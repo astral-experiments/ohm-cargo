@@ -422,6 +422,28 @@ pub use self::dep_info::translate_dep_info;
 pub use self::dirty_reason::DirtyReason;
 pub use self::rustdoc::RustdocFingerprint;
 
+/// Computes a blake3 hash of the file contents.
+///
+/// Blake3 provides 256-bit collision resistance, making hash collisions
+/// effectively impossible. This is important for early cutoff correctness
+/// since we skip compilation based on hash equality.
+fn blake3_hash_file(file: &std::fs::File) -> std::io::Result<[u8; 32]> {
+    use std::io::Read;
+    // Buffer size is the recommended amount to fully leverage SIMD instructions
+    // on AVX-512 as per blake3 documentation.
+    let mut buf = [0u8; 16 * 1024];
+    let mut hasher = blake3::Hasher::new();
+    let mut reader = std::io::BufReader::new(file);
+    loop {
+        let bytes_read = reader.read(&mut buf)?;
+        if bytes_read == 0 {
+            break;
+        }
+        hasher.update(&buf[..bytes_read]);
+    }
+    Ok(*hasher.finalize().as_bytes())
+}
+
 /// Finds the best output file to use for early cutoff hash comparison.
 ///
 /// Priority: Rmeta > Linkable > Normal
@@ -660,9 +682,9 @@ pub fn prepare_target(
     // Priority: Rmeta > Linkable > Normal (proc-macros produce Linkable .dylib)
     let unit_outputs = build_runner.outputs(unit)?;
     let compare_output = find_output_for_comparison(&unit_outputs);
-    let old_output_hash: Option<u64> = match &compare_output {
+    let old_output_hash: Option<[u8; 32]> = match &compare_output {
         Some(output) => match std::fs::File::open(&output.path) {
-            Ok(f) => match util::hex::hash_u64_file(&f) {
+            Ok(f) => match blake3_hash_file(&f) {
                 Ok(hash) => Some(hash),
                 Err(e) => {
                     debug!(
@@ -692,10 +714,10 @@ pub fn prepare_target(
 
     let check_output_unchanged = |fingerprint: &Arc<Fingerprint>,
                                    compare_path: &Option<PathBuf>,
-                                   old_hash: Option<u64>| {
+                                   old_hash: Option<[u8; 32]>| {
         if let (Some(old_hash), Some(path)) = (old_hash, compare_path) {
             match std::fs::File::open(path) {
-                Ok(f) => match util::hex::hash_u64_file(&f) {
+                Ok(f) => match blake3_hash_file(&f) {
                     Ok(new_hash) => {
                         if old_hash == new_hash {
                             *fingerprint.fs_status.lock().unwrap() = FsStatus::OutputUnchanged {
@@ -704,14 +726,14 @@ pub fn prepare_target(
                             };
                             fingerprint.set_build_state(BuildState::BuiltUnchanged);
                             info!(
-                                "early_cutoff: unit {:?} built with UNCHANGED output (hash {:x}), dependents may skip",
-                                fingerprint.index, new_hash
+                                "early_cutoff: unit {:?} built with UNCHANGED output (hash {}), dependents may skip",
+                                fingerprint.index, hex::encode(new_hash)
                             );
                             return;
                         } else {
                             info!(
-                                "early_cutoff: unit {:?} built with CHANGED output (old={:x}, new={:x}), dependents must rebuild",
-                                fingerprint.index, old_hash, new_hash
+                                "early_cutoff: unit {:?} built with CHANGED output (old={}, new={}), dependents must rebuild",
+                                fingerprint.index, hex::encode(old_hash), hex::encode(new_hash)
                             );
                         }
                     }
@@ -934,8 +956,9 @@ pub enum FsStatus {
     /// Dependents should not be marked dirty due to this dependency.
     OutputUnchanged {
         unit: UnitIndex,
-        /// Content hash of the .rmeta file (or primary output).
-        rmeta_hash: u64,
+        /// Blake3 content hash of the .rmeta file (or primary output).
+        /// Using 256-bit blake3 hash for collision resistance.
+        rmeta_hash: [u8; 32],
     },
 
     /// This unit is up-to-date. All outputs and their corresponding mtime are
