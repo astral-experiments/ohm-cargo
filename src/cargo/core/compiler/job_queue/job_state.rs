@@ -167,6 +167,11 @@ impl<'a, 'gctx> JobState<'a, 'gctx> {
         self.messages.push(Message::SectionTiming(self.id, section));
     }
 
+    /// Notifies that this unit was skipped via early cutoff.
+    pub fn skipped_early_cutoff(&self) {
+        self.messages.push(Message::SkippedEarlyCutoff(self.id));
+    }
+
     /// Drives a [`Job`] to finish. This ensures that a [`Message::Finish`] is
     /// sent even if our job panics.
     pub(super) fn run_to_finish(self, job: Job) {

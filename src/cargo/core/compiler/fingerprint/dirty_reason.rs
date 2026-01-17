@@ -327,7 +327,7 @@ impl DirtyReason {
                         format_args!("the dependency `{dep_name}` was rebuilt"),
                     )
                 }
-                FsStatus::UpToDate { .. } => {
+                FsStatus::UpToDate { .. } | FsStatus::OutputUnchanged { .. } => {
                     unreachable!()
                 }
             },

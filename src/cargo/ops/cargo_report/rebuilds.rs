@@ -470,6 +470,7 @@ fn format_dirty_reason(
                 .get(unit)
                 .map(|u| format!("dependency rebuilt: {}", unit_description(u)))
                 .unwrap_or_else(|| format!("dependency rebuilt: unit {unit}")),
+            FsStatus::OutputUnchanged { .. } => "output unchanged".to_string(),
             FsStatus::UpToDate { .. } => "up to date".to_string(),
         },
         DirtyReason::EnvVarChanged {

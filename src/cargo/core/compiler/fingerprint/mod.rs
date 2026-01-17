@@ -409,6 +409,7 @@ use super::BuildContext;
 use super::BuildRunner;
 use super::FileFlavor;
 use super::Job;
+use super::build_runner::OutputFile;
 use super::Unit;
 use super::UnitIndex;
 use super::Work;
@@ -420,6 +421,112 @@ pub use self::dep_info::parse_rustc_dep_info;
 pub use self::dep_info::translate_dep_info;
 pub use self::dirty_reason::DirtyReason;
 pub use self::rustdoc::RustdocFingerprint;
+
+/// Finds the best output file to use for early cutoff hash comparison.
+///
+/// Priority: Rmeta > Linkable > Normal
+/// - Rmeta: Metadata files for libraries (preferred, as they contain the public API)
+/// - Linkable: Dynamic libraries like proc-macro .dylib files
+/// - Normal: Binaries and other outputs
+fn find_output_for_comparison(outputs: &[OutputFile]) -> Option<&OutputFile> {
+    let mut rmeta = None;
+    let mut linkable = None;
+    let mut normal = None;
+
+    for output in outputs {
+        match output.flavor {
+            FileFlavor::Rmeta => rmeta = Some(output),
+            FileFlavor::Linkable => {
+                if linkable.is_none() {
+                    linkable = Some(output);
+                }
+            }
+            FileFlavor::Normal => {
+                if normal.is_none() {
+                    normal = Some(output);
+                }
+            }
+            FileFlavor::DebugInfo | FileFlavor::Auxiliary | FileFlavor::Sbom | FileFlavor::DocParts => {}
+        }
+    }
+
+    rmeta.or(linkable).or(normal)
+}
+
+/// Checks if early cutoff applies for a unit.
+///
+/// Early cutoff means: a dependency was rebuilt, but its output (.rmeta) didn't
+/// change, so this unit doesn't need to be rebuilt.
+///
+/// Returns `true` if the unit can skip compilation due to early cutoff.
+/// This only applies when:
+/// 1. The unit was marked dirty due to a dependency (StaleDependency/StaleDepFingerprint)
+/// 2. All dependencies have a `BuildState` that allows early cutoff
+/// 3. At least one dependency was rebuilt with unchanged output
+pub fn can_skip_due_to_early_cutoff(fingerprint: &Fingerprint) -> bool {
+    let own_status = fingerprint.fs_status.lock().unwrap();
+    let is_stale_due_to_dep = match &*own_status {
+        FsStatus::StaleDependency {
+            unit: _,
+            dep_mtime: _,
+            max_mtime: _,
+        }
+        | FsStatus::StaleDepFingerprint { unit: _ } => true,
+        FsStatus::Stale
+        | FsStatus::StaleItem(_)
+        | FsStatus::OutputUnchanged {
+            unit: _,
+            rmeta_hash: _,
+        }
+        | FsStatus::UpToDate { mtimes: _ } => false,
+    };
+    drop(own_status);
+
+    if !is_stale_due_to_dep {
+        debug!(
+            "early_cutoff: unit {:?} not stale due to dep, cannot skip",
+            fingerprint.index
+        );
+        return false;
+    }
+
+    let mut found_rebuilt_unchanged = false;
+
+    for dep in &fingerprint.deps {
+        let dep_build_state = dep.fingerprint.build_state.lock().unwrap();
+        debug!(
+            "early_cutoff: unit {:?} checking dep '{}' build_state={:?}",
+            fingerprint.index, dep.name, &*dep_build_state
+        );
+        match &*dep_build_state {
+            BuildState::BuiltUnchanged | BuildState::SkippedEarlyCutoff => {
+                found_rebuilt_unchanged = true;
+            }
+            BuildState::Fresh => {}
+            BuildState::Pending | BuildState::BuiltChanged => {
+                info!(
+                    "early_cutoff: unit {:?} CANNOT skip - dep '{}' has build_state={:?}",
+                    fingerprint.index, dep.name, &*dep_build_state
+                );
+                return false;
+            }
+        }
+    }
+
+    if found_rebuilt_unchanged {
+        info!(
+            "early_cutoff: unit {:?} CAN skip - all deps allow early cutoff",
+            fingerprint.index
+        );
+    } else {
+        debug!(
+            "early_cutoff: unit {:?} cannot skip - no dep was rebuilt with unchanged output",
+            fingerprint.index
+        );
+    }
+
+    found_rebuilt_unchanged
+}
 
 /// Result of comparing fingerprints between the current and previous builds.
 enum FingerprintComparison {
@@ -490,6 +597,12 @@ pub fn prepare_target(
     }
 
     let Some(dirty_reason) = dirty_reason else {
+        // Unit is already up-to-date, mark it as Fresh for early cutoff propagation
+        debug!(
+            "early_cutoff: unit {:?} is FRESH (already up-to-date)",
+            fingerprint.index
+        );
+        fingerprint.set_build_state(BuildState::Fresh);
         return Ok(Job::new_fresh());
     };
 
@@ -543,6 +656,103 @@ pub fn prepare_target(
         paths::write(&loc, b"")?;
     }
 
+    // Find the best output file to compare for early cutoff.
+    // Priority: Rmeta > Linkable > Normal (proc-macros produce Linkable .dylib)
+    let unit_outputs = build_runner.outputs(unit)?;
+    let compare_output = find_output_for_comparison(&unit_outputs);
+    let old_output_hash: Option<u64> = match &compare_output {
+        Some(output) => match std::fs::File::open(&output.path) {
+            Ok(f) => match util::hex::hash_u64_file(&f) {
+                Ok(hash) => Some(hash),
+                Err(e) => {
+                    debug!(
+                        "early_cutoff: unit {:?} failed to hash old output {:?}: {}",
+                        fingerprint.index, output.path, e
+                    );
+                    None
+                }
+            },
+            Err(e) => {
+                debug!(
+                    "early_cutoff: unit {:?} failed to open old output {:?}: {}",
+                    fingerprint.index, output.path, e
+                );
+                None
+            }
+        },
+        None => {
+            debug!(
+                "early_cutoff: unit {:?} has no output file to compare",
+                fingerprint.index
+            );
+            None
+        }
+    };
+    let compare_output_path = compare_output.map(|o| o.path.clone());
+
+    let check_output_unchanged = |fingerprint: &Arc<Fingerprint>,
+                                   compare_path: &Option<PathBuf>,
+                                   old_hash: Option<u64>| {
+        if let (Some(old_hash), Some(path)) = (old_hash, compare_path) {
+            match std::fs::File::open(path) {
+                Ok(f) => match util::hex::hash_u64_file(&f) {
+                    Ok(new_hash) => {
+                        if old_hash == new_hash {
+                            *fingerprint.fs_status.lock().unwrap() = FsStatus::OutputUnchanged {
+                                unit: fingerprint.index,
+                                rmeta_hash: new_hash,
+                            };
+                            fingerprint.set_build_state(BuildState::BuiltUnchanged);
+                            info!(
+                                "early_cutoff: unit {:?} built with UNCHANGED output (hash {:x}), dependents may skip",
+                                fingerprint.index, new_hash
+                            );
+                            return;
+                        } else {
+                            info!(
+                                "early_cutoff: unit {:?} built with CHANGED output (old={:x}, new={:x}), dependents must rebuild",
+                                fingerprint.index, old_hash, new_hash
+                            );
+                        }
+                    }
+                    Err(e) => {
+                        debug!(
+                            "early_cutoff: unit {:?} failed to hash new output {:?}: {}",
+                            fingerprint.index, path, e
+                        );
+                    }
+                },
+                Err(e) => {
+                    debug!(
+                        "early_cutoff: unit {:?} failed to open new output {:?}: {}",
+                        fingerprint.index, path, e
+                    );
+                }
+            }
+        } else {
+            let current_state = fingerprint.build_state();
+            let already_skipped = match current_state {
+                BuildState::SkippedEarlyCutoff => true,
+                BuildState::Pending
+                | BuildState::BuiltChanged
+                | BuildState::BuiltUnchanged
+                | BuildState::Fresh => false,
+            };
+            if already_skipped {
+                debug!(
+                    "early_cutoff: unit {:?} no hash to compare, but already marked SkippedEarlyCutoff",
+                    fingerprint.index
+                );
+                return;
+            }
+            debug!(
+                "early_cutoff: unit {:?} no old hash to compare, treating as changed",
+                fingerprint.index
+            );
+        }
+        fingerprint.set_build_state(BuildState::BuiltChanged);
+    };
+
     let write_fingerprint = if unit.mode.is_run_custom_build() {
         // For build scripts the `local` field of the fingerprint may change
         // while we're executing it. For example it could be in the legacy
@@ -574,10 +784,18 @@ pub fn prepare_target(
                 *fingerprint.local.lock().unwrap() = new_local;
             }
 
+            // Check if output changed and update fs_status
+            check_output_unchanged(&fingerprint, &compare_output_path, old_output_hash);
+
             write_fingerprint(&loc, &fingerprint)
         })
     } else {
-        Work::new(move |_| write_fingerprint(&loc, &fingerprint))
+        Work::new(move |_| {
+            // Check if output changed and update fs_status
+            check_output_unchanged(&fingerprint, &compare_output_path, old_output_hash);
+
+            write_fingerprint(&loc, &fingerprint)
+        })
     };
 
     Ok(Job::new_dirty(write_fingerprint, dirty_reason))
@@ -669,9 +887,15 @@ pub struct Fingerprint {
     #[serde(skip)]
     index: UnitIndex,
     /// Description of whether the filesystem status for this unit is up to date
-    /// or should be considered stale.
+    /// or should be considered stale. Uses a Mutex for interior mutability so
+    /// that it can be updated after builds complete (e.g., to mark as
+    /// OutputUnchanged if the output hash didn't change).
     #[serde(skip)]
-    fs_status: FsStatus,
+    fs_status: Mutex<FsStatus>,
+    /// Tracks the build state during the current build session.
+    /// Used for early cutoff propagation through the dependency graph.
+    #[serde(skip)]
+    build_state: Mutex<BuildState>,
     /// Files, relative to `target_root`, that are produced by the step that
     /// this `Fingerprint` represents. This is used to detect when the whole
     /// fingerprint is out of date if this is missing, or if previous
@@ -706,6 +930,14 @@ pub enum FsStatus {
     /// A dependency's fingerprint was stale.
     StaleDepFingerprint { unit: UnitIndex },
 
+    /// This unit was rebuilt, but its output (.rmeta) content hash is unchanged.
+    /// Dependents should not be marked dirty due to this dependency.
+    OutputUnchanged {
+        unit: UnitIndex,
+        /// Content hash of the .rmeta file (or primary output).
+        rmeta_hash: u64,
+    },
+
     /// This unit is up-to-date. All outputs and their corresponding mtime are
     /// listed in the payload here for other dependencies to compare against.
     #[serde(skip)]
@@ -716,10 +948,52 @@ impl FsStatus {
     fn up_to_date(&self) -> bool {
         match self {
             FsStatus::UpToDate { .. } => true,
+            // OutputUnchanged means the unit was rebuilt but output didn't change,
+            // so dependents can treat it as up-to-date.
+            FsStatus::OutputUnchanged { .. } => true,
             FsStatus::Stale
             | FsStatus::StaleItem(_)
             | FsStatus::StaleDependency { .. }
             | FsStatus::StaleDepFingerprint { .. } => false,
+        }
+    }
+}
+
+/// Tracks the build state of a unit during a build session.
+///
+/// This is separate from [`FsStatus`] which tracks *why* something is stale.
+/// `BuildState` tracks *what happened* during the current build session,
+/// which is needed for early cutoff to propagate correctly through the
+/// dependency graph.
+#[derive(Clone, Debug, Default)]
+pub enum BuildState {
+    /// Not yet processed in this build session.
+    #[default]
+    Pending,
+    /// Compiled and output changed - dependents must rebuild.
+    BuiltChanged,
+    /// Compiled but output unchanged - dependents can skip via early cutoff.
+    BuiltUnchanged,
+    /// Skipped due to early cutoff - treat same as `BuiltUnchanged` for dependents.
+    SkippedEarlyCutoff,
+    /// Was already up-to-date, no rebuild needed.
+    Fresh,
+}
+
+impl BuildState {
+    /// Returns true if dependents can potentially skip rebuilding due to early cutoff.
+    pub fn allows_early_cutoff(&self) -> bool {
+        match self {
+            BuildState::BuiltUnchanged | BuildState::SkippedEarlyCutoff | BuildState::Fresh => true,
+            BuildState::Pending | BuildState::BuiltChanged => false,
+        }
+    }
+
+    /// Returns true if this unit was rebuilt with unchanged output.
+    pub fn is_rebuilt_unchanged(&self) -> bool {
+        match self {
+            BuildState::BuiltUnchanged | BuildState::SkippedEarlyCutoff => true,
+            BuildState::Pending | BuildState::BuiltChanged | BuildState::Fresh => false,
         }
     }
 }
@@ -1040,7 +1314,8 @@ impl Fingerprint {
             config: 0,
             compile_kind: 0,
             index: UnitIndex::default(),
-            fs_status: FsStatus::Stale,
+            fs_status: Mutex::new(FsStatus::Stale),
+            build_state: Mutex::new(BuildState::Pending),
             outputs: Vec::new(),
         }
     }
@@ -1053,6 +1328,21 @@ impl Fingerprint {
     /// to ensure that after a build completes everything is up-to-date.
     pub fn clear_memoized(&self) {
         *self.memoized_hash.lock().unwrap() = None;
+    }
+
+    /// Returns a copy of the current filesystem status for debugging purposes.
+    pub fn fs_status(&self) -> FsStatus {
+        self.fs_status.lock().unwrap().clone()
+    }
+
+    /// Returns a copy of the current build state.
+    pub fn build_state(&self) -> BuildState {
+        self.build_state.lock().unwrap().clone()
+    }
+
+    /// Sets the build state for this fingerprint.
+    pub fn set_build_state(&self, state: BuildState) {
+        *self.build_state.lock().unwrap() = state;
     }
 
     fn hash_u64(&self) -> u64 {
@@ -1218,9 +1508,11 @@ impl Fingerprint {
             }
         }
 
-        if !self.fs_status.up_to_date() {
-            return DirtyReason::FsStatusOutdated(self.fs_status.clone());
+        let fs_status = self.fs_status.lock().unwrap();
+        if !fs_status.up_to_date() {
+            return DirtyReason::FsStatusOutdated(fs_status.clone());
         }
+        drop(fs_status);
 
         // This typically means some filesystem modifications happened or
         // something transitive was odd. In general we should strive to provide
@@ -1246,7 +1538,7 @@ impl Fingerprint {
         cargo_exe: &Path,
         gctx: &GlobalContext,
     ) -> CargoResult<()> {
-        assert!(!self.fs_status.up_to_date());
+        assert!(!self.fs_status.get_mut().unwrap().up_to_date());
 
         let pkg_root = pkg.root();
         let mut mtimes = HashMap::new();
@@ -1262,7 +1554,7 @@ impl Fingerprint {
                 let item = StaleItem::FailedToReadMetadata {
                     path: output.clone(),
                 };
-                self.fs_status = FsStatus::StaleItem(item);
+                *self.fs_status.get_mut().unwrap() = FsStatus::StaleItem(item);
                 return Ok(());
             };
             assert!(mtimes.insert(output.clone(), mtime).is_none());
@@ -1273,7 +1565,7 @@ impl Fingerprint {
             // We had no output files. This means we're an overridden build
             // script and we're just always up to date because we aren't
             // watching the filesystem.
-            self.fs_status = FsStatus::UpToDate { mtimes };
+            *self.fs_status.get_mut().unwrap() = FsStatus::UpToDate { mtimes };
             return Ok(());
         };
         debug!(
@@ -1282,38 +1574,49 @@ impl Fingerprint {
         );
 
         for dep in self.deps.iter() {
-            let dep_mtimes = match &dep.fingerprint.fs_status {
-                FsStatus::UpToDate { mtimes } => mtimes,
-                // If our dependency is stale, so are we, so bail out.
-                FsStatus::Stale
-                | FsStatus::StaleItem(_)
-                | FsStatus::StaleDependency { .. }
-                | FsStatus::StaleDepFingerprint { .. } => {
-                    self.fs_status = FsStatus::StaleDepFingerprint {
-                        unit: dep.fingerprint.index,
-                    };
-                    return Ok(());
+            // Extract needed data from the dependency's fs_status under the lock,
+            // then drop the lock before potentially modifying self.fs_status.
+            let dep_info = {
+                let dep_fs_status = dep.fingerprint.fs_status.lock().unwrap();
+                match &*dep_fs_status {
+                    FsStatus::UpToDate { mtimes } => {
+                        // If our dependency edge only requires the rmeta file to be present
+                        // then we only need to look at that one output file, otherwise we
+                        // need to consider all output files to see if we're out of date.
+                        if dep.only_requires_rmeta {
+                            let (dep_path, dep_mtime) = mtimes
+                                .iter()
+                                .find(|(path, _mtime)| {
+                                    path.extension().and_then(|s| s.to_str()) == Some("rmeta")
+                                })
+                                .expect("failed to find rmeta");
+                            Some((dep_path.clone(), *dep_mtime))
+                        } else {
+                            mtimes.iter().max_by_key(|kv| kv.1)
+                                .map(|(path, mtime)| (path.clone(), *mtime))
+                        }
+                    }
+                    // Dependency was rebuilt but output didn't change - don't propagate
+                    // dirtiness. Skip this dependency since the content is semantically
+                    // unchanged.
+                    FsStatus::OutputUnchanged { .. } => None,
+                    // If our dependency is stale, so are we, so bail out.
+                    FsStatus::Stale
+                    | FsStatus::StaleItem(_)
+                    | FsStatus::StaleDependency { .. }
+                    | FsStatus::StaleDepFingerprint { .. } => {
+                        *self.fs_status.get_mut().unwrap() = FsStatus::StaleDepFingerprint {
+                            unit: dep.fingerprint.index,
+                        };
+                        return Ok(());
+                    }
                 }
             };
 
-            // If our dependency edge only requires the rmeta file to be present
-            // then we only need to look at that one output file, otherwise we
-            // need to consider all output files to see if we're out of date.
-            let (dep_path, dep_mtime) = if dep.only_requires_rmeta {
-                dep_mtimes
-                    .iter()
-                    .find(|(path, _mtime)| {
-                        path.extension().and_then(|s| s.to_str()) == Some("rmeta")
-                    })
-                    .expect("failed to find rmeta")
-            } else {
-                match dep_mtimes.iter().max_by_key(|kv| kv.1) {
-                    Some(dep_mtime) => dep_mtime,
-                    // If our dependencies is up to date and has no filesystem
-                    // interactions, then we can move on to the next dependency.
-                    None => continue,
-                }
+            let Some((dep_path, dep_mtime)) = dep_info else {
+                continue;
             };
+
             debug!(
                 "max dep mtime for {:?} is {:?} {}",
                 pkg_root, dep_path, dep_mtime
@@ -1326,15 +1629,15 @@ impl Fingerprint {
             // Note that this comparison should probably be `>=`, not `>`, but
             // for a discussion of why it's `>` see the discussion about #5918
             // below in `find_stale`.
-            if dep_mtime > max_mtime {
+            if dep_mtime > *max_mtime {
                 info!(
                     "dependency on `{}` is newer than we are {} > {} {:?}",
                     dep.name, dep_mtime, max_mtime, pkg_root
                 );
 
-                self.fs_status = FsStatus::StaleDependency {
+                *self.fs_status.get_mut().unwrap() = FsStatus::StaleDependency {
                     unit: dep.fingerprint.index,
-                    dep_mtime: *dep_mtime,
+                    dep_mtime,
                     max_mtime: *max_mtime,
                 };
 
@@ -1356,13 +1659,13 @@ impl Fingerprint {
                 gctx,
             )? {
                 item.log();
-                self.fs_status = FsStatus::StaleItem(item);
+                *self.fs_status.get_mut().unwrap() = FsStatus::StaleItem(item);
                 return Ok(());
             }
         }
 
         // Everything was up to date! Record such.
-        self.fs_status = FsStatus::UpToDate { mtimes };
+        *self.fs_status.get_mut().unwrap() = FsStatus::UpToDate { mtimes };
         debug!("filesystem up-to-date {:?}", pkg_root);
 
         Ok(())
@@ -1687,7 +1990,8 @@ fn calculate_normal(
         compile_kind,
         index: build_runner.bcx.unit_to_index[unit],
         rustflags: extra_flags,
-        fs_status: FsStatus::Stale,
+        fs_status: Mutex::new(FsStatus::Stale),
+        build_state: Mutex::new(BuildState::Pending),
         outputs,
     })
 }
@@ -2036,7 +2340,7 @@ fn _compare_old_fingerprint(
 
     let new_hash = new_fingerprint.hash_u64();
 
-    if util::to_hex(new_hash) == old_fingerprint_short && new_fingerprint.fs_status.up_to_date() {
+    if util::to_hex(new_hash) == old_fingerprint_short && new_fingerprint.fs_status.lock().unwrap().up_to_date() {
         return Ok(FingerprintComparison::Fresh);
     }
 
@@ -2201,4 +2505,249 @@ where
         reference, reference_mtime
     );
     None
+}
+
+#[cfg(test)]
+mod early_cutoff_tests {
+    use super::*;
+    use std::sync::Arc;
+
+    /// Creates a fingerprint with the given FsStatus and BuildState.
+    fn make_fingerprint(fs_status: FsStatus, build_state: BuildState) -> Arc<Fingerprint> {
+        let mut fp = Fingerprint::new();
+        *fp.fs_status.get_mut().unwrap() = fs_status;
+        *fp.build_state.get_mut().unwrap() = build_state;
+        Arc::new(fp)
+    }
+
+    /// Creates a fingerprint that is stale due to a dependency.
+    fn make_stale_due_to_dep() -> Fingerprint {
+        let mut fp = Fingerprint::new();
+        *fp.fs_status.get_mut().unwrap() = FsStatus::StaleDepFingerprint {
+            unit: UnitIndex::default(),
+        };
+        fp
+    }
+
+    fn make_dep_fingerprint(fp: Arc<Fingerprint>) -> DepFingerprint {
+        DepFingerprint {
+            pkg_id: 0,
+            name: InternedString::new("test_dep"),
+            public: false,
+            only_requires_rmeta: true,
+            fingerprint: fp,
+        }
+    }
+
+
+    #[test]
+    fn unit_not_stale_due_to_dep_should_not_cutoff() {
+        // Unit is stale for its own reasons (Stale), not due to a dependency
+        let fp = make_fingerprint(FsStatus::Stale, BuildState::Pending);
+        assert!(!can_skip_due_to_early_cutoff(&fp));
+    }
+
+    #[test]
+    fn unit_stale_item_should_not_cutoff() {
+        // Unit is stale due to StaleItem (source changed), not a dependency
+        let dep = make_fingerprint(FsStatus::Stale, BuildState::BuiltUnchanged);
+        let mut fp = Fingerprint::new();
+        *fp.fs_status.get_mut().unwrap() = FsStatus::StaleItem(StaleItem::MissingFile {
+            path: PathBuf::from("/some/file"),
+        });
+        fp.deps.push(make_dep_fingerprint(dep));
+        assert!(!can_skip_due_to_early_cutoff(&fp));
+    }
+
+    #[test]
+    fn up_to_date_unit_should_not_cutoff() {
+        // Unit is already up-to-date, no early cutoff needed
+        let fp = make_fingerprint(
+            FsStatus::UpToDate { mtimes: HashMap::new() },
+            BuildState::Fresh,
+        );
+        assert!(!can_skip_due_to_early_cutoff(&fp));
+    }
+
+
+    #[test]
+    fn dep_pending_should_not_cutoff() {
+        // Dep hasn't been built yet
+        let dep = make_fingerprint(FsStatus::Stale, BuildState::Pending);
+        let mut fp = make_stale_due_to_dep();
+        fp.deps.push(make_dep_fingerprint(dep));
+        assert!(!can_skip_due_to_early_cutoff(&fp));
+    }
+
+    #[test]
+    fn dep_built_changed_should_not_cutoff() {
+        // Dep was built but output changed
+        let dep = make_fingerprint(FsStatus::Stale, BuildState::BuiltChanged);
+        let mut fp = make_stale_due_to_dep();
+        fp.deps.push(make_dep_fingerprint(dep));
+        assert!(!can_skip_due_to_early_cutoff(&fp));
+    }
+
+    #[test]
+    fn dep_built_unchanged_should_cutoff() {
+        // Dep was built but output didn't change - early cutoff!
+        let dep = make_fingerprint(FsStatus::Stale, BuildState::BuiltUnchanged);
+        let mut fp = make_stale_due_to_dep();
+        fp.deps.push(make_dep_fingerprint(dep));
+        assert!(can_skip_due_to_early_cutoff(&fp));
+    }
+
+    #[test]
+    fn dep_skipped_early_cutoff_should_cutoff() {
+        // Dep was skipped via early cutoff - propagates!
+        let dep = make_fingerprint(FsStatus::Stale, BuildState::SkippedEarlyCutoff);
+        let mut fp = make_stale_due_to_dep();
+        fp.deps.push(make_dep_fingerprint(dep));
+        assert!(can_skip_due_to_early_cutoff(&fp));
+    }
+
+    #[test]
+    fn dep_fresh_alone_should_not_cutoff() {
+        // Dep was fresh - but we need at least one rebuilt-unchanged dep
+        let dep = make_fingerprint(
+            FsStatus::UpToDate { mtimes: HashMap::new() },
+            BuildState::Fresh,
+        );
+        let mut fp = make_stale_due_to_dep();
+        fp.deps.push(make_dep_fingerprint(dep));
+        assert!(!can_skip_due_to_early_cutoff(&fp));
+    }
+
+    #[test]
+    fn no_deps_should_not_cutoff() {
+        // Stale due to dep but no deps - can't cutoff
+        let fp = make_stale_due_to_dep();
+        assert!(!can_skip_due_to_early_cutoff(&fp));
+    }
+
+
+    #[test]
+    fn mixed_deps_fresh_and_built_unchanged_should_cutoff() {
+        // Some deps fresh, some rebuilt unchanged - should cutoff
+        let dep_fresh = make_fingerprint(
+            FsStatus::UpToDate { mtimes: HashMap::new() },
+            BuildState::Fresh,
+        );
+        let dep_unchanged = make_fingerprint(FsStatus::Stale, BuildState::BuiltUnchanged);
+        let mut fp = make_stale_due_to_dep();
+        fp.deps.push(make_dep_fingerprint(dep_fresh));
+        fp.deps.push(make_dep_fingerprint(dep_unchanged));
+        assert!(can_skip_due_to_early_cutoff(&fp));
+    }
+
+    #[test]
+    fn mixed_deps_with_one_pending_should_not_cutoff() {
+        // One dep still pending - can't cutoff
+        let dep_unchanged = make_fingerprint(FsStatus::Stale, BuildState::BuiltUnchanged);
+        let dep_pending = make_fingerprint(FsStatus::Stale, BuildState::Pending);
+        let mut fp = make_stale_due_to_dep();
+        fp.deps.push(make_dep_fingerprint(dep_unchanged));
+        fp.deps.push(make_dep_fingerprint(dep_pending));
+        assert!(!can_skip_due_to_early_cutoff(&fp));
+    }
+
+    #[test]
+    fn mixed_deps_with_one_changed_should_not_cutoff() {
+        // One dep changed - can't cutoff
+        let dep_unchanged = make_fingerprint(FsStatus::Stale, BuildState::BuiltUnchanged);
+        let dep_changed = make_fingerprint(FsStatus::Stale, BuildState::BuiltChanged);
+        let mut fp = make_stale_due_to_dep();
+        fp.deps.push(make_dep_fingerprint(dep_unchanged));
+        fp.deps.push(make_dep_fingerprint(dep_changed));
+        assert!(!can_skip_due_to_early_cutoff(&fp));
+    }
+
+
+    #[test]
+    fn transitive_early_cutoff_propagates() {
+        // Scenario: A's source changed, A rebuilt with unchanged output,
+        // B depends on A, B skips via early cutoff,
+        // C depends on B, C should also skip via early cutoff.
+
+        // A: rebuilt with unchanged output (not directly used in test, documents scenario)
+        let _a = make_fingerprint(FsStatus::Stale, BuildState::BuiltUnchanged);
+
+        // B: skipped due to early cutoff (depends on A)
+        let b = make_fingerprint(FsStatus::Stale, BuildState::SkippedEarlyCutoff);
+
+        // C: stale due to dep, depends on B
+        let mut c = make_stale_due_to_dep();
+        c.deps.push(make_dep_fingerprint(b));
+
+        // C should be able to skip because B is SkippedEarlyCutoff
+        assert!(can_skip_due_to_early_cutoff(&c));
+    }
+
+    #[test]
+    fn transitive_with_changed_dep_does_not_propagate() {
+        // Scenario: A's source changed, A rebuilt with CHANGED output,
+        // B depends on A, B must rebuild (output changed),
+        // C depends on B, C depends on whether B's output changed.
+
+        // A: rebuilt with changed output (not directly used in test, documents scenario)
+        let _a = make_fingerprint(FsStatus::Stale, BuildState::BuiltChanged);
+
+        // B: was stale due to A, but A changed, so B must rebuild
+        // If B also has changed output:
+        let b = make_fingerprint(FsStatus::Stale, BuildState::BuiltChanged);
+
+        // C: stale due to dep, depends on B
+        let mut c = make_stale_due_to_dep();
+        c.deps.push(make_dep_fingerprint(b));
+
+        // C cannot skip because B's output changed
+        assert!(!can_skip_due_to_early_cutoff(&c));
+    }
+
+    #[test]
+    fn transitive_chain_all_unchanged() {
+        // A → B → C → D, all rebuilt with unchanged output
+        // A and B not directly used in test, document the scenario
+        let _a = make_fingerprint(FsStatus::Stale, BuildState::BuiltUnchanged);
+        let _b = make_fingerprint(FsStatus::Stale, BuildState::SkippedEarlyCutoff);
+        let c = make_fingerprint(FsStatus::Stale, BuildState::SkippedEarlyCutoff);
+
+        // D depends on C
+        let mut d = make_stale_due_to_dep();
+        d.deps.push(make_dep_fingerprint(c));
+
+        assert!(can_skip_due_to_early_cutoff(&d));
+    }
+
+    #[test]
+    fn diamond_dependency_all_unchanged() {
+        // Diamond: A → B, A → C, B → D, C → D
+        // If A rebuilt unchanged, both B and C skip, D should also skip
+
+        let b = make_fingerprint(FsStatus::Stale, BuildState::SkippedEarlyCutoff);
+        let c = make_fingerprint(FsStatus::Stale, BuildState::SkippedEarlyCutoff);
+
+        // D depends on both B and C
+        let mut d = make_stale_due_to_dep();
+        d.deps.push(make_dep_fingerprint(b));
+        d.deps.push(make_dep_fingerprint(c));
+
+        assert!(can_skip_due_to_early_cutoff(&d));
+    }
+
+    #[test]
+    fn diamond_dependency_one_changed() {
+        // Diamond: A → B, A → C, B → D, C → D
+        // If B skipped but C had to rebuild with changed output, D cannot skip
+
+        let b = make_fingerprint(FsStatus::Stale, BuildState::SkippedEarlyCutoff);
+        let c = make_fingerprint(FsStatus::Stale, BuildState::BuiltChanged);
+
+        // D depends on both B and C
+        let mut d = make_stale_due_to_dep();
+        d.deps.push(make_dep_fingerprint(b));
+        d.deps.push(make_dep_fingerprint(c));
+
+        assert!(!can_skip_due_to_early_cutoff(&d));
+    }
 }
