@@ -3312,3 +3312,101 @@ fn symlink_to_package() {
 "#]])
         .run();
 }
+
+#[cargo_test]
+fn early_cutoff_skips_dependent_rebuild() {
+    // Test early cutoff: when a dependency is rebuilt but its .rmeta output
+    // is unchanged, dependent crates should skip compilation.
+    //
+    // We use #[inline(never)] to ensure the function body is not included
+    // in the .rmeta, so changing the body doesn't change the .rmeta hash.
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "app"
+                version = "0.1.0"
+                edition = "2021"
+
+                [dependencies]
+                dep = { path = "dep" }
+            "#,
+        )
+        .file(
+            "src/main.rs",
+            r#"
+                fn main() {
+                    dep::greet();
+                }
+            "#,
+        )
+        .file(
+            "dep/Cargo.toml",
+            r#"
+                [package]
+                name = "dep"
+                version = "0.1.0"
+                edition = "2021"
+            "#,
+        )
+        .file(
+            "dep/src/lib.rs",
+            r#"
+                #[inline(never)]
+                pub fn greet() {
+                    println!("Hello, world!");
+                }
+            "#,
+        )
+        .build();
+
+    // Initial build - both crates should be compiled
+    p.cargo("build -v")
+        .with_stderr_data(str![[r#"
+[LOCKING] 1 package to latest compatible version
+[COMPILING] dep v0.1.0 ([ROOT]/foo/dep)
+[RUNNING] `rustc --crate-name dep [..]`
+[COMPILING] app v0.1.0 ([ROOT]/foo)
+[RUNNING] `rustc --crate-name app [..]`
+[FINISHED] `dev` profile [unoptimized + debuginfo] target(s) in [ELAPSED]s
+
+"#]])
+        .run();
+
+    // Second build - everything should be fresh
+    p.cargo("build -v")
+        .with_stderr_data(str![[r#"
+[FRESH] dep v0.1.0 ([ROOT]/foo/dep)
+[FRESH] app v0.1.0 ([ROOT]/foo)
+[FINISHED] `dev` profile [unoptimized + debuginfo] target(s) in [ELAPSED]s
+
+"#]])
+        .run();
+
+    // Change the function body (but not the signature) in dep.
+    // Since the function is #[inline(never)], the .rmeta should be unchanged.
+    sleep_ms(1000);
+    p.change_file(
+        "dep/src/lib.rs",
+        r#"
+            #[inline(never)]
+            pub fn greet() {
+                println!("Hello, early cutoff!");
+            }
+        "#,
+    );
+
+    // Rebuild - dep should be recompiled, but app should be skipped due to early cutoff.
+    // The .rmeta hash of dep should be unchanged since only the function body changed.
+    p.cargo("build -v")
+        .with_stderr_data(str![[r#"
+[DIRTY] dep v0.1.0 ([ROOT]/foo/dep): the file `dep/src/lib.rs` has changed ([TIME_DIFF_AFTER_LAST_BUILD])
+[COMPILING] dep v0.1.0 ([ROOT]/foo/dep)
+[RUNNING] `rustc --crate-name dep [..]
+[FRESH] app v0.1.0 ([ROOT]/foo)
+[FINISHED] `dev` profile [unoptimized + debuginfo] target(s) in [ELAPSED]s
+
+"#]])
+        .run();
+}

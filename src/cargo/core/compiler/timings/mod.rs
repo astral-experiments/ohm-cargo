@@ -35,8 +35,12 @@ pub struct Timings<'gctx> {
     enabled: bool,
     /// When Cargo started.
     start: Instant,
-    /// A summary of the root units.
-    ///
+    /// Total number of fresh units (no recompilation needed).
+    total_fresh: u32,
+    /// Total number of dirty units (recompilation needed).
+    total_dirty: u32,
+    /// Total number of dirty units that were skipped via early cutoff.
+    total_skipped_early_cutoff: u32,
     /// A map from unit to index.
     unit_to_index: HashMap<Unit, UnitIndex>,
     /// Units that are in the process of being built.
@@ -88,6 +92,9 @@ impl<'gctx> Timings<'gctx> {
                 gctx: bcx.gctx,
                 enabled,
                 start,
+                total_fresh: 0,
+                total_dirty: 0,
+                total_skipped_early_cutoff: 0,
                 unit_to_index: HashMap::new(),
                 active: HashMap::new(),
                 last_cpu_state: None,
@@ -108,6 +115,9 @@ impl<'gctx> Timings<'gctx> {
             gctx: bcx.gctx,
             enabled,
             start,
+            total_fresh: 0,
+            total_dirty: 0,
+            total_skipped_early_cutoff: 0,
             unit_to_index: bcx.unit_to_index.clone(),
             active: HashMap::new(),
             last_cpu_state,
@@ -227,6 +237,26 @@ impl<'gctx> Timings<'gctx> {
                 section,
             },
         })
+    }
+
+    /// Returns the number of fresh units (no re-compile needed).
+    pub fn total_fresh(&self) -> u32 {
+        self.total_fresh
+    }
+
+    /// Returns the number of dirty units (re-compile needed).
+    pub fn total_dirty(&self) -> u32 {
+        self.total_dirty
+    }
+
+    /// Mark that a unit was skipped via early cutoff.
+    pub fn add_skipped_early_cutoff(&mut self) {
+        self.total_skipped_early_cutoff += 1;
+    }
+
+    /// Returns the number of units skipped via early cutoff.
+    pub fn total_skipped_early_cutoff(&self) -> u32 {
+        self.total_skipped_early_cutoff
     }
 
     /// Take a sample of CPU usage

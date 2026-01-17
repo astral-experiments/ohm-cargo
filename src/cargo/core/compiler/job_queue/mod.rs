@@ -389,6 +389,8 @@ enum Message {
     FutureIncompatReport(JobId, Vec<FutureBreakageItem>),
     SectionTiming(JobId, SectionTiming),
     UnusedExterns(JobId, std::collections::BTreeSet<InternedString>),
+    /// A unit was skipped via early cutoff (dependency rebuilt but output unchanged).
+    SkippedEarlyCutoff(JobId),
 }
 
 impl<'gctx> JobQueue<'gctx> {
@@ -758,6 +760,9 @@ impl<'gctx> DrainState<'gctx> {
             Message::SectionTiming(id, section) => {
                 self.timings.unit_section_timing(build_runner, id, &section);
             }
+            Message::SkippedEarlyCutoff(_id) => {
+                self.timings.add_skipped_early_cutoff();
+            }
         }
 
         Ok(())
@@ -897,6 +902,30 @@ impl<'gctx> DrainState<'gctx> {
             // `display_error` inside `handle_error`.
             (Err(anyhow::Error::new(AlreadyPrintedError::new(error))),)
         } else if self.queue.is_empty() && self.pending_queue.is_empty() {
+            let total_fresh = self.timings.total_fresh();
+            let total_dirty = self.timings.total_dirty();
+            let total_skipped = self.timings.total_skipped_early_cutoff();
+            let total_rebuilt = total_dirty.saturating_sub(total_skipped);
+            if total_dirty == 0 {
+                tracing::info!(
+                    "early_cutoff: nothing to build - all {} units are fresh",
+                    total_fresh
+                );
+            } else if total_skipped > 0 {
+                tracing::info!(
+                    "early_cutoff: build complete - {} units rebuilt, {} units skipped (early cutoff), {} units fresh",
+                    total_rebuilt,
+                    total_skipped,
+                    total_fresh
+                );
+            } else {
+                tracing::info!(
+                    "early_cutoff: build complete - {} units rebuilt, {} units fresh",
+                    total_rebuilt,
+                    total_fresh
+                );
+            }
+
             let profile_link = build_runner.bcx.gctx.shell().err_hyperlink(
                 "https://doc.rust-lang.org/cargo/reference/profiles.html#default-profiles",
             );

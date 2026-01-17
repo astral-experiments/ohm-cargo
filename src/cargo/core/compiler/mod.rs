@@ -88,6 +88,7 @@ pub use self::custom_build::LinkArgTarget;
 pub use self::custom_build::{BuildOutput, BuildScriptOutputs, BuildScripts, LibraryPath};
 pub(crate) use self::fingerprint::DirtyReason;
 pub use self::fingerprint::RustdocFingerprint;
+use self::fingerprint::BuildState;
 pub use self::job_queue::Freshness;
 use self::job_queue::{Job, JobQueue, JobState, Work};
 pub(crate) use self::layout::Layout;
@@ -363,7 +364,61 @@ fn rustc(
         output_options.show_diagnostics = false;
     }
     let env_config = Arc::clone(build_runner.bcx.gctx.env_config()?);
+
+    let fingerprint = build_runner.fingerprints.get(unit).cloned();
+    let unit_name = format!("{} v{}", unit.pkg.name(), unit.pkg.version());
+
     return Ok(Work::new(move |state| {
+        if let Some(ref fp) = fingerprint {
+            tracing::info!(
+                "early cutoff check for {}: fs_status={:?}, outputs={:?}",
+                unit_name,
+                fp.fs_status(),
+                outputs.iter().map(|o| (&o.path, o.path.exists())).collect::<Vec<_>>()
+            );
+
+            if fingerprint::can_skip_due_to_early_cutoff(fp) {
+                let mut essential_outputs = Vec::new();
+                for output in outputs.iter() {
+                    let is_dsym = output
+                        .path
+                        .to_str()
+                        .map(|s| s.ends_with(".dSYM"))
+                        .unwrap_or(false);
+                    if !is_dsym {
+                        essential_outputs.push(output);
+                    }
+                }
+                let all_outputs_exist =
+                    !essential_outputs.is_empty() && essential_outputs.iter().all(|o| o.path.exists());
+                if all_outputs_exist {
+                    // Touch output files to update their mtimes so future builds
+                    // don't see them as stale compared to rebuilt dependencies.
+                    let now = filetime::FileTime::now();
+                    for output in &essential_outputs {
+                        if let Err(e) = filetime::set_file_mtime(&output.path, now) {
+                            tracing::debug!(
+                                "early cutoff: failed to touch output {:?}: {}",
+                                output.path, e
+                            );
+                        }
+                    }
+                    tracing::info!(
+                        "early cutoff: skipping compilation of {} (all deps unchanged)",
+                        unit_name
+                    );
+                    fp.set_build_state(BuildState::SkippedEarlyCutoff);
+                    state.skipped_early_cutoff();
+                    return Ok(());
+                } else {
+                    tracing::info!(
+                        "early cutoff: cannot skip {} (outputs don't exist yet)",
+                        unit_name
+                    );
+                }
+            }
+        }
+
         // Artifacts are in a different location than typical units,
         // hence we must assure the crate- and target-dependent
         // directory is present.
