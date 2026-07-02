@@ -61,7 +61,7 @@ use std::ffi::{OsStr, OsString};
 use std::fmt::Display;
 use std::fs::{self, File};
 use std::io::{BufRead, BufWriter, Write};
-use std::ops::Range;
+use std::ops::{Deref, Range};
 use std::path::{Path, PathBuf};
 use std::sync::{Arc, LazyLock};
 use std::time::{Instant, UNIX_EPOCH};
@@ -2531,7 +2531,7 @@ struct ManifestErrorContext {
     /// The path to the manifest.
     path: PathBuf,
     /// The locations of various spans within the manifest.
-    spans: Option<toml::Spanned<toml::de::DeTable<'static>>>,
+    spans: Option<Arc<toml::Spanned<toml::de::DeTable<'static>>>>,
     /// The raw manifest contents.
     contents: Option<String>,
     /// A lookup for all the unambiguous renamings, mapping from the original package
@@ -2933,7 +2933,7 @@ impl ManifestErrorContext {
         let bcx = build_runner.bcx;
         ManifestErrorContext {
             path: unit.pkg.manifest_path().to_owned(),
-            spans: unit.pkg.manifest().document().cloned(),
+            spans: unit.pkg.manifest().document_rc(),
             contents: unit.pkg.manifest().contents().map(String::from),
             requested_kinds: bcx.target_data.requested_kinds().to_owned(),
             host_name: bcx.rustc().host,
@@ -3002,6 +3002,7 @@ impl ManifestErrorContext {
         // [target.'cfg(something)'.dependencies]. We filter out target tables
         // that don't match a requested target or a requested cfg.
         if let Some(target) = spans
+            .deref()
             .as_ref()
             .get("target")
             .and_then(|t| t.as_ref().as_table())
