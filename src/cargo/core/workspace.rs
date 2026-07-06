@@ -1,4 +1,4 @@
-use crate::util::data_structures::{HashMap, HashSet};
+use crate::util::data_structures::{HashMap, HashSet, IndexSet};
 use std::cell::RefCell;
 use std::collections::hash_map::Entry;
 use std::collections::{BTreeMap, BTreeSet};
@@ -99,7 +99,11 @@ pub struct Workspace<'gctx> {
     /// List of members in this workspace with a listing of all their manifest
     /// paths. The packages themselves can be looked up through the `packages`
     /// set above.
-    members: Vec<PathBuf>,
+    ///
+    /// Note: this uses a set because we query it using `contains`, which is
+    /// faster with a set, partly because running `PartialEq` on a bunch of paths
+    /// isn't very fast.
+    members: IndexSet<PathBuf>,
     /// Set of ids of workspace members
     member_ids: HashSet<PackageId>,
 
@@ -272,7 +276,7 @@ impl<'gctx> Workspace<'gctx> {
             root_manifest: None,
             target_dir: None,
             build_dir: None,
-            members: Vec::new(),
+            members: IndexSet::default(),
             member_ids: HashSet::default(),
             default_members: Vec::new(),
             is_ephemeral: false,
@@ -318,7 +322,7 @@ impl<'gctx> Workspace<'gctx> {
             ws.gctx.target_dir()?
         };
         ws.build_dir = ws.target_dir.clone();
-        ws.members.push(ws.current_manifest.clone());
+        ws.members.insert(ws.current_manifest.clone());
         ws.member_ids.insert(id);
         ws.default_members.push(ws.current_manifest.clone());
         ws.set_resolve_behavior()?;
@@ -857,7 +861,7 @@ impl<'gctx> Workspace<'gctx> {
     fn find_members(&mut self) -> CargoResult<()> {
         let Some(workspace_config) = self.load_workspace_config()? else {
             debug!("find_members - only me as a member");
-            self.members.push(self.current_manifest.clone());
+            self.members.insert(self.current_manifest.clone());
             self.default_members.push(self.current_manifest.clone());
             if let Ok(pkg) = self.current() {
                 let id = pkg.package_id();
@@ -925,7 +929,7 @@ impl<'gctx> Workspace<'gctx> {
                 self.default_members.push(manifest_path)
             }
         } else if self.is_virtual() {
-            self.default_members = self.members.clone()
+            self.default_members = self.members.iter().cloned().collect();
         } else {
             self.default_members.push(self.current_manifest.clone())
         }
@@ -965,7 +969,7 @@ impl<'gctx> Workspace<'gctx> {
         }
 
         debug!("find_path_deps - {}", manifest_path.display());
-        self.members.push(manifest_path.clone());
+        self.members.insert(manifest_path.clone());
 
         let candidates = {
             let pkg = match *self.packages.load(&manifest_path)? {
