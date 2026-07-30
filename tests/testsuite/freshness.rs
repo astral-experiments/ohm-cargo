@@ -3314,12 +3314,11 @@ fn symlink_to_package() {
 }
 
 #[cargo_test]
+#[cfg(not(windows))]
 fn early_cutoff_skips_dependent_rebuild() {
-    // Test early cutoff: when a dependency is rebuilt but its .rmeta output
-    // is unchanged, dependent crates should skip compilation.
-    //
-    // We use #[inline(never)] to ensure the function body is not included
-    // in the .rmeta, so changing the body doesn't change the .rmeta hash.
+    // Changing a native library rebuilds its Rust wrapper with byte-identical
+    // metadata. Intermediate Rust libraries can be reused, but the final
+    // binary must still be relinked against the new native implementation.
     let p = project()
         .file(
             "Cargo.toml",
@@ -3330,16 +3329,28 @@ fn early_cutoff_skips_dependent_rebuild() {
                 edition = "2021"
 
                 [dependencies]
-                dep = { path = "dep" }
+                middle = { path = "middle" }
             "#,
         )
         .file(
             "src/main.rs",
+            "fn main() { println!(\"{}\", middle::value()); }",
+        )
+        .file(
+            "middle/Cargo.toml",
             r#"
-                fn main() {
-                    dep::greet();
-                }
+                [package]
+                name = "middle"
+                version = "0.1.0"
+                edition = "2021"
+
+                [dependencies]
+                dep = { path = "../dep" }
             "#,
+        )
+        .file(
+            "middle/src/lib.rs",
+            "pub fn value() -> i32 { dep::value() }",
         )
         .file(
             "dep/Cargo.toml",
@@ -3348,64 +3359,92 @@ fn early_cutoff_skips_dependent_rebuild() {
                 name = "dep"
                 version = "0.1.0"
                 edition = "2021"
+                build = "build.rs"
+            "#,
+        )
+        .file(
+            "dep/build.rs",
+            r#"
+                use std::env;
+                use std::path::PathBuf;
+                use std::process::Command;
+
+                fn main() {
+                    let out_dir =
+                        PathBuf::from(env::var_os("OUT_DIR").expect("OUT_DIR should be set"));
+                    let object = out_dir.join("native.o");
+                    let archive = out_dir.join("libnative.a");
+                    assert!(
+                        Command::new("cc")
+                            .args(["-c", "native.c", "-o"])
+                            .arg(&object)
+                            .status()
+                            .expect("cc should run")
+                            .success()
+                    );
+                    assert!(
+                        Command::new("ar")
+                            .arg("rcs")
+                            .arg(&archive)
+                            .arg(&object)
+                            .status()
+                            .expect("ar should run")
+                            .success()
+                    );
+                    println!("cargo::rerun-if-changed=native.c");
+                    println!("cargo::rustc-link-search=native={}", out_dir.display());
+                    println!("cargo::rustc-link-lib=static=native");
+                }
             "#,
         )
         .file(
             "dep/src/lib.rs",
             r#"
+                unsafe extern "C" {
+                    fn native_value() -> i32;
+                }
+
                 #[inline(never)]
-                pub fn greet() {
-                    println!("Hello, world!");
+                pub fn value() -> i32 {
+                    // SAFETY: `native_value` is defined by `native.c`, which is
+                    // linked by this package's build script.
+                    unsafe { native_value() }
                 }
             "#,
         )
+        .file("dep/native.c", "int native_value(void) { return 1; }")
         .build();
 
-    // Initial build - both crates should be compiled
+    p.cargo("build").run();
+    p.process(&p.bin("app"))
+        .with_stdout_data(str![[r#"
+1
+
+"#]])
+        .run();
+
+    sleep_ms(1000);
+    p.change_file("dep/native.c", "int native_value(void) { return 2; }");
+
+    // `middle` can be reused, while the final executable must be rebuilt.
     p.cargo("build -v")
         .with_stderr_data(str![[r#"
-[LOCKING] 1 package to latest compatible version
+[DIRTY] dep v0.1.0 ([ROOT]/foo/dep): the file `dep/native.c` has changed ([TIME_DIFF_AFTER_LAST_BUILD])
 [COMPILING] dep v0.1.0 ([ROOT]/foo/dep)
+[RUNNING] `[ROOT]/foo/target/debug/build/dep-[HASH]/build-script-build`
 [RUNNING] `rustc --crate-name dep [..]`
+[DIRTY] middle v0.1.0 ([ROOT]/foo/middle): the dependency `dep` was rebuilt
+[COMPILING] middle v0.1.0 ([ROOT]/foo/middle)
+[DIRTY] app v0.1.0 ([ROOT]/foo): the dependency `middle` was rebuilt
 [COMPILING] app v0.1.0 ([ROOT]/foo)
 [RUNNING] `rustc --crate-name app [..]`
 [FINISHED] `dev` profile [unoptimized + debuginfo] target(s) in [ELAPSED]s
 
 "#]])
         .run();
-
-    // Second build - everything should be fresh
-    p.cargo("build -v")
-        .with_stderr_data(str![[r#"
-[FRESH] dep v0.1.0 ([ROOT]/foo/dep)
-[FRESH] app v0.1.0 ([ROOT]/foo)
-[FINISHED] `dev` profile [unoptimized + debuginfo] target(s) in [ELAPSED]s
-
-"#]])
-        .run();
-
-    // Change the function body (but not the signature) in dep.
-    // Since the function is #[inline(never)], the .rmeta should be unchanged.
-    sleep_ms(1000);
-    p.change_file(
-        "dep/src/lib.rs",
-        r#"
-            #[inline(never)]
-            pub fn greet() {
-                println!("Hello, early cutoff!");
-            }
-        "#,
-    );
-
-    // Rebuild - dep should be recompiled, but app should be skipped due to early cutoff.
-    // The .rmeta hash of dep should be unchanged since only the function body changed.
-    p.cargo("build -v")
-        .with_stderr_data(str![[r#"
-[DIRTY] dep v0.1.0 ([ROOT]/foo/dep): the file `dep/src/lib.rs` has changed ([TIME_DIFF_AFTER_LAST_BUILD])
-[COMPILING] dep v0.1.0 ([ROOT]/foo/dep)
-[RUNNING] `rustc --crate-name dep [..]
-[FRESH] app v0.1.0 ([ROOT]/foo)
-[FINISHED] `dev` profile [unoptimized + debuginfo] target(s) in [ELAPSED]s
+    p.process(&p.bin("app"))
+        .with_stdout_data(str![[r#"
+2
 
 "#]])
         .run();

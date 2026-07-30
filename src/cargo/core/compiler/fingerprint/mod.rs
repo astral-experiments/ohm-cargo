@@ -407,12 +407,13 @@ use crate::{CARGO_ENV, GlobalContext};
 
 use super::BuildContext;
 use super::BuildRunner;
+use super::CompileMode;
 use super::FileFlavor;
 use super::Job;
-use super::build_runner::OutputFile;
 use super::Unit;
 use super::UnitIndex;
 use super::Work;
+use super::build_runner::OutputFile;
 use super::custom_build::BuildDeps;
 
 pub use self::dep_info::Checksum;
@@ -468,11 +469,29 @@ fn find_output_for_comparison(outputs: &[OutputFile]) -> Option<&OutputFile> {
                     normal = Some(output);
                 }
             }
-            FileFlavor::DebugInfo | FileFlavor::Auxiliary | FileFlavor::Sbom | FileFlavor::DocParts => {}
+            FileFlavor::DebugInfo
+            | FileFlavor::Auxiliary
+            | FileFlavor::Sbom
+            | FileFlavor::DocParts => {}
         }
     }
 
     rmeta.or(linkable).or(normal)
+}
+
+/// Returns whether this unit can safely be reused after its dependencies'
+/// metadata outputs are proven unchanged.
+pub fn unit_can_use_early_cutoff(unit: &Unit) -> bool {
+    unit.mode == CompileMode::Build && !unit.requires_upstream_objects() && !unit.artifact.is_true()
+}
+
+/// Returns whether this unit is stale only because one of its dependencies is
+/// stale.
+pub fn is_stale_due_to_dependency(fingerprint: &Fingerprint) -> bool {
+    matches!(
+        fingerprint.fs_status(),
+        FsStatus::StaleDependency { .. } | FsStatus::StaleDepFingerprint { .. }
+    )
 }
 
 /// Checks if early cutoff applies for a unit.
@@ -486,25 +505,7 @@ fn find_output_for_comparison(outputs: &[OutputFile]) -> Option<&OutputFile> {
 /// 2. All dependencies have a `BuildState` that allows early cutoff
 /// 3. At least one dependency was rebuilt with unchanged output
 pub fn can_skip_due_to_early_cutoff(fingerprint: &Fingerprint) -> bool {
-    let own_status = fingerprint.fs_status.lock().unwrap();
-    let is_stale_due_to_dep = match &*own_status {
-        FsStatus::StaleDependency {
-            unit: _,
-            dep_mtime: _,
-            max_mtime: _,
-        }
-        | FsStatus::StaleDepFingerprint { unit: _ } => true,
-        FsStatus::Stale
-        | FsStatus::StaleItem(_)
-        | FsStatus::OutputUnchanged {
-            unit: _,
-            rmeta_hash: _,
-        }
-        | FsStatus::UpToDate { mtimes: _ } => false,
-    };
-    drop(own_status);
-
-    if !is_stale_due_to_dep {
+    if !is_stale_due_to_dependency(fingerprint) {
         debug!(
             "early_cutoff: unit {:?} not stale due to dep, cannot skip",
             fingerprint.index
@@ -713,8 +714,8 @@ pub fn prepare_target(
     let compare_output_path = compare_output.map(|o| o.path.clone());
 
     let check_output_unchanged = |fingerprint: &Arc<Fingerprint>,
-                                   compare_path: &Option<PathBuf>,
-                                   old_hash: Option<[u8; 32]>| {
+                                  compare_path: &Option<PathBuf>,
+                                  old_hash: Option<[u8; 32]>| {
         if let (Some(old_hash), Some(path)) = (old_hash, compare_path) {
             match std::fs::File::open(path) {
                 Ok(f) => match blake3_hash_file(&f) {
@@ -727,13 +728,16 @@ pub fn prepare_target(
                             fingerprint.set_build_state(BuildState::BuiltUnchanged);
                             info!(
                                 "early_cutoff: unit {:?} built with UNCHANGED output (hash {}), dependents may skip",
-                                fingerprint.index, hex::encode(new_hash)
+                                fingerprint.index,
+                                hex::encode(new_hash)
                             );
                             return;
                         } else {
                             info!(
                                 "early_cutoff: unit {:?} built with CHANGED output (old={}, new={}), dependents must rebuild",
-                                fingerprint.index, hex::encode(old_hash), hex::encode(new_hash)
+                                fingerprint.index,
+                                hex::encode(old_hash),
+                                hex::encode(new_hash)
                             );
                         }
                     }
@@ -1615,7 +1619,9 @@ impl Fingerprint {
                                 .expect("failed to find rmeta");
                             Some((dep_path.clone(), *dep_mtime))
                         } else {
-                            mtimes.iter().max_by_key(|kv| kv.1)
+                            mtimes
+                                .iter()
+                                .max_by_key(|kv| kv.1)
                                 .map(|(path, mtime)| (path.clone(), *mtime))
                         }
                     }
@@ -2363,7 +2369,9 @@ fn _compare_old_fingerprint(
 
     let new_hash = new_fingerprint.hash_u64();
 
-    if util::to_hex(new_hash) == old_fingerprint_short && new_fingerprint.fs_status.lock().unwrap().up_to_date() {
+    if util::to_hex(new_hash) == old_fingerprint_short
+        && new_fingerprint.fs_status.lock().unwrap().up_to_date()
+    {
         return Ok(FingerprintComparison::Fresh);
     }
 
@@ -2562,7 +2570,6 @@ mod early_cutoff_tests {
         }
     }
 
-
     #[test]
     fn unit_not_stale_due_to_dep_should_not_cutoff() {
         // Unit is stale for its own reasons (Stale), not due to a dependency
@@ -2586,12 +2593,13 @@ mod early_cutoff_tests {
     fn up_to_date_unit_should_not_cutoff() {
         // Unit is already up-to-date, no early cutoff needed
         let fp = make_fingerprint(
-            FsStatus::UpToDate { mtimes: HashMap::new() },
+            FsStatus::UpToDate {
+                mtimes: HashMap::new(),
+            },
             BuildState::Fresh,
         );
         assert!(!can_skip_due_to_early_cutoff(&fp));
     }
-
 
     #[test]
     fn dep_pending_should_not_cutoff() {
@@ -2633,7 +2641,9 @@ mod early_cutoff_tests {
     fn dep_fresh_alone_should_not_cutoff() {
         // Dep was fresh - but we need at least one rebuilt-unchanged dep
         let dep = make_fingerprint(
-            FsStatus::UpToDate { mtimes: HashMap::new() },
+            FsStatus::UpToDate {
+                mtimes: HashMap::new(),
+            },
             BuildState::Fresh,
         );
         let mut fp = make_stale_due_to_dep();
@@ -2648,12 +2658,13 @@ mod early_cutoff_tests {
         assert!(!can_skip_due_to_early_cutoff(&fp));
     }
 
-
     #[test]
     fn mixed_deps_fresh_and_built_unchanged_should_cutoff() {
         // Some deps fresh, some rebuilt unchanged - should cutoff
         let dep_fresh = make_fingerprint(
-            FsStatus::UpToDate { mtimes: HashMap::new() },
+            FsStatus::UpToDate {
+                mtimes: HashMap::new(),
+            },
             BuildState::Fresh,
         );
         let dep_unchanged = make_fingerprint(FsStatus::Stale, BuildState::BuiltUnchanged);
@@ -2684,7 +2695,6 @@ mod early_cutoff_tests {
         fp.deps.push(make_dep_fingerprint(dep_changed));
         assert!(!can_skip_due_to_early_cutoff(&fp));
     }
-
 
     #[test]
     fn transitive_early_cutoff_propagates() {
