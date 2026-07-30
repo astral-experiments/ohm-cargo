@@ -479,6 +479,56 @@ fn find_output_for_comparison(outputs: &[OutputFile]) -> Option<&OutputFile> {
     rmeta.or(linkable).or(normal)
 }
 
+fn parse_unstable_bool(value: Option<&str>) -> Option<bool> {
+    match value {
+        None | Some("y" | "yes" | "on" | "true") => Some(true),
+        Some("n" | "no" | "off" | "false") => Some(false),
+        Some(_) => None,
+    }
+}
+
+fn rustflags_enable_stable_crate_hash(rustflags: &[String]) -> bool {
+    let mut enabled = false;
+    let mut rustflags = rustflags.iter().map(String::as_str);
+    while let Some(rustflag) = rustflags.next() {
+        let option = if rustflag == "-Z" {
+            rustflags.next()
+        } else {
+            rustflag.strip_prefix("-Z")
+        };
+        let Some(option) = option else {
+            continue;
+        };
+        let (name, value) = option
+            .split_once('=')
+            .map_or((option, None), |(name, value)| (name, Some(value)));
+        if name == "stable-crate-hash"
+            && let Some(value) = parse_unstable_bool(value)
+        {
+            enabled = value;
+        }
+    }
+    enabled
+}
+
+/// Returns the `.spans` sidecar produced for this unit by
+/// `-Zstable-crate-hash`, if any.
+pub fn stable_crate_hash_span_output(unit: &Unit, outputs: &[OutputFile]) -> Option<PathBuf> {
+    if !rustflags_enable_stable_crate_hash(&unit.rustflags) {
+        return None;
+    }
+
+    outputs
+        .iter()
+        .find(|output| output.flavor == FileFlavor::Rmeta)
+        .or_else(|| {
+            outputs
+                .iter()
+                .find(|output| output.flavor == FileFlavor::Linkable)
+        })
+        .map(|output| output.path.with_extension("spans"))
+}
+
 /// Returns whether this unit can safely be reused after its dependencies'
 /// metadata outputs are proven unchanged.
 pub fn unit_can_use_early_cutoff(unit: &Unit) -> bool {
@@ -1938,8 +1988,8 @@ fn calculate_normal(
 
     // Figure out what the outputs of our unit is, and we'll be storing them
     // into the fingerprint as well.
-    let outputs = build_runner
-        .outputs(unit)?
+    let unit_outputs = build_runner.outputs(unit)?;
+    let mut outputs = unit_outputs
         .iter()
         .filter(|output| {
             !matches!(
@@ -1948,7 +1998,10 @@ fn calculate_normal(
             )
         })
         .map(|output| output.path.clone())
-        .collect();
+        .collect::<Vec<_>>();
+    if let Some(spans_output) = stable_crate_hash_span_output(unit, &unit_outputs) {
+        outputs.push(spans_output);
+    }
 
     // Fill out a bunch more information that we'll be tracking typically
     // hashed to take up less space on disk as we just need to know when things
@@ -2542,6 +2595,29 @@ where
 mod early_cutoff_tests {
     use super::*;
     use std::sync::Arc;
+
+    fn rustflags(flags: &[&str]) -> Vec<String> {
+        flags.iter().map(|flag| (*flag).to_owned()).collect()
+    }
+
+    #[test]
+    fn stable_crate_hash_rustflags() {
+        assert!(rustflags_enable_stable_crate_hash(&rustflags(&[
+            "-Zstable-crate-hash",
+        ])));
+        assert!(rustflags_enable_stable_crate_hash(&rustflags(&[
+            "-Z",
+            "stable-crate-hash=yes",
+        ])));
+        assert!(!rustflags_enable_stable_crate_hash(&rustflags(&[
+            "-Zstable-crate-hash",
+            "-Zstable-crate-hash=no",
+        ])));
+        assert!(!rustflags_enable_stable_crate_hash(&rustflags(&[
+            "-Z",
+            "stable-crate-hashing",
+        ])));
+    }
 
     /// Creates a fingerprint with the given FsStatus and BuildState.
     fn make_fingerprint(fs_status: FsStatus, build_state: BuildState) -> Arc<Fingerprint> {
