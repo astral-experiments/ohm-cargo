@@ -136,6 +136,7 @@ use super::CompileMode;
 use super::Unit;
 use super::UnitIndex;
 use super::custom_build::Severity;
+use super::fingerprint;
 use super::timings::SectionTiming;
 use super::timings::Timings;
 use super::unused_deps::UnusedDepState;
@@ -409,6 +410,11 @@ impl<'gctx> JobQueue<'gctx> {
         job: Job,
     ) -> CargoResult<()> {
         let dependencies = build_runner.unit_deps(unit);
+        let wait_for_early_cutoff = fingerprint::unit_can_use_early_cutoff(unit)
+            && build_runner
+                .fingerprints
+                .get(unit)
+                .is_some_and(|fingerprint| fingerprint::is_stale_due_to_dependency(fingerprint));
         let mut queue_deps = dependencies
             .iter()
             .filter(|dep| {
@@ -424,10 +430,14 @@ impl<'gctx> JobQueue<'gctx> {
                 // only require the metadata, not the full compilation to
                 // finish. Use the tables in `build_runner` to figure out what
                 // kind of artifact is associated with this dependency.
-                let artifact = if build_runner.only_requires_rmeta(unit, &dep.unit) {
-                    Artifact::Metadata
-                } else {
+                let artifact = if wait_for_early_cutoff
+                    || !build_runner.only_requires_rmeta(unit, &dep.unit)
+                {
+                    // Early cutoff needs the dependency's complete job to
+                    // finish before deciding whether its metadata changed.
                     Artifact::All
+                } else {
+                    Artifact::Metadata
                 };
                 (dep.unit.clone(), artifact)
             })
