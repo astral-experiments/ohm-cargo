@@ -335,6 +335,8 @@ fn rustc(
         .unwrap_or_else(|| build_runner.bcx.gctx.cwd())
         .to_path_buf();
     let fingerprint_dir = build_runner.files().fingerprint_dir(unit);
+    let cached_output_path = build_runner.files().message_cache_path(unit);
+    let mut cached_output_options = OutputOptions::for_fresh(build_runner, unit);
     let script_metadatas = build_runner.find_build_script_metadatas(unit);
     let is_local = unit.is_local();
     let artifact = unit.artifact;
@@ -399,6 +401,15 @@ fn rustc(
                 let all_outputs_exist = !essential_outputs.is_empty()
                     && essential_outputs.iter().all(|o| o.path.exists());
                 if all_outputs_exist {
+                    replay_output_cache_inner(
+                        state,
+                        package_id,
+                        &manifest,
+                        &target,
+                        &cached_output_path,
+                        &mut cached_output_options,
+                    )?;
+
                     // Touch output files to update their mtimes so future builds
                     // don't see them as stale compared to rebuilt dependencies.
                     let now = filetime::FileTime::now();
@@ -426,6 +437,8 @@ fn rustc(
                 }
             }
         }
+
+        output_options.prepare_for_compiler();
 
         // Artifacts are in a different location than typical units,
         // hence we must assure the crate- and target-dependent
@@ -1111,6 +1124,8 @@ fn rustdoc(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResult<W
     }
 
     Ok(Work::new(move |state| {
+        output_options.prepare_for_compiler();
+
         add_custom_flags(
             &mut rustdoc,
             &build_script_outputs.lock().unwrap(),
@@ -2108,8 +2123,6 @@ struct OutputOptions {
 impl OutputOptions {
     fn for_dirty(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> OutputOptions {
         let path = build_runner.files().message_cache_path(unit);
-        // Remove old cache, ignore ENOENT, which is the common case.
-        drop(fs::remove_file(&path));
         let cache_cell = Some((path, OnceCell::new()));
 
         let show_diagnostics = true;
@@ -2122,6 +2135,17 @@ impl OutputOptions {
             show_diagnostics,
             warnings_seen: 0,
             errors_seen: 0,
+        }
+    }
+
+    /// Clears output from the previous invocation immediately before the compiler runs.
+    ///
+    /// Dirty units can still be reused by early cutoff, in which case their cached diagnostics
+    /// must remain available for replay.
+    fn prepare_for_compiler(&mut self) {
+        if let Some((path, _)) = &self.cache_cell {
+            // Ignore ENOENT, which is the common case.
+            drop(fs::remove_file(path));
         }
     }
 
@@ -2678,34 +2702,45 @@ fn replay_output_cache(
 ) -> Work {
     let target = target.clone();
     Work::new(move |state| {
-        if !path.exists() {
-            // No cached output, probably didn't emit anything.
-            return Ok(());
-        }
-        // We sometimes have gigabytes of output from the compiler, so avoid
-        // loading it all into memory at once, as that can cause OOM where
-        // otherwise there would be none.
-        let file = paths::open(&path)?;
-        let mut reader = std::io::BufReader::new(file);
-        let mut line = String::new();
-        loop {
-            let length = reader.read_line(&mut line)?;
-            if length == 0 {
-                break;
-            }
-            let trimmed = line.trim_end_matches(&['\n', '\r'][..]);
-            on_stderr_line(
-                state,
-                trimmed,
-                package_id,
-                &manifest,
-                &target,
-                &mut output_options,
-            )?;
-            line.clear();
-        }
-        Ok(())
+        replay_output_cache_inner(
+            state,
+            package_id,
+            &manifest,
+            &target,
+            &path,
+            &mut output_options,
+        )
     })
+}
+
+fn replay_output_cache_inner(
+    state: &JobState<'_, '_>,
+    package_id: PackageId,
+    manifest: &ManifestErrorContext,
+    target: &Target,
+    path: &Path,
+    output_options: &mut OutputOptions,
+) -> CargoResult<()> {
+    if !path.exists() {
+        // No cached output, probably didn't emit anything.
+        return Ok(());
+    }
+    // We sometimes have gigabytes of output from the compiler, so avoid
+    // loading it all into memory at once, as that can cause OOM where
+    // otherwise there would be none.
+    let file = paths::open(path)?;
+    let mut reader = std::io::BufReader::new(file);
+    let mut line = String::new();
+    loop {
+        let length = reader.read_line(&mut line)?;
+        if length == 0 {
+            break;
+        }
+        let trimmed = line.trim_end_matches(&['\n', '\r'][..]);
+        on_stderr_line(state, trimmed, package_id, manifest, target, output_options)?;
+        line.clear();
+    }
+    Ok(())
 }
 
 /// Provides a package name with descriptive target information,
