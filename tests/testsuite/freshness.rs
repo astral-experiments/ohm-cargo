@@ -1,5 +1,6 @@
 //! Tests for fingerprinting (rebuild detection).
 
+use std::ffi::OsStr;
 use std::fs::{self, OpenOptions};
 use std::io;
 use std::io::prelude::*;
@@ -4257,4 +4258,295 @@ fn unchanged_check_metadata_does_not_fall_behind_rerun_build_script() {
 
 "#]])
         .run();
+}
+
+#[cargo_test]
+#[cfg(not(windows))]
+fn relink_only_reuses_root_codegen() {
+    // The testsuite compiler does not implement the public API hash or
+    // separate-link flags used by this prototype. This wrapper attaches a
+    // deterministic public hash and emulates rustc's `.rlink` protocol while
+    // still running the real compiler for behavioral validation.
+    let wrapper = project()
+        .at("relink-only-wrapper")
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "relink-only-wrapper"
+                version = "0.1.0"
+                edition = "2024"
+            "#,
+        )
+        .file(
+            "src/main.rs",
+            r#"
+                use std::env;
+                use std::ffi::{OsStr, OsString};
+                use std::fs::{self, OpenOptions};
+                use std::io::{self, Write};
+                use std::path::{Path, PathBuf};
+                use std::process::{Command, Output, exit};
+
+                fn has_flag(args: &[OsString], name: &str) -> bool {
+                    let combined = format!("-Z{name}");
+                    args.iter().any(|arg| arg == OsStr::new(&combined))
+                        || args.windows(2).any(|args| {
+                            args[0] == OsStr::new("-Z") && args[1] == OsStr::new(name)
+                        })
+                }
+
+                fn strip_flags(args: &[OsString]) -> Vec<OsString> {
+                    let mut stripped = Vec::new();
+                    let mut index = 0;
+                    while index < args.len() {
+                        if args[index] == OsStr::new("-Zpublic-api-hash") {
+                            index += 1;
+                        } else if index + 1 < args.len()
+                            && args[index] == OsStr::new("-Z")
+                            && matches!(
+                                args[index + 1].to_str(),
+                                Some("no-link" | "link-only")
+                            )
+                        {
+                            index += 2;
+                        } else {
+                            stripped.push(args[index].clone());
+                            index += 1;
+                        }
+                    }
+                    stripped
+                }
+
+                fn crate_name(args: &[OsString]) -> Option<&str> {
+                    args.windows(2)
+                        .find(|args| args[0] == OsStr::new("--crate-name"))
+                        .and_then(|args| args[1].to_str())
+                }
+
+                fn log(kind: &str, args: &[OsString]) {
+                    let Some(crate_name) = crate_name(args) else {
+                        return;
+                    };
+                    if crate_name == "___" {
+                        return;
+                    }
+                    let path = env::var_os("RELINK_WRAPPER_LOG")
+                        .expect("RELINK_WRAPPER_LOG should be set");
+                    let mut log = OpenOptions::new()
+                        .create(true)
+                        .append(true)
+                        .open(path)
+                        .expect("wrapper log should open");
+                    writeln!(log, "{kind}:{crate_name}")
+                        .expect("wrapper log should be writable");
+                }
+
+                fn run(rustc: &OsStr, args: &[OsString]) -> Output {
+                    Command::new(rustc)
+                        .args(args)
+                        .output()
+                        .expect("rustc should run")
+                }
+
+                fn emit(output: Output) -> ! {
+                    io::stdout().write_all(&output.stdout).unwrap();
+                    let stderr = String::from_utf8(output.stderr).unwrap();
+                    for line in stderr.lines() {
+                        if line.contains("\"artifact\":")
+                            && line.contains(".rmeta")
+                            && let Some(prefix) = line.strip_suffix('}')
+                        {
+                            eprintln!(
+                                "{prefix},\"public_api_hash\":{{\"version\":1,\
+                                 \"value\":\"00000000000000000000000000000000\"}}}}"
+                            );
+                        } else {
+                            eprintln!("{line}");
+                        }
+                    }
+                    exit(output.status.code().unwrap_or(1));
+                }
+
+                fn artifact_path(stderr: &[u8]) -> PathBuf {
+                    let stderr = String::from_utf8_lossy(stderr);
+                    stderr
+                        .lines()
+                        .filter(|line| !line.contains(".rmeta"))
+                        .find_map(|line| {
+                            let (_, rest) = line.split_once("\"artifact\":\"")?;
+                            let (path, _) = rest.split_once('"')?;
+                            Some(PathBuf::from(path))
+                        })
+                        .expect("rustc should report its executable artifact")
+                }
+
+                fn write_args(path: &Path, args: &[OsString]) {
+                    let args = args
+                        .iter()
+                        .map(|arg| arg.to_str().expect("test arguments should be UTF-8"))
+                        .collect::<Vec<_>>()
+                        .join("\n");
+                    fs::write(path, args).expect("saved rustc arguments should be writable");
+                }
+
+                fn read_args(path: &Path) -> Vec<OsString> {
+                    fs::read_to_string(path)
+                        .expect("saved rustc arguments should be readable")
+                        .lines()
+                        .map(OsString::from)
+                        .collect()
+                }
+
+                fn main() {
+                    let mut wrapper_args = env::args_os().skip(1);
+                    let rustc = wrapper_args.next().expect("rustc path");
+                    let args = wrapper_args.collect::<Vec<_>>();
+                    let stripped = strip_flags(&args);
+
+                    if has_flag(&args, "link-only") {
+                        log("link", &args);
+                        let rlink = args
+                            .iter()
+                            .find(|arg| Path::new(arg).extension() == Some(OsStr::new("rlink")))
+                            .map(PathBuf::from)
+                            .expect("link-only should receive an rlink");
+                        let marker = rlink.with_extension("fresh-rlink");
+                        if marker.exists() {
+                            fs::remove_file(marker).unwrap();
+                            exit(0);
+                        }
+                        let saved_args = read_args(&rlink.with_extension("relink-args"));
+                        emit(run(&rustc, &saved_args));
+                    }
+
+                    if has_flag(&args, "no-link") {
+                        log("codegen", &args);
+                        let output = run(&rustc, &stripped);
+                        if output.status.success() {
+                            let artifact = artifact_path(&output.stderr);
+                            let rlink = artifact.with_extension("rlink");
+                            fs::write(&rlink, b"test rlink").unwrap();
+                            fs::write(artifact.with_extension("fake.rcgu.o"), b"test object")
+                                .unwrap();
+                            fs::write(rlink.with_extension("fresh-rlink"), b"").unwrap();
+                            write_args(&rlink.with_extension("relink-args"), &stripped);
+                        }
+                        emit(output);
+                    }
+
+                    log("compile", &args);
+                    emit(run(&rustc, &stripped));
+                }
+            "#,
+        )
+        .build();
+    wrapper.cargo("build").run();
+    let wrapper = wrapper.bin("relink-only-wrapper");
+
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "app"
+                version = "0.1.0"
+                edition = "2024"
+
+                [dependencies]
+                dep = { path = "dep" }
+            "#,
+        )
+        .file(
+            "src/main.rs",
+            "fn main() { println!(\"{}\", dep::value()); }",
+        )
+        .file(
+            "dep/Cargo.toml",
+            r#"
+                [package]
+                name = "dep"
+                version = "0.1.0"
+                edition = "2024"
+            "#,
+        )
+        .file("dep/src/lib.rs", "pub fn value() -> i32 { 1 }")
+        .build();
+    let log = p.root().join("relink-wrapper.log");
+
+    p.cargo("-Zrelink-only build")
+        .masquerade_as_nightly_cargo(&["relink-only"])
+        .env("RUSTC_WRAPPER", &wrapper)
+        .env("RELINK_WRAPPER_LOG", &log)
+        .env("RUSTFLAGS", "-Zpublic-api-hash")
+        .run();
+    assert_eq!(
+        fs::read_to_string(&log).unwrap(),
+        "compile:dep\ncodegen:app\nlink:app\n"
+    );
+
+    fs::write(&log, "").unwrap();
+    sleep_ms(1000);
+    p.change_file("dep/src/lib.rs", "pub fn value() -> i32 { 2 }");
+    p.cargo("-Zrelink-only build")
+        .masquerade_as_nightly_cargo(&["relink-only"])
+        .env("RUSTC_WRAPPER", &wrapper)
+        .env("RELINK_WRAPPER_LOG", &log)
+        .env("RUSTFLAGS", "-Zpublic-api-hash")
+        .run();
+    assert_eq!(fs::read_to_string(&log).unwrap(), "compile:dep\nlink:app\n");
+    p.process(&p.bin("app"))
+        .with_stdout_data(str![[r#"
+2
+
+"#]])
+        .run();
+
+    // A corrupt sidecar must fail closed and regenerate the codegen cache.
+    let manifest = fs::read_dir(p.root().join("target/debug/deps"))
+        .unwrap()
+        .filter_map(Result::ok)
+        .map(|entry| entry.path())
+        .find(|path| {
+            path.file_name()
+                .and_then(OsStr::to_str)
+                .is_some_and(|name| name.ends_with(".rlink-cache.json"))
+        })
+        .unwrap();
+    fs::write(manifest, "corrupt").unwrap();
+    fs::write(&log, "").unwrap();
+    sleep_ms(1000);
+    p.change_file("dep/src/lib.rs", "pub fn value() -> i32 { 3 }");
+    p.cargo("-Zrelink-only build")
+        .masquerade_as_nightly_cargo(&["relink-only"])
+        .env("RUSTC_WRAPPER", &wrapper)
+        .env("RELINK_WRAPPER_LOG", &log)
+        .env("RUSTFLAGS", "-Zpublic-api-hash")
+        .run();
+    assert_eq!(
+        fs::read_to_string(&log).unwrap(),
+        "compile:dep\ncodegen:app\nlink:app\n"
+    );
+    p.process(&p.bin("app"))
+        .with_stdout_data(str![[r#"
+3
+
+"#]])
+        .run();
+
+    // A local source change is not dependency-only and must regenerate the
+    // codegen cache before linking.
+    fs::write(&log, "").unwrap();
+    sleep_ms(1000);
+    p.change_file(
+        "src/main.rs",
+        "fn main() { println!(\"value={}\", dep::value()); }",
+    );
+    p.cargo("-Zrelink-only build")
+        .masquerade_as_nightly_cargo(&["relink-only"])
+        .env("RUSTC_WRAPPER", &wrapper)
+        .env("RELINK_WRAPPER_LOG", &log)
+        .env("RUSTFLAGS", "-Zpublic-api-hash")
+        .run();
+    assert_eq!(fs::read_to_string(&log).unwrap(), "codegen:app\nlink:app\n");
 }
