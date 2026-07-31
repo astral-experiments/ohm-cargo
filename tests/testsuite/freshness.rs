@@ -3404,7 +3404,7 @@ fn early_cutoff_skips_dependent_rebuild() {
         )
         .file(
             "middle/src/lib.rs",
-            "pub fn value() -> i32 { dep::value() }",
+            "fn unused() {}\npub fn value() -> i32 { dep::value() }",
         )
         .file(
             "dep/Cargo.toml",
@@ -3494,6 +3494,15 @@ fn early_cutoff_skips_dependent_rebuild() {
 [RUNNING] `[..]/public-api-hash-wrapper[EXE] rustc --crate-name dep [..]`
 [DIRTY] middle v0.1.0 ([ROOT]/foo/middle): the dependency `dep` was rebuilt
 [COMPILING] middle v0.1.0 ([ROOT]/foo/middle)
+[WARNING] function `unused` is never used
+ --> middle/src/lib.rs:1:4
+  |
+1 | fn unused() {}
+  |    ^^^^^^
+  |
+  = [NOTE] `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+[WARNING] `middle` (lib) generated 1 warning
 [DIRTY] app v0.1.0 ([ROOT]/foo): the dependency `middle` was rebuilt
 [COMPILING] app v0.1.0 ([ROOT]/foo)
 [RUNNING] `[..]/public-api-hash-wrapper[EXE] rustc --crate-name app [..]`
@@ -3506,6 +3515,33 @@ fn early_cutoff_skips_dependent_rebuild() {
 2
 
 "#]])
+        .run();
+
+    sleep_ms(1000);
+    p.change_file("dep/native.c", "int native_value(void) { return 3; }");
+
+    // Replayed diagnostics must retain their normal policy effects, not merely be displayed.
+    p.cargo("build")
+        .arg("--config")
+        .arg("build.warnings='deny'")
+        .env("RUSTC_WRAPPER", &wrapper)
+        .env("RUSTFLAGS", "-Zpublic-api-hash")
+        .with_stderr_data(str![[r#"
+[COMPILING] dep v0.1.0 ([ROOT]/foo/dep)
+[COMPILING] middle v0.1.0 ([ROOT]/foo/middle)
+[WARNING] function `unused` is never used
+ --> middle/src/lib.rs:1:4
+  |
+1 | fn unused() {}
+  |    ^^^^^^
+  |
+  = [NOTE] `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+[ERROR] `middle` (lib) generated 1 warning
+[ERROR] warnings are denied by `build.warnings` configuration
+
+"#]])
+        .with_status(101)
         .run();
 
     sleep_ms(1000);
