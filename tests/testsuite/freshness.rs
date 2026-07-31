@@ -3316,6 +3316,60 @@ fn symlink_to_package() {
 #[cargo_test]
 #[cfg(not(windows))]
 fn early_cutoff_skips_dependent_rebuild() {
+    // The Cargo testsuite's rustc does not know about our fork's
+    // `-Zpublic-api-hash`. Strip the flag and attach a deterministic hash to
+    // rustc's metadata artifact notification so this test exercises Cargo's
+    // transport and scheduling behavior independently.
+    let wrapper = project()
+        .at("public-api-hash-wrapper")
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "public-api-hash-wrapper"
+                version = "0.1.0"
+                edition = "2024"
+            "#,
+        )
+        .file(
+            "src/main.rs",
+            r#"
+                use std::env;
+                use std::io::{self, Write};
+                use std::process::{Command, exit};
+
+                fn main() {
+                    let mut args = env::args_os().skip(1);
+                    let rustc = args.next().expect("rustc path");
+                    let args = args.filter(|arg| arg != "-Zpublic-api-hash");
+                    let output = Command::new(rustc)
+                        .args(args)
+                        .output()
+                        .expect("rustc should run");
+
+                    io::stdout().write_all(&output.stdout).unwrap();
+                    let stderr = String::from_utf8(output.stderr).unwrap();
+                    for line in stderr.lines() {
+                        if line.contains("\"artifact\":")
+                            && line.contains(".rmeta")
+                            && let Some(prefix) = line.strip_suffix('}')
+                        {
+                            eprintln!(
+                                "{prefix},\"public_api_hash\":{{\"version\":1,\
+                                 \"value\":\"00000000000000000000000000000000\"}}}}"
+                            );
+                        } else {
+                            eprintln!("{line}");
+                        }
+                    }
+                    exit(output.status.code().unwrap_or(1));
+                }
+            "#,
+        )
+        .build();
+    wrapper.cargo("build").run();
+    let wrapper = wrapper.bin("public-api-hash-wrapper");
+
     // Changing a native library rebuilds its Rust wrapper with byte-identical
     // metadata. Intermediate Rust libraries can be reused, but the final
     // binary must still be relinked against the new native implementation.
@@ -3415,7 +3469,10 @@ fn early_cutoff_skips_dependent_rebuild() {
         .file("dep/native.c", "int native_value(void) { return 1; }")
         .build();
 
-    p.cargo("build").run();
+    p.cargo("build")
+        .env("RUSTC_WRAPPER", &wrapper)
+        .env("RUSTFLAGS", "-Zpublic-api-hash")
+        .run();
     p.process(&p.bin("app"))
         .with_stdout_data(str![[r#"
 1
@@ -3428,16 +3485,18 @@ fn early_cutoff_skips_dependent_rebuild() {
 
     // `middle` can be reused, while the final executable must be rebuilt.
     p.cargo("build -v")
+        .env("RUSTC_WRAPPER", &wrapper)
+        .env("RUSTFLAGS", "-Zpublic-api-hash")
         .with_stderr_data(str![[r#"
 [DIRTY] dep v0.1.0 ([ROOT]/foo/dep): the file `dep/native.c` has changed ([TIME_DIFF_AFTER_LAST_BUILD])
 [COMPILING] dep v0.1.0 ([ROOT]/foo/dep)
 [RUNNING] `[ROOT]/foo/target/debug/build/dep-[HASH]/build-script-build`
-[RUNNING] `rustc --crate-name dep [..]`
+[RUNNING] `[..]/public-api-hash-wrapper[EXE] rustc --crate-name dep [..]`
 [DIRTY] middle v0.1.0 ([ROOT]/foo/middle): the dependency `dep` was rebuilt
 [COMPILING] middle v0.1.0 ([ROOT]/foo/middle)
 [DIRTY] app v0.1.0 ([ROOT]/foo): the dependency `middle` was rebuilt
 [COMPILING] app v0.1.0 ([ROOT]/foo)
-[RUNNING] `rustc --crate-name app [..]`
+[RUNNING] `[..]/public-api-hash-wrapper[EXE] rustc --crate-name app [..]`
 [FINISHED] `dev` profile [unoptimized + debuginfo] target(s) in [ELAPSED]s
 
 "#]])
@@ -3445,6 +3504,48 @@ fn early_cutoff_skips_dependent_rebuild() {
     p.process(&p.bin("app"))
         .with_stdout_data(str![[r#"
 2
+
+"#]])
+        .run();
+
+    sleep_ms(1000);
+    p.change_file(
+        "dep/src/lib.rs",
+        r#"
+            unsafe extern "C" {
+                fn native_value() -> i32;
+            }
+
+            #[inline(never)]
+            pub fn value() -> i32 {
+                // SAFETY: `native_value` is defined by `native.c`, which is
+                // linked by this package's build script.
+                let value = unsafe { native_value() };
+                value
+            }
+        "#,
+    );
+    p.change_file(
+        "middle/src/lib.rs",
+        "pub fn value() -> i32 { dep::value() + 0 }",
+    );
+
+    // The leaf's public API hash is unchanged, but the middle crate also has
+    // a local source change and therefore must not be skipped.
+    p.cargo("build -v")
+        .env("RUSTC_WRAPPER", &wrapper)
+        .env("RUSTFLAGS", "-Zpublic-api-hash")
+        .with_stderr_data(str![[r#"
+[DIRTY] dep v0.1.0 ([ROOT]/foo/dep): the file `dep/src/lib.rs` has changed ([TIME_DIFF_AFTER_LAST_BUILD])
+[COMPILING] dep v0.1.0 ([ROOT]/foo/dep)
+[RUNNING] `[..]/public-api-hash-wrapper[EXE] rustc --crate-name dep [..]`
+[DIRTY] middle v0.1.0 ([ROOT]/foo/middle): the file `middle/src/lib.rs` has changed ([TIME_DIFF_AFTER_LAST_BUILD])
+[COMPILING] middle v0.1.0 ([ROOT]/foo/middle)
+[RUNNING] `[..]/public-api-hash-wrapper[EXE] rustc --crate-name middle [..]`
+[DIRTY] app v0.1.0 ([ROOT]/foo): the dependency `middle` was rebuilt
+[COMPILING] app v0.1.0 ([ROOT]/foo)
+[RUNNING] `[..]/public-api-hash-wrapper[EXE] rustc --crate-name app [..]`
+[FINISHED] `dev` profile [unoptimized + debuginfo] target(s) in [ELAPSED]s
 
 "#]])
         .run();

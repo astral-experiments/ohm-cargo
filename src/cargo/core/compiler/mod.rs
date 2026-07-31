@@ -90,7 +90,7 @@ use self::fingerprint::BuildState;
 pub(crate) use self::fingerprint::DirtyReason;
 pub use self::fingerprint::RustdocFingerprint;
 pub use self::job_queue::Freshness;
-use self::job_queue::{Job, JobQueue, JobState, Work};
+use self::job_queue::{Job, JobQueue, JobState, PublicApiHash, Work};
 pub(crate) use self::layout::Layout;
 pub use self::lto::Lto;
 use self::output_depinfo::output_depinfo;
@@ -367,8 +367,10 @@ fn rustc(
 
     let fingerprint = build_runner.fingerprints.get(unit).cloned();
     let unit_name = format!("{} v{}", unit.pkg.name(), unit.pkg.version());
-    let can_skip_compilation = fingerprint::unit_can_use_early_cutoff(unit);
-    let stable_crate_hash_span_output = fingerprint::stable_crate_hash_span_output(unit, &outputs);
+    let can_skip_compilation = fingerprint::unit_can_use_early_cutoff(unit)
+        && fingerprint
+            .as_ref()
+            .is_some_and(|fingerprint| fingerprint.is_early_cutoff_candidate());
 
     return Ok(Work::new(move |state| {
         if let Some(ref fp) = fingerprint {
@@ -395,10 +397,7 @@ fn rustc(
                     }
                 }
                 let all_outputs_exist = !essential_outputs.is_empty()
-                    && essential_outputs.iter().all(|o| o.path.exists())
-                    && stable_crate_hash_span_output
-                        .as_ref()
-                        .is_none_or(|path| path.exists());
+                    && essential_outputs.iter().all(|o| o.path.exists());
                 if all_outputs_exist {
                     // Touch output files to update their mtimes so future builds
                     // don't see them as stale compared to rebuilt dependencies.
@@ -411,15 +410,6 @@ fn rustc(
                                 e
                             );
                         }
-                    }
-                    if let Some(path) = &stable_crate_hash_span_output
-                        && let Err(e) = filetime::set_file_mtime(path, now)
-                    {
-                        tracing::debug!(
-                            "early cutoff: failed to touch stable crate hash spans {:?}: {}",
-                            path,
-                            e
-                        );
                     }
                     tracing::info!(
                         "early cutoff: skipping compilation of {} (all deps unchanged)",
@@ -2453,11 +2443,33 @@ fn on_stderr_line_inner(
     struct ArtifactNotification<'a> {
         #[serde(borrow)]
         artifact: Cow<'a, str>,
+        public_api_hash: Option<serde_json::Value>,
+    }
+
+    #[derive(serde::Deserialize)]
+    struct PublicApiHashNotification {
+        version: u32,
+        value: String,
     }
 
     if let Ok(artifact) = serde_json::from_str::<ArtifactNotification<'_>>(compiler_message.get()) {
         trace!("found directive from rustc: `{}`", artifact.artifact);
         if artifact.artifact.ends_with(".rmeta") {
+            if let Some(public_api_hash) = artifact.public_api_hash {
+                if let Ok(public_api_hash) =
+                    serde_json::from_value::<PublicApiHashNotification>(public_api_hash)
+                    && let Some(public_api_hash) =
+                        PublicApiHash::new(public_api_hash.version, &public_api_hash.value)
+                {
+                    state.public_api_hash_produced(public_api_hash);
+                } else {
+                    state.invalid_public_api_hash();
+                    debug!(
+                        "rustc reported invalid public API hash for `{}`; disabling early cutoff",
+                        artifact.artifact
+                    );
+                }
+            }
             debug!("looks like metadata finished early!");
             state.rmeta_produced();
         }

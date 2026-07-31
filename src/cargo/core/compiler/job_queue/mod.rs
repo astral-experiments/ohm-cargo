@@ -130,6 +130,7 @@ use tracing::{debug, trace};
 pub use self::job::Freshness::{self, Dirty, Fresh};
 pub use self::job::{Job, Work};
 pub use self::job_state::JobState;
+pub(crate) use self::job_state::PublicApiHash;
 use super::BuildContext;
 use super::BuildRunner;
 use super::CompileMode;
@@ -414,7 +415,7 @@ impl<'gctx> JobQueue<'gctx> {
             && build_runner
                 .fingerprints
                 .get(unit)
-                .is_some_and(|fingerprint| fingerprint::is_stale_due_to_dependency(fingerprint));
+                .is_some_and(|fingerprint| fingerprint.is_early_cutoff_candidate());
         let mut queue_deps = dependencies
             .iter()
             .filter(|dep| {

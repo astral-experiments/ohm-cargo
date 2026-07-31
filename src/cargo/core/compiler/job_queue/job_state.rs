@@ -1,6 +1,10 @@
 //! See [`JobState`].
 
-use std::{cell::Cell, marker, sync::Arc};
+use std::{
+    cell::Cell,
+    fmt, marker,
+    sync::{Arc, Mutex},
+};
 
 use cargo_util::ProcessBuilder;
 
@@ -13,6 +17,36 @@ use crate::util::interning::InternedString;
 use crate::{CargoResult, core::compiler::locking::LockManager};
 
 use super::{Artifact, DiagDedupe, Job, JobId, Message};
+
+#[derive(Clone, Debug, Eq, PartialEq, serde::Deserialize, serde::Serialize)]
+pub(crate) struct PublicApiHash {
+    pub version: u32,
+    pub value: String,
+}
+
+impl PublicApiHash {
+    pub fn new(version: u32, value: &str) -> Option<Self> {
+        (version == 1 && value.len() == 32 && value.bytes().all(|byte| byte.is_ascii_hexdigit()))
+            .then(|| Self {
+                version,
+                value: value.to_ascii_lowercase(),
+            })
+    }
+}
+
+impl fmt::Display for PublicApiHash {
+    fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(formatter, "v{}:{}", self.version, self.value)
+    }
+}
+
+#[derive(Default)]
+enum PublicApiHashState {
+    #[default]
+    Missing,
+    Valid(PublicApiHash),
+    Invalid,
+}
 
 /// A `JobState` is constructed by `JobQueue::run` and passed to `Job::run`. It includes everything
 /// necessary to communicate between the main thread and the execution of the job.
@@ -50,6 +84,13 @@ pub struct JobState<'a, 'gctx> {
     /// sending a double message later on.
     rmeta_required: Cell<bool>,
 
+    /// The public API hash reported by rustc for this unit's metadata artifact.
+    ///
+    /// This is deliberately kept out of the artifact itself from Cargo's point
+    /// of view: rustc is the authority that knows how to compute the hash, and
+    /// Cargo only transports and persists the opaque value.
+    public_api_hash: Mutex<PublicApiHashState>,
+
     /// Manages locks for build units when fine grain locking is enabled.
     lock_manager: Arc<LockManager>,
 
@@ -74,6 +115,7 @@ impl<'a, 'gctx> JobState<'a, 'gctx> {
             messages,
             output,
             rmeta_required: Cell::new(rmeta_required),
+            public_api_hash: Mutex::new(PublicApiHashState::Missing),
             lock_manager,
             warning_handling,
             _marker: marker::PhantomData,
@@ -153,6 +195,36 @@ impl<'a, 'gctx> JobState<'a, 'gctx> {
         self.rmeta_required.set(false);
         self.messages
             .push(Message::Finish(self.id, Artifact::Metadata, Ok(())));
+    }
+
+    /// Records the public API hash attached to rustc's metadata notification.
+    pub(crate) fn public_api_hash_produced(&self, public_api_hash: PublicApiHash) {
+        let mut recorded = self.public_api_hash.lock().unwrap();
+        match &*recorded {
+            PublicApiHashState::Valid(previous) if previous != &public_api_hash => {
+                tracing::debug!(
+                    "rustc reported conflicting public API hashes; disabling early cutoff"
+                );
+                *recorded = PublicApiHashState::Invalid;
+            }
+            PublicApiHashState::Valid(_) | PublicApiHashState::Invalid => {}
+            PublicApiHashState::Missing => {
+                *recorded = PublicApiHashState::Valid(public_api_hash);
+            }
+        }
+    }
+
+    /// Marks rustc's public API hash notification as malformed.
+    pub(crate) fn invalid_public_api_hash(&self) {
+        *self.public_api_hash.lock().unwrap() = PublicApiHashState::Invalid;
+    }
+
+    /// Returns the public API hash reported by rustc, if one was received.
+    pub(crate) fn public_api_hash(&self) -> Option<PublicApiHash> {
+        match &*self.public_api_hash.lock().unwrap() {
+            PublicApiHashState::Valid(public_api_hash) => Some(public_api_hash.clone()),
+            PublicApiHashState::Missing | PublicApiHashState::Invalid => None,
+        }
     }
 
     pub fn lock_exclusive(&self, lock: &LockKey) -> CargoResult<()> {
