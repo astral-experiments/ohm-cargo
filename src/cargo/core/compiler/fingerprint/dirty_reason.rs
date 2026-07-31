@@ -138,6 +138,17 @@ impl DirtyReason {
         matches!(self, DirtyReason::FreshBuild)
     }
 
+    /// Whether the unit is dirty only because an existing dependency changed.
+    pub fn is_dependency_only(&self) -> bool {
+        matches!(
+            self,
+            DirtyReason::UnitDependencyInfoChanged { .. }
+                | DirtyReason::FsStatusOutdated(
+                    FsStatus::StaleDependency { .. } | FsStatus::StaleDepFingerprint { .. }
+                )
+        )
+    }
+
     fn after(old_time: FileTime, new_time: FileTime, what: &'static str) -> After {
         After {
             old_time,

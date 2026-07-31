@@ -384,6 +384,7 @@ use std::fs::File;
 use std::hash::{self, Hash, Hasher};
 use std::io::{self};
 use std::path::{Path, PathBuf};
+use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Arc, Mutex};
 use std::time::SystemTime;
 
@@ -410,10 +411,10 @@ use super::BuildRunner;
 use super::CompileMode;
 use super::FileFlavor;
 use super::Job;
+use super::PublicApiHash;
 use super::Unit;
 use super::UnitIndex;
 use super::Work;
-use super::build_runner::OutputFile;
 use super::custom_build::BuildDeps;
 
 pub use self::dep_info::Checksum;
@@ -423,62 +424,6 @@ pub use self::dep_info::translate_dep_info;
 pub use self::dirty_reason::DirtyReason;
 pub use self::rustdoc::RustdocFingerprint;
 
-/// Computes a blake3 hash of the file contents.
-///
-/// Blake3 provides 256-bit collision resistance, making hash collisions
-/// effectively impossible. This is important for early cutoff correctness
-/// since we skip compilation based on hash equality.
-fn blake3_hash_file(file: &std::fs::File) -> std::io::Result<[u8; 32]> {
-    use std::io::Read;
-    // Buffer size is the recommended amount to fully leverage SIMD instructions
-    // on AVX-512 as per blake3 documentation.
-    let mut buf = [0u8; 16 * 1024];
-    let mut hasher = blake3::Hasher::new();
-    let mut reader = std::io::BufReader::new(file);
-    loop {
-        let bytes_read = reader.read(&mut buf)?;
-        if bytes_read == 0 {
-            break;
-        }
-        hasher.update(&buf[..bytes_read]);
-    }
-    Ok(*hasher.finalize().as_bytes())
-}
-
-/// Finds the best output file to use for early cutoff hash comparison.
-///
-/// Priority: Rmeta > Linkable > Normal
-/// - Rmeta: Metadata files for libraries (preferred, as they contain the public API)
-/// - Linkable: Dynamic libraries like proc-macro .dylib files
-/// - Normal: Binaries and other outputs
-fn find_output_for_comparison(outputs: &[OutputFile]) -> Option<&OutputFile> {
-    let mut rmeta = None;
-    let mut linkable = None;
-    let mut normal = None;
-
-    for output in outputs {
-        match output.flavor {
-            FileFlavor::Rmeta => rmeta = Some(output),
-            FileFlavor::Linkable => {
-                if linkable.is_none() {
-                    linkable = Some(output);
-                }
-            }
-            FileFlavor::Normal => {
-                if normal.is_none() {
-                    normal = Some(output);
-                }
-            }
-            FileFlavor::DebugInfo
-            | FileFlavor::Auxiliary
-            | FileFlavor::Sbom
-            | FileFlavor::DocParts => {}
-        }
-    }
-
-    rmeta.or(linkable).or(normal)
-}
-
 fn parse_unstable_bool(value: Option<&str>) -> Option<bool> {
     match value {
         None | Some("y" | "yes" | "on" | "true") => Some(true),
@@ -487,7 +432,7 @@ fn parse_unstable_bool(value: Option<&str>) -> Option<bool> {
     }
 }
 
-fn rustflags_enable_stable_crate_hash(rustflags: &[String]) -> bool {
+fn rustflags_enable_unstable_option(rustflags: &[String], option_name: &str) -> bool {
     let mut enabled = false;
     let mut rustflags = rustflags.iter().map(String::as_str);
     while let Some(rustflag) = rustflags.next() {
@@ -502,7 +447,7 @@ fn rustflags_enable_stable_crate_hash(rustflags: &[String]) -> bool {
         let (name, value) = option
             .split_once('=')
             .map_or((option, None), |(name, value)| (name, Some(value)));
-        if name == "stable-crate-hash"
+        if name == option_name
             && let Some(value) = parse_unstable_bool(value)
         {
             enabled = value;
@@ -511,28 +456,36 @@ fn rustflags_enable_stable_crate_hash(rustflags: &[String]) -> bool {
     enabled
 }
 
-/// Returns the `.spans` sidecar produced for this unit by
-/// `-Zstable-crate-hash`, if any.
-pub fn stable_crate_hash_span_output(unit: &Unit, outputs: &[OutputFile]) -> Option<PathBuf> {
-    if !rustflags_enable_stable_crate_hash(&unit.rustflags) {
-        return None;
-    }
+fn rustflags_enable_public_api_hash(rustflags: &[String]) -> bool {
+    rustflags_enable_unstable_option(rustflags, "public-api-hash")
+}
 
-    outputs
-        .iter()
-        .find(|output| output.flavor == FileFlavor::Rmeta)
-        .or_else(|| {
-            outputs
-                .iter()
-                .find(|output| output.flavor == FileFlavor::Linkable)
+fn read_public_api_hash(path: &Path) -> Option<PublicApiHash> {
+    fs::read(path)
+        .ok()
+        .and_then(|contents| serde_json::from_slice::<PublicApiHash>(&contents).ok())
+        .and_then(|public_api_hash| {
+            PublicApiHash::new(public_api_hash.version, &public_api_hash.value)
         })
-        .map(|output| output.path.with_extension("spans"))
+}
+
+enum PublicApiHashUpdate {
+    Preserve,
+    Write(PublicApiHash),
+    Remove,
 }
 
 /// Returns whether this unit can safely be reused after its dependencies'
 /// metadata outputs are proven unchanged.
 pub fn unit_can_use_early_cutoff(unit: &Unit) -> bool {
-    unit.mode == CompileMode::Build && !unit.requires_upstream_objects() && !unit.artifact.is_true()
+    unit.mode == CompileMode::Build
+        && !unit.requires_upstream_objects()
+        && !unit.artifact.is_true()
+        && rustflags_enable_public_api_hash(&unit.rustflags)
+}
+
+fn is_early_cutoff_candidate(fingerprint: &Fingerprint, dirty_reason: &DirtyReason) -> bool {
+    is_stale_due_to_dependency(fingerprint) && dirty_reason.is_dependency_only()
 }
 
 /// Returns whether this unit is stale only because one of its dependencies is
@@ -555,9 +508,9 @@ pub fn is_stale_due_to_dependency(fingerprint: &Fingerprint) -> bool {
 /// 2. All dependencies have a `BuildState` that allows early cutoff
 /// 3. At least one dependency was rebuilt with unchanged output
 pub fn can_skip_due_to_early_cutoff(fingerprint: &Fingerprint) -> bool {
-    if !is_stale_due_to_dependency(fingerprint) {
+    if !fingerprint.is_early_cutoff_candidate() {
         debug!(
-            "early_cutoff: unit {:?} not stale due to dep, cannot skip",
+            "early_cutoff: unit {:?} is not a dependency-only candidate, cannot skip",
             fingerprint.index
         );
         return false;
@@ -572,6 +525,13 @@ pub fn can_skip_due_to_early_cutoff(fingerprint: &Fingerprint) -> bool {
             fingerprint.index, dep.name, &*dep_build_state
         );
         match &*dep_build_state {
+            BuildState::BuiltUnchanged if !dep.only_requires_rmeta => {
+                info!(
+                    "early_cutoff: unit {:?} CANNOT skip - rebuilt dep '{}' requires its full artifact",
+                    fingerprint.index, dep.name
+                );
+                return false;
+            }
             BuildState::BuiltUnchanged | BuildState::SkippedEarlyCutoff => {
                 found_rebuilt_unchanged = true;
             }
@@ -678,6 +638,7 @@ pub fn prepare_target(
         fingerprint.set_build_state(BuildState::Fresh);
         return Ok(Job::new_fresh());
     };
+    fingerprint.set_early_cutoff_candidate(is_early_cutoff_candidate(&fingerprint, &dirty_reason));
 
     // We're going to rebuild, so ensure the source of the crate passes all
     // verification checks before we build it.
@@ -729,105 +690,50 @@ pub fn prepare_target(
         paths::write(&loc, b"")?;
     }
 
-    // Find the best output file to compare for early cutoff.
-    // Priority: Rmeta > Linkable > Normal (proc-macros produce Linkable .dylib)
-    let unit_outputs = build_runner.outputs(unit)?;
-    let compare_output = find_output_for_comparison(&unit_outputs);
-    let old_output_hash: Option<[u8; 32]> = match &compare_output {
-        Some(output) => match std::fs::File::open(&output.path) {
-            Ok(f) => match blake3_hash_file(&f) {
-                Ok(hash) => Some(hash),
-                Err(e) => {
-                    debug!(
-                        "early_cutoff: unit {:?} failed to hash old output {:?}: {}",
-                        fingerprint.index, output.path, e
-                    );
-                    None
-                }
-            },
-            Err(e) => {
-                debug!(
-                    "early_cutoff: unit {:?} failed to open old output {:?}: {}",
-                    fingerprint.index, output.path, e
-                );
-                None
-            }
-        },
-        None => {
-            debug!(
-                "early_cutoff: unit {:?} has no output file to compare",
-                fingerprint.index
-            );
-            None
-        }
-    };
-    let compare_output_path = compare_output.map(|o| o.path.clone());
+    let public_api_hash_path = loc.with_extension("public-api-hash");
+    let old_public_api_hash = read_public_api_hash(&public_api_hash_path);
 
-    let check_output_unchanged = |fingerprint: &Arc<Fingerprint>,
-                                  compare_path: &Option<PathBuf>,
-                                  old_hash: Option<[u8; 32]>| {
-        if let (Some(old_hash), Some(path)) = (old_hash, compare_path) {
-            match std::fs::File::open(path) {
-                Ok(f) => match blake3_hash_file(&f) {
-                    Ok(new_hash) => {
-                        if old_hash == new_hash {
-                            *fingerprint.fs_status.lock().unwrap() = FsStatus::OutputUnchanged {
-                                unit: fingerprint.index,
-                                rmeta_hash: new_hash,
-                            };
-                            fingerprint.set_build_state(BuildState::BuiltUnchanged);
-                            info!(
-                                "early_cutoff: unit {:?} built with UNCHANGED output (hash {}), dependents may skip",
-                                fingerprint.index,
-                                hex::encode(new_hash)
-                            );
-                            return;
-                        } else {
-                            info!(
-                                "early_cutoff: unit {:?} built with CHANGED output (old={}, new={}), dependents must rebuild",
-                                fingerprint.index,
-                                hex::encode(old_hash),
-                                hex::encode(new_hash)
-                            );
-                        }
-                    }
-                    Err(e) => {
-                        debug!(
-                            "early_cutoff: unit {:?} failed to hash new output {:?}: {}",
-                            fingerprint.index, path, e
-                        );
-                    }
-                },
-                Err(e) => {
-                    debug!(
-                        "early_cutoff: unit {:?} failed to open new output {:?}: {}",
-                        fingerprint.index, path, e
-                    );
-                }
-            }
-        } else {
-            let current_state = fingerprint.build_state();
-            let already_skipped = match current_state {
-                BuildState::SkippedEarlyCutoff => true,
-                BuildState::Pending
-                | BuildState::BuiltChanged
-                | BuildState::BuiltUnchanged
-                | BuildState::Fresh => false,
-            };
-            if already_skipped {
+    let check_output_unchanged =
+        |state: &super::JobState<'_, '_>,
+         fingerprint: &Arc<Fingerprint>,
+         old_public_api_hash: &Option<PublicApiHash>| {
+            if matches!(fingerprint.build_state(), BuildState::SkippedEarlyCutoff) {
                 debug!(
-                    "early_cutoff: unit {:?} no hash to compare, but already marked SkippedEarlyCutoff",
+                    "early_cutoff: unit {:?} was skipped; preserving its public API hash",
                     fingerprint.index
                 );
-                return;
+                return PublicApiHashUpdate::Preserve;
             }
-            debug!(
-                "early_cutoff: unit {:?} no old hash to compare, treating as changed",
-                fingerprint.index
-            );
-        }
-        fingerprint.set_build_state(BuildState::BuiltChanged);
-    };
+
+            let Some(new_public_api_hash) = state.public_api_hash() else {
+                // A compiler without the expected hash field, or one that
+                // emitted a malformed value, must never enable early cutoff.
+                debug!(
+                    "early_cutoff: unit {:?} received no valid public API hash from rustc",
+                    fingerprint.index
+                );
+                fingerprint.set_build_state(BuildState::BuiltChanged);
+                return PublicApiHashUpdate::Remove;
+            };
+
+            if old_public_api_hash.as_ref() == Some(&new_public_api_hash) {
+                *fingerprint.fs_status.lock().unwrap() = FsStatus::OutputUnchanged {
+                    unit: fingerprint.index,
+                };
+                fingerprint.set_build_state(BuildState::BuiltUnchanged);
+                info!(
+                    "early_cutoff: unit {:?} built with unchanged public API hash {}; dependents may skip",
+                    fingerprint.index, new_public_api_hash
+                );
+            } else {
+                fingerprint.set_build_state(BuildState::BuiltChanged);
+                info!(
+                    "early_cutoff: unit {:?} built with changed public API hash (old={:?}, new={}); dependents must rebuild",
+                    fingerprint.index, old_public_api_hash, new_public_api_hash
+                );
+            }
+            PublicApiHashUpdate::Write(new_public_api_hash)
+        };
 
     let write_fingerprint = if unit.mode.is_run_custom_build() {
         // For build scripts the `local` field of the fingerprint may change
@@ -845,7 +751,7 @@ pub fn prepare_target(
         let output_path = build_runner.build_explicit_deps[unit]
             .build_script_output
             .clone();
-        Work::new(move |_| {
+        Work::new(move |state| {
             let outputs = build_script_outputs.lock().unwrap();
             let output = outputs
                 .get(metadata)
@@ -861,16 +767,26 @@ pub fn prepare_target(
             }
 
             // Check if output changed and update fs_status
-            check_output_unchanged(&fingerprint, &compare_output_path, old_output_hash);
-
-            write_fingerprint(&loc, &fingerprint)
+            let public_api_hash_update =
+                check_output_unchanged(state, &fingerprint, &old_public_api_hash);
+            write_fingerprint_and_public_api_hash(
+                &loc,
+                &fingerprint,
+                &public_api_hash_path,
+                public_api_hash_update,
+            )
         })
     } else {
-        Work::new(move |_| {
+        Work::new(move |state| {
             // Check if output changed and update fs_status
-            check_output_unchanged(&fingerprint, &compare_output_path, old_output_hash);
-
-            write_fingerprint(&loc, &fingerprint)
+            let public_api_hash_update =
+                check_output_unchanged(state, &fingerprint, &old_public_api_hash);
+            write_fingerprint_and_public_api_hash(
+                &loc,
+                &fingerprint,
+                &public_api_hash_path,
+                public_api_hash_update,
+            )
         })
     };
 
@@ -972,6 +888,9 @@ pub struct Fingerprint {
     /// Used for early cutoff propagation through the dependency graph.
     #[serde(skip)]
     build_state: Mutex<BuildState>,
+    /// Whether the unit is dirty only because one of its dependencies changed.
+    #[serde(skip)]
+    early_cutoff_candidate: AtomicBool,
     /// Files, relative to `target_root`, that are produced by the step that
     /// this `Fingerprint` represents. This is used to detect when the whole
     /// fingerprint is out of date if this is missing, or if previous
@@ -1006,14 +925,9 @@ pub enum FsStatus {
     /// A dependency's fingerprint was stale.
     StaleDepFingerprint { unit: UnitIndex },
 
-    /// This unit was rebuilt, but its output (.rmeta) content hash is unchanged.
+    /// This unit was rebuilt, but rustc reported an unchanged public API hash.
     /// Dependents should not be marked dirty due to this dependency.
-    OutputUnchanged {
-        unit: UnitIndex,
-        /// Blake3 content hash of the .rmeta file (or primary output).
-        /// Using 256-bit blake3 hash for collision resistance.
-        rmeta_hash: [u8; 32],
-    },
+    OutputUnchanged { unit: UnitIndex },
 
     /// This unit is up-to-date. All outputs and their corresponding mtime are
     /// listed in the payload here for other dependencies to compare against.
@@ -1393,6 +1307,7 @@ impl Fingerprint {
             index: UnitIndex::default(),
             fs_status: Mutex::new(FsStatus::Stale),
             build_state: Mutex::new(BuildState::Pending),
+            early_cutoff_candidate: AtomicBool::new(false),
             outputs: Vec::new(),
         }
     }
@@ -1420,6 +1335,17 @@ impl Fingerprint {
     /// Sets the build state for this fingerprint.
     pub fn set_build_state(&self, state: BuildState) {
         *self.build_state.lock().unwrap() = state;
+    }
+
+    /// Returns whether this unit is dirty only because of its dependencies.
+    pub fn is_early_cutoff_candidate(&self) -> bool {
+        self.early_cutoff_candidate.load(Ordering::Acquire)
+    }
+
+    /// Records whether this unit is dirty only because of its dependencies.
+    fn set_early_cutoff_candidate(&self, candidate: bool) {
+        self.early_cutoff_candidate
+            .store(candidate, Ordering::Release);
     }
 
     fn hash_u64(&self) -> u64 {
@@ -1650,6 +1576,24 @@ impl Fingerprint {
             pkg_root, max_path, max_mtime
         );
 
+        // Check local inputs before dependencies. If dependency checking
+        // returned first, a simultaneous local source change could be masked
+        // as dependency-only and incorrectly become eligible for early cutoff.
+        for local in self.local.get_mut().unwrap().iter() {
+            if let Some(item) = local.find_stale_item(
+                mtime_cache,
+                checksum_cache,
+                pkg,
+                build_root,
+                cargo_exe,
+                gctx,
+            )? {
+                item.log();
+                *self.fs_status.get_mut().unwrap() = FsStatus::StaleItem(item);
+                return Ok(());
+            }
+        }
+
         for dep in self.deps.iter() {
             // Extract needed data from the dependency's fs_status under the lock,
             // then drop the lock before potentially modifying self.fs_status.
@@ -1720,25 +1664,6 @@ impl Fingerprint {
                     max_mtime: *max_mtime,
                 };
 
-                return Ok(());
-            }
-        }
-
-        // If we reached this far then all dependencies are up to date. Check
-        // all our `LocalFingerprint` information to see if we have any stale
-        // files for this package itself. If we do find something log a helpful
-        // message and bail out so we stay stale.
-        for local in self.local.get_mut().unwrap().iter() {
-            if let Some(item) = local.find_stale_item(
-                mtime_cache,
-                checksum_cache,
-                pkg,
-                build_root,
-                cargo_exe,
-                gctx,
-            )? {
-                item.log();
-                *self.fs_status.get_mut().unwrap() = FsStatus::StaleItem(item);
                 return Ok(());
             }
         }
@@ -1989,7 +1914,7 @@ fn calculate_normal(
     // Figure out what the outputs of our unit is, and we'll be storing them
     // into the fingerprint as well.
     let unit_outputs = build_runner.outputs(unit)?;
-    let mut outputs = unit_outputs
+    let outputs = unit_outputs
         .iter()
         .filter(|output| {
             !matches!(
@@ -1999,10 +1924,6 @@ fn calculate_normal(
         })
         .map(|output| output.path.clone())
         .collect::<Vec<_>>();
-    if let Some(spans_output) = stable_crate_hash_span_output(unit, &unit_outputs) {
-        outputs.push(spans_output);
-    }
-
     // Fill out a bunch more information that we'll be tracking typically
     // hashed to take up less space on disk as we just need to know when things
     // change.
@@ -2074,6 +1995,7 @@ fn calculate_normal(
         rustflags: extra_flags,
         fs_status: Mutex::new(FsStatus::Stale),
         build_state: Mutex::new(BuildState::Pending),
+        early_cutoff_candidate: AtomicBool::new(false),
         outputs,
     })
 }
@@ -2341,6 +2263,32 @@ fn write_fingerprint(loc: &Path, fingerprint: &Fingerprint) -> CargoResult<()> {
     Ok(())
 }
 
+/// Commits the Cargo fingerprint before updating its public API hash sidecar.
+///
+/// If the build is interrupted after rustc reports a new hash, the next build
+/// must not compare that hash against an old Cargo fingerprint and conclude
+/// that dependents can be reused.
+fn write_fingerprint_and_public_api_hash(
+    loc: &Path,
+    fingerprint: &Fingerprint,
+    public_api_hash_path: &Path,
+    public_api_hash_update: PublicApiHashUpdate,
+) -> CargoResult<()> {
+    write_fingerprint(loc, fingerprint)?;
+    match public_api_hash_update {
+        PublicApiHashUpdate::Preserve => {}
+        PublicApiHashUpdate::Write(public_api_hash) => {
+            paths::write_atomic(public_api_hash_path, serde_json::to_vec(&public_api_hash)?)?;
+        }
+        PublicApiHashUpdate::Remove => {
+            if public_api_hash_path.exists() {
+                paths::remove_file(public_api_hash_path)?;
+            }
+        }
+    }
+    Ok(())
+}
+
 /// Prepare for work when a package starts to build
 pub fn prepare_init(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResult<()> {
     let new1 = build_runner.files().fingerprint_dir(unit);
@@ -2601,22 +2549,42 @@ mod early_cutoff_tests {
     }
 
     #[test]
-    fn stable_crate_hash_rustflags() {
-        assert!(rustflags_enable_stable_crate_hash(&rustflags(&[
-            "-Zstable-crate-hash",
+    fn public_api_hash_rustflags() {
+        assert!(rustflags_enable_public_api_hash(&rustflags(&[
+            "-Zpublic-api-hash",
         ])));
-        assert!(rustflags_enable_stable_crate_hash(&rustflags(&[
+        assert!(rustflags_enable_public_api_hash(&rustflags(&[
             "-Z",
-            "stable-crate-hash=yes",
+            "public-api-hash=yes",
         ])));
-        assert!(!rustflags_enable_stable_crate_hash(&rustflags(&[
-            "-Zstable-crate-hash",
-            "-Zstable-crate-hash=no",
+        assert!(!rustflags_enable_public_api_hash(&rustflags(&[
+            "-Zpublic-api-hash",
+            "-Zpublic-api-hash=no",
         ])));
-        assert!(!rustflags_enable_stable_crate_hash(&rustflags(&[
+        assert!(!rustflags_enable_public_api_hash(&rustflags(&[
             "-Z",
-            "stable-crate-hashing",
+            "public-api-hashing",
         ])));
+    }
+
+    #[test]
+    fn public_api_hash_format() {
+        assert_eq!(
+            PublicApiHash::new(1, "0123456789ABCDEF0123456789ABCDEF"),
+            Some(PublicApiHash {
+                version: 1,
+                value: "0123456789abcdef0123456789abcdef".to_owned(),
+            })
+        );
+        assert_eq!(
+            PublicApiHash::new(2, "0123456789abcdef0123456789abcdef"),
+            None
+        );
+        assert_eq!(PublicApiHash::new(1, "0123456789abcdef"), None);
+        assert_eq!(
+            PublicApiHash::new(1, "0123456789abcdef0123456789abcdeg"),
+            None
+        );
     }
 
     /// Creates a fingerprint with the given FsStatus and BuildState.
@@ -2633,6 +2601,7 @@ mod early_cutoff_tests {
         *fp.fs_status.get_mut().unwrap() = FsStatus::StaleDepFingerprint {
             unit: UnitIndex::default(),
         };
+        fp.set_early_cutoff_candidate(true);
         fp
     }
 
@@ -2663,6 +2632,65 @@ mod early_cutoff_tests {
         });
         fp.deps.push(make_dep_fingerprint(dep));
         assert!(!can_skip_due_to_early_cutoff(&fp));
+    }
+
+    #[test]
+    fn simultaneous_local_and_dependency_changes_are_not_candidates() {
+        let mut fp = Fingerprint::new();
+        *fp.fs_status.get_mut().unwrap() = FsStatus::StaleItem(StaleItem::ChangedFile {
+            reference: PathBuf::from("target/dep-info"),
+            reference_mtime: FileTime::zero(),
+            stale: PathBuf::from("src/lib.rs"),
+            stale_mtime: FileTime::from_unix_time(1, 0),
+        });
+
+        // The dependency fingerprint can differ at the same time as this
+        // crate's source. Local filesystem status must take precedence.
+        assert!(!is_early_cutoff_candidate(
+            &fp,
+            &DirtyReason::UnitDependencyInfoChanged {
+                unit: UnitIndex::default(),
+            },
+        ));
+    }
+
+    #[test]
+    fn non_dependency_dirty_reason_is_not_a_candidate() {
+        let fp = make_stale_due_to_dep();
+        assert!(!is_early_cutoff_candidate(&fp, &DirtyReason::Forced));
+        assert!(!is_early_cutoff_candidate(
+            &fp,
+            &DirtyReason::ProfileConfigurationChanged,
+        ));
+    }
+
+    #[test]
+    fn public_api_hash_is_not_advanced_before_fingerprint_commit() {
+        let temp_dir = tempfile::tempdir().unwrap();
+        let public_api_hash_path = temp_dir.path().join("unit.public-api-hash");
+        let old_public_api_hash =
+            PublicApiHash::new(1, "11111111111111111111111111111111").unwrap();
+        let old_public_api_hash_contents = serde_json::to_vec(&old_public_api_hash).unwrap();
+        paths::write(&public_api_hash_path, &old_public_api_hash_contents).unwrap();
+
+        let mut fingerprint = Fingerprint::new();
+        fingerprint.rustc = 1;
+        let missing_parent_fingerprint = temp_dir.path().join("missing").join("unit");
+        assert!(
+            write_fingerprint_and_public_api_hash(
+                &missing_parent_fingerprint,
+                &fingerprint,
+                &public_api_hash_path,
+                PublicApiHashUpdate::Write(
+                    PublicApiHash::new(1, "22222222222222222222222222222222").unwrap(),
+                ),
+            )
+            .is_err()
+        );
+        assert_eq!(
+            fs::read(public_api_hash_path).unwrap(),
+            old_public_api_hash_contents
+        );
     }
 
     #[test]
@@ -2702,6 +2730,16 @@ mod early_cutoff_tests {
         let mut fp = make_stale_due_to_dep();
         fp.deps.push(make_dep_fingerprint(dep));
         assert!(can_skip_due_to_early_cutoff(&fp));
+    }
+
+    #[test]
+    fn rebuilt_full_artifact_dependency_should_not_cutoff() {
+        let dep = make_fingerprint(FsStatus::Stale, BuildState::BuiltUnchanged);
+        let mut dep = make_dep_fingerprint(dep);
+        dep.only_requires_rmeta = false;
+        let mut fp = make_stale_due_to_dep();
+        fp.deps.push(dep);
+        assert!(!can_skip_due_to_early_cutoff(&fp));
     }
 
     #[test]
