@@ -376,6 +376,7 @@ mod dep_info;
 mod dirty_reason;
 mod rustdoc;
 
+use std::collections::HashSet;
 use std::collections::hash_map::{Entry, HashMap};
 use std::env;
 use std::ffi::OsString;
@@ -623,6 +624,18 @@ pub fn unit_can_use_early_cutoff(unit: &Unit) -> bool {
         && rustflags_enable_public_api_hash(&unit.rustflags)
 }
 
+/// Returns whether this unit can be split into codegen and reusable link steps.
+///
+/// The first prototype is intentionally limited to executable build and test
+/// units. Other linkable crate types have more complicated downstream artifact
+/// semantics and are left to future work.
+pub fn unit_can_use_relink_only(unit: &Unit) -> bool {
+    !unit.artifact.is_true()
+        && rustflags_enable_public_api_hash(&unit.rustflags)
+        && (unit.mode == CompileMode::Test
+            || (unit.mode == CompileMode::Build && unit.target.is_bin()))
+}
+
 fn is_early_cutoff_candidate(fingerprint: &Fingerprint, dirty_reason: &DirtyReason) -> bool {
     is_stale_due_to_dependency(fingerprint) && dirty_reason.is_dependency_only()
 }
@@ -698,6 +711,46 @@ pub fn can_skip_due_to_early_cutoff(fingerprint: &Fingerprint) -> bool {
     }
 
     found_rebuilt_unchanged
+}
+
+/// Checks whether a dependency-only rebuild can reuse this unit's codegen and
+/// run only its cached link step.
+///
+/// A dependency that was rebuilt with an unchanged public API hash is only
+/// accepted when the caller has also established that its artifact is an
+/// ordinary Rust library suitable for relinking. This prevents proc macros,
+/// build scripts, and native-producing units from being mistaken for
+/// link-only changes.
+pub fn can_relink_due_to_early_cutoff(
+    fingerprint: &Fingerprint,
+    relinkable_dependencies: &HashSet<UnitIndex>,
+) -> bool {
+    if !fingerprint.is_early_cutoff_candidate() {
+        return false;
+    }
+
+    let mut found_relink_change = false;
+    for dep in &fingerprint.deps {
+        let dep_build_state = dep.fingerprint.build_state.lock().unwrap();
+        match &*dep_build_state {
+            BuildState::BuiltUnchanged
+                if relinkable_dependencies.contains(&dep.fingerprint.index) =>
+            {
+                found_relink_change = true;
+            }
+            BuildState::SkippedEarlyCutoff => {
+                // This dependency's own artifact is unchanged, but one of its
+                // transitive link artifacts may have changed.
+                found_relink_change = true;
+            }
+            BuildState::Fresh => {}
+            BuildState::BuiltUnchanged | BuildState::Pending | BuildState::BuiltChanged => {
+                return false;
+            }
+        }
+    }
+
+    found_relink_change
 }
 
 /// Result of comparing fingerprints between the current and previous builds.
@@ -2821,6 +2874,18 @@ mod early_cutoff_tests {
         Arc::new(fp)
     }
 
+    fn make_indexed_fingerprint(
+        index: UnitIndex,
+        fs_status: FsStatus,
+        build_state: BuildState,
+    ) -> Arc<Fingerprint> {
+        let mut fingerprint = Fingerprint::new();
+        fingerprint.index = index;
+        *fingerprint.fs_status.get_mut().unwrap() = fs_status;
+        *fingerprint.build_state.get_mut().unwrap() = build_state;
+        Arc::new(fingerprint)
+    }
+
     /// Creates a fingerprint that is stale due to a dependency.
     fn make_stale_due_to_dep() -> Fingerprint {
         let mut fp = Fingerprint::new();
@@ -3014,6 +3079,48 @@ mod early_cutoff_tests {
         let mut fp = make_stale_due_to_dep();
         fp.deps.push(dep);
         assert!(!can_skip_due_to_early_cutoff(&fp));
+    }
+
+    #[test]
+    fn rebuilt_library_dependency_can_relink() {
+        let dependency =
+            make_indexed_fingerprint(UnitIndex(1), FsStatus::Stale, BuildState::BuiltUnchanged);
+        let mut fingerprint = make_stale_due_to_dep();
+        fingerprint.deps.push(make_dep_fingerprint(dependency));
+
+        assert!(can_relink_due_to_early_cutoff(
+            &fingerprint,
+            &HashSet::from([UnitIndex(1)]),
+        ));
+    }
+
+    #[test]
+    fn rebuilt_non_library_dependency_cannot_relink() {
+        let dependency =
+            make_indexed_fingerprint(UnitIndex(1), FsStatus::Stale, BuildState::BuiltUnchanged);
+        let mut fingerprint = make_stale_due_to_dep();
+        fingerprint.deps.push(make_dep_fingerprint(dependency));
+
+        assert!(!can_relink_due_to_early_cutoff(
+            &fingerprint,
+            &HashSet::new(),
+        ));
+    }
+
+    #[test]
+    fn skipped_library_dependency_can_relink_transitive_artifacts() {
+        let dependency = make_indexed_fingerprint(
+            UnitIndex(1),
+            FsStatus::Stale,
+            BuildState::SkippedEarlyCutoff,
+        );
+        let mut fingerprint = make_stale_due_to_dep();
+        fingerprint.deps.push(make_dep_fingerprint(dependency));
+
+        assert!(can_relink_due_to_early_cutoff(
+            &fingerprint,
+            &HashSet::new(),
+        ));
     }
 
     #[test]
