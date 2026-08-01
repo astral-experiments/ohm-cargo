@@ -735,6 +735,10 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
     /// Returns whether when `parent` depends on `dep` if it only requires the
     /// metadata file from `dep`.
     pub fn only_requires_rmeta(&self, parent: &Unit, dep: &Unit) -> bool {
+        if parent.mode.is_check() && dep.mode.is_check() {
+            return true;
+        }
+
         // We're only a candidate for requiring an `rmeta` file if we
         // ourselves are building an rlib,
         !parent.requires_upstream_objects()

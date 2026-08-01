@@ -618,8 +618,8 @@ enum PublicApiHashUpdate {
 /// Returns whether this unit can safely be reused after its dependencies'
 /// metadata outputs are proven unchanged.
 pub fn unit_can_use_early_cutoff(unit: &Unit) -> bool {
-    unit.mode == CompileMode::Build
-        && !unit.requires_upstream_objects()
+    (matches!(unit.mode, CompileMode::Check { .. })
+        || (unit.mode == CompileMode::Build && !unit.requires_upstream_objects()))
         && !unit.artifact.is_true()
         && rustflags_enable_public_api_hash(&unit.rustflags)
 }
