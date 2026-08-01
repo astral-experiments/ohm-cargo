@@ -2929,3 +2929,308 @@ Alternatively, to keep it out of the workspace, add the package to the `workspac
 "#]])
         .run();
 }
+
+const WORKSPACE_RESOLVE_CACHE_HIT: &str = "[..]reusing the cached workspace resolution[..]";
+
+fn workspace_resolve_cache_project() -> cargo_test_support::Project {
+    project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [workspace]
+                resolver = "2"
+                members = ["selected", "other"]
+                exclude = ["external"]
+            "#,
+        )
+        .file(
+            "selected/Cargo.toml",
+            r#"
+                [package]
+                name = "selected"
+                version = "0.1.0"
+                edition = "2021"
+
+                [dependencies]
+                external = { path = "../external" }
+            "#,
+        )
+        .file("selected/src/lib.rs", "")
+        .file("other/Cargo.toml", &basic_manifest("other", "0.1.0"))
+        .file("other/src/lib.rs", "")
+        .file("external/Cargo.toml", &basic_manifest("external", "0.1.0"))
+        .file("external/src/lib.rs", "")
+        .build()
+}
+
+fn workspace_resolve_cache_command(
+    project: &cargo_test_support::Project,
+    arguments: &str,
+) -> cargo_test_support::Execs {
+    let mut command = project.cargo(arguments);
+    command
+        .env("CARGO_EXPERIMENTAL_RESOLVE_CACHE", "1")
+        .env("CARGO_LOG", "cargo::ops::resolve=debug");
+    command
+}
+
+#[cargo_test]
+fn workspace_resolve_cache_reuses_unchanged_workspace() {
+    let project = workspace_resolve_cache_project();
+
+    workspace_resolve_cache_command(&project, "check --package selected")
+        .with_stderr_does_not_contain(WORKSPACE_RESOLVE_CACHE_HIT)
+        .run();
+
+    workspace_resolve_cache_command(&project, "check --package selected")
+        .with_stderr_contains(WORKSPACE_RESOLVE_CACHE_HIT)
+        .run();
+}
+
+#[cargo_test]
+fn workspace_resolve_cache_reuses_metadata_resolution_for_check() {
+    let project = workspace_resolve_cache_project();
+
+    workspace_resolve_cache_command(&project, "metadata --format-version 1")
+        .with_stderr_does_not_contain(WORKSPACE_RESOLVE_CACHE_HIT)
+        .run();
+
+    workspace_resolve_cache_command(&project, "check --package selected")
+        .with_stderr_contains(WORKSPACE_RESOLVE_CACHE_HIT)
+        .run();
+}
+
+#[cargo_test]
+fn workspace_resolve_cache_respects_explicit_opt_out() {
+    let project = workspace_resolve_cache_project();
+
+    for _ in 0..2 {
+        project
+            .cargo("check --package selected")
+            .env("CARGO_EXPERIMENTAL_RESOLVE_CACHE", "0")
+            .env("CARGO_LOG", "cargo::ops::resolve=debug")
+            .with_stderr_does_not_contain(WORKSPACE_RESOLVE_CACHE_HIT)
+            .run();
+    }
+
+    assert!(!project.build_dir().join(".cargo-resolve-cache-v1").exists());
+}
+
+#[cargo_test]
+fn workspace_resolve_cache_preserves_dependency_feature_kinds() {
+    let project = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [workspace]
+                resolver = "2"
+                members = ["selected"]
+                exclude = ["external"]
+            "#,
+        )
+        .file(
+            "selected/Cargo.toml",
+            r#"
+                [package]
+                name = "selected"
+                version = "0.1.0"
+                edition = "2021"
+
+                [dependencies]
+                external = { path = "../external", features = ["normal"] }
+
+                [build-dependencies]
+                external = { path = "../external", features = ["build"] }
+
+                [dev-dependencies]
+                external = { path = "../external", features = ["dev"] }
+            "#,
+        )
+        .file("selected/build.rs", "fn main() { external::build(); }")
+        .file(
+            "selected/src/lib.rs",
+            r#"
+                pub fn normal() {
+                    external::normal();
+                }
+
+                #[cfg(test)]
+                mod tests {
+                    #[test]
+                    fn dev_dependency_features() {
+                        external::dev();
+                    }
+                }
+            "#,
+        )
+        .file(
+            "external/Cargo.toml",
+            r#"
+                [package]
+                name = "external"
+                version = "0.1.0"
+                edition = "2021"
+
+                [features]
+                normal = []
+                build = []
+                dev = []
+            "#,
+        )
+        .file(
+            "external/src/lib.rs",
+            r#"
+                #[cfg(feature = "normal")]
+                pub fn normal() {}
+
+                #[cfg(feature = "build")]
+                pub fn build() {}
+
+                #[cfg(feature = "dev")]
+                pub fn dev() {}
+            "#,
+        )
+        .build();
+
+    workspace_resolve_cache_command(&project, "check --package selected --all-targets")
+        .with_stderr_does_not_contain(WORKSPACE_RESOLVE_CACHE_HIT)
+        .run();
+    workspace_resolve_cache_command(&project, "check --package selected --all-targets")
+        .with_stderr_contains(WORKSPACE_RESOLVE_CACHE_HIT)
+        .run();
+}
+
+#[cargo_test]
+fn workspace_resolve_cache_invalidates_unselected_workspace_member() {
+    let project = workspace_resolve_cache_project();
+
+    workspace_resolve_cache_command(&project, "check --package selected").run();
+    workspace_resolve_cache_command(&project, "check --package selected")
+        .with_stderr_contains(WORKSPACE_RESOLVE_CACHE_HIT)
+        .run();
+
+    project.change_file(
+        "other/Cargo.toml",
+        r#"
+            [package]
+            name = "other"
+            version = "0.1.0"
+            edition = "2021"
+
+            [dependencies]
+            external = { path = "../external" }
+        "#,
+    );
+
+    workspace_resolve_cache_command(&project, "check --locked --package selected")
+        .with_status(101)
+        .with_stderr_contains(
+            "[..]cannot update the lock file [..] because --locked was passed[..]",
+        )
+        .with_stderr_does_not_contain(WORKSPACE_RESOLVE_CACHE_HIT)
+        .run();
+}
+
+#[cargo_test]
+fn workspace_resolve_cache_invalidates_external_path_dependency() {
+    let project = workspace_resolve_cache_project();
+
+    workspace_resolve_cache_command(&project, "check --package selected").run();
+    workspace_resolve_cache_command(&project, "check --package selected")
+        .with_stderr_contains(WORKSPACE_RESOLVE_CACHE_HIT)
+        .run();
+
+    project.change_file("external/Cargo.toml", &basic_manifest("external", "0.1.1"));
+
+    workspace_resolve_cache_command(&project, "check --locked --package selected")
+        .with_status(101)
+        .with_stderr_contains(
+            "[..]cannot update the lock file [..] because --locked was passed[..]",
+        )
+        .with_stderr_does_not_contain(WORKSPACE_RESOLVE_CACHE_HIT)
+        .run();
+}
+
+#[cargo_test]
+fn workspace_resolve_cache_invalidates_configuration() {
+    let project = workspace_resolve_cache_project();
+
+    workspace_resolve_cache_command(&project, "check --package selected").run();
+    workspace_resolve_cache_command(&project, "check --package selected")
+        .with_stderr_contains(WORKSPACE_RESOLVE_CACHE_HIT)
+        .run();
+
+    project.change_file(".cargo/config.toml", "[net]\nretry = 3\n");
+
+    workspace_resolve_cache_command(&project, "check --package selected")
+        .with_stderr_does_not_contain(WORKSPACE_RESOLVE_CACHE_HIT)
+        .run();
+    workspace_resolve_cache_command(&project, "check --package selected")
+        .with_stderr_contains(WORKSPACE_RESOLVE_CACHE_HIT)
+        .run();
+}
+
+#[cargo_test]
+fn workspace_resolve_cache_ignores_required_target_features() {
+    let project = workspace_resolve_cache_project();
+    project.change_file(
+        "selected/Cargo.toml",
+        r#"
+            [package]
+            name = "selected"
+            version = "0.1.0"
+            edition = "2021"
+
+            [dependencies]
+            external = { path = "../external" }
+
+            [features]
+            gated = []
+
+            [[bin]]
+            name = "gated"
+            path = "src/gated.rs"
+            required-features = ["gated"]
+        "#,
+    );
+    project.change_file("selected/src/gated.rs", "fn main() {}\n");
+
+    workspace_resolve_cache_command(&project, "check --package selected")
+        .with_stderr_does_not_contain(WORKSPACE_RESOLVE_CACHE_HIT)
+        .run();
+    workspace_resolve_cache_command(&project, "check --package selected")
+        .with_stderr_does_not_contain(WORKSPACE_RESOLVE_CACHE_HIT)
+        .run();
+
+    assert!(!project.build_dir().join(".cargo-resolve-cache-v1").exists());
+}
+
+#[cargo_test]
+fn workspace_resolve_cache_allows_unselected_required_target_features() {
+    let project = workspace_resolve_cache_project();
+    project.change_file(
+        "other/Cargo.toml",
+        r#"
+            [package]
+            name = "other"
+            version = "0.1.0"
+            edition = "2021"
+
+            [features]
+            gated = []
+
+            [[bin]]
+            name = "gated"
+            path = "src/gated.rs"
+            required-features = ["gated"]
+        "#,
+    );
+    project.change_file("other/src/gated.rs", "fn main() {}\n");
+
+    workspace_resolve_cache_command(&project, "check --package selected")
+        .with_stderr_does_not_contain(WORKSPACE_RESOLVE_CACHE_HIT)
+        .run();
+    workspace_resolve_cache_command(&project, "check --package selected")
+        .with_stderr_contains(WORKSPACE_RESOLVE_CACHE_HIT)
+        .run();
+}

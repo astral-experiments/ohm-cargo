@@ -77,6 +77,7 @@ mod fix;
 pub(crate) mod lockfile;
 pub(crate) mod registry;
 pub(crate) mod resolve;
+mod resolve_cache;
 pub mod tree;
 mod vendor;
 
