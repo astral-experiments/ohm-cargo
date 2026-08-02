@@ -433,9 +433,12 @@ fn parse_unstable_bool(value: Option<&str>) -> Option<bool> {
     }
 }
 
-fn rustflags_enable_unstable_option(rustflags: &[String], option_name: &str) -> bool {
+fn rustflags_iter_enable_unstable_option<'a>(
+    rustflags: impl IntoIterator<Item = &'a str>,
+    option_name: &str,
+) -> bool {
     let mut enabled = false;
-    let mut rustflags = rustflags.iter().map(String::as_str);
+    let mut rustflags = rustflags.into_iter();
     while let Some(rustflag) = rustflags.next() {
         let option = if rustflag == "-Z" {
             rustflags.next()
@@ -457,8 +460,47 @@ fn rustflags_enable_unstable_option(rustflags: &[String], option_name: &str) -> 
     enabled
 }
 
+#[cfg(test)]
 fn rustflags_enable_public_api_hash(rustflags: &[String]) -> bool {
-    rustflags_enable_unstable_option(rustflags, "public-api-hash")
+    rustflags_iter_enable_unstable_option(rustflags.iter().map(String::as_str), "public-api-hash")
+}
+
+fn unit_uses_public_api_hash(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> bool {
+    if !matches!(
+        unit.mode,
+        CompileMode::Build | CompileMode::Test | CompileMode::Check { .. }
+    ) {
+        return false;
+    }
+
+    let gctx = build_runner.bcx.gctx;
+    let defaults = gctx
+        .cli_unstable()
+        .ohm_defaults()
+        .then_some(super::OHM_DEFAULT_RUSTFLAGS.as_slice())
+        .unwrap_or_default();
+    let extra_args = build_runner
+        .bcx
+        .extra_args_for(unit)
+        .map(Vec::as_slice)
+        .unwrap_or_default();
+    let user_rustflags = super::unit_rustflags_without_ohm_defaults(gctx, &unit.rustflags);
+    rustflags_iter_enable_unstable_option(
+        defaults
+            .iter()
+            .copied()
+            .chain(
+                unit.pkg
+                    .manifest()
+                    .lint_rustflags()
+                    .iter()
+                    .map(String::as_str),
+            )
+            .chain(unit.profile.rustflags.iter().map(|flag| flag.as_str()))
+            .chain(extra_args.iter().map(String::as_str))
+            .chain(user_rustflags.iter().map(String::as_str)),
+        "public-api-hash",
+    )
 }
 
 #[derive(Default)]
@@ -617,11 +659,11 @@ enum PublicApiHashUpdate {
 
 /// Returns whether this unit can safely be reused after its dependencies'
 /// metadata outputs are proven unchanged.
-pub fn unit_can_use_early_cutoff(unit: &Unit) -> bool {
+pub fn unit_can_use_early_cutoff(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> bool {
     (matches!(unit.mode, CompileMode::Check { .. })
         || (unit.mode == CompileMode::Build && !unit.requires_upstream_objects()))
         && !unit.artifact.is_true()
-        && rustflags_enable_public_api_hash(&unit.rustflags)
+        && unit_uses_public_api_hash(build_runner, unit)
 }
 
 /// Returns whether this unit can be split into codegen and reusable link steps.
@@ -629,9 +671,9 @@ pub fn unit_can_use_early_cutoff(unit: &Unit) -> bool {
 /// The first prototype is intentionally limited to executable build and test
 /// units. Other linkable crate types have more complicated downstream artifact
 /// semantics and are left to future work.
-pub fn unit_can_use_relink_only(unit: &Unit) -> bool {
+pub fn unit_can_use_relink_only(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> bool {
     !unit.artifact.is_true()
-        && rustflags_enable_public_api_hash(&unit.rustflags)
+        && unit_uses_public_api_hash(build_runner, unit)
         && (unit.mode == CompileMode::Test
             || (unit.mode == CompileMode::Build && unit.target.is_bin()))
 }
@@ -870,7 +912,7 @@ pub fn prepare_target(
         fingerprint.set_build_state(BuildState::Fresh);
         return Ok(Job::new_fresh());
     };
-    let previous_dependency_changes = if rustflags_enable_public_api_hash(&fingerprint.rustflags) {
+    let previous_dependency_changes = if unit_uses_public_api_hash(build_runner, unit) {
         previous_dependency_changes(&fingerprint)
     } else {
         PreviousDependencyChanges::default()
@@ -936,7 +978,7 @@ pub fn prepare_target(
 
     let public_api_hash_path = loc.with_extension("public-api-hash");
     let old_public_api_hash = read_public_api_hash(&public_api_hash_path);
-    let previous_metadata = (rustflags_enable_public_api_hash(&fingerprint.rustflags)
+    let previous_metadata = (unit_uses_public_api_hash(build_runner, unit)
         && !bcx.gctx.cli_unstable().fine_grain_locking)
         .then(|| {
             fingerprint
@@ -2285,7 +2327,7 @@ fn calculate_normal(
         .cli_unstable()
         .no_embed_metadata
         .hash(&mut config);
-    if rustflags_enable_public_api_hash(&extra_flags) {
+    if unit_uses_public_api_hash(build_runner, unit) {
         // Older implementations cannot soundly reuse the preserved metadata
         // generations without propagating the corresponding link generations.
         ("ohm-reduced-dependency-rebuild", 2_u8).hash(&mut config);
