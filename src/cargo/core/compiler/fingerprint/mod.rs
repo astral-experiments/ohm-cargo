@@ -1868,10 +1868,9 @@ impl Fingerprint {
             })
             .map(|(_, mtime)| *mtime)
             .max();
-        if rustflags_enable_public_api_hash(&self.rustflags)
-            && !gctx.cli_unstable().fine_grain_locking
-            && link_mtime.is_some()
-        {
+        // Even units that disable public API hashing must carry link changes
+        // from metadata-only dependencies that preserved their generation.
+        if !gctx.cli_unstable().fine_grain_locking && link_mtime.is_some() {
             for dependency in self
                 .deps
                 .iter()
