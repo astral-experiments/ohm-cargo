@@ -729,6 +729,17 @@ pub fn can_relink_due_to_early_cutoff(
         return false;
     }
 
+    let stale_link_dependency = match fingerprint.fs_status() {
+        FsStatus::StaleDependency {
+            unit,
+            dep_mtime,
+            max_mtime,
+        } if dep_mtime > max_mtime && relinkable_dependencies.contains(&unit) => {
+            Some((unit, max_mtime))
+        }
+        _ => None,
+    };
+
     let mut found_relink_change = false;
     for dep in &fingerprint.deps {
         let dep_build_state = dep.fingerprint.build_state.lock().unwrap();
@@ -741,6 +752,35 @@ pub fn can_relink_due_to_early_cutoff(
             BuildState::SkippedEarlyCutoff => {
                 // This dependency's own artifact is unchanged, but one of its
                 // transitive link artifacts may have changed.
+                found_relink_change = true;
+            }
+            BuildState::Fresh
+                if stale_link_dependency.is_some_and(|(unit, root_mtime)| {
+                    if unit != dep.fingerprint.index {
+                        return false;
+                    }
+
+                    let dependency_status = dep.fingerprint.fs_status.lock().unwrap();
+                    matches!(
+                        &*dependency_status,
+                        FsStatus::UpToDate {
+                            mtimes,
+                            link_mtime: Some(link_mtime),
+                        } if *link_mtime > root_mtime
+                            && mtimes
+                                .iter()
+                                .find(|(path, _)| {
+                                    path.extension().and_then(|extension| extension.to_str())
+                                        == Some("rmeta")
+                                })
+                                .is_some_and(|(_, metadata_mtime)| *metadata_mtime <= root_mtime)
+                    )
+                }) =>
+            {
+                // This ordinary library was already fresh at job preparation,
+                // but a previously rebuilt transitive rlib is newer than the
+                // executable. Its unchanged metadata proves cached frontend
+                // results are still valid, so only linking must run again.
                 found_relink_change = true;
             }
             BuildState::Fresh => {}
@@ -3104,6 +3144,115 @@ mod early_cutoff_tests {
         assert!(!can_relink_due_to_early_cutoff(
             &fingerprint,
             &HashSet::new(),
+        ));
+    }
+
+    fn fresh_relink_dependency(metadata_mtime: FileTime) -> Arc<Fingerprint> {
+        make_indexed_fingerprint(
+            UnitIndex(1),
+            FsStatus::UpToDate {
+                mtimes: HashMap::from([(PathBuf::from("dep.rmeta"), metadata_mtime)]),
+                link_mtime: Some(FileTime::from_unix_time(3, 0)),
+            },
+            BuildState::Fresh,
+        )
+    }
+
+    fn stale_due_to_fresh_relink_dependency() -> Fingerprint {
+        let mut fingerprint = Fingerprint::new();
+        *fingerprint.fs_status.get_mut().unwrap() = FsStatus::StaleDependency {
+            unit: UnitIndex(1),
+            dep_mtime: FileTime::from_unix_time(3, 0),
+            max_mtime: FileTime::from_unix_time(2, 0),
+        };
+        fingerprint.set_early_cutoff_candidate(true);
+        fingerprint
+    }
+
+    #[test]
+    fn fresh_library_dependency_can_relink_newer_transitive_artifacts() {
+        let mut fingerprint = stale_due_to_fresh_relink_dependency();
+        fingerprint
+            .deps
+            .push(make_dep_fingerprint(fresh_relink_dependency(
+                FileTime::from_unix_time(1, 0),
+            )));
+
+        assert!(can_relink_due_to_early_cutoff(
+            &fingerprint,
+            &HashSet::from([UnitIndex(1)]),
+        ));
+    }
+
+    #[test]
+    fn fresh_non_library_dependency_cannot_relink_newer_transitive_artifacts() {
+        let mut fingerprint = stale_due_to_fresh_relink_dependency();
+        fingerprint
+            .deps
+            .push(make_dep_fingerprint(fresh_relink_dependency(
+                FileTime::from_unix_time(1, 0),
+            )));
+
+        assert!(!can_relink_due_to_early_cutoff(
+            &fingerprint,
+            &HashSet::new(),
+        ));
+    }
+
+    #[test]
+    fn fresh_library_dependency_with_newer_metadata_cannot_relink() {
+        let mut fingerprint = stale_due_to_fresh_relink_dependency();
+        fingerprint
+            .deps
+            .push(make_dep_fingerprint(fresh_relink_dependency(
+                FileTime::from_unix_time(3, 0),
+            )));
+
+        assert!(!can_relink_due_to_early_cutoff(
+            &fingerprint,
+            &HashSet::from([UnitIndex(1)]),
+        ));
+    }
+
+    #[test]
+    fn fresh_library_dependency_with_different_stale_unit_cannot_relink() {
+        let mut fingerprint = stale_due_to_fresh_relink_dependency();
+        *fingerprint.fs_status.get_mut().unwrap() = FsStatus::StaleDependency {
+            unit: UnitIndex(2),
+            dep_mtime: FileTime::from_unix_time(3, 0),
+            max_mtime: FileTime::from_unix_time(2, 0),
+        };
+        fingerprint
+            .deps
+            .push(make_dep_fingerprint(fresh_relink_dependency(
+                FileTime::from_unix_time(1, 0),
+            )));
+
+        assert!(!can_relink_due_to_early_cutoff(
+            &fingerprint,
+            &HashSet::from([UnitIndex(1), UnitIndex(2)]),
+        ));
+    }
+
+    #[test]
+    fn rebuilt_changed_dependency_prevents_fresh_transitive_relink() {
+        let mut fingerprint = stale_due_to_fresh_relink_dependency();
+        fingerprint
+            .deps
+            .push(make_dep_fingerprint(fresh_relink_dependency(
+                FileTime::from_unix_time(1, 0),
+            )));
+        fingerprint
+            .deps
+            .push(make_dep_fingerprint(make_indexed_fingerprint(
+                UnitIndex(2),
+                FsStatus::Stale,
+                BuildState::BuiltChanged,
+            )));
+
+        assert!(!can_relink_due_to_early_cutoff(
+            &fingerprint,
+            &HashSet::from([UnitIndex(1), UnitIndex(2)]),
         ));
     }
 

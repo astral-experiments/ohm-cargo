@@ -4260,9 +4260,8 @@ fn unchanged_check_metadata_does_not_fall_behind_rerun_build_script() {
         .run();
 }
 
-#[cargo_test]
 #[cfg(not(windows))]
-fn relink_only_reuses_root_codegen() {
+fn relink_only_wrapper() -> PathBuf {
     // The testsuite compiler does not implement the public API hash or
     // separate-link flags used by this prototype. This wrapper attaches a
     // deterministic public hash and emulates rustc's `.rlink` protocol while
@@ -4442,8 +4441,13 @@ fn relink_only_reuses_root_codegen() {
         )
         .build();
     wrapper.cargo("build").run();
-    let wrapper = wrapper.bin("relink-only-wrapper");
+    wrapper.bin("relink-only-wrapper")
+}
 
+#[cargo_test]
+#[cfg(not(windows))]
+fn relink_only_reuses_root_codegen() {
+    let wrapper = relink_only_wrapper();
     let p = project()
         .file(
             "Cargo.toml",
@@ -4549,4 +4553,143 @@ fn relink_only_reuses_root_codegen() {
         .env("RUSTFLAGS", "-Zpublic-api-hash")
         .run();
     assert_eq!(fs::read_to_string(&log).unwrap(), "codegen:app\nlink:app\n");
+}
+
+#[cargo_test]
+#[cfg(not(windows))]
+fn relink_only_reuses_root_codegen_after_separate_transitive_dependency_build() {
+    let wrapper = relink_only_wrapper();
+    let p = project()
+        .at("transitive-relink-only")
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "app"
+                version = "0.1.0"
+                edition = "2024"
+
+                [dependencies]
+                middle = { path = "middle" }
+            "#,
+        )
+        .file(
+            "src/main.rs",
+            "fn main() { println!(\"{}\", middle::value()); }",
+        )
+        .file(
+            "middle/Cargo.toml",
+            r#"
+                [package]
+                name = "middle"
+                version = "0.1.0"
+                edition = "2024"
+
+                [dependencies]
+                dep = { path = "../dep" }
+            "#,
+        )
+        .file(
+            "middle/src/lib.rs",
+            "pub fn value() -> i32 { dep::value() }",
+        )
+        .file(
+            "dep/Cargo.toml",
+            r#"
+                [package]
+                name = "dep"
+                version = "0.1.0"
+                edition = "2024"
+                build = "build.rs"
+            "#,
+        )
+        .file(
+            "dep/build.rs",
+            r#"
+                use std::env;
+                use std::path::PathBuf;
+                use std::process::Command;
+
+                fn main() {
+                    let out_dir = PathBuf::from(env::var_os("OUT_DIR").unwrap());
+                    let object = out_dir.join("native.o");
+                    let archive = out_dir.join("libnative.a");
+                    assert!(
+                        Command::new("cc")
+                            .args(["-c", "native.c", "-o"])
+                            .arg(&object)
+                            .status()
+                            .unwrap()
+                            .success()
+                    );
+                    assert!(
+                        Command::new("ar")
+                            .arg("rcs")
+                            .arg(&archive)
+                            .arg(&object)
+                            .status()
+                            .unwrap()
+                            .success()
+                    );
+                    println!("cargo::rerun-if-changed=native.c");
+                    println!("cargo::rustc-link-search=native={}", out_dir.display());
+                    println!("cargo::rustc-link-lib=static=native");
+                }
+            "#,
+        )
+        .file(
+            "dep/src/lib.rs",
+            r#"
+                unsafe extern "C" {
+                    fn native_value() -> i32;
+                }
+
+                pub fn value() -> i32 {
+                    // SAFETY: `native_value` is provided by the build-script archive.
+                    unsafe { native_value() }
+                }
+            "#,
+        )
+        .file("dep/native.c", "int native_value(void) { return 1; }")
+        .build();
+    let log = p.root().join("relink-wrapper.log");
+
+    p.cargo("-Zrelink-only build")
+        .masquerade_as_nightly_cargo(&["relink-only"])
+        .env("RUSTC_WRAPPER", &wrapper)
+        .env("RELINK_WRAPPER_LOG", &log)
+        .env("RUSTFLAGS", "-Zpublic-api-hash")
+        .run();
+    assert_eq!(
+        fs::read_to_string(&log).unwrap(),
+        "compile:build_script_build\ncompile:dep\ncompile:middle\ncodegen:app\nlink:app\n"
+    );
+
+    fs::write(&log, "").unwrap();
+    if is_coarse_mtime() {
+        sleep_ms(1000);
+    }
+    p.change_file("dep/native.c", "int native_value(void) { return 2; }");
+    p.cargo("-Zrelink-only build -p dep")
+        .masquerade_as_nightly_cargo(&["relink-only"])
+        .env("RUSTC_WRAPPER", &wrapper)
+        .env("RELINK_WRAPPER_LOG", &log)
+        .env("RUSTFLAGS", "-Zpublic-api-hash")
+        .run();
+    assert_eq!(fs::read_to_string(&log).unwrap(), "compile:dep\n");
+
+    fs::write(&log, "").unwrap();
+    p.cargo("-Zrelink-only build")
+        .masquerade_as_nightly_cargo(&["relink-only"])
+        .env("RUSTC_WRAPPER", &wrapper)
+        .env("RELINK_WRAPPER_LOG", &log)
+        .env("RUSTFLAGS", "-Zpublic-api-hash")
+        .run();
+    assert_eq!(fs::read_to_string(&log).unwrap(), "link:app\n");
+    p.process(&p.bin("app"))
+        .with_stdout_data(str![[r#"
+2
+
+"#]])
+        .run();
 }
