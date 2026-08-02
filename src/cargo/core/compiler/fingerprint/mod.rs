@@ -460,6 +460,18 @@ fn rustflags_enable_public_api_hash(rustflags: &[String]) -> bool {
     rustflags_enable_unstable_option(rustflags, "public-api-hash")
 }
 
+/// An unchanged crate-local API hash cannot hide changed metadata inherited
+/// from a dependency, such as a newly available foreign trait implementation.
+fn has_changed_metadata_dependency(fingerprint: &Fingerprint) -> bool {
+    fingerprint.deps.iter().any(|dependency| {
+        dependency.only_requires_rmeta
+            && matches!(
+                dependency.fingerprint.build_state(),
+                BuildState::BuiltChanged
+            )
+    })
+}
+
 fn read_public_api_hash(path: &Path) -> Option<PublicApiHash> {
     fs::read(path)
         .ok()
@@ -716,7 +728,9 @@ pub fn prepare_target(
                 return PublicApiHashUpdate::Remove;
             };
 
-            if old_public_api_hash.as_ref() == Some(&new_public_api_hash) {
+            let unchanged_public_api_hash =
+                old_public_api_hash.as_ref() == Some(&new_public_api_hash);
+            if unchanged_public_api_hash && !has_changed_metadata_dependency(fingerprint) {
                 *fingerprint.fs_status.lock().unwrap() = FsStatus::OutputUnchanged {
                     unit: fingerprint.index,
                 };
@@ -727,10 +741,17 @@ pub fn prepare_target(
                 );
             } else {
                 fingerprint.set_build_state(BuildState::BuiltChanged);
-                info!(
-                    "early_cutoff: unit {:?} built with changed public API hash (old={:?}, new={}); dependents must rebuild",
-                    fingerprint.index, old_public_api_hash, new_public_api_hash
-                );
+                if unchanged_public_api_hash {
+                    info!(
+                        "early_cutoff: unit {:?} built with unchanged public API hash {}, but metadata dependency changed; dependents must rebuild",
+                        fingerprint.index, new_public_api_hash
+                    );
+                } else {
+                    info!(
+                        "early_cutoff: unit {:?} built with changed public API hash (old={:?}, new={}); dependents must rebuild",
+                        fingerprint.index, old_public_api_hash, new_public_api_hash
+                    );
+                }
             }
             PublicApiHashUpdate::Write(new_public_api_hash)
         };
@@ -2721,6 +2742,35 @@ mod early_cutoff_tests {
         let mut fp = make_stale_due_to_dep();
         fp.deps.push(make_dep_fingerprint(dep));
         assert!(!can_skip_due_to_early_cutoff(&fp));
+    }
+
+    #[test]
+    fn changed_metadata_dependency_propagates_through_unchanged_public_api() {
+        let dependency = make_fingerprint(FsStatus::Stale, BuildState::BuiltChanged);
+        let mut fingerprint = make_stale_due_to_dep();
+        fingerprint.deps.push(make_dep_fingerprint(dependency));
+
+        assert!(has_changed_metadata_dependency(&fingerprint));
+    }
+
+    #[test]
+    fn changed_full_artifact_dependency_does_not_propagate_metadata_only_state() {
+        let dependency = make_fingerprint(FsStatus::Stale, BuildState::BuiltChanged);
+        let mut dependency = make_dep_fingerprint(dependency);
+        dependency.only_requires_rmeta = false;
+        let mut fingerprint = make_stale_due_to_dep();
+        fingerprint.deps.push(dependency);
+
+        assert!(!has_changed_metadata_dependency(&fingerprint));
+    }
+
+    #[test]
+    fn unchanged_metadata_dependency_does_not_propagate_changed_state() {
+        let dependency = make_fingerprint(FsStatus::Stale, BuildState::BuiltUnchanged);
+        let mut fingerprint = make_stale_due_to_dep();
+        fingerprint.deps.push(make_dep_fingerprint(dependency));
+
+        assert!(!has_changed_metadata_dependency(&fingerprint));
     }
 
     #[test]
