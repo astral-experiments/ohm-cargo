@@ -2193,10 +2193,9 @@ fn calculate_normal(
         .no_embed_metadata
         .hash(&mut config);
     if rustflags_enable_public_api_hash(&extra_flags) {
-        // Earlier early-cutoff implementations could mark an outdated unit as
-        // fresh. Invalidate those fingerprints once when adopting the sound
-        // cross-invocation dependency-generation contract.
-        ("ohm-reduced-dependency-rebuild", 1_u8).hash(&mut config);
+        // Older implementations cannot soundly reuse the preserved metadata
+        // generations without propagating the corresponding link generations.
+        ("ohm-reduced-dependency-rebuild", 2_u8).hash(&mut config);
     }
 
     let compile_kind = unit.kind.fingerprint_hash();
