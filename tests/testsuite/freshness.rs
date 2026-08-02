@@ -181,7 +181,7 @@ fn rebuild_sub_package_then_while_package() {
 [DIRTY] a v0.0.1 ([ROOT]/foo/a): the dependency `b` was rebuilt ([TIME_DIFF_AFTER_LAST_BUILD])
 [COMPILING] a v0.0.1 ([ROOT]/foo/a)
 [RUNNING] `rustc --crate-name a [..]
-[DIRTY] foo v0.0.1 ([ROOT]/foo): the dependency `b` was rebuilt ([TIME_DIFF_AFTER_LAST_BUILD])
+[DIRTY] foo v0.0.1 ([ROOT]/foo): the file `src/lib.rs` has changed ([TIME_DIFF_AFTER_LAST_BUILD])
 [COMPILING] foo v0.0.1 ([ROOT]/foo)
 [RUNNING] `rustc --crate-name foo [..] src/lib.rs [..]
 [FINISHED] `dev` profile [unoptimized + debuginfo] target(s) in [ELAPSED]s
