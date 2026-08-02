@@ -3313,9 +3313,7 @@ fn symlink_to_package() {
         .run();
 }
 
-#[cargo_test]
-#[cfg(not(windows))]
-fn early_cutoff_skips_dependent_rebuild() {
+fn public_api_hash_wrapper() -> PathBuf {
     // The Cargo testsuite's rustc does not know about our fork's
     // `-Zpublic-api-hash`. Strip the flag and attach a deterministic hash to
     // rustc's metadata artifact notification so this test exercises Cargo's
@@ -3335,13 +3333,30 @@ fn early_cutoff_skips_dependent_rebuild() {
             "src/main.rs",
             r#"
                 use std::env;
+                use std::ffi::OsStr;
                 use std::io::{self, Write};
                 use std::process::{Command, exit};
 
                 fn main() {
                     let mut args = env::args_os().skip(1);
                     let rustc = args.next().expect("rustc path");
-                    let args = args.filter(|arg| arg != "-Zpublic-api-hash");
+                    let args = args.collect::<Vec<_>>();
+                    let crate_name = args
+                        .windows(2)
+                        .find(|args| args[0] == OsStr::new("--crate-name"))
+                        .map(|args| &args[1]);
+                    let public_api_hash = if crate_name.is_some_and(|crate_name| {
+                        env::var_os("PUBLIC_API_HASH_WRAPPER_CHANGED_CRATE")
+                            .as_deref()
+                            == Some(crate_name.as_os_str())
+                    }) {
+                        "11111111111111111111111111111111"
+                    } else {
+                        "00000000000000000000000000000000"
+                    };
+                    let args = args
+                        .into_iter()
+                        .filter(|arg| arg != "-Zpublic-api-hash");
                     let output = Command::new(rustc)
                         .args(args)
                         .output()
@@ -3356,7 +3371,7 @@ fn early_cutoff_skips_dependent_rebuild() {
                         {
                             eprintln!(
                                 "{prefix},\"public_api_hash\":{{\"version\":1,\
-                                 \"value\":\"00000000000000000000000000000000\"}}}}"
+                                 \"value\":\"{public_api_hash}\"}}}}"
                             );
                         } else {
                             eprintln!("{line}");
@@ -3368,7 +3383,13 @@ fn early_cutoff_skips_dependent_rebuild() {
         )
         .build();
     wrapper.cargo("build").run();
-    let wrapper = wrapper.bin("public-api-hash-wrapper");
+    wrapper.bin("public-api-hash-wrapper")
+}
+
+#[cargo_test]
+#[cfg(not(windows))]
+fn early_cutoff_skips_dependent_rebuild() {
+    let wrapper = public_api_hash_wrapper();
 
     // Changing a native library rebuilds its Rust wrapper with byte-identical
     // metadata. Intermediate Rust libraries can be reused, but the final
@@ -3585,4 +3606,133 @@ fn early_cutoff_skips_dependent_rebuild() {
 
 "#]])
         .run();
+}
+
+fn assert_early_cutoff_rechecks_transitive_trait_implementations(command: &str) {
+    let wrapper = public_api_hash_wrapper();
+    let p = project()
+        .at("transitive-trait-workspace")
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "app"
+                version = "0.1.0"
+                edition = "2024"
+
+                [dependencies]
+                middle = { path = "middle" }
+            "#,
+        )
+        .file(
+            "src/lib.rs",
+            r#"
+                use middle::{Candidate, External};
+
+                trait Local {
+                    fn selected(&self) -> usize;
+                }
+
+                impl Local for External {
+                    fn selected(&self) -> usize {
+                        1
+                    }
+                }
+
+                pub fn selected() -> usize {
+                    External.selected()
+                }
+            "#,
+        )
+        .file(
+            "middle/Cargo.toml",
+            r#"
+                [package]
+                name = "middle"
+                version = "0.1.0"
+                edition = "2024"
+
+                [dependencies]
+                helper = { path = "../helper" }
+                producer = { path = "../producer" }
+            "#,
+        )
+        .file(
+            "middle/src/lib.rs",
+            "pub use helper::Candidate;\npub use producer::External;\n",
+        )
+        .file(
+            "producer/Cargo.toml",
+            r#"
+                [package]
+                name = "producer"
+                version = "0.1.0"
+                edition = "2024"
+
+                [dependencies]
+                helper = { path = "../helper" }
+            "#,
+        )
+        .file(
+            "producer/src/lib.rs",
+            r#"
+                pub struct External;
+
+                pub type ExistingReference = &'static dyn helper::Candidate;
+            "#,
+        )
+        .file("helper/Cargo.toml", &basic_manifest("helper", "0.1.0"))
+        .file(
+            "helper/src/lib.rs",
+            r#"
+                pub trait Candidate {
+                    fn selected(&self) -> usize;
+                }
+            "#,
+        )
+        .build();
+
+    p.cargo(command)
+        .env("RUSTC_WRAPPER", &wrapper)
+        .env("RUSTFLAGS", "-Zpublic-api-hash")
+        .run();
+
+    if is_coarse_mtime() {
+        sleep_ms(1000);
+    }
+    p.change_file(
+        "producer/src/lib.rs",
+        r#"
+            pub struct External;
+
+            pub type ExistingReference = &'static dyn helper::Candidate;
+
+            impl helper::Candidate for External {
+                fn selected(&self) -> usize {
+                    2
+                }
+            }
+        "#,
+    );
+
+    p.cargo(command)
+        .env("RUSTC_WRAPPER", &wrapper)
+        .env("RUSTFLAGS", "-Zpublic-api-hash")
+        .env("PUBLIC_API_HASH_WRAPPER_CHANGED_CRATE", "producer")
+        .with_status(101)
+        .with_stderr_data(str![[r#"
+[COMPILING] producer v0.1.0 ([ROOT]/transitive-trait-workspace/producer)
+[COMPILING] middle v0.1.0 ([ROOT]/transitive-trait-workspace/middle)
+[COMPILING] app v0.1.0 ([ROOT]/transitive-trait-workspace)
+error[E0034]: multiple applicable items in scope
+...
+[ERROR] could not compile `app` (lib) due to 1 previous error
+
+"#]])
+        .run();
+}
+
+#[cargo_test]
+fn early_cutoff_rechecks_transitive_trait_implementations_in_builds() {
+    assert_early_cutoff_rechecks_transitive_trait_implementations("build");
 }
