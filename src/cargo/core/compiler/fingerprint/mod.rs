@@ -460,16 +460,76 @@ fn rustflags_enable_public_api_hash(rustflags: &[String]) -> bool {
     rustflags_enable_unstable_option(rustflags, "public-api-hash")
 }
 
+#[derive(Default)]
+struct PreviousDependencyChanges {
+    any: bool,
+    metadata: bool,
+}
+
+/// Returns the latest existing output from before this Cargo invocation.
+fn previous_output_mtime<'a>(
+    outputs: impl Iterator<Item = &'a PathBuf>,
+    only_requires_rmeta: bool,
+) -> Option<FileTime> {
+    let mut latest = None;
+
+    for output in outputs {
+        if only_requires_rmeta
+            && output.extension().and_then(|extension| extension.to_str()) != Some("rmeta")
+        {
+            continue;
+        }
+
+        let modified = paths::mtime(output).ok()?;
+        latest = Some(latest.map_or(modified, |latest: FileTime| latest.max(modified)));
+    }
+
+    latest
+}
+
+/// Detects dependencies rebuilt after this unit was last successfully built.
+///
+/// All jobs are prepared before any of them run, so these output mtimes still
+/// describe the previous invocation even for dependencies about to rebuild.
+fn previous_dependency_changes(fingerprint: &Fingerprint) -> PreviousDependencyChanges {
+    let Some(parent_modified) = previous_output_mtime(fingerprint.outputs.iter(), false) else {
+        return PreviousDependencyChanges {
+            any: !fingerprint.deps.is_empty(),
+            metadata: fingerprint
+                .deps
+                .iter()
+                .any(|dependency| dependency.only_requires_rmeta),
+        };
+    };
+
+    let mut changes = PreviousDependencyChanges::default();
+    for dependency in &fingerprint.deps {
+        let dependency_modified = previous_output_mtime(
+            dependency.fingerprint.outputs.iter(),
+            dependency.only_requires_rmeta,
+        );
+        if dependency_modified.is_none_or(|modified| modified > parent_modified) {
+            changes.any = true;
+            changes.metadata |= dependency.only_requires_rmeta;
+        }
+    }
+
+    changes
+}
+
 /// An unchanged crate-local API hash cannot hide changed metadata inherited
 /// from a dependency, such as a newly available foreign trait implementation.
 fn has_changed_metadata_dependency(fingerprint: &Fingerprint) -> bool {
-    fingerprint.deps.iter().any(|dependency| {
-        dependency.only_requires_rmeta
-            && matches!(
-                dependency.fingerprint.build_state(),
-                BuildState::BuiltChanged
-            )
-    })
+    fingerprint
+        .previously_changed_metadata_dependency
+        .load(Ordering::Acquire)
+        || fingerprint.deps.iter().any(|dependency| {
+            dependency.only_requires_rmeta
+                && matches!(
+                    dependency.fingerprint.build_state(),
+                    BuildState::BuiltChanged
+                )
+        })
 }
 
 fn read_public_api_hash(path: &Path) -> Option<PublicApiHash> {
@@ -650,7 +710,19 @@ pub fn prepare_target(
         fingerprint.set_build_state(BuildState::Fresh);
         return Ok(Job::new_fresh());
     };
-    fingerprint.set_early_cutoff_candidate(is_early_cutoff_candidate(&fingerprint, &dirty_reason));
+    let previous_dependency_changes = if rustflags_enable_public_api_hash(&fingerprint.rustflags) {
+        previous_dependency_changes(&fingerprint)
+    } else {
+        PreviousDependencyChanges::default()
+    };
+    fingerprint
+        .previously_changed_metadata_dependency
+        .store(previous_dependency_changes.metadata, Ordering::Release);
+    fingerprint.set_early_cutoff_candidate(
+        is_early_cutoff_candidate(&fingerprint, &dirty_reason)
+            && !previous_dependency_changes.any
+            && !bcx.gctx.cli_unstable().fine_grain_locking,
+    );
 
     // We're going to rebuild, so ensure the source of the crate passes all
     // verification checks before we build it.
@@ -912,6 +984,10 @@ pub struct Fingerprint {
     /// Whether the unit is dirty only because one of its dependencies changed.
     #[serde(skip)]
     early_cutoff_candidate: AtomicBool,
+    /// Whether metadata used by this unit had already changed in an earlier
+    /// Cargo invocation before its current dependencies were prepared.
+    #[serde(skip)]
+    previously_changed_metadata_dependency: AtomicBool,
     /// Files, relative to `target_root`, that are produced by the step that
     /// this `Fingerprint` represents. This is used to detect when the whole
     /// fingerprint is out of date if this is missing, or if previous
@@ -1329,6 +1405,7 @@ impl Fingerprint {
             fs_status: Mutex::new(FsStatus::Stale),
             build_state: Mutex::new(BuildState::Pending),
             early_cutoff_candidate: AtomicBool::new(false),
+            previously_changed_metadata_dependency: AtomicBool::new(false),
             outputs: Vec::new(),
         }
     }
@@ -1993,6 +2070,12 @@ fn calculate_normal(
         .cli_unstable()
         .no_embed_metadata
         .hash(&mut config);
+    if rustflags_enable_public_api_hash(&extra_flags) {
+        // Earlier early-cutoff implementations could mark an outdated unit as
+        // fresh. Invalidate those fingerprints once when adopting the sound
+        // cross-invocation dependency-generation contract.
+        ("ohm-reduced-dependency-rebuild", 1_u8).hash(&mut config);
+    }
 
     let compile_kind = unit.kind.fingerprint_hash();
     let mut declared_features = unit.pkg.summary().features().keys().collect::<Vec<_>>();
@@ -2017,6 +2100,7 @@ fn calculate_normal(
         fs_status: Mutex::new(FsStatus::Stale),
         build_state: Mutex::new(BuildState::Pending),
         early_cutoff_candidate: AtomicBool::new(false),
+        previously_changed_metadata_dependency: AtomicBool::new(false),
         outputs,
     })
 }
@@ -2749,6 +2833,23 @@ mod early_cutoff_tests {
         let dependency = make_fingerprint(FsStatus::Stale, BuildState::BuiltChanged);
         let mut fingerprint = make_stale_due_to_dep();
         fingerprint.deps.push(make_dep_fingerprint(dependency));
+
+        assert!(has_changed_metadata_dependency(&fingerprint));
+    }
+
+    #[test]
+    fn previously_changed_metadata_dependency_propagates_through_unchanged_public_api() {
+        let dependency = make_fingerprint(
+            FsStatus::UpToDate {
+                mtimes: HashMap::new(),
+            },
+            BuildState::Fresh,
+        );
+        let mut fingerprint = make_stale_due_to_dep();
+        fingerprint.deps.push(make_dep_fingerprint(dependency));
+        fingerprint
+            .previously_changed_metadata_dependency
+            .store(true, Ordering::Release);
 
         assert!(has_changed_metadata_dependency(&fingerprint));
     }
