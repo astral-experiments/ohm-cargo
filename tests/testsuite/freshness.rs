@@ -3980,3 +3980,281 @@ error[E0308]: mismatched types
 "#]])
         .run();
 }
+
+fn find_metadata_output(root: &Path, crate_name: &str) -> PathBuf {
+    let prefix = format!("lib{crate_name}-");
+    fs::read_dir(root.join("target/debug/deps"))
+        .expect("dependency output directory should exist")
+        .filter_map(Result::ok)
+        .map(|entry| entry.path())
+        .find(|path| {
+            path.extension().and_then(|extension| extension.to_str()) == Some("rmeta")
+                && path
+                    .file_name()
+                    .and_then(|name| name.to_str())
+                    .is_some_and(|name| name.starts_with(&prefix))
+        })
+        .expect("metadata output should exist")
+}
+
+fn assert_private_dependency_rebuild_preserves_metadata_generation(command: &str) {
+    let wrapper = public_api_hash_wrapper();
+    let p = project()
+        .at(&format!("private-metadata-generation-{command}"))
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "consumer"
+                version = "0.1.0"
+                edition = "2024"
+
+                [dependencies]
+                producer = { path = "producer" }
+            "#,
+        )
+        .file(
+            "src/lib.rs",
+            "pub fn value() -> i32 { producer::value() }\n",
+        )
+        .file("producer/Cargo.toml", &basic_manifest("producer", "0.1.0"))
+        .file("producer/src/lib.rs", "pub fn value() -> i32 { 1 }\n")
+        .build();
+
+    p.cargo(command)
+        .env("RUSTC_WRAPPER", &wrapper)
+        .env("RUSTFLAGS", "-Zpublic-api-hash")
+        .run();
+
+    let metadata = find_metadata_output(&p.root(), "producer");
+    let initial_mtime = FileTime::from_last_modification_time(
+        &fs::metadata(&metadata).expect("producer metadata should be readable"),
+    );
+
+    if is_coarse_mtime() {
+        sleep_ms(1000);
+    }
+    p.change_file("producer/src/lib.rs", "pub fn value() -> i32 { 2 }\n");
+    p.cargo(&format!("{command} -p producer"))
+        .env("RUSTC_WRAPPER", &wrapper)
+        .env("RUSTFLAGS", "-Zpublic-api-hash")
+        .run();
+
+    let rebuilt_mtime = FileTime::from_last_modification_time(
+        &fs::metadata(&metadata).expect("rebuilt producer metadata should be readable"),
+    );
+    assert_eq!(rebuilt_mtime, initial_mtime);
+
+    p.cargo(&format!("{command} -v"))
+        .env("RUSTC_WRAPPER", &wrapper)
+        .env("RUSTFLAGS", "-Zpublic-api-hash")
+        .with_stderr_data(str![[r#"
+[FRESH] producer v0.1.0 ([ROOT]/private-metadata-generation-[..]/producer)
+[FRESH] consumer v0.1.0 ([ROOT]/private-metadata-generation-[..])
+[FINISHED] `dev` profile [unoptimized + debuginfo] target(s) in [ELAPSED]s
+
+"#]])
+        .run();
+}
+
+#[cargo_test]
+fn private_dependency_rebuild_preserves_build_metadata_generation() {
+    assert_private_dependency_rebuild_preserves_metadata_generation("build");
+}
+
+#[cargo_test]
+fn private_dependency_rebuild_preserves_check_metadata_generation() {
+    assert_private_dependency_rebuild_preserves_metadata_generation("check");
+}
+
+fn assert_private_dependency_rebuild_propagates_link_generation(package: &str) {
+    let wrapper = public_api_hash_wrapper();
+    let p = project()
+        .at(&format!("private-dependency-link-generation-{package}"))
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "app"
+                version = "0.1.0"
+                edition = "2024"
+
+                [dependencies]
+                middle = { path = "middle" }
+            "#,
+        )
+        .file(
+            "src/main.rs",
+            "fn main() { println!(\"{}\", middle::value()); }\n",
+        )
+        .file(
+            "middle/Cargo.toml",
+            r#"
+                [package]
+                name = "middle"
+                version = "0.1.0"
+                edition = "2024"
+
+                [dependencies]
+                producer = { path = "../producer" }
+            "#,
+        )
+        .file(
+            "middle/src/lib.rs",
+            "pub fn value() -> i32 { producer::value() }\n",
+        )
+        .file(
+            "producer/Cargo.toml",
+            r#"
+                [package]
+                name = "producer"
+                version = "0.1.0"
+                edition = "2024"
+                build = "build.rs"
+            "#,
+        )
+        .file(
+            "producer/build.rs",
+            r#"
+                use std::env;
+                use std::path::PathBuf;
+                use std::process::Command;
+
+                fn main() {
+                    let out_dir =
+                        PathBuf::from(env::var_os("OUT_DIR").expect("OUT_DIR should be set"));
+                    let object = out_dir.join("native.o");
+                    let archive = out_dir.join("libnative.a");
+                    assert!(
+                        Command::new("cc")
+                            .args(["-c", "native.c", "-o"])
+                            .arg(&object)
+                            .status()
+                            .expect("cc should run")
+                            .success()
+                    );
+                    assert!(
+                        Command::new("ar")
+                            .arg("rcs")
+                            .arg(&archive)
+                            .arg(&object)
+                            .status()
+                            .expect("ar should run")
+                            .success()
+                    );
+                    println!("cargo::rerun-if-changed=native.c");
+                    println!("cargo::rustc-link-search=native={}", out_dir.display());
+                    println!("cargo::rustc-link-lib=static=native");
+                }
+            "#,
+        )
+        .file(
+            "producer/src/lib.rs",
+            r#"
+                unsafe extern "C" {
+                    fn native_value() -> i32;
+                }
+
+                #[inline(never)]
+                pub fn value() -> i32 {
+                    // SAFETY: `native_value` is defined by the static archive
+                    // generated by this package's build script.
+                    unsafe { native_value() }
+                }
+            "#,
+        )
+        .file("producer/native.c", "int native_value(void) { return 1; }")
+        .build();
+
+    p.cargo("run --quiet")
+        .env("RUSTC_WRAPPER", &wrapper)
+        .env("RUSTFLAGS", "-Zpublic-api-hash")
+        .with_stdout_data(str![[r#"
+1
+
+"#]])
+        .run();
+
+    let metadata = find_metadata_output(&p.root(), "middle");
+    let initial_mtime = FileTime::from_last_modification_time(
+        &fs::metadata(&metadata).expect("middle metadata should be readable"),
+    );
+
+    if is_coarse_mtime() {
+        sleep_ms(1000);
+    }
+    p.change_file("producer/native.c", "int native_value(void) { return 2; }");
+    p.cargo(&format!("build -p {package}"))
+        .env("RUSTC_WRAPPER", &wrapper)
+        .env("RUSTFLAGS", "-Zpublic-api-hash")
+        .run();
+
+    let rebuilt_mtime = FileTime::from_last_modification_time(
+        &fs::metadata(&metadata).expect("skipped middle metadata should be readable"),
+    );
+    assert_eq!(rebuilt_mtime, initial_mtime);
+
+    // Its effective link generation must make the existing executable stale,
+    // even though metadata-only intermediate crates do not recompile.
+    p.cargo("run --quiet")
+        .env("RUSTC_WRAPPER", &wrapper)
+        .env("RUSTFLAGS", "-Zpublic-api-hash")
+        .with_stdout_data(str![[r#"
+2
+
+"#]])
+        .run();
+}
+
+#[cargo_test]
+#[cfg(not(windows))]
+fn skipped_dependency_preserves_metadata_and_propagates_link_generation() {
+    assert_private_dependency_rebuild_propagates_link_generation("middle");
+}
+
+#[cargo_test]
+#[cfg(not(windows))]
+fn separately_rebuilt_dependency_propagates_transitive_link_generation() {
+    assert_private_dependency_rebuild_propagates_link_generation("producer");
+}
+
+#[cargo_test]
+fn unchanged_check_metadata_does_not_fall_behind_rerun_build_script() {
+    let wrapper = public_api_hash_wrapper();
+    let p = project()
+        .at("check-metadata-build-script-generation")
+        .file("src/lib.rs", "pub fn value() -> i32 { 1 }\n")
+        .file("touch-me", "initial")
+        .file(
+            "build.rs",
+            r#"fn main() { println!("cargo::rerun-if-changed=touch-me") }"#,
+        )
+        .build();
+
+    p.cargo("check")
+        .env("CARGO_INCREMENTAL", "1")
+        .env("RUSTC_WRAPPER", &wrapper)
+        .env("RUSTFLAGS", "-Zpublic-api-hash")
+        .run();
+
+    if is_coarse_mtime() {
+        sleep_ms(1000);
+    }
+    p.change_file("touch-me", "updated");
+    p.cargo("check")
+        .env("CARGO_INCREMENTAL", "1")
+        .env("RUSTC_WRAPPER", &wrapper)
+        .env("RUSTFLAGS", "-Zpublic-api-hash")
+        .run();
+
+    p.cargo("check -v")
+        .env("CARGO_INCREMENTAL", "1")
+        .env("RUSTC_WRAPPER", &wrapper)
+        .env("RUSTFLAGS", "-Zpublic-api-hash")
+        .with_stderr_data(str![[r#"
+[FRESH] foo v0.0.1 ([ROOT]/check-metadata-build-script-generation)
+[FINISHED] `dev` profile [unoptimized + debuginfo] target(s) in [ELAPSED]s
+
+"#]])
+        .run();
+}
