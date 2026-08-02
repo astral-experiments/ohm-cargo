@@ -1868,9 +1868,10 @@ impl Fingerprint {
             })
             .map(|(_, mtime)| *mtime)
             .max();
-        // Even units that disable public API hashing must carry link changes
-        // from metadata-only dependencies that preserved their generation.
-        if !gctx.cli_unstable().fine_grain_locking && link_mtime.is_some() {
+        // Metadata may have been preserved by an earlier invocation, so carry
+        // its link generation even when this one disables hashing or enables
+        // fine-grained locking. This only reads existing output generations.
+        if link_mtime.is_some() {
             for dependency in self
                 .deps
                 .iter()
