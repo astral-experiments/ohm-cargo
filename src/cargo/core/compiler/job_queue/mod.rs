@@ -411,7 +411,7 @@ impl<'gctx> JobQueue<'gctx> {
         job: Job,
     ) -> CargoResult<()> {
         let dependencies = build_runner.unit_deps(unit);
-        let wait_for_early_cutoff = fingerprint::unit_can_use_early_cutoff(unit)
+        let wait_for_early_cutoff = fingerprint::unit_can_use_early_cutoff(build_runner, unit)
             && build_runner
                 .fingerprints
                 .get(unit)

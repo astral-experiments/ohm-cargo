@@ -315,6 +315,18 @@ fn execute_subcommand(
         None => ProcessBuilder::new(&cargo_exe),
     };
     cmd.env(cargo::CARGO_ENV, cargo_exe).args(args);
+    if let Some(enabled) = gctx.cli_unstable().ohm_defaults {
+        cmd.env(
+            cargo::CARGO_INHERITED_OHM_DEFAULTS_ENV,
+            if enabled { "yes" } else { "no" },
+        );
+    }
+    if let Some(enabled) = gctx.cli_unstable().relink_only {
+        cmd.env(
+            cargo::CARGO_INHERITED_RELINK_ONLY_ENV,
+            if enabled { "yes" } else { "no" },
+        );
+    }
     if let Some(client) = gctx.jobserver_from_env() {
         cmd.inherit_jobserver(client);
     }
