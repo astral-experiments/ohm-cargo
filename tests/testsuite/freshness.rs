@@ -3608,7 +3608,10 @@ fn early_cutoff_skips_dependent_rebuild() {
         .run();
 }
 
-fn assert_early_cutoff_rechecks_transitive_trait_implementations(command: &str) {
+fn assert_early_cutoff_rechecks_transitive_trait_implementations(
+    command: &str,
+    rebuild_producer_separately: bool,
+) {
     let wrapper = public_api_hash_wrapper();
     let p = project()
         .at("transitive-trait-workspace")
@@ -3715,12 +3718,28 @@ fn assert_early_cutoff_rechecks_transitive_trait_implementations(command: &str) 
         "#,
     );
 
-    p.cargo(command)
-        .env("RUSTC_WRAPPER", &wrapper)
-        .env("RUSTFLAGS", "-Zpublic-api-hash")
-        .env("PUBLIC_API_HASH_WRAPPER_CHANGED_CRATE", "producer")
-        .with_status(101)
-        .with_stderr_data(str![[r#"
+    if rebuild_producer_separately {
+        // A separate Cargo invocation updates the producer without updating its dependents.
+        // During the full build below, the producer is fresh for this invocation even though its
+        // metadata differs from what the intermediate crate was originally compiled against.
+        p.cargo(&format!("{command} -p producer"))
+            .env("RUSTC_WRAPPER", &wrapper)
+            .env("RUSTFLAGS", "-Zpublic-api-hash")
+            .env("PUBLIC_API_HASH_WRAPPER_CHANGED_CRATE", "producer")
+            .run();
+    }
+
+    let expected = if rebuild_producer_separately {
+        str![[r#"
+[COMPILING] middle v0.1.0 ([ROOT]/transitive-trait-workspace/middle)
+[COMPILING] app v0.1.0 ([ROOT]/transitive-trait-workspace)
+error[E0034]: multiple applicable items in scope
+...
+[ERROR] could not compile `app` (lib) due to 1 previous error
+
+"#]]
+    } else {
+        str![[r#"
 [COMPILING] producer v0.1.0 ([ROOT]/transitive-trait-workspace/producer)
 [COMPILING] middle v0.1.0 ([ROOT]/transitive-trait-workspace/middle)
 [COMPILING] app v0.1.0 ([ROOT]/transitive-trait-workspace)
@@ -3728,11 +3747,236 @@ error[E0034]: multiple applicable items in scope
 ...
 [ERROR] could not compile `app` (lib) due to 1 previous error
 
-"#]])
+"#]]
+    };
+    p.cargo(command)
+        .env("RUSTC_WRAPPER", &wrapper)
+        .env("RUSTFLAGS", "-Zpublic-api-hash")
+        .env("PUBLIC_API_HASH_WRAPPER_CHANGED_CRATE", "producer")
+        .with_status(101)
+        .with_stderr_data(expected)
         .run();
 }
 
 #[cargo_test]
 fn early_cutoff_rechecks_transitive_trait_implementations_in_builds() {
-    assert_early_cutoff_rechecks_transitive_trait_implementations("build");
+    assert_early_cutoff_rechecks_transitive_trait_implementations("build", false);
+}
+
+#[cargo_test]
+fn early_cutoff_rechecks_previously_rebuilt_transitive_trait_implementations_in_builds() {
+    assert_early_cutoff_rechecks_transitive_trait_implementations("build", true);
+}
+
+fn assert_early_cutoff_rechecks_previously_changed_dependency(
+    rebuild_changed_dependency_again: bool,
+) {
+    let wrapper = public_api_hash_wrapper();
+    let p = project()
+        .at("previously-changed-dependency")
+        .file(
+            "Cargo.toml",
+            r#"
+                [workspace]
+                members = ["producer_a", "producer_b", "consumer", "app"]
+                resolver = "2"
+            "#,
+        )
+        .file(
+            "producer_a/Cargo.toml",
+            &basic_manifest("producer_a", "0.1.0"),
+        )
+        .file(
+            "producer_a/src/lib.rs",
+            "pub fn value() -> i32 { 1 }\npub fn stable() -> i32 { 10 }\n",
+        )
+        .file(
+            "producer_b/Cargo.toml",
+            &basic_manifest("producer_b", "0.1.0"),
+        )
+        .file("producer_b/src/lib.rs", "pub fn value() -> i32 { 2 }\n")
+        .file(
+            "consumer/Cargo.toml",
+            r#"
+                [package]
+                name = "consumer"
+                version = "0.1.0"
+                edition = "2024"
+
+                [dependencies]
+                producer_a = { path = "../producer_a" }
+                producer_b = { path = "../producer_b" }
+            "#,
+        )
+        .file(
+            "consumer/src/lib.rs",
+            "pub fn value() -> i32 { producer_a::value() + producer_b::value() }\n",
+        )
+        .file(
+            "app/Cargo.toml",
+            r#"
+                [package]
+                name = "app"
+                version = "0.1.0"
+                edition = "2024"
+
+                [dependencies]
+                producer_a = { path = "../producer_a" }
+            "#,
+        )
+        .file(
+            "app/src/lib.rs",
+            "pub fn value() -> i32 { producer_a::stable() }\n",
+        )
+        .build();
+
+    p.cargo("build -p consumer")
+        .env("RUSTC_WRAPPER", &wrapper)
+        .env("RUSTFLAGS", "-Zpublic-api-hash")
+        .run();
+
+    if is_coarse_mtime() {
+        sleep_ms(1000);
+    }
+    p.change_file(
+        "producer_a/src/lib.rs",
+        "pub fn value() -> &'static str { \"changed\" }\npub fn stable() -> i32 { 10 }\n",
+    );
+    p.cargo("build -p app")
+        .env("RUSTC_WRAPPER", &wrapper)
+        .env("RUSTFLAGS", "-Zpublic-api-hash")
+        .env("PUBLIC_API_HASH_WRAPPER_CHANGED_CRATE", "producer_a")
+        .run();
+
+    if is_coarse_mtime() {
+        sleep_ms(1000);
+    }
+    if rebuild_changed_dependency_again {
+        // Its public API is unchanged in this invocation, but still differs from the metadata
+        // recorded when `consumer` was compiled before the previous invocation.
+        p.change_file(
+            "producer_a/src/lib.rs",
+            "pub fn value() -> &'static str { \"changed again\" }\npub fn stable() -> i32 { 10 }\n",
+        );
+    } else {
+        p.change_file("producer_b/src/lib.rs", "pub fn value() -> i32 { 3 }\n");
+    }
+    p.cargo("build -p consumer")
+        .env("RUSTC_WRAPPER", &wrapper)
+        .env("RUSTFLAGS", "-Zpublic-api-hash")
+        .env("PUBLIC_API_HASH_WRAPPER_CHANGED_CRATE", "producer_a")
+        .with_status(101)
+        .with_stderr_data(str![[r#"
+...
+error[E0369]: cannot add `i32` to `&str`
+...
+[ERROR] could not compile `consumer` (lib) due to 1 previous error
+
+"#]])
+        .run();
+}
+
+#[cargo_test]
+fn early_cutoff_rechecks_fresh_dependency_changed_by_previous_build() {
+    assert_early_cutoff_rechecks_previously_changed_dependency(false);
+}
+
+#[cargo_test]
+fn early_cutoff_rechecks_unchanged_dependency_changed_by_previous_build() {
+    assert_early_cutoff_rechecks_previously_changed_dependency(true);
+}
+
+#[cargo_test]
+fn early_cutoff_rechecks_proc_macro_changed_by_previous_build() {
+    let wrapper = public_api_hash_wrapper();
+    let p = project()
+        .at("previously-changed-proc-macro")
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "consumer"
+                version = "0.1.0"
+                edition = "2024"
+
+                [dependencies]
+                macro_dep = { path = "macro_dep" }
+                producer = { path = "producer" }
+            "#,
+        )
+        .file(
+            "src/lib.rs",
+            "macro_dep::make_value!();\npub fn value() -> i32 { generated() + producer::value() }\n",
+        )
+        .file(
+            "macro_dep/Cargo.toml",
+            r#"
+                [package]
+                name = "macro_dep"
+                version = "0.1.0"
+                edition = "2024"
+
+                [lib]
+                proc-macro = true
+            "#,
+        )
+        .file(
+            "macro_dep/src/lib.rs",
+            r#"
+                use proc_macro::TokenStream;
+
+                #[proc_macro]
+                pub fn make_value(_: TokenStream) -> TokenStream {
+                    "pub fn generated() -> i32 { 1 }"
+                        .parse()
+                        .expect("generated function should parse")
+                }
+            "#,
+        )
+        .file("producer/Cargo.toml", &basic_manifest("producer", "0.1.0"))
+        .file("producer/src/lib.rs", "pub fn value() -> i32 { 2 }\n")
+        .build();
+
+    p.cargo("build")
+        .env("RUSTC_WRAPPER", &wrapper)
+        .env("RUSTFLAGS", "-Zpublic-api-hash")
+        .run();
+
+    if is_coarse_mtime() {
+        sleep_ms(1000);
+    }
+    p.change_file(
+        "macro_dep/src/lib.rs",
+        r#"
+            use proc_macro::TokenStream;
+
+            #[proc_macro]
+            pub fn make_value(_: TokenStream) -> TokenStream {
+                "pub fn generated() -> i32 { \"changed\" }"
+                    .parse()
+                    .expect("generated function should parse")
+            }
+        "#,
+    );
+    p.cargo("build -p macro_dep")
+        .env("RUSTC_WRAPPER", &wrapper)
+        .env("RUSTFLAGS", "-Zpublic-api-hash")
+        .run();
+
+    if is_coarse_mtime() {
+        sleep_ms(1000);
+    }
+    p.change_file("producer/src/lib.rs", "pub fn value() -> i32 { 3 }\n");
+    p.cargo("build")
+        .env("RUSTC_WRAPPER", &wrapper)
+        .env("RUSTFLAGS", "-Zpublic-api-hash")
+        .with_status(101)
+        .with_stderr_data(str![[r#"
+...
+error[E0308]: mismatched types
+...
+[ERROR] could not compile `consumer` (lib) due to 1 previous error
+
+"#]])
+        .run();
 }
