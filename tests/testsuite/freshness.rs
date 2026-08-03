@@ -4545,6 +4545,7 @@ fn relink_only_wrapper() -> PathBuf {
                 fn run(rustc: &OsStr, args: &[OsString]) -> Output {
                     Command::new(rustc)
                         .args(args)
+                        .env("RUSTC_BOOTSTRAP", "1")
                         .output()
                         .expect("rustc should run")
                 }
@@ -4622,8 +4623,24 @@ fn relink_only_wrapper() -> PathBuf {
                             let artifact = artifact_path(&output.stderr);
                             let rlink = artifact.with_extension("rlink");
                             fs::write(&rlink, b"test rlink").unwrap();
-                            fs::write(artifact.with_extension("fake.rcgu.o"), b"test object")
-                                .unwrap();
+                            let objects = args
+                                .windows(2)
+                                .find_map(|args| {
+                                    (args[0] == OsStr::new("-Z"))
+                                        .then(|| args[1].to_str())
+                                        .flatten()
+                                        .and_then(|arg| arg.strip_prefix("temps-dir="))
+                                        .map(PathBuf::from)
+                                })
+                                .expect("cached relinking should isolate codegen objects");
+                            fs::create_dir_all(&objects).unwrap();
+                            let object = objects.join(
+                                artifact
+                                    .with_extension("fake.rcgu.o")
+                                    .file_name()
+                                    .unwrap(),
+                            );
+                            fs::write(object, b"test object").unwrap();
                             write_args(&rlink.with_extension("relink-args"), &stripped);
                         }
                         emit(output);
@@ -4683,6 +4700,30 @@ fn relink_only_reuses_root_codegen() {
         "compile:dep\ncompile-link:app\n"
     );
 
+    let deps = p.root().join("target/debug/deps");
+    let manifest = fs::read_dir(&deps)
+        .unwrap()
+        .filter_map(Result::ok)
+        .map(|entry| entry.path())
+        .find(|path| {
+            path.file_name()
+                .and_then(OsStr::to_str)
+                .is_some_and(|name| name.ends_with(".rlink-cache.json"))
+        })
+        .unwrap();
+    let cache: serde_json::Value = serde_json::from_slice(&fs::read(&manifest).unwrap()).unwrap();
+    assert_eq!(cache["version"], 4);
+    let executable = Path::new(cache["executable"]["path"].as_str().unwrap());
+    let objects = executable.with_extension("rlink-objects");
+    assert!(objects.is_dir());
+    assert!(cache["objects"].as_array().unwrap().iter().all(|object| {
+        Path::new(object["path"].as_str().unwrap()).parent() == Some(objects.as_path())
+    }));
+    assert!(
+        !executable.with_extension("fake.rcgu.o").exists(),
+        "cached relink objects must not remain in the dependency search directory"
+    );
+
     fs::write(&log, "").unwrap();
     sleep_ms(1000);
     p.change_file("dep/src/lib.rs", "pub fn value() -> i32 { 2 }");
@@ -4700,17 +4741,7 @@ fn relink_only_reuses_root_codegen() {
         .run();
 
     // A corrupt sidecar must fail closed and regenerate the codegen cache.
-    let manifest = fs::read_dir(p.root().join("target/debug/deps"))
-        .unwrap()
-        .filter_map(Result::ok)
-        .map(|entry| entry.path())
-        .find(|path| {
-            path.file_name()
-                .and_then(OsStr::to_str)
-                .is_some_and(|name| name.ends_with(".rlink-cache.json"))
-        })
-        .unwrap();
-    fs::write(manifest, "corrupt").unwrap();
+    fs::write(&manifest, "corrupt").unwrap();
     fs::write(&log, "").unwrap();
     sleep_ms(1000);
     p.change_file("dep/src/lib.rs", "pub fn value() -> i32 { 3 }");

@@ -308,7 +308,7 @@ fn make_failed_scrape_diagnostic(
     )
 }
 
-const RELINK_CACHE_VERSION: u32 = 3;
+const RELINK_CACHE_VERSION: u32 = 4;
 
 #[derive(serde::Deserialize, serde::Serialize)]
 struct RelinkCacheFile {
@@ -335,16 +335,19 @@ struct RelinkCachePaths {
     rlink: PathBuf,
     executable: PathBuf,
     manifest: PathBuf,
+    objects: PathBuf,
 }
 
 impl RelinkCachePaths {
     fn new(executable: PathBuf) -> Self {
         let rlink = executable.with_extension("rlink");
         let manifest = executable.with_extension("rlink-cache.json");
+        let objects = executable.with_extension("rlink-objects");
         Self {
             rlink,
             executable,
             manifest,
+            objects,
         }
     }
 
@@ -389,27 +392,19 @@ impl RelinkCachePaths {
     }
 
     fn codegen_temps(&self) -> CargoResult<Vec<PathBuf>> {
-        let object_prefix = self
-            .rlink
-            .file_stem()
-            .ok_or_else(|| internal("cached rlink path has no file stem"))?
-            .to_string_lossy();
-        let parent = self
-            .rlink
-            .parent()
-            .ok_or_else(|| internal("cached rlink path has no parent"))?;
-        Ok(fs::read_dir(parent)?
+        let entries = match fs::read_dir(&self.objects) {
+            Ok(entries) => entries,
+            Err(error) if error.kind() == std::io::ErrorKind::NotFound => return Ok(Vec::new()),
+            Err(error) => return Err(error.into()),
+        };
+        Ok(entries
             .filter_map(Result::ok)
             .map(|entry| entry.path())
             .filter(|path| {
-                let Some(file_name) = path.file_name().and_then(OsStr::to_str) else {
-                    return false;
-                };
-                file_name.starts_with(&format!("{object_prefix}."))
-                    && matches!(
-                        path.extension().and_then(OsStr::to_str),
-                        Some("bc" | "o" | "obj")
-                    )
+                matches!(
+                    path.extension().and_then(OsStr::to_str),
+                    Some("bc" | "o" | "obj")
+                )
             })
             .collect())
     }
@@ -533,11 +528,15 @@ fn rustc(
         })
         .map(|dep| build_runner.bcx.unit_to_index[&dep.unit])
         .collect::<HashSet<_>>();
-    if relink_cache.is_some() {
+    if let Some(cache) = &relink_cache {
         // Preserve the codegen objects referenced by the cached `.rlink`, and
-        // emit the reusable linker inputs while completing the initial link.
+        // keep them outside the dependency search directory while completing
+        // the initial link.
         rustc.arg("-C").arg("save-temps=yes");
         rustc.arg("-Z").arg("emit-rlink");
+        let mut temps_dir = OsString::from("temps-dir=");
+        temps_dir.push(&cache.objects);
+        rustc.arg("-Z").arg(temps_dir);
     }
 
     // Prepare the native lib state (extra `-L` and `-l` flags).
