@@ -46,8 +46,10 @@ use crate::util::{
 };
 
 mod embedded;
+mod parallel;
 mod targets;
 
+pub(crate) use self::parallel::RegistryManifestParse;
 use self::targets::to_targets;
 
 /// See also `bin/cargo/commands/run.rs`s `is_manifest_command`
@@ -70,30 +72,60 @@ pub fn read_manifest(
     source_id: SourceId,
     gctx: &GlobalContext,
 ) -> CargoResult<EitherManifest> {
-    let mut warnings = Default::default();
-    let mut errors = Default::default();
-
     let is_embedded = is_embedded(path);
     let contents = read_toml_string(path, is_embedded, gctx)?;
-
     let keep_document = is_embedded
         || match source_id.kind() {
             SourceKind::Path | SourceKind::LocalRegistry | SourceKind::Directory => true,
             SourceKind::Git(_) | SourceKind::Registry | SourceKind::SparseRegistry => false,
         };
-    let (original_toml, document) = if keep_document {
-        let document = parse_document(&contents)
-            .map_err(|e| emit_toml_diagnostic(e.into(), &contents, path, gctx))?;
-        let original_toml = deserialize_toml(toml::de::Deserializer::from(document.clone()))
-            .map_err(|e| emit_toml_diagnostic(e.into(), &contents, path, gctx))?;
-        (original_toml, Some(make_document_owned(document)))
-    } else {
-        let deserializer = toml::de::Deserializer::parse(&contents)
-            .map_err(|e| emit_toml_diagnostic(e.into(), &contents, path, gctx))?;
-        let original_toml = deserialize_toml(deserializer)
-            .map_err(|e| emit_toml_diagnostic(e.into(), &contents, path, gctx))?;
-        (original_toml, None)
-    };
+    finish_manifest(
+        path,
+        source_id,
+        gctx,
+        prepare_manifest(contents, keep_document),
+    )
+}
+
+struct PreparedManifest {
+    contents: String,
+    parsed: Result<
+        (
+            Option<toml::Spanned<toml::de::DeTable<'static>>>,
+            manifest::TomlManifest,
+        ),
+        toml::de::Error,
+    >,
+}
+
+fn prepare_manifest(contents: String, keep_document: bool) -> PreparedManifest {
+    let parsed = (|| {
+        if keep_document {
+            let document = parse_document(&contents)?;
+            let original_toml = deserialize_toml(toml::de::Deserializer::from(document.clone()))?;
+            Ok((Some(make_document_owned(document)), original_toml))
+        } else {
+            let deserializer = toml::de::Deserializer::parse(&contents)?;
+            let original_toml = deserialize_toml(deserializer)?;
+            Ok((None, original_toml))
+        }
+    })();
+
+    PreparedManifest { contents, parsed }
+}
+
+fn finish_manifest(
+    path: &Path,
+    source_id: SourceId,
+    gctx: &GlobalContext,
+    prepared: PreparedManifest,
+) -> CargoResult<EitherManifest> {
+    let PreparedManifest { contents, parsed } = prepared;
+    let (document, original_toml) =
+        parsed.map_err(|error| emit_toml_diagnostic(error.into(), &contents, path, gctx))?;
+    let mut warnings = Default::default();
+    let mut errors = Default::default();
+    let is_embedded = is_embedded(path);
 
     let mut manifest = (|| {
         let empty = Vec::new();

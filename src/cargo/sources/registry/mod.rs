@@ -203,13 +203,14 @@ use tracing::debug;
 
 use crate::core::dependency::Dependency;
 use crate::core::global_cache_tracker;
-use crate::core::{Package, PackageId, SourceId};
+use crate::core::{EitherManifest, Package, PackageId, SourceId};
 use crate::sources::PathSource;
 use crate::sources::source::MaybePackage;
 use crate::sources::source::QueryKind;
 use crate::sources::source::Source;
 use crate::util::cache_lock::CacheLockMode;
 use crate::util::interning::InternedString;
+use crate::util::toml::RegistryManifestParse;
 use crate::util::{CargoResult, Filesystem, GlobalContext, LimitErrorReader, restricted_names};
 use crate::util::{VersionExt, hex};
 
@@ -715,10 +716,37 @@ impl<'gctx> RegistrySource<'gctx> {
     /// you need to call either [`RegistryData::download`] or
     /// [`RegistryData::finish_download`] before calling this method.
     async fn get_pkg(&self, package: PackageId, path: &File) -> CargoResult<Package> {
+        self.get_pkg_inner(package, path, None).await
+    }
+
+    /// Loads a registry package, optionally parsing its manifest in parallel.
+    async fn get_pkg_inner(
+        &self,
+        package: PackageId,
+        path: &File,
+        parse: Option<&mut RegistryManifestParse>,
+    ) -> CargoResult<Package> {
         let path = self
             .unpack_package(package, path)
             .with_context(|| format!("failed to unpack package `{}`", package))?;
-        let src = PathSource::new(&path, self.source_id, self.gctx);
+        let manifest_path = path.join("Cargo.toml");
+        let src = match parse {
+            Some(parse) if manifest_path.exists() => {
+                let manifest = parse
+                    .read(&manifest_path, self.source_id, self.gctx)
+                    .await?;
+                let manifest = match manifest {
+                    EitherManifest::Real(manifest) => manifest,
+                    EitherManifest::Virtual(..) => anyhow::bail!(
+                        "found a virtual manifest at `{}` instead of a package \
+                         manifest",
+                        manifest_path.display()
+                    ),
+                };
+                PathSource::preload_with(Package::new(manifest, &manifest_path), self.gctx)
+            }
+            _ => PathSource::new(&path, self.source_id, self.gctx),
+        };
         src.load()?;
         let mut pkg = match src.download(package).await? {
             MaybePackage::Ready(pkg) => pkg,
@@ -927,19 +955,39 @@ impl<'gctx> Source for RegistrySource<'gctx> {
     }
 
     async fn download(&self, package: PackageId) -> CargoResult<MaybePackage> {
-        let hash = self.index.hash(package, &*self.ops).await?;
-        match self.ops.download(package, &hash).await? {
-            MaybeLock::Ready(file) => self.get_pkg(package, &file).await.map(MaybePackage::Ready),
-            MaybeLock::Download {
-                url,
-                descriptor,
-                authorization,
-            } => Ok(MaybePackage::Download {
-                url,
-                descriptor,
-                authorization,
-            }),
+        let mut parse = if self.source_id.is_remote_registry() {
+            RegistryManifestParse::reserve()
+        } else {
+            None
+        };
+
+        // Finish every reserved turn so later failures cannot overtake an
+        // earlier package that fails before manifest parsing begins.
+        let result = async {
+            let hash = self.index.hash(package, &*self.ops).await?;
+            match self.ops.download(package, &hash).await? {
+                MaybeLock::Ready(file) => self
+                    .get_pkg_inner(package, &file, parse.as_mut())
+                    .await
+                    .map(MaybePackage::Ready),
+                MaybeLock::Download {
+                    url,
+                    descriptor,
+                    authorization,
+                } => Ok(MaybePackage::Download {
+                    url,
+                    descriptor,
+                    authorization,
+                }),
+            }
         }
+        .await;
+
+        if let Some(parse) = parse {
+            parse.finish().await;
+        }
+
+        result
     }
 
     async fn finish_download(&self, package: PackageId, data: Vec<u8>) -> CargoResult<Package> {

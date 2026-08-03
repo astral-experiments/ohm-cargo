@@ -2091,6 +2091,204 @@ Caused by:
 }
 
 #[cargo_test]
+fn cargo_metadata_cached_registry_manifest_preserves_error_span() {
+    Package::new("broken", "1.0.0").publish();
+
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "foo"
+                version = "1.0.0"
+
+                [dependencies]
+                broken = "1.0.0"
+            "#,
+        )
+        .file("src/lib.rs", "")
+        .build();
+
+    p.cargo("fetch --quiet").run();
+
+    let manifest_path = p
+        .glob(paths::cargo_home().join("registry/src/*/broken-1.0.0/Cargo.toml"))
+        .next()
+        .unwrap()
+        .unwrap();
+    std::fs::write(manifest_path, "[package]\nname = \"broken\"\nversion = 1\n").unwrap();
+
+    p.cargo("metadata --offline --format-version 1")
+        .with_status(101)
+        .with_stderr_data(str![[r#"
+[ERROR] invalid type: integer `1`, expected SemVer version
+ --> ../home/.cargo/registry/src/-[HASH]/broken-1.0.0/Cargo.toml:3:11
+  |
+3 | version = 1
+  |           ^
+[ERROR] failed to download `broken v1.0.0`
+
+Caused by:
+  unable to get packages from source
+
+Caused by:
+  failed to download replaced source registry `crates-io`
+
+"#]])
+        .run();
+}
+
+#[cargo_test]
+fn cargo_metadata_cached_registry_manifest_preserves_first_error_order() {
+    Package::new("a-first", "1.0.0").publish();
+    Package::new("z-second", "1.0.0").publish();
+
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "foo"
+                version = "1.0.0"
+
+                [dependencies]
+                a-first = "1.0.0"
+                z-second = "1.0.0"
+            "#,
+        )
+        .file("src/lib.rs", "")
+        .build();
+
+    p.cargo("fetch --quiet").run();
+
+    let manifest_path = |name| {
+        p.glob(paths::cargo_home().join(format!("registry/src/*/{name}-1.0.0/Cargo.toml")))
+            .next()
+            .unwrap()
+            .unwrap()
+    };
+    for (name, padding) in [
+        ("a-first", "# padding\n".repeat(32_768)),
+        ("z-second", String::new()),
+    ] {
+        std::fs::write(
+            manifest_path(name),
+            format!("[package]\nname = \"{name}\"\nversion = 1\n{padding}"),
+        )
+        .unwrap();
+    }
+
+    let assert_first_error = || {
+        p.cargo("metadata --offline --format-version 1")
+            .with_status(101)
+            .with_stderr_contains("[..]/a-first-1.0.0/Cargo.toml:3:11[..]")
+            .with_stderr_does_not_contain("[..]z-second[..]")
+            .run();
+    };
+
+    assert_first_error();
+
+    let second_manifest = manifest_path("z-second");
+    std::fs::remove_file(&second_manifest).unwrap();
+    std::fs::create_dir(&second_manifest).unwrap();
+    assert_first_error();
+
+    std::fs::remove_dir(&second_manifest).unwrap();
+    assert_first_error();
+
+    let package_lock = second_manifest.parent().unwrap().join(".cargo-ok");
+    let package_lock_contents = std::fs::read(&package_lock).unwrap();
+    std::fs::remove_file(&package_lock).unwrap();
+    std::fs::create_dir(&package_lock).unwrap();
+    assert_first_error();
+
+    std::fs::remove_dir(&package_lock).unwrap();
+    std::fs::write(&package_lock, package_lock_contents).unwrap();
+    std::fs::write(
+        &second_manifest,
+        "[package]\nname = \"z-second\"\nversion = \"1.0.0\"\n",
+    )
+    .unwrap();
+    let package_archive = p
+        .glob(paths::cargo_home().join("registry/cache/*/z-second-1.0.0.crate"))
+        .next()
+        .unwrap()
+        .unwrap();
+    std::fs::remove_file(package_archive).unwrap();
+    assert_first_error();
+}
+
+#[cargo_test]
+fn cargo_metadata_cached_registry_manifests_preserve_package_data() {
+    let mut dependencies = String::new();
+    let mut checksums = Vec::new();
+
+    for index in 0..8 {
+        let name = format!("dependency-{index:02}");
+        let manifest = format!(
+            "[package]\nname = \"{name}\"\nversion = \"1.0.0\"\n\n\
+             [package.metadata]\nindex = {index}\n\n[features]\nexample = []\n"
+        );
+        let checksum = Package::new(&name, "1.0.0")
+            .file("Cargo.toml", &manifest)
+            .file("src/lib.rs", "")
+            .feature("example", &[])
+            .publish();
+        dependencies.push_str(&format!("{name} = \"1.0.0\"\n"));
+        checksums.push((name, checksum));
+    }
+
+    let p = project()
+        .file(
+            "Cargo.toml",
+            &format!(
+                r#"
+                    [package]
+                    name = "foo"
+                    version = "1.0.0"
+
+                    [dependencies]
+                    {dependencies}
+                "#,
+            ),
+        )
+        .file("src/lib.rs", "")
+        .build();
+
+    let first = p.cargo("metadata --format-version 1").run_json();
+    let second = p.cargo("metadata --offline --format-version 1").run_json();
+
+    assert_eq!(first, second, "cached registry metadata changed");
+
+    let packages = second["packages"].as_array().unwrap();
+    assert_eq!(packages.len(), checksums.len() + 1);
+
+    let lockfile = std::fs::read_to_string(p.root().join("Cargo.lock")).unwrap();
+    for (index, (name, checksum)) in checksums.into_iter().enumerate() {
+        let package = packages
+            .iter()
+            .find(|package| package["name"].as_str() == Some(name.as_str()))
+            .unwrap();
+        assert_eq!(
+            package["id"],
+            json!(format!(
+                "registry+https://github.com/rust-lang/crates.io-index#{name}@1.0.0"
+            )),
+        );
+        assert_eq!(
+            package["source"],
+            json!("registry+https://github.com/rust-lang/crates.io-index"),
+        );
+        assert_eq!(package["metadata"], json!({ "index": index }));
+        assert_eq!(package["features"], json!({ "example": [] }));
+        assert!(
+            lockfile.contains(&format!("checksum = \"{checksum}\"")),
+            "missing checksum for {name}",
+        );
+    }
+}
+
+#[cargo_test]
 fn cargo_metadata_with_invalid_authors_field() {
     let p = project()
         .file("src/foo.rs", "")
