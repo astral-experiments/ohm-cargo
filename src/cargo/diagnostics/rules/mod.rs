@@ -171,9 +171,9 @@ fn find_lint_or_group<'a>(
 
 #[cfg(test)]
 mod tests {
+    use crate::util::data_structures::HashSet;
     use itertools::Itertools;
     use snapbox::ToDebug;
-    use std::collections::HashSet;
 
     #[test]
     fn ensure_lint_groups_do_not_default_to_forbid() {
@@ -227,7 +227,7 @@ mod tests {
     #[test]
     fn ensure_updated_lints() {
         let dir = snapbox::utils::current_dir!();
-        let mut expected = HashSet::new();
+        let mut expected = HashSet::default();
         for entry in std::fs::read_dir(&dir).unwrap() {
             let entry = entry.unwrap();
             let path = entry.path();

@@ -1,5 +1,6 @@
 use std::path::Path;
 
+use crate::util::data_structures::IndexSet;
 use cargo_util_schemas::manifest::TomlToolLints;
 use cargo_util_terminal::report::AnnotationKind;
 use cargo_util_terminal::report::Group;
@@ -7,7 +8,6 @@ use cargo_util_terminal::report::Level;
 use cargo_util_terminal::report::Origin;
 use cargo_util_terminal::report::Patch;
 use cargo_util_terminal::report::Snippet;
-use indexmap::IndexSet;
 use tracing::instrument;
 
 use super::SUSPICIOUS;
@@ -74,7 +74,7 @@ pub fn unused_workspace_package_fields(
         .flat_map(|d| d.keys())
         .collect();
 
-    let mut inherited_fields = IndexSet::new();
+    let mut inherited_fields = IndexSet::default();
     for member in ws.members() {
         inherited_fields.extend(
             member

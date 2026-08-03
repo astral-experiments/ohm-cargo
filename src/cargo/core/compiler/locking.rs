@@ -1,5 +1,6 @@
 //! This module handles the locking logic during compilation.
 
+use crate::util::data_structures::HashMap;
 use crate::{
     CargoResult,
     core::compiler::{BuildRunner, Unit},
@@ -7,7 +8,6 @@ use crate::{
 };
 use anyhow::bail;
 use std::{
-    collections::HashMap,
     fmt::{Display, Formatter},
     path::PathBuf,
     sync::RwLock,
@@ -22,7 +22,7 @@ pub struct LockManager {
 impl LockManager {
     pub fn new() -> Self {
         Self {
-            locks: RwLock::new(HashMap::new()),
+            locks: RwLock::new(HashMap::default()),
         }
     }
 

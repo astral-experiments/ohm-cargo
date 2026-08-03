@@ -1,8 +1,8 @@
 //! This module implements support for preferring some versions of a package
 //! over other versions.
 
+use crate::util::data_structures::{HashMap, HashSet};
 use std::cmp::Ordering;
-use std::collections::{HashMap, HashSet};
 
 use cargo_util_schemas::core::PartialVersion;
 
@@ -42,7 +42,7 @@ impl VersionPreferences {
     pub fn prefer_dependency(&mut self, dep: Dependency) {
         self.prefer_patch_deps
             .entry(dep.package_name())
-            .or_insert_with(HashSet::new)
+            .or_insert_with(HashSet::default)
             .insert(dep);
     }
 
