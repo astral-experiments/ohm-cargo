@@ -3171,7 +3171,7 @@ fn workspace_resolve_cache_invalidates_configuration() {
 }
 
 #[cargo_test]
-fn workspace_resolve_cache_ignores_required_target_features() {
+fn workspace_resolve_cache_reuses_local_required_target_features() {
     let project = workspace_resolve_cache_project();
     project.change_file(
         "selected/Cargo.toml",
@@ -3195,12 +3195,65 @@ fn workspace_resolve_cache_ignores_required_target_features() {
     );
     project.change_file("selected/src/gated.rs", "fn main() {}\n");
 
-    workspace_resolve_cache_command(&project, "check --package selected")
+    workspace_resolve_cache_command(&project, "metadata --format-version 1")
         .with_stderr_does_not_contain(WORKSPACE_RESOLVE_CACHE_HIT)
         .run();
-    workspace_resolve_cache_command(&project, "check --package selected")
+    workspace_resolve_cache_command(&project, "check --package selected --lib")
+        .with_stderr_contains(WORKSPACE_RESOLVE_CACHE_HIT)
+        .run();
+
+    workspace_resolve_cache_command(
+        &project,
+        "check --package selected --bin gated --features gated",
+    )
+    .with_stderr_contains(WORKSPACE_RESOLVE_CACHE_HIT)
+    .run();
+
+    assert!(project.build_dir().join(".cargo-resolve-cache-v1").exists());
+}
+
+#[cargo_test]
+fn workspace_resolve_cache_ignores_dependency_required_target_features() {
+    let project = workspace_resolve_cache_project();
+    project.change_file(
+        "selected/Cargo.toml",
+        r#"
+            [package]
+            name = "selected"
+            version = "0.1.0"
+            edition = "2021"
+
+            [dependencies]
+            external = { path = "../external" }
+
+            [[bin]]
+            name = "gated"
+            path = "src/gated.rs"
+            required-features = ["external/gated"]
+        "#,
+    );
+    project.change_file(
+        "external/Cargo.toml",
+        r#"
+            [package]
+            name = "external"
+            version = "0.1.0"
+            edition = "2021"
+
+            [features]
+            gated = []
+        "#,
+    );
+    project.change_file("selected/src/gated.rs", "fn main() {}\n");
+
+    for _ in 0..2 {
+        workspace_resolve_cache_command(
+            &project,
+            "check --package selected --bin gated --features external/gated",
+        )
         .with_stderr_does_not_contain(WORKSPACE_RESOLVE_CACHE_HIT)
         .run();
+    }
 
     assert!(!project.build_dir().join(".cargo-resolve-cache-v1").exists());
 }

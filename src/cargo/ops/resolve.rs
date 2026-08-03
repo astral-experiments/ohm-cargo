@@ -71,7 +71,7 @@ use crate::core::resolver::features::{
 use crate::core::resolver::{
     self, HasDevUnits, Resolve, ResolveOpts, ResolveVersion, VersionOrdering, VersionPreferences,
 };
-use crate::core::summary::Summary;
+use crate::core::summary::{FeatureValue, Summary};
 use crate::ops;
 use crate::ops::resolve_cache;
 use crate::sources::RecursivePathSource;
@@ -208,10 +208,18 @@ pub fn resolve_ws_with_opts<'gctx>(
                 .members()
                 .filter(|member| specs.iter().any(|spec| spec.matches(member.package_id())))
                 .all(|member| {
-                    member
-                        .targets()
-                        .iter()
-                        .all(|target| target.required_features().is_none())
+                    member.targets().iter().all(|target| {
+                        // Local features are validated from package summaries, but
+                        // dependency-feature validation needs complete graph edges.
+                        target.required_features().is_none_or(|features| {
+                            features.iter().all(|feature| {
+                                matches!(
+                                    FeatureValue::new(feature.into()),
+                                    FeatureValue::Feature(_)
+                                )
+                            })
+                        })
+                    })
                 });
         let cached_resolve = if can_reuse_workspace_resolve {
             ops::load_pkg_lockfile(ws)?.filter(|resolve| {
