@@ -56,6 +56,7 @@ fn ohm_defaults_apply_to_host_and_target_units() {
                     .expect("write log");
                     let status = Command::new(rustc)
                         .args(args.iter().filter(|arg| !is_ohm_rustflag(arg)))
+                        .env("RUSTC_BOOTSTRAP", "1")
                         .status()
                         .expect("rustc should run");
                     exit(status.code().unwrap_or(1));
