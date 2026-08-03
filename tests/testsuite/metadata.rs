@@ -5051,3 +5051,617 @@ fn metadata_ignores_build_target_configuration() -> anyhow::Result<()> {
     );
     Ok(())
 }
+
+fn registry_manifest_cache_path(workspace_root: &std::path::Path) -> std::path::PathBuf {
+    let workspace_hash = cargo::util::short_hash(&workspace_root);
+    paths::cargo_home()
+        .join("registry/manifest-cache-v2")
+        .join(format!("{workspace_hash}.json"))
+}
+
+#[cargo_test]
+fn registry_manifest_cache_preserves_metadata_output() {
+    Package::new("bar", "0.1.0")
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "bar"
+                version = "0.1.0"
+
+                [package.metadata.release]
+                zebra = "first"
+                alpha = "second"
+
+                [package.metadata.release.nested]
+                zebra = "first"
+                alpha = "second"
+            "#,
+        )
+        .file("src/lib.rs", "")
+        .publish();
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "foo"
+                version = "0.1.0"
+
+                [dependencies]
+                bar = "0.1.0"
+            "#,
+        )
+        .file("src/lib.rs", "")
+        .build();
+    let cache_path = registry_manifest_cache_path(&p.root());
+
+    let uncached = p.cargo("metadata -q --format-version 1").run();
+    assert!(
+        !cache_path.exists(),
+        "caching should require an explicit opt-in"
+    );
+
+    let cache_miss = p
+        .cargo("metadata -q --format-version 1")
+        .env("CARGO_EXPERIMENTAL_REGISTRY_MANIFEST_CACHE", "1")
+        .run();
+    assert!(cache_path.is_file(), "registry manifests should be cached");
+
+    let contents: serde_json::Value =
+        serde_json::from_slice(&std::fs::read(&cache_path).unwrap()).unwrap();
+    assert_eq!(contents["entries"].as_object().unwrap().len(), 1);
+
+    let cache_hit = p
+        .cargo("metadata -q --format-version 1")
+        .env("CARGO_EXPERIMENTAL_REGISTRY_MANIFEST_CACHE", "1")
+        .run();
+
+    assert_eq!(uncached.stdout, cache_miss.stdout);
+    assert_eq!(cache_miss.stdout, cache_hit.stdout);
+}
+
+#[cargo_test]
+fn registry_manifest_cache_is_reused_across_build_workflows() {
+    Package::new("bar", "0.1.0").publish();
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "foo"
+                version = "0.1.0"
+
+                [dependencies]
+                bar = "0.1.0"
+            "#,
+        )
+        .file("src/lib.rs", "pub fn answer() -> usize { 42 }")
+        .build();
+    let cache_path = registry_manifest_cache_path(&p.root());
+
+    p.cargo("check -q")
+        .env("CARGO_EXPERIMENTAL_REGISTRY_MANIFEST_CACHE", "1")
+        .run();
+    let cached = std::fs::read(&cache_path).unwrap();
+    let contents: serde_json::Value = serde_json::from_slice(&cached).unwrap();
+    assert_eq!(contents["entries"].as_object().unwrap().len(), 1);
+
+    p.cargo("metadata -q --format-version 1")
+        .env("CARGO_EXPERIMENTAL_REGISTRY_MANIFEST_CACHE", "1")
+        .run();
+    assert_eq!(std::fs::read(&cache_path).unwrap(), cached);
+
+    p.cargo("test -q --no-run")
+        .env("CARGO_EXPERIMENTAL_REGISTRY_MANIFEST_CACHE", "1")
+        .run();
+    assert_eq!(std::fs::read(&cache_path).unwrap(), cached);
+}
+
+#[cargo_test]
+fn registry_manifest_cache_supports_concurrent_writers() {
+    Package::new("bar", "0.1.0").publish();
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "foo"
+                version = "0.1.0"
+
+                [dependencies]
+                bar = "0.1.0"
+            "#,
+        )
+        .file("src/lib.rs", "")
+        .build();
+
+    let expected = p
+        .cargo("metadata -q --format-version 1")
+        .env("CARGO_EXPERIMENTAL_REGISTRY_MANIFEST_CACHE", "0")
+        .run();
+    let mut commands = (0..3)
+        .map(|_| {
+            let mut command = p
+                .cargo("metadata -q --format-version 1")
+                .env("CARGO_EXPERIMENTAL_REGISTRY_MANIFEST_CACHE", "1")
+                .build_command();
+            command
+                .stdout(std::process::Stdio::piped())
+                .stderr(std::process::Stdio::piped());
+            command
+        })
+        .collect::<Vec<_>>();
+    let children = commands
+        .iter_mut()
+        .map(|command| command.spawn().unwrap())
+        .collect::<Vec<_>>();
+
+    for child in children {
+        let output = child.wait_with_output().unwrap();
+        assert!(
+            output.status.success(),
+            "concurrent Cargo failed: {}",
+            String::from_utf8_lossy(&output.stderr)
+        );
+        assert_eq!(output.stdout, expected.stdout);
+    }
+
+    let contents: serde_json::Value =
+        serde_json::from_slice(&std::fs::read(registry_manifest_cache_path(&p.root())).unwrap())
+            .unwrap();
+    assert_eq!(contents["entries"].as_object().unwrap().len(), 1);
+}
+
+#[cargo_test]
+fn registry_manifest_cache_invalidates_modified_manifests() {
+    Package::new("bar", "0.1.0").publish();
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "foo"
+                version = "0.1.0"
+
+                [dependencies]
+                bar = "0.1.0"
+            "#,
+        )
+        .file("src/lib.rs", "")
+        .build();
+
+    let original = p
+        .cargo("metadata -q --format-version 1")
+        .env("CARGO_EXPERIMENTAL_REGISTRY_MANIFEST_CACHE", "1")
+        .run();
+    let original_metadata: serde_json::Value = serde_json::from_slice(&original.stdout).unwrap();
+    let registry_manifest = original_metadata["packages"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .find(|package| package["name"] == "bar")
+        .unwrap()["manifest_path"]
+        .as_str()
+        .unwrap();
+    let contents = std::fs::read_to_string(registry_manifest).unwrap();
+    std::fs::write(
+        registry_manifest,
+        format!("{contents}\n[package.metadata]\ncache-invalidation = true\n"),
+    )
+    .unwrap();
+
+    let updated = p
+        .cargo("metadata -q --format-version 1")
+        .env("CARGO_EXPERIMENTAL_REGISTRY_MANIFEST_CACHE", "1")
+        .run();
+    let updated_metadata: serde_json::Value = serde_json::from_slice(&updated.stdout).unwrap();
+    let registry_package = updated_metadata["packages"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .find(|package| package["name"] == "bar")
+        .unwrap();
+
+    assert_ne!(original.stdout, updated.stdout);
+    assert_eq!(registry_package["metadata"]["cache-invalidation"], true);
+}
+
+#[cargo_test]
+fn registry_manifest_cache_recovers_from_corrupt_cache() {
+    Package::new("bar", "0.1.0").publish();
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "foo"
+                version = "0.1.0"
+
+                [dependencies]
+                bar = "0.1.0"
+            "#,
+        )
+        .file("src/lib.rs", "")
+        .build();
+    let cache_path = registry_manifest_cache_path(&p.root());
+
+    let original = p
+        .cargo("metadata -q --format-version 1")
+        .env("CARGO_EXPERIMENTAL_REGISTRY_MANIFEST_CACHE", "1")
+        .run();
+    std::fs::write(&cache_path, "this is not valid JSON").unwrap();
+
+    let recovered = p
+        .cargo("metadata -q --format-version 1")
+        .env("CARGO_EXPERIMENTAL_REGISTRY_MANIFEST_CACHE", "1")
+        .run();
+    let contents: serde_json::Value =
+        serde_json::from_slice(&std::fs::read(&cache_path).unwrap()).unwrap();
+
+    assert_eq!(original.stdout, recovered.stdout);
+    assert_eq!(contents["entries"].as_object().unwrap().len(), 1);
+}
+
+#[cargo_test]
+fn registry_manifest_cache_skips_unresolved_and_path_dependencies() {
+    Package::new("bar", "0.1.0").publish();
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "foo"
+                version = "0.1.0"
+
+                [dependencies]
+                bar = "0.1.0"
+            "#,
+        )
+        .file("src/lib.rs", "")
+        .build();
+
+    p.cargo("metadata -q --format-version 1 --no-deps")
+        .env("CARGO_EXPERIMENTAL_REGISTRY_MANIFEST_CACHE", "1")
+        .run();
+    assert!(!registry_manifest_cache_path(&p.root()).exists());
+
+    let path_only = project()
+        .at("path-only")
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "path-only"
+                version = "0.1.0"
+
+                [dependencies]
+                local = { path = "local" }
+            "#,
+        )
+        .file("src/lib.rs", "")
+        .file(
+            "local/Cargo.toml",
+            r#"
+                [package]
+                name = "local"
+                version = "0.1.0"
+            "#,
+        )
+        .file("local/src/lib.rs", "")
+        .build();
+
+    path_only
+        .cargo("metadata -q --format-version 1")
+        .env("CARGO_EXPERIMENTAL_REGISTRY_MANIFEST_CACHE", "1")
+        .run();
+    assert!(!registry_manifest_cache_path(&path_only.root()).exists());
+}
+
+#[cargo_test]
+fn registry_manifest_cache_ignores_workspace_controlled_cache() {
+    Package::new("bar", "0.1.0").publish();
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "foo"
+                version = "0.1.0"
+
+                [dependencies]
+                bar = "0.1.0"
+            "#,
+        )
+        .file("src/lib.rs", "")
+        .build();
+    let trusted_cache_path = registry_manifest_cache_path(&p.root());
+    let workspace_cache_path = p.root().join("target/.cargo-registry-manifests-v1.json");
+
+    let original = p
+        .cargo("metadata -q --format-version 1")
+        .env("CARGO_EXPERIMENTAL_REGISTRY_MANIFEST_CACHE", "1")
+        .run();
+    let mut poisoned_cache: serde_json::Value =
+        serde_json::from_slice(&std::fs::read(&trusted_cache_path).unwrap()).unwrap();
+    for entry in poisoned_cache["entries"]
+        .as_object_mut()
+        .unwrap()
+        .values_mut()
+    {
+        entry["original_toml"]["package"]["metadata"] =
+            json!({ "poisoned": "workspace-controlled" });
+        entry["normalized_toml"]["package"]["metadata"] =
+            json!({ "poisoned": "workspace-controlled" });
+    }
+    std::fs::create_dir_all(workspace_cache_path.parent().unwrap()).unwrap();
+    std::fs::write(
+        &workspace_cache_path,
+        serde_json::to_vec(&poisoned_cache).unwrap(),
+    )
+    .unwrap();
+    std::fs::remove_file(&trusted_cache_path).unwrap();
+
+    let recovered = p
+        .cargo("metadata -q --format-version 1")
+        .env("CARGO_EXPERIMENTAL_REGISTRY_MANIFEST_CACHE", "1")
+        .run();
+
+    assert_eq!(original.stdout, recovered.stdout);
+    assert!(trusted_cache_path.is_file());
+    assert!(workspace_cache_path.is_file());
+    let metadata: serde_json::Value = serde_json::from_slice(&recovered.stdout).unwrap();
+    let registry_package = metadata["packages"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .find(|package| package["name"] == "bar")
+        .unwrap();
+    assert!(registry_package["metadata"].is_null());
+}
+
+#[cfg(unix)]
+#[cargo_test]
+fn registry_manifest_cache_does_not_follow_cache_symlinks() {
+    Package::new("bar", "0.1.0").publish();
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "foo"
+                version = "0.1.0"
+
+                [dependencies]
+                bar = "0.1.0"
+            "#,
+        )
+        .file("src/lib.rs", "")
+        .build();
+    let cache_path = registry_manifest_cache_path(&p.root());
+    let victim_path = p.root().join("victim.txt");
+    std::fs::write(&victim_path, "this file must not be overwritten").unwrap();
+    std::fs::create_dir_all(cache_path.parent().unwrap()).unwrap();
+    std::os::unix::fs::symlink(&victim_path, &cache_path).unwrap();
+
+    let uncached = p.cargo("metadata -q --format-version 1").run();
+    let cached = p
+        .cargo("metadata -q --format-version 1")
+        .env("CARGO_EXPERIMENTAL_REGISTRY_MANIFEST_CACHE", "1")
+        .run();
+
+    assert_eq!(uncached.stdout, cached.stdout);
+    assert_eq!(
+        std::fs::read_to_string(&victim_path).unwrap(),
+        "this file must not be overwritten"
+    );
+    assert!(cache_path.is_symlink());
+}
+
+#[cargo_test]
+fn registry_manifest_cache_skips_nonfinite_toml_values() {
+    Package::new("bar", "0.1.0")
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "bar"
+                version = "0.1.0"
+
+                [package.metadata]
+                nan = nan
+                positive = inf
+                negative = -inf
+                finite = 1.25
+
+                [package.metadata.nested]
+                values = [nan, inf, -inf, 2.5]
+            "#,
+        )
+        .file("src/lib.rs", "")
+        .publish();
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "foo"
+                version = "0.1.0"
+
+                [dependencies]
+                bar = "0.1.0"
+            "#,
+        )
+        .file("src/lib.rs", "")
+        .build();
+    let cache_path = registry_manifest_cache_path(&p.root());
+
+    let uncached = p.cargo("metadata -q --format-version 1").run();
+    let first = p
+        .cargo("metadata -q --format-version 1")
+        .env("CARGO_EXPERIMENTAL_REGISTRY_MANIFEST_CACHE", "1")
+        .run();
+    let second = p
+        .cargo("metadata -q --format-version 1")
+        .env("CARGO_EXPERIMENTAL_REGISTRY_MANIFEST_CACHE", "1")
+        .run();
+
+    assert_eq!(uncached.stdout, first.stdout);
+    assert_eq!(first.stdout, second.stdout);
+    assert!(
+        !cache_path.exists(),
+        "non-finite TOML values cannot be represented losslessly in JSON"
+    );
+    let metadata: serde_json::Value = serde_json::from_slice(&second.stdout).unwrap();
+    let registry_package = metadata["packages"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .find(|package| package["name"] == "bar")
+        .unwrap();
+    assert_eq!(
+        registry_package["metadata"],
+        json!({
+            "nan": null,
+            "positive": null,
+            "negative": null,
+            "finite": 1.25,
+            "nested": { "values": [null, null, null, 2.5] }
+        })
+    );
+}
+
+#[cargo_test]
+fn registry_manifest_cache_preserves_failed_manifest_diagnostics() {
+    Package::new("bar", "0.1.0")
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "bar"
+                version = "0.1.0"
+
+                [features]
+                broken = ["missing/feature"]
+            "#,
+        )
+        .file("src/lib.rs", "")
+        .publish();
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "foo"
+                version = "0.1.0"
+
+                [dependencies]
+                bar = "0.1.0"
+            "#,
+        )
+        .file("src/lib.rs", "")
+        .build();
+    let cache_path = registry_manifest_cache_path(&p.root());
+
+    p.cargo("metadata -q --format-version 1")
+        .env("CARGO_EXPERIMENTAL_REGISTRY_MANIFEST_CACHE", "0")
+        .with_status(101)
+        .with_stderr_contains(
+            "[ERROR] feature `broken` includes `missing/feature`, but `missing` is not a dependency",
+        )
+        .run();
+    let uncached = p
+        .cargo("metadata -q --format-version 1")
+        .env("CARGO_EXPERIMENTAL_REGISTRY_MANIFEST_CACHE", "0")
+        .with_status(101)
+        .with_stderr_contains(
+            "[ERROR] feature `broken` includes `missing/feature`, but `missing` is not a dependency",
+        )
+        .run();
+    let first = p
+        .cargo("metadata -q --format-version 1")
+        .env("CARGO_EXPERIMENTAL_REGISTRY_MANIFEST_CACHE", "1")
+        .with_status(101)
+        .with_stderr_contains(
+            "[ERROR] feature `broken` includes `missing/feature`, but `missing` is not a dependency",
+        )
+        .run();
+    assert!(
+        !cache_path.exists(),
+        "a manifest that failed package construction must not be cached"
+    );
+    let second = p
+        .cargo("metadata -q --format-version 1")
+        .env("CARGO_EXPERIMENTAL_REGISTRY_MANIFEST_CACHE", "1")
+        .with_status(101)
+        .with_stderr_contains(
+            "[ERROR] feature `broken` includes `missing/feature`, but `missing` is not a dependency",
+        )
+        .run();
+
+    assert_eq!(uncached.stderr, first.stderr);
+    assert_eq!(first.stderr, second.stderr);
+    assert!(!cache_path.exists());
+}
+
+#[cargo_test]
+fn registry_manifest_cache_skips_workspace_inheritance() {
+    Package::new("bar", "0.1.0")
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "bar"
+                version = "0.1.0"
+                description.workspace = true
+
+                [workspace.package]
+                description = "inherited from the registry package workspace"
+            "#,
+        )
+        .file("src/lib.rs", "")
+        .publish();
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "foo"
+                version = "0.1.0"
+
+                [dependencies]
+                bar = "0.1.0"
+            "#,
+        )
+        .file("src/lib.rs", "")
+        .build();
+    let cache_path = registry_manifest_cache_path(&p.root());
+
+    let uncached = p.cargo("metadata -q --format-version 1").run();
+    let first = p
+        .cargo("metadata -q --format-version 1")
+        .env("CARGO_EXPERIMENTAL_REGISTRY_MANIFEST_CACHE", "1")
+        .run();
+    let second = p
+        .cargo("metadata -q --format-version 1")
+        .env("CARGO_EXPERIMENTAL_REGISTRY_MANIFEST_CACHE", "1")
+        .run();
+
+    assert_eq!(uncached.stdout, first.stdout);
+    assert_eq!(first.stdout, second.stdout);
+    assert!(
+        !cache_path.exists(),
+        "workspace-inherited registry manifests depend on external state"
+    );
+    let metadata: serde_json::Value = serde_json::from_slice(&second.stdout).unwrap();
+    let registry_package = metadata["packages"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .find(|package| package["name"] == "bar")
+        .unwrap();
+    assert_eq!(
+        registry_package["description"],
+        "inherited from the registry package workspace"
+    );
+}

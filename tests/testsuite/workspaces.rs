@@ -3011,6 +3011,28 @@ fn workspace_resolve_cache_reuses_metadata_resolution_for_check() {
 }
 
 #[cargo_test]
+fn workspace_resolve_cache_ignores_registry_manifest_cache_mode() {
+    let project = workspace_resolve_cache_project();
+
+    let uncached = workspace_resolve_cache_command(&project, "metadata --format-version 1")
+        .env("CARGO_EXPERIMENTAL_REGISTRY_MANIFEST_CACHE", "0")
+        .with_stderr_does_not_contain(WORKSPACE_RESOLVE_CACHE_HIT)
+        .run();
+
+    let cached = workspace_resolve_cache_command(&project, "metadata --format-version 1")
+        .env("CARGO_EXPERIMENTAL_REGISTRY_MANIFEST_CACHE", "1")
+        .with_stderr_contains(WORKSPACE_RESOLVE_CACHE_HIT)
+        .run();
+
+    assert_eq!(uncached.stdout, cached.stdout);
+
+    workspace_resolve_cache_command(&project, "check --package selected")
+        .env("CARGO_EXPERIMENTAL_REGISTRY_MANIFEST_CACHE", "0")
+        .with_stderr_contains(WORKSPACE_RESOLVE_CACHE_HIT)
+        .run();
+}
+
+#[cargo_test]
 #[cfg(unix)]
 fn workspace_resolve_cache_rejects_replaced_lockfile_after_loading() {
     Package::new("registry-dependency", "1.0.0").publish();

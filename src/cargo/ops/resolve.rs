@@ -77,7 +77,7 @@ use crate::ops::resolve_cache;
 use crate::sources::RecursivePathSource;
 use crate::util::CanonicalUrl;
 use crate::util::cache_lock::CacheLockMode;
-use crate::util::context::FeatureUnification;
+use crate::util::context::{FeatureUnification, GlobalContext};
 use crate::util::data_structures::{HashMap, HashSet};
 use crate::util::errors::CargoResult;
 use anyhow::Context as _;
@@ -123,6 +123,30 @@ with the dependency requirements. If the patch has a different version from
 what is locked in the Cargo.lock file, run `cargo update` to use the new
 version. This may also occur with an optional dependency that is not enabled.";
 
+/// Publishes a registry-manifest cache when resolution exits or unwinds.
+struct RegistryManifestCacheGuard<'gctx> {
+    gctx: &'gctx GlobalContext,
+}
+
+impl Drop for RegistryManifestCacheGuard<'_> {
+    fn drop(&mut self) {
+        match self
+            .gctx
+            .acquire_package_cache_lock(CacheLockMode::DownloadExclusive)
+        {
+            Ok(_lock) => {
+                if let Err(error) = crate::util::toml::finish_registry_manifest_cache() {
+                    debug!("unable to save registry manifest cache: {error}");
+                }
+            }
+            Err(error) => {
+                crate::util::toml::discard_registry_manifest_cache();
+                debug!("unable to lock registry manifest cache for writing: {error}");
+            }
+        }
+    }
+}
+
 /// Resolves all dependencies for the workspace using the previous
 /// lock file as a guide if present.
 ///
@@ -150,6 +174,56 @@ pub fn resolve_ws<'a>(ws: &Workspace<'a>, dry_run: bool) -> CargoResult<(Package
 /// `specs` may be empty, which indicates it should resolve all workspace
 /// members. In this case, `opts.all_features` must be `true`.
 pub fn resolve_ws_with_opts<'gctx>(
+    ws: &Workspace<'gctx>,
+    target_data: &mut RustcTargetData<'gctx>,
+    requested_targets: &[CompileKind],
+    cli_features: &CliFeatures,
+    specs: &[PackageIdSpec],
+    has_dev_units: HasDevUnits,
+    force_all_targets: ForceAllTargets,
+    dry_run: bool,
+) -> CargoResult<WorkspaceResolve<'gctx>> {
+    let use_registry_manifest_cache = !dry_run
+        && !ws.is_ephemeral()
+        && !crate::util::toml::registry_manifest_cache_is_active()
+        && ws
+            .gctx()
+            .get_env_os("CARGO_EXPERIMENTAL_REGISTRY_MANIFEST_CACHE")
+            .is_some_and(|enabled| enabled == "1");
+
+    let registry_manifest_cache = if use_registry_manifest_cache {
+        let workspace_hash = crate::util::short_hash(&ws.root());
+        let cache_path = ws
+            .gctx()
+            .registry_base_path()
+            .join("manifest-cache-v2")
+            .join(format!("{workspace_hash}.json"))
+            .into_path_unlocked();
+        let _lock = ws
+            .gctx()
+            .acquire_package_cache_lock(CacheLockMode::DownloadExclusive)?;
+        crate::util::toml::start_registry_manifest_cache(cache_path, ws.gctx())?;
+        Some(RegistryManifestCacheGuard { gctx: ws.gctx() })
+    } else {
+        None
+    };
+
+    let result = resolve_ws_with_opts_inner(
+        ws,
+        target_data,
+        requested_targets,
+        cli_features,
+        specs,
+        has_dev_units,
+        force_all_targets,
+        dry_run,
+    );
+
+    drop(registry_manifest_cache);
+    result
+}
+
+fn resolve_ws_with_opts_inner<'gctx>(
     ws: &Workspace<'gctx>,
     target_data: &mut RustcTargetData<'gctx>,
     requested_targets: &[CompileKind],

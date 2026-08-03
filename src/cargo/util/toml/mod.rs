@@ -46,6 +46,7 @@ use crate::util::{
 };
 
 mod embedded;
+mod registry_manifest_cache;
 mod targets;
 
 use self::targets::to_targets;
@@ -70,6 +71,65 @@ pub fn read_manifest(
     source_id: SourceId,
     gctx: &GlobalContext,
 ) -> CargoResult<EitherManifest> {
+    if source_id.is_remote_registry() {
+        if let Some(cached) = registry_manifest_cache::get(path, source_id, gctx)
+            .filter(|cached| is_cacheable_registry_manifest(&cached.original_toml))
+        {
+            let mut warnings = cached.warnings;
+            let mut errors = cached.errors;
+            let mut discarded_warnings = Vec::new();
+            let empty = Vec::new();
+            let cargo_features = cached
+                .original_toml
+                .cargo_features
+                .as_ref()
+                .unwrap_or(&empty);
+            let features = Features::new(
+                cargo_features,
+                gctx,
+                &mut discarded_warnings,
+                source_id.is_path(),
+            )?;
+            let workspace_config = to_workspace_config(
+                &cached.original_toml,
+                path,
+                false,
+                gctx,
+                &mut discarded_warnings,
+            )?;
+            let mut manifest = to_real_manifest(
+                None,
+                None,
+                cached.original_toml,
+                cached.normalized_toml,
+                features,
+                workspace_config,
+                source_id,
+                path,
+                false,
+                gctx,
+                &mut warnings,
+                &mut errors,
+            )
+            .map(EitherManifest::Real)
+            .map_err(|err| {
+                ManifestError::new(
+                    err.context(format!("failed to parse manifest at `{}`", path.display())),
+                    path.into(),
+                )
+            })?;
+
+            for warning in warnings {
+                manifest.warnings_mut().add_warning(warning);
+            }
+            for error in errors {
+                manifest.warnings_mut().add_critical_warning(error);
+            }
+
+            return Ok(manifest);
+        }
+    }
+
     let mut warnings = Default::default();
     let mut errors = Default::default();
 
@@ -118,7 +178,11 @@ pub fn read_manifest(
         )?;
 
         if normalized_toml.package().is_some() {
-            to_real_manifest(
+            let cache_diagnostics = (source_id.is_remote_registry()
+                && registry_manifest_cache::is_active()
+                && is_cacheable_registry_manifest(&original_toml))
+            .then(|| (warnings.clone(), errors.clone()));
+            let manifest = to_real_manifest(
                 Some(contents),
                 document,
                 original_toml,
@@ -131,8 +195,23 @@ pub fn read_manifest(
                 gctx,
                 &mut warnings,
                 &mut errors,
-            )
-            .map(EitherManifest::Real)
+            )?;
+
+            if let Some((cached_warnings, cached_errors)) = cache_diagnostics {
+                if let Some(original_toml) = manifest.original_toml() {
+                    registry_manifest_cache::insert(
+                        path,
+                        source_id,
+                        gctx,
+                        original_toml,
+                        manifest.normalized_toml(),
+                        &cached_warnings,
+                        &cached_errors,
+                    );
+                }
+            }
+
+            Ok(EitherManifest::Real(manifest))
         } else if normalized_toml.workspace.is_some() {
             assert!(!is_embedded);
             to_virtual_manifest(
@@ -168,6 +247,130 @@ pub fn read_manifest(
     }
 
     Ok(manifest)
+}
+
+/// Only immutable registry manifests independent of workspace and configuration may be cached.
+fn is_cacheable_registry_manifest(manifest: &TomlManifest) -> bool {
+    let Some(package) = manifest.package() else {
+        return false;
+    };
+
+    if manifest.workspace.is_some()
+        || manifest.patch.is_some()
+        || manifest.replace.is_some()
+        || package.workspace.is_some()
+        || is_inherited(package.edition.as_ref())
+        || is_inherited(package.rust_version.as_ref())
+        || is_inherited(package.version.as_ref())
+        || is_inherited(package.authors.as_ref())
+        || is_inherited(package.exclude.as_ref())
+        || is_inherited(package.include.as_ref())
+        || is_inherited(package.publish.as_ref())
+        || is_inherited(package.description.as_ref())
+        || is_inherited(package.homepage.as_ref())
+        || is_inherited(package.documentation.as_ref())
+        || is_inherited(package.readme.as_ref())
+        || is_inherited(package.keywords.as_ref())
+        || is_inherited(package.categories.as_ref())
+        || is_inherited(package.license.as_ref())
+        || is_inherited(package.license_file.as_ref())
+        || is_inherited(package.repository.as_ref())
+        || package
+            .metadata
+            .as_ref()
+            .is_some_and(contains_nonfinite_toml_value)
+        || manifest
+            .lints
+            .as_ref()
+            .is_some_and(|lints| lints.workspace || contains_nonfinite_lints(&lints.lints))
+        || manifest
+            .hints
+            .as_ref()
+            .and_then(|hints| hints.mostly_unused.as_ref())
+            .is_some_and(contains_nonfinite_toml_value)
+    {
+        return false;
+    }
+
+    !manifest
+        .dependencies
+        .iter()
+        .chain(manifest.dev_dependencies.iter())
+        .chain(manifest.dev_dependencies2.iter())
+        .chain(manifest.build_dependencies.iter())
+        .chain(manifest.build_dependencies2.iter())
+        .flat_map(|dependencies| dependencies.values())
+        .chain(
+            manifest
+                .target
+                .iter()
+                .flat_map(|targets| targets.values())
+                .flat_map(|target| {
+                    target
+                        .dependencies
+                        .iter()
+                        .chain(target.dev_dependencies.iter())
+                        .chain(target.dev_dependencies2.iter())
+                        .chain(target.build_dependencies.iter())
+                        .chain(target.build_dependencies2.iter())
+                        .flat_map(|dependencies| dependencies.values())
+                }),
+        )
+        .any(dependency_depends_on_workspace_or_config)
+}
+
+fn is_inherited<T>(field: Option<&manifest::InheritableField<T>>) -> bool {
+    field.is_some_and(manifest::InheritableField::is_inherited)
+}
+
+fn dependency_depends_on_workspace_or_config(dependency: &manifest::InheritableDependency) -> bool {
+    match dependency {
+        manifest::InheritableDependency::Inherit(_) => true,
+        manifest::InheritableDependency::Value(TomlDependency::Simple(_)) => false,
+        manifest::InheritableDependency::Value(TomlDependency::Detailed(dependency)) => {
+            dependency.path.is_some() || dependency.base.is_some()
+        }
+    }
+}
+
+fn contains_nonfinite_lints(lints: &manifest::TomlLints) -> bool {
+    lints
+        .values()
+        .flat_map(|tool_lints| tool_lints.values())
+        .filter_map(manifest::TomlLint::config)
+        .flat_map(|configuration| configuration.values())
+        .any(contains_nonfinite_toml_value)
+}
+
+fn contains_nonfinite_toml_value(value: &toml::Value) -> bool {
+    match value {
+        toml::Value::Float(value) => !value.is_finite(),
+        toml::Value::Array(values) => values.iter().any(contains_nonfinite_toml_value),
+        toml::Value::Table(values) => values.values().any(contains_nonfinite_toml_value),
+        toml::Value::String(_)
+        | toml::Value::Integer(_)
+        | toml::Value::Boolean(_)
+        | toml::Value::Datetime(_) => false,
+    }
+}
+
+pub(crate) fn start_registry_manifest_cache(
+    cache_path: PathBuf,
+    gctx: &GlobalContext,
+) -> CargoResult<()> {
+    registry_manifest_cache::start(cache_path, gctx)
+}
+
+pub(crate) fn finish_registry_manifest_cache() -> CargoResult<()> {
+    registry_manifest_cache::finish()
+}
+
+pub(crate) fn registry_manifest_cache_is_active() -> bool {
+    registry_manifest_cache::is_active()
+}
+
+pub(crate) fn discard_registry_manifest_cache() {
+    registry_manifest_cache::discard();
 }
 
 /// Transform the parsed TOML document so that all its values are owned, so that it has a 'static

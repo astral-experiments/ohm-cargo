@@ -123,7 +123,10 @@ fn workspace_resolve_fingerprint(
     let mut environment: Vec<_> = workspace
         .gctx()
         .env()
-        .filter(|(key, _)| key.starts_with("CARGO_") || key.starts_with("RUST"))
+        .filter(|(key, _)| {
+            (key.starts_with("CARGO_") || key.starts_with("RUST"))
+                && *key != "CARGO_EXPERIMENTAL_REGISTRY_MANIFEST_CACHE"
+        })
         .collect();
     environment.sort_unstable_by_key(|(key, _)| *key);
     environment.len().hash(&mut hasher);
