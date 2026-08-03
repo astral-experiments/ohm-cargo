@@ -2327,6 +2327,9 @@ fn calculate_normal(
         .cli_unstable()
         .no_embed_metadata()
         .hash(&mut config);
+    // The same immutable package can become a root in another invocation, so
+    // its effective embedding policy must also invalidate its own fingerprint.
+    super::unit_uses_no_embed_metadata(build_runner, unit).hash(&mut config);
     if unit_uses_public_api_hash(build_runner, unit) {
         // Older implementations cannot soundly reuse the preserved metadata
         // generations without propagating the corresponding link generations.

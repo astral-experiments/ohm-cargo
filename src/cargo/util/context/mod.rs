@@ -1241,6 +1241,13 @@ impl GlobalContext {
                     _ => {}
                 }
             }
+            if let Ok(value) = self.get_env(crate::CARGO_INHERITED_NO_EMBED_METADATA_ENV) {
+                match value {
+                    "yes" => self.unstable_flags.no_embed_metadata = Some(true),
+                    "no" => self.unstable_flags.no_embed_metadata = Some(false),
+                    _ => {}
+                }
+            }
             if let Some(unstable_flags_cli) = &self.unstable_flags_cli {
                 // NB. It's not ideal to parse these twice, but doing it again here
                 //     allows the CLI to override config files for both enabling

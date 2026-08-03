@@ -169,8 +169,23 @@ fn ohm_defaults_apply_to_host_and_target_units() {
                             Ok(expected.as_str())
                         );
                     }
-                    let status = Command::new(env::var_os("CARGO").expect("CARGO path"))
-                        .arg("check")
+                    let nested_build = if let Ok(expected) =
+                        env::var("EXPECTED_INHERITED_NO_EMBED_METADATA")
+                    {
+                        assert_eq!(
+                            env::var("__CARGO_NO_EMBED_METADATA").as_deref(),
+                            Ok(expected.as_str())
+                        );
+                        true
+                    } else {
+                        false
+                    };
+                    let mut cargo = Command::new(env::var_os("CARGO").expect("CARGO path"));
+                    if let Ok(value) = env::var("NESTED_NO_EMBED_METADATA") {
+                        cargo.arg(format!("-Zno-embed-metadata={value}"));
+                    }
+                    let status = cargo
+                        .arg(if nested_build { "build" } else { "check" })
                         .status()
                         .expect("nested Cargo should run");
                     exit(status.code().unwrap_or(1));
@@ -211,6 +226,61 @@ fn ohm_defaults_apply_to_host_and_target_units() {
     let invocations = fs::read_to_string(&log).unwrap();
     assert!(!invocations.contains("public-api-hash"));
     assert!(!invocations.contains("cache-proc-macros"));
+
+    Package::new("metadata-dependency", "0.1.0")
+        .file("src/lib.rs", "pub fn value() -> i32 { 1 }")
+        .publish();
+    let nested = project()
+        .at("ohm-no-embed-metadata-inheritance")
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "metadata-root"
+                version = "0.1.0"
+                edition = "2024"
+
+                [dependencies]
+                metadata-dependency = "0.1.0"
+            "#,
+        )
+        .file(
+            "src/lib.rs",
+            "pub fn value() -> i32 { metadata_dependency::value() }",
+        )
+        .build();
+
+    for (inherited, nested_override, metadata_is_separate) in [
+        ("no", None, false),
+        ("yes", None, true),
+        ("no", Some("yes"), true),
+        ("yes", Some("no"), false),
+    ] {
+        nested.cargo("clean").run();
+        fs::write(&log, "").unwrap();
+
+        let mut invocation = nested.cargo(&format!(
+            "-Zohm-defaults -Zno-embed-metadata={inherited} reinvoke"
+        ));
+        invocation
+            .masquerade_as_nightly_cargo(&["ohm-defaults", "no-embed-metadata"])
+            .env("PATH", &path)
+            .env("EXPECTED_INHERITED_NO_EMBED_METADATA", inherited)
+            .env("RUSTC_WRAPPER", &wrapper)
+            .env("OHM_DEFAULTS_LOG", &log);
+        if let Some(nested_override) = nested_override {
+            invocation.env("NESTED_NO_EMBED_METADATA", nested_override);
+        }
+        invocation.run();
+
+        let invocations = fs::read_to_string(&log).unwrap();
+        let dependency = rustc_invocation(&invocations, "metadata_dependency");
+        assert_eq!(
+            dependency.contains(&"embed-metadata=no"),
+            metadata_is_separate,
+            "unexpected metadata mode for inherited={inherited:?}, nested={nested_override:?}"
+        );
+    }
 }
 
 fn rustc_invocation<'a>(log: &'a str, crate_name: &str) -> Vec<&'a str> {
