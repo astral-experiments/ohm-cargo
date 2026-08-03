@@ -39,10 +39,11 @@ use crate::sources::SourceConfigMap;
 use crate::sources::source::QueryKind;
 use crate::util::CargoResult;
 use crate::util::cache_lock::CacheLockMode;
+use crate::util::data_structures::{HashMap, HashSet};
 use anyhow::{Context, bail, format_err};
 use futures::stream::FuturesUnordered;
 use serde::{Deserialize, Serialize};
-use std::collections::{BTreeMap, BTreeSet, HashMap, HashSet};
+use std::collections::{BTreeMap, BTreeSet};
 use std::fmt::Write as _;
 use std::io::{Read, Write};
 
@@ -319,7 +320,7 @@ fn get_updates(ws: &Workspace<'_>, package_ids: &BTreeSet<PackageId>) -> Option<
     let sources: HashMap<_, _> = source_ids
         .into_iter()
         .filter_map(|sid| {
-            let source = map.load(sid, &HashSet::new()).ok()?;
+            let source = map.load(sid, &HashSet::default()).ok()?;
             Some((sid, source))
         })
         .collect();

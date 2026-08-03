@@ -1,4 +1,5 @@
-use std::collections::{BTreeMap, BTreeSet, HashMap, HashSet};
+use crate::util::data_structures::{HashMap, HashSet};
+use std::collections::{BTreeMap, BTreeSet};
 use std::path::{Path, PathBuf};
 use std::sync::Arc;
 use std::{env, fmt, fs};
@@ -184,7 +185,7 @@ impl<'gctx> InstallablePackage<'gctx> {
                     current_rust_version,
                 )?
             } else if let Some(dep) = dep {
-                let mut source = map.load(source_id, &HashSet::new())?;
+                let mut source = map.load(source_id, &HashSet::default())?;
                 if let Ok(Some(pkg)) = installed_exact_package(
                     dep.clone(),
                     &mut *source,
@@ -966,7 +967,7 @@ fn remove_orphaned_bins(
 ) -> CargoResult<()> {
     let filter = ops::CompileFilter::new_all_targets();
     let all_self_names = exe_names(pkg, &filter);
-    let mut to_remove: HashMap<PackageId, BTreeSet<String>> = HashMap::new();
+    let mut to_remove: HashMap<PackageId, BTreeSet<String>> = HashMap::default();
     // For each package that we stomped on.
     for other_pkg in duplicates.values().flatten() {
         // Only for packages with the same name.

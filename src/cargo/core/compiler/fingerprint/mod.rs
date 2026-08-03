@@ -376,8 +376,8 @@ mod dep_info;
 mod dirty_reason;
 mod rustdoc;
 
-use std::collections::HashSet;
-use std::collections::hash_map::{Entry, HashMap};
+use crate::util::data_structures::{HashMap, HashSet};
+use std::collections::hash_map::Entry;
 use std::env;
 use std::ffi::OsString;
 use std::fs;
@@ -1866,7 +1866,7 @@ impl Fingerprint {
         assert!(!self.fs_status.get_mut().unwrap().up_to_date());
 
         let pkg_root = pkg.root();
-        let mut mtimes = HashMap::new();
+        let mut mtimes = HashMap::default();
 
         // Get the `mtime` of all outputs. Optionally update their mtime
         // afterwards based on the `mtime_on_use` flag. Afterwards we want the
@@ -3071,7 +3071,7 @@ mod early_cutoff_tests {
         // Unit is already up-to-date, no early cutoff needed
         let fp = make_fingerprint(
             FsStatus::UpToDate {
-                mtimes: HashMap::new(),
+                mtimes: HashMap::default(),
                 link_mtime: None,
             },
             BuildState::Fresh,
@@ -3110,7 +3110,7 @@ mod early_cutoff_tests {
     fn previously_changed_metadata_dependency_propagates_through_unchanged_public_api() {
         let dependency = make_fingerprint(
             FsStatus::UpToDate {
-                mtimes: HashMap::new(),
+                mtimes: HashMap::default(),
                 link_mtime: None,
             },
             BuildState::Fresh,
@@ -3185,7 +3185,7 @@ mod early_cutoff_tests {
 
         assert!(!can_relink_due_to_early_cutoff(
             &fingerprint,
-            &HashSet::new(),
+            &HashSet::default(),
         ));
     }
 
@@ -3237,7 +3237,7 @@ mod early_cutoff_tests {
 
         assert!(!can_relink_due_to_early_cutoff(
             &fingerprint,
-            &HashSet::new(),
+            &HashSet::default(),
         ));
     }
 
@@ -3310,7 +3310,7 @@ mod early_cutoff_tests {
 
         assert!(can_relink_due_to_early_cutoff(
             &fingerprint,
-            &HashSet::new(),
+            &HashSet::default(),
         ));
     }
 
@@ -3328,7 +3328,7 @@ mod early_cutoff_tests {
         // Dep was fresh - but we need at least one rebuilt-unchanged dep
         let dep = make_fingerprint(
             FsStatus::UpToDate {
-                mtimes: HashMap::new(),
+                mtimes: HashMap::default(),
                 link_mtime: None,
             },
             BuildState::Fresh,
@@ -3350,7 +3350,7 @@ mod early_cutoff_tests {
         // Some deps fresh, some rebuilt unchanged - should cutoff
         let dep_fresh = make_fingerprint(
             FsStatus::UpToDate {
-                mtimes: HashMap::new(),
+                mtimes: HashMap::default(),
                 link_mtime: None,
             },
             BuildState::Fresh,

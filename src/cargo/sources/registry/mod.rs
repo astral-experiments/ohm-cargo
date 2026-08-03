@@ -182,8 +182,8 @@
 //! ```
 //!
 
+use crate::util::data_structures::HashSet;
 use std::cell::RefCell;
-use std::collections::HashSet;
 use std::fs;
 use std::fs::{File, OpenOptions};
 use std::io;
@@ -561,7 +561,7 @@ impl<'gctx> RegistrySource<'gctx> {
             index: index::RegistryIndex::new(source_id, ops.index_path(), gctx),
             yanked_whitelist: RefCell::new(yanked_whitelist.clone()),
             ops,
-            selected_precise_yanked: RefCell::new(HashSet::new()),
+            selected_precise_yanked: RefCell::new(HashSet::default()),
         }
     }
 

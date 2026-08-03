@@ -9,10 +9,10 @@ use crate::sources::overlay::DependencyConfusionThreatOverlaySource;
 use crate::sources::source::Source;
 use crate::sources::{CRATES_IO_REGISTRY, ReplacedSource};
 use crate::util::context::{self, ConfigRelativePath, OptValue};
+use crate::util::data_structures::{HashMap, HashSet};
 use crate::util::errors::CargoResult;
 use crate::util::{GlobalContext, IntoUrl};
 use anyhow::{Context as _, bail};
-use std::collections::{HashMap, HashSet};
 use tracing::debug;
 use url::Url;
 
@@ -103,9 +103,9 @@ impl<'gctx> SourceConfigMap<'gctx> {
     /// replacement into account.
     pub fn empty(gctx: &'gctx GlobalContext) -> CargoResult<SourceConfigMap<'gctx>> {
         let mut base = SourceConfigMap {
-            cfgs: HashMap::new(),
-            id2name: HashMap::new(),
-            overlays: HashMap::new(),
+            cfgs: HashMap::default(),
+            id2name: HashMap::default(),
+            overlays: HashMap::default(),
             gctx,
         };
         base.add(

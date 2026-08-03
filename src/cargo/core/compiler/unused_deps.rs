@@ -1,5 +1,6 @@
 use std::collections::BTreeSet;
 
+use crate::util::data_structures::{IndexMap, IndexSet};
 use cargo_util_schemas::manifest;
 use cargo_util_terminal::report::AnnotationKind;
 use cargo_util_terminal::report::Group;
@@ -7,8 +8,6 @@ use cargo_util_terminal::report::Level;
 use cargo_util_terminal::report::Origin;
 use cargo_util_terminal::report::Patch;
 use cargo_util_terminal::report::Snippet;
-use indexmap::IndexMap;
-use indexmap::IndexSet;
 use tracing::{debug, instrument, trace};
 
 use super::BuildRunner;
@@ -35,7 +34,7 @@ impl UnusedDepState {
     #[instrument(name = "UnusedDepState::new", skip_all)]
     pub fn new(build_runner: &mut BuildRunner<'_, '_>) -> Self {
         // Find all units for a package that can report unused externs
-        let mut root_build_script_builds = IndexSet::new();
+        let mut root_build_script_builds = IndexSet::default();
         let roots = &build_runner.bcx.roots;
         for root in roots.iter() {
             for build_script_run in build_runner.unit_deps(root).iter() {
@@ -62,7 +61,7 @@ impl UnusedDepState {
             "selected dep kinds: {:?}",
             build_runner.bcx.selected_dep_kinds
         );
-        let mut states = IndexMap::<_, IndexMap<_, DependenciesState>>::new();
+        let mut states = IndexMap::<_, IndexMap<_, DependenciesState>>::default();
         for root in roots.iter().chain(root_build_script_builds.iter()) {
             let pkg_id = root.pkg.package_id();
             let dep_kind = dep_kind_of(root);
