@@ -1,11 +1,12 @@
 use std::collections::BTreeSet;
 use std::hash::{Hash, Hasher};
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 
 use cargo_util::paths;
 use rustc_hash::FxHashMap as HashMap;
 
 use crate::core::{Resolve, Workspace};
+use crate::ops::lockfile;
 use crate::util::{CargoResult, ConfigValue, Rustc, StableHasher};
 
 const CACHE_FILE_NAME: &str = ".cargo-resolve-cache-v1";
@@ -15,12 +16,13 @@ pub(super) fn cached_workspace_resolve_is_fresh(
     workspace: &Workspace<'_>,
     previous: &Resolve,
     rustc: &Rustc,
+    lockfile_contents: &str,
 ) -> bool {
     let Ok(cached_fingerprint) = paths::read(&cache_path(workspace)) else {
         return false;
     };
 
-    workspace_resolve_fingerprint(workspace, previous, rustc)
+    workspace_resolve_fingerprint(workspace, previous, rustc, lockfile_contents)
         .is_ok_and(|fingerprint| cached_fingerprint.trim() == format!("{fingerprint:016x}"))
 }
 
@@ -30,13 +32,21 @@ pub(super) fn mark_workspace_resolve_fresh(
     resolve: &Resolve,
     rustc: &Rustc,
 ) -> CargoResult<()> {
-    let fingerprint = workspace_resolve_fingerprint(workspace, resolve, rustc)?;
-    let cache_path = cache_path(workspace);
-    if let Some(parent) = cache_path.parent() {
-        paths::create_dir_all(parent)?;
-    }
+    lockfile::with_pkg_lockfile(workspace, |lockfile_contents, _path| {
+        if !lockfile::lockfile_matches_resolve(lockfile_contents, resolve) {
+            return Ok(());
+        }
 
-    paths::write_atomic(cache_path, format!("{fingerprint:016x}"))?;
+        let fingerprint =
+            workspace_resolve_fingerprint(workspace, resolve, rustc, lockfile_contents)?;
+        let cache_path = cache_path(workspace);
+        if let Some(parent) = cache_path.parent() {
+            paths::create_dir_all(parent)?;
+        }
+
+        paths::write_atomic(cache_path, format!("{fingerprint:016x}"))?;
+        Ok(())
+    })?;
     Ok(())
 }
 
@@ -51,6 +61,7 @@ fn workspace_resolve_fingerprint(
     workspace: &Workspace<'_>,
     previous: &Resolve,
     rustc: &Rustc,
+    lockfile_contents: &str,
 ) -> CargoResult<u64> {
     let mut hasher = StableHasher::new();
     env!("CARGO_PKG_VERSION").hash(&mut hasher);
@@ -81,11 +92,31 @@ fn workspace_resolve_fingerprint(
 
     manifests.len().hash(&mut hasher);
     for manifest in manifests {
-        hash_file(&manifest, &mut hasher)?;
+        manifest.hash(&mut hasher);
+
+        if manifest == workspace.root_manifest() {
+            let Some(contents) = workspace.root_maybe().contents() else {
+                anyhow::bail!(
+                    "workspace manifest `{}` has no in-memory contents",
+                    manifest.display()
+                );
+            };
+            contents.as_bytes().hash(&mut hasher);
+        } else {
+            let package = workspace.load(&manifest)?;
+            let Some(contents) = package.manifest().contents() else {
+                anyhow::bail!(
+                    "package manifest `{}` has no in-memory contents",
+                    manifest.display()
+                );
+            };
+            contents.as_bytes().hash(&mut hasher);
+        }
     }
 
     let lockfile = workspace.lock_root().as_path_unlocked().join("Cargo.lock");
-    hash_file(&lockfile, &mut hasher)?;
+    lockfile.hash(&mut hasher);
+    lockfile_contents.as_bytes().hash(&mut hasher);
 
     hash_config_table(workspace.gctx().values()?, &mut hasher);
 
@@ -102,12 +133,6 @@ fn workspace_resolve_fingerprint(
     }
 
     Ok(Hasher::finish(&hasher))
-}
-
-fn hash_file(path: &Path, hasher: &mut StableHasher) -> CargoResult<()> {
-    path.hash(hasher);
-    paths::read_bytes(path)?.hash(hasher);
-    Ok(())
 }
 
 fn hash_config_table(values: &HashMap<String, ConfigValue>, hasher: &mut StableHasher) {

@@ -2,6 +2,14 @@
 
 use std::env;
 use std::fs;
+#[cfg(unix)]
+use std::io::Write as _;
+#[cfg(unix)]
+use std::process::{Command, Stdio};
+#[cfg(unix)]
+use std::sync::mpsc;
+#[cfg(unix)]
+use std::thread;
 
 use crate::prelude::*;
 use cargo_test_support::registry::Package;
@@ -10,6 +18,8 @@ use cargo_test_support::{
     ProjectBuilder, basic_lib_manifest, basic_manifest, git, paths, project, project_in_home,
     sleep_ms,
 };
+#[cfg(unix)]
+use cargo_test_support::{retry, slow_cpu_multiplier};
 
 #[cargo_test]
 fn simple_explicit() {
@@ -2998,6 +3008,117 @@ fn workspace_resolve_cache_reuses_metadata_resolution_for_check() {
     workspace_resolve_cache_command(&project, "check --package selected")
         .with_stderr_contains(WORKSPACE_RESOLVE_CACHE_HIT)
         .run();
+}
+
+#[cargo_test]
+#[cfg(unix)]
+fn workspace_resolve_cache_rejects_replaced_lockfile_after_loading() {
+    Package::new("registry-dependency", "1.0.0").publish();
+    Package::new("registry-dependency", "1.0.1").publish();
+
+    let project = workspace_resolve_cache_project();
+    project.change_file(
+        "selected/Cargo.toml",
+        r#"
+            [package]
+            name = "selected"
+            version = "0.1.0"
+            edition = "2021"
+
+            [dependencies]
+            registry-dependency = "1"
+        "#,
+    );
+
+    project
+        .cargo("update registry-dependency --precise 1.0.0")
+        .run();
+    workspace_resolve_cache_command(&project, "metadata --format-version 1 --locked").run();
+    let old_lockfile = project.read_lockfile();
+
+    project
+        .cargo("update registry-dependency --precise 1.0.1")
+        .run();
+    workspace_resolve_cache_command(&project, "metadata --format-version 1 --locked").run();
+
+    let current_lockfile = project.read_lockfile();
+    assert_ne!(old_lockfile, current_lockfile);
+
+    let cache_path = project.build_dir().join(".cargo-resolve-cache-v1");
+    let current_fingerprint = fs::read(&cache_path).unwrap();
+    fs::write(project.root().join("Cargo.lock"), old_lockfile).unwrap();
+    fs::remove_file(&cache_path).unwrap();
+
+    assert!(
+        Command::new("mkfifo")
+            .arg(&cache_path)
+            .status()
+            .expect("a FIFO can be created")
+            .success()
+    );
+
+    let mut child =
+        workspace_resolve_cache_command(&project, "metadata --format-version 1 --locked")
+            .build_command()
+            .stdout(Stdio::piped())
+            .stderr(Stdio::piped())
+            .spawn()
+            .unwrap();
+
+    let (opened_sender, opened_receiver) = mpsc::channel();
+    let (continue_sender, continue_receiver) = mpsc::channel();
+    let writer = thread::spawn(move || {
+        let mut marker = fs::OpenOptions::new().write(true).open(cache_path).unwrap();
+        opened_sender.send(()).unwrap();
+        continue_receiver
+            .recv_timeout(slow_cpu_multiplier(15))
+            .expect("lockfile replacement should not deadlock");
+        marker.write_all(&current_fingerprint).unwrap();
+    });
+
+    if opened_receiver
+        .recv_timeout(slow_cpu_multiplier(15))
+        .is_err()
+    {
+        let _ = child.kill();
+        panic!("Cargo did not load the old lockfile and open its cache marker");
+    }
+
+    // Replace the path rather than mutating the file descriptor Cargo already
+    // locked, mirroring an editor or Git atomically installing a new lockfile.
+    let replacement = project.root().join("Cargo.lock.concurrent");
+    fs::write(&replacement, current_lockfile).unwrap();
+    fs::rename(&replacement, project.root().join("Cargo.lock")).unwrap();
+    continue_sender.send(()).unwrap();
+    writer.join().unwrap();
+
+    let attempts = u32::try_from(slow_cpu_multiplier(15).as_millis() / 100).unwrap();
+    let completion = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
+        retry(attempts, || child.try_wait().unwrap())
+    }));
+    if let Err(panic) = completion {
+        let _ = child.kill();
+        let _ = child.wait();
+        std::panic::resume_unwind(panic);
+    }
+
+    let output = child.wait_with_output().unwrap();
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert!(output.status.success(), "{stderr}");
+    assert!(
+        !stderr.contains("reusing the cached workspace resolution"),
+        "an old in-memory graph was paired with the replacement lockfile: {stderr}"
+    );
+
+    let metadata: serde_json::Value = serde_json::from_slice(&output.stdout).unwrap();
+    let versions: Vec<_> = metadata["packages"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .filter(|package| package["name"] == "registry-dependency")
+        .map(|package| package["version"].as_str().unwrap())
+        .collect();
+    assert_eq!(versions, ["1.0.1"]);
 }
 
 #[cargo_test]

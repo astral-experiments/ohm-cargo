@@ -222,9 +222,16 @@ pub fn resolve_ws_with_opts<'gctx>(
                     })
                 });
         let cached_resolve = if can_reuse_workspace_resolve {
-            ops::load_pkg_lockfile(ws)?.filter(|resolve| {
-                resolve_cache::cached_workspace_resolve_is_fresh(ws, resolve, &target_data.rustc)
-            })
+            ops::lockfile::load_pkg_lockfile_with(ws, |resolve, lockfile_contents| {
+                Ok(resolve_cache::cached_workspace_resolve_is_fresh(
+                    ws,
+                    &resolve,
+                    &target_data.rustc,
+                    lockfile_contents,
+                )
+                .then_some(resolve))
+            })?
+            .flatten()
         } else {
             None
         };
