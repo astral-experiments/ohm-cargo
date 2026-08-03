@@ -534,11 +534,10 @@ fn rustc(
         .map(|dep| build_runner.bcx.unit_to_index[&dep.unit])
         .collect::<HashSet<_>>();
     if relink_cache.is_some() {
-        // `link-only` normally removes its codegen objects. Saving temporaries
-        // keeps the objects referenced by the cached `.rlink` available for a
-        // later invocation.
+        // Preserve the codegen objects referenced by the cached `.rlink`, and
+        // emit the reusable linker inputs while completing the initial link.
         rustc.arg("-C").arg("save-temps=yes");
-        rustc.arg("-Z").arg("no-link");
+        rustc.arg("-Z").arg("emit-rlink");
     }
 
     // Prepare the native lib state (extra `-L` and `-l` flags).
@@ -888,27 +887,7 @@ fn rustc(
         // Exec should never return with success *and* generate an error.
         debug_assert_eq!(output_options.errors_seen, 0);
 
-        if let (Some(cache), Some(link_only)) = (&relink_cache, &link_only) {
-            state.running(link_only);
-            exec.exec(
-                link_only,
-                package_id,
-                &target,
-                mode,
-                &mut |line| on_stdout_line(state, line, package_id, &target),
-                &mut |line| {
-                    on_stderr_line(
-                        state,
-                        line,
-                        package_id,
-                        &manifest,
-                        &target,
-                        &mut output_options,
-                    )
-                },
-            )
-            .map_err(verbose_if_simple_exit_code)
-            .with_context(|| format!("could not link `{unit_name}` from fresh codegen"))?;
+        if let Some(cache) = &relink_cache {
             cache.initialize()?;
         }
 
