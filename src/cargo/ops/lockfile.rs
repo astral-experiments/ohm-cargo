@@ -1,4 +1,5 @@
 use std::io::prelude::*;
+use std::path::Path;
 
 use crate::core::resolver::encode::into_resolve;
 use crate::core::{Resolve, ResolveVersion, Workspace};
@@ -12,6 +13,30 @@ pub const LOCKFILE_NAME: &str = "Cargo.lock";
 
 #[tracing::instrument(skip_all)]
 pub fn load_pkg_lockfile(ws: &Workspace<'_>) -> CargoResult<Option<Resolve>> {
+    load_pkg_lockfile_with(ws, |resolve, _contents| Ok(resolve))
+}
+
+/// Inspects a parsed lockfile without releasing its shared filesystem lock.
+pub(super) fn load_pkg_lockfile_with<T>(
+    ws: &Workspace<'_>,
+    action: impl FnOnce(Resolve, &str) -> CargoResult<T>,
+) -> CargoResult<Option<T>> {
+    with_pkg_lockfile(ws, |contents, path| {
+        let resolve = (|| -> CargoResult<Resolve> {
+            let lockfile: TomlLockfile = toml::from_str(contents)?;
+            into_resolve(lockfile, contents, ws)
+        })()
+        .with_context(|| format!("failed to parse lock file at: {}", path.display()))?;
+
+        action(resolve, contents)
+    })
+}
+
+/// Runs an operation on one consistent, shared-locked lockfile snapshot.
+pub(super) fn with_pkg_lockfile<T>(
+    ws: &Workspace<'_>,
+    action: impl FnOnce(&str, &Path) -> CargoResult<T>,
+) -> CargoResult<Option<T>> {
     let lock_root = ws.lock_root();
     if !lock_root.as_path_unlocked().join(LOCKFILE_NAME).exists() {
         return Ok(None);
@@ -19,16 +44,18 @@ pub fn load_pkg_lockfile(ws: &Workspace<'_>) -> CargoResult<Option<Resolve>> {
 
     let mut f = lock_root.open_ro_shared(LOCKFILE_NAME, ws.gctx(), "Cargo.lock file")?;
 
-    let mut s = String::new();
-    f.read_to_string(&mut s)
+    let mut contents = String::new();
+    f.read_to_string(&mut contents)
         .with_context(|| format!("failed to read file: {}", f.path().display()))?;
 
-    let resolve = (|| -> CargoResult<Option<Resolve>> {
-        let v: TomlLockfile = toml::from_str(&s)?;
-        Ok(Some(into_resolve(v, &s, ws)?))
-    })()
-    .with_context(|| format!("failed to parse lock file at: {}", f.path().display()))?;
-    Ok(resolve)
+    action(&contents, f.path()).map(Some)
+}
+
+/// Checks whether a lockfile snapshot encodes exactly the provided resolution.
+pub(super) fn lockfile_matches_resolve(contents: &str, resolve: &Resolve) -> bool {
+    contents
+        .lines()
+        .eq(serialize_resolve(resolve, Some(contents)).lines())
 }
 
 /// Generate a toml String of Cargo.lock from a Resolve.
