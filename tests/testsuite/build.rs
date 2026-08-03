@@ -6531,7 +6531,7 @@ fn no_embed_metadata_invalidate() {
 
 "#]])
         .run();
-    p.cargo("build")
+    p.cargo("build -Z no-embed-metadata=no")
         .masquerade_as_nightly_cargo(&["-Z no-embed-metadata"])
         .with_stderr_data(str![[r#"
 [COMPILING] bar v0.5.0 ([ROOT]/foo/bar)

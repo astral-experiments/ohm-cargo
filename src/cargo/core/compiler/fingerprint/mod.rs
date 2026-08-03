@@ -2325,7 +2325,7 @@ fn calculate_normal(
         .bcx
         .gctx
         .cli_unstable()
-        .no_embed_metadata
+        .no_embed_metadata()
         .hash(&mut config);
     if unit_uses_public_api_hash(build_runner, unit) {
         // Older implementations cannot soundly reuse the preserved metadata
