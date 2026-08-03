@@ -3172,7 +3172,7 @@ mod early_cutoff_tests {
 
         assert!(can_relink_due_to_early_cutoff(
             &fingerprint,
-            &HashSet::from([UnitIndex(1)]),
+            &HashSet::from_iter([UnitIndex(1)]),
         ));
     }
 
@@ -3193,7 +3193,7 @@ mod early_cutoff_tests {
         make_indexed_fingerprint(
             UnitIndex(1),
             FsStatus::UpToDate {
-                mtimes: HashMap::from([(PathBuf::from("dep.rmeta"), metadata_mtime)]),
+                mtimes: HashMap::from_iter([(PathBuf::from("dep.rmeta"), metadata_mtime)]),
                 link_mtime: Some(FileTime::from_unix_time(3, 0)),
             },
             BuildState::Fresh,
@@ -3222,7 +3222,7 @@ mod early_cutoff_tests {
 
         assert!(can_relink_due_to_early_cutoff(
             &fingerprint,
-            &HashSet::from([UnitIndex(1)]),
+            &HashSet::from_iter([UnitIndex(1)]),
         ));
     }
 
@@ -3252,7 +3252,7 @@ mod early_cutoff_tests {
 
         assert!(!can_relink_due_to_early_cutoff(
             &fingerprint,
-            &HashSet::from([UnitIndex(1)]),
+            &HashSet::from_iter([UnitIndex(1)]),
         ));
     }
 
@@ -3272,7 +3272,7 @@ mod early_cutoff_tests {
 
         assert!(!can_relink_due_to_early_cutoff(
             &fingerprint,
-            &HashSet::from([UnitIndex(1), UnitIndex(2)]),
+            &HashSet::from_iter([UnitIndex(1), UnitIndex(2)]),
         ));
     }
 
@@ -3294,7 +3294,7 @@ mod early_cutoff_tests {
 
         assert!(!can_relink_due_to_early_cutoff(
             &fingerprint,
-            &HashSet::from([UnitIndex(1), UnitIndex(2)]),
+            &HashSet::from_iter([UnitIndex(1), UnitIndex(2)]),
         ));
     }
 
