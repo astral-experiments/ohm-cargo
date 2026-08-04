@@ -2714,8 +2714,8 @@ To reuse those artifacts with a future compilation, set the environment variable
 
     // Find the path in the output.
     let stderr = stderr.split_once("found at `").unwrap().1;
-    let end = stderr.find('.').unwrap() - 1;
-    let path = Path::new(&stderr[..end]);
+    let (directory, _) = stderr.split_once('`').unwrap();
+    let path = Path::new(directory);
     assert!(path.exists());
     assert!(path.join("release/build/foo").exists());
 }
