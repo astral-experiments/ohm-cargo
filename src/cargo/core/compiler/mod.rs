@@ -532,7 +532,6 @@ fn rustc(
         // Preserve the codegen objects referenced by the cached `.rlink`, and
         // keep them outside the dependency search directory while completing
         // the initial link.
-        rustc.arg("-C").arg("save-temps=yes");
         rustc.arg("-Z").arg("emit-rlink");
         let mut temps_dir = OsString::from("temps-dir=");
         temps_dir.push(&cache.objects);
