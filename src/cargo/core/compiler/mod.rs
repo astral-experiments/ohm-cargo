@@ -844,17 +844,10 @@ fn rustc(
             if (can_skip_compilation && fingerprint::can_skip_due_to_early_cutoff(fp))
                 || skip_unused_integration_dependency
             {
-                let mut essential_outputs = Vec::new();
-                for output in outputs.iter() {
-                    let is_dsym = output
-                        .path
-                        .to_str()
-                        .map(|s| s.ends_with(".dSYM"))
-                        .unwrap_or(false);
-                    if !is_dsym {
-                        essential_outputs.push(output);
-                    }
-                }
+                let essential_outputs = outputs
+                    .iter()
+                    .filter(|output| output.flavor != FileFlavor::DebugInfo)
+                    .collect::<Vec<_>>();
                 let all_outputs_exist = !essential_outputs.is_empty()
                     && essential_outputs.iter().all(|o| o.path.exists());
                 if all_outputs_exist {
