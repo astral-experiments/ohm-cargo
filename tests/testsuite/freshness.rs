@@ -5495,8 +5495,9 @@ fn unused_package_library_does_not_relink_integration_test() {
     );
 
     fs::write(&log, "").expect("clear wrapper log");
-    // Keep dependency and executable generations distinct even on busy CI hosts.
-    sleep_ms(1000);
+    if is_coarse_mtime() {
+        sleep_ms(1000);
+    }
     p.change_file("src/lib.rs", "#[inline(never)] pub fn value() -> i32 { 2 }");
     p.cargo("-Zohm-defaults test --test integration -j2")
         .masquerade_as_nightly_cargo(&["ohm-defaults"])
