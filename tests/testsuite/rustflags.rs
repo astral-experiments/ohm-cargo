@@ -45,15 +45,13 @@ fn ohm_defaults_apply_to_host_and_target_units() {
                         .map(|arg| arg.to_string_lossy())
                         .collect::<Vec<_>>()
                         .join("\t");
-                    writeln!(
-                        OpenOptions::new()
-                            .create(true)
-                            .append(true)
-                            .open(env::var_os("OHM_DEFAULTS_LOG").expect("log path"))
-                            .expect("open log"),
-                        "{rendered}"
-                    )
-                    .expect("write log");
+                    OpenOptions::new()
+                        .create(true)
+                        .append(true)
+                        .open(env::var_os("OHM_DEFAULTS_LOG").expect("log path"))
+                        .expect("open log")
+                        .write_all(format!("{rendered}\n").as_bytes())
+                        .expect("write log");
                     let status = Command::new(rustc)
                         .args(args.iter().filter(|arg| !is_ohm_rustflag(arg)))
                         .env("RUSTC_BOOTSTRAP", "1")
