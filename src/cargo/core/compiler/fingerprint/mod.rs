@@ -761,6 +761,35 @@ pub fn can_skip_due_to_early_cutoff(fingerprint: &Fingerprint) -> bool {
     found_rebuilt_unchanged
 }
 
+/// Returns whether an integration executable changed only through a proven-unused library.
+///
+/// The caller separately verifies compiler-reported direct extern usage and rules out
+/// transitive paths through cyclic development dependencies.
+pub fn can_skip_unused_integration_dependency(
+    fingerprint: &Fingerprint,
+    unused_dependency: UnitIndex,
+) -> bool {
+    if !fingerprint.is_early_cutoff_candidate() {
+        return false;
+    }
+
+    let mut found_unused_change = false;
+    for dependency in &fingerprint.deps {
+        match dependency.fingerprint.build_state() {
+            BuildState::BuiltUnchanged if dependency.fingerprint.index == unused_dependency => {
+                found_unused_change = true;
+            }
+            BuildState::Fresh => {}
+            BuildState::Pending
+            | BuildState::BuiltChanged
+            | BuildState::BuiltUnchanged
+            | BuildState::SkippedEarlyCutoff => return false,
+        }
+    }
+
+    found_unused_change
+}
+
 /// Checks whether a dependency-only rebuild can reuse this unit's codegen and
 /// run only its cached link step.
 ///

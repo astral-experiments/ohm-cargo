@@ -104,6 +104,9 @@ pub struct JobState<'a, 'gctx> {
     /// Resolves metadata-only early-cutoff edges once their outcome is known.
     conditional_metadata: Option<ConditionalMetadata>,
 
+    /// Compiler-authoritative direct externs unused by this successful unit.
+    unused_externs: Mutex<Option<std::collections::BTreeSet<InternedString>>>,
+
     /// Manages locks for build units when fine grain locking is enabled.
     lock_manager: Arc<LockManager>,
 
@@ -141,6 +144,7 @@ impl<'a, 'gctx> JobState<'a, 'gctx> {
                     }
                 },
             ),
+            unused_externs: Mutex::new(None),
             lock_manager,
             warning_handling,
             _marker: marker::PhantomData,
@@ -382,7 +386,14 @@ impl<'a, 'gctx> JobState<'a, 'gctx> {
     /// This is useful for checking unused dependencies.
     /// Should only be called once, as the compiler only emits it once per compilation.
     pub fn unused_externs(&self, unused_externs: std::collections::BTreeSet<InternedString>) {
+        *self.unused_externs.lock().unwrap() = Some(unused_externs.clone());
         self.messages
             .push(Message::UnusedExterns(self.id, unused_externs));
+    }
+
+    pub(crate) fn recorded_unused_externs(
+        &self,
+    ) -> Option<std::collections::BTreeSet<InternedString>> {
+        self.unused_externs.lock().unwrap().clone()
     }
 }
