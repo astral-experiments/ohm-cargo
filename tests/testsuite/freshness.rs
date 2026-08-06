@@ -3525,7 +3525,7 @@ fn conditional_metadata_pipeline_wrapper() -> PathBuf {
                         {
                             let public_api_hash = if matches!(
                                 phase.as_deref(),
-                                Some("changed" | "failure")
+                                Some("changed" | "failure" | "committed-failure")
                             ) && (crate_name.as_deref() == Some("dep")
                                 || (crate_name.as_deref() == Some("middle")
                                     && env::var_os("CONDITIONAL_PIPELINE_CHANGE_MIDDLE").is_some()))
@@ -3549,25 +3549,33 @@ fn conditional_metadata_pipeline_wrapper() -> PathBuf {
                                 if phase == "unchanged" {
                                     thread::sleep(Duration::from_millis(150));
                                 } else {
-                                    let expected = if env::var_os("CONDITIONAL_PIPELINE_WAIT_FOR")
+                                    let expected = if phase == "committed-failure" {
+                                        PathBuf::from(
+                                            env::var_os("CONDITIONAL_PIPELINE_PARENT_FINGERPRINT")
+                                                .expect("parent fingerprint path"),
+                                        )
+                                    } else if env::var_os("CONDITIONAL_PIPELINE_WAIT_FOR")
                                         .as_deref()
                                         == Some(OsStr::new("middle"))
                                     {
-                                        "middle-started"
+                                        control.join("middle-started")
                                     } else {
-                                        "parent-started"
+                                        control.join("parent-started")
                                     };
                                     let deadline = Instant::now() + Duration::from_secs(5);
-                                    while !control.join(expected).exists()
+                                    while !fs::metadata(&expected)
+                                        .is_ok_and(|metadata| metadata.len() != 0)
                                         && Instant::now() < deadline
                                     {
                                         thread::sleep(Duration::from_millis(5));
                                     }
-                                    if !control.join(expected).exists() {
+                                    if !fs::metadata(&expected)
+                                        .is_ok_and(|metadata| metadata.len() != 0)
+                                    {
                                         fs::write(control.join("parent-timed-out"), b"timeout")
                                             .expect("record timeout");
                                     }
-                                    if phase == "failure" {
+                                    if matches!(phase.as_str(), "failure" | "committed-failure") {
                                         let _ = child.kill();
                                         let _ = child.wait();
                                         fs::write(control.join("dependency-failed"), b"failed")
@@ -3680,19 +3688,24 @@ fn assert_conditional_metadata_pipeline(command: &str, phase: &str) {
             assert_eq!(invocations, "dep\n");
             assert!(!p.root().join("parent-started").exists());
             assert!(!p.root().join("parent-started-early").exists());
+            assert_eq!(
+                fs::read(&previous_hash_path).expect("read preserved public API hash"),
+                previous_hash,
+            );
         }
         "changed" => {
             assert!(invocations.lines().any(|line| line == "app"));
             assert!(p.root().join("parent-started-early").exists());
             assert!(!p.root().join("parent-timed-out").exists());
+            assert_ne!(
+                fs::read(&previous_hash_path).expect("read committed public API hash"),
+                previous_hash,
+            );
         }
         "failure" => {
             assert!(p.root().join("dependency-failed").exists());
             assert!(p.root().join("parent-started-early").exists());
-            assert_eq!(
-                fs::read(&previous_hash_path).expect("read uncommitted public API hash"),
-                previous_hash,
-            );
+            assert!(!previous_hash_path.exists());
 
             for marker in [
                 "dependency-metadata",
@@ -3712,13 +3725,13 @@ fn assert_conditional_metadata_pipeline(command: &str, phase: &str) {
                 .env("RUSTC_WRAPPER", &wrapper)
                 .env("RUSTFLAGS", "-Zpublic-api-hash")
                 .env("CONDITIONAL_PIPELINE_LOG", &log)
-                .env("CONDITIONAL_PIPELINE_CONTROL", p.root())
                 .env("CONDITIONAL_PIPELINE_PHASE", "changed")
                 .run();
             let recovery = fs::read_to_string(&log).expect("read recovery log");
             assert!(recovery.lines().any(|line| line == "dep"));
             assert!(recovery.lines().any(|line| line == "app"));
             assert!(!p.root().join("parent-timed-out").exists());
+            assert!(previous_hash_path.exists());
         }
         _ => panic!("unsupported pipeline phase: {phase}"),
     }
@@ -3833,6 +3846,111 @@ fn conditional_metadata_waits_for_unchanged_hash_and_preserves_early_cutoff() {
 #[cargo_test]
 fn conditional_metadata_recovers_when_dependency_fails_after_metadata() {
     assert_conditional_metadata_pipeline("build", "failure");
+}
+
+#[cargo_test]
+fn conditional_metadata_rebuilds_committed_dependent_after_failed_producer_is_reverted() {
+    let wrapper = conditional_metadata_pipeline_wrapper();
+    let p = project()
+        .at("conditional-metadata-pipeline-committed-failure")
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "app"
+                version = "0.1.0"
+                edition = "2024"
+
+                [dependencies]
+                dep = { path = "dep" }
+            "#,
+        )
+        .file("src/lib.rs", "pub fn value() -> i32 { dep::VALUE }")
+        .file(
+            "src/main.rs",
+            "fn main() { println!(\"{}\", app::value()); }",
+        )
+        .file("dep/Cargo.toml", &basic_manifest("dep", "0.1.0"))
+        .file("dep/src/lib.rs", "pub const VALUE: i32 = 1;")
+        .build();
+
+    let log = p.root().join("conditional-pipeline.log");
+    p.cargo("build -j3")
+        .env("RUSTC_WRAPPER", &wrapper)
+        .env("RUSTFLAGS", "-Zpublic-api-hash")
+        .env("CONDITIONAL_PIPELINE_LOG", &log)
+        .run();
+    p.process(&p.bin("app"))
+        .with_stdout_data(str![[r#"
+1
+
+"#]])
+        .run();
+
+    let fingerprint_root = p.root().join("target/debug/.fingerprint");
+    let parent_fingerprint = fs::read_dir(&fingerprint_root)
+        .expect("fingerprint directory")
+        .filter_map(Result::ok)
+        .map(|entry| entry.path().join("lib-app"))
+        .find(|path| path.exists())
+        .expect("parent fingerprint");
+
+    fs::write(&log, "").expect("clear wrapper log");
+    if is_coarse_mtime() {
+        sleep_ms(1000);
+    }
+    p.change_file("dep/src/lib.rs", "pub const VALUE: i32 = 2;");
+    p.cargo("build -j3")
+        .env("RUSTC_WRAPPER", &wrapper)
+        .env("RUSTFLAGS", "-Zpublic-api-hash")
+        .env("CONDITIONAL_PIPELINE_LOG", &log)
+        .env("CONDITIONAL_PIPELINE_CONTROL", p.root())
+        .env(
+            "CONDITIONAL_PIPELINE_PARENT_FINGERPRINT",
+            &parent_fingerprint,
+        )
+        .env("CONDITIONAL_PIPELINE_PHASE", "committed-failure")
+        .with_status(101)
+        .with_stderr_data(str![[r#"
+[COMPILING] dep v0.1.0 ([ROOT]/conditional-metadata-pipeline-committed-failure/dep)
+[COMPILING] app v0.1.0 ([ROOT]/conditional-metadata-pipeline-committed-failure)
+[ERROR] could not compile `dep` (lib)
+...
+"#]])
+        .run();
+
+    assert!(p.root().join("dependency-failed").exists());
+    assert!(p.root().join("parent-started-early").exists());
+    assert!(!p.root().join("parent-timed-out").exists());
+    assert!(
+        fs::metadata(&parent_fingerprint)
+            .expect("committed parent fingerprint")
+            .len()
+            != 0
+    );
+
+    fs::write(&log, "").expect("clear recovery log");
+    if is_coarse_mtime() {
+        sleep_ms(1000);
+    }
+    p.change_file("dep/src/lib.rs", "pub const VALUE: i32 = 1;");
+    p.cargo("build -j3")
+        .env("RUSTC_WRAPPER", &wrapper)
+        .env("RUSTFLAGS", "-Zpublic-api-hash")
+        .env("CONDITIONAL_PIPELINE_LOG", &log)
+        .env("CONDITIONAL_PIPELINE_CONTROL", p.root())
+        .env("CONDITIONAL_PIPELINE_PHASE", "unchanged")
+        .run();
+
+    let recovery = fs::read_to_string(&log).expect("read recovery log");
+    assert!(recovery.lines().any(|line| line == "dep"));
+    assert!(recovery.lines().any(|line| line == "app"));
+    p.process(&p.bin("app"))
+        .with_stdout_data(str![[r#"
+1
+
+"#]])
+        .run();
 }
 
 #[cargo_test]

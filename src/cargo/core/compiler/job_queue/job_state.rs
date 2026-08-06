@@ -2,7 +2,8 @@
 
 use std::{
     cell::Cell,
-    fmt, marker,
+    fmt, fs, marker,
+    path::PathBuf,
     sync::{Arc, Mutex},
 };
 
@@ -51,6 +52,7 @@ enum PublicApiHashState {
 
 struct ConditionalMetadata {
     fingerprint: Arc<Fingerprint>,
+    public_api_hash_path: PathBuf,
     previous_public_api_hash: Option<PublicApiHash>,
     ready: Cell<bool>,
     released: Cell<bool>,
@@ -118,7 +120,7 @@ impl<'a, 'gctx> JobState<'a, 'gctx> {
         messages: Arc<Queue<Message>>,
         output: Option<&'a DiagDedupe<'gctx>>,
         rmeta_required: bool,
-        conditional_metadata: Option<(Arc<Fingerprint>, Option<PublicApiHash>)>,
+        conditional_metadata: Option<(Arc<Fingerprint>, PathBuf, Option<PublicApiHash>)>,
         lock_manager: Arc<LockManager>,
         warning_handling: WarningHandling,
     ) -> Self {
@@ -129,11 +131,14 @@ impl<'a, 'gctx> JobState<'a, 'gctx> {
             rmeta_required: Cell::new(rmeta_required),
             public_api_hash: Mutex::new(PublicApiHashState::Missing),
             conditional_metadata: conditional_metadata.map(
-                |(fingerprint, previous_public_api_hash)| ConditionalMetadata {
-                    fingerprint,
-                    previous_public_api_hash,
-                    ready: Cell::new(false),
-                    released: Cell::new(false),
+                |(fingerprint, public_api_hash_path, previous_public_api_hash)| {
+                    ConditionalMetadata {
+                        fingerprint,
+                        public_api_hash_path,
+                        previous_public_api_hash,
+                        ready: Cell::new(false),
+                        released: Cell::new(false),
+                    }
                 },
             ),
             lock_manager,
@@ -217,8 +222,8 @@ impl<'a, 'gctx> JobState<'a, 'gctx> {
             .push(Message::Finish(self.id, Artifact::Metadata, Ok(())));
         if let Some(conditional) = &self.conditional_metadata
             && conditional.ready.get()
+            && !conditional.released.replace(true)
         {
-            conditional.released.set(true);
             self.messages.push(Message::Finish(
                 self.id,
                 Artifact::ConditionalMetadata,
@@ -248,12 +253,26 @@ impl<'a, 'gctx> JobState<'a, 'gctx> {
                         .as_ref()
                         .is_some_and(|previous| previous != &public_api_hash)
                 {
-                    // A changed public API can never take early cutoff, so a
-                    // metadata-only dependent may start before codegen ends.
-                    conditional
-                        .fingerprint
-                        .set_build_state(BuildState::BuiltChanged);
-                    conditional.ready.set(true);
+                    match fs::remove_file(&conditional.public_api_hash_path) {
+                        Ok(()) => {
+                            // Invalidate the previously committed hash before a dependent
+                            // can observe provisional metadata. Otherwise a later producer
+                            // failure followed by a source reversion could reuse artifacts
+                            // already committed against the failed producer's metadata.
+                            conditional
+                                .fingerprint
+                                .set_build_state(BuildState::BuiltChanged);
+                            conditional.ready.set(true);
+                        }
+                        Err(error) => {
+                            tracing::debug!(
+                                "could not invalidate previous public API hash at {}: {}; \
+                                 waiting for producer completion",
+                                conditional.public_api_hash_path.display(),
+                                error
+                            );
+                        }
+                    }
                 }
                 *recorded = PublicApiHashState::Valid(public_api_hash);
             }

@@ -1060,19 +1060,18 @@ impl<'gctx> DrainState<'gctx> {
         let rmeta_required = build_runner.rmeta_required(unit);
         let conditional_metadata = if self.conditional_metadata_units.contains(unit) {
             build_runner.fingerprints.get(unit).map(|fingerprint| {
+                let public_api_hash_path = build_runner
+                    .files()
+                    .fingerprint_file_path(unit, "")
+                    .with_extension("public-api-hash");
                 // Only the sidecar from a successfully completed previous build
                 // can establish that this invocation changed its public API.
                 let previous_hash = if is_fresh {
                     None
                 } else {
-                    fingerprint::read_public_api_hash(
-                        &build_runner
-                            .files()
-                            .fingerprint_file_path(unit, "")
-                            .with_extension("public-api-hash"),
-                    )
+                    fingerprint::read_public_api_hash(&public_api_hash_path)
                 };
-                (Arc::clone(fingerprint), previous_hash)
+                (Arc::clone(fingerprint), public_api_hash_path, previous_hash)
             })
         } else {
             None
