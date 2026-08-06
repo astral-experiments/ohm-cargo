@@ -5117,6 +5117,15 @@ fn relink_only_wrapper() -> PathBuf {
                             )
                         {
                             index += 2;
+                        } else if let Some(argument) = args[index].to_str()
+                            && argument.starts_with("--json=")
+                            && argument.contains("unused-externs-transparent")
+                        {
+                            stripped.push(OsString::from(argument.replace(
+                                "unused-externs-transparent",
+                                "unused-externs-silent",
+                            )));
+                            index += 1;
                         } else {
                             stripped.push(args[index].clone());
                             index += 1;
@@ -5145,16 +5154,19 @@ fn relink_only_wrapper() -> PathBuf {
                         .append(true)
                         .open(path)
                         .expect("wrapper log should open");
-                    writeln!(log, "{kind}:{crate_name}")
+                    log.write_all(format!("{kind}:{crate_name}\n").as_bytes())
                         .expect("wrapper log should be writable");
                 }
 
                 fn run(rustc: &OsStr, args: &[OsString]) -> Output {
-                    Command::new(rustc)
-                        .args(args)
-                        .env("RUSTC_BOOTSTRAP", "1")
-                        .output()
-                        .expect("rustc should run")
+                    let mut command = Command::new(rustc);
+                    command.args(args).env("RUSTC_BOOTSTRAP", "1");
+                    if env::var_os("UNUSED_INTEGRATION_DEPENDENCY_PROOF").is_some()
+                        && crate_name(args) == Some("integration")
+                    {
+                        command.arg("--force-warn=unused_crate_dependencies");
+                    }
+                    command.output().expect("rustc should run")
                 }
 
                 fn emit(output: Output) -> ! {
@@ -5389,6 +5401,301 @@ fn relink_only_reuses_root_codegen() {
         .env("RELINK_WRAPPER_LOG", &log)
         .run();
     assert_eq!(fs::read_to_string(&log).unwrap(), "compile-link:app\n");
+}
+
+#[cargo_test]
+#[cfg(not(windows))]
+fn unused_package_library_does_not_relink_integration_test() {
+    let wrapper = relink_only_wrapper();
+    let p = project()
+        .at("unused-integration-package-library")
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "app"
+                version = "0.1.0"
+                edition = "2024"
+            "#,
+        )
+        .file("src/lib.rs", "#[inline(never)] pub fn value() -> i32 { 1 }")
+        .file(
+            "src/main.rs",
+            "fn main() { println!(\"{}\", app::value()); }",
+        )
+        .file(
+            "tests/integration.rs",
+            r#"
+                #[test]
+                fn executes_current_binary() {
+                    let output = std::process::Command::new(env!("CARGO_BIN_EXE_app"))
+                        .output()
+                        .expect("package binary should run");
+                    assert!(output.status.success());
+                    assert_eq!(
+                        String::from_utf8(output.stdout).expect("UTF-8 output").trim(),
+                        std::env::var("UNUSED_INTEGRATION_EXPECTED").expect("expected value"),
+                    );
+                }
+            "#,
+        )
+        .build();
+    let log = p.root().join("relink-wrapper.log");
+
+    p.cargo("-Zohm-defaults test --test integration -j2")
+        .masquerade_as_nightly_cargo(&["ohm-defaults"])
+        .env("RUSTC_WRAPPER", &wrapper)
+        .env("RELINK_WRAPPER_LOG", &log)
+        .env("UNUSED_INTEGRATION_DEPENDENCY_PROOF", "1")
+        .env("UNUSED_INTEGRATION_EXPECTED", "1")
+        .run();
+
+    let deps = p.root().join("target/debug/deps");
+    let manifest = fs::read_dir(&deps)
+        .expect("dependency output directory")
+        .filter_map(Result::ok)
+        .map(|entry| entry.path())
+        .find(|path| {
+            path.file_name()
+                .and_then(OsStr::to_str)
+                .is_some_and(|name| {
+                    name.starts_with("integration-") && name.ends_with(".rlink-cache.json")
+                })
+        })
+        .expect("integration relink cache");
+    let cache: serde_json::Value =
+        serde_json::from_slice(&fs::read(&manifest).expect("relink cache contents"))
+            .expect("valid relink cache");
+    assert!(
+        cache["unused_extern_names"]
+            .as_array()
+            .is_some_and(|names| names.iter().any(|name| name == "app"))
+    );
+
+    fs::write(&log, "").expect("clear wrapper log");
+    if is_coarse_mtime() {
+        sleep_ms(1000);
+    }
+    p.change_file("src/lib.rs", "#[inline(never)] pub fn value() -> i32 { 2 }");
+    p.cargo("-Zohm-defaults test --test integration -j2")
+        .masquerade_as_nightly_cargo(&["ohm-defaults"])
+        .env("RUSTC_WRAPPER", &wrapper)
+        .env("RELINK_WRAPPER_LOG", &log)
+        .env("UNUSED_INTEGRATION_DEPENDENCY_PROOF", "1")
+        .env("UNUSED_INTEGRATION_EXPECTED", "2")
+        .run();
+
+    let invocations = fs::read_to_string(&log).expect("wrapper log");
+    assert!(invocations.lines().any(|line| line == "compile:app"));
+    assert!(invocations.lines().any(|line| line == "link:app"));
+    assert!(
+        !invocations
+            .lines()
+            .any(|line| line.ends_with(":integration")),
+        "an unused package library must not recompile or relink the integration executable: \
+         {invocations}"
+    );
+
+    let mut cache: serde_json::Value =
+        serde_json::from_slice(&fs::read(&manifest).expect("relink cache contents"))
+            .expect("valid relink cache");
+    cache
+        .as_object_mut()
+        .expect("relink cache object")
+        .remove("unused_extern_names");
+    fs::write(
+        &manifest,
+        serde_json::to_vec(&cache).expect("serialize relink cache"),
+    )
+    .expect("write legacy relink cache");
+    fs::write(&log, "").expect("clear wrapper log");
+    if is_coarse_mtime() {
+        sleep_ms(1000);
+    }
+    p.change_file("src/lib.rs", "#[inline(never)] pub fn value() -> i32 { 3 }");
+    p.cargo("-Zohm-defaults test --test integration -j2")
+        .masquerade_as_nightly_cargo(&["ohm-defaults"])
+        .env("RUSTC_WRAPPER", &wrapper)
+        .env("RELINK_WRAPPER_LOG", &log)
+        .env("UNUSED_INTEGRATION_DEPENDENCY_PROOF", "1")
+        .env("UNUSED_INTEGRATION_EXPECTED", "3")
+        .run();
+    let invocations = fs::read_to_string(&log).expect("wrapper log");
+    assert!(
+        invocations.lines().any(|line| line == "link:integration"),
+        "missing compiler proof must conservatively relink the integration executable: \
+         {invocations}"
+    );
+
+    fs::write(&log, "").expect("clear wrapper log");
+    if is_coarse_mtime() {
+        sleep_ms(1000);
+    }
+    p.change_file(
+        "tests/integration.rs",
+        r#"
+            #[test]
+            fn uses_package_library() {
+                let expected = std::env::var("UNUSED_INTEGRATION_EXPECTED")
+                    .expect("expected value")
+                    .parse::<i32>()
+                    .expect("integer expected value");
+                assert_eq!(app::value(), expected);
+            }
+        "#,
+    );
+    p.cargo("-Zohm-defaults test --test integration -j2")
+        .masquerade_as_nightly_cargo(&["ohm-defaults"])
+        .env("RUSTC_WRAPPER", &wrapper)
+        .env("RELINK_WRAPPER_LOG", &log)
+        .env("UNUSED_INTEGRATION_DEPENDENCY_PROOF", "1")
+        .env("UNUSED_INTEGRATION_EXPECTED", "3")
+        .run();
+    let invocations = fs::read_to_string(&log).expect("wrapper log");
+    assert!(
+        invocations
+            .lines()
+            .any(|line| line == "compile-link:integration"),
+        "changed integration source must perform a full compile: {invocations}"
+    );
+    let cache: serde_json::Value =
+        serde_json::from_slice(&fs::read(&manifest).expect("relink cache contents"))
+            .expect("valid relink cache");
+    assert!(
+        cache["unused_extern_names"]
+            .as_array()
+            .is_some_and(|names| !names.iter().any(|name| name == "app")),
+        "a full compilation must replace stale unused-library proof"
+    );
+
+    fs::write(&log, "").expect("clear wrapper log");
+    if is_coarse_mtime() {
+        sleep_ms(1000);
+    }
+    p.change_file("src/lib.rs", "#[inline(never)] pub fn value() -> i32 { 4 }");
+    p.cargo("-Zohm-defaults test --test integration -j2")
+        .masquerade_as_nightly_cargo(&["ohm-defaults"])
+        .env("RUSTC_WRAPPER", &wrapper)
+        .env("RELINK_WRAPPER_LOG", &log)
+        .env("UNUSED_INTEGRATION_DEPENDENCY_PROOF", "1")
+        .env("UNUSED_INTEGRATION_EXPECTED", "4")
+        .run();
+    let invocations = fs::read_to_string(&log).expect("wrapper log");
+    assert!(
+        invocations.lines().any(|line| line == "link:integration"),
+        "a now-used package library must relink the integration executable: {invocations}"
+    );
+}
+
+#[cargo_test]
+#[cfg(not(windows))]
+fn cyclic_development_dependency_still_relinks_integration_test() {
+    let wrapper = relink_only_wrapper();
+    let p = project()
+        .at("cyclic-integration-package-library")
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "app"
+                version = "0.1.0"
+                edition = "2024"
+
+                [dev-dependencies]
+                helper = { path = "helper" }
+            "#,
+        )
+        .file("src/lib.rs", "#[inline(never)] pub fn value() -> i32 { 1 }")
+        .file(
+            "src/main.rs",
+            "fn main() { println!(\"{}\", app::value()); }",
+        )
+        .file(
+            "helper/Cargo.toml",
+            r#"
+                [package]
+                name = "helper"
+                version = "0.1.0"
+                edition = "2024"
+
+                [dependencies]
+                app = { path = ".." }
+            "#,
+        )
+        .file(
+            "helper/src/lib.rs",
+            "pub fn value() -> i32 { app::value() }",
+        )
+        .file(
+            "tests/integration.rs",
+            r#"
+                #[test]
+                fn observes_transitive_package_library() {
+                    let expected = std::env::var("UNUSED_INTEGRATION_EXPECTED")
+                        .expect("expected value")
+                        .parse::<i32>()
+                        .expect("integer expected value");
+                    assert_eq!(helper::value(), expected);
+                }
+            "#,
+        )
+        .build();
+    let log = p.root().join("relink-wrapper.log");
+
+    p.cargo("-Zohm-defaults test --test integration -j2")
+        .masquerade_as_nightly_cargo(&["ohm-defaults"])
+        .env("RUSTC_WRAPPER", &wrapper)
+        .env("RELINK_WRAPPER_LOG", &log)
+        .env("UNUSED_INTEGRATION_DEPENDENCY_PROOF", "1")
+        .env("UNUSED_INTEGRATION_EXPECTED", "1")
+        .run();
+
+    let integration_manifest = fs::read_dir(p.root().join("target/debug/deps"))
+        .expect("dependency output directory")
+        .filter_map(Result::ok)
+        .map(|entry| entry.path())
+        .find(|path| {
+            path.file_name()
+                .and_then(OsStr::to_str)
+                .is_some_and(|name| {
+                    name.starts_with("integration-") && name.ends_with(".rlink-cache.json")
+                })
+        })
+        .expect("integration relink cache");
+    let cache: serde_json::Value = serde_json::from_slice(
+        &fs::read(&integration_manifest).expect("integration relink cache contents"),
+    )
+    .expect("valid integration relink cache");
+    assert!(
+        cache.get("unused_extern_names").is_none(),
+        "a package library reached through a development dependency must not acquire reuse proof"
+    );
+
+    fs::write(&log, "").expect("clear wrapper log");
+    if is_coarse_mtime() {
+        sleep_ms(1000);
+    }
+    p.change_file("src/lib.rs", "#[inline(never)] pub fn value() -> i32 { 2 }");
+    // The testsuite's ordinary rustc cannot reuse `helper` across the emulated
+    // public-hash cutoff, so rebuild its metadata for the new crate instance.
+    p.change_file(
+        "helper/src/lib.rs",
+        "pub fn value() -> i32 { app::value() }\n",
+    );
+    p.cargo("-Zohm-defaults test --test integration -j2")
+        .masquerade_as_nightly_cargo(&["ohm-defaults"])
+        .env("RUSTC_WRAPPER", &wrapper)
+        .env("RELINK_WRAPPER_LOG", &log)
+        .env("UNUSED_INTEGRATION_DEPENDENCY_PROOF", "1")
+        .env("UNUSED_INTEGRATION_EXPECTED", "2")
+        .run();
+
+    let invocations = fs::read_to_string(&log).expect("wrapper log");
+    assert!(
+        invocations.lines().any(|line| line == "link:integration"),
+        "a package library reached through a development dependency must remain linked: \
+         {invocations}"
+    );
 }
 
 #[cargo_test]
