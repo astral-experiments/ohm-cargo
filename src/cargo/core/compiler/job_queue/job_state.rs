@@ -50,6 +50,14 @@ enum PublicApiHashState {
     Invalid,
 }
 
+#[derive(Default)]
+enum UnusedExternsState {
+    #[default]
+    Missing,
+    Valid(std::collections::BTreeSet<InternedString>),
+    Invalid,
+}
+
 struct ConditionalMetadata {
     fingerprint: Arc<Fingerprint>,
     public_api_hash_path: PathBuf,
@@ -105,7 +113,7 @@ pub struct JobState<'a, 'gctx> {
     conditional_metadata: Option<ConditionalMetadata>,
 
     /// Compiler-authoritative direct externs unused by this successful unit.
-    unused_externs: Mutex<Option<std::collections::BTreeSet<InternedString>>>,
+    unused_externs: Mutex<UnusedExternsState>,
 
     /// Manages locks for build units when fine grain locking is enabled.
     lock_manager: Arc<LockManager>,
@@ -144,7 +152,7 @@ impl<'a, 'gctx> JobState<'a, 'gctx> {
                     }
                 },
             ),
-            unused_externs: Mutex::new(None),
+            unused_externs: Mutex::new(UnusedExternsState::Missing),
             lock_manager,
             warning_handling,
             _marker: marker::PhantomData,
@@ -386,14 +394,36 @@ impl<'a, 'gctx> JobState<'a, 'gctx> {
     /// This is useful for checking unused dependencies.
     /// Should only be called once, as the compiler only emits it once per compilation.
     pub fn unused_externs(&self, unused_externs: std::collections::BTreeSet<InternedString>) {
-        *self.unused_externs.lock().unwrap() = Some(unused_externs.clone());
-        self.messages
-            .push(Message::UnusedExterns(self.id, unused_externs));
+        let mut recorded = self.unused_externs.lock().unwrap();
+        let first_report = match &*recorded {
+            UnusedExternsState::Missing => {
+                *recorded = UnusedExternsState::Valid(unused_externs.clone());
+                true
+            }
+            UnusedExternsState::Valid(previous) if previous != &unused_externs => {
+                *recorded = UnusedExternsState::Invalid;
+                false
+            }
+            UnusedExternsState::Valid(_) | UnusedExternsState::Invalid => false,
+        };
+        drop(recorded);
+        if first_report {
+            self.messages
+                .push(Message::UnusedExterns(self.id, unused_externs));
+        }
+    }
+
+    /// Rejects compiler usage proof after a malformed unused-extern notification.
+    pub(crate) fn invalid_unused_externs(&self) {
+        *self.unused_externs.lock().unwrap() = UnusedExternsState::Invalid;
     }
 
     pub(crate) fn recorded_unused_externs(
         &self,
     ) -> Option<std::collections::BTreeSet<InternedString>> {
-        self.unused_externs.lock().unwrap().clone()
+        match &*self.unused_externs.lock().unwrap() {
+            UnusedExternsState::Valid(unused_externs) => Some(unused_externs.clone()),
+            UnusedExternsState::Missing | UnusedExternsState::Invalid => None,
+        }
     }
 }

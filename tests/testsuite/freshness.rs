@@ -5120,6 +5120,7 @@ fn relink_only_wrapper() -> PathBuf {
                         } else if let Some(argument) = args[index].to_str()
                             && argument.starts_with("--json=")
                             && argument.contains("unused-externs-transparent")
+                            && env::var_os("UNUSED_INTEGRATION_UNSUPPORTED_COMPILER").is_none()
                         {
                             stripped.push(OsString::from(argument.replace(
                                 "unused-externs-transparent",
@@ -5183,6 +5184,23 @@ fn relink_only_wrapper() -> PathBuf {
                             );
                         } else {
                             eprintln!("{line}");
+                            if line.contains("\"$message_type\":\"unused_extern\"")
+                                && env::var_os("UNUSED_INTEGRATION_CONFLICTING_PROOF").is_some()
+                            {
+                                eprintln!(
+                                    "{{\"$message_type\":\"unused_extern\",\
+                                      \"lint_level\":\"allow\",\
+                                      \"unused_extern_names\":[]}}"
+                                );
+                            }
+                            if line.contains("\"$message_type\":\"unused_extern\"")
+                                && env::var_os("UNUSED_INTEGRATION_MALFORMED_PROOF").is_some()
+                            {
+                                eprintln!(
+                                    "{{\"$message_type\":\"unused_extern\",\
+                                      \"unused_extern_names\":\"malformed\"}}"
+                                );
+                            }
                         }
                     }
                     exit(output.status.code().unwrap_or(1));
@@ -5418,6 +5436,10 @@ fn unused_package_library_does_not_relink_integration_test() {
                 edition = "2024"
             "#,
         )
+        .file(
+            "build.rs",
+            r#"fn main() { println!("cargo::rerun-if-changed=build.rs"); }"#,
+        )
         .file("src/lib.rs", "#[inline(never)] pub fn value() -> i32 { 1 }")
         .file(
             "src/main.rs",
@@ -5584,6 +5606,155 @@ fn unused_package_library_does_not_relink_integration_test() {
     assert!(
         invocations.lines().any(|line| line == "link:integration"),
         "a now-used package library must relink the integration executable: {invocations}"
+    );
+}
+
+#[cfg(not(windows))]
+#[derive(Clone, Copy, PartialEq)]
+enum UnsafeIntegrationReuse {
+    BuildScriptLinkerArgument,
+    CompilerLinkerArgument,
+    UnsupportedCompiler,
+    ConflictingCompilerReports,
+    MalformedCompilerReport,
+}
+
+#[cfg(not(windows))]
+fn assert_unsafe_integration_dependency_is_relinked(case: UnsafeIntegrationReuse) {
+    let wrapper = relink_only_wrapper();
+    let name = match case {
+        UnsafeIntegrationReuse::BuildScriptLinkerArgument => "build-script-linker-argument",
+        UnsafeIntegrationReuse::CompilerLinkerArgument => "compiler-linker-argument",
+        UnsafeIntegrationReuse::UnsupportedCompiler => "unsupported-compiler",
+        UnsafeIntegrationReuse::ConflictingCompilerReports => "conflicting-compiler-reports",
+        UnsafeIntegrationReuse::MalformedCompilerReport => "malformed-compiler-report",
+    };
+    let mut project = project()
+        .at(&format!("unsafe-integration-{name}"))
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "app"
+                version = "0.1.0"
+                edition = "2024"
+            "#,
+        )
+        .file("src/lib.rs", "#[inline(never)] pub fn value() -> i32 { 1 }")
+        .file(
+            "src/main.rs",
+            "fn main() { println!(\"{}\", app::value()); }",
+        )
+        .file(
+            "tests/integration.rs",
+            r#"
+                #[test]
+                fn executes_current_binary() {
+                    let output = std::process::Command::new(env!("CARGO_BIN_EXE_app"))
+                        .output()
+                        .expect("package binary should run");
+                    assert!(output.status.success());
+                    assert_eq!(
+                        String::from_utf8(output.stdout).expect("UTF-8 output").trim(),
+                        std::env::var("UNUSED_INTEGRATION_EXPECTED").expect("expected value"),
+                    );
+                }
+            "#,
+        );
+    if case == UnsafeIntegrationReuse::BuildScriptLinkerArgument {
+        project = project.file(
+            "build.rs",
+            r#"fn main() { println!("cargo::rustc-link-arg-tests=-Wl,-rpath,/tmp"); }"#,
+        );
+    }
+    let project = project.build();
+    let log = project.root().join("relink-wrapper.log");
+
+    let run = |expected: &str| {
+        let mut command = project.cargo("-Zohm-defaults test --test integration -j2");
+        command
+            .masquerade_as_nightly_cargo(&["ohm-defaults"])
+            .env("RUSTC_WRAPPER", &wrapper)
+            .env("RELINK_WRAPPER_LOG", &log)
+            .env("UNUSED_INTEGRATION_EXPECTED", expected);
+        match case {
+            UnsafeIntegrationReuse::BuildScriptLinkerArgument => {
+                command.env("UNUSED_INTEGRATION_DEPENDENCY_PROOF", "1");
+            }
+            UnsafeIntegrationReuse::CompilerLinkerArgument => {
+                command
+                    .env("UNUSED_INTEGRATION_DEPENDENCY_PROOF", "1")
+                    .env("RUSTFLAGS", "-Clink_arg=-Wl,-rpath,/tmp");
+            }
+            UnsafeIntegrationReuse::UnsupportedCompiler => {
+                command.env("UNUSED_INTEGRATION_UNSUPPORTED_COMPILER", "1");
+            }
+            UnsafeIntegrationReuse::ConflictingCompilerReports => {
+                command
+                    .env("UNUSED_INTEGRATION_DEPENDENCY_PROOF", "1")
+                    .env("UNUSED_INTEGRATION_CONFLICTING_PROOF", "1");
+            }
+            UnsafeIntegrationReuse::MalformedCompilerReport => {
+                command
+                    .env("UNUSED_INTEGRATION_DEPENDENCY_PROOF", "1")
+                    .env("UNUSED_INTEGRATION_MALFORMED_PROOF", "1");
+            }
+        }
+        command.run();
+    };
+
+    run("1");
+    fs::write(&log, "").expect("clear wrapper log");
+    if is_coarse_mtime() {
+        sleep_ms(1000);
+    }
+    project.change_file("src/lib.rs", "#[inline(never)] pub fn value() -> i32 { 2 }");
+    run("2");
+
+    let invocations = fs::read_to_string(&log).expect("wrapper log");
+    assert!(
+        invocations
+            .lines()
+            .any(|line| matches!(line, "link:integration" | "compile-link:integration")),
+        "{name} must conservatively relink the integration executable: {invocations}"
+    );
+}
+
+#[cargo_test]
+#[cfg(not(windows))]
+fn build_script_linker_arguments_disable_unused_integration_reuse() {
+    assert_unsafe_integration_dependency_is_relinked(
+        UnsafeIntegrationReuse::BuildScriptLinkerArgument,
+    );
+}
+
+#[cargo_test]
+#[cfg(not(windows))]
+fn compiler_linker_arguments_disable_unused_integration_reuse() {
+    assert_unsafe_integration_dependency_is_relinked(
+        UnsafeIntegrationReuse::CompilerLinkerArgument,
+    );
+}
+
+#[cargo_test]
+#[cfg(not(windows))]
+fn unsupported_compiler_disables_unused_integration_reuse() {
+    assert_unsafe_integration_dependency_is_relinked(UnsafeIntegrationReuse::UnsupportedCompiler);
+}
+
+#[cargo_test]
+#[cfg(not(windows))]
+fn conflicting_compiler_reports_disable_unused_integration_reuse() {
+    assert_unsafe_integration_dependency_is_relinked(
+        UnsafeIntegrationReuse::ConflictingCompilerReports,
+    );
+}
+
+#[cargo_test]
+#[cfg(not(windows))]
+fn malformed_compiler_report_disables_unused_integration_reuse() {
+    assert_unsafe_integration_dependency_is_relinked(
+        UnsafeIntegrationReuse::MalformedCompilerReport,
     );
 }
 
