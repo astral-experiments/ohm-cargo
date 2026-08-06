@@ -648,7 +648,7 @@ fn has_changed_metadata_dependency(fingerprint: &Fingerprint) -> bool {
         })
 }
 
-fn read_public_api_hash(path: &Path) -> Option<PublicApiHash> {
+pub(super) fn read_public_api_hash(path: &Path) -> Option<PublicApiHash> {
     fs::read(path)
         .ok()
         .and_then(|contents| serde_json::from_slice::<PublicApiHash>(&contents).ok())

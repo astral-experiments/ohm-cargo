@@ -8,6 +8,7 @@ use std::{
 
 use cargo_util::ProcessBuilder;
 
+use crate::core::compiler::fingerprint::{BuildState, Fingerprint};
 use crate::core::compiler::future_incompat::FutureBreakageItem;
 use crate::core::compiler::locking::LockKey;
 use crate::core::compiler::timings::SectionTiming;
@@ -46,6 +47,13 @@ enum PublicApiHashState {
     Missing,
     Valid(PublicApiHash),
     Invalid,
+}
+
+struct ConditionalMetadata {
+    fingerprint: Arc<Fingerprint>,
+    previous_public_api_hash: Option<PublicApiHash>,
+    ready: Cell<bool>,
+    released: Cell<bool>,
 }
 
 /// A `JobState` is constructed by `JobQueue::run` and passed to `Job::run`. It includes everything
@@ -91,6 +99,9 @@ pub struct JobState<'a, 'gctx> {
     /// Cargo only transports and persists the opaque value.
     public_api_hash: Mutex<PublicApiHashState>,
 
+    /// Resolves metadata-only early-cutoff edges once their outcome is known.
+    conditional_metadata: Option<ConditionalMetadata>,
+
     /// Manages locks for build units when fine grain locking is enabled.
     lock_manager: Arc<LockManager>,
 
@@ -107,6 +118,7 @@ impl<'a, 'gctx> JobState<'a, 'gctx> {
         messages: Arc<Queue<Message>>,
         output: Option<&'a DiagDedupe<'gctx>>,
         rmeta_required: bool,
+        conditional_metadata: Option<(Arc<Fingerprint>, Option<PublicApiHash>)>,
         lock_manager: Arc<LockManager>,
         warning_handling: WarningHandling,
     ) -> Self {
@@ -116,6 +128,14 @@ impl<'a, 'gctx> JobState<'a, 'gctx> {
             output,
             rmeta_required: Cell::new(rmeta_required),
             public_api_hash: Mutex::new(PublicApiHashState::Missing),
+            conditional_metadata: conditional_metadata.map(
+                |(fingerprint, previous_public_api_hash)| ConditionalMetadata {
+                    fingerprint,
+                    previous_public_api_hash,
+                    ready: Cell::new(false),
+                    released: Cell::new(false),
+                },
+            ),
             lock_manager,
             warning_handling,
             _marker: marker::PhantomData,
@@ -195,6 +215,16 @@ impl<'a, 'gctx> JobState<'a, 'gctx> {
         self.rmeta_required.set(false);
         self.messages
             .push(Message::Finish(self.id, Artifact::Metadata, Ok(())));
+        if let Some(conditional) = &self.conditional_metadata
+            && conditional.ready.get()
+        {
+            conditional.released.set(true);
+            self.messages.push(Message::Finish(
+                self.id,
+                Artifact::ConditionalMetadata,
+                Ok(()),
+            ));
+        }
     }
 
     /// Records the public API hash attached to rustc's metadata notification.
@@ -206,9 +236,25 @@ impl<'a, 'gctx> JobState<'a, 'gctx> {
                     "rustc reported conflicting public API hashes; disabling early cutoff"
                 );
                 *recorded = PublicApiHashState::Invalid;
+                if let Some(conditional) = &self.conditional_metadata {
+                    conditional.ready.set(false);
+                }
             }
             PublicApiHashState::Valid(_) | PublicApiHashState::Invalid => {}
             PublicApiHashState::Missing => {
+                if let Some(conditional) = &self.conditional_metadata
+                    && conditional
+                        .previous_public_api_hash
+                        .as_ref()
+                        .is_some_and(|previous| previous != &public_api_hash)
+                {
+                    // A changed public API can never take early cutoff, so a
+                    // metadata-only dependent may start before codegen ends.
+                    conditional
+                        .fingerprint
+                        .set_build_state(BuildState::BuiltChanged);
+                    conditional.ready.set(true);
+                }
                 *recorded = PublicApiHashState::Valid(public_api_hash);
             }
         }
@@ -217,6 +263,9 @@ impl<'a, 'gctx> JobState<'a, 'gctx> {
     /// Marks rustc's public API hash notification as malformed.
     pub(crate) fn invalid_public_api_hash(&self) {
         *self.public_api_hash.lock().unwrap() = PublicApiHashState::Invalid;
+        if let Some(conditional) = &self.conditional_metadata {
+            conditional.ready.set(false);
+        }
     }
 
     /// Returns the public API hash reported by rustc, if one was received.
@@ -269,6 +318,17 @@ impl<'a, 'gctx> JobState<'a, 'gctx> {
         if self.rmeta_required.get() && sender.result.as_ref().unwrap().is_ok() {
             self.messages
                 .push(Message::Finish(self.id, Artifact::Metadata, Ok(())));
+        }
+
+        if sender.result.as_ref().is_some_and(Result::is_ok)
+            && let Some(conditional) = &self.conditional_metadata
+            && !conditional.released.replace(true)
+        {
+            self.messages.push(Message::Finish(
+                self.id,
+                Artifact::ConditionalMetadata,
+                Ok(()),
+            ));
         }
 
         // Use a helper struct with a `Drop` implementation to guarantee
