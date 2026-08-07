@@ -5170,9 +5170,11 @@ fn relink_only_wrapper() -> PathBuf {
                     command.output().expect("rustc should run")
                 }
 
-                fn emit(output: Output) -> ! {
+                fn emit(output: Output, args: &[OsString]) -> ! {
                     io::stdout().write_all(&output.stdout).unwrap();
                     let stderr = String::from_utf8(output.stderr).unwrap();
+                    let public_api_hash = env::var("UNUSED_INTEGRATION_PUBLIC_HASH")
+                        .unwrap_or_else(|_| "00000000000000000000000000000000".to_owned());
                     for line in stderr.lines() {
                         if line.contains("\"artifact\":")
                             && line.contains(".rmeta")
@@ -5180,8 +5182,17 @@ fn relink_only_wrapper() -> PathBuf {
                         {
                             eprintln!(
                                 "{prefix},\"public_api_hash\":{{\"version\":1,\
-                                 \"value\":\"00000000000000000000000000000000\"}}}}"
+                                 \"value\":\"{public_api_hash}\"}}}}"
                             );
+                            if crate_name(args) == Some("app")
+                                && let Some(path) =
+                                    env::var_os("UNUSED_INTEGRATION_FAIL_AFTER_METADATA")
+                            {
+                                io::stderr().flush().expect("flush metadata notification");
+                                fs::write(path, b"metadata emitted")
+                                    .expect("record metadata emission");
+                                exit(1);
+                            }
                         } else {
                             eprintln!("{line}");
                             if line.contains("\"$message_type\":\"unused_extern\"")
@@ -5250,7 +5261,7 @@ fn relink_only_wrapper() -> PathBuf {
                             .map(PathBuf::from)
                             .expect("link-only should receive an rlink");
                         let saved_args = read_args(&rlink.with_extension("relink-args"));
-                        emit(run(&rustc, &saved_args));
+                        emit(run(&rustc, &saved_args), &saved_args);
                     }
 
                     if has_flag(&args, "emit-rlink") {
@@ -5280,11 +5291,11 @@ fn relink_only_wrapper() -> PathBuf {
                             fs::write(object, b"test object").unwrap();
                             write_args(&rlink.with_extension("relink-args"), &stripped);
                         }
-                        emit(output);
+                        emit(output, &args);
                     }
 
                     log("compile", &args);
-                    emit(run(&rustc, &stripped));
+                    emit(run(&rustc, &stripped), &args);
                 }
             "#,
         )
@@ -5607,6 +5618,950 @@ fn unused_package_library_does_not_relink_integration_test() {
         invocations.lines().any(|line| line == "link:integration"),
         "a now-used package library must relink the integration executable: {invocations}"
     );
+}
+
+#[cfg(not(windows))]
+#[derive(Clone, Copy, PartialEq)]
+enum WorkspaceIntegrationReuse {
+    Unlinked,
+    Transitive,
+    Renamed,
+    DependencyBuildScript,
+    HarmlessTransitiveBuildScript,
+    NativeTransitiveBuildScript,
+    RootNativeLink,
+    GlobalAllocator,
+    ChangedTestSource,
+}
+
+#[cfg(not(windows))]
+fn assert_workspace_integration_dependency_reuse(case: WorkspaceIntegrationReuse) {
+    let wrapper = relink_only_wrapper();
+    let name = match case {
+        WorkspaceIntegrationReuse::Unlinked => "unlinked",
+        WorkspaceIntegrationReuse::Transitive => "transitive",
+        WorkspaceIntegrationReuse::Renamed => "renamed",
+        WorkspaceIntegrationReuse::DependencyBuildScript => "dependency-build-script",
+        WorkspaceIntegrationReuse::HarmlessTransitiveBuildScript => {
+            "harmless-transitive-build-script"
+        }
+        WorkspaceIntegrationReuse::NativeTransitiveBuildScript => "native-transitive-build-script",
+        WorkspaceIntegrationReuse::RootNativeLink => "root-native-link",
+        WorkspaceIntegrationReuse::GlobalAllocator => "global-allocator",
+        WorkspaceIntegrationReuse::ChangedTestSource => "changed-test-source",
+    };
+    let dependency_name = if case == WorkspaceIntegrationReuse::Renamed {
+        "renamed"
+    } else {
+        "dep"
+    };
+    let helper_required = matches!(
+        case,
+        WorkspaceIntegrationReuse::Transitive | WorkspaceIntegrationReuse::GlobalAllocator
+    );
+    let transitive_build_script = matches!(
+        case,
+        WorkspaceIntegrationReuse::HarmlessTransitiveBuildScript
+            | WorkspaceIntegrationReuse::NativeTransitiveBuildScript
+    );
+    let root_manifest = format!(
+        r#"
+            [package]
+            name = "app"
+            version = "0.1.0"
+            edition = "2024"
+
+            [workspace]
+            members = ["dep"{additional_member}]
+
+            [dependencies]
+            {dependency_name} = {{ package = "dep", path = "dep" }}
+
+            {dev_dependency}
+        "#,
+        additional_member = if helper_required {
+            ", \"helper\""
+        } else if transitive_build_script {
+            ", \"native\""
+        } else {
+            ""
+        },
+        dev_dependency = if helper_required {
+            "[dev-dependencies]\nhelper = { path = \"helper\" }"
+        } else {
+            ""
+        },
+    );
+    let dependency_manifest = if case == WorkspaceIntegrationReuse::DependencyBuildScript {
+        r#"
+            [package]
+            name = "dep"
+            version = "0.1.0"
+            edition = "2024"
+            build = "build.rs"
+        "#
+    } else if transitive_build_script {
+        r#"
+            [package]
+            name = "dep"
+            version = "0.1.0"
+            edition = "2024"
+
+            [dependencies]
+            native = { path = "../native" }
+        "#
+    } else {
+        r#"
+            [package]
+            name = "dep"
+            version = "0.1.0"
+            edition = "2024"
+
+            [features]
+            extra = []
+        "#
+    };
+    let dependency_source = |value| {
+        if case == WorkspaceIntegrationReuse::GlobalAllocator {
+            format!(
+                "#[global_allocator]\nstatic ALLOCATOR: std::alloc::System = \
+                 std::alloc::System;\n#[inline(never)] pub fn value() -> i32 {{ {value} }}"
+            )
+        } else if transitive_build_script {
+            format!("#[inline(never)] pub fn value() -> i32 {{ native::marker() + {value} }}")
+        } else {
+            format!("#[inline(never)] pub fn value() -> i32 {{ {value} }}")
+        }
+    };
+    let transitive_assertion = if helper_required {
+        "assert_eq!(helper::value(), expected);"
+    } else {
+        ""
+    };
+    let native_declaration = if case == WorkspaceIntegrationReuse::NativeTransitiveBuildScript {
+        r#"
+            #[link(name = "native", kind = "static")]
+            unsafe extern "C" {
+                fn native_value() -> i32;
+            }
+        "#
+    } else {
+        ""
+    };
+    let native_assertion = if case == WorkspaceIntegrationReuse::NativeTransitiveBuildScript {
+        r#"
+            // SAFETY: the native archive is built by the transitive package.
+            assert_eq!(unsafe { native_value() }, expected);
+        "#
+    } else {
+        ""
+    };
+    let integration_source = format!(
+        r#"
+            {native_declaration}
+
+            #[test]
+            fn observes_current_binary_and_dependencies() {{
+                let expected = std::env::var("UNUSED_INTEGRATION_EXPECTED")
+                    .expect("expected value")
+                    .parse::<i32>()
+                    .expect("integer expected value");
+                {transitive_assertion}
+                {native_assertion}
+
+                let output = std::process::Command::new(env!("CARGO_BIN_EXE_app"))
+                    .output()
+                    .expect("package binary should run");
+                assert!(output.status.success());
+                assert_eq!(
+                    String::from_utf8(output.stdout)
+                        .expect("UTF-8 output")
+                        .trim()
+                        .parse::<i32>()
+                        .expect("integer binary output"),
+                    expected,
+                );
+            }}
+        "#,
+    );
+    let mut project = project()
+        .at(&format!("unused-workspace-integration-{name}"))
+        .file("Cargo.toml", &root_manifest)
+        .file("src/lib.rs", "pub fn package_marker() {}")
+        .file(
+            "src/main.rs",
+            &format!("fn main() {{ println!(\"{{}}\", {dependency_name}::value()); }}"),
+        )
+        .file("dep/Cargo.toml", dependency_manifest)
+        .file("dep/src/lib.rs", &dependency_source(1))
+        .file("tests/integration.rs", &integration_source);
+
+    if helper_required {
+        project = project
+            .file(
+                "helper/Cargo.toml",
+                r#"
+                    [package]
+                    name = "helper"
+                    version = "0.1.0"
+                    edition = "2024"
+
+                    [dependencies]
+                    dep = { path = "../dep", features = ["extra"] }
+                "#,
+            )
+            .file(
+                "helper/src/lib.rs",
+                "pub fn value() -> i32 { dep::value() }",
+            );
+    }
+    if transitive_build_script {
+        project = project
+            .file(
+                "native/Cargo.toml",
+                r#"
+                    [package]
+                    name = "native"
+                    version = "0.1.0"
+                    edition = "2024"
+                    build = "build.rs"
+                "#,
+            )
+            .file("native/src/lib.rs", "pub fn marker() -> i32 { 0 }");
+        if case == WorkspaceIntegrationReuse::NativeTransitiveBuildScript {
+            project = project
+                .file(
+                    "native/build.rs",
+                    r#"
+                        use std::env;
+                        use std::path::PathBuf;
+                        use std::process::Command;
+
+                        fn main() {
+                            let out_dir = PathBuf::from(
+                                env::var_os("OUT_DIR").expect("OUT_DIR should be set"),
+                            );
+                            let object = out_dir.join("native.o");
+                            let archive = out_dir.join("libnative.a");
+                            assert!(
+                                Command::new("cc")
+                                    .args(["-c", "native.c", "-o"])
+                                    .arg(&object)
+                                    .status()
+                                    .expect("cc should run")
+                                    .success()
+                            );
+                            assert!(
+                                Command::new("ar")
+                                    .arg("rcs")
+                                    .arg(&archive)
+                                    .arg(&object)
+                                    .status()
+                                    .expect("ar should run")
+                                    .success()
+                            );
+                            println!("cargo::rerun-if-changed=native.c");
+                            println!("cargo::rustc-link-search=native={}", out_dir.display());
+                        }
+                    "#,
+                )
+                .file("native/native.c", "int native_value(void) { return 1; }");
+        } else {
+            project = project.file(
+                "native/build.rs",
+                r#"
+                    fn main() {
+                        println!("cargo::rustc-check-cfg=cfg(harmless_build_script)");
+                        println!("cargo::rustc-cfg=harmless_build_script");
+                    }
+                "#,
+            );
+        }
+    }
+    if case == WorkspaceIntegrationReuse::DependencyBuildScript {
+        project = project.file(
+            "dep/build.rs",
+            r#"fn main() { println!("cargo::rerun-if-changed=build.rs"); }"#,
+        );
+    }
+    if case == WorkspaceIntegrationReuse::RootNativeLink {
+        project = project.file(
+            "build.rs",
+            r#"fn main() { println!("cargo::rustc-link-arg-tests=-Wl,-rpath,/tmp"); }"#,
+        );
+    }
+    let project = project.build();
+    let log = project.root().join("relink-wrapper.log");
+    let run = |expected| {
+        project
+            .cargo("-Zohm-defaults test --test integration -j2")
+            .masquerade_as_nightly_cargo(&["ohm-defaults"])
+            .env("RUSTC_WRAPPER", &wrapper)
+            .env("RELINK_WRAPPER_LOG", &log)
+            .env("UNUSED_INTEGRATION_DEPENDENCY_PROOF", "1")
+            .env("UNUSED_INTEGRATION_EXPECTED", expected)
+            .run();
+    };
+
+    run("1");
+    fs::write(&log, "").expect("clear wrapper log");
+    if is_coarse_mtime() {
+        sleep_ms(1000);
+    }
+    project.change_file("dep/src/lib.rs", &dependency_source(2));
+    if case == WorkspaceIntegrationReuse::NativeTransitiveBuildScript {
+        project.change_file("native/native.c", "int native_value(void) { return 2; }");
+    }
+    if helper_required {
+        // The testsuite compiler cannot reuse old helper metadata across the
+        // wrapper's emulated public-hash cutoff.
+        project.change_file(
+            "helper/src/lib.rs",
+            "pub fn value() -> i32 { dep::value() }\n",
+        );
+    }
+    if case == WorkspaceIntegrationReuse::ChangedTestSource {
+        project.change_file(
+            "tests/integration.rs",
+            &format!(
+                "{integration_source}\n#[test] fn now_uses_dependency() {{ \
+                 assert_eq!(dep::value(), std::env::var(\"UNUSED_INTEGRATION_EXPECTED\")\
+                 .expect(\"expected value\").parse::<i32>().expect(\"integer\")); }}\n"
+            ),
+        );
+    }
+    run("2");
+
+    let invocations = fs::read_to_string(&log).expect("wrapper log");
+    assert!(
+        invocations.lines().any(|line| line == "compile:dep"),
+        "the edited workspace dependency must recompile: {invocations}"
+    );
+
+    let integration_rebuilt = invocations
+        .lines()
+        .any(|line| line.ends_with(":integration"));
+    if matches!(
+        case,
+        WorkspaceIntegrationReuse::Unlinked
+            | WorkspaceIntegrationReuse::HarmlessTransitiveBuildScript
+    ) {
+        assert!(
+            !integration_rebuilt,
+            "an actually unlinked workspace library must not rebuild the integration \
+             executable: {invocations}"
+        );
+
+        fs::write(&log, "").expect("clear wrapper log");
+        run("2");
+        assert!(
+            fs::read_to_string(&log)
+                .expect("wrapper log")
+                .lines()
+                .all(|line| !line.ends_with(":integration")),
+            "a second invocation must preserve the reused integration executable"
+        );
+
+        if is_coarse_mtime() {
+            sleep_ms(1000);
+        }
+        project.change_file("dep/src/lib.rs", "pub fn value() -> i32 {");
+        fs::write(&log, "").expect("clear wrapper log");
+        project
+            .cargo("-Zohm-defaults test --test integration -j2")
+            .masquerade_as_nightly_cargo(&["ohm-defaults"])
+            .env("RUSTC_WRAPPER", &wrapper)
+            .env("RELINK_WRAPPER_LOG", &log)
+            .env("UNUSED_INTEGRATION_DEPENDENCY_PROOF", "1")
+            .env("UNUSED_INTEGRATION_EXPECTED", "2")
+            .with_status(101)
+            .with_stderr_data(str![[r#"
+...
+[ERROR] this file contains an unclosed delimiter
+...
+[ERROR] could not compile `dep` (lib) due to 1 previous error
+
+"#]])
+            .run();
+        assert!(
+            fs::read_to_string(&log)
+                .expect("wrapper log")
+                .lines()
+                .all(|line| !line.ends_with(":integration")),
+            "a failed dependency must not reuse or rebuild its downstream test"
+        );
+
+        if is_coarse_mtime() {
+            sleep_ms(1000);
+        }
+        project.change_file("dep/src/lib.rs", &dependency_source(3));
+        fs::write(&log, "").expect("clear wrapper log");
+        run("3");
+        assert!(
+            fs::read_to_string(&log)
+                .expect("wrapper log")
+                .lines()
+                .any(|line| line == "compile:dep"),
+            "a successful retry must recompile the failed producer before running the test"
+        );
+    } else {
+        assert!(
+            integration_rebuilt,
+            "{name} must conservatively rebuild or relink the integration executable: \
+             {invocations}"
+        );
+
+        if case == WorkspaceIntegrationReuse::ChangedTestSource {
+            let manifest = fs::read_dir(project.root().join("target/debug/deps"))
+                .expect("dependency output directory")
+                .filter_map(Result::ok)
+                .map(|entry| entry.path())
+                .find(|path| {
+                    path.file_name()
+                        .and_then(OsStr::to_str)
+                        .is_some_and(|name| {
+                            name.starts_with("integration-") && name.ends_with(".rlink-cache.json")
+                        })
+                })
+                .expect("integration relink cache");
+            let cache: serde_json::Value =
+                serde_json::from_slice(&fs::read(&manifest).expect("relink cache contents"))
+                    .expect("valid relink cache");
+            assert!(
+                cache["unused_extern_names"]
+                    .as_array()
+                    .is_some_and(|names| names.iter().all(|name| name != "dep")),
+                "recompiled integration source must invalidate unused workspace proof"
+            );
+
+            if is_coarse_mtime() {
+                sleep_ms(1000);
+            }
+            project.change_file("dep/src/lib.rs", &dependency_source(3));
+            fs::write(&log, "").expect("clear wrapper log");
+            run("3");
+            let invocations = fs::read_to_string(&log).expect("wrapper log");
+            assert!(
+                invocations
+                    .lines()
+                    .any(|line| line.ends_with(":integration")),
+                "a now-used workspace dependency must relink the integration executable: \
+                 {invocations}"
+            );
+        }
+    }
+}
+
+#[cargo_test]
+#[cfg(not(windows))]
+fn unused_workspace_integration_skips_unlinked_library() {
+    assert_workspace_integration_dependency_reuse(WorkspaceIntegrationReuse::Unlinked);
+}
+
+#[cargo_test]
+#[cfg(not(windows))]
+fn unused_workspace_integration_relinks_transitive_library() {
+    assert_workspace_integration_dependency_reuse(WorkspaceIntegrationReuse::Transitive);
+}
+
+#[cargo_test]
+#[cfg(not(windows))]
+fn unused_workspace_integration_relinks_renamed_library() {
+    assert_workspace_integration_dependency_reuse(WorkspaceIntegrationReuse::Renamed);
+}
+
+#[cargo_test]
+#[cfg(not(windows))]
+fn unused_workspace_integration_rejects_dependency_build_script() {
+    assert_workspace_integration_dependency_reuse(WorkspaceIntegrationReuse::DependencyBuildScript);
+}
+
+#[cargo_test]
+#[cfg(not(windows))]
+fn unused_workspace_integration_allows_harmless_transitive_build_script() {
+    assert_workspace_integration_dependency_reuse(
+        WorkspaceIntegrationReuse::HarmlessTransitiveBuildScript,
+    );
+}
+
+#[cargo_test]
+#[cfg(not(windows))]
+fn unused_workspace_integration_relinks_transitive_native_archive() {
+    assert_workspace_integration_dependency_reuse(
+        WorkspaceIntegrationReuse::NativeTransitiveBuildScript,
+    );
+}
+
+#[cargo_test]
+#[cfg(not(windows))]
+fn unused_workspace_integration_rejects_root_native_link() {
+    assert_workspace_integration_dependency_reuse(WorkspaceIntegrationReuse::RootNativeLink);
+}
+
+#[cargo_test]
+#[cfg(not(windows))]
+fn unused_workspace_integration_rejects_transitive_global_allocator() {
+    assert_workspace_integration_dependency_reuse(WorkspaceIntegrationReuse::GlobalAllocator);
+}
+
+#[cargo_test]
+#[cfg(not(windows))]
+fn unused_workspace_integration_invalidates_changed_test_source() {
+    assert_workspace_integration_dependency_reuse(WorkspaceIntegrationReuse::ChangedTestSource);
+}
+
+#[cfg(not(windows))]
+#[derive(Clone, Copy, PartialEq)]
+enum ChangedPublicIntegrationReuse {
+    Unused,
+    DirectlyUsed,
+    TransitiveDevelopmentDependency,
+    NativeLinkInput,
+    ChangedTestSource,
+    FailureAfterMetadata,
+    DeniedWarnings,
+}
+
+#[cfg(not(windows))]
+fn assert_changed_public_integration_dependency(case: ChangedPublicIntegrationReuse) {
+    const INITIAL_HASH: &str = "00000000000000000000000000000000";
+    const ADDED_ITEM_HASH: &str = "11111111111111111111111111111111";
+    const REPLACED_PROVIDER_HASH: &str = "22222222222222222222222222222222";
+    const REMOVED_ITEM_HASH: &str = "33333333333333333333333333333333";
+    const RECOVERED_HASH: &str = "44444444444444444444444444444444";
+
+    let wrapper = relink_only_wrapper();
+    let name = match case {
+        ChangedPublicIntegrationReuse::Unused => "unused",
+        ChangedPublicIntegrationReuse::DirectlyUsed => "directly-used",
+        ChangedPublicIntegrationReuse::TransitiveDevelopmentDependency => "transitive-dev",
+        ChangedPublicIntegrationReuse::NativeLinkInput => "native-link-input",
+        ChangedPublicIntegrationReuse::ChangedTestSource => "changed-test-source",
+        ChangedPublicIntegrationReuse::FailureAfterMetadata => "failure-after-metadata",
+        ChangedPublicIntegrationReuse::DeniedWarnings => "denied-warnings",
+    };
+    let transitive = case == ChangedPublicIntegrationReuse::TransitiveDevelopmentDependency;
+    let manifest = format!(
+        r#"
+            [package]
+            name = "app"
+            version = "0.1.0"
+            edition = "2024"
+
+            {dev_dependency}
+        "#,
+        dev_dependency = if transitive {
+            "[dev-dependencies]\nhelper = { path = \"helper\" }"
+        } else {
+            ""
+        },
+    );
+    let original_library = |value| {
+        format!(
+            "#[inline(never)] pub fn value() -> i32 {{ {value} }}\n\
+             pub fn original_provider<T: Copy>(value: T) -> T {{ value }}\n"
+        )
+    };
+    let added_library = |value| {
+        format!(
+            "{}pub const ADDED_PUBLIC_ITEM: i32 = 40;\n\
+             pub fn newly_exported<T: Copy>(value: T) -> T {{ value }}\n",
+            original_library(value)
+        )
+    };
+    let replaced_library = |value, retain_added_item| {
+        format!(
+            "#[inline(never)] pub fn value() -> i32 {{ {value} }}\n\
+             pub fn replacement_provider<T: Copy>(value: T) -> T {{ value }}\n\
+             {added_item}",
+            added_item = if retain_added_item {
+                "pub const ADDED_PUBLIC_ITEM: i32 = 40;\n"
+            } else {
+                ""
+            },
+        )
+    };
+    let direct_assertion = match case {
+        ChangedPublicIntegrationReuse::DirectlyUsed => "assert_eq!(app::value(), expected);",
+        ChangedPublicIntegrationReuse::TransitiveDevelopmentDependency => {
+            "assert_eq!(helper::value(), expected);"
+        }
+        _ => "",
+    };
+    let integration_source = format!(
+        r#"
+            #[test]
+            fn observes_current_binary_and_dependencies() {{
+                let expected = std::env::var("UNUSED_INTEGRATION_EXPECTED")
+                    .expect("expected value")
+                    .parse::<i32>()
+                    .expect("integer expected value");
+                {direct_assertion}
+
+                let output = std::process::Command::new(env!("CARGO_BIN_EXE_app"))
+                    .output()
+                    .expect("package binary should run");
+                assert!(output.status.success());
+                assert_eq!(
+                    String::from_utf8(output.stdout)
+                        .expect("UTF-8 output")
+                        .trim()
+                        .parse::<i32>()
+                        .expect("integer binary output"),
+                    expected,
+                );
+            }}
+        "#,
+    );
+
+    let mut project = project()
+        .at(&format!("changed-public-integration-{name}"))
+        .file("Cargo.toml", &manifest)
+        .file("src/lib.rs", &original_library(1))
+        .file(
+            "src/main.rs",
+            "fn main() { println!(\"{}\", app::original_provider(app::value())); }",
+        )
+        .file("tests/integration.rs", &integration_source);
+    if transitive {
+        project = project
+            .file(
+                "helper/Cargo.toml",
+                r#"
+                    [package]
+                    name = "helper"
+                    version = "0.1.0"
+                    edition = "2024"
+
+                    [dependencies]
+                    app = { path = ".." }
+                "#,
+            )
+            .file(
+                "helper/src/lib.rs",
+                "pub fn value() -> i32 { app::value() }",
+            );
+    }
+    if case == ChangedPublicIntegrationReuse::NativeLinkInput {
+        project = project.file(
+            "build.rs",
+            r#"fn main() { println!("cargo::rustc-link-arg-tests=-Wl,-rpath,/tmp"); }"#,
+        );
+    }
+    let project = project.build();
+    let log = project.root().join("relink-wrapper.log");
+    let run = |expected: &str, public_api_hash: &str| {
+        project
+            .cargo("-Zohm-defaults test --test integration -j2")
+            .masquerade_as_nightly_cargo(&["ohm-defaults"])
+            .env("RUSTC_WRAPPER", &wrapper)
+            .env("RELINK_WRAPPER_LOG", &log)
+            .env("UNUSED_INTEGRATION_DEPENDENCY_PROOF", "1")
+            .env("UNUSED_INTEGRATION_EXPECTED", expected)
+            .env("UNUSED_INTEGRATION_PUBLIC_HASH", public_api_hash)
+            .run();
+    };
+
+    run("1", INITIAL_HASH);
+    let previous_hash_path = fs::read_dir(project.root().join("target/debug/.fingerprint"))
+        .expect("fingerprint directory")
+        .filter_map(Result::ok)
+        .map(|entry| entry.path().join("lib-app.public-api-hash"))
+        .find(|path| path.exists())
+        .expect("package public API hash");
+    let initial_hash = fs::read(&previous_hash_path).expect("initial public API hash");
+
+    fs::write(&log, "").expect("clear wrapper log");
+    if is_coarse_mtime() {
+        sleep_ms(1000);
+    }
+    project.change_file("src/lib.rs", &added_library(2));
+    if transitive {
+        // Ordinary testsuite rustc cannot reuse metadata for the old app crate instance.
+        project.change_file(
+            "helper/src/lib.rs",
+            "pub fn value() -> i32 { app::value() }\n",
+        );
+    }
+    if case == ChangedPublicIntegrationReuse::ChangedTestSource {
+        project.change_file(
+            "tests/integration.rs",
+            &format!(
+                "{integration_source}\n#[test] fn now_uses_package_library() {{ \
+                 assert_eq!(app::value(), std::env::var(\"UNUSED_INTEGRATION_EXPECTED\")\
+                 .expect(\"expected value\").parse::<i32>().expect(\"integer\")); }}\n"
+            ),
+        );
+    }
+    if case == ChangedPublicIntegrationReuse::FailureAfterMetadata {
+        let metadata_marker = project.root().join("producer-metadata-emitted");
+        project
+            .cargo("-Zohm-defaults test --test integration -j2")
+            .masquerade_as_nightly_cargo(&["ohm-defaults"])
+            .env("RUSTC_WRAPPER", &wrapper)
+            .env("RELINK_WRAPPER_LOG", &log)
+            .env("UNUSED_INTEGRATION_DEPENDENCY_PROOF", "1")
+            .env("UNUSED_INTEGRATION_EXPECTED", "2")
+            .env("UNUSED_INTEGRATION_PUBLIC_HASH", ADDED_ITEM_HASH)
+            .env("UNUSED_INTEGRATION_FAIL_AFTER_METADATA", &metadata_marker)
+            .with_status(101)
+            .with_stderr_data(str![[r#"
+...
+[ERROR] could not compile `app` (lib)
+...
+"#]])
+            .run();
+        assert!(
+            metadata_marker.exists(),
+            "the producer must fail only after publishing changed metadata"
+        );
+        let invocations = fs::read_to_string(&log).expect("post-metadata failure wrapper log");
+        assert!(invocations.lines().any(|line| line == "compile:app"));
+        assert!(
+            invocations
+                .lines()
+                .all(|line| !line.ends_with(":integration")),
+            "an integration executable must not run after its producer fails post-metadata: \
+             {invocations}"
+        );
+
+        fs::write(&log, "").expect("clear post-metadata recovery log");
+        run("2", ADDED_ITEM_HASH);
+        assert!(
+            fs::read_to_string(&log)
+                .expect("post-metadata recovery wrapper log")
+                .lines()
+                .any(|line| line == "compile:app"),
+            "recovery must retry a producer that previously failed after metadata"
+        );
+        return;
+    }
+    if case == ChangedPublicIntegrationReuse::DeniedWarnings {
+        project.change_file(
+            "src/lib.rs",
+            &format!("{}fn unused_warning() {{}}\n", added_library(2)),
+        );
+        project
+            .cargo("-Zohm-defaults test --test integration -j2")
+            .masquerade_as_nightly_cargo(&["ohm-defaults"])
+            .arg("--config")
+            .arg("build.warnings='deny'")
+            .env("RUSTC_WRAPPER", &wrapper)
+            .env("RELINK_WRAPPER_LOG", &log)
+            .env("UNUSED_INTEGRATION_DEPENDENCY_PROOF", "1")
+            .env("UNUSED_INTEGRATION_EXPECTED", "2")
+            .env("UNUSED_INTEGRATION_PUBLIC_HASH", ADDED_ITEM_HASH)
+            .with_status(101)
+            .with_stderr_data(str![[r#"
+...
+[WARNING] function `unused_warning` is never used
+...
+[ERROR] `app` (lib) generated 1 warning
+[ERROR] warnings are denied by `build.warnings` configuration
+...
+"#]])
+            .run();
+        let invocations = fs::read_to_string(&log).expect("denied-warning wrapper log");
+        assert!(invocations.lines().any(|line| line == "compile:app"));
+        assert!(
+            invocations
+                .lines()
+                .all(|line| !line.ends_with(":integration")),
+            "warnings denied after metadata must prevent integration execution: {invocations}"
+        );
+
+        fs::write(&log, "").expect("clear denied-warning recovery log");
+        if is_coarse_mtime() {
+            sleep_ms(1000);
+        }
+        project.change_file("src/lib.rs", &added_library(2));
+        run("2", ADDED_ITEM_HASH);
+        return;
+    }
+    run("2", ADDED_ITEM_HASH);
+
+    let changed_hash = fs::read(&previous_hash_path).expect("changed public API hash");
+    assert_ne!(
+        initial_hash, changed_hash,
+        "the producer must actually transition to BuiltChanged"
+    );
+    let invocations = fs::read_to_string(&log).expect("wrapper log");
+    assert!(
+        invocations.lines().any(|line| line == "compile:app"),
+        "the changed producer library must recompile: {invocations}"
+    );
+    assert!(
+        invocations.lines().any(|line| line == "compile-link:app"),
+        "the package CLI must rebuild against the new public API: {invocations}"
+    );
+    let integration_rebuilt = invocations
+        .lines()
+        .any(|line| line.ends_with(":integration"));
+    if case != ChangedPublicIntegrationReuse::Unused {
+        assert!(
+            integration_rebuilt,
+            "{name} must conservatively rebuild the integration executable: {invocations}"
+        );
+
+        if case == ChangedPublicIntegrationReuse::ChangedTestSource {
+            let integration_manifest = fs::read_dir(project.root().join("target/debug/deps"))
+                .expect("dependency output directory")
+                .filter_map(Result::ok)
+                .map(|entry| entry.path())
+                .find(|path| {
+                    path.file_name()
+                        .and_then(OsStr::to_str)
+                        .is_some_and(|name| {
+                            name.starts_with("integration-") && name.ends_with(".rlink-cache.json")
+                        })
+                })
+                .expect("integration relink cache");
+            let cache: serde_json::Value = serde_json::from_slice(
+                &fs::read(&integration_manifest).expect("relink cache contents"),
+            )
+            .expect("valid relink cache");
+            assert!(
+                cache["unused_extern_names"]
+                    .as_array()
+                    .is_some_and(|names| names.iter().all(|name| name != "app")),
+                "newly used package library must invalidate previous compiler proof"
+            );
+        }
+        return;
+    }
+
+    assert!(
+        !integration_rebuilt,
+        "an unused package library must not rebuild its black-box integration test after a \
+         public item was added: {invocations}"
+    );
+
+    fs::write(&log, "").expect("clear generic-provider log");
+    if is_coarse_mtime() {
+        sleep_ms(1000);
+    }
+    project.change_file("src/lib.rs", &replaced_library(3, true));
+    project.change_file(
+        "src/main.rs",
+        "fn main() { println!(\"{}\", app::replacement_provider(app::value())); }",
+    );
+    run("3", REPLACED_PROVIDER_HASH);
+    let invocations = fs::read_to_string(&log).expect("generic-provider wrapper log");
+    assert!(invocations.lines().any(|line| line == "compile:app"));
+    assert!(invocations.lines().any(|line| line == "compile-link:app"));
+    assert!(
+        !invocations
+            .lines()
+            .any(|line| line.ends_with(":integration")),
+        "adding and removing exported generic providers must not rebuild an unlinked test: \
+         {invocations}"
+    );
+
+    fs::write(&log, "").expect("clear removed-public-item log");
+    if is_coarse_mtime() {
+        sleep_ms(1000);
+    }
+    project.change_file("src/lib.rs", &replaced_library(4, false));
+    run("4", REMOVED_ITEM_HASH);
+    let invocations = fs::read_to_string(&log).expect("removed-public-item wrapper log");
+    assert!(invocations.lines().any(|line| line == "compile:app"));
+    assert!(invocations.lines().any(|line| line == "compile-link:app"));
+    assert!(
+        !invocations
+            .lines()
+            .any(|line| line.ends_with(":integration")),
+        "removing a public item must not rebuild an unlinked integration executable: {invocations}"
+    );
+
+    fs::write(&log, "").expect("clear producer-failure log");
+    if is_coarse_mtime() {
+        sleep_ms(1000);
+    }
+    project.change_file("src/lib.rs", "pub fn value() -> i32 {");
+    project
+        .cargo("-Zohm-defaults test --test integration -j2")
+        .masquerade_as_nightly_cargo(&["ohm-defaults"])
+        .env("RUSTC_WRAPPER", &wrapper)
+        .env("RELINK_WRAPPER_LOG", &log)
+        .env("UNUSED_INTEGRATION_DEPENDENCY_PROOF", "1")
+        .env("UNUSED_INTEGRATION_EXPECTED", "4")
+        .env("UNUSED_INTEGRATION_PUBLIC_HASH", RECOVERED_HASH)
+        .with_status(101)
+        .with_stderr_data(str![[r#"
+...
+[ERROR] this file contains an unclosed delimiter
+...
+[ERROR] could not compile `app` (lib) due to 1 previous error
+
+"#]])
+        .run();
+    assert!(
+        fs::read_to_string(&log)
+            .expect("failed producer wrapper log")
+            .lines()
+            .all(|line| !line.ends_with(":integration")),
+        "a failed producer must never reuse or run a downstream integration target"
+    );
+
+    fs::write(&log, "").expect("clear recovery log");
+    if is_coarse_mtime() {
+        sleep_ms(1000);
+    }
+    project.change_file("src/lib.rs", &replaced_library(5, false));
+    run("5", RECOVERED_HASH);
+    assert!(
+        fs::read_to_string(&log)
+            .expect("recovered producer wrapper log")
+            .lines()
+            .any(|line| line == "compile:app"),
+        "a successful retry must rebuild its previously failing producer"
+    );
+}
+
+#[cargo_test]
+#[cfg(not(windows))]
+fn changed_unused_package_public_api_does_not_rebuild_integration_test() {
+    assert_changed_public_integration_dependency(ChangedPublicIntegrationReuse::Unused);
+}
+
+#[cargo_test]
+#[cfg(not(windows))]
+fn changed_directly_used_package_public_api_rebuilds_integration_test() {
+    assert_changed_public_integration_dependency(ChangedPublicIntegrationReuse::DirectlyUsed);
+}
+
+#[cargo_test]
+#[cfg(not(windows))]
+fn changed_transitive_package_public_api_rebuilds_integration_test() {
+    assert_changed_public_integration_dependency(
+        ChangedPublicIntegrationReuse::TransitiveDevelopmentDependency,
+    );
+}
+
+#[cargo_test]
+#[cfg(not(windows))]
+fn changed_package_public_api_with_native_link_inputs_rebuilds_integration_test() {
+    assert_changed_public_integration_dependency(ChangedPublicIntegrationReuse::NativeLinkInput);
+}
+
+#[cargo_test]
+#[cfg(not(windows))]
+fn changed_integration_source_rebuilds_after_package_public_api_change() {
+    assert_changed_public_integration_dependency(ChangedPublicIntegrationReuse::ChangedTestSource);
+}
+
+#[cargo_test]
+#[cfg(not(windows))]
+fn changed_unused_package_producer_failure_after_metadata_stops_integration_test() {
+    assert_changed_public_integration_dependency(
+        ChangedPublicIntegrationReuse::FailureAfterMetadata,
+    );
+}
+
+#[cargo_test]
+#[cfg(not(windows))]
+fn changed_unused_package_denied_warnings_stop_integration_test() {
+    assert_changed_public_integration_dependency(ChangedPublicIntegrationReuse::DeniedWarnings);
 }
 
 #[cfg(not(windows))]

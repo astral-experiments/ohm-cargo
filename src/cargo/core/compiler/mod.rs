@@ -452,21 +452,29 @@ impl RelinkCachePaths {
     }
 
     fn proves_unused_extern(&self, extern_name: InternedString) -> bool {
+        self.unused_extern_names()
+            .is_some_and(|unused_externs| unused_externs.contains(&extern_name))
+    }
+
+    fn unused_extern_names(&self) -> Option<HashSet<InternedString>> {
         let Some(manifest) = self.read_manifest() else {
-            return false;
+            return None;
         };
 
-        manifest.version == RELINK_CACHE_VERSION
-            && manifest.executable.path == self.executable
-            && object_matches(&manifest.executable)
-            && manifest
-                .unused_extern_names
-                .as_ref()
-                .is_some_and(|unused_externs| {
-                    unused_externs
-                        .iter()
-                        .any(|unused_extern| unused_extern == extern_name.as_str())
-                })
+        if manifest.version != RELINK_CACHE_VERSION
+            || manifest.executable.path != self.executable
+            || !object_matches(&manifest.executable)
+        {
+            return None;
+        }
+
+        Some(
+            manifest
+                .unused_extern_names?
+                .into_iter()
+                .map(InternedString::from)
+                .collect(),
+        )
     }
 
     fn invalidate(&self) -> CargoResult<()> {
@@ -606,6 +614,101 @@ fn unused_integration_self_dependency(
     ))
 }
 
+/// Finds workspace libraries that cannot contribute to this test executable.
+///
+/// An unused direct `--extern` is insufficient: the same package may still be
+/// linked through a different, actually used dependency. Walk only the roots
+/// which the previous compiler invocation did not prove unused, then reject
+/// every candidate package reachable from one of those roots. Comparing package
+/// identities also rules out alternate features, profiles, and renamed edges.
+fn unused_integration_workspace_dependencies(
+    build_runner: &BuildRunner<'_, '_>,
+    unit: &Unit,
+    unused_extern_names: &HashSet<InternedString>,
+) -> (HashSet<UnitIndex>, HashMap<UnitIndex, Vec<UnitHash>>) {
+    let dependencies = build_runner.unit_deps(unit);
+    let mut pending = dependencies
+        .iter()
+        .filter(|dependency| {
+            dependency.unit.target.is_linkable()
+                && !unused_extern_names.contains(&dependency.extern_crate_name)
+        })
+        .map(|dependency| dependency.unit.clone())
+        .collect::<Vec<_>>();
+    let mut reachable_units = HashSet::default();
+    let mut reachable_packages = HashSet::default();
+
+    while let Some(dependency) = pending.pop() {
+        if reachable_units.insert(dependency.clone()) {
+            reachable_packages.insert(dependency.pkg.package_id());
+            pending.extend(
+                build_runner
+                    .unit_deps(&dependency)
+                    .iter()
+                    .filter(|dependency| dependency.unit.target.is_linkable())
+                    .map(|dependency| dependency.unit.clone()),
+            );
+        }
+    }
+
+    let reachable_build_scripts = reachable_units
+        .iter()
+        .filter_map(|dependency| build_runner.build_scripts.get(dependency))
+        .flat_map(|scripts| scripts.to_link.iter().map(|(_, metadata)| *metadata))
+        .collect::<HashSet<_>>();
+    let mut unused_dependencies = HashSet::default();
+    let mut exclusive_build_scripts = HashMap::default();
+
+    for dependency in dependencies.iter().filter(|dependency| {
+        let package_id = dependency.unit.pkg.package_id();
+
+        package_id != unit.pkg.package_id()
+            && build_runner.bcx.ws.is_member_id(package_id)
+            && dependency.unit.kind == unit.kind
+            && dependency.unit.mode == CompileMode::Build
+            && dependency.unit.target.is_lib()
+            && !dependency.unit.artifact.is_true()
+            && !dependency.nounused
+            && dependency.manifest_deps.0.is_some()
+            && dependency.extern_crate_name.as_str() == dependency.unit.target.crate_name()
+            && dependency.unit.pkg.manifest().links().is_none()
+            && build_runner
+                .find_build_script_units(&dependency.unit)
+                .is_none()
+            && !has_opaque_integration_linker_flags(build_runner, &dependency.unit)
+            && dependency
+                .unit
+                .target
+                .rustc_crate_types()
+                .iter()
+                .all(|crate_type| matches!(crate_type, CrateType::Lib | CrateType::Rlib))
+            && unused_extern_names.contains(&dependency.extern_crate_name)
+            && !reachable_packages.contains(&package_id)
+            && dependencies
+                .iter()
+                .filter(|other| other.unit.pkg.package_id() == package_id)
+                .count()
+                == 1
+    }) {
+        let index = build_runner.bcx.unit_to_index[&dependency.unit];
+        unused_dependencies.insert(index);
+
+        if let Some(scripts) = build_runner.build_scripts.get(&dependency.unit) {
+            let exclusive_scripts = scripts
+                .to_link
+                .iter()
+                .map(|(_, metadata)| *metadata)
+                .filter(|metadata| !reachable_build_scripts.contains(metadata))
+                .collect::<Vec<_>>();
+            if !exclusive_scripts.is_empty() {
+                exclusive_build_scripts.insert(index, exclusive_scripts);
+            }
+        }
+    }
+
+    (unused_dependencies, exclusive_build_scripts)
+}
+
 /// Whether user-controlled compiler arguments can add untracked linker inputs.
 fn has_opaque_integration_linker_flags(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> bool {
     let arguments = unit
@@ -716,6 +819,22 @@ fn rustc(
         .map(|dep| build_runner.bcx.unit_to_index[&dep.unit])
         .collect::<HashSet<_>>();
     let unused_integration_dependency = unused_integration_self_dependency(build_runner, unit);
+    let workspace_integration_proof = unused_integration_dependency
+        .and_then(|_| relink_cache.as_ref())
+        .and_then(RelinkCachePaths::unused_extern_names);
+    let (mut unused_workspace_dependencies, workspace_build_scripts) = workspace_integration_proof
+        .as_ref()
+        .map(|unused_extern_names| {
+            unused_integration_workspace_dependencies(build_runner, unit, unused_extern_names)
+        })
+        .unwrap_or_default();
+    if let Some((dependency, extern_name)) = unused_integration_dependency
+        && workspace_integration_proof
+            .as_ref()
+            .is_some_and(|unused_extern_names| unused_extern_names.contains(&extern_name))
+    {
+        unused_workspace_dependencies.insert(dependency);
+    }
     if let Some(cache) = &relink_cache {
         // Preserve the codegen objects referenced by the cached `.rlink`, and
         // keep them outside the dependency search directory while completing
@@ -821,6 +940,24 @@ fn rustc(
                     })
                 })
         });
+        if unused_integration_dependency.is_some() && !workspace_build_scripts.is_empty() {
+            let script_outputs = build_script_outputs.lock().unwrap();
+            unused_workspace_dependencies.retain(|dependency| {
+                workspace_build_scripts
+                    .get(dependency)
+                    .is_none_or(|scripts| {
+                        scripts.iter().all(|metadata| {
+                            script_outputs.get(*metadata).is_some_and(|output| {
+                                output.library_paths.is_empty()
+                                    && output.library_links.is_empty()
+                                    && !output.linker_args.iter().any(|(link_target, _)| {
+                                        link_target.applies_to(&target, mode)
+                                    })
+                            })
+                        })
+                    })
+            });
+        }
 
         if let Some(ref fp) = fingerprint {
             tracing::info!(
@@ -840,6 +977,16 @@ fn rustc(
                             .as_ref()
                             .is_some_and(|cache| cache.proves_unused_extern(extern_name))
                 });
+            let skip_unused_workspace_dependencies = unused_integration_dependency.is_some()
+                && fingerprint::can_skip_unused_workspace_integration_dependencies(
+                    fp,
+                    &unused_workspace_dependencies,
+                )
+                && relink_cache.as_ref().is_some_and(|cache| {
+                    cache.unused_extern_names() == workspace_integration_proof
+                });
+            let skip_unused_integration_dependency =
+                skip_unused_integration_dependency || skip_unused_workspace_dependencies;
 
             if (can_skip_compilation && fingerprint::can_skip_due_to_early_cutoff(fp))
                 || skip_unused_integration_dependency
