@@ -151,8 +151,8 @@ fn ohm_defaults_apply_to_host_and_target_units() {
 
     p.cargo("clean").run();
     fs::write(&log, "").unwrap();
-    p.cargo("-Zohm-defaults test --no-run")
-        .masquerade_as_nightly_cargo(&["ohm-defaults"])
+    p.cargo("-Zohm-defaults -Zrelink-only=no test --no-run")
+        .masquerade_as_nightly_cargo(&["ohm-defaults", "relink-only"])
         .env("CARGO_INCREMENTAL", "1")
         .env("RUSTC_WRAPPER", &wrapper)
         .env("OHM_DEFAULTS_LOG", &log)
