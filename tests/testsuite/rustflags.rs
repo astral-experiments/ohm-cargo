@@ -34,6 +34,8 @@ fn ohm_defaults_apply_to_host_and_target_units() {
                     let arg = arg.to_string_lossy();
                     arg.starts_with("-Zpublic-api-hash")
                         || arg.starts_with("-Zcache-proc-macros")
+                        || arg.starts_with("-Zohm-caller-local-cgus")
+                        || arg.starts_with("-Zohm-stable-cgu-merging")
                 }
 
                 fn main() {
@@ -52,6 +54,12 @@ fn ohm_defaults_apply_to_host_and_target_units() {
                         .expect("open log")
                         .write_all(format!("{rendered}\n").as_bytes())
                         .expect("write log");
+                    if env::var_os("OHM_INCREMENTAL_UNSUPPORTED").is_some()
+                        && args.iter().any(|arg| arg == "--print=sysroot")
+                        && args.iter().any(|arg| arg == "-Zohm-caller-local-cgus")
+                    {
+                        exit(1);
+                    }
                     let status = Command::new(rustc)
                         .args(args.iter().filter(|arg| !is_ohm_rustflag(arg)))
                         .env("RUSTC_BOOTSTRAP", "1")
@@ -80,6 +88,9 @@ fn ohm_defaults_apply_to_host_and_target_units() {
 
                 [dependencies]
                 dep = { path = "dep" }
+
+                [workspace]
+                members = [".", "dep"]
             "#,
         )
         .file("build.rs", "fn main() {}")
@@ -137,6 +148,137 @@ fn ohm_defaults_apply_to_host_and_target_units() {
         .unwrap();
     assert!(!library.contains(&"-Zpublic-api-hash=no"));
     assert!(rustc_invocation(&invocations, "integration").contains(&"-Zpublic-api-hash=no"));
+
+    p.cargo("clean").run();
+    fs::write(&log, "").unwrap();
+    p.cargo("-Zohm-defaults test --no-run")
+        .masquerade_as_nightly_cargo(&["ohm-defaults"])
+        .env("CARGO_INCREMENTAL", "1")
+        .env("RUSTC_WRAPPER", &wrapper)
+        .env("OHM_DEFAULTS_LOG", &log)
+        .run();
+    let invocations = fs::read_to_string(&log).unwrap();
+    for crate_name in ["foo", "dep", "integration"] {
+        assert_eq!(
+            ohm_incremental_codegen_rustflags(&rustc_invocation(&invocations, crate_name)),
+            ["-Zohm-caller-local-cgus", "-Zohm-stable-cgu-merging"],
+            "workspace target `{crate_name}` should use incremental codegen defaults"
+        );
+    }
+    assert!(
+        ohm_incremental_codegen_rustflags(&rustc_invocation(&invocations, "build_script_build"))
+            .is_empty()
+    );
+
+    p.cargo("clean").run();
+    fs::write(&log, "").unwrap();
+    p.cargo("-Zohm-defaults build")
+        .masquerade_as_nightly_cargo(&["ohm-defaults"])
+        .env("CARGO_INCREMENTAL", "1")
+        .env("RUSTC_WRAPPER", &wrapper)
+        .env("OHM_DEFAULTS_LOG", &log)
+        .env("CARGO_PROFILE_DEV_OPT_LEVEL", "1")
+        .run();
+    let invocations = fs::read_to_string(&log).unwrap();
+    for crate_name in ["foo", "dep"] {
+        assert_eq!(
+            ohm_incremental_codegen_rustflags(&rustc_invocation(&invocations, crate_name)),
+            ["-Zohm-caller-local-cgus", "-Zohm-stable-cgu-merging"]
+        );
+    }
+
+    p.cargo("clean").run();
+    fs::write(&log, "").unwrap();
+    p.cargo("-Zohm-defaults build")
+        .masquerade_as_nightly_cargo(&["ohm-defaults"])
+        .env("CARGO_INCREMENTAL", "1")
+        .env("RUSTC_WRAPPER", &wrapper)
+        .env("OHM_DEFAULTS_LOG", &log)
+        .env("CARGO_PROFILE_DEV_OPT_LEVEL", "2")
+        .run();
+    assert!(
+        ohm_incremental_codegen_rustflags(&rustc_invocation(
+            &fs::read_to_string(&log).unwrap(),
+            "foo"
+        ))
+        .is_empty()
+    );
+
+    p.cargo("clean").run();
+    fs::write(&log, "").unwrap();
+    p.cargo("-Zohm-defaults build --release")
+        .masquerade_as_nightly_cargo(&["ohm-defaults"])
+        .env("CARGO_INCREMENTAL", "1")
+        .env("RUSTC_WRAPPER", &wrapper)
+        .env("OHM_DEFAULTS_LOG", &log)
+        .env("CARGO_PROFILE_RELEASE_INCREMENTAL", "true")
+        .run();
+    assert!(
+        ohm_incremental_codegen_rustflags(&rustc_invocation(
+            &fs::read_to_string(&log).unwrap(),
+            "foo"
+        ))
+        .is_empty()
+    );
+
+    p.cargo("clean").run();
+    fs::write(&log, "").unwrap();
+    p.cargo("-Zohm-defaults build")
+        .masquerade_as_nightly_cargo(&["ohm-defaults"])
+        .env("CARGO_INCREMENTAL", "1")
+        .env("RUSTC_WRAPPER", &wrapper)
+        .env("OHM_DEFAULTS_LOG", &log)
+        .env("RUSTFLAGS", "-Cinstrument-coverage=no")
+        .run();
+    assert!(
+        ohm_incremental_codegen_rustflags(&rustc_invocation(
+            &fs::read_to_string(&log).unwrap(),
+            "foo"
+        ))
+        .is_empty()
+    );
+
+    p.cargo("clean").run();
+    fs::write(&log, "").unwrap();
+    p.cargo("-Zohm-defaults build")
+        .masquerade_as_nightly_cargo(&["ohm-defaults"])
+        .env("CARGO_INCREMENTAL", "1")
+        .env("RUSTC_WRAPPER", &wrapper)
+        .env("OHM_DEFAULTS_LOG", &log)
+        .env(
+            "RUSTFLAGS",
+            "-Zohm-caller-local-cgus=no -Zohm-stable-cgu-merging=no",
+        )
+        .run();
+    assert_eq!(
+        ohm_incremental_codegen_rustflags(&rustc_invocation(
+            &fs::read_to_string(&log).unwrap(),
+            "foo"
+        )),
+        [
+            "-Zohm-caller-local-cgus",
+            "-Zohm-stable-cgu-merging",
+            "-Zohm-caller-local-cgus=no",
+            "-Zohm-stable-cgu-merging=no",
+        ]
+    );
+
+    p.cargo("clean").run();
+    fs::write(&log, "").unwrap();
+    p.cargo("-Zohm-defaults build")
+        .masquerade_as_nightly_cargo(&["ohm-defaults"])
+        .env("CARGO_INCREMENTAL", "1")
+        .env("RUSTC_WRAPPER", &wrapper)
+        .env("OHM_DEFAULTS_LOG", &log)
+        .env("OHM_INCREMENTAL_UNSUPPORTED", "1")
+        .run();
+    assert!(
+        ohm_incremental_codegen_rustflags(&rustc_invocation(
+            &fs::read_to_string(&log).unwrap(),
+            "foo"
+        ))
+        .is_empty()
+    );
 
     p.cargo("clean").run();
     fs::write(&log, "").unwrap();
@@ -351,6 +493,17 @@ fn ohm_rustflags<'a>(invocation: &'a [&str]) -> Vec<&'a str> {
         .copied()
         .filter(|flag| {
             flag.starts_with("-Zpublic-api-hash") || flag.starts_with("-Zcache-proc-macros")
+        })
+        .collect()
+}
+
+fn ohm_incremental_codegen_rustflags<'a>(invocation: &'a [&str]) -> Vec<&'a str> {
+    invocation
+        .iter()
+        .copied()
+        .filter(|flag| {
+            flag.starts_with("-Zohm-caller-local-cgus")
+                || flag.starts_with("-Zohm-stable-cgu-merging")
         })
         .collect()
 }
