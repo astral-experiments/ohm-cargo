@@ -505,6 +505,11 @@ fn build_work(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResul
         .then(|| bcx.ws.build_dir().into_path_unlocked());
     let validate_shared_registry_environment =
         shared_registry_root.is_some() && id.source_id().is_remote_registry();
+    let shared_registry_compiler_driver = build_runner
+        .files()
+        .shared_registry_compiler_driver()
+        .map(Path::to_path_buf);
+    let shared_registry_compiler_driver_fresh = shared_registry_compiler_driver.clone();
     let all = (
         id,
         library_name.clone(),
@@ -701,6 +706,7 @@ fn build_work(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResul
             validate_shared_registry_environment,
             id,
             &parsed_output,
+            shared_registry_compiler_driver.as_deref(),
         )?;
 
         if json_messages {
@@ -731,7 +737,12 @@ fn build_work(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResul
                 &msrv_fresh,
             )?,
         };
-        validate_shared_registry_build_output(validate_shared_registry_environment, id, &output)?;
+        validate_shared_registry_build_output(
+            validate_shared_registry_environment,
+            id,
+            &output,
+            shared_registry_compiler_driver_fresh.as_deref(),
+        )?;
 
         if json_messages {
             emit_build_output(state, &output, script_out_dir.as_path(), id)?;
@@ -758,23 +769,57 @@ fn validate_shared_registry_build_output(
     shared_registry: bool,
     package: PackageId,
     output: &BuildOutput,
+    compiler_driver: Option<&Path>,
 ) -> CargoResult<()> {
     if !shared_registry {
         return Ok(());
     }
 
-    if let Some((name, _)) = output.env.iter().find(|(name, value)| {
-        !value.is_empty()
-            && (super::OHM_COMPILER_LOADER_INJECTION_ENVIRONMENT.contains(&name.as_str())
-                || matches!(
-                    name.as_str(),
-                    "RUSTC_BOOTSTRAP" | "RUSTC_OVERRIDE_VERSION_STRING"
-                ))
+    if let Some((name, _)) = output.env.iter().find(|(name, _)| {
+        super::OHM_COMPILER_LOADER_ENVIRONMENT.contains(&name.as_str())
+            || name.as_str() == paths::dylib_path_envvar()
+            || matches!(
+                name.as_str(),
+                "PATH" | "RUSTC_BOOTSTRAP" | "RUSTC_OVERRIDE_VERSION_STRING"
+            )
     }) {
         bail!(
             "cannot share registry package `{package}` because its build script overrides \
              the compiler environment variable `{name}`; disable -Zohm-shared-registry-cache"
         );
+    }
+
+    if let Some(compiler_driver) = compiler_driver
+        && let Some(filename) = compiler_driver.file_name()
+    {
+        for library_path in &output.library_paths {
+            let directory = get_dynamic_search_path(library_path.as_ref());
+            let candidate = directory.join(filename);
+            match candidate.canonicalize() {
+                Ok(candidate) if candidate == compiler_driver => {}
+                Ok(_) => {
+                    bail!(
+                        "cannot share registry package `{package}` because its build-script \
+                         library search path `{}` contains an alternate compiler driver; \
+                         disable -Zohm-shared-registry-cache",
+                        directory.display()
+                    );
+                }
+                Err(error)
+                    if matches!(
+                        error.kind(),
+                        std::io::ErrorKind::NotFound | std::io::ErrorKind::NotADirectory
+                    ) => {}
+                Err(error) => {
+                    bail!(
+                        "cannot share registry package `{package}` because its build-script \
+                         library search path `{}` cannot be inspected: {error}; disable \
+                         -Zohm-shared-registry-cache",
+                        directory.display()
+                    );
+                }
+            }
+        }
     }
 
     Ok(())
