@@ -2827,6 +2827,115 @@ fn shared_registry_cache_rejects_build_script_opaque_linker_arguments() {
 }
 
 #[cargo_test]
+fn shared_registry_cache_validates_configured_build_script_overrides() {
+    Package::new("configured-override-registry", "1.0.0")
+        .links("configured_native")
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "configured-override-registry"
+                version = "1.0.0"
+                edition = "2021"
+                links = "configured_native"
+            "#,
+        )
+        .file("build.rs", "this overridden build script is never compiled")
+        .file("src/lib.rs", "pub fn value() -> u32 { 67 }")
+        .publish();
+
+    let manifest = r#"
+        [package]
+        name = "configured-override-cache-app"
+        version = "0.1.0"
+        edition = "2021"
+
+        [dependencies]
+        configured-override-registry = "1.0.0"
+    "#;
+    let source = "fn main() { println!(\"{}\", configured_override_registry::value()); }";
+    let safe_configuration = format!(
+        "[target.{}.configured_native]\nrustc-env = {{ SAFE_GENERATED_VALUE = \"67\" }}\n",
+        rustc_host()
+    );
+    let left = project_in("configured-override-safe-left")
+        .file("Cargo.toml", manifest)
+        .file(".cargo/config.toml", &safe_configuration)
+        .file("src/main.rs", source)
+        .build();
+    let right = project_in("configured-override-safe-right")
+        .file("Cargo.toml", manifest)
+        .file(".cargo/config.toml", &safe_configuration)
+        .file("src/main.rs", source)
+        .build();
+    let shared = paths::root().join("configured-override-safe-shared-build-directory");
+
+    left.cargo("-Zohm-shared-registry-cache run")
+        .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+        .env("CARGO_BUILD_BUILD_DIR", &shared)
+        .with_stderr_contains("[COMPILING] configured-override-registry v1.0.0")
+        .with_stdout_data("67\n")
+        .run();
+    right
+        .cargo("-Zohm-shared-registry-cache run")
+        .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+        .env("CARGO_BUILD_BUILD_DIR", &shared)
+        .with_stderr_does_not_contain("[COMPILING] configured-override-registry v1.0.0")
+        .with_stdout_data("67\n")
+        .run();
+
+    for (index, (configuration, expected)) in [
+        (
+            r#"rustc-env = { LD_LIBRARY_PATH = "/opaque/compiler-driver" }"#,
+            "compiler environment variable `LD_LIBRARY_PATH`",
+        ),
+        (
+            r#"rustc-env = { RUSTC_OVERRIDE_VERSION_STRING = "1.99.0" }"#,
+            "compiler environment variable `RUSTC_OVERRIDE_VERSION_STRING`",
+        ),
+        (
+            r#"rustc-link-arg = ["-fuse-ld=/opaque/compiler-linker"]"#,
+            "opaque compiler linker arguments",
+        ),
+        (
+            r#"rustc-link-lib = ["link-arg=--opaque-linker"]"#,
+            "opaque compiler linker arguments",
+        ),
+        (
+            r#"rustc-link-lib = ["link-arg:+verbatim=--opaque-linker"]"#,
+            "opaque compiler linker arguments",
+        ),
+        (
+            r#"rustc-flags = "-llink-arg=--opaque-linker""#,
+            "opaque compiler linker arguments",
+        ),
+    ]
+    .into_iter()
+    .enumerate()
+    {
+        let configuration = format!(
+            "[target.{}.configured_native]\n{configuration}\n",
+            rustc_host()
+        );
+        let project = project_in(&format!("configured-override-unsafe-{index}"))
+            .file("Cargo.toml", manifest)
+            .file(".cargo/config.toml", &configuration)
+            .file("src/main.rs", source)
+            .build();
+
+        project
+            .cargo("-Zohm-shared-registry-cache build")
+            .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+            .env("RUSTC_BOOTSTRAP", "1")
+            .env("RUSTFLAGS", "-Zunstable-options")
+            .with_status(101)
+            .with_stderr_contains("[ERROR] cannot share registry package [..]")
+            .with_stderr_contains(&format!("[..]{expected}[..]"))
+            .run();
+    }
+}
+
+#[cargo_test]
 fn shared_registry_cache_rejects_build_script_native_compiler_driver_shadows() {
     Package::new("script-native-driver-registry", "1.0.0")
         .file(
