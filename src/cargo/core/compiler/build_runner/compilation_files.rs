@@ -147,6 +147,7 @@ pub struct CompilationFiles<'a, 'gctx> {
     outputs: HashMap<Unit, OnceCell<Arc<Vec<OutputFile>>>>,
 }
 
+/// Separates verified immutable registry artifacts from workspace-private compiler outputs.
 struct SharedRegistryCache {
     workspace: String,
     /// Includes the compiler and every stable Cargo-provided build-script input.
@@ -222,12 +223,6 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
             .then(|| {
                 let context = build_runner.bcx.gctx;
                 let compiler = build_runner.bcx.rustc();
-                let workspace_root = build_runner
-                    .bcx
-                    .ws
-                    .root()
-                    .canonicalize()
-                    .unwrap_or_else(|_| build_runner.bcx.ws.root().to_path_buf());
                 let rustdoc = context.rustdoc().ok().map(Path::to_path_buf);
                 let cargo = context.cargo_exe().ok().map(Path::to_path_buf);
                 let configured_environment = context.env_config().ok().map(|variables| {
@@ -298,13 +293,7 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
                     "PERL",
                     "OPENSSL_SRC_PERL",
                 ] {
-                    native_tool_names.push(tool.to_owned());
-                    native_tool_names.push(format!("HOST_{tool}"));
-                    native_tool_names.push(format!("TARGET_{tool}"));
-                    for kind in &build_runner.bcx.all_kinds {
-                        let target = build_runner.bcx.target_data.short_name(kind);
-                        native_tool_names.extend(native_target_environment_names(tool, target));
-                    }
+                    append_native_environment_names(&mut native_tool_names, tool, build_runner);
                 }
                 native_tool_names.sort_unstable();
                 native_tool_names.dedup();
@@ -318,15 +307,8 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
                 let opaque_native_selector = ["CROSS_COMPILE", "CMAKE_TOOLCHAIN_FILE"]
                     .into_iter()
                     .any(|selector| {
-                        let mut names = vec![
-                            selector.to_owned(),
-                            format!("HOST_{selector}"),
-                            format!("TARGET_{selector}"),
-                        ];
-                        for kind in &build_runner.bcx.all_kinds {
-                            let target = build_runner.bcx.target_data.short_name(kind);
-                            names.extend(native_target_environment_names(selector, target));
-                        }
+                        let mut names = Vec::new();
+                        append_native_environment_names(&mut names, selector, build_runner);
                         names.into_iter().any(|name| {
                             effective_environment(&name).is_some_and(|value| !value.is_empty())
                         })
@@ -359,44 +341,33 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
                             Some((metadata.len(), modified, metadata.created().ok()))
                         }
                     });
-                let compiler_driver_identity = compiler_driver_identity(build_runner);
+                let compiler_driver_identity = compiler_driver_identity_for_sysroot(
+                    &build_runner.bcx.target_data.info(CompileKind::Host).sysroot,
+                );
                 let verified_compiler_driver =
                     compiler_driver_identity.as_ref().is_some_and(|driver| {
-                        [
-                            "DYLD_LIBRARY_PATH",
-                            "DYLD_FALLBACK_LIBRARY_PATH",
-                            "DYLD_FRAMEWORK_PATH",
-                            "DYLD_FALLBACK_FRAMEWORK_PATH",
-                            "LD_LIBRARY_PATH",
-                            "LIBPATH",
-                            "SHLIB_PATH",
-                        ]
-                        .into_iter()
-                        .chain(std::iter::once(paths::dylib_path_envvar()))
-                        .all(|name| {
-                            effective_environment(name).is_none_or(|search_path| {
-                                std::env::split_paths(&search_path).all(|directory| {
-                                    directory.is_absolute()
-                                        && compiler_driver_search_directory_is_safe(
-                                            &directory,
-                                            &driver.path,
-                                        )
+                        super::OHM_COMPILER_LOADER_ENVIRONMENT
+                            .iter()
+                            .copied()
+                            .filter(|name| {
+                                !super::OHM_COMPILER_LOADER_INJECTION_ENVIRONMENT.contains(name)
+                            })
+                            .chain(["LIBPATH", "SHLIB_PATH", paths::dylib_path_envvar()])
+                            .all(|name| {
+                                effective_environment(name).is_none_or(|search_path| {
+                                    std::env::split_paths(&search_path).all(|directory| {
+                                        directory.is_absolute()
+                                            && compiler_driver_search_directory_is_safe(
+                                                &directory,
+                                                &driver.path,
+                                            )
+                                    })
                                 })
                             })
-                        })
                     });
-                let injected_loader = [
-                    "DYLD_INSERT_LIBRARIES",
-                    "DYLD_FORCE_FLAT_NAMESPACE",
-                    "DYLD_VERSIONED_LIBRARY_PATH",
-                    "DYLD_VERSIONED_FRAMEWORK_PATH",
-                    "DYLD_IMAGE_SUFFIX",
-                    "DYLD_ROOT_PATH",
-                    "LD_PRELOAD",
-                    "LD_AUDIT",
-                ]
-                .into_iter()
-                .any(|name| effective_environment(name).is_some_and(|value| !value.is_empty()));
+                let injected_loader = super::OHM_COMPILER_LOADER_INJECTION_ENVIRONMENT
+                    .iter()
+                    .any(|name| effective_environment(name).is_some_and(|value| !value.is_empty()));
                 let mut linkers = build_runner
                     .bcx
                     .all_kinds
@@ -508,7 +479,7 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
                     }
                 }
                 SharedRegistryCache {
-                    workspace: util::short_hash(&workspace_root),
+                    workspace: Layout::shared_workspace_namespace(build_runner.bcx.ws),
                     rustc: util::short_hash(&(
                         (
                             &compiler.verbose_version,
@@ -1107,7 +1078,28 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
     }
 }
 
-/// Native build tools disagree on whether target-name dots are normalized.
+/// Appends every plain, host, target, and toolchain-specific native-tool selector.
+///
+/// Sharing must reject opaque executables under every spelling consumed by build helpers.
+fn append_native_environment_names(
+    names: &mut Vec<String>,
+    name: &str,
+    build_runner: &BuildRunner<'_, '_>,
+) {
+    names.extend([
+        name.to_owned(),
+        format!("HOST_{name}"),
+        format!("TARGET_{name}"),
+    ]);
+    for kind in &build_runner.bcx.all_kinds {
+        let target = build_runner.bcx.target_data.short_name(kind);
+        names.extend(native_target_environment_names(name, target));
+    }
+}
+
+/// Covers the incompatible target-name normalization used by `cc`, CMake, and pkg-config.
+///
+/// CMake and pkg-config preserve dots that `cc` replaces with underscores.
 fn native_target_environment_names(name: &str, target: &str) -> [String; 3] {
     [
         format!("{name}_{target}"),
@@ -1116,7 +1108,7 @@ fn native_target_environment_names(name: &str, target: &str) -> [String; 3] {
     ]
 }
 
-/// Windows applies environment aliases case-insensitively after Cargo's exact-key checks.
+/// Rejects Windows configuration aliases that can bypass Cargo's case-sensitive lookups.
 fn configured_environment_has_sensitive_case_alias(
     configured: &[(String, OsString)],
     case_insensitive: bool,
@@ -1179,7 +1171,9 @@ fn is_immutable_registry_unit(
     eligible
 }
 
-/// A dynamically loaded codegen backend has its own executable implementation and state.
+/// Rejects compiler options and target specifications that can execute opaque external code.
+///
+/// Response files, dynamic LLVM extensions, custom targets, and linker overrides remain private.
 fn unit_uses_custom_codegen_backend(unit: &Unit, build_runner: &BuildRunner<'_, '_>) -> bool {
     let host_sysroot = &build_runner.bcx.target_data.info(CompileKind::Host).sysroot;
     let target_sysroot = &build_runner.bcx.target_data.info(unit.kind).sysroot;
@@ -1293,12 +1287,9 @@ fn sysroot_has_custom_codegen_backends(sysroot: &Path, host: &str) -> bool {
     !matches!(backends.try_exists(), Ok(false))
 }
 
-/// Identify the one real compiler driver dynamically loaded by the selected toolchain.
-fn compiler_driver_identity(build_runner: &BuildRunner<'_, '_>) -> Option<CompilerDriverIdentity> {
-    let sysroot = &build_runner.bcx.target_data.info(CompileKind::Host).sysroot;
-    compiler_driver_identity_for_sysroot(sysroot)
-}
-
+/// Identifies the sole readable, sysroot-contained runtime driver without hashing its contents.
+///
+/// Missing, ambiguous, unreadable, or escaped drivers make the selected toolchain unshareable.
 fn compiler_driver_identity_for_sysroot(sysroot: &Path) -> Option<CompilerDriverIdentity> {
     let directory = sysroot.join(if cfg!(windows) { "bin" } else { "lib" });
     let driver_prefix = format!("{}rustc_driver-", std::env::consts::DLL_PREFIX);
@@ -1336,7 +1327,7 @@ fn compiler_driver_identity_for_sysroot(sysroot: &Path) -> Option<CompilerDriver
     })
 }
 
-/// A loader search directory must not shadow the compiler's verified sysroot driver.
+/// Accepts absent driver names and genuine aliases while rejecting shadowed runtime drivers.
 fn compiler_driver_search_directory_is_safe(directory: &Path, expected: &Path) -> bool {
     let Some(filename) = expected.file_name() else {
         return false;
@@ -1387,7 +1378,9 @@ fn compiler_has_verified_toolchain_identity(build_runner: &BuildRunner<'_, '_>) 
         .is_ok_and(|expected| expected == compiler)
 }
 
-/// Build scripts receive `RUSTDOC` and can execute it without observing its private inputs.
+/// Accepts the selected toolchain's rustdoc, its exact missing path, or an authenticated proxy.
+///
+/// Build scripts can execute `RUSTDOC` without tracking the wrapper's private inputs.
 fn rustdoc_has_verified_toolchain_identity(
     rustdoc: &Path,
     build_runner: &BuildRunner<'_, '_>,

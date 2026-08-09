@@ -770,7 +770,10 @@ fn build_work(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResul
     Ok(job)
 }
 
-/// Registry build scripts must not turn a verified compiler into an opaque injected executable.
+/// Validates configured, freshly generated, and cached outputs for physically shared units.
+///
+/// Workspace-private scripts remain unrestricted; shared outputs cannot inject compiler policy,
+/// opaque linker arguments, or an alternate runtime compiler driver.
 fn validate_shared_registry_build_output(
     shared_registry: bool,
     package: PackageId,
@@ -840,7 +843,7 @@ fn validate_shared_registry_build_output(
     Ok(())
 }
 
-/// Windows treats process environment names as case-insensitive, unlike Unix.
+/// Detects compiler and loader overrides using the target platform's environment-key casing.
 fn build_script_overrides_compiler_environment(name: &str, case_insensitive: bool) -> bool {
     super::OHM_COMPILER_LOADER_ENVIRONMENT
         .iter()
@@ -860,7 +863,7 @@ fn build_script_overrides_compiler_environment(name: &str, case_insensitive: boo
         })
 }
 
-/// A native `-l link-arg=...` entry forwards executable arguments to the linker.
+/// Recognizes executable linker arguments even when native-library modifiers precede the value.
 fn build_script_uses_opaque_link_library(library: &str) -> bool {
     library
         .split_once('=')
