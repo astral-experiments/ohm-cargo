@@ -2404,6 +2404,19 @@ fn calculate_normal(
             .map(std::ffi::OsString::as_os_str)
             .or_else(|| build_runner.bcx.gctx.get_env_os("RUSTC_BOOTSTRAP"));
         bootstrap.hash(&mut config);
+        let override_version = build_runner
+            .bcx
+            .gctx
+            .env_config()?
+            .get("RUSTC_OVERRIDE_VERSION_STRING")
+            .map(std::ffi::OsString::as_os_str)
+            .or_else(|| {
+                build_runner
+                    .bcx
+                    .gctx
+                    .get_env_os("RUSTC_OVERRIDE_VERSION_STRING")
+            });
+        override_version.hash(&mut config);
     }
     let linker = if unit.target.for_host() && !build_runner.bcx.gctx.target_applies_to_host()? {
         build_runner.compilation.host_linker()
