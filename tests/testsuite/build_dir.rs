@@ -2001,6 +2001,10 @@ fn shared_registry_cache_rejects_ambient_rustdoc_wrappers() {
             "rustdoc-wrapper",
             "#!/bin/sh\nprintf '%s\\n' \"$OHM_RUSTDOC_MODE\"\n",
         )
+        .executable(
+            "rustdoc",
+            "#!/bin/sh\nprintf '%s\\n' \"$OHM_RUSTDOC_MODE\"\n",
+        )
         .build();
     let right = project_in("rustdoc-wrapper-right")
         .file("Cargo.toml", manifest)
@@ -2021,6 +2025,33 @@ fn shared_registry_cache_rejects_ambient_rustdoc_wrappers() {
         .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
         .env("CARGO_BUILD_BUILD_DIR", &shared)
         .env("RUSTDOC", &rustdoc)
+        .env("OHM_RUSTDOC_MODE", "right")
+        .with_stderr_contains("[COMPILING] rustdoc-wrapper-registry v1.0.0")
+        .with_stdout_data("right\n")
+        .run();
+
+    let inherited_path = std::env::var_os("PATH").expect("available executable search path");
+    let intercepted_path = std::env::join_paths(
+        std::iter::once(left.root()).chain(std::env::split_paths(&inherited_path)),
+    )
+    .expect("prepend the isolated fake rustdoc without changing its pathname");
+    let intercepted_build = paths::root().join("rustdoc-bare-path-shared-build-directory");
+
+    left.cargo("-Zohm-shared-registry-cache run")
+        .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+        .env("CARGO_BUILD_BUILD_DIR", &intercepted_build)
+        .env("PATH", &intercepted_path)
+        .env("RUSTDOC", "rustdoc")
+        .env("OHM_RUSTDOC_MODE", "left")
+        .with_stderr_contains("[COMPILING] rustdoc-wrapper-registry v1.0.0")
+        .with_stdout_data("left\n")
+        .run();
+    right
+        .cargo("-Zohm-shared-registry-cache run")
+        .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+        .env("CARGO_BUILD_BUILD_DIR", &intercepted_build)
+        .env("PATH", &intercepted_path)
+        .env("RUSTDOC", "rustdoc")
         .env("OHM_RUSTDOC_MODE", "right")
         .with_stderr_contains("[COMPILING] rustdoc-wrapper-registry v1.0.0")
         .with_stdout_data("right\n")
@@ -2677,6 +2708,75 @@ fn shared_registry_cache_rejects_build_script_compiler_search_path_overrides() {
             .with_status(101)
             .with_stderr_contains("[ERROR] cannot share registry package [..]")
             .with_stderr_contains(&format!("[..]compiler environment variable `{name}`[..]"))
+            .run();
+    }
+}
+
+#[cargo_test]
+fn shared_registry_cache_rejects_build_script_opaque_linker_arguments() {
+    Package::new("script-linker-registry", "1.0.0")
+        .file(
+            "Cargo.toml",
+            r#"
+            [package]
+            name = "script-linker-registry"
+            version = "1.0.0"
+            edition = "2021"
+
+            [lib]
+            crate-type = ["rlib", "cdylib"]
+            "#,
+        )
+        .file(
+            "build.rs",
+            r#"fn main() {
+                let form = std::env::var("OHM_SCRIPT_LINKER_FORM").unwrap();
+                println!("cargo:rerun-if-env-changed=OHM_SCRIPT_LINKER_FORM");
+                match form.as_str() {
+                    "argument" => println!(
+                        "cargo:rustc-link-arg=-fuse-ld=/opaque/compiler-linker-wrapper"
+                    ),
+                    "library" => println!("cargo:rustc-link-lib=link-arg=--opaque-linker"),
+                    "modifier" => println!(
+                        "cargo:rustc-link-lib=link-arg:+verbatim=--opaque-linker"
+                    ),
+                    "flags" => println!("cargo:rustc-flags=-llink-arg=--opaque-linker"),
+                    _ => {}
+                }
+            }"#,
+        )
+        .file("src/lib.rs", "pub fn value() -> u32 { 59 }")
+        .publish();
+
+    let project = project()
+        .file(
+            "Cargo.toml",
+            r#"
+            [package]
+            name = "script-linker-cache-app"
+            version = "0.1.0"
+            edition = "2021"
+
+            [dependencies]
+            script-linker-registry = "1.0.0"
+            "#,
+        )
+        .file(
+            "src/lib.rs",
+            "pub fn value() -> u32 { script_linker_registry::value() }",
+        )
+        .build();
+
+    for form in ["argument", "library", "modifier", "flags"] {
+        project
+            .cargo("-Zohm-shared-registry-cache build")
+            .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+            .env("RUSTC_BOOTSTRAP", "1")
+            .env("RUSTFLAGS", "-Zunstable-options")
+            .env("OHM_SCRIPT_LINKER_FORM", form)
+            .with_status(101)
+            .with_stderr_contains("[ERROR] cannot share registry package [..]")
+            .with_stderr_contains("[..]opaque compiler linker arguments[..]")
             .run();
     }
 }
