@@ -543,6 +543,16 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
         self.files.as_ref().unwrap()
     }
 
+    /// Records whether a successful registry build produced cached diagnostics.
+    ///
+    /// Compiler message caches are intentionally created lazily, so an absent
+    /// cache is safe to reuse only when its originating build recorded that it
+    /// emitted no cacheable messages.
+    pub(crate) fn registry_message_provenance_path(&self, unit: &Unit) -> PathBuf {
+        self.files()
+            .fingerprint_file_path(unit, "ohm-message-provenance-")
+    }
+
     /// Validates the exact build-mode registry units selected by a check graph.
     /// This runs after Cargo has computed canonical unit hashes, LTO settings,
     /// output paths, and build-script dependencies, but before any rustc work.
@@ -560,33 +570,55 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
             .collect::<Vec<_>>();
         promoted_units.sort_by_key(|unit| self.files().unit_hash(unit));
 
+        let mut registry_closure_units = HashSet::default();
+        let mut pending = promoted_units.clone();
+        while let Some(unit) = pending.pop() {
+            if !registry_closure_units.insert(unit.clone()) {
+                continue;
+            }
+            pending.extend(
+                self.unit_deps(&unit)
+                    .iter()
+                    .filter(|dependency| {
+                        dependency
+                            .unit
+                            .pkg
+                            .package_id()
+                            .source_id()
+                            .is_remote_registry()
+                    })
+                    .map(|dependency| dependency.unit.clone()),
+            );
+        }
+        let mut registry_closure_units = registry_closure_units.into_iter().collect::<Vec<_>>();
+        registry_closure_units.sort_by_key(|unit| self.files().unit_hash(unit));
+
         if self.bcx.gctx.cli_unstable().fine_grain_locking {
             // Keep the complete registry closure stable from the fingerprint
             // probe until the normal job queue acquires these same locks.
-            let mut locked_units = HashSet::default();
-            let mut pending = promoted_units.clone();
-            while let Some(unit) = pending.pop() {
-                if !locked_units.insert(unit.clone()) {
-                    continue;
-                }
-                pending.extend(
-                    self.unit_deps(&unit)
-                        .iter()
-                        .filter(|dependency| {
-                            dependency
-                                .unit
-                                .pkg
-                                .package_id()
-                                .source_id()
-                                .is_remote_registry()
-                        })
-                        .map(|dependency| dependency.unit.clone()),
-                );
-            }
-            let mut locked_units = locked_units.into_iter().collect::<Vec<_>>();
-            locked_units.sort_by_key(|unit| self.files().unit_hash(unit));
-            for unit in &locked_units {
+            for unit in &registry_closure_units {
                 self.lock_manager.lock_shared(self, unit)?;
+            }
+        }
+
+        // Future-incompatibility diagnostics can originate in any transitive
+        // dependency, even when only its parent has an incoming check edge.
+        for unit in registry_closure_units
+            .iter()
+            .filter(|unit| Self::is_promotable_registry_dependency(unit))
+        {
+            let messages_available =
+                match std::fs::read_to_string(self.registry_message_provenance_path(unit)) {
+                    Ok(state) if state == "present" => {
+                        self.files().message_cache_path(unit).is_file()
+                    }
+                    Ok(state) if state == "empty" => {
+                        !self.files().message_cache_path(unit).exists()
+                    }
+                    _ => false,
+                };
+            if !messages_available {
+                return Ok(false);
             }
         }
 

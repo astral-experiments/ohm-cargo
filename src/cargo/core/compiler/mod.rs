@@ -943,6 +943,9 @@ fn rustc(
         .to_path_buf();
     let fingerprint_dir = build_runner.files().fingerprint_dir(unit);
     let cached_output_path = build_runner.files().message_cache_path(unit);
+    let message_provenance_path = (unit.mode == CompileMode::Build
+        && unit.pkg.package_id().source_id().is_remote_registry())
+    .then(|| build_runner.registry_message_provenance_path(unit));
     let mut cached_output_options = OutputOptions::for_fresh(build_runner, unit);
     let script_metadatas = build_runner.find_build_script_metadatas(unit);
     let is_local = unit.is_local();
@@ -1245,6 +1248,14 @@ fn rustc(
             return Ok(());
         }
 
+        if let Some(path) = &message_provenance_path {
+            match fs::remove_file(path) {
+                Ok(()) => {}
+                Err(error) if error.kind() == std::io::ErrorKind::NotFound => {}
+                Err(error) => return Err(error.into()),
+            }
+        }
+
         state.running(&rustc);
         let timestamp = paths::set_invocation_time(&fingerprint_dir)?;
         for file in sbom_files {
@@ -1308,6 +1319,15 @@ fn rustc(
 
         // Exec should never return with success *and* generate an error.
         debug_assert_eq!(output_options.errors_seen, 0);
+
+        if let Some(path) = &message_provenance_path {
+            let provenance = if cached_output_path.is_file() {
+                "present"
+            } else {
+                "empty"
+            };
+            paths::write_atomic(path, provenance)?;
+        }
 
         if let Some(cache) = &relink_cache {
             let unused_externs =
