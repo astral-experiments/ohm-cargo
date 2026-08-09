@@ -1723,12 +1723,11 @@ where
                     .components()
                     .map(|component| component.as_os_str())
                     .collect::<Vec<_>>();
-                components
-                    .windows(2)
-                    .any(|pair| pair == [OsStr::new("build"), OsStr::new("registries")])
-                    && components
-                        .windows(2)
-                        .any(|pair| pair == [OsStr::new("run"), OsStr::new("out")])
+                components.windows(6).any(|directory| {
+                    directory[0] == OsStr::new("build")
+                        && directory[1] == OsStr::new("registries")
+                        && directory[5] == OsStr::new("out")
+                })
             }
         {
             search_path.push(canonical);
