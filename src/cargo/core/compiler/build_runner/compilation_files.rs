@@ -285,7 +285,19 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
                 .collect::<Vec<_>>();
                 let effective_executable_path = effective_environment("PATH");
                 let mut native_tool_names = Vec::new();
-                for tool in ["CC", "CXX", "AR"] {
+                for tool in [
+                    "CC",
+                    "CXX",
+                    "AR",
+                    "RANLIB",
+                    "NVCC",
+                    "CMAKE",
+                    "EMCMAKE",
+                    "EMMAKE",
+                    "PKG_CONFIG",
+                    "PERL",
+                    "OPENSSL_SRC_PERL",
+                ] {
                     native_tool_names.push(tool.to_owned());
                     native_tool_names.push(format!("HOST_{tool}"));
                     native_tool_names.push(format!("TARGET_{tool}"));
@@ -305,6 +317,23 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
                         (name, value)
                     })
                     .collect::<Vec<_>>();
+                let opaque_native_selector = ["CROSS_COMPILE", "CMAKE_TOOLCHAIN_FILE"]
+                    .into_iter()
+                    .any(|selector| {
+                        let mut names = vec![
+                            selector.to_owned(),
+                            format!("HOST_{selector}"),
+                            format!("TARGET_{selector}"),
+                        ];
+                        for kind in &build_runner.bcx.all_kinds {
+                            let target = build_runner.bcx.target_data.short_name(kind);
+                            names.push(format!("{selector}_{target}"));
+                            names.push(format!("{selector}_{}", target.replace(['-', '.'], "_")));
+                        }
+                        names.into_iter().any(|name| {
+                            effective_environment(&name).is_some_and(|value| !value.is_empty())
+                        })
+                    });
                 let verified_environment_spelling =
                     configured_environment.as_ref().is_some_and(|configured| {
                         !configured_environment_has_sensitive_case_alias(configured, cfg!(windows))
@@ -412,7 +441,8 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
                             )
                     })
                 }) && effective_environment("CC_KNOWN_WRAPPER_CUSTOM")
-                    .is_none_or(|wrapper| wrapper.is_empty());
+                    .is_none_or(|wrapper| wrapper.is_empty())
+                    && !opaque_native_selector;
                 let verified_rustdoc = rustdoc.as_deref().is_some_and(|rustdoc| {
                     rustdoc_has_verified_toolchain_identity(rustdoc, build_runner)
                 });
