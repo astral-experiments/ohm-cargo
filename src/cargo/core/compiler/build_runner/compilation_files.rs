@@ -1055,10 +1055,12 @@ fn unit_uses_custom_codegen_backend(unit: &Unit, build_runner: &BuildRunner<'_, 
     }
 
     let mut flags = unit
-        .profile
-        .rustflags
+        .pkg
+        .manifest()
+        .lint_rustflags()
         .iter()
-        .map(|flag| flag.as_str())
+        .map(String::as_str)
+        .chain(unit.profile.rustflags.iter().map(|flag| flag.as_str()))
         .chain(unit.rustflags.iter().map(String::as_str))
         .chain(
             build_runner
@@ -1070,13 +1072,20 @@ fn unit_uses_custom_codegen_backend(unit: &Unit, build_runner: &BuildRunner<'_, 
         );
 
     while let Some(flag) = flags.next() {
+        if flag.starts_with('@') {
+            return true;
+        }
         let option = if flag == "-C" || flag == "-Z" {
             flags.next()
         } else {
             flag.strip_prefix("-C").or_else(|| flag.strip_prefix("-Z"))
         };
         if option.is_some_and(|option| {
-            option == "codegen-backend" || option.starts_with("codegen-backend=")
+            option.starts_with('@')
+                || matches!(
+                    option.split('=').next(),
+                    Some("codegen-backend" | "codegen_backend")
+                )
         }) {
             return true;
         }
