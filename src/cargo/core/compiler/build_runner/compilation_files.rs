@@ -303,9 +303,7 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
                     native_tool_names.push(format!("TARGET_{tool}"));
                     for kind in &build_runner.bcx.all_kinds {
                         let target = build_runner.bcx.target_data.short_name(kind);
-                        native_tool_names.push(format!("{tool}_{target}"));
-                        native_tool_names
-                            .push(format!("{tool}_{}", target.replace(['-', '.'], "_")));
+                        native_tool_names.extend(native_target_environment_names(tool, target));
                     }
                 }
                 native_tool_names.sort_unstable();
@@ -327,8 +325,7 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
                         ];
                         for kind in &build_runner.bcx.all_kinds {
                             let target = build_runner.bcx.target_data.short_name(kind);
-                            names.push(format!("{selector}_{target}"));
-                            names.push(format!("{selector}_{}", target.replace(['-', '.'], "_")));
+                            names.extend(native_target_environment_names(selector, target));
                         }
                         names.into_iter().any(|name| {
                             effective_environment(&name).is_some_and(|value| !value.is_empty())
@@ -1108,6 +1105,15 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
         }
         Ok(outputs)
     }
+}
+
+/// Native build tools disagree on whether target-name dots are normalized.
+fn native_target_environment_names(name: &str, target: &str) -> [String; 3] {
+    [
+        format!("{name}_{target}"),
+        format!("{name}_{}", target.replace('-', "_")),
+        format!("{name}_{}", target.replace(['-', '.'], "_")),
+    ]
 }
 
 /// Windows applies environment aliases case-insensitively after Cargo's exact-key checks.
@@ -1913,8 +1919,28 @@ mod shared_registry_tests {
     use super::{
         compiler_driver_identity_for_sysroot, compiler_driver_search_directory_is_safe,
         compiler_option_uses_opaque_execution, configured_environment_has_sensitive_case_alias,
-        sysroot_has_custom_codegen_backends,
+        native_target_environment_names, sysroot_has_custom_codegen_backends,
     };
+
+    #[test]
+    fn native_target_aliases_preserve_dots_for_external_build_tools() {
+        assert_eq!(
+            native_target_environment_names("CMAKE", "thumbv8m.main-none-eabi"),
+            [
+                "CMAKE_thumbv8m.main-none-eabi",
+                "CMAKE_thumbv8m.main_none_eabi",
+                "CMAKE_thumbv8m_main_none_eabi",
+            ]
+        );
+        assert_eq!(
+            native_target_environment_names("CMAKE_TOOLCHAIN_FILE", "thumbv8m.main-none-eabi"),
+            [
+                "CMAKE_TOOLCHAIN_FILE_thumbv8m.main-none-eabi",
+                "CMAKE_TOOLCHAIN_FILE_thumbv8m.main_none_eabi",
+                "CMAKE_TOOLCHAIN_FILE_thumbv8m_main_none_eabi",
+            ]
+        );
+    }
 
     #[test]
     fn windows_configured_environment_cannot_alias_compiler_or_native_tools() {
