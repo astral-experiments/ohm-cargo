@@ -2262,6 +2262,12 @@ fn ohm_built_registry_dependency_reuse_rejects_rustflags_codegen_backends() {
         "-Zcodegen_backend=llvm",
         "-Z codegen-backend=llvm",
         "-Z codegen_backend=llvm",
+        "-Zllvm-plugins=",
+        "-Zllvm_plugins=",
+        "-Z llvm-plugins=",
+        "-Z llvm_plugins=",
+        "-Zautodiff",
+        "-Z autodiff",
         response_rustflags.as_str(),
     ] {
         p.cargo("build")
@@ -2275,6 +2281,96 @@ fn ohm_built_registry_dependency_reuse_rejects_rustflags_codegen_backends() {
             .with_stderr_contains("[CHECKING] dependency v1.0.0")
             .run();
     }
+}
+
+#[cargo_test]
+fn ohm_built_registry_dependency_reuse_rejects_custom_target_codegen_backends() {
+    Package::new("dependency", "1.0.0")
+        .file(
+            "src/lib.rs",
+            r#"
+                #![allow(internal_features)]
+                #![feature(no_core, lang_items)]
+                #![no_core]
+
+                #[lang = "pointee_sized"]
+                pub trait PointeeSized {}
+
+                #[lang = "meta_sized"]
+                pub trait MetaSized: PointeeSized {}
+
+                #[lang = "sized"]
+                pub trait Sized: MetaSized {}
+
+                #[lang = "copy"]
+                pub trait Copy {}
+
+                pub fn value() -> u32 { 19 }
+            "#,
+        )
+        .publish();
+
+    let mut target_specification =
+        serde_json::from_str::<serde_json::Value>(cargo_test_support::target_spec_json())
+            .expect("valid custom target specification");
+    target_specification["default-codegen-backend"] = serde_json::json!("llvm");
+    let target_specification = serde_json::to_string(&target_specification)
+        .expect("serialize custom target specification");
+
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "foo"
+                version = "0.0.1"
+                edition = "2021"
+
+                [dependencies]
+                dependency = "1.0.0"
+            "#,
+        )
+        .file(
+            "src/lib.rs",
+            r#"
+                #![allow(internal_features)]
+                #![feature(no_core, lang_items, auto_traits)]
+                #![no_core]
+
+                extern crate dependency;
+
+                pub fn value() -> u32 { dependency::value() }
+
+                #[lang = "freeze"]
+                unsafe auto trait Freeze {}
+            "#,
+        )
+        .file("custom-target.json", &target_specification)
+        .file("lookup-target.json", &target_specification)
+        .build();
+
+    p.cargo("-Zjson-target-spec build --lib --target custom-target.json")
+        .masquerade_as_nightly_cargo(&["json-target-spec"])
+        .env("RUSTC_BOOTSTRAP", "1")
+        .run();
+    p.cargo("-Zjson-target-spec -Zohm-reuse-built-deps check --lib --target custom-target.json")
+        .masquerade_as_nightly_cargo(&["json-target-spec", "ohm-reuse-built-deps"])
+        .env("RUSTC_BOOTSTRAP", "1")
+        .with_stderr_contains("[CHECKING] dependency v1.0.0")
+        .run();
+
+    p.cargo("build --lib --target lookup-target")
+        .env("RUSTC_BOOTSTRAP", "1")
+        .env("RUSTFLAGS", "-Zunstable-options")
+        .env("RUST_TARGET_PATH", p.root())
+        .run();
+    p.cargo("-Zohm-reuse-built-deps check --lib --target lookup-target")
+        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
+        .env("RUSTC_BOOTSTRAP", "1")
+        .env("RUSTFLAGS", "-Zunstable-options")
+        .env("RUST_TARGET_PATH", p.root())
+        .with_stderr_contains("[CHECKING] dependency v1.0.0")
+        .run();
 }
 
 #[cargo_test]
