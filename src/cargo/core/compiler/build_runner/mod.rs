@@ -1,9 +1,13 @@
 //! [`BuildRunner`] is the mutable state used during the build process.
 
 use crate::util::data_structures::{HashMap, HashSet};
+use std::fs::File;
 use std::hash::{Hash, Hasher};
 use std::path::{Path, PathBuf};
-use std::sync::{Arc, Mutex};
+use std::sync::{Arc, Mutex, OnceLock};
+
+#[cfg(unix)]
+use std::os::unix::fs::MetadataExt;
 
 use crate::core::PackageId;
 use crate::core::compiler::compilation::{self, UnitOutput};
@@ -13,7 +17,7 @@ use crate::util::StableHasher;
 use crate::util::cache_lock::CacheLockMode;
 use crate::util::errors::CargoResult;
 use anyhow::{Context as _, bail};
-use cargo_util::paths;
+use cargo_util::{ProcessBuilder, Sha256, paths};
 use cargo_util_terminal::report::{Level, Message};
 use filetime::FileTime;
 use itertools::Itertools;
@@ -29,7 +33,7 @@ use super::lto::Lto;
 use super::unit_graph::UnitDep;
 use super::{
     BuildContext, Compilation, CompileKind, CompileMode, Executor, FileFlavor,
-    OHM_COMPILER_LOADER_ENVIRONMENT,
+    OHM_COMPILER_LOADER_ENVIRONMENT, OHM_COMPILER_LOADER_INJECTION_ENVIRONMENT,
 };
 
 mod compilation_files;
@@ -51,7 +55,100 @@ pub(crate) struct StaleBuiltRegistryDependency;
 pub(crate) struct RegistryMessageProvenance {
     version: u8,
     compiler_context: u64,
-    pub(crate) messages_present: bool,
+    compiler_driver: CompilerDriverIdentity,
+    effective_policy_context: u64,
+    loader_injected: bool,
+    messages: Option<CachedCompilerMessages>,
+}
+
+/// The executable launcher is only a small shim around this shared library.
+#[derive(Clone, Debug, Deserialize, Eq, Hash, PartialEq, Serialize)]
+#[serde(deny_unknown_fields)]
+struct CompilerDriverIdentity {
+    path: PathBuf,
+    length: u64,
+    modified: (i64, u32),
+    created: Option<(i64, u32)>,
+    #[cfg(unix)]
+    changed: (i64, i64),
+    #[cfg(unix)]
+    device: u64,
+    #[cfg(unix)]
+    inode: u64,
+}
+
+/// Bind cacheable diagnostics to the successful compiler invocation.
+#[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]
+#[serde(deny_unknown_fields)]
+struct CachedCompilerMessages {
+    length: u64,
+    sha256: String,
+}
+
+impl RegistryMessageProvenance {
+    /// Capture the actual child environment after build scripts override it.
+    pub(crate) fn capture_compiler_environment(&mut self, compiler: &ProcessBuilder) {
+        let mut policy = StableHasher::new();
+        for name in ["RUSTC_BOOTSTRAP", "RUSTC_OVERRIDE_VERSION_STRING"] {
+            name.hash(&mut policy);
+            compiler.get_env(name).hash(&mut policy);
+        }
+        self.effective_policy_context = Hasher::finish(&policy);
+        self.loader_injected = OHM_COMPILER_LOADER_INJECTION_ENVIRONMENT
+            .iter()
+            .any(|name| {
+                compiler
+                    .get_env(name)
+                    .is_some_and(|value| !value.is_empty())
+            });
+    }
+
+    /// Snapshot diagnostics with a bounded streaming read; no-warning builds
+    /// have no message file and therefore never read compiler output.
+    pub(crate) fn capture_messages(&mut self, path: &Path) -> CargoResult<()> {
+        self.messages = Self::read_messages(path)?;
+        Ok(())
+    }
+
+    fn read_messages(path: &Path) -> CargoResult<Option<CachedCompilerMessages>> {
+        let file = match File::open(path) {
+            Ok(file) => file,
+            Err(error) if error.kind() == std::io::ErrorKind::NotFound => return Ok(None),
+            Err(error) => return Err(error.into()),
+        };
+        let before = file.metadata()?;
+        if !before.is_file() {
+            bail!("cached compiler diagnostics must be a regular file");
+        }
+        let mut digest = Sha256::new();
+        digest.update_file(&file)?;
+        let after = file.metadata()?;
+        if before.len() != after.len()
+            || FileTime::from_last_modification_time(&before)
+                != FileTime::from_last_modification_time(&after)
+        {
+            bail!("cached compiler diagnostics changed while being recorded");
+        }
+        Ok(Some(CachedCompilerMessages {
+            length: after.len(),
+            sha256: digest.finish_hex(),
+        }))
+    }
+
+    fn messages_match(&self, path: &Path) -> bool {
+        match (&self.messages, std::fs::metadata(path)) {
+            (None, Err(error)) if error.kind() == std::io::ErrorKind::NotFound => true,
+            (Some(expected), Ok(metadata))
+                if metadata.is_file() && metadata.len() == expected.length =>
+            {
+                Self::read_messages(path)
+                    .ok()
+                    .flatten()
+                    .is_some_and(|actual| actual == *expected)
+            }
+            _ => false,
+        }
+    }
 }
 
 /// Collection of all the stuff that is needed to perform a build.
@@ -98,6 +195,9 @@ pub struct BuildRunner<'a, 'gctx> {
     /// Reused registry units which also have a consumer that genuinely needs
     /// their object code and therefore must retain their full JSON artifact.
     object_required_registry_units: HashSet<Unit>,
+    /// Cached identity of the dynamic compiler implementation, not its tiny
+    /// executable launcher. `None` disables cross-mode reuse fail-closed.
+    compiler_driver_identity: OnceLock<Option<CompilerDriverIdentity>>,
     /// An abstraction of the files and directories that will be generated by
     /// the compilation. This is `None` until after `unit_dependencies` has
     /// been computed.
@@ -218,6 +318,7 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
             terminal_check_units,
             reused_registry_units,
             object_required_registry_units,
+            compiler_driver_identity: OnceLock::new(),
             files: None,
             rmeta_required: HashSet::default(),
             lto: HashMap::default(),
@@ -605,7 +706,16 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
 
     /// Capture compiler inputs that an ordinary same-mode Cargo fingerprint
     /// does not track but that cross-mode reuse must validate.
-    pub(crate) fn registry_message_provenance(&self) -> CargoResult<RegistryMessageProvenance> {
+    pub(crate) fn registry_message_provenance(
+        &self,
+    ) -> CargoResult<Option<RegistryMessageProvenance>> {
+        let Some(compiler_driver) = self
+            .compiler_driver_identity
+            .get_or_init(|| self.find_compiler_driver())
+            .as_ref()
+        else {
+            return Ok(None);
+        };
         let mut context = StableHasher::new();
         let compiler = paths::resolve_executable(&self.bcx.rustc().path)?;
         compiler.hash(&mut context);
@@ -613,24 +723,84 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
         compiler_metadata.len().hash(&mut context);
         FileTime::from_creation_time(&compiler_metadata).hash(&mut context);
         FileTime::from_last_modification_time(&compiler_metadata).hash(&mut context);
+        compiler_driver.hash(&mut context);
 
         let configured_environment = self.bcx.gctx.env_config()?;
+        let mut policy = StableHasher::new();
         for name in ["RUSTC_BOOTSTRAP", "RUSTC_OVERRIDE_VERSION_STRING"]
             .into_iter()
             .chain(OHM_COMPILER_LOADER_ENVIRONMENT.iter().copied())
         {
-            name.hash(&mut context);
-            configured_environment
+            let value = configured_environment
                 .get(name)
                 .map(std::ffi::OsString::as_os_str)
-                .or_else(|| self.bcx.gctx.get_env_os(name))
-                .hash(&mut context);
+                .or_else(|| self.bcx.gctx.get_env_os(name));
+            name.hash(&mut context);
+            value.hash(&mut context);
+            if matches!(name, "RUSTC_BOOTSTRAP" | "RUSTC_OVERRIDE_VERSION_STRING") {
+                name.hash(&mut policy);
+                value.map(std::ffi::OsStr::to_os_string).hash(&mut policy);
+            }
         }
 
-        Ok(RegistryMessageProvenance {
-            version: 1,
+        Ok(Some(RegistryMessageProvenance {
+            version: 2,
             compiler_context: Hasher::finish(&context),
-            messages_present: false,
+            compiler_driver: compiler_driver.clone(),
+            effective_policy_context: Hasher::finish(&policy),
+            loader_injected: false,
+            messages: None,
+        }))
+    }
+
+    /// Locate the one platform-native compiler implementation in its real
+    /// sysroot. Multiple matches are ambiguous and must never be reused.
+    fn find_compiler_driver(&self) -> Option<CompilerDriverIdentity> {
+        let sysroot = &self.bcx.target_data.info(CompileKind::Host).sysroot;
+        let runtime_directory = sysroot.join(if cfg!(windows) { "bin" } else { "lib" });
+        let prefix = format!("{}rustc_driver-", std::env::consts::DLL_PREFIX);
+        let suffix = std::env::consts::DLL_SUFFIX;
+        let mut matching_driver = None;
+
+        for entry in std::fs::read_dir(runtime_directory).ok()? {
+            let entry = entry.ok()?;
+            let file_name = entry.file_name();
+            let name = file_name.to_str()?;
+            let Some(hash) = name
+                .strip_prefix(&prefix)
+                .and_then(|name| name.strip_suffix(suffix))
+            else {
+                continue;
+            };
+            if hash.is_empty() || !hash.chars().all(|character| character.is_ascii_hexdigit()) {
+                continue;
+            }
+            if matching_driver.replace(entry.path()).is_some() {
+                return None;
+            }
+        }
+
+        let path = matching_driver?.canonicalize().ok()?;
+        let file = File::open(&path).ok()?;
+        let metadata = file.metadata().ok()?;
+        if !metadata.is_file() {
+            return None;
+        }
+        let modified = FileTime::from_last_modification_time(&metadata);
+        let created = FileTime::from_creation_time(&metadata)
+            .map(|time| (time.unix_seconds(), time.nanoseconds()));
+
+        Some(CompilerDriverIdentity {
+            path,
+            length: metadata.len(),
+            modified: (modified.unix_seconds(), modified.nanoseconds()),
+            created,
+            #[cfg(unix)]
+            changed: (metadata.ctime(), metadata.ctime_nsec()),
+            #[cfg(unix)]
+            device: metadata.dev(),
+            #[cfg(unix)]
+            inode: metadata.ino(),
         })
     }
 
@@ -650,6 +820,17 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
             .cloned()
             .collect::<Vec<_>>();
         promoted_units.sort_by_key(|unit| self.files().unit_hash(unit));
+
+        if promoted_units.is_empty() {
+            return Ok(true);
+        }
+
+        if promoted_units
+            .iter()
+            .any(|unit| self.unit_uses_custom_codegen_backend(unit))
+        {
+            return Ok(false);
+        }
 
         let mut registry_closure_units = HashSet::default();
         let mut pending = promoted_units.clone();
@@ -684,7 +865,9 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
 
         // Future-incompatibility diagnostics can originate in any transitive
         // dependency, even when only its parent has an incoming check edge.
-        let expected_provenance = self.registry_message_provenance()?;
+        let Some(expected_provenance) = self.registry_message_provenance()? else {
+            return Ok(false);
+        };
         for unit in registry_closure_units
             .iter()
             .filter(|unit| Self::is_promotable_registry_dependency(unit))
@@ -697,16 +880,16 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
                 .is_some_and(|provenance| {
                     if provenance.version != expected_provenance.version
                         || provenance.compiler_context != expected_provenance.compiler_context
+                        || provenance.compiler_driver != expected_provenance.compiler_driver
+                        || provenance.effective_policy_context
+                            != expected_provenance.effective_policy_context
+                        || provenance.loader_injected
                     {
                         return false;
                     }
 
                     let cached_messages = self.files().message_cache_path(unit);
-                    if provenance.messages_present {
-                        cached_messages.is_file()
-                    } else {
-                        !cached_messages.exists()
-                    }
+                    provenance.messages_match(&cached_messages)
                 });
             if !messages_available {
                 return Ok(false);
@@ -737,6 +920,47 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
         }
 
         Ok(true)
+    }
+
+    /// External backends are compiler plugins, and execute even for metadata
+    /// checks. Their arbitrary ambient inputs cannot safely be fingerprinted.
+    fn unit_uses_custom_codegen_backend(&self, unit: &Unit) -> bool {
+        if unit.profile.codegen_backend.is_some() {
+            return true;
+        }
+
+        let extra_args = self
+            .bcx
+            .extra_args_for(unit)
+            .map(Vec::as_slice)
+            .unwrap_or_default();
+        let mut arguments = unit
+            .pkg
+            .manifest()
+            .lint_rustflags()
+            .iter()
+            .map(String::as_str)
+            .chain(unit.profile.rustflags.iter().map(|flag| flag.as_str()))
+            .chain(extra_args.iter().map(String::as_str))
+            .chain(unit.rustflags.iter().map(String::as_str));
+
+        while let Some(argument) = arguments.next() {
+            if argument.starts_with('@') {
+                return true;
+            }
+            let option = if argument == "-Z" {
+                arguments.next()
+            } else {
+                argument.strip_prefix("-Z")
+            };
+            if option.is_some_and(|option| {
+                option == "codegen-backend" || option.starts_with("codegen-backend=")
+            }) {
+                return true;
+            }
+        }
+
+        false
     }
 
     /// Returns whether a unit has the shape of a promotable registry library.

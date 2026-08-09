@@ -974,13 +974,17 @@ fn rustc(
         .to_path_buf();
     let fingerprint_dir = build_runner.files().fingerprint_dir(unit);
     let cached_output_path = build_runner.files().message_cache_path(unit);
-    let message_provenance = if unit.mode == CompileMode::Build
+    let mut message_provenance = if unit.mode == CompileMode::Build
         && unit.pkg.package_id().source_id().is_remote_registry()
     {
-        Some((
-            build_runner.registry_message_provenance_path(unit),
-            build_runner.registry_message_provenance()?,
-        ))
+        build_runner
+            .registry_message_provenance()?
+            .map(|provenance| {
+                (
+                    build_runner.registry_message_provenance_path(unit),
+                    provenance,
+                )
+            })
     } else {
         None
     };
@@ -1201,6 +1205,10 @@ fn rustc(
             add_custom_flags(&mut rustc, &script_outputs, script_metadatas)?;
         }
 
+        if let Some((_, provenance)) = &mut message_provenance {
+            provenance.capture_compiler_environment(&rustc);
+        }
+
         let link_only = if let Some(cache) = &relink_cache {
             let mut link_only = rustc.clone();
             if !link_only.replace_arg(&source_arg, &cache.rlink) {
@@ -1360,7 +1368,7 @@ fn rustc(
 
         if let Some((path, provenance)) = &message_provenance {
             let mut provenance = provenance.clone();
-            provenance.messages_present = cached_output_path.is_file();
+            provenance.capture_messages(&cached_output_path)?;
             paths::write_atomic(path, serde_json::to_vec(&provenance)?)?;
         }
 
