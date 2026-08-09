@@ -1470,6 +1470,70 @@ registry:left:left
 }
 
 #[cargo_test]
+fn shared_registry_cache_keeps_replaced_registry_sources_private() {
+    Package::new("replaced-registry", "1.0.0")
+        .file("src/lib.rs", "pub fn value() -> u32 { 41 }")
+        .publish();
+
+    let _alternative = RegistryBuilder::new().alternative().build();
+    Package::new("replaced-registry", "1.0.0")
+        .alternative(true)
+        .file("src/lib.rs", "pub fn value() -> u32 { 82 }")
+        .publish();
+
+    let manifest = r#"
+        [package]
+        name = "replacement-cache-app"
+        version = "0.1.0"
+        edition = "2021"
+
+        [dependencies]
+        replaced-registry = "1.0.0"
+    "#;
+    let source = "fn main() { println!(\"{}\", replaced_registry::value()); }";
+    let original = project_in("original-registry-worktree")
+        .file("Cargo.toml", manifest)
+        .file("src/main.rs", source)
+        .build();
+    let replaced = project_in("replaced-registry-worktree")
+        .file("Cargo.toml", manifest)
+        .file("src/main.rs", source)
+        .file(
+            ".cargo/config.toml",
+            r#"
+                [source.crates-io]
+                replace-with = "alternative"
+            "#,
+        )
+        .build();
+    let shared = paths::root().join("replacement-shared-build-directory");
+
+    original
+        .cargo("-Zohm-shared-registry-cache run")
+        .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+        .env("CARGO_BUILD_BUILD_DIR", &shared)
+        .with_stderr_contains("[COMPILING] replaced-registry v1.0.0")
+        .with_stdout_data("41\n")
+        .run();
+
+    replaced
+        .cargo("-Zohm-shared-registry-cache run")
+        .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+        .env("CARGO_BUILD_BUILD_DIR", &shared)
+        .with_stderr_contains("[COMPILING] replaced-registry v1.0.0")
+        .with_stdout_data("82\n")
+        .run();
+
+    original
+        .cargo("-Zohm-shared-registry-cache run")
+        .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+        .env("CARGO_BUILD_BUILD_DIR", &shared)
+        .with_stderr_does_not_contain("[COMPILING] replaced-registry v1.0.0")
+        .with_stdout_data("41\n")
+        .run();
+}
+
+#[cargo_test]
 fn shared_registry_cache_rejects_global_compiler_wrappers() {
     Package::new("wrapped-registry", "1.0.0")
         .file("src/lib.rs", "pub fn value() -> u32 { 19 }")
@@ -1521,6 +1585,78 @@ fn shared_registry_cache_rejects_global_compiler_wrappers() {
         .env("CARGO_BUILD_BUILD_DIR", &shared_build_dir)
         .with_stderr_does_not_contain("[COMPILING] wrapped-registry v1.0.0")
         .with_stdout_data("19\n")
+        .run();
+}
+
+#[cfg(unix)]
+#[cargo_test]
+fn shared_registry_cache_rejects_ambient_direct_compiler_shims() {
+    Package::new("shimmed-registry", "1.0.0")
+        .file(
+            "src/lib.rs",
+            r#"
+                #[cfg(ohm_changed_direct_compiler)]
+                compile_error!("the shared compiler shim changed behavior");
+
+                pub fn value() -> u32 { 19 }
+            "#,
+        )
+        .publish();
+
+    let manifest = r#"
+        [package]
+        name = "compiler-shim-cache-app"
+        version = "0.1.0"
+        edition = "2021"
+
+        [dependencies]
+        shimmed-registry = "1.0.0"
+    "#;
+    let source = "fn main() { println!(\"{}\", shimmed_registry::value()); }";
+    let left = project_in("compiler-shim-left")
+        .file("Cargo.toml", manifest)
+        .file("src/main.rs", source)
+        .executable(
+            "rustc-shim",
+            r#"#!/bin/sh
+if [ "$OHM_DRIVER_MODE" = "deny" ]; then
+    previous=
+    for argument in "$@"; do
+        if [ "$previous" = "--crate-name" ] && [ "$argument" = "shimmed_registry" ]; then
+            exec rustc "$@" --cfg ohm_changed_direct_compiler
+        fi
+        previous="$argument"
+    done
+fi
+exec rustc "$@"
+"#,
+        )
+        .build();
+    let right = project_in("compiler-shim-right")
+        .file("Cargo.toml", manifest)
+        .file("src/main.rs", source)
+        .build();
+    let shared = paths::root().join("compiler-shim-shared-build-directory");
+    let compiler = left.root().join("rustc-shim");
+
+    left.cargo("-Zohm-shared-registry-cache run")
+        .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+        .env("CARGO_BUILD_BUILD_DIR", &shared)
+        .env("RUSTC", &compiler)
+        .env("OHM_DRIVER_MODE", "allow")
+        .with_stderr_contains("[COMPILING] shimmed-registry v1.0.0")
+        .with_stdout_data("19\n")
+        .run();
+
+    right
+        .cargo("-Zohm-shared-registry-cache build")
+        .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+        .env("CARGO_BUILD_BUILD_DIR", &shared)
+        .env("RUSTC", &compiler)
+        .env("OHM_DRIVER_MODE", "deny")
+        .with_status(101)
+        .with_stderr_contains("[COMPILING] shimmed-registry v1.0.0")
+        .with_stderr_contains("[ERROR] the shared compiler shim changed behavior")
         .run();
 }
 
@@ -2215,14 +2351,24 @@ fn shared_registry_cache_loads_native_libraries_from_shared_output() {
                     std::env::consts::DLL_PREFIX,
                     std::env::consts::DLL_SUFFIX,
                 ));
-                let status = std::process::Command::new(std::env::var_os("RUSTC").unwrap())
+                let mut compiler = std::process::Command::new(std::env::var_os("RUSTC").unwrap());
+                compiler
                     .arg("--crate-type=cdylib")
                     .arg("--edition=2021")
                     .arg("-o")
                     .arg(&library)
-                    .arg(&source)
-                    .status()
-                    .unwrap();
+                    .arg(&source);
+                let library_name = library.file_name().unwrap().to_string_lossy();
+                if cfg!(target_os = "macos") {
+                    compiler.arg("-C").arg(format!(
+                        "link-arg=-Wl,-install_name,@rpath/{library_name}"
+                    ));
+                } else if cfg!(target_os = "linux") {
+                    compiler
+                        .arg("-C")
+                        .arg(format!("link-arg=-Wl,-soname,{library_name}"));
+                }
+                let status = compiler.status().unwrap();
                 assert!(status.success(), "compile the shared native dependency");
                 println!("cargo:rustc-link-search=native={}", output.display());
                 println!("cargo:rustc-link-lib=dylib=shared_registry_native");
