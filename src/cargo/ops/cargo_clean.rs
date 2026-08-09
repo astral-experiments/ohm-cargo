@@ -7,7 +7,7 @@ use crate::util::data_structures::{IndexMap, IndexSet};
 use crate::util::edit_distance;
 use crate::util::errors::CargoResult;
 use crate::util::interning::InternedString;
-use crate::util::{self, Filesystem, GlobalContext, Progress, ProgressStyle};
+use crate::util::{Filesystem, GlobalContext, Progress, ProgressStyle};
 use anyhow::bail;
 use cargo_util::paths;
 use cargo_util_terminal::report::Level;
@@ -182,6 +182,7 @@ pub fn clean(ws: &Workspace<'_>, opts: &CleanOptions<'_>) -> CargoResult<()> {
 /// Every affected profile is locked exclusively before its private build outputs
 /// are removed. Compilers using fine-grained locking hold the same profile lock
 /// in shared mode, so the deletion cannot race an active build in any worktree.
+/// Host profiles are locked first to match the compiler's cross-target lock ordering.
 fn clean_shared_registry_workspace(
     clean_ctx: &mut CleanContext<'_>,
     ws: &Workspace<'_>,
@@ -190,11 +191,7 @@ fn clean_shared_registry_workspace(
 ) -> CargoResult<()> {
     let build_directory = ws.build_dir();
     let build_root = build_directory.as_path_unlocked();
-    let workspace_root = ws
-        .root()
-        .canonicalize()
-        .unwrap_or_else(|_| ws.root().to_path_buf());
-    let workspace = util::short_hash(&workspace_root);
+    let workspace = Layout::shared_workspace_namespace(ws);
     let mut profile_directories = Vec::new();
 
     if build_root.is_dir() {
@@ -395,13 +392,7 @@ fn clean_specs(
             .gctx
             .cli_unstable()
             .ohm_shared_registry_cache
-            .then(|| {
-                let root = ws
-                    .root()
-                    .canonicalize()
-                    .unwrap_or_else(|_| ws.root().to_path_buf());
-                util::short_hash(&root)
-            });
+            .then(|| Layout::shared_workspace_namespace(ws));
         for pkg in packages {
             clean_ctx.progress.on_cleaning_package(&pkg.name())?;
 

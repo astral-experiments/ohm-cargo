@@ -10,7 +10,7 @@ use serde::Serialize;
 use crate::CargoResult;
 use crate::core::compiler::BuildRunner;
 use crate::core::compiler::CompileKind;
-use crate::util;
+use crate::core::compiler::Layout;
 
 /// JSON Schema of the [`RustdocFingerprint`] file.
 #[derive(Debug, Serialize, Deserialize)]
@@ -198,15 +198,9 @@ fn fingerprint_path(build_runner: &BuildRunner<'_, '_>, kind: CompileKind) -> Pa
         .cli_unstable()
         .ohm_shared_registry_cache
     {
-        let workspace = build_runner
-            .bcx
-            .ws
-            .root()
-            .canonicalize()
-            .unwrap_or_else(|_| build_runner.bcx.ws.root().to_path_buf());
         root.join(format!(
             ".rustdoc_fingerprint-{}.json",
-            util::short_hash(&workspace)
+            Layout::shared_workspace_namespace(build_runner.bcx.ws)
         ))
     } else {
         root.join(".rustdoc_fingerprint.json")

@@ -227,6 +227,14 @@ impl Layout {
     /// Durable ownership marker for build roots shared by multiple workspaces.
     pub(crate) const SHARED_REGISTRY_CACHE_MARKER: &str = ".ohm-shared-registry-cache-v1";
 
+    /// Identifies one workspace consistently across artifacts, incremental state, and cleaning.
+    ///
+    /// Canonical roots keep symlinked workspace paths in the same private namespace.
+    pub(crate) fn shared_workspace_namespace(ws: &Workspace<'_>) -> String {
+        let root = ws.root();
+        util::short_hash(&root.canonicalize().unwrap_or_else(|_| root.to_path_buf()))
+    }
+
     /// Calculate the paths for build output, lock the build directory, and return as a Layout.
     ///
     /// This function will block if the directory is already locked.
@@ -336,13 +344,11 @@ impl Layout {
         let build_dest = build_dest.as_path_unlocked();
         let deps = build_dest.join("deps");
         let artifact = deps.join("artifact");
-        let workspace_namespace = ws.gctx().cli_unstable().ohm_shared_registry_cache.then(|| {
-            let workspace_root = ws
-                .root()
-                .canonicalize()
-                .unwrap_or_else(|_| ws.root().to_path_buf());
-            util::short_hash(&workspace_root)
-        });
+        let workspace_namespace = ws
+            .gctx()
+            .cli_unstable()
+            .ohm_shared_registry_cache
+            .then(|| Self::shared_workspace_namespace(ws));
         let incremental = workspace_namespace.as_ref().map_or_else(
             || build_dest.join("incremental"),
             |namespace| build_dest.join("incremental").join(namespace),
@@ -423,7 +429,9 @@ impl Layout {
     }
 }
 
-/// Probe the actual shared lock directly instead of accepting Cargo's unlocked fallback.
+/// Rejects unsupported advisory locks that Cargo would normally treat as successful.
+///
+/// Existing lock contention is safe; an unsupported or inaccessible lock fails closed.
 fn verify_shared_registry_file_lock(lock: &Path, root: &Path) -> CargoResult<()> {
     let file = std::fs::OpenOptions::new()
         .read(true)
@@ -444,7 +452,7 @@ fn verify_shared_registry_file_lock(lock: &Path, root: &Path) -> CargoResult<()>
     Ok(())
 }
 
-/// Detect NFS before invoking `flock`, which can block forever even in nonblocking mode.
+/// Detects NFS before invoking `flock`, which can block forever even in nonblocking mode.
 fn shared_registry_directory_is_nfs(path: &Path) -> CargoResult<bool> {
     #[cfg(any(target_os = "linux", target_os = "macos"))]
     {
