@@ -17,6 +17,8 @@
 
 use crate::util::data_structures::{HashMap, HashSet};
 
+use std::cell::RefCell;
+
 use tracing::trace;
 
 use crate::CargoResult;
@@ -68,6 +70,14 @@ struct State<'a, 'gctx> {
     /// dependency from a to b was added purely because it was a dev-dependency.
     /// This is used during `connect_run_custom_build_deps`.
     dev_dependency_edges: HashSet<(Unit, Unit)>,
+
+    /// Whether this graph may tentatively reuse complete registry builds.
+    /// Exact artifact and fingerprint validation happens after graph creation.
+    reuse_built_registry_dependencies: bool,
+
+    /// Whether a registry package's complete resolved closure consists only
+    /// of immutable registry packages.
+    immutable_registry_closures: RefCell<HashMap<PackageId, bool>>,
 }
 
 /// A boolean-like to indicate if a `Unit` is an artifact or not.
@@ -100,6 +110,7 @@ pub fn build_unit_dependencies<'a, 'gctx>(
     target_data: &'a RustcTargetData<'gctx>,
     profiles: &'a Profiles,
     interner: &'a UnitInterner,
+    reuse_built_registry_dependencies: bool,
 ) -> CargoResult<UnitGraph> {
     if roots.is_empty() {
         // If -Zbuild-std, don't attach units if there is nothing to build.
@@ -127,6 +138,8 @@ pub fn build_unit_dependencies<'a, 'gctx>(
         interner,
         scrape_units,
         dev_dependency_edges: HashSet::default(),
+        reuse_built_registry_dependencies,
+        immutable_registry_closures: RefCell::default(),
     };
 
     let std_unit_deps = calc_deps_of_std(&mut state, std_roots)?;
@@ -306,7 +319,10 @@ fn compute_deps(
             continue;
         };
         let dep_pkg = state.get(dep_pkg_id);
-        let mode = check_or_build_mode(unit.mode, dep_lib);
+        let mut mode = check_or_build_mode(unit.mode, dep_lib);
+        if mode.is_check() && state.can_reuse_built_registry_dependency(dep_pkg_id, dep_lib) {
+            mode = CompileMode::Build;
+        }
         let dep_unit_for = unit_for.with_dependency(unit, dep_lib, unit_for.root_compile_kind());
 
         let manifest_deps = deps.iter().map(|d| (*d).clone()).collect::<Vec<_>>();
@@ -1072,6 +1088,59 @@ fn connect_run_custom_build_deps(state: &mut State<'_, '_>) {
 }
 
 impl<'a, 'gctx> State<'a, 'gctx> {
+    /// Tentatively uses build mode only for an entirely immutable registry
+    /// closure. Once all unit hashes and layouts are known, `BuildRunner`
+    /// validates the exact existing artifacts and their complete fingerprints
+    /// before allowing the graph to execute.
+    fn can_reuse_built_registry_dependency(&self, package_id: PackageId, target: &Target) -> bool {
+        if !self.reuse_built_registry_dependencies
+            || self.is_std
+            || self.gctx.cli_unstable().bindeps
+            || self.target_data.rustc.wrapper.is_some()
+            || !package_id.source_id().is_remote_registry()
+            || target.for_host()
+            || !target.is_lib()
+            || !target
+                .rustc_crate_types()
+                .iter()
+                .all(|crate_type| matches!(crate_type, CrateType::Lib | CrateType::Rlib))
+        {
+            return false;
+        }
+        self.registry_closure_is_immutable(package_id, &mut HashSet::default())
+    }
+
+    fn registry_closure_is_immutable(
+        &self,
+        package_id: PackageId,
+        visiting: &mut HashSet<PackageId>,
+    ) -> bool {
+        if !package_id.source_id().is_remote_registry() {
+            return false;
+        }
+        if let Some(immutable) = self.immutable_registry_closures.borrow().get(&package_id) {
+            return *immutable;
+        }
+        if !visiting.insert(package_id) {
+            return true;
+        }
+
+        let dependencies = self
+            .resolve()
+            .deps(package_id)
+            .map(|(dependency_id, _)| dependency_id)
+            .collect::<Vec<_>>();
+        let immutable = dependencies
+            .into_iter()
+            .all(|dependency_id| self.registry_closure_is_immutable(dependency_id, visiting));
+
+        visiting.remove(&package_id);
+        self.immutable_registry_closures
+            .borrow_mut()
+            .insert(package_id, immutable);
+        immutable
+    }
+
     /// Gets `std_resolve` during building std, otherwise `usr_resolve`.
     fn resolve(&self) -> &'a Resolve {
         if self.is_std {

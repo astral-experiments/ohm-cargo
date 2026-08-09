@@ -917,6 +917,22 @@ enum FingerprintComparison {
     },
 }
 
+/// Checks an existing unit without truncating, updating, or otherwise changing
+/// its fingerprint. Registry build reuse must reject a stale candidate before
+/// scheduling any compiler work; `prepare_target` is unsuitable here because
+/// it intentionally clears a dirty fingerprint in preparation for a rebuild.
+pub(crate) fn existing_unit_is_fresh(
+    build_runner: &mut BuildRunner<'_, '_>,
+    unit: &Unit,
+) -> CargoResult<bool> {
+    let fingerprint_path = build_runner.files().fingerprint_file_path(unit, "");
+    let fingerprint = calculate(build_runner, unit)?;
+    Ok(matches!(
+        _compare_old_fingerprint(&fingerprint_path, &fingerprint),
+        Ok(FingerprintComparison::Fresh)
+    ))
+}
+
 /// Determines if a [`Unit`] is up-to-date, and if not prepares necessary work to
 /// update the persisted fingerprint.
 ///
@@ -2368,6 +2384,22 @@ fn calculate_normal(
         unit.pkg.manifest().lint_rustflags(),
     ));
     let mut config = StableHasher::new();
+    if unit.pkg.package_id().source_id().is_remote_registry() {
+        // A registry artifact can outlive the command that created it and be
+        // consumed by a different compiler mode. Equal `rustc -vV` output does
+        // not prove that two direct compiler shims have the same behavior, and
+        // `RUSTC_BOOTSTRAP` controls feature gating without appearing in the
+        // compiler arguments or its normal dependency information.
+        build_runner.bcx.rustc().path.hash(&mut config);
+        let bootstrap = build_runner
+            .bcx
+            .gctx
+            .env_config()?
+            .get("RUSTC_BOOTSTRAP")
+            .map(std::ffi::OsString::as_os_str)
+            .or_else(|| build_runner.bcx.gctx.get_env_os("RUSTC_BOOTSTRAP"));
+        bootstrap.hash(&mut config);
+    }
     let linker = if unit.target.for_host() && !build_runner.bcx.gctx.target_applies_to_host()? {
         build_runner.compilation.host_linker()
     } else {

@@ -1471,6 +1471,8 @@ fn link_targets(
     let manifest_path = PathBuf::from(unit.pkg.manifest_path());
     let profile = unit.profile.clone();
     let unit_mode = unit.mode;
+    let metadata_only_artifact = matches!(bcx.build_config.intent, UserIntent::Check { .. })
+        && build_runner.is_metadata_only_reused_registry_dependency(unit);
     let features = unit.features.iter().map(|s| s.to_string()).collect();
     let json_messages = bcx.build_config.emit_json();
     let executable = build_runner.get_executable(unit)?;
@@ -1537,7 +1539,17 @@ fn link_targets(
                 target: &target,
                 profile: art_profile,
                 features,
-                filenames: destinations,
+                filenames: if metadata_only_artifact {
+                    destinations
+                        .into_iter()
+                        .filter(|path| {
+                            path.extension().and_then(|extension| extension.to_str())
+                                == Some("rmeta")
+                        })
+                        .collect()
+                } else {
+                    destinations
+                },
                 executable,
                 fresh,
             }
