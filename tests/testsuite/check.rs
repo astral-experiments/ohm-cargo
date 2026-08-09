@@ -593,6 +593,268 @@ exec rustc "$@"
         .run();
 }
 
+#[cfg(unix)]
+#[cargo_test]
+fn ohm_built_registry_dependency_reuse_rejects_ambient_compiler_shims() {
+    Package::new("dependency", "1.0.0")
+        .file(
+            "src/lib.rs",
+            r#"
+                #[cfg(ohm_changed_direct_compiler)]
+                compile_error!("the same compiler shim changed behavior");
+
+                pub fn value() -> u32 { 19 }
+            "#,
+        )
+        .publish();
+
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "foo"
+                version = "0.0.1"
+                edition = "2021"
+
+                [dependencies]
+                dependency = "1.0.0"
+            "#,
+        )
+        .file(
+            "src/lib.rs",
+            "pub fn value() -> u32 { dependency::value() }",
+        )
+        .executable(
+            "rustc-shim",
+            r#"#!/bin/sh
+if [ "$OHM_DRIVER_MODE" = "deny" ]; then
+    previous=
+    for argument in "$@"; do
+        if [ "$previous" = "--crate-name" ] && [ "$argument" = "dependency" ]; then
+            exec rustc "$@" --cfg ohm_changed_direct_compiler
+        fi
+        previous="$argument"
+    done
+fi
+exec rustc "$@"
+"#,
+        )
+        .build();
+
+    p.cargo("build")
+        .env("RUSTC", p.root().join("rustc-shim"))
+        .env("OHM_DRIVER_MODE", "allow")
+        .run();
+    p.cargo("-Zohm-reuse-built-deps check")
+        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
+        .env("RUSTC", p.root().join("rustc-shim"))
+        .env("OHM_DRIVER_MODE", "deny")
+        .with_status(101)
+        .with_stderr_contains("[CHECKING] dependency v1.0.0")
+        .with_stderr_contains("[ERROR] the same compiler shim changed behavior")
+        .run();
+}
+
+#[cargo_test]
+fn ohm_built_registry_dependency_reuse_rechecks_untrusted_procedural_macro_environment() {
+    // A matching package name and major version in another registry must not
+    // inherit the explicitly audited crates.io producer's trust.
+    Package::new("serde_derive", "1.0.0")
+        .proc_macro(true)
+        .file(
+            "src/lib.rs",
+            r#"
+                extern crate proc_macro;
+
+                #[proc_macro_attribute]
+                pub fn gate(
+                    _attribute: proc_macro::TokenStream,
+                    input: proc_macro::TokenStream,
+                ) -> proc_macro::TokenStream {
+                    if std::env::var("OHM_MACRO_MODE").as_deref() == Ok("deny") {
+                        "compile_error!(\"the procedural macro observed changed environment\");"
+                            .parse()
+                            .expect("valid compiler error")
+                    } else {
+                        input
+                    }
+                }
+            "#,
+        )
+        .publish();
+    Package::new("dependency", "1.0.0")
+        .dep("serde_derive", "1.0.0")
+        .file(
+            "src/lib.rs",
+            r#"
+                extern crate serde_derive;
+
+                #[serde_derive::gate]
+                pub fn value() -> u32 { 19 }
+            "#,
+        )
+        .publish();
+
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "foo"
+                version = "0.0.1"
+                edition = "2021"
+
+                [dependencies]
+                dependency = "1.0.0"
+            "#,
+        )
+        .file(
+            "src/lib.rs",
+            "pub fn value() -> u32 { dependency::value() }",
+        )
+        .build();
+
+    p.cargo("build").env("OHM_MACRO_MODE", "allow").run();
+    p.cargo("-Zohm-reuse-built-deps check")
+        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
+        .env("OHM_MACRO_MODE", "deny")
+        .with_status(101)
+        .with_stderr_contains("[CHECKING] dependency v1.0.0")
+        .with_stderr_contains("[ERROR] the procedural macro observed changed environment")
+        .run();
+}
+
+#[cargo_test]
+fn ohm_built_registry_dependency_reuse_rechecks_untracked_procedural_macro_files() {
+    Package::new("file-macro", "1.0.0")
+        .proc_macro(true)
+        .file(
+            "src/lib.rs",
+            r#"
+                extern crate proc_macro;
+
+                #[proc_macro_attribute]
+                pub fn gate(
+                    _attribute: proc_macro::TokenStream,
+                    input: proc_macro::TokenStream,
+                ) -> proc_macro::TokenStream {
+                    let path = std::env::var("OHM_MACRO_STATE")
+                        .expect("procedural macro state path");
+                    if std::fs::read_to_string(path)
+                        .expect("procedural macro state")
+                        .trim()
+                        == "deny"
+                    {
+                        "compile_error!(\"the procedural macro observed changed external input\");"
+                            .parse()
+                            .expect("valid compiler error")
+                    } else {
+                        input
+                    }
+                }
+            "#,
+        )
+        .publish();
+    Package::new("dependency", "1.0.0")
+        .dep("file-macro", "1.0.0")
+        .file(
+            "src/lib.rs",
+            r#"
+                extern crate file_macro;
+
+                #[file_macro::gate]
+                pub fn value() -> u32 { 19 }
+            "#,
+        )
+        .publish();
+
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "foo"
+                version = "0.0.1"
+                edition = "2021"
+
+                [dependencies]
+                dependency = "1.0.0"
+            "#,
+        )
+        .file(
+            "src/lib.rs",
+            "pub fn value() -> u32 { dependency::value() }",
+        )
+        .file("external-state.txt", "allow")
+        .build();
+    let state_path = p.root().join("external-state.txt");
+
+    p.cargo("build").env("OHM_MACRO_STATE", &state_path).run();
+    p.change_file("external-state.txt", "deny");
+    p.cargo("-Zohm-reuse-built-deps check")
+        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
+        .env("OHM_MACRO_STATE", &state_path)
+        .with_status(101)
+        .with_stderr_contains("[CHECKING] dependency v1.0.0")
+        .with_stderr_contains("[ERROR] the procedural macro observed changed external input")
+        .run();
+}
+
+#[cargo_test]
+fn ohm_built_registry_dependency_reuse_rechecks_missing_future_incompat_messages() {
+    Package::new("leaf", "1.0.0")
+        .file("src/lib.rs", "pub fn value() -> u32 { let unused = 1; 19 }")
+        .publish();
+    Package::new("dependency", "1.0.0")
+        .dep("leaf", "1.0.0")
+        .file(
+            "src/lib.rs",
+            "extern crate leaf; pub fn value() -> u32 { leaf::value() }",
+        )
+        .publish();
+
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "foo"
+                version = "0.0.1"
+                edition = "2021"
+
+                [dependencies]
+                dependency = "1.0.0"
+            "#,
+        )
+        .file(
+            "src/lib.rs",
+            "pub fn value() -> u32 { dependency::value() }",
+        )
+        .build();
+
+    p.cargo("build")
+        .env("RUSTC_BOOTSTRAP", "1")
+        .env("RUSTFLAGS", "-Zfuture-incompat-test")
+        .run();
+    let cached_messages = p
+        .glob("target/debug/.fingerprint/leaf-*/output-lib-leaf")
+        .next()
+        .expect("registry compiler messages")
+        .expect("existing compiler message path");
+    std::fs::remove_file(cached_messages).expect("remove only cached compiler diagnostics");
+
+    p.cargo("-Zohm-reuse-built-deps check --future-incompat-report")
+        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
+        .env("RUSTC_BOOTSTRAP", "1")
+        .env("RUSTFLAGS", "-Zfuture-incompat-test")
+        .with_stderr_contains("[CHECKING] leaf v1.0.0")
+        .with_stderr_contains(
+            "[WARNING] the following packages contain code that will be rejected by a future version of Rust: leaf v1.0.0",
+        )
+        .run();
+}
+
 #[cargo_test]
 fn ohm_built_registry_dependency_reuse_revalidates_build_script_environment() {
     Package::new("dependency", "1.0.0")

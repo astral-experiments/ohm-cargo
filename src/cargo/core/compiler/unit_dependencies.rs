@@ -19,6 +19,7 @@ use crate::util::data_structures::{HashMap, HashSet};
 
 use std::cell::RefCell;
 
+use cargo_util::paths;
 use tracing::trace;
 
 use crate::CargoResult;
@@ -36,6 +37,8 @@ use crate::core::{
     Dependency, Feature, Package, PackageId, PackageSet, Target, TargetKind, Workspace,
 };
 use crate::ops::resolve_all_features;
+use crate::sources::CRATES_IO_INDEX;
+use crate::sources::registry::CRATES_IO_HTTP_INDEX;
 use crate::util::GlobalContext;
 use crate::util::Unhashed;
 use crate::util::interning::InternedString;
@@ -1097,6 +1100,7 @@ impl<'a, 'gctx> State<'a, 'gctx> {
             || self.is_std
             || self.gctx.cli_unstable().bindeps
             || self.target_data.rustc.wrapper.is_some()
+            || !self.compiler_has_verified_toolchain_identity()
             || !package_id.source_id().is_remote_registry()
             || target.for_host()
             || !target.is_lib()
@@ -1108,6 +1112,31 @@ impl<'a, 'gctx> State<'a, 'gctx> {
             return false;
         }
         self.registry_closure_is_immutable(package_id, &mut HashSet::default())
+    }
+
+    /// Reject opaque compiler shims whose behavior Cargo cannot fingerprint.
+    ///
+    /// Configuring the actual compiler from any installed or custom toolchain
+    /// remains supported. Cargo normally resolves rustup proxies to that
+    /// toolchain executable before constructing `RustcTargetData`.
+    fn compiler_has_verified_toolchain_identity(&self) -> bool {
+        let Ok(compiler) = paths::resolve_executable(&self.target_data.rustc.path) else {
+            return false;
+        };
+        let Ok(compiler) = compiler.canonicalize() else {
+            return false;
+        };
+        let expected = self
+            .target_data
+            .info(CompileKind::Host)
+            .sysroot
+            .join("bin")
+            .join("rustc")
+            .with_extension(std::env::consts::EXE_EXTENSION);
+
+        expected
+            .canonicalize()
+            .is_ok_and(|expected| expected == compiler)
     }
 
     fn registry_closure_is_immutable(
@@ -1125,14 +1154,44 @@ impl<'a, 'gctx> State<'a, 'gctx> {
             return true;
         }
 
-        let dependencies = self
-            .resolve()
-            .deps(package_id)
-            .map(|(dependency_id, _)| dependency_id)
-            .collect::<Vec<_>>();
-        let immutable = dependencies
-            .into_iter()
-            .all(|dependency_id| self.registry_closure_is_immutable(dependency_id, visiting));
+        let package = self.get(package_id);
+        // Stable procedural macros can inspect arbitrary environment variables
+        // and external files without recording either in rustc dependency
+        // information. Reusing their expanded consumers is sound only for an
+        // explicitly audited, immutable producer. Other macro closures must run
+        // the ordinary check compiler regardless of their existing artifacts.
+        let trusted_macro = !package.proc_macro()
+            || (package_id.source_id().is_crates_io()
+                // `is_crates_io` also accepts Cargo's test-only registry
+                // override, which must not make an arbitrary registry trusted.
+                && matches!(
+                    package_id.source_id().url().as_str(),
+                    CRATES_IO_INDEX | CRATES_IO_HTTP_INDEX
+                )
+                // Source replacement deliberately maps downloaded packages
+                // back to the original crates.io SourceId, so the effective
+                // source must independently confirm that no user-controlled
+                // mirror supplied a different macro under the same identity.
+                && self
+                    .package_set
+                    .sources()
+                    .get(package_id.source_id())
+                    .is_some_and(|source| !source.is_replaced())
+                && package_id.name().as_str() == "serde_derive"
+                && package_id.version().major == 1
+                && self
+                    .resolve()
+                    .checksums()
+                    .get(&package_id)
+                    .is_some_and(Option::is_some));
+        let immutable = trusted_macro
+            && self
+                .resolve()
+                .deps(package_id)
+                .map(|(dependency_id, _)| dependency_id)
+                .collect::<Vec<_>>()
+                .into_iter()
+                .all(|dependency_id| self.registry_closure_is_immutable(dependency_id, visiting));
 
         visiting.remove(&package_id);
         self.immutable_registry_closures

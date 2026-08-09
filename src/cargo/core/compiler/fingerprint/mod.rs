@@ -2390,7 +2390,12 @@ fn calculate_normal(
         // not prove that two direct compiler shims have the same behavior, and
         // `RUSTC_BOOTSTRAP` controls feature gating without appearing in the
         // compiler arguments or its normal dependency information.
-        build_runner.bcx.rustc().path.hash(&mut config);
+        let compiler = paths::resolve_executable(&build_runner.bcx.rustc().path)?;
+        compiler.hash(&mut config);
+        let compiler_metadata = paths::metadata(&compiler)?;
+        compiler_metadata.len().hash(&mut config);
+        FileTime::from_creation_time(&compiler_metadata).hash(&mut config);
+        FileTime::from_last_modification_time(&compiler_metadata).hash(&mut config);
         let bootstrap = build_runner
             .bcx
             .gctx
