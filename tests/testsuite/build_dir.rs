@@ -2236,6 +2236,105 @@ fn shared_registry_cache_rejects_ambient_native_compiler_wrappers() {
 
 #[cfg(unix)]
 #[cargo_test]
+fn shared_registry_cache_rejects_ambient_external_build_tool_wrappers() {
+    Package::new("external-build-tool-registry", "1.0.0")
+        .file(
+            "build.rs",
+            r#"fn main() {
+                let name = std::env::var("OHM_NATIVE_BUILD_TOOL").unwrap();
+                let executable = std::env::var_os(&name).unwrap();
+                let mut command = if name.contains("CROSS_COMPILE") {
+                    std::process::Command::new(format!("{}gcc", executable.to_string_lossy()))
+                } else if name.contains("CMAKE_TOOLCHAIN_FILE") {
+                    let mut command = std::process::Command::new("/bin/sh");
+                    command.arg(executable);
+                    command
+                } else {
+                    std::process::Command::new(executable)
+                };
+                let status = command.status().unwrap();
+                assert!(status.success(), "the shared native build tool changed behavior");
+            }"#,
+        )
+        .file("src/lib.rs", "pub fn value() -> u32 { 73 }")
+        .publish();
+
+    let manifest = r#"
+        [package]
+        name = "external-build-tool-cache-app"
+        version = "0.1.0"
+        edition = "2021"
+
+        [dependencies]
+        external-build-tool-registry = "1.0.0"
+    "#;
+    let source = "pub fn value() -> u32 { external_build_tool_registry::value() }";
+    let wrapper_source = "#!/bin/sh\nif [ \"$OHM_NATIVE_TOOL_MODE\" = deny ]; then\n    echo 'the shared native build tool changed behavior' >&2\n    exit 1\nfi\n";
+    let wrapper_project = project_in("external-build-tool-wrapper")
+        .file("Cargo.toml", manifest)
+        .file("src/lib.rs", source)
+        .executable("opaque-native-tool", wrapper_source)
+        .executable("opaque-native-cross-gcc", wrapper_source)
+        .build();
+    let wrapper = wrapper_project.root().join("opaque-native-tool");
+    let target = rustc_host().replace(['-', '.'], "_");
+    let names = [
+        "RANLIB".to_owned(),
+        "NVCC".to_owned(),
+        "CMAKE".to_owned(),
+        "EMCMAKE".to_owned(),
+        "EMMAKE".to_owned(),
+        "PKG_CONFIG".to_owned(),
+        "PERL".to_owned(),
+        "OPENSSL_SRC_PERL".to_owned(),
+        "HOST_RANLIB".to_owned(),
+        "TARGET_RANLIB".to_owned(),
+        format!("RANLIB_{target}"),
+        "CROSS_COMPILE".to_owned(),
+        "HOST_CROSS_COMPILE".to_owned(),
+        "CMAKE_TOOLCHAIN_FILE".to_owned(),
+        format!("CMAKE_TOOLCHAIN_FILE_{target}"),
+    ];
+
+    for (index, name) in names.into_iter().enumerate() {
+        let left = project_in(&format!("external-build-tool-{index}-left"))
+            .file("Cargo.toml", manifest)
+            .file("src/lib.rs", source)
+            .build();
+        let right = project_in(&format!("external-build-tool-{index}-right"))
+            .file("Cargo.toml", manifest)
+            .file("src/lib.rs", source)
+            .build();
+        let shared = paths::root().join(format!("external-build-tool-{index}-shared"));
+        let executable = if name.contains("CROSS_COMPILE") {
+            wrapper_project.root().join("opaque-native-cross-")
+        } else {
+            wrapper.clone()
+        };
+
+        left.cargo("-Zohm-shared-registry-cache build")
+            .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+            .env("CARGO_BUILD_BUILD_DIR", &shared)
+            .env(&name, &executable)
+            .env("OHM_NATIVE_BUILD_TOOL", &name)
+            .env("OHM_NATIVE_TOOL_MODE", "allow")
+            .run();
+        right
+            .cargo("-Zohm-shared-registry-cache build")
+            .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+            .env("CARGO_BUILD_BUILD_DIR", &shared)
+            .env(&name, &executable)
+            .env("OHM_NATIVE_BUILD_TOOL", &name)
+            .env("OHM_NATIVE_TOOL_MODE", "deny")
+            .with_status(101)
+            .with_stderr_contains("[COMPILING] external-build-tool-registry v1.0.0")
+            .with_stderr_contains("[..]the shared native build tool changed behavior[..]")
+            .run();
+    }
+}
+
+#[cfg(unix)]
+#[cargo_test]
 fn shared_registry_cache_keys_path_selected_native_compilers() {
     Package::new("path-sensitive-native-registry", "1.0.0")
         .file(
