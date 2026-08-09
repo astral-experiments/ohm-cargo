@@ -8,7 +8,9 @@ use cargo_test_support::compare::assert_e2e;
 use cargo_test_support::install::exe;
 use cargo_test_support::registry::Package;
 use cargo_test_support::str;
-use cargo_test_support::{Project, basic_bin_manifest, basic_manifest, git, project};
+use cargo_test_support::{
+    Project, basic_bin_manifest, basic_manifest, git, paths, project, project_in,
+};
 
 fn ohm_registry_project() -> Project {
     project()
@@ -2077,6 +2079,58 @@ fn ohm_built_registry_dependency_reuse_supports_new_build_layout() {
 [FINISHED] `dev` profile [unoptimized + debuginfo] target(s) in [ELAPSED]s
 
 "#]])
+        .run();
+}
+
+#[cargo_test]
+fn ohm_built_registry_dependency_reuse_composes_with_shared_registry_worktrees() {
+    Package::new("composed-dependency", "1.0.0")
+        .file(
+            "build.rs",
+            r#"fn main() { println!("cargo:rerun-if-changed=build.rs"); }"#,
+        )
+        .file("src/lib.rs", "pub fn value() -> u32 { 19 }")
+        .publish();
+
+    let create_project = |worktree: &str, source: &str| {
+        project_in(worktree)
+            .file(
+                "Cargo.toml",
+                r#"
+                    [package]
+                    name = "composed-app"
+                    version = "0.1.0"
+                    edition = "2021"
+
+                    [dependencies]
+                    composed-dependency = "1.0.0"
+                "#,
+            )
+            .file("src/lib.rs", source)
+            .build()
+    };
+    let left = create_project(
+        "composed-left",
+        "pub fn value() -> u32 { composed_dependency::value() + 1 }",
+    );
+    let right = create_project(
+        "composed-right",
+        "pub fn value() -> u32 { composed_dependency::value() + 2 }",
+    );
+    let shared_build_directory = paths::root().join("composed-shared-build-directory");
+
+    left.cargo("-Zohm-shared-registry-cache build")
+        .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+        .env("CARGO_BUILD_BUILD_DIR", &shared_build_directory)
+        .run();
+
+    right
+        .cargo("-Zohm-shared-registry-cache -Zohm-reuse-built-deps check -v")
+        .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache", "ohm-reuse-built-deps"])
+        .env("CARGO_BUILD_BUILD_DIR", &shared_build_directory)
+        .with_stderr_contains("[FRESH] composed-dependency v1.0.0")
+        .with_stderr_contains("[CHECKING] composed-app v0.1.0 ([..])")
+        .with_stderr_does_not_contain("[CHECKING] composed-dependency v1.0.0")
         .run();
 }
 
