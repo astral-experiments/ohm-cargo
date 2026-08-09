@@ -11,8 +11,9 @@
 use std::path::PathBuf;
 
 use crate::prelude::*;
+use crate::utils::tools;
 use cargo_test_support::registry::{Package, RegistryBuilder};
-use cargo_test_support::{paths, prelude::*, project, str};
+use cargo_test_support::{paths, prelude::*, project, project_in, rustc_host, str};
 use std::env::consts::{DLL_PREFIX, DLL_SUFFIX, EXE_SUFFIX};
 
 #[cargo_test]
@@ -1326,6 +1327,749 @@ fn should_work_with_cargo_default_lib_metadata() {
 [ROOT]/foo/build-dir/debug/build/foo/[HASH]/out/build_script_build.d
 
 "#]]);
+}
+
+#[cargo_test]
+fn shared_registry_cache_keeps_workspace_artifacts_private() {
+    Package::new("shared-registry", "1.0.0")
+        .file(
+            "build.rs",
+            r#"
+            fn main() {
+                let output = std::path::PathBuf::from(
+                    std::env::var_os("OUT_DIR").expect("build script output directory"),
+                );
+                std::fs::write(
+                    output.join("generated.rs"),
+                    "pub const VALUE: &str = \"registry\";",
+                )
+                .expect("write generated registry source");
+                println!("cargo:rerun-if-changed=build.rs");
+            }
+            "#,
+        )
+        .file(
+            "src/lib.rs",
+            r#"
+            include!(concat!(env!("OUT_DIR"), "/generated.rs"));
+            pub fn value() -> &'static str { VALUE }
+            "#,
+        )
+        .publish();
+    Package::new("local-dependency", "0.1.0")
+        .file(
+            "src/lib.rs",
+            "pub fn value() -> &'static str { \"published\" }",
+        )
+        .publish();
+    Package::new("registry-parent", "1.0.0")
+        .dep("local-dependency", "0.1.0")
+        .file(
+            "src/lib.rs",
+            "pub fn value() -> &'static str { local_dependency::value() }",
+        )
+        .publish();
+
+    let create_project = |worktree: &str, local_value: &str| {
+        project_in(worktree)
+            .file(
+                "Cargo.toml",
+                r#"
+                [package]
+                name = "shared-cache-app"
+                version = "0.1.0"
+                edition = "2021"
+
+                [dependencies]
+                shared-registry = "1.0.0"
+                registry-parent = "1.0.0"
+                local-dependency = "0.1.0"
+
+                [patch.crates-io]
+                local-dependency = { path = "local" }
+                "#,
+            )
+            .file(
+                "src/main.rs",
+                r#"
+                fn main() {
+                    println!(
+                        "{}:{}:{}",
+                        shared_registry::value(),
+                        local_dependency::value(),
+                        registry_parent::value(),
+                    );
+                }
+                "#,
+            )
+            .file(
+                "local/Cargo.toml",
+                r#"
+                [package]
+                name = "local-dependency"
+                version = "0.1.0"
+                edition = "2021"
+                "#,
+            )
+            .file(
+                "local/src/lib.rs",
+                &format!("pub fn value() -> &'static str {{ \"{local_value}\" }}"),
+            )
+            .build()
+    };
+    let left = create_project("left-worktree", "left");
+    let right = create_project("right-worktree", "right");
+    let shared_build_dir = paths::root().join("shared-registry-build-dir");
+
+    left.cargo("-Zohm-shared-registry-cache run")
+        .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+        .env("CARGO_BUILD_BUILD_DIR", &shared_build_dir)
+        .with_stderr_contains("[COMPILING] shared-registry v1.0.0")
+        .with_stderr_contains("[COMPILING] registry-parent v1.0.0")
+        .with_stderr_contains("[COMPILING] local-dependency v0.1.0 ([..])")
+        .with_stdout_data(str![[r#"
+registry:left:left
+
+"#]])
+        .run();
+
+    right
+        .cargo("run")
+        .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+        .env("CARGO_UNSTABLE_OHM_SHARED_REGISTRY_CACHE", "true")
+        .env("CARGO_BUILD_BUILD_DIR", &shared_build_dir)
+        .with_stderr_contains("[COMPILING] registry-parent v1.0.0")
+        .with_stderr_contains("[COMPILING] local-dependency v0.1.0 ([..])")
+        .with_stderr_does_not_contain("[COMPILING] shared-registry v1.0.0")
+        .with_stdout_data(str![[r#"
+registry:right:right
+
+"#]])
+        .run();
+
+    left.cargo("-Zohm-shared-registry-cache run")
+        .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+        .env("CARGO_BUILD_BUILD_DIR", &shared_build_dir)
+        .with_stderr_does_not_contain("[COMPILING] shared-registry v1.0.0")
+        .with_stderr_does_not_contain("[COMPILING] registry-parent v1.0.0")
+        .with_stderr_does_not_contain("[COMPILING] local-dependency v0.1.0 ([..])")
+        .with_stdout_data(str![[r#"
+registry:left:left
+
+"#]])
+        .run();
+
+    let incremental = shared_build_dir.join("debug/incremental");
+    assert_eq!(
+        std::fs::read_dir(&incremental)
+            .expect("read private workspace incremental directories")
+            .count(),
+        2,
+        "each worktree must retain a separate incremental directory",
+    );
+}
+
+#[cargo_test]
+fn shared_registry_cache_rejects_global_compiler_wrappers() {
+    Package::new("wrapped-registry", "1.0.0")
+        .file("src/lib.rs", "pub fn value() -> u32 { 19 }")
+        .publish();
+
+    let create_project = |worktree: &str| {
+        project_in(worktree)
+            .file(
+                "Cargo.toml",
+                r#"
+                [package]
+                name = "wrapper-cache-app"
+                version = "0.1.0"
+                edition = "2021"
+
+                [dependencies]
+                wrapped-registry = "1.0.0"
+                "#,
+            )
+            .file(
+                "src/main.rs",
+                "fn main() { println!(\"{}\", wrapped_registry::value()); }",
+            )
+            .build()
+    };
+    let left = create_project("wrapper-left");
+    let right = create_project("wrapper-right");
+    let shared_build_dir = paths::root().join("wrapper-shared-build-dir");
+
+    left.cargo("-Zohm-shared-registry-cache run")
+        .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+        .env("CARGO_BUILD_BUILD_DIR", &shared_build_dir)
+        .with_stderr_contains("[COMPILING] wrapped-registry v1.0.0")
+        .with_stdout_data("19\n")
+        .run();
+
+    right
+        .cargo("-Zohm-shared-registry-cache run")
+        .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+        .env("CARGO_BUILD_BUILD_DIR", &shared_build_dir)
+        .env("RUSTC_WRAPPER", tools::echo_wrapper())
+        .with_stderr_contains("[COMPILING] wrapped-registry v1.0.0")
+        .with_stderr_contains("WRAPPER CALLED: rustc --crate-name wrapped_registry[..]")
+        .with_stdout_data("19\n")
+        .run();
+
+    left.cargo("-Zohm-shared-registry-cache run")
+        .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+        .env("CARGO_BUILD_BUILD_DIR", &shared_build_dir)
+        .with_stderr_does_not_contain("[COMPILING] wrapped-registry v1.0.0")
+        .with_stdout_data("19\n")
+        .run();
+}
+
+#[cargo_test]
+fn shared_registry_cache_keys_build_script_tool_context() {
+    Package::new("tool-sensitive-registry", "1.0.0")
+        .file(
+            "build.rs",
+            r#"
+            fn main() {
+                let output = std::path::PathBuf::from(std::env::var_os("OUT_DIR").unwrap());
+                let rustdoc = std::env::var("RUSTDOC").unwrap();
+                std::fs::write(
+                    output.join("generated.rs"),
+                    format!("pub const TOOL: &str = {rustdoc:?};"),
+                )
+                .unwrap();
+                println!("cargo:rerun-if-changed=build.rs");
+            }
+            "#,
+        )
+        .file(
+            "src/lib.rs",
+            "include!(concat!(env!(\"OUT_DIR\"), \"/generated.rs\"));",
+        )
+        .publish();
+
+    let create_project = |worktree: &str| {
+        project_in(worktree)
+            .file(
+                "Cargo.toml",
+                r#"
+                [package]
+                name = "tool-context-app"
+                version = "0.1.0"
+                edition = "2021"
+
+                [dependencies]
+                tool-sensitive-registry = "1.0.0"
+                "#,
+            )
+            .file(
+                "src/main.rs",
+                "fn main() { println!(\"{}\", tool_sensitive_registry::TOOL); }",
+            )
+            .build()
+    };
+    let left = create_project("tool-context-left");
+    let right = create_project("tool-context-right");
+    let shared_build_dir = paths::root().join("tool-context-shared-build-dir");
+
+    left.cargo("-Zohm-shared-registry-cache run")
+        .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+        .env("CARGO_BUILD_BUILD_DIR", &shared_build_dir)
+        .env("RUSTDOC", "left-rustdoc")
+        .with_stdout_data("left-rustdoc\n")
+        .run();
+
+    right
+        .cargo("-Zohm-shared-registry-cache run")
+        .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+        .env("CARGO_BUILD_BUILD_DIR", &shared_build_dir)
+        .env("RUSTDOC", "right-rustdoc")
+        .with_stderr_contains("[COMPILING] tool-sensitive-registry v1.0.0")
+        .with_stdout_data("right-rustdoc\n")
+        .run();
+
+    left.cargo("-Zohm-shared-registry-cache run")
+        .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+        .env("CARGO_BUILD_BUILD_DIR", &shared_build_dir)
+        .env("RUSTDOC", "left-rustdoc")
+        .with_stderr_does_not_contain("[COMPILING] tool-sensitive-registry v1.0.0")
+        .with_stdout_data("left-rustdoc\n")
+        .run();
+}
+
+#[cargo_test(nightly, reason = "rustdoc mergeable crate info is unstable")]
+fn shared_registry_cache_keeps_rustdoc_merge_state_private() {
+    let create_project = |worktree: &str, package: &str| {
+        project_in(worktree)
+            .file(
+                "Cargo.toml",
+                &format!(
+                    r#"
+                    [package]
+                    name = "{package}"
+                    version = "0.1.0"
+                    edition = "2021"
+                    "#,
+                ),
+            )
+            .file("src/lib.rs", "pub fn documented() {}")
+            .build()
+    };
+    let left = create_project("rustdoc-left", "left-doc");
+    let right = create_project("rustdoc-right", "right-doc");
+    let shared_build_dir = paths::root().join("rustdoc-shared-build-dir");
+
+    left.cargo("-Zohm-shared-registry-cache -Zrustdoc-mergeable-info doc --no-deps")
+        .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache", "rustdoc-mergeable-info"])
+        .env("CARGO_BUILD_BUILD_DIR", &shared_build_dir)
+        .run();
+    right
+        .cargo("-Zohm-shared-registry-cache -Zrustdoc-mergeable-info doc --no-deps")
+        .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache", "rustdoc-mergeable-info"])
+        .env("CARGO_BUILD_BUILD_DIR", &shared_build_dir)
+        .run();
+
+    assert!(left.root().join("target/doc/left_doc/index.html").is_file());
+    assert!(
+        right
+            .root()
+            .join("target/doc/right_doc/index.html")
+            .is_file()
+    );
+    assert!(!right.root().join("target/doc/left_doc/index.html").exists());
+    assert_eq!(
+        std::fs::read_dir(&shared_build_dir)
+            .expect("read shared rustdoc build directory")
+            .filter_map(Result::ok)
+            .filter(|entry| {
+                entry
+                    .file_name()
+                    .to_string_lossy()
+                    .starts_with(".rustdoc_fingerprint-")
+            })
+            .count(),
+        2,
+        "each worktree must retain a separate rustdoc merge fingerprint",
+    );
+}
+
+#[cargo_test]
+fn shared_registry_cache_keeps_test_temporary_directories_private() {
+    let create_project = |worktree: &str, value: &str| {
+        project_in(worktree)
+            .file(
+                "Cargo.toml",
+                r#"
+                [package]
+                name = "temporary-cache-app"
+                version = "0.1.0"
+                edition = "2021"
+                "#,
+            )
+            .file("src/lib.rs", "")
+            .file(
+                "tests/private.rs",
+                &format!(
+                    r#"
+                    #[test]
+                    fn temporary_directory_is_private() {{
+                        let marker = std::path::Path::new(env!("CARGO_TARGET_TMPDIR"))
+                            .join("workspace-marker");
+                        assert!(!marker.exists(), "another worktree already created this marker");
+                        std::fs::write(marker, "{value}").unwrap();
+                    }}
+                    "#,
+                ),
+            )
+            .build()
+    };
+    let left = create_project("temporary-left", "left");
+    let right = create_project("temporary-right", "right");
+    let shared_build_dir = paths::root().join("temporary-shared-build-dir");
+
+    left.cargo("-Zohm-shared-registry-cache test --test private")
+        .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+        .env("CARGO_BUILD_BUILD_DIR", &shared_build_dir)
+        .run();
+    right
+        .cargo("-Zohm-shared-registry-cache test --test private")
+        .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+        .env("CARGO_BUILD_BUILD_DIR", &shared_build_dir)
+        .run();
+
+    let mut contents = std::fs::read_dir(shared_build_dir.join("tmp"))
+        .expect("read private test temporary directories")
+        .filter_map(Result::ok)
+        .map(|entry| {
+            std::fs::read_to_string(entry.path().join("workspace-marker"))
+                .expect("read private workspace marker")
+        })
+        .collect::<Vec<_>>();
+    contents.sort_unstable();
+    assert_eq!(contents, ["left", "right"]);
+}
+
+#[cargo_test]
+fn shared_registry_cache_plain_clean_preserves_other_workspaces_and_registries() {
+    Package::new("clean-shared-registry", "1.0.0")
+        .file("src/lib.rs", "pub fn value() -> u32 { 7 }")
+        .publish();
+
+    let create_project = |worktree: &str, value: u32| {
+        project_in(worktree)
+            .file(
+                "Cargo.toml",
+                r#"
+                [package]
+                name = "shared-clean-app"
+                version = "0.1.0"
+                edition = "2021"
+
+                [dependencies]
+                clean-shared-registry = "1.0.0"
+
+                [profile.alternate]
+                inherits = "dev"
+                "#,
+            )
+            .file(
+                "src/main.rs",
+                &format!(
+                    "fn main() {{ println!(\"{{}}:{value}\", clean_shared_registry::value()); }}"
+                ),
+            )
+            .build()
+    };
+    let left = create_project("clean-worktree-left", 1);
+    let right = create_project("clean-worktree-right", 2);
+    let shared = paths::root().join("clean-shared-build-directory");
+    let target = rustc_host();
+
+    for project in [&left, &right] {
+        project
+            .cargo("-Zohm-shared-registry-cache build")
+            .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+            .env("CARGO_BUILD_BUILD_DIR", &shared)
+            .run();
+        project
+            .cargo("-Zohm-shared-registry-cache build --target")
+            .arg(&target)
+            .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+            .env("CARGO_BUILD_BUILD_DIR", &shared)
+            .run();
+        project
+            .cargo("-Zohm-shared-registry-cache build --profile alternate")
+            .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+            .env("CARGO_BUILD_BUILD_DIR", &shared)
+            .run();
+    }
+
+    left.cargo("-Zohm-shared-registry-cache clean")
+        .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+        .env("CARGO_BUILD_BUILD_DIR", &shared)
+        .run();
+
+    assert!(!left.root().join("target").exists());
+    assert!(
+        right
+            .root()
+            .join(format!("target/debug/shared-clean-app{EXE_SUFFIX}"))
+            .is_file()
+    );
+    assert!(
+        right
+            .root()
+            .join(format!("target/alternate/shared-clean-app{EXE_SUFFIX}"))
+            .is_file()
+    );
+    assert!(shared.join("debug/build/registries").is_dir());
+    assert!(shared.join("alternate/build/registries").is_dir());
+    assert!(shared.join(&target).join("debug/build/registries").is_dir());
+    assert!(
+        right
+            .root()
+            .join(format!(
+                "target/{target}/debug/shared-clean-app{EXE_SUFFIX}"
+            ))
+            .is_file()
+    );
+
+    right
+        .cargo("-Zohm-shared-registry-cache run")
+        .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+        .env("CARGO_BUILD_BUILD_DIR", &shared)
+        .with_stderr_does_not_contain("[COMPILING] [..]")
+        .with_stdout_data("7:2\n")
+        .run();
+    left.cargo("-Zohm-shared-registry-cache run")
+        .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+        .env("CARGO_BUILD_BUILD_DIR", &shared)
+        .with_stderr_contains("[COMPILING] shared-clean-app v0.1.0 ([..])")
+        .with_stderr_does_not_contain("[COMPILING] clean-shared-registry v1.0.0")
+        .with_stdout_data("7:1\n")
+        .run();
+}
+
+#[cargo_test]
+fn shared_registry_cache_package_clean_only_removes_current_workspace() {
+    Package::new("package-clean-registry", "1.0.0")
+        .file("src/lib.rs", "pub fn value() -> u32 { 11 }")
+        .publish();
+
+    let create_project = |worktree: &str, value: u32| {
+        project_in(worktree)
+            .file(
+                "Cargo.toml",
+                r#"
+                [package]
+                name = "package-clean-app"
+                version = "0.1.0"
+                edition = "2021"
+
+                [dependencies]
+                package-clean-registry = "1.0.0"
+                package-clean-local = { path = "local" }
+                "#,
+            )
+            .file(
+                "src/main.rs",
+                r#"
+                fn main() {
+                    println!(
+                        "{}:{}",
+                        package_clean_registry::value(),
+                        package_clean_local::value()
+                    );
+                }
+                "#,
+            )
+            .file(
+                "local/Cargo.toml",
+                r#"
+                [package]
+                name = "package-clean-local"
+                version = "0.1.0"
+                edition = "2021"
+                "#,
+            )
+            .file(
+                "local/src/lib.rs",
+                &format!("pub fn value() -> u32 {{ {value} }}"),
+            )
+            .build()
+    };
+    let left = create_project("package-clean-left", 1);
+    let right = create_project("package-clean-right", 2);
+    let shared = paths::root().join("package-clean-shared-build-directory");
+
+    for project in [&left, &right] {
+        project
+            .cargo("-Zohm-shared-registry-cache run")
+            .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+            .env("CARGO_BUILD_BUILD_DIR", &shared)
+            .run();
+    }
+
+    left.cargo("-Zohm-shared-registry-cache clean -p package-clean-local")
+        .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+        .env("CARGO_BUILD_BUILD_DIR", &shared)
+        .run();
+
+    right
+        .cargo("-Zohm-shared-registry-cache run")
+        .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+        .env("CARGO_BUILD_BUILD_DIR", &shared)
+        .with_stderr_does_not_contain("[COMPILING] [..]")
+        .with_stdout_data("11:2\n")
+        .run();
+    left.cargo("-Zohm-shared-registry-cache run")
+        .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+        .env("CARGO_BUILD_BUILD_DIR", &shared)
+        .with_stderr_contains("[COMPILING] package-clean-local v0.1.0 ([..])")
+        .with_stderr_does_not_contain("[COMPILING] package-clean-registry v1.0.0")
+        .with_stdout_data("11:1\n")
+        .run();
+
+    left.cargo("-Zohm-shared-registry-cache clean -p package-clean-registry")
+        .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+        .env("CARGO_BUILD_BUILD_DIR", &shared)
+        .with_stderr_contains(
+            "[WARNING] preserving shared registry artifacts for `package-clean-registry` [..]",
+        )
+        .run();
+    right
+        .cargo("-Zohm-shared-registry-cache run")
+        .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+        .env("CARGO_BUILD_BUILD_DIR", &shared)
+        .with_stderr_does_not_contain("[COMPILING] [..]")
+        .with_stdout_data("11:2\n")
+        .run();
+}
+
+#[cargo_test]
+fn shared_registry_cache_keys_inherited_rustc_bootstrap() {
+    Package::new("bootstrap-sensitive-registry", "1.0.0")
+        .file(
+            "src/lib.rs",
+            "#![feature(never_type)]\npub fn value() -> u32 { 23 }\n",
+        )
+        .publish();
+
+    let create_project = |worktree: &str| {
+        project_in(worktree)
+            .file(
+                "Cargo.toml",
+                r#"
+                [package]
+                name = "bootstrap-cache-app"
+                version = "0.1.0"
+                edition = "2021"
+
+                [dependencies]
+                bootstrap-sensitive-registry = "1.0.0"
+                "#,
+            )
+            .file("src/lib.rs", "pub use bootstrap_sensitive_registry::value;")
+            .build()
+    };
+    let left = create_project("bootstrap-worktree-left");
+    let right = create_project("bootstrap-worktree-right");
+    let shared = paths::root().join("bootstrap-shared-build-directory");
+
+    left.cargo("-Zohm-shared-registry-cache build")
+        .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+        .env("CARGO_BUILD_BUILD_DIR", &shared)
+        .env("RUSTC_BOOTSTRAP", "1")
+        .run();
+
+    right
+        .cargo("-Zohm-shared-registry-cache build")
+        .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+        .env("CARGO_BUILD_BUILD_DIR", &shared)
+        .env("RUSTC_BOOTSTRAP", "-1")
+        .with_status(101)
+        .with_stderr_contains(
+            "error[E0554]: `#![feature]` may not be used on the [..] release channel",
+        )
+        .run();
+
+    left.cargo("-Zohm-shared-registry-cache build")
+        .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+        .env("CARGO_BUILD_BUILD_DIR", &shared)
+        .env("RUSTC_BOOTSTRAP", "1")
+        .with_stderr_does_not_contain("[COMPILING] [..]")
+        .run();
+}
+
+#[cfg(unix)]
+#[cargo_test]
+fn shared_registry_cache_keys_effective_host_runner() {
+    Package::new("runner-sensitive-registry", "1.0.0")
+        .file(
+            "build.rs",
+            r#"
+            fn main() {
+                let output = std::path::PathBuf::from(std::env::var_os("OUT_DIR").unwrap());
+                let runner = std::env::var("OHM_SHARED_HOST_RUNNER").unwrap();
+                std::fs::write(
+                    output.join("generated.rs"),
+                    format!("pub const RUNNER: &str = {runner:?};"),
+                )
+                .unwrap();
+                println!("cargo:rerun-if-changed=build.rs");
+            }
+            "#,
+        )
+        .file(
+            "src/lib.rs",
+            "include!(concat!(env!(\"OUT_DIR\"), \"/generated.rs\"));",
+        )
+        .publish();
+
+    let create_project = |worktree: &str, runner: &str| {
+        project_in(worktree)
+            .file(
+                "Cargo.toml",
+                r#"
+                [package]
+                name = "runner-cache-app"
+                version = "0.1.0"
+                edition = "2021"
+
+                [dependencies]
+                runner-sensitive-registry = "1.0.0"
+                "#,
+            )
+            .file(
+                ".cargo/config.toml",
+                &format!(
+                    r#"
+                    target-applies-to-host = false
+
+                    [host]
+                    runner = ["sh", "-c", "OHM_SHARED_HOST_RUNNER={runner} \"$@\"", "ohm-host-runner"]
+                    "#,
+                ),
+            )
+            .file(
+                "src/main.rs",
+                "fn main() { println!(\"{}\", runner_sensitive_registry::RUNNER); }",
+            )
+            .build()
+    };
+    let left = create_project("host-runner-left", "left");
+    let right = create_project("host-runner-right", "right");
+    let shared = paths::root().join("host-runner-shared-build-directory");
+    let flags = [
+        "ohm-shared-registry-cache",
+        "target-applies-to-host",
+        "host-config",
+    ];
+    let command = "-Zohm-shared-registry-cache -Ztarget-applies-to-host -Zhost-config run";
+
+    left.cargo(command)
+        .masquerade_as_nightly_cargo(&flags)
+        .env("CARGO_BUILD_BUILD_DIR", &shared)
+        .with_stdout_data("left\n")
+        .run();
+    right
+        .cargo(command)
+        .masquerade_as_nightly_cargo(&flags)
+        .env("CARGO_BUILD_BUILD_DIR", &shared)
+        .with_stderr_contains("[COMPILING] runner-sensitive-registry v1.0.0")
+        .with_stdout_data("right\n")
+        .run();
+    left.cargo(command)
+        .masquerade_as_nightly_cargo(&flags)
+        .env("CARGO_BUILD_BUILD_DIR", &shared)
+        .with_stderr_does_not_contain("[COMPILING] runner-sensitive-registry v1.0.0")
+        .with_stdout_data("left\n")
+        .run();
+}
+
+#[cargo_test]
+fn shared_registry_cache_clean_rejects_overlapping_target_and_build_directories() {
+    let project = project_in("unsafe-shared-clean")
+        .file(
+            "Cargo.toml",
+            r#"
+            [package]
+            name = "unsafe-shared-clean"
+            version = "0.1.0"
+            edition = "2021"
+            "#,
+        )
+        .file("src/lib.rs", "pub fn value() {}")
+        .build();
+
+    project
+        .cargo("-Zohm-shared-registry-cache clean")
+        .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+        .with_status(101)
+        .with_stderr_contains(
+            "[ERROR] cannot safely clean overlapping target and shared registry [..]",
+        )
+        .run();
 }
 
 fn parse_workspace_manifest_path_hash(hash_dir: &PathBuf) -> PathBuf {

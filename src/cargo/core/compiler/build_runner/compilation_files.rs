@@ -7,6 +7,7 @@ use std::hash::{Hash, Hasher};
 use std::path::{Path, PathBuf};
 use std::sync::Arc;
 
+use cargo_platform::CfgExpr;
 use tracing::debug;
 
 use super::{BuildContext, BuildRunner, CompileKind, FileFlavor, Layout};
@@ -131,10 +132,19 @@ pub struct CompilationFiles<'a, 'gctx> {
     /// include dependencies).
     roots: Vec<Unit>,
     ws: &'a Workspace<'gctx>,
+    /// Namespace immutable registry artifacts separately from workspace-local units.
+    shared_registry_cache: Option<SharedRegistryCache>,
     /// Metadata hash to use for each unit.
     metas: HashMap<Unit, Metadata>,
     /// For each Unit, a list all files produced.
     outputs: HashMap<Unit, OnceCell<Arc<Vec<OutputFile>>>>,
+}
+
+struct SharedRegistryCache {
+    workspace: String,
+    /// Includes the compiler and every stable Cargo-provided build-script input.
+    rustc: String,
+    immutable_units: HashMap<Unit, bool>,
 }
 
 /// Info about a single file emitted by the compiler.
@@ -176,12 +186,138 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
             .cloned()
             .map(|unit| (unit, OnceCell::new()))
             .collect();
+        let shared_registry_cache = build_runner
+            .bcx
+            .ws
+            .gctx()
+            .cli_unstable()
+            .ohm_shared_registry_cache
+            .then(|| {
+                let context = build_runner.bcx.gctx;
+                let compiler = build_runner.bcx.rustc();
+                let workspace_root = build_runner
+                    .bcx
+                    .ws
+                    .root()
+                    .canonicalize()
+                    .unwrap_or_else(|_| build_runner.bcx.ws.root().to_path_buf());
+                let rustdoc = context.rustdoc().ok().map(Path::to_path_buf);
+                let cargo = context.cargo_exe().ok().map(Path::to_path_buf);
+                let configured_environment = context.env_config().ok().map(|variables| {
+                    let mut variables = variables
+                        .iter()
+                        .map(|(name, value)| (name.clone(), value.clone()))
+                        .collect::<Vec<_>>();
+                    variables.sort_unstable_by(|left, right| left.0.cmp(&right.0));
+                    variables
+                });
+                let mut linkers = build_runner
+                    .bcx
+                    .all_kinds
+                    .iter()
+                    .map(|kind| {
+                        (
+                            kind.is_host(),
+                            build_runner.bcx.target_data.short_name(kind).to_owned(),
+                            build_runner
+                                .compilation
+                                .target_linker(*kind)
+                                .map(Path::to_path_buf),
+                        )
+                    })
+                    .collect::<Vec<_>>();
+                linkers.sort_unstable();
+                let inherited_loader_path = context
+                    .get_env_os(cargo_util::paths::dylib_path_envvar())
+                    .map(std::ffi::OsStr::to_os_string);
+                let effective_bootstrap = configured_environment
+                    .as_ref()
+                    .and_then(|variables| {
+                        variables
+                            .iter()
+                            .find(|(name, _)| name == "RUSTC_BOOTSTRAP")
+                            .map(|(_, value)| value.clone())
+                    })
+                    .or_else(|| {
+                        context
+                            .get_env_os("RUSTC_BOOTSTRAP")
+                            .map(std::ffi::OsStr::to_os_string)
+                    });
+                let target_applies_to_host = context.target_applies_to_host().ok();
+                let effective_host_runner = if target_applies_to_host == Some(false) {
+                    let configured_runner = build_runner
+                        .bcx
+                        .target_data
+                        .target_config(CompileKind::Host)
+                        .runner
+                        .as_ref()
+                        .map(|runner| &runner.val)
+                        .or_else(|| {
+                            context.target_cfgs().ok().and_then(|configurations| {
+                                let host_configuration =
+                                    build_runner.bcx.target_data.info(CompileKind::Host).cfg();
+                                configurations
+                                    .iter()
+                                    .find_map(|(condition, configuration)| {
+                                        CfgExpr::matches_key(condition, host_configuration)
+                                            .then_some(configuration.runner.as_ref())
+                                            .flatten()
+                                            .map(|runner| &runner.val)
+                                    })
+                            })
+                        });
+                    configured_runner.map(|runner| {
+                        (
+                            runner.path.clone().resolve_program(context),
+                            runner.args.clone(),
+                            context
+                                .get_env_os("PATH")
+                                .map(std::ffi::OsStr::to_os_string),
+                        )
+                    })
+                } else {
+                    None
+                };
+                let trusted_context = compiler.wrapper.is_none()
+                    && rustdoc.is_some()
+                    && cargo.is_some()
+                    && configured_environment.is_some()
+                    && target_applies_to_host.is_some();
+                let mut immutable_units = HashMap::default();
+                if trusted_context {
+                    for unit in metas.keys() {
+                        is_immutable_registry_unit(unit, build_runner, &mut immutable_units);
+                    }
+                }
+                SharedRegistryCache {
+                    workspace: util::short_hash(&workspace_root),
+                    rustc: util::short_hash(&(
+                        &compiler.verbose_version,
+                        &compiler.path,
+                        &rustdoc,
+                        &cargo,
+                        context.home().as_path_unlocked(),
+                        build_runner.bcx.jobs(),
+                        &linkers,
+                        &configured_environment,
+                        &inherited_loader_path,
+                        (
+                            &effective_bootstrap,
+                            context.cli_unstable().host_config,
+                            &target_applies_to_host,
+                            &effective_host_runner,
+                        ),
+                    )),
+                    immutable_units,
+                }
+            });
         CompilationFiles {
             ws: build_runner.bcx.ws,
             host,
             target,
             export_dir: build_runner.bcx.build_config.export_dir.clone(),
             roots: build_runner.bcx.roots.clone(),
+            shared_registry_cache,
             metas,
             outputs,
         }
@@ -245,12 +381,21 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
     /// Note that some units may share the same directory, so care should be
     /// taken in those cases!
     fn pkg_dir(&self, unit: &Unit) -> String {
+        let name = unit.pkg.package_id().name();
+        let hash = self.unit_hash(unit);
+        if let Some(cache) = &self.shared_registry_cache {
+            if cache.immutable_units.get(unit).copied().unwrap_or(false) {
+                return format!("registries/{}/{name}/{hash}", cache.rustc);
+            }
+            return format!(
+                "workspaces/{}/{}/{name}/{hash}",
+                cache.workspace, cache.rustc
+            );
+        }
         let separator = match self.ws.gctx().cli_unstable().build_dir_new_layout {
             true => "/",
             false => "-",
         };
-        let name = unit.pkg.package_id().name();
-        let hash = self.unit_hash(unit);
         format!("{name}{separator}{hash}")
     }
 
@@ -690,6 +835,32 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
         }
         Ok(outputs)
     }
+}
+
+/// Registry units remain shareable only when their entire dependency closure is immutable.
+///
+/// A `[patch.crates-io]` override can make an otherwise immutable registry crate depend on a
+/// workspace-local package. Such crates must remain private to the workspace that patched them.
+/// Sharing build-script output additionally relies on scripts declaring their external inputs;
+/// Cargo-provided compiler, documentation-tool, linker, configuration, and job-count context is
+/// already incorporated into the shared namespace. The explicit opt-in trusts build scripts not
+/// to persist Cargo's synthesized, workspace-private dynamic-library search paths or jobserver
+/// handles as generated source. Arbitrary global rustc wrappers are rejected.
+fn is_immutable_registry_unit(
+    unit: &Unit,
+    build_runner: &BuildRunner<'_, '_>,
+    eligibility: &mut HashMap<Unit, bool>,
+) -> bool {
+    if let Some(eligible) = eligibility.get(unit) {
+        return *eligible;
+    }
+
+    let eligible = unit.pkg.package_id().source_id().is_remote_registry()
+        && build_runner.unit_deps(unit).iter().all(|dependency| {
+            is_immutable_registry_unit(&dependency.unit, build_runner, eligibility)
+        });
+    eligibility.insert(unit.clone(), eligible);
+    eligible
 }
 
 /// Gets the metadata hash for the given [`Unit`].
