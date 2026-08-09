@@ -651,6 +651,15 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
             .and_then(|cache| cache.compiler_driver.as_deref())
     }
 
+    /// Whether this exact unit's artifacts use the cross-workspace registry namespace.
+    pub(crate) fn is_shared_registry_unit(&self, unit: &Unit) -> bool {
+        self.shared_registry_cache
+            .as_ref()
+            .and_then(|cache| cache.immutable_units.get(unit))
+            .copied()
+            .unwrap_or(false)
+    }
+
     /// Returns the host `deps` directory path for a given build unit.
     pub fn host_deps(&self, unit: &Unit) -> PathBuf {
         let dir = self.pkg_dir(unit);
