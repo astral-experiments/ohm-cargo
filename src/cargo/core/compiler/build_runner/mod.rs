@@ -954,7 +954,11 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
                 argument.strip_prefix("-Z")
             };
             if option.is_some_and(|option| {
-                option == "codegen-backend" || option.starts_with("codegen-backend=")
+                option.starts_with('@')
+                    || matches!(
+                        option.split_once('=').map_or(option, |(name, _)| name),
+                        "codegen-backend" | "codegen_backend"
+                    )
             }) {
                 return true;
             }
