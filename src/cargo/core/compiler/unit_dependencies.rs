@@ -1147,6 +1147,23 @@ impl<'a, 'gctx> State<'a, 'gctx> {
         if !package_id.source_id().is_remote_registry() {
             return false;
         }
+        let Some((source_is_replaced, effective_source_id)) = self
+            .package_set
+            .sources()
+            .get(package_id.source_id())
+            .map(|source| (source.is_replaced(), source.replaced_source_id()))
+        else {
+            return false;
+        };
+        // Source replacement preserves the original registry PackageId even
+        // when a mutable, checksummed vendor directory supplies the contents.
+        // Such sources must follow the ordinary check path so Cargo verifies
+        // their integrity before compiling a newly requested target. Registry
+        // mirrors remain immutable and their actual source path participates
+        // in the existing unit fingerprint.
+        if source_is_replaced && !effective_source_id.is_remote_registry() {
+            return false;
+        }
         if let Some(immutable) = self.immutable_registry_closures.borrow().get(&package_id) {
             return *immutable;
         }
@@ -1168,15 +1185,9 @@ impl<'a, 'gctx> State<'a, 'gctx> {
                     package_id.source_id().url().as_str(),
                     CRATES_IO_INDEX | CRATES_IO_HTTP_INDEX
                 )
-                // Source replacement deliberately maps downloaded packages
-                // back to the original crates.io SourceId, so the effective
-                // source must independently confirm that no user-controlled
-                // mirror supplied a different macro under the same identity.
-                && self
-                    .package_set
-                    .sources()
-                    .get(package_id.source_id())
-                    .is_some_and(|source| !source.is_replaced())
+                // A user-controlled registry mirror must not inherit the
+                // explicitly audited crates.io procedural macro's trust.
+                && !source_is_replaced
                 && package_id.name().as_str() == "serde_derive"
                 && package_id.version().major == 1
                 && self

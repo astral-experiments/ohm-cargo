@@ -439,6 +439,57 @@ fn ohm_built_registry_dependency_reuse_rejects_patched_path_closures() {
 }
 
 #[cargo_test]
+fn ohm_built_registry_dependency_reuse_verifies_replaced_vendored_sources() {
+    Package::new("dependency", "1.0.0")
+        .file("src/lib.rs", "pub fn value() -> u32 { 19 }")
+        .publish();
+
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "foo"
+                version = "0.0.1"
+                edition = "2021"
+
+                [dependencies]
+                dependency = "1.0.0"
+            "#,
+        )
+        .file(
+            "src/lib.rs",
+            "pub fn value() -> u32 { dependency::value() }",
+        )
+        .build();
+
+    p.cargo("vendor --respect-source-config").run();
+    p.change_file(
+        ".cargo/config.toml",
+        r#"
+            [source.crates-io]
+            replace-with = "vendor"
+
+            [source.vendor]
+            directory = "vendor"
+        "#,
+    );
+    p.cargo("build").run();
+    p.change_file(
+        "vendor/dependency/src/lib.rs",
+        r#"compile_error!("a vendored registry source was modified");"#,
+    );
+
+    p.cargo("-Zohm-reuse-built-deps check")
+        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
+        .with_status(101)
+        .with_stderr_contains(
+            "[ERROR] the listed checksum of `[ROOT]/foo/vendor/dependency/src/lib.rs` has changed:",
+        )
+        .run();
+}
+
+#[cargo_test]
 fn ohm_built_registry_dependency_reuse_revalidates_features() {
     Package::new("dependency", "1.0.0")
         .feature("extra", &[])
@@ -530,6 +581,55 @@ fn ohm_built_registry_dependency_reuse_revalidates_compiler_feature_policy() {
         .with_stderr_contains(
             "error[E0554]: `#![feature]` may not be used on the [..] release channel",
         )
+        .run();
+}
+
+#[cargo_test]
+fn ohm_built_registry_dependency_reuse_revalidates_overridden_compiler_version() {
+    Package::new("dependency", "1.0.0")
+        .file(
+            "src/lib.rs",
+            r#"
+                #![feature(cfg_version)]
+
+                #[cfg(not(version("1.80")))]
+                compile_error!("the compiler version changed");
+
+                pub fn value() -> u32 { 19 }
+            "#,
+        )
+        .publish();
+
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "foo"
+                version = "0.0.1"
+                edition = "2021"
+
+                [dependencies]
+                dependency = "1.0.0"
+            "#,
+        )
+        .file(
+            "src/lib.rs",
+            "pub fn value() -> u32 { dependency::value() }",
+        )
+        .build();
+
+    p.cargo("build")
+        .env("RUSTC_BOOTSTRAP", "1")
+        .env("RUSTC_OVERRIDE_VERSION_STRING", "1.99.0")
+        .run();
+    p.cargo("-Zohm-reuse-built-deps check")
+        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
+        .env("RUSTC_BOOTSTRAP", "1")
+        .env("RUSTC_OVERRIDE_VERSION_STRING", "1.50.0")
+        .with_status(101)
+        .with_stderr_contains("[CHECKING] dependency v1.0.0")
+        .with_stderr_contains("[ERROR] the compiler version changed")
         .run();
 }
 
@@ -1025,9 +1125,81 @@ fn ohm_built_registry_dependency_reuse_preserves_check_json_artifacts() {
 }
 
 #[cargo_test]
-fn ohm_built_registry_dependency_reuse_preserves_build_helper_json_artifacts() {
-    Package::new("build-helper", "1.0.0")
+fn ohm_built_registry_dependency_reuse_preserves_transitive_check_json_artifacts() {
+    Package::new("leaf", "1.0.0")
         .file("src/lib.rs", "pub fn value() -> u32 { 19 }")
+        .publish();
+    Package::new("middle", "1.0.0")
+        .dep("leaf", "1.0.0")
+        .file(
+            "src/lib.rs",
+            "extern crate leaf; pub fn value() -> u32 { leaf::value() }",
+        )
+        .publish();
+
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "foo"
+                version = "0.0.1"
+                edition = "2021"
+
+                [dependencies]
+                middle = "1.0.0"
+            "#,
+        )
+        .file("src/lib.rs", "pub fn value() -> u32 { middle::value() }")
+        .build();
+
+    p.cargo("build").run();
+    let output = p
+        .cargo("-Zohm-reuse-built-deps check --message-format=json")
+        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
+        .with_stderr_does_not_contain("[CHECKING] leaf v1.0.0")
+        .with_stderr_does_not_contain("[CHECKING] middle v1.0.0")
+        .run();
+    let stdout = String::from_utf8(output.stdout).expect("UTF-8 Cargo output");
+    let messages = stdout
+        .lines()
+        .map(|line| serde_json::from_str::<serde_json::Value>(line).expect("JSON Cargo message"))
+        .collect::<Vec<_>>();
+
+    for name in ["leaf", "middle"] {
+        let artifact = messages
+            .iter()
+            .find(|message| {
+                message["reason"] == "compiler-artifact"
+                    && message["package_id"]
+                        .as_str()
+                        .is_some_and(|package_id| package_id.contains(&format!("{name}@1.0.0")))
+            })
+            .expect("promoted registry artifact");
+        let filenames = artifact["filenames"]
+            .as_array()
+            .expect("promoted registry artifact filenames");
+        assert!(!filenames.is_empty(), "missing {name} metadata");
+        assert!(
+            filenames.iter().all(|filename| filename
+                .as_str()
+                .is_some_and(|path| path.ends_with(".rmeta"))),
+            "a transitive check dependency must retain check-mode JSON: {artifact}",
+        );
+    }
+}
+
+#[cargo_test]
+fn ohm_built_registry_dependency_reuse_preserves_build_helper_json_artifacts() {
+    Package::new("helper-leaf", "1.0.0")
+        .file("src/lib.rs", "pub fn value() -> u32 { 19 }")
+        .publish();
+    Package::new("build-helper", "1.0.0")
+        .dep("helper-leaf", "1.0.0")
+        .file(
+            "src/lib.rs",
+            "extern crate helper_leaf; pub fn value() -> u32 { helper_leaf::value() }",
+        )
         .publish();
     Package::new("dependency", "1.0.0")
         .build_dep("build-helper", "1.0.0")
@@ -1094,6 +1266,26 @@ fn ohm_built_registry_dependency_reuse_preserves_build_helper_json_artifacts() {
                 })
         }),
         "a genuine build-script dependency must retain its linkable library: {helper_artifacts:?}",
+    );
+
+    let helper_leaf = messages
+        .iter()
+        .find(|message| {
+            message["reason"] == "compiler-artifact"
+                && message["package_id"]
+                    .as_str()
+                    .is_some_and(|package_id| package_id.contains("helper-leaf@1.0.0"))
+        })
+        .expect("transitive build-script dependency artifact");
+    assert!(
+        helper_leaf["filenames"]
+            .as_array()
+            .expect("transitive build-script artifact filenames")
+            .iter()
+            .any(|filename| filename
+                .as_str()
+                .is_some_and(|path| path.ends_with(".rlib"))),
+        "a transitive build-script dependency must retain its linkable library: {helper_leaf}",
     );
 
     let dependency = messages

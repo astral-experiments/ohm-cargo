@@ -154,6 +154,37 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
             }
         }
 
+        if reuse_built_registry_dependencies {
+            let mut pending = reused_registry_units.iter().cloned().collect::<Vec<_>>();
+            while let Some(unit) = pending.pop() {
+                if let Some(dependencies) = bcx.unit_graph.get(&unit) {
+                    for dependency in dependencies {
+                        if Self::is_promotable_registry_dependency(&dependency.unit)
+                            && reused_registry_units.insert(dependency.unit.clone())
+                        {
+                            pending.push(dependency.unit.clone());
+                        }
+                    }
+                }
+            }
+
+            let mut pending = object_required_registry_units
+                .iter()
+                .cloned()
+                .collect::<Vec<_>>();
+            while let Some(unit) = pending.pop() {
+                if let Some(dependencies) = bcx.unit_graph.get(&unit) {
+                    for dependency in dependencies {
+                        if Self::is_promotable_registry_dependency(&dependency.unit)
+                            && object_required_registry_units.insert(dependency.unit.clone())
+                        {
+                            pending.push(dependency.unit.clone());
+                        }
+                    }
+                }
+            }
+        }
+
         Ok(Self {
             bcx,
             compilation: Compilation::new(bcx)?,
