@@ -1211,8 +1211,7 @@ fn rustc(
                     .filter_map(|metadata| script_outputs.get(*metadata))
                     .any(|output| {
                         output.env.iter().any(|(name, _)| {
-                            OHM_COMPILER_LOADER_ENVIRONMENT.contains(&name.as_str())
-                                || name == paths::dylib_path_envvar()
+                            build_runner::is_sensitive_compiler_environment(name, cfg!(windows))
                         })
                     });
             }

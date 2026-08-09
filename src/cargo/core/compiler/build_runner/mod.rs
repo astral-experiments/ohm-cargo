@@ -1,6 +1,7 @@
 //! [`BuildRunner`] is the mutable state used during the build process.
 
 use crate::util::data_structures::{HashMap, HashSet};
+use std::ffi::OsString;
 use std::fs::File;
 use std::hash::{Hash, Hasher};
 use std::path::{Path, PathBuf};
@@ -109,6 +110,58 @@ fn sysroot_has_external_codegen_backends(sysroot: &Path, host: &str) -> bool {
     !matches!(backend_directory.try_exists(), Ok(false))
 }
 
+/// Windows treats environment variable names as case-insensitive even though
+/// Cargo's process builder preserves their original spelling.
+pub(crate) fn is_sensitive_compiler_environment(name: &str, windows: bool) -> bool {
+    let matches_name = |expected: &str| {
+        if windows {
+            name.eq_ignore_ascii_case(expected)
+        } else {
+            name == expected
+        }
+    };
+
+    OHM_COMPILER_LOADER_ENVIRONMENT
+        .iter()
+        .any(|expected| matches_name(expected))
+        || matches_name(paths::dylib_path_envvar())
+        || (windows && matches_name("PATH"))
+        || matches_name("RUSTC_BOOTSTRAP")
+        || matches_name("RUSTC_OVERRIDE_VERSION_STRING")
+}
+
+/// Mixed-case Windows configuration keys can silently replace any variable
+/// Cargo synthesized for its child processes, not just known loader names.
+fn configured_compiler_environment_has_case_alias(
+    configured_environment: &HashMap<String, OsString>,
+    windows: bool,
+) -> bool {
+    windows
+        && configured_environment
+            .keys()
+            .any(|name| name.bytes().any(|character| character.is_ascii_lowercase()))
+}
+
+/// Follow the same last-wins environment ordering as `ProcessBuilder` when a
+/// Windows build script spells an existing variable with different casing.
+fn effective_compiler_environment(
+    compiler: &ProcessBuilder,
+    name: &str,
+    windows: bool,
+) -> Option<OsString> {
+    if windows
+        && let Some((_, value)) = compiler
+            .get_envs()
+            .iter()
+            .rev()
+            .find(|(actual, _)| actual.eq_ignore_ascii_case(name))
+    {
+        return value.clone();
+    }
+
+    compiler.get_env(name)
+}
+
 /// Bind cacheable diagnostics to the successful compiler invocation.
 #[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]
 #[serde(deny_unknown_fields)]
@@ -127,13 +180,13 @@ impl RegistryMessageProvenance {
         let mut policy = StableHasher::new();
         for name in ["RUSTC_BOOTSTRAP", "RUSTC_OVERRIDE_VERSION_STRING"] {
             name.hash(&mut policy);
-            compiler.get_env(name).hash(&mut policy);
+            effective_compiler_environment(compiler, name, cfg!(windows)).hash(&mut policy);
         }
         self.effective_policy_context = Hasher::finish(&policy);
-        self.compiler_search_directories = compiler
-            .get_env(paths::dylib_path_envvar())
-            .map(|search_path| std::env::split_paths(&search_path).collect())
-            .unwrap_or_default();
+        self.compiler_search_directories =
+            effective_compiler_environment(compiler, paths::dylib_path_envvar(), cfg!(windows))
+                .map(|search_path| std::env::split_paths(&search_path).collect())
+                .unwrap_or_default();
         self.loader_injected = build_script_overrides_loader
             || !self.compiler_search_directories.iter().all(|directory| {
                 compiler_driver_search_directory_is_unshadowed(
@@ -144,8 +197,7 @@ impl RegistryMessageProvenance {
             || OHM_COMPILER_LOADER_INJECTION_ENVIRONMENT
                 .iter()
                 .any(|name| {
-                    compiler
-                        .get_env(name)
+                    effective_compiler_environment(compiler, name, cfg!(windows))
                         .is_some_and(|value| !value.is_empty())
                 });
     }
@@ -773,6 +825,9 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
         compiler_driver.hash(&mut context);
 
         let configured_environment = self.bcx.gctx.env_config()?;
+        if configured_compiler_environment_has_case_alias(configured_environment, cfg!(windows)) {
+            return Ok(None);
+        }
         let mut policy = StableHasher::new();
         for name in ["RUSTC_BOOTSTRAP", "RUSTC_OVERRIDE_VERSION_STRING"]
             .into_iter()
@@ -1469,7 +1524,12 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
 
 #[cfg(test)]
 mod tests {
-    use super::sysroot_has_external_codegen_backends;
+    use cargo_util::ProcessBuilder;
+
+    use super::{
+        configured_compiler_environment_has_case_alias, effective_compiler_environment,
+        is_sensitive_compiler_environment, sysroot_has_external_codegen_backends,
+    };
 
     #[test]
     fn detects_opaque_default_codegen_backend_directories() {
@@ -1489,5 +1549,70 @@ mod tests {
         .expect("create external backend directory");
 
         assert!(sysroot_has_external_codegen_backends(sysroot.path(), host));
+    }
+
+    #[test]
+    fn recognizes_windows_sensitive_environment_aliases_without_changing_unix() {
+        for name in [
+            "pAtH",
+            "rUsTc_BoOtStRaP",
+            "rustc_override_version_string",
+            "dYlD_iNsErT_lIbRaRiEs",
+            "lD_lIbRaRy_PaTh",
+        ] {
+            assert!(is_sensitive_compiler_environment(name, true));
+            assert!(!is_sensitive_compiler_environment(name, false));
+        }
+
+        assert!(is_sensitive_compiler_environment("RUSTC_BOOTSTRAP", false));
+        assert!(!is_sensitive_compiler_environment("UNRELATED_POLICY", true));
+    }
+
+    #[test]
+    fn captures_windows_compiler_environment_alias_using_actual_process_order() {
+        let mut compiler = ProcessBuilder::new("rustc");
+        compiler.env("RUSTC_OVERRIDE_VERSION_STRING", "1.50.0");
+        compiler.env("rustc_override_version_string", "1.99.0");
+
+        assert_eq!(
+            effective_compiler_environment(&compiler, "RUSTC_OVERRIDE_VERSION_STRING", true),
+            Some("1.99.0".into())
+        );
+        assert_eq!(
+            effective_compiler_environment(&compiler, "RUSTC_OVERRIDE_VERSION_STRING", false),
+            Some("1.50.0".into())
+        );
+    }
+
+    #[test]
+    fn rejects_windows_sensitive_config_aliases_without_changing_unix() {
+        let configured_environment = [
+            ("Path".to_owned(), "opaque-linker-directory".into()),
+            ("rustc_override_version_string".to_owned(), "1.99.0".into()),
+            ("Cargo_Manifest_Dir".to_owned(), "opaque-workspace".into()),
+        ]
+        .into_iter()
+        .collect();
+
+        assert!(configured_compiler_environment_has_case_alias(
+            &configured_environment,
+            true
+        ));
+        assert!(!configured_compiler_environment_has_case_alias(
+            &configured_environment,
+            false
+        ));
+
+        let canonical_environment = [
+            ("PATH".to_owned(), "trusted-linker-directory".into()),
+            ("RUSTC_OVERRIDE_VERSION_STRING".to_owned(), "1.99.0".into()),
+        ]
+        .into_iter()
+        .collect();
+
+        assert!(!configured_compiler_environment_has_case_alias(
+            &canonical_environment,
+            true
+        ));
     }
 }
