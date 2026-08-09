@@ -32,7 +32,7 @@ use super::layout::Layout;
 use super::lto::Lto;
 use super::unit_graph::UnitDep;
 use super::{
-    BuildContext, Compilation, CompileKind, CompileMode, Executor, FileFlavor,
+    BuildContext, Compilation, CompileKind, CompileMode, CompileTarget, Executor, FileFlavor,
     OHM_COMPILER_LOADER_ENVIRONMENT, OHM_COMPILER_LOADER_INJECTION_ENVIRONMENT,
 };
 
@@ -95,6 +95,18 @@ fn compiler_driver_search_directory_is_unshadowed(expected: &Path, directory: &P
         Err(error) if error.kind() == std::io::ErrorKind::NotFound => true,
         Err(_) => false,
     }
+}
+
+/// A toolchain can select an external default backend at compiler build time,
+/// without exposing that choice in the unit's profile or command-line options.
+fn sysroot_has_external_codegen_backends(sysroot: &Path, host: &str) -> bool {
+    let backend_directory = sysroot
+        .join("lib")
+        .join("rustlib")
+        .join(host)
+        .join("codegen-backends");
+
+    !matches!(backend_directory.try_exists(), Ok(false))
 }
 
 /// Bind cacheable diagnostics to the successful compiler invocation.
@@ -1032,8 +1044,48 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
     /// External backends are compiler plugins, and execute even for metadata
     /// checks. Their arbitrary ambient inputs cannot safely be fingerprinted.
     fn unit_uses_custom_codegen_backend(&self, unit: &Unit) -> bool {
-        if unit.profile.codegen_backend.is_some() {
+        let host_sysroot = &self.bcx.target_data.info(CompileKind::Host).sysroot;
+        let unit_sysroot = &self.bcx.target_data.info(unit.kind).sysroot;
+        let host_triple = self.bcx.host_triple();
+        if unit.profile.codegen_backend.is_some()
+            || sysroot_has_external_codegen_backends(host_sysroot, host_triple.as_str())
+            || (unit_sysroot != host_sysroot
+                && sysroot_has_external_codegen_backends(unit_sysroot, host_triple.as_str()))
+        {
             return true;
+        }
+
+        if let CompileKind::Target(target) = unit.kind {
+            let CompileTarget::Tuple(target_name) = target else {
+                // Custom target specifications can select an external backend
+                // without adding any command-line compiler options.
+                return true;
+            };
+
+            let Ok(configured_environment) = self.bcx.gctx.env_config() else {
+                return true;
+            };
+            if configured_environment
+                .get("RUST_TARGET_PATH")
+                .map(std::ffi::OsString::as_os_str)
+                .or_else(|| self.bcx.gctx.get_env_os("RUST_TARGET_PATH"))
+                .is_some_and(|search_path| !search_path.is_empty())
+            {
+                // A bare target tuple can resolve to a custom specification
+                // through this search path, despite looking like a built-in.
+                return true;
+            }
+
+            let target_specification = unit_sysroot
+                .join("lib")
+                .join("rustlib")
+                .join(target_name.as_str())
+                .join("target.json");
+            if !matches!(target_specification.try_exists(), Ok(false)) {
+                // rustc also resolves otherwise unknown tuples from the
+                // selected toolchain's installed target specifications.
+                return true;
+            }
         }
 
         let extra_args = self
@@ -1064,7 +1116,11 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
                 option.starts_with('@')
                     || matches!(
                         option.split_once('=').map_or(option, |(name, _)| name),
-                        "codegen-backend" | "codegen_backend"
+                        "autodiff"
+                            | "codegen-backend"
+                            | "codegen_backend"
+                            | "llvm-plugins"
+                            | "llvm_plugins"
                     )
             }) {
                 return true;
@@ -1408,5 +1464,30 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
             self.metadata_for_doc_units
                 .insert(unit.clone(), self.files().metadata(metadata_unit));
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::sysroot_has_external_codegen_backends;
+
+    #[test]
+    fn detects_opaque_default_codegen_backend_directories() {
+        let sysroot = tempfile::tempdir().expect("create isolated compiler sysroot");
+        let host = "test-host";
+
+        assert!(!sysroot_has_external_codegen_backends(sysroot.path(), host));
+
+        std::fs::create_dir_all(
+            sysroot
+                .path()
+                .join("lib")
+                .join("rustlib")
+                .join(host)
+                .join("codegen-backends"),
+        )
+        .expect("create external backend directory");
+
+        assert!(sysroot_has_external_codegen_backends(sysroot.path(), host));
     }
 }
