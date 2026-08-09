@@ -224,6 +224,9 @@ pub struct Layout {
 }
 
 impl Layout {
+    /// Durable ownership marker for build roots shared by multiple workspaces.
+    pub(crate) const SHARED_REGISTRY_CACHE_MARKER: &str = ".ohm-shared-registry-cache-v1";
+
     /// Calculate the paths for build output, lock the build directory, and return as a Layout.
     ///
     /// This function will block if the directory is already locked.
@@ -253,6 +256,28 @@ impl Layout {
         paths::create_dir_all_excluded_from_backups_atomic(root.as_path_unlocked())?;
         if root != build_root {
             paths::create_dir_all_excluded_from_backups_atomic(build_root.as_path_unlocked())?;
+        }
+        if ws.gctx().cli_unstable().ohm_shared_registry_cache {
+            let shared_root = ws.build_dir();
+            let marker = shared_root
+                .as_path_unlocked()
+                .join(Self::SHARED_REGISTRY_CACHE_MARKER);
+            match std::fs::OpenOptions::new()
+                .write(true)
+                .create_new(true)
+                .open(&marker)
+            {
+                Ok(_) => {}
+                Err(error) if error.kind() == std::io::ErrorKind::AlreadyExists => {
+                    if !std::fs::symlink_metadata(&marker)?.file_type().is_file() {
+                        anyhow::bail!(
+                            "shared registry cache ownership marker is not a regular file: {}",
+                            marker.display()
+                        );
+                    }
+                }
+                Err(error) => return Err(error.into()),
+            }
         }
 
         // Now that the excluded from backups target root is created we can create the

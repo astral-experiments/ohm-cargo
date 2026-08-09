@@ -1764,8 +1764,8 @@ fn shared_registry_cache_plain_clean_preserves_other_workspaces_and_registries()
             .run();
     }
 
-    left.cargo("-Zohm-shared-registry-cache clean")
-        .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+    assert!(shared.join(".ohm-shared-registry-cache-v1").is_file());
+    left.cargo("clean")
         .env("CARGO_BUILD_BUILD_DIR", &shared)
         .run();
 
@@ -1869,6 +1869,14 @@ fn shared_registry_cache_package_clean_only_removes_current_workspace() {
             .env("CARGO_BUILD_BUILD_DIR", &shared)
             .run();
     }
+
+    left.cargo("clean -p package-clean-local")
+        .env("CARGO_BUILD_BUILD_DIR", &shared)
+        .with_status(101)
+        .with_stderr_contains(
+            "[ERROR] cleaning a package in a shared registry build directory requires [..]",
+        )
+        .run();
 
     left.cargo("-Zohm-shared-registry-cache clean -p package-clean-local")
         .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
@@ -2069,6 +2077,208 @@ fn shared_registry_cache_clean_rejects_overlapping_target_and_build_directories(
         .with_stderr_contains(
             "[ERROR] cannot safely clean overlapping target and shared registry [..]",
         )
+        .run();
+}
+
+#[cargo_test]
+fn shared_registry_cache_preserves_very_verbose_dependency_warnings() {
+    Package::new("warning-sensitive-registry", "1.0.0")
+        .file(
+            "src/lib.rs",
+            "pub fn value() -> u32 { let overlooked_warning = 1; 31 }",
+        )
+        .publish();
+
+    let create_project = |worktree: &str| {
+        project_in(worktree)
+            .file(
+                "Cargo.toml",
+                r#"
+                [package]
+                name = "warning-cache-app"
+                version = "0.1.0"
+                edition = "2021"
+
+                [dependencies]
+                warning-sensitive-registry = "1.0.0"
+                "#,
+            )
+            .file("src/lib.rs", "pub use warning_sensitive_registry::value;")
+            .build()
+    };
+    let left = create_project("warning-worktree-left");
+    let right = create_project("warning-worktree-right");
+    let shared = paths::root().join("warning-shared-build-directory");
+
+    left.cargo("-Zohm-shared-registry-cache build")
+        .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+        .env("CARGO_BUILD_BUILD_DIR", &shared)
+        .with_stderr_does_not_contain("[WARNING] unused variable: `overlooked_warning`")
+        .run();
+    right
+        .cargo("-Zohm-shared-registry-cache build -vv")
+        .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+        .env("CARGO_BUILD_BUILD_DIR", &shared)
+        .with_stderr_contains("[COMPILING] warning-sensitive-registry v1.0.0")
+        .with_stderr_contains("[WARNING] unused variable: `overlooked_warning`")
+        .run();
+    left.cargo("-Zohm-shared-registry-cache build")
+        .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+        .env("CARGO_BUILD_BUILD_DIR", &shared)
+        .with_stderr_does_not_contain("[COMPILING] warning-sensitive-registry v1.0.0")
+        .run();
+}
+
+#[cargo_test]
+fn shared_registry_cache_keys_apple_deployment_targets() {
+    Package::new("deployment-sensitive-registry", "1.0.0")
+        .file(
+            "build.rs",
+            r#"
+            fn main() {
+                let deployment = std::env::var("MACOSX_DEPLOYMENT_TARGET")
+                    .expect("inherited Apple deployment target");
+                println!("cargo:rustc-env=OBSERVED_APPLE_DEPLOYMENT={deployment}");
+                println!("cargo:rerun-if-changed=build.rs");
+            }
+            "#,
+        )
+        .file(
+            "src/lib.rs",
+            "pub const VALUE: &str = env!(\"OBSERVED_APPLE_DEPLOYMENT\");",
+        )
+        .publish();
+
+    let create_project = |worktree: &str| {
+        project_in(worktree)
+            .file(
+                "Cargo.toml",
+                r#"
+                [package]
+                name = "deployment-cache-app"
+                version = "0.1.0"
+                edition = "2021"
+
+                [dependencies]
+                deployment-sensitive-registry = "1.0.0"
+                "#,
+            )
+            .file(
+                "src/main.rs",
+                "fn main() { println!(\"{}\", deployment_sensitive_registry::VALUE); }",
+            )
+            .build()
+    };
+    let left = create_project("deployment-worktree-left");
+    let right = create_project("deployment-worktree-right");
+    let shared = paths::root().join("deployment-shared-build-directory");
+
+    left.cargo("-Zohm-shared-registry-cache run")
+        .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+        .env("CARGO_BUILD_BUILD_DIR", &shared)
+        .env("MACOSX_DEPLOYMENT_TARGET", "11.0")
+        .with_stdout_data("11.0\n")
+        .run();
+    right
+        .cargo("-Zohm-shared-registry-cache run")
+        .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+        .env("CARGO_BUILD_BUILD_DIR", &shared)
+        .env("MACOSX_DEPLOYMENT_TARGET", "12.0")
+        .with_stderr_contains("[COMPILING] deployment-sensitive-registry v1.0.0")
+        .with_stdout_data("12.0\n")
+        .run();
+    left.cargo("-Zohm-shared-registry-cache run")
+        .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+        .env("CARGO_BUILD_BUILD_DIR", &shared)
+        .env("MACOSX_DEPLOYMENT_TARGET", "11.0")
+        .with_stderr_does_not_contain("[COMPILING] deployment-sensitive-registry v1.0.0")
+        .with_stdout_data("11.0\n")
+        .run();
+}
+
+#[cargo_test]
+fn shared_registry_cache_loads_native_libraries_from_shared_output() {
+    Package::new("dynamic-native-registry", "1.0.0")
+        .file(
+            "build.rs",
+            r##"
+            fn main() {
+                let output = std::path::PathBuf::from(std::env::var_os("OUT_DIR").unwrap());
+                let source = output.join("native.rs");
+                std::fs::write(
+                    &source,
+                    "#[no_mangle] pub extern \"C\" fn shared_registry_native_value() -> u32 { 37 }",
+                )
+                .unwrap();
+                let library = output.join(format!(
+                    "{}shared_registry_native{}",
+                    std::env::consts::DLL_PREFIX,
+                    std::env::consts::DLL_SUFFIX,
+                ));
+                let status = std::process::Command::new(std::env::var_os("RUSTC").unwrap())
+                    .arg("--crate-type=cdylib")
+                    .arg("--edition=2021")
+                    .arg("-o")
+                    .arg(&library)
+                    .arg(&source)
+                    .status()
+                    .unwrap();
+                assert!(status.success(), "compile the shared native dependency");
+                println!("cargo:rustc-link-search=native={}", output.display());
+                println!("cargo:rustc-link-lib=dylib=shared_registry_native");
+                println!("cargo:rerun-if-changed=build.rs");
+            }
+            "##,
+        )
+        .file(
+            "src/lib.rs",
+            r#"
+            extern "C" {
+                fn shared_registry_native_value() -> u32;
+            }
+
+            pub fn value() -> u32 {
+                unsafe { shared_registry_native_value() }
+            }
+            "#,
+        )
+        .publish();
+
+    let create_project = |worktree: &str| {
+        project_in(worktree)
+            .file(
+                "Cargo.toml",
+                r#"
+                [package]
+                name = "dynamic-native-cache-app"
+                version = "0.1.0"
+                edition = "2021"
+
+                [dependencies]
+                dynamic-native-registry = "1.0.0"
+                "#,
+            )
+            .file(
+                "src/main.rs",
+                "fn main() { println!(\"{}\", dynamic_native_registry::value()); }",
+            )
+            .build()
+    };
+    let left = create_project("dynamic-native-worktree-left");
+    let right = create_project("dynamic-native-worktree-right");
+    let shared = paths::root().join("dynamic-native-shared-build-directory");
+
+    left.cargo("-Zohm-shared-registry-cache run")
+        .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+        .env("CARGO_BUILD_BUILD_DIR", &shared)
+        .with_stdout_data("37\n")
+        .run();
+    right
+        .cargo("-Zohm-shared-registry-cache run")
+        .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+        .env("CARGO_BUILD_BUILD_DIR", &shared)
+        .with_stderr_does_not_contain("[COMPILING] dynamic-native-registry v1.0.0")
+        .with_stdout_data("37\n")
         .run();
 }
 

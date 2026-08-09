@@ -50,6 +50,11 @@ pub fn clean(ws: &Workspace<'_>, opts: &CleanOptions<'_>) -> CargoResult<()> {
     let mut target_dir = ws.target_dir();
     let mut build_dir = ws.build_dir();
     let gctx = opts.gctx;
+    let shared_registry_cache = gctx.cli_unstable().ohm_shared_registry_cache
+        || build_dir
+            .as_path_unlocked()
+            .join(Layout::SHARED_REGISTRY_CACHE_MARKER)
+            .is_file();
     let mut clean_ctx = CleanContext::new(gctx);
     clean_ctx.dry_run = opts.dry_run;
 
@@ -87,7 +92,7 @@ pub fn clean(ws: &Workspace<'_>, opts: &CleanOptions<'_>) -> CargoResult<()> {
         }
     }
 
-    if gctx.cli_unstable().ohm_shared_registry_cache {
+    if shared_registry_cache {
         let target_root = fs::canonicalize(target_dir.as_path_unlocked())
             .unwrap_or_else(|_| paths::normalize_path(target_dir.as_path_unlocked()));
         let build_root = fs::canonicalize(build_dir.as_path_unlocked())
@@ -96,6 +101,12 @@ pub fn clean(ws: &Workspace<'_>, opts: &CleanOptions<'_>) -> CargoResult<()> {
             bail!(
                 "cannot safely clean overlapping target and shared registry build directories; \
                  configure a separate workspace-local target directory"
+            );
+        }
+        if !opts.spec.is_empty() && !gctx.cli_unstable().ohm_shared_registry_cache {
+            bail!(
+                "cleaning a package in a shared registry build directory requires \
+                 -Zohm-shared-registry-cache"
             );
         }
     }
@@ -131,7 +142,7 @@ pub fn clean(ws: &Workspace<'_>, opts: &CleanOptions<'_>) -> CargoResult<()> {
         // Note that we don't bother grabbing a lock here as we're just going to
         // blow it all away anyway.
         if opts.spec.is_empty() {
-            if gctx.cli_unstable().ohm_shared_registry_cache {
+            if shared_registry_cache {
                 clean_shared_registry_workspace(
                     &mut clean_ctx,
                     ws,
