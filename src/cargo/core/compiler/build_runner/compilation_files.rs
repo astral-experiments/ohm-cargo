@@ -1348,13 +1348,77 @@ fn rustdoc_has_verified_toolchain_identity(
             .is_some_and(|actual| actual == expected),
         Err(error) if error.kind() == std::io::ErrorKind::NotFound => {
             rustdoc == expected.as_path()
-                || rustdoc
+                || (rustdoc
                     == Path::new("rustdoc")
                         .with_extension(std::env::consts::EXE_EXTENSION)
                         .as_path()
+                    && rustdoc_is_authenticated_rustup_proxy(rustdoc, build_runner))
         }
         Err(_) => false,
     }
+}
+
+/// Authenticate a fallback rustdoc proxy without trusting PATH, HOME, or CARGO_HOME.
+fn rustdoc_is_authenticated_rustup_proxy(
+    rustdoc: &Path,
+    build_runner: &BuildRunner<'_, '_>,
+) -> bool {
+    let sysroot = &build_runner.bcx.target_data.info(CompileKind::Host).sysroot;
+    let Some(toolchains) = sysroot.parent() else {
+        return false;
+    };
+    if toolchains.file_name() != Some(OsStr::new("toolchains")) {
+        return false;
+    }
+    let Some(toolchain_owner) = toolchains.parent() else {
+        return false;
+    };
+    let user_home = if toolchain_owner.file_name() == Some(OsStr::new(".rustup")) {
+        toolchain_owner.parent()
+    } else if toolchain_owner.file_name() == Some(OsStr::new("ohm")) {
+        let Some(share) = toolchain_owner.parent() else {
+            return false;
+        };
+        let Some(local) = share.parent() else {
+            return false;
+        };
+        if share.file_name() != Some(OsStr::new("share"))
+            || local.file_name() != Some(OsStr::new(".local"))
+        {
+            return false;
+        }
+        local.parent()
+    } else {
+        None
+    };
+    let Some(user_home) = user_home else {
+        return false;
+    };
+
+    let compiler = paths::resolve_executable(&build_runner.bcx.rustc().path)
+        .ok()
+        .and_then(|compiler| compiler.canonicalize().ok());
+    let actual_sysroot = compiler
+        .as_deref()
+        .and_then(Path::parent)
+        .and_then(Path::parent)
+        .and_then(|sysroot| sysroot.canonicalize().ok());
+    if !sysroot
+        .canonicalize()
+        .ok()
+        .is_some_and(|expected| Some(expected.as_path()) == actual_sysroot.as_deref())
+    {
+        return false;
+    }
+
+    let trusted_proxy = user_home
+        .join(".cargo")
+        .join("bin")
+        .join("rustup")
+        .with_extension(std::env::consts::EXE_EXTENSION);
+    paths::resolve_executable(rustdoc)
+        .ok()
+        .is_some_and(|actual| same_file::is_same_file(actual, trusted_proxy).unwrap_or(false))
 }
 
 /// Explicit linkers can bypass compiler identity when they are opaque user-controlled wrappers.
