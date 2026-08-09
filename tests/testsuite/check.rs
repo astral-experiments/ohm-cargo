@@ -1955,18 +1955,28 @@ fn ohm_built_registry_dependency_reuse_rejects_rustflags_codegen_backends() {
             "src/lib.rs",
             "pub fn value() -> u32 { dependency::value() }",
         )
+        .file("codegen-backend.rsp", "codegen_backend=llvm")
         .build();
 
-    p.cargo("build")
-        .env("RUSTC_BOOTSTRAP", "1")
-        .env("RUSTFLAGS", "-Zcodegen-backend=llvm")
-        .run();
-    p.cargo("-Zohm-reuse-built-deps check")
-        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
-        .env("RUSTC_BOOTSTRAP", "1")
-        .env("RUSTFLAGS", "-Zcodegen-backend=llvm")
-        .with_stderr_contains("[CHECKING] dependency v1.0.0")
-        .run();
+    let response_rustflags = format!("-Z @{}", p.root().join("codegen-backend.rsp").display());
+    for rustflags in [
+        "-Zcodegen-backend=llvm",
+        "-Zcodegen_backend=llvm",
+        "-Z codegen-backend=llvm",
+        "-Z codegen_backend=llvm",
+        response_rustflags.as_str(),
+    ] {
+        p.cargo("build")
+            .env("RUSTC_BOOTSTRAP", "1")
+            .env("RUSTFLAGS", rustflags)
+            .run();
+        p.cargo("-Zohm-reuse-built-deps check")
+            .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
+            .env("RUSTC_BOOTSTRAP", "1")
+            .env("RUSTFLAGS", rustflags)
+            .with_stderr_contains("[CHECKING] dependency v1.0.0")
+            .run();
+    }
 }
 
 #[cargo_test]
