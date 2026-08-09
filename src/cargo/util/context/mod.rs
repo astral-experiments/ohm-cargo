@@ -1255,6 +1255,8 @@ impl GlobalContext {
                 //     control config parsing behavior.
                 self.unstable_flags.parse(unstable_flags_cli, true)?;
             }
+            // Config-only unstable flags must enable their dependent features as well.
+            self.unstable_flags.implicitly_enable_features_if_needed();
         }
 
         Ok(())

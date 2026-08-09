@@ -210,7 +210,7 @@
 use crate::core::Workspace;
 use crate::core::compiler::CompileTarget;
 use crate::util::flock::is_on_nfs_mount;
-use crate::util::{CargoResult, FileLock};
+use crate::util::{self, CargoResult, FileLock};
 use cargo_util::paths;
 use std::path::{Path, PathBuf};
 
@@ -281,6 +281,21 @@ impl Layout {
         let build_dest = build_dest.as_path_unlocked();
         let deps = build_dest.join("deps");
         let artifact = deps.join("artifact");
+        let workspace_namespace = ws.gctx().cli_unstable().ohm_shared_registry_cache.then(|| {
+            let workspace_root = ws
+                .root()
+                .canonicalize()
+                .unwrap_or_else(|_| ws.root().to_path_buf());
+            util::short_hash(&workspace_root)
+        });
+        let incremental = workspace_namespace.as_ref().map_or_else(
+            || build_dest.join("incremental"),
+            |namespace| build_dest.join("incremental").join(namespace),
+        );
+        let tmp = workspace_namespace.as_ref().map_or_else(
+            || build_root.join("tmp"),
+            |namespace| build_root.join("tmp").join(namespace),
+        );
 
         // We take a shared lock on `.cargo-lock` to make sure we don't run currently with
         // older versions of Cargo (including tools that use Cargo as a library) that don't support
@@ -323,10 +338,10 @@ impl Layout {
                 deps,
                 build: build_dest.join("build"),
                 artifact,
-                incremental: build_dest.join("incremental"),
+                incremental,
                 fingerprint: build_dest.join(".fingerprint"),
                 examples: build_dest.join("examples"),
-                tmp: build_root.join("tmp"),
+                tmp,
                 _lock: build_dir_lock,
                 is_new_layout,
             },
