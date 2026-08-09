@@ -1159,6 +1159,8 @@ impl<'a, 'gctx> State<'a, 'gctx> {
             .is_ok_and(|expected| expected == compiler)
     }
 
+    /// Reject mutable sources and unaudited procedural macros throughout the
+    /// resolved dependency closure, memoizing completed package decisions.
     fn registry_closure_is_immutable(
         &self,
         package_id: PackageId,
@@ -1216,13 +1218,9 @@ impl<'a, 'gctx> State<'a, 'gctx> {
                     .get(&package_id)
                     .is_some_and(Option::is_some));
         let immutable = trusted_macro
-            && self
-                .resolve()
-                .deps(package_id)
-                .map(|(dependency_id, _)| dependency_id)
-                .collect::<Vec<_>>()
-                .into_iter()
-                .all(|dependency_id| self.registry_closure_is_immutable(dependency_id, visiting));
+            && self.resolve().deps(package_id).all(|(dependency_id, _)| {
+                self.registry_closure_is_immutable(dependency_id, visiting)
+            });
 
         visiting.remove(&package_id);
         self.immutable_registry_closures
