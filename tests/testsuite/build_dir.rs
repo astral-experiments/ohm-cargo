@@ -13,7 +13,9 @@ use std::path::PathBuf;
 use crate::prelude::*;
 use crate::utils::tools;
 use cargo_test_support::registry::{Package, RegistryBuilder};
-use cargo_test_support::{paths, prelude::*, project, project_in, rustc_host, str};
+use cargo_test_support::{
+    paths, prelude::*, project, project_in, rustc_host, str, target_spec_json,
+};
 use std::env::consts::{DLL_PREFIX, DLL_SUFFIX, EXE_SUFFIX};
 
 #[cargo_test]
@@ -1613,6 +1615,18 @@ fn shared_registry_cache_rejects_hidden_codegen_backends() {
         format!("@{}", response.display()),
         format!("-Z @{}", split_response.display()),
         "-Zcodegen_backend=llvm".to_owned(),
+        "-Zllvm-plugins=".to_owned(),
+        "-Zllvm_plugins=".to_owned(),
+        "-Z llvm-plugins=".to_owned(),
+        "-Zautodiff".to_owned(),
+        "-Z autodiff".to_owned(),
+        "-Clinker=cc".to_owned(),
+        "-C linker=cc".to_owned(),
+        "--codegen=linker=cc".to_owned(),
+        "--codegen linker=cc".to_owned(),
+        "-Zpre-link-args=".to_owned(),
+        "-Zpre_link_args=".to_owned(),
+        "-Z pre-link-args=".to_owned(),
     ];
 
     for (index, rustflags) in flags.into_iter().enumerate() {
@@ -1644,6 +1658,127 @@ fn shared_registry_cache_rejects_hidden_codegen_backends() {
             .with_stderr_contains("[COMPILING] backend-registry v1.0.0")
             .run();
     }
+}
+
+#[cargo_test]
+fn shared_registry_cache_keeps_custom_target_codegen_backends_private() {
+    Package::new("target-backend-registry", "1.0.0")
+        .file(
+            "src/lib.rs",
+            r#"
+            #![allow(internal_features)]
+            #![feature(no_core, lang_items)]
+            #![no_core]
+
+            #[lang = "pointee_sized"]
+            pub trait PointeeSized {}
+            #[lang = "meta_sized"]
+            pub trait MetaSized: PointeeSized {}
+            #[lang = "sized"]
+            pub trait Sized: MetaSized {}
+            #[lang = "copy"]
+            pub trait Copy {}
+
+            pub fn value() -> u32 { 53 }
+            "#,
+        )
+        .publish();
+
+    let directory = paths::root().join("custom-backend-targets");
+    std::fs::create_dir_all(&directory).expect("create isolated custom target directory");
+    let target_path = directory.join("ohm-backend-target.json");
+    let mut target = serde_json::from_str::<serde_json::Value>(target_spec_json())
+        .expect("parse known compiler target specification");
+    target["default-codegen-backend"] = serde_json::Value::String("llvm".to_owned());
+    std::fs::write(
+        &target_path,
+        serde_json::to_vec(&target).expect("serialize custom target backend"),
+    )
+    .expect("write isolated custom target backend specification");
+
+    let manifest = r#"
+        [package]
+        name = "target-backend-cache-app"
+        version = "0.1.0"
+        edition = "2021"
+
+        [dependencies]
+        target-backend-registry = "1.0.0"
+    "#;
+    let source = r#"
+        #![allow(internal_features)]
+        #![feature(no_core, lang_items, auto_traits)]
+        #![no_core]
+
+        extern crate target_backend_registry;
+
+        #[lang = "freeze"]
+        unsafe auto trait Freeze {}
+
+        pub fn value() -> u32 { target_backend_registry::value() }
+    "#;
+
+    for (index, (target, search_path)) in [
+        (target_path.display().to_string(), None),
+        ("ohm-backend-target".to_owned(), Some(directory.as_path())),
+    ]
+    .into_iter()
+    .enumerate()
+    {
+        let left = project_in(&format!("target-backend-{index}-left"))
+            .file("Cargo.toml", manifest)
+            .file("src/lib.rs", source)
+            .build();
+        let right = project_in(&format!("target-backend-{index}-right"))
+            .file("Cargo.toml", manifest)
+            .file("src/lib.rs", source)
+            .build();
+        let shared = paths::root().join(format!("target-backend-shared-{index}"));
+        let command =
+            format!("-Zohm-shared-registry-cache -Zjson-target-spec build --lib --target {target}");
+
+        for project in [&left, &right] {
+            let mut invocation = project.cargo(&command);
+            invocation
+                .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache", "json-target-spec"])
+                .env("CARGO_BUILD_BUILD_DIR", &shared)
+                .env("RUSTC_BOOTSTRAP", "1")
+                .env("RUSTFLAGS", "-Zunstable-options")
+                .with_stderr_contains("[COMPILING] target-backend-registry v1.0.0");
+            if let Some(search_path) = search_path {
+                invocation.env("RUST_TARGET_PATH", search_path);
+            }
+            invocation.run();
+        }
+    }
+
+    let left = project_in("builtin-backend-left")
+        .file("Cargo.toml", manifest)
+        .file("src/lib.rs", source)
+        .build();
+    let right = project_in("builtin-backend-right")
+        .file("Cargo.toml", manifest)
+        .file("src/lib.rs", source)
+        .build();
+    let shared = paths::root().join("builtin-backend-shared");
+    let command = format!(
+        "-Zohm-shared-registry-cache build --lib --target {}",
+        rustc_host()
+    );
+
+    left.cargo(&command)
+        .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+        .env("CARGO_BUILD_BUILD_DIR", &shared)
+        .env("RUSTC_BOOTSTRAP", "1")
+        .with_stderr_contains("[COMPILING] target-backend-registry v1.0.0")
+        .run();
+    right
+        .cargo(&command)
+        .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+        .env("CARGO_BUILD_BUILD_DIR", &shared)
+        .env("RUSTC_BOOTSTRAP", "1")
+        .with_stderr_does_not_contain("[COMPILING] target-backend-registry v1.0.0")
+        .run();
 }
 
 #[cfg(unix)]
