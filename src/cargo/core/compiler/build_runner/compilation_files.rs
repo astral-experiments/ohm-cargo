@@ -9,6 +9,7 @@ use std::hash::{Hash, Hasher};
 use std::os::unix::fs::MetadataExt;
 use std::path::{Path, PathBuf};
 use std::sync::Arc;
+use std::time::SystemTime;
 
 use cargo_platform::CfgExpr;
 use cargo_util::paths;
@@ -17,6 +18,8 @@ use tracing::debug;
 use super::{BuildContext, BuildRunner, CompileKind, FileFlavor, Layout};
 use crate::core::compiler::{CompileMode, CompileTarget, CrateType, FileType, Unit};
 use crate::core::{Target, TargetKind, Workspace};
+use crate::sources::CRATES_IO_INDEX;
+use crate::sources::registry::CRATES_IO_HTTP_INDEX;
 use crate::util::{self, CargoResult, OnceExt, StableHasher};
 
 /// This is a generic version number that can be changed to make
@@ -151,6 +154,24 @@ struct SharedRegistryCache {
     immutable_units: HashMap<Unit, bool>,
 }
 
+/// The compiler implementation is a dynamic library, not its small executable launcher.
+#[derive(Debug, Eq, Hash, PartialEq)]
+struct CompilerDriverIdentity {
+    path: PathBuf,
+    length: u64,
+    modified: SystemTime,
+    #[cfg(unix)]
+    device: u64,
+    #[cfg(unix)]
+    inode: u64,
+    #[cfg(unix)]
+    changed: i64,
+    #[cfg(unix)]
+    changed_nanoseconds: i64,
+    #[cfg(not(unix))]
+    created: Option<SystemTime>,
+}
+
 /// Info about a single file emitted by the compiler.
 #[derive(Debug)]
 pub struct OutputFile {
@@ -254,6 +275,27 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
                 .map(|name| (name, effective_environment(name)))
                 .collect::<Vec<_>>();
                 let effective_executable_path = effective_environment("PATH");
+                let mut native_tool_names = Vec::new();
+                for tool in ["CC", "CXX", "AR"] {
+                    native_tool_names.push(tool.to_owned());
+                    native_tool_names.push(format!("HOST_{tool}"));
+                    native_tool_names.push(format!("TARGET_{tool}"));
+                    for kind in &build_runner.bcx.all_kinds {
+                        let target = build_runner.bcx.target_data.short_name(kind);
+                        native_tool_names.push(format!("{tool}_{target}"));
+                        native_tool_names
+                            .push(format!("{tool}_{}", target.replace(['-', '.'], "_")));
+                    }
+                }
+                native_tool_names.sort_unstable();
+                native_tool_names.dedup();
+                let native_tools = native_tool_names
+                    .into_iter()
+                    .map(|name| {
+                        let value = effective_environment(&name);
+                        (name, value)
+                    })
+                    .collect::<Vec<_>>();
                 let compiler_file_identity = paths::resolve_executable(&compiler.path)
                     .ok()
                     .and_then(|path| path.canonicalize().ok())
@@ -278,6 +320,7 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
                             Some((metadata.len(), modified, metadata.created().ok()))
                         }
                     });
+                let compiler_driver_identity = compiler_driver_identity(build_runner);
                 let injected_loader = [
                     "DYLD_INSERT_LIBRARIES",
                     "DYLD_FORCE_FLAT_NAMESPACE",
@@ -321,6 +364,20 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
                             effective_executable_path.as_deref(),
                         )
                     });
+                let verified_native_tools = native_tools.iter().all(|(_, value)| {
+                    value.as_deref().is_none_or(|tool| {
+                        tool.is_empty()
+                            || linker_has_verified_toolchain_identity(
+                                Path::new(tool),
+                                build_runner,
+                                effective_executable_path.as_deref(),
+                            )
+                    })
+                }) && effective_environment("CC_KNOWN_WRAPPER_CUSTOM")
+                    .is_none_or(|wrapper| wrapper.is_empty());
+                let verified_rustdoc = rustdoc.as_deref().is_some_and(|rustdoc| {
+                    rustdoc_has_verified_toolchain_identity(rustdoc, build_runner)
+                });
                 let effective_bootstrap = effective_environment("RUSTC_BOOTSTRAP");
                 let effective_compiler_version =
                     effective_environment("RUSTC_OVERRIDE_VERSION_STRING");
@@ -370,10 +427,12 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
                 let trusted_context = compiler.wrapper.is_none()
                     && compiler_has_verified_toolchain_identity(build_runner)
                     && verified_linkers
+                    && verified_native_tools
+                    && verified_rustdoc
                     && effective_host_runner.is_none()
                     && !injected_loader
                     && compiler_file_identity.is_some()
-                    && rustdoc.is_some()
+                    && compiler_driver_identity.is_some()
                     && cargo.is_some()
                     && configured_environment.is_some()
                     && target_applies_to_host.is_some();
@@ -386,17 +445,18 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
                 SharedRegistryCache {
                     workspace: util::short_hash(&workspace_root),
                     rustc: util::short_hash(&(
-                        &compiler.verbose_version,
-                        &compiler.path,
-                        &compiler_file_identity,
-                        &rustdoc,
-                        &cargo,
+                        (
+                            &compiler.verbose_version,
+                            &compiler.path,
+                            &compiler_file_identity,
+                            &compiler_driver_identity,
+                        ),
+                        (&rustdoc, &cargo),
                         context.home().as_path_unlocked(),
                         build_runner.bcx.jobs(),
-                        &linkers,
-                        &host_linker,
+                        (&linkers, &host_linker),
                         &configured_environment,
-                        &native_environment,
+                        (&native_environment, &native_tools),
                         (
                             &effective_bootstrap,
                             &effective_compiler_version,
@@ -948,7 +1008,8 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
 /// already incorporated into the shared namespace. The explicit opt-in trusts build scripts not
 /// to persist Cargo's synthesized, workspace-private dynamic-library search paths or jobserver
 /// handles as generated source. Arbitrary global rustc wrappers and direct compiler shims are
-/// rejected.
+/// rejected. Procedural macros can observe external inputs without tracking them, so only the
+/// audited, checksummed upstream `serde_derive` producer may appear in a shared closure.
 fn is_immutable_registry_unit(
     unit: &Unit,
     build_runner: &BuildRunner<'_, '_>,
@@ -958,19 +1019,113 @@ fn is_immutable_registry_unit(
         return *eligible;
     }
 
-    let source_id = unit.pkg.package_id().source_id();
+    let package_id = unit.pkg.package_id();
+    let source_id = package_id.source_id();
     let eligible = source_id.is_remote_registry()
         && build_runner
             .bcx
             .packages
             .sources()
             .get(source_id)
-            .is_some_and(|source| source.replaced_source_id().is_remote_registry())
+            .is_some_and(|source| {
+                source.replaced_source_id().is_remote_registry()
+                    && (!unit.pkg.proc_macro()
+                        || (source_id.is_crates_io()
+                            && matches!(
+                                source_id.url().as_str(),
+                                CRATES_IO_INDEX | CRATES_IO_HTTP_INDEX
+                            )
+                            && !source.is_replaced()
+                            && package_id.name().as_str() == "serde_derive"
+                            && package_id.version().major == 1
+                            && unit.pkg.summary().checksum().is_some()))
+            })
+        && !unit_uses_custom_codegen_backend(unit, build_runner)
         && build_runner.unit_deps(unit).iter().all(|dependency| {
             is_immutable_registry_unit(&dependency.unit, build_runner, eligibility)
         });
     eligibility.insert(unit.clone(), eligible);
     eligible
+}
+
+/// A dynamically loaded codegen backend has its own executable implementation and state.
+fn unit_uses_custom_codegen_backend(unit: &Unit, build_runner: &BuildRunner<'_, '_>) -> bool {
+    if unit.profile.codegen_backend.is_some() {
+        return true;
+    }
+
+    let mut flags = unit
+        .profile
+        .rustflags
+        .iter()
+        .map(|flag| flag.as_str())
+        .chain(unit.rustflags.iter().map(String::as_str))
+        .chain(
+            build_runner
+                .bcx
+                .extra_args_for(unit)
+                .into_iter()
+                .flatten()
+                .map(String::as_str),
+        );
+
+    while let Some(flag) = flags.next() {
+        let option = if flag == "-C" || flag == "-Z" {
+            flags.next()
+        } else {
+            flag.strip_prefix("-C").or_else(|| flag.strip_prefix("-Z"))
+        };
+        if option.is_some_and(|option| {
+            option == "codegen-backend" || option.starts_with("codegen-backend=")
+        }) {
+            return true;
+        }
+    }
+
+    false
+}
+
+/// Identify the one real compiler driver dynamically loaded by the selected toolchain.
+fn compiler_driver_identity(build_runner: &BuildRunner<'_, '_>) -> Option<CompilerDriverIdentity> {
+    let sysroot = &build_runner.bcx.target_data.info(CompileKind::Host).sysroot;
+    compiler_driver_identity_for_sysroot(sysroot)
+}
+
+fn compiler_driver_identity_for_sysroot(sysroot: &Path) -> Option<CompilerDriverIdentity> {
+    let directory = sysroot.join(if cfg!(windows) { "bin" } else { "lib" });
+    let driver_prefix = format!("{}rustc_driver-", std::env::consts::DLL_PREFIX);
+    let mut candidates = std::fs::read_dir(directory)
+        .ok()?
+        .filter_map(Result::ok)
+        .filter(|entry| {
+            entry.file_name().to_str().is_some_and(|name| {
+                name.starts_with(&driver_prefix) && name.ends_with(std::env::consts::DLL_SUFFIX)
+            })
+        });
+    let path = candidates.next()?.path().canonicalize().ok()?;
+    if candidates.next().is_some() || !path.starts_with(sysroot.canonicalize().ok()?) {
+        return None;
+    }
+    let metadata = std::fs::File::open(&path).ok()?.metadata().ok()?;
+    if !metadata.is_file() {
+        return None;
+    }
+
+    Some(CompilerDriverIdentity {
+        path,
+        length: metadata.len(),
+        modified: metadata.modified().ok()?,
+        #[cfg(unix)]
+        device: metadata.dev(),
+        #[cfg(unix)]
+        inode: metadata.ino(),
+        #[cfg(unix)]
+        changed: metadata.ctime(),
+        #[cfg(unix)]
+        changed_nanoseconds: metadata.ctime_nsec(),
+        #[cfg(not(unix))]
+        created: metadata.created().ok(),
+    })
 }
 
 /// Only an actual toolchain compiler has an identity Cargo can verify across workspaces.
@@ -996,6 +1151,36 @@ fn compiler_has_verified_toolchain_identity(build_runner: &BuildRunner<'_, '_>) 
     expected
         .canonicalize()
         .is_ok_and(|expected| expected == compiler)
+}
+
+/// Build scripts receive `RUSTDOC` and can execute it without observing its private inputs.
+fn rustdoc_has_verified_toolchain_identity(
+    rustdoc: &Path,
+    build_runner: &BuildRunner<'_, '_>,
+) -> bool {
+    let expected = build_runner
+        .bcx
+        .target_data
+        .info(CompileKind::Host)
+        .sysroot
+        .join("bin")
+        .join("rustdoc")
+        .with_extension(std::env::consts::EXE_EXTENSION);
+
+    match expected.canonicalize() {
+        Ok(expected) => paths::resolve_executable(rustdoc)
+            .ok()
+            .and_then(|actual| actual.canonicalize().ok())
+            .is_some_and(|actual| actual == expected),
+        Err(error) if error.kind() == std::io::ErrorKind::NotFound => {
+            rustdoc == expected.as_path()
+                || rustdoc
+                    == Path::new("rustdoc")
+                        .with_extension(std::env::consts::EXE_EXTENSION)
+                        .as_path()
+        }
+        Err(_) => false,
+    }
 }
 
 /// Explicit linkers can bypass compiler identity when they are opaque user-controlled wrappers.
@@ -1429,4 +1614,56 @@ fn use_pkg_dir(bcx: &BuildContext<'_, '_>, unit: &Unit) -> bool {
         return false;
     }
     true
+}
+
+#[cfg(test)]
+mod shared_registry_tests {
+    use super::compiler_driver_identity_for_sysroot;
+
+    #[test]
+    fn runtime_compiler_driver_changes_invalidate_its_identity() {
+        let sysroot = tempfile::tempdir().expect("create isolated compiler sysroot");
+        let directory = sysroot
+            .path()
+            .join(if cfg!(windows) { "bin" } else { "lib" });
+        std::fs::create_dir_all(&directory).expect("create isolated compiler library directory");
+        let driver = directory.join(format!(
+            "{}rustc_driver-test{}",
+            std::env::consts::DLL_PREFIX,
+            std::env::consts::DLL_SUFFIX
+        ));
+
+        assert!(compiler_driver_identity_for_sysroot(sysroot.path()).is_none());
+        std::fs::write(&driver, "first driver").expect("write isolated compiler implementation");
+        let initial = compiler_driver_identity_for_sysroot(sysroot.path())
+            .expect("identify the isolated compiler implementation");
+        std::fs::write(&driver, "replacement compiler implementation")
+            .expect("replace isolated compiler implementation");
+        let replaced = compiler_driver_identity_for_sysroot(sysroot.path())
+            .expect("identify the replaced compiler implementation");
+        assert_ne!(initial, replaced);
+
+        std::fs::remove_file(&driver).expect("remove isolated compiler implementation");
+        assert!(compiler_driver_identity_for_sysroot(sysroot.path()).is_none());
+    }
+
+    #[test]
+    fn ambiguous_runtime_compiler_drivers_cannot_be_shared() {
+        let sysroot = tempfile::tempdir().expect("create isolated compiler sysroot");
+        let directory = sysroot
+            .path()
+            .join(if cfg!(windows) { "bin" } else { "lib" });
+        std::fs::create_dir_all(&directory).expect("create isolated compiler library directory");
+
+        for name in ["first", "second"] {
+            let driver = directory.join(format!(
+                "{}rustc_driver-{name}{}",
+                std::env::consts::DLL_PREFIX,
+                std::env::consts::DLL_SUFFIX
+            ));
+            std::fs::write(driver, name).expect("write ambiguous compiler implementation");
+        }
+
+        assert!(compiler_driver_identity_for_sysroot(sysroot.path()).is_none());
+    }
 }

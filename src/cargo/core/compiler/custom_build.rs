@@ -503,6 +503,8 @@ fn build_work(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResul
         .cli_unstable()
         .ohm_shared_registry_cache
         .then(|| bcx.ws.build_dir().into_path_unlocked());
+    let validate_shared_registry_environment =
+        shared_registry_root.is_some() && id.source_id().is_remote_registry();
     let all = (
         id,
         library_name.clone(),
@@ -695,6 +697,11 @@ fn build_work(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResul
             &targets,
             &msrv,
         )?;
+        validate_shared_registry_build_output(
+            validate_shared_registry_environment,
+            id,
+            &parsed_output,
+        )?;
 
         if json_messages {
             emit_build_output(state, &parsed_output, script_out_dir.as_path(), id)?;
@@ -724,6 +731,7 @@ fn build_work(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResul
                 &msrv_fresh,
             )?,
         };
+        validate_shared_registry_build_output(validate_shared_registry_environment, id, &output)?;
 
         if json_messages {
             emit_build_output(state, &output, script_out_dir.as_path(), id)?;
@@ -743,6 +751,33 @@ fn build_work(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResul
         job.before(fresh);
     }
     Ok(job)
+}
+
+/// Registry build scripts must not turn a verified compiler into an opaque injected executable.
+fn validate_shared_registry_build_output(
+    shared_registry: bool,
+    package: PackageId,
+    output: &BuildOutput,
+) -> CargoResult<()> {
+    if !shared_registry {
+        return Ok(());
+    }
+
+    if let Some((name, _)) = output.env.iter().find(|(name, value)| {
+        !value.is_empty()
+            && (super::OHM_COMPILER_LOADER_INJECTION_ENVIRONMENT.contains(&name.as_str())
+                || matches!(
+                    name.as_str(),
+                    "RUSTC_BOOTSTRAP" | "RUSTC_OVERRIDE_VERSION_STRING"
+                ))
+    }) {
+        bail!(
+            "cannot share registry package `{package}` because its build script overrides \
+             the compiler environment variable `{name}`; disable -Zohm-shared-registry-cache"
+        );
+    }
+
+    Ok(())
 }
 
 /// When a build script run fails, store only log messages, and nuke other
