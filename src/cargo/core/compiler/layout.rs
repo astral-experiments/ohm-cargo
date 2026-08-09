@@ -259,6 +259,15 @@ impl Layout {
         }
         if ws.gctx().cli_unstable().ohm_shared_registry_cache {
             let shared_root = ws.build_dir();
+            if shared_registry_directory_is_nfs(shared_root.as_path_unlocked())?
+                || shared_registry_directory_is_nfs(build_root.as_path_unlocked())?
+            {
+                anyhow::bail!(
+                    "shared registry caching requires reliable filesystem locks; \
+                     NFS build directories are unsupported: {}",
+                    shared_root.display()
+                );
+            }
             let marker = shared_root
                 .as_path_unlocked()
                 .join(Self::SHARED_REGISTRY_CACHE_MARKER);
@@ -278,6 +287,27 @@ impl Layout {
                 }
                 Err(error) => return Err(error.into()),
             }
+
+            // Cargo deliberately treats unsupported filesystem locks as successful. That is
+            // safe for ordinary private build directories but would make shared unit writes and
+            // cleaning race. Probe the durable marker directly before any fine-grained locking.
+            verify_shared_registry_file_lock(&marker, shared_root.as_path_unlocked())?;
+
+            // A cross-target or profile directory can itself be a separate unsupported mount.
+            // Verify the exact lock Cargo is about to use, without relying on `FileLock`'s
+            // intentional unsupported-lock fallback.
+            paths::create_dir_all(build_dest.as_path_unlocked())?;
+            if shared_registry_directory_is_nfs(build_dest.as_path_unlocked())? {
+                anyhow::bail!(
+                    "shared registry caching requires reliable filesystem locks; \
+                     NFS build directories are unsupported: {}",
+                    build_dest.display()
+                );
+            }
+            verify_shared_registry_file_lock(
+                &build_dest.as_path_unlocked().join(".cargo-build-lock"),
+                build_dest.as_path_unlocked(),
+            )?;
         }
 
         // Now that the excluded from backups target root is created we can create the
@@ -390,6 +420,64 @@ impl Layout {
 
     pub fn build_dir(&self) -> &BuildDirLayout {
         &self.build_dir
+    }
+}
+
+/// Probe the actual shared lock directly instead of accepting Cargo's unlocked fallback.
+fn verify_shared_registry_file_lock(lock: &Path, root: &Path) -> CargoResult<()> {
+    let file = std::fs::OpenOptions::new()
+        .read(true)
+        .write(true)
+        .create(true)
+        .open(lock)?;
+    match file.try_lock_shared() {
+        Ok(()) => file.unlock()?,
+        Err(std::fs::TryLockError::WouldBlock) => {}
+        Err(std::fs::TryLockError::Error(error)) => {
+            anyhow::bail!(
+                "shared registry caching requires reliable filesystem locks at {}: {}",
+                root.display(),
+                error
+            );
+        }
+    }
+    Ok(())
+}
+
+/// Detect NFS before invoking `flock`, which can block forever even in nonblocking mode.
+fn shared_registry_directory_is_nfs(path: &Path) -> CargoResult<bool> {
+    #[cfg(any(target_os = "linux", target_os = "macos"))]
+    {
+        use std::ffi::CString;
+        use std::os::unix::ffi::OsStrExt;
+
+        let path = CString::new(path.as_os_str().as_bytes())?;
+        let mut filesystem = std::mem::MaybeUninit::<libc::statfs>::uninit();
+        // SAFETY: `path` is a valid NUL-terminated C string and `filesystem` points to writable
+        // storage for the `statfs` structure. Its contents are initialized only on success.
+        if unsafe { libc::statfs(path.as_ptr(), filesystem.as_mut_ptr()) } != 0 {
+            return Err(std::io::Error::last_os_error().into());
+        }
+        // SAFETY: A successful `statfs` call initialized the complete structure above.
+        let filesystem = unsafe { filesystem.assume_init() };
+
+        #[cfg(target_os = "linux")]
+        {
+            return Ok(filesystem.f_type as u32 == libc::NFS_SUPER_MAGIC as u32);
+        }
+
+        #[cfg(target_os = "macos")]
+        {
+            // SAFETY: macOS guarantees `f_fstypename` is a NUL-terminated C string in statfs.
+            let filesystem_type =
+                unsafe { std::ffi::CStr::from_ptr(filesystem.f_fstypename.as_ptr()) };
+            return Ok(filesystem_type.to_bytes().eq_ignore_ascii_case(b"nfs"));
+        }
+    }
+
+    #[cfg(not(any(target_os = "linux", target_os = "macos")))]
+    {
+        Ok(is_on_nfs_mount(path))
     }
 }
 
