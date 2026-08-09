@@ -128,6 +128,37 @@ const OHM_DEFAULT_RUSTFLAGS: [&str; 2] = ["-Zpublic-api-hash", "-Zcache-proc-mac
 const OHM_INCREMENTAL_CODEGEN_RUSTFLAGS: [&str; 2] =
     ["-Zohm-caller-local-cgus", "-Zohm-stable-cgu-merging"];
 
+/// Loader overrides can change a genuine compiler's behavior without changing
+/// its executable path, version output, or Cargo's normal fingerprints.
+pub(crate) const OHM_COMPILER_LOADER_ENVIRONMENT: &[&str] = &[
+    "DYLD_INSERT_LIBRARIES",
+    "DYLD_FORCE_FLAT_NAMESPACE",
+    "DYLD_LIBRARY_PATH",
+    "DYLD_FALLBACK_LIBRARY_PATH",
+    "DYLD_FRAMEWORK_PATH",
+    "DYLD_FALLBACK_FRAMEWORK_PATH",
+    "DYLD_VERSIONED_LIBRARY_PATH",
+    "DYLD_VERSIONED_FRAMEWORK_PATH",
+    "DYLD_IMAGE_SUFFIX",
+    "DYLD_ROOT_PATH",
+    "LD_PRELOAD",
+    "LD_AUDIT",
+    "LD_LIBRARY_PATH",
+];
+
+/// Unlike ordinary library search paths, these overrides can insert arbitrary
+/// executable code or replace the compiler's loaded images outright.
+pub(crate) const OHM_COMPILER_LOADER_INJECTION_ENVIRONMENT: &[&str] = &[
+    "DYLD_INSERT_LIBRARIES",
+    "DYLD_FORCE_FLAT_NAMESPACE",
+    "DYLD_VERSIONED_LIBRARY_PATH",
+    "DYLD_VERSIONED_FRAMEWORK_PATH",
+    "DYLD_IMAGE_SUFFIX",
+    "DYLD_ROOT_PATH",
+    "LD_PRELOAD",
+    "LD_AUDIT",
+];
+
 fn unit_rustflags_without_ohm_defaults<'a>(
     gctx: &GlobalContext,
     rustflags: &'a [String],
@@ -943,9 +974,16 @@ fn rustc(
         .to_path_buf();
     let fingerprint_dir = build_runner.files().fingerprint_dir(unit);
     let cached_output_path = build_runner.files().message_cache_path(unit);
-    let message_provenance_path = (unit.mode == CompileMode::Build
-        && unit.pkg.package_id().source_id().is_remote_registry())
-    .then(|| build_runner.registry_message_provenance_path(unit));
+    let message_provenance = if unit.mode == CompileMode::Build
+        && unit.pkg.package_id().source_id().is_remote_registry()
+    {
+        Some((
+            build_runner.registry_message_provenance_path(unit),
+            build_runner.registry_message_provenance()?,
+        ))
+    } else {
+        None
+    };
     let mut cached_output_options = OutputOptions::for_fresh(build_runner, unit);
     let script_metadatas = build_runner.find_build_script_metadatas(unit);
     let is_local = unit.is_local();
@@ -1248,7 +1286,7 @@ fn rustc(
             return Ok(());
         }
 
-        if let Some(path) = &message_provenance_path {
+        if let Some((path, _)) = &message_provenance {
             match fs::remove_file(path) {
                 Ok(()) => {}
                 Err(error) if error.kind() == std::io::ErrorKind::NotFound => {}
@@ -1320,13 +1358,10 @@ fn rustc(
         // Exec should never return with success *and* generate an error.
         debug_assert_eq!(output_options.errors_seen, 0);
 
-        if let Some(path) = &message_provenance_path {
-            let provenance = if cached_output_path.is_file() {
-                "present"
-            } else {
-                "empty"
-            };
-            paths::write_atomic(path, provenance)?;
+        if let Some((path, provenance)) = &message_provenance {
+            let mut provenance = provenance.clone();
+            provenance.messages_present = cached_output_path.is_file();
+            paths::write_atomic(path, serde_json::to_vec(&provenance)?)?;
         }
 
         if let Some(cache) = &relink_cache {
@@ -1493,6 +1528,9 @@ fn link_targets(
     let unit_mode = unit.mode;
     let metadata_only_artifact = matches!(bcx.build_config.intent, UserIntent::Check { .. })
         && build_runner.is_metadata_only_reused_registry_dependency(unit);
+    let additional_check_artifact = matches!(bcx.build_config.intent, UserIntent::Check { .. })
+        && build_runner.is_reused_registry_dependency(unit)
+        && !metadata_only_artifact;
     let features = unit.features.iter().map(|s| s.to_string()).collect();
     let json_messages = bcx.build_config.emit_json();
     let executable = build_runner.get_executable(unit)?;
@@ -1553,7 +1591,7 @@ fn link_targets(
                 test: unit_mode.is_any_test(),
             };
 
-            let msg = machine_message::Artifact {
+            let mut artifact = machine_message::Artifact {
                 package_id: package_id.to_spec(),
                 manifest_path,
                 target: &target,
@@ -1572,9 +1610,19 @@ fn link_targets(
                 },
                 executable,
                 fresh,
+            };
+            state.stdout(artifact.to_json_string())?;
+
+            // Ordinary check mode emits separate artifacts when the same
+            // package is both a genuine build helper and a checked library.
+            // Promotion can merge their units, but must not erase either
+            // machine-readable event.
+            if additional_check_artifact {
+                artifact.filenames.retain(|path| {
+                    path.extension().and_then(|extension| extension.to_str()) == Some("rmeta")
+                });
+                state.stdout(artifact.to_json_string())?;
             }
-            .to_json_string();
-            state.stdout(msg)?;
         }
         Ok(())
     }))

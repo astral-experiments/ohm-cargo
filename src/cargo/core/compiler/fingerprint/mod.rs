@@ -2384,40 +2384,6 @@ fn calculate_normal(
         unit.pkg.manifest().lint_rustflags(),
     ));
     let mut config = StableHasher::new();
-    if unit.pkg.package_id().source_id().is_remote_registry() {
-        // A registry artifact can outlive the command that created it and be
-        // consumed by a different compiler mode. Equal `rustc -vV` output does
-        // not prove that two direct compiler shims have the same behavior, and
-        // `RUSTC_BOOTSTRAP` controls feature gating without appearing in the
-        // compiler arguments or its normal dependency information.
-        let compiler = paths::resolve_executable(&build_runner.bcx.rustc().path)?;
-        compiler.hash(&mut config);
-        let compiler_metadata = paths::metadata(&compiler)?;
-        compiler_metadata.len().hash(&mut config);
-        FileTime::from_creation_time(&compiler_metadata).hash(&mut config);
-        FileTime::from_last_modification_time(&compiler_metadata).hash(&mut config);
-        let bootstrap = build_runner
-            .bcx
-            .gctx
-            .env_config()?
-            .get("RUSTC_BOOTSTRAP")
-            .map(std::ffi::OsString::as_os_str)
-            .or_else(|| build_runner.bcx.gctx.get_env_os("RUSTC_BOOTSTRAP"));
-        bootstrap.hash(&mut config);
-        let override_version = build_runner
-            .bcx
-            .gctx
-            .env_config()?
-            .get("RUSTC_OVERRIDE_VERSION_STRING")
-            .map(std::ffi::OsString::as_os_str)
-            .or_else(|| {
-                build_runner
-                    .bcx
-                    .gctx
-                    .get_env_os("RUSTC_OVERRIDE_VERSION_STRING")
-            });
-        override_version.hash(&mut config);
-    }
     let linker = if unit.target.for_host() && !build_runner.bcx.gctx.target_applies_to_host()? {
         build_runner.compilation.host_linker()
     } else {
