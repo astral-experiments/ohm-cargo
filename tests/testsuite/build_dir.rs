@@ -1538,6 +1538,14 @@ fn shared_registry_cache_keeps_replaced_registry_sources_private() {
 #[cargo_test]
 fn shared_registry_cache_rejects_global_compiler_wrappers() {
     Package::new("wrapped-registry", "1.0.0")
+        .file(
+            "build.rs",
+            r#"fn main() {
+                if std::env::var_os("OHM_PRIVATE_BUILD_SCRIPT_PATH").is_some() {
+                    println!("cargo:rustc-env=PATH={}", std::env::var("PATH").unwrap());
+                }
+            }"#,
+        )
         .file("src/lib.rs", "pub fn value() -> u32 { 19 }")
         .publish();
 
@@ -1577,6 +1585,7 @@ fn shared_registry_cache_rejects_global_compiler_wrappers() {
         .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
         .env("CARGO_BUILD_BUILD_DIR", &shared_build_dir)
         .env("RUSTC_WRAPPER", tools::echo_wrapper())
+        .env("OHM_PRIVATE_BUILD_SCRIPT_PATH", "1")
         .with_stderr_contains("[COMPILING] wrapped-registry v1.0.0")
         .with_stderr_contains("WRAPPER CALLED: rustc --crate-name wrapped_registry[..]")
         .with_stdout_data("19\n")
