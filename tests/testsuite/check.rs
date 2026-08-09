@@ -394,6 +394,69 @@ fn ohm_built_registry_dependency_reuse_rejects_artifacts_without_provenance() {
 }
 
 #[cargo_test]
+fn ohm_built_registry_dependency_reuse_revalidates_actual_compiler_driver() {
+    Package::new("dependency", "1.0.0")
+        .file("src/lib.rs", "pub fn value() -> u32 { 19 }")
+        .publish();
+
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "foo"
+                version = "0.0.1"
+                edition = "2021"
+
+                [dependencies]
+                dependency = "1.0.0"
+            "#,
+        )
+        .file(
+            "src/lib.rs",
+            "pub fn value() -> u32 { dependency::value() }",
+        )
+        .build();
+
+    p.cargo("build").run();
+    let provenance_path = p
+        .glob("target/debug/.fingerprint/dependency-*/ohm-message-provenance-lib-dependency")
+        .next()
+        .expect("registry compiler provenance")
+        .expect("existing compiler provenance path");
+    let mut provenance = serde_json::from_slice::<serde_json::Value>(
+        &std::fs::read(&provenance_path).expect("read registry compiler provenance"),
+    )
+    .expect("parse registry compiler provenance");
+    let driver = &provenance["compiler_driver"];
+    let driver_path = std::path::Path::new(driver["path"].as_str().expect("compiler driver path"));
+    let metadata = std::fs::metadata(driver_path).expect("actual compiler driver metadata");
+    assert!(metadata.is_file(), "compiler implementation must be a file");
+    assert_eq!(driver["length"], metadata.len());
+    assert!(
+        driver_path
+            .file_name()
+            .and_then(|name| name.to_str())
+            .is_some_and(|name| name.contains("rustc_driver-")),
+        "provenance must fingerprint rustc's loaded driver, not only its launcher",
+    );
+
+    // Simulate the implementation changing while its small executable
+    // launcher and `rustc -vV` output remain unchanged.
+    provenance["compiler_driver"]["length"] = serde_json::json!(metadata.len() + 1);
+    std::fs::write(
+        &provenance_path,
+        serde_json::to_vec(&provenance).expect("encode changed compiler provenance"),
+    )
+    .expect("simulate a changed compiler implementation");
+
+    p.cargo("-Zohm-reuse-built-deps check")
+        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
+        .with_stderr_contains("[CHECKING] dependency v1.0.0")
+        .run();
+}
+
+#[cargo_test]
 fn ohm_built_registry_dependency_reuse_preserves_cold_checks() {
     Package::new("dependency", "1.0.0")
         .file("src/lib.rs", "pub fn value() -> u32 { 19 }")
@@ -989,6 +1052,91 @@ fn ohm_built_registry_dependency_reuse_rejects_configured_loader_injection() {
 }
 
 #[cargo_test]
+fn ohm_built_registry_dependency_reuse_rejects_build_script_loader_injection() {
+    // The other platform ignores this harmless value, but Cargo must still
+    // recognize that a build script injected it into this registry compiler.
+    let loader_override = if cfg!(target_os = "macos") {
+        "LD_PRELOAD"
+    } else {
+        "DYLD_INSERT_LIBRARIES"
+    };
+    Package::new("dependency", "1.0.0")
+        .file(
+            "build.rs",
+            &format!(
+                r#"fn main() {{ println!("cargo::rustc-env={loader_override}=ohm-test-interposer"); }}"#
+            ),
+        )
+        .file("src/lib.rs", "pub fn value() -> u32 { 19 }")
+        .publish();
+
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "foo"
+                version = "0.0.1"
+                edition = "2021"
+
+                [dependencies]
+                dependency = "1.0.0"
+            "#,
+        )
+        .file(
+            "src/lib.rs",
+            "pub fn value() -> u32 { dependency::value() }",
+        )
+        .build();
+
+    p.cargo("build").run();
+    p.cargo("-Zohm-reuse-built-deps check")
+        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
+        .with_stderr_contains("[CHECKING] dependency v1.0.0")
+        .run();
+}
+
+#[cargo_test]
+fn ohm_built_registry_dependency_reuse_revalidates_build_script_compiler_policy() {
+    Package::new("dependency", "1.0.0")
+        .file(
+            "build.rs",
+            r#"
+                fn main() {
+                    println!("cargo::rustc-env=RUSTC_OVERRIDE_VERSION_STRING=1.99.0");
+                }
+            "#,
+        )
+        .file("src/lib.rs", "pub fn value() -> u32 { 19 }")
+        .publish();
+
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "foo"
+                version = "0.0.1"
+                edition = "2021"
+
+                [dependencies]
+                dependency = "1.0.0"
+            "#,
+        )
+        .file(
+            "src/lib.rs",
+            "pub fn value() -> u32 { dependency::value() }",
+        )
+        .build();
+
+    p.cargo("build").run();
+    p.cargo("-Zohm-reuse-built-deps check")
+        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
+        .with_stderr_contains("[CHECKING] dependency v1.0.0")
+        .run();
+}
+
+#[cargo_test]
 fn ohm_built_registry_dependency_reuse_rechecks_untrusted_procedural_macro_environment() {
     // A matching package name and major version in another registry must not
     // inherit the explicitly audited crates.io producer's trust.
@@ -1183,6 +1331,104 @@ fn ohm_built_registry_dependency_reuse_rechecks_missing_future_incompat_messages
         .with_stderr_contains("[CHECKING] leaf v1.0.0")
         .with_stderr_contains(
             "[WARNING] the following packages contain code that will be rejected by a future version of Rust: leaf v1.0.0",
+        )
+        .run();
+}
+
+#[cargo_test]
+fn ohm_built_registry_dependency_reuse_rechecks_truncated_future_incompat_messages() {
+    Package::new("dependency", "1.0.0")
+        .file("src/lib.rs", "pub fn value() -> u32 { let unused = 1; 19 }")
+        .publish();
+
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "foo"
+                version = "0.0.1"
+                edition = "2021"
+
+                [dependencies]
+                dependency = "1.0.0"
+            "#,
+        )
+        .file(
+            "src/lib.rs",
+            "pub fn value() -> u32 { dependency::value() }",
+        )
+        .build();
+
+    p.cargo("build")
+        .env("RUSTC_BOOTSTRAP", "1")
+        .env("RUSTFLAGS", "-Zfuture-incompat-test")
+        .run();
+    let cached_messages = p
+        .glob("target/debug/.fingerprint/dependency-*/output-lib-dependency")
+        .next()
+        .expect("registry compiler messages")
+        .expect("existing compiler message path");
+    std::fs::write(&cached_messages, []).expect("truncate cached compiler diagnostics");
+
+    p.cargo("-Zohm-reuse-built-deps check --future-incompat-report")
+        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
+        .env("RUSTC_BOOTSTRAP", "1")
+        .env("RUSTFLAGS", "-Zfuture-incompat-test")
+        .with_stderr_contains("[CHECKING] dependency v1.0.0")
+        .with_stderr_contains(
+            "[WARNING] the following packages contain code that will be rejected by a future version of Rust: dependency v1.0.0",
+        )
+        .run();
+}
+
+#[cargo_test]
+fn ohm_built_registry_dependency_reuse_rechecks_replaced_future_incompat_messages() {
+    Package::new("dependency", "1.0.0")
+        .file("src/lib.rs", "pub fn value() -> u32 { let unused = 1; 19 }")
+        .publish();
+
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "foo"
+                version = "0.0.1"
+                edition = "2021"
+
+                [dependencies]
+                dependency = "1.0.0"
+            "#,
+        )
+        .file(
+            "src/lib.rs",
+            "pub fn value() -> u32 { dependency::value() }",
+        )
+        .build();
+
+    p.cargo("build")
+        .env("RUSTC_BOOTSTRAP", "1")
+        .env("RUSTFLAGS", "-Zfuture-incompat-test")
+        .run();
+    let cached_messages = p
+        .glob("target/debug/.fingerprint/dependency-*/output-lib-dependency")
+        .next()
+        .expect("registry compiler messages")
+        .expect("existing compiler message path");
+    let length = std::fs::read(&cached_messages)
+        .expect("read cached compiler diagnostics")
+        .len();
+    std::fs::write(&cached_messages, vec![b' '; length])
+        .expect("replace cached diagnostics without changing their length");
+
+    p.cargo("-Zohm-reuse-built-deps check --future-incompat-report")
+        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
+        .env("RUSTC_BOOTSTRAP", "1")
+        .env("RUSTFLAGS", "-Zfuture-incompat-test")
+        .with_stderr_contains("[CHECKING] dependency v1.0.0")
+        .with_stderr_contains(
+            "[WARNING] the following packages contain code that will be rejected by a future version of Rust: dependency v1.0.0",
         )
         .run();
 }
@@ -1684,6 +1930,83 @@ fn ohm_built_registry_dependency_reuse_preserves_binary_artifact_dependencies() 
                 .is_some_and(|path| path.contains("/bin/artifact"))),
         "a genuine binary artifact dependency must retain its executable: {artifact}",
     );
+}
+
+#[cargo_test]
+fn ohm_built_registry_dependency_reuse_rejects_rustflags_codegen_backends() {
+    Package::new("dependency", "1.0.0")
+        .file("src/lib.rs", "pub fn value() -> u32 { 19 }")
+        .publish();
+
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "foo"
+                version = "0.0.1"
+                edition = "2021"
+
+                [dependencies]
+                dependency = "1.0.0"
+            "#,
+        )
+        .file(
+            "src/lib.rs",
+            "pub fn value() -> u32 { dependency::value() }",
+        )
+        .build();
+
+    p.cargo("build")
+        .env("RUSTC_BOOTSTRAP", "1")
+        .env("RUSTFLAGS", "-Zcodegen-backend=llvm")
+        .run();
+    p.cargo("-Zohm-reuse-built-deps check")
+        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
+        .env("RUSTC_BOOTSTRAP", "1")
+        .env("RUSTFLAGS", "-Zcodegen-backend=llvm")
+        .with_stderr_contains("[CHECKING] dependency v1.0.0")
+        .run();
+}
+
+#[cargo_test]
+fn ohm_built_registry_dependency_reuse_rejects_profile_codegen_backends() {
+    Package::new("dependency", "1.0.0")
+        .file("src/lib.rs", "pub fn value() -> u32 { 19 }")
+        .publish();
+
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "foo"
+                version = "0.0.1"
+                edition = "2021"
+
+                [dependencies]
+                dependency = "1.0.0"
+            "#,
+        )
+        .file(
+            ".cargo/config.toml",
+            "[profile.dev]\ncodegen-backend = \"llvm\"\n",
+        )
+        .file(
+            "src/lib.rs",
+            "pub fn value() -> u32 { dependency::value() }",
+        )
+        .build();
+
+    p.cargo("-Zcodegen-backend build")
+        .masquerade_as_nightly_cargo(&["codegen-backend"])
+        .env("RUSTC_BOOTSTRAP", "1")
+        .run();
+    p.cargo("-Zcodegen-backend -Zohm-reuse-built-deps check")
+        .masquerade_as_nightly_cargo(&["codegen-backend", "ohm-reuse-built-deps"])
+        .env("RUSTC_BOOTSTRAP", "1")
+        .with_stderr_contains("[CHECKING] dependency v1.0.0")
+        .run();
 }
 
 #[cargo_test]
