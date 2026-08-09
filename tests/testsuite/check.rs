@@ -209,6 +209,920 @@ fn build_check() {
     foo.cargo("check -v").run();
 }
 
+#[cargo_test]
+fn ohm_reuses_built_registry_dependency_closure() {
+    Package::new("leaf", "1.0.0")
+        .file("src/lib.rs", "pub fn value() -> u32 { 19 }")
+        .publish();
+    Package::new("middle", "1.0.0")
+        .dep("leaf", "1.0.0")
+        .file(
+            "src/lib.rs",
+            "extern crate leaf; pub fn value() -> u32 { leaf::value() }",
+        )
+        .publish();
+
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "foo"
+                version = "0.0.1"
+                edition = "2021"
+
+                [dependencies]
+                leaf = "1.0.0"
+                middle = "1.0.0"
+            "#,
+        )
+        .file(
+            "src/lib.rs",
+            "pub fn value() -> u32 { leaf::value() + middle::value() }",
+        )
+        .build();
+
+    p.cargo("build").run();
+    p.cargo("-Zohm-reuse-built-deps check -v")
+        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
+        .with_stderr_data(str![[r#"
+[FRESH] leaf v1.0.0
+[FRESH] middle v1.0.0
+[CHECKING] foo v0.0.1 ([ROOT]/foo)
+[RUNNING] `rustc --crate-name foo [..]`
+[FINISHED] `dev` profile [unoptimized + debuginfo] target(s) in [ELAPSED]s
+
+"#]])
+        .run();
+}
+
+#[cargo_test]
+fn ohm_built_registry_dependency_reuse_is_opt_in() {
+    Package::new("dependency", "1.0.0")
+        .file("src/lib.rs", "pub fn value() -> u32 { 19 }")
+        .publish();
+
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "foo"
+                version = "0.0.1"
+                edition = "2021"
+
+                [dependencies]
+                dependency = "1.0.0"
+            "#,
+        )
+        .file(
+            "src/lib.rs",
+            "pub fn value() -> u32 { dependency::value() }",
+        )
+        .build();
+
+    p.cargo("build").run();
+    p.cargo("check")
+        .with_stderr_data(str![[r#"
+[CHECKING] dependency v1.0.0
+[CHECKING] foo v0.0.1 ([ROOT]/foo)
+[FINISHED] `dev` profile [unoptimized + debuginfo] target(s) in [ELAPSED]s
+
+"#]])
+        .run();
+}
+
+#[cargo_test]
+fn ohm_built_registry_dependency_reuse_preserves_cold_checks() {
+    Package::new("dependency", "1.0.0")
+        .file("src/lib.rs", "pub fn value() -> u32 { 19 }")
+        .publish();
+
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "foo"
+                version = "0.0.1"
+                edition = "2021"
+
+                [dependencies]
+                dependency = "1.0.0"
+            "#,
+        )
+        .file(
+            "src/lib.rs",
+            "pub fn value() -> u32 { dependency::value() }",
+        )
+        .build();
+
+    p.cargo("-Zohm-reuse-built-deps check")
+        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
+        .with_stderr_data(str![[r#"
+[UPDATING] `dummy-registry` index
+[LOCKING] 1 package to latest compatible version
+[DOWNLOADING] crates ...
+[DOWNLOADED] dependency v1.0.0 (registry `dummy-registry`)
+[CHECKING] dependency v1.0.0
+[CHECKING] foo v0.0.1 ([ROOT]/foo)
+[FINISHED] `dev` profile [unoptimized + debuginfo] target(s) in [ELAPSED]s
+
+"#]])
+        .run();
+}
+
+#[cargo_test]
+fn ohm_built_registry_dependency_reuse_keeps_path_dependencies_checked() {
+    Package::new("dependency", "1.0.0")
+        .file("src/lib.rs", "pub fn value() -> u32 { 19 }")
+        .publish();
+
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "foo"
+                version = "0.0.1"
+                edition = "2021"
+
+                [dependencies]
+                local = { path = "local" }
+            "#,
+        )
+        .file(
+            "local/Cargo.toml",
+            r#"
+                [package]
+                name = "local"
+                version = "1.0.0"
+                edition = "2021"
+
+                [dependencies]
+                dependency = "1.0.0"
+            "#,
+        )
+        .file(
+            "local/src/lib.rs",
+            "pub fn value() -> u32 { dependency::value() }",
+        )
+        .file("src/lib.rs", "pub fn value() -> u32 { local::value() }")
+        .build();
+
+    p.cargo("build").run();
+    p.cargo("-Zohm-reuse-built-deps check -v")
+        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
+        .with_stderr_data(str![[r#"
+[FRESH] dependency v1.0.0
+[CHECKING] local v1.0.0 ([ROOT]/foo/local)
+[RUNNING] `rustc --crate-name local [..]`
+[CHECKING] foo v0.0.1 ([ROOT]/foo)
+[RUNNING] `rustc --crate-name foo [..]`
+[FINISHED] `dev` profile [unoptimized + debuginfo] target(s) in [ELAPSED]s
+
+"#]])
+        .run();
+}
+
+#[cargo_test]
+fn ohm_built_registry_dependency_reuse_rejects_patched_path_closures() {
+    Package::new("leaf", "1.0.0").publish();
+    Package::new("middle", "1.0.0")
+        .dep("leaf", "1.0.0")
+        .file(
+            "src/lib.rs",
+            "extern crate leaf; pub fn value() -> u32 { leaf::value() }",
+        )
+        .publish();
+
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "foo"
+                version = "0.0.1"
+                edition = "2021"
+
+                [dependencies]
+                middle = "1.0.0"
+
+                [patch.crates-io]
+                leaf = { path = "leaf" }
+            "#,
+        )
+        .file(
+            "leaf/Cargo.toml",
+            r#"
+                [package]
+                name = "leaf"
+                version = "1.0.0"
+                edition = "2021"
+            "#,
+        )
+        .file("leaf/src/lib.rs", "pub fn value() -> u32 { 19 }")
+        .file("src/lib.rs", "pub fn value() -> u32 { middle::value() }")
+        .build();
+
+    p.cargo("build").run();
+    p.cargo("-Zohm-reuse-built-deps check")
+        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
+        .with_stderr_data(str![[r#"
+[CHECKING] leaf v1.0.0 ([ROOT]/foo/leaf)
+[CHECKING] middle v1.0.0
+[CHECKING] foo v0.0.1 ([ROOT]/foo)
+[FINISHED] `dev` profile [unoptimized + debuginfo] target(s) in [ELAPSED]s
+
+"#]])
+        .run();
+}
+
+#[cargo_test]
+fn ohm_built_registry_dependency_reuse_revalidates_features() {
+    Package::new("dependency", "1.0.0")
+        .feature("extra", &[])
+        .file(
+            "src/lib.rs",
+            r#"
+                #[cfg(feature = "extra")]
+                pub fn extra() -> u32 { 19 }
+
+                #[cfg(feature = "extra")]
+                #[export_name = "duplicate_backend_symbol"]
+                pub fn first() {}
+
+                #[cfg(feature = "extra")]
+                #[export_name = "duplicate_backend_symbol"]
+                pub fn second() {}
+            "#,
+        )
+        .publish();
+
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "foo"
+                version = "0.0.1"
+                edition = "2021"
+
+                [features]
+                extra = ["dependency/extra"]
+
+                [dependencies]
+                dependency = "1.0.0"
+            "#,
+        )
+        .file(
+            "src/lib.rs",
+            "#[cfg(feature = \"extra\")] pub fn value() -> u32 { dependency::extra() }",
+        )
+        .build();
+
+    p.cargo("build").run();
+    p.cargo("-Zohm-reuse-built-deps check --features extra")
+        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
+        .with_stderr_data(str![[r#"
+[CHECKING] dependency v1.0.0
+[CHECKING] foo v0.0.1 ([ROOT]/foo)
+[FINISHED] `dev` profile [unoptimized + debuginfo] target(s) in [ELAPSED]s
+
+"#]])
+        .run();
+}
+
+#[cargo_test]
+fn ohm_built_registry_dependency_reuse_revalidates_compiler_feature_policy() {
+    Package::new("dependency", "1.0.0")
+        .file(
+            "src/lib.rs",
+            "#![feature(never_type)]\npub fn value() -> u32 { 19 }",
+        )
+        .publish();
+
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "foo"
+                version = "0.0.1"
+                edition = "2021"
+
+                [dependencies]
+                dependency = "1.0.0"
+            "#,
+        )
+        .file(
+            "src/lib.rs",
+            "pub fn value() -> u32 { dependency::value() }",
+        )
+        .build();
+
+    p.cargo("build").env("RUSTC_BOOTSTRAP", "1").run();
+    p.cargo("-Zohm-reuse-built-deps check")
+        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
+        .env("RUSTC_BOOTSTRAP", "-1")
+        .with_status(101)
+        .with_stderr_contains("[CHECKING] dependency v1.0.0")
+        .with_stderr_contains(
+            "error[E0554]: `#![feature]` may not be used on the [..] release channel",
+        )
+        .run();
+}
+
+#[cfg(unix)]
+#[cargo_test]
+fn ohm_built_registry_dependency_reuse_revalidates_direct_compiler_identity() {
+    Package::new("dependency", "1.0.0")
+        .file(
+            "src/lib.rs",
+            r#"
+                #[cfg(ohm_changed_direct_compiler)]
+                compile_error!("the direct compiler changed");
+
+                pub fn value() -> u32 { 19 }
+            "#,
+        )
+        .publish();
+
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "foo"
+                version = "0.0.1"
+                edition = "2021"
+
+                [dependencies]
+                dependency = "1.0.0"
+            "#,
+        )
+        .file(
+            "src/lib.rs",
+            "pub fn value() -> u32 { dependency::value() }",
+        )
+        .executable("rustc-before", "#!/bin/sh\nexec rustc \"$@\"\n")
+        .executable(
+            "rustc-after",
+            r#"#!/bin/sh
+previous=
+for argument in "$@"; do
+    if [ "$previous" = "--crate-name" ] && [ "$argument" = "dependency" ]; then
+        exec rustc "$@" --cfg ohm_changed_direct_compiler
+    fi
+    previous="$argument"
+done
+exec rustc "$@"
+"#,
+        )
+        .build();
+
+    p.cargo("build")
+        .env("RUSTC", p.root().join("rustc-before"))
+        .run();
+    p.cargo("-Zohm-reuse-built-deps check")
+        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
+        .env("RUSTC", p.root().join("rustc-after"))
+        .with_status(101)
+        .with_stderr_contains("[CHECKING] dependency v1.0.0")
+        .with_stderr_contains("[ERROR] the direct compiler changed")
+        .run();
+}
+
+#[cargo_test]
+fn ohm_built_registry_dependency_reuse_revalidates_build_script_environment() {
+    Package::new("dependency", "1.0.0")
+        .file(
+            "build.rs",
+            r#"
+                fn main() {
+                    println!("cargo:rerun-if-env-changed=OHM_REUSE_BUILD_INPUT");
+                    let value = std::env::var("OHM_REUSE_BUILD_INPUT").unwrap_or_default();
+                    println!("cargo:rustc-env=OHM_REUSE_BUILD_VALUE={value}");
+                }
+            "#,
+        )
+        .file(
+            "src/lib.rs",
+            "pub fn value() -> &'static str { env!(\"OHM_REUSE_BUILD_VALUE\") }",
+        )
+        .publish();
+
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "foo"
+                version = "0.0.1"
+                edition = "2021"
+
+                [dependencies]
+                dependency = "1.0.0"
+            "#,
+        )
+        .file(
+            "src/lib.rs",
+            "pub fn value() -> &'static str { dependency::value() }",
+        )
+        .build();
+
+    p.cargo("build")
+        .env("OHM_REUSE_BUILD_INPUT", "before")
+        .run();
+    p.cargo("-Zohm-reuse-built-deps check")
+        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
+        .env("OHM_REUSE_BUILD_INPUT", "after")
+        .with_stderr_data(str![[r#"
+[COMPILING] dependency v1.0.0
+[CHECKING] foo v0.0.1 ([ROOT]/foo)
+[FINISHED] `dev` profile [unoptimized + debuginfo] target(s) in [ELAPSED]s
+
+"#]])
+        .run();
+
+    // Cargo labels the rerun build script as `Compiling`, but the registry
+    // library itself must remain metadata-only after fallback.
+    assert_eq!(p.glob("target/debug/deps/libdependency-*.rlib").count(), 1);
+    assert_eq!(p.glob("target/debug/deps/libdependency-*.rmeta").count(), 2);
+}
+
+#[cargo_test]
+fn ohm_built_registry_dependency_reuse_preserves_extra_verbose_warnings() {
+    Package::new("dependency", "1.0.0")
+        .file("src/lib.rs", "fn unused() {}")
+        .publish();
+
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "foo"
+                version = "0.0.1"
+                edition = "2021"
+
+                [dependencies]
+                dependency = "1.0.0"
+            "#,
+        )
+        .file("src/lib.rs", "pub fn value() -> u32 { 19 }")
+        .build();
+
+    p.cargo("build").run();
+    p.cargo("-Zohm-reuse-built-deps check -vv")
+        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
+        .with_stderr_data(str![[r#"
+...
+[CHECKING] dependency v1.0.0
+...
+[WARNING] function `unused` is never used
+...
+[CHECKING] foo v0.0.1 ([ROOT]/foo)
+...
+"#]])
+        .run();
+}
+
+#[cargo_test]
+fn ohm_built_registry_dependency_reuse_preserves_check_json_artifacts() {
+    Package::new("dependency", "1.0.0")
+        .file("src/lib.rs", "pub fn value() -> u32 { 19 }")
+        .publish();
+
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "foo"
+                version = "0.0.1"
+                edition = "2021"
+
+                [dependencies]
+                dependency = "1.0.0"
+            "#,
+        )
+        .file(
+            "src/lib.rs",
+            "pub fn value() -> u32 { dependency::value() }",
+        )
+        .build();
+
+    p.cargo("build").run();
+    p.cargo("-Zohm-reuse-built-deps check --message-format=json")
+        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
+        .with_stderr_data(str![[r#"
+[CHECKING] foo v0.0.1 ([ROOT]/foo)
+[FINISHED] `dev` profile [unoptimized + debuginfo] target(s) in [ELAPSED]s
+
+"#]])
+        .with_stdout_data(
+            str![[r#"
+[
+  {
+    "executable": null,
+    "features": [],
+    "filenames": [
+      "[ROOT]/foo/target/debug/deps/libdependency-[HASH].rmeta"
+    ],
+    "fresh": true,
+    "manifest_path": "[..]/dependency-1.0.0/Cargo.toml",
+    "package_id": "[..]dependency@1.0.0",
+    "profile": "{...}",
+    "reason": "compiler-artifact",
+    "target": "{...}"
+  },
+  {
+    "executable": null,
+    "features": [],
+    "filenames": [
+      "[ROOT]/foo/target/debug/deps/libfoo-[HASH].rmeta"
+    ],
+    "fresh": false,
+    "manifest_path": "[ROOT]/foo/Cargo.toml",
+    "package_id": "path+[ROOTURL]/foo#0.0.1",
+    "profile": "{...}",
+    "reason": "compiler-artifact",
+    "target": "{...}"
+  },
+  {
+    "reason": "build-finished",
+    "success": true
+  }
+]
+"#]]
+            .is_json()
+            .against_jsonlines(),
+        )
+        .run();
+}
+
+#[cargo_test]
+fn ohm_built_registry_dependency_reuse_preserves_build_helper_json_artifacts() {
+    Package::new("build-helper", "1.0.0")
+        .file("src/lib.rs", "pub fn value() -> u32 { 19 }")
+        .publish();
+    Package::new("dependency", "1.0.0")
+        .build_dep("build-helper", "1.0.0")
+        .file("build.rs", "fn main() { let _ = build_helper::value(); }")
+        .file("src/lib.rs", "pub fn value() -> u32 { 23 }")
+        .publish();
+
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "foo"
+                version = "0.0.1"
+                edition = "2021"
+
+                [dependencies]
+                build-helper = "1.0.0"
+                dependency = "1.0.0"
+            "#,
+        )
+        .file(
+            "src/lib.rs",
+            "pub fn value() -> u32 { build_helper::value() + dependency::value() }",
+        )
+        .build();
+
+    p.cargo("build").run();
+    let output = p
+        .cargo("-Zohm-reuse-built-deps check --message-format=json")
+        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
+        .with_stderr_does_not_contain("[CHECKING] build-helper v1.0.0")
+        .with_stderr_does_not_contain("[CHECKING] dependency v1.0.0")
+        .run();
+    let stdout = String::from_utf8(output.stdout).expect("UTF-8 Cargo output");
+    let messages = stdout
+        .lines()
+        .map(|line| serde_json::from_str::<serde_json::Value>(line).expect("JSON Cargo message"))
+        .collect::<Vec<_>>();
+
+    let helper_artifacts = messages
+        .iter()
+        .filter(|message| {
+            message["reason"] == "compiler-artifact"
+                && message["package_id"]
+                    .as_str()
+                    .is_some_and(|package_id| package_id.contains("build-helper@1.0.0"))
+        })
+        .collect::<Vec<_>>();
+    assert!(
+        !helper_artifacts.is_empty(),
+        "registry build-helper artifacts"
+    );
+    assert!(
+        helper_artifacts.iter().any(|helper| {
+            helper["filenames"]
+                .as_array()
+                .expect("build-helper artifact filenames")
+                .iter()
+                .any(|filename| {
+                    filename
+                        .as_str()
+                        .is_some_and(|path| path.ends_with(".rlib"))
+                })
+        }),
+        "a genuine build-script dependency must retain its linkable library: {helper_artifacts:?}",
+    );
+
+    let dependency = messages
+        .iter()
+        .find(|message| {
+            message["reason"] == "compiler-artifact"
+                && message["package_id"]
+                    .as_str()
+                    .is_some_and(|package_id| package_id.contains("dependency@1.0.0"))
+                && message["target"]["kind"]
+                    .as_array()
+                    .is_some_and(|kinds| kinds.iter().any(|kind| kind == "lib"))
+        })
+        .expect("promoted registry library artifact");
+    assert!(
+        dependency["filenames"]
+            .as_array()
+            .expect("promoted registry artifact filenames")
+            .iter()
+            .all(|filename| filename
+                .as_str()
+                .is_some_and(|path| path.ends_with(".rmeta"))),
+        "a solely promoted registry dependency must retain check-mode JSON: {dependency}",
+    );
+}
+
+#[cargo_test]
+fn ohm_built_registry_dependency_reuse_supports_new_build_layout() {
+    Package::new("dependency", "1.0.0")
+        .file("src/lib.rs", "pub fn value() -> u32 { 19 }")
+        .publish();
+
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "foo"
+                version = "0.0.1"
+                edition = "2021"
+
+                [dependencies]
+                dependency = "1.0.0"
+            "#,
+        )
+        .file(
+            "src/lib.rs",
+            "pub fn value() -> u32 { dependency::value() }",
+        )
+        .build();
+
+    p.cargo("-Zbuild-dir-new-layout -Zfine-grain-locking build")
+        .masquerade_as_nightly_cargo(&["build-dir-new-layout", "fine-grain-locking"])
+        .run();
+    p.cargo("-Zbuild-dir-new-layout -Zfine-grain-locking -Zohm-reuse-built-deps check -v")
+        .masquerade_as_nightly_cargo(&[
+            "build-dir-new-layout",
+            "fine-grain-locking",
+            "ohm-reuse-built-deps",
+        ])
+        .with_stderr_data(str![[r#"
+[FRESH] dependency v1.0.0
+[CHECKING] foo v0.0.1 ([ROOT]/foo)
+[RUNNING] `rustc --crate-name foo [..]`
+[FINISHED] `dev` profile [unoptimized + debuginfo] target(s) in [ELAPSED]s
+
+"#]])
+        .run();
+}
+
+#[cargo_test]
+fn ohm_built_registry_dependency_reuse_preserves_binary_artifact_dependencies() {
+    Package::new("artifact", "1.0.0")
+        .file("src/main.rs", "fn main() {}")
+        .publish();
+    Package::new("dependency", "1.0.0")
+        .file("src/lib.rs", "pub fn value() -> u32 { 19 }")
+        .publish();
+
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "foo"
+                version = "0.0.1"
+                edition = "2021"
+
+                [dependencies]
+                artifact = { version = "1.0.0", artifact = "bin" }
+                dependency = "1.0.0"
+            "#,
+        )
+        .file(
+            "src/lib.rs",
+            r#"
+                pub fn value() -> u32 {
+                    let _ = include_bytes!(env!("CARGO_BIN_FILE_ARTIFACT"));
+                    dependency::value()
+                }
+            "#,
+        )
+        .build();
+
+    p.cargo("-Zbindeps build")
+        .masquerade_as_nightly_cargo(&["bindeps"])
+        .run();
+    let output = p
+        .cargo("-Zbindeps -Zohm-reuse-built-deps check --message-format=json")
+        .masquerade_as_nightly_cargo(&["bindeps", "ohm-reuse-built-deps"])
+        .with_stderr_contains("[CHECKING] dependency v1.0.0")
+        .with_stdout_does_not_contain(r#""filenames":[]"#)
+        .run();
+    let stdout = String::from_utf8(output.stdout).expect("UTF-8 Cargo output");
+    let artifact = stdout
+        .lines()
+        .map(|line| serde_json::from_str::<serde_json::Value>(line).expect("JSON Cargo message"))
+        .find(|message| {
+            message["reason"] == "compiler-artifact"
+                && message["package_id"]
+                    .as_str()
+                    .is_some_and(|package_id| package_id.contains("artifact@1.0.0"))
+        })
+        .expect("binary artifact dependency");
+    assert!(
+        artifact["filenames"]
+            .as_array()
+            .expect("binary artifact filenames")
+            .iter()
+            .any(|filename| filename
+                .as_str()
+                .is_some_and(|path| path.contains("/bin/artifact"))),
+        "a genuine binary artifact dependency must retain its executable: {artifact}",
+    );
+}
+
+#[cargo_test]
+fn ohm_built_registry_dependency_reuse_rejects_global_compiler_wrappers() {
+    Package::new("dependency", "1.0.0")
+        .file("src/lib.rs", "pub fn value() -> u32 { 19 }")
+        .publish();
+
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "foo"
+                version = "0.0.1"
+                edition = "2021"
+
+                [dependencies]
+                dependency = "1.0.0"
+            "#,
+        )
+        .file(
+            "src/lib.rs",
+            "pub fn value() -> u32 { dependency::value() }",
+        )
+        .build();
+
+    p.cargo("build")
+        .env("RUSTC_WRAPPER", tools::echo_wrapper())
+        .run();
+    p.cargo("-Zohm-reuse-built-deps check")
+        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
+        .env("RUSTC_WRAPPER", tools::echo_wrapper())
+        .with_stderr_contains("[CHECKING] dependency v1.0.0")
+        .with_stderr_contains("WRAPPER CALLED: rustc --crate-name dependency [..]")
+        .run();
+}
+
+#[cargo_test]
+fn ohm_built_registry_dependency_reuse_allows_workspace_compiler_wrappers() {
+    Package::new("dependency", "1.0.0")
+        .file("src/lib.rs", "pub fn value() -> u32 { 19 }")
+        .publish();
+
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "foo"
+                version = "0.0.1"
+                edition = "2021"
+
+                [dependencies]
+                dependency = "1.0.0"
+            "#,
+        )
+        .file(
+            "src/lib.rs",
+            "pub fn value() -> u32 { dependency::value() }",
+        )
+        .build();
+
+    p.cargo("build")
+        .env("RUSTC_WORKSPACE_WRAPPER", tools::echo_wrapper())
+        .run();
+    p.cargo("-Zohm-reuse-built-deps check -v")
+        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
+        .env("RUSTC_WORKSPACE_WRAPPER", tools::echo_wrapper())
+        .with_stderr_contains("[FRESH] dependency v1.0.0")
+        .with_stderr_contains("WRAPPER CALLED: rustc --crate-name foo [..]")
+        .with_stderr_does_not_contain("[CHECKING] dependency v1.0.0")
+        .run();
+}
+
+#[cargo_test]
+fn ohm_built_registry_dependency_reuse_preserves_root_diagnostics() {
+    Package::new("dependency", "1.0.0")
+        .file("src/lib.rs", "pub fn value() -> u32 { 19 }")
+        .publish();
+
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "foo"
+                version = "0.0.1"
+                edition = "2021"
+
+                [dependencies]
+                dependency = "1.0.0"
+            "#,
+        )
+        .file(
+            "src/lib.rs",
+            "pub fn value() -> u32 { dependency::value() }",
+        )
+        .build();
+
+    p.cargo("build").run();
+    p.change_file(
+        "src/lib.rs",
+        "pub fn value() -> u32 { dependency::value(19) }",
+    );
+    p.cargo("-Zohm-reuse-built-deps check")
+        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
+        .with_status(101)
+        .with_stderr_data(str![[r#"
+[CHECKING] foo v0.0.1 ([ROOT]/foo)
+error[E0061]: this function takes 0 arguments but 1 argument was supplied
+...
+[ERROR] could not compile `foo` (lib) due to 1 previous error
+
+"#]])
+        .run();
+}
+
+#[cargo_test]
+fn ohm_built_registry_dependency_reuse_can_be_enabled_by_config_environment() {
+    Package::new("dependency", "1.0.0")
+        .file("src/lib.rs", "pub fn value() -> u32 { 19 }")
+        .publish();
+
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "foo"
+                version = "0.0.1"
+                edition = "2021"
+
+                [dependencies]
+                dependency = "1.0.0"
+            "#,
+        )
+        .file(
+            "src/lib.rs",
+            "pub fn value() -> u32 { dependency::value() }",
+        )
+        .build();
+
+    p.cargo("build").run();
+    p.cargo("check -v")
+        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
+        .env("CARGO_UNSTABLE_OHM_REUSE_BUILT_DEPS", "true")
+        .with_stderr_data(str![[r#"
+[FRESH] dependency v1.0.0
+[CHECKING] foo v0.0.1 ([ROOT]/foo)
+[RUNNING] `rustc --crate-name foo [..]`
+[FINISHED] `dev` profile [unoptimized + debuginfo] target(s) in [ELAPSED]s
+
+"#]])
+        .run();
+}
+
 // Checks that where a project has both a lib and a bin, the lib is only checked
 // not built.
 #[cargo_test]
