@@ -27,7 +27,8 @@ use crate::core::compiler::UserIntent;
 use crate::core::compiler::artifact::match_artifacts_kind_with_targets;
 use crate::core::compiler::unit_graph::{UnitDep, UnitGraph};
 use crate::core::compiler::{
-    CompileKind, CompileMode, CrateType, RustcTargetData, Unit, UnitInterner,
+    CompileKind, CompileMode, CrateType, OHM_COMPILER_LOADER_INJECTION_ENVIRONMENT,
+    RustcTargetData, Unit, UnitInterner,
 };
 use crate::core::dependency::{Artifact, ArtifactKind, ArtifactTarget, DepKind};
 use crate::core::profiles::{Profile, Profiles, UnitFor};
@@ -1100,6 +1101,7 @@ impl<'a, 'gctx> State<'a, 'gctx> {
             || self.is_std
             || self.gctx.cli_unstable().bindeps
             || self.target_data.rustc.wrapper.is_some()
+            || !self.compiler_has_safe_loader_environment()
             || !self.compiler_has_verified_toolchain_identity()
             || !package_id.source_id().is_remote_registry()
             || target.for_host()
@@ -1112,6 +1114,24 @@ impl<'a, 'gctx> State<'a, 'gctx> {
             return false;
         }
         self.registry_closure_is_immutable(package_id, &mut HashSet::default())
+    }
+
+    /// Loader interposition can turn the genuine toolchain executable into an
+    /// opaque compiler wrapper, so cached cross-mode results are unusable.
+    fn compiler_has_safe_loader_environment(&self) -> bool {
+        let Ok(configured_environment) = self.gctx.env_config() else {
+            return false;
+        };
+
+        OHM_COMPILER_LOADER_INJECTION_ENVIRONMENT
+            .iter()
+            .all(|name| {
+                configured_environment
+                    .get(*name)
+                    .map(std::ffi::OsString::as_os_str)
+                    .or_else(|| self.gctx.get_env_os(name))
+                    .is_none_or(std::ffi::OsStr::is_empty)
+            })
     }
 
     /// Reject opaque compiler shims whose behavior Cargo cannot fingerprint.

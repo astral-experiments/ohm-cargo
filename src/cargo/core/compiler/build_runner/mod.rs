@@ -1,6 +1,7 @@
 //! [`BuildRunner`] is the mutable state used during the build process.
 
 use crate::util::data_structures::{HashMap, HashSet};
+use std::hash::{Hash, Hasher};
 use std::path::{Path, PathBuf};
 use std::sync::{Arc, Mutex};
 
@@ -8,6 +9,7 @@ use crate::core::PackageId;
 use crate::core::compiler::compilation::{self, UnitOutput};
 use crate::core::compiler::locking::LockManager;
 use crate::core::compiler::{self, CrateType, Unit, UserIntent, artifact};
+use crate::util::StableHasher;
 use crate::util::cache_lock::CacheLockMode;
 use crate::util::errors::CargoResult;
 use anyhow::{Context as _, bail};
@@ -16,6 +18,7 @@ use cargo_util_terminal::report::{Level, Message};
 use filetime::FileTime;
 use itertools::Itertools;
 use jobserver::Client;
+use serde::{Deserialize, Serialize};
 
 use super::RustdocFingerprint;
 use super::custom_build::{self, BuildDeps, BuildScriptOutputs, BuildScripts};
@@ -24,7 +27,10 @@ use super::job_queue::JobQueue;
 use super::layout::Layout;
 use super::lto::Lto;
 use super::unit_graph::UnitDep;
-use super::{BuildContext, Compilation, CompileKind, CompileMode, Executor, FileFlavor};
+use super::{
+    BuildContext, Compilation, CompileKind, CompileMode, Executor, FileFlavor,
+    OHM_COMPILER_LOADER_ENVIRONMENT,
+};
 
 mod compilation_files;
 use self::compilation_files::CompilationFiles;
@@ -35,6 +41,18 @@ pub use self::compilation_files::{Metadata, OutputFile, UnitHash};
 #[derive(Debug, thiserror::Error)]
 #[error("an existing registry build artifact is missing or stale")]
 pub(crate) struct StaleBuiltRegistryDependency;
+
+/// Additional facts needed to safely reuse an ordinary build as a check.
+///
+/// This is deliberately separate from Cargo's persisted fingerprint: users who
+/// never opt in must keep their existing dependency artifacts completely fresh.
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(deny_unknown_fields)]
+pub(crate) struct RegistryMessageProvenance {
+    version: u8,
+    compiler_context: u64,
+    pub(crate) messages_present: bool,
+}
 
 /// Collection of all the stuff that is needed to perform a build.
 ///
@@ -574,7 +592,8 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
         self.files.as_ref().unwrap()
     }
 
-    /// Records whether a successful registry build produced cached diagnostics.
+    /// Records the compiler context and whether a successful registry build
+    /// produced cached diagnostics without changing Cargo's own fingerprints.
     ///
     /// Compiler message caches are intentionally created lazily, so an absent
     /// cache is safe to reuse only when its originating build recorded that it
@@ -582,6 +601,37 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
     pub(crate) fn registry_message_provenance_path(&self, unit: &Unit) -> PathBuf {
         self.files()
             .fingerprint_file_path(unit, "ohm-message-provenance-")
+    }
+
+    /// Capture compiler inputs that an ordinary same-mode Cargo fingerprint
+    /// does not track but that cross-mode reuse must validate.
+    pub(crate) fn registry_message_provenance(&self) -> CargoResult<RegistryMessageProvenance> {
+        let mut context = StableHasher::new();
+        let compiler = paths::resolve_executable(&self.bcx.rustc().path)?;
+        compiler.hash(&mut context);
+        let compiler_metadata = paths::metadata(&compiler)?;
+        compiler_metadata.len().hash(&mut context);
+        FileTime::from_creation_time(&compiler_metadata).hash(&mut context);
+        FileTime::from_last_modification_time(&compiler_metadata).hash(&mut context);
+
+        let configured_environment = self.bcx.gctx.env_config()?;
+        for name in ["RUSTC_BOOTSTRAP", "RUSTC_OVERRIDE_VERSION_STRING"]
+            .into_iter()
+            .chain(OHM_COMPILER_LOADER_ENVIRONMENT.iter().copied())
+        {
+            name.hash(&mut context);
+            configured_environment
+                .get(name)
+                .map(std::ffi::OsString::as_os_str)
+                .or_else(|| self.bcx.gctx.get_env_os(name))
+                .hash(&mut context);
+        }
+
+        Ok(RegistryMessageProvenance {
+            version: 1,
+            compiler_context: Hasher::finish(&context),
+            messages_present: false,
+        })
     }
 
     /// Validates the exact build-mode registry units selected by a check graph.
@@ -634,20 +684,30 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
 
         // Future-incompatibility diagnostics can originate in any transitive
         // dependency, even when only its parent has an incoming check edge.
+        let expected_provenance = self.registry_message_provenance()?;
         for unit in registry_closure_units
             .iter()
             .filter(|unit| Self::is_promotable_registry_dependency(unit))
         {
-            let messages_available =
-                match std::fs::read_to_string(self.registry_message_provenance_path(unit)) {
-                    Ok(state) if state == "present" => {
-                        self.files().message_cache_path(unit).is_file()
+            let messages_available = std::fs::read(self.registry_message_provenance_path(unit))
+                .ok()
+                .and_then(|contents| {
+                    serde_json::from_slice::<RegistryMessageProvenance>(&contents).ok()
+                })
+                .is_some_and(|provenance| {
+                    if provenance.version != expected_provenance.version
+                        || provenance.compiler_context != expected_provenance.compiler_context
+                    {
+                        return false;
                     }
-                    Ok(state) if state == "empty" => {
-                        !self.files().message_cache_path(unit).exists()
+
+                    let cached_messages = self.files().message_cache_path(unit);
+                    if provenance.messages_present {
+                        cached_messages.is_file()
+                    } else {
+                        !cached_messages.exists()
                     }
-                    _ => false,
-                };
+                });
             if !messages_available {
                 return Ok(false);
             }

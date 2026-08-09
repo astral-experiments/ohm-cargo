@@ -293,6 +293,107 @@ fn ohm_built_registry_dependency_reuse_is_opt_in() {
 }
 
 #[cargo_test]
+fn ohm_built_registry_dependency_reuse_preserves_unflagged_fingerprints() {
+    Package::new("dependency", "1.0.0")
+        .file("src/lib.rs", "pub fn value() -> u32 { 19 }")
+        .publish();
+
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "foo"
+                version = "0.0.1"
+                edition = "2021"
+
+                [dependencies]
+                dependency = "1.0.0"
+            "#,
+        )
+        .file(
+            "src/lib.rs",
+            "pub fn value() -> u32 { dependency::value() }",
+        )
+        .build();
+
+    p.cargo("build").env("RUSTC_BOOTSTRAP", "1").run();
+    let fingerprint = p
+        .glob("target/debug/.fingerprint/dependency-*/lib-dependency")
+        .next()
+        .expect("registry fingerprint")
+        .expect("existing registry fingerprint path");
+    let original = std::fs::read(&fingerprint).expect("read original registry fingerprint");
+
+    // The opt-in reuse policy must not change ordinary Cargo's fingerprint
+    // contract or force every existing registry dependency to rebuild.
+    p.cargo("build -v")
+        .env("RUSTC_BOOTSTRAP", "-1")
+        .with_stderr_contains("[FRESH] dependency v1.0.0")
+        .run();
+    assert_eq!(
+        std::fs::read(&fingerprint).expect("read preserved registry fingerprint"),
+        original,
+        "ordinary builds must preserve the existing Cargo fingerprint",
+    );
+
+    // Cross-mode reuse still validates the policy captured by the build's
+    // separate provenance, even though the normal fingerprint did not change.
+    p.cargo("-Zohm-reuse-built-deps check")
+        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
+        .env("RUSTC_BOOTSTRAP", "-1")
+        .with_stderr_contains("[CHECKING] dependency v1.0.0")
+        .run();
+}
+
+#[cargo_test]
+fn ohm_built_registry_dependency_reuse_rejects_artifacts_without_provenance() {
+    Package::new("dependency", "1.0.0")
+        .file("src/lib.rs", "pub fn value() -> u32 { 19 }")
+        .publish();
+
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "foo"
+                version = "0.0.1"
+                edition = "2021"
+
+                [dependencies]
+                dependency = "1.0.0"
+            "#,
+        )
+        .file(
+            "src/lib.rs",
+            "pub fn value() -> u32 { dependency::value() }",
+        )
+        .build();
+
+    p.cargo("build").run();
+    let provenance = p
+        .glob("target/debug/.fingerprint/dependency-*/ohm-message-provenance-lib-dependency")
+        .next()
+        .expect("registry build provenance")
+        .expect("existing registry build provenance path");
+    std::fs::remove_file(provenance).expect("simulate an artifact from an older Cargo");
+
+    // An artifact produced before the opt-in feature remains perfectly usable
+    // for ordinary builds and must not force a global dependency rebuild.
+    p.cargo("build -v")
+        .with_stderr_contains("[FRESH] dependency v1.0.0")
+        .run();
+
+    // Without its compiler and diagnostics provenance, the same artifact is
+    // deliberately ineligible for the more aggressive cross-mode shortcut.
+    p.cargo("-Zohm-reuse-built-deps check")
+        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
+        .with_stderr_contains("[CHECKING] dependency v1.0.0")
+        .run();
+}
+
+#[cargo_test]
 fn ohm_built_registry_dependency_reuse_preserves_cold_checks() {
     Package::new("dependency", "1.0.0")
         .file("src/lib.rs", "pub fn value() -> u32 { 19 }")
@@ -753,6 +854,137 @@ exec rustc "$@"
         .with_status(101)
         .with_stderr_contains("[CHECKING] dependency v1.0.0")
         .with_stderr_contains("[ERROR] the same compiler shim changed behavior")
+        .run();
+}
+
+#[cargo_test]
+fn ohm_built_registry_dependency_reuse_rejects_compiler_loader_injection() {
+    Package::new("dependency", "1.0.0")
+        .file("src/lib.rs", "pub fn value() -> u32 { 19 }")
+        .publish();
+
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "foo"
+                version = "0.0.1"
+                edition = "2021"
+
+                [dependencies]
+                dependency = "1.0.0"
+            "#,
+        )
+        .file(
+            "src/lib.rs",
+            "pub fn value() -> u32 { dependency::value() }",
+        )
+        .build();
+
+    // Select the other platform's loader variable so the real dynamic loader
+    // ignores this harmless sentinel while Cargo still rejects interposition.
+    let loader_override = if cfg!(target_os = "macos") {
+        "LD_PRELOAD"
+    } else {
+        "DYLD_INSERT_LIBRARIES"
+    };
+
+    p.cargo("build").run();
+    p.cargo("-Zohm-reuse-built-deps check")
+        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
+        .env(loader_override, "ohm-test-interposer")
+        .with_stderr_contains("[CHECKING] dependency v1.0.0")
+        .run();
+}
+
+#[cargo_test]
+fn ohm_built_registry_dependency_reuse_revalidates_seed_loader_environment() {
+    Package::new("dependency", "1.0.0")
+        .file("src/lib.rs", "pub fn value() -> u32 { 19 }")
+        .publish();
+
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "foo"
+                version = "0.0.1"
+                edition = "2021"
+
+                [dependencies]
+                dependency = "1.0.0"
+            "#,
+        )
+        .file(
+            "src/lib.rs",
+            "pub fn value() -> u32 { dependency::value() }",
+        )
+        .build();
+
+    let loader_override = if cfg!(target_os = "macos") {
+        "LD_PRELOAD"
+    } else {
+        "DYLD_INSERT_LIBRARIES"
+    };
+
+    // Even when the current check has a clean loader environment, it must not
+    // trust an artifact compiled under an unrecorded prior interposer.
+    p.cargo("build")
+        .env(loader_override, "ohm-test-interposer")
+        .run();
+    p.cargo("-Zohm-reuse-built-deps check")
+        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
+        .with_stderr_contains("[CHECKING] dependency v1.0.0")
+        .run();
+}
+
+#[cargo_test]
+fn ohm_built_registry_dependency_reuse_rejects_configured_loader_injection() {
+    Package::new("dependency", "1.0.0")
+        .file("src/lib.rs", "pub fn value() -> u32 { 19 }")
+        .publish();
+
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "foo"
+                version = "0.0.1"
+                edition = "2021"
+
+                [dependencies]
+                dependency = "1.0.0"
+            "#,
+        )
+        .file(
+            "src/lib.rs",
+            "pub fn value() -> u32 { dependency::value() }",
+        )
+        .build();
+
+    p.cargo("build").run();
+
+    let loader_override = if cfg!(target_os = "macos") {
+        "LD_PRELOAD"
+    } else {
+        "DYLD_INSERT_LIBRARIES"
+    };
+    p.change_file(
+        ".cargo/config.toml",
+        &format!(
+            "[env]\n{loader_override} = {{ value = \"ohm-test-interposer\", force = true }}\n"
+        ),
+    );
+
+    // A forced Cargo configuration overrides the inherited empty value, so
+    // checking only the process snapshot would incorrectly allow reuse.
+    p.cargo("-Zohm-reuse-built-deps check")
+        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
+        .env(loader_override, "")
+        .with_stderr_contains("[CHECKING] dependency v1.0.0")
         .run();
 }
 
@@ -1267,25 +1499,57 @@ fn ohm_built_registry_dependency_reuse_preserves_build_helper_json_artifacts() {
         }),
         "a genuine build-script dependency must retain its linkable library: {helper_artifacts:?}",
     );
+    assert!(
+        helper_artifacts.iter().any(|helper| {
+            let filenames = helper["filenames"]
+                .as_array()
+                .expect("build-helper artifact filenames");
+            !filenames.is_empty()
+                && filenames.iter().all(|filename| {
+                    filename
+                        .as_str()
+                        .is_some_and(|path| path.ends_with(".rmeta"))
+                })
+        }),
+        "a mixed build and check dependency must retain both artifact events: {helper_artifacts:?}",
+    );
 
-    let helper_leaf = messages
+    let helper_leaf_artifacts = messages
         .iter()
-        .find(|message| {
+        .filter(|message| {
             message["reason"] == "compiler-artifact"
                 && message["package_id"]
                     .as_str()
                     .is_some_and(|package_id| package_id.contains("helper-leaf@1.0.0"))
         })
-        .expect("transitive build-script dependency artifact");
+        .collect::<Vec<_>>();
     assert!(
-        helper_leaf["filenames"]
-            .as_array()
-            .expect("transitive build-script artifact filenames")
-            .iter()
-            .any(|filename| filename
-                .as_str()
-                .is_some_and(|path| path.ends_with(".rlib"))),
-        "a transitive build-script dependency must retain its linkable library: {helper_leaf}",
+        helper_leaf_artifacts.iter().any(|artifact| {
+            artifact["filenames"]
+                .as_array()
+                .expect("transitive build-script artifact filenames")
+                .iter()
+                .any(|filename| {
+                    filename
+                        .as_str()
+                        .is_some_and(|path| path.ends_with(".rlib"))
+                })
+        }),
+        "a transitive build-script dependency must retain its linkable library: {helper_leaf_artifacts:?}",
+    );
+    assert!(
+        helper_leaf_artifacts.iter().any(|artifact| {
+            let filenames = artifact["filenames"]
+                .as_array()
+                .expect("transitive build-script artifact filenames");
+            !filenames.is_empty()
+                && filenames.iter().all(|filename| {
+                    filename
+                        .as_str()
+                        .is_some_and(|path| path.ends_with(".rmeta"))
+                })
+        }),
+        "a transitive mixed dependency must retain both artifact events: {helper_leaf_artifacts:?}",
     );
 
     let dependency = messages
