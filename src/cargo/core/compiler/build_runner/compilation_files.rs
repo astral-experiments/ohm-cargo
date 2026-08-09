@@ -2,8 +2,11 @@
 
 use crate::util::data_structures::HashMap;
 use std::cell::OnceCell;
+use std::ffi::OsStr;
 use std::fmt;
 use std::hash::{Hash, Hasher};
+#[cfg(unix)]
+use std::os::unix::fs::MetadataExt;
 use std::path::{Path, PathBuf};
 use std::sync::Arc;
 
@@ -212,6 +215,81 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
                     variables.sort_unstable_by(|left, right| left.0.cmp(&right.0));
                     variables
                 });
+                let effective_environment = |name: &str| {
+                    configured_environment
+                        .as_ref()
+                        .and_then(|variables| {
+                            variables
+                                .iter()
+                                .find(|(configured_name, _)| configured_name == name)
+                                .map(|(_, value)| value.clone())
+                        })
+                        .or_else(|| context.get_env_os(name).map(OsStr::to_os_string))
+                };
+                let native_environment = [
+                    "PATH",
+                    "SDKROOT",
+                    "DEVELOPER_DIR",
+                    "DYLD_LIBRARY_PATH",
+                    "DYLD_FALLBACK_LIBRARY_PATH",
+                    "DYLD_FRAMEWORK_PATH",
+                    "DYLD_FALLBACK_FRAMEWORK_PATH",
+                    "DYLD_VERSIONED_LIBRARY_PATH",
+                    "DYLD_VERSIONED_FRAMEWORK_PATH",
+                    "DYLD_IMAGE_SUFFIX",
+                    "DYLD_ROOT_PATH",
+                    "DYLD_FORCE_FLAT_NAMESPACE",
+                    "LD_LIBRARY_PATH",
+                    "LIBPATH",
+                    "SHLIB_PATH",
+                    "LIBRARY_PATH",
+                    "COMPILER_PATH",
+                    "GCC_EXEC_PREFIX",
+                    "CPATH",
+                    "C_INCLUDE_PATH",
+                    "CPLUS_INCLUDE_PATH",
+                    "OBJC_INCLUDE_PATH",
+                ]
+                .into_iter()
+                .map(|name| (name, effective_environment(name)))
+                .collect::<Vec<_>>();
+                let effective_executable_path = effective_environment("PATH");
+                let compiler_file_identity = paths::resolve_executable(&compiler.path)
+                    .ok()
+                    .and_then(|path| path.canonicalize().ok())
+                    .and_then(|path| std::fs::metadata(path).ok())
+                    .and_then(|metadata| {
+                        let modified = metadata.modified().ok()?;
+
+                        #[cfg(unix)]
+                        {
+                            Some((
+                                metadata.len(),
+                                modified,
+                                metadata.dev(),
+                                metadata.ino(),
+                                metadata.ctime(),
+                                metadata.ctime_nsec(),
+                            ))
+                        }
+
+                        #[cfg(not(unix))]
+                        {
+                            Some((metadata.len(), modified, metadata.created().ok()))
+                        }
+                    });
+                let injected_loader = [
+                    "DYLD_INSERT_LIBRARIES",
+                    "DYLD_FORCE_FLAT_NAMESPACE",
+                    "DYLD_VERSIONED_LIBRARY_PATH",
+                    "DYLD_VERSIONED_FRAMEWORK_PATH",
+                    "DYLD_IMAGE_SUFFIX",
+                    "DYLD_ROOT_PATH",
+                    "LD_PRELOAD",
+                    "LD_AUDIT",
+                ]
+                .into_iter()
+                .any(|name| effective_environment(name).is_some_and(|value| !value.is_empty()));
                 let mut linkers = build_runner
                     .bcx
                     .all_kinds
@@ -228,22 +306,24 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
                     })
                     .collect::<Vec<_>>();
                 linkers.sort_unstable();
-                let inherited_loader_path = context
-                    .get_env_os(cargo_util::paths::dylib_path_envvar())
-                    .map(std::ffi::OsStr::to_os_string);
-                let effective_bootstrap = configured_environment
-                    .as_ref()
-                    .and_then(|variables| {
-                        variables
-                            .iter()
-                            .find(|(name, _)| name == "RUSTC_BOOTSTRAP")
-                            .map(|(_, value)| value.clone())
-                    })
-                    .or_else(|| {
-                        context
-                            .get_env_os("RUSTC_BOOTSTRAP")
-                            .map(std::ffi::OsStr::to_os_string)
+                let host_linker = build_runner
+                    .compilation
+                    .host_linker()
+                    .map(Path::to_path_buf);
+                let verified_linkers = linkers
+                    .iter()
+                    .filter_map(|(_, _, linker)| linker.as_deref())
+                    .chain(host_linker.as_deref())
+                    .all(|linker| {
+                        linker_has_verified_toolchain_identity(
+                            linker,
+                            build_runner,
+                            effective_executable_path.as_deref(),
+                        )
                     });
+                let effective_bootstrap = effective_environment("RUSTC_BOOTSTRAP");
+                let effective_compiler_version =
+                    effective_environment("RUSTC_OVERRIDE_VERSION_STRING");
                 let apple_deployment_targets = [
                     "MACOSX_DEPLOYMENT_TARGET",
                     "IPHONEOS_DEPLOYMENT_TARGET",
@@ -252,17 +332,7 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
                     "XROS_DEPLOYMENT_TARGET",
                 ]
                 .into_iter()
-                .map(|name| {
-                    let configured = configured_environment.as_ref().and_then(|variables| {
-                        variables
-                            .iter()
-                            .find(|(configured_name, _)| configured_name == name)
-                            .map(|(_, value)| value.clone())
-                    });
-                    let value = configured
-                        .or_else(|| context.get_env_os(name).map(std::ffi::OsStr::to_os_string));
-                    (name, value)
-                })
+                .map(|name| (name, effective_environment(name)))
                 .collect::<Vec<_>>();
                 let target_applies_to_host = context.target_applies_to_host().ok();
                 let effective_host_runner = if target_applies_to_host == Some(false) {
@@ -291,9 +361,7 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
                         (
                             runner.path.clone().resolve_program(context),
                             runner.args.clone(),
-                            context
-                                .get_env_os("PATH")
-                                .map(std::ffi::OsStr::to_os_string),
+                            effective_executable_path.clone(),
                         )
                     })
                 } else {
@@ -301,6 +369,10 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
                 };
                 let trusted_context = compiler.wrapper.is_none()
                     && compiler_has_verified_toolchain_identity(build_runner)
+                    && verified_linkers
+                    && effective_host_runner.is_none()
+                    && !injected_loader
+                    && compiler_file_identity.is_some()
                     && rustdoc.is_some()
                     && cargo.is_some()
                     && configured_environment.is_some()
@@ -316,15 +388,18 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
                     rustc: util::short_hash(&(
                         &compiler.verbose_version,
                         &compiler.path,
+                        &compiler_file_identity,
                         &rustdoc,
                         &cargo,
                         context.home().as_path_unlocked(),
                         build_runner.bcx.jobs(),
                         &linkers,
+                        &host_linker,
                         &configured_environment,
-                        &inherited_loader_path,
+                        &native_environment,
                         (
                             &effective_bootstrap,
+                            &effective_compiler_version,
                             context.cli_unstable().host_config,
                             &target_applies_to_host,
                             &effective_host_runner,
@@ -921,6 +996,67 @@ fn compiler_has_verified_toolchain_identity(build_runner: &BuildRunner<'_, '_>) 
     expected
         .canonicalize()
         .is_ok_and(|expected| expected == compiler)
+}
+
+/// Explicit linkers can bypass compiler identity when they are opaque user-controlled wrappers.
+///
+/// Keep the normal system linkers and the selected toolchain's own executables shareable, but
+/// leave arbitrary scripts private to each workspace even when their configured paths match.
+fn linker_has_verified_toolchain_identity(
+    linker: &Path,
+    build_runner: &BuildRunner<'_, '_>,
+    executable_search_path: Option<&OsStr>,
+) -> bool {
+    let resolved = if linker.components().count() == 1 {
+        executable_search_path.and_then(|search_path| {
+            std::env::split_paths(search_path)
+                .flat_map(|directory| {
+                    let candidate = directory.join(linker);
+                    let executable = (!std::env::consts::EXE_EXTENSION.is_empty())
+                        .then(|| candidate.with_extension(std::env::consts::EXE_EXTENSION));
+                    std::iter::once(candidate).chain(executable)
+                })
+                .find(|candidate| candidate.is_file())
+        })
+    } else {
+        Some(linker.to_path_buf())
+    };
+    let Some(linker) = resolved.and_then(|path| path.canonicalize().ok()) else {
+        return false;
+    };
+
+    if build_runner
+        .bcx
+        .target_data
+        .info(CompileKind::Host)
+        .sysroot
+        .canonicalize()
+        .is_ok_and(|sysroot| linker.starts_with(sysroot))
+    {
+        return true;
+    }
+
+    #[cfg(windows)]
+    {
+        std::env::var_os("SystemRoot")
+            .map(PathBuf::from)
+            .and_then(|root| root.canonicalize().ok())
+            .is_some_and(|root| linker.starts_with(root))
+    }
+
+    #[cfg(not(windows))]
+    {
+        [
+            "/usr/bin",
+            "/bin",
+            "/usr/libexec",
+            "/Library/Developer/CommandLineTools/usr/bin",
+            "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin",
+        ]
+        .into_iter()
+        .filter_map(|directory| Path::new(directory).canonicalize().ok())
+        .any(|directory| linker.starts_with(directory))
+    }
 }
 
 /// Gets the metadata hash for the given [`Unit`].
