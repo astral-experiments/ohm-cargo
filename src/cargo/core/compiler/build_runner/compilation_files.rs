@@ -1121,8 +1121,43 @@ fn is_immutable_registry_unit(
 
 /// A dynamically loaded codegen backend has its own executable implementation and state.
 fn unit_uses_custom_codegen_backend(unit: &Unit, build_runner: &BuildRunner<'_, '_>) -> bool {
-    if unit.profile.codegen_backend.is_some() {
+    let host_sysroot = &build_runner.bcx.target_data.info(CompileKind::Host).sysroot;
+    let target_sysroot = &build_runner.bcx.target_data.info(unit.kind).sysroot;
+    let host = build_runner.bcx.host_triple();
+    if unit.profile.codegen_backend.is_some()
+        || sysroot_has_custom_codegen_backends(host_sysroot, host.as_str())
+        || (target_sysroot != host_sysroot
+            && sysroot_has_custom_codegen_backends(target_sysroot, host.as_str()))
+    {
         return true;
+    }
+
+    match unit.kind {
+        CompileKind::Target(CompileTarget::Json { .. }) => return true,
+        CompileKind::Target(CompileTarget::Tuple(target)) => {
+            let Ok(configured_environment) = build_runner.bcx.gctx.env_config() else {
+                return true;
+            };
+            let target_path = configured_environment
+                .get("RUST_TARGET_PATH")
+                .map(std::ffi::OsString::as_os_str)
+                .or_else(|| build_runner.bcx.gctx.get_env_os("RUST_TARGET_PATH"));
+            if target_path.is_some_and(|path| !path.is_empty()) {
+                return true;
+            }
+
+            let target_specification = target_sysroot
+                .join("lib")
+                .join("rustlib")
+                .join(target.as_str())
+                .join("target.json");
+            match std::fs::metadata(target_specification) {
+                Ok(_) => return true,
+                Err(error) if error.kind() == std::io::ErrorKind::NotFound => {}
+                Err(_) => return true,
+            }
+        }
+        CompileKind::Host => {}
     }
 
     let mut flags = unit
@@ -1146,23 +1181,56 @@ fn unit_uses_custom_codegen_backend(unit: &Unit, build_runner: &BuildRunner<'_, 
         if flag.starts_with('@') {
             return true;
         }
-        let option = if flag == "-C" || flag == "-Z" {
+        let option = if matches!(flag, "-C" | "-Z" | "--codegen") {
             flags.next()
         } else {
-            flag.strip_prefix("-C").or_else(|| flag.strip_prefix("-Z"))
+            flag.strip_prefix("-C")
+                .or_else(|| flag.strip_prefix("-Z"))
+                .or_else(|| flag.strip_prefix("--codegen="))
         };
-        if option.is_some_and(|option| {
-            option.starts_with('@')
-                || matches!(
-                    option.split('=').next(),
-                    Some("codegen-backend" | "codegen_backend")
-                )
-        }) {
+        if option.is_some_and(compiler_option_uses_opaque_execution) {
             return true;
         }
     }
 
     false
+}
+
+/// Executable compiler extensions and command-line linker overrides bypass toolchain identity.
+fn compiler_option_uses_opaque_execution(option: &str) -> bool {
+    option.starts_with('@')
+        || matches!(
+            option.split('=').next(),
+            Some(
+                "codegen-backend"
+                    | "codegen_backend"
+                    | "llvm-plugins"
+                    | "llvm_plugins"
+                    | "autodiff"
+                    | "linker"
+                    | "dlltool"
+                    | "link-arg"
+                    | "link_arg"
+                    | "link-args"
+                    | "link_args"
+                    | "pre-link-arg"
+                    | "pre_link_arg"
+                    | "pre-link-args"
+                    | "pre_link_args"
+                    | "linker-plugin-lto"
+                    | "linker_plugin_lto"
+            )
+        )
+}
+
+/// A toolchain can embed an external default backend without exposing any rustc flags.
+fn sysroot_has_custom_codegen_backends(sysroot: &Path, host: &str) -> bool {
+    let backends = sysroot
+        .join("lib")
+        .join("rustlib")
+        .join(host)
+        .join("codegen-backends");
+    !matches!(backends.try_exists(), Ok(false))
 }
 
 /// Identify the one real compiler driver dynamically loaded by the selected toolchain.
@@ -1724,7 +1792,66 @@ fn use_pkg_dir(bcx: &BuildContext<'_, '_>, unit: &Unit) -> bool {
 
 #[cfg(test)]
 mod shared_registry_tests {
-    use super::{compiler_driver_identity_for_sysroot, compiler_driver_search_directory_is_safe};
+    use super::{
+        compiler_driver_identity_for_sysroot, compiler_driver_search_directory_is_safe,
+        compiler_option_uses_opaque_execution, sysroot_has_custom_codegen_backends,
+    };
+
+    #[test]
+    fn executable_compiler_extensions_and_linker_overrides_are_opaque() {
+        for option in [
+            "codegen-backend=llvm",
+            "codegen_backend=llvm",
+            "llvm-plugins=",
+            "llvm_plugins=",
+            "autodiff=Enable",
+            "linker=opaque-wrapper",
+            "dlltool=opaque-wrapper",
+            "link-arg=opaque-argument",
+            "link_arg=opaque-argument",
+            "link-args=opaque-arguments",
+            "link_args=opaque-arguments",
+            "pre-link-arg=opaque-argument",
+            "pre_link_arg=opaque-argument",
+            "pre-link-args=opaque-arguments",
+            "pre_link_args=opaque-arguments",
+            "linker-plugin-lto=opaque-plugin",
+            "linker_plugin_lto=opaque-plugin",
+            "@opaque-response-file",
+        ] {
+            assert!(compiler_option_uses_opaque_execution(option));
+        }
+
+        assert!(!compiler_option_uses_opaque_execution("opt-level=2"));
+        assert!(!compiler_option_uses_opaque_execution("debuginfo=1"));
+    }
+
+    #[test]
+    fn sysroot_default_codegen_backends_cannot_be_shared() {
+        let sysroot = tempfile::tempdir().expect("create isolated compiler sysroot");
+        let host = "isolated-host-triple";
+
+        assert!(!sysroot_has_custom_codegen_backends(sysroot.path(), host));
+
+        let backends = sysroot
+            .path()
+            .join("lib")
+            .join("rustlib")
+            .join(host)
+            .join("codegen-backends");
+        std::fs::create_dir_all(&backends).expect("create isolated external backend directory");
+        std::fs::write(
+            backends.join(format!(
+                "{}rustc_codegen_mock{}",
+                std::env::consts::DLL_PREFIX,
+                std::env::consts::DLL_SUFFIX
+            )),
+            "isolated externally loaded compiler backend",
+        )
+        .expect("write mock external compiler backend");
+
+        assert!(sysroot_has_custom_codegen_backends(sysroot.path(), host));
+    }
 
     #[test]
     fn runtime_compiler_driver_changes_invalidate_its_identity() {
