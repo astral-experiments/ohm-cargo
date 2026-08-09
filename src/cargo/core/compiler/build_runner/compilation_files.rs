@@ -243,6 +243,26 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
                             .get_env_os("RUSTC_BOOTSTRAP")
                             .map(std::ffi::OsStr::to_os_string)
                     });
+                let apple_deployment_targets = [
+                    "MACOSX_DEPLOYMENT_TARGET",
+                    "IPHONEOS_DEPLOYMENT_TARGET",
+                    "WATCHOS_DEPLOYMENT_TARGET",
+                    "TVOS_DEPLOYMENT_TARGET",
+                    "XROS_DEPLOYMENT_TARGET",
+                ]
+                .into_iter()
+                .map(|name| {
+                    let configured = configured_environment.as_ref().and_then(|variables| {
+                        variables
+                            .iter()
+                            .find(|(configured_name, _)| configured_name == name)
+                            .map(|(_, value)| value.clone())
+                    });
+                    let value = configured
+                        .or_else(|| context.get_env_os(name).map(std::ffi::OsStr::to_os_string));
+                    (name, value)
+                })
+                .collect::<Vec<_>>();
                 let target_applies_to_host = context.target_applies_to_host().ok();
                 let effective_host_runner = if target_applies_to_host == Some(false) {
                     let configured_runner = build_runner
@@ -306,6 +326,8 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
                             context.cli_unstable().host_config,
                             &target_applies_to_host,
                             &effective_host_runner,
+                            &apple_deployment_targets,
+                            context.extra_verbose(),
                         ),
                     )),
                     immutable_units,

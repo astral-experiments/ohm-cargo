@@ -967,6 +967,12 @@ fn rustc(
 
     let root_output = build_runner.files().host_dest().map(|v| v.to_path_buf());
     let build_dir = build_runner.bcx.ws.build_dir().into_path_unlocked();
+    let shared_registry_root = build_runner
+        .bcx
+        .gctx
+        .cli_unstable()
+        .ohm_shared_registry_cache
+        .then(|| build_dir.clone());
     let pkg_root = unit.pkg.root().to_path_buf();
     let cwd = rustc
         .get_cwd()
@@ -1201,7 +1207,13 @@ fn rustc(
                 mode,
             )?;
             if let Some(ref root_output) = root_output {
-                add_plugin_deps(&mut rustc, &script_outputs, &build_scripts, root_output)?;
+                add_plugin_deps(
+                    &mut rustc,
+                    &script_outputs,
+                    &build_scripts,
+                    root_output,
+                    shared_registry_root.as_deref(),
+                )?;
             }
             if message_provenance.is_some() {
                 build_script_overrides_loader = script_metadatas
@@ -1657,6 +1669,7 @@ fn add_plugin_deps(
     build_script_outputs: &BuildScriptOutputs,
     build_scripts: &BuildScripts,
     root_output: &Path,
+    shared_registry_root: Option<&Path>,
 ) -> CargoResult<()> {
     let var = paths::dylib_path_envvar();
     let search_path = rustc.get_env(var).unwrap_or_default();
@@ -1668,6 +1681,7 @@ fn add_plugin_deps(
         search_path.append(&mut filter_dynamic_search_path(
             output.library_paths.iter().map(AsRef::as_ref),
             root_output,
+            shared_registry_root,
         ));
     }
     let search_path = paths::join_paths(&search_path, var)?;
@@ -1687,15 +1701,37 @@ fn get_dynamic_search_path(path: &Path) -> &Path {
 // Strip off prefixes like "native=" or "framework=" and filter out directories
 // **not** inside our output directory since they are likely spurious and can cause
 // clashes with system shared libraries (issue #3366).
-fn filter_dynamic_search_path<'a, I>(paths: I, root_output: &Path) -> Vec<PathBuf>
+fn filter_dynamic_search_path<'a, I>(
+    paths: I,
+    root_output: &Path,
+    shared_registry_root: Option<&Path>,
+) -> Vec<PathBuf>
 where
     I: Iterator<Item = &'a PathBuf>,
 {
     let mut search_path = vec![];
+    let shared_registry_root = shared_registry_root.and_then(|root| root.canonicalize().ok());
     for dir in paths {
         let dir = get_dynamic_search_path(dir);
         if dir.starts_with(&root_output) {
             search_path.push(dir.to_path_buf());
+        } else if let Some(root) = &shared_registry_root
+            && let Ok(canonical) = dir.canonicalize()
+            && let Ok(relative) = canonical.strip_prefix(root)
+            && {
+                let components = relative
+                    .components()
+                    .map(|component| component.as_os_str())
+                    .collect::<Vec<_>>();
+                components
+                    .windows(2)
+                    .any(|pair| pair == [OsStr::new("build"), OsStr::new("registries")])
+                    && components
+                        .windows(2)
+                        .any(|pair| pair == [OsStr::new("run"), OsStr::new("out")])
+            }
+        {
+            search_path.push(canonical);
         } else {
             debug!(
                 "Not including path {} in runtime library search path because it is \

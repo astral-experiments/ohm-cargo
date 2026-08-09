@@ -498,6 +498,11 @@ fn build_work(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResul
     let id = unit.pkg.package_id();
     let run_files = BuildScriptRunFiles::for_unit(build_runner, unit);
     let host_target_root = build_runner.files().host_dest().map(|v| v.to_path_buf());
+    let shared_registry_root = bcx
+        .gctx
+        .cli_unstable()
+        .ohm_shared_registry_cache
+        .then(|| bcx.ws.build_dir().into_path_unlocked());
     let all = (
         id,
         library_name.clone(),
@@ -582,6 +587,7 @@ fn build_work(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResul
                     &build_script_outputs,
                     &build_scripts,
                     host_target_root,
+                    shared_registry_root.as_deref(),
                 )?;
             }
         }
