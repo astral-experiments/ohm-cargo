@@ -56,6 +56,7 @@ pub(crate) struct RegistryMessageProvenance {
     version: u8,
     compiler_context: u64,
     compiler_driver: CompilerDriverIdentity,
+    compiler_search_directories: Vec<PathBuf>,
     effective_policy_context: u64,
     loader_injected: bool,
     messages: Option<CachedCompilerMessages>,
@@ -77,6 +78,25 @@ struct CompilerDriverIdentity {
     inode: u64,
 }
 
+/// Reject runtime-driver substitutions without reading the large compiler dylib.
+fn compiler_driver_search_directory_is_unshadowed(expected: &Path, directory: &Path) -> bool {
+    let Some(driver_name) = expected.file_name() else {
+        return false;
+    };
+
+    // Relative entries resolve against each rustc's own current directory,
+    // which varies across registry units and cannot be validated globally.
+    if !directory.is_absolute() {
+        return false;
+    }
+
+    match directory.join(driver_name).canonicalize() {
+        Ok(candidate) => candidate == expected,
+        Err(error) if error.kind() == std::io::ErrorKind::NotFound => true,
+        Err(_) => false,
+    }
+}
+
 /// Bind cacheable diagnostics to the successful compiler invocation.
 #[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]
 #[serde(deny_unknown_fields)]
@@ -87,20 +107,35 @@ struct CachedCompilerMessages {
 
 impl RegistryMessageProvenance {
     /// Capture the actual child environment after build scripts override it.
-    pub(crate) fn capture_compiler_environment(&mut self, compiler: &ProcessBuilder) {
+    pub(crate) fn capture_compiler_environment(
+        &mut self,
+        compiler: &ProcessBuilder,
+        build_script_overrides_loader: bool,
+    ) {
         let mut policy = StableHasher::new();
         for name in ["RUSTC_BOOTSTRAP", "RUSTC_OVERRIDE_VERSION_STRING"] {
             name.hash(&mut policy);
             compiler.get_env(name).hash(&mut policy);
         }
         self.effective_policy_context = Hasher::finish(&policy);
-        self.loader_injected = OHM_COMPILER_LOADER_INJECTION_ENVIRONMENT
-            .iter()
-            .any(|name| {
-                compiler
-                    .get_env(name)
-                    .is_some_and(|value| !value.is_empty())
-            });
+        self.compiler_search_directories = compiler
+            .get_env(paths::dylib_path_envvar())
+            .map(|search_path| std::env::split_paths(&search_path).collect())
+            .unwrap_or_default();
+        self.loader_injected = build_script_overrides_loader
+            || !self.compiler_search_directories.iter().all(|directory| {
+                compiler_driver_search_directory_is_unshadowed(
+                    &self.compiler_driver.path,
+                    directory,
+                )
+            })
+            || OHM_COMPILER_LOADER_INJECTION_ENVIRONMENT
+                .iter()
+                .any(|name| {
+                    compiler
+                        .get_env(name)
+                        .is_some_and(|value| !value.is_empty())
+                });
     }
 
     /// Snapshot diagnostics with a bounded streaming read; no-warning builds
@@ -730,11 +765,22 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
         for name in ["RUSTC_BOOTSTRAP", "RUSTC_OVERRIDE_VERSION_STRING"]
             .into_iter()
             .chain(OHM_COMPILER_LOADER_ENVIRONMENT.iter().copied())
+            .chain(
+                (!OHM_COMPILER_LOADER_ENVIRONMENT.contains(&paths::dylib_path_envvar()))
+                    .then_some(paths::dylib_path_envvar()),
+            )
         {
-            let value = configured_environment
-                .get(name)
-                .map(std::ffi::OsString::as_os_str)
-                .or_else(|| self.bcx.gctx.get_env_os(name));
+            let value = if name == paths::dylib_path_envvar() {
+                // Cargo constructs this variable from the inherited process
+                // environment before applying configuration. `apply_env_config`
+                // never overrides a variable that Cargo already populated.
+                self.bcx.gctx.get_env_os(name)
+            } else {
+                configured_environment
+                    .get(name)
+                    .map(std::ffi::OsString::as_os_str)
+                    .or_else(|| self.bcx.gctx.get_env_os(name))
+            };
             name.hash(&mut context);
             value.hash(&mut context);
             if matches!(name, "RUSTC_BOOTSTRAP" | "RUSTC_OVERRIDE_VERSION_STRING") {
@@ -744,9 +790,10 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
         }
 
         Ok(Some(RegistryMessageProvenance {
-            version: 2,
+            version: 3,
             compiler_context: Hasher::finish(&context),
             compiler_driver: compiler_driver.clone(),
+            compiler_search_directories: Vec::new(),
             effective_policy_context: Hasher::finish(&policy),
             loader_injected: false,
             messages: None,
@@ -786,6 +833,9 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
         if !metadata.is_file() {
             return None;
         }
+        if !self.compiler_driver_search_is_unshadowed(&path) {
+            return None;
+        }
         let modified = FileTime::from_last_modification_time(&metadata);
         let created = FileTime::from_creation_time(&metadata)
             .map(|time| (time.unix_seconds(), time.nanoseconds()));
@@ -802,6 +852,50 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
             #[cfg(unix)]
             inode: metadata.ino(),
         })
+    }
+
+    /// A stable search-path string can still start resolving a different driver when its
+    /// directory contents change, independently of the compiler or sysroot metadata.
+    fn compiler_driver_search_is_unshadowed(&self, expected: &Path) -> bool {
+        let Ok(configured_environment) = self.bcx.gctx.env_config() else {
+            return false;
+        };
+
+        let inherited_search_paths_are_safe = OHM_COMPILER_LOADER_ENVIRONMENT
+            .iter()
+            .copied()
+            .filter(|name| !OHM_COMPILER_LOADER_INJECTION_ENVIRONMENT.contains(name))
+            .chain(
+                (!OHM_COMPILER_LOADER_ENVIRONMENT.contains(&paths::dylib_path_envvar()))
+                    .then_some(paths::dylib_path_envvar()),
+            )
+            .all(|name| {
+                let search_path = if name == paths::dylib_path_envvar() {
+                    self.bcx.gctx.get_env_os(name)
+                } else {
+                    configured_environment
+                        .get(name)
+                        .map(std::ffi::OsString::as_os_str)
+                        .or_else(|| self.bcx.gctx.get_env_os(name))
+                };
+                let Some(search_path) = search_path else {
+                    return true;
+                };
+
+                std::env::split_paths(search_path).all(|directory| {
+                    compiler_driver_search_directory_is_unshadowed(expected, &directory)
+                })
+            });
+
+        inherited_search_paths_are_safe
+            && self
+                .compilation
+                .deps_output
+                .values()
+                .chain(self.compilation.native_dirs.iter())
+                .all(|directory| {
+                    compiler_driver_search_directory_is_unshadowed(expected, directory)
+                })
     }
 
     /// Validates the exact build-mode registry units selected by a check graph.
@@ -884,6 +978,19 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
                         || provenance.effective_policy_context
                             != expected_provenance.effective_policy_context
                         || provenance.loader_injected
+                    {
+                        return false;
+                    }
+
+                    if !provenance
+                        .compiler_search_directories
+                        .iter()
+                        .all(|directory| {
+                            compiler_driver_search_directory_is_unshadowed(
+                                &expected_provenance.compiler_driver.path,
+                                directory,
+                            )
+                        })
                     {
                         return false;
                     }

@@ -1188,6 +1188,7 @@ fn rustc(
         // located somewhere in there.
         // Finally, if custom environment variables have been produced by
         // previous build scripts, we include them in the rustc invocation.
+        let mut build_script_overrides_loader = false;
         if let Some(build_scripts) = build_scripts {
             let script_outputs = build_script_outputs.lock().unwrap();
             add_native_deps(
@@ -1202,11 +1203,24 @@ fn rustc(
             if let Some(ref root_output) = root_output {
                 add_plugin_deps(&mut rustc, &script_outputs, &build_scripts, root_output)?;
             }
+            if message_provenance.is_some() {
+                build_script_overrides_loader = script_metadatas
+                    .as_ref()
+                    .into_iter()
+                    .flatten()
+                    .filter_map(|metadata| script_outputs.get(*metadata))
+                    .any(|output| {
+                        output.env.iter().any(|(name, _)| {
+                            OHM_COMPILER_LOADER_ENVIRONMENT.contains(&name.as_str())
+                                || name == paths::dylib_path_envvar()
+                        })
+                    });
+            }
             add_custom_flags(&mut rustc, &script_outputs, script_metadatas)?;
         }
 
         if let Some((_, provenance)) = &mut message_provenance {
-            provenance.capture_compiler_environment(&rustc);
+            provenance.capture_compiler_environment(&rustc, build_script_overrides_loader);
         }
 
         let link_only = if let Some(cache) = &relink_cache {

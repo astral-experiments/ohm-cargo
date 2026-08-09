@@ -457,6 +457,253 @@ fn ohm_built_registry_dependency_reuse_revalidates_actual_compiler_driver() {
 }
 
 #[cargo_test]
+fn ohm_built_registry_dependency_reuse_rejects_shadowed_compiler_drivers() {
+    Package::new("dependency", "1.0.0")
+        .file("src/lib.rs", "pub fn value() -> u32 { 19 }")
+        .publish();
+
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "foo"
+                version = "0.0.1"
+                edition = "2021"
+
+                [dependencies]
+                dependency = "1.0.0"
+            "#,
+        )
+        .file(
+            "src/lib.rs",
+            "pub fn value() -> u32 { dependency::value() }",
+        )
+        .build();
+    let search_variable = if cfg!(target_os = "macos") {
+        "LD_LIBRARY_PATH"
+    } else {
+        "DYLD_LIBRARY_PATH"
+    };
+    let search_directory = p.root().join("driver-search");
+    std::fs::create_dir_all(&search_directory).expect("create isolated loader search directory");
+
+    p.cargo("build")
+        .env(search_variable, &search_directory)
+        .run();
+    p.cargo("-Zohm-reuse-built-deps check")
+        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
+        .env(search_variable, &search_directory)
+        .with_stderr_does_not_contain("[CHECKING] dependency v1.0.0")
+        .run();
+
+    let provenance_path = p
+        .glob("target/debug/.fingerprint/dependency-*/ohm-message-provenance-lib-dependency")
+        .next()
+        .expect("registry compiler provenance")
+        .expect("existing registry compiler provenance");
+    let provenance = serde_json::from_slice::<serde_json::Value>(
+        &std::fs::read(provenance_path).expect("read registry compiler provenance"),
+    )
+    .expect("parse registry compiler provenance");
+    let expected_driver = std::path::Path::new(
+        provenance["compiler_driver"]["path"]
+            .as_str()
+            .expect("actual compiler driver path"),
+    );
+    let shadow = search_directory.join(
+        expected_driver
+            .file_name()
+            .expect("actual compiler driver filename"),
+    );
+    std::fs::write(&shadow, "opaque replacement compiler implementation")
+        .expect("add a different compiler driver to an unchanged search path");
+
+    p.cargo("-Zohm-reuse-built-deps check")
+        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
+        .env(search_variable, &search_directory)
+        .with_stderr_contains("[CHECKING] dependency v1.0.0")
+        .run();
+
+    std::fs::remove_file(&shadow).expect("remove the shadow compiler implementation");
+    #[cfg(unix)]
+    std::os::unix::fs::symlink(expected_driver, &shadow)
+        .expect("add a safe alias to the actual compiler implementation");
+    p.cargo("-Zohm-reuse-built-deps check")
+        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
+        .env(search_variable, &search_directory)
+        .with_stderr_does_not_contain("[CHECKING] dependency v1.0.0")
+        .run();
+}
+
+#[cargo_test]
+fn ohm_built_registry_dependency_reuse_rejects_cargo_generated_driver_shadows() {
+    Package::new("dependency", "1.0.0")
+        .file("src/lib.rs", "pub fn value() -> u32 { 19 }")
+        .publish();
+
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "foo"
+                version = "0.0.1"
+                edition = "2021"
+
+                [dependencies]
+                dependency = "1.0.0"
+            "#,
+        )
+        .file(
+            "src/lib.rs",
+            "pub fn value() -> u32 { dependency::value() }",
+        )
+        .build();
+
+    p.cargo("build").run();
+    p.cargo("-Zohm-reuse-built-deps check")
+        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
+        .with_stderr_does_not_contain("[CHECKING] dependency v1.0.0")
+        .run();
+
+    let provenance_path = p
+        .glob("target/debug/.fingerprint/dependency-*/ohm-message-provenance-lib-dependency")
+        .next()
+        .expect("registry compiler provenance")
+        .expect("existing registry compiler provenance");
+    let provenance = serde_json::from_slice::<serde_json::Value>(
+        &std::fs::read(provenance_path).expect("read registry compiler provenance"),
+    )
+    .expect("parse registry compiler provenance");
+    let expected_driver = std::path::Path::new(
+        provenance["compiler_driver"]["path"]
+            .as_str()
+            .expect("actual compiler driver path"),
+    );
+    let generated_search_directory = p.root().join("target/debug/deps");
+    assert!(
+        provenance["compiler_search_directories"]
+            .as_array()
+            .expect("actual compiler search directories")
+            .iter()
+            .any(|directory| {
+                directory.as_str().is_some_and(|directory| {
+                    std::path::Path::new(directory) == generated_search_directory
+                })
+            }),
+        "the provenance must include Cargo's synthesized host dependency directory",
+    );
+    let shadow = generated_search_directory.join(
+        expected_driver
+            .file_name()
+            .expect("actual compiler driver filename"),
+    );
+    std::fs::write(
+        &shadow,
+        "opaque compiler driver in Cargo's generated search path",
+    )
+    .expect("add a different driver after the successful dependency build");
+
+    let mut check = p.cargo("-Zohm-reuse-built-deps check");
+    check
+        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
+        .with_stderr_contains("[CHECKING] dependency v1.0.0");
+    if cfg!(target_os = "macos") {
+        // macOS uses DYLD_FALLBACK_LIBRARY_PATH, so the compiler's valid
+        // install name remains usable even though reuse must be rejected.
+        check.run();
+    } else {
+        // On platforms where the generated path precedes the install name,
+        // an invalid replacement must surface the normal compiler failure.
+        check.with_status(101).run();
+    }
+}
+
+#[cargo_test]
+fn ohm_built_registry_dependency_reuse_uses_actual_platform_loader_precedence() {
+    Package::new("dependency", "1.0.0")
+        .file("src/lib.rs", "pub fn value() -> u32 { 19 }")
+        .publish();
+
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "foo"
+                version = "0.0.1"
+                edition = "2021"
+
+                [dependencies]
+                dependency = "1.0.0"
+            "#,
+        )
+        .file(
+            "src/lib.rs",
+            "pub fn value() -> u32 { dependency::value() }",
+        )
+        .build();
+    let platform_loader = cargo_util::paths::dylib_path_envvar();
+    let configured_directory = p.root().join("configured-driver-search");
+    let inherited_directory = p.root().join("actual-driver-search");
+    std::fs::create_dir_all(&configured_directory).expect("create forced-config search directory");
+    std::fs::create_dir_all(&inherited_directory).expect("create inherited search directory");
+    p.change_file(
+        ".cargo/config.toml",
+        &format!(
+            "[env]\n{platform_loader} = {{ value = {}, force = true }}\n",
+            toml::Value::String(configured_directory.display().to_string()),
+        ),
+    );
+
+    p.cargo("build")
+        .env(platform_loader, &inherited_directory)
+        .run();
+    p.cargo("-Zohm-reuse-built-deps check")
+        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
+        .env(platform_loader, &inherited_directory)
+        .with_stderr_does_not_contain("[CHECKING] dependency v1.0.0")
+        .run();
+
+    let provenance_path = p
+        .glob("target/debug/.fingerprint/dependency-*/ohm-message-provenance-lib-dependency")
+        .next()
+        .expect("registry compiler provenance")
+        .expect("existing registry compiler provenance");
+    let provenance = serde_json::from_slice::<serde_json::Value>(
+        &std::fs::read(provenance_path).expect("read registry compiler provenance"),
+    )
+    .expect("parse registry compiler provenance");
+    let expected_driver = std::path::Path::new(
+        provenance["compiler_driver"]["path"]
+            .as_str()
+            .expect("actual compiler driver path"),
+    );
+    let shadow = inherited_directory.join(
+        expected_driver
+            .file_name()
+            .expect("actual compiler driver filename"),
+    );
+    std::fs::write(
+        &shadow,
+        "opaque compiler driver in the inherited loader directory",
+    )
+    .expect("add a different compiler driver to the actual search path");
+
+    let mut check = p.cargo("-Zohm-reuse-built-deps check");
+    check
+        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
+        .env(platform_loader, &inherited_directory)
+        .with_stderr_contains("[CHECKING] dependency v1.0.0");
+    if cfg!(target_os = "macos") {
+        check.run();
+    } else {
+        check.with_status(101).run();
+    }
+}
+
+#[cargo_test]
 fn ohm_built_registry_dependency_reuse_preserves_cold_checks() {
     Package::new("dependency", "1.0.0")
         .file("src/lib.rs", "pub fn value() -> u32 { 19 }")
@@ -1094,6 +1341,57 @@ fn ohm_built_registry_dependency_reuse_rejects_build_script_loader_injection() {
         .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
         .with_stderr_contains("[CHECKING] dependency v1.0.0")
         .run();
+}
+
+#[cargo_test]
+fn ohm_built_registry_dependency_reuse_rejects_build_script_loader_search_overrides() {
+    let search_variable = if cfg!(target_os = "macos") {
+        "LD_LIBRARY_PATH"
+    } else {
+        "DYLD_LIBRARY_PATH"
+    };
+    Package::new("dependency", "1.0.0")
+        .file(
+            "build.rs",
+            &format!(
+                r#"fn main() {{
+                    println!("cargo::rustc-env={search_variable}={{}}", std::env::var("OHM_DRIVER_SEARCH").unwrap());
+                    println!("cargo::rerun-if-env-changed=OHM_DRIVER_SEARCH");
+                }}"#
+            ),
+        )
+        .file("src/lib.rs", "pub fn value() -> u32 { 19 }")
+        .publish();
+
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "foo"
+                version = "0.0.1"
+                edition = "2021"
+
+                [dependencies]
+                dependency = "1.0.0"
+            "#,
+        )
+        .file(
+            "src/lib.rs",
+            "pub fn value() -> u32 { dependency::value() }",
+        )
+        .build();
+
+    for search_override in ["opaque-search-path", ""] {
+        p.cargo("build")
+            .env("OHM_DRIVER_SEARCH", search_override)
+            .run();
+        p.cargo("-Zohm-reuse-built-deps check")
+            .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
+            .env("OHM_DRIVER_SEARCH", search_override)
+            .with_stderr_contains("[CHECKING] dependency v1.0.0")
+            .run();
+    }
 }
 
 #[cargo_test]
