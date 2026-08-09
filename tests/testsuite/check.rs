@@ -1434,6 +1434,84 @@ fn ohm_built_registry_dependency_reuse_revalidates_build_script_compiler_policy(
         .run();
 }
 
+#[cfg(windows)]
+#[cargo_test]
+fn ohm_built_registry_dependency_reuse_rejects_windows_build_script_policy_aliases() {
+    Package::new("dependency", "1.0.0")
+        .file(
+            "build.rs",
+            r#"
+                fn main() {
+                    println!("cargo::rustc-env=rustc_override_version_string=1.99.0");
+                }
+            "#,
+        )
+        .file("src/lib.rs", "pub fn value() -> u32 { 19 }")
+        .publish();
+
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "foo"
+                version = "0.0.1"
+                edition = "2021"
+
+                [dependencies]
+                dependency = "1.0.0"
+            "#,
+        )
+        .file(
+            "src/lib.rs",
+            "pub fn value() -> u32 { dependency::value() }",
+        )
+        .build();
+
+    p.cargo("build").run();
+    p.cargo("-Zohm-reuse-built-deps check")
+        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
+        .with_stderr_contains("[CHECKING] dependency v1.0.0")
+        .run();
+}
+
+#[cfg(windows)]
+#[cargo_test]
+fn ohm_built_registry_dependency_reuse_rejects_windows_configured_path_aliases() {
+    Package::new("dependency", "1.0.0")
+        .file("src/lib.rs", "pub fn value() -> u32 { 19 }")
+        .publish();
+
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "foo"
+                version = "0.0.1"
+                edition = "2021"
+
+                [dependencies]
+                dependency = "1.0.0"
+            "#,
+        )
+        .file(
+            "src/lib.rs",
+            "pub fn value() -> u32 { dependency::value() }",
+        )
+        .build();
+
+    p.cargo("build").run();
+    p.change_file(
+        ".cargo/config.toml",
+        "[env]\nPath = { value = \"opaque-linker-directory\", force = true }\n",
+    );
+    p.cargo("-Zohm-reuse-built-deps check")
+        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
+        .with_stderr_contains("[CHECKING] dependency v1.0.0")
+        .run();
+}
+
 #[cargo_test]
 fn ohm_built_registry_dependency_reuse_rechecks_untrusted_procedural_macro_environment() {
     // A matching package name and major version in another registry must not
