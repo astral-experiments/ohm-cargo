@@ -1588,6 +1588,64 @@ fn shared_registry_cache_rejects_global_compiler_wrappers() {
         .run();
 }
 
+#[cargo_test]
+fn shared_registry_cache_rejects_hidden_codegen_backends() {
+    Package::new("backend-registry", "1.0.0")
+        .file("src/lib.rs", "pub fn value() -> u32 { 37 }")
+        .publish();
+
+    let manifest = r#"
+        [package]
+        name = "backend-cache-app"
+        version = "0.1.0"
+        edition = "2021"
+
+        [dependencies]
+        backend-registry = "1.0.0"
+    "#;
+    let response = paths::root().join("backend.args");
+    std::fs::write(&response, "-Zcodegen-backend=llvm\n")
+        .expect("write opaque compiler backend response file");
+    let split_response = paths::root().join("split-backend.args");
+    std::fs::write(&split_response, "codegen-backend=llvm\n")
+        .expect("write split compiler backend response file");
+    let flags = [
+        format!("@{}", response.display()),
+        format!("-Z @{}", split_response.display()),
+        "-Zcodegen_backend=llvm".to_owned(),
+    ];
+
+    for (index, rustflags) in flags.into_iter().enumerate() {
+        let left_name = format!("backend-worktree-{index}-left");
+        let right_name = format!("backend-worktree-{index}-right");
+        let left = project_in(&left_name)
+            .file("Cargo.toml", manifest)
+            .file("src/lib.rs", "pub use backend_registry::value;")
+            .build();
+        let right = project_in(&right_name)
+            .file("Cargo.toml", manifest)
+            .file("src/lib.rs", "pub use backend_registry::value;")
+            .build();
+        let shared = paths::root().join(format!("backend-shared-build-directory-{index}"));
+
+        left.cargo("-Zohm-shared-registry-cache build")
+            .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+            .env("CARGO_BUILD_BUILD_DIR", &shared)
+            .env("RUSTC_BOOTSTRAP", "1")
+            .env("RUSTFLAGS", &rustflags)
+            .with_stderr_contains("[COMPILING] backend-registry v1.0.0")
+            .run();
+        right
+            .cargo("-Zohm-shared-registry-cache build")
+            .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+            .env("CARGO_BUILD_BUILD_DIR", &shared)
+            .env("RUSTC_BOOTSTRAP", "1")
+            .env("RUSTFLAGS", &rustflags)
+            .with_stderr_contains("[COMPILING] backend-registry v1.0.0")
+            .run();
+    }
+}
+
 #[cfg(unix)]
 #[cargo_test]
 fn shared_registry_cache_rejects_ambient_direct_compiler_shims() {
