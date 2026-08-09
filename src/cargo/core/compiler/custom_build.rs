@@ -281,13 +281,20 @@ impl LinkArgTarget {
 #[tracing::instrument(skip_all)]
 pub fn prepare(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResult<Job> {
     let metadata = build_runner.get_run_build_script_metadata(unit);
-    if build_runner
+    let overridden = build_runner
         .build_script_outputs
         .lock()
         .unwrap()
-        .contains_key(metadata)
-    {
+        .get(metadata)
+        .cloned();
+    if let Some(output) = overridden {
         // The output is already set, thus the build script is overridden.
+        validate_shared_registry_build_output(
+            build_runner.files().is_shared_registry_unit(unit),
+            unit.pkg.package_id(),
+            &output,
+            build_runner.files().shared_registry_compiler_driver(),
+        )?;
         fingerprint::prepare_target(build_runner, unit, false)
     } else {
         build_work(build_runner, unit)
@@ -1541,11 +1548,6 @@ impl BuildScriptOutputs {
                 parsed_output
             ),
         }
-    }
-
-    /// Returns `true` if the given key already exists.
-    fn contains_key(&self, metadata: UnitHash) -> bool {
-        self.outputs.contains_key(&metadata)
     }
 
     /// Gets the build output for the given key.
