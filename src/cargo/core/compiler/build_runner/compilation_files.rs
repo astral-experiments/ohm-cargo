@@ -8,6 +8,7 @@ use std::path::{Path, PathBuf};
 use std::sync::Arc;
 
 use cargo_platform::CfgExpr;
+use cargo_util::paths;
 use tracing::debug;
 
 use super::{BuildContext, BuildRunner, CompileKind, FileFlavor, Layout};
@@ -299,6 +300,7 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
                     None
                 };
                 let trusted_context = compiler.wrapper.is_none()
+                    && compiler_has_verified_toolchain_identity(build_runner)
                     && rustdoc.is_some()
                     && cargo.is_some()
                     && configured_environment.is_some()
@@ -863,11 +865,15 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
 ///
 /// A `[patch.crates-io]` override can make an otherwise immutable registry crate depend on a
 /// workspace-local package. Such crates must remain private to the workspace that patched them.
+/// A user-configured source replacement maps downloaded packages back to the original registry
+/// identity. Only remote registry replacements are immutable enough to share; their effective
+/// source identity and package checksum are included in the unit metadata below.
 /// Sharing build-script output additionally relies on scripts declaring their external inputs;
 /// Cargo-provided compiler, documentation-tool, linker, configuration, and job-count context is
 /// already incorporated into the shared namespace. The explicit opt-in trusts build scripts not
 /// to persist Cargo's synthesized, workspace-private dynamic-library search paths or jobserver
-/// handles as generated source. Arbitrary global rustc wrappers are rejected.
+/// handles as generated source. Arbitrary global rustc wrappers and direct compiler shims are
+/// rejected.
 fn is_immutable_registry_unit(
     unit: &Unit,
     build_runner: &BuildRunner<'_, '_>,
@@ -877,12 +883,44 @@ fn is_immutable_registry_unit(
         return *eligible;
     }
 
-    let eligible = unit.pkg.package_id().source_id().is_remote_registry()
+    let source_id = unit.pkg.package_id().source_id();
+    let eligible = source_id.is_remote_registry()
+        && build_runner
+            .bcx
+            .packages
+            .sources()
+            .get(source_id)
+            .is_some_and(|source| source.replaced_source_id().is_remote_registry())
         && build_runner.unit_deps(unit).iter().all(|dependency| {
             is_immutable_registry_unit(&dependency.unit, build_runner, eligibility)
         });
     eligibility.insert(unit.clone(), eligible);
     eligible
+}
+
+/// Only an actual toolchain compiler has an identity Cargo can verify across workspaces.
+///
+/// A direct `RUSTC` executable can otherwise be an opaque, environment-sensitive shim whose
+/// reported compiler version and path remain unchanged while its compilation behavior changes.
+fn compiler_has_verified_toolchain_identity(build_runner: &BuildRunner<'_, '_>) -> bool {
+    let Ok(compiler) = paths::resolve_executable(&build_runner.bcx.rustc().path) else {
+        return false;
+    };
+    let Ok(compiler) = compiler.canonicalize() else {
+        return false;
+    };
+    let expected = build_runner
+        .bcx
+        .target_data
+        .info(CompileKind::Host)
+        .sysroot
+        .join("bin")
+        .join("rustc")
+        .with_extension(std::env::consts::EXE_EXTENSION);
+
+    expected
+        .canonicalize()
+        .is_ok_and(|expected| expected == compiler)
 }
 
 /// Gets the metadata hash for the given [`Unit`].
@@ -939,6 +977,22 @@ fn compute_metadata(
         .package_id()
         .stable_hash(ws_root)
         .hash(&mut shared_hasher);
+
+    if bcx.gctx.cli_unstable().ohm_shared_registry_cache
+        && unit.pkg.package_id().source_id().is_remote_registry()
+        && let Some(source_id) = bcx
+            .packages
+            .sources()
+            .get(unit.pkg.package_id().source_id())
+            .map(|source| source.replaced_source_id())
+    {
+        // Source replacement deliberately maps packages back to the original registry identity.
+        // Include the actual remote source and archive checksum so distinct mirrors cannot share
+        // an artifact merely because they publish the same package name and version. Dependency
+        // metadata below recursively carries the same provenance into each reverse dependency.
+        source_id.stable_hash(ws_root, &mut shared_hasher);
+        unit.pkg.summary().checksum().hash(&mut shared_hasher);
+    }
 
     // Also mix in enabled features to our metadata. This'll ensure that
     // when changing feature sets each lib is separately cached.
