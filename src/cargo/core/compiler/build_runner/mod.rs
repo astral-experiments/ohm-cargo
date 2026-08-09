@@ -209,6 +209,8 @@ impl RegistryMessageProvenance {
         Ok(())
     }
 
+    /// Hash compiler messages while rejecting non-files and concurrent writes.
+    /// An absent cache is valid only when no diagnostics were emitted.
     fn read_messages(path: &Path) -> CargoResult<Option<CachedCompilerMessages>> {
         let file = match File::open(path) {
             Ok(file) => file,
@@ -234,6 +236,7 @@ impl RegistryMessageProvenance {
         }))
     }
 
+    /// Recheck both message presence and contents before replaying a cached build.
     fn messages_match(&self, path: &Path) -> bool {
         match (&self.messages, std::fs::metadata(path)) {
             (None, Err(error)) if error.kind() == std::io::ErrorKind::NotFound => true,
@@ -372,30 +375,19 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
         }
 
         if reuse_built_registry_dependencies {
-            let mut pending = reused_registry_units.iter().cloned().collect::<Vec<_>>();
-            while let Some(unit) = pending.pop() {
-                if let Some(dependencies) = bcx.unit_graph.get(&unit) {
-                    for dependency in dependencies {
-                        if Self::is_promotable_registry_dependency(&dependency.unit)
-                            && reused_registry_units.insert(dependency.unit.clone())
-                        {
-                            pending.push(dependency.unit.clone());
-                        }
-                    }
-                }
-            }
-
-            let mut pending = object_required_registry_units
-                .iter()
-                .cloned()
-                .collect::<Vec<_>>();
-            while let Some(unit) = pending.pop() {
-                if let Some(dependencies) = bcx.unit_graph.get(&unit) {
-                    for dependency in dependencies {
-                        if Self::is_promotable_registry_dependency(&dependency.unit)
-                            && object_required_registry_units.insert(dependency.unit.clone())
-                        {
-                            pending.push(dependency.unit.clone());
+            for registry_units in [
+                &mut reused_registry_units,
+                &mut object_required_registry_units,
+            ] {
+                let mut pending = registry_units.iter().cloned().collect::<Vec<_>>();
+                while let Some(unit) = pending.pop() {
+                    if let Some(dependencies) = bcx.unit_graph.get(&unit) {
+                        for dependency in dependencies {
+                            if Self::is_promotable_registry_dependency(&dependency.unit)
+                                && registry_units.insert(dependency.unit.clone())
+                            {
+                                pending.push(dependency.unit.clone());
+                            }
                         }
                     }
                 }
@@ -1072,23 +1064,16 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
 
         for unit in &promoted_units {
             let outputs = self.outputs(unit)?;
-            let has_library = outputs.iter().any(|output| {
-                output
-                    .path
-                    .extension()
-                    .and_then(|extension| extension.to_str())
-                    == Some("rlib")
-                    && output.path.is_file()
-            });
-            let has_metadata = outputs.iter().any(|output| {
-                output
-                    .path
-                    .extension()
-                    .and_then(|extension| extension.to_str())
-                    == Some("rmeta")
-                    && output.path.is_file()
-            });
-            if !has_library || !has_metadata || !fingerprint::existing_unit_is_fresh(self, unit)? {
+            let has_output = |extension| {
+                outputs.iter().any(|output| {
+                    output.path.extension().and_then(|actual| actual.to_str()) == Some(extension)
+                        && output.path.is_file()
+                })
+            };
+            if !has_output("rlib")
+                || !has_output("rmeta")
+                || !fingerprint::existing_unit_is_fresh(self, unit)?
+            {
                 return Ok(false);
             }
         }

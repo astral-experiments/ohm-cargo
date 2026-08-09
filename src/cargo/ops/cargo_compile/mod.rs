@@ -260,6 +260,8 @@ pub fn create_bcx<'a, 'gctx>(
     create_bcx_with_registry_reuse(ws, options, interner, logger, true)
 }
 
+/// Explicitly control speculative registry reuse so a failed preflight can
+/// rebuild the dependency graph for an ordinary, unmodified check.
 fn create_bcx_with_registry_reuse<'a, 'gctx>(
     ws: &'a Workspace<'gctx>,
     options: &'a CompileOptions,

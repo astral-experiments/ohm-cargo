@@ -8,7 +8,28 @@ use cargo_test_support::compare::assert_e2e;
 use cargo_test_support::install::exe;
 use cargo_test_support::registry::Package;
 use cargo_test_support::str;
-use cargo_test_support::{basic_bin_manifest, basic_manifest, git, project};
+use cargo_test_support::{Project, basic_bin_manifest, basic_manifest, git, project};
+
+fn ohm_registry_project() -> Project {
+    project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "foo"
+                version = "0.0.1"
+                edition = "2021"
+
+                [dependencies]
+                dependency = "1.0.0"
+            "#,
+        )
+        .file(
+            "src/lib.rs",
+            "pub fn value() -> u32 { dependency::value() }",
+        )
+        .build()
+}
 
 #[cargo_test]
 fn check_success() {
@@ -262,24 +283,7 @@ fn ohm_built_registry_dependency_reuse_is_opt_in() {
         .file("src/lib.rs", "pub fn value() -> u32 { 19 }")
         .publish();
 
-    let p = project()
-        .file(
-            "Cargo.toml",
-            r#"
-                [package]
-                name = "foo"
-                version = "0.0.1"
-                edition = "2021"
-
-                [dependencies]
-                dependency = "1.0.0"
-            "#,
-        )
-        .file(
-            "src/lib.rs",
-            "pub fn value() -> u32 { dependency::value() }",
-        )
-        .build();
+    let p = ohm_registry_project();
 
     p.cargo("build").run();
     p.cargo("check")
@@ -298,24 +302,7 @@ fn ohm_built_registry_dependency_reuse_preserves_unflagged_fingerprints() {
         .file("src/lib.rs", "pub fn value() -> u32 { 19 }")
         .publish();
 
-    let p = project()
-        .file(
-            "Cargo.toml",
-            r#"
-                [package]
-                name = "foo"
-                version = "0.0.1"
-                edition = "2021"
-
-                [dependencies]
-                dependency = "1.0.0"
-            "#,
-        )
-        .file(
-            "src/lib.rs",
-            "pub fn value() -> u32 { dependency::value() }",
-        )
-        .build();
+    let p = ohm_registry_project();
 
     p.cargo("build").env("RUSTC_BOOTSTRAP", "1").run();
     let fingerprint = p
@@ -352,24 +339,7 @@ fn ohm_built_registry_dependency_reuse_rejects_artifacts_without_provenance() {
         .file("src/lib.rs", "pub fn value() -> u32 { 19 }")
         .publish();
 
-    let p = project()
-        .file(
-            "Cargo.toml",
-            r#"
-                [package]
-                name = "foo"
-                version = "0.0.1"
-                edition = "2021"
-
-                [dependencies]
-                dependency = "1.0.0"
-            "#,
-        )
-        .file(
-            "src/lib.rs",
-            "pub fn value() -> u32 { dependency::value() }",
-        )
-        .build();
+    let p = ohm_registry_project();
 
     p.cargo("build").run();
     let provenance = p
@@ -399,24 +369,7 @@ fn ohm_built_registry_dependency_reuse_revalidates_actual_compiler_driver() {
         .file("src/lib.rs", "pub fn value() -> u32 { 19 }")
         .publish();
 
-    let p = project()
-        .file(
-            "Cargo.toml",
-            r#"
-                [package]
-                name = "foo"
-                version = "0.0.1"
-                edition = "2021"
-
-                [dependencies]
-                dependency = "1.0.0"
-            "#,
-        )
-        .file(
-            "src/lib.rs",
-            "pub fn value() -> u32 { dependency::value() }",
-        )
-        .build();
+    let p = ohm_registry_project();
 
     p.cargo("build").run();
     let provenance_path = p
@@ -462,24 +415,7 @@ fn ohm_built_registry_dependency_reuse_rejects_shadowed_compiler_drivers() {
         .file("src/lib.rs", "pub fn value() -> u32 { 19 }")
         .publish();
 
-    let p = project()
-        .file(
-            "Cargo.toml",
-            r#"
-                [package]
-                name = "foo"
-                version = "0.0.1"
-                edition = "2021"
-
-                [dependencies]
-                dependency = "1.0.0"
-            "#,
-        )
-        .file(
-            "src/lib.rs",
-            "pub fn value() -> u32 { dependency::value() }",
-        )
-        .build();
+    let p = ohm_registry_project();
     let search_variable = if cfg!(target_os = "macos") {
         "LD_LIBRARY_PATH"
     } else {
@@ -542,24 +478,7 @@ fn ohm_built_registry_dependency_reuse_rejects_cargo_generated_driver_shadows() 
         .file("src/lib.rs", "pub fn value() -> u32 { 19 }")
         .publish();
 
-    let p = project()
-        .file(
-            "Cargo.toml",
-            r#"
-                [package]
-                name = "foo"
-                version = "0.0.1"
-                edition = "2021"
-
-                [dependencies]
-                dependency = "1.0.0"
-            "#,
-        )
-        .file(
-            "src/lib.rs",
-            "pub fn value() -> u32 { dependency::value() }",
-        )
-        .build();
+    let p = ohm_registry_project();
 
     p.cargo("build").run();
     p.cargo("-Zohm-reuse-built-deps check")
@@ -626,24 +545,7 @@ fn ohm_built_registry_dependency_reuse_uses_actual_platform_loader_precedence() 
         .file("src/lib.rs", "pub fn value() -> u32 { 19 }")
         .publish();
 
-    let p = project()
-        .file(
-            "Cargo.toml",
-            r#"
-                [package]
-                name = "foo"
-                version = "0.0.1"
-                edition = "2021"
-
-                [dependencies]
-                dependency = "1.0.0"
-            "#,
-        )
-        .file(
-            "src/lib.rs",
-            "pub fn value() -> u32 { dependency::value() }",
-        )
-        .build();
+    let p = ohm_registry_project();
     let platform_loader = cargo_util::paths::dylib_path_envvar();
     let configured_directory = p.root().join("configured-driver-search");
     let inherited_directory = p.root().join("actual-driver-search");
@@ -709,24 +611,7 @@ fn ohm_built_registry_dependency_reuse_preserves_cold_checks() {
         .file("src/lib.rs", "pub fn value() -> u32 { 19 }")
         .publish();
 
-    let p = project()
-        .file(
-            "Cargo.toml",
-            r#"
-                [package]
-                name = "foo"
-                version = "0.0.1"
-                edition = "2021"
-
-                [dependencies]
-                dependency = "1.0.0"
-            "#,
-        )
-        .file(
-            "src/lib.rs",
-            "pub fn value() -> u32 { dependency::value() }",
-        )
-        .build();
+    let p = ohm_registry_project();
 
     p.cargo("-Zohm-reuse-built-deps check")
         .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
@@ -855,24 +740,7 @@ fn ohm_built_registry_dependency_reuse_verifies_replaced_vendored_sources() {
         .file("src/lib.rs", "pub fn value() -> u32 { 19 }")
         .publish();
 
-    let p = project()
-        .file(
-            "Cargo.toml",
-            r#"
-                [package]
-                name = "foo"
-                version = "0.0.1"
-                edition = "2021"
-
-                [dependencies]
-                dependency = "1.0.0"
-            "#,
-        )
-        .file(
-            "src/lib.rs",
-            "pub fn value() -> u32 { dependency::value() }",
-        )
-        .build();
+    let p = ohm_registry_project();
 
     p.cargo("vendor --respect-source-config").run();
     p.change_file(
@@ -964,24 +832,7 @@ fn ohm_built_registry_dependency_reuse_revalidates_compiler_feature_policy() {
         )
         .publish();
 
-    let p = project()
-        .file(
-            "Cargo.toml",
-            r#"
-                [package]
-                name = "foo"
-                version = "0.0.1"
-                edition = "2021"
-
-                [dependencies]
-                dependency = "1.0.0"
-            "#,
-        )
-        .file(
-            "src/lib.rs",
-            "pub fn value() -> u32 { dependency::value() }",
-        )
-        .build();
+    let p = ohm_registry_project();
 
     p.cargo("build").env("RUSTC_BOOTSTRAP", "1").run();
     p.cargo("-Zohm-reuse-built-deps check")
@@ -1011,24 +862,7 @@ fn ohm_built_registry_dependency_reuse_revalidates_overridden_compiler_version()
         )
         .publish();
 
-    let p = project()
-        .file(
-            "Cargo.toml",
-            r#"
-                [package]
-                name = "foo"
-                version = "0.0.1"
-                edition = "2021"
-
-                [dependencies]
-                dependency = "1.0.0"
-            "#,
-        )
-        .file(
-            "src/lib.rs",
-            "pub fn value() -> u32 { dependency::value() }",
-        )
-        .build();
+    let p = ohm_registry_project();
 
     p.cargo("build")
         .env("RUSTC_BOOTSTRAP", "1")
@@ -1173,24 +1007,7 @@ fn ohm_built_registry_dependency_reuse_rejects_compiler_loader_injection() {
         .file("src/lib.rs", "pub fn value() -> u32 { 19 }")
         .publish();
 
-    let p = project()
-        .file(
-            "Cargo.toml",
-            r#"
-                [package]
-                name = "foo"
-                version = "0.0.1"
-                edition = "2021"
-
-                [dependencies]
-                dependency = "1.0.0"
-            "#,
-        )
-        .file(
-            "src/lib.rs",
-            "pub fn value() -> u32 { dependency::value() }",
-        )
-        .build();
+    let p = ohm_registry_project();
 
     // Select the other platform's loader variable so the real dynamic loader
     // ignores this harmless sentinel while Cargo still rejects interposition.
@@ -1214,24 +1031,7 @@ fn ohm_built_registry_dependency_reuse_revalidates_seed_loader_environment() {
         .file("src/lib.rs", "pub fn value() -> u32 { 19 }")
         .publish();
 
-    let p = project()
-        .file(
-            "Cargo.toml",
-            r#"
-                [package]
-                name = "foo"
-                version = "0.0.1"
-                edition = "2021"
-
-                [dependencies]
-                dependency = "1.0.0"
-            "#,
-        )
-        .file(
-            "src/lib.rs",
-            "pub fn value() -> u32 { dependency::value() }",
-        )
-        .build();
+    let p = ohm_registry_project();
 
     let loader_override = if cfg!(target_os = "macos") {
         "LD_PRELOAD"
@@ -1256,24 +1056,7 @@ fn ohm_built_registry_dependency_reuse_rejects_configured_loader_injection() {
         .file("src/lib.rs", "pub fn value() -> u32 { 19 }")
         .publish();
 
-    let p = project()
-        .file(
-            "Cargo.toml",
-            r#"
-                [package]
-                name = "foo"
-                version = "0.0.1"
-                edition = "2021"
-
-                [dependencies]
-                dependency = "1.0.0"
-            "#,
-        )
-        .file(
-            "src/lib.rs",
-            "pub fn value() -> u32 { dependency::value() }",
-        )
-        .build();
+    let p = ohm_registry_project();
 
     p.cargo("build").run();
 
@@ -1317,24 +1100,7 @@ fn ohm_built_registry_dependency_reuse_rejects_build_script_loader_injection() {
         .file("src/lib.rs", "pub fn value() -> u32 { 19 }")
         .publish();
 
-    let p = project()
-        .file(
-            "Cargo.toml",
-            r#"
-                [package]
-                name = "foo"
-                version = "0.0.1"
-                edition = "2021"
-
-                [dependencies]
-                dependency = "1.0.0"
-            "#,
-        )
-        .file(
-            "src/lib.rs",
-            "pub fn value() -> u32 { dependency::value() }",
-        )
-        .build();
+    let p = ohm_registry_project();
 
     p.cargo("build").run();
     p.cargo("-Zohm-reuse-built-deps check")
@@ -1363,24 +1129,7 @@ fn ohm_built_registry_dependency_reuse_rejects_build_script_loader_search_overri
         .file("src/lib.rs", "pub fn value() -> u32 { 19 }")
         .publish();
 
-    let p = project()
-        .file(
-            "Cargo.toml",
-            r#"
-                [package]
-                name = "foo"
-                version = "0.0.1"
-                edition = "2021"
-
-                [dependencies]
-                dependency = "1.0.0"
-            "#,
-        )
-        .file(
-            "src/lib.rs",
-            "pub fn value() -> u32 { dependency::value() }",
-        )
-        .build();
+    let p = ohm_registry_project();
 
     for search_override in ["opaque-search-path", ""] {
         p.cargo("build")
@@ -1408,24 +1157,7 @@ fn ohm_built_registry_dependency_reuse_revalidates_build_script_compiler_policy(
         .file("src/lib.rs", "pub fn value() -> u32 { 19 }")
         .publish();
 
-    let p = project()
-        .file(
-            "Cargo.toml",
-            r#"
-                [package]
-                name = "foo"
-                version = "0.0.1"
-                edition = "2021"
-
-                [dependencies]
-                dependency = "1.0.0"
-            "#,
-        )
-        .file(
-            "src/lib.rs",
-            "pub fn value() -> u32 { dependency::value() }",
-        )
-        .build();
+    let p = ohm_registry_project();
 
     p.cargo("build").run();
     p.cargo("-Zohm-reuse-built-deps check")
@@ -1449,24 +1181,7 @@ fn ohm_built_registry_dependency_reuse_rejects_windows_build_script_policy_alias
         .file("src/lib.rs", "pub fn value() -> u32 { 19 }")
         .publish();
 
-    let p = project()
-        .file(
-            "Cargo.toml",
-            r#"
-                [package]
-                name = "foo"
-                version = "0.0.1"
-                edition = "2021"
-
-                [dependencies]
-                dependency = "1.0.0"
-            "#,
-        )
-        .file(
-            "src/lib.rs",
-            "pub fn value() -> u32 { dependency::value() }",
-        )
-        .build();
+    let p = ohm_registry_project();
 
     p.cargo("build").run();
     p.cargo("-Zohm-reuse-built-deps check")
@@ -1482,24 +1197,7 @@ fn ohm_built_registry_dependency_reuse_rejects_windows_configured_path_aliases()
         .file("src/lib.rs", "pub fn value() -> u32 { 19 }")
         .publish();
 
-    let p = project()
-        .file(
-            "Cargo.toml",
-            r#"
-                [package]
-                name = "foo"
-                version = "0.0.1"
-                edition = "2021"
-
-                [dependencies]
-                dependency = "1.0.0"
-            "#,
-        )
-        .file(
-            "src/lib.rs",
-            "pub fn value() -> u32 { dependency::value() }",
-        )
-        .build();
+    let p = ohm_registry_project();
 
     p.cargo("build").run();
     p.change_file(
@@ -1552,24 +1250,7 @@ fn ohm_built_registry_dependency_reuse_rechecks_untrusted_procedural_macro_envir
         )
         .publish();
 
-    let p = project()
-        .file(
-            "Cargo.toml",
-            r#"
-                [package]
-                name = "foo"
-                version = "0.0.1"
-                edition = "2021"
-
-                [dependencies]
-                dependency = "1.0.0"
-            "#,
-        )
-        .file(
-            "src/lib.rs",
-            "pub fn value() -> u32 { dependency::value() }",
-        )
-        .build();
+    let p = ohm_registry_project();
 
     p.cargo("build").env("OHM_MACRO_MODE", "allow").run();
     p.cargo("-Zohm-reuse-built-deps check")
@@ -1670,24 +1351,7 @@ fn ohm_built_registry_dependency_reuse_rechecks_missing_future_incompat_messages
         )
         .publish();
 
-    let p = project()
-        .file(
-            "Cargo.toml",
-            r#"
-                [package]
-                name = "foo"
-                version = "0.0.1"
-                edition = "2021"
-
-                [dependencies]
-                dependency = "1.0.0"
-            "#,
-        )
-        .file(
-            "src/lib.rs",
-            "pub fn value() -> u32 { dependency::value() }",
-        )
-        .build();
+    let p = ohm_registry_project();
 
     p.cargo("build")
         .env("RUSTC_BOOTSTRAP", "1")
@@ -1717,24 +1381,7 @@ fn ohm_built_registry_dependency_reuse_rechecks_truncated_future_incompat_messag
         .file("src/lib.rs", "pub fn value() -> u32 { let unused = 1; 19 }")
         .publish();
 
-    let p = project()
-        .file(
-            "Cargo.toml",
-            r#"
-                [package]
-                name = "foo"
-                version = "0.0.1"
-                edition = "2021"
-
-                [dependencies]
-                dependency = "1.0.0"
-            "#,
-        )
-        .file(
-            "src/lib.rs",
-            "pub fn value() -> u32 { dependency::value() }",
-        )
-        .build();
+    let p = ohm_registry_project();
 
     p.cargo("build")
         .env("RUSTC_BOOTSTRAP", "1")
@@ -1764,24 +1411,7 @@ fn ohm_built_registry_dependency_reuse_rechecks_replaced_future_incompat_message
         .file("src/lib.rs", "pub fn value() -> u32 { let unused = 1; 19 }")
         .publish();
 
-    let p = project()
-        .file(
-            "Cargo.toml",
-            r#"
-                [package]
-                name = "foo"
-                version = "0.0.1"
-                edition = "2021"
-
-                [dependencies]
-                dependency = "1.0.0"
-            "#,
-        )
-        .file(
-            "src/lib.rs",
-            "pub fn value() -> u32 { dependency::value() }",
-        )
-        .build();
+    let p = ohm_registry_project();
 
     p.cargo("build")
         .env("RUSTC_BOOTSTRAP", "1")
@@ -1910,24 +1540,7 @@ fn ohm_built_registry_dependency_reuse_preserves_check_json_artifacts() {
         .file("src/lib.rs", "pub fn value() -> u32 { 19 }")
         .publish();
 
-    let p = project()
-        .file(
-            "Cargo.toml",
-            r#"
-                [package]
-                name = "foo"
-                version = "0.0.1"
-                edition = "2021"
-
-                [dependencies]
-                dependency = "1.0.0"
-            "#,
-        )
-        .file(
-            "src/lib.rs",
-            "pub fn value() -> u32 { dependency::value() }",
-        )
-        .build();
+    let p = ohm_registry_project();
 
     p.cargo("build").run();
     p.cargo("-Zohm-reuse-built-deps check --message-format=json")
@@ -2204,24 +1817,7 @@ fn ohm_built_registry_dependency_reuse_supports_new_build_layout() {
         .file("src/lib.rs", "pub fn value() -> u32 { 19 }")
         .publish();
 
-    let p = project()
-        .file(
-            "Cargo.toml",
-            r#"
-                [package]
-                name = "foo"
-                version = "0.0.1"
-                edition = "2021"
-
-                [dependencies]
-                dependency = "1.0.0"
-            "#,
-        )
-        .file(
-            "src/lib.rs",
-            "pub fn value() -> u32 { dependency::value() }",
-        )
-        .build();
+    let p = ohm_registry_project();
 
     p.cargo("-Zbuild-dir-new-layout -Zfine-grain-locking build")
         .masquerade_as_nightly_cargo(&["build-dir-new-layout", "fine-grain-locking"])
@@ -2497,24 +2093,7 @@ fn ohm_built_registry_dependency_reuse_rejects_global_compiler_wrappers() {
         .file("src/lib.rs", "pub fn value() -> u32 { 19 }")
         .publish();
 
-    let p = project()
-        .file(
-            "Cargo.toml",
-            r#"
-                [package]
-                name = "foo"
-                version = "0.0.1"
-                edition = "2021"
-
-                [dependencies]
-                dependency = "1.0.0"
-            "#,
-        )
-        .file(
-            "src/lib.rs",
-            "pub fn value() -> u32 { dependency::value() }",
-        )
-        .build();
+    let p = ohm_registry_project();
 
     p.cargo("build")
         .env("RUSTC_WRAPPER", tools::echo_wrapper())
@@ -2533,24 +2112,7 @@ fn ohm_built_registry_dependency_reuse_allows_workspace_compiler_wrappers() {
         .file("src/lib.rs", "pub fn value() -> u32 { 19 }")
         .publish();
 
-    let p = project()
-        .file(
-            "Cargo.toml",
-            r#"
-                [package]
-                name = "foo"
-                version = "0.0.1"
-                edition = "2021"
-
-                [dependencies]
-                dependency = "1.0.0"
-            "#,
-        )
-        .file(
-            "src/lib.rs",
-            "pub fn value() -> u32 { dependency::value() }",
-        )
-        .build();
+    let p = ohm_registry_project();
 
     p.cargo("build")
         .env("RUSTC_WORKSPACE_WRAPPER", tools::echo_wrapper())
@@ -2570,24 +2132,7 @@ fn ohm_built_registry_dependency_reuse_preserves_root_diagnostics() {
         .file("src/lib.rs", "pub fn value() -> u32 { 19 }")
         .publish();
 
-    let p = project()
-        .file(
-            "Cargo.toml",
-            r#"
-                [package]
-                name = "foo"
-                version = "0.0.1"
-                edition = "2021"
-
-                [dependencies]
-                dependency = "1.0.0"
-            "#,
-        )
-        .file(
-            "src/lib.rs",
-            "pub fn value() -> u32 { dependency::value() }",
-        )
-        .build();
+    let p = ohm_registry_project();
 
     p.cargo("build").run();
     p.change_file(
@@ -2613,24 +2158,7 @@ fn ohm_built_registry_dependency_reuse_can_be_enabled_by_config_environment() {
         .file("src/lib.rs", "pub fn value() -> u32 { 19 }")
         .publish();
 
-    let p = project()
-        .file(
-            "Cargo.toml",
-            r#"
-                [package]
-                name = "foo"
-                version = "0.0.1"
-                edition = "2021"
-
-                [dependencies]
-                dependency = "1.0.0"
-            "#,
-        )
-        .file(
-            "src/lib.rs",
-            "pub fn value() -> u32 { dependency::value() }",
-        )
-        .build();
+    let p = ohm_registry_project();
 
     p.cargo("build").run();
     p.cargo("check -v")
