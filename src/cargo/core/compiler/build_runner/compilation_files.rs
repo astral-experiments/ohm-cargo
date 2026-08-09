@@ -2,7 +2,7 @@
 
 use crate::util::data_structures::{HashMap, HashSet};
 use std::cell::OnceCell;
-use std::ffi::OsStr;
+use std::ffi::{OsStr, OsString};
 use std::fmt;
 use std::hash::{Hash, Hasher};
 #[cfg(unix)]
@@ -305,6 +305,10 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
                         (name, value)
                     })
                     .collect::<Vec<_>>();
+                let verified_environment_spelling =
+                    configured_environment.as_ref().is_some_and(|configured| {
+                        !configured_environment_has_sensitive_case_alias(configured, cfg!(windows))
+                    });
                 let compiler_file_identity = paths::resolve_executable(&compiler.path)
                     .ok()
                     .and_then(|path| path.canonicalize().ok())
@@ -468,7 +472,7 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
                     && compiler_file_identity.is_some()
                     && verified_compiler_driver
                     && cargo.is_some()
-                    && configured_environment.is_some()
+                    && verified_environment_spelling
                     && target_applies_to_host.is_some();
                 let mut immutable_units = HashMap::default();
                 if trusted_context {
@@ -1065,6 +1069,17 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
         }
         Ok(outputs)
     }
+}
+
+/// Windows applies environment aliases case-insensitively after Cargo's exact-key checks.
+fn configured_environment_has_sensitive_case_alias(
+    configured: &[(String, OsString)],
+    case_insensitive: bool,
+) -> bool {
+    case_insensitive
+        && configured
+            .iter()
+            .any(|(name, _)| name.bytes().any(|byte| byte.is_ascii_lowercase()))
 }
 
 /// Registry units remain shareable only when their entire dependency closure is immutable.
@@ -1858,8 +1873,41 @@ fn use_pkg_dir(bcx: &BuildContext<'_, '_>, unit: &Unit) -> bool {
 mod shared_registry_tests {
     use super::{
         compiler_driver_identity_for_sysroot, compiler_driver_search_directory_is_safe,
-        compiler_option_uses_opaque_execution, sysroot_has_custom_codegen_backends,
+        compiler_option_uses_opaque_execution, configured_environment_has_sensitive_case_alias,
+        sysroot_has_custom_codegen_backends,
     };
+
+    #[test]
+    fn windows_configured_environment_cannot_alias_compiler_or_native_tools() {
+        for name in [
+            "Path",
+            "ld_library_path",
+            "Rustc_Bootstrap",
+            "Rustc_Override_Version_String",
+            "sdkroot",
+            "cc_AARCH64-UNKNOWN-WINDOWS",
+            "RustDoc",
+            "cargo_feature_untracked",
+        ] {
+            let configured = [(name.to_owned(), std::ffi::OsString::from("opaque"))];
+            assert!(configured_environment_has_sensitive_case_alias(
+                &configured,
+                true
+            ));
+            assert!(!configured_environment_has_sensitive_case_alias(
+                &configured,
+                false
+            ));
+        }
+
+        for name in ["PATH", "SDKROOT", "CC_AARCH64_UNKNOWN_WINDOWS"] {
+            let configured = [(name.to_owned(), std::ffi::OsString::from("trusted"))];
+            assert!(!configured_environment_has_sensitive_case_alias(
+                &configured,
+                true
+            ));
+        }
+    }
 
     #[test]
     fn executable_compiler_extensions_and_linker_overrides_are_opaque() {

@@ -2058,6 +2058,51 @@ fn shared_registry_cache_rejects_ambient_rustdoc_wrappers() {
         .run();
 }
 
+#[cfg(windows)]
+#[cargo_test]
+fn shared_registry_cache_rejects_windows_configuration_environment_aliases() {
+    Package::new("windows-environment-alias-registry", "1.0.0")
+        .file("src/lib.rs", "pub fn value() -> u32 { 61 }")
+        .publish();
+
+    let inherited_path = std::env::var("PATH").expect("available Windows executable search path");
+    let configuration = format!("[env]\nPath = {{ value = {inherited_path:?}, force = true }}\n");
+    let create_project = |worktree: &str| {
+        project_in(worktree)
+            .file(
+                "Cargo.toml",
+                r#"
+                [package]
+                name = "windows-environment-alias-cache-app"
+                version = "0.1.0"
+                edition = "2021"
+
+                [dependencies]
+                windows-environment-alias-registry = "1.0.0"
+                "#,
+            )
+            .file(".cargo/config.toml", &configuration)
+            .file(
+                "src/main.rs",
+                "fn main() { println!(\"{}\", windows_environment_alias_registry::value()); }",
+            )
+            .build()
+    };
+    let left = create_project("windows-environment-alias-left");
+    let right = create_project("windows-environment-alias-right");
+    let shared = paths::root().join("windows-environment-alias-shared-build-directory");
+
+    for project in [&left, &right] {
+        project
+            .cargo("-Zohm-shared-registry-cache run")
+            .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+            .env("CARGO_BUILD_BUILD_DIR", &shared)
+            .with_stderr_contains("[COMPILING] windows-environment-alias-registry v1.0.0")
+            .with_stdout_data("61\n")
+            .run();
+    }
+}
+
 #[cfg(unix)]
 #[cargo_test]
 fn shared_registry_cache_rejects_ambient_native_compiler_wrappers() {
