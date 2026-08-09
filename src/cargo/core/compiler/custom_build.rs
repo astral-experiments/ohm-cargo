@@ -775,17 +775,26 @@ fn validate_shared_registry_build_output(
         return Ok(());
     }
 
-    if let Some((name, _)) = output.env.iter().find(|(name, _)| {
-        super::OHM_COMPILER_LOADER_ENVIRONMENT.contains(&name.as_str())
-            || name.as_str() == paths::dylib_path_envvar()
-            || matches!(
-                name.as_str(),
-                "PATH" | "RUSTC_BOOTSTRAP" | "RUSTC_OVERRIDE_VERSION_STRING"
-            )
-    }) {
+    if let Some((name, _)) = output
+        .env
+        .iter()
+        .find(|(name, _)| build_script_overrides_compiler_environment(name, cfg!(windows)))
+    {
         bail!(
             "cannot share registry package `{package}` because its build script overrides \
              the compiler environment variable `{name}`; disable -Zohm-shared-registry-cache"
+        );
+    }
+
+    if !output.linker_args.is_empty()
+        || output
+            .library_links
+            .iter()
+            .any(|library| build_script_uses_opaque_link_library(library))
+    {
+        bail!(
+            "cannot share registry package `{package}` because its build script supplies \
+             opaque compiler linker arguments; disable -Zohm-shared-registry-cache"
         );
     }
 
@@ -823,6 +832,34 @@ fn validate_shared_registry_build_output(
     }
 
     Ok(())
+}
+
+/// Windows treats process environment names as case-insensitive, unlike Unix.
+fn build_script_overrides_compiler_environment(name: &str, case_insensitive: bool) -> bool {
+    super::OHM_COMPILER_LOADER_ENVIRONMENT
+        .iter()
+        .copied()
+        .chain([
+            paths::dylib_path_envvar(),
+            "PATH",
+            "RUSTC_BOOTSTRAP",
+            "RUSTC_OVERRIDE_VERSION_STRING",
+        ])
+        .any(|expected| {
+            if case_insensitive {
+                name.eq_ignore_ascii_case(expected)
+            } else {
+                name == expected
+            }
+        })
+}
+
+/// A native `-l link-arg=...` entry forwards executable arguments to the linker.
+fn build_script_uses_opaque_link_library(library: &str) -> bool {
+    library
+        .split_once('=')
+        .and_then(|(kind, _)| kind.split(':').next())
+        .is_some_and(|kind| kind == "link-arg")
 }
 
 /// When a build script run fails, store only log messages, and nuke other
@@ -1551,5 +1588,43 @@ impl BuildScriptRunFiles {
             stderr,
             root_output,
         }
+    }
+}
+
+#[cfg(test)]
+mod shared_registry_build_output_tests {
+    use super::{
+        build_script_overrides_compiler_environment, build_script_uses_opaque_link_library,
+    };
+
+    #[test]
+    fn windows_compiler_environment_names_are_case_insensitive() {
+        for name in [
+            "Path",
+            "ld_library_path",
+            "DyLd_LiBrArY_PaTh",
+            "rustc_bootstrap",
+            "Rustc_Override_Version_String",
+        ] {
+            assert!(build_script_overrides_compiler_environment(name, true));
+            assert!(!build_script_overrides_compiler_environment(name, false));
+        }
+
+        assert!(build_script_overrides_compiler_environment("PATH", false));
+        assert!(!build_script_overrides_compiler_environment(
+            "SAFE_PACKAGE_SETTING",
+            true
+        ));
+    }
+
+    #[test]
+    fn native_link_arguments_are_opaque_with_or_without_modifiers() {
+        assert!(build_script_uses_opaque_link_library("link-arg=opaque"));
+        assert!(build_script_uses_opaque_link_library(
+            "link-arg:+verbatim=opaque"
+        ));
+        assert!(!build_script_uses_opaque_link_library("static=ssl"));
+        assert!(!build_script_uses_opaque_link_library("dylib=ssl"));
+        assert!(!build_script_uses_opaque_link_library("ssl"));
     }
 }
