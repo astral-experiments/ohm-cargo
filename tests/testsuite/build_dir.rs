@@ -2196,6 +2196,255 @@ fn shared_registry_cache_rejects_injected_dynamic_loaders() {
 }
 
 #[cargo_test]
+fn shared_registry_cache_rejects_alternate_drivers_in_stable_loader_search_paths() {
+    Package::new("loader-shadow-registry", "1.0.0")
+        .file("src/lib.rs", "pub fn value() -> u32 { 23 }")
+        .publish();
+
+    let create_project = |worktree: &str| {
+        project_in(worktree)
+            .file(
+                "Cargo.toml",
+                r#"
+                [package]
+                name = "loader-shadow-cache-app"
+                version = "0.1.0"
+                edition = "2021"
+
+                [dependencies]
+                loader-shadow-registry = "1.0.0"
+                "#,
+            )
+            .file(
+                "src/main.rs",
+                "fn main() { println!(\"{}\", loader_shadow_registry::value()); }",
+            )
+            .build()
+    };
+    let left = create_project("loader-shadow-left");
+    let right = create_project("loader-shadow-right");
+    let shared = paths::root().join("loader-shadow-shared-build-directory");
+    let search = paths::root().join("loader-shadow-search-directory");
+    std::fs::create_dir_all(&search).expect("create an initially empty loader search directory");
+    let loader = if cfg!(target_os = "macos") {
+        "LD_LIBRARY_PATH"
+    } else {
+        "DYLD_LIBRARY_PATH"
+    };
+
+    left.cargo("-Zohm-shared-registry-cache run")
+        .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+        .env("CARGO_BUILD_BUILD_DIR", &shared)
+        .env(loader, &search)
+        .with_stderr_contains("[COMPILING] loader-shadow-registry v1.0.0")
+        .with_stdout_data("23\n")
+        .run();
+    right
+        .cargo("-Zohm-shared-registry-cache run")
+        .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+        .env("CARGO_BUILD_BUILD_DIR", &shared)
+        .env(loader, &search)
+        .with_stderr_does_not_contain("[COMPILING] loader-shadow-registry v1.0.0")
+        .with_stdout_data("23\n")
+        .run();
+
+    let alternate = search.join(selected_runtime_compiler_driver_filename());
+    std::fs::write(
+        &alternate,
+        "isolated same-basename compiler-driver stand-in",
+    )
+    .expect("introduce an alternate compiler driver without changing the search path");
+
+    right
+        .cargo("-Zohm-shared-registry-cache run")
+        .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+        .env("CARGO_BUILD_BUILD_DIR", &shared)
+        .env(loader, &search)
+        .with_stderr_contains("[COMPILING] loader-shadow-registry v1.0.0")
+        .with_stdout_data("23\n")
+        .run();
+
+    std::fs::remove_file(alternate).expect("remove only the isolated alternate driver");
+    left.cargo("-Zohm-shared-registry-cache run")
+        .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+        .env("CARGO_BUILD_BUILD_DIR", &shared)
+        .env(loader, &search)
+        .with_stderr_does_not_contain("[COMPILING] loader-shadow-registry v1.0.0")
+        .with_stdout_data("23\n")
+        .run();
+}
+
+fn selected_runtime_compiler_driver_filename() -> std::ffi::OsString {
+    let sysroot = std::process::Command::new("rustc")
+        .args(["--print", "sysroot"])
+        .output()
+        .expect("query the selected compiler's runtime sysroot");
+    assert!(
+        sysroot.status.success(),
+        "the compiler sysroot must be available"
+    );
+    let sysroot = String::from_utf8(sysroot.stdout).expect("UTF-8 compiler sysroot");
+    let runtime =
+        std::path::Path::new(sysroot.trim()).join(if cfg!(windows) { "bin" } else { "lib" });
+    let prefix = format!("{DLL_PREFIX}rustc_driver-");
+
+    std::fs::read_dir(runtime)
+        .expect("read the selected compiler's runtime directory")
+        .filter_map(Result::ok)
+        .map(|entry| entry.file_name())
+        .find(|filename| {
+            filename.to_str().is_some_and(|filename| {
+                filename.starts_with(&prefix) && filename.ends_with(DLL_SUFFIX)
+            })
+        })
+        .expect("locate the actual dynamically loaded compiler driver")
+}
+
+#[cargo_test]
+fn shared_registry_cache_rejects_drivers_in_generated_host_dependency_directories() {
+    Package::new("generated-host-driver-registry", "1.0.0")
+        .file("src/lib.rs", "pub fn value() -> u32 { 37 }")
+        .publish();
+
+    let create_project = |worktree: &str| {
+        project_in(worktree)
+            .file(
+                "Cargo.toml",
+                r#"
+                [package]
+                name = "generated-host-driver-cache-app"
+                version = "0.1.0"
+                edition = "2021"
+
+                [dependencies]
+                generated-host-driver-registry = "1.0.0"
+                "#,
+            )
+            .file(
+                "src/main.rs",
+                "fn main() { println!(\"{}\", generated_host_driver_registry::value()); }",
+            )
+            .build()
+    };
+    let left = create_project("generated-host-driver-left");
+    let right = create_project("generated-host-driver-right");
+    let shared = paths::root().join("generated-host-driver-shared-build-directory");
+
+    left.cargo("-Zohm-shared-registry-cache run")
+        .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+        .env("CARGO_BUILD_BUILD_DIR", &shared)
+        .with_stderr_contains("[COMPILING] generated-host-driver-registry v1.0.0")
+        .with_stdout_data("37\n")
+        .run();
+    right
+        .cargo("-Zohm-shared-registry-cache run")
+        .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+        .env("CARGO_BUILD_BUILD_DIR", &shared)
+        .with_stderr_does_not_contain("[COMPILING] generated-host-driver-registry v1.0.0")
+        .with_stdout_data("37\n")
+        .run();
+
+    let generated = walkdir::WalkDir::new(shared.join("debug/build/registries"))
+        .into_iter()
+        .filter_map(Result::ok)
+        .find(|entry| {
+            entry.file_type().is_dir()
+                && entry.file_name() == "out"
+                && entry.path().ancestors().any(|ancestor| {
+                    ancestor.file_name().is_some_and(|name| {
+                        name == std::ffi::OsStr::new("generated-host-driver-registry")
+                    })
+                })
+        })
+        .expect("locate the generated registry dependency directory")
+        .into_path();
+    let alternate = generated.join(selected_runtime_compiler_driver_filename());
+    std::fs::write(&alternate, "isolated generated-directory compiler driver")
+        .expect("introduce a same-basename driver into Cargo's generated loader path");
+
+    right
+        .cargo("-Zohm-shared-registry-cache run")
+        .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+        .env("CARGO_BUILD_BUILD_DIR", &shared)
+        .with_stderr_contains("[COMPILING] generated-host-driver-registry v1.0.0")
+        .with_stdout_data("37\n")
+        .run();
+}
+
+#[cfg(target_os = "macos")]
+#[cargo_test]
+fn shared_registry_cache_uses_inherited_platform_loader_paths_over_forced_configuration() {
+    Package::new("configured-loader-driver-registry", "1.0.0")
+        .file("src/lib.rs", "pub fn value() -> u32 { 43 }")
+        .publish();
+
+    let inherited = paths::root().join("configured-loader-inherited-search");
+    let configured = paths::root().join("configured-loader-ignored-search");
+    std::fs::create_dir_all(&inherited).expect("create inherited loader search directory");
+    std::fs::create_dir_all(&configured).expect("create ignored configured search directory");
+    let create_project = |worktree: &str| {
+        project_in(worktree)
+            .file(
+                "Cargo.toml",
+                r#"
+                [package]
+                name = "configured-loader-driver-cache-app"
+                version = "0.1.0"
+                edition = "2021"
+
+                [dependencies]
+                configured-loader-driver-registry = "1.0.0"
+                "#,
+            )
+            .file(
+                ".cargo/config.toml",
+                &format!(
+                    "[env]\nDYLD_FALLBACK_LIBRARY_PATH = {{ value = {:?}, force = true }}\n",
+                    configured.display().to_string()
+                ),
+            )
+            .file(
+                "src/main.rs",
+                "fn main() { println!(\"{}\", configured_loader_driver_registry::value()); }",
+            )
+            .build()
+    };
+    let left = create_project("configured-loader-left");
+    let right = create_project("configured-loader-right");
+    let shared = paths::root().join("configured-loader-shared-build-directory");
+
+    left.cargo("-Zohm-shared-registry-cache run")
+        .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+        .env("CARGO_BUILD_BUILD_DIR", &shared)
+        .env("DYLD_FALLBACK_LIBRARY_PATH", &inherited)
+        .with_stderr_contains("[COMPILING] configured-loader-driver-registry v1.0.0")
+        .with_stdout_data("43\n")
+        .run();
+    right
+        .cargo("-Zohm-shared-registry-cache run")
+        .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+        .env("CARGO_BUILD_BUILD_DIR", &shared)
+        .env("DYLD_FALLBACK_LIBRARY_PATH", &inherited)
+        .with_stderr_does_not_contain("[COMPILING] configured-loader-driver-registry v1.0.0")
+        .with_stdout_data("43\n")
+        .run();
+
+    std::fs::write(
+        inherited.join(selected_runtime_compiler_driver_filename()),
+        "same-basename driver hidden from forced Cargo configuration",
+    )
+    .expect("shadow the actual inherited compiler driver");
+    right
+        .cargo("-Zohm-shared-registry-cache run")
+        .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+        .env("CARGO_BUILD_BUILD_DIR", &shared)
+        .env("DYLD_FALLBACK_LIBRARY_PATH", &inherited)
+        .with_stderr_contains("[COMPILING] configured-loader-driver-registry v1.0.0")
+        .with_stdout_data("43\n")
+        .run();
+}
+
+#[cargo_test]
 fn shared_registry_cache_rejects_build_script_compiler_injection() {
     let loader_override = if cfg!(target_os = "macos") {
         "LD_PRELOAD"
@@ -2239,6 +2488,114 @@ fn shared_registry_cache_rejects_build_script_compiler_injection() {
         .with_stderr_contains(&format!(
             "[..]compiler environment variable `{loader_override}`[..]"
         ))
+        .run();
+}
+
+#[cargo_test]
+fn shared_registry_cache_rejects_build_script_compiler_search_path_overrides() {
+    Package::new("script-loader-search-registry", "1.0.0")
+        .file(
+            "build.rs",
+            r#"fn main() {
+                let name = std::env::var("OHM_SCRIPT_LOADER_VARIABLE").unwrap();
+                let value = std::env::var("OHM_SCRIPT_LOADER_VALUE").unwrap();
+                println!("cargo:rerun-if-env-changed=OHM_SCRIPT_LOADER_VARIABLE");
+                println!("cargo:rerun-if-env-changed=OHM_SCRIPT_LOADER_VALUE");
+                println!("cargo:rustc-env={name}={value}");
+            }"#,
+        )
+        .file("src/lib.rs", "pub fn value() -> u32 { 31 }")
+        .publish();
+
+    let project = project()
+        .file(
+            "Cargo.toml",
+            r#"
+            [package]
+            name = "script-loader-search-cache-app"
+            version = "0.1.0"
+            edition = "2021"
+
+            [dependencies]
+            script-loader-search-registry = "1.0.0"
+            "#,
+        )
+        .file(
+            "src/lib.rs",
+            "pub fn value() -> u32 { script_loader_search_registry::value() }",
+        )
+        .build();
+
+    for (name, value) in [
+        ("DYLD_LIBRARY_PATH", "/opaque/dynamic-libraries"),
+        ("DYLD_FALLBACK_LIBRARY_PATH", "/opaque/dynamic-libraries"),
+        ("LD_LIBRARY_PATH", "/opaque/dynamic-libraries"),
+        ("PATH", "/opaque/compiler-tools"),
+        ("DYLD_LIBRARY_PATH", ""),
+        ("PATH", ""),
+    ] {
+        project
+            .cargo("-Zohm-shared-registry-cache build")
+            .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+            .env("OHM_SCRIPT_LOADER_VARIABLE", name)
+            .env("OHM_SCRIPT_LOADER_VALUE", value)
+            .with_status(101)
+            .with_stderr_contains("[ERROR] cannot share registry package [..]")
+            .with_stderr_contains(&format!("[..]compiler environment variable `{name}`[..]"))
+            .run();
+    }
+}
+
+#[cargo_test]
+fn shared_registry_cache_rejects_build_script_native_compiler_driver_shadows() {
+    Package::new("script-native-driver-registry", "1.0.0")
+        .file(
+            "build.rs",
+            r#"fn main() {
+                let directory = std::path::PathBuf::from(
+                    std::env::var_os("OUT_DIR").expect("build-script output directory"),
+                );
+                let driver = std::env::var_os("OHM_EXPECTED_COMPILER_DRIVER")
+                    .expect("selected runtime compiler driver filename");
+                std::fs::write(directory.join(driver), "isolated alternate compiler driver")
+                    .expect("write same-basename build-script compiler driver");
+                println!("cargo:rustc-link-search=native={}", directory.display());
+            }"#,
+        )
+        .file("src/lib.rs", "pub fn value() -> u32 { 47 }")
+        .publish();
+
+    let project = project()
+        .file(
+            "Cargo.toml",
+            r#"
+            [package]
+            name = "script-native-driver-cache-app"
+            version = "0.1.0"
+            edition = "2021"
+
+            [dependencies]
+            script-native-driver-registry = "1.0.0"
+            "#,
+        )
+        .file(
+            "src/lib.rs",
+            "pub fn value() -> u32 { script_native_driver_registry::value() }",
+        )
+        .build();
+
+    project
+        .cargo("-Zohm-shared-registry-cache build")
+        .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+        .env(
+            "OHM_EXPECTED_COMPILER_DRIVER",
+            selected_runtime_compiler_driver_filename(),
+        )
+        .with_status(101)
+        .with_stderr_contains("[ERROR] cannot share registry package [..]")
+        .with_stderr_contains(
+            "[..]build-script library search path[..]alternate compiler driver[..]",
+        )
         .run();
 }
 

@@ -1,6 +1,6 @@
 //! See [`CompilationFiles`].
 
-use crate::util::data_structures::HashMap;
+use crate::util::data_structures::{HashMap, HashSet};
 use std::cell::OnceCell;
 use std::ffi::OsStr;
 use std::fmt;
@@ -151,6 +151,8 @@ struct SharedRegistryCache {
     workspace: String,
     /// Includes the compiler and every stable Cargo-provided build-script input.
     rustc: String,
+    /// Canonical implementation dynamically loaded by the verified compiler launcher.
+    compiler_driver: Option<PathBuf>,
     immutable_units: HashMap<Unit, bool>,
 }
 
@@ -237,6 +239,13 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
                     variables
                 });
                 let effective_environment = |name: &str| {
+                    // Cargo synthesizes this variable itself from the inherited environment.
+                    // `apply_env_config` deliberately does not override Cargo-provided values,
+                    // so a forced `[env]` entry does not affect the actual compiler process.
+                    if name == paths::dylib_path_envvar() {
+                        return context.get_env_os(name).map(OsStr::to_os_string);
+                    }
+
                     configured_environment
                         .as_ref()
                         .and_then(|variables| {
@@ -321,6 +330,31 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
                         }
                     });
                 let compiler_driver_identity = compiler_driver_identity(build_runner);
+                let verified_compiler_driver =
+                    compiler_driver_identity.as_ref().is_some_and(|driver| {
+                        [
+                            "DYLD_LIBRARY_PATH",
+                            "DYLD_FALLBACK_LIBRARY_PATH",
+                            "DYLD_FRAMEWORK_PATH",
+                            "DYLD_FALLBACK_FRAMEWORK_PATH",
+                            "LD_LIBRARY_PATH",
+                            "LIBPATH",
+                            "SHLIB_PATH",
+                        ]
+                        .into_iter()
+                        .chain(std::iter::once(paths::dylib_path_envvar()))
+                        .all(|name| {
+                            effective_environment(name).is_none_or(|search_path| {
+                                std::env::split_paths(&search_path).all(|directory| {
+                                    directory.is_absolute()
+                                        && compiler_driver_search_directory_is_safe(
+                                            &directory,
+                                            &driver.path,
+                                        )
+                                })
+                            })
+                        })
+                    });
                 let injected_loader = [
                     "DYLD_INSERT_LIBRARIES",
                     "DYLD_FORCE_FLAT_NAMESPACE",
@@ -432,7 +466,7 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
                     && effective_host_runner.is_none()
                     && !injected_loader
                     && compiler_file_identity.is_some()
-                    && compiler_driver_identity.is_some()
+                    && verified_compiler_driver
                     && cargo.is_some()
                     && configured_environment.is_some()
                     && target_applies_to_host.is_some();
@@ -467,10 +501,11 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
                             context.extra_verbose(),
                         ),
                     )),
+                    compiler_driver: compiler_driver_identity.map(|driver| driver.path),
                     immutable_units,
                 }
             });
-        CompilationFiles {
+        let mut files = CompilationFiles {
             ws: build_runner.bcx.ws,
             host,
             target,
@@ -479,7 +514,36 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
             shared_registry_cache,
             metas,
             outputs,
+        };
+
+        // `Compilation::fill_env` prepends a generated host dependency directory to the
+        // inherited loader search path. `BuildRunner::prepare` has not populated
+        // `Compilation::deps_output` yet, so derive every possible directory directly from
+        // the finalized layouts and unit metadata before choosing shared artifact paths.
+        if let Some(driver) = files
+            .shared_registry_cache
+            .as_ref()
+            .filter(|cache| cache.immutable_units.values().any(|immutable| *immutable))
+            .and_then(|cache| cache.compiler_driver.as_deref())
+        {
+            let mut directories = HashSet::default();
+            let verified_generated_directories = files
+                .metas
+                .keys()
+                .flat_map(|unit| [files.host_deps(unit), files.deps_dir(unit)])
+                .all(|directory| {
+                    !directories.insert(directory.clone())
+                        || compiler_driver_search_directory_is_safe(&directory, driver)
+                });
+
+            if !verified_generated_directories
+                && let Some(cache) = files.shared_registry_cache.as_mut()
+            {
+                cache.immutable_units.clear();
+            }
         }
+
+        files
     }
 
     /// Returns the appropriate directory layout for either a plugin or not.
@@ -574,6 +638,13 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
     /// Returns the root of the build output tree for the host (`/…/build-dir`)
     pub fn host_build_root(&self) -> &Path {
         self.host.build_dir().root()
+    }
+
+    /// The actual canonical compiler driver trusted by the shared registry namespace.
+    pub(crate) fn shared_registry_compiler_driver(&self) -> Option<&Path> {
+        self.shared_registry_cache
+            .as_ref()
+            .and_then(|cache| cache.compiler_driver.as_deref())
     }
 
     /// Returns the host `deps` directory path for a given build unit.
@@ -1137,6 +1208,32 @@ fn compiler_driver_identity_for_sysroot(sysroot: &Path) -> Option<CompilerDriver
     })
 }
 
+/// A loader search directory must not shadow the compiler's verified sysroot driver.
+fn compiler_driver_search_directory_is_safe(directory: &Path, expected: &Path) -> bool {
+    let Some(filename) = expected.file_name() else {
+        return false;
+    };
+    let candidate = directory.join(filename);
+
+    match std::fs::metadata(&candidate) {
+        Ok(metadata) => {
+            metadata.is_file()
+                && candidate
+                    .canonicalize()
+                    .is_ok_and(|candidate| candidate == expected)
+        }
+        Err(error)
+            if matches!(
+                error.kind(),
+                std::io::ErrorKind::NotFound | std::io::ErrorKind::NotADirectory
+            ) =>
+        {
+            true
+        }
+        Err(_) => false,
+    }
+}
+
 /// Only an actual toolchain compiler has an identity Cargo can verify across workspaces.
 ///
 /// A direct `RUSTC` executable can otherwise be an opaque, environment-sensitive shim whose
@@ -1627,7 +1724,7 @@ fn use_pkg_dir(bcx: &BuildContext<'_, '_>, unit: &Unit) -> bool {
 
 #[cfg(test)]
 mod shared_registry_tests {
-    use super::compiler_driver_identity_for_sysroot;
+    use super::{compiler_driver_identity_for_sysroot, compiler_driver_search_directory_is_safe};
 
     #[test]
     fn runtime_compiler_driver_changes_invalidate_its_identity() {
@@ -1674,5 +1771,60 @@ mod shared_registry_tests {
         }
 
         assert!(compiler_driver_identity_for_sysroot(sysroot.path()).is_none());
+    }
+
+    #[test]
+    fn loader_search_directories_cannot_shadow_the_verified_compiler_driver() {
+        let sysroot = tempfile::tempdir().expect("create isolated compiler sysroot");
+        let runtime = sysroot
+            .path()
+            .join(if cfg!(windows) { "bin" } else { "lib" });
+        let search = sysroot.path().join("external-loader-search");
+        std::fs::create_dir_all(&runtime).expect("create the verified runtime directory");
+        std::fs::create_dir_all(&search)
+            .expect("create an initially empty loader search directory");
+        let filename = format!(
+            "{}rustc_driver-identity{}",
+            std::env::consts::DLL_PREFIX,
+            std::env::consts::DLL_SUFFIX
+        );
+        let genuine = runtime.join(&filename);
+        std::fs::write(&genuine, "genuine compiler driver").expect("write the genuine driver");
+        let genuine = genuine
+            .canonicalize()
+            .expect("canonicalize the genuine driver");
+
+        assert!(compiler_driver_search_directory_is_safe(&search, &genuine));
+        std::fs::write(search.join(&filename), "shadow compiler driver")
+            .expect("write a same-basename external compiler driver");
+        assert!(!compiler_driver_search_directory_is_safe(&search, &genuine));
+        std::fs::remove_file(search.join(&filename)).expect("remove the external compiler driver");
+        assert!(compiler_driver_search_directory_is_safe(&search, &genuine));
+        assert!(compiler_driver_search_directory_is_safe(&runtime, &genuine));
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn canonical_driver_aliases_remain_safe_in_loader_search_directories() {
+        use std::os::unix::fs::symlink;
+
+        let directory = tempfile::tempdir().expect("create isolated compiler sysroot");
+        let runtime = directory.path().join("lib");
+        let aliases = directory.path().join("aliases");
+        std::fs::create_dir_all(&runtime).expect("create the verified runtime directory");
+        std::fs::create_dir_all(&aliases).expect("create the aliased search directory");
+        let filename = format!(
+            "{}rustc_driver-identity{}",
+            std::env::consts::DLL_PREFIX,
+            std::env::consts::DLL_SUFFIX
+        );
+        let genuine = runtime.join(&filename);
+        std::fs::write(&genuine, "genuine compiler driver").expect("write the genuine driver");
+        let genuine = genuine
+            .canonicalize()
+            .expect("canonicalize the genuine driver");
+        symlink(&genuine, aliases.join(filename)).expect("alias the genuine compiler driver");
+
+        assert!(compiler_driver_search_directory_is_safe(&aliases, &genuine));
     }
 }
