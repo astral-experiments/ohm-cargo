@@ -510,8 +510,7 @@ fn build_work(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResul
         .cli_unstable()
         .ohm_shared_registry_cache
         .then(|| bcx.ws.build_dir().into_path_unlocked());
-    let validate_shared_registry_environment =
-        shared_registry_root.is_some() && id.source_id().is_remote_registry();
+    let validate_shared_registry_environment = build_runner.files().is_shared_registry_unit(unit);
     let shared_registry_compiler_driver = build_runner
         .files()
         .shared_registry_compiler_driver()
