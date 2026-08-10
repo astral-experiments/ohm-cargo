@@ -19,12 +19,14 @@ use crate::util::data_structures::{HashMap, HashSet};
 
 use std::cell::RefCell;
 
-use cargo_util::paths;
 use tracing::trace;
 
 use crate::CargoResult;
 use crate::core::compiler::UserIntent;
 use crate::core::compiler::artifact::match_artifacts_kind_with_targets;
+use crate::core::compiler::build_runner::{
+    OHM_RUSTC_LOG_ENVIRONMENT, resolve_effective_compiler_executable,
+};
 use crate::core::compiler::unit_graph::{UnitDep, UnitGraph};
 use crate::core::compiler::{
     CompileKind, CompileMode, CrateType, OHM_COMPILER_LOADER_INJECTION_ENVIRONMENT,
@@ -1102,6 +1104,7 @@ impl<'a, 'gctx> State<'a, 'gctx> {
             || self.gctx.cli_unstable().bindeps
             || self.target_data.rustc.wrapper.is_some()
             || !self.compiler_has_safe_loader_environment()
+            || self.compiler_has_observable_logging()
             || !self.compiler_has_verified_toolchain_identity()
             || !package_id.source_id().is_remote_registry()
             || target.for_host()
@@ -1134,16 +1137,27 @@ impl<'a, 'gctx> State<'a, 'gctx> {
             })
     }
 
+    /// Rustc initializes every logger option even when its main filter is absent.
+    /// An invalid option can fail compilation and an output target truncates files.
+    fn compiler_has_observable_logging(&self) -> bool {
+        let Ok(configured_environment) = self.gctx.env_config() else {
+            return true;
+        };
+
+        OHM_RUSTC_LOG_ENVIRONMENT.iter().any(|name| {
+            configured_environment.contains_key(*name) || self.gctx.get_env_os(name).is_some()
+        })
+    }
+
     /// Reject opaque compiler shims whose behavior Cargo cannot fingerprint.
     ///
     /// Configuring the actual compiler from any installed or custom toolchain
     /// remains supported. Cargo normally resolves rustup proxies to that
     /// toolchain executable before constructing `RustcTargetData`.
     fn compiler_has_verified_toolchain_identity(&self) -> bool {
-        let Ok(compiler) = paths::resolve_executable(&self.target_data.rustc.path) else {
-            return false;
-        };
-        let Ok(compiler) = compiler.canonicalize() else {
+        let Some(compiler) =
+            resolve_effective_compiler_executable(self.gctx, &self.target_data.rustc.path)
+        else {
             return false;
         };
         let expected = self
