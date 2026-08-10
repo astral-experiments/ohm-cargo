@@ -1332,6 +1332,254 @@ fn should_work_with_cargo_default_lib_metadata() {
 }
 
 #[cargo_test]
+fn shared_registry_cache_automatically_shares_explicit_build_directories() {
+    Package::new("automatic-shared-registry", "1.0.0")
+        .file("src/lib.rs", "pub fn value() -> u32 { 17 }")
+        .publish();
+
+    let create_project = |worktree: &str, value: u32| {
+        project_in(worktree)
+            .file(
+                "Cargo.toml",
+                r#"
+                [package]
+                name = "automatic-shared-app"
+                version = "0.1.0"
+                edition = "2021"
+
+                [dependencies]
+                automatic-shared-registry = "1.0.0"
+                "#,
+            )
+            .file(
+                "src/main.rs",
+                &format!(
+                    "fn main() {{ println!(\"{{}}:{value}\", automatic_shared_registry::value()); }}"
+                ),
+            )
+            .build()
+    };
+    let left = create_project("automatic-shared-worktree-left", 1);
+    let right = create_project("automatic-shared-worktree-right", 2);
+    let shared = paths::root().join("automatic-shared-build-directory");
+
+    left.cargo("run")
+        .masquerade_as_nightly_cargo(&["ohm-defaults"])
+        .env("__CARGO_OHM_DEFAULTS", "yes")
+        .env("CARGO_BUILD_BUILD_DIR", &shared)
+        .with_stderr_contains("[COMPILING] automatic-shared-registry v1.0.0")
+        .with_stdout_data("17:1\n")
+        .run();
+    right
+        .cargo("run")
+        .masquerade_as_nightly_cargo(&["ohm-defaults"])
+        .env("__CARGO_OHM_DEFAULTS", "yes")
+        .env("CARGO_BUILD_BUILD_DIR", &shared)
+        .with_stderr_does_not_contain("[COMPILING] automatic-shared-registry v1.0.0")
+        .with_stdout_data("17:2\n")
+        .run();
+
+    assert!(shared.join(".ohm-shared-registry-cache-v1").is_file());
+    assert!(shared.join("debug/build/registries").is_dir());
+    assert_eq!(
+        std::fs::read_dir(shared.join("debug/incremental"))
+            .expect("read workspace-private incremental directories")
+            .count(),
+        2,
+    );
+
+    right
+        .cargo("check -v")
+        .masquerade_as_nightly_cargo(&["ohm-defaults"])
+        .env("__CARGO_OHM_DEFAULTS", "yes")
+        .env("CARGO_BUILD_BUILD_DIR", &shared)
+        .with_stderr_contains("[FRESH] automatic-shared-registry v1.0.0")
+        .with_stderr_does_not_contain("[CHECKING] automatic-shared-registry v1.0.0")
+        .run();
+}
+
+#[cargo_test]
+fn shared_registry_cache_defaults_preserve_ordinary_layout_without_build_directory() {
+    Package::new("ordinary-registry", "1.0.0")
+        .file("src/lib.rs", "pub fn value() -> u32 { 23 }")
+        .publish();
+
+    let project = project()
+        .file(
+            "Cargo.toml",
+            r#"
+            [package]
+            name = "ordinary-layout-app"
+            version = "0.1.0"
+            edition = "2021"
+
+            [dependencies]
+            ordinary-registry = "1.0.0"
+            "#,
+        )
+        .file(
+            "src/main.rs",
+            "fn main() { println!(\"{}\", ordinary_registry::value()); }",
+        )
+        .build();
+
+    project
+        .cargo("run")
+        .masquerade_as_nightly_cargo(&["ohm-defaults"])
+        .env("__CARGO_OHM_DEFAULTS", "yes")
+        .env_remove("CARGO_BUILD_BUILD_DIR")
+        .with_stderr_contains("[COMPILING] ordinary-registry v1.0.0")
+        .with_stdout_data("23\n")
+        .run();
+
+    let target = project.root().join("target");
+    assert!(target.join("debug/.fingerprint").is_dir());
+    assert!(!target.join(".ohm-shared-registry-cache-v1").exists());
+    assert!(!target.join("debug/build/registries").exists());
+}
+
+#[cargo_test]
+fn shared_registry_cache_defaults_preserve_overlapping_build_directories() {
+    Package::new("overlapping-registry", "1.0.0")
+        .file("src/lib.rs", "pub fn value() -> u32 { 31 }")
+        .publish();
+
+    let absolute_equal = paths::root().join("overlap-absolute-equal");
+    let absolute_child = paths::root().join("overlap-absolute-child");
+    let absolute_parent = paths::root().join("overlap-absolute-parent");
+    let cases = [
+        ("relative-equal", PathBuf::from("target"), None),
+        ("relative-child", PathBuf::from("target/cache"), None),
+        (
+            "workspace-template",
+            PathBuf::from("{workspace-root}/target"),
+            None,
+        ),
+        (
+            "absolute-equal",
+            absolute_equal.clone(),
+            Some(absolute_equal),
+        ),
+        (
+            "absolute-child",
+            absolute_child.join("cache"),
+            Some(absolute_child),
+        ),
+        (
+            "absolute-parent",
+            absolute_parent.clone(),
+            Some(absolute_parent.join("workspace-output")),
+        ),
+    ];
+
+    for (name, build_directory, target_directory) in cases {
+        let project = project_in(&format!("overlapping-build-directory-{name}"))
+            .file(
+                "Cargo.toml",
+                r#"
+                [package]
+                name = "overlapping-build-directory-app"
+                version = "0.1.0"
+                edition = "2021"
+
+                [dependencies]
+                overlapping-registry = "1.0.0"
+                "#,
+            )
+            .file(
+                "src/main.rs",
+                "fn main() { println!(\"{}\", overlapping_registry::value()); }",
+            )
+            .build();
+
+        let mut build = project.cargo("build");
+        build
+            .masquerade_as_nightly_cargo(&["ohm-defaults"])
+            .env("__CARGO_OHM_DEFAULTS", "yes")
+            .env("CARGO_BUILD_BUILD_DIR", &build_directory);
+        if let Some(target_directory) = &target_directory {
+            build.env("CARGO_TARGET_DIR", target_directory);
+        }
+        build.run();
+
+        let actual_build_directory = if name == "workspace-template" {
+            project.root().join("target")
+        } else if build_directory.is_absolute() {
+            build_directory.clone()
+        } else {
+            project.root().join(&build_directory)
+        };
+        assert!(
+            !actual_build_directory
+                .join(".ohm-shared-registry-cache-v1")
+                .exists(),
+            "{name} must retain Cargo's ordinary build layout"
+        );
+
+        let mut clean = project.cargo("clean");
+        clean
+            .masquerade_as_nightly_cargo(&["ohm-defaults"])
+            .env("__CARGO_OHM_DEFAULTS", "yes")
+            .env("CARGO_BUILD_BUILD_DIR", &build_directory);
+        if let Some(target_directory) = &target_directory {
+            clean.env("CARGO_TARGET_DIR", target_directory);
+        }
+        clean.run();
+    }
+}
+
+#[cargo_test]
+fn shared_registry_cache_defaults_respect_aggregate_opt_out() {
+    Package::new("opt-out-registry", "1.0.0")
+        .file("src/lib.rs", "pub fn value() -> u32 { 29 }")
+        .publish();
+
+    let project = project()
+        .file(
+            "Cargo.toml",
+            r#"
+            [package]
+            name = "opt-out-app"
+            version = "0.1.0"
+            edition = "2021"
+
+            [dependencies]
+            opt-out-registry = "1.0.0"
+            "#,
+        )
+        .file(
+            "src/main.rs",
+            "fn main() { println!(\"{}\", opt_out_registry::value()); }",
+        )
+        .build();
+    let ordinary = paths::root().join("opted-out-build-directory");
+
+    project
+        .cargo("-Zohm-defaults=no run")
+        .masquerade_as_nightly_cargo(&["ohm-defaults"])
+        .env("__CARGO_OHM_DEFAULTS", "yes")
+        .env("CARGO_BUILD_BUILD_DIR", &ordinary)
+        .with_stdout_data("29\n")
+        .run();
+
+    assert!(ordinary.join("debug/.fingerprint").is_dir());
+    assert!(!ordinary.join(".ohm-shared-registry-cache-v1").exists());
+    assert!(!ordinary.join("debug/build/registries").exists());
+
+    let explicit = paths::root().join("explicitly-shared-build-directory");
+    project
+        .cargo("-Zohm-defaults=no -Zohm-shared-registry-cache run")
+        .masquerade_as_nightly_cargo(&["ohm-defaults", "ohm-shared-registry-cache"])
+        .env("__CARGO_OHM_DEFAULTS", "yes")
+        .env("CARGO_BUILD_BUILD_DIR", &explicit)
+        .with_stdout_data("29\n")
+        .run();
+
+    assert!(explicit.join(".ohm-shared-registry-cache-v1").is_file());
+    assert!(explicit.join("debug/build/registries").is_dir());
+}
+
+#[cargo_test]
 fn shared_registry_cache_keeps_workspace_artifacts_private() {
     Package::new("shared-registry", "1.0.0")
         .file(
