@@ -31,6 +31,15 @@ fn ohm_registry_project() -> Project {
         .build()
 }
 
+fn ohm_compiler_supports_defaults() -> bool {
+    cargo_test_support::process("rustc")
+        .arg("-Zpublic-api-hash")
+        .arg("-Zcache-proc-macros")
+        .arg("--print=sysroot")
+        .exec_with_output()
+        .is_ok()
+}
+
 #[cargo_test]
 fn check_success() {
     let foo = project()
@@ -301,13 +310,7 @@ fn ohm_built_registry_dependency_reuse_remains_opt_in_without_ohm_defaults() {
 
 #[cargo_test]
 fn ohm_built_registry_dependency_reuse_is_enabled_by_ohm_defaults() {
-    if cargo_test_support::process("rustc")
-        .arg("-Zpublic-api-hash")
-        .arg("-Zcache-proc-macros")
-        .arg("--print=sysroot")
-        .exec_with_output()
-        .is_err()
-    {
+    if !ohm_compiler_supports_defaults() {
         return;
     }
 
@@ -321,6 +324,10 @@ fn ohm_built_registry_dependency_reuse_is_enabled_by_ohm_defaults() {
         .masquerade_as_nightly_cargo(&["ohm-defaults"])
         .env("__CARGO_OHM_DEFAULTS", "yes")
         .run();
+    assert!(
+        p.root().join("target/.ohm-built-registry-ready").is_file(),
+        "a successful registry build must make its artifacts discoverable before resolution",
+    );
     p.cargo("check -v")
         .masquerade_as_nightly_cargo(&["ohm-defaults"])
         .env("__CARGO_OHM_DEFAULTS", "yes")
@@ -331,6 +338,130 @@ fn ohm_built_registry_dependency_reuse_is_enabled_by_ohm_defaults() {
 [FINISHED] `dev` profile [unoptimized + debuginfo] target(s) in [ELAPSED]s
 
 "#]])
+        .run();
+
+    p.cargo("clean")
+        .masquerade_as_nightly_cargo(&["ohm-defaults"])
+        .env("__CARGO_OHM_DEFAULTS", "yes")
+        .run();
+    assert!(
+        !p.root().join("target/.ohm-built-registry-ready").exists(),
+        "cleaning the owning build directory must remove its readiness hint",
+    );
+}
+
+#[cargo_test]
+fn ohm_built_registry_dependency_reuse_skips_speculation_before_a_real_build() {
+    if !ohm_compiler_supports_defaults() {
+        return;
+    }
+
+    Package::new("build-helper", "1.0.0")
+        .file("src/lib.rs", "pub fn value() -> u32 { 11 }")
+        .publish();
+    Package::new("dependency", "1.0.0")
+        .build_dep("build-helper", "1.0.0")
+        .file("build.rs", "fn main() { let _ = build_helper::value(); }")
+        .file("src/lib.rs", "pub fn value() -> u32 { 19 }")
+        .publish();
+
+    let p = ohm_registry_project();
+    let readiness = p.root().join("target/.ohm-built-registry-ready");
+
+    for invocation in 0..3 {
+        if invocation == 2 {
+            p.change_file(
+                "src/lib.rs",
+                "pub fn value() -> u32 { dependency::value() + 1 }",
+            );
+        }
+
+        let mut check = p.cargo("check -Zbuild-analysis");
+        check
+            .masquerade_as_nightly_cargo(&["build-analysis", "ohm-defaults"])
+            .env("CARGO_BUILD_ANALYSIS_ENABLED", "true")
+            .env("__CARGO_OHM_DEFAULTS", "yes");
+        if invocation == 0 {
+            check.with_stderr_contains("[COMPILING] build-helper v1.0.0");
+        }
+        check.run();
+
+        assert!(
+            !readiness.exists(),
+            "incidental build-script dependencies must not mark a check as a completed build",
+        );
+
+        let analysis = std::fs::read_to_string(cargo_test_support::paths::log_file(invocation))
+            .expect("read build analysis events");
+        let resolutions = analysis
+            .lines()
+            .map(|line| serde_json::from_str::<serde_json::Value>(line))
+            .map(|event| event.expect("valid build analysis event"))
+            .filter(|event| event["reason"] == "resolution-started")
+            .count();
+        assert_eq!(
+            resolutions, 1,
+            "cold, no-op, and directly edited checks must resolve their dependency graph once",
+        );
+    }
+}
+
+#[cargo_test]
+fn ohm_built_registry_dependency_reuse_preserves_explicit_policy_without_readiness() {
+    Package::new("dependency", "1.0.0")
+        .file("src/lib.rs", "pub fn value() -> u32 { 19 }")
+        .publish();
+
+    let p = ohm_registry_project();
+    let readiness = p.root().join("target/.ohm-built-registry-ready");
+
+    p.cargo("-Zohm-defaults=no build")
+        .masquerade_as_nightly_cargo(&["ohm-defaults"])
+        .run();
+    assert!(
+        !readiness.exists(),
+        "ordinary builds must not change their layout when Ohm's defaults are disabled",
+    );
+
+    p.cargo("-Zohm-defaults=no -Zohm-reuse-built-deps check -v")
+        .masquerade_as_nightly_cargo(&["ohm-defaults", "ohm-reuse-built-deps"])
+        .with_stderr_data(str![[r#"
+[FRESH] dependency v1.0.0
+[CHECKING] foo v0.0.1 ([ROOT]/foo)
+[RUNNING] `rustc --crate-name foo [..]`
+[FINISHED] `dev` profile [unoptimized + debuginfo] target(s) in [ELAPSED]s
+
+"#]])
+        .run();
+}
+
+#[cargo_test]
+fn ohm_built_registry_dependency_reuse_keeps_readiness_in_the_build_directory() {
+    if !ohm_compiler_supports_defaults() {
+        return;
+    }
+
+    Package::new("dependency", "1.0.0")
+        .file("src/lib.rs", "pub fn value() -> u32 { 19 }")
+        .publish();
+
+    let p = ohm_registry_project();
+    let build_directory = p.root().join("shared-build");
+    let readiness = build_directory.join(".ohm-built-registry-ready");
+
+    p.cargo("build")
+        .masquerade_as_nightly_cargo(&["ohm-defaults"])
+        .env("__CARGO_OHM_DEFAULTS", "yes")
+        .env("CARGO_BUILD_BUILD_DIR", &build_directory)
+        .run();
+    assert!(readiness.is_file());
+    assert!(!p.root().join("target/.ohm-built-registry-ready").exists());
+
+    p.cargo("check -v")
+        .masquerade_as_nightly_cargo(&["ohm-defaults"])
+        .env("__CARGO_OHM_DEFAULTS", "yes")
+        .env("CARGO_BUILD_BUILD_DIR", &build_directory)
+        .with_stderr_contains("[FRESH] dependency v1.0.0")
         .run();
 }
 
