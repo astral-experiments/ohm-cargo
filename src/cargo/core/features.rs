@@ -1245,6 +1245,11 @@ impl CliUnstable {
         self.ohm_defaults.unwrap_or(cfg!(feature = "ohm-defaults"))
     }
 
+    /// Whether complete registry builds may be reused by a subsequent check.
+    pub fn ohm_reuse_built_deps(&self) -> bool {
+        self.ohm_reuse_built_deps || self.ohm_defaults()
+    }
+
     /// Whether library metadata should be emitted separately instead of embedded.
     pub fn no_embed_metadata(&self) -> bool {
         self.no_embed_metadata

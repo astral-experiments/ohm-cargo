@@ -416,7 +416,7 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
             .collect::<HashSet<_>>();
         let mut reused_registry_units = HashSet::default();
         let mut object_required_registry_units = HashSet::default();
-        let reuse_built_registry_dependencies = bcx.gctx.cli_unstable().ohm_reuse_built_deps
+        let reuse_built_registry_dependencies = bcx.gctx.cli_unstable().ohm_reuse_built_deps()
             && !bcx.gctx.cli_unstable().bindeps
             && matches!(bcx.build_config.intent, UserIntent::Check { .. });
         for (parent, dependencies) in &bcx.unit_graph {
@@ -1026,7 +1026,7 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
     /// This runs after Cargo has computed canonical unit hashes, LTO settings,
     /// output paths, and build-script dependencies, but before any rustc work.
     fn reused_registry_dependencies_are_fresh(&mut self) -> CargoResult<bool> {
-        if !self.bcx.gctx.cli_unstable().ohm_reuse_built_deps
+        if !self.bcx.gctx.cli_unstable().ohm_reuse_built_deps()
             || !matches!(self.bcx.build_config.intent, UserIntent::Check { .. })
         {
             return Ok(true);
