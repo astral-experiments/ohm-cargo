@@ -2250,19 +2250,21 @@ fn ohm_built_registry_dependency_reuse_composes_with_shared_registry_worktrees()
     );
     let shared_build_directory = paths::root().join("composed-shared-build-directory");
 
-    left.cargo("-Zohm-shared-registry-cache build")
+    crate::build_dir::shared_registry_cargo(&left, "-Zohm-shared-registry-cache build")
         .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
         .env("CARGO_BUILD_BUILD_DIR", &shared_build_directory)
         .run();
 
-    right
-        .cargo("-Zohm-shared-registry-cache -Zohm-reuse-built-deps check -v")
-        .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache", "ohm-reuse-built-deps"])
-        .env("CARGO_BUILD_BUILD_DIR", &shared_build_directory)
-        .with_stderr_contains("[FRESH] composed-dependency v1.0.0")
-        .with_stderr_contains("[CHECKING] composed-app v0.1.0 ([..])")
-        .with_stderr_does_not_contain("[CHECKING] composed-dependency v1.0.0")
-        .run();
+    crate::build_dir::shared_registry_cargo(
+        &right,
+        "-Zohm-shared-registry-cache -Zohm-reuse-built-deps check -v",
+    )
+    .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache", "ohm-reuse-built-deps"])
+    .env("CARGO_BUILD_BUILD_DIR", &shared_build_directory)
+    .with_stderr_contains("[FRESH] composed-dependency v1.0.0")
+    .with_stderr_contains("[CHECKING] composed-app v0.1.0 ([..])")
+    .with_stderr_does_not_contain("[CHECKING] composed-dependency v1.0.0")
+    .run();
 }
 
 #[cargo_test]
