@@ -68,6 +68,19 @@ const OLD_CARGO_WARNING_SYNTAX: &str = "cargo:warning=";
 /// [the doc]: https://doc.rust-lang.org/nightly/cargo/reference/build-scripts.html#cargo-warning
 const NEW_CARGO_WARNING_SYNTAX: &str = "cargo::warning=";
 
+/// Compiler logger settings can write external files even when artifact fingerprints match.
+pub(crate) const OHM_SHARED_RUSTC_LOG_ENVIRONMENT: &[&str] = &[
+    "RUSTC_LOG",
+    "RUSTC_LOG_COLOR",
+    "RUSTC_LOG_ENTRY_EXIT",
+    "RUSTC_LOG_THREAD_IDS",
+    "RUSTC_LOG_BACKTRACE",
+    "RUSTC_LOG_WRAPTREE",
+    "RUSTC_LOG_LINES",
+    "RUSTC_LOG_FORMAT_JSON",
+    "RUSTC_LOG_OUTPUT_TARGET",
+];
+
 #[derive(Clone, Debug, Hash, PartialEq, Eq, PartialOrd, Ord)]
 pub enum Severity {
     Error,
@@ -294,6 +307,7 @@ pub fn prepare(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResu
             unit.pkg.package_id(),
             &output,
             build_runner.files().shared_registry_compiler_driver(),
+            build_runner.files().shared_registry_implicit_native_tools(),
         )?;
         fingerprint::prepare_target(build_runner, unit, false)
     } else {
@@ -516,6 +530,11 @@ fn build_work(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResul
         .shared_registry_compiler_driver()
         .map(Path::to_path_buf);
     let shared_registry_compiler_driver_fresh = shared_registry_compiler_driver.clone();
+    let shared_registry_implicit_native_tools = build_runner
+        .files()
+        .shared_registry_implicit_native_tools()
+        .map(Arc::<[String]>::from);
+    let shared_registry_implicit_native_tools_fresh = shared_registry_implicit_native_tools.clone();
     let all = (
         id,
         library_name.clone(),
@@ -713,6 +732,7 @@ fn build_work(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResul
             id,
             &parsed_output,
             shared_registry_compiler_driver.as_deref(),
+            shared_registry_implicit_native_tools.as_deref(),
         )?;
 
         if json_messages {
@@ -748,6 +768,7 @@ fn build_work(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResul
             id,
             &output,
             shared_registry_compiler_driver_fresh.as_deref(),
+            shared_registry_implicit_native_tools_fresh.as_deref(),
         )?;
 
         if json_messages {
@@ -779,6 +800,7 @@ fn validate_shared_registry_build_output(
     package: PackageId,
     output: &BuildOutput,
     compiler_driver: Option<&Path>,
+    implicit_native_tools: Option<&[String]>,
 ) -> CargoResult<()> {
     if !shared_registry {
         return Ok(());
@@ -840,6 +862,45 @@ fn validate_shared_registry_build_output(
         }
     }
 
+    if cfg!(windows)
+        && let Some(implicit_native_tools) = implicit_native_tools
+    {
+        for library_path in &output.library_paths {
+            let directory = get_dynamic_search_path(library_path.as_ref());
+            for executable in implicit_native_tools {
+                let candidate = directory.join(executable);
+                let candidate = if candidate.extension().is_none() {
+                    candidate.with_extension(std::env::consts::EXE_EXTENSION)
+                } else {
+                    candidate
+                };
+                match std::fs::metadata(&candidate) {
+                    Ok(_) => {
+                        bail!(
+                            "cannot share registry package `{package}` because its build-script \
+                             library search path `{}` shadows the native tool `{executable}`; \
+                             disable -Zohm-shared-registry-cache",
+                            directory.display()
+                        );
+                    }
+                    Err(error)
+                        if matches!(
+                            error.kind(),
+                            std::io::ErrorKind::NotFound | std::io::ErrorKind::NotADirectory
+                        ) => {}
+                    Err(error) => {
+                        bail!(
+                            "cannot share registry package `{package}` because its build-script \
+                             library search path `{}` cannot be inspected: {error}; disable \
+                             -Zohm-shared-registry-cache",
+                            directory.display()
+                        );
+                    }
+                }
+            }
+        }
+    }
+
     Ok(())
 }
 
@@ -854,6 +915,7 @@ fn build_script_overrides_compiler_environment(name: &str, case_insensitive: boo
             "RUSTC_BOOTSTRAP",
             "RUSTC_OVERRIDE_VERSION_STRING",
         ])
+        .chain(OHM_SHARED_RUSTC_LOG_ENVIRONMENT.iter().copied())
         .any(|expected| {
             if case_insensitive {
                 name.eq_ignore_ascii_case(expected)
@@ -1609,12 +1671,21 @@ mod shared_registry_build_output_tests {
             "DyLd_LiBrArY_PaTh",
             "rustc_bootstrap",
             "Rustc_Override_Version_String",
+            "Rustc_Log_Output_Target",
         ] {
             assert!(build_script_overrides_compiler_environment(name, true));
             assert!(!build_script_overrides_compiler_environment(name, false));
         }
 
         assert!(build_script_overrides_compiler_environment("PATH", false));
+        assert!(build_script_overrides_compiler_environment(
+            "RUSTC_LOG",
+            false
+        ));
+        assert!(build_script_overrides_compiler_environment(
+            "RUSTC_LOG_OUTPUT_TARGET",
+            false
+        ));
         assert!(!build_script_overrides_compiler_environment(
             "SAFE_PACKAGE_SETTING",
             true
