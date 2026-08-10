@@ -3350,6 +3350,72 @@ fn shared_registry_cache_rejects_build_script_compiler_search_path_overrides() {
 }
 
 #[cargo_test]
+#[cfg(unix)]
+fn shared_registry_cache_accepts_standard_pthread_linker_arguments() {
+    Package::new("pthread-native-registry", "1.0.0")
+        .links("pthread_native")
+        .file(
+            "Cargo.toml",
+            r#"
+            [package]
+            name = "pthread-native-registry"
+            version = "1.0.0"
+            edition = "2021"
+            links = "pthread_native"
+            "#,
+        )
+        .file(
+            "build.rs",
+            r#"fn main() {
+                println!("cargo:rustc-link-arg=-pthread");
+                println!("cargo:rerun-if-changed=build.rs");
+            }"#,
+        )
+        .file("src/lib.rs", "pub fn value() -> u32 { 73 }")
+        .publish();
+
+    let create_project = |worktree: &str| {
+        project_in(worktree)
+            .file(
+                "Cargo.toml",
+                r#"
+                [package]
+                name = "pthread-native-cache-app"
+                version = "0.1.0"
+                edition = "2021"
+
+                [dependencies]
+                pthread-native-registry = "1.0.0"
+                "#,
+            )
+            .file(
+                "src/main.rs",
+                "fn main() { println!(\"{}\", pthread_native_registry::value()); }",
+            )
+            .build()
+    };
+    let left = create_project("pthread-native-left");
+    let right = create_project("pthread-native-right");
+    let shared = paths::root().join("pthread-native-shared-build-directory");
+
+    left.shared_registry_cargo("-Zohm-shared-registry-cache run")
+        .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+        .env("CARGO_BUILD_BUILD_DIR", &shared)
+        .with_stderr_contains("[COMPILING] pthread-native-registry v1.0.0")
+        .with_stdout_data("73\n")
+        .run();
+    right
+        .shared_registry_cargo("-Zohm-shared-registry-cache run")
+        .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+        .env("CARGO_BUILD_BUILD_DIR", &shared)
+        .with_stderr_does_not_contain("[COMPILING] pthread-native-registry v1.0.0")
+        .with_stdout_data("73\n")
+        .run();
+
+    assert!(shared.join("debug/build/registries").is_dir());
+}
+
+#[cargo_test]
 fn shared_registry_cache_rejects_build_script_opaque_linker_arguments() {
     Package::new("script-linker-registry", "1.0.0")
         .file(
@@ -3372,6 +3438,12 @@ fn shared_registry_cache_rejects_build_script_opaque_linker_arguments() {
                 match form.as_str() {
                     "argument" => println!(
                         "cargo:rustc-link-arg=-fuse-ld=/opaque/compiler-linker-wrapper"
+                    ),
+                    "pthread-prefix" => println!(
+                        "cargo:rustc-link-arg=-pthread=/opaque/compiler-linker-wrapper"
+                    ),
+                    "pthread-combined" => println!(
+                        "cargo:rustc-link-arg=-pthread,-fuse-ld=/opaque/compiler-linker-wrapper"
                     ),
                     "library" => println!("cargo:rustc-link-lib=link-arg=--opaque-linker"),
                     "modifier" => println!(
@@ -3404,7 +3476,14 @@ fn shared_registry_cache_rejects_build_script_opaque_linker_arguments() {
         )
         .build();
 
-    for form in ["argument", "library", "modifier", "flags"] {
+    for form in [
+        "argument",
+        "pthread-prefix",
+        "pthread-combined",
+        "library",
+        "modifier",
+        "flags",
+    ] {
         project
             .shared_registry_cargo("-Zohm-shared-registry-cache build")
             .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])

@@ -817,7 +817,10 @@ fn validate_shared_registry_build_output(
         );
     }
 
-    if !output.linker_args.is_empty()
+    if output
+        .linker_args
+        .iter()
+        .any(|(_, argument)| argument.as_str() != "-pthread")
         || output
             .library_links
             .iter()
