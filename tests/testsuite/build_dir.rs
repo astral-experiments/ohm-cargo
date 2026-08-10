@@ -1331,8 +1331,55 @@ fn should_work_with_cargo_default_lib_metadata() {
 "#]]);
 }
 
+fn selected_compiler_supports_ohm_defaults() -> bool {
+    static SUPPORTED: std::sync::OnceLock<bool> = std::sync::OnceLock::new();
+
+    *SUPPORTED.get_or_init(|| {
+        cargo_test_support::process("rustc")
+            .arg("-Zpublic-api-hash")
+            .arg("-Zcache-proc-macros")
+            .arg("--print=sysroot")
+            .exec_with_output()
+            .is_ok()
+    })
+}
+
+pub(super) fn shared_registry_cargo(
+    project: &cargo_test_support::Project,
+    command: &str,
+) -> cargo_test_support::Execs {
+    let mut cargo = project.cargo(command);
+
+    #[cfg(unix)]
+    if !selected_compiler_supports_ohm_defaults() {
+        let path = std::env::join_paths([
+            std::path::PathBuf::from(paths::sysroot()).join("bin"),
+            std::path::PathBuf::from("/usr/bin"),
+            std::path::PathBuf::from("/bin"),
+        ])
+        .expect("construct trusted stock-toolchain executable search path");
+        cargo.env("PATH", path);
+    }
+
+    cargo
+}
+
+trait SharedRegistryProjectExt {
+    fn shared_registry_cargo(&self, command: &str) -> cargo_test_support::Execs;
+}
+
+impl SharedRegistryProjectExt for cargo_test_support::Project {
+    fn shared_registry_cargo(&self, command: &str) -> cargo_test_support::Execs {
+        shared_registry_cargo(self, command)
+    }
+}
+
 #[cargo_test]
 fn shared_registry_cache_automatically_shares_explicit_build_directories() {
+    if !selected_compiler_supports_ohm_defaults() {
+        return;
+    }
+
     Package::new("automatic-shared-registry", "1.0.0")
         .file("src/lib.rs", "pub fn value() -> u32 { 17 }")
         .publish();
@@ -1400,6 +1447,10 @@ fn shared_registry_cache_automatically_shares_explicit_build_directories() {
 
 #[cargo_test]
 fn shared_registry_cache_defaults_preserve_ordinary_layout_without_build_directory() {
+    if !selected_compiler_supports_ohm_defaults() {
+        return;
+    }
+
     Package::new("ordinary-registry", "1.0.0")
         .file("src/lib.rs", "pub fn value() -> u32 { 23 }")
         .publish();
@@ -1440,6 +1491,10 @@ fn shared_registry_cache_defaults_preserve_ordinary_layout_without_build_directo
 
 #[cargo_test]
 fn shared_registry_cache_defaults_preserve_overlapping_build_directories() {
+    if !selected_compiler_supports_ohm_defaults() {
+        return;
+    }
+
     Package::new("overlapping-registry", "1.0.0")
         .file("src/lib.rs", "pub fn value() -> u32 { 31 }")
         .publish();
@@ -1555,7 +1610,7 @@ fn shared_registry_cache_defaults_respect_aggregate_opt_out() {
     let ordinary = paths::root().join("opted-out-build-directory");
 
     project
-        .cargo("-Zohm-defaults=no run")
+        .shared_registry_cargo("-Zohm-defaults=no run")
         .masquerade_as_nightly_cargo(&["ohm-defaults"])
         .env("__CARGO_OHM_DEFAULTS", "yes")
         .env("CARGO_BUILD_BUILD_DIR", &ordinary)
@@ -1568,7 +1623,7 @@ fn shared_registry_cache_defaults_respect_aggregate_opt_out() {
 
     let explicit = paths::root().join("explicitly-shared-build-directory");
     project
-        .cargo("-Zohm-defaults=no -Zohm-shared-registry-cache run")
+        .shared_registry_cargo("-Zohm-defaults=no -Zohm-shared-registry-cache run")
         .masquerade_as_nightly_cargo(&["ohm-defaults", "ohm-shared-registry-cache"])
         .env("__CARGO_OHM_DEFAULTS", "yes")
         .env("CARGO_BUILD_BUILD_DIR", &explicit)
@@ -1671,7 +1726,7 @@ fn shared_registry_cache_keeps_workspace_artifacts_private() {
     let right = create_project("right-worktree", "right");
     let shared_build_dir = paths::root().join("shared-registry-build-dir");
 
-    left.cargo("-Zohm-shared-registry-cache run")
+    left.shared_registry_cargo("-Zohm-shared-registry-cache run")
         .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
         .env("CARGO_BUILD_BUILD_DIR", &shared_build_dir)
         .with_stderr_contains("[COMPILING] shared-registry v1.0.0")
@@ -1684,7 +1739,7 @@ registry:left:left
         .run();
 
     right
-        .cargo("run")
+        .shared_registry_cargo("run")
         .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
         .env("CARGO_UNSTABLE_OHM_SHARED_REGISTRY_CACHE", "true")
         .env("CARGO_BUILD_BUILD_DIR", &shared_build_dir)
@@ -1697,7 +1752,7 @@ registry:right:right
 "#]])
         .run();
 
-    left.cargo("-Zohm-shared-registry-cache run")
+    left.shared_registry_cargo("-Zohm-shared-registry-cache run")
         .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
         .env("CARGO_BUILD_BUILD_DIR", &shared_build_dir)
         .with_stderr_does_not_contain("[COMPILING] shared-registry v1.0.0")
@@ -1998,7 +2053,7 @@ fn shared_registry_cache_keeps_custom_target_codegen_backends_private() {
             format!("-Zohm-shared-registry-cache -Zjson-target-spec build --lib --target {target}");
 
         for project in [&left, &right] {
-            let mut invocation = project.cargo(&command);
+            let mut invocation = project.shared_registry_cargo(&command);
             invocation
                 .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache", "json-target-spec"])
                 .env("CARGO_BUILD_BUILD_DIR", &shared)
@@ -2028,14 +2083,14 @@ fn shared_registry_cache_keeps_custom_target_codegen_backends_private() {
         rustc_host()
     );
 
-    left.cargo(&command)
+    left.shared_registry_cargo(&command)
         .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
         .env("CARGO_BUILD_BUILD_DIR", &shared)
         .env("RUSTC_BOOTSTRAP", "1")
         .with_stderr_contains("[COMPILING] target-backend-registry v1.0.0")
         .run();
     right
-        .cargo(&command)
+        .shared_registry_cargo(&command)
         .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
         .env("CARGO_BUILD_BUILD_DIR", &shared)
         .env("RUSTC_BOOTSTRAP", "1")
@@ -2978,7 +3033,7 @@ fn shared_registry_cache_rejects_alternate_drivers_in_stable_loader_search_paths
         "DYLD_LIBRARY_PATH"
     };
 
-    left.cargo("-Zohm-shared-registry-cache run")
+    left.shared_registry_cargo("-Zohm-shared-registry-cache run")
         .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
         .env("CARGO_BUILD_BUILD_DIR", &shared)
         .env(loader, &search)
@@ -2986,7 +3041,7 @@ fn shared_registry_cache_rejects_alternate_drivers_in_stable_loader_search_paths
         .with_stdout_data("23\n")
         .run();
     right
-        .cargo("-Zohm-shared-registry-cache run")
+        .shared_registry_cargo("-Zohm-shared-registry-cache run")
         .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
         .env("CARGO_BUILD_BUILD_DIR", &shared)
         .env(loader, &search)
@@ -3002,7 +3057,7 @@ fn shared_registry_cache_rejects_alternate_drivers_in_stable_loader_search_paths
     .expect("introduce an alternate compiler driver without changing the search path");
 
     right
-        .cargo("-Zohm-shared-registry-cache run")
+        .shared_registry_cargo("-Zohm-shared-registry-cache run")
         .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
         .env("CARGO_BUILD_BUILD_DIR", &shared)
         .env(loader, &search)
@@ -3011,7 +3066,7 @@ fn shared_registry_cache_rejects_alternate_drivers_in_stable_loader_search_paths
         .run();
 
     std::fs::remove_file(alternate).expect("remove only the isolated alternate driver");
-    left.cargo("-Zohm-shared-registry-cache run")
+    left.shared_registry_cargo("-Zohm-shared-registry-cache run")
         .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
         .env("CARGO_BUILD_BUILD_DIR", &shared)
         .env(loader, &search)
@@ -3076,14 +3131,14 @@ fn shared_registry_cache_rejects_drivers_in_generated_host_dependency_directorie
     let right = create_project("generated-host-driver-right");
     let shared = paths::root().join("generated-host-driver-shared-build-directory");
 
-    left.cargo("-Zohm-shared-registry-cache run")
+    left.shared_registry_cargo("-Zohm-shared-registry-cache run")
         .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
         .env("CARGO_BUILD_BUILD_DIR", &shared)
         .with_stderr_contains("[COMPILING] generated-host-driver-registry v1.0.0")
         .with_stdout_data("37\n")
         .run();
     right
-        .cargo("-Zohm-shared-registry-cache run")
+        .shared_registry_cargo("-Zohm-shared-registry-cache run")
         .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
         .env("CARGO_BUILD_BUILD_DIR", &shared)
         .with_stderr_does_not_contain("[COMPILING] generated-host-driver-registry v1.0.0")
@@ -3109,7 +3164,7 @@ fn shared_registry_cache_rejects_drivers_in_generated_host_dependency_directorie
         .expect("introduce a same-basename driver into Cargo's generated loader path");
 
     right
-        .cargo("-Zohm-shared-registry-cache run")
+        .shared_registry_cargo("-Zohm-shared-registry-cache run")
         .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
         .env("CARGO_BUILD_BUILD_DIR", &shared)
         .with_stderr_contains("[COMPILING] generated-host-driver-registry v1.0.0")
@@ -3159,7 +3214,7 @@ fn shared_registry_cache_uses_inherited_platform_loader_paths_over_forced_config
     let right = create_project("configured-loader-right");
     let shared = paths::root().join("configured-loader-shared-build-directory");
 
-    left.cargo("-Zohm-shared-registry-cache run")
+    left.shared_registry_cargo("-Zohm-shared-registry-cache run")
         .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
         .env("CARGO_BUILD_BUILD_DIR", &shared)
         .env("DYLD_FALLBACK_LIBRARY_PATH", &inherited)
@@ -3167,7 +3222,7 @@ fn shared_registry_cache_uses_inherited_platform_loader_paths_over_forced_config
         .with_stdout_data("43\n")
         .run();
     right
-        .cargo("-Zohm-shared-registry-cache run")
+        .shared_registry_cargo("-Zohm-shared-registry-cache run")
         .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
         .env("CARGO_BUILD_BUILD_DIR", &shared)
         .env("DYLD_FALLBACK_LIBRARY_PATH", &inherited)
@@ -3181,7 +3236,7 @@ fn shared_registry_cache_uses_inherited_platform_loader_paths_over_forced_config
     )
     .expect("shadow the actual inherited compiler driver");
     right
-        .cargo("-Zohm-shared-registry-cache run")
+        .shared_registry_cargo("-Zohm-shared-registry-cache run")
         .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
         .env("CARGO_BUILD_BUILD_DIR", &shared)
         .env("DYLD_FALLBACK_LIBRARY_PATH", &inherited)
@@ -3227,7 +3282,7 @@ fn shared_registry_cache_rejects_build_script_compiler_injection() {
         .build();
 
     project
-        .cargo("-Zohm-shared-registry-cache build")
+        .shared_registry_cargo("-Zohm-shared-registry-cache build")
         .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
         .with_status(101)
         .with_stderr_contains("[ERROR] cannot share registry package [..]")
@@ -3283,7 +3338,7 @@ fn shared_registry_cache_rejects_build_script_compiler_search_path_overrides() {
         ("RUSTC_LOG_OUTPUT_TARGET", "/opaque/compiler-log"),
     ] {
         project
-            .cargo("-Zohm-shared-registry-cache build")
+            .shared_registry_cargo("-Zohm-shared-registry-cache build")
             .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
             .env("OHM_SCRIPT_LOADER_VARIABLE", name)
             .env("OHM_SCRIPT_LOADER_VALUE", value)
@@ -3351,7 +3406,7 @@ fn shared_registry_cache_rejects_build_script_opaque_linker_arguments() {
 
     for form in ["argument", "library", "modifier", "flags"] {
         project
-            .cargo("-Zohm-shared-registry-cache build")
+            .shared_registry_cargo("-Zohm-shared-registry-cache build")
             .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
             .env("RUSTC_BOOTSTRAP", "1")
             .env("RUSTFLAGS", "-Zunstable-options")
@@ -3407,14 +3462,14 @@ fn shared_registry_cache_validates_configured_build_script_overrides() {
         .build();
     let shared = paths::root().join("configured-override-safe-shared-build-directory");
 
-    left.cargo("-Zohm-shared-registry-cache run")
+    left.shared_registry_cargo("-Zohm-shared-registry-cache run")
         .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
         .env("CARGO_BUILD_BUILD_DIR", &shared)
         .with_stderr_contains("[COMPILING] configured-override-registry v1.0.0")
         .with_stdout_data("67\n")
         .run();
     right
-        .cargo("-Zohm-shared-registry-cache run")
+        .shared_registry_cargo("-Zohm-shared-registry-cache run")
         .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
         .env("CARGO_BUILD_BUILD_DIR", &shared)
         .with_stderr_does_not_contain("[COMPILING] configured-override-registry v1.0.0")
@@ -3461,7 +3516,7 @@ fn shared_registry_cache_validates_configured_build_script_overrides() {
             .build();
 
         project
-            .cargo("-Zohm-shared-registry-cache build")
+            .shared_registry_cargo("-Zohm-shared-registry-cache build")
             .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
             .env("RUSTC_BOOTSTRAP", "1")
             .env("RUSTFLAGS", "-Zunstable-options")
@@ -3511,7 +3566,7 @@ fn shared_registry_cache_rejects_build_script_native_compiler_driver_shadows() {
         .build();
 
     project
-        .cargo("-Zohm-shared-registry-cache build")
+        .shared_registry_cargo("-Zohm-shared-registry-cache build")
         .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
         .env(
             "OHM_EXPECTED_COMPILER_DRIVER",
@@ -3557,7 +3612,7 @@ fn shared_registry_cache_rejects_build_script_compiler_version_overrides() {
         .build();
 
     project
-        .cargo("-Zohm-shared-registry-cache build")
+        .shared_registry_cargo("-Zohm-shared-registry-cache build")
         .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
         .with_status(101)
         .with_stderr_contains("[ERROR] cannot share registry package [..]")
@@ -3814,25 +3869,25 @@ fn shared_registry_cache_plain_clean_preserves_other_workspaces_and_registries()
 
     for project in [&left, &right] {
         project
-            .cargo("-Zohm-shared-registry-cache build")
+            .shared_registry_cargo("-Zohm-shared-registry-cache build")
             .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
             .env("CARGO_BUILD_BUILD_DIR", &shared)
             .run();
         project
-            .cargo("-Zohm-shared-registry-cache build --target")
+            .shared_registry_cargo("-Zohm-shared-registry-cache build --target")
             .arg(&target)
             .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
             .env("CARGO_BUILD_BUILD_DIR", &shared)
             .run();
         project
-            .cargo("-Zohm-shared-registry-cache build --profile alternate")
+            .shared_registry_cargo("-Zohm-shared-registry-cache build --profile alternate")
             .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
             .env("CARGO_BUILD_BUILD_DIR", &shared)
             .run();
     }
 
     assert!(shared.join(".ohm-shared-registry-cache-v1").is_file());
-    left.cargo("clean")
+    left.shared_registry_cargo("clean")
         .env("CARGO_BUILD_BUILD_DIR", &shared)
         .run();
 
@@ -3862,13 +3917,13 @@ fn shared_registry_cache_plain_clean_preserves_other_workspaces_and_registries()
     );
 
     right
-        .cargo("-Zohm-shared-registry-cache run")
+        .shared_registry_cargo("-Zohm-shared-registry-cache run")
         .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
         .env("CARGO_BUILD_BUILD_DIR", &shared)
         .with_stderr_does_not_contain("[COMPILING] [..]")
         .with_stdout_data("7:2\n")
         .run();
-    left.cargo("-Zohm-shared-registry-cache run")
+    left.shared_registry_cargo("-Zohm-shared-registry-cache run")
         .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
         .env("CARGO_BUILD_BUILD_DIR", &shared)
         .with_stderr_contains("[COMPILING] shared-clean-app v0.1.0 ([..])")
@@ -4661,13 +4716,13 @@ fn shared_registry_cache_loads_native_libraries_from_shared_output() {
     let right = create_project("dynamic-native-worktree-right");
     let shared = paths::root().join("dynamic-native-shared-build-directory");
 
-    left.cargo("-Zohm-shared-registry-cache run")
+    left.shared_registry_cargo("-Zohm-shared-registry-cache run")
         .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
         .env("CARGO_BUILD_BUILD_DIR", &shared)
         .with_stdout_data("37\n")
         .run();
     right
-        .cargo("-Zohm-shared-registry-cache run")
+        .shared_registry_cargo("-Zohm-shared-registry-cache run")
         .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
         .env("CARGO_BUILD_BUILD_DIR", &shared)
         .with_stderr_does_not_contain("[COMPILING] dynamic-native-registry v1.0.0")
