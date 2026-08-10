@@ -531,7 +531,7 @@ fn create_bcx_with_registry_reuse<'a, 'gctx>(
             &profiles,
             interner,
             reuse_built_registry_dependencies
-                && gctx.cli_unstable().ohm_reuse_built_deps
+                && gctx.cli_unstable().ohm_reuse_built_deps()
                 && !gctx.extra_verbose()
                 && !build_config.unit_graph
                 && !build_config.dry_run,

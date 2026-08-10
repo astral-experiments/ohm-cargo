@@ -278,15 +278,67 @@ fn ohm_reuses_built_registry_dependency_closure() {
 }
 
 #[cargo_test]
-fn ohm_built_registry_dependency_reuse_is_opt_in() {
+fn ohm_built_registry_dependency_reuse_remains_opt_in_without_ohm_defaults() {
     Package::new("dependency", "1.0.0")
         .file("src/lib.rs", "pub fn value() -> u32 { 19 }")
         .publish();
 
     let p = ohm_registry_project();
 
-    p.cargo("build").run();
-    p.cargo("check")
+    p.cargo("-Zohm-defaults=no build")
+        .masquerade_as_nightly_cargo(&["ohm-defaults"])
+        .run();
+    p.cargo("-Zohm-defaults=no check")
+        .masquerade_as_nightly_cargo(&["ohm-defaults"])
+        .with_stderr_data(str![[r#"
+[CHECKING] dependency v1.0.0
+[CHECKING] foo v0.0.1 ([ROOT]/foo)
+[FINISHED] `dev` profile [unoptimized + debuginfo] target(s) in [ELAPSED]s
+
+"#]])
+        .run();
+}
+
+#[cargo_test]
+fn ohm_built_registry_dependency_reuse_is_enabled_by_ohm_defaults() {
+    Package::new("dependency", "1.0.0")
+        .file("src/lib.rs", "pub fn value() -> u32 { 19 }")
+        .publish();
+
+    let p = ohm_registry_project();
+
+    p.cargo("build")
+        .masquerade_as_nightly_cargo(&["ohm-defaults"])
+        .env("__CARGO_OHM_DEFAULTS", "yes")
+        .run();
+    p.cargo("check -v")
+        .masquerade_as_nightly_cargo(&["ohm-defaults"])
+        .env("__CARGO_OHM_DEFAULTS", "yes")
+        .with_stderr_data(str![[r#"
+[FRESH] dependency v1.0.0
+[CHECKING] foo v0.0.1 ([ROOT]/foo)
+[RUNNING] `rustc -Zpublic-api-hash -Zcache-proc-macros -Zpublic-api-hash=no --crate-name foo [..]`
+[FINISHED] `dev` profile [unoptimized + debuginfo] target(s) in [ELAPSED]s
+
+"#]])
+        .run();
+}
+
+#[cargo_test]
+fn ohm_built_registry_dependency_reuse_respects_aggregate_default_opt_out() {
+    Package::new("dependency", "1.0.0")
+        .file("src/lib.rs", "pub fn value() -> u32 { 19 }")
+        .publish();
+
+    let p = ohm_registry_project();
+
+    p.cargo("-Zohm-defaults=no build")
+        .masquerade_as_nightly_cargo(&["ohm-defaults"])
+        .env("__CARGO_OHM_DEFAULTS", "yes")
+        .run();
+    p.cargo("-Zohm-defaults=no check")
+        .masquerade_as_nightly_cargo(&["ohm-defaults"])
+        .env("__CARGO_OHM_DEFAULTS", "yes")
         .with_stderr_data(str![[r#"
 [CHECKING] dependency v1.0.0
 [CHECKING] foo v0.0.1 ([ROOT]/foo)
