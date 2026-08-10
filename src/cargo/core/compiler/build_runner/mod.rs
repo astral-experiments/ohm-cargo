@@ -1181,6 +1181,21 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
                 return true;
             }
 
+            let local_specification_name = format!("{}.json", target_name.as_str());
+            if [self.bcx.gctx.cwd(), unit.pkg.root()]
+                .into_iter()
+                .any(|directory| {
+                    !matches!(
+                        directory.join(&local_specification_name).try_exists(),
+                        Ok(false)
+                    )
+                })
+            {
+                // An absent or empty `RUST_TARGET_PATH` still contains one
+                // current-directory search entry in rustc's target resolver.
+                return true;
+            }
+
             let target_specification = unit_sysroot
                 .join("lib")
                 .join("rustlib")
@@ -1209,7 +1224,28 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
             .chain(unit.rustflags.iter().map(String::as_str));
 
         while let Some(argument) = arguments.next() {
-            if argument.starts_with('@') {
+            if let Some(search_path) = argument.strip_prefix("-L") {
+                let search_path = if search_path.is_empty() {
+                    let Some(search_path) = arguments.next() else {
+                        return true;
+                    };
+                    search_path
+                } else {
+                    search_path
+                };
+                if !search_path.starts_with("native=") && !search_path.starts_with("framework=") {
+                    return true;
+                }
+                continue;
+            }
+            if argument.starts_with('@')
+                || argument == "--extern"
+                || argument.starts_with("--extern=")
+                || argument == "--target"
+                || argument.starts_with("--target=")
+                || argument == "--sysroot"
+                || argument.starts_with("--sysroot=")
+            {
                 return true;
             }
             let option = if argument == "-Z" {
