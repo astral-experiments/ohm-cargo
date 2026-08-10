@@ -2122,6 +2122,8 @@ fn ohm_built_registry_dependency_reuse_rejects_rustflags_codegen_backends() {
         "-Z llvm_plugins=",
         "-Zautodiff",
         "-Z autodiff",
+        "-Lcrate=.",
+        "-L dependency=.",
         response_rustflags.as_str(),
     ] {
         p.cargo("build")
@@ -2135,10 +2137,28 @@ fn ohm_built_registry_dependency_reuse_rejects_rustflags_codegen_backends() {
             .with_stderr_contains("[CHECKING] dependency v1.0.0")
             .run();
     }
+
+    p.cargo("build")
+        .env("RUSTC_BOOTSTRAP", "1")
+        .env("RUSTFLAGS", "-Lnative=.")
+        .run();
+    p.cargo("-Zohm-reuse-built-deps check")
+        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
+        .env("RUSTC_BOOTSTRAP", "1")
+        .env("RUSTFLAGS", "-Lnative=.")
+        .with_stderr_does_not_contain("[CHECKING] dependency v1.0.0")
+        .run();
 }
 
 #[cargo_test]
 fn ohm_built_registry_dependency_reuse_rejects_custom_target_codegen_backends() {
+    let mut target_specification =
+        serde_json::from_str::<serde_json::Value>(cargo_test_support::target_spec_json())
+            .expect("valid custom target specification");
+    target_specification["default-codegen-backend"] = serde_json::json!("llvm");
+    let target_specification = serde_json::to_string(&target_specification)
+        .expect("serialize custom target specification");
+
     Package::new("dependency", "1.0.0")
         .file(
             "src/lib.rs",
@@ -2162,14 +2182,8 @@ fn ohm_built_registry_dependency_reuse_rejects_custom_target_codegen_backends() 
                 pub fn value() -> u32 { 19 }
             "#,
         )
+        .file("cwd-target.json", &target_specification)
         .publish();
-
-    let mut target_specification =
-        serde_json::from_str::<serde_json::Value>(cargo_test_support::target_spec_json())
-            .expect("valid custom target specification");
-    target_specification["default-codegen-backend"] = serde_json::json!("llvm");
-    let target_specification = serde_json::to_string(&target_specification)
-        .expect("serialize custom target specification");
 
     let p = project()
         .file(
@@ -2201,6 +2215,7 @@ fn ohm_built_registry_dependency_reuse_rejects_custom_target_codegen_backends() 
         )
         .file("custom-target.json", &target_specification)
         .file("lookup-target.json", &target_specification)
+        .file("cwd-target.json", &target_specification)
         .build();
 
     p.cargo("-Zjson-target-spec build --lib --target custom-target.json")
@@ -2223,6 +2238,22 @@ fn ohm_built_registry_dependency_reuse_rejects_custom_target_codegen_backends() 
         .env("RUSTC_BOOTSTRAP", "1")
         .env("RUSTFLAGS", "-Zunstable-options")
         .env("RUST_TARGET_PATH", p.root())
+        .with_stderr_contains("[CHECKING] dependency v1.0.0")
+        .run();
+
+    // Rustc treats an absent target search path as a current-directory entry.
+    // Its initial probe runs from the workspace while registry compilation
+    // changes cwd to the downloaded dependency, so both roots need the spec.
+    p.cargo("build --lib --target cwd-target")
+        .env("RUSTC_BOOTSTRAP", "1")
+        .env("RUSTFLAGS", "-Zunstable-options")
+        .env_remove("RUST_TARGET_PATH")
+        .run();
+    p.cargo("-Zohm-reuse-built-deps check --lib --target cwd-target")
+        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
+        .env("RUSTC_BOOTSTRAP", "1")
+        .env("RUSTFLAGS", "-Zunstable-options")
+        .env_remove("RUST_TARGET_PATH")
         .with_stderr_contains("[CHECKING] dependency v1.0.0")
         .run();
 }
