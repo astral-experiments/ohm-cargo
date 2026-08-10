@@ -17,7 +17,7 @@
 
 use crate::util::data_structures::{HashMap, HashSet};
 
-use std::cell::RefCell;
+use std::cell::{OnceCell, RefCell};
 
 use tracing::trace;
 
@@ -80,6 +80,9 @@ struct State<'a, 'gctx> {
     /// Whether this graph may tentatively reuse complete registry builds.
     /// Exact artifact and fingerprint validation happens after graph creation.
     reuse_built_registry_dependencies: bool,
+
+    /// Compiler identity and global policy do not vary between registry targets in this graph.
+    trusted_registry_reuse_compiler: OnceCell<bool>,
 
     /// Whether a registry package's complete resolved closure consists only
     /// of immutable registry packages.
@@ -145,6 +148,7 @@ pub fn build_unit_dependencies<'a, 'gctx>(
         scrape_units,
         dev_dependency_edges: HashSet::default(),
         reuse_built_registry_dependencies,
+        trusted_registry_reuse_compiler: OnceCell::new(),
         immutable_registry_closures: RefCell::default(),
     };
 
@@ -1101,11 +1105,6 @@ impl<'a, 'gctx> State<'a, 'gctx> {
     fn can_reuse_built_registry_dependency(&self, package_id: PackageId, target: &Target) -> bool {
         if !self.reuse_built_registry_dependencies
             || self.is_std
-            || self.gctx.cli_unstable().bindeps
-            || self.target_data.rustc.wrapper.is_some()
-            || !self.compiler_has_safe_loader_environment()
-            || self.compiler_has_observable_logging()
-            || !self.compiler_has_verified_toolchain_identity()
             || !package_id.source_id().is_remote_registry()
             || target.for_host()
             || !target.is_lib()
@@ -1113,6 +1112,13 @@ impl<'a, 'gctx> State<'a, 'gctx> {
                 .rustc_crate_types()
                 .iter()
                 .all(|crate_type| matches!(crate_type, CrateType::Lib | CrateType::Rlib))
+            || self.gctx.cli_unstable().bindeps
+            || self.target_data.rustc.wrapper.is_some()
+            || !*self.trusted_registry_reuse_compiler.get_or_init(|| {
+                self.compiler_has_safe_loader_environment()
+                    && !self.compiler_has_observable_logging()
+                    && self.compiler_has_verified_toolchain_identity()
+            })
         {
             return false;
         }

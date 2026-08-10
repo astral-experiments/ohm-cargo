@@ -43,7 +43,9 @@ use crate::core::compiler::UserIntent;
 use crate::core::compiler::build_runner::StaleBuiltRegistryDependency;
 use crate::core::compiler::unit_dependencies::build_unit_dependencies;
 use crate::core::compiler::unit_graph::{self, UnitDep, UnitGraph};
-use crate::core::compiler::{BuildConfig, BuildContext, BuildRunner, Compilation};
+use crate::core::compiler::{
+    BuildConfig, BuildContext, BuildRunner, Compilation, OHM_BUILT_REGISTRY_READY_MARKER,
+};
 use crate::core::compiler::{CompileKind, CompileTarget, RustcTargetData, Unit};
 use crate::core::compiler::{CrateType, TargetInfo, apply_env_config, standard_lib};
 use crate::core::compiler::{DefaultExecutor, Executor, UnitInterner};
@@ -257,7 +259,24 @@ pub fn create_bcx<'a, 'gctx>(
     interner: &'a UnitInterner,
     logger: Option<&'a BuildLogger>,
 ) -> CargoResult<BuildContext<'a, 'gctx>> {
-    create_bcx_with_registry_reuse(ws, options, interner, logger, true)
+    let unstable = ws.gctx().cli_unstable();
+    let reuse_built_registry_dependencies =
+        !matches!(options.build_config.intent, UserIntent::Check { .. })
+            || !unstable.ohm_reuse_built_deps()
+            || unstable.ohm_reuse_built_deps
+            || ws
+                .build_dir()
+                .as_path_unlocked()
+                .join(OHM_BUILT_REGISTRY_READY_MARKER)
+                .is_file();
+
+    create_bcx_with_registry_reuse(
+        ws,
+        options,
+        interner,
+        logger,
+        reuse_built_registry_dependencies,
+    )
 }
 
 /// Explicitly control speculative registry reuse so a failed preflight can

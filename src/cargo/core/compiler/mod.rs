@@ -128,6 +128,12 @@ const OHM_DEFAULT_RUSTFLAGS: [&str; 2] = ["-Zpublic-api-hash", "-Zcache-proc-mac
 const OHM_INCREMENTAL_CODEGEN_RUSTFLAGS: [&str; 2] =
     ["-Zohm-caller-local-cgus", "-Zohm-stable-cgu-merging"];
 
+/// A successful non-check registry build can make a later check worth speculating on.
+///
+/// This lives in the build root so worktrees sharing registry artifacts observe the same hint.
+/// The normal artifact, fingerprint, and compiler-provenance checks remain authoritative.
+pub(crate) const OHM_BUILT_REGISTRY_READY_MARKER: &str = ".ohm-built-registry-ready";
+
 /// Loader overrides can change a genuine compiler's behavior without changing
 /// its executable path, version output, or Cargo's normal fingerprints.
 pub(crate) const OHM_COMPILER_LOADER_ENVIRONMENT: &[&str] = &[
@@ -988,6 +994,13 @@ fn rustc(
     } else {
         None
     };
+    let registry_reuse_readiness_path = (message_provenance.is_some()
+        && build_runner.bcx.gctx.cli_unstable().ohm_reuse_built_deps()
+        && !matches!(
+            build_runner.bcx.build_config.intent,
+            UserIntent::Check { .. }
+        ))
+    .then(|| build_dir.join(OHM_BUILT_REGISTRY_READY_MARKER));
     let mut cached_output_options = OutputOptions::for_fresh(build_runner, unit);
     let script_metadatas = build_runner.find_build_script_metadatas(unit);
     let is_local = unit.is_local();
@@ -1383,6 +1396,20 @@ fn rustc(
             let mut provenance = provenance.clone();
             provenance.capture_messages(&cached_output_path)?;
             paths::write_atomic(path, serde_json::to_vec(&provenance)?)?;
+
+            if let Some(readiness_path) = &registry_reuse_readiness_path
+                && let Err(error) = fs::OpenOptions::new()
+                    .write(true)
+                    .create_new(true)
+                    .open(readiness_path)
+                && error.kind() != std::io::ErrorKind::AlreadyExists
+            {
+                debug!(
+                    path = %readiness_path.display(),
+                    %error,
+                    "could not record registry build readiness"
+                );
+            }
         }
 
         if let Some(cache) = &relink_cache {
