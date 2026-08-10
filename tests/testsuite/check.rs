@@ -1001,6 +1001,186 @@ exec rustc "$@"
         .run();
 }
 
+#[cfg(unix)]
+#[cargo_test]
+fn ohm_built_registry_dependency_reuse_rejects_compilers_from_configured_path() {
+    Package::new("dependency", "1.0.0")
+        .file(
+            "src/lib.rs",
+            r#"
+                #[cfg(not(ohm_configured_compiler_permitted))]
+                compile_error!("configured PATH selected an opaque compiler");
+
+                pub fn value() -> u32 { 19 }
+            "#,
+        )
+        .publish();
+
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "foo"
+                version = "0.0.1"
+                edition = "2021"
+
+                [dependencies]
+                dependency = "1.0.0"
+            "#,
+        )
+        .file(
+            "src/lib.rs",
+            "pub fn value() -> u32 { dependency::value() }",
+        )
+        .executable(
+            "opaque-compiler/rustc",
+            r#"#!/bin/sh
+if [ "$OHM_COMPILER_MODE" = "allow" ]; then
+    previous=
+    for argument in "$@"; do
+        if [ "$previous" = "--crate-name" ] && [ "$argument" = "dependency" ]; then
+            exec "$OHM_REAL_RUSTC" "$@" --cfg ohm_configured_compiler_permitted
+        fi
+        previous="$argument"
+    done
+fi
+exec "$OHM_REAL_RUSTC" "$@"
+"#,
+        )
+        .build();
+
+    let sysroot = std::process::Command::new("rustc")
+        .args(["--print", "sysroot"])
+        .output()
+        .expect("discover the genuine compiler sysroot");
+    assert!(
+        sysroot.status.success(),
+        "query the genuine compiler sysroot"
+    );
+    let sysroot = String::from_utf8(sysroot.stdout).expect("UTF-8 compiler sysroot");
+    let compiler = std::path::Path::new(sysroot.trim()).join("bin/rustc");
+    let inherited_path = std::env::var_os("PATH").expect("inherited executable search path");
+    let parent_path = std::env::join_paths(
+        std::iter::once(compiler.parent().expect("compiler directory").to_path_buf())
+            .chain(std::env::split_paths(&inherited_path)),
+    )
+    .expect("prepend the genuine compiler to Cargo's inherited PATH");
+    let child_path = std::env::join_paths(
+        std::iter::once(p.root().join("opaque-compiler"))
+            .chain(std::env::split_paths(&parent_path)),
+    )
+    .expect("prepend the opaque compiler to rustc's configured PATH");
+    p.change_file(
+        ".cargo/config.toml",
+        &format!(
+            "[env]\nPATH = {{ value = {:?}, force = true }}\n",
+            child_path.to_str().expect("UTF-8 configured search path")
+        ),
+    );
+
+    p.cargo("build")
+        .env("RUSTC", "rustc")
+        .env("PATH", &parent_path)
+        .env("OHM_REAL_RUSTC", &compiler)
+        .env("OHM_COMPILER_MODE", "allow")
+        .run();
+    p.cargo("-Zohm-reuse-built-deps check")
+        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
+        .env("RUSTC", "rustc")
+        .env("PATH", &parent_path)
+        .env("OHM_REAL_RUSTC", &compiler)
+        .env("OHM_COMPILER_MODE", "deny")
+        .with_status(101)
+        .with_stderr_contains("[CHECKING] dependency v1.0.0")
+        .with_stderr_contains("[ERROR] configured PATH selected an opaque compiler")
+        .run();
+
+    // A build produced by the configured wrapper also cannot become trusted
+    // after that configuration disappears and bare rustc resolves normally.
+    p.change_file(".cargo/config.toml", "");
+    p.cargo("-Zohm-reuse-built-deps check")
+        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
+        .env("RUSTC", "rustc")
+        .env("PATH", &parent_path)
+        .with_status(101)
+        .with_stderr_contains("[CHECKING] dependency v1.0.0")
+        .with_stderr_contains("[ERROR] configured PATH selected an opaque compiler")
+        .run();
+}
+
+#[cargo_test]
+fn ohm_built_registry_dependency_reuse_preserves_compiler_logging() {
+    Package::new("dependency", "1.0.0")
+        .file("src/lib.rs", "pub fn value() -> u32 { 19 }")
+        .publish();
+
+    let p = ohm_registry_project();
+
+    p.cargo("build").run();
+    p.cargo("-Zohm-reuse-built-deps check")
+        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
+        .env("RUSTC_LOG", "rustc_metadata=info")
+        .with_stderr_contains("[CHECKING] dependency v1.0.0")
+        .run();
+}
+
+#[cargo_test]
+fn ohm_built_registry_dependency_reuse_preserves_configured_compiler_log_output() {
+    Package::new("dependency", "1.0.0")
+        .file("src/lib.rs", "pub fn value() -> u32 { 19 }")
+        .publish();
+
+    let p = ohm_registry_project();
+
+    p.cargo("build").run();
+
+    let output = p.root().join("configured-compiler.log");
+    p.change_file(
+        ".cargo/config.toml",
+        &format!(
+            "[env]\nRUSTC_LOG_OUTPUT_TARGET = {{ value = {:?}, force = true }}\n",
+            output.to_str().expect("UTF-8 compiler logging path")
+        ),
+    );
+
+    p.cargo("-Zohm-reuse-built-deps check")
+        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
+        .env("RUSTC_LOG_OUTPUT_TARGET", "")
+        .with_stderr_contains("[CHECKING] dependency v1.0.0")
+        .run();
+
+    assert!(
+        output.is_file(),
+        "rustc must create its configured log target"
+    );
+}
+
+#[cargo_test]
+fn ohm_built_registry_dependency_reuse_rejects_build_script_compiler_logging() {
+    Package::new("dependency", "1.0.0")
+        .file(
+            "build.rs",
+            r#"
+                fn main() {
+                    let output = std::path::Path::new(&std::env::var_os("OUT_DIR").unwrap())
+                        .join("compiler.log");
+                    println!("cargo::rustc-env=RUSTC_LOG_OUTPUT_TARGET={}", output.display());
+                }
+            "#,
+        )
+        .file("src/lib.rs", "pub fn value() -> u32 { 19 }")
+        .publish();
+
+    let p = ohm_registry_project();
+
+    p.cargo("build").run();
+    p.cargo("-Zohm-reuse-built-deps check")
+        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
+        .with_stderr_contains("[CHECKING] dependency v1.0.0")
+        .run();
+}
+
 #[cargo_test]
 fn ohm_built_registry_dependency_reuse_rejects_compiler_loader_injection() {
     Package::new("dependency", "1.0.0")

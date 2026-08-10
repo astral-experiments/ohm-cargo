@@ -14,9 +14,9 @@ use crate::core::PackageId;
 use crate::core::compiler::compilation::{self, UnitOutput};
 use crate::core::compiler::locking::LockManager;
 use crate::core::compiler::{self, CrateType, Unit, UserIntent, artifact};
-use crate::util::StableHasher;
 use crate::util::cache_lock::CacheLockMode;
 use crate::util::errors::CargoResult;
+use crate::util::{GlobalContext, StableHasher};
 use anyhow::{Context as _, bail};
 use cargo_util::{ProcessBuilder, Sha256, paths};
 use cargo_util_terminal::report::{Level, Message};
@@ -79,6 +79,19 @@ struct CompilerDriverIdentity {
     inode: u64,
 }
 
+/// Every option read by rustc's logger before it starts compiling a crate.
+pub(crate) const OHM_RUSTC_LOG_ENVIRONMENT: &[&str] = &[
+    "RUSTC_LOG",
+    "RUSTC_LOG_COLOR",
+    "RUSTC_LOG_ENTRY_EXIT",
+    "RUSTC_LOG_THREAD_IDS",
+    "RUSTC_LOG_BACKTRACE",
+    "RUSTC_LOG_WRAPTREE",
+    "RUSTC_LOG_LINES",
+    "RUSTC_LOG_FORMAT_JSON",
+    "RUSTC_LOG_OUTPUT_TARGET",
+];
+
 /// Reject runtime-driver substitutions without reading the large compiler dylib.
 fn compiler_driver_search_directory_is_unshadowed(expected: &Path, directory: &Path) -> bool {
     let Some(driver_name) = expected.file_name() else {
@@ -96,6 +109,51 @@ fn compiler_driver_search_directory_is_unshadowed(expected: &Path, directory: &P
         Err(error) if error.kind() == std::io::ErrorKind::NotFound => true,
         Err(_) => false,
     }
+}
+
+/// Resolve the compiler using the same executable search path as its child process.
+///
+/// Registry compiler processes run from their package roots, so relative programs
+/// and relative search directories cannot be authenticated independently of a unit.
+pub(crate) fn resolve_effective_compiler_executable(
+    gctx: &GlobalContext,
+    compiler: &Path,
+) -> Option<PathBuf> {
+    if compiler.is_absolute() {
+        return compiler.canonicalize().ok();
+    }
+    // On Windows, Cargo also synthesizes a per-unit dynamic-library search
+    // path in `PATH`, so a bare executable cannot be resolved globally.
+    if cfg!(windows) {
+        return None;
+    }
+    if compiler.components().count() != 1 {
+        return None;
+    }
+
+    let configured_environment = gctx.env_config().ok()?;
+    let search_path = configured_environment
+        .get("PATH")
+        .map(OsString::as_os_str)
+        .or_else(|| gctx.get_env_os("PATH"))?;
+    if std::env::split_paths(search_path).any(|directory| !directory.is_absolute()) {
+        return None;
+    }
+
+    for directory in std::env::split_paths(search_path) {
+        let candidate = directory.join(compiler);
+        if candidate.is_file() {
+            return candidate.canonicalize().ok();
+        }
+        if !std::env::consts::EXE_EXTENSION.is_empty() {
+            let candidate = candidate.with_extension(std::env::consts::EXE_EXTENSION);
+            if candidate.is_file() {
+                return candidate.canonicalize().ok();
+            }
+        }
+    }
+
+    None
 }
 
 /// A toolchain can select an external default backend at compiler build time,
@@ -124,6 +182,9 @@ pub(crate) fn is_sensitive_compiler_environment(name: &str, windows: bool) -> bo
     OHM_COMPILER_LOADER_ENVIRONMENT
         .iter()
         .any(|expected| matches_name(expected))
+        || OHM_RUSTC_LOG_ENVIRONMENT
+            .iter()
+            .any(|expected| matches_name(expected))
         || matches_name(paths::dylib_path_envvar())
         || (windows && matches_name("PATH"))
         || matches_name("RUSTC_BOOTSTRAP")
@@ -808,7 +869,11 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
             return Ok(None);
         };
         let mut context = StableHasher::new();
-        let compiler = paths::resolve_executable(&self.bcx.rustc().path)?;
+        let Some(compiler) =
+            resolve_effective_compiler_executable(self.bcx.gctx, &self.bcx.rustc().path)
+        else {
+            return Ok(None);
+        };
         compiler.hash(&mut context);
         let compiler_metadata = paths::metadata(&compiler)?;
         compiler_metadata.len().hash(&mut context);
@@ -1544,12 +1609,18 @@ mod tests {
             "rustc_override_version_string",
             "dYlD_iNsErT_lIbRaRiEs",
             "lD_lIbRaRy_PaTh",
+            "rUsTc_LoG_oUtPuT_tArGeT",
         ] {
             assert!(is_sensitive_compiler_environment(name, true));
             assert!(!is_sensitive_compiler_environment(name, false));
         }
 
         assert!(is_sensitive_compiler_environment("RUSTC_BOOTSTRAP", false));
+        assert!(is_sensitive_compiler_environment("RUSTC_LOG", false));
+        assert!(is_sensitive_compiler_environment(
+            "RUSTC_LOG_OUTPUT_TARGET",
+            false
+        ));
         assert!(!is_sensitive_compiler_environment("UNRELATED_POLICY", true));
     }
 
