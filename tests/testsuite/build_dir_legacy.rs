@@ -683,6 +683,7 @@ fn cargo_clean_should_remove_correct_files() {
 [ROOT]/foo/build-dir/debug/deps/bar[..].d
 [ROOT]/foo/build-dir/debug/deps/libbar[..].rlib
 [ROOT]/foo/build-dir/debug/deps/libbar[..].rmeta
+[ROOT]/foo/build-dir/debug/.fingerprint/bar-[HASH]/ohm-message-provenance-lib-bar
 
 "#]]);
 

@@ -301,6 +301,16 @@ fn ohm_built_registry_dependency_reuse_remains_opt_in_without_ohm_defaults() {
 
 #[cargo_test]
 fn ohm_built_registry_dependency_reuse_is_enabled_by_ohm_defaults() {
+    if cargo_test_support::process("rustc")
+        .arg("-Zpublic-api-hash")
+        .arg("-Zcache-proc-macros")
+        .arg("--print=sysroot")
+        .exec_with_output()
+        .is_err()
+    {
+        return;
+    }
+
     Package::new("dependency", "1.0.0")
         .file("src/lib.rs", "pub fn value() -> u32 { 19 }")
         .publish();
