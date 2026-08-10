@@ -1819,7 +1819,7 @@ fn linker_has_verified_toolchain_identity(
 
     #[cfg(not(windows))]
     {
-        [
+        let system_tool = [
             "/usr/bin",
             "/bin",
             "/usr/libexec",
@@ -1828,8 +1828,87 @@ fn linker_has_verified_toolchain_identity(
         ]
         .into_iter()
         .filter_map(|directory| Path::new(directory).canonicalize().ok())
-        .any(|directory| linker.starts_with(directory))
+        .any(|directory| linker.starts_with(directory));
+
+        #[cfg(target_os = "linux")]
+        {
+            system_tool
+                || (distribution_llvm_toolchain_path(&linker)
+                    && linker
+                        .ancestors()
+                        .take_while(|ancestor| *ancestor != Path::new("/"))
+                        .all(|ancestor| {
+                            std::fs::metadata(ancestor).is_ok_and(|metadata| {
+                                metadata.uid() == 0 && metadata.mode() & 0o022 == 0
+                            })
+                        }))
+        }
+
+        #[cfg(not(target_os = "linux"))]
+        {
+            system_tool
+        }
     }
+}
+
+/// Recognizes only versioned, distribution-managed LLVM native tool executables.
+///
+/// The caller separately authenticates the canonical executable and every ancestor as
+/// root-owned and inaccessible to group or world writes before trusting this layout.
+#[cfg(any(target_os = "linux", all(unix, test)))]
+fn distribution_llvm_toolchain_path(executable: &Path) -> bool {
+    let Some(filename) = executable.file_name().and_then(OsStr::to_str) else {
+        return false;
+    };
+    let numeric_version = |version: &str| {
+        !version.is_empty()
+            && version.split('.').all(|component| {
+                !component.is_empty() && component.bytes().all(|byte| byte.is_ascii_digit())
+            })
+    };
+    let tool = filename
+        .rsplit_once('-')
+        .filter(|(_, version)| numeric_version(version))
+        .map_or(filename, |(name, _)| name);
+    if !matches!(
+        tool,
+        "clang"
+            | "clang++"
+            | "clang-cl"
+            | "clang-cpp"
+            | "llvm-ar"
+            | "llvm-ranlib"
+            | "llvm-lib"
+            | "ld.lld"
+            | "lld"
+            | "lld-link"
+            | "wasm-ld"
+    ) {
+        return false;
+    }
+
+    let Some(directory) = executable.parent() else {
+        return false;
+    };
+    if directory.file_name() != Some(OsStr::new("bin")) {
+        return false;
+    }
+    let Some(toolchain) = directory.parent() else {
+        return false;
+    };
+    if !toolchain
+        .file_name()
+        .and_then(OsStr::to_str)
+        .and_then(|name| name.strip_prefix("llvm-"))
+        .is_some_and(numeric_version)
+    {
+        return false;
+    }
+
+    matches!(
+        toolchain.parent(),
+        Some(directory) if directory == Path::new("/usr/lib") || directory == Path::new("/usr/lib64")
+    )
 }
 
 /// Gets the metadata hash for the given [`Unit`].
@@ -2206,6 +2285,8 @@ fn use_pkg_dir(bcx: &BuildContext<'_, '_>, unit: &Unit) -> bool {
 
 #[cfg(test)]
 mod shared_registry_tests {
+    #[cfg(unix)]
+    use super::distribution_llvm_toolchain_path;
     use super::{
         compiler_driver_identity_for_sysroot, compiler_driver_search_directory_is_safe,
         compiler_option_uses_opaque_execution, configured_environment_has_sensitive_case_alias,
@@ -2231,6 +2312,41 @@ mod shared_registry_tests {
                 "CMAKE_TOOLCHAIN_FILE_thumbv8m_main_none_eabi",
             ]
         );
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn distribution_llvm_tools_require_exact_versioned_system_layouts() {
+        for tool in [
+            "/usr/lib/llvm-18/bin/clang",
+            "/usr/lib/llvm-18/bin/clang-18",
+            "/usr/lib/llvm-18.1/bin/clang++-18.1",
+            "/usr/lib64/llvm-19/bin/llvm-ar",
+            "/usr/lib64/llvm-19/bin/llvm-ranlib-19",
+        ] {
+            assert!(
+                distribution_llvm_toolchain_path(std::path::Path::new(tool)),
+                "distribution LLVM executable should be recognized: {tool}"
+            );
+        }
+
+        for tool in [
+            "/usr/lib/llvm-18/bin/opaque-wrapper",
+            "/usr/lib/llvm-18/bin/clang-wrapper",
+            "/usr/lib/llvm-18/bin/clang-18-wrapper",
+            "/usr/lib/llvm-18/bin/nested/clang",
+            "/usr/lib/llvm-18/lib/clang",
+            "/usr/lib/llvm-/bin/clang",
+            "/usr/lib/llvm-18./bin/clang",
+            "/usr/lib/llvm-custom/bin/clang",
+            "/usr/local/lib/llvm-18/bin/clang",
+            "/tmp/llvm-18/bin/clang",
+        ] {
+            assert!(
+                !distribution_llvm_toolchain_path(std::path::Path::new(tool)),
+                "untrusted LLVM executable should remain private: {tool}"
+            );
+        }
     }
 
     #[test]
