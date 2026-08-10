@@ -1671,6 +1671,11 @@ fn shared_registry_cache_rejects_hidden_codegen_backends() {
 
 #[cargo_test]
 fn shared_registry_cache_keeps_custom_target_codegen_backends_private() {
+    let mut target = serde_json::from_str::<serde_json::Value>(target_spec_json())
+        .expect("parse known compiler target specification");
+    target["default-codegen-backend"] = serde_json::Value::String("llvm".to_owned());
+    let target_json = serde_json::to_string(&target).expect("serialize custom target backend");
+
     Package::new("target-backend-registry", "1.0.0")
         .file(
             "src/lib.rs",
@@ -1691,19 +1696,14 @@ fn shared_registry_cache_keeps_custom_target_codegen_backends_private() {
             pub fn value() -> u32 { 53 }
             "#,
         )
+        .file("cwd-backend-target.json", &target_json)
         .publish();
 
     let directory = paths::root().join("custom-backend-targets");
     std::fs::create_dir_all(&directory).expect("create isolated custom target directory");
     let target_path = directory.join("ohm-backend-target.json");
-    let mut target = serde_json::from_str::<serde_json::Value>(target_spec_json())
-        .expect("parse known compiler target specification");
-    target["default-codegen-backend"] = serde_json::Value::String("llvm".to_owned());
-    std::fs::write(
-        &target_path,
-        serde_json::to_vec(&target).expect("serialize custom target backend"),
-    )
-    .expect("write isolated custom target backend specification");
+    std::fs::write(&target_path, &target_json)
+        .expect("write isolated custom target backend specification");
 
     let manifest = r#"
         [package]
@@ -1730,6 +1730,7 @@ fn shared_registry_cache_keeps_custom_target_codegen_backends_private() {
     for (index, (target, search_path)) in [
         (target_path.display().to_string(), None),
         ("ohm-backend-target".to_owned(), Some(directory.as_path())),
+        ("cwd-backend-target".to_owned(), None),
     ]
     .into_iter()
     .enumerate()
@@ -1737,10 +1738,12 @@ fn shared_registry_cache_keeps_custom_target_codegen_backends_private() {
         let left = project_in(&format!("target-backend-{index}-left"))
             .file("Cargo.toml", manifest)
             .file("src/lib.rs", source)
+            .file("cwd-backend-target.json", &target_json)
             .build();
         let right = project_in(&format!("target-backend-{index}-right"))
             .file("Cargo.toml", manifest)
             .file("src/lib.rs", source)
+            .file("cwd-backend-target.json", &target_json)
             .build();
         let shared = paths::root().join(format!("target-backend-shared-{index}"));
         let command =
@@ -1756,6 +1759,8 @@ fn shared_registry_cache_keeps_custom_target_codegen_backends_private() {
                 .with_stderr_contains("[COMPILING] target-backend-registry v1.0.0");
             if let Some(search_path) = search_path {
                 invocation.env("RUST_TARGET_PATH", search_path);
+            } else {
+                invocation.env_remove("RUST_TARGET_PATH");
             }
             invocation.run();
         }
@@ -1833,6 +1838,21 @@ fi
 exec rustc "$@"
 "#,
         )
+        .executable(
+            "rustc",
+            r#"#!/bin/sh
+if [ "$OHM_DRIVER_MODE" = "deny" ]; then
+    previous=
+    for argument in "$@"; do
+        if [ "$previous" = "--crate-name" ] && [ "$argument" = "shimmed_registry" ]; then
+            exec "$OHM_GENUINE_RUSTC" "$@" --cfg ohm_changed_direct_compiler
+        fi
+        previous="$argument"
+    done
+fi
+exec "$OHM_GENUINE_RUSTC" "$@"
+"#,
+        )
         .build();
     let right = project_in("compiler-shim-right")
         .file("Cargo.toml", manifest)
@@ -1855,6 +1875,50 @@ exec rustc "$@"
         .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
         .env("CARGO_BUILD_BUILD_DIR", &shared)
         .env("RUSTC", &compiler)
+        .env("OHM_DRIVER_MODE", "deny")
+        .with_status(101)
+        .with_stderr_contains("[COMPILING] shimmed-registry v1.0.0")
+        .with_stderr_contains("[ERROR] the shared compiler shim changed behavior")
+        .run();
+
+    let inherited_path = std::env::var_os("PATH").expect("available executable search path");
+    let configured_path = std::env::join_paths(
+        std::iter::once(left.root()).chain(std::env::split_paths(&inherited_path)),
+    )
+    .expect("prepend the opaque compiler to the configured child executable path");
+    let configuration = format!(
+        "[env]\nPATH = {{ value = {:?}, force = true }}\n",
+        configured_path.to_string_lossy()
+    );
+    let configured_left = project_in("configured-compiler-shim-left")
+        .file("Cargo.toml", manifest)
+        .file("src/main.rs", source)
+        .file(".cargo/config.toml", &configuration)
+        .build();
+    let configured_right = project_in("configured-compiler-shim-right")
+        .file("Cargo.toml", manifest)
+        .file("src/main.rs", source)
+        .file(".cargo/config.toml", &configuration)
+        .build();
+    let configured_shared = paths::root().join("configured-compiler-shim-shared-build-directory");
+    let genuine_compiler = PathBuf::from(paths::sysroot()).join("bin/rustc");
+
+    configured_left
+        .cargo("-Zohm-shared-registry-cache run")
+        .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+        .env("CARGO_BUILD_BUILD_DIR", &configured_shared)
+        .env("RUSTC", "rustc")
+        .env("OHM_GENUINE_RUSTC", &genuine_compiler)
+        .env("OHM_DRIVER_MODE", "allow")
+        .with_stderr_contains("[COMPILING] shimmed-registry v1.0.0")
+        .with_stdout_data("19\n")
+        .run();
+    configured_right
+        .cargo("-Zohm-shared-registry-cache build")
+        .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+        .env("CARGO_BUILD_BUILD_DIR", &configured_shared)
+        .env("RUSTC", "rustc")
+        .env("OHM_GENUINE_RUSTC", &genuine_compiler)
         .env("OHM_DRIVER_MODE", "deny")
         .with_status(101)
         .with_stderr_contains("[COMPILING] shimmed-registry v1.0.0")
@@ -2065,6 +2129,83 @@ fn shared_registry_cache_rejects_ambient_rustdoc_wrappers() {
         .with_stderr_contains("[COMPILING] rustdoc-wrapper-registry v1.0.0")
         .with_stdout_data("right\n")
         .run();
+
+    let configuration = format!(
+        "[env]\nPATH = {{ value = {:?}, force = true }}\n",
+        intercepted_path.to_string_lossy()
+    );
+    let configured_left = project_in("rustdoc-configured-path-left")
+        .file("Cargo.toml", manifest)
+        .file("src/main.rs", source)
+        .file(".cargo/config.toml", &configuration)
+        .build();
+    let configured_right = project_in("rustdoc-configured-path-right")
+        .file("Cargo.toml", manifest)
+        .file("src/main.rs", source)
+        .file(".cargo/config.toml", &configuration)
+        .build();
+    let configured_shared = paths::root().join("rustdoc-configured-path-shared-build-directory");
+
+    configured_left
+        .cargo("-Zohm-shared-registry-cache run")
+        .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+        .env("CARGO_BUILD_BUILD_DIR", &configured_shared)
+        .env("RUSTDOC", "rustdoc")
+        .env("OHM_RUSTDOC_MODE", "left")
+        .with_stderr_contains("[COMPILING] rustdoc-wrapper-registry v1.0.0")
+        .with_stdout_data("left\n")
+        .run();
+    configured_right
+        .cargo("-Zohm-shared-registry-cache run")
+        .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+        .env("CARGO_BUILD_BUILD_DIR", &configured_shared)
+        .env("RUSTDOC", "rustdoc")
+        .env("OHM_RUSTDOC_MODE", "right")
+        .with_stderr_contains("[COMPILING] rustdoc-wrapper-registry v1.0.0")
+        .with_stdout_data("right\n")
+        .run();
+}
+
+#[cfg(unix)]
+#[cargo_test]
+fn shared_registry_cache_rejects_rustup_proxy_toolchain_changes() {
+    Package::new("rustup-dispatch-registry", "1.0.0")
+        .file("src/lib.rs", "pub fn value() -> u32 { 47 }")
+        .publish();
+
+    let create_project = |name: &str| {
+        project_in(name)
+            .file(
+                "Cargo.toml",
+                r#"
+                    [package]
+                    name = "rustup-dispatch-app"
+                    version = "0.1.0"
+                    edition = "2021"
+
+                    [dependencies]
+                    rustup-dispatch-registry = "1.0.0"
+                "#,
+            )
+            .file("src/lib.rs", "pub use rustup_dispatch_registry::value;")
+            .build()
+    };
+    let left = create_project("rustup-dispatch-left");
+    let right = create_project("rustup-dispatch-right");
+    let shared = paths::root().join("rustup-dispatch-shared-build-directory");
+    let genuine_compiler = PathBuf::from(paths::sysroot()).join("bin/rustc");
+
+    for (project, toolchain) in [(&left, "stable"), (&right, "nightly")] {
+        project
+            .cargo("-Zohm-shared-registry-cache build")
+            .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+            .env("CARGO_BUILD_BUILD_DIR", &shared)
+            .env("RUSTC", &genuine_compiler)
+            .env("RUSTDOC", "rustdoc")
+            .env("RUSTUP_TOOLCHAIN", toolchain)
+            .with_stderr_contains("[COMPILING] rustup-dispatch-registry v1.0.0")
+            .run();
+    }
 }
 
 #[cfg(windows)]
@@ -2126,7 +2267,7 @@ fn shared_registry_cache_rejects_ambient_native_compiler_wrappers() {
                 let target = std::env::var("TARGET").unwrap().replace(['-', '.'], "_");
                 let compiler = std::env::var_os("CC")
                     .or_else(|| std::env::var_os(format!("CC_{target}")))
-                    .unwrap();
+                    .unwrap_or_else(|| "cc".into());
                 assert!(
                     std::process::Command::new(compiler)
                         .args(["-c", "native.c", "-o"])
@@ -2181,6 +2322,10 @@ fn shared_registry_cache_rejects_ambient_native_compiler_wrappers() {
             "native-wrapper",
             "#!/bin/sh\nexec /usr/bin/cc -DOHM_WRAPPED_VALUE=\"$OHM_NATIVE_MODE\" \"$@\"\n",
         )
+        .executable(
+            "cc",
+            "#!/bin/sh\nexec /usr/bin/cc -DOHM_WRAPPED_VALUE=\"$OHM_NATIVE_MODE\" \"$@\"\n",
+        )
         .build();
     let right = project_in("native-wrapper-right")
         .file("Cargo.toml", manifest)
@@ -2231,6 +2376,40 @@ fn shared_registry_cache_rejects_ambient_native_compiler_wrappers() {
         .env("OHM_NATIVE_MODE", "53")
         .with_stderr_contains("[COMPILING] native-wrapper-registry v1.0.0")
         .with_stdout_data("53\n")
+        .run();
+
+    let inherited_path = std::env::var_os("PATH").expect("available executable search path");
+    let intercepted_path = std::env::join_paths(
+        std::iter::once(left.root()).chain(std::env::split_paths(&inherited_path)),
+    )
+    .expect("prepend the implicitly selected native compiler");
+    let implicit_left = project_in("implicit-native-wrapper-left")
+        .file("Cargo.toml", manifest)
+        .file("src/main.rs", source)
+        .build();
+    let implicit_right = project_in("implicit-native-wrapper-right")
+        .file("Cargo.toml", manifest)
+        .file("src/main.rs", source)
+        .build();
+    let implicit_shared = paths::root().join("implicit-native-wrapper-shared-build-directory");
+
+    implicit_left
+        .cargo("-Zohm-shared-registry-cache run")
+        .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+        .env("CARGO_BUILD_BUILD_DIR", &implicit_shared)
+        .env("PATH", &intercepted_path)
+        .env("OHM_NATIVE_MODE", "67")
+        .with_stderr_contains("[COMPILING] native-wrapper-registry v1.0.0")
+        .with_stdout_data("67\n")
+        .run();
+    implicit_right
+        .cargo("-Zohm-shared-registry-cache run")
+        .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+        .env("CARGO_BUILD_BUILD_DIR", &implicit_shared)
+        .env("PATH", &intercepted_path)
+        .env("OHM_NATIVE_MODE", "83")
+        .with_stderr_contains("[COMPILING] native-wrapper-registry v1.0.0")
+        .with_stdout_data("83\n")
         .run();
 }
 
@@ -2852,6 +3031,8 @@ fn shared_registry_cache_rejects_build_script_compiler_search_path_overrides() {
         ("PATH", "/opaque/compiler-tools"),
         ("DYLD_LIBRARY_PATH", ""),
         ("PATH", ""),
+        ("RUSTC_LOG", "warn"),
+        ("RUSTC_LOG_OUTPUT_TARGET", "/opaque/compiler-log"),
     ] {
         project
             .cargo("-Zohm-shared-registry-cache build")
