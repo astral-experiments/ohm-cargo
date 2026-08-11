@@ -1043,13 +1043,6 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
             return Ok(true);
         }
 
-        if promoted_units
-            .iter()
-            .any(|unit| self.unit_uses_custom_codegen_backend(unit))
-        {
-            return Ok(false);
-        }
-
         let mut registry_closure_units = HashSet::default();
         let mut pending = promoted_units.clone();
         while let Some(unit) = pending.pop() {
@@ -1072,6 +1065,16 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
         }
         let mut registry_closure_units = registry_closure_units.into_iter().collect::<Vec<_>>();
         registry_closure_units.sort_by_key(|unit| self.files().unit_hash(unit));
+
+        // Host procedural macros, build scripts, and their dependencies have
+        // independent package and build-override profiles. Check their actual
+        // units too, not just the target libraries promoted by the check graph.
+        if registry_closure_units
+            .iter()
+            .any(|unit| self.unit_uses_custom_codegen_backend(unit))
+        {
+            return Ok(false);
+        }
 
         if self.bcx.gctx.cli_unstable().fine_grain_locking {
             // Keep the complete registry closure stable from the fingerprint
@@ -1213,7 +1216,7 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
             .extra_args_for(unit)
             .map(Vec::as_slice)
             .unwrap_or_default();
-        let mut arguments = unit
+        let arguments = unit
             .pkg
             .manifest()
             .lint_rustflags()
@@ -1223,52 +1226,12 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
             .chain(extra_args.iter().map(String::as_str))
             .chain(unit.rustflags.iter().map(String::as_str));
 
-        while let Some(argument) = arguments.next() {
-            if let Some(search_path) = argument.strip_prefix("-L") {
-                let search_path = if search_path.is_empty() {
-                    let Some(search_path) = arguments.next() else {
-                        return true;
-                    };
-                    search_path
-                } else {
-                    search_path
-                };
-                if !search_path.starts_with("native=") && !search_path.starts_with("framework=") {
-                    return true;
-                }
-                continue;
-            }
-            if argument.starts_with('@')
-                || argument == "--extern"
-                || argument.starts_with("--extern=")
-                || argument == "--target"
-                || argument.starts_with("--target=")
-                || argument == "--sysroot"
-                || argument.starts_with("--sysroot=")
-            {
-                return true;
-            }
-            let option = if argument == "-Z" {
-                arguments.next()
-            } else {
-                argument.strip_prefix("-Z")
-            };
-            if option.is_some_and(|option| {
-                option.starts_with('@')
-                    || matches!(
-                        option.split_once('=').map_or(option, |(name, _)| name),
-                        "autodiff"
-                            | "codegen-backend"
-                            | "codegen_backend"
-                            | "llvm-plugins"
-                            | "llvm_plugins"
-                    )
-            }) {
-                return true;
-            }
-        }
-
-        false
+        compilation_files::unit_compiler_arguments_use_opaque_execution(
+            unit,
+            host_triple.as_str(),
+            unit_sysroot,
+            arguments,
+        )
     }
 
     /// Returns whether a unit has the shape of a promotable registry library.
