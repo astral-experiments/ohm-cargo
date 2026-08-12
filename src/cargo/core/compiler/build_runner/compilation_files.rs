@@ -411,80 +411,35 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
                             effective_executable_path.as_deref(),
                         )
                     });
-                let mut implicit_native_tools = [
+                let universal_implicit_native_tools = [
                     "cc", "c++", "gcc", "g++", "clang", "clang++", "ar", "ranlib", "perl", "xcrun",
-                ]
-                .into_iter()
-                .map(str::to_owned)
-                .collect::<Vec<_>>();
+                ];
+                let compilation_targets = build_runner
+                    .bcx
+                    .all_kinds
+                    .iter()
+                    .map(|kind| build_runner.bcx.target_data.short_name(kind).to_owned())
+                    .collect::<Vec<_>>();
+                let mut package_native_tools = HashMap::default();
                 for unit in metas.keys() {
-                    match unit.pkg.package_id().name().as_str() {
-                        "cc" => {
-                            implicit_native_tools.extend(
-                                [
-                                    "nvcc",
-                                    "cl",
-                                    "cl.exe",
-                                    "clang-cl",
-                                    "clang-cl.exe",
-                                    "emcc",
-                                    "emcc.bat",
-                                    "em++",
-                                    "em++.bat",
-                                    "emar",
-                                    "emar.bat",
-                                    "emranlib",
-                                    "emranlib.bat",
-                                    "cmd",
-                                    "cmd.exe",
-                                    "llvm-ar",
-                                    "llvm-ranlib",
-                                    "llvm-lib",
-                                    "lib",
-                                    "lib.exe",
-                                    "wr-cc",
-                                    "wr-c++",
-                                    "qcc",
-                                    "q++",
-                                ]
-                                .into_iter()
-                                .map(str::to_owned),
-                            );
-                            for kind in &build_runner.bcx.all_kinds {
-                                let target = build_runner.bcx.target_data.short_name(kind);
-                                for tool in [
-                                    "gcc",
-                                    "g++",
-                                    "clang",
-                                    "clang++",
-                                    "ar",
-                                    "gcc-ar",
-                                    "ranlib",
-                                    "gcc-ranlib",
-                                ] {
-                                    implicit_native_tools.push(format!("{target}-{tool}"));
-                                }
-                            }
-                        }
-                        "cmake" => implicit_native_tools.extend(
-                            ["cmake", "emcmake", "emmake", "make", "mingw32-make"]
-                                .into_iter()
-                                .map(str::to_owned),
-                        ),
-                        "pkg-config" => implicit_native_tools
-                            .extend(["pkg-config", "pkgconf"].into_iter().map(str::to_owned)),
-                        "openssl-src" => implicit_native_tools.extend(
-                            ["make", "gmake", "nasm", "nmake.exe"]
-                                .into_iter()
-                                .map(str::to_owned),
-                        ),
-                        _ => {}
+                    let package = unit.pkg.package_id().name().as_str();
+                    if package_native_tools.contains_key(package) {
+                        continue;
+                    }
+                    let tools = package_implicit_native_tools(package, &compilation_targets);
+                    if !tools.is_empty() {
+                        package_native_tools.insert(package.to_owned(), tools);
                     }
                 }
+                let mut implicit_native_tools = universal_implicit_native_tools
+                    .iter()
+                    .map(|tool| (*tool).to_owned())
+                    .chain(package_native_tools.values().flatten().cloned())
+                    .collect::<Vec<_>>();
                 implicit_native_tools.sort_unstable();
                 implicit_native_tools.dedup();
-                let verified_implicit_native_tools = implicit_native_tools.iter().all(|tool| {
-                    match resolve_effective_executable(
+                let implicit_native_tool_is_verified =
+                    |tool: &str| match resolve_effective_executable(
                         Path::new(tool),
                         effective_executable_path.as_deref(),
                     ) {
@@ -495,8 +450,19 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
                         ),
                         Ok(None) => true,
                         Err(_) => false,
-                    }
-                });
+                    };
+                let verified_implicit_native_tools = universal_implicit_native_tools
+                    .iter()
+                    .all(|tool| implicit_native_tool_is_verified(tool));
+                let untrusted_native_tool_packages = package_native_tools
+                    .iter()
+                    .filter(|(_, tools)| {
+                        !tools
+                            .iter()
+                            .all(|tool| implicit_native_tool_is_verified(tool))
+                    })
+                    .map(|(package, _)| package.clone())
+                    .collect::<HashSet<_>>();
                 let verified_native_tools = native_tools.iter().all(|(_, value)| {
                     value.as_deref().is_none_or(|tool| {
                         tool.is_empty()
@@ -585,7 +551,13 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
                     for unit in metas.keys() {
                         immutable_units.insert(
                             unit.clone(),
-                            is_immutable_registry_unit(unit, build_runner, false, &mut eligibility),
+                            is_immutable_registry_unit(
+                                unit,
+                                build_runner,
+                                false,
+                                &untrusted_native_tool_packages,
+                                &mut eligibility,
+                            ),
                         );
                     }
                 }
@@ -1300,6 +1272,68 @@ fn native_target_environment_names(name: &str, target: &str) -> [String; 3] {
     ]
 }
 
+/// External executables selected implicitly by the known native-build helper families.
+///
+/// Keep these names associated with their originating helper so an unrelated Rust-only
+/// registry package does not inherit the helper's opaque, workspace-specific toolchain.
+fn package_implicit_native_tools(package: &str, targets: &[String]) -> Vec<String> {
+    let tools: &[&str] = match package {
+        "cc" => &[
+            "nvcc",
+            "cl",
+            "cl.exe",
+            "clang-cl",
+            "clang-cl.exe",
+            "emcc",
+            "emcc.bat",
+            "em++",
+            "em++.bat",
+            "emar",
+            "emar.bat",
+            "emranlib",
+            "emranlib.bat",
+            "cmd",
+            "cmd.exe",
+            "llvm-ar",
+            "llvm-ranlib",
+            "llvm-lib",
+            "lib",
+            "lib.exe",
+            "wr-cc",
+            "wr-c++",
+            "qcc",
+            "q++",
+        ],
+        "cmake" => &["cmake", "emcmake", "emmake", "make", "mingw32-make"],
+        "pkg-config" => &["pkg-config", "pkgconf"],
+        "openssl-src" => &["make", "gmake", "nasm", "nmake.exe"],
+        _ => &[],
+    };
+    let mut tools = tools
+        .iter()
+        .map(|tool| (*tool).to_owned())
+        .collect::<Vec<_>>();
+
+    if package == "cc" {
+        for target in targets {
+            for tool in [
+                "gcc",
+                "g++",
+                "clang",
+                "clang++",
+                "ar",
+                "gcc-ar",
+                "ranlib",
+                "gcc-ranlib",
+            ] {
+                tools.push(format!("{target}-{tool}"));
+            }
+        }
+    }
+
+    tools
+}
+
 /// Rejects Windows configuration aliases that can bypass Cargo's case-sensitive lookups.
 fn configured_environment_has_sensitive_case_alias(
     configured: &[(String, OsString)],
@@ -1326,10 +1360,15 @@ fn configured_environment_has_sensitive_case_alias(
 /// rejected. Procedural macros can observe external inputs without tracking them, so the
 /// selected trust policy controls which canonical, lockfile-authenticated macro and runtime
 /// dependency closures may be shared.
+///
+/// An opaque package-specific native tool taints its helper and every actual build script,
+/// which could execute that tool directly without declaring a helper dependency. The ordinary
+/// dependency walk then propagates both forms of taint through every downstream unit.
 fn is_immutable_registry_unit(
     unit: &Unit,
     build_runner: &BuildRunner<'_, '_>,
     audited_macro_runtime: bool,
+    untrusted_native_tool_packages: &HashSet<String>,
     eligibility: &mut HashMap<(Unit, bool), bool>,
 ) -> bool {
     let audited_macro_runtime = audited_macro_runtime || unit.pkg.proc_macro();
@@ -1341,6 +1380,9 @@ fn is_immutable_registry_unit(
     let package_id = unit.pkg.package_id();
     let source_id = package_id.source_id();
     let eligible = source_id.is_remote_registry()
+        && !untrusted_native_tool_packages.contains(package_id.name().as_str())
+        && (untrusted_native_tool_packages.is_empty()
+            || (!unit.target.is_custom_build() && !unit.mode.is_run_custom_build()))
         && build_runner
             .bcx
             .packages
@@ -1360,6 +1402,7 @@ fn is_immutable_registry_unit(
                 &dependency.unit,
                 build_runner,
                 audited_macro_runtime,
+                untrusted_native_tool_packages,
                 eligibility,
             )
         });
@@ -2460,8 +2503,8 @@ mod shared_registry_tests {
         compiler_arguments_use_opaque_execution, compiler_driver_identity_for_sysroot,
         compiler_driver_search_directory_is_safe, compiler_option_uses_opaque_execution,
         configured_environment_has_sensitive_case_alias, native_target_environment_names,
-        resolve_effective_executable, sysroot_contains_trusted_objcopy,
-        sysroot_has_custom_codegen_backends,
+        package_implicit_native_tools, resolve_effective_executable,
+        sysroot_contains_trusted_objcopy, sysroot_has_custom_codegen_backends,
     };
 
     #[test]
@@ -2482,6 +2525,32 @@ mod shared_registry_tests {
                 "CMAKE_TOOLCHAIN_FILE_thumbv8m_main_none_eabi",
             ]
         );
+    }
+
+    #[test]
+    fn implicit_native_tools_remain_scoped_to_their_build_helper_families() {
+        let targets = ["thumbv8m.main-none-eabi".to_owned()];
+        let compiler_tools = package_implicit_native_tools("cc", &targets);
+        assert!(compiler_tools.contains(&"nvcc".to_owned()));
+        assert!(compiler_tools.contains(&"thumbv8m.main-none-eabi-gcc".to_owned()));
+        assert!(!compiler_tools.contains(&"cmake".to_owned()));
+
+        let cmake_tools = package_implicit_native_tools("cmake", &targets);
+        assert!(cmake_tools.contains(&"cmake".to_owned()));
+        assert!(cmake_tools.contains(&"make".to_owned()));
+        assert!(!cmake_tools.contains(&"pkg-config".to_owned()));
+
+        let pkg_config_tools = package_implicit_native_tools("pkg-config", &targets);
+        assert!(pkg_config_tools.contains(&"pkg-config".to_owned()));
+        assert!(pkg_config_tools.contains(&"pkgconf".to_owned()));
+        assert!(!pkg_config_tools.contains(&"cmake".to_owned()));
+
+        let openssl_tools = package_implicit_native_tools("openssl-src", &targets);
+        assert!(openssl_tools.contains(&"make".to_owned()));
+        assert!(openssl_tools.contains(&"nasm".to_owned()));
+        assert!(!openssl_tools.contains(&"cmake".to_owned()));
+
+        assert!(package_implicit_native_tools("unrelated-registry", &targets).is_empty());
     }
 
     #[cfg(unix)]

@@ -2624,6 +2624,200 @@ fn shared_registry_cache_rejects_windows_configuration_environment_aliases() {
 
 #[cfg(unix)]
 #[cargo_test]
+fn shared_registry_cache_isolates_only_opaque_native_tool_closures() {
+    Package::new("cmake", "1.0.0")
+        .file(
+            "src/lib.rs",
+            r#"
+            pub fn selected_value() -> String {
+                let output = std::process::Command::new("cmake")
+                    .output()
+                    .expect("run workspace-private native tool");
+                assert!(output.status.success());
+                String::from_utf8(output.stdout).expect("decode native tool output")
+            }
+            "#,
+        )
+        .publish();
+    Package::new("unrelated-pure-registry", "1.0.0")
+        .file(
+            "src/lib.rs",
+            "pub fn value() -> &'static str { \"shared\" }",
+        )
+        .publish();
+    for helper in ["cc", "pkg-config", "openssl-src"] {
+        Package::new(helper, "1.0.0")
+            .file(
+                "src/lib.rs",
+                "pub fn value() -> &'static str { \"helper\" }",
+            )
+            .publish();
+    }
+    Package::new("indirect-native-registry", "1.0.0")
+        .build_dep("cmake", "1.0.0")
+        .file(
+            "build.rs",
+            r#"
+            fn main() {
+                let output = std::path::PathBuf::from(std::env::var_os("OUT_DIR").unwrap());
+                std::fs::write(
+                    output.join("generated.rs"),
+                    format!("pub const VALUE: &str = {:?};", cmake::selected_value()),
+                )
+                .unwrap();
+            }
+            "#,
+        )
+        .file(
+            "src/lib.rs",
+            r#"
+            include!(concat!(env!("OUT_DIR"), "/generated.rs"));
+            pub fn value() -> &'static str { VALUE }
+            "#,
+        )
+        .publish();
+    Package::new("direct-native-registry", "1.0.0")
+        .file(
+            "build.rs",
+            r#"
+            fn main() {
+                let selected = std::process::Command::new("cmake").output().unwrap();
+                assert!(selected.status.success());
+                let output = std::path::PathBuf::from(std::env::var_os("OUT_DIR").unwrap());
+                std::fs::write(
+                    output.join("generated.rs"),
+                    format!(
+                        "pub const VALUE: &str = {:?};",
+                        String::from_utf8(selected.stdout).unwrap(),
+                    ),
+                )
+                .unwrap();
+            }
+            "#,
+        )
+        .file(
+            "src/lib.rs",
+            r#"
+            include!(concat!(env!("OUT_DIR"), "/generated.rs"));
+            pub fn value() -> &'static str { VALUE }
+            "#,
+        )
+        .publish();
+    Package::new("native-parent-registry", "1.0.0")
+        .dep("indirect-native-registry", "1.0.0")
+        .file(
+            "src/lib.rs",
+            "pub fn value() -> &'static str { indirect_native_registry::value() }",
+        )
+        .publish();
+
+    let create_project = |worktree: &str| {
+        project_in(worktree)
+            .file(
+                "Cargo.toml",
+                r#"
+                [package]
+                name = "native-tool-closure-cache-app"
+                version = "0.1.0"
+                edition = "2021"
+
+                [dependencies]
+                unrelated-pure-registry = "1.0.0"
+                indirect-native-registry = "1.0.0"
+                direct-native-registry = "1.0.0"
+                native-parent-registry = "1.0.0"
+                cc = "1.0.0"
+                pkg-config = "1.0.0"
+                openssl-src = "1.0.0"
+                "#,
+            )
+            .file(
+                "src/main.rs",
+                r#"
+                fn main() {
+                    println!(
+                        "{}:{}:{}:{}",
+                        unrelated_pure_registry::value(),
+                        indirect_native_registry::value(),
+                        direct_native_registry::value(),
+                        native_parent_registry::value(),
+                    );
+                }
+                "#,
+            )
+            .build()
+    };
+    let left = create_project("native-tool-closure-left");
+    let right = create_project("native-tool-closure-right");
+    let wrapper = project_in("native-tool-closure-wrapper")
+        .file(
+            "Cargo.toml",
+            r#"
+            [package]
+            name = "native-tool-closure-wrapper"
+            version = "0.1.0"
+            edition = "2021"
+            "#,
+        )
+        .file("src/lib.rs", "")
+        .executable(
+            "cmake",
+            "#!/bin/sh\nprintf '%s' \"$OHM_NATIVE_TOOL_MODE\"\n",
+        )
+        .executable("nvcc", "#!/bin/sh\nexit 0\n")
+        .executable("pkg-config", "#!/bin/sh\nexit 0\n")
+        .executable("make", "#!/bin/sh\nexit 0\n")
+        .build();
+    let inherited_path = std::env::var_os("PATH").expect("native tool executable search path");
+    let executable_path = std::env::join_paths(
+        std::iter::once(wrapper.root())
+            .chain(std::iter::once(
+                std::path::PathBuf::from(paths::sysroot()).join("bin"),
+            ))
+            .chain(std::env::split_paths(&inherited_path)),
+    )
+    .expect("construct native tool wrapper executable search path");
+    let shared = paths::root().join("native-tool-closure-shared-build-directory");
+
+    left.shared_registry_cargo("-Zohm-shared-registry-cache run")
+        .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+        .env("CARGO_BUILD_BUILD_DIR", &shared)
+        .env("PATH", &executable_path)
+        .env("OHM_NATIVE_TOOL_MODE", "left")
+        .with_stderr_contains("[COMPILING] unrelated-pure-registry v1.0.0")
+        .with_stderr_contains("[COMPILING] cmake v1.0.0")
+        .with_stderr_contains("[COMPILING] cc v1.0.0")
+        .with_stderr_contains("[COMPILING] pkg-config v1.0.0")
+        .with_stderr_contains("[COMPILING] openssl-src v1.0.0")
+        .with_stderr_contains("[COMPILING] indirect-native-registry v1.0.0")
+        .with_stderr_contains("[COMPILING] direct-native-registry v1.0.0")
+        .with_stderr_contains("[COMPILING] native-parent-registry v1.0.0")
+        .with_stdout_data("shared:left:left:left\n")
+        .run();
+
+    right
+        .shared_registry_cargo("-Zohm-shared-registry-cache run")
+        .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+        .env("CARGO_BUILD_BUILD_DIR", &shared)
+        .env("PATH", &executable_path)
+        .env("OHM_NATIVE_TOOL_MODE", "right")
+        .with_stderr_does_not_contain("[COMPILING] unrelated-pure-registry v1.0.0")
+        .with_stderr_contains("[COMPILING] cmake v1.0.0")
+        .with_stderr_contains("[COMPILING] cc v1.0.0")
+        .with_stderr_contains("[COMPILING] pkg-config v1.0.0")
+        .with_stderr_contains("[COMPILING] openssl-src v1.0.0")
+        .with_stderr_contains("[COMPILING] indirect-native-registry v1.0.0")
+        .with_stderr_contains("[COMPILING] direct-native-registry v1.0.0")
+        .with_stderr_contains("[COMPILING] native-parent-registry v1.0.0")
+        .with_stdout_data("shared:right:right:right\n")
+        .run();
+
+    assert!(shared.join("debug/build/registries").is_dir());
+    assert!(shared.join("debug/build/workspaces").is_dir());
+}
+
+#[cfg(unix)]
+#[cargo_test]
 fn shared_registry_cache_rejects_ambient_native_compiler_wrappers() {
     Package::new("native-wrapper-registry", "1.0.0")
         .file(
