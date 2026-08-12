@@ -20,8 +20,6 @@ use crate::core::compiler::custom_build::OHM_SHARED_RUSTC_LOG_ENVIRONMENT;
 use crate::core::compiler::{CompileMode, CompileTarget, CrateType, FileType, Unit};
 use crate::core::profiles::StripInner;
 use crate::core::{Target, TargetKind, Workspace};
-use crate::sources::CRATES_IO_INDEX;
-use crate::sources::registry::CRATES_IO_HTTP_INDEX;
 use crate::util::{self, CargoResult, OnceExt, StableHasher};
 
 /// This is a generic version number that can be changed to make
@@ -582,8 +580,12 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
                     && target_applies_to_host.is_some();
                 let mut immutable_units = HashMap::default();
                 if trusted_context {
+                    let mut eligibility = HashMap::default();
                     for unit in metas.keys() {
-                        is_immutable_registry_unit(unit, build_runner, &mut immutable_units);
+                        immutable_units.insert(
+                            unit.clone(),
+                            is_immutable_registry_unit(unit, build_runner, false, &mut eligibility),
+                        );
                     }
                 }
                 SharedRegistryCache {
@@ -1313,13 +1315,17 @@ fn configured_environment_has_sensitive_case_alias(
 /// to persist Cargo's synthesized, workspace-private dynamic-library search paths or jobserver
 /// handles as generated source. Arbitrary global rustc wrappers and direct compiler shims are
 /// rejected. Procedural macros can observe external inputs without tracking them, so only the
-/// audited, checksummed upstream `serde_derive` producer may appear in a shared closure.
+/// explicitly audited canonical macro release and its exact, lockfile-authenticated runtime
+/// dependency closure may appear in a shared closure.
 fn is_immutable_registry_unit(
     unit: &Unit,
     build_runner: &BuildRunner<'_, '_>,
-    eligibility: &mut HashMap<Unit, bool>,
+    audited_macro_runtime: bool,
+    eligibility: &mut HashMap<(Unit, bool), bool>,
 ) -> bool {
-    if let Some(eligible) = eligibility.get(unit) {
+    let audited_macro_runtime = audited_macro_runtime || unit.pkg.proc_macro();
+    let cache_key = (unit.clone(), audited_macro_runtime);
+    if let Some(eligible) = eligibility.get(&cache_key) {
         return *eligible;
     }
 
@@ -1333,22 +1339,22 @@ fn is_immutable_registry_unit(
             .get(source_id)
             .is_some_and(|source| {
                 source.replaced_source_id().is_remote_registry()
-                    && (!unit.pkg.proc_macro()
-                        || (source_id.is_crates_io()
-                            && matches!(
-                                source_id.url().as_str(),
-                                CRATES_IO_INDEX | CRATES_IO_HTTP_INDEX
-                            )
-                            && !source.is_replaced()
-                            && package_id.name().as_str() == "serde_derive"
-                            && package_id.version().major == 1
-                            && unit.pkg.summary().checksum().is_some()))
+                    && (!audited_macro_runtime
+                        || build_runner
+                            .bcx
+                            .audited_proc_macro_packages
+                            .contains(&package_id))
             })
         && !unit_uses_custom_codegen_backend(unit, build_runner)
         && build_runner.unit_deps(unit).iter().all(|dependency| {
-            is_immutable_registry_unit(&dependency.unit, build_runner, eligibility)
+            is_immutable_registry_unit(
+                &dependency.unit,
+                build_runner,
+                audited_macro_runtime,
+                eligibility,
+            )
         });
-    eligibility.insert(unit.clone(), eligible);
+    eligibility.insert(cache_key, eligible);
     eligible
 }
 
