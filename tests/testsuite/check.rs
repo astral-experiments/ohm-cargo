@@ -729,7 +729,7 @@ fn ohm_built_registry_dependency_reuse_revalidates_shared_driver_search_director
     let mut check = p.cargo("-Zohm-reuse-built-deps check");
     check
         .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
-        .with_stderr_contains("[CHECKING] dependency v1.0.0");
+        .with_stderr_contains("[CHECKING] leaf v1.0.0");
     if cfg!(target_os = "macos") {
         check.run();
     } else {
