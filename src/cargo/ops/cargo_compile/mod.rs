@@ -751,6 +751,7 @@ where `<compatible-ver>` is the latest version supporting rustc {rustc_version}"
                         .and_then(Option::as_deref),
                     unit.pkg.summary().checksum(),
                     unit.pkg.proc_macro(),
+                    gctx.cli_unstable().ohm_proc_macro_trust,
                 )
                 .then_some(package_id)
             })

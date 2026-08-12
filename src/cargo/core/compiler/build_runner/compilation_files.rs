@@ -18,6 +18,7 @@ use tracing::debug;
 use super::{BuildContext, BuildRunner, CompileKind, FileFlavor, Layout};
 use crate::core::compiler::custom_build::OHM_SHARED_RUSTC_LOG_ENVIRONMENT;
 use crate::core::compiler::{CompileMode, CompileTarget, CrateType, FileType, Unit};
+use crate::core::features::OhmProcMacroTrust;
 use crate::core::profiles::StripInner;
 use crate::core::{Target, TargetKind, Workspace};
 use crate::util::{self, CargoResult, OnceExt, StableHasher};
@@ -588,31 +589,39 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
                         );
                     }
                 }
+                let rustc = util::short_hash(&(
+                    (
+                        &compiler.verbose_version,
+                        &compiler.path,
+                        &compiler_file_identity,
+                        &compiler_driver_identity,
+                    ),
+                    (&rustdoc, &cargo, &rustup_environment),
+                    context.home().as_path_unlocked(),
+                    build_runner.bcx.jobs(),
+                    (&linkers, &host_linker),
+                    &configured_environment,
+                    (&native_environment, &native_tools),
+                    (
+                        &effective_bootstrap,
+                        &effective_compiler_version,
+                        context.cli_unstable().host_config,
+                        &target_applies_to_host,
+                        &effective_host_runner,
+                        &apple_deployment_targets,
+                        context.extra_verbose(),
+                    ),
+                ));
+                let rustc = if context.cli_unstable().ohm_proc_macro_trust == OhmProcMacroTrust::All
+                {
+                    format!("{rustc}-all")
+                } else {
+                    rustc
+                };
+
                 SharedRegistryCache {
                     workspace: Layout::shared_workspace_namespace(build_runner.bcx.ws),
-                    rustc: util::short_hash(&(
-                        (
-                            &compiler.verbose_version,
-                            &compiler.path,
-                            &compiler_file_identity,
-                            &compiler_driver_identity,
-                        ),
-                        (&rustdoc, &cargo, &rustup_environment),
-                        context.home().as_path_unlocked(),
-                        build_runner.bcx.jobs(),
-                        (&linkers, &host_linker),
-                        &configured_environment,
-                        (&native_environment, &native_tools),
-                        (
-                            &effective_bootstrap,
-                            &effective_compiler_version,
-                            context.cli_unstable().host_config,
-                            &target_applies_to_host,
-                            &effective_host_runner,
-                            &apple_deployment_targets,
-                            context.extra_verbose(),
-                        ),
-                    )),
+                    rustc,
                     compiler_driver: compiler_driver_identity.map(|driver| driver.path),
                     #[cfg(windows)]
                     implicit_native_tools,
@@ -1314,9 +1323,9 @@ fn configured_environment_has_sensitive_case_alias(
 /// already incorporated into the shared namespace. The explicit opt-in trusts build scripts not
 /// to persist Cargo's synthesized, workspace-private dynamic-library search paths or jobserver
 /// handles as generated source. Arbitrary global rustc wrappers and direct compiler shims are
-/// rejected. Procedural macros can observe external inputs without tracking them, so only the
-/// explicitly audited canonical macro release and its exact, lockfile-authenticated runtime
-/// dependency closure may appear in a shared closure.
+/// rejected. Procedural macros can observe external inputs without tracking them, so the
+/// selected trust policy controls which canonical, lockfile-authenticated macro and runtime
+/// dependency closures may be shared.
 fn is_immutable_registry_unit(
     unit: &Unit,
     build_runner: &BuildRunner<'_, '_>,

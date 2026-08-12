@@ -11,7 +11,7 @@ use std::path::{Path, PathBuf};
 use crate::prelude::*;
 use cargo::CargoResult;
 use cargo::core::PackageIdSpec;
-use cargo::core::features::{GitFeatures, GitoxideFeatures};
+use cargo::core::features::{GitFeatures, GitoxideFeatures, OhmProcMacroTrust};
 use cargo::util::auth::RegistryConfig;
 use cargo::util::context::Value;
 use cargo::util::context::{
@@ -1331,6 +1331,81 @@ fn no_embed_metadata_accepts_boolean_values() {
         .unstable_flag("no-embed-metadata")
         .build();
     assert!(gctx.cli_unstable().no_embed_metadata());
+}
+
+#[cargo_test]
+fn ohm_proc_macro_trust_accepts_configuration_environment_and_cli() {
+    let gctx = GlobalContextBuilder::new()
+        .nightly_features_allowed(true)
+        .build();
+    assert_eq!(
+        gctx.cli_unstable().ohm_proc_macro_trust,
+        OhmProcMacroTrust::Audited
+    );
+
+    let gctx = GlobalContextBuilder::new()
+        .nightly_features_allowed(true)
+        .env("CARGO_UNSTABLE_OHM_PROC_MACRO_TRUST", "all")
+        .build();
+    assert_eq!(
+        gctx.cli_unstable().ohm_proc_macro_trust,
+        OhmProcMacroTrust::All
+    );
+
+    let gctx = GlobalContextBuilder::new()
+        .env("CARGO_UNSTABLE_OHM_PROC_MACRO_TRUST", "all")
+        .unstable_flag("ohm-proc-macro-trust=audited")
+        .build();
+    assert_eq!(
+        gctx.cli_unstable().ohm_proc_macro_trust,
+        OhmProcMacroTrust::Audited
+    );
+
+    write_config_toml(
+        "\
+[unstable]
+ohm-proc-macro-trust = 'all'
+",
+    );
+    let gctx = GlobalContextBuilder::new()
+        .nightly_features_allowed(true)
+        .build();
+    assert_eq!(
+        gctx.cli_unstable().ohm_proc_macro_trust,
+        OhmProcMacroTrust::All
+    );
+
+    let gctx = GlobalContextBuilder::new()
+        .env("CARGO_UNSTABLE_OHM_PROC_MACRO_TRUST", "audited")
+        .nightly_features_allowed(true)
+        .build();
+    assert_eq!(
+        gctx.cli_unstable().ohm_proc_macro_trust,
+        OhmProcMacroTrust::Audited
+    );
+}
+
+#[cargo_test]
+fn ohm_proc_macro_trust_rejects_invalid_values() {
+    assert!(
+        GlobalContextBuilder::new()
+            .nightly_features_allowed(true)
+            .env("CARGO_UNSTABLE_OHM_PROC_MACRO_TRUST", "everything")
+            .build_err()
+            .is_err()
+    );
+    assert!(
+        GlobalContextBuilder::new()
+            .unstable_flag("ohm-proc-macro-trust")
+            .build_err()
+            .is_err()
+    );
+    assert!(
+        GlobalContextBuilder::new()
+            .unstable_flag("ohm-proc-macro-trust=everything")
+            .build_err()
+            .is_err()
+    );
 }
 
 #[cargo_test]
