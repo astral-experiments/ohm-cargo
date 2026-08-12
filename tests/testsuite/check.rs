@@ -668,6 +668,76 @@ fn ohm_built_registry_dependency_reuse_rejects_shadowed_compiler_drivers() {
 }
 
 #[cargo_test]
+fn ohm_built_registry_dependency_reuse_revalidates_shared_driver_search_directories() {
+    Package::new("leaf", "1.0.0")
+        .file("src/lib.rs", "pub fn value() -> u32 { 19 }")
+        .publish();
+    Package::new("dependency", "1.0.0")
+        .dep("leaf", "1.0.0")
+        .file(
+            "src/lib.rs",
+            "extern crate leaf; pub fn value() -> u32 { leaf::value() }",
+        )
+        .publish();
+
+    let p = ohm_registry_project();
+    p.cargo("build").run();
+    let search_directory = p.root().join("target/debug/deps");
+
+    let mut expected_driver = None;
+    for package in ["leaf", "dependency"] {
+        let provenance_path = p
+            .glob(&format!(
+                "target/debug/.fingerprint/{package}-*/ohm-message-provenance-lib-{package}"
+            ))
+            .next()
+            .expect("registry compiler provenance")
+            .expect("existing registry compiler provenance");
+        let provenance = serde_json::from_slice::<serde_json::Value>(
+            &std::fs::read(provenance_path).expect("read registry compiler provenance"),
+        )
+        .expect("parse registry compiler provenance");
+
+        assert!(
+            provenance["compiler_search_directories"]
+                .as_array()
+                .expect("compiler search directories")
+                .iter()
+                .any(|directory| {
+                    directory.as_str().is_some_and(|directory| {
+                        std::path::Path::new(directory) == search_directory
+                    })
+                }),
+            "every registry unit must record the same authenticated loader directory",
+        );
+        expected_driver = Some(std::path::PathBuf::from(
+            provenance["compiler_driver"]["path"]
+                .as_str()
+                .expect("actual compiler driver path"),
+        ));
+    }
+
+    let expected_driver = expected_driver.expect("registry units share a compiler driver");
+    let shadow = search_directory.join(
+        expected_driver
+            .file_name()
+            .expect("actual compiler driver filename"),
+    );
+    std::fs::write(&shadow, "opaque replacement compiler implementation")
+        .expect("add a different compiler driver to the shared search directory");
+
+    let mut check = p.cargo("-Zohm-reuse-built-deps check");
+    check
+        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
+        .with_stderr_contains("[CHECKING] dependency v1.0.0");
+    if cfg!(target_os = "macos") {
+        check.run();
+    } else {
+        check.with_status(101).run();
+    }
+}
+
+#[cargo_test]
 fn ohm_built_registry_dependency_reuse_rejects_cargo_generated_driver_shadows() {
     Package::new("dependency", "1.0.0")
         .file("src/lib.rs", "pub fn value() -> u32 { 19 }")
