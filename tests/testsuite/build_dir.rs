@@ -1701,6 +1701,83 @@ fn shared_registry_cache_separates_procedural_macro_trust_policies() {
 }
 
 #[cargo_test]
+fn shared_registry_cache_separates_native_tool_trust_policies() {
+    Package::new("native-policy-registry", "1.0.0")
+        .file("src/lib.rs", "pub fn value() -> u32 { 53 }")
+        .publish();
+
+    let create_project = |name: &str| {
+        project_in(name)
+            .file(
+                "Cargo.toml",
+                r#"
+                [package]
+                name = "native-policy-cache-app"
+                version = "0.1.0"
+                edition = "2021"
+
+                [dependencies]
+                native-policy-registry = "1.0.0"
+                "#,
+            )
+            .file(
+                "src/main.rs",
+                "fn main() { println!(\"{}\", native_policy_registry::value()); }",
+            )
+            .build()
+    };
+    let strict = create_project("native-policy-strict");
+    let build_scripts = create_project("native-policy-build-scripts");
+    let all = create_project("native-policy-all");
+    let shared = paths::root().join("native-policy-shared-build-directory");
+
+    strict
+        .shared_registry_cargo("-Zohm-shared-registry-cache run")
+        .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+        .env("CARGO_BUILD_BUILD_DIR", &shared)
+        .with_stderr_contains("[COMPILING] native-policy-registry v1.0.0")
+        .with_stdout_data("53\n")
+        .run();
+
+    for (project, policy) in [(&build_scripts, "build-scripts"), (&all, "all")] {
+        project
+            .shared_registry_cargo("-Zohm-shared-registry-cache run")
+            .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+            .env("CARGO_UNSTABLE_OHM_NATIVE_TOOL_TRUST", policy)
+            .env("CARGO_BUILD_BUILD_DIR", &shared)
+            .with_stderr_contains("[COMPILING] native-policy-registry v1.0.0")
+            .with_stdout_data("53\n")
+            .run();
+
+        project
+            .shared_registry_cargo("-Zohm-shared-registry-cache run")
+            .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+            .env("CARGO_UNSTABLE_OHM_NATIVE_TOOL_TRUST", policy)
+            .env("CARGO_BUILD_BUILD_DIR", &shared)
+            .with_stderr_does_not_contain("[COMPILING] native-policy-registry v1.0.0")
+            .with_stdout_data("53\n")
+            .run();
+    }
+
+    all.shared_registry_cargo("-Zohm-shared-registry-cache -Zohm-native-tool-trust=strict run")
+        .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache", "ohm-native-tool-trust"])
+        .env("CARGO_UNSTABLE_OHM_NATIVE_TOOL_TRUST", "all")
+        .env("CARGO_BUILD_BUILD_DIR", &shared)
+        .with_stderr_does_not_contain("[COMPILING] native-policy-registry v1.0.0")
+        .with_stdout_data("53\n")
+        .run();
+
+    all.shared_registry_cargo("-Zohm-shared-registry-cache run")
+        .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+        .env("CARGO_UNSTABLE_OHM_NATIVE_TOOL_TRUST", "all")
+        .env("CARGO_UNSTABLE_OHM_PROC_MACRO_TRUST", "all")
+        .env("CARGO_BUILD_BUILD_DIR", &shared)
+        .with_stderr_contains("[COMPILING] native-policy-registry v1.0.0")
+        .with_stdout_data("53\n")
+        .run();
+}
+
+#[cargo_test]
 fn shared_registry_cache_keeps_workspace_artifacts_private() {
     Package::new("shared-registry", "1.0.0")
         .file(
@@ -2811,6 +2888,37 @@ fn shared_registry_cache_isolates_only_opaque_native_tool_closures() {
         .with_stderr_contains("[COMPILING] native-parent-registry v1.0.0")
         .with_stdout_data("shared:right:right:right\n")
         .run();
+
+    // Test registries replace canonical crates.io, so even permissive policies must not
+    // authenticate executable build scripts or opaque helpers from these sources.
+    for (policy, prefix) in [("build-scripts", "scripts"), ("all", "all")] {
+        for side in ["left", "right"] {
+            let project = create_project(&format!("native-tool-closure-{prefix}-{side}"));
+            let selected = format!("{prefix}-{side}");
+            let expected = format!("shared:{selected}:{selected}:{selected}\n");
+            let mut cargo = project.shared_registry_cargo("-Zohm-shared-registry-cache run");
+            cargo
+                .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+                .env("CARGO_UNSTABLE_OHM_NATIVE_TOOL_TRUST", policy)
+                .env("CARGO_BUILD_BUILD_DIR", &shared)
+                .env("PATH", &executable_path)
+                .env("OHM_NATIVE_TOOL_MODE", &selected)
+                .with_stderr_contains("[COMPILING] cmake v1.0.0")
+                .with_stderr_contains("[COMPILING] cc v1.0.0")
+                .with_stderr_contains("[COMPILING] pkg-config v1.0.0")
+                .with_stderr_contains("[COMPILING] openssl-src v1.0.0")
+                .with_stderr_contains("[COMPILING] indirect-native-registry v1.0.0")
+                .with_stderr_contains("[COMPILING] direct-native-registry v1.0.0")
+                .with_stderr_contains("[COMPILING] native-parent-registry v1.0.0")
+                .with_stdout_data(&expected);
+            if side == "left" {
+                cargo.with_stderr_contains("[COMPILING] unrelated-pure-registry v1.0.0");
+            } else {
+                cargo.with_stderr_does_not_contain("[COMPILING] unrelated-pure-registry v1.0.0");
+            }
+            cargo.run();
+        }
+    }
 
     assert!(shared.join("debug/build/registries").is_dir());
     assert!(shared.join("debug/build/workspaces").is_dir());

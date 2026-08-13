@@ -18,7 +18,7 @@ use tracing::debug;
 use super::{BuildContext, BuildRunner, CompileKind, FileFlavor, Layout};
 use crate::core::compiler::custom_build::OHM_SHARED_RUSTC_LOG_ENVIRONMENT;
 use crate::core::compiler::{CompileMode, CompileTarget, CrateType, FileType, Unit};
-use crate::core::features::OhmProcMacroTrust;
+use crate::core::features::{OhmNativeToolTrust, OhmProcMacroTrust};
 use crate::core::profiles::StripInner;
 use crate::core::{Target, TargetKind, Workspace};
 use crate::util::{self, CargoResult, OnceExt, StableHasher};
@@ -555,6 +555,7 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
                                 unit,
                                 build_runner,
                                 false,
+                                false,
                                 &untrusted_native_tool_packages,
                                 &mut eligibility,
                             ),
@@ -589,6 +590,11 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
                     format!("{rustc}-all")
                 } else {
                     rustc
+                };
+                let rustc = match context.cli_unstable().ohm_native_tool_trust {
+                    OhmNativeToolTrust::Strict => rustc,
+                    OhmNativeToolTrust::BuildScripts => format!("{rustc}-native-build-scripts"),
+                    OhmNativeToolTrust::All => format!("{rustc}-native-all"),
                 };
 
                 SharedRegistryCache {
@@ -1361,28 +1367,60 @@ fn configured_environment_has_sensitive_case_alias(
 /// selected trust policy controls which canonical, lockfile-authenticated macro and runtime
 /// dependency closures may be shared.
 ///
-/// An opaque package-specific native tool taints its helper and every actual build script,
-/// which could execute that tool directly without declaring a helper dependency. The ordinary
-/// dependency walk then propagates both forms of taint through every downstream unit.
+/// By default, an opaque package-specific native tool taints its helper, every build script,
+/// and their downstream consumers. Explicit permissive policies can instead trust authenticated
+/// build scripts or the complete native-tool closure; their executable dependency closures must
+/// always come from canonical, checksum-authenticated crates.io packages.
+fn native_tool_policy_allows_unit(
+    trust: OhmNativeToolTrust,
+    untrusted_native_helper: bool,
+    build_script: bool,
+    opaque_native_tools: bool,
+) -> bool {
+    (!untrusted_native_helper || trust == OhmNativeToolTrust::All)
+        && (!opaque_native_tools || !build_script || trust != OhmNativeToolTrust::Strict)
+}
+
 fn is_immutable_registry_unit(
     unit: &Unit,
     build_runner: &BuildRunner<'_, '_>,
     audited_macro_runtime: bool,
+    permissive_native_runtime: bool,
     untrusted_native_tool_packages: &HashSet<String>,
-    eligibility: &mut HashMap<(Unit, bool), bool>,
+    eligibility: &mut HashMap<(Unit, bool, bool), bool>,
 ) -> bool {
     let audited_macro_runtime = audited_macro_runtime || unit.pkg.proc_macro();
-    let cache_key = (unit.clone(), audited_macro_runtime);
+    let package_id = unit.pkg.package_id();
+    let native_helper = untrusted_native_tool_packages.contains(package_id.name().as_str());
+    let build_script = unit.target.is_custom_build() || unit.mode.is_run_custom_build();
+    let native_trust = build_runner.bcx.gctx.cli_unstable().ohm_native_tool_trust;
+    let permissive_native_runtime = permissive_native_runtime
+        || (native_helper && native_trust == OhmNativeToolTrust::All)
+        || (build_script
+            && !untrusted_native_tool_packages.is_empty()
+            && native_trust != OhmNativeToolTrust::Strict);
+    let cache_key = (
+        unit.clone(),
+        audited_macro_runtime,
+        permissive_native_runtime,
+    );
     if let Some(eligible) = eligibility.get(&cache_key) {
         return *eligible;
     }
 
-    let package_id = unit.pkg.package_id();
     let source_id = package_id.source_id();
     let eligible = source_id.is_remote_registry()
-        && !untrusted_native_tool_packages.contains(package_id.name().as_str())
-        && (untrusted_native_tool_packages.is_empty()
-            || (!unit.target.is_custom_build() && !unit.mode.is_run_custom_build()))
+        && native_tool_policy_allows_unit(
+            native_trust,
+            native_helper,
+            build_script,
+            !untrusted_native_tool_packages.is_empty(),
+        )
+        && (!permissive_native_runtime
+            || build_runner
+                .bcx
+                .authenticated_native_tool_packages
+                .contains(&package_id))
         && build_runner
             .bcx
             .packages
@@ -1402,6 +1440,7 @@ fn is_immutable_registry_unit(
                 &dependency.unit,
                 build_runner,
                 audited_macro_runtime,
+                permissive_native_runtime,
                 untrusted_native_tool_packages,
                 eligibility,
             )
@@ -2503,9 +2542,35 @@ mod shared_registry_tests {
         compiler_arguments_use_opaque_execution, compiler_driver_identity_for_sysroot,
         compiler_driver_search_directory_is_safe, compiler_option_uses_opaque_execution,
         configured_environment_has_sensitive_case_alias, native_target_environment_names,
-        package_implicit_native_tools, resolve_effective_executable,
-        sysroot_contains_trusted_objcopy, sysroot_has_custom_codegen_backends,
+        native_tool_policy_allows_unit, package_implicit_native_tools,
+        resolve_effective_executable, sysroot_contains_trusted_objcopy,
+        sysroot_has_custom_codegen_backends,
     };
+    use crate::core::features::OhmNativeToolTrust;
+
+    #[test]
+    fn native_tool_trust_policies_preserve_helper_and_build_script_boundaries() {
+        for trust in [
+            OhmNativeToolTrust::Strict,
+            OhmNativeToolTrust::BuildScripts,
+            OhmNativeToolTrust::All,
+        ] {
+            assert!(native_tool_policy_allows_unit(trust, false, false, true));
+            assert!(native_tool_policy_allows_unit(trust, false, true, false));
+            assert_eq!(
+                native_tool_policy_allows_unit(trust, false, true, true),
+                trust != OhmNativeToolTrust::Strict
+            );
+            assert_eq!(
+                native_tool_policy_allows_unit(trust, true, false, true),
+                trust == OhmNativeToolTrust::All
+            );
+            assert_eq!(
+                native_tool_policy_allows_unit(trust, true, true, true),
+                trust == OhmNativeToolTrust::All
+            );
+        }
+    }
 
     #[test]
     fn native_target_aliases_preserve_dots_for_external_build_tools() {

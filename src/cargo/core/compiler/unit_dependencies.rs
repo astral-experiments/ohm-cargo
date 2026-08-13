@@ -1953,6 +1953,48 @@ mod audited_proc_macro_tests {
     }
 
     #[test]
+    fn permissive_native_tool_identities_require_canonical_matching_checksums() {
+        let canonical = SourceId::from_url("registry+https://github.com/rust-lang/crates.io-index")
+            .expect("canonical registry source");
+        let alternative = SourceId::from_url("registry+file:///tmp/alternative-registry")
+            .expect("alternate registry source");
+        let version = semver::Version::new(1, 0, 0);
+        let checksum = "authenticated-package-checksum";
+
+        for name in ["cmake", "pkg-config", "serde", "direct-native-helper"] {
+            assert!(audited_proc_macro_package_identity(
+                canonical,
+                false,
+                name,
+                &version,
+                Some(checksum),
+                Some(checksum),
+                false,
+                OhmProcMacroTrust::All,
+            ));
+
+            for (source, replaced, resolved, downloaded) in [
+                (canonical, true, Some(checksum), Some(checksum)),
+                (alternative, false, Some(checksum), Some(checksum)),
+                (canonical, false, None, Some(checksum)),
+                (canonical, false, Some(checksum), None),
+                (canonical, false, Some(checksum), Some("changed-download")),
+            ] {
+                assert!(!audited_proc_macro_package_identity(
+                    source,
+                    replaced,
+                    name,
+                    &version,
+                    resolved,
+                    downloaded,
+                    false,
+                    OhmProcMacroTrust::All,
+                ));
+            }
+        }
+    }
+
+    #[test]
     fn macro_runtime_dependencies_require_exact_audited_identities() {
         for (name, version, checksum) in [
             (
