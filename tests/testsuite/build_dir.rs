@@ -2851,6 +2851,10 @@ fn shared_registry_cache_isolates_only_opaque_native_tool_closures() {
             .chain(std::iter::once(
                 std::path::PathBuf::from(paths::sysroot()).join("bin"),
             ))
+            .chain([
+                std::path::PathBuf::from("/usr/bin"),
+                std::path::PathBuf::from("/bin"),
+            ])
             .chain(std::env::split_paths(&inherited_path)),
     )
     .expect("construct native tool wrapper executable search path");
