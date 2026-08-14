@@ -182,12 +182,13 @@ fn unit_rustflags_without_ohm_defaults<'a>(
     }
 }
 
+/// Skips public API production for terminal outputs which no other unit can consume.
 fn unit_suppresses_default_public_api_hash(
     build_runner: &BuildRunner<'_, '_>,
     unit: &Unit,
 ) -> bool {
     build_runner.bcx.gctx.cli_unstable().ohm_defaults()
-        && build_runner.is_terminal_check_unit(unit)
+        && (build_runner.is_terminal_check_unit(unit) || unit.mode == CompileMode::Test)
         && fingerprint::unit_public_api_hash_override(build_runner, unit).is_none()
 }
 
