@@ -4190,6 +4190,20 @@ fn assert_early_cutoff_checks_dependents(
     rustflags: Option<&str>,
     expected_invocations: &str,
 ) {
+    assert_early_cutoff_checks_dependents_with_build_directory(
+        command,
+        rustflags,
+        expected_invocations,
+        false,
+    );
+}
+
+fn assert_early_cutoff_checks_dependents_with_build_directory(
+    command: &str,
+    rustflags: Option<&str>,
+    expected_invocations: &str,
+    shared_build: bool,
+) {
     let wrapper = public_api_hash_wrapper();
     let p = project()
         .at("check-workspace")
@@ -4238,10 +4252,16 @@ fn assert_early_cutoff_checks_dependents(
         .file("dep/src/lib.rs", "pub fn value() -> i32 { 1 }")
         .build();
     let log = p.root().join("public-api-hash-wrapper.log");
+    let shared_build_directory =
+        shared_build.then(|| paths::root().join("shared-early-cutoff-build-directory"));
 
     let mut initial = p.cargo(command);
     if command.contains("ohm-defaults") {
-        initial.masquerade_as_nightly_cargo(&["ohm-defaults"]);
+        if shared_build {
+            initial.masquerade_as_nightly_cargo(&["ohm-defaults", "ohm-shared-registry-cache"]);
+        } else {
+            initial.masquerade_as_nightly_cargo(&["ohm-defaults"]);
+        }
     }
     initial
         .env("PUBLIC_API_HASH_WRAPPER_LOG", &log)
@@ -4249,7 +4269,38 @@ fn assert_early_cutoff_checks_dependents(
     if let Some(rustflags) = rustflags {
         initial.env("RUSTFLAGS", rustflags);
     }
+    if let Some(directory) = &shared_build_directory {
+        initial.env("CARGO_BUILD_BUILD_DIR", directory);
+    }
     initial.run();
+
+    let initial_metadata = shared_build_directory.as_ref().map(|directory| {
+        assert!(directory.join(".ohm-shared-registry-cache-v1").is_file());
+        let workspaces = directory.join("debug/build/workspaces");
+        assert!(
+            walkdir::WalkDir::new(&workspaces)
+                .into_iter()
+                .filter_map(Result::ok)
+                .any(|entry| entry.file_name() == ".cargo-workspace-lock"),
+            "shared registry builds must hold a workspace-private lock",
+        );
+        let metadata = walkdir::WalkDir::new(workspaces)
+            .into_iter()
+            .filter_map(Result::ok)
+            .map(|entry| entry.into_path())
+            .find(|path| {
+                path.extension().and_then(|extension| extension.to_str()) == Some("rmeta")
+                    && path
+                        .file_name()
+                        .and_then(|name| name.to_str())
+                        .is_some_and(|name| name.starts_with("libdep-"))
+            })
+            .expect("workspace-private dependency metadata should exist");
+        let modified = FileTime::from_last_modification_time(
+            &fs::metadata(&metadata).expect("dependency metadata should be readable"),
+        );
+        (metadata, modified)
+    });
 
     fs::write(&log, "").unwrap();
     if is_coarse_mtime() {
@@ -4258,7 +4309,11 @@ fn assert_early_cutoff_checks_dependents(
     p.change_file("dep/src/lib.rs", "pub fn value() -> i32 { 2 }");
     let mut rebuilt = p.cargo(command);
     if command.contains("ohm-defaults") {
-        rebuilt.masquerade_as_nightly_cargo(&["ohm-defaults"]);
+        if shared_build {
+            rebuilt.masquerade_as_nightly_cargo(&["ohm-defaults", "ohm-shared-registry-cache"]);
+        } else {
+            rebuilt.masquerade_as_nightly_cargo(&["ohm-defaults"]);
+        }
     }
     rebuilt
         .env("PUBLIC_API_HASH_WRAPPER_LOG", &log)
@@ -4266,8 +4321,18 @@ fn assert_early_cutoff_checks_dependents(
     if let Some(rustflags) = rustflags {
         rebuilt.env("RUSTFLAGS", rustflags);
     }
+    if let Some(directory) = &shared_build_directory {
+        rebuilt.env("CARGO_BUILD_BUILD_DIR", directory);
+    }
     rebuilt.run();
     assert_eq!(fs::read_to_string(&log).unwrap(), expected_invocations);
+
+    if let Some((metadata, initial_modified)) = initial_metadata {
+        let rebuilt_modified = FileTime::from_last_modification_time(
+            &fs::metadata(metadata).expect("rebuilt dependency metadata should be readable"),
+        );
+        assert_eq!(rebuilt_modified, initial_modified);
+    }
 }
 
 #[cargo_test]
@@ -4285,6 +4350,16 @@ fn early_cutoff_skips_check_test_dependents() {
 #[cargo_test]
 fn ohm_defaults_enable_check_early_cutoff() {
     assert_early_cutoff_checks_dependents("-Zohm-defaults check", None, "dep\n");
+}
+
+#[cargo_test]
+fn shared_registry_cache_preserves_private_check_early_cutoff() {
+    assert_early_cutoff_checks_dependents_with_build_directory(
+        "-Zohm-shared-registry-cache -Zohm-defaults check",
+        None,
+        "dep\n",
+        true,
+    );
 }
 
 #[cargo_test]
