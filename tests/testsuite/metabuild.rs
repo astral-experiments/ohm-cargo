@@ -199,6 +199,95 @@ fn metabuild_optional_dep() {
 }
 
 #[cargo_test]
+fn metabuild_shared_registry_cache_keeps_target_directories_private() {
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                cargo-features = ["metabuild"]
+                [package]
+                name = "foo"
+                version = "0.0.1"
+                edition = "2015"
+                metabuild = "mb"
+
+                [build-dependencies]
+                mb = {path="mb", optional=true}
+            "#,
+        )
+        .file("src/lib.rs", "")
+        .file("mb/Cargo.toml", &basic_lib_manifest("mb"))
+        .file(
+            "mb/src/lib.rs",
+            r#"pub fn metabuild() { println!("Hello mb"); }"#,
+        )
+        .build();
+
+    let shared_build = p.root().join("shared-build");
+    let first_target = p.root().join("target-without-feature");
+    let second_target = p.root().join("target-with-feature");
+
+    p.cargo("-Zohm-shared-registry-cache check -vv")
+        .masquerade_as_nightly_cargo(&["metabuild", "ohm-shared-registry-cache"])
+        .env("CARGO_BUILD_BUILD_DIR", &shared_build)
+        .env("CARGO_TARGET_DIR", &first_target)
+        .with_stdout_does_not_contain("[foo 0.0.1] Hello mb")
+        .run();
+
+    let source_files = || {
+        walkdir::WalkDir::new(shared_build.join("tmp"))
+            .into_iter()
+            .filter_map(Result::ok)
+            .map(|entry| entry.into_path())
+            .filter(|path| {
+                path.file_name()
+                    .and_then(|name| name.to_str())
+                    .is_some_and(|name| name.starts_with("metabuild-foo-"))
+            })
+            .collect::<Vec<_>>()
+    };
+    let first_sources = source_files();
+    assert_eq!(first_sources.len(), 1);
+    let first_source = first_sources[0].clone();
+    assert_eq!(
+        std::fs::read_to_string(&first_source).unwrap(),
+        "fn main() {\n}\n"
+    );
+
+    p.cargo("-Zohm-shared-registry-cache check -vv --features mb")
+        .masquerade_as_nightly_cargo(&["metabuild", "ohm-shared-registry-cache"])
+        .env("CARGO_BUILD_BUILD_DIR", &shared_build)
+        .env("CARGO_TARGET_DIR", &second_target)
+        .with_stdout_contains("[foo 0.0.1] Hello mb")
+        .run();
+
+    let sources = source_files();
+    assert_eq!(sources.len(), 2);
+    let second_source = sources
+        .into_iter()
+        .find(|source| source != &first_source)
+        .unwrap();
+    assert_eq!(
+        std::fs::read_to_string(&first_source).unwrap(),
+        "fn main() {\n}\n"
+    );
+    assert_eq!(
+        std::fs::read_to_string(&second_source).unwrap(),
+        "fn main() {\n    mb::metabuild();\n}\n"
+    );
+
+    p.cargo("clean")
+        .masquerade_as_nightly_cargo(&["metabuild"])
+        .env("CARGO_BUILD_BUILD_DIR", &shared_build)
+        .env("CARGO_TARGET_DIR", &first_target)
+        .run();
+
+    assert!(!first_source.exists());
+    assert!(second_source.exists());
+    assert!(second_target.is_dir());
+}
+
+#[cargo_test]
 fn metabuild_lib_name() {
     // Test when setting `name` on [lib].
     let p = project()

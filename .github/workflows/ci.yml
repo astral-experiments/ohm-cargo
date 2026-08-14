@@ -69,6 +69,31 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y gcc-multilib libsecret-1-0 libsecret-1-dev
       - name: Run Cargo unit and integration tests
         run: cargo +"$RUST_VERSION" test -p cargo
+      - name: Install Ohm for shared-registry integration coverage
+        if: runner.os == 'Linux'
+        env:
+          OHM_VERSION: ohm-1.97.1-16
+          OHM_INSTALLER_SHA256: e8f33de7d5a2def0205fbde4db499853f44b3444037559637d2d8ff1e6cc92a4
+        run: |
+          installer="$RUNNER_TEMP/ohm-installer.sh"
+          curl --proto '=https' --tlsv1.2 --fail --silent --show-error --location \
+            --output "$installer" \
+            "https://labs.astral.sh/ohm/releases/$OHM_VERSION/install.sh"
+          printf '%s  %s\n' "$OHM_INSTALLER_SHA256" "$installer" | sha256sum --check
+          sh "$installer"
+      - name: Run shared-registry integration with Ohm
+        if: runner.os == 'Linux'
+        env:
+          RUSTUP_TOOLCHAIN: ohm-1.97.1-16
+        run: |
+          testsuite="$(find target/debug/deps -maxdepth 1 -type f -name 'testsuite-*' -perm -u+x -print -quit)"
+          if [[ -z "$testsuite" ]]; then
+            echo 'compiled Cargo integration test binary was not found' >&2
+            exit 1
+          fi
+          "$testsuite" \
+            build_dir::shared_registry_cache_preserves_cross_workspace_reuse_and_private_early_cutoff \
+            --exact --nocapture
 
   workspace-tests:
     name: Workspace tests

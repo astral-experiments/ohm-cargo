@@ -4195,6 +4195,7 @@ fn assert_early_cutoff_checks_dependents(
         rustflags,
         expected_invocations,
         false,
+        false,
     );
 }
 
@@ -4203,6 +4204,7 @@ fn assert_early_cutoff_checks_dependents_with_build_directory(
     rustflags: Option<&str>,
     expected_invocations: &str,
     shared_build: bool,
+    changed_public_api: bool,
 ) {
     let wrapper = public_api_hash_wrapper();
     let p = project()
@@ -4306,7 +4308,12 @@ fn assert_early_cutoff_checks_dependents_with_build_directory(
     if is_coarse_mtime() {
         sleep_ms(1000);
     }
-    p.change_file("dep/src/lib.rs", "pub fn value() -> i32 { 2 }");
+    let source = if changed_public_api {
+        "pub fn value() -> i32 { 2 }\npub fn newly_public() -> i32 { 3 }\n"
+    } else {
+        "pub fn value() -> i32 { 2 }"
+    };
+    p.change_file("dep/src/lib.rs", source);
     let mut rebuilt = p.cargo(command);
     if command.contains("ohm-defaults") {
         if shared_build {
@@ -4318,6 +4325,9 @@ fn assert_early_cutoff_checks_dependents_with_build_directory(
     rebuilt
         .env("PUBLIC_API_HASH_WRAPPER_LOG", &log)
         .env("RUSTC_WRAPPER", &wrapper);
+    if changed_public_api {
+        rebuilt.env("PUBLIC_API_HASH_WRAPPER_CHANGED_CRATE", "dep");
+    }
     if let Some(rustflags) = rustflags {
         rebuilt.env("RUSTFLAGS", rustflags);
     }
@@ -4331,7 +4341,11 @@ fn assert_early_cutoff_checks_dependents_with_build_directory(
         let rebuilt_modified = FileTime::from_last_modification_time(
             &fs::metadata(metadata).expect("rebuilt dependency metadata should be readable"),
         );
-        assert_eq!(rebuilt_modified, initial_modified);
+        if changed_public_api {
+            assert_ne!(rebuilt_modified, initial_modified);
+        } else {
+            assert_eq!(rebuilt_modified, initial_modified);
+        }
     }
 }
 
@@ -4358,6 +4372,18 @@ fn shared_registry_cache_preserves_private_check_early_cutoff() {
         "-Zohm-shared-registry-cache -Zohm-defaults check",
         None,
         "dep\n",
+        true,
+        false,
+    );
+}
+
+#[cargo_test]
+fn shared_registry_cache_rechecks_dependents_when_public_api_changes() {
+    assert_early_cutoff_checks_dependents_with_build_directory(
+        "-Zohm-shared-registry-cache -Zohm-defaults check",
+        None,
+        "dep\nmiddle\napp\n",
+        true,
         true,
     );
 }

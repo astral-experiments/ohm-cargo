@@ -12,6 +12,7 @@ use std::path::PathBuf;
 
 use crate::prelude::*;
 use crate::utils::tools;
+use cargo::util::short_hash;
 use cargo_test_support::registry::{Package, RegistryBuilder};
 use cargo_test_support::{
     is_coarse_mtime, paths, prelude::*, project, project_in, rustc_host, sleep_ms, str,
@@ -1611,6 +1612,265 @@ fn shared_registry_cache_preserves_cross_workspace_reuse_and_private_early_cutof
         &std::fs::metadata(metadata).expect("rebuilt dependency metadata should be readable"),
     );
     assert_eq!(rebuilt_modified, initial_modified);
+}
+
+#[cargo_test]
+fn shared_registry_cache_allows_nested_builds_with_distinct_target_directories() {
+    let project = project()
+        .file(
+            "Cargo.toml",
+            r#"
+            [workspace]
+            members = ["outer", "helper"]
+            resolver = "2"
+            "#,
+        )
+        .file(
+            "outer/Cargo.toml",
+            r#"
+            [package]
+            name = "nested-outer"
+            version = "0.1.0"
+            edition = "2021"
+            "#,
+        )
+        .file("outer/src/lib.rs", "pub fn value() -> u32 { 1 }")
+        .file(
+            "outer/build.rs",
+            r#"
+            use std::env;
+            use std::process::Command;
+            use std::thread;
+            use std::time::{Duration, Instant};
+
+            fn main() {
+                let shared = env::var_os("CARGO_BUILD_BUILD_DIR")
+                    .expect("nested Cargo must inherit the shared build directory");
+                assert_eq!(
+                    Some(shared),
+                    env::var_os("OHM_EXPECTED_SHARED_BUILD_DIRECTORY")
+                );
+
+                let target = env::var_os("OHM_NESTED_TARGET_DIRECTORY")
+                    .expect("nested Cargo needs an independent target directory");
+                let mut child = Command::new(env::var_os("CARGO").expect("Cargo executable"))
+                    .args(["-Zohm-shared-registry-cache", "check", "-p", "nested-helper"])
+                    .env("CARGO_TARGET_DIR", target)
+                    .spawn()
+                    .expect("nested Cargo should start");
+                let deadline = Instant::now() + Duration::from_secs(30);
+
+                loop {
+                    match child.try_wait().expect("nested Cargo status should be available") {
+                        Some(status) => {
+                            assert!(status.success(), "nested Cargo failed: {status}");
+                            break;
+                        }
+                        None if Instant::now() >= deadline => {
+                            let _ = child.kill();
+                            let _ = child.wait();
+                            panic!("nested Cargo deadlocked on its parent's workspace lock");
+                        }
+                        None => thread::sleep(Duration::from_millis(25)),
+                    }
+                }
+            }
+            "#,
+        )
+        .file(
+            "helper/Cargo.toml",
+            r#"
+            [package]
+            name = "nested-helper"
+            version = "0.1.0"
+            edition = "2021"
+            "#,
+        )
+        .file("helper/src/lib.rs", "pub fn value() -> u32 { 2 }")
+        .build();
+    let shared = paths::root().join("nested-workspace-shared-build-directory");
+    let parent_target = project.root().join("parent-target");
+    let nested_target = project.root().join("nested-target");
+
+    project
+        .cargo("-Zohm-shared-registry-cache check -p nested-outer")
+        .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+        .env("CARGO_BUILD_BUILD_DIR", &shared)
+        .env("CARGO_TARGET_DIR", &parent_target)
+        .env("OHM_EXPECTED_SHARED_BUILD_DIRECTORY", &shared)
+        .env("OHM_NESTED_TARGET_DIRECTORY", &nested_target)
+        .run();
+
+    assert!(parent_target.is_dir());
+    assert!(nested_target.is_dir());
+    let namespaces = std::fs::read_dir(shared.join("debug/build/workspaces"))
+        .expect("nested workspaces should have private namespaces")
+        .map(|entry| entry.expect("workspace namespace should be readable"))
+        .collect::<Vec<_>>();
+    assert_eq!(namespaces.len(), 2);
+    for namespace in namespaces {
+        assert!(namespace.path().join(".cargo-workspace-lock").is_file());
+    }
+}
+
+#[cargo_test]
+fn shared_registry_cache_isolates_target_directories_and_cleans_only_their_private_artifacts() {
+    Package::new("target-isolation-registry", "1.0.0")
+        .file("src/lib.rs", "pub fn value() -> u32 { 7 }")
+        .publish();
+
+    let project = project()
+        .file(
+            "Cargo.toml",
+            r#"
+            [package]
+            name = "target-isolation-app"
+            version = "0.1.0"
+            edition = "2021"
+
+            [dependencies]
+            target-isolation-registry = "1.0.0"
+            "#,
+        )
+        .file(
+            "src/lib.rs",
+            "pub fn value() -> u32 { target_isolation_registry::value() }",
+        )
+        .build();
+    let shared = paths::root().join("target-isolation-shared-build-directory");
+    let left_target = project.root().join("left-target");
+    let right_target = project.root().join("right-target");
+
+    project
+        .shared_registry_cargo("-Zohm-shared-registry-cache check")
+        .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+        .env("CARGO_BUILD_BUILD_DIR", &shared)
+        .env("CARGO_TARGET_DIR", &left_target)
+        .with_stderr_contains("[CHECKING] target-isolation-registry v1.0.0")
+        .run();
+
+    let workspace_root = shared.join("debug/build/workspaces");
+    let left_namespace = std::fs::read_dir(&workspace_root)
+        .expect("left target namespace should exist")
+        .next()
+        .expect("left target should have a private namespace")
+        .expect("left target namespace should be readable")
+        .path();
+    let legacy_namespace = short_hash(
+        &project
+            .root()
+            .canonicalize()
+            .expect("workspace root should have a canonical path"),
+    );
+    assert_ne!(
+        left_namespace.file_name().and_then(|name| name.to_str()),
+        Some(legacy_namespace.as_str()),
+        "older Cargo processes do not participate in the new workspace-lock protocol",
+    );
+
+    project
+        .shared_registry_cargo("-Zohm-shared-registry-cache check -v")
+        .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+        .env("CARGO_BUILD_BUILD_DIR", &shared)
+        .env("CARGO_TARGET_DIR", &right_target)
+        .with_stderr_contains("[FRESH] target-isolation-registry v1.0.0")
+        .with_stderr_does_not_contain("[CHECKING] target-isolation-registry v1.0.0")
+        .with_stderr_contains("[CHECKING] target-isolation-app v0.1.0 ([..])")
+        .run();
+
+    let right_namespace = std::fs::read_dir(&workspace_root)
+        .expect("both target namespaces should exist")
+        .filter_map(Result::ok)
+        .find(|entry| entry.path() != left_namespace)
+        .expect("the right target should have an independent namespace")
+        .path();
+    let private_metadata_exists = |namespace: &PathBuf| {
+        walkdir::WalkDir::new(namespace)
+            .into_iter()
+            .filter_map(Result::ok)
+            .any(|entry| {
+                entry.file_name().to_str().is_some_and(|name| {
+                    name.starts_with("libtarget_isolation_app-") && name.ends_with(".rmeta")
+                })
+            })
+    };
+    assert!(left_namespace.join(".cargo-workspace-lock").is_file());
+    assert!(right_namespace.join(".cargo-workspace-lock").is_file());
+    assert!(private_metadata_exists(&left_namespace));
+    assert!(private_metadata_exists(&right_namespace));
+    let registry = shared.join("debug/build/registries");
+    assert!(registry.is_dir());
+    assert_eq!(
+        std::fs::read_dir(&registry)
+            .expect("shared registry compiler contexts should be readable")
+            .count(),
+        1,
+    );
+
+    std::fs::remove_dir_all(&left_target)
+        .expect("simulate a target directory removed before Cargo cleans its private artifacts");
+    project
+        .shared_registry_cargo("clean")
+        .env("CARGO_BUILD_BUILD_DIR", &shared)
+        .env("CARGO_TARGET_DIR", &left_target)
+        .run();
+
+    assert!(!left_namespace.exists());
+    assert!(right_target.is_dir());
+    assert!(private_metadata_exists(&right_namespace));
+    assert!(registry.is_dir());
+
+    project
+        .shared_registry_cargo("-Zohm-shared-registry-cache check -v")
+        .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+        .env("CARGO_BUILD_BUILD_DIR", &shared)
+        .env("CARGO_TARGET_DIR", &right_target)
+        .with_stderr_contains("[FRESH] target-isolation-registry v1.0.0")
+        .with_stderr_does_not_contain("[CHECKING] target-isolation-app v0.1.0 ([..])")
+        .run();
+}
+
+#[cfg(unix)]
+#[cargo_test]
+fn shared_registry_cache_canonicalizes_symlinked_target_directories() {
+    let project = project()
+        .file(
+            "Cargo.toml",
+            r#"
+            [package]
+            name = "symlinked-target-app"
+            version = "0.1.0"
+            edition = "2021"
+            "#,
+        )
+        .file("src/lib.rs", "pub fn value() -> u32 { 1 }")
+        .build();
+    let shared = paths::root().join("symlinked-target-shared-build-directory");
+    let target = project.root().join("physical-target");
+    let alias = project.root().join("target-alias");
+
+    project
+        .cargo("-Zohm-shared-registry-cache check")
+        .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+        .env("CARGO_BUILD_BUILD_DIR", &shared)
+        .env("CARGO_TARGET_DIR", &target)
+        .run();
+    std::os::unix::fs::symlink(&target, &alias)
+        .expect("target-directory alias should point to the original target");
+    project
+        .cargo("-Zohm-shared-registry-cache check")
+        .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+        .env("CARGO_BUILD_BUILD_DIR", &shared)
+        .env("CARGO_TARGET_DIR", &alias)
+        .with_stderr_does_not_contain("[CHECKING] symlinked-target-app v0.1.0 ([..])")
+        .run();
+
+    assert_eq!(
+        std::fs::read_dir(shared.join("debug/build/workspaces"))
+            .expect("canonical target aliases should share one namespace")
+            .count(),
+        1,
+    );
 }
 
 #[cargo_test]
