@@ -14,7 +14,8 @@ use crate::prelude::*;
 use crate::utils::tools;
 use cargo_test_support::registry::{Package, RegistryBuilder};
 use cargo_test_support::{
-    paths, prelude::*, project, project_in, rustc_host, str, target_spec_json,
+    is_coarse_mtime, paths, prelude::*, project, project_in, rustc_host, sleep_ms, str,
+    target_spec_json,
 };
 use std::env::consts::{DLL_PREFIX, DLL_SUFFIX, EXE_SUFFIX};
 
@@ -1443,6 +1444,173 @@ fn shared_registry_cache_automatically_shares_explicit_build_directories() {
         .with_stderr_contains("[FRESH] automatic-shared-registry v1.0.0")
         .with_stderr_does_not_contain("[CHECKING] automatic-shared-registry v1.0.0")
         .run();
+}
+
+#[cargo_test]
+fn shared_registry_cache_preserves_cross_workspace_reuse_and_private_early_cutoff() {
+    if !selected_compiler_supports_ohm_defaults() {
+        return;
+    }
+
+    Package::new("cutoff-shared-registry", "1.0.0")
+        .file("src/lib.rs", "pub fn value() -> u32 { 10 }")
+        .publish();
+
+    let create_project = |worktree: &str| {
+        project_in(worktree)
+            .file(
+                "Cargo.toml",
+                r#"
+                [package]
+                name = "cutoff-shared-app"
+                version = "0.1.0"
+                edition = "2021"
+
+                [dependencies]
+                cutoff-shared-registry = "1.0.0"
+                cutoff-middle = { path = "middle" }
+                "#,
+            )
+            .file(
+                "src/lib.rs",
+                "pub fn value() -> u32 { cutoff_shared_registry::value() + cutoff_middle::value() }",
+            )
+            .file(
+                "middle/Cargo.toml",
+                r#"
+                [package]
+                name = "cutoff-middle"
+                version = "0.1.0"
+                edition = "2021"
+
+                [dependencies]
+                cutoff-private = { path = "../private" }
+                "#,
+            )
+            .file(
+                "middle/src/lib.rs",
+                "pub fn value() -> u32 { cutoff_private::value() }",
+            )
+            .file(
+                "private/Cargo.toml",
+                r#"
+                [package]
+                name = "cutoff-private"
+                version = "0.1.0"
+                edition = "2021"
+                "#,
+            )
+            .file("private/src/lib.rs", "pub fn value() -> u32 { 1 }")
+            .build()
+    };
+
+    let left = create_project("shared-cutoff-left");
+    let right = create_project("shared-cutoff-right");
+    let shared = paths::root().join("cross-workspace-early-cutoff-build-directory");
+
+    left.cargo("-Zohm-shared-registry-cache -Zohm-defaults check")
+        .masquerade_as_nightly_cargo(&["ohm-defaults", "ohm-shared-registry-cache"])
+        .env("__CARGO_OHM_DEFAULTS", "yes")
+        .env("CARGO_BUILD_BUILD_DIR", &shared)
+        .with_stderr_contains("[CHECKING] cutoff-shared-registry v1.0.0")
+        .run();
+
+    let workspace_root = shared.join("debug/build/workspaces");
+    let left_namespaces = std::fs::read_dir(&workspace_root)
+        .expect("left workspace namespace should exist")
+        .map(|entry| {
+            entry
+                .expect("workspace namespace should be readable")
+                .file_name()
+        })
+        .collect::<Vec<_>>();
+    let left_workspace_lock_path = workspace_root
+        .join(
+            left_namespaces
+                .first()
+                .expect("left workspace namespace should have been created"),
+        )
+        .join(".cargo-workspace-lock");
+    let left_workspace_lock = std::fs::File::options()
+        .read(true)
+        .write(true)
+        .open(&left_workspace_lock_path)
+        .expect("left workspace lock should be readable and writable");
+    left_workspace_lock
+        .lock()
+        .expect("left workspace lock should be acquired exclusively");
+    let competing_left_workspace_lock = std::fs::File::options()
+        .read(true)
+        .write(true)
+        .open(&left_workspace_lock_path)
+        .expect("competing workspace lock should open independently");
+    assert!(matches!(
+        competing_left_workspace_lock.try_lock(),
+        Err(std::fs::TryLockError::WouldBlock)
+    ));
+
+    right
+        .cargo("-Zohm-shared-registry-cache -Zohm-defaults check")
+        .masquerade_as_nightly_cargo(&["ohm-defaults", "ohm-shared-registry-cache"])
+        .env("__CARGO_OHM_DEFAULTS", "yes")
+        .env("CARGO_BUILD_BUILD_DIR", &shared)
+        .with_stderr_does_not_contain("[CHECKING] cutoff-shared-registry v1.0.0")
+        .run();
+    drop(left_workspace_lock);
+
+    let right_namespace = std::fs::read_dir(&workspace_root)
+        .expect("right workspace namespace should exist")
+        .filter_map(Result::ok)
+        .find(|entry| !left_namespaces.contains(&entry.file_name()))
+        .expect("the second workspace should have its own namespace")
+        .path();
+    assert!(right_namespace.join(".cargo-workspace-lock").is_file());
+
+    let metadata = walkdir::WalkDir::new(&right_namespace)
+        .into_iter()
+        .filter_map(Result::ok)
+        .map(|entry| entry.into_path())
+        .find(|path| {
+            path.extension().and_then(|extension| extension.to_str()) == Some("rmeta")
+                && path
+                    .file_name()
+                    .and_then(|name| name.to_str())
+                    .is_some_and(|name| name.starts_with("libcutoff_private-"))
+        })
+        .expect("workspace-private dependency metadata should exist");
+    let initial_modified = filetime::FileTime::from_last_modification_time(
+        &std::fs::metadata(&metadata).expect("dependency metadata should be readable"),
+    );
+
+    if is_coarse_mtime() {
+        sleep_ms(1000);
+    }
+    right.change_file("private/src/lib.rs", "pub fn value() -> u32 { 2 }");
+    right
+        .cargo("-Zohm-shared-registry-cache -Zohm-defaults check -v")
+        .masquerade_as_nightly_cargo(&["ohm-defaults", "ohm-shared-registry-cache"])
+        .env("__CARGO_OHM_DEFAULTS", "yes")
+        .env("CARGO_BUILD_BUILD_DIR", &shared)
+        .with_stderr_line_without(
+            &["[RUNNING] `rustc", "--crate-name cutoff_private"],
+            &[
+                "--crate-name cutoff_middle",
+                "--crate-name cutoff_shared_app",
+                "--crate-name cutoff_shared_registry",
+            ],
+        )
+        .with_stderr_contains("[FRESH] cutoff-shared-registry v1.0.0")
+        .with_stderr_does_not_contain("[RUNNING] `rustc [..]--crate-name cutoff_middle[..]")
+        .with_stderr_does_not_contain("[RUNNING] `rustc [..]--crate-name cutoff_shared_app[..]")
+        .with_stderr_does_not_contain(
+            "[RUNNING] `rustc [..]--crate-name cutoff_shared_registry[..]",
+        )
+        .run();
+
+    let rebuilt_modified = filetime::FileTime::from_last_modification_time(
+        &std::fs::metadata(metadata).expect("rebuilt dependency metadata should be readable"),
+    );
+    assert_eq!(rebuilt_modified, initial_modified);
 }
 
 #[cargo_test]

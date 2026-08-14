@@ -340,15 +340,46 @@ impl Layout {
                 )?)
             }
         };
-        let build_root = build_root.into_path_unlocked();
-        let build_dest = build_dest.as_path_unlocked();
-        let deps = build_dest.join("deps");
-        let artifact = deps.join("artifact");
         let workspace_namespace = ws
             .gctx()
             .cli_unstable()
             .ohm_shared_registry_cache
             .then(|| Self::shared_workspace_namespace(ws));
+        let workspace_lock = workspace_namespace
+            .as_ref()
+            .filter(|_| target.is_none() && !must_take_build_dir_lock_exclusively)
+            .map(|namespace| {
+                // The profile lock is shared so different workspaces can reuse registry
+                // artifacts concurrently. Serialize invocations of this workspace separately:
+                // fine-grained unit locks alone cannot protect early-cutoff fingerprint and
+                // metadata snapshots taken before a compilation job acquires its unit lock.
+                // Every invocation prepares its host layout first, so one host workspace lock
+                // also protects all target layouts without deadlocking on duplicate target paths.
+                // Acquire the workspace lock after the profile lock, matching clean's ordering.
+                let workspace = build_dest.join("build").join("workspaces").join(namespace);
+                workspace.create_dir()?;
+                if shared_registry_directory_is_nfs(workspace.as_path_unlocked())? {
+                    anyhow::bail!(
+                        "shared registry caching requires reliable filesystem locks; \
+                         NFS workspace build directories are unsupported: {}",
+                        workspace.display()
+                    );
+                }
+                verify_shared_registry_file_lock(
+                    &workspace.as_path_unlocked().join(".cargo-workspace-lock"),
+                    workspace.as_path_unlocked(),
+                )?;
+                workspace.open_rw_exclusive_create(
+                    ".cargo-workspace-lock",
+                    ws.gctx(),
+                    "workspace build directory",
+                )
+            })
+            .transpose()?;
+        let build_root = build_root.into_path_unlocked();
+        let build_dest = build_dest.as_path_unlocked();
+        let deps = build_dest.join("deps");
+        let artifact = deps.join("artifact");
         let incremental = workspace_namespace.as_ref().map_or_else(
             || build_dest.join("incremental"),
             |namespace| build_dest.join("incremental").join(namespace),
@@ -403,6 +434,7 @@ impl Layout {
                 fingerprint: build_dest.join(".fingerprint"),
                 examples: build_dest.join("examples"),
                 tmp,
+                workspace_lock,
                 _lock: build_dir_lock,
                 is_new_layout,
             },
@@ -546,6 +578,10 @@ pub struct BuildDirLayout {
     examples: PathBuf,
     /// The directory for temporary data of integration tests and benches
     tmp: PathBuf,
+    /// Serializes private workspace builds without blocking shared registry users.
+    ///
+    /// Declared before the profile lock so it is released first when this layout is dropped.
+    workspace_lock: Option<FileLock>,
     /// The lockfile for a build (`.cargo-lock`). Will be unlocked when this
     /// struct is `drop`ped.
     ///
@@ -588,6 +624,10 @@ impl BuildDirLayout {
     }
     pub fn root(&self) -> &Path {
         &self.root
+    }
+    /// Whether this invocation holds the exclusive workspace-private namespace lock.
+    pub(crate) fn has_workspace_lock(&self) -> bool {
+        self.workspace_lock.is_some()
     }
     /// Fetch the build examples path.
     pub fn examples(&self) -> &Path {
