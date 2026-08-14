@@ -45,6 +45,11 @@ impl LockManager {
         if let Some(lock) = locks.get_mut(&key) {
             lock.file().lock_shared()?;
         } else {
+            #[cfg(unix)]
+            if locks.is_empty() {
+                Self::reserve_descriptor_budget(build_runner.bcx.unit_graph.len());
+            }
+
             let fs = Filesystem::new(key.0.clone());
             let lock_msg = format!(
                 "{} ({})",
@@ -56,6 +61,92 @@ impl LockManager {
         }
 
         Ok(key)
+    }
+
+    #[cfg(unix)]
+    fn reserve_descriptor_budget(unit_count: usize) {
+        Self::reserve_descriptor_budget_with(
+            unit_count,
+            || {
+                let mut limit = std::mem::MaybeUninit::<libc::rlimit>::uninit();
+                // SAFETY: `limit` points to writable storage for one `rlimit`, and
+                // `RLIMIT_NOFILE` does not retain the pointer beyond this call.
+                if unsafe { libc::getrlimit(libc::RLIMIT_NOFILE, limit.as_mut_ptr()) } != 0 {
+                    return Err(std::io::Error::last_os_error());
+                }
+
+                // SAFETY: A successful `getrlimit` call initialized every field of `limit`.
+                Ok(unsafe { limit.assume_init() })
+            },
+            |limit| {
+                // SAFETY: `limit` is initialized and remains valid for the call; the
+                // requested soft limit cannot exceed the unchanged process hard limit.
+                if unsafe { libc::setrlimit(libc::RLIMIT_NOFILE, limit) } != 0 {
+                    return Err(std::io::Error::last_os_error());
+                }
+
+                Ok(())
+            },
+        );
+    }
+
+    #[cfg(unix)]
+    fn reserve_descriptor_budget_with(
+        unit_count: usize,
+        get_limit: impl FnOnce() -> std::io::Result<libc::rlimit>,
+        set_limit: impl FnOnce(&libc::rlimit) -> std::io::Result<()>,
+    ) {
+        // Fine-grained locking retains one descriptor for each compilation unit. Leave room
+        // for Cargo's other files, compiler pipes, and the jobserver in the same process.
+        const RESERVED_DESCRIPTORS: libc::rlim_t = 128;
+
+        let mut limit = match get_limit() {
+            Ok(limit) => limit,
+            Err(error) => {
+                tracing::warn!(
+                    "could not inspect the file-descriptor limit for {unit_count} fine-grained build locks; continuing with the existing limit: {error}"
+                );
+                return;
+            }
+        };
+        let required = libc::rlim_t::try_from(unit_count)
+            .unwrap_or(libc::RLIM_INFINITY)
+            .saturating_add(RESERVED_DESCRIPTORS);
+
+        if limit.rlim_cur >= required {
+            return;
+        }
+
+        let previous = limit.rlim_cur;
+        limit.rlim_cur = required.min(limit.rlim_max);
+        if limit.rlim_cur == previous {
+            tracing::warn!(
+                "file-descriptor hard limit {} is below the requested budget {required} for {unit_count} fine-grained build locks; continuing with the existing limit",
+                limit.rlim_max
+            );
+            return;
+        }
+
+        if let Err(error) = set_limit(&limit) {
+            tracing::warn!(
+                "could not raise the file-descriptor soft limit from {previous} to {} (hard limit {}) for {unit_count} fine-grained build locks; continuing with the existing limit: {error}",
+                limit.rlim_cur,
+                limit.rlim_max
+            );
+            return;
+        }
+
+        if limit.rlim_cur < required {
+            tracing::warn!(
+                "raised the file-descriptor soft limit from {previous} to its hard limit {}, below the requested budget {required} for {unit_count} fine-grained build locks",
+                limit.rlim_cur
+            );
+        } else {
+            tracing::debug!(
+                "raised file-descriptor soft limit from {previous} to {} for {unit_count} fine-grained build locks",
+                limit.rlim_cur
+            );
+        }
     }
 
     #[instrument(skip(self))]
@@ -104,5 +195,92 @@ impl LockKey {
 impl Display for LockKey {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}", self.0.display())
+    }
+}
+
+#[cfg(all(test, unix))]
+mod tests {
+    use super::LockManager;
+    use std::cell::Cell;
+
+    #[test]
+    fn descriptor_budget_ignores_denied_or_unsupported_inspection() {
+        for error in [libc::EPERM, libc::ENOSYS] {
+            let setter_called = Cell::new(false);
+            LockManager::reserve_descriptor_budget_with(
+                512,
+                || Err(std::io::Error::from_raw_os_error(error)),
+                |_| {
+                    setter_called.set(true);
+                    Ok(())
+                },
+            );
+
+            assert!(!setter_called.get());
+        }
+    }
+
+    #[test]
+    fn descriptor_budget_ignores_denied_or_unsupported_updates() {
+        for error in [libc::EPERM, libc::ENOSYS] {
+            let attempted = Cell::new(None);
+            LockManager::reserve_descriptor_budget_with(
+                72,
+                || {
+                    Ok(libc::rlimit {
+                        rlim_cur: 64,
+                        rlim_max: 512,
+                    })
+                },
+                |limit| {
+                    attempted.set(Some((limit.rlim_cur, limit.rlim_max)));
+                    Err(std::io::Error::from_raw_os_error(error))
+                },
+            );
+
+            assert_eq!(attempted.get(), Some((200, 512)));
+        }
+    }
+
+    #[test]
+    fn descriptor_budget_never_exceeds_the_process_hard_limit() {
+        let attempted = Cell::new(None);
+        LockManager::reserve_descriptor_budget_with(
+            512,
+            || {
+                Ok(libc::rlimit {
+                    rlim_cur: 64,
+                    rlim_max: 96,
+                })
+            },
+            |limit| {
+                attempted.set(Some((limit.rlim_cur, limit.rlim_max)));
+                Ok(())
+            },
+        );
+
+        assert_eq!(attempted.get(), Some((96, 96)));
+    }
+
+    #[test]
+    fn descriptor_budget_skips_sufficient_or_already_capped_limits() {
+        for (soft, hard, units) in [(256, 512, 64), (64, 64, 512)] {
+            let setter_called = Cell::new(false);
+            LockManager::reserve_descriptor_budget_with(
+                units,
+                || {
+                    Ok(libc::rlimit {
+                        rlim_cur: soft,
+                        rlim_max: hard,
+                    })
+                },
+                |_| {
+                    setter_called.set(true);
+                    Ok(())
+                },
+            );
+
+            assert!(!setter_called.get());
+        }
     }
 }
