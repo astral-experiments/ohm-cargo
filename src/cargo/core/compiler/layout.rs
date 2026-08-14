@@ -227,12 +227,52 @@ impl Layout {
     /// Durable ownership marker for build roots shared by multiple workspaces.
     pub(crate) const SHARED_REGISTRY_CACHE_MARKER: &str = ".ohm-shared-registry-cache-v1";
 
-    /// Identifies one workspace consistently across artifacts, incremental state, and cleaning.
+    /// Identifies one workspace and target directory across private artifacts and cleaning.
     ///
-    /// Canonical roots keep symlinked workspace paths in the same private namespace.
+    /// Independent target directories must not share mutable workspace state, even when their
+    /// registry artifacts use the same build directory. The version also separates this locking
+    /// protocol from older Cargo versions that only namespaced the workspace root.
     pub(crate) fn shared_workspace_namespace(ws: &Workspace<'_>) -> String {
-        let root = ws.root();
-        util::short_hash(&root.canonicalize().unwrap_or_else(|_| root.to_path_buf()))
+        let canonicalize = |path: &Path| {
+            let path = if path.is_absolute() {
+                path.to_path_buf()
+            } else {
+                ws.gctx().cwd().join(path)
+            };
+            let mut existing = path.as_path();
+            let mut missing = Vec::new();
+
+            loop {
+                match existing.canonicalize() {
+                    Ok(mut canonical) => {
+                        for component in missing.iter().rev() {
+                            canonical.push(component);
+                        }
+                        return paths::normalize_path(&canonical);
+                    }
+                    Err(error) if error.kind() == std::io::ErrorKind::NotFound => {
+                        let Some(component) = existing.file_name() else {
+                            break;
+                        };
+                        let Some(parent) = existing.parent() else {
+                            break;
+                        };
+                        missing.push(component.to_os_string());
+                        existing = parent;
+                    }
+                    Err(_) => break,
+                }
+            }
+
+            paths::normalize_path(&path)
+        };
+        let target = ws.target_dir();
+
+        util::short_hash(&(
+            "ohm-shared-workspace-v2",
+            canonicalize(ws.root()),
+            canonicalize(target.as_path_unlocked()),
+        ))
     }
 
     /// Calculate the paths for build output, lock the build directory, and return as a Layout.
