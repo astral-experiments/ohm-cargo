@@ -505,6 +505,43 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
         Ok(self.compilation)
     }
 
+    /// Returns whether every requested check already has a fresh ordinary fingerprint.
+    ///
+    /// Consume the runner so its workspace locks are released before the chosen
+    /// dependency graph is prepared for compilation.
+    pub(crate) fn check_roots_are_fresh(mut self) -> CargoResult<bool> {
+        if !matches!(self.bcx.build_config.intent, UserIntent::Check { .. })
+            || self.bcx.build_config.force_rebuild
+            || self.bcx.roots.is_empty()
+        {
+            return Ok(false);
+        }
+
+        let _lock = self
+            .bcx
+            .gctx
+            .acquire_package_cache_lock(CacheLockMode::Shared)?;
+        self.lto = super::lto::generate(self.bcx)?;
+        self.prepare_units()?;
+
+        if self.bcx.roots.iter().any(|unit| {
+            !unit.mode.is_check() || !self.files().fingerprint_file_path(unit, "").is_file()
+        }) {
+            return Ok(false);
+        }
+
+        self.prepare()?;
+        custom_build::build_map(&mut self)?;
+
+        for unit in self.bcx.roots.clone() {
+            if !fingerprint::existing_unit_is_fresh(&mut self, &unit)? {
+                return Ok(false);
+            }
+        }
+
+        Ok(true)
+    }
+
     /// Starts compilation, waits for it to finish, and returns information
     /// about the result of compilation.
     ///

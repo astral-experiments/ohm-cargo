@@ -210,6 +210,26 @@ pub fn compile_ws<'a>(
             };
             let rejected_registry_packages = stale_registry_dependencies.packages.clone();
             drop(bcx);
+
+            // A previous ordinary check may already have built the exact graph
+            // requested now. Selectively promoting compatible registry units
+            // would change its dependency fingerprints and rebuild otherwise
+            // fresh workspace crates, so preserve that graph when every root
+            // is still up to date.
+            let ordinary_interner = UnitInterner::new();
+            let ordinary_bcx = create_bcx_with_registry_reuse(
+                ws,
+                options,
+                &ordinary_interner,
+                logger.as_ref(),
+                false,
+                &HashSet::default(),
+            )?;
+            if BuildRunner::new(&ordinary_bcx)?.check_roots_are_fresh()? {
+                return BuildRunner::new(&ordinary_bcx)?.compile(exec);
+            }
+            drop(ordinary_bcx);
+
             let fallback_interner = UnitInterner::new();
             let fallback_bcx = create_bcx_with_registry_reuse(
                 ws,

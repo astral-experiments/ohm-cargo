@@ -349,6 +349,53 @@ fn ohm_reuses_compatible_test_built_registry_dependencies_when_features_change()
 }
 
 #[cargo_test]
+fn ohm_preserves_fresh_checks_when_test_registry_features_change() {
+    Package::new("stable", "1.0.0")
+        .file("src/lib.rs", "pub fn value() -> u32 { 19 }")
+        .publish();
+    Package::new("changing", "1.0.0")
+        .feature("development", &[])
+        .file("src/lib.rs", "pub fn value() -> u32 { 23 }")
+        .publish();
+
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "foo"
+                version = "0.0.1"
+                edition = "2021"
+
+                [dependencies]
+                changing = "1.0.0"
+                stable = "1.0.0"
+
+                [dev-dependencies]
+                changing = { version = "1.0.0", features = ["development"] }
+            "#,
+        )
+        .file(
+            "src/lib.rs",
+            "pub fn value() -> u32 { changing::value() + stable::value() }",
+        )
+        .build();
+
+    p.cargo("-Zohm-reuse-built-deps check")
+        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
+        .run();
+    p.cargo("test --no-run").run();
+
+    p.cargo("-Zohm-reuse-built-deps check -v")
+        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
+        .with_stderr_contains("[FRESH] stable v1.0.0")
+        .with_stderr_contains("[FRESH] changing v1.0.0")
+        .with_stderr_contains("[FRESH] foo v0.0.1 ([ROOT]/foo)")
+        .with_stderr_does_not_contain("[CHECKING]")
+        .run();
+}
+
+#[cargo_test]
 fn ohm_reuses_test_built_registry_dependencies_with_unrelated_profile_overrides() {
     Package::new("stable", "1.0.0")
         .file("src/lib.rs", "pub fn value() -> u32 { 19 }")
