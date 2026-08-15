@@ -94,6 +94,9 @@ jobs:
           "$testsuite" \
             build_dir::shared_registry_cache_preserves_cross_workspace_reuse_and_private_early_cutoff \
             --exact --nocapture
+          "$testsuite" \
+            build_dir::shared_registry_cache_avoids_hashing_immutable_public_apis \
+            --exact --nocapture
 
   workspace-tests:
     name: Workspace tests
