@@ -2998,6 +2998,30 @@ fn workspace_resolve_cache_reuses_unchanged_workspace() {
 }
 
 #[cargo_test]
+fn workspace_resolve_cache_ignores_execution_only_environment() {
+    let project = workspace_resolve_cache_project();
+
+    workspace_resolve_cache_command(&project, "check --package selected")
+        .env("RUST_MIN_STACK", "8388608")
+        .env("CARGO_BUILD_JOBS", "1")
+        .env("CARGO_TERM_PROGRESS_WHEN", "never")
+        .with_stderr_does_not_contain(WORKSPACE_RESOLVE_CACHE_HIT)
+        .run();
+
+    workspace_resolve_cache_command(&project, "check --package selected")
+        .env("RUST_MIN_STACK", "16777216")
+        .env("CARGO_BUILD_JOBS", "2")
+        .env("CARGO_TERM_PROGRESS_WHEN", "auto")
+        .with_stderr_contains(WORKSPACE_RESOLVE_CACHE_HIT)
+        .run();
+
+    workspace_resolve_cache_command(&project, "check --package selected")
+        .env("RUSTFLAGS", "--cfg=workspace_resolve_cache_semantic_change")
+        .with_stderr_does_not_contain(WORKSPACE_RESOLVE_CACHE_HIT)
+        .run();
+}
+
+#[cargo_test]
 fn workspace_resolve_cache_reuses_metadata_resolution_for_check() {
     let project = workspace_resolve_cache_project();
 
