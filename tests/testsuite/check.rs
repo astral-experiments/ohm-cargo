@@ -396,6 +396,178 @@ fn ohm_preserves_fresh_checks_when_test_registry_features_change() {
 }
 
 #[cargo_test]
+fn ohm_preserves_fresh_checks_while_holding_shared_workspace_locks() {
+    if !ohm_compiler_supports_defaults() {
+        return;
+    }
+
+    Package::new("stable", "1.0.0")
+        .file("src/lib.rs", "pub fn value() -> u32 { 19 }")
+        .publish();
+    Package::new("changing", "1.0.0")
+        .feature("development", &[])
+        .file("src/lib.rs", "pub fn value() -> u32 { 23 }")
+        .publish();
+
+    let project = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "foo"
+                version = "0.0.1"
+                edition = "2021"
+
+                [dependencies]
+                changing = "1.0.0"
+                stable = "1.0.0"
+
+                [dev-dependencies]
+                changing = { version = "1.0.0", features = ["development"] }
+            "#,
+        )
+        .file(
+            "src/lib.rs",
+            "pub fn value() -> u32 { changing::value() + stable::value() }",
+        )
+        .build();
+    let build_directory = project.root().join("shared-build");
+
+    for command in ["check", "test --no-run"] {
+        project
+            .cargo(command)
+            .masquerade_as_nightly_cargo(&["ohm-defaults"])
+            .env("__CARGO_OHM_DEFAULTS", "yes")
+            .env("CARGO_BUILD_BUILD_DIR", &build_directory)
+            .run();
+    }
+
+    project
+        .cargo("check -v")
+        .masquerade_as_nightly_cargo(&["ohm-defaults"])
+        .env("__CARGO_OHM_DEFAULTS", "yes")
+        .env("CARGO_BUILD_BUILD_DIR", &build_directory)
+        .with_stderr_contains("[FRESH] stable v1.0.0")
+        .with_stderr_contains("[FRESH] changing v1.0.0")
+        .with_stderr_contains("[FRESH] foo v0.0.1 ([ROOT]/foo)")
+        .with_stderr_does_not_contain("[CHECKING]")
+        .run();
+}
+
+#[cargo_test]
+fn ohm_preserves_established_check_graph_after_editing_the_root() {
+    Package::new("stable", "1.0.0")
+        .file("src/lib.rs", "pub fn value() -> u32 { 19 }")
+        .publish();
+    Package::new("changing", "1.0.0")
+        .feature("development", &[])
+        .file("src/lib.rs", "pub fn value() -> u32 { 23 }")
+        .publish();
+
+    let project = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "foo"
+                version = "0.0.1"
+                edition = "2021"
+
+                [dependencies]
+                changing = "1.0.0"
+                helper = { path = "helper" }
+
+                [dev-dependencies]
+                changing = { version = "1.0.0", features = ["development"] }
+            "#,
+        )
+        .file(
+            "src/lib.rs",
+            "pub fn value() -> u32 { changing::value() + helper::value() }",
+        )
+        .file(
+            "helper/Cargo.toml",
+            r#"
+                [package]
+                name = "helper"
+                version = "0.0.1"
+                edition = "2021"
+
+                [dependencies]
+                stable = "1.0.0"
+            "#,
+        )
+        .file(
+            "helper/src/lib.rs",
+            "pub fn value() -> u32 { stable::value() }",
+        )
+        .build();
+
+    project
+        .cargo("-Zohm-reuse-built-deps check")
+        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
+        .run();
+    project.cargo("test --no-run").run();
+    project.change_file(
+        "src/lib.rs",
+        "pub fn value() -> u32 { changing::value() + helper::value() + 1 }",
+    );
+
+    project
+        .cargo("-Zohm-reuse-built-deps check -v")
+        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
+        .with_stderr_contains("[FRESH] stable v1.0.0")
+        .with_stderr_contains("[FRESH] changing v1.0.0")
+        .with_stderr_contains("[FRESH] helper v0.0.1 ([ROOT]/foo/helper)")
+        .with_stderr_contains("[CHECKING] foo v0.0.1 ([ROOT]/foo)")
+        .with_stderr_does_not_contain("[CHECKING] stable")
+        .with_stderr_does_not_contain("[CHECKING] changing")
+        .with_stderr_does_not_contain("[CHECKING] helper")
+        .run();
+
+    project.cargo("test --no-run").run();
+    project.change_file(
+        "helper/src/lib.rs",
+        "pub fn value() -> u32 { stable::value() + 1 }",
+    );
+    project.change_file(
+        "src/lib.rs",
+        "pub fn value() -> u32 { changing::value() + helper::value() + 2 }",
+    );
+
+    project
+        .cargo("-Zohm-reuse-built-deps check -v")
+        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
+        .with_stderr_contains("[FRESH] stable v1.0.0")
+        .with_stderr_contains("[FRESH] changing v1.0.0")
+        .with_stderr_contains("[CHECKING] helper v0.0.1 ([ROOT]/foo/helper)")
+        .with_stderr_contains("[CHECKING] foo v0.0.1 ([ROOT]/foo)")
+        .with_stderr_does_not_contain("[CHECKING] stable")
+        .with_stderr_does_not_contain("[CHECKING] changing")
+        .run();
+
+    project.cargo("test --no-run").run();
+    let mut removed_registry_metadata = false;
+    for artifact in project.glob("target/debug/deps/libchanging-*.rmeta") {
+        let artifact = artifact.expect("existing registry metadata path");
+        std::fs::remove_file(artifact).expect("remove only this fixture's registry metadata");
+        removed_registry_metadata = true;
+    }
+    assert!(removed_registry_metadata);
+    project.change_file(
+        "src/lib.rs",
+        "pub fn value() -> u32 { changing::value() + helper::value() + 3 }",
+    );
+
+    project
+        .cargo("-Zohm-reuse-built-deps check -v")
+        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
+        .with_stderr_contains("[CHECKING] changing v1.0.0")
+        .with_stderr_contains("[CHECKING] foo v0.0.1 ([ROOT]/foo)")
+        .run();
+}
+
+#[cargo_test]
 fn ohm_reuses_test_built_registry_dependencies_with_unrelated_profile_overrides() {
     Package::new("stable", "1.0.0")
         .file("src/lib.rs", "pub fn value() -> u32 { 19 }")

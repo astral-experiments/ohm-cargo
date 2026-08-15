@@ -215,7 +215,7 @@ pub fn compile_ws<'a>(
             // requested now. Selectively promoting compatible registry units
             // would change its dependency fingerprints and rebuild otherwise
             // fresh workspace crates, so preserve that graph when every root
-            // is still up to date.
+            // is still up to date or only existing workspace sources changed.
             let ordinary_interner = UnitInterner::new();
             let ordinary_bcx = create_bcx_with_registry_reuse(
                 ws,
@@ -225,8 +225,10 @@ pub fn compile_ws<'a>(
                 false,
                 &HashSet::default(),
             )?;
-            if BuildRunner::new(&ordinary_bcx)?.check_roots_are_fresh()? {
-                return BuildRunner::new(&ordinary_bcx)?.compile(exec);
+            if let Some(compilation) =
+                BuildRunner::new(&ordinary_bcx)?.compile_if_check_graph_is_reusable(exec)?
+            {
+                return Ok(compilation);
             }
             drop(ordinary_bcx);
 

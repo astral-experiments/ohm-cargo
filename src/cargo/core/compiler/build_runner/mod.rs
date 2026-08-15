@@ -505,41 +505,65 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
         Ok(self.compilation)
     }
 
-    /// Returns whether every requested check already has a fresh ordinary fingerprint.
+    /// Compiles an established ordinary check graph when it can still be reused.
     ///
-    /// Consume the runner so its workspace locks are released before the chosen
-    /// dependency graph is prepared for compilation.
-    pub(crate) fn check_roots_are_fresh(mut self) -> CargoResult<bool> {
+    /// Keep the package-cache and workspace locks held while validating fingerprints and
+    /// executing the selected graph. Consuming the runner also releases its workspace locks
+    /// before an alternative graph is prepared when this graph cannot be reused.
+    pub(crate) fn compile_if_check_graph_is_reusable(
+        mut self,
+        exec: &Arc<dyn Executor>,
+    ) -> CargoResult<Option<Compilation<'gctx>>> {
         if !matches!(self.bcx.build_config.intent, UserIntent::Check { .. })
             || self.bcx.build_config.force_rebuild
             || self.bcx.roots.is_empty()
         {
-            return Ok(false);
+            return Ok(None);
         }
 
-        let _lock = self
-            .bcx
-            .gctx
-            .acquire_package_cache_lock(CacheLockMode::Shared)?;
+        let global_context = self.bcx.gctx;
+        let _lock = global_context.acquire_package_cache_lock(CacheLockMode::Shared)?;
+        let queue = JobQueue::new(self.bcx);
         self.lto = super::lto::generate(self.bcx)?;
         self.prepare_units()?;
 
         if self.bcx.roots.iter().any(|unit| {
             !unit.mode.is_check() || !self.files().fingerprint_file_path(unit, "").is_file()
         }) {
-            return Ok(false);
+            return Ok(None);
         }
 
         self.prepare()?;
         custom_build::build_map(&mut self)?;
 
+        let mut workspace_changed = false;
         for unit in self.bcx.roots.clone() {
-            if !fingerprint::existing_unit_is_fresh(&mut self, &unit)? {
-                return Ok(false);
+            match fingerprint::existing_check_root(&mut self, &unit)? {
+                Some(fingerprint::ExistingCheckRoot::Fresh) => {}
+                Some(fingerprint::ExistingCheckRoot::WorkspaceChanged) => workspace_changed = true,
+                None => return Ok(None),
             }
         }
 
-        Ok(true)
+        if workspace_changed {
+            let registry_check_units = self
+                .bcx
+                .unit_graph
+                .keys()
+                .filter(|unit| {
+                    unit.mode.is_check() && unit.pkg.package_id().source_id().is_remote_registry()
+                })
+                .cloned()
+                .collect::<Vec<_>>();
+
+            for unit in registry_check_units {
+                if !fingerprint::existing_unit_is_fresh(&mut self, &unit)? {
+                    return Ok(None);
+                }
+            }
+        }
+
+        self.compile_prepared(exec, queue).map(Some)
     }
 
     /// Starts compilation, waits for it to finish, and returns information
@@ -553,15 +577,24 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
         // A shared lock is held during the duration of the build since rustc
         // needs to read from the `src` cache, and we don't want other
         // commands modifying the `src` cache while it is running.
-        let _lock = self
-            .bcx
-            .gctx
-            .acquire_package_cache_lock(CacheLockMode::Shared)?;
-        let mut queue = JobQueue::new(self.bcx);
+        let global_context = self.bcx.gctx;
+        let _lock = global_context.acquire_package_cache_lock(CacheLockMode::Shared)?;
+        let queue = JobQueue::new(self.bcx);
         self.lto = super::lto::generate(self.bcx)?;
         self.prepare_units()?;
         self.prepare()?;
         custom_build::build_map(&mut self)?;
+        self.compile_prepared(exec, queue)
+    }
+
+    /// Executes a graph after its layouts, fingerprints, and build scripts are prepared.
+    ///
+    /// Both callers retain the package-cache lock for this method's entire execution.
+    fn compile_prepared(
+        mut self,
+        exec: &Arc<dyn Executor>,
+        mut queue: JobQueue<'gctx>,
+    ) -> CargoResult<Compilation<'gctx>> {
         let stale_registry_packages = self.stale_reused_registry_dependencies()?;
         if !stale_registry_packages.is_empty() {
             return Err(StaleBuiltRegistryDependency {

@@ -959,6 +959,47 @@ pub(crate) fn existing_unit_is_fresh(
     ))
 }
 
+/// Whether an existing check root can keep its established dependency graph.
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub(crate) enum ExistingCheckRoot {
+    /// The root and its complete dependency graph are already up to date.
+    Fresh,
+    /// Workspace source or an existing dependency changed and must be rebuilt.
+    WorkspaceChanged,
+}
+
+/// Validates an existing root without hiding the normal rebuild it still requires.
+///
+/// Missing artifacts and changed compiler options remain ineligible. A local
+/// source edit is checked before dependencies, so callers must independently
+/// validate registry units before preserving a dirty root's ordinary graph.
+pub(crate) fn existing_check_root(
+    build_runner: &mut BuildRunner<'_, '_>,
+    unit: &Unit,
+) -> CargoResult<Option<ExistingCheckRoot>> {
+    let fingerprint_path = build_runner.files().fingerprint_file_path(unit, "");
+    let fingerprint = calculate(build_runner, unit)?;
+
+    Ok(
+        match _compare_old_fingerprint(&fingerprint_path, &fingerprint) {
+            Ok(FingerprintComparison::Fresh) => Some(ExistingCheckRoot::Fresh),
+            Ok(FingerprintComparison::Dirty {
+                reason:
+                    DirtyReason::FsStatusOutdated(
+                        FsStatus::StaleItem(
+                            StaleItem::ChangedFile { .. }
+                            | StaleItem::ChangedChecksum { .. }
+                            | StaleItem::FileSizeChanged { .. },
+                        )
+                        | FsStatus::StaleDependency { .. }
+                        | FsStatus::StaleDepFingerprint { .. },
+                    ),
+            }) => Some(ExistingCheckRoot::WorkspaceChanged),
+            _ => None,
+        },
+    )
+}
+
 /// Determines if a [`Unit`] is up-to-date, and if not prepares necessary work to
 /// update the persisted fingerprint.
 ///
