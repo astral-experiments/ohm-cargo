@@ -35,6 +35,55 @@ fn ohm_registry_project() -> Project {
         .build()
 }
 
+fn ohm_workspace_project() -> Project {
+    Package::new("dependency", "1.0.0")
+        .file("src/lib.rs", "pub fn value() -> u32 { 19 }")
+        .publish();
+
+    project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [workspace]
+                members = ["application", "local"]
+                resolver = "2"
+            "#,
+        )
+        .file(
+            "application/Cargo.toml",
+            r#"
+                [package]
+                name = "application"
+                version = "0.0.1"
+                edition = "2021"
+
+                [dependencies]
+                local = { path = "../local" }
+            "#,
+        )
+        .file(
+            "application/src/lib.rs",
+            "pub fn value() -> u32 { local::value() }",
+        )
+        .file(
+            "local/Cargo.toml",
+            r#"
+                [package]
+                name = "local"
+                version = "1.0.0"
+                edition = "2021"
+
+                [dependencies]
+                dependency = "1.0.0"
+            "#,
+        )
+        .file(
+            "local/src/lib.rs",
+            "pub fn value() -> u32 { dependency::value() }",
+        )
+        .build()
+}
+
 fn ohm_compiler_supports_defaults() -> bool {
     cargo_test_support::process("rustc")
         .arg("-Zpublic-api-hash")
@@ -1578,6 +1627,100 @@ fn ohm_built_registry_dependency_reuse_preserves_cold_checks() {
 [FINISHED] `dev` profile [unoptimized + debuginfo] target(s) in [ELAPSED]s
 
 "#]])
+        .run();
+}
+
+#[cargo_test]
+fn ohm_reuses_fresh_built_workspace_members_during_checks() {
+    let project = ohm_workspace_project();
+
+    project
+        .cargo("-Zohm-reuse-built-deps build -p application")
+        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
+        .run();
+
+    project
+        .cargo("-Zohm-reuse-built-deps check -p application -v")
+        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
+        .with_stderr_contains("[FRESH] dependency v1.0.0")
+        .with_stderr_contains("[FRESH] local v1.0.0 ([ROOT]/foo/local)")
+        .with_stderr_contains("[CHECKING] application v0.0.1 ([ROOT]/foo/application)")
+        .with_stderr_does_not_contain("[CHECKING] local v1.0.0")
+        .with_stderr_does_not_contain("[COMPILING]")
+        .run();
+}
+
+#[cargo_test]
+fn ohm_defaults_reuse_test_built_workspace_members_in_shared_builds() {
+    if !ohm_compiler_supports_defaults() {
+        return;
+    }
+
+    let project = ohm_workspace_project();
+    let build_directory = project.root().join("shared-build");
+
+    project
+        .cargo("test --no-run -p application")
+        .masquerade_as_nightly_cargo(&["ohm-defaults"])
+        .env("__CARGO_OHM_DEFAULTS", "yes")
+        .env("CARGO_BUILD_BUILD_DIR", &build_directory)
+        .run();
+
+    project
+        .cargo("check -p application -v")
+        .masquerade_as_nightly_cargo(&["ohm-defaults"])
+        .env("__CARGO_OHM_DEFAULTS", "yes")
+        .env("CARGO_BUILD_BUILD_DIR", &build_directory)
+        .with_stderr_contains("[FRESH] dependency v1.0.0")
+        .with_stderr_contains("[FRESH] local v1.0.0 ([ROOT]/foo/local)")
+        .with_stderr_contains("[CHECKING] application v0.0.1 ([ROOT]/foo/application)")
+        .with_stderr_does_not_contain("[CHECKING] local v1.0.0")
+        .with_stderr_does_not_contain("[COMPILING]")
+        .run();
+}
+
+#[cargo_test]
+fn ohm_reused_workspace_members_preserve_cached_warnings() {
+    let project = ohm_workspace_project();
+    project.change_file(
+        "local/src/lib.rs",
+        "fn unused() {}\npub fn value() -> u32 { dependency::value() }",
+    );
+
+    project
+        .cargo("-Zohm-reuse-built-deps build -p application")
+        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
+        .run();
+
+    project
+        .cargo("-Zohm-reuse-built-deps check -p application -v")
+        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
+        .with_stderr_contains("[FRESH] local v1.0.0 ([ROOT]/foo/local)")
+        .with_stderr_contains("[WARNING] function `unused` is never used")
+        .with_stderr_does_not_contain("[CHECKING] local v1.0.0")
+        .run();
+}
+
+#[cargo_test]
+fn ohm_rechecks_changed_workspace_members_instead_of_reusing_stale_builds() {
+    let project = ohm_workspace_project();
+
+    project
+        .cargo("-Zohm-reuse-built-deps build -p application")
+        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
+        .run();
+    project.change_file(
+        "local/src/lib.rs",
+        "pub fn value() -> u32 { dependency::value() + 1 }",
+    );
+
+    project
+        .cargo("-Zohm-reuse-built-deps check -p application -v")
+        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
+        .with_stderr_contains("[FRESH] dependency v1.0.0")
+        .with_stderr_contains("[CHECKING] local v1.0.0 ([ROOT]/foo/local)")
+        .with_stderr_contains("[CHECKING] application v0.0.1 ([ROOT]/foo/application)")
+        .with_stderr_does_not_contain("[COMPILING]")
         .run();
 }
 

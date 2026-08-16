@@ -1107,10 +1107,10 @@ fn connect_run_custom_build_deps(state: &mut State<'_, '_>) {
 }
 
 impl<'a, 'gctx> State<'a, 'gctx> {
-    /// Tentatively uses build mode only for an entirely immutable registry
-    /// closure. Once all unit hashes and layouts are known, `BuildRunner`
-    /// validates the exact existing artifacts and their complete fingerprints
-    /// before allowing the graph to execute.
+    /// Tentatively uses build mode for an immutable registry closure or an
+    /// owned workspace member. Once all unit hashes and layouts are known,
+    /// `BuildRunner` validates the exact existing artifacts and their complete
+    /// fingerprints before allowing the graph to execute.
     fn can_reuse_built_registry_dependency(
         &self,
         parent: &Unit,
@@ -1120,7 +1120,9 @@ impl<'a, 'gctx> State<'a, 'gctx> {
     ) -> bool {
         if !self.reuse_built_registry_dependencies
             || self.is_std
-            || !package_id.source_id().is_remote_registry()
+            || (!package_id.source_id().is_remote_registry() && !self.ws.is_member_id(package_id))
+            || (self.ws.is_member_id(package_id)
+                && self.target_data.rustc.workspace_wrapper.is_some())
             || self.rejected_built_registry_packages.contains(&package_id)
             || target.for_host()
             || !target.is_lib()
@@ -1215,7 +1217,7 @@ impl<'a, 'gctx> State<'a, 'gctx> {
             .is_ok_and(|expected| expected == compiler)
     }
 
-    /// Reject mutable sources and unaudited procedural macros throughout the
+    /// Reject unowned mutable sources and unaudited procedural macros throughout the
     /// actual compilation closure, including active build-script dependencies.
     fn registry_closure_is_immutable(
         &self,
@@ -1225,26 +1227,39 @@ impl<'a, 'gctx> State<'a, 'gctx> {
         visiting: &mut HashSet<(Unit, bool)>,
     ) -> bool {
         let package_id = unit.pkg.package_id();
-        if !package_id.source_id().is_remote_registry() {
-            return false;
-        }
-        let Some((source_is_replaced, effective_source_id)) = self
-            .package_set
-            .sources()
-            .get(package_id.source_id())
-            .map(|source| (source.is_replaced(), source.replaced_source_id()))
-        else {
-            return false;
+        let source_is_replaced = if package_id.source_id().is_remote_registry() {
+            let Some((source_is_replaced, effective_source_id)) = self
+                .package_set
+                .sources()
+                .get(package_id.source_id())
+                .map(|source| (source.is_replaced(), source.replaced_source_id()))
+            else {
+                return false;
+            };
+            // Source replacement preserves the original registry PackageId even
+            // when a mutable, checksummed vendor directory supplies the contents.
+            // Such sources must follow the ordinary check path so Cargo verifies
+            // their integrity before compiling a newly requested target. Registry
+            // mirrors remain immutable and their actual source path participates
+            // in the existing unit fingerprint.
+            if source_is_replaced && !effective_source_id.is_remote_registry() {
+                return false;
+            }
+            source_is_replaced
+        } else {
+            // Workspace sources can change, so they are eligible only when their
+            // exact build fingerprint is revalidated under the workspace lock.
+            // Local build scripts and procedural macros may observe untracked
+            // inputs, and arbitrary path dependencies are outside that lock.
+            if !self.ws.is_member_id(package_id)
+                || !unit.target.is_lib()
+                || unit.target.for_host()
+                || audited_macro_runtime
+            {
+                return false;
+            }
+            false
         };
-        // Source replacement preserves the original registry PackageId even
-        // when a mutable, checksummed vendor directory supplies the contents.
-        // Such sources must follow the ordinary check path so Cargo verifies
-        // their integrity before compiling a newly requested target. Registry
-        // mirrors remain immutable and their actual source path participates
-        // in the existing unit fingerprint.
-        if source_is_replaced && !effective_source_id.is_remote_registry() {
-            return false;
-        }
 
         let audited_macro_runtime = audited_macro_runtime || unit.pkg.proc_macro();
         if audited_macro_runtime

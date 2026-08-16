@@ -433,7 +433,7 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
             for dependency in dependencies {
                 terminal_check_units.remove(&dependency.unit);
                 if reuse_built_registry_dependencies
-                    && Self::is_promotable_registry_dependency(&dependency.unit)
+                    && Self::is_promotable_registry_dependency(bcx, &dependency.unit)
                 {
                     if parent.mode.is_check() {
                         reused_registry_units.insert(dependency.unit.clone());
@@ -454,7 +454,7 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
                 while let Some(unit) = pending.pop() {
                     if let Some(dependencies) = bcx.unit_graph.get(&unit) {
                         for dependency in dependencies {
-                            if Self::is_promotable_registry_dependency(&dependency.unit)
+                            if Self::is_promotable_registry_dependency(bcx, &dependency.unit)
                                 && registry_units.insert(dependency.unit.clone())
                             {
                                 pending.push(dependency.unit.clone());
@@ -1265,6 +1265,7 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
                             .package_id()
                             .source_id()
                             .is_remote_registry()
+                            || self.bcx.ws.is_member(&dependency.unit.pkg)
                     })
                     .map(|dependency| dependency.unit.clone()),
             );
@@ -1301,7 +1302,7 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
         let mut compiler_search_directories = HashSet::default();
         for unit in registry_closure_units
             .iter()
-            .filter(|unit| Self::is_promotable_registry_dependency(unit))
+            .filter(|unit| Self::is_promotable_registry_dependency(self.bcx, unit))
         {
             let messages_available = std::fs::read(self.registry_message_provenance_path(unit))
                 .ok()
@@ -1381,6 +1382,7 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
                     .package_id()
                     .source_id()
                     .is_remote_registry()
+                    || self.bcx.ws.is_member(&dependency.unit.pkg)
                 {
                     reverse_dependencies
                         .entry(dependency.unit.clone())
@@ -1492,10 +1494,11 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
         )
     }
 
-    /// Returns whether a unit has the shape of a promotable registry library.
-    fn is_promotable_registry_dependency(unit: &Unit) -> bool {
+    /// Returns whether a unit has the shape of a promotable owned or registry library.
+    fn is_promotable_registry_dependency(bcx: &BuildContext<'_, '_>, unit: &Unit) -> bool {
         unit.mode == CompileMode::Build
-            && unit.pkg.package_id().source_id().is_remote_registry()
+            && (unit.pkg.package_id().source_id().is_remote_registry()
+                || bcx.ws.is_member(&unit.pkg))
             && !unit.target.for_host()
             && unit.target.is_lib()
             && !unit.artifact.is_true()
