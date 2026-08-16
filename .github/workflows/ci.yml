@@ -100,6 +100,12 @@ jobs:
           "$testsuite" \
             check::ohm_preserves_fresh_checks_while_holding_shared_workspace_locks \
             --exact --nocapture
+          "$testsuite" \
+            check::ohm_locks_fingerprints_before_preserving_established_check_graphs \
+            --exact --nocapture
+          "$testsuite" \
+            check::ohm_skips_cold_ordinary_check_graphs_after_test_builds \
+            --exact --nocapture
 
   workspace-tests:
     name: Workspace tests

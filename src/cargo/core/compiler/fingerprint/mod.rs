@@ -2374,6 +2374,17 @@ fn calculate(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResult
     Ok(fingerprint)
 }
 
+/// Hashes the profile and mode used by an existing compilation fingerprint.
+pub(crate) fn unit_profile_hash(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> u64 {
+    util::hash_u64((
+        &unit.profile,
+        unit.mode,
+        build_runner.bcx.extra_args_for(unit),
+        build_runner.lto[unit],
+        unit.pkg.manifest().lint_rustflags(),
+    ))
+}
+
 /// Calculate a fingerprint for a "normal" unit, or anything that's not a build
 /// script. This is an internal helper of [`calculate`], don't call directly.
 fn calculate_normal(
@@ -2444,13 +2455,7 @@ fn calculate_normal(
     }
     .to_vec();
 
-    let profile_hash = util::hash_u64((
-        &unit.profile,
-        unit.mode,
-        build_runner.bcx.extra_args_for(unit),
-        build_runner.lto[unit],
-        unit.pkg.manifest().lint_rustflags(),
-    ));
+    let profile_hash = unit_profile_hash(build_runner, unit);
     let mut config = StableHasher::new();
     let linker = if unit.target.for_host() && !build_runner.bcx.gctx.target_applies_to_host()? {
         build_runner.compilation.host_linker()
