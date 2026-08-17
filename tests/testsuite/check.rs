@@ -84,6 +84,89 @@ fn ohm_workspace_project() -> Project {
         .build()
 }
 
+fn ohm_dev_superset_project() -> Project {
+    Package::new("development-dependency", "1.0.0")
+        .feature("development", &[])
+        .file("src/lib.rs", "pub fn value() -> u32 { 19 }")
+        .publish();
+
+    project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "foo"
+                version = "0.0.1"
+                edition = "2021"
+
+                [dependencies]
+                development-dependency = "1.0.0"
+
+                [dev-dependencies]
+                development-dependency = { version = "1.0.0", features = ["development"] }
+
+                [profile.custom]
+                inherits = "dev"
+            "#,
+        )
+        .file(
+            "src/lib.rs",
+            "pub fn value() -> u32 { development_dependency::value() }",
+        )
+        .file("src/main.rs", "fn main() { let _ = foo::value(); }")
+        .file("src/bin/second.rs", "fn main() { let _ = foo::value(); }")
+        .file(
+            "tests/smoke.rs",
+            "#[test] fn smoke() { assert_eq!(foo::value(), 19); }",
+        )
+        .build()
+}
+
+fn ohm_dev_superset_build_script_project() -> Project {
+    project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "foo"
+                version = "0.0.1"
+                edition = "2021"
+
+                [dependencies]
+                generated-dependency = { path = "dependency" }
+            "#,
+        )
+        .file("src/lib.rs", "pub fn value() -> u32 { generated_dependency::value() }")
+        .file("tests/smoke.rs", "#[test] fn smoke() { foo::value(); }")
+        .file(
+            "dependency/Cargo.toml",
+            &basic_manifest("generated-dependency", "0.0.1"),
+        )
+        .file(
+            "dependency/build.rs",
+            r#"
+                fn main() {
+                    println!("cargo::rerun-if-changed=state.txt");
+                    println!("cargo::rerun-if-env-changed=OHM_DEV_SUPERSET_BUILD_STATE");
+                    println!("cargo::rustc-check-cfg=cfg(ohm_invalid_build_input)");
+                    let state = std::fs::read_to_string("state.txt").unwrap_or_default();
+                    if state.trim() == "invalid"
+                        || std::env::var("OHM_DEV_SUPERSET_BUILD_STATE").as_deref()
+                            == Ok("invalid")
+                    {
+                        println!("cargo::rustc-cfg=ohm_invalid_build_input");
+                    }
+                }
+            "#,
+        )
+        .file(
+            "dependency/src/lib.rs",
+            "#[cfg(ohm_invalid_build_input)]\ncompile_error!(\"changed build-script input\");\npub fn value() -> u32 { 19 }\n",
+        )
+        .file("dependency/state.txt", "valid")
+        .build()
+}
+
 fn ohm_compiler_supports_defaults() -> bool {
     cargo_test_support::process("rustc")
         .arg("-Zpublic-api-hash")
@@ -396,6 +479,410 @@ fn ohm_reuses_compatible_test_built_registry_dependencies_when_features_change()
         .with_stderr_contains("[CHECKING] changing-middle v1.0.0")
         .with_stderr_does_not_contain("[CHECKING] stable-leaf v1.0.0")
         .with_stderr_does_not_contain("[CHECKING] stable-middle v1.0.0")
+        .run();
+}
+
+#[cargo_test]
+fn ohm_dev_superset_reuses_fresh_test_unified_normal_targets() {
+    let p = ohm_dev_superset_project();
+
+    p.cargo("test --no-run").run();
+    assert!(p.bin("foo").is_file());
+    assert!(p.bin("second").is_file());
+
+    p.cargo("-Zohm-dev-superset check -v")
+        .masquerade_as_nightly_cargo(&["ohm-dev-superset"])
+        .with_stderr_contains("[FRESH] development-dependency v1.0.0")
+        .with_stderr_contains("[FRESH] foo v0.0.1 ([ROOT]/foo)")
+        .with_stderr_does_not_contain("[CHECKING] [..]")
+        .with_stderr_does_not_contain("[COMPILING] [..]")
+        .with_stderr_does_not_contain("[EXECUTABLE] [..]")
+        .run();
+}
+
+#[cargo_test]
+fn ohm_dev_superset_explicitly_accepts_test_feature_only_apis() {
+    Package::new("feature-dependent", "1.0.0")
+        .feature("development", &[])
+        .file(
+            "src/lib.rs",
+            "#[cfg(feature = \"development\")]\npub fn development_only() -> u32 { 19 }",
+        )
+        .publish();
+
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "foo"
+                version = "0.0.1"
+                edition = "2021"
+
+                [dependencies]
+                feature-dependent = "1.0.0"
+
+                [dev-dependencies]
+                feature-dependent = { version = "1.0.0", features = ["development"] }
+            "#,
+        )
+        .file(
+            "src/lib.rs",
+            "pub fn value() -> u32 { feature_dependent::development_only() }",
+        )
+        .file("tests/smoke.rs", "#[test] fn smoke() { foo::value(); }")
+        .build();
+
+    p.cargo("test --no-run").run();
+    p.cargo("check")
+        .with_status(101)
+        .with_stderr_contains("error[E0425]: [..]")
+        .run();
+    p.cargo("-Zohm-dev-superset check")
+        .masquerade_as_nightly_cargo(&["ohm-dev-superset"])
+        .with_stderr_does_not_contain("[CHECKING] [..]")
+        .with_stderr_does_not_contain("[COMPILING] [..]")
+        .run();
+}
+
+#[cargo_test]
+fn ohm_dev_superset_is_explicitly_opt_in() {
+    let p = ohm_dev_superset_project();
+
+    p.cargo("test --no-run").run();
+    p.cargo("check -v")
+        .with_stderr_contains("[CHECKING] development-dependency v1.0.0")
+        .with_stderr_contains("[CHECKING] foo v0.0.1 ([ROOT]/foo)")
+        .run();
+}
+
+#[cargo_test]
+fn ohm_dev_superset_does_not_change_ordinary_build_features() {
+    let p = ohm_dev_superset_project();
+
+    p.cargo("test --no-run").run();
+    p.cargo("-Zohm-dev-superset build")
+        .masquerade_as_nightly_cargo(&["ohm-dev-superset"])
+        .with_stderr_contains("[COMPILING] development-dependency v1.0.0")
+        .run();
+}
+
+#[cargo_test]
+fn ohm_dev_superset_falls_back_when_workspace_source_changes() {
+    let p = ohm_dev_superset_project();
+
+    p.cargo("test --no-run").run();
+    p.change_file(
+        "src/lib.rs",
+        "pub fn value() -> u32 { development_dependency::value(19) }",
+    );
+
+    p.cargo("-Zohm-dev-superset check")
+        .masquerade_as_nightly_cargo(&["ohm-dev-superset"])
+        .with_status(101)
+        .with_stderr_contains("[CHECKING] foo v0.0.1 ([ROOT]/foo)")
+        .with_stderr_contains("error[E0061]: [..]")
+        .with_stderr_does_not_contain("[COMPILING] foo [..]")
+        .run();
+}
+
+#[cargo_test]
+fn ohm_dev_superset_rechecks_changed_transitive_workspace_dependencies() {
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "foo"
+                version = "0.0.1"
+                edition = "2021"
+
+                [dependencies]
+                path-dependency = { path = "dependency" }
+            "#,
+        )
+        .file(
+            "src/lib.rs",
+            "pub fn value() -> u32 { path_dependency::value() }",
+        )
+        .file("tests/smoke.rs", "#[test] fn smoke() { foo::value(); }")
+        .file(
+            "dependency/Cargo.toml",
+            &basic_manifest("path-dependency", "0.0.1"),
+        )
+        .file("dependency/src/lib.rs", "pub fn value() -> u32 { 19 }")
+        .build();
+
+    p.cargo("test --no-run").run();
+    p.change_file(
+        "dependency/src/lib.rs",
+        "compile_error!(\"changed transitive workspace dependency\");",
+    );
+
+    p.cargo("-Zohm-dev-superset check")
+        .masquerade_as_nightly_cargo(&["ohm-dev-superset"])
+        .with_status(101)
+        .with_stderr_contains("[CHECKING] path-dependency v0.0.1 [..]")
+        .with_stderr_contains("[ERROR] changed transitive workspace dependency")
+        .run();
+}
+
+#[cargo_test]
+fn ohm_dev_superset_rechecks_changed_build_script_inputs() {
+    let p = ohm_dev_superset_build_script_project();
+
+    p.cargo("test --no-run").run();
+    p.change_file("dependency/state.txt", "invalid");
+
+    p.cargo("-Zohm-dev-superset check")
+        .masquerade_as_nightly_cargo(&["ohm-dev-superset"])
+        .with_status(101)
+        .with_stderr_contains("[ERROR] changed build-script input")
+        .run();
+}
+
+#[cargo_test]
+fn ohm_dev_superset_rechecks_changed_build_script_environment() {
+    let p = ohm_dev_superset_build_script_project();
+
+    p.cargo("test --no-run").run();
+
+    p.cargo("-Zohm-dev-superset check")
+        .masquerade_as_nightly_cargo(&["ohm-dev-superset"])
+        .env("OHM_DEV_SUPERSET_BUILD_STATE", "invalid")
+        .with_status(101)
+        .with_stderr_contains("[ERROR] changed build-script input")
+        .run();
+}
+
+#[cargo_test]
+fn ohm_dev_superset_does_not_build_cold_targets() {
+    let p = ohm_dev_superset_project();
+
+    p.cargo("-Zohm-dev-superset check")
+        .masquerade_as_nightly_cargo(&["ohm-dev-superset"])
+        .with_stderr_contains("[CHECKING] development-dependency v1.0.0")
+        .with_stderr_contains("[CHECKING] foo v0.0.1 ([ROOT]/foo)")
+        .with_stderr_does_not_contain("[COMPILING] [..]")
+        .run();
+
+    assert!(!p.bin("foo").exists());
+    assert!(!p.bin("second").exists());
+}
+
+#[cargo_test]
+fn ohm_dev_superset_preserves_locked_offline_checks_without_dev_sources() {
+    Package::new("uncached-development-only", "1.0.0")
+        .file("src/lib.rs", "pub fn value() -> u32 { 19 }")
+        .publish();
+
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "foo"
+                version = "0.0.1"
+                edition = "2021"
+
+                [dev-dependencies]
+                uncached-development-only = "1.0.0"
+            "#,
+        )
+        .file("src/lib.rs", "pub fn value() -> u32 { 23 }")
+        .build();
+
+    p.cargo("generate-lockfile").run();
+    let lockfile = p.root().join("Cargo.lock");
+    let original_lockfile = std::fs::read(&lockfile).expect("read generated lockfile");
+
+    p.cargo("-Zohm-dev-superset check --locked --offline")
+        .masquerade_as_nightly_cargo(&["ohm-dev-superset"])
+        .with_stderr_contains("[CHECKING] foo v0.0.1 ([ROOT]/foo)")
+        .with_stderr_does_not_contain("[DOWNLOADED] [..]")
+        .run();
+
+    assert_eq!(
+        std::fs::read(&lockfile).expect("read original lockfile"),
+        original_lockfile,
+        "a cold development-superset fallback must preserve the locked dependency graph",
+    );
+}
+
+#[cargo_test]
+fn ohm_dev_superset_does_not_recreate_missing_normal_binary() {
+    let p = ohm_dev_superset_project();
+
+    p.cargo("test --no-run").run();
+    let second_binary = p.bin("second");
+    std::fs::remove_file(&second_binary).expect("remove the existing test-built binary");
+
+    p.cargo("-Zohm-dev-superset check")
+        .masquerade_as_nightly_cargo(&["ohm-dev-superset"])
+        .with_stderr_contains("[CHECKING] foo v0.0.1 ([ROOT]/foo)")
+        .run();
+
+    assert!(!second_binary.exists());
+}
+
+#[cargo_test]
+fn ohm_dev_superset_preserves_workspace_compiler_wrappers() {
+    let p = ohm_dev_superset_project();
+
+    p.cargo("test --no-run").run();
+    p.cargo("-Zohm-dev-superset check")
+        .masquerade_as_nightly_cargo(&["ohm-dev-superset"])
+        .env("RUSTC_WORKSPACE_WRAPPER", tools::echo_wrapper())
+        .with_stderr_contains("[CHECKING] foo v0.0.1 ([ROOT]/foo)")
+        .with_stderr_contains("WRAPPER CALLED: rustc [..]--crate-name foo [..]")
+        .run();
+}
+
+#[cargo_test]
+fn ohm_dev_superset_preserves_global_compiler_wrappers() {
+    let p = ohm_dev_superset_project();
+
+    p.cargo("test --no-run").run();
+    p.cargo("-Zohm-dev-superset check")
+        .masquerade_as_nightly_cargo(&["ohm-dev-superset"])
+        .env("RUSTC_WRAPPER", tools::echo_wrapper())
+        .with_stderr_contains("[CHECKING] development-dependency v1.0.0")
+        .with_stderr_contains("WRAPPER CALLED: rustc [..]--crate-name foo [..]")
+        .run();
+}
+
+#[cargo_test]
+fn ohm_dev_superset_preserves_configured_workspace_compiler_wrappers() {
+    let p = ohm_dev_superset_project();
+
+    p.cargo("test --no-run").run();
+    p.change_file(
+        ".cargo/config.toml",
+        &format!(
+            "[build]\nrustc-workspace-wrapper = {:?}\n",
+            tools::echo_wrapper()
+        ),
+    );
+
+    p.cargo("-Zohm-dev-superset check")
+        .masquerade_as_nightly_cargo(&["ohm-dev-superset"])
+        .with_stderr_contains("[CHECKING] foo v0.0.1 ([ROOT]/foo)")
+        .with_stderr_contains("WRAPPER CALLED: rustc [..]--crate-name foo [..]")
+        .run();
+}
+
+#[cargo_test]
+fn ohm_dev_superset_preserves_machine_readable_check_artifacts() {
+    let p = ohm_dev_superset_project();
+
+    p.cargo("test --no-run").run();
+    p.cargo("-Zohm-dev-superset check --message-format=json")
+        .masquerade_as_nightly_cargo(&["ohm-dev-superset"])
+        .with_stderr_contains("[CHECKING] foo v0.0.1 ([ROOT]/foo)")
+        .with_stdout_contains(r#"[..]"executable":null[..]"#)
+        .with_stdout_does_not_contain(r#"[..]"executable":"[..]"#)
+        .run();
+}
+
+#[cargo_test]
+fn ohm_dev_superset_preserves_alternate_profiles() {
+    let p = ohm_dev_superset_project();
+
+    p.cargo("test --no-run").run();
+    p.cargo("-Zohm-dev-superset check --profile custom")
+        .masquerade_as_nightly_cargo(&["ohm-dev-superset"])
+        .with_stderr_contains("[CHECKING] foo v0.0.1 ([ROOT]/foo)")
+        .with_stderr_contains("[FINISHED] `custom` profile [..]")
+        .run();
+}
+
+#[cargo_test]
+fn ohm_dev_superset_preserves_explicit_target_filters() {
+    let p = ohm_dev_superset_project();
+
+    p.cargo("test --no-run").run();
+    p.cargo("-Zohm-dev-superset check --lib")
+        .masquerade_as_nightly_cargo(&["ohm-dev-superset"])
+        .with_stderr_contains("[CHECKING] foo v0.0.1 ([ROOT]/foo)")
+        .run();
+}
+
+#[cargo_test]
+fn ohm_dev_superset_replays_cached_root_warnings() {
+    let p = ohm_dev_superset_project();
+
+    p.change_file(
+        "src/lib.rs",
+        "pub fn value() -> u32 { development_dependency::value() }\nfn unused() {}\n",
+    );
+    p.cargo("test --no-run").run();
+
+    p.cargo("-Zohm-dev-superset check")
+        .masquerade_as_nightly_cargo(&["ohm-dev-superset"])
+        .with_stderr_contains("[WARNING] function `unused` is never used")
+        .with_stderr_does_not_contain("[CHECKING] [..]")
+        .with_stderr_does_not_contain("[COMPILING] [..]")
+        .run();
+}
+
+#[cargo_test]
+fn ohm_dev_superset_rechecks_strict_warning_flags() {
+    let p = ohm_dev_superset_project();
+
+    p.change_file(
+        "src/lib.rs",
+        "pub fn value() -> u32 { development_dependency::value() }\nfn unused() {}\n",
+    );
+    p.cargo("test --no-run").run();
+
+    p.cargo("-Zohm-dev-superset check")
+        .masquerade_as_nightly_cargo(&["ohm-dev-superset"])
+        .env("RUSTFLAGS", "-Dwarnings")
+        .with_status(101)
+        .with_stderr_contains("[CHECKING] foo v0.0.1 ([ROOT]/foo)")
+        .with_stderr_contains("[ERROR] function `unused` is never used")
+        .run();
+}
+
+#[cargo_test]
+fn ohm_dev_superset_preserves_denied_warnings_without_cached_diagnostics() {
+    let p = ohm_dev_superset_project();
+
+    p.change_file(
+        "src/lib.rs",
+        "pub fn value() -> u32 { development_dependency::value() }\nfn unused() {}\n",
+    );
+    p.cargo("test --no-run").run();
+    let cached_messages = p
+        .glob("target/debug/.fingerprint/foo-*/output-lib-foo")
+        .next()
+        .expect("workspace compiler messages")
+        .expect("existing workspace compiler message path");
+    std::fs::remove_file(cached_messages).expect("remove only cached workspace diagnostics");
+
+    p.cargo("-Zohm-dev-superset check")
+        .arg("--config")
+        .arg("build.warnings='deny'")
+        .masquerade_as_nightly_cargo(&["ohm-dev-superset"])
+        .with_status(101)
+        .with_stderr_contains("[CHECKING] foo v0.0.1 ([ROOT]/foo)")
+        .with_stderr_contains("[WARNING] function `unused` is never used")
+        .with_stderr_contains("[ERROR] warnings are denied by `build.warnings` configuration")
+        .run();
+}
+
+#[cargo_test]
+fn ohm_dev_superset_locks_fresh_units_with_fine_grained_locking() {
+    let p = ohm_dev_superset_project();
+
+    p.cargo("-Zfine-grain-locking test --no-run")
+        .masquerade_as_nightly_cargo(&["fine-grain-locking"])
+        .run();
+    p.cargo("-Zfine-grain-locking -Zohm-dev-superset check -v")
+        .masquerade_as_nightly_cargo(&["fine-grain-locking", "ohm-dev-superset"])
+        .with_stderr_contains("[FRESH] foo v0.0.1 ([ROOT]/foo)")
+        .with_stderr_does_not_contain("[CHECKING] [..]")
+        .with_stderr_does_not_contain("[COMPILING] [..]")
         .run();
 }
 

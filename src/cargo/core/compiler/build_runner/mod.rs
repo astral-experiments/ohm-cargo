@@ -683,6 +683,73 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
         self.compile_prepared(exec, queue).map(Some)
     }
 
+    /// Replays a complete, already-fresh build without scheduling code generation.
+    ///
+    /// Development-superset checks use genuine build units so normal artifact
+    /// directories are locked. Every unit is additionally locked in a stable order
+    /// before recursive fingerprint validation, preventing a shared-cache writer
+    /// from changing the graph between its freshness probe and cached replay.
+    #[tracing::instrument(name = "compile", skip_all)]
+    pub(crate) fn compile_if_build_graph_is_fresh(
+        mut self,
+        exec: &Arc<dyn Executor>,
+    ) -> CargoResult<Option<Compilation<'gctx>>> {
+        if !matches!(self.bcx.build_config.intent, UserIntent::Build)
+            || self.bcx.build_config.force_rebuild
+            || self.bcx.roots.is_empty()
+            || self
+                .bcx
+                .unit_graph
+                .keys()
+                .any(|unit| exec.force_rebuild(unit))
+        {
+            return Ok(None);
+        }
+
+        let global_context = self.bcx.gctx;
+        let _lock = global_context.acquire_package_cache_lock(CacheLockMode::Shared)?;
+        let queue = JobQueue::new(self.bcx);
+        self.lto = super::lto::generate(self.bcx)?;
+        self.prepare_units()?;
+
+        if self.bcx.roots.iter().any(|unit| {
+            unit.mode != CompileMode::Build
+                || !self.files().fingerprint_file_path(unit, "").is_file()
+        }) {
+            return Ok(None);
+        }
+
+        self.prepare()?;
+        custom_build::build_map(&mut self)?;
+
+        if self.bcx.gctx.cli_unstable().fine_grain_locking {
+            let mut units = self.bcx.unit_graph.keys().cloned().collect::<Vec<_>>();
+            units.sort_by_cached_key(|unit| self.files().build_unit_lock(unit));
+            for unit in units {
+                self.lock_manager.lock_shared(&self, &unit)?;
+            }
+        }
+
+        for unit in self.bcx.roots.clone() {
+            if unit.target.is_bin()
+                && self.outputs(&unit)?.iter().any(|output| {
+                    output.flavor == FileFlavor::Normal
+                        && output
+                            .hardlink
+                            .as_ref()
+                            .is_some_and(|destination| !destination.is_file())
+                })
+            {
+                return Ok(None);
+            }
+            if !fingerprint::existing_unit_is_fresh(&mut self, &unit)? {
+                return Ok(None);
+            }
+        }
+
+        self.compile_prepared(exec, queue).map(Some)
+    }
+
     /// Starts compilation, waits for it to finish, and returns information
     /// about the result of compilation.
     ///

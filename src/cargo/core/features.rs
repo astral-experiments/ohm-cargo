@@ -929,6 +929,7 @@ unstable_cli_options!(
     no_embed_metadata: Option<bool> = ("Avoid embedding metadata in library artifacts"),
     no_index_update: bool = ("Do not update the registry index even if the cache is outdated"),
     ohm_defaults: Option<bool> = ("Enable the defaults packaged with Ohm"),
+    ohm_dev_superset: bool = ("Reuse fresh test-unified development builds (potentially unsound)"),
     ohm_focused_tests: bool = ("Compile only an explicitly selected exact library test"),
     ohm_native_tool_trust: OhmNativeToolTrust = ("Set native-tool trust for shared registry artifacts: strict (default), build-scripts, or all (potentially unsound)"),
     ohm_proc_macro_trust: OhmProcMacroTrust = ("Set procedural-macro trust for shared registry artifacts: audited (default) or all (potentially unsound)"),
@@ -1502,6 +1503,7 @@ impl CliUnstable {
             "no-embed-metadata" => self.no_embed_metadata = Some(parse_bool(k, v)?),
             "no-index-update" => self.no_index_update = parse_empty(k, v)?,
             "ohm-defaults" => self.ohm_defaults = Some(parse_bool(k, v)?),
+            "ohm-dev-superset" => self.ohm_dev_superset = parse_empty(k, v)?,
             "ohm-focused-tests" => self.ohm_focused_tests = parse_empty(k, v)?,
             "ohm-native-tool-trust" => {
                 self.ohm_native_tool_trust = match v {

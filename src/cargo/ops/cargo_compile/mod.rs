@@ -189,6 +189,38 @@ pub fn compile_ws<'a>(
         });
     }
 
+    if is_dev_superset_check_candidate(ws, options) {
+        let mut superset_options = options.clone();
+        superset_options.build_config.intent = UserIntent::Build;
+        let superset_interner = UnitInterner::new();
+
+        let superset_result = create_bcx_with_registry_reuse(
+            ws,
+            &superset_options,
+            &superset_interner,
+            logger.as_ref(),
+            true,
+            &HashSet::default(),
+            true,
+        )
+        .and_then(|build_context| {
+            BuildRunner::new(&build_context)?.compile_if_build_graph_is_fresh(exec)
+        });
+
+        match superset_result {
+            Ok(Some(compilation)) => {
+                crate::core::gc::auto_gc(ws.gctx());
+                return Ok(compilation);
+            }
+            Ok(None) => {}
+            Err(error) => {
+                tracing::debug!(
+                    "falling back to the ordinary check after development-superset preflight: {error}"
+                );
+            }
+        }
+    }
+
     let bcx = create_bcx(ws, options, &interner, logger.as_ref())?;
 
     if options.build_config.unit_graph {
@@ -226,6 +258,7 @@ pub fn compile_ws<'a>(
                     logger.as_ref(),
                     false,
                     &HashSet::default(),
+                    false,
                 )?;
                 if let Some(compilation) =
                     BuildRunner::new(&ordinary_bcx)?.compile_if_check_graph_is_reusable(exec)?
@@ -242,6 +275,7 @@ pub fn compile_ws<'a>(
                 logger.as_ref(),
                 true,
                 &rejected_registry_packages,
+                false,
             )?;
             match BuildRunner::new(&fallback_bcx)?.compile(exec) {
                 Err(error) if error.is::<StaleBuiltRegistryDependency>() => {
@@ -257,6 +291,7 @@ pub fn compile_ws<'a>(
                         logger.as_ref(),
                         false,
                         &HashSet::default(),
+                        false,
                     )?;
                     BuildRunner::new(&final_bcx)?.compile(exec)
                 }
@@ -265,6 +300,54 @@ pub fn compile_ws<'a>(
         }
         result => result,
     }
+}
+
+/// Restricts development-superset reuse to an ordinary, human-readable package check.
+///
+/// Compiler wrappers, machine-readable artifacts, explicit targets, and alternate
+/// profiles retain their unmodified check semantics.
+///
+/// This explicitly requested optimization checks dependencies with their test-unified
+/// features. Those extra features can make a development check succeed when ordinary
+/// production-feature resolution would fail, so strict checks must omit the flag.
+fn is_dev_superset_check_candidate(ws: &Workspace<'_>, options: &CompileOptions) -> bool {
+    let unstable = ws.gctx().cli_unstable();
+    let config = &options.build_config;
+
+    if !unstable.ohm_dev_superset
+        || !matches!(config.intent, UserIntent::Check { test: false })
+        || config.requested_profile.as_str() != "dev"
+        || config.emit_json()
+        || config.force_rebuild
+        || config.unit_graph
+        || config.dry_run
+        || config.timing_report
+        || config.compile_time_deps_only
+        || config.sbom
+        || config.export_dir.is_some()
+        || config.primary_unit_rustc.is_some()
+        || config.rustfix_diagnostic_server.borrow().is_some()
+        || config.requested_kinds.len() != 1
+        || !config.requested_kinds[0].is_host()
+        || options.filter.is_specific()
+        || options.target_rustc_args.is_some()
+        || options.target_rustdoc_args.is_some()
+        || options.target_rustc_crate_types.is_some()
+        || unstable.bindeps
+        || unstable.build_std.is_some()
+        || !matches!(ws.gctx().warning_handling(), Ok(WarningHandling::Warn))
+        || !ws.build_dir().as_path_unlocked().join("debug").is_dir()
+        || !options
+            .spec
+            .to_package_id_specs(ws)
+            .is_ok_and(|packages| packages.len() == 1)
+    {
+        return false;
+    }
+
+    ws.gctx()
+        .load_global_rustc(Some(ws))
+        .is_ok_and(|rustc| rustc.wrapper.is_none() && rustc.workspace_wrapper.is_none())
 }
 
 /// Executes `rustc --print <VALUE>`.
@@ -329,6 +412,7 @@ pub fn create_bcx<'a, 'gctx>(
         logger,
         reuse_built_registry_dependencies,
         &HashSet::default(),
+        false,
     )
 }
 
@@ -341,6 +425,7 @@ fn create_bcx_with_registry_reuse<'a, 'gctx>(
     logger: Option<&'a BuildLogger>,
     reuse_built_registry_dependencies: bool,
     rejected_built_registry_packages: &HashSet<PackageId>,
+    force_development_superset: bool,
 ) -> CargoResult<BuildContext<'a, 'gctx>> {
     let CompileOptions {
         ref build_config,
@@ -398,7 +483,14 @@ fn create_bcx_with_registry_reuse<'a, 'gctx>(
                     .any(|target| target.is_example() && target.doc_scrape_examples().is_enabled())
             });
 
-        if filter.need_dev_deps(build_config.intent)
+        let development_superset = force_development_superset
+            && gctx.cli_unstable().ohm_dev_superset
+            && matches!(build_config.intent, UserIntent::Build)
+            && target_data.rustc.wrapper.is_none()
+            && target_data.rustc.workspace_wrapper.is_none();
+
+        if development_superset
+            || filter.need_dev_deps(build_config.intent)
             || (build_config.intent.is_doc() && any_pkg_has_scrape_enabled)
         {
             HasDevUnits::Yes
