@@ -1307,8 +1307,8 @@ impl<'a, 'gctx> State<'a, 'gctx> {
         immutable
     }
 
-    /// Trust audited, token-only macro releases only when their complete
-    /// source identities match both the resolved and downloaded checksums.
+    /// Trust configured macro releases only when their complete source
+    /// identities match both the resolved and downloaded checksums.
     fn proc_macro_is_audited(&self, unit: &Unit) -> bool {
         let package_id = unit.pkg.package_id();
         let sources = self.package_set.sources();
@@ -1326,7 +1326,7 @@ impl<'a, 'gctx> State<'a, 'gctx> {
                 .and_then(Option::as_deref),
             unit.pkg.summary().checksum(),
             true,
-            OhmProcMacroTrust::Audited,
+            self.gctx.cli_unstable().ohm_proc_macro_trust,
         )
     }
 
@@ -1347,6 +1347,7 @@ impl<'a, 'gctx> State<'a, 'gctx> {
                 .get(&package_id)
                 .and_then(Option::as_deref),
             unit.pkg.summary().checksum(),
+            self.gctx.cli_unstable().ohm_proc_macro_trust,
         )
     }
 
@@ -1548,6 +1549,7 @@ fn audited_proc_macro_runtime_dependency_identity(
     version: &semver::Version,
     resolved_checksum: Option<&str>,
     downloaded_checksum: Option<&str>,
+    trust: OhmProcMacroTrust,
 ) -> bool {
     audited_proc_macro_package_identity(
         source_id,
@@ -1557,7 +1559,7 @@ fn audited_proc_macro_runtime_dependency_identity(
         resolved_checksum,
         downloaded_checksum,
         false,
-        OhmProcMacroTrust::Audited,
+        trust,
     )
 }
 
@@ -2269,6 +2271,7 @@ mod audited_proc_macro_tests {
             &version,
             Some(checksum),
             Some(checksum),
+            OhmProcMacroTrust::Audited,
         ));
         assert!(!audited_proc_macro_runtime_dependency_identity(
             alternative,
@@ -2277,6 +2280,7 @@ mod audited_proc_macro_tests {
             &version,
             Some(checksum),
             Some(checksum),
+            OhmProcMacroTrust::Audited,
         ));
         assert!(!audited_proc_macro_runtime_dependency_identity(
             crates_io,
@@ -2285,6 +2289,7 @@ mod audited_proc_macro_tests {
             &version,
             Some(checksum),
             Some(checksum),
+            OhmProcMacroTrust::Audited,
         ));
         assert!(!audited_proc_macro_runtime_dependency_identity(
             crates_io,
@@ -2293,6 +2298,7 @@ mod audited_proc_macro_tests {
             &version,
             Some(checksum),
             Some("unaudited-download"),
+            OhmProcMacroTrust::Audited,
         ));
         assert!(!audited_proc_macro_runtime_dependency_identity(
             crates_io,
@@ -2301,6 +2307,54 @@ mod audited_proc_macro_tests {
             &version,
             None,
             Some(checksum),
+            OhmProcMacroTrust::Audited,
         ));
+    }
+
+    #[test]
+    fn permissive_macro_runtime_trust_still_requires_authenticated_crates_io_sources() {
+        let crates_io = SourceId::from_url("registry+https://github.com/rust-lang/crates.io-index")
+            .expect("canonical registry source");
+        let alternative = SourceId::from_url("registry+file:///tmp/alternative-registry")
+            .expect("alternate registry source");
+        let version = semver::Version::new(1, 0, 0);
+        let checksum = "unaudited-but-authenticated-runtime-helper";
+
+        assert!(!audited_proc_macro_runtime_dependency_identity(
+            crates_io,
+            false,
+            "unaudited-runtime-helper",
+            &version,
+            Some(checksum),
+            Some(checksum),
+            OhmProcMacroTrust::Audited,
+        ));
+        assert!(audited_proc_macro_runtime_dependency_identity(
+            crates_io,
+            false,
+            "unaudited-runtime-helper",
+            &version,
+            Some(checksum),
+            Some(checksum),
+            OhmProcMacroTrust::All,
+        ));
+
+        for (source, replaced, resolved, downloaded) in [
+            (alternative, false, Some(checksum), Some(checksum)),
+            (crates_io, true, Some(checksum), Some(checksum)),
+            (crates_io, false, None, Some(checksum)),
+            (crates_io, false, Some(checksum), None),
+            (crates_io, false, Some(checksum), Some("different-checksum")),
+        ] {
+            assert!(!audited_proc_macro_runtime_dependency_identity(
+                source,
+                replaced,
+                "unaudited-runtime-helper",
+                &version,
+                resolved,
+                downloaded,
+                OhmProcMacroTrust::All,
+            ));
+        }
     }
 }

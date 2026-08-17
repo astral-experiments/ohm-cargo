@@ -2724,13 +2724,16 @@ fn ohm_built_registry_dependency_reuse_rechecks_untrusted_procedural_macro_envir
     let p = ohm_registry_project();
 
     p.cargo("build").env("OHM_MACRO_MODE", "allow").run();
-    p.cargo("-Zohm-reuse-built-deps check")
-        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
-        .env("OHM_MACRO_MODE", "deny")
-        .with_status(101)
-        .with_stderr_contains("[CHECKING] dependency v1.0.0")
-        .with_stderr_contains("[ERROR] the procedural macro observed changed environment")
-        .run();
+    for trust in ["audited", "all"] {
+        p.cargo("-Zohm-reuse-built-deps check")
+            .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
+            .env("CARGO_UNSTABLE_OHM_PROC_MACRO_TRUST", trust)
+            .env("OHM_MACRO_MODE", "deny")
+            .with_status(101)
+            .with_stderr_contains("[CHECKING] dependency v1.0.0")
+            .with_stderr_contains("[ERROR] the procedural macro observed changed environment")
+            .run();
+    }
 }
 
 #[cargo_test]
