@@ -1639,8 +1639,8 @@ fn ohm_reuses_fresh_built_workspace_members_during_checks() {
         .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
         .run();
 
-    project
-        .cargo("-Zohm-reuse-built-deps check -p application -v")
+    let output = project
+        .cargo("-Zohm-reuse-built-deps check -p application -v --message-format=json")
         .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
         .with_stderr_contains("[FRESH] dependency v1.0.0")
         .with_stderr_contains("[FRESH] local v1.0.0 ([ROOT]/foo/local)")
@@ -1648,6 +1648,26 @@ fn ohm_reuses_fresh_built_workspace_members_during_checks() {
         .with_stderr_does_not_contain("[CHECKING] local v1.0.0")
         .with_stderr_does_not_contain("[COMPILING]")
         .run();
+
+    let stdout = String::from_utf8(output.stdout).expect("UTF-8 Cargo output");
+    let artifact = stdout
+        .lines()
+        .map(|line| serde_json::from_str::<serde_json::Value>(line).expect("JSON Cargo message"))
+        .find(|message| {
+            message["reason"] == "compiler-artifact" && message["target"]["name"] == "local"
+        })
+        .expect("promoted workspace artifact");
+    let filenames = artifact["filenames"]
+        .as_array()
+        .expect("promoted workspace artifact filenames");
+    assert_eq!(artifact["fresh"], true);
+    assert!(!filenames.is_empty(), "missing workspace metadata");
+    assert!(
+        filenames.iter().all(|filename| filename
+            .as_str()
+            .is_some_and(|path| path.ends_with(".rmeta"))),
+        "a promoted workspace dependency must retain check-mode JSON: {artifact}",
+    );
 }
 
 #[cargo_test]
@@ -1721,6 +1741,102 @@ fn ohm_rechecks_changed_workspace_members_instead_of_reusing_stale_builds() {
         .with_stderr_contains("[CHECKING] local v1.0.0 ([ROOT]/foo/local)")
         .with_stderr_contains("[CHECKING] application v0.0.1 ([ROOT]/foo/application)")
         .with_stderr_does_not_contain("[COMPILING]")
+        .run();
+}
+
+#[cargo_test]
+fn ohm_rechecks_workspace_members_with_compiler_wrappers() {
+    let project = ohm_workspace_project();
+
+    project
+        .cargo("-Zohm-reuse-built-deps build -p application")
+        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
+        .env("RUSTC_WORKSPACE_WRAPPER", tools::echo_wrapper())
+        .run();
+
+    project
+        .cargo("-Zohm-reuse-built-deps check -p application -v")
+        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
+        .env("RUSTC_WORKSPACE_WRAPPER", tools::echo_wrapper())
+        .with_stderr_contains("[FRESH] dependency v1.0.0")
+        .with_stderr_contains("[CHECKING] local v1.0.0 ([ROOT]/foo/local)")
+        .with_stderr_contains("WRAPPER CALLED: rustc --crate-name local [..]")
+        .run();
+}
+
+#[cargo_test]
+fn ohm_rechecks_workspace_members_with_local_build_scripts() {
+    let project = ohm_workspace_project();
+    project.change_file(
+        "local/build.rs",
+        "fn main() { println!(\"cargo:rerun-if-changed=build.rs\"); }",
+    );
+
+    project
+        .cargo("-Zohm-reuse-built-deps build -p application")
+        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
+        .run();
+
+    project
+        .cargo("-Zohm-reuse-built-deps check -p application -v")
+        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
+        .with_stderr_contains("[FRESH] dependency v1.0.0")
+        .with_stderr_contains("[CHECKING] local v1.0.0 ([ROOT]/foo/local)")
+        .with_stderr_does_not_contain("[COMPILING] local v1.0.0")
+        .run();
+}
+
+#[cargo_test]
+fn ohm_rechecks_workspace_members_with_external_path_dependencies() {
+    let project = ohm_workspace_project();
+    project.change_file(
+        "Cargo.toml",
+        r#"
+            [workspace]
+            members = ["application", "local"]
+            exclude = ["external"]
+            resolver = "2"
+        "#,
+    );
+    project.change_file(
+        "local/Cargo.toml",
+        r#"
+            [package]
+            name = "local"
+            version = "1.0.0"
+            edition = "2021"
+
+            [dependencies]
+            dependency = "1.0.0"
+            external = { path = "../external" }
+        "#,
+    );
+    project.change_file(
+        "local/src/lib.rs",
+        "pub fn value() -> u32 { dependency::value() + external::value() }",
+    );
+    project.change_file(
+        "external/Cargo.toml",
+        r#"
+            [package]
+            name = "external"
+            version = "1.0.0"
+            edition = "2021"
+        "#,
+    );
+    project.change_file("external/src/lib.rs", "pub fn value() -> u32 { 1 }");
+
+    project
+        .cargo("-Zohm-reuse-built-deps build -p application")
+        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
+        .run();
+
+    project
+        .cargo("-Zohm-reuse-built-deps check -p application -v")
+        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
+        .with_stderr_contains("[FRESH] dependency v1.0.0")
+        .with_stderr_contains("[CHECKING] external v1.0.0 ([ROOT]/foo/external)")
+        .with_stderr_contains("[CHECKING] local v1.0.0 ([ROOT]/foo/local)")
         .run();
 }
 

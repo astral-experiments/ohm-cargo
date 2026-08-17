@@ -1118,11 +1118,11 @@ impl<'a, 'gctx> State<'a, 'gctx> {
         target: &Target,
         unit_for: UnitFor,
     ) -> bool {
+        let is_workspace_member = self.ws.is_member_id(package_id);
         if !self.reuse_built_registry_dependencies
             || self.is_std
-            || (!package_id.source_id().is_remote_registry() && !self.ws.is_member_id(package_id))
-            || (self.ws.is_member_id(package_id)
-                && self.target_data.rustc.workspace_wrapper.is_some())
+            || (!package_id.source_id().is_remote_registry() && !is_workspace_member)
+            || (is_workspace_member && self.target_data.rustc.workspace_wrapper.is_some())
             || self.rejected_built_registry_packages.contains(&package_id)
             || target.for_host()
             || !target.is_lib()
@@ -1217,7 +1217,7 @@ impl<'a, 'gctx> State<'a, 'gctx> {
             .is_ok_and(|expected| expected == compiler)
     }
 
-    /// Reject unowned mutable sources and unaudited procedural macros throughout the
+    /// Reject unowned mutable sources and untrusted procedural macros throughout the
     /// actual compilation closure, including active build-script dependencies.
     fn registry_closure_is_immutable(
         &self,
@@ -1278,9 +1278,11 @@ impl<'a, 'gctx> State<'a, 'gctx> {
 
         // Stable procedural macros can inspect arbitrary environment variables
         // and external files without recording either in rustc dependency
-        // information. Reusing their expanded consumers is sound only for an
-        // explicitly audited, immutable producer. Other macro closures must run
-        // the ordinary check compiler regardless of their existing artifacts.
+        // information. By default, reusing their expanded consumers requires an
+        // explicitly audited, immutable producer. The existing explicit `all`
+        // policy also accepts authenticated crates.io macros, but is potentially
+        // unsound. Other macro closures must run the ordinary check compiler
+        // regardless of their existing artifacts.
         // A macro's ordinary library dependencies execute inside its compiler
         // process too. Authenticating only the macro package would let an
         // alternate registry or newer semver-compatible helper introduce
