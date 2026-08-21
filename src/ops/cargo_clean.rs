@@ -6,7 +6,7 @@ use crate::util::data_structures::{IndexMap, IndexSet};
 use crate::util::edit_distance;
 use crate::util::errors::CargoResult;
 use crate::util::interning::InternedString;
-use crate::util::{GlobalContext, Progress, ProgressStyle};
+use crate::util::{Filesystem, GlobalContext, Progress, ProgressStyle};
 use crate::workspace::profiles::Profiles;
 use crate::workspace::{PackageIdSpec, PackageIdSpecQuery, TargetKind, Workspace};
 use anyhow::bail;
@@ -51,6 +51,11 @@ pub fn clean(ws: &Workspace<'_>, opts: &CleanOptions<'_>) -> CargoResult<()> {
     let mut target_dir = ws.target_dir();
     let mut build_dir = ws.build_dir();
     let gctx = opts.gctx;
+    let shared_registry_cache = gctx.cli_unstable().ohm_shared_registry_cache
+        || build_dir
+            .as_path_unlocked()
+            .join(Layout::SHARED_REGISTRY_CACHE_MARKER)
+            .is_file();
     let mut clean_ctx = CleanContext::new(gctx);
     clean_ctx.dry_run = opts.dry_run;
 
@@ -85,6 +90,25 @@ pub fn clean(ws: &Workspace<'_>, opts: &CleanOptions<'_>) -> CargoResult<()> {
                 .element(Level::NOTE.message(CLEAN_ABORT_NOTE))];
             gctx.shell().print_report(&report, false)?;
             return Err(crate::AlreadyPrintedError::new(anyhow::anyhow!("")).into());
+        }
+    }
+
+    if shared_registry_cache {
+        let target_root = fs::canonicalize(target_dir.as_path_unlocked())
+            .unwrap_or_else(|_| paths::normalize_path(target_dir.as_path_unlocked()));
+        let build_root = fs::canonicalize(build_dir.as_path_unlocked())
+            .unwrap_or_else(|_| paths::normalize_path(build_dir.as_path_unlocked()));
+        if target_root.starts_with(&build_root) || build_root.starts_with(&target_root) {
+            bail!(
+                "cannot safely clean overlapping target and shared registry build directories; \
+                 configure a separate workspace-local target directory"
+            );
+        }
+        if !opts.spec.is_empty() && !gctx.cli_unstable().ohm_shared_registry_cache {
+            bail!(
+                "cleaning a package in a shared registry build directory requires \
+                 -Zohm-shared-registry-cache"
+            );
         }
     }
 
@@ -128,15 +152,25 @@ pub fn clean(ws: &Workspace<'_>, opts: &CleanOptions<'_>) -> CargoResult<()> {
         // Note that we don't bother grabbing a lock here as we're just going to
         // blow it all away anyway.
         if opts.spec.is_empty() {
-            let paths: &[PathBuf] = if build_dir != target_dir {
-                &[
-                    target_dir.into_path_unlocked(),
-                    build_dir.into_path_unlocked(),
-                ]
+            if shared_registry_cache {
+                clean_shared_registry_workspace(
+                    &mut clean_ctx,
+                    ws,
+                    target_dir.as_path_unlocked(),
+                    opts.profile_specified
+                        .then(|| profiles.get_dir_name().as_str()),
+                )?;
             } else {
-                &[target_dir.into_path_unlocked()]
-            };
-            clean_ctx.remove_paths(paths)?;
+                let paths: &[PathBuf] = if build_dir != target_dir {
+                    &[
+                        target_dir.into_path_unlocked(),
+                        build_dir.into_path_unlocked(),
+                    ]
+                } else {
+                    &[target_dir.into_path_unlocked()]
+                };
+                clean_ctx.remove_paths(paths)?;
+            }
         } else {
             clean_specs(
                 &mut clean_ctx,
@@ -150,6 +184,94 @@ pub fn clean(ws: &Workspace<'_>, opts: &CleanOptions<'_>) -> CargoResult<()> {
     }
 
     clean_ctx.display_summary()?;
+    Ok(())
+}
+
+/// Cleans only the calling workspace while preserving shared registry artifacts.
+///
+/// Every affected profile is locked exclusively before its private build outputs
+/// are removed. Compilers using fine-grained locking hold the same profile lock
+/// in shared mode, so the deletion cannot race an active build in any worktree.
+/// Host profiles are locked first to match the compiler's cross-target lock ordering.
+fn clean_shared_registry_workspace(
+    clean_ctx: &mut CleanContext<'_>,
+    ws: &Workspace<'_>,
+    target_directory: &Path,
+    requested_profile: Option<&str>,
+) -> CargoResult<()> {
+    let build_directory = ws.build_dir();
+    let build_root = build_directory.as_path_unlocked();
+    let workspace = Layout::shared_workspace_namespace(ws);
+    let mut profile_directories = Vec::new();
+
+    if build_root.is_dir() {
+        for entry in fs::read_dir(build_root)? {
+            let entry = entry?;
+            if !entry.file_type()?.is_dir() {
+                continue;
+            }
+
+            let path = entry.path();
+            if path.join(".cargo-build-lock").is_file() {
+                if requested_profile
+                    .is_none_or(|profile| path.file_name().is_some_and(|name| name == profile))
+                {
+                    profile_directories.push(path);
+                }
+                continue;
+            }
+
+            // Cross-compilation stores profiles one level below the target triple.
+            for nested in fs::read_dir(&path)? {
+                let nested = nested?;
+                if !nested.file_type()?.is_dir() {
+                    continue;
+                }
+                let nested_path = nested.path();
+                if nested_path.join(".cargo-build-lock").is_file()
+                    && requested_profile.is_none_or(|profile| {
+                        nested_path.file_name().is_some_and(|name| name == profile)
+                    })
+                {
+                    profile_directories.push(nested_path);
+                }
+            }
+        }
+    }
+
+    // Builds always acquire the host profile lock before any cross-target
+    // profile locks. Preserve that lock ordering while holding every profile
+    // lock, otherwise a concurrent cross-target build and clean can deadlock.
+    profile_directories.sort_unstable_by(|left, right| {
+        let left_is_target = left.parent() != Some(build_root);
+        let right_is_target = right.parent() != Some(build_root);
+        left_is_target
+            .cmp(&right_is_target)
+            .then_with(|| left.cmp(right))
+    });
+    profile_directories.dedup();
+    let mut locks = Vec::with_capacity(profile_directories.len());
+    for profile in &profile_directories {
+        locks.push(Filesystem::new(profile.clone()).open_rw_exclusive_create(
+            ".cargo-build-lock",
+            clean_ctx.gctx,
+            "shared build directory",
+        )?);
+    }
+
+    clean_ctx.remove_paths(&[target_directory.to_path_buf()])?;
+    for profile in &profile_directories {
+        clean_ctx.rm_rf(&profile.join("build/workspaces").join(&workspace))?;
+        clean_ctx.rm_rf(&profile.join("incremental").join(&workspace))?;
+        if requested_profile.is_none()
+            && let Some(root) = profile.parent()
+        {
+            clean_ctx.rm_rf(&root.join("tmp").join(&workspace))?;
+            clean_ctx.rm_rf(&root.join(format!(".rustdoc_fingerprint-{workspace}.json")))?;
+        }
+    }
+    drop(locks);
+
     Ok(())
 }
 
@@ -276,13 +398,41 @@ fn clean_specs(
     let mut dirs_to_clean = DirectoriesToClean::default();
 
     if clean_ctx.gctx.cli_unstable().build_dir_new_layout {
+        let shared_workspace = clean_ctx
+            .gctx
+            .cli_unstable()
+            .ohm_shared_registry_cache
+            .then(|| Layout::shared_workspace_namespace(ws));
         for pkg in packages {
             clean_ctx.progress.on_cleaning_package(&pkg.name())?;
 
             // Remove intermediate artifacts
             for (_compile_kind, layout) in &layouts_with_host {
-                let dir = layout.build_dir().build_unit(&pkg.name());
-                clean_ctx.rm_rf(&dir)?;
+                if let Some(workspace) = &shared_workspace {
+                    let workspace_directory = layout
+                        .build_dir()
+                        .build()
+                        .join("workspaces")
+                        .join(workspace);
+                    if workspace_directory.is_dir() {
+                        for context in fs::read_dir(&workspace_directory)? {
+                            let context = context?;
+                            if context.file_type()?.is_dir() {
+                                clean_ctx.rm_rf(&context.path().join(pkg.name().as_str()))?;
+                            }
+                        }
+                    }
+                } else {
+                    let dir = layout.build_dir().build_unit(&pkg.name());
+                    clean_ctx.rm_rf(&dir)?;
+                }
+            }
+
+            if shared_workspace.is_some() && pkg.package_id().source_id().is_remote_registry() {
+                clean_ctx.gctx.shell().warn(format!(
+                    "preserving shared registry artifacts for `{}` used by other workspaces",
+                    pkg.name()
+                ))?;
             }
 
             // Remove the uplifted copy.
