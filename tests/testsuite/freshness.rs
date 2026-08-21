@@ -3415,6 +3415,556 @@ fn public_api_hash_wrapper() -> PathBuf {
     wrapper.bin("public-api-hash-wrapper")
 }
 
+fn conditional_metadata_pipeline_wrapper() -> PathBuf {
+    let wrapper = project()
+        .at("conditional-metadata-pipeline-wrapper")
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "conditional-metadata-pipeline-wrapper"
+                version = "0.1.0"
+                edition = "2024"
+            "#,
+        )
+        .file(
+            "src/main.rs",
+            r#"
+                use std::env;
+                use std::ffi::OsStr;
+                use std::fs::{self, OpenOptions};
+                use std::io::{self, BufRead, BufReader, Write};
+                use std::path::PathBuf;
+                use std::process::{Command, Stdio, exit};
+                use std::thread;
+                use std::time::{Duration, Instant};
+
+                fn main() {
+                    let mut arguments = env::args_os().skip(1);
+                    let rustc = arguments.next().expect("rustc path");
+                    let arguments = arguments.collect::<Vec<_>>();
+                    let crate_name = arguments
+                        .windows(2)
+                        .find(|arguments| arguments[0] == OsStr::new("--crate-name"))
+                        .and_then(|arguments| arguments[1].to_str())
+                        .map(str::to_owned);
+                    let control = env::var_os("CONDITIONAL_PIPELINE_CONTROL").map(PathBuf::from);
+                    let phase = env::var("CONDITIONAL_PIPELINE_PHASE").ok();
+
+                    if let Some(path) = env::var_os("CONDITIONAL_PIPELINE_LOG")
+                        && let Some(crate_name) = &crate_name
+                        && crate_name != "___"
+                    {
+                        writeln!(
+                            OpenOptions::new()
+                                .create(true)
+                                .append(true)
+                                .open(path)
+                                .expect("wrapper log"),
+                            "{crate_name}"
+                        )
+                        .expect("write wrapper log");
+                    }
+
+                    if crate_name.as_deref() == Some("app")
+                        && let Some(control) = &control
+                        && phase.is_some()
+                    {
+                        if control.join("dependency-metadata").exists()
+                            && !control.join("dependency-finished").exists()
+                        {
+                            fs::write(control.join("parent-started-early"), b"ready")
+                                .expect("record early parent");
+                        }
+                        if control.join("middle-metadata").exists()
+                            && !control.join("middle-finished").exists()
+                        {
+                            fs::write(control.join("parent-started-before-middle-finish"), b"ready")
+                                .expect("record parent before intermediate completion");
+                        }
+                        fs::write(control.join("parent-started"), b"ready")
+                            .expect("record parent");
+                    }
+
+                    if crate_name.as_deref() == Some("middle")
+                        && let Some(control) = &control
+                        && phase.is_some()
+                    {
+                        if control.join("dependency-metadata").exists()
+                            && !control.join("dependency-finished").exists()
+                        {
+                            fs::write(control.join("middle-started-early"), b"ready")
+                                .expect("record early intermediate");
+                        }
+                        fs::write(control.join("middle-started"), b"ready")
+                            .expect("record intermediate");
+                    }
+
+                    let arguments = arguments.into_iter().filter(|argument| {
+                        !matches!(
+                            argument.to_str(),
+                            Some(
+                                "-Zpublic-api-hash"
+                                    | "-Zpublic-api-hash=no"
+                                    | "-Zcache-proc-macros"
+                                    | "-Zcache-proc-macros=no"
+                            )
+                        )
+                    });
+                    let mut child = Command::new(rustc)
+                        .args(arguments)
+                        .stdout(Stdio::inherit())
+                        .stderr(Stdio::piped())
+                        .spawn()
+                        .expect("rustc should start");
+                    let stderr = child.stderr.take().expect("rustc stderr");
+
+                    for line in BufReader::new(stderr).lines() {
+                        let line = line.expect("read rustc stderr");
+                        if line.contains("\"artifact\":")
+                            && line.contains(".rmeta")
+                            && let Some(prefix) = line.strip_suffix('}')
+                        {
+                            let public_api_hash = if matches!(
+                                phase.as_deref(),
+                                Some("changed" | "failure" | "committed-failure")
+                            ) && (crate_name.as_deref() == Some("dep")
+                                || (crate_name.as_deref() == Some("middle")
+                                    && env::var_os("CONDITIONAL_PIPELINE_CHANGE_MIDDLE").is_some()))
+                            {
+                                "11111111111111111111111111111111"
+                            } else {
+                                "00000000000000000000000000000000"
+                            };
+                            eprintln!(
+                                "{prefix},\"public_api_hash\":{{\"version\":1,\
+                                 \"value\":\"{public_api_hash}\"}}}}"
+                            );
+                            io::stderr().flush().expect("flush metadata notification");
+
+                            if crate_name.as_deref() == Some("dep")
+                                && let Some(control) = &control
+                                && let Some(phase) = &phase
+                            {
+                                fs::write(control.join("dependency-metadata"), b"ready")
+                                    .expect("record dependency metadata");
+                                if phase == "unchanged" {
+                                    thread::sleep(Duration::from_millis(150));
+                                } else {
+                                    let expected = if phase == "committed-failure" {
+                                        PathBuf::from(
+                                            env::var_os("CONDITIONAL_PIPELINE_PARENT_FINGERPRINT")
+                                                .expect("parent fingerprint path"),
+                                        )
+                                    } else if env::var_os("CONDITIONAL_PIPELINE_WAIT_FOR")
+                                        .as_deref()
+                                        == Some(OsStr::new("middle"))
+                                    {
+                                        control.join("middle-started")
+                                    } else {
+                                        control.join("parent-started")
+                                    };
+                                    let deadline = Instant::now() + Duration::from_secs(5);
+                                    while !fs::metadata(&expected)
+                                        .is_ok_and(|metadata| metadata.len() != 0)
+                                        && Instant::now() < deadline
+                                    {
+                                        thread::sleep(Duration::from_millis(5));
+                                    }
+                                    if !fs::metadata(&expected)
+                                        .is_ok_and(|metadata| metadata.len() != 0)
+                                    {
+                                        fs::write(control.join("parent-timed-out"), b"timeout")
+                                            .expect("record timeout");
+                                    }
+                                    if matches!(phase.as_str(), "failure" | "committed-failure") {
+                                        let _ = child.kill();
+                                        let _ = child.wait();
+                                        fs::write(control.join("dependency-failed"), b"failed")
+                                            .expect("record dependency failure");
+                                        exit(1);
+                                    }
+                                }
+                            } else if crate_name.as_deref() == Some("middle")
+                                && let Some(control) = &control
+                                && env::var_os("CONDITIONAL_PIPELINE_HOLD_MIDDLE").is_some()
+                            {
+                                fs::write(control.join("middle-metadata"), b"ready")
+                                    .expect("record intermediate metadata");
+                                thread::sleep(Duration::from_millis(150));
+                            }
+                        } else {
+                            eprintln!("{line}");
+                        }
+                    }
+
+                    let status = child.wait().expect("rustc should finish");
+                    if crate_name.as_deref() == Some("dep")
+                        && let Some(control) = &control
+                        && phase.is_some()
+                    {
+                        fs::write(control.join("dependency-finished"), b"finished")
+                            .expect("record dependency completion");
+                    }
+                    if crate_name.as_deref() == Some("middle")
+                        && let Some(control) = &control
+                        && env::var_os("CONDITIONAL_PIPELINE_HOLD_MIDDLE").is_some()
+                    {
+                        fs::write(control.join("middle-finished"), b"finished")
+                            .expect("record intermediate completion");
+                    }
+                    exit(status.code().unwrap_or(1));
+                }
+            "#,
+        )
+        .build();
+    wrapper
+        .cargo("-Zohm-defaults=no build")
+        .masquerade_as_nightly_cargo(&["ohm-defaults"])
+        .run();
+    wrapper.bin("conditional-metadata-pipeline-wrapper")
+}
+
+fn assert_conditional_metadata_pipeline(command: &str, phase: &str) {
+    let wrapper = conditional_metadata_pipeline_wrapper();
+    let p = project()
+        .at(&format!("conditional-metadata-pipeline-{command}-{phase}"))
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "app"
+                version = "0.1.0"
+                edition = "2024"
+
+                [dependencies]
+                dep = { path = "dep" }
+            "#,
+        )
+        .file("src/lib.rs", "pub fn value() -> i32 { dep::value() }")
+        .file("dep/Cargo.toml", &basic_manifest("dep", "0.1.0"))
+        .file("dep/src/lib.rs", "pub fn value() -> i32 { 1 }")
+        .build();
+
+    let log = p.root().join("conditional-pipeline.log");
+    p.cargo(&format!("{command} -j2"))
+        .env("RUSTC_WRAPPER", &wrapper)
+        .env("RUSTFLAGS", "-Zpublic-api-hash")
+        .env("CONDITIONAL_PIPELINE_LOG", &log)
+        .run();
+
+    let fingerprint_root = p.root().join("target/debug/.fingerprint");
+    let previous_hash_path = fs::read_dir(&fingerprint_root)
+        .expect("fingerprint directory")
+        .filter_map(Result::ok)
+        .map(|entry| entry.path().join("lib-dep.public-api-hash"))
+        .find(|path| path.exists())
+        .expect("dependency public API hash");
+    let previous_hash = fs::read(&previous_hash_path).expect("read previous public API hash");
+    fs::write(&log, "").expect("clear wrapper log");
+    if is_coarse_mtime() {
+        sleep_ms(1000);
+    }
+    p.change_file("dep/src/lib.rs", "pub fn value() -> i32 { 2 }");
+
+    let mut rebuilt = p.cargo(&format!("{command} -j2"));
+    rebuilt
+        .env("RUSTC_WRAPPER", &wrapper)
+        .env("RUSTFLAGS", "-Zpublic-api-hash")
+        .env("CONDITIONAL_PIPELINE_LOG", &log)
+        .env("CONDITIONAL_PIPELINE_CONTROL", p.root())
+        .env("CONDITIONAL_PIPELINE_PHASE", phase);
+    if phase == "failure" {
+        rebuilt.with_status(101).with_stderr_data(str![[r#"
+[COMPILING] dep v0.1.0 ([ROOT]/conditional-metadata-pipeline-build-failure/dep)
+[COMPILING] app v0.1.0 ([ROOT]/conditional-metadata-pipeline-build-failure)
+[ERROR] could not compile `dep` (lib)
+...
+"#]]);
+    }
+    rebuilt.run();
+
+    let invocations = fs::read_to_string(&log).expect("read wrapper log");
+    match phase {
+        "unchanged" => {
+            assert_eq!(invocations, "dep\n");
+            assert!(!p.root().join("parent-started").exists());
+            assert!(!p.root().join("parent-started-early").exists());
+            assert_eq!(
+                fs::read(&previous_hash_path).expect("read preserved public API hash"),
+                previous_hash,
+            );
+        }
+        "changed" => {
+            assert!(invocations.lines().any(|line| line == "app"));
+            assert!(p.root().join("parent-started-early").exists());
+            assert!(!p.root().join("parent-timed-out").exists());
+            assert_ne!(
+                fs::read(&previous_hash_path).expect("read committed public API hash"),
+                previous_hash,
+            );
+        }
+        "failure" => {
+            assert!(p.root().join("dependency-failed").exists());
+            assert!(p.root().join("parent-started-early").exists());
+            assert!(!previous_hash_path.exists());
+
+            for marker in [
+                "dependency-metadata",
+                "dependency-finished",
+                "dependency-failed",
+                "parent-started",
+                "parent-started-early",
+                "parent-timed-out",
+            ] {
+                let path = p.root().join(marker);
+                if path.exists() {
+                    fs::remove_file(path).expect("clear pipeline marker");
+                }
+            }
+            fs::write(&log, "").expect("clear recovery log");
+            p.cargo(&format!("{command} -j2"))
+                .env("RUSTC_WRAPPER", &wrapper)
+                .env("RUSTFLAGS", "-Zpublic-api-hash")
+                .env("CONDITIONAL_PIPELINE_LOG", &log)
+                .env("CONDITIONAL_PIPELINE_PHASE", "changed")
+                .run();
+            let recovery = fs::read_to_string(&log).expect("read recovery log");
+            assert!(recovery.lines().any(|line| line == "dep"));
+            assert!(recovery.lines().any(|line| line == "app"));
+            assert!(!p.root().join("parent-timed-out").exists());
+            assert!(previous_hash_path.exists());
+        }
+        _ => panic!("unsupported pipeline phase: {phase}"),
+    }
+}
+
+fn assert_conditional_metadata_pipeline_preserves_transitive_barriers(binary_target: bool) {
+    let wrapper = conditional_metadata_pipeline_wrapper();
+    let scenario = if binary_target {
+        "binary"
+    } else {
+        "unchanged-middle"
+    };
+    let (app_target, app_source) = if binary_target {
+        ("src/main.rs", "fn main() { let _ = middle::value(); }")
+    } else {
+        ("src/lib.rs", "pub fn value() -> i32 { middle::value() }")
+    };
+    let p = project()
+        .at(&format!("conditional-metadata-transitive-{scenario}"))
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "app"
+                version = "0.1.0"
+                edition = "2024"
+
+                [dependencies]
+                middle = { path = "middle" }
+            "#,
+        )
+        .file(app_target, app_source)
+        .file(
+            "middle/Cargo.toml",
+            r#"
+                [package]
+                name = "middle"
+                version = "0.1.0"
+                edition = "2024"
+
+                [dependencies]
+                dep = { path = "../dep" }
+            "#,
+        )
+        .file(
+            "middle/src/lib.rs",
+            "pub fn value() -> i32 { dep::value() }",
+        )
+        .file("dep/Cargo.toml", &basic_manifest("dep", "0.1.0"))
+        .file("dep/src/lib.rs", "pub fn value() -> i32 { 1 }")
+        .build();
+
+    let log = p.root().join("conditional-pipeline.log");
+    p.cargo("build -j3")
+        .env("RUSTC_WRAPPER", &wrapper)
+        .env("RUSTFLAGS", "-Zpublic-api-hash")
+        .env("CONDITIONAL_PIPELINE_LOG", &log)
+        .run();
+
+    fs::write(&log, "").expect("clear wrapper log");
+    if is_coarse_mtime() {
+        sleep_ms(1000);
+    }
+    p.change_file("dep/src/lib.rs", "pub fn value() -> i32 { 2 }");
+
+    let mut rebuilt = p.cargo("build -j3");
+    rebuilt
+        .env("RUSTC_WRAPPER", &wrapper)
+        .env("RUSTFLAGS", "-Zpublic-api-hash")
+        .env("CONDITIONAL_PIPELINE_LOG", &log)
+        .env("CONDITIONAL_PIPELINE_CONTROL", p.root())
+        .env("CONDITIONAL_PIPELINE_PHASE", "changed")
+        .env("CONDITIONAL_PIPELINE_WAIT_FOR", "middle")
+        .env("CONDITIONAL_PIPELINE_HOLD_MIDDLE", "1");
+    if binary_target {
+        rebuilt.env("CONDITIONAL_PIPELINE_CHANGE_MIDDLE", "1");
+    }
+    rebuilt.run();
+
+    let invocations = fs::read_to_string(&log).expect("read wrapper log");
+    for crate_name in ["dep", "middle", "app"] {
+        assert!(invocations.lines().any(|line| line == crate_name));
+    }
+    assert!(p.root().join("middle-started-early").exists());
+    assert!(p.root().join("middle-metadata").exists());
+    assert!(p.root().join("middle-finished").exists());
+    assert!(p.root().join("parent-started").exists());
+    assert!(!p.root().join("parent-started-early").exists());
+    assert!(
+        !p.root()
+            .join("parent-started-before-middle-finish")
+            .exists()
+    );
+    assert!(!p.root().join("parent-timed-out").exists());
+}
+
+#[cargo_test]
+fn conditional_metadata_pipelines_changed_rlib_before_codegen_finishes() {
+    assert_conditional_metadata_pipeline("build", "changed");
+}
+
+#[cargo_test]
+fn conditional_metadata_pipelines_changed_check_before_compiler_finishes() {
+    assert_conditional_metadata_pipeline("check", "changed");
+}
+
+#[cargo_test]
+fn conditional_metadata_waits_for_unchanged_hash_and_preserves_early_cutoff() {
+    assert_conditional_metadata_pipeline("build", "unchanged");
+}
+
+#[cargo_test]
+fn conditional_metadata_recovers_when_dependency_fails_after_metadata() {
+    assert_conditional_metadata_pipeline("build", "failure");
+}
+
+#[cargo_test]
+fn conditional_metadata_rebuilds_committed_dependent_after_failed_producer_is_reverted() {
+    let wrapper = conditional_metadata_pipeline_wrapper();
+    let p = project()
+        .at("conditional-metadata-pipeline-committed-failure")
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "app"
+                version = "0.1.0"
+                edition = "2024"
+
+                [dependencies]
+                dep = { path = "dep" }
+            "#,
+        )
+        .file("src/lib.rs", "pub fn value() -> i32 { dep::VALUE }")
+        .file(
+            "src/main.rs",
+            "fn main() { println!(\"{}\", app::value()); }",
+        )
+        .file("dep/Cargo.toml", &basic_manifest("dep", "0.1.0"))
+        .file("dep/src/lib.rs", "pub const VALUE: i32 = 1;")
+        .build();
+
+    let log = p.root().join("conditional-pipeline.log");
+    p.cargo("build -j3")
+        .env("RUSTC_WRAPPER", &wrapper)
+        .env("RUSTFLAGS", "-Zpublic-api-hash")
+        .env("CONDITIONAL_PIPELINE_LOG", &log)
+        .run();
+    p.process(&p.bin("app"))
+        .with_stdout_data(str![[r#"
+1
+
+"#]])
+        .run();
+
+    let fingerprint_root = p.root().join("target/debug/.fingerprint");
+    let parent_fingerprint = fs::read_dir(&fingerprint_root)
+        .expect("fingerprint directory")
+        .filter_map(Result::ok)
+        .map(|entry| entry.path().join("lib-app"))
+        .find(|path| path.exists())
+        .expect("parent fingerprint");
+
+    fs::write(&log, "").expect("clear wrapper log");
+    if is_coarse_mtime() {
+        sleep_ms(1000);
+    }
+    p.change_file("dep/src/lib.rs", "pub const VALUE: i32 = 2;");
+    p.cargo("build -j3")
+        .env("RUSTC_WRAPPER", &wrapper)
+        .env("RUSTFLAGS", "-Zpublic-api-hash")
+        .env("CONDITIONAL_PIPELINE_LOG", &log)
+        .env("CONDITIONAL_PIPELINE_CONTROL", p.root())
+        .env(
+            "CONDITIONAL_PIPELINE_PARENT_FINGERPRINT",
+            &parent_fingerprint,
+        )
+        .env("CONDITIONAL_PIPELINE_PHASE", "committed-failure")
+        .with_status(101)
+        .with_stderr_data(str![[r#"
+[COMPILING] dep v0.1.0 ([ROOT]/conditional-metadata-pipeline-committed-failure/dep)
+[COMPILING] app v0.1.0 ([ROOT]/conditional-metadata-pipeline-committed-failure)
+[ERROR] could not compile `dep` (lib)
+...
+"#]])
+        .run();
+
+    assert!(p.root().join("dependency-failed").exists());
+    assert!(p.root().join("parent-started-early").exists());
+    assert!(!p.root().join("parent-timed-out").exists());
+    assert!(
+        fs::metadata(&parent_fingerprint)
+            .expect("committed parent fingerprint")
+            .len()
+            != 0
+    );
+
+    fs::write(&log, "").expect("clear recovery log");
+    if is_coarse_mtime() {
+        sleep_ms(1000);
+    }
+    p.change_file("dep/src/lib.rs", "pub const VALUE: i32 = 1;");
+    p.cargo("build -j3")
+        .env("RUSTC_WRAPPER", &wrapper)
+        .env("RUSTFLAGS", "-Zpublic-api-hash")
+        .env("CONDITIONAL_PIPELINE_LOG", &log)
+        .env("CONDITIONAL_PIPELINE_CONTROL", p.root())
+        .env("CONDITIONAL_PIPELINE_PHASE", "unchanged")
+        .run();
+
+    let recovery = fs::read_to_string(&log).expect("read recovery log");
+    assert!(recovery.lines().any(|line| line == "dep"));
+    assert!(recovery.lines().any(|line| line == "app"));
+    p.process(&p.bin("app"))
+        .with_stdout_data(str![[r#"
+1
+
+"#]])
+        .run();
+}
+
+#[cargo_test]
+fn conditional_metadata_preserves_transitive_binary_object_barriers() {
+    assert_conditional_metadata_pipeline_preserves_transitive_barriers(true);
+}
+
+#[cargo_test]
+fn conditional_metadata_waits_when_unchanged_middle_has_changed_dependency() {
+    assert_conditional_metadata_pipeline_preserves_transitive_barriers(false);
+}
+
 #[cargo_test]
 #[cfg(not(windows))]
 fn early_cutoff_skips_dependent_rebuild() {

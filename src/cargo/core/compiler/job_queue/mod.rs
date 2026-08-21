@@ -164,6 +164,8 @@ use cargo_util_terminal::Shell;
 /// executed.
 pub struct JobQueue<'gctx> {
     queue: DependencyQueue<Unit, Artifact, Job>,
+    /// Producers with dependents that can resume when their public API changes.
+    conditional_metadata_units: HashSet<Unit>,
     counts: HashMap<PackageId, usize>,
     timings: Timings<'gctx>,
 }
@@ -179,6 +181,8 @@ struct DrainState<'gctx> {
     total_units: usize,
 
     queue: DependencyQueue<Unit, Artifact, Job>,
+    /// Producers whose metadata condition must eventually be resolved.
+    conditional_metadata_units: HashSet<Unit>,
     messages: Arc<Queue<Message>>,
     /// Diagnostic deduplication support.
     diag_dedupe: DiagDedupe<'gctx>,
@@ -354,6 +358,12 @@ enum Artifact {
     /// but the compilation is typically also producing an rlib. We can start
     /// our step, however, before the full rlib is available.
     Metadata,
+
+    /// Metadata from an early-cutoff dependency whose public API changed.
+    ///
+    /// An unchanged API does not satisfy this edge until the producer has
+    /// completed successfully, preserving its dependent's ability to skip.
+    ConditionalMetadata,
 }
 
 enum Message {
@@ -399,6 +409,7 @@ impl<'gctx> JobQueue<'gctx> {
     pub fn new(bcx: &BuildContext<'_, 'gctx>) -> JobQueue<'gctx> {
         JobQueue {
             queue: DependencyQueue::new(),
+            conditional_metadata_units: HashSet::default(),
             counts: HashMap::default(),
             timings: Timings::new(bcx),
         }
@@ -431,12 +442,11 @@ impl<'gctx> JobQueue<'gctx> {
                 // only require the metadata, not the full compilation to
                 // finish. Use the tables in `build_runner` to figure out what
                 // kind of artifact is associated with this dependency.
-                let artifact = if wait_for_early_cutoff
-                    || !build_runner.only_requires_rmeta(unit, &dep.unit)
-                {
-                    // Early cutoff needs the dependency's complete job to
-                    // finish before deciding whether its metadata changed.
+                let artifact = if !build_runner.only_requires_rmeta(unit, &dep.unit) {
                     Artifact::All
+                } else if wait_for_early_cutoff {
+                    self.conditional_metadata_units.insert(dep.unit.clone());
+                    Artifact::ConditionalMetadata
                 } else {
                     Artifact::Metadata
                 };
@@ -506,6 +516,7 @@ impl<'gctx> JobQueue<'gctx> {
         let state = DrainState {
             total_units: self.queue.len(),
             queue: self.queue,
+            conditional_metadata_units: self.conditional_metadata_units,
             // 100 here is somewhat arbitrary. It is a few screenfulls of
             // output, and hopefully at most a few megabytes of memory for
             // typical messages. If you change this, please update the test
@@ -720,7 +731,7 @@ impl<'gctx> DrainState<'gctx> {
                     }
                     // ... otherwise if it hasn't finished we leave it
                     // in there as we'll get another `Finish` later on.
-                    Artifact::Metadata => {
+                    Artifact::Metadata | Artifact::ConditionalMetadata => {
                         trace!("end (meta): {:?}", id);
                         self.active[&id].clone()
                     }
@@ -1045,6 +1056,24 @@ impl<'gctx> DrainState<'gctx> {
         let messages = self.messages.clone();
         let is_fresh = job.freshness().is_fresh();
         let rmeta_required = build_runner.rmeta_required(unit);
+        let conditional_metadata = if self.conditional_metadata_units.contains(unit) {
+            build_runner.fingerprints.get(unit).map(|fingerprint| {
+                let public_api_hash_path = build_runner
+                    .files()
+                    .fingerprint_file_path(unit, "")
+                    .with_extension("public-api-hash");
+                // Only the sidecar from a successfully completed previous build
+                // can establish that this invocation changed its public API.
+                let previous_hash = if is_fresh {
+                    None
+                } else {
+                    fingerprint::read_public_api_hash(&public_api_hash_path)
+                };
+                (Arc::clone(fingerprint), public_api_hash_path, previous_hash)
+            })
+        } else {
+            None
+        };
         let lock_manager = build_runner.lock_manager.clone();
         let warning_handling = build_runner.bcx.gctx.warning_handling().unwrap_or_default();
 
@@ -1054,6 +1083,7 @@ impl<'gctx> DrainState<'gctx> {
                 messages,
                 diag_dedupe,
                 rmeta_required,
+                conditional_metadata,
                 lock_manager,
                 warning_handling,
             );
@@ -1245,6 +1275,7 @@ impl<'gctx> DrainState<'gctx> {
             Artifact::Metadata => self
                 .timings
                 .unit_rmeta_finished(build_runner, id, unblocked),
+            Artifact::ConditionalMetadata => {}
         }
         Ok(())
     }
