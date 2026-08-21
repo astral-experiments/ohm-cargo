@@ -585,6 +585,14 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
                         context.extra_verbose(),
                     ),
                 ));
+                // Registry trust is established after unit identities are computed. Partition
+                // this compiler namespace before changing the effective registry hash policy
+                // so earlier hashed artifacts can never alias the new unhashed metadata.
+                let rustc = if context.cli_unstable().ohm_defaults() {
+                    util::short_hash(&(rustc, "ohm-immutable-registry-public-api-hash-v1"))
+                } else {
+                    rustc
+                };
                 let rustc = if context.cli_unstable().ohm_proc_macro_trust == OhmProcMacroTrust::All
                 {
                     format!("{rustc}-all")

@@ -1579,6 +1579,200 @@ impl SharedRegistryProjectExt for cargo_test_support::Project {
 }
 
 #[cargo_test]
+fn shared_registry_cache_avoids_hashing_immutable_public_apis() {
+    if !selected_compiler_supports_ohm_defaults() {
+        return;
+    }
+
+    Package::new("immutable-hash-registry", "1.0.0")
+        .file("src/lib.rs", "pub fn value() -> u32 { 1 }")
+        .publish();
+    Package::new("mixed-artifact-hash-registry", "1.0.0")
+        .file(
+            "Cargo.toml",
+            "[package]\nname = \"mixed-artifact-hash-registry\"\nversion = \"1.0.0\"\nedition = \"2021\"\n\n[lib]\ncrate-type = [\"rlib\", \"cdylib\"]\n",
+        )
+        .file("src/lib.rs", "pub fn value() -> u32 { 5 }")
+        .publish();
+    Package::new("hash-proc-macro", "1.0.0")
+        .proc_macro(true)
+        .file(
+            "src/lib.rs",
+            "extern crate proc_macro; #[proc_macro_attribute] pub fn unchanged(_: proc_macro::TokenStream, item: proc_macro::TokenStream) -> proc_macro::TokenStream { item }",
+        )
+        .publish();
+    Package::new("mutable-registry-input", "1.0.0")
+        .file("src/lib.rs", "pub fn value() -> u32 { 2 }")
+        .publish();
+    Package::new("patched-hash-registry", "1.0.0")
+        .dep("mutable-registry-input", "1.0.0")
+        .file(
+            "src/lib.rs",
+            "pub fn value() -> u32 { mutable_registry_input::value() }",
+        )
+        .publish();
+
+    let project = project()
+        .file(
+            "Cargo.toml",
+            r#"
+            [package]
+            name = "hash-policy-app"
+            version = "0.1.0"
+            edition = "2021"
+
+            [dependencies]
+            hash-proc-macro = "1.0.0"
+            immutable-hash-registry = "1.0.0"
+            mixed-artifact-hash-registry = "1.0.0"
+            patched-hash-registry = "1.0.0"
+            mutable-workspace-library = { path = "local" }
+
+            [patch.crates-io]
+            mutable-registry-input = { path = "patched" }
+            "#,
+        )
+        .file(
+            "src/lib.rs",
+            "#[hash_proc_macro::unchanged] pub fn value() -> u32 { immutable_hash_registry::value() + mixed_artifact_hash_registry::value() + patched_hash_registry::value() + mutable_workspace_library::value() }",
+        )
+        .file(
+            "local/Cargo.toml",
+            "[package]\nname = \"mutable-workspace-library\"\nversion = \"1.0.0\"\nedition = \"2021\"\n",
+        )
+        .file("local/src/lib.rs", "pub fn value() -> u32 { 3 }")
+        .file(
+            "patched/Cargo.toml",
+            "[package]\nname = \"mutable-registry-input\"\nversion = \"1.0.0\"\nedition = \"2021\"\n",
+        )
+        .file("patched/src/lib.rs", "pub fn value() -> u32 { 4 }")
+        .build();
+    let shared_build = paths::root()
+        .join("target")
+        .join("immutable-hash-shared-build");
+
+    project
+        .cargo("-Zohm-shared-registry-cache check -v")
+        .masquerade_as_nightly_cargo(&["ohm-defaults", "ohm-shared-registry-cache"])
+        .env("__CARGO_OHM_DEFAULTS", "yes")
+        .env("CARGO_BUILD_BUILD_DIR", &shared_build)
+        .with_stderr_line_without(
+            &[
+                "[RUNNING] `rustc",
+                "--crate-name immutable_hash_registry",
+                "-Zpublic-api-hash=no",
+            ],
+            &[],
+        )
+        .with_stderr_line_without(
+            &["[RUNNING] `rustc", "--crate-name patched_hash_registry"],
+            &["-Zpublic-api-hash=no"],
+        )
+        .with_stderr_line_without(
+            &[
+                "[RUNNING] `rustc",
+                "--crate-name mixed_artifact_hash_registry",
+            ],
+            &["-Zpublic-api-hash=no"],
+        )
+        .with_stderr_line_without(
+            &["[RUNNING] `rustc", "--crate-name hash_proc_macro"],
+            &["-Zpublic-api-hash=no"],
+        )
+        .with_stderr_line_without(
+            &["[RUNNING] `rustc", "--crate-name mutable_workspace_library"],
+            &["-Zpublic-api-hash=no"],
+        )
+        .run();
+
+    project
+        .cargo("-Zohm-shared-registry-cache build -v")
+        .masquerade_as_nightly_cargo(&["ohm-defaults", "ohm-shared-registry-cache"])
+        .env("__CARGO_OHM_DEFAULTS", "yes")
+        .env(
+            "CARGO_BUILD_BUILD_DIR",
+            paths::root().join("immutable-hash-build-mode"),
+        )
+        .with_stderr_line_without(
+            &[
+                "[RUNNING] `rustc",
+                "--crate-name immutable_hash_registry",
+                "-Zpublic-api-hash=no",
+            ],
+            &[],
+        )
+        .with_stderr_line_without(
+            &["[RUNNING] `rustc", "--crate-name patched_hash_registry"],
+            &["-Zpublic-api-hash=no"],
+        )
+        .with_stderr_line_without(
+            &[
+                "[RUNNING] `rustc",
+                "--crate-name mixed_artifact_hash_registry",
+            ],
+            &["-Zpublic-api-hash=no"],
+        )
+        .run();
+
+    project
+        .cargo("-Zohm-shared-registry-cache check -v")
+        .masquerade_as_nightly_cargo(&["ohm-defaults", "ohm-shared-registry-cache"])
+        .env("__CARGO_OHM_DEFAULTS", "yes")
+        .env("RUSTFLAGS", "-Zpublic-api-hash=yes")
+        .env(
+            "CARGO_BUILD_BUILD_DIR",
+            paths::root().join("immutable-hash-explicit-override"),
+        )
+        .with_stderr_line_without(
+            &[
+                "[RUNNING] `rustc",
+                "--crate-name immutable_hash_registry",
+                "-Zpublic-api-hash=yes",
+            ],
+            &["-Zpublic-api-hash=no"],
+        )
+        .run();
+
+    project
+        .cargo("-Zohm-shared-registry-cache check -v")
+        .masquerade_as_nightly_cargo(&["ohm-defaults", "ohm-shared-registry-cache"])
+        .env("__CARGO_OHM_DEFAULTS", "yes")
+        .env("RUSTFLAGS", "-Zpublic_api_hash=yes")
+        .env(
+            "CARGO_BUILD_BUILD_DIR",
+            paths::root().join("immutable-hash-underscore-override"),
+        )
+        .with_stderr_line_without(
+            &[
+                "[RUNNING] `rustc",
+                "--crate-name immutable_hash_registry",
+                "-Zpublic_api_hash=yes",
+            ],
+            &["-Zpublic-api-hash=no"],
+        )
+        .run();
+
+    project
+        .cargo("-Zohm-defaults=no -Zohm-shared-registry-cache check -v")
+        .masquerade_as_nightly_cargo(&["ohm-defaults", "ohm-shared-registry-cache"])
+        .env("__CARGO_OHM_DEFAULTS", "yes")
+        .env("CARGO_BUILD_BUILD_DIR", &shared_build)
+        .with_stderr_line_without(
+            &["[RUNNING] `rustc", "--crate-name immutable_hash_registry"],
+            &["-Zpublic-api-hash"],
+        )
+        .run();
+
+    assert_eq!(
+        std::fs::read_dir(shared_build.join("debug/build/registries"))
+            .expect("read compiler-policy namespaces")
+            .count(),
+        2,
+        "default and opted-out hash policies must never share registry artifacts"
+    );
+}
+
+#[cargo_test]
 fn shared_registry_cache_automatically_shares_explicit_build_directories() {
     if !selected_compiler_supports_ohm_defaults() {
         return;

@@ -182,13 +182,24 @@ fn unit_rustflags_without_ohm_defaults<'a>(
     }
 }
 
-/// Skips public API production for terminal outputs which no other unit can consume.
+/// Skips public API production when an output cannot expose a reusable changed interface.
 fn unit_suppresses_default_public_api_hash(
     build_runner: &BuildRunner<'_, '_>,
     unit: &Unit,
 ) -> bool {
     build_runner.bcx.gctx.cli_unstable().ohm_defaults()
-        && (build_runner.is_terminal_check_unit(unit) || unit.mode == CompileMode::Test)
+        && (build_runner.is_terminal_check_unit(unit)
+            || unit.mode == CompileMode::Test
+            || (matches!(unit.mode, CompileMode::Build | CompileMode::Check { .. })
+                && unit.target.is_lib()
+                && !unit.target.proc_macro()
+                && !unit.artifact.is_true()
+                && unit
+                    .target
+                    .rustc_crate_types()
+                    .iter()
+                    .all(|kind| matches!(kind, CrateType::Lib | CrateType::Rlib))
+                && build_runner.is_immutable_shared_registry_unit(unit)))
         && fingerprint::unit_public_api_hash_override(build_runner, unit).is_none()
 }
 
