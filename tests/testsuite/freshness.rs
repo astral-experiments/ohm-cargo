@@ -4661,6 +4661,7 @@ fn assert_early_cutoff_rechecks_previously_changed_dependency(
 error[E0369]: cannot add `i32` to `&str`
 ...
 [ERROR] could not compile `consumer` (lib) due to 1 previous error
+...
 
 "#]])
         .run();
