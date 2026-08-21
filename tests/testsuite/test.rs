@@ -1,6 +1,7 @@
 //! Tests for the `cargo test` command.
 
 use std::fs;
+use std::path::PathBuf;
 
 use crate::prelude::*;
 use crate::utils::cargo_exe;
@@ -925,6 +926,266 @@ test test_foo ... ok
             .unordered(),
         )
         .run();
+}
+
+fn focused_exact_test_rustc_wrapper() -> PathBuf {
+    let wrapper = project()
+        .at("focused-exact-test-rustc-wrapper")
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "focused-exact-test-rustc-wrapper"
+                version = "0.1.0"
+                edition = "2024"
+            "#,
+        )
+        .file(
+            "src/main.rs",
+            r#"
+                use std::env;
+                use std::fs::OpenOptions;
+                use std::io::Write;
+                use std::process::{Command, exit};
+
+                fn main() {
+                    let mut arguments = env::args();
+                    let _wrapper = arguments.next();
+                    let rustc = arguments.next().expect("rustc executable");
+                    let mut forwarded = Vec::new();
+                    let mut focus = None;
+
+                    for argument in arguments {
+                        if let Some(filter) = argument.strip_prefix("-Ztest-harness-filter=") {
+                            focus = Some(filter.to_owned());
+                        } else {
+                            forwarded.push(argument);
+                        }
+                    }
+
+                    if let Some(path) = env::var_os("CARGO_OHM_FOCUSED_TEST_LOG")
+                        && let Some(crate_name) = forwarded
+                            .windows(2)
+                            .find(|arguments| arguments[0] == "--crate-name")
+                            .map(|arguments| arguments[1].as_str())
+                    {
+                        let mode = if forwarded.iter().any(|argument| argument == "--test") {
+                            "test"
+                        } else {
+                            "build"
+                        };
+                        let line = format!(
+                            "{crate_name}:{mode}:{}\n",
+                            focus.as_deref().unwrap_or("-")
+                        );
+                        OpenOptions::new()
+                            .create(true)
+                            .append(true)
+                            .open(path)
+                            .expect("open rustc invocation log")
+                            .write_all(line.as_bytes())
+                            .expect("write rustc invocation log");
+                    }
+
+                    let status = Command::new(rustc)
+                        .args(forwarded)
+                        .status()
+                        .expect("run wrapped rustc");
+                    exit(status.code().unwrap_or(1));
+                }
+            "#,
+        )
+        .build();
+    wrapper.cargo("build").run();
+    wrapper.bin("focused-exact-test-rustc-wrapper")
+}
+
+#[cargo_test]
+fn ohm_focused_exact_lib_test_is_opt_in_and_scoped_to_the_root() {
+    let wrapper = focused_exact_test_rustc_wrapper();
+    let project = project()
+        .at("focused-exact-lib-test")
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "app"
+                version = "0.1.0"
+                edition = "2024"
+
+                [dependencies]
+                helper = { path = "helper" }
+            "#,
+        )
+        .file(
+            "src/lib.rs",
+            r#"
+                #[cfg(test)]
+                mod tests {
+                    #[test]
+                    fn selected() {
+                        assert_eq!(helper::value(), 7);
+                    }
+
+                    #[test]
+                    fn other() {}
+                }
+            "#,
+        )
+        .file("helper/Cargo.toml", &basic_manifest("helper", "0.1.0"))
+        .file("helper/src/lib.rs", "pub fn value() -> i32 { 7 }")
+        .build();
+    let log = project.root().join("focused-rustc.log");
+
+    project
+        .cargo("-Zohm-focused-tests test -p app --lib tests::selected -- --exact")
+        .masquerade_as_nightly_cargo(&["ohm-focused-tests"])
+        .env("CARGO_OHM_FOCUSED_TEST_LOG", &log)
+        .env("RUSTC_WRAPPER", &wrapper)
+        .with_stdout_data(str![[r#"
+...
+test tests::selected ... ok
+...
+"#]])
+        .run();
+
+    let invocations = fs::read_to_string(&log).expect("read focused rustc invocations");
+    assert!(
+        invocations
+            .lines()
+            .any(|line| line == "app:test:tests::selected"),
+        "missing focused root: {invocations}"
+    );
+    assert!(
+        invocations.lines().any(|line| line == "helper:build:-"),
+        "missing unchanged dependency: {invocations}"
+    );
+    assert!(
+        invocations
+            .lines()
+            .filter(|line| !line.starts_with("app:"))
+            .all(|line| line.ends_with(":-")),
+        "focused a dependency: {invocations}"
+    );
+
+    fs::write(&log, "").expect("clear rustc invocation log");
+    project
+        .cargo("test -p app --lib tests::selected -- --exact")
+        .env("CARGO_OHM_FOCUSED_TEST_LOG", &log)
+        .env("RUSTC_WRAPPER", &wrapper)
+        .run();
+    let invocations = fs::read_to_string(&log).expect("read unfocused rustc invocations");
+    assert!(
+        invocations.lines().any(|line| line == "app:test:-"),
+        "missing separate unfocused root: {invocations}"
+    );
+
+    fs::write(&log, "").expect("clear rustc invocation log");
+    project
+        .cargo("-Zohm-focused-tests test -p app --lib tests::selected -- --exact")
+        .masquerade_as_nightly_cargo(&["ohm-focused-tests"])
+        .env("CARGO_OHM_FOCUSED_TEST_LOG", &log)
+        .env("RUSTC_WRAPPER", &wrapper)
+        .run();
+    assert_eq!(
+        fs::read_to_string(&log).expect("read cached focused rustc invocations"),
+        "",
+        "focused and unfocused root artifacts must coexist without rebuilding"
+    );
+}
+
+#[cargo_test]
+fn ohm_focused_exact_lib_test_rejects_unsupported_filters_and_custom_harnesses() {
+    let wrapper = focused_exact_test_rustc_wrapper();
+    let p = project()
+        .at("focused-exact-fallbacks")
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "app"
+                version = "0.1.0"
+                edition = "2024"
+            "#,
+        )
+        .file(
+            "src/lib.rs",
+            r#"
+                #[cfg(test)]
+                mod tests {
+                    #[test]
+                    fn selected() {}
+
+                    #[test]
+                    fn other() {}
+                }
+            "#,
+        )
+        .build();
+    let log = p.root().join("focused-rustc.log");
+
+    for (index, command) in [
+        "-Zohm-focused-tests test -p app --lib tests::selected",
+        "-Zohm-focused-tests test -p app --lib selected -- --exact",
+        "-Zohm-focused-tests test --lib tests::selected -- --exact",
+        "-Zohm-focused-tests test -p app --lib tests::selected -- --exact --list",
+        "-Zohm-focused-tests test -p app --lib tests::selected -- --exact tests::other",
+        "-Zohm-focused-tests test -p app --lib tests::selected -- --exact --skip tests::other",
+        "-Zohm-focused-tests test -p app --lib --no-run tests::selected -- --exact",
+        "-Zohm-focused-tests test -p app tests::selected -- --exact",
+    ]
+    .iter()
+    .enumerate()
+    {
+        fs::write(&log, "").expect("clear fallback rustc invocation log");
+        p.cargo(command)
+            .masquerade_as_nightly_cargo(&["ohm-focused-tests"])
+            .env("CARGO_OHM_FOCUSED_TEST_LOG", &log)
+            .env("CARGO_TARGET_DIR", p.root().join(format!("target-{index}")))
+            .env("RUSTC_WRAPPER", &wrapper)
+            .run();
+
+        let invocations = fs::read_to_string(&log).expect("read fallback rustc invocations");
+        assert!(
+            invocations.lines().any(|line| line.starts_with("app:")),
+            "the fallback must compile its root: {command}"
+        );
+        assert!(
+            invocations.lines().all(|line| line.ends_with(":-")),
+            "unsupported invocation was focused: {command}: {invocations}"
+        );
+    }
+
+    let custom = project()
+        .at("focused-exact-custom-harness")
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "custom"
+                version = "0.1.0"
+                edition = "2024"
+
+                [lib]
+                harness = false
+                doctest = false
+            "#,
+        )
+        .file("src/lib.rs", "#[cfg(test)] fn main() {}")
+        .build();
+    let custom_log = custom.root().join("focused-rustc.log");
+    custom
+        .cargo("-Zohm-focused-tests test -p custom --lib tests::selected -- --exact")
+        .masquerade_as_nightly_cargo(&["ohm-focused-tests"])
+        .env("CARGO_OHM_FOCUSED_TEST_LOG", &custom_log)
+        .env("RUSTC_WRAPPER", &wrapper)
+        .run();
+    let invocations = fs::read_to_string(&custom_log).expect("read custom-harness invocations");
+    assert!(
+        invocations.lines().any(|line| line.starts_with("custom:"))
+            && invocations.lines().all(|line| line.ends_with(":-")),
+        "custom harness was focused: {invocations}"
+    );
 }
 
 // Regression test for running cargo-test twice with
