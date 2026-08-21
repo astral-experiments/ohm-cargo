@@ -227,12 +227,52 @@ impl Layout {
     /// Durable ownership marker for build roots shared by multiple workspaces.
     pub(crate) const SHARED_REGISTRY_CACHE_MARKER: &str = ".ohm-shared-registry-cache-v1";
 
-    /// Identifies one workspace consistently across artifacts, incremental state, and cleaning.
+    /// Identifies one workspace and target directory across private artifacts and cleaning.
     ///
-    /// Canonical roots keep symlinked workspace paths in the same private namespace.
+    /// Independent target directories must not share mutable workspace state, even when their
+    /// registry artifacts use the same build directory. The version also separates this locking
+    /// protocol from older Cargo versions that only namespaced the workspace root.
     pub(crate) fn shared_workspace_namespace(ws: &Workspace<'_>) -> String {
-        let root = ws.root();
-        util::short_hash(&root.canonicalize().unwrap_or_else(|_| root.to_path_buf()))
+        let canonicalize = |path: &Path| {
+            let path = if path.is_absolute() {
+                path.to_path_buf()
+            } else {
+                ws.gctx().cwd().join(path)
+            };
+            let mut existing = path.as_path();
+            let mut missing = Vec::new();
+
+            loop {
+                match existing.canonicalize() {
+                    Ok(mut canonical) => {
+                        for component in missing.iter().rev() {
+                            canonical.push(component);
+                        }
+                        return paths::normalize_path(&canonical);
+                    }
+                    Err(error) if error.kind() == std::io::ErrorKind::NotFound => {
+                        let Some(component) = existing.file_name() else {
+                            break;
+                        };
+                        let Some(parent) = existing.parent() else {
+                            break;
+                        };
+                        missing.push(component.to_os_string());
+                        existing = parent;
+                    }
+                    Err(_) => break,
+                }
+            }
+
+            paths::normalize_path(&path)
+        };
+        let target = ws.target_dir();
+
+        util::short_hash(&(
+            "ohm-shared-workspace-v2",
+            canonicalize(ws.root()),
+            canonicalize(target.as_path_unlocked()),
+        ))
     }
 
     /// Calculate the paths for build output, lock the build directory, and return as a Layout.
@@ -340,15 +380,46 @@ impl Layout {
                 )?)
             }
         };
-        let build_root = build_root.into_path_unlocked();
-        let build_dest = build_dest.as_path_unlocked();
-        let deps = build_dest.join("deps");
-        let artifact = deps.join("artifact");
         let workspace_namespace = ws
             .gctx()
             .cli_unstable()
             .ohm_shared_registry_cache
             .then(|| Self::shared_workspace_namespace(ws));
+        let workspace_lock = workspace_namespace
+            .as_ref()
+            .filter(|_| target.is_none() && !must_take_build_dir_lock_exclusively)
+            .map(|namespace| {
+                // The profile lock is shared so different workspaces can reuse registry
+                // artifacts concurrently. Serialize invocations of this workspace separately:
+                // fine-grained unit locks alone cannot protect early-cutoff fingerprint and
+                // metadata snapshots taken before a compilation job acquires its unit lock.
+                // Every invocation prepares its host layout first, so one host workspace lock
+                // also protects all target layouts without deadlocking on duplicate target paths.
+                // Acquire the workspace lock after the profile lock, matching clean's ordering.
+                let workspace = build_dest.join("build").join("workspaces").join(namespace);
+                workspace.create_dir()?;
+                if shared_registry_directory_is_nfs(workspace.as_path_unlocked())? {
+                    anyhow::bail!(
+                        "shared registry caching requires reliable filesystem locks; \
+                         NFS workspace build directories are unsupported: {}",
+                        workspace.display()
+                    );
+                }
+                verify_shared_registry_file_lock(
+                    &workspace.as_path_unlocked().join(".cargo-workspace-lock"),
+                    workspace.as_path_unlocked(),
+                )?;
+                workspace.open_rw_exclusive_create(
+                    ".cargo-workspace-lock",
+                    ws.gctx(),
+                    "workspace build directory",
+                )
+            })
+            .transpose()?;
+        let build_root = build_root.into_path_unlocked();
+        let build_dest = build_dest.as_path_unlocked();
+        let deps = build_dest.join("deps");
+        let artifact = deps.join("artifact");
         let incremental = workspace_namespace.as_ref().map_or_else(
             || build_dest.join("incremental"),
             |namespace| build_dest.join("incremental").join(namespace),
@@ -403,6 +474,7 @@ impl Layout {
                 fingerprint: build_dest.join(".fingerprint"),
                 examples: build_dest.join("examples"),
                 tmp,
+                workspace_lock,
                 _lock: build_dir_lock,
                 is_new_layout,
             },
@@ -546,6 +618,10 @@ pub struct BuildDirLayout {
     examples: PathBuf,
     /// The directory for temporary data of integration tests and benches
     tmp: PathBuf,
+    /// Serializes private workspace builds without blocking shared registry users.
+    ///
+    /// Declared before the profile lock so it is released first when this layout is dropped.
+    workspace_lock: Option<FileLock>,
     /// The lockfile for a build (`.cargo-lock`). Will be unlocked when this
     /// struct is `drop`ped.
     ///
@@ -588,6 +664,10 @@ impl BuildDirLayout {
     }
     pub fn root(&self) -> &Path {
         &self.root
+    }
+    /// Whether this invocation holds the exclusive workspace-private namespace lock.
+    pub(crate) fn has_workspace_lock(&self) -> bool {
+        self.workspace_lock.is_some()
     }
     /// Fetch the build examples path.
     pub fn examples(&self) -> &Path {
