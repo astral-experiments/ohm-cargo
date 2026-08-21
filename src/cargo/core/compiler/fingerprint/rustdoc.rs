@@ -10,6 +10,7 @@ use serde::Serialize;
 use crate::CargoResult;
 use crate::core::compiler::BuildRunner;
 use crate::core::compiler::CompileKind;
+use crate::core::compiler::Layout;
 
 /// JSON Schema of the [`RustdocFingerprint`] file.
 #[derive(Debug, Serialize, Deserialize)]
@@ -190,12 +191,20 @@ impl RustdocFingerprint {
 
 /// Returns the path to rustdoc fingerprint file for a given [`CompileKind`].
 fn fingerprint_path(build_runner: &BuildRunner<'_, '_>, kind: CompileKind) -> PathBuf {
-    build_runner
-        .files()
-        .layout(kind)
-        .build_dir()
-        .root()
-        .join(".rustdoc_fingerprint.json")
+    let root = build_runner.files().layout(kind).build_dir().root();
+    if build_runner
+        .bcx
+        .gctx
+        .cli_unstable()
+        .ohm_shared_registry_cache
+    {
+        root.join(format!(
+            ".rustdoc_fingerprint-{}.json",
+            Layout::shared_workspace_namespace(build_runner.bcx.ws)
+        ))
+    } else {
+        root.join(".rustdoc_fingerprint.json")
+    }
 }
 
 /// Checks rustdoc fingerprint file for a given [`CompileKind`].
