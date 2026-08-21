@@ -11,6 +11,7 @@ use crate::core::compiler::CompileKind;
 use crate::core::compiler::CompileMode;
 use crate::core::compiler::CompileTarget;
 use crate::core::compiler::CrateType;
+use crate::core::compiler::OHM_DEFAULT_RUSTFLAGS;
 use crate::core::compiler::apply_env_config;
 use crate::core::{Dependency, Package, Target, TargetKind, Workspace};
 use crate::util::context::{GlobalContext, StringList, TargetConfig};
@@ -784,24 +785,38 @@ fn extra_args(
     flags: Flags,
 ) -> CargoResult<Vec<String>> {
     if host_artifact_uses_only_host_config(gctx, requested_kinds, kind)? {
-        return Ok(rustflags_from_host(gctx, flags, host_triple)?.unwrap_or_else(Vec::new));
+        let rustflags = rustflags_from_host(gctx, flags, host_triple)?.unwrap_or_default();
+        return Ok(with_ohm_default_rustflags(gctx, flags, rustflags));
     }
 
     // All other artifacts pick up the RUSTFLAGS, [target.*], and [build], in that order.
     // NOTE: It is impossible to have a [host] section and reach this logic with kind.is_host(),
     // since [host] implies `target-applies-to-host = false`, which always early-returns above.
 
-    if let Some(rustflags) = rustflags_from_env(gctx, flags) {
-        Ok(rustflags)
+    let rustflags = if let Some(rustflags) = rustflags_from_env(gctx, flags) {
+        rustflags
     } else if let Some(rustflags) =
         rustflags_from_target(gctx, host_triple, target_cfg, kind, flags)?
     {
-        Ok(rustflags)
+        rustflags
     } else if let Some(rustflags) = rustflags_from_build(gctx, flags)? {
-        Ok(rustflags)
+        rustflags
     } else {
-        Ok(Vec::new())
+        Vec::new()
+    };
+
+    Ok(with_ohm_default_rustflags(gctx, flags, rustflags))
+}
+
+fn with_ohm_default_rustflags(
+    gctx: &GlobalContext,
+    flags: Flags,
+    mut rustflags: Vec<String>,
+) -> Vec<String> {
+    if matches!(flags, Flags::Rust) && gctx.cli_unstable().ohm_defaults() {
+        rustflags.splice(0..0, OHM_DEFAULT_RUSTFLAGS.map(str::to_owned));
     }
+    rustflags
 }
 
 /// Gets compiler flags from environment variables.

@@ -752,8 +752,8 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
     pub fn only_requires_rmeta(&self, parent: &Unit, dep: &Unit) -> bool {
         if parent.mode.is_check()
             && dep.mode.is_check()
-            && fingerprint::unit_can_use_early_cutoff(parent)
-            && fingerprint::unit_can_use_early_cutoff(dep)
+            && fingerprint::unit_can_use_early_cutoff(self, parent)
+            && fingerprint::unit_can_use_early_cutoff(self, dep)
         {
             return true;
         }
