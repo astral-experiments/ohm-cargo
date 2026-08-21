@@ -414,6 +414,11 @@ fn rustc(
                     // don't see them as stale compared to rebuilt dependencies.
                     let now = filetime::FileTime::now();
                     for output in &essential_outputs {
+                        if output.path.extension() == Some(OsStr::new("rmeta"))
+                            && fingerprint::can_preserve_metadata_generation(fp, &output.path)
+                        {
+                            continue;
+                        }
                         if let Err(e) = filetime::set_file_mtime(&output.path, now) {
                             tracing::debug!(
                                 "early cutoff: failed to touch output {:?}: {}",
