@@ -1107,10 +1107,10 @@ fn connect_run_custom_build_deps(state: &mut State<'_, '_>) {
 }
 
 impl<'a, 'gctx> State<'a, 'gctx> {
-    /// Tentatively uses build mode only for an entirely immutable registry
-    /// closure. Once all unit hashes and layouts are known, `BuildRunner`
-    /// validates the exact existing artifacts and their complete fingerprints
-    /// before allowing the graph to execute.
+    /// Tentatively uses build mode for an immutable registry closure or an
+    /// owned workspace member. Once all unit hashes and layouts are known,
+    /// `BuildRunner` validates the exact existing artifacts and their complete
+    /// fingerprints before allowing the graph to execute.
     fn can_reuse_built_registry_dependency(
         &self,
         parent: &Unit,
@@ -1118,9 +1118,11 @@ impl<'a, 'gctx> State<'a, 'gctx> {
         target: &Target,
         unit_for: UnitFor,
     ) -> bool {
+        let is_workspace_member = self.ws.is_member_id(package_id);
         if !self.reuse_built_registry_dependencies
             || self.is_std
-            || !package_id.source_id().is_remote_registry()
+            || (!package_id.source_id().is_remote_registry() && !is_workspace_member)
+            || (is_workspace_member && self.target_data.rustc.workspace_wrapper.is_some())
             || self.rejected_built_registry_packages.contains(&package_id)
             || target.for_host()
             || !target.is_lib()
@@ -1215,7 +1217,7 @@ impl<'a, 'gctx> State<'a, 'gctx> {
             .is_ok_and(|expected| expected == compiler)
     }
 
-    /// Reject mutable sources and unaudited procedural macros throughout the
+    /// Reject unowned mutable sources and untrusted procedural macros throughout the
     /// actual compilation closure, including active build-script dependencies.
     fn registry_closure_is_immutable(
         &self,
@@ -1225,26 +1227,39 @@ impl<'a, 'gctx> State<'a, 'gctx> {
         visiting: &mut HashSet<(Unit, bool)>,
     ) -> bool {
         let package_id = unit.pkg.package_id();
-        if !package_id.source_id().is_remote_registry() {
-            return false;
-        }
-        let Some((source_is_replaced, effective_source_id)) = self
-            .package_set
-            .sources()
-            .get(package_id.source_id())
-            .map(|source| (source.is_replaced(), source.replaced_source_id()))
-        else {
-            return false;
+        let source_is_replaced = if package_id.source_id().is_remote_registry() {
+            let Some((source_is_replaced, effective_source_id)) = self
+                .package_set
+                .sources()
+                .get(package_id.source_id())
+                .map(|source| (source.is_replaced(), source.replaced_source_id()))
+            else {
+                return false;
+            };
+            // Source replacement preserves the original registry PackageId even
+            // when a mutable, checksummed vendor directory supplies the contents.
+            // Such sources must follow the ordinary check path so Cargo verifies
+            // their integrity before compiling a newly requested target. Registry
+            // mirrors remain immutable and their actual source path participates
+            // in the existing unit fingerprint.
+            if source_is_replaced && !effective_source_id.is_remote_registry() {
+                return false;
+            }
+            source_is_replaced
+        } else {
+            // Workspace sources can change, so they are eligible only when their
+            // exact build fingerprint is revalidated under the workspace lock.
+            // Local build scripts and procedural macros may observe untracked
+            // inputs, and arbitrary path dependencies are outside that lock.
+            if !self.ws.is_member_id(package_id)
+                || !unit.target.is_lib()
+                || unit.target.for_host()
+                || audited_macro_runtime
+            {
+                return false;
+            }
+            false
         };
-        // Source replacement preserves the original registry PackageId even
-        // when a mutable, checksummed vendor directory supplies the contents.
-        // Such sources must follow the ordinary check path so Cargo verifies
-        // their integrity before compiling a newly requested target. Registry
-        // mirrors remain immutable and their actual source path participates
-        // in the existing unit fingerprint.
-        if source_is_replaced && !effective_source_id.is_remote_registry() {
-            return false;
-        }
 
         let audited_macro_runtime = audited_macro_runtime || unit.pkg.proc_macro();
         if audited_macro_runtime
@@ -1263,9 +1278,11 @@ impl<'a, 'gctx> State<'a, 'gctx> {
 
         // Stable procedural macros can inspect arbitrary environment variables
         // and external files without recording either in rustc dependency
-        // information. Reusing their expanded consumers is sound only for an
-        // explicitly audited, immutable producer. Other macro closures must run
-        // the ordinary check compiler regardless of their existing artifacts.
+        // information. By default, reusing their expanded consumers requires an
+        // explicitly audited, immutable producer. The existing explicit `all`
+        // policy also accepts authenticated crates.io macros, but is potentially
+        // unsound. Other macro closures must run the ordinary check compiler
+        // regardless of their existing artifacts.
         // A macro's ordinary library dependencies execute inside its compiler
         // process too. Authenticating only the macro package would let an
         // alternate registry or newer semver-compatible helper introduce
@@ -1292,8 +1309,8 @@ impl<'a, 'gctx> State<'a, 'gctx> {
         immutable
     }
 
-    /// Trust audited, token-only macro releases only when their complete
-    /// source identities match both the resolved and downloaded checksums.
+    /// Trust configured macro releases only when their complete source
+    /// identities match both the resolved and downloaded checksums.
     fn proc_macro_is_audited(&self, unit: &Unit) -> bool {
         let package_id = unit.pkg.package_id();
         let sources = self.package_set.sources();
@@ -1311,7 +1328,7 @@ impl<'a, 'gctx> State<'a, 'gctx> {
                 .and_then(Option::as_deref),
             unit.pkg.summary().checksum(),
             true,
-            OhmProcMacroTrust::Audited,
+            self.gctx.cli_unstable().ohm_proc_macro_trust,
         )
     }
 
@@ -1332,6 +1349,7 @@ impl<'a, 'gctx> State<'a, 'gctx> {
                 .get(&package_id)
                 .and_then(Option::as_deref),
             unit.pkg.summary().checksum(),
+            self.gctx.cli_unstable().ohm_proc_macro_trust,
         )
     }
 
@@ -1533,6 +1551,7 @@ fn audited_proc_macro_runtime_dependency_identity(
     version: &semver::Version,
     resolved_checksum: Option<&str>,
     downloaded_checksum: Option<&str>,
+    trust: OhmProcMacroTrust,
 ) -> bool {
     audited_proc_macro_package_identity(
         source_id,
@@ -1542,7 +1561,7 @@ fn audited_proc_macro_runtime_dependency_identity(
         resolved_checksum,
         downloaded_checksum,
         false,
-        OhmProcMacroTrust::Audited,
+        trust,
     )
 }
 
@@ -2254,6 +2273,7 @@ mod audited_proc_macro_tests {
             &version,
             Some(checksum),
             Some(checksum),
+            OhmProcMacroTrust::Audited,
         ));
         assert!(!audited_proc_macro_runtime_dependency_identity(
             alternative,
@@ -2262,6 +2282,7 @@ mod audited_proc_macro_tests {
             &version,
             Some(checksum),
             Some(checksum),
+            OhmProcMacroTrust::Audited,
         ));
         assert!(!audited_proc_macro_runtime_dependency_identity(
             crates_io,
@@ -2270,6 +2291,7 @@ mod audited_proc_macro_tests {
             &version,
             Some(checksum),
             Some(checksum),
+            OhmProcMacroTrust::Audited,
         ));
         assert!(!audited_proc_macro_runtime_dependency_identity(
             crates_io,
@@ -2278,6 +2300,7 @@ mod audited_proc_macro_tests {
             &version,
             Some(checksum),
             Some("unaudited-download"),
+            OhmProcMacroTrust::Audited,
         ));
         assert!(!audited_proc_macro_runtime_dependency_identity(
             crates_io,
@@ -2286,6 +2309,54 @@ mod audited_proc_macro_tests {
             &version,
             None,
             Some(checksum),
+            OhmProcMacroTrust::Audited,
         ));
+    }
+
+    #[test]
+    fn permissive_macro_runtime_trust_still_requires_authenticated_crates_io_sources() {
+        let crates_io = SourceId::from_url("registry+https://github.com/rust-lang/crates.io-index")
+            .expect("canonical registry source");
+        let alternative = SourceId::from_url("registry+file:///tmp/alternative-registry")
+            .expect("alternate registry source");
+        let version = semver::Version::new(1, 0, 0);
+        let checksum = "unaudited-but-authenticated-runtime-helper";
+
+        assert!(!audited_proc_macro_runtime_dependency_identity(
+            crates_io,
+            false,
+            "unaudited-runtime-helper",
+            &version,
+            Some(checksum),
+            Some(checksum),
+            OhmProcMacroTrust::Audited,
+        ));
+        assert!(audited_proc_macro_runtime_dependency_identity(
+            crates_io,
+            false,
+            "unaudited-runtime-helper",
+            &version,
+            Some(checksum),
+            Some(checksum),
+            OhmProcMacroTrust::All,
+        ));
+
+        for (source, replaced, resolved, downloaded) in [
+            (alternative, false, Some(checksum), Some(checksum)),
+            (crates_io, true, Some(checksum), Some(checksum)),
+            (crates_io, false, None, Some(checksum)),
+            (crates_io, false, Some(checksum), None),
+            (crates_io, false, Some(checksum), Some("different-checksum")),
+        ] {
+            assert!(!audited_proc_macro_runtime_dependency_identity(
+                source,
+                replaced,
+                "unaudited-runtime-helper",
+                &version,
+                resolved,
+                downloaded,
+                OhmProcMacroTrust::All,
+            ));
+        }
     }
 }
