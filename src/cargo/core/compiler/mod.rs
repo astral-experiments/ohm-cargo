@@ -1597,10 +1597,7 @@ fn link_targets(
     let mut target = Target::clone(&unit.target);
     if let TargetSourcePath::Metabuild = target.src_path() {
         // Give it something to serialize.
-        let path = unit
-            .pkg
-            .manifest()
-            .metabuild_path(build_runner.bcx.ws.build_dir());
+        let path = unit.pkg.manifest().metabuild_path(build_runner.bcx.ws);
         target.set_src_path(TargetSourcePath::Path(path));
     }
 
