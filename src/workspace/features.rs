@@ -917,6 +917,7 @@ unstable_cli_options!(
     ohm_defaults: Option<bool> = ("Enable the defaults packaged with Ohm"),
     ohm_focused_tests: bool = ("Compile only an explicitly selected exact library test"),
     ohm_reuse_built_deps: bool = ("Reuse already-built registry dependencies when checking a package"),
+    ohm_shared_registry_cache: bool = ("Share deterministic registry artifacts across isolated workspaces without global compiler wrappers"),
     panic_abort_tests: bool = ("Enable support to run tests with -Cpanic=abort"),
     panic_immediate_abort: bool = ("Enable setting `panic = \"immediate-abort\"` in profiles"),
     profile_hint_mostly_unused: bool = ("Enable the `hint-mostly-unused` setting in profiles to mark a crate as mostly unused."),
@@ -1501,6 +1502,7 @@ impl CliUnstable {
             "ohm-defaults" => self.ohm_defaults = Some(parse_bool(k, v)?),
             "ohm-focused-tests" => self.ohm_focused_tests = parse_empty(k, v)?,
             "ohm-reuse-built-deps" => self.ohm_reuse_built_deps = parse_empty(k, v)?,
+            "ohm-shared-registry-cache" => self.ohm_shared_registry_cache = parse_empty(k, v)?,
             "panic-abort-tests" => self.panic_abort_tests = parse_empty(k, v)?,
             "public-dependency" => self.public_dependency = parse_empty(k, v)?,
             "profile-hint-mostly-unused" => self.profile_hint_mostly_unused = parse_empty(k, v)?,
@@ -1610,7 +1612,11 @@ impl CliUnstable {
         }
     }
 
-    fn implicitly_enable_features_if_needed(&mut self) {
+    pub(crate) fn implicitly_enable_features_if_needed(&mut self) {
+        if self.ohm_shared_registry_cache && !self.fine_grain_locking {
+            debug!("-Zfine-grain-locking implicitly enabled by -Zohm-shared-registry-cache");
+            self.fine_grain_locking = true;
+        }
         if self.fine_grain_locking && !self.build_dir_new_layout {
             debug!("-Zbuild-dir-new-layout implicitly enabled by -Zfine-grain-locking");
             self.build_dir_new_layout = true;

@@ -208,8 +208,8 @@
 //! `target/$TRIPLE`.
 
 use crate::compiler::CompileTarget;
-use crate::util::flock::is_on_nfs_mount;
-use crate::util::{CargoResult, FileLock};
+use crate::util::flock::{self, is_on_nfs_mount};
+use crate::util::{self, CargoResult, FileLock};
 use crate::workspace::Workspace;
 use cargo_util::paths;
 use std::path::{Path, PathBuf};
@@ -224,6 +224,17 @@ pub struct Layout {
 }
 
 impl Layout {
+    /// Durable ownership marker for build roots shared by multiple workspaces.
+    pub(crate) const SHARED_REGISTRY_CACHE_MARKER: &str = ".ohm-shared-registry-cache-v1";
+
+    /// Identifies one workspace consistently across artifacts, incremental state, and cleaning.
+    ///
+    /// Canonical roots keep symlinked workspace paths in the same private namespace.
+    pub(crate) fn shared_workspace_namespace(ws: &Workspace<'_>) -> String {
+        let root = ws.root();
+        util::short_hash(&root.canonicalize().unwrap_or_else(|_| root.to_path_buf()))
+    }
+
     /// Calculate the paths for build output, lock the build directory, and return as a Layout.
     ///
     /// This function will block if the directory is already locked.
@@ -254,6 +265,58 @@ impl Layout {
         if root != build_root {
             paths::create_dir_all_excluded_from_backups_atomic(build_root.as_path_unlocked())?;
         }
+        if ws.gctx().cli_unstable().ohm_shared_registry_cache {
+            let shared_root = ws.build_dir();
+            if shared_registry_directory_is_nfs(shared_root.as_path_unlocked())?
+                || shared_registry_directory_is_nfs(build_root.as_path_unlocked())?
+            {
+                anyhow::bail!(
+                    "shared registry caching requires reliable filesystem locks; \
+                     NFS build directories are unsupported: {}",
+                    shared_root.display()
+                );
+            }
+            let marker = shared_root
+                .as_path_unlocked()
+                .join(Self::SHARED_REGISTRY_CACHE_MARKER);
+            match std::fs::OpenOptions::new()
+                .write(true)
+                .create_new(true)
+                .open(&marker)
+            {
+                Ok(_) => {}
+                Err(error) if error.kind() == std::io::ErrorKind::AlreadyExists => {
+                    if !std::fs::symlink_metadata(&marker)?.file_type().is_file() {
+                        anyhow::bail!(
+                            "shared registry cache ownership marker is not a regular file: {}",
+                            marker.display()
+                        );
+                    }
+                }
+                Err(error) => return Err(error.into()),
+            }
+
+            // Cargo deliberately treats unsupported filesystem locks as successful. That is
+            // safe for ordinary private build directories but would make shared unit writes and
+            // cleaning race. Probe the durable marker directly before any fine-grained locking.
+            verify_shared_registry_file_lock(&marker, shared_root.as_path_unlocked())?;
+
+            // A cross-target or profile directory can itself be a separate unsupported mount.
+            // Verify the exact lock Cargo is about to use, without relying on `FileLock`'s
+            // intentional unsupported-lock fallback.
+            paths::create_dir_all(build_dest.as_path_unlocked())?;
+            if shared_registry_directory_is_nfs(build_dest.as_path_unlocked())? {
+                anyhow::bail!(
+                    "shared registry caching requires reliable filesystem locks; \
+                     NFS build directories are unsupported: {}",
+                    build_dest.display()
+                );
+            }
+            verify_shared_registry_file_lock(
+                &build_dest.as_path_unlocked().join(".cargo-build-lock"),
+                build_dest.as_path_unlocked(),
+            )?;
+        }
 
         // Now that the excluded from backups target root is created we can create the
         // actual destination (sub)subdirectory.
@@ -281,6 +344,19 @@ impl Layout {
         let build_dest = build_dest.as_path_unlocked();
         let deps = build_dest.join("deps");
         let artifact = deps.join("artifact");
+        let workspace_namespace = ws
+            .gctx()
+            .cli_unstable()
+            .ohm_shared_registry_cache
+            .then(|| Self::shared_workspace_namespace(ws));
+        let incremental = workspace_namespace.as_ref().map_or_else(
+            || build_dest.join("incremental"),
+            |namespace| build_dest.join("incremental").join(namespace),
+        );
+        let tmp = workspace_namespace.as_ref().map_or_else(
+            || build_root.join("tmp"),
+            |namespace| build_root.join("tmp").join(namespace),
+        );
 
         // We take a shared lock on `.cargo-lock` to make sure we don't run currently with
         // older versions of Cargo (including tools that use Cargo as a library) that don't support
@@ -323,10 +399,10 @@ impl Layout {
                 deps,
                 build: build_dest.join("build"),
                 artifact,
-                incremental: build_dest.join("incremental"),
+                incremental,
                 fingerprint: build_dest.join(".fingerprint"),
                 examples: build_dest.join("examples"),
-                tmp: build_root.join("tmp"),
+                tmp,
                 _lock: build_dir_lock,
                 is_new_layout,
             },
@@ -350,6 +426,66 @@ impl Layout {
 
     pub fn build_dir(&self) -> &BuildDirLayout {
         &self.build_dir
+    }
+}
+
+/// Rejects unsupported advisory locks that Cargo would normally treat as successful.
+///
+/// Existing lock contention is safe; an unsupported or inaccessible lock fails closed.
+fn verify_shared_registry_file_lock(lock: &Path, root: &Path) -> CargoResult<()> {
+    let file = std::fs::OpenOptions::new()
+        .read(true)
+        .write(true)
+        .create(true)
+        .open(lock)?;
+    match flock::try_lock_shared(&file) {
+        Ok(()) => flock::unlock(&file)?,
+        Err(std::fs::TryLockError::WouldBlock) => {}
+        Err(std::fs::TryLockError::Error(error)) => {
+            anyhow::bail!(
+                "shared registry caching requires reliable filesystem locks at {}: {}",
+                root.display(),
+                error
+            );
+        }
+    }
+    Ok(())
+}
+
+/// Detects NFS before invoking `flock`, which can block forever even in nonblocking mode.
+fn shared_registry_directory_is_nfs(path: &Path) -> CargoResult<bool> {
+    #[cfg(any(target_os = "linux", target_os = "macos"))]
+    {
+        use std::ffi::CString;
+        use std::os::unix::ffi::OsStrExt;
+
+        let path = CString::new(path.as_os_str().as_bytes())?;
+        let mut filesystem = std::mem::MaybeUninit::<libc::statfs>::uninit();
+        // SAFETY: `path` is a valid NUL-terminated C string and `filesystem` points to writable
+        // storage for the `statfs` structure. Its contents are initialized only on success.
+        if unsafe { libc::statfs(path.as_ptr(), filesystem.as_mut_ptr()) } != 0 {
+            return Err(std::io::Error::last_os_error().into());
+        }
+        // SAFETY: A successful `statfs` call initialized the complete structure above.
+        let filesystem = unsafe { filesystem.assume_init() };
+
+        #[cfg(target_os = "linux")]
+        {
+            return Ok(filesystem.f_type as u32 == libc::NFS_SUPER_MAGIC as u32);
+        }
+
+        #[cfg(target_os = "macos")]
+        {
+            // SAFETY: macOS guarantees `f_fstypename` is a NUL-terminated C string in statfs.
+            let filesystem_type =
+                unsafe { std::ffi::CStr::from_ptr(filesystem.f_fstypename.as_ptr()) };
+            return Ok(filesystem_type.to_bytes().eq_ignore_ascii_case(b"nfs"));
+        }
+    }
+
+    #[cfg(not(any(target_os = "linux", target_os = "macos")))]
+    {
+        Ok(is_on_nfs_mount(path))
     }
 }
 
