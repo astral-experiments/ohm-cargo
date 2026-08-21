@@ -355,7 +355,14 @@ impl TargetInfo {
                 }
             }
 
-            let should_embed_metadata = match gctx.cli_unstable().embed_metadata {
+            let unstable = gctx.cli_unstable();
+            let embed_metadata = unstable.embed_metadata.or_else(|| {
+                unstable
+                    .no_embed_metadata
+                    .map(|omit| !omit)
+                    .or_else(|| unstable.ohm_defaults().then_some(false))
+            });
+            let should_embed_metadata = match embed_metadata {
                 Some(v) => v,
                 None => {
                     let cargo_nightly = matches!(

@@ -167,6 +167,10 @@ pub const CARGO_INHERITED_OHM_DEFAULTS_ENV: &str = "__CARGO_OHM_DEFAULTS";
 #[doc(hidden)]
 pub const CARGO_INHERITED_RELINK_ONLY_ENV: &str = "__CARGO_RELINK_ONLY";
 
+/// Carries an explicit metadata-embedding override through external Cargo subcommands.
+#[doc(hidden)]
+pub const CARGO_INHERITED_NO_EMBED_METADATA_ENV: &str = "__CARGO_NO_EMBED_METADATA";
+
 #[macro_use]
 mod macros;
 
