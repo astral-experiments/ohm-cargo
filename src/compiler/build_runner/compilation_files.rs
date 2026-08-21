@@ -878,6 +878,9 @@ fn compute_metadata(
     if crate::compiler::unit_suppresses_default_public_api_hash(build_runner, unit) {
         "ohm-terminal-check-no-public-api-hash".hash(&mut unit_id_hasher);
     }
+    if crate::compiler::unit_uses_ohm_incremental_codegen(build_runner, unit) {
+        "ohm-incremental-codegen-defaults".hash(&mut unit_id_hasher);
+    }
 
     let c_metadata = UnitHash(Hasher::finish(&c_metadata_hasher));
     let unit_id = UnitHash(Hasher::finish(&unit_id_hasher));
