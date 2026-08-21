@@ -264,6 +264,18 @@ fn unit_uses_ohm_incremental_codegen(build_runner: &BuildRunner<'_, '_>, unit: &
         .supports_ohm_incremental_codegen(gctx)
 }
 
+/// Enables local monomorphization reuse without requiring a public API hash.
+fn unit_uses_ohm_incremental_mono_partitions(
+    build_runner: &BuildRunner<'_, '_>,
+    unit: &Unit,
+) -> bool {
+    unit_uses_ohm_incremental_codegen(build_runner, unit)
+        && build_runner
+            .bcx
+            .rustc()
+            .supports_ohm_incremental_mono_partitions(build_runner.bcx.gctx)
+}
+
 /// A glorified callback for executing calls to rustc. Rather than calling rustc
 /// directly, we'll use an `Executor`, giving clients an opportunity to intercept
 /// the build calls.
@@ -1802,6 +1814,9 @@ fn prepare_rustc(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> CargoResult
         base.args(&OHM_DEFAULT_RUSTFLAGS);
         if unit_uses_ohm_incremental_codegen(build_runner, unit) {
             base.args(&OHM_INCREMENTAL_CODEGEN_RUSTFLAGS);
+        }
+        if unit_uses_ohm_incremental_mono_partitions(build_runner, unit) {
+            base.arg("-Zohm-incremental-mono-partitions");
         }
         if unit_suppresses_default_public_api_hash(build_runner, unit) {
             base.arg("-Zpublic-api-hash=no");
