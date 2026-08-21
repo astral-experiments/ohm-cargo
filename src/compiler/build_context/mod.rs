@@ -11,6 +11,7 @@ use crate::util::data_structures::{HashMap, HashSet};
 use crate::util::errors::CargoResult;
 use crate::util::interning::InternedString;
 use crate::util::logger::BuildLogger;
+use crate::workspace::PackageId;
 use crate::workspace::PackageSet;
 use crate::workspace::Workspace;
 use crate::workspace::dependency::DepKind;
@@ -85,6 +86,9 @@ pub struct BuildContext<'a, 'gctx> {
     /// The dependency graph of units to compile.
     pub unit_graph: UnitGraph,
 
+    /// Exact registry packages authenticated for execution inside an audited procedural macro.
+    pub audited_proc_macro_packages: HashSet<PackageId>,
+
     /// A map from unit to index.
     pub unit_to_index: HashMap<Unit, UnitIndex>,
 
@@ -107,6 +111,7 @@ impl<'a, 'gctx> BuildContext<'a, 'gctx> {
         target_data: RustcTargetData<'gctx>,
         roots: Vec<Unit>,
         unit_graph: UnitGraph,
+        audited_proc_macro_packages: HashSet<PackageId>,
         unit_to_index: HashMap<Unit, UnitIndex>,
         scrape_units: Vec<Unit>,
     ) -> CargoResult<BuildContext<'a, 'gctx>> {
@@ -129,6 +134,7 @@ impl<'a, 'gctx> BuildContext<'a, 'gctx> {
             target_data,
             roots,
             unit_graph,
+            audited_proc_macro_packages,
             unit_to_index,
             scrape_units,
             all_kinds,
