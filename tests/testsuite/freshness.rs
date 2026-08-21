@@ -2106,7 +2106,17 @@ fn public_api_hash_wrapper() -> PathBuf {
                     };
                     let args = args
                         .into_iter()
-                        .filter(|arg| arg != "-Zpublic-api-hash");
+                        .filter(|arg| {
+                            !matches!(
+                                arg.to_str(),
+                                Some(
+                                    "-Zpublic-api-hash"
+                                        | "-Zpublic-api-hash=no"
+                                        | "-Zcache-proc-macros"
+                                        | "-Zcache-proc-macros=no"
+                                )
+                            )
+                        });
                     let output = Command::new(rustc)
                         .args(args)
                         .output()
@@ -2132,7 +2142,10 @@ fn public_api_hash_wrapper() -> PathBuf {
             "#,
         )
         .build();
-    wrapper.cargo("build").run();
+    wrapper
+        .cargo("-Zohm-defaults=no build")
+        .masquerade_as_nightly_cargo(&["ohm-defaults"])
+        .run();
     wrapper.bin("public-api-hash-wrapper")
 }
 
@@ -2261,7 +2274,7 @@ fn early_cutoff_skips_dependent_rebuild() {
         .with_stderr_data(str![[r#"
 [DIRTY] dep v0.1.0 ([ROOT]/foo/dep): the file `dep/native.c` has changed ([TIME_DIFF_AFTER_LAST_BUILD])
 [COMPILING] dep v0.1.0 ([ROOT]/foo/dep)
-[RUNNING] `[ROOT]/foo/target/debug/build/dep-[HASH]/build-script-build`
+[RUNNING] `[ROOT]/foo/target/debug/build/dep/[HASH]/out/build_script_build`
 [RUNNING] `[..]/public-api-hash-wrapper[EXE] rustc --crate-name dep [..]`
 [DIRTY] middle v0.1.0 ([ROOT]/foo/middle): the dependency `dep` was rebuilt
 [COMPILING] middle v0.1.0 ([ROOT]/foo/middle)
@@ -2358,7 +2371,11 @@ fn early_cutoff_skips_dependent_rebuild() {
         .run();
 }
 
-fn assert_early_cutoff_skips_check_dependents(command: &str) {
+fn assert_early_cutoff_checks_dependents(
+    command: &str,
+    rustflags: Option<&str>,
+    expected_invocations: &str,
+) {
     let wrapper = public_api_hash_wrapper();
     let p = project()
         .at("check-workspace")
@@ -2408,35 +2425,75 @@ fn assert_early_cutoff_skips_check_dependents(command: &str) {
         .build();
     let log = p.root().join("public-api-hash-wrapper.log");
 
-    p.cargo(command)
+    let mut initial = p.cargo(command);
+    if command.contains("ohm-defaults") {
+        initial.masquerade_as_nightly_cargo(&["ohm-defaults"]);
+    }
+    initial
         .env("PUBLIC_API_HASH_WRAPPER_LOG", &log)
-        .env("RUSTC_WRAPPER", &wrapper)
-        .env("RUSTFLAGS", "-Zpublic-api-hash")
-        .run();
+        .env("RUSTC_WRAPPER", &wrapper);
+    if let Some(rustflags) = rustflags {
+        initial.env("RUSTFLAGS", rustflags);
+    }
+    initial.run();
 
     fs::write(&log, "").unwrap();
     if is_coarse_mtime() {
         sleep_ms(1000);
     }
     p.change_file("dep/src/lib.rs", "pub fn value() -> i32 { 2 }");
-    p.cargo(command)
+    let mut rebuilt = p.cargo(command);
+    if command.contains("ohm-defaults") {
+        rebuilt.masquerade_as_nightly_cargo(&["ohm-defaults"]);
+    }
+    rebuilt
         .env("PUBLIC_API_HASH_WRAPPER_LOG", &log)
-        .env("RUSTC_WRAPPER", &wrapper)
-        .env("RUSTFLAGS", "-Zpublic-api-hash")
-        .run();
-    assert_eq!(fs::read_to_string(&log).unwrap(), "dep\n");
+        .env("RUSTC_WRAPPER", &wrapper);
+    if let Some(rustflags) = rustflags {
+        rebuilt.env("RUSTFLAGS", rustflags);
+    }
+    rebuilt.run();
+    assert_eq!(fs::read_to_string(&log).unwrap(), expected_invocations);
 }
 
 #[cargo_test]
 fn early_cutoff_skips_check_dependents() {
-    assert_early_cutoff_skips_check_dependents("check");
+    assert_early_cutoff_checks_dependents("check", Some("-Zpublic-api-hash"), "dep\n");
 }
 
 #[cargo_test]
 fn early_cutoff_skips_check_test_dependents() {
     // Clippy schedules the same Check units, including test-mode units for
     // local test targets when invoked with `--tests`.
-    assert_early_cutoff_skips_check_dependents("check --tests");
+    assert_early_cutoff_checks_dependents("check --tests", Some("-Zpublic-api-hash"), "dep\n");
+}
+
+#[cargo_test]
+fn ohm_defaults_enable_check_early_cutoff() {
+    assert_early_cutoff_checks_dependents("-Zohm-defaults check", None, "dep\n");
+}
+
+#[cargo_test]
+fn ohm_defaults_respect_public_api_hash_opt_out() {
+    assert_early_cutoff_checks_dependents(
+        "-Zohm-defaults check",
+        Some("-Zpublic-api-hash=no"),
+        "dep\nmiddle\napp\n",
+    );
+}
+
+#[cargo_test]
+fn disabled_ohm_defaults_do_not_enable_check_early_cutoff() {
+    assert_early_cutoff_checks_dependents("-Zohm-defaults=no check", None, "dep\nmiddle\napp\n");
+}
+
+#[cargo_test]
+fn disabled_ohm_defaults_preserve_explicit_public_api_hash() {
+    assert_early_cutoff_checks_dependents(
+        "-Zohm-defaults=no check",
+        Some("-Zpublic-api-hash"),
+        "dep\n",
+    );
 }
 
 fn assert_early_cutoff_rechecks_transitive_trait_implementations(
@@ -3171,7 +3228,10 @@ fn relink_only_wrapper() -> PathBuf {
                     let mut stripped = Vec::new();
                     let mut index = 0;
                     while index < args.len() {
-                        if args[index] == OsStr::new("-Zpublic-api-hash") {
+                        if matches!(
+                            args[index].to_str(),
+                            Some("-Zpublic-api-hash" | "-Zcache-proc-macros")
+                        ) {
                             index += 1;
                         } else if index + 1 < args.len()
                             && args[index] == OsStr::new("-Z")
@@ -3350,11 +3410,10 @@ fn relink_only_reuses_root_codegen() {
         .build();
     let log = p.root().join("relink-wrapper.log");
 
-    p.cargo("-Zrelink-only build")
-        .masquerade_as_nightly_cargo(&["relink-only"])
+    p.cargo("-Zohm-defaults build")
+        .masquerade_as_nightly_cargo(&["ohm-defaults"])
         .env("RUSTC_WRAPPER", &wrapper)
         .env("RELINK_WRAPPER_LOG", &log)
-        .env("RUSTFLAGS", "-Zpublic-api-hash")
         .run();
     assert_eq!(
         fs::read_to_string(&log).unwrap(),
@@ -3364,11 +3423,10 @@ fn relink_only_reuses_root_codegen() {
     fs::write(&log, "").unwrap();
     sleep_ms(1000);
     p.change_file("dep/src/lib.rs", "pub fn value() -> i32 { 2 }");
-    p.cargo("-Zrelink-only build")
-        .masquerade_as_nightly_cargo(&["relink-only"])
+    p.cargo("-Zohm-defaults build")
+        .masquerade_as_nightly_cargo(&["ohm-defaults"])
         .env("RUSTC_WRAPPER", &wrapper)
         .env("RELINK_WRAPPER_LOG", &log)
-        .env("RUSTFLAGS", "-Zpublic-api-hash")
         .run();
     assert_eq!(fs::read_to_string(&log).unwrap(), "compile:dep\nlink:app\n");
     p.process(&p.bin("app"))
@@ -3393,11 +3451,10 @@ fn relink_only_reuses_root_codegen() {
     fs::write(&log, "").unwrap();
     sleep_ms(1000);
     p.change_file("dep/src/lib.rs", "pub fn value() -> i32 { 3 }");
-    p.cargo("-Zrelink-only build")
-        .masquerade_as_nightly_cargo(&["relink-only"])
+    p.cargo("-Zohm-defaults build")
+        .masquerade_as_nightly_cargo(&["ohm-defaults"])
         .env("RUSTC_WRAPPER", &wrapper)
         .env("RELINK_WRAPPER_LOG", &log)
-        .env("RUSTFLAGS", "-Zpublic-api-hash")
         .run();
     assert_eq!(
         fs::read_to_string(&log).unwrap(),
@@ -3418,11 +3475,10 @@ fn relink_only_reuses_root_codegen() {
         "src/main.rs",
         "fn main() { println!(\"value={}\", dep::value()); }",
     );
-    p.cargo("-Zrelink-only build")
-        .masquerade_as_nightly_cargo(&["relink-only"])
+    p.cargo("-Zohm-defaults build")
+        .masquerade_as_nightly_cargo(&["ohm-defaults"])
         .env("RUSTC_WRAPPER", &wrapper)
         .env("RELINK_WRAPPER_LOG", &log)
-        .env("RUSTFLAGS", "-Zpublic-api-hash")
         .run();
     assert_eq!(fs::read_to_string(&log).unwrap(), "codegen:app\nlink:app\n");
 }
