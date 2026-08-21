@@ -892,6 +892,102 @@ fn ohm_incremental_mono_partitions_are_fingerprinted() {
     assert_ne!(identities[0].1, identities[1].1);
 }
 
+#[cargo_test]
+fn ohm_incremental_mono_partitions_invalidate_unhashed_artifacts() {
+    let wrapper = ohm_defaults_wrapper();
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "foo"
+                version = "0.0.1"
+                edition = "2024"
+
+                [lib]
+                crate-type = ["cdylib"]
+            "#,
+        )
+        .file("src/lib.rs", "")
+        .build();
+    let log = p.root().join("ohm-defaults.log");
+
+    for (revision, (unsupported, fresh)) in [
+        (false, false),
+        (false, true),
+        (true, false),
+        (true, true),
+        (false, false),
+    ]
+    .into_iter()
+    .enumerate()
+    {
+        p.change_file(
+            ".cargo/config.toml",
+            &format!(
+                "[env]\nOHM_MONO_PARTITIONS_UNSUPPORTED = {{ value = \"{}\", force = true }}\n",
+                u8::from(unsupported)
+            ),
+        );
+        fs::write(&log, "").expect("clear compiler log");
+        let mut build = p.cargo("-Zohm-defaults build --lib -v");
+        build
+            .masquerade_as_nightly_cargo(&["ohm-defaults"])
+            .env("CARGO_INCREMENTAL", "1")
+            .env("CARGO_UNSTABLE_BUILD_DIR_NEW_LAYOUT", "false")
+            .env("CARGO_UNSTABLE_FINE_GRAIN_LOCKING", "false")
+            .env("CARGO_UNSTABLE_OHM_SHARED_REGISTRY_CACHE", "false")
+            .env("RUSTC_WORKSPACE_WRAPPER", &wrapper)
+            .env("OHM_DEFAULTS_LOG", &log);
+        if fresh {
+            build.with_stderr_data(str![[r#"
+[FRESH] foo v0.0.1 ([ROOT]/foo)
+[FINISHED] `dev` profile [unoptimized + debuginfo] target(s) in [ELAPSED]s
+
+"#]]);
+        } else if revision == 0 {
+            build.with_stderr_data(str![[r#"
+[COMPILING] foo v0.0.1 ([ROOT]/foo)
+[RUNNING] `[..] --crate-name foo [..]`
+[FINISHED] `dev` profile [unoptimized + debuginfo] target(s) in [ELAPSED]s
+
+"#]]);
+        } else {
+            build.with_stderr_data(str![[r#"
+[DIRTY] foo v0.0.1 ([ROOT]/foo): the config settings changed
+[COMPILING] foo v0.0.1 ([ROOT]/foo)
+[RUNNING] `[..] --crate-name foo [..]`
+[FINISHED] `dev` profile [unoptimized + debuginfo] target(s) in [ELAPSED]s
+
+"#]]);
+        }
+        build.run();
+        if !fresh {
+            let invocations = fs::read_to_string(&log).expect("read compiler log");
+            let invocation = rustc_invocation(&invocations, "foo");
+            assert_eq!(
+                invocation.contains(&"-Zohm-incremental-mono-partitions"),
+                !unsupported
+            );
+            assert!(
+                !invocation
+                    .iter()
+                    .any(|argument| argument.starts_with("extra-filename="))
+            );
+        }
+    }
+    // This layout overwrites one artifact and fingerprint instead of retaining
+    // separate unit-id-suffixed outputs for the two capability states.
+    assert_eq!(
+        WalkDir::new(p.build_dir())
+            .into_iter()
+            .map(|entry| entry.expect("read fingerprint directory"))
+            .filter(|entry| entry.file_name() == "lib-foo.json")
+            .count(),
+        1
+    );
+}
+
 fn rustc_invocation<'a>(log: &'a str, crate_name: &str) -> Vec<&'a str> {
     log.lines()
         .map(|line| line.split('\t').collect::<Vec<_>>())
