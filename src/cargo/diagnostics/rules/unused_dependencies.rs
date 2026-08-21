@@ -7,7 +7,6 @@ use cargo_util_terminal::report::Group;
 use cargo_util_terminal::report::Level;
 use cargo_util_terminal::report::Origin;
 use cargo_util_terminal::report::Snippet;
-use indexmap::IndexMap;
 use tracing::{debug, instrument, trace};
 
 use super::STYLE;
@@ -29,6 +28,7 @@ use crate::diagnostics::LintLevelProduct;
 use crate::diagnostics::ScopedDiagnosticStats;
 use crate::diagnostics::get_key_value_span;
 use crate::diagnostics::workspace_rel_path;
+use crate::util::data_structures::IndexMap;
 
 pub static LINT: &Lint = &Lint {
     name: "unused_dependencies",

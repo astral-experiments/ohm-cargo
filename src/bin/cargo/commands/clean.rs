@@ -1,7 +1,7 @@
 use crate::command_prelude::*;
 use crate::util::cache_lock::CacheLockMode;
+use crate::util::data_structures::IndexSet;
 use crate::util::time_span::parse_time_span;
-
 use cargo::core::gc::Gc;
 use cargo::core::gc::GcOpts;
 use cargo::core::gc::parse_human_size;
@@ -10,7 +10,6 @@ use cargo::ops::CleanContext;
 use cargo::ops::{self, CleanOptions};
 use cargo::util::print_available_packages;
 use clap_complete::ArgValueCandidates;
-use indexmap::IndexSet;
 use std::time::Duration;
 
 pub fn cli() -> Command {
