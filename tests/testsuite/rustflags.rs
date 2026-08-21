@@ -1,6 +1,6 @@
 //! Tests for setting custom rustc flags.
 
-use std::fs;
+use std::{env, fs};
 
 use crate::prelude::*;
 use cargo_test_support::registry::Package;
@@ -8,6 +8,229 @@ use cargo_test_support::{
     RawOutput, basic_manifest, paths, project, project_in_home, rustc_host, str,
 };
 use snapbox::assert_data_eq;
+
+#[cargo_test]
+fn ohm_defaults_apply_to_host_and_target_units() {
+    let wrapper = project()
+        .at("ohm-defaults-wrapper")
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "ohm-defaults-wrapper"
+                version = "0.1.0"
+                edition = "2024"
+            "#,
+        )
+        .file(
+            "src/main.rs",
+            r#"
+                use std::env;
+                use std::fs::OpenOptions;
+                use std::io::Write;
+                use std::process::{Command, exit};
+
+                fn is_ohm_rustflag(arg: &std::ffi::OsString) -> bool {
+                    let arg = arg.to_string_lossy();
+                    arg.starts_with("-Zpublic-api-hash")
+                        || arg.starts_with("-Zcache-proc-macros")
+                }
+
+                fn main() {
+                    let mut wrapper_args = env::args_os().skip(1);
+                    let rustc = wrapper_args.next().expect("rustc path");
+                    let args = wrapper_args.collect::<Vec<_>>();
+                    let rendered = args
+                        .iter()
+                        .map(|arg| arg.to_string_lossy())
+                        .collect::<Vec<_>>()
+                        .join("\t");
+                    writeln!(
+                        OpenOptions::new()
+                            .create(true)
+                            .append(true)
+                            .open(env::var_os("OHM_DEFAULTS_LOG").expect("log path"))
+                            .expect("open log"),
+                        "{rendered}"
+                    )
+                    .expect("write log");
+                    let status = Command::new(rustc)
+                        .args(args.iter().filter(|arg| !is_ohm_rustflag(arg)))
+                        .status()
+                        .expect("rustc should run");
+                    exit(status.code().unwrap_or(1));
+                }
+            "#,
+        )
+        .build();
+    wrapper
+        .cargo("-Zohm-defaults=no build")
+        .masquerade_as_nightly_cargo(&["ohm-defaults"])
+        .run();
+    let wrapper = wrapper.bin("ohm-defaults-wrapper");
+
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "foo"
+                version = "0.1.0"
+                edition = "2024"
+                build = "build.rs"
+            "#,
+        )
+        .file("build.rs", "fn main() {}")
+        .file("src/lib.rs", "pub fn value() -> i32 { 1 }")
+        .build();
+    let log = p.root().join("ohm-defaults.log");
+
+    let default_check = if cfg!(feature = "ohm-defaults") {
+        "check --target"
+    } else {
+        "-Zohm-defaults check --target"
+    };
+    p.cargo(default_check)
+        .masquerade_as_nightly_cargo(&["ohm-defaults"])
+        .arg(rustc_host())
+        .env("RUSTC_WRAPPER", &wrapper)
+        .env("OHM_DEFAULTS_LOG", &log)
+        .run();
+    let invocations = fs::read_to_string(&log).unwrap();
+    for crate_name in ["build_script_build", "foo"] {
+        let invocation = rustc_invocation(&invocations, crate_name);
+        assert!(invocation.contains(&"-Zpublic-api-hash"));
+        assert!(invocation.contains(&"-Zcache-proc-macros"));
+    }
+
+    p.cargo("clean").run();
+    fs::write(&log, "").unwrap();
+    p.cargo("-Zohm-defaults=no check --target")
+        .masquerade_as_nightly_cargo(&["ohm-defaults"])
+        .arg(rustc_host())
+        .env("RUSTC_WRAPPER", &wrapper)
+        .env("OHM_DEFAULTS_LOG", &log)
+        .run();
+    let invocations = fs::read_to_string(&log).unwrap();
+    assert!(!invocations.contains("public-api-hash"));
+    assert!(!invocations.contains("cache-proc-macros"));
+
+    p.cargo("clean").run();
+    fs::write(&log, "").unwrap();
+    p.cargo("-Zohm-defaults check --target")
+        .masquerade_as_nightly_cargo(&["ohm-defaults"])
+        .arg(rustc_host())
+        .env("RUSTC_WRAPPER", &wrapper)
+        .env("OHM_DEFAULTS_LOG", &log)
+        .env("RUSTFLAGS", "-Zpublic-api-hash=no -Zcache-proc-macros=no")
+        .run();
+    let invocations = fs::read_to_string(&log).unwrap();
+    assert_eq!(
+        ohm_rustflags(&rustc_invocation(&invocations, "foo")),
+        [
+            "-Zpublic-api-hash",
+            "-Zcache-proc-macros",
+            "-Zpublic-api-hash=no",
+            "-Zcache-proc-macros=no",
+        ]
+    );
+
+    p.cargo("clean").run();
+    fs::write(&log, "").unwrap();
+    p.cargo("-Zohm-defaults rustc --lib -- -Zpublic-api-hash=no -Zcache-proc-macros=no")
+        .masquerade_as_nightly_cargo(&["ohm-defaults"])
+        .env("RUSTC_WRAPPER", &wrapper)
+        .env("OHM_DEFAULTS_LOG", &log)
+        .run();
+    assert_eq!(
+        ohm_rustflags(&rustc_invocation(&fs::read_to_string(&log).unwrap(), "foo",)),
+        [
+            "-Zpublic-api-hash",
+            "-Zcache-proc-macros",
+            "-Zpublic-api-hash=no",
+            "-Zcache-proc-macros=no",
+        ]
+    );
+
+    let subcommand = project()
+        .at("cargo-reinvoke")
+        .file("Cargo.toml", &basic_manifest("cargo-reinvoke", "0.1.0"))
+        .file(
+            "src/main.rs",
+            r#"
+                use std::env;
+                use std::process::{Command, exit};
+
+                fn main() {
+                    if let Ok(expected) = env::var("EXPECTED_INHERITED_RELINK_ONLY") {
+                        assert_eq!(
+                            env::var("__CARGO_RELINK_ONLY").as_deref(),
+                            Ok(expected.as_str())
+                        );
+                    }
+                    let status = Command::new(env::var_os("CARGO").expect("CARGO path"))
+                        .arg("check")
+                        .status()
+                        .expect("nested Cargo should run");
+                    exit(status.code().unwrap_or(1));
+                }
+            "#,
+        )
+        .build();
+    subcommand
+        .cargo("-Zohm-defaults=no build")
+        .masquerade_as_nightly_cargo(&["ohm-defaults"])
+        .run();
+    let mut path = env::split_paths(&env::var_os("PATH").unwrap_or_default()).collect::<Vec<_>>();
+    path.insert(0, subcommand.target_debug_dir());
+    let path = env::join_paths(path).unwrap();
+
+    p.cargo("clean").run();
+    fs::write(&log, "").unwrap();
+    p.cargo("-Zohm-defaults -Zrelink-only=no reinvoke")
+        .masquerade_as_nightly_cargo(&["ohm-defaults", "relink-only"])
+        .env("PATH", &path)
+        .env("EXPECTED_INHERITED_RELINK_ONLY", "no")
+        .env("RUSTC_WRAPPER", &wrapper)
+        .env("OHM_DEFAULTS_LOG", &log)
+        .run();
+    let invocations = fs::read_to_string(&log).unwrap();
+    let invocation = rustc_invocation(&invocations, "foo");
+    assert!(invocation.contains(&"-Zpublic-api-hash"));
+    assert!(invocation.contains(&"-Zcache-proc-macros"));
+
+    p.cargo("clean").run();
+    fs::write(&log, "").unwrap();
+    p.cargo("-Zohm-defaults=no reinvoke")
+        .masquerade_as_nightly_cargo(&["ohm-defaults"])
+        .env("PATH", &path)
+        .env("RUSTC_WRAPPER", &wrapper)
+        .env("OHM_DEFAULTS_LOG", &log)
+        .run();
+    let invocations = fs::read_to_string(&log).unwrap();
+    assert!(!invocations.contains("public-api-hash"));
+    assert!(!invocations.contains("cache-proc-macros"));
+}
+
+fn rustc_invocation<'a>(log: &'a str, crate_name: &str) -> Vec<&'a str> {
+    log.lines()
+        .map(|line| line.split('\t').collect::<Vec<_>>())
+        .find(|args| {
+            args.windows(2)
+                .any(|args| args == ["--crate-name", crate_name])
+        })
+        .unwrap_or_else(|| panic!("missing rustc invocation for {crate_name}"))
+}
+
+fn ohm_rustflags<'a>(invocation: &'a [&str]) -> Vec<&'a str> {
+    invocation
+        .iter()
+        .copied()
+        .filter(|flag| {
+            flag.starts_with("-Zpublic-api-hash") || flag.starts_with("-Zcache-proc-macros")
+        })
+        .collect()
+}
 
 #[cargo_test]
 fn env_rustflags_normal_source() {
