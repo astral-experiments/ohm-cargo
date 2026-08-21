@@ -86,10 +86,11 @@ pub use self::compile_kind::{CompileKind, CompileKindFallback, CompileTarget};
 pub use self::crate_type::CrateType;
 pub use self::custom_build::LinkArgTarget;
 pub use self::custom_build::{BuildOutput, BuildScriptOutputs, BuildScripts, LibraryPath};
+use self::fingerprint::BuildState;
 pub(crate) use self::fingerprint::DirtyReason;
 pub use self::fingerprint::RustdocFingerprint;
 pub use self::job_queue::Freshness;
-use self::job_queue::{Job, JobQueue, JobState, Work};
+use self::job_queue::{Job, JobQueue, JobState, PublicApiHash, Work};
 pub(crate) use self::layout::Layout;
 pub use self::lto::Lto;
 use self::output_depinfo::output_depinfo;
@@ -334,6 +335,8 @@ fn rustc(
         .unwrap_or_else(|| build_runner.bcx.gctx.cwd())
         .to_path_buf();
     let fingerprint_dir = build_runner.files().fingerprint_dir(unit);
+    let cached_output_path = build_runner.files().message_cache_path(unit);
+    let mut cached_output_options = OutputOptions::for_fresh(build_runner, unit);
     let script_metadatas = build_runner.find_build_script_metadatas(unit);
     let is_local = unit.is_local();
     let artifact = unit.artifact;
@@ -363,7 +366,80 @@ fn rustc(
         output_options.show_diagnostics = false;
     }
     let env_config = Arc::clone(build_runner.bcx.gctx.env_config()?);
+
+    let fingerprint = build_runner.fingerprints.get(unit).cloned();
+    let unit_name = format!("{} v{}", unit.pkg.name(), unit.pkg.version());
+    let can_skip_compilation = fingerprint::unit_can_use_early_cutoff(unit)
+        && fingerprint
+            .as_ref()
+            .is_some_and(|fingerprint| fingerprint.is_early_cutoff_candidate());
+
     return Ok(Work::new(move |state| {
+        if let Some(ref fp) = fingerprint {
+            tracing::info!(
+                "early cutoff check for {}: fs_status={:?}, outputs={:?}",
+                unit_name,
+                fp.fs_status(),
+                outputs
+                    .iter()
+                    .map(|o| (&o.path, o.path.exists()))
+                    .collect::<Vec<_>>()
+            );
+
+            if can_skip_compilation && fingerprint::can_skip_due_to_early_cutoff(fp) {
+                let mut essential_outputs = Vec::new();
+                for output in outputs.iter() {
+                    let is_dsym = output
+                        .path
+                        .to_str()
+                        .map(|s| s.ends_with(".dSYM"))
+                        .unwrap_or(false);
+                    if !is_dsym {
+                        essential_outputs.push(output);
+                    }
+                }
+                let all_outputs_exist = !essential_outputs.is_empty()
+                    && essential_outputs.iter().all(|o| o.path.exists());
+                if all_outputs_exist {
+                    replay_output_cache_inner(
+                        state,
+                        package_id,
+                        &manifest,
+                        &target,
+                        &cached_output_path,
+                        &mut cached_output_options,
+                    )?;
+
+                    // Touch output files to update their mtimes so future builds
+                    // don't see them as stale compared to rebuilt dependencies.
+                    let now = filetime::FileTime::now();
+                    for output in &essential_outputs {
+                        if let Err(e) = filetime::set_file_mtime(&output.path, now) {
+                            tracing::debug!(
+                                "early cutoff: failed to touch output {:?}: {}",
+                                output.path,
+                                e
+                            );
+                        }
+                    }
+                    tracing::info!(
+                        "early cutoff: skipping compilation of {} (all deps unchanged)",
+                        unit_name
+                    );
+                    fp.set_build_state(BuildState::SkippedEarlyCutoff);
+                    state.skipped_early_cutoff();
+                    return Ok(());
+                } else {
+                    tracing::info!(
+                        "early cutoff: cannot skip {} (outputs don't exist yet)",
+                        unit_name
+                    );
+                }
+            }
+        }
+
+        output_options.prepare_for_compiler();
+
         // Artifacts are in a different location than typical units,
         // hence we must assure the crate- and target-dependent
         // directory is present.
@@ -1046,6 +1122,8 @@ fn rustdoc(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResult<W
     }
 
     Ok(Work::new(move |state| {
+        output_options.prepare_for_compiler();
+
         add_custom_flags(
             &mut rustdoc,
             &build_script_outputs.lock().unwrap(),
@@ -2066,8 +2144,6 @@ struct OutputOptions {
 impl OutputOptions {
     fn for_dirty(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> OutputOptions {
         let path = build_runner.files().message_cache_path(unit);
-        // Remove old cache, ignore ENOENT, which is the common case.
-        drop(fs::remove_file(&path));
         let cache_cell = Some((path, OnceCell::new()));
 
         let show_diagnostics = true;
@@ -2080,6 +2156,17 @@ impl OutputOptions {
             show_diagnostics,
             warnings_seen: 0,
             errors_seen: 0,
+        }
+    }
+
+    /// Clears output from the previous invocation immediately before the compiler runs.
+    ///
+    /// Dirty units can still be reused by early cutoff, in which case their cached diagnostics
+    /// must remain available for replay.
+    fn prepare_for_compiler(&mut self) {
+        if let Some((path, _)) = &self.cache_cell {
+            // Ignore ENOENT, which is the common case.
+            drop(fs::remove_file(path));
         }
     }
 
@@ -2401,11 +2488,33 @@ fn on_stderr_line_inner(
     struct ArtifactNotification<'a> {
         #[serde(borrow)]
         artifact: Cow<'a, str>,
+        public_api_hash: Option<serde_json::Value>,
+    }
+
+    #[derive(serde::Deserialize)]
+    struct PublicApiHashNotification {
+        version: u32,
+        value: String,
     }
 
     if let Ok(artifact) = serde_json::from_str::<ArtifactNotification<'_>>(compiler_message.get()) {
         trace!("found directive from rustc: `{}`", artifact.artifact);
         if artifact.artifact.ends_with(".rmeta") {
+            if let Some(public_api_hash) = artifact.public_api_hash {
+                if let Ok(public_api_hash) =
+                    serde_json::from_value::<PublicApiHashNotification>(public_api_hash)
+                    && let Some(public_api_hash) =
+                        PublicApiHash::new(public_api_hash.version, &public_api_hash.value)
+                {
+                    state.public_api_hash_produced(public_api_hash);
+                } else {
+                    state.invalid_public_api_hash();
+                    debug!(
+                        "rustc reported invalid public API hash for `{}`; disabling early cutoff",
+                        artifact.artifact
+                    );
+                }
+            }
             debug!("looks like metadata finished early!");
             state.rmeta_produced();
         }
@@ -2614,34 +2723,45 @@ fn replay_output_cache(
 ) -> Work {
     let target = target.clone();
     Work::new(move |state| {
-        if !path.exists() {
-            // No cached output, probably didn't emit anything.
-            return Ok(());
-        }
-        // We sometimes have gigabytes of output from the compiler, so avoid
-        // loading it all into memory at once, as that can cause OOM where
-        // otherwise there would be none.
-        let file = paths::open(&path)?;
-        let mut reader = std::io::BufReader::new(file);
-        let mut line = String::new();
-        loop {
-            let length = reader.read_line(&mut line)?;
-            if length == 0 {
-                break;
-            }
-            let trimmed = line.trim_end_matches(&['\n', '\r'][..]);
-            on_stderr_line(
-                state,
-                trimmed,
-                package_id,
-                &manifest,
-                &target,
-                &mut output_options,
-            )?;
-            line.clear();
-        }
-        Ok(())
+        replay_output_cache_inner(
+            state,
+            package_id,
+            &manifest,
+            &target,
+            &path,
+            &mut output_options,
+        )
     })
+}
+
+fn replay_output_cache_inner(
+    state: &JobState<'_, '_>,
+    package_id: PackageId,
+    manifest: &ManifestErrorContext,
+    target: &Target,
+    path: &Path,
+    output_options: &mut OutputOptions,
+) -> CargoResult<()> {
+    if !path.exists() {
+        // No cached output, probably didn't emit anything.
+        return Ok(());
+    }
+    // We sometimes have gigabytes of output from the compiler, so avoid
+    // loading it all into memory at once, as that can cause OOM where
+    // otherwise there would be none.
+    let file = paths::open(path)?;
+    let mut reader = std::io::BufReader::new(file);
+    let mut line = String::new();
+    loop {
+        let length = reader.read_line(&mut line)?;
+        if length == 0 {
+            break;
+        }
+        let trimmed = line.trim_end_matches(&['\n', '\r'][..]);
+        on_stderr_line(state, trimmed, package_id, manifest, target, output_options)?;
+        line.clear();
+    }
+    Ok(())
 }
 
 /// Provides a package name with descriptive target information,
