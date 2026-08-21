@@ -39,6 +39,7 @@ use crate::util::GlobalContext;
 use crate::util::Unhashed;
 use crate::util::interning::InternedString;
 use crate::workspace::dependency::{Artifact, ArtifactKind, ArtifactTarget, DepKind};
+use crate::workspace::features::OhmProcMacroTrust;
 use crate::workspace::profiles::{Profile, Profiles, UnitFor};
 use crate::workspace::{
     Dependency, Feature, Package, PackageId, PackageSet, SourceId, Target, TargetKind, Workspace,
@@ -1286,14 +1287,23 @@ impl<'a, 'gctx> State<'a, 'gctx> {
     /// source identities match both the resolved and downloaded checksums.
     fn proc_macro_is_audited(&self, unit: &Unit) -> bool {
         let package_id = unit.pkg.package_id();
-        self.audited_registry_package_checksum(unit)
-            .is_some_and(|checksum| {
-                audited_proc_macro_checksum(
-                    package_id.name().as_str(),
-                    package_id.version(),
-                    checksum,
-                )
-            })
+        let sources = self.package_set.sources();
+        let Some(source) = sources.get(package_id.source_id()) else {
+            return false;
+        };
+        audited_proc_macro_package_identity(
+            package_id.source_id(),
+            source.is_replaced(),
+            package_id.name().as_str(),
+            package_id.version(),
+            self.resolve()
+                .checksums()
+                .get(&package_id)
+                .and_then(Option::as_deref),
+            unit.pkg.summary().checksum(),
+            true,
+            OhmProcMacroTrust::Audited,
+        )
     }
 
     /// Authenticate every ordinary library linked into an audited macro.
@@ -1314,16 +1324,6 @@ impl<'a, 'gctx> State<'a, 'gctx> {
                 .and_then(Option::as_deref),
             unit.pkg.summary().checksum(),
         )
-    }
-
-    /// Require the downloaded package identity to agree with its lockfile.
-    fn audited_registry_package_checksum(&self, unit: &Unit) -> Option<&str> {
-        let checksum = self
-            .resolve()
-            .checksums()
-            .get(&unit.pkg.package_id())?
-            .as_deref()?;
-        (unit.pkg.summary().checksum() == Some(checksum)).then_some(checksum)
     }
 
     /// Traverse the same active dependency edges as unit-graph construction,
@@ -1525,10 +1525,42 @@ fn audited_proc_macro_runtime_dependency_identity(
     resolved_checksum: Option<&str>,
     downloaded_checksum: Option<&str>,
 ) -> bool {
+    audited_proc_macro_package_identity(
+        source_id,
+        source_is_replaced,
+        name,
+        version,
+        resolved_checksum,
+        downloaded_checksum,
+        false,
+        OhmProcMacroTrust::Audited,
+    )
+}
+
+/// Authenticate an exact canonical registry package against both actual checksum sources.
+///
+/// Procedural macros and the ordinary libraries linked into them use separate audited
+/// allowlists by default. An explicit permissive policy bypasses those allowlists, but both
+/// policies always enforce the same immutable-source and lockfile identity rules.
+pub(crate) fn audited_proc_macro_package_identity(
+    source_id: SourceId,
+    source_is_replaced: bool,
+    name: &str,
+    version: &semver::Version,
+    resolved_checksum: Option<&str>,
+    downloaded_checksum: Option<&str>,
+    is_proc_macro: bool,
+    trust: OhmProcMacroTrust,
+) -> bool {
     is_canonical_unreplaced_crates_io(source_id, source_is_replaced)
         && resolved_checksum.is_some_and(|checksum| {
             downloaded_checksum == Some(checksum)
-                && audited_proc_macro_runtime_dependency_checksum(name, version, checksum)
+                && (trust == OhmProcMacroTrust::All
+                    || if is_proc_macro {
+                        audited_proc_macro_checksum(name, version, checksum)
+                    } else {
+                        audited_proc_macro_runtime_dependency_checksum(name, version, checksum)
+                    })
         })
 }
 
@@ -1687,10 +1719,12 @@ fn audited_proc_macro_runtime_dependency_checksum(
 #[cfg(test)]
 mod audited_proc_macro_tests {
     use super::{
-        audited_proc_macro_checksum, audited_proc_macro_runtime_dependency_checksum,
+        audited_proc_macro_checksum, audited_proc_macro_package_identity,
+        audited_proc_macro_runtime_dependency_checksum,
         audited_proc_macro_runtime_dependency_identity, is_canonical_unreplaced_crates_io,
     };
     use crate::workspace::SourceId;
+    use crate::workspace::features::OhmProcMacroTrust;
 
     #[test]
     fn only_the_exact_audited_release_and_checksum_are_trusted() {
@@ -1771,6 +1805,149 @@ mod audited_proc_macro_tests {
             &semver::Version::new(1, 0, 229),
             "unaudited-checksum",
         ));
+    }
+
+    #[test]
+    fn shared_registry_macro_identities_require_canonical_matching_checksums() {
+        let source = SourceId::from_url("registry+https://github.com/rust-lang/crates.io-index")
+            .expect("canonical registry source");
+
+        for (name, version, checksum) in [
+            (
+                "bytecheck_derive",
+                semver::Version::new(0, 8, 2),
+                "89385e82b5d1821d2219e0b095efa2cc1f246cbf99080f3be46a1a85c0d392d9",
+            ),
+            (
+                "munge_macro",
+                semver::Version::new(0, 4, 7),
+                "4568f25ccbd45ab5d5603dc34318c1ec56b117531781260002151b8530a9f931",
+            ),
+            (
+                "ptr_meta_derive",
+                semver::Version::new(0, 3, 1),
+                "7347867d0a7e1208d93b46767be83e2b8f978c3dad35f775ac8d8847551d6fe1",
+            ),
+            (
+                "rkyv_derive",
+                semver::Version::new(0, 8, 17),
+                "c0ed1a78a1b19d184b0daa629dd9a024573173ec7d485b287cb369fb3607cc1c",
+            ),
+        ] {
+            assert!(audited_proc_macro_package_identity(
+                source,
+                false,
+                name,
+                &version,
+                Some(checksum),
+                Some(checksum),
+                true,
+                OhmProcMacroTrust::Audited,
+            ));
+            assert!(!audited_proc_macro_package_identity(
+                source,
+                true,
+                name,
+                &version,
+                Some(checksum),
+                Some(checksum),
+                true,
+                OhmProcMacroTrust::Audited,
+            ));
+            assert!(!audited_proc_macro_package_identity(
+                source,
+                false,
+                name,
+                &version,
+                Some(checksum),
+                Some("unaudited-download"),
+                true,
+                OhmProcMacroTrust::Audited,
+            ));
+            assert!(!audited_proc_macro_package_identity(
+                source,
+                false,
+                name,
+                &version,
+                None,
+                Some(checksum),
+                true,
+                OhmProcMacroTrust::Audited,
+            ));
+            assert!(!audited_proc_macro_package_identity(
+                source,
+                false,
+                name,
+                &version,
+                Some(checksum),
+                Some(checksum),
+                false,
+                OhmProcMacroTrust::Audited,
+            ));
+        }
+    }
+
+    #[test]
+    fn permissive_macro_trust_still_requires_canonical_matching_checksums() {
+        let canonical = SourceId::from_url("registry+https://github.com/rust-lang/crates.io-index")
+            .expect("canonical registry source");
+        let alternative = SourceId::from_url("registry+file:///tmp/alternative-registry")
+            .expect("alternate registry source");
+
+        for (name, version, checksum, is_proc_macro) in [
+            (
+                "clap_derive",
+                semver::Version::new(4, 6, 4),
+                "d012d2b9d65aca7f18f4d9878a045bc17899bba951561ba5ec3c2ba1eed9a061",
+                true,
+            ),
+            (
+                "heck",
+                semver::Version::new(0, 5, 0),
+                "2304e00983f87ffb38b55b444b5e3b60a884b5d30c0fca7d82fe33449bbe55ea",
+                false,
+            ),
+        ] {
+            assert!(!audited_proc_macro_package_identity(
+                canonical,
+                false,
+                name,
+                &version,
+                Some(checksum),
+                Some(checksum),
+                is_proc_macro,
+                OhmProcMacroTrust::Audited,
+            ));
+            assert!(audited_proc_macro_package_identity(
+                canonical,
+                false,
+                name,
+                &version,
+                Some(checksum),
+                Some(checksum),
+                is_proc_macro,
+                OhmProcMacroTrust::All,
+            ));
+
+            for (source, replaced, resolved, downloaded) in [
+                (canonical, true, Some(checksum), Some(checksum)),
+                (alternative, false, Some(checksum), Some(checksum)),
+                (canonical, false, None, Some(checksum)),
+                (canonical, false, Some(checksum), None),
+                (canonical, false, Some(checksum), Some("different-checksum")),
+            ] {
+                assert!(!audited_proc_macro_package_identity(
+                    source,
+                    replaced,
+                    name,
+                    &version,
+                    resolved,
+                    downloaded,
+                    is_proc_macro,
+                    OhmProcMacroTrust::All,
+                ));
+            }
+        }
     }
 
     #[test]
