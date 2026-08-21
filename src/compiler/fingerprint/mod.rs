@@ -781,7 +781,9 @@ pub fn can_skip_unused_integration_dependency(
     let mut found_unused_change = false;
     for dependency in &fingerprint.deps {
         match dependency.fingerprint.build_state() {
-            BuildState::BuiltUnchanged if dependency.fingerprint.index == unused_dependency => {
+            BuildState::BuiltUnchanged | BuildState::BuiltChanged
+                if dependency.fingerprint.index == unused_dependency =>
+            {
                 found_unused_change = true;
             }
             BuildState::Fresh => {}
@@ -793,6 +795,40 @@ pub fn can_skip_unused_integration_dependency(
     }
 
     found_unused_change
+}
+
+/// Accepts only dependency changes proven absent from an integration executable.
+///
+/// `SkippedEarlyCutoff` units retain their previous artifact, but are accepted
+/// only when that direct dependency was independently proven unused and absent
+/// from every linked transitive dependency.
+pub fn can_skip_unused_workspace_integration_dependencies(
+    fingerprint: &Fingerprint,
+    unused_dependencies: &HashSet<UnitIndex>,
+) -> bool {
+    if !fingerprint.is_early_cutoff_candidate() {
+        return false;
+    }
+
+    let mut found_rebuilt_unused = false;
+    for dependency in &fingerprint.deps {
+        match dependency.fingerprint.build_state() {
+            BuildState::BuiltUnchanged
+                if unused_dependencies.contains(&dependency.fingerprint.index) =>
+            {
+                found_rebuilt_unused = true;
+            }
+            BuildState::SkippedEarlyCutoff
+                if unused_dependencies.contains(&dependency.fingerprint.index) => {}
+            BuildState::Fresh => {}
+            BuildState::Pending
+            | BuildState::BuiltChanged
+            | BuildState::BuiltUnchanged
+            | BuildState::SkippedEarlyCutoff => return false,
+        }
+    }
+
+    found_rebuilt_unused
 }
 
 /// Checks whether a dependency-only rebuild can reuse this unit's codegen and
@@ -3239,6 +3275,71 @@ mod early_cutoff_tests {
         assert!(!can_relink_due_to_early_cutoff(
             &fingerprint,
             &HashSet::default(),
+        ));
+    }
+
+    #[test]
+    fn unused_workspace_dependency_with_skipped_unused_root_can_skip() {
+        let mut fingerprint = make_stale_due_to_dep();
+        fingerprint
+            .deps
+            .push(make_dep_fingerprint(make_indexed_fingerprint(
+                UnitIndex(1),
+                FsStatus::Stale,
+                BuildState::BuiltUnchanged,
+            )));
+        fingerprint
+            .deps
+            .push(make_dep_fingerprint(make_indexed_fingerprint(
+                UnitIndex(2),
+                FsStatus::Stale,
+                BuildState::SkippedEarlyCutoff,
+            )));
+
+        assert!(can_skip_unused_workspace_integration_dependencies(
+            &fingerprint,
+            &HashSet::from_iter([UnitIndex(1), UnitIndex(2)]),
+        ));
+    }
+
+    #[test]
+    fn changed_workspace_dependency_cannot_skip_unused_integration_target() {
+        let mut fingerprint = make_stale_due_to_dep();
+        fingerprint
+            .deps
+            .push(make_dep_fingerprint(make_indexed_fingerprint(
+                UnitIndex(1),
+                FsStatus::Stale,
+                BuildState::BuiltChanged,
+            )));
+
+        assert!(!can_skip_unused_workspace_integration_dependencies(
+            &fingerprint,
+            &HashSet::from_iter([UnitIndex(1)]),
+        ));
+    }
+
+    #[test]
+    fn unproven_skipped_workspace_dependency_cannot_skip_integration_target() {
+        let mut fingerprint = make_stale_due_to_dep();
+        fingerprint
+            .deps
+            .push(make_dep_fingerprint(make_indexed_fingerprint(
+                UnitIndex(1),
+                FsStatus::Stale,
+                BuildState::BuiltUnchanged,
+            )));
+        fingerprint
+            .deps
+            .push(make_dep_fingerprint(make_indexed_fingerprint(
+                UnitIndex(2),
+                FsStatus::Stale,
+                BuildState::SkippedEarlyCutoff,
+            )));
+
+        assert!(!can_skip_unused_workspace_integration_dependencies(
+            &fingerprint,
+            &HashSet::from_iter([UnitIndex(1)]),
         ));
     }
 
