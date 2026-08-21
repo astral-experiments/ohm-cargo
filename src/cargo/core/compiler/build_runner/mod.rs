@@ -50,6 +50,12 @@ pub use self::compilation_files::{Metadata, OutputFile, UnitHash};
 #[error("an existing registry build artifact is missing or stale")]
 pub(crate) struct StaleBuiltRegistryDependency {
     pub(crate) packages: HashSet<PackageId>,
+    pub(crate) ordinary_check_might_exist: bool,
+}
+
+#[derive(Deserialize)]
+struct ExistingFingerprintProfile {
+    profile: u64,
 }
 
 /// Additional facts needed to safely reuse an ordinary build as a check.
@@ -509,6 +515,178 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
         Ok(self.compilation)
     }
 
+    /// Conservatively checks whether every root has an existing same-profile check.
+    ///
+    /// A speculative graph changes dependency metadata and therefore the root's
+    /// fingerprint directory. Scan only siblings in the locked workspace/profile
+    /// namespace; ambiguous entries retain the complete ordinary graph probe.
+    fn ordinary_check_might_exist(&self) -> bool {
+        self.bcx.roots.iter().all(|unit| {
+            if !unit.mode.is_check() {
+                return true;
+            }
+
+            let fingerprint = self.files().fingerprint_file_path(unit, "");
+            let Some(filename) = fingerprint.file_name() else {
+                return true;
+            };
+            let Some(directory) = fingerprint.parent() else {
+                return true;
+            };
+            let new_layout = self.bcx.gctx.cli_unstable().build_dir_new_layout;
+            let search_directory = if new_layout {
+                directory.parent().and_then(Path::parent)
+            } else {
+                directory.parent()
+            };
+            let Some(search_directory) = search_directory else {
+                return true;
+            };
+            let entries = match std::fs::read_dir(search_directory) {
+                Ok(entries) => entries,
+                Err(error) if error.kind() == std::io::ErrorKind::NotFound => return false,
+                Err(_) => return true,
+            };
+            let prefix = format!("{}-", unit.pkg.package_id().name());
+            let expected_profile = fingerprint::unit_profile_hash(self, unit);
+
+            for entry in entries {
+                let Ok(entry) = entry else {
+                    return true;
+                };
+                if !new_layout && !entry.file_name().to_string_lossy().starts_with(&prefix) {
+                    continue;
+                }
+                match entry.file_type() {
+                    Ok(kind) if kind.is_dir() => {}
+                    Ok(kind) if kind.is_symlink() => return true,
+                    Ok(_) => continue,
+                    Err(_) => return true,
+                }
+
+                let candidate = if new_layout {
+                    entry.path().join("fingerprint").join(filename)
+                } else {
+                    entry.path().join(filename)
+                };
+                match std::fs::symlink_metadata(&candidate) {
+                    Ok(metadata) if metadata.is_file() => {}
+                    Ok(_) => return true,
+                    Err(error) if error.kind() == std::io::ErrorKind::NotFound => continue,
+                    Err(_) => return true,
+                }
+
+                let json = candidate.with_extension("json");
+                match std::fs::symlink_metadata(&json) {
+                    Ok(metadata) if metadata.is_file() => {}
+                    Ok(_) => return true,
+                    Err(_) => return true,
+                }
+                let Ok(contents) = std::fs::read(json) else {
+                    return true;
+                };
+                let Ok(existing) = serde_json::from_slice::<ExistingFingerprintProfile>(&contents)
+                else {
+                    return true;
+                };
+                if existing.profile == expected_profile {
+                    return true;
+                }
+            }
+
+            false
+        })
+    }
+
+    /// Compiles an established ordinary check graph when it can still be reused.
+    ///
+    /// Keep the package-cache and workspace locks held while validating fingerprints and
+    /// executing the selected graph. Consuming the runner also releases its workspace locks
+    /// before an alternative graph is prepared when this graph cannot be reused.
+    #[tracing::instrument(name = "compile", skip_all)]
+    pub(crate) fn compile_if_check_graph_is_reusable(
+        mut self,
+        exec: &Arc<dyn Executor>,
+    ) -> CargoResult<Option<Compilation<'gctx>>> {
+        if !matches!(self.bcx.build_config.intent, UserIntent::Check { .. })
+            || self.bcx.build_config.force_rebuild
+            || self.bcx.roots.is_empty()
+        {
+            return Ok(None);
+        }
+
+        let global_context = self.bcx.gctx;
+        let _lock = global_context.acquire_package_cache_lock(CacheLockMode::Shared)?;
+        let queue = JobQueue::new(self.bcx);
+        self.lto = super::lto::generate(self.bcx)?;
+        self.prepare_units()?;
+
+        if self.bcx.roots.iter().any(|unit| {
+            !unit.mode.is_check() || !self.files().fingerprint_file_path(unit, "").is_file()
+        }) {
+            return Ok(None);
+        }
+
+        self.prepare()?;
+        custom_build::build_map(&mut self)?;
+
+        let fine_grain_locking = self.bcx.gctx.cli_unstable().fine_grain_locking;
+        let workspace_is_locked = self
+            .files()
+            .layout(CompileKind::Host)
+            .build_dir()
+            .has_workspace_lock();
+        if fine_grain_locking && !workspace_is_locked {
+            let mut roots = self.bcx.roots.clone();
+            roots.sort_by_cached_key(|unit| self.files().build_unit_lock(unit));
+            for unit in roots {
+                self.lock_manager.lock_shared(&self, &unit)?;
+            }
+        }
+
+        let mut workspace_changed = false;
+        for unit in self.bcx.roots.clone() {
+            match fingerprint::existing_check_root(&mut self, &unit)? {
+                Some(fingerprint::ExistingCheckRoot::Fresh) => {}
+                Some(fingerprint::ExistingCheckRoot::WorkspaceChanged) => workspace_changed = true,
+                None => return Ok(None),
+            }
+        }
+
+        if workspace_changed {
+            let mut registry_check_units = self
+                .bcx
+                .unit_graph
+                .keys()
+                .filter(|unit| {
+                    unit.mode.is_check() && unit.pkg.package_id().source_id().is_remote_registry()
+                })
+                .cloned()
+                .collect::<Vec<_>>();
+            if fine_grain_locking
+                && (!workspace_is_locked
+                    || registry_check_units
+                        .iter()
+                        .any(|unit| self.files().is_shared_registry_unit(unit)))
+            {
+                registry_check_units.sort_by_cached_key(|unit| self.files().build_unit_lock(unit));
+            }
+
+            for unit in registry_check_units {
+                if fine_grain_locking
+                    && (!workspace_is_locked || self.files().is_shared_registry_unit(&unit))
+                {
+                    self.lock_manager.lock_shared(&self, &unit)?;
+                }
+                if !fingerprint::existing_unit_is_fresh(&mut self, &unit)? {
+                    return Ok(None);
+                }
+            }
+        }
+
+        self.compile_prepared(exec, queue).map(Some)
+    }
+
     /// Starts compilation, waits for it to finish, and returns information
     /// about the result of compilation.
     ///
@@ -520,19 +698,29 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
         // A shared lock is held during the duration of the build since rustc
         // needs to read from the `src` cache, and we don't want other
         // commands modifying the `src` cache while it is running.
-        let _lock = self
-            .bcx
-            .gctx
-            .acquire_package_cache_lock(CacheLockMode::Shared)?;
-        let mut queue = JobQueue::new(self.bcx);
+        let global_context = self.bcx.gctx;
+        let _lock = global_context.acquire_package_cache_lock(CacheLockMode::Shared)?;
+        let queue = JobQueue::new(self.bcx);
         self.lto = super::lto::generate(self.bcx)?;
         self.prepare_units()?;
         self.prepare()?;
         custom_build::build_map(&mut self)?;
+        self.compile_prepared(exec, queue)
+    }
+
+    /// Executes a graph after its layouts, fingerprints, and build scripts are prepared.
+    ///
+    /// Both callers retain the package-cache lock for this method's entire execution.
+    fn compile_prepared(
+        mut self,
+        exec: &Arc<dyn Executor>,
+        mut queue: JobQueue<'gctx>,
+    ) -> CargoResult<Compilation<'gctx>> {
         let stale_registry_packages = self.stale_reused_registry_dependencies()?;
         if !stale_registry_packages.is_empty() {
             return Err(StaleBuiltRegistryDependency {
                 packages: stale_registry_packages,
+                ordinary_check_might_exist: self.ordinary_check_might_exist(),
             }
             .into());
         }
