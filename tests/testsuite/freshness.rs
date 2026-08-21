@@ -4726,6 +4726,13 @@ fn relink_only_reuses_root_codegen() {
         !executable.with_extension("fake.rcgu.o").exists(),
         "cached relink objects must not remain in the dependency search directory"
     );
+    let saved_args = fs::read_to_string(executable.with_extension("relink-args")).unwrap();
+    assert!(
+        !saved_args
+            .lines()
+            .any(|argument| argument == "save-temps=yes"),
+        "cached relinking must not force unrelated compiler temporaries"
+    );
 
     fs::write(&log, "").unwrap();
     sleep_ms(1000);
