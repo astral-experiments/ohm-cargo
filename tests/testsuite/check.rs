@@ -1,6 +1,8 @@
 //! Tests for the `cargo check` command.
 
 use std::fmt::{self, Write};
+use std::io::{BufRead, BufReader, Read};
+use std::process::Stdio;
 
 use crate::prelude::*;
 use crate::utils::tools;
@@ -346,6 +348,472 @@ fn ohm_reuses_compatible_test_built_registry_dependencies_when_features_change()
         .with_stderr_does_not_contain("[CHECKING] stable-leaf v1.0.0")
         .with_stderr_does_not_contain("[CHECKING] stable-middle v1.0.0")
         .run();
+}
+
+#[cargo_test]
+fn ohm_preserves_fresh_checks_when_test_registry_features_change() {
+    Package::new("stable", "1.0.0")
+        .file("src/lib.rs", "pub fn value() -> u32 { 19 }")
+        .publish();
+    Package::new("changing", "1.0.0")
+        .feature("development", &[])
+        .file("src/lib.rs", "pub fn value() -> u32 { 23 }")
+        .publish();
+
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "foo"
+                version = "0.0.1"
+                edition = "2021"
+
+                [dependencies]
+                changing = "1.0.0"
+                stable = "1.0.0"
+
+                [dev-dependencies]
+                changing = { version = "1.0.0", features = ["development"] }
+            "#,
+        )
+        .file(
+            "src/lib.rs",
+            "pub fn value() -> u32 { changing::value() + stable::value() }",
+        )
+        .build();
+
+    p.cargo("-Zohm-reuse-built-deps check")
+        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
+        .run();
+    p.cargo("test --no-run").run();
+
+    p.cargo("-Zohm-reuse-built-deps check -v")
+        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
+        .env("CARGO_LOG_PROFILE", "true")
+        .with_stderr_contains("[FRESH] stable v1.0.0")
+        .with_stderr_contains("[FRESH] changing v1.0.0")
+        .with_stderr_contains("[FRESH] foo v0.0.1 ([ROOT]/foo)")
+        .with_stderr_does_not_contain("[CHECKING]")
+        .run();
+
+    let trace = p
+        .glob("trace-*.json")
+        .next()
+        .expect("Cargo recorded its compilation trace")
+        .expect("compilation trace exists");
+    let events = serde_json::from_slice::<Vec<serde_json::Value>>(
+        &std::fs::read(trace).expect("read the compilation trace"),
+    )
+    .expect("parse the compilation trace");
+    let compile_spans = events
+        .iter()
+        .filter(|event| {
+            event["name"] == "compile"
+                && event["cat"] == "cargo::core::compiler::build_runner"
+                && event["ph"] == "B"
+        })
+        .count();
+    assert_eq!(
+        compile_spans, 2,
+        "both the speculative and selected graphs retain their compilation spans",
+    );
+}
+
+#[cargo_test]
+fn ohm_preserves_fresh_checks_while_holding_shared_workspace_locks() {
+    if !ohm_compiler_supports_defaults() {
+        return;
+    }
+
+    Package::new("stable", "1.0.0")
+        .file("src/lib.rs", "pub fn value() -> u32 { 19 }")
+        .publish();
+    Package::new("changing", "1.0.0")
+        .feature("development", &[])
+        .file("src/lib.rs", "pub fn value() -> u32 { 23 }")
+        .publish();
+
+    let project = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "foo"
+                version = "0.0.1"
+                edition = "2021"
+
+                [dependencies]
+                changing = "1.0.0"
+                stable = "1.0.0"
+
+                [dev-dependencies]
+                changing = { version = "1.0.0", features = ["development"] }
+            "#,
+        )
+        .file(
+            "src/lib.rs",
+            "pub fn value() -> u32 { changing::value() + stable::value() }",
+        )
+        .build();
+    let build_directory = project.root().join("shared-build");
+
+    for command in ["check", "test --no-run"] {
+        project
+            .cargo(command)
+            .masquerade_as_nightly_cargo(&["ohm-defaults"])
+            .env("__CARGO_OHM_DEFAULTS", "yes")
+            .env("CARGO_BUILD_BUILD_DIR", &build_directory)
+            .run();
+    }
+
+    project
+        .cargo("check -v")
+        .masquerade_as_nightly_cargo(&["ohm-defaults"])
+        .env("__CARGO_OHM_DEFAULTS", "yes")
+        .env("CARGO_BUILD_BUILD_DIR", &build_directory)
+        .with_stderr_contains("[FRESH] stable v1.0.0")
+        .with_stderr_contains("[FRESH] changing v1.0.0")
+        .with_stderr_contains("[FRESH] foo v0.0.1 ([ROOT]/foo)")
+        .with_stderr_does_not_contain("[CHECKING]")
+        .run();
+}
+
+#[cargo_test]
+fn ohm_skips_cold_ordinary_check_graphs_after_test_builds() {
+    Package::new("stable", "1.0.0")
+        .file("src/lib.rs", "pub fn value() -> u32 { 19 }")
+        .publish();
+    Package::new("changing", "1.0.0")
+        .feature("development", &[])
+        .file("src/lib.rs", "pub fn value() -> u32 { 23 }")
+        .publish();
+
+    let project = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "foo"
+                version = "0.0.1"
+                edition = "2021"
+
+                [dependencies]
+                changing = "1.0.0"
+                stable = "1.0.0"
+
+                [dev-dependencies]
+                changing = { version = "1.0.0", features = ["development"] }
+            "#,
+        )
+        .file(
+            "src/lib.rs",
+            "pub fn value() -> u32 { changing::value() + stable::value() }",
+        )
+        .build();
+
+    project.cargo("test --no-run").run();
+
+    let output = project
+        .cargo("-Zohm-reuse-built-deps check -v")
+        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
+        .env("RUST_FLAGS", "ignored")
+        .with_stderr_contains("[CHECKING] changing v1.0.0")
+        .with_stderr_contains("[CHECKING] foo v0.0.1 ([ROOT]/foo)")
+        .run();
+    let stderr = String::from_utf8(output.stderr).expect("Cargo diagnostics use UTF-8");
+
+    assert_eq!(
+        stderr
+            .matches("ignoring environment variable `RUST_FLAGS`")
+            .count(),
+        2,
+        "a cold check should prepare only its initial and selective fallback graphs: {stderr}",
+    );
+}
+
+#[cargo_test]
+fn ohm_preserves_established_check_graph_after_editing_the_root() {
+    Package::new("stable", "1.0.0")
+        .file("src/lib.rs", "pub fn value() -> u32 { 19 }")
+        .publish();
+    Package::new("changing", "1.0.0")
+        .feature("development", &[])
+        .file("src/lib.rs", "pub fn value() -> u32 { 23 }")
+        .publish();
+
+    let project = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "foo"
+                version = "0.0.1"
+                edition = "2021"
+
+                [dependencies]
+                changing = "1.0.0"
+                helper = { path = "helper" }
+
+                [dev-dependencies]
+                changing = { version = "1.0.0", features = ["development"] }
+            "#,
+        )
+        .file(
+            "src/lib.rs",
+            "pub fn value() -> u32 { changing::value() + helper::value() }",
+        )
+        .file(
+            "helper/Cargo.toml",
+            r#"
+                [package]
+                name = "helper"
+                version = "0.0.1"
+                edition = "2021"
+
+                [dependencies]
+                stable = "1.0.0"
+            "#,
+        )
+        .file(
+            "helper/src/lib.rs",
+            "pub fn value() -> u32 { stable::value() }",
+        )
+        .build();
+
+    project
+        .cargo("-Zohm-reuse-built-deps check")
+        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
+        .run();
+    project.cargo("test --no-run").run();
+    project.change_file(
+        "src/lib.rs",
+        "pub fn value() -> u32 { changing::value() + helper::value() + 1 }",
+    );
+
+    project
+        .cargo("-Zohm-reuse-built-deps check -v")
+        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
+        .with_stderr_contains("[FRESH] stable v1.0.0")
+        .with_stderr_contains("[FRESH] changing v1.0.0")
+        .with_stderr_contains("[FRESH] helper v0.0.1 ([ROOT]/foo/helper)")
+        .with_stderr_contains("[CHECKING] foo v0.0.1 ([ROOT]/foo)")
+        .with_stderr_does_not_contain("[CHECKING] stable")
+        .with_stderr_does_not_contain("[CHECKING] changing")
+        .with_stderr_does_not_contain("[CHECKING] helper")
+        .run();
+
+    project.cargo("test --no-run").run();
+    project.change_file(
+        "helper/src/lib.rs",
+        "pub fn value() -> u32 { stable::value() + 1 }",
+    );
+    project.change_file(
+        "src/lib.rs",
+        "pub fn value() -> u32 { changing::value() + helper::value() + 2 }",
+    );
+
+    project
+        .cargo("-Zohm-reuse-built-deps check -v")
+        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
+        .with_stderr_contains("[FRESH] stable v1.0.0")
+        .with_stderr_contains("[FRESH] changing v1.0.0")
+        .with_stderr_contains("[CHECKING] helper v0.0.1 ([ROOT]/foo/helper)")
+        .with_stderr_contains("[CHECKING] foo v0.0.1 ([ROOT]/foo)")
+        .with_stderr_does_not_contain("[CHECKING] stable")
+        .with_stderr_does_not_contain("[CHECKING] changing")
+        .run();
+
+    project.cargo("test --no-run").run();
+    let mut removed_registry_metadata = false;
+    for artifact in project.glob("target/debug/deps/libchanging-*.rmeta") {
+        let artifact = artifact.expect("existing registry metadata path");
+        std::fs::remove_file(artifact).expect("remove only this fixture's registry metadata");
+        removed_registry_metadata = true;
+    }
+    assert!(removed_registry_metadata);
+    project.change_file(
+        "src/lib.rs",
+        "pub fn value() -> u32 { changing::value() + helper::value() + 3 }",
+    );
+
+    project
+        .cargo("-Zohm-reuse-built-deps check -v")
+        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
+        .with_stderr_contains("[CHECKING] changing v1.0.0")
+        .with_stderr_contains("[CHECKING] foo v0.0.1 ([ROOT]/foo)")
+        .run();
+}
+
+#[cargo_test]
+fn ohm_locks_fingerprints_before_preserving_established_check_graphs() {
+    Package::new("stable", "1.0.0")
+        .file("src/lib.rs", "pub fn value() -> u32 { 19 }")
+        .publish();
+    Package::new("changing", "1.0.0")
+        .feature("development", &[])
+        .file("src/lib.rs", "pub fn value() -> u32 { 23 }")
+        .publish();
+
+    for lock_shared_registry in [false, true] {
+        let worktree = if lock_shared_registry {
+            "shared-registry-fingerprint-lock"
+        } else {
+            "workspace-root-fingerprint-lock"
+        };
+        let project = project_in(worktree)
+            .file(
+                "Cargo.toml",
+                r#"
+                    [package]
+                    name = "foo"
+                    version = "0.0.1"
+                    edition = "2021"
+
+                    [dependencies]
+                    changing = "1.0.0"
+                    stable = "1.0.0"
+
+                    [dev-dependencies]
+                    changing = { version = "1.0.0", features = ["development"] }
+                "#,
+            )
+            .file(
+                "src/lib.rs",
+                "pub fn value() -> u32 { changing::value() + stable::value() }",
+            )
+            .build();
+        let build_directory = project.root().join("shared-build");
+        let locking_flag = if lock_shared_registry {
+            "-Zohm-shared-registry-cache"
+        } else {
+            "-Zfine-grain-locking"
+        };
+
+        for command in ["-Zohm-reuse-built-deps check", "test --no-run"] {
+            let mut cargo = crate::build_dir::shared_registry_cargo(
+                &project,
+                &format!("{locking_flag} {command}"),
+            );
+            cargo.masquerade_as_nightly_cargo(&[
+                "fine-grain-locking",
+                "ohm-shared-registry-cache",
+                "ohm-reuse-built-deps",
+            ]);
+            if lock_shared_registry {
+                cargo.env("CARGO_BUILD_BUILD_DIR", &build_directory);
+            }
+            cargo.run();
+        }
+
+        project.change_file(
+            "src/lib.rs",
+            "pub fn value() -> u32 { changing::value() + stable::value() + 1 }",
+        );
+
+        let fingerprint_pattern = if lock_shared_registry {
+            "shared-build/debug/build/registries/*/changing/*/fingerprint/lib-changing"
+        } else {
+            "target/debug/build/foo/*/fingerprint/lib-foo"
+        };
+        let fingerprint = project
+            .glob(fingerprint_pattern)
+            .filter_map(Result::ok)
+            .find(|fingerprint| {
+                let Some(directory) = fingerprint.parent().and_then(|path| path.parent()) else {
+                    return false;
+                };
+                std::fs::read_dir(directory.join("out"))
+                    .ok()
+                    .is_some_and(|entries| {
+                        !entries.filter_map(Result::ok).any(|entry| {
+                            entry
+                                .path()
+                                .extension()
+                                .and_then(|extension| extension.to_str())
+                                == Some("rlib")
+                        })
+                    })
+            })
+            .expect("ordinary check fingerprint should exist");
+        let lock_path = fingerprint
+            .parent()
+            .and_then(|directory| directory.parent())
+            .expect("fingerprint should have a unit directory")
+            .join(".lock");
+        let lock = std::fs::File::options()
+            .read(true)
+            .write(true)
+            .open(&lock_path)
+            .expect("unit lock should exist");
+        lock.lock()
+            .expect("fixture should acquire the unit lock exclusively");
+
+        let original_fingerprint =
+            std::fs::read(&fingerprint).expect("fingerprint should be readable");
+        std::fs::write(&fingerprint, b"0000000000000000")
+            .expect("fixture should model a fingerprint update in progress");
+
+        let mut cargo = crate::build_dir::shared_registry_cargo(
+            &project,
+            &format!("{locking_flag} -Zohm-reuse-built-deps check"),
+        );
+        cargo.masquerade_as_nightly_cargo(&[
+            "fine-grain-locking",
+            "ohm-shared-registry-cache",
+            "ohm-reuse-built-deps",
+        ]);
+        if lock_shared_registry {
+            cargo.env("CARGO_BUILD_BUILD_DIR", &build_directory);
+        }
+        let mut child = cargo
+            .build_command()
+            .stdout(Stdio::null())
+            .stderr(Stdio::piped())
+            .spawn()
+            .expect("concurrent check should start");
+        let mut stderr = BufReader::new(
+            child
+                .stderr
+                .take()
+                .expect("concurrent check should expose stderr"),
+        );
+        let expected_package = if lock_shared_registry {
+            "changing"
+        } else {
+            "foo"
+        };
+        let mut output = String::new();
+        let mut line = String::new();
+        let mut waited_for_unit_lock = false;
+
+        while stderr
+            .read_line(&mut line)
+            .expect("concurrent check output should be readable")
+            != 0
+        {
+            output.push_str(&line);
+            if line.contains(&format!("waiting for file lock on {expected_package} (")) {
+                waited_for_unit_lock = true;
+                break;
+            }
+            line.clear();
+        }
+
+        std::fs::write(&fingerprint, original_fingerprint)
+            .expect("fixture should restore the complete fingerprint");
+        drop(lock);
+        stderr
+            .read_to_string(&mut output)
+            .expect("remaining check output should be readable");
+        let status = child.wait().expect("concurrent check should finish");
+
+        assert!(
+            waited_for_unit_lock,
+            "fingerprint must not be read while its writer holds the unit lock: {output}"
+        );
+        assert!(status.success(), "concurrent check failed: {output}");
+    }
 }
 
 #[cargo_test]
