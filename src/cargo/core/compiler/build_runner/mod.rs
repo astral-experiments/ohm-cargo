@@ -42,11 +42,15 @@ mod compilation_files;
 use self::compilation_files::CompilationFiles;
 pub use self::compilation_files::{Metadata, OutputFile, UnitHash};
 
-/// The speculative build-mode dependency graph cannot safely reuse every
-/// required registry artifact and must be regenerated in ordinary check mode.
+/// Registry packages whose built artifacts cannot safely satisfy a check.
+///
+/// Regenerating the graph without these packages preserves independently fresh
+/// registry builds instead of disabling reuse for the entire dependency graph.
 #[derive(Debug, thiserror::Error)]
 #[error("an existing registry build artifact is missing or stale")]
-pub(crate) struct StaleBuiltRegistryDependency;
+pub(crate) struct StaleBuiltRegistryDependency {
+    pub(crate) packages: HashSet<PackageId>,
+}
 
 /// Additional facts needed to safely reuse an ordinary build as a check.
 ///
@@ -525,8 +529,12 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
         self.prepare_units()?;
         self.prepare()?;
         custom_build::build_map(&mut self)?;
-        if !self.reused_registry_dependencies_are_fresh()? {
-            return Err(StaleBuiltRegistryDependency.into());
+        let stale_registry_packages = self.stale_reused_registry_dependencies()?;
+        if !stale_registry_packages.is_empty() {
+            return Err(StaleBuiltRegistryDependency {
+                packages: stale_registry_packages,
+            }
+            .into());
         }
         self.check_collisions()?;
         self.compute_metadata_for_doc_units();
@@ -1041,11 +1049,11 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
     /// Validates the exact build-mode registry units selected by a check graph.
     /// This runs after Cargo has computed canonical unit hashes, LTO settings,
     /// output paths, and build-script dependencies, but before any rustc work.
-    fn reused_registry_dependencies_are_fresh(&mut self) -> CargoResult<bool> {
+    fn stale_reused_registry_dependencies(&mut self) -> CargoResult<HashSet<PackageId>> {
         if !self.bcx.gctx.cli_unstable().ohm_reuse_built_deps()
             || !matches!(self.bcx.build_config.intent, UserIntent::Check { .. })
         {
-            return Ok(true);
+            return Ok(HashSet::default());
         }
 
         let mut promoted_units = self
@@ -1056,7 +1064,7 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
         promoted_units.sort_by_key(|unit| self.files().unit_hash(unit));
 
         if promoted_units.is_empty() {
-            return Ok(true);
+            return Ok(HashSet::default());
         }
 
         let mut registry_closure_units = HashSet::default();
@@ -1085,12 +1093,11 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
         // Host procedural macros, build scripts, and their dependencies have
         // independent package and build-override profiles. Check their actual
         // units too, not just the target libraries promoted by the check graph.
-        if registry_closure_units
+        let mut stale_units = registry_closure_units
             .iter()
-            .any(|unit| self.unit_uses_custom_codegen_backend(unit))
-        {
-            return Ok(false);
-        }
+            .filter(|unit| self.unit_uses_custom_codegen_backend(unit))
+            .cloned()
+            .collect::<HashSet<_>>();
 
         if self.bcx.gctx.cli_unstable().fine_grain_locking {
             // Keep the complete registry closure stable from the fingerprint
@@ -1103,7 +1110,10 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
         // Future-incompatibility diagnostics can originate in any transitive
         // dependency, even when only its parent has an incoming check edge.
         let Some(expected_provenance) = self.registry_message_provenance()? else {
-            return Ok(false);
+            return Ok(promoted_units
+                .into_iter()
+                .map(|unit| unit.pkg.package_id())
+                .collect());
         };
         // Equal provenance records share their authenticated driver and loader paths.
         let mut compiler_search_directories = HashSet::default();
@@ -1134,7 +1144,7 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
                     provenance.messages_match(&cached_messages)
                 });
             if !messages_available {
-                return Ok(false);
+                stale_units.insert(unit.clone());
             }
         }
 
@@ -1150,7 +1160,7 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
                 || !has_output("rmeta")
                 || !fingerprint::existing_unit_is_fresh(self, unit)?
             {
-                return Ok(false);
+                stale_units.insert(unit.clone());
             }
         }
 
@@ -1163,10 +1173,56 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
                 directory,
             )
         }) {
-            return Ok(false);
+            return Ok(promoted_units
+                .into_iter()
+                .map(|unit| unit.pkg.package_id())
+                .collect());
         }
 
-        Ok(true)
+        if stale_units.is_empty() {
+            return Ok(HashSet::default());
+        }
+
+        // A built parent cannot remain promoted when any dependency in its
+        // build closure must fall back to metadata-only checking. Propagate
+        // rejected artifacts towards their registry dependents, but leave
+        // independent branches and shared, otherwise-fresh leaves reusable.
+        let mut reverse_dependencies = HashMap::<Unit, Vec<Unit>>::default();
+        for unit in &registry_closure_units {
+            if !self.reused_registry_units.contains(unit) {
+                continue;
+            }
+            for dependency in self.unit_deps(unit) {
+                if dependency
+                    .unit
+                    .pkg
+                    .package_id()
+                    .source_id()
+                    .is_remote_registry()
+                {
+                    reverse_dependencies
+                        .entry(dependency.unit.clone())
+                        .or_default()
+                        .push(unit.clone());
+                }
+            }
+        }
+
+        let mut pending = stale_units.iter().cloned().collect::<Vec<_>>();
+        while let Some(unit) = pending.pop() {
+            if let Some(dependents) = reverse_dependencies.get(&unit) {
+                for dependent in dependents {
+                    if stale_units.insert(dependent.clone()) {
+                        pending.push(dependent.clone());
+                    }
+                }
+            }
+        }
+
+        Ok(stale_units
+            .into_iter()
+            .map(|unit| unit.pkg.package_id())
+            .collect())
     }
 
     /// External backends are compiler plugins, and execute even for metadata

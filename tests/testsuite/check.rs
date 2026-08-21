@@ -289,6 +289,226 @@ fn ohm_reuses_built_registry_dependency_closure() {
 }
 
 #[cargo_test]
+fn ohm_reuses_compatible_test_built_registry_dependencies_when_features_change() {
+    Package::new("stable-leaf", "1.0.0")
+        .file("src/lib.rs", "pub fn value() -> u32 { 19 }")
+        .publish();
+    Package::new("stable-middle", "1.0.0")
+        .dep("stable-leaf", "1.0.0")
+        .file(
+            "src/lib.rs",
+            "pub fn value() -> u32 { stable_leaf::value() }",
+        )
+        .publish();
+    Package::new("changing-leaf", "1.0.0")
+        .feature("development", &[])
+        .file("src/lib.rs", "pub fn value() -> u32 { 23 }")
+        .publish();
+    Package::new("changing-middle", "1.0.0")
+        .dep("changing-leaf", "1.0.0")
+        .dep("stable-leaf", "1.0.0")
+        .file(
+            "src/lib.rs",
+            "pub fn value() -> u32 { changing_leaf::value() + stable_leaf::value() }",
+        )
+        .publish();
+
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "foo"
+                version = "0.0.1"
+                edition = "2021"
+
+                [dependencies]
+                changing-middle = "1.0.0"
+                stable-middle = "1.0.0"
+
+                [dev-dependencies]
+                changing-leaf = { version = "1.0.0", features = ["development"] }
+            "#,
+        )
+        .file(
+            "src/lib.rs",
+            "pub fn value() -> u32 { changing_middle::value() + stable_middle::value() }",
+        )
+        .build();
+
+    p.cargo("test --no-run").run();
+    p.cargo("-Zohm-reuse-built-deps check -v")
+        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
+        .with_stderr_contains("[FRESH] stable-leaf v1.0.0")
+        .with_stderr_contains("[FRESH] stable-middle v1.0.0")
+        .with_stderr_contains("[CHECKING] changing-leaf v1.0.0")
+        .with_stderr_contains("[CHECKING] changing-middle v1.0.0")
+        .with_stderr_does_not_contain("[CHECKING] stable-leaf v1.0.0")
+        .with_stderr_does_not_contain("[CHECKING] stable-middle v1.0.0")
+        .run();
+}
+
+#[cargo_test]
+fn ohm_reuses_test_built_registry_dependencies_with_unrelated_profile_overrides() {
+    Package::new("stable", "1.0.0")
+        .file("src/lib.rs", "pub fn value() -> u32 { 19 }")
+        .publish();
+    Package::new("changing", "1.0.0")
+        .file("src/lib.rs", "pub fn value() -> u32 { 23 }")
+        .publish();
+
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "foo"
+                version = "0.0.1"
+                edition = "2021"
+
+                [dependencies]
+                changing = "1.0.0"
+                stable = "1.0.0"
+
+                [profile.test.package.changing]
+                opt-level = 1
+            "#,
+        )
+        .file(
+            "src/lib.rs",
+            "pub fn value() -> u32 { changing::value() + stable::value() }",
+        )
+        .build();
+
+    p.cargo("test --no-run").run();
+    p.cargo("-Zohm-reuse-built-deps check -v")
+        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
+        .with_stderr_contains("[FRESH] stable v1.0.0")
+        .with_stderr_contains("[CHECKING] changing v1.0.0")
+        .with_stderr_does_not_contain("[CHECKING] stable v1.0.0")
+        .run();
+}
+
+#[cargo_test]
+fn ohm_defaults_reuse_compatible_test_built_registry_dependencies_in_shared_builds() {
+    if !ohm_compiler_supports_defaults() {
+        return;
+    }
+
+    Package::new("stable", "1.0.0")
+        .file("src/lib.rs", "pub fn value() -> u32 { 19 }")
+        .publish();
+    Package::new("changing", "1.0.0")
+        .feature("development", &[])
+        .file("src/lib.rs", "pub fn value() -> u32 { 23 }")
+        .publish();
+
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "foo"
+                version = "0.0.1"
+                edition = "2021"
+
+                [dependencies]
+                changing = "1.0.0"
+                stable = "1.0.0"
+
+                [dev-dependencies]
+                changing = { version = "1.0.0", features = ["development"] }
+            "#,
+        )
+        .file(
+            "src/lib.rs",
+            "pub fn value() -> u32 { changing::value() + stable::value() }",
+        )
+        .build();
+    let build_directory = p.root().join("shared-build");
+
+    p.cargo("test --no-run")
+        .masquerade_as_nightly_cargo(&["ohm-defaults"])
+        .env("__CARGO_OHM_DEFAULTS", "yes")
+        .env("CARGO_BUILD_BUILD_DIR", &build_directory)
+        .run();
+    assert!(
+        build_directory.join(".ohm-built-registry-ready").is_file(),
+        "test-built registry artifacts must be discoverable by the following check",
+    );
+
+    p.cargo("check -v")
+        .masquerade_as_nightly_cargo(&["ohm-defaults"])
+        .env("__CARGO_OHM_DEFAULTS", "yes")
+        .env("CARGO_BUILD_BUILD_DIR", &build_directory)
+        .with_stderr_contains("[FRESH] stable v1.0.0")
+        .with_stderr_contains("[CHECKING] changing v1.0.0")
+        .with_stderr_does_not_contain("[CHECKING] stable v1.0.0")
+        .run();
+}
+
+#[cargo_test]
+fn ohm_reuses_fresh_registry_dependencies_when_another_loses_cached_diagnostics() {
+    Package::new("stable", "1.0.0")
+        .file("src/lib.rs", "pub fn value() -> u32 { 19 }")
+        .publish();
+    Package::new("warning-leaf", "1.0.0")
+        .file("src/lib.rs", "pub fn value() -> u32 { let unused = 1; 23 }")
+        .publish();
+    Package::new("warning-middle", "1.0.0")
+        .dep("warning-leaf", "1.0.0")
+        .file(
+            "src/lib.rs",
+            "pub fn value() -> u32 { warning_leaf::value() }",
+        )
+        .publish();
+
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "foo"
+                version = "0.0.1"
+                edition = "2021"
+
+                [dependencies]
+                stable = "1.0.0"
+                warning-middle = "1.0.0"
+            "#,
+        )
+        .file(
+            "src/lib.rs",
+            "pub fn value() -> u32 { stable::value() + warning_middle::value() }",
+        )
+        .build();
+
+    p.cargo("build")
+        .env("RUSTC_BOOTSTRAP", "1")
+        .env("RUSTFLAGS", "-Zfuture-incompat-test")
+        .run();
+    let cached_messages = p
+        .glob("target/debug/.fingerprint/warning-leaf-*/output-lib-warning_leaf")
+        .next()
+        .expect("registry compiler messages")
+        .expect("existing compiler message path");
+    std::fs::remove_file(cached_messages).expect("remove only cached compiler diagnostics");
+
+    p.cargo("-Zohm-reuse-built-deps check --future-incompat-report -v")
+        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
+        .env("RUSTC_BOOTSTRAP", "1")
+        .env("RUSTFLAGS", "-Zfuture-incompat-test")
+        .with_stderr_contains("[FRESH] stable v1.0.0")
+        .with_stderr_contains("[CHECKING] warning-leaf v1.0.0")
+        .with_stderr_contains("[CHECKING] warning-middle v1.0.0")
+        .with_stderr_contains(
+            "[WARNING] the following packages contain code that will be rejected by a future version of Rust: warning-leaf v1.0.0",
+        )
+        .with_stderr_does_not_contain("[CHECKING] stable v1.0.0")
+        .run();
+}
+
+#[cargo_test]
 fn ohm_built_registry_dependency_reuse_remains_opt_in_without_ohm_defaults() {
     Package::new("dependency", "1.0.0")
         .file("src/lib.rs", "pub fn value() -> u32 { 19 }")

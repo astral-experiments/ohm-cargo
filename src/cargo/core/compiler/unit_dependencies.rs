@@ -82,6 +82,10 @@ struct State<'a, 'gctx> {
     /// Exact artifact and fingerprint validation happens after graph creation.
     reuse_built_registry_dependencies: bool,
 
+    /// Packages whose existing build artifacts failed exact reuse validation.
+    /// They and their stale dependents retain ordinary metadata-only checks.
+    rejected_built_registry_packages: HashSet<PackageId>,
+
     /// Compiler identity and global policy do not vary between registry targets in this graph.
     trusted_registry_reuse_compiler: OnceCell<bool>,
 
@@ -121,6 +125,7 @@ pub fn build_unit_dependencies<'a, 'gctx>(
     profiles: &'a Profiles,
     interner: &'a UnitInterner,
     reuse_built_registry_dependencies: bool,
+    rejected_built_registry_packages: &HashSet<PackageId>,
 ) -> CargoResult<UnitGraph> {
     if roots.is_empty() {
         // If -Zbuild-std, don't attach units if there is nothing to build.
@@ -149,6 +154,7 @@ pub fn build_unit_dependencies<'a, 'gctx>(
         scrape_units,
         dev_dependency_edges: HashSet::default(),
         reuse_built_registry_dependencies,
+        rejected_built_registry_packages: rejected_built_registry_packages.clone(),
         trusted_registry_reuse_compiler: OnceCell::new(),
         immutable_registry_closures: RefCell::default(),
     };
@@ -1115,6 +1121,7 @@ impl<'a, 'gctx> State<'a, 'gctx> {
         if !self.reuse_built_registry_dependencies
             || self.is_std
             || !package_id.source_id().is_remote_registry()
+            || self.rejected_built_registry_packages.contains(&package_id)
             || target.for_host()
             || !target.is_lib()
             || !target
