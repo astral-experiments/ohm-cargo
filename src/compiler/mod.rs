@@ -1667,6 +1667,20 @@ fn add_error_format_and_color(build_runner: &BuildRunner<'_, '_>, cmd: &mut Proc
     }
 }
 
+/// Returns whether an immutable internal library can omit its embedded metadata.
+fn unit_uses_no_embed_metadata(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> bool {
+    if let Some(embed) = build_runner.bcx.gctx.cli_unstable().embed_metadata {
+        return !embed && unit.benefits_from_no_embed_metadata();
+    }
+    let source = unit.pkg.package_id().source_id();
+
+    build_runner.bcx.gctx.cli_unstable().no_embed_metadata()
+        && unit.benefits_from_no_embed_metadata()
+        && (source.is_registry() || source.is_git())
+        && !build_runner.bcx.roots.contains(unit)
+        && !unit.target.rustc_crate_types().contains(&CrateType::Dylib)
+}
+
 /// Adds essential rustc flags and environment variables to the command to execute.
 fn build_base_args(
     build_runner: &BuildRunner<'_, '_>,
@@ -1742,7 +1756,9 @@ fn build_base_args(
         // files on disk.
         if unit.benefits_from_no_embed_metadata() {
             cmd.arg("--emit=dep-info,metadata,link");
-            cmd.args(&["-Z", "embed-metadata=no"]);
+            if unit_uses_no_embed_metadata(build_runner, unit) {
+                cmd.args(&["-Z", "embed-metadata=no"]);
+            }
         } else {
             cmd.arg("--emit=dep-info,link");
         }
