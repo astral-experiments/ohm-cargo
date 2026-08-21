@@ -214,6 +214,12 @@ fn compile_ws<'a>(
 
     match build_runner.compile(exec) {
         Err(error) if error.is::<StaleBuiltRegistryDependency>() => {
+            let Some(stale_registry_dependencies) =
+                error.downcast_ref::<StaleBuiltRegistryDependency>()
+            else {
+                return Err(error);
+            };
+            let rejected_registry_packages = stale_registry_dependencies.packages.clone();
             drop(bcx);
             let fallback_interner = UnitInterner::new();
             let fallback_bcx = create_bcx_with_registry_reuse(
@@ -221,9 +227,28 @@ fn compile_ws<'a>(
                 options,
                 &fallback_interner,
                 logger.as_ref(),
-                false,
+                true,
+                &rejected_registry_packages,
             )?;
-            BuildRunner::new(&fallback_bcx)?.compile(exec)
+            match BuildRunner::new(&fallback_bcx)?.compile(exec) {
+                Err(error) if error.is::<StaleBuiltRegistryDependency>() => {
+                    // Artifact races or a newly exposed incompatible closure
+                    // must never turn a check into an ordinary codegen build.
+                    // Preserve the original fail-closed full fallback.
+                    drop(fallback_bcx);
+                    let final_interner = UnitInterner::new();
+                    let final_bcx = create_bcx_with_registry_reuse(
+                        ws,
+                        options,
+                        &final_interner,
+                        logger.as_ref(),
+                        false,
+                        &HashSet::default(),
+                    )?;
+                    BuildRunner::new(&final_bcx)?.compile(exec)
+                }
+                result => result,
+            }
         }
         result => result,
     }
@@ -290,6 +315,7 @@ pub fn create_bcx<'a, 'gctx>(
         interner,
         logger,
         reuse_built_registry_dependencies,
+        &HashSet::default(),
     )
 }
 
@@ -301,6 +327,7 @@ fn create_bcx_with_registry_reuse<'a, 'gctx>(
     interner: &'a UnitInterner,
     logger: Option<&'a BuildLogger>,
     reuse_built_registry_dependencies: bool,
+    rejected_built_registry_packages: &HashSet<PackageId>,
 ) -> CargoResult<BuildContext<'a, 'gctx>> {
     let CompileOptions {
         ref build_config,
@@ -568,6 +595,7 @@ fn create_bcx_with_registry_reuse<'a, 'gctx>(
                 && !gctx.extra_verbose()
                 && !build_config.unit_graph
                 && !build_config.dry_run,
+            rejected_built_registry_packages,
         )?);
         root_units.extend(targeted_root_units);
         scrape_units.extend(targeted_scrape_units);
