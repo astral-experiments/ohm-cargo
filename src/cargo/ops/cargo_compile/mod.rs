@@ -40,9 +40,12 @@ use std::hash::{Hash, Hasher};
 use std::sync::Arc;
 
 use crate::core::compiler::UserIntent;
+use crate::core::compiler::build_runner::StaleBuiltRegistryDependency;
 use crate::core::compiler::unit_dependencies::build_unit_dependencies;
 use crate::core::compiler::unit_graph::{self, UnitDep, UnitGraph};
-use crate::core::compiler::{BuildConfig, BuildContext, BuildRunner, Compilation};
+use crate::core::compiler::{
+    BuildConfig, BuildContext, BuildRunner, Compilation, OHM_BUILT_REGISTRY_READY_MARKER,
+};
 use crate::core::compiler::{CompileKind, CompileTarget, RustcTargetData, Unit};
 use crate::core::compiler::{CrateType, TargetInfo, apply_env_config, standard_lib};
 use crate::core::compiler::{DefaultExecutor, Executor, UnitInterner};
@@ -196,9 +199,23 @@ fn compile_ws<'a>(
     crate::core::gc::auto_gc(bcx.gctx);
     let build_runner = BuildRunner::new(&bcx)?;
     if options.build_config.dry_run {
-        build_runner.dry_run()
-    } else {
-        build_runner.compile(exec)
+        return build_runner.dry_run();
+    }
+
+    match build_runner.compile(exec) {
+        Err(error) if error.is::<StaleBuiltRegistryDependency>() => {
+            drop(bcx);
+            let fallback_interner = UnitInterner::new();
+            let fallback_bcx = create_bcx_with_registry_reuse(
+                ws,
+                options,
+                &fallback_interner,
+                logger.as_ref(),
+                false,
+            )?;
+            BuildRunner::new(&fallback_bcx)?.compile(exec)
+        }
+        result => result,
     }
 }
 
@@ -245,6 +262,35 @@ pub fn create_bcx<'a, 'gctx>(
     options: &'a CompileOptions,
     interner: &'a UnitInterner,
     logger: Option<&'a BuildLogger>,
+) -> CargoResult<BuildContext<'a, 'gctx>> {
+    let unstable = ws.gctx().cli_unstable();
+    let reuse_built_registry_dependencies =
+        !matches!(options.build_config.intent, UserIntent::Check { .. })
+            || !unstable.ohm_reuse_built_deps()
+            || unstable.ohm_reuse_built_deps
+            || ws
+                .build_dir()
+                .as_path_unlocked()
+                .join(OHM_BUILT_REGISTRY_READY_MARKER)
+                .is_file();
+
+    create_bcx_with_registry_reuse(
+        ws,
+        options,
+        interner,
+        logger,
+        reuse_built_registry_dependencies,
+    )
+}
+
+/// Explicitly control speculative registry reuse so a failed preflight can
+/// rebuild the dependency graph for an ordinary, unmodified check.
+fn create_bcx_with_registry_reuse<'a, 'gctx>(
+    ws: &'a Workspace<'gctx>,
+    options: &'a CompileOptions,
+    interner: &'a UnitInterner,
+    logger: Option<&'a BuildLogger>,
+    reuse_built_registry_dependencies: bool,
 ) -> CargoResult<BuildContext<'a, 'gctx>> {
     let CompileOptions {
         ref build_config,
@@ -507,6 +553,11 @@ pub fn create_bcx<'a, 'gctx>(
             &target_data,
             &profiles,
             interner,
+            reuse_built_registry_dependencies
+                && gctx.cli_unstable().ohm_reuse_built_deps()
+                && !gctx.extra_verbose()
+                && !build_config.unit_graph
+                && !build_config.dry_run,
         )?);
         root_units.extend(targeted_root_units);
         scrape_units.extend(targeted_scrape_units);

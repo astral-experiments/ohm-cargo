@@ -917,6 +917,22 @@ enum FingerprintComparison {
     },
 }
 
+/// Checks an existing unit without truncating, updating, or otherwise changing
+/// its fingerprint. Registry build reuse must reject a stale candidate before
+/// scheduling any compiler work; `prepare_target` is unsuitable here because
+/// it intentionally clears a dirty fingerprint in preparation for a rebuild.
+pub(crate) fn existing_unit_is_fresh(
+    build_runner: &mut BuildRunner<'_, '_>,
+    unit: &Unit,
+) -> CargoResult<bool> {
+    let fingerprint_path = build_runner.files().fingerprint_file_path(unit, "");
+    let fingerprint = calculate(build_runner, unit)?;
+    Ok(matches!(
+        _compare_old_fingerprint(&fingerprint_path, &fingerprint),
+        Ok(FingerprintComparison::Fresh)
+    ))
+}
+
 /// Determines if a [`Unit`] is up-to-date, and if not prepares necessary work to
 /// update the persisted fingerprint.
 ///
