@@ -457,7 +457,10 @@ fn rustflags_iter_unstable_option<'a>(
         let (name, value) = option
             .split_once('=')
             .map_or((option, None), |(name, value)| (name, Some(value)));
-        if name == option_name
+        if name
+            .bytes()
+            .map(|byte| if byte == b'_' { b'-' } else { byte })
+            .eq(option_name.bytes())
             && let Some(value) = parse_unstable_bool(value)
         {
             enabled = Some(value);
@@ -703,10 +706,11 @@ pub fn unit_can_use_early_cutoff(build_runner: &BuildRunner<'_, '_>, unit: &Unit
 ///
 /// The first prototype is intentionally limited to executable build and test
 /// units. Other linkable crate types have more complicated downstream artifact
-/// semantics and are left to future work.
+/// semantics and are left to future work. Terminal test executables still
+/// consume their dependencies' public hashes without producing one themselves.
 pub fn unit_can_use_relink_only(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> bool {
     !unit.artifact.is_true()
-        && unit_uses_public_api_hash(build_runner, unit)
+        && unit_consumes_public_api_hash(build_runner, unit)
         && (unit.mode == CompileMode::Test
             || (unit.mode == CompileMode::Build && unit.target.is_bin()))
 }
@@ -3046,9 +3050,24 @@ mod early_cutoff_tests {
             "-Z",
             "public-api-hash=yes",
         ])));
+        assert!(rustflags_enable_public_api_hash(&rustflags(&[
+            "-Zpublic_api_hash=yes",
+        ])));
+        assert!(rustflags_enable_public_api_hash(&rustflags(&[
+            "-Z",
+            "public_api_hash",
+        ])));
         assert!(!rustflags_enable_public_api_hash(&rustflags(&[
             "-Zpublic-api-hash",
             "-Zpublic-api-hash=no",
+        ])));
+        assert!(!rustflags_enable_public_api_hash(&rustflags(&[
+            "-Zpublic-api-hash=yes",
+            "-Zpublic_api_hash=no",
+        ])));
+        assert!(rustflags_enable_public_api_hash(&rustflags(&[
+            "-Zpublic_api_hash=no",
+            "-Zpublic-api-hash=yes",
         ])));
         assert!(!rustflags_enable_public_api_hash(&rustflags(&[
             "-Z",

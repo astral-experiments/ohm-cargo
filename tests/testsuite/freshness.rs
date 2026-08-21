@@ -5211,7 +5211,11 @@ fn relink_only_wrapper() -> PathBuf {
                     while index < args.len() {
                         if matches!(
                             args[index].to_str(),
-                            Some("-Zpublic-api-hash" | "-Zcache-proc-macros")
+                            Some(
+                                "-Zpublic-api-hash"
+                                    | "-Zpublic-api-hash=no"
+                                    | "-Zcache-proc-macros"
+                            )
                         ) {
                             index += 1;
                         } else if index + 1 < args.len()
@@ -5535,6 +5539,102 @@ fn relink_only_reuses_root_codegen() {
         .env("RELINK_WRAPPER_LOG", &log)
         .run();
     assert_eq!(fs::read_to_string(&log).unwrap(), "compile-link:app\n");
+}
+
+#[cargo_test]
+#[cfg(not(windows))]
+fn terminal_test_harness_reuses_codegen_without_public_api_hash() {
+    let wrapper = relink_only_wrapper();
+    let library_source = r#"
+        pub fn value() -> i32 { dep::value() }
+
+        #[cfg(test)]
+        mod tests {
+            #[test]
+            fn observes_current_dependency() {
+                let expected = std::env::var("TERMINAL_TEST_EXPECTED")
+                    .expect("expected value")
+                    .parse::<i32>()
+                    .expect("integer expected value");
+                assert_eq!(super::value(), expected);
+            }
+        }
+    "#;
+    let p = project()
+        .at("terminal-test-harness-relink")
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "app"
+                version = "0.1.0"
+                edition = "2024"
+
+                [dependencies]
+                dep = { path = "dep" }
+            "#,
+        )
+        .file("src/lib.rs", library_source)
+        .file("dep/Cargo.toml", &basic_manifest("dep", "0.1.0"))
+        .file(
+            "dep/src/lib.rs",
+            "#[inline(never)] pub fn value() -> i32 { 1 }",
+        )
+        .build();
+    let log = p.root().join("relink-wrapper.log");
+    let run = |expected| {
+        p.cargo("-Zohm-defaults test --lib -j2")
+            .masquerade_as_nightly_cargo(&["ohm-defaults"])
+            .env("RUSTC_WRAPPER", &wrapper)
+            .env("RELINK_WRAPPER_LOG", &log)
+            .env("TERMINAL_TEST_EXPECTED", expected)
+            .run();
+    };
+
+    run("1");
+    assert_eq!(
+        fs::read_to_string(&log).expect("initial wrapper log"),
+        "compile:dep\ncompile-link:app\n"
+    );
+
+    let fingerprints = p.root().join("target/debug/.fingerprint");
+    assert!(
+        fs::read_dir(&fingerprints)
+            .expect("fingerprint directory")
+            .filter_map(Result::ok)
+            .all(|entry| !entry.path().join("test-lib-app.public-api-hash").exists()),
+        "a terminal test executable must not persist an unusable public API hash"
+    );
+
+    fs::write(&log, "").expect("clear wrapper log");
+    if is_coarse_mtime() {
+        sleep_ms(1000);
+    }
+    p.change_file(
+        "dep/src/lib.rs",
+        "#[inline(never)] pub fn value() -> i32 { 2 }",
+    );
+    run("2");
+    assert_eq!(
+        fs::read_to_string(&log).expect("dependency rebuild wrapper log"),
+        "compile:dep\nlink:app\n",
+        "a terminal test still consumes dependency hashes and must relink updated objects"
+    );
+
+    fs::write(&log, "").expect("clear wrapper log");
+    if is_coarse_mtime() {
+        sleep_ms(1000);
+    }
+    p.change_file(
+        "src/lib.rs",
+        &format!("{library_source}\nconst _: () = ();\n"),
+    );
+    run("2");
+    assert_eq!(
+        fs::read_to_string(&log).expect("local source rebuild wrapper log"),
+        "compile-link:app\n",
+        "changed test sources must regenerate their cached codegen"
+    );
 }
 
 #[cargo_test]
