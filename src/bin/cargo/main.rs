@@ -325,6 +325,12 @@ fn execute_subcommand(
             if enabled { "yes" } else { "no" },
         );
     }
+    if let Some(enabled) = gctx.cli_unstable().no_embed_metadata {
+        cmd.env(
+            cargo::CARGO_INHERITED_NO_EMBED_METADATA_ENV,
+            if enabled { "yes" } else { "no" },
+        );
+    }
     if let Some(client) = gctx.jobserver_from_env() {
         cmd.inherit_jobserver(client);
     }
