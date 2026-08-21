@@ -11,7 +11,7 @@ use std::path::{Path, PathBuf};
 use crate::prelude::*;
 use cargo::CargoResult;
 use cargo::core::PackageIdSpec;
-use cargo::core::features::{GitFeatures, GitoxideFeatures, OhmProcMacroTrust};
+use cargo::core::features::{GitFeatures, GitoxideFeatures, OhmNativeToolTrust, OhmProcMacroTrust};
 use cargo::util::auth::RegistryConfig;
 use cargo::util::context::Value;
 use cargo::util::context::{
@@ -1331,6 +1331,81 @@ fn no_embed_metadata_accepts_boolean_values() {
         .unstable_flag("no-embed-metadata")
         .build();
     assert!(gctx.cli_unstable().no_embed_metadata());
+}
+
+#[cargo_test]
+fn ohm_native_tool_trust_accepts_configuration_environment_and_cli() {
+    let gctx = GlobalContextBuilder::new()
+        .nightly_features_allowed(true)
+        .build();
+    assert_eq!(
+        gctx.cli_unstable().ohm_native_tool_trust,
+        OhmNativeToolTrust::Strict
+    );
+
+    let gctx = GlobalContextBuilder::new()
+        .nightly_features_allowed(true)
+        .env("CARGO_UNSTABLE_OHM_NATIVE_TOOL_TRUST", "build-scripts")
+        .build();
+    assert_eq!(
+        gctx.cli_unstable().ohm_native_tool_trust,
+        OhmNativeToolTrust::BuildScripts
+    );
+
+    let gctx = GlobalContextBuilder::new()
+        .env("CARGO_UNSTABLE_OHM_NATIVE_TOOL_TRUST", "all")
+        .unstable_flag("ohm-native-tool-trust=strict")
+        .build();
+    assert_eq!(
+        gctx.cli_unstable().ohm_native_tool_trust,
+        OhmNativeToolTrust::Strict
+    );
+
+    write_config_toml(
+        "\
+[unstable]
+ohm-native-tool-trust = 'all'
+",
+    );
+    let gctx = GlobalContextBuilder::new()
+        .nightly_features_allowed(true)
+        .build();
+    assert_eq!(
+        gctx.cli_unstable().ohm_native_tool_trust,
+        OhmNativeToolTrust::All
+    );
+
+    let gctx = GlobalContextBuilder::new()
+        .env("CARGO_UNSTABLE_OHM_NATIVE_TOOL_TRUST", "build-scripts")
+        .nightly_features_allowed(true)
+        .build();
+    assert_eq!(
+        gctx.cli_unstable().ohm_native_tool_trust,
+        OhmNativeToolTrust::BuildScripts
+    );
+}
+
+#[cargo_test]
+fn ohm_native_tool_trust_rejects_invalid_values() {
+    assert!(
+        GlobalContextBuilder::new()
+            .nightly_features_allowed(true)
+            .env("CARGO_UNSTABLE_OHM_NATIVE_TOOL_TRUST", "everything")
+            .build_err()
+            .is_err()
+    );
+    assert!(
+        GlobalContextBuilder::new()
+            .unstable_flag("ohm-native-tool-trust")
+            .build_err()
+            .is_err()
+    );
+    assert!(
+        GlobalContextBuilder::new()
+            .unstable_flag("ohm-native-tool-trust=everything")
+            .build_err()
+            .is_err()
+    );
 }
 
 #[cargo_test]
