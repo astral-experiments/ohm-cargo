@@ -1,5 +1,6 @@
 //! Tests for setting custom rustc flags.
 
+use std::path::PathBuf;
 use std::{env, fs};
 
 use crate::prelude::*;
@@ -7,10 +8,11 @@ use cargo_test_support::registry::Package;
 use cargo_test_support::{
     RawOutput, basic_manifest, paths, project, project_in_home, rustc_host, str,
 };
+use serde_json::Value;
 use snapbox::assert_data_eq;
+use walkdir::WalkDir;
 
-#[cargo_test]
-fn ohm_defaults_apply_to_host_and_target_units() {
+fn ohm_defaults_wrapper() -> PathBuf {
     let wrapper = project()
         .at("ohm-defaults-wrapper")
         .file(
@@ -37,6 +39,7 @@ fn ohm_defaults_apply_to_host_and_target_units() {
                         || arg.starts_with("-Zcache-proc-macros")
                         || arg.starts_with("-Zohm-caller-local-cgus")
                         || arg.starts_with("-Zohm-stable-cgu-merging")
+                        || arg.starts_with("-Zthreads=")
                 }
 
                 fn main() {
@@ -61,8 +64,23 @@ fn ohm_defaults_apply_to_host_and_target_units() {
                     {
                         exit(1);
                     }
+                    // Record thread options without requiring the test compiler
+                    // to support newer values such as `threads=sync`.
+                    let mut forwarded = Vec::new();
+                    let mut args = args.iter().peekable();
+                    while let Some(arg) = args.next() {
+                        if arg == "-Z"
+                            && args.peek().is_some_and(|arg| {
+                                arg.to_string_lossy().starts_with("threads=")
+                            })
+                        {
+                            args.next();
+                        } else if !is_ohm_rustflag(arg) {
+                            forwarded.push(arg);
+                        }
+                    }
                     let status = Command::new(rustc)
-                        .args(args.iter().filter(|arg| !is_ohm_rustflag(arg)))
+                        .args(forwarded)
                         .env("RUSTC_BOOTSTRAP", "1")
                         .status()
                         .expect("rustc should run");
@@ -75,7 +93,12 @@ fn ohm_defaults_apply_to_host_and_target_units() {
         .cargo("-Zohm-defaults=no build")
         .masquerade_as_nightly_cargo(&["ohm-defaults"])
         .run();
-    let wrapper = wrapper.bin("ohm-defaults-wrapper");
+    wrapper.bin("ohm-defaults-wrapper")
+}
+
+#[cargo_test]
+fn ohm_defaults_apply_to_host_and_target_units() {
+    let wrapper = ohm_defaults_wrapper();
 
     let p = project()
         .file(
@@ -121,8 +144,13 @@ fn ohm_defaults_apply_to_host_and_target_units() {
         let invocation = rustc_invocation(&invocations, crate_name);
         assert!(invocation.contains(&"-Zpublic-api-hash"));
         assert!(invocation.contains(&"-Zcache-proc-macros"));
+        assert_eq!(frontend_threads(&invocation), ["8"]);
         assert!(!invocation.contains(&"-Zpublic-api-hash=no"));
     }
+    assert_eq!(
+        frontend_threads(&rustc_invocation(&invocations, "foo")),
+        ["8"]
+    );
     assert_eq!(
         ohm_rustflags(&rustc_invocation(&invocations, "foo")),
         [
@@ -148,6 +176,11 @@ fn ohm_defaults_apply_to_host_and_target_units() {
         })
         .unwrap();
     assert!(!library.contains(&"-Zpublic-api-hash=no"));
+    assert_eq!(frontend_threads(&library), ["8"]);
+    assert_eq!(
+        frontend_threads(&rustc_invocation(&invocations, "integration")),
+        ["8"]
+    );
     assert!(rustc_invocation(&invocations, "integration").contains(&"-Zpublic-api-hash=no"));
 
     p.cargo("clean").run();
@@ -169,6 +202,7 @@ fn ohm_defaults_apply_to_host_and_target_units() {
                     && args.contains(&"--test")
             })
             .unwrap_or_else(|| panic!("missing test invocation for {crate_name}"));
+        assert_eq!(frontend_threads(&invocation), ["8"]);
         assert_eq!(
             ohm_rustflags(&invocation),
             [
@@ -249,6 +283,10 @@ fn ohm_defaults_apply_to_host_and_target_units() {
         .env("OHM_DEFAULTS_LOG", &log)
         .env("CARGO_PROFILE_RELEASE_INCREMENTAL", "true")
         .run();
+    assert_eq!(
+        frontend_threads(&rustc_invocation(&fs::read_to_string(&log).unwrap(), "foo")),
+        ["8"]
+    );
     assert!(
         ohm_incremental_codegen_rustflags(&rustc_invocation(
             &fs::read_to_string(&log).unwrap(),
@@ -381,6 +419,7 @@ fn ohm_defaults_apply_to_host_and_target_units() {
     let invocations = fs::read_to_string(&log).unwrap();
     assert!(!invocations.contains("public-api-hash"));
     assert!(!invocations.contains("cache-proc-macros"));
+    assert!(frontend_threads(&rustc_invocation(&invocations, "foo")).is_empty());
 
     p.cargo("clean").run();
     fs::write(&log, "").unwrap();
@@ -480,6 +519,7 @@ fn ohm_defaults_apply_to_host_and_target_units() {
     let invocation = rustc_invocation(&invocations, "foo");
     assert!(invocation.contains(&"-Zpublic-api-hash"));
     assert!(invocation.contains(&"-Zcache-proc-macros"));
+    assert_eq!(frontend_threads(&invocation), ["8"]);
 
     p.cargo("clean").run();
     fs::write(&log, "").unwrap();
@@ -492,6 +532,7 @@ fn ohm_defaults_apply_to_host_and_target_units() {
     let invocations = fs::read_to_string(&log).unwrap();
     assert!(!invocations.contains("public-api-hash"));
     assert!(!invocations.contains("cache-proc-macros"));
+    assert!(frontend_threads(&rustc_invocation(&invocations, "foo")).is_empty());
 
     Package::new("metadata-dependency", "0.1.0")
         .file("src/lib.rs", "pub fn value() -> i32 { 1 }")
@@ -549,6 +590,153 @@ fn ohm_defaults_apply_to_host_and_target_units() {
     }
 }
 
+#[cargo_test]
+fn ohm_parallel_frontend_user_flags_take_precedence() {
+    let wrapper = ohm_defaults_wrapper();
+    let p = project().file("src/lib.rs", "").build();
+    let log = p.root().join("ohm-defaults.log");
+
+    for (variable, flags, expected) in [
+        ("RUSTFLAGS", "-Zthreads=1", "1"),
+        ("RUSTFLAGS", "-Z threads=1", "1"),
+        ("RUSTFLAGS", "-Zthreads=4", "4"),
+        ("RUSTFLAGS", "-Zthreads=sync", "sync"),
+        ("RUSTFLAGS", "-Zthreads=0", "0"),
+        ("CARGO_ENCODED_RUSTFLAGS", "-Z\x1fthreads=1", "1"),
+    ] {
+        p.cargo("clean").run();
+        fs::write(&log, "").expect("clear compiler log");
+        p.cargo("-Zohm-defaults check")
+            .masquerade_as_nightly_cargo(&["ohm-defaults"])
+            .env("RUSTC_WRAPPER", &wrapper)
+            .env("OHM_DEFAULTS_LOG", &log)
+            .env("RUSTFLAGS", "-Zthreads=2")
+            .env(variable, flags)
+            .run();
+        let invocations = fs::read_to_string(&log).expect("read compiler log");
+        assert_eq!(
+            frontend_threads(&rustc_invocation(&invocations, "foo")),
+            ["8", expected],
+            "{variable}={flags:?} must override the packaged thread count"
+        );
+    }
+
+    for config in [
+        "build.rustflags=[\"-Zthreads=1\"]".to_owned(),
+        format!("target.{}.rustflags=[\"-Z\",\"threads=1\"]", rustc_host()),
+        "profile.dev.rustflags=[\"-Zthreads=1\"]".to_owned(),
+    ] {
+        p.cargo("clean").run();
+        fs::write(&log, "").expect("clear compiler log");
+        p.cargo("-Zohm-defaults -Zprofile-rustflags check")
+            .masquerade_as_nightly_cargo(&["ohm-defaults", "profile-rustflags"])
+            .arg("--config")
+            .arg(&config)
+            .env("RUSTC_WRAPPER", &wrapper)
+            .env("OHM_DEFAULTS_LOG", &log)
+            .run();
+        let invocations = fs::read_to_string(&log).expect("read compiler log");
+        assert_eq!(
+            frontend_threads(&rustc_invocation(&invocations, "foo")),
+            ["8", "1"],
+            "{config} must override the packaged thread count"
+        );
+    }
+
+    for flags in ["-Zthreads=1", "-Z threads=1"] {
+        p.cargo("clean").run();
+        fs::write(&log, "").expect("clear compiler log");
+        p.cargo(&format!("-Zohm-defaults rustc --lib -- {flags}"))
+            .masquerade_as_nightly_cargo(&["ohm-defaults"])
+            .env("RUSTC_WRAPPER", &wrapper)
+            .env("OHM_DEFAULTS_LOG", &log)
+            .run();
+        let invocations = fs::read_to_string(&log).expect("read compiler log");
+        assert_eq!(
+            frontend_threads(&rustc_invocation(&invocations, "foo")),
+            ["8", "1"]
+        );
+    }
+
+    p.cargo("clean").run();
+    fs::write(&log, "").expect("clear compiler log");
+    p.cargo("-Zohm-defaults=no check")
+        .masquerade_as_nightly_cargo(&["ohm-defaults"])
+        .env("RUSTC_WRAPPER", &wrapper)
+        .env("OHM_DEFAULTS_LOG", &log)
+        .env("RUSTFLAGS", "-Zthreads=1")
+        .run();
+    let invocations = fs::read_to_string(&log).expect("read compiler log");
+    assert_eq!(
+        frontend_threads(&rustc_invocation(&invocations, "foo")),
+        ["1"]
+    );
+}
+
+#[cargo_test]
+fn ohm_parallel_frontend_flags_are_fingerprinted() {
+    let wrapper = ohm_defaults_wrapper();
+    let p = project().file("src/lib.rs", "").build();
+    let log = p.root().join("ohm-defaults.log");
+
+    for (rustflags, fresh) in [
+        (None, false),
+        (None, true),
+        (Some("-Zthreads=1"), false),
+        (Some("-Zthreads=1"), true),
+        (None, true),
+    ] {
+        let mut check = p.cargo("-Zohm-defaults check -v");
+        check
+            .masquerade_as_nightly_cargo(&["ohm-defaults"])
+            .env("RUSTC_WRAPPER", &wrapper)
+            .env("OHM_DEFAULTS_LOG", &log);
+        if let Some(rustflags) = rustflags {
+            check.env("RUSTFLAGS", rustflags);
+        }
+        if fresh {
+            check.with_stderr_data(str![[r#"
+[FRESH] foo v0.0.1 ([ROOT]/foo)
+[FINISHED] `dev` profile [unoptimized + debuginfo] target(s) in [ELAPSED]s
+
+"#]]);
+        } else {
+            check.with_stderr_data(str![[r#"
+[CHECKING] foo v0.0.1 ([ROOT]/foo)
+[RUNNING] `[..] --crate-name foo [..]`
+[FINISHED] `dev` profile [unoptimized + debuginfo] target(s) in [ELAPSED]s
+
+"#]]);
+        }
+        check.run();
+    }
+
+    let mut rustflags = WalkDir::new(p.build_dir())
+        .into_iter()
+        .map(|entry| entry.expect("read fingerprint directory"))
+        .filter(|entry| entry.file_name() == "lib-foo.json")
+        .map(|entry| {
+            let contents = fs::read(entry.path()).expect("read fingerprint");
+            let fingerprint: Value = serde_json::from_slice(&contents).expect("parse fingerprint");
+            serde_json::from_value::<Vec<String>>(fingerprint["rustflags"].clone())
+                .expect("fingerprinted rustflags")
+        })
+        .collect::<Vec<_>>();
+    rustflags.sort();
+    assert_eq!(
+        rustflags,
+        [
+            vec!["-Zpublic-api-hash", "-Zcache-proc-macros", "-Zthreads=8"],
+            vec![
+                "-Zpublic-api-hash",
+                "-Zcache-proc-macros",
+                "-Zthreads=8",
+                "-Zthreads=1",
+            ],
+        ]
+    );
+}
+
 fn rustc_invocation<'a>(log: &'a str, crate_name: &str) -> Vec<&'a str> {
     log.lines()
         .map(|line| line.split('\t').collect::<Vec<_>>())
@@ -580,6 +768,22 @@ fn ohm_incremental_codegen_rustflags<'a>(invocation: &'a [&str]) -> Vec<&'a str>
                 || flag.starts_with("-Zohm-stable-cgu-merging")
         })
         .collect()
+}
+
+fn frontend_threads<'a>(invocation: &[&'a str]) -> Vec<&'a str> {
+    let mut threads = Vec::new();
+    let mut args = invocation.iter().copied();
+    while let Some(arg) = args.next() {
+        let option = if arg == "-Z" {
+            args.next()
+        } else {
+            arg.strip_prefix("-Z")
+        };
+        if let Some(value) = option.and_then(|option| option.strip_prefix("threads=")) {
+            threads.push(value);
+        }
+    }
+    threads
 }
 
 #[cargo_test]
