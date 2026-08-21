@@ -2490,6 +2490,9 @@ fn calculate_normal(
     // The same immutable package can become a root in another invocation, so
     // its effective embedding policy must also invalidate its own fingerprint.
     super::unit_uses_no_embed_metadata(build_runner, unit).hash(&mut config);
+    // Legacy dynamic-library and executable outputs may omit the unit-id suffix,
+    // so this injected default must also invalidate their shared fingerprint.
+    super::unit_uses_ohm_incremental_mono_partitions(build_runner, unit).hash(&mut config);
     if unit_consumes_public_api_hash(build_runner, unit) {
         // Older implementations cannot soundly reuse the preserved metadata
         // generations without propagating the corresponding link generations.
