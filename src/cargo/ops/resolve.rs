@@ -72,8 +72,9 @@ use crate::core::resolver::features::{
 use crate::core::resolver::{
     self, HasDevUnits, Resolve, ResolveOpts, ResolveVersion, VersionOrdering, VersionPreferences,
 };
-use crate::core::summary::Summary;
+use crate::core::summary::{FeatureValue, Summary};
 use crate::ops;
+use crate::ops::resolve_cache;
 use crate::sources::RecursivePathSource;
 use crate::util::CanonicalUrl;
 use crate::util::cache_lock::CacheLockMode;
@@ -191,11 +192,72 @@ pub fn resolve_ws_with_opts<'gctx>(
         ops::print_lockfile_changes(ws, None, &resolved_with_overrides, &mut registry)?;
         (resolve, resolved_with_overrides)
     } else if ws.require_optional_deps() {
+        let can_reuse_workspace_resolve = !dry_run
+            && !ws.is_ephemeral()
+            && !specs.is_empty()
+            && specs
+                .iter()
+                .all(|spec| ws.members().any(|member| spec.matches(member.package_id())))
+            && ws
+                .gctx()
+                .get_env_os("CARGO_EXPERIMENTAL_RESOLVE_CACHE")
+                .map_or_else(
+                    || ws.gctx().cli_unstable().ohm_defaults(),
+                    |enabled| enabled == "1",
+                )
+            && ws
+                .members()
+                .filter(|member| specs.iter().any(|spec| spec.matches(member.package_id())))
+                .all(|member| {
+                    member.targets().iter().all(|target| {
+                        // Local features are validated from package summaries, but
+                        // dependency-feature validation needs complete graph edges.
+                        target.required_features().is_none_or(|features| {
+                            features.iter().all(|feature| {
+                                matches!(
+                                    FeatureValue::new(feature.into()),
+                                    FeatureValue::Feature(_)
+                                )
+                            })
+                        })
+                    })
+                });
+        let cached_resolve = if can_reuse_workspace_resolve {
+            ops::lockfile::load_pkg_lockfile_with(ws, |resolve, lockfile_contents| {
+                Ok(resolve_cache::cached_workspace_resolve_is_fresh(
+                    ws,
+                    &resolve,
+                    &target_data.rustc,
+                    lockfile_contents,
+                )
+                .then_some(resolve))
+            })?
+            .flatten()
+        } else {
+            None
+        };
+
         // First, resolve the root_package's *listed* dependencies, as well as
         // downloading and updating all remotes and such.
-        let resolve = resolve_with_registry(ws, &mut registry, dry_run)?;
-        // No need to add patches again, `resolve_with_registry` has done it.
-        let add_patches = false;
+        let (resolve, add_patches) = if let Some(resolve) = cached_resolve {
+            debug!("reusing the cached workspace resolution");
+            // The lockfile graph is sufficient for package-profile validation,
+            // but it does not contain complete dependency or feature data. The
+            // selected packages are still fully resolved below, and selected
+            // packages with required target features take the ordinary path.
+            (resolve, true)
+        } else {
+            let resolve = resolve_with_registry(ws, &mut registry, dry_run)?;
+            if can_reuse_workspace_resolve {
+                if let Err(error) =
+                    resolve_cache::mark_workspace_resolve_fresh(ws, &resolve, &target_data.rustc)
+                {
+                    debug!("unable to cache the workspace resolution: {error}");
+                }
+            }
+            // No need to add patches again; `resolve_with_registry` has done it.
+            (resolve, false)
+        };
 
         // Second, resolve with precisely what we're doing. Filter out
         // transitive dependencies if necessary, specify features, handle
