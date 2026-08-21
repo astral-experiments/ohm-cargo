@@ -2374,6 +2374,9 @@ fn compute_metadata(
     if crate::compiler::unit_uses_ohm_incremental_codegen(build_runner, unit) {
         "ohm-incremental-codegen-defaults".hash(&mut unit_id_hasher);
     }
+    if crate::compiler::unit_uses_ohm_incremental_mono_partitions(build_runner, unit) {
+        "ohm-incremental-mono-partition-defaults".hash(&mut unit_id_hasher);
+    }
 
     let c_metadata = UnitHash(Hasher::finish(&c_metadata_hasher));
     let unit_id = UnitHash(Hasher::finish(&unit_id_hasher));
