@@ -62,6 +62,53 @@ fn minor_update_two_places() {
 }
 
 #[cargo_test]
+fn renamed_dependencies_preserve_multiple_locked_versions() {
+    Package::new("shared", "1.0.0").publish();
+    Package::new("shared", "2.0.0").publish();
+
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "example"
+                version = "0.1.0"
+
+                [dependencies]
+                earlier = { package = "shared", version = "1" }
+                later = { package = "shared", version = "2" }
+            "#,
+        )
+        .file("src/lib.rs", "")
+        .build();
+
+    p.cargo("check").run();
+    let lockfile = p.read_lockfile();
+    assert!(lockfile.contains("\nname = \"shared\"\nversion = \"1.0.0\""));
+    assert!(lockfile.contains("\nname = \"shared\"\nversion = \"2.0.0\""));
+
+    Package::new("shared", "1.1.0").publish();
+    p.change_file(
+        "Cargo.toml",
+        r#"
+            [package]
+            name = "example"
+            version = "0.1.0"
+
+            [dependencies]
+            earlier = { package = "shared", version = "1.1" }
+            later = { package = "shared", version = "2" }
+        "#,
+    );
+
+    p.cargo("check").run();
+    let lockfile = p.read_lockfile();
+    assert!(lockfile.contains("\nname = \"shared\"\nversion = \"1.1.0\""));
+    assert!(lockfile.contains("\nname = \"shared\"\nversion = \"2.0.0\""));
+    assert!(!lockfile.contains("\nname = \"shared\"\nversion = \"1.0.0\""));
+}
+
+#[cargo_test]
 fn transitive_minor_update() {
     Package::new("log", "0.1.0").publish();
     Package::new("serde", "0.1.0").dep("log", "0.1").publish();

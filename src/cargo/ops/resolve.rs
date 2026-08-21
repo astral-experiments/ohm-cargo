@@ -736,6 +736,8 @@ fn register_previous_locks(
     // come up first before newer version, if newer version are available.
     {
         let _span = tracing::span!(tracing::Level::TRACE, "poison").entered();
+        // Path-only workspaces never need a lockfile name index.
+        let mut locked_packages_by_name = None;
         let mut path_deps = ws.members().cloned().collect::<Vec<_>>();
         let mut visited = HashSet::default();
         while let Some(member) = path_deps.pop() {
@@ -773,7 +775,25 @@ fn register_previous_locks(
 
                 // If we match *anything* in the dependency graph then we consider
                 // ourselves all ok, and assume that we'll resolve to that.
-                if resolve.iter().any(|id| dep.matches_ignoring_source(id)) {
+                if locked_packages_by_name
+                    .get_or_insert_with(|| {
+                        let mut packages: HashMap<_, Vec<_>> = HashMap::default();
+                        for package_id in resolve.iter() {
+                            packages
+                                .entry(package_id.name())
+                                .or_default()
+                                .push(package_id);
+                        }
+                        packages
+                    })
+                    .get(&dep.package_name())
+                    .is_some_and(|packages| {
+                        packages
+                            .iter()
+                            .copied()
+                            .any(|package_id| dep.matches_ignoring_source(package_id))
+                    })
+                {
                     continue;
                 }
 
