@@ -4509,7 +4509,7 @@ fn relink_only_wrapper() -> PathBuf {
                             && args[index] == OsStr::new("-Z")
                             && matches!(
                                 args[index + 1].to_str(),
-                                Some("no-link" | "link-only")
+                                Some("emit-rlink" | "link-only")
                             )
                         {
                             index += 2;
@@ -4614,17 +4614,12 @@ fn relink_only_wrapper() -> PathBuf {
                             .find(|arg| Path::new(arg).extension() == Some(OsStr::new("rlink")))
                             .map(PathBuf::from)
                             .expect("link-only should receive an rlink");
-                        let marker = rlink.with_extension("fresh-rlink");
-                        if marker.exists() {
-                            fs::remove_file(marker).unwrap();
-                            exit(0);
-                        }
                         let saved_args = read_args(&rlink.with_extension("relink-args"));
                         emit(run(&rustc, &saved_args));
                     }
 
-                    if has_flag(&args, "no-link") {
-                        log("codegen", &args);
+                    if has_flag(&args, "emit-rlink") {
+                        log("compile-link", &args);
                         let output = run(&rustc, &stripped);
                         if output.status.success() {
                             let artifact = artifact_path(&output.stderr);
@@ -4632,7 +4627,6 @@ fn relink_only_wrapper() -> PathBuf {
                             fs::write(&rlink, b"test rlink").unwrap();
                             fs::write(artifact.with_extension("fake.rcgu.o"), b"test object")
                                 .unwrap();
-                            fs::write(rlink.with_extension("fresh-rlink"), b"").unwrap();
                             write_args(&rlink.with_extension("relink-args"), &stripped);
                         }
                         emit(output);
@@ -4689,7 +4683,7 @@ fn relink_only_reuses_root_codegen() {
         .run();
     assert_eq!(
         fs::read_to_string(&log).unwrap(),
-        "compile:dep\ncodegen:app\nlink:app\n"
+        "compile:dep\ncompile-link:app\n"
     );
 
     fs::write(&log, "").unwrap();
@@ -4730,7 +4724,7 @@ fn relink_only_reuses_root_codegen() {
         .run();
     assert_eq!(
         fs::read_to_string(&log).unwrap(),
-        "compile:dep\ncodegen:app\nlink:app\n"
+        "compile:dep\ncompile-link:app\n"
     );
     p.process(&p.bin("app"))
         .with_stdout_data(str![[r#"
@@ -4752,7 +4746,7 @@ fn relink_only_reuses_root_codegen() {
         .env("RUSTC_WRAPPER", &wrapper)
         .env("RELINK_WRAPPER_LOG", &log)
         .run();
-    assert_eq!(fs::read_to_string(&log).unwrap(), "codegen:app\nlink:app\n");
+    assert_eq!(fs::read_to_string(&log).unwrap(), "compile-link:app\n");
 }
 
 #[cargo_test]
@@ -4862,7 +4856,7 @@ fn relink_only_reuses_root_codegen_after_separate_transitive_dependency_build() 
         .run();
     assert_eq!(
         fs::read_to_string(&log).unwrap(),
-        "compile:build_script_build\ncompile:dep\ncompile:middle\ncodegen:app\nlink:app\n"
+        "compile:build_script_build\ncompile:dep\ncompile:middle\ncompile-link:app\n"
     );
 
     fs::write(&log, "").unwrap();
