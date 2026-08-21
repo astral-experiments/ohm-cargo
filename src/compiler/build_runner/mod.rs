@@ -1108,6 +1108,8 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
         let Some(expected_provenance) = self.registry_message_provenance()? else {
             return Ok(false);
         };
+        // Equal provenance records share their authenticated driver and loader paths.
+        let mut compiler_search_directories = HashSet::default();
         for unit in registry_closure_units
             .iter()
             .filter(|unit| Self::is_promotable_registry_dependency(unit))
@@ -1128,18 +1130,8 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
                         return false;
                     }
 
-                    if !provenance
-                        .compiler_search_directories
-                        .iter()
-                        .all(|directory| {
-                            compiler_driver_search_directory_is_unshadowed(
-                                &expected_provenance.compiler_driver.path,
-                                directory,
-                            )
-                        })
-                    {
-                        return false;
-                    }
+                    compiler_search_directories
+                        .extend(provenance.compiler_search_directories.iter().cloned());
 
                     let cached_messages = self.files().message_cache_path(unit);
                     provenance.messages_match(&cached_messages)
@@ -1163,6 +1155,18 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
             {
                 return Ok(false);
             }
+        }
+
+        // Every accepted record has the same authenticated compiler driver. Check each
+        // distinct loader directory once, after all fingerprints and diagnostics have
+        // been validated, so substitutions are rejected immediately before promotion.
+        if !compiler_search_directories.iter().all(|directory| {
+            compiler_driver_search_directory_is_unshadowed(
+                &expected_provenance.compiler_driver.path,
+                directory,
+            )
+        }) {
+            return Ok(false);
         }
 
         Ok(true)
