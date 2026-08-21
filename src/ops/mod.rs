@@ -79,6 +79,7 @@ mod common_for_install_and_uninstall;
 pub(crate) mod lockfile;
 pub(crate) mod registry;
 pub(crate) mod resolve;
+mod resolve_cache;
 
 /// Returns true if the dependency is either git or path, false otherwise
 /// Error if a git/path dep is transitive, but has no version (registry source).
