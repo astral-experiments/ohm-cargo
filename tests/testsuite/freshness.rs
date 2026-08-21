@@ -3380,6 +3380,7 @@ fn public_api_hash_wrapper() -> PathBuf {
                                         | "-Zpublic-api-hash=no"
                                         | "-Zcache-proc-macros"
                                         | "-Zcache-proc-macros=no"
+                                        | "-Zthreads=8"
                                 )
                             )
                         });
