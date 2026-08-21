@@ -1239,6 +1239,20 @@ impl GlobalContext {
             self.unstable_flags = self
                 .get::<Option<CliUnstable>>("unstable")?
                 .unwrap_or_default();
+            if let Ok(value) = self.get_env(crate::CARGO_INHERITED_OHM_DEFAULTS_ENV) {
+                match value {
+                    "yes" => self.unstable_flags.ohm_defaults = Some(true),
+                    "no" => self.unstable_flags.ohm_defaults = Some(false),
+                    _ => {}
+                }
+            }
+            if let Ok(value) = self.get_env(crate::CARGO_INHERITED_RELINK_ONLY_ENV) {
+                match value {
+                    "yes" => self.unstable_flags.relink_only = Some(true),
+                    "no" => self.unstable_flags.relink_only = Some(false),
+                    _ => {}
+                }
+            }
             if let Some(unstable_flags_cli) = &self.unstable_flags_cli {
                 // NB. It's not ideal to parse these twice, but doing it again here
                 //     allows the CLI to override config files for both enabling
