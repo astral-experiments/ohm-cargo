@@ -41,7 +41,7 @@ use crate::util::interning::InternedString;
 use crate::workspace::dependency::{Artifact, ArtifactKind, ArtifactTarget, DepKind};
 use crate::workspace::profiles::{Profile, Profiles, UnitFor};
 use crate::workspace::{
-    Dependency, Feature, Package, PackageId, PackageSet, Target, TargetKind, Workspace,
+    Dependency, Feature, Package, PackageId, PackageSet, SourceId, Target, TargetKind, Workspace,
 };
 
 const IS_NO_ARTIFACT_DEP: Option<&'static Artifact> = None;
@@ -82,9 +82,9 @@ struct State<'a, 'gctx> {
     /// Compiler identity and global policy do not vary between registry targets in this graph.
     trusted_registry_reuse_compiler: OnceCell<bool>,
 
-    /// Whether a registry package's complete resolved closure consists only
-    /// of immutable registry packages.
-    immutable_registry_closures: RefCell<HashMap<PackageId, bool>>,
+    /// Whether the dependencies actually compiled for a registry unit form an
+    /// immutable closure for its active platform, features, and target kind.
+    immutable_registry_closures: RefCell<HashMap<(Unit, bool), bool>>,
 }
 
 /// A boolean-like to indicate if a `Unit` is an artifact or not.
@@ -327,11 +327,13 @@ fn compute_deps(
             continue;
         };
         let dep_pkg = state.get(dep_pkg_id);
+        let dep_unit_for = unit_for.with_dependency(unit, dep_lib, unit_for.root_compile_kind());
         let mut mode = check_or_build_mode(unit.mode, dep_lib);
-        if mode.is_check() && state.can_reuse_built_registry_dependency(dep_pkg_id, dep_lib) {
+        if mode.is_check()
+            && state.can_reuse_built_registry_dependency(unit, dep_pkg_id, dep_lib, dep_unit_for)
+        {
             mode = CompileMode::Build;
         }
-        let dep_unit_for = unit_for.with_dependency(unit, dep_lib, unit_for.root_compile_kind());
 
         let manifest_deps = deps.iter().map(|d| (*d).clone()).collect::<Vec<_>>();
 
@@ -1100,7 +1102,13 @@ impl<'a, 'gctx> State<'a, 'gctx> {
     /// closure. Once all unit hashes and layouts are known, `BuildRunner`
     /// validates the exact existing artifacts and their complete fingerprints
     /// before allowing the graph to execute.
-    fn can_reuse_built_registry_dependency(&self, package_id: PackageId, target: &Target) -> bool {
+    fn can_reuse_built_registry_dependency(
+        &self,
+        parent: &Unit,
+        package_id: PackageId,
+        target: &Target,
+        unit_for: UnitFor,
+    ) -> bool {
         if !self.reuse_built_registry_dependencies
             || self.is_std
             || !package_id.source_id().is_remote_registry()
@@ -1120,7 +1128,27 @@ impl<'a, 'gctx> State<'a, 'gctx> {
         {
             return false;
         }
-        self.registry_closure_is_immutable(package_id, &mut HashSet::default())
+
+        let Ok(dependency) = new_unit_dep(
+            self,
+            parent,
+            self.get(package_id),
+            target,
+            None,
+            unit_for,
+            parent.kind.for_target(target),
+            CompileMode::Build,
+            IS_NO_ARTIFACT_DEP,
+        ) else {
+            return false;
+        };
+
+        self.registry_closure_is_immutable(
+            &dependency.unit,
+            unit_for,
+            false,
+            &mut HashSet::default(),
+        )
     }
 
     /// Loader interposition can turn the genuine toolchain executable into an
@@ -1178,12 +1206,15 @@ impl<'a, 'gctx> State<'a, 'gctx> {
     }
 
     /// Reject mutable sources and unaudited procedural macros throughout the
-    /// resolved dependency closure, memoizing completed package decisions.
+    /// actual compilation closure, including active build-script dependencies.
     fn registry_closure_is_immutable(
         &self,
-        package_id: PackageId,
-        visiting: &mut HashSet<PackageId>,
+        unit: &Unit,
+        unit_for: UnitFor,
+        audited_macro_runtime: bool,
+        visiting: &mut HashSet<(Unit, bool)>,
     ) -> bool {
+        let package_id = unit.pkg.package_id();
         if !package_id.source_id().is_remote_registry() {
             return false;
         }
@@ -1204,47 +1235,171 @@ impl<'a, 'gctx> State<'a, 'gctx> {
         if source_is_replaced && !effective_source_id.is_remote_registry() {
             return false;
         }
-        if let Some(immutable) = self.immutable_registry_closures.borrow().get(&package_id) {
+
+        let audited_macro_runtime = audited_macro_runtime || unit.pkg.proc_macro();
+        if audited_macro_runtime
+            && !is_canonical_unreplaced_crates_io(package_id.source_id(), source_is_replaced)
+        {
+            return false;
+        }
+
+        let cache_key = (unit.clone(), audited_macro_runtime);
+        if let Some(immutable) = self.immutable_registry_closures.borrow().get(&cache_key) {
             return *immutable;
         }
-        if !visiting.insert(package_id) {
+        if !visiting.insert(cache_key.clone()) {
             return true;
         }
 
-        let package = self.get(package_id);
         // Stable procedural macros can inspect arbitrary environment variables
         // and external files without recording either in rustc dependency
         // information. Reusing their expanded consumers is sound only for an
         // explicitly audited, immutable producer. Other macro closures must run
         // the ordinary check compiler regardless of their existing artifacts.
-        let trusted_macro = !package.proc_macro()
-            || (package_id.source_id().is_crates_io()
-                // `is_crates_io` also accepts Cargo's test-only registry
-                // override, which must not make an arbitrary registry trusted.
-                && matches!(
-                    package_id.source_id().url().as_str(),
-                    CRATES_IO_INDEX | CRATES_IO_HTTP_INDEX
-                )
-                // A user-controlled registry mirror must not inherit the
-                // explicitly audited crates.io procedural macro's trust.
-                && !source_is_replaced
-                && package_id.name().as_str() == "serde_derive"
-                && package_id.version().major == 1
-                && self
-                    .resolve()
-                    .checksums()
-                    .get(&package_id)
-                    .is_some_and(Option::is_some));
-        let immutable = trusted_macro
-            && self.resolve().deps(package_id).all(|(dependency_id, _)| {
-                self.registry_closure_is_immutable(dependency_id, visiting)
-            });
+        // A macro's ordinary library dependencies execute inside its compiler
+        // process too. Authenticating only the macro package would let an
+        // alternate registry or newer semver-compatible helper introduce
+        // untracked environment and filesystem reads into that same process.
+        let trusted_runtime = if unit.pkg.proc_macro() {
+            self.proc_macro_is_audited(unit)
+        } else if audited_macro_runtime {
+            self.proc_macro_runtime_dependency_is_audited(unit, source_is_replaced)
+        } else {
+            true
+        };
+        let immutable = trusted_runtime
+            && self.active_registry_dependencies_are_immutable(
+                unit,
+                unit_for,
+                audited_macro_runtime,
+                visiting,
+            );
 
-        visiting.remove(&package_id);
+        visiting.remove(&cache_key);
         self.immutable_registry_closures
             .borrow_mut()
-            .insert(package_id, immutable);
+            .insert(cache_key, immutable);
         immutable
+    }
+
+    /// Trust audited, token-only macro releases only when their complete
+    /// source identities match both the resolved and downloaded checksums.
+    fn proc_macro_is_audited(&self, unit: &Unit) -> bool {
+        let package_id = unit.pkg.package_id();
+        self.audited_registry_package_checksum(unit)
+            .is_some_and(|checksum| {
+                audited_proc_macro_checksum(
+                    package_id.name().as_str(),
+                    package_id.version(),
+                    checksum,
+                )
+            })
+    }
+
+    /// Authenticate every ordinary library linked into an audited macro.
+    fn proc_macro_runtime_dependency_is_audited(
+        &self,
+        unit: &Unit,
+        source_is_replaced: bool,
+    ) -> bool {
+        let package_id = unit.pkg.package_id();
+        audited_proc_macro_runtime_dependency_identity(
+            package_id.source_id(),
+            source_is_replaced,
+            package_id.name().as_str(),
+            package_id.version(),
+            self.resolve()
+                .checksums()
+                .get(&package_id)
+                .and_then(Option::as_deref),
+            unit.pkg.summary().checksum(),
+        )
+    }
+
+    /// Require the downloaded package identity to agree with its lockfile.
+    fn audited_registry_package_checksum(&self, unit: &Unit) -> Option<&str> {
+        let checksum = self
+            .resolve()
+            .checksums()
+            .get(&unit.pkg.package_id())?
+            .as_deref()?;
+        (unit.pkg.summary().checksum() == Some(checksum)).then_some(checksum)
+    }
+
+    /// Traverse the same active dependency edges as unit-graph construction,
+    /// instead of treating inactive platforms and optional features as used.
+    fn active_registry_dependencies_are_immutable(
+        &self,
+        unit: &Unit,
+        unit_for: UnitFor,
+        audited_macro_runtime: bool,
+        visiting: &mut HashSet<(Unit, bool)>,
+    ) -> bool {
+        if unit.mode.is_run_custom_build() {
+            return compute_deps_custom_build(unit, unit_for, self).is_ok_and(|dependencies| {
+                dependencies.into_iter().all(|dependency| {
+                    self.registry_closure_is_immutable(
+                        &dependency.unit,
+                        dependency.unit_for,
+                        audited_macro_runtime,
+                        visiting,
+                    )
+                })
+            });
+        }
+
+        for (package_id, dependencies) in self.deps(unit, unit_for) {
+            if dependencies
+                .iter()
+                .any(|dependency| dependency.artifact().is_some())
+            {
+                return false;
+            }
+
+            let package = self.get(package_id);
+            let Some(target) = package.targets().iter().find(|target| target.is_lib()) else {
+                return false;
+            };
+            let dependency_unit_for =
+                unit_for.with_dependency(unit, target, unit_for.root_compile_kind());
+            let Ok(dependency) = new_unit_dep(
+                self,
+                unit,
+                package,
+                target,
+                None,
+                dependency_unit_for,
+                unit.kind.for_target(target),
+                check_or_build_mode(unit.mode, target),
+                IS_NO_ARTIFACT_DEP,
+            ) else {
+                return false;
+            };
+
+            if !self.registry_closure_is_immutable(
+                &dependency.unit,
+                dependency_unit_for,
+                audited_macro_runtime,
+                visiting,
+            ) {
+                return false;
+            }
+        }
+
+        if unit.target.is_custom_build() {
+            return true;
+        }
+
+        dep_build_script(unit, unit_for, self).is_ok_and(|build_scripts| {
+            build_scripts.into_iter().flatten().all(|build_script| {
+                self.registry_closure_is_immutable(
+                    &build_script.unit,
+                    build_script.unit_for,
+                    audited_macro_runtime,
+                    visiting,
+                )
+            })
+        })
     }
 
     /// Gets `std_resolve` during building std, otherwise `usr_resolve`.
@@ -1348,5 +1503,561 @@ impl<'a, 'gctx> State<'a, 'gctx> {
                 }
             })
             .collect()
+    }
+}
+
+/// Reject replacement mirrors and file-backed registries for executable macro code.
+fn is_canonical_unreplaced_crates_io(source_id: SourceId, source_is_replaced: bool) -> bool {
+    !source_is_replaced
+        && source_id.is_crates_io()
+        && matches!(
+            source_id.url().as_str(),
+            CRATES_IO_INDEX | CRATES_IO_HTTP_INDEX
+        )
+}
+
+/// Authenticate the actual source and both package checksums of macro runtime code.
+fn audited_proc_macro_runtime_dependency_identity(
+    source_id: SourceId,
+    source_is_replaced: bool,
+    name: &str,
+    version: &semver::Version,
+    resolved_checksum: Option<&str>,
+    downloaded_checksum: Option<&str>,
+) -> bool {
+    is_canonical_unreplaced_crates_io(source_id, source_is_replaced)
+        && resolved_checksum.is_some_and(|checksum| {
+            downloaded_checksum == Some(checksum)
+                && audited_proc_macro_runtime_dependency_checksum(name, version, checksum)
+        })
+}
+
+/// Exact upstream releases whose macro entry points and runtime dependency
+/// closures have been audited to operate exclusively on their supplied tokens.
+fn audited_proc_macro_checksum(name: &str, version: &semver::Version, checksum: &str) -> bool {
+    if !version.pre.is_empty() || !version.build.is_empty() {
+        return false;
+    }
+
+    let expected = match (name, version.major, version.minor, version.patch) {
+        ("async-trait", 0, 1, 89) => {
+            "9035ad2d096bed7955a320ee7e2230574d28fd3c3a0f186cbea1ff3c7eed5dbb"
+        }
+        ("bytecheck_derive", 0, 8, 2) => {
+            "89385e82b5d1821d2219e0b095efa2cc1f246cbf99080f3be46a1a85c0d392d9"
+        }
+        ("bytemuck_derive", 1, 10, 2) => {
+            "f9abbd1bc6865053c427f7198e6af43bfdedc55ab791faed4fbd361d789575ff"
+        }
+        ("futures-macro", 0, 3, 32) => {
+            "e835b70203e41293343137df5c0664546da5745f82ec9b84d40be8336958447b"
+        }
+        ("futures-macro", 0, 3, 33) => {
+            "2d6d3cde68c518367be28956066ddfef33813991b77a55005a69dae04bf3b10b"
+        }
+        ("munge_macro", 0, 4, 7) => {
+            "4568f25ccbd45ab5d5603dc34318c1ec56b117531781260002151b8530a9f931"
+        }
+        ("pin-project-internal", 1, 1, 10) => {
+            "6e918e4ff8c4549eb882f14b3a4bc8c8bc93de829416eacf579f1207a8fbf861"
+        }
+        ("pin-project-internal", 1, 1, 11) => {
+            "d9b20ed30f105399776b9c883e68e536ef602a16ae6f596d2c473591d6ad64c6"
+        }
+        ("ptr_meta_derive", 0, 3, 1) => {
+            "7347867d0a7e1208d93b46767be83e2b8f978c3dad35f775ac8d8847551d6fe1"
+        }
+        ("rkyv_derive", 0, 8, 17) => {
+            "c0ed1a78a1b19d184b0daa629dd9a024573173ec7d485b287cb369fb3607cc1c"
+        }
+        ("serde_derive", 1, 0, 219) => {
+            "5b0276cf7f2c73365f7157c8123c21cd9a50fbbd844757af28ca1f5925fc2a00"
+        }
+        ("serde_derive", 1, 0, 228) => {
+            "d540f220d3187173da220f885ab66608367b6574e925011a9353e4badda91d79"
+        }
+        ("serde_derive", 1, 0, 229) => {
+            "e7a5d71263a5a7d47b41f6b3f06ba276f10cc18b0931f1799f710578e2309348"
+        }
+        ("thiserror-impl", 1, 0, 69) => {
+            "4fee6c4efc90059e10f81e6d42c60a18f76588c3d74cb83a0b242a2b6c7504c1"
+        }
+        ("thiserror-impl", 2, 0, 18) => {
+            "ebc4ee7f67670e9b64d05fa4253e753e016c6c95ff35b89b7941d6b856dec1d5"
+        }
+        ("thiserror-impl", 2, 0, 19) => {
+            "43cbfe0cf76104d42a574802844187e84a305e531ed54455f11fbde0f10541cd"
+        }
+        ("tokio-macros", 2, 7, 0) => {
+            "385a6cb71ab9ab790c5fe8d67f1645e6c450a7ce006a33de03daa956cf70a496"
+        }
+        ("tracing-attributes", 0, 1, 31) => {
+            "7490cfa5ec963746568740651ac6781f701c9c5ea257c58e057f3ba8cf69e8da"
+        }
+        ("yoke-derive", 0, 8, 1) => {
+            "b659052874eb698efe5b9e8cf382204678a0086ebf46982b79d6ca3182927e5d"
+        }
+        ("yoke-derive", 0, 8, 2) => {
+            "de844c262c8848816172cef550288e7dc6c7b7814b4ee56b3e1553f275f1858e"
+        }
+        ("zerocopy-derive", 0, 8, 37) => {
+            "1328722bbf2115db7e19d69ebcc15e795719e2d66b60827c6a69a117365e37a0"
+        }
+        ("zerocopy-derive", 0, 8, 42) => {
+            "7e6cc098ea4d3bd6246687de65af3f920c430e236bee1e3bf2e441463f08a02f"
+        }
+        ("zerofrom-derive", 0, 1, 6) => {
+            "d71e5d6e06ab090c67b5e44993ec16b72dcbaabc526db883a360057678b48502"
+        }
+        ("zeroize_derive", 1, 4, 3) => {
+            "85a5b4158499876c763cb03bc4e49185d3cccbabb15b33c627f7884f43db852e"
+        }
+        ("zerovec-derive", 0, 11, 2) => {
+            "eadce39539ca5cb3985590102671f2567e659fca9666581ad3411d59207951f3"
+        }
+        ("zerovec-derive", 0, 11, 3) => {
+            "625dc425cab0dca6dc3c3319506e6593dcb08a9f387ea3b284dbd52a92c40555"
+        }
+        _ => return false,
+    };
+
+    checksum == expected
+}
+
+/// Exact audited libraries that execute inside an accepted procedural macro.
+fn audited_proc_macro_runtime_dependency_checksum(
+    name: &str,
+    version: &semver::Version,
+    checksum: &str,
+) -> bool {
+    if !version.pre.is_empty() || !version.build.is_empty() {
+        return false;
+    }
+
+    let expected = match (name, version.major, version.minor, version.patch) {
+        ("proc-macro2", 1, 0, 93) => {
+            "60946a68e5f9d28b0dc1c21bb8a97ee7d018a8b322fa57838ba31cc878e22d99"
+        }
+        ("proc-macro2", 1, 0, 95) => {
+            "02b3e5e68a3a1a02aad3ec490a98007cbc13c37cbe84a3cd7b8e406d76e7f778"
+        }
+        ("proc-macro2", 1, 0, 103) => {
+            "5ee95bc4ef87b8d5ba32e8b7714ccc834865276eab0aed5c9958d00ec45f49e8"
+        }
+        ("proc-macro2", 1, 0, 106) => {
+            "8fd00f0bb2e90d81d1044c2b32617f68fcb9fa3bb7640c23e9c748e53fb30934"
+        }
+        ("proc-macro2", 1, 0, 107) => {
+            "985e7ec9bb745e6ce6535b544d84d6cd6f7ad8bd711c398938ae983b91a766d9"
+        }
+        ("quote", 1, 0, 38) => "0e4dccaaaf89514f546c693ddc140f729f958c247918a13380cccc6078391acc",
+        ("quote", 1, 0, 40) => "1885c039570dc00dcb4ff087a89e185fd56bae234ddc7f056a945bf36467248d",
+        ("quote", 1, 0, 45) => "41f2619966050689382d2b44f664f4bc593e129785a36d6ee376ddf37259b924",
+        ("quote", 1, 0, 46) => "dfbc457d0c7a0759a614551b11a6409e5951f6c7537be1f1b7682b9ae9230368",
+        ("quote", 1, 0, 47) => "1fbf4db142a473a8d80c26bbf18454ed458bf8d26c8219c331daecfdbd079001",
+        ("syn", 1, 0, 109) => "72b64191b275b66ffe2469e8af2c1cfe3bafa67b529ead792a6d0160888b4237",
+        ("syn", 2, 0, 96) => "d5d0adab1ae378d7f53bdebc67a39f1f151407ef230f0ce2883572f5d8985c80",
+        ("syn", 2, 0, 104) => "17b6f705963418cdb9927482fa304bc562ece2fdd4f616084c50b7023b435a40",
+        ("syn", 2, 0, 110) => "a99801b5bd34ede4cf3fc688c5919368fea4e4814a4664359503e6015b280aea",
+        ("syn", 2, 0, 117) => "e665b8803e7b1d2a727f4023456bbbbe74da67099c585258af0ad9c5013b9b99",
+        ("syn", 2, 0, 118) => "1b9ae57f904213ebb649ce6895b8a66c66f0203b9319718f69a5612a065b1422",
+        ("syn", 2, 0, 119) => "872831b642d1a07999a962a351ed35b955ea2cfc8f3862091e2a240a84f17297",
+        ("syn", 3, 0, 3) => "53e9bae58849f64dfa4f5d5ae372c8341f7305f82a3868709269343628b659a3",
+        ("synstructure", 0, 13, 2) => {
+            "728a70f3dbaf5bab7f0c4b1ac8d7ae5ea60a4b5549c8a5914361c99147a709d2"
+        }
+        ("unicode-ident", 1, 0, 14) => {
+            "adb9e6ca4f869e1180728b7950e35922a7fc6397f7b641499e8f3ef06e50dc83"
+        }
+        ("unicode-ident", 1, 0, 18) => {
+            "5a5f39404a5da50712a4c1eecf25e90dd62b613502b7e925fd4e4d19b5c96512"
+        }
+        ("unicode-ident", 1, 0, 22) => {
+            "9312f7c4f6ff9069b165498234ce8be658059c6728633667c526e27dc2cf1df5"
+        }
+        ("unicode-ident", 1, 0, 24) => {
+            "e6e4313cd5fcd3dad5cafa179702e2b244f760991f45397d14d4ebf38247da75"
+        }
+        _ => return false,
+    };
+
+    checksum == expected
+}
+
+#[cfg(test)]
+mod audited_proc_macro_tests {
+    use super::{
+        audited_proc_macro_checksum, audited_proc_macro_runtime_dependency_checksum,
+        audited_proc_macro_runtime_dependency_identity, is_canonical_unreplaced_crates_io,
+    };
+    use crate::workspace::SourceId;
+
+    #[test]
+    fn only_the_exact_audited_release_and_checksum_are_trusted() {
+        let checksum = "43cbfe0cf76104d42a574802844187e84a305e531ed54455f11fbde0f10541cd";
+        let audited = semver::Version::new(2, 0, 19);
+
+        assert!(audited_proc_macro_checksum(
+            "thiserror-impl",
+            &audited,
+            checksum
+        ));
+        assert!(!audited_proc_macro_checksum(
+            "thiserror-impl",
+            &audited,
+            "bad-checksum",
+        ));
+        assert!(!audited_proc_macro_checksum(
+            "thiserror-impl",
+            &semver::Version::new(2, 0, 20),
+            checksum,
+        ));
+        assert!(!audited_proc_macro_checksum(
+            "different-macro",
+            &audited,
+            checksum,
+        ));
+        assert!(!audited_proc_macro_checksum(
+            "thiserror-impl",
+            &semver::Version::parse("2.0.19-prerelease").expect("valid test version"),
+            checksum,
+        ));
+    }
+
+    #[test]
+    fn macros_with_untracked_runtime_inputs_remain_untrusted() {
+        for (name, version, checksum) in [
+            (
+                "clap_derive",
+                semver::Version::new(4, 5, 55),
+                "a92793da1a46a5f2a02a6f4c46c6496b28c43638adea8306fcb0caa1634f24e5",
+            ),
+            (
+                "clap_derive",
+                semver::Version::new(4, 6, 4),
+                "d012d2b9d65aca7f18f4d9878a045bc17899bba951561ba5ec3c2ba1eed9a061",
+            ),
+            (
+                "displaydoc",
+                semver::Version::new(0, 2, 5),
+                "97369cbbc041bc366949bc74d34658d6cda5621039731c6310521892a3a20ae0",
+            ),
+        ] {
+            assert!(!audited_proc_macro_checksum(name, &version, checksum));
+        }
+    }
+
+    #[test]
+    fn serde_derives_require_exact_audited_releases_and_checksums() {
+        let checksum = "e7a5d71263a5a7d47b41f6b3f06ba276f10cc18b0931f1799f710578e2309348";
+
+        assert!(audited_proc_macro_checksum(
+            "serde_derive",
+            &semver::Version::new(1, 0, 219),
+            "5b0276cf7f2c73365f7157c8123c21cd9a50fbbd844757af28ca1f5925fc2a00",
+        ));
+        assert!(audited_proc_macro_checksum(
+            "serde_derive",
+            &semver::Version::new(1, 0, 229),
+            checksum,
+        ));
+        assert!(!audited_proc_macro_checksum(
+            "serde_derive",
+            &semver::Version::new(1, 0, 230),
+            checksum,
+        ));
+        assert!(!audited_proc_macro_checksum(
+            "serde_derive",
+            &semver::Version::new(1, 0, 229),
+            "unaudited-checksum",
+        ));
+    }
+
+    #[test]
+    fn macro_runtime_dependencies_require_exact_audited_identities() {
+        for (name, version, checksum) in [
+            (
+                "proc-macro2",
+                semver::Version::new(1, 0, 107),
+                "985e7ec9bb745e6ce6535b544d84d6cd6f7ad8bd711c398938ae983b91a766d9",
+            ),
+            (
+                "quote",
+                semver::Version::new(1, 0, 47),
+                "1fbf4db142a473a8d80c26bbf18454ed458bf8d26c8219c331daecfdbd079001",
+            ),
+            (
+                "syn",
+                semver::Version::new(3, 0, 3),
+                "53e9bae58849f64dfa4f5d5ae372c8341f7305f82a3868709269343628b659a3",
+            ),
+            (
+                "synstructure",
+                semver::Version::new(0, 13, 2),
+                "728a70f3dbaf5bab7f0c4b1ac8d7ae5ea60a4b5549c8a5914361c99147a709d2",
+            ),
+            (
+                "unicode-ident",
+                semver::Version::new(1, 0, 24),
+                "e6e4313cd5fcd3dad5cafa179702e2b244f760991f45397d14d4ebf38247da75",
+            ),
+        ] {
+            assert!(audited_proc_macro_runtime_dependency_checksum(
+                name, &version, checksum,
+            ));
+            assert!(!audited_proc_macro_runtime_dependency_checksum(
+                name,
+                &version,
+                "unaudited-checksum",
+            ));
+            assert!(!audited_proc_macro_runtime_dependency_checksum(
+                name,
+                &semver::Version::new(version.major, version.minor, version.patch + 1),
+                checksum,
+            ));
+        }
+    }
+
+    #[test]
+    fn existing_serde_workspaces_have_complete_audited_macro_closures() {
+        for (macro_version, macro_checksum, helpers) in [
+            (
+                semver::Version::new(1, 0, 228),
+                "d540f220d3187173da220f885ab66608367b6574e925011a9353e4badda91d79",
+                [
+                    (
+                        "proc-macro2",
+                        semver::Version::new(1, 0, 106),
+                        "8fd00f0bb2e90d81d1044c2b32617f68fcb9fa3bb7640c23e9c748e53fb30934",
+                    ),
+                    (
+                        "quote",
+                        semver::Version::new(1, 0, 46),
+                        "dfbc457d0c7a0759a614551b11a6409e5951f6c7537be1f1b7682b9ae9230368",
+                    ),
+                    (
+                        "syn",
+                        semver::Version::new(2, 0, 118),
+                        "1b9ae57f904213ebb649ce6895b8a66c66f0203b9319718f69a5612a065b1422",
+                    ),
+                    (
+                        "unicode-ident",
+                        semver::Version::new(1, 0, 24),
+                        "e6e4313cd5fcd3dad5cafa179702e2b244f760991f45397d14d4ebf38247da75",
+                    ),
+                ],
+            ),
+            (
+                semver::Version::new(1, 0, 228),
+                "d540f220d3187173da220f885ab66608367b6574e925011a9353e4badda91d79",
+                [
+                    (
+                        "proc-macro2",
+                        semver::Version::new(1, 0, 103),
+                        "5ee95bc4ef87b8d5ba32e8b7714ccc834865276eab0aed5c9958d00ec45f49e8",
+                    ),
+                    (
+                        "quote",
+                        semver::Version::new(1, 0, 45),
+                        "41f2619966050689382d2b44f664f4bc593e129785a36d6ee376ddf37259b924",
+                    ),
+                    (
+                        "syn",
+                        semver::Version::new(2, 0, 110),
+                        "a99801b5bd34ede4cf3fc688c5919368fea4e4814a4664359503e6015b280aea",
+                    ),
+                    (
+                        "unicode-ident",
+                        semver::Version::new(1, 0, 22),
+                        "9312f7c4f6ff9069b165498234ce8be658059c6728633667c526e27dc2cf1df5",
+                    ),
+                ],
+            ),
+            (
+                semver::Version::new(1, 0, 228),
+                "d540f220d3187173da220f885ab66608367b6574e925011a9353e4badda91d79",
+                [
+                    (
+                        "proc-macro2",
+                        semver::Version::new(1, 0, 93),
+                        "60946a68e5f9d28b0dc1c21bb8a97ee7d018a8b322fa57838ba31cc878e22d99",
+                    ),
+                    (
+                        "quote",
+                        semver::Version::new(1, 0, 38),
+                        "0e4dccaaaf89514f546c693ddc140f729f958c247918a13380cccc6078391acc",
+                    ),
+                    (
+                        "syn",
+                        semver::Version::new(2, 0, 96),
+                        "d5d0adab1ae378d7f53bdebc67a39f1f151407ef230f0ce2883572f5d8985c80",
+                    ),
+                    (
+                        "unicode-ident",
+                        semver::Version::new(1, 0, 14),
+                        "adb9e6ca4f869e1180728b7950e35922a7fc6397f7b641499e8f3ef06e50dc83",
+                    ),
+                ],
+            ),
+            (
+                semver::Version::new(1, 0, 219),
+                "5b0276cf7f2c73365f7157c8123c21cd9a50fbbd844757af28ca1f5925fc2a00",
+                [
+                    (
+                        "proc-macro2",
+                        semver::Version::new(1, 0, 95),
+                        "02b3e5e68a3a1a02aad3ec490a98007cbc13c37cbe84a3cd7b8e406d76e7f778",
+                    ),
+                    (
+                        "quote",
+                        semver::Version::new(1, 0, 40),
+                        "1885c039570dc00dcb4ff087a89e185fd56bae234ddc7f056a945bf36467248d",
+                    ),
+                    (
+                        "syn",
+                        semver::Version::new(2, 0, 104),
+                        "17b6f705963418cdb9927482fa304bc562ece2fdd4f616084c50b7023b435a40",
+                    ),
+                    (
+                        "unicode-ident",
+                        semver::Version::new(1, 0, 18),
+                        "5a5f39404a5da50712a4c1eecf25e90dd62b613502b7e925fd4e4d19b5c96512",
+                    ),
+                ],
+            ),
+        ] {
+            assert!(audited_proc_macro_checksum(
+                "serde_derive",
+                &macro_version,
+                macro_checksum,
+            ));
+            for (name, version, checksum) in helpers {
+                assert!(
+                    audited_proc_macro_runtime_dependency_checksum(name, &version, checksum),
+                    "missing the audited {name} {version} runtime dependency",
+                );
+                assert!(!audited_proc_macro_runtime_dependency_checksum(
+                    name,
+                    &version,
+                    "unaudited-checksum",
+                ));
+            }
+        }
+    }
+
+    #[test]
+    fn ruff_workspaces_have_complete_audited_macro_runtime_closures() {
+        assert!(audited_proc_macro_checksum(
+            "async-trait",
+            &semver::Version::new(0, 1, 89),
+            "9035ad2d096bed7955a320ee7e2230574d28fd3c3a0f186cbea1ff3c7eed5dbb",
+        ));
+
+        for (name, version, checksum) in [
+            (
+                "proc-macro2",
+                semver::Version::new(1, 0, 107),
+                "985e7ec9bb745e6ce6535b544d84d6cd6f7ad8bd711c398938ae983b91a766d9",
+            ),
+            (
+                "quote",
+                semver::Version::new(1, 0, 47),
+                "1fbf4db142a473a8d80c26bbf18454ed458bf8d26c8219c331daecfdbd079001",
+            ),
+            (
+                "syn",
+                semver::Version::new(2, 0, 119),
+                "872831b642d1a07999a962a351ed35b955ea2cfc8f3862091e2a240a84f17297",
+            ),
+            (
+                "synstructure",
+                semver::Version::new(0, 13, 2),
+                "728a70f3dbaf5bab7f0c4b1ac8d7ae5ea60a4b5549c8a5914361c99147a709d2",
+            ),
+            (
+                "unicode-ident",
+                semver::Version::new(1, 0, 24),
+                "e6e4313cd5fcd3dad5cafa179702e2b244f760991f45397d14d4ebf38247da75",
+            ),
+        ] {
+            assert!(
+                audited_proc_macro_runtime_dependency_checksum(name, &version, checksum),
+                "missing the audited {name} {version} runtime dependency",
+            );
+            assert!(!audited_proc_macro_runtime_dependency_checksum(
+                name,
+                &version,
+                "unaudited-checksum",
+            ));
+        }
+
+        assert!(!audited_proc_macro_runtime_dependency_checksum(
+            "syn",
+            &semver::Version::new(2, 0, 120),
+            "872831b642d1a07999a962a351ed35b955ea2cfc8f3862091e2a240a84f17297",
+        ));
+    }
+
+    #[test]
+    fn alternate_registries_cannot_supply_macro_runtime_dependencies() {
+        let crates_io = SourceId::from_url("registry+https://github.com/rust-lang/crates.io-index")
+            .expect("canonical registry source");
+        let alternative = SourceId::from_url("registry+file:///tmp/alternative-registry")
+            .expect("alternate registry source");
+
+        assert!(is_canonical_unreplaced_crates_io(crates_io, false));
+        assert!(!is_canonical_unreplaced_crates_io(crates_io, true));
+        assert!(!is_canonical_unreplaced_crates_io(alternative, false));
+    }
+
+    #[test]
+    fn an_exact_macro_helper_checksum_cannot_authenticate_an_alternate_registry() {
+        let crates_io = SourceId::from_url("registry+https://github.com/rust-lang/crates.io-index")
+            .expect("canonical registry source");
+        let alternative = SourceId::from_url("registry+file:///tmp/alternative-registry")
+            .expect("alternate registry source");
+        let version = semver::Version::new(3, 0, 3);
+        let checksum = "53e9bae58849f64dfa4f5d5ae372c8341f7305f82a3868709269343628b659a3";
+
+        assert!(audited_proc_macro_runtime_dependency_identity(
+            crates_io,
+            false,
+            "syn",
+            &version,
+            Some(checksum),
+            Some(checksum),
+        ));
+        assert!(!audited_proc_macro_runtime_dependency_identity(
+            alternative,
+            false,
+            "syn",
+            &version,
+            Some(checksum),
+            Some(checksum),
+        ));
+        assert!(!audited_proc_macro_runtime_dependency_identity(
+            crates_io,
+            true,
+            "syn",
+            &version,
+            Some(checksum),
+            Some(checksum),
+        ));
+        assert!(!audited_proc_macro_runtime_dependency_identity(
+            crates_io,
+            false,
+            "syn",
+            &version,
+            Some(checksum),
+            Some("unaudited-download"),
+        ));
+        assert!(!audited_proc_macro_runtime_dependency_identity(
+            crates_io,
+            false,
+            "syn",
+            &version,
+            None,
+            Some(checksum),
+        ));
     }
 }
