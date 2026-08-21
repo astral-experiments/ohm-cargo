@@ -743,10 +743,11 @@ fn cargo_clean_should_remove_correct_files() {
 [ROOT]/foo/build-dir/debug/build/foo/[HASH]/fingerprint/bin-foo.json
 [ROOT]/foo/build-dir/debug/build/foo/[HASH]/fingerprint/dep-bin-foo
 [ROOT]/foo/build-dir/debug/build/foo/[HASH]/fingerprint/invoked.timestamp
+[ROOT]/foo/build-dir/debug/build/bar/[HASH]/fingerprint/ohm-message-provenance-lib-bar
 [ROOT]/foo/build-dir/debug/build/bar/[HASH]/fingerprint/output-lib-bar
 [ROOT]/foo/build-dir/debug/build/foo/[HASH]/fingerprint/output-bin-foo
-[ROOT]/foo/build-dir/debug/build/foo/[HASH]/out/foo[..][EXE]
 [ROOT]/foo/build-dir/debug/build/foo/[HASH]/out/foo[..].d
+[ROOT]/foo/build-dir/debug/build/foo/[HASH]/out/foo[..][EXE]
 
 "#]]);
 
