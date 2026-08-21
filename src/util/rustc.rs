@@ -35,6 +35,7 @@ pub struct Rustc {
     cache: Mutex<Cache>,
     transparent_unused_externs: OnceLock<bool>,
     ohm_incremental_codegen: OnceLock<bool>,
+    ohm_incremental_mono_partitions: OnceLock<bool>,
 }
 
 impl Rustc {
@@ -118,6 +119,7 @@ impl Rustc {
             cache: Mutex::new(cache),
             transparent_unused_externs: OnceLock::new(),
             ohm_incremental_codegen: OnceLock::new(),
+            ohm_incremental_mono_partitions: OnceLock::new(),
         })
     }
 
@@ -154,6 +156,24 @@ impl Rustc {
             process
                 .arg("-Zohm-caller-local-cgus")
                 .arg("-Zohm-stable-cgu-merging")
+                .arg("--print=sysroot");
+            self.cached_output(&process, 0).is_ok()
+        })
+    }
+
+    /// Whether this compiler can reuse monomorphization partitions without a public API hash.
+    ///
+    /// Keep this separate from the older codegen options so a previous Ohm compiler
+    /// retains those optimizations when it cannot support this additional default.
+    pub fn supports_ohm_incremental_mono_partitions(&self, gctx: &GlobalContext) -> bool {
+        *self.ohm_incremental_mono_partitions.get_or_init(|| {
+            let mut process = self.workspace_process();
+            if let Err(error) = apply_env_config(gctx, &mut process) {
+                debug!("unable to configure monomorphization partition capability probe: {error}");
+                return false;
+            }
+            process
+                .arg("-Zohm-incremental-mono-partitions")
                 .arg("--print=sysroot");
             self.cached_output(&process, 0).is_ok()
         })
