@@ -68,6 +68,19 @@ const OLD_CARGO_WARNING_SYNTAX: &str = "cargo:warning=";
 /// [the doc]: https://doc.rust-lang.org/nightly/cargo/reference/build-scripts.html#cargo-warning
 const NEW_CARGO_WARNING_SYNTAX: &str = "cargo::warning=";
 
+/// Compiler logger settings can write external files even when artifact fingerprints match.
+pub(crate) const OHM_SHARED_RUSTC_LOG_ENVIRONMENT: &[&str] = &[
+    "RUSTC_LOG",
+    "RUSTC_LOG_COLOR",
+    "RUSTC_LOG_ENTRY_EXIT",
+    "RUSTC_LOG_THREAD_IDS",
+    "RUSTC_LOG_BACKTRACE",
+    "RUSTC_LOG_WRAPTREE",
+    "RUSTC_LOG_LINES",
+    "RUSTC_LOG_FORMAT_JSON",
+    "RUSTC_LOG_OUTPUT_TARGET",
+];
+
 #[derive(Clone, Debug, Hash, PartialEq, Eq, PartialOrd, Ord)]
 pub enum Severity {
     Error,
@@ -281,13 +294,21 @@ impl LinkArgTarget {
 #[tracing::instrument(skip_all)]
 pub fn prepare(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResult<Job> {
     let metadata = build_runner.get_run_build_script_metadata(unit);
-    if build_runner
+    let overridden = build_runner
         .build_script_outputs
         .lock()
         .unwrap()
-        .contains_key(metadata)
-    {
+        .get(metadata)
+        .cloned();
+    if let Some(output) = overridden {
         // The output is already set, thus the build script is overridden.
+        validate_shared_registry_build_output(
+            build_runner.files().is_shared_registry_unit(unit),
+            unit.pkg.package_id(),
+            &output,
+            build_runner.files().shared_registry_compiler_driver(),
+            build_runner.files().shared_registry_implicit_native_tools(),
+        )?;
         fingerprint::prepare_target(build_runner, unit, false)
     } else {
         build_work(build_runner, unit)
@@ -505,6 +526,22 @@ fn build_work(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResul
     let id = unit.pkg.package_id();
     let run_files = BuildScriptRunFiles::for_unit(build_runner, unit);
     let host_target_root = build_runner.files().host_dest().map(|v| v.to_path_buf());
+    let shared_registry_root = bcx
+        .gctx
+        .cli_unstable()
+        .ohm_shared_registry_cache
+        .then(|| bcx.ws.build_dir().into_path_unlocked());
+    let validate_shared_registry_environment = build_runner.files().is_shared_registry_unit(unit);
+    let shared_registry_compiler_driver = build_runner
+        .files()
+        .shared_registry_compiler_driver()
+        .map(Path::to_path_buf);
+    let shared_registry_compiler_driver_fresh = shared_registry_compiler_driver.clone();
+    let shared_registry_implicit_native_tools = build_runner
+        .files()
+        .shared_registry_implicit_native_tools()
+        .map(Arc::<[String]>::from);
+    let shared_registry_implicit_native_tools_fresh = shared_registry_implicit_native_tools.clone();
     let all = (
         id,
         library_name.clone(),
@@ -589,6 +626,7 @@ fn build_work(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResul
                     &build_script_outputs,
                     &build_scripts,
                     host_target_root,
+                    shared_registry_root.as_deref(),
                 )?;
             }
         }
@@ -696,6 +734,13 @@ fn build_work(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResul
             &targets,
             &msrv,
         )?;
+        validate_shared_registry_build_output(
+            validate_shared_registry_environment,
+            id,
+            &parsed_output,
+            shared_registry_compiler_driver.as_deref(),
+            shared_registry_implicit_native_tools.as_deref(),
+        )?;
 
         if json_messages {
             emit_build_output(state, &parsed_output, script_out_dir.as_path(), id)?;
@@ -725,6 +770,13 @@ fn build_work(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResul
                 &msrv_fresh,
             )?,
         };
+        validate_shared_registry_build_output(
+            validate_shared_registry_environment,
+            id,
+            &output,
+            shared_registry_compiler_driver_fresh.as_deref(),
+            shared_registry_implicit_native_tools_fresh.as_deref(),
+        )?;
 
         if json_messages {
             emit_build_output(state, &output, script_out_dir.as_path(), id)?;
@@ -744,6 +796,151 @@ fn build_work(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResul
         job.before(fresh);
     }
     Ok(job)
+}
+
+/// Validates configured, freshly generated, and cached outputs for physically shared units.
+///
+/// Workspace-private scripts remain unrestricted; shared outputs cannot inject compiler policy,
+/// opaque linker arguments, or an alternate runtime compiler driver.
+fn validate_shared_registry_build_output(
+    shared_registry: bool,
+    package: PackageId,
+    output: &BuildOutput,
+    compiler_driver: Option<&Path>,
+    implicit_native_tools: Option<&[String]>,
+) -> CargoResult<()> {
+    if !shared_registry {
+        return Ok(());
+    }
+
+    if let Some((name, _)) = output
+        .env
+        .iter()
+        .find(|(name, _)| build_script_overrides_compiler_environment(name, cfg!(windows)))
+    {
+        bail!(
+            "cannot share registry package `{package}` because its build script overrides \
+             the compiler environment variable `{name}`; disable -Zohm-shared-registry-cache"
+        );
+    }
+
+    if output
+        .linker_args
+        .iter()
+        .any(|(_, argument)| argument.as_str() != "-pthread")
+        || output
+            .library_links
+            .iter()
+            .any(|library| build_script_uses_opaque_link_library(library))
+    {
+        bail!(
+            "cannot share registry package `{package}` because its build script supplies \
+             opaque compiler linker arguments; disable -Zohm-shared-registry-cache"
+        );
+    }
+
+    if let Some(compiler_driver) = compiler_driver
+        && let Some(filename) = compiler_driver.file_name()
+    {
+        for library_path in &output.library_paths {
+            let directory = get_dynamic_search_path(library_path.as_ref());
+            let candidate = directory.join(filename);
+            match candidate.canonicalize() {
+                Ok(candidate) if candidate == compiler_driver => {}
+                Ok(_) => {
+                    bail!(
+                        "cannot share registry package `{package}` because its build-script \
+                         library search path `{}` contains an alternate compiler driver; \
+                         disable -Zohm-shared-registry-cache",
+                        directory.display()
+                    );
+                }
+                Err(error)
+                    if matches!(
+                        error.kind(),
+                        std::io::ErrorKind::NotFound | std::io::ErrorKind::NotADirectory
+                    ) => {}
+                Err(error) => {
+                    bail!(
+                        "cannot share registry package `{package}` because its build-script \
+                         library search path `{}` cannot be inspected: {error}; disable \
+                         -Zohm-shared-registry-cache",
+                        directory.display()
+                    );
+                }
+            }
+        }
+    }
+
+    if cfg!(windows)
+        && let Some(implicit_native_tools) = implicit_native_tools
+    {
+        for library_path in &output.library_paths {
+            let directory = get_dynamic_search_path(library_path.as_ref());
+            for executable in implicit_native_tools {
+                let candidate = directory.join(executable);
+                let candidate = if candidate.extension().is_none() {
+                    candidate.with_extension(std::env::consts::EXE_EXTENSION)
+                } else {
+                    candidate
+                };
+                match std::fs::metadata(&candidate) {
+                    Ok(_) => {
+                        bail!(
+                            "cannot share registry package `{package}` because its build-script \
+                             library search path `{}` shadows the native tool `{executable}`; \
+                             disable -Zohm-shared-registry-cache",
+                            directory.display()
+                        );
+                    }
+                    Err(error)
+                        if matches!(
+                            error.kind(),
+                            std::io::ErrorKind::NotFound | std::io::ErrorKind::NotADirectory
+                        ) => {}
+                    Err(error) => {
+                        bail!(
+                            "cannot share registry package `{package}` because its build-script \
+                             library search path `{}` cannot be inspected: {error}; disable \
+                             -Zohm-shared-registry-cache",
+                            directory.display()
+                        );
+                    }
+                }
+            }
+        }
+    }
+
+    Ok(())
+}
+
+/// Detects compiler and loader overrides using the target platform's environment-key casing.
+fn build_script_overrides_compiler_environment(name: &str, case_insensitive: bool) -> bool {
+    super::OHM_COMPILER_LOADER_ENVIRONMENT
+        .iter()
+        .copied()
+        .chain([
+            paths::dylib_path_envvar(),
+            "PATH",
+            "RUSTC_BOOTSTRAP",
+            "RUSTC_OVERRIDE_VERSION_STRING",
+        ])
+        .chain(OHM_SHARED_RUSTC_LOG_ENVIRONMENT.iter().copied())
+        .any(|expected| {
+            if case_insensitive {
+                name.eq_ignore_ascii_case(expected)
+            } else {
+                name == expected
+            }
+        })
+}
+
+/// Recognizes executable linker arguments even when native-library modifiers precede the value.
+fn build_script_uses_opaque_link_library(library: &str) -> bool {
+    library
+        .split_once('=')
+        .and_then(|(kind, _)| kind.split(':').next())
+        .is_some_and(|kind| kind == "link-arg")
 }
 
 /// When a build script run fails, store only log messages, and nuke other
@@ -1427,11 +1624,6 @@ impl BuildScriptOutputs {
         }
     }
 
-    /// Returns `true` if the given key already exists.
-    fn contains_key(&self, metadata: UnitHash) -> bool {
-        self.outputs.contains_key(&metadata)
-    }
-
     /// Gets the build output for the given key.
     pub fn get(&self, meta: UnitHash) -> Option<&BuildOutput> {
         self.outputs.get(&meta)
@@ -1472,5 +1664,52 @@ impl BuildScriptRunFiles {
             stderr,
             root_output,
         }
+    }
+}
+
+#[cfg(test)]
+mod shared_registry_build_output_tests {
+    use super::{
+        build_script_overrides_compiler_environment, build_script_uses_opaque_link_library,
+    };
+
+    #[test]
+    fn windows_compiler_environment_names_are_case_insensitive() {
+        for name in [
+            "Path",
+            "ld_library_path",
+            "DyLd_LiBrArY_PaTh",
+            "rustc_bootstrap",
+            "Rustc_Override_Version_String",
+            "Rustc_Log_Output_Target",
+        ] {
+            assert!(build_script_overrides_compiler_environment(name, true));
+            assert!(!build_script_overrides_compiler_environment(name, false));
+        }
+
+        assert!(build_script_overrides_compiler_environment("PATH", false));
+        assert!(build_script_overrides_compiler_environment(
+            "RUSTC_LOG",
+            false
+        ));
+        assert!(build_script_overrides_compiler_environment(
+            "RUSTC_LOG_OUTPUT_TARGET",
+            false
+        ));
+        assert!(!build_script_overrides_compiler_environment(
+            "SAFE_PACKAGE_SETTING",
+            true
+        ));
+    }
+
+    #[test]
+    fn native_link_arguments_are_opaque_with_or_without_modifiers() {
+        assert!(build_script_uses_opaque_link_library("link-arg=opaque"));
+        assert!(build_script_uses_opaque_link_library(
+            "link-arg:+verbatim=opaque"
+        ));
+        assert!(!build_script_uses_opaque_link_library("static=ssl"));
+        assert!(!build_script_uses_opaque_link_library("dylib=ssl"));
+        assert!(!build_script_uses_opaque_link_library("ssl"));
     }
 }

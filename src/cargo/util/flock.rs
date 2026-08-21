@@ -23,7 +23,6 @@ pub(crate) use self::imp::lock_exclusive;
 pub(crate) use self::imp::lock_shared;
 #[expect(unused_imports, reason = "for non-blocking lock callers")]
 pub(crate) use self::imp::try_lock_exclusive;
-#[expect(unused_imports, reason = "for non-blocking lock callers")]
 pub(crate) use self::imp::try_lock_shared;
 pub(crate) use self::imp::unlock;
 
