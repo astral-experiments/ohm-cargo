@@ -123,7 +123,7 @@ fn workspace_resolve_fingerprint(
     let mut environment: Vec<_> = workspace
         .gctx()
         .env()
-        .filter(|(key, _)| key.starts_with("CARGO_") || key.starts_with("RUST"))
+        .filter(|(key, _)| environment_affects_workspace_resolution(key))
         .collect();
     environment.sort_unstable_by_key(|(key, _)| *key);
     environment.len().hash(&mut hasher);
@@ -133,6 +133,20 @@ fn workspace_resolve_fingerprint(
     }
 
     Ok(Hasher::finish(&hasher))
+}
+
+/// Excludes execution and presentation settings that cannot affect dependency resolution.
+fn environment_affects_workspace_resolution(name: &str) -> bool {
+    (name.starts_with("CARGO_") || name.starts_with("RUST"))
+        && !matches!(
+            name,
+            "RUST_MIN_STACK"
+                | "CARGO_BUILD_JOBS"
+                | "CARGO_TERM_COLOR"
+                | "CARGO_TERM_VERBOSE"
+                | "CARGO_TERM_QUIET"
+        )
+        && !name.starts_with("CARGO_TERM_PROGRESS_")
 }
 
 fn hash_config_table(values: &HashMap<String, ConfigValue>, hasher: &mut StableHasher) {
@@ -171,6 +185,52 @@ fn hash_config_value(value: &ConfigValue, hasher: &mut StableHasher) {
         ConfigValue::Boolean(value, _) => {
             4_u8.hash(hasher);
             value.hash(hasher);
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::environment_affects_workspace_resolution;
+
+    #[test]
+    fn execution_only_environment_does_not_affect_workspace_resolution() {
+        for name in [
+            "RUST_MIN_STACK",
+            "CARGO_BUILD_JOBS",
+            "CARGO_TERM_COLOR",
+            "CARGO_TERM_VERBOSE",
+            "CARGO_TERM_QUIET",
+            "CARGO_TERM_PROGRESS_WHEN",
+            "CARGO_TERM_PROGRESS_WIDTH",
+        ] {
+            assert!(
+                !environment_affects_workspace_resolution(name),
+                "execution-only setting {name} should not invalidate the resolver"
+            );
+        }
+    }
+
+    #[test]
+    fn resolution_relevant_environment_remains_in_workspace_fingerprint() {
+        for name in [
+            "CARGO_BUILD_TARGET",
+            "CARGO_BUILD_RUSTFLAGS",
+            "CARGO_REGISTRIES_CRATES_IO_PROTOCOL",
+            "CARGO_REGISTRY_DEFAULT",
+            "CARGO_TARGET_AARCH64_APPLE_DARWIN_RUSTFLAGS",
+            "CARGO_UNSTABLE_BUILD_STD",
+            "CARGO_EXPERIMENTAL_RESOLVE_CACHE",
+            "RUSTFLAGS",
+            "RUSTC",
+            "RUSTC_WRAPPER",
+            "RUSTC_WORKSPACE_WRAPPER",
+            "RUSTUP_TOOLCHAIN",
+        ] {
+            assert!(
+                environment_affects_workspace_resolution(name),
+                "potential resolver input {name} must stay in the fingerprint"
+            );
         }
     }
 }
