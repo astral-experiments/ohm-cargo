@@ -6416,21 +6416,23 @@ fn no_embed_metadata() {
                 version = "0.5.0"
                 edition = "2015"
 
-                [dependencies.bar]
-                path = "bar"
+                [dependencies]
+                bar = "0.5.0"
             "#,
         )
         .file("src/main.rs", &main_file(r#""{}", bar::gimme()"#, &[]))
-        .file("bar/Cargo.toml", &basic_lib_manifest("bar"))
+        .build();
+
+    Package::new("bar", "0.5.0")
         .file(
-            "bar/src/bar.rs",
+            "src/lib.rs",
             r#"
                 pub fn gimme() -> &'static str {
                     "test passed"
                 }
             "#,
         )
-        .build();
+        .publish();
 
     p.cargo("build -Z no-embed-metadata")
         .masquerade_as_nightly_cargo(&["-Z no-embed-metadata"])
@@ -6455,13 +6457,16 @@ fn no_embed_metadata_dylib_dep() {
                 version = "0.5.0"
                 edition = "2015"
 
-                [dependencies.bar]
-                path = "bar"
+                [dependencies]
+                bar = "0.5.0"
             "#,
         )
         .file("src/main.rs", &main_file(r#""{}", bar::gimme()"#, &[]))
+        .build();
+
+    Package::new("bar", "0.5.0")
         .file(
-            "bar/Cargo.toml",
+            "Cargo.toml",
             r#"
                 [package]
                 name = "bar"
@@ -6473,23 +6478,138 @@ fn no_embed_metadata_dylib_dep() {
             "#,
         )
         .file(
-            "bar/src/lib.rs",
+            "src/lib.rs",
             r#"
                 pub fn gimme() -> &'static str {
                     "test passed"
                 }
             "#,
         )
-        .build();
+        .publish();
 
     p.cargo("build -Z no-embed-metadata")
         .masquerade_as_nightly_cargo(&["-Z no-embed-metadata"])
         .arg("-v")
-        .with_stderr_contains("[RUNNING] `[..]-Z embed-metadata=no[..]`")
+        .with_stderr_line_without(
+            &["[RUNNING]", "--crate-name bar"],
+            &["-Z embed-metadata=no"],
+        )
         .with_stderr_contains(
-            "[RUNNING] `[..]--extern bar=[ROOT]/foo/target/debug/deps/libbar.rmeta[..]`",
+            "[RUNNING] `[..]--extern bar=[ROOT]/foo/target/debug/deps/libbar-[HASH].rmeta[..]`",
         )
         .run();
+}
+
+#[cargo_test]
+fn no_embed_metadata_preserves_exported_and_path_libraries() {
+    Package::new("external", "1.0.0")
+        .file("src/lib.rs", "pub fn value() -> i32 { 1 }")
+        .publish();
+
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [workspace]
+                members = ["app", "local"]
+                resolver = "2"
+            "#,
+        )
+        .file(
+            "app/Cargo.toml",
+            r#"
+                [package]
+                name = "app"
+                version = "0.1.0"
+                edition = "2021"
+
+                [dependencies]
+                external = "1.0.0"
+                local = { path = "../local" }
+            "#,
+        )
+        .file(
+            "app/src/lib.rs",
+            "pub fn value() -> i32 { external::value() + local::value() + 34 }",
+        )
+        .file(
+            "local/Cargo.toml",
+            r#"
+                [package]
+                name = "local"
+                version = "0.1.0"
+                edition = "2021"
+            "#,
+        )
+        .file("local/src/lib.rs", "pub fn value() -> i32 { 7 }")
+        .file("consumer.rs", "fn main() { assert_eq!(app::value(), 42); }")
+        .file(
+            "local-consumer.rs",
+            "fn main() { assert_eq!(local::value(), 7); }",
+        )
+        .build();
+
+    p.cargo("build -p app -Z no-embed-metadata -v")
+        .masquerade_as_nightly_cargo(&["no-embed-metadata"])
+        .env("RUSTC_BOOTSTRAP", "1")
+        .with_stderr_contains("[RUNNING] `[..]--crate-name external[..]-Z embed-metadata=no[..]`")
+        .with_stderr_line_without(
+            &["[RUNNING]", "--crate-name local"],
+            &["-Z embed-metadata=no"],
+        )
+        .with_stderr_line_without(
+            &["[RUNNING]", "--crate-name app"],
+            &["-Z embed-metadata=no"],
+        )
+        .run();
+
+    let root_library = p.target_debug_dir().join("libapp.rlib");
+    p.process("rustc")
+        .arg(p.root().join("consumer.rs"))
+        .arg("--edition=2021")
+        .arg("--extern")
+        .arg(format!("app={}", root_library.display()))
+        .arg("-L")
+        .arg(format!(
+            "dependency={}",
+            p.target_debug_dir().join("deps").display()
+        ))
+        .arg("-o")
+        .arg(
+            p.root()
+                .join(format!("consumer{}", env::consts::EXE_SUFFIX)),
+        )
+        .run();
+    p.process(
+        p.root()
+            .join(format!("consumer{}", env::consts::EXE_SUFFIX)),
+    )
+    .run();
+
+    p.cargo("build -p local -Z no-embed-metadata -v")
+        .masquerade_as_nightly_cargo(&["no-embed-metadata"])
+        .env("RUSTC_BOOTSTRAP", "1")
+        .with_stderr_contains("[FRESH] local v0.1.0 ([ROOT]/foo/local)")
+        .with_stderr_does_not_contain("[COMPILING] local v0.1.0")
+        .run();
+
+    let promoted_library = p.target_debug_dir().join("liblocal.rlib");
+    p.process("rustc")
+        .arg(p.root().join("local-consumer.rs"))
+        .arg("--edition=2021")
+        .arg("--extern")
+        .arg(format!("local={}", promoted_library.display()))
+        .arg("-o")
+        .arg(
+            p.root()
+                .join(format!("local-consumer{}", env::consts::EXE_SUFFIX)),
+        )
+        .run();
+    p.process(
+        p.root()
+            .join(format!("local-consumer{}", env::consts::EXE_SUFFIX)),
+    )
+    .run();
 }
 
 #[cargo_test(nightly, reason = "-Zno-embed-metadata is nightly only")]
@@ -6531,7 +6651,7 @@ fn no_embed_metadata_invalidate() {
 
 "#]])
         .run();
-    p.cargo("build")
+    p.cargo("build -Z no-embed-metadata=no")
         .masquerade_as_nightly_cargo(&["-Z no-embed-metadata"])
         .with_stderr_data(str![[r#"
 [COMPILING] bar v0.5.0 ([ROOT]/foo/bar)

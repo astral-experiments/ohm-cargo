@@ -1629,6 +1629,17 @@ fn add_error_format_and_color(build_runner: &BuildRunner<'_, '_>, cmd: &mut Proc
     }
 }
 
+/// Returns whether an immutable internal library can omit its embedded metadata.
+fn unit_uses_no_embed_metadata(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> bool {
+    let source = unit.pkg.package_id().source_id();
+
+    build_runner.bcx.gctx.cli_unstable().no_embed_metadata()
+        && unit.benefits_from_no_embed_metadata()
+        && (source.is_registry() || source.is_git())
+        && !build_runner.bcx.roots.contains(unit)
+        && !unit.target.rustc_crate_types().contains(&CrateType::Dylib)
+}
+
 /// Adds essential rustc flags and environment variables to the command to execute.
 fn build_base_args(
     build_runner: &BuildRunner<'_, '_>,
@@ -1692,7 +1703,7 @@ fn build_base_args(
 
     if unit.mode.is_check() {
         cmd.arg("--emit=dep-info,metadata");
-    } else if build_runner.bcx.gctx.cli_unstable().no_embed_metadata {
+    } else if build_runner.bcx.gctx.cli_unstable().no_embed_metadata() {
         // Nightly rustc supports the -Zembed-metadata=no flag, which tells it to avoid including
         // full metadata in rlib/dylib artifacts, to save space on disk. In this case, metadata
         // will only be stored in .rmeta files.
@@ -1704,7 +1715,9 @@ fn build_base_args(
         // files on disk.
         if unit.benefits_from_no_embed_metadata() {
             cmd.arg("--emit=dep-info,metadata,link");
-            cmd.args(&["-Z", "embed-metadata=no"]);
+            if unit_uses_no_embed_metadata(build_runner, unit) {
+                cmd.args(&["-Z", "embed-metadata=no"]);
+            }
         } else {
             cmd.arg("--emit=dep-info,link");
         }
@@ -2328,7 +2341,7 @@ pub fn extern_args(
     let mut result = Vec::new();
     let deps = build_runner.unit_deps(unit);
 
-    let no_embed_metadata = build_runner.bcx.gctx.cli_unstable().no_embed_metadata;
+    let no_embed_metadata = build_runner.bcx.gctx.cli_unstable().no_embed_metadata();
     let public_dependency_enabled = is_public_dependency_enabled(build_runner, unit);
 
     // Closure to add one dependency to `result`.
