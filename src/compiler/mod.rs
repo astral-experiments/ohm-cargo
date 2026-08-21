@@ -339,6 +339,8 @@ struct RelinkCacheManifest {
     rlink: RelinkCacheFile,
     executable: RelinkCacheObject,
     objects: Vec<RelinkCacheObject>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    unused_extern_names: Option<Vec<String>>,
 }
 
 struct RelinkCachePaths {
@@ -375,7 +377,10 @@ impl RelinkCachePaths {
             && manifest.objects.iter().all(object_matches)
     }
 
-    fn initialize(&self) -> CargoResult<()> {
+    fn initialize(
+        &self,
+        unused_externs: Option<&std::collections::BTreeSet<InternedString>>,
+    ) -> CargoResult<()> {
         let mut objects = Vec::new();
         for path in self.codegen_temps()? {
             match path.extension().and_then(OsStr::to_str) {
@@ -396,6 +401,12 @@ impl RelinkCachePaths {
             rlink: cached_file(self.rlink.clone())?,
             executable: cached_object(self.executable.clone())?,
             objects,
+            unused_extern_names: unused_externs.map(|unused_externs| {
+                unused_externs
+                    .iter()
+                    .map(|unused_extern| unused_extern.as_str().to_owned())
+                    .collect()
+            }),
         };
         paths::write_atomic(&self.manifest, serde_json::to_vec(&manifest)?)?;
         Ok(())
@@ -441,14 +452,40 @@ impl RelinkCachePaths {
             .and_then(|contents| serde_json::from_slice(&contents).ok())
     }
 
-    fn invalidate(&self) {
-        if self.manifest.exists()
-            && let Err(error) = paths::remove_file(&self.manifest)
-        {
-            debug!(
-                "failed to invalidate relink cache `{}`: {error}",
-                self.manifest.display()
-            );
+    fn proves_unused_extern(&self, extern_name: InternedString) -> bool {
+        let Some(manifest) = self.read_manifest() else {
+            return false;
+        };
+
+        manifest.version == RELINK_CACHE_VERSION
+            && manifest.executable.path == self.executable
+            && object_matches(&manifest.executable)
+            && manifest
+                .unused_extern_names
+                .as_ref()
+                .is_some_and(|unused_externs| {
+                    unused_externs
+                        .iter()
+                        .any(|unused_extern| unused_extern == extern_name.as_str())
+                })
+    }
+
+    fn invalidate(&self) -> CargoResult<()> {
+        match paths::remove_file(&self.manifest) {
+            Ok(()) => Ok(()),
+            Err(error)
+                if error
+                    .downcast_ref::<std::io::Error>()
+                    .is_some_and(|error| error.kind() == std::io::ErrorKind::NotFound) =>
+            {
+                Ok(())
+            }
+            Err(error) => Err(error).with_context(|| {
+                format!(
+                    "failed to invalidate relink cache `{}`",
+                    self.manifest.display()
+                )
+            }),
         }
     }
 }
@@ -499,6 +536,147 @@ fn object_matches(expected: &RelinkCacheObject) -> bool {
         .unwrap_or(false)
 }
 
+/// Finds an unused-self-library candidate that cannot be linked transitively.
+///
+/// Cargo permits development-dependency cycles, so a package library can still be
+/// linked through another dependency even when its direct `--extern` is unused.
+fn unused_integration_self_dependency(
+    build_runner: &BuildRunner<'_, '_>,
+    unit: &Unit,
+) -> Option<(UnitIndex, InternedString)> {
+    if !build_runner.bcx.gctx.cli_unstable().ohm_defaults()
+        || unit.mode != CompileMode::Test
+        || !unit.target.is_test()
+        || build_runner.bcx.build_config.primary_unit_rustc.is_some()
+        || matches!(unit.kind, CompileKind::Target(CompileTarget::Json { .. }))
+        || build_runner.compilation.target_linker(unit.kind).is_some()
+        || !build_runner
+            .bcx
+            .rustc()
+            .supports_transparent_unused_externs(build_runner.bcx.gctx)
+        || has_opaque_integration_linker_flags(build_runner, unit)
+    {
+        return None;
+    }
+
+    let dependencies = build_runner.unit_deps(unit);
+    let mut self_dependencies = dependencies.iter().enumerate().filter(|(_, dependency)| {
+        dependency.unit.pkg.package_id() == unit.pkg.package_id()
+            && dependency.unit.mode == CompileMode::Build
+            && dependency.unit.target.is_lib()
+            && !dependency.unit.artifact.is_true()
+            && dependency.manifest_deps.0.is_none()
+            && !dependency.nounused
+            && dependency
+                .unit
+                .target
+                .rustc_crate_types()
+                .iter()
+                .all(|crate_type| matches!(crate_type, CrateType::Lib | CrateType::Rlib))
+    });
+    let (self_index, self_dependency) = self_dependencies.next()?;
+    if self_dependencies.next().is_some() {
+        return None;
+    }
+
+    let mut pending = dependencies
+        .iter()
+        .enumerate()
+        .filter(|(index, dependency)| *index != self_index && dependency.unit.target.is_linkable())
+        .map(|(_, dependency)| dependency.unit.clone())
+        .collect::<Vec<_>>();
+    let mut visited = HashSet::default();
+    while let Some(dependency) = pending.pop() {
+        if dependency.pkg.package_id() == unit.pkg.package_id() && dependency.target.is_lib() {
+            return None;
+        }
+        if visited.insert(dependency.clone()) {
+            pending.extend(
+                build_runner
+                    .unit_deps(&dependency)
+                    .iter()
+                    .filter(|dependency| dependency.unit.target.is_linkable())
+                    .map(|dependency| dependency.unit.clone()),
+            );
+        }
+    }
+
+    Some((
+        build_runner.bcx.unit_to_index[&self_dependency.unit],
+        self_dependency.extern_crate_name,
+    ))
+}
+
+/// Whether user-controlled compiler arguments can add untracked linker inputs.
+fn has_opaque_integration_linker_flags(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> bool {
+    let arguments = unit
+        .profile
+        .rustflags
+        .iter()
+        .map(|argument| argument.as_str())
+        .chain(
+            build_runner
+                .bcx
+                .extra_args_for(unit)
+                .into_iter()
+                .flatten()
+                .map(String::as_str),
+        )
+        .chain(unit.rustflags.iter().map(String::as_str));
+    let mut arguments = arguments.peekable();
+
+    while let Some(argument) = arguments.next() {
+        if argument.starts_with('@')
+            || argument == "-l"
+            || argument.starts_with("-l")
+            || argument == "-L"
+            || argument.starts_with("-L")
+            || argument == "--extern"
+            || argument.starts_with("--extern=")
+            || argument == "--library-path"
+            || argument.starts_with("--library-path=")
+        {
+            return true;
+        }
+
+        let codegen_option = if argument == "-C" || argument == "--codegen" {
+            arguments.next()
+        } else {
+            argument
+                .strip_prefix("-C")
+                .or_else(|| argument.strip_prefix("--codegen="))
+        };
+        if codegen_option.is_some_and(|option| {
+            option.split_once('=').is_some_and(|(name, _)| {
+                matches!(
+                    name,
+                    "link-arg" | "link_arg" | "link-args" | "link_args" | "linker"
+                )
+            })
+        }) {
+            return true;
+        }
+
+        let unstable_option = if argument == "-Z" {
+            arguments.next()
+        } else {
+            argument.strip_prefix("-Z")
+        };
+        if unstable_option.is_some_and(|option| {
+            option.split_once('=').is_some_and(|(name, _)| {
+                matches!(
+                    name,
+                    "pre-link-arg" | "pre_link_arg" | "pre-link-args" | "pre_link_args"
+                )
+            })
+        }) {
+            return true;
+        }
+    }
+
+    false
+}
+
 /// Creates a unit of work invoking `rustc` for building the `unit`.
 fn rustc(
     build_runner: &mut BuildRunner<'_, '_>,
@@ -538,6 +716,7 @@ fn rustc(
         })
         .map(|dep| build_runner.bcx.unit_to_index[&dep.unit])
         .collect::<HashSet<_>>();
+    let unused_integration_dependency = unused_integration_self_dependency(build_runner, unit);
     if let Some(cache) = &relink_cache {
         // Preserve the codegen objects referenced by the cached `.rlink`, and
         // keep them outside the dependency search directory while completing
@@ -632,6 +811,27 @@ fn rustc(
             .is_some_and(|fingerprint| fingerprint.is_early_cutoff_candidate());
 
     return Ok(Work::new(move |state| {
+        let unused_integration_dependency = unused_integration_dependency.filter(|_| {
+            let Some(build_scripts) = build_scripts.as_ref() else {
+                return true;
+            };
+            let script_outputs = build_script_outputs.lock().unwrap();
+            build_scripts
+                .to_link
+                .iter()
+                .filter(|(package_id, _)| *package_id == current_id)
+                .all(|(_, metadata)| {
+                    script_outputs.get(*metadata).is_some_and(|output| {
+                        output.library_paths.is_empty()
+                            && output.library_links.is_empty()
+                            && !output
+                                .linker_args
+                                .iter()
+                                .any(|(link_target, _)| link_target.applies_to(&target, mode))
+                    })
+                })
+        });
+
         if let Some(ref fp) = fingerprint {
             tracing::info!(
                 "early cutoff check for {}: fs_status={:?}, outputs={:?}",
@@ -643,18 +843,21 @@ fn rustc(
                     .collect::<Vec<_>>()
             );
 
-            if can_skip_compilation && fingerprint::can_skip_due_to_early_cutoff(fp) {
-                let mut essential_outputs = Vec::new();
-                for output in outputs.iter() {
-                    let is_dsym = output
-                        .path
-                        .to_str()
-                        .map(|s| s.ends_with(".dSYM"))
-                        .unwrap_or(false);
-                    if !is_dsym {
-                        essential_outputs.push(output);
-                    }
-                }
+            let skip_unused_integration_dependency =
+                unused_integration_dependency.is_some_and(|(dependency, extern_name)| {
+                    fingerprint::can_skip_unused_integration_dependency(fp, dependency)
+                        && relink_cache
+                            .as_ref()
+                            .is_some_and(|cache| cache.proves_unused_extern(extern_name))
+                });
+
+            if (can_skip_compilation && fingerprint::can_skip_due_to_early_cutoff(fp))
+                || skip_unused_integration_dependency
+            {
+                let essential_outputs = outputs
+                    .iter()
+                    .filter(|output| output.flavor != FileFlavor::DebugInfo)
+                    .collect::<Vec<_>>();
                 let all_outputs_exist = !essential_outputs.is_empty()
                     && essential_outputs.iter().all(|o| o.path.exists());
                 if all_outputs_exist {
@@ -683,6 +886,9 @@ fn rustc(
                                 e
                             );
                         }
+                    }
+                    if skip_unused_integration_dependency && let Some(cache) = &relink_cache {
+                        cache.refresh_executable()?;
                     }
                     tracing::info!(
                         "early cutoff: skipping compilation of {} (all deps unchanged)",
@@ -718,7 +924,7 @@ fn rustc(
             tracing::info!("relink-only: reusing cached codegen for {unit_name}");
         } else {
             if let Some(cache) = &relink_cache {
-                cache.invalidate();
+                cache.invalidate()?;
                 cache.clear_codegen_temps()?;
             }
             output_options.prepare_for_compiler();
@@ -912,7 +1118,9 @@ fn rustc(
         debug_assert_eq!(output_options.errors_seen, 0);
 
         if let Some(cache) = &relink_cache {
-            cache.initialize()?;
+            let unused_externs =
+                unused_integration_dependency.and_then(|_| state.recorded_unused_externs());
+            cache.initialize(unused_externs.as_ref())?;
         }
 
         if rustc_dep_info_loc.exists() {
@@ -1322,7 +1530,7 @@ fn prepare_rustdoc(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> CargoResu
     rustdoc.args(&features_args(unit));
     rustdoc.args(&check_cfg_args(unit));
 
-    add_error_format_and_color(build_runner, &mut rustdoc);
+    add_error_format_and_color(build_runner, unit, &mut rustdoc);
     add_allow_features(build_runner, &mut rustdoc);
 
     if build_runner.bcx.gctx.cli_unstable().rustdoc_depinfo {
@@ -1645,7 +1853,11 @@ fn add_allow_features(build_runner: &BuildRunner<'_, '_>, cmd: &mut ProcessBuild
 /// which Cargo will extract and display to the user.
 ///
 /// [`--error-format`]: https://doc.rust-lang.org/nightly/rustc/command-line-arguments.html#--error-format-control-how-errors-are-produced
-fn add_error_format_and_color(build_runner: &BuildRunner<'_, '_>, cmd: &mut ProcessBuilder) {
+fn add_error_format_and_color(
+    build_runner: &BuildRunner<'_, '_>,
+    unit: &Unit,
+    cmd: &mut ProcessBuilder,
+) {
     let enable_timings =
         build_runner.bcx.gctx.cli_unstable().section_timings && build_runner.bcx.logger.is_some();
     if enable_timings {
@@ -1657,6 +1869,8 @@ fn add_error_format_and_color(build_runner: &BuildRunner<'_, '_>, cmd: &mut Proc
     let mut json = String::from("--json=diagnostic-rendered-ansi,artifacts,future-incompat");
     if build_runner.bcx.gctx.cli_unstable().cargo_lints {
         json.push_str(",unused-externs-silent");
+    } else if unused_integration_self_dependency(build_runner, unit).is_some() {
+        json.push_str(",unused-externs-transparent");
     }
     if let MessageFormat::Short | MessageFormat::Json { short: true, .. } =
         build_runner.bcx.build_config.message_format
@@ -1742,7 +1956,7 @@ fn build_base_args(
     edition.cmd_edition_arg(cmd);
 
     add_path_args(bcx.ws, unit, cmd);
-    add_error_format_and_color(build_runner, cmd);
+    add_error_format_and_color(build_runner, unit, cmd);
     add_allow_features(build_runner, cmd);
 
     let mut contains_dy_lib = false;
@@ -2778,15 +2992,32 @@ fn on_stderr_line_inner(
     }
 
     #[derive(serde::Deserialize)]
+    struct CompilerNotification<'a> {
+        #[serde(rename = "$message_type")]
+        message_type: &'a str,
+    }
+
+    #[derive(serde::Deserialize)]
     struct UnusedExterns {
         unused_extern_names: std::collections::BTreeSet<InternedString>,
     }
-    if let Ok(uext) = serde_json::from_str::<UnusedExterns>(compiler_message.get()) {
-        trace!(
-            "obtained unused externs list from rustc: `{:?}`",
-            uext.unused_extern_names
-        );
-        state.unused_externs(uext.unused_extern_names);
+    if let Ok(notification) =
+        serde_json::from_str::<CompilerNotification<'_>>(compiler_message.get())
+        && notification.message_type == "unused_extern"
+    {
+        match serde_json::from_str::<UnusedExterns>(compiler_message.get()) {
+            Ok(unused_externs) => {
+                trace!(
+                    "obtained unused externs list from rustc: `{:?}`",
+                    unused_externs.unused_extern_names
+                );
+                state.unused_externs(unused_externs.unused_extern_names);
+            }
+            Err(error) => {
+                debug!("rustc reported malformed unused externs; disabling reuse: {error}");
+                state.invalid_unused_externs();
+            }
+        }
         return Ok(true);
     }
 
