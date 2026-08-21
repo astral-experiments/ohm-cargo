@@ -10,6 +10,7 @@ use crate::sources::IndexSummary;
 use crate::sources::source::QueryKind;
 use crate::util::cache_lock::CacheLockMode;
 use crate::util::context::GlobalContext;
+use crate::util::data_structures::{HashMap, HashSet, IndexMap, IndexSet};
 use crate::util::toml_mut::dependency::{MaybeWorkspace, Source};
 use crate::util::toml_mut::manifest::LocalManifest;
 use crate::util::toml_mut::upgrade::upgrade_requirement;
@@ -19,11 +20,10 @@ use crate::util::{OptVersionReq, style};
 use anyhow::Context as _;
 use cargo_util_schemas::core::PartialVersion;
 use cargo_util_terminal::Verbosity;
-use indexmap::{IndexMap, IndexSet};
 use itertools::Itertools;
 use semver::{Op, Version, VersionReq};
 use std::cmp::Ordering;
-use std::collections::{BTreeMap, HashMap, HashSet};
+use std::collections::BTreeMap;
 use tracing::{debug, trace};
 
 pub type UpgradeMap = HashMap<(String, SourceId), Version>;
@@ -95,7 +95,7 @@ pub fn update_lockfile(ws: &Workspace<'_>, opts: &UpdateOptions<'_>) -> CargoRes
         }
     };
     let mut registry = ws.package_registry()?;
-    let mut to_avoid = HashSet::new();
+    let mut to_avoid = HashSet::default();
 
     if opts.to_update.is_empty() {
         if !opts.workspace {
@@ -107,7 +107,12 @@ pub fn update_lockfile(ws: &Workspace<'_>, opts: &UpdateOptions<'_>) -> CargoRes
         for name in opts.to_update.iter() {
             let pid = previous_resolve.query(name)?;
             if opts.recursive {
-                fill_with_deps(&previous_resolve, pid, &mut to_avoid, &mut HashSet::new());
+                fill_with_deps(
+                    &previous_resolve,
+                    pid,
+                    &mut to_avoid,
+                    &mut HashSet::default(),
+                );
             } else {
                 to_avoid.insert(pid);
                 sources.push(match opts.precise {
@@ -222,8 +227,8 @@ pub fn upgrade_manifests(
     to_update: &Vec<String>,
 ) -> CargoResult<UpgradeMap> {
     let gctx = ws.gctx();
-    let mut upgrades = HashMap::new();
-    let mut upgrade_messages = HashSet::new();
+    let mut upgrades = HashMap::default();
+    let mut upgrade_messages = HashSet::default();
 
     let to_update = to_update
         .iter()
@@ -1000,7 +1005,7 @@ impl PackageChange {
     ) -> IndexMap<PackageId, Self> {
         let member_ids: HashSet<_> = ws.members().map(|p| p.package_id()).collect();
 
-        let mut changes = IndexMap::new();
+        let mut changes = IndexMap::default();
         for diff in diff {
             if let Some((previous_id, package_id)) = diff.change() {
                 // If versions differ only in build metadata, we call it an "update"
