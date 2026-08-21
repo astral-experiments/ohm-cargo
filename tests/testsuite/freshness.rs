@@ -3337,6 +3337,7 @@ fn public_api_hash_wrapper() -> PathBuf {
             r#"
                 use std::env;
                 use std::ffi::OsStr;
+                use std::fs::OpenOptions;
                 use std::io::{self, Write};
                 use std::process::{Command, exit};
 
@@ -3348,6 +3349,18 @@ fn public_api_hash_wrapper() -> PathBuf {
                         .windows(2)
                         .find(|args| args[0] == OsStr::new("--crate-name"))
                         .map(|args| &args[1]);
+                    if let Some(path) = env::var_os("PUBLIC_API_HASH_WRAPPER_LOG")
+                        && let Some(crate_name) = crate_name
+                        && crate_name != OsStr::new("___")
+                    {
+                        let mut log = OpenOptions::new()
+                            .create(true)
+                            .append(true)
+                            .open(path)
+                            .expect("wrapper log should open");
+                        writeln!(log, "{}", crate_name.to_string_lossy())
+                            .expect("wrapper log should be writable");
+                    }
                     let public_api_hash = if crate_name.is_some_and(|crate_name| {
                         env::var_os("PUBLIC_API_HASH_WRAPPER_CHANGED_CRATE")
                             .as_deref()
@@ -3611,6 +3624,87 @@ fn early_cutoff_skips_dependent_rebuild() {
         .run();
 }
 
+fn assert_early_cutoff_skips_check_dependents(command: &str) {
+    let wrapper = public_api_hash_wrapper();
+    let p = project()
+        .at("check-workspace")
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "app"
+                version = "0.1.0"
+                edition = "2024"
+
+                [dependencies]
+                middle = { path = "middle" }
+            "#,
+        )
+        .file(
+            "src/lib.rs",
+            r#"
+                pub fn value() -> i32 {
+                    middle::value()
+                }
+
+                #[test]
+                fn value_is_positive() {
+                    assert!(value() > 0);
+                }
+            "#,
+        )
+        .file(
+            "middle/Cargo.toml",
+            r#"
+                [package]
+                name = "middle"
+                version = "0.1.0"
+                edition = "2024"
+
+                [dependencies]
+                dep = { path = "../dep" }
+            "#,
+        )
+        .file(
+            "middle/src/lib.rs",
+            "pub fn value() -> i32 { dep::value() }",
+        )
+        .file("dep/Cargo.toml", &basic_manifest("dep", "0.1.0"))
+        .file("dep/src/lib.rs", "pub fn value() -> i32 { 1 }")
+        .build();
+    let log = p.root().join("public-api-hash-wrapper.log");
+
+    p.cargo(command)
+        .env("PUBLIC_API_HASH_WRAPPER_LOG", &log)
+        .env("RUSTC_WRAPPER", &wrapper)
+        .env("RUSTFLAGS", "-Zpublic-api-hash")
+        .run();
+
+    fs::write(&log, "").unwrap();
+    if is_coarse_mtime() {
+        sleep_ms(1000);
+    }
+    p.change_file("dep/src/lib.rs", "pub fn value() -> i32 { 2 }");
+    p.cargo(command)
+        .env("PUBLIC_API_HASH_WRAPPER_LOG", &log)
+        .env("RUSTC_WRAPPER", &wrapper)
+        .env("RUSTFLAGS", "-Zpublic-api-hash")
+        .run();
+    assert_eq!(fs::read_to_string(&log).unwrap(), "dep\n");
+}
+
+#[cargo_test]
+fn early_cutoff_skips_check_dependents() {
+    assert_early_cutoff_skips_check_dependents("check");
+}
+
+#[cargo_test]
+fn early_cutoff_skips_check_test_dependents() {
+    // Clippy schedules the same Check units, including test-mode units for
+    // local test targets when invoked with `--tests`.
+    assert_early_cutoff_skips_check_dependents("check --tests");
+}
+
 fn assert_early_cutoff_rechecks_transitive_trait_implementations(
     command: &str,
     rebuild_producer_separately: bool,
@@ -3732,17 +3826,16 @@ fn assert_early_cutoff_rechecks_transitive_trait_implementations(
             .run();
     }
 
-    let expected = if rebuild_producer_separately {
-        str![[r#"
+    let expected = match (command, rebuild_producer_separately) {
+        ("build", true) => str![[r#"
 [COMPILING] middle v0.1.0 ([ROOT]/transitive-trait-workspace/middle)
 [COMPILING] app v0.1.0 ([ROOT]/transitive-trait-workspace)
 error[E0034]: multiple applicable items in scope
 ...
 [ERROR] could not compile `app` (lib) due to 1 previous error
 
-"#]]
-    } else {
-        str![[r#"
+"#]],
+        ("build", false) => str![[r#"
 [COMPILING] producer v0.1.0 ([ROOT]/transitive-trait-workspace/producer)
 [COMPILING] middle v0.1.0 ([ROOT]/transitive-trait-workspace/middle)
 [COMPILING] app v0.1.0 ([ROOT]/transitive-trait-workspace)
@@ -3750,7 +3843,25 @@ error[E0034]: multiple applicable items in scope
 ...
 [ERROR] could not compile `app` (lib) due to 1 previous error
 
-"#]]
+"#]],
+        ("check", true) => str![[r#"
+[CHECKING] middle v0.1.0 ([ROOT]/transitive-trait-workspace/middle)
+[CHECKING] app v0.1.0 ([ROOT]/transitive-trait-workspace)
+error[E0034]: multiple applicable items in scope
+...
+[ERROR] could not compile `app` (lib) due to 1 previous error
+
+"#]],
+        ("check", false) => str![[r#"
+[CHECKING] producer v0.1.0 ([ROOT]/transitive-trait-workspace/producer)
+[CHECKING] middle v0.1.0 ([ROOT]/transitive-trait-workspace/middle)
+[CHECKING] app v0.1.0 ([ROOT]/transitive-trait-workspace)
+error[E0034]: multiple applicable items in scope
+...
+[ERROR] could not compile `app` (lib) due to 1 previous error
+
+"#]],
+        _ => panic!("unsupported command: {command}"),
     };
     p.cargo(command)
         .env("RUSTC_WRAPPER", &wrapper)
@@ -3759,6 +3870,16 @@ error[E0034]: multiple applicable items in scope
         .with_status(101)
         .with_stderr_data(expected)
         .run();
+}
+
+#[cargo_test]
+fn early_cutoff_rechecks_transitive_trait_implementations() {
+    assert_early_cutoff_rechecks_transitive_trait_implementations("check", false);
+}
+
+#[cargo_test]
+fn early_cutoff_rechecks_previously_rebuilt_transitive_trait_implementations_in_checks() {
+    assert_early_cutoff_rechecks_transitive_trait_implementations("check", true);
 }
 
 #[cargo_test]
@@ -3772,6 +3893,7 @@ fn early_cutoff_rechecks_previously_rebuilt_transitive_trait_implementations_in_
 }
 
 fn assert_early_cutoff_rechecks_previously_changed_dependency(
+    command: &str,
     rebuild_changed_dependency_again: bool,
 ) {
     let wrapper = public_api_hash_wrapper();
@@ -3833,7 +3955,7 @@ fn assert_early_cutoff_rechecks_previously_changed_dependency(
         )
         .build();
 
-    p.cargo("build -p consumer")
+    p.cargo(&format!("{command} -p consumer"))
         .env("RUSTC_WRAPPER", &wrapper)
         .env("RUSTFLAGS", "-Zpublic-api-hash")
         .run();
@@ -3845,7 +3967,7 @@ fn assert_early_cutoff_rechecks_previously_changed_dependency(
         "producer_a/src/lib.rs",
         "pub fn value() -> &'static str { \"changed\" }\npub fn stable() -> i32 { 10 }\n",
     );
-    p.cargo("build -p app")
+    p.cargo(&format!("{command} -p app"))
         .env("RUSTC_WRAPPER", &wrapper)
         .env("RUSTFLAGS", "-Zpublic-api-hash")
         .env("PUBLIC_API_HASH_WRAPPER_CHANGED_CRATE", "producer_a")
@@ -3864,7 +3986,7 @@ fn assert_early_cutoff_rechecks_previously_changed_dependency(
     } else {
         p.change_file("producer_b/src/lib.rs", "pub fn value() -> i32 { 3 }\n");
     }
-    p.cargo("build -p consumer")
+    p.cargo(&format!("{command} -p consumer"))
         .env("RUSTC_WRAPPER", &wrapper)
         .env("RUSTFLAGS", "-Zpublic-api-hash")
         .env("PUBLIC_API_HASH_WRAPPER_CHANGED_CRATE", "producer_a")
@@ -3882,16 +4004,25 @@ error[E0369]: cannot add `i32` to `&str`
 
 #[cargo_test]
 fn early_cutoff_rechecks_fresh_dependency_changed_by_previous_build() {
-    assert_early_cutoff_rechecks_previously_changed_dependency(false);
+    assert_early_cutoff_rechecks_previously_changed_dependency("build", false);
 }
 
 #[cargo_test]
 fn early_cutoff_rechecks_unchanged_dependency_changed_by_previous_build() {
-    assert_early_cutoff_rechecks_previously_changed_dependency(true);
+    assert_early_cutoff_rechecks_previously_changed_dependency("build", true);
 }
 
 #[cargo_test]
-fn early_cutoff_rechecks_proc_macro_changed_by_previous_build() {
+fn early_cutoff_rechecks_fresh_dependency_changed_by_previous_check() {
+    assert_early_cutoff_rechecks_previously_changed_dependency("check", false);
+}
+
+#[cargo_test]
+fn early_cutoff_rechecks_unchanged_dependency_changed_by_previous_check() {
+    assert_early_cutoff_rechecks_previously_changed_dependency("check", true);
+}
+
+fn assert_early_cutoff_rechecks_proc_macro_changed_by_previous_build(command: &str) {
     let wrapper = public_api_hash_wrapper();
     let p = project()
         .at("previously-changed-proc-macro")
@@ -3941,7 +4072,7 @@ fn early_cutoff_rechecks_proc_macro_changed_by_previous_build() {
         .file("producer/src/lib.rs", "pub fn value() -> i32 { 2 }\n")
         .build();
 
-    p.cargo("build")
+    p.cargo(command)
         .env("RUSTC_WRAPPER", &wrapper)
         .env("RUSTFLAGS", "-Zpublic-api-hash")
         .run();
@@ -3971,7 +4102,7 @@ fn early_cutoff_rechecks_proc_macro_changed_by_previous_build() {
         sleep_ms(1000);
     }
     p.change_file("producer/src/lib.rs", "pub fn value() -> i32 { 3 }\n");
-    p.cargo("build")
+    p.cargo(command)
         .env("RUSTC_WRAPPER", &wrapper)
         .env("RUSTFLAGS", "-Zpublic-api-hash")
         .with_status(101)
@@ -3983,6 +4114,16 @@ error[E0308]: mismatched types
 
 "#]])
         .run();
+}
+
+#[cargo_test]
+fn early_cutoff_rechecks_proc_macro_changed_by_previous_build() {
+    assert_early_cutoff_rechecks_proc_macro_changed_by_previous_build("build");
+}
+
+#[cargo_test]
+fn early_cutoff_rechecks_proc_macro_changed_by_previous_check() {
+    assert_early_cutoff_rechecks_proc_macro_changed_by_previous_build("check");
 }
 
 fn find_metadata_output(root: &Path, crate_name: &str) -> PathBuf {
