@@ -17,14 +17,20 @@
 
 use crate::util::data_structures::{HashMap, HashSet};
 
+use std::cell::{OnceCell, RefCell};
+
 use tracing::trace;
 
 use crate::CargoResult;
 use crate::core::compiler::UserIntent;
 use crate::core::compiler::artifact::match_artifacts_kind_with_targets;
+use crate::core::compiler::build_runner::{
+    OHM_RUSTC_LOG_ENVIRONMENT, resolve_effective_compiler_executable,
+};
 use crate::core::compiler::unit_graph::{UnitDep, UnitGraph};
 use crate::core::compiler::{
-    CompileKind, CompileMode, CrateType, RustcTargetData, Unit, UnitInterner,
+    CompileKind, CompileMode, CrateType, OHM_COMPILER_LOADER_INJECTION_ENVIRONMENT,
+    RustcTargetData, Unit, UnitInterner,
 };
 use crate::core::dependency::{Artifact, ArtifactKind, ArtifactTarget, DepKind};
 use crate::core::profiles::{Profile, Profiles, UnitFor};
@@ -34,6 +40,8 @@ use crate::core::{
     Dependency, Feature, Package, PackageId, PackageSet, Target, TargetKind, Workspace,
 };
 use crate::ops::resolve_all_features;
+use crate::sources::CRATES_IO_INDEX;
+use crate::sources::registry::CRATES_IO_HTTP_INDEX;
 use crate::util::GlobalContext;
 use crate::util::Unhashed;
 use crate::util::interning::InternedString;
@@ -68,6 +76,17 @@ struct State<'a, 'gctx> {
     /// dependency from a to b was added purely because it was a dev-dependency.
     /// This is used during `connect_run_custom_build_deps`.
     dev_dependency_edges: HashSet<(Unit, Unit)>,
+
+    /// Whether this graph may tentatively reuse complete registry builds.
+    /// Exact artifact and fingerprint validation happens after graph creation.
+    reuse_built_registry_dependencies: bool,
+
+    /// Compiler identity and global policy do not vary between registry targets in this graph.
+    trusted_registry_reuse_compiler: OnceCell<bool>,
+
+    /// Whether a registry package's complete resolved closure consists only
+    /// of immutable registry packages.
+    immutable_registry_closures: RefCell<HashMap<PackageId, bool>>,
 }
 
 /// A boolean-like to indicate if a `Unit` is an artifact or not.
@@ -100,6 +119,7 @@ pub fn build_unit_dependencies<'a, 'gctx>(
     target_data: &'a RustcTargetData<'gctx>,
     profiles: &'a Profiles,
     interner: &'a UnitInterner,
+    reuse_built_registry_dependencies: bool,
 ) -> CargoResult<UnitGraph> {
     if roots.is_empty() {
         // If -Zbuild-std, don't attach units if there is nothing to build.
@@ -127,6 +147,9 @@ pub fn build_unit_dependencies<'a, 'gctx>(
         interner,
         scrape_units,
         dev_dependency_edges: HashSet::default(),
+        reuse_built_registry_dependencies,
+        trusted_registry_reuse_compiler: OnceCell::new(),
+        immutable_registry_closures: RefCell::default(),
     };
 
     let std_unit_deps = calc_deps_of_std(&mut state, std_roots)?;
@@ -306,7 +329,10 @@ fn compute_deps(
             continue;
         };
         let dep_pkg = state.get(dep_pkg_id);
-        let mode = check_or_build_mode(unit.mode, dep_lib);
+        let mut mode = check_or_build_mode(unit.mode, dep_lib);
+        if mode.is_check() && state.can_reuse_built_registry_dependency(dep_pkg_id, dep_lib) {
+            mode = CompileMode::Build;
+        }
         let dep_unit_for = unit_for.with_dependency(unit, dep_lib, unit_for.root_compile_kind());
 
         let manifest_deps = deps.iter().map(|d| (*d).clone()).collect::<Vec<_>>();
@@ -1072,6 +1098,157 @@ fn connect_run_custom_build_deps(state: &mut State<'_, '_>) {
 }
 
 impl<'a, 'gctx> State<'a, 'gctx> {
+    /// Tentatively uses build mode only for an entirely immutable registry
+    /// closure. Once all unit hashes and layouts are known, `BuildRunner`
+    /// validates the exact existing artifacts and their complete fingerprints
+    /// before allowing the graph to execute.
+    fn can_reuse_built_registry_dependency(&self, package_id: PackageId, target: &Target) -> bool {
+        if !self.reuse_built_registry_dependencies
+            || self.is_std
+            || !package_id.source_id().is_remote_registry()
+            || target.for_host()
+            || !target.is_lib()
+            || !target
+                .rustc_crate_types()
+                .iter()
+                .all(|crate_type| matches!(crate_type, CrateType::Lib | CrateType::Rlib))
+            || self.gctx.cli_unstable().bindeps
+            || self.target_data.rustc.wrapper.is_some()
+            || !*self.trusted_registry_reuse_compiler.get_or_init(|| {
+                self.compiler_has_safe_loader_environment()
+                    && !self.compiler_has_observable_logging()
+                    && self.compiler_has_verified_toolchain_identity()
+            })
+        {
+            return false;
+        }
+        self.registry_closure_is_immutable(package_id, &mut HashSet::default())
+    }
+
+    /// Loader interposition can turn the genuine toolchain executable into an
+    /// opaque compiler wrapper, so cached cross-mode results are unusable.
+    fn compiler_has_safe_loader_environment(&self) -> bool {
+        let Ok(configured_environment) = self.gctx.env_config() else {
+            return false;
+        };
+
+        OHM_COMPILER_LOADER_INJECTION_ENVIRONMENT
+            .iter()
+            .all(|name| {
+                configured_environment
+                    .get(*name)
+                    .map(std::ffi::OsString::as_os_str)
+                    .or_else(|| self.gctx.get_env_os(name))
+                    .is_none_or(std::ffi::OsStr::is_empty)
+            })
+    }
+
+    /// Rustc initializes every logger option even when its main filter is absent.
+    /// An invalid option can fail compilation and an output target truncates files.
+    fn compiler_has_observable_logging(&self) -> bool {
+        let Ok(configured_environment) = self.gctx.env_config() else {
+            return true;
+        };
+
+        OHM_RUSTC_LOG_ENVIRONMENT.iter().any(|name| {
+            configured_environment.contains_key(*name) || self.gctx.get_env_os(name).is_some()
+        })
+    }
+
+    /// Reject opaque compiler shims whose behavior Cargo cannot fingerprint.
+    ///
+    /// Configuring the actual compiler from any installed or custom toolchain
+    /// remains supported. Cargo normally resolves rustup proxies to that
+    /// toolchain executable before constructing `RustcTargetData`.
+    fn compiler_has_verified_toolchain_identity(&self) -> bool {
+        let Some(compiler) =
+            resolve_effective_compiler_executable(self.gctx, &self.target_data.rustc.path)
+        else {
+            return false;
+        };
+        let expected = self
+            .target_data
+            .info(CompileKind::Host)
+            .sysroot
+            .join("bin")
+            .join("rustc")
+            .with_extension(std::env::consts::EXE_EXTENSION);
+
+        expected
+            .canonicalize()
+            .is_ok_and(|expected| expected == compiler)
+    }
+
+    /// Reject mutable sources and unaudited procedural macros throughout the
+    /// resolved dependency closure, memoizing completed package decisions.
+    fn registry_closure_is_immutable(
+        &self,
+        package_id: PackageId,
+        visiting: &mut HashSet<PackageId>,
+    ) -> bool {
+        if !package_id.source_id().is_remote_registry() {
+            return false;
+        }
+        let Some((source_is_replaced, effective_source_id)) = self
+            .package_set
+            .sources()
+            .get(package_id.source_id())
+            .map(|source| (source.is_replaced(), source.replaced_source_id()))
+        else {
+            return false;
+        };
+        // Source replacement preserves the original registry PackageId even
+        // when a mutable, checksummed vendor directory supplies the contents.
+        // Such sources must follow the ordinary check path so Cargo verifies
+        // their integrity before compiling a newly requested target. Registry
+        // mirrors remain immutable and their actual source path participates
+        // in the existing unit fingerprint.
+        if source_is_replaced && !effective_source_id.is_remote_registry() {
+            return false;
+        }
+        if let Some(immutable) = self.immutable_registry_closures.borrow().get(&package_id) {
+            return *immutable;
+        }
+        if !visiting.insert(package_id) {
+            return true;
+        }
+
+        let package = self.get(package_id);
+        // Stable procedural macros can inspect arbitrary environment variables
+        // and external files without recording either in rustc dependency
+        // information. Reusing their expanded consumers is sound only for an
+        // explicitly audited, immutable producer. Other macro closures must run
+        // the ordinary check compiler regardless of their existing artifacts.
+        let trusted_macro = !package.proc_macro()
+            || (package_id.source_id().is_crates_io()
+                // `is_crates_io` also accepts Cargo's test-only registry
+                // override, which must not make an arbitrary registry trusted.
+                && matches!(
+                    package_id.source_id().url().as_str(),
+                    CRATES_IO_INDEX | CRATES_IO_HTTP_INDEX
+                )
+                // A user-controlled registry mirror must not inherit the
+                // explicitly audited crates.io procedural macro's trust.
+                && !source_is_replaced
+                && package_id.name().as_str() == "serde_derive"
+                && package_id.version().major == 1
+                && self
+                    .resolve()
+                    .checksums()
+                    .get(&package_id)
+                    .is_some_and(Option::is_some));
+        let immutable = trusted_macro
+            && self.resolve().deps(package_id).all(|(dependency_id, _)| {
+                self.registry_closure_is_immutable(dependency_id, visiting)
+            });
+
+        visiting.remove(&package_id);
+        self.immutable_registry_closures
+            .borrow_mut()
+            .insert(package_id, immutable);
+        immutable
+    }
+
     /// Gets `std_resolve` during building std, otherwise `usr_resolve`.
     fn resolve(&self) -> &'a Resolve {
         if self.is_std {

@@ -1,21 +1,29 @@
 //! [`BuildRunner`] is the mutable state used during the build process.
 
 use crate::util::data_structures::{HashMap, HashSet};
+use std::ffi::OsString;
+use std::fs::File;
+use std::hash::{Hash, Hasher};
 use std::path::{Path, PathBuf};
-use std::sync::{Arc, Mutex};
+use std::sync::{Arc, Mutex, OnceLock};
+
+#[cfg(unix)]
+use std::os::unix::fs::MetadataExt;
 
 use crate::core::PackageId;
 use crate::core::compiler::compilation::{self, UnitOutput};
 use crate::core::compiler::locking::LockManager;
-use crate::core::compiler::{self, Unit, UserIntent, artifact};
+use crate::core::compiler::{self, CrateType, Unit, UserIntent, artifact};
 use crate::util::cache_lock::CacheLockMode;
 use crate::util::errors::CargoResult;
+use crate::util::{GlobalContext, StableHasher};
 use anyhow::{Context as _, bail};
-use cargo_util::paths;
+use cargo_util::{ProcessBuilder, Sha256, paths};
 use cargo_util_terminal::report::{Level, Message};
 use filetime::FileTime;
 use itertools::Itertools;
 use jobserver::Client;
+use serde::{Deserialize, Serialize};
 
 use super::RustdocFingerprint;
 use super::custom_build::{self, BuildDeps, BuildScriptOutputs, BuildScripts};
@@ -25,11 +33,287 @@ use super::layout::Layout;
 use super::lto::Lto;
 use super::unit_graph::UnitDep;
 use super::unused_deps::UnusedDepState;
-use super::{BuildContext, Compilation, CompileKind, CompileMode, Executor, FileFlavor};
+use super::{
+    BuildContext, Compilation, CompileKind, CompileMode, CompileTarget, Executor, FileFlavor,
+    OHM_COMPILER_LOADER_ENVIRONMENT, OHM_COMPILER_LOADER_INJECTION_ENVIRONMENT,
+};
 
 mod compilation_files;
 use self::compilation_files::CompilationFiles;
 pub use self::compilation_files::{Metadata, OutputFile, UnitHash};
+
+/// The speculative build-mode dependency graph cannot safely reuse every
+/// required registry artifact and must be regenerated in ordinary check mode.
+#[derive(Debug, thiserror::Error)]
+#[error("an existing registry build artifact is missing or stale")]
+pub(crate) struct StaleBuiltRegistryDependency;
+
+/// Additional facts needed to safely reuse an ordinary build as a check.
+///
+/// This is deliberately separate from Cargo's persisted fingerprint: users who
+/// never opt in must keep their existing dependency artifacts completely fresh.
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(deny_unknown_fields)]
+pub(crate) struct RegistryMessageProvenance {
+    version: u8,
+    compiler_context: u64,
+    compiler_driver: CompilerDriverIdentity,
+    compiler_search_directories: Vec<PathBuf>,
+    effective_policy_context: u64,
+    loader_injected: bool,
+    messages: Option<CachedCompilerMessages>,
+}
+
+/// The executable launcher is only a small shim around this shared library.
+#[derive(Clone, Debug, Deserialize, Eq, Hash, PartialEq, Serialize)]
+#[serde(deny_unknown_fields)]
+struct CompilerDriverIdentity {
+    path: PathBuf,
+    length: u64,
+    modified: (i64, u32),
+    created: Option<(i64, u32)>,
+    #[cfg(unix)]
+    changed: (i64, i64),
+    #[cfg(unix)]
+    device: u64,
+    #[cfg(unix)]
+    inode: u64,
+}
+
+/// Every option read by rustc's logger before it starts compiling a crate.
+pub(crate) const OHM_RUSTC_LOG_ENVIRONMENT: &[&str] = &[
+    "RUSTC_LOG",
+    "RUSTC_LOG_COLOR",
+    "RUSTC_LOG_ENTRY_EXIT",
+    "RUSTC_LOG_THREAD_IDS",
+    "RUSTC_LOG_BACKTRACE",
+    "RUSTC_LOG_WRAPTREE",
+    "RUSTC_LOG_LINES",
+    "RUSTC_LOG_FORMAT_JSON",
+    "RUSTC_LOG_OUTPUT_TARGET",
+];
+
+/// Reject runtime-driver substitutions without reading the large compiler dylib.
+fn compiler_driver_search_directory_is_unshadowed(expected: &Path, directory: &Path) -> bool {
+    let Some(driver_name) = expected.file_name() else {
+        return false;
+    };
+
+    // Relative entries resolve against each rustc's own current directory,
+    // which varies across registry units and cannot be validated globally.
+    if !directory.is_absolute() {
+        return false;
+    }
+
+    match directory.join(driver_name).canonicalize() {
+        Ok(candidate) => candidate == expected,
+        Err(error) if error.kind() == std::io::ErrorKind::NotFound => true,
+        Err(_) => false,
+    }
+}
+
+/// Resolve the compiler using the same executable search path as its child process.
+///
+/// Registry compiler processes run from their package roots, so relative programs
+/// and relative search directories cannot be authenticated independently of a unit.
+pub(crate) fn resolve_effective_compiler_executable(
+    gctx: &GlobalContext,
+    compiler: &Path,
+) -> Option<PathBuf> {
+    if compiler.is_absolute() {
+        return compiler.canonicalize().ok();
+    }
+    // On Windows, Cargo also synthesizes a per-unit dynamic-library search
+    // path in `PATH`, so a bare executable cannot be resolved globally.
+    if cfg!(windows) {
+        return None;
+    }
+    if compiler.components().count() != 1 {
+        return None;
+    }
+
+    let configured_environment = gctx.env_config().ok()?;
+    let search_path = configured_environment
+        .get("PATH")
+        .map(OsString::as_os_str)
+        .or_else(|| gctx.get_env_os("PATH"))?;
+    if std::env::split_paths(search_path).any(|directory| !directory.is_absolute()) {
+        return None;
+    }
+
+    for directory in std::env::split_paths(search_path) {
+        let candidate = directory.join(compiler);
+        if candidate.is_file() {
+            return candidate.canonicalize().ok();
+        }
+        if !std::env::consts::EXE_EXTENSION.is_empty() {
+            let candidate = candidate.with_extension(std::env::consts::EXE_EXTENSION);
+            if candidate.is_file() {
+                return candidate.canonicalize().ok();
+            }
+        }
+    }
+
+    None
+}
+
+/// A toolchain can select an external default backend at compiler build time,
+/// without exposing that choice in the unit's profile or command-line options.
+fn sysroot_has_external_codegen_backends(sysroot: &Path, host: &str) -> bool {
+    let backend_directory = sysroot
+        .join("lib")
+        .join("rustlib")
+        .join(host)
+        .join("codegen-backends");
+
+    !matches!(backend_directory.try_exists(), Ok(false))
+}
+
+/// Windows treats environment variable names as case-insensitive even though
+/// Cargo's process builder preserves their original spelling.
+pub(crate) fn is_sensitive_compiler_environment(name: &str, windows: bool) -> bool {
+    let matches_name = |expected: &str| {
+        if windows {
+            name.eq_ignore_ascii_case(expected)
+        } else {
+            name == expected
+        }
+    };
+
+    OHM_COMPILER_LOADER_ENVIRONMENT
+        .iter()
+        .any(|expected| matches_name(expected))
+        || OHM_RUSTC_LOG_ENVIRONMENT
+            .iter()
+            .any(|expected| matches_name(expected))
+        || matches_name(paths::dylib_path_envvar())
+        || (windows && matches_name("PATH"))
+        || matches_name("RUSTC_BOOTSTRAP")
+        || matches_name("RUSTC_OVERRIDE_VERSION_STRING")
+}
+
+/// Mixed-case Windows configuration keys can silently replace any variable
+/// Cargo synthesized for its child processes, not just known loader names.
+fn configured_compiler_environment_has_case_alias(
+    configured_environment: &HashMap<String, OsString>,
+    windows: bool,
+) -> bool {
+    windows
+        && configured_environment
+            .keys()
+            .any(|name| name.bytes().any(|character| character.is_ascii_lowercase()))
+}
+
+/// Follow the same last-wins environment ordering as `ProcessBuilder` when a
+/// Windows build script spells an existing variable with different casing.
+fn effective_compiler_environment(
+    compiler: &ProcessBuilder,
+    name: &str,
+    windows: bool,
+) -> Option<OsString> {
+    if windows
+        && let Some((_, value)) = compiler
+            .get_envs()
+            .iter()
+            .rev()
+            .find(|(actual, _)| actual.eq_ignore_ascii_case(name))
+    {
+        return value.clone();
+    }
+
+    compiler.get_env(name)
+}
+
+/// Bind cacheable diagnostics to the successful compiler invocation.
+#[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]
+#[serde(deny_unknown_fields)]
+struct CachedCompilerMessages {
+    length: u64,
+    sha256: String,
+}
+
+impl RegistryMessageProvenance {
+    /// Capture the actual child environment after build scripts override it.
+    pub(crate) fn capture_compiler_environment(
+        &mut self,
+        compiler: &ProcessBuilder,
+        build_script_overrides_loader: bool,
+    ) {
+        let mut policy = StableHasher::new();
+        for name in ["RUSTC_BOOTSTRAP", "RUSTC_OVERRIDE_VERSION_STRING"] {
+            name.hash(&mut policy);
+            effective_compiler_environment(compiler, name, cfg!(windows)).hash(&mut policy);
+        }
+        self.effective_policy_context = Hasher::finish(&policy);
+        self.compiler_search_directories =
+            effective_compiler_environment(compiler, paths::dylib_path_envvar(), cfg!(windows))
+                .map(|search_path| std::env::split_paths(&search_path).collect())
+                .unwrap_or_default();
+        self.loader_injected = build_script_overrides_loader
+            || !self.compiler_search_directories.iter().all(|directory| {
+                compiler_driver_search_directory_is_unshadowed(
+                    &self.compiler_driver.path,
+                    directory,
+                )
+            })
+            || OHM_COMPILER_LOADER_INJECTION_ENVIRONMENT
+                .iter()
+                .any(|name| {
+                    effective_compiler_environment(compiler, name, cfg!(windows))
+                        .is_some_and(|value| !value.is_empty())
+                });
+    }
+
+    /// Snapshot diagnostics with a bounded streaming read; no-warning builds
+    /// have no message file and therefore never read compiler output.
+    pub(crate) fn capture_messages(&mut self, path: &Path) -> CargoResult<()> {
+        self.messages = Self::read_messages(path)?;
+        Ok(())
+    }
+
+    /// Hash compiler messages while rejecting non-files and concurrent writes.
+    /// An absent cache is valid only when no diagnostics were emitted.
+    fn read_messages(path: &Path) -> CargoResult<Option<CachedCompilerMessages>> {
+        let file = match File::open(path) {
+            Ok(file) => file,
+            Err(error) if error.kind() == std::io::ErrorKind::NotFound => return Ok(None),
+            Err(error) => return Err(error.into()),
+        };
+        let before = file.metadata()?;
+        if !before.is_file() {
+            bail!("cached compiler diagnostics must be a regular file");
+        }
+        let mut digest = Sha256::new();
+        digest.update_file(&file)?;
+        let after = file.metadata()?;
+        if before.len() != after.len()
+            || FileTime::from_last_modification_time(&before)
+                != FileTime::from_last_modification_time(&after)
+        {
+            bail!("cached compiler diagnostics changed while being recorded");
+        }
+        Ok(Some(CachedCompilerMessages {
+            length: after.len(),
+            sha256: digest.finish_hex(),
+        }))
+    }
+
+    /// Recheck both message presence and contents before replaying a cached build.
+    fn messages_match(&self, path: &Path) -> bool {
+        match (&self.messages, std::fs::metadata(path)) {
+            (None, Err(error)) if error.kind() == std::io::ErrorKind::NotFound => true,
+            (Some(expected), Ok(metadata))
+                if metadata.is_file() && metadata.len() == expected.length =>
+            {
+                Self::read_messages(path)
+                    .ok()
+                    .flatten()
+                    .is_some_and(|actual| actual == *expected)
+            }
+            _ => false,
+        }
+    }
+}
 
 /// Collection of all the stuff that is needed to perform a build.
 ///
@@ -69,6 +353,15 @@ pub struct BuildRunner<'a, 'gctx> {
     primary_packages: HashSet<PackageId>,
     /// Requested check units whose metadata is not consumed by another unit.
     terminal_check_units: HashSet<Unit>,
+    /// Registry units that actually occupy a metadata-only check dependency
+    /// edge after being promoted to an already-built library.
+    reused_registry_units: HashSet<Unit>,
+    /// Reused registry units which also have a consumer that genuinely needs
+    /// their object code and therefore must retain their full JSON artifact.
+    object_required_registry_units: HashSet<Unit>,
+    /// Cached identity of the dynamic compiler implementation, not its tiny
+    /// executable launcher. `None` disables cross-mode reuse fail-closed.
+    compiler_driver_identity: OnceLock<Option<CompilerDriverIdentity>>,
     /// An abstraction of the files and directories that will be generated by
     /// the compilation. This is `None` until after `unit_dependencies` has
     /// been computed.
@@ -124,9 +417,44 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
             .filter(|unit| matches!(unit.mode, CompileMode::Check { .. }))
             .cloned()
             .collect::<HashSet<_>>();
-        for dependencies in bcx.unit_graph.values() {
+        let mut reused_registry_units = HashSet::default();
+        let mut object_required_registry_units = HashSet::default();
+        let reuse_built_registry_dependencies = bcx.gctx.cli_unstable().ohm_reuse_built_deps()
+            && !bcx.gctx.cli_unstable().bindeps
+            && matches!(bcx.build_config.intent, UserIntent::Check { .. });
+        for (parent, dependencies) in &bcx.unit_graph {
             for dependency in dependencies {
                 terminal_check_units.remove(&dependency.unit);
+                if reuse_built_registry_dependencies
+                    && Self::is_promotable_registry_dependency(&dependency.unit)
+                {
+                    if parent.mode.is_check() {
+                        reused_registry_units.insert(dependency.unit.clone());
+                    }
+                    if !parent.mode.is_check() && parent.requires_upstream_objects() {
+                        object_required_registry_units.insert(dependency.unit.clone());
+                    }
+                }
+            }
+        }
+
+        if reuse_built_registry_dependencies {
+            for registry_units in [
+                &mut reused_registry_units,
+                &mut object_required_registry_units,
+            ] {
+                let mut pending = registry_units.iter().cloned().collect::<Vec<_>>();
+                while let Some(unit) = pending.pop() {
+                    if let Some(dependencies) = bcx.unit_graph.get(&unit) {
+                        for dependency in dependencies {
+                            if Self::is_promotable_registry_dependency(&dependency.unit)
+                                && registry_units.insert(dependency.unit.clone())
+                            {
+                                pending.push(dependency.unit.clone());
+                            }
+                        }
+                    }
+                }
             }
         }
 
@@ -143,6 +471,9 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
             jobserver,
             primary_packages: HashSet::default(),
             terminal_check_units,
+            reused_registry_units,
+            object_required_registry_units,
+            compiler_driver_identity: OnceLock::new(),
             files: None,
             rmeta_required: HashSet::default(),
             lto: HashMap::default(),
@@ -194,6 +525,9 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
         self.prepare_units()?;
         self.prepare()?;
         custom_build::build_map(&mut self)?;
+        if !self.reused_registry_dependencies_are_fresh()? {
+            return Err(StaleBuiltRegistryDependency.into());
+        }
         self.check_collisions()?;
         self.compute_metadata_for_doc_units();
 
@@ -526,6 +860,458 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
         self.files.as_ref().unwrap()
     }
 
+    /// Records the compiler context and whether a successful registry build
+    /// produced cached diagnostics without changing Cargo's own fingerprints.
+    ///
+    /// Compiler message caches are intentionally created lazily, so an absent
+    /// cache is safe to reuse only when its originating build recorded that it
+    /// emitted no cacheable messages.
+    pub(crate) fn registry_message_provenance_path(&self, unit: &Unit) -> PathBuf {
+        self.files()
+            .fingerprint_file_path(unit, "ohm-message-provenance-")
+    }
+
+    /// Capture compiler inputs that an ordinary same-mode Cargo fingerprint
+    /// does not track but that cross-mode reuse must validate.
+    pub(crate) fn registry_message_provenance(
+        &self,
+    ) -> CargoResult<Option<RegistryMessageProvenance>> {
+        let Some(compiler_driver) = self
+            .compiler_driver_identity
+            .get_or_init(|| self.find_compiler_driver())
+            .as_ref()
+        else {
+            return Ok(None);
+        };
+        let mut context = StableHasher::new();
+        let Some(compiler) =
+            resolve_effective_compiler_executable(self.bcx.gctx, &self.bcx.rustc().path)
+        else {
+            return Ok(None);
+        };
+        compiler.hash(&mut context);
+        let compiler_metadata = paths::metadata(&compiler)?;
+        compiler_metadata.len().hash(&mut context);
+        FileTime::from_creation_time(&compiler_metadata).hash(&mut context);
+        FileTime::from_last_modification_time(&compiler_metadata).hash(&mut context);
+        compiler_driver.hash(&mut context);
+
+        let configured_environment = self.bcx.gctx.env_config()?;
+        if configured_compiler_environment_has_case_alias(configured_environment, cfg!(windows)) {
+            return Ok(None);
+        }
+        let mut policy = StableHasher::new();
+        for name in ["RUSTC_BOOTSTRAP", "RUSTC_OVERRIDE_VERSION_STRING"]
+            .into_iter()
+            .chain(OHM_COMPILER_LOADER_ENVIRONMENT.iter().copied())
+            .chain(
+                (!OHM_COMPILER_LOADER_ENVIRONMENT.contains(&paths::dylib_path_envvar()))
+                    .then_some(paths::dylib_path_envvar()),
+            )
+        {
+            let value = if name == paths::dylib_path_envvar() {
+                // Cargo constructs this variable from the inherited process
+                // environment before applying configuration. `apply_env_config`
+                // never overrides a variable that Cargo already populated.
+                self.bcx.gctx.get_env_os(name)
+            } else {
+                configured_environment
+                    .get(name)
+                    .map(std::ffi::OsString::as_os_str)
+                    .or_else(|| self.bcx.gctx.get_env_os(name))
+            };
+            name.hash(&mut context);
+            value.hash(&mut context);
+            if matches!(name, "RUSTC_BOOTSTRAP" | "RUSTC_OVERRIDE_VERSION_STRING") {
+                name.hash(&mut policy);
+                value.map(std::ffi::OsStr::to_os_string).hash(&mut policy);
+            }
+        }
+
+        Ok(Some(RegistryMessageProvenance {
+            version: 3,
+            compiler_context: Hasher::finish(&context),
+            compiler_driver: compiler_driver.clone(),
+            compiler_search_directories: Vec::new(),
+            effective_policy_context: Hasher::finish(&policy),
+            loader_injected: false,
+            messages: None,
+        }))
+    }
+
+    /// Locate the one platform-native compiler implementation in its real
+    /// sysroot. Multiple matches are ambiguous and must never be reused.
+    fn find_compiler_driver(&self) -> Option<CompilerDriverIdentity> {
+        let sysroot = &self.bcx.target_data.info(CompileKind::Host).sysroot;
+        let runtime_directory = sysroot.join(if cfg!(windows) { "bin" } else { "lib" });
+        let prefix = format!("{}rustc_driver-", std::env::consts::DLL_PREFIX);
+        let suffix = std::env::consts::DLL_SUFFIX;
+        let mut matching_driver = None;
+
+        for entry in std::fs::read_dir(runtime_directory).ok()? {
+            let entry = entry.ok()?;
+            let file_name = entry.file_name();
+            let name = file_name.to_str()?;
+            let Some(hash) = name
+                .strip_prefix(&prefix)
+                .and_then(|name| name.strip_suffix(suffix))
+            else {
+                continue;
+            };
+            if hash.is_empty() || !hash.chars().all(|character| character.is_ascii_hexdigit()) {
+                continue;
+            }
+            if matching_driver.replace(entry.path()).is_some() {
+                return None;
+            }
+        }
+
+        let path = matching_driver?.canonicalize().ok()?;
+        let file = File::open(&path).ok()?;
+        let metadata = file.metadata().ok()?;
+        if !metadata.is_file() {
+            return None;
+        }
+        if !self.compiler_driver_search_is_unshadowed(&path) {
+            return None;
+        }
+        let modified = FileTime::from_last_modification_time(&metadata);
+        let created = FileTime::from_creation_time(&metadata)
+            .map(|time| (time.unix_seconds(), time.nanoseconds()));
+
+        Some(CompilerDriverIdentity {
+            path,
+            length: metadata.len(),
+            modified: (modified.unix_seconds(), modified.nanoseconds()),
+            created,
+            #[cfg(unix)]
+            changed: (metadata.ctime(), metadata.ctime_nsec()),
+            #[cfg(unix)]
+            device: metadata.dev(),
+            #[cfg(unix)]
+            inode: metadata.ino(),
+        })
+    }
+
+    /// A stable search-path string can still start resolving a different driver when its
+    /// directory contents change, independently of the compiler or sysroot metadata.
+    fn compiler_driver_search_is_unshadowed(&self, expected: &Path) -> bool {
+        let Ok(configured_environment) = self.bcx.gctx.env_config() else {
+            return false;
+        };
+
+        let inherited_search_paths_are_safe = OHM_COMPILER_LOADER_ENVIRONMENT
+            .iter()
+            .copied()
+            .filter(|name| !OHM_COMPILER_LOADER_INJECTION_ENVIRONMENT.contains(name))
+            .chain(
+                (!OHM_COMPILER_LOADER_ENVIRONMENT.contains(&paths::dylib_path_envvar()))
+                    .then_some(paths::dylib_path_envvar()),
+            )
+            .all(|name| {
+                let search_path = if name == paths::dylib_path_envvar() {
+                    self.bcx.gctx.get_env_os(name)
+                } else {
+                    configured_environment
+                        .get(name)
+                        .map(std::ffi::OsString::as_os_str)
+                        .or_else(|| self.bcx.gctx.get_env_os(name))
+                };
+                let Some(search_path) = search_path else {
+                    return true;
+                };
+
+                std::env::split_paths(search_path).all(|directory| {
+                    compiler_driver_search_directory_is_unshadowed(expected, &directory)
+                })
+            });
+
+        inherited_search_paths_are_safe
+            && self
+                .compilation
+                .deps_output
+                .values()
+                .flatten()
+                .chain(self.compilation.native_dirs.iter())
+                .all(|directory| {
+                    compiler_driver_search_directory_is_unshadowed(expected, directory)
+                })
+    }
+
+    /// Validates the exact build-mode registry units selected by a check graph.
+    /// This runs after Cargo has computed canonical unit hashes, LTO settings,
+    /// output paths, and build-script dependencies, but before any rustc work.
+    fn reused_registry_dependencies_are_fresh(&mut self) -> CargoResult<bool> {
+        if !self.bcx.gctx.cli_unstable().ohm_reuse_built_deps()
+            || !matches!(self.bcx.build_config.intent, UserIntent::Check { .. })
+        {
+            return Ok(true);
+        }
+
+        let mut promoted_units = self
+            .reused_registry_units
+            .iter()
+            .cloned()
+            .collect::<Vec<_>>();
+        promoted_units.sort_by_key(|unit| self.files().unit_hash(unit));
+
+        if promoted_units.is_empty() {
+            return Ok(true);
+        }
+
+        if promoted_units
+            .iter()
+            .any(|unit| self.unit_uses_custom_codegen_backend(unit))
+        {
+            return Ok(false);
+        }
+
+        let mut registry_closure_units = HashSet::default();
+        let mut pending = promoted_units.clone();
+        while let Some(unit) = pending.pop() {
+            if !registry_closure_units.insert(unit.clone()) {
+                continue;
+            }
+            pending.extend(
+                self.unit_deps(&unit)
+                    .iter()
+                    .filter(|dependency| {
+                        dependency
+                            .unit
+                            .pkg
+                            .package_id()
+                            .source_id()
+                            .is_remote_registry()
+                    })
+                    .map(|dependency| dependency.unit.clone()),
+            );
+        }
+        let mut registry_closure_units = registry_closure_units.into_iter().collect::<Vec<_>>();
+        registry_closure_units.sort_by_key(|unit| self.files().unit_hash(unit));
+
+        if self.bcx.gctx.cli_unstable().fine_grain_locking {
+            // Keep the complete registry closure stable from the fingerprint
+            // probe until the normal job queue acquires these same locks.
+            for unit in &registry_closure_units {
+                self.lock_manager.lock_shared(self, unit)?;
+            }
+        }
+
+        // Future-incompatibility diagnostics can originate in any transitive
+        // dependency, even when only its parent has an incoming check edge.
+        let Some(expected_provenance) = self.registry_message_provenance()? else {
+            return Ok(false);
+        };
+        for unit in registry_closure_units
+            .iter()
+            .filter(|unit| Self::is_promotable_registry_dependency(unit))
+        {
+            let messages_available = std::fs::read(self.registry_message_provenance_path(unit))
+                .ok()
+                .and_then(|contents| {
+                    serde_json::from_slice::<RegistryMessageProvenance>(&contents).ok()
+                })
+                .is_some_and(|provenance| {
+                    if provenance.version != expected_provenance.version
+                        || provenance.compiler_context != expected_provenance.compiler_context
+                        || provenance.compiler_driver != expected_provenance.compiler_driver
+                        || provenance.effective_policy_context
+                            != expected_provenance.effective_policy_context
+                        || provenance.loader_injected
+                    {
+                        return false;
+                    }
+
+                    if !provenance
+                        .compiler_search_directories
+                        .iter()
+                        .all(|directory| {
+                            compiler_driver_search_directory_is_unshadowed(
+                                &expected_provenance.compiler_driver.path,
+                                directory,
+                            )
+                        })
+                    {
+                        return false;
+                    }
+
+                    let cached_messages = self.files().message_cache_path(unit);
+                    provenance.messages_match(&cached_messages)
+                });
+            if !messages_available {
+                return Ok(false);
+            }
+        }
+
+        for unit in &promoted_units {
+            let outputs = self.outputs(unit)?;
+            let has_output = |extension| {
+                outputs.iter().any(|output| {
+                    output.path.extension().and_then(|actual| actual.to_str()) == Some(extension)
+                        && output.path.is_file()
+                })
+            };
+            if !has_output("rlib")
+                || !has_output("rmeta")
+                || !fingerprint::existing_unit_is_fresh(self, unit)?
+            {
+                return Ok(false);
+            }
+        }
+
+        Ok(true)
+    }
+
+    /// External backends are compiler plugins, and execute even for metadata
+    /// checks. Their arbitrary ambient inputs cannot safely be fingerprinted.
+    fn unit_uses_custom_codegen_backend(&self, unit: &Unit) -> bool {
+        let host_sysroot = &self.bcx.target_data.info(CompileKind::Host).sysroot;
+        let unit_sysroot = &self.bcx.target_data.info(unit.kind).sysroot;
+        let host_triple = self.bcx.host_triple();
+        if unit.profile.codegen_backend.is_some()
+            || sysroot_has_external_codegen_backends(host_sysroot, host_triple.as_str())
+            || (unit_sysroot != host_sysroot
+                && sysroot_has_external_codegen_backends(unit_sysroot, host_triple.as_str()))
+        {
+            return true;
+        }
+
+        if let CompileKind::Target(target) = unit.kind {
+            let CompileTarget::Tuple(target_name) = target else {
+                // Custom target specifications can select an external backend
+                // without adding any command-line compiler options.
+                return true;
+            };
+
+            let Ok(configured_environment) = self.bcx.gctx.env_config() else {
+                return true;
+            };
+            if configured_environment
+                .get("RUST_TARGET_PATH")
+                .map(std::ffi::OsString::as_os_str)
+                .or_else(|| self.bcx.gctx.get_env_os("RUST_TARGET_PATH"))
+                .is_some_and(|search_path| !search_path.is_empty())
+            {
+                // A bare target tuple can resolve to a custom specification
+                // through this search path, despite looking like a built-in.
+                return true;
+            }
+
+            let local_specification_name = format!("{}.json", target_name.as_str());
+            if [self.bcx.gctx.cwd(), unit.pkg.root()]
+                .into_iter()
+                .any(|directory| {
+                    !matches!(
+                        directory.join(&local_specification_name).try_exists(),
+                        Ok(false)
+                    )
+                })
+            {
+                // An absent or empty `RUST_TARGET_PATH` still contains one
+                // current-directory search entry in rustc's target resolver.
+                return true;
+            }
+
+            let target_specification = unit_sysroot
+                .join("lib")
+                .join("rustlib")
+                .join(target_name.as_str())
+                .join("target.json");
+            if !matches!(target_specification.try_exists(), Ok(false)) {
+                // rustc also resolves otherwise unknown tuples from the
+                // selected toolchain's installed target specifications.
+                return true;
+            }
+        }
+
+        let extra_args = self
+            .bcx
+            .extra_args_for(unit)
+            .map(Vec::as_slice)
+            .unwrap_or_default();
+        let mut arguments = unit
+            .pkg
+            .manifest()
+            .lint_rustflags()
+            .iter()
+            .map(String::as_str)
+            .chain(unit.profile.rustflags.iter().map(|flag| flag.as_str()))
+            .chain(extra_args.iter().map(String::as_str))
+            .chain(unit.rustflags.iter().map(String::as_str));
+
+        while let Some(argument) = arguments.next() {
+            if let Some(search_path) = argument.strip_prefix("-L") {
+                let search_path = if search_path.is_empty() {
+                    let Some(search_path) = arguments.next() else {
+                        return true;
+                    };
+                    search_path
+                } else {
+                    search_path
+                };
+                if !search_path.starts_with("native=") && !search_path.starts_with("framework=") {
+                    return true;
+                }
+                continue;
+            }
+            if argument.starts_with('@')
+                || argument == "--extern"
+                || argument.starts_with("--extern=")
+                || argument == "--target"
+                || argument.starts_with("--target=")
+                || argument == "--sysroot"
+                || argument.starts_with("--sysroot=")
+            {
+                return true;
+            }
+            let option = if argument == "-Z" {
+                arguments.next()
+            } else {
+                argument.strip_prefix("-Z")
+            };
+            if option.is_some_and(|option| {
+                option.starts_with('@')
+                    || matches!(
+                        option.split_once('=').map_or(option, |(name, _)| name),
+                        "autodiff"
+                            | "codegen-backend"
+                            | "codegen_backend"
+                            | "llvm-plugins"
+                            | "llvm_plugins"
+                    )
+            }) {
+                return true;
+            }
+        }
+
+        false
+    }
+
+    /// Returns whether a unit has the shape of a promotable registry library.
+    fn is_promotable_registry_dependency(unit: &Unit) -> bool {
+        unit.mode == CompileMode::Build
+            && unit.pkg.package_id().source_id().is_remote_registry()
+            && !unit.target.for_host()
+            && unit.target.is_lib()
+            && !unit.artifact.is_true()
+            && unit
+                .target
+                .rustc_crate_types()
+                .iter()
+                .all(|crate_type| matches!(crate_type, CrateType::Lib | CrateType::Rlib))
+    }
+
+    /// Returns whether this unit actually has an incoming promoted check edge.
+    pub(crate) fn is_reused_registry_dependency(&self, unit: &Unit) -> bool {
+        self.reused_registry_units.contains(unit)
+    }
+
+    /// Returns whether a promoted unit has no consumer requiring object code.
+    pub(crate) fn is_metadata_only_reused_registry_dependency(&self, unit: &Unit) -> bool {
+        self.reused_registry_units.contains(unit)
+            && !self.object_required_registry_units.contains(unit)
+    }
+
     /// Returns the filenames that the given unit will generate.
     pub fn outputs(&self, unit: &Unit) -> CargoResult<Arc<Vec<OutputFile>>> {
         self.files.as_ref().unwrap().outputs(unit, self.bcx)
@@ -770,6 +1556,13 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
     /// metadata file from `dep`.
     pub fn only_requires_rmeta(&self, parent: &Unit, dep: &Unit) -> bool {
         if parent.mode.is_check()
+            && self.is_reused_registry_dependency(dep)
+            && !dep.requires_upstream_objects()
+        {
+            return true;
+        }
+
+        if parent.mode.is_check()
             && dep.mode.is_check()
             && fingerprint::unit_can_use_early_cutoff(self, parent)
             && fingerprint::unit_can_use_early_cutoff(self, dep)
@@ -828,5 +1621,106 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
             self.metadata_for_doc_units
                 .insert(unit.clone(), self.files().metadata(metadata_unit));
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use cargo_util::ProcessBuilder;
+
+    use super::{
+        configured_compiler_environment_has_case_alias, effective_compiler_environment,
+        is_sensitive_compiler_environment, sysroot_has_external_codegen_backends,
+    };
+
+    #[test]
+    fn detects_opaque_default_codegen_backend_directories() {
+        let sysroot = tempfile::tempdir().expect("create isolated compiler sysroot");
+        let host = "test-host";
+
+        assert!(!sysroot_has_external_codegen_backends(sysroot.path(), host));
+
+        std::fs::create_dir_all(
+            sysroot
+                .path()
+                .join("lib")
+                .join("rustlib")
+                .join(host)
+                .join("codegen-backends"),
+        )
+        .expect("create external backend directory");
+
+        assert!(sysroot_has_external_codegen_backends(sysroot.path(), host));
+    }
+
+    #[test]
+    fn recognizes_windows_sensitive_environment_aliases_without_changing_unix() {
+        for name in [
+            "pAtH",
+            "rUsTc_BoOtStRaP",
+            "rustc_override_version_string",
+            "dYlD_iNsErT_lIbRaRiEs",
+            "lD_lIbRaRy_PaTh",
+            "rUsTc_LoG_oUtPuT_tArGeT",
+        ] {
+            assert!(is_sensitive_compiler_environment(name, true));
+            assert!(!is_sensitive_compiler_environment(name, false));
+        }
+
+        assert!(is_sensitive_compiler_environment("RUSTC_BOOTSTRAP", false));
+        assert!(is_sensitive_compiler_environment("RUSTC_LOG", false));
+        assert!(is_sensitive_compiler_environment(
+            "RUSTC_LOG_OUTPUT_TARGET",
+            false
+        ));
+        assert!(!is_sensitive_compiler_environment("UNRELATED_POLICY", true));
+    }
+
+    #[test]
+    fn captures_windows_compiler_environment_alias_using_actual_process_order() {
+        let mut compiler = ProcessBuilder::new("rustc");
+        compiler.env("RUSTC_OVERRIDE_VERSION_STRING", "1.50.0");
+        compiler.env("rustc_override_version_string", "1.99.0");
+
+        assert_eq!(
+            effective_compiler_environment(&compiler, "RUSTC_OVERRIDE_VERSION_STRING", true),
+            Some("1.99.0".into())
+        );
+        assert_eq!(
+            effective_compiler_environment(&compiler, "RUSTC_OVERRIDE_VERSION_STRING", false),
+            Some("1.50.0".into())
+        );
+    }
+
+    #[test]
+    fn rejects_windows_sensitive_config_aliases_without_changing_unix() {
+        let configured_environment = [
+            ("Path".to_owned(), "opaque-linker-directory".into()),
+            ("rustc_override_version_string".to_owned(), "1.99.0".into()),
+            ("Cargo_Manifest_Dir".to_owned(), "opaque-workspace".into()),
+        ]
+        .into_iter()
+        .collect();
+
+        assert!(configured_compiler_environment_has_case_alias(
+            &configured_environment,
+            true
+        ));
+        assert!(!configured_compiler_environment_has_case_alias(
+            &configured_environment,
+            false
+        ));
+
+        let canonical_environment = [
+            ("PATH".to_owned(), "trusted-linker-directory".into()),
+            ("RUSTC_OVERRIDE_VERSION_STRING".to_owned(), "1.99.0".into()),
+        ]
+        .into_iter()
+        .collect();
+
+        assert!(!configured_compiler_environment_has_case_alias(
+            &canonical_environment,
+            true
+        ));
     }
 }
