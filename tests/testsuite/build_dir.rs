@@ -67,6 +67,42 @@ fn binary_with_debug() {
 "#]]);
 }
 
+#[cfg(unix)]
+#[cargo_test]
+fn fine_grain_locking_scales_beyond_the_soft_descriptor_limit() {
+    let mut manifest = String::from(
+        "[package]\nname = \"descriptor-budget\"\nversion = \"0.1.0\"\nedition = \"2021\"\n\n[dependencies]\n",
+    );
+    let mut project = project().file("src/lib.rs", "pub fn value() -> u32 { 1 }");
+
+    for index in 0..72 {
+        let dependency = format!("dependency-{index}");
+        manifest.push_str(&format!(
+            "{dependency} = {{ path = \"crates/{dependency}\" }}\n"
+        ));
+        project = project
+            .file(
+                &format!("crates/{dependency}/Cargo.toml"),
+                &format!(
+                    "[package]\nname = \"{dependency}\"\nversion = \"0.1.0\"\nedition = \"2021\"\n",
+                ),
+            )
+            .file(
+                &format!("crates/{dependency}/src/lib.rs"),
+                "pub fn value() -> u32 { 1 }",
+            );
+    }
+    let project = project.file("Cargo.toml", &manifest).build();
+
+    project
+        .process("sh")
+        .arg("-c")
+        .arg("ulimit -Sn 64 && exec \"$CARGO_TEST_BINARY\" -Zbuild-dir-new-layout -Zfine-grain-locking build -j 1")
+        .env("CARGO_TEST_BINARY", crate::utils::cargo_exe())
+        .masquerade_as_nightly_cargo(&["build-dir-new-layout", "fine-grain-locking"])
+        .run();
+}
+
 #[cargo_test]
 fn binary_with_release() {
     let p = project()
