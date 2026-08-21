@@ -1295,6 +1295,45 @@ fn relink_only_accepts_boolean_values() {
 }
 
 #[cargo_test]
+fn no_embed_metadata_accepts_boolean_values() {
+    let gctx = GlobalContextBuilder::new()
+        .unstable_flag("no-embed-metadata")
+        .build();
+    assert!(gctx.cli_unstable().no_embed_metadata());
+
+    let gctx = GlobalContextBuilder::new()
+        .unstable_flag("no-embed-metadata=no")
+        .build();
+    assert!(!gctx.cli_unstable().no_embed_metadata());
+
+    let gctx = GlobalContextBuilder::new()
+        .unstable_flag("ohm-defaults")
+        .unstable_flag("no-embed-metadata=no")
+        .build();
+    assert!(gctx.cli_unstable().ohm_defaults());
+    assert!(!gctx.cli_unstable().no_embed_metadata());
+
+    let gctx = GlobalContextBuilder::new()
+        .unstable_flag("ohm-defaults=no")
+        .unstable_flag("no-embed-metadata")
+        .build();
+    assert!(!gctx.cli_unstable().ohm_defaults());
+    assert!(gctx.cli_unstable().no_embed_metadata());
+
+    let gctx = GlobalContextBuilder::new()
+        .env("__CARGO_NO_EMBED_METADATA", "yes")
+        .unstable_flag("no-embed-metadata=no")
+        .build();
+    assert!(!gctx.cli_unstable().no_embed_metadata());
+
+    let gctx = GlobalContextBuilder::new()
+        .env("__CARGO_NO_EMBED_METADATA", "no")
+        .unstable_flag("no-embed-metadata")
+        .build();
+    assert!(gctx.cli_unstable().no_embed_metadata());
+}
+
+#[cargo_test]
 fn ohm_defaults_can_be_disabled_for_one_invocation() {
     let gctx = GlobalContextBuilder::new().build();
     assert_eq!(
@@ -1305,42 +1344,54 @@ fn ohm_defaults_can_be_disabled_for_one_invocation() {
         gctx.cli_unstable().relink_only(),
         cfg!(feature = "ohm-defaults")
     );
+    assert_eq!(
+        gctx.cli_unstable().no_embed_metadata(),
+        cfg!(feature = "ohm-defaults")
+    );
 
     let gctx = GlobalContextBuilder::new()
         .unstable_flag("ohm-defaults=no")
         .build();
     assert!(!gctx.cli_unstable().ohm_defaults());
     assert!(!gctx.cli_unstable().relink_only());
+    assert!(!gctx.cli_unstable().no_embed_metadata());
 
     let gctx = GlobalContextBuilder::new()
         .unstable_flag("ohm-defaults")
         .build();
     assert!(gctx.cli_unstable().ohm_defaults());
     assert!(gctx.cli_unstable().relink_only());
+    assert!(gctx.cli_unstable().no_embed_metadata());
 
     let gctx = GlobalContextBuilder::new()
         .env("__CARGO_OHM_DEFAULTS", "no")
         .env("__CARGO_RELINK_ONLY", "no")
+        .env("__CARGO_NO_EMBED_METADATA", "no")
         .unstable_flag("ohm-defaults")
         .unstable_flag("relink-only")
+        .unstable_flag("no-embed-metadata")
         .build();
     assert!(gctx.cli_unstable().ohm_defaults());
     assert!(gctx.cli_unstable().relink_only());
+    assert!(gctx.cli_unstable().no_embed_metadata());
 
     write_config_toml(
         "\
 [unstable]
 ohm-defaults = false
 relink-only = false
+no-embed-metadata = false
 ",
     );
     let gctx = GlobalContextBuilder::new()
         .env("__CARGO_OHM_DEFAULTS", "invalid")
         .env("__CARGO_RELINK_ONLY", "invalid")
+        .env("__CARGO_NO_EMBED_METADATA", "invalid")
         .nightly_features_allowed(true)
         .build();
     assert!(!gctx.cli_unstable().ohm_defaults());
     assert!(!gctx.cli_unstable().relink_only());
+    assert!(!gctx.cli_unstable().no_embed_metadata());
 }
 
 #[cargo_test]
