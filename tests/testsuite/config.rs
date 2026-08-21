@@ -1354,6 +1354,10 @@ fn ohm_defaults_can_be_disabled_for_one_invocation() {
         gctx.cli_unstable().no_embed_metadata(),
         cfg!(feature = "ohm-defaults")
     );
+    assert_eq!(
+        gctx.cli_unstable().ohm_reuse_built_deps(),
+        cfg!(feature = "ohm-defaults")
+    );
 
     let gctx = GlobalContextBuilder::new()
         .unstable_flag("ohm-defaults=no")
@@ -1361,6 +1365,7 @@ fn ohm_defaults_can_be_disabled_for_one_invocation() {
     assert!(!gctx.cli_unstable().ohm_defaults());
     assert!(!gctx.cli_unstable().relink_only());
     assert!(!gctx.cli_unstable().no_embed_metadata());
+    assert!(!gctx.cli_unstable().ohm_reuse_built_deps());
 
     let gctx = GlobalContextBuilder::new()
         .unstable_flag("ohm-defaults")
@@ -1368,6 +1373,14 @@ fn ohm_defaults_can_be_disabled_for_one_invocation() {
     assert!(gctx.cli_unstable().ohm_defaults());
     assert!(gctx.cli_unstable().relink_only());
     assert!(gctx.cli_unstable().no_embed_metadata());
+    assert!(gctx.cli_unstable().ohm_reuse_built_deps());
+
+    let gctx = GlobalContextBuilder::new()
+        .unstable_flag("ohm-defaults=no")
+        .unstable_flag("ohm-reuse-built-deps")
+        .build();
+    assert!(!gctx.cli_unstable().ohm_defaults());
+    assert!(gctx.cli_unstable().ohm_reuse_built_deps());
 
     let gctx = GlobalContextBuilder::new()
         .env("__CARGO_OHM_DEFAULTS", "no")
@@ -1380,6 +1393,7 @@ fn ohm_defaults_can_be_disabled_for_one_invocation() {
     assert!(gctx.cli_unstable().ohm_defaults());
     assert!(gctx.cli_unstable().relink_only());
     assert!(gctx.cli_unstable().no_embed_metadata());
+    assert!(gctx.cli_unstable().ohm_reuse_built_deps());
 
     write_config_toml(
         "\
@@ -1398,6 +1412,7 @@ no-embed-metadata = false
     assert!(!gctx.cli_unstable().ohm_defaults());
     assert!(!gctx.cli_unstable().relink_only());
     assert!(!gctx.cli_unstable().no_embed_metadata());
+    assert!(!gctx.cli_unstable().ohm_reuse_built_deps());
 }
 
 #[cargo_test]
