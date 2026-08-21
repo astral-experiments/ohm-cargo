@@ -438,11 +438,11 @@ fn parse_unstable_bool(value: Option<&str>) -> Option<bool> {
     }
 }
 
-fn rustflags_iter_enable_unstable_option<'a>(
+fn rustflags_iter_unstable_option<'a>(
     rustflags: impl IntoIterator<Item = &'a str>,
     option_name: &str,
-) -> bool {
-    let mut enabled = false;
+) -> Option<bool> {
+    let mut enabled = None;
     let mut rustflags = rustflags.into_iter();
     while let Some(rustflag) = rustflags.next() {
         let option = if rustflag == "-Z" {
@@ -459,7 +459,7 @@ fn rustflags_iter_enable_unstable_option<'a>(
         if name == option_name
             && let Some(value) = parse_unstable_bool(value)
         {
-            enabled = value;
+            enabled = Some(value);
         }
     }
     enabled
@@ -467,7 +467,32 @@ fn rustflags_iter_enable_unstable_option<'a>(
 
 #[cfg(test)]
 fn rustflags_enable_public_api_hash(rustflags: &[String]) -> bool {
-    rustflags_iter_enable_unstable_option(rustflags.iter().map(String::as_str), "public-api-hash")
+    rustflags_iter_unstable_option(rustflags.iter().map(String::as_str), "public-api-hash")
+        .unwrap_or(false)
+}
+
+pub(super) fn unit_public_api_hash_override(
+    build_runner: &BuildRunner<'_, '_>,
+    unit: &Unit,
+) -> Option<bool> {
+    let gctx = build_runner.bcx.gctx;
+    let extra_args = build_runner
+        .bcx
+        .extra_args_for(unit)
+        .map(Vec::as_slice)
+        .unwrap_or_default();
+    let user_rustflags = super::unit_rustflags_without_ohm_defaults(gctx, &unit.rustflags);
+    rustflags_iter_unstable_option(
+        unit.pkg
+            .manifest()
+            .lint_rustflags()
+            .iter()
+            .map(String::as_str)
+            .chain(unit.profile.rustflags.iter().map(|flag| flag.as_str()))
+            .chain(extra_args.iter().map(String::as_str))
+            .chain(user_rustflags.iter().map(String::as_str)),
+        "public-api-hash",
+    )
 }
 
 fn unit_uses_public_api_hash(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> bool {
@@ -478,34 +503,15 @@ fn unit_uses_public_api_hash(build_runner: &BuildRunner<'_, '_>, unit: &Unit) ->
         return false;
     }
 
-    let gctx = build_runner.bcx.gctx;
-    let defaults = gctx
-        .cli_unstable()
-        .ohm_defaults()
-        .then_some(super::OHM_DEFAULT_RUSTFLAGS.as_slice())
-        .unwrap_or_default();
-    let extra_args = build_runner
-        .bcx
-        .extra_args_for(unit)
-        .map(Vec::as_slice)
-        .unwrap_or_default();
-    let user_rustflags = super::unit_rustflags_without_ohm_defaults(gctx, &unit.rustflags);
-    rustflags_iter_enable_unstable_option(
-        defaults
-            .iter()
-            .copied()
-            .chain(
-                unit.pkg
-                    .manifest()
-                    .lint_rustflags()
-                    .iter()
-                    .map(String::as_str),
-            )
-            .chain(unit.profile.rustflags.iter().map(|flag| flag.as_str()))
-            .chain(extra_args.iter().map(String::as_str))
-            .chain(user_rustflags.iter().map(String::as_str)),
-        "public-api-hash",
-    )
+    unit_public_api_hash_override(build_runner, unit).unwrap_or_else(|| {
+        build_runner.bcx.gctx.cli_unstable().ohm_defaults()
+            && !super::unit_suppresses_default_public_api_hash(build_runner, unit)
+    })
+}
+
+fn unit_consumes_public_api_hash(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> bool {
+    unit_uses_public_api_hash(build_runner, unit)
+        || super::unit_suppresses_default_public_api_hash(build_runner, unit)
 }
 
 #[derive(Default)]
@@ -668,7 +674,7 @@ pub fn unit_can_use_early_cutoff(build_runner: &BuildRunner<'_, '_>, unit: &Unit
     (matches!(unit.mode, CompileMode::Check { .. })
         || (unit.mode == CompileMode::Build && !unit.requires_upstream_objects()))
         && !unit.artifact.is_true()
-        && unit_uses_public_api_hash(build_runner, unit)
+        && unit_consumes_public_api_hash(build_runner, unit)
 }
 
 /// Returns whether this unit can be split into codegen and reusable link steps.
@@ -917,7 +923,7 @@ pub fn prepare_target(
         fingerprint.set_build_state(BuildState::Fresh);
         return Ok(Job::new_fresh());
     };
-    let previous_dependency_changes = if unit_uses_public_api_hash(build_runner, unit) {
+    let previous_dependency_changes = if unit_consumes_public_api_hash(build_runner, unit) {
         previous_dependency_changes(&fingerprint)
     } else {
         PreviousDependencyChanges::default()
@@ -2342,10 +2348,13 @@ fn calculate_normal(
     // The same immutable package can become a root in another invocation, so
     // its effective embedding policy must also invalidate its own fingerprint.
     super::unit_uses_no_embed_metadata(build_runner, unit).hash(&mut config);
-    if unit_uses_public_api_hash(build_runner, unit) {
+    if unit_consumes_public_api_hash(build_runner, unit) {
         // Older implementations cannot soundly reuse the preserved metadata
         // generations without propagating the corresponding link generations.
         ("ohm-reduced-dependency-rebuild", 2_u8).hash(&mut config);
+    }
+    if super::unit_suppresses_default_public_api_hash(build_runner, unit) {
+        ("ohm-terminal-check-public-api-hash", 1_u8).hash(&mut config);
     }
 
     let compile_kind = unit.kind.fingerprint_hash();
