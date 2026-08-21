@@ -42,7 +42,9 @@ use std::sync::Arc;
 use crate::compiler::OHM_BUILT_REGISTRY_READY_MARKER;
 use crate::compiler::UserIntent;
 use crate::compiler::build_runner::StaleBuiltRegistryDependency;
-use crate::compiler::unit_dependencies::build_unit_dependencies;
+use crate::compiler::unit_dependencies::{
+    audited_proc_macro_package_identity, build_unit_dependencies,
+};
 use crate::compiler::unit_graph::{self, UnitDep, UnitGraph};
 use crate::compiler::{BuildConfig, BuildContext, BuildRunner, Compilation};
 use crate::compiler::{CompileKind, CompileTarget, RustcTargetData, Unit};
@@ -740,6 +742,35 @@ where `<compatible-ver>` is the latest version supporting rustc {rustc_version}"
         }
     }
 
+    // Keep only authenticated executable-package identities after the resolver is dropped;
+    // ordinary builds do not need to retain or copy the full resolved dependency graph.
+    let audited_proc_macro_packages = if gctx.cli_unstable().ohm_shared_registry_cache {
+        unit_graph
+            .keys()
+            .filter_map(|unit| {
+                let package_id = unit.pkg.package_id();
+                let sources = pkg_set.sources();
+                let source = sources.get(package_id.source_id())?;
+                audited_proc_macro_package_identity(
+                    package_id.source_id(),
+                    source.is_replaced(),
+                    package_id.name().as_str(),
+                    package_id.version(),
+                    resolve
+                        .checksums()
+                        .get(&package_id)
+                        .and_then(Option::as_deref),
+                    unit.pkg.summary().checksum(),
+                    unit.pkg.proc_macro(),
+                    gctx.cli_unstable().ohm_proc_macro_trust,
+                )
+                .then_some(package_id)
+            })
+            .collect()
+    } else {
+        HashSet::default()
+    };
+
     let bcx = BuildContext::new(
         ws,
         logger,
@@ -751,6 +782,7 @@ where `<compatible-ver>` is the latest version supporting rustc {rustc_version}"
         target_data,
         root_units,
         unit_graph,
+        audited_proc_macro_packages,
         unit_to_index,
         scrape_units,
     )?;
