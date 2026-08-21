@@ -79,10 +79,19 @@ fn ohm_defaults_apply_to_host_and_target_units() {
                 version = "0.1.0"
                 edition = "2024"
                 build = "build.rs"
+
+                [dependencies]
+                dep = { path = "dep" }
             "#,
         )
         .file("build.rs", "fn main() {}")
-        .file("src/lib.rs", "pub fn value() -> i32 { 1 }")
+        .file("src/lib.rs", "pub fn value() -> i32 { dep::value() }")
+        .file(
+            "tests/integration.rs",
+            "#[test] fn value_is_positive() { assert!(foo::value() > 0); }",
+        )
+        .file("dep/Cargo.toml", &basic_manifest("dep", "0.1.0"))
+        .file("dep/src/lib.rs", "pub fn value() -> i32 { 1 }")
         .build();
     let log = p.root().join("ohm-defaults.log");
 
@@ -98,11 +107,56 @@ fn ohm_defaults_apply_to_host_and_target_units() {
         .env("OHM_DEFAULTS_LOG", &log)
         .run();
     let invocations = fs::read_to_string(&log).unwrap();
-    for crate_name in ["build_script_build", "foo"] {
+    for crate_name in ["build_script_build", "dep"] {
         let invocation = rustc_invocation(&invocations, crate_name);
         assert!(invocation.contains(&"-Zpublic-api-hash"));
         assert!(invocation.contains(&"-Zcache-proc-macros"));
+        assert!(!invocation.contains(&"-Zpublic-api-hash=no"));
     }
+    assert_eq!(
+        ohm_rustflags(&rustc_invocation(&invocations, "foo")),
+        [
+            "-Zpublic-api-hash",
+            "-Zcache-proc-macros",
+            "-Zpublic-api-hash=no",
+        ]
+    );
+
+    p.cargo("clean").run();
+    fs::write(&log, "").unwrap();
+    p.cargo("-Zohm-defaults check --tests")
+        .masquerade_as_nightly_cargo(&["ohm-defaults"])
+        .env("RUSTC_WRAPPER", &wrapper)
+        .env("OHM_DEFAULTS_LOG", &log)
+        .run();
+    let invocations = fs::read_to_string(&log).unwrap();
+    let library = invocations
+        .lines()
+        .map(|line| line.split('\t').collect::<Vec<_>>())
+        .find(|args| {
+            args.windows(2).any(|args| args == ["--crate-name", "foo"]) && !args.contains(&"--test")
+        })
+        .unwrap();
+    assert!(!library.contains(&"-Zpublic-api-hash=no"));
+    assert!(rustc_invocation(&invocations, "integration").contains(&"-Zpublic-api-hash=no"));
+
+    p.cargo("clean").run();
+    fs::write(&log, "").unwrap();
+    p.cargo("-Zohm-defaults check --target")
+        .masquerade_as_nightly_cargo(&["ohm-defaults"])
+        .arg(rustc_host())
+        .env("RUSTC_WRAPPER", &wrapper)
+        .env("OHM_DEFAULTS_LOG", &log)
+        .env("RUSTFLAGS", "-Zpublic-api-hash=yes")
+        .run();
+    assert_eq!(
+        ohm_rustflags(&rustc_invocation(&fs::read_to_string(&log).unwrap(), "foo")),
+        [
+            "-Zpublic-api-hash",
+            "-Zcache-proc-macros",
+            "-Zpublic-api-hash=yes",
+        ]
+    );
 
     p.cargo("clean").run();
     fs::write(&log, "").unwrap();
