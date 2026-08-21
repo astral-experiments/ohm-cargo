@@ -19,7 +19,7 @@ use jobserver::Client;
 
 use super::RustdocFingerprint;
 use super::custom_build::{self, BuildDeps, BuildScriptOutputs, BuildScripts};
-use super::fingerprint::{Checksum, Fingerprint};
+use super::fingerprint::{self, Checksum, Fingerprint};
 use super::job_queue::JobQueue;
 use super::layout::Layout;
 use super::lto::Lto;
@@ -763,6 +763,14 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
     /// Returns whether when `parent` depends on `dep` if it only requires the
     /// metadata file from `dep`.
     pub fn only_requires_rmeta(&self, parent: &Unit, dep: &Unit) -> bool {
+        if parent.mode.is_check()
+            && dep.mode.is_check()
+            && fingerprint::unit_can_use_early_cutoff(parent)
+            && fingerprint::unit_can_use_early_cutoff(dep)
+        {
+            return true;
+        }
+
         // We're only a candidate for requiring an `rmeta` file if we
         // ourselves are building an rlib,
         !parent.requires_upstream_objects()
