@@ -127,6 +127,22 @@ impl ProcessBuilder {
         self
     }
 
+    /// Replaces the first argument exactly matching `from`.
+    ///
+    /// Unlike [`ProcessBuilder::args_replace`], this preserves compiler
+    /// wrappers and every other argument on the command line.
+    pub fn replace_arg<T: AsRef<OsStr>, U: AsRef<OsStr>>(&mut self, from: T, to: U) -> bool {
+        let Some(argument) = self
+            .args
+            .iter_mut()
+            .find(|argument| argument.as_os_str() == from.as_ref())
+        else {
+            return false;
+        };
+        *argument = to.as_ref().to_os_string();
+        true
+    }
+
     /// (chainable) Sets the current working directory of the process.
     pub fn cwd<T: AsRef<OsStr>>(&mut self, path: T) -> &mut ProcessBuilder {
         self.cwd = Some(path.as_ref().to_os_string());
