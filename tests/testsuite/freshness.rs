@@ -181,7 +181,7 @@ fn rebuild_sub_package_then_while_package() {
 [DIRTY] a v0.0.1 ([ROOT]/foo/a): the dependency `b` was rebuilt ([TIME_DIFF_AFTER_LAST_BUILD])
 [COMPILING] a v0.0.1 ([ROOT]/foo/a)
 [RUNNING] `rustc --crate-name a [..]
-[DIRTY] foo v0.0.1 ([ROOT]/foo): the dependency `b` was rebuilt ([TIME_DIFF_AFTER_LAST_BUILD])
+[DIRTY] foo v0.0.1 ([ROOT]/foo): the file `src/lib.rs` has changed ([TIME_DIFF_AFTER_LAST_BUILD])
 [COMPILING] foo v0.0.1 ([ROOT]/foo)
 [RUNNING] `rustc --crate-name foo [..] src/lib.rs [..]
 [FINISHED] `dev` profile [unoptimized + debuginfo] target(s) in [ELAPSED]s
@@ -3310,6 +3310,675 @@ fn symlink_to_package() {
     p.cargo("check")
         .with_stderr_data(str![[r#"
 [FINISHED] `dev` profile [unoptimized + debuginfo] target(s) in [ELAPSED]s
+
+"#]])
+        .run();
+}
+
+fn public_api_hash_wrapper() -> PathBuf {
+    // The Cargo testsuite's rustc does not know about our fork's
+    // `-Zpublic-api-hash`. Strip the flag and attach a deterministic hash to
+    // rustc's metadata artifact notification so this test exercises Cargo's
+    // transport and scheduling behavior independently.
+    let wrapper = project()
+        .at("public-api-hash-wrapper")
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "public-api-hash-wrapper"
+                version = "0.1.0"
+                edition = "2024"
+            "#,
+        )
+        .file(
+            "src/main.rs",
+            r#"
+                use std::env;
+                use std::ffi::OsStr;
+                use std::io::{self, Write};
+                use std::process::{Command, exit};
+
+                fn main() {
+                    let mut args = env::args_os().skip(1);
+                    let rustc = args.next().expect("rustc path");
+                    let args = args.collect::<Vec<_>>();
+                    let crate_name = args
+                        .windows(2)
+                        .find(|args| args[0] == OsStr::new("--crate-name"))
+                        .map(|args| &args[1]);
+                    let public_api_hash = if crate_name.is_some_and(|crate_name| {
+                        env::var_os("PUBLIC_API_HASH_WRAPPER_CHANGED_CRATE")
+                            .as_deref()
+                            == Some(crate_name.as_os_str())
+                    }) {
+                        "11111111111111111111111111111111"
+                    } else {
+                        "00000000000000000000000000000000"
+                    };
+                    let args = args
+                        .into_iter()
+                        .filter(|arg| arg != "-Zpublic-api-hash");
+                    let output = Command::new(rustc)
+                        .args(args)
+                        .output()
+                        .expect("rustc should run");
+
+                    io::stdout().write_all(&output.stdout).unwrap();
+                    let stderr = String::from_utf8(output.stderr).unwrap();
+                    for line in stderr.lines() {
+                        if line.contains("\"artifact\":")
+                            && line.contains(".rmeta")
+                            && let Some(prefix) = line.strip_suffix('}')
+                        {
+                            eprintln!(
+                                "{prefix},\"public_api_hash\":{{\"version\":1,\
+                                 \"value\":\"{public_api_hash}\"}}}}"
+                            );
+                        } else {
+                            eprintln!("{line}");
+                        }
+                    }
+                    exit(output.status.code().unwrap_or(1));
+                }
+            "#,
+        )
+        .build();
+    wrapper.cargo("build").run();
+    wrapper.bin("public-api-hash-wrapper")
+}
+
+#[cargo_test]
+#[cfg(not(windows))]
+fn early_cutoff_skips_dependent_rebuild() {
+    let wrapper = public_api_hash_wrapper();
+
+    // Changing a native library rebuilds its Rust wrapper with byte-identical
+    // metadata. Intermediate Rust libraries can be reused, but the final
+    // binary must still be relinked against the new native implementation.
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "app"
+                version = "0.1.0"
+                edition = "2021"
+
+                [dependencies]
+                middle = { path = "middle" }
+            "#,
+        )
+        .file(
+            "src/main.rs",
+            "fn main() { println!(\"{}\", middle::value()); }",
+        )
+        .file(
+            "middle/Cargo.toml",
+            r#"
+                [package]
+                name = "middle"
+                version = "0.1.0"
+                edition = "2021"
+
+                [dependencies]
+                dep = { path = "../dep" }
+            "#,
+        )
+        .file(
+            "middle/src/lib.rs",
+            "fn unused() {}\npub fn value() -> i32 { dep::value() }",
+        )
+        .file(
+            "dep/Cargo.toml",
+            r#"
+                [package]
+                name = "dep"
+                version = "0.1.0"
+                edition = "2021"
+                build = "build.rs"
+            "#,
+        )
+        .file(
+            "dep/build.rs",
+            r#"
+                use std::env;
+                use std::path::PathBuf;
+                use std::process::Command;
+
+                fn main() {
+                    let out_dir =
+                        PathBuf::from(env::var_os("OUT_DIR").expect("OUT_DIR should be set"));
+                    let object = out_dir.join("native.o");
+                    let archive = out_dir.join("libnative.a");
+                    assert!(
+                        Command::new("cc")
+                            .args(["-c", "native.c", "-o"])
+                            .arg(&object)
+                            .status()
+                            .expect("cc should run")
+                            .success()
+                    );
+                    assert!(
+                        Command::new("ar")
+                            .arg("rcs")
+                            .arg(&archive)
+                            .arg(&object)
+                            .status()
+                            .expect("ar should run")
+                            .success()
+                    );
+                    println!("cargo::rerun-if-changed=native.c");
+                    println!("cargo::rustc-link-search=native={}", out_dir.display());
+                    println!("cargo::rustc-link-lib=static=native");
+                }
+            "#,
+        )
+        .file(
+            "dep/src/lib.rs",
+            r#"
+                unsafe extern "C" {
+                    fn native_value() -> i32;
+                }
+
+                #[inline(never)]
+                pub fn value() -> i32 {
+                    // SAFETY: `native_value` is defined by `native.c`, which is
+                    // linked by this package's build script.
+                    unsafe { native_value() }
+                }
+            "#,
+        )
+        .file("dep/native.c", "int native_value(void) { return 1; }")
+        .build();
+
+    p.cargo("build")
+        .env("RUSTC_WRAPPER", &wrapper)
+        .env("RUSTFLAGS", "-Zpublic-api-hash")
+        .run();
+    p.process(&p.bin("app"))
+        .with_stdout_data(str![[r#"
+1
+
+"#]])
+        .run();
+
+    sleep_ms(1000);
+    p.change_file("dep/native.c", "int native_value(void) { return 2; }");
+
+    // `middle` can be reused, while the final executable must be rebuilt.
+    p.cargo("build -v")
+        .env("RUSTC_WRAPPER", &wrapper)
+        .env("RUSTFLAGS", "-Zpublic-api-hash")
+        .with_stderr_data(str![[r#"
+[DIRTY] dep v0.1.0 ([ROOT]/foo/dep): the file `dep/native.c` has changed ([TIME_DIFF_AFTER_LAST_BUILD])
+[COMPILING] dep v0.1.0 ([ROOT]/foo/dep)
+[RUNNING] `[ROOT]/foo/target/debug/build/dep-[HASH]/build-script-build`
+[RUNNING] `[..]/public-api-hash-wrapper[EXE] rustc --crate-name dep [..]`
+[DIRTY] middle v0.1.0 ([ROOT]/foo/middle): the dependency `dep` was rebuilt
+[COMPILING] middle v0.1.0 ([ROOT]/foo/middle)
+[WARNING] function `unused` is never used
+ --> middle/src/lib.rs:1:4
+  |
+1 | fn unused() {}
+  |    ^^^^^^
+  |
+  = [NOTE] `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+[WARNING] `middle` (lib) generated 1 warning
+[DIRTY] app v0.1.0 ([ROOT]/foo): the dependency `middle` was rebuilt
+[COMPILING] app v0.1.0 ([ROOT]/foo)
+[RUNNING] `[..]/public-api-hash-wrapper[EXE] rustc --crate-name app [..]`
+[FINISHED] `dev` profile [unoptimized + debuginfo] target(s) in [ELAPSED]s
+
+"#]])
+        .run();
+    p.process(&p.bin("app"))
+        .with_stdout_data(str![[r#"
+2
+
+"#]])
+        .run();
+
+    sleep_ms(1000);
+    p.change_file("dep/native.c", "int native_value(void) { return 3; }");
+
+    // Replayed diagnostics must retain their normal policy effects, not merely be displayed.
+    p.cargo("build")
+        .arg("--config")
+        .arg("build.warnings='deny'")
+        .env("RUSTC_WRAPPER", &wrapper)
+        .env("RUSTFLAGS", "-Zpublic-api-hash")
+        .with_stderr_data(str![[r#"
+[COMPILING] dep v0.1.0 ([ROOT]/foo/dep)
+[COMPILING] middle v0.1.0 ([ROOT]/foo/middle)
+[WARNING] function `unused` is never used
+ --> middle/src/lib.rs:1:4
+  |
+1 | fn unused() {}
+  |    ^^^^^^
+  |
+  = [NOTE] `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+[ERROR] `middle` (lib) generated 1 warning
+[ERROR] warnings are denied by `build.warnings` configuration
+
+"#]])
+        .with_status(101)
+        .run();
+
+    sleep_ms(1000);
+    p.change_file(
+        "dep/src/lib.rs",
+        r#"
+            unsafe extern "C" {
+                fn native_value() -> i32;
+            }
+
+            #[inline(never)]
+            pub fn value() -> i32 {
+                // SAFETY: `native_value` is defined by `native.c`, which is
+                // linked by this package's build script.
+                let value = unsafe { native_value() };
+                value
+            }
+        "#,
+    );
+    p.change_file(
+        "middle/src/lib.rs",
+        "pub fn value() -> i32 { dep::value() + 0 }",
+    );
+
+    // The leaf's public API hash is unchanged, but the middle crate also has
+    // a local source change and therefore must not be skipped.
+    p.cargo("build -v")
+        .env("RUSTC_WRAPPER", &wrapper)
+        .env("RUSTFLAGS", "-Zpublic-api-hash")
+        .with_stderr_data(str![[r#"
+[DIRTY] dep v0.1.0 ([ROOT]/foo/dep): the file `dep/src/lib.rs` has changed ([TIME_DIFF_AFTER_LAST_BUILD])
+[COMPILING] dep v0.1.0 ([ROOT]/foo/dep)
+[RUNNING] `[..]/public-api-hash-wrapper[EXE] rustc --crate-name dep [..]`
+[DIRTY] middle v0.1.0 ([ROOT]/foo/middle): the file `middle/src/lib.rs` has changed ([TIME_DIFF_AFTER_LAST_BUILD])
+[COMPILING] middle v0.1.0 ([ROOT]/foo/middle)
+[RUNNING] `[..]/public-api-hash-wrapper[EXE] rustc --crate-name middle [..]`
+[DIRTY] app v0.1.0 ([ROOT]/foo): the dependency `middle` was rebuilt
+[COMPILING] app v0.1.0 ([ROOT]/foo)
+[RUNNING] `[..]/public-api-hash-wrapper[EXE] rustc --crate-name app [..]`
+[FINISHED] `dev` profile [unoptimized + debuginfo] target(s) in [ELAPSED]s
+
+"#]])
+        .run();
+}
+
+fn assert_early_cutoff_rechecks_transitive_trait_implementations(
+    command: &str,
+    rebuild_producer_separately: bool,
+) {
+    let wrapper = public_api_hash_wrapper();
+    let p = project()
+        .at("transitive-trait-workspace")
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "app"
+                version = "0.1.0"
+                edition = "2024"
+
+                [dependencies]
+                middle = { path = "middle" }
+            "#,
+        )
+        .file(
+            "src/lib.rs",
+            r#"
+                use middle::{Candidate, External};
+
+                trait Local {
+                    fn selected(&self) -> usize;
+                }
+
+                impl Local for External {
+                    fn selected(&self) -> usize {
+                        1
+                    }
+                }
+
+                pub fn selected() -> usize {
+                    External.selected()
+                }
+            "#,
+        )
+        .file(
+            "middle/Cargo.toml",
+            r#"
+                [package]
+                name = "middle"
+                version = "0.1.0"
+                edition = "2024"
+
+                [dependencies]
+                helper = { path = "../helper" }
+                producer = { path = "../producer" }
+            "#,
+        )
+        .file(
+            "middle/src/lib.rs",
+            "pub use helper::Candidate;\npub use producer::External;\n",
+        )
+        .file(
+            "producer/Cargo.toml",
+            r#"
+                [package]
+                name = "producer"
+                version = "0.1.0"
+                edition = "2024"
+
+                [dependencies]
+                helper = { path = "../helper" }
+            "#,
+        )
+        .file(
+            "producer/src/lib.rs",
+            r#"
+                pub struct External;
+
+                pub type ExistingReference = &'static dyn helper::Candidate;
+            "#,
+        )
+        .file("helper/Cargo.toml", &basic_manifest("helper", "0.1.0"))
+        .file(
+            "helper/src/lib.rs",
+            r#"
+                pub trait Candidate {
+                    fn selected(&self) -> usize;
+                }
+            "#,
+        )
+        .build();
+
+    p.cargo(command)
+        .env("RUSTC_WRAPPER", &wrapper)
+        .env("RUSTFLAGS", "-Zpublic-api-hash")
+        .run();
+
+    if is_coarse_mtime() {
+        sleep_ms(1000);
+    }
+    p.change_file(
+        "producer/src/lib.rs",
+        r#"
+            pub struct External;
+
+            pub type ExistingReference = &'static dyn helper::Candidate;
+
+            impl helper::Candidate for External {
+                fn selected(&self) -> usize {
+                    2
+                }
+            }
+        "#,
+    );
+
+    if rebuild_producer_separately {
+        // A separate Cargo invocation updates the producer without updating its dependents.
+        // During the full build below, the producer is fresh for this invocation even though its
+        // metadata differs from what the intermediate crate was originally compiled against.
+        p.cargo(&format!("{command} -p producer"))
+            .env("RUSTC_WRAPPER", &wrapper)
+            .env("RUSTFLAGS", "-Zpublic-api-hash")
+            .env("PUBLIC_API_HASH_WRAPPER_CHANGED_CRATE", "producer")
+            .run();
+    }
+
+    let expected = if rebuild_producer_separately {
+        str![[r#"
+[COMPILING] middle v0.1.0 ([ROOT]/transitive-trait-workspace/middle)
+[COMPILING] app v0.1.0 ([ROOT]/transitive-trait-workspace)
+error[E0034]: multiple applicable items in scope
+...
+[ERROR] could not compile `app` (lib) due to 1 previous error
+
+"#]]
+    } else {
+        str![[r#"
+[COMPILING] producer v0.1.0 ([ROOT]/transitive-trait-workspace/producer)
+[COMPILING] middle v0.1.0 ([ROOT]/transitive-trait-workspace/middle)
+[COMPILING] app v0.1.0 ([ROOT]/transitive-trait-workspace)
+error[E0034]: multiple applicable items in scope
+...
+[ERROR] could not compile `app` (lib) due to 1 previous error
+
+"#]]
+    };
+    p.cargo(command)
+        .env("RUSTC_WRAPPER", &wrapper)
+        .env("RUSTFLAGS", "-Zpublic-api-hash")
+        .env("PUBLIC_API_HASH_WRAPPER_CHANGED_CRATE", "producer")
+        .with_status(101)
+        .with_stderr_data(expected)
+        .run();
+}
+
+#[cargo_test]
+fn early_cutoff_rechecks_transitive_trait_implementations_in_builds() {
+    assert_early_cutoff_rechecks_transitive_trait_implementations("build", false);
+}
+
+#[cargo_test]
+fn early_cutoff_rechecks_previously_rebuilt_transitive_trait_implementations_in_builds() {
+    assert_early_cutoff_rechecks_transitive_trait_implementations("build", true);
+}
+
+fn assert_early_cutoff_rechecks_previously_changed_dependency(
+    rebuild_changed_dependency_again: bool,
+) {
+    let wrapper = public_api_hash_wrapper();
+    let p = project()
+        .at("previously-changed-dependency")
+        .file(
+            "Cargo.toml",
+            r#"
+                [workspace]
+                members = ["producer_a", "producer_b", "consumer", "app"]
+                resolver = "2"
+            "#,
+        )
+        .file(
+            "producer_a/Cargo.toml",
+            &basic_manifest("producer_a", "0.1.0"),
+        )
+        .file(
+            "producer_a/src/lib.rs",
+            "pub fn value() -> i32 { 1 }\npub fn stable() -> i32 { 10 }\n",
+        )
+        .file(
+            "producer_b/Cargo.toml",
+            &basic_manifest("producer_b", "0.1.0"),
+        )
+        .file("producer_b/src/lib.rs", "pub fn value() -> i32 { 2 }\n")
+        .file(
+            "consumer/Cargo.toml",
+            r#"
+                [package]
+                name = "consumer"
+                version = "0.1.0"
+                edition = "2024"
+
+                [dependencies]
+                producer_a = { path = "../producer_a" }
+                producer_b = { path = "../producer_b" }
+            "#,
+        )
+        .file(
+            "consumer/src/lib.rs",
+            "pub fn value() -> i32 { producer_a::value() + producer_b::value() }\n",
+        )
+        .file(
+            "app/Cargo.toml",
+            r#"
+                [package]
+                name = "app"
+                version = "0.1.0"
+                edition = "2024"
+
+                [dependencies]
+                producer_a = { path = "../producer_a" }
+            "#,
+        )
+        .file(
+            "app/src/lib.rs",
+            "pub fn value() -> i32 { producer_a::stable() }\n",
+        )
+        .build();
+
+    p.cargo("build -p consumer")
+        .env("RUSTC_WRAPPER", &wrapper)
+        .env("RUSTFLAGS", "-Zpublic-api-hash")
+        .run();
+
+    if is_coarse_mtime() {
+        sleep_ms(1000);
+    }
+    p.change_file(
+        "producer_a/src/lib.rs",
+        "pub fn value() -> &'static str { \"changed\" }\npub fn stable() -> i32 { 10 }\n",
+    );
+    p.cargo("build -p app")
+        .env("RUSTC_WRAPPER", &wrapper)
+        .env("RUSTFLAGS", "-Zpublic-api-hash")
+        .env("PUBLIC_API_HASH_WRAPPER_CHANGED_CRATE", "producer_a")
+        .run();
+
+    if is_coarse_mtime() {
+        sleep_ms(1000);
+    }
+    if rebuild_changed_dependency_again {
+        // Its public API is unchanged in this invocation, but still differs from the metadata
+        // recorded when `consumer` was compiled before the previous invocation.
+        p.change_file(
+            "producer_a/src/lib.rs",
+            "pub fn value() -> &'static str { \"changed again\" }\npub fn stable() -> i32 { 10 }\n",
+        );
+    } else {
+        p.change_file("producer_b/src/lib.rs", "pub fn value() -> i32 { 3 }\n");
+    }
+    p.cargo("build -p consumer")
+        .env("RUSTC_WRAPPER", &wrapper)
+        .env("RUSTFLAGS", "-Zpublic-api-hash")
+        .env("PUBLIC_API_HASH_WRAPPER_CHANGED_CRATE", "producer_a")
+        .env("CARGO_BUILD_JOBS", "1")
+        .with_status(101)
+        .with_stderr_data(str![[r#"
+...
+error[E0369]: cannot add `i32` to `&str`
+...
+[ERROR] could not compile `consumer` (lib) due to 1 previous error
+
+"#]])
+        .run();
+}
+
+#[cargo_test]
+fn early_cutoff_rechecks_fresh_dependency_changed_by_previous_build() {
+    assert_early_cutoff_rechecks_previously_changed_dependency(false);
+}
+
+#[cargo_test]
+fn early_cutoff_rechecks_unchanged_dependency_changed_by_previous_build() {
+    assert_early_cutoff_rechecks_previously_changed_dependency(true);
+}
+
+#[cargo_test]
+fn early_cutoff_rechecks_proc_macro_changed_by_previous_build() {
+    let wrapper = public_api_hash_wrapper();
+    let p = project()
+        .at("previously-changed-proc-macro")
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "consumer"
+                version = "0.1.0"
+                edition = "2024"
+
+                [dependencies]
+                macro_dep = { path = "macro_dep" }
+                producer = { path = "producer" }
+            "#,
+        )
+        .file(
+            "src/lib.rs",
+            "macro_dep::make_value!();\npub fn value() -> i32 { generated() + producer::value() }\n",
+        )
+        .file(
+            "macro_dep/Cargo.toml",
+            r#"
+                [package]
+                name = "macro_dep"
+                version = "0.1.0"
+                edition = "2024"
+
+                [lib]
+                proc-macro = true
+            "#,
+        )
+        .file(
+            "macro_dep/src/lib.rs",
+            r#"
+                use proc_macro::TokenStream;
+
+                #[proc_macro]
+                pub fn make_value(_: TokenStream) -> TokenStream {
+                    "pub fn generated() -> i32 { 1 }"
+                        .parse()
+                        .expect("generated function should parse")
+                }
+            "#,
+        )
+        .file("producer/Cargo.toml", &basic_manifest("producer", "0.1.0"))
+        .file("producer/src/lib.rs", "pub fn value() -> i32 { 2 }\n")
+        .build();
+
+    p.cargo("build")
+        .env("RUSTC_WRAPPER", &wrapper)
+        .env("RUSTFLAGS", "-Zpublic-api-hash")
+        .run();
+
+    if is_coarse_mtime() {
+        sleep_ms(1000);
+    }
+    p.change_file(
+        "macro_dep/src/lib.rs",
+        r#"
+            use proc_macro::TokenStream;
+
+            #[proc_macro]
+            pub fn make_value(_: TokenStream) -> TokenStream {
+                "pub fn generated() -> i32 { \"changed\" }"
+                    .parse()
+                    .expect("generated function should parse")
+            }
+        "#,
+    );
+    p.cargo("build -p macro_dep")
+        .env("RUSTC_WRAPPER", &wrapper)
+        .env("RUSTFLAGS", "-Zpublic-api-hash")
+        .run();
+
+    if is_coarse_mtime() {
+        sleep_ms(1000);
+    }
+    p.change_file("producer/src/lib.rs", "pub fn value() -> i32 { 3 }\n");
+    p.cargo("build")
+        .env("RUSTC_WRAPPER", &wrapper)
+        .env("RUSTFLAGS", "-Zpublic-api-hash")
+        .with_status(101)
+        .with_stderr_data(str![[r#"
+...
+error[E0308]: mismatched types
+...
+[ERROR] could not compile `consumer` (lib) due to 1 previous error
 
 "#]])
         .run();
