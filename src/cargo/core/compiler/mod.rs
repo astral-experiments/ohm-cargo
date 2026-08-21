@@ -1000,7 +1000,11 @@ fn rustc(
     let fingerprint_dir = build_runner.files().fingerprint_dir(unit);
     let cached_output_path = build_runner.files().message_cache_path(unit);
     let mut message_provenance = if unit.mode == CompileMode::Build
-        && unit.pkg.package_id().source_id().is_remote_registry()
+        && (unit.pkg.package_id().source_id().is_remote_registry()
+            || (build_runner.bcx.gctx.cli_unstable().ohm_reuse_built_deps()
+                && build_runner.bcx.ws.is_member(&unit.pkg)
+                && unit.target.is_lib()
+                && !unit.target.for_host()))
     {
         build_runner
             .registry_message_provenance()?
