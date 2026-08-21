@@ -893,7 +893,7 @@ unstable_cli_options!(
     msrv_policy: bool = ("Enable rust-version aware policy within cargo"),
     mtime_on_use: bool = ("Configure Cargo to update the mtime of used files"),
     next_lockfile_bump: bool,
-    no_embed_metadata: bool = ("Avoid embedding metadata in library artifacts"),
+    no_embed_metadata: Option<bool> = ("Avoid embedding metadata in library artifacts"),
     no_index_update: bool = ("Do not update the registry index even if the cache is outdated"),
     ohm_defaults: Option<bool> = ("Enable the defaults packaged with Ohm"),
     panic_abort_tests: bool = ("Enable support to run tests with -Cpanic=abort"),
@@ -1245,6 +1245,12 @@ impl CliUnstable {
         self.ohm_defaults.unwrap_or(cfg!(feature = "ohm-defaults"))
     }
 
+    /// Whether library metadata should be emitted separately instead of embedded.
+    pub fn no_embed_metadata(&self) -> bool {
+        self.no_embed_metadata
+            .unwrap_or_else(|| self.ohm_defaults())
+    }
+
     /// Whether cached rustc codegen should be reused when only dependencies changed.
     pub fn relink_only(&self) -> bool {
         self.relink_only.unwrap_or_else(|| self.ohm_defaults())
@@ -1452,7 +1458,7 @@ impl CliUnstable {
             "msrv-policy" => self.msrv_policy = parse_empty(k, v)?,
             // can also be set in .cargo/config or with and ENV
             "mtime-on-use" => self.mtime_on_use = parse_empty(k, v)?,
-            "no-embed-metadata" => self.no_embed_metadata = parse_empty(k, v)?,
+            "no-embed-metadata" => self.no_embed_metadata = Some(parse_bool(k, v)?),
             "no-index-update" => self.no_index_update = parse_empty(k, v)?,
             "ohm-defaults" => self.ohm_defaults = Some(parse_bool(k, v)?),
             "panic-abort-tests" => self.panic_abort_tests = parse_empty(k, v)?,
