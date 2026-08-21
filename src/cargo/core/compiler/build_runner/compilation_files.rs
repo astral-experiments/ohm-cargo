@@ -6,7 +6,7 @@ use std::ffi::{OsStr, OsString};
 use std::fmt;
 use std::hash::{Hash, Hasher};
 #[cfg(unix)]
-use std::os::unix::fs::MetadataExt;
+use std::os::unix::fs::{MetadataExt, PermissionsExt};
 use std::path::{Path, PathBuf};
 use std::sync::Arc;
 use std::time::SystemTime;
@@ -18,6 +18,7 @@ use tracing::debug;
 use super::{BuildContext, BuildRunner, CompileKind, FileFlavor, Layout};
 use crate::core::compiler::custom_build::OHM_SHARED_RUSTC_LOG_ENVIRONMENT;
 use crate::core::compiler::{CompileMode, CompileTarget, CrateType, FileType, Unit};
+use crate::core::profiles::StripInner;
 use crate::core::{Target, TargetKind, Workspace};
 use crate::sources::CRATES_IO_INDEX;
 use crate::sources::registry::CRATES_IO_HTTP_INDEX;
@@ -1401,7 +1402,7 @@ fn unit_uses_custom_codegen_backend(unit: &Unit, build_runner: &BuildRunner<'_, 
         CompileKind::Host => {}
     }
 
-    let mut flags = unit
+    let flags = unit
         .pkg
         .manifest()
         .lint_rustflags()
@@ -1418,12 +1419,125 @@ fn unit_uses_custom_codegen_backend(unit: &Unit, build_runner: &BuildRunner<'_, 
                 .map(String::as_str),
         );
 
+    unit_compiler_arguments_use_opaque_execution(unit, host.as_str(), target_sysroot, flags)
+}
+
+/// Executable compile-time units additionally run platform-specific native tools.
+pub(super) fn unit_compiler_arguments_use_opaque_execution<'a>(
+    unit: &Unit,
+    host_triple: &str,
+    sysroot: &Path,
+    flags: impl IntoIterator<Item = &'a str>,
+) -> bool {
+    let executable_unit =
+        unit.mode == CompileMode::Build && unit.target.is_compile_time_dependency();
+    let apple_executable = executable_unit
+        && match unit.kind {
+            CompileKind::Host => host_triple.contains("-apple-"),
+            CompileKind::Target(target) => target.short_name().contains("-apple-"),
+        };
+
+    let profile_debuginfo_enabled = unit.profile.debuginfo.is_turned_on();
+    let trusted_objcopy = || sysroot_contains_trusted_objcopy(sysroot, host_triple);
+    if apple_executable {
+        let strip = unit.profile.strip.into_inner();
+        if apple_executable_profile_uses_external_tools(
+            strip,
+            unit.profile
+                .split_debuginfo
+                .as_ref()
+                .map(|value| value.as_str()),
+            profile_debuginfo_enabled,
+            matches!(strip, StripInner::None) || trusted_objcopy(),
+        ) {
+            return true;
+        }
+    }
+
+    compiler_arguments_use_opaque_execution(
+        flags,
+        executable_unit,
+        apple_executable,
+        profile_debuginfo_enabled,
+        trusted_objcopy,
+    )
+}
+
+/// Accept only the tool rustc resolves before consulting ambient PATH entries.
+fn sysroot_contains_trusted_objcopy(sysroot: &Path, host_triple: &str) -> bool {
+    let Ok(sysroot) = sysroot.canonicalize() else {
+        return false;
+    };
+    let directory = sysroot
+        .join("lib")
+        .join("rustlib")
+        .join(host_triple)
+        .join("bin");
+    let executable = directory.join("rust-objcopy");
+    let Ok(executable) = executable.canonicalize() else {
+        return false;
+    };
+    if !executable.starts_with(&sysroot) {
+        return false;
+    }
+    let Ok(metadata) = std::fs::metadata(executable) else {
+        return false;
+    };
+    if !metadata.is_file() {
+        return false;
+    }
+
+    #[cfg(unix)]
+    {
+        let permissions = metadata.permissions().mode();
+        let Ok(directory_metadata) = std::fs::metadata(directory) else {
+            return false;
+        };
+        permissions & 0o111 != 0
+            && permissions & 0o022 == 0
+            && directory_metadata.is_dir()
+            && directory_metadata.permissions().mode() & 0o022 == 0
+    }
+    #[cfg(not(unix))]
+    {
+        false
+    }
+}
+
+/// Packed Apple debug info or an untrusted stripping utility remain opaque.
+fn apple_executable_profile_uses_external_tools(
+    strip: StripInner,
+    split_debuginfo: Option<&str>,
+    debuginfo_enabled: bool,
+    trusted_objcopy: bool,
+) -> bool {
+    (!matches!(strip, StripInner::None) && !trusted_objcopy)
+        || (debuginfo_enabled && split_debuginfo == Some("packed"))
+}
+
+/// Recognizes every spelling that can inject native code or opaque compiler tools.
+fn compiler_arguments_use_opaque_execution<'a>(
+    flags: impl IntoIterator<Item = &'a str>,
+    executable_unit: bool,
+    apple_executable: bool,
+    profile_debuginfo_enabled: bool,
+    trusted_objcopy: impl Fn() -> bool,
+) -> bool {
+    let mut flags = flags.into_iter();
     while let Some(flag) = flags.next() {
+        if apple_executable && !profile_debuginfo_enabled && flag == "-g" {
+            return true;
+        }
         if flag.starts_with('@')
-            || matches!(flag, "--target" | "--sysroot" | "--extern")
+            || flag.starts_with("-l")
+            || matches!(
+                flag,
+                "--target" | "--sysroot" | "--extern" | "--library-path"
+            )
             || flag.starts_with("--target=")
             || flag.starts_with("--sysroot=")
             || flag.starts_with("--extern=")
+            || flag.starts_with("--library-path=")
         {
             return true;
         }
@@ -1431,30 +1545,61 @@ fn unit_uses_custom_codegen_backend(unit: &Unit, build_runner: &BuildRunner<'_, 
             let Some(search_path) = flags.next() else {
                 return true;
             };
-            if !search_path.starts_with("native=") && !search_path.starts_with("framework=") {
+            if executable_unit
+                || (!search_path.starts_with("native=") && !search_path.starts_with("framework="))
+            {
                 return true;
             }
             continue;
         }
         if let Some(search_path) = flag.strip_prefix("-L") {
-            if !search_path.starts_with("native=") && !search_path.starts_with("framework=") {
+            if executable_unit
+                || (!search_path.starts_with("native=") && !search_path.starts_with("framework="))
+            {
                 return true;
             }
             continue;
         }
         let option = if matches!(flag, "-C" | "-Z" | "--codegen") {
-            flags.next()
+            let Some(option) = flags.next() else {
+                return true;
+            };
+            Some(option)
         } else {
             flag.strip_prefix("-C")
                 .or_else(|| flag.strip_prefix("-Z"))
                 .or_else(|| flag.strip_prefix("--codegen="))
         };
-        if option.is_some_and(compiler_option_uses_opaque_execution) {
+        if option.is_some_and(|option| {
+            option.is_empty()
+                || compiler_option_uses_opaque_execution(option)
+                || (apple_executable
+                    && compiler_option_uses_apple_auxiliary_tools(
+                        option,
+                        profile_debuginfo_enabled,
+                        &trusted_objcopy,
+                    ))
+        }) {
             return true;
         }
     }
 
     false
+}
+
+/// Apple links spawn auxiliary tools for nontrivial stripping and packed debug data.
+fn compiler_option_uses_apple_auxiliary_tools(
+    option: &str,
+    profile_debuginfo_enabled: bool,
+    trusted_objcopy: impl Fn() -> bool,
+) -> bool {
+    let (name, value) = option.split_once('=').unwrap_or((option, ""));
+    match name {
+        "strip" => value != "none" && !trusted_objcopy(),
+        "split-debuginfo" | "split_debuginfo" => value == "packed",
+        "debuginfo" => !profile_debuginfo_enabled && !matches!(value, "0" | "none"),
+        _ => false,
+    }
 }
 
 /// Executable compiler extensions and command-line linker overrides bypass toolchain identity.
@@ -1468,7 +1613,15 @@ fn compiler_option_uses_opaque_execution(option: &str) -> bool {
                     | "llvm-plugins"
                     | "llvm_plugins"
                     | "autodiff"
+                    | "default-linker-libraries"
+                    | "default_linker_libraries"
+                    | "link-self-contained"
+                    | "link_self_contained"
                     | "linker"
+                    | "linker-flavor"
+                    | "linker_flavor"
+                    | "linker-features"
+                    | "linker_features"
                     | "dlltool"
                     | "link-arg"
                     | "link_arg"
@@ -2288,9 +2441,11 @@ mod shared_registry_tests {
     #[cfg(unix)]
     use super::distribution_llvm_toolchain_path;
     use super::{
-        compiler_driver_identity_for_sysroot, compiler_driver_search_directory_is_safe,
-        compiler_option_uses_opaque_execution, configured_environment_has_sensitive_case_alias,
-        native_target_environment_names, resolve_effective_executable,
+        StripInner, apple_executable_profile_uses_external_tools,
+        compiler_arguments_use_opaque_execution, compiler_driver_identity_for_sysroot,
+        compiler_driver_search_directory_is_safe, compiler_option_uses_opaque_execution,
+        configured_environment_has_sensitive_case_alias, native_target_environment_names,
+        resolve_effective_executable, sysroot_contains_trusted_objcopy,
         sysroot_has_custom_codegen_backends,
     };
 
@@ -2447,7 +2602,15 @@ mod shared_registry_tests {
             "llvm-plugins=",
             "llvm_plugins=",
             "autodiff=Enable",
+            "default-linker-libraries=yes",
+            "default_linker_libraries=yes",
+            "link-self-contained=-linker",
+            "link_self_contained=-linker",
             "linker=opaque-wrapper",
+            "linker-flavor=gnu",
+            "linker_flavor=gnu",
+            "linker-features=+lld",
+            "linker_features=+lld",
             "dlltool=opaque-wrapper",
             "link-arg=opaque-argument",
             "link_arg=opaque-argument",
@@ -2466,6 +2629,290 @@ mod shared_registry_tests {
 
         assert!(!compiler_option_uses_opaque_execution("opt-level=2"));
         assert!(!compiler_option_uses_opaque_execution("debuginfo=1"));
+    }
+
+    #[test]
+    fn compiler_argument_spellings_cannot_hide_native_execution() {
+        let opaque: &[&[&str]] = &[
+            &["-C", "link-arg=--unused"],
+            &["-Clink-args=--unused"],
+            &["-Cdefault-linker-libraries=yes"],
+            &["--codegen=link_self_contained=-linker"],
+            &["--codegen", "linker=/opaque/linker"],
+            &["--codegen", "linker-flavor=gnu"],
+            &["-Clinker_features=+lld"],
+            &["--codegen=linker-plugin-lto=/opaque/plugin"],
+            &["-C", "dlltool=/opaque/dlltool"],
+            &["-Z", "pre-link-arg=--unused"],
+            &["-Zpre_link_args=--unused"],
+            &["-Z", "llvm-plugins="],
+            &["-l", "injected"],
+            &["-linjected"],
+            &["--library-path", "/opaque/libraries"],
+            &["--library-path=/opaque/libraries"],
+            &["@opaque-response-file"],
+            &["-C", "@opaque-response-file"],
+            &["-C"],
+            &["-Z"],
+            &["--codegen"],
+            &["--codegen="],
+        ];
+        for flags in opaque {
+            assert!(
+                compiler_arguments_use_opaque_execution(
+                    flags.iter().copied(),
+                    false,
+                    false,
+                    false,
+                    || false,
+                ),
+                "opaque compiler arguments were accepted: {flags:?}",
+            );
+            assert!(
+                compiler_arguments_use_opaque_execution(
+                    flags.iter().copied(),
+                    true,
+                    false,
+                    false,
+                    || false,
+                ),
+                "executable compiler arguments were accepted: {flags:?}",
+            );
+        }
+
+        let safe: &[&[&str]] = &[
+            &["-C", "opt-level=2"],
+            &["-Cdebuginfo=1"],
+            &["--codegen", "opt-level=3"],
+            &["--codegen=debuginfo=1"],
+            &["-Zunstable-options"],
+            &["-L", "native=/verified/native"],
+            &["-Lframework=/verified/framework"],
+        ];
+        for flags in safe {
+            assert!(
+                !compiler_arguments_use_opaque_execution(
+                    flags.iter().copied(),
+                    false,
+                    false,
+                    false,
+                    || false,
+                ),
+                "ordinary compiler arguments were rejected: {flags:?}",
+            );
+        }
+
+        for flags in [
+            &["-L", "native=/untrusted/native"][..],
+            &["-Lnative=/untrusted/native"][..],
+            &["-L", "framework=/untrusted/framework"][..],
+            &["-Lframework=/untrusted/framework"][..],
+        ] {
+            assert!(
+                compiler_arguments_use_opaque_execution(
+                    flags.iter().copied(),
+                    true,
+                    false,
+                    false,
+                    || false,
+                ),
+                "executable native search paths were accepted: {flags:?}",
+            );
+        }
+
+        assert!(!compiler_arguments_use_opaque_execution(
+            ["-C", "opt-level=2"],
+            true,
+            true,
+            false,
+            || false,
+        ));
+
+        for flags in [
+            &["-Cstrip=debuginfo"][..],
+            &["--codegen", "strip=symbols"][..],
+            &["-C", "split-debuginfo=packed"][..],
+            &["--codegen=split_debuginfo=packed"][..],
+        ] {
+            assert!(
+                compiler_arguments_use_opaque_execution(
+                    flags.iter().copied(),
+                    true,
+                    true,
+                    true,
+                    || false,
+                ),
+                "Apple auxiliary compiler tools were accepted: {flags:?}",
+            );
+            assert!(
+                !compiler_arguments_use_opaque_execution(
+                    flags.iter().copied(),
+                    true,
+                    false,
+                    false,
+                    || false,
+                ),
+                "non-Apple compiler arguments were rejected: {flags:?}",
+            );
+        }
+
+        for flags in [
+            &["-g"][..],
+            &["-Cdebuginfo=1"][..],
+            &["-C", "debuginfo=2"][..],
+            &["--codegen=debuginfo=full"][..],
+        ] {
+            assert!(
+                compiler_arguments_use_opaque_execution(
+                    flags.iter().copied(),
+                    true,
+                    true,
+                    false,
+                    || true,
+                ),
+                "implicit Apple packed debuginfo was accepted: {flags:?}",
+            );
+            assert!(
+                !compiler_arguments_use_opaque_execution(
+                    flags.iter().copied(),
+                    true,
+                    true,
+                    true,
+                    || true,
+                ),
+                "already-configured Apple debuginfo was rejected: {flags:?}",
+            );
+        }
+
+        for flags in [
+            &["-Cstrip=none"][..],
+            &["-Cdebuginfo=0"][..],
+            &["-Cdebuginfo=none"][..],
+            &["-Csplit-debuginfo=off"][..],
+            &["-Csplit_debuginfo=unpacked"][..],
+        ] {
+            assert!(
+                !compiler_arguments_use_opaque_execution(
+                    flags.iter().copied(),
+                    true,
+                    true,
+                    false,
+                    || false,
+                ),
+                "safe Apple compiler arguments were rejected: {flags:?}",
+            );
+        }
+
+        for flags in [
+            &["-Cstrip=debuginfo"][..],
+            &["--codegen", "strip=symbols"][..],
+        ] {
+            assert!(
+                !compiler_arguments_use_opaque_execution(
+                    flags.iter().copied(),
+                    true,
+                    true,
+                    false,
+                    || true,
+                ),
+                "trusted toolchain objcopy was rejected: {flags:?}",
+            );
+        }
+    }
+
+    #[test]
+    fn apple_executable_profiles_reject_only_external_native_tools() {
+        assert!(apple_executable_profile_uses_external_tools(
+            StripInner::Named("debuginfo".into()),
+            None,
+            false,
+            false,
+        ));
+        assert!(apple_executable_profile_uses_external_tools(
+            StripInner::Named("symbols".into()),
+            None,
+            false,
+            false,
+        ));
+        assert!(!apple_executable_profile_uses_external_tools(
+            StripInner::Named("symbols".into()),
+            None,
+            false,
+            true,
+        ));
+        assert!(apple_executable_profile_uses_external_tools(
+            StripInner::None,
+            Some("packed"),
+            true,
+            true,
+        ));
+        assert!(!apple_executable_profile_uses_external_tools(
+            StripInner::None,
+            Some("packed"),
+            false,
+            true,
+        ));
+        assert!(!apple_executable_profile_uses_external_tools(
+            StripInner::None,
+            Some("unpacked"),
+            true,
+            true,
+        ));
+        assert!(!apple_executable_profile_uses_external_tools(
+            StripInner::None,
+            Some("off"),
+            true,
+            true,
+        ));
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn apple_objcopy_must_be_executable_and_remain_inside_the_selected_sysroot() {
+        use std::os::unix::fs::{PermissionsExt, symlink};
+
+        let sysroot = tempfile::tempdir().expect("create isolated compiler sysroot");
+        let host = "aarch64-apple-darwin";
+        let bin = sysroot
+            .path()
+            .join("lib")
+            .join("rustlib")
+            .join(host)
+            .join("bin");
+        std::fs::create_dir_all(&bin).expect("create isolated compiler tool directory");
+        let executable = bin.join("rust-objcopy");
+
+        assert!(!sysroot_contains_trusted_objcopy(sysroot.path(), host));
+
+        std::fs::write(&executable, "authenticated toolchain executable")
+            .expect("create isolated compiler tool");
+        std::fs::set_permissions(&executable, std::fs::Permissions::from_mode(0o644))
+            .expect("clear isolated tool executable permissions");
+        assert!(!sysroot_contains_trusted_objcopy(sysroot.path(), host));
+
+        std::fs::set_permissions(&executable, std::fs::Permissions::from_mode(0o755))
+            .expect("set isolated tool executable permissions");
+        assert!(sysroot_contains_trusted_objcopy(sysroot.path(), host));
+
+        std::fs::set_permissions(&bin, std::fs::Permissions::from_mode(0o775))
+            .expect("set isolated tool directory group-write permissions");
+        assert!(!sysroot_contains_trusted_objcopy(sysroot.path(), host));
+        std::fs::set_permissions(&bin, std::fs::Permissions::from_mode(0o755))
+            .expect("restore isolated tool directory permissions");
+
+        std::fs::set_permissions(&executable, std::fs::Permissions::from_mode(0o775))
+            .expect("set isolated tool group-write permissions");
+        assert!(!sysroot_contains_trusted_objcopy(sysroot.path(), host));
+
+        std::fs::remove_file(&executable).expect("remove isolated compiler tool");
+        let external = tempfile::tempdir().expect("create external compiler tool directory");
+        let external_tool = external.path().join("external-objcopy");
+        std::fs::write(&external_tool, "external unauthenticated executable")
+            .expect("create external compiler tool");
+        std::fs::set_permissions(&external_tool, std::fs::Permissions::from_mode(0o755))
+            .expect("set external tool executable permissions");
+        symlink(&external_tool, &executable).expect("create escaped compiler tool symlink");
+        assert!(!sysroot_contains_trusted_objcopy(sysroot.path(), host));
     }
 
     #[test]
