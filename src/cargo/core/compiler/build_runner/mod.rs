@@ -868,6 +868,16 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
         self.files.as_ref().unwrap()
     }
 
+    /// Returns true only after the complete shared-registry trust context is finalized.
+    ///
+    /// Unit metadata is computed before `CompilationFiles` exists, so callers must treat
+    /// registry immutability as unproven until its authenticated transitive closure is ready.
+    pub(crate) fn is_immutable_shared_registry_unit(&self, unit: &Unit) -> bool {
+        self.files
+            .as_ref()
+            .is_some_and(|files| files.is_shared_registry_unit(unit))
+    }
+
     /// Records the compiler context and whether a successful registry build
     /// produced cached diagnostics without changing Cargo's own fingerprints.
     ///
