@@ -493,6 +493,73 @@ fn previous_output_mtime<'a>(
     latest
 }
 
+/// Returns the oldest metadata generation that remains newer than every input.
+///
+/// Check units have no `.rlib`, so moving their metadata behind a build-script
+/// output would make them stale again on every subsequent invocation.
+fn restored_metadata_mtime(
+    fingerprint: &Fingerprint,
+    previous_mtime: FileTime,
+) -> Option<FileTime> {
+    let other_output_mtime = previous_output_mtime(
+        fingerprint.outputs.iter().filter(|output| {
+            output.extension().and_then(|extension| extension.to_str()) != Some("rmeta")
+        }),
+        false,
+    );
+    fingerprint
+        .deps
+        .iter()
+        .try_fold(previous_mtime, |minimum_mtime, dependency| {
+            previous_output_mtime(
+                dependency.fingerprint.outputs.iter(),
+                dependency.only_requires_rmeta,
+            )
+            .map(|dependency_mtime| {
+                if other_output_mtime.is_some_and(|mtime| mtime >= dependency_mtime) {
+                    minimum_mtime
+                } else {
+                    minimum_mtime.max(dependency_mtime)
+                }
+            })
+        })
+}
+
+/// Returns whether an unchanged metadata output can retain its generation.
+pub fn can_preserve_metadata_generation(fingerprint: &Fingerprint, output: &Path) -> bool {
+    paths::mtime(output)
+        .ok()
+        .and_then(|mtime| {
+            restored_metadata_mtime(fingerprint, mtime)
+                .filter(|minimum_mtime| *minimum_mtime == mtime)
+        })
+        .is_some()
+}
+
+/// Restores a metadata generation when its public semantics did not change.
+fn preserve_metadata_generation(
+    fingerprint: &Fingerprint,
+    previous_metadata: Option<&(PathBuf, FileTime)>,
+) {
+    let Some((path, previous_mtime)) = previous_metadata else {
+        return;
+    };
+    let Some(restored_mtime) = restored_metadata_mtime(fingerprint, *previous_mtime) else {
+        debug!(
+            "early_cutoff: unit {:?} cannot preserve metadata generation because a dependency output is unavailable",
+            fingerprint.index
+        );
+        return;
+    };
+
+    if let Err(error) = filetime::set_file_mtime(path, restored_mtime) {
+        debug!(
+            "early_cutoff: unit {:?} could not preserve metadata generation for {:?}: {}",
+            fingerprint.index, path, error
+        );
+    }
+}
+
 /// Detects dependencies rebuilt after this unit was last successfully built.
 ///
 /// All jobs are prepared before any of them run, so these output mtimes still
@@ -782,11 +849,27 @@ pub fn prepare_target(
 
     let public_api_hash_path = loc.with_extension("public-api-hash");
     let old_public_api_hash = read_public_api_hash(&public_api_hash_path);
+    let previous_metadata = (rustflags_enable_public_api_hash(&fingerprint.rustflags)
+        && !bcx.gctx.cli_unstable().fine_grain_locking)
+        .then(|| {
+            fingerprint
+                .outputs
+                .iter()
+                .find(|output| {
+                    output.extension().and_then(|extension| extension.to_str()) == Some("rmeta")
+                })
+                .and_then(|output| {
+                    paths::mtime(output)
+                        .ok()
+                        .map(|mtime| (output.clone(), mtime))
+                })
+        })
+        .flatten();
 
     let check_output_unchanged =
-        |state: &super::JobState<'_, '_>,
-         fingerprint: &Arc<Fingerprint>,
-         old_public_api_hash: &Option<PublicApiHash>| {
+        move |state: &super::JobState<'_, '_>,
+              fingerprint: &Arc<Fingerprint>,
+              old_public_api_hash: &Option<PublicApiHash>| {
             if matches!(fingerprint.build_state(), BuildState::SkippedEarlyCutoff) {
                 debug!(
                     "early_cutoff: unit {:?} was skipped; preserving its public API hash",
@@ -809,6 +892,7 @@ pub fn prepare_target(
             let unchanged_public_api_hash =
                 old_public_api_hash.as_ref() == Some(&new_public_api_hash);
             if unchanged_public_api_hash && !has_changed_metadata_dependency(fingerprint) {
+                preserve_metadata_generation(fingerprint, previous_metadata.as_ref());
                 *fingerprint.fs_status.lock().unwrap() = FsStatus::OutputUnchanged {
                     unit: fingerprint.index,
                 };
@@ -1035,7 +1119,12 @@ pub enum FsStatus {
     /// This unit is up-to-date. All outputs and their corresponding mtime are
     /// listed in the payload here for other dependencies to compare against.
     #[serde(skip)]
-    UpToDate { mtimes: HashMap<PathBuf, FileTime> },
+    UpToDate {
+        mtimes: HashMap<PathBuf, FileTime>,
+        /// Newest linkable input reachable through metadata-only dependencies.
+        #[serde(skip)]
+        link_mtime: Option<FileTime>,
+    },
 }
 
 impl FsStatus {
@@ -1672,7 +1761,10 @@ impl Fingerprint {
             // We had no output files. This means we're an overridden build
             // script and we're just always up to date because we aren't
             // watching the filesystem.
-            *self.fs_status.get_mut().unwrap() = FsStatus::UpToDate { mtimes };
+            *self.fs_status.get_mut().unwrap() = FsStatus::UpToDate {
+                mtimes,
+                link_mtime: None,
+            };
             return Ok(());
         };
         debug!(
@@ -1704,7 +1796,7 @@ impl Fingerprint {
             let dep_info = {
                 let dep_fs_status = dep.fingerprint.fs_status.lock().unwrap();
                 match &*dep_fs_status {
-                    FsStatus::UpToDate { mtimes } => {
+                    FsStatus::UpToDate { mtimes, link_mtime } => {
                         // If our dependency edge only requires the rmeta file to be present
                         // then we only need to look at that one output file, otherwise we
                         // need to consider all output files to see if we're out of date.
@@ -1717,10 +1809,13 @@ impl Fingerprint {
                                 .expect("failed to find rmeta");
                             Some((dep_path.clone(), *dep_mtime))
                         } else {
-                            mtimes
-                                .iter()
-                                .max_by_key(|kv| kv.1)
-                                .map(|(path, mtime)| (path.clone(), *mtime))
+                            mtimes.iter().max_by_key(|kv| kv.1).map(|(path, mtime)| {
+                                (
+                                    path.clone(),
+                                    link_mtime
+                                        .map_or(*mtime, |link_mtime| (*mtime).max(link_mtime)),
+                                )
+                            })
                         }
                     }
                     // Dependency was rebuilt but output didn't change - don't propagate
@@ -1772,8 +1867,35 @@ impl Fingerprint {
             }
         }
 
+        let mut link_mtime = mtimes
+            .iter()
+            .filter(|(path, _)| {
+                path.extension().and_then(|extension| extension.to_str()) == Some("rlib")
+            })
+            .map(|(_, mtime)| *mtime)
+            .max();
+        // Metadata may have been preserved by an earlier invocation, so carry
+        // its link generation even when this one disables hashing or enables
+        // fine-grained locking. This only reads existing output generations.
+        if link_mtime.is_some() {
+            for dependency in self
+                .deps
+                .iter()
+                .filter(|dependency| dependency.only_requires_rmeta)
+            {
+                let dependency_status = dependency.fingerprint.fs_status.lock().unwrap();
+                if let FsStatus::UpToDate {
+                    link_mtime: Some(dependency_mtime),
+                    ..
+                } = &*dependency_status
+                {
+                    link_mtime = link_mtime.map(|mtime| mtime.max(*dependency_mtime));
+                }
+            }
+        }
+
         // Everything was up to date! Record such.
-        *self.fs_status.get_mut().unwrap() = FsStatus::UpToDate { mtimes };
+        *self.fs_status.get_mut().unwrap() = FsStatus::UpToDate { mtimes, link_mtime };
         debug!("filesystem up-to-date {:?}", pkg_root);
 
         Ok(())
@@ -2084,10 +2206,9 @@ fn calculate_normal(
         .not()
         .hash(&mut config);
     if rustflags_enable_public_api_hash(&extra_flags) {
-        // Earlier early-cutoff implementations could mark an outdated unit as
-        // fresh. Invalidate those fingerprints once when adopting the sound
-        // cross-invocation dependency-generation contract.
-        ("ohm-reduced-dependency-rebuild", 1_u8).hash(&mut config);
+        // Older implementations cannot soundly reuse the preserved metadata
+        // generations without propagating the corresponding link generations.
+        ("ohm-reduced-dependency-rebuild", 2_u8).hash(&mut config);
     }
 
     let compile_kind = unit.kind.fingerprint_hash();
@@ -2817,6 +2938,7 @@ mod early_cutoff_tests {
         let fp = make_fingerprint(
             FsStatus::UpToDate {
                 mtimes: HashMap::default(),
+                link_mtime: None,
             },
             BuildState::Fresh,
         );
@@ -2855,6 +2977,7 @@ mod early_cutoff_tests {
         let dependency = make_fingerprint(
             FsStatus::UpToDate {
                 mtimes: HashMap::default(),
+                link_mtime: None,
             },
             BuildState::Fresh,
         );
@@ -2921,6 +3044,7 @@ mod early_cutoff_tests {
         let dep = make_fingerprint(
             FsStatus::UpToDate {
                 mtimes: HashMap::default(),
+                link_mtime: None,
             },
             BuildState::Fresh,
         );
@@ -2942,6 +3066,7 @@ mod early_cutoff_tests {
         let dep_fresh = make_fingerprint(
             FsStatus::UpToDate {
                 mtimes: HashMap::default(),
+                link_mtime: None,
             },
             BuildState::Fresh,
         );
