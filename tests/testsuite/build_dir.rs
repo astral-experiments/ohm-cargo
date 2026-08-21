@@ -1801,6 +1801,72 @@ fn shared_registry_cache_defaults_respect_aggregate_opt_out() {
 }
 
 #[cargo_test]
+fn shared_registry_cache_separates_procedural_macro_trust_policies() {
+    Package::new("policy-registry", "1.0.0")
+        .file("src/lib.rs", "pub fn value() -> u32 { 47 }")
+        .publish();
+
+    let create_project = |name: &str| {
+        project_in(name)
+            .file(
+                "Cargo.toml",
+                r#"
+                [package]
+                name = "policy-cache-app"
+                version = "0.1.0"
+                edition = "2021"
+
+                [dependencies]
+                policy-registry = "1.0.0"
+                "#,
+            )
+            .file(
+                "src/main.rs",
+                "fn main() { println!(\"{}\", policy_registry::value()); }",
+            )
+            .build()
+    };
+    let audited = create_project("macro-policy-audited");
+    let permissive = create_project("macro-policy-all");
+    let shared = paths::root().join("macro-policy-shared-build-directory");
+
+    audited
+        .shared_registry_cargo("-Zohm-shared-registry-cache run")
+        .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+        .env("CARGO_BUILD_BUILD_DIR", &shared)
+        .with_stderr_contains("[COMPILING] policy-registry v1.0.0")
+        .with_stdout_data("47\n")
+        .run();
+
+    permissive
+        .shared_registry_cargo("-Zohm-shared-registry-cache run")
+        .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+        .env("CARGO_UNSTABLE_OHM_PROC_MACRO_TRUST", "all")
+        .env("CARGO_BUILD_BUILD_DIR", &shared)
+        .with_stderr_contains("[COMPILING] policy-registry v1.0.0")
+        .with_stdout_data("47\n")
+        .run();
+
+    permissive
+        .shared_registry_cargo("-Zohm-shared-registry-cache run")
+        .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+        .env("CARGO_UNSTABLE_OHM_PROC_MACRO_TRUST", "all")
+        .env("CARGO_BUILD_BUILD_DIR", &shared)
+        .with_stderr_does_not_contain("[COMPILING] policy-registry v1.0.0")
+        .with_stdout_data("47\n")
+        .run();
+
+    permissive
+        .shared_registry_cargo("-Zohm-shared-registry-cache -Zohm-proc-macro-trust=audited run")
+        .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache", "ohm-proc-macro-trust"])
+        .env("CARGO_UNSTABLE_OHM_PROC_MACRO_TRUST", "all")
+        .env("CARGO_BUILD_BUILD_DIR", &shared)
+        .with_stderr_does_not_contain("[COMPILING] policy-registry v1.0.0")
+        .with_stdout_data("47\n")
+        .run();
+}
+
+#[cargo_test]
 fn shared_registry_cache_keeps_workspace_artifacts_private() {
     Package::new("shared-registry", "1.0.0")
         .file(
