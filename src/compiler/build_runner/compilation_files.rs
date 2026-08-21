@@ -872,6 +872,12 @@ fn compute_metadata(
             unit.rustflags.hash(&mut unit_id_hasher);
         }
     }
+    // A package can be checked directly or consumed by another checked unit.
+    // Keep the unhashed terminal artifact separate without changing its symbol
+    // metadata, so switching between those roles does not evict either cache.
+    if crate::compiler::unit_suppresses_default_public_api_hash(build_runner, unit) {
+        "ohm-terminal-check-no-public-api-hash".hash(&mut unit_id_hasher);
+    }
 
     let c_metadata = UnitHash(Hasher::finish(&c_metadata_hasher));
     let unit_id = UnitHash(Hasher::finish(&unit_id_hasher));
