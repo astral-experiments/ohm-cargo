@@ -514,10 +514,9 @@ impl RelinkCachePaths {
         }
         objects.sort_by(|left, right| left.path.cmp(&right.path));
         if objects.is_empty() {
-            anyhow::bail!(
-                "rustc produced no reusable object files for `{}`",
-                self.rlink.display()
-            );
+            // A successful wrapper invocation may intentionally skip compilation.
+            // The cache was invalidated before running rustc, so leave it absent.
+            return Ok(());
         }
         let manifest = RelinkCacheManifest {
             version: RELINK_CACHE_VERSION,
