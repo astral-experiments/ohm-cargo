@@ -5375,6 +5375,12 @@ fn relink_only_wrapper() -> PathBuf {
                     }
 
                     if has_flag(&args, "emit-rlink") {
+                        if env::var("RELINK_WRAPPER_SKIP")
+                            .is_ok_and(|name| crate_name(&args) == Some(name.as_str()))
+                        {
+                            log("skip", &args);
+                            return;
+                        }
                         log("compile-link", &args);
                         let output = run(&rustc, &stripped);
                         if output.status.success() {
@@ -5447,18 +5453,33 @@ fn relink_only_reuses_root_codegen() {
         .file("dep/src/lib.rs", "pub fn value() -> i32 { 1 }")
         .build();
     let log = p.root().join("relink-wrapper.log");
+    let deps = p.root().join("target/debug/deps");
 
+    // Preparation wrappers may successfully skip the root compiler invocation.
+    p.cargo("-Zohm-defaults build")
+        .masquerade_as_nightly_cargo(&["ohm-defaults"])
+        .env("RUSTC_WRAPPER", &wrapper)
+        .env("RELINK_WRAPPER_LOG", &log)
+        .env("RELINK_WRAPPER_SKIP", "app")
+        .run();
+    assert_eq!(fs::read_to_string(&log).unwrap(), "compile:dep\nskip:app\n");
+    assert!(!p.bin("app").exists());
+    assert!(fs::read_dir(&deps).unwrap().all(|entry| {
+        !entry
+            .unwrap()
+            .file_name()
+            .to_string_lossy()
+            .ends_with(".rlink-cache.json")
+    }));
+
+    fs::write(&log, "").unwrap();
     p.cargo("-Zohm-defaults build")
         .masquerade_as_nightly_cargo(&["ohm-defaults"])
         .env("RUSTC_WRAPPER", &wrapper)
         .env("RELINK_WRAPPER_LOG", &log)
         .run();
-    assert_eq!(
-        fs::read_to_string(&log).unwrap(),
-        "compile:dep\ncompile-link:app\n"
-    );
+    assert_eq!(fs::read_to_string(&log).unwrap(), "compile-link:app\n");
 
-    let deps = p.root().join("target/debug/deps");
     let manifest = fs::read_dir(&deps)
         .unwrap()
         .filter_map(Result::ok)
@@ -5526,8 +5547,18 @@ fn relink_only_reuses_root_codegen() {
 "#]])
         .run();
 
-    // A local source change is not dependency-only and must regenerate the
-    // codegen cache before linking.
+    let rebuilt_cache: serde_json::Value =
+        serde_json::from_slice(&fs::read(&manifest).unwrap()).unwrap();
+    assert_eq!(rebuilt_cache["version"], 4);
+    let rebuilt_objects = rebuilt_cache["objects"].as_array().unwrap();
+    assert!(!rebuilt_objects.is_empty());
+    assert!(
+        rebuilt_objects
+            .iter()
+            .all(|object| Path::new(object["path"].as_str().unwrap()).is_file())
+    );
+
+    // A skipped invocation must invalidate the old cache after a source change.
     fs::write(&log, "").unwrap();
     sleep_ms(1000);
     p.change_file(
@@ -5538,8 +5569,60 @@ fn relink_only_reuses_root_codegen() {
         .masquerade_as_nightly_cargo(&["ohm-defaults"])
         .env("RUSTC_WRAPPER", &wrapper)
         .env("RELINK_WRAPPER_LOG", &log)
+        .env("RELINK_WRAPPER_SKIP", "app")
         .run();
-    assert_eq!(fs::read_to_string(&log).unwrap(), "compile-link:app\n");
+    assert_eq!(fs::read_to_string(&log).unwrap(), "skip:app\n");
+    assert!(!manifest.exists());
+    assert!(
+        rebuilt_objects
+            .iter()
+            .all(|object| !Path::new(object["path"].as_str().unwrap()).exists())
+    );
+
+    // A dependency change cannot reuse the invalidated cache. Compile the new
+    // root body, then confirm that normal relink-only reuse resumes.
+    for (value, expected_log) in [
+        (4, "compile:dep\ncompile-link:app\n"),
+        (5, "compile:dep\nlink:app\n"),
+    ] {
+        fs::write(&log, "").unwrap();
+        sleep_ms(1000);
+        p.change_file(
+            "dep/src/lib.rs",
+            &format!("pub fn value() -> i32 {{ {value} }}"),
+        );
+        p.cargo("-Zohm-defaults build")
+            .masquerade_as_nightly_cargo(&["ohm-defaults"])
+            .env("RUSTC_WRAPPER", &wrapper)
+            .env("RELINK_WRAPPER_LOG", &log)
+            .run();
+        assert_eq!(fs::read_to_string(&log).unwrap(), expected_log);
+        assert!(manifest.is_file());
+        p.process(&p.bin("app"))
+            .with_stdout_data(format!("value={value}\n").raw())
+            .run();
+    }
+
+    // A failed compiler invocation must still fail the build and invalidate the cache.
+    sleep_ms(1000);
+    p.change_file(
+        "src/main.rs",
+        r#"compile_error!("relink test failure"); fn main() {}"#,
+    );
+    p.cargo("-Zohm-defaults build")
+        .masquerade_as_nightly_cargo(&["ohm-defaults"])
+        .env("RUSTC_WRAPPER", &wrapper)
+        .env("RELINK_WRAPPER_LOG", &log)
+        .with_status(101)
+        .with_stderr_data(str![[r#"
+[COMPILING] app v0.1.0 ([ROOT]/foo)
+[ERROR] relink test failure
+...
+[ERROR] could not compile `app` (bin "app") due to 1 previous error
+
+"#]])
+        .run();
+    assert!(!manifest.exists());
 }
 
 #[cargo_test]
