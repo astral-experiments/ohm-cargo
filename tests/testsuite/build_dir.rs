@@ -3213,6 +3213,110 @@ exec "$OHM_GENUINE_RUSTC" "$@"
 }
 
 #[cargo_test]
+fn shared_registry_cache_shares_authenticated_mirror_macro_closures() {
+    let _registry = RegistryBuilder::new().http_index().build();
+    let _other_registry = RegistryBuilder::new().alternative().http_index().build();
+    let mut helper = Package::new("mirror-macro-helper", "1.0.0");
+    helper.file("src/lib.rs", "pub fn value() -> u32 { 23 }");
+    let mut macro_package = Package::new("mirror-macro", "1.0.0");
+    macro_package
+        .proc_macro(true)
+        .dep("mirror-macro-helper", "1.0.0")
+        .file(
+            "src/lib.rs",
+            r#"
+            extern crate mirror_macro_helper;
+            extern crate proc_macro;
+
+            #[proc_macro]
+            pub fn value(_: proc_macro::TokenStream) -> proc_macro::TokenStream {
+                format!("{}u32", mirror_macro_helper::value()).parse().unwrap()
+            }
+            "#,
+        );
+    let mut consumer = Package::new("mirror-consumer", "1.0.0");
+    consumer.dep("mirror-macro", "1.0.0").file(
+        "src/lib.rs",
+        "extern crate mirror_macro; pub fn value() -> u32 { mirror_macro::value!() }",
+    );
+    for package in [&mut helper, &mut macro_package, &mut consumer] {
+        let checksum = package.publish();
+        assert_eq!(package.alternative(true).publish(), checksum);
+    }
+
+    let create_project = |name: &str, mirror: &str| {
+        project_in(name)
+            .file(
+                "Cargo.toml",
+                r#"
+                [package]
+                name = "mirror-cache-app"
+                version = "0.1.0"
+                edition = "2021"
+
+                [dependencies]
+                mirror-consumer = "1.0.0"
+                "#,
+            )
+            .file(
+                "src/main.rs",
+                "fn main() { println!(\"{}\", mirror_consumer::value()); }",
+            )
+            .file(
+                ".cargo/config.toml",
+                &format!("[source.crates-io]\nreplace-with = {mirror:?}\n"),
+            )
+            .build()
+    };
+    let shared = paths::root().join("mirror-macro-shared-build-directory");
+    for policy in ["audited", "all"] {
+        for mirror in ["dummy-registry", "alternative"] {
+            for side in ["left", "right"] {
+                let project = create_project(&format!("{policy}-{mirror}-{side}"), mirror);
+                let mut cargo = project.shared_registry_cargo("-Zohm-shared-registry-cache run");
+                cargo
+                    .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+                    .env("CARGO_BUILD_BUILD_DIR", &shared)
+                    .env("CARGO_UNSTABLE_OHM_PROC_MACRO_TRUST", policy)
+                    .with_stdout_data("23\n");
+                for package in ["mirror-macro", "mirror-consumer"] {
+                    let compiling = format!("[COMPILING] {package} v1.0.0");
+                    if side == "left" || policy == "audited" {
+                        cargo.with_stderr_contains(&compiling);
+                    } else {
+                        cargo.with_stderr_does_not_contain(&compiling);
+                    }
+                }
+                // Identical archives from distinct mirrors still have distinct artifact keys.
+                if side == "left" {
+                    cargo.with_stderr_contains("[COMPILING] mirror-macro-helper v1.0.0");
+                } else {
+                    cargo.with_stderr_does_not_contain("[COMPILING] mirror-macro-helper v1.0.0");
+                }
+                cargo.run();
+            }
+        }
+    }
+
+    let project = create_project("mirror-build-to-check", "dummy-registry");
+    project
+        .shared_registry_cargo("-Zohm-shared-registry-cache build")
+        .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+        .env("CARGO_BUILD_BUILD_DIR", &shared)
+        .env("CARGO_UNSTABLE_OHM_PROC_MACRO_TRUST", "all")
+        .with_stderr_does_not_contain("[COMPILING] mirror-consumer v1.0.0")
+        .run();
+    project
+        .shared_registry_cargo("-Zohm-shared-registry-cache -Zohm-reuse-built-deps check -v")
+        .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache", "ohm-reuse-built-deps"])
+        .env("CARGO_BUILD_BUILD_DIR", &shared)
+        .env("CARGO_UNSTABLE_OHM_PROC_MACRO_TRUST", "all")
+        .with_stderr_contains("[FRESH] mirror-consumer v1.0.0")
+        .with_stderr_does_not_contain("[CHECKING] mirror-consumer v1.0.0")
+        .run();
+}
+
+#[cargo_test]
 fn shared_registry_cache_rejects_untrusted_procedural_macro_closures() {
     Package::new("ambient-registry-macro", "1.0.0")
         .proc_macro(true)
@@ -3542,6 +3646,19 @@ fn shared_registry_cache_rejects_windows_configuration_environment_aliases() {
 #[cfg(unix)]
 #[cargo_test]
 fn shared_registry_cache_isolates_only_opaque_native_tool_closures() {
+    native_tool_closure_sharing(false);
+}
+
+#[cfg(unix)]
+#[cargo_test]
+fn shared_registry_cache_shares_authenticated_mirror_native_tool_closures() {
+    native_tool_closure_sharing(true);
+}
+
+/// Exercise strict and permissive sharing with file-backed or HTTP registry replacements.
+#[cfg(unix)]
+fn native_tool_closure_sharing(http_mirror: bool) {
+    let _registry = http_mirror.then(|| RegistryBuilder::new().http_index().build());
     Package::new("cmake", "1.0.0")
         .file(
             "src/lib.rs",
@@ -3733,13 +3850,25 @@ fn shared_registry_cache_isolates_only_opaque_native_tool_closures() {
         .with_stdout_data("shared:right:right:right\n")
         .run();
 
-    // Test registries replace canonical crates.io, so even permissive policies must not
-    // authenticate executable build scripts or opaque helpers from these sources.
+    // File-backed replacements stay private. Authenticated HTTP mirrors can share build
+    // scripts, and `all` additionally shares opaque native helpers and their consumers.
     for (policy, prefix) in [("build-scripts", "scripts"), ("all", "all")] {
         for side in ["left", "right"] {
             let project = create_project(&format!("native-tool-closure-{prefix}-{side}"));
             let selected = format!("{prefix}-{side}");
-            let expected = format!("shared:{selected}:{selected}:{selected}\n");
+            let shared_scripts = http_mirror && side == "right";
+            let shared_helpers = shared_scripts && policy == "all";
+            let direct = if shared_scripts {
+                format!("{prefix}-left")
+            } else {
+                selected.clone()
+            };
+            let indirect = if shared_helpers {
+                format!("{prefix}-left")
+            } else {
+                selected.clone()
+            };
+            let expected = format!("shared:{indirect}:{direct}:{indirect}\n");
             let mut cargo = project.shared_registry_cargo("-Zohm-shared-registry-cache run");
             cargo
                 .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
@@ -3747,14 +3876,23 @@ fn shared_registry_cache_isolates_only_opaque_native_tool_closures() {
                 .env("CARGO_BUILD_BUILD_DIR", &shared)
                 .env("PATH", &executable_path)
                 .env("OHM_NATIVE_TOOL_MODE", &selected)
-                .with_stderr_contains("[COMPILING] cmake v1.0.0")
-                .with_stderr_contains("[COMPILING] cc v1.0.0")
-                .with_stderr_contains("[COMPILING] pkg-config v1.0.0")
-                .with_stderr_contains("[COMPILING] openssl-src v1.0.0")
-                .with_stderr_contains("[COMPILING] indirect-native-registry v1.0.0")
-                .with_stderr_contains("[COMPILING] direct-native-registry v1.0.0")
-                .with_stderr_contains("[COMPILING] native-parent-registry v1.0.0")
                 .with_stdout_data(&expected);
+            for (package, reused) in [
+                ("cmake", shared_helpers),
+                ("cc", shared_helpers),
+                ("pkg-config", shared_helpers),
+                ("openssl-src", shared_helpers),
+                ("indirect-native-registry", shared_helpers),
+                ("direct-native-registry", shared_scripts),
+                ("native-parent-registry", shared_helpers),
+            ] {
+                let compiling = format!("[COMPILING] {package} v1.0.0");
+                if reused {
+                    cargo.with_stderr_does_not_contain(&compiling);
+                } else {
+                    cargo.with_stderr_contains(&compiling);
+                }
+            }
             if side == "left" {
                 cargo.with_stderr_contains("[COMPILING] unrelated-pure-registry v1.0.0");
             } else {
