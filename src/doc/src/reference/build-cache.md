@@ -97,8 +97,8 @@ against the cache key, and validates the parsed graph against the current worksp
 The cache only avoids TOML parsing; it does not reuse an earlier resolution.
 
 The cache is stored as `.cargo-lockfile-parse-cache-v1` in the configured target
-directory. Missing, malformed, and unwritable cache entries fall
-back to ordinary parsing. `cargo clean` removes the cached representation.
+directory. Missing or malformed entries fall back to ordinary parsing, and cache
+write failures do not fail the command. `cargo clean` removes the cached representation.
 
 ## Shared cache
 
