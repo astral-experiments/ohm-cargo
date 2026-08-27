@@ -798,7 +798,7 @@ where `<compatible-ver>` is the latest version supporting rustc {rustc_version}"
                 let source = sources.get(package_id.source_id())?;
                 audited_proc_macro_package_identity(
                     package_id.source_id(),
-                    source.is_replaced(),
+                    source.replaced_source_id(),
                     package_id.name().as_str(),
                     package_id.version(),
                     resolve
@@ -826,7 +826,7 @@ where `<compatible-ver>` is the latest version supporting rustc {rustc_version}"
                 let source = sources.get(package_id.source_id())?;
                 audited_proc_macro_package_identity(
                     package_id.source_id(),
-                    source.is_replaced(),
+                    source.replaced_source_id(),
                     package_id.name().as_str(),
                     package_id.version(),
                     resolve
