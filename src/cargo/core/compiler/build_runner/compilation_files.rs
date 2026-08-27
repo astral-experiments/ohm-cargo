@@ -153,11 +153,14 @@ struct SharedRegistryCache {
     workspace: String,
     /// Includes the compiler and every stable Cargo-provided build-script input.
     rustc: String,
+    /// Omits the job count only for closures without executable build-time code.
+    rustc_without_jobs: String,
     /// Canonical implementation dynamically loaded by the verified compiler launcher.
     compiler_driver: Option<PathBuf>,
     #[cfg(windows)]
     implicit_native_tools: Vec<String>,
     immutable_units: HashMap<Unit, bool>,
+    job_independent_units: HashSet<Unit>,
 }
 
 /// The compiler implementation is a dynamic library, not its small executable launcher.
@@ -546,20 +549,29 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
                     && verified_environment_spelling
                     && target_applies_to_host.is_some();
                 let mut immutable_units = HashMap::default();
+                let mut job_independent_units = HashSet::default();
                 if trusted_context {
                     let mut eligibility = HashMap::default();
+                    let mut job_count_context = HashMap::default();
                     for unit in metas.keys() {
-                        immutable_units.insert(
-                            unit.clone(),
-                            is_immutable_registry_unit(
+                        let immutable = is_immutable_registry_unit(
+                            unit,
+                            build_runner,
+                            false,
+                            false,
+                            &untrusted_native_tool_packages,
+                            &mut eligibility,
+                        );
+                        immutable_units.insert(unit.clone(), immutable);
+                        if immutable
+                            && !unit_uses_job_count_context(
                                 unit,
                                 build_runner,
-                                false,
-                                false,
-                                &untrusted_native_tool_packages,
-                                &mut eligibility,
-                            ),
-                        );
+                                &mut job_count_context,
+                            )
+                        {
+                            job_independent_units.insert(unit.clone());
+                        }
                     }
                 }
                 let rustc = util::short_hash(&(
@@ -571,7 +583,6 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
                     ),
                     (&rustdoc, &cargo, &rustup_environment),
                     context.home().as_path_unlocked(),
-                    build_runner.bcx.jobs(),
                     (&linkers, &host_linker),
                     &configured_environment,
                     (&native_environment, &native_tools),
@@ -604,14 +615,25 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
                     OhmNativeToolTrust::BuildScripts => format!("{rustc}-native-build-scripts"),
                     OhmNativeToolTrust::All => format!("{rustc}-native-all"),
                 };
+                // Version both contexts: units with executable build-time code now consume
+                // ordinary dependencies from a namespace that is independent of the job count.
+                let rustc_without_jobs =
+                    util::short_hash(&(&rustc, "ohm-registry-job-independent-v1"));
+                let rustc = util::short_hash(&(
+                    &rustc,
+                    "ohm-registry-job-dependent-v1",
+                    build_runner.bcx.jobs(),
+                ));
 
                 SharedRegistryCache {
                     workspace: Layout::shared_workspace_namespace(build_runner.bcx.ws),
                     rustc,
+                    rustc_without_jobs,
                     compiler_driver: compiler_driver_identity.map(|driver| driver.path),
                     #[cfg(windows)]
                     implicit_native_tools,
                     immutable_units,
+                    job_independent_units,
                 }
             });
         let mut files = CompilationFiles {
@@ -774,7 +796,12 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
         let hash = self.unit_hash(unit);
         if let Some(cache) = &self.shared_registry_cache {
             if cache.immutable_units.get(unit).copied().unwrap_or(false) {
-                return format!("registries/{}/{name}/{hash}", cache.rustc);
+                let rustc = if cache.job_independent_units.contains(unit) {
+                    &cache.rustc_without_jobs
+                } else {
+                    &cache.rustc
+                };
+                return format!("registries/{rustc}/{name}/{hash}");
             }
             return format!(
                 "workspaces/{}/{}/{name}/{hash}",
@@ -1455,6 +1482,30 @@ fn is_immutable_registry_unit(
         });
     eligibility.insert(cache_key, eligible);
     eligible
+}
+
+/// Keeps the job count in the cache key for executable build-time code and its consumers.
+///
+/// Cargo exposes `NUM_JOBS` to build scripts. Procedural macros and their consumers retain
+/// the same conservative context, since they can inspect the compiler's jobserver state.
+/// Ordinary registry closures cannot observe Cargo's job count during compilation.
+fn unit_uses_job_count_context(
+    unit: &Unit,
+    build_runner: &BuildRunner<'_, '_>,
+    memo: &mut HashMap<Unit, bool>,
+) -> bool {
+    if let Some(uses_context) = memo.get(unit) {
+        return *uses_context;
+    }
+    let uses_context = unit.pkg.proc_macro()
+        || unit.target.is_custom_build()
+        || unit.mode.is_run_custom_build()
+        || build_runner
+            .unit_deps(unit)
+            .iter()
+            .any(|dependency| unit_uses_job_count_context(&dependency.unit, build_runner, memo));
+    memo.insert(unit.clone(), uses_context);
+    uses_context
 }
 
 /// Rejects compiler options and target specifications that can execute opaque external code.

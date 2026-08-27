@@ -4922,6 +4922,106 @@ fn shared_registry_cache_rejects_invalid_lock_ownership_markers() {
 }
 
 #[cargo_test]
+fn shared_registry_cache_scopes_job_count_to_build_time_code() {
+    Package::new("job-independent-leaf", "1.0.0")
+        .edition("2021")
+        .file("src/lib.rs", "pub fn value() -> u32 { 7 }")
+        .publish();
+    Package::new("job-independent-parent", "1.0.0")
+        .edition("2021")
+        .dep("job-independent-leaf", "1.0.0")
+        .file(
+            "src/lib.rs",
+            "pub fn value() -> u32 { job_independent_leaf::value() }",
+        )
+        .publish();
+    Package::new("job-sensitive-registry", "1.0.0")
+        .edition("2021")
+        .build_dep("job-independent-leaf", "1.0.0")
+        .file(
+            "build.rs",
+            r#"
+            fn main() {
+                assert_eq!(job_independent_leaf::value(), 7);
+                let jobs = std::env::var("NUM_JOBS").unwrap();
+                let output = std::path::PathBuf::from(std::env::var_os("OUT_DIR").unwrap());
+                std::fs::write(
+                    output.join("generated.rs"),
+                    format!("pub const JOBS: u32 = {jobs};"),
+                )
+                .unwrap();
+                println!("cargo:rerun-if-changed=build.rs");
+            }
+            "#,
+        )
+        .file(
+            "src/lib.rs",
+            "include!(concat!(env!(\"OUT_DIR\"), \"/generated.rs\"));",
+        )
+        .publish();
+    Package::new("job-sensitive-parent", "1.0.0")
+        .edition("2021")
+        .dep("job-sensitive-registry", "1.0.0")
+        .file("src/lib.rs", "pub use job_sensitive_registry::JOBS;")
+        .publish();
+
+    let create_project = |worktree: &str| {
+        project_in(worktree)
+            .file(
+                "Cargo.toml",
+                r#"
+                [package]
+                name = "job-context-app"
+                version = "0.1.0"
+                edition = "2021"
+
+                [dependencies]
+                job-independent-parent = "1.0.0"
+                job-sensitive-parent = "1.0.0"
+                "#,
+            )
+            .file(
+                "src/main.rs",
+                r#"
+                fn main() {
+                    println!("{}:{}", job_independent_parent::value(), job_sensitive_parent::JOBS);
+                }
+                "#,
+            )
+            .build()
+    };
+    let left = create_project("job-context-left");
+    let right = create_project("job-context-right");
+    let shared = paths::root().join("job-context-shared-build-dir");
+
+    left.shared_registry_cargo("-Zohm-shared-registry-cache run -j1")
+        .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+        .env("CARGO_BUILD_BUILD_DIR", &shared)
+        .with_stderr_contains("[COMPILING] job-independent-leaf v1.0.0")
+        .with_stderr_contains("[COMPILING] job-independent-parent v1.0.0")
+        .with_stdout_data("7:1\n")
+        .run();
+
+    right
+        .shared_registry_cargo("-Zohm-shared-registry-cache run -j2")
+        .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+        .env("CARGO_BUILD_BUILD_DIR", &shared)
+        .with_stderr_does_not_contain("[COMPILING] job-independent-leaf v1.0.0")
+        .with_stderr_does_not_contain("[COMPILING] job-independent-parent v1.0.0")
+        .with_stderr_contains("[COMPILING] job-sensitive-registry v1.0.0")
+        .with_stderr_contains("[COMPILING] job-sensitive-parent v1.0.0")
+        .with_stdout_data("7:2\n")
+        .run();
+
+    left.shared_registry_cargo("-Zohm-shared-registry-cache run -j1")
+        .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+        .env("CARGO_BUILD_BUILD_DIR", &shared)
+        .with_stderr_does_not_contain("[COMPILING]")
+        .with_stdout_data("7:1\n")
+        .run();
+}
+
+#[cargo_test]
 fn shared_registry_cache_keys_build_script_tool_context() {
     Package::new("tool-sensitive-registry", "1.0.0")
         .file(
