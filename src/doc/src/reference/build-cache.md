@@ -88,6 +88,18 @@ re-executed. The paths in the file are absolute by default. See the
 /path/to/myproj/target/debug/foo: /path/to/myproj/src/lib.rs /path/to/myproj/src/main.rs
 ```
 
+## Parsed lockfile cache (experimental)
+
+Ohm can cache the parsed representation of lockfiles of at least 16 KiB when
+`CARGO_EXPERIMENTAL_LOCKFILE_PARSE_CACHE=1` is set. This experiment is disabled by
+default. Cargo still reads and locks the original `Cargo.lock`, checks its contents
+against the cache key, and validates the parsed graph against the current workspace.
+The cache only avoids TOML parsing; it does not reuse an earlier resolution.
+
+The cache is stored as `.cargo-lockfile-parse-cache-v1` in the configured target
+directory. Missing, malformed, and unwritable cache entries fall
+back to ordinary parsing. `cargo clean` removes the cached representation.
+
 ## Shared cache
 
 A third party tool, [sccache], can be used to share built dependencies across

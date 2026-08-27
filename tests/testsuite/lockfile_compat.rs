@@ -8,6 +8,124 @@ use cargo_test_support::str;
 use cargo_test_support::{basic_lib_manifest, basic_manifest, project};
 
 #[cargo_test]
+fn parsed_lockfile_cache_preserves_metadata_and_recovers_from_corruption() {
+    let p = project().file("src/lib.rs", "").build();
+    p.cargo("generate-lockfile").run();
+    // Exercise the large-lockfile path without publishing hundreds of artificial packages.
+    let lockfile = format!("{}{}", p.read_lockfile(), "# cache test\n".repeat(2048));
+    p.change_file("Cargo.lock", &lockfile);
+    let cache_path = p.root().join("target/.cargo-lockfile-parse-cache-v1");
+    let cache_hit = "[..]reusing the parsed lockfile cache[..]";
+    let expected = p
+        .cargo("metadata --format-version 1 --locked")
+        .env("CARGO_EXPERIMENTAL_LOCKFILE_PARSE_CACHE", "0")
+        .run_json();
+
+    let cold = p
+        .cargo("metadata --format-version 1 --locked")
+        .env("CARGO_EXPERIMENTAL_LOCKFILE_PARSE_CACHE", "1")
+        .env("CARGO_LOG", "cargo::ops::lockfile=debug")
+        .with_stderr_does_not_contain(cache_hit)
+        .run_json();
+    assert_eq!(cold, expected);
+    let published = std::fs::read(&cache_path).unwrap();
+
+    let warm = p
+        .cargo("metadata --format-version 1 --locked")
+        .env("CARGO_EXPERIMENTAL_LOCKFILE_PARSE_CACHE", "1")
+        .env("CARGO_LOG", "cargo::ops::lockfile=debug")
+        .with_stderr_contains(cache_hit)
+        .run_json();
+    assert_eq!(warm, expected);
+    assert_eq!(p.read_lockfile(), lockfile);
+
+    // A truncated payload with the right input key must not turn a cache failure into a command
+    // failure. The ordinary parser repairs the entry, and the following invocation reuses it.
+    std::fs::write(&cache_path, &published[..32]).unwrap();
+    p.cargo("metadata --format-version 1 --locked")
+        .env("CARGO_EXPERIMENTAL_LOCKFILE_PARSE_CACHE", "1")
+        .env("CARGO_LOG", "cargo::ops::lockfile=debug")
+        .with_stderr_does_not_contain(cache_hit)
+        .run();
+    assert_eq!(std::fs::read(&cache_path).unwrap(), published);
+
+    // Corruption that remains syntactically valid JSON must also be a cache miss.
+    let payload = std::str::from_utf8(&published[64..]).unwrap();
+    let mut corrupted = published[..64].to_vec();
+    corrupted.extend_from_slice(
+        payload
+            .replacen("\"version\":4", "\"version\":9", 1)
+            .as_bytes(),
+    );
+    assert_ne!(corrupted, published);
+    std::fs::write(&cache_path, corrupted).unwrap();
+    p.cargo("metadata --format-version 1 --locked")
+        .env("CARGO_EXPERIMENTAL_LOCKFILE_PARSE_CACHE", "1")
+        .env("CARGO_LOG", "cargo::ops::lockfile=debug")
+        .with_stderr_does_not_contain(cache_hit)
+        .run();
+    assert_eq!(std::fs::read(&cache_path).unwrap(), published);
+
+    // The cache cannot hide a change to the original file, even if its timestamp is restored.
+    let modified = filetime::FileTime::from_last_modification_time(
+        &p.root().join("Cargo.lock").metadata().unwrap(),
+    );
+    p.change_file(
+        "Cargo.lock",
+        &lockfile.replacen("version = 4", "version = 9", 1),
+    );
+    filetime::set_file_mtime(p.root().join("Cargo.lock"), modified).unwrap();
+    p.cargo("metadata --format-version 1 --locked")
+        .env("CARGO_EXPERIMENTAL_LOCKFILE_PARSE_CACHE", "1")
+        .with_status(101)
+        .with_stderr_data(str![[r#"
+[ERROR] failed to parse lock file at: [ROOT]/foo/Cargo.lock
+
+Caused by:
+  lock file version `9` was found, but this version of Cargo does not understand this lock file, perhaps Cargo needs to be updated?
+
+"#]])
+        .run();
+
+    // Creating the target directory for metadata must preserve Cargo's cache tagging, so an
+    // explicit clean remains safe and does not require an intervening build.
+    p.cargo("clean --target-dir target").run();
+    assert!(!cache_path.exists());
+}
+
+#[cargo_test]
+fn parsed_lockfile_cache_ignores_non_regular_cache_entries() {
+    let p = project().file("src/lib.rs", "").build();
+    p.cargo("generate-lockfile").run();
+    p.change_file(
+        "Cargo.lock",
+        &format!("{}{}", p.read_lockfile(), "# cache test\n".repeat(2048)),
+    );
+    let cache_path = p.root().join("target/.cargo-lockfile-parse-cache-v1");
+    std::fs::create_dir_all(&cache_path).unwrap();
+
+    p.cargo("metadata --format-version 1 --locked")
+        .env("CARGO_EXPERIMENTAL_LOCKFILE_PARSE_CACHE", "1")
+        .run();
+    assert!(cache_path.is_dir());
+
+    #[cfg(unix)]
+    {
+        std::fs::remove_dir(&cache_path).unwrap();
+        p.change_file("sentinel", "untouched");
+        std::os::unix::fs::symlink(p.root().join("sentinel"), &cache_path).unwrap();
+        p.cargo("metadata --format-version 1 --locked")
+            .env("CARGO_EXPERIMENTAL_LOCKFILE_PARSE_CACHE", "1")
+            .run();
+        assert_eq!(
+            std::fs::read_to_string(p.root().join("sentinel")).unwrap(),
+            "untouched"
+        );
+        assert!(cache_path.is_symlink());
+    }
+}
+
+#[cargo_test]
 fn oldest_lockfile_still_works() {
     let cargo_commands = vec!["build", "update"];
     for cargo_command in cargo_commands {
@@ -121,6 +239,23 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 
     let lock = p.read_lockfile();
     assert_e2e().eq(&lock, &old_lockfile);
+
+    // Exercise the parsed cache with the legacy root, metadata checksums, fully qualified
+    // dependency IDs, and source URLs rather than only a modern path-only lockfile.
+    let padded = format!("{old_lockfile}{}", "# cache test\n".repeat(2048));
+    p.change_file("Cargo.lock", &padded);
+    let cold = p
+        .cargo("metadata --format-version 1 --locked")
+        .env("CARGO_EXPERIMENTAL_LOCKFILE_PARSE_CACHE", "1")
+        .run_json();
+    let warm = p
+        .cargo("metadata --format-version 1 --locked")
+        .env("CARGO_EXPERIMENTAL_LOCKFILE_PARSE_CACHE", "1")
+        .env("CARGO_LOG", "cargo::ops::lockfile=debug")
+        .with_stderr_contains("[..]reusing the parsed lockfile cache[..]")
+        .run_json();
+    assert_eq!(warm, cold);
+    assert_eq!(p.read_lockfile(), padded);
 }
 
 #[cargo_test]

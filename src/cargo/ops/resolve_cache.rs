@@ -142,6 +142,7 @@ fn environment_affects_workspace_resolution(name: &str) -> bool {
             name,
             "RUST_MIN_STACK"
                 | "CARGO_BUILD_JOBS"
+                | "CARGO_EXPERIMENTAL_LOCKFILE_PARSE_CACHE"
                 | "CARGO_TERM_COLOR"
                 | "CARGO_TERM_VERBOSE"
                 | "CARGO_TERM_QUIET"
@@ -198,6 +199,7 @@ mod tests {
         for name in [
             "RUST_MIN_STACK",
             "CARGO_BUILD_JOBS",
+            "CARGO_EXPERIMENTAL_LOCKFILE_PARSE_CACHE",
             "CARGO_TERM_COLOR",
             "CARGO_TERM_VERBOSE",
             "CARGO_TERM_QUIET",

@@ -23,13 +23,89 @@ pub(super) fn load_pkg_lockfile_with<T>(
 ) -> CargoResult<Option<T>> {
     with_pkg_lockfile(ws, |contents, path| {
         let resolve = (|| -> CargoResult<Resolve> {
-            let lockfile: TomlLockfile = toml::from_str(contents)?;
+            let lockfile = parse_pkg_lockfile(ws, contents)?;
             into_resolve(lockfile, contents, ws)
         })()
         .with_context(|| format!("failed to parse lock file at: {}", path.display()))?;
 
         action(resolve, contents)
     })
+}
+
+/// Reuses the parsed representation of a large, unchanged lockfile.
+///
+/// The caller still reads and locks `Cargo.lock`, and `into_resolve` still validates its graph
+/// against the current workspace. Only TOML parsing is cached; file timestamps, resolver options,
+/// and an earlier resolution are never used as a substitute for the current lockfile contents.
+fn parse_pkg_lockfile(ws: &Workspace<'_>, contents: &str) -> CargoResult<TomlLockfile> {
+    let enabled = ws
+        .gctx()
+        .get_env_os("CARGO_EXPERIMENTAL_LOCKFILE_PARSE_CACHE")
+        .is_some_and(|value| value == "1");
+    // For small lockfiles, opening another file can cost more than parsing the TOML.
+    if !enabled || ws.is_ephemeral() || contents.len() < 16 * 1024 {
+        return Ok(toml::from_str(contents)?);
+    }
+
+    let mut hasher = blake3::Hasher::new();
+    for input in [
+        "cargo-lockfile-parse-cache-v1",
+        env!("CARGO_PKG_VERSION"),
+        option_env!("CARGO_COMMIT_HASH").unwrap_or_default(),
+        contents,
+    ] {
+        hasher.update(&(input.len() as u64).to_le_bytes());
+        hasher.update(input.as_bytes());
+    }
+    let key = hasher.finalize();
+    let cache_path = ws
+        .target_dir()
+        .as_path_unlocked()
+        .join(".cargo-lockfile-parse-cache-v1");
+
+    if let Ok(metadata) = std::fs::symlink_metadata(&cache_path)
+        && metadata.file_type().is_file()
+        && let Ok(bytes) = std::fs::read(&cache_path)
+        && let Some(cached) = bytes.strip_prefix(key.as_bytes().as_slice())
+        && let Some((checksum, payload)) = cached.split_at_checked(32)
+        && blake3::hash(payload).as_bytes().as_slice() == checksum
+        && let Ok(lockfile) = serde_json::from_slice(payload)
+    {
+        tracing::debug!("reusing the parsed lockfile cache");
+        return Ok(lockfile);
+    }
+
+    let lockfile: TomlLockfile = toml::from_str(contents)?;
+    // Cache failures are misses, including read-only target directories and malformed cache data.
+    // A temporary file and rename publish the key and parsed data as one consistent snapshot.
+    let write = || -> CargoResult<()> {
+        match std::fs::symlink_metadata(&cache_path) {
+            Ok(metadata) if !metadata.file_type().is_file() => return Ok(()),
+            Ok(_) => {}
+            Err(error) if error.kind() == std::io::ErrorKind::NotFound => {}
+            Err(error) => return Err(error.into()),
+        }
+        let parent = cache_path.parent().unwrap();
+        cargo_util::paths::create_dir_all_excluded_from_backups_atomic(parent)?;
+        let mut temporary = tempfile::Builder::new()
+            .prefix(".cargo-lockfile-parse-cache-")
+            .tempfile_in(parent)?;
+        // Serialize into memory first to avoid one write syscall per JSON token.
+        let payload = serde_json::to_vec(&lockfile)?;
+        let mut bytes = Vec::with_capacity(64 + payload.len());
+        bytes.extend_from_slice(key.as_bytes());
+        bytes.extend_from_slice(blake3::hash(&payload).as_bytes());
+        bytes.extend_from_slice(&payload);
+        temporary.write_all(&bytes)?;
+        temporary
+            .persist(&cache_path)
+            .map_err(|error| error.error)?;
+        Ok(())
+    };
+    if let Err(error) = write() {
+        tracing::debug!("unable to cache the parsed lockfile: {error}");
+    }
+    Ok(lockfile)
 }
 
 /// Runs an operation on one consistent, shared-locked lockfile snapshot.
