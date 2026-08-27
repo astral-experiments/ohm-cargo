@@ -1227,12 +1227,12 @@ impl<'a, 'gctx> State<'a, 'gctx> {
         visiting: &mut HashSet<(Unit, bool)>,
     ) -> bool {
         let package_id = unit.pkg.package_id();
-        let source_is_replaced = if package_id.source_id().is_remote_registry() {
-            let Some((source_is_replaced, effective_source_id)) = self
+        let effective_source_id = if package_id.source_id().is_remote_registry() {
+            let Some(effective_source_id) = self
                 .package_set
                 .sources()
                 .get(package_id.source_id())
-                .map(|source| (source.is_replaced(), source.replaced_source_id()))
+                .map(|source| source.replaced_source_id())
             else {
                 return false;
             };
@@ -1242,10 +1242,10 @@ impl<'a, 'gctx> State<'a, 'gctx> {
             // their integrity before compiling a newly requested target. Registry
             // mirrors remain immutable and their actual source path participates
             // in the existing unit fingerprint.
-            if source_is_replaced && !effective_source_id.is_remote_registry() {
+            if !effective_source_id.is_remote_registry() {
                 return false;
             }
-            source_is_replaced
+            effective_source_id
         } else {
             // Workspace sources can change, so they are eligible only when their
             // exact build fingerprint is revalidated under the workspace lock.
@@ -1258,12 +1258,12 @@ impl<'a, 'gctx> State<'a, 'gctx> {
             {
                 return false;
             }
-            false
+            package_id.source_id()
         };
 
         let audited_macro_runtime = audited_macro_runtime || unit.pkg.proc_macro();
         if audited_macro_runtime
-            && !is_canonical_unreplaced_crates_io(package_id.source_id(), source_is_replaced)
+            && !is_canonical_crates_io_source(package_id.source_id(), effective_source_id)
         {
             return false;
         }
@@ -1290,7 +1290,7 @@ impl<'a, 'gctx> State<'a, 'gctx> {
         let trusted_runtime = if unit.pkg.proc_macro() {
             self.proc_macro_is_audited(unit)
         } else if audited_macro_runtime {
-            self.proc_macro_runtime_dependency_is_audited(unit, source_is_replaced)
+            self.proc_macro_runtime_dependency_is_audited(unit, effective_source_id)
         } else {
             true
         };
@@ -1319,7 +1319,7 @@ impl<'a, 'gctx> State<'a, 'gctx> {
         };
         audited_proc_macro_package_identity(
             package_id.source_id(),
-            source.is_replaced(),
+            source.replaced_source_id(),
             package_id.name().as_str(),
             package_id.version(),
             self.resolve()
@@ -1336,12 +1336,12 @@ impl<'a, 'gctx> State<'a, 'gctx> {
     fn proc_macro_runtime_dependency_is_audited(
         &self,
         unit: &Unit,
-        source_is_replaced: bool,
+        effective_source_id: SourceId,
     ) -> bool {
         let package_id = unit.pkg.package_id();
         audited_proc_macro_runtime_dependency_identity(
             package_id.source_id(),
-            source_is_replaced,
+            effective_source_id,
             package_id.name().as_str(),
             package_id.version(),
             self.resolve()
@@ -1533,20 +1533,25 @@ impl<'a, 'gctx> State<'a, 'gctx> {
     }
 }
 
-/// Reject replacement mirrors and file-backed registries for executable macro code.
-fn is_canonical_unreplaced_crates_io(source_id: SourceId, source_is_replaced: bool) -> bool {
-    !source_is_replaced
-        && source_id.is_crates_io()
+/// Accept canonical crates.io packages fetched directly or through an HTTP(S) registry mirror.
+/// Local replacements remain mutable even when they advertise matching package checksums.
+fn is_canonical_crates_io_source(source_id: SourceId, effective_source_id: SourceId) -> bool {
+    source_id.is_crates_io()
         && matches!(
             source_id.url().as_str(),
             CRATES_IO_INDEX | CRATES_IO_HTTP_INDEX
+        )
+        && effective_source_id.is_remote_registry()
+        && matches!(
+            effective_source_id.url().scheme(),
+            "http" | "https" | "sparse+http" | "sparse+https"
         )
 }
 
 /// Authenticate the actual source and both package checksums of macro runtime code.
 fn audited_proc_macro_runtime_dependency_identity(
     source_id: SourceId,
-    source_is_replaced: bool,
+    effective_source_id: SourceId,
     name: &str,
     version: &semver::Version,
     resolved_checksum: Option<&str>,
@@ -1555,7 +1560,7 @@ fn audited_proc_macro_runtime_dependency_identity(
 ) -> bool {
     audited_proc_macro_package_identity(
         source_id,
-        source_is_replaced,
+        effective_source_id,
         name,
         version,
         resolved_checksum,
@@ -1570,9 +1575,10 @@ fn audited_proc_macro_runtime_dependency_identity(
 /// Procedural macros and the ordinary libraries linked into them use separate audited
 /// allowlists by default. An explicit permissive policy bypasses those allowlists, but both
 /// policies always enforce the same immutable-source and lockfile identity rules.
+/// HTTP(S) mirrors are allowed; their effective source and checksum are included in artifact keys.
 pub(crate) fn audited_proc_macro_package_identity(
     source_id: SourceId,
-    source_is_replaced: bool,
+    effective_source_id: SourceId,
     name: &str,
     version: &semver::Version,
     resolved_checksum: Option<&str>,
@@ -1580,7 +1586,7 @@ pub(crate) fn audited_proc_macro_package_identity(
     is_proc_macro: bool,
     trust: OhmProcMacroTrust,
 ) -> bool {
-    is_canonical_unreplaced_crates_io(source_id, source_is_replaced)
+    is_canonical_crates_io_source(source_id, effective_source_id)
         && resolved_checksum.is_some_and(|checksum| {
             downloaded_checksum == Some(checksum)
                 && (trust == OhmProcMacroTrust::All
@@ -1749,7 +1755,7 @@ mod audited_proc_macro_tests {
     use super::{
         audited_proc_macro_checksum, audited_proc_macro_package_identity,
         audited_proc_macro_runtime_dependency_checksum,
-        audited_proc_macro_runtime_dependency_identity, is_canonical_unreplaced_crates_io,
+        audited_proc_macro_runtime_dependency_identity, is_canonical_crates_io_source,
     };
     use crate::core::SourceId;
     use crate::core::features::OhmProcMacroTrust;
@@ -1864,7 +1870,7 @@ mod audited_proc_macro_tests {
         ] {
             assert!(audited_proc_macro_package_identity(
                 source,
-                false,
+                source,
                 name,
                 &version,
                 Some(checksum),
@@ -1874,7 +1880,7 @@ mod audited_proc_macro_tests {
             ));
             assert!(!audited_proc_macro_package_identity(
                 source,
-                true,
+                SourceId::from_url("registry+file:///tmp/mirror").unwrap(),
                 name,
                 &version,
                 Some(checksum),
@@ -1884,7 +1890,7 @@ mod audited_proc_macro_tests {
             ));
             assert!(!audited_proc_macro_package_identity(
                 source,
-                false,
+                source,
                 name,
                 &version,
                 Some(checksum),
@@ -1894,7 +1900,7 @@ mod audited_proc_macro_tests {
             ));
             assert!(!audited_proc_macro_package_identity(
                 source,
-                false,
+                source,
                 name,
                 &version,
                 None,
@@ -1904,7 +1910,7 @@ mod audited_proc_macro_tests {
             ));
             assert!(!audited_proc_macro_package_identity(
                 source,
-                false,
+                source,
                 name,
                 &version,
                 Some(checksum),
@@ -1938,7 +1944,7 @@ mod audited_proc_macro_tests {
         ] {
             assert!(!audited_proc_macro_package_identity(
                 canonical,
-                false,
+                canonical,
                 name,
                 &version,
                 Some(checksum),
@@ -1948,7 +1954,7 @@ mod audited_proc_macro_tests {
             ));
             assert!(audited_proc_macro_package_identity(
                 canonical,
-                false,
+                canonical,
                 name,
                 &version,
                 Some(checksum),
@@ -1957,16 +1963,21 @@ mod audited_proc_macro_tests {
                 OhmProcMacroTrust::All,
             ));
 
-            for (source, replaced, resolved, downloaded) in [
-                (canonical, true, Some(checksum), Some(checksum)),
-                (alternative, false, Some(checksum), Some(checksum)),
-                (canonical, false, None, Some(checksum)),
-                (canonical, false, Some(checksum), None),
-                (canonical, false, Some(checksum), Some("different-checksum")),
+            for (source, effective_source, resolved, downloaded) in [
+                (canonical, alternative, Some(checksum), Some(checksum)),
+                (alternative, alternative, Some(checksum), Some(checksum)),
+                (canonical, canonical, None, Some(checksum)),
+                (canonical, canonical, Some(checksum), None),
+                (
+                    canonical,
+                    canonical,
+                    Some(checksum),
+                    Some("different-checksum"),
+                ),
             ] {
                 assert!(!audited_proc_macro_package_identity(
                     source,
-                    replaced,
+                    effective_source,
                     name,
                     &version,
                     resolved,
@@ -1990,7 +2001,7 @@ mod audited_proc_macro_tests {
         for name in ["cmake", "pkg-config", "serde", "direct-native-helper"] {
             assert!(audited_proc_macro_package_identity(
                 canonical,
-                false,
+                canonical,
                 name,
                 &version,
                 Some(checksum),
@@ -1999,16 +2010,21 @@ mod audited_proc_macro_tests {
                 OhmProcMacroTrust::All,
             ));
 
-            for (source, replaced, resolved, downloaded) in [
-                (canonical, true, Some(checksum), Some(checksum)),
-                (alternative, false, Some(checksum), Some(checksum)),
-                (canonical, false, None, Some(checksum)),
-                (canonical, false, Some(checksum), None),
-                (canonical, false, Some(checksum), Some("changed-download")),
+            for (source, effective_source, resolved, downloaded) in [
+                (canonical, alternative, Some(checksum), Some(checksum)),
+                (alternative, alternative, Some(checksum), Some(checksum)),
+                (canonical, canonical, None, Some(checksum)),
+                (canonical, canonical, Some(checksum), None),
+                (
+                    canonical,
+                    canonical,
+                    Some(checksum),
+                    Some("changed-download"),
+                ),
             ] {
                 assert!(!audited_proc_macro_package_identity(
                     source,
-                    replaced,
+                    effective_source,
                     name,
                     &version,
                     resolved,
@@ -2016,6 +2032,74 @@ mod audited_proc_macro_tests {
                     false,
                     OhmProcMacroTrust::All,
                 ));
+            }
+        }
+    }
+
+    #[test]
+    fn remote_mirrors_preserve_macro_and_native_package_authentication() {
+        for canonical in [
+            "registry+https://github.com/rust-lang/crates.io-index",
+            "sparse+https://index.crates.io/",
+        ] {
+            let canonical = SourceId::from_url(canonical).unwrap();
+            for mirror in [
+                "registry+https://mirror.example/index",
+                "sparse+https://mirror.example/index/",
+                "sparse+http://127.0.0.1/index/",
+            ] {
+                let mirror = SourceId::from_url(mirror).unwrap();
+                for (name, version, checksum, is_proc_macro, trust) in [
+                    (
+                        "thiserror-impl",
+                        semver::Version::new(2, 0, 19),
+                        "43cbfe0cf76104d42a574802844187e84a305e531ed54455f11fbde0f10541cd",
+                        true,
+                        OhmProcMacroTrust::Audited,
+                    ),
+                    (
+                        "syn",
+                        semver::Version::new(3, 0, 3),
+                        "53e9bae58849f64dfa4f5d5ae372c8341f7305f82a3868709269343628b659a3",
+                        false,
+                        OhmProcMacroTrust::Audited,
+                    ),
+                    (
+                        "unaudited-macro",
+                        semver::Version::new(1, 0, 0),
+                        "authenticated-macro-checksum",
+                        true,
+                        OhmProcMacroTrust::All,
+                    ),
+                    (
+                        "cmake",
+                        semver::Version::new(1, 0, 0),
+                        "authenticated-native-helper-checksum",
+                        false,
+                        OhmProcMacroTrust::All,
+                    ),
+                ] {
+                    for (resolved, downloaded, expected) in [
+                        (Some(checksum), Some(checksum), true),
+                        (None, Some(checksum), false),
+                        (Some(checksum), None, false),
+                        (Some(checksum), Some("changed-download"), false),
+                    ] {
+                        assert_eq!(
+                            audited_proc_macro_package_identity(
+                                canonical,
+                                mirror,
+                                name,
+                                &version,
+                                resolved,
+                                downloaded,
+                                is_proc_macro,
+                                trust,
+                            ),
+                            expected,
+                        );
+                    }
+                }
             }
         }
     }
@@ -2246,15 +2330,29 @@ mod audited_proc_macro_tests {
     }
 
     #[test]
-    fn alternate_registries_cannot_supply_macro_runtime_dependencies() {
+    fn alternate_and_local_sources_cannot_supply_macro_runtime_dependencies() {
         let crates_io = SourceId::from_url("registry+https://github.com/rust-lang/crates.io-index")
             .expect("canonical registry source");
         let alternative = SourceId::from_url("registry+file:///tmp/alternative-registry")
             .expect("alternate registry source");
 
-        assert!(is_canonical_unreplaced_crates_io(crates_io, false));
-        assert!(!is_canonical_unreplaced_crates_io(crates_io, true));
-        assert!(!is_canonical_unreplaced_crates_io(alternative, false));
+        assert!(is_canonical_crates_io_source(crates_io, crates_io));
+        assert!(!is_canonical_crates_io_source(crates_io, alternative));
+        assert!(!is_canonical_crates_io_source(alternative, alternative));
+
+        let remote = SourceId::from_url("sparse+https://mirror.example/index/").unwrap();
+        assert!(!is_canonical_crates_io_source(remote, remote));
+        assert!(!is_canonical_crates_io_source(remote, crates_io));
+
+        let local = std::env::temp_dir().join("macro-runtime-replacement");
+        for replacement in [
+            SourceId::for_local_registry(&local).unwrap(),
+            SourceId::for_directory(&local).unwrap(),
+            SourceId::for_path(&local).unwrap(),
+            SourceId::from_url("git+https://mirror.example/index").unwrap(),
+        ] {
+            assert!(!is_canonical_crates_io_source(crates_io, replacement));
+        }
     }
 
     #[test]
@@ -2268,7 +2366,7 @@ mod audited_proc_macro_tests {
 
         assert!(audited_proc_macro_runtime_dependency_identity(
             crates_io,
-            false,
+            crates_io,
             "syn",
             &version,
             Some(checksum),
@@ -2277,7 +2375,7 @@ mod audited_proc_macro_tests {
         ));
         assert!(!audited_proc_macro_runtime_dependency_identity(
             alternative,
-            false,
+            alternative,
             "syn",
             &version,
             Some(checksum),
@@ -2286,7 +2384,7 @@ mod audited_proc_macro_tests {
         ));
         assert!(!audited_proc_macro_runtime_dependency_identity(
             crates_io,
-            true,
+            alternative,
             "syn",
             &version,
             Some(checksum),
@@ -2295,7 +2393,7 @@ mod audited_proc_macro_tests {
         ));
         assert!(!audited_proc_macro_runtime_dependency_identity(
             crates_io,
-            false,
+            crates_io,
             "syn",
             &version,
             Some(checksum),
@@ -2304,7 +2402,7 @@ mod audited_proc_macro_tests {
         ));
         assert!(!audited_proc_macro_runtime_dependency_identity(
             crates_io,
-            false,
+            crates_io,
             "syn",
             &version,
             None,
@@ -2324,7 +2422,7 @@ mod audited_proc_macro_tests {
 
         assert!(!audited_proc_macro_runtime_dependency_identity(
             crates_io,
-            false,
+            crates_io,
             "unaudited-runtime-helper",
             &version,
             Some(checksum),
@@ -2333,7 +2431,7 @@ mod audited_proc_macro_tests {
         ));
         assert!(audited_proc_macro_runtime_dependency_identity(
             crates_io,
-            false,
+            crates_io,
             "unaudited-runtime-helper",
             &version,
             Some(checksum),
@@ -2341,16 +2439,21 @@ mod audited_proc_macro_tests {
             OhmProcMacroTrust::All,
         ));
 
-        for (source, replaced, resolved, downloaded) in [
-            (alternative, false, Some(checksum), Some(checksum)),
-            (crates_io, true, Some(checksum), Some(checksum)),
-            (crates_io, false, None, Some(checksum)),
-            (crates_io, false, Some(checksum), None),
-            (crates_io, false, Some(checksum), Some("different-checksum")),
+        for (source, effective_source, resolved, downloaded) in [
+            (alternative, alternative, Some(checksum), Some(checksum)),
+            (crates_io, alternative, Some(checksum), Some(checksum)),
+            (crates_io, crates_io, None, Some(checksum)),
+            (crates_io, crates_io, Some(checksum), None),
+            (
+                crates_io,
+                crates_io,
+                Some(checksum),
+                Some("different-checksum"),
+            ),
         ] {
             assert!(!audited_proc_macro_runtime_dependency_identity(
                 source,
-                replaced,
+                effective_source,
                 "unaudited-runtime-helper",
                 &version,
                 resolved,
