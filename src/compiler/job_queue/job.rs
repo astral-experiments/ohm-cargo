@@ -86,6 +86,25 @@ impl Job {
         self.work = next.then(prev);
     }
 
+    /// Rechecks a dirty job at execution time, using fresh work if another process built it.
+    ///
+    /// The job remains dirty for scheduling; callers must acquire any required lock before
+    /// this check and preserve it while either branch executes.
+    pub fn recheck(
+        &mut self,
+        is_fresh: impl FnOnce() -> CargoResult<bool> + Send + 'static,
+        fresh: Work,
+    ) {
+        let dirty = mem::replace(&mut self.work, Work::noop());
+        self.work = Work::new(move |state| {
+            if is_fresh()? {
+                fresh.call(state)
+            } else {
+                dirty.call(state)
+            }
+        });
+    }
+
     /// Chains the given work by putting it after of our own unit of work.
     pub fn after(&mut self, next: Work) {
         let prev = mem::replace(&mut self.work, Work::noop());

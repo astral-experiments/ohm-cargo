@@ -410,6 +410,7 @@ use crate::util::interning::InternedString;
 use crate::util::log_message::LogMessage;
 use crate::util::{StableHasher, internal, path_args};
 use crate::workspace::Package;
+use crate::workspace::manifest::ManifestMetadata;
 use crate::{CARGO_ENV, GlobalContext};
 
 use super::BuildContext;
@@ -964,6 +965,109 @@ pub(crate) fn existing_unit_is_fresh(
     ))
 }
 
+/// Limits concurrent cache-miss reuse to authenticated, dependency-free registry libraries.
+///
+/// Build scripts, procedural macros, and units with dependencies require additional runtime
+/// input and dependency-generation checks before their stale jobs can be reused safely.
+pub(super) fn can_recheck_shared_registry_unit(
+    build_runner: &BuildRunner<'_, '_>,
+    unit: &Unit,
+) -> bool {
+    build_runner.bcx.gctx.cli_unstable().fine_grain_locking
+        && build_runner.is_immutable_shared_registry_unit(unit)
+        && matches!(unit.mode, CompileMode::Build | CompileMode::Check { .. })
+        && unit.target.is_lib()
+        && !unit.target.proc_macro()
+        && build_runner.unit_deps(unit).is_empty()
+}
+
+/// Revalidates a queued registry miss after obtaining its exclusive unit lock.
+///
+/// A matching completed fingerprint still needs valid dep-info, current tracked files, and
+/// all expected outputs. Environment references other than package metadata conservatively
+/// rebuild. On a miss, invalidate the fingerprint under the lock before touching outputs.
+pub(super) fn prepare_shared_registry_recheck(
+    build_runner: &BuildRunner<'_, '_>,
+    unit: &Unit,
+    forced: bool,
+) -> impl FnOnce() -> CargoResult<bool> + Send + 'static {
+    assert!(can_recheck_shared_registry_unit(build_runner, unit));
+    let fingerprint = Arc::clone(&build_runner.fingerprints[unit]);
+    let loc = build_runner.files().fingerprint_file_path(unit, "");
+    let build_root = build_root(build_runner);
+    let pkg_root = unit.pkg.root().to_path_buf();
+    let metadata = unit.pkg.manifest().metadata().clone();
+    let package_id = unit.pkg.package_id();
+
+    move || {
+        if !forced
+            && shared_registry_outputs_are_fresh(
+                &loc,
+                &fingerprint,
+                &pkg_root,
+                &metadata,
+                &build_root,
+            )?
+        {
+            // This unit was dirty when its dependents were prepared. They must not mistake
+            // another process's rebuild for proof that an earlier metadata generation survived.
+            fingerprint.set_build_state(BuildState::BuiltChanged);
+            debug!(
+                "reusing registry unit completed while waiting for its lock: {}",
+                package_id
+            );
+            return Ok(true);
+        }
+        if loc.exists() {
+            paths::write(&loc, b"")?;
+        }
+        Ok(false)
+    }
+}
+
+/// Checks a dependency-free unit against completed artifacts without its cached filesystem state.
+fn shared_registry_outputs_are_fresh(
+    loc: &Path,
+    fingerprint: &Fingerprint,
+    pkg_root: &Path,
+    metadata: &ManifestMetadata,
+    build_root: &Path,
+) -> CargoResult<bool> {
+    if !fs::read_to_string(loc).is_ok_and(|hash| hash == util::to_hex(fingerprint.hash_u64())) {
+        return Ok(false);
+    }
+    let local = fingerprint.local.lock().unwrap();
+    let [LocalFingerprint::CheckDepInfo { dep_info, checksum }] = local.as_slice() else {
+        return Ok(false);
+    };
+    let dep_info = build_root.join(dep_info);
+    let Some(info) = parse_dep_info(pkg_root, build_root, &dep_info)? else {
+        return Ok(false);
+    };
+    if info.env.iter().any(|(key, previous)| {
+        metadata
+            .env_var(key)
+            .is_none_or(|current| Some(current.as_ref()) != previous.as_deref())
+    }) {
+        return Ok(false);
+    }
+    if find_stale_file(
+        &mut HashMap::default(),
+        &mut HashMap::default(),
+        &dep_info,
+        info.files.iter().map(|(path, checksum)| (path, *checksum)),
+        *checksum,
+    )
+    .is_some()
+    {
+        return Ok(false);
+    }
+    Ok(
+        !fingerprint.outputs.is_empty()
+            && fingerprint.outputs.iter().all(|output| output.is_file()),
+    )
+}
+
 /// Whether an existing check root can keep its established dependency graph.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub(crate) enum ExistingCheckRoot {
@@ -1127,8 +1231,10 @@ pub fn prepare_target(
     //
     // But the executable is corrupt and needs to be rebuilt. Clearing the
     // fingerprint at step 3 ensures that Cargo never mistakes a partially
-    // written output as up-to-date.
-    if loc.exists() {
+    // written output as up-to-date. Shared registry leaves instead invalidate
+    // under their exclusive unit lock, after checking whether another process
+    // completed the queued work in the meantime.
+    if !can_recheck_shared_registry_unit(build_runner, unit) && loc.exists() {
         // Truncate instead of delete so that compare_old_fingerprint will
         // still log the reason for the fingerprint failure instead of just
         // reporting "failed to read fingerprint" during the next build if
