@@ -1032,7 +1032,8 @@ pub fn prepare_target(
     // compare it to an old version, if any, and attempt to print diagnostic
     // information about failed comparisons to aid in debugging.
     let fingerprint = calculate(build_runner, unit)?;
-    let mtime_on_use = build_runner.bcx.gctx.cli_unstable().mtime_on_use;
+    let mtime_on_use = build_runner.bcx.gctx.cli_unstable().mtime_on_use
+        && !build_runner.files().has_registry_generation(unit);
     let dirty_reason = match compare_old_fingerprint(unit, &loc, &*fingerprint, mtime_on_use, force)
     {
         FingerprintComparison::Fresh => None,
@@ -1066,6 +1067,12 @@ pub fn prepare_target(
         fingerprint.set_build_state(BuildState::Fresh);
         return Ok(Job::new_fresh());
     };
+    if build_runner.files().has_published_registry_generation(unit) {
+        anyhow::bail!(
+            "published registry generation for {} changed after build preparation; retry the build",
+            unit.pkg
+        );
+    }
     let previous_dependency_changes = if unit_consumes_public_api_hash(build_runner, unit) {
         previous_dependency_changes(&fingerprint)
     } else {
@@ -2824,7 +2831,10 @@ pub fn prepare_init(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> Carg
     let new1 = build_runner.files().fingerprint_dir(unit);
 
     // Doc tests have no output, thus no fingerprint.
-    if !new1.exists() && !unit.mode.is_doc_test() {
+    if !new1.exists()
+        && !unit.mode.is_doc_test()
+        && !build_runner.files().has_published_registry_generation(unit)
+    {
         paths::create_dir_all(&new1)?;
     }
 

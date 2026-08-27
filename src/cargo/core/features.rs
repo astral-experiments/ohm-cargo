@@ -932,6 +932,7 @@ unstable_cli_options!(
     no_index_update: bool = ("Do not update the registry index even if the cache is outdated"),
     ohm_defaults: Option<bool> = ("Enable the defaults packaged with Ohm"),
     ohm_focused_tests: bool = ("Compile only an explicitly selected exact library test"),
+    ohm_immutable_registry_generations: bool = ("Publish pure registry libraries as immutable generations (experimental)"),
     ohm_native_tool_trust: OhmNativeToolTrust = ("Set native-tool trust for shared registry artifacts: strict (default), build-scripts, or all (potentially unsound)"),
     ohm_proc_macro_trust: OhmProcMacroTrust = ("Set procedural-macro trust for shared registry artifacts: audited (default) or all (potentially unsound)"),
     ohm_reuse_built_deps: bool = ("Reuse already-built registry dependencies when checking a package"),
@@ -1530,6 +1531,9 @@ impl CliUnstable {
                     None => bail!("flag -Z{k} requires `audited` or `all`"),
                 };
             }
+            "ohm-immutable-registry-generations" => {
+                self.ohm_immutable_registry_generations = parse_empty(k, v)?
+            }
             "ohm-reuse-built-deps" => self.ohm_reuse_built_deps = parse_empty(k, v)?,
             "ohm-shared-registry-cache" => self.ohm_shared_registry_cache = parse_empty(k, v)?,
             "panic-abort-tests" => self.panic_abort_tests = parse_empty(k, v)?,
@@ -1642,6 +1646,9 @@ impl CliUnstable {
     }
 
     pub(crate) fn implicitly_enable_features_if_needed(&mut self) {
+        if self.ohm_immutable_registry_generations {
+            self.ohm_shared_registry_cache = true;
+        }
         if self.ohm_shared_registry_cache && !self.fine_grain_locking {
             debug!("-Zfine-grain-locking implicitly enabled by -Zohm-shared-registry-cache");
             self.fine_grain_locking = true;

@@ -1578,6 +1578,346 @@ impl SharedRegistryProjectExt for cargo_test_support::Project {
     }
 }
 
+fn registry_generations_cargo(
+    project: &cargo_test_support::Project,
+    command: &str,
+) -> cargo_test_support::Execs {
+    let mut cargo = shared_registry_cargo(
+        project,
+        &format!("-Zohm-immutable-registry-generations {command}"),
+    );
+    cargo.masquerade_as_nightly_cargo(&[
+        "ohm-immutable-registry-generations",
+        "ohm-reuse-built-deps",
+        "mtime-on-use",
+    ]);
+    cargo
+}
+
+fn registry_generation_pointers(shared: &std::path::Path) -> Vec<PathBuf> {
+    let mut pointers = walkdir::WalkDir::new(shared.join("debug/build/registries-generations-v1"))
+        .into_iter()
+        .filter_map(Result::ok)
+        .filter(|entry| entry.file_name() == "current")
+        .map(|entry| entry.into_path())
+        .collect::<Vec<_>>();
+    pointers.sort();
+    pointers
+}
+
+#[cargo_test]
+fn shared_registry_generations_publish_only_complete_builds_and_preserve_old_outputs() {
+    Package::new("generation-leaf", "1.0.0")
+        .file(
+            "src/lib.rs",
+            "pub fn value() -> &'static str { env!(\"OHM_GENERATION_VALUE\") }",
+        )
+        .publish();
+    Package::new("generation-parent", "1.0.0")
+        .dep("generation-leaf", "1.0.0")
+        .file(
+            "src/lib.rs",
+            "pub fn value() -> &'static str { generation_leaf::value() }",
+        )
+        .publish();
+    let create = |name| {
+        project_in(name)
+            .file(
+                "Cargo.toml",
+                r#"
+                [package]
+                name = "generation-app"
+                version = "0.1.0"
+                edition = "2021"
+                [dependencies]
+                generation-parent = "1.0.0"
+            "#,
+            )
+            .file(
+                "src/main.rs",
+                "fn main() { println!(\"{}\", generation_parent::value()); }",
+            )
+            .build()
+    };
+    let left = create("generation-left");
+    let right = create("generation-right");
+    let shared = paths::root().join("generation-shared");
+    registry_generations_cargo(&left, "run")
+        .env("CARGO_BUILD_BUILD_DIR", &shared)
+        .env("OHM_GENERATION_VALUE", "first")
+        .with_stdout_data("first\n")
+        .run();
+
+    let pointers = registry_generation_pointers(&shared);
+    assert_eq!(pointers.len(), 2);
+    let initial = pointers
+        .iter()
+        .map(|pointer| std::fs::read_to_string(pointer).unwrap())
+        .collect::<Vec<_>>();
+    let mut snapshots = Vec::new();
+    for (pointer, name) in pointers.iter().zip(&initial) {
+        let directory = pointer.parent().unwrap().join("generations").join(name);
+        assert!(!directory.join(".lock").exists());
+        for entry in walkdir::WalkDir::new(directory)
+            .into_iter()
+            .map(Result::unwrap)
+        {
+            if entry.file_type().is_file() {
+                snapshots.push((
+                    entry.path().to_path_buf(),
+                    std::fs::read(entry.path()).unwrap(),
+                    entry.metadata().unwrap().modified().unwrap(),
+                ));
+            }
+        }
+    }
+    registry_generations_cargo(&right, "-Zmtime-on-use run -v")
+        .env("CARGO_BUILD_BUILD_DIR", &shared)
+        .env("OHM_GENERATION_VALUE", "first")
+        .with_stderr_contains("[FRESH] generation-leaf v1.0.0")
+        .with_stderr_contains("[FRESH] generation-parent v1.0.0")
+        .with_stdout_data("first\n")
+        .run();
+    if selected_compiler_supports_ohm_defaults() {
+        registry_generations_cargo(&right, "-Zohm-reuse-built-deps check -v")
+            .env("CARGO_BUILD_BUILD_DIR", &shared)
+            .env("OHM_GENERATION_VALUE", "first")
+            .with_stderr_contains("[FRESH] generation-parent v1.0.0")
+            .with_stderr_does_not_contain("[CHECKING] generation-parent v1.0.0")
+            .run();
+    }
+    for (pointer, name) in pointers.iter().zip(&initial) {
+        assert!(
+            !pointer
+                .parent()
+                .unwrap()
+                .join("generations")
+                .join(name)
+                .join(".lock")
+                .exists()
+        );
+    }
+
+    // A tracked input changed, but rustc fails before a replacement is complete.
+    registry_generations_cargo(&right, "build")
+        .env("CARGO_BUILD_BUILD_DIR", &shared)
+        .env_remove("OHM_GENERATION_VALUE")
+        .with_status(101)
+        .with_stderr_contains(
+            "[ERROR] environment variable `OHM_GENERATION_VALUE` not defined at compile time",
+        )
+        .run();
+    for (pointer, name) in pointers.iter().zip(&initial) {
+        assert_eq!(std::fs::read_to_string(pointer).unwrap(), *name);
+        assert_eq!(
+            std::fs::read_dir(pointer.parent().unwrap().join("generations"))
+                .unwrap()
+                .count(),
+            1
+        );
+    }
+
+    // Successful pipelined registry jobs must also remain unpublished when a consumer fails.
+    right.change_file("src/main.rs", "fn main() { let _: u8 = \"invalid\"; }");
+    registry_generations_cargo(&right, "build")
+        .env("CARGO_BUILD_BUILD_DIR", &shared)
+        .env("OHM_GENERATION_VALUE", "second")
+        .with_status(101)
+        .with_stderr_contains("[COMPILING] generation-parent v1.0.0")
+        .with_stderr_contains("error[E0308]: mismatched types")
+        .run();
+    for (pointer, name) in pointers.iter().zip(&initial) {
+        assert_eq!(std::fs::read_to_string(pointer).unwrap(), *name);
+    }
+    right.change_file(
+        "src/main.rs",
+        "fn main() { println!(\"{}\", generation_parent::value()); }",
+    );
+
+    registry_generations_cargo(&right, "run")
+        .env("CARGO_BUILD_BUILD_DIR", &shared)
+        .env("OHM_GENERATION_VALUE", "second")
+        .with_stderr_contains("[COMPILING] generation-leaf v1.0.0")
+        .with_stderr_contains("[COMPILING] generation-parent v1.0.0")
+        .with_stdout_data("second\n")
+        .run();
+    for (pointer, name) in pointers.iter().zip(&initial) {
+        assert_ne!(std::fs::read_to_string(pointer).unwrap(), *name);
+    }
+    registry_generations_cargo(&right, "run -v")
+        .env("CARGO_BUILD_BUILD_DIR", &shared)
+        .env("OHM_GENERATION_VALUE", "second")
+        .with_stderr_contains("[FRESH] generation-parent v1.0.0")
+        .with_stdout_data("second\n")
+        .run();
+
+    // A damaged published generation must be replaced, not repaired in place during prepare.
+    let current = std::fs::read_to_string(&pointers[0]).unwrap();
+    let damaged = pointers[0]
+        .parent()
+        .unwrap()
+        .join("generations")
+        .join(current);
+    std::fs::remove_dir_all(damaged.join("out")).unwrap();
+    let modified = std::fs::metadata(&damaged).unwrap().modified().unwrap();
+    registry_generations_cargo(&right, "run")
+        .env("CARGO_BUILD_BUILD_DIR", &shared)
+        .env("OHM_GENERATION_VALUE", "second")
+        .with_stdout_data("second\n")
+        .run();
+    assert!(!damaged.join("out").exists());
+    assert_eq!(
+        std::fs::metadata(&damaged).unwrap().modified().unwrap(),
+        modified
+    );
+
+    registry_generations_cargo(&left, "clean")
+        .env("CARGO_BUILD_BUILD_DIR", &shared)
+        .run();
+    for (path, bytes, modified) in snapshots {
+        assert_eq!(std::fs::read(&path).unwrap(), bytes);
+        assert_eq!(
+            std::fs::metadata(&path).unwrap().modified().unwrap(),
+            modified
+        );
+    }
+}
+
+#[cargo_test]
+fn shared_registry_generations_exclude_executable_build_time_closures() {
+    Package::new("generation-pure", "1.0.0")
+        .file("src/lib.rs", "pub fn value() -> u32 { 1 }")
+        .publish();
+    Package::new("generation-script", "1.0.0")
+        .file("build.rs", "fn main() {}")
+        .file("src/lib.rs", "pub fn value() -> u32 { 2 }")
+        .publish();
+    Package::new("generation-macro", "1.0.0")
+        .proc_macro(true)
+        .file("src/lib.rs", "extern crate proc_macro; #[proc_macro_attribute] pub fn identity(_: proc_macro::TokenStream, item: proc_macro::TokenStream) -> proc_macro::TokenStream { item }")
+        .publish();
+    Package::new("generation-macro-user", "1.0.0")
+        .dep("generation-macro", "1.0.0")
+        .file(
+            "src/lib.rs",
+            "#[generation_macro::identity] pub fn value() -> u32 { 3 }",
+        )
+        .publish();
+    let project = project()
+        .file("Cargo.toml", r#"
+            [package]
+            name = "generation-scope"
+            version = "0.1.0"
+            edition = "2021"
+            [dependencies]
+            generation-pure = "1.0.0"
+            generation-script = "1.0.0"
+            generation-macro-user = "1.0.0"
+        "#)
+        .file("src/main.rs", "fn main() { println!(\"{}\", generation_pure::value() + generation_script::value() + generation_macro_user::value()); }")
+        .build();
+    let shared = paths::root().join("generation-scope-shared");
+    registry_generations_cargo(&project, "run")
+        .env("CARGO_BUILD_BUILD_DIR", &shared)
+        .env("CARGO_UNSTABLE_OHM_PROC_MACRO_TRUST", "all")
+        .with_stdout_data("6\n")
+        .run();
+    let pointers = registry_generation_pointers(&shared);
+    assert_eq!(pointers.len(), 1);
+    assert!(
+        pointers[0]
+            .components()
+            .any(|component| component.as_os_str() == "generation-pure")
+    );
+}
+
+#[cargo_test]
+fn shared_registry_generations_allow_readers_during_replacement() {
+    Package::new("generation-concurrent", "1.0.0")
+        .file(
+            "src/lib.rs",
+            "pub fn value() -> &'static str { env!(\"OHM_GENERATION_VALUE\") }",
+        )
+        .publish();
+    let create = |name| {
+        project_in(name)
+            .file(
+                "Cargo.toml",
+                r#"
+                [package]
+                name = "generation-concurrent-app"
+                version = "0.1.0"
+                edition = "2021"
+                [dependencies]
+                generation-concurrent = "1.0.0"
+            "#,
+            )
+            .file(
+                "src/main.rs",
+                "fn main() { println!(\"{}\", generation_concurrent::value()); }",
+            )
+            .build()
+    };
+    let writer = create("generation-writer");
+    let reader = create("generation-reader");
+    reader.change_file("build.rs", r#"
+        fn main() {
+            let ready = std::env::var_os("OHM_GENERATION_READER_READY").unwrap();
+            let release = std::env::var_os("OHM_GENERATION_READER_RELEASE").unwrap();
+            std::fs::write(ready, "ready").unwrap();
+            let deadline = std::time::Instant::now() + std::time::Duration::from_secs(30);
+            while !std::path::Path::new(&release).exists() {
+                assert!(std::time::Instant::now() < deadline, "writer blocked by an immutable reader");
+                std::thread::sleep(std::time::Duration::from_millis(10));
+            }
+        }
+    "#);
+    let shared = paths::root().join("generation-concurrent-shared");
+    registry_generations_cargo(&writer, "run")
+        .env("CARGO_BUILD_BUILD_DIR", &shared)
+        .env("OHM_GENERATION_VALUE", "before")
+        .with_stdout_data("before\n")
+        .run();
+    let pointer = registry_generation_pointers(&shared).pop().unwrap();
+    let original = std::fs::read_to_string(&pointer).unwrap();
+    let ready = paths::root().join("generation-reader-ready");
+    let release = paths::root().join("generation-reader-release");
+    let mut child = registry_generations_cargo(&reader, "run")
+        .env("CARGO_BUILD_BUILD_DIR", &shared)
+        .env("OHM_GENERATION_VALUE", "before")
+        .env("OHM_GENERATION_READER_READY", &ready)
+        .env("OHM_GENERATION_READER_RELEASE", &release)
+        .build_command()
+        .stdout(std::process::Stdio::piped())
+        .stderr(std::process::Stdio::piped())
+        .spawn()
+        .unwrap();
+    let deadline = std::time::Instant::now() + std::time::Duration::from_secs(30);
+    while !ready.exists() {
+        assert!(
+            child.try_wait().unwrap().is_none(),
+            "reader exited before pinning its generation"
+        );
+        assert!(std::time::Instant::now() < deadline, "reader did not start");
+        sleep_ms(10);
+    }
+    let replacement = registry_generations_cargo(&writer, "run")
+        .env("CARGO_BUILD_BUILD_DIR", &shared)
+        .env("OHM_GENERATION_VALUE", "after")
+        .exec_with_output();
+    std::fs::write(release, "release").unwrap();
+    let output = child.wait_with_output().unwrap();
+    let replacement = replacement.unwrap();
+    assert_eq!(String::from_utf8_lossy(&replacement.stdout), "after\n");
+    assert!(
+        output.status.success(),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    assert_eq!(String::from_utf8_lossy(&output.stdout), "before\n");
+    assert_ne!(std::fs::read_to_string(pointer).unwrap(), original);
+}
+
 #[cargo_test]
 fn shared_registry_cache_avoids_hashing_immutable_public_apis() {
     if !selected_compiler_supports_ohm_defaults() {

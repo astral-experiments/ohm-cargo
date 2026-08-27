@@ -15,6 +15,7 @@ use cargo_platform::CfgExpr;
 use cargo_util::paths;
 use tracing::debug;
 
+use super::registry_generations::{RegistryGeneration, has_custom_output_paths};
 use super::{BuildContext, BuildRunner, CompileKind, FileFlavor, Layout};
 use crate::core::compiler::custom_build::OHM_SHARED_RUSTC_LOG_ENVIRONMENT;
 use crate::core::compiler::{CompileMode, CompileTarget, CrateType, FileType, Unit};
@@ -142,6 +143,8 @@ pub struct CompilationFiles<'a, 'gctx> {
     ws: &'a Workspace<'gctx>,
     /// Namespace immutable registry artifacts separately from workspace-local units.
     shared_registry_cache: Option<SharedRegistryCache>,
+    /// Resolve each immutable pointer once, before constructing compiler commands.
+    registry_generations: HashMap<Unit, RegistryGeneration>,
     /// Metadata hash to use for each unit.
     metas: HashMap<Unit, Metadata>,
     /// For each Unit, a list all files produced.
@@ -207,7 +210,7 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
         build_runner: &BuildRunner<'a, 'gctx>,
         host: Layout,
         target: HashMap<CompileTarget, Layout>,
-    ) -> CompilationFiles<'a, 'gctx> {
+    ) -> CargoResult<CompilationFiles<'a, 'gctx>> {
         let mut metas = HashMap::default();
         for unit in &build_runner.bcx.roots {
             metadata_of(unit, build_runner, &mut metas);
@@ -621,9 +624,31 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
             export_dir: build_runner.bcx.build_config.export_dir.clone(),
             roots: build_runner.bcx.roots.clone(),
             shared_registry_cache,
+            registry_generations: HashMap::default(),
             metas,
             outputs,
         };
+
+        if build_runner
+            .bcx
+            .gctx
+            .cli_unstable()
+            .ohm_immutable_registry_generations
+        {
+            let mut eligible = HashMap::default();
+            for unit in files.metas.keys() {
+                if !is_pure_registry_library(unit, build_runner, &files, &mut eligible) {
+                    continue;
+                }
+                let root = files
+                    .layout(unit.kind)
+                    .build_dir()
+                    .build_unit(&files.registry_generation_namespace(unit));
+                files
+                    .registry_generations
+                    .insert(unit.clone(), RegistryGeneration::open(root)?);
+            }
+        }
 
         // `Compilation::fill_env` prepends a generated host dependency directory to the
         // inherited loader search path. `BuildRunner::prepare` has not populated
@@ -706,10 +731,11 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
                 && let Some(cache) = files.shared_registry_cache.as_mut()
             {
                 cache.immutable_units.clear();
+                files.registry_generations.clear();
             }
         }
 
-        files
+        Ok(files)
     }
 
     /// Returns the appropriate directory layout for either a plugin or not.
@@ -770,6 +796,13 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
     /// Note that some units may share the same directory, so care should be
     /// taken in those cases!
     fn pkg_dir(&self, unit: &Unit) -> String {
+        if let Some(generation) = self.registry_generations.get(unit) {
+            return format!(
+                "{}/generations/{}",
+                self.registry_generation_namespace(unit),
+                generation.name()
+            );
+        }
         let name = unit.pkg.package_id().name();
         let hash = self.unit_hash(unit);
         if let Some(cache) = &self.shared_registry_cache {
@@ -786,6 +819,50 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
             false => "-",
         };
         format!("{name}{separator}{hash}")
+    }
+
+    fn registry_generation_namespace(&self, unit: &Unit) -> String {
+        let cache = self.shared_registry_cache.as_ref().unwrap();
+        format!(
+            "registries-generations-v1/{}/{}/{}",
+            cache.rustc,
+            unit.pkg.name(),
+            self.unit_hash(unit)
+        )
+    }
+
+    pub(crate) fn has_registry_generation(&self, unit: &Unit) -> bool {
+        self.registry_generations.contains_key(unit)
+    }
+
+    pub(crate) fn has_published_registry_generation(&self, unit: &Unit) -> bool {
+        self.registry_generations
+            .get(unit)
+            .is_some_and(RegistryGeneration::is_published)
+    }
+
+    pub(super) fn registry_generation_units(&self) -> impl Iterator<Item = &Unit> {
+        self.registry_generations.keys()
+    }
+
+    pub(super) fn replace_registry_generation(&mut self, unit: &Unit) -> CargoResult<()> {
+        self.registry_generations.get_mut(unit).unwrap().replace()
+    }
+
+    pub(super) fn clear_cached_outputs(&mut self) {
+        for outputs in self.outputs.values_mut() {
+            outputs.take();
+        }
+    }
+
+    pub(super) fn publish_registry_generations(&mut self) -> CargoResult<()> {
+        for generation in self.registry_generations.values_mut() {
+            generation.retain();
+        }
+        for generation in self.registry_generations.values_mut() {
+            generation.publish()?;
+        }
+        Ok(())
     }
 
     /// The directory hash to use for a given unit
@@ -1387,6 +1464,58 @@ fn native_tool_policy_allows_unit(
 ) -> bool {
     (!untrusted_native_helper || trust == OhmNativeToolTrust::All)
         && (!opaque_native_tools || !build_script || trust != OhmNativeToolTrust::Strict)
+}
+
+/// The generation experiment intentionally excludes executable build-time inputs and native
+/// outputs, even when the broader shared-cache trust policy would allow them.
+fn is_pure_registry_library(
+    unit: &Unit,
+    build_runner: &BuildRunner<'_, '_>,
+    files: &CompilationFiles<'_, '_>,
+    eligible: &mut HashMap<Unit, bool>,
+) -> bool {
+    if let Some(eligible) = eligible.get(unit) {
+        return *eligible;
+    }
+    let pure = files.is_shared_registry_unit(unit)
+        && matches!(
+            unit.mode,
+            CompileMode::Build | CompileMode::Check { test: false }
+        )
+        && unit.target.is_lib()
+        && !unit.target.proc_macro()
+        && !unit.profile.incremental
+        && !unit.skip_non_compile_time_dep
+        && !unit.artifact.is_true()
+        && unit.pkg.manifest().links().is_none()
+        && !unit.pkg.targets().iter().any(Target::is_custom_build)
+        && !has_custom_output_paths(
+            unit.pkg
+                .manifest()
+                .lint_rustflags()
+                .iter()
+                .map(String::as_str)
+                .chain(unit.profile.rustflags.iter().map(|flag| flag.as_str()))
+                .chain(unit.rustflags.iter().map(String::as_str))
+                .chain(
+                    build_runner
+                        .bcx
+                        .extra_args_for(unit)
+                        .into_iter()
+                        .flatten()
+                        .map(String::as_str),
+                ),
+        )
+        && unit
+            .target
+            .rustc_crate_types()
+            .iter()
+            .all(|kind| matches!(kind, CrateType::Lib | CrateType::Rlib))
+        && build_runner.unit_deps(unit).iter().all(|dependency| {
+            is_pure_registry_library(&dependency.unit, build_runner, files, eligible)
+        });
+    eligible.insert(unit.clone(), pure);
+    pure
 }
 
 fn is_immutable_registry_unit(

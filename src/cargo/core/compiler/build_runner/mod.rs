@@ -39,6 +39,7 @@ use super::{
 };
 
 mod compilation_files;
+mod registry_generations;
 use self::compilation_files::CompilationFiles;
 pub use self::compilation_files::{Metadata, OutputFile, UnitHash};
 
@@ -640,7 +641,9 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
             let mut roots = self.bcx.roots.clone();
             roots.sort_by_cached_key(|unit| self.files().build_unit_lock(unit));
             for unit in roots {
-                self.lock_manager.lock_shared(&self, &unit)?;
+                if !self.files().has_registry_generation(&unit) {
+                    self.lock_manager.lock_shared(&self, &unit)?;
+                }
             }
         }
 
@@ -675,6 +678,7 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
             for unit in registry_check_units {
                 if fine_grain_locking
                     && (!workspace_is_locked || self.files().is_shared_registry_unit(&unit))
+                    && !self.files().has_registry_generation(&unit)
                 {
                     self.lock_manager.lock_shared(&self, &unit)?;
                 }
@@ -716,6 +720,7 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
         exec: &Arc<dyn Executor>,
         mut queue: JobQueue<'gctx>,
     ) -> CargoResult<Compilation<'gctx>> {
+        self.prepare_registry_generations(exec)?;
         let stale_registry_packages = self.stale_reused_registry_dependencies()?;
         if !stale_registry_packages.is_empty() {
             return Err(StaleBuiltRegistryDependency {
@@ -751,6 +756,8 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
 
         // Now that we've figured out everything that we're going to do, do it!
         queue.execute(&mut self)?;
+
+        self.publish_registry_generations()?;
 
         // Add `OUT_DIR` to env vars if unit has a build script.
         let units_with_build_script = &self
@@ -997,7 +1004,7 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
 
         self.record_units_requiring_metadata();
 
-        let files = CompilationFiles::new(self, host_layout, targets);
+        let files = CompilationFiles::new(self, host_layout, targets)?;
         self.files = Some(files);
         Ok(())
     }
@@ -1032,7 +1039,9 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
                         continue;
                     }
                     let dep_dir = self.files().deps_dir(unit);
-                    paths::create_dir_all(&dep_dir)?;
+                    if !files.has_published_registry_generation(unit) {
+                        paths::create_dir_all(&dep_dir)?;
+                    }
                     if unit.target.is_dylib() {
                         self.compilation
                             .deps_output
@@ -1054,6 +1063,91 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
 
     pub fn files(&self) -> &CompilationFiles<'a, 'gctx> {
         self.files.as_ref().unwrap()
+    }
+
+    /// Select writable generations before fingerprints and compiler commands capture paths.
+    /// Published candidates are only read here. A replacement also invalidates its consumers,
+    /// so no published library can be rebuilt against a different dependency generation.
+    fn prepare_registry_generations(&mut self, exec: &Arc<dyn Executor>) -> CargoResult<()> {
+        let units = self
+            .files()
+            .registry_generation_units()
+            .cloned()
+            .collect::<Vec<_>>();
+        if units.is_empty() {
+            return Ok(());
+        }
+        let mut dirty = HashSet::default();
+        for unit in &units {
+            if !self.files().has_published_registry_generation(unit)
+                || exec.force_rebuild(unit)
+                || (self.bcx.build_config.force_rebuild && self.bcx.roots.contains(unit))
+                || !fingerprint::existing_unit_is_fresh(self, unit)?
+            {
+                dirty.insert(unit.clone());
+            }
+        }
+        loop {
+            let before = dirty.len();
+            for unit in &units {
+                if self
+                    .unit_deps(unit)
+                    .iter()
+                    .any(|dependency| dirty.contains(&dependency.unit))
+                {
+                    dirty.insert(unit.clone());
+                }
+            }
+            if dirty.len() == before {
+                break;
+            }
+        }
+        if !dirty.is_empty() {
+            let files = self.files.as_mut().unwrap();
+            for unit in &dirty {
+                if files.has_published_registry_generation(unit) {
+                    files.replace_registry_generation(unit)?;
+                }
+                paths::create_dir_all(files.deps_dir(unit))?;
+            }
+            files.clear_cached_outputs();
+            self.fingerprints.clear();
+            self.mtime_cache.clear();
+            self.checksum_cache.clear();
+        }
+        Ok(())
+    }
+
+    /// Do not publish pipelined consumers until their dependencies' object code also succeeds.
+    fn publish_registry_generations(&mut self) -> CargoResult<()> {
+        if self.bcx.build_config.dry_run {
+            return Ok(());
+        }
+        for unit in self.files().registry_generation_units() {
+            if self.files().has_published_registry_generation(unit) {
+                continue;
+            }
+            let fingerprint = self.files().fingerprint_file_path(unit, "");
+            let complete = std::fs::metadata(&fingerprint)
+                .is_ok_and(|metadata| metadata.len() == 16)
+                && self
+                    .outputs(unit)?
+                    .iter()
+                    .filter(|output| {
+                        !matches!(
+                            output.flavor,
+                            FileFlavor::DebugInfo | FileFlavor::Auxiliary | FileFlavor::Sbom
+                        )
+                    })
+                    .all(|output| output.path.is_file());
+            if !complete {
+                bail!(
+                    "cannot publish incomplete registry generation for {}",
+                    unit.pkg
+                );
+            }
+        }
+        self.files.as_mut().unwrap().publish_registry_generations()
     }
 
     /// Returns true only after the complete shared-registry trust context is finalized.
@@ -1302,7 +1396,9 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
             // Keep the complete registry closure stable from the fingerprint
             // probe until the normal job queue acquires these same locks.
             for unit in &registry_closure_units {
-                self.lock_manager.lock_shared(self, unit)?;
+                if !self.files().has_registry_generation(unit) {
+                    self.lock_manager.lock_shared(self, unit)?;
+                }
             }
         }
 

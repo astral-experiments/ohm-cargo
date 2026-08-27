@@ -346,7 +346,9 @@ fn compile<'gctx>(
         return Ok(());
     }
 
-    let lock = if build_runner.bcx.gctx.cli_unstable().fine_grain_locking {
+    let lock = if build_runner.bcx.gctx.cli_unstable().fine_grain_locking
+        && !build_runner.files().has_registry_generation(unit)
+    {
         Some(build_runner.lock_manager.lock_shared(build_runner, unit)?)
     } else {
         None

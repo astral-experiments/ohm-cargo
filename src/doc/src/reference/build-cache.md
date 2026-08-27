@@ -90,6 +90,20 @@ re-executed. The paths in the file are absolute by default. See the
 
 ## Shared cache
 
+Ohm's experimental `-Zohm-immutable-registry-generations` enables shared registry
+caching and publishes pure registry library builds as immutable generations.
+It keeps the existing shared-cache trust checks and additionally excludes
+build-script and procedural-macro dependency closures, native/artifact targets,
+and incremental compilation. Readers resolve a published generation once and
+do not take a per-unit build lock. Rebuilds write to new directories whose paths
+remain stable for rustc and pipelined consumers; atomic pointers are updated only
+after the complete build graph succeeds. Failed builds leave published generations
+untouched. Old generations are retained, including across workspace `cargo clean`;
+this prototype does not yet reclaim them automatically. Concurrent cache misses
+may duplicate compilation. Pointers for different units are published independently;
+a racing reader can conservatively rebuild a mixed snapshot. The flag is off by
+default and uses a separate cache namespace from the normal shared registry cache.
+
 A third party tool, [sccache], can be used to share built dependencies across
 different workspaces.
 
