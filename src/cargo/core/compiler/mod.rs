@@ -376,17 +376,7 @@ fn compile<'gctx>(
                 };
                 work.then(link_targets(build_runner, unit, false)?)
             } else {
-                let output_options = OutputOptions::for_fresh(build_runner, unit);
-                let manifest = ManifestErrorContext::new(build_runner, unit);
-                let work = replay_output_cache(
-                    unit.pkg.package_id(),
-                    manifest,
-                    &unit.target,
-                    build_runner.files().message_cache_path(unit),
-                    output_options,
-                );
-                // Need to link targets on both the dirty and fresh.
-                work.then(link_targets(build_runner, unit, true)?)
+                fresh_work(build_runner, unit)?
             });
 
             // If -Zfine-grain-locking is enabled, we wrap the job with an upgrade to exclusive
@@ -401,6 +391,12 @@ fn compile<'gctx>(
                     // We will hold this shared lock for the remainder of compilation to prevent
                     // other cargo from re-compiling while we are still using the unit.
                     build_runner.lock_manager.unlock(&lock)?;
+                    if fingerprint::can_recheck_shared_registry_unit(build_runner, unit) {
+                        job.recheck(
+                            fingerprint::prepare_shared_registry_recheck(build_runner, unit, force),
+                            fresh_work(build_runner, unit)?,
+                        );
+                    }
                     job.before(prebuild_lock_exclusive(lock.clone()));
                     job.after(downgrade_lock_to_shared(lock));
                 }
@@ -418,6 +414,21 @@ fn compile<'gctx>(
     }
 
     Ok(())
+}
+
+/// Replays diagnostics and publishes outputs for an already completed unit.
+fn fresh_work(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResult<Work> {
+    let output_options = OutputOptions::for_fresh(build_runner, unit);
+    let manifest = ManifestErrorContext::new(build_runner, unit);
+    let work = replay_output_cache(
+        unit.pkg.package_id(),
+        manifest,
+        &unit.target,
+        build_runner.files().message_cache_path(unit),
+        output_options,
+    );
+    // Need to link targets on both the dirty and fresh paths.
+    Ok(work.then(link_targets(build_runner, unit, true)?))
 }
 
 /// Generates the warning message used when fallible doc-scrape units fail,
