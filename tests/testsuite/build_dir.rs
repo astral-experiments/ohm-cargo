@@ -8,15 +8,19 @@
 //!
 //! Tests check if directories match some "layout" by using [`CargoPathExt::assert_file_layout`]
 
+use std::io::{BufRead, BufReader};
 use std::path::PathBuf;
+use std::process::Stdio;
+use std::sync::mpsc;
+use std::thread;
 
 use crate::prelude::*;
 use crate::utils::tools;
 use cargo::util::short_hash;
 use cargo_test_support::registry::{Package, RegistryBuilder};
 use cargo_test_support::{
-    is_coarse_mtime, paths, prelude::*, project, project_in, rustc_host, sleep_ms, str,
-    target_spec_json,
+    execs, is_coarse_mtime, paths, prelude::*, project, project_in, rustc_host, sleep_ms,
+    slow_cpu_multiplier, str, target_spec_json,
 };
 use std::env::consts::{DLL_PREFIX, DLL_SUFFIX, EXE_SUFFIX};
 
@@ -1575,6 +1579,191 @@ trait SharedRegistryProjectExt {
 impl SharedRegistryProjectExt for cargo_test_support::Project {
     fn shared_registry_cargo(&self, command: &str) -> cargo_test_support::Execs {
         shared_registry_cargo(self, command)
+    }
+}
+
+#[cargo_test]
+fn shared_registry_cache_coalesces_concurrent_builds() {
+    concurrent_shared_registry_misses("build", "env!(\"CARGO_PKG_VERSION\")", 1);
+}
+
+#[cargo_test]
+fn shared_registry_cache_coalesces_concurrent_checks() {
+    concurrent_shared_registry_misses("check", "env!(\"CARGO_PKG_VERSION\")", 1);
+}
+
+#[cargo_test]
+fn shared_registry_cache_concurrent_misses_preserve_forced_rebuilds() {
+    concurrent_shared_registry_misses(
+        "fix --allow-no-vcs -p coalesced-registry --lib",
+        "env!(\"CARGO_PKG_VERSION\")",
+        2,
+    );
+}
+
+#[cargo_test]
+fn shared_registry_cache_concurrent_misses_preserve_environment_inputs() {
+    concurrent_shared_registry_misses("build", "env!(\"OHM_COALESCING_INPUT\")", 2);
+}
+
+/// The first coalescing path deliberately covers only dependency-free registry libraries.
+/// Hold their unit lock shared until both workspaces have queued a dirty job, ensuring that
+/// neither process can build the missing outputs before the other checks freshness.
+fn concurrent_shared_registry_misses(command: &str, value: &str, expected_compilations: usize) {
+    Package::new("coalesced-registry", "1.0.0")
+        .file(
+            "src/lib.rs",
+            &format!(
+                r#"
+                #[deprecated(note = "coalesced registry warning")]
+                fn old() {{}}
+
+                pub fn value() -> &'static str {{
+                    old();
+                    {value}
+                }}
+                "#,
+            ),
+        )
+        .publish();
+
+    let projects = ["coalescing-left", "coalescing-right"].map(|directory| {
+        project_in(directory)
+            .file(
+                "Cargo.toml",
+                r#"
+                [package]
+                name = "coalesced-app"
+                version = "0.1.0"
+                edition = "2021"
+
+                [dependencies]
+                coalesced-registry = "1.0.0"
+                "#,
+            )
+            .file(
+                "src/main.rs",
+                "fn main() { println!(\"{}\", coalesced_registry::value()); }",
+            )
+            .build()
+    });
+    let shared = paths::root().join("coalescing-shared-build-directory");
+    let command = format!("-Zohm-shared-registry-cache {command} -vv --message-format=json");
+    let cargo = |project: &cargo_test_support::Project, input: &str| {
+        let mut cargo = project.shared_registry_cargo(&command);
+        cargo
+            .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+            .env("CARGO_BUILD_BUILD_DIR", &shared)
+            .env("OHM_COALESCING_INPUT", input);
+        cargo
+    };
+
+    // Discover the unit's lock without introducing a rustc wrapper, which would disable
+    // authenticated registry sharing. Retain the lock inode while making the unit stale.
+    cargo(&projects[0], "left").run();
+    let unit_lock = walkdir::WalkDir::new(shared.join("debug/build/registries"))
+        .into_iter()
+        .map(Result::unwrap)
+        .find(|entry| entry.file_name() == ".lock")
+        .expect("the shared registry unit should have a lock")
+        .into_path();
+    let unit = unit_lock.parent().unwrap();
+    let fingerprint = unit.join("fingerprint/lib-coalesced_registry");
+    std::fs::remove_dir_all(unit.join("out")).unwrap();
+    if command.contains(" check ") {
+        // Cover a completely missing fingerprint as well as an existing stale fingerprint.
+        std::fs::remove_file(&fingerprint).unwrap();
+    }
+    let original_fingerprint = std::fs::read(&fingerprint).ok();
+    let lock = std::fs::File::open(&unit_lock).unwrap();
+    lock.lock_shared().unwrap();
+
+    let (ready, queued) = mpsc::channel();
+    let mut children = Vec::new();
+    for (project, input) in projects.iter().zip(["left", "right"]) {
+        let mut child = cargo(project, input)
+            .build_command()
+            .stdout(Stdio::piped())
+            .stderr(Stdio::piped())
+            .spawn()
+            .unwrap();
+        let stderr = child.stderr.take().unwrap();
+        let ready = ready.clone();
+        let reader = thread::spawn(move || {
+            let mut output = String::new();
+            for line in BufReader::new(stderr).lines() {
+                let line = line.unwrap();
+                if line.contains("coalesced-registry v1.0.0")
+                    && (line.contains("Compiling") || line.contains("Checking"))
+                {
+                    let _ = ready.send(());
+                }
+                output.push_str(&line);
+                output.push('\n');
+            }
+            output.into_bytes()
+        });
+        children.push((child, reader));
+    }
+    for _ in 0..2 {
+        if queued.recv_timeout(slow_cpu_multiplier(30)).is_err() {
+            for (child, _) in &mut children {
+                let _ = child.kill();
+                let _ = child.wait();
+            }
+            panic!("both Cargo processes must queue the registry miss before the barrier opens");
+        }
+    }
+    let queued_fingerprint = std::fs::read(&fingerprint).ok();
+    drop(lock);
+
+    let mut compilations = 0;
+    let mut fresh_artifacts = 0;
+    for (child, reader) in children {
+        let mut output = child.wait_with_output().unwrap();
+        output.stderr = reader.join().unwrap();
+        execs().run_output(&output);
+        compilations += String::from_utf8_lossy(&output.stderr)
+            .lines()
+            .filter(|line| {
+                line.contains("Running") && line.contains("--crate-name coalesced_registry")
+            })
+            .count();
+        let messages = String::from_utf8_lossy(&output.stdout)
+            .lines()
+            .map(|line| serde_json::from_str::<serde_json::Value>(line).unwrap())
+            .collect::<Vec<_>>();
+        assert!(messages.iter().any(|message| {
+            message["reason"] == "compiler-message"
+                && message["message"]["message"]
+                    .as_str()
+                    .is_some_and(|message| message.contains("coalesced registry warning"))
+        }));
+        fresh_artifacts += messages
+            .iter()
+            .filter(|message| {
+                message["reason"] == "compiler-artifact"
+                    && message["target"]["name"] == "coalesced_registry"
+                    && message["fresh"] == true
+            })
+            .count();
+    }
+    assert_eq!(queued_fingerprint, original_fingerprint);
+    assert_eq!(compilations, expected_compilations);
+    assert_eq!(fresh_artifacts, 2 - expected_compilations);
+
+    if command.contains(" build ") {
+        for (project, input) in projects.iter().zip(["left", "right"]) {
+            let expected = if value.contains("OHM_COALESCING_INPUT") {
+                input
+            } else {
+                "1.0.0"
+            };
+            project
+                .process(project.bin("coalesced-app"))
+                .with_stdout_data(format!("{expected}\n"))
+                .run();
+        }
     }
 }
 
