@@ -48,10 +48,24 @@ pub struct CleanContext<'gctx> {
 
 /// Cleans various caches.
 pub fn clean(ws: &Workspace<'_>, opts: &CleanOptions<'_>) -> CargoResult<()> {
+    ws.validate_shared_cache_target()?;
     let mut target_dir = ws.target_dir();
+    // Nested builds use their private target as the build directory. Preserve the
+    // overlap protection when that fallback reaches the recursive clean path.
+    let ancestors = ws.shared_cache_ancestors()?;
+    if !ancestors.is_empty() {
+        let target = ws.canonical_build_path(target_dir.as_path_unlocked());
+        if ancestors.iter().any(|ancestor| {
+            ancestor.build_root.starts_with(&target) || ancestor.target_root.starts_with(&target)
+        }) {
+            bail!(
+                "nested Cargo cannot clean a directory containing its parent's build or target directories"
+            );
+        }
+    }
     let mut build_dir = ws.build_dir();
     let gctx = opts.gctx;
-    let shared_registry_cache = gctx.cli_unstable().ohm_shared_registry_cache
+    let shared_registry_cache = ws.shared_registry_cache_enabled()
         || build_dir
             .as_path_unlocked()
             .join(Layout::SHARED_REGISTRY_CACHE_MARKER)
@@ -104,7 +118,7 @@ pub fn clean(ws: &Workspace<'_>, opts: &CleanOptions<'_>) -> CargoResult<()> {
                  configure a separate workspace-local target directory"
             );
         }
-        if !opts.spec.is_empty() && !gctx.cli_unstable().ohm_shared_registry_cache {
+        if !opts.spec.is_empty() && !ws.shared_registry_cache_enabled() {
             bail!(
                 "cleaning a package in a shared registry build directory requires \
                  -Zohm-shared-registry-cache"
@@ -398,10 +412,8 @@ fn clean_specs(
     let mut dirs_to_clean = DirectoriesToClean::default();
 
     if clean_ctx.gctx.cli_unstable().build_dir_new_layout {
-        let shared_workspace = clean_ctx
-            .gctx
-            .cli_unstable()
-            .ohm_shared_registry_cache
+        let shared_workspace = ws
+            .shared_registry_cache_enabled()
             .then(|| Layout::shared_workspace_namespace(ws));
         for pkg in packages {
             clean_ctx.progress.on_cleaning_package(&pkg.name())?;
