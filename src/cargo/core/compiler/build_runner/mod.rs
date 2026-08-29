@@ -36,7 +36,7 @@ use super::unit_graph::UnitDep;
 use super::unused_deps::UnusedDepState;
 use super::{
     BuildContext, Compilation, CompileKind, CompileMode, CompileTarget, Executor, FileFlavor,
-    OHM_COMPILER_LOADER_ENVIRONMENT, OHM_COMPILER_LOADER_INJECTION_ENVIRONMENT,
+    OHM_COMPILER_LOADER_ENVIRONMENT, OHM_COMPILER_LOADER_INJECTION_ENVIRONMENT, UnitIndex,
 };
 
 mod compilation_files;
@@ -56,8 +56,10 @@ pub(crate) struct StaleBuiltRegistryDependency {
 
 /// Retry preparation from scratch before changing any shared artifact.
 #[derive(Debug, thiserror::Error)]
-#[error("shared registry artifacts require exclusive build-directory access")]
-struct SharedCacheNeedsExclusiveLock;
+#[error("shared registry artifacts require additional exclusive unit locks")]
+struct SharedCacheNeedsExclusiveLocks {
+    units: HashSet<UnitIndex>,
+}
 
 #[derive(Deserialize)]
 struct ExistingFingerprintProfile {
@@ -407,7 +409,7 @@ pub struct BuildRunner<'a, 'gctx> {
     pub lock_manager: Arc<LockManager>,
 
     /// Readers never upgrade in place: a dirty shared cache needs a fresh runner.
-    exclusive_shared_cache: bool,
+    exclusive_shared_cache_units: HashSet<UnitIndex>,
 }
 
 impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
@@ -500,7 +502,7 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
             failed_scrape_units: Arc::new(Mutex::new(HashSet::default())),
             unused_dep_state: UnusedDepState::new(bcx),
             lock_manager: Arc::new(LockManager::new()),
-            exclusive_shared_cache: false,
+            exclusive_shared_cache_units: HashSet::default(),
         })
     }
 
@@ -618,7 +620,7 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
         self,
         exec: &Arc<dyn Executor>,
     ) -> CargoResult<Option<Compilation<'gctx>>> {
-        self.retry_with_exclusive_shared_cache(|runner| {
+        self.retry_with_shared_cache_write_locks(|runner| {
             runner.compile_if_check_graph_is_reusable_inner(exec)
         })
     }
@@ -714,22 +716,31 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
     /// [`ops::cargo_compile`]: crate::ops::cargo_compile
     #[tracing::instrument(skip_all)]
     pub fn compile(self, exec: &Arc<dyn Executor>) -> CargoResult<Compilation<'gctx>> {
-        self.retry_with_exclusive_shared_cache(|runner| runner.compile_inner(exec))
+        self.retry_with_shared_cache_write_locks(|runner| runner.compile_inner(exec))
     }
 
-    /// Releases every read lock and cached observation before waiting for a writer lease.
-    fn retry_with_exclusive_shared_cache<T>(
+    /// Discards locks and observations before reserving any newly discovered shared writers.
+    fn retry_with_shared_cache_write_locks<T>(
         self,
         compile: impl Fn(Self) -> CargoResult<T>,
     ) -> CargoResult<T> {
         let bcx = self.bcx;
-        match compile(self) {
-            Err(error) if error.is::<SharedCacheNeedsExclusiveLock>() => {
-                let mut writer = Self::new(bcx)?;
-                writer.exclusive_shared_cache = true;
-                compile(writer)
+        let mut exclusive = self.exclusive_shared_cache_units.clone();
+        let mut runner = self;
+        loop {
+            match compile(runner) {
+                Err(error) if error.is::<SharedCacheNeedsExclusiveLocks>() => {
+                    let request = error.downcast::<SharedCacheNeedsExclusiveLocks>().unwrap();
+                    let previous = exclusive.len();
+                    exclusive.extend(request.units);
+                    if exclusive.len() == previous {
+                        bail!("shared registry writer reservation did not make progress");
+                    }
+                    runner = Self::new(bcx)?;
+                    runner.exclusive_shared_cache_units = exclusive.clone();
+                }
+                result => return result,
             }
-            result => result,
         }
     }
 
@@ -755,7 +766,7 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
         exec: &Arc<dyn Executor>,
         mut queue: JobQueue<'gctx>,
     ) -> CargoResult<Compilation<'gctx>> {
-        self.check_shared_cache_read_only(exec)?;
+        self.check_shared_cache_write_locks(exec)?;
         let stale_registry_packages = self.stale_reused_registry_dependencies()?;
         if !stale_registry_packages.is_empty() {
             return Err(StaleBuiltRegistryDependency {
@@ -899,9 +910,9 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
         Ok(self.compilation)
     }
 
-    /// Allows concurrent workspace builds only while their shared inputs stay read-only.
-    fn check_shared_cache_read_only(&mut self, exec: &Arc<dyn Executor>) -> CargoResult<()> {
-        if !self.bcx.ws.shared_registry_cache_enabled() || self.exclusive_shared_cache {
+    /// Discovers all missing writer reservations before any fingerprint is invalidated.
+    fn check_shared_cache_write_locks(&mut self, exec: &Arc<dyn Executor>) -> CargoResult<()> {
+        if !self.bcx.ws.shared_registry_cache_enabled() {
             return Ok(());
         }
         let units = self
@@ -911,20 +922,34 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
             .filter(|unit| self.files().is_shared_registry_unit(unit))
             .cloned()
             .collect::<Vec<_>>();
+        let mut needed = HashSet::default();
         for unit in units {
+            let key = self.lock_manager.key_for_unit(self, &unit);
+            if self.lock_manager.has_shared_cache_write_access(&key) {
+                continue;
+            }
             let forced = exec.force_rebuild(&unit)
                 || (self.bcx.build_config.force_rebuild && self.bcx.roots.contains(&unit));
             if forced || !fingerprint::existing_unit_is_fresh(self, &unit)? {
-                return Err(SharedCacheNeedsExclusiveLock.into());
+                needed.insert(self.bcx.unit_to_index[&unit]);
             }
+        }
+        if !needed.is_empty() {
+            return Err(SharedCacheNeedsExclusiveLocks { units: needed }.into());
         }
         Ok(())
     }
 
     /// Guards the mutation boundary as well as the read-only preflight.
     pub(super) fn require_shared_cache_write_access(&self, unit: &Unit) -> CargoResult<()> {
-        if self.files().is_shared_registry_unit(unit) && !self.exclusive_shared_cache {
-            return Err(SharedCacheNeedsExclusiveLock.into());
+        if self.files().is_shared_registry_unit(unit) {
+            let key = self.lock_manager.key_for_unit(self, unit);
+            if !self.lock_manager.has_shared_cache_write_access(&key) {
+                return Err(SharedCacheNeedsExclusiveLocks {
+                    units: HashSet::from_iter([self.bcx.unit_to_index[unit]]),
+                }
+                .into());
+            }
         }
         Ok(())
     }
@@ -943,6 +968,7 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
             for layout in self.files().target.values() {
                 layout.inherit_locks(command);
             }
+            self.lock_manager.inherit_shared_cache_locks(command);
         }
         let ws = self.bcx.ws;
         let mut ancestors = ws.shared_cache_ancestors()?;
@@ -1075,7 +1101,7 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
     #[tracing::instrument(skip_all)]
     pub fn prepare_units(&mut self) -> CargoResult<()> {
         let dest = self.bcx.profiles.get_dir_name();
-        if self.exclusive_shared_cache {
+        if self.bcx.ws.shared_registry_cache_enabled() {
             let mut profile_locks = HashSet::default();
             for kind in std::iter::once(CompileKind::Host)
                 .chain(self.bcx.all_kinds.iter().copied())
@@ -1113,13 +1139,8 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
             | UserIntent::Doctest
             | UserIntent::Bench => true,
         };
-        let host_layout = Layout::new(
-            self.bcx.ws,
-            None,
-            &dest,
-            must_take_artifact_dir_lock,
-            self.exclusive_shared_cache,
-        )?;
+        let host_layout =
+            Layout::new(self.bcx.ws, None, &dest, must_take_artifact_dir_lock, false)?;
         let mut targets = HashMap::default();
         for kind in self.bcx.all_kinds.iter() {
             if let CompileKind::Target(target) = *kind {
@@ -1128,7 +1149,7 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
                     Some(target),
                     &dest,
                     must_take_artifact_dir_lock,
-                    self.exclusive_shared_cache,
+                    false,
                 )?;
                 targets.insert(target, layout);
             }
@@ -1143,6 +1164,17 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
 
         let files = CompilationFiles::new(self, host_layout, targets);
         self.files = Some(files);
+        self.lock_manager
+            .reserve_shared_cache(self, &self.exclusive_shared_cache_units)?;
+        if !self
+            .files()
+            .shared_cache_compiler_directories_are_safe(self)
+        {
+            bail!(
+                "generated compiler search paths changed while acquiring shared registry locks; \
+                 retry with shared registry caching disabled"
+            );
+        }
         Ok(())
     }
 
