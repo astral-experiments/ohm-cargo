@@ -559,7 +559,7 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
                     }
                 }
                 let rustc = util::short_hash(&(
-                    "ohm-profile-reader-writer-locks-v1",
+                    "ohm-ordered-shared-unit-locks-v2",
                     (
                         &compiler.verbose_version,
                         &compiler.path,
@@ -625,23 +625,36 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
             outputs,
         };
 
-        // `Compilation::fill_env` prepends a generated host dependency directory to the
-        // inherited loader search path. `BuildRunner::prepare` has not populated
-        // `Compilation::deps_output` yet, so derive every possible directory directly from
-        // the finalized layouts and unit metadata before choosing shared artifact paths.
-        if let Some(driver) = files
+        if !files.shared_cache_compiler_directories_are_safe(build_runner)
+            && let Some(cache) = files.shared_registry_cache.as_mut()
+        {
+            cache.immutable_units.clear();
+        }
+
+        files
+    }
+
+    /// Checks generated loader paths before selecting shared outputs and again under their leases.
+    ///
+    /// `Compilation::fill_env` adds generated dependency paths before the inherited loader
+    /// paths. Derive them from the layouts because `prepare` has not populated `deps_output`.
+    pub(super) fn shared_cache_compiler_directories_are_safe(
+        &self,
+        _build_runner: &BuildRunner<'_, '_>,
+    ) -> bool {
+        if let Some(driver) = self
             .shared_registry_cache
             .as_ref()
             .filter(|cache| cache.immutable_units.values().any(|immutable| *immutable))
             .and_then(|cache| cache.compiler_driver.as_deref())
         {
             let mut directories = HashSet::default();
-            let verified_generated_directories = files
+            return self
                 .metas
                 .keys()
                 .flat_map(|unit| {
                     #[cfg(windows)]
-                    let root = files
+                    let root = self
                         .layout(unit.kind)
                         .artifact_dir()
                         .map(|layout| layout.dest().to_path_buf());
@@ -650,11 +663,11 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
                     #[cfg(windows)]
                     let build_script = (unit.target.is_custom_build()
                         && !unit.mode.is_run_custom_build())
-                    .then(|| files.build_script_dir(unit));
+                    .then(|| self.build_script_dir(unit));
                     #[cfg(not(windows))]
                     let build_script = None;
 
-                    [files.host_deps(unit), files.deps_dir(unit)]
+                    [self.host_deps(unit), self.deps_dir(unit)]
                         .into_iter()
                         .chain(root)
                         .chain(build_script)
@@ -669,7 +682,7 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
 
                     #[cfg(windows)]
                     {
-                        let Some(cache) = files.shared_registry_cache.as_ref() else {
+                        let Some(cache) = self.shared_registry_cache.as_ref() else {
                             return false;
                         };
                         for executable in &cache.implicit_native_tools {
@@ -684,7 +697,7 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
                                     if metadata.is_file()
                                         && linker_has_verified_toolchain_identity(
                                             &candidate,
-                                            build_runner,
+                                            _build_runner,
                                             None,
                                         ) => {}
                                 Ok(_) => return false,
@@ -701,15 +714,8 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
 
                     true
                 });
-
-            if !verified_generated_directories
-                && let Some(cache) = files.shared_registry_cache.as_mut()
-            {
-                cache.immutable_units.clear();
-            }
         }
-
-        files
+        true
     }
 
     /// Returns the appropriate directory layout for either a plugin or not.

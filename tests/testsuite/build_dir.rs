@@ -12,7 +12,8 @@
 //! the same tests with `enabled and the old build-dir layout respectively.
 //! New tests should be added to all when applicable.
 
-use std::io::{BufRead, BufReader, Read};
+use std::io::{BufRead, BufReader, Read, Write};
+use std::net::{TcpListener, TcpStream};
 use std::path::PathBuf;
 use std::process::{Child, Command, Output, Stdio};
 use std::sync::mpsc;
@@ -1658,8 +1659,8 @@ fn concurrent_shared_registry_misses(command: &str, value: &str, expected_compil
     );
 }
 
-/// Hold the unit lock until both invocations have reached a build lock. A cold writer may
-/// wait on the unit while the other invocation waits for exclusive access to the profile.
+/// Hold the unit lock until both invocations reach compilation or report a lock wait.
+/// Accept unit and profile lock waits, including lease reservation before scheduling.
 fn concurrent_shared_registry_misses_with_interruption(
     command: &str,
     value: &str,
@@ -1751,7 +1752,7 @@ fn concurrent_shared_registry_misses_with_interruption(
         children.push(spawn_shared_registry_cargo(
             cargo(project, input).build_command(),
             index,
-            "coalesced-registry",
+            &["coalesced-registry"],
             ready.clone(),
         ));
     }
@@ -1759,10 +1760,11 @@ fn concurrent_shared_registry_misses_with_interruption(
     let queued_fingerprint = std::fs::read(&fingerprint).ok();
     if interruption == SharedRegistryInterruption::CancelledWaiter {
         // The held unit lock prevents either invocation from starting a compiler.
-        let (mut child, reader) = children.pop().unwrap();
-        kill_shared_registry_cargo(&mut child);
-        assert!(!child.wait().unwrap().success());
-        reader.join().unwrap();
+        let mut child = children.pop().unwrap();
+        kill_shared_registry_cargo(&mut child.process);
+        assert!(!child.process.wait().unwrap().success());
+        child.stdout.join().unwrap();
+        child.stderr.join().unwrap();
     }
     drop(lock);
 
@@ -1841,12 +1843,16 @@ fn concurrent_shared_registry_misses_with_interruption(
     }
 }
 
-type SharedRegistryChild = (Child, thread::JoinHandle<Vec<u8>>);
+struct SharedRegistryChild {
+    process: Child,
+    stdout: thread::JoinHandle<Vec<u8>>,
+    stderr: thread::JoinHandle<Vec<u8>>,
+}
 
 fn spawn_shared_registry_cargo(
     mut command: Command,
     index: usize,
-    first_package: &str,
+    packages: &[&str],
     ready: mpsc::Sender<usize>,
 ) -> SharedRegistryChild {
     #[cfg(unix)]
@@ -1859,15 +1865,31 @@ fn spawn_shared_registry_cargo(
         .stderr(Stdio::piped())
         .spawn()
         .unwrap();
+    let mut stdout = child.stdout.take().unwrap();
+    let stdout = thread::spawn(move || {
+        let mut output = Vec::new();
+        stdout.read_to_end(&mut output).unwrap();
+        output
+    });
     let stderr = child.stderr.take().unwrap();
-    let first_package = format!("{first_package} v1.0.0");
+    let packages = packages
+        .iter()
+        .map(|package| {
+            (
+                format!("{package} v1.0.0"),
+                format!("Blocking waiting for file lock on {package} ("),
+            )
+        })
+        .collect::<Vec<_>>();
     let reader = thread::spawn(move || {
         let mut output = String::new();
         for line in BufReader::new(stderr).lines() {
             let line = line.unwrap();
-            if (line.contains(&first_package)
-                && (line.contains("Compiling") || line.contains("Checking")))
-                || line.contains("Blocking waiting for file lock on build directory")
+            if packages.iter().any(|(package, lock)| {
+                (line.contains(package)
+                    && (line.contains("Compiling") || line.contains("Checking")))
+                    || line.contains(lock)
+            }) || line.contains("Blocking waiting for file lock on build directory")
             {
                 let _ = ready.send(index);
             }
@@ -1876,7 +1898,11 @@ fn spawn_shared_registry_cargo(
         }
         output.into_bytes()
     });
-    (child, reader)
+    SharedRegistryChild {
+        process: child,
+        stdout,
+        stderr: reader,
+    }
 }
 
 /// The child must not have been reaped: its PID keeps the owned group ID reserved.
@@ -1902,8 +1928,8 @@ fn wait_for_shared_registry_barriers(
         match queued.recv_timeout(remaining) {
             Ok(index) => arrived[index] = true,
             Err(error) => {
-                for (child, _) in children {
-                    kill_shared_registry_cargo(child);
+                for child in children {
+                    kill_shared_registry_cargo(&mut child.process);
                 }
                 panic!("both Cargo processes must reach a build lock before release: {error}");
             }
@@ -1912,36 +1938,23 @@ fn wait_for_shared_registry_barriers(
 }
 
 fn finish_shared_registry_cargos(mut children: Vec<SharedRegistryChild>) -> Vec<Output> {
-    let stdout = children
-        .iter_mut()
-        .map(|(child, _)| {
-            let mut stdout = child.stdout.take().unwrap();
-            thread::spawn(move || {
-                let mut output = Vec::new();
-                stdout.read_to_end(&mut output).unwrap();
-                output
-            })
-        })
-        .collect::<Vec<_>>();
     let deadline = std::time::Instant::now() + slow_cpu_multiplier(60);
     let mut completed = vec![false; children.len()];
     let timed_out = loop {
-        for (((child, stderr), stdout), completed) in
-            children.iter_mut().zip(&stdout).zip(&mut completed)
-        {
+        for (child, completed) in children.iter_mut().zip(&mut completed) {
             // Do not reap the group leader while descendants can still own its pipes.
             // Keeping its PID reserved makes timeout cleanup safe after Cargo exits.
-            if !*completed && stdout.is_finished() && stderr.is_finished() {
-                *completed = child.try_wait().unwrap().is_some();
+            if !*completed && child.stdout.is_finished() && child.stderr.is_finished() {
+                *completed = child.process.try_wait().unwrap().is_some();
             }
         }
         if completed.iter().all(|completed| *completed) {
             break false;
         }
         if std::time::Instant::now() >= deadline {
-            for ((child, _), completed) in children.iter_mut().zip(&completed) {
+            for (child, completed) in children.iter_mut().zip(&completed) {
                 if !*completed {
-                    kill_shared_registry_cargo(child);
+                    kill_shared_registry_cargo(&mut child.process);
                 }
             }
             break true;
@@ -1950,11 +1963,10 @@ fn finish_shared_registry_cargos(mut children: Vec<SharedRegistryChild>) -> Vec<
     };
     let outputs = children
         .into_iter()
-        .zip(stdout)
-        .map(|((mut child, stderr), stdout)| Output {
-            status: child.wait().unwrap(),
-            stdout: stdout.join().unwrap(),
-            stderr: stderr.join().unwrap(),
+        .map(|mut child| Output {
+            status: child.process.wait().unwrap(),
+            stdout: child.stdout.join().unwrap(),
+            stderr: child.stderr.join().unwrap(),
         })
         .collect::<Vec<_>>();
     assert!(
@@ -2054,16 +2066,16 @@ fn concurrent_shared_registry_independent_leaves(command: &str, different_inputs
 
     // The extra private consumer gives opposite leaves strictly higher scheduling
     // priority. The old protocol lets each Cargo retain one completed leaf and then
-    // wait forever for an exclusive lock on the other's leaf. A repaired writer
-    // can instead block on the profile before reaching either unit lock.
+    // wait forever for an exclusive lock on the other's leaf. Readiness accepts
+    // either unit or profile lock waits, including leases reserved before scheduling.
     let inputs = ["left", if different_inputs { "right" } else { "left" }];
     let (ready, queued) = mpsc::channel();
     let mut children = Vec::new();
-    for (index, (project, first)) in projects.iter().zip(["locking-a", "locking-b"]).enumerate() {
+    for (index, project) in projects.iter().enumerate() {
         children.push(spawn_shared_registry_cargo(
             cargo(project, inputs[index]).build_command(),
             index,
-            first,
+            &["locking-a", "locking-b"],
             ready.clone(),
         ));
     }
@@ -2114,7 +2126,7 @@ fn concurrent_shared_registry_independent_leaves(command: &str, different_inputs
             children.push(spawn_shared_registry_cargo(
                 cargo(project, "left").build_command(),
                 index,
-                "locking-a",
+                &["locking-a"],
                 ready.clone(),
             ));
         }
@@ -2126,6 +2138,306 @@ fn concurrent_shared_registry_independent_leaves(command: &str, different_inputs
                 .run_output(&output);
         }
         drop(reader);
+    }
+}
+
+#[cargo_test]
+fn shared_registry_cache_unrelated_cold_writer_overlaps_private_compilation() {
+    shared_registry_writer_overlaps_private_compilation(false);
+}
+
+#[cargo_test]
+fn shared_registry_cache_unrelated_stale_writer_overlaps_private_compilation() {
+    shared_registry_writer_overlaps_private_compilation(true);
+}
+
+fn shared_registry_writer_overlaps_private_compilation(stale: bool) {
+    Package::new("overlap-common", "1.0.0")
+        .file("src/lib.rs", "pub const VALUE: &str = \"common\";")
+        .publish();
+    Package::new("overlap-changing", "1.0.0")
+        .file(
+            "src/lib.rs",
+            "pub const VALUE: &str = env!(\"OHM_OVERLAP_INPUT\");",
+        )
+        .publish();
+
+    let source = |tag: &str, writer: bool| {
+        let value = if writer {
+            "overlap_changing::VALUE"
+        } else {
+            "\"private\""
+        };
+        format!(
+            "locking_gate::hold!({tag});\nfn main() {{ println!(\"{{}}/{{}}\", overlap_common::VALUE, {value}); }}",
+        )
+    };
+    for first in [0, 1] {
+        let projects = [false, true].map(|writer| {
+            let extra = if writer { "overlap-changing = \"1.0.0\"\n" } else { "" };
+            project_in(&format!("overlap-{first}-{writer}"))
+                .file(
+                    "Cargo.toml",
+                    &format!(
+                        "[package]\nname = \"overlap-app\"\nversion = \"0.1.0\"\nedition = \"2021\"\n\n[dependencies]\noverlap-common = \"1.0.0\"\nlocking-gate = {{ path = \"gate\" }}\n{extra}",
+                    ),
+                )
+                .file("src/main.rs", &source("skip", writer))
+                .file(
+                    "gate/Cargo.toml",
+                    "[package]\nname = \"locking-gate\"\nversion = \"0.1.0\"\nedition = \"2021\"\n\n[lib]\nproc-macro = true\n",
+                )
+                .file(
+                    "gate/src/lib.rs",
+                    r#"
+                    extern crate proc_macro;
+                    use std::io::{Read, Write};
+                    use std::net::TcpStream;
+
+                    #[proc_macro]
+                    pub fn hold(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
+                        let tag = input.to_string();
+                        if tag != "skip" {
+                            let mut stream = TcpStream::connect(
+                                std::env::var("OHM_OVERLAP_GATE").unwrap()
+                            ).unwrap();
+                            writeln!(stream, "{} {}", tag, std::process::id()).unwrap();
+                            stream.read_exact(&mut [0]).unwrap();
+                        }
+                        proc_macro::TokenStream::new()
+                    }
+                    "#,
+                )
+                .build()
+        });
+        let shared = paths::root().join(format!("overlap-shared-{first}"));
+        let cargo = |project: &cargo_test_support::Project, input: &str| {
+            let mut cargo = project.shared_registry_cargo(
+                "-Zohm-shared-registry-cache build -j 1 -vv --message-format=json",
+            );
+            cargo
+                .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+                .env("CARGO_BUILD_BUILD_DIR", &shared)
+                .env("OHM_OVERLAP_INPUT", input);
+            cargo
+        };
+        cargo(&projects[0], "before").run();
+        if stale {
+            cargo(&projects[1], "before").run();
+        }
+        let registries = shared.join("debug/build/registries");
+        let fingerprint = walkdir::WalkDir::new(&registries)
+            .into_iter()
+            .map(Result::unwrap)
+            .find(|entry| entry.file_name() == "lib-overlap_common")
+            .expect("the common dependency must be shared")
+            .into_path();
+        let common_lock = fingerprint
+            .parent()
+            .unwrap()
+            .parent()
+            .unwrap()
+            .join(".lock");
+        let common_fingerprint = std::fs::read(&fingerprint).unwrap();
+        assert!(!common_fingerprint.is_empty());
+
+        if is_coarse_mtime() {
+            sleep_ms(1000);
+        }
+        projects[0].change_file("src/main.rs", &source("consumer", false));
+        projects[1].change_file("src/main.rs", &source("writer", true));
+        let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+        listener.set_nonblocking(true).unwrap();
+        let (ready, _queued) = mpsc::channel();
+        let mut children = Vec::new();
+        let mut gates = Vec::new();
+        for index in [first, 1 - first] {
+            let mut command = cargo(&projects[index], "after");
+            command.env(
+                "OHM_OVERLAP_GATE",
+                listener.local_addr().unwrap().to_string(),
+            );
+            children.push(spawn_shared_registry_cargo(
+                command.build_command(),
+                index,
+                &["overlap-common", "overlap-changing"],
+                ready.clone(),
+            ));
+            match wait_for_private_compilation_gate(&listener) {
+                Ok(gate) => gates.push(gate),
+                Err(error) => {
+                    // Unblock compiler descendants even when only Cargo can be killed.
+                    // Also reject connections racing with cleanup through the listener.
+                    drop(gates);
+                    drop(listener);
+                    for child in &mut children {
+                        kill_shared_registry_cargo(&mut child.process);
+                    }
+                    let stderr = children
+                        .into_iter()
+                        .map(|child| {
+                            String::from_utf8_lossy(&child.stderr.join().unwrap()).into_owned()
+                        })
+                        .collect::<Vec<_>>();
+                    panic!("private compilations did not overlap: {error}; {stderr:#?}");
+                }
+            }
+        }
+
+        // Both real rustc processes remain in their private proc-macro invocation.
+        // The extra unit has finished writing, but the common dependency is still
+        // pinned while either compiler can consume it. Do not release either gate
+        // until both have arrived: a whole-invocation profile writer cannot pass.
+        let common_is_pinned = std::fs::File::open(&common_lock)
+            .map(|lock| matches!(lock.try_lock(), Err(std::fs::TryLockError::WouldBlock)));
+        let unchanged = std::fs::read(&fingerprint);
+        let releases = gates
+            .iter_mut()
+            .map(|(_, _, stream)| stream.write_all(&[1]))
+            .collect::<Vec<_>>();
+        let outputs = finish_shared_registry_cargos(children);
+        for output in &outputs {
+            execs().run_output(output);
+        }
+        for release in releases {
+            release.unwrap();
+        }
+        assert_ne!(
+            gates[0].1, gates[1].1,
+            "two separate compiler processes must overlap"
+        );
+        let expected = if first == 0 {
+            ["consumer", "writer"]
+        } else {
+            ["writer", "consumer"]
+        };
+        assert_eq!([gates[0].0.as_str(), gates[1].0.as_str()], expected);
+        assert!(
+            common_is_pinned.unwrap(),
+            "consumers must retain their common dependency lease"
+        );
+        assert_eq!(unchanged.unwrap(), common_fingerprint);
+
+        let mut shared_writes = 0;
+        for output in &outputs {
+            assert!(
+                !String::from_utf8_lossy(&output.stderr).lines().any(|line| {
+                    line.contains("Running") && line.contains("--crate-name overlap_common ")
+                })
+            );
+            for line in String::from_utf8_lossy(&output.stdout).lines() {
+                let message: serde_json::Value = serde_json::from_str(line).unwrap();
+                if message["reason"] == "compiler-artifact"
+                    && message["target"]["name"] == "overlap_changing"
+                    && message["fresh"] == false
+                {
+                    let filenames = message["filenames"].as_array().unwrap();
+                    assert!(!filenames.is_empty());
+                    assert!(
+                        filenames.iter().all(|filename| {
+                            std::path::Path::new(filename.as_str().unwrap())
+                                .starts_with(&registries)
+                        }),
+                        "the writer must publish into the shared registry cache"
+                    );
+                    shared_writes += 1;
+                }
+            }
+        }
+        assert_eq!(shared_writes, 1);
+        for (project, expected) in projects.iter().zip(["common/private\n", "common/after\n"]) {
+            project
+                .process(project.bin("overlap-app"))
+                .with_stdout_data(expected)
+                .run();
+        }
+    }
+}
+
+fn wait_for_private_compilation_gate(
+    listener: &TcpListener,
+) -> std::io::Result<(String, u32, TcpStream)> {
+    let deadline = std::time::Instant::now() + slow_cpu_multiplier(30);
+    loop {
+        match listener.accept() {
+            Ok((mut stream, _)) => {
+                stream.set_nonblocking(false)?;
+                stream.set_read_timeout(Some(slow_cpu_multiplier(5)))?;
+                let mut message = String::new();
+                BufReader::new(&mut stream).read_line(&mut message)?;
+                let mut parts = message.split_whitespace();
+                let tag = parts
+                    .next()
+                    .ok_or(std::io::ErrorKind::InvalidData)?
+                    .to_owned();
+                let pid = parts
+                    .next()
+                    .and_then(|pid| pid.parse().ok())
+                    .ok_or(std::io::ErrorKind::InvalidData)?;
+                if parts.next().is_some() {
+                    return Err(std::io::ErrorKind::InvalidData.into());
+                }
+                return Ok((tag, pid, stream));
+            }
+            Err(error) if error.kind() == std::io::ErrorKind::WouldBlock => {}
+            Err(error) => return Err(error),
+        }
+        if std::time::Instant::now() >= deadline {
+            return Err(std::io::ErrorKind::TimedOut.into());
+        }
+        sleep_ms(10);
+    }
+}
+
+#[cfg(unix)]
+#[cargo_test]
+fn shared_registry_cache_rejects_unit_lock_aliases() {
+    Package::new("lock-alias", "1.0.0")
+        .file("src/lib.rs", "pub fn value() -> u32 { 7 }")
+        .publish();
+    let project = project()
+        .file("Cargo.toml", "[package]\nname = \"lock-alias-app\"\nversion = \"0.1.0\"\nedition = \"2021\"\n\n[dependencies]\nlock-alias = \"1.0.0\"\n")
+        .file("src/main.rs", "fn main() { assert_eq!(lock_alias::value(), 7); }")
+        .build();
+    let cargo = |shared: &std::path::Path| {
+        let mut cargo = project.shared_registry_cargo("-Zohm-shared-registry-cache build");
+        cargo
+            .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+            .env("CARGO_BUILD_BUILD_DIR", shared);
+        cargo
+    };
+    let original = paths::root().join("original-lock-alias-cache");
+    cargo(&original).run();
+    let original_registries = original.join("debug/build/registries");
+    for internal in [false, true] {
+        let shared = paths::root().join(format!("aliased-lock-cache-{internal}"));
+        cargo(&shared).run();
+        let registries = shared.join("debug/build/registries");
+        if internal {
+            let unit_lock = walkdir::WalkDir::new(&registries)
+                .into_iter()
+                .map(Result::unwrap)
+                .find(|entry| entry.file_name() == ".lock")
+                .unwrap()
+                .into_path();
+            std::fs::remove_dir_all(unit_lock.parent().unwrap().join("out")).unwrap();
+            std::fs::remove_file(&unit_lock).unwrap();
+            std::os::unix::fs::symlink(shared.join("debug/.cargo-build-lock"), unit_lock).unwrap();
+        } else {
+            std::fs::remove_dir_all(&registries).unwrap();
+            std::os::unix::fs::symlink(&original_registries, &registries).unwrap();
+        }
+        let (ready, _queued) = mpsc::channel();
+        let child =
+            spawn_shared_registry_cargo(cargo(&shared).build_command(), 0, &["lock-alias"], ready);
+        for output in finish_shared_registry_cargos(vec![child]) {
+            execs()
+                .with_status(101)
+                .with_stderr_contains(
+                    "[..]shared registry unit lock escapes its locked build profile[..]",
+                )
+                .run_output(&output);
+        }
     }
 }
 
@@ -2763,7 +3075,7 @@ fn shared_registry_cache_allows_nested_builds_with_distinct_target_directories()
     // Bound the complete process tree, including nested Cargo and its compilers.
     // Command::output inside build.rs drains both child pipes while they run.
     let (ready, _queued) = mpsc::channel();
-    let child = spawn_shared_registry_cargo(cargo.build_command(), 0, "nested-common", ready);
+    let child = spawn_shared_registry_cargo(cargo.build_command(), 0, &["nested-common"], ready);
     for output in finish_shared_registry_cargos(vec![child]) {
         execs().run_output(&output);
     }
