@@ -8,9 +8,9 @@
 //!
 //! Tests check if directories match some "layout" by using [`CargoPathExt::assert_file_layout`]
 
-use std::io::{BufRead, BufReader};
+use std::io::{BufRead, BufReader, Read};
 use std::path::PathBuf;
-use std::process::Stdio;
+use std::process::{Child, Command, Output, Stdio};
 use std::sync::mpsc;
 use std::thread;
 
@@ -1606,10 +1606,50 @@ fn shared_registry_cache_concurrent_misses_preserve_environment_inputs() {
     concurrent_shared_registry_misses("build", "env!(\"OHM_COALESCING_INPUT\")", 2);
 }
 
-/// The first coalescing path deliberately covers only dependency-free registry libraries.
-/// Hold their unit lock shared until both workspaces have queued a dirty job, ensuring that
-/// neither process can build the missing outputs before the other checks freshness.
+#[cargo_test]
+fn shared_registry_cache_failed_producer_releases_waiters() {
+    concurrent_shared_registry_misses_with_interruption(
+        "check",
+        "compile_error!(\"shared registry producer failure\")",
+        2,
+        SharedRegistryInterruption::CompilationFailure,
+    );
+}
+
+#[cargo_test]
+fn shared_registry_cache_cancelled_waiter_does_not_block_recovery() {
+    concurrent_shared_registry_misses_with_interruption(
+        "build",
+        "env!(\"CARGO_PKG_VERSION\")",
+        1,
+        SharedRegistryInterruption::CancelledWaiter,
+    );
+}
+
+#[derive(Clone, Copy, PartialEq)]
+enum SharedRegistryInterruption {
+    None,
+    CompilationFailure,
+    CancelledWaiter,
+}
+
 fn concurrent_shared_registry_misses(command: &str, value: &str, expected_compilations: usize) {
+    concurrent_shared_registry_misses_with_interruption(
+        command,
+        value,
+        expected_compilations,
+        SharedRegistryInterruption::None,
+    );
+}
+
+/// Hold the unit lock until both invocations have reached a build lock. A cold writer may
+/// wait on the unit while the other invocation waits for exclusive access to the profile.
+fn concurrent_shared_registry_misses_with_interruption(
+    command: &str,
+    value: &str,
+    expected_compilations: usize,
+    interruption: SharedRegistryInterruption,
+) {
     Package::new("coalesced-registry", "1.0.0")
         .file(
             "src/lib.rs",
@@ -1660,7 +1700,18 @@ fn concurrent_shared_registry_misses(command: &str, value: &str, expected_compil
 
     // Discover the unit's lock without introducing a rustc wrapper, which would disable
     // authenticated registry sharing. Retain the lock inode while making the unit stale.
-    cargo(&projects[0], "left").run();
+    let expected_status = if interruption == SharedRegistryInterruption::CompilationFailure {
+        101
+    } else {
+        0
+    };
+    let producer_failure = r#"[..]"message":"shared registry producer failure"[..]"#;
+    let mut discovery = cargo(&projects[0], "left");
+    discovery.with_status(expected_status);
+    if interruption == SharedRegistryInterruption::CompilationFailure {
+        discovery.with_stdout_contains(producer_failure);
+    }
+    discovery.run();
     let unit_lock = walkdir::WalkDir::new(shared.join("debug/build/registries"))
         .into_iter()
         .map(Result::unwrap)
@@ -1670,7 +1721,7 @@ fn concurrent_shared_registry_misses(command: &str, value: &str, expected_compil
     let unit = unit_lock.parent().unwrap();
     let fingerprint = unit.join("fingerprint/lib-coalesced_registry");
     std::fs::remove_dir_all(unit.join("out")).unwrap();
-    if command.contains(" check ") {
+    if command.contains(" check ") && fingerprint.exists() {
         // Cover a completely missing fingerprint as well as an existing stale fingerprint.
         std::fs::remove_file(&fingerprint).unwrap();
     }
@@ -1680,49 +1731,35 @@ fn concurrent_shared_registry_misses(command: &str, value: &str, expected_compil
 
     let (ready, queued) = mpsc::channel();
     let mut children = Vec::new();
-    for (project, input) in projects.iter().zip(["left", "right"]) {
-        let mut child = cargo(project, input)
-            .build_command()
-            .stdout(Stdio::piped())
-            .stderr(Stdio::piped())
-            .spawn()
-            .unwrap();
-        let stderr = child.stderr.take().unwrap();
-        let ready = ready.clone();
-        let reader = thread::spawn(move || {
-            let mut output = String::new();
-            for line in BufReader::new(stderr).lines() {
-                let line = line.unwrap();
-                if line.contains("coalesced-registry v1.0.0")
-                    && (line.contains("Compiling") || line.contains("Checking"))
-                {
-                    let _ = ready.send(());
-                }
-                output.push_str(&line);
-                output.push('\n');
-            }
-            output.into_bytes()
-        });
-        children.push((child, reader));
+    for (index, (project, input)) in projects.iter().zip(["left", "right"]).enumerate() {
+        children.push(spawn_shared_registry_cargo(
+            cargo(project, input).build_command(),
+            index,
+            "coalesced-registry",
+            ready.clone(),
+        ));
     }
-    for _ in 0..2 {
-        if queued.recv_timeout(slow_cpu_multiplier(30)).is_err() {
-            for (child, _) in &mut children {
-                let _ = child.kill();
-                let _ = child.wait();
-            }
-            panic!("both Cargo processes must queue the registry miss before the barrier opens");
-        }
-    }
+    wait_for_shared_registry_barriers(&queued, &mut children);
     let queued_fingerprint = std::fs::read(&fingerprint).ok();
+    if interruption == SharedRegistryInterruption::CancelledWaiter {
+        // The held unit lock prevents either invocation from starting a compiler.
+        let (mut child, reader) = children.pop().unwrap();
+        kill_shared_registry_cargo(&mut child);
+        assert!(!child.wait().unwrap().success());
+        reader.join().unwrap();
+    }
     drop(lock);
 
+    let surviving_children = children.len();
     let mut compilations = 0;
     let mut fresh_artifacts = 0;
-    for (child, reader) in children {
-        let mut output = child.wait_with_output().unwrap();
-        output.stderr = reader.join().unwrap();
-        execs().run_output(&output);
+    for output in finish_shared_registry_cargos(children) {
+        let mut expected = execs();
+        expected.with_status(expected_status);
+        if interruption == SharedRegistryInterruption::CompilationFailure {
+            expected.with_stdout_contains(producer_failure);
+        }
+        expected.run_output(&output);
         compilations += String::from_utf8_lossy(&output.stderr)
             .lines()
             .filter(|line| {
@@ -1733,11 +1770,17 @@ fn concurrent_shared_registry_misses(command: &str, value: &str, expected_compil
             .lines()
             .map(|line| serde_json::from_str::<serde_json::Value>(line).unwrap())
             .collect::<Vec<_>>();
+        let expected_diagnostic = if interruption == SharedRegistryInterruption::CompilationFailure
+        {
+            "shared registry producer failure"
+        } else {
+            "coalesced registry warning"
+        };
         assert!(messages.iter().any(|message| {
             message["reason"] == "compiler-message"
                 && message["message"]["message"]
                     .as_str()
-                    .is_some_and(|message| message.contains("coalesced registry warning"))
+                    .is_some_and(|message| message.contains(expected_diagnostic))
         }));
         fresh_artifacts += messages
             .iter()
@@ -1750,9 +1793,24 @@ fn concurrent_shared_registry_misses(command: &str, value: &str, expected_compil
     }
     assert_eq!(queued_fingerprint, original_fingerprint);
     assert_eq!(compilations, expected_compilations);
-    assert_eq!(fresh_artifacts, 2 - expected_compilations);
+    assert_eq!(fresh_artifacts, surviving_children - expected_compilations);
 
-    if command.contains(" build ") {
+    if interruption == SharedRegistryInterruption::CompilationFailure {
+        assert!(std::fs::read(&fingerprint).unwrap_or_default().is_empty());
+        cargo(&projects[0], "left")
+            .with_status(101)
+            .with_stdout_contains(producer_failure)
+            .with_stderr_contains("[RUNNING] `[..]--crate-name coalesced_registry[..]`")
+            .run();
+    }
+    if interruption == SharedRegistryInterruption::CancelledWaiter {
+        cargo(&projects[1], "right")
+            .with_stderr_does_not_contain("[RUNNING] `[..]--crate-name coalesced_registry[..]`")
+            .run();
+    }
+
+    if command.contains(" build ") && interruption != SharedRegistryInterruption::CompilationFailure
+    {
         for (project, input) in projects.iter().zip(["left", "right"]) {
             let expected = if value.contains("OHM_COALESCING_INPUT") {
                 input
@@ -1764,6 +1822,294 @@ fn concurrent_shared_registry_misses(command: &str, value: &str, expected_compil
                 .with_stdout_data(format!("{expected}\n"))
                 .run();
         }
+    }
+}
+
+type SharedRegistryChild = (Child, thread::JoinHandle<Vec<u8>>);
+
+fn spawn_shared_registry_cargo(
+    mut command: Command,
+    index: usize,
+    first_package: &str,
+    ready: mpsc::Sender<usize>,
+) -> SharedRegistryChild {
+    #[cfg(unix)]
+    {
+        use std::os::unix::process::CommandExt;
+        command.process_group(0);
+    }
+    let mut child = command
+        .stdout(Stdio::piped())
+        .stderr(Stdio::piped())
+        .spawn()
+        .unwrap();
+    let stderr = child.stderr.take().unwrap();
+    let first_package = format!("{first_package} v1.0.0");
+    let reader = thread::spawn(move || {
+        let mut output = String::new();
+        for line in BufReader::new(stderr).lines() {
+            let line = line.unwrap();
+            if (line.contains(&first_package)
+                && (line.contains("Compiling") || line.contains("Checking")))
+                || line.contains("Blocking waiting for file lock on build directory")
+            {
+                let _ = ready.send(index);
+            }
+            output.push_str(&line);
+            output.push('\n');
+        }
+        output.into_bytes()
+    });
+    (child, reader)
+}
+
+/// The child must not have been reaped: its PID keeps the owned group ID reserved.
+fn kill_shared_registry_cargo(child: &mut Child) {
+    #[cfg(unix)]
+    {
+        // SAFETY: Each child starts its own process group. Kill only that owned group,
+        // including compilers that may still hold inherited locks after Cargo exits.
+        unsafe { libc::kill(-(child.id() as i32), libc::SIGKILL) };
+    }
+    let _ = child.kill();
+    let _ = child.wait();
+}
+
+fn wait_for_shared_registry_barriers(
+    queued: &mpsc::Receiver<usize>,
+    children: &mut [SharedRegistryChild],
+) {
+    let mut arrived = vec![false; children.len()];
+    let deadline = std::time::Instant::now() + slow_cpu_multiplier(30);
+    while !arrived.iter().all(|arrived| *arrived) {
+        let remaining = deadline.saturating_duration_since(std::time::Instant::now());
+        match queued.recv_timeout(remaining) {
+            Ok(index) => arrived[index] = true,
+            Err(error) => {
+                for (child, _) in children {
+                    kill_shared_registry_cargo(child);
+                }
+                panic!("both Cargo processes must reach a build lock before release: {error}");
+            }
+        }
+    }
+}
+
+fn finish_shared_registry_cargos(mut children: Vec<SharedRegistryChild>) -> Vec<Output> {
+    let stdout = children
+        .iter_mut()
+        .map(|(child, _)| {
+            let mut stdout = child.stdout.take().unwrap();
+            thread::spawn(move || {
+                let mut output = Vec::new();
+                stdout.read_to_end(&mut output).unwrap();
+                output
+            })
+        })
+        .collect::<Vec<_>>();
+    let deadline = std::time::Instant::now() + slow_cpu_multiplier(60);
+    let mut completed = vec![false; children.len()];
+    let timed_out = loop {
+        for (((child, stderr), stdout), completed) in
+            children.iter_mut().zip(&stdout).zip(&mut completed)
+        {
+            // Do not reap the group leader while descendants can still own its pipes.
+            // Keeping its PID reserved makes timeout cleanup safe after Cargo exits.
+            if !*completed && stdout.is_finished() && stderr.is_finished() {
+                *completed = child.try_wait().unwrap().is_some();
+            }
+        }
+        if completed.iter().all(|completed| *completed) {
+            break false;
+        }
+        if std::time::Instant::now() >= deadline {
+            for ((child, _), completed) in children.iter_mut().zip(&completed) {
+                if !*completed {
+                    kill_shared_registry_cargo(child);
+                }
+            }
+            break true;
+        }
+        sleep_ms(10);
+    };
+    let outputs = children
+        .into_iter()
+        .zip(stdout)
+        .map(|((mut child, stderr), stdout)| Output {
+            status: child.wait().unwrap(),
+            stdout: stdout.join().unwrap(),
+            stderr: stderr.join().unwrap(),
+        })
+        .collect::<Vec<_>>();
+    assert!(
+        !timed_out,
+        "concurrent Cargo processes deadlocked: {outputs:#?}"
+    );
+    outputs
+}
+
+#[cargo_test]
+fn shared_registry_cache_concurrent_independent_leaves_build() {
+    concurrent_shared_registry_independent_leaves("build", false);
+}
+
+#[cargo_test]
+fn shared_registry_cache_concurrent_independent_leaves_check() {
+    concurrent_shared_registry_independent_leaves("check", false);
+}
+
+#[cargo_test]
+fn shared_registry_cache_concurrent_independent_generations() {
+    concurrent_shared_registry_independent_leaves("build", true);
+}
+
+fn concurrent_shared_registry_independent_leaves(command: &str, different_inputs: bool) {
+    for name in ["locking-a", "locking-b"] {
+        Package::new(name, "1.0.0")
+            .file(
+                "src/lib.rs",
+                "pub const VALUE: &str = env!(\"OHM_LOCKING_INPUT\");",
+            )
+            .publish();
+    }
+    let projects = ["a", "b"].map(|first| {
+        project_in(&format!("locking-{first}"))
+            .file(
+                "Cargo.toml",
+                r#"
+                [package]
+                name = "locking-app"
+                version = "0.1.0"
+                edition = "2021"
+
+                [dependencies]
+                locking-a = "1.0.0"
+                locking-b = "1.0.0"
+                priority = { path = "priority" }
+                "#,
+            )
+            .file(
+                "src/main.rs",
+                "fn main() { println!(\"{}/{}/{}\", locking_a::VALUE, locking_b::VALUE, priority::VALUE); }",
+            )
+            .file(
+                "priority/Cargo.toml",
+                &format!(
+                    "[package]\nname = \"priority\"\nversion = \"0.1.0\"\nedition = \"2021\"\n\n[dependencies]\nlocking-{first} = \"1.0.0\"\n",
+                ),
+            )
+            .file(
+                "priority/src/lib.rs",
+                &format!("pub use locking_{first}::VALUE;"),
+            )
+            .build()
+    });
+    let shared = paths::root().join("independent-leaves-shared-build-directory");
+    let command = format!("-Zohm-shared-registry-cache {command} -j 1 -vv --message-format=json");
+    let cargo = |project: &cargo_test_support::Project, input: &str| {
+        let mut cargo = project.shared_registry_cargo(&command);
+        cargo
+            .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+            .env("CARGO_BUILD_BUILD_DIR", &shared)
+            .env("OHM_LOCKING_INPUT", input);
+        cargo
+    };
+    cargo(&projects[0], "left").run();
+
+    let profile = std::fs::File::open(shared.join("debug/.cargo-build-lock")).unwrap();
+    profile.lock_shared().unwrap();
+    let unit_paths = walkdir::WalkDir::new(shared.join("debug/build/registries"))
+        .into_iter()
+        .map(Result::unwrap)
+        .filter(|entry| entry.file_name() == ".lock")
+        .map(|entry| entry.into_path())
+        .collect::<Vec<_>>();
+    assert_eq!(unit_paths.len(), 2);
+    let unit_locks = unit_paths
+        .iter()
+        .map(|path| {
+            let unit = path.parent().unwrap();
+            std::fs::remove_dir_all(unit.join("out")).unwrap();
+            let lock = std::fs::File::open(path).unwrap();
+            lock.lock_shared().unwrap();
+            lock
+        })
+        .collect::<Vec<_>>();
+
+    // The extra private consumer gives opposite leaves strictly higher scheduling
+    // priority. The old protocol lets each Cargo retain one completed leaf and then
+    // wait forever for an exclusive lock on the other's leaf. A repaired writer
+    // can instead block on the profile before reaching either unit lock.
+    let inputs = ["left", if different_inputs { "right" } else { "left" }];
+    let (ready, queued) = mpsc::channel();
+    let mut children = Vec::new();
+    for (index, (project, first)) in projects.iter().zip(["locking-a", "locking-b"]).enumerate() {
+        children.push(spawn_shared_registry_cargo(
+            cargo(project, inputs[index]).build_command(),
+            index,
+            first,
+            ready.clone(),
+        ));
+    }
+    wait_for_shared_registry_barriers(&queued, &mut children);
+    drop(profile);
+    drop(unit_locks);
+
+    let outputs = finish_shared_registry_cargos(children);
+    for output in &outputs {
+        execs().run_output(output);
+    }
+    for name in ["locking_a", "locking_b"] {
+        let compilations = outputs
+            .iter()
+            .map(|output| {
+                String::from_utf8_lossy(&output.stderr)
+                    .lines()
+                    .filter(|line| {
+                        line.contains("Running") && line.contains(&format!("--crate-name {name} "))
+                    })
+                    .count()
+            })
+            .sum::<usize>();
+        assert_eq!(compilations, if different_inputs { 2 } else { 1 });
+    }
+    if command.contains(" build ") {
+        for (project, input) in projects.iter().zip(inputs) {
+            project
+                .process(project.bin("locking-app"))
+                .with_stdout_data(format!("{input}/{input}/{input}\n"))
+                .run();
+        }
+    }
+    if !different_inputs {
+        // Private edits must keep working while another invocation pins the shared
+        // profile for reading. Taking an exclusive lock unconditionally would hang.
+        let reader = std::fs::File::open(shared.join("debug/.cargo-build-lock")).unwrap();
+        reader.lock_shared().unwrap();
+        if is_coarse_mtime() {
+            sleep_ms(1000);
+        }
+        let mut children = Vec::new();
+        for (index, project) in projects.iter().enumerate() {
+            project.change_file(
+                "src/main.rs",
+                "// private workspace edit\nfn main() { println!(\"{}/{}/{}\", locking_a::VALUE, locking_b::VALUE, priority::VALUE); }",
+            );
+            children.push(spawn_shared_registry_cargo(
+                cargo(project, "left").build_command(),
+                index,
+                "locking-a",
+                ready.clone(),
+            ));
+        }
+        for output in finish_shared_registry_cargos(children) {
+            execs()
+                .with_stderr_contains("[RUNNING] `[..]--crate-name locking_app[..]`")
+                .with_stderr_does_not_contain("[RUNNING] `[..]--crate-name locking_a [..]`")
+                .with_stderr_does_not_contain("[RUNNING] `[..]--crate-name locking_b [..]`")
+                .run_output(&output);
+        }
+        drop(reader);
     }
 }
 
@@ -2201,6 +2547,12 @@ fn shared_registry_cache_preserves_cross_workspace_reuse_and_private_early_cutof
 
 #[cargo_test]
 fn shared_registry_cache_allows_nested_builds_with_distinct_target_directories() {
+    Package::new("nested-common", "1.0.0")
+        .file("src/lib.rs", "pub fn value() -> u32 { 7 }")
+        .publish();
+    Package::new("nested-helper-only", "1.0.0")
+        .file("src/lib.rs", "pub fn value() -> u32 { 11 }")
+        .publish();
     let project = project()
         .file(
             "Cargo.toml",
@@ -2217,46 +2569,127 @@ fn shared_registry_cache_allows_nested_builds_with_distinct_target_directories()
             name = "nested-outer"
             version = "0.1.0"
             edition = "2021"
+
+            [dependencies]
+            nested-common = "1.0.0"
+
+            [build-dependencies]
+            nested-common = "1.0.0"
             "#,
         )
-        .file("outer/src/lib.rs", "pub fn value() -> u32 { 1 }")
+        .file("outer/src/lib.rs", "pub use nested_common::value;")
         .file(
             "outer/build.rs",
             r#"
             use std::env;
-            use std::process::Command;
-            use std::thread;
-            use std::time::{Duration, Instant};
+            use std::ffi::OsStr;
+            use std::path::PathBuf;
+            use std::process::{Command, Output};
+
+            fn run_nested(target: &OsStr, mode: &str) -> Output {
+                let mut command = Command::new(env::var_os("CARGO").expect("Cargo executable"));
+                command.env("__CARGO_OHM_DEFAULTS", "no");
+                match mode {
+                    "shared" => { command.arg("-Zohm-shared-registry-cache"); }
+                    "defaults" => {
+                        command.env("__CARGO_OHM_DEFAULTS", env::var_os("OHM_TEST_COMPILER_DEFAULTS").unwrap());
+                    }
+                    "disabled" => {
+                        command.arg("-Zohm-defaults=no").env("__CARGO_OHM_DEFAULTS", "yes");
+                    }
+                    _ => unreachable!(),
+                }
+                command
+                    .args(["check", "-p", "nested-helper", "--target-dir"])
+                    .arg(target)
+                    // Keep the initial configured target valid too: an invalid CLI
+                    // target must still be caught when applied after workspace creation.
+                    .env("CARGO_TARGET_DIR", env::var_os("OHM_NESTED_TARGET_DIRECTORY").unwrap());
+                command.output().expect("nested Cargo should start")
+            }
 
             fn main() {
+                assert_eq!(nested_common::value(), 7);
                 let shared = env::var_os("CARGO_BUILD_BUILD_DIR")
                     .expect("nested Cargo must inherit the shared build directory");
                 assert_eq!(
-                    Some(shared),
+                    Some(shared.clone()),
                     env::var_os("OHM_EXPECTED_SHARED_BUILD_DIRECTORY")
                 );
+                let parent_target = env::var_os("OHM_PARENT_TARGET_DIRECTORY").unwrap();
+                assert_eq!(env::var_os("CARGO_TARGET_DIR"), Some(parent_target.clone()));
+                let assert_rejected = |output: Output| {
+                    assert_eq!(output.status.code(), Some(101), "{output:?}");
+                    assert!(
+                        String::from_utf8_lossy(&output.stderr).contains(
+                            "nested Cargo requires a target directory separate from its parent's build and target directories"
+                        ),
+                        "{output:?}"
+                    );
+                };
 
-                let target = env::var_os("OHM_NESTED_TARGET_DIRECTORY")
-                    .expect("nested Cargo needs an independent target directory");
-                let mut child = Command::new(env::var_os("CARGO").expect("Cargo executable"))
-                    .args(["-Zohm-shared-registry-cache", "check", "-p", "nested-helper"])
-                    .env("CARGO_TARGET_DIR", target)
-                    .spawn()
-                    .expect("nested Cargo should start");
-                let deadline = Instant::now() + Duration::from_secs(30);
+                // Read-only commands can use the inherited parent target. Cleaning
+                // that same target must fail before it can remove in-use artifacts.
+                let mut metadata = Command::new(env::var_os("CARGO").unwrap());
+                metadata.args(["metadata", "--no-deps", "--format-version", "1"]);
+                let output = metadata.output().expect("nested metadata should start");
+                assert!(output.status.success(), "nested metadata failed: {output:?}");
+                assert!(String::from_utf8_lossy(&output.stdout).contains("\"workspace_members\""));
+                let mut clean = Command::new(env::var_os("CARGO").unwrap());
+                clean.arg("clean");
+                assert_rejected(clean.output().expect("nested clean should start"));
 
-                loop {
-                    match child.try_wait().expect("nested Cargo status should be available") {
-                        Some(status) => {
-                            assert!(status.success(), "nested Cargo failed: {status}");
-                            break;
-                        }
-                        None if Instant::now() >= deadline => {
-                            let _ = child.kill();
-                            let _ = child.wait();
-                            panic!("nested Cargo deadlocked on its parent's workspace lock");
-                        }
-                        None => thread::sleep(Duration::from_millis(25)),
+                // Cleaning an ancestor would also remove the active parent roots,
+                // even though it does not equal either root. Keep this target inside
+                // the disposable fixture and check both roots survive unchanged.
+                let sentinels = [
+                    PathBuf::from(shared.clone()).join("parent-build-sentinel"),
+                    PathBuf::from(parent_target.clone()).join("parent-target-sentinel"),
+                ];
+                let contents = b"active parent artifacts must survive nested clean";
+                for sentinel in &sentinels {
+                    std::fs::write(sentinel, contents).unwrap();
+                }
+                let mut clean = Command::new(env::var_os("CARGO").unwrap());
+                clean.args(["clean", "--target-dir"])
+                    .arg(env::var_os("OHM_NESTED_ANCESTOR_TARGET").unwrap());
+                let output = clean.output().expect("nested ancestor clean should start");
+                for sentinel in &sentinels {
+                    assert_eq!(
+                        std::fs::read(sentinel).expect("nested clean must preserve the parent's files"),
+                        contents,
+                    );
+                }
+                assert_eq!(output.status.code(), Some(101), "{output:?}");
+                assert!(
+                    String::from_utf8_lossy(&output.stderr).contains(
+                        "nested Cargo cannot clean a directory containing its parent"
+                    ),
+                    "{output:?}"
+                );
+
+                let mut invalid = vec![shared, parent_target.clone()];
+                if let Some(alias) = env::var_os("OHM_SHARED_BUILD_ALIAS") {
+                    invalid.push(alias);
+                }
+                for target in invalid {
+                    assert_rejected(run_nested(&target, "shared"));
+                }
+                let private_target = env::var_os("OHM_NESTED_TARGET_DIRECTORY").unwrap();
+                let descendant_target = PathBuf::from(parent_target).join("helpers");
+                for target in [private_target, descendant_target.clone().into_os_string()] {
+                    let output = run_nested(&target, "shared");
+                    assert!(output.status.success(), "nested Cargo failed: {output:?}");
+                }
+                let out_target = PathBuf::from(env::var_os("OUT_DIR").unwrap()).join("nested-cargo-target");
+                std::fs::write(
+                    env::var_os("OHM_NESTED_OUT_TARGET_FILE").unwrap(),
+                    out_target.to_str().unwrap(),
+                ).unwrap();
+                for mode in ["defaults", "disabled"] {
+                    for target in [&descendant_target, &out_target] {
+                        let output = run_nested(target.as_os_str(), mode);
+                        assert!(output.status.success(), "nested Cargo ({mode}) failed: {output:?}");
                     }
                 }
             }
@@ -2269,32 +2702,89 @@ fn shared_registry_cache_allows_nested_builds_with_distinct_target_directories()
             name = "nested-helper"
             version = "0.1.0"
             edition = "2021"
+
+            [dependencies]
+            nested-common = "1.0.0"
+            nested-helper-only = "1.0.0"
             "#,
         )
-        .file("helper/src/lib.rs", "pub fn value() -> u32 { 2 }")
+        .file(
+            "helper/src/lib.rs",
+            "pub fn value() -> u32 { nested_common::value() + nested_helper_only::value() }",
+        )
         .build();
     let shared = paths::root().join("nested-workspace-shared-build-directory");
     let parent_target = project.root().join("parent-target");
     let nested_target = project.root().join("nested-target");
+    let descendant_target = parent_target.join("helpers");
+    let out_target_file = paths::root().join("nested-out-target");
 
-    project
-        .cargo("-Zohm-shared-registry-cache check -p nested-outer")
-        .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+    let mut cargo =
+        project.shared_registry_cargo("-Zohm-shared-registry-cache check -p nested-outer");
+    cargo
+        .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache", "ohm-defaults"])
         .env("CARGO_BUILD_BUILD_DIR", &shared)
         .env("CARGO_TARGET_DIR", &parent_target)
+        .env("OHM_PARENT_TARGET_DIRECTORY", &parent_target)
         .env("OHM_EXPECTED_SHARED_BUILD_DIRECTORY", &shared)
         .env("OHM_NESTED_TARGET_DIRECTORY", &nested_target)
-        .run();
+        .env("OHM_NESTED_OUT_TARGET_FILE", &out_target_file)
+        .env("OHM_NESTED_ANCESTOR_TARGET", paths::root())
+        .env(
+            "OHM_TEST_COMPILER_DEFAULTS",
+            if selected_compiler_supports_ohm_defaults() {
+                "yes"
+            } else {
+                "no"
+            },
+        );
+    #[cfg(unix)]
+    {
+        let alias = project.root().join("shared-build-alias");
+        std::os::unix::fs::symlink(&shared, &alias).unwrap();
+        cargo.env("OHM_SHARED_BUILD_ALIAS", alias);
+    }
+    // Bound the complete process tree, including nested Cargo and its compilers.
+    // Command::output inside build.rs drains both child pipes while they run.
+    let (ready, _queued) = mpsc::channel();
+    let child = spawn_shared_registry_cargo(cargo.build_command(), 0, "nested-common", ready);
+    for output in finish_shared_registry_cargos(vec![child]) {
+        execs().run_output(&output);
+    }
+    let out_target = PathBuf::from(std::fs::read_to_string(out_target_file).unwrap());
 
     assert!(parent_target.is_dir());
     assert!(nested_target.is_dir());
     let namespaces = std::fs::read_dir(shared.join("debug/build/workspaces"))
-        .expect("nested workspaces should have private namespaces")
+        .expect("the outer workspace should have a private namespace")
         .map(|entry| entry.expect("workspace namespace should be readable"))
         .collect::<Vec<_>>();
-    assert_eq!(namespaces.len(), 2);
+    // The parent still holds its shared-cache lock while build.rs waits for the
+    // nested Cargo. The nested invocation must use its private target directory
+    // for both its workspace and registry artifacts, while preserving the visible
+    // CARGO_BUILD_BUILD_DIR environment inherited by the build script.
+    assert_eq!(namespaces.len(), 1);
     for namespace in namespaces {
         assert!(namespace.path().join(".cargo-workspace-lock").is_file());
+    }
+    for fingerprint in ["lib-nested_helper", "lib-nested_helper_only"] {
+        for target in [&nested_target, &descendant_target, &out_target] {
+            assert!(
+                walkdir::WalkDir::new(target)
+                    .into_iter()
+                    .map(Result::unwrap)
+                    .any(|entry| entry.file_name() == fingerprint)
+            );
+        }
+        assert!(
+            !walkdir::WalkDir::new(shared.join("debug/build"))
+                .into_iter()
+                // OUT_DIR belongs to the parent's private workspace namespace; a
+                // nested target below it does not publish into shared registry units.
+                .filter_entry(|entry| !entry.path().starts_with(&out_target))
+                .map(Result::unwrap)
+                .any(|entry| entry.file_name() == fingerprint)
+        );
     }
 }
 

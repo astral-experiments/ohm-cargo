@@ -201,9 +201,8 @@ impl<'gctx> Compilation<'gctx> {
             runners,
             linkers,
             shared_registry_root: bcx
-                .gctx
-                .cli_unstable()
-                .ohm_shared_registry_cache
+                .ws
+                .shared_registry_cache_enabled()
                 .then(|| bcx.ws.build_dir().into_path_unlocked()),
             lint_warning_count: 0,
         })
