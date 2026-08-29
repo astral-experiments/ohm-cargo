@@ -14,6 +14,7 @@ use crate::core::PackageId;
 use crate::core::compiler::compilation::{self, UnitOutput};
 use crate::core::compiler::locking::LockManager;
 use crate::core::compiler::{self, CrateType, Unit, UserIntent, artifact};
+use crate::core::workspace::SharedCacheAncestor;
 use crate::util::cache_lock::CacheLockMode;
 use crate::util::errors::CargoResult;
 use crate::util::{GlobalContext, StableHasher};
@@ -52,6 +53,11 @@ pub(crate) struct StaleBuiltRegistryDependency {
     pub(crate) packages: HashSet<PackageId>,
     pub(crate) ordinary_check_might_exist: bool,
 }
+
+/// Retry preparation from scratch before changing any shared artifact.
+#[derive(Debug, thiserror::Error)]
+#[error("shared registry artifacts require exclusive build-directory access")]
+struct SharedCacheNeedsExclusiveLock;
 
 #[derive(Deserialize)]
 struct ExistingFingerprintProfile {
@@ -399,6 +405,9 @@ pub struct BuildRunner<'a, 'gctx> {
 
     /// Manages locks for build units when fine grain locking is enabled.
     pub lock_manager: Arc<LockManager>,
+
+    /// Readers never upgrade in place: a dirty shared cache needs a fresh runner.
+    exclusive_shared_cache: bool,
 }
 
 impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
@@ -491,6 +500,7 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
             failed_scrape_units: Arc::new(Mutex::new(HashSet::default())),
             unused_dep_state: UnusedDepState::new(bcx),
             lock_manager: Arc::new(LockManager::new()),
+            exclusive_shared_cache: false,
         })
     }
 
@@ -605,6 +615,15 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
     /// before an alternative graph is prepared when this graph cannot be reused.
     #[tracing::instrument(name = "compile", skip_all)]
     pub(crate) fn compile_if_check_graph_is_reusable(
+        self,
+        exec: &Arc<dyn Executor>,
+    ) -> CargoResult<Option<Compilation<'gctx>>> {
+        self.retry_with_exclusive_shared_cache(|runner| {
+            runner.compile_if_check_graph_is_reusable_inner(exec)
+        })
+    }
+
+    fn compile_if_check_graph_is_reusable_inner(
         mut self,
         exec: &Arc<dyn Executor>,
     ) -> CargoResult<Option<Compilation<'gctx>>> {
@@ -694,7 +713,27 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
     ///
     /// [`ops::cargo_compile`]: crate::ops::cargo_compile
     #[tracing::instrument(skip_all)]
-    pub fn compile(mut self, exec: &Arc<dyn Executor>) -> CargoResult<Compilation<'gctx>> {
+    pub fn compile(self, exec: &Arc<dyn Executor>) -> CargoResult<Compilation<'gctx>> {
+        self.retry_with_exclusive_shared_cache(|runner| runner.compile_inner(exec))
+    }
+
+    /// Releases every read lock and cached observation before waiting for a writer lease.
+    fn retry_with_exclusive_shared_cache<T>(
+        self,
+        compile: impl Fn(Self) -> CargoResult<T>,
+    ) -> CargoResult<T> {
+        let bcx = self.bcx;
+        match compile(self) {
+            Err(error) if error.is::<SharedCacheNeedsExclusiveLock>() => {
+                let mut writer = Self::new(bcx)?;
+                writer.exclusive_shared_cache = true;
+                compile(writer)
+            }
+            result => result,
+        }
+    }
+
+    fn compile_inner(mut self, exec: &Arc<dyn Executor>) -> CargoResult<Compilation<'gctx>> {
         // A shared lock is held during the duration of the build since rustc
         // needs to read from the `src` cache, and we don't want other
         // commands modifying the `src` cache while it is running.
@@ -716,6 +755,7 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
         exec: &Arc<dyn Executor>,
         mut queue: JobQueue<'gctx>,
     ) -> CargoResult<Compilation<'gctx>> {
+        self.check_shared_cache_read_only(exec)?;
         let stale_registry_packages = self.stale_reused_registry_dependencies()?;
         if !stale_registry_packages.is_empty() {
             return Err(StaleBuiltRegistryDependency {
@@ -859,6 +899,83 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
         Ok(self.compilation)
     }
 
+    /// Allows concurrent workspace builds only while their shared inputs stay read-only.
+    fn check_shared_cache_read_only(&mut self, exec: &Arc<dyn Executor>) -> CargoResult<()> {
+        if !self.bcx.ws.shared_registry_cache_enabled() || self.exclusive_shared_cache {
+            return Ok(());
+        }
+        let units = self
+            .bcx
+            .unit_graph
+            .keys()
+            .filter(|unit| self.files().is_shared_registry_unit(unit))
+            .cloned()
+            .collect::<Vec<_>>();
+        for unit in units {
+            let forced = exec.force_rebuild(&unit)
+                || (self.bcx.build_config.force_rebuild && self.bcx.roots.contains(&unit));
+            if forced || !fingerprint::existing_unit_is_fresh(self, &unit)? {
+                return Err(SharedCacheNeedsExclusiveLock.into());
+            }
+        }
+        Ok(())
+    }
+
+    /// Guards the mutation boundary as well as the read-only preflight.
+    pub(super) fn require_shared_cache_write_access(&self, unit: &Unit) -> CargoResult<()> {
+        if self.files().is_shared_registry_unit(unit) && !self.exclusive_shared_cache {
+            return Err(SharedCacheNeedsExclusiveLock.into());
+        }
+        Ok(())
+    }
+
+    /// Gives actual build commands ownership of the leases protecting their inputs/outputs.
+    pub(super) fn inherit_shared_cache_locks(
+        &self,
+        command: &mut ProcessBuilder,
+    ) -> CargoResult<()> {
+        if !self.bcx.ws.shared_registry_cache_enabled() {
+            return Ok(());
+        }
+        #[cfg(unix)]
+        {
+            self.files().host.inherit_locks(command);
+            for layout in self.files().target.values() {
+                layout.inherit_locks(command);
+            }
+        }
+        let ws = self.bcx.ws;
+        let mut ancestors = ws.shared_cache_ancestors()?;
+        for kind in std::iter::once(CompileKind::Host)
+            .chain(self.bcx.all_kinds.iter().copied())
+            .sorted()
+            .dedup()
+        {
+            let mut target = ws.target_dir();
+            if let CompileKind::Target(target_kind) = kind {
+                target.push(target_kind.short_name());
+            }
+            let build = self.files().layout(kind).build_dir();
+            let build_profile = build
+                .build()
+                .parent()
+                .expect("build directory has a profile");
+            let artifact_profile = target.join(self.bcx.profiles.get_dir_name().as_str());
+            ancestors.push(SharedCacheAncestor {
+                build_root: ws.canonical_build_path(build.root()),
+                target_root: ws.canonical_build_path(target.as_path_unlocked()),
+                build_lock: ws.canonical_build_path(&build_profile.join(".cargo-build-lock")),
+                artifact_lock: ws
+                    .canonical_build_path(&artifact_profile.as_path_unlocked().join(".cargo-lock")),
+            });
+        }
+        command.env(
+            crate::CARGO_SHARED_CACHE_ANCESTORS_ENV,
+            serde_json::to_string(&ancestors)?,
+        );
+        Ok(())
+    }
+
     fn collect_tests_and_executables(&mut self, unit: &Unit) -> CargoResult<()> {
         for output in self.outputs(unit)?.iter() {
             if matches!(
@@ -958,6 +1075,28 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
     #[tracing::instrument(skip_all)]
     pub fn prepare_units(&mut self) -> CargoResult<()> {
         let dest = self.bcx.profiles.get_dir_name();
+        if self.exclusive_shared_cache {
+            let mut profile_locks = HashSet::default();
+            for kind in std::iter::once(CompileKind::Host)
+                .chain(self.bcx.all_kinds.iter().copied())
+                .sorted()
+                .dedup()
+            {
+                let mut root = self.bcx.ws.build_dir();
+                if let CompileKind::Target(target) = kind {
+                    root.push(target.short_name());
+                }
+                let lock = root.join(dest.as_str()).join(".cargo-build-lock");
+                let lock = self.bcx.ws.canonical_build_path(lock.as_path_unlocked());
+                if !profile_locks.insert(lock.clone()) {
+                    bail!(
+                        "shared registry build profiles alias the same lock: {}; \
+                         use distinct host and target build directories",
+                        lock.display()
+                    );
+                }
+            }
+        }
         // We try to only lock the artifact-dir if we need to.
         // For example, `cargo check` does not write any files to the artifact-dir so we don't need
         // to lock it.
@@ -974,8 +1113,13 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
             | UserIntent::Doctest
             | UserIntent::Bench => true,
         };
-        let host_layout =
-            Layout::new(self.bcx.ws, None, &dest, must_take_artifact_dir_lock, false)?;
+        let host_layout = Layout::new(
+            self.bcx.ws,
+            None,
+            &dest,
+            must_take_artifact_dir_lock,
+            self.exclusive_shared_cache,
+        )?;
         let mut targets = HashMap::default();
         for kind in self.bcx.all_kinds.iter() {
             if let CompileKind::Target(target) = *kind {
@@ -984,7 +1128,7 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
                     Some(target),
                     &dest,
                     must_take_artifact_dir_lock,
-                    false,
+                    self.exclusive_shared_cache,
                 )?;
                 targets.insert(target, layout);
             }

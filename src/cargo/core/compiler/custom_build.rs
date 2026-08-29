@@ -527,9 +527,8 @@ fn build_work(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResul
     let run_files = BuildScriptRunFiles::for_unit(build_runner, unit);
     let host_target_root = build_runner.files().host_dest().map(|v| v.to_path_buf());
     let shared_registry_root = bcx
-        .gctx
-        .cli_unstable()
-        .ohm_shared_registry_cache
+        .ws
+        .shared_registry_cache_enabled()
         .then(|| bcx.ws.build_dir().into_path_unlocked());
     let validate_shared_registry_environment = build_runner.files().is_shared_registry_unit(unit);
     let shared_registry_compiler_driver = build_runner
@@ -581,6 +580,7 @@ fn build_work(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResul
     //
     // Note that this has to do some extra work just before running the command
     // to determine extra environment variables and such.
+    build_runner.inherit_shared_cache_locks(&mut cmd)?;
     let dirty = Work::new(move |state| {
         // Make sure that OUT_DIR exists.
         //
