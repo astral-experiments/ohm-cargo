@@ -192,12 +192,7 @@ impl RustdocFingerprint {
 /// Returns the path to rustdoc fingerprint file for a given [`CompileKind`].
 fn fingerprint_path(build_runner: &BuildRunner<'_, '_>, kind: CompileKind) -> PathBuf {
     let root = build_runner.files().layout(kind).build_dir().root();
-    if build_runner
-        .bcx
-        .gctx
-        .cli_unstable()
-        .ohm_shared_registry_cache
-    {
+    if build_runner.bcx.ws.shared_registry_cache_enabled() {
         root.join(format!(
             ".rustdoc_fingerprint-{}.json",
             Layout::shared_workspace_namespace(build_runner.bcx.ws)
