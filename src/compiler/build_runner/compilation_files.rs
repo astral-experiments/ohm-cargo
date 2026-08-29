@@ -218,13 +218,8 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
             .cloned()
             .map(|unit| (unit, OnceCell::new()))
             .collect();
-        let shared_registry_cache = build_runner
-            .bcx
-            .ws
-            .gctx()
-            .cli_unstable()
-            .ohm_shared_registry_cache
-            .then(|| {
+        let shared_registry_cache = if build_runner.bcx.ws.shared_registry_cache_enabled() {
+            Some({
                 let context = build_runner.bcx.gctx;
                 let compiler = build_runner.bcx.rustc();
                 let rustdoc = context.rustdoc().ok().map(Path::to_path_buf);
@@ -564,6 +559,7 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
                     }
                 }
                 let rustc = util::short_hash(&(
+                    "ohm-profile-reader-writer-locks-v1",
                     (
                         &compiler.verbose_version,
                         &compiler.path,
@@ -614,7 +610,10 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
                     implicit_native_tools,
                     immutable_units,
                 }
-            });
+            })
+        } else {
+            None
+        };
         let mut files = CompilationFiles {
             ws: build_runner.bcx.ws,
             host,
@@ -2247,7 +2246,7 @@ fn compute_metadata(
         .stable_hash(ws_root)
         .hash(&mut shared_hasher);
 
-    if bcx.gctx.cli_unstable().ohm_shared_registry_cache
+    if bcx.ws.shared_registry_cache_enabled()
         && unit.pkg.package_id().source_id().is_remote_registry()
         && let Some(source_id) = bcx
             .packages
