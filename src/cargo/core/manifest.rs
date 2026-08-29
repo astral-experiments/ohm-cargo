@@ -742,7 +742,7 @@ impl Manifest {
 
     pub fn metabuild_path(&self, workspace: &Workspace<'_>) -> PathBuf {
         let hash = short_hash(&self.package_id());
-        let directory = if workspace.gctx().cli_unstable().ohm_shared_registry_cache {
+        let directory = if workspace.shared_registry_cache_enabled() {
             workspace
                 .build_dir()
                 .join("tmp")

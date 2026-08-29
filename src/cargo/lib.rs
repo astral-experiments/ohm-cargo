@@ -171,6 +171,9 @@ pub const CARGO_INHERITED_RELINK_ONLY_ENV: &str = "__CARGO_RELINK_ONLY";
 #[doc(hidden)]
 pub const CARGO_INHERITED_NO_EMBED_METADATA_ENV: &str = "__CARGO_NO_EMBED_METADATA";
 
+/// Shared build and target roots held by ancestor Cargo invocations.
+pub(crate) const CARGO_SHARED_CACHE_ANCESTORS_ENV: &str = "__CARGO_OHM_SHARED_CACHE_ANCESTORS";
+
 #[macro_use]
 mod macros;
 
