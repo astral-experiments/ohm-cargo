@@ -56,10 +56,13 @@ pub fn clean(ws: &Workspace<'_>, opts: &CleanOptions<'_>) -> CargoResult<()> {
     if !ancestors.is_empty() {
         let target = ws.canonical_build_path(target_dir.as_path_unlocked());
         if ancestors.iter().any(|ancestor| {
-            ancestor.build_root.starts_with(&target) || ancestor.target_root.starts_with(&target)
+            ancestor.build_root.starts_with(&target)
+                || ancestor.target_root.starts_with(&target)
+                || target.starts_with(&ancestor.build_root)
+                || target.starts_with(&ancestor.target_root)
         }) {
             bail!(
-                "nested Cargo cannot clean a directory containing its parent's build or target directories"
+                "nested Cargo cannot clean a directory overlapping its parent's build or target directories"
             );
         }
     }
