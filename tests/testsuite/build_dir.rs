@@ -2975,10 +2975,34 @@ fn shared_registry_cache_allows_nested_builds_with_distinct_target_directories()
                 assert_eq!(output.status.code(), Some(101), "{output:?}");
                 assert!(
                     String::from_utf8_lossy(&output.stderr).contains(
-                        "nested Cargo cannot clean a directory containing its parent"
+                        "nested Cargo cannot clean a directory overlapping its parent"
                     ),
                     "{output:?}"
                 );
+
+                // A descendant can contain active profile or unit locks too.
+                // The fallback must not route it to unguarded recursive cleanup.
+                for root in [&shared, &parent_target] {
+                    for suffix in ["debug", "debug/build"] {
+                        let target = PathBuf::from(root).join(suffix);
+                        std::fs::create_dir_all(&target).unwrap();
+                        let sentinel = target.join("active-parent-sentinel");
+                        std::fs::write(&sentinel, contents).unwrap();
+                        let output = Command::new(env::var_os("CARGO").unwrap())
+                            .args(["-Zohm-shared-registry-cache", "clean"])
+                            .env("CARGO_TARGET_DIR", &target)
+                            .output()
+                            .expect("nested descendant clean should start");
+                        assert_eq!(std::fs::read(&sentinel).unwrap(), contents);
+                        assert_eq!(output.status.code(), Some(101), "{output:?}");
+                        assert!(
+                            String::from_utf8_lossy(&output.stderr).contains(
+                                "nested Cargo cannot clean a directory overlapping its parent"
+                            ),
+                            "{output:?}"
+                        );
+                    }
+                }
 
                 let mut invalid = vec![shared, parent_target.clone()];
                 if let Some(alias) = env::var_os("OHM_SHARED_BUILD_ALIAS") {
@@ -3003,6 +3027,26 @@ fn shared_registry_cache_allows_nested_builds_with_distinct_target_directories()
                         let output = run_nested(target.as_os_str(), mode);
                         assert!(output.status.success(), "nested Cargo ({mode}) failed: {output:?}");
                     }
+                }
+
+                // Package verification reconstructs a workspace, but must keep
+                // this target private so subsequent nested cleanup is safe.
+                let package_target = PathBuf::from(
+                    env::var_os("OHM_NESTED_TARGET_DIRECTORY").unwrap()
+                ).join("package-verification");
+                for action in ["package", "clean"] {
+                    let mut command = Command::new(env::var_os("CARGO").unwrap());
+                    command.args(["-Zohm-shared-registry-cache", action]);
+                    if action == "package" {
+                        command.args(["-p", "nested-helper", "--allow-dirty", "--offline"]);
+                    }
+                    let output = command
+                        .env("__CARGO_OHM_DEFAULTS", "no")
+                        .env("CARGO_TARGET_DIR", &package_target)
+                        .output()
+                        .expect("nested package or clean should start");
+                    assert!(output.status.success(), "nested {action} failed: {output:?}");
+                    assert!(!package_target.join(".ohm-shared-registry-cache-v1").exists());
                 }
             }
             "#,
@@ -6120,6 +6164,98 @@ fn shared_registry_cache_keys_build_script_tool_context() {
         .env("RUSTDOC", "left-rustdoc")
         .with_stderr_does_not_contain("[COMPILING] tool-sensitive-registry v1.0.0")
         .with_stdout_data("left-rustdoc\n")
+        .run();
+}
+
+#[cargo_test]
+fn shared_registry_cache_rebuilds_docs_after_rustdoc_invalidation() {
+    Package::new("registry-doc", "1.0.0")
+        .file("src/lib.rs", "pub struct RegistryDoc;")
+        .publish();
+    let project = project()
+        .file(
+            "Cargo.toml",
+            r#"
+            [package]
+            name = "doc-app"
+            version = "0.1.0"
+            edition = "2021"
+
+            [dependencies]
+            registry-doc = "1.0.0"
+            "#,
+        )
+        .file("src/lib.rs", "pub use registry_doc::RegistryDoc;")
+        .build();
+    let shared = paths::root().join("doc-shared-build");
+    let cargo = || {
+        let mut cargo = project.shared_registry_cargo("-Zohm-shared-registry-cache doc");
+        cargo
+            .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+            .env("CARGO_BUILD_BUILD_DIR", &shared);
+        cargo
+    };
+    cargo().run();
+    let doc = project.root().join("target/doc/registry_doc/index.html");
+    assert!(doc.is_file());
+    assert_exists_patterns_with_base_dir(
+        &shared,
+        &["debug/build/registries/*/registry-doc/*/fingerprint/doc-lib-registry_doc"],
+    );
+    let fingerprint = std::fs::read_dir(&shared)
+        .unwrap()
+        .map(Result::unwrap)
+        .find(|entry| {
+            entry
+                .file_name()
+                .to_string_lossy()
+                .starts_with(".rustdoc_fingerprint-")
+        })
+        .unwrap()
+        .path();
+    let mut contents: serde_json::Value =
+        serde_json::from_slice(&std::fs::read(&fingerprint).unwrap()).unwrap();
+    // Model returning to a cached compiler after a different compiler wrote the docs.
+    contents["rustc_vv"] = "different compiler".into();
+    std::fs::write(&fingerprint, serde_json::to_vec(&contents).unwrap()).unwrap();
+    cargo().run();
+    assert!(
+        doc.is_file(),
+        "freshness must be observed after rustdoc clears old outputs"
+    );
+}
+
+#[cargo_test]
+fn shared_registry_cache_can_test_registry_doctests() {
+    Package::new("registry-doctest", "1.0.0")
+        .file(
+            "src/lib.rs",
+            "/// ```\n/// assert_eq!(1 + 1, 2);\n/// ```\npub struct RegistryDoc;",
+        )
+        .publish();
+    let project = project()
+        .file(
+            "Cargo.toml",
+            r#"
+            [package]
+            name = "doctest-app"
+            version = "0.1.0"
+            edition = "2021"
+
+            [dependencies]
+            registry-doctest = "1.0.0"
+            "#,
+        )
+        .file("src/lib.rs", "")
+        .build();
+    project
+        .shared_registry_cargo("-Zohm-shared-registry-cache test --doc -p registry-doctest")
+        .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+        .env(
+            "CARGO_BUILD_BUILD_DIR",
+            paths::root().join("doctest-shared-build"),
+        )
+        .with_stdout_contains("test result: ok. 1 passed; 0 failed; [..]")
         .run();
 }
 
