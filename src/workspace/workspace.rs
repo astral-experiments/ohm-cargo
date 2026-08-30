@@ -544,6 +544,16 @@ impl<'gctx> Workspace<'gctx> {
         self.gctx.cli_unstable().ohm_shared_registry_cache && !self.nested_shared_cache
     }
 
+    /// Preserves the parent's private-cache fallback in a temporary workspace.
+    pub(crate) fn with_shared_cache_policy_from(mut self, parent: &Workspace<'_>) -> Self {
+        if parent.nested_shared_cache {
+            // Pin the target before changing how embedded manifests derive it.
+            self.target_dir = Some(self.target_dir());
+            self.nested_shared_cache = true;
+        }
+        self
+    }
+
     /// Decodes the inherited roots without treating them as authority to reuse a lock.
     pub(crate) fn shared_cache_ancestors(&self) -> CargoResult<Vec<SharedCacheAncestor>> {
         self.gctx

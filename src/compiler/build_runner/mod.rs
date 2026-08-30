@@ -766,7 +766,6 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
         exec: &Arc<dyn Executor>,
         mut queue: JobQueue<'gctx>,
     ) -> CargoResult<Compilation<'gctx>> {
-        self.check_shared_cache_write_locks(exec)?;
         let stale_registry_packages = self.stale_reused_registry_dependencies()?;
         if !stale_registry_packages.is_empty() {
             return Err(StaleBuiltRegistryDependency {
@@ -784,6 +783,10 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
         if self.bcx.build_config.intent.is_doc() {
             RustdocFingerprint::check_rustdoc_fingerprint(&self)?
         }
+
+        // Rustdoc may have removed outputs after a compiler change. Only cache
+        // unit freshness once that invalidation is complete.
+        self.check_shared_cache_write_locks(exec)?;
 
         for unit in &self.bcx.roots {
             let force_rebuild = self.bcx.build_config.force_rebuild;
@@ -919,7 +922,8 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
             .bcx
             .unit_graph
             .keys()
-            .filter(|unit| self.files().is_shared_registry_unit(unit))
+            // Doctests run after compilation and deliberately have no fingerprint.
+            .filter(|unit| !unit.mode.is_doc_test() && self.files().is_shared_registry_unit(unit))
             .cloned()
             .collect::<Vec<_>>();
         let mut needed = HashSet::default();
