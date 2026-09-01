@@ -141,6 +141,7 @@ mod multitarget;
 mod net_config;
 mod new;
 mod offline;
+mod ohm_worktree;
 mod old_cargos;
 mod open_namespaces;
 mod owner;
