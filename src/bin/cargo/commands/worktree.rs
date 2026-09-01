@@ -16,6 +16,11 @@ pub fn cli() -> Command {
                         .value_name("BRANCH"),
                 )
                 .arg(
+                    flag("detach", "Detach HEAD in the new worktree")
+                        .short('d')
+                        .conflicts_with("branch"),
+                )
+                .arg(
                     Arg::new("path")
                         .value_name("PATH")
                         .help("Directory for the new worktree")
@@ -25,7 +30,7 @@ pub fn cli() -> Command {
                 .arg(
                     Arg::new("commit")
                         .value_name("COMMIT")
-                        .help("Commit to check out (defaults to HEAD)"),
+                        .help("Commit or branch to check out"),
                 )
                 .arg(
                     opt(
@@ -55,6 +60,7 @@ pub fn exec(gctx: &mut GlobalContext, args: &ArgMatches) -> CliResult {
                 manifest_path: args.root_manifest(gctx)?,
                 path: args.get_one::<PathBuf>("path").unwrap().clone(),
                 branch: args.get_one::<String>("branch").cloned(),
+                detach: args.get_flag("detach"),
                 commit: args.get_one::<String>("commit").cloned(),
                 target_dir: args.get_one::<PathBuf>("destination-target-dir").cloned(),
             };

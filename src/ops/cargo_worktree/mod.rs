@@ -22,6 +22,7 @@ pub struct WorktreeOptions {
     pub manifest_path: PathBuf,
     pub path: PathBuf,
     pub branch: Option<String>,
+    pub detach: bool,
     pub commit: Option<String>,
     pub target_dir: Option<PathBuf>,
 }
@@ -80,12 +81,15 @@ pub fn worktree_add(gctx: &GlobalContext, opts: &WorktreeOptions) -> CargoResult
     git.arg("-C").arg(&git_root).args(&["worktree", "add"]);
     if let Some(branch) = &opts.branch {
         git.arg("-b").arg(branch);
-    } else {
+    }
+    if opts.detach {
         git.arg("--detach");
     }
-    git.arg("--")
-        .arg(&destination)
-        .arg(opts.commit.as_deref().unwrap_or("HEAD"));
+    git.arg("--").arg(&destination);
+    // Keep an omitted commit unset so Git can infer a branch from the destination.
+    if let Some(commit) = &opts.commit {
+        git.arg(commit);
+    }
     git.exec()?;
 
     let seed = || -> CargoResult<Seeded> {
