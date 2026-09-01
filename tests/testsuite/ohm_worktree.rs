@@ -7,14 +7,19 @@ use crate::prelude::*;
 use cargo_test_support::{Execs, Project, git, paths, str};
 
 fn seeded_cargo(project: &Project, command: &str) -> Execs {
-    let mut cargo = crate::build_dir::shared_registry_cargo(
-        project,
-        &format!("-Zohm-defaults -Zohm-worktree-seeds {command}"),
-    );
+    // Packaged Ohm exercises bare commands; other test builds opt into its defaults.
+    let command = if cfg!(feature = "ohm-defaults") {
+        command.to_owned()
+    } else {
+        format!("-Zohm-defaults {command}")
+    };
+    let mut cargo = crate::build_dir::shared_registry_cargo(project, &command);
     cargo
-        .masquerade_as_nightly_cargo(&["ohm-defaults", "ohm-worktree-seeds"])
+        .masquerade_as_nightly_cargo(&["ohm-defaults"])
         .env("CARGO_BUILD_BUILD_DIR", paths::root().join("shared-build"))
         .env("CARGO_INCREMENTAL", "1")
+        .env_remove(cargo::CARGO_INHERITED_OHM_DEFAULTS_ENV)
+        .env_remove(cargo::CARGO_INHERITED_OHM_WORKTREE_SEEDS_ENV)
         .env_remove("CARGO_TARGET_DIR");
     cargo
 }
@@ -195,6 +200,85 @@ fn destination_target_must_be_independent_of_the_donor() {
             .len(),
         0
     );
+}
+
+#[cargo_test(
+    nightly,
+    reason = "worktree seeds use checksum freshness and cwd remapping"
+)]
+fn worktree_seeding_can_be_disabled() {
+    let donor = git::new("donor", |p| {
+        p.file(".gitignore", "/target\n/Cargo.lock\n")
+            .file("src/lib.rs", "pub fn value() -> u32 { 1 }")
+    });
+
+    seeded_cargo(&donor, "-Zohm-worktree-seeds=no build").run();
+    seeded_cargo(&donor, "worktree add")
+        .arg(paths::root().join("unprepared"))
+        .with_stderr_contains("[CREATED] [ROOT]/unprepared (no compatible build snapshot seeded)")
+        .run();
+    assert_eq!(workspace_caches().len(), 1);
+
+    // Establish a compatible donor before checking that both overrides prevent copying it.
+    seeded_cargo(&donor, "build").run();
+    seeded_cargo(&donor, "worktree add")
+        .arg(paths::root().join("prepared"))
+        .with_stderr_contains("[..]Seeded [..] files [..]")
+        .run();
+    assert_eq!(workspace_caches().len(), 2);
+
+    for (directory, command, environment) in [
+        (
+            "disabled-flag",
+            "-Zohm-worktree-seeds=no worktree add",
+            false,
+        ),
+        ("disabled-env", "worktree add", true),
+    ] {
+        let mut cargo = seeded_cargo(&donor, command);
+        if environment {
+            cargo.env("CARGO_UNSTABLE_OHM_WORKTREE_SEEDS", "false");
+        }
+        cargo
+            .arg(paths::root().join(directory))
+            .with_stderr_contains("[CREATED] [ROOT]/[..] (no compatible build snapshot seeded)")
+            .run();
+        assert_eq!(workspace_caches().len(), 2);
+    }
+}
+
+#[cargo_test(
+    nightly,
+    reason = "worktree seeds use checksum freshness and cwd remapping"
+)]
+fn worktree_seeding_can_override_disabled_ohm_defaults() {
+    let donor = git::new("donor", |p| {
+        p.file(".gitignore", "/target\n/Cargo.lock\n")
+            .file("src/lib.rs", "pub fn value() -> u32 { 1 }")
+    });
+    // Keep the shared layout enabled explicitly so only preparation differs.
+    let without_defaults = "-Zohm-defaults=no -Zohm-shared-registry-cache";
+    seeded_cargo(&donor, &format!("{without_defaults} build")).run();
+    seeded_cargo(&donor, "worktree add")
+        .arg(paths::root().join("unprepared"))
+        .with_stderr_contains("[CREATED] [ROOT]/unprepared (no compatible build snapshot seeded)")
+        .run();
+    assert_eq!(workspace_caches().len(), 1);
+
+    let enabled = format!("{without_defaults} -Zohm-worktree-seeds=yes build -v");
+    seeded_cargo(&donor, &enabled).run();
+    let destination = paths::root().join("seeded");
+    // The worktree command itself requires Ohm defaults; subsequent builds do not.
+    seeded_cargo(&donor, "worktree add")
+        .arg(&destination)
+        .with_stderr_contains("[..]Seeded [..] files [..]")
+        .run();
+    assert_eq!(workspace_caches().len(), 2);
+    seeded_cargo(&donor, &enabled)
+        .cwd(&destination)
+        .with_stderr_contains("[FRESH] foo v0.0.1 ([ROOT]/seeded)")
+        .with_stderr_does_not_contain("[COMPILING] foo v0.0.1 ([ROOT]/seeded)")
+        .run();
 }
 
 #[cargo_test(
