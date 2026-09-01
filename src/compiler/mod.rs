@@ -132,6 +132,14 @@ const OHM_DEFAULT_RUSTFLAGS: [&str; 3] =
 const OHM_INCREMENTAL_CODEGEN_RUSTFLAGS: [&str; 2] =
     ["-Zohm-caller-local-cgus", "-Zohm-stable-cgu-merging"];
 
+/// Marks a workspace/profile namespace prepared under the current seed policy.
+pub(crate) const OHM_WORKTREE_SEED_MARKER: &str = ".ohm-worktree-seed-v5";
+/// Permanently excludes a namespace that has compiled opaque inputs from seeding.
+pub(crate) const OHM_WORKTREE_SEED_DENY_MARKER: &str = ".ohm-worktree-seed-deny-v5";
+// Version the compiler-visible prefix too: changing only Cargo's fingerprint
+// cannot invalidate an older incremental session containing untracked macro output.
+const OHM_WORKTREE_SEED_RUSTFLAG: &str = "-Zremap-cwd-prefix=/ohm-workspace/v5";
+
 /// A successful non-check registry build can make a later check worth speculating on.
 ///
 /// This lives in the build root so worktrees sharing registry artifacts observe the same hint.
@@ -184,6 +192,50 @@ fn unit_rustflags_without_ohm_defaults<'a>(
     } else {
         rustflags
     }
+}
+
+/// Keeps mutable-package source identities stable when a completed build is
+/// copied into a new worktree. Immutable dependencies retain their existing
+/// compiler flags and shared-cache fingerprints.
+fn unit_uses_ohm_worktree_seeds(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> bool {
+    build_runner.bcx.gctx.cli_unstable().ohm_worktree_seeds
+        && !unit.is_std
+        && unit.pkg.package_id().source_id().is_path()
+}
+
+/// A new checkout has new source mtimes, so seeded mutable units must validate
+/// source contents. Explicit checksum freshness still applies to every unit.
+fn unit_fingerprint_method(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> CargoResult<FingerprintMethod> {
+    if unit_uses_ohm_worktree_seeds(build_runner, unit) {
+        Ok(FingerprintMethod::Content)
+    } else if build_runner.bcx.gctx.cli_unstable().checksum_freshness {
+        Ok(build_runner
+            .bcx
+            .gctx
+            .build_config()?
+            .fingerprint
+            .unwrap_or_default())
+    } else {
+        Ok(FingerprintMethod::Mtime)
+    }
+}
+
+/// Returns the private namespace whose completed artifacts may seed another worktree.
+fn unit_worktree_seed_namespace(
+    build_runner: &BuildRunner<'_, '_>,
+    unit: &Unit,
+) -> Option<PathBuf> {
+    (unit_uses_ohm_worktree_seeds(build_runner, unit)
+        && build_runner.bcx.ws.shared_registry_cache_enabled())
+    .then(|| {
+        build_runner
+            .files()
+            .layout(unit.kind)
+            .build_dir()
+            .build()
+            .join("workspaces")
+            .join(Layout::shared_workspace_namespace(build_runner.bcx.ws))
+    })
 }
 
 /// Skips public API production when an output cannot expose a reusable changed interface.
@@ -1058,6 +1110,7 @@ fn rustc(
     let mut cached_output_options = OutputOptions::for_fresh(build_runner, unit);
     let script_metadatas = build_runner.find_build_script_metadatas(unit);
     let is_local = unit.is_local();
+    let worktree_seed_namespace = unit_worktree_seed_namespace(build_runner, unit);
     let artifact = unit.artifact;
     let sbom_files = build_runner.sbom_output_files(unit)?;
     let sbom = if !sbom_files.is_empty() {
@@ -1304,6 +1357,33 @@ fn rustc(
             add_custom_flags(&mut rustc, &script_outputs, script_metadatas)?;
         }
 
+        if let (Some(fingerprint), Some(namespace)) =
+            (fingerprint.as_ref(), worktree_seed_namespace.as_deref())
+            && fingerprint::can_reuse_after_scripts(
+                fingerprint,
+                &pkg_root,
+                &build_dir,
+                namespace,
+                &rustc_dep_info_loc,
+                &rustc,
+            )
+        {
+            replay_output_cache_inner(
+                state,
+                package_id,
+                &manifest,
+                &target,
+                &cached_output_path,
+                &mut cached_output_options,
+            )?;
+            tracing::info!(
+                "worktree seed: reusing {unit_name} after unchanged build script results"
+            );
+            fingerprint.mark_worktree_reused();
+            state.skipped_early_cutoff();
+            return Ok(());
+        }
+
         if let Some((_, provenance)) = &mut message_provenance {
             provenance.capture_compiler_environment(&rustc, build_script_overrides_loader);
         }
@@ -1511,6 +1591,7 @@ fn rustc(
                 // Do not track source files in the fingerprint for registry dependencies.
                 is_local,
                 &env_config,
+                worktree_seed_namespace.as_deref(),
             )
             .with_context(|| {
                 internal(format!(
@@ -1864,6 +1945,12 @@ fn prepare_rustc(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> CargoResult
             base.arg("-Zpublic-api-hash=no");
         }
     }
+    if unit_uses_ohm_worktree_seeds(build_runner, unit) {
+        // Unlike a checkout-specific --remap-path-prefix, this keeps the real
+        // working directory out of rustc's incremental compatibility hash.
+        // Both the donor build and later builds must use this same mode.
+        base.arg(OHM_WORKTREE_SEED_RUSTFLAG);
+    }
     build_base_args(build_runner, &mut base, unit)?;
     if unit.pkg.manifest().is_embedded() {
         if !gctx.cli_unstable().script {
@@ -1886,19 +1973,8 @@ fn prepare_rustc(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> CargoResult
     if gctx.cli_unstable().binary_dep_depinfo {
         base.arg("-Z").arg("binary-dep-depinfo");
     }
-    if build_runner.bcx.gctx.cli_unstable().checksum_freshness {
-        match build_runner
-            .bcx
-            .gctx
-            .build_config()?
-            .fingerprint
-            .unwrap_or_default()
-        {
-            FingerprintMethod::Content => {
-                base.arg("-Z").arg("checksum-hash-algorithm=blake3");
-            }
-            FingerprintMethod::Mtime => {}
-        }
+    if unit_fingerprint_method(build_runner, unit)? == FingerprintMethod::Content {
+        base.arg("-Z").arg("checksum-hash-algorithm=blake3");
     }
 
     if is_primary {
@@ -1939,6 +2015,9 @@ fn prepare_rustdoc(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> CargoResu
     // script_metadata is not needed here, it is only for tests.
     let mut rustdoc = build_runner.compilation.rustdoc_process(unit, None)?;
     let wants_json_output = build_runner.bcx.build_config.intent.wants_doc_json_output();
+    if unit_uses_ohm_worktree_seeds(build_runner, unit) {
+        rustdoc.arg(OHM_WORKTREE_SEED_RUSTFLAG);
+    }
     if unit.pkg.manifest().is_embedded() {
         if !bcx.gctx.cli_unstable().script {
             anyhow::bail!(
@@ -1988,19 +2067,8 @@ fn prepare_rustdoc(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> CargoResu
         arg.push(rustdoc_dep_info_loc(build_runner, unit));
         rustdoc.arg(arg);
 
-        if build_runner.bcx.gctx.cli_unstable().checksum_freshness {
-            match build_runner
-                .bcx
-                .gctx
-                .build_config()?
-                .fingerprint
-                .unwrap_or_default()
-            {
-                FingerprintMethod::Content => {
-                    rustdoc.arg("-Z").arg("checksum-hash-algorithm=blake3");
-                }
-                FingerprintMethod::Mtime => {}
-            }
+        if unit_fingerprint_method(build_runner, unit)? == FingerprintMethod::Content {
+            rustdoc.arg("-Z").arg("checksum-hash-algorithm=blake3");
         }
     } else if build_runner.bcx.gctx.cli_unstable().rustdoc_mergeable_info && !wants_json_output {
         // toolchain resources are written at the end, at the same time as merging
@@ -2103,6 +2171,7 @@ fn rustdoc(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResult<W
         .to_path_buf();
     let fingerprint_dir = build_runner.files().fingerprint_dir(unit);
     let is_local = unit.is_local();
+    let worktree_seed_namespace = unit_worktree_seed_namespace(build_runner, unit);
     let env_config = Arc::clone(build_runner.bcx.gctx.env_config()?);
     let rustdoc_depinfo_enabled = build_runner.bcx.gctx.cli_unstable().rustdoc_depinfo;
 
@@ -2214,6 +2283,7 @@ fn rustdoc(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResult<W
                 // Should we track source file for doc gen?
                 is_local,
                 &env_config,
+                worktree_seed_namespace.as_deref(),
             )
             .with_context(|| {
                 internal(format_args!(
