@@ -646,7 +646,7 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
         &self,
         build_runner: &BuildRunner<'_, '_>,
     ) -> CargoResult<()> {
-        let prepared = self.ws.gctx().cli_unstable().ohm_worktree_seeds;
+        let prepared = self.ws.gctx().cli_unstable().ohm_worktree_seeds();
         let Some(cache) = &self.shared_registry_cache else {
             return Ok(());
         };

@@ -195,7 +195,7 @@ fn unit_rustflags_without_ohm_defaults<'a>(
 /// copied into a new worktree. Immutable dependencies retain their existing
 /// compiler flags and shared-cache fingerprints.
 fn unit_uses_ohm_worktree_seeds(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> bool {
-    build_runner.bcx.gctx.cli_unstable().ohm_worktree_seeds
+    build_runner.bcx.gctx.cli_unstable().ohm_worktree_seeds()
         && !unit.is_std
         && unit.pkg.package_id().source_id().is_path()
 }
