@@ -955,7 +955,7 @@ unstable_cli_options!(
     ohm_proc_macro_trust: OhmProcMacroTrust = ("Set procedural-macro trust for shared registry artifacts: audited (default) or all (potentially unsound)"),
     ohm_reuse_built_deps: bool = ("Reuse already-built registry dependencies when checking a package"),
     ohm_shared_registry_cache: bool = ("Share deterministic registry artifacts across isolated workspaces without global compiler wrappers"),
-    ohm_worktree_seeds: bool = ("Prepare mutable packages for worktree seeding with source checksums and portable incremental paths"),
+    ohm_worktree_seeds: Option<bool> = ("Prepare mutable packages for worktree seeding (enabled by Ohm defaults)"),
     panic_abort_tests: bool = ("Enable support to run tests with -Cpanic=abort"),
     panic_immediate_abort: bool = ("Enable setting `panic = \"immediate-abort\"` in profiles"),
     profile_hint_mostly_unused: bool = ("Enable the `hint-mostly-unused` setting in profiles to mark a crate as mostly unused."),
@@ -1310,6 +1310,12 @@ impl CliUnstable {
         self.ohm_reuse_built_deps || self.ohm_defaults()
     }
 
+    /// Whether mutable packages are prepared for reuse in another worktree.
+    pub fn ohm_worktree_seeds(&self) -> bool {
+        self.ohm_worktree_seeds
+            .unwrap_or_else(|| self.ohm_defaults())
+    }
+
     /// Whether library metadata should be emitted separately instead of embedded.
     pub fn no_embed_metadata(&self) -> bool {
         self.embed_metadata
@@ -1564,7 +1570,7 @@ impl CliUnstable {
             }
             "ohm-reuse-built-deps" => self.ohm_reuse_built_deps = parse_empty(k, v)?,
             "ohm-shared-registry-cache" => self.ohm_shared_registry_cache = parse_empty(k, v)?,
-            "ohm-worktree-seeds" => self.ohm_worktree_seeds = parse_empty(k, v)?,
+            "ohm-worktree-seeds" => self.ohm_worktree_seeds = Some(parse_bool(k, v)?),
             "panic-abort-tests" => self.panic_abort_tests = parse_empty(k, v)?,
             "public-dependency" => self.public_dependency = parse_empty(k, v)?,
             "profile-hint-mostly-unused" => self.profile_hint_mostly_unused = parse_empty(k, v)?,
