@@ -2067,8 +2067,13 @@ export CARGO_TARGET_DIR=/path/to/targets/my-change
 cargo +ohm -Zohm-worktree-seeds build
 ```
 
-The command accepts `worktree add [-b <BRANCH>] <PATH> [<COMMIT>]`, with `HEAD` as
-the default commit. Without `-b`, the new worktree has a detached HEAD.
+The command accepts `worktree add [-b <BRANCH> | --detach] <PATH> [<COMMIT>]`
+and follows Git's branch selection. Without `-b`, `--detach`, or `<COMMIT>`, Git
+creates a branch named after the destination directory, starting at `HEAD`, or
+checks out an existing branch with that name. A branch supplied as `<COMMIT>` is
+checked out normally. Use `-b`/`--branch` to create a named branch or
+`-d`/`--detach` to explicitly detach `HEAD`; these options cannot be combined.
+
 `--manifest-path` selects the donor workspace. For this
 command, `--target-dir` selects only the destination target directory and defaults
 to the new workspace's `target` directory; the donor target still follows its

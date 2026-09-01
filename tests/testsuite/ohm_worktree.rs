@@ -43,23 +43,104 @@ fn creates_a_worktree_without_a_previous_build() {
     let original_head = donor_repo.head().unwrap().target();
 
     donor
-        .cargo("-Zohm-defaults worktree add -b charlie/seeded")
+        .cargo("-Zohm-defaults worktree add")
         .masquerade_as_nightly_cargo(&["ohm-defaults"])
         .arg(&destination)
         .run();
 
     let seeded_repo = git2::Repository::open(&destination).unwrap();
     assert_eq!(seeded_repo.head().unwrap().target(), original_head);
-    assert_eq!(
-        seeded_repo.head().unwrap().shorthand().unwrap(),
-        "charlie/seeded"
-    );
+    assert!(!seeded_repo.head_detached().unwrap());
+    assert_eq!(seeded_repo.head().unwrap().shorthand().unwrap(), "seeded");
     assert_eq!(
         fs::read_to_string(destination.join("src/main.rs")).unwrap(),
         donor.read_file("src/main.rs")
     );
     assert_eq!(donor_repo.head().unwrap().target(), original_head);
     assert!(destination.join(".git").is_file());
+}
+
+#[cargo_test]
+fn existing_branches_can_be_selected_by_basename_or_operand() {
+    let (donor, repo) = git::new_repo("donor", |p| p.file("src/lib.rs", "pub fn original() {}"));
+    let original = repo.head().unwrap().peel_to_commit().unwrap();
+    repo.branch("existing", &original, false).unwrap();
+    repo.branch("charlie/explicit", &original, false).unwrap();
+    donor.change_file("src/lib.rs", "pub fn newer() {}");
+    git::add(&repo);
+    let donor_head = git::commit(&repo);
+    assert_ne!(donor_head, original.id());
+
+    for (directory, branch, operand) in [
+        ("existing", "existing", None),
+        (
+            "different-name",
+            "charlie/explicit",
+            Some("charlie/explicit"),
+        ),
+    ] {
+        let destination = paths::root().join(directory);
+        let mut command = donor.cargo("-Zohm-defaults worktree add");
+        command
+            .masquerade_as_nightly_cargo(&["ohm-defaults"])
+            .arg(&destination);
+        if let Some(operand) = operand {
+            command.arg(operand);
+        }
+        command.run();
+
+        let recipient = git2::Repository::open(&destination).unwrap();
+        assert!(!recipient.head_detached().unwrap());
+        assert_eq!(recipient.head().unwrap().shorthand().unwrap(), branch);
+        assert_eq!(recipient.head().unwrap().target(), Some(original.id()));
+    }
+    assert_eq!(repo.head().unwrap().target(), Some(donor_head));
+}
+
+#[cargo_test]
+fn detach_options_create_detached_worktrees() {
+    let (donor, repo) = git::new_repo("donor", |p| p.file("src/lib.rs", ""));
+    let original_head = repo.head().unwrap().target();
+
+    for (flag, directory) in [("--detach", "detached-long"), ("-d", "detached-short")] {
+        let destination = paths::root().join(directory);
+        donor
+            .cargo("-Zohm-defaults worktree add")
+            .masquerade_as_nightly_cargo(&["ohm-defaults"])
+            .arg(flag)
+            .arg(&destination)
+            .run();
+
+        let recipient = git2::Repository::open(&destination).unwrap();
+        assert!(recipient.head_detached().unwrap());
+        assert_eq!(recipient.head().unwrap().target(), original_head);
+    }
+}
+
+#[cargo_test]
+fn branch_and_detach_conflict_before_creating_a_worktree() {
+    let (donor, repo) = git::new_repo("donor", |p| p.file("src/lib.rs", ""));
+
+    for (flag, directory) in [("-b", "conflict-short"), ("--branch", "conflict-long")] {
+        let destination = paths::root().join(directory);
+        donor
+            .cargo("-Zohm-defaults worktree add")
+            .masquerade_as_nightly_cargo(&["ohm-defaults"])
+            .arg(flag)
+            .arg("charlie/conflicting")
+            .arg("--detach")
+            .arg(&destination)
+            .with_status(1)
+            .with_stderr_contains("[ERROR] the argument [..] cannot be used with [..]")
+            .run();
+
+        assert!(!destination.exists());
+        assert_eq!(repo.worktrees().unwrap().len(), 0);
+        assert!(
+            repo.find_branch("charlie/conflicting", git2::BranchType::Local)
+                .is_err()
+        );
+    }
 }
 
 #[cargo_test]
