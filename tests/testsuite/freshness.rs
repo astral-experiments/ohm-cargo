@@ -3386,6 +3386,9 @@ fn public_api_hash_wrapper() -> PathBuf {
                         });
                     let output = Command::new(rustc)
                         .args(args)
+                        // Keep upstream checksum and path-remapping flags active
+                        // when emulating Ohm defaults with the stable compiler.
+                        .env("RUSTC_BOOTSTRAP", "1")
                         .output()
                         .expect("rustc should run");
 
