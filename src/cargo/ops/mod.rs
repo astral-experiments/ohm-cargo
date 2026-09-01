@@ -32,6 +32,7 @@ pub use self::cargo_update::print_lockfile_changes;
 pub use self::cargo_update::update_lockfile;
 pub use self::cargo_update::upgrade_manifests;
 pub use self::cargo_update::write_manifest_upgrades;
+pub use self::cargo_worktree::{WorktreeOptions, worktree_add};
 pub use self::common_for_install_and_uninstall::{InstallTracker, resolve_root};
 pub use self::fix::{
     EditionFixMode, FixOptions, fix, fix_edition, fix_exec_rustc, fix_get_proxy_lock_addr,
@@ -72,6 +73,7 @@ mod cargo_run;
 mod cargo_test;
 mod cargo_uninstall;
 mod cargo_update;
+mod cargo_worktree;
 mod common_for_install_and_uninstall;
 mod fix;
 pub(crate) mod lockfile;

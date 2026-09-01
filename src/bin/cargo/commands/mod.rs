@@ -40,6 +40,7 @@ pub fn builtin() -> Vec<Command> {
         vendor::cli(),
         verify_project::cli(),
         version::cli(),
+        worktree::cli(),
         yank::cli(),
     ]
 }
@@ -86,6 +87,7 @@ pub fn builtin_exec(cmd: &str) -> Option<Exec> {
         "vendor" => vendor::exec,
         "verify-project" => verify_project::exec,
         "version" => version::exec,
+        "worktree" => worktree::exec,
         "yank" => yank::exec,
         _ => return None,
     };
@@ -130,4 +132,5 @@ pub mod update;
 pub mod vendor;
 pub mod verify_project;
 pub mod version;
+pub mod worktree;
 pub mod yank;

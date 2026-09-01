@@ -1176,9 +1176,10 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
         {
             bail!(
                 "generated compiler search paths changed while acquiring shared registry locks; \
-                 retry with shared registry caching disabled"
+                retry with shared registry caching disabled"
             );
         }
+        self.files().record_worktree_seed_policy(self)?;
         Ok(())
     }
 

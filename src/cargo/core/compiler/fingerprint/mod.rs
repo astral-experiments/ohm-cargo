@@ -372,11 +372,13 @@
 //! [`CompileMode::RunCustomBuild`]: crate::core::compiler::CompileMode::RunCustomBuild
 //! [`A-rebuild-detection`]: https://github.com/rust-lang/cargo/issues?q=is%3Aissue+is%3Aopen+label%3AA-rebuild-detection
 
-mod dep_info;
+pub(crate) mod dep_info;
 mod dirty_reason;
 mod rustdoc;
+mod worktree;
 
 use crate::util::data_structures::{HashMap, HashSet};
+use std::borrow::Cow;
 use std::collections::hash_map::Entry;
 use std::env;
 use std::ffi::OsString;
@@ -426,6 +428,9 @@ pub use self::dep_info::parse_rustc_dep_info;
 pub use self::dep_info::translate_dep_info;
 pub use self::dirty_reason::DirtyReason;
 pub use self::rustdoc::RustdocFingerprint;
+use self::worktree::ScriptResult;
+pub(super) use self::worktree::can_reuse_after_scripts;
+pub(crate) use self::worktree::{OHM_WORKTREE_SCRIPT_RERUN, OHM_WORKTREE_SCRIPT_RESULT};
 
 fn parse_unstable_bool(value: Option<&str>) -> Option<bool> {
     match value {
@@ -646,10 +651,7 @@ fn previous_dependency_changes(fingerprint: &Fingerprint) -> PreviousDependencyC
 
     let mut changes = PreviousDependencyChanges::default();
     for dependency in &fingerprint.deps {
-        let dependency_modified = previous_output_mtime(
-            dependency.fingerprint.outputs.iter(),
-            dependency.only_requires_rmeta,
-        );
+        let dependency_modified = dependency.previous_output_mtime();
         if dependency_modified.is_none_or(|modified| modified > parent_modified) {
             changes.any = true;
             changes.metadata |= dependency.only_requires_rmeta;
@@ -1174,7 +1176,9 @@ pub fn prepare_target(
         fingerprint.set_build_state(BuildState::Fresh);
         return Ok(Job::new_fresh());
     };
-    let previous_dependency_changes = if unit_consumes_public_api_hash(build_runner, unit) {
+    let previous_dependency_changes = if unit_consumes_public_api_hash(build_runner, unit)
+        || fingerprint.ohm_worktree_namespace.is_some()
+    {
         previous_dependency_changes(&fingerprint)
     } else {
         PreviousDependencyChanges::default()
@@ -1188,6 +1192,18 @@ pub fn prepare_target(
             && !previous_dependency_changes.any
             && has_exclusive_metadata_access,
     );
+    if fingerprint.ohm_worktree_namespace.is_some()
+        && !force
+        && !unit.artifact.is_true()
+        && !previous_dependency_changes.any
+        && has_exclusive_metadata_access
+    {
+        // Retain the last successful identity before invalidating the on-disk
+        // admission file. A late result check still has to verify every input.
+        *fingerprint.worktree_reuse_hash.lock().unwrap() = paths::read(&loc)
+            .ok()
+            .filter(|hash| hash.len() == 16 && hash.bytes().all(|byte| byte.is_ascii_hexdigit()));
+    }
 
     // We're going to rebuild, so ensure the source of the crate passes all
     // verification checks before we build it.
@@ -1328,6 +1344,14 @@ pub fn prepare_target(
         let output_path = build_runner.build_explicit_deps[unit]
             .build_script_output
             .clone();
+        let result_paths = super::unit_worktree_seed_namespace(build_runner, unit).map(|_| {
+            let out_dir = if build_runner.bcx.gctx.cli_unstable().build_dir_new_layout {
+                build_runner.files().out_dir_new_layout(unit)
+            } else {
+                build_runner.files().build_script_out_dir(unit)
+            };
+            (build_runner.files().fingerprint_dir(unit), out_dir)
+        });
         Work::new(move |state| {
             let outputs = build_script_outputs.lock().unwrap();
             let output = outputs
@@ -1343,6 +1367,17 @@ pub fn prepare_target(
                 *fingerprint.local.lock().unwrap() = new_local;
             }
 
+            if let Some((directory, out_dir)) = &result_paths {
+                let mut result = fingerprint.script_result.lock().unwrap();
+                *result = worktree::record_script_result(
+                    &directory.join(OHM_WORKTREE_SCRIPT_RESULT),
+                    &output_path,
+                    out_dir,
+                    output,
+                    result.as_ref(),
+                )?;
+            }
+
             // Check if output changed and update fs_status
             let public_api_hash_update =
                 check_output_unchanged(state, &fingerprint, &old_public_api_hash);
@@ -1351,7 +1386,14 @@ pub fn prepare_target(
                 &fingerprint,
                 &public_api_hash_path,
                 public_api_hash_update,
-            )
+            )?;
+            if let Some((directory, _)) = result_paths {
+                let rerun = directory.join(OHM_WORKTREE_SCRIPT_RERUN);
+                if rerun.symlink_metadata().is_ok() {
+                    paths::remove_file(&rerun)?;
+                }
+            }
+            Ok(())
         })
     } else {
         Work::new(move |state| {
@@ -1440,10 +1482,25 @@ pub struct Fingerprint {
     /// Information about the inputs that affect this Unit (such as source
     /// file mtimes or build script environment variables).
     local: Mutex<Vec<LocalFingerprint>>,
+    /// Build-root-relative private namespace used only to normalize dep-info
+    /// identity. Filesystem checks must keep using the original paths above.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    ohm_worktree_namespace: Option<PathBuf>,
     /// Cached hash of the [`Fingerprint`] struct. Used to improve performance
     /// for hashing.
     #[serde(skip)]
     memoized_hash: Mutex<Option<u64>>,
+    /// A script's result is used by dependents, while its action hash still
+    /// determines whether the script itself must run.
+    #[serde(skip)]
+    script_result: Mutex<Option<ScriptResult>>,
+    /// The last successful compilation, retained for revalidation after scripts run.
+    #[serde(skip)]
+    worktree_reuse_hash: Mutex<Option<String>>,
+    /// Late reuse proved all inputs unchanged, including transitive link artifacts.
+    /// Ordinary metadata-only early cutoff does not provide this guarantee.
+    #[serde(skip)]
+    worktree_reused: AtomicBool,
     /// RUSTFLAGS/RUSTDOCFLAGS environment variable value (or config value).
     rustflags: Vec<String>,
     /// Hash of various config settings that change how things are compiled.
@@ -1611,7 +1668,7 @@ impl Serialize for DepFingerprint {
             &self.pkg_id,
             &self.name,
             &self.public,
-            &self.fingerprint.hash_u64(),
+            &self.dependency_hash(),
         )
             .serialize(ser)
     }
@@ -1656,7 +1713,7 @@ impl<'de> Deserialize<'de> for DepFingerprint {
 /// when the filesystem contains stale information (based on mtime currently).
 /// The paths here don't change much between compilations but they're used as
 /// inputs when we probe the filesystem looking at information.
-#[derive(Debug, Serialize, Deserialize, Hash)]
+#[derive(Clone, Debug, Serialize, Deserialize, Hash)]
 enum LocalFingerprint {
     /// This is a precalculated fingerprint which has an opaque string we just
     /// hash as usual. This variant is primarily used for rustdoc where we
@@ -1784,6 +1841,7 @@ impl LocalFingerprint {
         build_root: &Path,
         cargo_exe: &Path,
         gctx: &GlobalContext,
+        worktree_seed: bool,
     ) -> CargoResult<Option<StaleItem>> {
         let pkg_root = pkg.root();
         match self {
@@ -1805,7 +1863,11 @@ impl LocalFingerprint {
                         }
                     }
 
-                    let current = if key == CARGO_ENV {
+                    let current = if worktree_seed && key == "CARGO_MANIFEST_DIR" {
+                        pkg.root().to_str()
+                    } else if worktree_seed && key == "CARGO_MANIFEST_PATH" {
+                        pkg.manifest_path().to_str()
+                    } else if key == CARGO_ENV {
                         Some(cargo_exe.to_str().ok_or_else(|| {
                             format_err!(
                                 "cargo exe path {} must be valid UTF-8",
@@ -1886,7 +1948,11 @@ impl Fingerprint {
             declared_features: String::new(),
             deps: Vec::new(),
             local: Mutex::new(Vec::new()),
+            ohm_worktree_namespace: None,
             memoized_hash: Mutex::new(None),
+            script_result: Mutex::new(None),
+            worktree_reuse_hash: Mutex::new(None),
+            worktree_reused: AtomicBool::new(false),
             rustflags: Vec::new(),
             config: 0,
             compile_kind: 0,
@@ -1924,6 +1990,12 @@ impl Fingerprint {
         *self.build_state.lock().unwrap() = state;
     }
 
+    /// Records full input revalidation separately from metadata-only early cutoff.
+    pub(super) fn mark_worktree_reused(&self) {
+        self.worktree_reused.store(true, Ordering::Release);
+        self.set_build_state(BuildState::SkippedEarlyCutoff);
+    }
+
     /// Returns whether this unit is dirty only because of its dependencies.
     pub fn is_early_cutoff_candidate(&self) -> bool {
         self.early_cutoff_candidate.load(Ordering::Acquire)
@@ -1942,6 +2014,24 @@ impl Fingerprint {
         let ret = util::hash_u64(self);
         *self.memoized_hash.lock().unwrap() = Some(ret);
         ret
+    }
+
+    /// Removes only this worktree's namespace from dep-info identity. A cloned
+    /// fingerprint still describes the same profile, compiler, package and unit,
+    /// while its actual dep-info file lives under the recipient's namespace.
+    fn local_identity<'a>(&self, local: &'a [LocalFingerprint]) -> Cow<'a, [LocalFingerprint]> {
+        let Some(namespace) = &self.ohm_worktree_namespace else {
+            return Cow::Borrowed(local);
+        };
+        let mut normalized = local.to_vec();
+        for local in &mut normalized {
+            if let LocalFingerprint::CheckDepInfo { dep_info, .. } = local
+                && let Ok(relative) = dep_info.strip_prefix(namespace)
+            {
+                *dep_info = namespace.with_file_name("$ohm-workspace").join(relative);
+            }
+        }
+        Cow::Owned(normalized)
     }
 
     /// Compares this fingerprint with an old version which was previously
@@ -1988,6 +2078,8 @@ impl Fingerprint {
         }
         let my_local = self.local.lock().unwrap();
         let old_local = old.local.lock().unwrap();
+        let my_local = self.local_identity(&my_local);
+        let old_local = old.local_identity(&old_local);
         if my_local.len() != old_local.len() {
             return DirtyReason::LocalLengthsChanged;
         }
@@ -2091,7 +2183,7 @@ impl Fingerprint {
                 };
             }
 
-            if a.fingerprint.hash_u64() != b.fingerprint.hash_u64() {
+            if a.dependency_hash() != b.dependency_hash() {
                 return DirtyReason::UnitDependencyInfoChanged {
                     unit: a.fingerprint.index,
                 };
@@ -2169,6 +2261,7 @@ impl Fingerprint {
         // Check local inputs before dependencies. If dependency checking
         // returned first, a simultaneous local source change could be masked
         // as dependency-only and incorrectly become eligible for early cutoff.
+        let worktree_seed = self.ohm_worktree_namespace.is_some();
         for local in self.local.get_mut().unwrap().iter() {
             if let Some(item) = local.find_stale_item(
                 mtime_cache,
@@ -2177,6 +2270,7 @@ impl Fingerprint {
                 build_root,
                 cargo_exe,
                 gctx,
+                worktree_seed,
             )? {
                 item.log();
                 *self.fs_status.get_mut().unwrap() = FsStatus::StaleItem(item);
@@ -2194,7 +2288,10 @@ impl Fingerprint {
                         // If our dependency edge only requires the rmeta file to be present
                         // then we only need to look at that one output file, otherwise we
                         // need to consider all output files to see if we're out of date.
-                        if dep.only_requires_rmeta {
+                        if let Some(result) = dep.fingerprint.script_result.lock().unwrap().as_ref()
+                        {
+                            Some((dep.fingerprint.outputs[0].clone(), result.generation))
+                        } else if dep.only_requires_rmeta {
                             let (dep_path, dep_mtime) = mtimes
                                 .iter()
                                 .find(|(path, _mtime)| {
@@ -2313,6 +2410,7 @@ impl hash::Hash for Fingerprint {
             ..
         } = *self;
         let local = local.lock().unwrap();
+        let local = self.local_identity(&local);
         (
             rustc,
             features,
@@ -2328,24 +2426,34 @@ impl hash::Hash for Fingerprint {
             .hash(h);
 
         h.write_usize(deps.len());
-        for DepFingerprint {
-            pkg_id,
-            name,
-            public,
-            fingerprint,
-            only_requires_rmeta: _, // static property, no need to hash
-        } in deps
-        {
-            pkg_id.hash(h);
-            name.hash(h);
-            public.hash(h);
+        for dependency in deps {
+            dependency.pkg_id.hash(h);
+            dependency.name.hash(h);
+            dependency.public.hash(h);
             // use memoized dep hashes to avoid exponential blowup
-            h.write_u64(fingerprint.hash_u64());
+            h.write_u64(dependency.dependency_hash());
         }
     }
 }
 
 impl DepFingerprint {
+    /// Build scripts expose their validated result, not the identity of the action.
+    fn dependency_hash(&self) -> u64 {
+        let result = self.fingerprint.script_result.lock().unwrap();
+        if let Some(result) = result.as_ref() {
+            return result.dependency_hash();
+        }
+        drop(result);
+        self.fingerprint.hash_u64()
+    }
+
+    fn previous_output_mtime(&self) -> Option<FileTime> {
+        if let Some(result) = self.fingerprint.script_result.lock().unwrap().as_ref() {
+            return Some(result.generation);
+        }
+        previous_output_mtime(self.fingerprint.outputs.iter(), self.only_requires_rmeta)
+    }
+
     fn new(
         build_runner: &mut BuildRunner<'_, '_>,
         parent: &Unit,
@@ -2477,6 +2585,24 @@ fn calculate(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResult
         build_runner.bcx.gctx,
     )?;
 
+    if unit.mode.is_run_custom_build()
+        && !fingerprint.outputs.is_empty()
+        && super::unit_worktree_seed_namespace(build_runner, unit).is_some()
+    {
+        let loc = build_runner.files().fingerprint_file_path(unit, "");
+        let rerun = build_runner
+            .files()
+            .fingerprint_dir(unit)
+            .join(OHM_WORKTREE_SCRIPT_RERUN);
+        let action_matches =
+            paths::read(&loc).is_ok_and(|old| old == util::to_hex(fingerprint.hash_u64()));
+        if rerun.symlink_metadata().is_ok() || !action_matches {
+            // Result hashes must not conceal action-only changes (for example
+            // rerun-if-env-changed) from the consumer's initial scheduling pass.
+            *fingerprint.fs_status.get_mut().unwrap() = FsStatus::Stale;
+        }
+    }
+
     let fingerprint = Arc::new(fingerprint);
     build_runner
         .fingerprints
@@ -2538,7 +2664,7 @@ fn calculate_normal(
         let dep_info = dep_info.strip_prefix(&build_root).unwrap().to_path_buf();
         vec![LocalFingerprint::CheckDepInfo {
             dep_info,
-            checksum: build_runner.bcx.gctx.cli_unstable().checksum_freshness,
+            checksum: super::unit_uses_checksum_freshness(build_runner, unit),
         }]
     };
 
@@ -2603,6 +2729,11 @@ fn calculate_normal(
     // Legacy dynamic-library and executable outputs may omit the unit-id suffix,
     // so this injected default must also invalidate their shared fingerprint.
     super::unit_uses_ohm_incremental_mono_partitions(build_runner, unit).hash(&mut config);
+    if super::unit_uses_ohm_worktree_seeds(build_runner, unit) {
+        // An ordinary build must not appear prepared just because its outputs
+        // were copied. This injected path mapping also changes rustc's output.
+        ("ohm-worktree-seeds", 5_u8).hash(&mut config);
+    }
     if unit_consumes_public_api_hash(build_runner, unit) {
         // Older implementations cannot soundly reuse the preserved metadata
         // generations without propagating the corresponding link generations.
@@ -2616,6 +2747,9 @@ fn calculate_normal(
     let mut declared_features = unit.pkg.summary().features().keys().collect::<Vec<_>>();
     declared_features.sort(); // to avoid useless rebuild if the user orders it's features
     // differently
+    let ohm_worktree_namespace = super::unit_worktree_seed_namespace(build_runner, unit)
+        .map(|namespace| namespace.strip_prefix(&build_root).map(Path::to_path_buf))
+        .transpose()?;
     Ok(Fingerprint {
         rustc: util::hash_u64(&build_runner.bcx.rustc().verbose_version),
         target: util::hash_u64(&unit.target),
@@ -2627,7 +2761,11 @@ fn calculate_normal(
         declared_features: format!("{declared_features:?}"),
         deps,
         local: Mutex::new(local),
+        ohm_worktree_namespace,
         memoized_hash: Mutex::new(None),
+        script_result: Mutex::new(None),
+        worktree_reuse_hash: Mutex::new(None),
+        worktree_reused: AtomicBool::new(false),
         config: Hasher::finish(&config),
         compile_kind,
         index: build_runner.bcx.unit_to_index[unit],
@@ -2693,6 +2831,28 @@ See https://doc.rust-lang.org/cargo/reference/build-scripts.html#rerun-if-change
     };
 
     let rustflags = unit.rustflags.to_vec();
+    let script_result =
+        if !overridden && super::unit_worktree_seed_namespace(build_runner, unit).is_some() {
+            let (previous, _) = super::custom_build::prev_build_output(build_runner, unit);
+            previous.and_then(|previous| {
+                let out_dir = if build_runner.bcx.gctx.cli_unstable().build_dir_new_layout {
+                    build_runner.files().out_dir_new_layout(unit)
+                } else {
+                    build_runner.files().build_script_out_dir(unit)
+                };
+                worktree::load_script_result(
+                    &build_runner
+                        .files()
+                        .fingerprint_dir(unit)
+                        .join(OHM_WORKTREE_SCRIPT_RESULT),
+                    &output,
+                    &out_dir,
+                    &previous,
+                )
+            })
+        } else {
+            None
+        };
 
     Ok(Fingerprint {
         local: Mutex::new(local),
@@ -2700,6 +2860,7 @@ See https://doc.rust-lang.org/cargo/reference/build-scripts.html#rerun-if-change
         deps,
         outputs: if overridden { Vec::new() } else { vec![output] },
         rustflags,
+        script_result: Mutex::new(script_result),
         index: build_runner.bcx.unit_to_index[unit],
 
         // Most of the other info is blank here as we don't really include it
@@ -3177,6 +3338,85 @@ where
         reference, reference_mtime
     );
     None
+}
+
+#[cfg(test)]
+mod worktree_seed_tests {
+    use super::*;
+
+    fn fingerprint(namespace: Option<&str>, dep_info: &str) -> Fingerprint {
+        let mut fingerprint = Fingerprint::new();
+        fingerprint.ohm_worktree_namespace = namespace.map(PathBuf::from);
+        *fingerprint.local.get_mut().unwrap() = vec![LocalFingerprint::CheckDepInfo {
+            dep_info: PathBuf::from(dep_info),
+            checksum: true,
+        }];
+        *fingerprint.fs_status.get_mut().unwrap() = FsStatus::UpToDate {
+            mtimes: HashMap::default(),
+            link_mtime: None,
+        };
+        fingerprint
+    }
+
+    #[test]
+    fn seeded_dep_info_identity_survives_relocation_and_serialization() {
+        let donor_path = "debug/build/workspaces/donor/compiler/pkg/unit/fingerprint/dep-lib-pkg";
+        let recipient_path =
+            "debug/build/workspaces/recipient/compiler/pkg/unit/fingerprint/dep-lib-pkg";
+        let donor = fingerprint(Some("debug/build/workspaces/donor"), donor_path);
+        let recipient = fingerprint(Some("debug/build/workspaces/recipient"), recipient_path);
+        assert_eq!(donor.hash_u64(), recipient.hash_u64());
+        assert!(matches!(
+            recipient.compare(&donor),
+            DirtyReason::NothingObvious
+        ));
+
+        let serialized = serde_json::to_string(&donor).unwrap();
+        let restored: Fingerprint = serde_json::from_str(&serialized).unwrap();
+        assert_eq!(restored.hash_u64(), recipient.hash_u64());
+        let local = restored.local.lock().unwrap();
+        assert!(matches!(
+            &local[0],
+            LocalFingerprint::CheckDepInfo { dep_info, .. } if dep_info == Path::new(donor_path)
+        ));
+    }
+
+    #[test]
+    fn seed_identity_preserves_other_paths_and_checksum_policy() {
+        let donor_path = "debug/build/workspaces/donor/compiler/pkg/unit/fingerprint/dep-lib-pkg";
+        let recipient_path =
+            "debug/build/workspaces/recipient/compiler/pkg/unit/fingerprint/dep-lib-pkg";
+        let donor = fingerprint(Some("debug/build/workspaces/donor"), donor_path);
+        for other_path in [
+            "release/build/workspaces/donor/compiler/pkg/unit/fingerprint/dep-lib-pkg",
+            "debug/build/workspaces/donor/other-compiler/pkg/unit/fingerprint/dep-lib-pkg",
+            "debug/build/workspaces/donor/compiler/pkg/other-unit/fingerprint/dep-lib-pkg",
+            recipient_path,
+        ] {
+            let other = fingerprint(Some("debug/build/workspaces/donor"), other_path);
+            assert_ne!(donor.hash_u64(), other.hash_u64());
+        }
+        let mut timestamp = fingerprint(Some("debug/build/workspaces/donor"), donor_path);
+        if let LocalFingerprint::CheckDepInfo { checksum, .. } =
+            &mut timestamp.local.get_mut().unwrap()[0]
+        {
+            *checksum = false;
+        }
+        assert_ne!(donor.hash_u64(), timestamp.hash_u64());
+
+        // Ordinary fingerprints retain path identity and omit the new field.
+        let ordinary = fingerprint(None, donor_path);
+        assert_ne!(
+            ordinary.hash_u64(),
+            fingerprint(None, recipient_path).hash_u64()
+        );
+        assert!(
+            serde_json::to_value(ordinary)
+                .unwrap()
+                .get("ohm_worktree_namespace")
+                .is_none()
+        );
+    }
 }
 
 #[cfg(test)]
