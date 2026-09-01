@@ -102,7 +102,7 @@ pub fn worktree_add(gctx: &GlobalContext, opts: &WorktreeOptions) -> CargoResult
         ensure_absent(&target, "destination target directory")?;
         let mut recipient = Workspace::new(&manifest, gctx)?;
         recipient.set_target_dir(Filesystem::new(target.clone()));
-        if !gctx.cli_unstable().ohm_worktree_seeds || !donor.shared_registry_cache_enabled() {
+        if !gctx.cli_unstable().ohm_worktree_seeds() || !donor.shared_registry_cache_enabled() {
             return Ok(Seeded::default());
         }
         seed_shared_build(&donor, &recipient)

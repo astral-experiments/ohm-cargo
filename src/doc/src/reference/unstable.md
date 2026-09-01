@@ -1974,19 +1974,25 @@ This layout change unblocks work towards caching and locking improvements.
 
 ## ohm-worktree-seeds
 
-This experimental Ohm feature prepares build state that `cargo worktree add` can
-copy into a new Git worktree. Each worktree retains its own mutable artifacts and
+Ohm enables this feature by default to prepare reusable build state for
+`cargo worktree add`. Each worktree retains its own mutable artifacts and
 incremental compiler state; immutable registry artifacts remain in the shared
 build directory.
 
-Enable `-Zohm-worktree-seeds` when building both the donor and the new worktree.
-First run a normal build with the flag in the donor workspace. Entering this mode
-changes compiler settings and can require rebuilding existing artifacts; copying
-an ordinary build directory does not prepare compatible incremental state.
+First run a normal Ohm build in the donor workspace. Its prepared build state can
+then seed a new worktree without extra feature flags. The first build after
+enabling this preparation can require rebuilding existing artifacts; copying an
+unprepared build directory does not prepare compatible incremental state.
 Checksum validation reads source contents on later builds. The mode also replaces
 compiler working-directory paths with a stable virtual prefix, which can affect
-debugger source lookup and path-bearing diagnostics. It is opt-in while those
-costs and compatibility limits are evaluated.
+debugger source lookup and path-bearing diagnostics.
+
+Use `-Zohm-worktree-seeds=no` to disable preparation or copying for an individual
+command while retaining the other Ohm defaults. Setting
+`unstable.ohm-worktree-seeds = false` in Cargo configuration also disables it.
+`-Zohm-defaults=no` disables it together with the other Ohm defaults unless
+explicitly overridden with `-Zohm-worktree-seeds=yes`. Cargo builds without Ohm's
+packaged defaults continue to require explicit enablement.
 
 Use the same separate `CARGO_BUILD_BUILD_DIR` for both worktrees and a distinct
 `CARGO_TARGET_DIR` for each:
@@ -1994,11 +2000,11 @@ Use the same separate `CARGO_BUILD_BUILD_DIR` for both worktrees and a distinct
 ```console
 export CARGO_BUILD_BUILD_DIR=/path/to/shared-build
 export CARGO_TARGET_DIR=/path/to/targets/source
-cargo +ohm -Zohm-worktree-seeds build
-cargo +ohm -Zohm-worktree-seeds worktree add -b charlie/my-change ../my-change --target-dir /path/to/targets/my-change
+cargo +ohm build
+cargo +ohm worktree add -b charlie/my-change ../my-change --target-dir /path/to/targets/my-change
 cd ../my-change
 export CARGO_TARGET_DIR=/path/to/targets/my-change
-cargo +ohm -Zohm-worktree-seeds build
+cargo +ohm build
 ```
 
 The command accepts `worktree add [-b <BRANCH> | --detach] <PATH> [<COMMIT>]`
@@ -2014,7 +2020,7 @@ to the new workspace's `target` directory; the donor target still follows its
 existing environment and configuration. Use the chosen destination target for
 subsequent builds so they find the seeded state.
 
-The flag enables checksum-based freshness checks so a new checkout's timestamps
+This mode enables checksum-based freshness checks so a new checkout's timestamps
 do not determine whether copied source-dependent artifacts are reusable. Cargo
 and rustc still validate the copied state, and changed inputs or incompatible
 settings can require recompilation. Final executables are published only by that
