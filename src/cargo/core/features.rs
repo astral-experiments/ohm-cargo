@@ -930,6 +930,7 @@ unstable_cli_options!(
     next_lockfile_bump: bool,
     no_embed_metadata: Option<bool> = ("Avoid embedding metadata in library artifacts"),
     no_index_update: bool = ("Do not update the registry index even if the cache is outdated"),
+    ohm_clippy_codegen: Option<bool> = ("Run Clippy while generating workspace build and test artifacts"),
     ohm_defaults: Option<bool> = ("Enable the defaults packaged with Ohm"),
     ohm_focused_tests: bool = ("Compile only an explicitly selected exact library test"),
     ohm_native_tool_trust: OhmNativeToolTrust = ("Set native-tool trust for shared registry artifacts: strict (default), build-scripts, or all (potentially unsound)"),
@@ -1281,6 +1282,11 @@ fn parse_gitoxide(
 }
 
 impl CliUnstable {
+    /// Whether workspace compilation also runs the matching Ohm Clippy driver.
+    pub fn ohm_clippy_codegen(&self) -> bool {
+        self.ohm_clippy_codegen.unwrap_or(false)
+    }
+
     /// Whether defaults packaged with Ohm are enabled for this invocation.
     pub fn ohm_defaults(&self) -> bool {
         self.ohm_defaults.unwrap_or(cfg!(feature = "ohm-defaults"))
@@ -1537,6 +1543,7 @@ impl CliUnstable {
                     None => bail!("flag -Z{k} requires `audited` or `all`"),
                 };
             }
+            "ohm-clippy-codegen" => self.ohm_clippy_codegen = Some(parse_bool(k, v)?),
             "ohm-reuse-built-deps" => self.ohm_reuse_built_deps = parse_empty(k, v)?,
             "ohm-shared-registry-cache" => self.ohm_shared_registry_cache = parse_empty(k, v)?,
             "ohm-worktree-seeds" => self.ohm_worktree_seeds = Some(parse_bool(k, v)?),

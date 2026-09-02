@@ -962,6 +962,8 @@ fn rustc(
     exec: &Arc<dyn Executor>,
 ) -> CargoResult<Work> {
     let mut rustc = prepare_rustc(build_runner, unit)?;
+    let ohm_clippy_codegen = build_runner.bcx.ws.is_member(&unit.pkg)
+        && build_runner.bcx.rustc().ohm_clippy_codegen_args.is_some();
 
     let name = unit.pkg.name();
 
@@ -1321,7 +1323,12 @@ fn rustc(
                         })
                     });
             }
-            add_custom_flags(&mut rustc, &script_outputs, script_metadatas)?;
+            add_custom_flags(
+                &mut rustc,
+                &script_outputs,
+                script_metadatas,
+                ohm_clippy_codegen,
+            )?;
         }
 
         if let (Some(fingerprint), Some(namespace)) =
@@ -1890,6 +1897,15 @@ fn prepare_rustc(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> CargoResult
     let mut base = build_runner
         .compilation
         .rustc_process(unit, is_primary, is_workspace)?;
+    if is_workspace && build_runner.bcx.rustc().ohm_clippy_codegen_args.is_some() {
+        base.env(
+            "CLIPPY_CODEGEN_CONFIG",
+            build_runner
+                .bcx
+                .rustc()
+                .ohm_clippy_config_fingerprint(unit.pkg.root(), gctx)?,
+        );
+    }
     if gctx.cli_unstable().ohm_defaults() {
         base.args(&OHM_DEFAULT_RUSTFLAGS);
         if unit_uses_ohm_incremental_codegen(build_runner, unit) {
@@ -2176,6 +2192,7 @@ fn rustdoc(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResult<W
             &mut rustdoc,
             &build_script_outputs.lock().unwrap(),
             script_metadatas,
+            false,
         )?;
 
         // Add the output of scraped examples to the rustdoc command.
@@ -2989,6 +3006,7 @@ fn add_custom_flags(
     cmd: &mut ProcessBuilder,
     build_script_outputs: &BuildScriptOutputs,
     metadata_vec: Option<Vec<UnitHash>>,
+    ohm_clippy_codegen: bool,
 ) -> CargoResult<()> {
     if let Some(metadata_vec) = metadata_vec {
         for metadata in metadata_vec {
@@ -3000,6 +3018,17 @@ fn add_custom_flags(
                     cmd.arg("--check-cfg").arg(check_cfg);
                 }
                 for (name, value) in output.env.iter() {
+                    anyhow::ensure!(
+                        !ohm_clippy_codegen
+                            || !matches!(
+                                name.as_str(),
+                                "CLIPPY_CODEGEN"
+                                    | "CLIPPY_ARGS"
+                                    | "CLIPPY_CODEGEN_CONFIG"
+                                    | "CLIPPY_CONF_DIR"
+                            ),
+                        "-Zohm-clippy-codegen does not support build-script overrides of {name}"
+                    );
                     cmd.env(name, value);
                 }
             }

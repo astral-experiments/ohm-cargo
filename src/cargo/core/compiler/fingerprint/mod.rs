@@ -1842,6 +1842,7 @@ impl LocalFingerprint {
         cargo_exe: &Path,
         gctx: &GlobalContext,
         worktree_seed: bool,
+        clippy_codegen: Option<(&str, &str)>,
     ) -> CargoResult<Option<StaleItem>> {
         let pkg_root = pkg.root();
         match self {
@@ -1863,7 +1864,16 @@ impl LocalFingerprint {
                         }
                     }
 
-                    let current = if worktree_seed && key == "CARGO_MANIFEST_DIR" {
+                    let clippy_value =
+                        clippy_codegen.and_then(|(args, config)| match key.as_str() {
+                            "CLIPPY_CODEGEN" => Some("1"),
+                            "CLIPPY_ARGS" => Some(args),
+                            "CLIPPY_CODEGEN_CONFIG" => Some(config),
+                            _ => None,
+                        });
+                    let current = if let Some(value) = clippy_value {
+                        Some(value)
+                    } else if worktree_seed && key == "CARGO_MANIFEST_DIR" {
                         pkg.root().to_str()
                     } else if worktree_seed && key == "CARGO_MANIFEST_PATH" {
                         pkg.manifest_path().to_str()
@@ -2219,6 +2229,7 @@ impl Fingerprint {
         build_root: &Path,
         cargo_exe: &Path,
         gctx: &GlobalContext,
+        clippy_codegen: Option<(&str, &str)>,
     ) -> CargoResult<()> {
         assert!(!self.fs_status.get_mut().unwrap().up_to_date());
 
@@ -2271,6 +2282,7 @@ impl Fingerprint {
                 cargo_exe,
                 gctx,
                 worktree_seed,
+                clippy_codegen,
             )? {
                 item.log();
                 *self.fs_status.get_mut().unwrap() = FsStatus::StaleItem(item);
@@ -2576,6 +2588,25 @@ fn calculate(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResult
     // `fs_status` field of it.
     let build_root = build_root(build_runner);
     let cargo_exe = build_runner.bcx.gctx.cargo_exe()?;
+    let clippy_codegen = if build_runner.bcx.ws.is_member(&unit.pkg) {
+        build_runner
+            .bcx
+            .rustc()
+            .ohm_clippy_codegen_args
+            .as_ref()
+            .map(|args| -> CargoResult<_> {
+                Ok((
+                    args.as_str(),
+                    build_runner
+                        .bcx
+                        .rustc()
+                        .ohm_clippy_config_fingerprint(unit.pkg.root(), build_runner.bcx.gctx)?,
+                ))
+            })
+            .transpose()?
+    } else {
+        None
+    };
     fingerprint.check_filesystem(
         &mut build_runner.mtime_cache,
         &mut build_runner.checksum_cache,
@@ -2583,6 +2614,9 @@ fn calculate(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResult
         &build_root,
         cargo_exe,
         build_runner.bcx.gctx,
+        clippy_codegen
+            .as_ref()
+            .map(|(args, config)| (*args, config.as_str())),
     )?;
 
     if unit.mode.is_run_custom_build()
@@ -2733,6 +2767,16 @@ fn calculate_normal(
         // An ordinary build must not appear prepared just because its outputs
         // were copied. This injected path mapping also changes rustc's output.
         ("ohm-worktree-seeds", 5_u8).hash(&mut config);
+    }
+    if build_runner.bcx.ws.is_member(&unit.pkg) {
+        if let Some(args) = &build_runner.bcx.rustc().ohm_clippy_codegen_args {
+            ("ohm-clippy-codegen", 1_u8, args).hash(&mut config);
+            build_runner
+                .bcx
+                .rustc()
+                .ohm_clippy_config_fingerprint(unit.pkg.root(), build_runner.bcx.gctx)?
+                .hash(&mut config);
+        }
     }
     if unit_consumes_public_api_hash(build_runner, unit) {
         // Older implementations cannot soundly reuse the preserved metadata

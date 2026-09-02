@@ -145,6 +145,10 @@ impl<'gctx> Compilation<'gctx> {
     pub fn new<'a>(bcx: &BuildContext<'a, 'gctx>) -> CargoResult<Compilation<'gctx>> {
         let rustc_process = bcx.rustc().process();
         let primary_rustc_process = bcx.build_config.primary_unit_rustc.clone();
+        anyhow::ensure!(
+            !bcx.gctx.cli_unstable().ohm_clippy_codegen() || primary_rustc_process.is_none(),
+            "-Zohm-clippy-codegen cannot be combined with a primary compiler override"
+        );
         let rustc_workspace_wrapper_process = bcx.rustc().workspace_process();
         let host = bcx.host_triple().to_string();
 

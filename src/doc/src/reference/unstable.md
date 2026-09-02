@@ -92,6 +92,7 @@ Each new feature described below should explain how to use it.
     * [build-std-features](#build-std-features) --- Sets features to use with the standard library.
     * [binary-dep-depinfo](#binary-dep-depinfo) --- Causes the dep-info file to track binary dependencies.
     * [checksum-freshness](#checksum-freshness) --- When passed, the decision as to whether a crate needs to be rebuilt is made using file checksums instead of the file mtime.
+    * [ohm-clippy-codegen](#ohm-clippy-codegen) --- Run Clippy while compiling workspace build and test artifacts.
     * [ohm-worktree-seeds](#ohm-worktree-seeds) --- Prepare build state for seeding new Git worktrees with Ohm.
     * [panic-abort-tests](#panic-abort-tests) --- Allows running tests with the "abort" panic strategy.
     * [host-config](#host-config) --- Allows setting `[target]`-like configuration settings for host build targets.
@@ -1971,6 +1972,38 @@ The following commands are available under `-Zbuild-analysis`:
 
 Enables the new build-dir filesystem layout.
 This layout change unblocks work towards caching and locking improvements.
+
+## ohm-clippy-codegen
+
+`-Zohm-clippy-codegen` uses the matching Ohm Clippy driver for workspace
+compilation, producing normal build or test artifacts while reporting Clippy
+lints. It is disabled by default, including when Ohm defaults are enabled.
+
+```sh
+cargo +ohm -Zohm-clippy-codegen test -p my-package
+cargo +ohm -Zohm-clippy-codegen nextest run -p my-package
+CARGO_OHM_CLIPPY_ARGS='-D warnings' cargo +ohm -Zohm-clippy-codegen build
+```
+
+`CARGO_OHM_CLIPPY_ARGS` is a whitespace-separated list of lint levels, such as
+`-W clippy::pedantic` or `-Dwarnings`. Only `-A`, `-W`, `-D`, `-F` and their long
+forms are accepted. The arguments are passed to the compiler, leaving arguments
+after `cargo test --` available for the test harness. Manifest lint settings and
+Clippy configuration files still apply.
+
+This mode does not inject `cfg(clippy)` and retains the compiler's normal
+code-generation settings. Registry dependencies continue to use rustc. Workspace
+artifacts are separate from ordinary compilation artifacts; changing the lint
+arguments also invalidates them. The option requires the capability-enabled Ohm
+Clippy driver in the selected compiler's sysroot, with matching compiler version
+information. Other compiler wrappers and primary compiler overrides are rejected.
+Build-script overrides of Clippy's mode, arguments, and configuration directory
+are also rejected because these inputs must be known when checking freshness.
+
+The explicit setting propagates through external Cargo subcommands such as
+nextest. A nested Cargo command can override it with `-Zohm-clippy-codegen=no`.
+It can also be set through `unstable.ohm-clippy-codegen` in Cargo configuration.
+Ordinary `cargo clippy` retains its existing behavior.
 
 ## ohm-worktree-seeds
 
