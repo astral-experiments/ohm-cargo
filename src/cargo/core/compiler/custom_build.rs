@@ -479,7 +479,12 @@ fn build_work(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResul
     }
     cmd.env_remove("RUSTC_WORKSPACE_WRAPPER");
     if build_runner.bcx.ws.is_member(&unit.pkg) {
-        if let Some(wrapper) = bcx.rustc().workspace_wrapper.as_ref() {
+        if bcx.rustc().ohm_clippy_codegen_args.is_some() {
+            // Nested Cargo must select and validate its own driver rather than
+            // adopting our wrapper as a conflicting user-provided wrapper.
+            cmd.env(crate::CARGO_INHERITED_OHM_CLIPPY_CODEGEN_ENV, "yes");
+            cmd.env_remove("CLIPPY_CODEGEN").env_remove("CLIPPY_ARGS");
+        } else if let Some(wrapper) = bcx.rustc().workspace_wrapper.as_ref() {
             cmd.env("RUSTC_WORKSPACE_WRAPPER", wrapper);
         }
     }

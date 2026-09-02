@@ -32,6 +32,9 @@ pub struct Rustc {
     pub host: InternedString,
     /// The rustc full commit hash, this comes from `verbose_version`.
     pub commit_hash: Option<String>,
+    /// Lint-only arguments for the opt-in Clippy codegen workspace wrapper.
+    pub(crate) ohm_clippy_codegen_args: Option<String>,
+    ohm_clippy_configs: Mutex<HashMap<PathBuf, String>>,
     cache: Mutex<Cache>,
     transparent_unused_externs: OnceLock<bool>,
     ohm_incremental_codegen: OnceLock<bool>,
@@ -48,11 +51,47 @@ impl Rustc {
     pub fn new(
         path: PathBuf,
         wrapper: Option<PathBuf>,
-        workspace_wrapper: Option<PathBuf>,
+        mut workspace_wrapper: Option<PathBuf>,
         rustup_rustc: &Path,
         cache_location: Option<PathBuf>,
         gctx: &GlobalContext,
     ) -> CargoResult<Rustc> {
+        let ohm_clippy_codegen_args = if gctx.cli_unstable().ohm_clippy_codegen() {
+            anyhow::ensure!(
+                wrapper.is_none() && workspace_wrapper.is_none(),
+                "-Zohm-clippy-codegen cannot be combined with a rustc wrapper or workspace wrapper"
+            );
+            let mut clippy_cache = Cache::load(
+                None,
+                None,
+                &path,
+                rustup_rustc,
+                cache_location
+                    .as_ref()
+                    .map(|path| path.with_file_name(".ohm_clippy_codegen_info.json")),
+                gctx,
+            );
+            workspace_wrapper = Some(ohm_clippy_codegen_driver(
+                &path,
+                rustup_rustc,
+                gctx,
+                &mut clippy_cache,
+            )?);
+            let lint_args = gctx
+                .env_config()?
+                .get("CARGO_OHM_CLIPPY_ARGS")
+                .map(|value| {
+                    value
+                        .to_str()
+                        .context("CARGO_OHM_CLIPPY_ARGS must be valid UTF-8")
+                })
+                .transpose()?
+                .or_else(|| gctx.get_env("CARGO_OHM_CLIPPY_ARGS").ok())
+                .unwrap_or_default();
+            Some(encode_clippy_lint_args(lint_args)?)
+        } else {
+            None
+        };
         let mut cache = Cache::load(
             wrapper.as_deref(),
             workspace_wrapper.as_deref(),
@@ -65,6 +104,9 @@ impl Rustc {
         let mut cmd = ProcessBuilder::new(&path)
             .wrapped(workspace_wrapper.as_ref())
             .wrapped(wrapper.as_deref());
+        if let Some(args) = &ohm_clippy_codegen_args {
+            cmd.env("CLIPPY_CODEGEN", "1").env("CLIPPY_ARGS", args);
+        }
         apply_env_config(gctx, &mut cmd)?;
         cmd.env(crate::CARGO_ENV, gctx.cargo_exe()?);
         cmd.arg("-vV");
@@ -116,6 +158,8 @@ impl Rustc {
             version,
             host,
             commit_hash,
+            ohm_clippy_codegen_args,
+            ohm_clippy_configs: Mutex::new(HashMap::default()),
             cache: Mutex::new(cache),
             transparent_unused_externs: OnceLock::new(),
             ohm_incremental_codegen: OnceLock::new(),
@@ -191,6 +235,9 @@ impl Rustc {
         let mut cmd = ProcessBuilder::new(self.path.as_path())
             .wrapped(self.workspace_wrapper.as_ref())
             .wrapped(self.wrapper.as_ref());
+        if let Some(args) = &self.ohm_clippy_codegen_args {
+            cmd.env("CLIPPY_CODEGEN", "1").env("CLIPPY_ARGS", args);
+        }
         cmd.retry_with_argfile(true);
         cmd
     }
@@ -199,6 +246,53 @@ impl Rustc {
         let mut cmd = ProcessBuilder::new(&self.path);
         cmd.retry_with_argfile(true);
         cmd
+    }
+
+    /// Tracks Clippy config discovery, including a config appearing after a fresh build.
+    pub(crate) fn ohm_clippy_config_fingerprint(
+        &self,
+        package_root: &Path,
+        gctx: &GlobalContext,
+    ) -> CargoResult<String> {
+        let mut configs = self.ohm_clippy_configs.lock().unwrap();
+        if let Some(fingerprint) = configs.get(package_root) {
+            return Ok(fingerprint.clone());
+        }
+        let configured = gctx
+            .env_config()?
+            .get("CLIPPY_CONF_DIR")
+            .map(|value| value.as_os_str())
+            .or_else(|| gctx.get_env_os("CLIPPY_CONF_DIR"));
+        let mut directory = configured
+            .map_or_else(
+                || package_root.to_path_buf(),
+                |value| package_root.join(value),
+            )
+            .canonicalize()?;
+        let mut hasher = StableHasher::new();
+        directory.hash(&mut hasher);
+        loop {
+            let mut found = false;
+            // Match Clippy's upward search and dotfile precedence. The second
+            // path also matters because its presence produces a warning.
+            for name in [".clippy.toml", "clippy.toml"] {
+                if let Ok(path) = directory.join(name).canonicalize() {
+                    if !path.is_dir() {
+                        path.hash(&mut hasher);
+                        if !found {
+                            std::fs::read(&path)?.hash(&mut hasher);
+                        }
+                        found = true;
+                    }
+                }
+            }
+            if found || !directory.pop() {
+                break;
+            }
+        }
+        let fingerprint = crate::util::to_hex(Hasher::finish(&hasher));
+        configs.insert(package_root.to_path_buf(), fingerprint.clone());
+        Ok(fingerprint)
     }
 
     /// Gets the output for the given command.
@@ -221,6 +315,101 @@ impl Rustc {
             .unwrap()
             .cached_output(cmd, extra_fingerprint)
     }
+}
+
+/// Selects the capability-checked Clippy driver from the selected compiler's sysroot.
+fn ohm_clippy_codegen_driver(
+    rustc: &Path,
+    rustup_rustc: &Path,
+    gctx: &GlobalContext,
+    cache: &mut Cache,
+) -> CargoResult<PathBuf> {
+    let mut output = |tool: &Path, args: &[&str], fingerprint| -> CargoResult<String> {
+        let mut process = ProcessBuilder::new(tool);
+        apply_env_config(gctx, &mut process)?;
+        process.args(args);
+        Ok(cache.cached_output(&process, fingerprint)?.0)
+    };
+    let sysroot = output(rustc, &["--print", "sysroot"], 0)?;
+    let driver = Path::new(sysroot.trim())
+        .join("bin/clippy-driver")
+        .with_extension(env::consts::EXE_EXTENSION);
+    // The selected compiler keys this cache; each driver probe additionally
+    // tracks the driver executable so replacing it cannot preserve admission.
+    let driver_fingerprint = rustc_fingerprint(None, Some(&driver), rustc, rustup_rustc, gctx)
+        .with_context(|| {
+            format!(
+                "-Zohm-clippy-codegen requires a Clippy driver at {}",
+                driver.display()
+            )
+        })?;
+    let capability = output(
+        &driver,
+        &["--ohm-clippy-codegen-version"],
+        driver_fingerprint,
+    )
+    .with_context(|| {
+        format!(
+            "-Zohm-clippy-codegen requires a compatible Ohm Clippy driver at {}",
+            driver.display()
+        )
+    })?;
+    anyhow::ensure!(
+        capability.trim() == "ohm-clippy-codegen-v1",
+        "{} does not support -Zohm-clippy-codegen",
+        driver.display()
+    );
+    anyhow::ensure!(
+        output(&driver, &["--rustc", "-vV"], driver_fingerprint)? == output(rustc, &["-vV"], 0)?,
+        "-Zohm-clippy-codegen requires Clippy and rustc from the same compiler build"
+    );
+    Ok(driver)
+}
+
+/// Allows lint levels without letting Clippy-only arguments change the compiled program.
+fn encode_clippy_lint_args(value: &str) -> CargoResult<String> {
+    let args = value.split_whitespace().collect::<Vec<_>>();
+    let mut remaining = args.as_slice();
+    while let Some((arg, rest)) = remaining.split_first() {
+        remaining = rest;
+        let lint = if matches!(
+            *arg,
+            "-A" | "-W" | "-D" | "-F" | "--allow" | "--warn" | "--deny" | "--forbid"
+        ) {
+            let Some((lint, rest)) = remaining.split_first() else {
+                anyhow::bail!("CARGO_OHM_CLIPPY_ARGS: {arg} requires a lint name");
+            };
+            remaining = rest;
+            *lint
+        } else if let Some(lint) = [
+            "--allow=",
+            "--warn=",
+            "--deny=",
+            "--forbid=",
+            "-A",
+            "-W",
+            "-D",
+            "-F",
+        ]
+        .iter()
+        .find_map(|prefix| arg.strip_prefix(prefix))
+        {
+            lint
+        } else {
+            anyhow::bail!(
+                "CARGO_OHM_CLIPPY_ARGS accepts only lint levels (-A, -W, -D, -F), found `{arg}`"
+            );
+        };
+        anyhow::ensure!(
+            !lint.is_empty()
+                && !lint.contains("__CLIPPY_HACKERY__")
+                && lint
+                    .bytes()
+                    .all(|byte| byte.is_ascii_alphanumeric() || matches!(byte, b'_' | b':' | b'-')),
+            "CARGO_OHM_CLIPPY_ARGS contains an invalid lint name `{lint}`"
+        );
+    }
+    Ok(args.join("__CLIPPY_HACKERY__"))
 }
 
 /// It is a well known fact that `rustc` is not the fastest compiler in the
