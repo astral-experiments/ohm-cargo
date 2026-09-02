@@ -2367,6 +2367,9 @@ fn compute_metadata(
         if let Some(path) = &build_runner.bcx.rustc().workspace_wrapper {
             path.hash(&mut shared_hasher);
         }
+        if let Some(args) = &build_runner.bcx.rustc().ohm_clippy_codegen_args {
+            ("ohm-clippy-codegen", 1_u8, args).hash(&mut shared_hasher);
+        }
     }
 
     // Seed the contents of `__CARGO_DEFAULT_LIB_METADATA` to the hasher if present.
