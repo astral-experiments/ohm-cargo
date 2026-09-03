@@ -12,10 +12,12 @@ use crate::CargoResult;
 use crate::core::Workspace;
 use crate::core::compiler::{BuildRunner, CompileMode, Layout, Unit};
 use crate::ops::CleanContext;
+use crate::util::data_structures::{HashMap, HashSet};
 use crate::util::flock;
 
 pub const DIRECTORY: &str = "ohm-gc-v1";
 const MARKER: &str = ".ohm-incremental-gc.json";
+const REFRESH_INTERVAL: u64 = 60 * 60;
 
 #[derive(Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
@@ -28,12 +30,27 @@ struct Record {
 impl Record {
     fn parse(contents: &[u8], unit: &str) -> Option<Self> {
         let record: Self = serde_json::from_slice(contents).ok()?;
-        (record.version == 1 && record.unit == unit && valid_unit_name(unit)).then_some(record)
+        (matches!(record.version, 1 | 2) && record.unit == unit && valid_unit_name(unit))
+            .then_some(record)
     }
 
     fn expired(&self, now: u64, max_age: Duration) -> bool {
-        now.checked_sub(self.last_used)
+        // Version 2 refreshes at most hourly. Treat the end of that interval as
+        // the last possible use, so throttling never causes premature expiry.
+        let latest_use = if self.version == 2 {
+            self.last_used.saturating_add(REFRESH_INTERVAL)
+        } else {
+            self.last_used
+        };
+        now.checked_sub(latest_use)
             .is_some_and(|age| Duration::from_secs(age) >= max_age)
+    }
+
+    fn needs_refresh(&self, now: u64) -> bool {
+        self.version == 1
+            || now
+                .checked_sub(self.last_used)
+                .is_some_and(|age| age >= REFRESH_INTERVAL)
     }
 }
 
@@ -41,8 +58,8 @@ fn valid_unit_name(name: &str) -> bool {
     name.rsplit_once('-').is_some_and(|(name, hash)| {
         !name.is_empty()
             && name
-                .bytes()
-                .all(|byte| byte.is_ascii_alphanumeric() || byte == b'_')
+                .chars()
+                .all(|character| character.is_alphanumeric() || character == '_')
             && hash.len() == 16
             && hash.bytes().all(|byte| byte.is_ascii_hexdigit())
     })
@@ -58,7 +75,8 @@ pub(crate) fn enabled(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> bool {
         )
 }
 
-/// Gives each Cargo configuration its own root without changing rustc's session protocol.
+/// Groups by Cargo's `-C metadata` value, preserving reuse across diagnostic flags.
+/// Rustc still applies its own crate identity and session protocol within each root.
 pub(crate) fn directory(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> PathBuf {
     let files = build_runner.files();
     let root = files.incremental_dir(unit);
@@ -68,57 +86,124 @@ pub(crate) fn directory(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> Path
     root.join(DIRECTORY).join(format!(
         "{}-{}",
         unit.target.crate_name(),
-        files.metadata(unit).unit_id()
+        files.metadata(unit).c_metadata()
     ))
 }
 
 /// Records graph use, including fresh units, while the build's profile lease is held.
-pub(crate) fn record_use(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> CargoResult<()> {
+pub(crate) fn record_use(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResult<()> {
     if !enabled(build_runner, unit) {
         return Ok(());
     }
-    let layout = build_runner.files().layout(unit.kind).build_dir();
-    let root = build_runner.bcx.ws.canonical_build_path(layout.root());
-    let directory = root.join(directory(build_runner, unit).strip_prefix(layout.root())?);
-    create_plain_descendants(&root, &directory)?;
-    let name = directory.file_name().unwrap().to_str().unwrap();
-    ensure!(
-        valid_unit_name(name),
-        "invalid incremental configuration name"
-    );
-    let marker = directory.join(MARKER);
-    match fs::symlink_metadata(&marker) {
-        Ok(metadata) => {
-            ensure!(
-                metadata.is_file(),
-                "incremental ownership marker is not a regular file"
-            );
-            ensure!(
-                Record::parse(&fs::read(&marker)?, name).is_some(),
-                "invalid incremental ownership marker: {}",
-                marker.display()
-            );
-        }
-        Err(error) if error.kind() == std::io::ErrorKind::NotFound => {
-            ensure!(
-                fs::read_dir(&directory)?.next().is_none(),
-                "refusing to adopt unrecorded incremental data: {}",
-                directory.display()
-            );
-        }
-        Err(error) => return Err(error.into()),
-    }
-    let record = Record {
-        version: 1,
-        unit: name.to_owned(),
-        last_used: now()?,
-    };
-    // Persist replaces the marker itself rather than following a marker symlink.
-    let mut temporary = tempfile::NamedTempFile::new_in(&directory)?;
-    temporary.write_all(&serde_json::to_vec(&record)?)?;
-    temporary.persist(&marker)?;
-    Ok(())
+    let layout_root = build_runner
+        .files()
+        .layout(unit.kind)
+        .build_dir()
+        .root()
+        .to_path_buf();
+    let directory = directory(build_runner, unit);
+    let root = build_runner
+        .incremental_gc
+        .roots
+        .entry(layout_root.clone())
+        .or_insert_with(|| build_runner.bcx.ws.canonical_build_path(&layout_root))
+        .clone();
+    let directory = root.join(directory.strip_prefix(&layout_root)?);
+    build_runner.incremental_gc.record(&root, &directory)
 }
+
+/// Caches directory validation within the build's workspace/profile leases.
+#[derive(Default)]
+pub(crate) struct Tracker {
+    roots: HashMap<PathBuf, PathBuf>,
+    directories: HashSet<PathBuf>,
+}
+
+impl Tracker {
+    fn record(&mut self, root: &Path, directory: &Path) -> CargoResult<()> {
+        let mut current = root.to_path_buf();
+        for component in
+            std::iter::once(None).chain(directory.strip_prefix(root)?.components().map(Some))
+        {
+            if let Some(component) = component {
+                ensure!(
+                    matches!(component, Component::Normal(_)),
+                    "invalid incremental directory path"
+                );
+                current.push(component);
+            }
+            if !self.directories.contains(&current) {
+                match fs::symlink_metadata(&current) {
+                    Ok(metadata) => ensure!(
+                        metadata.is_dir(),
+                        "incremental directory contains a symlink or non-directory: {}",
+                        current.display()
+                    ),
+                    Err(error) if error.kind() == std::io::ErrorKind::NotFound => {
+                        match fs::create_dir(&current) {
+                            Ok(()) => {}
+                            Err(error) if error.kind() == std::io::ErrorKind::AlreadyExists => {
+                                // Another workspace can create a shared ancestor
+                                // while both builds hold their shared profile lease.
+                                ensure!(
+                                    fs::symlink_metadata(&current)?.is_dir(),
+                                    "incremental directory is not a plain directory: {}",
+                                    current.display()
+                                );
+                            }
+                            Err(error) => return Err(error.into()),
+                        }
+                    }
+                    Err(error) => return Err(error.into()),
+                }
+                self.directories.insert(current.clone());
+            }
+        }
+        let name = directory.file_name().unwrap().to_str().unwrap();
+        ensure!(
+            valid_unit_name(name),
+            "invalid incremental configuration name"
+        );
+        let marker = directory.join(MARKER);
+        let now = now()?;
+        match fs::symlink_metadata(&marker) {
+            Ok(metadata) => {
+                ensure!(
+                    metadata.is_file(),
+                    "incremental ownership marker is not a regular file"
+                );
+                let record = Record::parse(&fs::read(&marker)?, name).with_context(|| {
+                    format!("invalid incremental ownership marker: {}", marker.display())
+                })?;
+                if !record.needs_refresh(now) {
+                    return Ok(());
+                }
+            }
+            Err(error) if error.kind() == std::io::ErrorKind::NotFound => {
+                ensure!(
+                    fs::read_dir(&directory)?.next().is_none(),
+                    "refusing to adopt unrecorded incremental data: {}",
+                    directory.display()
+                );
+            }
+            Err(error) => return Err(error.into()),
+        }
+        let record = Record {
+            version: 2,
+            unit: name.to_owned(),
+            last_used: now,
+        };
+        // Stage outside the unit directory: a killed writer must not leave a
+        // nonempty, unrecorded unit that subsequent builds refuse to enroll.
+        // Persist replaces the marker itself rather than following a marker symlink.
+        let mut temporary = tempfile::NamedTempFile::new_in(directory.parent().unwrap())?;
+        temporary.write_all(&serde_json::to_vec(&record)?)?;
+        temporary.persist(&marker)?;
+        Ok(())
+    }
+}
+
+pub(crate) const TRASH_DIRECTORY: &str = "ohm-gc-trash-v1";
 
 /// Expires recorded configurations for the calling workspace, skipping busy profiles.
 ///
@@ -159,73 +244,133 @@ pub fn clean(ws: &Workspace<'_>, max_age: Duration, dry_run: bool) -> CargoResul
     let mut retained = 0;
     let mut skipped = 0;
     let mut busy = 0;
+    let mut reclaimed = 0;
     for profile in profiles(&build_root)? {
         let Some(_guard) = lock_profile(&profile)? else {
             busy += 1;
             continue;
         };
-        let managed = profile.join("incremental").join(&namespace).join(DIRECTORY);
-        if !plain_descendants(&profile, &managed)? {
-            continue;
-        }
-        for entry in fs::read_dir(&managed)? {
-            let entry = entry?;
-            let directory = entry.path();
-            let Some(name) = entry.file_name().to_str().map(str::to_owned) else {
-                skipped += 1;
-                continue;
-            };
-            let marker = directory.join(MARKER);
-            if !entry.file_type()?.is_dir() || !regular_file(&marker)? {
-                skipped += 1;
+        let incremental = profile.join("incremental").join(&namespace);
+        let managed = incremental.join(DIRECTORY);
+        let trash = incremental.join(TRASH_DIRECTORY);
+        let mut reclaimed_paths = HashSet::default();
+        // Retired configurations are no longer available to rustc, regardless
+        // of their age. Finish prior collections before retiring more entries.
+        for (root, is_trash) in [(&trash, true), (&managed, false)] {
+            if !plain_descendants(&profile, root)? {
                 continue;
             }
-            let Some(record) = Record::parse(&fs::read(&marker)?, &name) else {
-                skipped += 1;
-                continue;
-            };
-            if !record.expired(now, max_age) {
-                retained += 1;
-                continue;
-            }
-            if !plain_tree(&directory)? {
-                skipped += 1;
-                continue;
-            }
-            ws.gctx()
-                .shell()
-                .status(if dry_run { "Would expire" } else { "Expiring" }, &name)?;
-            // Keep ownership until every data file has gone so an interrupted
-            // deletion can be retried without adopting an unknown directory.
-            for child in fs::read_dir(&directory)? {
-                let child = child?;
-                if child.file_name() != MARKER {
-                    context.rm_rf(&child.path())?;
+            for entry in fs::read_dir(root)? {
+                let entry = entry?;
+                let directory = entry.path();
+                let Some(name) = entry.file_name().to_str().map(str::to_owned) else {
+                    skipped += 1;
+                    continue;
+                };
+                if !entry.file_type()?.is_dir() || !valid_unit_name(&name) {
+                    skipped += 1;
+                    continue;
+                }
+                // A collection can stop after removing its last marker but
+                // before removing the empty trash directory. `remove_dir`
+                // cannot delete an unrecognized payload in this recovery path.
+                if is_trash && fs::read_dir(&directory)?.next().is_none() {
+                    if !dry_run {
+                        fs::remove_dir(&directory)?;
+                    }
+                    reclaimed_paths.insert(directory);
+                    reclaimed += 1;
+                    continue;
+                }
+                let marker = directory.join(MARKER);
+                if !regular_file(&marker)? {
+                    skipped += 1;
+                    continue;
+                }
+                let Some(record) = Record::parse(&fs::read(&marker)?, &name) else {
+                    skipped += 1;
+                    continue;
+                };
+                if !is_trash && !record.expired(now, max_age) {
+                    retained += 1;
+                    continue;
+                }
+                if !plain_tree(&directory)? {
+                    skipped += 1;
+                    continue;
+                }
+                let destination = trash.join(&name);
+                if !is_trash {
+                    match fs::symlink_metadata(&destination) {
+                        Ok(_) if !(dry_run && reclaimed_paths.contains(&destination)) => {
+                            skipped += 1;
+                            continue;
+                        }
+                        Ok(_) => {}
+                        Err(error) if error.kind() == std::io::ErrorKind::NotFound => {}
+                        Err(error) => return Err(error.into()),
+                    }
+                }
+                ws.gctx()
+                    .shell()
+                    .status(if dry_run { "Would expire" } else { "Expiring" }, &name)?;
+                if !is_trash && !dry_run {
+                    create_plain_descendants(&profile, &trash)?;
+                    // Removing files from a finalized session in place can
+                    // leave a usable dep-graph with a missing query cache after
+                    // interruption. Hide the entire configuration atomically
+                    // before deleting any files, while holding the profile lock.
+                    fs::rename(&directory, &destination)?;
+                }
+                let deletion = if is_trash || dry_run {
+                    &directory
+                } else {
+                    &destination
+                };
+                remove_retired_configuration(&mut context, deletion)?;
+                if is_trash {
+                    reclaimed_paths.insert(directory);
+                    reclaimed += 1;
+                } else {
+                    removed += 1;
                 }
             }
-            if !dry_run {
-                // CleanContext can report an inaccessible child without failing.
-                // Do not discard ownership if any payload remains to be retried.
-                for child in fs::read_dir(&directory)? {
-                    ensure!(
-                        child?.file_name() == MARKER,
-                        "incremental payload remains after cleanup: {}",
-                        directory.display()
-                    );
-                }
-            }
-            context.rm_rf(&marker)?;
-            if !dry_run {
-                fs::remove_dir(&directory)?;
-            }
-            removed += 1;
         }
     }
     ws.gctx().shell().status(
         "Incremental",
-        format!("{removed} configurations eligible, {retained} retained, {skipped} unrecognized, {busy} busy profiles"),
+        format!("{removed} configurations eligible, {reclaimed} trash entries eligible, {retained} retained, {skipped} unrecognized, {busy} busy profiles"),
     )?;
     context.display_summary()
+}
+
+/// Keeps retired ownership until every payload file has been removed.
+fn remove_retired_configuration(
+    context: &mut CleanContext<'_>,
+    directory: &Path,
+) -> CargoResult<()> {
+    for child in fs::read_dir(directory)? {
+        let child = child?;
+        if child.file_name() != MARKER {
+            context.rm_rf(&child.path())?;
+        }
+    }
+    if !context.dry_run {
+        // CleanContext can report an inaccessible child without failing.
+        // Preserve the marker if any payload remains to be retried.
+        for child in fs::read_dir(directory)? {
+            ensure!(
+                child?.file_name() == MARKER,
+                "incremental payload remains after cleanup: {}",
+                directory.display()
+            );
+        }
+    }
+    context.rm_rf(&directory.join(MARKER))?;
+    if !context.dry_run {
+        fs::remove_dir(directory)?;
+    }
+    Ok(())
 }
 
 fn now() -> CargoResult<u64> {
@@ -385,7 +530,7 @@ mod tests {
         assert!(record.expired(110, Duration::from_secs(10)));
         assert!(
             Record::parse(
-                br#"{"version":2,"unit":"example-0123456789abcdef","last_used":100}"#,
+                br#"{"version":3,"unit":"example-0123456789abcdef","last_used":100}"#,
                 name
             )
             .is_none()
@@ -399,6 +544,49 @@ mod tests {
         );
         assert!(!valid_unit_name("../example-0123456789abcdef"));
         assert!(!valid_unit_name("example-1234"));
+        assert!(valid_unit_name("café-0123456789abcdef"));
+    }
+
+    #[test]
+    fn throttled_records_expire_after_the_latest_possible_use() {
+        let record = Record {
+            version: 2,
+            unit: "example-0123456789abcdef".into(),
+            last_used: 100,
+        };
+        assert!(!record.needs_refresh(99));
+        assert!(!record.needs_refresh(100 + REFRESH_INTERVAL - 1));
+        assert!(record.needs_refresh(100 + REFRESH_INTERVAL));
+        assert!(!record.expired(99, Duration::ZERO));
+        assert!(!record.expired(100 + REFRESH_INTERVAL - 1, Duration::ZERO));
+        assert!(!record.expired(100 + REFRESH_INTERVAL + 9, Duration::from_secs(10)));
+        assert!(record.expired(100 + REFRESH_INTERVAL + 10, Duration::from_secs(10)));
+    }
+
+    #[test]
+    fn interrupted_enrollment_and_fresh_uses_do_not_rewrite_records() -> CargoResult<()> {
+        let root = tempfile::tempdir()?;
+        let managed = root.path().join(DIRECTORY);
+        let unit = managed.join("café-0123456789abcdef");
+        fs::create_dir_all(&unit)?;
+        // A killed initial writer can leave its staging file beside the unit,
+        // but the unit itself remains empty and can be enrolled on retry.
+        fs::write(managed.join(".tmp-interrupted"), b"partial json")?;
+        Tracker::default().record(root.path(), &unit)?;
+        let marker = unit.join(MARKER);
+        let before = fs::read(&marker)?;
+        let modified = fs::metadata(&marker)?.modified()?;
+        // A second writer must not need write permission when the lease is recent.
+        let mut permissions = fs::metadata(&managed)?.permissions();
+        let original = permissions.clone();
+        permissions.set_readonly(true);
+        fs::set_permissions(&managed, permissions)?;
+        let result = Tracker::default().record(root.path(), &unit);
+        fs::set_permissions(&managed, original)?;
+        result?;
+        assert_eq!(before, fs::read(&marker)?);
+        assert_eq!(modified, fs::metadata(&marker)?.modified()?);
+        Ok(())
     }
 
     #[cfg(unix)]

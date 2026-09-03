@@ -66,13 +66,13 @@ The output directory is deliberately retained as evidence. It contains disposabl
 source archives, build artifacts and a cache backup; remove it only when the run is
 no longer needed and no process is using it.
 
-## Recorded result: macOS arm64
+## Current release expiry result: macOS arm64
 
 The September 3, 2026 run used Ruff revision
-`0a5ec91697d9d3267392b471580c67e694b9e318` and Ohm 1.98.0-8. The
-[checked-in receipt](results/macos-aarch64.json) preserves executable and source
-hashes, per-unit payload digests, cleanup output, exact measured compiler arguments,
-artifact freshness and all eight timing samples.
+`0a5ec91697d9d3267392b471580c67e694b9e318`, Ohm 1.98.0-8, and the fixed
+release Cargo executable. The [expiry receipt](results/expiry-release-macos-aarch64.json)
+preserves source and executable hashes, per-unit payload digests, cleanup output,
+measured compiler arguments, artifact freshness, and all eight timing samples.
 
 Three debug configurations produced 15 caches across five workspace crates. After
 simulating 40 days of inactivity and refreshing debug=2, the 30-day collection
@@ -82,26 +82,111 @@ removed the ten caches belonging to debug=0 and debug=1:
 | --- | ---: | ---: |
 | Configuration caches | 15 | 5 |
 | Files | 786 | 262 |
-| Logical size | 349.43 MiB | 128.05 MiB |
-| Allocated size, deduplicated by inode | 353.44 MiB | 129.46 MiB |
+| Logical size | 349.42 MiB | 128.05 MiB |
+| Allocated size, deduplicated by inode | 353.02 MiB | 129.14 MiB |
 
-The reduction was **221.38 MiB of logical data, or 63.4%**. Allocation estimates
-fell by 223.98 MiB; these are not physical free-space measurements and do not
+The reduction was **221.37 MiB of logical data, or 63.4%**. Allocation estimates
+fell by 223.88 MiB; these are not physical free-space measurements and do not
 account for shared APFS extents. The dry run changed no snapshot fields. All five
 retained caches were unchanged. Both configurations tested immediately after
 collection (debug=2 and debug=0) reported all 97 artifacts fresh and performed no
 compilation.
+
+Next-edit timings were collected with the earlier release Cargo executable,
+before the final hash-container and worktree-trash-discovery changes. The receipt
+records that executable separately; the collection checks above were repeated
+with the final executable used by the tracking benchmark below. Both runs use the
+same Ohm compiler and pinned Ruff source.
 
 Each measured next edit compiled only `ruff_python_parser`, with 96 other artifacts
 fresh. The expired configuration took longer in both counterbalanced blocks:
 
 | Sample order (A = retained, B = expired) | Retained median rustc time | Expired median rustc time |
 | --- | ---: | ---: |
-| ABBA | 0.469 s | 2.146 s |
-| BAAB | 0.239 s | 0.920 s |
+| ABBA | 0.246 s | 0.921 s |
+| BAAB | 0.243 s | 0.902 s |
 
-Timings were substantially lower in the second block, so the pooled ratio is not
-a stable performance estimate. This run demonstrates the intended tradeoff: reclaiming old
-configuration caches preserves fresh builds, while revisiting one costs more on
-its next source edit. Retention ages were simulated; this is one local workload,
-not a measurement of long-term cache usage.
+The pooled medians were 0.244 s retained and 0.903 s expired: about 0.66 s extra
+compiler time for this edit. This is one local package and edit, not a general
+build-speed estimate. Retention ages were simulated; the run does not measure
+long-term cache usage. It demonstrates that reclaiming old configuration caches
+preserves fresh artifacts, while revisiting an evicted configuration costs more
+on its next source edit.
+
+The [first-prototype receipt](results/macos-aarch64.json) is retained as historical
+evidence from before the correctness and tracking-overhead fixes. The current
+measurements above supersede it for this implementation.
+
+## Measure tracking overhead separately
+
+Expiry makes the next edit to an evicted configuration slower. Tracking can also
+add work to an otherwise fresh build, so measure it independently with one pinned
+Cargo executable. Prefer a release build with `--features ohm-defaults`; the
+`--cargo-build-profile` argument records how that executable was built and does
+not compile it. Run this while no other compilation or benchmark is active:
+
+```sh
+python3 benches/incremental-gc/tracking_perf.py \
+  --cargo /absolute/path/to/release/cargo \
+  --cargo-build-profile release \
+  --source /absolute/path/to/fixed/ruff-source \
+  --output /private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/tracking-release
+```
+
+The source must be an existing fixed Ruff snapshot with `Cargo.lock`, and its
+registry dependencies must already be available in the shared Cargo home. The
+harness does not edit that source. It creates a second workspace containing 100
+tiny local dependencies and a root crate, making per-unit bookkeeping visible
+without introducing registry or compilation work into the measured samples.
+
+Both modes explicitly enable fine-grained locking and shared registry caching.
+Mode A omits `-Zohm-incremental-gc`; mode B enables it. They use the same Cargo
+executable, Ohm compiler, source, flags, and new shared-build root, with separate
+fixed target namespaces. Do not alternate the flag in a single namespace: output
+warmed with tracking disabled can already be fresh when tracking is enabled,
+without having created a managed incremental payload. Separate namespaces let
+each mode populate its own caches before timing.
+
+After warming both modes until all compiler artifacts are fresh, the harness
+runs 32 no-op builds per workload in repeated ABBA/BAAB order. Every measured
+artifact must remain fresh. It records wall times, all per-run commands and Cargo
+JSON output, executable and source hashes, paired four-run block differences,
+and an approximate confidence interval to show local timing noise. Its eight
+serial block measurements are not independent machines or workloads; a small
+percentage within that noise is not evidence of a performance improvement.
+
+Ownership-marker snapshots compare content, modification time, and inode before
+and after each workload. They show whether the fresh invocations rewrote markers;
+they do not count every filesystem syscall. The result also verifies that the
+source snapshots and Cargo/rustc executables did not change. All output remains
+under the bounded experiment directory as durable evidence.
+
+Current version-2 ownership records keep the actual refresh time in `last_used`.
+Fresh invocations within one hour validate existing records without rewriting
+them. Collection adds that one-hour interval to the recorded time before testing
+expiry, so a recent use omitted by throttling cannot cause premature eviction.
+This can retain a cache for up to one extra hour, including with `--max-age '0 seconds'`.
+Version-1 records remain readable and use their original expiry semantics; a new
+use upgrades them to version 2.
+
+### Current release tracking result: macOS arm64
+
+The [release tracking receipt](results/tracking-release-macos-aarch64.json) records
+32 fresh builds per workload on September 3, 2026, with the fixed Cargo executable
+SHA-256 `f6e6e80c52b6b6ddedc44696ee333ae2a2113bea4201e325168bc33c896257bb`
+and Ohm 1.98.0-8. Both modes used that same release executable.
+
+| Fresh-build workload | Tracked local units | Disabled mean | Enabled mean | Difference |
+| --- | ---: | ---: | ---: | ---: |
+| Ruff parser, 97 artifacts | 5 | 79.48 ms | 78.42 ms | -1.06 ms (-1.3%) |
+| Synthetic, 101 artifacts | 101 | 47.58 ms | 49.23 ms | +1.65 ms (+3.5%) |
+
+The approximate paired-block intervals were -3.31 to +1.19 ms for Ruff and
+-0.25 to +3.56 ms for the synthetic graph. Both include zero: this run does not
+establish a speedup, zero overhead, or a precise slowdown percentage. Every
+measured artifact was fresh, and none of the 106 ownership markers changed in
+content, modification time, or inode. The repeated writes within the refresh
+interval are gone. Validation still reads markers and adds bookkeeping.
+
+This compares enabled and disabled tracking within one executable. It does not
+measure the speed difference between Cargo revisions or build profiles.
