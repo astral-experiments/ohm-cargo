@@ -356,6 +356,8 @@ pub struct BuildRunner<'a, 'gctx> {
     pub mtime_cache: HashMap<PathBuf, FileTime>,
     /// Cache of file checksums to reduce filesystem reads.
     pub checksum_cache: HashMap<PathBuf, Checksum>,
+    /// Incremental ownership paths already checked under this build's leases.
+    pub(crate) incremental_gc: crate::core::incremental_gc::Tracker,
     /// A set used to track which units have been compiled.
     /// A unit may appear in the job graph multiple times as a dependency of
     /// multiple packages, but it only needs to run once.
@@ -486,6 +488,7 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
             fingerprints: HashMap::default(),
             mtime_cache: HashMap::default(),
             checksum_cache: HashMap::default(),
+            incremental_gc: crate::core::incremental_gc::Tracker::default(),
             compiled: HashSet::default(),
             build_scripts: HashMap::default(),
             build_explicit_deps: HashMap::default(),

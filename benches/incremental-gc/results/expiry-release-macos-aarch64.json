@@ -1,0 +1,1113 @@
+{
+  "caveats": [
+    "Retention ages are simulated, not observed over 40 days.",
+    "The workload is one package from a pinned real workspace; it is not a fleet estimate.",
+    "Allocated byte counts deduplicate hardlinks by inode; they do not account for shared APFS extents.",
+    "An unmeasured build restores baseline source and artifacts before each trial, then its incremental cache is restored or removed.",
+    "Deleting incremental state keeps fresh artifacts reusable but can slow the next source edit."
+  ],
+  "commands": {
+    "expired-noop-after-gc": {
+      "argv": [
+        "/private/tmp/codex-cargo-targets/cargo/ohm-incremental-cache-gc/ohm/release/cargo",
+        "-Zohm-incremental-gc",
+        "-Zfine-grain-locking",
+        "-Zohm-shared-registry-cache",
+        "build",
+        "--locked",
+        "--lib",
+        "-p",
+        "ruff_python_parser",
+        "--jobs",
+        "8",
+        "--config",
+        "profile.dev.debug=0",
+        "--message-format=json"
+      ],
+      "artifact_count": 97,
+      "compilations": [],
+      "cwd": "/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/hardened-final-correctness/source",
+      "fresh_artifact_count": 97,
+      "returncode": 0,
+      "wall_seconds": 0.1174790000077337
+    },
+    "gc": {
+      "argv": [
+        "/private/tmp/codex-cargo-targets/cargo/ohm-incremental-cache-gc/ohm/release/cargo",
+        "-Zohm-incremental-gc",
+        "-Zfine-grain-locking",
+        "-Zohm-shared-registry-cache",
+        "clean",
+        "incremental",
+        "--max-age",
+        "30 days"
+      ],
+      "cwd": "/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/hardened-final-correctness/source",
+      "returncode": 0,
+      "stderr": "    Expiring ruff_python_trivia-781ebb0694af8b48\n    Expiring ruff_source_file-0e047752d8a1ee8c\n    Expiring ruff_python_ast-f0a9928f8f22a789\n    Expiring ruff_python_parser-b454b2e291776aa3\n    Expiring ruff_python_ast-fcdef6522ca46c76\n    Expiring ruff_source_file-d12691de44578d24\n    Expiring ruff_python_parser-04b1d84ed12c6293\n    Expiring ruff_python_trivia-aa0ea0b46c3b70d9\n    Expiring ruff_text_size-652784a9f4d2ff16\n    Expiring ruff_text_size-a8a2b27219b31ac7\n Incremental 10 configurations eligible, 0 trash entries eligible, 5 retained, 0 unrecognized, 0 busy profiles\n     Removed 524 files, 221.4MiB total\n",
+      "stdout": "",
+      "wall_seconds": 0.06123179104179144
+    },
+    "gc-dry-run": {
+      "argv": [
+        "/private/tmp/codex-cargo-targets/cargo/ohm-incremental-cache-gc/ohm/release/cargo",
+        "-Zohm-incremental-gc",
+        "-Zfine-grain-locking",
+        "-Zohm-shared-registry-cache",
+        "clean",
+        "incremental",
+        "--max-age",
+        "30 days",
+        "--dry-run"
+      ],
+      "cwd": "/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/hardened-final-correctness/source",
+      "returncode": 0,
+      "stderr": "Would expire ruff_python_trivia-781ebb0694af8b48\nWould expire ruff_source_file-0e047752d8a1ee8c\nWould expire ruff_python_ast-f0a9928f8f22a789\nWould expire ruff_python_parser-b454b2e291776aa3\nWould expire ruff_python_ast-fcdef6522ca46c76\nWould expire ruff_source_file-d12691de44578d24\nWould expire ruff_python_parser-04b1d84ed12c6293\nWould expire ruff_python_trivia-aa0ea0b46c3b70d9\nWould expire ruff_text_size-652784a9f4d2ff16\nWould expire ruff_text_size-a8a2b27219b31ac7\n Incremental 10 configurations eligible, 0 trash entries eligible, 5 retained, 0 unrecognized, 0 busy profiles\n     Summary 524 files, 221.4MiB total\nwarning: no files deleted due to --dry-run\n",
+      "stdout": "",
+      "wall_seconds": 0.03150816704146564
+    },
+    "refresh-debug-2": {
+      "argv": [
+        "/private/tmp/codex-cargo-targets/cargo/ohm-incremental-cache-gc/ohm/release/cargo",
+        "-Zohm-incremental-gc",
+        "-Zfine-grain-locking",
+        "-Zohm-shared-registry-cache",
+        "build",
+        "--locked",
+        "--lib",
+        "-p",
+        "ruff_python_parser",
+        "--jobs",
+        "8",
+        "--config",
+        "profile.dev.debug=2",
+        "--message-format=json"
+      ],
+      "artifact_count": 97,
+      "compilations": [],
+      "cwd": "/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/hardened-final-correctness/source",
+      "fresh_artifact_count": 97,
+      "returncode": 0,
+      "wall_seconds": 0.08435562485828996
+    },
+    "retained-noop-after-gc": {
+      "argv": [
+        "/private/tmp/codex-cargo-targets/cargo/ohm-incremental-cache-gc/ohm/release/cargo",
+        "-Zohm-incremental-gc",
+        "-Zfine-grain-locking",
+        "-Zohm-shared-registry-cache",
+        "build",
+        "--locked",
+        "--lib",
+        "-p",
+        "ruff_python_parser",
+        "--jobs",
+        "8",
+        "--config",
+        "profile.dev.debug=2",
+        "--message-format=json"
+      ],
+      "artifact_count": 97,
+      "compilations": [],
+      "cwd": "/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/hardened-final-correctness/source",
+      "fresh_artifact_count": 97,
+      "returncode": 0,
+      "wall_seconds": 0.08293675002641976
+    }
+  },
+  "gc": {
+    "after": {
+      "files": 262,
+      "hardlinked_files": 232,
+      "logical_bytes": 134270383,
+      "payload_sha256": "7d00d38b3edbe2cc5764a3d2f2ddc09956b61b923e0448b4449cacd1af1e5dc9",
+      "unique_inode_allocated_bytes": 135417856,
+      "unique_inode_logical_bytes": 134270383
+    },
+    "before": {
+      "files": 786,
+      "hardlinked_files": 469,
+      "logical_bytes": 366397995,
+      "payload_sha256": "9498b3a13315f4318dd56c7c8a20fd717fa490863009ea769c2c0457b5cb6b34",
+      "unique_inode_allocated_bytes": 370171904,
+      "unique_inode_logical_bytes": 366397995
+    },
+    "dry_run_unchanged": true,
+    "expired_noop_fresh": true,
+    "expired_units": [
+      "89ed7c307a11a2c5/ohm-gc-v1/ruff_python_ast-f0a9928f8f22a789",
+      "89ed7c307a11a2c5/ohm-gc-v1/ruff_python_ast-fcdef6522ca46c76",
+      "89ed7c307a11a2c5/ohm-gc-v1/ruff_python_parser-04b1d84ed12c6293",
+      "89ed7c307a11a2c5/ohm-gc-v1/ruff_python_parser-b454b2e291776aa3",
+      "89ed7c307a11a2c5/ohm-gc-v1/ruff_python_trivia-781ebb0694af8b48",
+      "89ed7c307a11a2c5/ohm-gc-v1/ruff_python_trivia-aa0ea0b46c3b70d9",
+      "89ed7c307a11a2c5/ohm-gc-v1/ruff_source_file-0e047752d8a1ee8c",
+      "89ed7c307a11a2c5/ohm-gc-v1/ruff_source_file-d12691de44578d24",
+      "89ed7c307a11a2c5/ohm-gc-v1/ruff_text_size-652784a9f4d2ff16",
+      "89ed7c307a11a2c5/ohm-gc-v1/ruff_text_size-a8a2b27219b31ac7"
+    ],
+    "removed_logical_bytes": 232127612,
+    "removed_unique_inode_allocated_bytes": 234754048,
+    "retained_noop_fresh": true,
+    "retained_payload_unchanged": true,
+    "retained_units": [
+      "89ed7c307a11a2c5/ohm-gc-v1/ruff_python_ast-f77b4379aa0c06ce",
+      "89ed7c307a11a2c5/ohm-gc-v1/ruff_python_parser-52d1f45f8bbc0f89",
+      "89ed7c307a11a2c5/ohm-gc-v1/ruff_python_trivia-8407994d818ad5cf",
+      "89ed7c307a11a2c5/ohm-gc-v1/ruff_source_file-5741715776303b19",
+      "89ed7c307a11a2c5/ohm-gc-v1/ruff_text_size-3e1f5436a0cd19f9"
+    ],
+    "seeded_units": 15
+  },
+  "next_edit_validation": {
+    "commands": {
+      "edit-1-retained": {
+        "argv": [
+          "/private/tmp/codex-cargo-targets/cargo/ohm-incremental-cache-gc/ohm/release/cargo",
+          "-Zohm-incremental-gc",
+          "-Zfine-grain-locking",
+          "-Zohm-shared-registry-cache",
+          "build",
+          "--locked",
+          "--lib",
+          "-p",
+          "ruff_python_parser",
+          "--jobs",
+          "8",
+          "--config",
+          "profile.dev.debug=0",
+          "--message-format=json"
+        ],
+        "artifact_count": 97,
+        "compilations": [
+          {
+            "argv_sha256": "554708e8db62ccd36bc27a2c0d9e807b93c6171b21a1adb6d9e3997106a25daf",
+            "compilation": true,
+            "returncode": 0,
+            "wall_seconds": 0.24929154221899807
+          }
+        ],
+        "cwd": "/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/hardened-results/source",
+        "fresh_artifact_count": 96,
+        "returncode": 0,
+        "wall_seconds": 0.7477131660562009
+      },
+      "edit-2-expired": {
+        "argv": [
+          "/private/tmp/codex-cargo-targets/cargo/ohm-incremental-cache-gc/ohm/release/cargo",
+          "-Zohm-incremental-gc",
+          "-Zfine-grain-locking",
+          "-Zohm-shared-registry-cache",
+          "build",
+          "--locked",
+          "--lib",
+          "-p",
+          "ruff_python_parser",
+          "--jobs",
+          "8",
+          "--config",
+          "profile.dev.debug=0",
+          "--message-format=json"
+        ],
+        "artifact_count": 97,
+        "compilations": [
+          {
+            "argv_sha256": "554708e8db62ccd36bc27a2c0d9e807b93c6171b21a1adb6d9e3997106a25daf",
+            "compilation": true,
+            "returncode": 0,
+            "wall_seconds": 0.938921167049557
+          }
+        ],
+        "cwd": "/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/hardened-results/source",
+        "fresh_artifact_count": 96,
+        "returncode": 0,
+        "wall_seconds": 1.4377940418198705
+      },
+      "edit-3-expired": {
+        "argv": [
+          "/private/tmp/codex-cargo-targets/cargo/ohm-incremental-cache-gc/ohm/release/cargo",
+          "-Zohm-incremental-gc",
+          "-Zfine-grain-locking",
+          "-Zohm-shared-registry-cache",
+          "build",
+          "--locked",
+          "--lib",
+          "-p",
+          "ruff_python_parser",
+          "--jobs",
+          "8",
+          "--config",
+          "profile.dev.debug=0",
+          "--message-format=json"
+        ],
+        "artifact_count": 97,
+        "compilations": [
+          {
+            "argv_sha256": "554708e8db62ccd36bc27a2c0d9e807b93c6171b21a1adb6d9e3997106a25daf",
+            "compilation": true,
+            "returncode": 0,
+            "wall_seconds": 0.902274584164843
+          }
+        ],
+        "cwd": "/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/hardened-results/source",
+        "fresh_artifact_count": 96,
+        "returncode": 0,
+        "wall_seconds": 1.3909206669777632
+      },
+      "edit-4-retained": {
+        "argv": [
+          "/private/tmp/codex-cargo-targets/cargo/ohm-incremental-cache-gc/ohm/release/cargo",
+          "-Zohm-incremental-gc",
+          "-Zfine-grain-locking",
+          "-Zohm-shared-registry-cache",
+          "build",
+          "--locked",
+          "--lib",
+          "-p",
+          "ruff_python_parser",
+          "--jobs",
+          "8",
+          "--config",
+          "profile.dev.debug=0",
+          "--message-format=json"
+        ],
+        "artifact_count": 97,
+        "compilations": [
+          {
+            "argv_sha256": "554708e8db62ccd36bc27a2c0d9e807b93c6171b21a1adb6d9e3997106a25daf",
+            "compilation": true,
+            "returncode": 0,
+            "wall_seconds": 0.24292229185812175
+          }
+        ],
+        "cwd": "/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/hardened-results/source",
+        "fresh_artifact_count": 96,
+        "returncode": 0,
+        "wall_seconds": 0.7450978339184076
+      },
+      "edit-5-expired": {
+        "argv": [
+          "/private/tmp/codex-cargo-targets/cargo/ohm-incremental-cache-gc/ohm/release/cargo",
+          "-Zohm-incremental-gc",
+          "-Zfine-grain-locking",
+          "-Zohm-shared-registry-cache",
+          "build",
+          "--locked",
+          "--lib",
+          "-p",
+          "ruff_python_parser",
+          "--jobs",
+          "8",
+          "--config",
+          "profile.dev.debug=0",
+          "--message-format=json"
+        ],
+        "artifact_count": 97,
+        "compilations": [
+          {
+            "argv_sha256": "554708e8db62ccd36bc27a2c0d9e807b93c6171b21a1adb6d9e3997106a25daf",
+            "compilation": true,
+            "returncode": 0,
+            "wall_seconds": 0.9036992499604821
+          }
+        ],
+        "cwd": "/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/hardened-results/source",
+        "fresh_artifact_count": 96,
+        "returncode": 0,
+        "wall_seconds": 1.4052098330575973
+      },
+      "edit-6-retained": {
+        "argv": [
+          "/private/tmp/codex-cargo-targets/cargo/ohm-incremental-cache-gc/ohm/release/cargo",
+          "-Zohm-incremental-gc",
+          "-Zfine-grain-locking",
+          "-Zohm-shared-registry-cache",
+          "build",
+          "--locked",
+          "--lib",
+          "-p",
+          "ruff_python_parser",
+          "--jobs",
+          "8",
+          "--config",
+          "profile.dev.debug=0",
+          "--message-format=json"
+        ],
+        "artifact_count": 97,
+        "compilations": [
+          {
+            "argv_sha256": "554708e8db62ccd36bc27a2c0d9e807b93c6171b21a1adb6d9e3997106a25daf",
+            "compilation": true,
+            "returncode": 0,
+            "wall_seconds": 0.24423166690394282
+          }
+        ],
+        "cwd": "/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/hardened-results/source",
+        "fresh_artifact_count": 96,
+        "returncode": 0,
+        "wall_seconds": 0.7454367920290679
+      },
+      "edit-7-retained": {
+        "argv": [
+          "/private/tmp/codex-cargo-targets/cargo/ohm-incremental-cache-gc/ohm/release/cargo",
+          "-Zohm-incremental-gc",
+          "-Zfine-grain-locking",
+          "-Zohm-shared-registry-cache",
+          "build",
+          "--locked",
+          "--lib",
+          "-p",
+          "ruff_python_parser",
+          "--jobs",
+          "8",
+          "--config",
+          "profile.dev.debug=0",
+          "--message-format=json"
+        ],
+        "artifact_count": 97,
+        "compilations": [
+          {
+            "argv_sha256": "554708e8db62ccd36bc27a2c0d9e807b93c6171b21a1adb6d9e3997106a25daf",
+            "compilation": true,
+            "returncode": 0,
+            "wall_seconds": 0.2421793749090284
+          }
+        ],
+        "cwd": "/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/hardened-results/source",
+        "fresh_artifact_count": 96,
+        "returncode": 0,
+        "wall_seconds": 0.73953020805493
+      },
+      "edit-8-expired": {
+        "argv": [
+          "/private/tmp/codex-cargo-targets/cargo/ohm-incremental-cache-gc/ohm/release/cargo",
+          "-Zohm-incremental-gc",
+          "-Zfine-grain-locking",
+          "-Zohm-shared-registry-cache",
+          "build",
+          "--locked",
+          "--lib",
+          "-p",
+          "ruff_python_parser",
+          "--jobs",
+          "8",
+          "--config",
+          "profile.dev.debug=0",
+          "--message-format=json"
+        ],
+        "artifact_count": 97,
+        "compilations": [
+          {
+            "argv_sha256": "554708e8db62ccd36bc27a2c0d9e807b93c6171b21a1adb6d9e3997106a25daf",
+            "compilation": true,
+            "returncode": 0,
+            "wall_seconds": 0.9003821250516921
+          }
+        ],
+        "cwd": "/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/hardened-results/source",
+        "fresh_artifact_count": 96,
+        "returncode": 0,
+        "wall_seconds": 1.4024655828252435
+      }
+    },
+    "next_edit": {
+      "blocks": [
+        {
+          "median_rustc_seconds": {
+            "expired": 0.9205978756072,
+            "retained": 0.2461069170385599
+          },
+          "order": "ABBA"
+        },
+        {
+          "median_rustc_seconds": {
+            "expired": 0.9020406875060871,
+            "retained": 0.24320552090648562
+          },
+          "order": "BAAB"
+        }
+      ],
+      "debug": 0,
+      "expired_over_retained": 3.707193181216449,
+      "median_rustc_seconds": {
+        "expired": 0.9029869170626625,
+        "retained": 0.2435769793810323
+      },
+      "samples": [
+        {
+          "cache": "retained",
+          "command": "edit-1-retained",
+          "rustc_seconds": 0.24929154221899807,
+          "wall_seconds": 0.7477131660562009
+        },
+        {
+          "cache": "expired",
+          "command": "edit-2-expired",
+          "rustc_seconds": 0.938921167049557,
+          "wall_seconds": 1.4377940418198705
+        },
+        {
+          "cache": "expired",
+          "command": "edit-3-expired",
+          "rustc_seconds": 0.902274584164843,
+          "wall_seconds": 1.3909206669777632
+        },
+        {
+          "cache": "retained",
+          "command": "edit-4-retained",
+          "rustc_seconds": 0.24292229185812175,
+          "wall_seconds": 0.7450978339184076
+        },
+        {
+          "cache": "expired",
+          "command": "edit-5-expired",
+          "rustc_seconds": 0.9036992499604821,
+          "wall_seconds": 1.4052098330575973
+        },
+        {
+          "cache": "retained",
+          "command": "edit-6-retained",
+          "rustc_seconds": 0.24423166690394282,
+          "wall_seconds": 0.7454367920290679
+        },
+        {
+          "cache": "retained",
+          "command": "edit-7-retained",
+          "rustc_seconds": 0.2421793749090284,
+          "wall_seconds": 0.73953020805493
+        },
+        {
+          "cache": "expired",
+          "command": "edit-8-expired",
+          "rustc_seconds": 0.9003821250516921,
+          "wall_seconds": 1.4024655828252435
+        }
+      ],
+      "unit": "/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/hardened-results/build/debug/incremental/0a185a5cb1bb230b/ohm-gc-v1/ruff_python_parser-47d926a99fb0a7df"
+    },
+    "provenance": {
+      "age_simulation": "Set all prototype last_used markers to 40 days ago, then run a fresh debug=2 build.",
+      "cargo": "/private/tmp/codex-cargo-targets/cargo/ohm-incremental-cache-gc/ohm/release/cargo",
+      "cargo_build_profile": "release",
+      "cargo_sha256": "c3ee51bcabb3ab4bfbc8eb2e2296652ae317f7a7d3a71edaf0862d9ac0263714",
+      "cargo_source": "/private/tmp/ohm-incremental-cache-gc",
+      "cargo_source_delta": {
+        "base_revision": "7f48c78d59428880fd687a83d0ad2ee9ebf82cf5",
+        "tracked_diff_sha256": "95d186f5b5432c4970a919e73997c03ea0f4e800f034f66b5c185b9c24be84ca",
+        "untracked_file_sha256": {
+          "benches/incremental-gc/tracking_perf.py": "5159d28d2ed2124b4b8877db9c4ee19b9982438359051c5d7f5cfca7eabb38a5",
+          "tests/testsuite/incremental_gc_reuse.rs": "4f4c083a9c8a1521d6bbc23e855a945cd5a4fa5c3e02bbd97ef8b815f57251ee"
+        }
+      },
+      "cargo_source_delta_sha256": "1bc09e039272f010334922979db9c794d6a4afaab11b439299374df4940cc25c",
+      "cargo_version": "cargo 1.98.0 (7f48c78d5 2026-09-03)\nrelease: 1.98.0\ncommit-hash: 7f48c78d59428880fd687a83d0ad2ee9ebf82cf5\ncommit-date: 2026-09-03\nhost: aarch64-apple-darwin\nlibgit2: 1.9.4 (sys:0.21.0 vendored)\nlibcurl: 8.7.1 (sys:0.4.90+curl-8.21.0 system ssl:(SecureTransport) LibreSSL/3.3.6)\nos: Mac OS 26.6.2 [64-bit]\n",
+      "configurations": [
+        0,
+        1,
+        2
+      ],
+      "edit_file": "crates/ruff_python_parser/src/lib.rs",
+      "environment": {
+        "CARGO_BUILD_BUILD_DIR": "/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/hardened-results/build",
+        "CARGO_HOME": "/private/tmp/codex-cargo-home",
+        "CARGO_INCREMENTAL": "1",
+        "CARGO_TARGET_DIR": "/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/hardened-results/target",
+        "CARGO_TERM_COLOR": "never",
+        "CARGO_UNSTABLE_OHM_NATIVE_TOOL_TRUST": "all",
+        "CARGO_UNSTABLE_OHM_PROC_MACRO_TRUST": "all",
+        "RUSTC": "/Users/charliemarsh/.local/share/ohm/toolchains/ohm-1.98.0-8/bin/rustc",
+        "RUSTC_WORKSPACE_WRAPPER": "/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/hardened-results/rustc-wrapper.py",
+        "RUSTUP_TOOLCHAIN": "ohm"
+      },
+      "harness_sha256": "11516421faef248df278901481a87693c70c6ccf44f56808e42132c1e37c1c3b",
+      "jobs": 8,
+      "package": "ruff_python_parser",
+      "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+      "python": "3.14.5 (main, May 10 2026, 10:21:34) [Clang 21.0.0 (clang-2100.0.123.102)]",
+      "rustc": "/Users/charliemarsh/.local/share/ohm/toolchains/ohm-1.98.0-8/bin/rustc",
+      "rustc_sha256": "60d52a0682970d3e1667b20ad59992b565af942c10b321e9a8888449b28e2bb5",
+      "rustc_version": "rustc 1.98.0-dev (ca4f4c0a4 2026-09-03) (ohm-1.98.0-8)\nbinary: rustc\ncommit-hash: ca4f4c0a4aa9f79c51046df02c69a9d2d25a9823\ncommit-date: 2026-09-03\nhost: aarch64-apple-darwin\nrelease: 1.98.0-dev\nLLVM version: 22.1.8\n",
+      "source": "/Users/charliemarsh/code/oss/ruff",
+      "source_revision": "0a5ec91697d9d3267392b471580c67e694b9e318"
+    },
+    "rustc_argv_by_sha256": {
+      "554708e8db62ccd36bc27a2c0d9e807b93c6171b21a1adb6d9e3997106a25daf": [
+        "/Users/charliemarsh/.local/share/ohm/toolchains/ohm-1.98.0-8/bin/rustc",
+        "-Zpublic-api-hash",
+        "-Zcache-proc-macros",
+        "-Zthreads=8",
+        "-Zohm-caller-local-cgus",
+        "-Zohm-stable-cgu-merging",
+        "-Zohm-incremental-mono-partitions",
+        "-Zremap-cwd-prefix=/ohm-workspace/v6",
+        "--crate-name",
+        "ruff_python_parser",
+        "--edition=2024",
+        "crates/ruff_python_parser/src/lib.rs",
+        "--error-format=json",
+        "--json=diagnostic-rendered-ansi,artifacts,future-incompat",
+        "--crate-type",
+        "lib",
+        "--emit=dep-info,metadata,link",
+        "-C",
+        "opt-level=1",
+        "-C",
+        "lto=off",
+        "-C",
+        "embed-bitcode=no",
+        "--warn=clippy::pedantic",
+        "--warn=clippy::unused_peekable",
+        "--warn=unsafe_code",
+        "--warn=unreachable_pub",
+        "--allow=clippy::unnecessary_debug_formatting",
+        "--warn=unexpected_cfgs",
+        "--allow=clippy::too_many_lines",
+        "--allow=clippy::single_match_else",
+        "--allow=clippy::similar_names",
+        "--warn=clippy::rest_pat_in_fully_bound_structs",
+        "--warn=clippy::redundant_clone",
+        "--warn=clippy::rc_mutex",
+        "--warn=clippy::rc_buffer",
+        "--warn=clippy::print_stdout",
+        "--warn=clippy::print_stderr",
+        "--allow=clippy::needless_raw_string_hashes",
+        "--allow=clippy::needless_continue",
+        "--allow=clippy::must_use_candidate",
+        "--allow=clippy::module_name_repetitions",
+        "--allow=clippy::missing_panics_doc",
+        "--allow=clippy::missing_errors_doc",
+        "--allow=clippy::match_same_arms",
+        "--allow=clippy::map_unwrap_or",
+        "--warn=clippy::iter_over_hash_type",
+        "--allow=clippy::implicit_hasher",
+        "--allow=clippy::ignore_without_reason",
+        "--allow=clippy::if_not_else",
+        "--warn=clippy::get_unwrap",
+        "--warn=clippy::exit",
+        "--warn=clippy::empty_structs_with_brackets",
+        "--warn=clippy::empty_drop",
+        "--allow=clippy::disallowed_methods",
+        "--warn=clippy::debug_assert_with_mut_call",
+        "--warn=clippy::dbg_macro",
+        "--allow=clippy::collapsible_match",
+        "--allow=clippy::collapsible_if",
+        "--allow=clippy::collapsible_else_if",
+        "--allow=clippy::char_lit_as_u8",
+        "--check-cfg",
+        "cfg(fuzzing)",
+        "--check-cfg",
+        "cfg(codspeed)",
+        "-C",
+        "debug-assertions=on",
+        "--check-cfg",
+        "cfg(docsrs,test)",
+        "--check-cfg",
+        "cfg(feature, values())",
+        "-C",
+        "metadata=47d926a99fb0a7df",
+        "-C",
+        "extra-filename=-e45d63aba7f58ce1",
+        "--out-dir",
+        "/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/hardened-results/build/debug/build/workspaces/0a185a5cb1bb230b/cfa93722aa97c298-all-native-all/ruff_python_parser/e45d63aba7f58ce1/out",
+        "-C",
+        "incremental=/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/hardened-results/build/debug/incremental/0a185a5cb1bb230b/ohm-gc-v1/ruff_python_parser-47d926a99fb0a7df",
+        "-C",
+        "strip=debuginfo",
+        "-L",
+        "dependency=/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/hardened-results/build/debug/build/registries/cfa93722aa97c298-all-native-all/aho-corasick/7483c656441e0f90/out",
+        "-L",
+        "dependency=/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/hardened-results/build/debug/build/registries/cfa93722aa97c298-all-native-all/arrayvec/2ce6bf9f2aaf986a/out",
+        "-L",
+        "dependency=/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/hardened-results/build/debug/build/registries/cfa93722aa97c298-all-native-all/attribute-derive/0857cba027f21da2/out",
+        "-L",
+        "dependency=/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/hardened-results/build/debug/build/registries/cfa93722aa97c298-all-native-all/attribute-derive-macro/9c5fe24319ad63f0/out",
+        "-L",
+        "dependency=/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/hardened-results/build/debug/build/registries/cfa93722aa97c298-all-native-all/bitflags/85f172e7b6e8af71/out",
+        "-L",
+        "dependency=/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/hardened-results/build/debug/build/registries/cfa93722aa97c298-all-native-all/bstr/cc613f833e6a6a99/out",
+        "-L",
+        "dependency=/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/hardened-results/build/debug/build/registries/cfa93722aa97c298-all-native-all/castaway/6acb3c4d4054337d/out",
+        "-L",
+        "dependency=/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/hardened-results/build/debug/build/registries/cfa93722aa97c298-all-native-all/cfg-if/d52f97621c7e45f3/out",
+        "-L",
+        "dependency=/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/hardened-results/build/debug/build/registries/cfa93722aa97c298-all-native-all/char_str/2e844b7783357728/out",
+        "-L",
+        "dependency=/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/hardened-results/build/debug/build/registries/cfa93722aa97c298-all-native-all/collection_literals/ce051cb7a0f9bc50/out",
+        "-L",
+        "dependency=/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/hardened-results/build/debug/build/registries/cfa93722aa97c298-all-native-all/compact_str/0d59835893fa9689/out",
+        "-L",
+        "dependency=/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/hardened-results/build/debug/build/registries/cfa93722aa97c298-all-native-all/derive-where/8a33dfe0ac9d8903/out",
+        "-L",
+        "dependency=/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/hardened-results/build/debug/build/registries/cfa93722aa97c298-all-native-all/drop_bomb/e6bd6225602835de/out",
+        "-L",
+        "dependency=/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/hardened-results/build/debug/build/registries/cfa93722aa97c298-all-native-all/either/ac627a539615dcd3/out",
+        "-L",
+        "dependency=/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/hardened-results/build/debug/build/registries/cfa93722aa97c298-all-native-all/equivalent/dc15c6fe6d88a978/out",
+        "-L",
+        "dependency=/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/hardened-results/build/debug/build/registries/cfa93722aa97c298-all-native-all/get-size-derive2/c951eb68f6f5bbc7/out",
+        "-L",
+        "dependency=/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/hardened-results/build/debug/build/registries/cfa93722aa97c298-all-native-all/get-size2/f2a9ed09cd0a12d7/out",
+        "-L",
+        "dependency=/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/hardened-results/build/debug/build/registries/cfa93722aa97c298-all-native-all/hashbrown/68a07dbf3088567b/out",
+        "-L",
+        "dependency=/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/hardened-results/build/debug/build/registries/cfa93722aa97c298-all-native-all/heck/80f9ac2fcb599395/out",
+        "-L",
+        "dependency=/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/hardened-results/build/debug/build/registries/cfa93722aa97c298-all-native-all/indexmap/6afb2268b8fe02de/out",
+        "-L",
+        "dependency=/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/hardened-results/build/debug/build/registries/cfa93722aa97c298-all-native-all/interpolator/8097fe9cf9efc2dd/out",
+        "-L",
+        "dependency=/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/hardened-results/build/debug/build/registries/cfa93722aa97c298-all-native-all/is-macro/720345d1d74057e5/out",
+        "-L",
+        "dependency=/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/hardened-results/build/debug/build/registries/cfa93722aa97c298-all-native-all/itertools/15a3978b11d6eb66/out",
+        "-L",
+        "dependency=/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/hardened-results/build/debug/build/registries/cfa93722aa97c298-all-native-all/itoa/00f4b46bfbf37c8c/out",
+        "-L",
+        "dependency=/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/hardened-results/build/debug/build/registries/cfa93722aa97c298-all-native-all/libc/a7e5098e978206de/out",
+        "-L",
+        "dependency=/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/hardened-results/build/debug/build/registries/cfa93722aa97c298-all-native-all/manyhow/51c8b1183d60647f/out",
+        "-L",
+        "dependency=/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/hardened-results/build/debug/build/registries/cfa93722aa97c298-all-native-all/manyhow-macros/4d6d96ccbc536167/out",
+        "-L",
+        "dependency=/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/hardened-results/build/debug/build/registries/cfa93722aa97c298-all-native-all/memchr/6a63c0329e042d75/out",
+        "-L",
+        "dependency=/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/hardened-results/build/debug/build/registries/cfa93722aa97c298-all-native-all/ordermap/a1e4c03cff2b9ae8/out",
+        "-L",
+        "dependency=/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/hardened-results/build/debug/build/registries/cfa93722aa97c298-all-native-all/phf/fb7671b6476e89bc/out",
+        "-L",
+        "dependency=/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/hardened-results/build/debug/build/registries/cfa93722aa97c298-all-native-all/phf_shared/3119152de108d3ae/out",
+        "-L",
+        "dependency=/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/hardened-results/build/debug/build/registries/cfa93722aa97c298-all-native-all/proc-macro-utils/c258ba675390def1/out",
+        "-L",
+        "dependency=/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/hardened-results/build/debug/build/registries/cfa93722aa97c298-all-native-all/proc-macro2/b48d250a1a6c2d80/out",
+        "-L",
+        "dependency=/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/hardened-results/build/debug/build/registries/cfa93722aa97c298-all-native-all/psm/e09a4f066138434f/out",
+        "-L",
+        "dependency=/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/hardened-results/build/debug/build/registries/cfa93722aa97c298-all-native-all/quote/2f45ca87a54fdc51/out",
+        "-L",
+        "dependency=/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/hardened-results/build/debug/build/registries/cfa93722aa97c298-all-native-all/quote-use/7d735f6fd22a0c48/out",
+        "-L",
+        "dependency=/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/hardened-results/build/debug/build/registries/cfa93722aa97c298-all-native-all/quote-use-macros/6c226df92eaa0f73/out",
+        "-L",
+        "dependency=/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/hardened-results/build/debug/build/registries/cfa93722aa97c298-all-native-all/regex-automata/ffdde4ae05428628/out",
+        "-L",
+        "dependency=/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/hardened-results/build/debug/build/registries/cfa93722aa97c298-all-native-all/rustc-hash/ad3732c11dd8db84/out",
+        "-L",
+        "dependency=/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/hardened-results/build/debug/build/registries/cfa93722aa97c298-all-native-all/rustversion/c863450edd58f263/out",
+        "-L",
+        "dependency=/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/hardened-results/build/debug/build/registries/cfa93722aa97c298-all-native-all/ryu/42108bad97a52364/out",
+        "-L",
+        "dependency=/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/hardened-results/build/debug/build/registries/cfa93722aa97c298-all-native-all/siphasher/25a0b1b7fd20937d/out",
+        "-L",
+        "dependency=/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/hardened-results/build/debug/build/registries/cfa93722aa97c298-all-native-all/smallvec/8c23ac5a4eb3c83b/out",
+        "-L",
+        "dependency=/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/hardened-results/build/debug/build/registries/cfa93722aa97c298-all-native-all/smallvec/d041a8494fbc9c37/out",
+        "-L",
+        "dependency=/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/hardened-results/build/debug/build/registries/cfa93722aa97c298-all-native-all/stacker/a23d152e68a53628/out",
+        "-L",
+        "dependency=/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/hardened-results/build/debug/build/registries/cfa93722aa97c298-all-native-all/static_assertions/3694d042e3828c00/out",
+        "-L",
+        "dependency=/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/hardened-results/build/debug/build/registries/cfa93722aa97c298-all-native-all/syn/5bb10af7044ce6f3/out",
+        "-L",
+        "dependency=/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/hardened-results/build/debug/build/registries/cfa93722aa97c298-all-native-all/syn/fc3c7e146342a7d2/out",
+        "-L",
+        "dependency=/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/hardened-results/build/debug/build/registries/cfa93722aa97c298-all-native-all/thin-vec/b223c6323a7c2f9e/out",
+        "-L",
+        "dependency=/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/hardened-results/build/debug/build/registries/cfa93722aa97c298-all-native-all/thiserror/4d1c091bfe725efd/out",
+        "-L",
+        "dependency=/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/hardened-results/build/debug/build/registries/cfa93722aa97c298-all-native-all/thiserror-impl/2e01b0ae8024b2f9/out",
+        "-L",
+        "dependency=/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/hardened-results/build/debug/build/registries/cfa93722aa97c298-all-native-all/tinyvec/15bd35a18cb34c10/out",
+        "-L",
+        "dependency=/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/hardened-results/build/debug/build/registries/cfa93722aa97c298-all-native-all/tinyvec_macros/0a17b386d34edcae/out",
+        "-L",
+        "dependency=/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/hardened-results/build/debug/build/registries/cfa93722aa97c298-all-native-all/unicode-ident/31e78ac04e28cce2/out",
+        "-L",
+        "dependency=/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/hardened-results/build/debug/build/registries/cfa93722aa97c298-all-native-all/unicode-ident/505bdb463431c3c8/out",
+        "-L",
+        "dependency=/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/hardened-results/build/debug/build/registries/cfa93722aa97c298-all-native-all/unicode-normalization/d3fed14257b30229/out",
+        "-L",
+        "dependency=/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/hardened-results/build/debug/build/registries/cfa93722aa97c298-all-native-all/unicode_names2/7d4cee59ae0b4c57/out",
+        "-L",
+        "dependency=/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/hardened-results/build/debug/build/registries/cfa93722aa97c298-all-native-all/zmij/8b220d1803d7af78/out",
+        "-L",
+        "dependency=/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/hardened-results/build/debug/build/workspaces/0a185a5cb1bb230b/cfa93722aa97c298-all-native-all/ruff_python_ast/93bab6b0c9943fdc/out",
+        "-L",
+        "dependency=/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/hardened-results/build/debug/build/workspaces/0a185a5cb1bb230b/cfa93722aa97c298-all-native-all/ruff_python_trivia/1d36390d7e3ecad5/out",
+        "-L",
+        "dependency=/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/hardened-results/build/debug/build/workspaces/0a185a5cb1bb230b/cfa93722aa97c298-all-native-all/ruff_source_file/a2131e698356990f/out",
+        "-L",
+        "dependency=/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/hardened-results/build/debug/build/workspaces/0a185a5cb1bb230b/cfa93722aa97c298-all-native-all/ruff_text_size/c12336dbc4bb4a8a/out",
+        "--extern",
+        "bitflags=/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/hardened-results/build/debug/build/registries/cfa93722aa97c298-all-native-all/bitflags/85f172e7b6e8af71/out/libbitflags-85f172e7b6e8af71.rmeta",
+        "--extern",
+        "bstr=/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/hardened-results/build/debug/build/registries/cfa93722aa97c298-all-native-all/bstr/cc613f833e6a6a99/out/libbstr-cc613f833e6a6a99.rmeta",
+        "--extern",
+        "drop_bomb=/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/hardened-results/build/debug/build/registries/cfa93722aa97c298-all-native-all/drop_bomb/e6bd6225602835de/out/libdrop_bomb-e6bd6225602835de.rmeta",
+        "--extern",
+        "get_size2=/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/hardened-results/build/debug/build/registries/cfa93722aa97c298-all-native-all/get-size2/f2a9ed09cd0a12d7/out/libget_size2-f2a9ed09cd0a12d7.rmeta",
+        "--extern",
+        "memchr=/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/hardened-results/build/debug/build/registries/cfa93722aa97c298-all-native-all/memchr/6a63c0329e042d75/out/libmemchr-6a63c0329e042d75.rmeta",
+        "--extern",
+        "ruff_python_ast=/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/hardened-results/build/debug/build/workspaces/0a185a5cb1bb230b/cfa93722aa97c298-all-native-all/ruff_python_ast/93bab6b0c9943fdc/out/libruff_python_ast-93bab6b0c9943fdc.rmeta",
+        "--extern",
+        "ruff_python_trivia=/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/hardened-results/build/debug/build/workspaces/0a185a5cb1bb230b/cfa93722aa97c298-all-native-all/ruff_python_trivia/1d36390d7e3ecad5/out/libruff_python_trivia-1d36390d7e3ecad5.rmeta",
+        "--extern",
+        "ruff_text_size=/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/hardened-results/build/debug/build/workspaces/0a185a5cb1bb230b/cfa93722aa97c298-all-native-all/ruff_text_size/c12336dbc4bb4a8a/out/libruff_text_size-c12336dbc4bb4a8a.rmeta",
+        "--extern",
+        "rustc_hash=/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/hardened-results/build/debug/build/registries/cfa93722aa97c298-all-native-all/rustc-hash/ad3732c11dd8db84/out/librustc_hash-ad3732c11dd8db84.rmeta",
+        "--extern",
+        "stacker=/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/hardened-results/build/debug/build/registries/cfa93722aa97c298-all-native-all/stacker/a23d152e68a53628/out/libstacker-a23d152e68a53628.rmeta",
+        "--extern",
+        "static_assertions=/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/hardened-results/build/debug/build/registries/cfa93722aa97c298-all-native-all/static_assertions/3694d042e3828c00/out/libstatic_assertions-3694d042e3828c00.rmeta",
+        "--extern",
+        "thin_vec=/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/hardened-results/build/debug/build/registries/cfa93722aa97c298-all-native-all/thin-vec/b223c6323a7c2f9e/out/libthin_vec-b223c6323a7c2f9e.rmeta",
+        "--extern",
+        "unicode_ident=/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/hardened-results/build/debug/build/registries/cfa93722aa97c298-all-native-all/unicode-ident/505bdb463431c3c8/out/libunicode_ident-505bdb463431c3c8.rmeta",
+        "--extern",
+        "unicode_normalization=/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/hardened-results/build/debug/build/registries/cfa93722aa97c298-all-native-all/unicode-normalization/d3fed14257b30229/out/libunicode_normalization-d3fed14257b30229.rmeta",
+        "--extern",
+        "unicode_names2=/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/hardened-results/build/debug/build/registries/cfa93722aa97c298-all-native-all/unicode_names2/7d4cee59ae0b4c57/out/libunicode_names2-7d4cee59ae0b4c57.rmeta",
+        "-Z",
+        "checksum-hash-algorithm=blake3",
+        "-L",
+        "native=/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/hardened-results/build/debug/build/registries/cfa93722aa97c298-all-native-all/psm/b64106d6875f1ab8/out"
+      ]
+    },
+    "scope": "Measured with the earlier release Cargo executable before switching tracking maps to repository hash containers and skipping worktree trash during profile discovery; same Ohm Rust compiler and pinned Ruff source. Final Cargo collection correctness was revalidated separately above."
+  },
+  "provenance": {
+    "age_simulation": "Set all prototype last_used markers to 40 days ago, then run a fresh debug=2 build.",
+    "cargo": "/private/tmp/codex-cargo-targets/cargo/ohm-incremental-cache-gc/ohm/release/cargo",
+    "cargo_build_profile": "release",
+    "cargo_sha256": "f6e6e80c52b6b6ddedc44696ee333ae2a2113bea4201e325168bc33c896257bb",
+    "cargo_source": "/private/tmp/ohm-incremental-cache-gc",
+    "cargo_source_delta": {
+      "base_revision": "7f48c78d59428880fd687a83d0ad2ee9ebf82cf5",
+      "tracked_diff_sha256": "11e4b5add267320ad7f6d69dca6c8ab7af32bbf10c6388c21d4f6abe55637f19",
+      "untracked_file_sha256": {
+        "benches/incremental-gc/results/expiry-release-macos-aarch64.json": "20e4b080c33582b9fc79fe5307872e6c92d7d4a568e331472c12d23018c90016",
+        "benches/incremental-gc/results/tracking-release-macos-aarch64.json": "73b796c75060960e50023b1d3eb3a51cd8b2b00f586003f8a7ae880dff261a82",
+        "benches/incremental-gc/tracking_perf.py": "5159d28d2ed2124b4b8877db9c4ee19b9982438359051c5d7f5cfca7eabb38a5",
+        "tests/testsuite/incremental_gc_reuse.rs": "3a10a4ba5b35f8ffacb55ddfd8435257693ffb2b4f6faad076eca50252769133"
+      }
+    },
+    "cargo_source_delta_sha256": "d7d68c2c82810bfa16f44dbaaba833f67e9bd310480b285fe29863adeeec037c",
+    "cargo_version": "cargo 1.98.0 (7f48c78d5 2026-09-03)\nrelease: 1.98.0\ncommit-hash: 7f48c78d59428880fd687a83d0ad2ee9ebf82cf5\ncommit-date: 2026-09-03\nhost: aarch64-apple-darwin\nlibgit2: 1.9.4 (sys:0.21.0 vendored)\nlibcurl: 8.7.1 (sys:0.4.90+curl-8.21.0 system ssl:(SecureTransport) LibreSSL/3.3.6)\nos: Mac OS 26.6.2 [64-bit]\n",
+    "configurations": [
+      0,
+      1,
+      2
+    ],
+    "driver_sha256": "658c79594e9ccb5ee1e7693caed31e42e8770c87084ba6a0db5c2086d9792d82",
+    "edit_file": "crates/ruff_python_parser/src/lib.rs",
+    "environment": {
+      "CARGO_BUILD_BUILD_DIR": "/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/hardened-final-correctness/build",
+      "CARGO_HOME": "/private/tmp/codex-cargo-home",
+      "CARGO_INCREMENTAL": "1",
+      "CARGO_TARGET_DIR": "/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/hardened-final-correctness/target",
+      "CARGO_TERM_COLOR": "never",
+      "CARGO_UNSTABLE_OHM_NATIVE_TOOL_TRUST": "all",
+      "CARGO_UNSTABLE_OHM_PROC_MACRO_TRUST": "all",
+      "RUSTC": "/Users/charliemarsh/.local/share/ohm/toolchains/ohm-1.98.0-8/bin/rustc",
+      "RUSTC_WORKSPACE_WRAPPER": "/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/hardened-final-correctness/rustc-wrapper.py",
+      "RUSTUP_TOOLCHAIN": "ohm"
+    },
+    "harness_sha256": "11516421faef248df278901481a87693c70c6ccf44f56808e42132c1e37c1c3b",
+    "jobs": 8,
+    "package": "ruff_python_parser",
+    "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+    "python": "3.14.5 (main, May 10 2026, 10:21:34) [Clang 21.0.0 (clang-2100.0.123.102)]",
+    "rustc": "/Users/charliemarsh/.local/share/ohm/toolchains/ohm-1.98.0-8/bin/rustc",
+    "rustc_sha256": "60d52a0682970d3e1667b20ad59992b565af942c10b321e9a8888449b28e2bb5",
+    "rustc_version": "rustc 1.98.0-dev (ca4f4c0a4 2026-09-03) (ohm-1.98.0-8)\nbinary: rustc\ncommit-hash: ca4f4c0a4aa9f79c51046df02c69a9d2d25a9823\ncommit-date: 2026-09-03\nhost: aarch64-apple-darwin\nrelease: 1.98.0-dev\nLLVM version: 22.1.8\n",
+    "source": "/Users/charliemarsh/code/oss/ruff",
+    "source_revision": "0a5ec91697d9d3267392b471580c67e694b9e318"
+  },
+  "scope": "Final-binary seed, simulated-age collection, dry-run, payload, and fresh-artifact checks; no next-edit timings.",
+  "snapshots": {
+    "after": {
+      "total": {
+        "files": 262,
+        "hardlinked_files": 232,
+        "logical_bytes": 134270383,
+        "payload_sha256": "7d00d38b3edbe2cc5764a3d2f2ddc09956b61b923e0448b4449cacd1af1e5dc9",
+        "unique_inode_allocated_bytes": 135417856,
+        "unique_inode_logical_bytes": 134270383
+      },
+      "units": {
+        "89ed7c307a11a2c5/ohm-gc-v1/ruff_python_ast-f77b4379aa0c06ce": {
+          "files": 108,
+          "hardlinked_files": 102,
+          "logical_bytes": 91154349,
+          "marker": {
+            "last_used": 1788460064,
+            "unit": "ruff_python_ast-f77b4379aa0c06ce",
+            "version": 2
+          },
+          "payload_sha256": "c4a97ae2e4fa9074f377997efd7af38a5137f9e5bb3beb2e26aa66d1b19862c8",
+          "unique_inode_allocated_bytes": 91992064,
+          "unique_inode_logical_bytes": 91154349
+        },
+        "89ed7c307a11a2c5/ohm-gc-v1/ruff_python_parser-52d1f45f8bbc0f89": {
+          "files": 88,
+          "hardlinked_files": 82,
+          "logical_bytes": 32555822,
+          "marker": {
+            "last_used": 1788460064,
+            "unit": "ruff_python_parser-52d1f45f8bbc0f89",
+            "version": 2
+          },
+          "payload_sha256": "a8da99b1e57d73f62f0bde4165f3cf02f3d0811c17de3e6db46cf8d588523ed2",
+          "unique_inode_allocated_bytes": 32727040,
+          "unique_inode_logical_bytes": 32555822
+        },
+        "89ed7c307a11a2c5/ohm-gc-v1/ruff_python_trivia-8407994d818ad5cf": {
+          "files": 32,
+          "hardlinked_files": 26,
+          "logical_bytes": 4996162,
+          "marker": {
+            "last_used": 1788460064,
+            "unit": "ruff_python_trivia-8407994d818ad5cf",
+            "version": 2
+          },
+          "payload_sha256": "d8af5df6768c4c6b13389664b12a0ce16c1599dabfb27a40b3e4dffe058ce050",
+          "unique_inode_allocated_bytes": 5058560,
+          "unique_inode_logical_bytes": 4996162
+        },
+        "89ed7c307a11a2c5/ohm-gc-v1/ruff_source_file-5741715776303b19": {
+          "files": 21,
+          "hardlinked_files": 15,
+          "logical_bytes": 3981843,
+          "marker": {
+            "last_used": 1788460064,
+            "unit": "ruff_source_file-5741715776303b19",
+            "version": 2
+          },
+          "payload_sha256": "f0e57c717f0ff536703372b2633714d8791677848e20dec4a536d4224807fc03",
+          "unique_inode_allocated_bytes": 4030464,
+          "unique_inode_logical_bytes": 3981843
+        },
+        "89ed7c307a11a2c5/ohm-gc-v1/ruff_text_size-3e1f5436a0cd19f9": {
+          "files": 13,
+          "hardlinked_files": 7,
+          "logical_bytes": 1582207,
+          "marker": {
+            "last_used": 1788460064,
+            "unit": "ruff_text_size-3e1f5436a0cd19f9",
+            "version": 2
+          },
+          "payload_sha256": "6652605317cfd7b1d11e748a30853b4557eff0d07ca21ad968d0a42bf131156f",
+          "unique_inode_allocated_bytes": 1609728,
+          "unique_inode_logical_bytes": 1582207
+        }
+      }
+    },
+    "before": {
+      "total": {
+        "files": 786,
+        "hardlinked_files": 469,
+        "logical_bytes": 366397995,
+        "payload_sha256": "9498b3a13315f4318dd56c7c8a20fd717fa490863009ea769c2c0457b5cb6b34",
+        "unique_inode_allocated_bytes": 370171904,
+        "unique_inode_logical_bytes": 366397995
+      },
+      "units": {
+        "89ed7c307a11a2c5/ohm-gc-v1/ruff_python_ast-f0a9928f8f22a789": {
+          "files": 108,
+          "hardlinked_files": 1,
+          "logical_bytes": 77051005,
+          "marker": {
+            "last_used": 1785004064,
+            "unit": "ruff_python_ast-f0a9928f8f22a789",
+            "version": 2
+          },
+          "payload_sha256": "40e00db8e56e619e38b6cd352eb63ca93b757ef5d51a29c6b0b250a4a74eeb47",
+          "unique_inode_allocated_bytes": 77922304,
+          "unique_inode_logical_bytes": 77051005
+        },
+        "89ed7c307a11a2c5/ohm-gc-v1/ruff_python_ast-f77b4379aa0c06ce": {
+          "files": 108,
+          "hardlinked_files": 102,
+          "logical_bytes": 91154349,
+          "marker": {
+            "last_used": 1788460064,
+            "unit": "ruff_python_ast-f77b4379aa0c06ce",
+            "version": 2
+          },
+          "payload_sha256": "c4a97ae2e4fa9074f377997efd7af38a5137f9e5bb3beb2e26aa66d1b19862c8",
+          "unique_inode_allocated_bytes": 91992064,
+          "unique_inode_logical_bytes": 91154349
+        },
+        "89ed7c307a11a2c5/ohm-gc-v1/ruff_python_ast-fcdef6522ca46c76": {
+          "files": 108,
+          "hardlinked_files": 102,
+          "logical_bytes": 84095278,
+          "marker": {
+            "last_used": 1785004064,
+            "unit": "ruff_python_ast-fcdef6522ca46c76",
+            "version": 2
+          },
+          "payload_sha256": "001c28f5cd4d0c1bc13b5a159a87b3be393ce1de8f2c2822c89a02e1a6992589",
+          "unique_inode_allocated_bytes": 85213184,
+          "unique_inode_logical_bytes": 84095278
+        },
+        "89ed7c307a11a2c5/ohm-gc-v1/ruff_python_parser-04b1d84ed12c6293": {
+          "files": 88,
+          "hardlinked_files": 1,
+          "logical_bytes": 24456754,
+          "marker": {
+            "last_used": 1785004064,
+            "unit": "ruff_python_parser-04b1d84ed12c6293",
+            "version": 2
+          },
+          "payload_sha256": "0f3b1716409233ad3284b237d671af9a2ec23adac79602598fc6c608196a74ea",
+          "unique_inode_allocated_bytes": 24653824,
+          "unique_inode_logical_bytes": 24456754
+        },
+        "89ed7c307a11a2c5/ohm-gc-v1/ruff_python_parser-52d1f45f8bbc0f89": {
+          "files": 88,
+          "hardlinked_files": 82,
+          "logical_bytes": 32555822,
+          "marker": {
+            "last_used": 1788460064,
+            "unit": "ruff_python_parser-52d1f45f8bbc0f89",
+            "version": 2
+          },
+          "payload_sha256": "a8da99b1e57d73f62f0bde4165f3cf02f3d0811c17de3e6db46cf8d588523ed2",
+          "unique_inode_allocated_bytes": 32727040,
+          "unique_inode_logical_bytes": 32555822
+        },
+        "89ed7c307a11a2c5/ohm-gc-v1/ruff_python_parser-b454b2e291776aa3": {
+          "files": 88,
+          "hardlinked_files": 82,
+          "logical_bytes": 28376383,
+          "marker": {
+            "last_used": 1785004064,
+            "unit": "ruff_python_parser-b454b2e291776aa3",
+            "version": 2
+          },
+          "payload_sha256": "76d734f07d3d532bf8f58ce5baa19dd78bd60d9e88f291023c04ae4b33f64568",
+          "unique_inode_allocated_bytes": 28540928,
+          "unique_inode_logical_bytes": 28376383
+        },
+        "89ed7c307a11a2c5/ohm-gc-v1/ruff_python_trivia-781ebb0694af8b48": {
+          "files": 32,
+          "hardlinked_files": 26,
+          "logical_bytes": 4510335,
+          "marker": {
+            "last_used": 1785004064,
+            "unit": "ruff_python_trivia-781ebb0694af8b48",
+            "version": 2
+          },
+          "payload_sha256": "1b8fe940c36d34ad698f6e9c55f08aa69e666f0a647f17b0b02c38bec530d460",
+          "unique_inode_allocated_bytes": 4579328,
+          "unique_inode_logical_bytes": 4510335
+        },
+        "89ed7c307a11a2c5/ohm-gc-v1/ruff_python_trivia-8407994d818ad5cf": {
+          "files": 32,
+          "hardlinked_files": 26,
+          "logical_bytes": 4996162,
+          "marker": {
+            "last_used": 1788460064,
+            "unit": "ruff_python_trivia-8407994d818ad5cf",
+            "version": 2
+          },
+          "payload_sha256": "d8af5df6768c4c6b13389664b12a0ce16c1599dabfb27a40b3e4dffe058ce050",
+          "unique_inode_allocated_bytes": 5058560,
+          "unique_inode_logical_bytes": 4996162
+        },
+        "89ed7c307a11a2c5/ohm-gc-v1/ruff_python_trivia-aa0ea0b46c3b70d9": {
+          "files": 32,
+          "hardlinked_files": 1,
+          "logical_bytes": 3676181,
+          "marker": {
+            "last_used": 1785004064,
+            "unit": "ruff_python_trivia-aa0ea0b46c3b70d9",
+            "version": 2
+          },
+          "payload_sha256": "625d7a52998928a1d32f39c11c158f076acef86aed0b5d6bc3c2dfe0cd522bdc",
+          "unique_inode_allocated_bytes": 3739648,
+          "unique_inode_logical_bytes": 3676181
+        },
+        "89ed7c307a11a2c5/ohm-gc-v1/ruff_source_file-0e047752d8a1ee8c": {
+          "files": 21,
+          "hardlinked_files": 15,
+          "logical_bytes": 3711780,
+          "marker": {
+            "last_used": 1785004064,
+            "unit": "ruff_source_file-0e047752d8a1ee8c",
+            "version": 2
+          },
+          "payload_sha256": "965aa9d54cff43cb913fc7677aa3af704a26de26a4fa58527a71239b691bcc1b",
+          "unique_inode_allocated_bytes": 3756032,
+          "unique_inode_logical_bytes": 3711780
+        },
+        "89ed7c307a11a2c5/ohm-gc-v1/ruff_source_file-5741715776303b19": {
+          "files": 21,
+          "hardlinked_files": 15,
+          "logical_bytes": 3981843,
+          "marker": {
+            "last_used": 1788460064,
+            "unit": "ruff_source_file-5741715776303b19",
+            "version": 2
+          },
+          "payload_sha256": "f0e57c717f0ff536703372b2633714d8791677848e20dec4a536d4224807fc03",
+          "unique_inode_allocated_bytes": 4030464,
+          "unique_inode_logical_bytes": 3981843
+        },
+        "89ed7c307a11a2c5/ohm-gc-v1/ruff_source_file-d12691de44578d24": {
+          "files": 21,
+          "hardlinked_files": 1,
+          "logical_bytes": 3232148,
+          "marker": {
+            "last_used": 1785004064,
+            "unit": "ruff_source_file-d12691de44578d24",
+            "version": 2
+          },
+          "payload_sha256": "dc2453c5e4110faaf0f037c395ed106ebaf1006936a048c654b7521cd130f647",
+          "unique_inode_allocated_bytes": 3280896,
+          "unique_inode_logical_bytes": 3232148
+        },
+        "89ed7c307a11a2c5/ohm-gc-v1/ruff_text_size-3e1f5436a0cd19f9": {
+          "files": 13,
+          "hardlinked_files": 7,
+          "logical_bytes": 1582207,
+          "marker": {
+            "last_used": 1788460064,
+            "unit": "ruff_text_size-3e1f5436a0cd19f9",
+            "version": 2
+          },
+          "payload_sha256": "6652605317cfd7b1d11e748a30853b4557eff0d07ca21ad968d0a42bf131156f",
+          "unique_inode_allocated_bytes": 1609728,
+          "unique_inode_logical_bytes": 1582207
+        },
+        "89ed7c307a11a2c5/ohm-gc-v1/ruff_text_size-652784a9f4d2ff16": {
+          "files": 13,
+          "hardlinked_files": 1,
+          "logical_bytes": 1475799,
+          "marker": {
+            "last_used": 1785004064,
+            "unit": "ruff_text_size-652784a9f4d2ff16",
+            "version": 2
+          },
+          "payload_sha256": "ac45e3f51fc2d497a8e72299fd75246d565acf6852ec31caeca113d388c38db0",
+          "unique_inode_allocated_bytes": 1503232,
+          "unique_inode_logical_bytes": 1475799
+        },
+        "89ed7c307a11a2c5/ohm-gc-v1/ruff_text_size-a8a2b27219b31ac7": {
+          "files": 13,
+          "hardlinked_files": 7,
+          "logical_bytes": 1541949,
+          "marker": {
+            "last_used": 1785004064,
+            "unit": "ruff_text_size-a8a2b27219b31ac7",
+            "version": 2
+          },
+          "payload_sha256": "d91fbfb0fa95bea8a5096a55857f186be1124277a1f5aaeb4924fcf9bb17ca9d",
+          "unique_inode_allocated_bytes": 1564672,
+          "unique_inode_logical_bytes": 1541949
+        }
+      }
+    }
+  }
+}

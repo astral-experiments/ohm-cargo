@@ -295,6 +295,10 @@ fn clone_tree(
         let name = entry.file_name();
         let text = name.to_string_lossy();
         let ty = entry.file_type()?;
+        if incremental && text == crate::core::incremental_gc::TRASH_DIRECTORY {
+            // Retired caches cannot be reused and may be only partly deleted.
+            continue;
+        }
         if text.ends_with("-working")
             || text == ".cargo-workspace-lock"
             || text == ".lock"
