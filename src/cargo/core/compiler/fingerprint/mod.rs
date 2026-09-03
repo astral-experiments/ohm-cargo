@@ -2766,7 +2766,7 @@ fn calculate_normal(
     if super::unit_uses_ohm_worktree_seeds(build_runner, unit) {
         // An ordinary build must not appear prepared just because its outputs
         // were copied. This injected path mapping also changes rustc's output.
-        ("ohm-worktree-seeds", 5_u8).hash(&mut config);
+        ("ohm-worktree-seeds", 6_u8).hash(&mut config);
     }
     if build_runner.bcx.ws.is_member(&unit.pkg) {
         if let Some(args) = &build_runner.bcx.rustc().ohm_clippy_codegen_args {

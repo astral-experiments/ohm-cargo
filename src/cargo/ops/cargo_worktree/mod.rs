@@ -15,6 +15,7 @@ use crate::core::Workspace;
 use crate::core::compiler::Layout;
 use crate::core::compiler::fingerprint::dep_info::{DepInfoPathType, EncodedDepInfo};
 use crate::core::compiler::fingerprint::{OHM_WORKTREE_SCRIPT_RERUN, OHM_WORKTREE_SCRIPT_RESULT};
+use crate::core::features::OhmProcMacroTrust;
 use crate::util::{Filesystem, GlobalContext};
 
 /// Git checkout and destination storage for a new, independently writable worktree.
@@ -191,7 +192,7 @@ fn seed_shared_build(donor: &Workspace<'_>, recipient: &Workspace<'_>) -> CargoR
             continue;
         }
         ensure_plain_descendants(profile, &source)?;
-        if !seed_policy_allows(&source)? {
+        if !seed_policy_allows(&source, donor.gctx().cli_unstable().ohm_proc_macro_trust)? {
             seeded.skipped_profiles += 1;
             continue;
         }
@@ -437,7 +438,8 @@ fn ensure_absent(path: &Path, description: &str) -> CargoResult<()> {
     }
 }
 
-fn seed_policy_allows(namespace: &Path) -> CargoResult<bool> {
+/// Checks the donor's retained history against this import's explicit trust policy.
+fn seed_policy_allows(namespace: &Path, proc_macro_trust: OhmProcMacroTrust) -> CargoResult<bool> {
     let marker = namespace.join(crate::core::compiler::OHM_WORKTREE_SEED_MARKER);
     match fs::symlink_metadata(&marker) {
         Ok(metadata) if metadata.file_type().is_file() => {}
@@ -447,7 +449,17 @@ fn seed_policy_allows(namespace: &Path) -> CargoResult<bool> {
     }
     let deny = namespace.join(crate::core::compiler::OHM_WORKTREE_SEED_DENY_MARKER);
     match fs::symlink_metadata(deny) {
-        Ok(_) => Ok(false),
+        Ok(_) => return Ok(false),
+        Err(error) if error.kind() == io::ErrorKind::NotFound => {}
+        Err(error) => return Err(error.into()),
+    }
+    let local_macro =
+        namespace.join(crate::core::compiler::OHM_WORKTREE_SEED_LOCAL_PROC_MACRO_MARKER);
+    match fs::symlink_metadata(local_macro) {
+        // clone_tree must retain this marker so a subsequent fork checks trust again.
+        Ok(metadata) => {
+            Ok(metadata.file_type().is_file() && proc_macro_trust == OhmProcMacroTrust::All)
+        }
         Err(error) if error.kind() == io::ErrorKind::NotFound => Ok(true),
         Err(error) => Err(error.into()),
     }
@@ -467,5 +479,28 @@ fn plain_directory(path: &Path) -> CargoResult<bool> {
         Ok(metadata) => Ok(metadata.file_type().is_dir()),
         Err(error) if error.kind() == io::ErrorKind::NotFound => Ok(false),
         Err(error) => Err(error.into()),
+    }
+}
+
+#[cfg(all(test, unix))]
+mod tests {
+    use super::*;
+    use crate::core::compiler::{
+        OHM_WORKTREE_SEED_LOCAL_PROC_MACRO_MARKER, OHM_WORKTREE_SEED_MARKER,
+    };
+
+    #[test]
+    fn local_macro_trust_cannot_drop_a_symlinked_taint_marker() {
+        let root = tempfile::tempdir().unwrap();
+        fs::write(root.path().join(OHM_WORKTREE_SEED_MARKER), "6\n").unwrap();
+        let taint = root.path().join(OHM_WORKTREE_SEED_LOCAL_PROC_MACRO_MARKER);
+        let target = root.path().join("taint");
+        fs::write(&target, "local macro\n").unwrap();
+        std::os::unix::fs::symlink(&target, &taint).unwrap();
+        assert!(!seed_policy_allows(root.path(), OhmProcMacroTrust::All).unwrap());
+
+        // A broken symlink must not turn a tainted donor into an untainted one.
+        fs::remove_file(target).unwrap();
+        assert!(!seed_policy_allows(root.path(), OhmProcMacroTrust::All).unwrap());
     }
 }

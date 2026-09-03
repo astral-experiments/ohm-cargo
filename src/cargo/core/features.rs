@@ -140,7 +140,7 @@ pub const SEE_CHANNELS: &str = "See https://doc.rust-lang.org/book/appendix-07-n
 /// Value of [`allow-features`](CliUnstable::allow_features)
 pub type AllowFeatures = BTreeSet<String>;
 
-/// Procedural-macro policy for registry artifacts shared between worktrees.
+/// Procedural-macro policy for registry sharing and workspace snapshot imports.
 #[derive(Clone, Copy, Debug, Default, Deserialize, Eq, Hash, PartialEq)]
 #[serde(rename_all = "kebab-case")]
 pub enum OhmProcMacroTrust {
@@ -148,6 +148,7 @@ pub enum OhmProcMacroTrust {
     #[default]
     Audited,
     /// Trust every authenticated crates.io macro, even when expansion observes untracked inputs.
+    /// Also allow local procedural-macro outputs when importing a workspace snapshot.
     ///
     /// This explicit opt-in is potentially unsound: macros can inspect files, environment
     /// variables, randomness, or emit observable output without recording those dependencies.
@@ -934,7 +935,7 @@ unstable_cli_options!(
     ohm_defaults: Option<bool> = ("Enable the defaults packaged with Ohm"),
     ohm_focused_tests: bool = ("Compile only an explicitly selected exact library test"),
     ohm_native_tool_trust: OhmNativeToolTrust = ("Set native-tool trust for shared registry artifacts: strict (default), build-scripts, or all (potentially unsound)"),
-    ohm_proc_macro_trust: OhmProcMacroTrust = ("Set procedural-macro trust for shared registry artifacts: audited (default) or all (potentially unsound)"),
+    ohm_proc_macro_trust: OhmProcMacroTrust = ("Set procedural-macro trust for shared registry artifacts and workspace snapshots: audited (default) or all (potentially unsound)"),
     ohm_reuse_built_deps: bool = ("Reuse already-built registry dependencies when checking a package"),
     ohm_shared_registry_cache: bool = ("Share deterministic registry artifacts across isolated workspaces without global compiler wrappers"),
     ohm_worktree_seeds: Option<bool> = ("Prepare mutable packages for worktree seeding (enabled by Ohm defaults)"),
