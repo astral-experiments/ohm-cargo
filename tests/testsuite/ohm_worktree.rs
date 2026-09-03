@@ -20,6 +20,7 @@ fn seeded_cargo(project: &Project, command: &str) -> Execs {
         .env("CARGO_INCREMENTAL", "1")
         .env_remove(cargo::CARGO_INHERITED_OHM_DEFAULTS_ENV)
         .env_remove(cargo::CARGO_INHERITED_OHM_WORKTREE_SEEDS_ENV)
+        .env_remove("CARGO_UNSTABLE_OHM_PROC_MACRO_TRUST")
         .env_remove("CARGO_TARGET_DIR");
     cargo
 }
@@ -734,6 +735,8 @@ fn integration_tests_execute_the_recipient_binary() {
 
     let destination = paths::root().join("seeded");
     seeded_cargo(&donor, "worktree add -b charlie/seeded")
+        // Trusting macros must not admit unsupported Cargo-generated paths.
+        .env("CARGO_UNSTABLE_OHM_PROC_MACRO_TRUST", "all")
         .arg(&destination)
         .arg(requested.to_string())
         .with_stderr_contains("[..](no compatible build snapshot seeded)")
@@ -975,12 +978,8 @@ fn embedded_output_directory_is_revalidated_after_relocation() {
     );
 }
 
-#[cargo_test(
-    nightly,
-    reason = "worktree seeds use checksum freshness and cwd remapping"
-)]
-fn local_proc_macros_use_the_new_worktrees_environment() {
-    let donor = git::new("donor", |p| {
+fn local_proc_macro_project(macro_body: &str) -> Project {
+    git::new("donor", |p| {
         p.file(".gitignore", "/target\n/Cargo.lock\n")
             .file(
                 "Cargo.toml",
@@ -991,7 +990,7 @@ fn local_proc_macros_use_the_new_worktrees_environment() {
                     edition = "2024"
 
                     [workspace]
-                    members = ["path-macro"]
+                    members = ["path-macro", "macro-helper"]
 
                     [dependencies]
                     path-macro = { path = "path-macro" }
@@ -1007,26 +1006,53 @@ fn local_proc_macros_use_the_new_worktrees_environment() {
 
                     [lib]
                     proc-macro = true
+
+                    [dependencies]
+                    macro-helper = { path = "../macro-helper" }
                 "#,
             )
             .file(
                 "path-macro/src/lib.rs",
-                r#"
+                &format!(
+                    r#"
                     extern crate proc_macro;
 
                     #[proc_macro]
-                    pub fn manifest_dir(_: proc_macro::TokenStream) -> proc_macro::TokenStream {
-                        // Unlike env!, this runtime read does not appear in rustc's dep-info.
-                        let directory = std::env::var("CARGO_MANIFEST_DIR").unwrap();
-                        format!("{directory:?}").parse().unwrap()
-                    }
-                "#,
+                    pub fn value(_: proc_macro::TokenStream) -> proc_macro::TokenStream {{
+                        {macro_body}
+                    }}
+                "#
+                ),
             )
             .file(
-                "src/main.rs",
-                "fn main() { println!(\"{}\", path_macro::manifest_dir!()); }",
+                "macro-helper/Cargo.toml",
+                r#"
+                    [package]
+                    name = "macro-helper"
+                    version = "0.0.1"
+                    edition = "2024"
+                "#,
             )
-    });
+            .file("macro-helper/src/lib.rs", "pub fn value() -> u32 { 1 }")
+            .file(
+                "src/main.rs",
+                "fn main() { println!(\"{}\", path_macro::value!()); }",
+            )
+    })
+}
+
+const AMBIENT_PROC_MACRO_BODY: &str = r#"
+    // Unlike env!, this runtime read does not appear in rustc's dep-info.
+    let directory = std::env::var("CARGO_MANIFEST_DIR").unwrap();
+    format!("{directory:?}").parse().unwrap()
+"#;
+
+#[cargo_test(
+    nightly,
+    reason = "worktree seeds use checksum freshness and cwd remapping"
+)]
+fn local_proc_macros_use_the_new_worktrees_environment() {
+    let donor = local_proc_macro_project(AMBIENT_PROC_MACRO_BODY);
     let destination = paths::root().join("seeded");
     seeded_cargo(&donor, "build").run();
     donor
@@ -1039,7 +1065,9 @@ fn local_proc_macros_use_the_new_worktrees_environment() {
 
     seeded_cargo(&donor, "worktree add -b charlie/seeded")
         .arg(&destination)
+        .with_stderr_contains("[..](no compatible build snapshot seeded)")
         .run();
+    assert_eq!(workspace_caches().len(), 1);
     seeded_cargo(&donor, "build").cwd(&destination).run();
     donor
         .process(binary(&destination))
@@ -1048,6 +1076,208 @@ fn local_proc_macros_use_the_new_worktrees_environment() {
 
 "#]])
         .run();
+}
+
+#[cargo_test(
+    nightly,
+    reason = "worktree seeds can explicitly trust local procedural macro history"
+)]
+fn local_proc_macro_trust_is_selected_when_adding_a_worktree() {
+    let donor = local_proc_macro_project(AMBIENT_PROC_MACRO_BODY);
+    let destination = paths::root().join("seeded");
+
+    // Preparation and subsequent builds need no opt-in: admission happens at add.
+    seeded_cargo(&donor, "build").run();
+    seeded_cargo(&donor, "worktree add")
+        .env("CARGO_UNSTABLE_OHM_PROC_MACRO_TRUST", "all")
+        .arg(&destination)
+        .with_stderr_contains("[..]Seeded [..] files [..]")
+        .run();
+    assert_eq!(workspace_caches().len(), 2);
+    seeded_cargo(&donor, "build -v")
+        .cwd(&destination)
+        .with_stderr_contains("[FRESH] foo v0.0.1 ([ROOT]/seeded)")
+        .with_stderr_does_not_contain("[RUNNING]")
+        .run();
+    // This deliberately demonstrates why the opt-in is unsafe: the macro's
+    // untracked environment read retains the donor's value.
+    donor
+        .process(binary(&destination))
+        .with_stdout_data(str![[r#"
+[ROOT]/donor
+
+"#]])
+        .run();
+
+    seeded_cargo(&donor, "worktree add")
+        .cwd(&destination)
+        .arg(paths::root().join("strict"))
+        .with_stderr_contains("[..](no compatible build snapshot seeded)")
+        .run();
+    assert_eq!(workspace_caches().len(), 2);
+
+    // Removing the macro from the current graph must not erase opaque history
+    // retained in old artifacts and incremental sessions.
+    fs::write(
+        destination.join("Cargo.toml"),
+        "[package]\nname = \"foo\"\nversion = \"0.0.1\"\nedition = \"2024\"\n[workspace]\n",
+    )
+    .unwrap();
+    fs::write(
+        destination.join("src/main.rs"),
+        "fn main() { println!(\"no macro\"); }",
+    )
+    .unwrap();
+    seeded_cargo(&donor, "build").cwd(&destination).run();
+    let recipient_repo = git2::Repository::open(&destination).unwrap();
+    git::add(&recipient_repo);
+    git::commit(&recipient_repo);
+    seeded_cargo(&donor, "worktree add")
+        .cwd(&destination)
+        .arg(paths::root().join("strict-after-removal"))
+        .with_stderr_contains("[..](no compatible build snapshot seeded)")
+        .run();
+    assert_eq!(workspace_caches().len(), 2);
+}
+
+#[cargo_test(
+    nightly,
+    reason = "trusted local macro seeds still revalidate tracked inputs"
+)]
+fn trusted_local_proc_macro_seeds_rebuild_changed_inputs() {
+    let donor =
+        local_proc_macro_project(r#"format!("{}u32", macro_helper::value()).parse().unwrap()"#);
+    let destination = paths::root().join("seeded");
+    seeded_cargo(&donor, "build").run();
+    seeded_cargo(&donor, "worktree add")
+        .env("CARGO_UNSTABLE_OHM_PROC_MACRO_TRUST", "all")
+        .arg(&destination)
+        .with_stderr_contains("[..]Seeded [..] files [..]")
+        .run();
+    seeded_cargo(&donor, "build -v")
+        .cwd(&destination)
+        .with_stderr_does_not_contain("[RUNNING]")
+        .run();
+
+    let changed_macro = donor
+        .read_file("path-macro/src/lib.rs")
+        .replace("macro_helper::value()", "macro_helper::value() + 1");
+    for (path, contents, expected) in [
+        (
+            "src/main.rs",
+            "fn main() { println!(\"source {}\", path_macro::value!()); }",
+            "source 1\n",
+        ),
+        (
+            "path-macro/src/lib.rs",
+            changed_macro.as_str(),
+            "source 2\n",
+        ),
+        (
+            "macro-helper/src/lib.rs",
+            "pub fn value() -> u32 { 41 }",
+            "source 42\n",
+        ),
+    ] {
+        let source = destination.join(path);
+        fs::write(&source, contents).unwrap();
+        source.move_into_the_past();
+        seeded_cargo(&donor, "build -v")
+            .cwd(&destination)
+            .with_stderr_contains("[COMPILING] foo v0.0.1 ([ROOT]/seeded)")
+            .run();
+        donor
+            .process(binary(&destination))
+            .with_stdout_data(expected)
+            .run();
+    }
+    donor
+        .process(donor.bin("foo"))
+        .with_stdout_data("1\n")
+        .run();
+}
+
+#[cargo_test(
+    nightly,
+    reason = "trusting a local macro import does not change build-script invalidation"
+)]
+fn trusted_local_proc_macro_imports_preserve_build_script_invalidation() {
+    let donor =
+        local_proc_macro_project(r#"format!("{}u32", macro_helper::value()).parse().unwrap()"#);
+    donor.change_file(".gitignore", "/target\n/Cargo.lock\n/script-ran\n");
+    donor.change_file(
+        "build.rs",
+        r#"
+            fn main() {
+                std::fs::write("script-ran", std::env::var("SCRIPT_TRIGGER").unwrap()).unwrap();
+                println!("cargo:rerun-if-env-changed=SCRIPT_TRIGGER");
+            }
+        "#,
+    );
+    let repo = git2::Repository::open(donor.root()).unwrap();
+    git::add(&repo);
+    git::commit(&repo);
+    seeded_cargo(&donor, "build")
+        .env("SCRIPT_TRIGGER", "first")
+        .run();
+
+    // Merely preparing a snapshot must preserve ordinary donor invalidation.
+    // COMPILING alone would also be printed if Cargo subsequently skipped rustc.
+    seeded_cargo(&donor, "build -v")
+        .env("SCRIPT_TRIGGER", "second")
+        .with_stderr_contains("[RUNNING] `[..]--crate-name foo [..]`")
+        .run();
+    assert_eq!(donor.read_file("script-ran"), "second");
+
+    let destination = paths::root().join("seeded");
+    seeded_cargo(&donor, "worktree add")
+        .env("CARGO_UNSTABLE_OHM_PROC_MACRO_TRUST", "all")
+        .arg(&destination)
+        .with_stderr_contains("[..]Seeded [..] files [..]")
+        .run();
+    seeded_cargo(&donor, "build -v")
+        .cwd(&destination)
+        .env("SCRIPT_TRIGGER", "second")
+        .with_stderr_contains("[RUNNING] `[..]--crate-name foo [..]`")
+        .run();
+    assert_eq!(
+        fs::read_to_string(destination.join("script-ran")).unwrap(),
+        "second"
+    );
+    donor
+        .process(binary(&destination))
+        .with_stdout_data("1\n")
+        .run();
+}
+
+#[cargo_test(
+    nightly,
+    reason = "new worktree trust policies must not reinterpret old snapshot markers"
+)]
+fn local_proc_macro_trust_does_not_admit_legacy_snapshots() {
+    let donor = git::new("donor", |p| {
+        p.file(".gitignore", "/target\n/Cargo.lock\n")
+            .file("src/lib.rs", "pub fn value() -> u32 { 1 }")
+    });
+    seeded_cargo(&donor, "build").run();
+    let namespace = workspace_caches().pop().unwrap();
+    fs::rename(
+        namespace.join(".ohm-worktree-seed-v6"),
+        namespace.join(".ohm-worktree-seed-v5"),
+    )
+    .unwrap();
+    fs::write(
+        namespace.join(".ohm-worktree-seed-deny-v5"),
+        "untrusted compile-time inputs\n",
+    )
+    .unwrap();
+
+    seeded_cargo(&donor, "worktree add")
+        .env("CARGO_UNSTABLE_OHM_PROC_MACRO_TRUST", "all")
+        .arg(paths::root().join("legacy"))
+        .with_stderr_contains("[..](no compatible build snapshot seeded)")
+        .run();
+    assert_eq!(workspace_caches().len(), 1);
 }
 
 #[cargo_test(
