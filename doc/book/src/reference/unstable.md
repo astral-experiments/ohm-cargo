@@ -2100,13 +2100,35 @@ change. Code that observes a changed checkout or output-directory path is rebuil
 Native linker outputs and unsupported files conservatively retain ordinary
 rebuild behavior. Saved relink recipes are not imported.
 
-A build profile that has used procedural macros outside Ohm's existing trust
-policy or custom compiler execution is excluded from seeding, including its
-incremental state. Immutable registry macros follow that trust policy. This
-prototype conservatively excludes the whole profile rather than selecting
-individual eligible crates. Profiles that read unsupported Cargo-generated paths,
-such as `CARGO_BIN_EXE_*`, also skip seeding so copied tests cannot execute a
-donor worktree's binaries.
+By default, a build profile that has used local procedural macros is excluded
+from seeding, including its incremental state. To trust those macros' cached
+outputs for a particular import, set the existing procedural-macro trust option
+on `worktree add`:
+
+```sh
+CARGO_UNSTABLE_OHM_PROC_MACRO_TRUST=all cargo +ohm worktree add -b charlie/my-change ../my-change --target-dir /path/to/targets/my-change
+```
+
+This opt-in is potentially unsound: a macro can read the donor's environment,
+files, or working directory without recording those inputs, and the new
+worktree can reuse the old expansion. Use it only when willing to trust those
+outputs across checkouts. Source, dependency, configuration, and tracked
+environment changes still undergo the usual validation.
+
+The donor records local-macro use regardless of its trust setting. The option
+only needs to be set on `worktree add` for this local snapshot import; subsequent
+builds do not need it to use the imported state. A later fork requires its own
+opt-in, even if the macros have since been removed from the build graph. The
+option's existing effect on authenticated registry-macro sharing during builds
+is unchanged; it does not make local macros immutable or globally shared.
+The existing conservative rebuild after a build script reruns also remains in
+place for profiles containing local macros, even when the script's outputs match.
+
+Custom compiler execution, nonshared macros from non-path sources, and
+unsupported Cargo-generated paths such as `CARGO_BIN_EXE_*` still exclude the
+whole profile, regardless of this opt-in. Copied tests must not execute a donor
+worktree's binaries. Profiles prepared under an older snapshot policy must be
+rebuilt before they can seed a new worktree.
 
 Copies are independently writable. Supported filesystems can clone their data
 blocks; other filesystems copy the bytes. Seeding is a one-time operation and does
