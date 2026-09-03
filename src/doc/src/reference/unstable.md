@@ -1993,22 +1993,31 @@ configurations are marked used even when all their compiled outputs are fresh.
 Nested Cargo builds using the existing private-directory fallback remain
 untracked, even when they inherit the tracking configuration.
 
-The first tracked build creates separate per-unit incremental roots and can
-rebuild existing outputs. Cleanup visits only this workspace's explicitly tracked
-roots, across existing host and target profiles. It does not adopt or remove
-older untracked caches. Different feature sets, profiles, targets, and compiler
-versions can retain independently useful caches; an entry's absence from the
-current build graph alone is not evidence that it is obsolete.
+Enabling or disabling tracking preserves fresh compiled outputs. Managed roots
+use the same metadata identity that Cargo gives rustc, preserving incremental
+reuse across diagnostic-only flag changes. Existing untracked caches are left
+alone; the next naturally dirty build populates managed state. Cleanup visits
+only this workspace's explicitly tracked roots, across existing host and target
+profiles. Different feature sets, profiles, targets, and compiler versions can
+retain independently useful caches; an entry's absence from the current build
+graph alone is not evidence that it is obsolete.
+
+Usage records are refreshed at most once an hour. Collection adds a corresponding
+one-hour grace to the requested age, so a build late in the refresh interval can
+never cause premature expiry. This grace also applies to a zero age threshold.
+Version 1 records from the original prototype are upgraded when used; older
+prototype binaries cannot read the new version 2 records.
 
 Cleanup is explicit, uses an age threshold, and skips profiles with active build
-locks. It removes whole incremental configurations while retaining compiled
-outputs and freshness metadata. An expired configuration can still be fresh;
+locks. It atomically moves expired configurations into a separate trash directory
+before removing any payload, and retries interrupted trash deletion on the next
+collection. Compiled outputs and freshness metadata remain. An expired configuration can still be fresh;
 its next source-changing build will regenerate incremental state. Malformed or
 unknown ownership records and symlinked cache directories are left alone.
 
 This is an experiment, not a production cache policy. Automatic scheduling, size
-budgets, adoption of existing caches, broader platform support, and the cost of
-tracking very large build graphs remain follow-up work. See
+budgets, adoption of existing caches, and broader platform support remain
+follow-up work. See
 `benches/incremental-gc/` for the reproducible experiment and measured tradeoffs.
 
 ## ohm-worktree-seeds

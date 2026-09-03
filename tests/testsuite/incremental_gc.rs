@@ -104,7 +104,7 @@ fn evicts_stale_variants_but_preserves_recent_and_freshly_reused_variants() {
     let p = fixture();
     cargo(&p, "build").run();
     let stale = units("debug").pop().unwrap();
-    assert_eq!(record(&stale)["version"], 1);
+    assert_eq!(record(&stale)["version"], 2);
     assert_eq!(
         record(&stale)["unit"],
         stale.file_name().unwrap().to_str().unwrap()
@@ -241,7 +241,7 @@ fn leaves_malformed_untracked_and_unknown_version_caches_untouched() {
     let future = managed_root("debug").join("foo-1111111111111111");
     fs::create_dir(&future).unwrap();
     let mut future_record = old_record.clone();
-    future_record["version"] = 2.into();
+    future_record["version"] = 3.into();
     future_record["unit"] = future.file_name().unwrap().to_str().unwrap().into();
     fs::write(
         future.join(RECORD),
@@ -413,4 +413,172 @@ fn inherited_tracking_setting_allows_nested_private_builds() {
             .unwrap()
             .starts_with("nested_helper-")
     }));
+}
+
+#[cargo_test]
+fn interrupted_trash_deletion_cannot_expose_partial_sessions_to_rustc() {
+    let p = fixture();
+    let source = "fn warn() { let unused = 1; }\nfn main() { warn(); println!(\"first\"); }\n";
+    p.change_file("src/main.rs", source);
+    cargo(&p, "build")
+        .with_stderr_contains("[WARNING] unused variable: `unused`")
+        .run();
+    let unit = units("debug").pop().unwrap();
+    let trash = managed_root("debug").with_file_name("ohm-gc-trash-v1");
+    fs::create_dir(&trash).unwrap();
+    let retired = trash.join(unit.file_name().unwrap());
+    fs::rename(&unit, &retired).unwrap();
+
+    // Recreate interruption after the atomic retirement and deletion of just the
+    // query cache. Reusing this finalized session would panic while replaying
+    // the cached unused-variable diagnostic from its surviving dep-graph.
+    let query_cache = walkdir::WalkDir::new(&retired)
+        .into_iter()
+        .map(Result::unwrap)
+        .find(|entry| entry.file_name() == "query-cache.bin")
+        .unwrap();
+    fs::remove_file(query_cache.path()).unwrap();
+    assert!(
+        walkdir::WalkDir::new(&retired)
+            .into_iter()
+            .map(Result::unwrap)
+            .any(|entry| entry.file_name() == "dep-graph.bin")
+    );
+    cargo(&p, "build -v")
+        .with_stderr_contains("[FRESH] foo [..]")
+        .run();
+    assert!(unit.join(RECORD).is_file());
+    p.change_file("src/main.rs", &source.replace("first", "second"));
+    cargo(&p, "build")
+        .with_stderr_contains("[WARNING] unused variable: `unused`")
+        .run();
+    p.process(p.bin("foo")).with_stdout_data("second\n").run();
+
+    // The previous trash marker is recent, but retirement is unconditional.
+    // A dry run must also handle a new eligible unit with the same name as the
+    // trash entry that it would remove first.
+    age(&unit);
+    cargo(&p, "clean incremental --max-age 30days --dry-run")
+        .with_stderr_contains("[..]1 configurations eligible, 1 trash entries eligible[..]")
+        .run();
+    assert!(retired.join(RECORD).is_file());
+    assert!(unit.join(RECORD).is_file());
+    cargo(&p, "clean incremental --max-age 30days").run();
+    assert!(!retired.exists());
+    assert!(!unit.exists());
+
+    // Package-scoped cleaning also removes retired configurations.
+    cargo(&p, "build").run();
+    fs::rename(&unit, &retired).unwrap();
+    cargo(&p, "clean -p foo").run();
+    assert!(!retired.exists());
+}
+
+#[cargo_test]
+fn trash_recovery_preserves_unknown_data_and_removes_only_empty_unmarked_entries() {
+    let p = fixture();
+    cargo(&p, "build").run();
+    let unit = units("debug").pop().unwrap();
+    age(&unit);
+    let trash = managed_root("debug").with_file_name("ohm-gc-trash-v1");
+    fs::create_dir(&trash).unwrap();
+
+    let collision = trash.join(unit.file_name().unwrap());
+    fs::create_dir(&collision).unwrap();
+    fs::write(collision.join("important"), "unrecognized payload").unwrap();
+    cargo(&p, "clean incremental --max-age 30days").run();
+    assert!(unit.join(RECORD).is_file());
+    assert_eq!(
+        fs::read_to_string(collision.join("important")).unwrap(),
+        "unrecognized payload"
+    );
+
+    let unknown = trash.join("foo-0000000000000000");
+    fs::rename(collision, &unknown).unwrap();
+    let empty = trash.join("foo-1111111111111111");
+    fs::create_dir(&empty).unwrap();
+    let alias = trash.join("foo-2222222222222222");
+    p.symlink(&unknown, &alias);
+
+    cargo(&p, "clean incremental --max-age 30days --dry-run").run();
+    assert!(empty.is_dir());
+    cargo(&p, "clean incremental --max-age 30days").run();
+    assert!(!unit.exists());
+    assert!(!empty.exists());
+    assert!(alias.is_symlink());
+    assert_eq!(
+        fs::read_to_string(unknown.join("important")).unwrap(),
+        "unrecognized payload"
+    );
+}
+
+#[cargo_test]
+fn unicode_target_names_can_be_tracked_and_expired() {
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "unicode-target"
+                version = "0.1.0"
+                edition = "2021"
+
+                [[bin]]
+                name = "café"
+                path = "src/main.rs"
+            "#,
+        )
+        .file("src/main.rs", "fn main() { println!(\"unicode\"); }")
+        .build();
+    cargo(&p, "build").run();
+    let unit = units("debug").pop().unwrap();
+    assert!(
+        unit.file_name()
+            .unwrap()
+            .to_str()
+            .unwrap()
+            .starts_with("café-")
+    );
+    age(&unit);
+    cargo(&p, "clean incremental --max-age 30days").run();
+    assert!(!unit.exists());
+    p.process(p.bin("café")).with_stdout_data("unicode\n").run();
+    cargo(&p, "build -v")
+        .with_stderr_contains("[FRESH] unicode-target [..]")
+        .run();
+}
+
+#[cargo_test]
+fn fresh_builds_preserve_recent_records_and_upgrade_legacy_records_once() {
+    use std::os::unix::fs::MetadataExt;
+
+    let p = fixture();
+    cargo(&p, "build").run();
+    let unit = units("debug").pop().unwrap();
+    let marker = unit.join(RECORD);
+    let original = fs::read(&marker).unwrap();
+    let original_inode = fs::metadata(&marker).unwrap().ino();
+    cargo(&p, "build -v")
+        .with_stderr_contains("[FRESH] foo [..]")
+        .run();
+    assert_eq!(fs::read(&marker).unwrap(), original);
+    assert_eq!(fs::metadata(&marker).unwrap().ino(), original_inode);
+
+    // Upgrade version 1 even when its timestamp is within the refresh window.
+    // This ensures only records written with throttling use its expiry grace.
+    let mut legacy = record(&unit);
+    legacy["version"] = 1.into();
+    fs::write(&marker, serde_json::to_vec(&legacy).unwrap()).unwrap();
+    cargo(&p, "build -v")
+        .with_stderr_contains("[FRESH] foo [..]")
+        .run();
+    assert_eq!(record(&unit)["version"], 2);
+    let upgraded = fs::read(&marker).unwrap();
+    let upgraded_inode = fs::metadata(&marker).unwrap().ino();
+    assert_ne!(upgraded_inode, original_inode);
+    cargo(&p, "build -v")
+        .with_stderr_contains("[FRESH] foo [..]")
+        .run();
+    assert_eq!(fs::read(&marker).unwrap(), upgraded);
+    assert_eq!(fs::metadata(&marker).unwrap().ino(), upgraded_inode);
 }

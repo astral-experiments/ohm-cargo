@@ -1,0 +1,841 @@
+{
+  "limitations": [
+    "One macOS arm64 machine; same final release Cargo binary for both modes.",
+    "Eight serial paired blocks per scenario; approximate intervals describe local noise, not independent repeated experiments.",
+    "Source compilation and expiry are excluded: every measured compiler artifact is fresh.",
+    "No claim of zero overhead or a general build-speed improvement.",
+    "This compares enabled and disabled tracking within one executable, not Cargo revisions or build profiles."
+  ],
+  "provenance": {
+    "cargo": "/private/tmp/codex-cargo-targets/cargo/ohm-incremental-cache-gc/ohm/release/cargo",
+    "cargo_build_profile": "release",
+    "cargo_sha256": "f6e6e80c52b6b6ddedc44696ee333ae2a2113bea4201e325168bc33c896257bb",
+    "cargo_source": "/private/tmp/ohm-incremental-cache-gc",
+    "cargo_source_diff_sha256": "11e4b5add267320ad7f6d69dca6c8ab7af32bbf10c6388c21d4f6abe55637f19",
+    "cargo_source_revision": "7f48c78d59428880fd687a83d0ad2ee9ebf82cf5",
+    "cargo_version": "cargo 1.98.0 (7f48c78d5 2026-09-03)\nrelease: 1.98.0\ncommit-hash: 7f48c78d59428880fd687a83d0ad2ee9ebf82cf5\ncommit-date: 2026-09-03\nhost: aarch64-apple-darwin\nlibgit2: 1.9.4 (sys:0.21.0 vendored)\nlibcurl: 8.7.1 (sys:0.4.90+curl-8.21.0 system ssl:(SecureTransport) LibreSSL/3.3.6)\nos: Mac OS 26.6.2 [64-bit]\n",
+    "environment": {
+      "CARGO_BUILD_BUILD_DIR": "/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/release-tracking-final/build",
+      "CARGO_HOME": "/private/tmp/codex-cargo-home",
+      "CARGO_INCREMENTAL": "1",
+      "CARGO_TERM_COLOR": "never",
+      "CARGO_UNSTABLE_OHM_NATIVE_TOOL_TRUST": "all",
+      "CARGO_UNSTABLE_OHM_PROC_MACRO_TRUST": "all",
+      "RUSTC": "/Users/charliemarsh/.local/share/ohm/toolchains/ohm-1.98.0-8/bin/rustc",
+      "RUSTUP_TOOLCHAIN": "ohm"
+    },
+    "harness_sha256": "5159d28d2ed2124b4b8877db9c4ee19b9982438359051c5d7f5cfca7eabb38a5",
+    "jobs": 8,
+    "mode_A": "disabled",
+    "mode_B": "enabled",
+    "order": "ABBABAABABBABAABABBABAABABBABAAB",
+    "package": "ruff_python_parser",
+    "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+    "rustc": "/Users/charliemarsh/.local/share/ohm/toolchains/ohm-1.98.0-8/bin/rustc",
+    "rustc_sha256": "60d52a0682970d3e1667b20ad59992b565af942c10b321e9a8888449b28e2bb5",
+    "rustc_version": "rustc 1.98.0-dev (ca4f4c0a4 2026-09-03) (ohm-1.98.0-8)\nbinary: rustc\ncommit-hash: ca4f4c0a4aa9f79c51046df02c69a9d2d25a9823\ncommit-date: 2026-09-03\nhost: aarch64-apple-darwin\nrelease: 1.98.0-dev\nLLVM version: 22.1.8\n",
+    "source": "/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/results/source",
+    "source_inventory": {
+      "files": 11107,
+      "sha256": "389d5d41701f49496c8c57b2fd376b09d6bcac24619bfc888c925c338a6381c8"
+    },
+    "synthetic_inventory": {
+      "files": 203,
+      "sha256": "7fdee6691c0bee5b428e8104dea43641788881cff9f12771ca30e60020ed4710"
+    }
+  },
+  "scenarios": {
+    "ruff": {
+      "all_artifacts_fresh": true,
+      "approximate_paired_block_95_percent_t_interval_ms": [
+        -3.3095067114424053,
+        1.1880958364424066
+      ],
+      "blocks": [
+        {
+          "difference_ms": -0.8353960000000029,
+          "disabled_ms": 78.0636045,
+          "enabled_ms": 77.2282085,
+          "order": "ABBA",
+          "percent": -1.0701478689726707
+        },
+        {
+          "difference_ms": -0.5496239999999943,
+          "disabled_ms": 80.032937,
+          "enabled_ms": 79.48331300000001,
+          "order": "BAAB",
+          "percent": -0.6867472575697087
+        },
+        {
+          "difference_ms": -5.706291000000007,
+          "disabled_ms": 84.075833,
+          "enabled_ms": 78.369542,
+          "order": "ABBA",
+          "percent": -6.787076376632517
+        },
+        {
+          "difference_ms": -1.0185630000000003,
+          "disabled_ms": 79.5465835,
+          "enabled_ms": 78.5280205,
+          "order": "BAAB",
+          "percent": -1.2804610269654182
+        },
+        {
+          "difference_ms": 3.6962090000000103,
+          "disabled_ms": 79.11908299999999,
+          "enabled_ms": 82.815292,
+          "order": "ABBA",
+          "percent": 4.67170353832338
+        },
+        {
+          "difference_ms": -0.13870799999999406,
+          "disabled_ms": 76.318708,
+          "enabled_ms": 76.18,
+          "order": "BAAB",
+          "percent": -0.18174835978617132
+        },
+        {
+          "difference_ms": -3.3145000000000095,
+          "disabled_ms": 81.621375,
+          "enabled_ms": 78.30687499999999,
+          "order": "ABBA",
+          "percent": -4.06082352815057
+        },
+        {
+          "difference_ms": -0.6187704999999966,
+          "disabled_ms": 77.0816875,
+          "enabled_ms": 76.462917,
+          "order": "BAAB",
+          "percent": -0.80274643701852
+        }
+      ],
+      "commands": {
+        "A": {
+          "command": [
+            "/private/tmp/codex-cargo-targets/cargo/ohm-incremental-cache-gc/ohm/release/cargo",
+            "-Zfine-grain-locking",
+            "-Zohm-shared-registry-cache",
+            "build",
+            "--offline",
+            "--message-format=json",
+            "--jobs",
+            "8",
+            "--locked",
+            "--lib",
+            "-p",
+            "ruff_python_parser"
+          ],
+          "cwd": "/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/results/source",
+          "environment": {
+            "CARGO_BUILD_BUILD_DIR": "/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/release-tracking-final/build",
+            "CARGO_HOME": "/private/tmp/codex-cargo-home",
+            "CARGO_INCREMENTAL": "1",
+            "CARGO_TARGET_DIR": "/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/release-tracking-final/ruff-target-A",
+            "CARGO_TERM_COLOR": "never",
+            "CARGO_UNSTABLE_OHM_NATIVE_TOOL_TRUST": "all",
+            "CARGO_UNSTABLE_OHM_PROC_MACRO_TRUST": "all",
+            "RUSTC": "/Users/charliemarsh/.local/share/ohm/toolchains/ohm-1.98.0-8/bin/rustc",
+            "RUSTUP_TOOLCHAIN": "ohm"
+          }
+        },
+        "B": {
+          "command": [
+            "/private/tmp/codex-cargo-targets/cargo/ohm-incremental-cache-gc/ohm/release/cargo",
+            "-Zfine-grain-locking",
+            "-Zohm-shared-registry-cache",
+            "-Zohm-incremental-gc",
+            "build",
+            "--offline",
+            "--message-format=json",
+            "--jobs",
+            "8",
+            "--locked",
+            "--lib",
+            "-p",
+            "ruff_python_parser"
+          ],
+          "cwd": "/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/results/source",
+          "environment": {
+            "CARGO_BUILD_BUILD_DIR": "/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/release-tracking-final/build",
+            "CARGO_HOME": "/private/tmp/codex-cargo-home",
+            "CARGO_INCREMENTAL": "1",
+            "CARGO_TARGET_DIR": "/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/release-tracking-final/ruff-target-B",
+            "CARGO_TERM_COLOR": "never",
+            "CARGO_UNSTABLE_OHM_NATIVE_TOOL_TRUST": "all",
+            "CARGO_UNSTABLE_OHM_PROC_MACRO_TRUST": "all",
+            "RUSTC": "/Users/charliemarsh/.local/share/ohm/toolchains/ohm-1.98.0-8/bin/rustc",
+            "RUSTUP_TOOLCHAIN": "ohm"
+          }
+        }
+      },
+      "marker_changes": {
+        "content_changed": 0,
+        "count": 5,
+        "inode_changed": 0,
+        "mtime_changed": 0
+      },
+      "mean_difference_ms": -1.0607054374999905,
+      "mean_percent": -1.3345148327556955,
+      "means_ms": {
+        "A": 79.4824764375,
+        "B": 78.421771
+      },
+      "medians_ms": {
+        "A": 77.843333,
+        "B": 78.375021
+      },
+      "paired_block_difference_sd_ms": 2.6898863608848647,
+      "samples": [
+        {
+          "all_fresh": true,
+          "artifact_count": 97,
+          "local_artifact_count": 5,
+          "mode": "A",
+          "name": "measure00",
+          "wall_ms": 80.608209
+        },
+        {
+          "all_fresh": true,
+          "artifact_count": 97,
+          "local_artifact_count": 5,
+          "mode": "B",
+          "name": "measure01",
+          "wall_ms": 75.746834
+        },
+        {
+          "all_fresh": true,
+          "artifact_count": 97,
+          "local_artifact_count": 5,
+          "mode": "B",
+          "name": "measure02",
+          "wall_ms": 78.709583
+        },
+        {
+          "all_fresh": true,
+          "artifact_count": 97,
+          "local_artifact_count": 5,
+          "mode": "A",
+          "name": "measure03",
+          "wall_ms": 75.519
+        },
+        {
+          "all_fresh": true,
+          "artifact_count": 97,
+          "local_artifact_count": 5,
+          "mode": "B",
+          "name": "measure04",
+          "wall_ms": 78.284209
+        },
+        {
+          "all_fresh": true,
+          "artifact_count": 97,
+          "local_artifact_count": 5,
+          "mode": "A",
+          "name": "measure05",
+          "wall_ms": 77.828416
+        },
+        {
+          "all_fresh": true,
+          "artifact_count": 97,
+          "local_artifact_count": 5,
+          "mode": "A",
+          "name": "measure06",
+          "wall_ms": 82.237458
+        },
+        {
+          "all_fresh": true,
+          "artifact_count": 97,
+          "local_artifact_count": 5,
+          "mode": "B",
+          "name": "measure07",
+          "wall_ms": 80.682417
+        },
+        {
+          "all_fresh": true,
+          "artifact_count": 97,
+          "local_artifact_count": 5,
+          "mode": "A",
+          "name": "measure08",
+          "wall_ms": 92.18
+        },
+        {
+          "all_fresh": true,
+          "artifact_count": 97,
+          "local_artifact_count": 5,
+          "mode": "B",
+          "name": "measure09",
+          "wall_ms": 80.520625
+        },
+        {
+          "all_fresh": true,
+          "artifact_count": 97,
+          "local_artifact_count": 5,
+          "mode": "B",
+          "name": "measure10",
+          "wall_ms": 76.218459
+        },
+        {
+          "all_fresh": true,
+          "artifact_count": 97,
+          "local_artifact_count": 5,
+          "mode": "A",
+          "name": "measure11",
+          "wall_ms": 75.971666
+        },
+        {
+          "all_fresh": true,
+          "artifact_count": 97,
+          "local_artifact_count": 5,
+          "mode": "B",
+          "name": "measure12",
+          "wall_ms": 78.465833
+        },
+        {
+          "all_fresh": true,
+          "artifact_count": 97,
+          "local_artifact_count": 5,
+          "mode": "A",
+          "name": "measure13",
+          "wall_ms": 78.4645
+        },
+        {
+          "all_fresh": true,
+          "artifact_count": 97,
+          "local_artifact_count": 5,
+          "mode": "A",
+          "name": "measure14",
+          "wall_ms": 80.628667
+        },
+        {
+          "all_fresh": true,
+          "artifact_count": 97,
+          "local_artifact_count": 5,
+          "mode": "B",
+          "name": "measure15",
+          "wall_ms": 78.590208
+        },
+        {
+          "all_fresh": true,
+          "artifact_count": 97,
+          "local_artifact_count": 5,
+          "mode": "A",
+          "name": "measure16",
+          "wall_ms": 81.68525
+        },
+        {
+          "all_fresh": true,
+          "artifact_count": 97,
+          "local_artifact_count": 5,
+          "mode": "B",
+          "name": "measure17",
+          "wall_ms": 81.293334
+        },
+        {
+          "all_fresh": true,
+          "artifact_count": 97,
+          "local_artifact_count": 5,
+          "mode": "B",
+          "name": "measure18",
+          "wall_ms": 84.33725
+        },
+        {
+          "all_fresh": true,
+          "artifact_count": 97,
+          "local_artifact_count": 5,
+          "mode": "A",
+          "name": "measure19",
+          "wall_ms": 76.552916
+        },
+        {
+          "all_fresh": true,
+          "artifact_count": 97,
+          "local_artifact_count": 5,
+          "mode": "B",
+          "name": "measure20",
+          "wall_ms": 76.538833
+        },
+        {
+          "all_fresh": true,
+          "artifact_count": 97,
+          "local_artifact_count": 5,
+          "mode": "A",
+          "name": "measure21",
+          "wall_ms": 76.139708
+        },
+        {
+          "all_fresh": true,
+          "artifact_count": 97,
+          "local_artifact_count": 5,
+          "mode": "A",
+          "name": "measure22",
+          "wall_ms": 76.497708
+        },
+        {
+          "all_fresh": true,
+          "artifact_count": 97,
+          "local_artifact_count": 5,
+          "mode": "B",
+          "name": "measure23",
+          "wall_ms": 75.821167
+        },
+        {
+          "all_fresh": true,
+          "artifact_count": 97,
+          "local_artifact_count": 5,
+          "mode": "A",
+          "name": "measure24",
+          "wall_ms": 76.412708
+        },
+        {
+          "all_fresh": true,
+          "artifact_count": 97,
+          "local_artifact_count": 5,
+          "mode": "B",
+          "name": "measure25",
+          "wall_ms": 78.947667
+        },
+        {
+          "all_fresh": true,
+          "artifact_count": 97,
+          "local_artifact_count": 5,
+          "mode": "B",
+          "name": "measure26",
+          "wall_ms": 77.666083
+        },
+        {
+          "all_fresh": true,
+          "artifact_count": 97,
+          "local_artifact_count": 5,
+          "mode": "A",
+          "name": "measure27",
+          "wall_ms": 86.830042
+        },
+        {
+          "all_fresh": true,
+          "artifact_count": 97,
+          "local_artifact_count": 5,
+          "mode": "B",
+          "name": "measure28",
+          "wall_ms": 77.276792
+        },
+        {
+          "all_fresh": true,
+          "artifact_count": 97,
+          "local_artifact_count": 5,
+          "mode": "A",
+          "name": "measure29",
+          "wall_ms": 77.85825
+        },
+        {
+          "all_fresh": true,
+          "artifact_count": 97,
+          "local_artifact_count": 5,
+          "mode": "A",
+          "name": "measure30",
+          "wall_ms": 76.305125
+        },
+        {
+          "all_fresh": true,
+          "artifact_count": 97,
+          "local_artifact_count": 5,
+          "mode": "B",
+          "name": "measure31",
+          "wall_ms": 75.649042
+        }
+      ]
+    },
+    "synthetic": {
+      "all_artifacts_fresh": true,
+      "approximate_paired_block_95_percent_t_interval_ms": [
+        -0.2512453774524035,
+        3.5577296274524093
+      ],
+      "blocks": [
+        {
+          "difference_ms": 1.4876250000000084,
+          "disabled_ms": 46.206520999999995,
+          "enabled_ms": 47.694146,
+          "order": "ABBA",
+          "percent": 3.2195131072517036
+        },
+        {
+          "difference_ms": -2.6671044999999935,
+          "disabled_ms": 50.062416999999996,
+          "enabled_ms": 47.3953125,
+          "order": "BAAB",
+          "percent": -5.32755839575223
+        },
+        {
+          "difference_ms": 1.5362709999999993,
+          "disabled_ms": 47.607479,
+          "enabled_ms": 49.14375,
+          "order": "ABBA",
+          "percent": 3.2269530592031526
+        },
+        {
+          "difference_ms": 3.124854500000005,
+          "disabled_ms": 47.9007705,
+          "enabled_ms": 51.025625000000005,
+          "order": "BAAB",
+          "percent": 6.523599656919932
+        },
+        {
+          "difference_ms": 0.09187449999999586,
+          "disabled_ms": 49.793917,
+          "enabled_ms": 49.885791499999996,
+          "order": "ABBA",
+          "percent": 0.1845094853654361
+        },
+        {
+          "difference_ms": 4.898083500000006,
+          "disabled_ms": 45.888374999999996,
+          "enabled_ms": 50.7864585,
+          "order": "BAAB",
+          "percent": 10.673909241719738
+        },
+        {
+          "difference_ms": 1.5289165000000082,
+          "disabled_ms": 47.02175,
+          "enabled_ms": 48.550666500000005,
+          "order": "ABBA",
+          "percent": 3.251509142045994
+        },
+        {
+          "difference_ms": 3.2254164999999944,
+          "disabled_ms": 46.1621255,
+          "enabled_ms": 49.387541999999996,
+          "order": "BAAB",
+          "percent": 6.9871490211168785
+        }
+      ],
+      "commands": {
+        "A": {
+          "command": [
+            "/private/tmp/codex-cargo-targets/cargo/ohm-incremental-cache-gc/ohm/release/cargo",
+            "-Zfine-grain-locking",
+            "-Zohm-shared-registry-cache",
+            "build",
+            "--offline",
+            "--message-format=json",
+            "--jobs",
+            "8"
+          ],
+          "cwd": "/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/release-tracking-final/synthetic",
+          "environment": {
+            "CARGO_BUILD_BUILD_DIR": "/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/release-tracking-final/build",
+            "CARGO_HOME": "/private/tmp/codex-cargo-home",
+            "CARGO_INCREMENTAL": "1",
+            "CARGO_TARGET_DIR": "/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/release-tracking-final/synthetic-target-A",
+            "CARGO_TERM_COLOR": "never",
+            "CARGO_UNSTABLE_OHM_NATIVE_TOOL_TRUST": "all",
+            "CARGO_UNSTABLE_OHM_PROC_MACRO_TRUST": "all",
+            "RUSTC": "/Users/charliemarsh/.local/share/ohm/toolchains/ohm-1.98.0-8/bin/rustc",
+            "RUSTUP_TOOLCHAIN": "ohm"
+          }
+        },
+        "B": {
+          "command": [
+            "/private/tmp/codex-cargo-targets/cargo/ohm-incremental-cache-gc/ohm/release/cargo",
+            "-Zfine-grain-locking",
+            "-Zohm-shared-registry-cache",
+            "-Zohm-incremental-gc",
+            "build",
+            "--offline",
+            "--message-format=json",
+            "--jobs",
+            "8"
+          ],
+          "cwd": "/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/release-tracking-final/synthetic",
+          "environment": {
+            "CARGO_BUILD_BUILD_DIR": "/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/release-tracking-final/build",
+            "CARGO_HOME": "/private/tmp/codex-cargo-home",
+            "CARGO_INCREMENTAL": "1",
+            "CARGO_TARGET_DIR": "/private/tmp/codex-cargo-targets/cargo/isolated/incremental-gc/release-tracking-final/synthetic-target-B",
+            "CARGO_TERM_COLOR": "never",
+            "CARGO_UNSTABLE_OHM_NATIVE_TOOL_TRUST": "all",
+            "CARGO_UNSTABLE_OHM_PROC_MACRO_TRUST": "all",
+            "RUSTC": "/Users/charliemarsh/.local/share/ohm/toolchains/ohm-1.98.0-8/bin/rustc",
+            "RUSTUP_TOOLCHAIN": "ohm"
+          }
+        }
+      },
+      "marker_changes": {
+        "content_changed": 0,
+        "count": 101,
+        "inode_changed": 0,
+        "mtime_changed": 0
+      },
+      "mean_difference_ms": 1.6532421250000056,
+      "mean_percent": 3.4746270560798376,
+      "means_ms": {
+        "A": 47.580419375,
+        "B": 49.233661500000004
+      },
+      "medians_ms": {
+        "A": 47.548229,
+        "B": 49.190062499999996
+      },
+      "paired_block_difference_sd_ms": 2.278038089306779,
+      "samples": [
+        {
+          "all_fresh": true,
+          "artifact_count": 101,
+          "local_artifact_count": 101,
+          "mode": "A",
+          "name": "measure00",
+          "wall_ms": 47.247125
+        },
+        {
+          "all_fresh": true,
+          "artifact_count": 101,
+          "local_artifact_count": 101,
+          "mode": "B",
+          "name": "measure01",
+          "wall_ms": 48.109208
+        },
+        {
+          "all_fresh": true,
+          "artifact_count": 101,
+          "local_artifact_count": 101,
+          "mode": "B",
+          "name": "measure02",
+          "wall_ms": 47.279084
+        },
+        {
+          "all_fresh": true,
+          "artifact_count": 101,
+          "local_artifact_count": 101,
+          "mode": "A",
+          "name": "measure03",
+          "wall_ms": 45.165917
+        },
+        {
+          "all_fresh": true,
+          "artifact_count": 101,
+          "local_artifact_count": 101,
+          "mode": "B",
+          "name": "measure04",
+          "wall_ms": 47.126542
+        },
+        {
+          "all_fresh": true,
+          "artifact_count": 101,
+          "local_artifact_count": 101,
+          "mode": "A",
+          "name": "measure05",
+          "wall_ms": 50.85825
+        },
+        {
+          "all_fresh": true,
+          "artifact_count": 101,
+          "local_artifact_count": 101,
+          "mode": "A",
+          "name": "measure06",
+          "wall_ms": 49.266584
+        },
+        {
+          "all_fresh": true,
+          "artifact_count": 101,
+          "local_artifact_count": 101,
+          "mode": "B",
+          "name": "measure07",
+          "wall_ms": 47.664083
+        },
+        {
+          "all_fresh": true,
+          "artifact_count": 101,
+          "local_artifact_count": 101,
+          "mode": "A",
+          "name": "measure08",
+          "wall_ms": 45.019167
+        },
+        {
+          "all_fresh": true,
+          "artifact_count": 101,
+          "local_artifact_count": 101,
+          "mode": "B",
+          "name": "measure09",
+          "wall_ms": 47.363
+        },
+        {
+          "all_fresh": true,
+          "artifact_count": 101,
+          "local_artifact_count": 101,
+          "mode": "B",
+          "name": "measure10",
+          "wall_ms": 50.9245
+        },
+        {
+          "all_fresh": true,
+          "artifact_count": 101,
+          "local_artifact_count": 101,
+          "mode": "A",
+          "name": "measure11",
+          "wall_ms": 50.195791
+        },
+        {
+          "all_fresh": true,
+          "artifact_count": 101,
+          "local_artifact_count": 101,
+          "mode": "B",
+          "name": "measure12",
+          "wall_ms": 51.49725
+        },
+        {
+          "all_fresh": true,
+          "artifact_count": 101,
+          "local_artifact_count": 101,
+          "mode": "A",
+          "name": "measure13",
+          "wall_ms": 47.952208
+        },
+        {
+          "all_fresh": true,
+          "artifact_count": 101,
+          "local_artifact_count": 101,
+          "mode": "A",
+          "name": "measure14",
+          "wall_ms": 47.849333
+        },
+        {
+          "all_fresh": true,
+          "artifact_count": 101,
+          "local_artifact_count": 101,
+          "mode": "B",
+          "name": "measure15",
+          "wall_ms": 50.554
+        },
+        {
+          "all_fresh": true,
+          "artifact_count": 101,
+          "local_artifact_count": 101,
+          "mode": "A",
+          "name": "measure16",
+          "wall_ms": 49.381875
+        },
+        {
+          "all_fresh": true,
+          "artifact_count": 101,
+          "local_artifact_count": 101,
+          "mode": "B",
+          "name": "measure17",
+          "wall_ms": 50.60075
+        },
+        {
+          "all_fresh": true,
+          "artifact_count": 101,
+          "local_artifact_count": 101,
+          "mode": "B",
+          "name": "measure18",
+          "wall_ms": 49.170833
+        },
+        {
+          "all_fresh": true,
+          "artifact_count": 101,
+          "local_artifact_count": 101,
+          "mode": "A",
+          "name": "measure19",
+          "wall_ms": 50.205959
+        },
+        {
+          "all_fresh": true,
+          "artifact_count": 101,
+          "local_artifact_count": 101,
+          "mode": "B",
+          "name": "measure20",
+          "wall_ms": 56.568584
+        },
+        {
+          "all_fresh": true,
+          "artifact_count": 101,
+          "local_artifact_count": 101,
+          "mode": "A",
+          "name": "measure21",
+          "wall_ms": 48.002
+        },
+        {
+          "all_fresh": true,
+          "artifact_count": 101,
+          "local_artifact_count": 101,
+          "mode": "A",
+          "name": "measure22",
+          "wall_ms": 43.77475
+        },
+        {
+          "all_fresh": true,
+          "artifact_count": 101,
+          "local_artifact_count": 101,
+          "mode": "B",
+          "name": "measure23",
+          "wall_ms": 45.004333
+        },
+        {
+          "all_fresh": true,
+          "artifact_count": 101,
+          "local_artifact_count": 101,
+          "mode": "A",
+          "name": "measure24",
+          "wall_ms": 47.088916
+        },
+        {
+          "all_fresh": true,
+          "artifact_count": 101,
+          "local_artifact_count": 101,
+          "mode": "B",
+          "name": "measure25",
+          "wall_ms": 47.548875
+        },
+        {
+          "all_fresh": true,
+          "artifact_count": 101,
+          "local_artifact_count": 101,
+          "mode": "B",
+          "name": "measure26",
+          "wall_ms": 49.552458
+        },
+        {
+          "all_fresh": true,
+          "artifact_count": 101,
+          "local_artifact_count": 101,
+          "mode": "A",
+          "name": "measure27",
+          "wall_ms": 46.954584
+        },
+        {
+          "all_fresh": true,
+          "artifact_count": 101,
+          "local_artifact_count": 101,
+          "mode": "B",
+          "name": "measure28",
+          "wall_ms": 49.209292
+        },
+        {
+          "all_fresh": true,
+          "artifact_count": 101,
+          "local_artifact_count": 101,
+          "mode": "A",
+          "name": "measure29",
+          "wall_ms": 46.448209
+        },
+        {
+          "all_fresh": true,
+          "artifact_count": 101,
+          "local_artifact_count": 101,
+          "mode": "A",
+          "name": "measure30",
+          "wall_ms": 45.876042
+        },
+        {
+          "all_fresh": true,
+          "artifact_count": 101,
+          "local_artifact_count": 101,
+          "mode": "B",
+          "name": "measure31",
+          "wall_ms": 49.565792
+        }
+      ]
+    }
+  },
+  "source_unchanged": true,
+  "synthetic_unchanged": true
+}
