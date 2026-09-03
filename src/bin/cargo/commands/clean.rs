@@ -33,6 +33,23 @@ pub fn cli() -> Command {
         .arg_dry_run("Display what would be deleted without deleting anything")
         .args_conflicts_with_subcommands(true)
         .subcommand(
+            subcommand("incremental")
+                .about("Expire unused Ohm incremental configurations (prototype)")
+                .hide(true)
+                .arg_manifest_path()
+                .arg_target_dir()
+                .arg_dry_run("Display what would be deleted without deleting anything")
+                .arg(
+                    opt(
+                        "max-age",
+                        "Remove tracked configurations unused for this duration",
+                    )
+                    .value_name("DURATION")
+                    .required(true)
+                    .value_parser(parse_time_span),
+                ),
+        )
+        .subcommand(
             subcommand("gc")
                 .about("Clean global caches")
                 .hide(true)
@@ -138,6 +155,15 @@ pub fn cli() -> Command {
 
 pub fn exec(gctx: &mut GlobalContext, args: &ArgMatches) -> CliResult {
     match args.subcommand() {
+        Some(("incremental", args)) => {
+            let ws = args.workspace(gctx)?;
+            cargo::core::incremental_gc::clean(
+                &ws,
+                *args.get_one::<Duration>("max-age").unwrap(),
+                args.dry_run(),
+            )?;
+            return Ok(());
+        }
         Some(("gc", args)) => {
             return gc(gctx, args);
         }
