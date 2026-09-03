@@ -401,6 +401,7 @@ fn compile<'gctx>(
     // dependency, skip compiling the unit and jumps to dependencies, which still
     // have chances to be compile time dependencies
     if !unit.skip_non_compile_time_dep {
+        crate::core::incremental_gc::record_use(build_runner, unit)?;
         // Build up the work to be done to compile this unit, enqueuing it once
         // we've got everything constructed.
         fingerprint::prepare_init(build_runner, unit)?;
@@ -3175,7 +3176,7 @@ fn add_codegen_incremental(
     build_runner: &BuildRunner<'_, '_>,
     unit: &Unit,
 ) {
-    let dir = build_runner.files().incremental_dir(&unit);
+    let dir = crate::core::incremental_gc::directory(build_runner, unit);
     let mut arg = OsString::from("incremental=");
     arg.push(dir.as_os_str());
     cmd.arg("-C").arg(arg);

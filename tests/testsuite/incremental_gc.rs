@@ -1,0 +1,416 @@
+//! Eviction of tracked, workspace-private incremental build configurations.
+
+#![cfg(any(target_os = "linux", target_os = "macos"))]
+
+use std::fs;
+use std::path::{Path, PathBuf};
+use std::time::{Duration, SystemTime, UNIX_EPOCH};
+
+use crate::prelude::*;
+use cargo_test_support::{Execs, Project, paths, project};
+use serde_json::Value;
+
+const RECORD: &str = ".ohm-incremental-gc.json";
+const FLAGS: &str = "-Zfine-grain-locking -Zohm-shared-registry-cache -Zohm-incremental-gc";
+
+fn fixture() -> Project {
+    project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "foo"
+                version = "0.1.0"
+                edition = "2021"
+
+                [features]
+                recent = []
+                reused = []
+
+                [profile.release]
+                incremental = true
+            "#,
+        )
+        .file(
+            "src/main.rs",
+            r#"
+                fn main() {
+                    println!("{}", if cfg!(feature = "recent") {
+                        "recent"
+                    } else if cfg!(feature = "reused") {
+                        "reused"
+                    } else {
+                        "default"
+                    });
+                }
+            "#,
+        )
+        .build()
+}
+
+fn shared_build() -> PathBuf {
+    paths::root().join("shared-build")
+}
+
+fn cargo(p: &Project, command: &str) -> Execs {
+    let mut cargo = crate::build_dir::shared_registry_cargo(p, &format!("{FLAGS} {command}"));
+    cargo
+        .masquerade_as_nightly_cargo(&[
+            "fine-grain-locking",
+            "ohm-shared-registry-cache",
+            "ohm-incremental-gc",
+        ])
+        // The test harness disables incremental compilation by default.
+        .env("CARGO_INCREMENTAL", "1")
+        .env("CARGO_TARGET_DIR", p.build_dir())
+        .env("CARGO_BUILD_BUILD_DIR", shared_build());
+    cargo
+}
+
+fn managed_root(profile: &str) -> PathBuf {
+    let namespaces = fs::read_dir(shared_build().join(profile).join("incremental"))
+        .unwrap()
+        .map(|entry| entry.unwrap().path())
+        .collect::<Vec<_>>();
+    assert_eq!(namespaces.len(), 1, "one workspace namespace");
+    namespaces[0].join("ohm-gc-v1")
+}
+
+fn units(profile: &str) -> Vec<PathBuf> {
+    let mut units = fs::read_dir(managed_root(profile))
+        .unwrap()
+        .map(|entry| entry.unwrap().path())
+        .collect::<Vec<_>>();
+    units.sort();
+    units
+}
+
+fn record(unit: &Path) -> Value {
+    serde_json::from_slice(&fs::read(unit.join(RECORD)).unwrap()).unwrap()
+}
+
+fn age(unit: &Path) {
+    let timestamp = (SystemTime::now() - Duration::from_secs(60 * 24 * 60 * 60))
+        .duration_since(UNIX_EPOCH)
+        .unwrap()
+        .as_secs();
+    let mut record = record(unit);
+    record["last_used"] = timestamp.into();
+    fs::write(unit.join(RECORD), serde_json::to_vec(&record).unwrap()).unwrap();
+}
+
+#[cargo_test]
+fn evicts_stale_variants_but_preserves_recent_and_freshly_reused_variants() {
+    let p = fixture();
+    cargo(&p, "build").run();
+    let stale = units("debug").pop().unwrap();
+    assert_eq!(record(&stale)["version"], 1);
+    assert_eq!(
+        record(&stale)["unit"],
+        stale.file_name().unwrap().to_str().unwrap()
+    );
+    assert!(
+        walkdir::WalkDir::new(&stale)
+            .into_iter()
+            .map(Result::unwrap)
+            .any(|entry| entry.file_name() == "dep-graph.bin"),
+        "the tracked unit must own real rustc incremental data"
+    );
+
+    cargo(&p, "build --features recent").run();
+    let recent = units("debug")
+        .into_iter()
+        .find(|unit| unit != &stale)
+        .unwrap();
+    cargo(&p, "build --features reused").run();
+    let reused = units("debug")
+        .into_iter()
+        .find(|unit| unit != &stale && unit != &recent)
+        .unwrap();
+    assert_eq!(units("debug").len(), 3);
+
+    age(&stale);
+    age(&reused);
+    let old_timestamp = record(&reused)["last_used"].as_u64().unwrap();
+    cargo(&p, "build --features reused -v")
+        .with_stderr_contains("[FRESH] foo v0.1.0 ([..])")
+        .with_stderr_does_not_contain("[COMPILING] foo [..]")
+        .run();
+    assert!(record(&reused)["last_used"].as_u64().unwrap() > old_timestamp);
+
+    let binary = fs::read(p.bin("foo")).unwrap();
+    let records = [&stale, &recent, &reused].map(|unit| fs::read(unit.join(RECORD)).unwrap());
+    cargo(&p, "clean incremental --max-age 30days --dry-run").run();
+    assert_eq!(units("debug").len(), 3);
+    assert_eq!(
+        [&stale, &recent, &reused].map(|unit| fs::read(unit.join(RECORD)).unwrap()),
+        records,
+        "dry-run must not mutate tracking records"
+    );
+
+    cargo(&p, "clean incremental --max-age 30days").run();
+    assert!(!stale.exists());
+    assert!(recent.is_dir());
+    assert!(reused.is_dir());
+    assert_eq!(fs::read(p.bin("foo")).unwrap(), binary);
+    cargo(&p, "build --features reused -v")
+        .with_stderr_contains("[FRESH] foo v0.1.0 ([..])")
+        .run();
+
+    // Revisit an evicted configuration after a source edit: rustc reconstructs
+    // the cache and still produces the expected executable.
+    p.change_file("src/main.rs", "fn main() { println!(\"rebuilt\"); }");
+    cargo(&p, "build")
+        .with_stderr_contains("[COMPILING] foo v0.1.0 ([..])")
+        .run();
+    assert!(stale.join(RECORD).is_file());
+    p.process(p.bin("foo")).with_stdout_data("rebuilt\n").run();
+
+    cargo(&p, "clean -p foo").run();
+    assert!(!stale.exists());
+    assert!(!recent.exists());
+    assert!(!reused.exists());
+}
+
+#[cargo_test]
+fn tracking_and_cleaning_require_opt_in() {
+    let p = fixture();
+    crate::build_dir::shared_registry_cargo(&p, "-Zohm-shared-registry-cache build")
+        .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+        .env("CARGO_INCREMENTAL", "1")
+        .env("CARGO_TARGET_DIR", p.build_dir())
+        .env("CARGO_BUILD_BUILD_DIR", shared_build())
+        .run();
+    assert!(!managed_root("debug").exists());
+    assert!(
+        walkdir::WalkDir::new(shared_build().join("debug/incremental"))
+            .into_iter()
+            .map(Result::unwrap)
+            .any(|entry| entry.file_name() == "dep-graph.bin")
+    );
+
+    p.cargo("clean incremental --max-age 30days")
+        .env("CARGO_BUILD_BUILD_DIR", shared_build())
+        .with_status(101)
+        .with_stderr_contains("[..]ohm-incremental-gc[..]")
+        .run();
+}
+
+#[cargo_test]
+fn skips_active_profiles_and_cleans_other_profiles() {
+    let p = fixture();
+    cargo(&p, "build").run();
+    cargo(&p, "build --release").run();
+    let debug = units("debug").pop().unwrap();
+    let release = units("release").pop().unwrap();
+    age(&debug);
+    age(&release);
+
+    let active = fs::File::open(shared_build().join("debug/.cargo-build-lock")).unwrap();
+    active.lock_shared().unwrap();
+    cargo(&p, "clean incremental --max-age 30days").run();
+    assert!(
+        debug.is_dir(),
+        "a live build holds the profile's shared lock"
+    );
+    assert!(
+        !release.exists(),
+        "an idle profile can be evicted independently"
+    );
+
+    drop(active);
+    cargo(&p, "clean incremental --max-age 30days").run();
+    assert!(!debug.exists());
+    assert!(p.bin("foo").is_file());
+    assert!(p.release_bin("foo").is_file());
+}
+
+#[cargo_test]
+fn leaves_malformed_untracked_and_unknown_version_caches_untouched() {
+    let p = fixture();
+    cargo(&p, "build").run();
+    let malformed = units("debug").pop().unwrap();
+    age(&malformed);
+    let old_record = record(&malformed);
+    fs::write(malformed.join(RECORD), b"not json").unwrap();
+
+    let untracked = managed_root("debug").join("foo-0000000000000000");
+    fs::create_dir(&untracked).unwrap();
+    fs::write(untracked.join("important"), b"untracked").unwrap();
+
+    let future = managed_root("debug").join("foo-1111111111111111");
+    fs::create_dir(&future).unwrap();
+    let mut future_record = old_record.clone();
+    future_record["version"] = 2.into();
+    future_record["unit"] = future.file_name().unwrap().to_str().unwrap().into();
+    fs::write(
+        future.join(RECORD),
+        serde_json::to_vec(&future_record).unwrap(),
+    )
+    .unwrap();
+
+    let mismatched = managed_root("debug").join("foo-2222222222222222");
+    fs::create_dir(&mismatched).unwrap();
+    fs::write(
+        mismatched.join(RECORD),
+        serde_json::to_vec(&old_record).unwrap(),
+    )
+    .unwrap();
+
+    cargo(&p, "clean incremental --max-age 30days").run();
+    assert_eq!(fs::read(malformed.join(RECORD)).unwrap(), b"not json");
+    assert_eq!(fs::read(untracked.join("important")).unwrap(), b"untracked");
+    assert_eq!(record(&future), future_record);
+    assert_eq!(record(&mismatched), old_record);
+}
+
+#[cfg(unix)]
+#[cargo_test]
+fn does_not_follow_symlinked_units_or_records() {
+    let p = fixture();
+    cargo(&p, "build").run();
+    let unit = units("debug").pop().unwrap();
+    age(&unit);
+    let original_record = fs::read(unit.join(RECORD)).unwrap();
+
+    let outside = paths::root().join("outside-incremental");
+    fs::rename(&unit, &outside).unwrap();
+    p.symlink(&outside, &unit);
+    cargo(&p, "clean incremental --max-age 30days").run();
+    assert!(unit.is_symlink());
+    assert_eq!(fs::read(outside.join(RECORD)).unwrap(), original_record);
+
+    fs::remove_file(&unit).unwrap();
+    fs::rename(&outside, &unit).unwrap();
+    let outside_record = paths::root().join("outside-record.json");
+    fs::rename(unit.join(RECORD), &outside_record).unwrap();
+    p.symlink(&outside_record, unit.join(RECORD));
+    cargo(&p, "clean incremental --max-age 30days").run();
+    assert!(unit.join(RECORD).is_symlink());
+    assert_eq!(fs::read(outside_record).unwrap(), original_record);
+}
+
+#[cargo_test]
+fn cleaning_one_workspace_preserves_another_workspace_in_the_same_build_root() {
+    let first = fixture();
+    cargo(&first, "build").run();
+    let first_unit = units("debug").pop().unwrap();
+
+    // Reuse the crate name and shared root, but keep this workspace's mutable
+    // incremental state and final artifacts in their own namespaces.
+    let other = project()
+        .at("other")
+        .file(
+            "src/main.rs",
+            "fn main() { println!(\"other workspace\"); }",
+        )
+        .build();
+    cargo(&other, "build").run();
+    let all_units = walkdir::WalkDir::new(shared_build().join("debug/incremental"))
+        .into_iter()
+        .map(Result::unwrap)
+        .filter(|entry| entry.file_name() == RECORD)
+        .map(|entry| entry.path().parent().unwrap().to_path_buf())
+        .collect::<Vec<_>>();
+    assert_eq!(all_units.len(), 2);
+    let other_unit = all_units
+        .into_iter()
+        .find(|unit| unit != &first_unit)
+        .unwrap();
+    assert_ne!(first_unit.parent(), other_unit.parent());
+    age(&first_unit);
+    age(&other_unit);
+    let other_record = fs::read(other_unit.join(RECORD)).unwrap();
+    let other_binary = fs::read(other.bin("foo")).unwrap();
+
+    cargo(&first, "clean incremental --max-age 30days").run();
+    assert!(!first_unit.exists());
+    assert_eq!(fs::read(other_unit.join(RECORD)).unwrap(), other_record);
+    assert_eq!(fs::read(other.bin("foo")).unwrap(), other_binary);
+
+    cargo(&other, "build -v")
+        .with_stderr_contains("[FRESH] foo [..]")
+        .with_stderr_does_not_contain("[COMPILING] foo [..]")
+        .run();
+    other
+        .process(other.bin("foo"))
+        .with_stdout_data("other workspace\n")
+        .run();
+}
+
+#[cargo_test]
+fn inherited_tracking_setting_allows_nested_private_builds() {
+    let p = project()
+        .file("src/main.rs", "fn main() {}")
+        .file(
+            "build.rs",
+            r#"
+                use std::{env, process::Command};
+
+                fn main() {
+                    assert_eq!(
+                        env::var("CARGO_UNSTABLE_OHM_INCREMENTAL_GC").unwrap(),
+                        "true"
+                    );
+                    let target = env::var_os("OHM_NESTED_TARGET").unwrap();
+                    let output = Command::new(env::var_os("CARGO").unwrap())
+                        .args([
+                            "-Zohm-shared-registry-cache", "build",
+                            "--manifest-path", "helper/Cargo.toml",
+                            "--target-dir",
+                        ])
+                        .arg(&target)
+                        .env("CARGO_TARGET_DIR", &target)
+                        .output()
+                        .unwrap();
+                    assert!(output.status.success(), "{}", String::from_utf8_lossy(&output.stderr));
+                }
+            "#,
+        )
+        .file(
+            "helper/Cargo.toml",
+            r#"
+                [package]
+                name = "nested-helper"
+                version = "0.1.0"
+                edition = "2021"
+                [workspace]
+            "#,
+        )
+        .file("helper/src/lib.rs", "pub fn value() -> u32 { 7 }")
+        .build();
+    let nested_target = p.root().join("nested-target");
+    crate::build_dir::shared_registry_cargo(&p, "-Zohm-shared-registry-cache build")
+        .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache", "ohm-incremental-gc"])
+        .env("CARGO_UNSTABLE_OHM_INCREMENTAL_GC", "true")
+        .env("CARGO_INCREMENTAL", "1")
+        .env("CARGO_TARGET_DIR", p.build_dir())
+        .env("CARGO_BUILD_BUILD_DIR", shared_build())
+        .env("OHM_NESTED_TARGET", &nested_target)
+        .run();
+
+    assert!(!units("debug").is_empty(), "the outer build is tracked");
+    let nested_files = walkdir::WalkDir::new(nested_target.join("debug/incremental"))
+        .into_iter()
+        .map(Result::unwrap)
+        .collect::<Vec<_>>();
+    assert!(
+        nested_files
+            .iter()
+            .any(|entry| entry.file_name() == "dep-graph.bin")
+    );
+    assert!(nested_files.iter().all(|entry| entry.file_name() != RECORD));
+    assert!(
+        nested_files
+            .iter()
+            .all(|entry| entry.file_name() != "ohm-gc-v1")
+    );
+    assert!(units("debug").iter().all(|unit| {
+        !unit
+            .file_name()
+            .unwrap()
+            .to_str()
+            .unwrap()
+            .starts_with("nested_helper-")
+    }));
+}
