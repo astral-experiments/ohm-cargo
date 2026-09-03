@@ -639,9 +639,10 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
 
     /// Records the admission policy before any selected compiler can create outputs.
     ///
-    /// A profile can retain units from older graphs, so discovering an untrusted
-    /// macro or compiler extension permanently taints the whole private namespace.
-    /// Deleting that macro's library later must not make its cached consumers safe.
+    /// A profile can retain units from older graphs, so opaque inputs permanently
+    /// taint the whole private namespace. Local macros are recorded independently
+    /// of the current trust setting: only the eventual import decides whether to
+    /// trust their cached outputs. Deleting a macro cannot erase that history.
     pub(super) fn record_worktree_seed_policy(
         &self,
         build_runner: &BuildRunner<'_, '_>,
@@ -665,13 +666,19 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
                 return Ok(());
             }
         }
+        let local_proc_macro = self
+            .metas
+            .keys()
+            .any(|unit| unit.target.proc_macro() && unit.pkg.package_id().source_id().is_path());
         let denied = !cache.trusted_context
             || build_runner.bcx.rustc().workspace_wrapper.is_some()
             || self.metas.keys().any(|unit| {
-                (unit.target.proc_macro() && !self.is_shared_registry_unit(unit))
+                (unit.target.proc_macro()
+                    && !unit.pkg.package_id().source_id().is_path()
+                    && !self.is_shared_registry_unit(unit))
                     || unit_uses_custom_codegen_backend(unit, build_runner)
             });
-        if !prepared && !denied {
+        if !prepared && !denied && !local_proc_macro {
             return Ok(());
         }
         let mut namespaces = HashSet::default();
@@ -702,8 +709,15 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
                     b"untrusted compile-time inputs\n",
                 )?;
             }
+            if local_proc_macro {
+                paths::write_atomic(
+                    &namespace
+                        .join(crate::core::compiler::OHM_WORKTREE_SEED_LOCAL_PROC_MACRO_MARKER),
+                    b"local procedural-macro outputs require trust at import time\n",
+                )?;
+            }
             if prepared {
-                paths::write_atomic(&marker, b"5\n")?;
+                paths::write_atomic(&marker, b"6\n")?;
             }
         }
         Ok(())
