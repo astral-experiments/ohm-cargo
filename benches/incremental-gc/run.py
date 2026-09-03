@@ -55,7 +55,7 @@ def inventory(root):
             seen.add(inode)
             result["unique_inode_logical_bytes"] += info.st_size
             result["unique_inode_allocated_bytes"] += info.st_blocks * 512
-        # Fresh builds are expected to update the marker without changing payload.
+        # An expired tracking timestamp can refresh without changing the payload.
         if path.name != MARKER:
             digest.update(os.fsencode(path.relative_to(root)))
             digest.update(b"\0")
@@ -68,7 +68,7 @@ def markers(root):
     found = {}
     for path in sorted(root.rglob(MARKER)):
         value = json.loads(path.read_text())
-        if value["version"] != 1 or value["unit"] != path.parent.name:
+        if value["version"] not in {1, 2} or value["unit"] != path.parent.name:
             raise RuntimeError(f"Unrecognized prototype marker: {path}")
         found[path.parent] = value
     return found

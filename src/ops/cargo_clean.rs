@@ -497,13 +497,15 @@ fn clean_specs(
                         dirs_to_clean.mark_utf(layout.build_dir().incremental(), |filename| {
                             filename.starts_with(&path_dash)
                         });
-                        dirs_to_clean.mark_utf(
-                            &layout
-                                .build_dir()
-                                .incremental()
-                                .join(crate::workspace::incremental_gc::DIRECTORY),
-                            |filename| filename.starts_with(&path_dash),
-                        );
+                        for directory in [
+                            crate::workspace::incremental_gc::DIRECTORY,
+                            crate::workspace::incremental_gc::TRASH_DIRECTORY,
+                        ] {
+                            dirs_to_clean.mark_utf(
+                                &layout.build_dir().incremental().join(directory),
+                                |filename| filename.starts_with(&path_dash),
+                            );
+                        }
                     }
                 }
             }
@@ -614,13 +616,15 @@ fn clean_specs(
                         dirs_to_clean.mark_utf(layout.build_dir().incremental(), |filename| {
                             filename.starts_with(path_dash)
                         });
-                        dirs_to_clean.mark_utf(
-                            &layout
-                                .build_dir()
-                                .incremental()
-                                .join(crate::workspace::incremental_gc::DIRECTORY),
-                            |filename| filename.starts_with(path_dash),
-                        );
+                        for directory in [
+                            crate::workspace::incremental_gc::DIRECTORY,
+                            crate::workspace::incremental_gc::TRASH_DIRECTORY,
+                        ] {
+                            dirs_to_clean.mark_utf(
+                                &layout.build_dir().incremental().join(directory),
+                                |filename| filename.starts_with(path_dash),
+                            );
+                        }
                     }
                 }
             }
