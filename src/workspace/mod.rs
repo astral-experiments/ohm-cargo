@@ -20,6 +20,7 @@ pub mod editor;
 pub mod features;
 pub mod gc;
 pub mod global_cache_tracker;
+pub mod incremental_gc;
 pub mod manifest;
 pub mod package;
 pub mod package_id;

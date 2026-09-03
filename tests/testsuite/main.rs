@@ -116,6 +116,7 @@ mod help;
 mod hint_msrv;
 mod hints;
 mod https;
+mod incremental_gc;
 mod inheritable_workspace_fields;
 mod install;
 mod install_upgrade;

@@ -497,6 +497,13 @@ fn clean_specs(
                         dirs_to_clean.mark_utf(layout.build_dir().incremental(), |filename| {
                             filename.starts_with(&path_dash)
                         });
+                        dirs_to_clean.mark_utf(
+                            &layout
+                                .build_dir()
+                                .incremental()
+                                .join(crate::workspace::incremental_gc::DIRECTORY),
+                            |filename| filename.starts_with(&path_dash),
+                        );
                     }
                 }
             }
@@ -607,6 +614,13 @@ fn clean_specs(
                         dirs_to_clean.mark_utf(layout.build_dir().incremental(), |filename| {
                             filename.starts_with(path_dash)
                         });
+                        dirs_to_clean.mark_utf(
+                            &layout
+                                .build_dir()
+                                .incremental()
+                                .join(crate::workspace::incremental_gc::DIRECTORY),
+                            |filename| filename.starts_with(path_dash),
+                        );
                     }
                 }
             }

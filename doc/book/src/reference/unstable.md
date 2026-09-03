@@ -93,6 +93,7 @@ Each new feature described below should explain how to use it.
     * [binary-dep-depinfo](#binary-dep-depinfo) --- Causes the dep-info file to track binary dependencies.
     * [checksum-freshness](#checksum-freshness) --- When passed, the decision as to whether a crate needs to be rebuilt is made using file checksums instead of the file mtime.
     * [ohm-worktree-seeds](#ohm-worktree-seeds) --- Prepare build state for seeding new Git worktrees with Ohm.
+    * [ohm-incremental-gc](#ohm-incremental-gc) --- Track and explicitly expire unused incremental configurations (prototype).
     * [panic-abort-tests](#panic-abort-tests) --- Allows running tests with the "abort" panic strategy.
     * [host-config](#host-config) --- Allows setting `[target]`-like configuration settings for host build targets.
     * [embed-metadata](#embed-metadata) --- If set to `no`, cargo will pass `-Zembed-metadata=no` to the compiler, which avoid embedding metadata into rlib and dylib artifacts, to save disk space.
@@ -2037,6 +2038,44 @@ The following commands are available under `-Zbuild-analysis`:
 
 Enables the new build-dir filesystem layout.
 This layout change unblocks work towards caching and locking improvements.
+
+## ohm-incremental-gc
+
+This prototype tracks incremental-cache use per Cargo build configuration. It is
+disabled by default and currently supports the shared registry build layout on
+Linux and macOS only. Configure a separate `CARGO_BUILD_BUILD_DIR` and a private
+`CARGO_TARGET_DIR`, as for ordinary Ohm shared builds.
+
+```console
+cargo +ohm -Zohm-incremental-gc check
+cargo +ohm -Zohm-incremental-gc clean incremental --max-age '30 days' --dry-run
+cargo +ohm -Zohm-incremental-gc clean incremental --max-age '30 days'
+```
+
+Unpackaged Cargo builds also require `-Zfine-grain-locking` and
+`-Zohm-shared-registry-cache`. Enable tracking on every relevant build, either with
+the flag or `unstable.ohm-incremental-gc = true` in Cargo configuration. Selected
+configurations are marked used even when all their compiled outputs are fresh.
+Nested Cargo builds using the existing private-directory fallback remain
+untracked, even when they inherit the tracking configuration.
+
+The first tracked build creates separate per-unit incremental roots and can
+rebuild existing outputs. Cleanup visits only this workspace's explicitly tracked
+roots, across existing host and target profiles. It does not adopt or remove
+older untracked caches. Different feature sets, profiles, targets, and compiler
+versions can retain independently useful caches; an entry's absence from the
+current build graph alone is not evidence that it is obsolete.
+
+Cleanup is explicit, uses an age threshold, and skips profiles with active build
+locks. It removes whole incremental configurations while retaining compiled
+outputs and freshness metadata. An expired configuration can still be fresh;
+its next source-changing build will regenerate incremental state. Malformed or
+unknown ownership records and symlinked cache directories are left alone.
+
+This is an experiment, not a production cache policy. Automatic scheduling, size
+budgets, adoption of existing caches, broader platform support, and the cost of
+tracking very large build graphs remain follow-up work. See
+`benches/incremental-gc/` for the reproducible experiment and measured tradeoffs.
 
 ## ohm-worktree-seeds
 

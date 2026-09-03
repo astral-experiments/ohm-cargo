@@ -2741,6 +2741,11 @@ fn calculate_normal(
     // Legacy dynamic-library and executable outputs may omit the unit-id suffix,
     // so this injected default must also invalidate their shared fingerprint.
     super::unit_uses_ohm_incremental_mono_partitions(build_runner, unit).hash(&mut config);
+    if crate::workspace::incremental_gc::enabled(build_runner, unit) {
+        // Opting into the managed layout must populate its new incremental root,
+        // even when the previously compiled output is otherwise fresh.
+        ("ohm-incremental-gc", 1_u8).hash(&mut config);
+    }
     if super::unit_uses_ohm_worktree_seeds(build_runner, unit) {
         // An ordinary build must not appear prepared just because its outputs
         // were copied. This injected path mapping also changes rustc's output.

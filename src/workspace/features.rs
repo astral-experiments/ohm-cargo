@@ -952,6 +952,7 @@ unstable_cli_options!(
     no_index_update: bool = ("Do not update the registry index even if the cache is outdated"),
     ohm_defaults: Option<bool> = ("Enable the defaults packaged with Ohm"),
     ohm_focused_tests: bool = ("Compile only an explicitly selected exact library test"),
+    ohm_incremental_gc: bool = ("Track incremental-cache use for explicit cleanup (prototype)"),
     ohm_native_tool_trust: OhmNativeToolTrust = ("Set native-tool trust for shared registry artifacts: strict (default), build-scripts, or all (potentially unsound)"),
     ohm_proc_macro_trust: OhmProcMacroTrust = ("Set procedural-macro trust for shared registry artifacts and workspace snapshots: audited (default) or all (potentially unsound)"),
     ohm_reuse_built_deps: bool = ("Reuse already-built registry dependencies when checking a package"),
@@ -1546,6 +1547,7 @@ impl CliUnstable {
             "no-index-update" => self.no_index_update = parse_empty(k, v)?,
             "ohm-defaults" => self.ohm_defaults = Some(parse_bool(k, v)?),
             "ohm-focused-tests" => self.ohm_focused_tests = parse_empty(k, v)?,
+            "ohm-incremental-gc" => self.ohm_incremental_gc = parse_empty(k, v)?,
             "ohm-native-tool-trust" => {
                 self.ohm_native_tool_trust = match v {
                     Some("strict") => OhmNativeToolTrust::Strict,
