@@ -1104,6 +1104,16 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
 
     #[tracing::instrument(skip_all)]
     pub fn prepare_units(&mut self) -> CargoResult<()> {
+        if self.bcx.gctx.cli_unstable().ohm_incremental_gc {
+            if !cfg!(any(target_os = "linux", target_os = "macos")) {
+                bail!("the incremental-cache GC prototype supports Linux and macOS only");
+            }
+            if !self.bcx.ws.shared_registry_cache_enabled()
+                && self.bcx.ws.shared_cache_ancestors()?.is_empty()
+            {
+                bail!("-Zohm-incremental-gc requires -Zohm-shared-registry-cache");
+            }
+        }
         let dest = self.bcx.profiles.get_dir_name();
         if self.bcx.ws.shared_registry_cache_enabled() {
             let mut profile_locks = HashSet::default();
