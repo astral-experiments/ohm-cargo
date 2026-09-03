@@ -10,7 +10,10 @@ use filetime::FileTime;
 
 use super::{BuildState, Fingerprint, LocalFingerprint, find_stale_file, parse_dep_info};
 use crate::CargoResult;
-use crate::compiler::{BuildOutput, OHM_WORKTREE_SEED_DENY_MARKER, OHM_WORKTREE_SEED_MARKER};
+use crate::compiler::{
+    BuildOutput, OHM_WORKTREE_SEED_DENY_MARKER, OHM_WORKTREE_SEED_LOCAL_PROC_MACRO_MARKER,
+    OHM_WORKTREE_SEED_MARKER,
+};
 use crate::util;
 use crate::util::data_structures::HashMap;
 
@@ -171,6 +174,12 @@ pub(in crate::compiler) fn can_reuse_after_scripts(
     if !namespace.join(OHM_WORKTREE_SEED_MARKER).is_file()
         || namespace
             .join(OHM_WORKTREE_SEED_DENY_MARKER)
+            .symlink_metadata()
+            .is_ok()
+        // Preserve the ordinary-build cutoff policy. Import-time macro trust
+        // does not authorize future script-triggered reuse in this workspace.
+        || namespace
+            .join(OHM_WORKTREE_SEED_LOCAL_PROC_MACRO_MARKER)
             .symlink_metadata()
             .is_ok()
     {
