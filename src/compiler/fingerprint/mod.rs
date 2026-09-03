@@ -3245,6 +3245,7 @@ where
     } else {
         None
     };
+    let mut checksum_buffer = Vec::new();
     for (path, prior_checksum) in paths {
         let path = path.as_ref();
 
@@ -3285,7 +3286,11 @@ where
                             path: path.to_path_buf(),
                         });
                     };
-                    let Ok(checksum) = Checksum::compute(prior_checksum.algo(), file) else {
+                    // Allocate lazily and reuse the buffer across source files.
+                    checksum_buffer.resize(64 * 1024, 0);
+                    let Ok(checksum) =
+                        Checksum::compute(prior_checksum.algo(), file, &mut checksum_buffer)
+                    else {
                         return Some(StaleItem::UnableToReadFile {
                             path: path.to_path_buf(),
                         });
