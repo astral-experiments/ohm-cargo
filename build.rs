@@ -5,6 +5,8 @@ use std::path::Path;
 use std::process::Command;
 
 fn main() {
+    #[cfg(feature = "ohm-defaults")]
+    mimalloc();
     commit_info();
     compress_man();
     windows_manifest();
@@ -14,6 +16,39 @@ fn main() {
     )]
     let target = std::env::var("TARGET").unwrap();
     println!("cargo:rustc-env=RUST_HOST_TARGET={target}");
+}
+
+#[cfg(feature = "ohm-defaults")]
+fn mimalloc() {
+    #[expect(
+        clippy::disallowed_methods,
+        reason = "build script target configuration"
+    )]
+    let target = std::env::var("TARGET").unwrap();
+    if target != "aarch64-apple-darwin" {
+        return;
+    }
+
+    println!("cargo:rerun-if-changed=src/etc/mimalloc");
+    let destination = cmake::Config::new("src/etc/mimalloc")
+        .profile("Release")
+        .define("CMAKE_OSX_DEPLOYMENT_TARGET", "11.0")
+        .define("MI_BUILD_SHARED", "OFF")
+        .define("MI_BUILD_OBJECT", "OFF")
+        .define("MI_BUILD_TESTS", "OFF")
+        .define("MI_OVERRIDE", "ON")
+        .define("MI_OSX_ZONE", "ON")
+        .define("MI_OSX_INTERPOSE", "ON")
+        .build_target("mimalloc-static")
+        .build();
+    let archive = destination.join("build/libmimalloc.a");
+
+    // Retain the allocator's startup registration, and apply it only to Cargo's executable.
+    // Cargo library consumers and credential helpers keep their own allocator.
+    for argument in ["-Xlinker", "-force_load", "-Xlinker"] {
+        println!("cargo:rustc-link-arg-bin=cargo={argument}");
+    }
+    println!("cargo:rustc-link-arg-bin=cargo={}", archive.display());
 }
 
 fn compress_man() {
