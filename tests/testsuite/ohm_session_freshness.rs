@@ -213,7 +213,9 @@ fn warm_freshness_rechecks_outputs_short_hashes_and_dep_info() {
     let interrupted = session.check(true);
     assert_reused(&interrupted, &prepared);
     assert_fresh(&interrupted, "dep", false);
-    assert_fresh(&interrupted, "app", false);
+    // Ordinary Cargo also keeps the root fresh: the interrupted-build marker
+    // changes the dependency's admission, not its computed hash or source inputs.
+    assert_fresh(&interrupted, "app", true);
     assert_eq!(fs::read(&hash).unwrap(), original);
     warm(&session, &prepared, &["app", "dep"]);
 
