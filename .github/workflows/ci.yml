@@ -127,7 +127,9 @@ jobs:
           RUSTUP_TOOLCHAIN: ohm-1.98.0-9
         run: |
           toolchain_bin="$(dirname "$(rustup which rustc)")"
-          export PATH="$toolchain_bin:$PATH"
+          rustup_bin="$(dirname "$(command -v rustup)")"
+          # Exclude runner-provided native-tool shims from the trusted-cache fixture.
+          export PATH="$toolchain_bin:$rustup_bin:/usr/bin:/bin:/usr/sbin:/sbin"
           rustc -Vv
           clippy-driver -V
           testsuite="$(find target/debug/deps -maxdepth 1 -type f -name 'testsuite-*' -perm -u+x -print -quit)"
@@ -215,13 +217,15 @@ jobs:
         run: |
           # The harness enables local macro/native-tool trust only for this pinned,
           # trusted development fixture, using separate build storage in each arm.
-          python3 benches/clippy-seeding/run_apfs.py \
+          python="$(command -v python3)"
+          export PATH="$HOME/.cargo/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+          "$python" benches/clippy-seeding/run_apfs.py \
             --cargo "$CARGO_TARGET_DIR/release/cargo" --ruff "$RUNNER_TEMP/ruff-fixture" \
             --root /private/tmp/codex-cargo-targets/ruff/isolated/clippy-seeding-ci \
             --evidence "$RUNNER_TEMP/clippy-apfs-results/apfs" --jobs 4 \
             --toolchain "$OHM_VERSION" --arms off1,on1,on2,off2,on3,off3,off4,on4 \
             --production --require-quiet
-          python3 benches/clippy-seeding/summarize.py "$RUNNER_TEMP/clippy-apfs-results/apfs" \
+          "$python" benches/clippy-seeding/summarize.py "$RUNNER_TEMP/clippy-apfs-results/apfs" \
             --arms off1,on1,on2,off2,on3,off3,off4,on4 \
             > "$RUNNER_TEMP/clippy-apfs-results/summary.json"
       - name: Preserve APFS receipts and logs
