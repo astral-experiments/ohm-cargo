@@ -334,3 +334,115 @@ for toolchain in 1.98.0-x86_64-unknown-linux-gnu ohm-1.98.0-2; do
   done
 done
 ```
+
+## Test validation follow-up
+
+After test or benchmark execution, the server previously validated the whole
+input graph a third time. Compilation had already validated its planning inputs
+before and after the build, and the last pass only decided whether to retain the
+plan for a future request. The follow-up removes that last pass and returns the
+actual harness result immediately. Tests and benchmarks still execute at most
+once per request. Every future plan use validates inputs before compilation, so
+manifest changes made by a harness invalidate the plan before it can be reused.
+A plan can remain included in `cached_plans` until that validation occurs;
+retirement through `!prepared.can_reuse()` remains active.
+
+### Focused test workload
+
+This study repeats only `test`, using `baseline_session` in the same capture
+to compare #116 with the follow-up. All three modes are interleaved in the same
+capture with rotating order: ordinary Cargo, the #116 workspace daemon, and the
+updated daemon. Ordinary Cargo uses the updated binary. Each mode has a separate
+target/build directory and the same pinned compiler and matching rustdoc. The
+benchmark uses `--offline --locked --message-format=json` and no compiler worker.
+The earlier mixed-command study has different artifact state and execution
+order, so its absolute timings are not comparable to this test-only study.
+
+Each capture has two warmup rounds, 30 rounds with unchanged source, and 30
+rounds changing the appended function body in the selected package. The fixture
+is archived at `c7fe941024f7245018d935254b46270bc28e8839`. Every measured mode has
+30 samples per phase. Wall-clock timings include client startup and the daemon
+round trip; p95 is nearest rank over all 30 samples. Warmups remain in the raw
+report but are excluded from summary statistics. No outliers are filtered.
+
+The four captures were recorded on 2026-09-06 on Linux x86_64. All times below
+are milliseconds.
+
+| Package / compiler | Source | Ordinary median / p95 | #116 daemon median / p95 | Updated daemon median / p95 | Median reduction vs #116 |
+| --- | --- | ---: | ---: | ---: | ---: |
+| cargo-platform / Rust 1.98.0 | Unchanged | 286.9 / 303.4 | 209.5 / 219.8 | 158.2 / 163.8 | 24.5% |
+| cargo-platform / Rust 1.98.0 | Edited | 606.7 / 640.2 | 539.4 / 553.7 | 490.6 / 504.1 | 9.0% |
+| cargo-platform / Ohm 1.98.0-2 | Unchanged | 301.9 / 310.5 | 208.7 / 216.4 | 163.1 / 170.2 | 21.8% |
+| cargo-platform / Ohm 1.98.0-2 | Edited | 615.3 / 631.0 | 541.8 / 556.1 | 498.6 / 514.0 | 8.0% |
+| cargo-util-schemas / Rust 1.98.0 | Unchanged | 909.6 / 954.9 | 811.4 / 831.7 | 759.5 / 797.2 | 6.4% |
+| cargo-util-schemas / Rust 1.98.0 | Edited | 1,688.2 / 1,721.6 | 1,599.0 / 1,650.5 | 1,547.0 / 1,581.5 | 3.2% |
+| cargo-util-schemas / Ohm 1.98.0-2 | Unchanged | 933.3 / 979.2 | 824.6 / 839.4 | 774.9 / 796.6 | 6.0% |
+| cargo-util-schemas / Ohm 1.98.0-2 | Edited | 1,684.6 / 1,732.5 | 1,598.7 / 1,646.0 | 1,542.6 / 1,575.4 | 3.5% |
+
+Each capture retains 180 measured samples and six warmups, for **720 measured
+samples and 24 warmup samples** across the four captures. Both daemons reuse one
+plan on all 60 measured requests per capture: **480/480 combined daemon
+requests reuse their plan**. Each daemon finishes with one preparation, one
+cached plan, and 62 requests including warmups.
+
+Every unchanged-source sample compiles zero selected-package artifacts. Edited
+samples recompile four for `cargo-platform` or two for `cargo-util-schemas`.
+Each test invocation reports eight passing tests for `cargo-platform` or 13
+for `cargo-util-schemas`. The harness requires plan reuse from both daemons,
+recompilation after edits, and successful nonempty test execution; raw artifact
+and test-result records support these checks.
+
+All eight median and p95 comparisons improve against the baseline measured in
+the same capture. Median savings are 45.6–51.9 ms with unchanged source and
+43.3–56.1 ms after an edit. Every sample remains included in the reported
+statistics.
+
+### Follow-up identities and reproduction
+
+The updated binary was frozen at source and embedded commit
+`790153923caf1bdbe62d22ff17c01775c04d7513`. Later harness changes and the merge
+from #116 leave that compiled Cargo implementation unchanged. The baseline is
+the frozen `89b6211b43f18aa2519571a28bb81e395ef44b7e` binary, whose compiled
+Cargo Rust sources match #116 at `c3ef330cf5a310fd689ebe614c984d06cf3518b7`.
+The harness at `32c05ae4b37eceabb9adef068549f4ec86424508` adds a full workspace
+daemon baseline and requires reuse from both daemon modes.
+
+| Identity | Source revision or file | SHA-256 |
+| --- | --- | --- |
+| Updated Cargo | `790153923caf1bdbe62d22ff17c01775c04d7513` | `c2513aa538d8e75a93c42c4ce98bf01a90a9346bbd73fe0fb8615fc31011dc59` |
+| Baseline #116 Cargo | `89b6211b43f18aa2519571a28bb81e395ef44b7e` | `640d60be282af5c21f0708a72d8ad8219910a7e31850d1216ed8aaadaa958565` |
+| Focused-study harness | `benches/session_workspace.py` at `32c05ae` | `5f19e883d8a685336f9e3545583c7d4f6a756e1f6a84d118ee44f18549c06741` |
+| Shared harness helper | `benches/session.py` | `4c503d5edba2a07988c472ba3839fc27d94c194949247ff859d07d3f6c394a06` |
+
+| Package / compiler | Raw report |
+| --- | --- |
+| cargo-platform / Rust 1.98.0 | [JSON](benches/session/results/workspace-test-validation-platform-stock-1.98-linux-x86_64.json) |
+| cargo-platform / Ohm 1.98.0-2 | [JSON](benches/session/results/workspace-test-validation-platform-ohm-1.98.0-2-linux-x86_64.json) |
+| cargo-util-schemas / Rust 1.98.0 | [JSON](benches/session/results/workspace-test-validation-schemas-stock-1.98-linux-x86_64.json) |
+| cargo-util-schemas / Ohm 1.98.0-2 | [JSON](benches/session/results/workspace-test-validation-schemas-ohm-1.98.0-2-linux-x86_64.json) |
+
+Use the recorded frozen executables and matching Rust/rustdoc toolchains to
+reproduce all four package/compiler combinations. The harness retains each new
+private work directory with `report.json`, `samples.jsonl`, source snapshots,
+build outputs, and logs.
+
+```sh
+updated_cargo=/absolute/path/to/frozen-test-validation-cargo
+baseline_cargo=/absolute/path/to/frozen-workspace-cargo
+for toolchain in 1.98.0-x86_64-unknown-linux-gnu ohm-1.98.0-2; do
+  for package in cargo-platform cargo-util-schemas; do
+    python3 benches/session_workspace.py \
+      --cargo "$updated_cargo" \
+      --baseline-cargo "$baseline_cargo" \
+      --rustc "$HOME/.rustup/toolchains/$toolchain/bin/rustc" \
+      --revision c7fe941024f7245018d935254b46270bc28e8839 \
+      --package "$package" --source "crates/$package/src/lib.rs" \
+      --commands test --rounds 30 --warmup-rounds 2 --require-reuse
+  done
+done
+```
+
+All 11 command integration tests passed locally, including the strengthened
+manifest-mutation case: two requests execute twice, the second request prepares
+a new plan, and its invalidation reason names `Cargo.toml`. The pull request
+records the full CI results.
