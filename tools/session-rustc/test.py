@@ -12,6 +12,7 @@ import struct
 import subprocess
 import tempfile
 import time
+from itertools import pairwise
 from pathlib import Path
 
 MANIFEST = """[package]
@@ -396,6 +397,65 @@ def main():
         finally:
             session.close()
 
+        # Reload dependency metadata at the same --extern path while the root
+        # compiler and Cargo's prepared graph/freshness cache remain alive.
+        dependency = project / "dep"
+        (dependency / "src").mkdir(parents=True)
+        (dependency / "Cargo.toml").write_text(
+            '[package]\nname="dep"\nversion="0.1.0"\nedition="2021"\n'
+        )
+        dependency_source = dependency / "src/lib.rs"
+        dependency_source.write_text("pub fn value() -> u32 { 1 }\n")
+        (project / "Cargo.toml").write_text(
+            MANIFEST + '\n[dependencies]\ndep={path="dep"}\n'
+        )
+        source.write_text("pub fn value() -> u32 { dep::value() }\n")
+        session = Session(cargo, worker, project, env, socket_directory / "server.sock")
+        try:
+            dependent = session.check()
+            same_worker(dependent, dependent, 1)
+            arguments = (
+                Path(f"/proc/{dependent['compiler_worker']['pid']}/cmdline")
+                .read_bytes()
+                .split(b"\0")
+            )
+            (extern_path,) = [
+                argument.removeprefix(b"dep=")
+                for option, argument in pairwise(arguments)
+                if option == b"--extern" and argument.startswith(b"dep=")
+            ]
+            metadata = Path(os.fsdecode(extern_path))
+            assert metadata.suffix == ".rmeta", metadata
+            original_metadata = metadata.read_bytes()
+            same_worker(session.check(), dependent, 1)
+
+            dependency_source.write_text(
+                'pub fn value() -> &\'static str { "broken" }\n'
+            )
+            dependency_error = session.check(False)
+            same_worker(dependency_error, dependent, 2)
+            assert "mismatched types" in dependency_error["stderr"], dependency_error
+            changed_metadata = metadata.read_bytes()
+            assert changed_metadata != original_metadata
+
+            dependency_source.write_text("pub fn value() -> u32 { 2 }\n")
+            dependency_fixed = session.check()
+            same_worker(dependency_fixed, dependent, 3)
+            assert "mismatched types" not in dependency_fixed["stderr"], (
+                dependency_fixed
+            )
+            assert metadata.read_bytes() != changed_metadata
+            assert (
+                Path(f"/proc/{dependent['compiler_worker']['pid']}/cmdline")
+                .read_bytes()
+                .split(b"\0")
+                == arguments
+            )
+            same_worker(session.check(), dependent, 3)
+        finally:
+            session.close()
+            (project / "Cargo.toml").write_text(MANIFEST)
+
         # User rustflags can add code-generation output after Cargo's default
         # metadata flag. Such a request must use an ordinary compiler process.
         output_env = env | {"RUSTFLAGS": "--emit=link"}
@@ -469,7 +529,7 @@ pub fn counter(_: TokenStream) -> TokenStream {
         finally:
             session.close()
     print(
-        "PASS: worker reuse, output boundaries, source/include edits, errors, locks, replacement, crash recovery, output fallback, loader injection fallback, driver substitution, macro fallback, native mapping retirement"
+        "PASS: worker reuse, output boundaries, source/include edits, dependency metadata reloads, errors, locks, replacement, crash recovery, output fallback, loader injection fallback, driver substitution, macro fallback, native mapping retirement"
     )
 
 

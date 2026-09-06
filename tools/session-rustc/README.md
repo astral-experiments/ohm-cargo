@@ -41,7 +41,7 @@ python3 tools/session-rustc/test.py \
   --scratch /directory/with/free/space
 ```
 
-The test creates an unregistered private toolchain using a copy of rustc and read-only installed libraries. It checks the same worker PID across real source edits, included-file edits, error recovery, output boundaries, idle lock release, worker/compiler replacement, an active-worker crash with next-request recovery, code-generation output fallback, build-script loader injection, a driver substituted through `LD_LIBRARY_PATH`, a stateful macro's ordinary-execution fallback, and worker retirement after an implicitly discovered macro loads native code. It does not modify installed toolchains.
+The test creates an unregistered private toolchain using a copy of rustc and read-only installed libraries. It checks the same worker PID across real source edits, included-file edits, path-dependency API and metadata changes, error recovery, output boundaries, idle lock release, worker/compiler replacement, an active-worker crash with next-request recovery, code-generation output fallback, build-script loader injection, a driver substituted through `LD_LIBRARY_PATH`, a stateful macro's ordinary-execution fallback, and worker retirement after an implicitly discovered macro loads native code. It does not modify installed toolchains.
 
 ### Validation environment (2026-09-06)
 
@@ -63,3 +63,50 @@ LLVM version: 22.1.8
 The worker embeds the selected compiler's absolute paths, so its hash identifies this exact validation binary. The integration test separately builds a worker for its private compiler copy.
 
 The installed Ohm compiler (`1.98.0-dev`, commit `e03456bd2`, 2026-08-21) has a driver library but lacks matching `rustc-dev` metadata. It was not used for persistent-worker validation. Borrowing the stock release's metadata cannot support that Ohm driver; its own matching development component is required. Validation links the installed compiler and LLVM libraries.
+
+## Measurements
+
+Thirty alternating parent/current pairs after real leaf edits in a 101-crate
+Linux x86_64 workspace used the same stock Rust 1.98.0 compiler on both sides.
+The separate aggregate comparison used the original prepared-session binary as
+its baseline. These are client and server medians; startup and cold preparation
+are excluded.
+
+| Comparison | Before client | Worker client | Before server | Worker server | Client speedup |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Retained-freshness parent to worker | 118.80 ms | 84.48 ms | 106.08 ms | 74.18 ms | 1.406x |
+| Original session to complete stack | 109.20 ms | 79.21 ms | 96.75 ms | 69.72 ms | 1.378x |
+
+Both comparisons kept one preparation across 31 checks, with one compiler worker
+PID, one start, 31 requests, and no fallback. Every measured edit changed the leaf
+dep-info output. The harness rejects a worker restart or ordinary-execution
+fallback instead of reporting it as worker performance. No outliers were removed;
+the individual samples show substantial host noise, so the two comparisons should
+not be combined arithmetically.
+
+The additional 2x target was not reached. These measurements establish reuse and
+a gain for the stock compiler; they do not establish the gain for Ohm. Matching
+Ohm development metadata is proposed in
+[astral-sh/ohm#108](https://github.com/astral-sh/ohm/pull/108).
+
+The measured Cargo implementation is `be94dab`, based on retained freshness at
+`b31f140`. Shared Cargo build-script outputs can retain an earlier embedded commit
+string, so use the recorded SHA-256 values to identify the actual measured
+executables. The standalone worker is the binary identified above.
+
+The release build, 26 session unit tests, 41 session integration tests, and three
+session protocol tests pass. The real-driver integration suite also checks the
+combined dependency metadata/error/recovery case described above.
+
+Reproduce the paired measurement with:
+
+```sh
+python3 benches/session_compare.py \
+  --before /absolute/parent/cargo --after /absolute/worker/cargo \
+  --rustc /absolute/toolchain/bin/rustc \
+  --after-worker /absolute/path/session-rustc --crates 100 --rounds 30
+```
+
+[Parent comparison data](../../benches/session/results/worker-stock-1.98-linux-x86_64.json)
+and [complete-stack data](../../benches/session/results/stack-stock-1.98-linux-x86_64.json)
+include every sample, compiler/worker/executable identity, and session counter.

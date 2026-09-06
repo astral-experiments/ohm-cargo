@@ -1,0 +1,1263 @@
+{
+  "benchmark": "paired sessions after real leaf-source edits",
+  "configuration": {
+    "dependency_crates": 100,
+    "total_crates": 101,
+    "rounds": 30,
+    "dependency_shape": "chain",
+    "offline": true,
+    "measurement_order": "alternating",
+    "before_serve_args": [],
+    "after_serve_args": [
+      "--compiler-worker",
+      "/run/user/1000/cargo-rustc-worker-dev-0ebe/session-rustc"
+    ]
+  },
+  "binaries": {
+    "before": {
+      "path": "/run/user/1000/cargo-session-binaries-0ebe/foundation",
+      "sha256": "ea40f718218ed8aed49613d30d6ebc8f6f03509c4b5d26023acf3b5d89d44830",
+      "version": "cargo 1.98.0 (e3792054a 2026-09-06)\nrelease: 1.98.0\ncommit-hash: e3792054a9056961620ffd23cef2304b437a6cb9\ncommit-date: 2026-09-06\nhost: x86_64-unknown-linux-gnu\nlibgit2: 1.9.4 (sys:0.21.0 vendored)\nlibcurl: 8.21.0-DEV (sys:0.4.90+curl-8.21.0 vendored ssl:OpenSSL/3.0.13)\nos: Ubuntu 24.4.0 (noble) [64-bit]"
+    },
+    "after": {
+      "path": "/run/user/1000/cargo-session-binaries-0ebe/worker",
+      "sha256": "89a0d387b8d7921cb7345f15695bdd526d2e04b1b0dcda7de5cd90d0147ab309",
+      "version": "cargo 1.98.0 (bd069fee9 2026-09-06)\nrelease: 1.98.0\ncommit-hash: bd069fee9e06751fa6b8b39af0e31691d39c5a7a\ncommit-date: 2026-09-06\nhost: x86_64-unknown-linux-gnu\nlibgit2: 1.9.4 (sys:0.21.0 vendored)\nlibcurl: 8.21.0-DEV (sys:0.4.90+curl-8.21.0 vendored ssl:OpenSSL/3.0.13)\nos: Ubuntu 24.4.0 (noble) [64-bit]"
+    },
+    "rustc": {
+      "path": "/home/dev-user/.rustup/toolchains/1.98.0-x86_64-unknown-linux-gnu/bin/rustc",
+      "sha256": "3690cc576ede140504698405d5d8fa3826aaadbe71699c6c4ed0a565d6f493e2",
+      "version": "rustc 1.98.0 (88d9e12ae 2026-08-18)\nbinary: rustc\ncommit-hash: 88d9e12ae178fab0fb5cc050a94da85685d449ea\ncommit-date: 2026-08-18\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.0\nLLVM version: 22.1.8",
+      "selection": {
+        "requested_path": "/home/dev-user/.rustup/toolchains/1.98.0-x86_64-unknown-linux-gnu/bin/rustc",
+        "method": "provided executable"
+      }
+    },
+    "after_worker": {
+      "path": "/run/user/1000/cargo-rustc-worker-dev-0ebe/session-rustc",
+      "sha256": "6795ee33c51df78084e9854ef11c7986588d4a09ad2ae78c56bf2c2845d221cb"
+    }
+  },
+  "host": {
+    "python": "3.12.13",
+    "platform": "Linux-6.8.0-106-generic-x86_64-with-glibc2.39"
+  },
+  "cold_preparation": {
+    "included_in_speedup": false,
+    "before": {
+      "startup_ms": 88.515747,
+      "client_ms": 5878.586129,
+      "server_ms": 5815.199272
+    },
+    "after": {
+      "startup_ms": 112.80073,
+      "client_ms": 5998.357459,
+      "server_ms": 5983.78686
+    }
+  },
+  "changed_source": {
+    "before": {
+      "client_ms": {
+        "median_ms": 109.196784,
+        "min_ms": 102.038377,
+        "max_ms": 378.198146
+      },
+      "server_ms": {
+        "median_ms": 96.751997,
+        "min_ms": 90.845303,
+        "max_ms": 290.629734
+      },
+      "client_overhead_ms": {
+        "median_ms": 11.250195500000004,
+        "min_ms": 9.81867600000001,
+        "max_ms": 87.56841200000002
+      }
+    },
+    "after": {
+      "client_ms": {
+        "median_ms": 79.21451350000001,
+        "min_ms": 74.651083,
+        "max_ms": 389.588997
+      },
+      "server_ms": {
+        "median_ms": 69.7200205,
+        "min_ms": 65.797556,
+        "max_ms": 297.88316199999997
+      },
+      "client_overhead_ms": {
+        "median_ms": 9.527949499999991,
+        "min_ms": 8.322340999999994,
+        "max_ms": 91.70583500000004
+      }
+    },
+    "client_speedup": 1.3784946618399667
+  },
+  "status_ms": {
+    "before": {
+      "median_ms": 10.1325505,
+      "min_ms": 8.158654,
+      "max_ms": 13.355903
+    },
+    "after": {
+      "median_ms": 8.707211000000001,
+      "min_ms": 6.992041,
+      "max_ms": 10.156425
+    }
+  },
+  "status_samples": [
+    {
+      "round": 1,
+      "order": [
+        "before",
+        "after"
+      ],
+      "before": 10.560807,
+      "after": 10.137019
+    },
+    {
+      "round": 2,
+      "order": [
+        "after",
+        "before"
+      ],
+      "after": 9.326008,
+      "before": 10.996398
+    },
+    {
+      "round": 3,
+      "order": [
+        "before",
+        "after"
+      ],
+      "before": 9.912551,
+      "after": 8.647554
+    },
+    {
+      "round": 4,
+      "order": [
+        "after",
+        "before"
+      ],
+      "after": 8.855262,
+      "before": 9.766639
+    },
+    {
+      "round": 5,
+      "order": [
+        "before",
+        "after"
+      ],
+      "before": 9.929793,
+      "after": 10.120758
+    },
+    {
+      "round": 6,
+      "order": [
+        "after",
+        "before"
+      ],
+      "after": 8.820857,
+      "before": 13.355903
+    },
+    {
+      "round": 7,
+      "order": [
+        "before",
+        "after"
+      ],
+      "before": 12.230086,
+      "after": 9.364419
+    },
+    {
+      "round": 8,
+      "order": [
+        "after",
+        "before"
+      ],
+      "after": 8.191404,
+      "before": 9.979396
+    },
+    {
+      "round": 9,
+      "order": [
+        "before",
+        "after"
+      ],
+      "before": 9.580523,
+      "after": 8.47877
+    },
+    {
+      "round": 10,
+      "order": [
+        "after",
+        "before"
+      ],
+      "after": 8.353277,
+      "before": 10.661204
+    },
+    {
+      "round": 11,
+      "order": [
+        "before",
+        "after"
+      ],
+      "before": 10.335548,
+      "after": 10.156425
+    },
+    {
+      "round": 12,
+      "order": [
+        "after",
+        "before"
+      ],
+      "after": 8.63391,
+      "before": 9.876954
+    },
+    {
+      "round": 13,
+      "order": [
+        "before",
+        "after"
+      ],
+      "before": 10.040299,
+      "after": 7.414637
+    },
+    {
+      "round": 14,
+      "order": [
+        "after",
+        "before"
+      ],
+      "after": 6.992041,
+      "before": 10.169259
+    },
+    {
+      "round": 15,
+      "order": [
+        "before",
+        "after"
+      ],
+      "before": 9.557118,
+      "after": 8.753332
+    },
+    {
+      "round": 16,
+      "order": [
+        "after",
+        "before"
+      ],
+      "after": 8.849239,
+      "before": 10.055167
+    },
+    {
+      "round": 17,
+      "order": [
+        "before",
+        "after"
+      ],
+      "before": 8.158654,
+      "after": 8.681448
+    },
+    {
+      "round": 18,
+      "order": [
+        "after",
+        "before"
+      ],
+      "after": 8.906388,
+      "before": 11.959582
+    },
+    {
+      "round": 19,
+      "order": [
+        "before",
+        "after"
+      ],
+      "before": 10.419884,
+      "after": 8.612459
+    },
+    {
+      "round": 20,
+      "order": [
+        "after",
+        "before"
+      ],
+      "after": 8.750737,
+      "before": 9.592233
+    },
+    {
+      "round": 21,
+      "order": [
+        "before",
+        "after"
+      ],
+      "before": 10.533257,
+      "after": 8.211402
+    },
+    {
+      "round": 22,
+      "order": [
+        "after",
+        "before"
+      ],
+      "after": 8.222953,
+      "before": 10.095842
+    },
+    {
+      "round": 23,
+      "order": [
+        "before",
+        "after"
+      ],
+      "before": 10.302466,
+      "after": 8.294426
+    },
+    {
+      "round": 24,
+      "order": [
+        "after",
+        "before"
+      ],
+      "after": 8.836768,
+      "before": 9.611049
+    },
+    {
+      "round": 25,
+      "order": [
+        "before",
+        "after"
+      ],
+      "before": 10.428882,
+      "after": 8.732974
+    },
+    {
+      "round": 26,
+      "order": [
+        "after",
+        "before"
+      ],
+      "after": 9.913612,
+      "before": 10.360695
+    },
+    {
+      "round": 27,
+      "order": [
+        "before",
+        "after"
+      ],
+      "before": 10.21256,
+      "after": 8.240887
+    },
+    {
+      "round": 28,
+      "order": [
+        "after",
+        "before"
+      ],
+      "after": 7.328333,
+      "before": 10.653361
+    },
+    {
+      "round": 29,
+      "order": [
+        "before",
+        "after"
+      ],
+      "before": 9.806742,
+      "after": 8.612479
+    },
+    {
+      "round": 30,
+      "order": [
+        "after",
+        "before"
+      ],
+      "after": 10.140696,
+      "before": 9.046333
+    }
+  ],
+  "session_counters": {
+    "before": {
+      "after_preparation": {
+        "pid": 3579101,
+        "checks": 1,
+        "preparations": 1,
+        "reused": false
+      },
+      "after_measurement": {
+        "pid": 3579101,
+        "checks": 31,
+        "preparations": 1,
+        "reused": true
+      }
+    },
+    "after": {
+      "after_preparation": {
+        "pid": 3579765,
+        "checks": 1,
+        "preparations": 1,
+        "reused": false,
+        "compiler_worker": {
+          "pid": 3580452,
+          "starts": 1,
+          "requests": 1,
+          "fallback_reason": null
+        }
+      },
+      "after_measurement": {
+        "pid": 3579765,
+        "checks": 31,
+        "preparations": 1,
+        "reused": true,
+        "compiler_worker": {
+          "pid": 3580452,
+          "starts": 1,
+          "requests": 31,
+          "fallback_reason": null
+        }
+      }
+    }
+  },
+  "samples": [
+    {
+      "round": 1,
+      "order": [
+        "before",
+        "after"
+      ],
+      "source_value": 1,
+      "before": {
+        "client_ms": 117.259374,
+        "server_ms": 102.719626,
+        "client_overhead_ms": 14.539747999999989,
+        "checks": 2,
+        "preparations": 1
+      },
+      "after": {
+        "client_ms": 82.618712,
+        "server_ms": 71.901493,
+        "client_overhead_ms": 10.717219,
+        "checks": 2,
+        "preparations": 1,
+        "compiler_worker": {
+          "pid": 3580452,
+          "starts": 1,
+          "requests": 2,
+          "fallback_reason": null
+        }
+      }
+    },
+    {
+      "round": 2,
+      "order": [
+        "after",
+        "before"
+      ],
+      "source_value": 2,
+      "after": {
+        "client_ms": 79.240744,
+        "server_ms": 69.903953,
+        "client_overhead_ms": 9.336791000000005,
+        "checks": 3,
+        "preparations": 1,
+        "compiler_worker": {
+          "pid": 3580452,
+          "starts": 1,
+          "requests": 3,
+          "fallback_reason": null
+        }
+      },
+      "before": {
+        "client_ms": 113.072151,
+        "server_ms": 101.566264,
+        "client_overhead_ms": 11.505887000000001,
+        "checks": 3,
+        "preparations": 1
+      }
+    },
+    {
+      "round": 3,
+      "order": [
+        "before",
+        "after"
+      ],
+      "source_value": 3,
+      "before": {
+        "client_ms": 104.390017,
+        "server_ms": 93.126722,
+        "client_overhead_ms": 11.263295,
+        "checks": 4,
+        "preparations": 1
+      },
+      "after": {
+        "client_ms": 79.384949,
+        "server_ms": 70.066566,
+        "client_overhead_ms": 9.318383000000011,
+        "checks": 4,
+        "preparations": 1,
+        "compiler_worker": {
+          "pid": 3580452,
+          "starts": 1,
+          "requests": 4,
+          "fallback_reason": null
+        }
+      }
+    },
+    {
+      "round": 4,
+      "order": [
+        "after",
+        "before"
+      ],
+      "source_value": 4,
+      "after": {
+        "client_ms": 76.572924,
+        "server_ms": 67.955896,
+        "client_overhead_ms": 8.617028000000005,
+        "checks": 5,
+        "preparations": 1,
+        "compiler_worker": {
+          "pid": 3580452,
+          "starts": 1,
+          "requests": 5,
+          "fallback_reason": null
+        }
+      },
+      "before": {
+        "client_ms": 104.046579,
+        "server_ms": 92.753376,
+        "client_overhead_ms": 11.293202999999991,
+        "checks": 5,
+        "preparations": 1
+      }
+    },
+    {
+      "round": 5,
+      "order": [
+        "before",
+        "after"
+      ],
+      "source_value": 5,
+      "before": {
+        "client_ms": 104.073958,
+        "server_ms": 93.553715,
+        "client_overhead_ms": 10.520243000000008,
+        "checks": 6,
+        "preparations": 1
+      },
+      "after": {
+        "client_ms": 77.833582,
+        "server_ms": 69.506313,
+        "client_overhead_ms": 8.327269000000001,
+        "checks": 6,
+        "preparations": 1,
+        "compiler_worker": {
+          "pid": 3580452,
+          "starts": 1,
+          "requests": 6,
+          "fallback_reason": null
+        }
+      }
+    },
+    {
+      "round": 6,
+      "order": [
+        "after",
+        "before"
+      ],
+      "source_value": 6,
+      "after": {
+        "client_ms": 78.649942,
+        "server_ms": 68.656169,
+        "client_overhead_ms": 9.99377299999999,
+        "checks": 7,
+        "preparations": 1,
+        "compiler_worker": {
+          "pid": 3580452,
+          "starts": 1,
+          "requests": 7,
+          "fallback_reason": null
+        }
+      },
+      "before": {
+        "client_ms": 106.538137,
+        "server_ms": 95.444718,
+        "client_overhead_ms": 11.093419000000011,
+        "checks": 7,
+        "preparations": 1
+      }
+    },
+    {
+      "round": 7,
+      "order": [
+        "before",
+        "after"
+      ],
+      "source_value": 7,
+      "before": {
+        "client_ms": 103.18868,
+        "server_ms": 92.305081,
+        "client_overhead_ms": 10.883599000000004,
+        "checks": 8,
+        "preparations": 1
+      },
+      "after": {
+        "client_ms": 78.231964,
+        "server_ms": 68.96445299999999,
+        "client_overhead_ms": 9.267511000000013,
+        "checks": 8,
+        "preparations": 1,
+        "compiler_worker": {
+          "pid": 3580452,
+          "starts": 1,
+          "requests": 8,
+          "fallback_reason": null
+        }
+      }
+    },
+    {
+      "round": 8,
+      "order": [
+        "after",
+        "before"
+      ],
+      "source_value": 8,
+      "after": {
+        "client_ms": 313.740934,
+        "server_ms": 297.089877,
+        "client_overhead_ms": 16.65105699999998,
+        "checks": 9,
+        "preparations": 1,
+        "compiler_worker": {
+          "pid": 3580452,
+          "starts": 1,
+          "requests": 9,
+          "fallback_reason": null
+        }
+      },
+      "before": {
+        "client_ms": 378.198146,
+        "server_ms": 290.629734,
+        "client_overhead_ms": 87.56841200000002,
+        "checks": 9,
+        "preparations": 1
+      }
+    },
+    {
+      "round": 9,
+      "order": [
+        "before",
+        "after"
+      ],
+      "source_value": 9,
+      "before": {
+        "client_ms": 126.390117,
+        "server_ms": 115.291891,
+        "client_overhead_ms": 11.098225999999997,
+        "checks": 10,
+        "preparations": 1
+      },
+      "after": {
+        "client_ms": 116.321738,
+        "server_ms": 91.137988,
+        "client_overhead_ms": 25.18374999999999,
+        "checks": 10,
+        "preparations": 1,
+        "compiler_worker": {
+          "pid": 3580452,
+          "starts": 1,
+          "requests": 10,
+          "fallback_reason": null
+        }
+      }
+    },
+    {
+      "round": 10,
+      "order": [
+        "after",
+        "before"
+      ],
+      "source_value": 10,
+      "after": {
+        "client_ms": 80.353744,
+        "server_ms": 70.499041,
+        "client_overhead_ms": 9.854703,
+        "checks": 11,
+        "preparations": 1,
+        "compiler_worker": {
+          "pid": 3580452,
+          "starts": 1,
+          "requests": 11,
+          "fallback_reason": null
+        }
+      },
+      "before": {
+        "client_ms": 132.614019,
+        "server_ms": 121.376923,
+        "client_overhead_ms": 11.237096000000008,
+        "checks": 11,
+        "preparations": 1
+      }
+    },
+    {
+      "round": 11,
+      "order": [
+        "before",
+        "after"
+      ],
+      "source_value": 11,
+      "before": {
+        "client_ms": 135.046413,
+        "server_ms": 124.025365,
+        "client_overhead_ms": 11.021048000000008,
+        "checks": 12,
+        "preparations": 1
+      },
+      "after": {
+        "client_ms": 81.188658,
+        "server_ms": 71.784316,
+        "client_overhead_ms": 9.404342,
+        "checks": 12,
+        "preparations": 1,
+        "compiler_worker": {
+          "pid": 3580452,
+          "starts": 1,
+          "requests": 12,
+          "fallback_reason": null
+        }
+      }
+    },
+    {
+      "round": 12,
+      "order": [
+        "after",
+        "before"
+      ],
+      "source_value": 12,
+      "after": {
+        "client_ms": 77.560071,
+        "server_ms": 68.435209,
+        "client_overhead_ms": 9.124861999999993,
+        "checks": 13,
+        "preparations": 1,
+        "compiler_worker": {
+          "pid": 3580452,
+          "starts": 1,
+          "requests": 13,
+          "fallback_reason": null
+        }
+      },
+      "before": {
+        "client_ms": 120.457219,
+        "server_ms": 109.028175,
+        "client_overhead_ms": 11.42904399999999,
+        "checks": 13,
+        "preparations": 1
+      }
+    },
+    {
+      "round": 13,
+      "order": [
+        "before",
+        "after"
+      ],
+      "source_value": 13,
+      "before": {
+        "client_ms": 115.345219,
+        "server_ms": 96.226273,
+        "client_overhead_ms": 19.118945999999994,
+        "checks": 14,
+        "preparations": 1
+      },
+      "after": {
+        "client_ms": 79.188283,
+        "server_ms": 69.70578400000001,
+        "client_overhead_ms": 9.48249899999999,
+        "checks": 14,
+        "preparations": 1,
+        "compiler_worker": {
+          "pid": 3580452,
+          "starts": 1,
+          "requests": 14,
+          "fallback_reason": null
+        }
+      }
+    },
+    {
+      "round": 14,
+      "order": [
+        "after",
+        "before"
+      ],
+      "source_value": 14,
+      "after": {
+        "client_ms": 75.053053,
+        "server_ms": 66.670432,
+        "client_overhead_ms": 8.382621,
+        "checks": 15,
+        "preparations": 1,
+        "compiler_worker": {
+          "pid": 3580452,
+          "starts": 1,
+          "requests": 15,
+          "fallback_reason": null
+        }
+      },
+      "before": {
+        "client_ms": 109.006273,
+        "server_ms": 95.738595,
+        "client_overhead_ms": 13.26767799999999,
+        "checks": 15,
+        "preparations": 1
+      }
+    },
+    {
+      "round": 15,
+      "order": [
+        "before",
+        "after"
+      ],
+      "source_value": 15,
+      "before": {
+        "client_ms": 102.536015,
+        "server_ms": 92.717339,
+        "client_overhead_ms": 9.81867600000001,
+        "checks": 16,
+        "preparations": 1
+      },
+      "after": {
+        "client_ms": 78.987419,
+        "server_ms": 69.58786599999999,
+        "client_overhead_ms": 9.399553000000012,
+        "checks": 16,
+        "preparations": 1,
+        "compiler_worker": {
+          "pid": 3580452,
+          "starts": 1,
+          "requests": 16,
+          "fallback_reason": null
+        }
+      }
+    },
+    {
+      "round": 16,
+      "order": [
+        "after",
+        "before"
+      ],
+      "source_value": 16,
+      "after": {
+        "client_ms": 77.562667,
+        "server_ms": 69.00058100000001,
+        "client_overhead_ms": 8.562085999999994,
+        "checks": 17,
+        "preparations": 1,
+        "compiler_worker": {
+          "pid": 3580452,
+          "starts": 1,
+          "requests": 17,
+          "fallback_reason": null
+        }
+      },
+      "before": {
+        "client_ms": 118.760942,
+        "server_ms": 107.426073,
+        "client_overhead_ms": 11.334868999999998,
+        "checks": 17,
+        "preparations": 1
+      }
+    },
+    {
+      "round": 17,
+      "order": [
+        "before",
+        "after"
+      ],
+      "source_value": 17,
+      "before": {
+        "client_ms": 122.826349,
+        "server_ms": 108.040984,
+        "client_overhead_ms": 14.785364999999999,
+        "checks": 18,
+        "preparations": 1
+      },
+      "after": {
+        "client_ms": 78.354632,
+        "server_ms": 69.55480299999999,
+        "client_overhead_ms": 8.799829000000003,
+        "checks": 18,
+        "preparations": 1,
+        "compiler_worker": {
+          "pid": 3580452,
+          "starts": 1,
+          "requests": 18,
+          "fallback_reason": null
+        }
+      }
+    },
+    {
+      "round": 18,
+      "order": [
+        "after",
+        "before"
+      ],
+      "source_value": 18,
+      "after": {
+        "client_ms": 75.435705,
+        "server_ms": 65.836397,
+        "client_overhead_ms": 9.599307999999994,
+        "checks": 19,
+        "preparations": 1,
+        "compiler_worker": {
+          "pid": 3580452,
+          "starts": 1,
+          "requests": 19,
+          "fallback_reason": null
+        }
+      },
+      "before": {
+        "client_ms": 104.228125,
+        "server_ms": 93.830933,
+        "client_overhead_ms": 10.397192000000004,
+        "checks": 19,
+        "preparations": 1
+      }
+    },
+    {
+      "round": 19,
+      "order": [
+        "before",
+        "after"
+      ],
+      "source_value": 19,
+      "before": {
+        "client_ms": 108.616118,
+        "server_ms": 97.277721,
+        "client_overhead_ms": 11.338397,
+        "checks": 20,
+        "preparations": 1
+      },
+      "after": {
+        "client_ms": 83.770257,
+        "server_ms": 74.17385399999999,
+        "client_overhead_ms": 9.59640300000001,
+        "checks": 20,
+        "preparations": 1,
+        "compiler_worker": {
+          "pid": 3580452,
+          "starts": 1,
+          "requests": 20,
+          "fallback_reason": null
+        }
+      }
+    },
+    {
+      "round": 20,
+      "order": [
+        "after",
+        "before"
+      ],
+      "source_value": 20,
+      "after": {
+        "client_ms": 87.349542,
+        "server_ms": 76.430969,
+        "client_overhead_ms": 10.918572999999995,
+        "checks": 21,
+        "preparations": 1,
+        "compiler_worker": {
+          "pid": 3580452,
+          "starts": 1,
+          "requests": 21,
+          "fallback_reason": null
+        }
+      },
+      "before": {
+        "client_ms": 104.996366,
+        "server_ms": 92.487894,
+        "client_overhead_ms": 12.508471999999998,
+        "checks": 21,
+        "preparations": 1
+      }
+    },
+    {
+      "round": 21,
+      "order": [
+        "before",
+        "after"
+      ],
+      "source_value": 21,
+      "before": {
+        "client_ms": 102.038377,
+        "server_ms": 90.845303,
+        "client_overhead_ms": 11.193073999999996,
+        "checks": 22,
+        "preparations": 1
+      },
+      "after": {
+        "client_ms": 80.180191,
+        "server_ms": 70.606791,
+        "client_overhead_ms": 9.573399999999992,
+        "checks": 22,
+        "preparations": 1,
+        "compiler_worker": {
+          "pid": 3580452,
+          "starts": 1,
+          "requests": 22,
+          "fallback_reason": null
+        }
+      }
+    },
+    {
+      "round": 22,
+      "order": [
+        "after",
+        "before"
+      ],
+      "source_value": 22,
+      "after": {
+        "client_ms": 74.651083,
+        "server_ms": 65.797556,
+        "client_overhead_ms": 8.853527,
+        "checks": 23,
+        "preparations": 1,
+        "compiler_worker": {
+          "pid": 3580452,
+          "starts": 1,
+          "requests": 23,
+          "fallback_reason": null
+        }
+      },
+      "before": {
+        "client_ms": 104.550987,
+        "server_ms": 93.447078,
+        "client_overhead_ms": 11.103909000000002,
+        "checks": 23,
+        "preparations": 1
+      }
+    },
+    {
+      "round": 23,
+      "order": [
+        "before",
+        "after"
+      ],
+      "source_value": 23,
+      "before": {
+        "client_ms": 103.862876,
+        "server_ms": 93.05616,
+        "client_overhead_ms": 10.806715999999994,
+        "checks": 24,
+        "preparations": 1
+      },
+      "after": {
+        "client_ms": 389.588997,
+        "server_ms": 297.88316199999997,
+        "client_overhead_ms": 91.70583500000004,
+        "checks": 24,
+        "preparations": 1,
+        "compiler_worker": {
+          "pid": 3580452,
+          "starts": 1,
+          "requests": 24,
+          "fallback_reason": null
+        }
+      }
+    },
+    {
+      "round": 24,
+      "order": [
+        "after",
+        "before"
+      ],
+      "source_value": 24,
+      "after": {
+        "client_ms": 110.27611,
+        "server_ms": 99.920204,
+        "client_overhead_ms": 10.355906000000004,
+        "checks": 25,
+        "preparations": 1,
+        "compiler_worker": {
+          "pid": 3580452,
+          "starts": 1,
+          "requests": 25,
+          "fallback_reason": null
+        }
+      },
+      "before": {
+        "client_ms": 283.563074,
+        "server_ms": 233.346005,
+        "client_overhead_ms": 50.21706899999998,
+        "checks": 25,
+        "preparations": 1
+      }
+    },
+    {
+      "round": 25,
+      "order": [
+        "before",
+        "after"
+      ],
+      "source_value": 25,
+      "before": {
+        "client_ms": 129.867775,
+        "server_ms": 119.232209,
+        "client_overhead_ms": 10.635565999999997,
+        "checks": 26,
+        "preparations": 1
+      },
+      "after": {
+        "client_ms": 81.607349,
+        "server_ms": 71.431067,
+        "client_overhead_ms": 10.176282,
+        "checks": 26,
+        "preparations": 1,
+        "compiler_worker": {
+          "pid": 3580452,
+          "starts": 1,
+          "requests": 26,
+          "fallback_reason": null
+        }
+      }
+    },
+    {
+      "round": 26,
+      "order": [
+        "after",
+        "before"
+      ],
+      "source_value": 26,
+      "after": {
+        "client_ms": 79.112746,
+        "server_ms": 70.790405,
+        "client_overhead_ms": 8.322340999999994,
+        "checks": 27,
+        "preparations": 1,
+        "compiler_worker": {
+          "pid": 3580452,
+          "starts": 1,
+          "requests": 27,
+          "fallback_reason": null
+        }
+      },
+      "before": {
+        "client_ms": 140.865584,
+        "server_ms": 120.289186,
+        "client_overhead_ms": 20.57639800000001,
+        "checks": 27,
+        "preparations": 1
+      }
+    },
+    {
+      "round": 27,
+      "order": [
+        "before",
+        "after"
+      ],
+      "source_value": 27,
+      "before": {
+        "client_ms": 116.900109,
+        "server_ms": 103.314044,
+        "client_overhead_ms": 13.586065000000005,
+        "checks": 28,
+        "preparations": 1
+      },
+      "after": {
+        "client_ms": 79.490717,
+        "server_ms": 69.680136,
+        "client_overhead_ms": 9.810580999999999,
+        "checks": 28,
+        "preparations": 1,
+        "compiler_worker": {
+          "pid": 3580452,
+          "starts": 1,
+          "requests": 28,
+          "fallback_reason": null
+        }
+      }
+    },
+    {
+      "round": 28,
+      "order": [
+        "after",
+        "before"
+      ],
+      "source_value": 28,
+      "after": {
+        "client_ms": 82.666661,
+        "server_ms": 69.734257,
+        "client_overhead_ms": 12.932404000000005,
+        "checks": 29,
+        "preparations": 1,
+        "compiler_worker": {
+          "pid": 3580452,
+          "starts": 1,
+          "requests": 29,
+          "fallback_reason": null
+        }
+      },
+      "before": {
+        "client_ms": 106.124978,
+        "server_ms": 95.039974,
+        "client_overhead_ms": 11.085003999999998,
+        "checks": 29,
+        "preparations": 1
+      }
+    },
+    {
+      "round": 29,
+      "order": [
+        "before",
+        "after"
+      ],
+      "source_value": 29,
+      "before": {
+        "client_ms": 104.076453,
+        "server_ms": 93.51791,
+        "client_overhead_ms": 10.558543,
+        "checks": 30,
+        "preparations": 1
+      },
+      "after": {
+        "client_ms": 77.208015,
+        "server_ms": 68.49149200000001,
+        "client_overhead_ms": 8.716522999999995,
+        "checks": 30,
+        "preparations": 1,
+        "compiler_worker": {
+          "pid": 3580452,
+          "starts": 1,
+          "requests": 30,
+          "fallback_reason": null
+        }
+      }
+    },
+    {
+      "round": 30,
+      "order": [
+        "after",
+        "before"
+      ],
+      "source_value": 30,
+      "after": {
+        "client_ms": 78.082705,
+        "server_ms": 68.215609,
+        "client_overhead_ms": 9.867096000000004,
+        "checks": 31,
+        "preparations": 1,
+        "compiler_worker": {
+          "pid": 3580452,
+          "starts": 1,
+          "requests": 31,
+          "fallback_reason": null
+        }
+      },
+      "before": {
+        "client_ms": 109.387295,
+        "server_ms": 98.751948,
+        "client_overhead_ms": 10.635346999999996,
+        "checks": 31,
+        "preparations": 1
+      }
+    }
+  ]
+}
