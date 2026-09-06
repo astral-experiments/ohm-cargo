@@ -25,13 +25,33 @@ The workspace namespace advances to v3 and snapshot/remapped-path protocol to
 v7 so old importers cannot accidentally copy the Clippy subdirectory. Fresh donor
 state is required. Full, package, and incremental cleanup handle both the current
 namespace and the same workspace/target's legacy v2 namespace; other targets remain
-untouched. Re-enabling isolation never clears a previous denial marker.
+untouched. An upgrade does not purge old caches automatically: v2 and v3 storage
+can coexist until normal cleanup. Fresh-workflow savings exclude that transition.
+Re-enabling isolation never clears a previous denial marker.
 
 Local validation passes 32 worktree integration tests, 17 incremental-cleanup and
 reuse tests, four targeted filesystem/driver unit tests, and all Cargo target
 Clippy checks with warnings denied. New coverage includes automatic admission on
 clone-capable storage, explicit disable/child overrides, global wrapper and logger
 rejection, mismatched unwrapped rustc versions, and cleanup of legacy namespaces.
+
+## Replaying the production policy
+
+The optional `clippy_apfs_replay` workflow-dispatch input runs the production
+comparison on a dedicated macOS runner with pinned Ohm 1.98.0-9. It builds Cargo
+with `ohm-defaults`, records source and binary identities, and runs eight fresh
+APFS arms in off/on/on/off/on/off/off/on order. Enabled arms use automatic
+admission; disabled arms set the explicit override to false.
+
+The replay includes the first and immediate repeated Clippy commands in both
+worktrees, test-command no-ops, and donor-only allocation. It requires actual
+reflink imports in enabled arms, rejected imports in disabled arms, fresh no-op
+commands, and matching 812/813 Ruff test totals. Macro/native-tool trust applies
+only to the pinned development fixture; the CI build itself uses private storage.
+
+Current production results and limitations are linked from
+[PR #108](https://github.com/astral-sh/ohm-cargo/pull/108). The historical results
+below remain tied to their original implementation.
 
 ## Original opt-in prototype measurements
 
