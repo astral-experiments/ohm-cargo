@@ -306,7 +306,8 @@ impl Rustc {
             rustc.arg("-vV");
             let mut fingerprint = StableHasher::new();
             ("ohm-unwrapped-rustc-version-v1", &self.path).hash(&mut fingerprint);
-            let Ok((rustc_version, _)) = self.cached_output(&rustc, Hasher::finish(&fingerprint)) else {
+            let Ok((rustc_version, _)) = self.cached_output(&rustc, Hasher::finish(&fingerprint))
+            else {
                 return false;
             };
             let mut process = ProcessBuilder::new(expected);
