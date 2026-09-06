@@ -16,6 +16,11 @@ use anyhow::Context as _;
 
 use crate::util::CargoResult;
 
+#[cfg(target_os = "linux")]
+mod cache;
+#[cfg(target_os = "linux")]
+mod watcher;
+
 #[derive(Clone, Debug, Default)]
 pub struct SessionInputs {
     graph: Arc<Mutex<Graph>>,
@@ -26,6 +31,8 @@ struct Graph {
     revision: u64,
     generation: u64,
     nodes: BTreeMap<InputKey, Node>,
+    #[cfg(target_os = "linux")]
+    cache: cache::InputCache,
 }
 
 #[derive(Debug)]
@@ -72,6 +79,10 @@ impl SessionInputs {
         graph.revision += 1;
         graph.generation += 1;
         graph.nodes.clear();
+        #[cfg(target_os = "linux")]
+        {
+            graph.cache = cache::InputCache::default();
+        }
         let generation = graph.generation;
         drop(graph);
         InputTracker {
@@ -150,12 +161,22 @@ impl InputTracker {
             return Err(conflict.clone());
         }
         graph.revision += 1;
-        let changed = reads.dependencies.iter().find_map(|(key, expected)| {
-            let observed = graph.observe(key.clone(), key.evaluate());
-            (observed != *expected).then(|| Invalidation {
-                reason: format!("{key} changed"),
-            })
-        });
+        #[cfg(target_os = "linux")]
+        let values = graph
+            .cache
+            .evaluate(&reads.dependencies.keys().collect::<Vec<_>>());
+        #[cfg(not(target_os = "linux"))]
+        let values = reads.dependencies.keys().map(InputKey::evaluate);
+        let changed = reads
+            .dependencies
+            .iter()
+            .zip(values)
+            .find_map(|((key, expected), value)| {
+                let observed = graph.observe(key.clone(), value);
+                (observed != *expected).then(|| Invalidation {
+                    reason: format!("{key} changed"),
+                })
+            });
         if let Some(changed) = changed {
             reads.conflict = Some(changed.clone());
             return Err(changed);
@@ -620,24 +641,33 @@ struct FileIdentity {
     unix: (u64, u64, i64, i64, u32),
 }
 
-fn identity(path: &Path) -> io::Result<FileIdentity> {
-    let meta = fs::metadata(path)?;
-    #[cfg(unix)]
-    use std::os::unix::fs::MetadataExt;
-    Ok(FileIdentity {
-        len: meta.len(),
-        modified: meta.modified().ok(),
-        kind: meta.file_type().into(),
-        canonical: fs::canonicalize(path)?,
+impl FileIdentity {
+    fn from_metadata(metadata: &fs::Metadata, canonical: PathBuf) -> Self {
         #[cfg(unix)]
-        unix: (
-            meta.dev(),
-            meta.ino(),
-            meta.ctime(),
-            meta.ctime_nsec(),
-            meta.mode(),
-        ),
-    })
+        use std::os::unix::fs::MetadataExt;
+        Self {
+            len: metadata.len(),
+            modified: metadata.modified().ok(),
+            kind: metadata.file_type().into(),
+            canonical,
+            #[cfg(unix)]
+            unix: (
+                metadata.dev(),
+                metadata.ino(),
+                metadata.ctime(),
+                metadata.ctime_nsec(),
+                metadata.mode(),
+            ),
+        }
+    }
+}
+
+fn identity(path: &Path) -> io::Result<FileIdentity> {
+    let metadata = fs::metadata(path)?;
+    Ok(FileIdentity::from_metadata(
+        &metadata,
+        fs::canonicalize(path)?,
+    ))
 }
 
 fn resolve_executable(
@@ -666,13 +696,26 @@ fn resolve_executable(
 }
 
 fn installation(root: &Path) -> CargoResult<Vec<(PathBuf, FileIdentity)>> {
+    installation_with(root, identity, |_| {})
+}
+
+/// Report visited directories alongside the ordinary installation snapshot.
+fn installation_with(
+    root: &Path,
+    mut identify: impl FnMut(&Path) -> io::Result<FileIdentity>,
+    mut directory: impl FnMut(&Path),
+) -> CargoResult<Vec<(PathBuf, FileIdentity)>> {
     let compiler = root
         .join("bin")
         .join(format!("rustc{}", std::env::consts::EXE_SUFFIX));
-    let mut values = vec![(compiler.clone(), identity(&compiler)?)];
+    let mut values = vec![(compiler.clone(), identify(&compiler)?)];
     for entry in walkdir::WalkDir::new(root.join("lib")).follow_links(true) {
-        let path = entry?.into_path();
-        values.push((path.clone(), identity(&path)?));
+        let entry = entry?;
+        if entry.file_type().is_dir() {
+            directory(entry.path());
+        }
+        let path = entry.into_path();
+        values.push((path.clone(), identify(&path)?));
     }
     values.sort_by(|a, b| a.0.cmp(&b.0));
     Ok(values)
@@ -680,6 +723,15 @@ fn installation(root: &Path) -> CargoResult<Vec<(PathBuf, FileIdentity)>> {
 
 /// Snapshot loadable native libraries without depending on unrelated build outputs.
 fn library_directory(directory: &Path) -> CargoResult<Vec<(PathBuf, FileIdentity)>> {
+    library_directory_with(directory, identity, |_| {})
+}
+
+/// Collect every visited directory, including directories with no native libraries.
+fn library_directory_with(
+    directory: &Path,
+    mut identify: impl FnMut(&Path) -> io::Result<FileIdentity>,
+    mut visited_directory: impl FnMut(&Path),
+) -> CargoResult<Vec<(PathBuf, FileIdentity)>> {
     match fs::metadata(directory) {
         Ok(metadata) if metadata.is_dir() => {}
         Ok(_) => return Ok(Vec::new()),
@@ -696,6 +748,9 @@ fn library_directory(directory: &Path) -> CargoResult<Vec<(PathBuf, FileIdentity
     let mut libraries = Vec::new();
     for entry in walkdir::WalkDir::new(directory).follow_links(true) {
         let entry = entry?;
+        if entry.file_type().is_dir() {
+            visited_directory(entry.path());
+        }
         if !entry.file_type().is_file() {
             continue;
         }
@@ -716,7 +771,7 @@ fn library_directory(directory: &Path) -> CargoResult<Vec<(PathBuf, FileIdentity
         };
         if native_library {
             let path = entry.into_path();
-            libraries.push((path.clone(), identity(&path)?));
+            libraries.push((path.clone(), identify(&path)?));
         }
     }
     // Traverse loader subdirectories such as glibc-hwcaps and framework bundles,
