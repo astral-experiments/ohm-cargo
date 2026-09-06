@@ -140,6 +140,14 @@ pub const SEE_CHANNELS: &str = "See https://doc.rust-lang.org/book/appendix-07-n
 /// Value of [`allow-features`](CliUnstable::allow_features)
 pub type AllowFeatures = BTreeSet<String>;
 
+/// Bundled linker selected for native Linux x86-64 builds.
+#[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, PartialEq)]
+#[serde(rename_all = "kebab-case")]
+pub enum OhmLinker {
+    Wild,
+    Lld,
+}
+
 /// Procedural-macro policy for registry sharing and workspace snapshot imports.
 #[derive(Clone, Copy, Debug, Default, Deserialize, Eq, Hash, PartialEq)]
 #[serde(rename_all = "kebab-case")]
@@ -935,6 +943,7 @@ unstable_cli_options!(
     ohm_defaults: Option<bool> = ("Enable the defaults packaged with Ohm"),
     ohm_focused_tests: bool = ("Compile only an explicitly selected exact library test"),
     ohm_incremental_gc: bool = ("Track incremental-cache use for explicit cleanup (prototype)"),
+    ohm_linker: Option<OhmLinker> = ("Select a bundled linker for native Linux x86-64 builds: wild or lld"),
     ohm_native_tool_trust: OhmNativeToolTrust = ("Set native-tool trust for shared registry artifacts: strict (default), build-scripts, or all (potentially unsound)"),
     ohm_proc_macro_trust: OhmProcMacroTrust = ("Set procedural-macro trust for shared registry artifacts and workspace snapshots: audited (default) or all (potentially unsound)"),
     ohm_reuse_built_deps: bool = ("Reuse already-built registry dependencies when checking a package"),
@@ -1518,6 +1527,13 @@ impl CliUnstable {
             "ohm-defaults" => self.ohm_defaults = Some(parse_bool(k, v)?),
             "ohm-focused-tests" => self.ohm_focused_tests = parse_empty(k, v)?,
             "ohm-incremental-gc" => self.ohm_incremental_gc = parse_empty(k, v)?,
+            "ohm-linker" => {
+                self.ohm_linker = Some(match v {
+                    Some("wild") => OhmLinker::Wild,
+                    Some("lld") => OhmLinker::Lld,
+                    _ => bail!("flag -Z{k} requires `wild` or `lld`"),
+                });
+            }
             "ohm-native-tool-trust" => {
                 self.ohm_native_tool_trust = match v {
                     Some("strict") => OhmNativeToolTrust::Strict,
