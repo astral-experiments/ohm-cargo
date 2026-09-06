@@ -79,6 +79,10 @@ def main():
     parser.add_argument("--evidence", type=Path, required=True)
     parser.add_argument("--jobs", default="4")
     parser.add_argument("--arms", default="off1,on1,on2,off2")
+    parser.add_argument("--production", action="store_true",
+                        help="compare automatic production defaults with explicit isolation=false")
+    parser.add_argument("--require-quiet", action="store_true",
+                        help="reject external Rust processes before and after every command")
     args = parser.parse_args()
     args.evidence.mkdir(parents=True, exist_ok=True)
     assert args.cargo.is_file() and args.ruff.is_dir()
@@ -111,22 +115,50 @@ def main():
                    CARGO_EXPERIMENTAL_CLIPPY_SEED_ISOLATION=str(int(enabled)), INSTA_UPDATE="no",
                    CARGO_PROFILE_DEV_DEBUG="line-tables-only", CARGO_PROFILE_DEV_OPT_LEVEL="1",
                    CARGO_PROFILE_DEV_LTO="off", PATH=os.pathsep.join([str(args.cargo.parent), str(sysroot / "bin"), os.environ["PATH"]]))
-        for variable in ["RUSTFLAGS", "CARGO_ENCODED_RUSTFLAGS", "RUSTC_WRAPPER", "RUSTC_WORKSPACE_WRAPPER"]:
+        for variable in ["RUSTFLAGS", "CARGO_ENCODED_RUSTFLAGS", "RUSTC_WRAPPER", "RUSTC_WORKSPACE_WRAPPER",
+                         "CARGO_UNSTABLE_OHM_CLIPPY_SEED_ISOLATION", "CARGO_UNSTABLE_OHM_WORKTREE_SEEDS",
+                         "CARGO_UNSTABLE_OHM_DEFAULTS", "__CARGO_OHM_DEFAULTS", "__CARGO_OHM_WORKTREE_SEEDS",
+                         "__CARGO_OHM_CLIPPY_SEED_ISOLATION"]:
             env.pop(variable, None)
+        if args.production:
+            env.pop("CARGO_EXPERIMENTAL_CLIPPY_SEED_ISOLATION", None)
+            if not enabled:
+                env["CARGO_UNSTABLE_OHM_CLIPPY_SEED_ISOLATION"] = "false"
         receipt = {"label": label, "enabled": enabled, "base": BASE, "edit": EDIT,
+                   "production": args.production, "require_quiet": args.require_quiet,
+                   "harness_sha256": sha256(Path(__file__)),
+                   "cargo_version": subprocess.check_output([str(args.cargo), "-Vv"], text=True),
                    "cargo_sha256": sha256(args.cargo), "rustc_sha256": sha256(sysroot / "bin/rustc"),
                    "source_root": str(args.ruff), "volume": str(mount), "attach": plistlib.loads(attached),
-                   "environment": {key: env[key] for key in ["CARGO_HOME", "RUSTUP_TOOLCHAIN", "RUSTC", "CARGO",
+                   "environment": {key: env.get(key) for key in ["CARGO_HOME", "RUSTUP_TOOLCHAIN", "RUSTC", "CARGO",
                        "CARGO_BUILD_JOBS", "CARGO_TARGET_DIR", "CARGO_BUILD_BUILD_DIR", "CARGO_UNSTABLE_OHM_PROC_MACRO_TRUST",
                        "CARGO_UNSTABLE_OHM_NATIVE_TOOL_TRUST", "CARGO_EXPERIMENTAL_CLIPPY_SEED_ISOLATION",
+                       "CARGO_UNSTABLE_OHM_CLIPPY_SEED_ISOLATION",
                        "CARGO_PROFILE_DEV_DEBUG", "CARGO_PROFILE_DEV_OPT_LEVEL", "CARGO_PROFILE_DEV_LTO"]},
                    "commands": [], "measurements": {}, "toolchain": toolchain,
                    "machine": {"platform": platform.platform(), "cpu_count": os.cpu_count()},
-                   "timing_caveat": "Other development workloads were active; use as a storage screen, not a precise wall-time speedup."}
+                   "timing_caveat": ("External Rust processes checked before/after commands; ordinary host activity remains."
+                                      if args.require_quiet else "Other development workloads were active; use as a storage screen, not a precise wall-time speedup.")}
         def save():
             (evidence / "receipt.json").write_text(json.dumps(receipt, indent=2) + "\n")
+        def quiet_snapshot():
+            rows = []
+            output = subprocess.check_output(["ps", "-axo", "pid=,ppid=,pcpu=,comm="], text=True)
+            for line in output.splitlines():
+                pid, ppid, cpu, executable = line.split(None, 3)
+                if int(pid) == os.getpid() or Path(executable).name == "ps":
+                    continue
+                rust = Path(executable).name in {"cargo", "rustc", "clippy-driver", "cargo-clippy"}
+                if rust or float(cpu) >= 20:
+                    rows.append({"pid": int(pid), "ppid": int(ppid), "cpu_percent": float(cpu),
+                                 "executable": executable, "rust": rust})
+            return rows
+
         def command(name, argv, cwd, environment=env):
             entry = {"name": name, "argv": list(map(str, argv)), "cwd": str(cwd)}
+            if args.require_quiet:
+                entry["processes_before"] = quiet_snapshot()
+                assert not any(row["rust"] for row in entry["processes_before"]), entry["processes_before"]
             receipt["commands"].append(entry)
             save()
             usage_before = resource.getrusage(resource.RUSAGE_CHILDREN)
@@ -137,6 +169,10 @@ def main():
             entry.update(elapsed_seconds=time.monotonic() - start, returncode=process.returncode,
                          child_user_seconds=usage_after.ru_utime - usage_before.ru_utime,
                          child_system_seconds=usage_after.ru_stime - usage_before.ru_stime)
+            if args.require_quiet:
+                entry["processes_after"] = quiet_snapshot()
+                save()
+                assert not any(row["rust"] for row in entry["processes_after"]), entry["processes_after"]
             text = (evidence / (name + ".log")).read_text(errors="replace")
             entry["summaries"] = [line for line in text.splitlines() if "test result:" in line or "Seeded " in line or "snapshot" in line]
             entry["compiling_lines"] = sum("Compiling " in line for line in text.splitlines())
