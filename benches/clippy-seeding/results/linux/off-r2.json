@@ -1,0 +1,377 @@
+{
+  "label": "off-r2",
+  "enabled": 0,
+  "cargo": "/tmp/codex-cargo-targets/cargo/01-clippy-seeding/ohm/release/cargo",
+  "cargo_sha256": "ef160dc6775497155e819ee9e9c20cde385df752d28909dcb900d3447ee1d51b",
+  "rustc_sha256": "4d75695b40cf14e7e7122fb8c87a66942ee05ba309c26d644a0a217b98d96456",
+  "revisions": [
+    "21c9b077ab3b10dd9007710ffa471cd12f7eceab",
+    "c0a91dd16d5b32a254cbf6bcd268f6dbaf0fef0f",
+    "38c87bfba12aa635e3f273f248ca1f114391f504"
+  ],
+  "commands": [
+    {
+      "name": "00-create-donor",
+      "command": [
+        "/tmp/codex-cargo-targets/cargo/01-clippy-seeding/ohm/release/cargo",
+        "worktree",
+        "add",
+        "-b",
+        "charlie/off-r2-donor",
+        "/tmp/ohm-seven-prototypes/workloads/01-clippy-seeding/off-r2/donor",
+        "--target-dir",
+        "/tmp/codex-cargo-targets/ruff/isolated/ohm-seven-prototypes/01-clippy-seeding/off-r2/donor",
+        "21c9b077ab3b10dd9007710ffa471cd12f7eceab"
+      ],
+      "cwd": "/tmp/ohm-seven-prototypes/inputs/ruff-base",
+      "started": 1788658603.7613153,
+      "log": "/tmp/ohm-seven-prototypes/01-clippy-seeding/runs/off-r2/00-create-donor.log",
+      "elapsed": 2.09494686126709,
+      "returncode": 0,
+      "summaries": [
+        "     Created /tmp/ohm-seven-prototypes/workloads/01-clippy-seeding/off-r2/donor (no compatible build snapshot seeded)"
+      ],
+      "compiling_lines": 0
+    },
+    {
+      "name": "01-donor-warmup",
+      "command": [
+        "/tmp/codex-cargo-targets/cargo/01-clippy-seeding/ohm/release/cargo",
+        "nextest",
+        "run",
+        "-p",
+        "ty_python_semantic",
+        "-p",
+        "ty_python_core",
+        "--status-level",
+        "fail"
+      ],
+      "cwd": "/tmp/ohm-seven-prototypes/workloads/01-clippy-seeding/off-r2/donor",
+      "started": 1788658605.8604627,
+      "log": "/tmp/ohm-seven-prototypes/01-clippy-seeding/runs/off-r2/01-donor-warmup.log",
+      "elapsed": 94.20108079910278,
+      "returncode": 0,
+      "summaries": [
+        "     Summary [   8.820s] 868 tests run: 868 passed, 34 skipped"
+      ],
+      "compiling_lines": 240
+    },
+    {
+      "name": "02-donor-focused-baseline",
+      "command": [
+        "/tmp/codex-cargo-targets/cargo/01-clippy-seeding/ohm/release/cargo",
+        "nextest",
+        "run",
+        "-p",
+        "ty_python_semantic",
+        "--test",
+        "mdtest",
+        "-E",
+        "test(mdtest::cycle.md) | test(mdtest::attributes.md)",
+        "--status-level",
+        "fail"
+      ],
+      "cwd": "/tmp/ohm-seven-prototypes/workloads/01-clippy-seeding/off-r2/donor",
+      "started": 1788658700.0648525,
+      "log": "/tmp/ohm-seven-prototypes/01-clippy-seeding/runs/off-r2/02-donor-focused-baseline.log",
+      "elapsed": 2.0701632499694824,
+      "returncode": 0,
+      "summaries": [
+        "     Summary [   1.037s] 2 tests run: 2 passed, 480 skipped"
+      ],
+      "compiling_lines": 0
+    },
+    {
+      "name": "03-donor-first-edit",
+      "command": [
+        "git",
+        "checkout",
+        "--detach",
+        "c0a91dd16d5b32a254cbf6bcd268f6dbaf0fef0f"
+      ],
+      "cwd": "/tmp/ohm-seven-prototypes/workloads/01-clippy-seeding/off-r2/donor",
+      "started": 1788658702.1425314,
+      "log": "/tmp/ohm-seven-prototypes/01-clippy-seeding/runs/off-r2/03-donor-first-edit.log",
+      "elapsed": 0.6179468631744385,
+      "returncode": 0,
+      "summaries": [],
+      "compiling_lines": 0
+    },
+    {
+      "name": "04-donor-first-focused",
+      "command": [
+        "/tmp/codex-cargo-targets/cargo/01-clippy-seeding/ohm/release/cargo",
+        "nextest",
+        "run",
+        "-p",
+        "ty_python_semantic",
+        "--test",
+        "mdtest",
+        "-E",
+        "test(mdtest::cycle.md) | test(mdtest::attributes.md)",
+        "--status-level",
+        "fail"
+      ],
+      "cwd": "/tmp/ohm-seven-prototypes/workloads/01-clippy-seeding/off-r2/donor",
+      "started": 1788658702.7611918,
+      "log": "/tmp/ohm-seven-prototypes/01-clippy-seeding/runs/off-r2/04-donor-first-focused.log",
+      "elapsed": 28.010259866714478,
+      "returncode": 0,
+      "summaries": [
+        "     Summary [   1.021s] 2 tests run: 2 passed, 480 skipped"
+      ],
+      "compiling_lines": 2
+    },
+    {
+      "name": "05-donor-first-all",
+      "command": [
+        "/tmp/codex-cargo-targets/cargo/01-clippy-seeding/ohm/release/cargo",
+        "nextest",
+        "run",
+        "-p",
+        "ty_python_semantic",
+        "-p",
+        "ty_python_core",
+        "--status-level",
+        "fail"
+      ],
+      "cwd": "/tmp/ohm-seven-prototypes/workloads/01-clippy-seeding/off-r2/donor",
+      "started": 1788658730.7758093,
+      "log": "/tmp/ohm-seven-prototypes/01-clippy-seeding/runs/off-r2/05-donor-first-all.log",
+      "elapsed": 33.39498448371887,
+      "returncode": 0,
+      "summaries": [
+        "     Summary [   9.118s] 868 tests run: 868 passed, 34 skipped"
+      ],
+      "compiling_lines": 1
+    },
+    {
+      "name": "06-donor-first-clippy",
+      "command": [
+        "/tmp/codex-cargo-targets/cargo/01-clippy-seeding/ohm/release/cargo",
+        "clippy",
+        "-p",
+        "ty_python_semantic",
+        "-p",
+        "ty_python_core",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings",
+        "-A",
+        "clippy::format_push_string"
+      ],
+      "cwd": "/tmp/ohm-seven-prototypes/workloads/01-clippy-seeding/off-r2/donor",
+      "started": 1788658764.174457,
+      "log": "/tmp/ohm-seven-prototypes/01-clippy-seeding/runs/off-r2/06-donor-first-clippy.log",
+      "elapsed": 35.819029569625854,
+      "returncode": 0,
+      "summaries": [],
+      "compiling_lines": 5
+    },
+    {
+      "name": "07-create-sibling",
+      "command": [
+        "/tmp/codex-cargo-targets/cargo/01-clippy-seeding/ohm/release/cargo",
+        "worktree",
+        "add",
+        "-b",
+        "charlie/off-r2-sibling",
+        "/tmp/ohm-seven-prototypes/workloads/01-clippy-seeding/off-r2/sibling",
+        "--target-dir",
+        "/tmp/codex-cargo-targets/ruff/isolated/ohm-seven-prototypes/01-clippy-seeding/off-r2/sibling",
+        "c0a91dd16d5b32a254cbf6bcd268f6dbaf0fef0f"
+      ],
+      "cwd": "/tmp/ohm-seven-prototypes/workloads/01-clippy-seeding/off-r2/donor",
+      "started": 1788658800.3117583,
+      "log": "/tmp/ohm-seven-prototypes/01-clippy-seeding/runs/off-r2/07-create-sibling.log",
+      "elapsed": 2.233198642730713,
+      "returncode": 0,
+      "summaries": [
+        "     Created /tmp/ohm-seven-prototypes/workloads/01-clippy-seeding/off-r2/sibling (no compatible build snapshot seeded)"
+      ],
+      "compiling_lines": 0
+    },
+    {
+      "name": "08-sibling-fresh-focused",
+      "command": [
+        "/tmp/codex-cargo-targets/cargo/01-clippy-seeding/ohm/release/cargo",
+        "nextest",
+        "run",
+        "-p",
+        "ty_python_semantic",
+        "--test",
+        "mdtest",
+        "-E",
+        "test(mdtest::cycle.md) | test(mdtest::attributes.md)",
+        "--status-level",
+        "fail"
+      ],
+      "cwd": "/tmp/ohm-seven-prototypes/workloads/01-clippy-seeding/off-r2/sibling",
+      "started": 1788658802.5499845,
+      "log": "/tmp/ohm-seven-prototypes/01-clippy-seeding/runs/off-r2/08-sibling-fresh-focused.log",
+      "elapsed": 43.920320987701416,
+      "returncode": 0,
+      "summaries": [
+        "     Summary [   2.230s] 2 tests run: 2 passed, 480 skipped"
+      ],
+      "compiling_lines": 25
+    },
+    {
+      "name": "09-sibling-second-edit",
+      "command": [
+        "git",
+        "checkout",
+        "--detach",
+        "38c87bfba12aa635e3f273f248ca1f114391f504"
+      ],
+      "cwd": "/tmp/ohm-seven-prototypes/workloads/01-clippy-seeding/off-r2/sibling",
+      "started": 1788658846.4793975,
+      "log": "/tmp/ohm-seven-prototypes/01-clippy-seeding/runs/off-r2/09-sibling-second-edit.log",
+      "elapsed": 0.45967721939086914,
+      "returncode": 0,
+      "summaries": [],
+      "compiling_lines": 0
+    },
+    {
+      "name": "10-sibling-second-focused",
+      "command": [
+        "/tmp/codex-cargo-targets/cargo/01-clippy-seeding/ohm/release/cargo",
+        "nextest",
+        "run",
+        "-p",
+        "ty_python_semantic",
+        "--test",
+        "mdtest",
+        "-E",
+        "test(mdtest::cycle.md) | test(mdtest::attributes.md)",
+        "--status-level",
+        "fail"
+      ],
+      "cwd": "/tmp/ohm-seven-prototypes/workloads/01-clippy-seeding/off-r2/sibling",
+      "started": 1788658846.9400003,
+      "log": "/tmp/ohm-seven-prototypes/01-clippy-seeding/runs/off-r2/10-sibling-second-focused.log",
+      "elapsed": 34.120506048202515,
+      "returncode": 0,
+      "summaries": [
+        "     Summary [   2.413s] 2 tests run: 2 passed, 480 skipped"
+      ],
+      "compiling_lines": 2
+    },
+    {
+      "name": "11-sibling-second-all",
+      "command": [
+        "/tmp/codex-cargo-targets/cargo/01-clippy-seeding/ohm/release/cargo",
+        "nextest",
+        "run",
+        "-p",
+        "ty_python_semantic",
+        "-p",
+        "ty_python_core",
+        "--status-level",
+        "fail"
+      ],
+      "cwd": "/tmp/ohm-seven-prototypes/workloads/01-clippy-seeding/off-r2/sibling",
+      "started": 1788658881.0681756,
+      "log": "/tmp/ohm-seven-prototypes/01-clippy-seeding/runs/off-r2/11-sibling-second-all.log",
+      "elapsed": 40.84228229522705,
+      "returncode": 0,
+      "summaries": [
+        "     Summary [   7.296s] 868 tests run: 868 passed, 34 skipped"
+      ],
+      "compiling_lines": 2
+    },
+    {
+      "name": "12-sibling-second-clippy",
+      "command": [
+        "/tmp/codex-cargo-targets/cargo/01-clippy-seeding/ohm/release/cargo",
+        "clippy",
+        "-p",
+        "ty_python_semantic",
+        "-p",
+        "ty_python_core",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings",
+        "-A",
+        "clippy::format_push_string"
+      ],
+      "cwd": "/tmp/ohm-seven-prototypes/workloads/01-clippy-seeding/off-r2/sibling",
+      "started": 1788658921.9193332,
+      "log": "/tmp/ohm-seven-prototypes/01-clippy-seeding/runs/off-r2/12-sibling-second-clippy.log",
+      "elapsed": 37.1213002204895,
+      "returncode": 0,
+      "summaries": [],
+      "compiling_lines": 5
+    }
+  ],
+  "environment": {
+    "CARGO_BUILD_JOBS": "16",
+    "CARGO_TARGET_DIR": "/tmp/codex-cargo-targets/ruff/isolated/ohm-seven-prototypes/01-clippy-seeding/off-r2/donor",
+    "CARGO_BUILD_BUILD_DIR": "/tmp/codex-cargo-targets/ruff/isolated/ohm-seven-prototypes/01-clippy-seeding/off-r2/shared",
+    "CARGO_EXPERIMENTAL_CLIPPY_SEED_ISOLATION": "0",
+    "CARGO_PROFILE_DEV_OPT_LEVEL": "1",
+    "CARGO_PROFILE_DEV_LTO": "off",
+    "CARGO_PROFILE_DEV_DEBUG": "line-tables-only"
+  },
+  "donor_inventory": {
+    "groups": {
+      "other": {
+        "files": 4354,
+        "logical": 1357313798,
+        "allocated_clone_unaware": 1368092672
+      },
+      "other-incremental": {
+        "files": 306,
+        "logical": 1446959030,
+        "allocated_clone_unaware": 1447493632
+      },
+      "query-cache": {
+        "files": 66,
+        "logical": 862819463,
+        "allocated_clone_unaware": 862965760
+      },
+      "object": {
+        "files": 3095,
+        "logical": 586079832,
+        "allocated_clone_unaware": 592183296
+      }
+    },
+    "unique_inode_allocated_clone_unaware": 3998547968,
+    "scope": [
+      "/tmp/codex-cargo-targets/ruff/isolated/ohm-seven-prototypes/01-clippy-seeding/off-r2"
+    ],
+    "filesystem": "ext4; these are not APFS physical savings"
+  },
+  "final_inventory": {
+    "groups": {
+      "other": {
+        "files": 4965,
+        "logical": 2258953659,
+        "allocated_clone_unaware": 2270498816
+      },
+      "other-incremental": {
+        "files": 612,
+        "logical": 2895352650,
+        "allocated_clone_unaware": 2896429056
+      },
+      "query-cache": {
+        "files": 132,
+        "logical": 1609037078,
+        "allocated_clone_unaware": 1609322496
+      },
+      "object": {
+        "files": 6189,
+        "logical": 1173555216,
+        "allocated_clone_unaware": 1185779712
+      }
+    },
+    "unique_inode_allocated_clone_unaware": 7417012224,
+    "scope": [
+      "/tmp/codex-cargo-targets/ruff/isolated/ohm-seven-prototypes/01-clippy-seeding/off-r2"
+    ],
+    "filesystem": "ext4; these are not APFS physical savings"
+  },
+  "completed": true
+}

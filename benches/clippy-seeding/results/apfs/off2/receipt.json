@@ -1,0 +1,515 @@
+{
+  "label": "off2",
+  "enabled": false,
+  "base": "1edf9fe2cab23e34c383419b8c7830324c428a58",
+  "edit": "0ecff877901a0377ad966ffab528488ce872b50e",
+  "cargo_sha256": "3bd1da869284affdd941d2328565c06dac59e58bd140250c651a70b95649c23c",
+  "rustc_sha256": "5d87dbf31bdff571fc94181be7cc241ccd80936404f9a87b1a91476670f1c95c",
+  "source_root": "/Users/charliemarsh/code/oss/ruff",
+  "volume": "/private/tmp/codex-cargo-targets/ruff/isolated/target-size-clippy-seeding/off2/volume",
+  "attach": {
+    "system-entities": [
+      {
+        "content-hint": "EFI",
+        "dev-entry": "/dev/disk18s1",
+        "potentially-mountable": true,
+        "unmapped-content-hint": "C12A7328-F81F-11D2-BA4B-00A0C93EC93B",
+        "volume-kind": "msdos"
+      },
+      {
+        "content-hint": "41504653-0000-11AA-AA11-00306543ECAC",
+        "dev-entry": "/dev/disk19s1",
+        "mount-point": "/private/tmp/codex-cargo-targets/ruff/isolated/target-size-clippy-seeding/off2/volume",
+        "potentially-mountable": true,
+        "unmapped-content-hint": "41504653-0000-11AA-AA11-00306543ECAC",
+        "volume-kind": "apfs"
+      },
+      {
+        "content-hint": "Apple_APFS",
+        "dev-entry": "/dev/disk18s2",
+        "potentially-mountable": false,
+        "unmapped-content-hint": "7C3457EF-0000-11AA-AA11-00306543ECAC"
+      },
+      {
+        "content-hint": "EF57347C-0000-11AA-AA11-00306543ECAC",
+        "dev-entry": "/dev/disk19",
+        "potentially-mountable": false,
+        "unmapped-content-hint": "EF57347C-0000-11AA-AA11-00306543ECAC"
+      },
+      {
+        "content-hint": "GUID_partition_scheme",
+        "dev-entry": "/dev/disk18",
+        "potentially-mountable": false,
+        "unmapped-content-hint": "GUID_partition_scheme"
+      }
+    ]
+  },
+  "environment": {
+    "CARGO_HOME": "/private/tmp/codex-cargo-home",
+    "RUSTUP_TOOLCHAIN": "ohm",
+    "RUSTC": "/Users/charliemarsh/.local/share/ohm/toolchains/ohm-1.98.0-9/bin/rustc",
+    "CARGO": "/private/tmp/codex-cargo-targets/cargo/clippy-seeding/ohm/release/cargo",
+    "CARGO_BUILD_JOBS": "4",
+    "CARGO_TARGET_DIR": "/private/tmp/codex-cargo-targets/ruff/isolated/target-size-clippy-seeding/off2/volume/targets/donor",
+    "CARGO_BUILD_BUILD_DIR": "/private/tmp/codex-cargo-targets/ruff/isolated/target-size-clippy-seeding/off2/volume/shared",
+    "CARGO_UNSTABLE_OHM_PROC_MACRO_TRUST": "all",
+    "CARGO_UNSTABLE_OHM_NATIVE_TOOL_TRUST": "all",
+    "CARGO_EXPERIMENTAL_CLIPPY_SEED_ISOLATION": "0",
+    "CARGO_PROFILE_DEV_DEBUG": "line-tables-only",
+    "CARGO_PROFILE_DEV_OPT_LEVEL": "1",
+    "CARGO_PROFILE_DEV_LTO": "off"
+  },
+  "commands": [
+    {
+      "name": "00-clone",
+      "argv": [
+        "git",
+        "clone",
+        "--shared",
+        "--no-checkout",
+        "/Users/charliemarsh/code/oss/ruff",
+        "/private/tmp/codex-cargo-targets/ruff/isolated/target-size-clippy-seeding/off2/volume/donor"
+      ],
+      "cwd": "/private/tmp/codex-cargo-targets/ruff/isolated/target-size-clippy-seeding/off2",
+      "elapsed_seconds": 0.04791958397254348,
+      "returncode": 0,
+      "child_user_seconds": 0.01225499999998192,
+      "child_system_seconds": 0.021855999999999653,
+      "summaries": [],
+      "compiling_lines": 0
+    },
+    {
+      "name": "01-checkout",
+      "argv": [
+        "git",
+        "checkout",
+        "--detach",
+        "1edf9fe2cab23e34c383419b8c7830324c428a58"
+      ],
+      "cwd": "/private/tmp/codex-cargo-targets/ruff/isolated/target-size-clippy-seeding/off2/volume/donor",
+      "elapsed_seconds": 1.6336663749534637,
+      "returncode": 0,
+      "child_user_seconds": 0.20365800000001855,
+      "child_system_seconds": 0.9766740000000027,
+      "summaries": [],
+      "compiling_lines": 0
+    },
+    {
+      "name": "01b-fetch",
+      "argv": [
+        "/private/tmp/codex-cargo-targets/cargo/clippy-seeding/ohm/release/cargo",
+        "fetch",
+        "--locked"
+      ],
+      "cwd": "/private/tmp/codex-cargo-targets/ruff/isolated/target-size-clippy-seeding/off2/volume/donor",
+      "elapsed_seconds": 0.21788941603153944,
+      "returncode": 0,
+      "child_user_seconds": 0.08950699999996914,
+      "child_system_seconds": 0.10651099999999758,
+      "summaries": [],
+      "compiling_lines": 0
+    },
+    {
+      "name": "02-donor-test",
+      "argv": [
+        "/private/tmp/codex-cargo-targets/cargo/clippy-seeding/ohm/release/cargo",
+        "test",
+        "--offline",
+        "-p",
+        "ruff_python_parser"
+      ],
+      "cwd": "/private/tmp/codex-cargo-targets/ruff/isolated/target-size-clippy-seeding/off2/volume/donor",
+      "elapsed_seconds": 26.79442133405246,
+      "returncode": 0,
+      "child_user_seconds": 77.535394,
+      "child_system_seconds": 11.596724000000009,
+      "summaries": [
+        "test parser::scratch_buffer::tests::snapshot_is_empty_relative_to_its_buffer ... ok",
+        "test parser::scratch_buffer::tests::snapshot_must_be_restored - should panic ... ok",
+        "test parser::scratch_buffer::tests::snapshot_must_be_restored_in_reverse_order - should panic ... ok",
+        "test result: ok. 245 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.06s",
+        "test result: ok. 556 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.18s",
+        "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s",
+        "test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.04s"
+      ],
+      "compiling_lines": 123
+    },
+    {
+      "name": "03-donor-clippy",
+      "argv": [
+        "/private/tmp/codex-cargo-targets/cargo/clippy-seeding/ohm/release/cargo",
+        "clippy",
+        "--offline",
+        "-p",
+        "ruff_python_parser",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings",
+        "-A",
+        "clippy::format_push_string"
+      ],
+      "cwd": "/private/tmp/codex-cargo-targets/ruff/isolated/target-size-clippy-seeding/off2/volume/donor",
+      "elapsed_seconds": 1.757713041966781,
+      "returncode": 0,
+      "child_user_seconds": 3.088841000000002,
+      "child_system_seconds": 0.6739979999999974,
+      "summaries": [],
+      "compiling_lines": 0
+    },
+    {
+      "name": "04-donor-noop",
+      "argv": [
+        "/private/tmp/codex-cargo-targets/cargo/clippy-seeding/ohm/release/cargo",
+        "test",
+        "--offline",
+        "-p",
+        "ruff_python_parser"
+      ],
+      "cwd": "/private/tmp/codex-cargo-targets/ruff/isolated/target-size-clippy-seeding/off2/volume/donor",
+      "elapsed_seconds": 1.2494078329764307,
+      "returncode": 0,
+      "child_user_seconds": 0.5590970000000084,
+      "child_system_seconds": 1.2350859999999955,
+      "summaries": [
+        "test parser::scratch_buffer::tests::snapshot_is_empty_relative_to_its_buffer ... ok",
+        "test parser::scratch_buffer::tests::snapshot_must_be_restored - should panic ... ok",
+        "test parser::scratch_buffer::tests::snapshot_must_be_restored_in_reverse_order - should panic ... ok",
+        "test result: ok. 245 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s",
+        "test result: ok. 556 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.16s",
+        "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s",
+        "test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s"
+      ],
+      "compiling_lines": 0
+    },
+    {
+      "name": "05-fork",
+      "argv": [
+        "/private/tmp/codex-cargo-targets/cargo/clippy-seeding/ohm/release/cargo",
+        "worktree",
+        "add",
+        "--detach",
+        "/private/tmp/codex-cargo-targets/ruff/isolated/target-size-clippy-seeding/off2/volume/child",
+        "--target-dir",
+        "/private/tmp/codex-cargo-targets/ruff/isolated/target-size-clippy-seeding/off2/volume/targets/child",
+        "1edf9fe2cab23e34c383419b8c7830324c428a58"
+      ],
+      "cwd": "/private/tmp/codex-cargo-targets/ruff/isolated/target-size-clippy-seeding/off2/volume/donor",
+      "elapsed_seconds": 1.1777551248669624,
+      "returncode": 0,
+      "child_user_seconds": 0.17624399999999696,
+      "child_system_seconds": 0.8244800000000083,
+      "summaries": [
+        "     Created /private/tmp/codex-cargo-targets/ruff/isolated/target-size-clippy-seeding/off2/volume/child (no compatible build snapshot seeded)"
+      ],
+      "compiling_lines": 0
+    },
+    {
+      "name": "06-child-test",
+      "argv": [
+        "/private/tmp/codex-cargo-targets/cargo/clippy-seeding/ohm/release/cargo",
+        "test",
+        "--offline",
+        "-p",
+        "ruff_python_parser"
+      ],
+      "cwd": "/private/tmp/codex-cargo-targets/ruff/isolated/target-size-clippy-seeding/off2/volume/child",
+      "elapsed_seconds": 7.189910292159766,
+      "returncode": 0,
+      "child_user_seconds": 16.617076999999995,
+      "child_system_seconds": 2.627749999999992,
+      "summaries": [
+        "test parser::scratch_buffer::tests::snapshot_is_empty_relative_to_its_buffer ... ok",
+        "test parser::scratch_buffer::tests::snapshot_must_be_restored - should panic ... ok",
+        "test parser::scratch_buffer::tests::snapshot_must_be_restored_in_reverse_order - should panic ... ok",
+        "test result: ok. 245 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.07s",
+        "test result: ok. 556 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.16s",
+        "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s",
+        "test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s"
+      ],
+      "compiling_lines": 7
+    },
+    {
+      "name": "07-edit",
+      "argv": [
+        "git",
+        "checkout",
+        "--detach",
+        "0ecff877901a0377ad966ffab528488ce872b50e"
+      ],
+      "cwd": "/private/tmp/codex-cargo-targets/ruff/isolated/target-size-clippy-seeding/off2/volume/child",
+      "elapsed_seconds": 0.3406922919675708,
+      "returncode": 0,
+      "child_user_seconds": 0.17423000000002276,
+      "child_system_seconds": 0.23935900000000743,
+      "summaries": [],
+      "compiling_lines": 0
+    },
+    {
+      "name": "08-child-edit-test",
+      "argv": [
+        "/private/tmp/codex-cargo-targets/cargo/clippy-seeding/ohm/release/cargo",
+        "test",
+        "--offline",
+        "-p",
+        "ruff_python_parser"
+      ],
+      "cwd": "/private/tmp/codex-cargo-targets/ruff/isolated/target-size-clippy-seeding/off2/volume/child",
+      "elapsed_seconds": 4.1851045419462025,
+      "returncode": 0,
+      "child_user_seconds": 3.525229999999965,
+      "child_system_seconds": 1.853475000000003,
+      "summaries": [
+        "test parser::scratch_buffer::tests::snapshot_is_empty_relative_to_its_buffer ... ok",
+        "test parser::scratch_buffer::tests::snapshot_must_be_restored - should panic ... ok",
+        "test parser::scratch_buffer::tests::snapshot_must_be_restored_in_reverse_order - should panic ... ok",
+        "test result: ok. 245 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.06s",
+        "test result: ok. 557 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.16s",
+        "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s",
+        "test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s"
+      ],
+      "compiling_lines": 1
+    },
+    {
+      "name": "09-child-clippy",
+      "argv": [
+        "/private/tmp/codex-cargo-targets/cargo/clippy-seeding/ohm/release/cargo",
+        "clippy",
+        "--offline",
+        "-p",
+        "ruff_python_parser",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings",
+        "-A",
+        "clippy::format_push_string"
+      ],
+      "cwd": "/private/tmp/codex-cargo-targets/ruff/isolated/target-size-clippy-seeding/off2/volume/child",
+      "elapsed_seconds": 1.9813090420793742,
+      "returncode": 0,
+      "child_user_seconds": 3.582809999999995,
+      "child_system_seconds": 0.7179029999999926,
+      "summaries": [],
+      "compiling_lines": 0
+    },
+    {
+      "name": "10-child-noop",
+      "argv": [
+        "/private/tmp/codex-cargo-targets/cargo/clippy-seeding/ohm/release/cargo",
+        "test",
+        "--offline",
+        "-p",
+        "ruff_python_parser"
+      ],
+      "cwd": "/private/tmp/codex-cargo-targets/ruff/isolated/target-size-clippy-seeding/off2/volume/child",
+      "elapsed_seconds": 1.2429322500247508,
+      "returncode": 0,
+      "child_user_seconds": 0.5548660000000041,
+      "child_system_seconds": 1.261973999999995,
+      "summaries": [
+        "test parser::scratch_buffer::tests::snapshot_is_empty_relative_to_its_buffer ... ok",
+        "test parser::scratch_buffer::tests::snapshot_must_be_restored - should panic ... ok",
+        "test parser::scratch_buffer::tests::snapshot_must_be_restored_in_reverse_order - should panic ... ok",
+        "test result: ok. 245 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s",
+        "test result: ok. 557 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.16s",
+        "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s",
+        "test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s"
+      ],
+      "compiling_lines": 0
+    }
+  ],
+  "measurements": {
+    "empty": {
+      "volume_used_bytes": 20480,
+      "container_used_bytes": 61865984,
+      "stable": true,
+      "samples": [
+        {
+          "volume_used_bytes": 20480,
+          "container_used_bytes": 61865984
+        },
+        {
+          "volume_used_bytes": 20480,
+          "container_used_bytes": 61865984
+        },
+        {
+          "volume_used_bytes": 20480,
+          "container_used_bytes": 61865984
+        }
+      ],
+      "artifact_groups": {}
+    },
+    "sources": {
+      "volume_used_bytes": 127700992,
+      "container_used_bytes": 189546496,
+      "stable": true,
+      "samples": [
+        {
+          "volume_used_bytes": 127700992,
+          "container_used_bytes": 189546496
+        },
+        {
+          "volume_used_bytes": 127700992,
+          "container_used_bytes": 189546496
+        },
+        {
+          "volume_used_bytes": 127700992,
+          "container_used_bytes": 189546496
+        }
+      ],
+      "artifact_groups": {}
+    },
+    "donor": {
+      "volume_used_bytes": 694321152,
+      "container_used_bytes": 756166656,
+      "stable": true,
+      "samples": [
+        {
+          "volume_used_bytes": 694321152,
+          "container_used_bytes": 756166656
+        },
+        {
+          "volume_used_bytes": 694321152,
+          "container_used_bytes": 756166656
+        },
+        {
+          "volume_used_bytes": 694321152,
+          "container_used_bytes": 756166656
+        }
+      ],
+      "artifact_groups": {
+        "other": {
+          "files": 1417,
+          "logical_bytes": 243494927,
+          "inode_allocated_clone_unaware_bytes": 250044416
+        },
+        ".rmeta": {
+          "files": 146,
+          "logical_bytes": 114985347,
+          "inode_allocated_clone_unaware_bytes": 115298304
+        },
+        "query-cache": {
+          "files": 20,
+          "logical_bytes": 63247732,
+          "inode_allocated_clone_unaware_bytes": 63291392
+        },
+        ".o": {
+          "files": 1110,
+          "logical_bytes": 85977704,
+          "inode_allocated_clone_unaware_bytes": 88141824
+        },
+        ".rlib": {
+          "files": 122,
+          "logical_bytes": 88618512,
+          "inode_allocated_clone_unaware_bytes": 88842240
+        }
+      }
+    },
+    "child_fresh": {
+      "volume_used_bytes": 1053741056,
+      "container_used_bytes": 1115586560,
+      "stable": true,
+      "samples": [
+        {
+          "volume_used_bytes": 1053741056,
+          "container_used_bytes": 1115586560
+        },
+        {
+          "volume_used_bytes": 1053741056,
+          "container_used_bytes": 1115586560
+        },
+        {
+          "volume_used_bytes": 1053741056,
+          "container_used_bytes": 1115586560
+        }
+      ],
+      "artifact_groups": {
+        "other": {
+          "files": 1545,
+          "logical_bytes": 369120844,
+          "inode_allocated_clone_unaware_bytes": 377475072
+        },
+        ".o": {
+          "files": 1993,
+          "logical_bytes": 129938336,
+          "inode_allocated_clone_unaware_bytes": 133799936
+        },
+        ".rmeta": {
+          "files": 160,
+          "logical_bytes": 135630833,
+          "inode_allocated_clone_unaware_bytes": 135974912
+        },
+        "query-cache": {
+          "files": 30,
+          "logical_bytes": 108313159,
+          "inode_allocated_clone_unaware_bytes": 108376064
+        },
+        ".rlib": {
+          "files": 129,
+          "logical_bytes": 114300824,
+          "inode_allocated_clone_unaware_bytes": 114536448
+        }
+      }
+    },
+    "final": {
+      "volume_used_bytes": 1160384512,
+      "container_used_bytes": 1222230016,
+      "stable": true,
+      "samples": [
+        {
+          "volume_used_bytes": 1160384512,
+          "container_used_bytes": 1222230016
+        },
+        {
+          "volume_used_bytes": 1160384512,
+          "container_used_bytes": 1222230016
+        },
+        {
+          "volume_used_bytes": 1160384512,
+          "container_used_bytes": 1222230016
+        }
+      ],
+      "artifact_groups": {
+        "other": {
+          "files": 1650,
+          "logical_bytes": 439840918,
+          "inode_allocated_clone_unaware_bytes": 447315968
+        },
+        ".rmeta": {
+          "files": 177,
+          "logical_bytes": 150523045,
+          "inode_allocated_clone_unaware_bytes": 150892544
+        },
+        "query-cache": {
+          "files": 40,
+          "logical_bytes": 138082811,
+          "inode_allocated_clone_unaware_bytes": 138166272
+        },
+        ".o": {
+          "files": 1993,
+          "logical_bytes": 129941984,
+          "inode_allocated_clone_unaware_bytes": 133799936
+        },
+        ".rlib": {
+          "files": 129,
+          "logical_bytes": 114301568,
+          "inode_allocated_clone_unaware_bytes": 114536448
+        }
+      }
+    }
+  },
+  "toolchain": {
+    "rustc_version": "rustc 1.98.0-dev (d37229159 2026-09-05) (ohm-1.98.0-9)\nbinary: rustc\ncommit-hash: d37229159e545bbdec917dd7efdf5d26da40d2bc\ncommit-date: 2026-09-05\nhost: aarch64-apple-darwin\nrelease: 1.98.0-dev\nLLVM version: 22.1.8\n",
+    "clippy_sha256": "d4bdd65200698f9e304282826ebcc08e15c84f0f2f867315ae6df8311b1ffdbf",
+    "driver_sha256": {
+      "librustc_driver-eeeb3982ca989643.dylib": "51f59b4475848a69fcae68ac8098b068e14f1fd4dc7e71c1df8a27c32e7a08b2"
+    }
+  },
+  "machine": {
+    "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+    "cpu_count": 18
+  },
+  "timing_caveat": "Other development workloads were active; use as a storage screen, not a precise wall-time speedup.",
+  "complete": true
+}

@@ -1,0 +1,109 @@
+{
+  "scope": "Same final candidate executable; package status lines are not exact rustc invocation counts",
+  "phases": [
+    {
+      "phase": "00-create-donor",
+      "off_seconds": 2.09494686126709,
+      "on_seconds": 2.430164337158203,
+      "on_minus_off_seconds": 0.3352174758911133,
+      "off_compiling_package_status_lines": 0,
+      "on_compiling_package_status_lines": 0
+    },
+    {
+      "phase": "01-donor-warmup",
+      "off_seconds": 94.20108079910278,
+      "on_seconds": 93.94159507751465,
+      "on_minus_off_seconds": -0.25948572158813477,
+      "off_compiling_package_status_lines": 240,
+      "on_compiling_package_status_lines": 240
+    },
+    {
+      "phase": "02-donor-focused-baseline",
+      "off_seconds": 2.0701632499694824,
+      "on_seconds": 2.164330005645752,
+      "on_minus_off_seconds": 0.09416675567626953,
+      "off_compiling_package_status_lines": 0,
+      "on_compiling_package_status_lines": 0
+    },
+    {
+      "phase": "03-donor-first-edit",
+      "off_seconds": 0.6179468631744385,
+      "on_seconds": 0.404280424118042,
+      "on_minus_off_seconds": -0.21366643905639648,
+      "off_compiling_package_status_lines": 0,
+      "on_compiling_package_status_lines": 0
+    },
+    {
+      "phase": "04-donor-first-focused",
+      "off_seconds": 28.010259866714478,
+      "on_seconds": 33.525654792785645,
+      "on_minus_off_seconds": 5.515394926071167,
+      "off_compiling_package_status_lines": 2,
+      "on_compiling_package_status_lines": 2
+    },
+    {
+      "phase": "05-donor-first-all",
+      "off_seconds": 33.39498448371887,
+      "on_seconds": 34.68671989440918,
+      "on_minus_off_seconds": 1.2917354106903076,
+      "off_compiling_package_status_lines": 1,
+      "on_compiling_package_status_lines": 1
+    },
+    {
+      "phase": "06-donor-first-clippy",
+      "off_seconds": 35.819029569625854,
+      "on_seconds": 37.116259813308716,
+      "on_minus_off_seconds": 1.2972302436828613,
+      "off_compiling_package_status_lines": 5,
+      "on_compiling_package_status_lines": 5
+    },
+    {
+      "phase": "07-create-sibling",
+      "off_seconds": 2.233198642730713,
+      "on_seconds": 16.832207679748535,
+      "on_minus_off_seconds": 14.599009037017822,
+      "off_compiling_package_status_lines": 0,
+      "on_compiling_package_status_lines": 0
+    },
+    {
+      "phase": "08-sibling-fresh-focused",
+      "off_seconds": 43.920320987701416,
+      "on_seconds": 6.48844051361084,
+      "on_minus_off_seconds": -37.431880474090576,
+      "off_compiling_package_status_lines": 25,
+      "on_compiling_package_status_lines": 5
+    },
+    {
+      "phase": "09-sibling-second-edit",
+      "off_seconds": 0.45967721939086914,
+      "on_seconds": 0.5506289005279541,
+      "on_minus_off_seconds": 0.09095168113708496,
+      "off_compiling_package_status_lines": 0,
+      "on_compiling_package_status_lines": 0
+    },
+    {
+      "phase": "10-sibling-second-focused",
+      "off_seconds": 34.120506048202515,
+      "on_seconds": 44.678961515426636,
+      "on_minus_off_seconds": 10.558455467224121,
+      "off_compiling_package_status_lines": 2,
+      "on_compiling_package_status_lines": 2
+    },
+    {
+      "phase": "11-sibling-second-all",
+      "off_seconds": 40.84228229522705,
+      "on_seconds": 45.851202964782715,
+      "on_minus_off_seconds": 5.008920669555664,
+      "off_compiling_package_status_lines": 2,
+      "on_compiling_package_status_lines": 2
+    },
+    {
+      "phase": "12-sibling-second-clippy",
+      "off_seconds": 37.1213002204895,
+      "on_seconds": 30.165132999420166,
+      "on_minus_off_seconds": -6.956167221069336,
+      "off_compiling_package_status_lines": 5,
+      "on_compiling_package_status_lines": 5
+    }
+  ]
+}
