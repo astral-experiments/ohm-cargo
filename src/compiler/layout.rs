@@ -241,10 +241,25 @@ impl Layout {
     /// protocol from older Cargo versions that only namespaced the workspace root
     /// or cannot exclude isolated Clippy state when importing worktree snapshots.
     pub(crate) fn shared_workspace_namespace(ws: &Workspace<'_>) -> String {
+        Self::shared_workspace_namespace_version(ws, "ohm-shared-workspace-v3")
+    }
+
+    /// Known namespaces owned by this workspace and target, including release-9 storage.
+    ///
+    /// Older namespaces are cleanup candidates only; they must never be used to import seeds.
+    /// The earlier workspace-only namespace is excluded because it can belong to other targets.
+    pub(crate) fn shared_workspace_cleanup_namespaces(ws: &Workspace<'_>) -> [String; 2] {
+        [
+            Self::shared_workspace_namespace(ws),
+            Self::shared_workspace_namespace_version(ws, "ohm-shared-workspace-v2"),
+        ]
+    }
+
+    fn shared_workspace_namespace_version(ws: &Workspace<'_>, version: &str) -> String {
         let target = ws.target_dir();
 
         util::short_hash(&(
-            "ohm-shared-workspace-v3",
+            version,
             ws.canonical_build_path(ws.root()),
             ws.canonical_build_path(target.as_path_unlocked()),
         ))
