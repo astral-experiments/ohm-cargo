@@ -51,7 +51,8 @@ fn mock_toolchain() -> PathBuf {
                                 env::var("CLIPPY_ARGS").unwrap()
                             } else { String::new() };
                             let mut log = OpenOptions::new().append(true).create(true).open(env::var_os("OHM_TEST_LOG").unwrap()).unwrap();
-                            writeln!(log, "{crate_name}|{clippy}|{lint_args}").unwrap();
+                            let line = format!("{crate_name}|{clippy}|{lint_args}\n");
+                            log.write_all(line.as_bytes()).unwrap();
                             if clippy {
                                 args.extend(lint_args.split("__CLIPPY_HACKERY__").filter(|arg| !arg.is_empty()).map(str::to_owned));
                             }
@@ -113,8 +114,8 @@ fn workspace_codegen_is_opt_in_separate_and_inherited_by_external_commands() {
     let log = paths::root().join("compiler.log");
     cargo(&p, &bin, "test --lib").run();
     let ordinary = fs::read_to_string(&log).unwrap();
-    assert!(ordinary.contains("foo|false|"));
-    assert!(ordinary.contains("dep|false|"));
+    assert!(ordinary.contains("foo|false|"), "{ordinary}");
+    assert!(ordinary.contains("dep|false|"), "{ordinary}");
 
     fs::write(&log, "").unwrap();
     cargo(&p, &bin, "-Zohm-clippy-codegen test --lib")
