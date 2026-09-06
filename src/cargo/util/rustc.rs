@@ -36,6 +36,7 @@ pub struct Rustc {
     transparent_unused_externs: OnceLock<bool>,
     ohm_incremental_codegen: OnceLock<bool>,
     ohm_incremental_mono_partitions: OnceLock<bool>,
+    bundled_clippy_wrapper: OnceLock<bool>,
 }
 
 impl Rustc {
@@ -120,6 +121,7 @@ impl Rustc {
             transparent_unused_externs: OnceLock::new(),
             ohm_incremental_codegen: OnceLock::new(),
             ohm_incremental_mono_partitions: OnceLock::new(),
+            bundled_clippy_wrapper: OnceLock::new(),
         })
     }
 
@@ -199,6 +201,44 @@ impl Rustc {
         let mut cmd = ProcessBuilder::new(&self.path);
         cmd.retry_with_argfile(true);
         cmd
+    }
+
+    /// Recognizes only the selected toolchain's own matching Clippy driver.
+    ///
+    /// This permits isolating its private outputs, not importing its diagnostics
+    /// or trusting arbitrary wrappers. The caller must also validate the compiler
+    /// and its loader environment before using this result.
+    pub(crate) fn has_bundled_clippy_wrapper(&self, gctx: &GlobalContext, sysroot: &Path) -> bool {
+        *self.bundled_clippy_wrapper.get_or_init(|| {
+            let Some(wrapper) = &self.workspace_wrapper else {
+                return false;
+            };
+            if self.wrapper.is_some() {
+                return false;
+            }
+            let Ok(bin) = sysroot.join("bin").canonicalize() else {
+                return false;
+            };
+            let Ok(expected) = bin
+                .join("clippy-driver")
+                .with_extension(env::consts::EXE_EXTENSION)
+                .canonicalize()
+            else {
+                return false;
+            };
+            if expected.parent() != Some(bin.as_path())
+                || wrapper.canonicalize().ok().as_ref() != Some(&expected)
+            {
+                return false;
+            }
+            let mut process = ProcessBuilder::new(expected);
+            if apply_env_config(gctx, &mut process).is_err() {
+                return false;
+            }
+            process.args(&["--rustc", "-vV"]);
+            self.cached_output(&process, 0)
+                .is_ok_and(|(version, _)| version == self.verbose_version)
+        })
     }
 
     /// Gets the output for the given command.
