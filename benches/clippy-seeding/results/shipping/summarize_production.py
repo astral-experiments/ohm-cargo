@@ -3,6 +3,7 @@
 import argparse
 import json
 from pathlib import Path
+import re
 from statistics import median
 
 ORDER = ['off1', 'on1', 'on2', 'off2', 'on3', 'off3', 'off4', 'on4']
@@ -28,6 +29,25 @@ def summarize(root):
             assert step['returncode'] == 0
             assert not any(item['rust'] for key in ['processes_before', 'processes_after']
                            for item in step[key])
+        if receipt.get('controlled_background'):
+            assert all(item['returncode'] == 0 for item in receipt['indexing'])
+            assert re.search(r'\bindexing(?: and searching)? disabled\b',
+                             receipt['indexing'][-1]['stdout'].lower())
+            for name, step in steps.items():
+                if int(name[:2]) < 2:
+                    continue
+                wait = step['background_wait']
+                assert wait['consecutive_samples_required'] == 3
+                assert wait['timeout_seconds'] == 60
+                assert wait['maximum_single_process_cpu_percent'] == 20
+                assert wait['maximum_aggregate_recorded_cpu_percent'] == 50
+                assert wait['record_process_cpu_at_percent'] == 1
+                assert len(wait['samples']) >= 3
+                samples = [item['processes'] for item in wait['samples'][-3:]]
+                samples.extend([step['processes_before'], step['processes_after']])
+                for sample in samples:
+                    assert not any(item['rust'] or item['cpu_percent'] >= 20 for item in sample)
+                    assert sum(item['cpu_percent'] for item in sample) < 50
         for name, expected in TEST_COUNTS.items():
             passed = sum(int(line.split('test result: ok. ')[1].split()[0])
                          for line in steps[name]['summaries'] if 'test result: ok.' in line)
@@ -61,6 +81,8 @@ def summarize(root):
         row['seed_import'] = receipt['seed_import']
         rows[label] = row
     assert len(identities) == 1
+    assert len({json.loads((root / label / 'receipt.json').read_text()).get(
+        'controlled_background', False) for label in ORDER}) == 1
     metrics = {}
     for metric in rows[ORDER[0]]:
         if metric == 'seed_import':

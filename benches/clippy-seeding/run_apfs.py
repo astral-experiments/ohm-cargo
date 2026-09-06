@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Run an off/on/on/off Ruff workflow on fresh, isolated APFS volumes."""
 import argparse
+import atexit
 import ctypes
 import hashlib
 import json
@@ -85,7 +86,10 @@ def main():
                         help="compare automatic production defaults with explicit isolation=false")
     parser.add_argument("--require-quiet", action="store_true",
                         help="reject external Rust processes before and after every command")
+    parser.add_argument("--controlled-background", action="store_true",
+                        help="disable indexing only on owned volumes and require bounded idle CPU checks")
     args = parser.parse_args()
+    assert not args.controlled_background or args.require_quiet
     args.evidence.mkdir(parents=True, exist_ok=True)
     assert args.cargo.is_file() and args.ruff.is_dir()
     sysroot = Path(subprocess.check_output(["rustc", "+" + args.toolchain, "--print", "sysroot"], text=True).strip())
@@ -105,6 +109,25 @@ def main():
                         "-volname", "OhmClippy-" + label, str(image)], check=True, capture_output=True)
         attached = subprocess.check_output(["hdiutil", "attach", "-nobrowse", "-noautoopen", "-mountpoint",
                                             str(mount), "-plist", str(image)])
+        def detach_on_exit(path=mount, output=evidence):
+            if os.path.ismount(path):
+                result = subprocess.run(["hdiutil", "detach", str(path)], capture_output=True, text=True)
+                (output / "exit-detach.json").write_text(json.dumps({
+                    "returncode": result.returncode, "stdout": result.stdout, "stderr": result.stderr
+                }, indent=2) + "\n")
+        atexit.register(detach_on_exit)
+        indexing = []
+        if args.controlled_background:
+            # Only the fresh image attached above is changed. Do not use mdutil -a.
+            for argv in [["sudo", "-n", "/usr/bin/mdutil", "-i", "off", str(mount)],
+                         ["/usr/bin/mdutil", "-s", str(mount)]]:
+                result = subprocess.run(argv, capture_output=True, text=True)
+                indexing.append({"argv": argv, "returncode": result.returncode,
+                                 "stdout": result.stdout, "stderr": result.stderr})
+                (evidence / "indexing.json").write_text(json.dumps(indexing, indent=2) + "\n")
+                assert result.returncode == 0, indexing
+            assert re.search(r"\bindexing(?: and searching)? disabled\b",
+                             indexing[-1]["stdout"].lower()), indexing
         (mount / ".metadata_never_index").touch()
         (mount / ".fseventsd").mkdir(exist_ok=True)
         (mount / ".fseventsd/no_log").touch()
@@ -128,6 +151,7 @@ def main():
                 env["CARGO_UNSTABLE_OHM_CLIPPY_SEED_ISOLATION"] = "false"
         receipt = {"label": label, "enabled": enabled, "base": BASE, "edit": EDIT,
                    "production": args.production, "require_quiet": args.require_quiet,
+                   "controlled_background": args.controlled_background, "indexing": indexing,
                    "harness_sha256": sha256(Path(__file__)),
                    "cargo_version": subprocess.check_output([str(args.cargo), "-Vv"], text=True),
                    "cargo_sha256": sha256(args.cargo), "rustc_sha256": sha256(sysroot / "bin/rustc"),
@@ -139,11 +163,13 @@ def main():
                        "CARGO_PROFILE_DEV_DEBUG", "CARGO_PROFILE_DEV_OPT_LEVEL", "CARGO_PROFILE_DEV_LTO"]},
                    "commands": [], "measurements": {}, "toolchain": toolchain,
                    "machine": {"platform": platform.platform(), "cpu_count": os.cpu_count()},
-                   "timing_caveat": ("External Rust processes checked before/after commands; ordinary host activity remains."
+                   "timing_caveat": ("Indexing disabled on owned volumes; CPU endpoints and bounded pre-command settling checked, not continuous monitoring."
+                                      if args.controlled_background else
+                                      "External Rust processes checked before/after commands; ordinary host activity remains."
                                       if args.require_quiet else "Other development workloads were active; use as a storage screen, not a precise wall-time speedup.")}
         def save():
             (evidence / "receipt.json").write_text(json.dumps(receipt, indent=2) + "\n")
-        def quiet_snapshot():
+        def quiet_snapshot(record_at=20):
             rows = []
             output = subprocess.check_output(["ps", "-axo", "pid=,ppid=,pcpu=,comm="], text=True)
             for line in output.splitlines():
@@ -151,17 +177,46 @@ def main():
                 if int(pid) == os.getpid() or Path(executable).name == "ps":
                     continue
                 rust = Path(executable).name in {"cargo", "rustc", "clippy-driver", "cargo-clippy"}
-                if rust or float(cpu) >= 20:
+                if rust or float(cpu) >= record_at:
                     rows.append({"pid": int(pid), "ppid": int(ppid), "cpu_percent": float(cpu),
                                  "executable": executable, "rust": rust})
             return rows
 
+        def background_is_busy(rows):
+            return (any(row["rust"] or row["cpu_percent"] >= 20 for row in rows)
+                    or sum(row["cpu_percent"] for row in rows) >= 50)
+
+        def await_background(entry):
+            wait = {"timeout_seconds": 60, "consecutive_samples_required": 3,
+                    "maximum_single_process_cpu_percent": 20,
+                    "maximum_aggregate_recorded_cpu_percent": 50,
+                    "record_process_cpu_at_percent": 1, "samples": []}
+            entry["background_wait"] = wait
+            started = time.monotonic()
+            consecutive = 0
+            while True:
+                rows = quiet_snapshot(record_at=1)
+                busy = background_is_busy(rows)
+                elapsed = time.monotonic() - started
+                wait["samples"].append({"elapsed_seconds": elapsed, "processes": rows, "busy": busy})
+                save()
+                consecutive = 0 if busy else consecutive + 1
+                if consecutive == 3:
+                    wait["elapsed_seconds"] = elapsed
+                    return rows
+                if elapsed >= 60:
+                    raise RuntimeError(f"Background CPU did not settle within 60 seconds: {rows}")
+                time.sleep(1)
+
         def command(name, argv, cwd, environment=env):
             entry = {"name": name, "argv": list(map(str, argv)), "cwd": str(cwd)}
-            if args.require_quiet:
-                entry["processes_before"] = quiet_snapshot()
-                assert not any(row["rust"] for row in entry["processes_before"]), entry["processes_before"]
             receipt["commands"].append(entry)
+            if args.require_quiet:
+                if args.controlled_background and int(name[:2]) >= 2:
+                    entry["processes_before"] = await_background(entry)
+                else:
+                    entry["processes_before"] = quiet_snapshot()
+                assert not any(row["rust"] for row in entry["processes_before"]), entry["processes_before"]
             save()
             usage_before = resource.getrusage(resource.RUSAGE_CHILDREN)
             start = time.monotonic()
@@ -172,9 +227,11 @@ def main():
                          child_user_seconds=usage_after.ru_utime - usage_before.ru_utime,
                          child_system_seconds=usage_after.ru_stime - usage_before.ru_stime)
             if args.require_quiet:
-                entry["processes_after"] = quiet_snapshot()
+                entry["processes_after"] = quiet_snapshot(record_at=1 if args.controlled_background else 20)
                 save()
                 assert not any(row["rust"] for row in entry["processes_after"]), entry["processes_after"]
+                if args.controlled_background and int(name[:2]) >= 2:
+                    assert not background_is_busy(entry["processes_after"]), entry["processes_after"]
             text = (evidence / (name + ".log")).read_text(errors="replace")
             entry["summaries"] = [line for line in text.splitlines() if "test result:" in line or "Seeded " in line or "snapshot" in line]
             entry["compiling_lines"] = sum("Compiling " in line for line in text.splitlines())
