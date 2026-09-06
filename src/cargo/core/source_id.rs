@@ -389,6 +389,11 @@ impl SourceId {
     /// Creates an implementation of `Source` corresponding to this ID.
     pub fn load<'a>(self, gctx: &'a GlobalContext) -> CargoResult<Box<dyn Source + 'a>> {
         trace!("loading SourceId; {}", self);
+        if !self.is_path() {
+            if let Some(inputs) = gctx.session_inputs() {
+                inputs.require_fresh(format!("source {self} has no session dependency contract"));
+            }
+        }
         match self.inner.kind {
             SourceKind::Git(..) => Ok(Box::new(GitSource::new(self, gctx)?)),
             SourceKind::Path => {
@@ -397,7 +402,7 @@ impl SourceId {
                     .url
                     .to_file_path()
                     .expect("path sources cannot be remote");
-                if crate::util::toml::is_embedded(&path) && path.is_file() {
+                if crate::util::toml::is_embedded(&path) && gctx.files().is_file(&path) {
                     anyhow::bail!("single file packages cannot be used as dependencies")
                 }
                 Ok(Box::new(PathSource::new(&path, self, gctx)))

@@ -13,7 +13,7 @@ use crate::sources::source::QueryKind;
 use crate::sources::source::Source;
 use crate::util::GlobalContext;
 use crate::util::errors::CargoResult;
-use crate::util::important_paths::find_project_manifest_exact;
+use crate::util::important_paths::find_project_manifest_exact_tracked as find_project_manifest_exact;
 use crate::util::internal;
 use crate::util::toml::read_manifest;
 use anyhow::Context as _;
@@ -1001,7 +1001,7 @@ fn read_packages(
         source_id
     );
 
-    walk(path, &mut |dir| {
+    walk(path, gctx, &mut |dir| {
         trace!("looking for child package: {}", dir.display());
 
         // Don't recurse into hidden/dot directories unless we're at the toplevel
@@ -1012,19 +1012,19 @@ fn read_packages(
             }
 
             // Don't automatically discover packages across git submodules
-            if dir.join(".git").exists() {
+            if gctx.files().exists(&dir.join(".git")) {
                 return Ok(false);
             }
         }
 
         // Don't ever look at target directories
         if dir.file_name().and_then(|s| s.to_str()) == Some("target")
-            && has_manifest(dir.parent().unwrap())
+            && has_manifest(dir.parent().unwrap(), gctx)
         {
             return Ok(false);
         }
 
-        if has_manifest(dir) {
+        if has_manifest(dir, gctx) {
             read_nested_packages(
                 dir,
                 &mut all_packages,
@@ -1041,7 +1041,7 @@ fn read_packages(
         match errors.pop() {
             Some(err) => Err(err),
             None => {
-                if find_project_manifest_exact(path, "cargo.toml").is_ok() {
+                if find_project_manifest_exact(path, "cargo.toml", gctx).is_ok() {
                     Err(anyhow::format_err!(
                         "could not find `Cargo.toml` in `{}`
 help: found `cargo.toml`, consider renaming it to `Cargo.toml`",
@@ -1098,7 +1098,11 @@ fn nested_paths(manifest: &Manifest) -> Vec<PathBuf> {
     nested_paths
 }
 
-fn walk(path: &Path, callback: &mut dyn FnMut(&Path) -> CargoResult<bool>) -> CargoResult<()> {
+fn walk(
+    path: &Path,
+    gctx: &GlobalContext,
+    callback: &mut dyn FnMut(&Path) -> CargoResult<bool>,
+) -> CargoResult<()> {
     if !callback(path)? {
         trace!("not processing {}", path.display());
         return Ok(());
@@ -1106,7 +1110,7 @@ fn walk(path: &Path, callback: &mut dyn FnMut(&Path) -> CargoResult<bool>) -> Ca
 
     // Ignore any permission denied errors because temporary directories
     // can often have some weird permissions on them.
-    let dirs = match fs::read_dir(path) {
+    let dirs = match gctx.files().read_dir(path) {
         Ok(dirs) => dirs,
         Err(ref e) if e.kind() == io::ErrorKind::PermissionDenied => return Ok(()),
         Err(e) => {
@@ -1120,14 +1124,14 @@ fn walk(path: &Path, callback: &mut dyn FnMut(&Path) -> CargoResult<bool>) -> Ca
     for dir in dirs {
         let dir = dir?;
         if dir.file_type()?.is_dir() {
-            walk(&dir.path(), callback)?;
+            walk(&dir.path(), gctx, callback)?;
         }
     }
     Ok(())
 }
 
-fn has_manifest(path: &Path) -> bool {
-    find_project_manifest_exact(path, "Cargo.toml").is_ok()
+fn has_manifest(path: &Path, gctx: &GlobalContext) -> bool {
+    find_project_manifest_exact(path, "Cargo.toml", gctx).is_ok()
 }
 
 fn read_nested_packages(
@@ -1142,7 +1146,7 @@ fn read_nested_packages(
         return Ok(());
     }
 
-    let manifest_path = find_project_manifest_exact(path, "Cargo.toml")?;
+    let manifest_path = find_project_manifest_exact(path, "Cargo.toml", gctx)?;
 
     let manifest = match read_manifest(&manifest_path, source_id, gctx) {
         Err(err) => {

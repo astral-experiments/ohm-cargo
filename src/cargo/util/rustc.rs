@@ -56,6 +56,19 @@ impl Rustc {
         cache_location: Option<PathBuf>,
         gctx: &GlobalContext,
     ) -> CargoResult<Rustc> {
+        // Probe caches persisted by ordinary Cargo do not record the session's
+        // declared toolchain closure. The initial epoch runs those probes once.
+        let cache_location = if gctx.session_inputs().is_some() {
+            observe_session_compiler(
+                gctx,
+                &path,
+                wrapper.as_deref(),
+                workspace_wrapper.as_deref(),
+            );
+            None
+        } else {
+            cache_location
+        };
         let ohm_clippy_codegen_args = if gctx.cli_unstable().ohm_clippy_codegen() {
             anyhow::ensure!(
                 wrapper.is_none() && workspace_wrapper.is_none(),
@@ -246,6 +259,14 @@ impl Rustc {
         let mut cmd = ProcessBuilder::new(&self.path);
         cmd.retry_with_argfile(true);
         cmd
+    }
+
+    /// Discards observations of project files before another check in this process.
+    ///
+    /// Compiler capability and target probes remain valid for the retained build context.
+    #[cfg(unix)]
+    pub(crate) fn reset_session_caches(&self) {
+        self.ohm_clippy_configs.lock().unwrap().clear();
     }
 
     /// Tracks Clippy config discovery, including a config appearing after a fresh build.
@@ -561,6 +582,121 @@ impl Drop for Cache {
             match paths::write(path, json.as_bytes()) {
                 Ok(()) => info!("updated rustc info cache"),
                 Err(e) => warn!("failed to update rustc info cache: {}", e),
+            }
+        }
+    }
+}
+
+/// Declare the inputs of compiler subprocess queries before running any probe.
+///
+/// A direct compiler path or explicit Rustup toolchain identifies the installation
+/// closure when it matches the executable being invoked. Arbitrary shims and
+/// wrappers retain ordinary per-invocation preparation semantics.
+fn observe_session_compiler(
+    gctx: &GlobalContext,
+    rustc: &Path,
+    wrapper: Option<&Path>,
+    workspace_wrapper: Option<&Path>,
+) {
+    let inputs = gctx.session_inputs().unwrap();
+    if gctx.cli_unstable().ohm_clippy_codegen() {
+        inputs.require_fresh("Clippy compiler wrappers have undeclared inputs");
+    }
+    if wrapper
+        .into_iter()
+        .chain(workspace_wrapper)
+        .any(|p| !p.as_os_str().is_empty())
+    {
+        inputs.require_fresh("compiler wrappers have undeclared inputs");
+    }
+    let search_path = gctx.get_env_os("PATH").unwrap_or_default();
+    if std::env::split_paths(search_path).any(|entry| !entry.is_absolute()) {
+        inputs.require_fresh("relative compiler search paths require fresh preparation");
+    }
+    if gctx.env_config().is_ok_and(|values| {
+        ["PATH", "RUSTUP_HOME", "RUSTUP_TOOLCHAIN"]
+            .iter()
+            .any(|key| values.contains_key(*key))
+    }) {
+        inputs
+            .require_fresh("configured compiler selection environment requires fresh preparation");
+    }
+    let resolved = inputs.executable(rustc, gctx.cwd(), search_path);
+    let installation = (|| {
+        let rustup_home = gctx
+            .get_env_os("RUSTUP_HOME")
+            .map(PathBuf::from)
+            .or_else(|| {
+                gctx.get_env_os("HOME")
+                    .map(|home| Path::new(home).join(".rustup"))
+            })?;
+        let toolchains = rustup_home.join("toolchains");
+        // An explicit installed compiler is authoritative even when rustup's
+        // environment contains an unqualified or unrelated toolchain name.
+        // Preserve the logical path for custom toolchains linked elsewhere.
+        let compiler_name = format!("rustc{}", env::consts::EXE_SUFFIX);
+        let direct_root = [Some(rustc), resolved.as_deref()]
+            .into_iter()
+            .flatten()
+            .filter(|path| path.file_name() == Some(std::ffi::OsStr::new(&compiler_name)))
+            .filter_map(|path| path.parent())
+            .filter(|bin| bin.file_name() == Some(std::ffi::OsStr::new("bin")))
+            .filter_map(Path::parent)
+            .find(|root| root.parent() == Some(toolchains.as_path()));
+        let root = direct_root.map(Path::to_path_buf).or_else(|| {
+            gctx.get_env_os("RUSTUP_TOOLCHAIN")
+                .map(|selected| toolchains.join(selected))
+        })?;
+        let expected = root
+            .join("bin")
+            .join(format!("rustc{}", env::consts::EXE_SUFFIX));
+        let expected = gctx.files().canonicalize(&expected).ok()?;
+        (resolved.as_ref() == Some(&expected)).then_some(root)
+    })();
+    match installation {
+        Some(root) if inputs.compiler_installation(&root) => {
+            observe_session_loader(gctx, inputs, &root);
+        }
+        _ => inputs.require_fresh("compiler installation could not be verified for reuse"),
+    }
+}
+
+/// Account for loader search directories outside the selected installation.
+/// Cargo and rustup commonly supply these paths for their own subprocesses.
+fn observe_session_loader(
+    gctx: &GlobalContext,
+    inputs: &crate::util::session_inputs::InputTracker,
+    root: &Path,
+) {
+    use crate::core::compiler::{
+        OHM_COMPILER_LOADER_ENVIRONMENT, OHM_COMPILER_LOADER_INJECTION_ENVIRONMENT,
+    };
+    let Ok(configured) = gctx.env_config() else {
+        inputs.require_fresh("could not determine the compiler loader environment");
+        return;
+    };
+    let installation_lib = gctx.files().canonicalize(&root.join("lib")).ok();
+    for name in OHM_COMPILER_LOADER_ENVIRONMENT {
+        let value = configured
+            .get(*name)
+            .map(std::ffi::OsString::as_os_str)
+            .or_else(|| gctx.get_env_os(name));
+        let Some(value) = value.filter(|value| !value.is_empty()) else {
+            continue;
+        };
+        if OHM_COMPILER_LOADER_INJECTION_ENVIRONMENT.contains(name) {
+            inputs.require_fresh("compiler loader injection has undeclared inputs");
+            continue;
+        }
+        for directory in std::env::split_paths(value) {
+            let directory = gctx.cwd().join(directory);
+            let in_installation = gctx.files().canonicalize(&directory).is_ok_and(|path| {
+                installation_lib
+                    .as_ref()
+                    .is_some_and(|lib| path.starts_with(lib))
+            });
+            if !in_installation && !inputs.compiler_library_directory(&directory) {
+                inputs.require_fresh("could not observe a compiler library search directory");
             }
         }
     }

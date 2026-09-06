@@ -10,9 +10,10 @@
 //! It is a bit tricky because we need match explicit information from `Cargo.toml`
 //! with implicit info in directory layout.
 
+use crate::util::context::GlobalContext;
 use crate::util::data_structures::{HashMap, HashSet};
+use crate::util::session_inputs::DirEntry;
 use std::fmt::Write;
-use std::fs::{self, DirEntry};
 use std::path::{Path, PathBuf};
 
 use anyhow::Context as _;
@@ -145,6 +146,7 @@ pub(super) fn to_targets(
 
 #[tracing::instrument(skip_all)]
 pub fn normalize_lib(
+    gctx: &GlobalContext,
     original_lib: Option<&TomlLibTarget>,
     package_root: &Path,
     package_name: &str,
@@ -169,7 +171,7 @@ pub fn normalize_lib(
 
         Ok(Some(lib))
     } else {
-        let inferred = inferred_lib(package_root);
+        let inferred = inferred_lib(gctx, package_root);
         let lib = original_lib.cloned().or_else(|| {
             inferred.as_ref().map(|lib| TomlTarget {
                 path: Some(PathValue(lib.clone())),
@@ -192,7 +194,9 @@ pub fn normalize_lib(
             } else {
                 let name = name_or_panic(&lib);
                 let legacy_path = Path::new("src").join(format!("{name}.rs"));
-                if edition == Edition::Edition2015 && package_root.join(&legacy_path).exists() {
+                if edition == Edition::Edition2015
+                    && gctx.files().exists(&package_root.join(&legacy_path))
+                {
                     warnings.push(format!(
                         "path `{}` was erroneously implicitly accepted for library `{name}`,\n\
                      please rename the file to `src/lib.rs` or set lib.path in Cargo.toml",
@@ -273,6 +277,7 @@ fn to_lib_target(
 
 #[tracing::instrument(skip_all)]
 pub fn normalize_bins(
+    gctx: &GlobalContext,
     toml_bins: Option<&Vec<TomlBinTarget>>,
     package_root: &Path,
     package_name: &str,
@@ -295,7 +300,7 @@ pub fn normalize_bins(
         }
         Ok(toml_bins)
     } else {
-        let inferred = inferred_bins(package_root, package_name);
+        let inferred = inferred_bins(gctx, package_root, package_name);
 
         let mut bins = toml_targets_and_inferred(
             toml_bins,
@@ -317,6 +322,7 @@ pub fn normalize_bins(
             validate_bin_proc_macro(bin, edition, warnings, errors)?;
 
             let path = target_path(
+                gctx,
                 bin,
                 &inferred,
                 TARGET_KIND_BIN,
@@ -324,7 +330,7 @@ pub fn normalize_bins(
                 edition,
                 &mut |_| {
                     if let Some(legacy_path) =
-                        legacy_bin_path(package_root, name_or_panic(bin), has_lib)
+                        legacy_bin_path(gctx, package_root, name_or_panic(bin), has_lib)
                     {
                         warnings.push(format!(
                             "path `{}` was erroneously implicitly accepted for binary `{}`,\n\
@@ -385,22 +391,27 @@ fn to_bin_targets(
     Ok(result)
 }
 
-fn legacy_bin_path(package_root: &Path, name: &str, has_lib: bool) -> Option<PathBuf> {
+fn legacy_bin_path(
+    gctx: &GlobalContext,
+    package_root: &Path,
+    name: &str,
+    has_lib: bool,
+) -> Option<PathBuf> {
     if !has_lib {
         let rel_path = Path::new("src").join(format!("{}.rs", name));
-        if package_root.join(&rel_path).exists() {
+        if gctx.files().exists(&package_root.join(&rel_path)) {
             return Some(rel_path);
         }
     }
 
     let rel_path = Path::new("src").join("main.rs");
-    if package_root.join(&rel_path).exists() {
+    if gctx.files().exists(&package_root.join(&rel_path)) {
         return Some(rel_path);
     }
 
     let default_bin_dir_name = Path::new("src").join("bin");
     let rel_path = default_bin_dir_name.join("main.rs");
-    if package_root.join(&rel_path).exists() {
+    if gctx.files().exists(&package_root.join(&rel_path)) {
         return Some(rel_path);
     }
     None
@@ -408,6 +419,7 @@ fn legacy_bin_path(package_root: &Path, name: &str, has_lib: bool) -> Option<Pat
 
 #[tracing::instrument(skip_all)]
 pub fn normalize_examples(
+    gctx: &GlobalContext,
     toml_examples: Option<&Vec<TomlExampleTarget>>,
     package_root: &Path,
     edition: Edition,
@@ -415,9 +427,11 @@ pub fn normalize_examples(
     warnings: &mut Vec<String>,
     errors: &mut Vec<String>,
 ) -> CargoResult<Vec<TomlExampleTarget>> {
-    let mut inferred = || infer_from_directory(&package_root, Path::new(DEFAULT_EXAMPLE_DIR_NAME));
+    let mut inferred =
+        || infer_from_directory(gctx, &package_root, Path::new(DEFAULT_EXAMPLE_DIR_NAME));
 
     let targets = normalize_targets(
+        gctx,
         TARGET_KIND_HUMAN_EXAMPLE,
         TARGET_KIND_EXAMPLE,
         toml_examples,
@@ -466,6 +480,7 @@ fn to_example_targets(
 
 #[tracing::instrument(skip_all)]
 pub fn normalize_tests(
+    gctx: &GlobalContext,
     toml_tests: Option<&Vec<TomlTestTarget>>,
     package_root: &Path,
     edition: Edition,
@@ -473,9 +488,11 @@ pub fn normalize_tests(
     warnings: &mut Vec<String>,
     errors: &mut Vec<String>,
 ) -> CargoResult<Vec<TomlTestTarget>> {
-    let mut inferred = || infer_from_directory(&package_root, Path::new(DEFAULT_TEST_DIR_NAME));
+    let mut inferred =
+        || infer_from_directory(gctx, &package_root, Path::new(DEFAULT_TEST_DIR_NAME));
 
     let targets = normalize_targets(
+        gctx,
         TARGET_KIND_HUMAN_TEST,
         TARGET_KIND_TEST,
         toml_tests,
@@ -517,6 +534,7 @@ fn to_test_targets(
 
 #[tracing::instrument(skip_all)]
 pub fn normalize_benches(
+    gctx: &GlobalContext,
     toml_benches: Option<&Vec<TomlBenchTarget>>,
     package_root: &Path,
     edition: Edition,
@@ -527,7 +545,9 @@ pub fn normalize_benches(
     let mut legacy_warnings = vec![];
     let mut legacy_bench_path = |bench: &TomlTarget| {
         let legacy_path = Path::new("src").join("bench.rs");
-        if !(name_or_panic(bench) == "bench" && package_root.join(&legacy_path).exists()) {
+        if !(name_or_panic(bench) == "bench"
+            && gctx.files().exists(&package_root.join(&legacy_path)))
+        {
             return None;
         }
         legacy_warnings.push(format!(
@@ -539,9 +559,11 @@ pub fn normalize_benches(
         Some(legacy_path)
     };
 
-    let mut inferred = || infer_from_directory(&package_root, Path::new(DEFAULT_BENCH_DIR_NAME));
+    let mut inferred =
+        || infer_from_directory(gctx, &package_root, Path::new(DEFAULT_BENCH_DIR_NAME));
 
     let targets = normalize_targets_with_legacy_path(
+        gctx,
         TARGET_KIND_HUMAN_BENCH,
         TARGET_KIND_BENCH,
         toml_benches,
@@ -606,6 +628,7 @@ fn are_normalized_(toml_targets: Option<&[TomlTarget]>, autodiscover: Option<boo
 }
 
 fn normalize_targets(
+    gctx: &GlobalContext,
     target_kind_human: &str,
     target_kind: &str,
     toml_targets: Option<&Vec<TomlTarget>>,
@@ -618,6 +641,7 @@ fn normalize_targets(
     autodiscover_flag_name: &str,
 ) -> CargoResult<Vec<TomlTarget>> {
     normalize_targets_with_legacy_path(
+        gctx,
         target_kind_human,
         target_kind,
         toml_targets,
@@ -633,6 +657,7 @@ fn normalize_targets(
 }
 
 fn normalize_targets_with_legacy_path(
+    gctx: &GlobalContext,
     target_kind_human: &str,
     target_kind: &str,
     toml_targets: Option<&Vec<TomlTarget>>,
@@ -684,6 +709,7 @@ fn normalize_targets_with_legacy_path(
         let mut result = Vec::new();
         for mut target in toml_targets {
             let path = target_path(
+                gctx,
                 &target,
                 &inferred,
                 target_kind,
@@ -705,31 +731,43 @@ fn normalize_targets_with_legacy_path(
     }
 }
 
-fn inferred_lib(package_root: &Path) -> Option<PathBuf> {
+fn inferred_lib(gctx: &GlobalContext, package_root: &Path) -> Option<PathBuf> {
     let lib = Path::new("src").join("lib.rs");
-    if package_root.join(&lib).exists() {
+    if gctx.files().exists(&package_root.join(&lib)) {
         Some(lib)
     } else {
         None
     }
 }
 
-fn inferred_bins(package_root: &Path, package_name: &str) -> Vec<(String, PathBuf)> {
+fn inferred_bins(
+    gctx: &GlobalContext,
+    package_root: &Path,
+    package_name: &str,
+) -> Vec<(String, PathBuf)> {
     let main = "src/main.rs";
     let mut result = Vec::new();
-    if package_root.join(main).exists() {
+    if gctx.files().exists(&package_root.join(main)) {
         let main = PathBuf::from(main);
         result.push((package_name.to_string(), main));
     }
     let default_bin_dir_name = Path::new("src").join("bin");
-    result.extend(infer_from_directory(package_root, &default_bin_dir_name));
+    result.extend(infer_from_directory(
+        gctx,
+        package_root,
+        &default_bin_dir_name,
+    ));
 
     result
 }
 
-fn infer_from_directory(package_root: &Path, relpath: &Path) -> Vec<(String, PathBuf)> {
+fn infer_from_directory(
+    gctx: &GlobalContext,
+    package_root: &Path,
+    relpath: &Path,
+) -> Vec<(String, PathBuf)> {
     let directory = package_root.join(relpath);
-    let entries = match fs::read_dir(directory) {
+    let entries = match gctx.files().read_dir(&directory) {
         Err(_) => return Vec::new(),
         Ok(dir) => dir,
     };
@@ -737,13 +775,17 @@ fn infer_from_directory(package_root: &Path, relpath: &Path) -> Vec<(String, Pat
     entries
         .filter_map(|e| e.ok())
         .filter(is_not_dotfile)
-        .filter_map(|d| infer_any(package_root, &d))
+        .filter_map(|d| infer_any(gctx, package_root, &d))
         .collect()
 }
 
-fn infer_any(package_root: &Path, entry: &DirEntry) -> Option<(String, PathBuf)> {
+fn infer_any(
+    gctx: &GlobalContext,
+    package_root: &Path,
+    entry: &DirEntry<'_>,
+) -> Option<(String, PathBuf)> {
     if entry.file_type().map_or(false, |t| t.is_dir()) {
-        infer_subdirectory(package_root, entry)
+        infer_subdirectory(gctx, package_root, entry)
     } else if entry.path().extension().and_then(|p| p.to_str()) == Some("rs") {
         infer_file(package_root, entry)
     } else {
@@ -751,7 +793,7 @@ fn infer_any(package_root: &Path, entry: &DirEntry) -> Option<(String, PathBuf)>
     }
 }
 
-fn infer_file(package_root: &Path, entry: &DirEntry) -> Option<(String, PathBuf)> {
+fn infer_file(package_root: &Path, entry: &DirEntry<'_>) -> Option<(String, PathBuf)> {
     let path = entry.path();
     let stem = path.file_stem()?.to_str()?.to_owned();
     let path = path
@@ -761,11 +803,15 @@ fn infer_file(package_root: &Path, entry: &DirEntry) -> Option<(String, PathBuf)
     Some((stem, path))
 }
 
-fn infer_subdirectory(package_root: &Path, entry: &DirEntry) -> Option<(String, PathBuf)> {
+fn infer_subdirectory(
+    gctx: &GlobalContext,
+    package_root: &Path,
+    entry: &DirEntry<'_>,
+) -> Option<(String, PathBuf)> {
     let path = entry.path();
     let main = path.join("main.rs");
     let name = path.file_name()?.to_str()?.to_owned();
-    if main.exists() {
+    if gctx.files().exists(&main) {
         let main = main
             .strip_prefix(package_root)
             .map(|p| p.to_owned())
@@ -776,7 +822,7 @@ fn infer_subdirectory(package_root: &Path, entry: &DirEntry) -> Option<(String, 
     }
 }
 
-fn is_not_dotfile(entry: &DirEntry) -> bool {
+fn is_not_dotfile(entry: &DirEntry<'_>) -> bool {
     entry.file_name().to_str().map(|s| s.starts_with('.')) == Some(false)
 }
 
@@ -975,6 +1021,7 @@ fn configure(
 ///
 /// Note that the logic need to sync with [`infer_from_directory`] if changes.
 fn target_path_not_found_error_message(
+    gctx: &GlobalContext,
     package_root: &Path,
     target: &TomlTarget,
     target_kind: &str,
@@ -1015,7 +1062,7 @@ fn target_path_not_found_error_message(
     if let Some((wrong_path, possible_path)) = commonly_wrong_paths
         .iter()
         .zip(possible_paths.iter())
-        .filter(|(wp, _)| package_root.join(wp).exists())
+        .filter(|(wp, _)| gctx.files().exists(&package_root.join(wp)))
         .next()
     {
         let [wrong_path, possible_path] = [wrong_path, possible_path].map(|p| p.display());
@@ -1034,6 +1081,7 @@ fn target_path_not_found_error_message(
 }
 
 fn target_path(
+    gctx: &GlobalContext,
     target: &TomlTarget,
     inferred: &[(String, PathBuf)],
     target_kind: &str,
@@ -1063,6 +1111,7 @@ fn target_path(
                 }
             }
             Err(target_path_not_found_error_message(
+                gctx,
                 package_root,
                 target,
                 target_kind,
@@ -1092,6 +1141,7 @@ Cargo doesn't know which to use because multiple target files found at `{}` and 
 /// Returns the path to the build script if one exists for this crate.
 #[tracing::instrument(skip_all)]
 pub fn normalize_build(
+    gctx: &GlobalContext,
     build: Option<&TomlPackageBuild>,
     package_root: &Path,
 ) -> CargoResult<Option<TomlPackageBuild>> {
@@ -1101,7 +1151,7 @@ pub fn normalize_build(
             // If there is a `build.rs` file next to the `Cargo.toml`, assume it is
             // a build script.
             let build_rs = package_root.join(BUILD_RS);
-            if build_rs.is_file() {
+            if gctx.files().is_file(&build_rs) {
                 Ok(Some(TomlPackageBuild::SingleScript(BUILD_RS.to_owned())))
             } else {
                 Ok(Some(TomlPackageBuild::Auto(false)))

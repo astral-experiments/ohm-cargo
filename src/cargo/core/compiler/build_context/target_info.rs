@@ -11,8 +11,8 @@ use crate::core::compiler::CompileKind;
 use crate::core::compiler::CompileMode;
 use crate::core::compiler::CompileTarget;
 use crate::core::compiler::CrateType;
-use crate::core::compiler::OHM_DEFAULT_RUSTFLAGS;
 use crate::core::compiler::apply_env_config;
+use crate::core::compiler::{OHM_DEFAULT_RUSTFLAGS, unit_rustflags_without_ohm_defaults};
 use crate::core::{Dependency, Package, Target, TargetKind, Workspace};
 use crate::util::context::{GlobalContext, StringList, TargetConfig};
 use crate::util::interning::InternedString;
@@ -177,6 +177,24 @@ impl TargetInfo {
             extra_args(gctx, requested_kinds, &rustc.host, None, kind, Flags::Rust)?;
         let mut turn = 0;
         loop {
+            // Observe every probe's contract, including the initial flags of
+            // the cfg/rustflags fixed point. The final flags can omit a response
+            // file or custom target option consumed by an earlier iteration.
+            if let Some(inputs) = gctx.session_inputs() {
+                // Cargo's built-in Ohm switches have a known, file-independent
+                // probe contract. User-provided unstable flags remain opaque.
+                if unit_rustflags_without_ohm_defaults(gctx, &rustflags)
+                    .iter()
+                    .any(|flag| {
+                        flag.starts_with('@')
+                            || flag.starts_with("--sysroot")
+                            || flag.starts_with("-Z")
+                            || flag.contains("llvm-args")
+                    })
+                {
+                    inputs.require_fresh("response files, unstable compiler flags, or an overridden sysroot have undeclared inputs");
+                }
+            }
             let extra_fingerprint = kind.fingerprint_hash();
 
             // Query rustc for several kinds of info from each line of output:

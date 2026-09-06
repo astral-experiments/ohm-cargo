@@ -69,6 +69,7 @@ pub mod restricted_names;
 pub mod rustc;
 mod semver_eval_ext;
 mod semver_ext;
+pub mod session_inputs;
 pub mod sqlite;
 pub mod time_span;
 pub mod toml;
