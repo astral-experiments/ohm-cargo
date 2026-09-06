@@ -236,8 +236,21 @@ impl Rustc {
                 return false;
             }
             process.args(&["--rustc", "-vV"]);
-            self.cached_output(&process, 0)
-                .is_ok_and(|(version, _)| version == self.verbose_version)
+            let Ok((clippy_version, _)) = self.cached_output(&process, 0) else {
+                return false;
+            };
+            // `verbose_version` was obtained through the workspace wrapper, so it
+            // alone cannot prove that the selected rustc matches Clippy's compiler.
+            let mut compiler = ProcessBuilder::new(&self.path);
+            if apply_env_config(gctx, &mut compiler).is_err() {
+                return false;
+            }
+            compiler.arg("-vV");
+            let fingerprint = crate::util::hash_u64(("ohm-clippy-seed-rustc-v1", &self.path));
+            self.cached_output(&compiler, fingerprint)
+                .is_ok_and(|(version, _)| {
+                    version == clippy_version && version == self.verbose_version
+                })
         })
     }
 
@@ -492,4 +505,54 @@ fn process_fingerprint(cmd: &ProcessBuilder, extra_fingerprint: u64) -> u64 {
     env.sort_unstable();
     env.hash(&mut hasher);
     Hasher::finish(&hasher)
+}
+
+#[cfg(all(test, unix))]
+mod tests {
+    use std::fs;
+    use std::os::unix::fs::PermissionsExt;
+
+    use super::*;
+
+    #[test]
+    fn bundled_clippy_requires_the_unwrapped_compiler_version_and_path() {
+        let root = tempfile::tempdir().unwrap();
+        let bin = root.path().join("bin");
+        fs::create_dir(&bin).unwrap();
+        let compiler = bin.join("rustc");
+        let clippy = bin.join("clippy-driver");
+        let write_tool = |path: &Path, version: &str| {
+            fs::write(path, format!(
+                "#!/bin/sh\nprintf '%s\\n' 'rustc {version}\nbinary: rustc\nhost: x86_64-unknown-linux-gnu\nrelease: {version}\n'\n"
+            )).unwrap();
+            fs::set_permissions(path, fs::Permissions::from_mode(0o755)).unwrap();
+        };
+        write_tool(&compiler, "1.98.0");
+        write_tool(&clippy, "1.98.0");
+        let context = GlobalContext::default().unwrap();
+        let selected = |wrapper: &Path| {
+            Rustc::new(
+                compiler.clone(),
+                None,
+                Some(wrapper.to_path_buf()),
+                &compiler,
+                None,
+                &context,
+            )
+            .unwrap()
+        };
+        assert!(selected(&clippy).has_bundled_clippy_wrapper(&context, root.path()));
+
+        // Both wrapper-based probes still report 1.98.0. The unwrapped compiler
+        // must be checked independently rather than trusting those identical answers.
+        write_tool(&compiler, "1.99.0");
+        assert!(!selected(&clippy).has_bundled_clippy_wrapper(&context, root.path()));
+        write_tool(&compiler, "1.98.0");
+        let external = root.path().join("external-clippy");
+        write_tool(&external, "1.98.0");
+        assert!(!selected(&external).has_bundled_clippy_wrapper(&context, root.path()));
+        fs::remove_file(&clippy).unwrap();
+        std::os::unix::fs::symlink(&external, &clippy).unwrap();
+        assert!(!selected(&clippy).has_bundled_clippy_wrapper(&context, root.path()));
+    }
 }
