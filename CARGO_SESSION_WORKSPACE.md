@@ -347,88 +347,117 @@ manifest changes made by a harness invalidate the plan before it can be reused.
 A plan can remain included in `cached_plans` until that validation occurs;
 retirement through `!prepared.can_reuse()` remains active.
 
+### Production build comparison
+
+Both measured Cargo executables were built with the recorded command
+`cargo +stable build --release --locked --offline -p cargo --bin cargo`.
+For these builds, `+stable` resolved to **Rust 1.97.1**, commit
+`8bab26f4f68e0e26f0bb7960be334d5b520ea452`, using LLVM 22.1.6. This compiler
+builds Cargo itself; the workloads below separately use Rust 1.98.0 or
+Ohm 1.98.0-2 with their matching rustdoc.
+
+The [production-build audit](benches/session/results/test-validation-production-builds-linux-x86_64.json)
+records the full build environment and both saved Cargo fingerprints. All
+**81 dependency entries** match, including the Cargo library and build-script
+compile identity, as do all eight compiler/profile/feature/configuration fields.
+The implementation change is in Cargo's binary sources, so matching dependency
+fingerprints are expected. Source revisions and executable SHA-256 hashes below
+identify the actual measured binaries.
+
+The recorded build environment is reproduced below, with the builder pinned to
+`+1.97.1` instead of the moving `+stable` alias. Build each source revision in its
+own checkout and copy its resulting Cargo executable to a separate frozen path
+before building or testing another revision.
+
+```sh
+CARGO_TARGET_DIR=/run/user/1000/cargo-session-0ebe \
+CARGO_BUILD_BUILD_DIR=/run/user/1000/cargo-session-0ebe \
+TMPDIR=/run/user/1000 \
+CARGO_BUILD_JOBS=8 \
+CARGO_PROFILE_RELEASE_DEBUG=0 \
+CARGO_INCREMENTAL=0 \
+  cargo +1.97.1 build --release --locked --offline -p cargo --bin cargo
+```
+
 ### Focused test workload
 
 This study repeats only `test`, using `baseline_session` in the same capture
-to compare #116 with the follow-up. All three modes are interleaved in the same
-capture with rotating order: ordinary Cargo, the #116 workspace daemon, and the
-updated daemon. Ordinary Cargo uses the updated binary. Each mode has a separate
-target/build directory and the same pinned compiler and matching rustdoc. The
-benchmark uses `--offline --locked --message-format=json` and no compiler worker.
-The earlier mixed-command study has different artifact state and execution
-order, so its absolute timings are not comparable to this test-only study.
+to compare #116 with the follow-up. All three modes are interleaved with rotating
+order: ordinary Cargo, the #116 workspace daemon, and the updated daemon.
+Ordinary Cargo uses the updated production binary. Each mode has a separate
+target/build directory and the same pinned workload compiler and matching
+rustdoc. The benchmark uses `--offline --locked --message-format=json` and no
+compiler worker. The earlier mixed-command study has different artifact state
+and execution order, so its absolute timings are not comparable to this study.
 
 Each capture has two warmup rounds, 30 rounds with unchanged source, and 30
 rounds changing the appended function body in the selected package. The fixture
-is archived at `c7fe941024f7245018d935254b46270bc28e8839`. Every measured mode has
-30 samples per phase. Wall-clock timings include client startup and the daemon
-round trip; p95 is nearest rank over all 30 samples. Warmups remain in the raw
-report but are excluded from summary statistics. No outliers are filtered.
+is archived at `c7fe941024f7245018d935254b46270bc28e8839`. Wall-clock timings
+include client startup and the daemon round trip; p95 is nearest rank over all
+30 samples. Warmups remain recorded but are excluded from summary statistics.
+No samples or outliers are filtered.
 
-The four captures were recorded on 2026-09-06 on Linux x86_64. All times below
-are milliseconds.
+All four production captures are complete. Timings below are median / p95
+milliseconds.
 
-| Package / compiler | Source | Ordinary median / p95 | #116 daemon median / p95 | Updated daemon median / p95 | Median reduction vs #116 |
+| Package / workload compiler | Source | Ordinary median / p95 | #116 daemon median / p95 | Updated daemon median / p95 | Median reduction vs #116 |
 | --- | --- | ---: | ---: | ---: | ---: |
-| cargo-platform / Rust 1.98.0 | Unchanged | 286.9 / 303.4 | 209.5 / 219.8 | 158.2 / 163.8 | 24.5% |
-| cargo-platform / Rust 1.98.0 | Edited | 606.7 / 640.2 | 539.4 / 553.7 | 490.6 / 504.1 | 9.0% |
-| cargo-platform / Ohm 1.98.0-2 | Unchanged | 301.9 / 310.5 | 208.7 / 216.4 | 163.1 / 170.2 | 21.8% |
-| cargo-platform / Ohm 1.98.0-2 | Edited | 615.3 / 631.0 | 541.8 / 556.1 | 498.6 / 514.0 | 8.0% |
-| cargo-util-schemas / Rust 1.98.0 | Unchanged | 909.6 / 954.9 | 811.4 / 831.7 | 759.5 / 797.2 | 6.4% |
-| cargo-util-schemas / Rust 1.98.0 | Edited | 1,688.2 / 1,721.6 | 1,599.0 / 1,650.5 | 1,547.0 / 1,581.5 | 3.2% |
-| cargo-util-schemas / Ohm 1.98.0-2 | Unchanged | 933.3 / 979.2 | 824.6 / 839.4 | 774.9 / 796.6 | 6.0% |
-| cargo-util-schemas / Ohm 1.98.0-2 | Edited | 1,684.6 / 1,732.5 | 1,598.7 / 1,646.0 | 1,542.6 / 1,575.4 | 3.5% |
+| cargo-platform / Rust 1.98.0 | Unchanged | 291.1 / 298.9 | 220.6 / 226.1 | 160.2 / 171.0 | 27.4% |
+| cargo-platform / Rust 1.98.0 | Edited | 613.0 / 624.8 | 551.9 / 587.3 | 496.4 / 518.1 | 10.0% |
+| cargo-platform / Ohm 1.98.0-2 | Unchanged | 307.0 / 321.2 | 209.5 / 215.7 | 167.8 / 173.0 | 19.9% |
+| cargo-platform / Ohm 1.98.0-2 | Edited | 625.5 / 643.0 | 547.3 / 570.4 | 503.9 / 514.2 | 7.9% |
+| cargo-util-schemas / Rust 1.98.0 | Unchanged | 907.4 / 931.2 | 818.0 / 844.2 | 761.8 / 783.6 | 6.9% |
+| cargo-util-schemas / Rust 1.98.0 | Edited | 1,679.1 / 1,735.5 | 1,597.8 / 1,640.2 | 1,542.6 / 1,581.5 | 3.5% |
+| cargo-util-schemas / Ohm 1.98.0-2 | Unchanged | 982.8 / 1,815.4 | 852.6 / 1,570.1 | 811.8 / 1,484.9 | 4.8% |
+| cargo-util-schemas / Ohm 1.98.0-2 | Edited | 1,685.8 / 1,788.2 | 1,600.5 / 1,821.4 | 1,543.2 / 1,574.4 | 3.6% |
 
-Each capture retains 180 measured samples and six warmups, for **720 measured
-samples and 24 warmup samples** across the four captures. Both daemons reuse one
-plan on all 60 measured requests per capture: **480/480 combined daemon
-requests reuse their plan**. Each daemon finishes with one preparation, one
-cached plan, and 62 requests including warmups.
+All four cases have lower updated medians and p95s in both phases. The unchanged
+`cargo-util-schemas` run with Ohm varies substantially in all three modes, with
+p95s well above their medians. Slower individual samples remain included: for
+example, the updated Rust `cargo-platform` edited maximum is 742.3 ms versus
+598.3 ms for #116.
 
-Every unchanged-source sample compiles zero selected-package artifacts. Edited
-samples recompile four for `cargo-platform` or two for `cargo-util-schemas`.
-Each test invocation reports eight passing tests for `cargo-platform` or 13
-for `cargo-util-schemas`. The harness requires plan reuse from both daemons,
-recompilation after edits, and successful nonempty test execution; raw artifact
-and test-result records support these checks.
+Each capture retains 180 measured samples and six warmups, totaling **720 measured
+samples and 24 warmups**. Both daemons reuse their plan in all 60 measured
+requests per capture: **480/480 combined measured daemon requests**. Each finishes
+with one preparation, one cached plan, and 62 requests including warmups.
+Every invocation, including warmups, passes eight tests for `cargo-platform` or
+13 for `cargo-util-schemas`. Unchanged requests compile zero selected artifacts;
+every edited request compiles four for `cargo-platform` or two for
+`cargo-util-schemas`. The raw reports record selected artifacts, test results,
+and counters; independent review also verified every invocation's stdout log.
 
-All eight median and p95 comparisons improve against the baseline measured in
-the same capture. Median savings are 45.6–51.9 ms with unchanged source and
-43.3–56.1 ms after an edit. Every sample remains included in the reported
-statistics.
-
-### Follow-up identities and reproduction
-
-The updated binary was frozen at source and embedded commit
-`790153923caf1bdbe62d22ff17c01775c04d7513`. Later harness changes and the merge
-from #116 leave that compiled Cargo implementation unchanged. The baseline is
-the frozen `89b6211b43f18aa2519571a28bb81e395ef44b7e` binary, whose compiled
-Cargo Rust sources match #116 at `c3ef330cf5a310fd689ebe614c984d06cf3518b7`.
-The harness at `32c05ae4b37eceabb9adef068549f4ec86424508` adds a full workspace
-daemon baseline and requires reuse from both daemon modes.
+### Production identities and reproduction
 
 | Identity | Source revision or file | SHA-256 |
 | --- | --- | --- |
-| Updated Cargo | `790153923caf1bdbe62d22ff17c01775c04d7513` | `c2513aa538d8e75a93c42c4ce98bf01a90a9346bbd73fe0fb8615fc31011dc59` |
-| Baseline #116 Cargo | `89b6211b43f18aa2519571a28bb81e395ef44b7e` | `640d60be282af5c21f0708a72d8ad8219910a7e31850d1216ed8aaadaa958565` |
+| Updated production Cargo | `63b78dac217804f0532d0d7214a392fcbb643307` | `51aabfad0a02b4600094fb81112b037342338397bc3b4b717a3d30963889e32e` |
+| Baseline #116 production Cargo | `89b6211b43f18aa2519571a28bb81e395ef44b7e` | `640d60be282af5c21f0708a72d8ad8219910a7e31850d1216ed8aaadaa958565` |
+| Rust 1.97.1 used to build Cargo | `8bab26f4f68e0e26f0bb7960be334d5b520ea452` | `d3a664c970a9fd8361b64194861bebc1ae37b9054e5ee3400dc1c9e691797eea` |
 | Focused-study harness | `benches/session_workspace.py` at `32c05ae` | `5f19e883d8a685336f9e3545583c7d4f6a756e1f6a84d118ee44f18549c06741` |
 | Shared harness helper | `benches/session.py` | `4c503d5edba2a07988c472ba3839fc27d94c194949247ff859d07d3f6c394a06` |
 
-| Package / compiler | Raw report |
-| --- | --- |
-| cargo-platform / Rust 1.98.0 | [JSON](benches/session/results/workspace-test-validation-platform-stock-1.98-linux-x86_64.json) |
-| cargo-platform / Ohm 1.98.0-2 | [JSON](benches/session/results/workspace-test-validation-platform-ohm-1.98.0-2-linux-x86_64.json) |
-| cargo-util-schemas / Rust 1.98.0 | [JSON](benches/session/results/workspace-test-validation-schemas-stock-1.98-linux-x86_64.json) |
-| cargo-util-schemas / Ohm 1.98.0-2 | [JSON](benches/session/results/workspace-test-validation-schemas-ohm-1.98.0-2-linux-x86_64.json) |
+The baseline's compiled Cargo Rust implementation matches #116 at
+`c3ef330cf5a310fd689ebe614c984d06cf3518b7`. The updated binary includes the
+post-harness validation removal; later documentation and data commits do not
+change its compiled source. Both executables are frozen independently of Cargo
+build/test output directories.
 
-Use the recorded frozen executables and matching Rust/rustdoc toolchains to
-reproduce all four package/compiler combinations. The harness retains each new
-private work directory with `report.json`, `samples.jsonl`, source snapshots,
-build outputs, and logs.
+| Package / workload compiler | Production report |
+| --- | --- |
+| cargo-platform / Rust 1.98.0 | [JSON](benches/session/results/workspace-test-validation-production-platform-stock-1.98-linux-x86_64.json) |
+| cargo-platform / Ohm 1.98.0-2 | [JSON](benches/session/results/workspace-test-validation-production-platform-ohm-1.98.0-2-linux-x86_64.json) |
+| cargo-util-schemas / Rust 1.98.0 | [JSON](benches/session/results/workspace-test-validation-production-schemas-stock-1.98-linux-x86_64.json) |
+| cargo-util-schemas / Ohm 1.98.0-2 | [JSON](benches/session/results/workspace-test-validation-production-schemas-ohm-1.98.0-2-linux-x86_64.json) |
+
+Use the recorded production executables and matching workload Rust/rustdoc
+toolchains to reproduce all four package/compiler combinations. The harness
+retains each new private work directory with `report.json`, `samples.jsonl`,
+source snapshots, isolated build outputs, and logs.
 
 ```sh
-updated_cargo=/absolute/path/to/frozen-test-validation-cargo
-baseline_cargo=/absolute/path/to/frozen-workspace-cargo
+updated_cargo=/absolute/path/to/frozen-test-validation-production-cargo
+baseline_cargo=/absolute/path/to/frozen-workspace-production-cargo
 for toolchain in 1.98.0-x86_64-unknown-linux-gnu ohm-1.98.0-2; do
   for package in cargo-platform cargo-util-schemas; do
     python3 benches/session_workspace.py \
@@ -442,7 +471,29 @@ for toolchain in 1.98.0-x86_64-unknown-linux-gnu ohm-1.98.0-2; do
 done
 ```
 
+### Superseded captures
+
+The four reports below are retained unchanged as **superseded evidence** and
+are excluded from the production comparison. Their updated Cargo executable was
+copied after `cargo test --release`, while the baseline was built with
+`cargo build --release`. Development-dependency feature unification changed the
+`gix` and `cargo_util_terminal` build configurations, so the old timings do not
+isolate removal of the post-harness validation pass.
+
+The superseded updated binary is source `790153923caf1bdbe62d22ff17c01775c04d7513`,
+SHA-256 `c2513aa538d8e75a93c42c4ce98bf01a90a9346bbd73fe0fb8615fc31011dc59`.
+The baseline is source `89b6211b43f18aa2519571a28bb81e395ef44b7e`, SHA-256
+`640d60be282af5c21f0708a72d8ad8219910a7e31850d1216ed8aaadaa958565`.
+
+| Superseded package / compiler | Preserved raw report |
+| --- | --- |
+| cargo-platform / Rust 1.98.0 | [JSON](benches/session/results/workspace-test-validation-platform-stock-1.98-linux-x86_64.json) |
+| cargo-platform / Ohm 1.98.0-2 | [JSON](benches/session/results/workspace-test-validation-platform-ohm-1.98.0-2-linux-x86_64.json) |
+| cargo-util-schemas / Rust 1.98.0 | [JSON](benches/session/results/workspace-test-validation-schemas-stock-1.98-linux-x86_64.json) |
+| cargo-util-schemas / Ohm 1.98.0-2 | [JSON](benches/session/results/workspace-test-validation-schemas-ohm-1.98.0-2-linux-x86_64.json) |
+
 All 11 command integration tests passed locally, including the strengthened
 manifest-mutation case: two requests execute twice, the second request prepares
-a new plan, and its invalidation reason names `Cargo.toml`. The pull request
-records the full CI results.
+a new plan, and its invalidation reason names `Cargo.toml`. All eight
+[CI checks at `63b78dac`](https://github.com/astral-sh/ohm-cargo/actions/runs/34041262892)
+passed. The pull request records subsequent CI results.
