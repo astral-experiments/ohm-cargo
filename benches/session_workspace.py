@@ -732,7 +732,7 @@ def main():
         parser.error("--parent-cargo requires check in --commands")
     if args.work_dir:
         work = args.work_dir.absolute()
-        work.mkdir(parents=True, exist_ok=False)
+        work.mkdir(mode=0o700, parents=True, exist_ok=False)
     else:
         runtime = Path("/run/user") / str(os.getuid())
         work = Path(
@@ -745,6 +745,11 @@ def main():
     report = {
         "benchmark": "same Cargo binary: real workspace mixed commands",
         "format_version": 1,
+        "harness": {
+            "path": str(Path(__file__).resolve()),
+            "sha256": sha256(Path(__file__)),
+            "helper_sha256": sha256(Path(__file__).with_name("session.py")),
+        },
         "started_at": datetime.datetime.now(datetime.timezone.utc).isoformat(),
         "configuration": {
             **vars(args),

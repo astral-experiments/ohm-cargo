@@ -472,6 +472,7 @@ fn benchmarks_preserve_no_run_forwarded_arguments_and_failure_modes() {
         .args(&all)
         .with_status(101)
         .with_stderr_data(str![[r#"
+...
 [FINISHED] `bench` profile [optimized] target(s) in [ELAPSED]s
 [RUNNING] benches/first.rs (target/release/deps/first-[HASH][EXE])
 [ERROR] bench failed, to rerun pass `-p app --bench first`
