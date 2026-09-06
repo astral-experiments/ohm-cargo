@@ -70,3 +70,35 @@ negative queries without watch setup, replaced watch registrations, metadata
 changes with notifications deliberately discarded, and memory-mapped byte writes.
 Test-only counters establish that an unchanged pass skips traversal and
 canonicalization while retaining identity metadata reads.
+
+
+## Measured comparison
+
+The release build, all 22 session-input unit tests, all 38 session integration
+tests, and formatting pass. On Linux x86_64, 30 alternating parent/current pairs
+following real leaf edits in a 101-crate path workspace produced these medians:
+
+| Compiler | Parent client | Watcher client | Parent server | Watcher server | Client speedup |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Ohm 1.98.0-2 | 116.04 ms | 110.90 ms | 106.62 ms | 101.89 ms | 1.046x |
+| Stable Rust 1.97.1 | 107.81 ms | 105.09 ms | 97.34 ms | 95.05 ms | 1.026x |
+
+Both sides retained one preparation across 31 checks, with a changed leaf
+dep-info artifact after every measured edit. They used the same compiler and
+independently warmed outputs. Startup and cold checks are recorded separately.
+The [Ohm data](benches/session/results/watchers-ohm-linux-x86_64.json) and
+[stable data](benches/session/results/watchers-stable-linux-x86_64.json) contain
+all samples, binary hashes, compiler versions, and counters. Reproduce with
+`benches/session_compare.py --before PARENT_CARGO --after WATCHER_CARGO
+--crates 100 --rounds 30`, selecting the compiler with `RUSTUP_TOOLCHAIN` or
+`--rustc`.
+
+The archived initial [Ohm](benches/session/results/watchers-initial-ohm-linux-x86_64.json)
+and [stable](benches/session/results/watchers-initial-stable-linux-x86_64.json)
+runs showed a regression to about 203 ms per check. Setting up ancestor watches
+for absent implicit target directories dominated that implementation. Failed
+queries now return before coverage setup; a regression test verifies that these
+queries create no watches. Lookup-only caches use FxHashMap with raw query path
+spellings, while filesystem coverage checks remain in place. These measurements
+support a modest end-to-end improvement, with file polling and other Cargo work
+still present.
