@@ -5,8 +5,10 @@ use std::ffi::OsStr;
 use std::fs;
 use std::io;
 use std::os::unix::fs::MetadataExt;
-use std::path::{Path, PathBuf};
+use std::path::{Component, Path, PathBuf};
 use std::sync::Arc;
+
+use crate::util::data_structures::HashMap;
 
 use super::watcher::{Token, Watcher};
 use super::{FileIdentity, InputKey, InputValue};
@@ -14,7 +16,7 @@ use super::{FileIdentity, InputKey, InputValue};
 #[derive(Debug, Default)]
 pub(super) struct InputCache {
     watcher: Watcher,
-    canonical: BTreeMap<PathBuf, Arc<CachedCanonical>>,
+    canonical: HashMap<PathBuf, Arc<CachedCanonical>>,
     topology: BTreeMap<InputKey, Arc<CachedTopology>>,
     #[cfg(test)]
     pub(super) last_stats: Stats,
@@ -80,17 +82,21 @@ impl StructuralIdentity {
 #[derive(Debug, Default)]
 struct Coverage {
     tokens: Vec<Token>,
-    paths: BTreeMap<PathBuf, StructuralIdentity>,
-    links: BTreeMap<PathBuf, PathBuf>,
+    paths: HashMap<PathBuf, StructuralIdentity>,
+    links: HashMap<PathBuf, PathBuf>,
 }
 
 impl Coverage {
     /// Arm each parent before observing the next component. Follow link targets
     /// explicitly so intermediate links omitted by canonicalize are covered too.
     fn path(&mut self, watcher: &mut Watcher, path: &Path) -> Option<()> {
-        if !path.is_absolute() {
+        if !path.is_absolute() || path.components().any(|part| part == Component::ParentDir) {
             return None;
         }
+        // A trailing separator or `.` can make symlink_metadata follow the
+        // final link. Inspect normalized components while keeping the original
+        // query spelling for the authoritative filesystem operation.
+        let path = path.components().collect::<PathBuf>();
         // A successful canonicalization cannot require arbitrarily many links.
         // Limit cache setup independently from Cargo's actual filesystem query.
         if self.links.len() > 64 {
@@ -153,9 +159,9 @@ impl IoFailure {
 
 struct Pass<'a> {
     cache: &'a mut InputCache,
-    metadata: BTreeMap<PathBuf, Result<fs::Metadata, IoFailure>>,
-    symlink_metadata: BTreeMap<PathBuf, Result<fs::Metadata, IoFailure>>,
-    links: BTreeMap<PathBuf, Result<PathBuf, IoFailure>>,
+    metadata: HashMap<PathBuf, Result<fs::Metadata, IoFailure>>,
+    symlink_metadata: HashMap<PathBuf, Result<fs::Metadata, IoFailure>>,
+    links: HashMap<PathBuf, Result<PathBuf, IoFailure>>,
     used: Vec<Token>,
     #[cfg(test)]
     stats: Stats,
@@ -168,9 +174,9 @@ impl InputCache {
         self.watcher.synchronize();
         let mut pass = Pass {
             cache: self,
-            metadata: BTreeMap::new(),
-            symlink_metadata: BTreeMap::new(),
-            links: BTreeMap::new(),
+            metadata: HashMap::default(),
+            symlink_metadata: HashMap::default(),
+            links: HashMap::default(),
             used: Vec::new(),
             #[cfg(test)]
             stats: Stats::default(),
@@ -327,23 +333,30 @@ impl Pass<'_> {
         {
             return Ok(cached.path.clone());
         }
-        let mut coverage = Coverage::default();
-        let covered = coverage.path(&mut self.cache.watcher, path).is_some();
         #[cfg(test)]
         {
             self.stats.canonical_reads += 1;
         }
         let canonical = fs::canonicalize(path)?;
-        if covered {
-            self.used.extend(coverage.tokens.iter().cloned());
-            self.cache.canonical.insert(
-                path.to_owned(),
-                Arc::new(CachedCanonical {
-                    path: canonical.clone(),
-                    coverage,
-                }),
-            );
+        let mut coverage = Coverage::default();
+        if coverage.path(&mut self.cache.watcher, path).is_none() {
+            return Ok(canonical);
         }
+        // Failed queries stay on the polling path without opening every
+        // ancestor. For successful queries, repeat after arming the watches.
+        #[cfg(test)]
+        {
+            self.stats.canonical_reads += 1;
+        }
+        let canonical = fs::canonicalize(path)?;
+        self.used.extend(coverage.tokens.iter().cloned());
+        self.cache.canonical.insert(
+            path.to_owned(),
+            Arc::new(CachedCanonical {
+                path: canonical.clone(),
+                coverage,
+            }),
+        );
         Ok(canonical)
     }
 
@@ -387,15 +400,25 @@ impl Pass<'_> {
         {
             return value.clone();
         }
-        let mut coverage = Coverage::default();
-        let covered = coverage.directory(&mut self.cache.watcher, path).is_some();
         #[cfg(test)]
         {
             self.stats.directory_reads += 1;
         }
         let value = key.evaluate();
-        if covered
-            && matches!(value, InputValue::Directory(Ok(ref entries)) if entries.iter().all(Result::is_ok))
+        if !matches!(value, InputValue::Directory(Ok(ref entries)) if entries.iter().all(Result::is_ok))
+        {
+            return value;
+        }
+        let mut coverage = Coverage::default();
+        if coverage.directory(&mut self.cache.watcher, path).is_none() {
+            return value;
+        }
+        #[cfg(test)]
+        {
+            self.stats.directory_reads += 1;
+        }
+        let value = key.evaluate();
+        if matches!(value, InputValue::Directory(Ok(ref entries)) if entries.iter().all(Result::is_ok))
         {
             self.used.extend(coverage.tokens.iter().cloned());
             self.cache.topology.insert(
@@ -511,6 +534,27 @@ mod tests {
     }
 
     #[test]
+    fn negative_and_parent_queries_do_not_arm_watches() {
+        let dir = tempfile::tempdir().unwrap();
+        fs::create_dir(dir.path().join("child")).unwrap();
+        let missing = dir.path().join("missing");
+        let keys = [
+            InputKey::Canonical(missing.clone()),
+            InputKey::Directory(missing.clone()),
+            InputKey::Canonical(dir.path().join("child/..")),
+        ];
+        let mut cache = InputCache::default();
+        for _ in 0..2 {
+            assert_eq!(evaluate(&mut cache, &keys), polled(&keys));
+            assert_eq!(cache.watcher.watch_count(), 0);
+        }
+        fs::create_dir(&missing).unwrap();
+        assert_eq!(evaluate(&mut cache, &keys), polled(&keys));
+        fs::write(missing.join("new"), "file").unwrap();
+        assert_eq!(evaluate(&mut cache, &keys), polled(&keys));
+    }
+
+    #[test]
     fn unchanged_trees_skip_walks_and_canonicalization_but_poll_identities() {
         let Some(dir) = watched_tempdir() else {
             return; // This host uses the polling fallback.
@@ -604,13 +648,13 @@ mod tests {
         cache.simulate_overflow();
         fs::write(dir.path().join("after-overflow"), "new").unwrap();
         assert_eq!(evaluate(&mut cache, &keys), polled(&keys));
-        assert_eq!(cache.last_stats.directory_reads, 1);
+        assert!(cache.last_stats.directory_reads > 0);
         cache.simulate_failure();
         fs::write(dir.path().join("after-failure"), "new").unwrap();
         assert_eq!(evaluate(&mut cache, &keys), polled(&keys));
-        assert_eq!(cache.last_stats.directory_reads, 1);
+        assert!(cache.last_stats.directory_reads > 0);
         assert_eq!(evaluate(&mut cache, &keys), polled(&keys));
-        assert_eq!(cache.last_stats.directory_reads, 1);
+        assert!(cache.last_stats.directory_reads > 0);
     }
 
     #[test]
@@ -652,6 +696,28 @@ mod tests {
         assert_eq!(current, polled(&keys));
         assert_ne!(current, previous);
         assert!(cache.last_stats.canonical_reads > 0);
+    }
+
+    #[test]
+    fn canonical_guards_follow_links_before_trailing_dots_and_separators() {
+        let Some(dir) = watched_tempdir() else {
+            return;
+        };
+        fs::create_dir(dir.path().join("original")).unwrap();
+        symlink("original", dir.path().join("link")).unwrap();
+        let keys = [
+            InputKey::Canonical(dir.path().join("link/")),
+            InputKey::Canonical(dir.path().join("link/.")),
+        ];
+        let mut cache = InputCache::default();
+        let previous = evaluate(&mut cache, &keys);
+        assert_eq!(evaluate(&mut cache, &keys), previous);
+        fs::rename(dir.path().join("original"), dir.path().join("moved")).unwrap();
+        symlink("moved", dir.path().join("original")).unwrap();
+        cache.watcher.discard_events();
+        let current = evaluate(&mut cache, &keys);
+        assert_eq!(current, polled(&keys));
+        assert_ne!(current, previous);
     }
 
     #[test]

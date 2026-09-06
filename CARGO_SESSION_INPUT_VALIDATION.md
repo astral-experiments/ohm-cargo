@@ -23,10 +23,12 @@ invalidate a named ancestor watch.
 Watches are registered against an opened directory descriptor, and their device
 and inode are checked before an existing path registration can be reused. This
 keeps registration tied to the observed directory when its path is replaced.
-Directory watches are armed before reading a listing. Tree traversal first
-identifies every visited directory, then repeats the scan after installing
-coverage; a different directory set prevents cache admission. Empty directories
-are included in watch coverage even when they contribute no library identities.
+Failed queries use their original polling operation without opening each
+ancestor. Successful directory listings and canonicalizations are repeated after
+coverage is armed. Tree traversal first identifies every visited directory, then
+repeats the scan after installing coverage; a different directory set prevents
+cache admission. Empty directories are included in watch coverage even when they
+contribute no library identities.
 
 Queue overflow, removed watches, and mount changes retire the watcher generation.
 An initialization, registration, or read failure disables it for that preparation.
@@ -42,8 +44,11 @@ preparation drops the old cache and its watches.
 - File contents always use fresh byte reads. Artifact identities retain their
   existing metadata and canonical-path fields; their metadata is polled even
   while a traversal result is reused.
-- General globs, same-file checks, and negative or failed topology queries remain
-  polled. Related metadata queries share observations only within one validation.
+- General globs, same-file checks, negative or failed topology queries, and
+  paths containing `..` remain polled. Coverage removes `.` and redundant
+  separators so a final symlink stays visible, while the authoritative query
+  retains its original path spelling. Related metadata queries share
+  observations only within one validation.
 - Cargo-authored input files still publish their exact bytes through the existing
   graph API. Notifications do not update dependency values or clear conflicts.
 
@@ -60,7 +65,8 @@ and [kernel inotify documentation](https://www.kernel.org/doc/html/latest/filesy
 The session-input tests compare cache-backed validation with the original polling
 queries. They cover unchanged tree reuse, new subdirectories during setup,
 changes at the final synchronization boundary, overflow and backend failure,
-ancestor and symlink replacement, replaced watch registrations, metadata changes
-with notifications deliberately discarded, and memory-mapped byte writes.
+ancestor and symlink replacement (including trailing `.` and separators),
+negative queries without watch setup, replaced watch registrations, metadata
+changes with notifications deliberately discarded, and memory-mapped byte writes.
 Test-only counters establish that an unchanged pass skips traversal and
 canonicalization while retaining identity metadata reads.

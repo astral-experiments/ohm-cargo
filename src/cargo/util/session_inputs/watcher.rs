@@ -42,6 +42,11 @@ pub(super) struct Watcher {
 }
 
 impl Watcher {
+    #[cfg(test)]
+    pub(super) fn watch_count(&self) -> usize {
+        self.watches.len()
+    }
+
     /// Start each validation at a drained queue and a checked mount topology.
     pub(super) fn synchronize(&mut self) {
         if self.disabled {
