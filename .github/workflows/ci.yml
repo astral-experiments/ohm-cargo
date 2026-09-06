@@ -53,6 +53,9 @@ jobs:
     env:
       CARGO_PROFILE_DEV_DEBUG: 1
       CARGO_PROFILE_TEST_DEBUG: 1
+      # Automatic shared-build admission rejects paths nested below a `target`
+      # component; integration scratch directories are compiled into the suite.
+      CARGO_TARGET_DIR: build/cargo-tests
       CARGO_INCREMENTAL: 0
       CARGO_PUBLIC_NETWORK_TESTS: 1
     strategy:
@@ -91,7 +94,7 @@ jobs:
         env:
           RUSTUP_TOOLCHAIN: ohm-1.97.1-16
         run: |
-          testsuite="$(find target/debug/deps -maxdepth 1 -type f -name 'testsuite-*' -perm -u+x -print -quit)"
+          testsuite="$(find "$CARGO_TARGET_DIR/debug/deps" -maxdepth 1 -type f -name 'testsuite-*' -perm -u+x -print -quit)"
           if [[ -z "$testsuite" ]]; then
             echo 'compiled Cargo integration test binary was not found' >&2
             exit 1
@@ -132,7 +135,7 @@ jobs:
           export PATH="$toolchain_bin:$rustup_bin:/usr/bin:/bin:/usr/sbin:/sbin"
           rustc -Vv
           clippy-driver -V
-          testsuite="$(find target/debug/deps -maxdepth 1 -type f -name 'testsuite-*' -perm -u+x -print -quit)"
+          testsuite="$(find "$CARGO_TARGET_DIR/debug/deps" -maxdepth 1 -type f -name 'testsuite-*' -perm -u+x -print -quit)"
           if [[ -z "$testsuite" ]]; then
             echo 'compiled Cargo integration test binary was not found' >&2
             exit 1
@@ -212,7 +215,7 @@ jobs:
           git init "$RUNNER_TEMP/ruff-fixture"
           git -C "$RUNNER_TEMP/ruff-fixture" fetch --depth=2 https://github.com/astral-sh/ruff.git \
             0ecff877901a0377ad966ffab528488ce872b50e
-          git -C "$RUNNER_TEMP/ruff-fixture" checkout --detach 1edf9fe2cab23e34c383419b8c7830324c428a58
+          git -C "$RUNNER_TEMP/ruff-fixture" checkout --detach 0ecff877901a0377ad966ffab528488ce872b50e
       - name: Run four paired APFS workflows
         run: |
           # The harness enables local macro/native-tool trust only for this pinned,
