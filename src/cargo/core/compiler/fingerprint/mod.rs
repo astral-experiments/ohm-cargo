@@ -2757,7 +2757,7 @@ fn calculate_normal(
         .cli_unstable()
         .no_embed_metadata()
         .hash(&mut config);
-    // The same immutable package can become a root in another invocation, so
+    // The same internal package can become a root in another invocation, so
     // its effective embedding policy must also invalidate its own fingerprint.
     super::unit_uses_no_embed_metadata(build_runner, unit).hash(&mut config);
     // Legacy dynamic-library and executable outputs may omit the unit-id suffix,

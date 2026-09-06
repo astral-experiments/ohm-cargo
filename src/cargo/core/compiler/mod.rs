@@ -2372,13 +2372,24 @@ fn add_error_format_and_color(
     }
 }
 
-/// Returns whether an immutable internal library can omit its embedded metadata.
+/// Returns whether an internal library can use its separately emitted metadata.
 fn unit_uses_no_embed_metadata(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> bool {
     let source = unit.pkg.package_id().source_id();
+    let internal_workspace_library = build_runner.bcx.ws.is_member(&unit.pkg)
+        && unit
+            .target
+            .rustc_crate_types()
+            .iter()
+            .all(|kind| matches!(kind, CrateType::Lib | CrateType::Rlib))
+        && build_runner
+            .bcx
+            .gctx
+            .get_env("CARGO_EXPERIMENTAL_WORKSPACE_NO_EMBED_METADATA")
+            .is_ok_and(|value| value == "1");
 
     build_runner.bcx.gctx.cli_unstable().no_embed_metadata()
         && unit.benefits_from_no_embed_metadata()
-        && (source.is_registry() || source.is_git())
+        && (source.is_registry() || source.is_git() || internal_workspace_library)
         && !build_runner.bcx.roots.contains(unit)
         && !unit.target.rustc_crate_types().contains(&CrateType::Dylib)
 }

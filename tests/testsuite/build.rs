@@ -6502,6 +6502,15 @@ fn no_embed_metadata_dylib_dep() {
 
 #[cargo_test]
 fn no_embed_metadata_preserves_exported_and_path_libraries() {
+    check_no_embed_metadata_preserves_exported_libraries(false);
+}
+
+#[cargo_test]
+fn no_embed_metadata_internal_workspace_libraries() {
+    check_no_embed_metadata_preserves_exported_libraries(true);
+}
+
+fn check_no_embed_metadata_preserves_exported_libraries(omit_internal: bool) {
     Package::new("external", "1.0.0")
         .file("src/lib.rs", "pub fn value() -> i32 { 1 }")
         .publish();
@@ -6549,18 +6558,38 @@ fn no_embed_metadata_preserves_exported_and_path_libraries() {
         )
         .build();
 
-    p.cargo("build -p app -Z no-embed-metadata -v")
+    let mut initial = p.cargo("build -p app -Z no-embed-metadata -v");
+    initial
         .masquerade_as_nightly_cargo(&["no-embed-metadata"])
         .env("RUSTC_BOOTSTRAP", "1")
-        .with_stderr_contains("[RUNNING] `[..]--crate-name external[..]-Z embed-metadata=no[..]`")
-        .with_stderr_line_without(
-            &["[RUNNING]", "--crate-name local"],
-            &["-Z embed-metadata=no"],
+        .env(
+            "CARGO_EXPERIMENTAL_WORKSPACE_NO_EMBED_METADATA",
+            if omit_internal { "1" } else { "0" },
         )
+        .with_stderr_contains("[RUNNING] `[..]--crate-name external[..]-Z embed-metadata=no[..]`")
         .with_stderr_line_without(
             &["[RUNNING]", "--crate-name app"],
             &["-Z embed-metadata=no"],
+        );
+    if omit_internal {
+        initial
+            .with_stderr_contains("[RUNNING] `[..]--crate-name local[..]-Z embed-metadata=no[..]`");
+    } else {
+        initial.with_stderr_line_without(
+            &["[RUNNING]", "--crate-name local"],
+            &["-Z embed-metadata=no"],
+        );
+    }
+    initial.run();
+
+    p.cargo("build -p app -Z no-embed-metadata")
+        .masquerade_as_nightly_cargo(&["no-embed-metadata"])
+        .env("RUSTC_BOOTSTRAP", "1")
+        .env(
+            "CARGO_EXPERIMENTAL_WORKSPACE_NO_EMBED_METADATA",
+            if omit_internal { "1" } else { "0" },
         )
+        .with_stderr_does_not_contain("[COMPILING]")
         .run();
 
     let root_library = p.target_debug_dir().join("libapp.rlib");
@@ -6586,12 +6615,44 @@ fn no_embed_metadata_preserves_exported_and_path_libraries() {
     )
     .run();
 
-    p.cargo("build -p local -Z no-embed-metadata -v")
+    if omit_internal {
+        // The opt-out changes this unit's fingerprint even when it stays internal.
+        p.cargo("build -p app -Z no-embed-metadata -v")
+            .masquerade_as_nightly_cargo(&["no-embed-metadata"])
+            .env("RUSTC_BOOTSTRAP", "1")
+            .env("CARGO_EXPERIMENTAL_WORKSPACE_NO_EMBED_METADATA", "0")
+            .with_stderr_line_without(
+                &["[RUNNING]", "--crate-name local"],
+                &["-Z embed-metadata=no"],
+            )
+            .run();
+        p.cargo("build -p app -Z no-embed-metadata -v")
+            .masquerade_as_nightly_cargo(&["no-embed-metadata"])
+            .env("RUSTC_BOOTSTRAP", "1")
+            .env("CARGO_EXPERIMENTAL_WORKSPACE_NO_EMBED_METADATA", "1")
+            .with_stderr_contains("[RUNNING] `[..]--crate-name local[..]-Z embed-metadata=no[..]`")
+            .run();
+    }
+
+    let mut promote = p.cargo("build -p local -Z no-embed-metadata -v");
+    promote
         .masquerade_as_nightly_cargo(&["no-embed-metadata"])
         .env("RUSTC_BOOTSTRAP", "1")
-        .with_stderr_contains("[FRESH] local v0.1.0 ([ROOT]/foo/local)")
-        .with_stderr_does_not_contain("[COMPILING] local v0.1.0")
-        .run();
+        .env(
+            "CARGO_EXPERIMENTAL_WORKSPACE_NO_EMBED_METADATA",
+            if omit_internal { "1" } else { "0" },
+        );
+    if omit_internal {
+        promote.with_stderr_line_without(
+            &["[RUNNING]", "--crate-name local"],
+            &["-Z embed-metadata=no"],
+        );
+    } else {
+        promote
+            .with_stderr_contains("[FRESH] local v0.1.0 ([ROOT]/foo/local)")
+            .with_stderr_does_not_contain("[COMPILING] local v0.1.0");
+    }
+    promote.run();
 
     let promoted_library = p.target_debug_dir().join("liblocal.rlib");
     p.process("rustc")
