@@ -950,6 +950,7 @@ unstable_cli_options!(
     next_lockfile_bump: bool,
     no_embed_metadata: Option<bool> = ("Avoid embedding metadata in library artifacts"),
     no_index_update: bool = ("Do not update the registry index even if the cache is outdated"),
+    ohm_clippy_seed_isolation: Option<bool> = ("Isolate bundled Clippy outputs from worktree snapshots (automatic when cloning is available)"),
     ohm_defaults: Option<bool> = ("Enable the defaults packaged with Ohm"),
     ohm_focused_tests: bool = ("Compile only an explicitly selected exact library test"),
     ohm_native_tool_trust: OhmNativeToolTrust = ("Set native-tool trust for shared registry artifacts: strict (default), build-scripts, or all (potentially unsound)"),
@@ -1568,6 +1569,9 @@ impl CliUnstable {
                     }
                     None => bail!("flag -Z{k} requires `audited` or `all`"),
                 };
+            }
+            "ohm-clippy-seed-isolation" => {
+                self.ohm_clippy_seed_isolation = Some(parse_bool(k, v)?);
             }
             "ohm-reuse-built-deps" => self.ohm_reuse_built_deps = parse_empty(k, v)?,
             "ohm-shared-registry-cache" => self.ohm_shared_registry_cache = parse_empty(k, v)?,
