@@ -1,0 +1,409 @@
+{
+  "label": "on1",
+  "cargo_sha256": "2e6a4fed471da02f16d6fb369ae8238cbd523be4a182fd2a45801ee5244f8bdc",
+  "source_commit": "0ecff877901a0377ad966ffab528488ce872b50e",
+  "environment": {
+    "CARGO_HOME": "/private/tmp/codex-cargo-home",
+    "RUSTUP_TOOLCHAIN": "ohm",
+    "RUSTC": "/Users/charliemarsh/.local/share/ohm/toolchains/ohm-1.98.0-9/bin/rustc",
+    "CARGO": "/private/tmp/codex-cargo-targets/cargo/workspace-metadata/ohm/release/cargo",
+    "CARGO_BUILD_JOBS": "4",
+    "CARGO_TARGET_DIR": "/private/tmp/codex-cargo-targets/ruff/isolated/target-size-workspace-metadata/on1/volume/targets/role-transition",
+    "CARGO_BUILD_BUILD_DIR": "/private/tmp/codex-cargo-targets/ruff/isolated/target-size-workspace-metadata/on1/volume/shared/role-transition",
+    "CARGO_UNSTABLE_OHM_PROC_MACRO_TRUST": "all",
+    "CARGO_UNSTABLE_OHM_NATIVE_TOOL_TRUST": "all",
+    "CARGO_EXPERIMENTAL_WORKSPACE_NO_EMBED_METADATA": "1",
+    "CARGO_PROFILE_DEV_DEBUG": "line-tables-only",
+    "CARGO_PROFILE_DEV_OPT_LEVEL": "1",
+    "CARGO_PROFILE_DEV_LTO": "off"
+  },
+  "commands": [
+    {
+      "name": "role-01-parser",
+      "argv": [
+        "/private/tmp/codex-cargo-targets/cargo/workspace-metadata/ohm/release/cargo",
+        "build",
+        "--offline",
+        "-p",
+        "ruff_python_parser"
+      ],
+      "elapsed_seconds": 10.485216833185405,
+      "returncode": 0,
+      "child_user_seconds": 28.018447000000002,
+      "child_system_seconds": 5.453526,
+      "compiling": [
+        "   Compiling proc-macro2 v1.0.107",
+        "   Compiling quote v1.0.47",
+        "   Compiling unicode-ident v1.0.24",
+        "   Compiling smallvec v1.15.2",
+        "   Compiling libc v0.2.189",
+        "   Compiling zerocopy v0.8.27",
+        "   Compiling cfg-if v1.0.4",
+        "   Compiling rustversion v1.0.22",
+        "   Compiling syn v2.0.119",
+        "   Compiling proc-macro-utils v0.10.0",
+        "   Compiling getrandom v0.2.16",
+        "   Compiling interpolator v0.5.0",
+        "   Compiling manyhow-macros v0.11.4",
+        "   Compiling collection_literals v1.0.2",
+        "   Compiling zmij v1.0.10",
+        "   Compiling rand_core v0.6.4",
+        "   Compiling ppv-lite86 v0.2.21",
+        "   Compiling equivalent v1.0.2",
+        "   Compiling hashbrown v0.17.1",
+        "   Compiling rand_chacha v0.3.1",
+        "   Compiling castaway v0.2.4",
+        "   Compiling indexmap v2.14.0",
+        "   Compiling static_assertions v1.1.0",
+        "   Compiling itoa v1.0.15",
+        "   Compiling shlex v2.0.1",
+        "   Compiling find-msvc-tools v0.1.9",
+        "   Compiling manyhow v0.11.4",
+        "   Compiling object v0.39.1",
+        "   Compiling siphasher v1.0.1",
+        "   Compiling phf_shared v0.11.3",
+        "   Compiling cc v1.2.65",
+        "   Compiling ordermap v1.2.0",
+        "   Compiling compact_str v0.10.0",
+        "   Compiling rand v0.8.5",
+        "   Compiling quote-use-macros v0.8.4",
+        "   Compiling derive-where v1.6.0",
+        "   Compiling thin-vec v0.2.19",
+        "   Compiling quote-use v0.8.4",
+        "   Compiling memchr v2.8.3",
+        "   Compiling phf_generator v0.11.3",
+        "   Compiling attribute-derive-macro v0.10.3",
+        "   Compiling unicode-width v0.2.2",
+        "   Compiling getopts v0.2.24",
+        "   Compiling phf_codegen v0.11.3",
+        "   Compiling log v0.4.33",
+        "   Compiling syn v3.0.3",
+        "   Compiling attribute-derive v0.10.3",
+        "   Compiling unicode_names2_generator v1.3.0",
+        "   Compiling thiserror v2.0.19",
+        "   Compiling get-size-derive2 v0.10.3",
+        "   Compiling get-size2 v0.10.3",
+        "   Compiling either v1.15.0",
+        "   Compiling ar_archive_writer v0.5.3",
+        "   Compiling itertools v0.15.0",
+        "   Compiling thiserror-impl v2.0.19",
+        "   Compiling ruff_text_size v0.0.11 (/private/tmp/codex-cargo-targets/ruff/isolated/target-size-workspace-metadata/on1/volume/donor/crates/ruff_text_size)",
+        "   Compiling ruff_source_file v0.0.11 (/private/tmp/codex-cargo-targets/ruff/isolated/target-size-workspace-metadata/on1/volume/donor/crates/ruff_source_file)",
+        "   Compiling psm v0.1.32",
+        "   Compiling unicode_names2 v1.3.0",
+        "   Compiling stacker v0.1.25",
+        "   Compiling ryu v1.0.20",
+        "   Compiling tinyvec_macros v0.1.1",
+        "   Compiling rustc-hash v2.1.3",
+        "   Compiling heck v0.5.0",
+        "   Compiling ruff_python_trivia v0.0.11 (/private/tmp/codex-cargo-targets/ruff/isolated/target-size-workspace-metadata/on1/volume/donor/crates/ruff_python_trivia)",
+        "   Compiling is-macro v0.3.7",
+        "   Compiling char_str v0.0.2",
+        "   Compiling tinyvec v1.10.0",
+        "   Compiling phf v0.11.3",
+        "   Compiling aho-corasick v1.1.5",
+        "   Compiling arrayvec v0.7.8",
+        "   Compiling regex-automata v0.4.18",
+        "   Compiling bitflags v2.13.1",
+        "   Compiling ruff_python_ast v0.0.11 (/private/tmp/codex-cargo-targets/ruff/isolated/target-size-workspace-metadata/on1/volume/donor/crates/ruff_python_ast)",
+        "   Compiling bstr v1.13.0",
+        "   Compiling unicode-normalization v0.1.24",
+        "   Compiling drop_bomb v0.1.5",
+        "   Compiling ruff_python_parser v0.0.11 (/private/tmp/codex-cargo-targets/ruff/isolated/target-size-workspace-metadata/on1/volume/donor/crates/ruff_python_parser)"
+      ]
+    },
+    {
+      "name": "role-02-add-ast-root",
+      "argv": [
+        "/private/tmp/codex-cargo-targets/cargo/workspace-metadata/ohm/release/cargo",
+        "build",
+        "--offline",
+        "-p",
+        "ruff_python_parser",
+        "-p",
+        "ruff_python_ast"
+      ],
+      "elapsed_seconds": 2.148900375002995,
+      "returncode": 0,
+      "child_user_seconds": 5.051811000000001,
+      "child_system_seconds": 0.4011420000000001,
+      "compiling": [
+        "   Compiling ruff_python_ast v0.0.11 (/private/tmp/codex-cargo-targets/ruff/isolated/target-size-workspace-metadata/on1/volume/donor/crates/ruff_python_ast)",
+        "   Compiling ruff_python_parser v0.0.11 (/private/tmp/codex-cargo-targets/ruff/isolated/target-size-workspace-metadata/on1/volume/donor/crates/ruff_python_parser)"
+      ]
+    },
+    {
+      "name": "role-03-return-parser",
+      "argv": [
+        "/private/tmp/codex-cargo-targets/cargo/workspace-metadata/ohm/release/cargo",
+        "build",
+        "--offline",
+        "-p",
+        "ruff_python_parser"
+      ],
+      "elapsed_seconds": 2.095248542027548,
+      "returncode": 0,
+      "child_user_seconds": 5.089489,
+      "child_system_seconds": 0.3881610000000002,
+      "compiling": [
+        "   Compiling ruff_python_ast v0.0.11 (/private/tmp/codex-cargo-targets/ruff/isolated/target-size-workspace-metadata/on1/volume/donor/crates/ruff_python_ast)",
+        "   Compiling ruff_python_parser v0.0.11 (/private/tmp/codex-cargo-targets/ruff/isolated/target-size-workspace-metadata/on1/volume/donor/crates/ruff_python_parser)"
+      ]
+    },
+    {
+      "name": "role-04-noop",
+      "argv": [
+        "/private/tmp/codex-cargo-targets/cargo/workspace-metadata/ohm/release/cargo",
+        "build",
+        "--offline",
+        "-p",
+        "ruff_python_parser"
+      ],
+      "elapsed_seconds": 0.08284950000233948,
+      "returncode": 0,
+      "child_user_seconds": 0.028126000000000317,
+      "child_system_seconds": 0.04465699999999906,
+      "compiling": []
+    }
+  ],
+  "measurements": {
+    "before": {
+      "volume_used_bytes": 1002475520,
+      "container_used_bytes": 1064321024,
+      "stable": true,
+      "samples": [
+        {
+          "volume_used_bytes": 1002475520,
+          "container_used_bytes": 1064321024
+        },
+        {
+          "volume_used_bytes": 1002475520,
+          "container_used_bytes": 1064321024
+        },
+        {
+          "volume_used_bytes": 1002475520,
+          "container_used_bytes": 1064321024
+        }
+      ],
+      "artifact_groups": {
+        "other": {
+          "files": 1690,
+          "logical_bytes": 386542926,
+          "inode_allocated_clone_unaware_bytes": 391380992
+        },
+        ".rmeta": {
+          "files": 186,
+          "logical_bytes": 168549095,
+          "inode_allocated_clone_unaware_bytes": 168951808
+        },
+        "query-cache": {
+          "files": 31,
+          "logical_bytes": 128897820,
+          "inode_allocated_clone_unaware_bytes": 128958464
+        },
+        ".o": {
+          "files": 1918,
+          "logical_bytes": 137279008,
+          "inode_allocated_clone_unaware_bytes": 140931072
+        },
+        ".rlib": {
+          "files": 152,
+          "logical_bytes": 144207368,
+          "inode_allocated_clone_unaware_bytes": 144486400
+        }
+      }
+    },
+    "role-01-parser": {
+      "volume_used_bytes": 1258577920,
+      "container_used_bytes": 1320423424,
+      "stable": true,
+      "samples": [
+        {
+          "volume_used_bytes": 1258577920,
+          "container_used_bytes": 1320423424
+        },
+        {
+          "volume_used_bytes": 1258577920,
+          "container_used_bytes": 1320423424
+        },
+        {
+          "volume_used_bytes": 1258577920,
+          "container_used_bytes": 1320423424
+        }
+      ],
+      "artifact_groups": {
+        "other": {
+          "files": 2515,
+          "logical_bytes": 491783124,
+          "inode_allocated_clone_unaware_bytes": 499658752
+        },
+        ".o": {
+          "files": 2433,
+          "logical_bytes": 167367160,
+          "inode_allocated_clone_unaware_bytes": 171974656
+        },
+        ".rmeta": {
+          "files": 268,
+          "logical_bytes": 238784209,
+          "inode_allocated_clone_unaware_bytes": 239366144
+        },
+        "query-cache": {
+          "files": 36,
+          "logical_bytes": 158030991,
+          "inode_allocated_clone_unaware_bytes": 158097408
+        },
+        ".rlib": {
+          "files": 230,
+          "logical_bytes": 188219776,
+          "inode_allocated_clone_unaware_bytes": 188641280
+        }
+      }
+    },
+    "role-02-add-ast-root": {
+      "volume_used_bytes": 1266855936,
+      "container_used_bytes": 1328701440,
+      "stable": true,
+      "samples": [
+        {
+          "volume_used_bytes": 1266855936,
+          "container_used_bytes": 1328701440
+        },
+        {
+          "volume_used_bytes": 1266855936,
+          "container_used_bytes": 1328701440
+        },
+        {
+          "volume_used_bytes": 1266855936,
+          "container_used_bytes": 1328701440
+        }
+      ],
+      "artifact_groups": {
+        "other": {
+          "files": 2516,
+          "logical_bytes": 491787674,
+          "inode_allocated_clone_unaware_bytes": 499269632
+        },
+        ".o": {
+          "files": 2433,
+          "logical_bytes": 167367160,
+          "inode_allocated_clone_unaware_bytes": 171974656
+        },
+        ".rmeta": {
+          "files": 268,
+          "logical_bytes": 238784209,
+          "inode_allocated_clone_unaware_bytes": 239366144
+        },
+        "query-cache": {
+          "files": 36,
+          "logical_bytes": 159157330,
+          "inode_allocated_clone_unaware_bytes": 159223808
+        },
+        ".rlib": {
+          "files": 231,
+          "logical_bytes": 211200672,
+          "inode_allocated_clone_unaware_bytes": 211628032
+        }
+      }
+    },
+    "role-03-return-parser": {
+      "volume_used_bytes": 1275940864,
+      "container_used_bytes": 1337786368,
+      "stable": true,
+      "samples": [
+        {
+          "volume_used_bytes": 1275940864,
+          "container_used_bytes": 1337786368
+        },
+        {
+          "volume_used_bytes": 1275940864,
+          "container_used_bytes": 1337786368
+        },
+        {
+          "volume_used_bytes": 1275940864,
+          "container_used_bytes": 1337786368
+        }
+      ],
+      "artifact_groups": {
+        "other": {
+          "files": 2516,
+          "logical_bytes": 491795345,
+          "inode_allocated_clone_unaware_bytes": 499490816
+        },
+        ".o": {
+          "files": 2433,
+          "logical_bytes": 167367160,
+          "inode_allocated_clone_unaware_bytes": 171974656
+        },
+        ".rmeta": {
+          "files": 268,
+          "logical_bytes": 238784209,
+          "inode_allocated_clone_unaware_bytes": 239366144
+        },
+        "query-cache": {
+          "files": 36,
+          "logical_bytes": 160091551,
+          "inode_allocated_clone_unaware_bytes": 160161792
+        },
+        ".rlib": {
+          "files": 231,
+          "logical_bytes": 203666248,
+          "inode_allocated_clone_unaware_bytes": 204091392
+        }
+      }
+    },
+    "role-04-noop": {
+      "volume_used_bytes": 1275940864,
+      "container_used_bytes": 1337786368,
+      "stable": true,
+      "samples": [
+        {
+          "volume_used_bytes": 1275940864,
+          "container_used_bytes": 1337786368
+        },
+        {
+          "volume_used_bytes": 1275940864,
+          "container_used_bytes": 1337786368
+        },
+        {
+          "volume_used_bytes": 1275940864,
+          "container_used_bytes": 1337786368
+        }
+      ],
+      "artifact_groups": {
+        "other": {
+          "files": 2516,
+          "logical_bytes": 491795345,
+          "inode_allocated_clone_unaware_bytes": 499490816
+        },
+        ".o": {
+          "files": 2433,
+          "logical_bytes": 167367160,
+          "inode_allocated_clone_unaware_bytes": 171974656
+        },
+        ".rmeta": {
+          "files": 268,
+          "logical_bytes": 238784209,
+          "inode_allocated_clone_unaware_bytes": 239366144
+        },
+        "query-cache": {
+          "files": 36,
+          "logical_bytes": 160091551,
+          "inode_allocated_clone_unaware_bytes": 160161792
+        },
+        ".rlib": {
+          "files": 231,
+          "logical_bytes": 203666248,
+          "inode_allocated_clone_unaware_bytes": 204091392
+        }
+      }
+    }
+  },
+  "complete": true,
+  "detach_attempts": [
+    {
+      "returncode": 0,
+      "stdout": "\"disk18\" ejected.\n",
+      "stderr": ""
+    }
+  ]
+}

@@ -1,0 +1,1236 @@
+{
+  "rows": {
+    "off1": {
+      "cargo_sha256": "2e6a4fed471da02f16d6fb369ae8238cbd523be4a182fd2a45801ee5244f8bdc",
+      "rustc_sha256": "5d87dbf31bdff571fc94181be7cc241ccd80936404f9a87b1a91476670f1c95c",
+      "retained_physical_bytes_after_source_checkout": {
+        "build": 264060928,
+        "workflow": 742678528,
+        "edit": 753278976,
+        "export": 896999424,
+        "final": 896999424
+      },
+      "workflow_wall_seconds": 43.694546876242384,
+      "workflow_child_cpu_seconds": 123.142003,
+      "steps": {
+        "02-build": {
+          "elapsed_seconds": 9.3103113330435,
+          "child_user_seconds": 25.686394,
+          "child_system_seconds": 5.267612,
+          "compiling_lines": 78,
+          "summaries": []
+        },
+        "03-build-noop": {
+          "elapsed_seconds": 0.09886270901188254,
+          "child_user_seconds": 0.03738999999999848,
+          "child_system_seconds": 0.05242600000000053,
+          "compiling_lines": 0,
+          "summaries": []
+        },
+        "04-tests": {
+          "elapsed_seconds": 18.132061416981742,
+          "child_user_seconds": 53.49635000000001,
+          "child_system_seconds": 6.299434,
+          "compiling_lines": 62,
+          "summaries": [
+            "test parser::scratch_buffer::tests::snapshot_is_empty_relative_to_its_buffer ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored - should panic ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored_in_reverse_order - should panic ... ok",
+            "test result: ok. 245 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s",
+            "test result: ok. 556 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.16s",
+            "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s",
+            "test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s"
+          ]
+        },
+        "05-tests-noop": {
+          "elapsed_seconds": 1.1192684171255678,
+          "child_user_seconds": 0.5044400000000024,
+          "child_system_seconds": 1.2147989999999993,
+          "compiling_lines": 0,
+          "summaries": [
+            "test parser::scratch_buffer::tests::snapshot_is_empty_relative_to_its_buffer ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored - should panic ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored_in_reverse_order - should panic ... ok",
+            "test result: ok. 245 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.04s",
+            "test result: ok. 556 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.16s",
+            "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s",
+            "test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s"
+          ]
+        },
+        "06-check": {
+          "elapsed_seconds": 0.27985875005833805,
+          "child_user_seconds": 0.3732179999999943,
+          "child_system_seconds": 0.10388400000000075,
+          "compiling_lines": 0,
+          "summaries": []
+        },
+        "07-clippy": {
+          "elapsed_seconds": 1.683386666001752,
+          "child_user_seconds": 3.067430999999999,
+          "child_system_seconds": 0.6039139999999996,
+          "compiling_lines": 0,
+          "summaries": []
+        },
+        "08-edit": {
+          "elapsed_seconds": 0.1795857921242714,
+          "child_user_seconds": 0.09491800000000694,
+          "child_system_seconds": 0.20397200000000026,
+          "compiling_lines": 0,
+          "summaries": []
+        },
+        "09-edit-tests": {
+          "elapsed_seconds": 5.678424499928951,
+          "child_user_seconds": 3.5575159999999926,
+          "child_system_seconds": 1.8193479999999997,
+          "compiling_lines": 1,
+          "summaries": [
+            "test parser::scratch_buffer::tests::snapshot_is_empty_relative_to_its_buffer ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored_in_reverse_order - should panic ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored - should panic ... ok",
+            "test result: ok. 245 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s",
+            "test result: ok. 557 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.17s",
+            "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s",
+            "test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.04s"
+          ]
+        },
+        "10-export-ast": {
+          "elapsed_seconds": 5.84047529194504,
+          "child_user_seconds": 17.611608000000004,
+          "child_system_seconds": 1.3247679999999988,
+          "compiling_lines": 15,
+          "summaries": []
+        },
+        "11-return-to-parser": {
+          "elapsed_seconds": 1.3723120000213385,
+          "child_user_seconds": 0.5826789999999988,
+          "child_system_seconds": 1.2399020000000007,
+          "compiling_lines": 0,
+          "summaries": [
+            "test parser::scratch_buffer::tests::snapshot_is_empty_relative_to_its_buffer ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored - should panic ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored_in_reverse_order - should panic ... ok",
+            "test result: ok. 245 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.06s",
+            "test result: ok. 557 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.21s",
+            "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s",
+            "test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.04s"
+          ]
+        }
+      },
+      "final_artifact_groups_clone_unaware": {
+        "other": {
+          "files": 1690,
+          "logical_bytes": 386538812,
+          "inode_allocated_clone_unaware_bytes": 394350592
+        },
+        ".rmeta": {
+          "files": 186,
+          "logical_bytes": 168549109,
+          "inode_allocated_clone_unaware_bytes": 168951808
+        },
+        "query-cache": {
+          "files": 31,
+          "logical_bytes": 128865640,
+          "inode_allocated_clone_unaware_bytes": 128925696
+        },
+        ".o": {
+          "files": 1918,
+          "logical_bytes": 137279008,
+          "inode_allocated_clone_unaware_bytes": 140931072
+        },
+        ".rlib": {
+          "files": 152,
+          "logical_bytes": 163181136,
+          "inode_allocated_clone_unaware_bytes": 163844096
+        }
+      },
+      "role_transition": {
+        "steps": [
+          {
+            "name": "role-01-parser",
+            "argv": [
+              "/private/tmp/codex-cargo-targets/cargo/workspace-metadata/ohm/release/cargo",
+              "build",
+              "--offline",
+              "-p",
+              "ruff_python_parser"
+            ],
+            "elapsed_seconds": 12.236123665934429,
+            "returncode": 0,
+            "child_user_seconds": 28.455057,
+            "child_system_seconds": 6.083692,
+            "compiling": [
+              "   Compiling proc-macro2 v1.0.107",
+              "   Compiling quote v1.0.47",
+              "   Compiling unicode-ident v1.0.24",
+              "   Compiling smallvec v1.15.2",
+              "   Compiling libc v0.2.189",
+              "   Compiling zerocopy v0.8.27",
+              "   Compiling cfg-if v1.0.4",
+              "   Compiling rustversion v1.0.22",
+              "   Compiling syn v2.0.119",
+              "   Compiling proc-macro-utils v0.10.0",
+              "   Compiling getrandom v0.2.16",
+              "   Compiling interpolator v0.5.0",
+              "   Compiling manyhow-macros v0.11.4",
+              "   Compiling collection_literals v1.0.2",
+              "   Compiling zmij v1.0.10",
+              "   Compiling rand_core v0.6.4",
+              "   Compiling equivalent v1.0.2",
+              "   Compiling hashbrown v0.17.1",
+              "   Compiling ppv-lite86 v0.2.21",
+              "   Compiling rand_chacha v0.3.1",
+              "   Compiling castaway v0.2.4",
+              "   Compiling indexmap v2.14.0",
+              "   Compiling static_assertions v1.1.0",
+              "   Compiling itoa v1.0.15",
+              "   Compiling shlex v2.0.1",
+              "   Compiling find-msvc-tools v0.1.9",
+              "   Compiling manyhow v0.11.4",
+              "   Compiling object v0.39.1",
+              "   Compiling siphasher v1.0.1",
+              "   Compiling phf_shared v0.11.3",
+              "   Compiling cc v1.2.65",
+              "   Compiling ordermap v1.2.0",
+              "   Compiling compact_str v0.10.0",
+              "   Compiling rand v0.8.5",
+              "   Compiling thin-vec v0.2.19",
+              "   Compiling quote-use-macros v0.8.4",
+              "   Compiling derive-where v1.6.0",
+              "   Compiling memchr v2.8.3",
+              "   Compiling phf_generator v0.11.3",
+              "   Compiling quote-use v0.8.4",
+              "   Compiling attribute-derive-macro v0.10.3",
+              "   Compiling unicode-width v0.2.2",
+              "   Compiling getopts v0.2.24",
+              "   Compiling phf_codegen v0.11.3",
+              "   Compiling log v0.4.33",
+              "   Compiling unicode_names2_generator v1.3.0",
+              "   Compiling syn v3.0.3",
+              "   Compiling attribute-derive v0.10.3",
+              "   Compiling thiserror v2.0.19",
+              "   Compiling get-size-derive2 v0.10.3",
+              "   Compiling get-size2 v0.10.3",
+              "   Compiling ar_archive_writer v0.5.3",
+              "   Compiling either v1.15.0",
+              "   Compiling itertools v0.15.0",
+              "   Compiling ruff_text_size v0.0.11 (/private/tmp/codex-cargo-targets/ruff/isolated/target-size-workspace-metadata/off1/volume/donor/crates/ruff_text_size)",
+              "   Compiling thiserror-impl v2.0.19",
+              "   Compiling psm v0.1.32",
+              "   Compiling ruff_source_file v0.0.11 (/private/tmp/codex-cargo-targets/ruff/isolated/target-size-workspace-metadata/off1/volume/donor/crates/ruff_source_file)",
+              "   Compiling unicode_names2 v1.3.0",
+              "   Compiling stacker v0.1.25",
+              "   Compiling ryu v1.0.20",
+              "   Compiling tinyvec_macros v0.1.1",
+              "   Compiling rustc-hash v2.1.3",
+              "   Compiling heck v0.5.0",
+              "   Compiling ruff_python_trivia v0.0.11 (/private/tmp/codex-cargo-targets/ruff/isolated/target-size-workspace-metadata/off1/volume/donor/crates/ruff_python_trivia)",
+              "   Compiling char_str v0.0.2",
+              "   Compiling tinyvec v1.10.0",
+              "   Compiling is-macro v0.3.7",
+              "   Compiling phf v0.11.3",
+              "   Compiling aho-corasick v1.1.5",
+              "   Compiling arrayvec v0.7.8",
+              "   Compiling regex-automata v0.4.18",
+              "   Compiling bitflags v2.13.1",
+              "   Compiling bstr v1.13.0",
+              "   Compiling ruff_python_ast v0.0.11 (/private/tmp/codex-cargo-targets/ruff/isolated/target-size-workspace-metadata/off1/volume/donor/crates/ruff_python_ast)",
+              "   Compiling unicode-normalization v0.1.24",
+              "   Compiling drop_bomb v0.1.5",
+              "   Compiling ruff_python_parser v0.0.11 (/private/tmp/codex-cargo-targets/ruff/isolated/target-size-workspace-metadata/off1/volume/donor/crates/ruff_python_parser)"
+            ]
+          },
+          {
+            "name": "role-02-add-ast-root",
+            "argv": [
+              "/private/tmp/codex-cargo-targets/cargo/workspace-metadata/ohm/release/cargo",
+              "build",
+              "--offline",
+              "-p",
+              "ruff_python_parser",
+              "-p",
+              "ruff_python_ast"
+            ],
+            "elapsed_seconds": 0.11672220914624631,
+            "returncode": 0,
+            "child_user_seconds": 0.04049000000000191,
+            "child_system_seconds": 0.06162299999999998,
+            "compiling": []
+          },
+          {
+            "name": "role-03-return-parser",
+            "argv": [
+              "/private/tmp/codex-cargo-targets/cargo/workspace-metadata/ohm/release/cargo",
+              "build",
+              "--offline",
+              "-p",
+              "ruff_python_parser"
+            ],
+            "elapsed_seconds": 0.07505412492901087,
+            "returncode": 0,
+            "child_user_seconds": 0.025990999999997655,
+            "child_system_seconds": 0.039711000000000496,
+            "compiling": []
+          },
+          {
+            "name": "role-04-noop",
+            "argv": [
+              "/private/tmp/codex-cargo-targets/cargo/workspace-metadata/ohm/release/cargo",
+              "build",
+              "--offline",
+              "-p",
+              "ruff_python_parser"
+            ],
+            "elapsed_seconds": 0.09386229189112782,
+            "returncode": 0,
+            "child_user_seconds": 0.033789999999999765,
+            "child_system_seconds": 0.048160999999999454,
+            "compiling": []
+          }
+        ],
+        "retained_physical_bytes": {
+          "role-01-parser": 263602176,
+          "role-02-add-ast-root": 263610368,
+          "role-03-return-parser": 263610368,
+          "role-04-noop": 263610368
+        }
+      }
+    },
+    "on1": {
+      "cargo_sha256": "2e6a4fed471da02f16d6fb369ae8238cbd523be4a182fd2a45801ee5244f8bdc",
+      "rustc_sha256": "5d87dbf31bdff571fc94181be7cc241ccd80936404f9a87b1a91476670f1c95c",
+      "retained_physical_bytes_after_source_checkout": {
+        "build": 256262144,
+        "workflow": 724537344,
+        "edit": 734732288,
+        "export": 877125632,
+        "final": 877125632
+      },
+      "workflow_wall_seconds": 42.02984054083936,
+      "workflow_child_cpu_seconds": 121.609226,
+      "steps": {
+        "02-build": {
+          "elapsed_seconds": 9.678490249905735,
+          "child_user_seconds": 26.481729,
+          "child_system_seconds": 5.332129999999999,
+          "compiling_lines": 78,
+          "summaries": []
+        },
+        "03-build-noop": {
+          "elapsed_seconds": 0.10377337504178286,
+          "child_user_seconds": 0.03198199999999929,
+          "child_system_seconds": 0.057571000000002925,
+          "compiling_lines": 0,
+          "summaries": []
+        },
+        "04-tests": {
+          "elapsed_seconds": 18.52930570789613,
+          "child_user_seconds": 54.916207000000014,
+          "child_system_seconds": 6.4099159999999955,
+          "compiling_lines": 62,
+          "summaries": [
+            "test parser::scratch_buffer::tests::snapshot_is_empty_relative_to_its_buffer ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored - should panic ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored_in_reverse_order - should panic ... ok",
+            "test result: ok. 245 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s",
+            "test result: ok. 556 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.16s",
+            "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s",
+            "test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s"
+          ]
+        },
+        "05-tests-noop": {
+          "elapsed_seconds": 1.1069761659018695,
+          "child_user_seconds": 0.49430199999997626,
+          "child_system_seconds": 1.1978870000000015,
+          "compiling_lines": 0,
+          "summaries": [
+            "test parser::scratch_buffer::tests::snapshot_is_empty_relative_to_its_buffer ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored_in_reverse_order - should panic ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored - should panic ... ok",
+            "test result: ok. 245 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.04s",
+            "test result: ok. 556 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.15s",
+            "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s",
+            "test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s"
+          ]
+        },
+        "06-check": {
+          "elapsed_seconds": 0.38861470902338624,
+          "child_user_seconds": 0.37957100000002697,
+          "child_system_seconds": 0.10652900000000187,
+          "compiling_lines": 0,
+          "summaries": []
+        },
+        "07-clippy": {
+          "elapsed_seconds": 1.7776053331326693,
+          "child_user_seconds": 2.984421999999995,
+          "child_system_seconds": 0.640500000000003,
+          "compiling_lines": 0,
+          "summaries": []
+        },
+        "08-edit": {
+          "elapsed_seconds": 0.4654775829985738,
+          "child_user_seconds": 0.21591499999999542,
+          "child_system_seconds": 0.35404999999999376,
+          "compiling_lines": 0,
+          "summaries": []
+        },
+        "09-edit-tests": {
+          "elapsed_seconds": 4.2286780420690775,
+          "child_user_seconds": 3.4101420000000076,
+          "child_system_seconds": 1.8550260000000023,
+          "compiling_lines": 1,
+          "summaries": [
+            "test parser::scratch_buffer::tests::snapshot_is_empty_relative_to_its_buffer ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored_in_reverse_order - should panic ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored - should panic ... ok",
+            "test result: ok. 245 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.06s",
+            "test result: ok. 557 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.17s",
+            "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s",
+            "test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s"
+          ]
+        },
+        "10-export-ast": {
+          "elapsed_seconds": 4.638168374774978,
+          "child_user_seconds": 13.970038999999986,
+          "child_system_seconds": 1.0653569999999988,
+          "compiling_lines": 15,
+          "summaries": []
+        },
+        "11-return-to-parser": {
+          "elapsed_seconds": 1.1127510000951588,
+          "child_user_seconds": 0.505911999999995,
+          "child_system_seconds": 1.2000390000000039,
+          "compiling_lines": 0,
+          "summaries": [
+            "test parser::scratch_buffer::tests::snapshot_is_empty_relative_to_its_buffer ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored - should panic ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored_in_reverse_order - should panic ... ok",
+            "test result: ok. 245 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s",
+            "test result: ok. 557 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.15s",
+            "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s",
+            "test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.04s"
+          ]
+        }
+      },
+      "final_artifact_groups_clone_unaware": {
+        "other": {
+          "files": 1690,
+          "logical_bytes": 386542926,
+          "inode_allocated_clone_unaware_bytes": 393732096
+        },
+        ".rmeta": {
+          "files": 186,
+          "logical_bytes": 168549095,
+          "inode_allocated_clone_unaware_bytes": 168951808
+        },
+        "query-cache": {
+          "files": 31,
+          "logical_bytes": 128897820,
+          "inode_allocated_clone_unaware_bytes": 128958464
+        },
+        ".o": {
+          "files": 1918,
+          "logical_bytes": 137279008,
+          "inode_allocated_clone_unaware_bytes": 140931072
+        },
+        ".rlib": {
+          "files": 152,
+          "logical_bytes": 144207368,
+          "inode_allocated_clone_unaware_bytes": 144486400
+        }
+      },
+      "role_transition": {
+        "steps": [
+          {
+            "name": "role-01-parser",
+            "argv": [
+              "/private/tmp/codex-cargo-targets/cargo/workspace-metadata/ohm/release/cargo",
+              "build",
+              "--offline",
+              "-p",
+              "ruff_python_parser"
+            ],
+            "elapsed_seconds": 10.485216833185405,
+            "returncode": 0,
+            "child_user_seconds": 28.018447000000002,
+            "child_system_seconds": 5.453526,
+            "compiling": [
+              "   Compiling proc-macro2 v1.0.107",
+              "   Compiling quote v1.0.47",
+              "   Compiling unicode-ident v1.0.24",
+              "   Compiling smallvec v1.15.2",
+              "   Compiling libc v0.2.189",
+              "   Compiling zerocopy v0.8.27",
+              "   Compiling cfg-if v1.0.4",
+              "   Compiling rustversion v1.0.22",
+              "   Compiling syn v2.0.119",
+              "   Compiling proc-macro-utils v0.10.0",
+              "   Compiling getrandom v0.2.16",
+              "   Compiling interpolator v0.5.0",
+              "   Compiling manyhow-macros v0.11.4",
+              "   Compiling collection_literals v1.0.2",
+              "   Compiling zmij v1.0.10",
+              "   Compiling rand_core v0.6.4",
+              "   Compiling ppv-lite86 v0.2.21",
+              "   Compiling equivalent v1.0.2",
+              "   Compiling hashbrown v0.17.1",
+              "   Compiling rand_chacha v0.3.1",
+              "   Compiling castaway v0.2.4",
+              "   Compiling indexmap v2.14.0",
+              "   Compiling static_assertions v1.1.0",
+              "   Compiling itoa v1.0.15",
+              "   Compiling shlex v2.0.1",
+              "   Compiling find-msvc-tools v0.1.9",
+              "   Compiling manyhow v0.11.4",
+              "   Compiling object v0.39.1",
+              "   Compiling siphasher v1.0.1",
+              "   Compiling phf_shared v0.11.3",
+              "   Compiling cc v1.2.65",
+              "   Compiling ordermap v1.2.0",
+              "   Compiling compact_str v0.10.0",
+              "   Compiling rand v0.8.5",
+              "   Compiling quote-use-macros v0.8.4",
+              "   Compiling derive-where v1.6.0",
+              "   Compiling thin-vec v0.2.19",
+              "   Compiling quote-use v0.8.4",
+              "   Compiling memchr v2.8.3",
+              "   Compiling phf_generator v0.11.3",
+              "   Compiling attribute-derive-macro v0.10.3",
+              "   Compiling unicode-width v0.2.2",
+              "   Compiling getopts v0.2.24",
+              "   Compiling phf_codegen v0.11.3",
+              "   Compiling log v0.4.33",
+              "   Compiling syn v3.0.3",
+              "   Compiling attribute-derive v0.10.3",
+              "   Compiling unicode_names2_generator v1.3.0",
+              "   Compiling thiserror v2.0.19",
+              "   Compiling get-size-derive2 v0.10.3",
+              "   Compiling get-size2 v0.10.3",
+              "   Compiling either v1.15.0",
+              "   Compiling ar_archive_writer v0.5.3",
+              "   Compiling itertools v0.15.0",
+              "   Compiling thiserror-impl v2.0.19",
+              "   Compiling ruff_text_size v0.0.11 (/private/tmp/codex-cargo-targets/ruff/isolated/target-size-workspace-metadata/on1/volume/donor/crates/ruff_text_size)",
+              "   Compiling ruff_source_file v0.0.11 (/private/tmp/codex-cargo-targets/ruff/isolated/target-size-workspace-metadata/on1/volume/donor/crates/ruff_source_file)",
+              "   Compiling psm v0.1.32",
+              "   Compiling unicode_names2 v1.3.0",
+              "   Compiling stacker v0.1.25",
+              "   Compiling ryu v1.0.20",
+              "   Compiling tinyvec_macros v0.1.1",
+              "   Compiling rustc-hash v2.1.3",
+              "   Compiling heck v0.5.0",
+              "   Compiling ruff_python_trivia v0.0.11 (/private/tmp/codex-cargo-targets/ruff/isolated/target-size-workspace-metadata/on1/volume/donor/crates/ruff_python_trivia)",
+              "   Compiling is-macro v0.3.7",
+              "   Compiling char_str v0.0.2",
+              "   Compiling tinyvec v1.10.0",
+              "   Compiling phf v0.11.3",
+              "   Compiling aho-corasick v1.1.5",
+              "   Compiling arrayvec v0.7.8",
+              "   Compiling regex-automata v0.4.18",
+              "   Compiling bitflags v2.13.1",
+              "   Compiling ruff_python_ast v0.0.11 (/private/tmp/codex-cargo-targets/ruff/isolated/target-size-workspace-metadata/on1/volume/donor/crates/ruff_python_ast)",
+              "   Compiling bstr v1.13.0",
+              "   Compiling unicode-normalization v0.1.24",
+              "   Compiling drop_bomb v0.1.5",
+              "   Compiling ruff_python_parser v0.0.11 (/private/tmp/codex-cargo-targets/ruff/isolated/target-size-workspace-metadata/on1/volume/donor/crates/ruff_python_parser)"
+            ]
+          },
+          {
+            "name": "role-02-add-ast-root",
+            "argv": [
+              "/private/tmp/codex-cargo-targets/cargo/workspace-metadata/ohm/release/cargo",
+              "build",
+              "--offline",
+              "-p",
+              "ruff_python_parser",
+              "-p",
+              "ruff_python_ast"
+            ],
+            "elapsed_seconds": 2.148900375002995,
+            "returncode": 0,
+            "child_user_seconds": 5.051811000000001,
+            "child_system_seconds": 0.4011420000000001,
+            "compiling": [
+              "   Compiling ruff_python_ast v0.0.11 (/private/tmp/codex-cargo-targets/ruff/isolated/target-size-workspace-metadata/on1/volume/donor/crates/ruff_python_ast)",
+              "   Compiling ruff_python_parser v0.0.11 (/private/tmp/codex-cargo-targets/ruff/isolated/target-size-workspace-metadata/on1/volume/donor/crates/ruff_python_parser)"
+            ]
+          },
+          {
+            "name": "role-03-return-parser",
+            "argv": [
+              "/private/tmp/codex-cargo-targets/cargo/workspace-metadata/ohm/release/cargo",
+              "build",
+              "--offline",
+              "-p",
+              "ruff_python_parser"
+            ],
+            "elapsed_seconds": 2.095248542027548,
+            "returncode": 0,
+            "child_user_seconds": 5.089489,
+            "child_system_seconds": 0.3881610000000002,
+            "compiling": [
+              "   Compiling ruff_python_ast v0.0.11 (/private/tmp/codex-cargo-targets/ruff/isolated/target-size-workspace-metadata/on1/volume/donor/crates/ruff_python_ast)",
+              "   Compiling ruff_python_parser v0.0.11 (/private/tmp/codex-cargo-targets/ruff/isolated/target-size-workspace-metadata/on1/volume/donor/crates/ruff_python_parser)"
+            ]
+          },
+          {
+            "name": "role-04-noop",
+            "argv": [
+              "/private/tmp/codex-cargo-targets/cargo/workspace-metadata/ohm/release/cargo",
+              "build",
+              "--offline",
+              "-p",
+              "ruff_python_parser"
+            ],
+            "elapsed_seconds": 0.08284950000233948,
+            "returncode": 0,
+            "child_user_seconds": 0.028126000000000317,
+            "child_system_seconds": 0.04465699999999906,
+            "compiling": []
+          }
+        ],
+        "retained_physical_bytes": {
+          "role-01-parser": 256102400,
+          "role-02-add-ast-root": 264380416,
+          "role-03-return-parser": 273465344,
+          "role-04-noop": 273465344
+        }
+      }
+    },
+    "on2": {
+      "cargo_sha256": "2e6a4fed471da02f16d6fb369ae8238cbd523be4a182fd2a45801ee5244f8bdc",
+      "rustc_sha256": "5d87dbf31bdff571fc94181be7cc241ccd80936404f9a87b1a91476670f1c95c",
+      "retained_physical_bytes_after_source_checkout": {
+        "build": 256192512,
+        "workflow": 724164608,
+        "edit": 734146560,
+        "export": 876769280,
+        "final": 876769280
+      },
+      "workflow_wall_seconds": 41.294474749593064,
+      "workflow_child_cpu_seconds": 111.413387,
+      "steps": {
+        "02-build": {
+          "elapsed_seconds": 8.928413500078022,
+          "child_user_seconds": 25.547584,
+          "child_system_seconds": 5.094661000000002,
+          "compiling_lines": 78,
+          "summaries": []
+        },
+        "03-build-noop": {
+          "elapsed_seconds": 0.07715787505730987,
+          "child_user_seconds": 0.025048000000026605,
+          "child_system_seconds": 0.04259599999999608,
+          "compiling_lines": 0,
+          "summaries": []
+        },
+        "04-tests": {
+          "elapsed_seconds": 16.412024500081316,
+          "child_user_seconds": 47.87740099999996,
+          "child_system_seconds": 5.813139,
+          "compiling_lines": 62,
+          "summaries": [
+            "test parser::scratch_buffer::tests::snapshot_is_empty_relative_to_its_buffer ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored_in_reverse_order - should panic ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored - should panic ... ok",
+            "test result: ok. 245 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s",
+            "test result: ok. 556 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.15s",
+            "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s",
+            "test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.04s"
+          ]
+        },
+        "05-tests-noop": {
+          "elapsed_seconds": 1.252480500144884,
+          "child_user_seconds": 0.5168080000000259,
+          "child_system_seconds": 1.264675000000004,
+          "compiling_lines": 0,
+          "summaries": [
+            "test parser::scratch_buffer::tests::snapshot_is_empty_relative_to_its_buffer ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored - should panic ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored_in_reverse_order - should panic ... ok",
+            "test result: ok. 245 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.07s",
+            "test result: ok. 556 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.17s",
+            "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s",
+            "test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s"
+          ]
+        },
+        "06-check": {
+          "elapsed_seconds": 0.29752579098567367,
+          "child_user_seconds": 0.3853849999999852,
+          "child_system_seconds": 0.10041999999999973,
+          "compiling_lines": 0,
+          "summaries": []
+        },
+        "07-clippy": {
+          "elapsed_seconds": 1.862253291066736,
+          "child_user_seconds": 3.186817000000019,
+          "child_system_seconds": 0.6678470000000019,
+          "compiling_lines": 0,
+          "summaries": []
+        },
+        "08-edit": {
+          "elapsed_seconds": 1.7815102501772344,
+          "child_user_seconds": 0.10965499999997519,
+          "child_system_seconds": 0.2927219999999977,
+          "compiling_lines": 0,
+          "summaries": []
+        },
+        "09-edit-tests": {
+          "elapsed_seconds": 5.429626791970804,
+          "child_user_seconds": 3.4258179999999925,
+          "child_system_seconds": 1.3273689999999974,
+          "compiling_lines": 1,
+          "summaries": [
+            "test parser::scratch_buffer::tests::snapshot_is_empty_relative_to_its_buffer ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored - should panic ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored_in_reverse_order - should panic ... ok",
+            "test result: ok. 245 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.35s",
+            "test result: ok. 557 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.95s",
+            "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s",
+            "test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s"
+          ]
+        },
+        "10-export-ast": {
+          "elapsed_seconds": 4.0946584169287235,
+          "child_user_seconds": 13.07284500000003,
+          "child_system_seconds": 0.980470000000004,
+          "compiling_lines": 15,
+          "summaries": []
+        },
+        "11-return-to-parser": {
+          "elapsed_seconds": 1.1588238331023604,
+          "child_user_seconds": 0.49032599999998183,
+          "child_system_seconds": 1.1918009999999981,
+          "compiling_lines": 0,
+          "summaries": [
+            "test parser::scratch_buffer::tests::snapshot_is_empty_relative_to_its_buffer ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored_in_reverse_order - should panic ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored - should panic ... ok",
+            "test result: ok. 245 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s",
+            "test result: ok. 557 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.15s",
+            "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s",
+            "test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s"
+          ]
+        }
+      },
+      "final_artifact_groups_clone_unaware": {
+        "other": {
+          "files": 1690,
+          "logical_bytes": 386550493,
+          "inode_allocated_clone_unaware_bytes": 392859648
+        },
+        ".rmeta": {
+          "files": 186,
+          "logical_bytes": 168549095,
+          "inode_allocated_clone_unaware_bytes": 168951808
+        },
+        "query-cache": {
+          "files": 31,
+          "logical_bytes": 128891242,
+          "inode_allocated_clone_unaware_bytes": 128950272
+        },
+        ".o": {
+          "files": 1918,
+          "logical_bytes": 137279008,
+          "inode_allocated_clone_unaware_bytes": 140931072
+        },
+        ".rlib": {
+          "files": 152,
+          "logical_bytes": 144207368,
+          "inode_allocated_clone_unaware_bytes": 144486400
+        }
+      },
+      "role_transition": {
+        "steps": [
+          {
+            "name": "role-01-parser",
+            "argv": [
+              "/private/tmp/codex-cargo-targets/cargo/workspace-metadata/ohm/release/cargo",
+              "build",
+              "--offline",
+              "-p",
+              "ruff_python_parser"
+            ],
+            "elapsed_seconds": 10.343931165989488,
+            "returncode": 0,
+            "child_user_seconds": 28.143674000000004,
+            "child_system_seconds": 5.507715000000001,
+            "compiling": [
+              "   Compiling proc-macro2 v1.0.107",
+              "   Compiling quote v1.0.47",
+              "   Compiling unicode-ident v1.0.24",
+              "   Compiling smallvec v1.15.2",
+              "   Compiling libc v0.2.189",
+              "   Compiling zerocopy v0.8.27",
+              "   Compiling rustversion v1.0.22",
+              "   Compiling cfg-if v1.0.4",
+              "   Compiling syn v2.0.119",
+              "   Compiling proc-macro-utils v0.10.0",
+              "   Compiling getrandom v0.2.16",
+              "   Compiling interpolator v0.5.0",
+              "   Compiling manyhow-macros v0.11.4",
+              "   Compiling collection_literals v1.0.2",
+              "   Compiling zmij v1.0.10",
+              "   Compiling rand_core v0.6.4",
+              "   Compiling ppv-lite86 v0.2.21",
+              "   Compiling equivalent v1.0.2",
+              "   Compiling hashbrown v0.17.1",
+              "   Compiling rand_chacha v0.3.1",
+              "   Compiling castaway v0.2.4",
+              "   Compiling indexmap v2.14.0",
+              "   Compiling object v0.39.1",
+              "   Compiling siphasher v1.0.1",
+              "   Compiling manyhow v0.11.4",
+              "   Compiling static_assertions v1.1.0",
+              "   Compiling itoa v1.0.15",
+              "   Compiling shlex v2.0.1",
+              "   Compiling find-msvc-tools v0.1.9",
+              "   Compiling compact_str v0.10.0",
+              "   Compiling cc v1.2.65",
+              "   Compiling ordermap v1.2.0",
+              "   Compiling phf_shared v0.11.3",
+              "   Compiling rand v0.8.5",
+              "   Compiling memchr v2.8.3",
+              "   Compiling quote-use-macros v0.8.4",
+              "   Compiling derive-where v1.6.0",
+              "   Compiling thin-vec v0.2.19",
+              "   Compiling quote-use v0.8.4",
+              "   Compiling phf_generator v0.11.3",
+              "   Compiling attribute-derive-macro v0.10.3",
+              "   Compiling unicode-width v0.2.2",
+              "   Compiling getopts v0.2.24",
+              "   Compiling phf_codegen v0.11.3",
+              "   Compiling log v0.4.33",
+              "   Compiling attribute-derive v0.10.3",
+              "   Compiling syn v3.0.3",
+              "   Compiling unicode_names2_generator v1.3.0",
+              "   Compiling thiserror v2.0.19",
+              "   Compiling get-size-derive2 v0.10.3",
+              "   Compiling either v1.15.0",
+              "   Compiling get-size2 v0.10.3",
+              "   Compiling ar_archive_writer v0.5.3",
+              "   Compiling thiserror-impl v2.0.19",
+              "   Compiling ruff_text_size v0.0.11 (/private/tmp/codex-cargo-targets/ruff/isolated/target-size-workspace-metadata/on2/volume/donor/crates/ruff_text_size)",
+              "   Compiling itertools v0.15.0",
+              "   Compiling ruff_source_file v0.0.11 (/private/tmp/codex-cargo-targets/ruff/isolated/target-size-workspace-metadata/on2/volume/donor/crates/ruff_source_file)",
+              "   Compiling psm v0.1.32",
+              "   Compiling unicode_names2 v1.3.0",
+              "   Compiling stacker v0.1.25",
+              "   Compiling rustc-hash v2.1.3",
+              "   Compiling heck v0.5.0",
+              "   Compiling ryu v1.0.20",
+              "   Compiling tinyvec_macros v0.1.1",
+              "   Compiling tinyvec v1.10.0",
+              "   Compiling ruff_python_trivia v0.0.11 (/private/tmp/codex-cargo-targets/ruff/isolated/target-size-workspace-metadata/on2/volume/donor/crates/ruff_python_trivia)",
+              "   Compiling is-macro v0.3.7",
+              "   Compiling char_str v0.0.2",
+              "   Compiling phf v0.11.3",
+              "   Compiling aho-corasick v1.1.5",
+              "   Compiling regex-automata v0.4.18",
+              "   Compiling bitflags v2.13.1",
+              "   Compiling arrayvec v0.7.8",
+              "   Compiling ruff_python_ast v0.0.11 (/private/tmp/codex-cargo-targets/ruff/isolated/target-size-workspace-metadata/on2/volume/donor/crates/ruff_python_ast)",
+              "   Compiling bstr v1.13.0",
+              "   Compiling unicode-normalization v0.1.24",
+              "   Compiling drop_bomb v0.1.5",
+              "   Compiling ruff_python_parser v0.0.11 (/private/tmp/codex-cargo-targets/ruff/isolated/target-size-workspace-metadata/on2/volume/donor/crates/ruff_python_parser)"
+            ]
+          },
+          {
+            "name": "role-02-add-ast-root",
+            "argv": [
+              "/private/tmp/codex-cargo-targets/cargo/workspace-metadata/ohm/release/cargo",
+              "build",
+              "--offline",
+              "-p",
+              "ruff_python_parser",
+              "-p",
+              "ruff_python_ast"
+            ],
+            "elapsed_seconds": 2.2929509999230504,
+            "returncode": 0,
+            "child_user_seconds": 5.191380999999993,
+            "child_system_seconds": 0.4170449999999981,
+            "compiling": [
+              "   Compiling ruff_python_ast v0.0.11 (/private/tmp/codex-cargo-targets/ruff/isolated/target-size-workspace-metadata/on2/volume/donor/crates/ruff_python_ast)",
+              "   Compiling ruff_python_parser v0.0.11 (/private/tmp/codex-cargo-targets/ruff/isolated/target-size-workspace-metadata/on2/volume/donor/crates/ruff_python_parser)"
+            ]
+          },
+          {
+            "name": "role-03-return-parser",
+            "argv": [
+              "/private/tmp/codex-cargo-targets/cargo/workspace-metadata/ohm/release/cargo",
+              "build",
+              "--offline",
+              "-p",
+              "ruff_python_parser"
+            ],
+            "elapsed_seconds": 2.0711652499157935,
+            "returncode": 0,
+            "child_user_seconds": 5.198571000000001,
+            "child_system_seconds": 0.41241400000000183,
+            "compiling": [
+              "   Compiling ruff_python_ast v0.0.11 (/private/tmp/codex-cargo-targets/ruff/isolated/target-size-workspace-metadata/on2/volume/donor/crates/ruff_python_ast)",
+              "   Compiling ruff_python_parser v0.0.11 (/private/tmp/codex-cargo-targets/ruff/isolated/target-size-workspace-metadata/on2/volume/donor/crates/ruff_python_parser)"
+            ]
+          },
+          {
+            "name": "role-04-noop",
+            "argv": [
+              "/private/tmp/codex-cargo-targets/cargo/workspace-metadata/ohm/release/cargo",
+              "build",
+              "--offline",
+              "-p",
+              "ruff_python_parser"
+            ],
+            "elapsed_seconds": 0.08028937480412424,
+            "returncode": 0,
+            "child_user_seconds": 0.02660099999999943,
+            "child_system_seconds": 0.04550699999999708,
+            "compiling": []
+          }
+        ],
+        "retained_physical_bytes": {
+          "role-01-parser": 255709184,
+          "role-02-add-ast-root": 264425472,
+          "role-03-return-parser": 273362944,
+          "role-04-noop": 273362944
+        }
+      }
+    },
+    "off2": {
+      "cargo_sha256": "2e6a4fed471da02f16d6fb369ae8238cbd523be4a182fd2a45801ee5244f8bdc",
+      "rustc_sha256": "5d87dbf31bdff571fc94181be7cc241ccd80936404f9a87b1a91476670f1c95c",
+      "retained_physical_bytes_after_source_checkout": {
+        "build": 264388608,
+        "workflow": 743952384,
+        "edit": 753397760,
+        "export": 896491520,
+        "final": 896491520
+      },
+      "workflow_wall_seconds": 42.1486288739834,
+      "workflow_child_cpu_seconds": 122.898619,
+      "steps": {
+        "02-build": {
+          "elapsed_seconds": 9.843777790898457,
+          "child_user_seconds": 28.305387999999994,
+          "child_system_seconds": 5.593127000000003,
+          "compiling_lines": 78,
+          "summaries": []
+        },
+        "03-build-noop": {
+          "elapsed_seconds": 0.0782935421448201,
+          "child_user_seconds": 0.026230999999995674,
+          "child_system_seconds": 0.044035000000000935,
+          "compiling_lines": 0,
+          "summaries": []
+        },
+        "04-tests": {
+          "elapsed_seconds": 18.116751291090623,
+          "child_user_seconds": 53.80321600000002,
+          "child_system_seconds": 6.4379320000000035,
+          "compiling_lines": 62,
+          "summaries": [
+            "test parser::scratch_buffer::tests::snapshot_is_empty_relative_to_its_buffer ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored - should panic ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored_in_reverse_order - should panic ... ok",
+            "test result: ok. 245 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s",
+            "test result: ok. 556 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.19s",
+            "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s",
+            "test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s"
+          ]
+        },
+        "05-tests-noop": {
+          "elapsed_seconds": 1.129452624823898,
+          "child_user_seconds": 0.4982369999999605,
+          "child_system_seconds": 1.1537620000000004,
+          "compiling_lines": 0,
+          "summaries": [
+            "test parser::scratch_buffer::tests::snapshot_is_empty_relative_to_its_buffer ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored - should panic ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored_in_reverse_order - should panic ... ok",
+            "test result: ok. 245 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s",
+            "test result: ok. 556 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.15s",
+            "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s",
+            "test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.04s"
+          ]
+        },
+        "06-check": {
+          "elapsed_seconds": 0.3169206250458956,
+          "child_user_seconds": 0.478300000000047,
+          "child_system_seconds": 0.11466699999999719,
+          "compiling_lines": 0,
+          "summaries": []
+        },
+        "07-clippy": {
+          "elapsed_seconds": 1.7990355419460684,
+          "child_user_seconds": 3.053024999999991,
+          "child_system_seconds": 0.66601,
+          "compiling_lines": 0,
+          "summaries": []
+        },
+        "08-edit": {
+          "elapsed_seconds": 0.32022141688503325,
+          "child_user_seconds": 0.17071899999996276,
+          "child_system_seconds": 0.16031399999999962,
+          "compiling_lines": 0,
+          "summaries": []
+        },
+        "09-edit-tests": {
+          "elapsed_seconds": 4.920294916024432,
+          "child_user_seconds": 3.626002000000028,
+          "child_system_seconds": 1.8266100000000023,
+          "compiling_lines": 1,
+          "summaries": [
+            "test parser::scratch_buffer::tests::snapshot_is_empty_relative_to_its_buffer ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored_in_reverse_order - should panic ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored - should panic ... ok",
+            "test result: ok. 245 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.08s",
+            "test result: ok. 557 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.17s",
+            "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s",
+            "test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.04s"
+          ]
+        },
+        "10-export-ast": {
+          "elapsed_seconds": 4.412475667195395,
+          "child_user_seconds": 14.067718000000013,
+          "child_system_seconds": 1.111976999999996,
+          "compiling_lines": 15,
+          "summaries": []
+        },
+        "11-return-to-parser": {
+          "elapsed_seconds": 1.2114054579287767,
+          "child_user_seconds": 0.5279899999999884,
+          "child_system_seconds": 1.233358999999993,
+          "compiling_lines": 0,
+          "summaries": [
+            "test parser::scratch_buffer::tests::snapshot_is_empty_relative_to_its_buffer ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored_in_reverse_order - should panic ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored - should panic ... ok",
+            "test result: ok. 245 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s",
+            "test result: ok. 557 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.18s",
+            "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s",
+            "test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s"
+          ]
+        }
+      },
+      "final_artifact_groups_clone_unaware": {
+        "other": {
+          "files": 1690,
+          "logical_bytes": 386554874,
+          "inode_allocated_clone_unaware_bytes": 394231808
+        },
+        ".rmeta": {
+          "files": 186,
+          "logical_bytes": 168549109,
+          "inode_allocated_clone_unaware_bytes": 168951808
+        },
+        "query-cache": {
+          "files": 31,
+          "logical_bytes": 128866058,
+          "inode_allocated_clone_unaware_bytes": 128929792
+        },
+        ".o": {
+          "files": 1918,
+          "logical_bytes": 137279008,
+          "inode_allocated_clone_unaware_bytes": 140931072
+        },
+        ".rlib": {
+          "files": 152,
+          "logical_bytes": 163181136,
+          "inode_allocated_clone_unaware_bytes": 163446784
+        }
+      },
+      "role_transition": {
+        "steps": [
+          {
+            "name": "role-01-parser",
+            "argv": [
+              "/private/tmp/codex-cargo-targets/cargo/workspace-metadata/ohm/release/cargo",
+              "build",
+              "--offline",
+              "-p",
+              "ruff_python_parser"
+            ],
+            "elapsed_seconds": 11.013320291880518,
+            "returncode": 0,
+            "child_user_seconds": 29.852421000000007,
+            "child_system_seconds": 5.67924,
+            "compiling": [
+              "   Compiling proc-macro2 v1.0.107",
+              "   Compiling quote v1.0.47",
+              "   Compiling unicode-ident v1.0.24",
+              "   Compiling smallvec v1.15.2",
+              "   Compiling libc v0.2.189",
+              "   Compiling zerocopy v0.8.27",
+              "   Compiling cfg-if v1.0.4",
+              "   Compiling rustversion v1.0.22",
+              "   Compiling syn v2.0.119",
+              "   Compiling proc-macro-utils v0.10.0",
+              "   Compiling getrandom v0.2.16",
+              "   Compiling interpolator v0.5.0",
+              "   Compiling manyhow-macros v0.11.4",
+              "   Compiling collection_literals v1.0.2",
+              "   Compiling zmij v1.0.10",
+              "   Compiling rand_core v0.6.4",
+              "   Compiling ppv-lite86 v0.2.21",
+              "   Compiling equivalent v1.0.2",
+              "   Compiling hashbrown v0.17.1",
+              "   Compiling rand_chacha v0.3.1",
+              "   Compiling castaway v0.2.4",
+              "   Compiling indexmap v2.14.0",
+              "   Compiling siphasher v1.0.1",
+              "   Compiling static_assertions v1.1.0",
+              "   Compiling itoa v1.0.15",
+              "   Compiling shlex v2.0.1",
+              "   Compiling find-msvc-tools v0.1.9",
+              "   Compiling manyhow v0.11.4",
+              "   Compiling object v0.39.1",
+              "   Compiling cc v1.2.65",
+              "   Compiling ordermap v1.2.0",
+              "   Compiling compact_str v0.10.0",
+              "   Compiling phf_shared v0.11.3",
+              "   Compiling rand v0.8.5",
+              "   Compiling thin-vec v0.2.19",
+              "   Compiling quote-use-macros v0.8.4",
+              "   Compiling derive-where v1.6.0",
+              "   Compiling memchr v2.8.3",
+              "   Compiling phf_generator v0.11.3",
+              "   Compiling quote-use v0.8.4",
+              "   Compiling unicode-width v0.2.2",
+              "   Compiling attribute-derive-macro v0.10.3",
+              "   Compiling getopts v0.2.24",
+              "   Compiling phf_codegen v0.11.3",
+              "   Compiling log v0.4.33",
+              "   Compiling syn v3.0.3",
+              "   Compiling unicode_names2_generator v1.3.0",
+              "   Compiling attribute-derive v0.10.3",
+              "   Compiling either v1.15.0",
+              "   Compiling thiserror v2.0.19",
+              "   Compiling get-size-derive2 v0.10.3",
+              "   Compiling get-size2 v0.10.3",
+              "   Compiling ar_archive_writer v0.5.3",
+              "   Compiling thiserror-impl v2.0.19",
+              "   Compiling ruff_text_size v0.0.11 (/private/tmp/codex-cargo-targets/ruff/isolated/target-size-workspace-metadata/off2/volume/donor/crates/ruff_text_size)",
+              "   Compiling psm v0.1.32",
+              "   Compiling ruff_source_file v0.0.11 (/private/tmp/codex-cargo-targets/ruff/isolated/target-size-workspace-metadata/off2/volume/donor/crates/ruff_source_file)",
+              "   Compiling itertools v0.15.0",
+              "   Compiling unicode_names2 v1.3.0",
+              "   Compiling stacker v0.1.25",
+              "   Compiling rustc-hash v2.1.3",
+              "   Compiling heck v0.5.0",
+              "   Compiling ryu v1.0.20",
+              "   Compiling tinyvec_macros v0.1.1",
+              "   Compiling tinyvec v1.10.0",
+              "   Compiling char_str v0.0.2",
+              "   Compiling is-macro v0.3.7",
+              "   Compiling ruff_python_trivia v0.0.11 (/private/tmp/codex-cargo-targets/ruff/isolated/target-size-workspace-metadata/off2/volume/donor/crates/ruff_python_trivia)",
+              "   Compiling phf v0.11.3",
+              "   Compiling aho-corasick v1.1.5",
+              "   Compiling arrayvec v0.7.8",
+              "   Compiling regex-automata v0.4.18",
+              "   Compiling bitflags v2.13.1",
+              "   Compiling bstr v1.13.0",
+              "   Compiling ruff_python_ast v0.0.11 (/private/tmp/codex-cargo-targets/ruff/isolated/target-size-workspace-metadata/off2/volume/donor/crates/ruff_python_ast)",
+              "   Compiling unicode-normalization v0.1.24",
+              "   Compiling drop_bomb v0.1.5",
+              "   Compiling ruff_python_parser v0.0.11 (/private/tmp/codex-cargo-targets/ruff/isolated/target-size-workspace-metadata/off2/volume/donor/crates/ruff_python_parser)"
+            ]
+          },
+          {
+            "name": "role-02-add-ast-root",
+            "argv": [
+              "/private/tmp/codex-cargo-targets/cargo/workspace-metadata/ohm/release/cargo",
+              "build",
+              "--offline",
+              "-p",
+              "ruff_python_parser",
+              "-p",
+              "ruff_python_ast"
+            ],
+            "elapsed_seconds": 0.1242822918575257,
+            "returncode": 0,
+            "child_user_seconds": 0.039069999999981064,
+            "child_system_seconds": 0.06196999999999875,
+            "compiling": []
+          },
+          {
+            "name": "role-03-return-parser",
+            "argv": [
+              "/private/tmp/codex-cargo-targets/cargo/workspace-metadata/ohm/release/cargo",
+              "build",
+              "--offline",
+              "-p",
+              "ruff_python_parser"
+            ],
+            "elapsed_seconds": 0.09904458303935826,
+            "returncode": 0,
+            "child_user_seconds": 0.03665500000002453,
+            "child_system_seconds": 0.05233600000000038,
+            "compiling": []
+          },
+          {
+            "name": "role-04-noop",
+            "argv": [
+              "/private/tmp/codex-cargo-targets/cargo/workspace-metadata/ohm/release/cargo",
+              "build",
+              "--offline",
+              "-p",
+              "ruff_python_parser"
+            ],
+            "elapsed_seconds": 0.08678545895963907,
+            "returncode": 0,
+            "child_user_seconds": 0.02987999999999147,
+            "child_system_seconds": 0.04579700000000031,
+            "compiling": []
+          }
+        ],
+        "retained_physical_bytes": {
+          "role-01-parser": 263995392,
+          "role-02-add-ast-root": 264003584,
+          "role-03-return-parser": 264003584,
+          "role-04-noop": 264003584
+        }
+      }
+    }
+  },
+  "pairs": [
+    {
+      "pair": "1",
+      "workflow_wall_change_percent": -3.8098720650840745,
+      "workflow_child_cpu_change_percent": -1.244723134802339,
+      "retained_physical_change_percent": {
+        "build": -2.9534032388161546,
+        "workflow": -2.442669784577367,
+        "edit": -2.4621273911672237,
+        "export": -2.2155858151364893,
+        "final": -2.2155858151364893
+      },
+      "role_transition_retained_physical_change_percent": {
+        "role-01-parser": -2.8451115669090643,
+        "role-02-add-ast-root": 0.2921159762578007,
+        "role-03-return-parser": 3.7384629727462038,
+        "role-04-noop": 3.7384629727462038
+      }
+    },
+    {
+      "pair": "2",
+      "workflow_wall_change_percent": -2.0265288509006996,
+      "workflow_child_cpu_change_percent": -9.345289713955207,
+      "retained_physical_change_percent": {
+        "build": -3.1000185908161337,
+        "workflow": -2.659817540150522,
+        "edit": -2.5552504960991707,
+        "export": -2.1999360350893227,
+        "final": -2.1999360350893227
+      },
+      "role_transition_retained_physical_change_percent": {
+        "role-01-parser": -3.138769937317698,
+        "role-02-add-ast-root": 0.15980389114718108,
+        "role-03-return-parser": 3.5451639929251932,
+        "role-04-noop": 3.5451639929251932
+      }
+    }
+  ],
+  "timing_caveat": "Other development workloads were active; these are storage screens with observational timings.",
+  "allocation_scope": "Dedicated APFS volume growth after donor checkout: build and incremental state, plus child checkout in the seeding workflow."
+}

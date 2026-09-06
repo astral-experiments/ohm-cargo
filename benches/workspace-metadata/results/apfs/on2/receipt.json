@@ -1,0 +1,670 @@
+{
+  "label": "on2",
+  "enabled": true,
+  "base": "1edf9fe2cab23e34c383419b8c7830324c428a58",
+  "edit": "0ecff877901a0377ad966ffab528488ce872b50e",
+  "cargo_sha256": "2e6a4fed471da02f16d6fb369ae8238cbd523be4a182fd2a45801ee5244f8bdc",
+  "rustc_sha256": "5d87dbf31bdff571fc94181be7cc241ccd80936404f9a87b1a91476670f1c95c",
+  "source_root": "/Users/charliemarsh/code/oss/ruff",
+  "volume": "/private/tmp/codex-cargo-targets/ruff/isolated/target-size-workspace-metadata/on2/volume",
+  "attach": {
+    "system-entities": [
+      {
+        "content-hint": "EFI",
+        "dev-entry": "/dev/disk18s1",
+        "potentially-mountable": true,
+        "unmapped-content-hint": "C12A7328-F81F-11D2-BA4B-00A0C93EC93B",
+        "volume-kind": "msdos"
+      },
+      {
+        "content-hint": "41504653-0000-11AA-AA11-00306543ECAC",
+        "dev-entry": "/dev/disk19s1",
+        "mount-point": "/private/tmp/codex-cargo-targets/ruff/isolated/target-size-workspace-metadata/on2/volume",
+        "potentially-mountable": true,
+        "unmapped-content-hint": "41504653-0000-11AA-AA11-00306543ECAC",
+        "volume-kind": "apfs"
+      },
+      {
+        "content-hint": "Apple_APFS",
+        "dev-entry": "/dev/disk18s2",
+        "potentially-mountable": false,
+        "unmapped-content-hint": "7C3457EF-0000-11AA-AA11-00306543ECAC"
+      },
+      {
+        "content-hint": "EF57347C-0000-11AA-AA11-00306543ECAC",
+        "dev-entry": "/dev/disk19",
+        "potentially-mountable": false,
+        "unmapped-content-hint": "EF57347C-0000-11AA-AA11-00306543ECAC"
+      },
+      {
+        "content-hint": "GUID_partition_scheme",
+        "dev-entry": "/dev/disk18",
+        "potentially-mountable": false,
+        "unmapped-content-hint": "GUID_partition_scheme"
+      }
+    ]
+  },
+  "environment": {
+    "CARGO_HOME": "/private/tmp/codex-cargo-home",
+    "RUSTUP_TOOLCHAIN": "ohm",
+    "RUSTC": "/Users/charliemarsh/.local/share/ohm/toolchains/ohm-1.98.0-9/bin/rustc",
+    "CARGO": "/private/tmp/codex-cargo-targets/cargo/workspace-metadata/ohm/release/cargo",
+    "CARGO_BUILD_JOBS": "4",
+    "CARGO_TARGET_DIR": "/private/tmp/codex-cargo-targets/ruff/isolated/target-size-workspace-metadata/on2/volume/targets/donor",
+    "CARGO_BUILD_BUILD_DIR": "/private/tmp/codex-cargo-targets/ruff/isolated/target-size-workspace-metadata/on2/volume/shared",
+    "CARGO_UNSTABLE_OHM_PROC_MACRO_TRUST": "all",
+    "CARGO_UNSTABLE_OHM_NATIVE_TOOL_TRUST": "all",
+    "CARGO_EXPERIMENTAL_WORKSPACE_NO_EMBED_METADATA": "1",
+    "CARGO_PROFILE_DEV_DEBUG": "line-tables-only",
+    "CARGO_PROFILE_DEV_OPT_LEVEL": "1",
+    "CARGO_PROFILE_DEV_LTO": "off"
+  },
+  "commands": [
+    {
+      "name": "00-clone",
+      "argv": [
+        "git",
+        "clone",
+        "--shared",
+        "--no-checkout",
+        "/Users/charliemarsh/code/oss/ruff",
+        "/private/tmp/codex-cargo-targets/ruff/isolated/target-size-workspace-metadata/on2/volume/donor"
+      ],
+      "cwd": "/private/tmp/codex-cargo-targets/ruff/isolated/target-size-workspace-metadata/on2",
+      "elapsed_seconds": 0.05525116599164903,
+      "returncode": 0,
+      "child_user_seconds": 0.012564999999995052,
+      "child_system_seconds": 0.024133999999996547,
+      "summaries": [],
+      "compiling_lines": 0
+    },
+    {
+      "name": "01-checkout",
+      "argv": [
+        "git",
+        "checkout",
+        "--detach",
+        "1edf9fe2cab23e34c383419b8c7830324c428a58"
+      ],
+      "cwd": "/private/tmp/codex-cargo-targets/ruff/isolated/target-size-workspace-metadata/on2/volume/donor",
+      "elapsed_seconds": 1.0905847910325974,
+      "returncode": 0,
+      "child_user_seconds": 0.17656099999999242,
+      "child_system_seconds": 0.8056359999999998,
+      "summaries": [],
+      "compiling_lines": 0
+    },
+    {
+      "name": "01b-fetch",
+      "argv": [
+        "/private/tmp/codex-cargo-targets/cargo/workspace-metadata/ohm/release/cargo",
+        "fetch",
+        "--locked"
+      ],
+      "cwd": "/private/tmp/codex-cargo-targets/ruff/isolated/target-size-workspace-metadata/on2/volume/donor",
+      "elapsed_seconds": 0.36852404195815325,
+      "returncode": 0,
+      "child_user_seconds": 0.08458699999999908,
+      "child_system_seconds": 0.1246539999999996,
+      "summaries": [],
+      "compiling_lines": 0
+    },
+    {
+      "name": "02-build",
+      "argv": [
+        "/private/tmp/codex-cargo-targets/cargo/workspace-metadata/ohm/release/cargo",
+        "build",
+        "--offline",
+        "-p",
+        "ruff_python_parser"
+      ],
+      "cwd": "/private/tmp/codex-cargo-targets/ruff/isolated/target-size-workspace-metadata/on2/volume/donor",
+      "elapsed_seconds": 8.928413500078022,
+      "returncode": 0,
+      "child_user_seconds": 25.547584,
+      "child_system_seconds": 5.094661000000002,
+      "summaries": [],
+      "compiling_lines": 78
+    },
+    {
+      "name": "03-build-noop",
+      "argv": [
+        "/private/tmp/codex-cargo-targets/cargo/workspace-metadata/ohm/release/cargo",
+        "build",
+        "--offline",
+        "-p",
+        "ruff_python_parser"
+      ],
+      "cwd": "/private/tmp/codex-cargo-targets/ruff/isolated/target-size-workspace-metadata/on2/volume/donor",
+      "elapsed_seconds": 0.07715787505730987,
+      "returncode": 0,
+      "child_user_seconds": 0.025048000000026605,
+      "child_system_seconds": 0.04259599999999608,
+      "summaries": [],
+      "compiling_lines": 0
+    },
+    {
+      "name": "04-tests",
+      "argv": [
+        "/private/tmp/codex-cargo-targets/cargo/workspace-metadata/ohm/release/cargo",
+        "test",
+        "--offline",
+        "-p",
+        "ruff_python_parser"
+      ],
+      "cwd": "/private/tmp/codex-cargo-targets/ruff/isolated/target-size-workspace-metadata/on2/volume/donor",
+      "elapsed_seconds": 16.412024500081316,
+      "returncode": 0,
+      "child_user_seconds": 47.87740099999996,
+      "child_system_seconds": 5.813139,
+      "summaries": [
+        "test parser::scratch_buffer::tests::snapshot_is_empty_relative_to_its_buffer ... ok",
+        "test parser::scratch_buffer::tests::snapshot_must_be_restored_in_reverse_order - should panic ... ok",
+        "test parser::scratch_buffer::tests::snapshot_must_be_restored - should panic ... ok",
+        "test result: ok. 245 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s",
+        "test result: ok. 556 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.15s",
+        "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s",
+        "test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.04s"
+      ],
+      "compiling_lines": 62
+    },
+    {
+      "name": "05-tests-noop",
+      "argv": [
+        "/private/tmp/codex-cargo-targets/cargo/workspace-metadata/ohm/release/cargo",
+        "test",
+        "--offline",
+        "-p",
+        "ruff_python_parser"
+      ],
+      "cwd": "/private/tmp/codex-cargo-targets/ruff/isolated/target-size-workspace-metadata/on2/volume/donor",
+      "elapsed_seconds": 1.252480500144884,
+      "returncode": 0,
+      "child_user_seconds": 0.5168080000000259,
+      "child_system_seconds": 1.264675000000004,
+      "summaries": [
+        "test parser::scratch_buffer::tests::snapshot_is_empty_relative_to_its_buffer ... ok",
+        "test parser::scratch_buffer::tests::snapshot_must_be_restored - should panic ... ok",
+        "test parser::scratch_buffer::tests::snapshot_must_be_restored_in_reverse_order - should panic ... ok",
+        "test result: ok. 245 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.07s",
+        "test result: ok. 556 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.17s",
+        "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s",
+        "test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s"
+      ],
+      "compiling_lines": 0
+    },
+    {
+      "name": "06-check",
+      "argv": [
+        "/private/tmp/codex-cargo-targets/cargo/workspace-metadata/ohm/release/cargo",
+        "check",
+        "--offline",
+        "-p",
+        "ruff_python_parser"
+      ],
+      "cwd": "/private/tmp/codex-cargo-targets/ruff/isolated/target-size-workspace-metadata/on2/volume/donor",
+      "elapsed_seconds": 0.29752579098567367,
+      "returncode": 0,
+      "child_user_seconds": 0.3853849999999852,
+      "child_system_seconds": 0.10041999999999973,
+      "summaries": [],
+      "compiling_lines": 0
+    },
+    {
+      "name": "07-clippy",
+      "argv": [
+        "/private/tmp/codex-cargo-targets/cargo/workspace-metadata/ohm/release/cargo",
+        "clippy",
+        "--offline",
+        "-p",
+        "ruff_python_parser",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings",
+        "-A",
+        "clippy::format_push_string"
+      ],
+      "cwd": "/private/tmp/codex-cargo-targets/ruff/isolated/target-size-workspace-metadata/on2/volume/donor",
+      "elapsed_seconds": 1.862253291066736,
+      "returncode": 0,
+      "child_user_seconds": 3.186817000000019,
+      "child_system_seconds": 0.6678470000000019,
+      "summaries": [],
+      "compiling_lines": 0
+    },
+    {
+      "name": "08-edit",
+      "argv": [
+        "git",
+        "checkout",
+        "--detach",
+        "0ecff877901a0377ad966ffab528488ce872b50e"
+      ],
+      "cwd": "/private/tmp/codex-cargo-targets/ruff/isolated/target-size-workspace-metadata/on2/volume/donor",
+      "elapsed_seconds": 1.7815102501772344,
+      "returncode": 0,
+      "child_user_seconds": 0.10965499999997519,
+      "child_system_seconds": 0.2927219999999977,
+      "summaries": [],
+      "compiling_lines": 0
+    },
+    {
+      "name": "09-edit-tests",
+      "argv": [
+        "/private/tmp/codex-cargo-targets/cargo/workspace-metadata/ohm/release/cargo",
+        "test",
+        "--offline",
+        "-p",
+        "ruff_python_parser"
+      ],
+      "cwd": "/private/tmp/codex-cargo-targets/ruff/isolated/target-size-workspace-metadata/on2/volume/donor",
+      "elapsed_seconds": 5.429626791970804,
+      "returncode": 0,
+      "child_user_seconds": 3.4258179999999925,
+      "child_system_seconds": 1.3273689999999974,
+      "summaries": [
+        "test parser::scratch_buffer::tests::snapshot_is_empty_relative_to_its_buffer ... ok",
+        "test parser::scratch_buffer::tests::snapshot_must_be_restored - should panic ... ok",
+        "test parser::scratch_buffer::tests::snapshot_must_be_restored_in_reverse_order - should panic ... ok",
+        "test result: ok. 245 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.35s",
+        "test result: ok. 557 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.95s",
+        "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s",
+        "test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s"
+      ],
+      "compiling_lines": 1
+    },
+    {
+      "name": "10-export-ast",
+      "argv": [
+        "/private/tmp/codex-cargo-targets/cargo/workspace-metadata/ohm/release/cargo",
+        "build",
+        "--offline",
+        "-p",
+        "ruff_python_ast",
+        "--features",
+        "get-size,serde"
+      ],
+      "cwd": "/private/tmp/codex-cargo-targets/ruff/isolated/target-size-workspace-metadata/on2/volume/donor",
+      "elapsed_seconds": 4.0946584169287235,
+      "returncode": 0,
+      "child_user_seconds": 13.07284500000003,
+      "child_system_seconds": 0.980470000000004,
+      "summaries": [],
+      "compiling_lines": 15
+    },
+    {
+      "name": "11-return-to-parser",
+      "argv": [
+        "/private/tmp/codex-cargo-targets/cargo/workspace-metadata/ohm/release/cargo",
+        "test",
+        "--offline",
+        "-p",
+        "ruff_python_parser"
+      ],
+      "cwd": "/private/tmp/codex-cargo-targets/ruff/isolated/target-size-workspace-metadata/on2/volume/donor",
+      "elapsed_seconds": 1.1588238331023604,
+      "returncode": 0,
+      "child_user_seconds": 0.49032599999998183,
+      "child_system_seconds": 1.1918009999999981,
+      "summaries": [
+        "test parser::scratch_buffer::tests::snapshot_is_empty_relative_to_its_buffer ... ok",
+        "test parser::scratch_buffer::tests::snapshot_must_be_restored_in_reverse_order - should panic ... ok",
+        "test parser::scratch_buffer::tests::snapshot_must_be_restored - should panic ... ok",
+        "test result: ok. 245 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s",
+        "test result: ok. 557 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.15s",
+        "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s",
+        "test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s"
+      ],
+      "compiling_lines": 0
+    }
+  ],
+  "measurements": {
+    "empty": {
+      "volume_used_bytes": 20480,
+      "container_used_bytes": 61865984,
+      "stable": true,
+      "samples": [
+        {
+          "volume_used_bytes": 20480,
+          "container_used_bytes": 61865984
+        },
+        {
+          "volume_used_bytes": 20480,
+          "container_used_bytes": 61865984
+        },
+        {
+          "volume_used_bytes": 20480,
+          "container_used_bytes": 61865984
+        }
+      ],
+      "artifact_groups": {}
+    },
+    "sources": {
+      "volume_used_bytes": 127700992,
+      "container_used_bytes": 189546496,
+      "stable": true,
+      "samples": [
+        {
+          "volume_used_bytes": 127700992,
+          "container_used_bytes": 189546496
+        },
+        {
+          "volume_used_bytes": 127700992,
+          "container_used_bytes": 189546496
+        },
+        {
+          "volume_used_bytes": 127700992,
+          "container_used_bytes": 189546496
+        }
+      ],
+      "artifact_groups": {}
+    },
+    "build": {
+      "volume_used_bytes": 383893504,
+      "container_used_bytes": 445739008,
+      "stable": true,
+      "samples": [
+        {
+          "volume_used_bytes": 383893504,
+          "container_used_bytes": 445739008
+        },
+        {
+          "volume_used_bytes": 383893504,
+          "container_used_bytes": 445739008
+        },
+        {
+          "volume_used_bytes": 383893504,
+          "container_used_bytes": 445739008
+        }
+      ],
+      "artifact_groups": {
+        "other": {
+          "files": 825,
+          "logical_bytes": 105232328,
+          "inode_allocated_clone_unaware_bytes": 108326912
+        },
+        ".o": {
+          "files": 515,
+          "logical_bytes": 30086344,
+          "inode_allocated_clone_unaware_bytes": 31043584
+        },
+        ".rmeta": {
+          "files": 82,
+          "logical_bytes": 70234978,
+          "inode_allocated_clone_unaware_bytes": 70414336
+        },
+        "query-cache": {
+          "files": 5,
+          "logical_bytes": 29129803,
+          "inode_allocated_clone_unaware_bytes": 29134848
+        },
+        ".rlib": {
+          "files": 78,
+          "logical_bytes": 44010552,
+          "inode_allocated_clone_unaware_bytes": 44154880
+        }
+      }
+    },
+    "workflow": {
+      "volume_used_bytes": 851865600,
+      "container_used_bytes": 913715200,
+      "stable": true,
+      "samples": [
+        {
+          "volume_used_bytes": 851607552,
+          "container_used_bytes": 913453056
+        },
+        {
+          "volume_used_bytes": 851922944,
+          "container_used_bytes": 913772544
+        },
+        {
+          "volume_used_bytes": 851922944,
+          "container_used_bytes": 913772544
+        },
+        {
+          "volume_used_bytes": 851947520,
+          "container_used_bytes": 913797120
+        },
+        {
+          "volume_used_bytes": 852000768,
+          "container_used_bytes": 913850368
+        },
+        {
+          "volume_used_bytes": 852090880,
+          "container_used_bytes": 913940480
+        },
+        {
+          "volume_used_bytes": 852180992,
+          "container_used_bytes": 914030592
+        },
+        {
+          "volume_used_bytes": 852254720,
+          "container_used_bytes": 914104320
+        },
+        {
+          "volume_used_bytes": 852271104,
+          "container_used_bytes": 914120704
+        },
+        {
+          "volume_used_bytes": 851849216,
+          "container_used_bytes": 913698816
+        },
+        {
+          "volume_used_bytes": 851750912,
+          "container_used_bytes": 913600512
+        },
+        {
+          "volume_used_bytes": 851779584,
+          "container_used_bytes": 913629184
+        },
+        {
+          "volume_used_bytes": 851791872,
+          "container_used_bytes": 913641472
+        },
+        {
+          "volume_used_bytes": 851820544,
+          "container_used_bytes": 913670144
+        },
+        {
+          "volume_used_bytes": 851865600,
+          "container_used_bytes": 913715200
+        },
+        {
+          "volume_used_bytes": 851865600,
+          "container_used_bytes": 913715200
+        },
+        {
+          "volume_used_bytes": 851865600,
+          "container_used_bytes": 913715200
+        }
+      ],
+      "artifact_groups": {
+        "other": {
+          "files": 1558,
+          "logical_bytes": 326210293,
+          "inode_allocated_clone_unaware_bytes": 333250560
+        },
+        ".rmeta": {
+          "files": 167,
+          "logical_bytes": 144178903,
+          "inode_allocated_clone_unaware_bytes": 144535552
+        },
+        "query-cache": {
+          "files": 26,
+          "logical_bytes": 94572022,
+          "inode_allocated_clone_unaware_bytes": 94621696
+        },
+        ".o": {
+          "files": 1581,
+          "logical_bytes": 112171128,
+          "inode_allocated_clone_unaware_bytes": 115191808
+        },
+        ".rlib": {
+          "files": 137,
+          "logical_bytes": 103495624,
+          "inode_allocated_clone_unaware_bytes": 103751680
+        }
+      }
+    },
+    "edit": {
+      "volume_used_bytes": 861847552,
+      "container_used_bytes": 923693056,
+      "stable": true,
+      "samples": [
+        {
+          "volume_used_bytes": 861847552,
+          "container_used_bytes": 923693056
+        },
+        {
+          "volume_used_bytes": 861847552,
+          "container_used_bytes": 923693056
+        },
+        {
+          "volume_used_bytes": 861847552,
+          "container_used_bytes": 923693056
+        }
+      ],
+      "artifact_groups": {
+        "other": {
+          "files": 1558,
+          "logical_bytes": 326441668,
+          "inode_allocated_clone_unaware_bytes": 331841536
+        },
+        ".rmeta": {
+          "files": 167,
+          "logical_bytes": 144178579,
+          "inode_allocated_clone_unaware_bytes": 144535552
+        },
+        "query-cache": {
+          "files": 26,
+          "logical_bytes": 106186687,
+          "inode_allocated_clone_unaware_bytes": 106237952
+        },
+        ".o": {
+          "files": 1581,
+          "logical_bytes": 112174776,
+          "inode_allocated_clone_unaware_bytes": 115191808
+        },
+        ".rlib": {
+          "files": 137,
+          "logical_bytes": 103496536,
+          "inode_allocated_clone_unaware_bytes": 103751680
+        }
+      }
+    },
+    "export": {
+      "volume_used_bytes": 1004470272,
+      "container_used_bytes": 1066315776,
+      "stable": true,
+      "samples": [
+        {
+          "volume_used_bytes": 1004470272,
+          "container_used_bytes": 1066315776
+        },
+        {
+          "volume_used_bytes": 1004470272,
+          "container_used_bytes": 1066315776
+        },
+        {
+          "volume_used_bytes": 1004470272,
+          "container_used_bytes": 1066315776
+        }
+      ],
+      "artifact_groups": {
+        "other": {
+          "files": 1690,
+          "logical_bytes": 386550493,
+          "inode_allocated_clone_unaware_bytes": 392859648
+        },
+        ".rmeta": {
+          "files": 186,
+          "logical_bytes": 168549095,
+          "inode_allocated_clone_unaware_bytes": 168951808
+        },
+        "query-cache": {
+          "files": 31,
+          "logical_bytes": 128891242,
+          "inode_allocated_clone_unaware_bytes": 128950272
+        },
+        ".o": {
+          "files": 1918,
+          "logical_bytes": 137279008,
+          "inode_allocated_clone_unaware_bytes": 140931072
+        },
+        ".rlib": {
+          "files": 152,
+          "logical_bytes": 144207368,
+          "inode_allocated_clone_unaware_bytes": 144486400
+        }
+      }
+    },
+    "final": {
+      "volume_used_bytes": 1004470272,
+      "container_used_bytes": 1066315776,
+      "stable": true,
+      "samples": [
+        {
+          "volume_used_bytes": 1004470272,
+          "container_used_bytes": 1066315776
+        },
+        {
+          "volume_used_bytes": 1004470272,
+          "container_used_bytes": 1066315776
+        },
+        {
+          "volume_used_bytes": 1004470272,
+          "container_used_bytes": 1066315776
+        }
+      ],
+      "artifact_groups": {
+        "other": {
+          "files": 1690,
+          "logical_bytes": 386550493,
+          "inode_allocated_clone_unaware_bytes": 392859648
+        },
+        ".rmeta": {
+          "files": 186,
+          "logical_bytes": 168549095,
+          "inode_allocated_clone_unaware_bytes": 168951808
+        },
+        "query-cache": {
+          "files": 31,
+          "logical_bytes": 128891242,
+          "inode_allocated_clone_unaware_bytes": 128950272
+        },
+        ".o": {
+          "files": 1918,
+          "logical_bytes": 137279008,
+          "inode_allocated_clone_unaware_bytes": 140931072
+        },
+        ".rlib": {
+          "files": 152,
+          "logical_bytes": 144207368,
+          "inode_allocated_clone_unaware_bytes": 144486400
+        }
+      }
+    }
+  },
+  "toolchain": {
+    "rustc_version": "rustc 1.98.0-dev (d37229159 2026-09-05) (ohm-1.98.0-9)\nbinary: rustc\ncommit-hash: d37229159e545bbdec917dd7efdf5d26da40d2bc\ncommit-date: 2026-09-05\nhost: aarch64-apple-darwin\nrelease: 1.98.0-dev\nLLVM version: 22.1.8\n",
+    "clippy_sha256": "d4bdd65200698f9e304282826ebcc08e15c84f0f2f867315ae6df8311b1ffdbf",
+    "driver_sha256": {
+      "librustc_driver-eeeb3982ca989643.dylib": "51f59b4475848a69fcae68ac8098b068e14f1fd4dc7e71c1df8a27c32e7a08b2"
+    }
+  },
+  "machine": {
+    "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+    "cpu_count": 18
+  },
+  "timing_caveat": "Other development workloads were active; use as a storage screen, not a precise wall-time speedup.",
+  "complete": true,
+  "detach_attempts": [
+    {
+      "returncode": 0,
+      "stdout": "\"disk18\" ejected.\n",
+      "stderr": ""
+    }
+  ]
+}

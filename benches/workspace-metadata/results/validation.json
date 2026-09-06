@@ -1,0 +1,17 @@
+{
+  "baseline": "49a7295fc6b46da600c6dca91d188a972d6abcc7",
+  "code_commit": "1e91193b4822e52a7c1dcbe109906d1b829ed441",
+  "cargo_sha256": "2e6a4fed471da02f16d6fb369ae8238cbd523be4a182fd2a45801ee5244f8bdc",
+  "cargo_version": "cargo 1.98.0 (1e91193b4 2026-09-05)\nrelease: 1.98.0\ncommit-hash: 1e91193b4822e52a7c1dcbe109906d1b829ed441\ncommit-date: 2026-09-05\nhost: aarch64-apple-darwin\nlibgit2: 1.9.4 (sys:0.21.0 vendored)\nlibcurl: 8.7.1 (sys:0.4.90+curl-8.21.0 system ssl:(SecureTransport) LibreSSL/3.3.6)\nos: Mac OS 26.6.2 [64-bit]\n",
+  "tests": {
+    "no_embed_metadata": {
+      "passed": 6,
+      "failed": 0
+    }
+  },
+  "formatting": "cargo +ohm fmt --all --check passed",
+  "source_diff_check": "git diff --check passed",
+  "apfs_main_and_role_transitions_complete": true,
+  "all_volumes_detached": true,
+  "timing_limit": "Concurrent unrelated development workloads were active; timings are observational."
+}
