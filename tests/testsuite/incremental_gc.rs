@@ -595,7 +595,7 @@ fn isolated_clippy_caches_can_expire_and_be_cleaned_by_package() {
     let binary = fs::read(p.bin("foo")).unwrap();
     let driver = PathBuf::from(paths::sysroot()).join("bin/clippy-driver");
     cargo(&p, "check")
-        .env("CARGO_EXPERIMENTAL_CLIPPY_SEED_ISOLATION", "1")
+        .env("CARGO_UNSTABLE_OHM_CLIPPY_SEED_ISOLATION", "true")
         .env("RUSTC_WORKSPACE_WRAPPER", &driver)
         .run();
     let managed = managed_root("debug");
@@ -621,7 +621,7 @@ fn isolated_clippy_caches_can_expire_and_be_cleaned_by_package() {
         .run();
 
     cargo(&p, "check --features recent")
-        .env("CARGO_EXPERIMENTAL_CLIPPY_SEED_ISOLATION", "1")
+        .env("CARGO_UNSTABLE_OHM_CLIPPY_SEED_ISOLATION", "true")
         .env("RUSTC_WORKSPACE_WRAPPER", &driver)
         .run();
     let current = fs::read_dir(&isolated)
@@ -651,8 +651,127 @@ fn isolated_clippy_caches_can_expire_and_be_cleaned_by_package() {
             .any(|entry| entry.file_name() == "foo")
     );
     cargo(&p, "check -v")
-        .env("CARGO_EXPERIMENTAL_CLIPPY_SEED_ISOLATION", "1")
+        .env("CARGO_UNSTABLE_OHM_CLIPPY_SEED_ISOLATION", "true")
         .env("RUSTC_WORKSPACE_WRAPPER", &driver)
         .with_stderr_contains("[CHECKING] foo [..]")
         .run();
+}
+
+#[cargo_test]
+fn cleanup_includes_release_9_namespaces_for_only_the_selected_target() {
+    let p = fixture();
+    cargo(&p, "build").run();
+    let original_unit = units("debug").pop().unwrap();
+    let namespace = |version: &str, target: &Path| {
+        cargo::util::short_hash(&(
+            version,
+            p.root().canonicalize().unwrap(),
+            target.canonicalize().unwrap(),
+        ))
+    };
+    let current = namespace("ohm-shared-workspace-v3", &p.build_dir());
+    let legacy = namespace("ohm-shared-workspace-v2", &p.build_dir());
+    let profile = shared_build().join("debug");
+    let move_to_legacy = |current: &str, legacy: &str| {
+        for root in ["build/workspaces", "incremental"] {
+            fs::rename(
+                profile.join(root).join(current),
+                profile.join(root).join(legacy),
+            )
+            .unwrap();
+        }
+    };
+    // The previous release used the same layout below a workspace-and-target v2 hash.
+    move_to_legacy(&current, &legacy);
+    let legacy_incremental = profile.join("incremental").join(&legacy);
+    let legacy_unit = legacy_incremental
+        .join("ohm-gc-v1")
+        .join(original_unit.file_name().unwrap());
+    age(&legacy_unit);
+    cargo(&p, "build --features recent").run();
+    let current_incremental = profile.join("incremental").join(&current);
+    let current_unit = fs::read_dir(current_incremental.join("ohm-gc-v1"))
+        .unwrap()
+        .next()
+        .unwrap()
+        .unwrap()
+        .path();
+
+    // Even another v2 namespace for this same workspace belongs to a different target.
+    let other_target = paths::root().join("other-target");
+    cargo(&p, "build")
+        .env("CARGO_TARGET_DIR", &other_target)
+        .run();
+    let other_current = namespace("ohm-shared-workspace-v3", &other_target);
+    let other_legacy = namespace("ohm-shared-workspace-v2", &other_target);
+    move_to_legacy(&other_current, &other_legacy);
+    let other_incremental = profile.join("incremental").join(&other_legacy);
+    let other_unit = fs::read_dir(other_incremental.join("ohm-gc-v1"))
+        .unwrap()
+        .next()
+        .unwrap()
+        .unwrap()
+        .path();
+    age(&other_unit);
+    let other_record = fs::read(other_unit.join(RECORD)).unwrap();
+    let other_binary = fs::read(other_target.join("debug/foo")).unwrap();
+
+    cargo(&p, "clean incremental --max-age 30days --dry-run")
+        .with_stderr_contains("[..]1 configurations eligible[..]")
+        .run();
+    assert!(legacy_unit.is_dir());
+    assert!(current_unit.is_dir());
+    let active = fs::File::open(profile.join(".cargo-build-lock")).unwrap();
+    active.lock_shared().unwrap();
+    cargo(&p, "clean incremental --max-age 30days").run();
+    assert!(
+        legacy_unit.is_dir(),
+        "the old namespace still shares the profile lock"
+    );
+    drop(active);
+    cargo(&p, "clean incremental --max-age 30days").run();
+    assert!(!legacy_unit.exists());
+    assert!(current_unit.is_dir());
+    assert_eq!(fs::read(other_unit.join(RECORD)).unwrap(), other_record);
+
+    // Package cleanup must also find real configurations in both namespace versions.
+    let relocated_unit = legacy_incremental
+        .join("ohm-gc-v1")
+        .join(current_unit.file_name().unwrap());
+    fs::rename(&current_unit, &relocated_unit).unwrap();
+    cargo(&p, "build --features reused").run();
+    let current_unit = fs::read_dir(current_incremental.join("ohm-gc-v1"))
+        .unwrap()
+        .next()
+        .unwrap()
+        .unwrap()
+        .path();
+    cargo(&p, "clean -p foo --dry-run").run();
+    assert!(relocated_unit.is_dir());
+    assert!(current_unit.is_dir());
+    cargo(&p, "clean -p foo").run();
+    assert!(!relocated_unit.exists());
+    assert!(!current_unit.exists());
+    for workspace in [&current, &legacy] {
+        assert!(
+            !walkdir::WalkDir::new(profile.join("build/workspaces").join(workspace))
+                .into_iter()
+                .map(Result::unwrap)
+                .any(|entry| entry.file_name() == "foo")
+        );
+    }
+
+    cargo(&p, "clean --dry-run").run();
+    assert!(legacy_incremental.is_dir());
+    cargo(&p, "clean").run();
+    for workspace in [&current, &legacy] {
+        assert!(!profile.join("build/workspaces").join(workspace).exists());
+        assert!(!profile.join("incremental").join(workspace).exists());
+    }
+    assert!(profile.join("build/workspaces").join(other_legacy).is_dir());
+    assert_eq!(fs::read(other_unit.join(RECORD)).unwrap(), other_record);
+    assert_eq!(
+        fs::read(other_target.join("debug/foo")).unwrap(),
+        other_binary
+    );
 }

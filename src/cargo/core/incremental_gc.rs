@@ -236,7 +236,7 @@ pub fn clean(ws: &Workspace<'_>, max_age: Duration, dry_run: bool) -> CargoResul
             }
         }
     }
-    let namespace = Layout::shared_workspace_namespace(ws);
+    let namespaces = Layout::shared_workspace_cleanup_namespaces(ws);
     let mut context = CleanContext::new(ws.gctx());
     context.dry_run = dry_run;
     let now = now()?;
@@ -250,97 +250,99 @@ pub fn clean(ws: &Workspace<'_>, max_age: Duration, dry_run: bool) -> CargoResul
             busy += 1;
             continue;
         };
-        let incremental = profile.join("incremental").join(&namespace);
-        let managed = incremental.join(DIRECTORY);
-        let trash = incremental.join(TRASH_DIRECTORY);
-        let clippy = incremental.join(crate::core::compiler::OHM_WORKTREE_CLIPPY_DIRECTORY);
-        let clippy_managed = clippy.join(DIRECTORY);
-        let clippy_trash = clippy.join(TRASH_DIRECTORY);
-        let mut reclaimed_paths = HashSet::default();
-        // Retired configurations are no longer available to rustc, regardless
-        // of their age. Finish prior collections before retiring more entries.
-        for (root, trash, is_trash) in [
-            (&trash, &trash, true),
-            (&clippy_trash, &clippy_trash, true),
-            (&managed, &trash, false),
-            (&clippy_managed, &clippy_trash, false),
-        ] {
-            if !plain_descendants(&profile, root)? {
-                continue;
-            }
-            for entry in fs::read_dir(root)? {
-                let entry = entry?;
-                let directory = entry.path();
-                let Some(name) = entry.file_name().to_str().map(str::to_owned) else {
-                    skipped += 1;
-                    continue;
-                };
-                if !entry.file_type()?.is_dir() || !valid_unit_name(&name) {
-                    skipped += 1;
+        for namespace in &namespaces {
+            let incremental = profile.join("incremental").join(namespace);
+            let managed = incremental.join(DIRECTORY);
+            let trash = incremental.join(TRASH_DIRECTORY);
+            let clippy = incremental.join(crate::core::compiler::OHM_WORKTREE_CLIPPY_DIRECTORY);
+            let clippy_managed = clippy.join(DIRECTORY);
+            let clippy_trash = clippy.join(TRASH_DIRECTORY);
+            let mut reclaimed_paths = HashSet::default();
+            // Retired configurations are no longer available to rustc, regardless
+            // of their age. Finish prior collections before retiring more entries.
+            for (root, trash, is_trash) in [
+                (&trash, &trash, true),
+                (&clippy_trash, &clippy_trash, true),
+                (&managed, &trash, false),
+                (&clippy_managed, &clippy_trash, false),
+            ] {
+                if !plain_descendants(&profile, root)? {
                     continue;
                 }
-                // A collection can stop after removing its last marker but
-                // before removing the empty trash directory. `remove_dir`
-                // cannot delete an unrecognized payload in this recovery path.
-                if is_trash && fs::read_dir(&directory)?.next().is_none() {
-                    if !dry_run {
-                        fs::remove_dir(&directory)?;
+                for entry in fs::read_dir(root)? {
+                    let entry = entry?;
+                    let directory = entry.path();
+                    let Some(name) = entry.file_name().to_str().map(str::to_owned) else {
+                        skipped += 1;
+                        continue;
+                    };
+                    if !entry.file_type()?.is_dir() || !valid_unit_name(&name) {
+                        skipped += 1;
+                        continue;
                     }
-                    reclaimed_paths.insert(directory);
-                    reclaimed += 1;
-                    continue;
-                }
-                let marker = directory.join(MARKER);
-                if !regular_file(&marker)? {
-                    skipped += 1;
-                    continue;
-                }
-                let Some(record) = Record::parse(&fs::read(&marker)?, &name) else {
-                    skipped += 1;
-                    continue;
-                };
-                if !is_trash && !record.expired(now, max_age) {
-                    retained += 1;
-                    continue;
-                }
-                if !plain_tree(&directory)? {
-                    skipped += 1;
-                    continue;
-                }
-                let destination = trash.join(&name);
-                if !is_trash {
-                    match fs::symlink_metadata(&destination) {
-                        Ok(_) if !(dry_run && reclaimed_paths.contains(&destination)) => {
-                            skipped += 1;
-                            continue;
+                    // A collection can stop after removing its last marker but
+                    // before removing the empty trash directory. `remove_dir`
+                    // cannot delete an unrecognized payload in this recovery path.
+                    if is_trash && fs::read_dir(&directory)?.next().is_none() {
+                        if !dry_run {
+                            fs::remove_dir(&directory)?;
                         }
-                        Ok(_) => {}
-                        Err(error) if error.kind() == std::io::ErrorKind::NotFound => {}
-                        Err(error) => return Err(error.into()),
+                        reclaimed_paths.insert(directory);
+                        reclaimed += 1;
+                        continue;
                     }
-                }
-                ws.gctx()
-                    .shell()
-                    .status(if dry_run { "Would expire" } else { "Expiring" }, &name)?;
-                if !is_trash && !dry_run {
-                    create_plain_descendants(&profile, trash)?;
-                    // Removing files from a finalized session in place can
-                    // leave a usable dep-graph with a missing query cache after
-                    // interruption. Hide the entire configuration atomically
-                    // before deleting any files, while holding the profile lock.
-                    fs::rename(&directory, &destination)?;
-                }
-                let deletion = if is_trash || dry_run {
-                    &directory
-                } else {
-                    &destination
-                };
-                remove_retired_configuration(&mut context, deletion)?;
-                if is_trash {
-                    reclaimed_paths.insert(directory);
-                    reclaimed += 1;
-                } else {
-                    removed += 1;
+                    let marker = directory.join(MARKER);
+                    if !regular_file(&marker)? {
+                        skipped += 1;
+                        continue;
+                    }
+                    let Some(record) = Record::parse(&fs::read(&marker)?, &name) else {
+                        skipped += 1;
+                        continue;
+                    };
+                    if !is_trash && !record.expired(now, max_age) {
+                        retained += 1;
+                        continue;
+                    }
+                    if !plain_tree(&directory)? {
+                        skipped += 1;
+                        continue;
+                    }
+                    let destination = trash.join(&name);
+                    if !is_trash {
+                        match fs::symlink_metadata(&destination) {
+                            Ok(_) if !(dry_run && reclaimed_paths.contains(&destination)) => {
+                                skipped += 1;
+                                continue;
+                            }
+                            Ok(_) => {}
+                            Err(error) if error.kind() == std::io::ErrorKind::NotFound => {}
+                            Err(error) => return Err(error.into()),
+                        }
+                    }
+                    ws.gctx()
+                        .shell()
+                        .status(if dry_run { "Would expire" } else { "Expiring" }, &name)?;
+                    if !is_trash && !dry_run {
+                        create_plain_descendants(&profile, trash)?;
+                        // Removing files from a finalized session in place can
+                        // leave a usable dep-graph with a missing query cache after
+                        // interruption. Hide the entire configuration atomically
+                        // before deleting any files, while holding the profile lock.
+                        fs::rename(&directory, &destination)?;
+                    }
+                    let deletion = if is_trash || dry_run {
+                        &directory
+                    } else {
+                        &destination
+                    };
+                    remove_retired_configuration(&mut context, deletion)?;
+                    if is_trash {
+                        reclaimed_paths.insert(directory);
+                        reclaimed += 1;
+                    } else {
+                        removed += 1;
+                    }
                 }
             }
         }

@@ -610,12 +610,34 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
                         build_runner.bcx.build_config.intent,
                         UserIntent::Check { .. }
                     )
-                    && effective_environment("CARGO_EXPERIMENTAL_CLIPPY_SEED_ISOLATION")
-                        .is_some_and(|value| value == "1")
+                    && context
+                        .cli_unstable()
+                        .ohm_clippy_seed_isolation
+                        .unwrap_or_else(|| context.cli_unstable().ohm_worktree_seeds())
                     && compiler.has_bundled_clippy_wrapper(
                         context,
                         &build_runner.bcx.target_data.info(CompileKind::Host).sysroot,
-                    );
+                    )
+                    && context
+                        .cli_unstable()
+                        .ohm_clippy_seed_isolation
+                        .unwrap_or_else(|| {
+                            std::iter::once(&host).chain(target.values()).all(|layout| {
+                                let workspaces = layout.build_dir().build().join("workspaces");
+                                let namespace =
+                                    Layout::shared_workspace_namespace(build_runner.bcx.ws);
+                                let incremental = layout.build_dir().incremental();
+                                // Snapshot destinations are siblings in the same separate build
+                                // directory, regardless of the recipient's final target directory.
+                                util::file_clone::supported_between(
+                                    &workspaces.join(namespace),
+                                    &workspaces,
+                                ) && util::file_clone::supported_between(
+                                    incremental,
+                                    incremental.parent().unwrap(),
+                                )
+                            })
+                        });
                 let mut workspace = Layout::shared_workspace_namespace(build_runner.bcx.ws);
                 if isolated_clippy {
                     workspace.push('/');
@@ -663,8 +685,7 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
     /// A profile can retain units from older graphs, so opaque inputs permanently
     /// taint the whole private namespace. Authenticated Clippy uses an excluded
     /// child namespace, so its denial cannot taint ordinary build outputs.
-    /// Local macros are recorded independently
-    /// of the current trust setting: only the eventual import decides whether to
+    /// Local macros are recorded independently of the current trust setting: only the eventual import decides whether to
     /// trust their cached outputs. Deleting a macro cannot erase that history.
     pub(super) fn record_worktree_seed_policy(
         &self,

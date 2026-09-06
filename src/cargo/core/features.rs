@@ -932,6 +932,7 @@ unstable_cli_options!(
     no_embed_metadata: Option<bool> = ("Avoid embedding metadata in library artifacts"),
     no_index_update: bool = ("Do not update the registry index even if the cache is outdated"),
     ohm_clippy_codegen: Option<bool> = ("Run Clippy while generating workspace build and test artifacts"),
+    ohm_clippy_seed_isolation: Option<bool> = ("Isolate bundled Clippy outputs from worktree snapshots (automatic when cloning is available)"),
     ohm_defaults: Option<bool> = ("Enable the defaults packaged with Ohm"),
     ohm_focused_tests: bool = ("Compile only an explicitly selected exact library test"),
     ohm_incremental_gc: bool = ("Track incremental-cache use for explicit cleanup (prototype)"),
@@ -1547,6 +1548,9 @@ impl CliUnstable {
                 };
             }
             "ohm-clippy-codegen" => self.ohm_clippy_codegen = Some(parse_bool(k, v)?),
+            "ohm-clippy-seed-isolation" => {
+                self.ohm_clippy_seed_isolation = Some(parse_bool(k, v)?);
+            }
             "ohm-reuse-built-deps" => self.ohm_reuse_built_deps = parse_empty(k, v)?,
             "ohm-shared-registry-cache" => self.ohm_shared_registry_cache = parse_empty(k, v)?,
             "ohm-worktree-seeds" => self.ohm_worktree_seeds = Some(parse_bool(k, v)?),
