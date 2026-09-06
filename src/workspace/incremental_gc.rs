@@ -253,10 +253,18 @@ pub fn clean(ws: &Workspace<'_>, max_age: Duration, dry_run: bool) -> CargoResul
         let incremental = profile.join("incremental").join(&namespace);
         let managed = incremental.join(DIRECTORY);
         let trash = incremental.join(TRASH_DIRECTORY);
+        let clippy = incremental.join(crate::compiler::OHM_WORKTREE_CLIPPY_DIRECTORY);
+        let clippy_managed = clippy.join(DIRECTORY);
+        let clippy_trash = clippy.join(TRASH_DIRECTORY);
         let mut reclaimed_paths = HashSet::default();
         // Retired configurations are no longer available to rustc, regardless
         // of their age. Finish prior collections before retiring more entries.
-        for (root, is_trash) in [(&trash, true), (&managed, false)] {
+        for (root, trash, is_trash) in [
+            (&trash, &trash, true),
+            (&clippy_trash, &clippy_trash, true),
+            (&managed, &trash, false),
+            (&clippy_managed, &clippy_trash, false),
+        ] {
             if !plain_descendants(&profile, root)? {
                 continue;
             }
@@ -315,7 +323,7 @@ pub fn clean(ws: &Workspace<'_>, max_age: Duration, dry_run: bool) -> CargoResul
                     .shell()
                     .status(if dry_run { "Would expire" } else { "Expiring" }, &name)?;
                 if !is_trash && !dry_run {
-                    create_plain_descendants(&profile, &trash)?;
+                    create_plain_descendants(&profile, trash)?;
                     // Removing files from a finalized session in place can
                     // leave a usable dep-graph with a missing query cache after
                     // interruption. Hide the entire configuration atomically
