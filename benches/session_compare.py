@@ -106,6 +106,9 @@ def compare(args):
         name: bench.executable(getattr(args, name)) for name in ("before", "after")
     }
     requested_compiler = bench.executable(args.rustc)
+    worker = bench.executable(args.after_worker) if args.after_worker else None
+    if worker:
+        args.after_serve_arg.extend(["--compiler-worker", worker])
     with tempfile.TemporaryDirectory(
         prefix="cargo-session-compare-", dir="/tmp"
     ) as temporary:
@@ -140,6 +143,12 @@ def compare(args):
         }
         info["rustc"] = binary_info(compiler, workspace, common_env)
         info["rustc"]["selection"] = selection
+        if worker:
+            with open(worker, "rb") as binary:
+                info["after_worker"] = {
+                    "path": worker,
+                    "sha256": hashlib.file_digest(binary, "sha256").hexdigest(),
+                }
         sessions = {}
         prepared = {}
         cold = {}
@@ -161,6 +170,16 @@ def compare(args):
                 response, elapsed_ms = session.call("check")
                 if response["checks"] != 1 or response["reused"]:
                     raise RuntimeError(f"unexpected initial preparation: {response}")
+                if worker and name == "after":
+                    stats = response.get("compiler_worker") or {}
+                    if (
+                        not stats.get("pid")
+                        or stats.get("starts") != 1
+                        or stats.get("requests") != 1
+                    ):
+                        raise RuntimeError(
+                            f"worker did not compile the initial root: {response}"
+                        )
                 prepared[name] = response
                 cold[name] = {
                     "startup_ms": session.startup_ms,
@@ -191,6 +210,18 @@ def compare(args):
                         raise RuntimeError(
                             f"{name} did not retain preparation: {response}"
                         )
+                    if worker and name == "after":
+                        stats = response.get("compiler_worker") or {}
+                        first_worker = first["compiler_worker"]
+                        if (
+                            stats.get("pid") != first_worker["pid"]
+                            or stats.get("starts") != 1
+                            or stats.get("requests") != number + 2
+                            or stats.get("fallback_reason") is not None
+                        ):
+                            raise RuntimeError(
+                                f"worker did not retain the compiler: {response}"
+                            )
                     current_stamps = bench.stamps(depfiles[name])
                     if current_stamps == previous_stamps[name]:
                         raise RuntimeError(f"{name} reused an unchanged leaf artifact")
@@ -202,6 +233,8 @@ def compare(args):
                         "checks": response["checks"],
                         "preparations": response["preparations"],
                     }
+                    if worker and name == "after":
+                        sample[name]["compiler_worker"] = response["compiler_worker"]
                 samples.append(sample)
             for number in range(args.rounds):
                 order = ["before", "after"] if number % 2 == 0 else ["after", "before"]
@@ -224,6 +257,13 @@ def compare(args):
                     },
                     "after_measurement": {key: final[key] for key in counter_keys},
                 }
+                if worker and name == "after":
+                    counters[name]["after_preparation"]["compiler_worker"] = prepared[
+                        name
+                    ]["compiler_worker"]
+                    counters[name]["after_measurement"]["compiler_worker"] = final[
+                        "compiler_worker"
+                    ]
         finally:
             first_error = None
             for session in sessions.values():
@@ -281,6 +321,10 @@ def main():
     parser.add_argument("--rustc", default=os.environ.get("RUSTC", "rustc"))
     parser.add_argument("--crates", type=bench.positive_int, default=100)
     parser.add_argument("--rounds", type=bench.positive_int, default=30)
+    parser.add_argument(
+        "--after-worker",
+        help="worker executable; require one retained compiler PID across every check",
+    )
     parser.add_argument("--before-serve-arg", action="append", default=[])
     parser.add_argument("--after-serve-arg", action="append", default=[])
     signal.signal(signal.SIGTERM, lambda *_: sys.exit(143))
