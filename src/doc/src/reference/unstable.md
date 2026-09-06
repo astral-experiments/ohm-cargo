@@ -2115,6 +2115,19 @@ checks out an existing branch with that name. A branch supplied as `<COMMIT>` is
 checked out normally. Use `-b`/`--branch` to create a named branch or
 `-d`/`--detach` to explicitly detach `HEAD`; these options cannot be combined.
 
+By default, importing a profile requires copy-on-write file cloning. If cloning
+is unavailable, Cargo discards that profile's staged snapshot and creates the
+worktree without importing it. The recipient then builds normally. This avoids
+copying large build trees on filesystems such as ext4. Metadata relocation and
+new session lock files are still written independently.
+
+Pass `--copy-build-state` to allow ordinary file copying when cloning is
+unavailable. This can help when the imported state saves more compilation time
+than it costs to copy, but may make worktree creation substantially slower and
+consume additional disk space. Imported files always have independent writable
+state; no mutable file is hardlinked to the donor. This option controls only
+import, leaving preparation and Clippy isolation unchanged.
+
 `--manifest-path` selects the donor workspace. For this
 command, `--target-dir` selects only the destination target directory and defaults
 to the new workspace's `target` directory; the donor target still follows its
@@ -2165,9 +2178,8 @@ whole profile, regardless of this opt-in. Copied tests must not execute a donor
 worktree's binaries. Profiles prepared under an older snapshot policy must be
 rebuilt before they can seed a new worktree.
 
-Copies are independently writable. Supported filesystems can clone their data
-blocks; other filesystems copy the bytes. Seeding is a one-time operation and does
-not share later workspace compilations or collect abandoned worktrees.
+Seeding is a one-time operation and does not share later workspace compilations
+or collect abandoned worktrees.
 
 ## compile-time-deps
 

@@ -32,6 +32,10 @@ pub fn cli() -> Command {
                         .value_name("COMMIT")
                         .help("Commit or branch to check out"),
                 )
+                .arg(flag(
+                    "copy-build-state",
+                    "Allow copying build state when copy-on-write cloning is unavailable",
+                ))
                 .arg(
                     opt(
                         "destination-target-dir",
@@ -63,6 +67,7 @@ pub fn exec(gctx: &mut GlobalContext, args: &ArgMatches) -> CliResult {
                 detach: args.get_flag("detach"),
                 commit: args.get_one::<String>("commit").cloned(),
                 target_dir: args.get_one::<PathBuf>("destination-target-dir").cloned(),
+                copy_build_state: args.flag("copy-build-state"),
             };
             ops::worktree_add(gctx, &opts)?;
             Ok(())

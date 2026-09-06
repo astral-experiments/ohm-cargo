@@ -26,6 +26,7 @@ pub struct WorktreeOptions {
     pub detach: bool,
     pub commit: Option<String>,
     pub target_dir: Option<PathBuf>,
+    pub copy_build_state: bool,
 }
 
 /// Creates a Git worktree, then seeds private build state for Cargo to validate.
@@ -106,7 +107,7 @@ pub fn worktree_add(gctx: &GlobalContext, opts: &WorktreeOptions) -> CargoResult
         if !gctx.cli_unstable().ohm_worktree_seeds() || !donor.shared_registry_cache_enabled() {
             return Ok(Seeded::default());
         }
-        seed_shared_build(&donor, &recipient)
+        seed_shared_build(&donor, &recipient, opts.copy_build_state)
     };
     let seeded = seed().with_context(|| {
         format!(
@@ -143,6 +144,15 @@ pub fn worktree_add(gctx: &GlobalContext, opts: &WorktreeOptions) -> CargoResult
             ),
         )?;
     }
+    if seeded.unclonable_profiles != 0 {
+        gctx.shell().status(
+            "Skipped",
+            format!(
+                "{} build profiles without copy-on-write support; use --copy-build-state to copy them",
+                seeded.unclonable_profiles
+            ),
+        )?;
+    }
     gctx.shell().status("Target", target.display())?;
     Ok(())
 }
@@ -153,13 +163,18 @@ struct Seeded {
     bytes: u64,
     reflinked_files: u64,
     skipped_profiles: usize,
+    unclonable_profiles: usize,
 }
 
 /// Copies only this donor's namespaces while holding the ordinary profile locks.
 ///
 /// Taking exclusive profile locks also excludes child compilers and cleanup. Host
 /// profiles precede cross-target profiles, matching compilation and `cargo clean`.
-fn seed_shared_build(donor: &Workspace<'_>, recipient: &Workspace<'_>) -> CargoResult<Seeded> {
+fn seed_shared_build(
+    donor: &Workspace<'_>,
+    recipient: &Workspace<'_>,
+    allow_copy: bool,
+) -> CargoResult<Seeded> {
     let build_dir = donor.build_dir();
     let build_root = donor.canonical_build_path(build_dir.as_path_unlocked());
     ensure!(
@@ -196,50 +211,83 @@ fn seed_shared_build(donor: &Workspace<'_>, recipient: &Workspace<'_>) -> CargoR
             seeded.skipped_profiles += 1;
             continue;
         }
-        let destination = workspaces.join(&destination_namespace);
-        ensure_absent(&destination, "destination build namespace")?;
-        let incremental = profile.join("incremental");
-        let incremental_source = incremental.join(&source_namespace);
-        let incremental_destination = incremental.join(&destination_namespace);
-        ensure_absent(
-            &incremental_destination,
-            "destination incremental namespace",
-        )?;
-        let old_prefix = source.strip_prefix(&build_root)?;
-        let new_prefix = destination.strip_prefix(&build_root)?;
-
-        // Stage both trees before publishing either. A failed copy never exposes
-        // a partly copied fingerprint tree to the recipient.
-        let stage = tempfile::Builder::new()
-            .prefix(".ohm-worktree-seed-")
-            .tempdir_in(&workspaces)?;
-        let staged_build = stage.path().join("build");
-        clone_tree(
-            &source,
-            &staged_build,
-            old_prefix,
-            new_prefix,
-            false,
-            &mut seeded,
-        )?;
-        let staged_incremental = stage.path().join("incremental");
-        let has_incremental = plain_directory(&incremental_source)?;
-        if has_incremental {
-            ensure_plain_descendants(profile, &incremental_source)?;
-            clone_tree(
-                &incremental_source,
-                &staged_incremental,
-                old_prefix,
-                new_prefix,
-                true,
-                &mut seeded,
-            )?;
-            fs::rename(&staged_incremental, &incremental_destination)?;
+        if let Some(profile_seeded) = seed_profile(
+            &build_root,
+            profile,
+            &source_namespace,
+            &destination_namespace,
+            &|source, destination| copy::copy_file(source, destination, allow_copy),
+        )? {
+            seeded.files += profile_seeded.files;
+            seeded.bytes += profile_seeded.bytes;
+            seeded.reflinked_files += profile_seeded.reflinked_files;
+        } else {
+            seeded.unclonable_profiles += 1;
         }
-        fs::rename(&staged_build, &destination)?;
     }
     drop(guards);
     Ok(seeded)
+}
+
+/// Publishes a complete profile, or discards its entire stage when cloning is unavailable.
+fn seed_profile(
+    build_root: &Path,
+    profile: &Path,
+    source_namespace: &str,
+    destination_namespace: &str,
+    copy_file: &impl Fn(&Path, &Path) -> CargoResult<Option<(u64, bool)>>,
+) -> CargoResult<Option<Seeded>> {
+    let workspaces = profile.join("build/workspaces");
+    let source = workspaces.join(source_namespace);
+    let destination = workspaces.join(destination_namespace);
+    ensure_absent(&destination, "destination build namespace")?;
+    let incremental = profile.join("incremental");
+    let incremental_source = incremental.join(source_namespace);
+    let incremental_destination = incremental.join(destination_namespace);
+    ensure_absent(
+        &incremental_destination,
+        "destination incremental namespace",
+    )?;
+    let old_prefix = source.strip_prefix(build_root)?;
+    let new_prefix = destination.strip_prefix(build_root)?;
+
+    // Stage both trees before publishing either. A failed copy never exposes
+    // a partly copied fingerprint tree to the recipient.
+    let stage = tempfile::Builder::new()
+        .prefix(".ohm-worktree-seed-")
+        .tempdir_in(&workspaces)?;
+    let staged_build = stage.path().join("build");
+    let mut seeded = Seeded::default();
+    if !clone_tree(
+        &source,
+        &staged_build,
+        old_prefix,
+        new_prefix,
+        false,
+        &mut seeded,
+        copy_file,
+    )? {
+        return Ok(None);
+    }
+    let staged_incremental = stage.path().join("incremental");
+    let has_incremental = plain_directory(&incremental_source)?;
+    if has_incremental {
+        ensure_plain_descendants(profile, &incremental_source)?;
+        if !clone_tree(
+            &incremental_source,
+            &staged_incremental,
+            old_prefix,
+            new_prefix,
+            true,
+            &mut seeded,
+            copy_file,
+        )? {
+            return Ok(None);
+        }
+        fs::rename(&staged_incremental, &incremental_destination)?;
+    }
+    fs::rename(&staged_build, &destination)?;
+    Ok(Some(seeded))
 }
 
 /// Enumerates the known host/profile and target/profile layouts without following links.
@@ -277,7 +325,7 @@ fn build_profiles(root: &Path) -> CargoResult<Vec<PathBuf>> {
 
 /// Clones regular snapshot files into private inodes, retaining their original mtimes.
 ///
-/// File cloning shares data blocks where supported and otherwise copies bytes.
+/// Returns false if a file cannot be cloned and copying was not requested.
 /// Mutable hardlinks, active compiler sessions, and path-bearing relink recipes
 /// are not imported. Prepared build-script results are copied for comparison,
 /// and the recipient must rerun each script before reusing its consumers.
@@ -288,7 +336,8 @@ fn clone_tree(
     new_prefix: &Path,
     incremental: bool,
     seeded: &mut Seeded,
-) -> CargoResult<()> {
+    copy_file: &impl Fn(&Path, &Path) -> CargoResult<Option<(u64, bool)>>,
+) -> CargoResult<bool> {
     fs::create_dir(destination)?;
     for entry in fs::read_dir(source)? {
         let entry = entry?;
@@ -315,14 +364,17 @@ fn clone_tree(
             if build_script && !has_build_script_result(&source)? {
                 continue;
             }
-            clone_tree(
+            if !clone_tree(
                 &source,
                 &destination,
                 old_prefix,
                 new_prefix,
                 incremental,
                 seeded,
-            )?;
+                copy_file,
+            )? {
+                return Ok(false);
+            }
             if build_script {
                 // A snapshot is evidence for comparing the next execution,
                 // never permission to skip a script in a different checkout.
@@ -340,7 +392,9 @@ fn clone_tree(
                 // A finalized session needs a lock file, but never its donor's inode.
                 fs::File::create(&destination)?;
             } else {
-                let (bytes, reflinked) = copy::copy_file(&source, &destination)?;
+                let Some((bytes, reflinked)) = copy_file(&source, &destination)? else {
+                    return Ok(false);
+                };
                 seeded.bytes += bytes;
                 seeded.reflinked_files += u64::from(reflinked);
                 if text.starts_with("dep-")
@@ -365,7 +419,7 @@ fn clone_tree(
         // Unknown files and symlinks are omitted. Missing outputs force ordinary
         // recompilation; following a link could copy or mutate unrelated storage.
     }
-    Ok(())
+    Ok(true)
 }
 
 fn has_build_script_execution(unit: &Path) -> CargoResult<bool> {
@@ -493,6 +547,73 @@ mod tests {
     use crate::core::compiler::{
         OHM_WORKTREE_SEED_LOCAL_PROC_MACRO_MARKER, OHM_WORKTREE_SEED_MARKER,
     };
+
+    #[test]
+    fn unsupported_clone_discards_both_stages_and_their_counts() -> CargoResult<()> {
+        let root = tempfile::tempdir()?;
+        let profile = root.path().join("debug");
+        let workspaces = profile.join("build/workspaces");
+        let incremental = profile.join("incremental");
+        fs::create_dir_all(workspaces.join("donor"))?;
+        fs::create_dir_all(incremental.join("donor"))?;
+        fs::write(workspaces.join("donor/output"), b"artifact")?;
+        fs::write(incremental.join("donor/query-cache.bin"), b"cache")?;
+
+        // Finish staging the build tree, then reject the first incremental file.
+        // This callback exercises publication/cleanup without requiring a particular FS.
+        let result = seed_profile(root.path(), &profile, "donor", "recipient", &|src, dst| {
+            if src.starts_with(&incremental) {
+                Ok(None)
+            } else {
+                Ok(Some((fs::copy(src, dst)?, false)))
+            }
+        })?;
+        assert!(result.is_none());
+        assert_eq!(fs::read_dir(&workspaces)?.count(), 1);
+        assert_eq!(fs::read_dir(&incremental)?.count(), 1);
+        assert!(!workspaces.join("recipient").exists());
+        assert!(!incremental.join("recipient").exists());
+
+        // A retry sees absent destinations and reports only its committed files.
+        let result = seed_profile(root.path(), &profile, "donor", "recipient", &|src, dst| {
+            copy::copy_file(src, dst, true)
+        })?
+        .unwrap();
+        assert_eq!(result.files, 2);
+        assert_eq!(result.bytes, 13);
+        assert_eq!(fs::read_dir(&workspaces)?.count(), 2);
+        assert_eq!(fs::read_dir(&incremental)?.count(), 2);
+        for (base, name) in [(&workspaces, "output"), (&incremental, "query-cache.bin")] {
+            let source = base.join("donor").join(name);
+            let destination = base.join("recipient").join(name);
+            let original = fs::read(&source)?;
+            assert!(!same_file::is_same_file(&source, &destination)?);
+            fs::write(destination, b"child")?;
+            assert_eq!(fs::read(source)?, original);
+        }
+        Ok(())
+    }
+
+    #[test]
+    fn clone_io_error_cleans_the_unpublished_profile() -> CargoResult<()> {
+        let root = tempfile::tempdir()?;
+        let profile = root.path().join("debug");
+        let workspaces = profile.join("build/workspaces");
+        fs::create_dir_all(workspaces.join("donor"))?;
+        fs::write(workspaces.join("donor/output"), b"artifact")?;
+        let error = seed_profile(root.path(), &profile, "donor", "recipient", &|_, _| {
+            Err(io::Error::from(io::ErrorKind::PermissionDenied).into())
+        })
+        .err()
+        .unwrap();
+        assert_eq!(
+            error.downcast_ref::<io::Error>().unwrap().kind(),
+            io::ErrorKind::PermissionDenied
+        );
+        assert_eq!(fs::read_dir(&workspaces)?.count(), 1);
+        assert_eq!(fs::read(workspaces.join("donor/output"))?, b"artifact");
+        Ok(())
+    }
 
     #[test]
     fn local_macro_trust_cannot_drop_a_symlinked_taint_marker() {

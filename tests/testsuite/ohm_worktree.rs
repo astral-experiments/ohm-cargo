@@ -7,6 +7,16 @@ use crate::prelude::*;
 use cargo_test_support::{Execs, Project, git, paths, str};
 
 fn seeded_cargo(project: &Project, command: &str) -> Execs {
+    let mut cargo = clone_seeded_cargo(project, command);
+    // Reuse correctness is exercised on filesystems without reflinks too.
+    // Dedicated policy tests below exercise the default without this opt-in.
+    if command.contains("worktree add") {
+        cargo.arg("--copy-build-state");
+    }
+    cargo
+}
+
+fn clone_seeded_cargo(project: &Project, command: &str) -> Execs {
     // Packaged Ohm exercises bare commands; other test builds opt into its defaults.
     let command = if cfg!(feature = "ohm-defaults") {
         command.to_owned()
@@ -37,6 +47,46 @@ fn binary(workspace: &Path) -> PathBuf {
     workspace
         .join("target/debug")
         .join(format!("foo{}", std::env::consts::EXE_SUFFIX))
+}
+
+#[cargo_test(
+    nightly,
+    reason = "worktree seeds use checksum freshness and cwd remapping"
+)]
+fn default_import_requires_cloning_but_copying_can_be_requested() {
+    let donor = git::new("donor", |p| {
+        p.file(".gitignore", "/target\n/Cargo.lock\n")
+            .file("src/lib.rs", "pub fn value() -> u32 { 1 }")
+    });
+    seeded_cargo(&donor, "build").run();
+    let output = clone_seeded_cargo(&donor, "worktree add")
+        .arg(paths::root().join("default"))
+        .run();
+    let stderr = String::from_utf8(output.stderr).unwrap();
+    if stderr.contains("without copy-on-write support") {
+        assert!(stderr.contains("--copy-build-state"));
+        assert_eq!(workspace_caches().len(), 1);
+    } else {
+        assert!(stderr.contains("reflinked files"), "{stderr}");
+        let count = stderr
+            .split(" reflinked files")
+            .next()
+            .unwrap()
+            .rsplit_once(", ")
+            .unwrap()
+            .1
+            .parse::<u64>()
+            .unwrap();
+        assert!(count > 0, "{stderr}");
+        assert_eq!(workspace_caches().len(), 2);
+    }
+    let before = workspace_caches().len();
+    seeded_cargo(&donor, "worktree add")
+        .arg(paths::root().join("copied"))
+        .with_stderr_contains("[..]Seeded [..] files [..]")
+        .run();
+    assert_eq!(workspace_caches().len(), before + 1);
+    seeded_cargo(&donor, "build").run();
 }
 
 #[cargo_test]
