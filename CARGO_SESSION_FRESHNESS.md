@@ -33,5 +33,35 @@ Validation covers real transitive includes, deletion and error recovery, output
 mtime regression and deletion, interrupted short fingerprints with preserved
 mtime, corrupt dep-info, warning replay, and JSON artifact freshness. Focused
 read-set tests cover racing values, request-local mtime cache values, conflicting
-reads, and directory exclusion. Performance data will compare this branch with
-its immediate parent using alternating source-edit measurements.
+reads, and directory exclusion. The release build, 24 session unit tests, and
+41 session integration tests pass.
+
+## Measurements
+
+Thirty alternating parent/current pairs after actual leaf edits in a 101-crate
+Linux x86_64 workspace produced these medians:
+
+| Compiler | Parent client | Cached client | Parent server | Cached server | Client speedup |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Ohm 1.98.0-2 | 114.22 ms | 115.12 ms | 105.03 ms | 106.09 ms | 0.992x |
+| Stable Rust 1.97.1 | 107.72 ms | 104.70 ms | 96.83 ms | 95.26 ms | 1.029x |
+
+These results do not establish a substantial performance improvement. The Ohm
+median regressed slightly; the stable median improved slightly. Validation still
+polls the saved inputs, and every request still constructs mutable fingerprints
+and schedules every unit. Removing dep-info parsing and static fingerprint work
+does not remove that remaining work. Individual samples include substantial
+host noise; no outliers were removed.
+
+Both sides retained one preparation across 31 checks, and every measured edit
+changed the leaf dep-info output. Cold preparation and startup are reported
+separately. The immediate parent is the input-watcher branch at `2fbb8db`; the
+measured implementation is `2445ce8`. Shared Cargo build-script outputs can retain
+an earlier embedded commit string, so the data records each executable SHA-256
+as its measured binary identity.
+
+Reproduce with `benches/session_compare.py --before PARENT_CARGO --after CARGO
+--crates 100 --rounds 30`, selecting the compiler with `RUSTUP_TOOLCHAIN`.
+[Ohm samples](benches/session/results/freshness-ohm-linux-x86_64.json) and
+[stable samples](benches/session/results/freshness-stable-linux-x86_64.json) include
+every measurement, compiler identity, executable hash, and session counter.
