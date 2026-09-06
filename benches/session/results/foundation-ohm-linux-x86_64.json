@@ -1,0 +1,471 @@
+{
+  "benchmark": "changed leaf library source, independently warmed targets",
+  "configuration": {
+    "dependency_crates": 100,
+    "total_crates": 101,
+    "rounds": 30,
+    "dependency_shape": "chain",
+    "offline": true,
+    "compiler_wrappers_disabled": true,
+    "measurement_order": "alternating",
+    "baseline_command": [
+      "/run/user/1000/cargo-session-binaries-0ebe/foundation",
+      "check",
+      "-p",
+      "app",
+      "--lib"
+    ],
+    "session_command": [
+      "/run/user/1000/cargo-session-binaries-0ebe/foundation",
+      "session",
+      "check",
+      "--socket",
+      "<private socket>",
+      "--json"
+    ]
+  },
+  "toolchain": {
+    "cargo_path": "/run/user/1000/cargo-session-binaries-0ebe/foundation",
+    "rustc_path": "/home/dev-user/.rustup/toolchains/ohm/bin/rustc",
+    "rustc_selection": {
+      "requested_path": "/home/dev-user/.cargo/bin/rustc",
+      "method": "rustup which rustc",
+      "rustup_path": "/home/dev-user/.cargo/bin/rustup"
+    },
+    "cargo": "cargo 1.98.0 (e3792054a 2026-09-06)\nrelease: 1.98.0\ncommit-hash: e3792054a9056961620ffd23cef2304b437a6cb9\ncommit-date: 2026-09-06\nhost: x86_64-unknown-linux-gnu\nlibgit2: 1.9.4 (sys:0.21.0 vendored)\nlibcurl: 8.21.0-DEV (sys:0.4.90+curl-8.21.0 vendored ssl:OpenSSL/3.0.13)\nos: Ubuntu 24.4.0 (noble) [64-bit]",
+    "rustc": "rustc 1.98.0-dev (e03456bd2 2026-08-21) (ohm-1.98.0-2)\nbinary: rustc\ncommit-hash: e03456bd220c9c4b4b7d6f74d0a047cc708bc633\ncommit-date: 2026-08-21\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.0-dev\nLLVM version: 22.1.8",
+    "python": "3.12.13",
+    "platform": "Linux-6.8.0-106-generic-x86_64-with-glibc2.39"
+  },
+  "cold_preparation": {
+    "cargo_client_ms": 5625.370855,
+    "session_startup_ms": 43.911928,
+    "session_client_ms": 6065.427601,
+    "session_server_ms": 6046.920304,
+    "included_in_speedup": false
+  },
+  "changed_source": {
+    "cargo_client": {
+      "median_ms": 199.024747,
+      "min_ms": 192.728256,
+      "max_ms": 358.111434
+    },
+    "session_client": {
+      "median_ms": 116.309793,
+      "min_ms": 112.083075,
+      "max_ms": 132.996913
+    },
+    "session_server": {
+      "median_ms": 105.4309215,
+      "min_ms": 101.69052,
+      "max_ms": 121.763854
+    },
+    "client_speedup": 1.711160701661639
+  },
+  "session_counters": {
+    "after_preparation": {
+      "pid": 3392524,
+      "checks": 1,
+      "preparations": 1,
+      "reused": false
+    },
+    "after_measurement": {
+      "pid": 3392524,
+      "checks": 31,
+      "preparations": 1,
+      "reused": true
+    }
+  },
+  "samples": [
+    {
+      "round": 1,
+      "order": [
+        "cargo",
+        "session"
+      ],
+      "source_value": 1,
+      "cargo_client_ms": 358.111434,
+      "session_client_ms": 124.675977,
+      "session_server_ms": 112.324082,
+      "preparations": 1,
+      "checks": 2
+    },
+    {
+      "round": 2,
+      "order": [
+        "session",
+        "cargo"
+      ],
+      "source_value": 2,
+      "session_client_ms": 129.986818,
+      "session_server_ms": 105.464739,
+      "preparations": 1,
+      "checks": 3,
+      "cargo_client_ms": 207.232302
+    },
+    {
+      "round": 3,
+      "order": [
+        "cargo",
+        "session"
+      ],
+      "source_value": 3,
+      "cargo_client_ms": 230.606015,
+      "session_client_ms": 117.889708,
+      "session_server_ms": 106.134456,
+      "preparations": 1,
+      "checks": 4
+    },
+    {
+      "round": 4,
+      "order": [
+        "session",
+        "cargo"
+      ],
+      "source_value": 4,
+      "session_client_ms": 127.546299,
+      "session_server_ms": 116.03832,
+      "preparations": 1,
+      "checks": 5,
+      "cargo_client_ms": 216.893982
+    },
+    {
+      "round": 5,
+      "order": [
+        "cargo",
+        "session"
+      ],
+      "source_value": 5,
+      "cargo_client_ms": 216.891282,
+      "session_client_ms": 121.43588,
+      "session_server_ms": 109.880526,
+      "preparations": 1,
+      "checks": 6
+    },
+    {
+      "round": 6,
+      "order": [
+        "session",
+        "cargo"
+      ],
+      "source_value": 6,
+      "session_client_ms": 119.785645,
+      "session_server_ms": 107.238152,
+      "preparations": 1,
+      "checks": 7,
+      "cargo_client_ms": 215.530379
+    },
+    {
+      "round": 7,
+      "order": [
+        "cargo",
+        "session"
+      ],
+      "source_value": 7,
+      "cargo_client_ms": 197.985446,
+      "session_client_ms": 114.698665,
+      "session_server_ms": 103.446029,
+      "preparations": 1,
+      "checks": 8
+    },
+    {
+      "round": 8,
+      "order": [
+        "session",
+        "cargo"
+      ],
+      "source_value": 8,
+      "session_client_ms": 115.328008,
+      "session_server_ms": 103.600047,
+      "preparations": 1,
+      "checks": 9,
+      "cargo_client_ms": 199.075643
+    },
+    {
+      "round": 9,
+      "order": [
+        "cargo",
+        "session"
+      ],
+      "source_value": 9,
+      "cargo_client_ms": 201.724406,
+      "session_client_ms": 116.742508,
+      "session_server_ms": 105.667347,
+      "preparations": 1,
+      "checks": 10
+    },
+    {
+      "round": 10,
+      "order": [
+        "session",
+        "cargo"
+      ],
+      "source_value": 10,
+      "session_client_ms": 115.266576,
+      "session_server_ms": 103.909632,
+      "preparations": 1,
+      "checks": 11,
+      "cargo_client_ms": 195.480596
+    },
+    {
+      "round": 11,
+      "order": [
+        "cargo",
+        "session"
+      ],
+      "source_value": 11,
+      "cargo_client_ms": 202.786002,
+      "session_client_ms": 115.938875,
+      "session_server_ms": 105.274985,
+      "preparations": 1,
+      "checks": 12
+    },
+    {
+      "round": 12,
+      "order": [
+        "session",
+        "cargo"
+      ],
+      "source_value": 12,
+      "session_client_ms": 115.763227,
+      "session_server_ms": 104.555104,
+      "preparations": 1,
+      "checks": 13,
+      "cargo_client_ms": 200.097184
+    },
+    {
+      "round": 13,
+      "order": [
+        "cargo",
+        "session"
+      ],
+      "source_value": 13,
+      "cargo_client_ms": 198.973851,
+      "session_client_ms": 115.78587,
+      "session_server_ms": 105.478966,
+      "preparations": 1,
+      "checks": 14
+    },
+    {
+      "round": 14,
+      "order": [
+        "session",
+        "cargo"
+      ],
+      "source_value": 14,
+      "session_client_ms": 114.044227,
+      "session_server_ms": 103.384644,
+      "preparations": 1,
+      "checks": 15,
+      "cargo_client_ms": 197.176315
+    },
+    {
+      "round": 15,
+      "order": [
+        "cargo",
+        "session"
+      ],
+      "source_value": 15,
+      "cargo_client_ms": 197.696584,
+      "session_client_ms": 112.532605,
+      "session_server_ms": 102.218174,
+      "preparations": 1,
+      "checks": 16
+    },
+    {
+      "round": 16,
+      "order": [
+        "session",
+        "cargo"
+      ],
+      "source_value": 16,
+      "session_client_ms": 112.519928,
+      "session_server_ms": 101.8031,
+      "preparations": 1,
+      "checks": 17,
+      "cargo_client_ms": 193.88718
+    },
+    {
+      "round": 17,
+      "order": [
+        "cargo",
+        "session"
+      ],
+      "source_value": 17,
+      "cargo_client_ms": 196.605922,
+      "session_client_ms": 114.226456,
+      "session_server_ms": 103.499209,
+      "preparations": 1,
+      "checks": 18
+    },
+    {
+      "round": 18,
+      "order": [
+        "session",
+        "cargo"
+      ],
+      "source_value": 18,
+      "session_client_ms": 112.083075,
+      "session_server_ms": 101.69052,
+      "preparations": 1,
+      "checks": 19,
+      "cargo_client_ms": 193.861652
+    },
+    {
+      "round": 19,
+      "order": [
+        "cargo",
+        "session"
+      ],
+      "source_value": 19,
+      "cargo_client_ms": 197.963951,
+      "session_client_ms": 115.583945,
+      "session_server_ms": 105.397104,
+      "preparations": 1,
+      "checks": 20
+    },
+    {
+      "round": 20,
+      "order": [
+        "session",
+        "cargo"
+      ],
+      "source_value": 20,
+      "session_client_ms": 118.467814,
+      "session_server_ms": 107.066482,
+      "preparations": 1,
+      "checks": 21,
+      "cargo_client_ms": 201.565716
+    },
+    {
+      "round": 21,
+      "order": [
+        "cargo",
+        "session"
+      ],
+      "source_value": 21,
+      "cargo_client_ms": 197.649316,
+      "session_client_ms": 116.837328,
+      "session_server_ms": 106.262604,
+      "preparations": 1,
+      "checks": 22
+    },
+    {
+      "round": 22,
+      "order": [
+        "session",
+        "cargo"
+      ],
+      "source_value": 22,
+      "session_client_ms": 114.854518,
+      "session_server_ms": 104.360595,
+      "preparations": 1,
+      "checks": 23,
+      "cargo_client_ms": 192.728256
+    },
+    {
+      "round": 23,
+      "order": [
+        "cargo",
+        "session"
+      ],
+      "source_value": 23,
+      "cargo_client_ms": 206.550428,
+      "session_client_ms": 123.042659,
+      "session_server_ms": 108.499659,
+      "preparations": 1,
+      "checks": 24
+    },
+    {
+      "round": 24,
+      "order": [
+        "session",
+        "cargo"
+      ],
+      "source_value": 24,
+      "session_client_ms": 116.680711,
+      "session_server_ms": 106.05513,
+      "preparations": 1,
+      "checks": 25,
+      "cargo_client_ms": 200.343467
+    },
+    {
+      "round": 25,
+      "order": [
+        "cargo",
+        "session"
+      ],
+      "source_value": 25,
+      "cargo_client_ms": 209.941882,
+      "session_client_ms": 118.755672,
+      "session_server_ms": 108.097141,
+      "preparations": 1,
+      "checks": 26
+    },
+    {
+      "round": 26,
+      "order": [
+        "session",
+        "cargo"
+      ],
+      "source_value": 26,
+      "session_client_ms": 114.250118,
+      "session_server_ms": 103.650076,
+      "preparations": 1,
+      "checks": 27,
+      "cargo_client_ms": 197.470677
+    },
+    {
+      "round": 27,
+      "order": [
+        "cargo",
+        "session"
+      ],
+      "source_value": 27,
+      "cargo_client_ms": 210.207755,
+      "session_client_ms": 132.996913,
+      "session_server_ms": 121.763854,
+      "preparations": 1,
+      "checks": 28
+    },
+    {
+      "round": 28,
+      "order": [
+        "session",
+        "cargo"
+      ],
+      "source_value": 28,
+      "session_client_ms": 116.717605,
+      "session_server_ms": 105.082655,
+      "preparations": 1,
+      "checks": 29,
+      "cargo_client_ms": 198.442103
+    },
+    {
+      "round": 29,
+      "order": [
+        "cargo",
+        "session"
+      ],
+      "source_value": 29,
+      "cargo_client_ms": 195.448818,
+      "session_client_ms": 113.041258,
+      "session_server_ms": 102.940688,
+      "preparations": 1,
+      "checks": 30
+    },
+    {
+      "round": 30,
+      "order": [
+        "session",
+        "cargo"
+      ],
+      "source_value": 30,
+      "session_client_ms": 117.302414,
+      "session_server_ms": 106.022552,
+      "preparations": 1,
+      "checks": 31,
+      "cargo_client_ms": 194.735187
+    }
+  ]
+}

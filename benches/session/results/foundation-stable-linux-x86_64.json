@@ -1,0 +1,471 @@
+{
+  "benchmark": "changed leaf library source, independently warmed targets",
+  "configuration": {
+    "dependency_crates": 100,
+    "total_crates": 101,
+    "rounds": 30,
+    "dependency_shape": "chain",
+    "offline": true,
+    "compiler_wrappers_disabled": true,
+    "measurement_order": "alternating",
+    "baseline_command": [
+      "/run/user/1000/cargo-session-binaries-0ebe/foundation",
+      "check",
+      "-p",
+      "app",
+      "--lib"
+    ],
+    "session_command": [
+      "/run/user/1000/cargo-session-binaries-0ebe/foundation",
+      "session",
+      "check",
+      "--socket",
+      "<private socket>",
+      "--json"
+    ]
+  },
+  "toolchain": {
+    "cargo_path": "/run/user/1000/cargo-session-binaries-0ebe/foundation",
+    "rustc_path": "/home/dev-user/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc",
+    "rustc_selection": {
+      "requested_path": "/home/dev-user/.cargo/bin/rustc",
+      "method": "rustup which rustc",
+      "rustup_path": "/home/dev-user/.cargo/bin/rustup"
+    },
+    "cargo": "cargo 1.98.0 (e3792054a 2026-09-06)\nrelease: 1.98.0\ncommit-hash: e3792054a9056961620ffd23cef2304b437a6cb9\ncommit-date: 2026-09-06\nhost: x86_64-unknown-linux-gnu\nlibgit2: 1.9.4 (sys:0.21.0 vendored)\nlibcurl: 8.21.0-DEV (sys:0.4.90+curl-8.21.0 vendored ssl:OpenSSL/3.0.13)\nos: Ubuntu 24.4.0 (noble) [64-bit]",
+    "rustc": "rustc 1.97.1 (8bab26f4f 2026-07-14)\nbinary: rustc\ncommit-hash: 8bab26f4f68e0e26f0bb7960be334d5b520ea452\ncommit-date: 2026-07-14\nhost: x86_64-unknown-linux-gnu\nrelease: 1.97.1\nLLVM version: 22.1.6",
+    "python": "3.12.13",
+    "platform": "Linux-6.8.0-106-generic-x86_64-with-glibc2.39"
+  },
+  "cold_preparation": {
+    "cargo_client_ms": 4711.77838,
+    "session_startup_ms": 41.585225,
+    "session_client_ms": 5448.568267,
+    "session_server_ms": 5437.12441,
+    "included_in_speedup": false
+  },
+  "changed_source": {
+    "cargo_client": {
+      "median_ms": 192.214879,
+      "min_ms": 179.00262,
+      "max_ms": 613.89513
+    },
+    "session_client": {
+      "median_ms": 106.75406050000001,
+      "min_ms": 102.924818,
+      "max_ms": 156.897824
+    },
+    "session_server": {
+      "median_ms": 95.5497685,
+      "min_ms": 90.348226,
+      "max_ms": 143.366755
+    },
+    "client_speedup": 1.8005392778478901
+  },
+  "session_counters": {
+    "after_preparation": {
+      "pid": 3395529,
+      "checks": 1,
+      "preparations": 1,
+      "reused": false
+    },
+    "after_measurement": {
+      "pid": 3395529,
+      "checks": 31,
+      "preparations": 1,
+      "reused": true
+    }
+  },
+  "samples": [
+    {
+      "round": 1,
+      "order": [
+        "cargo",
+        "session"
+      ],
+      "source_value": 1,
+      "cargo_client_ms": 197.536988,
+      "session_client_ms": 106.376247,
+      "session_server_ms": 95.954807,
+      "preparations": 1,
+      "checks": 2
+    },
+    {
+      "round": 2,
+      "order": [
+        "session",
+        "cargo"
+      ],
+      "source_value": 2,
+      "session_client_ms": 109.059863,
+      "session_server_ms": 97.880984,
+      "preparations": 1,
+      "checks": 3,
+      "cargo_client_ms": 227.734008
+    },
+    {
+      "round": 3,
+      "order": [
+        "cargo",
+        "session"
+      ],
+      "source_value": 3,
+      "cargo_client_ms": 187.651116,
+      "session_client_ms": 106.281351,
+      "session_server_ms": 95.243083,
+      "preparations": 1,
+      "checks": 4
+    },
+    {
+      "round": 4,
+      "order": [
+        "session",
+        "cargo"
+      ],
+      "source_value": 4,
+      "session_client_ms": 106.86711,
+      "session_server_ms": 95.767419,
+      "preparations": 1,
+      "checks": 5,
+      "cargo_client_ms": 186.405818
+    },
+    {
+      "round": 5,
+      "order": [
+        "cargo",
+        "session"
+      ],
+      "source_value": 5,
+      "cargo_client_ms": 183.739156,
+      "session_client_ms": 104.960069,
+      "session_server_ms": 94.801892,
+      "preparations": 1,
+      "checks": 6
+    },
+    {
+      "round": 6,
+      "order": [
+        "session",
+        "cargo"
+      ],
+      "source_value": 6,
+      "session_client_ms": 103.037448,
+      "session_server_ms": 91.781978,
+      "preparations": 1,
+      "checks": 7,
+      "cargo_client_ms": 179.00262
+    },
+    {
+      "round": 7,
+      "order": [
+        "cargo",
+        "session"
+      ],
+      "source_value": 7,
+      "cargo_client_ms": 179.161165,
+      "session_client_ms": 106.767045,
+      "session_server_ms": 96.238307,
+      "preparations": 1,
+      "checks": 8
+    },
+    {
+      "round": 8,
+      "order": [
+        "session",
+        "cargo"
+      ],
+      "source_value": 8,
+      "session_client_ms": 104.335707,
+      "session_server_ms": 92.461102,
+      "preparations": 1,
+      "checks": 9,
+      "cargo_client_ms": 613.89513
+    },
+    {
+      "round": 9,
+      "order": [
+        "cargo",
+        "session"
+      ],
+      "source_value": 9,
+      "cargo_client_ms": 240.051682,
+      "session_client_ms": 156.897824,
+      "session_server_ms": 143.366755,
+      "preparations": 1,
+      "checks": 10
+    },
+    {
+      "round": 10,
+      "order": [
+        "session",
+        "cargo"
+      ],
+      "source_value": 10,
+      "session_client_ms": 105.581787,
+      "session_server_ms": 94.182117,
+      "preparations": 1,
+      "checks": 11,
+      "cargo_client_ms": 199.894297
+    },
+    {
+      "round": 11,
+      "order": [
+        "cargo",
+        "session"
+      ],
+      "source_value": 11,
+      "cargo_client_ms": 208.711136,
+      "session_client_ms": 110.551815,
+      "session_server_ms": 98.571291,
+      "preparations": 1,
+      "checks": 12
+    },
+    {
+      "round": 12,
+      "order": [
+        "session",
+        "cargo"
+      ],
+      "source_value": 12,
+      "session_client_ms": 106.043968,
+      "session_server_ms": 90.348226,
+      "preparations": 1,
+      "checks": 13,
+      "cargo_client_ms": 201.307348
+    },
+    {
+      "round": 13,
+      "order": [
+        "cargo",
+        "session"
+      ],
+      "source_value": 13,
+      "cargo_client_ms": 208.219687,
+      "session_client_ms": 106.741076,
+      "session_server_ms": 95.332118,
+      "preparations": 1,
+      "checks": 14
+    },
+    {
+      "round": 14,
+      "order": [
+        "session",
+        "cargo"
+      ],
+      "source_value": 14,
+      "session_client_ms": 111.371764,
+      "session_server_ms": 100.222156,
+      "preparations": 1,
+      "checks": 15,
+      "cargo_client_ms": 179.688417
+    },
+    {
+      "round": 15,
+      "order": [
+        "cargo",
+        "session"
+      ],
+      "source_value": 15,
+      "cargo_client_ms": 190.176349,
+      "session_client_ms": 106.800376,
+      "session_server_ms": 96.134242,
+      "preparations": 1,
+      "checks": 16
+    },
+    {
+      "round": 16,
+      "order": [
+        "session",
+        "cargo"
+      ],
+      "source_value": 16,
+      "session_client_ms": 104.818466,
+      "session_server_ms": 93.655656,
+      "preparations": 1,
+      "checks": 17,
+      "cargo_client_ms": 198.57612
+    },
+    {
+      "round": 17,
+      "order": [
+        "cargo",
+        "session"
+      ],
+      "source_value": 17,
+      "cargo_client_ms": 205.056182,
+      "session_client_ms": 113.869832,
+      "session_server_ms": 102.849528,
+      "preparations": 1,
+      "checks": 18
+    },
+    {
+      "round": 18,
+      "order": [
+        "session",
+        "cargo"
+      ],
+      "source_value": 18,
+      "session_client_ms": 117.935493,
+      "session_server_ms": 106.019763,
+      "preparations": 1,
+      "checks": 19,
+      "cargo_client_ms": 189.961869
+    },
+    {
+      "round": 19,
+      "order": [
+        "cargo",
+        "session"
+      ],
+      "source_value": 19,
+      "cargo_client_ms": 201.698546,
+      "session_client_ms": 108.117931,
+      "session_server_ms": 97.184678,
+      "preparations": 1,
+      "checks": 20
+    },
+    {
+      "round": 20,
+      "order": [
+        "session",
+        "cargo"
+      ],
+      "source_value": 20,
+      "session_client_ms": 107.5787,
+      "session_server_ms": 95.325958,
+      "preparations": 1,
+      "checks": 21,
+      "cargo_client_ms": 189.84976
+    },
+    {
+      "round": 21,
+      "order": [
+        "cargo",
+        "session"
+      ],
+      "source_value": 21,
+      "cargo_client_ms": 194.253409,
+      "session_client_ms": 112.111458,
+      "session_server_ms": 102.141039,
+      "preparations": 1,
+      "checks": 22
+    },
+    {
+      "round": 22,
+      "order": [
+        "session",
+        "cargo"
+      ],
+      "source_value": 22,
+      "session_client_ms": 105.079602,
+      "session_server_ms": 92.037192,
+      "preparations": 1,
+      "checks": 23,
+      "cargo_client_ms": 197.15767
+    },
+    {
+      "round": 23,
+      "order": [
+        "cargo",
+        "session"
+      ],
+      "source_value": 23,
+      "cargo_client_ms": 187.913374,
+      "session_client_ms": 107.829653,
+      "session_server_ms": 96.135414,
+      "preparations": 1,
+      "checks": 24
+    },
+    {
+      "round": 24,
+      "order": [
+        "session",
+        "cargo"
+      ],
+      "source_value": 24,
+      "session_client_ms": 104.680598,
+      "session_server_ms": 93.037825,
+      "preparations": 1,
+      "checks": 25,
+      "cargo_client_ms": 194.840798
+    },
+    {
+      "round": 25,
+      "order": [
+        "cargo",
+        "session"
+      ],
+      "source_value": 25,
+      "cargo_client_ms": 212.072396,
+      "session_client_ms": 108.830527,
+      "session_server_ms": 97.07788,
+      "preparations": 1,
+      "checks": 26
+    },
+    {
+      "round": 26,
+      "order": [
+        "session",
+        "cargo"
+      ],
+      "source_value": 26,
+      "session_client_ms": 105.483664,
+      "session_server_ms": 94.300077,
+      "preparations": 1,
+      "checks": 27,
+      "cargo_client_ms": 183.807432
+    },
+    {
+      "round": 27,
+      "order": [
+        "cargo",
+        "session"
+      ],
+      "source_value": 27,
+      "cargo_client_ms": 183.072675,
+      "session_client_ms": 108.025548,
+      "session_server_ms": 97.449482,
+      "preparations": 1,
+      "checks": 28
+    },
+    {
+      "round": 28,
+      "order": [
+        "session",
+        "cargo"
+      ],
+      "source_value": 28,
+      "session_client_ms": 106.267352,
+      "session_server_ms": 95.201074,
+      "preparations": 1,
+      "checks": 29,
+      "cargo_client_ms": 179.925048
+    },
+    {
+      "round": 29,
+      "order": [
+        "cargo",
+        "session"
+      ],
+      "source_value": 29,
+      "cargo_client_ms": 185.016624,
+      "session_client_ms": 105.120628,
+      "session_server_ms": 94.374697,
+      "preparations": 1,
+      "checks": 30
+    },
+    {
+      "round": 30,
+      "order": [
+        "session",
+        "cargo"
+      ],
+      "source_value": 30,
+      "session_client_ms": 102.924818,
+      "session_server_ms": 92.059974,
+      "preparations": 1,
+      "checks": 31,
+      "cargo_client_ms": 180.833569
+    }
+  ]
+}

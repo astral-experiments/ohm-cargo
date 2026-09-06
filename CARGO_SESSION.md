@@ -253,29 +253,45 @@ One run per compiler on Linux x86_64, using this branch's release Cargo binary,
 
 | Compiler | Ordinary check, median | Session check, median | Speedup |
 | --- | ---: | ---: | ---: |
-| Ohm 1.98.0-2 | 200.7 ms | 115.5 ms | 1.74x |
-| Stable Rust 1.97.1 | 184.2 ms | 106.3 ms | 1.73x |
+| Ohm 1.98.0-2 | 199.0 ms | 116.3 ms | 1.71x |
+| Stable Rust 1.97.1 | 192.2 ms | 106.8 ms | 1.80x |
 
 These are end-to-end client times, including client startup, input validation,
-compilation, output capture, and IPC. The server-side medians were 104.9 ms and
-94.9 ms, respectively. Both runs kept one server process and one preparation
+compilation, output capture, and IPC. The server-side medians were 105.4 ms and
+95.5 ms, respectively. Both runs kept one server process and one preparation
 through all 31 checks (one cold check plus 30 edits). Every measured check changed
 the leaf's dep-info artifact.
 
 | Compiler | Ordinary cold check | Server startup | Session cold check |
 | --- | ---: | ---: | ---: |
-| Ohm 1.98.0-2 | 6223.7 ms | 53.4 ms | 5674.7 ms |
-| Stable Rust 1.97.1 | 5474.5 ms | 121.3 ms | 5689.1 ms |
+| Ohm 1.98.0-2 | 5625.4 ms | 43.9 ms | 6065.4 ms |
+| Stable Rust 1.97.1 | 4711.8 ms | 41.6 ms | 5448.6 ms |
 
 Cold figures are single observations, excluded from the speedup. These results
 measure this path-dependency fixture; registry/Git workspaces currently prepare
 afresh and do not receive the same preparation savings. The script emits the
 compiler-selection provenance, all samples, cold timings, and session counters
-as JSON.
+as JSON. The committed [Ohm report](benches/session/results/foundation-ohm-linux-x86_64.json)
+and [stable report](benches/session/results/foundation-stable-linux-x86_64.json)
+retain every sample and identify the measured source commit, `e3792054a`.
 
 To reproduce each compiler selection:
 
 ```sh
 RUSTUP_TOOLCHAIN=ohm python3 -S benches/session.py --cargo target/release/cargo --crates 100 --rounds 30
 RUSTUP_TOOLCHAIN=stable python3 -S benches/session.py --cargo target/release/cargo --crates 100 --rounds 30
+```
+
+
+### Comparing an optimization with its parent
+
+`benches/session_compare.py` runs two session binaries against the same compiler
+and changed-source fixture. Each has separate warmed outputs; measured order
+alternates, and both must retain their preparation and update the leaf artifact
+on every round. The JSON report includes binary hashes, every sample, startup
+costs, and session counters. Optional `--before-serve-arg` and
+`--after-serve-arg` arguments select the feature under test.
+
+```sh
+python3 -S benches/session_compare.py --before /path/to/parent/cargo --after /path/to/current/cargo --crates 100 --rounds 30
 ```

@@ -74,6 +74,11 @@ usage, and measurement details.
 A recognized rustup proxy is resolved in the temporary workspace, and both modes
 use the same selected compiler path recorded in the report.
 
+For a stacked optimization, `python3 -S benches/session_compare.py --before
+/path/to/parent/cargo --after /path/to/current/cargo` compares two sessions with
+independent warmed outputs. It verifies preparation reuse and changed leaf
+artifacts, records binary hashes, and emits every paired sample as JSON.
+
 ## Viewing reports
 
 The benchmarks display some basic information on the command-line while they
