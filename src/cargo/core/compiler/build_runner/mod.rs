@@ -416,6 +416,10 @@ pub struct BuildRunner<'a, 'gctx> {
 
 impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
     pub fn new(bcx: &'a BuildContext<'a, 'gctx>) -> CargoResult<Self> {
+        Self::new_with_jobserver(bcx, None)
+    }
+
+    pub(crate) fn create_jobserver(bcx: &BuildContext<'_, '_>) -> CargoResult<Client> {
         // Load up the jobserver that we'll use to manage our parallelism. This
         // is the same as the GNU make implementation of a jobserver, and
         // intentionally so! It's hoped that we can interact with GNU make and
@@ -433,7 +437,17 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
                 client
             }
         };
+        Ok(jobserver)
+    }
 
+    pub(crate) fn new_with_jobserver(
+        bcx: &'a BuildContext<'a, 'gctx>,
+        jobserver: Option<&Client>,
+    ) -> CargoResult<Self> {
+        let jobserver = match jobserver {
+            Some(client) => client.clone(),
+            None => Self::create_jobserver(bcx)?,
+        };
         let mut terminal_check_units = bcx
             .roots
             .iter()

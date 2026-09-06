@@ -22,6 +22,9 @@ pub fn cli() -> Command {
                 .name("serve")
                 .about("Serve checks with fixed package, target, feature, and configuration options")
                 .arg(socket_arg())
+                .arg(opt("compiler-worker", "Use an explicitly built persistent rustc worker (experimental)")
+                    .value_name("PATH")
+                    .value_parser(value_parser!(std::path::PathBuf)))
                 .after_help("The server stays in the foreground. Run `cargo session check` from the same directory and environment to check again. SIGTERM lets the current check finish before shutdown; Ctrl-C also reaches compilers in the foreground process group."),
         )
         .subcommand(client("check", "Check using the running session's options"))

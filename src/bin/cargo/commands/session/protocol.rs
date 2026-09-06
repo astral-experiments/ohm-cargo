@@ -170,6 +170,7 @@ pub(super) struct Response {
     pub reprepare_reason: Option<String>,
     pub reuse_disabled_reason: Option<String>,
     pub reused: bool,
+    pub compiler_worker: Option<cargo::util::session_worker::WorkerStats>,
     pub returncode: i32,
     pub elapsed_ms: f64,
     pub stdout: String,

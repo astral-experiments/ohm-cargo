@@ -30,6 +30,7 @@ struct State {
     reused: bool,
     reprepare_reason: Option<String>,
     reuse_disabled_reason: Option<String>,
+    compiler_worker: Option<cargo::util::session_worker::WorkerStats>,
 }
 
 impl State {
@@ -42,6 +43,7 @@ impl State {
             reused: false,
             reprepare_reason: None,
             reuse_disabled_reason: None,
+            compiler_worker: None,
         }
     }
 
@@ -58,6 +60,7 @@ impl State {
             reprepare_reason: self.reprepare_reason.clone(),
             reuse_disabled_reason: self.reuse_disabled_reason.clone(),
             reused: self.reused,
+            compiler_worker: self.compiler_worker.clone(),
             returncode: 0,
             elapsed_ms: 0.0,
             stdout: String::new(),
@@ -87,6 +90,7 @@ impl PendingCheck {
         state.reused = reused;
         state.reprepare_reason = self.reprepare_reason.clone();
         state.reuse_disabled_reason = None;
+        state.compiler_worker = None;
     }
 
     fn disconnected(&self) -> bool {
@@ -311,7 +315,15 @@ fn run_epoch(
         }
     };
     let interner = UnitInterner::new();
-    let prepared = match PreparedCheck::new(&ws, &options, &interner) {
+    let prepared = match PreparedCheck::new(
+        &ws,
+        &options,
+        &interner,
+        config
+            .args
+            .get_one::<std::path::PathBuf>("compiler-worker")
+            .map(std::path::PathBuf::as_path),
+    ) {
         Ok(prepared) => prepared,
         Err(error) => {
             return Ok(preparation_failed(
@@ -326,6 +338,7 @@ fn run_epoch(
             return Ok(EpochExit::Shutdown);
         }
         let outcome = prepared.check();
+        state.compiler_worker = prepared.compiler_worker_stats();
         state.revision = tracker.revision();
         state.reuse_disabled_reason = tracker.reuse_reason().or_else(|| {
             (!prepared.can_reuse()).then(|| "the previous plan is no longer reusable".to_owned())

@@ -233,6 +233,12 @@ impl ProcessBuilder {
         self
     }
 
+    /// Whether this command must carry request-scoped file handles into its child.
+    #[cfg(unix)]
+    pub fn has_inherited_files(&self) -> bool {
+        !self.inherited_files.is_empty()
+    }
+
     /// Enables environment variable display.
     pub fn display_env_vars(&mut self) -> &mut Self {
         self.display_env_vars = true;

@@ -1,10 +1,11 @@
 //! Retain Cargo's compilation front end between checks of one configuration.
 //!
 //! A session keeps a `BuildContext`, but creates a new `BuildRunner` for every
-//! check. Fingerprints, source mtimes, build-script outputs, jobs, and build locks
-//! therefore have the same lifetime as in an ordinary Cargo invocation.
+//! check. Mutable fingerprints, build-script outputs, jobs, and build locks have
+//! the same lifetime as in an ordinary Cargo invocation.
 
 use std::cell::Cell;
+use std::path::Path;
 use std::sync::Arc;
 
 use anyhow::{Context as _, bail};
@@ -18,6 +19,7 @@ use crate::ops::CompileOptions;
 use crate::util::CargoResult;
 use crate::util::context::WarningHandling;
 use crate::util::session_inputs::{InputTracker, Invalidation};
+use crate::util::session_worker::{WorkerExecutor, WorkerStats};
 
 /// A build result is publishable only after its planning inputs validate.
 pub enum CheckOutcome<'gctx> {
@@ -35,6 +37,8 @@ pub struct PreparedCheck<'a, 'gctx> {
     options: &'a CompileOptions,
     inputs: InputTracker,
     invalidated: Cell<bool>,
+    executor: Arc<dyn Executor>,
+    worker: Option<Arc<WorkerExecutor>>,
 }
 
 impl<'a, 'gctx> PreparedCheck<'a, 'gctx> {
@@ -42,6 +46,7 @@ impl<'a, 'gctx> PreparedCheck<'a, 'gctx> {
         ws: &'a Workspace<'gctx>,
         options: &'a CompileOptions,
         interner: &'a UnitInterner,
+        compiler_worker: Option<&Path>,
     ) -> CargoResult<Self> {
         if !matches!(options.build_config.intent, UserIntent::Check { .. }) {
             bail!("a Cargo session currently supports only `check`");
@@ -61,12 +66,25 @@ impl<'a, 'gctx> PreparedCheck<'a, 'gctx> {
             inputs.require_fresh("building the standard library requires fresh preparation");
         }
         let bcx = super::create_bcx(ws, options, interner, None)?;
+        let worker = compiler_worker
+            .map(|path| WorkerExecutor::new(&bcx, path, &inputs).map(Arc::new))
+            .transpose()?;
+        let executor: Arc<dyn Executor> = match &worker {
+            Some(worker) => worker.clone(),
+            None => Arc::new(DefaultExecutor),
+        };
         Ok(Self {
             bcx,
             options,
             inputs,
             invalidated: Cell::new(false),
+            executor,
+            worker,
         })
+    }
+
+    pub fn compiler_worker_stats(&self) -> Option<WorkerStats> {
+        self.worker.as_ref().map(|worker| worker.stats())
     }
 
     /// Whether all queries in this epoch have a complete dependency contract.
@@ -96,7 +114,7 @@ impl<'a, 'gctx> PreparedCheck<'a, 'gctx> {
             self.bcx.ws,
             crate::diagnostics::rules::PARSE_PASS_RULES,
         )?;
-        let exec: Arc<dyn Executor> = Arc::new(DefaultExecutor);
+        let exec = self.executor.clone();
         let result = if self.options.build_config.unit_graph {
             crate::core::compiler::unit_graph::emit_serialized_unit_graph(
                 &self.bcx.roots,
@@ -106,7 +124,10 @@ impl<'a, 'gctx> PreparedCheck<'a, 'gctx> {
             Compilation::new(&self.bcx)
         } else {
             crate::core::gc::auto_gc(self.bcx.gctx);
-            let runner = BuildRunner::new(&self.bcx)?;
+            let runner = BuildRunner::new_with_jobserver(
+                &self.bcx,
+                self.worker.as_ref().map(|worker| worker.jobserver()),
+            )?;
             if self.options.build_config.dry_run {
                 runner.dry_run()
             } else {
