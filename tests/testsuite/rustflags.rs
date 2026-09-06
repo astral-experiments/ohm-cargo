@@ -40,6 +40,7 @@ fn ohm_defaults_wrapper() -> PathBuf {
                         || arg.starts_with("-Zohm-caller-local-cgus")
                         || arg.starts_with("-Zohm-stable-cgu-merging")
                         || arg.starts_with("-Zohm-incremental-mono-partitions")
+                        || arg.starts_with("-Zohm-cloned-query-cache-prefix")
                         || arg.starts_with("-Zthreads=")
                 }
 
@@ -69,6 +70,12 @@ fn ohm_defaults_wrapper() -> PathBuf {
                         .is_some_and(|value| value == "1")
                         && args.iter().any(|arg| arg == "--print=sysroot")
                         && args.iter().any(|arg| arg == "-Zohm-incremental-mono-partitions")
+                    {
+                        exit(1);
+                    }
+                    if env::var_os("OHM_CLONED_QUERY_UNSUPPORTED").is_some()
+                        && args.iter().any(|arg| arg == "--print=sysroot")
+                        && args.iter().any(|arg| arg == "-Zohm-cloned-query-cache-prefix")
                     {
                         exit(1);
                     }
@@ -102,6 +109,64 @@ fn ohm_defaults_wrapper() -> PathBuf {
         .masquerade_as_nightly_cargo(&["ohm-defaults"])
         .run();
     wrapper.bin("ohm-defaults-wrapper")
+}
+
+#[cargo_test]
+fn cloned_query_prefix_defaults_respect_capability_and_explicit_options() {
+    let wrapper = ohm_defaults_wrapper();
+    for (index, (defaults, incremental, unsupported, explicit, expected)) in [
+        (
+            "yes",
+            "1",
+            false,
+            None,
+            vec!["-Zohm-cloned-query-cache-prefix"],
+        ),
+        ("no", "1", false, None, vec![]),
+        ("yes", "0", false, None, vec![]),
+        ("yes", "1", true, None, vec![]),
+        (
+            "yes",
+            "1",
+            false,
+            Some("-Zohm-cloned-query-cache-prefix=no"),
+            vec![
+                "-Zohm-cloned-query-cache-prefix",
+                "-Zohm-cloned-query-cache-prefix=no",
+            ],
+        ),
+    ]
+    .into_iter()
+    .enumerate()
+    {
+        let p = project()
+            .at(format!("cloned-prefix-{index}"))
+            .file("src/lib.rs", "pub fn value() {}")
+            .build();
+        let log = p.root().join("compiler.log");
+        let mut check = p.cargo(&format!("-Zohm-defaults={defaults} check"));
+        check
+            .masquerade_as_nightly_cargo(&["ohm-defaults"])
+            .env("CARGO_INCREMENTAL", incremental)
+            .env("RUSTC_WORKSPACE_WRAPPER", &wrapper)
+            .env("OHM_DEFAULTS_LOG", &log);
+        if unsupported {
+            check.env("OHM_CLONED_QUERY_UNSUPPORTED", "1");
+        }
+        if let Some(explicit) = explicit {
+            check.env("RUSTFLAGS", explicit);
+        }
+        check.run();
+        let invocations = fs::read_to_string(&log).unwrap();
+        assert_eq!(
+            rustc_invocation(&invocations, "foo")
+                .iter()
+                .copied()
+                .filter(|flag| flag.starts_with("-Zohm-cloned-query-cache-prefix"))
+                .collect::<Vec<_>>(),
+            expected
+        );
+    }
 }
 
 #[cargo_test]

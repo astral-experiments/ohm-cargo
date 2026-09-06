@@ -2095,6 +2095,13 @@ Ohm enables this feature by default to prepare reusable build state for
 incremental compiler state; immutable registry artifacts remain in the shared
 build directory.
 
+With a supporting compiler, Ohm defaults also enable
+`-Zohm-cloned-query-cache-prefix` for incremental compilations. This preserves
+shared file extents when rustc appends to an unchanged query-cache prefix;
+unsupported filesystems use the ordinary rewrite path. An explicit rustc option
+`-Zohm-cloned-query-cache-prefix=no` overrides this default without disabling
+worktree preparation.
+
 First run a normal Ohm build in the donor workspace. Its prepared build state can
 then seed a new worktree without extra feature flags. The first build after
 enabling this preparation can require rebuilding existing artifacts; copying an

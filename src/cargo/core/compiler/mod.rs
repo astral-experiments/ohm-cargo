@@ -1912,6 +1912,16 @@ fn prepare_rustc(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> CargoResult
         if unit_uses_ohm_incremental_mono_partitions(build_runner, unit) {
             base.arg("-Zohm-incremental-mono-partitions");
         }
+        if unit.profile.incremental
+            && build_runner
+                .bcx
+                .rustc()
+                .supports_ohm_cloned_query_cache_prefix(gctx)
+        {
+            // This changes storage only, so it does not affect fingerprints.
+            // Explicit user options are appended later and can disable it.
+            base.arg("-Zohm-cloned-query-cache-prefix");
+        }
         if unit_suppresses_default_public_api_hash(build_runner, unit) {
             base.arg("-Zpublic-api-hash=no");
         }

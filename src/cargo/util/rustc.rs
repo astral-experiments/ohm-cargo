@@ -39,6 +39,7 @@ pub struct Rustc {
     transparent_unused_externs: OnceLock<bool>,
     ohm_incremental_codegen: OnceLock<bool>,
     ohm_incremental_mono_partitions: OnceLock<bool>,
+    ohm_cloned_query_cache_prefix: OnceLock<bool>,
     bundled_clippy_wrapper: OnceLock<bool>,
 }
 
@@ -165,6 +166,7 @@ impl Rustc {
             transparent_unused_externs: OnceLock::new(),
             ohm_incremental_codegen: OnceLock::new(),
             ohm_incremental_mono_partitions: OnceLock::new(),
+            ohm_cloned_query_cache_prefix: OnceLock::new(),
             bundled_clippy_wrapper: OnceLock::new(),
         })
     }
@@ -248,6 +250,21 @@ impl Rustc {
         let mut cmd = ProcessBuilder::new(&self.path);
         cmd.retry_with_argfile(true);
         cmd
+    }
+
+    /// Checks whether the selected compiler can clone retained query-cache prefixes.
+    pub fn supports_ohm_cloned_query_cache_prefix(&self, gctx: &GlobalContext) -> bool {
+        *self.ohm_cloned_query_cache_prefix.get_or_init(|| {
+            let mut process = self.workspace_process();
+            if let Err(error) = apply_env_config(gctx, &mut process) {
+                debug!("unable to configure query-cache clone capability probe: {error}");
+                return false;
+            }
+            process
+                .arg("-Zohm-cloned-query-cache-prefix")
+                .arg("--print=sysroot");
+            self.cached_output(&process, 0).is_ok()
+        })
     }
 
     /// Recognizes only the selected toolchain's own matching Clippy driver.
