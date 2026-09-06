@@ -1,0 +1,35 @@
+[
+  {
+    "argv": [
+      "/usr/bin/mdutil",
+      "-s",
+      "/Volumes/OhmClippy-off1"
+    ],
+    "returncode": 0,
+    "stdout": "/System/Volumes/Data/Volumes/OhmClippy-off1:\n\tIndexing disabled.\n",
+    "stderr": ""
+  },
+  {
+    "argv": [
+      "sudo",
+      "-n",
+      "/usr/bin/mdutil",
+      "-i",
+      "off",
+      "/Volumes/OhmClippy-off1"
+    ],
+    "returncode": 0,
+    "stdout": "/System/Volumes/Data/Volumes/OhmClippy-off1:\n\tIndexing disabled.\n",
+    "stderr": "2026-09-06 12:45:05.136 mdutil[9838:30461] mdutil disabling Spotlight: /System/Volumes/Data/Volumes/OhmClippy-off1 -> kMDConfigSearchLevelFSSearchOnly\n"
+  },
+  {
+    "argv": [
+      "/usr/bin/mdutil",
+      "-s",
+      "/Volumes/OhmClippy-off1"
+    ],
+    "returncode": 0,
+    "stdout": "/System/Volumes/Data/Volumes/OhmClippy-off1:\n\tIndexing disabled.\n",
+    "stderr": ""
+  }
+]

@@ -1,0 +1,105 @@
+{
+  "run": "https://github.com/astral-sh/ohm-cargo/actions/runs/34033899814",
+  "head": "a9ad0dd68ba108319a1f3020bb1b6a024b336ce5",
+  "artifact": {
+    "id": 9989569453,
+    "node_id": "MDg6QXJ0aWZhY3Q5OTg5NTY5NDUz",
+    "name": "clippy-apfs-replay-a9ad0dd68ba108319a1f3020bb1b6a024b336ce5",
+    "size_in_bytes": 29082,
+    "url": "https://api.github.com/repos/astral-sh/ohm-cargo/actions/artifacts/9989569453",
+    "archive_download_url": "https://api.github.com/repos/astral-sh/ohm-cargo/actions/artifacts/9989569453/zip",
+    "expired": false,
+    "digest": "sha256:eac0925abc823f72deb5ef961fb01eef2bf803bf2a03d0eb3396ffb4a7b14f3e",
+    "created_at": "2026-09-06T12:45:53Z",
+    "updated_at": "2026-09-06T12:45:53Z",
+    "expires_at": "2026-10-06T12:45:53Z",
+    "workflow_run": {
+      "id": 34033899814,
+      "repository_id": 1319437741,
+      "head_repository_id": 1319437741,
+      "head_branch": "charlie/target-size-clippy-evidence",
+      "head_sha": "a9ad0dd68ba108319a1f3020bb1b6a024b336ce5"
+    }
+  },
+  "verified_archive_sha256": "eac0925abc823f72deb5ef961fb01eef2bf803bf2a03d0eb3396ffb4a7b14f3e",
+  "files": [
+    {
+      "path": "apfs/off1/00-clone.log",
+      "bytes": 48,
+      "sha256": "eeb96d4b613069a43665ffb37b997f03cc0af7ff00cc10a5180a1ffbc264b529"
+    },
+    {
+      "path": "apfs/off1/01b-fetch.log",
+      "bytes": 12991,
+      "sha256": "84efd5714335d721a9e08224e3778fb4b269c13edaa73fc531cf558918dd5239"
+    },
+    {
+      "path": "apfs/off1/01-checkout.log",
+      "bytes": 368,
+      "sha256": "9c61311ab999659c00878cd78b6308cdd3a15e1fbd01933fa4897ba42035946e"
+    },
+    {
+      "path": "apfs/off1/02-donor-test.log",
+      "bytes": 65822,
+      "sha256": "af7b599b47f392624413f910c20814ed9294319251bed099ac943b2c55a39df7"
+    },
+    {
+      "path": "apfs/off1/03-donor-clippy.log",
+      "bytes": 730,
+      "sha256": "b727e5d8e708c7d649de9694ff5a1c4c3fefa520cc411f1e5e0212234458e9c9"
+    },
+    {
+      "path": "apfs/off1/03b-donor-clippy-noop.log",
+      "bytes": 70,
+      "sha256": "3414ae8f4814bf95fe9d0daac818fcfd9933b51475ee3aa1d61b19b3ad3ed113"
+    },
+    {
+      "path": "apfs/off1/05-fork.log",
+      "bytes": 329,
+      "sha256": "80cc58370047c4490da282fa505750d15ef9b0c2dd05d2ceca473748cd9a4b42"
+    },
+    {
+      "path": "apfs/off1/04-donor-noop.log",
+      "bytes": 61571,
+      "sha256": "22f9ebe137d0f505d00750cc04fb77d1a56e52ae906fe4518270bb7a2c56d98d"
+    },
+    {
+      "path": "apfs/off1/exit-detach.json",
+      "bytes": 74,
+      "sha256": "f221fe6047808f270430508c321ca810737e2b09d385e01363888e951b25a772"
+    },
+    {
+      "path": "apfs/off1/indexing.json",
+      "bytes": 863,
+      "sha256": "de900c42d171f1796910ddcbe276f79df5a510ca3a71d52b145a231d81286bce"
+    },
+    {
+      "path": "apfs/off1/receipt.json",
+      "bytes": 83038,
+      "sha256": "82464eb5d8fcb5972755555bba2e1330e8416b464d811822d33fb0ace7f2780b"
+    },
+    {
+      "path": "cargo-sha256.txt",
+      "bytes": 141,
+      "sha256": "8ea2f2e9a575f28372a6dd8c7b53fc163cd6a7daa3f829e59868c6668bdc5080"
+    },
+    {
+      "path": "cargo-version.txt",
+      "bytes": 305,
+      "sha256": "bbea16811b5712c64946d33e3ab47034534ab5b8c076c566df67250bd26456da"
+    },
+    {
+      "path": "source-commit.txt",
+      "bytes": 41,
+      "sha256": "16afa94f0facc3077ce483342bd8a0f0d4274765a3b17970c23057111f2bf8a3"
+    },
+    {
+      "path": "source-tree.txt",
+      "bytes": 41,
+      "sha256": "39ce99b32ccfaa0568902cda2ba4c94aa41d6dbedcf61d7a9921774675192673"
+    }
+  ],
+  "complete_arms": 0,
+  "accepted_paired_measurements": false,
+  "reason": "Strict post-fork CPU guard rejected OS background activity in off1; no complete arm or pair."
+}

@@ -8,6 +8,8 @@ storage** and **12.75% less elapsed time**. Donor-only total time is nearly flat
 but repeated donor Clippy has an observed **14.95 ms / 16.66%** median cost. This
 is a small, explicit tradeoff; the evidence does not establish universal absence
 of performance regressions or attribute that entire cost to the new policy.
+A stricter follow-up stopped on OS activity after its first fork, so there is no
+accepted comparison under those stronger background controls.
 
 The benchmark compares automatic isolation with explicit isolation-off using the
 same new Cargo binary. It measures this policy's effect on fresh state, not every
@@ -232,6 +234,28 @@ recognize the custom `/private/tmp` mount. A read-only local standard-mount smok
 reached explicit disabled status after 2 s; both volumes detached normally.
 [Failed admission receipt](results/shipping/strict-admission-failure/apfs/off1/indexing.json)
 and [standard-mount smoke](results/shipping/spotlight-standard-mount.json).
+
+The [final strict attempt](https://github.com/astral-sh/ohm-cargo/actions/runs/34033899814)
+at evidence source `a9ad0dd68ba108319a1f3020bb1b6a024b336ce5` successfully verified
+indexing was disabled on `/Volumes/OhmClippy-off1`. All commands through the donor
+tests, first/repeated Clippy, donor no-op, and fork returned zero. Before the fork,
+three snapshots passed the CPU bounds. The post-fork snapshot then reported
+`fseventsd` at 35.2%, `diskimages-helper` at 34.5%, `mds` at 16.7%, and Finder at
+10.3%; the guard rejected the arm and the volume detached normally. This OS
+activity may have been induced by the workload itself. It is not a compiler or
+test failure, and it is not evidence of a Clippy performance difference.
+
+**No complete arm or paired timing comparison was accepted from either strict
+attempt.** No bounds were relaxed and no further replay was attempted. The
+recommendation therefore rests on the original eight-arm storage result and
+qualified timings, including the observed warm-donor tradeoff. The final attempt's
+[receipt](results/shipping/controlled-raw/apfs/off1/receipt.json),
+[indexing commands](results/shipping/controlled-raw/apfs/off1/indexing.json), and
+[full original artifact](results/shipping/controlled-raw.zip) are preserved. That
+15-file artifact is 29,082 bytes, SHA-256
+`eac0925abc823f72deb5ef961fb01eef2bf803bf2a03d0eb3396ffb4a7b14f3e`;
+[its manifest](results/shipping/controlled-archive.json) records zero complete arms
+and no accepted paired measurements.
 
 ## Historical evidence
 
