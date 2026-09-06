@@ -93,6 +93,7 @@ Each new feature described below should explain how to use it.
     * [binary-dep-depinfo](#binary-dep-depinfo) --- Causes the dep-info file to track binary dependencies.
     * [checksum-freshness](#checksum-freshness) --- When passed, the decision as to whether a crate needs to be rebuilt is made using file checksums instead of the file mtime.
     * [ohm-clippy-codegen](#ohm-clippy-codegen) --- Run Clippy while compiling workspace build and test artifacts.
+    * [ohm-clippy-seed-isolation](#ohm-clippy-seed-isolation) --- Keep bundled Clippy state out of worktree snapshots.
     * [ohm-worktree-seeds](#ohm-worktree-seeds) --- Prepare build state for seeding new Git worktrees with Ohm.
     * [ohm-incremental-gc](#ohm-incremental-gc) --- Track and explicitly expire unused incremental configurations (prototype).
     * [panic-abort-tests](#panic-abort-tests) --- Allows running tests with the "abort" panic strategy.
@@ -2052,6 +2053,40 @@ The explicit setting propagates through external Cargo subcommands such as
 nextest. A nested Cargo command can override it with `-Zohm-clippy-codegen=no`.
 It can also be set through `unstable.ohm-clippy-codegen` in Cargo configuration.
 Ordinary `cargo clippy` retains its existing behavior.
+
+## ohm-clippy-seed-isolation
+
+When worktree preparation is enabled, Ohm automatically keeps the selected
+compiler's matching bundled Clippy outputs in a private namespace if the shared
+build storage supports copy-on-write cloning. Ordinary build and test snapshots
+then remain usable after `cargo clippy`. Lint state and Clippy incremental caches
+stay in the donor; they are never imported into another worktree.
+
+Cargo checks cloning with a small temporary file using the same operation as
+snapshot import. It probes the actual source and destination storage once per
+Cargo invocation that needs this policy, removes the temporary files, and falls
+back conservatively if cloning or cleanup fails. Snapshot source and destination
+namespaces must use the same separate build directory. The final
+`CARGO_TARGET_DIR` can use a different filesystem without changing where snapshots
+are cloned.
+
+Use `-Zohm-clippy-seed-isolation=no` or
+`unstable.ohm-clippy-seed-isolation = false` to disable isolation. This also skips
+the filesystem probe. `-Zohm-defaults=no` disables the automatic policy together
+with worktree preparation, unless worktree preparation is explicitly enabled.
+The explicit isolation override is inherited by external Cargo subcommands;
+a nested Cargo command can override it with its own flag.
+
+`-Zohm-clippy-seed-isolation=yes` forces isolation without requiring cloning.
+This can increase storage on filesystems where snapshots copy bytes; the measured
+ext4 prototype retained more data. It does not relax compiler, wrapper, loader,
+procedural-macro, or native-tool trust checks. Arbitrary wrapper scripts,
+mismatched Clippy drivers, and combined Clippy codegen remain excluded.
+
+Disabling isolation or running an unsupported wrapper can permanently exclude
+that existing ordinary namespace from seeding. Re-enabling isolation does not
+remove that history. `cargo clean` clears owned current and legacy namespaces;
+subsequent normal builds prepare fresh state.
 
 ## ohm-worktree-seeds
 

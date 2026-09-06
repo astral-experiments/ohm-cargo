@@ -325,6 +325,12 @@ fn execute_subcommand(
             if enabled { "yes" } else { "no" },
         );
     }
+    if let Some(enabled) = gctx.cli_unstable().ohm_clippy_seed_isolation {
+        cmd.env(
+            cargo::CARGO_INHERITED_OHM_CLIPPY_SEED_ISOLATION_ENV,
+            if enabled { "yes" } else { "no" },
+        );
+    }
     if let Some(enabled) = gctx.cli_unstable().ohm_clippy_codegen {
         cmd.env(
             cargo::CARGO_INHERITED_OHM_CLIPPY_CODEGEN_ENV,
