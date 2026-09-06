@@ -853,7 +853,8 @@ mod tests {
         fs::write(nested.join("libignored.so.rlib"), "artifact").unwrap();
         tracker.validate().unwrap();
         let native = if cfg!(target_os = "macos") {
-            b"libshadow\xff.dylib".as_slice()
+            // The macOS CI filesystem rejects non-UTF-8 filenames.
+            b"libshadow.dylib".as_slice()
         } else {
             b"libshadow\xff.so.1".as_slice()
         };
@@ -875,7 +876,7 @@ mod tests {
         let tracker = SessionInputs::default().begin();
         assert_eq!(
             TrackedFs::new(Some(&tracker)).canonicalize(&link).unwrap(),
-            a
+            a.canonicalize().unwrap()
         );
         fs::remove_file(&link).unwrap();
         symlink(&b, &link).unwrap();
