@@ -11,13 +11,13 @@ import hashlib
 import importlib.util
 import json
 import os
-from pathlib import Path
 import platform
 import signal
 import subprocess
 import sys
 import tempfile
 import time
+from pathlib import Path
 
 _spec = importlib.util.spec_from_file_location(
     "session_benchmark", Path(__file__).with_name("session.py")
@@ -146,6 +146,7 @@ def compare(args):
         depfiles = {}
         previous_stamps = {}
         samples = []
+        status_samples = []
         try:
             for name, cargo in cargos.items():
                 session = RunningSession(
@@ -197,10 +198,22 @@ def compare(args):
                     sample[name] = {
                         "client_ms": elapsed_ms,
                         "server_ms": response["elapsed_ms"],
+                        "client_overhead_ms": elapsed_ms - response["elapsed_ms"],
                         "checks": response["checks"],
                         "preparations": response["preparations"],
                     }
                 samples.append(sample)
+            for number in range(args.rounds):
+                order = ["before", "after"] if number % 2 == 0 else ["after", "before"]
+                sample = {"round": number + 1, "order": order}
+                for name in order:
+                    response, elapsed_ms = sessions[name].call("status")
+                    if response["pid"] != prepared[name]["pid"]:
+                        raise RuntimeError(
+                            f"{name} changed servers during status: {response}"
+                        )
+                    sample[name] = elapsed_ms
+                status_samples.append(sample)
             counter_keys = ("pid", "checks", "preparations", "reused")
             counters = {}
             for name, session in sessions.items():
@@ -216,7 +229,7 @@ def compare(args):
             for session in sessions.values():
                 try:
                     session.close()
-                except BaseException as error:
+                except BaseException as error:  # noqa: BLE001 - close every server on interruption
                     first_error = first_error or error
             if first_error is not None and sys.exc_info()[0] is None:
                 raise first_error
@@ -224,7 +237,7 @@ def compare(args):
         summary = {
             name: {
                 field: bench.summary([sample[name][field] for sample in samples])
-                for field in ("client_ms", "server_ms")
+                for field in ("client_ms", "server_ms", "client_overhead_ms")
             }
             for name in cargos
         }
@@ -251,6 +264,11 @@ def compare(args):
                 "client_speedup": summary["before"]["client_ms"]["median_ms"]
                 / summary["after"]["client_ms"]["median_ms"],
             },
+            "status_ms": {
+                name: bench.summary([sample[name] for sample in status_samples])
+                for name in cargos
+            },
+            "status_samples": status_samples,
             "session_counters": counters,
             "samples": samples,
         }
