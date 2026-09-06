@@ -106,6 +106,39 @@ jobs:
           "$testsuite" \
             check::ohm_skips_cold_ordinary_check_graphs_after_test_builds \
             --exact --nocapture
+      - name: Install Ohm for Clippy worktree coverage
+        env:
+          OHM_VERSION: ohm-1.98.0-9
+          OHM_INSTALLER_SHA256: 573e00024783ab952f7c2d629f12f9e0ba61be96843f7e692dc056642a72affe
+        run: |
+          installer="$RUNNER_TEMP/ohm-clippy-installer.sh"
+          curl --proto '=https' --tlsv1.2 --fail --silent --show-error --location \
+            --output "$installer" \
+            "https://labs.astral.sh/ohm/releases/$OHM_VERSION/install.sh"
+          printf '%s  %s\n' "$OHM_INSTALLER_SHA256" "$installer" | shasum -a 256 --check
+          sh "$installer"
+      - name: Run bundled Clippy worktree tests with Ohm
+        env:
+          RUSTUP_TOOLCHAIN: ohm-1.98.0-9
+        run: |
+          toolchain_bin="$(dirname "$(rustup which rustc)")"
+          export PATH="$toolchain_bin:$PATH"
+          rustc -Vv
+          clippy-driver -V
+          testsuite="$(find target/debug/deps -maxdepth 1 -type f -name 'testsuite-*' -perm -u+x -print -quit)"
+          if [[ -z "$testsuite" ]]; then
+            echo 'compiled Cargo integration test binary was not found' >&2
+            exit 1
+          fi
+          # The stable-built testsuite marks these nightly tests ignored at compile time.
+          for test in \
+            bundled_clippy_isolation_defaults_follow_actual_snapshot_cloning \
+            bundled_clippy_preserves_ordinary_seeds_without_importing_lint_state \
+            clippy_isolation_overrides_are_inherited_and_child_flags_take_precedence \
+            forced_clippy_isolation_preserves_compiler_trust_rejections \
+            clippy_wrapper_scripts_still_deny_the_whole_seed; do
+            "$testsuite" "ohm_worktree::$test" --exact --include-ignored --nocapture
+          done
 
   workspace-tests:
     name: Workspace tests
