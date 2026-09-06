@@ -87,18 +87,57 @@ pub fn main(gctx: &mut GlobalContext) -> CliResult {
             }
         };
         let exec = Exec::infer(cmd)?;
+        let session_client = is_session_client(&expanded_args);
+        if session_client {
+            // Globals collected before expanding an alias are no longer in
+            // the expanded clap matches, but cannot override a live session.
+            global_args.validate_session_client()?;
+            commands::session::validate_client_options(&expanded_args, subcommand_args)?;
+        }
+        // A session must reconstruct fresh contexts after planning
+        // invalidation, including global options collected while expanding
+        // aliases. Nested serve arguments also own check's --target-dir.
+        let session = (cmd == "session")
+            .then(|| subcommand_args.subcommand())
+            .flatten()
+            .filter(|(command, _)| *command == "serve")
+            .map(|(_, args)| (args, global_args.clone()));
         configure_gctx(
             gctx,
             &expanded_args,
-            Some(subcommand_args),
+            Some(session.as_ref().map_or(subcommand_args, |(args, _)| *args)),
             global_args,
             Some(&exec),
         )?;
-        super::init_git();
+        // Socket-only session clients do not access repositories. Avoid loading
+        // libgit2 and its TLS certificate store on every check.
+        if !session_client {
+            super::init_git();
+        }
 
-        exec.exec(gctx, subcommand_args)?;
+        if let Some((args, globals)) = session {
+            commands::session::serve(gctx, args, |fresh| {
+                configure_gctx(
+                    fresh,
+                    &expanded_args,
+                    Some(args),
+                    globals.clone(),
+                    Some(&exec),
+                )
+            })?;
+        } else {
+            exec.exec(gctx, subcommand_args)?;
+        }
     }
     Ok(())
+}
+
+fn is_session_client(args: &ArgMatches) -> bool {
+    matches!(
+        args.subcommand(),
+        Some(("session", args))
+            if matches!(args.subcommand_name(), Some("check" | "status" | "stop"))
+    )
 }
 
 fn print_zhelp(gctx: &GlobalContext) {
@@ -392,7 +431,19 @@ To pass the arguments to the subcommand, remove `--`",
                     .into());
                 }
 
-                let (expanded_args, _) = expand_aliases(gctx, new_args, already_expanded)?;
+                let (expanded_args, nested_globals) =
+                    expand_aliases(gctx, new_args, already_expanded)?;
+                // Validate at every layer: intermediate aliases can carry
+                // global flags which ordinary alias expansion does not retain.
+                if is_session_client(&expanded_args) {
+                    global_args.validate_session_client()?;
+                }
+                let global_args = match expanded_args.subcommand() {
+                    Some(("session", args)) if args.subcommand_name() == Some("serve") => {
+                        global_args.merge_for_session(nested_globals)
+                    }
+                    _ => global_args,
+                };
                 return Ok((expanded_args, global_args));
             }
             (None, Err(e)) => return Err(e.into()),
@@ -530,7 +581,7 @@ impl Exec {
     }
 }
 
-#[derive(Default)]
+#[derive(Clone, Default, Eq, PartialEq)]
 struct GlobalArgs {
     verbose: u32,
     quiet: bool,
@@ -543,6 +594,31 @@ struct GlobalArgs {
 }
 
 impl GlobalArgs {
+    /// Preserve each alias layer for a session's fixed configuration. Arguments
+    /// in the final clap matches still take precedence in `configure_gctx`.
+    fn merge_for_session(mut self, inner: Self) -> Self {
+        self.verbose += inner.verbose;
+        self.quiet |= inner.quiet;
+        self.frozen |= inner.frozen;
+        self.locked |= inner.locked;
+        self.offline |= inner.offline;
+        if inner.color.is_some() {
+            self.color = inner.color;
+        }
+        self.unstable_flags.extend(inner.unstable_flags);
+        self.config_args.extend(inner.config_args);
+        self
+    }
+
+    fn validate_session_client(&self) -> CliResult {
+        if *self != Self::default() {
+            return Err(anyhow!(
+                "session clients accept only --socket and --json; pass global options to `cargo session serve`"
+            ).into());
+        }
+        Ok(())
+    }
+
     fn new(args: &ArgMatches) -> GlobalArgs {
         GlobalArgs {
             verbose: args.verbose(),

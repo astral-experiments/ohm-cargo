@@ -1052,11 +1052,11 @@ pub fn root_manifest(manifest_path: Option<&Path>, gctx: &GlobalContext) -> Carg
         // In general, we try to avoid normalizing paths in Cargo,
         // but in this particular case we need it to fix #3586.
         let path = paths::normalize_path(&path);
-        if !path.exists() {
+        if !gctx.files().exists(&path) {
             anyhow::bail!("manifest path `{}` does not exist", manifest_path.display())
-        } else if path.is_dir() {
+        } else if gctx.files().is_dir(&path) {
             let child_path = path.join("Cargo.toml");
-            let suggested_path = if child_path.exists() {
+            let suggested_path = if gctx.files().exists(&child_path) {
                 format!("\nhelp: {} exists", child_path.display())
             } else {
                 "".to_string()
@@ -1083,7 +1083,7 @@ pub fn root_manifest(manifest_path: Option<&Path>, gctx: &GlobalContext) -> Carg
         }
         Ok(path)
     } else {
-        find_root_manifest_for_wd(gctx.cwd())
+        crate::util::important_paths::find_root_manifest_for_wd_tracked(gctx.cwd(), gctx)
     }
 }
 

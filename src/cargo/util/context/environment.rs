@@ -43,7 +43,7 @@ fn make_case_insensitive_and_normalized_env(
 /// This type contains the env var snapshot and helper methods for both APIs.
 ///
 /// [`GlobalContext`]: super::GlobalContext
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 pub struct Env {
     /// A snapshot of the process's environment variables.
     env: HashMap<OsString, OsString>,
@@ -89,6 +89,13 @@ impl Env {
             case_insensitive_env,
             normalized_env,
         }
+    }
+
+    /// Returns the environment snapshot without discarding non-UTF-8 entries.
+    pub fn iter_os(&self) -> impl Iterator<Item = (&OsStr, &OsStr)> {
+        self.env
+            .iter()
+            .map(|(key, value)| (key.as_os_str(), value.as_os_str()))
     }
 
     /// Returns all environment variables as an iterator,

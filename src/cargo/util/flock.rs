@@ -25,6 +25,19 @@ pub(crate) use self::imp::try_lock_exclusive;
 pub(crate) use self::imp::try_lock_shared;
 pub(crate) use self::imp::unlock;
 
+/// Distinguishes opening a path from acquiring its advisory lock.
+/// Session dependency recording must not interpret lock failures as file reads.
+#[derive(Debug)]
+pub(crate) struct FileOpenError(PathBuf);
+
+impl std::fmt::Display for FileOpenError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "failed to open: {}", self.0.display())
+    }
+}
+
+impl std::error::Error for FileOpenError {}
+
 /// A locked file.
 ///
 /// This provides access to file while holding a lock on the file. This type
@@ -356,7 +369,7 @@ impl Filesystem {
                     Err(anyhow::Error::from(e))
                 }
             })
-            .with_context(|| format!("failed to open: {}", path.display()))?;
+            .with_context(|| FileOpenError(path.clone()))?;
         Ok((path, f))
     }
 }

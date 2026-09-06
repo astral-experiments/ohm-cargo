@@ -66,7 +66,7 @@ use std::borrow::Cow;
 use std::env;
 use std::ffi::{OsStr, OsString};
 use std::fmt;
-use std::fs::{self, File};
+use std::fs::File;
 use std::io::SeekFrom;
 use std::io::prelude::*;
 use std::mem;
@@ -88,6 +88,7 @@ use crate::util::errors::CargoResult;
 use crate::util::network::http::{HandleConfiguration, configure_http_handle, http_handle};
 use crate::util::network::http_async;
 use crate::util::restricted_names::is_glob_pattern;
+use crate::util::session_inputs::{InputTracker, TrackedFs};
 use crate::util::{CanonicalUrl, closest_msg, internal};
 use crate::util::{Filesystem, IntoUrl, IntoUrlWithBase, Rustc};
 
@@ -215,6 +216,8 @@ pub struct GlobalContext {
     shell: Mutex<Shell>,
     /// A collection of configuration options
     values: OnceLock<HashMap<String, ConfigValue>>,
+    /// Filesystem observations made while preparing a retained session plan.
+    session_inputs: Option<InputTracker>,
     /// A collection of configuration options from the credentials file
     credential_values: OnceLock<HashMap<String, ConfigValue>>,
     /// CLI config values, passed in via `configure`.
@@ -251,11 +254,11 @@ pub struct GlobalContext {
     /// If false, don't cache `rustc --version --verbose` invocations
     cache_rustc_info: bool,
     /// Monotonic start of this cargo invocation for reporting time elapsed.
-    invocation_instant: Instant,
+    invocation_instant: Mutex<Instant>,
     /// Wall-clock time of this cargo invocation.
     ///
     /// Currently used as the reference time for `min-publish-age` and `-Zbuild-analysis`.
-    invocation_time: jiff::Timestamp,
+    invocation_time: Mutex<jiff::Timestamp>,
     /// Target Directory via resolved Cli parameter
     target_dir: Option<Filesystem>,
     /// Environment variable snapshot.
@@ -312,7 +315,11 @@ impl GlobalContext {
     ///
     /// This does only minimal initialization. In particular, it does not load
     /// any config files from disk. Those will be loaded lazily as-needed.
-    pub fn new(mut shell: Shell, cwd: PathBuf, homedir: PathBuf) -> GlobalContext {
+    pub fn new(shell: Shell, cwd: PathBuf, homedir: PathBuf) -> GlobalContext {
+        Self::new_with_env(shell, cwd, homedir, Env::new())
+    }
+
+    fn new_with_env(mut shell: Shell, cwd: PathBuf, homedir: PathBuf, env: Env) -> GlobalContext {
         static GLOBAL_JOBSERVER: LazyLock<CargoResult<Option<jobserver::Client>>> = LazyLock::new(
             || {
                 use jobserver::FromEnvErrorKind;
@@ -354,19 +361,13 @@ impl GlobalContext {
             }
         };
 
-        let env = Env::new();
-
         let cache_key = "CARGO_CACHE_RUSTC_INFO";
         let cache_rustc_info = match env.get_env_os(cache_key) {
             Some(cache) => cache != "0",
             _ => true,
         };
 
-        #[expect(
-            clippy::disallowed_methods,
-            reason = "testing only, no reason for config support"
-        )]
-        let invocation_time = match env::var("__CARGO_TEST_INVOCATION_TIME") {
+        let invocation_time = match env.get_env("__CARGO_TEST_INVOCATION_TIME") {
             Ok(now) => now.parse().unwrap(),
             Err(_) => jiff::Timestamp::now(),
         };
@@ -377,6 +378,7 @@ impl GlobalContext {
             cwd,
             search_stop_path: None,
             values: Default::default(),
+            session_inputs: None,
             credential_values: Default::default(),
             cli_config: None,
             cargo_exe: Default::default(),
@@ -391,8 +393,8 @@ impl GlobalContext {
             easy: Default::default(),
             crates_io_source_id: Default::default(),
             cache_rustc_info,
-            invocation_instant: Instant::now(),
-            invocation_time,
+            invocation_instant: Mutex::new(Instant::now()),
+            invocation_time: Mutex::new(invocation_time),
             target_dir: None,
             env,
             updated_sources: Default::default(),
@@ -775,7 +777,9 @@ impl GlobalContext {
                     .to_string(),
             ),
             ("{workspace-path-hash}", {
-                let real_path = std::fs::canonicalize(workspace_manifest_path)
+                let real_path = self
+                    .files()
+                    .canonicalize(workspace_manifest_path)
                     .unwrap_or_else(|_err| workspace_manifest_path.to_owned());
                 let hash = crate::util::hex::short_hash(&real_path);
                 format!("{}{}{}", &hash[0..2], std::path::MAIN_SEPARATOR, &hash[2..])
@@ -968,6 +972,14 @@ impl GlobalContext {
     /// Helper primarily for testing.
     pub fn set_env(&mut self, env: HashMap<String, String>) {
         self.env = Env::from_map(env);
+    }
+
+    /// Returns the original environment snapshot, preserving non-UTF-8 entries.
+    ///
+    /// Session clients compare launch inputs before library initialization can
+    /// add environment variables such as discovered TLS certificate paths.
+    pub fn env_os(&self) -> impl Iterator<Item = (&OsStr, &OsStr)> {
+        self.env.iter_os()
     }
 
     /// Returns all environment variables as an iterator,
@@ -1319,7 +1331,7 @@ impl GlobalContext {
             let mut missing = Vec::new();
 
             loop {
-                match fs::canonicalize(existing) {
+                match self.files().canonicalize(existing) {
                     Ok(mut canonical) => {
                         for component in missing.iter().rev() {
                             canonical.push(component);
@@ -1337,7 +1349,10 @@ impl GlobalContext {
         let Some(build_directory) = normalize_directory(Path::new(build_directory)) else {
             return false;
         };
-        if !matches!(build_directory.join("Cargo.toml").try_exists(), Ok(false)) {
+        if !matches!(
+            self.files().try_exists(&build_directory.join("Cargo.toml")),
+            Ok(false)
+        ) {
             return false;
         }
         if build_directory.components().any(|component| {
@@ -1420,6 +1435,31 @@ impl GlobalContext {
         } else {
             None
         }
+    }
+
+    pub fn session_inputs(&self) -> Option<&InputTracker> {
+        self.session_inputs.as_ref()
+    }
+
+    pub(crate) fn files(&self) -> TrackedFs<'_> {
+        TrackedFs::new(self.session_inputs.as_ref())
+    }
+
+    /// Start a tracked epoch with empty caches and the original launch environment.
+    ///
+    /// Installing its tracker here ensures no configuration can be cached before
+    /// dependency recording starts.
+    pub fn fresh_for_session(&self, inputs: InputTracker) -> Self {
+        let mut gctx = Self::new_with_env(
+            Shell::new(),
+            self.cwd.clone(),
+            self.home_path.clone().into_path_unlocked(),
+            self.env.clone(),
+        );
+        gctx.search_stop_path = self.search_stop_path.clone();
+        gctx.nightly_features_allowed = self.nightly_features_allowed;
+        gctx.session_inputs = Some(inputs);
+        gctx
     }
 
     /// Loads configuration from the filesystem.
@@ -1525,7 +1565,9 @@ impl GlobalContext {
         }
         tracing::debug!(?path, ?why_load, includes, "load config from file");
 
-        let contents = fs::read_to_string(path)
+        let contents = self
+            .files()
+            .read_to_string(path)
             .with_context(|| format!("failed to read configuration file `{}`", path.display()))?;
         let toml = parse_document(&contents, path, self).with_context(|| {
             format!("could not parse TOML configuration in `{}`", path.display())
@@ -1684,7 +1726,7 @@ impl GlobalContext {
         let mut seen = HashSet::default();
         for arg in cli_args {
             let arg_as_path = self.cwd.join(arg);
-            let tmp_table = if !arg.is_empty() && arg_as_path.exists() {
+            let tmp_table = if !arg.is_empty() && self.files().exists(&arg_as_path) {
                 // --config path_to_file
                 self._load_file(&arg_as_path, &mut seen, true, WhyLoad::Cli)
                     .with_context(|| {
@@ -1779,17 +1821,15 @@ impl GlobalContext {
         let possible = dir.join(filename_without_extension);
         let possible_with_extension = dir.join(format!("{}.toml", filename_without_extension));
 
-        if let Ok(possible_handle) = same_file::Handle::from_path(&possible) {
+        if self.files().same_file(&possible, &possible).is_ok() {
             if warn {
-                if let Ok(possible_with_extension_handle) =
-                    same_file::Handle::from_path(&possible_with_extension)
-                {
+                if let Ok(same_file) = self.files().same_file(&possible, &possible_with_extension) {
                     // We don't want to print a warning if the version
                     // without the extension is just a symlink to the version
                     // WITH an extension, which people may want to do to
                     // support multiple Cargo versions at once and not
                     // get a warning.
-                    if possible_handle != possible_with_extension_handle {
+                    if !same_file {
                         self.shell().warn(format!(
                             "both `{}` and `{}` exist. Using `{}`",
                             possible.display(),
@@ -1810,7 +1850,7 @@ impl GlobalContext {
             }
 
             Ok(Some(possible))
-        } else if possible_with_extension.exists() {
+        } else if self.files().exists(&possible_with_extension) {
             Ok(Some(possible_with_extension))
         } else {
             Ok(None)
@@ -1829,11 +1869,17 @@ impl GlobalContext {
                 walk(&path)?;
             }
 
-            let canonical_root = config_root.canonicalize().unwrap_or(config_root);
+            let canonical_root = self
+                .files()
+                .canonicalize(&config_root)
+                .unwrap_or(config_root);
             seen_dir.insert(canonical_root);
         }
 
-        let canonical_home = home.canonicalize().unwrap_or(home.to_path_buf());
+        let canonical_home = self
+            .files()
+            .canonicalize(home)
+            .unwrap_or(home.to_path_buf());
 
         // Once we're done, also be sure to walk the home directory even if it's not
         // in our history to be sure we pick up that standard location for
@@ -2001,7 +2047,21 @@ impl GlobalContext {
                 }
                 // If the tool on PATH is the same as `rustup` on path, then
                 // there is pretty good evidence that it will be a proxy.
+                if let Some(inputs) = self.session_inputs() {
+                    inputs.executable(
+                        Path::new(tool_str),
+                        self.cwd(),
+                        &self.get_env_os("PATH").unwrap_or_default(),
+                    );
+                }
                 let tool_resolved = paths::resolve_executable(Path::new(tool_str)).ok()?;
+                if let Some(inputs) = self.session_inputs() {
+                    inputs.executable(
+                        Path::new("rustup"),
+                        self.cwd(),
+                        &self.get_env_os("PATH").unwrap_or_default(),
+                    );
+                }
                 let rustup_resolved = paths::resolve_executable(Path::new("rustup")).ok()?;
                 let tool_meta = tool_resolved.metadata().ok()?;
                 let rustup_meta = rustup_resolved.metadata().ok()?;
@@ -2020,7 +2080,7 @@ impl GlobalContext {
                     .join(&toolchain)
                     .join("bin")
                     .join(&tool_exe);
-                toolchain_exe.exists().then_some(toolchain_exe)
+                self.files().exists(&toolchain_exe).then_some(toolchain_exe)
             })
             .unwrap_or_else(|| PathBuf::from(tool_str))
     }
@@ -2196,8 +2256,19 @@ impl GlobalContext {
         Ok(*source_id)
     }
 
+    /// Starts timing another check while retaining the workspace and build context.
+    ///
+    /// Call this between checks, after the previous check's jobs have finished.
+    /// The fixed wall-clock override used by tests remains unchanged.
+    pub fn begin_session_check(&self) {
+        *self.invocation_instant.lock().unwrap() = Instant::now();
+        if self.get_env("__CARGO_TEST_INVOCATION_TIME").is_err() {
+            *self.invocation_time.lock().unwrap() = jiff::Timestamp::now();
+        }
+    }
+
     pub fn invocation_instant(&self) -> Instant {
-        self.invocation_instant
+        *self.invocation_instant.lock().unwrap()
     }
 
     /// Returns the wall-clock time of this cargo invocation.
@@ -2206,7 +2277,7 @@ impl GlobalContext {
     ///
     /// [`invocation_time`]: GlobalContext::invocation_time
     pub fn invocation_time(&self) -> jiff::Timestamp {
-        self.invocation_time
+        *self.invocation_time.lock().unwrap()
     }
 
     /// Retrieves a config variable.
@@ -2503,8 +2574,7 @@ impl ConfigInclude {
         }
         .join(&self.path);
         let abs_path = paths::normalize_path(&abs_path);
-
-        if self.optional && !abs_path.exists() {
+        if self.optional && !gctx.files().exists(&abs_path) {
             tracing::info!(
                 "skipping optional include `{}` in `{}`:  file not found at `{}`",
                 self.path.display(),

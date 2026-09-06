@@ -7,7 +7,6 @@ use std::rc::Rc;
 
 use anyhow::{Context as _, anyhow, bail};
 use cargo_util_terminal::report::Level;
-use glob::glob;
 use itertools::Itertools;
 use tracing::debug;
 use url::Url;
@@ -431,7 +430,7 @@ impl<'gctx> Workspace<'gctx> {
             if !path.ends_with(LOCKFILE_NAME) {
                 bail!("the `resolver.lockfile-path` must be a path to a {LOCKFILE_NAME} file");
             }
-            if path.is_dir() {
+            if self.gctx.files().is_dir(&path) {
                 bail!(
                     "`resolver.lockfile-path` `{}` is a directory but expected a file",
                     path.display()
@@ -642,7 +641,7 @@ impl<'gctx> Workspace<'gctx> {
         let mut existing = path.as_path();
         let mut missing = Vec::new();
         loop {
-            match existing.canonicalize() {
+            match self.gctx.files().canonicalize(existing) {
                 Ok(mut canonical) => {
                     for component in missing.iter().rev() {
                         canonical.push(component);
@@ -906,7 +905,10 @@ impl<'gctx> Workspace<'gctx> {
             // Include a workspace hash in case the user requests a shared build-dir so that
             // scripts don't fight over the `Cargo.lock` content
             let workspace_manifest_path = self.root_manifest();
-            let real_path = std::fs::canonicalize(workspace_manifest_path)
+            let real_path = self
+                .gctx
+                .files()
+                .canonicalize(workspace_manifest_path)
                 .unwrap_or_else(|_err| workspace_manifest_path.to_owned());
             let hash = crate::util::hex::short_hash(&real_path);
             self.build_dir().join(hash)
@@ -1040,11 +1042,13 @@ impl<'gctx> Workspace<'gctx> {
         // self.root_manifest must be Some to have retrieved workspace_config
         let root_manifest_path = self.root_manifest.clone().unwrap();
 
-        let members_paths = workspace_config
-            .members_paths(workspace_config.members.as_deref().unwrap_or_default())?;
+        let members_paths = workspace_config.members_paths(
+            self.gctx,
+            workspace_config.members.as_deref().unwrap_or_default(),
+        )?;
         let default_members_paths = if root_manifest_path == self.current_manifest {
             if let Some(ref default) = workspace_config.default_members {
-                Some(workspace_config.members_paths(default)?)
+                Some(workspace_config.members_paths(self.gctx, default)?)
             } else {
                 None
             }
@@ -2176,7 +2180,7 @@ impl WorkspaceRootConfig {
     /// A `false` return does NOT mean the package is definitely not a member -
     /// it could still be a member via path dependencies. Callers should fallback
     /// to full workspace loading when this returns `false`.
-    fn is_explicitly_listed_member(&self, manifest_path: &Path) -> bool {
+    fn is_explicitly_listed_member(&self, gctx: &GlobalContext, manifest_path: &Path) -> bool {
         let root_manifest = self.root_dir.join("Cargo.toml");
         if manifest_path == root_manifest {
             return true;
@@ -2184,7 +2188,7 @@ impl WorkspaceRootConfig {
         match self.members {
             Some(ref members) => {
                 // Use members_paths to properly expand glob patterns
-                let Ok(expanded_members) = self.members_paths(members) else {
+                let Ok(expanded_members) = self.members_paths(gctx, members) else {
                     return false;
                 };
                 // Normalize the manifest path for comparison
@@ -2215,13 +2219,14 @@ impl WorkspaceRootConfig {
     #[tracing::instrument(skip_all)]
     fn members_paths<'g>(
         &self,
+        gctx: &GlobalContext,
         globs: &'g [String],
     ) -> CargoResult<Vec<(PathBuf, Option<&'g str>)>> {
         let mut expanded_list = Vec::new();
 
         for glob in globs {
             let pathbuf = self.root_dir.join(glob);
-            let expanded_paths = Self::expand_member_path(&pathbuf)?;
+            let expanded_paths = Self::expand_member_path(gctx, &pathbuf)?;
 
             // If glob does not find any valid paths, then put the original
             // path in the expanded list to maintain backwards compatibility.
@@ -2237,7 +2242,7 @@ impl WorkspaceRootConfig {
                 // Check and filter out non-directory paths to prevent pushing such accidental unwanted path
                 // as a member.
                 for expanded_path in expanded_paths {
-                    if expanded_path.is_dir() {
+                    if gctx.files().is_dir(&expanded_path) {
                         expanded_list.push((expanded_path, glob));
                     }
                 }
@@ -2247,15 +2252,11 @@ impl WorkspaceRootConfig {
         Ok(expanded_list)
     }
 
-    fn expand_member_path(path: &Path) -> CargoResult<Vec<PathBuf>> {
+    fn expand_member_path(gctx: &GlobalContext, path: &Path) -> CargoResult<Vec<PathBuf>> {
         let Some(path) = path.to_str() else {
             return Ok(Vec::new());
         };
-        let res = glob(path).with_context(|| format!("could not parse pattern `{}`", &path))?;
-        let res = res
-            .map(|p| p.with_context(|| format!("unable to match path to pattern `{}`", &path)))
-            .collect::<Result<Vec<_>, _>>()?;
-        Ok(res)
+        gctx.files().glob(path)
     }
 
     pub fn inheritable(&self) -> &InheritableFields {
@@ -2369,7 +2370,7 @@ pub fn find_workspace_root_with_membership_check(
 
             // Verify the workspace includes this package in its members
             if let WorkspaceConfig::Root(ref root_config) = *ws_manifest.workspace_config() {
-                if root_config.is_explicitly_listed_member(manifest_path)
+                if root_config.is_explicitly_listed_member(gctx, manifest_path)
                     && !root_config.is_excluded(manifest_path)
                 {
                     return Ok(Some(ws_manifest_path));
@@ -2384,7 +2385,7 @@ pub fn find_workspace_root_with_membership_check(
                 let source_id = SourceId::for_manifest_path(candidate_manifest_path)?;
                 let manifest = read_manifest(candidate_manifest_path, source_id, gctx)?;
                 if let WorkspaceConfig::Root(ref root_config) = *manifest.workspace_config() {
-                    if root_config.is_explicitly_listed_member(manifest_path)
+                    if root_config.is_explicitly_listed_member(gctx, manifest_path)
                         && !root_config.is_excluded(manifest_path)
                     {
                         return Ok(Some(candidate_manifest_path.to_path_buf()));
@@ -2470,7 +2471,7 @@ fn find_root_iter<'a>(
             }
         })
         .map(|path| path.curr.join("Cargo.toml"))
-        .filter(|ances_manifest_path| ances_manifest_path.exists())
+        .filter(move |ances_manifest_path| gctx.files().exists(ances_manifest_path))
 }
 
 struct LookBehindWindow<'a, T: ?Sized> {

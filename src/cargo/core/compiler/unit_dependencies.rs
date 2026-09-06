@@ -1212,8 +1212,9 @@ impl<'a, 'gctx> State<'a, 'gctx> {
             .join("rustc")
             .with_extension(std::env::consts::EXE_EXTENSION);
 
-        expected
-            .canonicalize()
+        self.gctx
+            .files()
+            .canonicalize(&expected)
             .is_ok_and(|expected| expected == compiler)
     }
 

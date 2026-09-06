@@ -3,8 +3,9 @@ use std::path::Path;
 
 use crate::core::resolver::encode::into_resolve;
 use crate::core::{Resolve, ResolveVersion, Workspace};
-use crate::util::Filesystem;
 use crate::util::errors::CargoResult;
+use crate::util::flock::FileOpenError;
+use crate::util::{FileLock, Filesystem, GlobalContext};
 
 use anyhow::Context as _;
 use cargo_util_schemas::lockfile::TomlLockfile;
@@ -38,17 +39,61 @@ pub(super) fn with_pkg_lockfile<T>(
     action: impl FnOnce(&str, &Path) -> CargoResult<T>,
 ) -> CargoResult<Option<T>> {
     let lock_root = ws.lock_root();
-    if !lock_root.as_path_unlocked().join(LOCKFILE_NAME).exists() {
+    let path = lock_root.as_path_unlocked().join(LOCKFILE_NAME);
+    if !ws.gctx().files().exists(&path) {
+        if let Some(inputs) = ws.gctx().session_inputs() {
+            inputs.observe_missing_file(&path);
+        }
         return Ok(None);
     }
 
-    let mut f = lock_root.open_ro_shared(LOCKFILE_NAME, ws.gctx(), "Cargo.lock file")?;
+    let mut f = open_locked_lockfile(&lock_root, ws.gctx())?;
 
-    let mut contents = String::new();
-    f.read_to_string(&mut contents)
+    let contents = read_locked_lockfile(&mut f, ws.gctx())
         .with_context(|| format!("failed to read file: {}", f.path().display()))?;
 
     action(&contents, f.path()).map(Some)
+}
+
+/// Record filesystem open failures separately from advisory lock failures.
+fn open_locked_lockfile(lock_root: &Filesystem, gctx: &GlobalContext) -> CargoResult<FileLock> {
+    lock_root
+        .open_ro_shared(LOCKFILE_NAME, gctx, "Cargo.lock file")
+        .inspect_err(|error| {
+            let Some(inputs) = gctx.session_inputs() else {
+                return;
+            };
+            let path = lock_root.as_path_unlocked().join(LOCKFILE_NAME);
+            if error.is::<FileOpenError>() {
+                if let Some(error) = error.downcast_ref::<std::io::Error>() {
+                    inputs.observe_file_error(&path, error.kind());
+                    return;
+                }
+            }
+            inputs.require_fresh(format!(
+                "could not acquire lockfile {}: {error}",
+                path.display()
+            ));
+        })
+}
+
+/// Observe the locked bytes before decoding, so invalid UTF-8 remains an input.
+fn read_locked_lockfile(file: &mut FileLock, gctx: &GlobalContext) -> std::io::Result<String> {
+    let mut contents = Vec::new();
+    let read = file.read_to_end(&mut contents);
+    if let Some(inputs) = gctx.session_inputs() {
+        match &read {
+            Ok(_) => inputs.observe_file(file.path(), &contents),
+            Err(error) => inputs.observe_file_error(file.path(), error.kind()),
+        }
+    }
+    read?;
+    String::from_utf8(contents).map_err(|_| {
+        std::io::Error::new(
+            std::io::ErrorKind::InvalidData,
+            "stream did not contain valid UTF-8",
+        )
+    })
 }
 
 /// Checks whether a lockfile snapshot encodes exactly the provided resolution.
@@ -81,7 +126,7 @@ pub fn write_pkg_lockfile(ws: &Workspace<'_>, resolve: &mut Resolve) -> CargoRes
 
     if let Some(locked_flag) = ws.gctx().locked_flag() {
         let lockfile_path = lock_root.as_path_unlocked().join(LOCKFILE_NAME);
-        let action = if lockfile_path.exists() {
+        let action = if ws.gctx().files().exists(&lockfile_path) {
             "update"
         } else {
             "create"
@@ -122,6 +167,9 @@ pub fn write_pkg_lockfile(ws: &Workspace<'_>, resolve: &mut Resolve) -> CargoRes
         .and_then(|mut f| {
             f.file().set_len(0)?;
             f.write_all(out.as_bytes())?;
+            if let Some(inputs) = ws.gctx().session_inputs() {
+                inputs.publish_file(f.path(), out.as_bytes());
+            }
             Ok(())
         })
         .with_context(|| {
@@ -139,12 +187,8 @@ fn resolve_to_string_orig(
 ) -> (Option<String>, String, Filesystem) {
     // Load the original lock file if it exists.
     let lock_root = ws.lock_root();
-    let orig = lock_root.open_ro_shared(LOCKFILE_NAME, ws.gctx(), "Cargo.lock file");
-    let orig = orig.and_then(|mut f| {
-        let mut s = String::new();
-        f.read_to_string(&mut s)?;
-        Ok(s)
-    });
+    let orig = open_locked_lockfile(&lock_root, ws.gctx());
+    let orig = orig.and_then(|mut f| Ok(read_locked_lockfile(&mut f, ws.gctx())?));
     let out = serialize_resolve(resolve, orig.as_deref().ok());
     (orig.ok(), out, lock_root)
 }

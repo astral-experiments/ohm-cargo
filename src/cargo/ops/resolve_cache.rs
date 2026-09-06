@@ -18,6 +18,11 @@ pub(super) fn cached_workspace_resolve_is_fresh(
     rustc: &Rustc,
     lockfile_contents: &str,
 ) -> bool {
+    // This cache predates dependency recording. A session's initial resolution
+    // must visit its reads; subsequent requests reuse the tracked in-memory node.
+    if workspace.gctx().session_inputs().is_some() {
+        return false;
+    }
     let Ok(cached_fingerprint) = paths::read(&cache_path(workspace)) else {
         return false;
     };
@@ -83,7 +88,7 @@ fn workspace_resolve_fingerprint(
     );
     manifests.extend(previous.iter().filter_map(|package_id| {
         let path = package_id.source_id().local_path()?;
-        Some(if path.is_file() {
+        Some(if workspace.gctx().files().is_file(&path) {
             path
         } else {
             path.join("Cargo.toml")

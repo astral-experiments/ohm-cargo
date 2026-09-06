@@ -65,6 +65,15 @@ cache in your cargo home directory.
 cargo bench -p benchsuite --bench global_cache_tracker
 ```
 
+## Development session benchmark
+
+`python3 -S benches/session.py --cargo target/release/cargo` compares ordinary
+checks with Cargo's built-in session after real source edits. See
+[Cargo development sessions](../CARGO_SESSION.md) for the retained-state design,
+usage, and measurement details.
+A recognized rustup proxy is resolved in the temporary workspace, and both modes
+use the same selected compiler path recorded in the report.
+
 ## Viewing reports
 
 The benchmarks display some basic information on the command-line while they

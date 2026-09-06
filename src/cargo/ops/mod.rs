@@ -24,6 +24,8 @@ pub use self::cargo_report::sessions::report_sessions;
 pub use self::cargo_report::timings::ReportTimingsOptions;
 pub use self::cargo_report::timings::report_timings;
 pub use self::cargo_run::run;
+#[cfg(unix)]
+pub use self::cargo_session::{CheckOutcome, PreparedCheck};
 pub use self::cargo_test::{TestOptions, run_benches, run_tests};
 pub use self::cargo_uninstall::uninstall;
 pub use self::cargo_update::UpdateOptions;
@@ -70,6 +72,8 @@ mod cargo_read_manifest;
 pub mod cargo_remove;
 pub(crate) mod cargo_report;
 mod cargo_run;
+#[cfg(unix)]
+mod cargo_session;
 mod cargo_test;
 mod cargo_uninstall;
 mod cargo_update;

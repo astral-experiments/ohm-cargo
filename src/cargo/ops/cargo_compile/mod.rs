@@ -164,7 +164,7 @@ pub fn compile_with_exec<'a>(
 
 /// Like [`compile_with_exec`] but without warnings from manifest parsing.
 #[tracing::instrument(skip_all)]
-fn compile_ws<'a>(
+pub(super) fn compile_ws<'a>(
     ws: &Workspace<'a>,
     options: &CompileOptions,
     exec: &Arc<dyn Executor>,
@@ -320,11 +320,11 @@ pub fn create_bcx<'a, 'gctx>(
         !matches!(options.build_config.intent, UserIntent::Check { .. })
             || !unstable.ohm_reuse_built_deps()
             || unstable.ohm_reuse_built_deps
-            || ws
-                .build_dir()
-                .as_path_unlocked()
-                .join(OHM_BUILT_REGISTRY_READY_MARKER)
-                .is_file();
+            || ws.gctx().files().is_file(
+                &ws.build_dir()
+                    .as_path_unlocked()
+                    .join(OHM_BUILT_REGISTRY_READY_MARKER),
+            );
 
     create_bcx_with_registry_reuse(
         ws,
@@ -874,7 +874,7 @@ fn validate_target_path_as_source_file(
     unit_manifest_path: &std::path::Path,
     error_count: &mut usize,
 ) -> CargoResult<()> {
-    if !target_path.exists() {
+    if !gctx.files().exists(target_path) {
         *error_count += 1;
 
         let err_msg = format!(
@@ -889,7 +889,7 @@ fn validate_target_path_as_source_file(
         ));
 
         gctx.shell().print_report(&[group], true)?;
-    } else if target_path.is_dir() {
+    } else if gctx.files().is_dir(target_path) {
         *error_count += 1;
 
         // suggest setting the path to a likely entrypoint
@@ -898,42 +898,42 @@ fn validate_target_path_as_source_file(
 
         let suggested_files_opt = match target_kind {
             TargetKind::Lib(_) => {
-                if lib_rs.exists() {
+                if gctx.files().exists(&lib_rs) {
                     Some(format!("`{}`", lib_rs.display()))
                 } else {
                     None
                 }
             }
             TargetKind::Bin => {
-                if main_rs.exists() {
+                if gctx.files().exists(&main_rs) {
                     Some(format!("`{}`", main_rs.display()))
                 } else {
                     None
                 }
             }
             TargetKind::Test => {
-                if main_rs.exists() {
+                if gctx.files().exists(&main_rs) {
                     Some(format!("`{}`", main_rs.display()))
                 } else {
                     None
                 }
             }
             TargetKind::ExampleBin => {
-                if main_rs.exists() {
+                if gctx.files().exists(&main_rs) {
                     Some(format!("`{}`", main_rs.display()))
                 } else {
                     None
                 }
             }
             TargetKind::Bench => {
-                if main_rs.exists() {
+                if gctx.files().exists(&main_rs) {
                     Some(format!("`{}`", main_rs.display()))
                 } else {
                     None
                 }
             }
             TargetKind::ExampleLib(_) => {
-                if lib_rs.exists() {
+                if gctx.files().exists(&lib_rs) {
                     Some(format!("`{}`", lib_rs.display()))
                 } else {
                     None

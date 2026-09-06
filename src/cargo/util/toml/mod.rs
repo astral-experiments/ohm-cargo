@@ -188,7 +188,17 @@ fn make_document_owned(
 
 #[tracing::instrument(skip_all)]
 fn read_toml_string(path: &Path, is_embedded: bool, gctx: &GlobalContext) -> CargoResult<String> {
-    let mut contents = paths::read(path).map_err(|err| ManifestError::new(err, path.into()))?;
+    let bytes = gctx
+        .files()
+        .read(path)
+        .with_context(|| format!("failed to read `{}`", path.display()))
+        .map_err(|err| ManifestError::new(err, path.into()))?;
+    let mut contents = String::from_utf8(bytes).map_err(|_| {
+        ManifestError::new(
+            anyhow!("path at `{}` was not valid utf-8", path.display()),
+            path.into(),
+        )
+    })?;
     if is_embedded {
         if !gctx.cli_unstable().script {
             anyhow::bail!("parsing `{}` requires `-Zscript`", path.display());
@@ -423,6 +433,7 @@ fn normalize_toml(
 
         let auto_embedded = is_embedded.then_some(false);
         normalized_toml.lib = targets::normalize_lib(
+            gctx,
             original_toml.lib.as_ref(),
             package_root,
             package_name,
@@ -457,6 +468,7 @@ fn normalize_toml(
             Cow::Borrowed(&original_toml.bin)
         };
         normalized_toml.bin = Some(targets::normalize_bins(
+            gctx,
             original_toml_bin.as_ref().as_ref(),
             package_root,
             package_name,
@@ -467,6 +479,7 @@ fn normalize_toml(
             normalized_toml.lib.is_some(),
         )?);
         normalized_toml.example = Some(targets::normalize_examples(
+            gctx,
             original_toml.example.as_ref(),
             package_root,
             edition,
@@ -475,6 +488,7 @@ fn normalize_toml(
             errors,
         )?);
         normalized_toml.test = Some(targets::normalize_tests(
+            gctx,
             original_toml.test.as_ref(),
             package_root,
             edition,
@@ -483,6 +497,7 @@ fn normalize_toml(
             errors,
         )?);
         normalized_toml.bench = Some(targets::normalize_benches(
+            gctx,
             original_toml.bench.as_ref(),
             package_root,
             edition,
@@ -742,7 +757,7 @@ fn normalize_package_toml<'a>(
         if let Some(TomlPackageBuild::MultipleScript(_)) = original_package.build {
             features.require(Feature::multiple_build_scripts())?;
         }
-        targets::normalize_build(original_package.build.as_ref(), package_root)?
+        targets::normalize_build(gctx, original_package.build.as_ref(), package_root)?
     };
     let metabuild = original_package.metabuild.clone();
     let default_target = original_package.default_target.clone();
@@ -793,11 +808,14 @@ fn normalize_package_toml<'a>(
         .transpose()?
         .map(manifest::InheritableField::Value);
     let readme = normalize_package_readme(
+        gctx,
         package_root,
         original_package
             .readme
             .clone()
-            .map(|value| field_inherit_with(value, "readme", || inherit()?.readme(package_root)))
+            .map(|value| {
+                field_inherit_with(value, "readme", || inherit()?.readme(gctx, package_root))
+            })
             .transpose()?
             .as_ref(),
     )
@@ -883,11 +901,12 @@ fn normalize_package_toml<'a>(
 
 /// Returns the name of the README file for a [`manifest::TomlPackage`].
 fn normalize_package_readme(
+    gctx: &GlobalContext,
     package_root: &Path,
     readme: Option<&manifest::StringOrBool>,
 ) -> Option<String> {
     match &readme {
-        None => default_readme_from_package_root(package_root),
+        None => default_readme_from_package_root(gctx, package_root),
         Some(value) => match value {
             manifest::StringOrBool::Bool(false) => None,
             manifest::StringOrBool::Bool(true) => Some("README.md".to_string()),
@@ -900,9 +919,9 @@ pub const DEFAULT_README_FILES: [&str; 3] = ["README.md", "README.txt", "README"
 
 /// Checks if a file with any of the default README file names exists in the package root.
 /// If so, returns a `String` representing that name.
-fn default_readme_from_package_root(package_root: &Path) -> Option<String> {
+fn default_readme_from_package_root(gctx: &GlobalContext, package_root: &Path) -> Option<String> {
     for &readme_filename in DEFAULT_README_FILES.iter() {
-        if package_root.join(readme_filename).is_file() {
+        if gctx.files().is_file(&package_root.join(readme_filename)) {
             return Some(readme_filename.to_string());
         }
     }
@@ -1159,8 +1178,13 @@ impl InheritableFields {
     }
 
     /// Gets the field `workspace.package.readme`.
-    fn readme(&self, package_root: &Path) -> CargoResult<manifest::StringOrBool> {
+    fn readme(
+        &self,
+        gctx: &GlobalContext,
+        package_root: &Path,
+    ) -> CargoResult<manifest::StringOrBool> {
         let Some(readme) = normalize_package_readme(
+            gctx,
             self._ws_root.as_path(),
             self.package.as_ref().and_then(|p| p.readme.as_ref()),
         ) else {
@@ -1332,7 +1356,7 @@ pub fn to_real_manifest(
     _errors: &mut Vec<String>,
 ) -> CargoResult<Manifest> {
     let package_root = manifest_file.parent().unwrap();
-    if !package_root.is_dir() {
+    if !gctx.files().is_dir(package_root) {
         bail!(
             "package root '{}' is not a directory",
             package_root.display()
