@@ -103,12 +103,22 @@ def main():
         evidence = args.evidence / label
         evidence.mkdir(exist_ok=False)
         mount = root / "volume"
-        mount.mkdir()
+        if not args.controlled_background:
+            mount.mkdir()
         image = root / "storage.sparsebundle"
         subprocess.run(["hdiutil", "create", "-size", "24g", "-type", "SPARSEBUNDLE", "-fs", "APFS",
                         "-volname", "OhmClippy-" + label, str(image)], check=True, capture_output=True)
-        attached = subprocess.check_output(["hdiutil", "attach", "-nobrowse", "-noautoopen", "-mountpoint",
-                                            str(mount), "-plist", str(image)])
+        attach = ["hdiutil", "attach", "-nobrowse", "-noautoopen", "-plist", str(image)]
+        if not args.controlled_background:
+            attach.extend(["-mountpoint", str(mount)])
+        attached = subprocess.check_output(attach)
+        if args.controlled_background:
+            # Spotlight registers the standard mount. A custom mount below /tmp
+            # can remain unknown to mdutil even when accessed as root.
+            volumes = [entity for entity in plistlib.loads(attached)["system-entities"]
+                       if entity.get("volume-kind") == "apfs" and "mount-point" in entity]
+            assert len(volumes) == 1, volumes
+            mount = Path(volumes[0]["mount-point"])
         def detach_on_exit(path=mount, output=evidence):
             if os.path.ismount(path):
                 result = subprocess.run(["hdiutil", "detach", str(path)], capture_output=True, text=True)
@@ -118,14 +128,29 @@ def main():
         atexit.register(detach_on_exit)
         indexing = []
         if args.controlled_background:
-            # Only the fresh image attached above is changed. Do not use mdutil -a.
-            for argv in [["sudo", "-n", "/usr/bin/mdutil", "-i", "off", str(mount)],
-                         ["/usr/bin/mdutil", "-s", str(mount)]]:
+            def indexing_command(argv, require_success=True):
                 result = subprocess.run(argv, capture_output=True, text=True)
                 indexing.append({"argv": argv, "returncode": result.returncode,
                                  "stdout": result.stdout, "stderr": result.stderr})
                 (evidence / "indexing.json").write_text(json.dumps(indexing, indent=2) + "\n")
-                assert result.returncode == 0, indexing
+                if require_success:
+                    assert result.returncode == 0, indexing
+                return result
+            # A newly attached volume can briefly report a transitioning state.
+            # Wait a bounded interval for registration; never accept unknown.
+            for attempt in range(16):
+                status = indexing_command(["/usr/bin/mdutil", "-s", str(mount)], require_success=False)
+                if status.returncode == 0 and re.search(
+                    r"\bindexing(?: and searching)? (?:enabled|disabled)\b", status.stdout.lower()
+                ):
+                    break
+                if attempt == 15:
+                    raise RuntimeError(f"Spotlight did not register the owned volume: {indexing}")
+                time.sleep(1)
+            # Only the fresh image attached above is changed. Do not use mdutil -a.
+            for argv in [["sudo", "-n", "/usr/bin/mdutil", "-i", "off", str(mount)],
+                         ["/usr/bin/mdutil", "-s", str(mount)]]:
+                indexing_command(argv)
             assert re.search(r"\bindexing(?: and searching)? disabled\b",
                              indexing[-1]["stdout"].lower()), indexing
         (mount / ".metadata_never_index").touch()

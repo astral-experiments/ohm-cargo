@@ -215,9 +215,11 @@ The measured driver is
 its SHA-256 is
 `34832be58e65cc3799e33f424fdc6ebae45e75cadc6ad368621b82b4232b1289`.
 
-The evidence branch also contains a stricter optional replay mode. It disables
-indexing with `mdutil` only on each newly attached task-owned volume and requires
-an explicit disabled status. Before measured commands, it waits at most 60 s
+The evidence branch also contains a stricter optional replay mode. It uses the
+single APFS mount reported by `hdiutil` for each fresh image at the standard
+`/Volumes` location, waits at most 15 s for Spotlight registration, disables
+indexing with `mdutil` only on that task-owned volume, and requires an explicit
+disabled status. Before measured commands, it waits at most 60 s
 for three consecutive snapshots spaced 1 s apart with no external process at
 20% CPU or above and a sum below 50% among recorded processes at 1% CPU or above.
 The same limits apply at the post-command snapshot. Every wait and snapshot is
@@ -225,6 +227,11 @@ recorded; settling time is excluded from workload timing. This creates a brief
 pause even between first and repeated Clippy. It strengthens endpoint control
 but is still not continuous monitoring. Results above are from the original
 run and are retained separately from any replay using these stricter controls.
+The first strict attempt stopped before any workload because `mdutil` could not
+recognize the custom `/private/tmp` mount. A read-only local standard-mount smoke
+reached explicit disabled status after 2 s; both volumes detached normally.
+[Failed admission receipt](results/shipping/strict-admission-failure/apfs/off1/indexing.json)
+and [standard-mount smoke](results/shipping/spotlight-standard-mount.json).
 
 ## Historical evidence
 

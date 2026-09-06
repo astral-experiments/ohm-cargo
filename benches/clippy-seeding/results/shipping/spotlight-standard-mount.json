@@ -1,0 +1,77 @@
+{
+  "scope": "fresh task-owned volume; read indexing status only",
+  "commands": [
+    {
+      "argv": [
+        "hdiutil",
+        "create",
+        "-size",
+        "1g",
+        "-type",
+        "SPARSEBUNDLE",
+        "-fs",
+        "APFS",
+        "-volname",
+        "OhmClippySpotlightStandard",
+        "/private/tmp/codex-cargo-targets/cargo/isolated/clippy-spotlight-smoke/standard-mount.sparsebundle"
+      ],
+      "returncode": 0,
+      "stdout": "created: /private/tmp/codex-cargo-targets/cargo/isolated/clippy-spotlight-smoke/standard-mount.sparsebundle\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "hdiutil",
+        "attach",
+        "-nobrowse",
+        "-noautoopen",
+        "-plist",
+        "/private/tmp/codex-cargo-targets/cargo/isolated/clippy-spotlight-smoke/standard-mount.sparsebundle"
+      ],
+      "returncode": 0,
+      "stdout": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\n<plist version=\"1.0\">\n<dict>\n\t<key>system-entities</key>\n\t<array>\n\t\t<dict>\n\t\t\t<key>content-hint</key>\n\t\t\t<string>GUID_partition_scheme</string>\n\t\t\t<key>dev-entry</key>\n\t\t\t<string>/dev/disk14</string>\n\t\t\t<key>potentially-mountable</key>\n\t\t\t<false/>\n\t\t\t<key>unmapped-content-hint</key>\n\t\t\t<string>GUID_partition_scheme</string>\n\t\t</dict>\n\t\t<dict>\n\t\t\t<key>content-hint</key>\n\t\t\t<string>Apple_APFS</string>\n\t\t\t<key>dev-entry</key>\n\t\t\t<string>/dev/disk14s1</string>\n\t\t\t<key>potentially-mountable</key>\n\t\t\t<false/>\n\t\t\t<key>unmapped-content-hint</key>\n\t\t\t<string>7C3457EF-0000-11AA-AA11-00306543ECAC</string>\n\t\t</dict>\n\t\t<dict>\n\t\t\t<key>content-hint</key>\n\t\t\t<string>41504653-0000-11AA-AA11-00306543ECAC</string>\n\t\t\t<key>dev-entry</key>\n\t\t\t<string>/dev/disk15s1</string>\n\t\t\t<key>mount-point</key>\n\t\t\t<string>/Volumes/OhmClippySpotlightStandard</string>\n\t\t\t<key>potentially-mountable</key>\n\t\t\t<true/>\n\t\t\t<key>unmapped-content-hint</key>\n\t\t\t<string>41504653-0000-11AA-AA11-00306543ECAC</string>\n\t\t\t<key>volume-kind</key>\n\t\t\t<string>apfs</string>\n\t\t</dict>\n\t\t<dict>\n\t\t\t<key>content-hint</key>\n\t\t\t<string>EF57347C-0000-11AA-AA11-00306543ECAC</string>\n\t\t\t<key>dev-entry</key>\n\t\t\t<string>/dev/disk15</string>\n\t\t\t<key>potentially-mountable</key>\n\t\t\t<false/>\n\t\t\t<key>unmapped-content-hint</key>\n\t\t\t<string>EF57347C-0000-11AA-AA11-00306543ECAC</string>\n\t\t</dict>\n\t</array>\n</dict>\n</plist>\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/usr/bin/mdutil",
+        "-s",
+        "/Volumes/OhmClippySpotlightStandard"
+      ],
+      "returncode": 0,
+      "stdout": "/System/Volumes/Data/Volumes/OhmClippySpotlightStandard:\n\tError: unexpected indexing state.  kMDConfigSearchLevelTransitioning\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/usr/bin/mdutil",
+        "-s",
+        "/Volumes/OhmClippySpotlightStandard"
+      ],
+      "returncode": 0,
+      "stdout": "/System/Volumes/Data/Volumes/OhmClippySpotlightStandard:\n\tIndexing disabled.\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/usr/bin/mdutil",
+        "-s",
+        "/Volumes/OhmClippySpotlightStandard"
+      ],
+      "returncode": 0,
+      "stdout": "/System/Volumes/Data/Volumes/OhmClippySpotlightStandard:\n\tIndexing disabled.\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "hdiutil",
+        "detach",
+        "/Volumes/OhmClippySpotlightStandard"
+      ],
+      "returncode": 0,
+      "stdout": "\"disk14\" ejected.\n",
+      "stderr": ""
+    }
+  ],
+  "mount": "/Volumes/OhmClippySpotlightStandard"
+}

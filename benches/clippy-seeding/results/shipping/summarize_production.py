@@ -30,7 +30,10 @@ def summarize(root):
             assert not any(item['rust'] for key in ['processes_before', 'processes_after']
                            for item in step[key])
         if receipt.get('controlled_background'):
-            assert all(item['returncode'] == 0 for item in receipt['indexing'])
+            # Registration can transiently fail; disable and final verification must not.
+            assert all(item['returncode'] == 0 for item in receipt['indexing'][-3:])
+            assert re.search(r'\bindexing(?: and searching)? (?:enabled|disabled)\b',
+                             receipt['indexing'][-3]['stdout'].lower())
             assert re.search(r'\bindexing(?: and searching)? disabled\b',
                              receipt['indexing'][-1]['stdout'].lower())
             for name, step in steps.items():
