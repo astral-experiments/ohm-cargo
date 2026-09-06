@@ -1,0 +1,231 @@
+{
+  "scope": "Linux ext4 same-binary controls; timings include donor Clippy and filesystem-copy seed cost; allocations are not APFS savings",
+  "arms": [
+    {
+      "label": "off-r1",
+      "cargo_sha256": "fc0693d9a1e9e0147ff5a7d859cd2e3ae4fc92cab83f633bda3ba8158e3a0f6d",
+      "total_seconds": 359.4973614215851,
+      "warmup_seconds": 108.93464732170105,
+      "warm_session_seconds": 248.68427419662476,
+      "donor_seconds": 208.3891351222992,
+      "fork_and_child_seconds": 151.1082262992859,
+      "first_child_test_seconds": 42.957667112350464,
+      "donor_clippy_seconds": 34.40801024436951,
+      "child_clippy_seconds": 30.189646005630493,
+      "seed_summaries": [
+        "     Created /tmp/ohm-seven-prototypes/workloads/01-clippy-seeding/off-r1/sibling (no compatible build snapshot seeded)"
+      ],
+      "final_unique_inode_allocated_clone_unaware": 7416991744,
+      "donor_unique_inode_allocated_clone_unaware": 3998498816,
+      "tests": [
+        [
+          "     Summary [   9.608s] 868 tests run: 868 passed, 34 skipped"
+        ],
+        [
+          "     Summary [   0.992s] 2 tests run: 2 passed, 480 skipped"
+        ],
+        [
+          "     Summary [   2.289s] 2 tests run: 2 passed, 480 skipped"
+        ],
+        [
+          "     Summary [   9.159s] 868 tests run: 868 passed, 34 skipped"
+        ],
+        [
+          "     Summary [   2.097s] 2 tests run: 2 passed, 480 skipped"
+        ],
+        [
+          "     Summary [   2.532s] 2 tests run: 2 passed, 480 skipped"
+        ],
+        [
+          "     Summary [   8.883s] 868 tests run: 868 passed, 34 skipped"
+        ]
+      ]
+    },
+    {
+      "label": "off-r2",
+      "cargo_sha256": "ef160dc6775497155e819ee9e9c20cde385df752d28909dcb900d3447ee1d51b",
+      "total_seconds": 354.90569710731506,
+      "warmup_seconds": 94.20108079910278,
+      "warm_session_seconds": 258.6096694469452,
+      "donor_seconds": 196.208411693573,
+      "fork_and_child_seconds": 158.69728541374207,
+      "first_child_test_seconds": 43.920320987701416,
+      "donor_clippy_seconds": 35.819029569625854,
+      "child_clippy_seconds": 37.1213002204895,
+      "seed_summaries": [
+        "     Created /tmp/ohm-seven-prototypes/workloads/01-clippy-seeding/off-r2/sibling (no compatible build snapshot seeded)"
+      ],
+      "final_unique_inode_allocated_clone_unaware": 7417012224,
+      "donor_unique_inode_allocated_clone_unaware": 3998547968,
+      "tests": [
+        [
+          "     Summary [   8.820s] 868 tests run: 868 passed, 34 skipped"
+        ],
+        [
+          "     Summary [   1.037s] 2 tests run: 2 passed, 480 skipped"
+        ],
+        [
+          "     Summary [   1.021s] 2 tests run: 2 passed, 480 skipped"
+        ],
+        [
+          "     Summary [   9.118s] 868 tests run: 868 passed, 34 skipped"
+        ],
+        [
+          "     Summary [   2.230s] 2 tests run: 2 passed, 480 skipped"
+        ],
+        [
+          "     Summary [   2.413s] 2 tests run: 2 passed, 480 skipped"
+        ],
+        [
+          "     Summary [   7.296s] 868 tests run: 868 passed, 34 skipped"
+        ]
+      ]
+    },
+    {
+      "label": "on-r1",
+      "cargo_sha256": "fc0693d9a1e9e0147ff5a7d859cd2e3ae4fc92cab83f633bda3ba8158e3a0f6d",
+      "total_seconds": 334.4301743507385,
+      "warmup_seconds": 94.27765130996704,
+      "warm_session_seconds": 237.99128913879395,
+      "donor_seconds": 195.543217420578,
+      "fork_and_child_seconds": 138.88695693016052,
+      "first_child_test_seconds": 6.785925626754761,
+      "donor_clippy_seconds": 35.291646003723145,
+      "child_clippy_seconds": 31.90341567993164,
+      "seed_summaries": [
+        "      Seeded 2632 files (2934480198 bytes, 0 reflinked files) for /tmp/ohm-seven-prototypes/workloads/01-clippy-seeding/on-r1/sibling; the next build validates reuse"
+      ],
+      "final_unique_inode_allocated_clone_unaware": 7909605376,
+      "donor_unique_inode_allocated_clone_unaware": 3998564352,
+      "tests": [
+        [
+          "     Summary [   9.082s] 868 tests run: 868 passed, 34 skipped"
+        ],
+        [
+          "     Summary [   1.020s] 2 tests run: 2 passed, 480 skipped"
+        ],
+        [
+          "     Summary [   2.312s] 2 tests run: 2 passed, 480 skipped"
+        ],
+        [
+          "     Summary [   9.196s] 868 tests run: 868 passed, 34 skipped"
+        ],
+        [
+          "     Summary [   1.292s] 2 tests run: 2 passed, 480 skipped"
+        ],
+        [
+          "     Summary [   2.422s] 2 tests run: 2 passed, 480 skipped"
+        ],
+        [
+          "     Summary [   9.496s] 868 tests run: 868 passed, 34 skipped"
+        ]
+      ]
+    },
+    {
+      "label": "on-r2",
+      "cargo_sha256": "ef160dc6775497155e819ee9e9c20cde385df752d28909dcb900d3447ee1d51b",
+      "total_seconds": 348.83557891845703,
+      "warmup_seconds": 93.94159507751465,
+      "warm_session_seconds": 252.46381950378418,
+      "donor_seconds": 204.26900434494019,
+      "fork_and_child_seconds": 144.56657457351685,
+      "first_child_test_seconds": 6.48844051361084,
+      "donor_clippy_seconds": 37.116259813308716,
+      "child_clippy_seconds": 30.165132999420166,
+      "seed_summaries": [
+        "      Seeded 2632 files (2934494760 bytes, 0 reflinked files) for /tmp/ohm-seven-prototypes/workloads/01-clippy-seeding/on-r2/sibling; the next build validates reuse"
+      ],
+      "final_unique_inode_allocated_clone_unaware": 7909646336,
+      "donor_unique_inode_allocated_clone_unaware": 3998572544,
+      "tests": [
+        [
+          "     Summary [   8.583s] 868 tests run: 868 passed, 34 skipped"
+        ],
+        [
+          "     Summary [   0.993s] 2 tests run: 2 passed, 480 skipped"
+        ],
+        [
+          "     Summary [   2.697s] 2 tests run: 2 passed, 480 skipped"
+        ],
+        [
+          "     Summary [   9.543s] 868 tests run: 868 passed, 34 skipped"
+        ],
+        [
+          "     Summary [   1.172s] 2 tests run: 2 passed, 480 skipped"
+        ],
+        [
+          "     Summary [   2.777s] 2 tests run: 2 passed, 480 skipped"
+        ],
+        [
+          "     Summary [   9.462s] 868 tests run: 868 passed, 34 skipped"
+        ]
+      ]
+    },
+    {
+      "label": "rev9-r1",
+      "cargo_sha256": "9b807eae6b6ecec61c07cc1e716ade018d17e839db36e3c6d8ac617ffe2965c1",
+      "total_seconds": 360.66583347320557,
+      "warmup_seconds": 107.35323786735535,
+      "warm_session_seconds": 251.09215188026428,
+      "donor_seconds": 208.16268110275269,
+      "fork_and_child_seconds": 152.50315237045288,
+      "first_child_test_seconds": 44.46548557281494,
+      "donor_clippy_seconds": 35.66858744621277,
+      "child_clippy_seconds": 30.079105377197266,
+      "seed_summaries": [
+        "     Created /tmp/ohm-seven-prototypes/workloads/01-clippy-seeding/rev9-r1/sibling (no compatible build snapshot seeded)"
+      ],
+      "final_unique_inode_allocated_clone_unaware": 7417036800,
+      "donor_unique_inode_allocated_clone_unaware": 3998519296,
+      "tests": [
+        [
+          "     Summary [   9.394s] 868 tests run: 868 passed, 34 skipped"
+        ],
+        [
+          "     Summary [   1.002s] 2 tests run: 2 passed, 480 skipped"
+        ],
+        [
+          "     Summary [   2.265s] 2 tests run: 2 passed, 480 skipped"
+        ],
+        [
+          "     Summary [   8.749s] 868 tests run: 868 passed, 34 skipped"
+        ],
+        [
+          "     Summary [   1.060s] 2 tests run: 2 passed, 480 skipped"
+        ],
+        [
+          "     Summary [   1.642s] 2 tests run: 2 passed, 480 skipped"
+        ],
+        [
+          "     Summary [   8.450s] 868 tests run: 868 passed, 34 skipped"
+        ]
+      ]
+    }
+  ],
+  "pairs": [
+    {
+      "pair": 1,
+      "off": "off-r1",
+      "on": "on-r1",
+      "improvement_percent": {
+        "total_seconds": 6.972843130676025,
+        "warm_session_seconds": 4.299823578460893,
+        "fork_and_child_seconds": 8.087759130280467,
+        "first_child_test_seconds": 84.2032259130669
+      },
+      "allocated_inode_delta_bytes": 492613632
+    },
+    {
+      "pair": 2,
+      "off": "off-r2",
+      "on": "on-r2",
+      "improvement_percent": {
+        "total_seconds": 1.7103467874235259,
+        "warm_session_seconds": 2.376496577372509,
+        "fork_and_child_seconds": 8.904191904344698,
+        "first_child_test_seconds": 85.22679168162789
+      },
+      "allocated_inode_delta_bytes": 492634112
+    }
+  ]
+}
