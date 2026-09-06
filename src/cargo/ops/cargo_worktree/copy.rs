@@ -5,12 +5,29 @@ use crate::CargoResult;
 use crate::util::file_clone::try_clone;
 
 /// Copies a regular file into an absent destination with independent writable state.
-/// Returns its logical size and whether an explicit copy-on-write clone succeeded.
-pub(super) fn copy_file(source: &Path, destination: &Path) -> CargoResult<(u64, bool)> {
-    if try_clone(source, destination)? {
+/// Returns `None` when cloning is unavailable and byte copying was not requested.
+/// Otherwise returns the logical size and whether a copy-on-write clone succeeded.
+pub(super) fn copy_file(
+    source: &Path,
+    destination: &Path,
+    allow_copy: bool,
+) -> CargoResult<Option<(u64, bool)>> {
+    copy_file_with(source, destination, allow_copy, try_clone)
+}
+
+fn copy_file_with(
+    source: &Path,
+    destination: &Path,
+    allow_copy: bool,
+    clone: impl FnOnce(&Path, &Path) -> CargoResult<bool>,
+) -> CargoResult<Option<(u64, bool)>> {
+    if clone(source, destination)? {
         let metadata = fs::metadata(source)?;
         fs::set_permissions(destination, metadata.permissions())?;
-        return Ok((metadata.len(), true));
+        return Ok(Some((metadata.len(), true)));
+    }
+    if !allow_copy {
+        return Ok(None);
     }
     // Reserve our own file before the fallback, which otherwise overwrites paths.
     drop(
@@ -19,7 +36,7 @@ pub(super) fn copy_file(source: &Path, destination: &Path) -> CargoResult<(u64, 
             .create_new(true)
             .open(destination)?,
     );
-    Ok((fs::copy(source, destination)?, false))
+    Ok(Some((fs::copy(source, destination)?, false)))
 }
 
 #[cfg(test)]
@@ -37,7 +54,7 @@ mod tests {
             use std::os::unix::fs::PermissionsExt;
             fs::set_permissions(&source, fs::Permissions::from_mode(0o750))?;
         }
-        assert_eq!(copy_file(&source, &destination)?.0, 8);
+        assert_eq!(copy_file(&source, &destination, true)?.unwrap().0, 8);
         assert_eq!(fs::read(&destination)?, b"snapshot");
         assert!(!same_file::is_same_file(&source, &destination)?);
         #[cfg(unix)]
@@ -50,8 +67,47 @@ mod tests {
         }
         fs::write(&destination, b"private")?;
         assert_eq!(fs::read(&source)?, b"snapshot");
-        assert!(copy_file(&source, &destination).is_err());
+        assert!(copy_file(&source, &destination, true).is_err());
         assert_eq!(fs::read(&destination)?, b"private");
+        Ok(())
+    }
+
+    #[test]
+    fn unsupported_cloning_requires_explicit_copying() -> CargoResult<()> {
+        let root = tempfile::tempdir()?;
+        let source = root.path().join("source");
+        let destination = root.path().join("destination");
+        fs::write(&source, b"snapshot")?;
+        assert_eq!(
+            copy_file_with(&source, &destination, false, |_, _| Ok(false))?,
+            None
+        );
+        assert!(!destination.exists());
+        assert_eq!(
+            copy_file_with(&source, &destination, true, |_, _| Ok(false))?,
+            Some((8, false))
+        );
+        assert!(!same_file::is_same_file(&source, &destination)?);
+        fs::write(destination, b"private")?;
+        assert_eq!(fs::read(source)?, b"snapshot");
+        Ok(())
+    }
+
+    #[test]
+    fn default_cloning_never_copies_bytes() -> CargoResult<()> {
+        let root = tempfile::tempdir()?;
+        let source = root.path().join("source");
+        let destination = root.path().join("destination");
+        fs::write(&source, b"snapshot")?;
+        match copy_file(&source, &destination, false)? {
+            Some((8, true)) => {
+                assert!(!same_file::is_same_file(&source, &destination)?);
+                fs::write(destination, b"private")?;
+                assert_eq!(fs::read(source)?, b"snapshot");
+            }
+            None => assert!(!destination.exists()),
+            other => panic!("unexpected clone result: {other:?}"),
+        }
         Ok(())
     }
 }
