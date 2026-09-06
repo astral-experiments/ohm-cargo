@@ -1,7 +1,7 @@
-//! Dependency recording for a session's coarse prepared-check computation.
+//! Dependency recording for a session's retained command plans.
 //!
 //! Observations are made at read sites, including negative observations. An
-//! epoch never overwrites a conflicting read. Validation re-evaluates the same
+//! read set never overwrites a conflicting read. Validation re-evaluates the same
 //! typed queries and applies value equality before invalidating the consumer.
 
 use std::collections::btree_map::Entry;
@@ -64,16 +64,25 @@ impl Graph {
 }
 
 impl SessionInputs {
-    /// Start a preparation before any configuration or workspace reads.
+    /// Start a graph generation before any configuration or workspace reads.
     pub fn begin(&self) -> InputTracker {
-        // Only one epoch is live. Bound memory by releasing dependencies of the
-        // retired epoch, while keeping the session's revision monotonic.
+        // Release every dependency from the retired arena generation while
+        // keeping the session's revision monotonic.
         let mut graph = self.graph.lock().unwrap();
         graph.revision += 1;
         graph.generation += 1;
         graph.nodes.clear();
-        let generation = graph.generation;
         drop(graph);
+        self.track()
+    }
+
+    /// Start an independent computation in the current graph generation.
+    ///
+    /// Its read set is separate from other retained plans. Observing a changed
+    /// value advances the shared node version, so every consuming plan rejects
+    /// that old value on its next validation. `begin` retires all these trackers.
+    pub fn track(&self) -> InputTracker {
+        let generation = self.graph.lock().unwrap().generation;
         InputTracker {
             graph: self.graph.clone(),
             reads: Arc::new(Mutex::new(ReadSet::default())),
@@ -91,7 +100,7 @@ pub struct InputTracker {
 
 #[derive(Debug, Default)]
 struct ReadSet {
-    /// Versions of graph nodes consumed by this epoch.
+    /// Versions of graph nodes consumed by this plan.
     dependencies: BTreeMap<InputKey, u64>,
     conflict: Option<Invalidation>,
     fresh_only: BTreeSet<String>,
@@ -206,6 +215,40 @@ impl InputTracker {
         );
     }
 
+    /// Record a revision lookup performed on an already opened Git repository.
+    pub(crate) fn observe_git_revision(
+        &self,
+        repository: &Path,
+        revision: &str,
+        value: Result<String, String>,
+    ) {
+        self.record(
+            InputKey::GitRevision(repository.to_owned(), revision.to_owned()),
+            InputValue::Git(value),
+        );
+    }
+
+    /// Record the checkout directory selected by an opened Git repository.
+    pub(crate) fn observe_git_workdir(&self, repository: &Path, workdir: &Path) {
+        self.record(
+            InputKey::GitWorkdir(repository.to_owned()),
+            InputValue::GitPath(Ok(workdir.to_owned())),
+        );
+    }
+
+    /// Record the abbreviation that selects a pinned Git checkout directory.
+    pub(crate) fn observe_git_short_id(
+        &self,
+        repository: &Path,
+        revision: git2::Oid,
+        value: Result<String, String>,
+    ) {
+        self.record(
+            InputKey::GitShortId(repository.to_owned(), revision.to_string()),
+            InputValue::Git(value),
+        );
+    }
+
     /// Publish exact bytes successfully authored by Cargo, preserving conflicts.
     ///
     /// This is reserved for input/output files such as Cargo.lock. Validation
@@ -279,6 +322,11 @@ impl InputTracker {
 #[derive(Clone, Debug, Eq, PartialEq, Ord, PartialOrd)]
 enum InputKey {
     File(PathBuf),
+    OpenFile(PathBuf),
+    FileLength(PathBuf),
+    GitRevision(PathBuf, String),
+    GitWorkdir(PathBuf),
+    GitShortId(PathBuf, String),
     Exists(PathBuf),
     TryExists(PathBuf),
     IsFile(PathBuf),
@@ -301,6 +349,15 @@ impl std::fmt::Display for InputKey {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             Self::File(path) => write!(f, "contents of {}", path.display()),
+            Self::OpenFile(path) => write!(f, "read access to {}", path.display()),
+            Self::FileLength(path) => write!(f, "length of {}", path.display()),
+            Self::GitRevision(path, revision) => {
+                write!(f, "Git revision {revision} in {}", path.display())
+            }
+            Self::GitWorkdir(path) => write!(f, "Git working directory of {}", path.display()),
+            Self::GitShortId(path, revision) => {
+                write!(f, "Git abbreviation of {revision} in {}", path.display())
+            }
             Self::Exists(path)
             | Self::TryExists(path)
             | Self::IsFile(path)
@@ -329,6 +386,9 @@ impl std::fmt::Display for InputKey {
 enum InputValue {
     Bytes(Result<Arc<[u8]>, io::ErrorKind>),
     Bool(bool),
+    Length(Result<u64, io::ErrorKind>),
+    Git(Result<String, String>),
+    GitPath(Result<PathBuf, String>),
     Type(Result<PathType, io::ErrorKind>),
     Directory(Result<Vec<Result<OsString, io::ErrorKind>>, io::ErrorKind>),
     Paths(Result<Vec<PathBuf>, String>),
@@ -393,6 +453,33 @@ impl InputKey {
     fn evaluate(&self) -> InputValue {
         match self {
             Self::File(path) => InputValue::Bytes(io_value(fs::read(path).map(Arc::from))),
+            Self::OpenFile(path) => {
+                InputValue::Identity(io_value(fs::File::open(path).map(|_| true)))
+            }
+            Self::FileLength(path) => {
+                InputValue::Length(io_value(fs::metadata(path).map(|meta| meta.len())))
+            }
+            Self::GitRevision(path, revision) => InputValue::Git(
+                git2::Repository::open(path)
+                    .and_then(|repo| {
+                        repo.revparse_single(revision)
+                            .map(|object| object.id().to_string())
+                    })
+                    .map_err(|error| error.to_string()),
+            ),
+            Self::GitWorkdir(path) => InputValue::GitPath(
+                git2::Repository::open(path)
+                    .map(|repo| repo.workdir().unwrap_or_else(|| repo.path()).to_path_buf())
+                    .map_err(|error| error.to_string()),
+            ),
+            Self::GitShortId(path, revision) => InputValue::Git(
+                git2::Repository::open(path)
+                    .and_then(|repo| {
+                        let object = repo.find_object(git2::Oid::from_str(revision)?, None)?;
+                        Ok(object.short_id()?.as_str().unwrap().to_owned())
+                    })
+                    .map_err(|error| error.to_string()),
+            ),
             Self::Exists(path) => InputValue::Bool(path.exists()),
             Self::TryExists(path) => InputValue::Identity(io_value(path.try_exists())),
             Self::IsFile(path) => InputValue::Bool(path.is_file()),
@@ -433,6 +520,38 @@ pub(crate) struct TrackedFs<'a> {
 impl<'a> TrackedFs<'a> {
     pub(crate) fn new(tracker: Option<&'a InputTracker>) -> Self {
         Self { tracker }
+    }
+
+    /// Open a cached archive without reading bytes that Cargo does not consume.
+    pub(crate) fn open(&self, path: &Path) -> io::Result<fs::File> {
+        let result = fs::File::open(path);
+        if let Some(tracker) = self.tracker {
+            tracker.record(
+                InputKey::OpenFile(path.to_owned()),
+                InputValue::Identity(result.as_ref().map(|_| true).map_err(io::Error::kind)),
+            );
+        }
+        result
+    }
+
+    pub(crate) fn metadata_len(&self, path: &Path) -> io::Result<u64> {
+        self.observe_len(path, fs::metadata(path))
+    }
+
+    /// Preserve the metadata observation from the handle Cargo actually opened.
+    pub(crate) fn opened_file_len(&self, path: &Path, file: &fs::File) -> io::Result<u64> {
+        self.observe_len(path, file.metadata())
+    }
+
+    fn observe_len(&self, path: &Path, result: io::Result<fs::Metadata>) -> io::Result<u64> {
+        let result = result.map(|meta| meta.len());
+        if let Some(tracker) = self.tracker {
+            tracker.record(
+                InputKey::FileLength(path.to_owned()),
+                InputValue::Length(result.as_ref().copied().map_err(io::Error::kind)),
+            );
+        }
+        result
     }
 
     pub(crate) fn read(&self, path: &Path) -> io::Result<Vec<u8>> {
@@ -735,6 +854,50 @@ fn is_non_native_artifact(name: &[u8]) -> bool {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn shared_plans_invalidate_only_their_consumed_values() {
+        let dir = tempfile::tempdir().unwrap();
+        let first_path = dir.path().join("first");
+        let second_path = dir.path().join("second");
+        fs::write(&first_path, b"old").unwrap();
+        fs::write(&second_path, b"stable").unwrap();
+        let graph = SessionInputs::default();
+        let _generation = graph.begin();
+        let first = graph.track();
+        let second = graph.track();
+        TrackedFs::new(Some(&first)).read(&first_path).unwrap();
+        TrackedFs::new(Some(&second)).read(&second_path).unwrap();
+        fs::write(&first_path, b"new").unwrap();
+        assert!(first.validate().is_err());
+        second.validate().unwrap();
+        let replacement = graph.track();
+        TrackedFs::new(Some(&replacement))
+            .read(&first_path)
+            .unwrap();
+        replacement.validate().unwrap();
+        second.validate().unwrap();
+        let _next_generation = graph.begin();
+        assert!(second.validate().is_err());
+        assert!(replacement.validate().is_err());
+    }
+
+    #[test]
+    fn published_inputs_invalidate_other_plan_consumers() {
+        let dir = tempfile::tempdir().unwrap();
+        let path = dir.path().join("Cargo.lock");
+        fs::write(&path, b"old").unwrap();
+        let graph = SessionInputs::default();
+        let _generation = graph.begin();
+        let writer = graph.track();
+        let reader = graph.track();
+        TrackedFs::new(Some(&writer)).read(&path).unwrap();
+        TrackedFs::new(Some(&reader)).read(&path).unwrap();
+        fs::write(&path, b"new").unwrap();
+        writer.publish_file(&path, b"new");
+        writer.validate().unwrap();
+        assert!(reader.validate().is_err());
+    }
 
     #[test]
     fn equal_contents_survive_atomic_replacement() {

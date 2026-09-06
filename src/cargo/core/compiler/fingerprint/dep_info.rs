@@ -286,8 +286,9 @@ impl EncodedDepInfo {
 /// The serialized Cargo format will contain a list of files, all of which are
 /// relative if they're under `root`. or absolute if they're elsewhere.
 ///
-/// The `env_config` argument is a set of environment variables that are
-/// defined in `[env]` table of the `config.toml`.
+/// The `env_config` argument contains variables from the `[env]` table and
+/// per-plan launch overrides. Both remain dependencies even when Cargo installs
+/// them explicitly on the compiler process.
 ///
 /// `worktree_seed_namespace` preserves lexical source paths and manifest-path
 /// environment inputs when preparing mutable artifacts for another checkout.

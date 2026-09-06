@@ -4,7 +4,8 @@ use crate::core::PackageId;
 use crate::sources::registry::{LoadResponse, MaybeLock, RegistryConfig, RegistryData};
 use crate::util::errors::CargoResult;
 use crate::util::{Filesystem, GlobalContext};
-use cargo_util::{Sha256, paths};
+use anyhow::Context as _;
+use cargo_util::Sha256;
 use std::cell::Cell;
 use std::fs::File;
 use std::io::SeekFrom;
@@ -93,11 +94,11 @@ impl<'gctx> LocalRegistry<'gctx> {
         // exists though. We don't use any locks as we're just checking whether
         // these directories exist.
         let root = self.root.clone().into_path_unlocked();
-        if !root.is_dir() {
+        if !self.gctx.files().is_dir(&root) {
             anyhow::bail!("local registry path is not a directory: {}", root.display());
         }
         let index_path = self.index_path.clone().into_path_unlocked();
-        if !index_path.is_dir() {
+        if !self.gctx.files().is_dir(&index_path) {
             anyhow::bail!(
                 "local registry index path is not a directory: {}",
                 index_path.display()
@@ -137,14 +138,12 @@ impl<'gctx> RegistryData for LocalRegistry<'gctx> {
         if !self.updated.get() {
             self.update()?;
         }
-        let raw_data = match paths::read_bytes(&root.join(path)) {
-            Err(e)
-                if e.downcast_ref::<io::Error>()
-                    .map_or(false, |ioe| ioe.kind() == io::ErrorKind::NotFound) =>
-            {
+        let path = root.join(path);
+        let raw_data = match self.gctx.files().read(&path) {
+            Err(e) if e.kind() == io::ErrorKind::NotFound => {
                 return Ok(LoadResponse::NotFound);
             }
-            r => r,
+            r => r.with_context(|| format!("failed to read `{}`", path.display())),
         }?;
         Ok(LoadResponse::Data {
             raw_data,
@@ -176,12 +175,20 @@ impl<'gctx> RegistryData for LocalRegistry<'gctx> {
         // crate files here never change in that we're not the one writing them,
         // so it's not our responsibility to synchronize access to them.
         let path = self.root.join(&pkg.tarball_name()).into_path_unlocked();
-        let mut crate_file = paths::open(&path)?;
+        let mut crate_file = self
+            .gctx
+            .files()
+            .open(&path)
+            .with_context(|| format!("failed to open `{}`", path.display()))?;
 
         // If we've already got an unpacked version of this crate, then skip the
         // checksum below as it is in theory already verified.
         let dst = path.file_stem().unwrap();
-        if self.src_path.join(dst).into_path_unlocked().exists() {
+        if self
+            .gctx
+            .files()
+            .exists(self.src_path.join(dst).as_path_unlocked())
+        {
             return Ok(MaybeLock::Ready(crate_file));
         }
 

@@ -25,8 +25,10 @@ pub use self::cargo_report::timings::ReportTimingsOptions;
 pub use self::cargo_report::timings::report_timings;
 pub use self::cargo_run::run;
 #[cfg(unix)]
-pub use self::cargo_session::{CheckOutcome, PreparedCheck};
-pub use self::cargo_test::{TestOptions, run_benches, run_tests};
+pub use self::cargo_session::{CompileOutcome, PreparedBuild};
+pub use self::cargo_test::{
+    TestOptions, run_benches, run_compiled_benches, run_compiled_tests, run_tests,
+};
 pub use self::cargo_uninstall::uninstall;
 pub use self::cargo_update::UpdateOptions;
 pub use self::cargo_update::generate_lockfile;

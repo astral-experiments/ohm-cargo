@@ -1,4 +1,5 @@
 use crate::command_prelude::*;
+use cargo::core::Workspace;
 use cargo::ops::{self, TestOptions};
 
 pub fn cli() -> Command {
@@ -58,9 +59,18 @@ pub fn cli() -> Command {
 
 pub fn exec(gctx: &mut GlobalContext, args: &ArgMatches) -> CliResult {
     let ws = args.workspace(gctx)?;
+    let (options, bench_args) = options(gctx, args, &ws)?;
+    let bench_args = bench_args.iter().map(String::as_str).collect::<Vec<_>>();
+    ops::run_benches(&ws, &options, &bench_args)
+}
 
+pub(super) fn options(
+    gctx: &GlobalContext,
+    args: &ArgMatches,
+    ws: &Workspace<'_>,
+) -> Result<(TestOptions, Vec<String>), CliError> {
     let mut compile_opts =
-        args.compile_options(gctx, UserIntent::Bench, Some(&ws), ProfileChecking::Custom)?;
+        args.compile_options(gctx, UserIntent::Bench, Some(ws), ProfileChecking::Custom)?;
 
     compile_opts.build_config.requested_profile =
         args.get_profile_name("bench", ProfileChecking::Custom)?;
@@ -73,7 +83,7 @@ pub fn exec(gctx: &mut GlobalContext, args: &ArgMatches) -> CliResult {
 
     let bench_args = args.get_one::<String>("BENCHNAME").into_iter();
     let bench_args = bench_args.chain(args.get_many::<String>("args").unwrap_or_default());
-    let bench_args = bench_args.map(String::as_str).collect::<Vec<_>>();
+    let bench_args = bench_args.cloned().collect();
 
-    ops::run_benches(&ws, &ops, &bench_args)
+    Ok((ops, bench_args))
 }

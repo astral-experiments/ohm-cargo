@@ -65,7 +65,27 @@ impl UnitTestError {
 /// On error, the returned [`CliError`] will have the appropriate process exit
 /// code that Cargo should use.
 pub fn run_tests(ws: &Workspace<'_>, options: &TestOptions, test_args: &[&str]) -> CliResult {
-    let compilation = compile_tests(ws, options)?;
+    let compilation = ops::compile(ws, &options.compile_opts)?;
+    run_compiled_tests(ws, options, test_args, compilation)
+}
+
+/// Runs the selected tests and doctests from an existing compilation.
+///
+/// The compilation must match `options.compile_opts`. This also implements
+/// `--no-run` output using the compiled test artifacts.
+///
+/// Any validation of cached build inputs must finish before this call. Once test
+/// execution starts, callers must not automatically retry if those inputs change:
+/// test binaries and doctests may have side effects.
+///
+/// On error, the returned [`CliError`] has the process exit code Cargo should use.
+pub fn run_compiled_tests(
+    ws: &Workspace<'_>,
+    options: &TestOptions,
+    test_args: &[&str],
+    mut compilation: Compilation<'_>,
+) -> CliResult {
+    compilation.tests.sort_by_key(|u| u.unit.clone());
 
     if options.no_run {
         if !options.compile_opts.build_config.emit_json() {
@@ -85,7 +105,26 @@ pub fn run_tests(ws: &Workspace<'_>, options: &TestOptions, test_args: &[&str]) 
 /// On error, the returned [`CliError`] will have the appropriate process exit
 /// code that Cargo should use.
 pub fn run_benches(ws: &Workspace<'_>, options: &TestOptions, args: &[&str]) -> CliResult {
-    let compilation = compile_tests(ws, options)?;
+    let compilation = ops::compile(ws, &options.compile_opts)?;
+    run_compiled_benches(ws, options, args, compilation)
+}
+
+/// Runs the selected benchmarks from an existing compilation.
+///
+/// The compilation must match `options.compile_opts`. This also implements
+/// `--no-run` output using the compiled benchmark artifacts.
+///
+/// As with [`run_compiled_tests`], callers must validate cached build inputs before
+/// this call and must not automatically retry after benchmark execution starts.
+///
+/// On error, the returned [`CliError`] has the process exit code Cargo should use.
+pub fn run_compiled_benches(
+    ws: &Workspace<'_>,
+    options: &TestOptions,
+    args: &[&str],
+    mut compilation: Compilation<'_>,
+) -> CliResult {
+    compilation.tests.sort_by_key(|u| u.unit.clone());
 
     if options.no_run {
         if !options.compile_opts.build_config.emit_json() {
@@ -99,12 +138,6 @@ pub fn run_benches(ws: &Workspace<'_>, options: &TestOptions, args: &[&str]) -> 
 
     let errors = run_unit_tests(ws, options, &args, &compilation, TestKind::Bench)?;
     no_fail_fast_err(ws, &options.compile_opts, &errors)
-}
-
-fn compile_tests<'a>(ws: &Workspace<'a>, options: &TestOptions) -> CargoResult<Compilation<'a>> {
-    let mut compilation = ops::compile(ws, &options.compile_opts)?;
-    compilation.tests.sort_by_key(|u| u.unit.clone());
-    Ok(compilation)
 }
 
 /// Runs the unit and integration tests of a package.

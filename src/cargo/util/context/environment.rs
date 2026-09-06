@@ -1,6 +1,7 @@
 //! Encapsulates snapshotting of environment variables.
 
 use crate::util::data_structures::HashMap;
+use std::collections::BTreeMap;
 use std::ffi::{OsStr, OsString};
 
 use crate::util::errors::CargoResult;
@@ -89,6 +90,18 @@ impl Env {
             case_insensitive_env,
             normalized_env,
         }
+    }
+
+    /// Apply a plan's launch variables while preserving the original raw environment.
+    pub(super) fn with_overrides(mut self, overrides: &BTreeMap<String, OsString>) -> Self {
+        self.env.extend(
+            overrides
+                .iter()
+                .map(|(key, value)| (OsString::from(key), value.clone())),
+        );
+        (self.case_insensitive_env, self.normalized_env) =
+            make_case_insensitive_and_normalized_env(&self.env);
+        self
     }
 
     /// Returns the environment snapshot without discarding non-UTF-8 entries.

@@ -111,6 +111,12 @@ impl<'gctx> RemoteRegistry<'gctx> {
 
     /// Creates intermediate dirs and initialize the repository.
     fn repo(&self) -> CargoResult<Ref<'_, Option<git2::Repository>>> {
+        if let Some(inputs) = self.gctx.session_inputs() {
+            inputs.require_fresh(format!(
+                "Git registry source {} has no session index dependency contract",
+                self.source_id
+            ));
+        }
         if self.repo.borrow().is_none() {
             trace!("acquiring registry index lock");
             let path = self

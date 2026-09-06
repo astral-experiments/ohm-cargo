@@ -1,6 +1,7 @@
 use crate::command_prelude::*;
 
-use cargo::ops;
+use cargo::core::Workspace;
+use cargo::{CargoResult, ops};
 
 pub fn cli() -> Command {
     subcommand("build")
@@ -47,8 +48,18 @@ pub fn cli() -> Command {
 
 pub fn exec(gctx: &mut GlobalContext, args: &ArgMatches) -> CliResult {
     let ws = args.workspace(gctx)?;
+    let compile_opts = compile_options(gctx, args, &ws)?;
+    ops::compile(&ws, &compile_opts)?;
+    Ok(())
+}
+
+pub(super) fn compile_options(
+    gctx: &GlobalContext,
+    args: &ArgMatches,
+    ws: &Workspace<'_>,
+) -> CargoResult<ops::CompileOptions> {
     let mut compile_opts =
-        args.compile_options(gctx, UserIntent::Build, Some(&ws), ProfileChecking::Custom)?;
+        args.compile_options(gctx, UserIntent::Build, Some(ws), ProfileChecking::Custom)?;
 
     if let Some(artifact_dir) = args.value_of_path("artifact-dir", gctx) {
         // If the user specifies `--artifact-dir`, use that
@@ -65,6 +76,5 @@ pub fn exec(gctx: &mut GlobalContext, args: &ArgMatches) -> CliResult {
             .fail_if_stable_opt("--artifact-dir", 6790)?;
     }
 
-    ops::compile(&ws, &compile_opts)?;
-    Ok(())
+    Ok(compile_opts)
 }

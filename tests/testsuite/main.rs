@@ -146,6 +146,8 @@ mod offline;
 mod ohm_clippy_codegen;
 mod ohm_session;
 mod ohm_session_client;
+mod ohm_session_commands;
+mod ohm_session_sources;
 mod ohm_worktree;
 mod old_cargos;
 mod open_namespaces;

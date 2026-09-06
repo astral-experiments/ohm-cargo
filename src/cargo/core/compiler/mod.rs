@@ -1123,7 +1123,7 @@ fn rustc(
     if hide_diagnostics_for_scrape_unit {
         output_options.show_diagnostics = false;
     }
-    let env_config = Arc::clone(build_runner.bcx.gctx.env_config()?);
+    let env_config = build_runner.bcx.gctx.env_for_fingerprint()?;
 
     let fingerprint = build_runner.fingerprints.get(unit).cloned();
     let unit_name = format!("{} v{}", unit.pkg.name(), unit.pkg.version());
@@ -2149,7 +2149,7 @@ fn rustdoc(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResult<W
     let fingerprint_dir = build_runner.files().fingerprint_dir(unit);
     let is_local = unit.is_local();
     let worktree_seed_namespace = unit_worktree_seed_namespace(build_runner, unit);
-    let env_config = Arc::clone(build_runner.bcx.gctx.env_config()?);
+    let env_config = build_runner.bcx.gctx.env_for_fingerprint()?;
     let rustdoc_depinfo_enabled = build_runner.bcx.gctx.cli_unstable().rustdoc_depinfo;
 
     let mut output_options = OutputOptions::for_dirty(build_runner, unit);
@@ -3899,12 +3899,20 @@ fn descriptive_pkg_name(name: &str, target: &Target, mode: &CompileMode) -> Stri
     format!("`{name}` ({desc_name}{mode})")
 }
 
-/// Applies environment variables from config `[env]` to [`ProcessBuilder`].
+/// Applies a plan's launch environment and config `[env]` to [`ProcessBuilder`].
 pub(crate) fn apply_env_config(
     gctx: &crate::GlobalContext,
     cmd: &mut ProcessBuilder,
 ) -> CargoResult<()> {
-    for (key, value) in gctx.env_config()?.iter() {
+    let configured = gctx.env_config()?;
+    for (key, value) in gctx.session_env() {
+        if !cmd.get_envs().contains_key(key) {
+            // Treat plan variables like inherited values: forced `[env]` entries
+            // override them, while Cargo's unit-specific values still take priority.
+            cmd.env(key, configured.get(key).unwrap_or(value));
+        }
+    }
+    for (key, value) in configured.iter() {
         // never override a value that has already been set by cargo
         if cmd.get_envs().contains_key(key) {
             continue;

@@ -1,5 +1,6 @@
 use crate::util::data_structures::HashMap;
 use std::env;
+use std::ffi::OsString;
 use std::hash::{Hash, Hasher};
 use std::path::{Path, PathBuf};
 use std::sync::{Mutex, OnceLock};
@@ -602,13 +603,9 @@ fn observe_session_compiler(
     if gctx.cli_unstable().ohm_clippy_codegen() {
         inputs.require_fresh("Clippy compiler wrappers have undeclared inputs");
     }
-    if wrapper
-        .into_iter()
-        .chain(workspace_wrapper)
-        .any(|p| !p.as_os_str().is_empty())
-    {
-        inputs.require_fresh("compiler wrappers have undeclared inputs");
-    }
+    let wrapper = wrapper.filter(|path| !path.as_os_str().is_empty());
+    let workspace_wrapper = workspace_wrapper.filter(|path| !path.as_os_str().is_empty());
+    let mut declared_workspace_wrapper = workspace_wrapper.is_none();
     let search_path = gctx.get_env_os("PATH").unwrap_or_default();
     if std::env::split_paths(search_path).any(|entry| !entry.is_absolute()) {
         inputs.require_fresh("relative compiler search paths require fresh preparation");
@@ -655,10 +652,69 @@ fn observe_session_compiler(
     })();
     match installation {
         Some(root) if inputs.compiler_installation(&root) => {
+            if wrapper.is_none()
+                && let Some(workspace_wrapper) = workspace_wrapper
+            {
+                declared_workspace_wrapper =
+                    observe_session_clippy(gctx, rustc, &root, workspace_wrapper);
+            }
             observe_session_loader(gctx, inputs, &root);
         }
         _ => inputs.require_fresh("compiler installation could not be verified for reuse"),
     }
+    if wrapper.is_some() || !declared_workspace_wrapper {
+        inputs.require_fresh("compiler wrappers have undeclared inputs");
+    }
+}
+
+/// Admit only the selected installation's Clippy driver with its matching compiler.
+///
+/// This permits retaining Cargo's compiler probes, not running Clippy in the
+/// persistent rustc worker. The driver remains an ordinary compiler subprocess.
+fn observe_session_clippy(
+    gctx: &GlobalContext,
+    rustc: &Path,
+    installation: &Path,
+    workspace_wrapper: &Path,
+) -> bool {
+    let verify = || -> CargoResult<bool> {
+        let Some(candidate) = gctx.session_clippy_driver() else {
+            return Ok(false);
+        };
+        let configured = gctx.env_config()?;
+        if configured
+            .get("SYSROOT")
+            .map(OsString::as_os_str)
+            .or_else(|| gctx.get_env_os("SYSROOT"))
+            .is_some_and(|sysroot| !sysroot.is_empty())
+        {
+            // clippy-driver honors this independently of Cargo's selected compiler.
+            return Ok(false);
+        }
+        let expected = installation
+            .join("bin/clippy-driver")
+            .with_extension(env::consts::EXE_EXTENSION);
+        let expected = gctx.files().canonicalize(&expected)?;
+        if gctx.files().canonicalize(&gctx.cwd().join(candidate))? != expected {
+            return Ok(false);
+        }
+        let actual = gctx.session_inputs().unwrap().executable(
+            workspace_wrapper,
+            gctx.cwd(),
+            gctx.get_env_os("PATH").unwrap_or_default(),
+        );
+        if actual.as_ref() != Some(&expected) {
+            return Ok(false);
+        }
+        let output = |tool: &Path, args: &[&str]| -> CargoResult<Vec<u8>> {
+            let mut process = ProcessBuilder::new(tool);
+            process.cwd(gctx.cwd()).args(args);
+            apply_env_config(gctx, &mut process)?;
+            Ok(process.exec_with_output()?.stdout)
+        };
+        Ok(output(&expected, &["--rustc", "-vV"])? == output(rustc, &["-vV"])?)
+    };
+    verify().unwrap_or(false)
 }
 
 /// Account for loader search directories outside the selected installation.
@@ -777,4 +833,93 @@ fn process_fingerprint(cmd: &ProcessBuilder, extra_fingerprint: u64) -> u64 {
     env.sort_unstable();
     env.hash(&mut hasher);
     Hasher::finish(&hasher)
+}
+
+#[cfg(all(test, unix))]
+mod session_tests {
+    use super::*;
+    use crate::util::session_inputs::SessionInputs;
+    use cargo_util_terminal::Shell;
+    use std::collections::BTreeMap;
+    use std::fs;
+    use std::os::unix::fs::PermissionsExt;
+
+    fn tool(path: &Path, arguments: &str, version: &str) {
+        fs::write(
+            path,
+            format!(
+                "#!/bin/sh\n[ \"$*\" = '{arguments}' ] || exit 1\nprintf '%s\\n' '{version}'\n"
+            ),
+        )
+        .unwrap();
+        fs::set_permissions(path, fs::Permissions::from_mode(0o755)).unwrap();
+    }
+
+    #[test]
+    fn clippy_admission_requires_matching_installed_driver() {
+        let dir = tempfile::tempdir().unwrap();
+        let root = dir.path().canonicalize().unwrap();
+        let rustup = root.join("rustup");
+        let installation = rustup.join("toolchains/test");
+        fs::create_dir_all(installation.join("bin")).unwrap();
+        fs::create_dir(installation.join("lib")).unwrap();
+        let rustc = installation.join("bin/rustc");
+        let driver = installation.join("bin/clippy-driver");
+        tool(&rustc, "-vV", "compiler-a");
+        tool(&driver, "--rustc -vV", "compiler-a");
+        let mut initial = GlobalContext::new(Shell::new(), root.clone(), root.join("home"));
+        initial.set_search_stop_path(root.clone());
+        initial.set_env(
+            [
+                ("PATH".to_owned(), "/usr/bin:/bin".to_owned()),
+                (
+                    "RUSTUP_HOME".to_owned(),
+                    rustup.to_str().unwrap().to_owned(),
+                ),
+                ("RUSTC".to_owned(), rustc.to_str().unwrap().to_owned()),
+                (
+                    "RUSTC_WORKSPACE_WRAPPER".to_owned(),
+                    "/missing/wrapper".to_owned(),
+                ),
+            ]
+            .into_iter()
+            .collect(),
+        );
+        let plan = |candidate| {
+            initial.fresh_for_session_with_env(
+                SessionInputs::default().begin(),
+                BTreeMap::new(),
+                candidate,
+            )
+        };
+        let preliminary = plan(None);
+        assert_eq!(preliminary.resolve_session_clippy_driver().unwrap(), driver);
+        let admitted = plan(Some(driver.clone()));
+        observe_session_compiler(&admitted, &rustc, None, Some(&driver));
+        assert!(admitted.session_inputs().unwrap().reuse_reason().is_none());
+        admitted.session_inputs().unwrap().validate().unwrap();
+
+        let unmarked = plan(None);
+        observe_session_compiler(&unmarked, &rustc, None, Some(&driver));
+        assert!(unmarked.session_inputs().unwrap().reuse_reason().is_some());
+        let wrapped = plan(Some(driver.clone()));
+        observe_session_compiler(
+            &wrapped,
+            &rustc,
+            Some(Path::new("outer-wrapper")),
+            Some(&driver),
+        );
+        assert!(wrapped.session_inputs().unwrap().reuse_reason().is_some());
+        let outside = root.join("clippy-driver");
+        tool(&outside, "--rustc -vV", "compiler-a");
+        let arbitrary = plan(Some(outside.clone()));
+        observe_session_compiler(&arbitrary, &rustc, None, Some(&outside));
+        assert!(arbitrary.session_inputs().unwrap().reuse_reason().is_some());
+
+        tool(&driver, "--rustc -vV", "compiler-b");
+        assert!(admitted.session_inputs().unwrap().validate().is_err());
+        let changed = plan(Some(driver.clone()));
+        observe_session_compiler(&changed, &rustc, None, Some(&driver));
+        assert!(changed.session_inputs().unwrap().reuse_reason().is_some());
+    }
 }

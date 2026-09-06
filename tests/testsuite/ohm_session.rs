@@ -35,7 +35,7 @@ const MANIFEST: &str = r#"
     changed = []
 "#;
 
-fn fixture() -> Project {
+pub(super) fn fixture() -> Project {
     let p = project()
         .at("workspace with spaces")
         .file("Cargo.toml", MANIFEST)
@@ -55,7 +55,7 @@ fn fixture() -> Project {
     p
 }
 
-fn change(p: &Project, path: &str, source: &str) {
+pub(super) fn change(p: &Project, path: &str, source: &str) {
     if is_coarse_mtime() {
         sleep_ms(1100);
     }
@@ -95,7 +95,7 @@ fn run_command(mut command: Command) -> Output {
     output
 }
 
-struct Session<'a> {
+pub(super) struct Session<'a> {
     project: &'a Project,
     socket: PathBuf,
     log: PathBuf,
@@ -105,11 +105,11 @@ struct Session<'a> {
 }
 
 impl<'a> Session<'a> {
-    fn start(project: &'a Project, flags: &[&str]) -> Self {
+    pub(super) fn start(project: &'a Project, flags: &[&str]) -> Self {
         Self::start_with_env(project, flags, &[])
     }
 
-    fn start_with_env(
+    pub(super) fn start_with_env(
         project: &'a Project,
         flags: &[&str],
         environment: &[(&str, OsString)],
@@ -190,7 +190,11 @@ impl<'a> Session<'a> {
     }
 
     fn command(&self, command: &str) -> Execs {
-        let mut cargo = self.project.cargo(&format!("session {command}"));
+        self.cargo_command(&format!("session {command}"))
+    }
+
+    fn cargo_command(&self, command: &str) -> Execs {
+        let mut cargo = self.project.cargo(command);
         cargo.arg("--socket").arg(&self.socket);
         for (key, value) in &self.environment {
             cargo.env(key, value);
@@ -200,6 +204,10 @@ impl<'a> Session<'a> {
 
     fn json(&self, mut command: Execs, success: bool) -> Value {
         let output = run_command(command.arg("--json").build_command());
+        self.response(output, success)
+    }
+
+    fn response(&self, output: Output, success: bool) -> Value {
         assert_eq!(
             output.status.success(),
             success,
@@ -208,19 +216,47 @@ impl<'a> Session<'a> {
         );
         let response: Value = serde_json::from_slice(&output.stdout)
             .unwrap_or_else(|error| panic!("invalid session JSON: {error}: {output:?}"));
-        assert_eq!(response["version"], 1, "{response}");
+        assert_eq!(response["version"], 2, "{response}");
         if let Some(code) = response.get("returncode") {
             assert_eq!(code.as_i64(), output.status.code().map(i64::from));
         }
         response
     }
 
-    fn check(&self, success: bool) -> Value {
-        let response = self.json(self.command("check"), success);
+    pub(super) fn request(&self, operation: &str, args: &[&str], success: bool) -> Value {
+        self.work_response(self.command(operation), operation, args, success)
+    }
+
+    pub(super) fn request_alias(
+        &self,
+        alias: &str,
+        operation: &str,
+        args: &[&str],
+        success: bool,
+    ) -> Value {
+        self.work_response(self.cargo_command(alias), operation, args, success)
+    }
+
+    fn work_response(
+        &self,
+        mut command: Execs,
+        operation: &str,
+        args: &[&str],
+        success: bool,
+    ) -> Value {
+        // Once Cargo arguments start, even `--json` belongs to the forwarded
+        // command. In particular, it must precede a test's `--` separator.
+        command.arg("--json").args(args);
+        let response = self.response(run_command(command.build_command()), success);
+        assert_eq!(response["command"], operation, "{response}");
         assert!(response["elapsed_ms"].is_number(), "{response}");
         assert!(response["stdout"].is_string(), "{response}");
         assert!(response["stderr"].is_string(), "{response}");
         response
+    }
+
+    pub(super) fn check(&self, success: bool) -> Value {
+        self.request("check", &[], success)
     }
 
     fn stop(&mut self) {
@@ -255,7 +291,7 @@ impl Drop for Session<'_> {
     }
 }
 
-fn assert_reused(response: &Value, prepared: &Value) {
+pub(super) fn assert_reused(response: &Value, prepared: &Value) {
     assert_eq!(response["pid"], prepared["pid"], "{response}");
     assert_eq!(response["session"], prepared["session"], "{response}");
     assert_eq!(
@@ -778,7 +814,7 @@ fn explicit_compiler_path_is_authoritative_for_toolchain_reuse() {
 }
 
 #[cargo_test]
-fn registry_sources_prepare_afresh_after_the_cache_is_warm() {
+fn git_registry_sources_prepare_afresh_after_the_cache_is_warm() {
     cargo_test_support::registry::Package::new("registry_dep", "1.0.0").publish();
     let p = fixture();
     p.change_file(
@@ -998,7 +1034,7 @@ fn invalid_protocol_requests_leave_the_session_usable() {
         let mut line = String::new();
         BufReader::new(connection).read_line(&mut line).unwrap();
         let response: Value = serde_json::from_str(&line).unwrap();
-        assert_eq!(response["version"], 1, "{case}: {response}");
+        assert_eq!(response["version"], 2, "{case}: {response}");
         assert_eq!(response["status"], "rejected", "{case}: {response}");
         assert_eq!(response["error_kind"], "protocol", "{case}: {response}");
         assert_eq!(response["returncode"], 1, "{case}: {response}");

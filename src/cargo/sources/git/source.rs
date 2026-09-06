@@ -191,11 +191,19 @@ impl<'gctx> GitSource<'gctx> {
         let db_path = db_path.into_path_unlocked();
 
         let db = self.remote.db_at(&db_path).ok();
+        if matches!(&*self.locked_rev.borrow(), Revision::Deferred(_)) {
+            if let Some(inputs) = self.gctx.session_inputs() {
+                inputs.require_fresh(format!(
+                    "Git source {} is not locked to a precise revision",
+                    self.source_id.borrow()
+                ));
+            }
+        }
 
         let (db, actual_rev) = match (&*self.locked_rev.borrow(), db) {
             // If we have a locked revision, and we have a preexisting database
             // which has that revision, then no update needs to happen.
-            (Revision::Locked(oid), Some(db)) if db.contains(*oid) => (db, *oid),
+            (Revision::Locked(oid), Some(db)) if db.contains(*oid, self.gctx) => (db, *oid),
 
             // If we're in offline mode, we're not locked, and we have a
             // database, then try to resolve our reference with the preexisting
@@ -219,6 +227,12 @@ impl<'gctx> GitSource<'gctx> {
             // situation that we have a locked revision but the database
             // doesn't have it.
             (locked_rev, db) => {
+                if let Some(inputs) = self.gctx.session_inputs() {
+                    inputs.require_fresh(format!(
+                        "Git source {} requires fetching a revision",
+                        self.source_id.borrow()
+                    ));
+                }
                 if let Some(offline_flag) = self.gctx.offline_flag() {
                     anyhow::bail!(
                         "can't checkout from '{}': you are in the offline mode ({offline_flag})",
@@ -277,7 +291,7 @@ impl<'gctx> GitSource<'gctx> {
         // Don’t use the full hash, in order to contribute less to reaching the
         // path length limit on Windows. See
         // <https://github.com/servo/servo/pull/14397>.
-        let short_id = db.to_short_id(actual_rev)?;
+        let short_id = db.to_short_id(actual_rev, self.gctx)?;
 
         // Check out `actual_rev` from the database to a scoped location on the
         // filesystem. This will use hard links and such to ideally make the

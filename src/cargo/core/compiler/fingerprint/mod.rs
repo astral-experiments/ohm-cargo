@@ -2987,7 +2987,7 @@ fn build_script_local_fingerprints(
     // obvious.
     let pkg_root = unit.pkg.root().to_path_buf();
     let build_dir = build_root(build_runner);
-    let env_config = Arc::clone(build_runner.bcx.gctx.env_config()?);
+    let env_config = build_runner.bcx.gctx.env_for_fingerprint()?;
     let calculate =
         move |deps: &BuildDeps, pkg_fingerprint: Option<&dyn Fn() -> CargoResult<String>>| {
             if deps.rerun_if_changed.is_empty() && deps.rerun_if_env_changed.is_empty() {

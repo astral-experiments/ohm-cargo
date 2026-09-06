@@ -9,10 +9,12 @@ use std::os::unix::ffi::OsStrExt;
 use std::os::unix::net::UnixStream;
 use std::path::PathBuf;
 
+#[cfg_attr(test, derive(Debug, Eq, PartialEq))]
 pub(crate) struct Client {
     command: Operation,
     socket: Option<PathBuf>,
     json: bool,
+    args: Vec<OsString>,
 }
 
 impl Client {
@@ -24,6 +26,10 @@ impl Client {
         }
         let command = match args.next()?.to_str()? {
             "check" => Operation::Check,
+            "build" => Operation::Build,
+            "clippy" => Operation::Clippy,
+            "test" => Operation::Test,
+            "bench" => Operation::Bench,
             "status" => Operation::Status,
             "stop" => Operation::Stop,
             _ => return None,
@@ -32,11 +38,18 @@ impl Client {
             command,
             socket: None,
             json: false,
+            args: Vec::new(),
         };
         while let Some(arg) = args.next() {
-            if arg == "--json" && !client.json {
+            if arg == "--json" {
+                if client.json {
+                    return None;
+                }
                 client.json = true;
-            } else if arg == "--socket" && client.socket.is_none() {
+            } else if arg == "--socket" {
+                if client.socket.is_some() {
+                    return None;
+                }
                 let path = args.next()?;
                 if path.is_empty() || path.as_bytes().starts_with(b"-") {
                     return None;
@@ -47,8 +60,16 @@ impl Client {
                     return None;
                 }
                 client.socket = Some(std::ffi::OsStr::from_bytes(path).into());
-            } else {
+            } else if matches!(client.command, Operation::Status | Operation::Stop)
+                || matches!(arg.to_str(), Some("--help" | "-h"))
+            {
                 return None;
+            } else if arg == "--" {
+                client.args.push(arg);
+                client.args.extend(args);
+                break;
+            } else {
+                client.args.push(arg);
             }
         }
         Some(client)
@@ -61,6 +82,11 @@ impl Client {
         let request = Request {
             version: protocol::VERSION,
             command: self.command,
+            args: self
+                .args
+                .iter()
+                .map(|arg| arg.as_bytes().to_vec())
+                .collect(),
             identity: ClientIdentity::new(gctx)?,
         };
         protocol::write_request(&mut connection, &request)?;
@@ -68,7 +94,9 @@ impl Client {
         let response = protocol::read_response(connection)?;
         if self.json {
             gctx.shell().print_json(&response)?;
-        } else if matches!(self.command, Operation::Check) || response.returncode != 0 {
+        } else if !matches!(self.command, Operation::Status | Operation::Stop)
+            || response.returncode != 0
+        {
             gctx.shell().print_ansi_stdout(response.stdout.as_bytes())?;
             gctx.shell().print_ansi_stderr(response.stderr.as_bytes())?;
         } else {
@@ -88,6 +116,10 @@ pub fn exec(gctx: &mut GlobalContext, args: &ArgMatches) -> CliResult {
     let (command, args) = args.subcommand().expect("session requires a subcommand");
     let command = match command {
         "check" => Operation::Check,
+        "build" => Operation::Build,
+        "clippy" => Operation::Clippy,
+        "test" => Operation::Test,
+        "bench" => Operation::Bench,
         "status" => Operation::Status,
         "stop" => Operation::Stop,
         "serve" => unreachable!("session serve is dispatched with its configuration"),
@@ -97,6 +129,14 @@ pub fn exec(gctx: &mut GlobalContext, args: &ArgMatches) -> CliResult {
         command,
         socket: args.get_one::<PathBuf>("socket").cloned(),
         json: args.get_flag("json"),
+        args: args
+            .try_get_many::<OsString>("args")
+            .ok()
+            .flatten()
+            .into_iter()
+            .flatten()
+            .cloned()
+            .collect(),
     }
     .exec(gctx)
 }

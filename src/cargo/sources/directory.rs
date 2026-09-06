@@ -90,6 +90,12 @@ impl<'gctx> DirectorySource<'gctx> {
     }
 
     fn update(&self) -> CargoResult<()> {
+        if let Some(inputs) = self.gctx.session_inputs() {
+            inputs.require_fresh(format!(
+                "directory source {} has no session checksum dependency contract",
+                self.source_id
+            ));
+        }
         if self.updated.get() {
             return Ok(());
         }

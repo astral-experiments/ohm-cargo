@@ -1,4 +1,5 @@
 use crate::command_prelude::*;
+use cargo::core::Workspace;
 use cargo::ops;
 
 pub fn cli() -> Command {
@@ -69,9 +70,18 @@ pub fn cli() -> Command {
 
 pub fn exec(gctx: &mut GlobalContext, args: &ArgMatches) -> CliResult {
     let ws = args.workspace(gctx)?;
+    let (options, test_args) = options(gctx, args, &ws)?;
+    let test_args = test_args.iter().map(String::as_str).collect::<Vec<_>>();
+    ops::run_tests(&ws, &options, &test_args)
+}
 
+pub(super) fn options(
+    gctx: &GlobalContext,
+    args: &ArgMatches,
+    ws: &Workspace<'_>,
+) -> Result<(ops::TestOptions, Vec<String>), CliError> {
     let mut compile_opts =
-        args.compile_options(gctx, UserIntent::Test, Some(&ws), ProfileChecking::Custom)?;
+        args.compile_options(gctx, UserIntent::Test, Some(ws), ProfileChecking::Custom)?;
 
     compile_opts.build_config.requested_profile =
         args.get_profile_name("test", ProfileChecking::Custom)?;
@@ -129,7 +139,7 @@ pub fn exec(gctx: &mut GlobalContext, args: &ArgMatches) -> CliResult {
                 && benches.is_empty()
         )
         && matches!(&compile_opts.spec, ops::Packages::Packages(packages) if packages.len() == 1)
-        && compile_opts.spec.get_packages(&ws).is_ok_and(|packages| {
+        && compile_opts.spec.get_packages(ws).is_ok_and(|packages| {
             packages.len() == 1
                 && packages[0]
                     .targets()
@@ -147,5 +157,5 @@ pub fn exec(gctx: &mut GlobalContext, args: &ArgMatches) -> CliResult {
         compile_opts,
     };
 
-    ops::run_tests(&ws, &ops, &test_args)
+    Ok((ops, test_args.into_iter().map(str::to_owned).collect()))
 }

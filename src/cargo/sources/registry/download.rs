@@ -17,7 +17,7 @@ use crate::util::auth;
 use crate::util::cache_lock::CacheLockMode;
 use crate::util::errors::CargoResult;
 use crate::util::{Filesystem, GlobalContext};
-use std::fs::{self, File, OpenOptions};
+use std::fs::{File, OpenOptions};
 use std::io::SeekFrom;
 use std::io::prelude::*;
 use std::str;
@@ -43,20 +43,23 @@ pub(super) fn download(
     //
     // If this fails then we fall through to the exclusive path where we may
     // have to redownload the file.
-    if let Ok(dst) = File::open(path) {
-        let meta = dst.metadata()?;
-        if meta.len() > 0 {
+    if let Ok(dst) = gctx.files().open(path) {
+        let len = gctx.files().opened_file_len(path, &dst)?;
+        if len > 0 {
             gctx.deferred_global_last_use()?.mark_registry_crate_used(
                 global_cache_tracker::RegistryCrate {
                     encoded_registry_name,
                     crate_filename: pkg.tarball_name().into(),
-                    size: meta.len(),
+                    size: len,
                 },
             );
             return Ok(MaybeLock::Ready(dst));
         }
     }
 
+    if let Some(inputs) = gctx.session_inputs() {
+        inputs.require_fresh(format!("registry source {pkg} requires a download"));
+    }
     let url = crate_url(
         &registry_config.dl,
         &*pkg.name(),
@@ -139,8 +142,8 @@ pub(super) fn is_crate_downloaded(
 ) -> bool {
     let path = cache_path.join(pkg.tarball_name());
     let path = gctx.assert_package_cache_locked(CacheLockMode::DownloadExclusive, &path);
-    if let Ok(meta) = fs::metadata(path) {
-        return meta.len() > 0;
+    if let Ok(len) = gctx.files().metadata_len(path) {
+        return len > 0;
     }
     false
 }

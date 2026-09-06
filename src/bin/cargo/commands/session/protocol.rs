@@ -10,14 +10,18 @@ use std::os::unix::ffi::OsStrExt;
 use std::os::unix::fs::MetadataExt;
 use std::time::{SystemTime, UNIX_EPOCH};
 
-pub(super) const VERSION: u32 = 1;
+pub(super) const VERSION: u32 = 2;
 pub(super) const MAX_REQUEST_BYTES: usize = 1024 * 1024;
 const MAX_RESPONSE_BYTES: usize = 64 * 1024 * 1024;
 
-#[derive(Clone, Copy, Deserialize, Serialize)]
+#[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, PartialEq, Serialize)]
 #[serde(rename_all = "lowercase")]
 pub(super) enum Operation {
     Check,
+    Build,
+    Clippy,
+    Test,
+    Bench,
     Status,
     Stop,
 }
@@ -27,6 +31,8 @@ pub(super) enum Operation {
 pub(super) struct Request {
     pub version: u32,
     pub command: Operation,
+    #[serde(default)]
+    pub args: Vec<Vec<u8>>,
     pub identity: ClientIdentity,
 }
 
@@ -99,8 +105,8 @@ pub(super) struct SessionInfo {
     pub configuration: SessionConfiguration,
 }
 
-/// The recorded invocation describes the fixed options selected by this socket.
-/// Execution uses the already expanded clap arguments and configuration factory.
+/// The recorded invocation describes the defaults selected by this socket.
+/// Each command applies its arguments through the same configuration factory.
 #[derive(Clone, Deserialize, Serialize)]
 pub(super) struct SessionConfiguration {
     pub command: Vec<String>,
@@ -166,6 +172,9 @@ pub(super) struct Response {
     pub pid: u32,
     pub checks: u64,
     pub preparations: u64,
+    pub command: Option<Operation>,
+    pub plan_id: Option<u64>,
+    pub cached_plans: usize,
     pub revision: u64,
     pub reprepare_reason: Option<String>,
     pub reuse_disabled_reason: Option<String>,

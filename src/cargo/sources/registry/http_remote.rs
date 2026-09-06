@@ -181,7 +181,7 @@ impl<'gctx> HttpRegistry<'gctx> {
         let config_json_path = self
             .assert_index_locked(&self.inner().index_cache_path)
             .join(RegistryConfig::NAME);
-        match fs::read(&config_json_path) {
+        match self.inner().gctx.files().read(&config_json_path) {
             Ok(raw_data) => match serde_json::from_slice(&raw_data) {
                 Ok(json) => return Some(json),
                 Err(e) => tracing::debug!("failed to decode cached config.json: {}", e),
@@ -480,6 +480,12 @@ impl<'gctx> HttpBackend<'gctx> {
     ) -> CargoResult<LoadResponse> {
         if self.offline() {
             return Ok(LoadResponse::NotFound);
+        }
+        if let Some(inputs) = self.gctx.session_inputs() {
+            inputs.require_fresh(format!(
+                "registry source {} fetched index data from the network",
+                self.source_id
+            ));
         }
         let mut r = Retry::new(self.gctx)?;
         self.pending.update(|v| v + 1);

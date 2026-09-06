@@ -184,7 +184,6 @@
 
 use crate::util::data_structures::HashSet;
 use std::cell::RefCell;
-use std::fs;
 use std::fs::{File, OpenOptions};
 use std::io;
 use std::io::Read;
@@ -559,7 +558,7 @@ impl<'gctx> RegistrySource<'gctx> {
             .gctx
             .assert_package_cache_locked(CacheLockMode::DownloadExclusive, &path);
         let unpack_dir = path.parent().unwrap();
-        match fs::read_to_string(path) {
+        match self.gctx.files().read_to_string(path) {
             Ok(ok) => match serde_json::from_str::<LockMetadata>(&ok) {
                 Ok(lock_meta) if lock_meta.v == 1 => {
                     self.gctx
@@ -583,6 +582,11 @@ impl<'gctx> RegistrySource<'gctx> {
             },
             Err(e) if e.kind() == io::ErrorKind::NotFound => {}
             Err(e) => anyhow::bail!("unable to read .cargo-ok file at {path:?}: {e}"),
+        }
+        if let Some(inputs) = self.gctx.session_inputs() {
+            inputs.require_fresh(format!(
+                "registry source {pkg} was unpacked during preparation"
+            ));
         }
         dst.create_dir()?;
 

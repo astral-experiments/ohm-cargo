@@ -117,7 +117,7 @@
 use crate::core::gc::GcOpts;
 use crate::ops::CleanContext;
 use crate::util::cache_lock::CacheLockMode;
-use crate::util::data_structures::HashMap;
+use crate::util::data_structures::{HashMap, HashSet};
 use crate::util::interning::InternedString;
 use crate::util::sqlite::{self, Migration, basic_migration};
 use crate::util::{Filesystem, Progress, ProgressStyle};
@@ -1449,6 +1449,17 @@ pub struct DeferredGlobalLastUse {
     /// The current time, used to improve performance to avoid accessing the
     /// clock hundreds of times.
     now: Timestamp,
+    /// Actual source uses retained while a prepared session plan is alive.
+    session_usage: Option<SessionUsage>,
+}
+
+#[derive(Debug)]
+struct SessionUsage {
+    registry_indexes: HashSet<RegistryIndex>,
+    registry_crates: HashSet<RegistryCrate>,
+    registry_sources: HashSet<RegistrySrc>,
+    git_checkouts: HashSet<GitCheckout>,
+    refreshed_at: Timestamp,
 }
 
 impl DeferredGlobalLastUse {
@@ -1463,7 +1474,66 @@ impl DeferredGlobalLastUse {
             git_checkout_timestamps: HashMap::default(),
             save_err_has_warned: false,
             now: now(),
+            session_usage: None,
         }
+    }
+
+    /// Retain source uses from preparation so later commands can refresh them.
+    pub(crate) fn for_session() -> Self {
+        let mut tracker = Self::new();
+        tracker.session_usage = Some(SessionUsage {
+            registry_indexes: HashSet::default(),
+            registry_crates: HashSet::default(),
+            registry_sources: HashSet::default(),
+            git_checkouts: HashSet::default(),
+            refreshed_at: tracker.now,
+        });
+        tracker
+    }
+
+    fn refresh_session_usage_at(&mut self, timestamp: Timestamp) -> bool {
+        let Some(usage) = &mut self.session_usage else {
+            return false;
+        };
+        self.now = timestamp;
+        if timestamp.saturating_sub(usage.refreshed_at) > UPDATE_RESOLUTION {
+            usage.refreshed_at = timestamp;
+            for index in &usage.registry_indexes {
+                self.registry_index_timestamps
+                    .insert(index.clone(), timestamp);
+            }
+            for archive in &usage.registry_crates {
+                self.registry_index_timestamps.insert(
+                    RegistryIndex {
+                        encoded_registry_name: archive.encoded_registry_name,
+                    },
+                    timestamp,
+                );
+                self.registry_crate_timestamps
+                    .insert(archive.clone(), timestamp);
+            }
+            for source in &usage.registry_sources {
+                self.registry_index_timestamps.insert(
+                    RegistryIndex {
+                        encoded_registry_name: source.encoded_registry_name,
+                    },
+                    timestamp,
+                );
+                self.registry_src_timestamps
+                    .insert(source.clone(), timestamp);
+            }
+            for checkout in &usage.git_checkouts {
+                self.git_db_timestamps.insert(
+                    GitDb {
+                        encoded_git_name: checkout.encoded_git_name,
+                    },
+                    timestamp,
+                );
+                self.git_checkout_timestamps
+                    .insert(checkout.clone(), timestamp);
+            }
+        }
+        !self.is_empty()
     }
 
     pub fn is_empty(&self) -> bool {
@@ -1484,6 +1554,9 @@ impl DeferredGlobalLastUse {
 
     /// Indicates the given [`RegistryIndex`] has been used right now.
     pub fn mark_registry_index_used(&mut self, registry_index: RegistryIndex) {
+        if let Some(usage) = &mut self.session_usage {
+            usage.registry_indexes.insert(registry_index.clone());
+        }
         self.mark_registry_index_used_stamp(registry_index, None);
     }
 
@@ -1491,6 +1564,9 @@ impl DeferredGlobalLastUse {
     ///
     /// Also implicitly marks the index used, too.
     pub fn mark_registry_crate_used(&mut self, registry_crate: RegistryCrate) {
+        if let Some(usage) = &mut self.session_usage {
+            usage.registry_crates.insert(registry_crate.clone());
+        }
         self.mark_registry_crate_used_stamp(registry_crate, None);
     }
 
@@ -1498,6 +1574,9 @@ impl DeferredGlobalLastUse {
     ///
     /// Also implicitly marks the index used, too.
     pub fn mark_registry_src_used(&mut self, registry_src: RegistrySrc) {
+        if let Some(usage) = &mut self.session_usage {
+            usage.registry_sources.insert(registry_src.clone());
+        }
         self.mark_registry_src_used_stamp(registry_src, None);
     }
 
@@ -1505,6 +1584,9 @@ impl DeferredGlobalLastUse {
     ///
     /// Also implicitly marks the git db used, too.
     pub fn mark_git_checkout_used(&mut self, git_checkout: GitCheckout) {
+        if let Some(usage) = &mut self.session_usage {
+            usage.git_checkouts.insert(git_checkout.clone());
+        }
         self.mark_git_checkout_used_stamp(git_checkout, None);
     }
 
@@ -1778,6 +1860,23 @@ impl DeferredGlobalLastUse {
     }
 }
 
+/// Refresh the sources used by an active prepared plan before automatic GC.
+///
+/// The caller must validate the plan's inputs separately. These descriptors
+/// preserve last-use accounting; they never establish that a source still exists
+/// or that its contents are unchanged. Calls within the ordinary timestamp
+/// resolution avoid taking the download lock or writing the cache database.
+pub(crate) fn refresh_session_usage(gctx: &GlobalContext) -> CargoResult<()> {
+    let pending = gctx
+        .deferred_global_last_use()?
+        .refresh_session_usage_at(now());
+    if pending {
+        let _lock = gctx.acquire_package_cache_lock(CacheLockMode::DownloadExclusive)?;
+        gctx.deferred_global_last_use()?.save_no_error(gctx);
+    }
+    Ok(())
+}
+
 /// Converts a [`SystemTime`] to a [`Timestamp`] which can be stored in the database.
 fn to_timestamp(t: &SystemTime) -> Timestamp {
     t.duration_since(SystemTime::UNIX_EPOCH)
@@ -1836,5 +1935,98 @@ fn du(path: &Path, table_name: &str) -> CargoResult<u64> {
         du_git_checkout(path)
     } else {
         cargo_util::du(&path, &[])
+    }
+}
+
+#[cfg(test)]
+mod session_usage_tests {
+    use super::*;
+
+    fn cache() -> GlobalCacheTracker {
+        let mut conn = Connection::open_in_memory().unwrap();
+        conn.pragma_update(None, "foreign_keys", true).unwrap();
+        sqlite::migrate(&mut conn, &migrations()).unwrap();
+        GlobalCacheTracker {
+            conn,
+            auto_gc_checked_this_session: false,
+        }
+    }
+
+    fn session() -> DeferredGlobalLastUse {
+        let mut deferred = DeferredGlobalLastUse::for_session();
+        deferred.now = 1000;
+        deferred.session_usage.as_mut().unwrap().refreshed_at = 1000;
+        deferred
+    }
+
+    #[test]
+    fn retained_sources_survive_a_flush_and_refresh_at_the_normal_resolution() {
+        let mut cache = cache();
+        let mut deferred = session();
+        deferred.mark_registry_index_used(RegistryIndex {
+            encoded_registry_name: "index-only".into(),
+        });
+        deferred.mark_registry_crate_used(RegistryCrate {
+            encoded_registry_name: "registry".into(),
+            crate_filename: "dep-1.0.0.crate".into(),
+            size: 10,
+        });
+        deferred.mark_registry_src_used(RegistrySrc {
+            encoded_registry_name: "registry".into(),
+            package_dir: "dep-1.0.0".into(),
+            size: None,
+        });
+        deferred.mark_git_checkout_used(GitCheckout {
+            encoded_git_name: "git-dep".into(),
+            short_name: "abcdef0".into(),
+            size: None,
+        });
+        deferred.save(&mut cache).unwrap();
+        assert!(deferred.is_empty());
+        for timestamp in [1001, 1100, 1200, 1000 + UPDATE_RESOLUTION] {
+            assert!(!deferred.refresh_session_usage_at(timestamp));
+        }
+        let refreshed = 1000 + UPDATE_RESOLUTION + 1;
+        assert!(deferred.refresh_session_usage_at(refreshed));
+        deferred.save(&mut cache).unwrap();
+        assert!(deferred.is_empty());
+        for table in [
+            REGISTRY_INDEX_TABLE,
+            REGISTRY_CRATE_TABLE,
+            REGISTRY_SRC_TABLE,
+            GIT_DB_TABLE,
+            GIT_CO_TABLE,
+        ] {
+            let timestamps = cache
+                .conn
+                .prepare(&format!("SELECT timestamp FROM {table}"))
+                .unwrap()
+                .query_map([], |row| row.get::<_, Timestamp>(0))
+                .unwrap()
+                .collect::<Result<Vec<_>, _>>()
+                .unwrap();
+            assert!(!timestamps.is_empty());
+            assert!(timestamps.iter().all(|timestamp| *timestamp == refreshed));
+        }
+    }
+
+    #[test]
+    fn cache_discovery_and_ordinary_invocations_do_not_pin_sources() {
+        let mut cache = cache();
+        let index = RegistryIndex {
+            encoded_registry_name: "unused".into(),
+        };
+        let mut deferred = session();
+        deferred.mark_registry_index_used_stamp(index.clone(), None);
+        deferred.save(&mut cache).unwrap();
+        assert!(!deferred.refresh_session_usage_at(2000));
+        assert!(deferred.is_empty());
+
+        let mut ordinary = DeferredGlobalLastUse::new();
+        ordinary.now = 1000;
+        ordinary.mark_registry_index_used(index);
+        ordinary.save(&mut cache).unwrap();
+        assert!(!ordinary.refresh_session_usage_at(2000));
+        assert!(ordinary.session_usage.is_none());
     }
 }

@@ -189,11 +189,17 @@ impl GitDatabase {
         // clone is created.
         let checkout = match git2::Repository::open(dest)
             .ok()
-            .map(|repo| GitCheckout::new(self, rev, repo))
-            .filter(|co| co.is_fresh())
+            .map(|repo| GitCheckout::new(self, rev, repo, dest, gctx))
+            .filter(|co| co.is_fresh(dest, gctx))
         {
             Some(co) => co,
             None => {
+                if let Some(inputs) = gctx.session_inputs() {
+                    inputs.require_fresh(format!(
+                        "Git checkout {} was materialized during preparation",
+                        dest.display()
+                    ));
+                }
                 let (checkout, guard) = GitCheckout::clone_into(dest, self, rev, gctx)?;
                 checkout.update_submodules(gctx, quiet)?;
                 guard.mark_ok()?;
@@ -205,14 +211,43 @@ impl GitDatabase {
     }
 
     /// Get a short OID for a `revision`, usually 7 chars or more if ambiguous.
-    pub fn to_short_id(&self, revision: git2::Oid) -> CargoResult<GitShortID> {
-        let obj = self.repo.find_object(revision, None)?;
-        Ok(GitShortID(obj.short_id()?))
+    pub fn to_short_id(
+        &self,
+        revision: git2::Oid,
+        gctx: &GlobalContext,
+    ) -> CargoResult<GitShortID> {
+        let result = self
+            .repo
+            .find_object(revision, None)
+            .and_then(|obj| obj.short_id());
+        if let Some(inputs) = gctx.session_inputs() {
+            inputs.observe_git_short_id(
+                &self.path,
+                revision,
+                result
+                    .as_ref()
+                    .map(|id| id.as_str().unwrap().to_owned())
+                    .map_err(ToString::to_string),
+            );
+        }
+        Ok(GitShortID(result?))
     }
 
     /// Checks if the database contains the object of this `oid`..
-    pub fn contains(&self, oid: git2::Oid) -> bool {
-        self.repo.revparse_single(&oid.to_string()).is_ok()
+    pub fn contains(&self, oid: git2::Oid, gctx: &GlobalContext) -> bool {
+        let revision = oid.to_string();
+        let result = self.repo.revparse_single(&revision);
+        if let Some(inputs) = gctx.session_inputs() {
+            inputs.observe_git_revision(
+                &self.path,
+                &revision,
+                result
+                    .as_ref()
+                    .map(|object| object.id().to_string())
+                    .map_err(ToString::to_string),
+            );
+        }
+        result.is_ok()
     }
 
     /// [`resolve_ref`]s this reference with this database.
@@ -275,8 +310,13 @@ impl<'a> GitCheckout<'a> {
         database: &'a GitDatabase,
         revision: git2::Oid,
         repo: git2::Repository,
+        location: &Path,
+        gctx: &GlobalContext,
     ) -> GitCheckout<'a> {
         let path = repo.workdir().unwrap_or_else(|| repo.path());
+        if let Some(inputs) = gctx.session_inputs() {
+            inputs.observe_git_workdir(location, path);
+        }
         GitCheckout {
             path: path.to_path_buf(),
             database,
@@ -345,17 +385,27 @@ impl<'a> GitCheckout<'a> {
         })?;
         let repo = repo.unwrap();
 
-        let checkout = GitCheckout::new(database, revision, repo);
+        let checkout = GitCheckout::new(database, revision, repo, into, gctx);
         let guard = checkout.reset(gctx)?;
         Ok((checkout, guard))
     }
 
     /// Checks if the `HEAD` of this checkout points to the expected revision.
-    fn is_fresh(&self) -> bool {
-        match self.repo.revparse_single("HEAD") {
+    fn is_fresh(&self, path: &Path, gctx: &GlobalContext) -> bool {
+        let head = self.repo.revparse_single("HEAD");
+        if let Some(inputs) = gctx.session_inputs() {
+            inputs.observe_git_revision(
+                path,
+                "HEAD",
+                head.as_ref()
+                    .map(|object| object.id().to_string())
+                    .map_err(ToString::to_string),
+            );
+        }
+        match head {
             Ok(ref head) if head.id() == self.revision => {
                 // See comments in reset() for why we check this
-                self.path.join(CHECKOUT_READY_LOCK).exists()
+                gctx.files().exists(&self.path.join(CHECKOUT_READY_LOCK))
             }
             _ => false,
         }

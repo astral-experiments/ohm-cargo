@@ -389,11 +389,6 @@ impl SourceId {
     /// Creates an implementation of `Source` corresponding to this ID.
     pub fn load<'a>(self, gctx: &'a GlobalContext) -> CargoResult<Box<dyn Source + 'a>> {
         trace!("loading SourceId; {}", self);
-        if !self.is_path() {
-            if let Some(inputs) = gctx.session_inputs() {
-                inputs.require_fresh(format!("source {self} has no session dependency contract"));
-            }
-        }
         match self.inner.kind {
             SourceKind::Git(..) => Ok(Box::new(GitSource::new(self, gctx)?)),
             SourceKind::Path => {

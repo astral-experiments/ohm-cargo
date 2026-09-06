@@ -1,6 +1,7 @@
 use crate::command_prelude::*;
 
-use cargo::ops;
+use cargo::core::Workspace;
+use cargo::{CargoResult, ops};
 
 pub fn cli() -> Command {
     subcommand("check")
@@ -45,15 +46,21 @@ pub fn cli() -> Command {
 
 pub fn exec(gctx: &mut GlobalContext, args: &ArgMatches) -> CliResult {
     let ws = args.workspace(gctx)?;
+    let compile_opts = compile_options(gctx, args, &ws)?;
+    ops::compile(&ws, &compile_opts)?;
+    Ok(())
+}
+
+pub(super) fn compile_options(
+    gctx: &GlobalContext,
+    args: &ArgMatches,
+    ws: &Workspace<'_>,
+) -> CargoResult<ops::CompileOptions> {
     // This is a legacy behavior that causes `cargo check` to pass `--test`.
     let test = matches!(
         args.get_one::<String>("profile").map(String::as_str),
         Some("test")
     );
     let intent = UserIntent::Check { test };
-    let compile_opts =
-        args.compile_options(gctx, intent, Some(&ws), ProfileChecking::LegacyTestOnly)?;
-
-    ops::compile(&ws, &compile_opts)?;
-    Ok(())
+    args.compile_options(gctx, intent, Some(ws), ProfileChecking::LegacyTestOnly)
 }

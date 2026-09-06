@@ -158,6 +158,14 @@ impl WorkerExecutor {
                 "planning inputs require fresh preparation"
             );
             ensure!(
+                bcx.rustc()
+                    .wrapper
+                    .iter()
+                    .chain(bcx.rustc().workspace_wrapper.iter())
+                    .all(|wrapper| wrapper.as_os_str().is_empty()),
+                "compiler workers do not support compiler wrappers"
+            );
+            ensure!(
                 resolved.is_some(),
                 "compiler worker executable could not be resolved"
             );

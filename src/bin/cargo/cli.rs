@@ -65,6 +65,18 @@ pub fn main(gctx: &mut GlobalContext) -> CliResult {
 
     let (expanded_args, global_args) = expand_aliases(gctx, args, vec![])?;
 
+    #[cfg(unix)]
+    if let Some(raw) = &global_args.session_client_args {
+        // Alias expansion preserves the terminal client's raw argv. Parsing it
+        // with the direct client keeps `--` and request globals on the same side
+        // of the protocol boundary as a literal invocation.
+        global_args.validate_session_client()?;
+        let client = commands::session::Client::parse(raw.iter().cloned())
+            .expect("alias expansion retained a recognized session client");
+        gctx.configure(0, false, None, false, false, false, &None, &[], &[])?;
+        return client.exec(gctx);
+    }
+
     let is_verbose = expanded_args.verbose() > 0;
 
     if expanded_args
@@ -128,12 +140,15 @@ pub fn main(gctx: &mut GlobalContext) -> CliResult {
         }
 
         if let Some((args, globals)) = session {
-            commands::session::serve(gctx, args, |fresh| {
+            commands::session::serve(gctx, args, |fresh, requested| {
+                let inherited = globals
+                    .clone()
+                    .merge_for_session(GlobalArgs::new(&expanded_args));
                 configure_gctx(
                     fresh,
-                    &expanded_args,
-                    Some(args),
-                    globals.clone(),
+                    requested,
+                    requested.subcommand().map(|(_, args)| args),
+                    inherited,
                     Some(&exec),
                 )
             })?;
@@ -148,7 +163,7 @@ fn is_session_client(args: &ArgMatches) -> bool {
     matches!(
         args.subcommand(),
         Some(("session", args))
-            if matches!(args.subcommand_name(), Some("check" | "status" | "stop"))
+            if matches!(args.subcommand_name(), Some("check" | "build" | "clippy" | "test" | "bench" | "status" | "stop"))
     )
 }
 
@@ -418,8 +433,20 @@ To pass the arguments to the subcommand, remove `--`",
                 // capture those global options now.
                 // Note that an alias to an external command will not receive
                 // these arguments. That may be confusing, but such is life.
-                let global_args = GlobalArgs::new(sub_args);
-                let new_args = cli(gctx).no_binary_name(true).try_get_matches_from(alias)?;
+                let mut global_args = GlobalArgs::new(sub_args);
+                #[cfg(unix)]
+                let session_client_args =
+                    commands::session::Client::parse(alias.iter().cloned()).map(|_| alias.clone());
+                #[cfg(not(unix))]
+                let session_client_args: Option<Vec<OsString>> = None;
+                // Parse only the dispatch prefix of a recognized client. Clap
+                // must not consume its Cargo globals or its leading `--` before
+                // the same client parser used for literal invocations sees them.
+                let new_args = cli(gctx).no_binary_name(true).try_get_matches_from(
+                    session_client_args
+                        .as_ref()
+                        .map_or(alias.as_slice(), |raw| &raw[..2]),
+                )?;
 
                 let Some(new_cmd) = new_args.subcommand_name() else {
                     return Err(anyhow!(
@@ -446,6 +473,12 @@ To pass the arguments to the subcommand, remove `--`",
                 // global flags which ordinary alias expansion does not retain.
                 if is_session_client(&expanded_args) {
                     global_args.validate_session_client()?;
+                    commands::session::validate_client_options(
+                        &args,
+                        expanded_args.subcommand_matches("session").unwrap(),
+                    )?;
+                    global_args.session_client_args =
+                        session_client_args.or(nested_globals.session_client_args.clone());
                 }
                 let global_args = match expanded_args.subcommand() {
                     Some(("session", args)) if args.subcommand_name() == Some("serve") => {
@@ -606,6 +639,8 @@ struct GlobalArgs {
     offline: bool,
     unstable_flags: Vec<String>,
     config_args: Vec<String>,
+    /// Exact argv of a recognized terminal client after alias expansion.
+    session_client_args: Option<Vec<OsString>>,
 }
 
 impl GlobalArgs {
@@ -626,7 +661,15 @@ impl GlobalArgs {
     }
 
     fn validate_session_client(&self) -> CliResult {
-        if *self != Self::default() {
+        if self.verbose != 0
+            || self.quiet
+            || self.color.is_some()
+            || self.frozen
+            || self.locked
+            || self.offline
+            || !self.unstable_flags.is_empty()
+            || !self.config_args.is_empty()
+        {
             return Err(anyhow!(
                 "session clients accept only --socket and --json; pass global options to `cargo session serve`"
             ).into());
@@ -652,6 +695,7 @@ impl GlobalArgs {
                 .unwrap_or_default()
                 .cloned()
                 .collect(),
+            session_client_args: None,
         }
     }
 }
@@ -887,5 +931,117 @@ fn avoid_ambiguity_between_builtins_and_manifest_commands() {
             !commands::run::is_manifest_command(&name),
             "built-in command {name} is ambiguous with manifest-commands"
         )
+    }
+}
+
+#[cfg(all(test, unix))]
+mod session_client_alias_tests {
+    use super::*;
+    use cargo_util_terminal::Shell;
+    use std::os::unix::ffi::OsStringExt;
+
+    fn raw(args: &[&str]) -> Vec<OsString> {
+        args.iter().map(OsString::from).collect()
+    }
+
+    fn context(root: &std::path::Path) -> GlobalContext {
+        let mut gctx = GlobalContext::new(Shell::new(), root.to_owned(), root.join("home"));
+        gctx.set_search_stop_path(root.to_owned());
+        gctx.set_env(
+            [
+                ("CARGO_ALIAS_SCHECK", "session check"),
+                ("CARGO_ALIAS_STEST", "session test"),
+                ("CARGO_ALIAS_SCLIPPY", "session clippy"),
+                ("CARGO_ALIAS_NESTED", "sclippy"),
+                ("CARGO_ALIAS_OUTER", "--offline nested"),
+            ]
+            .into_iter()
+            .map(|(key, value)| (key.to_owned(), value.to_owned()))
+            .collect(),
+        );
+        gctx
+    }
+
+    fn expanded(
+        gctx: &mut GlobalContext,
+        args: Vec<OsString>,
+    ) -> Result<commands::session::Client, CliError> {
+        let matches =
+            cli(gctx).try_get_matches_from([OsString::from("cargo")].into_iter().chain(args))?;
+        let (_, globals) = expand_aliases(gctx, matches, Vec::new())?;
+        globals.validate_session_client()?;
+        Ok(
+            commands::session::Client::parse(globals.session_client_args.unwrap().into_iter())
+                .unwrap(),
+        )
+    }
+
+    #[test]
+    fn terminal_aliases_preserve_client_and_cargo_argument_boundaries() {
+        let dir = tempfile::tempdir().unwrap();
+        let mut gctx = context(&dir.path().canonicalize().unwrap());
+        for (alias, command, arguments) in [
+            ("sclippy", "clippy", raw(&["--", "-Dwarnings"])),
+            ("nested", "clippy", raw(&["--", "-Dwarnings"])),
+            ("stest", "test", raw(&["--", "--ignored"])),
+            ("stest", "test", raw(&["module", "--", "--exact"])),
+            (
+                "scheck",
+                "check",
+                raw(&["-p", "app", "--json", "--socket", "session.sock"]),
+            ),
+            (
+                "scheck",
+                "check",
+                raw(&["--offline", "--config", "build.jobs=2"]),
+            ),
+            (
+                "stest",
+                "test",
+                vec![
+                    OsString::from("--socket"),
+                    OsString::from_vec(b"session-\xff.sock".to_vec()),
+                    OsString::from("--"),
+                    OsString::from_vec(b"filter-\xfe".to_vec()),
+                ],
+            ),
+        ] {
+            let literal = commands::session::Client::parse(
+                raw(&["session", command])
+                    .into_iter()
+                    .chain(arguments.clone()),
+            )
+            .unwrap();
+            let aliased = expanded(
+                &mut gctx,
+                [OsString::from(alias)]
+                    .into_iter()
+                    .chain(arguments)
+                    .collect(),
+            )
+            .unwrap();
+            assert_eq!(aliased, literal, "alias {alias}");
+        }
+    }
+
+    #[test]
+    fn outer_alias_and_root_options_cannot_configure_the_client() {
+        let dir = tempfile::tempdir().unwrap();
+        let mut gctx = context(&dir.path().canonicalize().unwrap());
+        for arguments in [
+            raw(&["--offline", "scheck"]),
+            raw(&["--color", "never", "nested"]),
+            raw(&["-C", ".", "scheck"]),
+            raw(&["outer"]),
+        ] {
+            let error = expanded(&mut gctx, arguments).err().unwrap();
+            assert!(
+                error
+                    .error
+                    .unwrap()
+                    .to_string()
+                    .contains("session clients accept only"),
+            );
+        }
     }
 }

@@ -1,7 +1,7 @@
-//! Retain Cargo's compilation front end between checks of one configuration.
+//! Retain Cargo's compilation front end for a command configuration.
 //!
 //! A session keeps a `BuildContext`, but creates a new `BuildRunner` for every
-//! check. Mutable fingerprints, build-script outputs, jobs, and build locks have
+//! command. Mutable fingerprints, build-script outputs, jobs, and build locks have
 //! the same lifetime as in an ordinary Cargo invocation.
 
 use std::cell::Cell;
@@ -13,7 +13,7 @@ use anyhow::{Context as _, bail};
 use crate::core::Workspace;
 use crate::core::compiler::build_runner::StaleBuiltRegistryDependency;
 use crate::core::compiler::{
-    BuildContext, BuildRunner, Compilation, DefaultExecutor, Executor, UnitInterner, UserIntent,
+    BuildContext, BuildRunner, Compilation, DefaultExecutor, Executor, UnitInterner,
 };
 use crate::ops::CompileOptions;
 use crate::util::CargoResult;
@@ -22,17 +22,17 @@ use crate::util::session_inputs::{InputTracker, Invalidation};
 use crate::util::session_worker::{WorkerExecutor, WorkerStats};
 
 /// A build result is publishable only after its planning inputs validate.
-pub enum CheckOutcome<'gctx> {
+pub enum CompileOutcome<'gctx> {
     Complete(CargoResult<Compilation<'gctx>>),
     InputsChanged(Invalidation),
 }
 
-/// A prepared check of a workspace with fixed command-line configuration.
+/// A prepared compilation of a workspace with fixed command-line configuration.
 ///
-/// Keep the workspace, options, and interner on the server's stack. A planning
-/// input change ends that scope, allowing the server to construct a fresh
-/// `GlobalContext` and discard all configuration and manifest caches together.
-pub struct PreparedCheck<'a, 'gctx> {
+/// The server owns the workspace, options, and interner in bounded arenas. A
+/// planning input change retires this plan and its context-backed caches; the
+/// next preparation uses a fresh `GlobalContext`.
+pub struct PreparedBuild<'a, 'gctx> {
     bcx: BuildContext<'a, 'gctx>,
     options: &'a CompileOptions,
     inputs: InputTracker,
@@ -41,16 +41,13 @@ pub struct PreparedCheck<'a, 'gctx> {
     worker: Option<Arc<WorkerExecutor>>,
 }
 
-impl<'a, 'gctx> PreparedCheck<'a, 'gctx> {
+impl<'a, 'gctx> PreparedBuild<'a, 'gctx> {
     pub fn new(
         ws: &'a Workspace<'gctx>,
         options: &'a CompileOptions,
         interner: &'a UnitInterner,
         compiler_worker: Option<&Path>,
     ) -> CargoResult<Self> {
-        if !matches!(options.build_config.intent, UserIntent::Check { .. }) {
-            bail!("a Cargo session currently supports only `check`");
-        }
         if ws.gctx().cli_unstable().build_analysis {
             bail!("`cargo session` does not yet support `-Zbuild-analysis`");
         }
@@ -87,27 +84,27 @@ impl<'a, 'gctx> PreparedCheck<'a, 'gctx> {
         self.worker.as_ref().map(|worker| worker.stats())
     }
 
-    /// Whether all queries in this epoch have a complete dependency contract.
+    /// Whether all queries in this plan have a complete dependency contract.
     pub fn can_reuse(&self) -> bool {
         self.inputs.reuse_reason().is_none() && !self.invalidated.get()
     }
 
     /// Execute with fresh request state and validate even an unsuccessful build.
     ///
-    /// The caller discards diagnostics and drops the whole epoch on an input
+    /// The caller discards diagnostics and retires this plan on an input
     /// change. A stable compiler error remains a normal, publishable result.
-    pub fn check(&self) -> CargoResult<CheckOutcome<'gctx>> {
+    pub fn compile(&self) -> CargoResult<CompileOutcome<'gctx>> {
         if let Err(changed) = self.inputs.validate() {
-            return Ok(CheckOutcome::InputsChanged(changed));
+            return Ok(CompileOutcome::InputsChanged(changed));
         }
-        let result = self.check_inner();
+        let result = self.compile_inner();
         if let Err(changed) = self.inputs.validate() {
-            return Ok(CheckOutcome::InputsChanged(changed));
+            return Ok(CompileOutcome::InputsChanged(changed));
         }
-        Ok(CheckOutcome::Complete(result))
+        Ok(CompileOutcome::Complete(result))
     }
 
-    fn check_inner(&self) -> CargoResult<Compilation<'gctx>> {
+    fn compile_inner(&self) -> CargoResult<Compilation<'gctx>> {
         self.bcx.gctx.begin_session_check();
         self.bcx.rustc().reset_session_caches();
         let parse_output = crate::diagnostics::passes::emit_parse_diagnostics(
@@ -123,6 +120,7 @@ impl<'a, 'gctx> PreparedCheck<'a, 'gctx> {
             )?;
             Compilation::new(&self.bcx)
         } else {
+            crate::core::global_cache_tracker::refresh_session_usage(self.bcx.gctx)?;
             crate::core::gc::auto_gc(self.bcx.gctx);
             let runner = BuildRunner::new_with_jobserver(
                 &self.bcx,

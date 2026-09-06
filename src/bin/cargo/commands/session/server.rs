@@ -1,21 +1,27 @@
-//! Serialized request execution with a scoped, transaction-validated plan epoch.
+//! Serialized workspace commands with independently validated retained plans.
 
 use super::output::{OutputCapture, OutputLimitExceeded};
 use super::protocol::{self, ErrorKind, Operation, Response, ResponseStatus, SessionInfo};
 use super::transport::{self, SessionListener};
 use crate::command_prelude::*;
 use cargo::CargoResult;
+use cargo::core::Workspace;
 use cargo::core::compiler::UnitInterner;
-use cargo::ops::{CheckOutcome, PreparedCheck};
+use cargo::ops::{CompileOptions, CompileOutcome, PreparedBuild, TestOptions};
+use cargo::util::data_structures::HashMap;
 use cargo::util::session_inputs::{InputTracker, SessionInputs};
+use std::collections::BTreeMap;
+use std::ffi::OsString;
 use std::os::fd::AsRawFd;
+use std::os::unix::ffi::OsStringExt;
 use std::os::unix::net::UnixStream;
 use std::time::Instant;
+use typed_arena::Arena;
 
 const MAX_ATTEMPTS: u8 = 3;
 
-/// One socket selects one immutable invocation. The factory replays expanded
-/// global options, including aliases, into a context with fresh typed caches.
+/// One socket fixes the launch environment and supplies command defaults. The
+/// factory applies request options to a context with fresh typed caches.
 struct SessionConfig<'a, F> {
     initial: &'a GlobalContext,
     args: ArgMatches,
@@ -26,6 +32,9 @@ struct State {
     info: SessionInfo,
     checks: u64,
     preparations: u64,
+    command: Option<Operation>,
+    plan_id: Option<u64>,
+    cached_plans: usize,
     revision: u64,
     reused: bool,
     reprepare_reason: Option<String>,
@@ -39,6 +48,9 @@ impl State {
             info,
             checks: 0,
             preparations: 0,
+            command: None,
+            plan_id: None,
+            cached_plans: 0,
             revision: 0,
             reused: false,
             reprepare_reason: None,
@@ -56,6 +68,9 @@ impl State {
             pid: std::process::id(),
             checks: self.checks,
             preparations: self.preparations,
+            command: self.command,
+            plan_id: self.plan_id,
+            cached_plans: self.cached_plans,
             revision: self.revision,
             reprepare_reason: self.reprepare_reason.clone(),
             reuse_disabled_reason: self.reuse_disabled_reason.clone(),
@@ -71,7 +86,8 @@ impl State {
 
 /// Request state never lives in the retained plan. Retries keep the original
 /// connection and wall-clock timer, but each attempt gets its own output files.
-struct PendingCheck {
+struct PendingRequest {
+    key: PlanKey,
     connection: UnixStream,
     started: Instant,
     attempts: u8,
@@ -84,10 +100,12 @@ enum Completion {
     Cancelled,
 }
 
-impl PendingCheck {
+impl PendingRequest {
     fn begin_attempt(&mut self, state: &mut State, reused: bool) {
         self.attempts += 1;
         state.reused = reused;
+        state.command = Some(self.key.operation);
+        state.plan_id = None;
         state.reprepare_reason = self.reprepare_reason.clone();
         state.reuse_disabled_reason = None;
         state.compiler_worker = None;
@@ -151,12 +169,15 @@ impl PendingCheck {
 /// Returning from an epoch drops every context-backed planning object before
 /// the server prepares again or waits without a usable plan.
 enum EpochExit {
-    Reprepare(PendingCheck),
+    Reprepare(PendingRequest),
     Idle,
     Shutdown,
 }
 
-fn next_check(listener: &SessionListener, state: &mut State) -> CargoResult<Option<PendingCheck>> {
+fn next_request(
+    listener: &SessionListener,
+    state: &mut State,
+) -> CargoResult<Option<PendingRequest>> {
     while let Some(mut connection) = listener.accept()? {
         let request = match protocol::read_request(listener.request_reader(&mut connection)) {
             Ok(request) => request,
@@ -173,6 +194,17 @@ fn next_check(listener: &SessionListener, state: &mut State) -> CargoResult<Opti
                 continue;
             }
         };
+        if matches!(request.command, Operation::Status | Operation::Stop)
+            && !request.args.is_empty()
+        {
+            reject(
+                &mut connection,
+                state,
+                ErrorKind::Protocol,
+                "session administration requests do not accept Cargo arguments".to_owned(),
+            );
+            continue;
+        }
         match request.command {
             Operation::Status => {
                 let _ = protocol::write_response(
@@ -187,9 +219,13 @@ fn next_check(listener: &SessionListener, state: &mut State) -> CargoResult<Opti
                 );
                 return Ok(None);
             }
-            Operation::Check => {
+            Operation::Check
+            | Operation::Build
+            | Operation::Clippy
+            | Operation::Test
+            | Operation::Bench => {
                 // Management commands can address an explicitly named socket
-                // from another directory or environment. Checks cannot drift.
+                // from another directory or environment. Build commands cannot drift.
                 if request.identity != state.info.identity {
                     reject(
                         &mut connection,
@@ -200,7 +236,11 @@ fn next_check(listener: &SessionListener, state: &mut State) -> CargoResult<Opti
                     continue;
                 }
                 state.checks += 1;
-                return Ok(Some(PendingCheck {
+                return Ok(Some(PendingRequest {
+                    key: PlanKey {
+                        operation: request.command,
+                        args: request.args.into_iter().map(OsString::from_vec).collect(),
+                    },
                     connection,
                     started: Instant::now(),
                     attempts: 0,
@@ -221,10 +261,70 @@ fn reject(connection: &mut UnixStream, state: &State, kind: ErrorKind, error: St
     let _ = protocol::write_response(transport::response_writer(connection), &response);
 }
 
+#[derive(Clone, Eq, Hash, PartialEq)]
+struct PlanKey {
+    operation: Operation,
+    args: Vec<OsString>,
+}
+
+enum CommandOptions {
+    Compile(CompileOptions),
+    Test(TestOptions, Vec<String>),
+    Bench(TestOptions, Vec<String>),
+}
+
+impl CommandOptions {
+    fn compile(&self) -> &CompileOptions {
+        match self {
+            Self::Compile(options) => options,
+            Self::Test(options, _) | Self::Bench(options, _) => &options.compile_opts,
+        }
+    }
+
+    /// This is the side-effect boundary. Compilation was validated before entry;
+    /// tests and benchmarks execute at most once for this request.
+    fn has_side_effects(&self) -> bool {
+        match self {
+            Self::Compile(_) => false,
+            Self::Test(options, _) | Self::Bench(options, _) => !options.no_run,
+        }
+    }
+
+    fn finish(
+        &self,
+        ws: &Workspace<'_>,
+        compilation: cargo::core::compiler::Compilation<'_>,
+    ) -> CliResult {
+        match self {
+            Self::Compile(_) => Ok(()),
+            Self::Test(options, args) => cargo::ops::run_compiled_tests(
+                ws,
+                options,
+                &args.iter().map(String::as_str).collect::<Vec<_>>(),
+                compilation,
+            ),
+            Self::Bench(options, args) => cargo::ops::run_compiled_benches(
+                ws,
+                options,
+                &args.iter().map(String::as_str).collect::<Vec<_>>(),
+                compilation,
+            ),
+        }
+    }
+}
+
+struct Plan<'a> {
+    id: u64,
+    workspace: &'a Workspace<'a>,
+    options: &'a CommandOptions,
+    prepared: PreparedBuild<'a, 'a>,
+    tracker: InputTracker,
+}
+
 pub fn serve(
     gctx: &mut GlobalContext,
     args: &ArgMatches,
-    configure: impl Fn(&mut GlobalContext) -> CliResult,
+    configure: impl Fn(&mut GlobalContext, &ArgMatches) -> CliResult,
 ) -> CliResult {
     let config = SessionConfig {
         initial: gctx,
@@ -239,7 +339,7 @@ pub fn serve(
     let mut transition = EpochExit::Idle;
     loop {
         transition = match transition {
-            EpochExit::Idle => match next_check(&listener, &mut state)? {
+            EpochExit::Idle => match next_request(&listener, &mut state)? {
                 Some(request) => EpochExit::Reprepare(request),
                 None => EpochExit::Shutdown,
             },
@@ -252,133 +352,51 @@ pub fn serve(
     Ok(())
 }
 
+/// Arenas own every borrowed Cargo object and are dropped in dependency order.
+/// No lifetime is extended and no object is leaked. A bounded number of total
+/// preparations (including retired plans) limits each arena generation.
 fn run_epoch(
-    config: &SessionConfig<'_, impl Fn(&mut GlobalContext) -> CliResult>,
+    config: &SessionConfig<'_, impl Fn(&mut GlobalContext, &ArgMatches) -> CliResult>,
     listener: &SessionListener,
     inputs: &SessionInputs,
     state: &mut State,
-    mut request: PendingCheck,
+    first: PendingRequest,
 ) -> CargoResult<EpochExit> {
-    if listener.shutdown_requested() {
-        request.complete(state, None, Completion::Cancelled);
-        return Ok(EpochExit::Shutdown);
-    }
-    if request.disconnected() {
-        return Ok(EpochExit::Idle);
-    }
-    request.begin_attempt(state, false);
-    let capture = match OutputCapture::start() {
-        Ok(capture) => capture,
-        Err(error) => {
-            request.complete(
-                state,
-                None,
-                Completion::Failure(ErrorKind::Internal, error.to_string()),
-            );
-            return Ok(EpochExit::Idle);
-        }
-    };
-    state.preparations += 1;
-    let tracker = inputs.begin();
-    let mut gctx = config.initial.fresh_for_session(tracker.clone());
-    // Every fallible preparation stage validates the reads it observed before
-    // deciding whether its diagnostics belong to a current transaction.
-    if let Err(error) = (config.configure)(&mut gctx) {
-        let error = error.error.unwrap_or_else(|| {
-            anyhow::anyhow!("Cargo configuration exited with {}", error.exit_code)
-        });
-        return Ok(preparation_failed(
-            listener, state, &tracker, &gctx, request, capture, error,
-        ));
-    }
-    gctx.begin_session_check();
-    let ws = match config.args.workspace(&gctx) {
-        Ok(workspace) => workspace,
-        Err(error) => {
-            return Ok(preparation_failed(
-                listener, state, &tracker, &gctx, request, capture, error,
-            ));
-        }
-    };
-    let test = config.args.get_one::<String>("profile").map(String::as_str) == Some("test");
-    let options = match config.args.compile_options(
-        &gctx,
-        UserIntent::Check { test },
-        Some(&ws),
-        ProfileChecking::LegacyTestOnly,
-    ) {
-        Ok(options) => options,
-        Err(error) => {
-            return Ok(preparation_failed(
-                listener, state, &tracker, &gctx, request, capture, error,
-            ));
-        }
-    };
-    let interner = UnitInterner::new();
-    let prepared = match PreparedCheck::new(
-        &ws,
-        &options,
-        &interner,
-        config
-            .args
-            .get_one::<std::path::PathBuf>("compiler-worker")
-            .map(std::path::PathBuf::as_path),
-    ) {
-        Ok(prepared) => prepared,
-        Err(error) => {
-            return Ok(preparation_failed(
-                listener, state, &tracker, &gctx, request, capture, error,
-            ));
-        }
-    };
-    let mut capture = capture;
+    let _generation = inputs.begin();
+    let contexts = Arena::new();
+    let workspaces = Arena::new();
+    let options = Arena::new();
+    let interners = Arena::new();
+    let mut plans = HashMap::<PlanKey, Plan<'_>>::default();
+    let mut allocations = 0usize;
+    let capacity = usize::from(*config.args.get_one::<u16>("max-plans").unwrap());
+    let mut pending = Some(first);
+    state.cached_plans = 0;
     loop {
-        if listener.shutdown_requested() {
-            request.complete(state, Some(capture), Completion::Cancelled);
-            return Ok(EpochExit::Shutdown);
-        }
-        let outcome = prepared.check();
-        state.compiler_worker = prepared.compiler_worker_stats();
-        state.revision = tracker.revision();
-        state.reuse_disabled_reason = tracker.reuse_reason().or_else(|| {
-            (!prepared.can_reuse()).then(|| "the previous plan is no longer reusable".to_owned())
-        });
-        match outcome {
-            Ok(CheckOutcome::InputsChanged(reason)) => {
-                return Ok(reprepare(
-                    listener,
-                    state,
-                    request,
-                    capture,
-                    reason.to_string(),
-                ));
-            }
-            Ok(CheckOutcome::Complete(result)) => {
-                let code = match result {
-                    Ok(_) => 0,
-                    Err(error) => {
-                        cargo::display_error(&error, &mut gctx.shell());
-                        101
-                    }
-                };
-                request.complete(state, Some(capture), Completion::Cargo(code));
-            }
-            Err(error) => {
-                return Ok(preparation_failed(
-                    listener, state, &tracker, &gctx, request, capture, error,
-                ));
-            }
-        }
-        let Some(next) = next_check(listener, state)? else {
-            return Ok(EpochExit::Shutdown);
+        let mut request = match pending.take() {
+            Some(request) => request,
+            None => match next_request(listener, state)? {
+                Some(request) => request,
+                None => return Ok(EpochExit::Shutdown),
+            },
         };
-        request = next;
-        if !prepared.can_reuse() {
-            request.reprepare_reason = state.reuse_disabled_reason.clone();
+        if listener.shutdown_requested() {
+            request.complete(state, None, Completion::Cancelled);
+            return Ok(EpochExit::Shutdown);
+        }
+        if request.disconnected() {
+            continue;
+        }
+        let key = request.key.clone();
+        let reused = plans.contains_key(&key);
+        if !reused && allocations == capacity {
+            request.reprepare_reason.get_or_insert_with(|| {
+                "command-plan capacity reached; releasing retained state".to_owned()
+            });
             return Ok(EpochExit::Reprepare(request));
         }
-        request.begin_attempt(state, true);
-        capture = match OutputCapture::start() {
+        request.begin_attempt(state, reused);
+        let capture = match OutputCapture::start() {
             Ok(capture) => capture,
             Err(error) => {
                 request.complete(
@@ -386,30 +404,236 @@ fn run_epoch(
                     None,
                     Completion::Failure(ErrorKind::Internal, error.to_string()),
                 );
-                return Ok(EpochExit::Idle);
+                continue;
             }
         };
+        if !reused {
+            allocations += 1;
+            state.preparations += 1;
+            let tracker = inputs.track();
+            let result = prepare_command(config, &key, &tracker);
+            match result {
+                Ok((mut gctx, parsed)) if parsed.clippy_fix => {
+                    // Cargo fix owns its diagnostic server and may edit sources.
+                    // Invoke its ordinary execution path once; never retry it.
+                    if let Err(reason) = tracker.validate() {
+                        match reprepare(listener, state, request, capture, reason.to_string()) {
+                            EpochExit::Reprepare(next) => pending = Some(next),
+                            EpochExit::Idle => (),
+                            EpochExit::Shutdown => return Ok(EpochExit::Shutdown),
+                        }
+                        continue;
+                    }
+                    if request.disconnected() {
+                        drop(capture);
+                        continue;
+                    }
+                    let (_, args) = parsed.root.subcommand().unwrap();
+                    let result = super::super::fix::exec(&mut gctx, args);
+                    state.revision = tracker.revision();
+                    state.reuse_disabled_reason =
+                        Some("Clippy fix uses ordinary request-scoped execution".to_owned());
+                    let code = result_code(&gctx, result);
+                    request.complete(state, Some(capture), Completion::Cargo(code));
+                    continue;
+                }
+                Ok((gctx, parsed)) => {
+                    let gctx = contexts.alloc(gctx);
+                    let result = prepare_plan(
+                        config,
+                        &key,
+                        &parsed.root,
+                        gctx,
+                        &workspaces,
+                        &options,
+                        &interners,
+                        tracker.clone(),
+                        state.preparations,
+                    );
+                    match result {
+                        Ok(plan) => {
+                            plans.insert(key.clone(), plan);
+                        }
+                        Err(error) => {
+                            if let Err(reason) = tracker.validate() {
+                                match reprepare(
+                                    listener,
+                                    state,
+                                    request,
+                                    capture,
+                                    reason.to_string(),
+                                ) {
+                                    EpochExit::Reprepare(next) => pending = Some(next),
+                                    EpochExit::Idle => (),
+                                    EpochExit::Shutdown => return Ok(EpochExit::Shutdown),
+                                }
+                            } else {
+                                state.revision = tracker.revision();
+                                state.reuse_disabled_reason = tracker.reuse_reason();
+                                let code = result_code(gctx, Err(error));
+                                request.complete(state, Some(capture), Completion::Cargo(code));
+                            }
+                            continue;
+                        }
+                    }
+                }
+                Err(error) => {
+                    if let Err(reason) = tracker.validate() {
+                        match reprepare(listener, state, request, capture, reason.to_string()) {
+                            EpochExit::Reprepare(next) => pending = Some(next),
+                            EpochExit::Idle => (),
+                            EpochExit::Shutdown => return Ok(EpochExit::Shutdown),
+                        }
+                    } else {
+                        state.revision = tracker.revision();
+                        state.reuse_disabled_reason = tracker.reuse_reason();
+                        let code = result_code(config.initial, Err(error));
+                        request.complete(state, Some(capture), Completion::Cargo(code));
+                    }
+                    continue;
+                }
+            }
+        }
+        let plan = &plans[&key];
+        state.plan_id = Some(plan.id);
+        state.cached_plans = plans.len();
+        let outcome = plan.prepared.compile();
+        state.compiler_worker = plan.prepared.compiler_worker_stats();
+        state.revision = plan.tracker.revision();
+        state.reuse_disabled_reason = plan.tracker.reuse_reason().or_else(|| {
+            (!plan.prepared.can_reuse())
+                .then(|| "the previous plan is no longer reusable".to_owned())
+        });
+        match outcome {
+            Ok(CompileOutcome::InputsChanged(reason)) => {
+                plans.remove(&key);
+                state.cached_plans = plans.len();
+                match reprepare(listener, state, request, capture, reason.to_string()) {
+                    EpochExit::Reprepare(next) => pending = Some(next),
+                    EpochExit::Idle => (),
+                    EpochExit::Shutdown => return Ok(EpochExit::Shutdown),
+                }
+            }
+            result => {
+                let mut executed = false;
+                let result = match result {
+                    Ok(CompileOutcome::Complete(Ok(compilation))) => {
+                        if request.disconnected() {
+                            if !plan.prepared.can_reuse() {
+                                plans.remove(&key);
+                                state.cached_plans = plans.len();
+                            }
+                            drop(capture);
+                            continue;
+                        }
+                        executed = plan.options.has_side_effects();
+                        plan.options.finish(plan.workspace, compilation)
+                    }
+                    Ok(CompileOutcome::Complete(Err(error))) | Err(error) => Err(error.into()),
+                    Ok(CompileOutcome::InputsChanged(_)) => unreachable!(),
+                };
+                let code = result_code(plan.workspace.gctx(), result);
+                // Test and benchmark programs can change planning inputs. Preserve their
+                // actual result and retire the plan for the next request.
+                let retire =
+                    !plan.prepared.can_reuse() || (executed && plan.tracker.validate().is_err());
+                state.revision = plan.tracker.revision();
+                if retire {
+                    plans.remove(&key);
+                    state.cached_plans = plans.len();
+                }
+                request.complete(state, Some(capture), Completion::Cargo(code));
+            }
+        }
     }
 }
 
-fn preparation_failed(
-    listener: &SessionListener,
-    state: &mut State,
+fn prepare_command(
+    config: &SessionConfig<'_, impl Fn(&mut GlobalContext, &ArgMatches) -> CliResult>,
+    key: &PlanKey,
     tracker: &InputTracker,
-    gctx: &GlobalContext,
-    request: PendingCheck,
-    capture: OutputCapture,
-    error: anyhow::Error,
-) -> EpochExit {
-    let validation = tracker.validate();
-    state.revision = tracker.revision();
-    state.reuse_disabled_reason = tracker.reuse_reason();
-    match validation {
-        Err(reason) => reprepare(listener, state, request, capture, reason.to_string()),
-        Ok(()) => {
-            cargo::display_error(&error, &mut gctx.shell());
-            request.complete(state, Some(capture), Completion::Cargo(101));
-            EpochExit::Idle
+) -> Result<(GlobalContext, super::arguments::ParsedCommand), CliError> {
+    let mut gctx = config.initial.fresh_for_session(tracker.clone());
+    let parsed = super::arguments::parse(&gctx, &config.args, key.operation, &key.args)?;
+    (config.configure)(&mut gctx, &parsed.root)?;
+    if let Some(args) = &parsed.clippy_args {
+        let driver = gctx.resolve_session_clippy_driver()?;
+        let overlay = BTreeMap::from([
+            (
+                "RUSTC_WORKSPACE_WRAPPER".to_owned(),
+                driver.as_os_str().to_owned(),
+            ),
+            ("CLIPPY_ARGS".to_owned(), OsString::from(args)),
+            // The protocol captures non-interactive output, as cargo-clippy does with pipes.
+            ("CLIPPY_TERMINAL_WIDTH".to_owned(), OsString::from("0")),
+        ]);
+        gctx = config
+            .initial
+            .fresh_for_session_with_env(tracker.clone(), overlay, Some(driver));
+        (config.configure)(&mut gctx, &parsed.root)?;
+    }
+    Ok((gctx, parsed))
+}
+
+#[allow(clippy::too_many_arguments)]
+fn prepare_plan<'a>(
+    config: &SessionConfig<'_, impl Fn(&mut GlobalContext, &ArgMatches) -> CliResult>,
+    key: &PlanKey,
+    parsed: &ArgMatches,
+    gctx: &'a GlobalContext,
+    workspaces: &'a Arena<Workspace<'a>>,
+    options: &'a Arena<CommandOptions>,
+    interners: &'a Arena<UnitInterner>,
+    tracker: InputTracker,
+    id: u64,
+) -> Result<Plan<'a>, CliError> {
+    let (_, args) = parsed.subcommand().unwrap();
+    let workspace = workspaces.alloc(args.workspace(gctx)?);
+    let value = match key.operation {
+        Operation::Check | Operation::Clippy => {
+            CommandOptions::Compile(super::super::check::compile_options(gctx, args, workspace)?)
+        }
+        Operation::Build => {
+            CommandOptions::Compile(super::super::build::compile_options(gctx, args, workspace)?)
+        }
+        Operation::Test => {
+            let (options, args) = super::super::test::options(gctx, args, workspace)?;
+            CommandOptions::Test(options, args)
+        }
+        Operation::Bench => {
+            let (options, args) = super::super::bench::options(gctx, args, workspace)?;
+            CommandOptions::Bench(options, args)
+        }
+        Operation::Status | Operation::Stop => unreachable!(),
+    };
+    let options = options.alloc(value);
+    let interner = interners.alloc(UnitInterner::new());
+    let prepared = PreparedBuild::new(
+        workspace,
+        options.compile(),
+        interner,
+        config
+            .args
+            .get_one::<std::path::PathBuf>("compiler-worker")
+            .map(std::path::PathBuf::as_path),
+    )?;
+    Ok(Plan {
+        id,
+        workspace,
+        options,
+        prepared,
+        tracker,
+    })
+}
+
+fn result_code(gctx: &GlobalContext, result: CliResult) -> i32 {
+    match result {
+        Ok(()) => 0,
+        Err(error) => {
+            if let Some(error) = error.error {
+                cargo::display_error(&error, &mut gctx.shell());
+            }
+            error.exit_code
         }
     }
 }
@@ -417,7 +641,7 @@ fn preparation_failed(
 fn reprepare(
     listener: &SessionListener,
     state: &mut State,
-    mut request: PendingCheck,
+    mut request: PendingRequest,
     capture: OutputCapture,
     reason: String,
 ) -> EpochExit {
@@ -437,7 +661,7 @@ fn reprepare(
                 None,
             Completion::Failure(
                 ErrorKind::InputsChanged,
-                format!("workspace inputs changed repeatedly during session preparation; retry the check ({reason})"),
+                format!("workspace inputs changed repeatedly during session preparation; retry the command ({reason})"),
             ),
         );
         EpochExit::Idle

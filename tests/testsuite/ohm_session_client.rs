@@ -54,7 +54,7 @@ fn exchange(mut command: Command, equals_socket: bool, returncode: i32) -> (Valu
             .unwrap();
         let request: Value = serde_json::from_str(&frame).unwrap();
         let response = json!({
-            "version": 1,
+            "version": request["version"],
             "session": {
                 "id": "client-test",
                 "identity": request["identity"],
@@ -65,6 +65,9 @@ fn exchange(mut command: Command, equals_socket: bool, returncode: i32) -> (Valu
             "pid": 42,
             "checks": 1,
             "preparations": 1,
+            "command": request["command"],
+            "plan_id": 1,
+            "cached_plans": 1,
             "revision": 1,
             "reprepare_reason": null,
             "reuse_disabled_reason": null,

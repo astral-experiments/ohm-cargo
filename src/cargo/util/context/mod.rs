@@ -63,6 +63,7 @@
 
 use crate::util::data_structures::{HashMap, HashSet};
 use std::borrow::Cow;
+use std::collections::BTreeMap;
 use std::env;
 use std::ffi::{OsStr, OsString};
 use std::fmt;
@@ -218,6 +219,10 @@ pub struct GlobalContext {
     values: OnceLock<HashMap<String, ConfigValue>>,
     /// Filesystem observations made while preparing a retained session plan.
     session_inputs: Option<InputTracker>,
+    /// Command-specific launch variables, also applied explicitly to child processes.
+    session_env: BTreeMap<String, OsString>,
+    /// Candidate installed Clippy driver; compiler construction verifies its identity.
+    session_clippy_driver: Option<PathBuf>,
     /// A collection of configuration options from the credentials file
     credential_values: OnceLock<HashMap<String, ConfigValue>>,
     /// CLI config values, passed in via `configure`.
@@ -379,6 +384,8 @@ impl GlobalContext {
             search_stop_path: None,
             values: Default::default(),
             session_inputs: None,
+            session_env: BTreeMap::new(),
+            session_clippy_driver: None,
             credential_values: Default::default(),
             cli_config: None,
             cargo_exe: Default::default(),
@@ -548,6 +555,28 @@ impl GlobalContext {
             },
             self,
         )
+    }
+
+    /// Resolve the configured compiler's sibling Clippy driver without invoking wrappers.
+    ///
+    /// A preliminary tracked context can use this path to construct the Clippy
+    /// plan's launch environment. The final plan verifies the driver before
+    /// admitting its compiler probes for reuse.
+    pub fn resolve_session_clippy_driver(&self) -> CargoResult<PathBuf> {
+        let inputs = self
+            .session_inputs()
+            .context("Clippy driver selection requires session input tracking")?;
+        let rustc = self.get_tool(Tool::Rustc, &self.build_config()?.rustc);
+        let search_path = self.get_env_os("PATH").unwrap_or_default();
+        let rustc = inputs
+            .executable(&rustc, self.cwd(), search_path)
+            .context("could not resolve the configured compiler for Clippy")?;
+        let driver = rustc
+            .with_file_name("clippy-driver")
+            .with_extension(env::consts::EXE_EXTENSION);
+        inputs
+            .executable(&driver, self.cwd(), search_path)
+            .with_context(|| format!("could not resolve Clippy driver at {}", driver.display()))
     }
 
     /// Gets the path to the `cargo` executable.
@@ -1450,16 +1479,58 @@ impl GlobalContext {
     /// Installing its tracker here ensures no configuration can be cached before
     /// dependency recording starts.
     pub fn fresh_for_session(&self, inputs: InputTracker) -> Self {
+        self.fresh_for_session_with_env(
+            inputs,
+            self.session_env.clone(),
+            self.session_clippy_driver.clone(),
+        )
+    }
+
+    /// Construct a plan with command-specific launch variables before reading configuration.
+    ///
+    /// These overrides affect both Cargo's environment snapshot and its child processes,
+    /// without changing the server's process environment. The optional Clippy path only
+    /// requests admission: compiler construction still verifies the selected installation
+    /// and the driver's compiler version before permitting retained preparation.
+    pub fn fresh_for_session_with_env(
+        &self,
+        inputs: InputTracker,
+        overlay: BTreeMap<String, OsString>,
+        clippy_driver: Option<PathBuf>,
+    ) -> Self {
         let mut gctx = Self::new_with_env(
             Shell::new(),
             self.cwd.clone(),
             self.home_path.clone().into_path_unlocked(),
-            self.env.clone(),
+            self.env.clone().with_overrides(&overlay),
         );
         gctx.search_stop_path = self.search_stop_path.clone();
         gctx.nightly_features_allowed = self.nightly_features_allowed;
         gctx.session_inputs = Some(inputs);
+        gctx.session_env = overlay;
+        gctx.session_clippy_driver = clippy_driver;
         gctx
+    }
+
+    /// Launch variables belonging to this plan, before Cargo's `[env]` overrides.
+    pub fn session_env(&self) -> &BTreeMap<String, OsString> {
+        &self.session_env
+    }
+
+    pub(crate) fn session_clippy_driver(&self) -> Option<&Path> {
+        self.session_clippy_driver.as_deref()
+    }
+
+    /// Capture externally supplied child variables for dep-info and build-script fingerprints.
+    pub(crate) fn env_for_fingerprint(&self) -> CargoResult<Arc<HashMap<String, OsString>>> {
+        let mut values = Arc::clone(self.env_config()?);
+        if !self.session_env.is_empty() {
+            let values = Arc::make_mut(&mut values);
+            for (key, value) in &self.session_env {
+                values.entry(key.clone()).or_insert_with(|| value.clone());
+            }
+        }
+        Ok(values)
     }
 
     /// Loads configuration from the filesystem.
@@ -2361,9 +2432,14 @@ impl GlobalContext {
 
     /// Returns a reference to the shared [`DeferredGlobalLastUse`].
     pub fn deferred_global_last_use(&self) -> CargoResult<MutexGuard<'_, DeferredGlobalLastUse>> {
-        let deferred = self
-            .deferred_global_last_use
-            .try_borrow_with(|| Ok::<_, anyhow::Error>(Mutex::new(DeferredGlobalLastUse::new())))?;
+        let deferred = self.deferred_global_last_use.try_borrow_with(|| {
+            let deferred = if self.session_inputs().is_some() {
+                DeferredGlobalLastUse::for_session()
+            } else {
+                DeferredGlobalLastUse::new()
+            };
+            Ok::<_, anyhow::Error>(Mutex::new(deferred))
+        })?;
         Ok(deferred.lock().unwrap())
     }
 
@@ -2820,6 +2896,65 @@ mod tests {
             disables_multiplexing_for_bad_curl(curl_v, &mut http, &gctx);
             assert_eq!(http.multiplexing, result);
         }
+    }
+
+    #[test]
+    fn session_environment_preserves_config_and_process_precedence() {
+        use crate::core::compiler::apply_env_config;
+        use crate::util::session_inputs::SessionInputs;
+        use cargo_util::ProcessBuilder;
+        use std::collections::BTreeMap;
+        use std::ffi::{OsStr, OsString};
+
+        let dir = tempfile::tempdir().unwrap();
+        let root = dir.path().canonicalize().unwrap();
+        std::fs::create_dir(root.join(".cargo")).unwrap();
+        std::fs::write(
+            root.join(".cargo/config.toml"),
+            r#"[env]
+CLIPPY_ARGS = { value = "configured", force = true }
+CLIPPY_TERMINAL_WIDTH = "60"
+"#,
+        )
+        .unwrap();
+        let mut initial = GlobalContext::new(Shell::new(), root.clone(), root.join("home"));
+        initial.set_search_stop_path(root);
+        initial.set_env(
+            [("CLIPPY_ARGS".to_owned(), "initial".to_owned())]
+                .into_iter()
+                .collect(),
+        );
+        let overlay: BTreeMap<String, OsString> = [
+            ("CLIPPY_ARGS".into(), "plan".into()),
+            ("CLIPPY_TERMINAL_WIDTH".into(), "80".into()),
+            ("SESSION_INPUT".into(), "value".into()),
+        ]
+        .into();
+        let plan =
+            initial.fresh_for_session_with_env(SessionInputs::default().begin(), overlay, None);
+        assert_eq!(initial.get_env("CLIPPY_ARGS").unwrap(), "initial");
+        assert!(initial.get_env_os("SESSION_INPUT").is_none());
+        assert_eq!(plan.get_env("CLIPPY_ARGS").unwrap(), "plan");
+        assert_eq!(plan.get_env("SESSION_INPUT").unwrap(), "value");
+
+        let mut process = ProcessBuilder::new("rustc");
+        apply_env_config(&plan, &mut process).unwrap();
+        let fingerprints = plan.env_for_fingerprint().unwrap();
+        for (key, value) in [
+            ("CLIPPY_ARGS", "configured"),
+            ("CLIPPY_TERMINAL_WIDTH", "80"),
+            ("SESSION_INPUT", "value"),
+        ] {
+            assert_eq!(process.get_env(key).as_deref(), Some(OsStr::new(value)));
+            assert_eq!(fingerprints.get(key).unwrap(), OsStr::new(value));
+        }
+        let mut process = ProcessBuilder::new("rustc");
+        process.env("CLIPPY_ARGS", "unit");
+        apply_env_config(&plan, &mut process).unwrap();
+        assert_eq!(
+            process.get_env("CLIPPY_ARGS").as_deref(),
+            Some(OsStr::new("unit"))
+        );
     }
 
     #[test]

@@ -247,7 +247,7 @@ impl<'gctx> CacheManager<'gctx> {
     /// Gets the cache associated with the key.
     pub fn get(&self, key: &str) -> Option<Vec<u8>> {
         let cache_path = &self.cache_path(key);
-        match fs::read(cache_path) {
+        match self.gctx.files().read(cache_path) {
             Ok(contents) => Some(contents),
             Err(e) => {
                 tracing::debug!(?cache_path, "cache missing: {e}");

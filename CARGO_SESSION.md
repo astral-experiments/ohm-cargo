@@ -2,6 +2,11 @@
 
 ## Status and objective
 
+This document records the original single-check foundation. The current
+[workspace daemon](CARGO_SESSION_WORKSPACE.md) extends it with independently
+retained command plans, registry and Git inputs, Clippy, tests, and benchmarks.
+Its protocol and command contract supersede the corresponding sections below.
+
 This implements an experimental, explicit Unix `cargo session` server inside
 Cargo. Its purpose is to avoid repeating workspace preparation during an edit /
 check loop while preserving Cargo's ordinary compilation and freshness logic.
