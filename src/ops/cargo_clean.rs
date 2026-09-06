@@ -429,11 +429,15 @@ fn clean_specs(
                         .build()
                         .join("workspaces")
                         .join(workspace);
-                    if workspace_directory.is_dir() {
-                        for context in fs::read_dir(&workspace_directory)? {
-                            let context = context?;
-                            if context.file_type()?.is_dir() {
-                                clean_ctx.rm_rf(&context.path().join(pkg.name().as_str()))?;
+                    let clippy_directory =
+                        workspace_directory.join(crate::compiler::OHM_WORKTREE_CLIPPY_DIRECTORY);
+                    for directory in [&workspace_directory, &clippy_directory] {
+                        if fs::symlink_metadata(directory).is_ok_and(|metadata| metadata.is_dir()) {
+                            for context in fs::read_dir(directory)? {
+                                let context = context?;
+                                if context.file_type()?.is_dir() {
+                                    clean_ctx.rm_rf(&context.path().join(pkg.name().as_str()))?;
+                                }
                             }
                         }
                     }
@@ -494,9 +498,16 @@ fn clean_specs(
                         }
                         let path_dash = format!("{}-", crate_name);
 
-                        dirs_to_clean.mark_utf(layout.build_dir().incremental(), |filename| {
-                            filename.starts_with(&path_dash)
-                        });
+                        let incremental = layout.build_dir().incremental();
+                        let clippy =
+                            incremental.join(crate::compiler::OHM_WORKTREE_CLIPPY_DIRECTORY);
+                        for root in [incremental, clippy.as_path()] {
+                            if !fs::symlink_metadata(root).is_ok_and(|metadata| metadata.is_dir()) {
+                                continue;
+                            }
+                            dirs_to_clean
+                                .mark_utf(root, |filename| filename.starts_with(&path_dash));
+                        }
                     }
                 }
             }
