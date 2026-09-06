@@ -61,6 +61,8 @@ pub struct TargetInfo {
     pub sysroot_target_libdir: PathBuf,
     /// Extra flags to pass to `rustc`, see [`extra_args`].
     pub rustflags: Rc<[String]>,
+    /// Number of bundled-linker flags appended to `rustflags`.
+    pub(crate) ohm_linker_flags: usize,
     /// Extra flags to pass to `rustdoc`, see [`extra_args`].
     pub rustdocflags: Rc<[String]>,
 }
@@ -352,12 +354,23 @@ impl TargetInfo {
                 }
             }
 
+            let linker_flags = super::super::ohm_linker::flags(
+                gctx,
+                &rustc.host,
+                kind,
+                &cfg,
+                &sysroot,
+                &rustflags,
+            )?;
+            let ohm_linker_flags = linker_flags.len();
+            rustflags.extend(linker_flags);
             return Ok(TargetInfo {
                 crate_type_process,
                 crate_types: RefCell::new(map),
                 sysroot,
                 sysroot_target_libdir,
                 rustflags: rustflags.into(),
+                ohm_linker_flags,
                 rustdocflags: extra_args(
                     gctx,
                     requested_kinds,
