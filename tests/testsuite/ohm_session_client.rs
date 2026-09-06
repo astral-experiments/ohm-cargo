@@ -22,9 +22,13 @@ const STDERR: &str = "\x1b[31mcheck diagnostic\x1b[0m\n";
 fn exchange(mut command: Command, equals_socket: bool, returncode: i32) -> (Value, Output) {
     // Short paths avoid Unix socket limits, including long test names.
     let directory = tempfile::tempdir().unwrap();
-    let socket = directory
-        .path()
-        .join(OsStr::from_bytes(b"session-\xff.sock"));
+    // The macOS CI filesystem rejects non-UTF-8 filenames.
+    let socket_name = if cfg!(target_os = "macos") {
+        OsStr::new("session.sock")
+    } else {
+        OsStr::from_bytes(b"session-\xff.sock")
+    };
+    let socket = directory.path().join(socket_name);
     let listener = UnixListener::bind(&socket).unwrap();
     listener.set_nonblocking(true).unwrap();
     let server = thread::spawn(move || {
@@ -102,7 +106,12 @@ fn direct_clients_match_aliases_with_inherited_configuration() {
             "#,
         )
         .build();
-    let cwd = p.root().join(OsStr::from_bytes(b"nested-\xfe"));
+    let directory_name = if cfg!(target_os = "macos") {
+        OsStr::new("nested")
+    } else {
+        OsStr::from_bytes(b"nested-\xfe")
+    };
+    let cwd = p.root().join(directory_name);
     fs::create_dir(&cwd).unwrap();
     let cwd_bytes = cwd.canonicalize().unwrap().as_os_str().as_bytes().to_vec();
 
