@@ -6,6 +6,11 @@ on:
       - ohm-1.99.0
   pull_request:
   workflow_dispatch:
+    inputs:
+      clippy_apfs_replay:
+        description: Run the isolated production Clippy APFS storage and performance replay
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -169,3 +174,61 @@ jobs:
         run: rustup toolchain install "$RUST_VERSION" --profile minimal
       - name: Run schema tests
         run: cargo +"$RUST_VERSION" test -p cargo-util-schemas --features unstable-schema
+
+  clippy-apfs-replay:
+    name: Clippy APFS replay
+    if: github.event_name == 'workflow_dispatch' && inputs.clippy_apfs_replay
+    runs-on: namespace-profile-macos-15
+    timeout-minutes: 45
+    env:
+      OHM_VERSION: ohm-1.98.0-9
+      OHM_INSTALLER_SHA256: 573e00024783ab952f7c2d629f12f9e0ba61be96843f7e692dc056642a72affe
+      CARGO_HOME: /private/tmp/codex-cargo-home
+      CARGO_TARGET_DIR: /private/tmp/codex-cargo-targets/cargo/clippy-seeding-ci/ohm
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: '3.13'
+      - name: Install pinned Ohm
+        run: |
+          installer="$RUNNER_TEMP/ohm-clippy-installer.sh"
+          curl --proto '=https' --tlsv1.2 --fail --silent --show-error --location \
+            --output "$installer" \
+            "https://labs.astral.sh/ohm/releases/$OHM_VERSION/install.sh"
+          printf '%s  %s\n' "$OHM_INSTALLER_SHA256" "$installer" | shasum -a 256 --check
+          sh "$installer"
+      - name: Build production Cargo and prepare the Ruff fixture
+        run: |
+          mkdir -p "$RUNNER_TEMP/clippy-apfs-results"
+          git rev-parse HEAD > "$RUNNER_TEMP/clippy-apfs-results/source-commit.txt"
+          git rev-parse HEAD^{tree} > "$RUNNER_TEMP/clippy-apfs-results/source-tree.txt"
+          df -h /private/tmp
+          cargo +"$OHM_VERSION" build --locked --release -p cargo --features ohm-defaults -j 4
+          "$CARGO_TARGET_DIR/release/cargo" -Vv > "$RUNNER_TEMP/clippy-apfs-results/cargo-version.txt"
+          shasum -a 256 "$CARGO_TARGET_DIR/release/cargo" > "$RUNNER_TEMP/clippy-apfs-results/cargo-sha256.txt"
+          git init "$RUNNER_TEMP/ruff-fixture"
+          git -C "$RUNNER_TEMP/ruff-fixture" fetch --depth=2 https://github.com/astral-sh/ruff.git \
+            0ecff877901a0377ad966ffab528488ce872b50e
+          git -C "$RUNNER_TEMP/ruff-fixture" checkout --detach 1edf9fe2cab23e34c383419b8c7830324c428a58
+      - name: Run four paired APFS workflows
+        run: |
+          # The harness enables local macro/native-tool trust only for this pinned,
+          # trusted development fixture, using separate build storage in each arm.
+          python3 benches/clippy-seeding/run_apfs.py \
+            --cargo "$CARGO_TARGET_DIR/release/cargo" --ruff "$RUNNER_TEMP/ruff-fixture" \
+            --root /private/tmp/codex-cargo-targets/ruff/isolated/clippy-seeding-ci \
+            --evidence "$RUNNER_TEMP/clippy-apfs-results/apfs" --jobs 4 \
+            --toolchain "$OHM_VERSION" --arms off1,on1,on2,off2,on3,off3,off4,on4 \
+            --production --require-quiet
+          python3 benches/clippy-seeding/summarize.py "$RUNNER_TEMP/clippy-apfs-results/apfs" \
+            --arms off1,on1,on2,off2,on3,off3,off4,on4 \
+            > "$RUNNER_TEMP/clippy-apfs-results/summary.json"
+      - name: Preserve APFS receipts and logs
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: clippy-apfs-replay-${{ github.sha }}
+          path: ${{ runner.temp }}/clippy-apfs-results
+          if-no-files-found: error
+          retention-days: 30
