@@ -160,7 +160,7 @@ fn test_compile_errors_and_process_exit_codes_recover_independently() {
 }
 
 #[cargo_test]
-fn tests_that_change_the_manifest_execute_once_and_retire_the_plan() {
+fn tests_that_change_the_manifest_revalidate_before_the_next_execution() {
     let p = fixture();
     p.change_file(
         "src/lib.rs",
@@ -180,14 +180,22 @@ fn tests_that_change_the_manifest_execute_once_and_retire_the_plan() {
     let session = Session::start(&p, &[]);
     let first = session.request("test", &[], true);
     assert_eq!(p.read_file("test-runs"), "x");
-    assert_eq!(first["cached_plans"], 0, "{first}");
+    assert_eq!(first["cached_plans"], 1, "{first}");
 
     let second = session.request("test", &[], true);
     assert_eq!(p.read_file("test-runs"), "xx");
     assert_ne!(plan_id(&second), plan_id(&first));
     assert_eq!(second["preparations"], 2, "{second}");
     assert_eq!(second["checks"], 2, "{second}");
-    assert_eq!(second["cached_plans"], 0, "{second}");
+    assert_eq!(second["cached_plans"], 1, "{second}");
+    assert_eq!(second["reused"], false, "{second}");
+    assert!(
+        second["reprepare_reason"]
+            .as_str()
+            .unwrap()
+            .contains("Cargo.toml"),
+        "{second}"
+    );
 }
 
 #[cargo_test]

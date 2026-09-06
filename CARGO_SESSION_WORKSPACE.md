@@ -154,8 +154,9 @@ Compilation results and preparation failures are validated before publication.
 A planning input change can retry compilation, up to the existing three-attempt
 limit, after discarding diagnostics from the obsolete attempt. Tests and
 benchmarks start only after successful validated compilation. Once a harness
-starts, its request is never retried. If it changes a planning input, its actual
-result is returned and the plan is retired for the next request. Client
+starts, its request is never retried. Its actual result is returned immediately.
+If it changes a planning input, the next request invalidates the plan before
+reusing it; no additional validation is needed after the harness finishes. Client
 transport failures are never retried automatically.
 
 ## Protocol and diagnostics

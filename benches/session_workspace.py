@@ -12,7 +12,8 @@ Example (run after building the Cargo binary under test):
     --work-dir /run/user/1000/cargo-workspace-benchmark --require-reuse
 
 Use --parent-cargo to include an older fixed-check session as an additional check
-baseline. --repository, --revision, --manifest-path, --package, and --source can
+baseline, or --baseline-cargo to compare an existing workspace daemon across all
+selected commands. --repository, --revision, --manifest-path, --package, and --source can
 select another Git workspace. Manifest/source paths are relative to its root.
 """
 
@@ -552,6 +553,11 @@ def run(args, work, report):
         report["binaries"]["parent_cargo"] = binary_info(
             lanes["parent_session"], workspace, common_env
         )
+    if args.baseline_cargo:
+        lanes["baseline_session"] = executable(args.baseline_cargo)
+        report["binaries"]["baseline_cargo"] = binary_info(
+            lanes["baseline_session"], workspace, common_env
+        )
     environments = {}
     report["environments"] = {}
     for lane, binary in lanes.items():
@@ -672,6 +678,10 @@ def main():
     )
     parser.add_argument(
         "--parent-cargo", help="optional older fixed-check session binary"
+    )
+    parser.add_argument(
+        "--baseline-cargo",
+        help="existing workspace daemon to compare across all commands",
     )
     parser.add_argument(
         "--repository", type=Path, default=Path(__file__).resolve().parents[1]

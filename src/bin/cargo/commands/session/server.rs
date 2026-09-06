@@ -281,15 +281,8 @@ impl CommandOptions {
         }
     }
 
-    /// This is the side-effect boundary. Compilation was validated before entry;
-    /// tests and benchmarks execute at most once for this request.
-    fn has_side_effects(&self) -> bool {
-        match self {
-            Self::Compile(_) => false,
-            Self::Test(options, _) | Self::Bench(options, _) => !options.no_run,
-        }
-    }
-
+    /// Execute runtime work only after compilation validates. Once a harness
+    /// starts, its result is returned without retrying the request.
     fn finish(
         &self,
         ws: &Workspace<'_>,
@@ -515,7 +508,6 @@ fn run_epoch(
                 }
             }
             result => {
-                let mut executed = false;
                 let result = match result {
                     Ok(CompileOutcome::Complete(Ok(compilation))) => {
                         if request.disconnected() {
@@ -526,19 +518,17 @@ fn run_epoch(
                             drop(capture);
                             continue;
                         }
-                        executed = plan.options.has_side_effects();
                         plan.options.finish(plan.workspace, compilation)
                     }
                     Ok(CompileOutcome::Complete(Err(error))) | Err(error) => Err(error.into()),
                     Ok(CompileOutcome::InputsChanged(_)) => unreachable!(),
                 };
                 let code = result_code(plan.workspace.gctx(), result);
-                // Test and benchmark programs can change planning inputs. Preserve their
-                // actual result and retire the plan for the next request.
-                let retire =
-                    !plan.prepared.can_reuse() || (executed && plan.tracker.validate().is_err());
+                // Runtime results are final. Any inputs changed by the harness
+                // are validated before the next use of this plan, just like
+                // external edits between requests.
                 state.revision = plan.tracker.revision();
-                if retire {
+                if !plan.prepared.can_reuse() {
                     plans.remove(&key);
                     state.cached_plans = plans.len();
                 }
