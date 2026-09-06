@@ -1,0 +1,1339 @@
+{
+  "label": "on1",
+  "enabled": true,
+  "base": "1edf9fe2cab23e34c383419b8c7830324c428a58",
+  "edit": "0ecff877901a0377ad966ffab528488ce872b50e",
+  "production": true,
+  "require_quiet": true,
+  "harness_sha256": "34832be58e65cc3799e33f424fdc6ebae45e75cadc6ad368621b82b4232b1289",
+  "cargo_version": "cargo 1.98.0 (496285f24 2026-09-06)\nrelease: 1.98.0\ncommit-hash: 496285f24f268208a93cecb45c642b8a82658650\ncommit-date: 2026-09-06\nhost: aarch64-apple-darwin\nlibgit2: 1.9.4 (sys:0.21.0 vendored)\nlibcurl: 8.7.1 (sys:0.4.90+curl-8.21.0 system ssl:(SecureTransport) LibreSSL/3.3.6)\nos: Mac OS 15.7.5 [64-bit]\n",
+  "cargo_sha256": "24e006f5db0835da3fcd3e0931ab5db07f49a4361b61eeb6a1b193e92d2a5b02",
+  "rustc_sha256": "5d87dbf31bdff571fc94181be7cc241ccd80936404f9a87b1a91476670f1c95c",
+  "source_root": "/Users/runner/work/_temp/ruff-fixture",
+  "volume": "/private/tmp/codex-cargo-targets/ruff/isolated/clippy-seeding-ci/on1/volume",
+  "attach": {
+    "system-entities": [
+      {
+        "content-hint": "EFI",
+        "dev-entry": "/dev/disk8s1",
+        "potentially-mountable": true,
+        "unmapped-content-hint": "C12A7328-F81F-11D2-BA4B-00A0C93EC93B",
+        "volume-kind": "msdos"
+      },
+      {
+        "content-hint": "41504653-0000-11AA-AA11-00306543ECAC",
+        "dev-entry": "/dev/disk9s1",
+        "mount-point": "/private/tmp/codex-cargo-targets/ruff/isolated/clippy-seeding-ci/on1/volume",
+        "potentially-mountable": true,
+        "unmapped-content-hint": "41504653-0000-11AA-AA11-00306543ECAC",
+        "volume-kind": "apfs"
+      },
+      {
+        "content-hint": "EF57347C-0000-11AA-AA11-00306543ECAC",
+        "dev-entry": "/dev/disk9",
+        "potentially-mountable": false,
+        "unmapped-content-hint": "EF57347C-0000-11AA-AA11-00306543ECAC"
+      },
+      {
+        "content-hint": "Apple_APFS",
+        "dev-entry": "/dev/disk8s2",
+        "potentially-mountable": false,
+        "unmapped-content-hint": "7C3457EF-0000-11AA-AA11-00306543ECAC"
+      },
+      {
+        "content-hint": "GUID_partition_scheme",
+        "dev-entry": "/dev/disk8",
+        "potentially-mountable": false,
+        "unmapped-content-hint": "GUID_partition_scheme"
+      }
+    ]
+  },
+  "environment": {
+    "CARGO_HOME": "/private/tmp/codex-cargo-home",
+    "RUSTUP_TOOLCHAIN": "ohm-1.98.0-9",
+    "RUSTC": "/Users/runner/.local/share/ohm/toolchains/ohm-1.98.0-9/bin/rustc",
+    "CARGO": "/private/tmp/codex-cargo-targets/cargo/clippy-seeding-ci/ohm/release/cargo",
+    "PATH": "/private/tmp/codex-cargo-targets/cargo/clippy-seeding-ci/ohm/release:/Users/runner/.local/share/ohm/toolchains/ohm-1.98.0-9/bin:/Users/runner/.cargo/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+    "CARGO_BUILD_JOBS": "4",
+    "CARGO_TARGET_DIR": "/private/tmp/codex-cargo-targets/ruff/isolated/clippy-seeding-ci/on1/volume/targets/donor",
+    "CARGO_BUILD_BUILD_DIR": "/private/tmp/codex-cargo-targets/ruff/isolated/clippy-seeding-ci/on1/volume/shared",
+    "CARGO_UNSTABLE_OHM_PROC_MACRO_TRUST": "all",
+    "CARGO_UNSTABLE_OHM_NATIVE_TOOL_TRUST": "all",
+    "CARGO_EXPERIMENTAL_CLIPPY_SEED_ISOLATION": null,
+    "CARGO_UNSTABLE_OHM_CLIPPY_SEED_ISOLATION": null,
+    "CARGO_PROFILE_DEV_DEBUG": "line-tables-only",
+    "CARGO_PROFILE_DEV_OPT_LEVEL": "1",
+    "CARGO_PROFILE_DEV_LTO": "off"
+  },
+  "commands": [
+    {
+      "name": "00-clone",
+      "argv": [
+        "git",
+        "clone",
+        "--shared",
+        "--no-checkout",
+        "/Users/runner/work/_temp/ruff-fixture",
+        "/private/tmp/codex-cargo-targets/ruff/isolated/clippy-seeding-ci/on1/volume/donor"
+      ],
+      "cwd": "/private/tmp/codex-cargo-targets/ruff/isolated/clippy-seeding-ci/on1",
+      "processes_before": [],
+      "elapsed_seconds": 0.2206903329999932,
+      "returncode": 0,
+      "child_user_seconds": 0.1870310000000046,
+      "child_system_seconds": 0.12604999999999933,
+      "processes_after": [],
+      "summaries": [],
+      "compiling_lines": 0,
+      "checking_lines": 0
+    },
+    {
+      "name": "01-checkout",
+      "argv": [
+        "git",
+        "checkout",
+        "--detach",
+        "1edf9fe2cab23e34c383419b8c7830324c428a58"
+      ],
+      "cwd": "/private/tmp/codex-cargo-targets/ruff/isolated/clippy-seeding-ci/on1/volume/donor",
+      "processes_before": [],
+      "elapsed_seconds": 0.6007194169999934,
+      "returncode": 0,
+      "child_user_seconds": 0.12091499999999655,
+      "child_system_seconds": 0.468668000000001,
+      "processes_after": [
+        {
+          "pid": 88,
+          "ppid": 1,
+          "cpu_percent": 24.6,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/FSEvents.framework/Versions/A/Support/fseventsd",
+          "rust": false
+        },
+        {
+          "pid": 10569,
+          "ppid": 1,
+          "cpu_percent": 32.2,
+          "executable": "/System/Library/PrivateFrameworks/DiskImages.framework/Resources/diskimages-helper",
+          "rust": false
+        }
+      ],
+      "summaries": [],
+      "compiling_lines": 0,
+      "checking_lines": 0
+    },
+    {
+      "name": "01b-fetch",
+      "argv": [
+        "/private/tmp/codex-cargo-targets/cargo/clippy-seeding-ci/ohm/release/cargo",
+        "fetch",
+        "--locked"
+      ],
+      "cwd": "/private/tmp/codex-cargo-targets/ruff/isolated/clippy-seeding-ci/on1/volume/donor",
+      "processes_before": [
+        {
+          "pid": 88,
+          "ppid": 1,
+          "cpu_percent": 24.6,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/FSEvents.framework/Versions/A/Support/fseventsd",
+          "rust": false
+        },
+        {
+          "pid": 10569,
+          "ppid": 1,
+          "cpu_percent": 32.2,
+          "executable": "/System/Library/PrivateFrameworks/DiskImages.framework/Resources/diskimages-helper",
+          "rust": false
+        }
+      ],
+      "elapsed_seconds": 0.09867504100000701,
+      "returncode": 0,
+      "child_user_seconds": 0.058878999999990356,
+      "child_system_seconds": 0.04055399999999665,
+      "processes_after": [
+        {
+          "pid": 88,
+          "ppid": 1,
+          "cpu_percent": 20.7,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/FSEvents.framework/Versions/A/Support/fseventsd",
+          "rust": false
+        },
+        {
+          "pid": 10569,
+          "ppid": 1,
+          "cpu_percent": 29.2,
+          "executable": "/System/Library/PrivateFrameworks/DiskImages.framework/Resources/diskimages-helper",
+          "rust": false
+        }
+      ],
+      "summaries": [],
+      "compiling_lines": 0,
+      "checking_lines": 0
+    },
+    {
+      "name": "02-donor-test",
+      "argv": [
+        "/private/tmp/codex-cargo-targets/cargo/clippy-seeding-ci/ohm/release/cargo",
+        "test",
+        "--offline",
+        "-p",
+        "ruff_python_parser"
+      ],
+      "cwd": "/private/tmp/codex-cargo-targets/ruff/isolated/clippy-seeding-ci/on1/volume/donor",
+      "processes_before": [
+        {
+          "pid": 1092,
+          "ppid": 1,
+          "cpu_percent": 63.7,
+          "executable": "/usr/sbin/spindump",
+          "rust": false
+        }
+      ],
+      "elapsed_seconds": 15.742618499999992,
+      "returncode": 0,
+      "child_user_seconds": 56.469864000000015,
+      "child_system_seconds": 6.173489,
+      "processes_after": [],
+      "summaries": [
+        "test parser::scratch_buffer::tests::snapshot_is_empty_relative_to_its_buffer ... ok",
+        "test parser::scratch_buffer::tests::snapshot_must_be_restored - should panic ... ok",
+        "test parser::scratch_buffer::tests::snapshot_must_be_restored_in_reverse_order - should panic ... ok",
+        "test result: ok. 245 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s",
+        "test result: ok. 556 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.22s",
+        "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+        "test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s"
+      ],
+      "compiling_lines": 123,
+      "checking_lines": 0
+    },
+    {
+      "name": "03-donor-clippy",
+      "argv": [
+        "/private/tmp/codex-cargo-targets/cargo/clippy-seeding-ci/ohm/release/cargo",
+        "clippy",
+        "--offline",
+        "-p",
+        "ruff_python_parser",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings",
+        "-A",
+        "clippy::format_push_string"
+      ],
+      "cwd": "/private/tmp/codex-cargo-targets/ruff/isolated/clippy-seeding-ci/on1/volume/donor",
+      "processes_before": [],
+      "elapsed_seconds": 1.4462283340000113,
+      "returncode": 0,
+      "child_user_seconds": 3.0688769999999863,
+      "child_system_seconds": 0.504919000000001,
+      "processes_after": [
+        {
+          "pid": 111,
+          "ppid": 1,
+          "cpu_percent": 76.4,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Support/mds",
+          "rust": false
+        },
+        {
+          "pid": 11082,
+          "ppid": 1,
+          "cpu_percent": 38.8,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mdworker_shared",
+          "rust": false
+        },
+        {
+          "pid": 11083,
+          "ppid": 1,
+          "cpu_percent": 38.9,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mdworker_shared",
+          "rust": false
+        },
+        {
+          "pid": 11084,
+          "ppid": 1,
+          "cpu_percent": 38.2,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mdworker_shared",
+          "rust": false
+        },
+        {
+          "pid": 11085,
+          "ppid": 1,
+          "cpu_percent": 36.6,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mdworker_shared",
+          "rust": false
+        },
+        {
+          "pid": 11086,
+          "ppid": 1,
+          "cpu_percent": 32.1,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mdworker_shared",
+          "rust": false
+        },
+        {
+          "pid": 11087,
+          "ppid": 1,
+          "cpu_percent": 36.1,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mdworker_shared",
+          "rust": false
+        },
+        {
+          "pid": 11088,
+          "ppid": 1,
+          "cpu_percent": 38.1,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mdworker_shared",
+          "rust": false
+        },
+        {
+          "pid": 11089,
+          "ppid": 1,
+          "cpu_percent": 40.9,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mdworker_shared",
+          "rust": false
+        },
+        {
+          "pid": 11090,
+          "ppid": 1,
+          "cpu_percent": 38.3,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mdworker_shared",
+          "rust": false
+        },
+        {
+          "pid": 11091,
+          "ppid": 1,
+          "cpu_percent": 35.3,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mdworker_shared",
+          "rust": false
+        }
+      ],
+      "summaries": [],
+      "compiling_lines": 0,
+      "checking_lines": 7
+    },
+    {
+      "name": "03b-donor-clippy-noop",
+      "argv": [
+        "/private/tmp/codex-cargo-targets/cargo/clippy-seeding-ci/ohm/release/cargo",
+        "clippy",
+        "--offline",
+        "-p",
+        "ruff_python_parser",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings",
+        "-A",
+        "clippy::format_push_string"
+      ],
+      "cwd": "/private/tmp/codex-cargo-targets/ruff/isolated/clippy-seeding-ci/on1/volume/donor",
+      "processes_before": [
+        {
+          "pid": 111,
+          "ppid": 1,
+          "cpu_percent": 76.4,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Support/mds",
+          "rust": false
+        },
+        {
+          "pid": 11082,
+          "ppid": 1,
+          "cpu_percent": 51.4,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mdworker_shared",
+          "rust": false
+        },
+        {
+          "pid": 11083,
+          "ppid": 1,
+          "cpu_percent": 51.1,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mdworker_shared",
+          "rust": false
+        },
+        {
+          "pid": 11084,
+          "ppid": 1,
+          "cpu_percent": 50.3,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mdworker_shared",
+          "rust": false
+        },
+        {
+          "pid": 11085,
+          "ppid": 1,
+          "cpu_percent": 50.7,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mdworker_shared",
+          "rust": false
+        },
+        {
+          "pid": 11086,
+          "ppid": 1,
+          "cpu_percent": 46.2,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mdworker_shared",
+          "rust": false
+        },
+        {
+          "pid": 11087,
+          "ppid": 1,
+          "cpu_percent": 48.4,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mdworker_shared",
+          "rust": false
+        },
+        {
+          "pid": 11088,
+          "ppid": 1,
+          "cpu_percent": 50.6,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mdworker_shared",
+          "rust": false
+        },
+        {
+          "pid": 11089,
+          "ppid": 1,
+          "cpu_percent": 52.9,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mdworker_shared",
+          "rust": false
+        },
+        {
+          "pid": 11090,
+          "ppid": 1,
+          "cpu_percent": 51.0,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mdworker_shared",
+          "rust": false
+        },
+        {
+          "pid": 11091,
+          "ppid": 1,
+          "cpu_percent": 48.7,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mdworker_shared",
+          "rust": false
+        }
+      ],
+      "elapsed_seconds": 0.10497004199999083,
+      "returncode": 0,
+      "child_user_seconds": 0.051484000000016295,
+      "child_system_seconds": 0.04681899999999928,
+      "processes_after": [
+        {
+          "pid": 111,
+          "ppid": 1,
+          "cpu_percent": 94.8,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Support/mds",
+          "rust": false
+        },
+        {
+          "pid": 11082,
+          "ppid": 1,
+          "cpu_percent": 60.9,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mdworker_shared",
+          "rust": false
+        },
+        {
+          "pid": 11083,
+          "ppid": 1,
+          "cpu_percent": 61.0,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mdworker_shared",
+          "rust": false
+        },
+        {
+          "pid": 11084,
+          "ppid": 1,
+          "cpu_percent": 60.2,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mdworker_shared",
+          "rust": false
+        },
+        {
+          "pid": 11085,
+          "ppid": 1,
+          "cpu_percent": 60.4,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mdworker_shared",
+          "rust": false
+        },
+        {
+          "pid": 11086,
+          "ppid": 1,
+          "cpu_percent": 57.8,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mdworker_shared",
+          "rust": false
+        },
+        {
+          "pid": 11087,
+          "ppid": 1,
+          "cpu_percent": 59.1,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mdworker_shared",
+          "rust": false
+        },
+        {
+          "pid": 11088,
+          "ppid": 1,
+          "cpu_percent": 60.5,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mdworker_shared",
+          "rust": false
+        },
+        {
+          "pid": 11089,
+          "ppid": 1,
+          "cpu_percent": 61.5,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mdworker_shared",
+          "rust": false
+        },
+        {
+          "pid": 11090,
+          "ppid": 1,
+          "cpu_percent": 59.7,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mdworker_shared",
+          "rust": false
+        },
+        {
+          "pid": 11091,
+          "ppid": 1,
+          "cpu_percent": 59.8,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mdworker_shared",
+          "rust": false
+        }
+      ],
+      "summaries": [],
+      "compiling_lines": 0,
+      "checking_lines": 0
+    },
+    {
+      "name": "04-donor-noop",
+      "argv": [
+        "/private/tmp/codex-cargo-targets/cargo/clippy-seeding-ci/ohm/release/cargo",
+        "test",
+        "--offline",
+        "-p",
+        "ruff_python_parser"
+      ],
+      "cwd": "/private/tmp/codex-cargo-targets/ruff/isolated/clippy-seeding-ci/on1/volume/donor",
+      "processes_before": [
+        {
+          "pid": 111,
+          "ppid": 1,
+          "cpu_percent": 94.8,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Support/mds",
+          "rust": false
+        },
+        {
+          "pid": 11082,
+          "ppid": 1,
+          "cpu_percent": 60.9,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mdworker_shared",
+          "rust": false
+        },
+        {
+          "pid": 11083,
+          "ppid": 1,
+          "cpu_percent": 61.0,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mdworker_shared",
+          "rust": false
+        },
+        {
+          "pid": 11084,
+          "ppid": 1,
+          "cpu_percent": 60.2,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mdworker_shared",
+          "rust": false
+        },
+        {
+          "pid": 11085,
+          "ppid": 1,
+          "cpu_percent": 60.4,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mdworker_shared",
+          "rust": false
+        },
+        {
+          "pid": 11086,
+          "ppid": 1,
+          "cpu_percent": 57.8,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mdworker_shared",
+          "rust": false
+        },
+        {
+          "pid": 11087,
+          "ppid": 1,
+          "cpu_percent": 59.1,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mdworker_shared",
+          "rust": false
+        },
+        {
+          "pid": 11088,
+          "ppid": 1,
+          "cpu_percent": 60.5,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mdworker_shared",
+          "rust": false
+        },
+        {
+          "pid": 11089,
+          "ppid": 1,
+          "cpu_percent": 61.5,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mdworker_shared",
+          "rust": false
+        },
+        {
+          "pid": 11090,
+          "ppid": 1,
+          "cpu_percent": 59.7,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mdworker_shared",
+          "rust": false
+        },
+        {
+          "pid": 11091,
+          "ppid": 1,
+          "cpu_percent": 59.8,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mdworker_shared",
+          "rust": false
+        }
+      ],
+      "elapsed_seconds": 0.6716413329999966,
+      "returncode": 0,
+      "child_user_seconds": 0.506463999999994,
+      "child_system_seconds": 1.4676709999999993,
+      "processes_after": [
+        {
+          "pid": 111,
+          "ppid": 1,
+          "cpu_percent": 26.8,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Support/mds",
+          "rust": false
+        }
+      ],
+      "summaries": [
+        "test parser::scratch_buffer::tests::snapshot_is_empty_relative_to_its_buffer ... ok",
+        "test parser::scratch_buffer::tests::snapshot_must_be_restored - should panic ... ok",
+        "test parser::scratch_buffer::tests::snapshot_must_be_restored_in_reverse_order - should panic ... ok",
+        "test result: ok. 245 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.06s",
+        "test result: ok. 556 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.22s",
+        "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+        "test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s"
+      ],
+      "compiling_lines": 0,
+      "checking_lines": 0
+    },
+    {
+      "name": "05-fork",
+      "argv": [
+        "/private/tmp/codex-cargo-targets/cargo/clippy-seeding-ci/ohm/release/cargo",
+        "worktree",
+        "add",
+        "--detach",
+        "/private/tmp/codex-cargo-targets/ruff/isolated/clippy-seeding-ci/on1/volume/child",
+        "--target-dir",
+        "/private/tmp/codex-cargo-targets/ruff/isolated/clippy-seeding-ci/on1/volume/targets/child",
+        "1edf9fe2cab23e34c383419b8c7830324c428a58"
+      ],
+      "cwd": "/private/tmp/codex-cargo-targets/ruff/isolated/clippy-seeding-ci/on1/volume/donor",
+      "processes_before": [
+        {
+          "pid": 342,
+          "ppid": 1,
+          "cpu_percent": 22.5,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mds_stores",
+          "rust": false
+        }
+      ],
+      "elapsed_seconds": 0.7698149999999941,
+      "returncode": 0,
+      "child_user_seconds": 0.14756900000000428,
+      "child_system_seconds": 0.5980060000000016,
+      "processes_after": [
+        {
+          "pid": 88,
+          "ppid": 1,
+          "cpu_percent": 25.1,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/FSEvents.framework/Versions/A/Support/fseventsd",
+          "rust": false
+        },
+        {
+          "pid": 111,
+          "ppid": 1,
+          "cpu_percent": 33.8,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Support/mds",
+          "rust": false
+        },
+        {
+          "pid": 10569,
+          "ppid": 1,
+          "cpu_percent": 36.0,
+          "executable": "/System/Library/PrivateFrameworks/DiskImages.framework/Resources/diskimages-helper",
+          "rust": false
+        }
+      ],
+      "summaries": [
+        "      Seeded 851 files (253206642 bytes, 841 reflinked files) for /private/tmp/codex-cargo-targets/ruff/isolated/clippy-seeding-ci/on1/volume/child; the next build validates reuse"
+      ],
+      "compiling_lines": 0,
+      "checking_lines": 0
+    },
+    {
+      "name": "06-child-test",
+      "argv": [
+        "/private/tmp/codex-cargo-targets/cargo/clippy-seeding-ci/ohm/release/cargo",
+        "test",
+        "--offline",
+        "-p",
+        "ruff_python_parser"
+      ],
+      "cwd": "/private/tmp/codex-cargo-targets/ruff/isolated/clippy-seeding-ci/on1/volume/child",
+      "processes_before": [
+        {
+          "pid": 88,
+          "ppid": 1,
+          "cpu_percent": 25.1,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/FSEvents.framework/Versions/A/Support/fseventsd",
+          "rust": false
+        },
+        {
+          "pid": 111,
+          "ppid": 1,
+          "cpu_percent": 33.8,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Support/mds",
+          "rust": false
+        },
+        {
+          "pid": 10569,
+          "ppid": 1,
+          "cpu_percent": 36.0,
+          "executable": "/System/Library/PrivateFrameworks/DiskImages.framework/Resources/diskimages-helper",
+          "rust": false
+        }
+      ],
+      "elapsed_seconds": 1.6810718329999759,
+      "returncode": 0,
+      "child_user_seconds": 1.97136500000002,
+      "child_system_seconds": 3.7968170000000008,
+      "processes_after": [
+        {
+          "pid": 111,
+          "ppid": 1,
+          "cpu_percent": 81.6,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Support/mds",
+          "rust": false
+        },
+        {
+          "pid": 342,
+          "ppid": 1,
+          "cpu_percent": 48.5,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mds_stores",
+          "rust": false
+        },
+        {
+          "pid": 11090,
+          "ppid": 1,
+          "cpu_percent": 63.9,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mdworker_shared",
+          "rust": false
+        },
+        {
+          "pid": 11148,
+          "ppid": 1,
+          "cpu_percent": 63.3,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mdworker_shared",
+          "rust": false
+        },
+        {
+          "pid": 11155,
+          "ppid": 1,
+          "cpu_percent": 65.4,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mdworker_shared",
+          "rust": false
+        },
+        {
+          "pid": 11156,
+          "ppid": 1,
+          "cpu_percent": 63.9,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mdworker_shared",
+          "rust": false
+        },
+        {
+          "pid": 11165,
+          "ppid": 1,
+          "cpu_percent": 65.3,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mdworker_shared",
+          "rust": false
+        },
+        {
+          "pid": 11167,
+          "ppid": 1,
+          "cpu_percent": 65.1,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mdworker_shared",
+          "rust": false
+        },
+        {
+          "pid": 11184,
+          "ppid": 1,
+          "cpu_percent": 68.0,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mdworker_shared",
+          "rust": false
+        },
+        {
+          "pid": 11197,
+          "ppid": 1,
+          "cpu_percent": 55.1,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mdworker_shared",
+          "rust": false
+        },
+        {
+          "pid": 11198,
+          "ppid": 1,
+          "cpu_percent": 55.9,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mdworker_shared",
+          "rust": false
+        },
+        {
+          "pid": 11199,
+          "ppid": 1,
+          "cpu_percent": 57.6,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mdworker_shared",
+          "rust": false
+        }
+      ],
+      "summaries": [
+        "test parser::scratch_buffer::tests::snapshot_is_empty_relative_to_its_buffer ... ok",
+        "test parser::scratch_buffer::tests::snapshot_must_be_restored - should panic ... ok",
+        "test parser::scratch_buffer::tests::snapshot_must_be_restored_in_reverse_order - should panic ... ok",
+        "test result: ok. 245 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.10s",
+        "test result: ok. 556 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.49s",
+        "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s",
+        "test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s"
+      ],
+      "compiling_lines": 1,
+      "checking_lines": 0
+    },
+    {
+      "name": "07-edit",
+      "argv": [
+        "git",
+        "checkout",
+        "--detach",
+        "0ecff877901a0377ad966ffab528488ce872b50e"
+      ],
+      "cwd": "/private/tmp/codex-cargo-targets/ruff/isolated/clippy-seeding-ci/on1/volume/child",
+      "processes_before": [
+        {
+          "pid": 111,
+          "ppid": 1,
+          "cpu_percent": 47.7,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Support/mds",
+          "rust": false
+        },
+        {
+          "pid": 342,
+          "ppid": 1,
+          "cpu_percent": 26.5,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mds_stores",
+          "rust": false
+        }
+      ],
+      "elapsed_seconds": 0.43197487500000875,
+      "returncode": 0,
+      "child_user_seconds": 0.2854499999999973,
+      "child_system_seconds": 0.283732999999998,
+      "processes_after": [
+        {
+          "pid": 111,
+          "ppid": 1,
+          "cpu_percent": 53.8,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Support/mds",
+          "rust": false
+        },
+        {
+          "pid": 11227,
+          "ppid": 1,
+          "cpu_percent": 22.6,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mdworker_shared",
+          "rust": false
+        },
+        {
+          "pid": 11228,
+          "ppid": 1,
+          "cpu_percent": 20.8,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mdworker_shared",
+          "rust": false
+        },
+        {
+          "pid": 11234,
+          "ppid": 1,
+          "cpu_percent": 21.1,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mdworker_shared",
+          "rust": false
+        },
+        {
+          "pid": 11238,
+          "ppid": 1,
+          "cpu_percent": 20.7,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mdworker_shared",
+          "rust": false
+        },
+        {
+          "pid": 11243,
+          "ppid": 1,
+          "cpu_percent": 24.9,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mdworker_shared",
+          "rust": false
+        }
+      ],
+      "summaries": [],
+      "compiling_lines": 0,
+      "checking_lines": 0
+    },
+    {
+      "name": "08-child-edit-test",
+      "argv": [
+        "/private/tmp/codex-cargo-targets/cargo/clippy-seeding-ci/ohm/release/cargo",
+        "test",
+        "--offline",
+        "-p",
+        "ruff_python_parser"
+      ],
+      "cwd": "/private/tmp/codex-cargo-targets/ruff/isolated/clippy-seeding-ci/on1/volume/child",
+      "processes_before": [
+        {
+          "pid": 111,
+          "ppid": 1,
+          "cpu_percent": 37.1,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Support/mds",
+          "rust": false
+        }
+      ],
+      "elapsed_seconds": 1.8876480410000056,
+      "returncode": 0,
+      "child_user_seconds": 3.330779000000007,
+      "child_system_seconds": 3.763334999999998,
+      "processes_after": [
+        {
+          "pid": 111,
+          "ppid": 1,
+          "cpu_percent": 82.6,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Support/mds",
+          "rust": false
+        },
+        {
+          "pid": 342,
+          "ppid": 1,
+          "cpu_percent": 47.1,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mds_stores",
+          "rust": false
+        },
+        {
+          "pid": 11244,
+          "ppid": 1,
+          "cpu_percent": 42.5,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mdworker_shared",
+          "rust": false
+        },
+        {
+          "pid": 11270,
+          "ppid": 1,
+          "cpu_percent": 43.2,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mdworker_shared",
+          "rust": false
+        },
+        {
+          "pid": 11273,
+          "ppid": 1,
+          "cpu_percent": 45.4,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mdworker_shared",
+          "rust": false
+        },
+        {
+          "pid": 11275,
+          "ppid": 1,
+          "cpu_percent": 45.1,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mdworker_shared",
+          "rust": false
+        },
+        {
+          "pid": 11276,
+          "ppid": 1,
+          "cpu_percent": 43.6,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mdworker_shared",
+          "rust": false
+        },
+        {
+          "pid": 11283,
+          "ppid": 1,
+          "cpu_percent": 47.2,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mdworker_shared",
+          "rust": false
+        },
+        {
+          "pid": 11288,
+          "ppid": 1,
+          "cpu_percent": 27.7,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mdworker_shared",
+          "rust": false
+        },
+        {
+          "pid": 11289,
+          "ppid": 1,
+          "cpu_percent": 27.7,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mdworker_shared",
+          "rust": false
+        }
+      ],
+      "summaries": [
+        "test parser::scratch_buffer::tests::snapshot_is_empty_relative_to_its_buffer ... ok",
+        "test parser::scratch_buffer::tests::snapshot_must_be_restored - should panic ... ok",
+        "test parser::scratch_buffer::tests::snapshot_must_be_restored_in_reverse_order - should panic ... ok",
+        "test result: ok. 245 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.08s",
+        "test result: ok. 557 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.50s",
+        "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s",
+        "test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s"
+      ],
+      "compiling_lines": 1,
+      "checking_lines": 0
+    },
+    {
+      "name": "09-child-clippy",
+      "argv": [
+        "/private/tmp/codex-cargo-targets/cargo/clippy-seeding-ci/ohm/release/cargo",
+        "clippy",
+        "--offline",
+        "-p",
+        "ruff_python_parser",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings",
+        "-A",
+        "clippy::format_push_string"
+      ],
+      "cwd": "/private/tmp/codex-cargo-targets/ruff/isolated/clippy-seeding-ci/on1/volume/child",
+      "processes_before": [
+        {
+          "pid": 111,
+          "ppid": 1,
+          "cpu_percent": 82.6,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Support/mds",
+          "rust": false
+        },
+        {
+          "pid": 342,
+          "ppid": 1,
+          "cpu_percent": 47.1,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mds_stores",
+          "rust": false
+        },
+        {
+          "pid": 11244,
+          "ppid": 1,
+          "cpu_percent": 42.5,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mdworker_shared",
+          "rust": false
+        },
+        {
+          "pid": 11270,
+          "ppid": 1,
+          "cpu_percent": 43.2,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mdworker_shared",
+          "rust": false
+        },
+        {
+          "pid": 11273,
+          "ppid": 1,
+          "cpu_percent": 45.4,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mdworker_shared",
+          "rust": false
+        },
+        {
+          "pid": 11275,
+          "ppid": 1,
+          "cpu_percent": 45.1,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mdworker_shared",
+          "rust": false
+        },
+        {
+          "pid": 11276,
+          "ppid": 1,
+          "cpu_percent": 43.6,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mdworker_shared",
+          "rust": false
+        },
+        {
+          "pid": 11283,
+          "ppid": 1,
+          "cpu_percent": 47.2,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mdworker_shared",
+          "rust": false
+        },
+        {
+          "pid": 11288,
+          "ppid": 1,
+          "cpu_percent": 27.7,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mdworker_shared",
+          "rust": false
+        },
+        {
+          "pid": 11289,
+          "ppid": 1,
+          "cpu_percent": 27.7,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mdworker_shared",
+          "rust": false
+        }
+      ],
+      "elapsed_seconds": 1.3247309169999824,
+      "returncode": 0,
+      "child_user_seconds": 2.829131000000018,
+      "child_system_seconds": 0.46287000000000234,
+      "processes_after": [],
+      "summaries": [],
+      "compiling_lines": 0,
+      "checking_lines": 7
+    },
+    {
+      "name": "09b-child-clippy-noop",
+      "argv": [
+        "/private/tmp/codex-cargo-targets/cargo/clippy-seeding-ci/ohm/release/cargo",
+        "clippy",
+        "--offline",
+        "-p",
+        "ruff_python_parser",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings",
+        "-A",
+        "clippy::format_push_string"
+      ],
+      "cwd": "/private/tmp/codex-cargo-targets/ruff/isolated/clippy-seeding-ci/on1/volume/child",
+      "processes_before": [],
+      "elapsed_seconds": 0.08454574999998954,
+      "returncode": 0,
+      "child_user_seconds": 0.043073999999990065,
+      "child_system_seconds": 0.03746900000000153,
+      "processes_after": [],
+      "summaries": [],
+      "compiling_lines": 0,
+      "checking_lines": 0
+    },
+    {
+      "name": "10-child-noop",
+      "argv": [
+        "/private/tmp/codex-cargo-targets/cargo/clippy-seeding-ci/ohm/release/cargo",
+        "test",
+        "--offline",
+        "-p",
+        "ruff_python_parser"
+      ],
+      "cwd": "/private/tmp/codex-cargo-targets/ruff/isolated/clippy-seeding-ci/on1/volume/child",
+      "processes_before": [],
+      "elapsed_seconds": 0.6213380840000013,
+      "returncode": 0,
+      "child_user_seconds": 0.47701699999998937,
+      "child_system_seconds": 1.4656730000000024,
+      "processes_after": [],
+      "summaries": [
+        "test parser::scratch_buffer::tests::snapshot_is_empty_relative_to_its_buffer ... ok",
+        "test parser::scratch_buffer::tests::snapshot_must_be_restored - should panic ... ok",
+        "test parser::scratch_buffer::tests::snapshot_must_be_restored_in_reverse_order - should panic ... ok",
+        "test result: ok. 245 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s",
+        "test result: ok. 557 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.23s",
+        "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+        "test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s"
+      ],
+      "compiling_lines": 0,
+      "checking_lines": 0
+    }
+  ],
+  "measurements": {
+    "empty": {
+      "volume_used_bytes": 20480,
+      "container_used_bytes": 61865984,
+      "stable": true,
+      "samples": [
+        {
+          "volume_used_bytes": 20480,
+          "container_used_bytes": 61865984
+        },
+        {
+          "volume_used_bytes": 20480,
+          "container_used_bytes": 61865984
+        },
+        {
+          "volume_used_bytes": 20480,
+          "container_used_bytes": 61865984
+        }
+      ],
+      "artifact_groups": {}
+    },
+    "sources": {
+      "volume_used_bytes": 142626816,
+      "container_used_bytes": 204472320,
+      "stable": true,
+      "samples": [
+        {
+          "volume_used_bytes": 142626816,
+          "container_used_bytes": 204472320
+        },
+        {
+          "volume_used_bytes": 142626816,
+          "container_used_bytes": 204472320
+        },
+        {
+          "volume_used_bytes": 142626816,
+          "container_used_bytes": 204472320
+        }
+      ],
+      "artifact_groups": {}
+    },
+    "donor": {
+      "volume_used_bytes": 708055040,
+      "container_used_bytes": 769900544,
+      "stable": true,
+      "samples": [
+        {
+          "volume_used_bytes": 708055040,
+          "container_used_bytes": 769900544
+        },
+        {
+          "volume_used_bytes": 708055040,
+          "container_used_bytes": 769900544
+        },
+        {
+          "volume_used_bytes": 708055040,
+          "container_used_bytes": 769900544
+        }
+      ],
+      "artifact_groups": {
+        "other": {
+          "files": 1418,
+          "logical_bytes": 243474036,
+          "inode_allocated_clone_unaware_bytes": 248803328
+        },
+        ".o": {
+          "files": 1110,
+          "logical_bytes": 85977608,
+          "inode_allocated_clone_unaware_bytes": 88141824
+        },
+        ".rmeta": {
+          "files": 146,
+          "logical_bytes": 114985247,
+          "inode_allocated_clone_unaware_bytes": 115298304
+        },
+        "query-cache": {
+          "files": 20,
+          "logical_bytes": 63247638,
+          "inode_allocated_clone_unaware_bytes": 63291392
+        },
+        ".rlib": {
+          "files": 122,
+          "logical_bytes": 88618512,
+          "inode_allocated_clone_unaware_bytes": 88842240
+        }
+      }
+    },
+    "child_fresh": {
+      "volume_used_bytes": 902504448,
+      "container_used_bytes": 964349952,
+      "stable": true,
+      "samples": [
+        {
+          "volume_used_bytes": 902504448,
+          "container_used_bytes": 964349952
+        },
+        {
+          "volume_used_bytes": 902504448,
+          "container_used_bytes": 964349952
+        },
+        {
+          "volume_used_bytes": 902504448,
+          "container_used_bytes": 964349952
+        }
+      ],
+      "artifact_groups": {
+        "other": {
+          "files": 1546,
+          "logical_bytes": 369252490,
+          "inode_allocated_clone_unaware_bytes": 373645312
+        },
+        ".o": {
+          "files": 1993,
+          "logical_bytes": 129938144,
+          "inode_allocated_clone_unaware_bytes": 133799936
+        },
+        ".rmeta": {
+          "files": 160,
+          "logical_bytes": 135630733,
+          "inode_allocated_clone_unaware_bytes": 135974912
+        },
+        "query-cache": {
+          "files": 30,
+          "logical_bytes": 116033887,
+          "inode_allocated_clone_unaware_bytes": 116101120
+        },
+        ".rlib": {
+          "files": 129,
+          "logical_bytes": 114300824,
+          "inode_allocated_clone_unaware_bytes": 114536448
+        }
+      }
+    },
+    "final": {
+      "volume_used_bytes": 1043685376,
+      "container_used_bytes": 1105530880,
+      "stable": true,
+      "samples": [
+        {
+          "volume_used_bytes": 1043685376,
+          "container_used_bytes": 1105530880
+        },
+        {
+          "volume_used_bytes": 1043685376,
+          "container_used_bytes": 1105530880
+        },
+        {
+          "volume_used_bytes": 1043685376,
+          "container_used_bytes": 1105530880
+        }
+      ],
+      "artifact_groups": {
+        "other": {
+          "files": 1652,
+          "logical_bytes": 439866826,
+          "inode_allocated_clone_unaware_bytes": 444506112
+        },
+        ".o": {
+          "files": 1993,
+          "logical_bytes": 129941792,
+          "inode_allocated_clone_unaware_bytes": 133799936
+        },
+        ".rmeta": {
+          "files": 177,
+          "logical_bytes": 150522945,
+          "inode_allocated_clone_unaware_bytes": 150892544
+        },
+        "query-cache": {
+          "files": 40,
+          "logical_bytes": 146008122,
+          "inode_allocated_clone_unaware_bytes": 146092032
+        },
+        ".rlib": {
+          "files": 129,
+          "logical_bytes": 114301568,
+          "inode_allocated_clone_unaware_bytes": 114536448
+        }
+      }
+    }
+  },
+  "toolchain": {
+    "rustc_version": "rustc 1.98.0-dev (d37229159 2026-09-05) (ohm-1.98.0-9)\nbinary: rustc\ncommit-hash: d37229159e545bbdec917dd7efdf5d26da40d2bc\ncommit-date: 2026-09-05\nhost: aarch64-apple-darwin\nrelease: 1.98.0-dev\nLLVM version: 22.1.8\n",
+    "clippy_sha256": "d4bdd65200698f9e304282826ebcc08e15c84f0f2f867315ae6df8311b1ffdbf",
+    "driver_sha256": {
+      "librustc_driver-eeeb3982ca989643.dylib": "51f59b4475848a69fcae68ac8098b068e14f1fd4dc7e71c1df8a27c32e7a08b2"
+    }
+  },
+  "machine": {
+    "platform": "macOS-15.7.5-arm64-arm-64bit-Mach-O",
+    "cpu_count": 12
+  },
+  "timing_caveat": "External Rust processes checked before/after commands; ordinary host activity remains.",
+  "seed_import": {
+    "files": 851,
+    "bytes": 253206642,
+    "reflinked_files": 841
+  },
+  "complete": true,
+  "detach_attempts": [
+    {
+      "returncode": 0,
+      "stdout": "\"disk8\" ejected.\n",
+      "stderr": ""
+    }
+  ]
+}

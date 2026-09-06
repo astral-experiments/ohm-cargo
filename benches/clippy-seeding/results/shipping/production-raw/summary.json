@@ -1,0 +1,1731 @@
+{
+  "rows": {
+    "off1": {
+      "cargo_sha256": "24e006f5db0835da3fcd3e0931ab5db07f49a4361b61eeb6a1b193e92d2a5b02",
+      "rustc_sha256": "5d87dbf31bdff571fc94181be7cc241ccd80936404f9a87b1a91476670f1c95c",
+      "retained_physical_bytes_after_source_checkout": {
+        "donor": 566865920,
+        "child_fresh": 924831744,
+        "final": 1032785920
+      },
+      "workflow_wall_seconds": 26.893524960000008,
+      "workflow_child_cpu_seconds": 97.872262,
+      "steps": {
+        "02-donor-test": {
+          "elapsed_seconds": 15.561996333999986,
+          "child_user_seconds": 56.544379,
+          "child_system_seconds": 6.3339550000000004,
+          "compiling_lines": 123,
+          "summaries": [
+            "test parser::scratch_buffer::tests::snapshot_is_empty_relative_to_its_buffer ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored - should panic ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored_in_reverse_order - should panic ... ok",
+            "test result: ok. 245 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.06s",
+            "test result: ok. 556 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.24s",
+            "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+            "test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s"
+          ]
+        },
+        "03-donor-clippy": {
+          "elapsed_seconds": 1.2810457079999935,
+          "child_user_seconds": 2.768070999999999,
+          "child_system_seconds": 0.4529139999999998,
+          "compiling_lines": 0,
+          "summaries": []
+        },
+        "03b-donor-clippy-noop": {
+          "elapsed_seconds": 0.0829299170000013,
+          "child_user_seconds": 0.04287300000000016,
+          "child_system_seconds": 0.03620499999999893,
+          "compiling_lines": 0,
+          "summaries": []
+        },
+        "04-donor-noop": {
+          "elapsed_seconds": 0.6691041249999898,
+          "child_user_seconds": 0.47737300000000005,
+          "child_system_seconds": 1.7703260000000007,
+          "compiling_lines": 0,
+          "summaries": [
+            "test parser::scratch_buffer::tests::snapshot_is_empty_relative_to_its_buffer ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored - should panic ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored_in_reverse_order - should panic ... ok",
+            "test result: ok. 245 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.07s",
+            "test result: ok. 556 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.26s",
+            "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+            "test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s"
+          ]
+        },
+        "05-fork": {
+          "elapsed_seconds": 0.6530742090000103,
+          "child_user_seconds": 0.1431880000000021,
+          "child_system_seconds": 0.49451,
+          "compiling_lines": 0,
+          "summaries": [
+            "     Created /private/tmp/codex-cargo-targets/ruff/isolated/clippy-seeding-ci/off1/volume/child (no compatible build snapshot seeded)"
+          ]
+        },
+        "06-child-test": {
+          "elapsed_seconds": 4.76829758300002,
+          "child_user_seconds": 15.129266000000001,
+          "child_system_seconds": 2.5416550000000004,
+          "compiling_lines": 7,
+          "summaries": [
+            "test parser::scratch_buffer::tests::snapshot_is_empty_relative_to_its_buffer ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored - should panic ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored_in_reverse_order - should panic ... ok",
+            "test result: ok. 245 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.06s",
+            "test result: ok. 556 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.26s",
+            "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+            "test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s"
+          ]
+        },
+        "07-edit": {
+          "elapsed_seconds": 0.3409519579999767,
+          "child_user_seconds": 0.2343970000000013,
+          "child_system_seconds": 0.26890200000000064,
+          "compiling_lines": 0,
+          "summaries": []
+        },
+        "08-child-edit-test": {
+          "elapsed_seconds": 1.5284197500000118,
+          "child_user_seconds": 3.1179540000000117,
+          "child_system_seconds": 2.1712359999999986,
+          "compiling_lines": 1,
+          "summaries": [
+            "test parser::scratch_buffer::tests::snapshot_is_empty_relative_to_its_buffer ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored - should panic ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored_in_reverse_order - should panic ... ok",
+            "test result: ok. 245 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s",
+            "test result: ok. 557 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.27s",
+            "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+            "test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s"
+          ]
+        },
+        "09-child-clippy": {
+          "elapsed_seconds": 1.2864951670000266,
+          "child_user_seconds": 2.799055999999993,
+          "child_system_seconds": 0.46210400000000007,
+          "compiling_lines": 0,
+          "summaries": []
+        },
+        "09b-child-clippy-noop": {
+          "elapsed_seconds": 0.0822477499999934,
+          "child_user_seconds": 0.042676999999997633,
+          "child_system_seconds": 0.03594400000000064,
+          "compiling_lines": 0,
+          "summaries": []
+        },
+        "10-child-noop": {
+          "elapsed_seconds": 0.6389624589999983,
+          "child_user_seconds": 0.4778670000000034,
+          "child_system_seconds": 1.5274099999999997,
+          "compiling_lines": 0,
+          "summaries": [
+            "test parser::scratch_buffer::tests::snapshot_is_empty_relative_to_its_buffer ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored - should panic ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored_in_reverse_order - should panic ... ok",
+            "test result: ok. 245 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s",
+            "test result: ok. 557 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.25s",
+            "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+            "test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s"
+          ]
+        }
+      },
+      "final_artifact_groups_clone_unaware": {
+        "other": {
+          "files": 1650,
+          "logical_bytes": 439797995,
+          "inode_allocated_clone_unaware_bytes": 447504384
+        },
+        ".rmeta": {
+          "files": 177,
+          "logical_bytes": 150522955,
+          "inode_allocated_clone_unaware_bytes": 150892544
+        },
+        "query-cache": {
+          "files": 40,
+          "logical_bytes": 138089346,
+          "inode_allocated_clone_unaware_bytes": 138170368
+        },
+        ".o": {
+          "files": 1993,
+          "logical_bytes": 129941792,
+          "inode_allocated_clone_unaware_bytes": 133799936
+        },
+        ".rlib": {
+          "files": 129,
+          "logical_bytes": 114301568,
+          "inode_allocated_clone_unaware_bytes": 114536448
+        }
+      },
+      "child_marginal_physical_bytes": 465920000,
+      "fork_and_child_wall_seconds": 9.298448876000037
+    },
+    "on1": {
+      "cargo_sha256": "24e006f5db0835da3fcd3e0931ab5db07f49a4361b61eeb6a1b193e92d2a5b02",
+      "rustc_sha256": "5d87dbf31bdff571fc94181be7cc241ccd80936404f9a87b1a91476670f1c95c",
+      "retained_physical_bytes_after_source_checkout": {
+        "donor": 565428224,
+        "child_fresh": 759877632,
+        "final": 901058560
+      },
+      "workflow_wall_seconds": 24.766582708999948,
+      "workflow_child_cpu_seconds": 87.78187500000004,
+      "steps": {
+        "02-donor-test": {
+          "elapsed_seconds": 15.742618499999992,
+          "child_user_seconds": 56.469864000000015,
+          "child_system_seconds": 6.173489,
+          "compiling_lines": 123,
+          "summaries": [
+            "test parser::scratch_buffer::tests::snapshot_is_empty_relative_to_its_buffer ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored - should panic ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored_in_reverse_order - should panic ... ok",
+            "test result: ok. 245 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s",
+            "test result: ok. 556 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.22s",
+            "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+            "test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s"
+          ]
+        },
+        "03-donor-clippy": {
+          "elapsed_seconds": 1.4462283340000113,
+          "child_user_seconds": 3.0688769999999863,
+          "child_system_seconds": 0.504919000000001,
+          "compiling_lines": 0,
+          "summaries": []
+        },
+        "03b-donor-clippy-noop": {
+          "elapsed_seconds": 0.10497004199999083,
+          "child_user_seconds": 0.051484000000016295,
+          "child_system_seconds": 0.04681899999999928,
+          "compiling_lines": 0,
+          "summaries": []
+        },
+        "04-donor-noop": {
+          "elapsed_seconds": 0.6716413329999966,
+          "child_user_seconds": 0.506463999999994,
+          "child_system_seconds": 1.4676709999999993,
+          "compiling_lines": 0,
+          "summaries": [
+            "test parser::scratch_buffer::tests::snapshot_is_empty_relative_to_its_buffer ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored - should panic ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored_in_reverse_order - should panic ... ok",
+            "test result: ok. 245 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.06s",
+            "test result: ok. 556 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.22s",
+            "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+            "test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s"
+          ]
+        },
+        "05-fork": {
+          "elapsed_seconds": 0.7698149999999941,
+          "child_user_seconds": 0.14756900000000428,
+          "child_system_seconds": 0.5980060000000016,
+          "compiling_lines": 0,
+          "summaries": [
+            "      Seeded 851 files (253206642 bytes, 841 reflinked files) for /private/tmp/codex-cargo-targets/ruff/isolated/clippy-seeding-ci/on1/volume/child; the next build validates reuse"
+          ]
+        },
+        "06-child-test": {
+          "elapsed_seconds": 1.6810718329999759,
+          "child_user_seconds": 1.97136500000002,
+          "child_system_seconds": 3.7968170000000008,
+          "compiling_lines": 1,
+          "summaries": [
+            "test parser::scratch_buffer::tests::snapshot_is_empty_relative_to_its_buffer ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored - should panic ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored_in_reverse_order - should panic ... ok",
+            "test result: ok. 245 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.10s",
+            "test result: ok. 556 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.49s",
+            "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s",
+            "test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s"
+          ]
+        },
+        "07-edit": {
+          "elapsed_seconds": 0.43197487500000875,
+          "child_user_seconds": 0.2854499999999973,
+          "child_system_seconds": 0.283732999999998,
+          "compiling_lines": 0,
+          "summaries": []
+        },
+        "08-child-edit-test": {
+          "elapsed_seconds": 1.8876480410000056,
+          "child_user_seconds": 3.330779000000007,
+          "child_system_seconds": 3.763334999999998,
+          "compiling_lines": 1,
+          "summaries": [
+            "test parser::scratch_buffer::tests::snapshot_is_empty_relative_to_its_buffer ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored - should panic ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored_in_reverse_order - should panic ... ok",
+            "test result: ok. 245 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.08s",
+            "test result: ok. 557 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.50s",
+            "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s",
+            "test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s"
+          ]
+        },
+        "09-child-clippy": {
+          "elapsed_seconds": 1.3247309169999824,
+          "child_user_seconds": 2.829131000000018,
+          "child_system_seconds": 0.46287000000000234,
+          "compiling_lines": 0,
+          "summaries": []
+        },
+        "09b-child-clippy-noop": {
+          "elapsed_seconds": 0.08454574999998954,
+          "child_user_seconds": 0.043073999999990065,
+          "child_system_seconds": 0.03746900000000153,
+          "compiling_lines": 0,
+          "summaries": []
+        },
+        "10-child-noop": {
+          "elapsed_seconds": 0.6213380840000013,
+          "child_user_seconds": 0.47701699999998937,
+          "child_system_seconds": 1.4656730000000024,
+          "compiling_lines": 0,
+          "summaries": [
+            "test parser::scratch_buffer::tests::snapshot_is_empty_relative_to_its_buffer ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored - should panic ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored_in_reverse_order - should panic ... ok",
+            "test result: ok. 245 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s",
+            "test result: ok. 557 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.23s",
+            "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+            "test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s"
+          ]
+        }
+      },
+      "final_artifact_groups_clone_unaware": {
+        "other": {
+          "files": 1652,
+          "logical_bytes": 439866826,
+          "inode_allocated_clone_unaware_bytes": 444506112
+        },
+        ".o": {
+          "files": 1993,
+          "logical_bytes": 129941792,
+          "inode_allocated_clone_unaware_bytes": 133799936
+        },
+        ".rmeta": {
+          "files": 177,
+          "logical_bytes": 150522945,
+          "inode_allocated_clone_unaware_bytes": 150892544
+        },
+        "query-cache": {
+          "files": 40,
+          "logical_bytes": 146008122,
+          "inode_allocated_clone_unaware_bytes": 146092032
+        },
+        ".rlib": {
+          "files": 129,
+          "logical_bytes": 114301568,
+          "inode_allocated_clone_unaware_bytes": 114536448
+        }
+      },
+      "child_marginal_physical_bytes": 335630336,
+      "fork_and_child_wall_seconds": 6.801124499999958
+    },
+    "on2": {
+      "cargo_sha256": "24e006f5db0835da3fcd3e0931ab5db07f49a4361b61eeb6a1b193e92d2a5b02",
+      "rustc_sha256": "5d87dbf31bdff571fc94181be7cc241ccd80936404f9a87b1a91476670f1c95c",
+      "retained_physical_bytes_after_source_checkout": {
+        "donor": 566927360,
+        "child_fresh": 760061952,
+        "final": 901218304
+      },
+      "workflow_wall_seconds": 23.372152999000036,
+      "workflow_child_cpu_seconds": 83.080481,
+      "steps": {
+        "02-donor-test": {
+          "elapsed_seconds": 15.575676041999998,
+          "child_user_seconds": 56.60404199999999,
+          "child_system_seconds": 6.368131000000005,
+          "compiling_lines": 123,
+          "summaries": [
+            "test parser::scratch_buffer::tests::snapshot_is_empty_relative_to_its_buffer ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored_in_reverse_order - should panic ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored - should panic ... ok",
+            "test result: ok. 245 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s",
+            "test result: ok. 556 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.23s",
+            "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+            "test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s"
+          ]
+        },
+        "03-donor-clippy": {
+          "elapsed_seconds": 1.3138862080000138,
+          "child_user_seconds": 2.834021000000007,
+          "child_system_seconds": 0.468244999999996,
+          "compiling_lines": 0,
+          "summaries": []
+        },
+        "03b-donor-clippy-noop": {
+          "elapsed_seconds": 0.09224662500000136,
+          "child_user_seconds": 0.04703000000000657,
+          "child_system_seconds": 0.04095000000000226,
+          "compiling_lines": 0,
+          "summaries": []
+        },
+        "04-donor-noop": {
+          "elapsed_seconds": 0.6170702090000191,
+          "child_user_seconds": 0.4801400000000058,
+          "child_system_seconds": 1.3935010000000005,
+          "compiling_lines": 0,
+          "summaries": [
+            "test parser::scratch_buffer::tests::snapshot_is_empty_relative_to_its_buffer ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored_in_reverse_order - should panic ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored - should panic ... ok",
+            "test result: ok. 245 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s",
+            "test result: ok. 556 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.22s",
+            "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+            "test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s"
+          ]
+        },
+        "05-fork": {
+          "elapsed_seconds": 0.7223864999999989,
+          "child_user_seconds": 0.1437180000000069,
+          "child_system_seconds": 0.5562959999999961,
+          "compiling_lines": 0,
+          "summaries": [
+            "      Seeded 851 files (253207789 bytes, 841 reflinked files) for /private/tmp/codex-cargo-targets/ruff/isolated/clippy-seeding-ci/on2/volume/child; the next build validates reuse"
+          ]
+        },
+        "06-child-test": {
+          "elapsed_seconds": 1.1852979999999889,
+          "child_user_seconds": 1.827418999999992,
+          "child_system_seconds": 1.7290260000000046,
+          "compiling_lines": 1,
+          "summaries": [
+            "test parser::scratch_buffer::tests::snapshot_is_empty_relative_to_its_buffer ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored_in_reverse_order - should panic ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored - should panic ... ok",
+            "test result: ok. 245 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s",
+            "test result: ok. 556 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.23s",
+            "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+            "test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s"
+          ]
+        },
+        "07-edit": {
+          "elapsed_seconds": 0.410586416000001,
+          "child_user_seconds": 0.2688280000000134,
+          "child_system_seconds": 0.36689799999999906,
+          "compiling_lines": 0,
+          "summaries": []
+        },
+        "08-child-edit-test": {
+          "elapsed_seconds": 1.4844104999999956,
+          "child_user_seconds": 3.135976999999997,
+          "child_system_seconds": 1.7299569999999989,
+          "compiling_lines": 1,
+          "summaries": [
+            "test parser::scratch_buffer::tests::snapshot_is_empty_relative_to_its_buffer ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored - should panic ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored_in_reverse_order - should panic ... ok",
+            "test result: ok. 245 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.06s",
+            "test result: ok. 557 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.22s",
+            "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+            "test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s"
+          ]
+        },
+        "09-child-clippy": {
+          "elapsed_seconds": 1.2930413330000192,
+          "child_user_seconds": 2.7956399999999917,
+          "child_system_seconds": 0.47169099999999986,
+          "compiling_lines": 0,
+          "summaries": []
+        },
+        "09b-child-clippy-noop": {
+          "elapsed_seconds": 0.08425729100000012,
+          "child_user_seconds": 0.043160999999997784,
+          "child_system_seconds": 0.03748300000000171,
+          "compiling_lines": 0,
+          "summaries": []
+        },
+        "10-child-noop": {
+          "elapsed_seconds": 0.5932938750000005,
+          "child_user_seconds": 0.4792009999999891,
+          "child_system_seconds": 1.259126000000002,
+          "compiling_lines": 0,
+          "summaries": [
+            "test parser::scratch_buffer::tests::snapshot_is_empty_relative_to_its_buffer ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored - should panic ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored_in_reverse_order - should panic ... ok",
+            "test result: ok. 245 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s",
+            "test result: ok. 557 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.21s",
+            "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+            "test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s"
+          ]
+        }
+      },
+      "final_artifact_groups_clone_unaware": {
+        "other": {
+          "files": 1652,
+          "logical_bytes": 439869576,
+          "inode_allocated_clone_unaware_bytes": 444506112
+        },
+        ".o": {
+          "files": 1993,
+          "logical_bytes": 129941792,
+          "inode_allocated_clone_unaware_bytes": 133799936
+        },
+        ".rmeta": {
+          "files": 177,
+          "logical_bytes": 150522945,
+          "inode_allocated_clone_unaware_bytes": 150892544
+        },
+        "query-cache": {
+          "files": 40,
+          "logical_bytes": 145999231,
+          "inode_allocated_clone_unaware_bytes": 146083840
+        },
+        ".rlib": {
+          "files": 129,
+          "logical_bytes": 114301568,
+          "inode_allocated_clone_unaware_bytes": 114536448
+        }
+      },
+      "child_marginal_physical_bytes": 334290944,
+      "fork_and_child_wall_seconds": 5.773273915000004
+    },
+    "off2": {
+      "cargo_sha256": "24e006f5db0835da3fcd3e0931ab5db07f49a4361b61eeb6a1b193e92d2a5b02",
+      "rustc_sha256": "5d87dbf31bdff571fc94181be7cc241ccd80936404f9a87b1a91476670f1c95c",
+      "retained_physical_bytes_after_source_checkout": {
+        "donor": 566902784,
+        "child_fresh": 924905472,
+        "final": 1032929280
+      },
+      "workflow_wall_seconds": 26.755871750999916,
+      "workflow_child_cpu_seconds": 96.494545,
+      "steps": {
+        "02-donor-test": {
+          "elapsed_seconds": 15.609392500000013,
+          "child_user_seconds": 56.603087999999985,
+          "child_system_seconds": 6.148749000000002,
+          "compiling_lines": 123,
+          "summaries": [
+            "test parser::scratch_buffer::tests::snapshot_is_empty_relative_to_its_buffer ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored - should panic ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored_in_reverse_order - should panic ... ok",
+            "test result: ok. 245 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.06s",
+            "test result: ok. 556 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.21s",
+            "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+            "test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s"
+          ]
+        },
+        "03-donor-clippy": {
+          "elapsed_seconds": 1.2774749579999707,
+          "child_user_seconds": 2.76247699999999,
+          "child_system_seconds": 0.4515270000000058,
+          "compiling_lines": 0,
+          "summaries": []
+        },
+        "03b-donor-clippy-noop": {
+          "elapsed_seconds": 0.10901854100001174,
+          "child_user_seconds": 0.0518769999999904,
+          "child_system_seconds": 0.05061500000000052,
+          "compiling_lines": 0,
+          "summaries": []
+        },
+        "04-donor-noop": {
+          "elapsed_seconds": 0.6395679579999864,
+          "child_user_seconds": 0.4896850000000086,
+          "child_system_seconds": 1.4021019999999993,
+          "compiling_lines": 0,
+          "summaries": [
+            "test parser::scratch_buffer::tests::snapshot_is_empty_relative_to_its_buffer ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored - should panic ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored_in_reverse_order - should panic ... ok",
+            "test result: ok. 245 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s",
+            "test result: ok. 556 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.23s",
+            "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+            "test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s"
+          ]
+        },
+        "05-fork": {
+          "elapsed_seconds": 0.6730237089999491,
+          "child_user_seconds": 0.14523500000001377,
+          "child_system_seconds": 0.510386000000004,
+          "compiling_lines": 0,
+          "summaries": [
+            "     Created /private/tmp/codex-cargo-targets/ruff/isolated/clippy-seeding-ci/off2/volume/child (no compatible build snapshot seeded)"
+          ]
+        },
+        "06-child-test": {
+          "elapsed_seconds": 4.705935750000037,
+          "child_user_seconds": 15.124700000000018,
+          "child_system_seconds": 2.212564999999998,
+          "compiling_lines": 7,
+          "summaries": [
+            "test parser::scratch_buffer::tests::snapshot_is_empty_relative_to_its_buffer ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored - should panic ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored_in_reverse_order - should panic ... ok",
+            "test result: ok. 245 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.06s",
+            "test result: ok. 556 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.21s",
+            "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+            "test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s"
+          ]
+        },
+        "07-edit": {
+          "elapsed_seconds": 0.2715037920000327,
+          "child_user_seconds": 0.1963620000000219,
+          "child_system_seconds": 0.19544399999999484,
+          "compiling_lines": 0,
+          "summaries": []
+        },
+        "08-child-edit-test": {
+          "elapsed_seconds": 1.4821349169999962,
+          "child_user_seconds": 3.109911000000011,
+          "child_system_seconds": 1.8159789999999987,
+          "compiling_lines": 1,
+          "summaries": [
+            "test parser::scratch_buffer::tests::snapshot_is_empty_relative_to_its_buffer ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored - should panic ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored_in_reverse_order - should panic ... ok",
+            "test result: ok. 245 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s",
+            "test result: ok. 557 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.23s",
+            "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+            "test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s"
+          ]
+        },
+        "09-child-clippy": {
+          "elapsed_seconds": 1.2989842499999895,
+          "child_user_seconds": 2.825243999999998,
+          "child_system_seconds": 0.4648389999999978,
+          "compiling_lines": 0,
+          "summaries": []
+        },
+        "09b-child-clippy-noop": {
+          "elapsed_seconds": 0.08325341699998035,
+          "child_user_seconds": 0.043099999999981264,
+          "child_system_seconds": 0.0365369999999956,
+          "compiling_lines": 0,
+          "summaries": []
+        },
+        "10-child-noop": {
+          "elapsed_seconds": 0.6055819589999487,
+          "child_user_seconds": 0.47807699999998476,
+          "child_system_seconds": 1.3760460000000023,
+          "compiling_lines": 0,
+          "summaries": [
+            "test parser::scratch_buffer::tests::snapshot_is_empty_relative_to_its_buffer ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored - should panic ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored_in_reverse_order - should panic ... ok",
+            "test result: ok. 245 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s",
+            "test result: ok. 557 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.22s",
+            "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+            "test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s"
+          ]
+        }
+      },
+      "final_artifact_groups_clone_unaware": {
+        "other": {
+          "files": 1650,
+          "logical_bytes": 439819041,
+          "inode_allocated_clone_unaware_bytes": 447635456
+        },
+        ".rmeta": {
+          "files": 177,
+          "logical_bytes": 150522955,
+          "inode_allocated_clone_unaware_bytes": 150892544
+        },
+        "query-cache": {
+          "files": 40,
+          "logical_bytes": 138106979,
+          "inode_allocated_clone_unaware_bytes": 138190848
+        },
+        ".o": {
+          "files": 1993,
+          "logical_bytes": 129941792,
+          "inode_allocated_clone_unaware_bytes": 133799936
+        },
+        ".rlib": {
+          "files": 129,
+          "logical_bytes": 114301568,
+          "inode_allocated_clone_unaware_bytes": 114536448
+        }
+      },
+      "child_marginal_physical_bytes": 466026496,
+      "fork_and_child_wall_seconds": 9.120417793999934
+    },
+    "on3": {
+      "cargo_sha256": "24e006f5db0835da3fcd3e0931ab5db07f49a4361b61eeb6a1b193e92d2a5b02",
+      "rustc_sha256": "5d87dbf31bdff571fc94181be7cc241ccd80936404f9a87b1a91476670f1c95c",
+      "retained_physical_bytes_after_source_checkout": {
+        "donor": 565989376,
+        "child_fresh": 759844864,
+        "final": 900993024
+      },
+      "workflow_wall_seconds": 23.421788999000057,
+      "workflow_child_cpu_seconds": 83.11414900000001,
+      "steps": {
+        "02-donor-test": {
+          "elapsed_seconds": 15.520309124999983,
+          "child_user_seconds": 56.53943799999996,
+          "child_system_seconds": 6.2228039999999964,
+          "compiling_lines": 123,
+          "summaries": [
+            "test parser::scratch_buffer::tests::snapshot_is_empty_relative_to_its_buffer ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored - should panic ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored_in_reverse_order - should panic ... ok",
+            "test result: ok. 245 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s",
+            "test result: ok. 556 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.23s",
+            "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+            "test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s"
+          ]
+        },
+        "03-donor-clippy": {
+          "elapsed_seconds": 1.3104900410000369,
+          "child_user_seconds": 2.802830999999969,
+          "child_system_seconds": 0.4638360000000006,
+          "compiling_lines": 0,
+          "summaries": []
+        },
+        "03b-donor-clippy-noop": {
+          "elapsed_seconds": 0.10443812500000149,
+          "child_user_seconds": 0.05119400000000951,
+          "child_system_seconds": 0.04845299999999497,
+          "compiling_lines": 0,
+          "summaries": []
+        },
+        "04-donor-noop": {
+          "elapsed_seconds": 0.6009730000000104,
+          "child_user_seconds": 0.48365799999999126,
+          "child_system_seconds": 1.2143140000000017,
+          "compiling_lines": 0,
+          "summaries": [
+            "test parser::scratch_buffer::tests::snapshot_is_empty_relative_to_its_buffer ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored - should panic ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored_in_reverse_order - should panic ... ok",
+            "test result: ok. 245 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s",
+            "test result: ok. 556 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.20s",
+            "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+            "test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s"
+          ]
+        },
+        "05-fork": {
+          "elapsed_seconds": 0.7251104169999962,
+          "child_user_seconds": 0.1433550000000423,
+          "child_system_seconds": 0.5579350000000005,
+          "compiling_lines": 0,
+          "summaries": [
+            "      Seeded 851 files (253204399 bytes, 841 reflinked files) for /private/tmp/codex-cargo-targets/ruff/isolated/clippy-seeding-ci/on3/volume/child; the next build validates reuse"
+          ]
+        },
+        "06-child-test": {
+          "elapsed_seconds": 1.1838038750000237,
+          "child_user_seconds": 1.834414000000038,
+          "child_system_seconds": 1.6265489999999971,
+          "compiling_lines": 1,
+          "summaries": [
+            "test parser::scratch_buffer::tests::snapshot_is_empty_relative_to_its_buffer ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored - should panic ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored_in_reverse_order - should panic ... ok",
+            "test result: ok. 245 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.04s",
+            "test result: ok. 556 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.22s",
+            "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+            "test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s"
+          ]
+        },
+        "07-edit": {
+          "elapsed_seconds": 0.4221575830000006,
+          "child_user_seconds": 0.2771720000000073,
+          "child_system_seconds": 0.31126599999998916,
+          "compiling_lines": 0,
+          "summaries": []
+        },
+        "08-child-edit-test": {
+          "elapsed_seconds": 1.5708834999999794,
+          "child_user_seconds": 3.202327999999966,
+          "child_system_seconds": 2.152078000000003,
+          "compiling_lines": 1,
+          "summaries": [
+            "test parser::scratch_buffer::tests::snapshot_is_empty_relative_to_its_buffer ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored - should panic ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored_in_reverse_order - should panic ... ok",
+            "test result: ok. 245 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.07s",
+            "test result: ok. 557 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.27s",
+            "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+            "test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s"
+          ]
+        },
+        "09-child-clippy": {
+          "elapsed_seconds": 1.2877895000000308,
+          "child_user_seconds": 2.775305000000003,
+          "child_system_seconds": 0.4460200000000043,
+          "compiling_lines": 0,
+          "summaries": []
+        },
+        "09b-child-clippy-noop": {
+          "elapsed_seconds": 0.083822457999986,
+          "child_user_seconds": 0.04293700000005174,
+          "child_system_seconds": 0.03730399999999179,
+          "compiling_lines": 0,
+          "summaries": []
+        },
+        "10-child-noop": {
+          "elapsed_seconds": 0.6120113750000087,
+          "child_user_seconds": 0.4801909999999907,
+          "child_system_seconds": 1.4007670000000019,
+          "compiling_lines": 0,
+          "summaries": [
+            "test parser::scratch_buffer::tests::snapshot_is_empty_relative_to_its_buffer ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored - should panic ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored_in_reverse_order - should panic ... ok",
+            "test result: ok. 245 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s",
+            "test result: ok. 557 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.22s",
+            "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+            "test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s"
+          ]
+        }
+      },
+      "final_artifact_groups_clone_unaware": {
+        "other": {
+          "files": 1652,
+          "logical_bytes": 439844095,
+          "inode_allocated_clone_unaware_bytes": 444485632
+        },
+        ".o": {
+          "files": 1993,
+          "logical_bytes": 129941792,
+          "inode_allocated_clone_unaware_bytes": 133799936
+        },
+        ".rmeta": {
+          "files": 177,
+          "logical_bytes": 150522945,
+          "inode_allocated_clone_unaware_bytes": 150892544
+        },
+        "query-cache": {
+          "files": 40,
+          "logical_bytes": 145990876,
+          "inode_allocated_clone_unaware_bytes": 146071552
+        },
+        ".rlib": {
+          "files": 129,
+          "logical_bytes": 114301568,
+          "inode_allocated_clone_unaware_bytes": 114536448
+        }
+      },
+      "child_marginal_physical_bytes": 335003648,
+      "fork_and_child_wall_seconds": 5.8855787080000255
+    },
+    "off3": {
+      "cargo_sha256": "24e006f5db0835da3fcd3e0931ab5db07f49a4361b61eeb6a1b193e92d2a5b02",
+      "rustc_sha256": "5d87dbf31bdff571fc94181be7cc241ccd80936404f9a87b1a91476670f1c95c",
+      "retained_physical_bytes_after_source_checkout": {
+        "donor": 566833152,
+        "child_fresh": 925732864,
+        "final": 1032732672
+      },
+      "workflow_wall_seconds": 27.19441591599991,
+      "workflow_child_cpu_seconds": 97.96292599999987,
+      "steps": {
+        "02-donor-test": {
+          "elapsed_seconds": 15.636982290999981,
+          "child_user_seconds": 56.67116199999998,
+          "child_system_seconds": 6.539372999999998,
+          "compiling_lines": 123,
+          "summaries": [
+            "test parser::scratch_buffer::tests::snapshot_is_empty_relative_to_its_buffer ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored_in_reverse_order - should panic ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored - should panic ... ok",
+            "test result: ok. 245 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s",
+            "test result: ok. 556 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.28s",
+            "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s",
+            "test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s"
+          ]
+        },
+        "03-donor-clippy": {
+          "elapsed_seconds": 1.2925969170000258,
+          "child_user_seconds": 2.805700999999999,
+          "child_system_seconds": 0.4538960000000003,
+          "compiling_lines": 0,
+          "summaries": []
+        },
+        "03b-donor-clippy-noop": {
+          "elapsed_seconds": 0.095213957999988,
+          "child_user_seconds": 0.047083999999983916,
+          "child_system_seconds": 0.04138299999999617,
+          "compiling_lines": 0,
+          "summaries": []
+        },
+        "04-donor-noop": {
+          "elapsed_seconds": 0.6732350830000087,
+          "child_user_seconds": 0.4840059999999653,
+          "child_system_seconds": 1.694789,
+          "compiling_lines": 0,
+          "summaries": [
+            "test parser::scratch_buffer::tests::snapshot_is_empty_relative_to_its_buffer ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored - should panic ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored_in_reverse_order - should panic ... ok",
+            "test result: ok. 245 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.06s",
+            "test result: ok. 556 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.27s",
+            "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s",
+            "test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s"
+          ]
+        },
+        "05-fork": {
+          "elapsed_seconds": 0.6401012919999971,
+          "child_user_seconds": 0.13587300000000369,
+          "child_system_seconds": 0.4919009999999986,
+          "compiling_lines": 0,
+          "summaries": [
+            "     Created /private/tmp/codex-cargo-targets/ruff/isolated/clippy-seeding-ci/off3/volume/child (no compatible build snapshot seeded)"
+          ]
+        },
+        "06-child-test": {
+          "elapsed_seconds": 4.997193791999962,
+          "child_user_seconds": 15.190292999999997,
+          "child_system_seconds": 2.4907290000000017,
+          "compiling_lines": 7,
+          "summaries": [
+            "test parser::scratch_buffer::tests::snapshot_is_empty_relative_to_its_buffer ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored - should panic ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored_in_reverse_order - should panic ... ok",
+            "test result: ok. 245 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s",
+            "test result: ok. 556 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.26s",
+            "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s",
+            "test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s"
+          ]
+        },
+        "07-edit": {
+          "elapsed_seconds": 0.3124096249999866,
+          "child_user_seconds": 0.22553199999998697,
+          "child_system_seconds": 0.2039829999999938,
+          "compiling_lines": 0,
+          "summaries": []
+        },
+        "08-child-edit-test": {
+          "elapsed_seconds": 1.545211542000004,
+          "child_user_seconds": 3.182756999999981,
+          "child_system_seconds": 2.0052749999999975,
+          "compiling_lines": 1,
+          "summaries": [
+            "test parser::scratch_buffer::tests::snapshot_is_empty_relative_to_its_buffer ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored - should panic ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored_in_reverse_order - should panic ... ok",
+            "test result: ok. 245 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s",
+            "test result: ok. 557 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.26s",
+            "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s",
+            "test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s"
+          ]
+        },
+        "09-child-clippy": {
+          "elapsed_seconds": 1.282750582999995,
+          "child_user_seconds": 2.7811300000000188,
+          "child_system_seconds": 0.447535000000002,
+          "compiling_lines": 0,
+          "summaries": []
+        },
+        "09b-child-clippy-noop": {
+          "elapsed_seconds": 0.08382358299996895,
+          "child_user_seconds": 0.043238999999971384,
+          "child_system_seconds": 0.036968000000001666,
+          "compiling_lines": 0,
+          "summaries": []
+        },
+        "10-child-noop": {
+          "elapsed_seconds": 0.6348972499999945,
+          "child_user_seconds": 0.49016000000000304,
+          "child_system_seconds": 1.5001569999999873,
+          "compiling_lines": 0,
+          "summaries": [
+            "test parser::scratch_buffer::tests::snapshot_is_empty_relative_to_its_buffer ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored - should panic ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored_in_reverse_order - should panic ... ok",
+            "test result: ok. 245 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s",
+            "test result: ok. 557 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.24s",
+            "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s",
+            "test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s"
+          ]
+        }
+      },
+      "final_artifact_groups_clone_unaware": {
+        "other": {
+          "files": 1650,
+          "logical_bytes": 439811954,
+          "inode_allocated_clone_unaware_bytes": 447352832
+        },
+        ".rmeta": {
+          "files": 177,
+          "logical_bytes": 150522955,
+          "inode_allocated_clone_unaware_bytes": 150892544
+        },
+        "query-cache": {
+          "files": 40,
+          "logical_bytes": 138098081,
+          "inode_allocated_clone_unaware_bytes": 138178560
+        },
+        ".o": {
+          "files": 1993,
+          "logical_bytes": 129941792,
+          "inode_allocated_clone_unaware_bytes": 133799936
+        },
+        ".rlib": {
+          "files": 129,
+          "logical_bytes": 114301568,
+          "inode_allocated_clone_unaware_bytes": 114536448
+        }
+      },
+      "child_marginal_physical_bytes": 465899520,
+      "fork_and_child_wall_seconds": 9.496387666999908
+    },
+    "off4": {
+      "cargo_sha256": "24e006f5db0835da3fcd3e0931ab5db07f49a4361b61eeb6a1b193e92d2a5b02",
+      "rustc_sha256": "5d87dbf31bdff571fc94181be7cc241ccd80936404f9a87b1a91476670f1c95c",
+      "retained_physical_bytes_after_source_checkout": {
+        "donor": 566005760,
+        "child_fresh": 925110272,
+        "final": 1032085504
+      },
+      "workflow_wall_seconds": 27.402867208000146,
+      "workflow_child_cpu_seconds": 98.27849400000015,
+      "steps": {
+        "02-donor-test": {
+          "elapsed_seconds": 15.909162583000011,
+          "child_user_seconds": 56.765877000000046,
+          "child_system_seconds": 6.314992000000004,
+          "compiling_lines": 123,
+          "summaries": [
+            "test parser::scratch_buffer::tests::snapshot_is_empty_relative_to_its_buffer ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored - should panic ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored_in_reverse_order - should panic ... ok",
+            "test result: ok. 245 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s",
+            "test result: ok. 556 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.24s",
+            "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s",
+            "test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s"
+          ]
+        },
+        "03-donor-clippy": {
+          "elapsed_seconds": 1.3351302499999633,
+          "child_user_seconds": 2.8661049999999477,
+          "child_system_seconds": 0.48597999999999786,
+          "compiling_lines": 0,
+          "summaries": []
+        },
+        "03b-donor-clippy-noop": {
+          "elapsed_seconds": 0.08429245900003934,
+          "child_user_seconds": 0.043220000000019354,
+          "child_system_seconds": 0.03711699999999496,
+          "compiling_lines": 0,
+          "summaries": []
+        },
+        "04-donor-noop": {
+          "elapsed_seconds": 0.6494795830000157,
+          "child_user_seconds": 0.4838230000000294,
+          "child_system_seconds": 1.5716929999999962,
+          "compiling_lines": 0,
+          "summaries": [
+            "test parser::scratch_buffer::tests::snapshot_is_empty_relative_to_its_buffer ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored_in_reverse_order - should panic ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored - should panic ... ok",
+            "test result: ok. 245 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s",
+            "test result: ok. 556 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.26s",
+            "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s",
+            "test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s"
+          ]
+        },
+        "05-fork": {
+          "elapsed_seconds": 0.6285755000000108,
+          "child_user_seconds": 0.13369999999997617,
+          "child_system_seconds": 0.4827109999999948,
+          "compiling_lines": 0,
+          "summaries": [
+            "     Created /private/tmp/codex-cargo-targets/ruff/isolated/clippy-seeding-ci/off4/volume/child (no compatible build snapshot seeded)"
+          ]
+        },
+        "06-child-test": {
+          "elapsed_seconds": 4.75617491600002,
+          "child_user_seconds": 15.265795000000026,
+          "child_system_seconds": 2.43552600000001,
+          "compiling_lines": 7,
+          "summaries": [
+            "test parser::scratch_buffer::tests::snapshot_is_empty_relative_to_its_buffer ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored - should panic ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored_in_reverse_order - should panic ... ok",
+            "test result: ok. 245 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.06s",
+            "test result: ok. 556 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.24s",
+            "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s",
+            "test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s"
+          ]
+        },
+        "07-edit": {
+          "elapsed_seconds": 0.4245298750000188,
+          "child_user_seconds": 0.28001799999992727,
+          "child_system_seconds": 0.28263699999999403,
+          "compiling_lines": 0,
+          "summaries": []
+        },
+        "08-child-edit-test": {
+          "elapsed_seconds": 1.5478447080000137,
+          "child_user_seconds": 3.1834370000000263,
+          "child_system_seconds": 2.035837000000001,
+          "compiling_lines": 1,
+          "summaries": [
+            "test parser::scratch_buffer::tests::snapshot_is_empty_relative_to_its_buffer ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored - should panic ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored_in_reverse_order - should panic ... ok",
+            "test result: ok. 245 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s",
+            "test result: ok. 557 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.27s",
+            "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s",
+            "test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s"
+          ]
+        },
+        "09-child-clippy": {
+          "elapsed_seconds": 1.3127996250000251,
+          "child_user_seconds": 2.8316810000000032,
+          "child_system_seconds": 0.4699780000000118,
+          "compiling_lines": 0,
+          "summaries": []
+        },
+        "09b-child-clippy-noop": {
+          "elapsed_seconds": 0.0841022920000114,
+          "child_user_seconds": 0.042886000000066815,
+          "child_system_seconds": 0.03760800000000586,
+          "compiling_lines": 0,
+          "summaries": []
+        },
+        "10-child-noop": {
+          "elapsed_seconds": 0.6707754170000158,
+          "child_user_seconds": 0.4812370000000783,
+          "child_system_seconds": 1.7466359999999952,
+          "compiling_lines": 0,
+          "summaries": [
+            "test parser::scratch_buffer::tests::snapshot_is_empty_relative_to_its_buffer ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored - should panic ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored_in_reverse_order - should panic ... ok",
+            "test result: ok. 245 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s",
+            "test result: ok. 557 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.28s",
+            "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s",
+            "test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s"
+          ]
+        }
+      },
+      "final_artifact_groups_clone_unaware": {
+        "other": {
+          "files": 1650,
+          "logical_bytes": 439818601,
+          "inode_allocated_clone_unaware_bytes": 446648320
+        },
+        ".rmeta": {
+          "files": 177,
+          "logical_bytes": 150522955,
+          "inode_allocated_clone_unaware_bytes": 150892544
+        },
+        "query-cache": {
+          "files": 40,
+          "logical_bytes": 138110315,
+          "inode_allocated_clone_unaware_bytes": 138194944
+        },
+        ".o": {
+          "files": 1993,
+          "logical_bytes": 129941792,
+          "inode_allocated_clone_unaware_bytes": 133799936
+        },
+        ".rlib": {
+          "files": 129,
+          "logical_bytes": 114301568,
+          "inode_allocated_clone_unaware_bytes": 114536448
+        }
+      },
+      "child_marginal_physical_bytes": 466079744,
+      "fork_and_child_wall_seconds": 9.424802333000116
+    },
+    "on4": {
+      "cargo_sha256": "24e006f5db0835da3fcd3e0931ab5db07f49a4361b61eeb6a1b193e92d2a5b02",
+      "rustc_sha256": "5d87dbf31bdff571fc94181be7cc241ccd80936404f9a87b1a91476670f1c95c",
+      "retained_physical_bytes_after_source_checkout": {
+        "donor": 566312960,
+        "child_fresh": 759984128,
+        "final": 901128192
+      },
+      "workflow_wall_seconds": 23.76867287500022,
+      "workflow_child_cpu_seconds": 84.8157810000003,
+      "steps": {
+        "02-donor-test": {
+          "elapsed_seconds": 15.705346125000005,
+          "child_user_seconds": 57.00840800000003,
+          "child_system_seconds": 6.534945999999991,
+          "compiling_lines": 123,
+          "summaries": [
+            "test parser::scratch_buffer::tests::snapshot_is_empty_relative_to_its_buffer ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored_in_reverse_order - should panic ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored - should panic ... ok",
+            "test result: ok. 245 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s",
+            "test result: ok. 556 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.27s",
+            "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s",
+            "test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s"
+          ]
+        },
+        "03-donor-clippy": {
+          "elapsed_seconds": 1.3139340410000386,
+          "child_user_seconds": 2.8312420000000884,
+          "child_system_seconds": 0.46308800000001327,
+          "compiling_lines": 0,
+          "summaries": []
+        },
+        "03b-donor-clippy-noop": {
+          "elapsed_seconds": 0.10511250000001837,
+          "child_user_seconds": 0.047621999999932996,
+          "child_system_seconds": 0.04974300000000653,
+          "compiling_lines": 0,
+          "summaries": []
+        },
+        "04-donor-noop": {
+          "elapsed_seconds": 0.6767141249999895,
+          "child_user_seconds": 0.48398100000008526,
+          "child_system_seconds": 1.7687330000000117,
+          "compiling_lines": 0,
+          "summaries": [
+            "test parser::scratch_buffer::tests::snapshot_is_empty_relative_to_its_buffer ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored - should panic ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored_in_reverse_order - should panic ... ok",
+            "test result: ok. 245 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.06s",
+            "test result: ok. 556 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.27s",
+            "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+            "test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s"
+          ]
+        },
+        "05-fork": {
+          "elapsed_seconds": 0.7066983330000198,
+          "child_user_seconds": 0.13514099999997597,
+          "child_system_seconds": 0.5556410000000085,
+          "compiling_lines": 0,
+          "summaries": [
+            "      Seeded 851 files (253206772 bytes, 841 reflinked files) for /private/tmp/codex-cargo-targets/ruff/isolated/clippy-seeding-ci/on4/volume/child; the next build validates reuse"
+          ]
+        },
+        "06-child-test": {
+          "elapsed_seconds": 1.229454042000043,
+          "child_user_seconds": 1.843595999999934,
+          "child_system_seconds": 1.9220730000000117,
+          "compiling_lines": 1,
+          "summaries": [
+            "test parser::scratch_buffer::tests::snapshot_is_empty_relative_to_its_buffer ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored - should panic ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored_in_reverse_order - should panic ... ok",
+            "test result: ok. 245 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s",
+            "test result: ok. 556 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.25s",
+            "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s",
+            "test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s"
+          ]
+        },
+        "07-edit": {
+          "elapsed_seconds": 0.4282818340000176,
+          "child_user_seconds": 0.2814409999999725,
+          "child_system_seconds": 0.33836400000001277,
+          "compiling_lines": 0,
+          "summaries": []
+        },
+        "08-child-edit-test": {
+          "elapsed_seconds": 1.5301962920000278,
+          "child_user_seconds": 3.177032000000054,
+          "child_system_seconds": 1.8642700000000048,
+          "compiling_lines": 1,
+          "summaries": [
+            "test parser::scratch_buffer::tests::snapshot_is_empty_relative_to_its_buffer ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored - should panic ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored_in_reverse_order - should panic ... ok",
+            "test result: ok. 245 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s",
+            "test result: ok. 557 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.24s",
+            "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s",
+            "test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s"
+          ]
+        },
+        "09-child-clippy": {
+          "elapsed_seconds": 1.3073880420000137,
+          "child_user_seconds": 2.8207250000000386,
+          "child_system_seconds": 0.46158700000000863,
+          "compiling_lines": 0,
+          "summaries": []
+        },
+        "09b-child-clippy-noop": {
+          "elapsed_seconds": 0.08761754100004282,
+          "child_user_seconds": 0.04442200000005414,
+          "child_system_seconds": 0.03922499999998763,
+          "compiling_lines": 0,
+          "summaries": []
+        },
+        "10-child-noop": {
+          "elapsed_seconds": 0.6779300000000035,
+          "child_user_seconds": 0.4936280000000579,
+          "child_system_seconds": 1.6508730000000185,
+          "compiling_lines": 0,
+          "summaries": [
+            "test parser::scratch_buffer::tests::snapshot_is_empty_relative_to_its_buffer ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored - should panic ... ok",
+            "test parser::scratch_buffer::tests::snapshot_must_be_restored_in_reverse_order - should panic ... ok",
+            "test result: ok. 245 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.06s",
+            "test result: ok. 557 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.25s",
+            "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s",
+            "test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s"
+          ]
+        }
+      },
+      "final_artifact_groups_clone_unaware": {
+        "other": {
+          "files": 1652,
+          "logical_bytes": 439861696,
+          "inode_allocated_clone_unaware_bytes": 444497920
+        },
+        ".o": {
+          "files": 1993,
+          "logical_bytes": 129941792,
+          "inode_allocated_clone_unaware_bytes": 133799936
+        },
+        ".rmeta": {
+          "files": 177,
+          "logical_bytes": 150522945,
+          "inode_allocated_clone_unaware_bytes": 150892544
+        },
+        "query-cache": {
+          "files": 40,
+          "logical_bytes": 145998165,
+          "inode_allocated_clone_unaware_bytes": 146079744
+        },
+        ".rlib": {
+          "files": 129,
+          "logical_bytes": 114301568,
+          "inode_allocated_clone_unaware_bytes": 114536448
+        }
+      },
+      "child_marginal_physical_bytes": 334815232,
+      "fork_and_child_wall_seconds": 5.967566084000168
+    }
+  },
+  "pairs": [
+    {
+      "pair": "1",
+      "workflow_wall_change_percent": -7.908752215128212,
+      "workflow_child_cpu_change_percent": -10.309751500379106,
+      "retained_physical_change_percent": {
+        "donor": -0.25362187940315417,
+        "child_fresh": -17.836121334520282,
+        "final": -12.754565825219611
+      },
+      "child_marginal_physical_change_percent": -27.96395604395604,
+      "fork_and_child_wall_change_percent": -26.857429763859354
+    },
+    {
+      "pair": "2",
+      "workflow_wall_change_percent": -12.646639898299794,
+      "workflow_child_cpu_change_percent": -13.901370279532376,
+      "retained_physical_change_percent": {
+        "donor": 0.004335134822697206,
+        "child_fresh": -17.822742430482673,
+        "final": -12.751209453564915
+      },
+      "child_marginal_physical_change_percent": -28.267824497257767,
+      "fork_and_child_wall_change_percent": -36.6994577945971
+    },
+    {
+      "pair": "3",
+      "workflow_wall_change_percent": -13.87279994780185,
+      "workflow_child_cpu_change_percent": -15.157547458310782,
+      "retained_physical_change_percent": {
+        "donor": -0.14885791295424777,
+        "child_fresh": -17.919640368303913,
+        "final": -12.756413307315217
+      },
+      "child_marginal_physical_change_percent": -28.09530089234692,
+      "fork_and_child_wall_change_percent": -38.02297342543732
+    },
+    {
+      "pair": "4",
+      "workflow_wall_change_percent": -13.262095186663302,
+      "workflow_child_cpu_change_percent": -13.698534086205916,
+      "retained_physical_change_percent": {
+        "donor": 0.05427506603465915,
+        "child_fresh": -17.849347153287255,
+        "final": -12.688610729678462
+      },
+      "child_marginal_physical_change_percent": -28.16353074550264,
+      "fork_and_child_wall_change_percent": -36.682321038126595
+    }
+  ],
+  "aggregates": {
+    "workflow_wall_seconds": {
+      "off": {
+        "samples": [
+          26.893524960000008,
+          26.755871750999916,
+          27.19441591599991,
+          27.402867208000146
+        ],
+        "median": 27.04397043799996,
+        "min": 26.755871750999916,
+        "max": 27.402867208000146
+      },
+      "on": {
+        "samples": [
+          24.766582708999948,
+          23.372152999000036,
+          23.421788999000057,
+          23.76867287500022
+        ],
+        "median": 23.59523093700014,
+        "min": 23.372152999000036,
+        "max": 24.766582708999948
+      },
+      "change_percent": -12.75234163158948
+    },
+    "workflow_child_cpu_seconds": {
+      "off": {
+        "samples": [
+          97.872262,
+          96.494545,
+          97.96292599999987,
+          98.27849400000015
+        ],
+        "median": 97.91759399999994,
+        "min": 96.494545,
+        "max": 98.27849400000015
+      },
+      "on": {
+        "samples": [
+          87.78187500000004,
+          83.080481,
+          83.11414900000001,
+          84.8157810000003
+        ],
+        "median": 83.96496500000015,
+        "min": 83.080481,
+        "max": 87.78187500000004
+      },
+      "change_percent": -14.24935849628801
+    },
+    "fork_and_child_wall_seconds": {
+      "off": {
+        "samples": [
+          9.298448876000037,
+          9.120417793999934,
+          9.496387666999908,
+          9.424802333000116
+        ],
+        "median": 9.361625604500077,
+        "min": 9.120417793999934,
+        "max": 9.496387666999908
+      },
+      "on": {
+        "samples": [
+          6.801124499999958,
+          5.773273915000004,
+          5.8855787080000255,
+          5.967566084000168
+        ],
+        "median": 5.926572396000097,
+        "min": 5.773273915000004,
+        "max": 6.801124499999958
+      },
+      "change_percent": -36.692913748321345
+    },
+    "child_marginal_physical_bytes": {
+      "off": {
+        "samples": [
+          465920000,
+          466026496,
+          465899520,
+          466079744
+        ],
+        "median": 465973248.0,
+        "min": 465899520,
+        "max": 466079744
+      },
+      "on": {
+        "samples": [
+          335630336,
+          334290944,
+          335003648,
+          334815232
+        ],
+        "median": 334909440.0,
+        "min": 334290944,
+        "max": 335630336
+      },
+      "change_percent": -28.12689538777986
+    },
+    "02-donor-test": {
+      "off": {
+        "samples": [
+          15.561996333999986,
+          15.609392500000013,
+          15.636982290999981,
+          15.909162583000011
+        ],
+        "median": 15.623187395499997,
+        "min": 15.561996333999986,
+        "max": 15.909162583000011
+      },
+      "on": {
+        "samples": [
+          15.742618499999992,
+          15.575676041999998,
+          15.520309124999983,
+          15.705346125000005
+        ],
+        "median": 15.640511083500002,
+        "min": 15.520309124999983,
+        "max": 15.742618499999992
+      },
+      "change_percent": 0.11088446653975126
+    },
+    "03-donor-clippy": {
+      "off": {
+        "samples": [
+          1.2810457079999935,
+          1.2774749579999707,
+          1.2925969170000258,
+          1.3351302499999633
+        ],
+        "median": 1.2868213125000096,
+        "min": 1.2774749579999707,
+        "max": 1.3351302499999633
+      },
+      "on": {
+        "samples": [
+          1.4462283340000113,
+          1.3138862080000138,
+          1.3104900410000369,
+          1.3139340410000386
+        ],
+        "median": 1.3139101245000262,
+        "min": 1.3104900410000369,
+        "max": 1.4462283340000113
+      },
+      "change_percent": 2.1050950692904635
+    },
+    "03b-donor-clippy-noop": {
+      "off": {
+        "samples": [
+          0.0829299170000013,
+          0.10901854100001174,
+          0.095213957999988,
+          0.08429245900003934
+        ],
+        "median": 0.08975320850001367,
+        "min": 0.0829299170000013,
+        "max": 0.10901854100001174
+      },
+      "on": {
+        "samples": [
+          0.10497004199999083,
+          0.09224662500000136,
+          0.10443812500000149,
+          0.10511250000001837
+        ],
+        "median": 0.10470408349999616,
+        "min": 0.09224662500000136,
+        "max": 0.10511250000001837
+      },
+      "change_percent": 16.657761042581786
+    },
+    "04-donor-noop": {
+      "off": {
+        "samples": [
+          0.6691041249999898,
+          0.6395679579999864,
+          0.6732350830000087,
+          0.6494795830000157
+        ],
+        "median": 0.6592918540000028,
+        "min": 0.6395679579999864,
+        "max": 0.6732350830000087
+      },
+      "on": {
+        "samples": [
+          0.6716413329999966,
+          0.6170702090000191,
+          0.6009730000000104,
+          0.6767141249999895
+        ],
+        "median": 0.6443557710000078,
+        "min": 0.6009730000000104,
+        "max": 0.6767141249999895
+      },
+      "change_percent": -2.265473615270075
+    },
+    "05-fork": {
+      "off": {
+        "samples": [
+          0.6530742090000103,
+          0.6730237089999491,
+          0.6401012919999971,
+          0.6285755000000108
+        ],
+        "median": 0.6465877505000037,
+        "min": 0.6285755000000108,
+        "max": 0.6730237089999491
+      },
+      "on": {
+        "samples": [
+          0.7698149999999941,
+          0.7223864999999989,
+          0.7251104169999962,
+          0.7066983330000198
+        ],
+        "median": 0.7237484584999976,
+        "min": 0.7066983330000198,
+        "max": 0.7698149999999941
+      },
+      "change_percent": 11.933524558781983
+    },
+    "06-child-test": {
+      "off": {
+        "samples": [
+          4.76829758300002,
+          4.705935750000037,
+          4.997193791999962,
+          4.75617491600002
+        ],
+        "median": 4.76223624950002,
+        "min": 4.705935750000037,
+        "max": 4.997193791999962
+      },
+      "on": {
+        "samples": [
+          1.6810718329999759,
+          1.1852979999999889,
+          1.1838038750000237,
+          1.229454042000043
+        ],
+        "median": 1.207376021000016,
+        "min": 1.1838038750000237,
+        "max": 1.6810718329999759
+      },
+      "change_percent": -74.64686845120764
+    },
+    "07-edit": {
+      "off": {
+        "samples": [
+          0.3409519579999767,
+          0.2715037920000327,
+          0.3124096249999866,
+          0.4245298750000188
+        ],
+        "median": 0.32668079149998164,
+        "min": 0.2715037920000327,
+        "max": 0.4245298750000188
+      },
+      "on": {
+        "samples": [
+          0.43197487500000875,
+          0.410586416000001,
+          0.4221575830000006,
+          0.4282818340000176
+        ],
+        "median": 0.4252197085000091,
+        "min": 0.410586416000001,
+        "max": 0.43197487500000875
+      },
+      "change_percent": 30.163670336286973
+    },
+    "08-child-edit-test": {
+      "off": {
+        "samples": [
+          1.5284197500000118,
+          1.4821349169999962,
+          1.545211542000004,
+          1.5478447080000137
+        ],
+        "median": 1.536815646000008,
+        "min": 1.4821349169999962,
+        "max": 1.5478447080000137
+      },
+      "on": {
+        "samples": [
+          1.8876480410000056,
+          1.4844104999999956,
+          1.5708834999999794,
+          1.5301962920000278
+        ],
+        "median": 1.5505398960000036,
+        "min": 1.4844104999999956,
+        "max": 1.8876480410000056
+      },
+      "change_percent": 0.893031642130726
+    },
+    "09-child-clippy": {
+      "off": {
+        "samples": [
+          1.2864951670000266,
+          1.2989842499999895,
+          1.282750582999995,
+          1.3127996250000251
+        ],
+        "median": 1.292739708500008,
+        "min": 1.282750582999995,
+        "max": 1.3127996250000251
+      },
+      "on": {
+        "samples": [
+          1.3247309169999824,
+          1.2930413330000192,
+          1.2877895000000308,
+          1.3073880420000137
+        ],
+        "median": 1.3002146875000165,
+        "min": 1.2877895000000308,
+        "max": 1.3247309169999824
+      },
+      "change_percent": 0.5782276935456521
+    },
+    "09b-child-clippy-noop": {
+      "off": {
+        "samples": [
+          0.0822477499999934,
+          0.08325341699998035,
+          0.08382358299996895,
+          0.0841022920000114
+        ],
+        "median": 0.08353849999997465,
+        "min": 0.0822477499999934,
+        "max": 0.0841022920000114
+      },
+      "on": {
+        "samples": [
+          0.08454574999998954,
+          0.08425729100000012,
+          0.083822457999986,
+          0.08761754100004282
+        ],
+        "median": 0.08440152049999483,
+        "min": 0.083822457999986,
+        "max": 0.08761754100004282
+      },
+      "change_percent": 1.033081154222848
+    },
+    "10-child-noop": {
+      "off": {
+        "samples": [
+          0.6389624589999983,
+          0.6055819589999487,
+          0.6348972499999945,
+          0.6707754170000158
+        ],
+        "median": 0.6369298544999964,
+        "min": 0.6055819589999487,
+        "max": 0.6707754170000158
+      },
+      "on": {
+        "samples": [
+          0.6213380840000013,
+          0.5932938750000005,
+          0.6120113750000087,
+          0.6779300000000035
+        ],
+        "median": 0.616674729500005,
+        "min": 0.5932938750000005,
+        "max": 0.6779300000000035
+      },
+      "change_percent": -3.1801186358099143
+    }
+  },
+  "sample_order": [
+    "off1",
+    "on1",
+    "on2",
+    "off2",
+    "on3",
+    "off3",
+    "off4",
+    "on4"
+  ],
+  "timing_caveat": "External Rust processes checked before/after commands; ordinary host activity remains.",
+  "allocation_scope": "Dedicated APFS volume growth after donor checkout: build and incremental state, plus child checkout in the seeding workflow."
+}

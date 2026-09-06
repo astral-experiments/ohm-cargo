@@ -1,0 +1,160 @@
+{
+  "scope": "Untimed tiny local APFS fixture, attribution only; not representative performance evidence",
+  "cargo_sha256": "4a3383fc93966ea97342bb53fc5f48550a1fa71a82c9bfd620bc6fe6f746c325",
+  "cargo_version": "cargo 1.98.0 (795cddae6 2026-09-06)\nrelease: 1.98.0\ncommit-hash: 795cddae649feb6387fbf35c7a905d7b4977dba0\ncommit-date: 2026-09-06\nhost: aarch64-apple-darwin\nlibgit2: 1.9.4 (sys:0.21.0 vendored)\nlibcurl: 8.7.1 (sys:0.4.90+curl-8.21.0 system ssl:(SecureTransport) LibreSSL/3.3.6)\nos: Mac OS 26.6.2 [64-bit]\n",
+  "environment": {
+    "PATH": "/private/tmp/codex-cargo-targets/cargo/clippy-seeding/ohm/release:/Users/charliemarsh/.local/share/ohm/toolchains/ohm-1.98.0-9/bin:/Users/charliemarsh/.cargo/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+    "CARGO_HOME": "/private/tmp/codex-cargo-home",
+    "RUSTC": "/Users/charliemarsh/.local/share/ohm/toolchains/ohm-1.98.0-9/bin/rustc",
+    "RUSTUP_TOOLCHAIN": "ohm",
+    "CARGO_TARGET_DIR": "/private/tmp/codex-cargo-targets/cargo/isolated/clippy-warm-trace/outputs",
+    "CARGO_BUILD_BUILD_DIR": "/private/tmp/codex-cargo-targets/cargo/isolated/clippy-warm-trace/shared",
+    "CARGO_UNSTABLE_OHM_NATIVE_TOOL_TRUST": "all",
+    "CARGO_UNSTABLE_OHM_PROC_MACRO_TRUST": "all",
+    "CARGO_LOG": "cargo::util::rustc=debug"
+  },
+  "isolated_paths": [
+    "/private/tmp/codex-cargo-targets/cargo/isolated/clippy-warm-trace/shared/debug/build/workspaces/f3cbdc770a564d4c/.ohm-clippy-v1",
+    "/private/tmp/codex-cargo-targets/cargo/isolated/clippy-warm-trace/shared/debug/incremental/f3cbdc770a564d4c/.ohm-clippy-v1"
+  ],
+  "commands": [
+    {
+      "label": "init",
+      "argv": [
+        "git",
+        "init"
+      ],
+      "returncode": 0,
+      "cache_trace": []
+    },
+    {
+      "label": "add",
+      "argv": [
+        "git",
+        "add",
+        "."
+      ],
+      "returncode": 0,
+      "cache_trace": []
+    },
+    {
+      "label": "commit",
+      "argv": [
+        "git",
+        "-c",
+        "user.name=Benchmark",
+        "-c",
+        "user.email=benchmark@example.invalid",
+        "-c",
+        "commit.gpgsign=false",
+        "commit",
+        "-m",
+        "fixture"
+      ],
+      "returncode": 0,
+      "cache_trace": []
+    },
+    {
+      "label": "build",
+      "argv": [
+        "/private/tmp/codex-cargo-targets/cargo/clippy-seeding/ohm/release/cargo",
+        "build",
+        "--offline"
+      ],
+      "returncode": 0,
+      "cache_trace": [
+        "   0.024594959s DEBUG new{path=\"/Users/charliemarsh/.local/share/ohm/toolchains/ohm-1.98.0-9/bin/rustc\" wrapper=None workspace_wrapper=None rustup_rustc=\"/private/tmp/codex-cargo-home/bin/rustc\" cache_location=Some(\"/private/tmp/codex-cargo-targets/cargo/isolated/clippy-warm-trace/shared/.rustc_info.json\")}: cargo::util::rustc: failed to read rustc info cache: failed to read `/private/tmp/codex-cargo-targets/cargo/isolated/clippy-warm-trace/shared/.rustc_info.json`",
+        "   0.024973125s DEBUG new{path=\"/Users/charliemarsh/.local/share/ohm/toolchains/ohm-1.98.0-9/bin/rustc\" wrapper=None workspace_wrapper=None rustup_rustc=\"/private/tmp/codex-cargo-home/bin/rustc\" cache_location=Some(\"/private/tmp/codex-cargo-targets/cargo/isolated/clippy-warm-trace/shared/.rustc_info.json\")}: cargo::util::rustc: rustc info cache miss",
+        "   0.024976459s DEBUG new{path=\"/Users/charliemarsh/.local/share/ohm/toolchains/ohm-1.98.0-9/bin/rustc\" wrapper=None workspace_wrapper=None rustup_rustc=\"/private/tmp/codex-cargo-home/bin/rustc\" cache_location=Some(\"/private/tmp/codex-cargo-targets/cargo/isolated/clippy-warm-trace/shared/.rustc_info.json\")}: cargo::util::rustc: running `/Users/charliemarsh/.local/share/ohm/toolchains/ohm-1.98.0-9/bin/rustc -vV`",
+        "   0.050996459s DEBUG cargo::util::rustc: rustc info cache miss",
+        "   0.051002917s DEBUG cargo::util::rustc: running `/Users/charliemarsh/.local/share/ohm/toolchains/ohm-1.98.0-9/bin/rustc - --crate-name ___ --print=file-names -Zpublic-api-hash -Zcache-proc-macros -Zthreads=8 --crate-type bin --crate-type rlib --crate-type dylib --crate-type cdylib --crate-type staticlib --crate-type proc-macro --print=sysroot --print=split-debuginfo --print=crate-name --print=cfg -Wwarnings`",
+        "   0.085369792s DEBUG new{path=\"/Users/charliemarsh/.local/share/ohm/toolchains/ohm-1.98.0-9/bin/rustc\" wrapper=None workspace_wrapper=None rustup_rustc=\"/private/tmp/codex-cargo-home/bin/rustc\" cache_location=Some(\"/private/tmp/codex-cargo-targets/cargo/isolated/clippy-warm-trace/shared/.rustc_info.json\")}: cargo::util::rustc: failed to read rustc info cache: failed to read `/private/tmp/codex-cargo-targets/cargo/isolated/clippy-warm-trace/shared/.rustc_info.json`",
+        "   0.085380209s DEBUG new{path=\"/Users/charliemarsh/.local/share/ohm/toolchains/ohm-1.98.0-9/bin/rustc\" wrapper=None workspace_wrapper=None rustup_rustc=\"/private/tmp/codex-cargo-home/bin/rustc\" cache_location=Some(\"/private/tmp/codex-cargo-targets/cargo/isolated/clippy-warm-trace/shared/.rustc_info.json\")}: cargo::util::rustc: rustc info cache miss",
+        "   0.085381500s DEBUG new{path=\"/Users/charliemarsh/.local/share/ohm/toolchains/ohm-1.98.0-9/bin/rustc\" wrapper=None workspace_wrapper=None rustup_rustc=\"/private/tmp/codex-cargo-home/bin/rustc\" cache_location=Some(\"/private/tmp/codex-cargo-targets/cargo/isolated/clippy-warm-trace/shared/.rustc_info.json\")}: cargo::util::rustc: running `/Users/charliemarsh/.local/share/ohm/toolchains/ohm-1.98.0-9/bin/rustc -vV`",
+        "   0.100481917s  WARN cargo::util::rustc: failed to update rustc info cache: failed to write `/private/tmp/codex-cargo-targets/cargo/isolated/clippy-warm-trace/shared/.rustc_info.json`",
+        "   0.106282834s DEBUG new{path=\"/Users/charliemarsh/.local/share/ohm/toolchains/ohm-1.98.0-9/bin/rustc\" wrapper=None workspace_wrapper=None rustup_rustc=\"/private/tmp/codex-cargo-home/bin/rustc\" cache_location=Some(\"/private/tmp/codex-cargo-targets/cargo/isolated/clippy-warm-trace/shared/.rustc_info.json\")}: cargo::util::rustc: failed to read rustc info cache: failed to read `/private/tmp/codex-cargo-targets/cargo/isolated/clippy-warm-trace/shared/.rustc_info.json`",
+        "   0.106291084s DEBUG new{path=\"/Users/charliemarsh/.local/share/ohm/toolchains/ohm-1.98.0-9/bin/rustc\" wrapper=None workspace_wrapper=None rustup_rustc=\"/private/tmp/codex-cargo-home/bin/rustc\" cache_location=Some(\"/private/tmp/codex-cargo-targets/cargo/isolated/clippy-warm-trace/shared/.rustc_info.json\")}: cargo::util::rustc: rustc info cache miss",
+        "   0.106292125s DEBUG new{path=\"/Users/charliemarsh/.local/share/ohm/toolchains/ohm-1.98.0-9/bin/rustc\" wrapper=None workspace_wrapper=None rustup_rustc=\"/private/tmp/codex-cargo-home/bin/rustc\" cache_location=Some(\"/private/tmp/codex-cargo-targets/cargo/isolated/clippy-warm-trace/shared/.rustc_info.json\")}: cargo::util::rustc: running `/Users/charliemarsh/.local/share/ohm/toolchains/ohm-1.98.0-9/bin/rustc -vV`",
+        "   0.121190292s  WARN cargo::util::rustc: failed to update rustc info cache: failed to write `/private/tmp/codex-cargo-targets/cargo/isolated/clippy-warm-trace/shared/.rustc_info.json`",
+        "   0.122347459s DEBUG new{path=\"/Users/charliemarsh/.local/share/ohm/toolchains/ohm-1.98.0-9/bin/rustc\" wrapper=None workspace_wrapper=None rustup_rustc=\"/private/tmp/codex-cargo-home/bin/rustc\" cache_location=Some(\"/private/tmp/codex-cargo-targets/cargo/isolated/clippy-warm-trace/shared/.rustc_info.json\")}: cargo::util::rustc: failed to read rustc info cache: failed to read `/private/tmp/codex-cargo-targets/cargo/isolated/clippy-warm-trace/shared/.rustc_info.json`",
+        "   0.122355834s DEBUG new{path=\"/Users/charliemarsh/.local/share/ohm/toolchains/ohm-1.98.0-9/bin/rustc\" wrapper=None workspace_wrapper=None rustup_rustc=\"/private/tmp/codex-cargo-home/bin/rustc\" cache_location=Some(\"/private/tmp/codex-cargo-targets/cargo/isolated/clippy-warm-trace/shared/.rustc_info.json\")}: cargo::util::rustc: rustc info cache miss",
+        "   0.122356875s DEBUG new{path=\"/Users/charliemarsh/.local/share/ohm/toolchains/ohm-1.98.0-9/bin/rustc\" wrapper=None workspace_wrapper=None rustup_rustc=\"/private/tmp/codex-cargo-home/bin/rustc\" cache_location=Some(\"/private/tmp/codex-cargo-targets/cargo/isolated/clippy-warm-trace/shared/.rustc_info.json\")}: cargo::util::rustc: running `/Users/charliemarsh/.local/share/ohm/toolchains/ohm-1.98.0-9/bin/rustc -vV`",
+        "   0.143702750s  WARN cargo::util::rustc: failed to update rustc info cache: failed to write `/private/tmp/codex-cargo-targets/cargo/isolated/clippy-warm-trace/shared/.rustc_info.json`",
+        "   0.150511917s DEBUG cargo::util::rustc: rustc info cache miss",
+        "   0.150518792s DEBUG cargo::util::rustc: running `/Users/charliemarsh/.local/share/ohm/toolchains/ohm-1.98.0-9/bin/rustc -Zohm-caller-local-cgus -Zohm-stable-cgu-merging --print=sysroot`",
+        "   0.166162875s DEBUG cargo::util::rustc: rustc info cache miss",
+        "   0.166170917s DEBUG cargo::util::rustc: running `/Users/charliemarsh/.local/share/ohm/toolchains/ohm-1.98.0-9/bin/rustc -Zohm-incremental-mono-partitions --print=sysroot`",
+        "   0.248336084s  INFO cargo::util::rustc: updated rustc info cache"
+      ]
+    },
+    {
+      "label": "clippy-first",
+      "argv": [
+        "/private/tmp/codex-cargo-targets/cargo/clippy-seeding/ohm/release/cargo",
+        "clippy",
+        "--offline"
+      ],
+      "returncode": 0,
+      "cache_trace": [
+        "   0.001873291s DEBUG new{path=\"/Users/charliemarsh/.local/share/ohm/toolchains/ohm-1.98.0-9/bin/rustc\" wrapper=None workspace_wrapper=Some(\"/Users/charliemarsh/.local/share/ohm/toolchains/ohm-1.98.0-9/bin/clippy-driver\") rustup_rustc=\"/private/tmp/codex-cargo-home/bin/rustc\" cache_location=Some(\"/private/tmp/codex-cargo-targets/cargo/isolated/clippy-warm-trace/shared/.rustc_info.json\")}: cargo::util::rustc: different compiler, creating new rustc info cache",
+        "   0.001890125s DEBUG new{path=\"/Users/charliemarsh/.local/share/ohm/toolchains/ohm-1.98.0-9/bin/rustc\" wrapper=None workspace_wrapper=Some(\"/Users/charliemarsh/.local/share/ohm/toolchains/ohm-1.98.0-9/bin/clippy-driver\") rustup_rustc=\"/private/tmp/codex-cargo-home/bin/rustc\" cache_location=Some(\"/private/tmp/codex-cargo-targets/cargo/isolated/clippy-warm-trace/shared/.rustc_info.json\")}: cargo::util::rustc: rustc info cache miss",
+        "   0.001891625s DEBUG new{path=\"/Users/charliemarsh/.local/share/ohm/toolchains/ohm-1.98.0-9/bin/rustc\" wrapper=None workspace_wrapper=Some(\"/Users/charliemarsh/.local/share/ohm/toolchains/ohm-1.98.0-9/bin/clippy-driver\") rustup_rustc=\"/private/tmp/codex-cargo-home/bin/rustc\" cache_location=Some(\"/private/tmp/codex-cargo-targets/cargo/isolated/clippy-warm-trace/shared/.rustc_info.json\")}: cargo::util::rustc: running `/Users/charliemarsh/.local/share/ohm/toolchains/ohm-1.98.0-9/bin/clippy-driver /Users/charliemarsh/.local/share/ohm/toolchains/ohm-1.98.0-9/bin/rustc -vV`",
+        "   0.039370500s DEBUG cargo::util::rustc: rustc info cache miss",
+        "   0.039378791s DEBUG cargo::util::rustc: running `/Users/charliemarsh/.local/share/ohm/toolchains/ohm-1.98.0-9/bin/clippy-driver /Users/charliemarsh/.local/share/ohm/toolchains/ohm-1.98.0-9/bin/rustc - --crate-name ___ --print=file-names -Zpublic-api-hash -Zcache-proc-macros -Zthreads=8 --crate-type bin --crate-type rlib --crate-type dylib --crate-type cdylib --crate-type staticlib --crate-type proc-macro --print=sysroot --print=split-debuginfo --print=crate-name --print=cfg -Wwarnings`",
+        "   0.055598583s DEBUG new{path=\"/Users/charliemarsh/.local/share/ohm/toolchains/ohm-1.98.0-9/bin/rustc\" wrapper=None workspace_wrapper=Some(\"/Users/charliemarsh/.local/share/ohm/toolchains/ohm-1.98.0-9/bin/clippy-driver\") rustup_rustc=\"/private/tmp/codex-cargo-home/bin/rustc\" cache_location=Some(\"/private/tmp/codex-cargo-targets/cargo/isolated/clippy-warm-trace/shared/.rustc_info.json\")}: cargo::util::rustc: different compiler, creating new rustc info cache",
+        "   0.055606250s DEBUG new{path=\"/Users/charliemarsh/.local/share/ohm/toolchains/ohm-1.98.0-9/bin/rustc\" wrapper=None workspace_wrapper=Some(\"/Users/charliemarsh/.local/share/ohm/toolchains/ohm-1.98.0-9/bin/clippy-driver\") rustup_rustc=\"/private/tmp/codex-cargo-home/bin/rustc\" cache_location=Some(\"/private/tmp/codex-cargo-targets/cargo/isolated/clippy-warm-trace/shared/.rustc_info.json\")}: cargo::util::rustc: rustc info cache miss",
+        "   0.055607416s DEBUG new{path=\"/Users/charliemarsh/.local/share/ohm/toolchains/ohm-1.98.0-9/bin/rustc\" wrapper=None workspace_wrapper=Some(\"/Users/charliemarsh/.local/share/ohm/toolchains/ohm-1.98.0-9/bin/clippy-driver\") rustup_rustc=\"/private/tmp/codex-cargo-home/bin/rustc\" cache_location=Some(\"/private/tmp/codex-cargo-targets/cargo/isolated/clippy-warm-trace/shared/.rustc_info.json\")}: cargo::util::rustc: running `/Users/charliemarsh/.local/share/ohm/toolchains/ohm-1.98.0-9/bin/clippy-driver /Users/charliemarsh/.local/share/ohm/toolchains/ohm-1.98.0-9/bin/rustc -vV`",
+        "   0.069722666s  INFO cargo::util::rustc: updated rustc info cache",
+        "   0.070435250s DEBUG new{path=\"/Users/charliemarsh/.local/share/ohm/toolchains/ohm-1.98.0-9/bin/rustc\" wrapper=None workspace_wrapper=Some(\"/Users/charliemarsh/.local/share/ohm/toolchains/ohm-1.98.0-9/bin/clippy-driver\") rustup_rustc=\"/private/tmp/codex-cargo-home/bin/rustc\" cache_location=Some(\"/private/tmp/codex-cargo-targets/cargo/isolated/clippy-warm-trace/shared/.rustc_info.json\")}: cargo::util::rustc: reusing existing rustc info cache",
+        "   0.070441541s DEBUG new{path=\"/Users/charliemarsh/.local/share/ohm/toolchains/ohm-1.98.0-9/bin/rustc\" wrapper=None workspace_wrapper=Some(\"/Users/charliemarsh/.local/share/ohm/toolchains/ohm-1.98.0-9/bin/clippy-driver\") rustup_rustc=\"/private/tmp/codex-cargo-home/bin/rustc\" cache_location=Some(\"/private/tmp/codex-cargo-targets/cargo/isolated/clippy-warm-trace/shared/.rustc_info.json\")}: cargo::util::rustc: rustc info cache hit",
+        "   0.070731041s DEBUG new{path=\"/Users/charliemarsh/.local/share/ohm/toolchains/ohm-1.98.0-9/bin/rustc\" wrapper=None workspace_wrapper=Some(\"/Users/charliemarsh/.local/share/ohm/toolchains/ohm-1.98.0-9/bin/clippy-driver\") rustup_rustc=\"/private/tmp/codex-cargo-home/bin/rustc\" cache_location=Some(\"/private/tmp/codex-cargo-targets/cargo/isolated/clippy-warm-trace/shared/.rustc_info.json\")}: cargo::util::rustc: reusing existing rustc info cache",
+        "   0.070734625s DEBUG new{path=\"/Users/charliemarsh/.local/share/ohm/toolchains/ohm-1.98.0-9/bin/rustc\" wrapper=None workspace_wrapper=Some(\"/Users/charliemarsh/.local/share/ohm/toolchains/ohm-1.98.0-9/bin/clippy-driver\") rustup_rustc=\"/private/tmp/codex-cargo-home/bin/rustc\" cache_location=Some(\"/private/tmp/codex-cargo-targets/cargo/isolated/clippy-warm-trace/shared/.rustc_info.json\")}: cargo::util::rustc: rustc info cache hit",
+        "   0.071676791s DEBUG cargo::util::rustc: rustc info cache miss",
+        "   0.071679666s DEBUG cargo::util::rustc: running `/Users/charliemarsh/.local/share/ohm/toolchains/ohm-1.98.0-9/bin/clippy-driver --rustc -vV`",
+        "   0.085525958s DEBUG cargo::util::rustc: rustc info cache miss",
+        "   0.085533375s DEBUG cargo::util::rustc: running `/Users/charliemarsh/.local/share/ohm/toolchains/ohm-1.98.0-9/bin/rustc -vV`",
+        "   0.154068375s  INFO cargo::util::rustc: updated rustc info cache"
+      ]
+    },
+    {
+      "label": "clippy-warm1",
+      "argv": [
+        "/private/tmp/codex-cargo-targets/cargo/clippy-seeding/ohm/release/cargo",
+        "clippy",
+        "--offline"
+      ],
+      "returncode": 0,
+      "cache_trace": [
+        "   0.001873417s DEBUG new{path=\"/Users/charliemarsh/.local/share/ohm/toolchains/ohm-1.98.0-9/bin/rustc\" wrapper=None workspace_wrapper=Some(\"/Users/charliemarsh/.local/share/ohm/toolchains/ohm-1.98.0-9/bin/clippy-driver\") rustup_rustc=\"/private/tmp/codex-cargo-home/bin/rustc\" cache_location=Some(\"/private/tmp/codex-cargo-targets/cargo/isolated/clippy-warm-trace/shared/.rustc_info.json\")}: cargo::util::rustc: reusing existing rustc info cache",
+        "   0.001892084s DEBUG new{path=\"/Users/charliemarsh/.local/share/ohm/toolchains/ohm-1.98.0-9/bin/rustc\" wrapper=None workspace_wrapper=Some(\"/Users/charliemarsh/.local/share/ohm/toolchains/ohm-1.98.0-9/bin/clippy-driver\") rustup_rustc=\"/private/tmp/codex-cargo-home/bin/rustc\" cache_location=Some(\"/private/tmp/codex-cargo-targets/cargo/isolated/clippy-warm-trace/shared/.rustc_info.json\")}: cargo::util::rustc: rustc info cache hit",
+        "   0.001914959s DEBUG cargo::util::rustc: rustc info cache hit",
+        "   0.002189625s DEBUG new{path=\"/Users/charliemarsh/.local/share/ohm/toolchains/ohm-1.98.0-9/bin/rustc\" wrapper=None workspace_wrapper=Some(\"/Users/charliemarsh/.local/share/ohm/toolchains/ohm-1.98.0-9/bin/clippy-driver\") rustup_rustc=\"/private/tmp/codex-cargo-home/bin/rustc\" cache_location=Some(\"/private/tmp/codex-cargo-targets/cargo/isolated/clippy-warm-trace/shared/.rustc_info.json\")}: cargo::util::rustc: reusing existing rustc info cache",
+        "   0.002192750s DEBUG new{path=\"/Users/charliemarsh/.local/share/ohm/toolchains/ohm-1.98.0-9/bin/rustc\" wrapper=None workspace_wrapper=Some(\"/Users/charliemarsh/.local/share/ohm/toolchains/ohm-1.98.0-9/bin/clippy-driver\") rustup_rustc=\"/private/tmp/codex-cargo-home/bin/rustc\" cache_location=Some(\"/private/tmp/codex-cargo-targets/cargo/isolated/clippy-warm-trace/shared/.rustc_info.json\")}: cargo::util::rustc: rustc info cache hit",
+        "   0.002883417s DEBUG new{path=\"/Users/charliemarsh/.local/share/ohm/toolchains/ohm-1.98.0-9/bin/rustc\" wrapper=None workspace_wrapper=Some(\"/Users/charliemarsh/.local/share/ohm/toolchains/ohm-1.98.0-9/bin/clippy-driver\") rustup_rustc=\"/private/tmp/codex-cargo-home/bin/rustc\" cache_location=Some(\"/private/tmp/codex-cargo-targets/cargo/isolated/clippy-warm-trace/shared/.rustc_info.json\")}: cargo::util::rustc: reusing existing rustc info cache",
+        "   0.002888500s DEBUG new{path=\"/Users/charliemarsh/.local/share/ohm/toolchains/ohm-1.98.0-9/bin/rustc\" wrapper=None workspace_wrapper=Some(\"/Users/charliemarsh/.local/share/ohm/toolchains/ohm-1.98.0-9/bin/clippy-driver\") rustup_rustc=\"/private/tmp/codex-cargo-home/bin/rustc\" cache_location=Some(\"/private/tmp/codex-cargo-targets/cargo/isolated/clippy-warm-trace/shared/.rustc_info.json\")}: cargo::util::rustc: rustc info cache hit",
+        "   0.003608000s DEBUG cargo::util::rustc: rustc info cache hit",
+        "   0.003611917s DEBUG cargo::util::rustc: rustc info cache hit"
+      ]
+    },
+    {
+      "label": "clippy-warm2",
+      "argv": [
+        "/private/tmp/codex-cargo-targets/cargo/clippy-seeding/ohm/release/cargo",
+        "clippy",
+        "--offline"
+      ],
+      "returncode": 0,
+      "cache_trace": [
+        "   0.001841666s DEBUG new{path=\"/Users/charliemarsh/.local/share/ohm/toolchains/ohm-1.98.0-9/bin/rustc\" wrapper=None workspace_wrapper=Some(\"/Users/charliemarsh/.local/share/ohm/toolchains/ohm-1.98.0-9/bin/clippy-driver\") rustup_rustc=\"/private/tmp/codex-cargo-home/bin/rustc\" cache_location=Some(\"/private/tmp/codex-cargo-targets/cargo/isolated/clippy-warm-trace/shared/.rustc_info.json\")}: cargo::util::rustc: reusing existing rustc info cache",
+        "   0.001858458s DEBUG new{path=\"/Users/charliemarsh/.local/share/ohm/toolchains/ohm-1.98.0-9/bin/rustc\" wrapper=None workspace_wrapper=Some(\"/Users/charliemarsh/.local/share/ohm/toolchains/ohm-1.98.0-9/bin/clippy-driver\") rustup_rustc=\"/private/tmp/codex-cargo-home/bin/rustc\" cache_location=Some(\"/private/tmp/codex-cargo-targets/cargo/isolated/clippy-warm-trace/shared/.rustc_info.json\")}: cargo::util::rustc: rustc info cache hit",
+        "   0.001878958s DEBUG cargo::util::rustc: rustc info cache hit",
+        "   0.002141083s DEBUG new{path=\"/Users/charliemarsh/.local/share/ohm/toolchains/ohm-1.98.0-9/bin/rustc\" wrapper=None workspace_wrapper=Some(\"/Users/charliemarsh/.local/share/ohm/toolchains/ohm-1.98.0-9/bin/clippy-driver\") rustup_rustc=\"/private/tmp/codex-cargo-home/bin/rustc\" cache_location=Some(\"/private/tmp/codex-cargo-targets/cargo/isolated/clippy-warm-trace/shared/.rustc_info.json\")}: cargo::util::rustc: reusing existing rustc info cache",
+        "   0.002144458s DEBUG new{path=\"/Users/charliemarsh/.local/share/ohm/toolchains/ohm-1.98.0-9/bin/rustc\" wrapper=None workspace_wrapper=Some(\"/Users/charliemarsh/.local/share/ohm/toolchains/ohm-1.98.0-9/bin/clippy-driver\") rustup_rustc=\"/private/tmp/codex-cargo-home/bin/rustc\" cache_location=Some(\"/private/tmp/codex-cargo-targets/cargo/isolated/clippy-warm-trace/shared/.rustc_info.json\")}: cargo::util::rustc: rustc info cache hit",
+        "   0.002647625s DEBUG new{path=\"/Users/charliemarsh/.local/share/ohm/toolchains/ohm-1.98.0-9/bin/rustc\" wrapper=None workspace_wrapper=Some(\"/Users/charliemarsh/.local/share/ohm/toolchains/ohm-1.98.0-9/bin/clippy-driver\") rustup_rustc=\"/private/tmp/codex-cargo-home/bin/rustc\" cache_location=Some(\"/private/tmp/codex-cargo-targets/cargo/isolated/clippy-warm-trace/shared/.rustc_info.json\")}: cargo::util::rustc: reusing existing rustc info cache",
+        "   0.002651250s DEBUG new{path=\"/Users/charliemarsh/.local/share/ohm/toolchains/ohm-1.98.0-9/bin/rustc\" wrapper=None workspace_wrapper=Some(\"/Users/charliemarsh/.local/share/ohm/toolchains/ohm-1.98.0-9/bin/clippy-driver\") rustup_rustc=\"/private/tmp/codex-cargo-home/bin/rustc\" cache_location=Some(\"/private/tmp/codex-cargo-targets/cargo/isolated/clippy-warm-trace/shared/.rustc_info.json\")}: cargo::util::rustc: rustc info cache hit",
+        "   0.003376291s DEBUG cargo::util::rustc: rustc info cache hit",
+        "   0.003379583s DEBUG cargo::util::rustc: rustc info cache hit"
+      ]
+    }
+  ]
+}

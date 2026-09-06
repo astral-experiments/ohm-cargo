@@ -1,0 +1,123 @@
+{
+  "cargo_version": "cargo 1.98.0 (795cddae6 2026-09-06)\nrelease: 1.98.0\ncommit-hash: 795cddae649feb6387fbf35c7a905d7b4977dba0\ncommit-date: 2026-09-06\nhost: aarch64-apple-darwin\nlibgit2: 1.9.4 (sys:0.21.0 vendored)\nlibcurl: 8.7.1 (sys:0.4.90+curl-8.21.0 system ssl:(SecureTransport) LibreSSL/3.3.6)\nos: Mac OS 26.6.2 [64-bit]\n",
+  "cargo_sha256": "4a3383fc93966ea97342bb53fc5f48550a1fa71a82c9bfd620bc6fe6f746c325",
+  "filesystem": "HFS+",
+  "scope": "correctness and non-clone default policy; no performance claim",
+  "commands": [
+    {
+      "name": "init",
+      "argv": [
+        "git",
+        "init"
+      ],
+      "returncode": 0,
+      "stdout": "Initialized empty Git repository in /private/tmp/codex-cargo-targets/cargo/isolated/clippy-shipping-fallback/volume/donor/.git/\n",
+      "stderr": ""
+    },
+    {
+      "name": "add",
+      "argv": [
+        "git",
+        "add",
+        "."
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "name": "commit",
+      "argv": [
+        "git",
+        "-c",
+        "user.name=Benchmark",
+        "-c",
+        "user.email=benchmark@example.invalid",
+        "-c",
+        "commit.gpgsign=false",
+        "commit",
+        "-m",
+        "fixture"
+      ],
+      "returncode": 0,
+      "stdout": "[main (root-commit) 5d0b9e3] fixture\n 3 files changed, 6 insertions(+)\n create mode 100644 .gitignore\n create mode 100644 Cargo.toml\n create mode 100644 src/lib.rs\n",
+      "stderr": ""
+    },
+    {
+      "name": "build",
+      "argv": [
+        "/private/tmp/codex-cargo-targets/cargo/clippy-seeding/ohm/release/cargo",
+        "build",
+        "--offline"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": "   Compiling clippy_fallback v0.1.0 (/private/tmp/codex-cargo-targets/cargo/isolated/clippy-shipping-fallback/volume/donor)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.14s\n"
+    },
+    {
+      "name": "fork-before-clippy",
+      "argv": [
+        "/private/tmp/codex-cargo-targets/cargo/clippy-seeding/ohm/release/cargo",
+        "worktree",
+        "add",
+        "--detach",
+        "/private/tmp/codex-cargo-targets/cargo/isolated/clippy-shipping-fallback/volume/probe",
+        "--target-dir",
+        "/private/tmp/codex-cargo-targets/cargo/isolated/clippy-shipping-fallback/volume/probe-target"
+      ],
+      "returncode": 0,
+      "stdout": "HEAD is now at 5d0b9e3 fixture\n",
+      "stderr": "Preparing worktree (detached HEAD 5d0b9e3)\n      Seeded 18 files (39472 bytes, 0 reflinked files) for /private/tmp/codex-cargo-targets/cargo/isolated/clippy-shipping-fallback/volume/probe; the next build validates reuse\n      Target /private/tmp/codex-cargo-targets/cargo/isolated/clippy-shipping-fallback/volume/probe-target\n"
+    },
+    {
+      "name": "default-clippy",
+      "argv": [
+        "/private/tmp/codex-cargo-targets/cargo/clippy-seeding/ohm/release/cargo",
+        "clippy",
+        "--offline",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": "    Checking clippy_fallback v0.1.0 (/private/tmp/codex-cargo-targets/cargo/isolated/clippy-shipping-fallback/volume/donor)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.11s\n"
+    },
+    {
+      "name": "fork-after-clippy",
+      "argv": [
+        "/private/tmp/codex-cargo-targets/cargo/clippy-seeding/ohm/release/cargo",
+        "worktree",
+        "add",
+        "--detach",
+        "/private/tmp/codex-cargo-targets/cargo/isolated/clippy-shipping-fallback/volume/child",
+        "--target-dir",
+        "/private/tmp/codex-cargo-targets/cargo/isolated/clippy-shipping-fallback/volume/child-target"
+      ],
+      "returncode": 0,
+      "stdout": "HEAD is now at 5d0b9e3 fixture\n",
+      "stderr": "Preparing worktree (detached HEAD 5d0b9e3)\n     Created /private/tmp/codex-cargo-targets/cargo/isolated/clippy-shipping-fallback/volume/child (no compatible build snapshot seeded)\n     Skipped 1 unprepared or unsupported build profiles\n      Target /private/tmp/codex-cargo-targets/cargo/isolated/clippy-shipping-fallback/volume/child-target\n"
+    },
+    {
+      "name": "forced-clippy",
+      "argv": [
+        "/private/tmp/codex-cargo-targets/cargo/clippy-seeding/ohm/release/cargo",
+        "clippy",
+        "--offline",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": "    Checking clippy_fallback v0.1.0 (/private/tmp/codex-cargo-targets/cargo/isolated/clippy-shipping-fallback/volume/donor)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.04s\n"
+    }
+  ],
+  "complete": true,
+  "no_reflinks": true,
+  "default_isolated": false,
+  "default_denied": true,
+  "forced_isolated": true,
+  "previous_denial_preserved": true,
+  "probe_residue": false
+}

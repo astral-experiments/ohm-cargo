@@ -1,0 +1,922 @@
+{
+  "order": [
+    "off1",
+    "on1",
+    "on2",
+    "off2",
+    "on3",
+    "off3",
+    "off4",
+    "on4"
+  ],
+  "identities": [
+    "24e006f5db0835da3fcd3e0931ab5db07f49a4361b61eeb6a1b193e92d2a5b02",
+    "5d87dbf31bdff571fc94181be7cc241ccd80936404f9a87b1a91476670f1c95c",
+    "d4bdd65200698f9e304282826ebcc08e15c84f0f2f867315ae6df8311b1ffdbf",
+    "34832be58e65cc3799e33f424fdc6ebae45e75cadc6ad368621b82b4232b1289"
+  ],
+  "rows": {
+    "off1": {
+      "donor_physical_mib": 540.60546875,
+      "child_fresh_physical_mib": 881.98828125,
+      "final_physical_mib": 984.94140625,
+      "child_marginal_physical_mib": 444.3359375,
+      "workflow_wall_seconds": 26.893524960000008,
+      "workflow_cpu_seconds": 97.872262,
+      "donor_wall_seconds": 17.59507608399997,
+      "donor_cpu_seconds": 68.426096,
+      "fork_and_child_wall_seconds": 9.298448876000037,
+      "fork_and_child_cpu_seconds": 29.44616600000001,
+      "03-donor-clippy_wall_seconds": 1.2810457079999935,
+      "03-donor-clippy_cpu_seconds": 3.220984999999999,
+      "09-child-clippy_wall_seconds": 1.2864951670000266,
+      "09-child-clippy_cpu_seconds": 3.261159999999993,
+      "03b-donor-clippy-noop_wall_seconds": 0.0829299170000013,
+      "03b-donor-clippy-noop_cpu_seconds": 0.0790779999999991,
+      "04-donor-noop_wall_seconds": 0.6691041249999898,
+      "04-donor-noop_cpu_seconds": 2.247699000000001,
+      "09b-child-clippy-noop_wall_seconds": 0.0822477499999934,
+      "09b-child-clippy-noop_cpu_seconds": 0.07862099999999828,
+      "10-child-noop_wall_seconds": 0.6389624589999983,
+      "10-child-noop_cpu_seconds": 2.005277000000003,
+      "seed_import": null
+    },
+    "on1": {
+      "donor_physical_mib": 539.234375,
+      "child_fresh_physical_mib": 724.67578125,
+      "final_physical_mib": 859.31640625,
+      "child_marginal_physical_mib": 320.08203125,
+      "workflow_wall_seconds": 24.766582708999948,
+      "workflow_cpu_seconds": 87.78187500000004,
+      "donor_wall_seconds": 17.96545820899999,
+      "donor_cpu_seconds": 68.28958700000001,
+      "fork_and_child_wall_seconds": 6.801124499999958,
+      "fork_and_child_cpu_seconds": 19.49228800000003,
+      "03-donor-clippy_wall_seconds": 1.4462283340000113,
+      "03-donor-clippy_cpu_seconds": 3.5737959999999873,
+      "09-child-clippy_wall_seconds": 1.3247309169999824,
+      "09-child-clippy_cpu_seconds": 3.2920010000000204,
+      "03b-donor-clippy-noop_wall_seconds": 0.10497004199999083,
+      "03b-donor-clippy-noop_cpu_seconds": 0.09830300000001557,
+      "04-donor-noop_wall_seconds": 0.6716413329999966,
+      "04-donor-noop_cpu_seconds": 1.9741349999999933,
+      "09b-child-clippy-noop_wall_seconds": 0.08454574999998954,
+      "09b-child-clippy-noop_cpu_seconds": 0.0805429999999916,
+      "10-child-noop_wall_seconds": 0.6213380840000013,
+      "10-child-noop_cpu_seconds": 1.9426899999999918,
+      "seed_import": {
+        "files": 851,
+        "bytes": 253206642,
+        "reflinked_files": 841
+      }
+    },
+    "on2": {
+      "donor_physical_mib": 540.6640625,
+      "child_fresh_physical_mib": 724.8515625,
+      "final_physical_mib": 859.46875,
+      "child_marginal_physical_mib": 318.8046875,
+      "workflow_wall_seconds": 23.372152999000036,
+      "workflow_cpu_seconds": 83.080481,
+      "donor_wall_seconds": 17.598879084000032,
+      "donor_cpu_seconds": 68.23606000000001,
+      "fork_and_child_wall_seconds": 5.773273915000004,
+      "fork_and_child_cpu_seconds": 14.84442099999999,
+      "03-donor-clippy_wall_seconds": 1.3138862080000138,
+      "03-donor-clippy_cpu_seconds": 3.302266000000003,
+      "09-child-clippy_wall_seconds": 1.2930413330000192,
+      "09-child-clippy_cpu_seconds": 3.2673309999999915,
+      "03b-donor-clippy-noop_wall_seconds": 0.09224662500000136,
+      "03b-donor-clippy-noop_cpu_seconds": 0.08798000000000883,
+      "04-donor-noop_wall_seconds": 0.6170702090000191,
+      "04-donor-noop_cpu_seconds": 1.8736410000000063,
+      "09b-child-clippy-noop_wall_seconds": 0.08425729100000012,
+      "09b-child-clippy-noop_cpu_seconds": 0.0806439999999995,
+      "10-child-noop_wall_seconds": 0.5932938750000005,
+      "10-child-noop_cpu_seconds": 1.738326999999991,
+      "seed_import": {
+        "files": 851,
+        "bytes": 253207789,
+        "reflinked_files": 841
+      }
+    },
+    "off2": {
+      "donor_physical_mib": 540.640625,
+      "child_fresh_physical_mib": 882.05859375,
+      "final_physical_mib": 985.078125,
+      "child_marginal_physical_mib": 444.4375,
+      "workflow_wall_seconds": 26.755871750999916,
+      "workflow_cpu_seconds": 96.494545,
+      "donor_wall_seconds": 17.63545395699998,
+      "donor_cpu_seconds": 67.96011999999999,
+      "fork_and_child_wall_seconds": 9.120417793999934,
+      "fork_and_child_cpu_seconds": 28.53442500000002,
+      "03-donor-clippy_wall_seconds": 1.2774749579999707,
+      "03-donor-clippy_cpu_seconds": 3.2140039999999956,
+      "09-child-clippy_wall_seconds": 1.2989842499999895,
+      "09-child-clippy_cpu_seconds": 3.2900829999999956,
+      "03b-donor-clippy-noop_wall_seconds": 0.10901854100001174,
+      "03b-donor-clippy-noop_cpu_seconds": 0.10249199999999092,
+      "04-donor-noop_wall_seconds": 0.6395679579999864,
+      "04-donor-noop_cpu_seconds": 1.8917870000000079,
+      "09b-child-clippy-noop_wall_seconds": 0.08325341699998035,
+      "09b-child-clippy-noop_cpu_seconds": 0.07963699999997687,
+      "10-child-noop_wall_seconds": 0.6055819589999487,
+      "10-child-noop_cpu_seconds": 1.854122999999987,
+      "seed_import": null
+    },
+    "on3": {
+      "donor_physical_mib": 539.76953125,
+      "child_fresh_physical_mib": 724.64453125,
+      "final_physical_mib": 859.25390625,
+      "child_marginal_physical_mib": 319.484375,
+      "workflow_wall_seconds": 23.421788999000057,
+      "workflow_cpu_seconds": 83.11414900000001,
+      "donor_wall_seconds": 17.53621029100003,
+      "donor_cpu_seconds": 67.82652799999993,
+      "fork_and_child_wall_seconds": 5.8855787080000255,
+      "fork_and_child_cpu_seconds": 15.287621000000087,
+      "03-donor-clippy_wall_seconds": 1.3104900410000369,
+      "03-donor-clippy_cpu_seconds": 3.26666699999997,
+      "09-child-clippy_wall_seconds": 1.2877895000000308,
+      "09-child-clippy_cpu_seconds": 3.2213250000000073,
+      "03b-donor-clippy-noop_wall_seconds": 0.10443812500000149,
+      "03b-donor-clippy-noop_cpu_seconds": 0.09964700000000448,
+      "04-donor-noop_wall_seconds": 0.6009730000000104,
+      "04-donor-noop_cpu_seconds": 1.697971999999993,
+      "09b-child-clippy-noop_wall_seconds": 0.083822457999986,
+      "09b-child-clippy-noop_cpu_seconds": 0.08024100000004353,
+      "10-child-noop_wall_seconds": 0.6120113750000087,
+      "10-child-noop_cpu_seconds": 1.8809579999999926,
+      "seed_import": {
+        "files": 851,
+        "bytes": 253204399,
+        "reflinked_files": 841
+      }
+    },
+    "off3": {
+      "donor_physical_mib": 540.57421875,
+      "child_fresh_physical_mib": 882.84765625,
+      "final_physical_mib": 984.890625,
+      "child_marginal_physical_mib": 444.31640625,
+      "workflow_wall_seconds": 27.19441591599991,
+      "workflow_cpu_seconds": 97.96292599999987,
+      "donor_wall_seconds": 17.698028249000004,
+      "donor_cpu_seconds": 68.73739399999992,
+      "fork_and_child_wall_seconds": 9.496387666999908,
+      "fork_and_child_cpu_seconds": 29.225531999999944,
+      "03-donor-clippy_wall_seconds": 1.2925969170000258,
+      "03-donor-clippy_cpu_seconds": 3.2595969999999994,
+      "09-child-clippy_wall_seconds": 1.282750582999995,
+      "09-child-clippy_cpu_seconds": 3.2286650000000208,
+      "03b-donor-clippy-noop_wall_seconds": 0.095213957999988,
+      "03b-donor-clippy-noop_cpu_seconds": 0.08846699999998009,
+      "04-donor-noop_wall_seconds": 0.6732350830000087,
+      "04-donor-noop_cpu_seconds": 2.1787949999999654,
+      "09b-child-clippy-noop_wall_seconds": 0.08382358299996895,
+      "09b-child-clippy-noop_cpu_seconds": 0.08020699999997305,
+      "10-child-noop_wall_seconds": 0.6348972499999945,
+      "10-child-noop_cpu_seconds": 1.9903169999999903,
+      "seed_import": null
+    },
+    "off4": {
+      "donor_physical_mib": 539.78515625,
+      "child_fresh_physical_mib": 882.25390625,
+      "final_physical_mib": 984.2734375,
+      "child_marginal_physical_mib": 444.48828125,
+      "workflow_wall_seconds": 27.402867208000146,
+      "workflow_cpu_seconds": 98.27849400000015,
+      "donor_wall_seconds": 17.97806487500003,
+      "donor_cpu_seconds": 68.56880700000004,
+      "fork_and_child_wall_seconds": 9.424802333000116,
+      "fork_and_child_cpu_seconds": 29.709687000000116,
+      "03-donor-clippy_wall_seconds": 1.3351302499999633,
+      "03-donor-clippy_cpu_seconds": 3.3520849999999456,
+      "09-child-clippy_wall_seconds": 1.3127996250000251,
+      "09-child-clippy_cpu_seconds": 3.301659000000015,
+      "03b-donor-clippy-noop_wall_seconds": 0.08429245900003934,
+      "03b-donor-clippy-noop_cpu_seconds": 0.08033700000001431,
+      "04-donor-noop_wall_seconds": 0.6494795830000157,
+      "04-donor-noop_cpu_seconds": 2.0555160000000257,
+      "09b-child-clippy-noop_wall_seconds": 0.0841022920000114,
+      "09b-child-clippy-noop_cpu_seconds": 0.08049400000007267,
+      "10-child-noop_wall_seconds": 0.6707754170000158,
+      "10-child-noop_cpu_seconds": 2.2278730000000735,
+      "seed_import": null
+    },
+    "on4": {
+      "donor_physical_mib": 540.078125,
+      "child_fresh_physical_mib": 724.77734375,
+      "final_physical_mib": 859.3828125,
+      "child_marginal_physical_mib": 319.3046875,
+      "workflow_wall_seconds": 23.76867287500022,
+      "workflow_cpu_seconds": 84.8157810000003,
+      "donor_wall_seconds": 17.801106791000052,
+      "donor_cpu_seconds": 69.18776300000016,
+      "fork_and_child_wall_seconds": 5.967566084000168,
+      "fork_and_child_cpu_seconds": 15.62801800000014,
+      "03-donor-clippy_wall_seconds": 1.3139340410000386,
+      "03-donor-clippy_cpu_seconds": 3.2943300000001017,
+      "09-child-clippy_wall_seconds": 1.3073880420000137,
+      "09-child-clippy_cpu_seconds": 3.282312000000047,
+      "03b-donor-clippy-noop_wall_seconds": 0.10511250000001837,
+      "03b-donor-clippy-noop_cpu_seconds": 0.09736499999993953,
+      "04-donor-noop_wall_seconds": 0.6767141249999895,
+      "04-donor-noop_cpu_seconds": 2.252714000000097,
+      "09b-child-clippy-noop_wall_seconds": 0.08761754100004282,
+      "09b-child-clippy-noop_cpu_seconds": 0.08364700000004177,
+      "10-child-noop_wall_seconds": 0.6779300000000035,
+      "10-child-noop_cpu_seconds": 2.1445010000000764,
+      "seed_import": {
+        "files": 851,
+        "bytes": 253206772,
+        "reflinked_files": 841
+      }
+    }
+  },
+  "metrics": {
+    "donor_physical_mib": {
+      "off": {
+        "median": 540.58984375,
+        "min": 539.78515625,
+        "max": 540.640625,
+        "samples": [
+          540.60546875,
+          540.640625,
+          540.57421875,
+          539.78515625
+        ]
+      },
+      "on": {
+        "median": 539.923828125,
+        "min": 539.234375,
+        "max": 540.6640625,
+        "samples": [
+          539.234375,
+          540.6640625,
+          539.76953125,
+          540.078125
+        ]
+      },
+      "median_change_percent": -0.12320165328669752,
+      "paired_change_percent": [
+        -0.25362187940315417,
+        0.004335134822697206,
+        -0.14885791295424777,
+        0.05427506603465915
+      ]
+    },
+    "child_fresh_physical_mib": {
+      "off": {
+        "median": 882.15625,
+        "min": 881.98828125,
+        "max": 882.84765625,
+        "samples": [
+          881.98828125,
+          882.05859375,
+          882.84765625,
+          882.25390625
+        ]
+      },
+      "on": {
+        "median": 724.7265625,
+        "min": 724.64453125,
+        "max": 724.8515625,
+        "samples": [
+          724.67578125,
+          724.8515625,
+          724.64453125,
+          724.77734375
+        ]
+      },
+      "median_change_percent": -17.84600942293386,
+      "paired_change_percent": [
+        -17.836121334520282,
+        -17.822742430482673,
+        -17.919640368303913,
+        -17.849347153287255
+      ]
+    },
+    "final_physical_mib": {
+      "off": {
+        "median": 984.916015625,
+        "min": 984.2734375,
+        "max": 985.078125,
+        "samples": [
+          984.94140625,
+          985.078125,
+          984.890625,
+          984.2734375
+        ]
+      },
+      "on": {
+        "median": 859.349609375,
+        "min": 859.25390625,
+        "max": 859.46875,
+        "samples": [
+          859.31640625,
+          859.46875,
+          859.25390625,
+          859.3828125
+        ]
+      },
+      "median_change_percent": -12.748945520021737,
+      "paired_change_percent": [
+        -12.754565825219611,
+        -12.751209453564915,
+        -12.756413307315217,
+        -12.688610729678462
+      ]
+    },
+    "child_marginal_physical_mib": {
+      "off": {
+        "median": 444.38671875,
+        "min": 444.31640625,
+        "max": 444.48828125,
+        "samples": [
+          444.3359375,
+          444.4375,
+          444.31640625,
+          444.48828125
+        ]
+      },
+      "on": {
+        "median": 319.39453125,
+        "min": 318.8046875,
+        "max": 320.08203125,
+        "samples": [
+          320.08203125,
+          318.8046875,
+          319.484375,
+          319.3046875
+        ]
+      },
+      "median_change_percent": -28.12689538777986,
+      "paired_change_percent": [
+        -27.96395604395604,
+        -28.267824497257767,
+        -28.09530089234692,
+        -28.16353074550264
+      ]
+    },
+    "workflow_wall_seconds": {
+      "off": {
+        "median": 27.04397043799996,
+        "min": 26.755871750999916,
+        "max": 27.402867208000146,
+        "samples": [
+          26.893524960000008,
+          26.755871750999916,
+          27.19441591599991,
+          27.402867208000146
+        ]
+      },
+      "on": {
+        "median": 23.59523093700014,
+        "min": 23.372152999000036,
+        "max": 24.766582708999948,
+        "samples": [
+          24.766582708999948,
+          23.372152999000036,
+          23.421788999000057,
+          23.76867287500022
+        ]
+      },
+      "median_change_percent": -12.75234163158948,
+      "paired_change_percent": [
+        -7.908752215128212,
+        -12.646639898299794,
+        -13.87279994780185,
+        -13.262095186663302
+      ]
+    },
+    "workflow_cpu_seconds": {
+      "off": {
+        "median": 97.91759399999994,
+        "min": 96.494545,
+        "max": 98.27849400000015,
+        "samples": [
+          97.872262,
+          96.494545,
+          97.96292599999987,
+          98.27849400000015
+        ]
+      },
+      "on": {
+        "median": 83.96496500000015,
+        "min": 83.080481,
+        "max": 87.78187500000004,
+        "samples": [
+          87.78187500000004,
+          83.080481,
+          83.11414900000001,
+          84.8157810000003
+        ]
+      },
+      "median_change_percent": -14.24935849628801,
+      "paired_change_percent": [
+        -10.309751500379106,
+        -13.901370279532376,
+        -15.157547458310782,
+        -13.698534086205916
+      ]
+    },
+    "donor_wall_seconds": {
+      "off": {
+        "median": 17.666741102999993,
+        "min": 17.59507608399997,
+        "max": 17.97806487500003,
+        "samples": [
+          17.59507608399997,
+          17.63545395699998,
+          17.698028249000004,
+          17.97806487500003
+        ]
+      },
+      "on": {
+        "median": 17.699992937500042,
+        "min": 17.53621029100003,
+        "max": 17.96545820899999,
+        "samples": [
+          17.96545820899999,
+          17.598879084000032,
+          17.53621029100003,
+          17.801106791000052
+        ]
+      },
+      "median_change_percent": 0.18821713810253105,
+      "paired_change_percent": [
+        2.105032812769858,
+        -0.20739399784733825,
+        -0.914327606009524,
+        -0.9842999523605678
+      ]
+    },
+    "donor_cpu_seconds": {
+      "off": {
+        "median": 68.49745150000001,
+        "min": 67.96011999999999,
+        "max": 68.73739399999992,
+        "samples": [
+          68.426096,
+          67.96011999999999,
+          68.73739399999992,
+          68.56880700000004
+        ]
+      },
+      "on": {
+        "median": 68.26282350000001,
+        "min": 67.82652799999993,
+        "max": 69.18776300000016,
+        "samples": [
+          68.28958700000001,
+          68.23606000000001,
+          67.82652799999993,
+          69.18776300000016
+        ]
+      },
+      "median_change_percent": -0.3425353715531987,
+      "paired_change_percent": [
+        -0.1994984486620277,
+        0.40603224361583923,
+        -1.3251389774829092,
+        0.9026786772010187
+      ]
+    },
+    "fork_and_child_wall_seconds": {
+      "off": {
+        "median": 9.361625604500077,
+        "min": 9.120417793999934,
+        "max": 9.496387666999908,
+        "samples": [
+          9.298448876000037,
+          9.120417793999934,
+          9.496387666999908,
+          9.424802333000116
+        ]
+      },
+      "on": {
+        "median": 5.926572396000097,
+        "min": 5.773273915000004,
+        "max": 6.801124499999958,
+        "samples": [
+          6.801124499999958,
+          5.773273915000004,
+          5.8855787080000255,
+          5.967566084000168
+        ]
+      },
+      "median_change_percent": -36.692913748321345,
+      "paired_change_percent": [
+        -26.857429763859354,
+        -36.6994577945971,
+        -38.02297342543732,
+        -36.682321038126595
+      ]
+    },
+    "fork_and_child_cpu_seconds": {
+      "off": {
+        "median": 29.335848999999975,
+        "min": 28.53442500000002,
+        "max": 29.709687000000116,
+        "samples": [
+          29.44616600000001,
+          28.53442500000002,
+          29.225531999999944,
+          29.709687000000116
+        ]
+      },
+      "on": {
+        "median": 15.457819500000113,
+        "min": 14.84442099999999,
+        "max": 19.49228800000003,
+        "samples": [
+          19.49228800000003,
+          14.84442099999999,
+          15.287621000000087,
+          15.62801800000014
+        ]
+      },
+      "median_change_percent": -47.30740705680573,
+      "paired_change_percent": [
+        -33.80364696714667,
+        -47.977150406920835,
+        -47.69087180346241,
+        -47.3975676687537
+      ]
+    },
+    "03-donor-clippy_wall_seconds": {
+      "off": {
+        "median": 1.2868213125000096,
+        "min": 1.2774749579999707,
+        "max": 1.3351302499999633,
+        "samples": [
+          1.2810457079999935,
+          1.2774749579999707,
+          1.2925969170000258,
+          1.3351302499999633
+        ]
+      },
+      "on": {
+        "median": 1.3139101245000262,
+        "min": 1.3104900410000369,
+        "max": 1.4462283340000113,
+        "samples": [
+          1.4462283340000113,
+          1.3138862080000138,
+          1.3104900410000369,
+          1.3139340410000386
+        ]
+      },
+      "median_change_percent": 2.1050950692904635,
+      "paired_change_percent": [
+        12.894358489199087,
+        2.850251566343731,
+        1.3842771682868404,
+        -1.587576118504186
+      ]
+    },
+    "03-donor-clippy_cpu_seconds": {
+      "off": {
+        "median": 3.240290999999999,
+        "min": 3.2140039999999956,
+        "max": 3.3520849999999456,
+        "samples": [
+          3.220984999999999,
+          3.2140039999999956,
+          3.2595969999999994,
+          3.3520849999999456
+        ]
+      },
+      "on": {
+        "median": 3.2982980000000524,
+        "min": 3.26666699999997,
+        "max": 3.5737959999999873,
+        "samples": [
+          3.5737959999999873,
+          3.302266000000003,
+          3.26666699999997,
+          3.2943300000001017
+        ]
+      },
+      "median_change_percent": 1.7901787216041187,
+      "paired_change_percent": [
+        10.95351266770843,
+        2.746169575395907,
+        0.21689797849151482,
+        -1.7229575025646704
+      ]
+    },
+    "09-child-clippy_wall_seconds": {
+      "off": {
+        "median": 1.292739708500008,
+        "min": 1.282750582999995,
+        "max": 1.3127996250000251,
+        "samples": [
+          1.2864951670000266,
+          1.2989842499999895,
+          1.282750582999995,
+          1.3127996250000251
+        ]
+      },
+      "on": {
+        "median": 1.3002146875000165,
+        "min": 1.2877895000000308,
+        "max": 1.3247309169999824,
+        "samples": [
+          1.3247309169999824,
+          1.2930413330000192,
+          1.2877895000000308,
+          1.3073880420000137
+        ]
+      },
+      "median_change_percent": 0.5782276935456521,
+      "paired_change_percent": [
+        2.97208656361434,
+        -0.457504931254582,
+        0.3928212597846592,
+        -0.412216982466862
+      ]
+    },
+    "09-child-clippy_cpu_seconds": {
+      "off": {
+        "median": 3.2756214999999944,
+        "min": 3.2286650000000208,
+        "max": 3.301659000000015,
+        "samples": [
+          3.261159999999993,
+          3.2900829999999956,
+          3.2286650000000208,
+          3.301659000000015
+        ]
+      },
+      "on": {
+        "median": 3.2748215000000194,
+        "min": 3.2213250000000073,
+        "max": 3.2920010000000204,
+        "samples": [
+          3.2920010000000204,
+          3.2673309999999915,
+          3.2213250000000073,
+          3.282312000000047
+        ]
+      },
+      "median_change_percent": -0.024422846167515555,
+      "paired_change_percent": [
+        0.9457064357476286,
+        -0.6915327060139198,
+        -0.22733854394969555,
+        -0.5859781400795128
+      ]
+    },
+    "03b-donor-clippy-noop_wall_seconds": {
+      "off": {
+        "median": 0.08975320850001367,
+        "min": 0.0829299170000013,
+        "max": 0.10901854100001174,
+        "samples": [
+          0.0829299170000013,
+          0.10901854100001174,
+          0.095213957999988,
+          0.08429245900003934
+        ]
+      },
+      "on": {
+        "median": 0.10470408349999616,
+        "min": 0.09224662500000136,
+        "max": 0.10511250000001837,
+        "samples": [
+          0.10497004199999083,
+          0.09224662500000136,
+          0.10443812500000149,
+          0.10511250000001837
+        ]
+      },
+      "median_change_percent": 16.657761042581786,
+      "paired_change_percent": [
+        26.576808222283876,
+        -15.384461987992093,
+        9.687830643501517,
+        24.69976703369077
+      ]
+    },
+    "03b-donor-clippy-noop_cpu_seconds": {
+      "off": {
+        "median": 0.0844019999999972,
+        "min": 0.0790779999999991,
+        "max": 0.10249199999999092,
+        "samples": [
+          0.0790779999999991,
+          0.10249199999999092,
+          0.08846699999998009,
+          0.08033700000001431
+        ]
+      },
+      "on": {
+        "median": 0.09783399999997755,
+        "min": 0.08798000000000883,
+        "max": 0.09964700000000448,
+        "samples": [
+          0.09830300000001557,
+          0.08798000000000883,
+          0.09964700000000448,
+          0.09736499999993953
+        ]
+      },
+      "median_change_percent": 15.914314826640119,
+      "paired_change_percent": [
+        24.31143933839588,
+        -14.159153885165065,
+        12.637480642529875,
+        21.195713058643186
+      ]
+    },
+    "04-donor-noop_wall_seconds": {
+      "off": {
+        "median": 0.6592918540000028,
+        "min": 0.6395679579999864,
+        "max": 0.6732350830000087,
+        "samples": [
+          0.6691041249999898,
+          0.6395679579999864,
+          0.6732350830000087,
+          0.6494795830000157
+        ]
+      },
+      "on": {
+        "median": 0.6443557710000078,
+        "min": 0.6009730000000104,
+        "max": 0.6767141249999895,
+        "samples": [
+          0.6716413329999966,
+          0.6170702090000191,
+          0.6009730000000104,
+          0.6767141249999895
+        ]
+      },
+      "median_change_percent": -2.265473615270075,
+      "paired_change_percent": [
+        0.37919479273973433,
+        -3.5176479244396153,
+        -10.733558726320469,
+        4.193286858098677
+      ]
+    },
+    "04-donor-noop_cpu_seconds": {
+      "off": {
+        "median": 2.1171554999999955,
+        "min": 1.8917870000000079,
+        "max": 2.247699000000001,
+        "samples": [
+          2.247699000000001,
+          1.8917870000000079,
+          2.1787949999999654,
+          2.0555160000000257
+        ]
+      },
+      "on": {
+        "median": 1.9238879999999998,
+        "min": 1.697971999999993,
+        "max": 2.252714000000097,
+        "samples": [
+          1.9741349999999933,
+          1.8736410000000063,
+          1.697971999999993,
+          2.252714000000097
+        ]
+      },
+      "median_change_percent": -9.128639818851102,
+      "paired_change_percent": [
+        -12.17084671924521,
+        -0.9591988950131025,
+        -22.068299220439748,
+        9.593600828213876
+      ]
+    },
+    "09b-child-clippy-noop_wall_seconds": {
+      "off": {
+        "median": 0.08353849999997465,
+        "min": 0.0822477499999934,
+        "max": 0.0841022920000114,
+        "samples": [
+          0.0822477499999934,
+          0.08325341699998035,
+          0.08382358299996895,
+          0.0841022920000114
+        ]
+      },
+      "on": {
+        "median": 0.08440152049999483,
+        "min": 0.083822457999986,
+        "max": 0.08761754100004282,
+        "samples": [
+          0.08454574999998954,
+          0.08425729100000012,
+          0.083822457999986,
+          0.08761754100004282
+        ]
+      },
+      "median_change_percent": 1.033081154222848,
+      "paired_change_percent": [
+        2.7939974041798266,
+        1.205805162351492,
+        -0.0013421043848160785,
+        4.179730321774033
+      ]
+    },
+    "09b-child-clippy-noop_cpu_seconds": {
+      "off": {
+        "median": 0.07992199999997496,
+        "min": 0.07862099999999828,
+        "max": 0.08049400000007267,
+        "samples": [
+          0.07862099999999828,
+          0.07963699999997687,
+          0.08020699999997305,
+          0.08049400000007267
+        ]
+      },
+      "on": {
+        "median": 0.08059349999999554,
+        "min": 0.08024100000004353,
+        "max": 0.08364700000004177,
+        "samples": [
+          0.0805429999999916,
+          0.0806439999999995,
+          0.08024100000004353,
+          0.08364700000004177
+        ]
+      },
+      "median_change_percent": 0.8401941893606324,
+      "paired_change_percent": [
+        2.4446394729059184,
+        1.2644876125706972,
+        0.04239031514765568,
+        3.917062141235683
+      ]
+    },
+    "10-child-noop_wall_seconds": {
+      "off": {
+        "median": 0.6369298544999964,
+        "min": 0.6055819589999487,
+        "max": 0.6707754170000158,
+        "samples": [
+          0.6389624589999983,
+          0.6055819589999487,
+          0.6348972499999945,
+          0.6707754170000158
+        ]
+      },
+      "on": {
+        "median": 0.616674729500005,
+        "min": 0.5932938750000005,
+        "max": 0.6779300000000035,
+        "samples": [
+          0.6213380840000013,
+          0.5932938750000005,
+          0.6120113750000087,
+          0.6779300000000035
+        ]
+      },
+      "median_change_percent": -3.1801186358099143,
+      "paired_change_percent": [
+        -2.7582802012468433,
+        -2.029136406282739,
+        -3.604658076560585,
+        1.0666137754400618
+      ]
+    },
+    "10-child-noop_cpu_seconds": {
+      "off": {
+        "median": 1.9977969999999967,
+        "min": 1.854122999999987,
+        "max": 2.2278730000000735,
+        "samples": [
+          2.005277000000003,
+          1.854122999999987,
+          1.9903169999999903,
+          2.2278730000000735
+        ]
+      },
+      "on": {
+        "median": 1.9118239999999922,
+        "min": 1.738326999999991,
+        "max": 2.1445010000000764,
+        "samples": [
+          1.9426899999999918,
+          1.738326999999991,
+          1.8809579999999926,
+          2.1445010000000764
+        ]
+      },
+      "median_change_percent": -4.303390184288225,
+      "paired_change_percent": [
+        -3.121114938236025,
+        -6.245324608992863,
+        -5.4945518728925276,
+        -3.7422240854839695
+      ]
+    }
+  },
+  "physical_scope": "Dedicated APFS allocator growth after donor checkout, including build state and child checkout; no pre-upgrade caches.",
+  "timing_scope": "Waited-child CPU and wall time; no instruction-count claim. External Rust checked before/after commands, not continuously."
+}

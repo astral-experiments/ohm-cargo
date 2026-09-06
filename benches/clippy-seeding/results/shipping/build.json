@@ -1,0 +1,16 @@
+{
+  "source_commit": "795cddae649feb6387fbf35c7a905d7b4977dba0",
+  "source_status": "",
+  "binary": "/private/tmp/codex-cargo-targets/cargo/clippy-seeding/ohm/release/cargo",
+  "binary_sha256": "4a3383fc93966ea97342bb53fc5f48550a1fa71a82c9bfd620bc6fe6f746c325",
+  "binary_version": "cargo 1.98.0 (795cddae6 2026-09-06)\nrelease: 1.98.0\ncommit-hash: 795cddae649feb6387fbf35c7a905d7b4977dba0\ncommit-date: 2026-09-06\nhost: aarch64-apple-darwin\nlibgit2: 1.9.4 (sys:0.21.0 vendored)\nlibcurl: 8.7.1 (sys:0.4.90+curl-8.21.0 system ssl:(SecureTransport) LibreSSL/3.3.6)\nos: Mac OS 26.6.2 [64-bit]\n",
+  "build_command": "cargo +ohm build -p cargo --release --features ohm-defaults -j 4",
+  "build_env": {
+    "CARGO_HOME": "/private/tmp/codex-cargo-home",
+    "CARGO_TARGET_DIR": "/private/tmp/codex-cargo-targets/cargo/clippy-seeding/ohm",
+    "CARGO_BUILD_BUILD_DIR": "/private/tmp/codex-cargo-targets/shared-build/ohm",
+    "CARGO_UNSTABLE_OHM_PROC_MACRO_TRUST": "all",
+    "CARGO_UNSTABLE_OHM_NATIVE_TOOL_TRUST": "all"
+  },
+  "build_note": "Cargo build.rs does not watch Git HEAD. Moved only this worktree release build-script fingerprint into clippy-shipping/pre-795c-build-script-fingerprint to refresh embedded Git metadata; source remained clean."
+}

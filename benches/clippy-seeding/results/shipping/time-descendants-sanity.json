@@ -1,0 +1,26 @@
+{
+  "direct": {
+    "argv": [
+      "python3",
+      "-c",
+      "value=0\nfor i in range(3000000): value += i\n"
+    ],
+    "stderr": "        0.12 real         0.11 user         0.00 sys\n            15122432  maximum resident set size\n                   0  average shared memory size\n                   0  average unshared data size\n                   0  average unshared stack size\n                1607  page reclaims\n                  41  page faults\n                   0  swaps\n                   0  block input operations\n                   0  block output operations\n                   0  messages sent\n                   0  messages received\n                   0  signals received\n                   0  voluntary context switches\n                  69  involuntary context switches\n          3901569640  instructions retired\n           503128235  cycles elapsed\n             6062488  peak memory footprint\n"
+  },
+  "child": {
+    "argv": [
+      "python3",
+      "-c",
+      "import subprocess\nsubprocess.run([\"python3\",\"-c\",'value=0\\nfor i in range(3000000): value += i\\n'], check=True)"
+    ],
+    "stderr": "        0.15 real         0.12 user         0.01 sys\n            16531456  maximum resident set size\n                   0  average shared memory size\n                   0  average unshared data size\n                   0  average unshared stack size\n                3735  page reclaims\n                  82  page faults\n                   0  swaps\n                   0  block input operations\n                   0  block output operations\n                   0  messages sent\n                   0  messages received\n                   0  signals received\n                   2  voluntary context switches\n                  69  involuntary context switches\n           219581390  instructions retired\n            86850304  cycles elapsed\n             7061936  peak memory footprint\n"
+  },
+  "idle": {
+    "argv": [
+      "python3",
+      "-c",
+      "pass"
+    ],
+    "stderr": "        0.02 real         0.01 user         0.00 sys\n            15122432  maximum resident set size\n                   0  average shared memory size\n                   0  average unshared data size\n                   0  average unshared stack size\n                1608  page reclaims\n                  41  page faults\n                   0  swaps\n                   0  block input operations\n                   0  block output operations\n                   0  messages sent\n                   0  messages received\n                   0  signals received\n                   0  voluntary context switches\n                  14  involuntary context switches\n           169080124  instructions retired\n            66520630  cycles elapsed\n             6013336  peak memory footprint\n"
+  }
+}

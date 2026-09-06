@@ -1,0 +1,780 @@
+{
+  "label": "off2",
+  "enabled": false,
+  "base": "1edf9fe2cab23e34c383419b8c7830324c428a58",
+  "edit": "0ecff877901a0377ad966ffab528488ce872b50e",
+  "production": true,
+  "require_quiet": true,
+  "harness_sha256": "34832be58e65cc3799e33f424fdc6ebae45e75cadc6ad368621b82b4232b1289",
+  "cargo_version": "cargo 1.98.0 (496285f24 2026-09-06)\nrelease: 1.98.0\ncommit-hash: 496285f24f268208a93cecb45c642b8a82658650\ncommit-date: 2026-09-06\nhost: aarch64-apple-darwin\nlibgit2: 1.9.4 (sys:0.21.0 vendored)\nlibcurl: 8.7.1 (sys:0.4.90+curl-8.21.0 system ssl:(SecureTransport) LibreSSL/3.3.6)\nos: Mac OS 15.7.5 [64-bit]\n",
+  "cargo_sha256": "24e006f5db0835da3fcd3e0931ab5db07f49a4361b61eeb6a1b193e92d2a5b02",
+  "rustc_sha256": "5d87dbf31bdff571fc94181be7cc241ccd80936404f9a87b1a91476670f1c95c",
+  "source_root": "/Users/runner/work/_temp/ruff-fixture",
+  "volume": "/private/tmp/codex-cargo-targets/ruff/isolated/clippy-seeding-ci/off2/volume",
+  "attach": {
+    "system-entities": [
+      {
+        "content-hint": "EFI",
+        "dev-entry": "/dev/disk8s1",
+        "potentially-mountable": true,
+        "unmapped-content-hint": "C12A7328-F81F-11D2-BA4B-00A0C93EC93B",
+        "volume-kind": "msdos"
+      },
+      {
+        "content-hint": "41504653-0000-11AA-AA11-00306543ECAC",
+        "dev-entry": "/dev/disk9s1",
+        "mount-point": "/private/tmp/codex-cargo-targets/ruff/isolated/clippy-seeding-ci/off2/volume",
+        "potentially-mountable": true,
+        "unmapped-content-hint": "41504653-0000-11AA-AA11-00306543ECAC",
+        "volume-kind": "apfs"
+      },
+      {
+        "content-hint": "EF57347C-0000-11AA-AA11-00306543ECAC",
+        "dev-entry": "/dev/disk9",
+        "potentially-mountable": false,
+        "unmapped-content-hint": "EF57347C-0000-11AA-AA11-00306543ECAC"
+      },
+      {
+        "content-hint": "Apple_APFS",
+        "dev-entry": "/dev/disk8s2",
+        "potentially-mountable": false,
+        "unmapped-content-hint": "7C3457EF-0000-11AA-AA11-00306543ECAC"
+      },
+      {
+        "content-hint": "GUID_partition_scheme",
+        "dev-entry": "/dev/disk8",
+        "potentially-mountable": false,
+        "unmapped-content-hint": "GUID_partition_scheme"
+      }
+    ]
+  },
+  "environment": {
+    "CARGO_HOME": "/private/tmp/codex-cargo-home",
+    "RUSTUP_TOOLCHAIN": "ohm-1.98.0-9",
+    "RUSTC": "/Users/runner/.local/share/ohm/toolchains/ohm-1.98.0-9/bin/rustc",
+    "CARGO": "/private/tmp/codex-cargo-targets/cargo/clippy-seeding-ci/ohm/release/cargo",
+    "PATH": "/private/tmp/codex-cargo-targets/cargo/clippy-seeding-ci/ohm/release:/Users/runner/.local/share/ohm/toolchains/ohm-1.98.0-9/bin:/Users/runner/.cargo/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+    "CARGO_BUILD_JOBS": "4",
+    "CARGO_TARGET_DIR": "/private/tmp/codex-cargo-targets/ruff/isolated/clippy-seeding-ci/off2/volume/targets/donor",
+    "CARGO_BUILD_BUILD_DIR": "/private/tmp/codex-cargo-targets/ruff/isolated/clippy-seeding-ci/off2/volume/shared",
+    "CARGO_UNSTABLE_OHM_PROC_MACRO_TRUST": "all",
+    "CARGO_UNSTABLE_OHM_NATIVE_TOOL_TRUST": "all",
+    "CARGO_EXPERIMENTAL_CLIPPY_SEED_ISOLATION": null,
+    "CARGO_UNSTABLE_OHM_CLIPPY_SEED_ISOLATION": "false",
+    "CARGO_PROFILE_DEV_DEBUG": "line-tables-only",
+    "CARGO_PROFILE_DEV_OPT_LEVEL": "1",
+    "CARGO_PROFILE_DEV_LTO": "off"
+  },
+  "commands": [
+    {
+      "name": "00-clone",
+      "argv": [
+        "git",
+        "clone",
+        "--shared",
+        "--no-checkout",
+        "/Users/runner/work/_temp/ruff-fixture",
+        "/private/tmp/codex-cargo-targets/ruff/isolated/clippy-seeding-ci/off2/volume/donor"
+      ],
+      "cwd": "/private/tmp/codex-cargo-targets/ruff/isolated/clippy-seeding-ci/off2",
+      "processes_before": [
+        {
+          "pid": 342,
+          "ppid": 1,
+          "cpu_percent": 124.4,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mds_stores",
+          "rust": false
+        }
+      ],
+      "elapsed_seconds": 0.2333753329999979,
+      "returncode": 0,
+      "child_user_seconds": 0.19600699999998028,
+      "child_system_seconds": 0.13474500000000234,
+      "processes_after": [
+        {
+          "pid": 342,
+          "ppid": 1,
+          "cpu_percent": 50.3,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mds_stores",
+          "rust": false
+        }
+      ],
+      "summaries": [],
+      "compiling_lines": 0,
+      "checking_lines": 0
+    },
+    {
+      "name": "01-checkout",
+      "argv": [
+        "git",
+        "checkout",
+        "--detach",
+        "1edf9fe2cab23e34c383419b8c7830324c428a58"
+      ],
+      "cwd": "/private/tmp/codex-cargo-targets/ruff/isolated/clippy-seeding-ci/off2/volume/donor",
+      "processes_before": [
+        {
+          "pid": 342,
+          "ppid": 1,
+          "cpu_percent": 50.3,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mds_stores",
+          "rust": false
+        }
+      ],
+      "elapsed_seconds": 0.6065832499999999,
+      "returncode": 0,
+      "child_user_seconds": 0.12173699999999599,
+      "child_system_seconds": 0.47260699999999645,
+      "processes_after": [
+        {
+          "pid": 88,
+          "ppid": 1,
+          "cpu_percent": 27.9,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/FSEvents.framework/Versions/A/Support/fseventsd",
+          "rust": false
+        },
+        {
+          "pid": 12116,
+          "ppid": 1,
+          "cpu_percent": 31.9,
+          "executable": "/System/Library/PrivateFrameworks/DiskImages.framework/Resources/diskimages-helper",
+          "rust": false
+        }
+      ],
+      "summaries": [],
+      "compiling_lines": 0,
+      "checking_lines": 0
+    },
+    {
+      "name": "01b-fetch",
+      "argv": [
+        "/private/tmp/codex-cargo-targets/cargo/clippy-seeding-ci/ohm/release/cargo",
+        "fetch",
+        "--locked"
+      ],
+      "cwd": "/private/tmp/codex-cargo-targets/ruff/isolated/clippy-seeding-ci/off2/volume/donor",
+      "processes_before": [
+        {
+          "pid": 88,
+          "ppid": 1,
+          "cpu_percent": 27.9,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/FSEvents.framework/Versions/A/Support/fseventsd",
+          "rust": false
+        },
+        {
+          "pid": 12116,
+          "ppid": 1,
+          "cpu_percent": 31.9,
+          "executable": "/System/Library/PrivateFrameworks/DiskImages.framework/Resources/diskimages-helper",
+          "rust": false
+        }
+      ],
+      "elapsed_seconds": 0.09627924999998072,
+      "returncode": 0,
+      "child_user_seconds": 0.05867400000002476,
+      "child_system_seconds": 0.03945099999999968,
+      "processes_after": [
+        {
+          "pid": 88,
+          "ppid": 1,
+          "cpu_percent": 24.0,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/FSEvents.framework/Versions/A/Support/fseventsd",
+          "rust": false
+        },
+        {
+          "pid": 12116,
+          "ppid": 1,
+          "cpu_percent": 28.6,
+          "executable": "/System/Library/PrivateFrameworks/DiskImages.framework/Resources/diskimages-helper",
+          "rust": false
+        }
+      ],
+      "summaries": [],
+      "compiling_lines": 0,
+      "checking_lines": 0
+    },
+    {
+      "name": "02-donor-test",
+      "argv": [
+        "/private/tmp/codex-cargo-targets/cargo/clippy-seeding-ci/ohm/release/cargo",
+        "test",
+        "--offline",
+        "-p",
+        "ruff_python_parser"
+      ],
+      "cwd": "/private/tmp/codex-cargo-targets/ruff/isolated/clippy-seeding-ci/off2/volume/donor",
+      "processes_before": [
+        {
+          "pid": 342,
+          "ppid": 1,
+          "cpu_percent": 41.7,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mds_stores",
+          "rust": false
+        }
+      ],
+      "elapsed_seconds": 15.609392500000013,
+      "returncode": 0,
+      "child_user_seconds": 56.603087999999985,
+      "child_system_seconds": 6.148749000000002,
+      "processes_after": [],
+      "summaries": [
+        "test parser::scratch_buffer::tests::snapshot_is_empty_relative_to_its_buffer ... ok",
+        "test parser::scratch_buffer::tests::snapshot_must_be_restored - should panic ... ok",
+        "test parser::scratch_buffer::tests::snapshot_must_be_restored_in_reverse_order - should panic ... ok",
+        "test result: ok. 245 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.06s",
+        "test result: ok. 556 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.21s",
+        "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+        "test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s"
+      ],
+      "compiling_lines": 123,
+      "checking_lines": 0
+    },
+    {
+      "name": "03-donor-clippy",
+      "argv": [
+        "/private/tmp/codex-cargo-targets/cargo/clippy-seeding-ci/ohm/release/cargo",
+        "clippy",
+        "--offline",
+        "-p",
+        "ruff_python_parser",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings",
+        "-A",
+        "clippy::format_push_string"
+      ],
+      "cwd": "/private/tmp/codex-cargo-targets/ruff/isolated/clippy-seeding-ci/off2/volume/donor",
+      "processes_before": [],
+      "elapsed_seconds": 1.2774749579999707,
+      "returncode": 0,
+      "child_user_seconds": 2.76247699999999,
+      "child_system_seconds": 0.4515270000000058,
+      "processes_after": [],
+      "summaries": [],
+      "compiling_lines": 0,
+      "checking_lines": 7
+    },
+    {
+      "name": "03b-donor-clippy-noop",
+      "argv": [
+        "/private/tmp/codex-cargo-targets/cargo/clippy-seeding-ci/ohm/release/cargo",
+        "clippy",
+        "--offline",
+        "-p",
+        "ruff_python_parser",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings",
+        "-A",
+        "clippy::format_push_string"
+      ],
+      "cwd": "/private/tmp/codex-cargo-targets/ruff/isolated/clippy-seeding-ci/off2/volume/donor",
+      "processes_before": [],
+      "elapsed_seconds": 0.10901854100001174,
+      "returncode": 0,
+      "child_user_seconds": 0.0518769999999904,
+      "child_system_seconds": 0.05061500000000052,
+      "processes_after": [
+        {
+          "pid": 111,
+          "ppid": 1,
+          "cpu_percent": 37.9,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Support/mds",
+          "rust": false
+        }
+      ],
+      "summaries": [],
+      "compiling_lines": 0,
+      "checking_lines": 0
+    },
+    {
+      "name": "04-donor-noop",
+      "argv": [
+        "/private/tmp/codex-cargo-targets/cargo/clippy-seeding-ci/ohm/release/cargo",
+        "test",
+        "--offline",
+        "-p",
+        "ruff_python_parser"
+      ],
+      "cwd": "/private/tmp/codex-cargo-targets/ruff/isolated/clippy-seeding-ci/off2/volume/donor",
+      "processes_before": [
+        {
+          "pid": 111,
+          "ppid": 1,
+          "cpu_percent": 37.9,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Support/mds",
+          "rust": false
+        }
+      ],
+      "elapsed_seconds": 0.6395679579999864,
+      "returncode": 0,
+      "child_user_seconds": 0.4896850000000086,
+      "child_system_seconds": 1.4021019999999993,
+      "processes_after": [],
+      "summaries": [
+        "test parser::scratch_buffer::tests::snapshot_is_empty_relative_to_its_buffer ... ok",
+        "test parser::scratch_buffer::tests::snapshot_must_be_restored - should panic ... ok",
+        "test parser::scratch_buffer::tests::snapshot_must_be_restored_in_reverse_order - should panic ... ok",
+        "test result: ok. 245 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s",
+        "test result: ok. 556 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.23s",
+        "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+        "test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s"
+      ],
+      "compiling_lines": 0,
+      "checking_lines": 0
+    },
+    {
+      "name": "05-fork",
+      "argv": [
+        "/private/tmp/codex-cargo-targets/cargo/clippy-seeding-ci/ohm/release/cargo",
+        "worktree",
+        "add",
+        "--detach",
+        "/private/tmp/codex-cargo-targets/ruff/isolated/clippy-seeding-ci/off2/volume/child",
+        "--target-dir",
+        "/private/tmp/codex-cargo-targets/ruff/isolated/clippy-seeding-ci/off2/volume/targets/child",
+        "1edf9fe2cab23e34c383419b8c7830324c428a58"
+      ],
+      "cwd": "/private/tmp/codex-cargo-targets/ruff/isolated/clippy-seeding-ci/off2/volume/donor",
+      "processes_before": [
+        {
+          "pid": 342,
+          "ppid": 1,
+          "cpu_percent": 39.8,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mds_stores",
+          "rust": false
+        }
+      ],
+      "elapsed_seconds": 0.6730237089999491,
+      "returncode": 0,
+      "child_user_seconds": 0.14523500000001377,
+      "child_system_seconds": 0.510386000000004,
+      "processes_after": [
+        {
+          "pid": 88,
+          "ppid": 1,
+          "cpu_percent": 23.5,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/FSEvents.framework/Versions/A/Support/fseventsd",
+          "rust": false
+        },
+        {
+          "pid": 12116,
+          "ppid": 1,
+          "cpu_percent": 31.9,
+          "executable": "/System/Library/PrivateFrameworks/DiskImages.framework/Resources/diskimages-helper",
+          "rust": false
+        }
+      ],
+      "summaries": [
+        "     Created /private/tmp/codex-cargo-targets/ruff/isolated/clippy-seeding-ci/off2/volume/child (no compatible build snapshot seeded)"
+      ],
+      "compiling_lines": 0,
+      "checking_lines": 0
+    },
+    {
+      "name": "06-child-test",
+      "argv": [
+        "/private/tmp/codex-cargo-targets/cargo/clippy-seeding-ci/ohm/release/cargo",
+        "test",
+        "--offline",
+        "-p",
+        "ruff_python_parser"
+      ],
+      "cwd": "/private/tmp/codex-cargo-targets/ruff/isolated/clippy-seeding-ci/off2/volume/child",
+      "processes_before": [
+        {
+          "pid": 88,
+          "ppid": 1,
+          "cpu_percent": 23.5,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/FSEvents.framework/Versions/A/Support/fseventsd",
+          "rust": false
+        },
+        {
+          "pid": 12116,
+          "ppid": 1,
+          "cpu_percent": 31.9,
+          "executable": "/System/Library/PrivateFrameworks/DiskImages.framework/Resources/diskimages-helper",
+          "rust": false
+        }
+      ],
+      "elapsed_seconds": 4.705935750000037,
+      "returncode": 0,
+      "child_user_seconds": 15.124700000000018,
+      "child_system_seconds": 2.212564999999998,
+      "processes_after": [],
+      "summaries": [
+        "test parser::scratch_buffer::tests::snapshot_is_empty_relative_to_its_buffer ... ok",
+        "test parser::scratch_buffer::tests::snapshot_must_be_restored - should panic ... ok",
+        "test parser::scratch_buffer::tests::snapshot_must_be_restored_in_reverse_order - should panic ... ok",
+        "test result: ok. 245 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.06s",
+        "test result: ok. 556 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.21s",
+        "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+        "test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s"
+      ],
+      "compiling_lines": 7,
+      "checking_lines": 0
+    },
+    {
+      "name": "07-edit",
+      "argv": [
+        "git",
+        "checkout",
+        "--detach",
+        "0ecff877901a0377ad966ffab528488ce872b50e"
+      ],
+      "cwd": "/private/tmp/codex-cargo-targets/ruff/isolated/clippy-seeding-ci/off2/volume/child",
+      "processes_before": [],
+      "elapsed_seconds": 0.2715037920000327,
+      "returncode": 0,
+      "child_user_seconds": 0.1963620000000219,
+      "child_system_seconds": 0.19544399999999484,
+      "processes_after": [],
+      "summaries": [],
+      "compiling_lines": 0,
+      "checking_lines": 0
+    },
+    {
+      "name": "08-child-edit-test",
+      "argv": [
+        "/private/tmp/codex-cargo-targets/cargo/clippy-seeding-ci/ohm/release/cargo",
+        "test",
+        "--offline",
+        "-p",
+        "ruff_python_parser"
+      ],
+      "cwd": "/private/tmp/codex-cargo-targets/ruff/isolated/clippy-seeding-ci/off2/volume/child",
+      "processes_before": [],
+      "elapsed_seconds": 1.4821349169999962,
+      "returncode": 0,
+      "child_user_seconds": 3.109911000000011,
+      "child_system_seconds": 1.8159789999999987,
+      "processes_after": [],
+      "summaries": [
+        "test parser::scratch_buffer::tests::snapshot_is_empty_relative_to_its_buffer ... ok",
+        "test parser::scratch_buffer::tests::snapshot_must_be_restored - should panic ... ok",
+        "test parser::scratch_buffer::tests::snapshot_must_be_restored_in_reverse_order - should panic ... ok",
+        "test result: ok. 245 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s",
+        "test result: ok. 557 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.23s",
+        "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+        "test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s"
+      ],
+      "compiling_lines": 1,
+      "checking_lines": 0
+    },
+    {
+      "name": "09-child-clippy",
+      "argv": [
+        "/private/tmp/codex-cargo-targets/cargo/clippy-seeding-ci/ohm/release/cargo",
+        "clippy",
+        "--offline",
+        "-p",
+        "ruff_python_parser",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings",
+        "-A",
+        "clippy::format_push_string"
+      ],
+      "cwd": "/private/tmp/codex-cargo-targets/ruff/isolated/clippy-seeding-ci/off2/volume/child",
+      "processes_before": [],
+      "elapsed_seconds": 1.2989842499999895,
+      "returncode": 0,
+      "child_user_seconds": 2.825243999999998,
+      "child_system_seconds": 0.4648389999999978,
+      "processes_after": [
+        {
+          "pid": 342,
+          "ppid": 1,
+          "cpu_percent": 37.1,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mds_stores",
+          "rust": false
+        }
+      ],
+      "summaries": [],
+      "compiling_lines": 0,
+      "checking_lines": 7
+    },
+    {
+      "name": "09b-child-clippy-noop",
+      "argv": [
+        "/private/tmp/codex-cargo-targets/cargo/clippy-seeding-ci/ohm/release/cargo",
+        "clippy",
+        "--offline",
+        "-p",
+        "ruff_python_parser",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings",
+        "-A",
+        "clippy::format_push_string"
+      ],
+      "cwd": "/private/tmp/codex-cargo-targets/ruff/isolated/clippy-seeding-ci/off2/volume/child",
+      "processes_before": [
+        {
+          "pid": 342,
+          "ppid": 1,
+          "cpu_percent": 37.1,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mds_stores",
+          "rust": false
+        }
+      ],
+      "elapsed_seconds": 0.08325341699998035,
+      "returncode": 0,
+      "child_user_seconds": 0.043099999999981264,
+      "child_system_seconds": 0.0365369999999956,
+      "processes_after": [
+        {
+          "pid": 342,
+          "ppid": 1,
+          "cpu_percent": 37.1,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mds_stores",
+          "rust": false
+        }
+      ],
+      "summaries": [],
+      "compiling_lines": 0,
+      "checking_lines": 0
+    },
+    {
+      "name": "10-child-noop",
+      "argv": [
+        "/private/tmp/codex-cargo-targets/cargo/clippy-seeding-ci/ohm/release/cargo",
+        "test",
+        "--offline",
+        "-p",
+        "ruff_python_parser"
+      ],
+      "cwd": "/private/tmp/codex-cargo-targets/ruff/isolated/clippy-seeding-ci/off2/volume/child",
+      "processes_before": [
+        {
+          "pid": 342,
+          "ppid": 1,
+          "cpu_percent": 23.3,
+          "executable": "/System/Library/Frameworks/CoreServices.framework/Frameworks/Metadata.framework/Versions/A/Support/mds_stores",
+          "rust": false
+        }
+      ],
+      "elapsed_seconds": 0.6055819589999487,
+      "returncode": 0,
+      "child_user_seconds": 0.47807699999998476,
+      "child_system_seconds": 1.3760460000000023,
+      "processes_after": [],
+      "summaries": [
+        "test parser::scratch_buffer::tests::snapshot_is_empty_relative_to_its_buffer ... ok",
+        "test parser::scratch_buffer::tests::snapshot_must_be_restored - should panic ... ok",
+        "test parser::scratch_buffer::tests::snapshot_must_be_restored_in_reverse_order - should panic ... ok",
+        "test result: ok. 245 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s",
+        "test result: ok. 557 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.22s",
+        "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+        "test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s"
+      ],
+      "compiling_lines": 0,
+      "checking_lines": 0
+    }
+  ],
+  "measurements": {
+    "empty": {
+      "volume_used_bytes": 20480,
+      "container_used_bytes": 61865984,
+      "stable": true,
+      "samples": [
+        {
+          "volume_used_bytes": 20480,
+          "container_used_bytes": 61865984
+        },
+        {
+          "volume_used_bytes": 20480,
+          "container_used_bytes": 61865984
+        },
+        {
+          "volume_used_bytes": 20480,
+          "container_used_bytes": 61865984
+        }
+      ],
+      "artifact_groups": {}
+    },
+    "sources": {
+      "volume_used_bytes": 142626816,
+      "container_used_bytes": 204472320,
+      "stable": true,
+      "samples": [
+        {
+          "volume_used_bytes": 142626816,
+          "container_used_bytes": 204472320
+        },
+        {
+          "volume_used_bytes": 142626816,
+          "container_used_bytes": 204472320
+        },
+        {
+          "volume_used_bytes": 142626816,
+          "container_used_bytes": 204472320
+        }
+      ],
+      "artifact_groups": {}
+    },
+    "donor": {
+      "volume_used_bytes": 709529600,
+      "container_used_bytes": 771375104,
+      "stable": true,
+      "samples": [
+        {
+          "volume_used_bytes": 709529600,
+          "container_used_bytes": 771375104
+        },
+        {
+          "volume_used_bytes": 709529600,
+          "container_used_bytes": 771375104
+        },
+        {
+          "volume_used_bytes": 709529600,
+          "container_used_bytes": 771375104
+        }
+      ],
+      "artifact_groups": {
+        "other": {
+          "files": 1417,
+          "logical_bytes": 243474470,
+          "inode_allocated_clone_unaware_bytes": 250347520
+        },
+        ".rmeta": {
+          "files": 146,
+          "logical_bytes": 114985257,
+          "inode_allocated_clone_unaware_bytes": 115298304
+        },
+        "query-cache": {
+          "files": 20,
+          "logical_bytes": 63247858,
+          "inode_allocated_clone_unaware_bytes": 63291392
+        },
+        ".o": {
+          "files": 1110,
+          "logical_bytes": 85977608,
+          "inode_allocated_clone_unaware_bytes": 88141824
+        },
+        ".rlib": {
+          "files": 122,
+          "logical_bytes": 88618512,
+          "inode_allocated_clone_unaware_bytes": 88842240
+        }
+      }
+    },
+    "child_fresh": {
+      "volume_used_bytes": 1067532288,
+      "container_used_bytes": 1129377792,
+      "stable": true,
+      "samples": [
+        {
+          "volume_used_bytes": 1067532288,
+          "container_used_bytes": 1129377792
+        },
+        {
+          "volume_used_bytes": 1067532288,
+          "container_used_bytes": 1129377792
+        },
+        {
+          "volume_used_bytes": 1067532288,
+          "container_used_bytes": 1129377792
+        }
+      ],
+      "artifact_groups": {
+        "other": {
+          "files": 1545,
+          "logical_bytes": 369086124,
+          "inode_allocated_clone_unaware_bytes": 377004032
+        },
+        ".rmeta": {
+          "files": 160,
+          "logical_bytes": 135630743,
+          "inode_allocated_clone_unaware_bytes": 135974912
+        },
+        "query-cache": {
+          "files": 30,
+          "logical_bytes": 108312740,
+          "inode_allocated_clone_unaware_bytes": 108376064
+        },
+        ".o": {
+          "files": 1993,
+          "logical_bytes": 129938144,
+          "inode_allocated_clone_unaware_bytes": 133799936
+        },
+        ".rlib": {
+          "files": 129,
+          "logical_bytes": 114300824,
+          "inode_allocated_clone_unaware_bytes": 114536448
+        }
+      }
+    },
+    "final": {
+      "volume_used_bytes": 1175556096,
+      "container_used_bytes": 1237401600,
+      "stable": true,
+      "samples": [
+        {
+          "volume_used_bytes": 1175556096,
+          "container_used_bytes": 1237401600
+        },
+        {
+          "volume_used_bytes": 1175556096,
+          "container_used_bytes": 1237401600
+        },
+        {
+          "volume_used_bytes": 1175556096,
+          "container_used_bytes": 1237401600
+        }
+      ],
+      "artifact_groups": {
+        "other": {
+          "files": 1650,
+          "logical_bytes": 439819041,
+          "inode_allocated_clone_unaware_bytes": 447635456
+        },
+        ".rmeta": {
+          "files": 177,
+          "logical_bytes": 150522955,
+          "inode_allocated_clone_unaware_bytes": 150892544
+        },
+        "query-cache": {
+          "files": 40,
+          "logical_bytes": 138106979,
+          "inode_allocated_clone_unaware_bytes": 138190848
+        },
+        ".o": {
+          "files": 1993,
+          "logical_bytes": 129941792,
+          "inode_allocated_clone_unaware_bytes": 133799936
+        },
+        ".rlib": {
+          "files": 129,
+          "logical_bytes": 114301568,
+          "inode_allocated_clone_unaware_bytes": 114536448
+        }
+      }
+    }
+  },
+  "toolchain": {
+    "rustc_version": "rustc 1.98.0-dev (d37229159 2026-09-05) (ohm-1.98.0-9)\nbinary: rustc\ncommit-hash: d37229159e545bbdec917dd7efdf5d26da40d2bc\ncommit-date: 2026-09-05\nhost: aarch64-apple-darwin\nrelease: 1.98.0-dev\nLLVM version: 22.1.8\n",
+    "clippy_sha256": "d4bdd65200698f9e304282826ebcc08e15c84f0f2f867315ae6df8311b1ffdbf",
+    "driver_sha256": {
+      "librustc_driver-eeeb3982ca989643.dylib": "51f59b4475848a69fcae68ac8098b068e14f1fd4dc7e71c1df8a27c32e7a08b2"
+    }
+  },
+  "machine": {
+    "platform": "macOS-15.7.5-arm64-arm-64bit-Mach-O",
+    "cpu_count": 12
+  },
+  "timing_caveat": "External Rust processes checked before/after commands; ordinary host activity remains.",
+  "seed_import": null,
+  "complete": true,
+  "detach_attempts": [
+    {
+      "returncode": 0,
+      "stdout": "\"disk8\" ejected.\n",
+      "stderr": ""
+    }
+  ]
+}

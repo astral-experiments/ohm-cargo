@@ -1,0 +1,82 @@
+{
+  "source_commit": "795cddae649feb6387fbf35c7a905d7b4977dba0",
+  "scope": "Local validation ran on the source subsequently committed as 795c; later snapshot/evidence/CI changes do not modify production Rust.",
+  "commands": [
+    {
+      "command": "cargo +ohm test -p cargo --lib --features ohm-defaults -j4 util::file_clone -- --nocapture",
+      "passed": 2
+    },
+    {
+      "command": "cargo +ohm test -p cargo --lib --features ohm-defaults -j4 bundled_clippy_requires -- --nocapture",
+      "passed": 1
+    },
+    {
+      "command": "cargo +ohm test -p cargo --lib --features ohm-defaults -j4 copied_files_are_independent -- --nocapture",
+      "passed": 1
+    },
+    {
+      "command": "cargo +ohm test -p cargo --test testsuite --features ohm-defaults -j4 ohm_worktree",
+      "passed": 31,
+      "note": "Run before adding the forced-trust regression below; union is 32 worktree tests."
+    },
+    {
+      "command": "cargo +ohm test -p cargo --test testsuite --features ohm-defaults -j4 forced_clippy_isolation",
+      "passed": 1
+    },
+    {
+      "command": "cargo +ohm test -p cargo --test testsuite --features ohm-defaults -j4 incremental_gc",
+      "passed": 17
+    },
+    {
+      "command": "cargo +ohm clippy -p cargo --all-targets --features ohm-defaults --no-deps -j4 -- -D warnings",
+      "passed": true
+    },
+    {
+      "command": "cargo +ohm fmt --all -- --check",
+      "passed": true
+    }
+  ],
+  "ci_initial": "https://github.com/astral-sh/ohm-cargo/actions/runs/34031426388",
+  "ci_initial_note": "macOS passed 4210 tests, failing only the newly added -Z help flag snapshot; fixed in 940fd7da8373049b952d484c3b5c161f12fe3bb0. Stable CI ignores bundled-Clippy nightly tests; local packaged-Ohm validation above includes them.",
+  "excluded_trials": [
+    {
+      "path": "/private/tmp/ohm-target-size-prototypes/cargo/clippy-shipping/apfs-aborted-external-cargo",
+      "reason": "Strict process guard found external Cargo after the first off fork; arm incomplete and excluded. Image preserved and normally detached."
+    },
+    {
+      "path": "/private/tmp/ohm-target-size-prototypes/cargo/clippy-shipping/fallback-harness-assertion",
+      "reason": "Harness expected incorrect no-snapshot log text; default behavior checks passed. Corrected assertion and complete fresh-volume rerun passed."
+    },
+    {
+      "path": "/private/tmp/ohm-target-size-prototypes/cargo/clippy-shipping/apfs-aborted-external-bootstrap",
+      "reason": "One off arm complete; first on arm aborted before fork due external Rust-bootstrap Cargo. No paired result accepted; images preserved and normally detached."
+    },
+    {
+      "run": "https://github.com/astral-sh/ohm-cargo/actions/runs/34031964910",
+      "dispatch_head": "443fcccb659b7accaa7321209dcd806c0520f1aa",
+      "production_diff_vs_795c": "git diff --exit-code 795c HEAD -- src/cargo src/bin crates Cargo.toml Cargo.lock build.rs succeeded locally before dispatch",
+      "status": "cancelled before any APFS workload",
+      "reason": "Focused CI exposed untrusted runner native-tool shims; canceled build and sanitized fixture PATH before retry."
+    },
+    {
+      "run": "https://github.com/astral-sh/ohm-cargo/actions/runs/34032194604",
+      "head": "858f95e2b71c253436d205e689df898e10ad16cf",
+      "path": "/private/tmp/ohm-target-size-prototypes/cargo/clippy-shipping/ci-apfs-858f-failed",
+      "reason": "Shallow fixture HEAD at BASE omitted unreachable EDIT during local clone; failed before first edit. Fixed source HEAD to EDIT and validated clone/fork/edit locally; no measured comparison accepted."
+    }
+  ],
+  "instruction_counter_note": "macOS time -l does not include waited descendants in instructions retired; direct/child sanity results retained and no workflow instruction claim made.",
+  "current_ci": {
+    "commit": "0428ec35f1c2fc6903220d1b5be7675e2ebeed72",
+    "run": "https://github.com/astral-sh/ohm-cargo/actions/runs/34032859038",
+    "conclusion": "success",
+    "verified_by_parent": "All eight standard checks passed. macOS full suite passed 4211 tests; five exact bundled-Clippy tests each ran 1 passed/0 ignored on both macOS and Linux."
+  },
+  "production_replay": {
+    "run": "https://github.com/astral-sh/ohm-cargo/actions/runs/34032543352",
+    "job_id": 101484660340,
+    "conclusion": "success",
+    "source": "496285f24f268208a93cecb45c642b8a82658650",
+    "note": "The optional APFS job passed all eight arms. Separate ordinary tests in this earlier workflow failed due an inside-repository fixture target; final CI at0428 corrects only that workflow placement."
+  }
+}
