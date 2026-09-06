@@ -1,8 +1,9 @@
 //! Retain Cargo's compilation front end between checks of one configuration.
 //!
 //! A session keeps a `BuildContext`, but creates a new `BuildRunner` for every
-//! check. Fingerprints, source mtimes, build-script outputs, jobs, and build locks
-//! therefore have the same lifetime as in an ordinary Cargo invocation.
+//! check. Mutable fingerprints, build-script outputs, jobs, and build locks have
+//! the same lifetime as in an ordinary Cargo invocation. Immutable per-unit
+//! freshness results are retained only with their original, revalidated reads.
 
 use std::cell::Cell;
 use std::sync::Arc;
@@ -11,6 +12,7 @@ use anyhow::{Context as _, bail};
 
 use crate::core::Workspace;
 use crate::core::compiler::build_runner::StaleBuiltRegistryDependency;
+use crate::core::compiler::fingerprint::session::SessionFreshness;
 use crate::core::compiler::{
     BuildContext, BuildRunner, Compilation, DefaultExecutor, Executor, UnitInterner, UserIntent,
 };
@@ -35,6 +37,7 @@ pub struct PreparedCheck<'a, 'gctx> {
     options: &'a CompileOptions,
     inputs: InputTracker,
     invalidated: Cell<bool>,
+    freshness: SessionFreshness,
 }
 
 impl<'a, 'gctx> PreparedCheck<'a, 'gctx> {
@@ -61,11 +64,13 @@ impl<'a, 'gctx> PreparedCheck<'a, 'gctx> {
             inputs.require_fresh("building the standard library requires fresh preparation");
         }
         let bcx = super::create_bcx(ws, options, interner, None)?;
+        let freshness = SessionFreshness::new(&bcx);
         Ok(Self {
             bcx,
             options,
             inputs,
             invalidated: Cell::new(false),
+            freshness,
         })
     }
 
@@ -106,7 +111,10 @@ impl<'a, 'gctx> PreparedCheck<'a, 'gctx> {
             Compilation::new(&self.bcx)
         } else {
             crate::core::gc::auto_gc(self.bcx.gctx);
-            let runner = BuildRunner::new(&self.bcx)?;
+            let mut runner = BuildRunner::new(&self.bcx)?;
+            if self.can_reuse() && !self.bcx.gctx.cli_unstable().mtime_on_use {
+                runner.session_freshness = Some(self.freshness.start());
+            }
             if self.options.build_config.dry_run {
                 runner.dry_run()
             } else {

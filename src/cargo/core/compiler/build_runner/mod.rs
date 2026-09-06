@@ -352,6 +352,8 @@ pub struct BuildRunner<'a, 'gctx> {
     pub build_explicit_deps: HashMap<Unit, BuildDeps>,
     /// Fingerprints used to detect if a unit is out-of-date.
     pub fingerprints: HashMap<Unit, Arc<Fingerprint>>,
+    /// Retained immutable freshness results for a prepared session graph.
+    pub(crate) session_freshness: Option<fingerprint::session::FreshnessRun<'a>>,
     /// Cache of file mtimes to reduce filesystem hits.
     pub mtime_cache: HashMap<PathBuf, FileTime>,
     /// Cache of file checksums to reduce filesystem reads.
@@ -486,6 +488,7 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
             compilation: Compilation::new(bcx)?,
             build_script_outputs: Arc::new(Mutex::new(BuildScriptOutputs::default())),
             fingerprints: HashMap::default(),
+            session_freshness: None,
             mtime_cache: HashMap::default(),
             checksum_cache: HashMap::default(),
             incremental_gc: crate::core::incremental_gc::Tracker::default(),

@@ -266,6 +266,7 @@ pub(in crate::core::compiler) fn can_reuse_after_scripts(
                 &dep_info,
                 info.files.iter().map(|(path, checksum)| (path, *checksum)),
                 true,
+                None,
             )
             .is_none()
     })

@@ -375,6 +375,7 @@
 pub(crate) mod dep_info;
 mod dirty_reason;
 mod rustdoc;
+pub(crate) mod session;
 mod worktree;
 
 use crate::util::data_structures::{HashMap, HashSet};
@@ -957,7 +958,7 @@ pub(crate) fn existing_unit_is_fresh(
     let fingerprint_path = build_runner.files().fingerprint_file_path(unit, "");
     let fingerprint = calculate(build_runner, unit)?;
     Ok(matches!(
-        _compare_old_fingerprint(&fingerprint_path, &fingerprint),
+        _compare_old_fingerprint(&fingerprint_path, &fingerprint, None),
         Ok(FingerprintComparison::Fresh)
     ))
 }
@@ -1054,6 +1055,7 @@ fn shared_registry_outputs_are_fresh(
         &dep_info,
         info.files.iter().map(|(path, checksum)| (path, *checksum)),
         *checksum,
+        None,
     )
     .is_some()
     {
@@ -1087,7 +1089,7 @@ pub(crate) fn existing_check_root(
     let fingerprint = calculate(build_runner, unit)?;
 
     Ok(
-        match _compare_old_fingerprint(&fingerprint_path, &fingerprint) {
+        match _compare_old_fingerprint(&fingerprint_path, &fingerprint, None) {
             Ok(FingerprintComparison::Fresh) => Some(ExistingCheckRoot::Fresh),
             Ok(FingerprintComparison::Dirty {
                 reason:
@@ -1139,11 +1141,15 @@ pub fn prepare_target(
     // information about failed comparisons to aid in debugging.
     let fingerprint = calculate(build_runner, unit)?;
     let mtime_on_use = build_runner.bcx.gctx.cli_unstable().mtime_on_use;
-    let dirty_reason = match compare_old_fingerprint(unit, &loc, &*fingerprint, mtime_on_use, force)
-    {
-        FingerprintComparison::Fresh => None,
-        FingerprintComparison::Dirty { reason } => Some(reason),
-    };
+    let reads = build_runner
+        .session_freshness
+        .as_mut()
+        .and_then(|cache| cache.reads(unit));
+    let dirty_reason =
+        match compare_old_fingerprint(unit, &loc, &*fingerprint, mtime_on_use, force, reads) {
+            FingerprintComparison::Fresh => None,
+            FingerprintComparison::Dirty { reason } => Some(reason),
+        };
 
     if dirty_reason.is_some() {
         build_runner.require_shared_cache_write_access(unit)?;
@@ -1168,6 +1174,9 @@ pub fn prepare_target(
     }
 
     let Some(dirty_reason) = dirty_reason else {
+        if let Some(cache) = build_runner.session_freshness.as_mut() {
+            cache.publish(unit, &bcx.unit_graph[unit], &fingerprint);
+        }
         // Unit is already up-to-date, mark it as Fresh for early cutoff propagation
         debug!(
             "early_cutoff: unit {:?} is FRESH (already up-to-date)",
@@ -1843,6 +1852,7 @@ impl LocalFingerprint {
         gctx: &GlobalContext,
         worktree_seed: bool,
         clippy_codegen: Option<(&str, &str)>,
+        mut reads: Option<&mut session::ReadSet>,
     ) -> CargoResult<Option<StaleItem>> {
         let pkg_root = pkg.root();
         match self {
@@ -1854,7 +1864,13 @@ impl LocalFingerprint {
             // rustc.
             LocalFingerprint::CheckDepInfo { dep_info, checksum } => {
                 let dep_info = build_root.join(dep_info);
-                let Some(info) = parse_dep_info(pkg_root, build_root, &dep_info)? else {
+                let Some(info) = dep_info::parse_dep_info_recorded(
+                    pkg_root,
+                    build_root,
+                    &dep_info,
+                    reads.as_deref_mut(),
+                )?
+                else {
                     return Ok(Some(StaleItem::MissingFile { path: dep_info }));
                 };
                 for (key, previous) in info.env.iter() {
@@ -1907,6 +1923,7 @@ impl LocalFingerprint {
                         &dep_info,
                         info.files.iter().map(|(file, checksum)| (file, *checksum)),
                         *checksum,
+                        reads,
                     ))
                 } else {
                     Ok(find_stale_file(
@@ -1915,6 +1932,7 @@ impl LocalFingerprint {
                         &dep_info,
                         info.files.into_keys().map(|p| (p, None)),
                         *checksum,
+                        reads,
                     ))
                 }
             }
@@ -1927,6 +1945,7 @@ impl LocalFingerprint {
                 &build_root.join(output),
                 paths.iter().map(|p| (pkg_root.join(p), None)),
                 false,
+                None,
             )),
 
             // These have no dependencies on the filesystem, and their values
@@ -2230,6 +2249,7 @@ impl Fingerprint {
         cargo_exe: &Path,
         gctx: &GlobalContext,
         clippy_codegen: Option<(&str, &str)>,
+        mut reads: Option<&mut session::ReadSet>,
     ) -> CargoResult<()> {
         assert!(!self.fs_status.get_mut().unwrap().up_to_date());
 
@@ -2250,6 +2270,9 @@ impl Fingerprint {
                 *self.fs_status.get_mut().unwrap() = FsStatus::StaleItem(item);
                 return Ok(());
             };
+            if let Some(reads) = reads.as_deref_mut() {
+                reads.mtime(output, mtime);
+            }
             assert!(mtimes.insert(output.clone(), mtime).is_none());
         }
 
@@ -2283,6 +2306,7 @@ impl Fingerprint {
                 gctx,
                 worktree_seed,
                 clippy_codegen,
+                reads.as_deref_mut(),
             )? {
                 item.log();
                 *self.fs_status.get_mut().unwrap() = FsStatus::StaleItem(item);
@@ -2581,7 +2605,27 @@ fn calculate(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResult
     } else if unit.mode.is_doc_test() {
         panic!("doc tests do not fingerprint");
     } else {
-        calculate_normal(build_runner, unit)?
+        let deps = calculate_normal_deps(build_runner, unit)?;
+        let deps = if let Some(cache) = build_runner.session_freshness.as_mut() {
+            match cache.reuse(
+                unit,
+                &build_runner.bcx.unit_graph[unit],
+                deps,
+                build_runner.bcx.unit_to_index[unit],
+            ) {
+                Ok(fingerprint) => {
+                    let fingerprint = Arc::new(fingerprint);
+                    build_runner
+                        .fingerprints
+                        .insert(unit.clone(), Arc::clone(&fingerprint));
+                    return Ok(fingerprint);
+                }
+                Err(deps) => deps,
+            }
+        } else {
+            deps
+        };
+        calculate_normal(build_runner, unit, deps)?
     };
 
     // After we built the initial `Fingerprint` be sure to update the
@@ -2617,6 +2661,10 @@ fn calculate(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResult
         clippy_codegen
             .as_ref()
             .map(|(args, config)| (*args, config.as_str())),
+        build_runner
+            .session_freshness
+            .as_mut()
+            .and_then(|cache| cache.reads(unit)),
     )?;
 
     if unit.mode.is_run_custom_build()
@@ -2655,31 +2703,36 @@ pub(crate) fn unit_profile_hash(build_runner: &BuildRunner<'_, '_>, unit: &Unit)
     ))
 }
 
+/// Build this request's dependency edges even when the parent result is retained.
+fn calculate_normal_deps(
+    build_runner: &mut BuildRunner<'_, '_>,
+    unit: &Unit,
+) -> CargoResult<Vec<DepFingerprint>> {
+    // Recursively calculate the fingerprint for all of our dependencies.
+    //
+    // Skip fingerprints of binaries because they don't actually induce a
+    // recompile, they're just dependencies in the sense that they need to be
+    // built. The only exception here are artifact dependencies,
+    // which is an actual dependency that needs a recompile.
+    //
+    // Create Vec since mutable build_runner is needed in closure.
+    let deps = Vec::from(build_runner.unit_deps(unit));
+    let mut deps = deps
+        .into_iter()
+        .filter(|dep| !dep.unit.target.is_bin() || dep.unit.artifact.is_true())
+        .map(|dep| DepFingerprint::new(build_runner, unit, &dep))
+        .collect::<CargoResult<Vec<_>>>()?;
+    deps.sort_by(|a, b| a.pkg_id.cmp(&b.pkg_id));
+    Ok(deps)
+}
+
 /// Calculate a fingerprint for a "normal" unit, or anything that's not a build
 /// script. This is an internal helper of [`calculate`], don't call directly.
 fn calculate_normal(
     build_runner: &mut BuildRunner<'_, '_>,
     unit: &Unit,
+    deps: Vec<DepFingerprint>,
 ) -> CargoResult<Fingerprint> {
-    let deps = {
-        // Recursively calculate the fingerprint for all of our dependencies.
-        //
-        // Skip fingerprints of binaries because they don't actually induce a
-        // recompile, they're just dependencies in the sense that they need to be
-        // built. The only exception here are artifact dependencies,
-        // which is an actual dependency that needs a recompile.
-        //
-        // Create Vec since mutable build_runner is needed in closure.
-        let deps = Vec::from(build_runner.unit_deps(unit));
-        let mut deps = deps
-            .into_iter()
-            .filter(|dep| !dep.unit.target.is_bin() || dep.unit.artifact.is_true())
-            .map(|dep| DepFingerprint::new(build_runner, unit, &dep))
-            .collect::<CargoResult<Vec<_>>>()?;
-        deps.sort_by(|a, b| a.pkg_id.cmp(&b.pkg_id));
-        deps
-    };
-
     // Afterwards calculate our own fingerprint information.
     let build_root = build_root(build_runner);
     let is_any_doc_gen = unit.mode.is_doc() || unit.mode.is_doc_scrape();
@@ -3168,6 +3221,7 @@ fn compare_old_fingerprint(
     new_fingerprint: &Fingerprint,
     mtime_on_use: bool,
     forced: bool,
+    reads: Option<&mut session::ReadSet>,
 ) -> FingerprintComparison {
     if mtime_on_use {
         // update the mtime so other cleaners know we used it
@@ -3176,7 +3230,7 @@ fn compare_old_fingerprint(
         paths::set_file_time_no_err(old_hash_path, t);
     }
 
-    let compare = _compare_old_fingerprint(old_hash_path, new_fingerprint);
+    let compare = _compare_old_fingerprint(old_hash_path, new_fingerprint, reads);
 
     match compare.as_ref() {
         Ok(FingerprintComparison::Fresh) => {}
@@ -3210,8 +3264,12 @@ fn compare_old_fingerprint(
 fn _compare_old_fingerprint(
     old_hash_path: &Path,
     new_fingerprint: &Fingerprint,
+    reads: Option<&mut session::ReadSet>,
 ) -> CargoResult<FingerprintComparison> {
     let old_fingerprint_short = paths::read(old_hash_path)?;
+    if let Some(reads) = reads {
+        reads.bytes(old_hash_path, old_fingerprint_short.as_bytes());
+    }
 
     let new_hash = new_fingerprint.hash_u64();
 
@@ -3254,6 +3312,7 @@ fn find_stale_file<I, P>(
     reference: &Path,
     paths: I,
     use_checksums: bool,
+    mut reads: Option<&mut session::ReadSet>,
 ) -> Option<StaleItem>
 where
     I: IntoIterator<Item = (P, Option<(u64, Checksum)>)>,
@@ -3267,6 +3326,10 @@ where
             });
         }
     };
+
+    if let Some(reads) = reads.as_deref_mut() {
+        reads.mtime(reference, reference_mtime);
+    }
 
     let skippable_dirs = if let Ok(cargo_home) = home::cargo_home() {
         let skippable_dirs: Vec<_> = ["git", "registry"]
@@ -3350,6 +3413,10 @@ where
                     *v.insert(mtime)
                 }
             };
+
+            if let Some(reads) = reads.as_deref_mut() {
+                reads.mtime(path, path_mtime);
+            }
 
             // TODO: fix #5918.
             // Note that equal mtimes should be considered "stale". For filesystems with

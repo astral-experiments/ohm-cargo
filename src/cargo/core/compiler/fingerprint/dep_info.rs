@@ -545,9 +545,21 @@ pub fn parse_dep_info(
     build_root: &Path,
     dep_info: &Path,
 ) -> CargoResult<Option<RustcDepInfo>> {
+    parse_dep_info_recorded(pkg_root, build_root, dep_info, None)
+}
+
+pub(super) fn parse_dep_info_recorded(
+    pkg_root: &Path,
+    build_root: &Path,
+    dep_info: &Path,
+    mut reads: Option<&mut super::session::ReadSet>,
+) -> CargoResult<Option<RustcDepInfo>> {
     let Ok(data) = paths::read_bytes(dep_info) else {
         return Ok(None);
     };
+    if let Some(reads) = reads.as_deref_mut() {
+        reads.bytes(dep_info, &data);
+    }
     let Some(info) = EncodedDepInfo::parse(&data) else {
         tracing::warn!("failed to parse cargo's dep-info at {:?}", dep_info);
         return Ok(None);
@@ -557,12 +569,19 @@ pub fn parse_dep_info(
             && path
                 .components()
                 .any(|component| component == std::path::Component::ParentDir)
-    }) && !crate::util::try_canonicalize(pkg_root)
-        .is_ok_and(|canonical| canonical == paths::normalize_path(pkg_root))
-    {
-        // A newly symlinked package root can change where a saved ../ prefix
-        // resolves. Recompile and let translation reject further seeding.
-        return Ok(None);
+    }) {
+        let canonical = crate::util::try_canonicalize(pkg_root);
+        if !canonical
+            .as_ref()
+            .is_ok_and(|canonical| *canonical == paths::normalize_path(pkg_root))
+        {
+            // A newly symlinked package root can change where a saved ../ prefix
+            // resolves. Recompile and let translation reject further seeding.
+            return Ok(None);
+        }
+        if let Some(reads) = reads {
+            reads.canonical(pkg_root, &canonical?);
+        }
     }
     let mut ret = RustcDepInfo::default();
     ret.env = info.env;

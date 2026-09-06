@@ -35,7 +35,7 @@ const MANIFEST: &str = r#"
     changed = []
 "#;
 
-fn fixture() -> Project {
+pub(super) fn fixture() -> Project {
     let p = project()
         .at("workspace with spaces")
         .file("Cargo.toml", MANIFEST)
@@ -55,7 +55,7 @@ fn fixture() -> Project {
     p
 }
 
-fn change(p: &Project, path: &str, source: &str) {
+pub(super) fn change(p: &Project, path: &str, source: &str) {
     if is_coarse_mtime() {
         sleep_ms(1100);
     }
@@ -95,7 +95,7 @@ fn run_command(mut command: Command) -> Output {
     output
 }
 
-struct Session<'a> {
+pub(super) struct Session<'a> {
     project: &'a Project,
     socket: PathBuf,
     log: PathBuf,
@@ -109,7 +109,7 @@ impl<'a> Session<'a> {
         Self::start_with_env(project, flags, &[])
     }
 
-    fn start_with_env(
+    pub(super) fn start_with_env(
         project: &'a Project,
         flags: &[&str],
         environment: &[(&str, OsString)],
@@ -215,7 +215,7 @@ impl<'a> Session<'a> {
         response
     }
 
-    fn check(&self, success: bool) -> Value {
+    pub(super) fn check(&self, success: bool) -> Value {
         let response = self.json(self.command("check"), success);
         assert!(response["elapsed_ms"].is_number(), "{response}");
         assert!(response["stdout"].is_string(), "{response}");
@@ -255,7 +255,7 @@ impl Drop for Session<'_> {
     }
 }
 
-fn assert_reused(response: &Value, prepared: &Value) {
+pub(super) fn assert_reused(response: &Value, prepared: &Value) {
     assert_eq!(response["pid"], prepared["pid"], "{response}");
     assert_eq!(response["session"], prepared["session"], "{response}");
     assert_eq!(
