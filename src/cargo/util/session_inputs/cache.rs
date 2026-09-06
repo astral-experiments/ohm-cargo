@@ -1,7 +1,7 @@
 //! Reuse topology while continuing to poll file bytes and artifact identities.
 
 use std::collections::{BTreeMap, BTreeSet};
-use std::ffi::OsStr;
+use std::ffi::{OsStr, OsString};
 use std::fs;
 use std::io;
 use std::os::unix::fs::MetadataExt;
@@ -16,7 +16,7 @@ use super::{FileIdentity, InputKey, InputValue};
 #[derive(Debug, Default)]
 pub(super) struct InputCache {
     watcher: Watcher,
-    canonical: HashMap<PathBuf, Arc<CachedCanonical>>,
+    canonical: HashMap<OsString, Arc<CachedCanonical>>,
     topology: BTreeMap<InputKey, Arc<CachedTopology>>,
     #[cfg(test)]
     pub(super) last_stats: Stats,
@@ -159,9 +159,11 @@ impl IoFailure {
 
 struct Pass<'a> {
     cache: &'a mut InputCache,
-    metadata: HashMap<PathBuf, Result<fs::Metadata, IoFailure>>,
-    symlink_metadata: HashMap<PathBuf, Result<fs::Metadata, IoFailure>>,
-    links: HashMap<PathBuf, Result<PathBuf, IoFailure>>,
+    // Path equality hides spelling differences such as `file` and `file/.`,
+    // which can have different syscall results for the same filesystem state.
+    metadata: HashMap<OsString, Result<fs::Metadata, IoFailure>>,
+    symlink_metadata: HashMap<OsString, Result<fs::Metadata, IoFailure>>,
+    links: HashMap<OsString, Result<PathBuf, IoFailure>>,
     used: Vec<Token>,
     #[cfg(test)]
     stats: Stats,
@@ -257,32 +259,34 @@ impl Pass<'_> {
     }
 
     fn metadata(&mut self, path: &Path) -> io::Result<fs::Metadata> {
-        if !self.metadata.contains_key(path) {
+        if !self.metadata.contains_key(path.as_os_str()) {
             #[cfg(test)]
             {
                 self.stats.metadata_reads += 1;
             }
-            self.metadata
-                .insert(path.to_owned(), fs::metadata(path).map_err(IoFailure::new));
+            self.metadata.insert(
+                path.as_os_str().to_owned(),
+                fs::metadata(path).map_err(IoFailure::new),
+            );
         }
-        self.metadata[path]
+        self.metadata[path.as_os_str()]
             .as_ref()
             .cloned()
             .map_err(IoFailure::error)
     }
 
     fn symlink_metadata(&mut self, path: &Path) -> io::Result<fs::Metadata> {
-        if !self.symlink_metadata.contains_key(path) {
+        if !self.symlink_metadata.contains_key(path.as_os_str()) {
             #[cfg(test)]
             {
                 self.stats.metadata_reads += 1;
             }
             self.symlink_metadata.insert(
-                path.to_owned(),
+                path.as_os_str().to_owned(),
                 fs::symlink_metadata(path).map_err(IoFailure::new),
             );
         }
-        self.symlink_metadata[path]
+        self.symlink_metadata[path.as_os_str()]
             .as_ref()
             .cloned()
             .map_err(IoFailure::error)
@@ -290,7 +294,7 @@ impl Pass<'_> {
 
     fn read_link(&mut self, path: &Path) -> io::Result<PathBuf> {
         self.links
-            .entry(path.to_owned())
+            .entry(path.as_os_str().to_owned())
             .or_insert_with(|| fs::read_link(path).map_err(IoFailure::new))
             .as_ref()
             .cloned()
@@ -327,7 +331,7 @@ impl Pass<'_> {
     }
 
     fn canonical(&mut self, path: &Path) -> io::Result<PathBuf> {
-        let cached = self.cache.canonical.get(path).cloned();
+        let cached = self.cache.canonical.get(path.as_os_str()).cloned();
         if let Some(cached) = cached
             && self.covered(&cached.coverage)
         {
@@ -351,7 +355,7 @@ impl Pass<'_> {
         let canonical = fs::canonicalize(path)?;
         self.used.extend(coverage.tokens.iter().cloned());
         self.cache.canonical.insert(
-            path.to_owned(),
+            path.as_os_str().to_owned(),
             Arc::new(CachedCanonical {
                 path: canonical.clone(),
                 coverage,
@@ -531,6 +535,27 @@ mod tests {
         Coverage::default()
             .directory(&mut watcher, dir.path())
             .map(|()| dir)
+    }
+
+    #[test]
+    fn different_query_spellings_keep_their_filesystem_values() {
+        let dir = tempfile::tempdir().unwrap();
+        let file = dir.path().join("file");
+        fs::write(&file, "source").unwrap();
+        let executable = InputKey::Executable {
+            program: file.clone(),
+            cwd: dir.path().to_owned(),
+            search_path: "".into(),
+        };
+        let mut cache = InputCache::default();
+        evaluate(&mut cache, std::slice::from_ref(&executable));
+        let keys = [
+            InputKey::Exists(file.clone()),
+            InputKey::IsFile(file.join(".")),
+            executable,
+            InputKey::Canonical(file.join(".")),
+        ];
+        assert_eq!(evaluate(&mut cache, &keys), polled(&keys));
     }
 
     #[test]
