@@ -41,6 +41,8 @@ mod server;
 mod transport;
 
 #[cfg(unix)]
+pub(crate) use client::Client;
+#[cfg(unix)]
 pub use client::exec;
 #[cfg(unix)]
 pub use server::serve;

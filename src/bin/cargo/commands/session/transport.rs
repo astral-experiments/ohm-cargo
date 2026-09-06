@@ -10,7 +10,7 @@ use std::os::fd::AsRawFd;
 use std::os::unix::ffi::OsStrExt;
 use std::os::unix::fs::{DirBuilderExt, FileTypeExt, MetadataExt, PermissionsExt};
 use std::os::unix::net::{UnixListener, UnixStream};
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use std::sync::atomic::{AtomicBool, AtomicI32, Ordering};
 use std::time::{Duration, Instant};
 
@@ -131,10 +131,17 @@ pub(super) struct SessionListener {
 }
 
 pub(super) fn socket_path(gctx: &GlobalContext, args: &ArgMatches) -> CargoResult<PathBuf> {
-    if let Some(path) = args.get_one::<PathBuf>("socket") {
-        return Ok(gctx.cwd().join(path));
+    socket_path_for(
+        gctx.cwd(),
+        args.get_one::<PathBuf>("socket").map(PathBuf::as_path),
+    )
+}
+
+pub(super) fn socket_path_for(cwd: &Path, socket: Option<&Path>) -> CargoResult<PathBuf> {
+    if let Some(path) = socket {
+        return Ok(cwd.join(path));
     }
-    let cwd = gctx.cwd().canonicalize()?;
+    let cwd = cwd.canonicalize()?;
     let mut hash = Sha256::new();
     hash.update(cwd.as_os_str().as_bytes());
     // SAFETY: getuid has no preconditions.
