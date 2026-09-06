@@ -163,6 +163,10 @@ pub const CARGO_ENV: &str = "CARGO";
 #[doc(hidden)]
 pub const CARGO_INHERITED_OHM_DEFAULTS_ENV: &str = "__CARGO_OHM_DEFAULTS";
 
+/// Carries an explicit Clippy seed-isolation override through external Cargo subcommands.
+#[doc(hidden)]
+pub const CARGO_INHERITED_OHM_CLIPPY_SEED_ISOLATION_ENV: &str = "__CARGO_OHM_CLIPPY_SEED_ISOLATION";
+
 /// Carries an explicit worktree-seeding override through external Cargo subcommands.
 #[doc(hidden)]
 pub const CARGO_INHERITED_OHM_WORKTREE_SEEDS_ENV: &str = "__CARGO_OHM_WORKTREE_SEEDS";
