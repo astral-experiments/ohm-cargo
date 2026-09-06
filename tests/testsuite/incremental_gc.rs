@@ -582,3 +582,74 @@ fn fresh_builds_preserve_recent_records_and_upgrade_legacy_records_once() {
     assert_eq!(fs::read(&marker).unwrap(), upgraded);
     assert_eq!(fs::metadata(&marker).unwrap().ino(), upgraded_inode);
 }
+
+#[cargo_test(
+    nightly,
+    requires = "clippy-driver",
+    reason = "isolated bundled Clippy caches must retain cleanup eligibility"
+)]
+fn isolated_clippy_caches_can_expire_and_be_cleaned_by_package() {
+    let p = fixture();
+    cargo(&p, "build").run();
+    let ordinary = units("debug").pop().unwrap();
+    let binary = fs::read(p.bin("foo")).unwrap();
+    let driver = PathBuf::from(paths::sysroot()).join("bin/clippy-driver");
+    cargo(&p, "-Zohm-worktree-seeds check")
+        .env("RUSTC_WORKSPACE_WRAPPER", &driver)
+        .run();
+    let managed = managed_root("debug");
+    let isolated = managed.parent().unwrap().join(".ohm-clippy-v1/ohm-gc-v1");
+    let clippy = fs::read_dir(&isolated)
+        .unwrap()
+        .next()
+        .unwrap()
+        .unwrap()
+        .path();
+    assert!(clippy.join(RECORD).is_file());
+    age(&clippy);
+    cargo(&p, "clean incremental --max-age 30days --dry-run")
+        .with_stderr_contains("[..]1 configurations eligible[..]")
+        .run();
+    assert!(clippy.is_dir());
+    cargo(&p, "clean incremental --max-age 30days").run();
+    assert!(!clippy.exists());
+    assert!(ordinary.is_dir());
+    assert_eq!(fs::read(p.bin("foo")).unwrap(), binary);
+    cargo(&p, "build -v")
+        .with_stderr_contains("[FRESH] foo [..]")
+        .run();
+
+    cargo(&p, "-Zohm-worktree-seeds check --features recent")
+        .env("RUSTC_WORKSPACE_WRAPPER", &driver)
+        .run();
+    let current = fs::read_dir(&isolated)
+        .unwrap()
+        .next()
+        .unwrap()
+        .unwrap()
+        .path();
+    assert!(current.join(RECORD).is_file());
+    let namespace = managed.parent().unwrap().file_name().unwrap();
+    let private = shared_build()
+        .join("debug/build/workspaces")
+        .join(namespace);
+    assert!(
+        walkdir::WalkDir::new(private.join(".ohm-clippy-v1"))
+            .into_iter()
+            .map(Result::unwrap)
+            .any(|entry| entry.file_name() == "foo")
+    );
+    cargo(&p, "clean -p foo").run();
+    assert!(!ordinary.exists());
+    assert!(!current.exists());
+    assert!(
+        !walkdir::WalkDir::new(&private)
+            .into_iter()
+            .map(Result::unwrap)
+            .any(|entry| entry.file_name() == "foo")
+    );
+    cargo(&p, "-Zohm-worktree-seeds check -v")
+        .env("RUSTC_WORKSPACE_WRAPPER", &driver)
+        .with_stderr_contains("[CHECKING] foo [..]")
+        .run();
+}

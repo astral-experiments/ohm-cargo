@@ -39,6 +39,8 @@ pub struct Rustc {
     transparent_unused_externs: OnceLock<bool>,
     ohm_incremental_codegen: OnceLock<bool>,
     ohm_incremental_mono_partitions: OnceLock<bool>,
+    ohm_cloned_query_cache_prefix: OnceLock<bool>,
+    bundled_clippy_wrapper: OnceLock<bool>,
 }
 
 impl Rustc {
@@ -164,6 +166,8 @@ impl Rustc {
             transparent_unused_externs: OnceLock::new(),
             ohm_incremental_codegen: OnceLock::new(),
             ohm_incremental_mono_partitions: OnceLock::new(),
+            ohm_cloned_query_cache_prefix: OnceLock::new(),
+            bundled_clippy_wrapper: OnceLock::new(),
         })
     }
 
@@ -246,6 +250,73 @@ impl Rustc {
         let mut cmd = ProcessBuilder::new(&self.path);
         cmd.retry_with_argfile(true);
         cmd
+    }
+
+    /// Checks whether the selected compiler can clone retained query-cache prefixes.
+    pub fn supports_ohm_cloned_query_cache_prefix(&self, gctx: &GlobalContext) -> bool {
+        *self.ohm_cloned_query_cache_prefix.get_or_init(|| {
+            let mut process = self.workspace_process();
+            if let Err(error) = apply_env_config(gctx, &mut process) {
+                debug!("unable to configure query-cache clone capability probe: {error}");
+                return false;
+            }
+            process
+                .arg("-Zohm-cloned-query-cache-prefix")
+                .arg("--print=sysroot");
+            self.cached_output(&process, 0).is_ok()
+        })
+    }
+
+    /// Recognizes only the selected toolchain's own matching Clippy driver.
+    ///
+    /// This permits isolating its private outputs, not importing its diagnostics
+    /// or trusting arbitrary wrappers. The caller must also validate the compiler
+    /// and its loader environment before using this result.
+    pub(crate) fn has_bundled_clippy_wrapper(&self, gctx: &GlobalContext, sysroot: &Path) -> bool {
+        *self.bundled_clippy_wrapper.get_or_init(|| {
+            let Some(wrapper) = &self.workspace_wrapper else {
+                return false;
+            };
+            if self.wrapper.is_some() || self.ohm_clippy_codegen_args.is_some() {
+                return false;
+            }
+            let Ok(bin) = sysroot.join("bin").canonicalize() else {
+                return false;
+            };
+            let Ok(expected) = bin
+                .join("clippy-driver")
+                .with_extension(env::consts::EXE_EXTENSION)
+                .canonicalize()
+            else {
+                return false;
+            };
+            if expected.parent() != Some(bin.as_path())
+                || wrapper.canonicalize().ok().as_ref() != Some(&expected)
+            {
+                return false;
+            }
+            // `verbose_version` was obtained through the workspace wrapper, so
+            // Clippy can report its own version while ignoring the selected rustc.
+            // Probe rustc separately. Cache keys do not include the executable;
+            // distinguish this unwrapped probe from the initial wrapped `-vV`.
+            let mut rustc = self.process_no_wrapper();
+            if apply_env_config(gctx, &mut rustc).is_err() {
+                return false;
+            }
+            rustc.arg("-vV");
+            let mut fingerprint = StableHasher::new();
+            ("ohm-unwrapped-rustc-version-v1", &self.path).hash(&mut fingerprint);
+            let Ok((rustc_version, _)) = self.cached_output(&rustc, fingerprint.finish()) else {
+                return false;
+            };
+            let mut process = ProcessBuilder::new(expected);
+            if apply_env_config(gctx, &mut process).is_err() {
+                return false;
+            }
+            process.args(&["--rustc", "-vV"]);
+            self.cached_output(&process, 0)
+                .is_ok_and(|(version, _)| version == rustc_version)
+        })
     }
 
     /// Tracks Clippy config discovery, including a config appearing after a fresh build.
@@ -641,4 +712,64 @@ fn process_fingerprint(cmd: &ProcessBuilder, extra_fingerprint: u64) -> u64 {
     env.sort_unstable();
     env.hash(&mut hasher);
     Hasher::finish(&hasher)
+}
+
+#[cfg(all(test, unix))]
+mod tests {
+    use super::*;
+    use std::fs;
+    use std::os::unix::fs::PermissionsExt;
+
+    #[test]
+    fn bundled_clippy_requires_the_unwrapped_compiler_version() {
+        let version = "rustc 1.98.0\nbinary: rustc\ncommit-hash: unknown\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.0\n";
+        for (selected_version, admitted) in [
+            (Some(version.to_owned()), true),
+            (Some(version.replace("1.98.0", "1.97.0")), false),
+            (None, false),
+        ] {
+            let root = tempfile::tempdir().unwrap();
+            let bin = root.path().join("bin");
+            fs::create_dir(&bin).unwrap();
+            let rustc = bin.join("rustc");
+            let clippy = bin.join("clippy-driver");
+            for (path, output) in [
+                (&rustc, selected_version.as_deref()),
+                (&clippy, Some(version)),
+            ] {
+                let script = match output {
+                    Some(output) => format!("#!/bin/sh\ncat <<'VERSION'\n{output}VERSION\n"),
+                    None => "#!/bin/sh\nexit 1\n".to_owned(),
+                };
+                fs::write(path, script).unwrap();
+                fs::set_permissions(path, fs::Permissions::from_mode(0o755)).unwrap();
+            }
+            let gctx = GlobalContext::new(
+                cargo_util_terminal::Shell::new(),
+                root.path().to_path_buf(),
+                root.path().join("cargo-home"),
+            );
+            let compiler = Rustc::new(
+                rustc,
+                None,
+                Some(clippy.clone()),
+                Path::new("unused-rustup-proxy"),
+                None,
+                &gctx,
+            )
+            .unwrap();
+            assert_eq!(compiler.verbose_version, version);
+
+            // A wrapped version already cached under identical arguments must
+            // not answer the unwrapped probe: process keys omit the executable.
+            let mut wrapped = ProcessBuilder::new(clippy);
+            apply_env_config(&gctx, &mut wrapped).unwrap();
+            wrapped.arg("-vV");
+            assert_eq!(compiler.cached_output(&wrapped, 0).unwrap().0, version);
+            assert_eq!(
+                compiler.has_bundled_clippy_wrapper(&gctx, root.path()),
+                admitted
+            );
+        }
+    }
 }

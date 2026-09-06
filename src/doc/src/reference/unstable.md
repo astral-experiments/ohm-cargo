@@ -2068,6 +2068,26 @@ Checksum validation reads source contents on later builds. The mode also replace
 compiler working-directory paths with a stable virtual prefix, which can affect
 debugger source lookup and path-bearing diagnostics.
 
+Ordinary `cargo clippy` with the selected toolchain's matching bundled driver
+keeps its workspace artifacts and incremental state in a separate private
+namespace. This preserves ordinary build snapshots without copying lint state
+or diagnostics into the new worktree. The recipient runs Clippy and discovers
+its own lint configuration. Other wrappers, mismatched drivers, and unsupported
+compiler environments still exclude the affected ordinary namespace from
+seeding. Disabling worktree preparation also disables this isolation; enabling
+it again does not erase an earlier unsupported compilation's history.
+
+Upgrading the seed policy creates a new private workspace namespace and requires
+rebuilding compatible donor state. Older snapshots are not imported or deleted
+automatically.
+
+With a supporting compiler, Ohm defaults also enable
+`-Zohm-cloned-query-cache-prefix` for incremental compilations. This preserves
+shared file extents when rustc appends to an unchanged query-cache prefix;
+unsupported filesystems use the ordinary rewrite path. An explicit rustc option
+`-Zohm-cloned-query-cache-prefix=no` overrides this default without disabling
+worktree preparation.
+
 Use `-Zohm-worktree-seeds=no` to disable preparation or copying for an individual
 command while retaining the other Ohm defaults. Setting
 `unstable.ohm-worktree-seeds = false` in Cargo configuration also disables it.

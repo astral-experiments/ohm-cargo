@@ -130,15 +130,17 @@ const OHM_INCREMENTAL_CODEGEN_RUSTFLAGS: [&str; 2] =
     ["-Zohm-caller-local-cgus", "-Zohm-stable-cgu-merging"];
 
 /// Marks a workspace/profile namespace prepared under the current seed policy.
-pub(crate) const OHM_WORKTREE_SEED_MARKER: &str = ".ohm-worktree-seed-v6";
+pub(crate) const OHM_WORKTREE_SEED_MARKER: &str = ".ohm-worktree-seed-v7";
 /// Permanently excludes a namespace with unsupported inputs from seeding.
-pub(crate) const OHM_WORKTREE_SEED_DENY_MARKER: &str = ".ohm-worktree-seed-deny-v6";
+pub(crate) const OHM_WORKTREE_SEED_DENY_MARKER: &str = ".ohm-worktree-seed-deny-v7";
 /// Requires explicit trust at import time, including when a recipient is re-exported.
 pub(crate) const OHM_WORKTREE_SEED_LOCAL_PROC_MACRO_MARKER: &str =
-    ".ohm-worktree-seed-local-proc-macro-v6";
+    ".ohm-worktree-seed-local-proc-macro-v7";
+/// Private Clippy state is retained locally but never imported into another worktree.
+pub(crate) const OHM_WORKTREE_CLIPPY_DIRECTORY: &str = ".ohm-clippy-v1";
 // Version the compiler-visible prefix too: changing only Cargo's fingerprint
 // cannot invalidate an older incremental session containing untracked macro output.
-const OHM_WORKTREE_SEED_RUSTFLAG: &str = "-Zremap-cwd-prefix=/ohm-workspace/v6";
+const OHM_WORKTREE_SEED_RUSTFLAG: &str = "-Zremap-cwd-prefix=/ohm-workspace/v7";
 
 /// A successful non-check registry build can make a later check worth speculating on.
 ///
@@ -217,15 +219,7 @@ fn unit_worktree_seed_namespace(
 ) -> Option<PathBuf> {
     (unit_uses_ohm_worktree_seeds(build_runner, unit)
         && build_runner.bcx.ws.shared_registry_cache_enabled())
-    .then(|| {
-        build_runner
-            .files()
-            .layout(unit.kind)
-            .build_dir()
-            .build()
-            .join("workspaces")
-            .join(Layout::shared_workspace_namespace(build_runner.bcx.ws))
-    })
+    .then(|| build_runner.files().worktree_seed_namespace(unit))
 }
 
 /// Skips public API production when an output cannot expose a reusable changed interface.
@@ -1917,6 +1911,16 @@ fn prepare_rustc(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> CargoResult
         }
         if unit_uses_ohm_incremental_mono_partitions(build_runner, unit) {
             base.arg("-Zohm-incremental-mono-partitions");
+        }
+        if unit.profile.incremental
+            && build_runner
+                .bcx
+                .rustc()
+                .supports_ohm_cloned_query_cache_prefix(gctx)
+        {
+            // This changes storage only, so it does not affect fingerprints.
+            // Explicit user options are appended later and can disable it.
+            base.arg("-Zohm-cloned-query-cache-prefix");
         }
         if unit_suppresses_default_public_api_hash(build_runner, unit) {
             base.arg("-Zpublic-api-hash=no");
