@@ -25,6 +25,18 @@ pub fn main(gctx: &mut GlobalContext) -> CliResult {
     // In general, try to avoid loading config values unless necessary (like
     // the [alias] table).
 
+    #[cfg(unix)]
+    if let Some(client) = commands::session::Client::parse(std::env::args_os().skip(1)) {
+        // Keep the config reads performed by CLI construction and execution,
+        // including warnings emitted before resolving aliases.
+        let _ = gctx.get::<TermConfig>("term");
+        if matches!(super::aliased_command(gctx, "session"), Ok(Some(_))) {
+            warn_shadowed_builtin_alias(gctx, "session")?;
+        }
+        gctx.configure(0, false, None, false, false, false, &None, &[], &[])?;
+        return client.exec(gctx);
+    }
+
     let args = cli(gctx).try_get_matches()?;
 
     // Update the process-level notion of cwd
@@ -328,10 +340,7 @@ fn expand_aliases(
         match (exec, aliased_cmd) {
             (Some(_), Ok(Some(_))) => {
                 // User alias conflicts with a built-in subcommand
-                gctx.shell().warn(format!(
-                    "user-defined alias `{}` is ignored, because it is shadowed by a built-in command",
-                    cmd,
-                ))?;
+                warn_shadowed_builtin_alias(gctx, cmd)?;
             }
             (Some(_), Ok(None) | Err(_)) => {
                 // Here we ignore errors from aliasing as we already favor built-in command,
@@ -451,6 +460,12 @@ To pass the arguments to the subcommand, remove `--`",
     };
 
     Ok((args, GlobalArgs::default()))
+}
+
+fn warn_shadowed_builtin_alias(gctx: &GlobalContext, cmd: &str) -> CargoResult<()> {
+    gctx.shell().warn(format!(
+        "user-defined alias `{cmd}` is ignored, because it is shadowed by a built-in command",
+    ))
 }
 
 #[tracing::instrument(skip_all)]
