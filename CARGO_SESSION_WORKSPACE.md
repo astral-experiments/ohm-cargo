@@ -177,9 +177,159 @@ harness execution, compile and runtime failures, doctests, feature/profile/targe
 selection, aliases, Clippy configuration and lint arguments, build scripts,
 procedural macros, and test programs that mutate manifests.
 
-The reproducible mixed-command benchmark is
-[benches/session_workspace.py](benches/session_workspace.py). It snapshots an
-exact workspace revision, isolates build outputs, alternates execution order,
-verifies recompilation and test execution, and records every sample and plan
-counter. Source-unchanged and source-edit phases are reported separately;
-command switching may still require compilation in the former.
+On 2026-09-06, local release validation passed 32 library tests, all 14 Cargo
+CLI unit tests, and 57 selected integration tests (39 daemon cases and 18
+existing report/GC cases). All 14 real compiler-worker tests also passed against
+the workspace daemon, covering metadata reloads, compiler errors, output
+isolation, locks, replacement, crash recovery, loader injection, and macro
+fallback. Clippy lint and fix cases used an installed matching driver. All eight
+[CI checks at `5454b21`](https://github.com/astral-sh/ohm-cargo/actions/runs/34038740726)
+passed, including both Linux and macOS Cargo suites, explicit CLI unit tests,
+and integration cases with Clippy installed.
+
+### Workload and method
+
+The four captures below select `cargo-platform` or `cargo-util-schemas` from
+this repository's 27-member workspace, with stock Rust 1.98.0 or
+`ohm-1.98.0-2`. They ran on 2026-09-06 on Linux x86_64, kernel
+`6.8.0-106-generic`, glibc 2.39, with 32 CPUs in the process affinity mask.
+[benches/session_workspace.py](benches/session_workspace.py) creates a separate
+`git archive` snapshot at `c7fe941024f7245018d935254b46270bc28e8839` for each
+capture; uncommitted checkout changes are excluded.
+
+Each round runs `check`, `build`, `test`, and `clippy` in that order. There are
+two warmup rounds, then 30 rounds with unchanged source and 30 rounds that
+change one function body before running the sequence. The harness appends a
+public function returning the round number to the selected package's `src/lib.rs`.
+Each ordinary/daemon pair uses the same frozen Cargo binary, compiler, matching
+rustdoc and Clippy, and command arguments (`--offline --locked
+--message-format=json`). Each mode has separate target and build directories.
+Ordinary/daemon execution order alternates per command; checks rotate through
+three modes when the parent daemon is included. Compiler workers are disabled.
+
+The tables report command wall-clock medians in milliseconds, including client
+startup and the daemon round trip. Every cell is **ordinary → workspace daemon**.
+The sequence column is the median of each round's sum of the four command times,
+excluding the parent check. It is computed from raw rounds, rather than by adding
+four independently computed medians.
+
+Each capture retains 540 measured samples and 18 warmup samples: 2,160 measured
+samples and 72 warmup samples in total. Startup and warmups are excluded from
+summary statistics but remain recorded. No measured samples or outliers were
+filtered. p95 uses the nearest-rank rule, `ceil(0.95 * n)` (the 29th sorted sample
+when `n = 30`). A preliminary stock-toolchain attempt failed socket-directory
+validation before collecting any samples; the harness now creates its work
+directory with mode `0700`.
+
+| Package / compiler | Source | Check | Build | Test | Clippy | Four-command sequence |
+| --- | --- | ---: | ---: | ---: | ---: | ---: |
+| cargo-platform / Rust 1.98.0 | Unchanged | 230.5 → 124.9 | 230.3 → 125.9 | 289.7 → 239.0 | 278.5 → 124.9 | 1,036.2 → 617.0 |
+| cargo-platform / Rust 1.98.0 | Edited | 314.1 → 226.3 | 360.3 → 272.6 | 487.0 → 455.7 | 372.9 → 237.0 | 1,539.1 → 1,189.3 |
+| cargo-platform / Ohm 1.98.0-2 | Unchanged | 242.1 → 138.0 | 241.0 → 138.0 | 306.4 → 266.1 | 288.5 → 138.0 | 1,078.2 → 678.5 |
+| cargo-platform / Ohm 1.98.0-2 | Edited | 330.8 → 237.4 | 379.7 → 283.5 | 495.9 → 470.7 | 390.5 → 246.6 | 1,601.3 → 1,241.2 |
+| cargo-util-schemas / Rust 1.98.0 | Unchanged | 264.8 → 154.5 | 261.0 → 153.4 | 899.4 → 862.7 | 308.1 → 151.4 | 1,739.4 → 1,315.4 |
+| cargo-util-schemas / Rust 1.98.0 | Edited | 645.3 → 555.3 | 774.7 → 678.7 | 1,660.8 → 1,645.1 | 752.0 → 615.4 | 3,832.8 → 3,500.6 |
+| cargo-util-schemas / Ohm 1.98.0-2 | Unchanged | 276.9 → 154.7 | 275.8 → 157.4 | 935.6 → 889.2 | 325.7 → 151.4 | 1,817.1 → 1,350.1 |
+| cargo-util-schemas / Ohm 1.98.0-2 | Edited | 673.4 → 566.5 | 799.0 → 690.0 | 1,707.8 → 1,662.3 | 767.7 → 616.1 | 3,948.8 → 3,530.7 |
+
+In these captures, the four-command sequence median decreases by 24.4–40.5% with
+unchanged source and 8.7–22.7% after an edit. The unchanged phase happened to compile
+zero selected-package artifacts in every sample; the harness still records
+artifact freshness because switching commands can require compilation.
+Every edited command recompiled at least one selected-package artifact.
+
+All 960 measured workspace-daemon requests reused their command plan. Each
+capture ended with four preparations, four cached plans, and 248 requests
+(including eight warmup requests). Every measured test invocation ran eight
+passing tests for `cargo-platform` or 13 for `cargo-util-schemas`; test execution
+was preserved in both modes even when all artifacts were fresh.
+
+### Test tail latency
+
+Test medians improve modestly, and the stock `cargo-util-schemas` unchanged-source
+p95 regresses from 947.4 to 1,105.1 ms (+16.7%). That sample distribution is kept
+in full. The other seven test phase comparisons have lower daemon p95 values.
+These are 30-sample captures; the raw reports include minima, maxima, and every
+sample alongside the median and p95.
+
+| Package / compiler | Unchanged test p95 | Edited test p95 |
+| --- | ---: | ---: |
+| cargo-platform / Rust 1.98.0 | 324.3 → 249.6 | 507.3 → 486.1 |
+| cargo-platform / Ohm 1.98.0-2 | 315.2 → 273.5 | 513.5 → 490.4 |
+| cargo-util-schemas / Rust 1.98.0 | 947.4 → 1,105.1 | 1,694.6 → 1,675.4 |
+| cargo-util-schemas / Ohm 1.98.0-2 | 978.0 → 922.5 | 1,765.5 → 1,723.6 |
+
+### Parent check comparison
+
+The parent from [#113](https://github.com/astral-sh/ohm-cargo/pull/113) supports
+only fixed `check` requests. Its registry sources have no session dependency
+contract for these fixtures, so it performs fresh preparation on all 62 check
+requests per capture, with zero measured plan reuse. The comparison below is
+**parent daemon → workspace daemon**, in median milliseconds; it includes the
+parent's documented fallback behavior.
+
+| Package / compiler | Unchanged check | Edited check |
+| --- | ---: | ---: |
+| cargo-platform / Rust 1.98.0 | 207.9 → 124.9 | 307.5 → 226.3 |
+| cargo-platform / Ohm 1.98.0-2 | 230.9 → 138.0 | 341.3 → 237.4 |
+| cargo-util-schemas / Rust 1.98.0 | 243.7 → 154.5 | 644.1 → 555.3 |
+| cargo-util-schemas / Ohm 1.98.0-2 | 267.6 → 154.7 | 677.2 → 566.5 |
+
+### Captured identities and raw data
+
+The measured Cargo executables were copied and frozen before the captures.
+The results above are tied to these binaries and the harness hashes below.
+The parent binary's Rust sources match #113 at
+`c7fe941024f7245018d935254b46270bc28e8839`. Its version output reports the stale
+embedded commit `bd069fee9e06751fa6b8b39af0e31691d39c5a7a`, retained by shared
+Cargo build-script outputs as described in the
+[worker measurements](tools/session-rustc/README.md). The SHA-256 below identifies
+the actual parent executable; the workspace Cargo binary has a fresh embedded
+identity matching its `89b6211` source revision.
+
+Stock Rust is `1.98.0` at `88d9e12ae178fab0fb5cc050a94da85685d449ea`;
+Ohm is `1.98.0-dev (ohm-1.98.0-2)` at
+`e03456bd220c9c4b4b7d6f74d0a047cc708bc633`. Both use LLVM 22.1.8.
+Each raw report also records the resolved compiler, rustdoc, cargo-clippy, and
+Clippy-driver paths and hashes, compiler identity checks, Cargo configuration
+hashes, environment digests and overrides, source hashes, lockfile hash, startup
+state, final counters, commands, and log paths.
+
+| Identity | Source revision or file | SHA-256 |
+| --- | --- | --- |
+| Cargo for ordinary commands and workspace daemon | `89b6211b43f18aa2519571a28bb81e395ef44b7e` | `640d60be282af5c21f0708a72d8ad8219910a7e31850d1216ed8aaadaa958565` |
+| Parent #113 Cargo | Rust sources match `c7fe941024f7245018d935254b46270bc28e8839` | `89a0d387b8d7921cb7345f15695bdd526d2e04b1b0dcda7de5cd90d0147ab309` |
+| Benchmark harness | `benches/session_workspace.py` | `dde8b8eae45143e7924b5f9c1403bc050599241d3708d8d2f99a3df39848138d` |
+| Shared harness helper | `benches/session.py` | `4c503d5edba2a07988c472ba3839fc27d94c194949247ff859d07d3f6c394a06` |
+| Fixture lockfile at `c7fe941024f7245018d935254b46270bc28e8839` | `Cargo.lock` | `e2a3de477681336c8966cb63859f4eb7d590acf6c90582eda23a4f43f35593ff` |
+
+| Package / compiler | Raw report |
+| --- | --- |
+| cargo-platform / Rust 1.98.0 | [JSON](benches/session/results/workspace-platform-stock-1.98-linux-x86_64.json) |
+| cargo-platform / Ohm 1.98.0-2 | [JSON](benches/session/results/workspace-platform-ohm-1.98.0-2-linux-x86_64.json) |
+| cargo-util-schemas / Rust 1.98.0 | [JSON](benches/session/results/workspace-schemas-stock-1.98-linux-x86_64.json) |
+| cargo-util-schemas / Ohm 1.98.0-2 | [JSON](benches/session/results/workspace-schemas-ohm-1.98.0-2-linux-x86_64.json) |
+
+To reproduce all four workloads, supply the frozen Cargo executables above and
+matching installed toolchains, then run the following from this checkout. The
+harness creates and retains a new private work directory for each invocation,
+preferring `/run/user/$(id -u)` when available. Each directory contains
+`report.json`, `samples.jsonl`, the workspace snapshot, isolated build outputs,
+and logs. Both Rust toolchains must include matching rustdoc and Clippy.
+
+```sh
+workspace_cargo=/absolute/path/to/frozen-workspace-cargo
+parent_cargo=/absolute/path/to/frozen-parent-cargo
+for toolchain in 1.98.0-x86_64-unknown-linux-gnu ohm-1.98.0-2; do
+  for package in cargo-platform cargo-util-schemas; do
+    python3 benches/session_workspace.py \
+      --cargo "$workspace_cargo" \
+      --parent-cargo "$parent_cargo" \
+      --rustc "$HOME/.rustup/toolchains/$toolchain/bin/rustc" \
+      --revision c7fe941024f7245018d935254b46270bc28e8839 \
+      --package "$package" \
+      --source "crates/$package/src/lib.rs" \
+      --rounds 30 --warmup-rounds 2 --require-reuse
+  done
+done
+```
