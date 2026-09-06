@@ -133,10 +133,16 @@ impl<'a> Session<'a> {
         let log = directory.path().join("server.log");
         let stdout = fs::File::create(&log).unwrap();
         let stderr = stdout.try_clone().unwrap();
-        let environment: Vec<_> = environment
+        let mut environment: Vec<_> = environment
             .iter()
             .map(|(key, value)| ((*key).to_owned(), value.clone()))
             .collect();
+        if cfg!(target_os = "macos") {
+            // Cargo adds system fallback directories when launching this test
+            // binary. Keep those ambient trees out of the fixture's compiler
+            // inputs; explicit test overrides below still take precedence.
+            environment.insert(0, ("DYLD_FALLBACK_LIBRARY_PATH".into(), OsString::new()));
+        }
         let mut command = project.cargo(&format!("{command} --offline -p app --lib"));
         command.args(flags).arg("--socket").arg(&socket);
         for (key, value) in &environment {
@@ -250,9 +256,12 @@ impl Drop for Session<'_> {
 }
 
 fn assert_reused(response: &Value, prepared: &Value) {
-    assert_eq!(response["pid"], prepared["pid"]);
-    assert_eq!(response["session"], prepared["session"]);
-    assert_eq!(response["preparations"], prepared["preparations"]);
+    assert_eq!(response["pid"], prepared["pid"], "{response}");
+    assert_eq!(response["session"], prepared["session"], "{response}");
+    assert_eq!(
+        response["preparations"], prepared["preparations"],
+        "{response}"
+    );
     assert_eq!(response["reused"], true, "{response}");
 }
 
