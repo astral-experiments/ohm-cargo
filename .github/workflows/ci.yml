@@ -69,6 +69,8 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y gcc-multilib libsecret-1-0 libsecret-1-dev
       - name: Run Cargo unit and integration tests
         run: cargo +"$RUST_VERSION" test -p cargo
+      - name: Run Cargo CLI unit tests
+        run: cargo +"$RUST_VERSION" test -p cargo --bin cargo -- --test-threads=1
       - name: Install Ohm for shared-registry integration coverage
         if: runner.os == 'Linux'
         env:
