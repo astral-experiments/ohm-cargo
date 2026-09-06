@@ -178,6 +178,7 @@ def main():
             text = (evidence / (name + ".log")).read_text(errors="replace")
             entry["summaries"] = [line for line in text.splitlines() if "test result:" in line or "Seeded " in line or "snapshot" in line]
             entry["compiling_lines"] = sum("Compiling " in line for line in text.splitlines())
+            entry["checking_lines"] = sum("Checking " in line for line in text.splitlines())
             save()
             print(label, name, round(entry["elapsed_seconds"], 3), process.returncode, flush=True)
             if process.returncode:
@@ -192,6 +193,10 @@ def main():
         clippy = [args.cargo, "clippy", "--offline", "-p", "ruff_python_parser", "--all-targets", "--", "-D", "warnings", "-A", "clippy::format_push_string"]
         command("02-donor-test", tests, donor)
         command("03-donor-clippy", clippy, donor)
+        if args.production:
+            command("03b-donor-clippy-noop", clippy, donor)
+            assert receipt["commands"][-1]["compiling_lines"] == 0
+            assert receipt["commands"][-1]["checking_lines"] == 0
         command("04-donor-noop", tests, donor)
         assert receipt["commands"][-1]["compiling_lines"] == 0
         receipt["measurements"]["donor"] = measure(mount)
@@ -211,6 +216,10 @@ def main():
         command("07-edit", ["git", "checkout", "--detach", EDIT], child, child_env)
         command("08-child-edit-test", tests, child, child_env)
         command("09-child-clippy", clippy, child, child_env)
+        if args.production:
+            command("09b-child-clippy-noop", clippy, child, child_env)
+            assert receipt["commands"][-1]["compiling_lines"] == 0
+            assert receipt["commands"][-1]["checking_lines"] == 0
         command("10-child-noop", tests, child, child_env)
         assert receipt["commands"][-1]["compiling_lines"] == 0
         for name, passed in [("02-donor-test", 812), ("06-child-test", 812), ("08-child-edit-test", 813)]:
