@@ -78,6 +78,7 @@ def main():
     parser.add_argument("--root", type=Path, required=True)
     parser.add_argument("--evidence", type=Path, required=True)
     parser.add_argument("--jobs", default="4")
+    parser.add_argument("--toolchain", default="ohm")
     parser.add_argument("--arms", default="off1,on1,on2,off2")
     parser.add_argument("--production", action="store_true",
                         help="compare automatic production defaults with explicit isolation=false")
@@ -86,7 +87,7 @@ def main():
     args = parser.parse_args()
     args.evidence.mkdir(parents=True, exist_ok=True)
     assert args.cargo.is_file() and args.ruff.is_dir()
-    sysroot = Path(subprocess.check_output(["rustc", "+ohm", "--print", "sysroot"], text=True).strip())
+    sysroot = Path(subprocess.check_output(["rustc", "+" + args.toolchain, "--print", "sysroot"], text=True).strip())
     toolchain = {"rustc_version": subprocess.check_output([str(sysroot / "bin/rustc"), "-vV"], text=True),
                  "clippy_sha256": sha256(sysroot / "bin/clippy-driver"),
                  "driver_sha256": {path.name: sha256(path) for path in (sysroot / "lib").glob("librustc_driver-*.dylib")}}
@@ -108,7 +109,7 @@ def main():
         (mount / ".fseventsd/no_log").touch()
         donor = mount / "donor"
         child = mount / "child"
-        env = dict(os.environ, CARGO_HOME="/private/tmp/codex-cargo-home", RUSTUP_TOOLCHAIN="ohm",
+        env = dict(os.environ, CARGO_HOME="/private/tmp/codex-cargo-home", RUSTUP_TOOLCHAIN=args.toolchain,
                    RUSTC=str(sysroot / "bin/rustc"), CARGO=str(args.cargo), CARGO_BUILD_JOBS=args.jobs,
                    CARGO_TARGET_DIR=str(mount / "targets/donor"), CARGO_BUILD_BUILD_DIR=str(mount / "shared"),
                    CARGO_UNSTABLE_OHM_PROC_MACRO_TRUST="all", CARGO_UNSTABLE_OHM_NATIVE_TOOL_TRUST="all",
