@@ -373,11 +373,11 @@ def sample(
     if (
         args.require_reuse
         and phase != "warmup"
-        and lane == "session"
+        and lane in {"session", "baseline_session"}
         and not item["counters"]["reused"]
     ):
         raise RuntimeError(
-            f"the daemon did not reuse the {command} plan: {item['counters']}"
+            f"{lane} did not reuse the {command} plan: {item['counters']}"
         )
     return item
 
@@ -733,7 +733,7 @@ def main():
     parser.add_argument(
         "--require-reuse",
         action="store_true",
-        help="fail if any measured main-daemon command reparses its plan",
+        help="fail if any measured workspace-daemon command reparses its plan",
     )
     args = parser.parse_args()
     if len(set(args.commands)) != len(args.commands):
@@ -766,7 +766,7 @@ def main():
             "repository": str(args.repository),
             "work_dir": str(work),
             "source_edit": f"append public {EDIT_FUNCTION} returning the round number",
-            "mode_order": "alternate two-lane order; rotate three-lane check order by round plus command index",
+            "mode_order": "alternate two-lane order; rotate three-lane order by round plus command index",
             "source_unchanged": "source bytes stay fixed; switching commands may still recompile artifacts",
             "edit": "change one function body before each mixed-command round",
             "command_order": args.commands,
