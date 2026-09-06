@@ -1,41 +1,51 @@
 # Preserve ordinary worktree snapshots after Clippy
 
-## Assessment
+## Production policy
 
-Worth pursuing for worktree-heavy development on filesystems with copy-on-write
-cloning. Keep the prototype opt-in: the Linux replay saved time but consumed
-more disk, and existing tainted donors cannot be adopted automatically.
+Normal Ohm worktree preparation now isolates the verified bundled Clippy driver
+when a small clone-only probe succeeds in the actual shared snapshot storage.
+The probe checks source and destination locations, removes its temporary files,
+and retains no capability marker between Cargo invocations. A different final
+`CARGO_TARGET_DIR` does not change the shared directory where snapshots are cloned.
 
-The APFS parser workflow reduced final physical allocation by **12.63–12.67%**
-and the additional allocation for the child by **27.88–27.94%**. The experiment
-retains ordinary incremental state and does not discard Clippy caches.
+`-Zohm-clippy-seed-isolation=no` or
+`CARGO_UNSTABLE_OHM_CLIPPY_SEED_ISOLATION=false` disables the policy and skips the
+probe. Explicit `yes`/`true` forces isolation even without cloning and can increase
+storage, as the historical ext4 measurements below demonstrate. External Cargo
+subcommands inherit explicit overrides. Arbitrary wrappers, unmatched compilers,
+loader injection, and combined Clippy codegen retain conservative admission.
+The old `CARGO_EXPERIMENTAL_CLIPPY_SEED_ISOLATION` variable is no longer used.
 
-## Implementation
-
-Set `CARGO_EXPERIMENTAL_CLIPPY_SEED_ISOLATION=1` to put a verified bundled
-Clippy invocation's private outputs and incremental state in an excluded child
-namespace. Ordinary build/test/check artifacts remain eligible for worktree
-seeding. Clippy artifacts and diagnostics are never imported.
-
-Recognition requires the canonical `sysroot/bin/clippy-driver`, a matching
-compiler version, no global wrapper, and the existing compiler/loader checks.
-Combined Clippy/codegen and opaque wrappers retain their existing admission
-rules. Local procedural-macro trust remains explicit.
+Clippy artifacts and diagnostics are never imported. Recognition checks the
+canonical bundled driver and compares its compiler version with the unwrapped
+selected rustc, in addition to the existing compiler/loader trust checks. Local
+procedural-macro trust remains explicit.
 
 The workspace namespace advances to v3 and snapshot/remapped-path protocol to
-v7 so old importers cannot accidentally copy the new Clippy subdirectory. This
-requires fresh donor state; the experiment does not clear old denial markers
-or reclaim older namespaces. Package and incremental cleanup include the
-isolated directory.
+v7 so old importers cannot accidentally copy the Clippy subdirectory. Fresh donor
+state is required. Full, package, and incremental cleanup handle both the current
+namespace and the same workspace/target's legacy v2 namespace; other targets remain
+untouched. Re-enabling isolation never clears a previous denial marker.
 
-## Local correctness
+Local validation passes 32 worktree integration tests, 17 incremental-cleanup and
+reuse tests, four targeted filesystem/driver unit tests, and all Cargo target
+Clippy checks with warnings denied. New coverage includes automatic admission on
+clone-capable storage, explicit disable/child overrides, global wrapper and logger
+rejection, mismatched unwrapped rustc versions, and cleanup of legacy namespaces.
 
-Against packaged Ohm 1.98.0-9, all **29 worktree tests** and **16 incremental-GC
-and reuse tests** pass. They cover genuine Clippy recognition, rejection of a
-wrapper around Clippy, fresh ordinary builds after import, exclusion of lint
-state, changed lint configuration, backdated source edits, donor independence,
-and cleanup. See [validation provenance](results/validation.json) and the
-compressed test logs in `results/`.
+## Original opt-in prototype measurements
+
+The retained results below belong to the original opt-in implementation at
+`fcb7f19dc2f3bda0fdaa1c7659159a5bcf5f3037`, before the production activation and
+legacy-cleanup changes. They remain historical evidence, not current-head timing
+measurements. Its 29 worktree and 16 incremental-cleanup/reuse tests are recorded
+in [validation provenance](results/validation.json) and the original compressed
+logs. No original raw receipt or result has been replaced.
+
+The APFS parser workflow reduced final physical allocation by **12.63–12.67%**
+and the additional allocation for the child by **27.88–27.94%**. It retains ordinary
+incremental state and does not discard Clippy caches. The larger ext4 replay grew
+allocation, motivating the production clone gate.
 
 ## Physical APFS experiment
 
@@ -81,6 +91,8 @@ python3 benches/clippy-seeding/run_apfs.py \
 python3 benches/clippy-seeding/summarize.py /path/to/results
 ```
 
+The runner defaults to the historical prototype activation, for use with that
+older binary. Add `--production` when testing the current automatic policy.
 The runner refuses to replace existing arms and preserves each sparse image.
 It prefetches dependencies before timing and builds offline. The final runner
 adds retries for transient detach failures; this changes only teardown.
@@ -95,7 +107,7 @@ However, final unique-inode allocation increased **6.64%**, from approximately
 7.417 GB to 7.910 GB. Ext4 used ordinary copies rather than reflinks, and
 additional query-cache storage accounts for most of the increase.
 
-The second pair has the same source tree as this implementation. The first
+The second pair has the same source tree as the original opt-in prototype. The first
 predates a cleanup-only amendment that its workload does not exercise. An
 unpaired packaged-revision-9 reference fell inside the feature-off timing
 range; that observation does not prove zero disabled-mode overhead. The
