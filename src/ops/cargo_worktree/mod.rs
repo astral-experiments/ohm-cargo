@@ -296,6 +296,7 @@ fn clone_tree(
         let text = name.to_string_lossy();
         let ty = entry.file_type()?;
         if text.ends_with("-working")
+            || text == crate::compiler::OHM_WORKTREE_CLIPPY_DIRECTORY
             || text == ".cargo-workspace-lock"
             || text == ".lock"
             || text.ends_with(".rlink")
@@ -489,7 +490,7 @@ mod tests {
     #[test]
     fn local_macro_trust_cannot_drop_a_symlinked_taint_marker() {
         let root = tempfile::tempdir().unwrap();
-        fs::write(root.path().join(OHM_WORKTREE_SEED_MARKER), "6\n").unwrap();
+        fs::write(root.path().join(OHM_WORKTREE_SEED_MARKER), "7\n").unwrap();
         let taint = root.path().join(OHM_WORKTREE_SEED_LOCAL_PROC_MACRO_MARKER);
         let target = root.path().join("taint");
         fs::write(&target, "local macro\n").unwrap();

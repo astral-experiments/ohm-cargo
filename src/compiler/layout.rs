@@ -238,12 +238,13 @@ impl Layout {
     ///
     /// Independent target directories must not share mutable workspace state, even when their
     /// registry artifacts use the same build directory. The version also separates this locking
-    /// protocol from older Cargo versions that only namespaced the workspace root.
+    /// protocol from older Cargo versions that only namespaced the workspace root
+    /// or cannot exclude isolated Clippy state when importing worktree snapshots.
     pub(crate) fn shared_workspace_namespace(ws: &Workspace<'_>) -> String {
         let target = ws.target_dir();
 
         util::short_hash(&(
-            "ohm-shared-workspace-v2",
+            "ohm-shared-workspace-v3",
             ws.canonical_build_path(ws.root()),
             ws.canonical_build_path(target.as_path_unlocked()),
         ))
