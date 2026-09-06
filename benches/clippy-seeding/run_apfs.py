@@ -8,6 +8,7 @@ import os
 from pathlib import Path
 import plistlib
 import platform
+import re
 import resource
 import struct
 import subprocess
@@ -131,7 +132,7 @@ def main():
                    "cargo_version": subprocess.check_output([str(args.cargo), "-Vv"], text=True),
                    "cargo_sha256": sha256(args.cargo), "rustc_sha256": sha256(sysroot / "bin/rustc"),
                    "source_root": str(args.ruff), "volume": str(mount), "attach": plistlib.loads(attached),
-                   "environment": {key: env.get(key) for key in ["CARGO_HOME", "RUSTUP_TOOLCHAIN", "RUSTC", "CARGO",
+                   "environment": {key: env.get(key) for key in ["CARGO_HOME", "RUSTUP_TOOLCHAIN", "RUSTC", "CARGO", "PATH",
                        "CARGO_BUILD_JOBS", "CARGO_TARGET_DIR", "CARGO_BUILD_BUILD_DIR", "CARGO_UNSTABLE_OHM_PROC_MACRO_TRUST",
                        "CARGO_UNSTABLE_OHM_NATIVE_TOOL_TRUST", "CARGO_EXPERIMENTAL_CLIPPY_SEED_ISOLATION",
                        "CARGO_UNSTABLE_OHM_CLIPPY_SEED_ISOLATION",
@@ -192,8 +193,18 @@ def main():
         command("02-donor-test", tests, donor)
         command("03-donor-clippy", clippy, donor)
         command("04-donor-noop", tests, donor)
+        assert receipt["commands"][-1]["compiling_lines"] == 0
         receipt["measurements"]["donor"] = measure(mount)
         command("05-fork", [args.cargo, "worktree", "add", "--detach", child, "--target-dir", mount / "targets/child", BASE], donor)
+        if args.production:
+            fork_log = (evidence / "05-fork.log").read_text()
+            seeded = re.search(r"Seeded (\d+) files \((\d+) bytes, (\d+) reflinked files\)", fork_log)
+            receipt["seed_import"] = dict(zip(["files", "bytes", "reflinked_files"], map(int, seeded.groups()))) if seeded else None
+            save()
+            if enabled:
+                assert seeded and int(seeded[1]) > 0 and int(seeded[3]) > 0, fork_log
+            else:
+                assert not seeded and "no compatible build snapshot seeded" in fork_log, fork_log
         child_env = dict(env, CARGO_TARGET_DIR=str(mount / "targets/child"))
         command("06-child-test", tests, child, child_env)
         receipt["measurements"]["child_fresh"] = measure(mount)
@@ -201,6 +212,10 @@ def main():
         command("08-child-edit-test", tests, child, child_env)
         command("09-child-clippy", clippy, child, child_env)
         command("10-child-noop", tests, child, child_env)
+        assert receipt["commands"][-1]["compiling_lines"] == 0
+        for name, passed in [("02-donor-test", 812), ("06-child-test", 812), ("08-child-edit-test", 813)]:
+            results = re.findall(r"test result: ok\. (\d+) passed;", (evidence / (name + ".log")).read_text())
+            assert sum(map(int, results)) == passed, (name, results)
         receipt["measurements"]["final"] = measure(mount)
         receipt["complete"] = True
         save()
