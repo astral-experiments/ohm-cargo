@@ -24,6 +24,7 @@ env:
 
 jobs:
   rustfmt:
+    if: github.event_name != 'workflow_dispatch' || !inputs.clippy_apfs_replay
     name: Rustfmt
     runs-on: depot-ubuntu-24.04-4
     steps:
@@ -34,6 +35,7 @@ jobs:
         run: cargo +"$RUST_VERSION" fmt --all --check
 
   clippy:
+    if: github.event_name != 'workflow_dispatch' || !inputs.clippy_apfs_replay
     name: Clippy (${{ matrix.os }})
     runs-on: ${{ matrix.os == 'depot-macos-15' && 'namespace-profile-macos-15' || matrix.os }}
     strategy:
@@ -48,6 +50,7 @@ jobs:
         run: cargo +"$RUST_VERSION" clippy --workspace --all-targets --no-deps -- -D warnings
 
   cargo-tests:
+    if: github.event_name != 'workflow_dispatch' || !inputs.clippy_apfs_replay
     name: Cargo tests (${{ matrix.os }})
     runs-on: ${{ matrix.os == 'depot-macos-15' && 'namespace-profile-macos-15' || matrix.os }}
     env:
@@ -151,6 +154,7 @@ jobs:
           done
 
   workspace-tests:
+    if: github.event_name != 'workflow_dispatch' || !inputs.clippy_apfs_replay
     name: Workspace tests
     runs-on: depot-ubuntu-24.04-8
     steps:
@@ -161,6 +165,7 @@ jobs:
         run: cargo +"$RUST_VERSION" test --workspace --exclude cargo --exclude benchsuite --exclude resolver-tests
 
   resolver:
+    if: github.event_name != 'workflow_dispatch' || !inputs.clippy_apfs_replay
     name: Resolver tests
     runs-on: depot-ubuntu-24.04-8
     steps:
@@ -171,6 +176,7 @@ jobs:
         run: cargo +"$RUST_VERSION" test -p resolver-tests
 
   schema:
+    if: github.event_name != 'workflow_dispatch' || !inputs.clippy_apfs_replay
     name: Schema tests
     runs-on: depot-ubuntu-24.04-4
     steps:
