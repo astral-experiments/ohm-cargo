@@ -1,4 +1,4 @@
-//! Opt-in linker defaults. Keep these in unit rustflags so they affect fingerprints.
+//! Bundled linker defaults. Keep these in unit rustflags so they affect fingerprints.
 
 use std::path::Path;
 
@@ -20,7 +20,7 @@ pub(super) fn flags(
     sysroot: &Path,
     rustflags: &[String],
 ) -> CargoResult<Vec<String>> {
-    let Some(linker) = gctx.cli_unstable().ohm_linker else {
+    let Some(linker) = gctx.cli_unstable().ohm_linker() else {
         return Ok(Vec::new());
     };
     if host != TARGET
@@ -98,6 +98,28 @@ pub(super) fn has_linker_flags<'a>(args: impl IntoIterator<Item = &'a str>) -> b
 #[cfg(test)]
 mod tests {
     use super::has_linker_flags;
+    use crate::core::features::{CliUnstable, OhmLinker};
+
+    #[test]
+    fn defaults_and_explicit_linker_selection() {
+        for defaults in [false, true] {
+            for selection in [None, Some(OhmLinker::Wild), Some(OhmLinker::Lld)] {
+                let options = CliUnstable {
+                    ohm_defaults: Some(defaults),
+                    ohm_linker: selection,
+                    ..CliUnstable::default()
+                };
+                assert_eq!(
+                    options.ohm_linker(),
+                    selection.or(defaults.then_some(OhmLinker::Wild))
+                );
+            }
+        }
+        assert_eq!(
+            CliUnstable::default().ohm_linker(),
+            cfg!(feature = "ohm-defaults").then_some(OhmLinker::Wild)
+        );
+    }
 
     #[test]
     fn explicit_linker_controls() {
