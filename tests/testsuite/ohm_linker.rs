@@ -172,4 +172,12 @@ fn ohm_defaults_select_wild_and_allow_lld() {
     let output = fs::read_to_string(&log).unwrap();
     assert!(output.contains("foo "), "{output}");
     assert!(!output.contains("wild-ld"), "{output}");
+    // Older compiler sysroots retain their linker under automatic defaults.
+    fs::remove_file(linker).unwrap();
+    p.change_file("src/main.rs", "fn main() { println!(\"older sysroot\"); }");
+    fs::write(&log, "").unwrap();
+    cargo(&p, &rustc, "-Zohm-defaults=yes build").run();
+    let output = fs::read_to_string(&log).unwrap();
+    assert!(output.contains("foo "), "{output}");
+    assert!(!output.contains("wild-ld"), "{output}");
 }
