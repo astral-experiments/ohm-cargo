@@ -2105,9 +2105,10 @@ inside build scripts keep their existing linker configuration.
 
 The system C compiler driver still supplies startup objects and system
 libraries. Changing the selection changes Cargo's artifact identity. Wild must
-be present in the selected compiler's sysroot; older Ohm installations produce
-an error when Wild is requested. This selects Wild's full linker and does not
-enable incremental linking.
+be present in the selected compiler's sysroot for automatic selection; older
+sysroots retain their existing linker. Explicitly requesting Wild when it is
+missing produces an error. This selects Wild's full linker and does not enable
+incremental linking.
 
 ## ohm-worktree-seeds
 
