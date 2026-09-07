@@ -132,3 +132,44 @@ fn unsupported_host_keeps_default_linker() {
     assert!(!log.contains("wild-ld"));
     assert!(!log.contains("linker-features"));
 }
+
+#[cargo_test(
+    nightly,
+    reason = "automatic defaults require the packaged Ohm compiler"
+)]
+#[cfg(all(target_os = "linux", target_arch = "x86_64", target_env = "gnu"))]
+fn ohm_defaults_select_wild_and_allow_lld() {
+    let rustc = mock_toolchain();
+    let linker =
+        paths::root().join("sysroot/lib/rustlib/x86_64-unknown-linux-gnu/bin/wild-ld/ld.bfd");
+    fs::create_dir_all(linker.parent().unwrap()).unwrap();
+    fs::write(&linker, "fixture").unwrap();
+    let p = project()
+        .file("src/main.rs", "fn main() {}")
+        .file("build.rs", "fn main() {}")
+        .build();
+    let log = paths::root().join("linker.log");
+    cargo(&p, &rustc, "-Zohm-defaults=yes build").run();
+    let output = fs::read_to_string(&log).unwrap();
+    for name in ["foo", "build_script_build"] {
+        assert!(
+            output
+                .lines()
+                .any(|line| line.starts_with(name) && line.contains("wild-ld")),
+            "{output}"
+        );
+    }
+    fs::write(&log, "").unwrap();
+    cargo(&p, &rustc, "-Zohm-defaults=yes build").run();
+    assert!(fs::read_to_string(&log).unwrap().is_empty());
+
+    cargo(&p, &rustc, "-Zohm-defaults=yes -Zohm-linker=lld build").run();
+    let output = fs::read_to_string(&log).unwrap();
+    assert!(output.contains("foo "), "{output}");
+    assert!(!output.contains("wild-ld"), "{output}");
+    fs::write(&log, "").unwrap();
+    cargo(&p, &rustc, "build").run();
+    let output = fs::read_to_string(&log).unwrap();
+    assert!(output.contains("foo "), "{output}");
+    assert!(!output.contains("wild-ld"), "{output}");
+}

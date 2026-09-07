@@ -149,6 +149,10 @@ jobs:
             clippy_wrapper_scripts_still_deny_the_whole_seed; do
             "$testsuite" "ohm_worktree::$test" --exact --include-ignored --nocapture
           done
+          if [[ "$RUNNER_OS" == Linux ]]; then
+            "$testsuite" ohm_linker::ohm_defaults_select_wild_and_allow_lld \
+              --exact --include-ignored --nocapture
+          fi
 
   workspace-tests:
     name: Workspace tests
