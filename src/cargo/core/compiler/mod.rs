@@ -1947,7 +1947,7 @@ fn prepare_rustc(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> CargoResult
         );
         if explicit {
             rustflags = &rustflags[..rustflags.len() - info.ohm_linker_flags];
-        } else if gctx.cli_unstable().ohm_linker == Some(crate::core::features::OhmLinker::Wild) {
+        } else if gctx.cli_unstable().ohm_linker() == Some(crate::core::features::OhmLinker::Wild) {
             let linker = ohm_linker::wild_directory(&info.sysroot).join("ld.bfd");
             anyhow::ensure!(
                 linker.is_file(),
