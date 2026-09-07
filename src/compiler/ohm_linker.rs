@@ -29,6 +29,15 @@ pub(super) fn flags(
     {
         return Ok(Vec::new());
     }
+    // A standalone Ohm Cargo can also drive an older compiler without Wild.
+    // Only automatic selection falls back; explicit Wild requests still fail
+    // in prepare_rustc when the bundled executable is missing.
+    if linker == OhmLinker::Wild
+        && gctx.cli_unstable().ohm_linker.is_none()
+        && !wild_directory(sysroot).join("ld.bfd").is_file()
+    {
+        return Ok(Vec::new());
+    }
 
     let use_host_config = kind.is_host() && !gctx.target_applies_to_host()?;
     let config = if use_host_config {
