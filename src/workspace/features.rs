@@ -1317,6 +1317,12 @@ impl CliUnstable {
         self.ohm_defaults.unwrap_or(cfg!(feature = "ohm-defaults"))
     }
 
+    /// The bundled linker selected for supported native targets.
+    pub fn ohm_linker(&self) -> Option<OhmLinker> {
+        self.ohm_linker
+            .or_else(|| self.ohm_defaults().then_some(OhmLinker::Wild))
+    }
+
     /// Whether complete registry builds may be reused by a subsequent check.
     pub fn ohm_reuse_built_deps(&self) -> bool {
         self.ohm_reuse_built_deps || self.ohm_defaults()

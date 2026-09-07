@@ -2123,11 +2123,12 @@ subsequent normal builds prepare fresh state.
 
 ## ohm-linker
 
-`cargo +ohm -Zohm-linker=wild test` selects the Wild linker bundled with
-the compiler for native `x86_64-unknown-linux-gnu` Rust builds. Use
-`-Zohm-linker=lld` to select the bundled LLD instead. This is independent of
-`ohm-defaults` and is not enabled automatically. It can also be configured as
-`[unstable] ohm-linker = "wild"` or `CARGO_UNSTABLE_OHM_LINKER=wild`.
+Ohm selects the bundled Wild linker by default for native
+`x86_64-unknown-linux-gnu` Rust builds. Use `-Zohm-linker=lld` to select the
+bundled LLD instead, or `-Zohm-defaults=no` to disable automatic selection
+together with the other Ohm defaults. An explicit `-Zohm-linker=wild` still
+selects Wild when Ohm defaults are disabled. The selection can also be configured
+as `[unstable] ohm-linker = "wild"` or `CARGO_UNSTABLE_OHM_LINKER=wild`.
 
 Explicit Cargo linker configuration and linker-related compiler flags take
 precedence. Other platforms and cross-compilation targets keep their existing
