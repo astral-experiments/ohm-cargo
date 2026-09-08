@@ -2673,6 +2673,15 @@ fn shared_registry_cache_automatically_shares_explicit_build_directories() {
 
     assert!(shared.join(".ohm-shared-registry-cache-v1").is_file());
     assert!(shared.join("debug/build/registries").is_dir());
+    for workspace in std::fs::read_dir(shared.join("debug/build/workspaces")).unwrap() {
+        assert!(
+            !workspace
+                .unwrap()
+                .path()
+                .join(".ohm-worktree-seed-deny-v7")
+                .exists()
+        );
+    }
     assert_eq!(
         std::fs::read_dir(shared.join("debug/incremental"))
             .expect("read workspace-private incremental directories")
