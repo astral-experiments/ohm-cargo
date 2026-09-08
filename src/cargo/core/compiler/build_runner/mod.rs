@@ -1686,6 +1686,12 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
             .extra_args_for(unit)
             .map(Vec::as_slice)
             .unwrap_or_default();
+        let target_info = self.bcx.target_data.info(unit.kind);
+        let rustflags = compilation_files::rustflags_for_cache_admission(
+            &unit.rustflags,
+            &target_info.rustflags,
+            target_info.ohm_linker_flags,
+        );
         let arguments = unit
             .pkg
             .manifest()
@@ -1694,7 +1700,7 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
             .map(String::as_str)
             .chain(unit.profile.rustflags.iter().map(|flag| flag.as_str()))
             .chain(extra_args.iter().map(String::as_str))
-            .chain(unit.rustflags.iter().map(String::as_str));
+            .chain(rustflags.iter().map(String::as_str));
 
         compilation_files::unit_compiler_arguments_use_opaque_execution(
             unit,
