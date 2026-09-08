@@ -1686,6 +1686,12 @@ fn unit_uses_custom_codegen_backend(unit: &Unit, build_runner: &BuildRunner<'_, 
         CompileKind::Host => {}
     }
 
+    let target_info = build_runner.bcx.target_data.info(unit.kind);
+    let rustflags = rustflags_for_cache_admission(
+        &unit.rustflags,
+        &target_info.rustflags,
+        target_info.ohm_linker_flags,
+    );
     let flags = unit
         .pkg
         .manifest()
@@ -1693,7 +1699,7 @@ fn unit_uses_custom_codegen_backend(unit: &Unit, build_runner: &BuildRunner<'_, 
         .iter()
         .map(String::as_str)
         .chain(unit.profile.rustflags.iter().map(|flag| flag.as_str()))
-        .chain(unit.rustflags.iter().map(String::as_str))
+        .chain(rustflags.iter().map(String::as_str))
         .chain(
             build_runner
                 .bcx
@@ -1704,6 +1710,23 @@ fn unit_uses_custom_codegen_backend(unit: &Unit, build_runner: &BuildRunner<'_, 
         );
 
     unit_compiler_arguments_use_opaque_execution(unit, host.as_str(), target_sysroot, flags)
+}
+
+/// Excludes only the bundled-linker suffix recorded during target discovery.
+///
+/// Cargo's generated flags remain in fingerprints and compiler invocations. User flags,
+/// including identical linker arguments without this provenance, still require inspection.
+pub(super) fn rustflags_for_cache_admission<'a>(
+    rustflags: &'a [String],
+    target_rustflags: &[String],
+    bundled_linker_flags: usize,
+) -> &'a [String] {
+    let Some(start) = target_rustflags.len().checked_sub(bundled_linker_flags) else {
+        return rustflags;
+    };
+    rustflags
+        .strip_suffix(&target_rustflags[start..])
+        .unwrap_or(rustflags)
 }
 
 /// Executable compile-time units additionally run platform-specific native tools.
@@ -2733,8 +2756,8 @@ mod shared_registry_tests {
         compiler_driver_search_directory_is_safe, compiler_option_uses_opaque_execution,
         configured_environment_has_sensitive_case_alias, native_target_environment_names,
         native_tool_policy_allows_unit, package_implicit_native_tools,
-        resolve_effective_executable, sysroot_contains_trusted_objcopy,
-        sysroot_has_custom_codegen_backends,
+        resolve_effective_executable, rustflags_for_cache_admission,
+        sysroot_contains_trusted_objcopy, sysroot_has_custom_codegen_backends,
     };
     use crate::workspace::features::OhmNativeToolTrust;
 
@@ -2968,6 +2991,43 @@ mod shared_registry_tests {
 
         assert!(!compiler_option_uses_opaque_execution("opt-level=2"));
         assert!(!compiler_option_uses_opaque_execution("debuginfo=1"));
+    }
+
+    #[test]
+    fn bundled_linker_provenance_preserves_explicit_execution_boundaries() {
+        let bundled = [
+            "-Clinker-features=-lld",
+            "-Clink-self-contained=-linker",
+            "-Clink-arg=-B/toolchain/lib/rustlib/host/bin/wild-ld",
+            "-Clink-arg=-fuse-ld=bfd",
+        ]
+        .map(str::to_owned);
+        let opaque = |flags: &[String], generated: usize| {
+            compiler_arguments_use_opaque_execution(
+                rustflags_for_cache_admission(flags, &bundled, generated)
+                    .iter()
+                    .map(String::as_str),
+                false,
+                false,
+                false,
+                || false,
+            )
+        };
+        assert!(!opaque(&bundled, bundled.len()));
+        assert!(opaque(&bundled, 0));
+        assert!(opaque(&bundled, bundled.len() + 1));
+
+        for explicit in ["-Clinker=custom", "-Clink-arg=-fuse-ld=bfd", "@flags"] {
+            let mut before = vec![explicit.to_owned()];
+            before.extend_from_slice(&bundled);
+            assert!(opaque(&before, bundled.len()), "{explicit}");
+            let mut after = bundled.to_vec();
+            after.push(explicit.to_owned());
+            assert!(opaque(&after, bundled.len()), "{explicit}");
+        }
+        let mut altered = bundled.clone();
+        altered[2] = "-Clink-arg=-B/other-toolchain/bin".to_owned();
+        assert!(opaque(&altered, bundled.len()));
     }
 
     #[test]
