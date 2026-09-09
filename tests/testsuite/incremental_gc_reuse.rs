@@ -205,9 +205,12 @@ fn tracked_worktree_seeds_remain_private_and_reusable() {
     let donor_trash = donor_incremental.join("ohm-gc-trash-v1");
     fs::create_dir(&donor_trash).unwrap();
     fs::write(donor_trash.join("retired-payload"), b"partly deleted cache").unwrap();
-    seeded_cargo("worktree add -b charlie/seeded")
+    let output = seeded_cargo("worktree add -b charlie/seeded")
         .arg(&destination)
         .run();
+    if !crate::ohm_worktree::seed_was_imported(&output) {
+        return;
+    }
     let recipient_marker = markers()
         .into_iter()
         .find(|marker| *marker != donor_marker)

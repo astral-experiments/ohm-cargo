@@ -2111,8 +2111,9 @@ The explicit isolation override is inherited by external Cargo subcommands;
 a nested Cargo command can override it with its own flag.
 
 `-Zohm-clippy-seed-isolation=yes` forces isolation without requiring cloning.
-This can increase storage on filesystems where snapshots copy bytes; the measured
-ext4 prototype retained more data. It does not relax compiler, wrapper, loader,
+This does not allow importing snapshots without cloning. Forcing isolation can
+still increase storage by retaining separate ordinary and Clippy artifacts.
+It does not relax compiler, wrapper, loader,
 procedural-macro, or native-tool trust checks. Arbitrary wrapper scripts,
 and mismatched Clippy drivers remain excluded.
 
@@ -2158,7 +2159,7 @@ Checksum validation reads source contents on later builds. The mode also replace
 compiler working-directory paths with a stable virtual prefix, which can affect
 debugger source lookup and path-bearing diagnostics.
 
-Use `-Zohm-worktree-seeds=no` to disable preparation or copying for an individual
+Use `-Zohm-worktree-seeds=no` to disable preparation or importing for an individual
 command while retaining the other Ohm defaults. Setting
 `unstable.ohm-worktree-seeds = false` in Cargo configuration also disables it.
 `-Zohm-defaults=no` disables it together with the other Ohm defaults unless
@@ -2235,9 +2236,16 @@ whole profile, regardless of this opt-in. Copied tests must not execute a donor
 worktree's binaries. Profiles prepared under an older snapshot policy must be
 rebuilt before they can seed a new worktree.
 
-Copies are independently writable. Supported filesystems can clone their data
-blocks; other filesystems copy the bytes. Seeding is a one-time operation and does
-not share later workspace compilations or collect abandoned worktrees.
+Importing a profile requires copy-on-write file cloning. If any snapshot file
+cannot be cloned, Cargo discards that profile's staged build and incremental
+trees and creates the worktree without importing them. The recipient then builds
+normally. There is no byte-copy fallback or option to enable one. Ordinary I/O
+errors still surface as errors.
+
+Imported files are independently writable; no mutable file is hardlinked to the
+donor. Metadata relocation and new session lock files are still written
+independently. Seeding is a one-time operation and does not share later workspace
+compilations or collect abandoned worktrees.
 
 ## compile-time-deps
 
