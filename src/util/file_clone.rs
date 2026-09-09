@@ -119,7 +119,13 @@ mod tests {
         let source = root.path().join("source");
         let destination = root.path().join("destination");
         fs::write(&source, b"snapshot")?;
-        if !try_clone(&source, &destination)? {
+        let supported = cargo_test_support::paths::clone_file(&source, &root.path().join("probe"));
+        let cloned = try_clone(&source, &destination)?;
+        assert_eq!(
+            cloned, supported,
+            "Cargo and the independent clone probe disagree"
+        );
+        if !cloned {
             assert!(!destination.exists());
             return Ok(());
         }
