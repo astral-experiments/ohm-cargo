@@ -282,6 +282,18 @@ codegen-units = 256
 rpath = false
 ```
 
+With Ohm defaults enabled, `dev` instead uses `debug = "line-tables-only"` for
+workspace packages and dependencies. This keeps file-and-line backtraces but
+omits type and variable information for interactive debugging. The `test`
+profile and custom profiles inheriting from `dev` inherit this default. Build
+dependencies retain their existing debug-info defaults.
+
+Explicit `debug` settings in manifests, Cargo configuration, or environment
+variables take precedence. For example, setting `debug = true` in
+`[profile.dev]` restores full debug information, including for dependencies
+without their own overrides. `-Zohm-defaults=no` restores Cargo's ordinary
+defaults.
+
 ### debug
 
 The `debug` profile is used for creating binaries to run with a debugger. It is used with `cargo build --profile debug` and `cargo install --debug`.
