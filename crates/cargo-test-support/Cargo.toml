@@ -28,6 +28,9 @@ toml = { workspace = true, features = ["display", "serde"] }
 url.workspace = true
 walkdir.workspace = true
 
+[target.'cfg(target_os = "macos")'.dependencies]
+libc.workspace = true
+
 [target.'cfg(windows)'.dependencies]
 windows-sys = { workspace = true, features = ["Win32_Storage_FileSystem"] }
 

@@ -467,6 +467,47 @@ pub fn sysroot() -> String {
     sysroot.trim().to_string()
 }
 
+/// Tries a clone-only copy independently of Cargo's file-cloning implementation.
+///
+/// Callers supply a nonempty source and an absent destination on the filesystem
+/// under test. In particular, macOS `cp -c` is unsuitable because it can copy bytes.
+pub fn clone_file(source: &Path, destination: &Path) -> bool {
+    #[cfg(target_os = "macos")]
+    {
+        use std::ffi::CString;
+        use std::os::unix::ffi::OsStrExt;
+
+        let source = CString::new(source.as_os_str().as_bytes()).unwrap();
+        let destination = CString::new(destination.as_os_str().as_bytes()).unwrap();
+        // SAFETY: The paths remain live and NUL-terminated. A null state requests
+        // automatic state management, and CLONE_FORCE forbids byte-copy fallback.
+        unsafe {
+            libc::copyfile(
+                source.as_ptr(),
+                destination.as_ptr(),
+                std::ptr::null_mut(),
+                libc::COPYFILE_CLONE_FORCE,
+            ) == 0
+        }
+    }
+    #[cfg(target_os = "linux")]
+    {
+        Command::new("cp")
+            .arg("--reflink=always")
+            .arg(source)
+            .arg(destination)
+            .output()
+            .expect("cp must be available to probe file cloning")
+            .status
+            .success()
+    }
+    #[cfg(not(any(target_os = "macos", target_os = "linux")))]
+    {
+        let _ = (source, destination);
+        false
+    }
+}
+
 /// Returns true if names such as aux.* are allowed.
 ///
 /// Traditionally, Windows did not allow a set of file names (see `is_windows_reserved`
