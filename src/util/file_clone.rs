@@ -42,6 +42,27 @@ pub(crate) fn supported_between(source: &Path, destination: &Path) -> bool {
     probe().unwrap_or(false)
 }
 
+/// Unsupported cloning is an optional-cache miss; ordinary I/O errors still surface.
+#[cfg(any(target_os = "macos", target_os = "linux"))]
+fn clone_error(error: io::Error) -> CargoResult<bool> {
+    match error.raw_os_error() {
+        Some(code)
+            if [
+                libc::ENOTSUP,
+                libc::EOPNOTSUPP,
+                libc::ENOTTY,
+                libc::ENOSYS,
+                libc::EXDEV,
+                libc::EINVAL,
+            ]
+            .contains(&code) =>
+        {
+            Ok(false)
+        }
+        _ => Err(error.into()),
+    }
+}
+
 #[cfg(target_os = "macos")]
 pub(crate) fn try_clone(source: &Path, destination: &Path) -> CargoResult<bool> {
     use std::ffi::CString;
@@ -55,11 +76,8 @@ pub(crate) fn try_clone(source: &Path, destination: &Path) -> CargoResult<bool> 
         return Ok(true);
     }
     let error = io::Error::last_os_error();
-    if error.kind() == io::ErrorKind::AlreadyExists {
-        return Err(error.into());
-    }
     // clonefile is atomic: a failed call does not create a destination to remove.
-    Ok(false)
+    clone_error(error)
 }
 
 #[cfg(target_os = "linux")]
@@ -73,12 +91,16 @@ pub(crate) fn try_clone(source: &Path, destination: &Path) -> CargoResult<bool> 
         .open(destination)?;
     // SAFETY: Both descriptors remain open; FICLONE takes the source descriptor by value.
     let cloned = unsafe { libc::ioctl(output.as_raw_fd(), libc::FICLONE, input.as_raw_fd()) } == 0;
+    let error = (!cloned).then(io::Error::last_os_error);
     drop(output);
     if !cloned {
         // create_new above proves this is the file created by our clone attempt.
         fs::remove_file(destination)?;
     }
-    Ok(cloned)
+    match error {
+        Some(error) => clone_error(error),
+        None => Ok(true),
+    }
 }
 
 #[cfg(not(any(target_os = "macos", target_os = "linux")))]
@@ -89,6 +111,26 @@ pub(crate) fn try_clone(_source: &Path, _destination: &Path) -> CargoResult<bool
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    #[cfg(any(target_os = "macos", target_os = "linux"))]
+    fn cloned_files_are_independent_and_existing_destinations_are_preserved() -> CargoResult<()> {
+        let root = tempfile::tempdir()?;
+        let source = root.path().join("source");
+        let destination = root.path().join("destination");
+        fs::write(&source, b"snapshot")?;
+        if !try_clone(&source, &destination)? {
+            assert!(!destination.exists());
+            return Ok(());
+        }
+        assert_eq!(fs::read(&destination)?, b"snapshot");
+        assert!(!same_file::is_same_file(&source, &destination)?);
+        fs::write(&destination, b"private")?;
+        assert_eq!(fs::read(&source)?, b"snapshot");
+        assert!(try_clone(&source, &destination).is_err());
+        assert_eq!(fs::read(&destination)?, b"private");
+        Ok(())
+    }
 
     #[test]
     fn capability_probe_cleans_up_and_does_not_create_namespace_directories() {
@@ -114,5 +156,16 @@ mod tests {
         std::os::unix::fs::symlink(&source, &link).unwrap();
         assert!(!supported_between(&link, root.path()));
         assert_eq!(fs::read_dir(&source).unwrap().count(), 0);
+    }
+
+    #[test]
+    #[cfg(any(target_os = "macos", target_os = "linux"))]
+    fn real_clone_errors_are_not_cache_misses() {
+        assert!(!clone_error(io::Error::from_raw_os_error(libc::ENOTSUP)).unwrap());
+        assert!(!clone_error(io::Error::from_raw_os_error(libc::EOPNOTSUPP)).unwrap());
+        assert!(!clone_error(io::Error::from_raw_os_error(libc::EXDEV)).unwrap());
+        for code in [libc::ENOSPC, libc::EIO, libc::EACCES, libc::EEXIST] {
+            assert!(clone_error(io::Error::from_raw_os_error(code)).is_err());
+        }
     }
 }
