@@ -879,6 +879,105 @@ fn debug_options_valid() {
 }
 
 #[cargo_test]
+fn ohm_default_debuginfo() {
+    Package::new("bar", "1.0.0").publish();
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "foo"
+                version = "0.1.0"
+                edition = "2024"
+                [dependencies]
+                bar = "1"
+                [profile.custom]
+                inherits = "dev"
+            "#,
+        )
+        .file("src/main.rs", "fn main() {}")
+        .build();
+
+    for defaults in ["yes", "no"] {
+        for profile in ["dev", "test", "custom", "release"] {
+            let graph = p
+                .cargo(&format!(
+                    "build --profile {profile} --unit-graph -Zunstable-options -Zohm-defaults={defaults}"
+                ))
+                .masquerade_as_nightly_cargo(&["unit-graph", "ohm-defaults"])
+                .run_json();
+            let expected = match (profile, defaults) {
+                ("release", _) => serde_json::json!(0),
+                (_, "yes") => serde_json::json!("line-tables-only"),
+                _ => serde_json::json!(2),
+            };
+            let units = graph["units"].as_array().unwrap();
+            assert_eq!(units.len(), 2);
+            for unit in units {
+                assert_eq!(unit["profile"]["debuginfo"], expected, "{unit}");
+            }
+        }
+    }
+}
+
+#[cargo_test]
+fn ohm_default_debuginfo_respects_overrides() {
+    Package::new("bar", "1.0.0").publish();
+    let manifest = r#"
+        [package]
+        name = "foo"
+        version = "0.1.0"
+        edition = "2024"
+        [dependencies]
+        bar = "1"
+    "#;
+    let p = project()
+        .file("Cargo.toml", manifest)
+        .file("src/main.rs", "fn main() {}")
+        .build();
+    let check = |env_debug: Option<&str>, workspace_debug, dependency_debug| {
+        let mut cargo = p.cargo("build --unit-graph -Zunstable-options -Zohm-defaults=yes");
+        cargo.masquerade_as_nightly_cargo(&["unit-graph", "ohm-defaults"]);
+        if let Some(debug) = env_debug {
+            cargo.env("CARGO_PROFILE_DEV_DEBUG", debug);
+        }
+        let graph = cargo.run_json();
+        let units = graph["units"].as_array().unwrap();
+        assert_eq!(units.len(), 2);
+        for unit in units {
+            let expected = if unit["target"]["name"] == "foo" {
+                &workspace_debug
+            } else {
+                &dependency_debug
+            };
+            assert_eq!(&unit["profile"]["debuginfo"], expected, "{unit}");
+        }
+    };
+
+    p.change_file(
+        "Cargo.toml",
+        &format!("{manifest}\n[profile.dev]\ndebug = true"),
+    );
+    check(None, serde_json::json!(2), serde_json::json!(2));
+
+    p.change_file(".cargo/config.toml", "[profile.dev]\ndebug = 1");
+    check(None, serde_json::json!(1), serde_json::json!(1));
+    check(Some("0"), serde_json::json!(0), serde_json::json!(0));
+    check(Some("2"), serde_json::json!(2), serde_json::json!(2));
+
+    p.change_file(".cargo/config.toml", "");
+    p.change_file(
+        "Cargo.toml",
+        &format!("{manifest}\n[profile.dev.package.'*']\ndebug = false"),
+    );
+    check(
+        None,
+        serde_json::json!("line-tables-only"),
+        serde_json::json!(0),
+    );
+}
+
+#[cargo_test]
 fn profile_hint_mostly_unused_warn_without_gate() {
     Package::new("bar", "1.0.0").publish();
     let p = project()
