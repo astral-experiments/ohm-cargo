@@ -90,7 +90,11 @@ impl Profiles {
             rustc_host,
         };
 
-        Self::add_root_profiles(&mut profile_makers, &profiles);
+        Self::add_root_profiles(
+            &mut profile_makers,
+            &profiles,
+            gctx.cli_unstable().ohm_defaults(),
+        );
 
         // Merge with predefined profiles.
         use std::collections::btree_map::Entry;
@@ -132,10 +136,14 @@ impl Profiles {
     fn add_root_profiles(
         profile_makers: &mut Profiles,
         profiles: &BTreeMap<InternedString, TomlProfile>,
+        ohm_defaults: bool,
     ) {
         profile_makers.by_name.insert(
             "dev".into(),
-            ProfileMaker::new(Profile::default_dev(), profiles.get("dev").cloned()),
+            ProfileMaker::new(
+                Profile::default_dev(ohm_defaults),
+                profiles.get("dev").cloned(),
+            ),
         );
 
         profile_makers.by_name.insert(
@@ -665,7 +673,7 @@ compact_debug! {
     impl fmt::Debug for Profile {
         fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
             let (default, default_name) = match self.name.as_str() {
-                "dev" => (Profile::default_dev(), "default_dev()"),
+                "dev" => (Profile::default_dev(false), "default_dev()"),
                 "release" => (Profile::default_release(), "default_release()"),
                 _ => (Profile::default(), "default()"),
             };
@@ -715,11 +723,15 @@ impl cmp::PartialEq for Profile {
 
 impl Profile {
     /// Returns a built-in `dev` profile.
-    fn default_dev() -> Profile {
+    fn default_dev(ohm_defaults: bool) -> Profile {
         Profile {
             name: "dev".into(),
             root: ProfileRoot::Debug,
-            debuginfo: DebugInfo::Resolved(TomlDebugInfo::Full),
+            debuginfo: DebugInfo::Resolved(if ohm_defaults {
+                TomlDebugInfo::LineTablesOnly
+            } else {
+                TomlDebugInfo::Full
+            }),
             debug_assertions: true,
             overflow_checks: true,
             incremental: true,
