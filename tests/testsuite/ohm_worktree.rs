@@ -31,8 +31,17 @@ fn seeded_cargo(project: &Project, command: &str) -> Execs {
 /// Reuse-specific assertions require a clone-capable test filesystem.
 /// The import policy test below also verifies normal builds when cloning is unavailable.
 pub(super) fn seed_was_imported(output: &cargo_test_support::RawOutput) -> bool {
+    let probe = tempfile::tempdir_in(paths::root().join("shared-build")).unwrap();
+    let source = probe.path().join("source");
+    fs::write(&source, [0x42; 4096]).unwrap();
+    let supported = paths::clone_file(&source, &probe.path().join("destination"));
+    probe.close().unwrap();
     let stderr = std::str::from_utf8(&output.stderr).unwrap();
     if stderr.contains("without copy-on-write support") {
+        assert!(
+            !supported,
+            "Cargo skipped a clone-capable filesystem: {stderr}"
+        );
         assert!(
             stderr.contains("no compatible build snapshot seeded"),
             "{stderr}"
@@ -41,6 +50,10 @@ pub(super) fn seed_was_imported(output: &cargo_test_support::RawOutput) -> bool 
         eprintln!("skipping reuse assertions: test filesystem does not support cloning");
         false
     } else {
+        assert!(
+            supported,
+            "Cargo seeded without independent clone support: {stderr}"
+        );
         assert!(stderr.contains("Seeded"), "{stderr}");
         assert!(!stderr.contains(", 0 reflinked files)"), "{stderr}");
         true
