@@ -28,6 +28,25 @@ fn seeded_cargo(project: &Project, command: &str) -> Execs {
     cargo
 }
 
+/// Reuse-specific assertions require a clone-capable test filesystem.
+/// The import policy test below also verifies normal builds when cloning is unavailable.
+pub(super) fn seed_was_imported(output: &cargo_test_support::RawOutput) -> bool {
+    let stderr = std::str::from_utf8(&output.stderr).unwrap();
+    if stderr.contains("without copy-on-write support") {
+        assert!(
+            stderr.contains("no compatible build snapshot seeded"),
+            "{stderr}"
+        );
+        assert!(!stderr.contains("Seeded"), "{stderr}");
+        eprintln!("skipping reuse assertions: test filesystem does not support cloning");
+        false
+    } else {
+        assert!(stderr.contains("Seeded"), "{stderr}");
+        assert!(!stderr.contains(", 0 reflinked files)"), "{stderr}");
+        true
+    }
+}
+
 fn workspace_caches() -> Vec<PathBuf> {
     fs::read_dir(paths::root().join("shared-build/debug/build/workspaces"))
         .unwrap()
@@ -40,6 +59,53 @@ fn binary(workspace: &Path) -> PathBuf {
     workspace
         .join("target/debug")
         .join(format!("foo{}", std::env::consts::EXE_SUFFIX))
+}
+
+#[cargo_test(
+    nightly,
+    reason = "worktree imports require cloning even with explicit preparation or isolation"
+)]
+fn worktree_import_requires_cloning() {
+    for isolation in ["false", "true"] {
+        let donor = git::new(&format!("donor-{isolation}"), |p| {
+            p.file(".gitignore", "/target\n/Cargo.lock\n")
+                .file("src/lib.rs", "pub fn value() -> u32 { 1 }")
+        });
+        seeded_cargo(&donor, "-Zohm-worktree-seeds=yes build").run();
+        let before = workspace_caches().len();
+        let destination = paths::root().join(format!("seeded-{isolation}"));
+        let output = seeded_cargo(&donor, "worktree add")
+            .env("CARGO_UNSTABLE_OHM_CLIPPY_SEED_ISOLATION", isolation)
+            .arg(&destination)
+            .run();
+        let cloned = seed_was_imported(&output);
+        assert_eq!(workspace_caches().len(), before + usize::from(cloned));
+        assert!(git2::Repository::open(&destination).unwrap().is_worktree());
+        assert!(
+            !walkdir::WalkDir::new(paths::root().join("shared-build"))
+                .into_iter()
+                .map(Result::unwrap)
+                .any(|entry| entry.file_type().is_dir()
+                    && entry
+                        .file_name()
+                        .to_string_lossy()
+                        .starts_with(".ohm-worktree-seed-"))
+        );
+        let mut build = seeded_cargo(&donor, "build -v");
+        build.cwd(&destination);
+        if cloned {
+            build
+                .with_stderr_contains("[FRESH] foo [..]")
+                .with_stderr_does_not_contain("[COMPILING] foo [..]");
+        } else {
+            build.with_stderr_contains("[COMPILING] foo [..]");
+        }
+        build.run();
+        seeded_cargo(&donor, "build -v")
+            .with_stderr_contains("[FRESH] foo [..]")
+            .with_stderr_does_not_contain("[COMPILING] foo [..]")
+            .run();
+    }
 }
 
 #[cargo_test]
@@ -225,11 +291,11 @@ fn worktree_seeding_can_be_disabled() {
 
     // Establish a compatible donor before checking that both overrides prevent copying it.
     seeded_cargo(&donor, "build").run();
-    seeded_cargo(&donor, "worktree add")
+    let output = seeded_cargo(&donor, "worktree add")
         .arg(paths::root().join("prepared"))
-        .with_stderr_contains("[..]Seeded [..] files [..]")
         .run();
-    assert_eq!(workspace_caches().len(), 2);
+    let expected_caches = 1 + usize::from(seed_was_imported(&output));
+    assert_eq!(workspace_caches().len(), expected_caches);
 
     for (directory, command, environment) in [
         (
@@ -247,7 +313,7 @@ fn worktree_seeding_can_be_disabled() {
             .arg(paths::root().join(directory))
             .with_stderr_contains("[CREATED] [ROOT]/[..] (no compatible build snapshot seeded)")
             .run();
-        assert_eq!(workspace_caches().len(), 2);
+        assert_eq!(workspace_caches().len(), expected_caches);
     }
 }
 
@@ -273,10 +339,10 @@ fn worktree_seeding_can_override_disabled_ohm_defaults() {
     seeded_cargo(&donor, &enabled).run();
     let destination = paths::root().join("seeded");
     // The worktree command itself requires Ohm defaults; subsequent builds do not.
-    seeded_cargo(&donor, "worktree add")
-        .arg(&destination)
-        .with_stderr_contains("[..]Seeded [..] files [..]")
-        .run();
+    let output = seeded_cargo(&donor, "worktree add").arg(&destination).run();
+    if !seed_was_imported(&output) {
+        return;
+    }
     assert_eq!(workspace_caches().len(), 2);
     seeded_cargo(&donor, &enabled)
         .cwd(&destination)
@@ -315,9 +381,12 @@ fn seeds_an_unchanged_build_and_keeps_the_worktrees_independent() {
         .expect("the donor library should have been compiled");
     let original_artifact = fs::read(&artifact).unwrap();
 
-    seeded_cargo(&donor, "worktree add -b charlie/seeded")
+    let output = seeded_cargo(&donor, "worktree add -b charlie/seeded")
         .arg(&destination)
         .run();
+    if !seed_was_imported(&output) {
+        return;
+    }
 
     let caches = workspace_caches();
     assert_eq!(caches.len(), 2);
@@ -395,23 +464,14 @@ fn bundled_clippy_isolation_defaults_follow_actual_snapshot_cloning() {
     let output = seeded_cargo(&donor, "worktree add -b charlie/probe")
         .arg(paths::root().join("probe"))
         .run();
-    let stderr = std::str::from_utf8(&output.stderr).unwrap();
-    let reflinked: u64 = stderr
-        .split(" reflinked files)")
-        .next()
-        .unwrap()
-        .rsplit(", ")
-        .next()
-        .unwrap()
-        .parse()
-        .unwrap();
+    let cloned = seed_was_imported(&output);
     seeded_cargo(&donor, "check --lib")
         .env("RUSTC_WORKSPACE_WRAPPER", &clippy)
         .run();
-    assert_eq!(donor_cache.join(".ohm-clippy-v1").is_dir(), reflinked != 0);
+    assert_eq!(donor_cache.join(".ohm-clippy-v1").is_dir(), cloned);
     assert_eq!(
         donor_cache.join(".ohm-worktree-seed-deny-v7").is_file(),
-        reflinked == 0,
+        !cloned,
     );
     seeded_cargo(&donor, "check --lib -v")
         .env("RUSTC_WORKSPACE_WRAPPER", &clippy)
@@ -472,10 +532,12 @@ fn bundled_clippy_preserves_ordinary_seeds_without_importing_lint_state() {
         .with_stderr_does_not_contain("[COMPILING] foo v0.0.1 ([ROOT]/donor)")
         .run();
 
-    seeded_cargo(&donor, "worktree add -b charlie/seeded")
+    let output = seeded_cargo(&donor, "worktree add -b charlie/seeded")
         .arg(&destination)
-        .with_stderr_contains("[..]Seeded [..] files [..]")
         .run();
+    if !seed_was_imported(&output) {
+        return;
+    }
     let recipient_cache = workspace_caches()
         .into_iter()
         .find(|cache| *cache != donor_cache)
@@ -723,10 +785,12 @@ fn metadata_only_cutoff_does_not_reuse_a_stale_executable() {
     });
     let destination = paths::root().join("seeded");
     seeded_cargo(&donor, "build").run();
-    seeded_cargo(&donor, "worktree add -b charlie/seeded")
+    let output = seeded_cargo(&donor, "worktree add -b charlie/seeded")
         .arg(&destination)
-        .with_stderr_contains("[..]Seeded [..] files [..]")
         .run();
+    if !seed_was_imported(&output) {
+        return;
+    }
     assert_eq!(workspace_caches().len(), 2, "the child must receive a seed");
 
     // A's body changes without changing its API. B can reuse metadata, but
@@ -826,10 +890,13 @@ fn dirty_donor_does_not_override_the_requested_commit() {
     donor.change_file("src/main.rs", "fn main() { println!(\"dirty\"); }");
     seeded_cargo(&donor, "build").run();
 
-    seeded_cargo(&donor, "worktree add -b charlie/seeded")
+    let output = seeded_cargo(&donor, "worktree add -b charlie/seeded")
         .arg(&destination)
         .arg("HEAD")
         .run();
+    if !seed_was_imported(&output) {
+        return;
+    }
     // A copied mtime fingerprint would incorrectly accept the donor's binary here.
     destination.join("src/main.rs").move_into_the_past();
     seeded_cargo(&donor, "build -v")
@@ -890,10 +957,13 @@ fn sibling_source_file_is_revalidated_in_the_requested_commit() {
     assert_eq!(donor.read_file("shared.txt"), "donor");
 
     let destination = paths::root().join("seeded");
-    seeded_cargo(&donor, "worktree add -b charlie/seeded")
+    let output = seeded_cargo(&donor, "worktree add -b charlie/seeded")
         .arg(&destination)
         .arg(requested.to_string())
         .run();
+    if !seed_was_imported(&output) {
+        return;
+    }
     assert_eq!(workspace_caches().len(), 2, "the child must receive a seed");
     destination.join("shared.txt").move_into_the_past();
     destination.join("app/src/main.rs").move_into_the_past();
@@ -937,10 +1007,13 @@ fn retargeted_source_symlinks_are_revalidated_in_the_new_worktree() {
     repo.reset(&original, git2::ResetType::Hard, None).unwrap();
 
     let destination = paths::root().join("seeded");
-    seeded_cargo(&donor, "worktree add -b charlie/seeded")
+    let output = seeded_cargo(&donor, "worktree add -b charlie/seeded")
         .arg(&destination)
         .arg(requested.to_string())
         .run();
+    if !seed_was_imported(&output) {
+        return;
+    }
     assert_eq!(workspace_caches().len(), 2, "the child must receive a seed");
     destination.join("b.txt").move_into_the_past();
     destination.join("src/main.rs").move_into_the_past();
@@ -973,9 +1046,12 @@ fn cargo_manifest_environment_is_revalidated_without_a_build_script() {
     });
     let destination = paths::root().join("seeded");
     seeded_cargo(&donor, "build").run();
-    seeded_cargo(&donor, "worktree add -b charlie/seeded")
+    let output = seeded_cargo(&donor, "worktree add -b charlie/seeded")
         .arg(&destination)
         .run();
+    if !seed_was_imported(&output) {
+        return;
+    }
     assert_eq!(workspace_caches().len(), 2, "the child must receive a seed");
     seeded_cargo(&donor, "build -v").cwd(&destination).run();
     donor
@@ -1082,9 +1158,12 @@ fn path_sensitive_code_and_build_scripts_use_the_new_worktree() {
     seeded_cargo(&donor, "build")
         .env("WORKTREE_SEED_VALUE", "shared")
         .run();
-    seeded_cargo(&donor, "worktree add -b charlie/seeded")
+    let output = seeded_cargo(&donor, "worktree add -b charlie/seeded")
         .arg(&destination)
         .run();
+    if !seed_was_imported(&output) {
+        return;
+    }
     seeded_cargo(&donor, "build -v")
         .cwd(&destination)
         .env("WORKTREE_SEED_VALUE", "shared")
@@ -1124,10 +1203,12 @@ fn identical_build_script_results_preserve_seeded_compilations() {
     });
     let destination = paths::root().join("seeded");
     seeded_cargo(&donor, "build").run();
-    seeded_cargo(&donor, "worktree add -b charlie/seeded")
+    let output = seeded_cargo(&donor, "worktree add -b charlie/seeded")
         .arg(&destination)
-        .with_stderr_contains("[..]Seeded [..] files [..]")
         .run();
+    if !seed_was_imported(&output) {
+        return;
+    }
 
     seeded_cargo(&donor, "build -v")
         .cwd(&destination)
@@ -1174,10 +1255,12 @@ fn changed_build_script_results_invalidate_seeded_compilations() {
     });
     let destination = paths::root().join("seeded");
     seeded_cargo(&donor, "build").run();
-    seeded_cargo(&donor, "worktree add -b charlie/seeded")
+    let output = seeded_cargo(&donor, "worktree add -b charlie/seeded")
         .arg(&destination)
-        .with_stderr_contains("[..]Seeded [..] files [..]")
         .run();
+    if !seed_was_imported(&output) {
+        return;
+    }
     fs::write(destination.join("value.txt"), "child").unwrap();
     destination.join("value.txt").move_into_the_past();
 
@@ -1219,10 +1302,12 @@ fn source_rewritten_by_a_build_script_is_checked_after_execution() {
     seeded_cargo(&donor, "build")
         .env("GENERATED_VALUE", "1")
         .run();
-    seeded_cargo(&donor, "worktree add -b charlie/seeded")
+    let output = seeded_cargo(&donor, "worktree add -b charlie/seeded")
         .arg(&destination)
-        .with_stderr_contains("[..]Seeded [..] files [..]")
         .run();
+    if !seed_was_imported(&output) {
+        return;
+    }
     seeded_cargo(&donor, "build -v")
         .cwd(&destination)
         .env("GENERATED_VALUE", "2")
@@ -1257,10 +1342,12 @@ fn embedded_output_directory_is_revalidated_after_relocation() {
     seeded_cargo(&donor, "build").run();
     let donor_namespace = workspace_caches().pop().unwrap();
     let original = donor.process(donor.bin("foo")).run().stdout;
-    seeded_cargo(&donor, "worktree add -b charlie/seeded")
+    let output = seeded_cargo(&donor, "worktree add -b charlie/seeded")
         .arg(&destination)
-        .with_stderr_contains("[..]Seeded [..] files [..]")
         .run();
+    if !seed_was_imported(&output) {
+        return;
+    }
     let recipient_namespace = workspace_caches()
         .into_iter()
         .find(|path| *path != donor_namespace)
@@ -1384,11 +1471,13 @@ fn local_proc_macro_trust_is_selected_when_adding_a_worktree() {
 
     // Preparation and subsequent builds need no opt-in: admission happens at add.
     seeded_cargo(&donor, "build").run();
-    seeded_cargo(&donor, "worktree add")
+    let output = seeded_cargo(&donor, "worktree add")
         .env("CARGO_UNSTABLE_OHM_PROC_MACRO_TRUST", "all")
         .arg(&destination)
-        .with_stderr_contains("[..]Seeded [..] files [..]")
         .run();
+    if !seed_was_imported(&output) {
+        return;
+    }
     assert_eq!(workspace_caches().len(), 2);
     seeded_cargo(&donor, "build -v")
         .cwd(&destination)
@@ -1445,11 +1534,13 @@ fn trusted_local_proc_macro_seeds_rebuild_changed_inputs() {
         local_proc_macro_project(r#"format!("{}u32", macro_helper::value()).parse().unwrap()"#);
     let destination = paths::root().join("seeded");
     seeded_cargo(&donor, "build").run();
-    seeded_cargo(&donor, "worktree add")
+    let output = seeded_cargo(&donor, "worktree add")
         .env("CARGO_UNSTABLE_OHM_PROC_MACRO_TRUST", "all")
         .arg(&destination)
-        .with_stderr_contains("[..]Seeded [..] files [..]")
         .run();
+    if !seed_was_imported(&output) {
+        return;
+    }
     seeded_cargo(&donor, "build -v")
         .cwd(&destination)
         .with_stderr_does_not_contain("[RUNNING]")
@@ -1526,11 +1617,13 @@ fn trusted_local_proc_macro_imports_preserve_build_script_invalidation() {
     assert_eq!(donor.read_file("script-ran"), "second");
 
     let destination = paths::root().join("seeded");
-    seeded_cargo(&donor, "worktree add")
+    let output = seeded_cargo(&donor, "worktree add")
         .env("CARGO_UNSTABLE_OHM_PROC_MACRO_TRUST", "all")
         .arg(&destination)
-        .with_stderr_contains("[..]Seeded [..] files [..]")
         .run();
+    if !seed_was_imported(&output) {
+        return;
+    }
     seeded_cargo(&donor, "build -v")
         .cwd(&destination)
         .env("SCRIPT_TRIGGER", "second")
@@ -1595,12 +1688,15 @@ fn external_targets_stay_independent_and_recheck_changed_environment() {
         .env("CARGO_TARGET_DIR", &donor_target)
         .env("WORKTREE_SEED_VALUE", "donor")
         .run();
-    seeded_cargo(&donor, "worktree add -b charlie/seeded")
+    let output = seeded_cargo(&donor, "worktree add -b charlie/seeded")
         .env("CARGO_TARGET_DIR", &donor_target)
         .arg(&destination)
         .arg("--target-dir")
         .arg(&seeded_target)
         .run();
+    if !seed_was_imported(&output) {
+        return;
+    }
 
     seeded_cargo(&donor, "build -v")
         .cwd(&destination)

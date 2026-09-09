@@ -142,6 +142,7 @@ jobs:
           fi
           # The stable-built testsuite marks these nightly tests ignored at compile time.
           for test in \
+            worktree_import_requires_cloning \
             bundled_clippy_isolation_defaults_follow_actual_snapshot_cloning \
             bundled_clippy_preserves_ordinary_seeds_without_importing_lint_state \
             clippy_isolation_overrides_are_inherited_and_child_flags_take_precedence \
