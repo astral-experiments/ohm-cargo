@@ -878,7 +878,7 @@ fn debug_options_valid() {
         .run();
 }
 
-#[cargo_test]
+#[cargo_test(nightly, reason = "Ohm defaults require the Ohm compiler")]
 fn ohm_default_debuginfo() {
     Package::new("bar", "1.0.0").publish();
     let p = project()
@@ -920,7 +920,7 @@ fn ohm_default_debuginfo() {
     }
 }
 
-#[cargo_test]
+#[cargo_test(nightly, reason = "Ohm defaults require the Ohm compiler")]
 fn ohm_default_debuginfo_respects_overrides() {
     Package::new("bar", "1.0.0").publish();
     let manifest = r#"
