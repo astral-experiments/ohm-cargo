@@ -962,6 +962,7 @@ unstable_cli_options!(
     ohm_defaults: Option<bool> = ("Enable the defaults packaged with Ohm"),
     ohm_focused_tests: bool = ("Compile only an explicitly selected exact library test"),
     ohm_linker: Option<OhmLinker> = ("Select a bundled linker for native Linux x86-64 builds: wild or lld"),
+    ohm_lto_share_generics: bool = ("Share optimized generics between crates used only for LTO (prototype)"),
     ohm_native_tool_trust: OhmNativeToolTrust = ("Set native-tool trust for shared registry artifacts: strict (default), build-scripts, or all (potentially unsound)"),
     ohm_proc_macro_trust: OhmProcMacroTrust = ("Set procedural-macro trust for shared registry artifacts and workspace snapshots: audited (default) or all (potentially unsound)"),
     ohm_reuse_built_deps: bool = ("Reuse already-built registry dependencies when checking a package"),
@@ -1569,6 +1570,7 @@ impl CliUnstable {
                     _ => bail!("flag -Z{k} requires `wild` or `lld`"),
                 });
             }
+            "ohm-lto-share-generics" => self.ohm_lto_share_generics = parse_bool(k, v)?,
             "ohm-native-tool-trust" => {
                 self.ohm_native_tool_trust = match v {
                     Some("strict") => OhmNativeToolTrust::Strict,

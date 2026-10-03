@@ -317,6 +317,18 @@ fn unit_uses_ohm_incremental_mono_partitions(
             .supports_ohm_incremental_mono_partitions(build_runner.bcx.gctx)
 }
 
+/// Shares optimized instances only when LTO can optimize all their callers.
+fn unit_uses_ohm_lto_share_generics(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> bool {
+    build_runner.bcx.gctx.cli_unstable().ohm_lto_share_generics
+        && !unit.is_std
+        && matches!(unit.mode, CompileMode::Build | CompileMode::Test)
+        && matches!(unit.profile.opt_level.as_str(), "2" | "3")
+        && unit.profile.codegen_backend.is_none()
+        // ObjectAndBitcode also serves consumers that do not run LTO, which
+        // cannot recover the cross-crate inlining lost by sharing instances.
+        && matches!(build_runner.lto[unit], Lto::OnlyBitcode | Lto::Run(_))
+}
+
 /// A glorified callback for executing calls to rustc. Rather than calling rustc
 /// directly, we'll use an `Executor`, giving clients an opportunity to intercept
 /// the build calls.
@@ -1894,6 +1906,10 @@ fn prepare_rustc(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> CargoResult
     let mut base = build_runner
         .compilation
         .rustc_process(unit, is_primary, is_workspace)?;
+    if unit_uses_ohm_lto_share_generics(build_runner, unit) {
+        // User flags are appended afterward and can override this experiment.
+        base.arg("-Zshare-generics=yes");
+    }
     if gctx.cli_unstable().ohm_defaults() {
         base.args(&OHM_DEFAULT_RUSTFLAGS);
         if unit_uses_ohm_incremental_codegen(build_runner, unit) {

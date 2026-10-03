@@ -1029,6 +1029,179 @@ fn ohm_incremental_mono_partitions_invalidate_unhashed_artifacts() {
     );
 }
 
+#[cargo_test]
+fn ohm_lto_share_generics_respects_lto_and_user_flags() {
+    let wrapper = ohm_defaults_wrapper();
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "foo"
+                version = "0.1.0"
+                edition = "2024"
+
+                [dependencies]
+                dep = { path = "dep" }
+
+                [build-dependencies]
+                host_dep = { path = "host-dep" }
+
+                [profile.release]
+                lto = "fat"
+            "#,
+        )
+        .file("src/main.rs", "fn main() { assert_eq!(dep::value(3), 3); }")
+        .file("build.rs", "fn main() { host_dep::value(); }")
+        .file("dep/Cargo.toml", &basic_manifest("dep", "0.1.0"))
+        .file("dep/src/lib.rs", "pub fn value<T>(value: T) -> T { value }")
+        .file("host-dep/Cargo.toml", &basic_manifest("host_dep", "0.1.0"))
+        .file("host-dep/src/lib.rs", "pub fn value() {}")
+        .build();
+    let log = p.root().join("ohm-defaults.log");
+
+    p.cargo("-Zohm-defaults=no -Zohm-lto-share-generics run --release")
+        .masquerade_as_nightly_cargo(&["ohm-defaults", "ohm-lto-share-generics"])
+        .env("RUSTC_WRAPPER", &wrapper)
+        .env("OHM_DEFAULTS_LOG", &log)
+        .run();
+    let invocations = fs::read_to_string(&log).unwrap();
+    assert!(rustc_invocation(&invocations, "foo").contains(&"-Zshare-generics=yes"));
+    assert!(rustc_invocation(&invocations, "dep").contains(&"-Zshare-generics=yes"));
+    assert!(!rustc_invocation(&invocations, "host_dep").contains(&"-Zshare-generics=yes"));
+    assert!(
+        !rustc_invocation(&invocations, "build_script_build").contains(&"-Zshare-generics=yes")
+    );
+
+    fs::write(&log, "").unwrap();
+    p.cargo("-Zohm-defaults=no -Zohm-lto-share-generics run --release")
+        .masquerade_as_nightly_cargo(&["ohm-defaults", "ohm-lto-share-generics"])
+        .env("RUSTC_WRAPPER", &wrapper)
+        .env("OHM_DEFAULTS_LOG", &log)
+        .env("CARGO_PROFILE_RELEASE_LTO", "thin")
+        .env("RUSTFLAGS", "-Zshare-generics=no")
+        .run();
+    let invocations = fs::read_to_string(&log).unwrap();
+    let invocation = rustc_invocation(&invocations, "foo");
+    assert_eq!(
+        invocation
+            .iter()
+            .copied()
+            .filter(|arg| arg.starts_with("-Zshare-generics="))
+            .collect::<Vec<_>>(),
+        ["-Zshare-generics=yes", "-Zshare-generics=no"]
+    );
+
+    fs::write(&log, "").unwrap();
+    p.cargo("-Zohm-defaults=no -Zohm-lto-share-generics run --release")
+        .masquerade_as_nightly_cargo(&["ohm-defaults", "ohm-lto-share-generics"])
+        .env("RUSTC_WRAPPER", &wrapper)
+        .env("OHM_DEFAULTS_LOG", &log)
+        .env("CARGO_PROFILE_RELEASE_LTO", "off")
+        .run();
+    let invocations = fs::read_to_string(&log).unwrap();
+    assert!(!invocations.contains("-Zshare-generics"));
+}
+
+#[cargo_test]
+fn ohm_lto_share_generics_preserves_mixed_outputs() {
+    let wrapper = ohm_defaults_wrapper();
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "foo"
+                version = "0.1.0"
+                edition = "2024"
+
+                [lib]
+                crate-type = ["rlib", "cdylib"]
+
+                [dependencies]
+                dep = { path = "dep" }
+
+                [profile.release]
+                lto = "fat"
+            "#,
+        )
+        .file("src/lib.rs", "pub fn value() -> u32 { dep::value(3) }")
+        .file("dep/Cargo.toml", &basic_manifest("dep", "0.1.0"))
+        .file("dep/src/lib.rs", "pub fn value<T>(value: T) -> T { value }")
+        .build();
+    let log = p.root().join("ohm-defaults.log");
+    p.cargo("-Zohm-defaults=no -Zohm-lto-share-generics build --release")
+        .masquerade_as_nightly_cargo(&["ohm-defaults", "ohm-lto-share-generics"])
+        .env("RUSTC_WRAPPER", &wrapper)
+        .env("OHM_DEFAULTS_LOG", &log)
+        .run();
+    let invocations = fs::read_to_string(&log).unwrap();
+    assert!(!rustc_invocation(&invocations, "foo").contains(&"-Zshare-generics=yes"));
+    assert!(!rustc_invocation(&invocations, "dep").contains(&"-Zshare-generics=yes"));
+}
+
+#[cargo_test]
+fn ohm_lto_share_generics_invalidates_unhashed_outputs() {
+    let wrapper = ohm_defaults_wrapper();
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "foo"
+                version = "0.1.0"
+                edition = "2024"
+
+                [lib]
+                crate-type = ["cdylib"]
+
+                [profile.release]
+                lto = "fat"
+            "#,
+        )
+        .file("src/lib.rs", "pub fn value<T>(value: T) -> T { value }")
+        .build();
+    let log = p.root().join("ohm-defaults.log");
+    p.cargo("-Zohm-defaults=no build --release")
+        .masquerade_as_nightly_cargo(&["ohm-defaults"])
+        .env("RUSTC_WRAPPER", &wrapper)
+        .env("OHM_DEFAULTS_LOG", &log)
+        .run();
+    let invocations = fs::read_to_string(&log).unwrap();
+    let invocation = rustc_invocation(&invocations, "foo");
+    assert!(!invocation.contains(&"-Zshare-generics=yes"));
+    assert!(
+        !invocation
+            .iter()
+            .any(|arg| arg.starts_with("extra-filename="))
+    );
+
+    fs::write(&log, "").unwrap();
+    p.cargo("-Zohm-defaults=no -Zohm-lto-share-generics build --release")
+        .masquerade_as_nightly_cargo(&["ohm-defaults", "ohm-lto-share-generics"])
+        .env("RUSTC_WRAPPER", &wrapper)
+        .env("OHM_DEFAULTS_LOG", &log)
+        .run();
+    let invocations = fs::read_to_string(&log).unwrap();
+    assert!(rustc_invocation(&invocations, "foo").contains(&"-Zshare-generics=yes"));
+
+    fs::write(&log, "").unwrap();
+    p.cargo("-Zohm-defaults=no -Zohm-lto-share-generics build --release")
+        .masquerade_as_nightly_cargo(&["ohm-defaults", "ohm-lto-share-generics"])
+        .env("RUSTC_WRAPPER", &wrapper)
+        .env("OHM_DEFAULTS_LOG", &log)
+        .run();
+    assert!(fs::read_to_string(&log).unwrap().is_empty());
+
+    p.cargo("-Zohm-defaults=no build --release")
+        .masquerade_as_nightly_cargo(&["ohm-defaults"])
+        .env("RUSTC_WRAPPER", &wrapper)
+        .env("OHM_DEFAULTS_LOG", &log)
+        .run();
+    let invocations = fs::read_to_string(&log).unwrap();
+    assert!(!rustc_invocation(&invocations, "foo").contains(&"-Zshare-generics=yes"));
+}
+
 fn rustc_invocation<'a>(log: &'a str, crate_name: &str) -> Vec<&'a str> {
     log.lines()
         .map(|line| line.split('\t').collect::<Vec<_>>())

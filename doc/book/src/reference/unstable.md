@@ -94,6 +94,7 @@ Each new feature described below should explain how to use it.
     * [checksum-freshness](#checksum-freshness) --- When passed, the decision as to whether a crate needs to be rebuilt is made using file checksums instead of the file mtime.
     * [ohm-clippy-seed-isolation](#ohm-clippy-seed-isolation) --- Keep bundled Clippy state out of worktree snapshots.
     * [ohm-worktree-seeds](#ohm-worktree-seeds) --- Prepare build state for seeding new Git worktrees with Ohm.
+    * [ohm-lto-share-generics](#ohm-lto-share-generics) --- Share optimized generic instances in LTO builds (prototype).
     * [panic-abort-tests](#panic-abort-tests) --- Allows running tests with the "abort" panic strategy.
     * [host-config](#host-config) --- Allows setting `[target]`-like configuration settings for host build targets.
     * [embed-metadata](#embed-metadata) --- If set to `no`, cargo will pass `-Zembed-metadata=no` to the compiler, which avoid embedding metadata into rlib and dylib artifacts, to save disk space.
@@ -2073,6 +2074,27 @@ Disabling isolation or running an unsupported wrapper can permanently exclude
 that existing ordinary namespace from seeding. Re-enabling isolation does not
 remove that history. `cargo clean` clears owned current and legacy namespaces;
 subsequent normal builds prepare fresh state.
+
+## ohm-lto-share-generics
+
+`-Zohm-lto-share-generics` enables an opt-in experiment that shares generic
+instances between optimized crates participating in cross-crate LTO:
+
+```console
+cargo +ohm -Zohm-lto-share-generics build --release
+```
+
+The profile must request fat or thin LTO and optimization level 2 or 3. Cargo
+passes `-Zshare-generics=yes` to final LTO invocations and dependencies used only
+as LTO bitcode. It excludes host tools, standard-library builds, and dependencies
+that also supply object code to non-LTO consumers. Explicit rustc flags can
+override the injected setting.
+
+This can reduce duplicate code generation while changing inlining decisions.
+Compare build time, executable performance, and binary size for the intended
+workload before choosing it. The experiment is disabled by default, including
+when Ohm's other defaults are enabled. It can also be configured with
+`unstable.ohm-lto-share-generics = true`.
 
 ## ohm-linker
 
