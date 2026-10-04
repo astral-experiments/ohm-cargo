@@ -1976,9 +1976,20 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
         }
     }
 
+    pub fn headstart_enabled(&self) -> bool {
+        self.bcx.gctx.cli_unstable().headstart
+    }
+
     /// Returns whether when `parent` depends on `dep` if it only requires the
     /// metadata file from `dep`.
     pub fn only_requires_rmeta(&self, parent: &Unit, dep: &Unit) -> bool {
+        if self.headstart_enabled()
+            && parent.mode.is_check()
+            && dep.mode.is_check()
+            && !dep.requires_upstream_objects()
+        {
+            return true;
+        }
         if parent.mode.is_check()
             && self.is_reused_registry_dependency(dep)
             && !dep.requires_upstream_objects()
