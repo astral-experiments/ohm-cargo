@@ -193,15 +193,12 @@ fn compact_artifacts_require_capability_and_track_mode_changes() {
         "-Zohm-defaults=yes -Zohm-compact-artifacts=yes build",
     )
     .run();
-    assert!(
-        !fs::read_dir(macros.root().join("target/debug/deps"))
-            .unwrap()
-            .any(|entry| entry
-                .unwrap()
-                .path()
-                .extension()
-                .is_some_and(|ext| ext == "rmeta"))
-    );
+    let output = fs::read_to_string(&log).unwrap();
+    let invocation = output
+        .lines()
+        .find(|line| line.starts_with("metadata_macro "))
+        .unwrap();
+    assert!(invocation.contains("--emit=dep-info,link"), "{invocation}");
 }
 
 #[cargo_test]
