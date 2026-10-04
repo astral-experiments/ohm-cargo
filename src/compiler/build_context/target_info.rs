@@ -832,6 +832,9 @@ fn with_ohm_default_rustflags(
     if matches!(flags, Flags::Rust) && gctx.cli_unstable().ohm_defaults() {
         rustflags.splice(0..0, OHM_DEFAULT_RUSTFLAGS.map(str::to_owned));
     }
+    if matches!(flags, Flags::Rust) && gctx.cli_unstable().headstart {
+        rustflags.insert(0, "-Zohm-early-metadata".to_owned());
+    }
     rustflags
 }
 
