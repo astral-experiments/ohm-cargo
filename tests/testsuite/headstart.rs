@@ -4,7 +4,7 @@ use std::fs;
 
 // Keep the producer alive after metadata until its consumer finishes. This
 // exercises Cargo's scheduler deterministically, without requiring patched rustc.
-fn check_pipeline(producer_fails: bool, consumer_fails: bool) {
+fn check_pipeline(producer_fails: bool, consumer_fails: bool, binary: bool) {
     let wrapper = project()
         .at("wrapper")
         .file("Cargo.toml", &basic_manifest("wrapper", "0.1.0"))
@@ -68,12 +68,16 @@ fn check_pipeline(producer_fails: bool, consumer_fails: bool) {
         "#,
         )
         .file(
-            "src/lib.rs",
-            if consumer_fails {
-                "pub fn app() { downstream_missing(); middle::value(); }"
-            } else {
-                "pub fn app() { middle::value(); } fn downstream_warning() {}"
-            },
+            if binary { "src/main.rs" } else { "src/lib.rs" },
+            &format!(
+                "{} {}",
+                if consumer_fails {
+                    "pub fn app() { downstream_missing(); middle::value(); }"
+                } else {
+                    "pub fn app() { middle::value(); } fn downstream_warning() {}"
+                },
+                if binary { "fn main() { app(); }" } else { "" },
+            ),
         )
         .file(
             "middle/Cargo.toml",
@@ -135,22 +139,27 @@ fn check_pipeline(producer_fails: bool, consumer_fails: bool) {
 
 #[cargo_test]
 fn overlapping_check_releases_successful_consumer_output() {
-    check_pipeline(false, false);
+    check_pipeline(false, false, false);
 }
 
 #[cargo_test]
 fn overlapping_check_releases_consumer_errors() {
-    check_pipeline(false, true);
+    check_pipeline(false, true, false);
 }
 
 #[cargo_test]
 fn failed_producer_discards_consumer_errors_and_recovers() {
-    check_pipeline(true, true);
+    check_pipeline(true, true, false);
 }
 
 #[cargo_test]
 fn failed_producer_discards_consumer_success_and_recovers() {
-    check_pipeline(true, false);
+    check_pipeline(true, false, false);
+}
+
+#[cargo_test]
+fn check_binary_does_not_wait_for_transitive_dependency_completion() {
+    check_pipeline(false, false, true);
 }
 
 #[cargo_test(nightly, reason = "requires the Ohm early-metadata compiler")]
