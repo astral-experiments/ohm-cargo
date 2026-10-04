@@ -216,6 +216,31 @@ struct DrainState<'gctx> {
     /// How many jobs we've finished
     finished: usize,
     per_package_future_incompat_reports: Vec<FutureIncompatReportPackage>,
+    provisional: Provisional,
+}
+
+/// Holds output and results from checks that started before their dependencies
+/// finished. Output is released when every dependency succeeds, or discarded if
+/// any dependency fails. Finished checks release their job slots while waiting.
+#[derive(Default)]
+struct Provisional {
+    enabled: bool,
+    /// The job each started unit runs as.
+    ids: HashMap<Unit, JobId>,
+    /// Units that finished cleanly, with every dependency confirmed.
+    confirmed: HashSet<JobId>,
+    /// Units that failed.
+    failed: HashSet<JobId>,
+    /// For each unit with unconfirmed dependencies, which ones.
+    waiting_on: HashMap<JobId, HashSet<JobId>>,
+    /// Output held for waiting units, in order.
+    held: HashMap<JobId, Vec<Message>>,
+    /// Waiting units that already finished, with their result.
+    finished: HashMap<JobId, (Unit, CargoResult<()>)>,
+    /// Units with a failed dependency: their output is dropped.
+    tainted: HashSet<JobId>,
+    /// Errors of units released after they finished, for the drain loop.
+    released_errors: Vec<ErrorToHandle>,
 }
 
 /// Count of warnings, used to print a summary after the job succeeds
@@ -366,8 +391,8 @@ enum Artifact {
 
 enum Message {
     Run(JobId, String),
-    Stdout(String),
-    Stderr(String),
+    Stdout(JobId, String),
+    Stderr(JobId, String),
 
     // This is for general stderr output from subprocesses
     Diagnostic {
@@ -544,6 +569,10 @@ impl<'gctx> JobQueue<'gctx> {
             ),
             finished: 0,
             per_package_future_incompat_reports: Vec::new(),
+            provisional: Provisional {
+                enabled: build_runner.headstart_enabled(),
+                ..Default::default()
+            },
         };
 
         // Create a helper thread for acquiring jobserver tokens
@@ -637,7 +666,9 @@ impl<'gctx> DrainState<'gctx> {
         build_runner: &mut BuildRunner<'_, '_>,
         event: Message,
     ) -> Result<(), ErrorToHandle> {
-        let warning_handling = build_runner.bcx.gctx.warning_handling()?;
+        let Some(event) = self.hold(build_runner, event) else {
+            return Ok(());
+        };
         match event {
             Message::Run(id, cmd) => {
                 build_runner
@@ -648,10 +679,10 @@ impl<'gctx> DrainState<'gctx> {
                 self.timings
                     .unit_start(build_runner, id, self.active[&id].clone());
             }
-            Message::Stdout(out) => {
+            Message::Stdout(_, out) => {
                 writeln!(build_runner.bcx.gctx.shell().out(), "{}", out)?;
             }
-            Message::Stderr(err) => {
+            Message::Stderr(_, err) => {
                 let mut shell = build_runner.bcx.gctx.shell();
                 shell.print_ansi_stderr(err.as_bytes())?;
                 shell.err().write_all(b"\n")?;
@@ -699,31 +730,8 @@ impl<'gctx> DrainState<'gctx> {
                         trace!("end: {:?}", id);
                         self.finished += 1;
                         let unit = self.active.remove(&id).unwrap();
-                        // An error could add an entry for a `Unit`
-                        // with 0 warnings but having fixable
-                        // warnings be disallowed
-                        let count = self
-                            .warning_count
-                            .get(&id)
-                            .filter(|count| 0 < count.total)
-                            .cloned();
-                        if let Some(count) = count {
-                            let denied_warnings =
-                                warning_handling == WarningHandling::Deny && 0 < count.lints;
-                            self.report_warning_count(
-                                build_runner,
-                                &unit,
-                                &count,
-                                &build_runner.bcx.rustc().workspace_wrapper,
-                                denied_warnings,
-                            );
-                            let stop_on_warnings =
-                                denied_warnings && !build_runner.bcx.build_config.keep_going;
-                            if stop_on_warnings {
-                                result = Err(anyhow::format_err!(
-                                    "warnings are denied by `build.warnings` configuration"
-                                ))
-                            }
+                        if let Err(denied) = self.report_warnings(build_runner, id, &unit) {
+                            result = Err(denied);
                         }
                         unit
                     }
@@ -736,7 +744,12 @@ impl<'gctx> DrainState<'gctx> {
                 };
                 debug!("end ({:?}): {:?}", unit, result);
                 match result {
-                    Ok(()) => self.finish(id, &unit, artifact, build_runner)?,
+                    Ok(()) => {
+                        self.finish(id, &unit, artifact, build_runner)?;
+                        if artifact == Artifact::All {
+                            self.settle(build_runner, id, true);
+                        }
+                    }
                     Err(_) if build_runner.bcx.unit_can_fail_for_docscraping(&unit) => {
                         build_runner
                             .failed_scrape_units
@@ -744,8 +757,11 @@ impl<'gctx> DrainState<'gctx> {
                             .unwrap()
                             .insert(build_runner.files().metadata(&unit).unit_id());
                         self.queue.finish(&unit, &artifact);
+                        // Its dependents run as if it had succeeded.
+                        self.settle(build_runner, id, true);
                     }
                     Err(error) => {
+                        self.settle(build_runner, id, false);
                         let show_warnings = true;
                         self.emit_log_messages(&unit, build_runner, show_warnings)?;
                         self.back_compat_notice(build_runner, &unit)?;
@@ -786,6 +802,183 @@ impl<'gctx> DrainState<'gctx> {
         }
 
         Ok(())
+    }
+
+    /// Reports a finished unit's warning count. Returns an error if its
+    /// warnings are denied.
+    fn report_warnings(
+        &mut self,
+        build_runner: &mut BuildRunner<'_, '_>,
+        id: JobId,
+        unit: &Unit,
+    ) -> CargoResult<()> {
+        let warning_handling = build_runner.bcx.gctx.warning_handling()?;
+        // An error could add an entry for a `Unit`
+        // with 0 warnings but having fixable
+        // warnings be disallowed
+        let count = self
+            .warning_count
+            .get(&id)
+            .filter(|count| 0 < count.total)
+            .cloned();
+        if let Some(count) = count {
+            let denied_warnings = warning_handling == WarningHandling::Deny && 0 < count.lints;
+            self.report_warning_count(
+                build_runner,
+                unit,
+                &count,
+                &build_runner.bcx.rustc().workspace_wrapper,
+                denied_warnings,
+            );
+            let stop_on_warnings = denied_warnings && !build_runner.bcx.build_config.keep_going;
+            if stop_on_warnings {
+                anyhow::bail!("warnings are denied by `build.warnings` configuration")
+            }
+        }
+        Ok(())
+    }
+
+    /// Headstart: holds `event` if it belongs to a unit with unconfirmed
+    /// dependencies, and drops it if the unit has a failed dependency.
+    /// Returns the event if it should be handled now.
+    fn hold(&mut self, build_runner: &mut BuildRunner<'_, '_>, event: Message) -> Option<Message> {
+        if !self.provisional.enabled {
+            return Some(event);
+        }
+        let id = match &event {
+            Message::Stdout(id, _)
+            | Message::Stderr(id, _)
+            | Message::Diagnostic { id, .. }
+            | Message::WarningCount { id, .. }
+            | Message::Warning { id, .. }
+            | Message::Finish(id, Artifact::All, _) => *id,
+            _ => return Some(event),
+        };
+        if self.provisional.tainted.contains(&id) {
+            if let Message::Finish(..) = event {
+                self.active.remove(&id);
+                self.finished += 1;
+            }
+            return None;
+        }
+        if !self.provisional.waiting_on.contains_key(&id) {
+            return Some(event);
+        }
+        match event {
+            Message::Finish(id, _, mut result) => {
+                // Free the job slot and unblock dependents now; only the
+                // report waits.
+                let unit = self.active.remove(&id).unwrap();
+                self.finished += 1;
+                // As in `handle_event`: a scrape unit may fail, and its
+                // dependents still run.
+                if result.is_err() && build_runner.bcx.unit_can_fail_for_docscraping(&unit) {
+                    build_runner
+                        .failed_scrape_units
+                        .lock()
+                        .unwrap()
+                        .insert(build_runner.files().metadata(&unit).unit_id());
+                    self.queue.finish(&unit, &Artifact::All);
+                    result = Ok(());
+                } else if result.is_ok() {
+                    if let Err(error) = self.finish(id, &unit, Artifact::All, build_runner) {
+                        self.provisional.released_errors.push(error.into());
+                    }
+                }
+                self.provisional.finished.insert(id, (unit, result));
+            }
+            event => self.provisional.held.entry(id).or_default().push(event),
+        }
+        None
+    }
+
+    /// Headstart: `id` finished cleanly with every dependency confirmed
+    /// (`ok`), or failed. Releases or drops its dependents' output.
+    fn settle(&mut self, build_runner: &mut BuildRunner<'_, '_>, id: JobId, ok: bool) {
+        if !self.provisional.enabled {
+            return;
+        }
+        if ok {
+            self.provisional.confirmed.insert(id);
+        } else {
+            self.provisional.failed.insert(id);
+        }
+        let dependents: Vec<JobId> = self
+            .provisional
+            .waiting_on
+            .iter()
+            .filter(|(_, deps)| deps.contains(&id))
+            .map(|(&dependent, _)| dependent)
+            .collect();
+        for dependent in dependents {
+            if !ok {
+                self.taint(dependent);
+                continue;
+            }
+            let deps = self.provisional.waiting_on.get_mut(&dependent).unwrap();
+            deps.remove(&id);
+            if deps.is_empty() {
+                self.provisional.waiting_on.remove(&dependent);
+                self.release(build_runner, dependent);
+            }
+        }
+    }
+
+    /// Headstart: a dependency of `id` failed, so drop its output, and its
+    /// dependents' output.
+    fn taint(&mut self, id: JobId) {
+        if !self.provisional.tainted.insert(id) {
+            return;
+        }
+        self.provisional.waiting_on.remove(&id);
+        self.provisional.held.remove(&id);
+        self.provisional.finished.remove(&id);
+        let dependents: Vec<JobId> = self
+            .provisional
+            .waiting_on
+            .iter()
+            .filter(|(_, deps)| deps.contains(&id))
+            .map(|(&dependent, _)| dependent)
+            .collect();
+        for dependent in dependents {
+            self.taint(dependent);
+        }
+    }
+
+    /// Headstart: every dependency of `id` is confirmed. Emits its held
+    /// output, and its result if it has finished.
+    fn release(&mut self, build_runner: &mut BuildRunner<'_, '_>, id: JobId) {
+        for event in self.provisional.held.remove(&id).unwrap_or_default() {
+            if let Err(err) = self.handle_event(build_runner, event) {
+                self.provisional.released_errors.push(err);
+            }
+        }
+        let Some((unit, result)) = self.provisional.finished.remove(&id) else {
+            return;
+        };
+        let result = match self.report_warnings(build_runner, id, &unit) {
+            Err(denied) => Err(denied),
+            Ok(()) => result,
+        };
+        match result {
+            Ok(()) => self.settle(build_runner, id, true),
+            Err(error) => {
+                self.settle(build_runner, id, false);
+                let show_warnings = true;
+                for result in [
+                    self.emit_log_messages(&unit, build_runner, show_warnings),
+                    self.back_compat_notice(build_runner, &unit),
+                ] {
+                    if let Err(err) = result {
+                        self.provisional.released_errors.push(err.into());
+                    }
+                }
+                self.provisional.released_errors.push(ErrorToHandle {
+                    error,
+                    print_always: true,
+                });
+            }
+        }
     }
 
     // This will also tick the progress bar as appropriate
@@ -863,6 +1056,9 @@ impl<'gctx> DrainState<'gctx> {
             for event in self.wait_for_events() {
                 if let Err(event_err) = self.handle_event(build_runner, event) {
                     self.handle_error(&mut build_runner.bcx.gctx.shell(), &mut errors, event_err);
+                }
+                for err in std::mem::take(&mut self.provisional.released_errors) {
+                    self.handle_error(&mut build_runner.bcx.gctx.shell(), &mut errors, err);
                 }
             }
         }
@@ -973,7 +1169,13 @@ impl<'gctx> DrainState<'gctx> {
         let new_err = new_err.into();
         if new_err.print_always || err_state.count == 0 {
             crate::display_error(&new_err.error, shell);
-            if err_state.count == 0 && !self.active.is_empty() {
+            // Headstart: jobs whose dependency failed don't count; their
+            // output is dropped.
+            let waiting_for_others = self
+                .active
+                .keys()
+                .any(|id| !self.provisional.tainted.contains(id));
+            if err_state.count == 0 && waiting_for_others {
                 self.progress.indicate_error();
                 let _ = shell.warn("build failed, waiting for other jobs to finish...");
             }
@@ -1050,6 +1252,24 @@ impl<'gctx> DrainState<'gctx> {
         debug!("start {}: {:?}", id, unit);
 
         assert!(self.active.insert(id, unit.clone()).is_none());
+        if self.provisional.enabled {
+            let deps: Vec<JobId> = build_runner
+                .unit_deps(unit)
+                .iter()
+                .filter_map(|dep| self.provisional.ids.get(&dep.unit).copied())
+                .filter(|dep| !self.provisional.confirmed.contains(dep))
+                .collect();
+            if deps.iter().any(|dep| {
+                self.provisional.failed.contains(dep) || self.provisional.tainted.contains(dep)
+            }) {
+                self.provisional.tainted.insert(id);
+            } else if !deps.is_empty() {
+                self.provisional
+                    .waiting_on
+                    .insert(id, deps.into_iter().collect());
+            }
+            self.provisional.ids.insert(unit.clone(), id);
+        }
 
         let messages = self.messages.clone();
         let is_fresh = job.freshness().is_fresh();
@@ -1144,7 +1364,12 @@ impl<'gctx> DrainState<'gctx> {
         let count = self.warning_count.entry(id).or_default();
         count.total += 1;
         if lint {
-            let unit = self.active.get(&id).unwrap();
+            // A held unit (see `Provisional`) may have finished already.
+            let unit = self
+                .active
+                .get(&id)
+                .or_else(|| self.provisional.finished.get(&id).map(|(unit, _)| unit))
+                .unwrap();
             // If this is an upstream dep but we *do* want warnings, make sure that they
             // don't fail compilation.
             if unit.is_local() {
