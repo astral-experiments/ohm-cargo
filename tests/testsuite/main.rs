@@ -112,6 +112,7 @@ mod git_gc;
 mod git_shallow;
 mod glob_targets;
 mod global_cache_tracker;
+mod headstart;
 mod help;
 mod hint_msrv;
 mod hints;
