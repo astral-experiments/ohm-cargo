@@ -224,7 +224,6 @@ struct DrainState<'gctx> {
 /// any dependency fails. Finished checks release their job slots while waiting.
 #[derive(Default)]
 struct Provisional {
-    enabled: bool,
     /// The job each started unit runs as.
     ids: HashMap<Unit, JobId>,
     /// Units that finished cleanly, with every dependency confirmed.
@@ -239,7 +238,7 @@ struct Provisional {
     finished: HashMap<JobId, (Unit, CargoResult<()>)>,
     /// Units with a failed dependency: their output is dropped.
     tainted: HashSet<JobId>,
-    /// Errors of units released after they finished, for the drain loop.
+    /// Deferred errors for the drain loop.
     released_errors: Vec<ErrorToHandle>,
 }
 
@@ -573,10 +572,7 @@ impl<'gctx> JobQueue<'gctx> {
             ),
             finished: 0,
             per_package_future_incompat_reports: Vec::new(),
-            provisional: Provisional {
-                enabled: build_runner.headstart_enabled(),
-                ..Default::default()
-            },
+            provisional: Provisional::default(),
         };
 
         // Create a helper thread for acquiring jobserver tokens
@@ -817,9 +813,7 @@ impl<'gctx> DrainState<'gctx> {
         unit: &Unit,
     ) -> CargoResult<()> {
         let warning_handling = build_runner.bcx.gctx.warning_handling()?;
-        // An error could add an entry for a `Unit`
-        // with 0 warnings but having fixable
-        // warnings be disallowed
+        // An error may record fixability without any warnings.
         let count = self
             .warning_count
             .get(&id)
@@ -842,11 +836,11 @@ impl<'gctx> DrainState<'gctx> {
         Ok(())
     }
 
-    /// Headstart: holds `event` if it belongs to a unit with unconfirmed
+    /// Holds `event` if it belongs to a unit with unconfirmed
     /// dependencies, and drops it if the unit has a failed dependency.
     /// Returns the event if it should be handled now.
     fn hold(&mut self, build_runner: &mut BuildRunner<'_, '_>, event: Message) -> Option<Message> {
-        if !self.provisional.enabled {
+        if !build_runner.headstart_enabled() {
             return Some(event);
         }
         let id = match &event {
@@ -896,10 +890,10 @@ impl<'gctx> DrainState<'gctx> {
         None
     }
 
-    /// Headstart: `id` finished cleanly with every dependency confirmed
+    /// `id` finished cleanly with every dependency confirmed
     /// (`ok`), or failed. Releases or drops its dependents' output.
     fn settle(&mut self, build_runner: &mut BuildRunner<'_, '_>, id: JobId, ok: bool) {
-        if !self.provisional.enabled {
+        if !build_runner.headstart_enabled() {
             return;
         }
         if ok {
@@ -928,7 +922,7 @@ impl<'gctx> DrainState<'gctx> {
         }
     }
 
-    /// Headstart: a dependency of `id` failed, so drop its output, and its
+    /// A dependency of `id` failed, so drop its output, and its
     /// dependents' output.
     fn taint(&mut self, id: JobId) {
         if !self.provisional.tainted.insert(id) {
@@ -949,7 +943,7 @@ impl<'gctx> DrainState<'gctx> {
         }
     }
 
-    /// Headstart: every dependency of `id` is confirmed. Emits its held
+    /// Every dependency of `id` is confirmed. Emits its held
     /// output, and its result if it has finished.
     fn release(&mut self, build_runner: &mut BuildRunner<'_, '_>, id: JobId) {
         for event in self.provisional.held.remove(&id).unwrap_or_default() {
@@ -960,10 +954,7 @@ impl<'gctx> DrainState<'gctx> {
         let Some((unit, result)) = self.provisional.finished.remove(&id) else {
             return;
         };
-        let result = match self.report_warnings(build_runner, id, &unit) {
-            Err(denied) => Err(denied),
-            Ok(()) => result,
-        };
+        let result = self.report_warnings(build_runner, id, &unit).and(result);
         match result {
             Ok(()) => self.settle(build_runner, id, true),
             Err(error) => {
@@ -1173,8 +1164,7 @@ impl<'gctx> DrainState<'gctx> {
         let new_err = new_err.into();
         if new_err.print_always || err_state.count == 0 {
             crate::display_error(&new_err.error, shell);
-            // Headstart: jobs whose dependency failed don't count; their
-            // output is dropped.
+            // Jobs whose dependency failed have no remaining output to report.
             let waiting_for_others = self
                 .active
                 .keys()
@@ -1256,8 +1246,8 @@ impl<'gctx> DrainState<'gctx> {
         debug!("start {}: {:?}", id, unit);
 
         assert!(self.active.insert(id, unit.clone()).is_none());
-        if self.provisional.enabled {
-            let deps: Vec<JobId> = build_runner
+        if build_runner.headstart_enabled() {
+            let deps: HashSet<JobId> = build_runner
                 .unit_deps(unit)
                 .iter()
                 .filter_map(|dep| self.provisional.ids.get(&dep.unit).copied())
@@ -1268,9 +1258,7 @@ impl<'gctx> DrainState<'gctx> {
             }) {
                 self.provisional.tainted.insert(id);
             } else if !deps.is_empty() {
-                self.provisional
-                    .waiting_on
-                    .insert(id, deps.into_iter().collect());
+                self.provisional.waiting_on.insert(id, deps);
             }
             self.provisional.ids.insert(unit.clone(), id);
         }
