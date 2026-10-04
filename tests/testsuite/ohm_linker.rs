@@ -21,7 +21,7 @@ fn mock_toolchain() -> PathBuf {
                         writeln!(log, "{name} {}", args.join(" ")).unwrap();
                     }
                 }
-                args.retain(|arg| !arg.starts_with("-Clinker-features=") && !arg.starts_with("-Clink-self-contained=") && !arg.starts_with("-Clink-arg=-B") && arg != "-Clink-arg=-fuse-ld=bfd");
+                args.retain(|arg| !arg.starts_with("-Clinker-features=") && !arg.starts_with("-Clink-self-contained=") && !arg.starts_with("-Clink-arg=-B") && arg != "-Clink-arg=-fuse-ld=bfd" && arg != "-Zcompact-artifacts=yes" && !arg.starts_with("-Zartifact-compression-"));
                 let output = Command::new(env::var_os("OHM_REAL_RUSTC").unwrap()).args(&args).output().unwrap();
                 let mut stdout = String::from_utf8_lossy(&output.stdout).into_owned();
                 if args.iter().any(|arg| arg == "--print=sysroot") {
@@ -42,18 +42,167 @@ fn mock_toolchain() -> PathBuf {
 
 fn cargo(p: &Project, rustc: &Path, command: &str) -> Execs {
     let mut exec = p.cargo(&format!("-Zohm-defaults=no {command}"));
-    exec.masquerade_as_nightly_cargo(&["ohm-defaults", "ohm-linker", "profile-rustflags"])
-        .env("RUSTC", rustc)
-        .env(
-            "OHM_REAL_RUSTC",
-            Path::new(&paths::sysroot())
-                .join("bin/rustc")
-                .with_extension(env::consts::EXE_EXTENSION),
-        )
-        .env("OHM_REAL_SYSROOT", paths::sysroot())
-        .env("OHM_MOCK_SYSROOT", paths::root().join("sysroot"))
-        .env("OHM_LINKER_LOG", paths::root().join("linker.log"));
+    exec.masquerade_as_nightly_cargo(&[
+        "ohm-defaults",
+        "ohm-linker",
+        "ohm-compact-artifacts",
+        "profile-rustflags",
+    ])
+    .env("RUSTC", rustc)
+    .env(
+        "OHM_REAL_RUSTC",
+        Path::new(&paths::sysroot())
+            .join("bin/rustc")
+            .with_extension(env::consts::EXE_EXTENSION),
+    )
+    .env("OHM_REAL_SYSROOT", paths::sysroot())
+    .env("OHM_MOCK_SYSROOT", paths::root().join("sysroot"))
+    .env("OHM_LINKER_LOG", paths::root().join("linker.log"));
     exec
+}
+
+#[cargo_test]
+#[cfg(all(target_os = "linux", target_arch = "x86_64", target_env = "gnu"))]
+fn compact_artifacts_require_capability_and_track_mode_changes() {
+    let rustc = mock_toolchain();
+    let linker = paths::root().join("sysroot/lib/rustlib/x86_64-unknown-linux-gnu/bin/wild-ld");
+    fs::create_dir_all(&linker).unwrap();
+    fs::write(linker.join("ld.bfd"), "fixture").unwrap();
+    let p = project().file("src/main.rs", "fn main() {}").build();
+    let log = paths::root().join("linker.log");
+    cargo(&p, &rustc, "-Zohm-compact-artifacts=yes build")
+        .with_status(101)
+        .with_stderr_contains("[ERROR] -Zohm-compact-artifacts requires an Ohm toolchain with compact-capable bundled Wild")
+        .run();
+    fs::write(linker.join("compact-artifacts-v1"), b"RCOBJ001\n").unwrap();
+    cargo(&p, &rustc, "-Zohm-compact-artifacts=yes build").run();
+    let output = fs::read_to_string(&log).unwrap();
+    assert!(output.contains("-Zcompact-artifacts=yes"), "{output}");
+    assert!(
+        output.contains("-Zartifact-compression-profile=fast"),
+        "{output}"
+    );
+    assert!(output.contains("wild-ld"), "{output}");
+    fs::write(&log, "").unwrap();
+    cargo(&p, &rustc, "-Zohm-compact-artifacts=yes build").run();
+    assert!(fs::read_to_string(&log).unwrap().is_empty());
+    cargo(&p, &rustc, "-Zohm-compact-artifacts=no build").run();
+    assert!(
+        !fs::read_to_string(&log)
+            .unwrap()
+            .contains("compact-artifacts=yes")
+    );
+
+    p.change_file(
+        ".cargo/config.toml",
+        "[unstable]\nohm-compact-artifacts=true\n",
+    );
+    cargo(&p, &rustc, "build").run();
+    fs::write(&log, "").unwrap();
+    cargo(&p, &rustc, "-Zohm-compact-artifacts=no build")
+        .env("CARGO_UNSTABLE_OHM_COMPACT_ARTIFACTS", "true")
+        .run();
+    assert!(
+        !fs::read_to_string(&log)
+            .unwrap()
+            .contains("compact-artifacts=yes")
+    );
+    p.change_file(".cargo/config.toml", "");
+    p.change_file("src/main.rs", "fn main() { println!(\"changed\"); }");
+    fs::write(&log, "").unwrap();
+    cargo(&p, &rustc, "build")
+        .env("CARGO_UNSTABLE_OHM_COMPACT_ARTIFACTS", "true")
+        .run();
+    assert!(
+        fs::read_to_string(&log)
+            .unwrap()
+            .contains("compact-artifacts=yes")
+    );
+
+    for command in [
+        "-Zohm-linker=lld build",
+        "rustc -- -Clinker=cc",
+        "rustc -- -Clto=fat",
+    ] {
+        cargo(
+            &p,
+            &rustc,
+            &format!("-Zohm-compact-artifacts=yes {command}"),
+        )
+        .with_status(101)
+        .with_stderr_contains("[ERROR] -Zohm-compact-artifacts [..]")
+        .run();
+    }
+    p.change_file(".cargo/config.toml", "[profile.dev]\nlto=true\n");
+    cargo(&p, &rustc, "-Zohm-compact-artifacts=yes build")
+        .with_status(101)
+        .with_stderr_contains("[ERROR] -Zohm-compact-artifacts does not support cross-crate LTO")
+        .run();
+    p.change_file(
+        ".cargo/config.toml",
+        "[profile.dev]\nsplit-debuginfo='packed'\n",
+    );
+    cargo(&p, &rustc, "-Zohm-compact-artifacts=yes build")
+        .with_status(101)
+        .with_stderr_contains(
+            "[ERROR] -Zohm-compact-artifacts does not support packed split debuginfo",
+        )
+        .run();
+    p.change_file(".cargo/config.toml", "");
+    p.change_file(
+        "build.rs",
+        "fn main() { println!(\"cargo::rustc-link-arg=-fuse-ld=lld\"); }",
+    );
+    cargo(&p, &rustc, "-Zohm-compact-artifacts=yes build")
+        .with_status(101)
+        .with_stderr_contains("[ERROR] -Zohm-compact-artifacts cannot use build-script linker selection `-fuse-ld=lld`")
+        .run();
+}
+
+#[cargo_test]
+#[cfg(all(target_os = "linux", target_arch = "x86_64", target_env = "gnu"))]
+fn compact_artifacts_preserve_codec_options() {
+    let rustc = mock_toolchain();
+    let linker = paths::root().join("sysroot/lib/rustlib/x86_64-unknown-linux-gnu/bin/wild-ld");
+    fs::create_dir_all(&linker).unwrap();
+    fs::write(linker.join("ld.bfd"), "fixture").unwrap();
+    fs::write(linker.join("compact-artifacts-v1"), b"RCOBJ001\n").unwrap();
+    let p = project().file("src/main.rs", "fn main() {}").build();
+    let log = paths::root().join("linker.log");
+    cargo(&p, &rustc, "-Zohm-compact-artifacts=yes build")
+        .env("RUSTFLAGS", "-Zartifact-compression-profile=small")
+        .run();
+    let output = fs::read_to_string(&log).unwrap();
+    assert!(
+        output.contains("-Zartifact-compression-profile=small"),
+        "{output}"
+    );
+    assert!(
+        !output.contains("-Zartifact-compression-profile=fast"),
+        "{output}"
+    );
+    for (command, config) in [
+        (
+            "-Zprofile-rustflags build",
+            "[profile.dev]\nrustflags=['-Zartifact-compression-level=2']\n",
+        ),
+        ("rustc -- -Zartifact-compression-profile=small", ""),
+    ] {
+        p.change_file(".cargo/config.toml", config);
+        fs::write(&log, "").unwrap();
+        cargo(
+            &p,
+            &rustc,
+            &format!("-Zohm-compact-artifacts=yes {command}"),
+        )
+        .run();
+        let output = fs::read_to_string(&log).unwrap();
+        assert!(output.contains("-Zartifact-compression-"), "{output}");
+        assert!(
+            !output.contains("-Zartifact-compression-profile=fast"),
+            "{output}"
+        );
+    }
 }
 
 #[cargo_test]
@@ -131,6 +280,12 @@ fn unsupported_host_keeps_default_linker() {
     let log = fs::read_to_string(paths::root().join("linker.log")).unwrap();
     assert!(!log.contains("wild-ld"));
     assert!(!log.contains("linker-features"));
+    cargo(&p, &rustc, "-Zohm-compact-artifacts=yes build")
+        .with_status(101)
+        .with_stderr_contains(
+            "[ERROR] -Zohm-compact-artifacts requires native x86_64-unknown-linux-gnu builds",
+        )
+        .run();
 }
 
 #[cargo_test(

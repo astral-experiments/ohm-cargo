@@ -959,6 +959,7 @@ unstable_cli_options!(
     no_embed_metadata: Option<bool> = ("Avoid embedding metadata in library artifacts"),
     no_index_update: bool = ("Do not update the registry index even if the cache is outdated"),
     ohm_clippy_seed_isolation: Option<bool> = ("Isolate bundled Clippy outputs from worktree snapshots (automatic when cloning is available)"),
+    ohm_compact_artifacts: bool = ("Store compact objects using the matching bundled Wild linker (default: no)"),
     ohm_defaults: Option<bool> = ("Enable the defaults packaged with Ohm"),
     ohm_focused_tests: bool = ("Compile only an explicitly selected exact library test"),
     ohm_linker: Option<OhmLinker> = ("Select a bundled linker for native Linux x86-64 builds: wild or lld"),
@@ -1318,8 +1319,9 @@ impl CliUnstable {
 
     /// The bundled linker selected for supported native targets.
     pub fn ohm_linker(&self) -> Option<OhmLinker> {
-        self.ohm_linker
-            .or_else(|| self.ohm_defaults().then_some(OhmLinker::Wild))
+        self.ohm_linker.or_else(|| {
+            (self.ohm_compact_artifacts || self.ohm_defaults()).then_some(OhmLinker::Wild)
+        })
     }
 
     /// Whether complete registry builds may be reused by a subsequent check.
@@ -1560,6 +1562,7 @@ impl CliUnstable {
             "mtime-on-use" => self.mtime_on_use = parse_empty(k, v)?,
             "no-embed-metadata" => self.no_embed_metadata = Some(parse_bool(k, v)?),
             "no-index-update" => self.no_index_update = parse_empty(k, v)?,
+            "ohm-compact-artifacts" => self.ohm_compact_artifacts = parse_bool(k, v)?,
             "ohm-defaults" => self.ohm_defaults = Some(parse_bool(k, v)?),
             "ohm-focused-tests" => self.ohm_focused_tests = parse_empty(k, v)?,
             "ohm-linker" => {

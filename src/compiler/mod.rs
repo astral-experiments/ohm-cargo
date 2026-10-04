@@ -1600,6 +1600,7 @@ fn rustc(
         mode: CompileMode,
     ) -> CargoResult<()> {
         let mut library_paths = vec![];
+        let compact = rustc.get_args().any(|arg| arg == "-Zcompact-artifacts=yes");
 
         for key in build_scripts.to_link.iter() {
             let output = build_script_outputs.get(key.1).ok_or_else(|| {
@@ -1650,6 +1651,10 @@ fn rustc(
                 if lt.applies_to(target, mode)
                     && (key.0 == current_id || *lt == LinkArgTarget::Cdylib)
                 {
+                    anyhow::ensure!(
+                        !compact || !ohm_linker::selects_linker(arg),
+                        "-Zohm-compact-artifacts cannot use build-script linker selection `{arg}`"
+                    );
                     rustc.arg("-C").arg(format!("link-arg={}", arg));
                 }
             }
@@ -1932,6 +1937,34 @@ fn prepare_rustc(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> CargoResult
     }
     let info = build_runner.bcx.target_data.info(unit.kind);
     let mut rustflags = unit_rustflags_without_ohm_defaults(gctx, &unit.rustflags);
+    if gctx.cli_unstable().ohm_compact_artifacts {
+        anyhow::ensure!(
+            matches!(build_runner.lto[unit], lto::Lto::Off | lto::Lto::OnlyObject),
+            "-Zohm-compact-artifacts does not support cross-crate LTO"
+        );
+        anyhow::ensure!(
+            unit.profile
+                .split_debuginfo
+                .as_ref()
+                .map(|value| value.as_str())
+                != Some("packed"),
+            "-Zohm-compact-artifacts does not support packed split debuginfo"
+        );
+        ohm_linker::validate_compact_flags(
+            unit.profile
+                .rustflags
+                .iter()
+                .map(|flag| flag.as_str())
+                .chain(
+                    build_runner
+                        .bcx
+                        .extra_args_for(unit)
+                        .into_iter()
+                        .flatten()
+                        .map(String::as_str),
+                ),
+        )?;
+    }
     if info.ohm_linker_flags != 0 {
         // Profile flags and `cargo rustc -- ...` arrive after target discovery.
         // Preserve their explicit linker choices too, without dropping the
@@ -1951,6 +1984,10 @@ fn prepare_rustc(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> CargoResult
                 ),
         );
         if explicit {
+            anyhow::ensure!(
+                !gctx.cli_unstable().ohm_compact_artifacts,
+                "-Zohm-compact-artifacts cannot be combined with explicit linker flags"
+            );
             rustflags = &rustflags[..rustflags.len() - info.ohm_linker_flags];
         } else if gctx.cli_unstable().ohm_linker()
             == Some(crate::workspace::features::OhmLinker::Wild)
@@ -1962,6 +1999,29 @@ fn prepare_rustc(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> CargoResult
                 linker.display()
             );
         }
+    }
+    if gctx.cli_unstable().ohm_compact_artifacts
+        && rustflags
+            .last()
+            .is_some_and(|flag| flag == ohm_linker::FAST_COMPRESSION_FLAG)
+        && ohm_linker::has_compression_options(
+            unit.profile
+                .rustflags
+                .iter()
+                .map(|flag| flag.as_str())
+                .chain(
+                    build_runner
+                        .bcx
+                        .extra_args_for(unit)
+                        .into_iter()
+                        .flatten()
+                        .map(String::as_str),
+                ),
+        )
+    {
+        // Profile/cargo-rustc options arrive after target discovery. Their existing fingerprint
+        // inputs distinguish this command even though its conservative suffix still names fast.
+        rustflags = &rustflags[..rustflags.len() - 1];
     }
     base.args(rustflags);
     if gctx.cli_unstable().binary_dep_depinfo {
@@ -2411,6 +2471,10 @@ fn add_error_format_and_color(
 
 /// Returns whether an immutable internal library can omit its embedded metadata.
 fn unit_uses_no_embed_metadata(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> bool {
+    if build_runner.bcx.gctx.cli_unstable().ohm_compact_artifacts {
+        // Keep compact archives self-contained, including immutable registry libraries.
+        return false;
+    }
     if let Some(embed) = build_runner.bcx.gctx.cli_unstable().embed_metadata {
         return !embed && unit.benefits_from_no_embed_metadata();
     }

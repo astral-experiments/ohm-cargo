@@ -1712,7 +1712,7 @@ fn unit_uses_custom_codegen_backend(unit: &Unit, build_runner: &BuildRunner<'_, 
     unit_compiler_arguments_use_opaque_execution(unit, host.as_str(), target_sysroot, flags)
 }
 
-/// Excludes only the bundled-linker suffix recorded during target discovery.
+/// Excludes only the bundled-linker and format suffix recorded during target discovery.
 ///
 /// Cargo's generated flags remain in fingerprints and compiler invocations. User flags,
 /// including identical linker arguments without this provenance, still require inspection.
@@ -3000,6 +3000,8 @@ mod shared_registry_tests {
             "-Clink-self-contained=-linker",
             "-Clink-arg=-B/toolchain/lib/rustlib/host/bin/wild-ld",
             "-Clink-arg=-fuse-ld=bfd",
+            "-Zcompact-artifacts=yes",
+            "-Zartifact-compression-profile=fast",
         ]
         .map(str::to_owned);
         let opaque = |flags: &[String], generated: usize| {

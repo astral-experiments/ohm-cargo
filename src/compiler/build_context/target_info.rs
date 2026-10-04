@@ -61,7 +61,7 @@ pub struct TargetInfo {
     pub sysroot_target_libdir: PathBuf,
     /// Extra flags to pass to `rustc`, see [`extra_args`].
     pub rustflags: Rc<[String]>,
-    /// Number of bundled-linker flags appended to `rustflags`.
+    /// Number of bundled-linker and optional compact-format flags appended to `rustflags`.
     pub(crate) ohm_linker_flags: usize,
     /// Extra flags to pass to `rustdoc`, see [`extra_args`].
     pub rustdocflags: Rc<[String]>,
