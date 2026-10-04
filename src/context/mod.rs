@@ -1389,7 +1389,7 @@ impl GlobalContext {
     }
 
     pub fn should_embed_metadata(&self) -> bool {
-        !self.cli_unstable().no_embed_metadata()
+        self.cli_unstable().ohm_compact_artifacts || !self.cli_unstable().no_embed_metadata()
     }
 
     pub fn network_allowed(&self) -> bool {

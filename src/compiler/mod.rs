@@ -1642,21 +1642,19 @@ fn rustc(
                 }
             }
 
-            for (lt, arg) in &output.linker_args {
-                // There was an unintentional change where cdylibs were
-                // allowed to be passed via transitive dependencies. This
-                // clause should have been kept in the `if` block above. For
-                // now, continue allowing it for cdylib only.
-                // See https://github.com/rust-lang/cargo/issues/9562
-                if lt.applies_to(target, mode)
-                    && (key.0 == current_id || *lt == LinkArgTarget::Cdylib)
-                {
-                    anyhow::ensure!(
-                        !compact || !ohm_linker::selects_linker(arg),
-                        "-Zohm-compact-artifacts cannot use build-script linker selection `{arg}`"
-                    );
-                    rustc.arg("-C").arg(format!("link-arg={}", arg));
-                }
+            // Preserve the historical transitive cdylib link arguments (see #9562).
+            let args = output.linker_args.iter().filter_map(|(lt, arg)| {
+                (lt.applies_to(target, mode)
+                    && (key.0 == current_id || *lt == LinkArgTarget::Cdylib))
+                    .then_some(arg.as_str())
+            });
+            if compact && let Some(arg) = ohm_linker::linker_selection(args.clone()) {
+                anyhow::bail!(
+                    "-Zohm-compact-artifacts cannot use build-script linker selection `{arg}`"
+                );
+            }
+            for arg in args {
+                rustc.arg("-C").arg(format!("link-arg={arg}"));
             }
         }
         Ok(())

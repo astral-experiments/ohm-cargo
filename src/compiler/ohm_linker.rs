@@ -173,7 +173,7 @@ pub(super) fn has_compression_options<'a>(args: impl IntoIterator<Item = &'a str
 }
 
 /// Build-script linker arguments arrive after the bundled linker flags have been selected.
-pub(super) fn selects_linker(arg: &str) -> bool {
+fn selects_linker(arg: &str) -> bool {
     [
         "@",
         "-B",
@@ -230,16 +230,21 @@ pub(super) fn has_linker_overrides<'a>(
             _ => {}
         }
     }
-    let mut driver_args = driver_args.into_iter();
-    while let Some(arg) = driver_args.next() {
+    linker_selection(driver_args).is_some()
+}
+
+/// Locate a driver override while respecting arguments forwarded directly to the linker.
+pub(super) fn linker_selection<'a>(args: impl IntoIterator<Item = &'a str>) -> Option<&'a str> {
+    let mut args = args.into_iter();
+    while let Some(arg) = args.next() {
         if arg == "-Xlinker" {
             // The next argument is forwarded to Wild, not interpreted by the C driver.
-            driver_args.next();
+            args.next();
         } else if selects_linker(arg) {
-            return true;
+            return Some(arg);
         }
     }
-    false
+    None
 }
 
 #[cfg(test)]

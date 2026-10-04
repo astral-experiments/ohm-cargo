@@ -151,7 +151,7 @@ fn compact_artifacts_require_capability_and_track_mode_changes() {
     p.change_file(".cargo/config.toml", "");
     p.change_file(
         "build.rs",
-        "fn main() { println!(\"cargo::rustc-link-arg=-Wl,--no-as-needed\"); }",
+        "fn main() { println!(\"cargo::rustc-link-arg=-Wl,--no-as-needed\"); println!(\"cargo::rustc-link-arg=-Xlinker\"); println!(\"cargo::rustc-link-arg=-Bsymbolic\"); }",
     );
     fs::write(&log, "").unwrap();
     cargo(&p, &rustc, "-Zohm-compact-artifacts=yes build")
@@ -177,6 +177,31 @@ fn compact_artifacts_require_capability_and_track_mode_changes() {
         .with_status(101)
         .with_stderr_contains("[ERROR] -Zohm-compact-artifacts cannot use build-script linker selection `-fuse-ld=lld`")
         .run();
+
+    // Compact mode uses full metadata globally, including proc-macro output discovery.
+    let macros = project()
+        .at("metadata-macro")
+        .file(
+            "Cargo.toml",
+            "[package]\nname='metadata-macro'\nversion='0.1.0'\n[lib]\nproc-macro=true\n",
+        )
+        .file("src/lib.rs", "")
+        .build();
+    cargo(
+        &macros,
+        &rustc,
+        "-Zohm-defaults=yes -Zohm-compact-artifacts=yes build",
+    )
+    .run();
+    assert!(
+        !fs::read_dir(macros.root().join("target/debug/deps"))
+            .unwrap()
+            .any(|entry| entry
+                .unwrap()
+                .path()
+                .extension()
+                .is_some_and(|ext| ext == "rmeta"))
+    );
 }
 
 #[cargo_test]
