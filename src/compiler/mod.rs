@@ -1969,7 +1969,7 @@ fn prepare_rustc(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> CargoResult
         // Profile flags and `cargo rustc -- ...` arrive after target discovery.
         // Preserve their explicit linker choices too, without dropping the
         // conservative linker identity already included in the unit fingerprint.
-        let explicit = ohm_linker::has_linker_flags(
+        let explicit = ohm_linker::has_linker_overrides(
             unit.profile
                 .rustflags
                 .iter()
@@ -1982,6 +1982,7 @@ fn prepare_rustc(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> CargoResult
                         .flatten()
                         .map(String::as_str),
                 ),
+            gctx.cli_unstable().ohm_compact_artifacts,
         );
         if explicit {
             anyhow::ensure!(

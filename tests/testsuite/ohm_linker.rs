@@ -151,6 +151,26 @@ fn compact_artifacts_require_capability_and_track_mode_changes() {
     p.change_file(".cargo/config.toml", "");
     p.change_file(
         "build.rs",
+        "fn main() { println!(\"cargo::rustc-link-arg=-Wl,--no-as-needed\"); }",
+    );
+    fs::write(&log, "").unwrap();
+    cargo(&p, &rustc, "-Zohm-compact-artifacts=yes build")
+        .env("RUSTFLAGS", "-Clink-arg=-Wl,-rpath,/native/lib")
+        .run();
+    let output = fs::read_to_string(&log).unwrap();
+    assert!(output.contains("-Zcompact-artifacts=yes"), "{output}");
+    assert!(
+        output.contains("-Clink-arg=-Wl,-rpath,/native/lib"),
+        "{output}"
+    );
+    cargo(
+        &p,
+        &rustc,
+        "-Zohm-compact-artifacts=yes rustc -- -Clink-arg=-pthread",
+    )
+    .run();
+    p.change_file(
+        "build.rs",
         "fn main() { println!(\"cargo::rustc-link-arg=-fuse-ld=lld\"); }",
     );
     cargo(&p, &rustc, "-Zohm-compact-artifacts=yes build")

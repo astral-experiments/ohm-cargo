@@ -38,7 +38,7 @@ pub(super) fn flags(
         );
         return Ok(Vec::new());
     }
-    if has_linker_flags(rustflags.iter().map(String::as_str)) {
+    if has_linker_overrides(rustflags.iter().map(String::as_str), compact) {
         anyhow::ensure!(
             !compact,
             "-Zohm-compact-artifacts cannot be combined with explicit linker flags"
@@ -135,7 +135,9 @@ pub(super) fn validate_compact_flags<'a>(
             "lto" | "linker-plugin-lto" => !matches!(value, "off" | "no" | "false"),
             "split-debuginfo" => value == "packed",
             "compact-artifacts" | "compact-artifact-store" => true,
-            "compress-artifacts" | "compress-incremental" => value != "no",
+            "compress-artifacts" | "compress-incremental" => {
+                !matches!(value, "off" | "no" | "false")
+            }
             "embed-metadata" => matches!(value, "no" | "false"),
             _ => false,
         };
@@ -189,30 +191,51 @@ pub(super) fn selects_linker(arg: &str) -> bool {
     .any(|prefix| arg.starts_with(prefix))
 }
 
-/// Treat opaque response files and driver arguments as explicit linker choices.
-pub(super) fn has_linker_flags<'a>(args: impl IntoIterator<Item = &'a str>) -> bool {
+/// Compact mode requires Wild but accepts native arguments that preserve its selection.
+pub(super) fn has_linker_overrides<'a>(
+    args: impl IntoIterator<Item = &'a str>,
+    allow_native_args: bool,
+) -> bool {
+    let mut driver_args = Vec::new();
     let mut args = args.into_iter();
     while let Some(arg) = args.next() {
         if arg.starts_with('@') {
             return true;
         }
-        let option = if arg == "-C" || arg == "--codegen" {
+        let option = if matches!(arg, "-C" | "--codegen" | "-Z") {
             args.next()
         } else {
             arg.strip_prefix("-C")
                 .or_else(|| arg.strip_prefix("--codegen="))
+                .or_else(|| arg.strip_prefix("-Z"))
         };
-        if option.is_some_and(|option| {
-            matches!(
-                option.split('=').next().unwrap().replace('_', "-").as_str(),
-                "linker"
-                    | "linker-flavor"
-                    | "linker-features"
-                    | "link-self-contained"
-                    | "link-arg"
-                    | "link-args"
-            )
-        }) {
+        let Some(option) = option else { continue };
+        let (name, value) = option.split_once('=').unwrap_or((option, ""));
+        match name.replace('_', "-").as_str() {
+            "linker" | "linker-flavor" | "linker-features" | "link-self-contained" => {
+                return true;
+            }
+            "link-arg" | "pre-link-arg" => {
+                if !allow_native_args {
+                    return true;
+                }
+                driver_args.push(value);
+            }
+            "link-args" | "pre-link-args" => {
+                if !allow_native_args {
+                    return true;
+                }
+                driver_args.extend(value.split_whitespace());
+            }
+            _ => {}
+        }
+    }
+    let mut driver_args = driver_args.into_iter();
+    while let Some(arg) = driver_args.next() {
+        if arg == "-Xlinker" {
+            // The next argument is forwarded to Wild, not interpreted by the C driver.
+            driver_args.next();
+        } else if selects_linker(arg) {
             return true;
         }
     }
@@ -222,7 +245,7 @@ pub(super) fn has_linker_flags<'a>(args: impl IntoIterator<Item = &'a str>) -> b
 #[cfg(test)]
 mod tests {
     use super::{
-        has_compression_options, has_linker_flags, selects_linker, validate_compact_flags,
+        has_compression_options, has_linker_overrides, selects_linker, validate_compact_flags,
     };
     use crate::workspace::features::{CliUnstable, OhmLinker};
 
@@ -273,6 +296,7 @@ mod tests {
             vec!["-Csplit-debuginfo=unpacked", "--cfg", "test"],
             vec!["-Z", "artifact_compression_level=2"],
             vec!["-Zartifact-compression-profile=small"],
+            vec!["-Zcompress-artifacts=false", "-Zcompress-incremental=off"],
         ] {
             assert!(validate_compact_flags(args.clone()).is_ok(), "{args:?}");
         }
@@ -296,6 +320,20 @@ mod tests {
         ] {
             assert!(selects_linker(arg), "{arg}");
         }
+        assert!(!has_linker_overrides(
+            [
+                "-Clink-arg=-Wl,-rpath,/native/lib",
+                "-Clink-args=-Xlinker -Bsymbolic -pthread"
+            ],
+            true
+        ));
+        for flag in [
+            "-Clink-arg=-fuse-ld=lld",
+            "-Zpre-link-args=-B/other",
+            "-Clink-args=-pthread @driver.rsp",
+        ] {
+            assert!(has_linker_overrides([flag], true), "{flag}");
+        }
         for arg in ["-Wl,-rpath,/native/lib", "-Wl,--no-as-needed", "-pthread"] {
             assert!(!selects_linker(arg), "{arg}");
         }
@@ -312,8 +350,11 @@ mod tests {
             vec!["-Clinker-features=-lld"],
             vec!["@flags"],
         ] {
-            assert!(has_linker_flags(args));
+            assert!(has_linker_overrides(args, false));
         }
-        assert!(!has_linker_flags(["-Cdebuginfo=1", "--cfg", "test"]));
+        assert!(!has_linker_overrides(
+            ["-Cdebuginfo=1", "--cfg", "test"],
+            false
+        ));
     }
 }
