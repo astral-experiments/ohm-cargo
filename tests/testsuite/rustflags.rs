@@ -37,6 +37,7 @@ fn ohm_defaults_wrapper() -> PathBuf {
                     arg.starts_with("-Zpublic-api-hash")
                         || arg.starts_with("-Zpublic_api_hash")
                         || arg.starts_with("-Zcache-proc-macros")
+                        || arg.starts_with("-Zohm-early-metadata")
                         || arg.starts_with("-Zohm-caller-local-cgus")
                         || arg.starts_with("-Zohm-stable-cgu-merging")
                         || arg.starts_with("-Zohm-incremental-mono-partitions")
@@ -102,6 +103,54 @@ fn ohm_defaults_wrapper() -> PathBuf {
         .masquerade_as_nightly_cargo(&["ohm-defaults"])
         .run();
     wrapper.bin("ohm-defaults-wrapper")
+}
+
+#[cargo_test]
+fn headstart_preserves_ohm_default_suppression() {
+    let wrapper = ohm_defaults_wrapper();
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "macros"
+                version = "0.1.0"
+                edition = "2024"
+                [lib]
+                proc-macro = true
+                [dependencies]
+                dep = { path = "dep" }
+            "#,
+        )
+        .file(
+            "src/lib.rs",
+            "#[proc_macro] pub fn identity(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
+                let _ = dep::value(); input
+            }",
+        )
+        .file("dep/Cargo.toml", &basic_manifest("dep", "0.1.0"))
+        .file("dep/src/lib.rs", "pub fn value() -> u32 { 1 }")
+        .build();
+    let log = p.root().join("ohm-defaults.log");
+    p.cargo("-Zohm-defaults=yes -Zheadstart check")
+        .masquerade_as_nightly_cargo(&["ohm-defaults", "headstart"])
+        .env("RUSTC_WRAPPER", &wrapper)
+        .env("OHM_DEFAULTS_LOG", &log)
+        .env("RUSTFLAGS", "-Zthreads=1")
+        .run();
+
+    let invocations = fs::read_to_string(&log).unwrap();
+    let invocation = rustc_invocation(&invocations, "macros");
+    assert!(invocation.contains(&"-Zohm-early-metadata"));
+    assert_eq!(frontend_threads(&invocation), ["8", "1"]);
+    assert_eq!(
+        ohm_rustflags(&invocation),
+        [
+            "-Zpublic-api-hash",
+            "-Zcache-proc-macros",
+            "-Zpublic-api-hash=no",
+        ]
+    );
 }
 
 #[cargo_test]
