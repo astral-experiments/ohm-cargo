@@ -498,7 +498,11 @@ impl<'gctx> JobQueue<'gctx> {
         // the target as well. This should ensure that edges changed to
         // `Metadata` propagate upwards `All` dependencies to anything that
         // transitively contains the `Metadata` edge.
-        if unit.requires_upstream_objects() {
+        // Check-mode binaries and tests do not link, so early metadata from
+        // their direct dependencies is sufficient even for these target kinds.
+        if unit.requires_upstream_objects()
+            && !(build_runner.headstart_enabled() && unit.mode.is_check())
+        {
             for dep in dependencies {
                 depend_on_deps_of_deps(build_runner, &mut queue_deps, dep.unit.clone());
             }
