@@ -47,6 +47,7 @@ fn cargo(p: &Project, rustc: &Path, command: &str) -> Execs {
         "ohm-defaults",
         "ohm-linker",
         "ohm-compact-artifacts",
+        "ohm-worktree-seeds",
         "profile-rustflags",
     ])
     .env("RUSTC", rustc)
@@ -180,6 +181,7 @@ fn compact_artifacts_require_capability_and_track_mode_changes() {
         .run();
 
     // Compact mode uses full metadata globally, including proc-macro output discovery.
+    // Disable unrelated worktree seeds, whose compiler options require real Ohm.
     let macros = project()
         .at("metadata-macro")
         .file(
@@ -191,7 +193,7 @@ fn compact_artifacts_require_capability_and_track_mode_changes() {
     cargo(
         &macros,
         &rustc,
-        "-Zohm-defaults=yes -Zohm-compact-artifacts=yes build",
+        "-Zohm-defaults=yes -Zohm-worktree-seeds=no -Zohm-compact-artifacts=yes build",
     )
     .run();
     let output = fs::read_to_string(&log).unwrap();
