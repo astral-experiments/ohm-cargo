@@ -829,7 +829,7 @@ fn with_ohm_default_rustflags(
     flags: Flags,
     mut rustflags: Vec<String>,
 ) -> Vec<String> {
-    if matches!(flags, Flags::Rust) && gctx.cli_unstable().headstart {
+    if matches!(flags, Flags::Rust) && gctx.cli_unstable().headstart() {
         rustflags.insert(0, "-Zohm-early-metadata".to_owned());
     }
     // Keep defaults first so per-unit flag selection can distinguish them from
