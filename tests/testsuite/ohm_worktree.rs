@@ -544,6 +544,25 @@ fn bundled_clippy_preserves_ordinary_seeds_without_importing_lint_state() {
         .arg(paths::root().join("after-disabled-clippy"))
         .with_stderr_contains("[..](no compatible build snapshot seeded)")
         .run();
+
+    let donor_incremental = paths::root()
+        .join("shared-build/debug/incremental")
+        .join(donor_cache.file_name().unwrap());
+    assert!(donor_incremental.join(".ohm-clippy-v1").is_dir());
+    seeded_cargo(&donor, "clean -p foo").run();
+    for root in [&donor_cache, &donor_incremental] {
+        assert!(
+            !walkdir::WalkDir::new(root)
+                .into_iter()
+                .map(Result::unwrap)
+                .any(|entry| {
+                    let name = entry.file_name().to_string_lossy();
+                    name == "foo" || name.starts_with("foo-")
+                })
+        );
+    }
+    assert!(!donor.bin("foo").exists());
+    assert!(binary(&destination).is_file());
 }
 
 #[cargo_test(
