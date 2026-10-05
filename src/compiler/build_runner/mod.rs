@@ -1977,7 +1977,7 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
     }
 
     pub fn headstart_enabled(&self) -> bool {
-        self.bcx.gctx.cli_unstable().headstart
+        self.bcx.gctx.cli_unstable().headstart()
     }
 
     /// Returns whether when `parent` depends on `dep` if it only requires the

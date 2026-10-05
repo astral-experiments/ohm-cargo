@@ -319,6 +319,12 @@ fn execute_subcommand(
             if enabled { "yes" } else { "no" },
         );
     }
+    if let Some(enabled) = gctx.cli_unstable().headstart {
+        cmd.env(
+            cargo::CARGO_INHERITED_HEADSTART_ENV,
+            if enabled { "yes" } else { "no" },
+        );
+    }
     if let Some(enabled) = gctx.cli_unstable().ohm_worktree_seeds {
         cmd.env(
             cargo::CARGO_INHERITED_OHM_WORKTREE_SEEDS_ENV,
