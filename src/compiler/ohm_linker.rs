@@ -134,10 +134,7 @@ pub(super) fn validate_compact_flags<'a>(
         let incompatible = match name.replace('_', "-").as_str() {
             "lto" | "linker-plugin-lto" => !matches!(value, "off" | "no" | "false"),
             "split-debuginfo" => value == "packed",
-            "compact-artifacts" | "compact-artifact-store" => true,
-            "compress-artifacts" | "compress-incremental" => {
-                !matches!(value, "off" | "no" | "false")
-            }
+            "compact-artifacts" => true,
             "embed-metadata" => matches!(value, "no" | "false"),
             _ => false,
         };
@@ -289,9 +286,7 @@ mod tests {
             vec!["--codegen=lto"],
             vec!["-Clinker_plugin_lto=yes"],
             vec!["--codegen", "split-debuginfo=packed"],
-            vec!["-Z", "compact_artifact_store=store"],
             vec!["-Zcompact-artifacts=no"],
-            vec!["-Zcompress-artifacts=yes"],
             vec!["-Zembed-metadata=no"],
         ] {
             assert!(validate_compact_flags(args.clone()).is_err(), "{args:?}");
@@ -301,7 +296,6 @@ mod tests {
             vec!["-Csplit-debuginfo=unpacked", "--cfg", "test"],
             vec!["-Z", "artifact_compression_level=2"],
             vec!["-Zartifact-compression-profile=small"],
-            vec!["-Zcompress-artifacts=false", "-Zcompress-incremental=off"],
         ] {
             assert!(validate_compact_flags(args.clone()).is_ok(), "{args:?}");
         }
