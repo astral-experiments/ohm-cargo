@@ -93,6 +93,8 @@ jobs:
         if: runner.os == 'Linux'
         env:
           RUSTUP_TOOLCHAIN: ohm-1.97.1-16
+          # This pinned compiler predates early metadata.
+          __CARGO_HEADSTART: "no"
         run: |
           testsuite="$(find "$CARGO_TARGET_DIR/debug/deps" -maxdepth 1 -type f -name 'testsuite-*' -perm -u+x -print -quit)"
           if [[ -z "$testsuite" ]]; then
@@ -128,6 +130,8 @@ jobs:
       - name: Run profile and bundled Clippy worktree tests with Ohm
         env:
           RUSTUP_TOOLCHAIN: ohm-1.98.0-9
+          # This pinned compiler predates early metadata.
+          __CARGO_HEADSTART: "no"
         run: |
           toolchain_bin="$(dirname "$(rustup which rustc)")"
           rustup_bin="$(dirname "$(command -v rustup)")"
@@ -223,6 +227,9 @@ jobs:
             0ecff877901a0377ad966ffab528488ce872b50e
           git -C "$RUNNER_TEMP/ruff-fixture" checkout --detach 0ecff877901a0377ad966ffab528488ce872b50e
       - name: Run four paired APFS workflows
+        env:
+          # This pinned compiler predates early metadata.
+          __CARGO_HEADSTART: "no"
         run: |
           # The harness enables local macro/native-tool trust only for this pinned,
           # trusted development fixture, using separate build storage in each arm.
