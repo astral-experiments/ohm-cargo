@@ -1244,6 +1244,13 @@ impl GlobalContext {
                     _ => {}
                 }
             }
+            if let Ok(value) = self.get_env(crate::CARGO_INHERITED_HEADSTART_ENV) {
+                match value {
+                    "yes" => self.unstable_flags.headstart = Some(true),
+                    "no" => self.unstable_flags.headstart = Some(false),
+                    _ => {}
+                }
+            }
             if let Ok(value) = self.get_env(crate::CARGO_INHERITED_OHM_WORKTREE_SEEDS_ENV) {
                 match value {
                     "yes" => self.unstable_flags.ohm_worktree_seeds = Some(true),

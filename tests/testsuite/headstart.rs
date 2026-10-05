@@ -189,8 +189,8 @@ fn preserves_private_edit_cutoff_and_recovers_from_interface_errors() {
         .file("dep/src/lib.rs", "pub fn value() -> u32 { 7 }")
         .build();
     let check = || {
-        let mut command = p.cargo("-Zohm-defaults=yes -Zheadstart check -vv");
-        command.masquerade_as_nightly_cargo(&["ohm-defaults", "headstart"]);
+        let mut command = p.cargo("-Zohm-defaults=yes check -vv");
+        command.masquerade_as_nightly_cargo(&["ohm-defaults"]);
         command
     };
     check().run();
