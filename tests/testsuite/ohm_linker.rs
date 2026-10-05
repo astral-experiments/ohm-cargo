@@ -21,7 +21,8 @@ fn mock_toolchain() -> PathBuf {
                         writeln!(log, "{name} {}", args.join(" ")).unwrap();
                     }
                 }
-                args.retain(|arg| !arg.starts_with("-Clinker-features=") && !arg.starts_with("-Clink-self-contained=") && !arg.starts_with("-Clink-arg=-B") && arg != "-Clink-arg=-fuse-ld=bfd" && arg != "-Zcompact-artifacts=yes" && !arg.starts_with("-Zartifact-compression-"));
+                // Record Ohm's flags above, then delegate only standard options to the CI compiler.
+                args.retain(|arg| !matches!(arg.as_str(), "-Zpublic-api-hash" | "-Zcache-proc-macros" | "-Zthreads=8") && !arg.starts_with("-Clinker-features=") && !arg.starts_with("-Clink-self-contained=") && !arg.starts_with("-Clink-arg=-B") && arg != "-Clink-arg=-fuse-ld=bfd" && arg != "-Zcompact-artifacts=yes" && !arg.starts_with("-Zartifact-compression-"));
                 let output = Command::new(env::var_os("OHM_REAL_RUSTC").unwrap()).args(&args).output().unwrap();
                 let mut stdout = String::from_utf8_lossy(&output.stdout).into_owned();
                 if args.iter().any(|arg| arg == "--print=sysroot") {
@@ -199,6 +200,9 @@ fn compact_artifacts_require_capability_and_track_mode_changes() {
         .find(|line| line.starts_with("metadata_macro "))
         .unwrap();
     assert!(invocation.contains("--emit=dep-info,link"), "{invocation}");
+    for flag in ["-Zpublic-api-hash", "-Zcache-proc-macros", "-Zthreads=8"] {
+        assert!(invocation.contains(flag), "{invocation}");
+    }
 }
 
 #[cargo_test]
