@@ -53,6 +53,10 @@ pub(super) fn flags(
         && metadata_compatible
         && validate_compact_flags(rustflags.iter().map(String::as_str)).is_ok();
 
+    // Ordinary builds must leave linker configuration discovery to its existing callers.
+    if !compact && options.ohm_linker() != Some(OhmLinker::Wild) {
+        return Ok(Vec::new());
+    }
     let use_host_config = kind.is_host() && !gctx.target_applies_to_host()?;
     let config = if use_host_config {
         gctx.host_cfg_triple(host)?

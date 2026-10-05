@@ -14,7 +14,7 @@ fn mock_toolchain() -> PathBuf {
         .file("src/main.rs", r#"
             use std::{env, fs::OpenOptions, io::Write, process::{Command, exit}};
             fn main() {
-                let mut args: Vec<String> = env::args().skip(1).collect();
+                let args: Vec<String> = env::args().skip(1).collect();
                 if let Some(name) = args.windows(2).find(|a| a[0] == "--crate-name").map(|a| a[1].clone()) {
                     if name != "___" {
                         let mut log = OpenOptions::new().create(true).append(true).open(env::var_os("OHM_LINKER_LOG").unwrap()).unwrap();
@@ -22,6 +22,16 @@ fn mock_toolchain() -> PathBuf {
                     }
                 }
                 // Record Ohm's flags above, then delegate only standard options to the CI compiler.
+                let mut forwarded = Vec::new();
+                let mut iter = args.into_iter().peekable();
+                while let Some(arg) = iter.next() {
+                    if arg == "-Z" && iter.peek().is_some_and(|value| value == "emit-rlink" || value.starts_with("temps-dir=")) {
+                        iter.next();
+                    } else {
+                        forwarded.push(arg);
+                    }
+                }
+                let mut args = forwarded;
                 args.retain(|arg| !matches!(arg.as_str(), "-Zpublic-api-hash" | "-Zcache-proc-macros" | "-Zthreads=8") && !arg.starts_with("-Clinker-features=") && !arg.starts_with("-Clink-self-contained=") && !arg.starts_with("-Clink-arg=-B") && arg != "-Clink-arg=-fuse-ld=bfd" && arg != "-Zcompact-artifacts=yes" && arg != "-Zcompact-artifacts-linker=yes" && !arg.starts_with("-Zartifact-compression-") && !arg.starts_with("-Zembed-metadata=") && !arg.starts_with("-Zpublic-api-hash="));
                 let output = Command::new(env::var_os("OHM_REAL_RUSTC").unwrap()).args(&args).output().unwrap();
                 let mut stdout = String::from_utf8_lossy(&output.stdout).into_owned();
