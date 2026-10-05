@@ -2623,10 +2623,7 @@ fn calculate_normal(
     .hash(&mut config);
     // -Zembed-metadata changes how all units are compiled, and it also changes how we tell
     // rustc to link to deps using `--extern`. If it changes, we should rebuild everything.
-    build_runner
-        .bcx
-        .gctx
-        .should_embed_metadata()
+    super::unit_should_embed_metadata(build_runner.bcx, unit)
         .not()
         .hash(&mut config);
     // The same immutable package can become a root in another invocation, so

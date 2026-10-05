@@ -949,7 +949,7 @@ fn rustc(
     unit: &Unit,
     exec: &Arc<dyn Executor>,
 ) -> CargoResult<Work> {
-    let mut rustc = prepare_rustc(build_runner, unit)?;
+    let (mut rustc, generated_wild_args) = prepare_rustc(build_runner, unit)?;
 
     let name = unit.pkg.name();
 
@@ -1290,6 +1290,7 @@ fn rustc(
             let script_outputs = build_script_outputs.lock().unwrap();
             add_native_deps(
                 &mut rustc,
+                generated_wild_args,
                 &script_outputs,
                 &build_scripts,
                 pass_l_flag,
@@ -1592,6 +1593,7 @@ fn rustc(
     // present in `state`) to the command provided.
     fn add_native_deps(
         rustc: &mut ProcessBuilder,
+        generated_wild_args: Option<std::ops::Range<usize>>,
         build_script_outputs: &BuildScriptOutputs,
         build_scripts: &BuildScripts,
         pass_l_flag: bool,
@@ -1600,7 +1602,7 @@ fn rustc(
         mode: CompileMode,
     ) -> CargoResult<()> {
         let mut library_paths = vec![];
-        let compact = rustc.get_args().any(|arg| arg == "-Zcompact-artifacts=yes");
+        let mut linker_args = Vec::new();
 
         for key in build_scripts.to_link.iter() {
             let output = build_script_outputs.get(key.1).ok_or_else(|| {
@@ -1610,6 +1612,20 @@ fn rustc(
                 ))
             })?;
             library_paths.extend(output.library_paths.iter());
+            if generated_wild_args.is_some() {
+                linker_args.extend(output.linker_args.iter().filter_map(|(lt, arg)| {
+                    (lt.applies_to(target, mode)
+                        && (key.0 == current_id || *lt == LinkArgTarget::Cdylib))
+                        .then_some(arg.as_str())
+                }));
+            }
+        }
+        if ohm_linker::linker_selection(linker_args).is_some()
+            && let Some(range) = generated_wild_args
+        {
+            // Remove only our recorded arguments, even if a user supplied identical flags.
+            // rustc's default adapter now handles compact inputs for the selected linker.
+            rustc.remove_args(range);
         }
 
         // NOTE: This very intentionally does not use the derived ord from LibraryPath because we need to
@@ -1648,11 +1664,6 @@ fn rustc(
                     && (key.0 == current_id || *lt == LinkArgTarget::Cdylib))
                     .then_some(arg.as_str())
             });
-            if compact && let Some(arg) = ohm_linker::linker_selection(args.clone()) {
-                anyhow::bail!(
-                    "-Zohm-compact-artifacts cannot use build-script linker selection `{arg}`"
-                );
-            }
             for arg in args {
                 rustc.arg("-C").arg(format!("link-arg={arg}"));
             }
@@ -1889,7 +1900,10 @@ where
 /// This builds a static view of the invocation. Flags depending on the
 /// completion of other units will be added later in runtime, such as flags
 /// from build scripts.
-fn prepare_rustc(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> CargoResult<ProcessBuilder> {
+fn prepare_rustc(
+    build_runner: &BuildRunner<'_, '_>,
+    unit: &Unit,
+) -> CargoResult<(ProcessBuilder, Option<std::ops::Range<usize>>)> {
     let gctx = build_runner.bcx.gctx;
     let is_primary = build_runner.is_primary_package(unit);
     let is_workspace = build_runner.bcx.ws.is_member(&unit.pkg);
@@ -1934,95 +1948,58 @@ fn prepare_rustc(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> CargoResult
         base.args(args);
     }
     let info = build_runner.bcx.target_data.info(unit.kind);
-    let mut rustflags = unit_rustflags_without_ohm_defaults(gctx, &unit.rustflags);
-    if gctx.cli_unstable().ohm_compact_artifacts {
-        anyhow::ensure!(
-            matches!(build_runner.lto[unit], lto::Lto::Off | lto::Lto::OnlyObject),
-            "-Zohm-compact-artifacts does not support cross-crate LTO"
-        );
-        anyhow::ensure!(
-            unit.profile
-                .split_debuginfo
-                .as_ref()
-                .map(|value| value.as_str())
-                != Some("packed"),
-            "-Zohm-compact-artifacts does not support packed split debuginfo"
-        );
-        ohm_linker::validate_compact_flags(
-            unit.profile
-                .rustflags
-                .iter()
-                .map(|flag| flag.as_str())
-                .chain(
-                    build_runner
-                        .bcx
-                        .extra_args_for(unit)
-                        .into_iter()
-                        .flatten()
-                        .map(String::as_str),
-                ),
-        )?;
+    let rustflags = unit_rustflags_without_ohm_defaults(gctx, &unit.rustflags);
+    let (user_flags, generated) = rustflags.split_at(rustflags.len() - info.ohm_linker_flags);
+    let mut generated = generated.to_vec();
+    let late_flags = || {
+        unit.profile
+            .rustflags
+            .iter()
+            .map(|flag| flag.as_str())
+            .chain(
+                build_runner
+                    .bcx
+                    .extra_args_for(unit)
+                    .into_iter()
+                    .flatten()
+                    .map(String::as_str),
+            )
+    };
+    if !unit_uses_compact_artifacts(build_runner.bcx, unit) {
+        generated.retain(|flag| {
+            !matches!(
+                flag.as_str(),
+                ohm_linker::COMPACT_FLAG
+                    | ohm_linker::COMPACT_LINKER_FLAG
+                    | ohm_linker::FAST_COMPRESSION_FLAG
+            )
+        });
     }
-    if info.ohm_linker_flags != 0 {
-        // Profile flags and `cargo rustc -- ...` arrive after target discovery.
-        // Preserve their explicit linker choices too, without dropping the
-        // conservative linker identity already included in the unit fingerprint.
-        let explicit = ohm_linker::has_linker_overrides(
-            unit.profile
-                .rustflags
-                .iter()
-                .map(|flag| flag.as_str())
-                .chain(
-                    build_runner
-                        .bcx
-                        .extra_args_for(unit)
-                        .into_iter()
-                        .flatten()
-                        .map(String::as_str),
-                ),
-            gctx.cli_unstable().ohm_compact_artifacts,
-        );
-        if explicit {
-            anyhow::ensure!(
-                !gctx.cli_unstable().ohm_compact_artifacts,
-                "-Zohm-compact-artifacts cannot be combined with explicit linker flags"
-            );
-            rustflags = &rustflags[..rustflags.len() - info.ohm_linker_flags];
-        } else if gctx.cli_unstable().ohm_linker()
-            == Some(crate::workspace::features::OhmLinker::Wild)
-        {
-            let linker = ohm_linker::wild_directory(&info.sysroot).join("ld.bfd");
-            anyhow::ensure!(
-                linker.is_file(),
-                "bundled Wild linker not found at `{}`; install an Ohm toolchain that includes Wild or use `-Zohm-linker=lld`",
-                linker.display()
-            );
-        }
-    }
-    if gctx.cli_unstable().ohm_compact_artifacts
-        && rustflags
-            .last()
-            .is_some_and(|flag| flag == ohm_linker::FAST_COMPRESSION_FLAG)
-        && ohm_linker::has_compression_options(
-            unit.profile
-                .rustflags
-                .iter()
-                .map(|flag| flag.as_str())
-                .chain(
-                    build_runner
-                        .bcx
-                        .extra_args_for(unit)
-                        .into_iter()
-                        .flatten()
-                        .map(String::as_str),
-                ),
-        )
+    let wild_flags = ohm_linker::wild_flag_count(&generated);
+    if ohm_linker::has_linker_overrides(late_flags(), true)
+        || build_runner.lto[unit] == lto::Lto::OnlyBitcode
     {
-        // Profile/cargo-rustc options arrive after target discovery. Their existing fingerprint
-        // inputs distinguish this command even though its conservative suffix still names fast.
-        rustflags = &rustflags[..rustflags.len() - 1];
+        generated.drain(..wild_flags);
+    } else if wild_flags != 0 {
+        let linker = ohm_linker::wild_directory(&info.sysroot).join("ld.bfd");
+        anyhow::ensure!(
+            linker.is_file(),
+            "bundled Wild linker not found at `{}`; install an Ohm toolchain that includes Wild or use `-Zohm-linker=lld`",
+            linker.display()
+        );
     }
-    base.args(rustflags);
+    if ohm_linker::has_compression_options(late_flags()) {
+        generated.retain(|flag| flag != ohm_linker::FAST_COMPRESSION_FLAG);
+    }
+    // All generated flags remain in the conservative unit fingerprint/cache suffix.
+    // Record only actual driver/capability arguments for later build-script overrides.
+    base.args(user_flags);
+    let wild_flags = ohm_linker::wild_flag_count(&generated);
+    let generated_wild_args = (wild_flags != 0).then(|| {
+        let start = base.get_unwrapped_args().len();
+        start..start + wild_flags
+    });
+    base.args(&generated);
     if gctx.cli_unstable().binary_dep_depinfo {
         base.arg("-Z").arg("binary-dep-depinfo");
     }
@@ -2055,7 +2032,7 @@ fn prepare_rustc(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> CargoResult
     }
 
     build_runner.inherit_shared_cache_locks(&mut base)?;
-    Ok(base)
+    Ok((base, generated_wild_args))
 }
 
 /// Prepares flags and environments we can compute for a `rustdoc` invocation
@@ -2468,9 +2445,32 @@ fn add_error_format_and_color(
     }
 }
 
+/// Automatic compact storage yields to late per-unit format/metadata overrides.
+fn unit_uses_compact_artifacts(bcx: &BuildContext<'_, '_>, unit: &Unit) -> bool {
+    bcx.target_data.info(unit.kind).uses_compact_artifacts()
+        && ohm_linker::validate_compact_flags(
+            unit.profile
+                .rustflags
+                .iter()
+                .map(|flag| flag.as_str())
+                .chain(
+                    bcx.extra_args_for(unit)
+                        .into_iter()
+                        .flatten()
+                        .map(String::as_str),
+                ),
+        )
+        .is_ok()
+}
+
+/// Output discovery, compilation, dependency arguments and fingerprints share this policy.
+fn unit_should_embed_metadata(bcx: &BuildContext<'_, '_>, unit: &Unit) -> bool {
+    unit_uses_compact_artifacts(bcx, unit) || bcx.gctx.should_embed_metadata()
+}
+
 /// Returns whether an immutable internal library can omit its embedded metadata.
 fn unit_uses_no_embed_metadata(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> bool {
-    if build_runner.bcx.gctx.cli_unstable().ohm_compact_artifacts {
+    if unit_uses_compact_artifacts(build_runner.bcx, unit) {
         // Keep compact archives self-contained, including immutable registry libraries.
         return false;
     }
@@ -2549,7 +2549,7 @@ fn build_base_args(
 
     if unit.mode.is_check() {
         cmd.arg("--emit=dep-info,metadata");
-    } else if !build_runner.bcx.gctx.should_embed_metadata() {
+    } else if !unit_should_embed_metadata(build_runner.bcx, unit) {
         // Nightly rustc supports the -Zembed-metadata=no flag, which tells it to avoid including
         // full metadata in rlib/dylib artifacts, to save space on disk. In this case, metadata
         // will only be stored in .rmeta files.
@@ -3045,7 +3045,6 @@ pub fn extern_args(
     let mut result = Vec::new();
     let deps = build_runner.unit_deps(unit);
 
-    let no_embed_metadata = !build_runner.bcx.gctx.should_embed_metadata();
     let public_dependency_enabled = is_public_dependency_enabled(build_runner, unit);
 
     // Closure to add one dependency to `result`.
@@ -3100,7 +3099,9 @@ pub fn extern_args(
                 // If we use -Zembed-metadata=no, we also need to pass the path to the
                 // corresponding .rmeta file to the linkable artifact, because the
                 // normal dependency (rlib) doesn't contain the full metadata.
-                else if no_embed_metadata && output.flavor == FileFlavor::Rmeta {
+                else if !unit_should_embed_metadata(build_runner.bcx, &dep.unit)
+                    && output.flavor == FileFlavor::Rmeta
+                {
                     pass(&output.path);
                 }
             }

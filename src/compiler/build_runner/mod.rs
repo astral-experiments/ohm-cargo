@@ -1107,6 +1107,33 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
 
     #[tracing::instrument(skip_all)]
     pub fn prepare_units(&mut self) -> CargoResult<()> {
+        // Explicit conflicts are errors even when an earlier automatic fallback is fresh.
+        // Validate before output discovery or either ordinary/check-graph cache reuse.
+        if self.bcx.gctx.cli_unstable().ohm_compact_artifacts == Some(true) {
+            for unit in self.bcx.unit_graph.keys() {
+                if unit.skip_non_compile_time_dep
+                    || unit.mode.is_run_custom_build()
+                    || unit.mode.is_doc()
+                    || unit.mode.is_doc_test()
+                    || unit.mode.is_doc_scrape()
+                {
+                    continue;
+                }
+                super::ohm_linker::validate_compact_flags(
+                    unit.profile
+                        .rustflags
+                        .iter()
+                        .map(|flag| flag.as_str())
+                        .chain(
+                            self.bcx
+                                .extra_args_for(unit)
+                                .into_iter()
+                                .flatten()
+                                .map(String::as_str),
+                        ),
+                )?;
+            }
+        }
         let dest = self.bcx.profiles.get_dir_name();
         if self.bcx.ws.shared_registry_cache_enabled() {
             let mut profile_locks = HashSet::default();

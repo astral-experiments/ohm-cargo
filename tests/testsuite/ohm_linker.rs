@@ -22,7 +22,7 @@ fn mock_toolchain() -> PathBuf {
                     }
                 }
                 // Record Ohm's flags above, then delegate only standard options to the CI compiler.
-                args.retain(|arg| !matches!(arg.as_str(), "-Zpublic-api-hash" | "-Zcache-proc-macros" | "-Zthreads=8") && !arg.starts_with("-Clinker-features=") && !arg.starts_with("-Clink-self-contained=") && !arg.starts_with("-Clink-arg=-B") && arg != "-Clink-arg=-fuse-ld=bfd" && arg != "-Zcompact-artifacts=yes" && !arg.starts_with("-Zartifact-compression-"));
+                args.retain(|arg| !matches!(arg.as_str(), "-Zpublic-api-hash" | "-Zcache-proc-macros" | "-Zthreads=8") && !arg.starts_with("-Clinker-features=") && !arg.starts_with("-Clink-self-contained=") && !arg.starts_with("-Clink-arg=-B") && arg != "-Clink-arg=-fuse-ld=bfd" && arg != "-Zcompact-artifacts=yes" && arg != "-Zcompact-artifacts-linker=yes" && !arg.starts_with("-Zartifact-compression-") && !arg.starts_with("-Zembed-metadata=") && !arg.starts_with("-Zpublic-api-hash="));
                 let output = Command::new(env::var_os("OHM_REAL_RUSTC").unwrap()).args(&args).output().unwrap();
                 let mut stdout = String::from_utf8_lossy(&output.stdout).into_owned();
                 if args.iter().any(|arg| arg == "--print=sysroot") {
@@ -74,9 +74,33 @@ fn compact_artifacts_require_capability_and_track_mode_changes() {
     let log = paths::root().join("linker.log");
     cargo(&p, &rustc, "-Zohm-compact-artifacts=yes build")
         .with_status(101)
-        .with_stderr_contains("[ERROR] -Zohm-compact-artifacts requires an Ohm toolchain with compact-capable bundled Wild")
+        .with_stderr_contains("[ERROR] -Zohm-compact-artifacts requires an Ohm compiler with compact-artifacts-v2 support")
         .run();
     fs::write(linker.join("compact-artifacts-v1"), b"RCOBJ001\n").unwrap();
+    cargo(
+        &p,
+        &rustc,
+        "-Zohm-defaults=yes -Zohm-worktree-seeds=no build",
+    )
+    .run();
+    assert!(
+        !fs::read_to_string(&log)
+            .unwrap()
+            .contains("-Zcompact-artifacts=yes")
+    );
+    fs::write(&log, "").unwrap();
+    fs::write(linker.join("compact-artifacts-v2"), b"RCOBJ001\n").unwrap();
+    cargo(
+        &p,
+        &rustc,
+        "-Zohm-defaults=yes -Zohm-worktree-seeds=no build",
+    )
+    .run();
+    assert!(
+        fs::read_to_string(&log)
+            .unwrap()
+            .contains("-Zcompact-artifacts-linker=yes")
+    );
     cargo(&p, &rustc, "-Zohm-compact-artifacts=yes build").run();
     let output = fs::read_to_string(&log).unwrap();
     assert!(output.contains("-Zcompact-artifacts=yes"), "{output}");
@@ -121,35 +145,40 @@ fn compact_artifacts_require_capability_and_track_mode_changes() {
             .contains("compact-artifacts=yes")
     );
 
-    for command in [
-        "-Zohm-linker=lld build",
-        "rustc -- -Clinker=cc",
-        "rustc -- -Clto=fat",
-    ] {
+    for command in ["-Zohm-linker=lld build", "rustc -- -Clinker=cc"] {
+        fs::write(&log, "").unwrap();
         cargo(
             &p,
             &rustc,
             &format!("-Zohm-compact-artifacts=yes {command}"),
         )
-        .with_status(101)
-        .with_stderr_contains("[ERROR] -Zohm-compact-artifacts [..]")
         .run();
+        let output = fs::read_to_string(&log).unwrap();
+        assert!(output.contains("-Zcompact-artifacts=yes"), "{output}");
+        assert!(!output.contains("wild-ld"), "{output}");
+        assert!(
+            !output.contains("-Zcompact-artifacts-linker=yes"),
+            "{output}"
+        );
     }
-    p.change_file(".cargo/config.toml", "[profile.dev]\nlto=true\n");
-    cargo(&p, &rustc, "-Zohm-compact-artifacts=yes build")
-        .with_status(101)
-        .with_stderr_contains("[ERROR] -Zohm-compact-artifacts does not support cross-crate LTO")
-        .run();
+    for profile in ["lto='thin'", "lto=true", "split-debuginfo='packed'"] {
+        p.change_file(".cargo/config.toml", &format!("[profile.dev]\n{profile}\n"));
+        cargo(&p, &rustc, "-Zohm-compact-artifacts=yes build").run();
+    }
     p.change_file(
         ".cargo/config.toml",
-        "[profile.dev]\nsplit-debuginfo='packed'\n",
+        "[profile.dev]\nrustflags=['-Clinker=cc']\n",
     );
-    cargo(&p, &rustc, "-Zohm-compact-artifacts=yes build")
-        .with_status(101)
-        .with_stderr_contains(
-            "[ERROR] -Zohm-compact-artifacts does not support packed split debuginfo",
-        )
-        .run();
+    fs::write(&log, "").unwrap();
+    cargo(
+        &p,
+        &rustc,
+        "-Zprofile-rustflags -Zohm-compact-artifacts=yes build",
+    )
+    .run();
+    let output = fs::read_to_string(&log).unwrap();
+    assert!(output.contains("-Zcompact-artifacts=yes") && output.contains("-Clinker=cc"));
+    assert!(!output.contains("wild-ld") && !output.contains("-Zcompact-artifacts-linker=yes"));
     p.change_file(".cargo/config.toml", "");
     p.change_file(
         "build.rs",
@@ -173,14 +202,27 @@ fn compact_artifacts_require_capability_and_track_mode_changes() {
     .run();
     p.change_file(
         "build.rs",
-        "fn main() { println!(\"cargo::rustc-link-arg=-fuse-ld=lld\"); }",
+        "fn main() { println!(\"cargo::rustc-link-arg=-fuse-ld=bfd\"); }",
     );
-    cargo(&p, &rustc, "-Zohm-compact-artifacts=yes build")
-        .with_status(101)
-        .with_stderr_contains("[ERROR] -Zohm-compact-artifacts cannot use build-script linker selection `-fuse-ld=lld`")
-        .run();
+    fs::write(&log, "").unwrap();
+    cargo(&p, &rustc, "-Zohm-compact-artifacts=yes build").run();
+    let output = fs::read_to_string(&log).unwrap();
+    let invocation = output
+        .lines()
+        .find(|line| line.starts_with("foo "))
+        .unwrap();
+    assert!(
+        invocation.contains("-Zcompact-artifacts=yes"),
+        "{invocation}"
+    );
+    assert!(invocation.contains("link-arg=-fuse-ld=bfd"), "{invocation}");
+    assert!(!invocation.contains("wild-ld"), "{invocation}");
+    assert!(
+        !invocation.contains("-Zcompact-artifacts-linker=yes"),
+        "{invocation}"
+    );
 
-    // Compact mode uses full metadata globally, including proc-macro output discovery.
+    // Compact units use full metadata, including proc-macro output discovery.
     // Disable unrelated worktree seeds, whose compiler options require real Ohm.
     let macros = project()
         .at("metadata-macro")
@@ -209,12 +251,117 @@ fn compact_artifacts_require_capability_and_track_mode_changes() {
 
 #[cargo_test]
 #[cfg(all(target_os = "linux", target_arch = "x86_64", target_env = "gnu"))]
+fn compact_artifacts_yield_to_opaque_rustc_response_files() {
+    let rustc = mock_toolchain();
+    let linker = paths::root().join("sysroot/lib/rustlib/x86_64-unknown-linux-gnu/bin/wild-ld");
+    fs::create_dir_all(&linker).unwrap();
+    fs::write(linker.join("ld.bfd"), "fixture").unwrap();
+    fs::write(linker.join("compact-artifacts-v2"), b"RCOBJ001\n").unwrap();
+    let p = project().file("src/main.rs", "fn main() {}").build();
+    p.change_file("rustflags", "--cfg=response_file\n");
+    let response = format!("@{}", p.root().join("rustflags").display());
+    let log = paths::root().join("linker.log");
+    for source in ["rustflags", "profile", "extra"] {
+        p.change_file(".cargo/config.toml", "");
+        let command = match source {
+            "profile" => {
+                p.change_file(
+                    ".cargo/config.toml",
+                    &format!("[profile.dev]\nrustflags=['{response}']\n"),
+                );
+                "-Zprofile-rustflags build".to_owned()
+            }
+            "extra" => format!("rustc -- {response}"),
+            _ => "build".to_owned(),
+        };
+        for explicit in [false, true] {
+            fs::write(&log, "").unwrap();
+            let mut exec = cargo(
+                &p,
+                &rustc,
+                &format!(
+                    "-Zohm-defaults=yes -Zohm-worktree-seeds=no {} {command}",
+                    if explicit {
+                        "-Zohm-compact-artifacts=yes"
+                    } else {
+                        ""
+                    }
+                ),
+            );
+            if source == "rustflags" {
+                exec.env("RUSTFLAGS", &response);
+            }
+            if explicit {
+                exec.with_status(101)
+                    .with_stderr_contains("[ERROR] -Zohm-compact-artifacts cannot be combined with opaque rustc response file [..]")
+                    .run();
+            } else {
+                exec.run();
+                let output = fs::read_to_string(&log).unwrap();
+                assert!(output.contains(&response), "{source}: {output}");
+                assert!(
+                    !output.contains("-Zcompact-artifacts="),
+                    "{source}: {output}"
+                );
+                assert!(
+                    !output.contains("-Zcompact-artifacts-linker="),
+                    "{source}: {output}"
+                );
+                assert!(!output.contains("wild-ld"), "{source}: {output}");
+                assert!(
+                    !output.contains("-Zartifact-compression-"),
+                    "{source}: {output}"
+                );
+            }
+        }
+    }
+}
+
+#[cargo_test]
+#[cfg(all(target_os = "linux", target_arch = "x86_64", target_env = "gnu"))]
+fn compact_artifacts_reject_metadata_conflicts_even_when_fresh() {
+    let rustc = mock_toolchain();
+    let linker = paths::root().join("sysroot/lib/rustlib/x86_64-unknown-linux-gnu/bin/wild-ld");
+    fs::create_dir_all(&linker).unwrap();
+    fs::write(linker.join("ld.bfd"), "fixture").unwrap();
+    fs::write(linker.join("compact-artifacts-v2"), b"RCOBJ001\n").unwrap();
+    let p = project().file("src/main.rs", "fn main() {}").build();
+    let log = paths::root().join("linker.log");
+    for value in ["n", "no", "off", "false"] {
+        p.change_file(
+            ".cargo/config.toml",
+            &format!("[profile.dev]\nrustflags=['-Zembed-metadata={value}']\n"),
+        );
+        for command in ["build", "check"] {
+            let automatic =
+                format!("-Zohm-defaults=yes -Zohm-worktree-seeds=no -Zprofile-rustflags {command}");
+            cargo(&p, &rustc, &automatic).run();
+            fs::write(&log, "").unwrap();
+            cargo(&p, &rustc, &automatic).run();
+            assert!(fs::read_to_string(&log).unwrap().is_empty());
+            cargo(
+                &p,
+                &rustc,
+                &format!("-Zohm-compact-artifacts=yes {automatic}"),
+            )
+            .with_status(101)
+            .with_stderr_contains(
+                "[ERROR] -Zohm-compact-artifacts cannot be combined with `embed-metadata=[..]`",
+            )
+            .run();
+            assert!(fs::read_to_string(&log).unwrap().is_empty());
+        }
+    }
+}
+
+#[cargo_test]
+#[cfg(all(target_os = "linux", target_arch = "x86_64", target_env = "gnu"))]
 fn compact_artifacts_preserve_codec_options() {
     let rustc = mock_toolchain();
     let linker = paths::root().join("sysroot/lib/rustlib/x86_64-unknown-linux-gnu/bin/wild-ld");
     fs::create_dir_all(&linker).unwrap();
     fs::write(linker.join("ld.bfd"), "fixture").unwrap();
-    fs::write(linker.join("compact-artifacts-v1"), b"RCOBJ001\n").unwrap();
+    fs::write(linker.join("compact-artifacts-v2"), b"RCOBJ001\n").unwrap();
     let p = project().file("src/main.rs", "fn main() {}").build();
     let log = paths::root().join("linker.log");
     cargo(&p, &rustc, "-Zohm-compact-artifacts=yes build")
@@ -328,6 +475,15 @@ fn unsupported_host_keeps_default_linker() {
     let log = fs::read_to_string(paths::root().join("linker.log")).unwrap();
     assert!(!log.contains("wild-ld"));
     assert!(!log.contains("linker-features"));
+    cargo(
+        &p,
+        &rustc,
+        "-Zohm-defaults=yes -Zohm-worktree-seeds=no build",
+    )
+    .run();
+    let log = fs::read_to_string(paths::root().join("linker.log")).unwrap();
+    assert!(!log.contains("-Zcompact-artifacts=yes"));
+    assert!(!log.contains("-Zcompact-artifacts-linker=yes"));
     cargo(&p, &rustc, "-Zohm-compact-artifacts=yes build")
         .with_status(101)
         .with_stderr_contains(

@@ -163,6 +163,17 @@ impl FileType {
 }
 
 impl TargetInfo {
+    /// Whether Cargo's authenticated suffix enables compact storage for this target.
+    pub(crate) fn uses_compact_artifacts(&self) -> bool {
+        self.rustflags[self.rustflags.len() - self.ohm_linker_flags..]
+            .iter()
+            .any(|flag| flag == super::super::ohm_linker::COMPACT_FLAG)
+    }
+
+    pub(crate) fn should_embed_metadata(&self, gctx: &GlobalContext) -> bool {
+        self.uses_compact_artifacts() || gctx.should_embed_metadata()
+    }
+
     /// Learns the information of target platform from `rustc` invocation(s).
     ///
     /// Generally, the first time calling this function is expensive, as it may
@@ -595,10 +606,12 @@ impl TargetInfo {
         mode: CompileMode,
         target_kind: &TargetKind,
         target_triple: &str,
-        gctx: &GlobalContext,
+        embed_metadata: bool,
     ) -> CargoResult<(Vec<FileType>, Vec<CrateType>)> {
         match mode {
-            CompileMode::Build => self.calc_rustc_outputs(target_kind, target_triple, gctx),
+            CompileMode::Build => {
+                self.calc_rustc_outputs(target_kind, target_triple, embed_metadata)
+            }
             CompileMode::Test => {
                 match self.file_types(&CrateType::Bin, FileFlavor::Normal, target_triple)? {
                     Some(fts) => Ok((fts, Vec::new())),
@@ -619,7 +632,7 @@ impl TargetInfo {
         &self,
         target_kind: &TargetKind,
         target_triple: &str,
-        gctx: &GlobalContext,
+        embed_metadata: bool,
     ) -> CargoResult<(Vec<FileType>, Vec<CrateType>)> {
         let mut unsupported = Vec::new();
         let mut result = Vec::new();
@@ -641,7 +654,7 @@ impl TargetInfo {
             }
         }
         if !result.is_empty() {
-            if !gctx.should_embed_metadata()
+            if !embed_metadata
                 && crate_types
                     .iter()
                     .any(|ct| ct.benefits_from_no_embed_metadata())

@@ -12,7 +12,8 @@ use super::CompileKind;
 const TARGET: &str = "x86_64-unknown-linux-gnu";
 pub(super) const FAST_COMPRESSION_FLAG: &str = "-Zartifact-compression-profile=fast";
 
-/// Return driver flags only when no applicable user linker configuration exists.
+/// Select storage independently from the linker used to consume its objects.
+/// The v2 marker also promises rustc's ordinary-linker materialization adapter.
 pub(super) fn flags(
     gctx: &GlobalContext,
     host: &str,
@@ -21,54 +22,36 @@ pub(super) fn flags(
     sysroot: &Path,
     rustflags: &[String],
 ) -> CargoResult<Vec<String>> {
-    let compact = gctx.cli_unstable().ohm_compact_artifacts;
-    let Some(linker) = gctx.cli_unstable().ohm_linker() else {
-        return Ok(Vec::new());
-    };
-    anyhow::ensure!(
-        !compact || linker == OhmLinker::Wild,
-        "-Zohm-compact-artifacts requires the bundled Wild linker, not -Zohm-linker=lld"
-    );
+    let options = gctx.cli_unstable();
+    let explicit_compact = options.ohm_compact_artifacts == Some(true);
     if host != TARGET
         || matches!(kind, CompileKind::Target(target) if target.rustc_target().as_str() != TARGET)
     {
         anyhow::ensure!(
-            !compact,
+            !explicit_compact,
             "-Zohm-compact-artifacts requires native x86_64-unknown-linux-gnu builds"
         );
         return Ok(Vec::new());
     }
-    if has_linker_overrides(rustflags.iter().map(String::as_str), compact) {
+    let capable = std::fs::read(wild_directory(sysroot).join("compact-artifacts-v2"))
+        .is_ok_and(|bytes| bytes == b"RCOBJ001\n");
+    anyhow::ensure!(
+        !explicit_compact || capable,
+        "-Zohm-compact-artifacts requires an Ohm compiler with compact-artifacts-v2 support"
+    );
+    let metadata_compatible =
+        options.embed_metadata != Some(false) && options.no_embed_metadata != Some(true);
+    if explicit_compact {
         anyhow::ensure!(
-            !compact,
-            "-Zohm-compact-artifacts cannot be combined with explicit linker flags"
-        );
-        return Ok(Vec::new());
-    }
-    if compact {
-        validate_compact_flags(rustflags.iter().map(String::as_str))?;
-        anyhow::ensure!(
-            gctx.cli_unstable().embed_metadata != Some(false)
-                && gctx.cli_unstable().no_embed_metadata != Some(true),
+            metadata_compatible,
             "-Zohm-compact-artifacts requires embedded metadata"
         );
-        anyhow::ensure!(
-            wild_directory(sysroot).join("ld.bfd").is_file()
-                && std::fs::read(wild_directory(sysroot).join("compact-artifacts-v1"))
-                    .is_ok_and(|bytes| bytes == b"RCOBJ001\n"),
-            "-Zohm-compact-artifacts requires an Ohm toolchain with compact-capable bundled Wild"
-        );
+        validate_compact_flags(rustflags.iter().map(String::as_str))?;
     }
-    // A standalone Ohm Cargo can also drive an older compiler without Wild.
-    // Only automatic selection falls back; explicit Wild requests still fail
-    // in prepare_rustc when the bundled executable is missing.
-    if linker == OhmLinker::Wild
-        && gctx.cli_unstable().ohm_linker.is_none()
-        && !compact
-        && !wild_directory(sysroot).join("ld.bfd").is_file()
-    {
-        return Ok(Vec::new());
-    }
+    let compact = options.ohm_compact_artifacts()
+        && capable
+        && metadata_compatible
+        && validate_compact_flags(rustflags.iter().map(String::as_str)).is_ok();
 
     let use_host_config = kind.is_host() && !gctx.target_applies_to_host()?;
     let config = if use_host_config {
@@ -76,35 +59,33 @@ pub(super) fn flags(
     } else {
         gctx.target_cfg_triple(TARGET)?
     };
-    if config.linker.is_some()
+    let explicit_linker = has_linker_overrides(rustflags.iter().map(String::as_str), true)
+        || config.linker.is_some()
         || (!use_host_config
             && gctx
                 .target_cfgs()?
                 .iter()
-                .any(|(key, config)| config.linker.is_some() && CfgExpr::matches_key(key, cfg)))
-    {
-        anyhow::ensure!(
-            !compact,
-            "-Zohm-compact-artifacts cannot be combined with explicit linker configuration"
-        );
-        return Ok(Vec::new());
-    }
-
-    let mut flags = match linker {
-        OhmLinker::Wild => vec![
+                .any(|(key, config)| config.linker.is_some() && CfgExpr::matches_key(key, cfg)));
+    let wild = options.ohm_linker() == Some(OhmLinker::Wild)
+        && !explicit_linker
+        && (options.ohm_linker.is_some() || wild_directory(sysroot).join("ld.bfd").is_file());
+    let mut flags = if wild {
+        vec![
             "-Clinker-features=-lld".into(),
             "-Clink-self-contained=-linker".into(),
             format!("-Clink-arg=-B{}", wild_directory(sysroot).display()),
             // Older GCC releases do not recognize -fuse-ld=wild. Both GCC and
             // Clang resolve this private ld.bfd through the preceding -B path.
             "-Clink-arg=-fuse-ld=bfd".into(),
-        ],
-        // Restore the native GNU target's bundled LLD default. Explicit +lld
-        // flags need -Zunstable-options; the target default needs neither.
-        OhmLinker::Lld => Vec::new(),
+        ]
+    } else {
+        Vec::new()
     };
     if compact {
-        flags.push("-Zcompact-artifacts=yes".into());
+        if wild {
+            flags.push(COMPACT_LINKER_FLAG.into());
+        }
+        flags.push(COMPACT_FLAG.into());
         if !has_compression_options(rustflags.iter().map(String::as_str)) {
             flags.push(FAST_COMPRESSION_FLAG.into());
         }
@@ -112,11 +93,26 @@ pub(super) fn flags(
     Ok(flags)
 }
 
+pub(super) const COMPACT_FLAG: &str = "-Zcompact-artifacts=yes";
+pub(super) const COMPACT_LINKER_FLAG: &str = "-Zcompact-artifacts-linker=yes";
+
+/// The generated Wild driver flags precede storage flags in the authenticated suffix.
+pub(super) fn wild_flag_count(flags: &[String]) -> usize {
+    if flags
+        .first()
+        .is_some_and(|flag| flag == "-Clinker-features=-lld")
+    {
+        4 + usize::from(flags.get(4).is_some_and(|flag| flag == COMPACT_LINKER_FLAG))
+    } else {
+        0
+    }
+}
+
 pub(super) fn wild_directory(sysroot: &Path) -> std::path::PathBuf {
     sysroot.join("lib/rustlib").join(TARGET).join("bin/wild-ld")
 }
 
-/// Reject format and code-generation overrides that cannot use the compact-object lane.
+/// User metadata/format choices take precedence over automatic compact storage.
 pub(super) fn validate_compact_flags<'a>(
     args: impl IntoIterator<Item = &'a str>,
 ) -> CargoResult<()> {
@@ -129,13 +125,20 @@ pub(super) fn validate_compact_flags<'a>(
                 .or_else(|| arg.strip_prefix("--codegen="))
                 .or_else(|| arg.strip_prefix("-Z"))
         };
+        // Rustc expands these before parsing, including a response used as an option value.
+        if let Some(response) = std::iter::once(arg)
+            .chain(option)
+            .find(|arg| arg.starts_with('@'))
+        {
+            anyhow::bail!(
+                "-Zohm-compact-artifacts cannot be combined with opaque rustc response file `{response}`"
+            );
+        }
         let Some(option) = option else { continue };
         let (name, value) = option.split_once('=').unwrap_or((option, ""));
         let incompatible = match name.replace('_', "-").as_str() {
-            "lto" | "linker-plugin-lto" => !matches!(value, "off" | "no" | "false"),
-            "split-debuginfo" => value == "packed",
-            "compact-artifacts" => true,
-            "embed-metadata" => matches!(value, "no" | "false"),
+            "compact-artifacts" | "compact-artifacts-linker" => true,
+            "embed-metadata" => matches!(value, "n" | "no" | "off" | "false"),
             _ => false,
         };
         anyhow::ensure!(
@@ -188,7 +191,7 @@ fn selects_linker(arg: &str) -> bool {
     .any(|prefix| arg.starts_with(prefix))
 }
 
-/// Compact mode requires Wild but accepts native arguments that preserve its selection.
+/// Preserve user linker selection and let rustc materialize objects for ordinary linkers.
 pub(super) fn has_linker_overrides<'a>(
     args: impl IntoIterator<Item = &'a str>,
     allow_native_args: bool,
@@ -209,6 +212,11 @@ pub(super) fn has_linker_overrides<'a>(
         let Some(option) = option else { continue };
         let (name, value) = option.split_once('=').unwrap_or((option, ""));
         match name.replace('_', "-").as_str() {
+            name if name.starts_with('@') => return true,
+            "linker-plugin-lto" if !matches!(value, "n" | "no" | "off" | "false") => {
+                // Wild does not provide the LLVM linker plugin. Retain the platform/user linker.
+                return true;
+            }
             "linker" | "linker-flavor" | "linker-features" | "link-self-contained" => {
                 return true;
             }
@@ -270,28 +278,194 @@ mod tests {
             CliUnstable::default().ohm_linker(),
             cfg!(feature = "ohm-defaults").then_some(OhmLinker::Wild)
         );
+        for defaults in [false, true] {
+            for selection in [None, Some(false), Some(true)] {
+                let options = CliUnstable {
+                    ohm_defaults: Some(defaults),
+                    ohm_compact_artifacts: selection,
+                    ..CliUnstable::default()
+                };
+                assert_eq!(
+                    options.ohm_compact_artifacts(),
+                    selection.unwrap_or(defaults)
+                );
+            }
+        }
         let compact = CliUnstable {
             ohm_defaults: Some(false),
-            ohm_compact_artifacts: true,
+            ohm_compact_artifacts: Some(true),
             ..CliUnstable::default()
         };
         assert_eq!(compact.ohm_linker(), Some(OhmLinker::Wild));
-        assert!(!CliUnstable::default().ohm_compact_artifacts);
+        assert_eq!(CliUnstable::default().ohm_compact_artifacts, None);
+    }
+
+    #[test]
+    fn compact_capability_fallback_and_independent_linker_selection() {
+        use crate::Shell;
+        use crate::compiler::{CompileKind, CompileTarget};
+        use crate::util::GlobalContext;
+        let tmp = tempfile::tempdir().unwrap();
+        let root = tmp.path();
+        let directory = super::wild_directory(root);
+        std::fs::create_dir_all(&directory).unwrap();
+        std::fs::write(directory.join("ld.bfd"), b"fixture").unwrap();
+        let select = |options: &[&str], args: &[&str], host: &str, kind, config: &[&str]| {
+            let mut gctx = GlobalContext::new(Shell::new(), root.into(), root.join("home"));
+            gctx.nightly_features_allowed = true;
+            gctx.set_env(Default::default());
+            gctx.set_search_stop_path(root);
+            gctx.configure(
+                0,
+                false,
+                None,
+                false,
+                false,
+                false,
+                &None,
+                &options.iter().map(|s| (*s).into()).collect::<Vec<_>>(),
+                &config.iter().map(|s| (*s).into()).collect::<Vec<_>>(),
+            )
+            .unwrap();
+            super::flags(
+                &gctx,
+                host,
+                kind,
+                &[],
+                root,
+                &args.iter().map(|s| (*s).into()).collect::<Vec<_>>(),
+            )
+        };
+        let auto = ["ohm-defaults=yes"];
+        let yes = ["ohm-defaults=no", "ohm-compact-artifacts=yes"];
+        let has = |flags: &[String], flag: &str| flags.iter().any(|s| s == flag);
+        for old_marker in [false, true] {
+            if old_marker {
+                std::fs::write(directory.join("compact-artifacts-v1"), b"RCOBJ001\n").unwrap();
+            }
+            let flags = select(&auto, &[], super::TARGET, CompileKind::Host, &[]).unwrap();
+            assert!(!has(&flags, super::COMPACT_FLAG));
+            assert!(!has(&flags, super::COMPACT_LINKER_FLAG));
+            assert!(select(&yes, &[], super::TARGET, CompileKind::Host, &[]).is_err());
+        }
+        std::fs::write(directory.join("compact-artifacts-v2"), b"wrong").unwrap();
+        assert!(!has(
+            &select(&auto, &[], super::TARGET, CompileKind::Host, &[]).unwrap(),
+            super::COMPACT_FLAG
+        ));
+        std::fs::write(directory.join("compact-artifacts-v2"), b"RCOBJ001\n").unwrap();
+        for response in [
+            vec!["@user-rustflags"],
+            vec!["-Z", "@unstable-options"],
+            vec!["-C", "@codegen-options"],
+            vec!["--codegen", "@codegen-options"],
+        ] {
+            assert!(
+                select(&auto, &response, super::TARGET, CompileKind::Host, &[])
+                    .unwrap()
+                    .is_empty(),
+                "{response:?}"
+            );
+            assert!(
+                select(&yes, &response, super::TARGET, CompileKind::Host, &[])
+                    .unwrap_err()
+                    .to_string()
+                    .contains("opaque rustc response file")
+            );
+        }
+        for options in [&auto[..], &yes[..]] {
+            let flags = select(options, &[], super::TARGET, CompileKind::Host, &[]).unwrap();
+            assert!(has(&flags, super::COMPACT_FLAG));
+            assert!(has(&flags, super::COMPACT_LINKER_FLAG));
+            assert_eq!(super::wild_flag_count(&flags), 5);
+            for args in [
+                vec!["-Clinker=clang"],
+                vec!["-Clink-arg=-fuse-ld=lld"],
+                vec!["-Clinker-plugin-lto"],
+            ] {
+                let flags = select(options, &args, super::TARGET, CompileKind::Host, &[]).unwrap();
+                assert!(has(&flags, super::COMPACT_FLAG));
+                assert!(!has(&flags, super::COMPACT_LINKER_FLAG));
+                assert_eq!(super::wild_flag_count(&flags), 0);
+            }
+            for args in [
+                vec!["-Clto=thin"],
+                vec!["-Csplit-debuginfo=packed"],
+                vec!["-Clink-arg=-pthread"],
+            ] {
+                let flags = select(options, &args, super::TARGET, CompileKind::Host, &[]).unwrap();
+                assert!(has(&flags, super::COMPACT_FLAG));
+                assert!(has(&flags, super::COMPACT_LINKER_FLAG));
+            }
+            let flags = select(
+                options,
+                &[],
+                super::TARGET,
+                CompileKind::Host,
+                &["target.x86_64-unknown-linux-gnu.linker='clang'"],
+            )
+            .unwrap();
+            assert!(has(&flags, super::COMPACT_FLAG));
+            assert!(!has(&flags, super::COMPACT_LINKER_FLAG));
+        }
+        for option in ["ohm-compact-artifacts=no", "embed-metadata=no"] {
+            let flags = select(
+                &["ohm-defaults=yes", option],
+                &[],
+                super::TARGET,
+                CompileKind::Host,
+                &[],
+            )
+            .unwrap();
+            assert!(!has(&flags, super::COMPACT_FLAG));
+            assert!(!has(&flags, super::COMPACT_LINKER_FLAG));
+        }
+        for value in ["n", "no", "off", "false"] {
+            let flag = format!("-Zembed-metadata={value}");
+            let flags = select(&auto, &[&flag], super::TARGET, CompileKind::Host, &[]).unwrap();
+            assert!(!has(&flags, super::COMPACT_FLAG), "{value}");
+            assert!(select(&yes, &[&flag], super::TARGET, CompileKind::Host, &[]).is_err());
+            assert!(!has_linker_overrides(
+                [format!("-Clinker-plugin-lto={value}").as_str()],
+                true
+            ));
+        }
+        let flags = select(
+            &["ohm-defaults=yes", "ohm-linker=lld"],
+            &[],
+            super::TARGET,
+            CompileKind::Host,
+            &[],
+        )
+        .unwrap();
+        assert!(has(&flags, super::COMPACT_FLAG));
+        assert!(!has(&flags, super::COMPACT_LINKER_FLAG));
+        let cross =
+            CompileKind::Target(CompileTarget::new("aarch64-unknown-linux-gnu", false).unwrap());
+        for (host, kind) in [
+            ("aarch64-apple-darwin", CompileKind::Host),
+            (super::TARGET, cross),
+        ] {
+            assert!(select(&auto, &[], host, kind, &[]).unwrap().is_empty());
+            assert!(select(&yes, &[], host, kind, &[]).is_err());
+        }
     }
 
     #[test]
     fn compact_option_compatibility() {
         for args in [
-            vec!["-C", "lto=thin"],
-            vec!["--codegen=lto"],
-            vec!["-Clinker_plugin_lto=yes"],
-            vec!["--codegen", "split-debuginfo=packed"],
             vec!["-Zcompact-artifacts=no"],
             vec!["-Zembed-metadata=no"],
+            vec!["@user-rustflags"],
+            vec!["-Z", "@unstable-options"],
         ] {
             assert!(validate_compact_flags(args.clone()).is_err(), "{args:?}");
         }
         for args in [
+            vec!["-C", "lto=thin"],
+            vec!["--codegen=lto"],
+            vec!["-Clinker_plugin_lto=yes"],
+            vec!["--codegen", "split-debuginfo=packed"],
             vec!["-Clto=off", "-Clinker-plugin-lto=no"],
             vec!["-Csplit-debuginfo=unpacked", "--cfg", "test"],
             vec!["-Z", "artifact_compression_level=2"],
@@ -348,6 +522,9 @@ mod tests {
             vec!["-Clink-self-contained=+linker"],
             vec!["-Clinker-features=-lld"],
             vec!["@flags"],
+            vec!["-Z", "@flags"],
+            vec!["-C", "@flags"],
+            vec!["--codegen", "@flags"],
         ] {
             assert!(has_linker_overrides(args, false));
         }

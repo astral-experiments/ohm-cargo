@@ -152,6 +152,16 @@ impl ProcessBuilder {
         true
     }
 
+    /// Arguments for the original executable, excluding compiler wrapper executables.
+    pub fn get_unwrapped_args(&self) -> &[OsString] {
+        &self.args
+    }
+
+    /// Remove a range of `get_unwrapped_args` without changing compiler wrappers.
+    pub fn remove_args(&mut self, range: std::ops::Range<usize>) {
+        self.args.drain(range);
+    }
+
     /// (chainable) Sets the current working directory of the process.
     pub fn cwd<T: AsRef<OsStr>>(&mut self, path: T) -> &mut ProcessBuilder {
         self.cwd = Some(path.as_ref().to_os_string());
@@ -745,6 +755,44 @@ mod imp {
 mod tests {
     use super::ProcessBuilder;
     use std::fs;
+
+    #[test]
+    fn removing_generated_range_preserves_wrappers_and_identical_user_arguments() {
+        let mut process = ProcessBuilder::new("rustc").wrapped(Some("inner-wrapper"));
+        process.args(&["user", "-Clinker-features=-lld"]);
+        let start = process.get_unwrapped_args().len();
+        process.args(&["-Clinker-features=-lld", "generated"]);
+        let generated = start..process.get_unwrapped_args().len();
+        // prepare_rustc's caller appends replay arguments before native build-script outputs.
+        // Wrapping, environment and cwd changes must not affect the recorded argument indices.
+        process.args(&["-Z", "emit-rlink", "-Z", "temps-dir=cache"]);
+        process = process.wrapped(Some("outer-wrapper"));
+        process.env("KEY", "value").cwd("work");
+        process.remove_args(generated);
+        let command = process.build_command();
+        assert_eq!(command.get_program(), "outer-wrapper");
+        assert_eq!(
+            command.get_args().collect::<Vec<_>>(),
+            [
+                "inner-wrapper",
+                "rustc",
+                "user",
+                "-Clinker-features=-lld",
+                "-Z",
+                "emit-rlink",
+                "-Z",
+                "temps-dir=cache"
+            ]
+        );
+        assert_eq!(
+            command.get_current_dir(),
+            Some(std::path::Path::new("work"))
+        );
+        assert_eq!(
+            command.get_envs().find(|(key, _)| *key == "KEY").unwrap().1,
+            Some(std::ffi::OsStr::new("value"))
+        );
+    }
 
     #[test]
     fn argfile_build_succeeds() {

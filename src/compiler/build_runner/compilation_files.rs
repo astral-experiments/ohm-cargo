@@ -1140,7 +1140,7 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
                 CompileMode::Build,
                 &TargetKind::Bin,
                 bcx.target_data.short_name(&kind),
-                bcx.gctx,
+                info.should_embed_metadata(bcx.gctx),
             )
             .expect("target must support `bin`");
 
@@ -1383,8 +1383,12 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
 
         let info = bcx.target_data.info(unit.kind);
         let triple = bcx.target_data.short_name(&unit.kind);
-        let (file_types, unsupported) =
-            info.rustc_outputs(unit.mode, unit.target.kind(), triple, bcx.gctx)?;
+        let (file_types, unsupported) = info.rustc_outputs(
+            unit.mode,
+            unit.target.kind(),
+            triple,
+            super::super::unit_should_embed_metadata(bcx, unit),
+        )?;
         if file_types.is_empty() {
             if !unsupported.is_empty() {
                 let unsupported_strs: Vec<_> = unsupported.iter().map(|ct| ct.as_str()).collect();
@@ -3000,6 +3004,7 @@ mod shared_registry_tests {
             "-Clink-self-contained=-linker",
             "-Clink-arg=-B/toolchain/lib/rustlib/host/bin/wild-ld",
             "-Clink-arg=-fuse-ld=bfd",
+            "-Zcompact-artifacts-linker=yes",
             "-Zcompact-artifacts=yes",
             "-Zartifact-compression-profile=fast",
         ]
