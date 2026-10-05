@@ -6508,10 +6508,7 @@ fn embed_metadata_no_dylib_dep() {
     p.cargo("build -Z embed-metadata=no")
         .masquerade_as_nightly_cargo(&["-Z embed-metadata"])
         .arg("-v")
-        .with_stderr_line_without(
-            &["[RUNNING]", "--crate-name bar"],
-            &["-Z embed-metadata=no"],
-        )
+        .with_stderr_contains("[RUNNING] `[..]--crate-name bar[..]-Z embed-metadata=no[..]`")
         .with_stderr_contains(
             "[RUNNING] `[..]--extern bar=[ROOT]/foo/target/debug/deps/libbar-[HASH].rmeta[..]`",
         )

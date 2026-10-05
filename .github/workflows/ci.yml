@@ -142,6 +142,8 @@ jobs:
           fi
           # The stable-built testsuite marks these nightly tests ignored at compile time.
           "$testsuite" profiles::ohm_default_debuginfo --include-ignored --nocapture
+          "$testsuite" build::embed_metadata_no_dylib_dep \
+            --exact --include-ignored --nocapture
           for test in \
             worktree_import_requires_cloning \
             bundled_clippy_isolation_defaults_follow_actual_snapshot_cloning \
@@ -152,8 +154,7 @@ jobs:
             "$testsuite" "ohm_worktree::$test" --exact --include-ignored --nocapture
           done
           if [[ "$RUNNER_OS" == Linux ]]; then
-            "$testsuite" ohm_linker::ohm_defaults_select_wild_and_allow_lld \
-              --exact --include-ignored --nocapture
+            "$testsuite" ohm_linker:: --include-ignored --nocapture
           fi
 
   workspace-tests:
