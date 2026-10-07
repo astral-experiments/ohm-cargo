@@ -81,8 +81,6 @@ def main():
     parser.add_argument("--jobs", default="4")
     parser.add_argument("--toolchain", default="ohm")
     parser.add_argument("--arms", default="off1,on1,on2,off2")
-    parser.add_argument("--production", action="store_true",
-                        help="compare automatic production defaults with explicit isolation=false")
     parser.add_argument("--require-quiet", action="store_true",
                         help="reject external Rust processes before and after every command")
     args = parser.parse_args()
@@ -114,27 +112,26 @@ def main():
                    RUSTC=str(sysroot / "bin/rustc"), CARGO=str(args.cargo), CARGO_BUILD_JOBS=args.jobs,
                    CARGO_TARGET_DIR=str(mount / "targets/donor"), CARGO_BUILD_BUILD_DIR=str(mount / "shared"),
                    CARGO_UNSTABLE_OHM_PROC_MACRO_TRUST="all", CARGO_UNSTABLE_OHM_NATIVE_TOOL_TRUST="all",
-                   CARGO_EXPERIMENTAL_CLIPPY_SEED_ISOLATION=str(int(enabled)), INSTA_UPDATE="no",
+                   INSTA_UPDATE="no",
                    CARGO_PROFILE_DEV_DEBUG="line-tables-only", CARGO_PROFILE_DEV_OPT_LEVEL="1",
                    CARGO_PROFILE_DEV_LTO="off", PATH=os.pathsep.join([str(args.cargo.parent), str(sysroot / "bin"), os.environ["PATH"]]))
         for variable in ["RUSTFLAGS", "CARGO_ENCODED_RUSTFLAGS", "RUSTC_WRAPPER", "RUSTC_WORKSPACE_WRAPPER",
+                         "CARGO_EXPERIMENTAL_CLIPPY_SEED_ISOLATION",
                          "CARGO_UNSTABLE_OHM_CLIPPY_SEED_ISOLATION", "CARGO_UNSTABLE_OHM_WORKTREE_SEEDS",
                          "CARGO_UNSTABLE_OHM_DEFAULTS", "__CARGO_OHM_DEFAULTS", "__CARGO_OHM_WORKTREE_SEEDS",
                          "__CARGO_OHM_CLIPPY_SEED_ISOLATION"]:
             env.pop(variable, None)
-        if args.production:
-            env.pop("CARGO_EXPERIMENTAL_CLIPPY_SEED_ISOLATION", None)
-            if not enabled:
-                env["CARGO_UNSTABLE_OHM_CLIPPY_SEED_ISOLATION"] = "false"
+        if not enabled:
+            env["CARGO_UNSTABLE_OHM_CLIPPY_SEED_ISOLATION"] = "false"
         receipt = {"label": label, "enabled": enabled, "base": BASE, "edit": EDIT,
-                   "production": args.production, "require_quiet": args.require_quiet,
+                   "require_quiet": args.require_quiet,
                    "harness_sha256": sha256(Path(__file__)),
                    "cargo_version": subprocess.check_output([str(args.cargo), "-Vv"], text=True),
                    "cargo_sha256": sha256(args.cargo), "rustc_sha256": sha256(sysroot / "bin/rustc"),
                    "source_root": str(args.ruff), "volume": str(mount), "attach": plistlib.loads(attached),
                    "environment": {key: env.get(key) for key in ["CARGO_HOME", "RUSTUP_TOOLCHAIN", "RUSTC", "CARGO", "PATH",
                        "CARGO_BUILD_JOBS", "CARGO_TARGET_DIR", "CARGO_BUILD_BUILD_DIR", "CARGO_UNSTABLE_OHM_PROC_MACRO_TRUST",
-                       "CARGO_UNSTABLE_OHM_NATIVE_TOOL_TRUST", "CARGO_EXPERIMENTAL_CLIPPY_SEED_ISOLATION",
+                       "CARGO_UNSTABLE_OHM_NATIVE_TOOL_TRUST",
                        "CARGO_UNSTABLE_OHM_CLIPPY_SEED_ISOLATION",
                        "CARGO_PROFILE_DEV_DEBUG", "CARGO_PROFILE_DEV_OPT_LEVEL", "CARGO_PROFILE_DEV_LTO"]},
                    "commands": [], "measurements": {}, "toolchain": toolchain,
@@ -193,33 +190,30 @@ def main():
         clippy = [args.cargo, "clippy", "--offline", "-p", "ruff_python_parser", "--all-targets", "--", "-D", "warnings", "-A", "clippy::format_push_string"]
         command("02-donor-test", tests, donor)
         command("03-donor-clippy", clippy, donor)
-        if args.production:
-            command("03b-donor-clippy-noop", clippy, donor)
-            assert receipt["commands"][-1]["compiling_lines"] == 0
-            assert receipt["commands"][-1]["checking_lines"] == 0
+        command("03b-donor-clippy-noop", clippy, donor)
+        assert receipt["commands"][-1]["compiling_lines"] == 0
+        assert receipt["commands"][-1]["checking_lines"] == 0
         command("04-donor-noop", tests, donor)
         assert receipt["commands"][-1]["compiling_lines"] == 0
         receipt["measurements"]["donor"] = measure(mount)
         command("05-fork", [args.cargo, "worktree", "add", "--detach", child, "--target-dir", mount / "targets/child", BASE], donor)
-        if args.production:
-            fork_log = (evidence / "05-fork.log").read_text()
-            seeded = re.search(r"Seeded (\d+) files \((\d+) bytes, (\d+) reflinked files\)", fork_log)
-            receipt["seed_import"] = dict(zip(["files", "bytes", "reflinked_files"], map(int, seeded.groups()))) if seeded else None
-            save()
-            if enabled:
-                assert seeded and int(seeded[1]) > 0 and int(seeded[3]) > 0, fork_log
-            else:
-                assert not seeded and "no compatible build snapshot seeded" in fork_log, fork_log
+        fork_log = (evidence / "05-fork.log").read_text()
+        seeded = re.search(r"Seeded (\d+) files \((\d+) bytes, (\d+) reflinked files\)", fork_log)
+        receipt["seed_import"] = dict(zip(["files", "bytes", "reflinked_files"], map(int, seeded.groups()))) if seeded else None
+        save()
+        if enabled:
+            assert seeded and int(seeded[1]) > 0 and int(seeded[3]) > 0, fork_log
+        else:
+            assert not seeded and "no compatible build snapshot seeded" in fork_log, fork_log
         child_env = dict(env, CARGO_TARGET_DIR=str(mount / "targets/child"))
         command("06-child-test", tests, child, child_env)
         receipt["measurements"]["child_fresh"] = measure(mount)
         command("07-edit", ["git", "checkout", "--detach", EDIT], child, child_env)
         command("08-child-edit-test", tests, child, child_env)
         command("09-child-clippy", clippy, child, child_env)
-        if args.production:
-            command("09b-child-clippy-noop", clippy, child, child_env)
-            assert receipt["commands"][-1]["compiling_lines"] == 0
-            assert receipt["commands"][-1]["checking_lines"] == 0
+        command("09b-child-clippy-noop", clippy, child, child_env)
+        assert receipt["commands"][-1]["compiling_lines"] == 0
+        assert receipt["commands"][-1]["checking_lines"] == 0
         command("10-child-noop", tests, child, child_env)
         assert receipt["commands"][-1]["compiling_lines"] == 0
         for name, passed in [("02-donor-test", 812), ("06-child-test", 812), ("08-child-edit-test", 813)]:
