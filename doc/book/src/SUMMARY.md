@@ -69,6 +69,8 @@
         * [cargo run](commands/cargo-run.md)
         * [cargo rustc](commands/cargo-rustc.md)
         * [cargo rustdoc](commands/cargo-rustdoc.md)
+        * [cargo start](commands/cargo-start.md)
+        * [cargo stop](commands/cargo-stop.md)
         * [cargo test](commands/cargo-test.md)
     * [Manifest Commands](commands/manifest-commands.md)
         * [cargo add](commands/cargo-add.md)

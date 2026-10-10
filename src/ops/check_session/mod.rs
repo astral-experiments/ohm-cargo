@@ -1,45 +1,46 @@
-//! Own a single private compiler and validate each request through Cargo's build graph.
+//! Retain one compiler behind an explicitly started workspace session.
 
 use std::collections::BTreeMap;
 use std::ffi::OsString;
 use std::io::{BufRead, BufReader, Write};
 use std::path::{Path, PathBuf};
 use std::process::{Child, ChildStdin, Stdio};
+use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Mutex, mpsc};
 use std::time::{Duration, Instant};
 
-use anyhow::{Context, bail, ensure};
+use anyhow::{Context, ensure};
 use cargo_util::ProcessBuilder;
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use serde_json::json;
 
-use crate::compiler::{BuildRunner, CompileMode, DefaultExecutor, Executor, Unit};
 use crate::util::CargoResult;
-use crate::workspace::{PackageId, Target};
+
+pub mod workspace;
 
 const TIMEOUT: Duration = Duration::from_secs(300);
 const OUTPUT_LIMIT: usize = 64 * 1024 * 1024;
 
-#[derive(Clone)]
-struct Root {
-    package: PackageId,
-    target: Target,
+#[derive(Clone, Serialize, Deserialize)]
+struct CompilerConfiguration {
     compiler: String,
     compiler_fingerprint: Option<u64>,
-    retain: bool,
     trust_proc_macros: bool,
     directory: PathBuf,
+    jobs: u32,
 }
 
 #[derive(PartialEq, Eq)]
 struct Invocation {
     program: OsString,
     arguments: Vec<OsString>,
-    environment: BTreeMap<String, Option<OsString>>,
+    arg0: Option<OsString>,
+    environment: BTreeMap<OsString, OsString>,
     cwd: Option<PathBuf>,
     compiler: String,
     compiler_fingerprint: Option<u64>,
     trust_proc_macros: bool,
+    jobs: u32,
 }
 
 #[derive(Default)]
@@ -47,190 +48,124 @@ struct State {
     worker: Option<Worker>,
     invocation: Option<Invocation>,
     scratch: Option<tempfile::TempDir>,
-    generations: u64,
 }
 
-/// A session owns the compiler process; no worker is shared with another Cargo invocation.
-pub struct CheckSession {
+struct CompilerSession {
     source: PathBuf,
-    root: Mutex<Option<Root>>,
     state: Mutex<State>,
 }
 
-impl CheckSession {
-    /// Select the source whose restricted edits may reuse frontend state.
-    pub fn new(source: PathBuf) -> Self {
+#[derive(Serialize, Deserialize)]
+struct Checked {
+    diagnostics: Vec<String>,
+    errors: bool,
+    retained: bool,
+    worker_pid: u32,
+}
+
+impl CompilerSession {
+    fn new(source: PathBuf) -> Self {
         Self {
             source,
-            root: Mutex::new(None),
             state: Mutex::new(State::default()),
         }
     }
 
-    /// Discard retained state after a failed dependency or request setup.
-    pub fn invalidate(&self) {
-        self.state.lock().unwrap().worker = None;
-    }
-
-    /// Whether the next compatible request can reuse a live compiler.
-    pub fn is_warm(&self) -> bool {
-        self.state.lock().unwrap().worker.is_some()
-    }
-}
-
-impl Executor for CheckSession {
-    fn is_check_session(&self) -> bool {
-        true
-    }
-
-    fn init(&self, runner: &BuildRunner<'_, '_>, unit: &Unit) {
-        if !runner.bcx.roots.contains(unit) {
-            return;
-        }
-        let compiler = runner.bcx.rustc();
-        // Proc macros may read inputs that neither Cargo nor rustc can enumerate.
-        let trust_proc_macros = runner
-            .bcx
-            .gctx
-            .cli_unstable()
-            .ohm_check_session_trust_proc_macros;
-        let compiler_fingerprint = compiler.check_session_fingerprint();
-        let retain = compiler_fingerprint.is_some()
-            && compiler.wrapper.is_none()
-            && compiler.workspace_wrapper.is_none()
-            && (trust_proc_macros
-                || !runner
-                    .bcx
-                    .unit_graph
-                    .keys()
-                    .any(|unit| unit.target.proc_macro()));
-        *self.root.lock().unwrap() = Some(Root {
-            package: unit.pkg.package_id(),
-            target: unit.target.clone(),
-            compiler: compiler.verbose_version.clone(),
-            compiler_fingerprint,
-            retain,
-            trust_proc_macros,
-            directory: runner
-                .bcx
-                .ws
-                .target_dir()
-                .as_path_unlocked()
-                .join(".ohm-check-sessions"),
-        });
-    }
-
-    fn exec(
+    fn check(
         &self,
+        config: &CompilerConfiguration,
         command: &ProcessBuilder,
-        package: PackageId,
-        target: &Target,
-        mode: CompileMode,
-        stdout: &mut dyn FnMut(&str) -> CargoResult<()>,
-        stderr: &mut dyn FnMut(&str) -> CargoResult<()>,
-    ) -> CargoResult<()> {
-        let root = self
-            .root
-            .lock()
-            .unwrap()
-            .clone()
-            .context("missing check-session root")?;
-        if package != root.package
-            || *target != root.target
-            || mode != (CompileMode::Check { test: false })
-        {
-            self.invalidate();
-            return DefaultExecutor.exec(command, package, target, mode, stdout, stderr);
-        }
-
+        environment: BTreeMap<OsString, OsString>,
+        cancelled: &AtomicBool,
+    ) -> CargoResult<Option<Checked>> {
         let invocation = Invocation {
             program: command.get_program().clone(),
             arguments: command.get_args().cloned().collect(),
-            environment: command.get_envs().clone(),
+            arg0: command.get_arg0().map(ToOwned::to_owned),
+            environment,
             cwd: command.get_cwd().map(Path::to_path_buf),
-            compiler: root.compiler,
-            compiler_fingerprint: root.compiler_fingerprint,
-            trust_proc_macros: root.trust_proc_macros,
+            compiler: config.compiler.clone(),
+            compiler_fingerprint: config.compiler_fingerprint,
+            trust_proc_macros: config.trust_proc_macros,
+            jobs: config.jobs,
         };
         let mut state = self.state.lock().unwrap();
-        if state.invocation.as_ref() != Some(&invocation) || !root.retain {
+        if state.invocation.as_ref() != Some(&invocation) {
             state.worker = None;
         }
         if state.scratch.is_none() {
-            std::fs::create_dir_all(&root.directory)?;
+            std::fs::create_dir_all(&config.directory)?;
             state.scratch = Some(
                 tempfile::Builder::new()
                     .prefix("session-")
-                    .tempdir_in(&root.directory)?,
+                    .tempdir_in(&config.directory)?,
             );
         }
         let scratch = state.scratch.as_ref().unwrap().path().to_owned();
         state.invocation = Some(invocation);
-
-        if root.retain {
-            let reused = state.worker.is_some();
-            let response = if let Some(worker) = &mut state.worker {
-                worker.check()
-            } else {
-                let outputs = tempfile::Builder::new()
-                    .prefix("worker-")
-                    .tempdir_in(&scratch)?;
-                let mut worker_command =
-                    isolated_command(command, outputs.path(), true, &self.source)?;
-                if root.trust_proc_macros {
-                    worker_command.arg("-Zohm-check-session-trust-proc-macros");
-                }
-                match Worker::start(&mut worker_command, outputs) {
-                    Ok(mut worker) => {
-                        let response = worker.response("ready", 0);
-                        state.generations += 1;
-                        state.worker = Some(worker);
-                        response
-                    }
-                    Err(error) => Err(error),
-                }
-            };
-            match response {
-                Ok((boundary, diagnostics)) => {
-                    tracing::debug!(
-                        reused,
-                        generation = state.generations,
-                        revision = boundary.revision,
-                        "completed resident check-session request"
-                    );
-                    if !boundary.retained {
-                        state.worker = None;
-                    }
-                    for diagnostic in diagnostics {
-                        stderr(&diagnostic)?;
-                    }
-                    if boundary.errors {
-                        bail!("compiler reported errors");
-                    }
-                    return Ok(());
-                }
-                Err(error) => {
-                    tracing::debug!(%error, "discarding check-session worker before fresh compilation");
+        let response = if let Some(worker) = &mut state.worker {
+            worker.check(cancelled)
+        } else {
+            let outputs = tempfile::Builder::new()
+                .prefix("worker-")
+                .tempdir_in(&scratch)?;
+            let mut worker_command = isolated_command(command, outputs.path(), true, &self.source)?;
+            if config.trust_proc_macros {
+                worker_command.arg("-Zohm-check-session-trust-proc-macros");
+            }
+            let environment = &state.invocation.as_ref().unwrap().environment;
+            let mut worker = Worker::start(&mut worker_command, outputs, environment, config.jobs)?;
+            let response = worker.response("ready", 0, cancelled);
+            state.worker = Some(worker);
+            response
+        };
+        match response {
+            Ok((boundary, diagnostics)) => {
+                let worker_pid = state.worker.as_ref().unwrap().child.id();
+                if !boundary.retained {
                     state.worker = None;
                 }
+                Ok(Some(Checked {
+                    diagnostics,
+                    errors: boundary.errors,
+                    retained: boundary.retained,
+                    worker_pid,
+                }))
+            }
+            Err(error) => {
+                tracing::debug!(%error, "discarding check-session worker before fresh compilation");
+                state.worker = None;
+                Ok(None)
             }
         }
-
-        let fresh = isolated_command(command, &scratch.join("fresh"), false, &self.source)?;
-        tracing::debug!("running fresh check-session fallback");
-        fresh
-            .exec_with_streaming(
-                stdout,
-                &mut |line| {
-                    if !is_artifact(line) {
-                        stderr(line)?;
-                    }
-                    Ok(())
-                },
-                false,
-            )
-            .map(drop)
     }
+}
+
+fn fresh_check(
+    command: &ProcessBuilder,
+    directory: &Path,
+    source: &Path,
+    stdout: &mut dyn FnMut(&str) -> CargoResult<()>,
+    stderr: &mut dyn FnMut(&str) -> CargoResult<()>,
+) -> CargoResult<()> {
+    std::fs::create_dir_all(directory)?;
+    let scratch = tempfile::Builder::new()
+        .prefix("fresh-")
+        .tempdir_in(directory)?;
+    let fresh = isolated_command(command, scratch.path(), false, source)?;
+    tracing::debug!("running fresh check-session fallback");
+    fresh
+        .exec_with_streaming(
+            stdout,
+            &mut |line| {
+                if !is_artifact(line) {
+                    stderr(line)?;
+                }
+                Ok(())
+            },
+            false,
+        )
+        .map(drop)
 }
 
 fn is_artifact(line: &str) -> bool {
@@ -334,13 +269,24 @@ struct Worker {
     revision: u64,
     // Cargo removes snapshots after reaping the child, even if it exited without destructors.
     _outputs: tempfile::TempDir,
+    _jobserver: jobserver::Client,
 }
 
 impl Worker {
-    fn start(command: &mut ProcessBuilder, outputs: tempfile::TempDir) -> CargoResult<Self> {
+    fn start(
+        command: &mut ProcessBuilder,
+        outputs: tempfile::TempDir,
+        environment: &BTreeMap<OsString, OsString>,
+        jobs: u32,
+    ) -> CargoResult<Self> {
         command.clear_inherited_files();
-        let mut child = command
-            .build_command()
+        // The requesting client reserves this many slots before sending a check. Its
+        // jobserver descriptors cannot outlive that Cargo process; this private budget can.
+        let jobserver = jobserver::Client::new(jobs.saturating_sub(1) as usize)?;
+        let mut process = command.build_command();
+        process.env_clear().envs(environment);
+        jobserver.configure(&mut process);
+        let mut child = process
             .stdin(Stdio::piped())
             .stdout(Stdio::null())
             .stderr(Stdio::piped())
@@ -376,10 +322,11 @@ impl Worker {
             output,
             revision: 0,
             _outputs: outputs,
+            _jobserver: jobserver,
         })
     }
 
-    fn check(&mut self) -> CargoResult<(Boundary, Vec<String>)> {
+    fn check(&mut self, cancelled: &AtomicBool) -> CargoResult<(Boundary, Vec<String>)> {
         self.revision += 1;
         let input = self.input.as_mut().context("closed worker input")?;
         serde_json::to_writer(
@@ -388,19 +335,36 @@ impl Worker {
         )?;
         input.write_all(b"\n")?;
         input.flush()?;
-        self.response("checked", self.revision)
+        self.response("checked", self.revision, cancelled)
     }
 
-    fn response(&mut self, kind: &str, revision: u64) -> CargoResult<(Boundary, Vec<String>)> {
+    fn response(
+        &mut self,
+        kind: &str,
+        revision: u64,
+        cancelled: &AtomicBool,
+    ) -> CargoResult<(Boundary, Vec<String>)> {
         let deadline = Instant::now() + TIMEOUT;
         let mut diagnostics = Vec::new();
         let mut bytes = 0;
         let mut errors = false;
         loop {
-            let line = self
+            ensure!(
+                !cancelled.load(Ordering::Relaxed),
+                "check-session client disconnected"
+            );
+            let remaining = deadline.saturating_duration_since(Instant::now());
+            ensure!(
+                !remaining.is_zero(),
+                "compiler did not complete a session request"
+            );
+            let line = match self
                 .output
-                .recv_timeout(deadline.saturating_duration_since(Instant::now()))
-                .context("compiler did not complete a session request")??;
+                .recv_timeout(remaining.min(Duration::from_millis(100)))
+            {
+                Err(mpsc::RecvTimeoutError::Timeout) => continue,
+                response => response.context("compiler exited during a session request")??,
+            };
             bytes += line.len();
             ensure!(
                 bytes <= OUTPUT_LIMIT,

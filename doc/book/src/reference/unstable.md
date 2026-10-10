@@ -93,7 +93,7 @@ Each new feature described below should explain how to use it.
     * [binary-dep-depinfo](#binary-dep-depinfo) --- Causes the dep-info file to track binary dependencies.
     * [checksum-freshness](#checksum-freshness) --- When passed, the decision as to whether a crate needs to be rebuilt is made using file checksums instead of the file mtime.
     * [headstart](#headstart) --- Overlap dependency checks using early interface metadata in Ohm.
-    * [ohm-check-session](#ohm-check-session) --- Keep an explicitly owned compiler for restricted library edits.
+    * [ohm-check-session](#ohm-check-session) --- Share a workspace compiler across independent checks.
     * [ohm-clippy-seed-isolation](#ohm-clippy-seed-isolation) --- Keep bundled Clippy state out of worktree snapshots.
     * [ohm-worktree-seeds](#ohm-worktree-seeds) --- Prepare build state for seeding new Git worktrees with Ohm.
     * [panic-abort-tests](#panic-abort-tests) --- Allows running tests with the "abort" panic strategy.
@@ -2066,49 +2066,67 @@ changes compiler arguments and therefore invalidates existing build fingerprints
 
 ## ohm-check-session
 
-This experimental Ohm feature keeps one compiler process alive while you work on
-a selected library source file. It requires the matching Ohm compiler to reuse
-frontend state; other compilers use fresh checks.
+This experimental Ohm feature starts a workspace-local server that retains one
+compiler process across independent Cargo commands. It currently supports Unix
+platforms and requires the matching Ohm compiler to reuse frontend state.
 
 ```console
-cargo +ohm -Zohm-check-session check -p my-library --lib --session src/math.rs
+cargo +ohm -Zohm-check-session start -p my-library --lib --source src/math.rs
+cargo +ohm check -p my-library --lib
+cargo +ohm check -p my-library --lib
+cargo +ohm stop
 ```
 
-The command checks once, then waits for Enter to check again. Type `q`, close
-standard input, or press Ctrl-C to end the session. Cargo owns the private child
-process and closes it when the session ends. There is no separately started
-service, listening socket, background watcher, or reuse across Cargo commands.
+`start` starts the host, performs the first check, and returns. The host remains
+alive until `stop`, including when the first check reports an error. Later `check`
+commands from this workspace find the host automatically. Each command has its
+own diagnostics and exit status. A repeated start with the same source and trust
+setting reuses the host. To change these settings, stop the existing session first.
 
-Each request reloads Cargo configuration and the workspace, checks dependencies
-normally, and validates the compiler invocation before attempting reuse. The
-compiler validates its source and dependency inputs before and after an update.
+The host uses a private, owner-only Unix socket and a persistent startup lock.
+Discovery uses the canonical workspace root, so member directories share a
+session and separate workspaces do not. Clients must use the same Cargo executable.
+The host serializes compiler requests. `stop` waits for any active request and
+reaps the compiler before acknowledging shutdown. A cancelled check retires its
+worker; the host remains available. SIGINT, SIGTERM, and SIGHUP stop the host.
+A killed host cannot serve results, and the next explicit start recovers its
+stale socket. There is no file watcher or automatic background startup.
+
+Each client reloads Cargo configuration, resolves the workspace, and checks
+its dependencies normally. Only a supported terminal library check is sent to
+the host. The compiler invocation, effective environment, compiler identity, and
+job budget must match before a worker can be reused. The compiler also validates
+its source and dependency inputs before and after each update. Client jobserver
+descriptors are never retained. The client reserves its job budget while the
+terminal worker uses an equivalent private budget. Clients running under an
+external jobserver use fresh checks.
+
 Unrecognized edits, changed inputs, unsupported compilers, and failed protocol
-requests discard retained state and run a fresh check. A fresh fallback can report
-errors; the session continues so that the next request can check a repair. The
-exit status reflects the last check.
+requests discard retained state and run a fresh check. Warnings, errors, and
+repairs can retain state when the compiler supports them. Missing or incompatible
+hosts use ordinary Cargo. `cargo check --no-session` explicitly bypasses a host;
+`build`, `test`, and checks of multiple targets also use ordinary Cargo.
 
-The first version accepts exactly one local, non-procedural-macro library target.
-Reuse is restricted to an ASCII source file for an out-of-line module, with a
-non-generic function as its final item. Its declaration stays fixed. Supported
-bodies contain simple local expressions, control flow, and supported inherent
-method calls. Closures, new definitions, macros, attributes, and changes outside
-that body require a fresh check. A preceding `f32` literal constant can also
-change without changing its byte width. Source files included elsewhere as code
-or data require fresh checks.
+The first version retains exactly one local, non-procedural-macro library target
+whose package contains the selected source. Reuse is restricted to an ASCII
+source file for an out-of-line module, with a non-generic function as its final
+item. Its declaration stays fixed. Supported bodies contain simple local
+expressions, control flow, and supported inherent method calls. Closures, new
+definitions, macros, attributes, and changes outside that body require a fresh
+check. A preceding `f32` literal constant can also change without changing its
+byte width. Source files included elsewhere as code or data require fresh checks.
 
 By default, compiler wrappers and workspaces with procedural-macro dependencies
-use fresh checks. `-Zohm-check-session-trust-proc-macros` explicitly assumes that
-macro expansion remains valid while a worker is retained. Declared macro file
+use fresh checks. Passing `-Zohm-check-session-trust-proc-macros` to `start` explicitly
+assumes macro expansion remains valid for that session. Declared macro file
 inputs are checked, but undeclared reads and other side effects are not tracked;
 this opt-in can therefore be unsound. It is intended for controlled experiments.
 
 Retained checks use the configured frontend thread count. They do not publish
 library metadata or a successful Cargo fingerprint. Dependencies still produce
 their normal artifacts. Worker dependency metadata is copied into private storage
-so that the session can release Cargo's build locks while idle. Ordinary
-`cargo check`, `build`, and `test` remain separate operations. Normal session
-shutdown removes its temporary outputs; abrupt process termination may leave
-temporary files.
+so that the host holds no Cargo build locks while idle. Normal shutdown removes
+private outputs; SIGKILL or machine failure may leave temporary files.
 
 Workers retire after 256 updates or when their resident memory exceeds 4 GiB at
 a request boundary. These limits bound retention, not peak compilation memory.

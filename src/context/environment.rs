@@ -99,6 +99,14 @@ impl Env {
             .filter_map(|(k, v)| Some((k.to_str()?, v.to_str()?)))
     }
 
+    /// Iterate over the complete environment snapshot, including non-UTF-8 entries.
+    #[cfg(unix)]
+    pub fn iter_os(&self) -> impl Iterator<Item = (&OsStr, &OsStr)> {
+        self.env
+            .iter()
+            .map(|(key, value)| (key.as_os_str(), value.as_os_str()))
+    }
+
     /// Returns all environment variable keys, filtering out keys that are not valid UTF-8.
     pub fn keys_str(&self) -> impl Iterator<Item = &str> {
         self.env.keys().filter_map(|k| k.to_str())

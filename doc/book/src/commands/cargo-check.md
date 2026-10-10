@@ -228,11 +228,11 @@ machine-readable timing data.</p>
 
 
 
-<dt class="option-term" id="option-cargo-check---session"><a class="option-anchor" href="#option-cargo-check---session"><code>--session</code> <em>SOURCE</em></a></dt>
-<dd class="option-desc"><p>Keep an experimental Ohm development session for one selected library source
-file. Check once, then press Enter to recheck or type <code>q</code> to stop. Requires
-<code>-Zohm-check-session</code>; see <a href="../reference/unstable.html#ohm-check-session">Ohm check sessions</a>
-for the supported edit boundary and fallback behavior.</p>
+<dt class="option-term" id="option-cargo-check---no-session"><a class="option-anchor" href="#option-cargo-check---no-session"><code>--no-session</code></a></dt>
+<dd class="option-desc"><p>Run an ordinary check without using an explicitly started Ohm workspace session.
+Without this option, compatible checks can reuse the session created by
+<a href="cargo-start.html">cargo-start(1)</a>. See <a href="../reference/unstable.html#ohm-check-session">Ohm check sessions</a>
+for the experimental scope and fallback behavior.</p>
 </dd>
 
 

@@ -15,6 +15,10 @@ fn main() {
     }).collect();
     let mut revision = 0;
     loop {
+        if fs::metadata("pause").is_ok() {
+            fs::write("checking", "").unwrap();
+            while fs::metadata("pause").is_ok() { std::thread::sleep(std::time::Duration::from_millis(20)); }
+        }
         if fs::metadata("decline").is_ok() {
             eprintln!(r#"{{"$message_type":"diagnostic","level":"error","message":"discard this provisional diagnostic"}}"#);
             eprintln!(r#"{{"$message_type":"ohm-check-session","protocol":1,"kind":"unsupported","revision":{revision},"errors":true,"retained":false}}"#);

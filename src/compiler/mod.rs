@@ -322,7 +322,7 @@ fn unit_uses_ohm_incremental_mono_partitions(
 /// the build calls.
 pub trait Executor: Send + Sync + 'static {
     /// Check sessions execute one terminal check without publishing its outputs or fingerprint.
-    fn is_check_session(&self) -> bool {
+    fn is_check_session(&self, _roots: &[Unit]) -> bool {
         false
     }
 
@@ -412,7 +412,8 @@ fn compile<'gctx>(
             // We run these targets later, so this is just a no-op for now.
             Job::new_fresh()
         } else {
-            let session = exec.is_check_session() && build_runner.bcx.roots.contains(unit);
+            let session = exec.is_check_session(&build_runner.bcx.roots)
+                && build_runner.bcx.roots.contains(unit);
             let force = session || exec.force_rebuild(unit) || force_rebuild;
             let mut job = fingerprint::prepare_target(build_runner, unit, force)?;
             if session {

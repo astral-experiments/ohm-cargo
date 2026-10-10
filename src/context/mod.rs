@@ -203,16 +203,6 @@ pub struct CredentialCacheValue {
     pub operation_independent: bool,
 }
 
-#[derive(Debug)]
-struct ConfigureOptions {
-    verbose: u32,
-    quiet: bool,
-    color: Option<String>,
-    frozen: bool,
-    locked: bool,
-    offline: bool,
-}
-
 /// Configuration information for cargo. This is not specific to a build, it is information
 /// relating to cargo itself.
 #[derive(Debug)]
@@ -227,7 +217,6 @@ pub struct GlobalContext {
     credential_values: OnceLock<HashMap<String, ConfigValue>>,
     /// CLI config values, passed in via `configure`.
     cli_config: Option<Vec<String>>,
-    configure_options: Option<ConfigureOptions>,
     /// The current working directory of cargo
     cwd: PathBuf,
     /// Directory where config file searching should stop (inclusive).
@@ -388,7 +377,6 @@ impl GlobalContext {
             values: Default::default(),
             credential_values: Default::default(),
             cli_config: None,
-            configure_options: None,
             cargo_exe: Default::default(),
             rustdoc: Default::default(),
             extra_verbose: false,
@@ -697,37 +685,6 @@ impl GlobalContext {
         Ok(())
     }
 
-    /// Recreate configuration and compiler observations for the next explicit session request.
-    pub fn fresh_for_check_session(&self) -> CargoResult<Self> {
-        let options = self
-            .configure_options
-            .as_ref()
-            .context("Cargo configuration is not initialized")?;
-        let mut fresh = Self::new(
-            Shell::new(),
-            self.cwd.clone(),
-            self.home_path.as_path_unlocked().to_owned(),
-        );
-        fresh.nightly_features_allowed = self.nightly_features_allowed;
-        fresh.search_stop_path = self.search_stop_path.clone();
-        let target = self
-            .target_dir
-            .as_ref()
-            .map(|path| path.as_path_unlocked().to_owned());
-        fresh.configure(
-            options.verbose,
-            options.quiet,
-            options.color.as_deref(),
-            options.frozen,
-            options.locked,
-            options.offline,
-            &target,
-            self.unstable_flags_cli.as_deref().unwrap_or_default(),
-            self.cli_config.as_deref().unwrap_or_default(),
-        )?;
-        Ok(fresh)
-    }
-
     /// Reloads on-disk configuration values, starting at the given path and
     /// walking up its ancestors.
     pub fn reload_rooted_at<P: AsRef<Path>>(&mut self, path: P) -> CargoResult<()> {
@@ -1017,6 +974,12 @@ impl GlobalContext {
         self.env.iter_str()
     }
 
+    /// Return the full client environment for a workspace compiler request.
+    #[cfg(unix)]
+    pub(crate) fn env_os(&self) -> impl Iterator<Item = (&OsStr, &OsStr)> {
+        self.env.iter_os()
+    }
+
     /// Returns all environment variable keys, filtering out keys that are not valid UTF-8.
     fn env_keys(&self) -> impl Iterator<Item = &str> {
         self.env.keys_str()
@@ -1205,14 +1168,6 @@ impl GlobalContext {
         unstable_flags: &[String],
         cli_config: &[String],
     ) -> CargoResult<()> {
-        self.configure_options = Some(ConfigureOptions {
-            verbose,
-            quiet,
-            color: color.map(str::to_owned),
-            frozen,
-            locked,
-            offline,
-        });
         for warning in self
             .unstable_flags
             .parse(unstable_flags, self.nightly_features_allowed)?

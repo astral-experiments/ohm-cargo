@@ -46,11 +46,11 @@ they have `required-features` that are missing.
 
 {{> options-timings }}
 
-{{#option "`--session` _SOURCE_" }}
-Keep an experimental Ohm development session for one selected library source
-file. Check once, then press Enter to recheck or type `q` to stop. Requires
-`-Zohm-check-session`; see [Ohm check sessions](../reference/unstable.html#ohm-check-session)
-for the supported edit boundary and fallback behavior.
+{{#option "`--no-session`" }}
+Run an ordinary check without using an explicitly started Ohm workspace session.
+Without this option, compatible checks can reuse the session created by
+{{man "cargo-start" 1}}. See [Ohm check sessions](../reference/unstable.html#ohm-check-session)
+for the experimental scope and fallback behavior.
 {{/option}}
 
 {{/options}}

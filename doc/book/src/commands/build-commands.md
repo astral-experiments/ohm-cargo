@@ -12,4 +12,6 @@
 * [cargo run](cargo-run.md)
 * [cargo rustc](cargo-rustc.md)
 * [cargo rustdoc](cargo-rustdoc.md)
+* [cargo start](cargo-start.md)
+* [cargo stop](cargo-stop.md)
 * [cargo test](cargo-test.md)

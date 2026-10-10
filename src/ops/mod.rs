@@ -119,4 +119,5 @@ fn check_dep_has_version(
 }
 
 /// Private compiler process ownership for explicit check sessions.
+#[cfg(unix)]
 pub mod check_session;

@@ -1,0 +1,40 @@
+'\" t
+.TH "CARGO\-START" "1"
+.nh
+.ad l
+.ss \n[.ss] 0
+.SH "NAME"
+cargo\-start \[em] Start an experimental Ohm workspace check session
+.SH "SYNOPSIS"
+\fBcargo \-Zohm\-check\-session start \-\-source\fR \fISOURCE\fR [\fIcheck\-options\fR]
+.SH "DESCRIPTION"
+Start a workspace\-local compiler host, perform the first check, and return. Later
+\fBcargo\-check\fR(1) commands in the same workspace can reuse its warm compiler
+state. \fBcargo\-stop\fR(1) shuts down the host and its compiler. A failed first
+check leaves the session available for repairs.
+.sp
+This experimental feature currently requires Unix. It retains one supported
+library source file; use \fB\-p\fR and \fB\-\-lib\fR to select the library. Other targets and
+unsupported edits use fresh checks. See \fIOhm check sessions\fR <https://doc.rust\-lang.org/cargo/reference/unstable.html#ohm\-check\-session>
+for the supported source edits, compatibility checks, and lifecycle.
+.SH "OPTIONS"
+.sp
+\fB\-\-source\fR \fISOURCE\fR
+.RS 4
+Select the source file whose supported edits may reuse compiler state. The path
+is relative to the current directory and must be inside the workspace.
+.RE
+.sp
+Other options are the same as \fBcargo\-check\fR(1), except \fB\-\-no\-session\fR,
+\fB\-\-unit\-graph\fR, and \fB\-\-compile\-time\-deps\fR cannot be used when starting a session.
+.SH "EXAMPLES"
+.sp
+.RS 4
+.nf
+cargo +ohm \-Zohm\-check\-session start \-p my\-library \-\-lib \-\-source src/math.rs
+cargo +ohm check \-p my\-library \-\-lib
+cargo +ohm stop
+.fi
+.RE
+.SH "SEE ALSO"
+\fBcargo\fR(1), \fBcargo\-check\fR(1), \fBcargo\-stop\fR(1)

@@ -217,12 +217,12 @@ These reports are suitable for human consumption only, and do not provide
 machine\-readable timing data.
 .RE
 .sp
-\fB\-\-session\fR \fISOURCE\fR
+\fB\-\-no\-session\fR
 .RS 4
-Keep an experimental Ohm development session for one selected library source
-file. Check once, then press Enter to recheck or type \fBq\fR to stop. Requires
-\fB\-Zohm\-check\-session\fR; see \fIOhm check sessions\fR <https://doc.rust\-lang.org/cargo/reference/unstable.html#ohm\-check\-session>
-for the supported edit boundary and fallback behavior.
+Run an ordinary check without using an explicitly started Ohm workspace session.
+Without this option, compatible checks can reuse the session created by
+\fBcargo\-start\fR(1). See \fIOhm check sessions\fR <https://doc.rust\-lang.org/cargo/reference/unstable.html#ohm\-check\-session>
+for the experimental scope and fallback behavior.
 .RE
 .SS "Output Options"
 .sp

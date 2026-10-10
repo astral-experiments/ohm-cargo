@@ -17,6 +17,14 @@ use crate::command_prelude::*;
 fn main() {
     let _guard = setup_logger();
 
+    #[cfg(unix)]
+    if std::env::args_os().nth(1).as_deref() == Some(OsStr::new("__ohm-check-session-host")) {
+        if cargo::ops::check_session::workspace::host().is_err() {
+            std::process::exit(101);
+        }
+        return;
+    }
+
     let mut gctx = match GlobalContext::default() {
         Ok(gctx) => gctx,
         Err(e) => {

@@ -1,10 +1,11 @@
 //! Exercise the session controller independently of the experimental compiler implementation.
+#![cfg(unix)]
+
 use std::fs;
-use std::io::{BufRead, BufReader, Write};
 use std::path::PathBuf;
-use std::process::{Child, Stdio};
-use std::sync::{Mutex, OnceLock, mpsc};
-use std::time::Duration;
+use std::process::{Command, Stdio};
+use std::sync::{Mutex, OnceLock};
+use std::time::{Duration, Instant};
 
 use crate::prelude::*;
 use cargo_test_support::{Project, basic_manifest, paths, project};
@@ -29,72 +30,113 @@ fn compiler() -> PathBuf {
     path
 }
 
-struct Session {
-    child: Child,
-    lines: mpsc::Receiver<String>,
+struct Session<'a> {
+    project: &'a Project,
+    compiler: Option<PathBuf>,
+    initial: Option<String>,
+    status: i32,
+    host: u32,
 }
 
-impl Session {
-    fn start(p: &Project, mock: bool) -> Self {
+impl<'a> Session<'a> {
+    fn start(p: &'a Project, mock: bool) -> Self {
         Self::with_compiler(p, mock.then(compiler))
     }
 
-    fn with_compiler(p: &Project, compiler: Option<PathBuf>) -> Self {
-        let mut command = p
-            .cargo("-Zohm-check-session check --lib --session src/edit.rs")
+    fn with_compiler(p: &'a Project, compiler: Option<PathBuf>) -> Self {
+        let mut session = Self {
+            project: p,
+            compiler,
+            initial: None,
+            status: 0,
+            host: 0,
+        };
+        let output = session.run("-Zohm-check-session start --lib --source src/edit.rs", &[]);
+        session.host = output
+            .split("workspace host pid=")
+            .nth(1)
+            .unwrap_or_else(|| panic!("{output}"))
+            .split(';')
+            .next()
+            .unwrap()
+            .parse()
+            .unwrap();
+        session.initial = Some(output);
+        session
+    }
+
+    fn command(&self, args: &str) -> Command {
+        let mut command = self
+            .project
+            .cargo(args)
             .masquerade_as_nightly_cargo(&["ohm-check-session"])
             .build_command();
-        if let Some(compiler) = compiler {
+        command.env("CARGO_LOG", "cargo::ops::check_session=debug");
+        if let Some(compiler) = &self.compiler {
             command.env("RUSTC", compiler);
         }
-        let mut child = command
-            .stdin(Stdio::piped())
-            .stdout(Stdio::null())
-            .stderr(Stdio::piped())
-            .spawn()
-            .unwrap();
-        let stderr = child.stderr.take().unwrap();
-        let (sender, lines) = mpsc::channel();
-        std::thread::spawn(move || {
-            for line in BufReader::new(stderr).lines() {
-                if sender.send(line.unwrap()).is_err() {
-                    break;
-                }
+        command
+    }
+
+    fn run(&mut self, args: &str, environment: &[(&str, Option<&str>)]) -> String {
+        let mut command = self.command(args);
+        for (key, value) in environment {
+            if let Some(value) = value {
+                command.env(key, value);
+            } else {
+                command.env_remove(key);
             }
-        });
-        Self { child, lines }
+        }
+        let output = command.output().unwrap();
+        self.status = output.status.code().unwrap();
+        format!(
+            "{}{}",
+            String::from_utf8_lossy(&output.stdout),
+            String::from_utf8_lossy(&output.stderr)
+        )
     }
 
     fn response(&mut self) -> String {
-        let mut output = String::new();
-        loop {
-            let line = self
-                .lines
-                .recv_timeout(Duration::from_secs(120))
-                .unwrap_or_else(|error| panic!("{error}: {output}"));
-            output.push_str(&line);
-            output.push('\n');
-            if line.contains("press Enter to check again") {
-                return output;
-            }
-        }
+        self.initial.take().unwrap()
     }
-
     fn check(&mut self) -> String {
-        self.child.stdin.as_mut().unwrap().write_all(b"\n").unwrap();
-        self.response()
+        self.run("check --lib", &[])
     }
-
     fn stop(mut self) -> i32 {
-        self.child.stdin.take();
-        self.child.wait().unwrap().code().unwrap()
+        let output = self.run("stop", &[]);
+        assert!(output.contains("stopped"), "{output}");
+        assert!(self.workers().iter().all(|pid| !alive(*pid)));
+        self.host = 0;
+        self.status
+    }
+    fn workers(&self) -> Vec<u32> {
+        fs::read_to_string(self.project.root().join("worker-starts"))
+            .unwrap_or_default()
+            .lines()
+            .map(|line| line.parse().unwrap())
+            .collect()
     }
 }
 
-impl Drop for Session {
+impl Drop for Session<'_> {
     fn drop(&mut self) {
-        let _ = self.child.kill();
-        let _ = self.child.wait();
+        if self.host != 0 {
+            let _ = self.command("stop").output();
+        }
+    }
+}
+
+fn alive(pid: u32) -> bool {
+    unsafe { libc::kill(pid as i32, 0) == 0 }
+}
+fn wait_for(mut ready: impl FnMut() -> bool) {
+    let deadline = Instant::now() + Duration::from_secs(10);
+    while !ready() {
+        assert!(
+            Instant::now() < deadline,
+            "timed out waiting for session state"
+        );
+        std::thread::sleep(Duration::from_millis(20));
     }
 }
 
@@ -123,7 +165,7 @@ fn errors_repairs_and_private_outputs() {
                 .extension()
                 .is_some_and(|ext| ext == "rmeta"))
     );
-    p.cargo("check --lib").run();
+    p.cargo("check --lib --no-session").run();
     p.change_file("src/edit.rs", "pub(crate) fn value() -> u32 { false }");
     assert!(session.check().contains("mismatched types"));
     p.change_file(
@@ -176,7 +218,8 @@ fn unsupported_protocol_discards_provisional_diagnostics() {
             .to_string_lossy()
             .starts_with("worker-")
     }));
-    assert_eq!(session.stop(), 101);
+    assert_eq!(session.status, 101);
+    assert_eq!(session.stop(), 0);
 }
 
 #[cargo_test]
@@ -218,4 +261,201 @@ fn changing_the_compiler_invalidates_even_when_its_version_is_unchanged() {
         2
     );
     assert_eq!(session.stop(), 0);
+}
+
+#[cargo_test]
+fn environment_and_target_selection_belong_to_each_client() {
+    let p = fixture();
+    let mut session = Session::start(&p, true);
+    session.response();
+    p.change_file("src/lib.rs", "mod edit; const _: () = assert!(env!(\"SESSION_VALUE\").as_bytes()[0] == b'b'); pub fn value() -> u32 { edit::value() }");
+    assert!(
+        session
+            .run("check --lib", &[("SESSION_VALUE", Some("a"))])
+            .contains("evaluation")
+    );
+    assert_eq!(session.status, 101);
+    assert!(
+        !session
+            .run("check --lib", &[("SESSION_VALUE", Some("b"))])
+            .contains("error:")
+    );
+    assert_eq!(session.status, 0);
+    assert!(
+        session
+            .run("check --lib", &[("SESSION_VALUE", None)])
+            .contains("not defined")
+    );
+    assert_eq!(session.status, 101);
+    assert_eq!(session.workers().len(), 4);
+    p.change_file(
+        "src/lib.rs",
+        "mod edit; pub fn value() -> u32 { edit::value() }",
+    );
+    p.change_file("src/main.rs", "fn main() { let _: bool = foo::value(); }");
+    // The default multi-target command uses normal Cargo, including producing library
+    // metadata needed by the binary, even while a library-only session exists.
+    assert!(session.run("check", &[]).contains("mismatched types"));
+    assert_eq!(session.status, 101);
+    assert_eq!(session.workers().len(), 4);
+    assert!(!session.check().contains("error:"));
+    assert_eq!(session.stop(), 0);
+}
+
+#[cargo_test]
+fn concurrent_start_and_checks_share_one_host_and_worker() {
+    let p = fixture();
+    let mut session = Session::start(&p, true);
+    session.response();
+    let host = session.host;
+    let output = session.run("-Zohm-check-session start --lib --source src/edit.rs", &[]);
+    assert!(
+        output.contains(&format!("workspace host pid={host};")),
+        "{output}"
+    );
+    let mut first = session
+        .command("check --lib")
+        .stdout(Stdio::null())
+        .stderr(Stdio::null())
+        .spawn()
+        .unwrap();
+    let mut second = session
+        .command("check --lib")
+        .stdout(Stdio::null())
+        .stderr(Stdio::null())
+        .spawn()
+        .unwrap();
+    assert!(first.wait().unwrap().success());
+    assert!(second.wait().unwrap().success());
+    assert_eq!(session.workers().len(), 1);
+    assert_eq!(session.stop(), 0);
+    p.cargo("stop")
+        .with_stderr_contains("[..]Session not running")
+        .run();
+}
+
+#[cargo_test]
+fn disconnected_client_retires_the_worker_without_stopping_the_host() {
+    let p = fixture();
+    let mut session = Session::start(&p, true);
+    session.response();
+    let worker = session.workers()[0];
+    p.change_file("pause", "");
+    let mut client = session
+        .command("check --lib")
+        .stdout(Stdio::null())
+        .stderr(Stdio::null())
+        .spawn()
+        .unwrap();
+    wait_for(|| p.root().join("checking").exists());
+    client.kill().unwrap();
+    client.wait().unwrap();
+    wait_for(|| !alive(worker));
+    assert!(alive(session.host));
+    fs::remove_file(p.root().join("pause")).unwrap();
+    assert!(!session.check().contains("error:"));
+    assert_eq!(session.workers().len(), 2);
+    assert_eq!(session.stop(), 0);
+}
+
+#[cargo_test]
+fn terminated_and_killed_hosts_can_be_restarted() {
+    let p = fixture();
+    for signal in [libc::SIGTERM, libc::SIGKILL] {
+        let mut session = Session::start(&p, true);
+        session.response();
+        let worker = *session.workers().last().unwrap();
+        assert_eq!(unsafe { libc::kill(session.host as i32, signal) }, 0);
+        wait_for(|| !alive(worker));
+        // A dead host must never make an ordinary check appear successful.
+        p.change_file("src/edit.rs", "pub(crate) fn value() -> u32 { false }");
+        assert!(session.check().contains("mismatched types"));
+        assert_eq!(session.status, 101);
+        p.change_file("src/edit.rs", "pub(crate) fn value() -> u32 { 1 }");
+        let mut restarted = Session::start(&p, true);
+        assert_ne!(session.host, restarted.host);
+        session.host = 0;
+        assert!(!restarted.response().contains("error:"));
+        assert_eq!(restarted.stop(), 0);
+    }
+}
+
+#[cargo_test]
+fn simultaneous_cold_starts_and_subdirectory_clients_share_the_workspace() {
+    let p = fixture();
+    let mut session = Session {
+        project: &p,
+        compiler: Some(compiler()),
+        initial: None,
+        status: 0,
+        host: 0,
+    };
+    let args = "-Zohm-check-session start --lib --source src/edit.rs";
+    let first = session
+        .command(args)
+        .stdout(Stdio::piped())
+        .stderr(Stdio::piped())
+        .spawn()
+        .unwrap();
+    let second = session
+        .command(args)
+        .stdout(Stdio::piped())
+        .stderr(Stdio::piped())
+        .spawn()
+        .unwrap();
+    for child in [first, second] {
+        let output = child.wait_with_output().unwrap();
+        let stderr = String::from_utf8_lossy(&output.stderr);
+        assert!(output.status.success(), "{stderr}");
+        let host = stderr
+            .split("workspace host pid=")
+            .nth(1)
+            .unwrap()
+            .split(';')
+            .next()
+            .unwrap()
+            .parse()
+            .unwrap();
+        if session.host != 0 {
+            assert_eq!(session.host, host);
+        }
+        session.host = host;
+    }
+    let output = session
+        .command("check --lib")
+        .current_dir(p.root().join("src"))
+        .output()
+        .unwrap();
+    assert!(
+        output.status.success(),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    assert_eq!(session.workers().len(), 1);
+    assert_eq!(session.stop(), 0);
+}
+
+#[cargo_test]
+fn failed_start_can_be_repaired_and_stopping_one_workspace_does_not_stop_another() {
+    let p = fixture();
+    p.change_file("src/edit.rs", "pub(crate) fn value() -> u32 { false }");
+    let mut first = Session::start(&p, true);
+    assert!(first.response().contains("mismatched types"));
+    assert_eq!(first.status, 101);
+    p.change_file("src/edit.rs", "pub(crate) fn value() -> u32 { 1 }");
+    assert!(!first.check().contains("error:"));
+    assert_eq!(first.workers().len(), 1);
+    let other = project()
+        .at("other")
+        .file("src/lib.rs", "mod edit;")
+        .file("src/edit.rs", "pub fn value() -> u32 { 1 }")
+        .build();
+    let mut second = Session::start(&other, true);
+    second.response();
+    assert_ne!(first.host, second.host);
+    assert_eq!(first.stop(), 0);
+    assert!(alive(second.host));
+    assert!(!second.check().contains("error:"));
+    assert_eq!(second.workers().len(), 1);
+    assert_eq!(second.stop(), 0);
 }
