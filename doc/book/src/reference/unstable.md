@@ -2102,12 +2102,13 @@ macro expansion remains valid while a worker is retained. Declared macro file
 inputs are checked, but undeclared reads and other side effects are not tracked;
 this opt-in can therefore be unsound. It is intended for controlled experiments.
 
-Retained checks run on one frontend thread and do not publish library metadata or
-a successful Cargo fingerprint. Dependencies still produce their normal
-artifacts. Worker dependency metadata is copied into private storage so that the
-session can release Cargo's build locks while idle. Ordinary `cargo check`,
-`build`, and `test` remain separate operations. Normal session shutdown removes
-its temporary outputs; abrupt process termination may leave temporary files.
+Retained checks use the configured frontend thread count. They do not publish
+library metadata or a successful Cargo fingerprint. Dependencies still produce
+their normal artifacts. Worker dependency metadata is copied into private storage
+so that the session can release Cargo's build locks while idle. Ordinary
+`cargo check`, `build`, and `test` remain separate operations. Normal session
+shutdown removes its temporary outputs; abrupt process termination may leave
+temporary files.
 
 Workers retire after 256 updates or when their resident memory exceeds 4 GiB at
 a request boundary. These limits bound retention, not peak compilation memory.

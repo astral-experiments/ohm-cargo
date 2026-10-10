@@ -294,9 +294,7 @@ fn isolated_command(
         let codegen = argument == "-C" || text.starts_with("-C");
         if (codegen && key == "incremental")
             || (!codegen
-                && (key.starts_with("ohm-resident-")
-                    || key.starts_with("ohm-check-session")
-                    || (resident && key == "threads")))
+                && (key.starts_with("ohm-resident-") || key.starts_with("ohm-check-session")))
         {
             index += if paired { 2 } else { 1 };
             continue;
@@ -305,7 +303,6 @@ fn isolated_command(
         index += 1;
     }
     if resident {
-        arguments.push("-Zthreads=1".into());
         arguments.push("-Zohm-check-session".into());
         let mut option = OsString::from("-Zohm-resident-frontend=");
         option.push(source);
@@ -485,7 +482,7 @@ mod tests {
             && !arg.contains("old.rs")
             && !arg.contains("trust-proc-macros")));
         assert!(arguments.contains(&std::borrow::Cow::Borrowed("-Copt-level=1")));
-        assert!(arguments.contains(&std::borrow::Cow::Borrowed("-Zthreads=1")));
+        assert!(arguments.contains(&std::borrow::Cow::Borrowed("-Zthreads=8")));
         let fresh = isolated_command(&original, scratch.path(), false, source).unwrap();
         assert!(
             fresh
