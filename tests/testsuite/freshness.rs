@@ -5766,6 +5766,181 @@ fn terminal_test_harness_reuses_codegen_without_public_api_hash() {
 
 #[cargo_test]
 #[cfg(not(windows))]
+fn test_partitions_reuse_unused_library_changes_across_invocations() {
+    let wrapper = relink_only_wrapper();
+    let p = project()
+        .at("partitioned-unused-integration")
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "app"
+                version = "0.1.0"
+                edition = "2024"
+
+                [[test]]
+                name = "integration"
+                path = "tests/integration/main.rs"
+
+                [package.metadata.ohm.test-partitions.integration.a]
+                path = "tests/integration/part_a.rs"
+                prefixes = ["a"]
+                [package.metadata.ohm.test-partitions.integration.b]
+                path = "tests/integration/part_b.rs"
+                prefixes = ["b"]
+                [package.metadata.ohm.test-partitions.integration.c]
+                path = "tests/integration/part_c.rs"
+                prefixes = ["c"]
+            "#,
+        )
+        .file("src/lib.rs", "#[inline(never)] pub fn value() -> i32 { 1 }")
+        .file(
+            "src/main.rs",
+            "fn main() { println!(\"{}\", app::value()); }",
+        )
+        .file(
+            "tests/integration/main.rs",
+            "mod support; mod a; mod b; mod c;",
+        )
+        .file("tests/integration/part_a.rs", "mod support; mod a;")
+        .file("tests/integration/part_b.rs", "mod support; mod b;")
+        .file("tests/integration/part_c.rs", "mod support; mod c;")
+        .file(
+            "tests/integration/support.rs",
+            r#"
+                pub fn expected() -> i32 {
+                    std::env::var("UNUSED_INTEGRATION_EXPECTED").unwrap().parse().unwrap()
+                }
+                pub fn check_binary() {
+                    let output = std::process::Command::new(env!("CARGO_BIN_EXE_app"))
+                        .output().unwrap();
+                    assert!(output.status.success());
+                    assert_eq!(String::from_utf8(output.stdout).unwrap().trim()
+                        .parse::<i32>().unwrap(), expected());
+                }
+            "#,
+        )
+        .file(
+            "tests/integration/a.rs",
+            r#"
+                #[test]
+                fn selected() {
+                    crate::support::check_binary();
+                    std::fs::write("a-marker", "before").unwrap();
+                }
+            "#,
+        )
+        .file(
+            "tests/integration/b.rs",
+            "#[test] fn selected() { crate::support::check_binary(); }",
+        )
+        .file(
+            "tests/integration/c.rs",
+            r#"
+                #[test]
+                fn selected() {
+                    crate::support::check_binary();
+                    assert_eq!(app::value(), crate::support::expected());
+                }
+            "#,
+        )
+        .build();
+    let log = p.root().join("relink-wrapper.log");
+    let run = |group: &str, expected: &str| {
+        let output = p
+            .cargo(&format!(
+                "-Zohm-defaults -Zohm-test-partitions test -p app --test integration \
+                 {group}::selected --message-format=json -j2 -- --exact"
+            ))
+            .masquerade_as_nightly_cargo(&["ohm-defaults", "ohm-test-partitions"])
+            .env("RUSTC_WRAPPER", &wrapper)
+            .env("RELINK_WRAPPER_LOG", &log)
+            .env("UNUSED_INTEGRATION_DEPENDENCY_PROOF", "1")
+            .env("UNUSED_INTEGRATION_EXPECTED", expected)
+            .run();
+        let stdout = String::from_utf8(output.stdout).unwrap();
+        assert!(stdout.contains(&format!("test {group}::selected ... ok")));
+        let artifact = stdout
+            .lines()
+            .filter_map(|line| serde_json::from_str::<serde_json::Value>(line).ok())
+            .find(|value| {
+                value["reason"] == "compiler-artifact" && value["target"]["name"] == "integration"
+            })
+            .expect("selected integration artifact");
+        assert!(
+            artifact["target"]["src_path"]
+                .as_str()
+                .unwrap()
+                .ends_with(&format!("part_{group}.rs"))
+        );
+        PathBuf::from(artifact["executable"].as_str().unwrap())
+    };
+    let assert_no_integration_work = || {
+        let invocations = fs::read_to_string(&log).unwrap();
+        assert!(
+            invocations
+                .lines()
+                .all(|line| !line.ends_with(":integration")),
+            "unused library changes must not compile or relink a warmed partition: {invocations}"
+        );
+    };
+
+    let a = run("a", "1");
+    let b = run("b", "1");
+    let c = run("c", "1");
+    assert_ne!(a, b);
+    assert_ne!(b, c);
+    let b_bytes = fs::read(&b).unwrap();
+
+    fs::write(&log, "").unwrap();
+    if is_coarse_mtime() {
+        sleep_ms(1000);
+    }
+    p.change_file("src/lib.rs", "#[inline(never)] pub fn value() -> i32 { 2 }");
+    assert_eq!(run("a", "2"), a);
+    assert_no_integration_work();
+
+    // B missed the invocation that rebuilt the producer; it now sees a Fresh dependency.
+    fs::write(&log, "").unwrap();
+    assert_eq!(run("b", "2"), b);
+    assert_no_integration_work();
+    assert_eq!(fs::read(&b).unwrap(), b_bytes);
+
+    // An actually linked library must still update the executable, even across invocations.
+    fs::write(&log, "").unwrap();
+    assert_eq!(run("c", "2"), c);
+    assert!(
+        fs::read_to_string(&log)
+            .unwrap()
+            .lines()
+            .any(|line| line.ends_with(":integration"))
+    );
+
+    fs::write(&log, "").unwrap();
+    if is_coarse_mtime() {
+        sleep_ms(1000);
+    }
+    p.change_file(
+        "tests/integration/a.rs",
+        &p.read_file("tests/integration/a.rs")
+            .replace("\"before\"", "\"after\""),
+    );
+    assert_eq!(run("a", "2"), a);
+    assert_eq!(p.read_file("a-marker"), "after");
+    assert!(
+        fs::read_to_string(&log)
+            .unwrap()
+            .lines()
+            .any(|line| line == "compile-link:integration")
+    );
+    fs::write(&log, "").unwrap();
+    assert_eq!(run("b", "2"), b);
+    assert_no_integration_work();
+    assert_eq!(fs::read(&b).unwrap(), b_bytes);
+}
+
+#[cargo_test]
+#[cfg(not(windows))]
 fn unused_package_library_does_not_relink_integration_test() {
     let wrapper = relink_only_wrapper();
     let p = project()

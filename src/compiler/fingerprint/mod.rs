@@ -802,6 +802,15 @@ pub fn can_skip_unused_integration_dependency(
     fingerprint: &Fingerprint,
     unused_dependency: UnitIndex,
 ) -> bool {
+    if fingerprint
+        .previous_integration_inputs
+        .lock()
+        .unwrap()
+        .as_ref()
+        .is_some_and(|previous| previous.can_reuse(fingerprint, unused_dependency))
+    {
+        return true;
+    }
     if !fingerprint.is_early_cutoff_candidate() {
         return false;
     }
@@ -823,6 +832,64 @@ pub fn can_skip_unused_integration_dependency(
     }
 
     found_unused_change
+}
+
+/// Inputs retained for a test not visited when its package library last rebuilt.
+struct PreviousIntegrationInputs {
+    output_mtime: FileTime,
+    dependencies: Vec<DepFingerprint>,
+}
+
+impl PreviousIntegrationInputs {
+    fn read(path: &Path, fingerprint: &Fingerprint) -> Option<Self> {
+        let short = paths::read(path).ok()?;
+        let old: Fingerprint =
+            serde_json::from_slice(&fs::read(path.with_extension("json")).ok()?).ok()?;
+        // An interrupted build leaves an empty admission file. The JSON alone
+        // must not authorize reuse of an executable from an earlier build.
+        if short.is_empty() || short != util::to_hex(old.hash_u64()) {
+            return None;
+        }
+        Some(Self {
+            output_mtime: previous_output_mtime(fingerprint.outputs.iter(), false)?,
+            dependencies: old.deps,
+        })
+    }
+
+    fn can_reuse(&self, fingerprint: &Fingerprint, unused_dependency: UnitIndex) -> bool {
+        if self.dependencies.len() != fingerprint.deps.len() {
+            return false;
+        }
+        let mut found_unused_change = false;
+        for (current, previous) in fingerprint.deps.iter().zip(&self.dependencies) {
+            if current.pkg_id != previous.pkg_id
+                || current.name != previous.name
+                || current.public != previous.public
+                || !matches!(current.fingerprint.build_state(), BuildState::Fresh)
+            {
+                return false;
+            }
+            let Some(mut generation) = current.previous_output_mtime() else {
+                return false;
+            };
+            match current.fingerprint.fs_status() {
+                FsStatus::UpToDate { link_mtime, .. } => {
+                    if let Some(link_mtime) = link_mtime {
+                        generation = generation.max(link_mtime);
+                    }
+                }
+                _ => return false,
+            }
+            let changed = current.dependency_hash() != previous.dependency_hash()
+                || generation > self.output_mtime;
+            if current.fingerprint.index == unused_dependency {
+                found_unused_change |= changed;
+            } else if changed {
+                return false;
+            }
+        }
+        found_unused_change
+    }
 }
 
 /// Accepts only dependency changes proven absent from an integration executable.
@@ -1093,6 +1160,18 @@ pub fn prepare_target(
             && !previous_dependency_changes.any
             && has_exclusive_metadata_access,
     );
+    if unit.mode == CompileMode::Test
+        && unit.target.is_test()
+        && previous_dependency_changes.any
+        && has_exclusive_metadata_access
+        && is_early_cutoff_candidate(&fingerprint, &dirty_reason)
+    {
+        // Unlike ordinary cutoff, an unused-library proof may survive a rebuild
+        // in an earlier invocation. Retain every dependency's successful input
+        // identity before clearing this unit's on-disk fingerprint below.
+        *fingerprint.previous_integration_inputs.lock().unwrap() =
+            PreviousIntegrationInputs::read(&loc, &fingerprint);
+    }
     if fingerprint.ohm_worktree_namespace.is_some()
         && !force
         && !unit.artifact.is_true()
@@ -1428,6 +1507,9 @@ pub struct Fingerprint {
     /// Cargo invocation before its current dependencies were prepared.
     #[serde(skip)]
     previously_changed_metadata_dependency: AtomicBool,
+    /// Successful prior inputs for the separate unused-package-library check.
+    #[serde(skip)]
+    previous_integration_inputs: Mutex<Option<PreviousIntegrationInputs>>,
     /// Files, relative to `target_root`, that are produced by the step that
     /// this `Fingerprint` represents. This is used to detect when the whole
     /// fingerprint is out of date if this is missing, or if previous
@@ -1860,6 +1942,7 @@ impl Fingerprint {
             build_state: Mutex::new(BuildState::Pending),
             early_cutoff_candidate: AtomicBool::new(false),
             previously_changed_metadata_dependency: AtomicBool::new(false),
+            previous_integration_inputs: Mutex::new(None),
             outputs: Vec::new(),
         }
     }
@@ -2680,6 +2763,7 @@ fn calculate_normal(
         build_state: Mutex::new(BuildState::Pending),
         early_cutoff_candidate: AtomicBool::new(false),
         previously_changed_metadata_dependency: AtomicBool::new(false),
+        previous_integration_inputs: Mutex::new(None),
         outputs,
     })
 }
@@ -3632,6 +3716,67 @@ mod early_cutoff_tests {
             &fingerprint,
             &HashSet::default(),
         ));
+    }
+
+    fn previous_integration_inputs_fixture(
+        root: &Path,
+    ) -> (Fingerprint, PreviousIntegrationInputs) {
+        let mut fingerprint = make_stale_due_to_dep();
+        for (index, seconds) in [(1, 3), (2, 1)] {
+            let output = root.join(format!("dependency-{index}.rlib"));
+            fs::write(&output, b"artifact").unwrap();
+            let mtime = FileTime::from_unix_time(seconds, 0);
+            filetime::set_file_mtime(&output, mtime).unwrap();
+            let mut dependency = make_indexed_fingerprint(
+                UnitIndex(index),
+                FsStatus::UpToDate {
+                    mtimes: HashMap::from_iter([(output.clone(), mtime)]),
+                    link_mtime: None,
+                },
+                BuildState::Fresh,
+            );
+            Arc::get_mut(&mut dependency).unwrap().outputs = vec![output];
+            let mut dependency = make_dep_fingerprint(dependency);
+            dependency.only_requires_rmeta = false;
+            fingerprint.deps.push(dependency);
+        }
+        let old: Fingerprint =
+            serde_json::from_slice(&serde_json::to_vec(&fingerprint).unwrap()).unwrap();
+        let previous = PreviousIntegrationInputs {
+            output_mtime: FileTime::from_unix_time(2, 0),
+            dependencies: old.deps,
+        };
+        (fingerprint, previous)
+    }
+
+    #[test]
+    fn previous_unused_library_reuse_checks_every_dependency() {
+        let directory = tempfile::tempdir().unwrap();
+        let (mut fingerprint, previous) = previous_integration_inputs_fixture(directory.path());
+        assert!(previous.can_reuse(&fingerprint, UnitIndex(1)));
+
+        // The first dependency is the unused library. A later used dependency
+        // must not be hidden by the first mismatch reported in diagnostics.
+        let dependency = Arc::get_mut(&mut fingerprint.deps[1].fingerprint).unwrap();
+        dependency.rustc = 1;
+        dependency.clear_memoized();
+        assert!(!previous.can_reuse(&fingerprint, UnitIndex(1)));
+    }
+
+    #[test]
+    fn previous_unused_library_reuse_checks_transitive_link_generation() {
+        let directory = tempfile::tempdir().unwrap();
+        let (mut fingerprint, previous) = previous_integration_inputs_fixture(directory.path());
+        assert!(previous.can_reuse(&fingerprint, UnitIndex(1)));
+
+        // A used dependency's direct artifact may predate the test while a
+        // transitive link input has changed since the test was compiled.
+        let dependency = Arc::get_mut(&mut fingerprint.deps[1].fingerprint).unwrap();
+        let FsStatus::UpToDate { link_mtime, .. } = dependency.fs_status.get_mut().unwrap() else {
+            unreachable!();
+        };
+        *link_mtime = Some(FileTime::from_unix_time(4, 0));
+        assert!(!previous.can_reuse(&fingerprint, UnitIndex(1)));
     }
 
     #[test]
