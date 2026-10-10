@@ -163,6 +163,19 @@ fn unsupported_protocol_discards_provisional_diagnostics() {
     let output = session.check();
     assert!(output.contains("mismatched types"));
     assert!(!output.contains("discard this provisional diagnostic"));
+    let scratch = fs::read_dir(p.build_dir().join(".ohm-check-sessions"))
+        .unwrap()
+        .next()
+        .unwrap()
+        .unwrap()
+        .path();
+    assert!(!fs::read_dir(scratch).unwrap().any(|entry| {
+        entry
+            .unwrap()
+            .file_name()
+            .to_string_lossy()
+            .starts_with("worker-")
+    }));
     assert_eq!(session.stop(), 101);
 }
 

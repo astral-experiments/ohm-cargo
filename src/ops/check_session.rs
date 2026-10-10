@@ -172,12 +172,15 @@ impl Executor for CheckSession {
             let response = if let Some(worker) = &mut state.worker {
                 worker.check()
             } else {
+                let outputs = tempfile::Builder::new()
+                    .prefix("worker-")
+                    .tempdir_in(&scratch)?;
                 let mut worker_command =
-                    isolated_command(command, &scratch.join("resident"), true, &self.source)?;
+                    isolated_command(command, outputs.path(), true, &self.source)?;
                 if root.trust_proc_macros {
                     worker_command.arg("-Zohm-check-session-trust-proc-macros");
                 }
-                match Worker::start(&mut worker_command) {
+                match Worker::start(&mut worker_command, outputs) {
                     Ok(mut worker) => {
                         let response = worker.response("ready", 0);
                         state.generations += 1;
@@ -332,10 +335,12 @@ struct Worker {
     input: Option<ChildStdin>,
     output: mpsc::Receiver<CargoResult<String>>,
     revision: u64,
+    // Cargo removes snapshots after reaping the child, even if it exited without destructors.
+    _outputs: tempfile::TempDir,
 }
 
 impl Worker {
-    fn start(command: &mut ProcessBuilder) -> CargoResult<Self> {
+    fn start(command: &mut ProcessBuilder, outputs: tempfile::TempDir) -> CargoResult<Self> {
         command.clear_inherited_files();
         let mut child = command
             .build_command()
@@ -373,6 +378,7 @@ impl Worker {
             input,
             output,
             revision: 0,
+            _outputs: outputs,
         })
     }
 
