@@ -216,6 +216,14 @@ in its filename is also written if you want to look at a previous run.
 These reports are suitable for human consumption only, and do not provide
 machine\-readable timing data.
 .RE
+.sp
+\fB\-\-session\fR \fISOURCE\fR
+.RS 4
+Keep an experimental Ohm development session for one selected library source
+file. Check once, then press Enter to recheck or type \fBq\fR to stop. Requires
+\fB\-Zohm\-check\-session\fR; see \fIOhm check sessions\fR <https://doc.rust\-lang.org/cargo/reference/unstable.html#ohm\-check\-session>
+for the supported edit boundary and fallback behavior.
+.RE
 .SS "Output Options"
 .sp
 \fB\-\-target\-dir\fR \fIdirectory\fR

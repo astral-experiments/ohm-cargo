@@ -228,6 +228,14 @@ machine-readable timing data.</p>
 
 
 
+<dt class="option-term" id="option-cargo-check---session"><a class="option-anchor" href="#option-cargo-check---session"><code>--session</code> <em>SOURCE</em></a></dt>
+<dd class="option-desc"><p>Keep an experimental Ohm development session for one selected library source
+file. Check once, then press Enter to recheck or type <code>q</code> to stop. Requires
+<code>-Zohm-check-session</code>; see <a href="../reference/unstable.html#ohm-check-session">Ohm check sessions</a>
+for the supported edit boundary and fallback behavior.</p>
+</dd>
+
+
 </dl>
 
 ### Output Options

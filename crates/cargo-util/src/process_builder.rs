@@ -212,6 +212,13 @@ impl ProcessBuilder {
         &self.env
     }
 
+    /// Drops inherited leases for a worker that owns private copies of all mutable inputs.
+    pub fn clear_inherited_files(&mut self) -> &mut Self {
+        #[cfg(unix)]
+        self.inherited_files.clear();
+        self
+    }
+
     /// Sets the `make` jobserver. See the [jobserver crate][jobserver_docs] for
     /// more information.
     ///

@@ -188,6 +188,13 @@ OPTIONS
            previous run. These reports are suitable for human consumption only,
            and do not provide machine-readable timing data.
 
+       --session SOURCE
+           Keep an experimental Ohm development session for one selected
+           library source file. Check once, then press Enter to recheck or type
+           q to stop. Requires -Zohm-check-session; see Ohm check sessions
+           <https://doc.rust-lang.org/cargo/reference/unstable.html#ohm-check-session>
+           for the supported edit boundary and fallback behavior.
+
    Output Options
        --target-dir directory
            Directory for all generated artifacts and intermediate files. May

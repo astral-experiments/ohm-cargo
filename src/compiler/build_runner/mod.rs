@@ -766,6 +766,16 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
         exec: &Arc<dyn Executor>,
         mut queue: JobQueue<'gctx>,
     ) -> CargoResult<Compilation<'gctx>> {
+        if exec.is_check_session() {
+            anyhow::ensure!(
+                self.bcx.roots.len() == 1
+                    && self.bcx.roots[0].is_local()
+                    && self.bcx.roots[0].target.is_lib()
+                    && !self.bcx.roots[0].target.for_host()
+                    && self.bcx.roots[0].mode == (CompileMode::Check { test: false }),
+                "check sessions require exactly one local library target; select it with -p and --lib"
+            );
+        }
         let stale_registry_packages = self.stale_reused_registry_dependencies()?;
         if !stale_registry_packages.is_empty() {
             return Err(StaleBuiltRegistryDependency {

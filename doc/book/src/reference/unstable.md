@@ -93,6 +93,7 @@ Each new feature described below should explain how to use it.
     * [binary-dep-depinfo](#binary-dep-depinfo) --- Causes the dep-info file to track binary dependencies.
     * [checksum-freshness](#checksum-freshness) --- When passed, the decision as to whether a crate needs to be rebuilt is made using file checksums instead of the file mtime.
     * [headstart](#headstart) --- Overlap dependency checks using early interface metadata in Ohm.
+    * [ohm-check-session](#ohm-check-session) --- Keep an explicitly owned compiler for restricted library edits.
     * [ohm-clippy-seed-isolation](#ohm-clippy-seed-isolation) --- Keep bundled Clippy state out of worktree snapshots.
     * [ohm-worktree-seeds](#ohm-worktree-seeds) --- Prepare build state for seeding new Git worktrees with Ohm.
     * [panic-abort-tests](#panic-abort-tests) --- Allows running tests with the "abort" panic strategy.
@@ -2062,6 +2063,57 @@ checks; build scripts and procedural macros still need executable artifacts.
 Code-generating builds retain their existing scheduling. Changing this setting
 changes compiler arguments and therefore invalidates existing build fingerprints.
 
+
+## ohm-check-session
+
+This experimental Ohm feature keeps one compiler process alive while you work on
+a selected library source file. It requires the matching Ohm compiler to reuse
+frontend state; other compilers use fresh checks.
+
+```console
+cargo +ohm -Zohm-check-session check -p my-library --lib --session src/math.rs
+```
+
+The command checks once, then waits for Enter to check again. Type `q`, close
+standard input, or press Ctrl-C to end the session. Cargo owns the private child
+process and closes it when the session ends. There is no separately started
+service, listening socket, background watcher, or reuse across Cargo commands.
+
+Each request reloads Cargo configuration and the workspace, checks dependencies
+normally, and validates the compiler invocation before attempting reuse. The
+compiler validates its source and dependency inputs before and after an update.
+Unrecognized edits, changed inputs, unsupported compilers, and failed protocol
+requests discard retained state and run a fresh check. A fresh fallback can report
+errors; the session continues so that the next request can check a repair. The
+exit status reflects the last check.
+
+The first version accepts exactly one local, non-procedural-macro library target.
+Reuse is restricted to an ASCII source file for an out-of-line module, with a
+non-generic function as its final item. Its declaration stays fixed. Supported
+bodies contain simple local expressions, control flow, and supported inherent
+method calls. Closures, new definitions, macros, attributes, and changes outside
+that body require a fresh check. A preceding `f32` literal constant can also
+change without changing its byte width. Source files included elsewhere as code
+or data require fresh checks.
+
+By default, compiler wrappers and workspaces with procedural-macro dependencies
+use fresh checks. `-Zohm-check-session-trust-proc-macros` explicitly assumes that
+macro expansion remains valid while a worker is retained. Declared macro file
+inputs are checked, but undeclared reads and other side effects are not tracked;
+this opt-in can therefore be unsound. It is intended for controlled experiments.
+
+Retained checks run on one frontend thread and do not publish library metadata or
+a successful Cargo fingerprint. Dependencies still produce their normal
+artifacts. Worker dependency metadata is copied into private storage so that the
+session can release Cargo's build locks while idle. Ordinary `cargo check`,
+`build`, and `test` remain separate operations. Normal session shutdown removes
+its temporary outputs; abrupt process termination may leave temporary files.
+
+Workers retire after 256 updates or when their resident memory exceeds 4 GiB at
+a request boundary. These limits bound retention, not peak compilation memory.
+Startup and input validation have a cost, so a session is not necessarily faster
+for small crates or short editing sessions. This feature remains opt-in and is
+not enabled by Ohm defaults.
 
 ## ohm-clippy-seed-isolation
 

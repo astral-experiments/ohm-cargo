@@ -40,6 +40,15 @@ pub struct Rustc {
 }
 
 impl Rustc {
+    /// Reuse Cargo's executable and rustup identity checks for a retained compiler.
+    pub(crate) fn check_session_fingerprint(&self) -> Option<u64> {
+        let cache = self.cache.lock().unwrap();
+        cache
+            .cache_location
+            .as_ref()
+            .map(|_| cache.data.rustc_fingerprint)
+    }
+
     /// Runs the compiler at `path` to learn various pieces of information about
     /// it, with an optional wrapper.
     ///

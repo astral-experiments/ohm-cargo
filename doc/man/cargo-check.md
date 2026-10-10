@@ -46,6 +46,13 @@ they have `required-features` that are missing.
 
 {{> options-timings }}
 
+{{#option "`--session` _SOURCE_" }}
+Keep an experimental Ohm development session for one selected library source
+file. Check once, then press Enter to recheck or type `q` to stop. Requires
+`-Zohm-check-session`; see [Ohm check sessions](../reference/unstable.html#ohm-check-session)
+for the supported edit boundary and fallback behavior.
+{{/option}}
+
 {{/options}}
 
 ### Output Options

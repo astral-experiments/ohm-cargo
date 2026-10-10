@@ -960,6 +960,8 @@ unstable_cli_options!(
     no_embed_metadata: Option<bool> = ("Avoid embedding metadata in library artifacts"),
     no_index_update: bool = ("Do not update the registry index even if the cache is outdated"),
     ohm_clippy_seed_isolation: Option<bool> = ("Isolate bundled Clippy outputs from worktree snapshots (automatic when cloning is available)"),
+    ohm_check_session: bool = ("Enable explicitly owned experimental compiler check sessions"),
+    ohm_check_session_trust_proc_macros: bool = ("Assume procedural-macro expansion remains valid across check-session edits (potentially unsound)"),
     ohm_defaults: Option<bool> = ("Enable the defaults packaged with Ohm"),
     ohm_focused_tests: bool = ("Compile only an explicitly selected exact library test"),
     ohm_linker: Option<OhmLinker> = ("Select a bundled linker for native Linux x86-64 builds: wild or lld"),
@@ -1567,6 +1569,10 @@ impl CliUnstable {
             "mtime-on-use" => self.mtime_on_use = parse_empty(k, v)?,
             "no-embed-metadata" => self.no_embed_metadata = Some(parse_bool(k, v)?),
             "no-index-update" => self.no_index_update = parse_empty(k, v)?,
+            "ohm-check-session" => self.ohm_check_session = parse_empty(k, v)?,
+            "ohm-check-session-trust-proc-macros" => {
+                self.ohm_check_session_trust_proc_macros = parse_empty(k, v)?
+            }
             "ohm-defaults" => self.ohm_defaults = Some(parse_bool(k, v)?),
             "ohm-focused-tests" => self.ohm_focused_tests = parse_empty(k, v)?,
             "ohm-linker" => {

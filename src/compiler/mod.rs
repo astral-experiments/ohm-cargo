@@ -321,6 +321,11 @@ fn unit_uses_ohm_incremental_mono_partitions(
 /// directly, we'll use an `Executor`, giving clients an opportunity to intercept
 /// the build calls.
 pub trait Executor: Send + Sync + 'static {
+    /// Check sessions execute one terminal check without publishing its outputs or fingerprint.
+    fn is_check_session(&self) -> bool {
+        false
+    }
+
     /// Called after a rustc process invocation is prepared up-front for a given
     /// unit of work (may still be modified for runtime-known dependencies, when
     /// the work is actually executed).
@@ -407,15 +412,25 @@ fn compile<'gctx>(
             // We run these targets later, so this is just a no-op for now.
             Job::new_fresh()
         } else {
-            let force = exec.force_rebuild(unit) || force_rebuild;
+            let session = exec.is_check_session() && build_runner.bcx.roots.contains(unit);
+            let force = session || exec.force_rebuild(unit) || force_rebuild;
             let mut job = fingerprint::prepare_target(build_runner, unit, force)?;
+            if session {
+                // Preparing the target invalidates any previous fingerprint. The session must
+                // never publish a replacement for an artifact it did not produce.
+                job = Job::new_dirty(Work::noop(), fingerprint::DirtyReason::Forced);
+            }
             job.before(if job.freshness().is_dirty() {
                 let work = if unit.mode.is_doc() || unit.mode.is_doc_scrape() {
                     rustdoc(build_runner, unit)?
                 } else {
-                    rustc(build_runner, unit, exec)?
+                    rustc(build_runner, unit, exec, session)?
                 };
-                work.then(link_targets(build_runner, unit, false)?)
+                if session {
+                    work
+                } else {
+                    work.then(link_targets(build_runner, unit, false)?)
+                }
             } else {
                 let output_options = OutputOptions::for_fresh(build_runner, unit);
                 let manifest = ManifestErrorContext::new(build_runner, unit);
@@ -948,6 +963,7 @@ fn rustc(
     build_runner: &mut BuildRunner<'_, '_>,
     unit: &Unit,
     exec: &Arc<dyn Executor>,
+    session: bool,
 ) -> CargoResult<Work> {
     let mut rustc = prepare_rustc(build_runner, unit)?;
 
@@ -1029,6 +1045,9 @@ fn rustc(
     let dep_info_loc = fingerprint::dep_info_loc(build_runner, unit);
 
     let mut output_options = OutputOptions::for_dirty(build_runner, unit);
+    if session {
+        output_options.cache_cell = None;
+    }
     let package_id = unit.pkg.package_id();
     let target = Target::clone(&unit.target);
     let mode = unit.mode;
@@ -1080,10 +1099,18 @@ fn rustc(
     let is_local = unit.is_local();
     let worktree_seed_namespace = unit_worktree_seed_namespace(build_runner, unit);
     let artifact = unit.artifact;
-    let sbom_files = build_runner.sbom_output_files(unit)?;
+    let sbom_files = if session {
+        Vec::new()
+    } else {
+        build_runner.sbom_output_files(unit)?
+    };
     let sbom = build_sbom(build_runner, unit)?;
 
-    let unremap_files = build_runner.unremap_output_files(unit)?;
+    let unremap_files = if session {
+        Vec::new()
+    } else {
+        build_runner.unremap_output_files(unit)?
+    };
     let unremap_content = if unremap_files.is_empty() {
         None
     } else {
@@ -1192,8 +1219,9 @@ fn rustc(
             let skip_unused_integration_dependency =
                 skip_unused_integration_dependency || skip_unused_workspace_dependencies;
 
-            if (can_skip_compilation && fingerprint::can_skip_due_to_early_cutoff(fp))
-                || skip_unused_integration_dependency
+            if !session
+                && ((can_skip_compilation && fingerprint::can_skip_due_to_early_cutoff(fp))
+                    || skip_unused_integration_dependency)
             {
                 let essential_outputs = outputs
                     .iter()
@@ -1321,8 +1349,9 @@ fn rustc(
             add_custom_flags(&mut rustc, &script_outputs, script_metadatas)?;
         }
 
-        if let (Some(fingerprint), Some(namespace)) =
-            (fingerprint.as_ref(), worktree_seed_namespace.as_deref())
+        if !session
+            && let (Some(fingerprint), Some(namespace)) =
+                (fingerprint.as_ref(), worktree_seed_namespace.as_deref())
             && fingerprint::can_reuse_after_scripts(
                 fingerprint,
                 &pkg_root,
@@ -1367,7 +1396,7 @@ fn rustc(
             None
         };
 
-        for output in outputs.iter() {
+        for output in outputs.iter().filter(|_| !session) {
             // If there is both an rmeta and rlib, rustc will prefer to use the
             // rlib, even if it is older. Therefore, we must delete the rlib to
             // force using the new rmeta.
@@ -1515,6 +1544,9 @@ fn rustc(
 
         // Exec should never return with success *and* generate an error.
         debug_assert_eq!(output_options.errors_seen, 0);
+        if session {
+            return Ok(());
+        }
 
         if let Some((path, provenance)) = &message_provenance {
             let mut provenance = provenance.clone();

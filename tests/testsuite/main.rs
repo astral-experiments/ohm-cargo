@@ -73,6 +73,7 @@ mod cargo_yank;
 mod cfg;
 mod check;
 mod check_cfg;
+mod check_session;
 mod clean;
 mod clean_legacy_layout;
 mod collisions;
