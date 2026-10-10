@@ -2464,6 +2464,7 @@ fn compute_metadata(
     // compiles of targets in the same crate don't collide.
     unit.target.name().hash(&mut shared_hasher);
     unit.target.kind().hash(&mut shared_hasher);
+    unit.target.hash_ohm_test_partition(&mut shared_hasher);
 
     hash_rustc_version(bcx, &mut shared_hasher, unit);
 

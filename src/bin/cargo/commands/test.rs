@@ -104,6 +104,8 @@ pub fn exec(gctx: &mut GlobalContext, args: &ArgMatches) -> CliResult {
         compile_opts.filter = ops::CompileFilter::all_test_targets();
     }
 
+    ops::configure_test_partition(&ws, &mut compile_opts, &test_args, no_run || doc)?;
+
     // Focus only an explicitly selected, exact, built-in library test. The Ohm
     // compiler's `-Ztest-harness-filter` keeps separate per-filter artifacts and
     // may omit backend diagnostics for tests outside the focused harness.

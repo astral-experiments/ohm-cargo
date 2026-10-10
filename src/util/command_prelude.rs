@@ -849,6 +849,7 @@ Run `{cmd}` to see possible targets."
             target_rustdoc_args: None,
             target_rustc_args: None,
             target_rustc_crate_types: None,
+            test_partition: None,
             rustdoc_document_private_items: false,
             honor_rust_version: self.honor_rust_version(),
         };

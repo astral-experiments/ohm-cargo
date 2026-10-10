@@ -335,6 +335,19 @@ struct TargetInner {
     proc_macro: bool,
     edition: Edition,
     doc_scrape_examples: RustdocScrapeExamples,
+    ohm_test_partition: TestPartitionIdentity,
+}
+
+#[derive(Clone, Debug, Default, PartialEq, Eq, PartialOrd, Ord)]
+struct TestPartitionIdentity(Option<(String, PathBuf)>);
+
+impl Hash for TestPartitionIdentity {
+    fn hash<H: Hasher>(&self, state: &mut H) {
+        // Ordinary targets must keep their existing fingerprint and artifact identities.
+        if let Some(identity) = &self.0 {
+            ("ohm-test-partition", 1_u8, identity).hash(state);
+        }
+    }
 }
 
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord)]
@@ -490,6 +503,7 @@ compact_debug! {
                 proc_macro
                 edition
                 doc_scrape_examples
+                ohm_test_partition
             )]
         }
     }
@@ -852,6 +866,7 @@ impl Target {
                 for_host: false,
                 proc_macro: false,
                 doc_scrape_examples: RustdocScrapeExamples::Unset,
+                ohm_test_partition: TestPartitionIdentity::default(),
                 edition,
                 tested: true,
                 benched: true,
@@ -987,6 +1002,15 @@ impl Target {
     }
     pub fn set_src_path(&mut self, src_path: TargetSourcePath) {
         Arc::make_mut(&mut self.inner).src_path = src_path;
+    }
+
+    pub(crate) fn set_ohm_test_partition(&mut self, group: String, path: PathBuf) {
+        Arc::make_mut(&mut self.inner).ohm_test_partition =
+            TestPartitionIdentity(Some((group, path)));
+    }
+
+    pub(crate) fn hash_ohm_test_partition(&self, state: &mut impl Hasher) {
+        self.inner.ohm_test_partition.hash(state);
     }
     pub fn required_features(&self) -> Option<&Vec<String>> {
         self.inner.required_features.as_ref()

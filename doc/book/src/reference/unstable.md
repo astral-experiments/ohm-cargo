@@ -94,6 +94,7 @@ Each new feature described below should explain how to use it.
     * [checksum-freshness](#checksum-freshness) --- When passed, the decision as to whether a crate needs to be rebuilt is made using file checksums instead of the file mtime.
     * [headstart](#headstart) --- Overlap dependency checks using early interface metadata in Ohm.
     * [ohm-clippy-seed-isolation](#ohm-clippy-seed-isolation) --- Keep bundled Clippy state out of worktree snapshots.
+    * [ohm-test-partitions](#ohm-test-partitions) --- Route exact integration tests to declared source roots with stable artifacts.
     * [ohm-worktree-seeds](#ohm-worktree-seeds) --- Prepare build state for seeding new Git worktrees with Ohm.
     * [panic-abort-tests](#panic-abort-tests) --- Allows running tests with the "abort" panic strategy.
     * [host-config](#host-config) --- Allows setting `[target]`-like configuration settings for host build targets.
@@ -2119,6 +2120,70 @@ be present in the selected compiler's sysroot for automatic selection; older
 sysroots retain their existing linker. Explicitly requesting Wild when it is
 missing produces an error. This selects Wild's full linker and does not enable
 incremental linking.
+
+## ohm-test-partitions
+
+`-Zohm-test-partitions` lets a package declare up to eight alternate source roots
+for an integration-test target. An exact test selection chooses a root by module
+prefix. Tests in the same group share an artifact; switching groups preserves
+each group's compiled state. Ohm does not enable this option by default.
+
+Keep the original integration-test root intact, then declare the alternate roots
+in `Cargo.toml`:
+
+```toml
+[package.metadata.ohm.test-partitions.it.help]
+path = "tests/it/ohm_help.rs"
+prefixes = ["help"]
+
+[package.metadata.ohm.test-partitions.it.version]
+path = "tests/it/ohm_version.rs"
+prefixes = ["version"]
+```
+
+Here, `it` is the original Cargo target and `help` and `version` are stable group
+names. Prefixes match complete module paths: `help` matches `help::selected`,
+but not `helper::selected`. Prefixes cannot overlap, including a prefix and one
+of its descendants. Paths must name existing files relative to the package,
+without `.` or `..` components. Partition roots cannot also be declared or
+automatically discovered Cargo targets. Placing them beside `tests/it/main.rs`
+avoids discovering extra targets from `tests/*.rs`.
+
+For example, `tests/it/ohm_help.rs` can include the existing module:
+
+```rust,ignore
+#[path = "help.rs"]
+mod help;
+```
+
+The normal target name and test selector stay unchanged:
+
+```console
+cargo +ohm -Zohm-test-partitions test -p app --test it help::selected -- --exact
+```
+
+The package author must preserve every test under each declared prefix,
+including its name, cfg conditions, shared helpers, crate attributes, and other
+root context. Cargo validates the configuration and routing; it does not parse
+Rust source or prove that the roots are equivalent. An incomplete root can turn
+a valid exact selection into a run with zero tests. Unknown exact names retain
+libtest's normal zero-test behavior.
+
+Routing requires one explicitly named package, one literal integration-test
+target with `harness = true`, one compile target, and the exact test arguments
+shown above. General filters, extra test arguments such as `--list`, `--no-run`,
+coverage compiler options, compiler response files, and unmapped prefixes use
+the original full root.
+Nextest's `cargo test --no-run` discovery therefore uses the original harness.
+This option cannot be combined with `-Zohm-focused-tests`.
+
+Cargo cannot detect Rust custom-test-framework attributes from the manifest;
+authored roots must use the ordinary libtest harness. A partition executable
+contains only its authored root's tests, including when invoked directly for
+listing. Test code excluded from that root is not compiled or checked for frontend or
+codegen diagnostics until a full build, such as `cargo test --test it --no-run`.
+Shared dependencies retain their normal artifacts; each group and the full
+harness have separate executable and incremental-cache identities.
 
 ## ohm-worktree-seeds
 

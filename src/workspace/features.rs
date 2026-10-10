@@ -967,6 +967,7 @@ unstable_cli_options!(
     ohm_proc_macro_trust: OhmProcMacroTrust = ("Set procedural-macro trust for shared registry artifacts and workspace snapshots: audited (default) or all (potentially unsound)"),
     ohm_reuse_built_deps: bool = ("Reuse already-built registry dependencies when checking a package"),
     ohm_shared_registry_cache: bool = ("Share deterministic registry artifacts across isolated workspaces without global compiler wrappers"),
+    ohm_test_partitions: bool = ("Route exact integration tests to declared stable partition roots"),
     ohm_worktree_seeds: Option<bool> = ("Prepare mutable packages for worktree seeding (enabled by Ohm defaults)"),
     panic_abort_tests: bool = ("Enable support to run tests with -Cpanic=abort"),
     panic_immediate_abort: bool = ("Enable setting `panic = \"immediate-abort\"` in profiles"),
@@ -1569,6 +1570,7 @@ impl CliUnstable {
             "no-index-update" => self.no_index_update = parse_empty(k, v)?,
             "ohm-defaults" => self.ohm_defaults = Some(parse_bool(k, v)?),
             "ohm-focused-tests" => self.ohm_focused_tests = parse_empty(k, v)?,
+            "ohm-test-partitions" => self.ohm_test_partitions = parse_empty(k, v)?,
             "ohm-linker" => {
                 self.ohm_linker = Some(match v {
                     Some("wild") => OhmLinker::Wild,

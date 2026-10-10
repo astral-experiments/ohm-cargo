@@ -105,6 +105,8 @@ pub struct CompileOptions {
     pub target_rustc_args: Option<Vec<String>>,
     /// Crate types to be passed to rustc (single target only)
     pub target_rustc_crate_types: Option<Vec<String>>,
+    /// An explicitly declared source root for one exact integration-test selection.
+    pub test_partition: Option<ops::TestPartition>,
     /// Whether the `--document-private-items` flags was specified and should
     /// be forwarded to `rustdoc`.
     pub rustdoc_document_private_items: bool,
@@ -127,6 +129,7 @@ impl CompileOptions {
             target_rustdoc_args: None,
             target_rustc_args: None,
             target_rustc_crate_types: None,
+            test_partition: None,
             rustdoc_document_private_items: false,
             honor_rust_version: None,
         })
@@ -361,6 +364,7 @@ fn create_bcx_with_registry_reuse<'a, 'gctx>(
         ref target_rustdoc_args,
         ref target_rustc_args,
         ref target_rustc_crate_types,
+        ref test_partition,
         rustdoc_document_private_items,
         honor_rust_version,
     } = *options;
@@ -569,6 +573,9 @@ fn create_bcx_with_registry_reuse<'a, 'gctx>(
             has_dev_units,
         };
         let (mut targeted_root_units, curr_selected_dep_kinds) = generator.generate_root_units()?;
+        if let Some(partition) = test_partition {
+            partition.apply(&mut targeted_root_units, interner);
+        }
         // Should be fine as the loop iterate is independent of target selection
         selected_dep_kinds = curr_selected_dep_kinds;
 

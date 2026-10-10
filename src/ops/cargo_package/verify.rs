@@ -111,6 +111,7 @@ pub fn run_verify(
             target_rustdoc_args: None,
             target_rustc_args: rustc_args,
             target_rustc_crate_types: None,
+            test_partition: None,
             rustdoc_document_private_items: false,
             honor_rust_version: None,
         },

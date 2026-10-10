@@ -1188,6 +1188,358 @@ fn ohm_focused_exact_lib_test_rejects_unsupported_filters_and_custom_harnesses()
     );
 }
 
+fn test_partition_project(name: &str) -> cargo_test_support::Project {
+    project()
+        .at(name)
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "app"
+                version = "0.1.0"
+                edition = "2021"
+
+                [[test]]
+                name = "it"
+                path = "tests/it/main.rs"
+
+                [package.metadata.ohm.test-partitions.it.a]
+                path = "tests/it/part_a.rs"
+                prefixes = ["a"]
+
+                [package.metadata.ohm.test-partitions.it.b]
+                path = "tests/it/part_b.rs"
+                prefixes = ["b"]
+            "#,
+        )
+        .file("src/lib.rs", "pub fn value() -> u32 { 7 }")
+        .file(
+            "tests/it/main.rs",
+            "mod support; mod a; mod b; #[test] fn apple() {}",
+        )
+        .file(
+            "tests/it/part_a.rs",
+            "mod support; #[path = \"a.rs\"] mod a;",
+        )
+        .file(
+            "tests/it/part_b.rs",
+            "mod support; #[path = \"b.rs\"] mod b;",
+        )
+        .file(
+            "tests/it/support.rs",
+            "pub fn value() -> u32 { app::value() }",
+        )
+        .file(
+            "tests/it/a.rs",
+            r#"
+                fn revision() -> &'static str { "before" }
+                #[test]
+                fn selected() {
+                    assert_eq!(env!("CARGO_CRATE_NAME"), "it");
+                    assert_eq!(module_path!(), "it::a");
+                    assert_eq!(env!("CARGO_PKG_NAME"), "app");
+                    assert_eq!(crate::support::value(), 7);
+                    std::fs::write("identity", format!("{}|{}|{}|{}|{}",
+                        env!("CARGO_CRATE_NAME"), module_path!(), file!(),
+                        env!("CARGO_PKG_NAME"), env!("CARGO_MANIFEST_DIR"))).unwrap();
+                    std::fs::write("revision", revision()).unwrap();
+                }
+                #[test]
+                fn sibling() { assert_eq!(crate::support::value(), 7); }
+                #[test]
+                #[ignore]
+                fn ignored() {}
+            "#,
+        )
+        .file(
+            "tests/it/b.rs",
+            "#[test] fn selected() { assert_eq!(crate::support::value(), 7); }",
+        )
+        .build()
+}
+
+fn test_partition_run(
+    p: &cargo_test_support::Project,
+    command: &str,
+) -> (serde_json::Value, String) {
+    let output = p
+        .cargo(command)
+        .masquerade_as_nightly_cargo(&["ohm-test-partitions"])
+        .run();
+    let stdout = String::from_utf8(output.stdout).unwrap();
+    let artifacts: Vec<serde_json::Value> = stdout
+        .lines()
+        .filter_map(|line| serde_json::from_str::<serde_json::Value>(line).ok())
+        .filter(|value| value["reason"] == "compiler-artifact" && value["target"]["name"] == "it")
+        .collect();
+    assert_eq!(
+        artifacts.len(),
+        1,
+        "expected one original-named test target: {stdout}"
+    );
+    (artifacts.into_iter().next().unwrap(), stdout)
+}
+
+#[cargo_test]
+fn ohm_test_partitions_preserve_identity_and_reuse_independent_groups() {
+    let p = test_partition_project("partitioned");
+    let (full, _) = test_partition_run(
+        &p,
+        "test -p app --test it a::selected --message-format=json -- --exact",
+    );
+    let identity = p.read_file("identity");
+    let (a, stdout) = test_partition_run(
+        &p,
+        "-Zohm-test-partitions test -p app --test it a::selected --message-format=json -- --exact",
+    );
+    assert!(stdout.contains("test a::selected ... ok"));
+    assert_eq!(p.read_file("identity"), identity);
+    assert_ne!(full["executable"], a["executable"]);
+    assert!(
+        a["target"]["src_path"]
+            .as_str()
+            .unwrap()
+            .ends_with("part_a.rs")
+    );
+    let a_path = PathBuf::from(a["executable"].as_str().unwrap());
+    let a_mtime = fs::metadata(&a_path).unwrap().modified().unwrap();
+
+    let (sibling, stdout) = test_partition_run(
+        &p,
+        "-Zohm-test-partitions test -p app --test it a::sibling --message-format=json -- --exact",
+    );
+    assert!(stdout.contains("test a::sibling ... ok"));
+    assert_eq!(sibling["executable"], a["executable"]);
+    assert_eq!(sibling["fresh"], true);
+    assert_eq!(fs::metadata(&a_path).unwrap().modified().unwrap(), a_mtime);
+
+    let (b, stdout) = test_partition_run(
+        &p,
+        "-Zohm-test-partitions test -p app --test it b::selected --message-format=json -- --exact",
+    );
+    assert!(stdout.contains("test b::selected ... ok"));
+    assert_ne!(b["executable"], a["executable"]);
+    let b_path = PathBuf::from(b["executable"].as_str().unwrap());
+    let b_mtime = fs::metadata(&b_path).unwrap().modified().unwrap();
+    let (again, _) = test_partition_run(
+        &p,
+        "-Zohm-test-partitions test -p app --test it a::selected --message-format=json -- --exact",
+    );
+    assert_eq!(again["executable"], a["executable"]);
+    assert_eq!(again["fresh"], true);
+    assert_eq!(fs::metadata(&a_path).unwrap().modified().unwrap(), a_mtime);
+
+    // A body edit must rebuild A and execute the new code without dirtying B's source closure.
+    let edited = p
+        .read_file("tests/it/a.rs")
+        .replace("\"before\"", "\"after\"");
+    p.change_file("tests/it/a.rs", &edited);
+    let (changed, _) = test_partition_run(
+        &p,
+        "-Zohm-test-partitions test -p app --test it a::selected --message-format=json -- --exact",
+    );
+    assert_eq!(changed["executable"], a["executable"]);
+    assert_eq!(changed["fresh"], false);
+    assert_eq!(p.read_file("revision"), "after");
+    let (unchanged, _) = test_partition_run(
+        &p,
+        "-Zohm-test-partitions test -p app --test it b::selected --message-format=json -- --exact",
+    );
+    assert_eq!(unchanged["executable"], b["executable"]);
+    assert_eq!(unchanged["fresh"], true);
+    assert_eq!(fs::metadata(&b_path).unwrap().modified().unwrap(), b_mtime);
+}
+
+#[cargo_test]
+fn ohm_test_partitions_keep_full_discovery_and_general_requests() {
+    let p = test_partition_project("partitioned");
+    let (listed, stdout) = test_partition_run(
+        &p,
+        "-Zohm-test-partitions test -p app --test it --message-format=json -- --list",
+    );
+    assert!(
+        listed["target"]["src_path"]
+            .as_str()
+            .unwrap()
+            .ends_with("main.rs")
+    );
+    assert!(stdout.contains("a::selected: test"));
+    assert!(stdout.contains("b::selected: test"));
+    assert!(stdout.contains("apple: test"));
+
+    let (broad, stdout) = test_partition_run(
+        &p,
+        "-Zohm-test-partitions test -p app --test it selected --message-format=json",
+    );
+    assert_eq!(broad["executable"], listed["executable"]);
+    assert!(stdout.contains("test a::selected ... ok"));
+    assert!(stdout.contains("test b::selected ... ok"));
+
+    fs::remove_file(p.root().join("identity")).unwrap();
+    let (no_run, _) = test_partition_run(
+        &p,
+        "-Zohm-test-partitions test -p app --test it a::selected --no-run --message-format=json -- --exact",
+    );
+    assert_eq!(no_run["executable"], listed["executable"]);
+    assert!(!p.root().join("identity").exists());
+
+    let (outside, stdout) = test_partition_run(
+        &p,
+        "-Zohm-test-partitions test -p app --test it apple --message-format=json -- --exact",
+    );
+    assert_eq!(outside["executable"], listed["executable"]);
+    assert!(stdout.contains("test apple ... ok"));
+
+    let (missing, stdout) = test_partition_run(
+        &p,
+        "-Zohm-test-partitions test -p app --test it unknown::missing --message-format=json -- --exact",
+    );
+    assert_eq!(missing["executable"], listed["executable"]);
+    assert!(stdout.contains("running 0 tests"));
+
+    // Prefix declarations are an author contract, not an inventory of known test names.
+    let (group_missing, stdout) = test_partition_run(
+        &p,
+        "-Zohm-test-partitions test -p app --test it a::missing --message-format=json -- --exact",
+    );
+    assert!(
+        group_missing["target"]["src_path"]
+            .as_str()
+            .unwrap()
+            .ends_with("part_a.rs")
+    );
+    assert!(stdout.contains("running 0 tests"));
+
+    let (ignored, stdout) = test_partition_run(
+        &p,
+        "-Zohm-test-partitions test -p app --test it a::ignored --message-format=json -- --exact",
+    );
+    assert_eq!(ignored["executable"], group_missing["executable"]);
+    assert!(stdout.contains("test a::ignored ... ignored"));
+}
+
+#[cargo_test]
+fn ohm_test_partitions_preserve_custom_harness_and_coverage_roots() {
+    let p = test_partition_project("partitioned");
+    let manifest = p.read_file("Cargo.toml").replace(
+        "path = \"tests/it/main.rs\"",
+        "path = \"tests/it/main.rs\"\nharness = false",
+    );
+    p.change_file("Cargo.toml", &manifest);
+    p.change_file(
+        "tests/it/main.rs",
+        "fn main() { println!(\"complete custom harness\"); }",
+    );
+    p.change_file(
+        "tests/it/part_a.rs",
+        "compile_error!(\"partition must not be selected\");",
+    );
+    let (custom, stdout) = test_partition_run(
+        &p,
+        "-Zohm-test-partitions test -p app --test it a::selected --message-format=json -- --exact",
+    );
+    assert!(
+        custom["target"]["src_path"]
+            .as_str()
+            .unwrap()
+            .ends_with("main.rs")
+    );
+    assert!(stdout.contains("complete custom harness"));
+
+    let coverage = test_partition_project("coverage");
+    coverage.change_file(
+        "tests/it/part_a.rs",
+        "compile_error!(\"partition must not be selected\");",
+    );
+    coverage.change_file("coverage.rsp", "-Cinstrument-coverage\n");
+    for flags in [
+        "-Cinstrument-coverage".to_owned(),
+        format!("@{}", coverage.root().join("coverage.rsp").display()),
+    ] {
+        coverage
+            .cargo("-Zohm-test-partitions test -p app --test it a::selected -- --exact")
+            .masquerade_as_nightly_cargo(&["ohm-test-partitions"])
+            .env("CARGO_ENCODED_RUSTFLAGS", flags)
+            .env(
+                "LLVM_PROFILE_FILE",
+                coverage.root().join("coverage-%p.profraw"),
+            )
+            .with_stdout_data(str![[r#"
+...
+test a::selected ... ok
+...
+"#]])
+            .run();
+    }
+}
+
+#[cargo_test]
+fn ohm_test_partitions_reject_ambiguous_or_unbounded_declarations() {
+    let p = test_partition_project("invalid-partitions");
+    let original = p.read_file("Cargo.toml");
+    p.change_file(
+        "Cargo.toml",
+        &original.replace("prefixes = [\"a\"]", "prefixes = 7"),
+    );
+    p.cargo("-Zohm-test-partitions test -p app --test it a::selected -- --exact")
+        .masquerade_as_nightly_cargo(&["ohm-test-partitions"])
+        .with_status(101)
+        .with_stderr_data(str![[r#"
+...
+[ERROR] invalid test partitions for integration target `it`
+...
+"#]])
+        .run();
+
+    p.change_file(
+        "Cargo.toml",
+        &original.replace("prefixes = [\"b\"]", "prefixes = [\"a::nested\"]"),
+    );
+    p.cargo("-Zohm-test-partitions test -p app --test it a::selected -- --exact")
+        .masquerade_as_nightly_cargo(&["ohm-test-partitions"])
+        .with_status(101)
+        .with_stderr_data(str![[r#"
+...
+[ERROR] overlapping test partition prefixes `a` and `a::nested`
+...
+"#]])
+        .run();
+
+    let mut excessive = original.clone();
+    for index in 0..7 {
+        excessive.push_str(&format!(
+            "\n[package.metadata.ohm.test-partitions.it.extra{index}]\npath = \"tests/it/part_a.rs\"\nprefixes = [\"extra{index}\"]\n"
+        ));
+    }
+    p.change_file("Cargo.toml", &excessive);
+    p.cargo("-Zohm-test-partitions test -p app --test it a::selected -- --exact")
+        .masquerade_as_nightly_cargo(&["ohm-test-partitions"])
+        .with_status(101)
+        .with_stderr_data(str![[r#"
+...
+[ERROR] integration target `it` declares more than 8 test partitions
+...
+"#]])
+        .run();
+
+    // A top-level .rs file is also an automatically discovered target. It would duplicate tests
+    // during ordinary full-suite runs, even with the experimental flag disabled.
+    p.change_file(
+        "Cargo.toml",
+        &original.replace("tests/it/part_a.rs", "tests/extra.rs"),
+    );
+    p.change_file("tests/extra.rs", "#[test] fn extra() {}");
+    p.cargo("-Zohm-test-partitions test -p app --test it a::selected -- --exact")
+        .masquerade_as_nightly_cargo(&["ohm-test-partitions"])
+        .with_status(101)
+        .with_stderr_data(str![[r#"
+...
+[ERROR] test partition `a` source is already a Cargo target; place partition roots in a nested directory
+...
+"#]])
+        .run();
+}
+
 // Regression test for running cargo-test twice with
 // tests in an rlib
 #[cargo_test]
