@@ -11,6 +11,17 @@ Codex.
 Use Ohm only for local development, and at your own risk. Never use it for production builds or
 releases, and always verify your work with the official Rust toolchain.
 
+Ohm defaults enable native ThinLTO object caching for supported Linux builds. Cargo manages
+`<build-dir>/.ohm-thinlto-cache`, pruning it after builds to 2 GiB or 100,000 objects and expiring
+entries unused for 30 days. Concurrent builds can temporarily exceed these limits. Compiler
+wrappers, unsupported compilers, and unsupported backend configurations retain normal compilation.
+Optimization settings, including the selected LTO mode, are preserved.
+
+Use `cargo +ohm -Zohm-thinlto-cache=no build --release` to disable automatic caching, or
+`-Zohm-defaults=no` to disable all Ohm defaults. `[unstable] ohm-thinlto-cache = false` provides the
+same targeted opt-out in Cargo configuration. An explicit rustc `-Zthinlto-cache=PATH` keeps its own
+directory and eviction policy.
+
 ## License
 
 Cargo is primarily distributed under the terms of both the MIT license
