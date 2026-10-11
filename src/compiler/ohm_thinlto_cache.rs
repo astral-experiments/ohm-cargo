@@ -9,6 +9,8 @@ use std::time::{Duration, SystemTime};
 use cargo_platform::Cfg;
 use cargo_util::ProcessBuilder;
 
+use crate::util::flock;
+
 use super::{BuildRunner, CompileMode, Unit};
 
 const MAX_BYTES: u64 = 2 * 1024 * 1024 * 1024;
@@ -125,7 +127,7 @@ fn prune(root: &Path, max_bytes: u64, max_entries: usize, max_age: Duration) -> 
         .create(true)
         .truncate(false)
         .open(root.join(".prune-lock"))?;
-    if lock.try_lock().is_err() {
+    if flock::try_lock_exclusive(&lock).is_err() {
         return Ok(());
     }
 
@@ -267,7 +269,7 @@ mod tests {
         let unrelated = cached.parent().unwrap().join("keep.txt");
         fs::write(&unrelated, "unrelated").unwrap();
         let lock = fs::File::create(root.path().join(".prune-lock")).unwrap();
-        lock.lock().unwrap();
+        flock::lock_exclusive(&lock).unwrap();
         prune(root.path(), 0, 0, MAX_AGE).unwrap();
         assert!(cached.exists());
         drop(lock);
