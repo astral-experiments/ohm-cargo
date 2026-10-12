@@ -60,6 +60,7 @@ impl LockManager {
         if !build_runner.bcx.ws.shared_registry_cache_enabled() {
             return Ok(());
         }
+        let mut canonical_profiles = HashMap::default();
         let mut units = build_runner
             .bcx
             .unit_graph
@@ -75,11 +76,10 @@ impl LockManager {
                     .build()
                     .parent()
                     .unwrap();
-                let expected = build_runner
-                    .bcx
-                    .ws
-                    .canonical_build_path(profile)
-                    .join(path.strip_prefix(profile).unwrap());
+                let canonical_profile = canonical_profiles
+                    .entry(unit.kind)
+                    .or_insert_with(|| build_runner.bcx.ws.canonical_build_path(profile));
+                let expected = canonical_profile.join(path.strip_prefix(profile).unwrap());
                 if key.0 != expected {
                     bail!(
                         "shared registry unit lock escapes its locked build profile or namespace: {}; \
