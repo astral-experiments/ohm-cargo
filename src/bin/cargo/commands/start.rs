@@ -26,11 +26,7 @@ pub fn exec(gctx: &mut GlobalContext, args: &ArgMatches) -> CliResult {
         }
         let source = args.value_of_path("source", gctx).unwrap();
         let ws = args.workspace(gctx)?;
-        let info = cargo::ops::check_session::workspace::start(
-            ws.root(),
-            &source,
-            gctx.cli_unstable().ohm_check_session_trust_proc_macros,
-        )?;
+        let info = cargo::ops::check_session::workspace::start(ws.root(), &source)?;
         gctx.shell().status(
             "Session",
             format!(

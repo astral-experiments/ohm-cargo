@@ -151,6 +151,54 @@ fn fixture() -> Project {
 }
 
 #[cargo_test]
+fn macro_validation_reuses_matching_expansion_and_discards_changed_or_failed_proofs() {
+    let p = fixture();
+    p.change_file("macro-output", "first");
+    let mut session = Session::start(&p, true);
+    assert!(session.response().contains("retained=true"));
+    let output = session.check();
+    assert!(output.contains("retained=true"), "{output}");
+    assert_eq!(session.workers().len(), 1);
+
+    p.change_file("macro-output", "second");
+    assert!(
+        session
+            .check()
+            .contains("running fresh check-session fallback")
+    );
+    assert_eq!(session.status, 0);
+    assert!(session.check().contains("retained=true"));
+    assert_eq!(session.workers().len(), 2);
+
+    p.change_file("late-validator-diagnostic", "");
+    let output = session.check();
+    assert!(
+        output.contains("running fresh check-session fallback"),
+        "{output}"
+    );
+    assert!(!output.contains("discard this late diagnostic"), "{output}");
+    assert_eq!(session.status, 0);
+    fs::remove_file(p.root().join("late-validator-diagnostic")).unwrap();
+    assert!(session.check().contains("retained=true"));
+
+    p.change_file("failed-validator", "");
+    assert!(
+        session
+            .check()
+            .contains("running fresh check-session fallback")
+    );
+    assert_eq!(session.status, 0);
+    let validators: Vec<u32> = fs::read_to_string(p.root().join("validator-starts"))
+        .unwrap()
+        .lines()
+        .map(|line| line.parse().unwrap())
+        .collect();
+    assert_eq!(validators.len(), 4);
+    assert!(validators.iter().all(|pid| !alive(*pid)));
+    assert_eq!(session.stop(), 0);
+}
+
+#[cargo_test]
 fn errors_repairs_and_private_outputs() {
     let p = fixture();
     let mut session = Session::start(&p, true);

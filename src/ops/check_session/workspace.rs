@@ -37,7 +37,6 @@ pub struct Info {
     executable: String,
     generation: String,
     source: PathBuf,
-    trust_proc_macros: bool,
     /// PID of the workspace host, which owns the compiler until `cargo stop`.
     pub pid: u32,
 }
@@ -46,7 +45,6 @@ pub struct Info {
 struct Bootstrap {
     workspace: PathBuf,
     source: PathBuf,
-    trust_proc_macros: bool,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -213,7 +211,7 @@ fn read_packet<T: DeserializeOwned>(input: &mut impl Read, limit: usize) -> Carg
 }
 
 /// Start an independent host, or attach to an identical explicitly started session.
-pub fn start(workspace: &Path, source: &Path, trust_proc_macros: bool) -> CargoResult<Info> {
+pub fn start(workspace: &Path, source: &Path) -> CargoResult<Info> {
     let endpoint = Endpoint::new(workspace)?;
     let source = fs::canonicalize(source).context("cannot read the selected session source")?;
     ensure!(
@@ -222,9 +220,7 @@ pub fn start(workspace: &Path, source: &Path, trust_proc_macros: bool) -> CargoR
     );
     let validate = |info: Info| -> CargoResult<Info> {
         ensure!(
-            info.executable == executable_identity()?
-                && info.source == source
-                && info.trust_proc_macros == trust_proc_macros,
+            info.executable == executable_identity()? && info.source == source,
             "a different workspace session is already running; use `cargo stop` first"
         );
         Ok(info)
@@ -255,7 +251,6 @@ pub fn start(workspace: &Path, source: &Path, trust_proc_macros: bool) -> CargoR
             &Bootstrap {
                 workspace: endpoint.workspace.clone(),
                 source: source.clone(),
-                trust_proc_macros,
             },
             REQUEST_LIMIT,
         )?;
@@ -398,7 +393,6 @@ fn run_host() -> CargoResult<()> {
         executable: executable_identity()?,
         generation: format!("{}-{:?}", std::process::id(), SystemTime::now()),
         source: bootstrap.source,
-        trust_proc_macros: bootstrap.trust_proc_macros,
         pid: std::process::id(),
     };
     let session = CompilerSession::new(info.source.clone());
@@ -569,17 +563,10 @@ impl Executor for Client {
             retain: compiler_fingerprint.is_some()
                 && compiler.wrapper.is_none()
                 && compiler.workspace_wrapper.is_none()
-                && runner.bcx.gctx.jobserver_from_env().is_none()
-                && (self.info.trust_proc_macros
-                    || !runner
-                        .bcx
-                        .unit_graph
-                        .keys()
-                        .any(|unit| unit.target.proc_macro())),
+                && runner.bcx.gctx.jobserver_from_env().is_none(),
             config: CompilerConfiguration {
                 compiler: compiler.verbose_version.clone(),
                 compiler_fingerprint,
-                trust_proc_macros: self.info.trust_proc_macros,
                 directory: runner
                     .bcx
                     .ws
@@ -638,6 +625,7 @@ impl Executor for Client {
                     tracing::debug!(
                         pid = checked.worker_pid,
                         retained = checked.retained,
+                        macro_validation_seconds = checked.macro_validation_seconds,
                         "completed workspace session check"
                     );
                     for line in checked.diagnostics {

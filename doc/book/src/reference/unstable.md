@@ -2116,11 +2116,14 @@ definitions, macros, attributes, and changes outside that body require a fresh
 check. A preceding `f32` literal constant can also change without changing its
 byte width. Source files included elsewhere as code or data require fresh checks.
 
-By default, compiler wrappers and workspaces with procedural-macro dependencies
-use fresh checks. Passing `-Zohm-check-session-trust-proc-macros` to `start` explicitly
-assumes macro expansion remains valid for that session. Declared macro file
-inputs are checked, but undeclared reads and other side effects are not tracked;
-this opt-in can therefore be unsound. It is intended for controlled experiments.
+Compiler wrappers use fresh checks. When the retained compiler executes a
+procedural macro, each later check first runs expansion in a fresh compiler
+process. The expanded program must match outside the supported edit, including
+source spans and hygiene. The worker also verifies that the expansion proof
+describes the current source. Changed expansion, expansion diagnostics, or a
+failed validator discard the worker and use a fresh check. Macros run again even
+when they read undeclared inputs. There is no macro-trust option; expansion
+validation adds work to each check that uses procedural macros.
 
 Retained checks use the configured frontend thread count. They do not publish
 library metadata or a successful Cargo fingerprint. Dependencies still produce

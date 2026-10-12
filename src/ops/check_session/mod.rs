@@ -25,7 +25,6 @@ const OUTPUT_LIMIT: usize = 64 * 1024 * 1024;
 struct CompilerConfiguration {
     compiler: String,
     compiler_fingerprint: Option<u64>,
-    trust_proc_macros: bool,
     directory: PathBuf,
     jobs: u32,
 }
@@ -39,7 +38,6 @@ struct Invocation {
     cwd: Option<PathBuf>,
     compiler: String,
     compiler_fingerprint: Option<u64>,
-    trust_proc_macros: bool,
     jobs: u32,
 }
 
@@ -61,6 +59,7 @@ struct Checked {
     errors: bool,
     retained: bool,
     worker_pid: u32,
+    macro_validation_seconds: f64,
 }
 
 impl CompilerSession {
@@ -86,7 +85,6 @@ impl CompilerSession {
             cwd: command.get_cwd().map(Path::to_path_buf),
             compiler: config.compiler.clone(),
             compiler_fingerprint: config.compiler_fingerprint,
-            trust_proc_macros: config.trust_proc_macros,
             jobs: config.jobs,
         };
         let mut state = self.state.lock().unwrap();
@@ -103,18 +101,55 @@ impl CompilerSession {
         }
         let scratch = state.scratch.as_ref().unwrap().path().to_owned();
         state.invocation = Some(invocation);
+        let environment = state.invocation.as_ref().unwrap().environment.clone();
+        let mut macro_validation_seconds = 0.0;
         let response = if let Some(worker) = &mut state.worker {
-            worker.check(cancelled)
+            (|| {
+                let expansion = if let Some(previous) = &worker.expansion {
+                    let started = Instant::now();
+                    let outputs = tempfile::Builder::new()
+                        .prefix("expansion-")
+                        .tempdir_in(&scratch)?;
+                    let mut command = isolated_command(
+                        command,
+                        outputs.path(),
+                        CompilerMode::Expansion,
+                        &self.source,
+                    )?;
+                    let mut validator =
+                        Worker::start(&mut command, outputs, &environment, config.jobs)?;
+                    let (boundary, diagnostics) = validator.response("expanded", 0, cancelled)?;
+                    ensure!(
+                        diagnostics.is_empty(),
+                        "macro validation produced diagnostics"
+                    );
+                    validator.finish_validation(cancelled)?;
+                    let expansion = boundary
+                        .expansion
+                        .context("missing macro expansion proof")?;
+                    ensure!(
+                        previous.fingerprint == expansion.fingerprint,
+                        "macro expansion changed outside the supported edit"
+                    );
+                    macro_validation_seconds = started.elapsed().as_secs_f64();
+                    Some(expansion)
+                } else {
+                    None
+                };
+                worker.check(expansion.as_ref(), cancelled)
+            })()
         } else {
             let outputs = tempfile::Builder::new()
                 .prefix("worker-")
                 .tempdir_in(&scratch)?;
-            let mut worker_command = isolated_command(command, outputs.path(), true, &self.source)?;
-            if config.trust_proc_macros {
-                worker_command.arg("-Zohm-check-session-trust-proc-macros");
-            }
-            let environment = &state.invocation.as_ref().unwrap().environment;
-            let mut worker = Worker::start(&mut worker_command, outputs, environment, config.jobs)?;
+            let mut worker_command = isolated_command(
+                command,
+                outputs.path(),
+                CompilerMode::Retained,
+                &self.source,
+            )?;
+            let mut worker =
+                Worker::start(&mut worker_command, outputs, &environment, config.jobs)?;
             let response = worker.response("ready", 0, cancelled);
             state.worker = Some(worker);
             response
@@ -130,12 +165,13 @@ impl CompilerSession {
                     errors: boundary.errors,
                     retained: boundary.retained,
                     worker_pid,
+                    macro_validation_seconds,
                 }))
             }
             Err(error) => {
                 tracing::debug!(%error, "discarding check-session worker before fresh compilation");
                 state.worker = None;
-                Ok(None)
+                Err(error)
             }
         }
     }
@@ -152,7 +188,7 @@ fn fresh_check(
     let scratch = tempfile::Builder::new()
         .prefix("fresh-")
         .tempdir_in(directory)?;
-    let fresh = isolated_command(command, scratch.path(), false, source)?;
+    let fresh = isolated_command(command, scratch.path(), CompilerMode::Fresh, source)?;
     tracing::debug!("running fresh check-session fallback");
     fresh
         .exec_with_streaming(
@@ -173,10 +209,16 @@ fn is_artifact(line: &str) -> bool {
         .is_ok_and(|value| matches!(value["$message_type"].as_str(), Some("artifact")))
 }
 
+enum CompilerMode {
+    Retained,
+    Expansion,
+    Fresh,
+}
+
 fn isolated_command(
     original: &ProcessBuilder,
     output: &Path,
-    resident: bool,
+    mode: CompilerMode,
     source: &Path,
 ) -> CargoResult<ProcessBuilder> {
     std::fs::create_dir_all(output)?;
@@ -237,8 +279,13 @@ fn isolated_command(
         arguments.push(argument.clone());
         index += 1;
     }
-    if resident {
-        arguments.push("-Zohm-check-session".into());
+    let flag = match mode {
+        CompilerMode::Retained => Some("-Zohm-check-session"),
+        CompilerMode::Expansion => Some("-Zohm-check-session-validate-macros"),
+        CompilerMode::Fresh => None,
+    };
+    if let Some(flag) = flag {
+        arguments.push(flag.into());
         let mut option = OsString::from("-Zohm-resident-frontend=");
         option.push(source);
         arguments.push(option);
@@ -260,6 +307,14 @@ struct Boundary {
     retained: bool,
     #[serde(default)]
     reason: String,
+    #[serde(default)]
+    expansion: Option<ExpansionProof>,
+}
+
+#[derive(Clone, Deserialize, Serialize)]
+struct ExpansionProof {
+    fingerprint: String,
+    source_hash: String,
 }
 
 struct Worker {
@@ -267,6 +322,7 @@ struct Worker {
     input: Option<ChildStdin>,
     output: mpsc::Receiver<CargoResult<String>>,
     revision: u64,
+    expansion: Option<ExpansionProof>,
     // Cargo removes snapshots after reaping the child, even if it exited without destructors.
     _outputs: tempfile::TempDir,
     _jobserver: jobserver::Client,
@@ -321,21 +377,46 @@ impl Worker {
             input,
             output,
             revision: 0,
+            expansion: None,
             _outputs: outputs,
             _jobserver: jobserver,
         })
     }
 
-    fn check(&mut self, cancelled: &AtomicBool) -> CargoResult<(Boundary, Vec<String>)> {
+    fn check(
+        &mut self,
+        expansion: Option<&ExpansionProof>,
+        cancelled: &AtomicBool,
+    ) -> CargoResult<(Boundary, Vec<String>)> {
         self.revision += 1;
         let input = self.input.as_mut().context("closed worker input")?;
         serde_json::to_writer(
             &mut *input,
-            &json!({"command":"check", "revision":self.revision}),
+            &json!({"command":"check", "revision":self.revision, "expansion": expansion}),
         )?;
         input.write_all(b"\n")?;
         input.flush()?;
         self.response("checked", self.revision, cancelled)
+    }
+
+    fn finish_validation(&mut self, cancelled: &AtomicBool) -> CargoResult<()> {
+        let deadline = Instant::now() + TIMEOUT;
+        loop {
+            ensure!(
+                !cancelled.load(Ordering::Relaxed),
+                "check-session client disconnected"
+            );
+            ensure!(Instant::now() < deadline, "macro validator did not exit");
+            let status = self.child.try_wait()?;
+            if let Some(status) = status {
+                ensure!(status.success(), "macro validator exited unsuccessfully");
+            }
+            match self.output.recv_timeout(Duration::from_millis(10)) {
+                Ok(_) => anyhow::bail!("macro validator emitted late diagnostics"),
+                Err(mpsc::RecvTimeoutError::Disconnected) if status.is_some() => return Ok(()),
+                Err(_) => {}
+            }
+        }
     }
 
     fn response(
@@ -389,6 +470,9 @@ impl Worker {
                     boundary.errors == errors,
                     "compiler status did not match its diagnostics"
                 );
+                if kind == "ready" {
+                    self.expansion = boundary.expansion.clone();
+                }
                 return Ok((boundary, diagnostics));
             }
             ensure!(
@@ -437,7 +521,8 @@ mod tests {
             "ohm-resident-frontend=old.rs",
         ]);
         let source = Path::new("src/edit.rs");
-        let resident = isolated_command(&original, scratch.path(), true, source).unwrap();
+        let resident =
+            isolated_command(&original, scratch.path(), CompilerMode::Retained, source).unwrap();
         let arguments: Vec<_> = resident
             .get_args()
             .map(|arg| arg.to_string_lossy())
@@ -447,7 +532,24 @@ mod tests {
             && !arg.contains("trust-proc-macros")));
         assert!(arguments.contains(&std::borrow::Cow::Borrowed("-Copt-level=1")));
         assert!(arguments.contains(&std::borrow::Cow::Borrowed("-Zthreads=8")));
-        let fresh = isolated_command(&original, scratch.path(), false, source).unwrap();
+        let expansion =
+            isolated_command(&original, scratch.path(), CompilerMode::Expansion, source).unwrap();
+        let arguments: Vec<_> = expansion
+            .get_args()
+            .map(|arg| arg.to_string_lossy())
+            .collect();
+        assert!(
+            arguments
+                .iter()
+                .any(|arg| *arg == "-Zohm-check-session-validate-macros")
+        );
+        assert!(
+            arguments
+                .iter()
+                .all(|arg| !arg.contains("incremental") && *arg != "-Zohm-check-session")
+        );
+        let fresh =
+            isolated_command(&original, scratch.path(), CompilerMode::Fresh, source).unwrap();
         assert!(
             fresh
                 .get_args()
@@ -471,7 +573,13 @@ mod tests {
             let mut command = ProcessBuilder::new("rustc");
             command.args(&args);
             assert!(
-                isolated_command(&command, scratch.path(), true, Path::new("edit.rs")).is_err(),
+                isolated_command(
+                    &command,
+                    scratch.path(),
+                    CompilerMode::Retained,
+                    Path::new("edit.rs")
+                )
+                .is_err(),
                 "{args:?}"
             );
         }
