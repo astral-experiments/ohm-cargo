@@ -647,7 +647,7 @@ fn create_bcx_with_registry_reuse<'a, 'gctx>(
         &scrape_units,
         host_kind_requested.then_some(explicit_host_kind),
         build_config.compile_time_deps_only,
-        gctx.cli_unstable().ohm_shared_stages
+        gctx.cli_unstable().ohm_shared_stages()
             && target_data.rustc.workspace_wrapper.is_none()
             && target_data.rustc.supports_ohm_shared_stages(gctx),
     );
