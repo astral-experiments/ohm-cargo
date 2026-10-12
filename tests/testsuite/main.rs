@@ -144,6 +144,7 @@ mod net_config;
 mod new;
 mod offline;
 mod ohm_linker;
+mod ohm_shared_stages;
 mod ohm_worktree;
 mod old_cargos;
 mod open_namespaces;

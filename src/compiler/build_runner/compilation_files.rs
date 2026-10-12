@@ -2467,7 +2467,16 @@ fn compute_metadata(
     // `panic=abort` and `panic=unwind` artifacts, additionally with various
     // settings like debuginfo and whatnot.
     unit.profile.hash(&mut shared_hasher);
-    unit.mode.hash(&mut shared_hasher);
+    let shared_stages = crate::compiler::unit_uses_ohm_shared_stages(build_runner, unit);
+    if shared_stages {
+        // A stable compiler identity also selects the same rustc incremental
+        // directory. Keep the real mode in Cargo's unit ID below so a checked
+        // rmeta never satisfies a build or overwrites a built artifact.
+        CompileMode::Build.hash(&mut shared_hasher);
+        "ohm-shared-stages-v1".hash(&mut shared_hasher);
+    } else {
+        unit.mode.hash(&mut shared_hasher);
+    }
     build_runner.lto[unit].hash(&mut shared_hasher);
 
     // Artifacts compiled for the host should have a different
@@ -2541,6 +2550,9 @@ fn compute_metadata(
     dep_c_metadata_hashes.hash(&mut c_metadata_hasher);
 
     let mut unit_id_hasher = shared_hasher.clone();
+    if shared_stages {
+        unit.mode.hash(&mut unit_id_hasher);
+    }
     // Mix in the target-metadata of all the dependencies of this target.
     let mut dep_unit_id_hashes = deps_metadata.iter().map(|m| m.unit_id).collect::<Vec<_>>();
     dep_unit_id_hashes.sort();

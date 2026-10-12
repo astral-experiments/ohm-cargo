@@ -22,6 +22,31 @@ Use `cargo +ohm -Zohm-thinlto-cache=no build --release` to disable automatic cac
 same targeted opt-out in Cargo configuration. An explicit rustc `-Zthinlto-cache=PATH` keeps its own
 directory and eviction policy.
 
+## Shared frontend stages
+
+With the matching experimental Ohm compiler, opt into frontend query reuse for a
+debug check followed by a build:
+
+```sh
+cargo +ohm -Zohm-shared-stages check
+cargo +ohm -Zohm-shared-stages build
+```
+
+Use the flag for both commands. Cargo preserves separate checked and built
+artifacts while giving compatible units the same compiler identity and incremental
+directory. Source, feature, profile, dependency, and build-script inputs remain
+tracked. Reuse excludes release and test targets, procedural macros, build scripts,
+explicit codegen backends, and workspace compiler wrappers. It falls back to
+ordinary compilation when the compiler does not support the experiment, and is
+disabled by default.
+
+The first native build can reuse frontend results from a preceding check. Once a
+native build exists, subsequent builds restore its saved graph and query cache;
+checks restore their own saved state and retain the native work products. Both
+paths apply normal incremental validation to changed inputs. Each incremental
+session retains at most one checkpoint per stage, removed with the normal build
+cache. This uses additional cache space and remains an opt-in experiment.
+
 ## License
 
 Cargo is primarily distributed under the terms of both the MIT license
