@@ -252,7 +252,7 @@ fn unit_suppresses_default_public_api_hash(
 /// Cargo's artifact and fingerprint identities remain distinct for each mode.
 fn unit_uses_ohm_shared_stages(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> bool {
     let bcx = build_runner.bcx;
-    bcx.gctx.cli_unstable().ohm_shared_stages
+    bcx.gctx.cli_unstable().ohm_shared_stages()
         && unit.profile.root == ProfileRoot::Debug
         && unit.profile.codegen_backend.is_none()
         && matches!(

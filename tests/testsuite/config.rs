@@ -1489,6 +1489,10 @@ fn ohm_proc_macro_trust_rejects_invalid_values() {
 fn ohm_defaults_can_be_disabled_for_one_invocation() {
     let gctx = GlobalContextBuilder::new().build();
     assert_eq!(
+        gctx.cli_unstable().ohm_shared_stages(),
+        cfg!(feature = "ohm-defaults")
+    );
+    assert_eq!(
         gctx.cli_unstable().headstart(),
         cfg!(feature = "ohm-defaults")
     );
@@ -1513,6 +1517,7 @@ fn ohm_defaults_can_be_disabled_for_one_invocation() {
         .unstable_flag("ohm-defaults=no")
         .build();
     assert!(!gctx.cli_unstable().ohm_defaults());
+    assert!(!gctx.cli_unstable().ohm_shared_stages());
     assert!(!gctx.cli_unstable().headstart());
     assert!(!gctx.cli_unstable().relink_only());
     assert!(!gctx.cli_unstable().no_embed_metadata());
@@ -1522,6 +1527,7 @@ fn ohm_defaults_can_be_disabled_for_one_invocation() {
         .unstable_flag("ohm-defaults")
         .build();
     assert!(gctx.cli_unstable().ohm_defaults());
+    assert!(gctx.cli_unstable().ohm_shared_stages());
     assert!(gctx.cli_unstable().headstart());
     assert!(gctx.cli_unstable().relink_only());
     assert!(gctx.cli_unstable().no_embed_metadata());
@@ -1565,6 +1571,32 @@ no-embed-metadata = false
     assert!(!gctx.cli_unstable().relink_only());
     assert!(!gctx.cli_unstable().no_embed_metadata());
     assert!(!gctx.cli_unstable().ohm_reuse_built_deps());
+}
+
+#[cargo_test]
+fn shared_stages_overrides_ohm_defaults() {
+    for (defaults, override_flag, expected) in [
+        ("ohm-defaults", "ohm-shared-stages=no", false),
+        ("ohm-defaults=no", "ohm-shared-stages", true),
+    ] {
+        for flags in [[defaults, override_flag], [override_flag, defaults]] {
+            let gctx = GlobalContextBuilder::new()
+                .unstable_flag(flags[0])
+                .unstable_flag(flags[1])
+                .build();
+            assert_eq!(gctx.cli_unstable().ohm_shared_stages(), expected);
+        }
+    }
+
+    write_config_toml("[unstable]\nohm-defaults = true\nohm-shared-stages = false\n");
+    let gctx = GlobalContextBuilder::new()
+        .nightly_features_allowed(true)
+        .build();
+    assert!(!gctx.cli_unstable().ohm_shared_stages());
+    let gctx = GlobalContextBuilder::new()
+        .unstable_flag("ohm-shared-stages")
+        .build();
+    assert!(gctx.cli_unstable().ohm_shared_stages());
 }
 
 #[cargo_test]
