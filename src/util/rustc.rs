@@ -36,6 +36,7 @@ pub struct Rustc {
     transparent_unused_externs: OnceLock<bool>,
     ohm_incremental_codegen: OnceLock<bool>,
     ohm_incremental_mono_partitions: OnceLock<bool>,
+    ohm_shared_stages: OnceLock<bool>,
     ohm_thinlto_cache: OnceLock<bool>,
     bundled_clippy_wrapper: OnceLock<bool>,
 }
@@ -122,6 +123,7 @@ impl Rustc {
             transparent_unused_externs: OnceLock::new(),
             ohm_incremental_codegen: OnceLock::new(),
             ohm_incremental_mono_partitions: OnceLock::new(),
+            ohm_shared_stages: OnceLock::new(),
             ohm_thinlto_cache: OnceLock::new(),
             bundled_clippy_wrapper: OnceLock::new(),
         })
@@ -179,6 +181,19 @@ impl Rustc {
             process
                 .arg("-Zohm-incremental-mono-partitions")
                 .arg("--print=sysroot");
+            self.cached_output(&process, 0).is_ok()
+        })
+    }
+
+    /// Whether this compiler tracks check/build output mode as a query dependency.
+    pub fn supports_ohm_shared_stages(&self, gctx: &GlobalContext) -> bool {
+        *self.ohm_shared_stages.get_or_init(|| {
+            let mut process = self.workspace_process();
+            if let Err(error) = apply_env_config(gctx, &mut process) {
+                debug!("unable to configure shared stages capability probe: {error}");
+                return false;
+            }
+            process.arg("-Zohm-shared-stages").arg("--print=sysroot");
             self.cached_output(&process, 0).is_ok()
         })
     }
