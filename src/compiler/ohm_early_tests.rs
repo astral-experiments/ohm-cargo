@@ -2,6 +2,7 @@ use std::sync::{Arc, Condvar, Mutex};
 
 use super::{BuildRunner, CompileMode, FileFlavor, Unit, unused_integration_self_dependency};
 use crate::util::CargoResult;
+use crate::util::data_structures::HashSet;
 use crate::util::interning::InternedString;
 
 /// A producer's final scheduler result, including denied warnings and dependencies.
@@ -46,11 +47,13 @@ impl Drop for CompletionGuard {
     }
 }
 
-/// Restrict speculation to first native integration-test builds. The normal
-/// command, all other dependencies, and final producer-success barrier remain.
+/// Preserve dependency-only skip/relink paths while overlapping compilations
+/// that need rustc anyway. Warm builds require prior unused-library evidence
+/// tied to their executable; current compiler proof still decides acceptance.
 pub(crate) fn dependency(
     runner: &BuildRunner<'_, '_>,
     unit: &Unit,
+    previous_unused_externs: Option<&HashSet<InternedString>>,
 ) -> Option<(Unit, InternedString)> {
     if !runner.bcx.gctx.cli_unstable().ohm_early_tests()
         || runner.bcx.build_config.jobs < 2
@@ -60,15 +63,24 @@ pub(crate) fn dependency(
     {
         return None;
     }
-    if runner
+    let (index, name) = unused_integration_self_dependency(runner, unit)?;
+    let has_executable = runner
         .outputs(unit)
         .ok()?
         .iter()
-        .any(|output| output.flavor == FileFlavor::Normal && output.path.exists())
+        .any(|output| output.flavor == FileFlavor::Normal && output.path.exists());
+    if has_executable
+        && (previous_unused_externs.is_none_or(|unused| !unused.contains(&name))
+            || runner.fingerprints.get(unit).is_none_or(|fingerprint| {
+                fingerprint.is_early_cutoff_candidate()
+                    || !matches!(
+                        fingerprint.fs_status(),
+                        super::fingerprint::FsStatus::StaleItem(_)
+                    )
+            }))
     {
         return None;
     }
-    let (index, name) = unused_integration_self_dependency(runner, unit)?;
     let dependency = runner
         .unit_deps(unit)
         .iter()

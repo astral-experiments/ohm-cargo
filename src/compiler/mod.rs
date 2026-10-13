@@ -1011,20 +1011,23 @@ fn rustc(
         .map(|dep| build_runner.bcx.unit_to_index[&dep.unit])
         .collect::<HashSet<_>>();
     let unused_integration_dependency = unused_integration_self_dependency(build_runner, unit);
-    let early_test = ohm_early_tests::dependency(build_runner, unit).map(|(dependency, name)| {
-        build_runner
-            .early_test_dependencies
-            .insert(unit.clone(), dependency.clone());
-        let completion = build_runner
-            .early_test_completions
-            .entry(dependency)
-            .or_default()
-            .clone();
-        (completion, name)
-    });
     let workspace_integration_proof = unused_integration_dependency
         .and_then(|_| relink_cache.as_ref())
         .and_then(RelinkCachePaths::unused_extern_names);
+    let early_test =
+        ohm_early_tests::dependency(build_runner, unit, workspace_integration_proof.as_ref()).map(
+            |(dependency, name)| {
+                build_runner
+                    .early_test_dependencies
+                    .insert(unit.clone(), dependency.clone());
+                let completion = build_runner
+                    .early_test_completions
+                    .entry(dependency)
+                    .or_default()
+                    .clone();
+                (completion, name)
+            },
+        );
     let (mut unused_workspace_dependencies, workspace_build_scripts) = workspace_integration_proof
         .as_ref()
         .map(|unused_extern_names| {
