@@ -50,6 +50,31 @@ paths apply normal incremental validation to changed inputs. Each incremental
 session retains at most one checkpoint per stage, removed with the normal build
 cache. This uses additional cache space.
 
+## Early integration-test compilation
+
+Ohm defaults start supported first native integration-test compilations alongside
+the package library. This helps CLI tests that invoke the package binary without
+linking its library. All other compilation dependencies remain prerequisites;
+Cargo still builds the library and binaries before running any tests. Existing
+test executables retain the normal incremental and relink paths.
+
+The compiler command and optimization settings are unchanged. Cargo accepts an
+early result only when that invocation succeeds, consistently reports the package
+library unused, and the library finishes successfully, including Cargo's warning
+policy. Otherwise Cargo discards provisional diagnostics and retries after the
+library succeeds. Diagnostic buffering is bounded; overflow also retries through
+the normal streaming path. A failed library still fails the command.
+
+This requires at least two jobs, Ohm defaults and headstart, and a compiler that
+supports transparent unused-extern reporting. Custom linker inputs, native-link
+build-script outputs, artifact dependencies, and indirect linkage of the package
+library retain ordinary scheduling. No prior `cargo check` is required, and check
+scheduling is unchanged.
+
+Use `cargo +ohm -Zohm-early-tests=no test` to opt out, or set
+`[unstable] ohm-early-tests = false` in Cargo configuration. The explicit override
+is inherited by external Cargo subcommands. `-Zohm-defaults=no` also disables it.
+
 ## License
 
 Cargo is primarily distributed under the terms of both the MIT license

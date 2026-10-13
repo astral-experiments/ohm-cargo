@@ -1489,6 +1489,10 @@ fn ohm_proc_macro_trust_rejects_invalid_values() {
 fn ohm_defaults_can_be_disabled_for_one_invocation() {
     let gctx = GlobalContextBuilder::new().build();
     assert_eq!(
+        gctx.cli_unstable().ohm_early_tests(),
+        cfg!(feature = "ohm-defaults")
+    );
+    assert_eq!(
         gctx.cli_unstable().ohm_shared_stages(),
         cfg!(feature = "ohm-defaults")
     );
@@ -1518,6 +1522,7 @@ fn ohm_defaults_can_be_disabled_for_one_invocation() {
         .build();
     assert!(!gctx.cli_unstable().ohm_defaults());
     assert!(!gctx.cli_unstable().ohm_shared_stages());
+    assert!(!gctx.cli_unstable().ohm_early_tests());
     assert!(!gctx.cli_unstable().headstart());
     assert!(!gctx.cli_unstable().relink_only());
     assert!(!gctx.cli_unstable().no_embed_metadata());
@@ -1528,6 +1533,7 @@ fn ohm_defaults_can_be_disabled_for_one_invocation() {
         .build();
     assert!(gctx.cli_unstable().ohm_defaults());
     assert!(gctx.cli_unstable().ohm_shared_stages());
+    assert!(gctx.cli_unstable().ohm_early_tests());
     assert!(gctx.cli_unstable().headstart());
     assert!(gctx.cli_unstable().relink_only());
     assert!(gctx.cli_unstable().no_embed_metadata());
@@ -1571,6 +1577,39 @@ no-embed-metadata = false
     assert!(!gctx.cli_unstable().relink_only());
     assert!(!gctx.cli_unstable().no_embed_metadata());
     assert!(!gctx.cli_unstable().ohm_reuse_built_deps());
+}
+
+#[cargo_test]
+fn early_tests_override_defaults_and_inherit_opt_out() {
+    write_config_toml("[unstable]\nohm-defaults = true\nohm-early-tests = false\n");
+    let gctx = GlobalContextBuilder::new()
+        .nightly_features_allowed(true)
+        .build();
+    assert!(!gctx.cli_unstable().ohm_early_tests());
+    let gctx = GlobalContextBuilder::new()
+        .unstable_flag("ohm-early-tests")
+        .build();
+    assert!(gctx.cli_unstable().ohm_early_tests());
+    for flags in [
+        ["ohm-defaults", "ohm-early-tests=no"],
+        ["ohm-early-tests=no", "ohm-defaults"],
+    ] {
+        let gctx = GlobalContextBuilder::new()
+            .unstable_flag(flags[0])
+            .unstable_flag(flags[1])
+            .build();
+        assert!(!gctx.cli_unstable().ohm_early_tests());
+    }
+    let gctx = GlobalContextBuilder::new()
+        .env("__CARGO_OHM_EARLY_TESTS", "no")
+        .unstable_flag("ohm-defaults")
+        .build();
+    assert!(!gctx.cli_unstable().ohm_early_tests());
+    let gctx = GlobalContextBuilder::new()
+        .env("__CARGO_OHM_EARLY_TESTS", "no")
+        .unstable_flag("ohm-early-tests")
+        .build();
+    assert!(gctx.cli_unstable().ohm_early_tests());
 }
 
 #[cargo_test]

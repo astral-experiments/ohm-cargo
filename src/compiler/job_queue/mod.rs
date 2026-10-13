@@ -187,6 +187,8 @@ struct DrainState<'gctx> {
     /// Count of warnings, used to print a summary after the job succeeds
     warning_count: HashMap<JobId, WarningCount>,
     active: HashMap<JobId, Unit>,
+    /// Guards wake waiting tests on scheduler rejection or unwinding as well as success.
+    early_test_completions: HashMap<JobId, super::ohm_early_tests::CompletionGuard>,
     compiled: HashSet<PackageId>,
     documented: HashSet<PackageId>,
     scraped: HashSet<PackageId>,
@@ -371,6 +373,8 @@ impl<'gctx> DiagDedupe<'gctx> {
 /// this case and track the progress of compilations as they proceed.
 #[derive(Copy, Clone, Eq, PartialEq, Hash, Debug)]
 enum Artifact {
+    /// The producer has a worker, so an early test can safely wait for it.
+    Started,
     /// A generic placeholder for "depends on everything run by a step" and
     /// means that we can't start the next compilation until the previous has
     /// finished entirely.
@@ -519,6 +523,12 @@ impl<'gctx> JobQueue<'gctx> {
             }
         }
 
+        if job.freshness().is_dirty()
+            && let Some(dependency) = build_runner.early_test_dependencies.get(unit)
+        {
+            queue_deps.insert(dependency.clone(), Artifact::Started);
+        }
+
         // For now we use a fixed placeholder value for the cost of each unit, but
         // in the future this could be used to allow users to provide hints about
         // relative expected costs of units, or this could be automatically set in
@@ -551,6 +561,7 @@ impl<'gctx> JobQueue<'gctx> {
             diag_dedupe: DiagDedupe::new(build_runner.bcx.gctx),
             warning_count: HashMap::default(),
             active: HashMap::default(),
+            early_test_completions: HashMap::default(),
             compiled: HashSet::default(),
             documented: HashSet::default(),
             scraped: HashSet::default(),
@@ -737,7 +748,7 @@ impl<'gctx> DrainState<'gctx> {
                     }
                     // ... otherwise if it hasn't finished we leave it
                     // in there as we'll get another `Finish` later on.
-                    Artifact::Metadata | Artifact::ConditionalMetadata => {
+                    Artifact::Started | Artifact::Metadata | Artifact::ConditionalMetadata => {
                         trace!("end (meta): {:?}", id);
                         self.active[&id].clone()
                     }
@@ -745,10 +756,11 @@ impl<'gctx> DrainState<'gctx> {
                 debug!("end ({:?}): {:?}", unit, result);
                 match result {
                     Ok(()) => {
-                        self.finish(id, &unit, artifact, build_runner)?;
+                        let result = self.finish(id, &unit, artifact, build_runner);
                         if artifact == Artifact::All {
-                            self.settle(build_runner, id, true);
+                            self.settle(build_runner, id, result.is_ok());
                         }
+                        result?;
                     }
                     Err(_) if build_runner.bcx.unit_can_fail_for_docscraping(&unit) => {
                         build_runner
@@ -854,6 +866,7 @@ impl<'gctx> DrainState<'gctx> {
         };
         if self.provisional.tainted.contains(&id) {
             if let Message::Finish(..) = event {
+                self.early_test_completions.remove(&id);
                 self.active.remove(&id);
                 self.finished += 1;
             }
@@ -880,6 +893,7 @@ impl<'gctx> DrainState<'gctx> {
                     result = Ok(());
                 } else if result.is_ok() {
                     if let Err(error) = self.finish(id, &unit, Artifact::All, build_runner) {
+                        self.early_test_completions.remove(&id);
                         self.provisional.released_errors.push(error.into());
                     }
                 }
@@ -893,6 +907,9 @@ impl<'gctx> DrainState<'gctx> {
     /// `id` finished cleanly with every dependency confirmed
     /// (`ok`), or failed. Releases or drops its dependents' output.
     fn settle(&mut self, build_runner: &mut BuildRunner<'_, '_>, id: JobId, ok: bool) {
+        if let Some(completion) = self.early_test_completions.remove(&id) {
+            completion.finish(ok);
+        }
         if !build_runner.headstart_enabled() {
             return;
         }
@@ -928,6 +945,7 @@ impl<'gctx> DrainState<'gctx> {
         if !self.provisional.tainted.insert(id) {
             return;
         }
+        self.early_test_completions.remove(&id);
         self.provisional.waiting_on.remove(&id);
         self.provisional.held.remove(&id);
         self.provisional.finished.remove(&id);
@@ -1246,6 +1264,7 @@ impl<'gctx> DrainState<'gctx> {
         debug!("start {}: {:?}", id, unit);
 
         assert!(self.active.insert(id, unit.clone()).is_none());
+        self.queue.finish(unit, &Artifact::Started);
         if build_runner.headstart_enabled() {
             let deps: HashSet<JobId> = build_runner
                 .unit_deps(unit)
@@ -1286,6 +1305,9 @@ impl<'gctx> DrainState<'gctx> {
         };
         let lock_manager = build_runner.lock_manager.clone();
         let warning_handling = build_runner.bcx.gctx.warning_handling().unwrap_or_default();
+        if let Some(completion) = build_runner.early_test_completions.get(unit) {
+            self.early_test_completions.insert(id, completion.guard());
+        }
 
         let doit = move |diag_dedupe| {
             let state = JobState::new(
@@ -1490,7 +1512,7 @@ impl<'gctx> DrainState<'gctx> {
             Artifact::Metadata => self
                 .timings
                 .unit_rmeta_finished(build_runner, id, unblocked),
-            Artifact::ConditionalMetadata => {}
+            Artifact::Started | Artifact::ConditionalMetadata => {}
         }
         Ok(())
     }
