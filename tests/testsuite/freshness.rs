@@ -5308,8 +5308,8 @@ fn relink_only_wrapper() -> PathBuf {
                             fs::write(control.join("library-started"), "").unwrap();
                             if env::var_os("EARLY_TEST_EXPECT_OVERLAP").is_some() {
                                 let deadline = std::time::Instant::now() + std::time::Duration::from_secs(15);
-                                while !control.join("test-started").exists() {
-                                    assert!(std::time::Instant::now() < deadline, "test did not start early");
+                                while !control.join("test-finished").exists() {
+                                    assert!(std::time::Instant::now() < deadline, "test did not finish early");
                                     std::thread::sleep(std::time::Duration::from_millis(5));
                                 }
                             }
@@ -5333,6 +5333,8 @@ fn relink_only_wrapper() -> PathBuf {
                     if let Some(control) = &control {
                         if crate_name(args) == Some("app") {
                             fs::write(control.join("library-finished"), "").unwrap();
+                        } else if crate_name(args) == Some("integration") {
+                            fs::write(control.join("test-finished"), "").unwrap();
                         }
                     }
                     if args.iter().any(|arg| arg == "--print=sysroot")
@@ -7475,6 +7477,21 @@ fn early_native_integration_tests_default_and_fallback() {
                 .env("UNUSED_INTEGRATION_DEPENDENCY_PROOF", "1")
                 .run();
             assert!(fs::read_to_string(&log).unwrap().is_empty());
+            // The earlier executable must not look older than its accepted
+            // producer when a later, unused library change is considered.
+            p.change_file("src/lib.rs", "pub fn value() -> u32 { 11 }");
+            p.cargo("-Zohm-defaults -Zheadstart -Zsection-timings test --test integration -j2")
+                .masquerade_as_nightly_cargo(&["ohm-defaults", "headstart", "section-timings"])
+                .env("RUSTC_WRAPPER", &wrapper)
+                .env("RELINK_WRAPPER_LOG", &log)
+                .env("UNUSED_INTEGRATION_DEPENDENCY_PROOF", "1")
+                .run();
+            assert!(
+                !fs::read_to_string(&log)
+                    .unwrap()
+                    .lines()
+                    .any(|line| line.ends_with(":integration"))
+            );
         }
     }
 }

@@ -1538,6 +1538,16 @@ fn rustc(
             accepted_early_test =
                 producer_result.is_ok() && result.is_ok() && output.proves_unused(*extern_name);
             if accepted_early_test {
+                // The executable may have been linked before its producer. Mark
+                // the acceptance time so the next build does not mistake that
+                // ordering for a dependency changed after a successful build.
+                let accepted_at = filetime::FileTime::now();
+                for artifact in outputs
+                    .iter()
+                    .filter(|output| output.flavor == FileFlavor::Normal)
+                {
+                    filetime::set_file_mtime(&artifact.path, accepted_at)?;
+                }
                 tracing::info!(target: "cargo::compiler::ohm_early_tests", "accepted early {}", target.name());
                 for line in output.stdout {
                     on_stdout_line(state, &line, package_id, &target)?;
