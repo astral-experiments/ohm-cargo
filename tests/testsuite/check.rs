@@ -14,6 +14,60 @@ use cargo_test_support::{
     Project, basic_bin_manifest, basic_manifest, git, paths, project, project_in,
 };
 
+#[cargo_test]
+fn ohm_reuses_host_build_dependency_after_test() {
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "foo"
+                version = "0.0.1"
+                edition = "2021"
+
+                [dependencies]
+                shared = { path = "shared" }
+
+                [build-dependencies]
+                shared = { path = "shared" }
+            "#,
+        )
+        .file("src/lib.rs", "pub fn value() -> u8 { shared::value() }")
+        .file(
+            "build.rs",
+            r#"
+                use std::io::Write;
+
+                fn main() {
+                    println!("cargo:rerun-if-changed=build.rs");
+                    std::fs::OpenOptions::new()
+                        .create(true)
+                        .append(true)
+                        .open("build-script-runs")
+                        .unwrap()
+                        .write_all(&[shared::value()])
+                        .unwrap();
+                }
+            "#,
+        )
+        .file("shared/Cargo.toml", &basic_manifest("shared", "0.0.1"))
+        .file("shared/src/lib.rs", "pub fn value() -> u8 { 1 }")
+        .build();
+
+    p.cargo("test --no-run").run();
+    p.cargo("check -Zohm-reuse-host-build-deps")
+        .masquerade_as_nightly_cargo(&["ohm-reuse-host-build-deps"])
+        .run();
+    let runs = p.root().join("build-script-runs");
+    assert_eq!(std::fs::read(&runs).unwrap(), [1]);
+
+    p.change_file("shared/src/lib.rs", "pub fn value() -> u8 { 2 }");
+    p.cargo("check -Zohm-reuse-host-build-deps")
+        .masquerade_as_nightly_cargo(&["ohm-reuse-host-build-deps"])
+        .run();
+    assert_eq!(std::fs::read(&runs).unwrap(), [1, 2]);
+}
+
 fn ohm_registry_project() -> Project {
     project()
         .file(

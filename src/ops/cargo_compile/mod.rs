@@ -650,6 +650,8 @@ fn create_bcx_with_registry_reuse<'a, 'gctx>(
         gctx.cli_unstable().ohm_shared_stages()
             && target_data.rustc.workspace_wrapper.is_none()
             && target_data.rustc.supports_ohm_shared_stages(gctx),
+        gctx.cli_unstable().ohm_reuse_host_build_deps
+            && matches!(build_config.intent, UserIntent::Check { .. }),
     );
 
     let units: Vec<_> = unit_graph.keys().sorted().collect();
@@ -1016,6 +1018,7 @@ fn rebuild_unit_graph_shared(
     to_host: Option<CompileKind>,
     compile_time_deps_only: bool,
     shared_stages: bool,
+    reuse_host_build_deps: bool,
 ) -> (Vec<Unit>, Vec<Unit>, UnitGraph) {
     let mut result = UnitGraph::default();
     // Map of the old unit to the new unit, used to avoid recursing into units
@@ -1035,6 +1038,7 @@ fn rebuild_unit_graph_shared(
                 to_host,
                 compile_time_deps_only,
                 shared_stages,
+                reuse_host_build_deps,
             )
         })
         .collect();
@@ -1064,6 +1068,7 @@ fn traverse_and_share(
     to_host: Option<CompileKind>,
     compile_time_deps_only: bool,
     shared_stages: bool,
+    reuse_host_build_deps: bool,
 ) -> Unit {
     if let Some(new_unit) = memo.get(unit) {
         // Already computed, no need to recompute.
@@ -1092,6 +1097,7 @@ fn traverse_and_share(
                 // dependencies only.
                 skip_non_compile_time_deps,
                 shared_stages,
+                reuse_host_build_deps,
             );
             new_dep_unit.hash(&mut dep_hash);
             UnitDep {
@@ -1141,37 +1147,15 @@ fn traverse_and_share(
         // in the graph. This is the level we'd expect if it was set manually or the default value
         // set by a profile for a runtime dependency: its canonical value.
         let canonical_debuginfo = profile.debuginfo.finalize();
-        let mut canonical_profile = profile.clone();
-        canonical_profile.debuginfo = canonical_debuginfo;
-        let unit_probe = interner.intern(
-            &unit.pkg,
-            &unit.target,
-            canonical_profile.clone(),
-            to_host.unwrap(),
-            unit.mode,
-            unit.features.clone(),
-            unit.rustflags.clone(),
-            unit.rustdocflags.clone(),
-            unit.links_overrides.clone(),
-            unit.is_std,
-            unit.dep_hash,
-            unit.artifact,
-            unit.artifact_target_for_features,
-            unit.skip_non_compile_time_dep,
-        );
-
-        // A runtime dependency is checked, while its build-time counterpart is built.
-        // Keep the same resolved profile in both command modes so their identities agree.
-        let checked_counterpart = shared_stages
-            && profile.root == ProfileRoot::Debug
-            && unit.mode == CompileMode::Build
-            && !unit.is_std
-            && unit_graph.contains_key(&interner.intern(
+        let has_target_counterpart = |mode| {
+            let mut canonical_profile = profile.clone();
+            canonical_profile.debuginfo = canonical_debuginfo;
+            let unit_probe = interner.intern(
                 &unit.pkg,
                 &unit.target,
                 canonical_profile,
                 to_host.unwrap(),
-                CompileMode::Check { test: false },
+                mode,
                 unit.features.clone(),
                 unit.rustflags.clone(),
                 unit.rustdocflags.clone(),
@@ -1181,12 +1165,22 @@ fn traverse_and_share(
                 unit.artifact,
                 unit.artifact_target_for_features,
                 unit.skip_non_compile_time_dep,
-            ));
+            );
+            unit_graph.contains_key(&unit_probe)
+        };
+
+        // A runtime dependency is checked, while its build-time counterpart is built.
+        // Keep the same resolved profile in both command modes so their identities agree.
+        let checked_counterpart = unit.mode == CompileMode::Build
+            && (reuse_host_build_deps
+                || (shared_stages && profile.root == ProfileRoot::Debug && !unit.is_std))
+            && has_target_counterpart(CompileMode::Check { test: false });
 
         // We can now turn the deferred value into its actual final value.
-        profile.debuginfo = if unit_graph.contains_key(&unit_probe) || checked_counterpart {
+        profile.debuginfo = if has_target_counterpart(unit.mode) || checked_counterpart {
             // The unit is present in both build time and runtime subgraphs: we canonicalize its
-            // level to the other unit's, thus ensuring reuse between the two to optimize build times.
+            // level to the other unit's. During a check, this keeps the host profile consistent
+            // with a build of the same target graph even though the check unit cannot be shared.
             canonical_debuginfo
         } else {
             // The unit is only present in the build time subgraph, we can weaken its debuginfo
