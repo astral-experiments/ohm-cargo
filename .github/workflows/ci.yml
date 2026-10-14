@@ -116,6 +116,12 @@ jobs:
           "$testsuite" \
             check::ohm_skips_cold_ordinary_check_graphs_after_test_builds \
             --exact --nocapture
+          "$testsuite" \
+            check::ohm_reuses_host_build_dependency_after_test \
+            --exact --nocapture
+          "$testsuite" \
+            check::ohm_cold_check_keeps_the_ordinary_host_build_dependency_profile \
+            --exact --nocapture
       - name: Install Ohm for Clippy worktree coverage
         env:
           OHM_VERSION: ohm-1.98.0-9
