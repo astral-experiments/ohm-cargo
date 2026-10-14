@@ -36,6 +36,7 @@
 //! ["Cargo Target"]: https://doc.rust-lang.org/nightly/cargo/reference/cargo-targets.html
 
 use crate::util::data_structures::{HashMap, HashSet};
+use std::cell::OnceCell;
 use std::hash::{Hash, Hasher};
 use std::sync::Arc;
 
@@ -46,7 +47,7 @@ use crate::compiler::unit_dependencies::{
     audited_proc_macro_package_identity, build_unit_dependencies,
 };
 use crate::compiler::unit_graph::{self, UnitDep, UnitGraph};
-use crate::compiler::{BuildConfig, BuildContext, BuildRunner, Compilation};
+use crate::compiler::{BuildConfig, BuildContext, BuildRunner, Compilation, Layout};
 use crate::compiler::{CompileKind, CompileMode, CompileTarget, RustcTargetData, Unit};
 use crate::compiler::{CrateType, TargetInfo, apply_env_config, standard_lib};
 use crate::compiler::{DefaultExecutor, Executor, UnitInterner};
@@ -200,7 +201,16 @@ fn compile_ws<'a>(
         }
     }
 
-    let bcx = create_bcx(ws, options, &interner, logger.as_ref())?;
+    // A registry-reuse fallback may reconstruct the graph. Keep the host profile decision
+    // stable even if another command changes the readiness hint in between.
+    let reuse_host_build_deps = OnceCell::new();
+    let bcx = create_bcx_with_host_reuse(
+        ws,
+        options,
+        &interner,
+        logger.as_ref(),
+        &reuse_host_build_deps,
+    )?;
 
     if options.build_config.unit_graph {
         unit_graph::emit_serialized_unit_graph(&bcx.roots, &bcx.unit_graph, ws.gctx())?;
@@ -237,6 +247,7 @@ fn compile_ws<'a>(
                     logger.as_ref(),
                     false,
                     &HashSet::default(),
+                    &reuse_host_build_deps,
                 )?;
                 if let Some(compilation) =
                     BuildRunner::new(&ordinary_bcx)?.compile_if_check_graph_is_reusable(exec)?
@@ -253,6 +264,7 @@ fn compile_ws<'a>(
                 logger.as_ref(),
                 true,
                 &rejected_registry_packages,
+                &reuse_host_build_deps,
             )?;
             match BuildRunner::new(&fallback_bcx)?.compile(exec) {
                 Err(error) if error.is::<StaleBuiltRegistryDependency>() => {
@@ -268,6 +280,7 @@ fn compile_ws<'a>(
                         logger.as_ref(),
                         false,
                         &HashSet::default(),
+                        &reuse_host_build_deps,
                     )?;
                     BuildRunner::new(&final_bcx)?.compile(exec)
                 }
@@ -322,6 +335,16 @@ pub fn create_bcx<'a, 'gctx>(
     interner: &'a UnitInterner,
     logger: Option<&'a BuildLogger>,
 ) -> CargoResult<BuildContext<'a, 'gctx>> {
+    create_bcx_with_host_reuse(ws, options, interner, logger, &OnceCell::new())
+}
+
+fn create_bcx_with_host_reuse<'a, 'gctx>(
+    ws: &'a Workspace<'gctx>,
+    options: &'a CompileOptions,
+    interner: &'a UnitInterner,
+    logger: Option<&'a BuildLogger>,
+    reuse_host_build_deps: &OnceCell<bool>,
+) -> CargoResult<BuildContext<'a, 'gctx>> {
     let unstable = ws.gctx().cli_unstable();
     let reuse_built_registry_dependencies =
         !matches!(options.build_config.intent, UserIntent::Check { .. })
@@ -340,6 +363,7 @@ pub fn create_bcx<'a, 'gctx>(
         logger,
         reuse_built_registry_dependencies,
         &HashSet::default(),
+        reuse_host_build_deps,
     )
 }
 
@@ -352,6 +376,7 @@ fn create_bcx_with_registry_reuse<'a, 'gctx>(
     logger: Option<&'a BuildLogger>,
     reuse_built_registry_dependencies: bool,
     rejected_built_registry_packages: &HashSet<PackageId>,
+    reuse_host_build_deps: &OnceCell<bool>,
 ) -> CargoResult<BuildContext<'a, 'gctx>> {
     let CompileOptions {
         ref build_config,
@@ -635,6 +660,21 @@ fn create_bcx_with_registry_reuse<'a, 'gctx>(
         .requested_kinds
         .iter()
         .any(CompileKind::is_host);
+    let reuse_host_build_deps = *reuse_host_build_deps.get_or_init(|| {
+        host_kind_requested
+            && matches!(build_config.intent, UserIntent::Check { .. })
+            && gctx
+                .cli_unstable()
+                .ohm_reuse_host_build_deps
+                .unwrap_or_else(|| {
+                    gctx.cli_unstable().ohm_defaults()
+                        && Layout::host_build_dependency_ready_marker(
+                            ws,
+                            profiles.get_dir_name().as_str(),
+                        )
+                        .is_file()
+                })
+    });
     // Rebuild the unit graph, replacing the explicit host targets with
     // CompileKind::Host, removing `artifact_target_for_features` and merging any dependencies
     // shared with build and artifact dependencies.
@@ -650,8 +690,7 @@ fn create_bcx_with_registry_reuse<'a, 'gctx>(
         gctx.cli_unstable().ohm_shared_stages()
             && target_data.rustc.workspace_wrapper.is_none()
             && target_data.rustc.supports_ohm_shared_stages(gctx),
-        gctx.cli_unstable().ohm_reuse_host_build_deps
-            && matches!(build_config.intent, UserIntent::Check { .. }),
+        reuse_host_build_deps,
     );
 
     let units: Vec<_> = unit_graph.keys().sorted().collect();

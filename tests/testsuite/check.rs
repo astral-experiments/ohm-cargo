@@ -14,9 +14,8 @@ use cargo_test_support::{
     Project, basic_bin_manifest, basic_manifest, git, paths, project, project_in,
 };
 
-#[cargo_test]
-fn ohm_reuses_host_build_dependency_after_test() {
-    let p = project()
+fn ohm_host_build_dependency_project() -> Project {
+    project()
         .file(
             "Cargo.toml",
             r#"
@@ -52,20 +51,55 @@ fn ohm_reuses_host_build_dependency_after_test() {
         )
         .file("shared/Cargo.toml", &basic_manifest("shared", "0.0.1"))
         .file("shared/src/lib.rs", "pub fn value() -> u8 { 1 }")
-        .build();
+        .build()
+}
 
-    p.cargo("test --no-run").run();
-    p.cargo("check -Zohm-reuse-host-build-deps")
-        .masquerade_as_nightly_cargo(&["ohm-reuse-host-build-deps"])
+#[cargo_test]
+fn ohm_reuses_host_build_dependency_after_test() {
+    if !ohm_compiler_supports_defaults() {
+        return;
+    }
+    let p = ohm_host_build_dependency_project();
+    p.cargo("test --no-run -Zohm-defaults=yes")
+        .masquerade_as_nightly_cargo(&["ohm-defaults"])
+        .run();
+    p.cargo("check -Zohm-defaults=yes")
+        .masquerade_as_nightly_cargo(&["ohm-defaults"])
         .run();
     let runs = p.root().join("build-script-runs");
     assert_eq!(std::fs::read(&runs).unwrap(), [1]);
 
-    p.change_file("shared/src/lib.rs", "pub fn value() -> u8 { 2 }");
-    p.cargo("check -Zohm-reuse-host-build-deps")
-        .masquerade_as_nightly_cargo(&["ohm-reuse-host-build-deps"])
+    p.cargo("check -Zohm-defaults=yes -Zohm-reuse-host-build-deps=no")
+        .masquerade_as_nightly_cargo(&["ohm-defaults", "ohm-reuse-host-build-deps"])
         .run();
-    assert_eq!(std::fs::read(&runs).unwrap(), [1, 2]);
+    assert_eq!(std::fs::read(&runs).unwrap(), [1, 1]);
+
+    p.change_file("shared/src/lib.rs", "pub fn value() -> u8 { 2 }");
+    p.cargo("check -Zohm-defaults=yes")
+        .masquerade_as_nightly_cargo(&["ohm-defaults"])
+        .run();
+    assert_eq!(std::fs::read(&runs).unwrap(), [1, 1, 2]);
+}
+
+#[cargo_test]
+fn ohm_cold_check_keeps_the_ordinary_host_build_dependency_profile() {
+    if !ohm_compiler_supports_defaults() {
+        return;
+    }
+    let p = ohm_host_build_dependency_project();
+    p.cargo("check -Zohm-defaults=yes")
+        .masquerade_as_nightly_cargo(&["ohm-defaults"])
+        .run();
+    p.cargo("check -Zohm-defaults=yes -Zohm-reuse-host-build-deps=no")
+        .masquerade_as_nightly_cargo(&["ohm-defaults", "ohm-reuse-host-build-deps"])
+        .run();
+    let runs = p.root().join("build-script-runs");
+    assert_eq!(std::fs::read(&runs).unwrap(), [1]);
+
+    p.cargo("check -Zohm-defaults=yes -Zohm-reuse-host-build-deps")
+        .masquerade_as_nightly_cargo(&["ohm-defaults", "ohm-reuse-host-build-deps"])
+        .run();
+    assert_eq!(std::fs::read(&runs).unwrap(), [1, 1]);
 }
 
 fn ohm_registry_project() -> Project {

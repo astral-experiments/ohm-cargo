@@ -918,6 +918,34 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
                     .insert(dir.clone().into_path_buf());
             }
         }
+        if self.bcx.gctx.cli_unstable().ohm_defaults()
+            && self.bcx.gctx.cli_unstable().ohm_reuse_host_build_deps != Some(false)
+            && matches!(
+                self.bcx.build_config.intent,
+                UserIntent::Build | UserIntent::Test | UserIntent::Bench
+            )
+            && self
+                .bcx
+                .build_config
+                .requested_kinds
+                .contains(&CompileKind::Host)
+            && !self.bcx.roots.is_empty()
+        {
+            // This hint selects a profile; ordinary fingerprints still decide whether the
+            // artifacts can be reused. Keep it best-effort and do not recreate cleaned state.
+            let marker = Layout::host_build_dependency_ready_marker(
+                self.bcx.ws,
+                self.bcx.profiles.get_dir_name().as_str(),
+            );
+            if let Err(error) = std::fs::OpenOptions::new()
+                .write(true)
+                .create_new(true)
+                .open(&marker)
+                && error.kind() != std::io::ErrorKind::AlreadyExists
+            {
+                tracing::debug!(?marker, %error, "could not record host build-dependency readiness");
+            }
+        }
         Ok(self.compilation)
     }
 

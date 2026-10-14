@@ -244,6 +244,25 @@ impl Layout {
         Self::shared_workspace_namespace_version(ws, "ohm-shared-workspace-v3")
     }
 
+    /// Locates the hint that this workspace and target have native build artifacts for a profile.
+    pub(crate) fn host_build_dependency_ready_marker(
+        ws: &Workspace<'_>,
+        profile_dir: &str,
+    ) -> PathBuf {
+        const MARKER: &str = ".ohm-host-build-deps-ready";
+        let namespace = Self::shared_workspace_namespace(ws);
+        let profile = ws.build_dir().as_path_unlocked().join(profile_dir);
+        if ws.shared_registry_cache_enabled() {
+            profile
+                .join("build")
+                .join("workspaces")
+                .join(namespace)
+                .join(MARKER)
+        } else {
+            profile.join(format!("{MARKER}-{namespace}"))
+        }
+    }
+
     /// Known namespaces owned by this workspace and target, including release-9 storage.
     ///
     /// Older namespaces are cleanup candidates only; they must never be used to import seeds.
