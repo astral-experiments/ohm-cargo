@@ -16,6 +16,11 @@ use cargo_test_support::{
 
 fn ohm_host_build_dependency_project() -> Project {
     project()
+        // Shared stages independently preserve the host profile on compatible compilers.
+        .file(
+            ".cargo/config.toml",
+            "[unstable]\nohm-shared-stages = false",
+        )
         .file(
             "Cargo.toml",
             r#"

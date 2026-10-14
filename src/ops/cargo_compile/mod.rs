@@ -687,10 +687,12 @@ fn create_bcx_with_registry_reuse<'a, 'gctx>(
         &scrape_units,
         host_kind_requested.then_some(explicit_host_kind),
         build_config.compile_time_deps_only,
-        gctx.cli_unstable().ohm_shared_stages()
-            && target_data.rustc.workspace_wrapper.is_none()
-            && target_data.rustc.supports_ohm_shared_stages(gctx),
-        reuse_host_build_deps,
+        UnitGraphReuse {
+            shared_stages: gctx.cli_unstable().ohm_shared_stages()
+                && target_data.rustc.workspace_wrapper.is_none()
+                && target_data.rustc.supports_ohm_shared_stages(gctx),
+            host_build_deps: reuse_host_build_deps,
+        },
     );
 
     let units: Vec<_> = unit_graph.keys().sorted().collect();
@@ -1015,6 +1017,12 @@ fn validate_target_path_as_source_file(
     Ok(())
 }
 
+#[derive(Clone, Copy)]
+struct UnitGraphReuse {
+    shared_stages: bool,
+    host_build_deps: bool,
+}
+
 /// This is used to rebuild the unit graph, sharing host dependencies if possible,
 /// and applying other unit adjustments based on the whole graph.
 ///
@@ -1056,8 +1064,7 @@ fn rebuild_unit_graph_shared(
     scrape_units: &[Unit],
     to_host: Option<CompileKind>,
     compile_time_deps_only: bool,
-    shared_stages: bool,
-    reuse_host_build_deps: bool,
+    reuse: UnitGraphReuse,
 ) -> (Vec<Unit>, Vec<Unit>, UnitGraph) {
     let mut result = UnitGraph::default();
     // Map of the old unit to the new unit, used to avoid recursing into units
@@ -1076,8 +1083,7 @@ fn rebuild_unit_graph_shared(
                 false,
                 to_host,
                 compile_time_deps_only,
-                shared_stages,
-                reuse_host_build_deps,
+                reuse,
             )
         })
         .collect();
@@ -1106,8 +1112,7 @@ fn traverse_and_share(
     unit_is_for_host: bool,
     to_host: Option<CompileKind>,
     compile_time_deps_only: bool,
-    shared_stages: bool,
-    reuse_host_build_deps: bool,
+    reuse: UnitGraphReuse,
 ) -> Unit {
     if let Some(new_unit) = memo.get(unit) {
         // Already computed, no need to recompute.
@@ -1135,8 +1140,7 @@ fn traverse_and_share(
                 // its dependencies. And if not, we should compile compile time
                 // dependencies only.
                 skip_non_compile_time_deps,
-                shared_stages,
-                reuse_host_build_deps,
+                reuse,
             );
             new_dep_unit.hash(&mut dep_hash);
             UnitDep {
@@ -1211,8 +1215,8 @@ fn traverse_and_share(
         // A runtime dependency is checked, while its build-time counterpart is built.
         // Keep the same resolved profile in both command modes so their identities agree.
         let checked_counterpart = unit.mode == CompileMode::Build
-            && (reuse_host_build_deps
-                || (shared_stages && profile.root == ProfileRoot::Debug && !unit.is_std))
+            && (reuse.host_build_deps
+                || (reuse.shared_stages && profile.root == ProfileRoot::Debug && !unit.is_std))
             && has_target_counterpart(CompileMode::Check { test: false });
 
         // We can now turn the deferred value into its actual final value.
