@@ -84,6 +84,48 @@ fn ohm_workspace_project() -> Project {
         .build()
 }
 
+fn ohm_workspace_macro_project() -> Project {
+    let project = ohm_workspace_project();
+    project.change_file(
+        "Cargo.toml",
+        "[workspace]\nmembers = [\"application\", \"local\", \"macro\", \"helper\"]\nresolver = \"2\"\n",
+    );
+    project.change_file(
+        "local/Cargo.toml",
+        &format!(
+            "{}\nworkspace-macro = {{ path = \"../macro\" }}\n",
+            project.read_file("local/Cargo.toml")
+        ),
+    );
+    project.change_file(
+        "local/src/lib.rs",
+        "pub fn value() -> u32 { dependency::value() + workspace_macro::value!() }",
+    );
+    project.change_file(
+        "macro/Cargo.toml",
+        r#"
+            [package]
+            name = "workspace-macro"
+            version = "1.0.0"
+            edition = "2021"
+            [lib]
+            proc-macro = true
+            [dependencies]
+            helper = { path = "../helper" }
+        "#,
+    );
+    project.change_file(
+        "macro/src/lib.rs",
+        "#[proc_macro] pub fn value(_: proc_macro::TokenStream) -> proc_macro::TokenStream { helper::expansion().parse().unwrap() }",
+    );
+    project.change_file("helper/Cargo.toml", &basic_manifest("helper", "1.0.0"));
+    project.change_file(
+        "helper/src/lib.rs",
+        r#"pub fn expansion() -> &'static str { "23u32" }"#,
+    );
+    project
+}
+
 fn ohm_compiler_supports_defaults() -> bool {
     cargo_test_support::process("rustc")
         .arg("-Zpublic-api-hash")
@@ -1668,6 +1710,91 @@ fn ohm_reuses_fresh_built_workspace_members_during_checks() {
             .is_some_and(|path| path.ends_with(".rmeta"))),
         "a promoted workspace dependency must retain check-mode JSON: {artifact}",
     );
+}
+
+#[cargo_test]
+fn ohm_workspace_macro_reuse_validates_owned_sources() {
+    let project = ohm_workspace_macro_project();
+    let build = "-Zohm-reuse-built-deps build -p application";
+    let check = "-Zohm-reuse-built-deps -Zohm-reuse-local-macros check -p application -v";
+    let flags = &["ohm-reuse-built-deps", "ohm-reuse-local-macros"];
+
+    project
+        .cargo(build)
+        .masquerade_as_nightly_cargo(flags)
+        .run();
+    project
+        .cargo("-Zohm-reuse-built-deps check -p application -v")
+        .masquerade_as_nightly_cargo(flags)
+        .with_stderr_contains("[CHECKING] local v1.0.0 ([ROOT]/foo/local)")
+        .run();
+    project
+        .cargo(check)
+        .masquerade_as_nightly_cargo(flags)
+        .with_stderr_contains("[FRESH] local v1.0.0 ([ROOT]/foo/local)")
+        .with_stderr_does_not_contain("[CHECKING] local v1.0.0 ([ROOT]/foo/local)")
+        .run();
+
+    let original_helper = project.read_file("helper/src/lib.rs");
+    project.change_file(
+        "helper/src/lib.rs",
+        r#"pub fn expansion() -> &'static str { "compile_error!(\"helper changed\")" }"#,
+    );
+    project
+        .cargo(check)
+        .masquerade_as_nightly_cargo(flags)
+        .with_status(101)
+        .with_stderr_contains("[ERROR] helper changed")
+        .run();
+
+    project.change_file("helper/src/lib.rs", &original_helper);
+    project
+        .cargo(build)
+        .masquerade_as_nightly_cargo(flags)
+        .run();
+    project.change_file(
+        "macro/src/lib.rs",
+        r#"#[proc_macro] pub fn value(_: proc_macro::TokenStream) -> proc_macro::TokenStream { "compile_error!(\"macro changed\")".parse().unwrap() }"#,
+    );
+    project
+        .cargo(check)
+        .masquerade_as_nightly_cargo(flags)
+        .with_status(101)
+        .with_stderr_contains("[ERROR] macro changed")
+        .run();
+}
+
+#[cargo_test]
+fn ohm_workspace_macro_reuse_rejects_local_build_scripts() {
+    let project = ohm_workspace_macro_project();
+    project.change_file("macro/build.rs", "fn main() {}\n");
+    project
+        .cargo("-Zohm-reuse-built-deps build -p application")
+        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
+        .run();
+    project
+        .cargo("-Zohm-reuse-built-deps -Zohm-reuse-local-macros check -p application -v")
+        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps", "ohm-reuse-local-macros"])
+        .with_stderr_contains("[CHECKING] local v1.0.0 ([ROOT]/foo/local)")
+        .run();
+}
+
+#[cargo_test]
+fn ohm_workspace_macro_reuse_rejects_nonmember_helpers() {
+    let project = ohm_workspace_macro_project();
+    project.change_file(
+        "Cargo.toml",
+        "[workspace]\nmembers = [\"application\", \"local\", \"macro\"]\nexclude = [\"helper\"]\nresolver = \"2\"\n",
+    );
+    project
+        .cargo("-Zohm-reuse-built-deps build -p application")
+        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
+        .run();
+    project
+        .cargo("-Zohm-reuse-built-deps -Zohm-reuse-local-macros check -p application -v")
+        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps", "ohm-reuse-local-macros"])
+        .with_stderr_contains("[CHECKING] local v1.0.0 ([ROOT]/foo/local)")
+        .run();
 }
 
 #[cargo_test]

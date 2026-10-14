@@ -94,6 +94,7 @@ Each new feature described below should explain how to use it.
     * [checksum-freshness](#checksum-freshness) --- When passed, the decision as to whether a crate needs to be rebuilt is made using file checksums instead of the file mtime.
     * [headstart](#headstart) --- Overlap dependency checks using early interface metadata in Ohm.
     * [ohm-clippy-seed-isolation](#ohm-clippy-seed-isolation) --- Keep bundled Clippy state out of worktree snapshots.
+    * [ohm-reuse-local-macros](#ohm-reuse-local-macros) --- Trust workspace procedural macros during build-to-check reuse.
     * [ohm-worktree-seeds](#ohm-worktree-seeds) --- Prepare build state for seeding new Git worktrees with Ohm.
     * [panic-abort-tests](#panic-abort-tests) --- Allows running tests with the "abort" panic strategy.
     * [host-config](#host-config) --- Allows setting `[target]`-like configuration settings for host build targets.
@@ -2119,6 +2120,21 @@ be present in the selected compiler's sysroot for automatic selection; older
 sysroots retain their existing linker. Explicitly requesting Wild when it is
 missing produces an error. This selects Wild's full linker and does not enable
 incremental linking.
+
+## ohm-reuse-local-macros
+
+When checking a package after a native build, Ohm can reuse compatible built
+dependencies. By default, this excludes workspace libraries whose compilation
+ran a workspace procedural macro. Pass `-Zohm-reuse-local-macros` to allow
+such libraries and the workspace-owned helper libraries used by their macros.
+The built-dependency reuse feature must also be active, as it is with Ohm
+defaults. Pass `-Zohm-reuse-local-macros=no` to disable the opt-in.
+
+This trusts workspace macros and their helpers not to read untracked external
+files or environment variables. If that assumption is wrong, a check can reuse
+stale generated code. Cargo still validates normal fingerprints, artifacts,
+and compiler provenance, and keeps local build scripts, nonmember path dependencies,
+and untrusted registry macro closures ineligible.
 
 ## ohm-worktree-seeds
 

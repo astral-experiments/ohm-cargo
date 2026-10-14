@@ -89,7 +89,15 @@ struct State<'a, 'gctx> {
 
     /// Whether the dependencies actually compiled for a registry unit form an
     /// immutable closure for its active platform, features, and target kind.
-    immutable_registry_closures: RefCell<HashMap<(Unit, bool), bool>>,
+    immutable_registry_closures: RefCell<HashMap<(Unit, MacroRuntime), bool>>,
+}
+
+/// The trust boundary for code linked into a procedural macro.
+#[derive(Clone, Copy, Eq, Hash, PartialEq)]
+enum MacroRuntime {
+    None,
+    Registry,
+    Workspace,
 }
 
 /// A boolean-like to indicate if a `Unit` is an artifact or not.
@@ -1156,7 +1164,7 @@ impl<'a, 'gctx> State<'a, 'gctx> {
         self.registry_closure_is_immutable(
             &dependency.unit,
             unit_for,
-            false,
+            MacroRuntime::None,
             &mut HashSet::default(),
         )
     }
@@ -1221,11 +1229,12 @@ impl<'a, 'gctx> State<'a, 'gctx> {
         &self,
         unit: &Unit,
         unit_for: UnitFor,
-        audited_macro_runtime: bool,
-        visiting: &mut HashSet<(Unit, bool)>,
+        macro_runtime: MacroRuntime,
+        visiting: &mut HashSet<(Unit, MacroRuntime)>,
     ) -> bool {
         let package_id = unit.pkg.package_id();
-        let effective_source_id = if package_id.source_id().is_remote_registry() {
+        let registry_source = package_id.source_id().is_remote_registry();
+        let effective_source_id = if registry_source {
             let Some(effective_source_id) = self
                 .package_set
                 .sources()
@@ -1247,26 +1256,38 @@ impl<'a, 'gctx> State<'a, 'gctx> {
         } else {
             // Workspace sources can change, so they are eligible only when their
             // exact build fingerprint is revalidated under the workspace lock.
-            // Local build scripts and procedural macros may observe untracked
-            // inputs, and arbitrary path dependencies are outside that lock.
+            // Local build scripts and arbitrary path dependencies remain ineligible. The
+            // separate workspace-macro opt-in also trusts owned ordinary libraries executing
+            // inside that macro, but cannot widen the trust boundary of a registry macro.
             if !self.ws.is_member_id(package_id)
                 || !unit.target.is_lib()
-                || unit.target.for_host()
-                || audited_macro_runtime
+                || macro_runtime == MacroRuntime::Registry
+                || (unit.target.for_host()
+                    && !(unit.target.proc_macro()
+                        && self.gctx.cli_unstable().ohm_reuse_local_macros))
             {
                 return false;
             }
             package_id.source_id()
         };
 
-        let audited_macro_runtime = audited_macro_runtime || unit.pkg.proc_macro();
-        if audited_macro_runtime
+        let macro_runtime = if unit.pkg.proc_macro() {
+            if registry_source {
+                MacroRuntime::Registry
+            } else {
+                MacroRuntime::Workspace
+            }
+        } else {
+            macro_runtime
+        };
+        if registry_source
+            && macro_runtime != MacroRuntime::None
             && !is_canonical_crates_io_source(package_id.source_id(), effective_source_id)
         {
             return false;
         }
 
-        let cache_key = (unit.clone(), audited_macro_runtime);
+        let cache_key = (unit.clone(), macro_runtime);
         if let Some(immutable) = self.immutable_registry_closures.borrow().get(&cache_key) {
             return *immutable;
         }
@@ -1285,9 +1306,11 @@ impl<'a, 'gctx> State<'a, 'gctx> {
         // process too. Authenticating only the macro package would let an
         // alternate registry or newer semver-compatible helper introduce
         // untracked environment and filesystem reads into that same process.
-        let trusted_runtime = if unit.pkg.proc_macro() {
+        let trusted_runtime = if !registry_source {
+            true
+        } else if unit.pkg.proc_macro() {
             self.proc_macro_is_audited(unit)
-        } else if audited_macro_runtime {
+        } else if macro_runtime != MacroRuntime::None {
             self.proc_macro_runtime_dependency_is_audited(unit, effective_source_id)
         } else {
             true
@@ -1296,7 +1319,7 @@ impl<'a, 'gctx> State<'a, 'gctx> {
             && self.active_registry_dependencies_are_immutable(
                 unit,
                 unit_for,
-                audited_macro_runtime,
+                macro_runtime,
                 visiting,
             );
 
@@ -1357,8 +1380,8 @@ impl<'a, 'gctx> State<'a, 'gctx> {
         &self,
         unit: &Unit,
         unit_for: UnitFor,
-        audited_macro_runtime: bool,
-        visiting: &mut HashSet<(Unit, bool)>,
+        macro_runtime: MacroRuntime,
+        visiting: &mut HashSet<(Unit, MacroRuntime)>,
     ) -> bool {
         if unit.mode.is_run_custom_build() {
             return compute_deps_custom_build(unit, unit_for, self).is_ok_and(|dependencies| {
@@ -1366,7 +1389,7 @@ impl<'a, 'gctx> State<'a, 'gctx> {
                     self.registry_closure_is_immutable(
                         &dependency.unit,
                         dependency.unit_for,
-                        audited_macro_runtime,
+                        macro_runtime,
                         visiting,
                     )
                 })
@@ -1404,7 +1427,7 @@ impl<'a, 'gctx> State<'a, 'gctx> {
             if !self.registry_closure_is_immutable(
                 &dependency.unit,
                 dependency_unit_for,
-                audited_macro_runtime,
+                macro_runtime,
                 visiting,
             ) {
                 return false;
@@ -1420,7 +1443,7 @@ impl<'a, 'gctx> State<'a, 'gctx> {
                 self.registry_closure_is_immutable(
                     &build_script.unit,
                     build_script.unit_for,
-                    audited_macro_runtime,
+                    macro_runtime,
                     visiting,
                 )
             })
