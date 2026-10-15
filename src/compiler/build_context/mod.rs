@@ -83,6 +83,10 @@ pub struct BuildContext<'a, 'gctx> {
     /// The root units of `unit_graph` (units requested on the command-line).
     pub roots: Vec<Unit>,
 
+    /// Native integration-test units inspected as possible check results.
+    /// These and their private dependencies are never scheduled as build jobs.
+    pub test_check_candidates: HashMap<Unit, Unit>,
+
     /// The dependency graph of units to compile.
     pub unit_graph: UnitGraph,
 
@@ -113,6 +117,7 @@ impl<'a, 'gctx> BuildContext<'a, 'gctx> {
         extra_compiler_args: HashMap<Unit, Vec<String>>,
         target_data: RustcTargetData<'gctx>,
         roots: Vec<Unit>,
+        test_check_candidates: HashMap<Unit, Unit>,
         unit_graph: UnitGraph,
         audited_proc_macro_packages: HashSet<PackageId>,
         authenticated_native_tool_packages: HashSet<PackageId>,
@@ -137,6 +142,7 @@ impl<'a, 'gctx> BuildContext<'a, 'gctx> {
             extra_compiler_args,
             target_data,
             roots,
+            test_check_candidates,
             unit_graph,
             audited_proc_macro_packages,
             authenticated_native_tool_packages,

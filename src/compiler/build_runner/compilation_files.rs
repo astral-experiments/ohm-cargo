@@ -214,7 +214,12 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
         target: HashMap<CompileTarget, Layout>,
     ) -> CompilationFiles<'a, 'gctx> {
         let mut metas = HashMap::default();
-        for unit in &build_runner.bcx.roots {
+        for unit in build_runner
+            .bcx
+            .roots
+            .iter()
+            .chain(build_runner.bcx.test_check_candidates.values())
+        {
             metadata_of(unit, build_runner, &mut metas);
         }
         let outputs = metas
