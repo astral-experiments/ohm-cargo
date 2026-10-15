@@ -12,6 +12,7 @@ use std::ffi::OsString;
 use std::fmt::Write;
 use std::path::{Path, PathBuf};
 
+pub(crate) mod ready_test_process;
 pub(crate) mod ready_tests;
 
 pub struct TestOptions {
