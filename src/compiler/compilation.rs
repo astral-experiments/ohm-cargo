@@ -193,15 +193,6 @@ impl<'gctx> Compilation<'gctx> {
             let kind = explicit_host_kind(&host);
             linkers.insert(kind, target_linker(bcx, kind)?);
         }
-        let ready_tests = bcx
-            .build_config
-            .ready_tests
-            .clone()
-            .filter(|_| {
-                bcx.build_config.requested_kinds == [CompileKind::Host]
-                    && runners.values().all(Option::is_none)
-            })
-            .and_then(crate::ops::ReadyTests::new);
         Ok(Compilation {
             native_dirs: BTreeSet::new(),
             root_output: HashMap::default(),
@@ -227,8 +218,22 @@ impl<'gctx> Compilation<'gctx> {
                 .shared_registry_cache_enabled()
                 .then(|| bcx.ws.build_dir().into_path_unlocked()),
             lint_warning_count: 0,
-            ready_tests,
+            ready_tests: None,
         })
+    }
+
+    /// Install early-test signal handling only once the scheduler can service it.
+    /// Build preparation must retain ordinary interrupts while acquiring locks.
+    pub(crate) fn prepare_ready_tests(&mut self, bcx: &BuildContext<'_, 'gctx>) {
+        self.ready_tests = bcx
+            .build_config
+            .ready_tests
+            .clone()
+            .filter(|_| {
+                bcx.build_config.requested_kinds == [CompileKind::Host]
+                    && self.runners.values().all(Option::is_none)
+            })
+            .and_then(crate::ops::ReadyTests::new);
     }
 
     /// Returns a [`ProcessBuilder`] for running `rustc`.

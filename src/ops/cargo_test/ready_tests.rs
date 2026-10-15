@@ -48,6 +48,7 @@ impl ReadyTests {
     /// Wait for the actual queued runtime artifacts, including fresh ones. Old files
     /// on disk and provisional compiler results never establish runtime readiness.
     pub(crate) fn prepare(build: &mut BuildRunner<'_, '_>) {
+        build.compilation.prepare_ready_tests(build.bcx);
         let Some(ready) = build.compilation.ready_tests.as_mut() else {
             return;
         };
