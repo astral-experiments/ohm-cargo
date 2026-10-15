@@ -15,6 +15,10 @@ mod commands;
 use crate::command_prelude::*;
 
 fn main() {
+    #[cfg(unix)]
+    if cargo::ops::run_ready_test_relay() {
+        return;
+    }
     let _guard = setup_logger();
 
     let mut gctx = match GlobalContext::default() {
