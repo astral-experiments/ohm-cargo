@@ -73,6 +73,8 @@ pub struct UnitOutput {
 
 /// A structure returning the result of a compilation.
 pub struct Compilation<'gctx> {
+    /// Tests already started during compilation; dropping this cancels an active test.
+    pub(crate) ready_tests: Option<crate::ops::ReadyTests>,
     /// An array of all tests created during this compilation.
     pub tests: Vec<UnitOutput>,
 
@@ -191,6 +193,15 @@ impl<'gctx> Compilation<'gctx> {
             let kind = explicit_host_kind(&host);
             linkers.insert(kind, target_linker(bcx, kind)?);
         }
+        let ready_tests = bcx
+            .build_config
+            .ready_tests
+            .clone()
+            .filter(|_| {
+                bcx.build_config.requested_kinds == [CompileKind::Host]
+                    && runners.values().all(Option::is_none)
+            })
+            .and_then(crate::ops::ReadyTests::new);
         Ok(Compilation {
             native_dirs: BTreeSet::new(),
             root_output: HashMap::default(),
@@ -216,6 +227,7 @@ impl<'gctx> Compilation<'gctx> {
                 .shared_registry_cache_enabled()
                 .then(|| bcx.ws.build_dir().into_path_unlocked()),
             lint_warning_count: 0,
+            ready_tests,
         })
     }
 

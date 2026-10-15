@@ -13,6 +13,8 @@ use std::thread::available_parallelism;
 /// Configuration information for a rustc build.
 #[derive(Debug, Clone)]
 pub struct BuildConfig {
+    /// Execution of ready test binaries during supported test builds.
+    pub(crate) ready_tests: Option<crate::ops::ReadyTestOptions>,
     /// The requested kind of compilation for this session
     pub requested_kinds: Vec<CompileKind>,
     /// Number of rustc jobs to run in parallel.
@@ -114,6 +116,7 @@ impl BuildConfig {
         };
 
         Ok(BuildConfig {
+            ready_tests: None,
             requested_kinds,
             jobs,
             keep_going,

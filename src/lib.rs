@@ -167,6 +167,10 @@ pub const CARGO_INHERITED_OHM_DEFAULTS_ENV: &str = "__CARGO_OHM_DEFAULTS";
 #[doc(hidden)]
 pub const CARGO_INHERITED_OHM_EARLY_TESTS_ENV: &str = "__CARGO_OHM_EARLY_TESTS";
 
+/// Carries an explicit ready-test execution override through Cargo subcommands.
+#[doc(hidden)]
+pub const CARGO_INHERITED_OHM_READY_TESTS_ENV: &str = "__CARGO_OHM_READY_TESTS";
+
 /// Carries an explicit early-metadata override through external Cargo subcommands.
 #[doc(hidden)]
 pub const CARGO_INHERITED_HEADSTART_ENV: &str = "__CARGO_HEADSTART";
