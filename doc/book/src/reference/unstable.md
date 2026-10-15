@@ -2125,8 +2125,9 @@ cancelled. The relay exits with the test; there is no resident service.
 
 Explicit targets, custom runners, unsupported platforms or signal handlers,
 inaccessible controlling terminals, terminals using `stty tostop` (which stops
-background terminal output), and Cargo JSON build output retain ordinary
-execution. `--no-run`, benchmarks, and doctests also retain their usual behavior.
+background terminal output), terminal invocations with redirected I/O or shared
+job control, and Cargo JSON build output retain ordinary execution. `--no-run`,
+benchmarks, and doctests also retain their usual behavior.
 If an early process cannot start, Cargo retries it on the ordinary path after
 compilation. Build failure or interruption cancels the active test process group.
 Tests may run in a different order and produce side effects before a later build

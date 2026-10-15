@@ -33,7 +33,7 @@ fn wrapper() -> PathBuf {
                         let control = PathBuf::from(control);
                         let mode = env::var("READY_MODE").unwrap();
                         fs::write(control.join("slow-active"), std::process::id().to_string()).unwrap();
-                        if mode != "fallback" && mode != "terminal-fallback" {
+                        if mode != "fallback" && mode != "terminal-fallback" && mode != "terminal-pipeline" {
                             let marker = if mode.starts_with("terminal") {
                                 "release-build"
                             } else if mode == "build-failure" || mode == "signal" {
@@ -115,7 +115,16 @@ fn fixture() -> Project {
                     std::fs::write(control.join("test-group"), unsafe { getpgrp() }.to_string()).unwrap();
                     std::fs::write(control.join("active"), std::process::id().to_string()).unwrap();
                     let mut input = String::new();
-                    std::io::stdin().read_line(&mut input).unwrap();
+                    if mode == "terminal-pipeline" {
+                        let deadline = std::time::Instant::now() + std::time::Duration::from_secs(15);
+                        while !control.join("input").exists() {
+                            assert!(std::time::Instant::now() < deadline, "pipeline reader lost the terminal");
+                            std::thread::sleep(std::time::Duration::from_millis(5));
+                        }
+                        input = std::fs::read_to_string(control.join("input")).unwrap();
+                    } else {
+                        std::io::stdin().read_line(&mut input).unwrap();
+                    }
                     assert_eq!(input, "hello\n");
                     std::fs::write(control.join("input"), input).unwrap();
                     child.kill().unwrap();
@@ -454,6 +463,10 @@ impl TerminalSession {
     }
 
     fn start(&mut self, cmd: &mut Execs) {
+        self.start_with_pipeline(cmd, None);
+    }
+
+    fn start_with_pipeline(&mut self, cmd: &mut Execs, pipeline: Option<&str>) {
         fn quote(value: &std::ffi::OsStr) -> String {
             format!("'{}'", value.to_str().unwrap().replace('\'', "'\\''"))
         }
@@ -467,6 +480,10 @@ impl TerminalSession {
         for arg in cargo.get_args() {
             line.push(' ');
             line.push_str(&quote(arg));
+        }
+        if let Some(pipeline) = pipeline {
+            line.push_str(" | ");
+            line.push_str(pipeline);
         }
         line.push_str("; printf '\\nREADY-STATUS=%s\\n' \"$?\"\n");
         self.send(line.as_bytes());
@@ -562,6 +579,7 @@ fn terminal_input_job_control_and_opt_out() {
         "job-control-finished-build",
         "opt-out",
         "tostop",
+        "pipeline",
     ]
     .iter()
     .enumerate()
@@ -572,7 +590,9 @@ fn terminal_input_job_control_and_opt_out() {
         let mut cmd = command(
             &p,
             &wrapper,
-            if enabled {
+            if *case == "pipeline" {
+                "terminal-pipeline"
+            } else if enabled {
                 "terminal"
             } else {
                 "terminal-fallback"
@@ -587,7 +607,14 @@ fn terminal_input_job_control_and_opt_out() {
             terminal.send(b"stty tostop\n");
             terminal.expect("READY-SHELL> ");
         }
-        terminal.start(&mut cmd);
+        if *case == "pipeline" {
+            terminal.start_with_pipeline(
+                &mut cmd,
+                Some(r#"sh -c 'while [ ! -f "$READY_CONTROL/active" ]; do sleep 0.01; done; IFS= read -r input </dev/tty; printf "%s\n" "$input" > "$READY_CONTROL/input-tmp"; mv "$READY_CONTROL/input-tmp" "$READY_CONTROL/input"; cat'"#),
+            );
+        } else {
+            terminal.start(&mut cmd);
+        }
         terminal.marker("active");
         assert_run(&p, if enabled { "during" } else { "after" });
         if *case == "job-control-finished-build" {
