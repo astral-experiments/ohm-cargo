@@ -33,7 +33,8 @@ fn wrapper() -> PathBuf {
                         let control = PathBuf::from(control);
                         let mode = env::var("READY_MODE").unwrap();
                         fs::write(control.join("slow-active"), std::process::id().to_string()).unwrap();
-                        if mode != "fallback" && mode != "terminal-fallback" && mode != "terminal-pipeline" {
+                        if mode != "fallback" && mode != "terminal-fallback"
+                            && mode != "terminal-pipeline" && mode != "terminal-redirected" {
                             let marker = if mode.starts_with("terminal") {
                                 "release-build"
                             } else if mode == "build-failure" || mode == "signal" {
@@ -122,6 +123,10 @@ fn fixture() -> Project {
                             std::thread::sleep(std::time::Duration::from_millis(5));
                         }
                         input = std::fs::read_to_string(control.join("input")).unwrap();
+                    } else if mode == "terminal-redirected" {
+                        use std::io::BufRead;
+                        let tty = std::fs::File::open("/dev/tty").unwrap();
+                        std::io::BufReader::new(tty).read_line(&mut input).unwrap();
                     } else {
                         std::io::stdin().read_line(&mut input).unwrap();
                     }
@@ -163,8 +168,10 @@ fn change(p: &Project, revision: usize) {
             r#"#[test] fn selected() {{
                 assert_eq!({revision}, {revision});
                 if std::env::var("READY_MODE").unwrap().starts_with("terminal") {{
+                    use std::os::fd::AsRawFd;
                     unsafe extern "C" {{ fn getpgrp() -> i32; fn tcgetpgrp(fd: i32) -> i32; }}
-                    unsafe {{ assert_eq!(getpgrp(), tcgetpgrp(0), "later test lost the terminal"); }}
+                    let tty = std::fs::File::open("/dev/tty").unwrap();
+                    unsafe {{ assert_eq!(getpgrp(), tcgetpgrp(tty.as_raw_fd()), "later test lost the terminal"); }}
                 }}
                 std::fs::write(std::path::Path::new(&std::env::var("READY_CONTROL").unwrap())
                     .join("z-ran"), "yes").unwrap();
@@ -462,7 +469,7 @@ impl TerminalSession {
         terminal
     }
 
-    fn start(&mut self, cmd: &mut Execs, pipeline: Option<&str>) {
+    fn start(&mut self, cmd: &mut Execs, suffix: Option<&str>) {
         fn quote(value: &std::ffi::OsStr) -> String {
             format!("'{}'", value.to_str().unwrap().replace('\'', "'\\''"))
         }
@@ -477,9 +484,9 @@ impl TerminalSession {
             line.push(' ');
             line.push_str(&quote(arg));
         }
-        if let Some(pipeline) = pipeline {
-            line.push_str(" | ");
-            line.push_str(pipeline);
+        if let Some(suffix) = suffix {
+            line.push(' ');
+            line.push_str(suffix);
         }
         line.push_str("; printf '\\nREADY-STATUS=%s\\n' \"$?\"\n");
         self.send(line.as_bytes());
@@ -488,6 +495,18 @@ impl TerminalSession {
     fn send(&mut self, bytes: &[u8]) {
         use std::io::Write;
         self.master.write_all(bytes).unwrap();
+    }
+
+    fn interrupt(&mut self) {
+        self.send(b"\x03");
+        // Bash may skip the trailing status printf after an interruption.
+        // Keep a status it already printed, or query it at the next prompt.
+        let status_cursor = self.cursor;
+        self.expect("READY-SHELL> ");
+        if !self.output[status_cursor..self.cursor].contains("READY-STATUS=130\r\n") {
+            self.send(b"printf '\\nREADY-STATUS=%s\\n' \"$?\"\n");
+        }
+        self.cursor = status_cursor;
     }
 
     fn read(&mut self) {
@@ -604,7 +623,7 @@ fn terminal_input_job_control_and_opt_out() {
             terminal.expect("READY-SHELL> ");
         }
         let pipeline = (*case == "pipeline").then_some(
-            r#"sh -c 'while [ ! -f "$READY_CONTROL/active" ]; do sleep 0.01; done; IFS= read -r input </dev/tty; printf "%s\n" "$input" > "$READY_CONTROL/input-tmp"; mv "$READY_CONTROL/input-tmp" "$READY_CONTROL/input"; cat'"#,
+            r#"| sh -c 'while [ ! -f "$READY_CONTROL/active" ]; do sleep 0.01; done; IFS= read -r input </dev/tty; printf "%s\n" "$input" > "$READY_CONTROL/input-tmp"; mv "$READY_CONTROL/input-tmp" "$READY_CONTROL/input"; cat'"#,
         );
         terminal.start(&mut cmd, pipeline);
         terminal.marker("active");
@@ -667,15 +686,7 @@ fn terminal_cancellation_restores_the_shell_and_stops_descendants() {
             if *mode == "terminal-finished-build" {
                 terminal.expect("Finished");
             }
-            terminal.send(b"\x03"); // Ctrl-C goes to the test's foreground group.
-            // Bash may skip the trailing status printf after an interruption.
-            // Keep a status it already printed, or query it at the next prompt.
-            let status_cursor = terminal.cursor;
-            terminal.expect("READY-SHELL> ");
-            if !terminal.output[status_cursor..terminal.cursor].contains("READY-STATUS=130\r\n") {
-                terminal.send(b"printf '\\nREADY-STATUS=%s\\n' \"$?\"\n");
-            }
-            terminal.cursor = status_cursor;
+            terminal.interrupt(); // Ctrl-C goes to the test's foreground group.
         }
         terminal.finish(if *mode == "terminal-build-failure" {
             101
@@ -685,4 +696,47 @@ fn terminal_cancellation_restores_the_shell_and_stops_descendants() {
         #[cfg(target_os = "linux")]
         assert_process_tree_stopped(&p);
     }
+}
+
+#[cargo_test]
+#[cfg(any(target_os = "linux", target_os = "macos"))]
+fn interruption_while_waiting_for_build_lock() {
+    let p = project().file("src/lib.rs", "").build();
+    fs::create_dir(p.root().join("control")).unwrap();
+    fs::create_dir_all(p.target_debug_dir()).unwrap();
+    let lock = fs::File::create(p.target_debug_dir().join(".cargo-build-lock")).unwrap();
+    lock.lock().unwrap();
+
+    let mut cmd = p.cargo("test --lib -Zohm-defaults=no -Zohm-ready-tests");
+    cmd.masquerade_as_nightly_cargo(&["ohm-defaults", "ohm-ready-tests"]);
+    let mut terminal = TerminalSession::new(&p, &mut cmd);
+    terminal.start(&mut cmd, None);
+    terminal.expect("Blocking waiting for file lock on build directory");
+    terminal.interrupt();
+    terminal.finish(130);
+    // Keep the lock held until Cargo exits: acquiring it must not be necessary
+    // to process the interrupt.
+    drop(lock);
+}
+
+#[cargo_test]
+#[cfg(any(target_os = "linux", target_os = "macos"))]
+fn redirected_stdio_preserves_controlling_terminal_input() {
+    let wrapper = wrapper();
+    let p = fixture();
+    seed(&p, &wrapper);
+    change(&p, 1);
+    let mut cmd = command(&p, &wrapper, "terminal-redirected");
+    cmd.arg("--").arg("selected");
+    let mut terminal = TerminalSession::new(&p, &mut cmd);
+    terminal.start(
+        &mut cmd,
+        Some(r#"</dev/null >"$READY_CONTROL/cargo.log" 2>&1"#),
+    );
+    terminal.marker("active");
+    terminal.send(b"hello\n");
+    terminal.marker("input");
+    terminal.finish(0);
+    assert_run(&p, "after");
+    assert!(p.root().join("control/z-ran").exists());
 }

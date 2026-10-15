@@ -1488,10 +1488,7 @@ fn ohm_proc_macro_trust_rejects_invalid_values() {
 #[cargo_test]
 fn ohm_defaults_can_be_disabled_for_one_invocation() {
     let gctx = GlobalContextBuilder::new().build();
-    assert_eq!(
-        gctx.cli_unstable().ohm_ready_tests(),
-        cfg!(feature = "ohm-defaults")
-    );
+    assert!(!gctx.cli_unstable().ohm_ready_tests());
     assert_eq!(
         gctx.cli_unstable().ohm_early_tests(),
         cfg!(feature = "ohm-defaults")
@@ -1539,7 +1536,7 @@ fn ohm_defaults_can_be_disabled_for_one_invocation() {
     assert!(gctx.cli_unstable().ohm_defaults());
     assert!(gctx.cli_unstable().ohm_shared_stages());
     assert!(gctx.cli_unstable().ohm_early_tests());
-    assert!(gctx.cli_unstable().ohm_ready_tests());
+    assert!(!gctx.cli_unstable().ohm_ready_tests());
     assert!(gctx.cli_unstable().headstart());
     assert!(gctx.cli_unstable().relink_only());
     assert!(gctx.cli_unstable().no_embed_metadata());
@@ -1619,12 +1616,17 @@ fn early_tests_override_defaults_and_inherit_opt_out() {
 }
 
 #[cargo_test]
-fn ready_tests_override_defaults_and_inherit_opt_out() {
-    write_config_toml("[unstable]\nohm-defaults = true\nohm-ready-tests = false\n");
+fn ready_tests_require_opt_in_and_preserve_overrides() {
+    write_config_toml("[unstable]\nohm-defaults = true\n");
     let gctx = GlobalContextBuilder::new()
         .nightly_features_allowed(true)
         .build();
     assert!(!gctx.cli_unstable().ohm_ready_tests());
+    write_config_toml("[unstable]\nohm-defaults = true\nohm-ready-tests = true\n");
+    let gctx = GlobalContextBuilder::new()
+        .nightly_features_allowed(true)
+        .build();
+    assert!(gctx.cli_unstable().ohm_ready_tests());
     for flags in [
         ["ohm-defaults", "ohm-ready-tests=no"],
         ["ohm-ready-tests=no", "ohm-defaults"],
@@ -1651,6 +1653,23 @@ fn ready_tests_override_defaults_and_inherit_opt_out() {
         .unstable_flag("ohm-ready-tests")
         .build();
     assert!(gctx.cli_unstable().ohm_ready_tests());
+
+    write_config_toml("[unstable]\nohm-defaults = false\nohm-ready-tests = false\n");
+    for (key, value) in [
+        ("CARGO_UNSTABLE_OHM_READY_TESTS", "true"),
+        ("__CARGO_OHM_READY_TESTS", "yes"),
+    ] {
+        let gctx = GlobalContextBuilder::new()
+            .env(key, value)
+            .nightly_features_allowed(true)
+            .build();
+        assert!(gctx.cli_unstable().ohm_ready_tests());
+        let gctx = GlobalContextBuilder::new()
+            .env(key, value)
+            .unstable_flag("ohm-ready-tests=no")
+            .build();
+        assert!(!gctx.cli_unstable().ohm_ready_tests());
+    }
 }
 
 #[cargo_test]

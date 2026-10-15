@@ -300,9 +300,21 @@ impl Terminal {
             std::io::stdout().is_terminal(),
             std::io::stderr().is_terminal(),
         ];
-        if streams.iter().all(|terminal| !terminal) {
-            return Ok(None);
-        }
+        // Redirecting every standard stream does not detach a shell job from
+        // its controlling terminal. Only headless jobs can omit the relay.
+        let terminal = match File::open("/dev/tty") {
+            Ok(terminal) => Self(terminal),
+            Err(error)
+                if streams.iter().all(|terminal| !terminal)
+                    && matches!(
+                        error.raw_os_error(),
+                        Some(libc::ENXIO | libc::ENODEV | libc::ENOENT)
+                    ) =>
+            {
+                return Ok(None);
+            }
+            Err(error) => return Err(error.into()),
+        };
         // A pipeline's pager or a wrapper may also need foreground input. Only
         // take the terminal from a direct Cargo job with terminal stdio; otherwise
         // keep the shell's shared process group and ordinary test execution.
@@ -312,7 +324,6 @@ impl Terminal {
                 && unsafe { libc::getpid() == libc::getpgrp() },
             "shared terminal job requires ordinary test execution"
         );
-        let terminal = Self(File::open("/dev/tty")?);
         terminal.check()?;
         Ok(Some(terminal))
     }
