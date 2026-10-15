@@ -5,7 +5,7 @@
 //! The relay ends with the test; it never survives the Cargo invocation.
 
 use crate::util::CargoResult;
-use std::process::Command;
+use std::process::{Child, Command};
 use std::sync::atomic::{AtomicBool, AtomicI32, Ordering};
 
 #[cfg(unix)]
@@ -13,7 +13,7 @@ use std::{
     fs::File,
     io::{IsTerminal, Read, Write},
     os::{fd::AsRawFd, unix::process::CommandExt},
-    process::{Child, Stdio},
+    process::Stdio,
     sync::Arc,
 };
 
@@ -204,8 +204,10 @@ pub(super) struct ProcessGroup {
 }
 
 impl ProcessGroup {
-    #[cfg_attr(not(unix), allow(unused_mut, unused_variables))]
-    pub(super) fn new(signals: &Signals) -> CargoResult<Self> {
+    /// Spawn the test in its owned group; restore the terminal and reap the relay
+    /// if startup fails.
+    #[cfg_attr(not(unix), allow(unused_variables))]
+    pub(super) fn spawn(signals: &Signals, command: &mut Command) -> CargoResult<(Child, Self)> {
         let mut group = Self {
             id: 0,
             #[cfg(unix)]
@@ -249,19 +251,14 @@ impl ProcessGroup {
             // background and retain ordinary SIGTTIN / `fg` behavior.
             terminal.handoff(group.id)?;
         }
-        Ok(group)
-    }
-
-    pub(super) fn configure(&self, _command: &mut Command) {
         #[cfg(unix)]
-        _command.process_group(self.id);
-    }
-
-    pub(super) fn register(&mut self, child: u32) {
-        if self.id == 0 {
-            self.id = child as i32;
+        command.process_group(group.id);
+        let child = command.spawn()?;
+        if group.id == 0 {
+            group.id = child.id() as i32;
         }
-        ACTIVE_GROUP.store(self.id, Ordering::SeqCst);
+        ACTIVE_GROUP.store(group.id, Ordering::SeqCst);
+        Ok((child, group))
     }
 
     pub(super) fn cancel(&self) {
