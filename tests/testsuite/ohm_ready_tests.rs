@@ -4,9 +4,9 @@ use crate::prelude::*;
 use cargo_test_support::{Execs, Project, basic_manifest, project, rustc_host, rustc_host_env};
 use std::fs;
 use std::path::{Path, PathBuf};
-#[cfg(target_os = "linux")]
+#[cfg(any(target_os = "linux", target_os = "macos"))]
 use std::process::Stdio;
-#[cfg(target_os = "linux")]
+#[cfg(any(target_os = "linux", target_os = "macos"))]
 use std::time::{Duration, Instant};
 
 // The slow compiler waits for a real test to run. This demonstrates overlap
@@ -32,8 +32,11 @@ fn wrapper() -> PathBuf {
                     if let Some(control) = env::var_os("READY_CONTROL") {
                         let control = PathBuf::from(control);
                         let mode = env::var("READY_MODE").unwrap();
-                        if mode != "fallback" {
-                            let marker = if mode == "build-failure" || mode == "signal" {
+                        fs::write(control.join("slow-active"), std::process::id().to_string()).unwrap();
+                        if mode != "fallback" && mode != "terminal-fallback" {
+                            let marker = if mode.starts_with("terminal") {
+                                "release-build"
+                            } else if mode == "build-failure" || mode == "signal" {
                                 "active"
                             } else {
                                 "a-timing"
@@ -44,7 +47,7 @@ fn wrapper() -> PathBuf {
                                 thread::sleep(Duration::from_millis(5));
                             }
                         }
-                        if mode == "build-failure" {
+                        if mode == "build-failure" || mode == "terminal-build-failure" {
                             eprintln!("intentional late compiler failure");
                             std::process::exit(1);
                         }
@@ -98,6 +101,26 @@ fn fixture() -> Project {
                     std::fs::write(control.join("active"), std::process::id().to_string()).unwrap();
                     std::thread::sleep(std::time::Duration::from_secs(30));
                 }
+                if mode.starts_with("terminal") {
+                    unsafe extern "C" {
+                        fn getpgrp() -> i32;
+                        fn signal(signal: i32, handler: usize) -> usize;
+                    }
+                    if mode == "terminal-ignore-int" {
+                        // SIGINT and SIG_IGN on the Linux/macOS PTY test hosts.
+                        unsafe { signal(2, 1); }
+                    }
+                    let mut child = std::process::Command::new("sleep").arg("30").spawn().unwrap();
+                    std::fs::write(control.join("descendant"), child.id().to_string()).unwrap();
+                    std::fs::write(control.join("test-group"), unsafe { getpgrp() }.to_string()).unwrap();
+                    std::fs::write(control.join("active"), std::process::id().to_string()).unwrap();
+                    let mut input = String::new();
+                    std::io::stdin().read_line(&mut input).unwrap();
+                    assert_eq!(input, "hello\n");
+                    std::fs::write(control.join("input"), input).unwrap();
+                    child.kill().unwrap();
+                    child.wait().unwrap();
+                }
             }
             #[test]
             fn excluded() { panic!("the test filter was lost"); }
@@ -130,6 +153,10 @@ fn change(p: &Project, revision: usize) {
         &format!(
             r#"#[test] fn selected() {{
                 assert_eq!({revision}, {revision});
+                if std::env::var("READY_MODE").unwrap().starts_with("terminal") {{
+                    unsafe extern "C" {{ fn getpgrp() -> i32; fn tcgetpgrp(fd: i32) -> i32; }}
+                    unsafe {{ assert_eq!(getpgrp(), tcgetpgrp(0), "later test lost the terminal"); }}
+                }}
                 std::fs::write(std::path::Path::new(&std::env::var("READY_CONTROL").unwrap())
                     .join("z-ran"), "yes").unwrap();
             }}"#
@@ -268,7 +295,12 @@ fn uses_current_runtime_inputs_and_ignores_disabled_binaries() {
 
 #[cfg(target_os = "linux")]
 fn assert_process_tree_stopped(p: &Project) {
-    for name in ["active", "descendant"] {
+    for name in ["active", "descendant", "slow-active", "test-group"] {
+        if matches!(name, "slow-active" | "test-group")
+            && !p.root().join("control").join(name).exists()
+        {
+            continue;
+        }
         let pid = fs::read_to_string(p.root().join("control").join(name)).unwrap();
         let stat = fs::read_to_string(format!("/proc/{pid}/stat"));
         assert!(
@@ -337,4 +369,297 @@ fn interrupt_cancels_the_active_test_and_descendants() {
     };
     assert!(status.signal() == Some(libc::SIGINT) || status.code() == Some(130));
     assert_process_tree_stopped(&p);
+}
+
+// Exercise the actual terminal driver and an interactive shell's job table.
+// Sending signals directly to Cargo cannot establish foreground/input behavior.
+#[cfg(any(target_os = "linux", target_os = "macos"))]
+struct TerminalSession {
+    shell: std::process::Child,
+    master: fs::File,
+    control: PathBuf,
+    output: String,
+    cursor: usize,
+}
+
+#[cfg(any(target_os = "linux", target_os = "macos"))]
+impl TerminalSession {
+    fn new(p: &Project, cmd: &mut Execs) -> Self {
+        use std::os::fd::{AsRawFd, FromRawFd};
+        use std::os::unix::process::CommandExt;
+
+        let (mut master, mut slave) = (-1, -1);
+        // SAFETY: openpty initializes both descriptors; File takes ownership.
+        let (master, slave) = unsafe {
+            assert_eq!(
+                libc::openpty(
+                    &mut master,
+                    &mut slave,
+                    std::ptr::null_mut(),
+                    std::ptr::null(),
+                    std::ptr::null(),
+                ),
+                0
+            );
+            libc::fcntl(master, libc::F_SETFD, libc::FD_CLOEXEC);
+            libc::fcntl(slave, libc::F_SETFD, libc::FD_CLOEXEC);
+            (fs::File::from_raw_fd(master), fs::File::from_raw_fd(slave))
+        };
+        let cargo = cmd.build_command();
+        let mut shell = std::process::Command::new("bash");
+        shell
+            .args(["--noprofile", "--norc", "-i"])
+            .current_dir(p.root())
+            .stdin(slave.try_clone().unwrap())
+            .stdout(slave.try_clone().unwrap())
+            .stderr(slave);
+        for (key, value) in cargo.get_envs() {
+            if let Some(value) = value {
+                shell.env(key, value);
+            } else {
+                shell.env_remove(key);
+            }
+        }
+        shell
+            .env("PS1", "READY-SHELL> ")
+            .env("TERM", "dumb")
+            .env("HISTFILE", "/dev/null")
+            .env_remove("PROMPT_COMMAND");
+        // SAFETY: only async-signal-safe calls between fork and exec. The slave
+        // is already stdin; the shell starts a new session with a controlling tty.
+        unsafe {
+            shell.pre_exec(|| {
+                if libc::setsid() < 0 || libc::ioctl(0, libc::TIOCSCTTY, 0) < 0 {
+                    return Err(std::io::Error::last_os_error());
+                }
+                Ok(())
+            });
+        }
+        let mut terminal = Self {
+            shell: shell.spawn().unwrap(),
+            master,
+            control: p.root().join("control"),
+            output: String::new(),
+            cursor: 0,
+        };
+        terminal.expect("READY-SHELL> ");
+        terminal.send(b"set -b\n");
+        terminal.expect("READY-SHELL> ");
+        // The master reports the terminal foreground group, not our test runner's.
+        assert_eq!(
+            unsafe { libc::tcgetpgrp(terminal.master.as_raw_fd()) },
+            terminal.shell.id() as i32
+        );
+        terminal
+    }
+
+    fn start(&mut self, cmd: &mut Execs) {
+        fn quote(value: &std::ffi::OsStr) -> String {
+            format!("'{}'", value.to_str().unwrap().replace('\'', "'\\''"))
+        }
+        let cargo = cmd.build_command();
+        // exec preserves the shell job's PID/group while recording it for cleanup.
+        let mut line = format!(
+            "sh -c 'echo $$ > \"$1\"; shift; exec \"$@\"' sh {} {}",
+            quote(self.control.join("cargo-pid").as_os_str()),
+            quote(cargo.get_program())
+        );
+        for arg in cargo.get_args() {
+            line.push(' ');
+            line.push_str(&quote(arg));
+        }
+        line.push_str("; printf '\\nREADY-STATUS=%s\\n' \"$?\"\n");
+        self.send(line.as_bytes());
+    }
+
+    fn send(&mut self, bytes: &[u8]) {
+        use std::io::Write;
+        self.master.write_all(bytes).unwrap();
+    }
+
+    fn read(&mut self) {
+        use std::io::Read;
+        use std::os::fd::AsRawFd;
+        let mut poll = libc::pollfd {
+            fd: self.master.as_raw_fd(),
+            events: libc::POLLIN,
+            revents: 0,
+        };
+        // SAFETY: one live PTY descriptor. Each wait stays short for diagnostics.
+        if unsafe { libc::poll(&mut poll, 1, 20) } > 0 {
+            let mut bytes = [0; 8192];
+            if let Ok(count) = self.master.read(&mut bytes) {
+                self.output
+                    .push_str(&String::from_utf8_lossy(&bytes[..count]));
+            }
+        }
+    }
+
+    fn expect(&mut self, text: &str) {
+        let deadline = Instant::now() + Duration::from_secs(15);
+        loop {
+            if let Some(index) = self.output[self.cursor..].find(text) {
+                self.cursor += index + text.len();
+                return;
+            }
+            assert!(
+                Instant::now() < deadline,
+                "missing {text:?}: {}",
+                self.output
+            );
+            self.read();
+        }
+    }
+
+    fn marker(&mut self, name: &str) {
+        let deadline = Instant::now() + Duration::from_secs(15);
+        while !self.control.join(name).exists() {
+            assert!(Instant::now() < deadline, "missing {name}: {}", self.output);
+            self.read();
+        }
+    }
+
+    fn finish(&mut self, status: i32) {
+        use std::os::fd::AsRawFd;
+        self.expect(&format!("READY-STATUS={status}\r\n"));
+        self.expect("READY-SHELL> ");
+        assert_eq!(
+            unsafe { libc::tcgetpgrp(self.master.as_raw_fd()) },
+            self.shell.id() as i32,
+            "terminal not returned to shell: {}",
+            self.output
+        );
+    }
+}
+
+#[cfg(any(target_os = "linux", target_os = "macos"))]
+impl Drop for TerminalSession {
+    fn drop(&mut self) {
+        // Also clean up on assertion failure. These groups belong to this PTY's
+        // Cargo job/test, never the surrounding test runner or interactive shell.
+        for name in ["test-group", "cargo-pid"] {
+            if let Ok(pid) = fs::read_to_string(self.control.join(name))
+                && let Ok(pid) = pid.trim().parse::<i32>()
+                && pid > 1
+            {
+                unsafe { libc::kill(-pid, libc::SIGKILL) };
+            }
+        }
+        let _ = self.shell.kill();
+        let _ = self.shell.wait();
+    }
+}
+
+#[cargo_test]
+#[cfg(any(target_os = "linux", target_os = "macos"))]
+fn terminal_input_job_control_and_opt_out() {
+    let wrapper = wrapper();
+    let p = fixture();
+    seed(&p, &wrapper);
+    for (revision, case) in [
+        "input",
+        "job-control",
+        "job-control-finished-build",
+        "opt-out",
+        "tostop",
+    ]
+    .iter()
+    .enumerate()
+    {
+        change(&p, revision);
+        let job_control = case.starts_with("job-control");
+        let enabled = *case == "input" || job_control;
+        let mut cmd = command(
+            &p,
+            &wrapper,
+            if enabled {
+                "terminal"
+            } else {
+                "terminal-fallback"
+            },
+        );
+        if *case == "opt-out" {
+            cmd.arg("-Zohm-ready-tests=no");
+        }
+        cmd.arg("--").arg("selected");
+        let mut terminal = TerminalSession::new(&p, &mut cmd);
+        if *case == "tostop" {
+            terminal.send(b"stty tostop\n");
+            terminal.expect("READY-SHELL> ");
+        }
+        terminal.start(&mut cmd);
+        terminal.marker("active");
+        assert_run(&p, if enabled { "during" } else { "after" });
+        if *case == "job-control-finished-build" {
+            fs::write(p.root().join("control/release-build"), "yes").unwrap();
+            terminal.expect("Finished");
+        }
+        if job_control {
+            terminal.send(b"\x1a"); // Real terminal Ctrl-Z, not kill(Cargo, ...).
+            terminal.expect("Stopped");
+            terminal.expect("READY-SHELL> ");
+            terminal.send(b"bg\n");
+            // Reading stdin in the background must stop the job again.
+            terminal.expect("Stopped");
+            assert!(!p.root().join("control/input").exists());
+            terminal.send(b"fg\n");
+        }
+        terminal.send(b"hello\n");
+        terminal.marker("input");
+        fs::write(p.root().join("control/release-build"), "yes").unwrap();
+        if job_control {
+            // `fg` is a new shell command, so report its status explicitly.
+            terminal.expect("READY-SHELL> ");
+            terminal.send(b"printf '\\nREADY-STATUS=%s\\n' \"$?\"\n");
+        }
+        terminal.finish(0);
+        assert_run(&p, if enabled { "during" } else { "after" });
+        assert!(p.root().join("control/z-ran").exists());
+    }
+}
+
+#[cargo_test]
+#[cfg(any(target_os = "linux", target_os = "macos"))]
+fn terminal_cancellation_restores_the_shell_and_stops_descendants() {
+    let wrapper = wrapper();
+    let p = fixture();
+    seed(&p, &wrapper);
+    for (revision, mode) in [
+        "terminal-interrupt",
+        "terminal-ignore-int",
+        "terminal-finished-build",
+        "terminal-build-failure",
+    ]
+    .iter()
+    .enumerate()
+    {
+        change(&p, revision);
+        let mut cmd = command(&p, &wrapper, mode);
+        cmd.arg("--").arg("selected");
+        let mut terminal = TerminalSession::new(&p, &mut cmd);
+        terminal.start(&mut cmd);
+        terminal.marker("active");
+        terminal.marker("slow-active");
+        assert_run(&p, "during");
+        if matches!(*mode, "terminal-finished-build" | "terminal-build-failure") {
+            fs::write(p.root().join("control/release-build"), "yes").unwrap();
+        }
+        if *mode != "terminal-build-failure" {
+            if *mode == "terminal-finished-build" {
+                terminal.expect("Finished");
+            }
+            terminal.send(b"\x03"); // Ctrl-C goes to the test's foreground group.
+            // Bash aborts the rest of an interrupted command line, including
+            // its status printf. Read the preserved status at the next prompt.
+            terminal.expect("READY-SHELL> ");
+            terminal.send(b"printf '\\nREADY-STATUS=%s\\n' \"$?\"\n");
+        }
+        terminal.finish(if *mode == "terminal-build-failure" {
+            101
+        } else {
+            130
+        });
+        #[cfg(target_os = "linux")]
+        assert_process_tree_stopped(&p);
+    }
 }
