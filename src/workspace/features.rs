@@ -148,7 +148,7 @@ pub enum OhmLinker {
     Lld,
 }
 
-/// Procedural-macro policy for registry sharing and workspace snapshot imports.
+/// Procedural-macro policy for registry sharing and workspace artifact reuse.
 #[derive(Clone, Copy, Debug, Default, Deserialize, Eq, Hash, PartialEq)]
 #[serde(rename_all = "kebab-case")]
 pub enum OhmProcMacroTrust {
@@ -156,7 +156,8 @@ pub enum OhmProcMacroTrust {
     #[default]
     Audited,
     /// Trust every authenticated crates.io macro, even when expansion observes untracked inputs.
-    /// Also allow local procedural-macro outputs when importing a workspace snapshot.
+    /// Also allow local procedural-macro outputs when importing a workspace snapshot
+    /// or reusing built workspace dependencies during checks.
     ///
     /// This explicit opt-in is potentially unsound: macros can inspect files, environment
     /// variables, randomness, or emit observable output without recording those dependencies.
@@ -965,9 +966,8 @@ unstable_cli_options!(
     ohm_focused_tests: bool = ("Compile only an explicitly selected exact library test"),
     ohm_linker: Option<OhmLinker> = ("Select a bundled linker for native Linux x86-64 builds: wild or lld"),
     ohm_native_tool_trust: OhmNativeToolTrust = ("Set native-tool trust for shared registry artifacts: strict (default), build-scripts, or all (potentially unsound)"),
-    ohm_proc_macro_trust: OhmProcMacroTrust = ("Set procedural-macro trust for shared registry artifacts and workspace snapshots: audited (default) or all (potentially unsound)"),
+    ohm_proc_macro_trust: OhmProcMacroTrust = ("Set procedural-macro trust for registry sharing and workspace artifact reuse: audited (default) or all (potentially unsound)"),
     ohm_reuse_built_deps: bool = ("Reuse already-built registry dependencies when checking a package"),
-    ohm_reuse_local_macros: bool = ("Trust workspace procedural macros' untracked inputs when reusing built dependencies (potentially unsound)"),
     ohm_shared_registry_cache: bool = ("Share deterministic registry artifacts across isolated workspaces without global compiler wrappers"),
     ohm_shared_stages: Option<bool> = ("Reuse compatible frontend queries between check and build (enabled by Ohm defaults)"),
     ohm_thinlto_cache: Option<bool> = ("Cache native ThinLTO objects in the build directory (enabled by Ohm defaults)"),
@@ -1627,7 +1627,6 @@ impl CliUnstable {
                 self.ohm_clippy_seed_isolation = Some(parse_bool(k, v)?);
             }
             "ohm-reuse-built-deps" => self.ohm_reuse_built_deps = parse_empty(k, v)?,
-            "ohm-reuse-local-macros" => self.ohm_reuse_local_macros = parse_bool(k, v)?,
             "ohm-shared-registry-cache" => self.ohm_shared_registry_cache = parse_empty(k, v)?,
             "ohm-worktree-seeds" => self.ohm_worktree_seeds = Some(parse_bool(k, v)?),
             "panic-abort-tests" => self.panic_abort_tests = parse_empty(k, v)?,

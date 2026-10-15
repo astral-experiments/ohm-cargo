@@ -1716,8 +1716,8 @@ fn ohm_reuses_fresh_built_workspace_members_during_checks() {
 fn ohm_workspace_macro_reuse_validates_owned_sources() {
     let project = ohm_workspace_macro_project();
     let build = "-Zohm-reuse-built-deps build -p application";
-    let check = "-Zohm-reuse-built-deps -Zohm-reuse-local-macros check -p application -v";
-    let flags = &["ohm-reuse-built-deps", "ohm-reuse-local-macros"];
+    let check = "-Zohm-reuse-built-deps check -p application -v";
+    let flags = &["ohm-reuse-built-deps", "ohm-proc-macro-trust"];
 
     project
         .cargo(build)
@@ -1731,6 +1731,7 @@ fn ohm_workspace_macro_reuse_validates_owned_sources() {
     project
         .cargo(check)
         .masquerade_as_nightly_cargo(flags)
+        .env("CARGO_UNSTABLE_OHM_PROC_MACRO_TRUST", "all")
         .with_stderr_contains("[FRESH] local v1.0.0 ([ROOT]/foo/local)")
         .with_stderr_does_not_contain("[CHECKING] local v1.0.0 ([ROOT]/foo/local)")
         .run();
@@ -1743,6 +1744,7 @@ fn ohm_workspace_macro_reuse_validates_owned_sources() {
     project
         .cargo(check)
         .masquerade_as_nightly_cargo(flags)
+        .env("CARGO_UNSTABLE_OHM_PROC_MACRO_TRUST", "all")
         .with_status(101)
         .with_stderr_contains("[ERROR] helper changed")
         .run();
@@ -1759,6 +1761,7 @@ fn ohm_workspace_macro_reuse_validates_owned_sources() {
     project
         .cargo(check)
         .masquerade_as_nightly_cargo(flags)
+        .env("CARGO_UNSTABLE_OHM_PROC_MACRO_TRUST", "all")
         .with_status(101)
         .with_stderr_contains("[ERROR] macro changed")
         .run();
@@ -1773,8 +1776,8 @@ fn ohm_workspace_macro_reuse_rejects_local_build_scripts() {
         .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
         .run();
     project
-        .cargo("-Zohm-reuse-built-deps -Zohm-reuse-local-macros check -p application -v")
-        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps", "ohm-reuse-local-macros"])
+        .cargo("-Zohm-reuse-built-deps -Zohm-proc-macro-trust=all check -p application -v")
+        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps", "ohm-proc-macro-trust"])
         .with_stderr_contains("[CHECKING] local v1.0.0 ([ROOT]/foo/local)")
         .run();
 }
@@ -1791,8 +1794,8 @@ fn ohm_workspace_macro_reuse_rejects_nonmember_helpers() {
         .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
         .run();
     project
-        .cargo("-Zohm-reuse-built-deps -Zohm-reuse-local-macros check -p application -v")
-        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps", "ohm-reuse-local-macros"])
+        .cargo("-Zohm-reuse-built-deps -Zohm-proc-macro-trust=all check -p application -v")
+        .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps", "ohm-proc-macro-trust"])
         .with_stderr_contains("[CHECKING] local v1.0.0 ([ROOT]/foo/local)")
         .run();
 }

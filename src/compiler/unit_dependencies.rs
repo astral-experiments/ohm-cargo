@@ -1257,14 +1257,14 @@ impl<'a, 'gctx> State<'a, 'gctx> {
             // Workspace sources can change, so they are eligible only when their
             // exact build fingerprint is revalidated under the workspace lock.
             // Local build scripts and arbitrary path dependencies remain ineligible. The
-            // separate workspace-macro opt-in also trusts owned ordinary libraries executing
+            // `all` macro trust policy also trusts owned ordinary libraries executing
             // inside that macro, but cannot widen the trust boundary of a registry macro.
             if !self.ws.is_member_id(package_id)
                 || !unit.target.is_lib()
                 || macro_runtime == MacroRuntime::Registry
                 || (unit.target.for_host()
                     && !(unit.target.proc_macro()
-                        && self.gctx.cli_unstable().ohm_reuse_local_macros))
+                        && self.gctx.cli_unstable().ohm_proc_macro_trust == OhmProcMacroTrust::All))
             {
                 return false;
             }
@@ -1298,9 +1298,9 @@ impl<'a, 'gctx> State<'a, 'gctx> {
         // Stable procedural macros can inspect arbitrary environment variables
         // and external files without recording either in rustc dependency
         // information. By default, reusing their expanded consumers requires an
-        // explicitly audited, immutable producer. The existing explicit `all`
-        // policy also accepts authenticated crates.io macros, but is potentially
-        // unsound. Other macro closures must run the ordinary check compiler
+        // explicitly audited, immutable producer. The explicit `all` policy also
+        // accepts authenticated crates.io and workspace macros, but is potentially
+        // unsound. Untrusted macro closures must run the ordinary check compiler
         // regardless of their existing artifacts.
         // A macro's ordinary library dependencies execute inside its compiler
         // process too. Authenticating only the macro package would let an
