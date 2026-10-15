@@ -149,17 +149,8 @@ impl ReadyTests {
             .concise(|shell| shell.status("Running", &display))?;
         gctx.shell()
             .verbose(|shell| shell.status("Running", &cmd))?;
-        let mut command = cmd.build_command();
-        let Ok(mut group) = ProcessGroup::new(&self.signals) else {
-            // Terminal setup failed before any test could execute.
-            self.stopped = true;
-            self.signals.check();
-            return Ok(());
-        };
-        group.configure(&mut command);
-        match command.spawn() {
-            Ok(child) => {
-                group.register(child.id());
+        match ProcessGroup::spawn(&self.signals, &mut cmd.build_command()) {
+            Ok((child, group)) => {
                 self.active = Some(ActiveTest {
                     child,
                     cmd,
@@ -167,13 +158,13 @@ impl ReadyTests {
                     reaped: false,
                     group,
                 });
-                self.signals.check();
             }
             Err(_) => {
                 // No test executed: let the ordinary path retry after the build.
                 self.stopped = true;
             }
         }
+        self.signals.check();
         Ok(())
     }
 
@@ -197,11 +188,11 @@ impl ReadyTests {
     /// Finish only the active binary after build locks have been released. Tests
     /// not yet started remain in Compilation.tests and use the ordinary runner.
     pub(crate) fn finish(&mut self) -> CargoResult<Vec<(Unit, CargoResult<()>)>> {
-        while self.active.is_some() {
+        while let Some(active) = &mut self.active {
             // Keep servicing terminal suspend/resume after compilation ends.
             // A blocking wait would never resume a test stopped by Ctrl-Z.
             self.signals.check();
-            if let Some(status) = self.active.as_mut().unwrap().child.try_wait()? {
+            if let Some(status) = active.child.try_wait()? {
                 self.complete(status);
             } else {
                 std::thread::sleep(std::time::Duration::from_millis(10));

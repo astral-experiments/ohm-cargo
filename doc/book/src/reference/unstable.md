@@ -2134,6 +2134,8 @@ Tests may run in a different order and produce side effects before a later build
 failure; those side effects cannot be undone. Fail-fast stops further tests,
 while compilation already in progress finishes. `--no-fail-fast` continues
 running the remaining tests and preserves their failure status.
+Overlap can be slower when tests compete with compilation for CPU, memory, or
+disk bandwidth, or when little compilation remains to overlap.
 
 ## ohm-linker
 
