@@ -4,7 +4,7 @@ use crate::prelude::*;
 use cargo_test_support::{Execs, Project, basic_manifest, project, rustc_host, rustc_host_env};
 use std::fs;
 use std::path::{Path, PathBuf};
-#[cfg(any(target_os = "linux", target_os = "macos"))]
+#[cfg(target_os = "linux")]
 use std::process::Stdio;
 #[cfg(any(target_os = "linux", target_os = "macos"))]
 use std::time::{Duration, Instant};
@@ -429,7 +429,7 @@ impl TerminalSession {
         // is already stdin; the shell starts a new session with a controlling tty.
         unsafe {
             shell.pre_exec(|| {
-                if libc::setsid() < 0 || libc::ioctl(0, libc::TIOCSCTTY, 0) < 0 {
+                if libc::setsid() < 0 || libc::ioctl(0, libc::TIOCSCTTY as _, 0) < 0 {
                     return Err(std::io::Error::last_os_error());
                 }
                 Ok(())
