@@ -298,19 +298,24 @@ struct Terminal(File);
 #[cfg(unix)]
 impl Terminal {
     fn open() -> CargoResult<Option<Self>> {
-        let file = match File::open("/dev/tty") {
-            Ok(file) => file,
-            Err(error) => {
-                anyhow::ensure!(
-                    !std::io::stdin().is_terminal()
-                        && !std::io::stdout().is_terminal()
-                        && !std::io::stderr().is_terminal(),
-                    "terminal has no accessible controlling tty: {error}"
-                );
-                return Ok(None);
-            }
-        };
-        let terminal = Self(file);
+        let streams = [
+            std::io::stdin().is_terminal(),
+            std::io::stdout().is_terminal(),
+            std::io::stderr().is_terminal(),
+        ];
+        if streams.iter().all(|terminal| !terminal) {
+            return Ok(None);
+        }
+        // A pipeline's pager or a wrapper may also need foreground input. Only
+        // take the terminal from a direct Cargo job with terminal stdio; otherwise
+        // keep the shell's shared process group and ordinary test execution.
+        // SAFETY: getpid and getpgrp have no preconditions.
+        anyhow::ensure!(
+            streams.iter().all(|terminal| *terminal)
+                && unsafe { libc::getpid() == libc::getpgrp() },
+            "shared terminal job requires ordinary test execution"
+        );
+        let terminal = Self(File::open("/dev/tty")?);
         terminal.check()?;
         Ok(Some(terminal))
     }
