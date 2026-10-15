@@ -462,11 +462,7 @@ impl TerminalSession {
         terminal
     }
 
-    fn start(&mut self, cmd: &mut Execs) {
-        self.start_with_pipeline(cmd, None);
-    }
-
-    fn start_with_pipeline(&mut self, cmd: &mut Execs, pipeline: Option<&str>) {
+    fn start(&mut self, cmd: &mut Execs, pipeline: Option<&str>) {
         fn quote(value: &std::ffi::OsStr) -> String {
             format!("'{}'", value.to_str().unwrap().replace('\'', "'\\''"))
         }
@@ -607,14 +603,10 @@ fn terminal_input_job_control_and_opt_out() {
             terminal.send(b"stty tostop\n");
             terminal.expect("READY-SHELL> ");
         }
-        if *case == "pipeline" {
-            terminal.start_with_pipeline(
-                &mut cmd,
-                Some(r#"sh -c 'while [ ! -f "$READY_CONTROL/active" ]; do sleep 0.01; done; IFS= read -r input </dev/tty; printf "%s\n" "$input" > "$READY_CONTROL/input-tmp"; mv "$READY_CONTROL/input-tmp" "$READY_CONTROL/input"; cat'"#),
-            );
-        } else {
-            terminal.start(&mut cmd);
-        }
+        let pipeline = (*case == "pipeline").then_some(
+            r#"sh -c 'while [ ! -f "$READY_CONTROL/active" ]; do sleep 0.01; done; IFS= read -r input </dev/tty; printf "%s\n" "$input" > "$READY_CONTROL/input-tmp"; mv "$READY_CONTROL/input-tmp" "$READY_CONTROL/input"; cat'"#,
+        );
+        terminal.start(&mut cmd, pipeline);
         terminal.marker("active");
         assert_run(&p, if enabled { "during" } else { "after" });
         if *case == "job-control-finished-build" {
@@ -664,7 +656,7 @@ fn terminal_cancellation_restores_the_shell_and_stops_descendants() {
         let mut cmd = command(&p, &wrapper, mode);
         cmd.arg("--").arg("selected");
         let mut terminal = TerminalSession::new(&p, &mut cmd);
-        terminal.start(&mut cmd);
+        terminal.start(&mut cmd, None);
         terminal.marker("active");
         terminal.marker("slow-active");
         assert_run(&p, "during");
