@@ -668,10 +668,14 @@ fn terminal_cancellation_restores_the_shell_and_stops_descendants() {
                 terminal.expect("Finished");
             }
             terminal.send(b"\x03"); // Ctrl-C goes to the test's foreground group.
-            // Bash aborts the rest of an interrupted command line, including
-            // its status printf. Read the preserved status at the next prompt.
+            // Bash may skip the trailing status printf after an interruption.
+            // Keep a status it already printed, or query it at the next prompt.
+            let status_cursor = terminal.cursor;
             terminal.expect("READY-SHELL> ");
-            terminal.send(b"printf '\\nREADY-STATUS=%s\\n' \"$?\"\n");
+            if !terminal.output[status_cursor..terminal.cursor].contains("READY-STATUS=130\r\n") {
+                terminal.send(b"printf '\\nREADY-STATUS=%s\\n' \"$?\"\n");
+            }
+            terminal.cursor = status_cursor;
         }
         terminal.finish(if *mode == "terminal-build-failure" {
             101
