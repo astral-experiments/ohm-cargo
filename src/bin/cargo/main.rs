@@ -325,6 +325,12 @@ fn execute_subcommand(
             if enabled { "yes" } else { "no" },
         );
     }
+    if let Some(enabled) = gctx.cli_unstable().ohm_ready_tests {
+        cmd.env(
+            cargo::CARGO_INHERITED_OHM_READY_TESTS_ENV,
+            if enabled { "yes" } else { "no" },
+        );
+    }
     if let Some(enabled) = gctx.cli_unstable().headstart {
         cmd.env(
             cargo::CARGO_INHERITED_HEADSTART_ENV,
