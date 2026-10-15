@@ -2155,6 +2155,10 @@ ordinary metadata checks. This reuses existing same-workspace results under
 Cargo's normal build-script freshness rules and requires no additional trust
 setting.
 
+These reuse rules also apply when a binary, test, example, or benchmark depends
+on its own package's library. An explicit `cargo check --lib` keeps its normal
+check behavior.
+
 The separate `CARGO_UNSTABLE_OHM_NATIVE_TOOL_TRUST` policy controls sharing of
 authenticated registry build scripts and native helpers; macro trust does not
 change that policy.
