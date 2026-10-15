@@ -50,6 +50,23 @@ paths apply normal incremental validation to changed inputs. Each incremental
 session retains at most one checkpoint per stage, removed with the normal build
 cache. This uses additional cache space.
 
+## Reusing native integration tests during checks
+
+Ohm defaults let `cargo check --test <name>` reuse a compatible native integration-test
+compilation. The check replays its warnings and reports ordinary metadata-only
+artifacts. It does not run the test executable.
+
+Reuse requires a standard test harness, a matching debug profile, fresh native
+artifacts and build-script execution records, and authenticated compiler diagnostics.
+The existing procedural-macro trust policy still applies. Missing or stale records,
+compiler wrappers, and unsupported configurations fall back to ordinary checking;
+that fallback does not build the package binaries required by native tests.
+Explicit compiler-output options and user-supplied unstable Rust flags also use
+ordinary checking.
+
+Older native builds without a diagnostic record cannot supply this reuse. Use
+`-Zohm-defaults=no` to disable the automatic optimization.
+
 ## Early integration-test compilation
 
 Ohm defaults start supported first native integration-test compilations alongside

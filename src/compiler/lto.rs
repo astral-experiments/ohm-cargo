@@ -45,7 +45,7 @@ pub enum Lto {
 
 pub fn generate(bcx: &BuildContext<'_, '_>) -> CargoResult<HashMap<Unit, Lto>> {
     let mut map = HashMap::default();
-    for unit in bcx.roots.iter() {
+    for unit in bcx.roots.iter().chain(bcx.test_check_candidates.values()) {
         let root_lto = match unit.profile.lto {
             // LTO not requested, no need for bitcode.
             profiles::Lto::Bool(false) => Lto::OnlyObject,
