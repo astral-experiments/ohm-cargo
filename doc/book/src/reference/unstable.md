@@ -2130,6 +2130,17 @@ such libraries and the workspace-owned helper libraries used by their macros.
 The built-dependency reuse feature must also be active, as it is with Ohm
 defaults. Pass `-Zohm-reuse-local-macros=no` to disable the opt-in.
 
+The same option is available as
+`CARGO_UNSTABLE_OHM_REUSE_LOCAL_MACROS=true` or
+`[unstable] ohm-reuse-local-macros = true`. An explicit `-Z` value overrides
+environment and configuration values.
+
+This is separate from `CARGO_UNSTABLE_OHM_PROC_MACRO_TRUST=all`, which controls
+authenticated registry-macro reuse and allows importing worktree snapshots
+that contain local-macro outputs. That setting does not enable local-macro
+build-to-check reuse. This option leaves registry-macro trust and worktree
+snapshot import policy unchanged.
+
 This trusts workspace macros and their helpers not to read untracked external
 files or environment variables. If that assumption is wrong, a check can reuse
 stale generated code. Cargo still validates normal fingerprints, artifacts,
