@@ -2275,7 +2275,7 @@ fn ohm_test_target_reuse_does_not_revive_old_check_fingerprints() {
     assert_ohm_metadata_only_check(&output, "integration");
 }
 
-#[cargo_test]
+#[cargo_test(nightly, reason = "uses compiler path remapping and checksum tracking")]
 fn ohm_test_target_reuse_with_shared_build_directories() {
     let project = ohm_own_library_project();
     let flags = &[
