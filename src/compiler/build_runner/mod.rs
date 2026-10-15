@@ -375,6 +375,10 @@ pub struct BuildRunner<'a, 'gctx> {
     primary_packages: HashSet<PackageId>,
     /// Requested check units whose metadata is not consumed by another unit.
     terminal_check_units: HashSet<Unit>,
+    /// Units reachable from the requested roots, excluding validation-only units.
+    execution_units: Option<HashSet<Unit>>,
+    /// Checked test roots backed by a validated successful native compilation.
+    reused_test_checks: HashMap<Unit, Unit>,
     /// Registry units that actually occupy a metadata-only check dependency
     /// edge after being promoted to an already-built library.
     reused_registry_units: HashSet<Unit>,
@@ -437,6 +441,16 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
             }
         };
 
+        let execution_units = (!bcx.test_check_candidates.is_empty()).then(|| {
+            let mut units = HashSet::default();
+            let mut pending = bcx.roots.clone();
+            while let Some(unit) = pending.pop() {
+                if units.insert(unit.clone()) {
+                    pending.extend(bcx.unit_graph[&unit].iter().map(|dep| dep.unit.clone()));
+                }
+            }
+            units
+        });
         let mut terminal_check_units = bcx
             .roots
             .iter()
@@ -449,6 +463,12 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
             && !bcx.gctx.cli_unstable().bindeps
             && matches!(bcx.build_config.intent, UserIntent::Check { .. });
         for (parent, dependencies) in &bcx.unit_graph {
+            if execution_units
+                .as_ref()
+                .is_some_and(|units| !units.contains(parent))
+            {
+                continue;
+            }
             for dependency in dependencies {
                 terminal_check_units.remove(&dependency.unit);
                 if reuse_built_registry_dependencies
@@ -499,6 +519,8 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
             jobserver,
             primary_packages: HashSet::default(),
             terminal_check_units,
+            execution_units,
+            reused_test_checks: HashMap::default(),
             reused_registry_units,
             object_required_registry_units,
             compiler_driver_identity: OnceLock::new(),
@@ -782,6 +804,7 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
             }
             .into());
         }
+        self.validate_test_check_reuse()?;
         self.check_collisions()?;
         self.compute_metadata_for_doc_units();
 
@@ -931,7 +954,14 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
             .unit_graph
             .keys()
             // Doctests run after compilation and deliberately have no fingerprint.
-            .filter(|unit| !unit.mode.is_doc_test() && self.files().is_shared_registry_unit(unit))
+            .filter(|unit| {
+                !unit.mode.is_doc_test()
+                    && self
+                        .execution_units
+                        .as_ref()
+                        .is_none_or(|units| units.contains(*unit))
+                    && self.files().is_shared_registry_unit(unit)
+            })
             .cloned()
             .collect::<Vec<_>>();
         let mut needed = HashSet::default();
@@ -1512,29 +1542,9 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
             .iter()
             .filter(|unit| Self::is_promotable_registry_dependency(self.bcx, unit))
         {
-            let messages_available = std::fs::read(self.registry_message_provenance_path(unit))
-                .ok()
-                .and_then(|contents| {
-                    serde_json::from_slice::<RegistryMessageProvenance>(&contents).ok()
-                })
-                .is_some_and(|provenance| {
-                    if provenance.version != expected_provenance.version
-                        || provenance.compiler_context != expected_provenance.compiler_context
-                        || provenance.compiler_driver != expected_provenance.compiler_driver
-                        || provenance.effective_policy_context
-                            != expected_provenance.effective_policy_context
-                        || provenance.loader_injected
-                    {
-                        return false;
-                    }
-
-                    compiler_search_directories
-                        .extend(provenance.compiler_search_directories.iter().cloned());
-
-                    let cached_messages = self.files().message_cache_path(unit);
-                    provenance.messages_match(&cached_messages)
-                });
-            if !messages_available {
+            if let Some(provenance) = self.matching_message_provenance(unit, &expected_provenance) {
+                compiler_search_directories.extend(provenance.compiler_search_directories);
+            } else {
                 stale_units.insert(unit.clone());
             }
         }
@@ -1625,6 +1635,186 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
             .filter(|unit| self.reused_registry_units.contains(unit))
             .map(|unit| unit.pkg.package_id())
             .collect())
+    }
+
+    /// Authenticates the compiler context and the exact cached diagnostics.
+    fn matching_message_provenance(
+        &self,
+        unit: &Unit,
+        expected: &RegistryMessageProvenance,
+    ) -> Option<RegistryMessageProvenance> {
+        let bytes = std::fs::read(self.registry_message_provenance_path(unit)).ok()?;
+        let provenance: RegistryMessageProvenance = serde_json::from_slice(&bytes).ok()?;
+        (provenance.version == expected.version
+            && provenance.compiler_context == expected.compiler_context
+            && provenance.compiler_driver == expected.compiler_driver
+            && provenance.effective_policy_context == expected.effective_policy_context
+            && !provenance.loader_injected
+            && provenance.messages_match(&self.files().message_cache_path(unit)))
+        .then_some(provenance)
+    }
+
+    /// Validates native tests without scheduling any of their additional units.
+    /// A missing proof simply leaves the requested metadata-only job unchanged.
+    fn validate_test_check_reuse(&mut self) -> CargoResult<()> {
+        if self.bcx.test_check_candidates.is_empty() {
+            return Ok(());
+        }
+        let Some(expected) = self.registry_message_provenance()? else {
+            return Ok(());
+        };
+        let candidates = self
+            .bcx
+            .test_check_candidates
+            .iter()
+            .map(|(check, native)| (check.clone(), native.clone()))
+            .collect::<Vec<_>>();
+        for (check, native) in candidates {
+            if self.bcx.gctx.cli_unstable().fine_grain_locking {
+                self.lock_manager.lock_shared(self, &check)?;
+            }
+            if fingerprint::existing_unit_is_fresh(self, &check)?
+                || self.test_check_has_unsupported_flags(&check)
+            {
+                continue;
+            }
+            // Reusing a native root must not hide a dependency that still needs
+            // checking, or substitute a different feature/profile configuration.
+            if !self
+                .unit_deps(&check)
+                .iter()
+                .all(|dep| self.unit_deps(&native).contains(dep))
+            {
+                continue;
+            }
+            let mut closure = HashSet::default();
+            let mut pending = vec![native.clone()];
+            while let Some(unit) = pending.pop() {
+                if closure.insert(unit.clone()) {
+                    pending.extend(self.unit_deps(&unit).iter().map(|dep| dep.unit.clone()));
+                }
+            }
+            if self.bcx.gctx.cli_unstable().fine_grain_locking {
+                for unit in &closure {
+                    self.lock_manager.lock_shared(self, unit)?;
+                }
+            }
+            if closure
+                .iter()
+                .any(|unit| self.unit_uses_custom_codegen_backend(unit))
+            {
+                continue;
+            }
+            let Some(provenance) = self.matching_message_provenance(&native, &expected) else {
+                continue;
+            };
+            if !provenance
+                .compiler_search_directories
+                .iter()
+                .all(|directory| {
+                    compiler_driver_search_directory_is_unshadowed(
+                        &expected.compiler_driver.path,
+                        directory,
+                    )
+                })
+                || !self
+                    .outputs(&native)?
+                    .iter()
+                    .any(|output| output.flavor == FileFlavor::Normal && output.path.is_file())
+                || !fingerprint::existing_unit_is_fresh(self, &native)?
+            {
+                continue;
+            }
+            let mut fresh_scripts = true;
+            for script in closure
+                .iter()
+                .filter(|unit| unit.mode.is_run_custom_build())
+            {
+                if !fingerprint::existing_unit_is_fresh(self, script)? {
+                    fresh_scripts = false;
+                    break;
+                }
+            }
+            let outputs = self.outputs(&check)?;
+            if fresh_scripts
+                && !outputs.is_empty()
+                && outputs.iter().all(|output| {
+                    output
+                        .path
+                        .extension()
+                        .and_then(|extension| extension.to_str())
+                        == Some("rmeta")
+                })
+            {
+                self.reused_test_checks.insert(check, native);
+            }
+        }
+        Ok(())
+    }
+
+    /// Rejects requested compiler outputs and unaudited user-supplied unstable options.
+    /// Native artifacts cannot provide check-specific assembly, IR, or tracing
+    /// output. Ordinary checking must handle these options itself.
+    fn test_check_has_unsupported_flags(&self, unit: &Unit) -> bool {
+        let gctx = self.bcx.gctx;
+        let mut rustflags = super::unit_rustflags_without_ohm_defaults(
+            gctx,
+            self.rustflags_for_cache_admission(unit),
+        );
+        // Remove only Cargo's ordered prefixes. Explicit copies of these flags
+        // remain subject to the same policy as any other user-supplied option.
+        if gctx.cli_unstable().headstart()
+            && rustflags
+                .first()
+                .is_some_and(|flag| flag == super::OHM_EARLY_METADATA_RUSTFLAG)
+        {
+            rustflags = &rustflags[1..];
+        }
+        let extra_args = self
+            .bcx
+            .extra_args_for(unit)
+            .map(Vec::as_slice)
+            .unwrap_or_default();
+        let mut flags = unit
+            .pkg
+            .manifest()
+            .lint_rustflags()
+            .iter()
+            .map(String::as_str)
+            .chain(unit.profile.rustflags.iter().map(|flag| flag.as_str()))
+            .chain(extra_args.iter().map(String::as_str))
+            .chain(rustflags.iter().map(String::as_str));
+        while let Some(flag) = flags.next() {
+            if flag.starts_with("-Z")
+                || flag.starts_with("-o")
+                || matches!(
+                    flag.split('=').next(),
+                    Some("--emit" | "--print" | "--out-dir")
+                )
+            {
+                return true;
+            }
+            let codegen = if matches!(flag, "-C" | "--codegen") {
+                flags.next()
+            } else {
+                flag.strip_prefix("-C")
+                    .or_else(|| flag.strip_prefix("--codegen="))
+            };
+            if codegen.is_some_and(|option| {
+                matches!(
+                    option.split('=').next(),
+                    Some("save-temps" | "save_temps" | "llvm-args" | "llvm_args")
+                )
+            }) {
+                return true;
+            }
+        }
+        false
+    }
+
+    /// Returns the native compilation supplying this terminal test check.
+    pub(crate) fn reused_test_check(&self, unit: &Unit) -> Option<&Unit> {
+        self.reused_test_checks.get(unit)
     }
 
     /// External backends are compiler plugins, and execute even for metadata

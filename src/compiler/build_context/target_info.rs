@@ -12,6 +12,7 @@ use crate::compiler::CompileMode;
 use crate::compiler::CompileTarget;
 use crate::compiler::CrateType;
 use crate::compiler::OHM_DEFAULT_RUSTFLAGS;
+use crate::compiler::OHM_EARLY_METADATA_RUSTFLAG;
 use crate::compiler::apply_env_config;
 use crate::context::{GlobalContext, StringList, TargetConfig};
 use crate::util::interning::InternedString;
@@ -830,7 +831,7 @@ fn with_ohm_default_rustflags(
     mut rustflags: Vec<String>,
 ) -> Vec<String> {
     if matches!(flags, Flags::Rust) && gctx.cli_unstable().headstart() {
-        rustflags.insert(0, "-Zohm-early-metadata".to_owned());
+        rustflags.insert(0, OHM_EARLY_METADATA_RUSTFLAG.to_owned());
     }
     // Keep defaults first so per-unit flag selection can distinguish them from
     // explicit overrides with `unit_rustflags_without_ohm_defaults`.

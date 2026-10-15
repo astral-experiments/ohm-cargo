@@ -138,6 +138,22 @@ fn assert_ohm_reused_library(output: &cargo_test_support::RawOutput, name: &str)
     );
 }
 
+fn assert_ohm_reused_test(output: &cargo_test_support::RawOutput, name: &str) {
+    let artifact = std::str::from_utf8(&output.stdout)
+        .unwrap()
+        .lines()
+        .map(|line| serde_json::from_str::<serde_json::Value>(line).unwrap())
+        .find(|event| event["reason"] == "compiler-artifact" && event["target"]["name"] == name)
+        .expect("test artifact");
+    assert_eq!(artifact["fresh"], true, "test must be reused: {artifact}");
+    assert_eq!(artifact["executable"], serde_json::Value::Null);
+    let filenames = artifact["filenames"].as_array().unwrap();
+    assert_eq!(filenames.len(), 1);
+    let path = std::path::Path::new(filenames[0].as_str().unwrap());
+    assert_eq!(path.extension().unwrap(), "rmeta");
+    assert_eq!(path.metadata().unwrap().len(), 0);
+}
+
 fn ohm_workspace_macro_project() -> Project {
     let project = ohm_workspace_project();
     project.change_file(
@@ -1849,6 +1865,441 @@ fn ohm_built_registry_dependency_reuse_preserves_cold_checks() {
 
 "#]])
         .run();
+}
+
+#[cargo_test]
+fn ohm_test_target_reuse_preserves_check_artifacts_and_warnings() {
+    let project = ohm_own_library_project();
+    project.change_file(
+        "tests/integration.rs",
+        "extern crate foo; fn unused_test() {} #[test] fn integration() { panic!(\"do not run\"); }",
+    );
+    project.change_file("src/main.rs", "fn unused_binary() {} fn main() {}");
+    ohm_own_library_cargo(&project, "test --no-run --test integration").run();
+
+    for _ in 0..2 {
+        let output = ohm_own_library_cargo(
+            &project,
+            "check --test integration -v --message-format=json",
+        )
+        .run();
+        let events = std::str::from_utf8(&output.stdout)
+            .unwrap()
+            .lines()
+            .map(|line| serde_json::from_str::<serde_json::Value>(line).unwrap())
+            .collect::<Vec<_>>();
+        let artifact = events
+            .iter()
+            .find(|event| {
+                event["reason"] == "compiler-artifact" && event["target"]["name"] == "integration"
+            })
+            .unwrap();
+        assert_eq!(
+            artifact["fresh"], true,
+            "test compilation must be reused: {artifact}"
+        );
+        assert_eq!(artifact["executable"], serde_json::Value::Null);
+        assert_eq!(artifact["profile"]["test"], true);
+        for filename in artifact["filenames"].as_array().unwrap() {
+            let path = std::path::Path::new(filename.as_str().unwrap());
+            assert_eq!(path.extension().unwrap(), "rmeta");
+            assert_eq!(path.metadata().unwrap().len(), 0);
+        }
+        assert!(
+            !events
+                .iter()
+                .any(|event| event["target"]["kind"] == serde_json::json!(["bin"]))
+        );
+        assert!(
+            std::str::from_utf8(&output.stdout)
+                .unwrap()
+                .contains("function `unused_test` is never used")
+        );
+        assert!(
+            !std::str::from_utf8(&output.stderr)
+                .unwrap()
+                .contains("--crate-name integration")
+        );
+        assert_ohm_reused_library(&output, "foo");
+    }
+}
+
+#[cargo_test]
+fn ohm_test_target_reuse_with_defaults() {
+    if !ohm_compiler_supports_defaults() {
+        return;
+    }
+
+    let project = ohm_own_library_project();
+    for flags in [
+        None,
+        Some("--emit=asm"),
+        Some("-Zthreads=8"),
+        Some("-Zohm-early-metadata"),
+    ] {
+        for command in [
+            "test --no-run --test integration",
+            "check --test integration -v --message-format=json",
+        ] {
+            let mut cargo = project.cargo(command);
+            cargo
+                .masquerade_as_nightly_cargo(&["ohm-defaults"])
+                .env("__CARGO_OHM_DEFAULTS", "yes");
+            if let Some(flags) = flags {
+                cargo.env("RUSTFLAGS", flags);
+            }
+            let output = cargo.run();
+            if command.starts_with("check") {
+                if flags.is_none() {
+                    assert_ohm_reused_test(&output, "integration");
+                } else {
+                    // Explicit flags must survive removal of Cargo's defaults,
+                    // even when their text matches an automatically added flag.
+                    assert_ohm_metadata_only_check(&output, "integration");
+                }
+            }
+        }
+    }
+}
+
+#[cargo_test]
+fn ohm_test_target_reuse_preserves_requested_compiler_outputs() {
+    let project = project()
+        .file("Cargo.toml", &basic_manifest("foo", "0.0.1"))
+        .file("tests/integration.rs", "#[test] fn integration() {}")
+        .build();
+
+    for (flags, extension) in [
+        ("--emit=asm", "s"),
+        ("--emit asm", "s"),
+        ("--emit=llvm-ir", "ll"),
+        ("--emit llvm-ir", "ll"),
+    ] {
+        ohm_own_library_cargo(&project, "test --no-run --test integration")
+            .env("RUSTFLAGS", flags)
+            .run();
+        let output =
+            ohm_own_library_cargo(&project, "check --test integration --message-format=json")
+                .env("RUSTFLAGS", flags)
+                .run();
+        let artifact = std::str::from_utf8(&output.stdout)
+            .unwrap()
+            .lines()
+            .map(|line| serde_json::from_str::<serde_json::Value>(line).unwrap())
+            .find(|event| event["reason"] == "compiler-artifact")
+            .unwrap();
+        assert_eq!(artifact["fresh"], false, "{flags} must run the compiler");
+        let metadata = std::path::Path::new(artifact["filenames"][0].as_str().unwrap());
+        let stem = metadata
+            .file_stem()
+            .unwrap()
+            .to_str()
+            .unwrap()
+            .strip_prefix("lib")
+            .unwrap();
+        assert!(
+            metadata
+                .parent()
+                .unwrap()
+                .join(format!("{stem}.{extension}"))
+                .is_file(),
+            "the check must produce its own requested output for {flags}",
+        );
+    }
+}
+
+#[cargo_test]
+fn ohm_test_target_reuse_rechecks_changed_inputs() {
+    for changed in ["source", "environment", "features", "profile", "rustflags"] {
+        let project = ohm_own_library_project();
+        project.change_file(
+            "Cargo.toml",
+            &format!(
+                "{}\n[features]\nchanged = []\n[profile.test]\ndebug-assertions = {}\n",
+                project.read_file("Cargo.toml"),
+                changed != "profile",
+            ),
+        );
+        project.change_file("tests/integration.rs", if changed == "profile" {
+            "#[cfg(debug_assertions)] compile_error!(\"test profile changed\"); #[test] fn integration() {}"
+        } else {
+            "#[cfg(any(feature = \"changed\", test_changed))] compile_error!(\"test configuration changed\"); const _: [(); 1] = [(); env!(\"OHM_TEST_REUSE_INPUT\").len()]; #[test] fn integration() {}"
+        });
+        ohm_own_library_cargo(&project, "test --no-run --test integration")
+            .env("OHM_TEST_REUSE_INPUT", "a")
+            .run();
+        if changed == "source" {
+            project.change_file(
+                "tests/integration.rs",
+                "compile_error!(\"test source changed\");",
+            );
+        }
+        let command = if changed == "features" {
+            "check --test integration --features changed -v"
+        } else {
+            "check --test integration -v"
+        };
+        let mut check = ohm_own_library_cargo(&project, command);
+        check.env(
+            "OHM_TEST_REUSE_INPUT",
+            if changed == "environment" {
+                "changed"
+            } else {
+                "a"
+            },
+        );
+        if changed == "rustflags" {
+            check.env("RUSTFLAGS", "--cfg test_changed");
+        }
+        let expected = match changed {
+            "source" => "[ERROR] test source changed",
+            "environment" => "error[E0308]: mismatched types",
+            "profile" => "[ERROR] test profile changed",
+            _ => "[ERROR] test configuration changed",
+        };
+        let output = check.with_status(101).with_stderr_contains(expected).run();
+        assert_ohm_metadata_only_check(&output, "integration");
+    }
+}
+
+#[cargo_test]
+fn ohm_test_target_reuse_requires_native_outputs_and_diagnostics() {
+    for missing in ["executable", "provenance", "messages", "corrupt-messages"] {
+        let project = ohm_own_library_project();
+        project.change_file(
+            "tests/integration.rs",
+            "fn unused_test() {} #[test] fn integration() {}",
+        );
+        let native = ohm_own_library_cargo(
+            &project,
+            "test --no-run --test integration --message-format=json",
+        )
+        .run();
+        let path = if missing == "executable" {
+            std::str::from_utf8(&native.stdout)
+                .unwrap()
+                .lines()
+                .map(|line| serde_json::from_str::<serde_json::Value>(line).unwrap())
+                .find(|event| {
+                    event["target"]["name"] == "integration"
+                        && event["reason"] == "compiler-artifact"
+                })
+                .unwrap()["executable"]
+                .as_str()
+                .unwrap()
+                .into()
+        } else {
+            let prefix = if missing == "provenance" {
+                "ohm-message-provenance-"
+            } else {
+                "output-"
+            };
+            let files = project
+                .glob(&format!(
+                    "target/debug/.fingerprint/foo-*/{prefix}test-integration-test-integration"
+                ))
+                .map(Result::unwrap)
+                .collect::<Vec<_>>();
+            assert_eq!(files.len(), 1);
+            files[0].clone()
+        };
+        if missing == "corrupt-messages" {
+            std::fs::write(path, "altered diagnostics\n").unwrap();
+        } else {
+            std::fs::remove_file(path).unwrap();
+        }
+        let output = ohm_own_library_cargo(
+            &project,
+            "check --test integration -v --message-format=json",
+        )
+        .run();
+        assert_ohm_metadata_only_check(&output, "integration");
+        assert_ohm_reused_library(&output, "foo");
+    }
+}
+
+#[cargo_test]
+fn ohm_test_target_reuse_respects_opt_out_and_wrappers() {
+    for setting in ["opt-out", "RUSTC_WRAPPER", "RUSTC_WORKSPACE_WRAPPER"] {
+        let project = ohm_own_library_project();
+        ohm_own_library_cargo(&project, "test --no-run --test integration").run();
+        let reused =
+            ohm_own_library_cargo(&project, "check --test integration --message-format=json").run();
+        assert_ohm_reused_test(&reused, "integration");
+        let output = if setting == "opt-out" {
+            project
+                .cargo("-Zohm-defaults=no check --test integration -v")
+                .masquerade_as_nightly_cargo(&["ohm-defaults"])
+                .run()
+        } else {
+            ohm_own_library_cargo(&project, "check --test integration -v")
+                .env(setting, tools::echo_wrapper())
+                .run()
+        };
+        assert_ohm_metadata_only_check(&output, "integration");
+    }
+}
+
+#[cargo_test]
+fn ohm_test_target_reuse_respects_direct_macro_trust() {
+    let project = project()
+        .file("Cargo.toml", &format!("{}\n[workspace]\nmembers = [\"mac\"]\n[dev-dependencies]\nmac = {{ path = \"mac\" }}\n", basic_manifest("foo", "0.0.1")))
+        .file("tests/integration.rs", "extern crate mac; #[test] fn integration() { mac::value!(); }")
+        .file("mac/Cargo.toml", &format!("{}\n[lib]\nproc-macro = true\n", basic_manifest("mac", "0.0.1")))
+        .file("mac/src/lib.rs", r#"
+            extern crate proc_macro;
+            #[proc_macro]
+            pub fn value(_: proc_macro::TokenStream) -> proc_macro::TokenStream {
+                if std::env::var_os("OHM_TEST_MACRO_INPUT").is_some() {
+                    "compile_error!(\"macro input changed\")"
+                } else { "()" }.parse().unwrap()
+            }
+        "#).build();
+    let flags = &["ohm-reuse-built-deps", "ohm-proc-macro-trust"];
+    project
+        .cargo("-Zohm-reuse-built-deps -Zohm-proc-macro-trust=all test --no-run --test integration")
+        .masquerade_as_nightly_cargo(flags)
+        .env_remove("OHM_TEST_MACRO_INPUT")
+        .run();
+    let reused = project.cargo("-Zohm-reuse-built-deps -Zohm-proc-macro-trust=all check --test integration --message-format=json")
+        .masquerade_as_nightly_cargo(flags).env_remove("OHM_TEST_MACRO_INPUT").run();
+    assert_ohm_reused_test(&reused, "integration");
+    let output = project
+        .cargo("-Zohm-reuse-built-deps -Zohm-proc-macro-trust=audited check --test integration -v")
+        .masquerade_as_nightly_cargo(flags)
+        .env("OHM_TEST_MACRO_INPUT", "changed")
+        .with_status(101)
+        .with_stderr_contains("[ERROR] macro input changed")
+        .run();
+    assert_ohm_metadata_only_check(&output, "integration");
+}
+
+#[cargo_test]
+fn ohm_test_target_reuse_revalidates_direct_build_scripts() {
+    for changed in ["file", "environment"] {
+        let project = project()
+            .file("Cargo.toml", &basic_manifest("foo", "0.0.1"))
+            .file("input", "a")
+            .file("build.rs", r#"
+                fn main() {
+                    println!("cargo:rerun-if-changed=input");
+                    println!("cargo:rerun-if-env-changed=OHM_TEST_SCRIPT_INPUT");
+                    let value = std::env::var("OHM_TEST_SCRIPT_INPUT")
+                        .unwrap_or_else(|_| std::fs::read_to_string("input").unwrap());
+                    println!("cargo:rustc-env=OHM_GENERATED={value}");
+                }
+            "#)
+            .file("tests/integration.rs", "const _: [(); 1] = [(); env!(\"OHM_GENERATED\").len()]; #[test] fn integration() {}")
+            .build();
+        ohm_own_library_cargo(&project, "test --no-run --test integration")
+            .env_remove("OHM_TEST_SCRIPT_INPUT")
+            .run();
+        let reused =
+            ohm_own_library_cargo(&project, "check --test integration --message-format=json")
+                .env_remove("OHM_TEST_SCRIPT_INPUT")
+                .run();
+        assert_ohm_reused_test(&reused, "integration");
+        if changed == "file" {
+            project.change_file("input", "changed");
+        }
+        let mut check = ohm_own_library_cargo(&project, "check --test integration -v");
+        check.env_remove("OHM_TEST_SCRIPT_INPUT");
+        if changed == "environment" {
+            check.env("OHM_TEST_SCRIPT_INPUT", "changed");
+        }
+        let output = check
+            .with_status(101)
+            .with_stderr_contains("error[E0308]: mismatched types")
+            .run();
+        assert_ohm_metadata_only_check(&output, "integration");
+    }
+}
+
+#[cargo_test]
+fn ohm_test_target_reuse_keeps_independent_targets_reusable() {
+    let project = ohm_own_library_project();
+    ohm_own_library_cargo(&project, "test --no-run --test integration").run();
+    project.change_file(
+        "tests/broken.rs",
+        "compile_error!(\"new test must be checked\");",
+    );
+    let output = ohm_own_library_cargo(
+        &project,
+        "check --test integration --test broken --keep-going -v --message-format=json",
+    )
+    .with_stdout_contains("[..]new test must be checked[..]")
+    .with_status(101)
+    .run();
+    assert_ohm_reused_test(&output, "integration");
+    assert_ohm_metadata_only_check(&output, "broken");
+}
+
+#[cargo_test]
+fn ohm_test_target_reuse_does_not_build_package_binaries() {
+    let project = ohm_own_library_project();
+    ohm_own_library_cargo(&project, "test --no-run --test integration").run();
+    project.change_file("src/main.rs", "compile_error!(\"unrequested binary\");");
+    ohm_own_library_cargo(&project, "check --test integration -v")
+        .with_stderr_does_not_contain("unrequested binary")
+        .run();
+}
+
+#[cargo_test]
+fn ohm_test_target_reuse_does_not_revive_old_check_fingerprints() {
+    let project = ohm_own_library_project();
+    ohm_own_library_cargo(&project, "test --no-run --test integration").run();
+    let provenance = project.glob("target/debug/.fingerprint/foo-*/ohm-message-provenance-test-integration-test-integration")
+        .next().unwrap().unwrap();
+    let proof = std::fs::read(&provenance).unwrap();
+    std::fs::remove_file(&provenance).unwrap();
+    let checked =
+        ohm_own_library_cargo(&project, "check --test integration --message-format=json").run();
+    let metadata = std::str::from_utf8(&checked.stdout)
+        .unwrap()
+        .lines()
+        .map(|line| serde_json::from_str::<serde_json::Value>(line).unwrap())
+        .find(|event| {
+            event["reason"] == "compiler-artifact" && event["target"]["name"] == "integration"
+        })
+        .unwrap()["filenames"][0]
+        .as_str()
+        .unwrap()
+        .to_owned();
+    std::fs::write(&provenance, proof).unwrap();
+    std::fs::remove_file(metadata).unwrap();
+    let reused =
+        ohm_own_library_cargo(&project, "check --test integration --message-format=json").run();
+    assert_ohm_reused_test(&reused, "integration");
+    std::fs::remove_file(provenance).unwrap();
+    let output = ohm_own_library_cargo(&project, "check --test integration -v").run();
+    assert_ohm_metadata_only_check(&output, "integration");
+}
+
+#[cargo_test]
+fn ohm_test_target_reuse_with_shared_build_directories() {
+    let project = ohm_own_library_project();
+    let flags = &[
+        "ohm-reuse-built-deps",
+        "build-dir-new-layout",
+        "fine-grain-locking",
+        "ohm-shared-registry-cache",
+        "ohm-worktree-seeds",
+    ];
+    let prefix = "-Zohm-reuse-built-deps -Zbuild-dir-new-layout -Zfine-grain-locking -Zohm-shared-registry-cache -Zohm-worktree-seeds";
+    project
+        .cargo(&format!("{prefix} test --no-run --test integration"))
+        .masquerade_as_nightly_cargo(flags)
+        .env("CARGO_BUILD_BUILD_DIR", project.root().join("build"))
+        .run();
+    let output = project
+        .cargo(&format!(
+            "{prefix} check --test integration -v --message-format=json"
+        ))
+        .masquerade_as_nightly_cargo(flags)
+        .env("CARGO_BUILD_BUILD_DIR", project.root().join("build"))
+        .run();
+    assert_ohm_reused_test(&output, "integration");
+    assert_ohm_reused_library(&output, "foo");
 }
 
 #[cargo_test]
