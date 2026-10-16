@@ -693,7 +693,21 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
         crate::workspace::build_cache_gc_roots::register_root(self.ws.gctx(), &root)?;
         if let Some((compiler, driver)) = &cache.provenance {
             build_cache_gc::record_context(&root, &cache.rustc, compiler.clone(), driver.clone())?;
-            return build_cache_gc::ContextUse::new(&root, &cache.rustc).map(Some);
+            let build_root = self.ws.configured_build_dir();
+            let entries = cache
+                .immutable_units
+                .iter()
+                .filter(|(_, shared)| **shared)
+                .map(|(unit, _)| {
+                    let path = self
+                        .layout(unit.kind)
+                        .build_dir()
+                        .build_unit(&self.pkg_dir(unit));
+                    path.strip_prefix(build_root.as_path_unlocked())
+                        .map(Path::to_path_buf)
+                })
+                .collect::<Result<Vec<_>, _>>()?;
+            return build_cache_gc::ContextUse::new(&root, &cache.rustc, Some(entries)).map(Some);
         }
         Ok(None)
     }

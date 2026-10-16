@@ -15,7 +15,8 @@ pub fn cli() -> Command {
         )
         .after_help(
             "Explicitly reclaims legacy caches, contexts from older Ohm releases or removed \
-             compilers, and build contexts unused for at least one hour, respecting active builds. \
+             compilers, and dependencies or build contexts unused for at least one hour, \
+             respecting active builds. \
              Runs from any directory.\n\n\
              Use `cargo clean` to remove the current project's outputs and private build state.",
         )
