@@ -962,6 +962,7 @@ unstable_cli_options!(
     no_index_update: bool = ("Do not update the registry index even if the cache is outdated"),
     ohm_clippy_seed_isolation: Option<bool> = ("Isolate bundled Clippy outputs from worktree snapshots (automatic when cloning is available)"),
     ohm_defaults: Option<bool> = ("Enable the defaults packaged with Ohm"),
+    ohm_defer_dev_deps: Option<bool> = ("Skip proven-unused dev dependencies in targeted test rebuilds (enabled by Ohm defaults)"),
     ohm_early_tests: Option<bool> = ("Compile eligible integration tests alongside their package library (enabled by Ohm defaults)"),
     ohm_focused_tests: bool = ("Compile only an explicitly selected exact library test"),
     ohm_linker: Option<OhmLinker> = ("Select a bundled linker for native Linux x86-64 builds: wild or lld"),
@@ -1327,6 +1328,12 @@ impl CliUnstable {
         self.ohm_early_tests.unwrap_or_else(|| self.ohm_defaults())
     }
 
+    /// Targeted test builds may omit dependencies their executable does not use.
+    pub fn ohm_defer_dev_deps(&self) -> bool {
+        self.ohm_defer_dev_deps
+            .unwrap_or_else(|| self.ohm_defaults())
+    }
+
     /// Whether supported test binaries may run while other targets compile.
     pub fn ohm_ready_tests(&self) -> bool {
         self.ohm_ready_tests.unwrap_or(false)
@@ -1595,6 +1602,7 @@ impl CliUnstable {
             "no-embed-metadata" => self.no_embed_metadata = Some(parse_bool(k, v)?),
             "no-index-update" => self.no_index_update = parse_empty(k, v)?,
             "ohm-defaults" => self.ohm_defaults = Some(parse_bool(k, v)?),
+            "ohm-defer-dev-deps" => self.ohm_defer_dev_deps = Some(parse_bool(k, v)?),
             "ohm-early-tests" => self.ohm_early_tests = Some(parse_bool(k, v)?),
             "ohm-ready-tests" => self.ohm_ready_tests = Some(parse_bool(k, v)?),
             "ohm-thinlto-cache" => self.ohm_thinlto_cache = Some(parse_bool(k, v)?),

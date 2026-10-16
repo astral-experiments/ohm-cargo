@@ -1244,6 +1244,13 @@ impl GlobalContext {
                     _ => {}
                 }
             }
+            if let Ok(value) = self.get_env(crate::CARGO_INHERITED_OHM_DEFER_DEV_DEPS_ENV) {
+                match value {
+                    "yes" => self.unstable_flags.ohm_defer_dev_deps = Some(true),
+                    "no" => self.unstable_flags.ohm_defer_dev_deps = Some(false),
+                    _ => {}
+                }
+            }
             if let Ok(value) = self.get_env(crate::CARGO_INHERITED_OHM_EARLY_TESTS_ENV) {
                 match value {
                     "yes" => self.unstable_flags.ohm_early_tests = Some(true),

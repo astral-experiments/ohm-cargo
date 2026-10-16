@@ -358,6 +358,7 @@ pub struct BuildRunner<'a, 'gctx> {
     pub(crate) early_test_completions: HashMap<Unit, Arc<super::ohm_early_tests::Completion>>,
     /// Use the same admission decision when preparing work and scheduling it.
     pub(crate) early_test_dependencies: HashMap<Unit, Unit>,
+    pub(crate) deferred_dev_deps: super::ohm_deferred_dev_deps::State,
     /// Cache of file mtimes to reduce filesystem hits.
     pub mtime_cache: HashMap<PathBuf, FileTime>,
     /// Cache of file checksums to reduce filesystem reads.
@@ -514,6 +515,7 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
             fingerprints: HashMap::default(),
             early_test_completions: HashMap::default(),
             early_test_dependencies: HashMap::default(),
+            deferred_dev_deps: super::ohm_deferred_dev_deps::State::default(),
             mtime_cache: HashMap::default(),
             checksum_cache: HashMap::default(),
             compiled: HashSet::default(),
@@ -749,7 +751,16 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
     /// [`ops::cargo_compile`]: crate::ops::cargo_compile
     #[tracing::instrument(skip_all)]
     pub fn compile(self, exec: &Arc<dyn Executor>) -> CargoResult<Compilation<'gctx>> {
-        self.retry_with_shared_cache_write_locks(|runner| runner.compile_inner(exec))
+        let bcx = self.bcx;
+        let retry = self.deferred_dev_deps.retry.clone();
+        let result = self.retry_with_shared_cache_write_locks(|runner| runner.compile_inner(exec));
+        if result.is_err() && retry.load(std::sync::atomic::Ordering::Relaxed) {
+            tracing::info!(target: "cargo::compiler::ohm_deferred_dev_deps", "retrying complete graph");
+            let mut runner = Self::new(bcx)?;
+            runner.deferred_dev_deps.disabled = true;
+            return runner.retry_with_shared_cache_write_locks(|runner| runner.compile_inner(exec));
+        }
+        result
     }
 
     /// Discards locks and observations before reserving any newly discovered shared writers.
@@ -758,6 +769,8 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
         compile: impl Fn(Self) -> CargoResult<T>,
     ) -> CargoResult<T> {
         let bcx = self.bcx;
+        let deferred_disabled = self.deferred_dev_deps.disabled;
+        let deferred_retry = self.deferred_dev_deps.retry.clone();
         let mut exclusive = self.exclusive_shared_cache_units.clone();
         let mut runner = self;
         loop {
@@ -770,6 +783,8 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
                         bail!("shared registry writer reservation did not make progress");
                     }
                     runner = Self::new(bcx)?;
+                    runner.deferred_dev_deps.disabled = deferred_disabled;
+                    runner.deferred_dev_deps.retry = deferred_retry.clone();
                     runner.exclusive_shared_cache_units = exclusive.clone();
                 }
                 result => return result,

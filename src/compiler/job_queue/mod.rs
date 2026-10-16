@@ -447,14 +447,20 @@ impl<'gctx> JobQueue<'gctx> {
         unit: &Unit,
         job: Job,
     ) -> CargoResult<()> {
-        let dependencies = build_runner.unit_deps(unit);
+        let dependencies = build_runner.unit_deps(unit).iter().filter(|dep| {
+            !build_runner
+                .deferred_dev_deps
+                .dependencies
+                .contains(&dep.unit)
+                || !build_runner.bcx.roots.contains(unit)
+        });
         let wait_for_early_cutoff = fingerprint::unit_can_use_early_cutoff(build_runner, unit)
             && build_runner
                 .fingerprints
                 .get(unit)
                 .is_some_and(|fingerprint| fingerprint.is_early_cutoff_candidate());
         let mut queue_deps = dependencies
-            .iter()
+            .clone()
             .filter(|dep| {
                 // Binaries aren't actually needed to *compile* tests, just to run
                 // them, so we don't include this dependency edge in the job graph.
@@ -1124,7 +1130,9 @@ impl<'gctx> DrainState<'gctx> {
         {
             self.handle_error(&mut build_runner.bcx.gctx.shell(), &mut errors, e);
         }
-        if build_runner.bcx.build_config.emit_json() {
+        if build_runner.bcx.build_config.emit_json()
+            && !build_runner.deferred_dev_deps.retry_requested()
+        {
             let mut shell = build_runner.bcx.gctx.shell();
             let msg = machine_message::BuildFinished {
                 success: errors.count == 0,
@@ -1191,6 +1199,10 @@ impl<'gctx> DrainState<'gctx> {
         new_err: impl Into<ErrorToHandle>,
     ) {
         let new_err = new_err.into();
+        if new_err.error.is::<super::ohm_deferred_dev_deps::Retry>() {
+            err_state.count += 1;
+            return;
+        }
         if new_err.print_always || err_state.count == 0 {
             crate::display_error(&new_err.error, shell);
             // Jobs whose dependency failed have no remaining output to report.

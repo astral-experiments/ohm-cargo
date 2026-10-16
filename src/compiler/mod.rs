@@ -43,6 +43,7 @@ pub(crate) mod layout;
 mod links;
 mod locking;
 mod lto;
+mod ohm_deferred_dev_deps;
 mod ohm_early_tests;
 mod ohm_linker;
 mod ohm_thinlto_cache;
@@ -494,6 +495,14 @@ fn compile<'gctx>(
     // Be sure to compile all dependencies of this target as well.
     let deps = Vec::from(build_runner.unit_deps(unit)); // Create vec due to mutable borrow.
     for dep in deps {
+        if build_runner
+            .deferred_dev_deps
+            .dependencies
+            .contains(&dep.unit)
+            && build_runner.bcx.roots.contains(unit)
+        {
+            continue;
+        }
         compile(build_runner, jobs, &dep.unit, exec, false)?;
     }
 
@@ -1030,6 +1039,17 @@ fn rustc(
         .map(|dep| build_runner.bcx.unit_to_index[&dep.unit])
         .collect::<HashSet<_>>();
     let unused_integration_dependency = unused_integration_self_dependency(build_runner, unit);
+    let record_dev_unused = ohm_deferred_dev_deps::supported(build_runner, unit);
+    let previous_dev_unused = record_dev_unused
+        .then(|| {
+            relink_cache
+                .as_ref()
+                .and_then(RelinkCachePaths::unused_extern_names)
+        })
+        .flatten();
+    let deferred_dev_names =
+        ohm_deferred_dev_deps::plan(build_runner, unit, previous_dev_unused.as_ref());
+    let deferred_dev_retry = build_runner.deferred_dev_deps.retry.clone();
     let workspace_integration_proof = unused_integration_dependency
         .and_then(|_| relink_cache.as_ref())
         .and_then(RelinkCachePaths::unused_extern_names);
@@ -1277,6 +1297,7 @@ fn rustc(
                 skip_unused_integration_dependency || skip_unused_workspace_dependencies;
 
             if early_test.is_none()
+                && deferred_dev_names.is_empty()
                 && ((can_skip_compilation && fingerprint::can_skip_due_to_early_cutoff(fp))
                     || skip_unused_integration_dependency)
             {
@@ -1337,6 +1358,7 @@ fn rustc(
         });
         let validation_started = Instant::now();
         let use_cached_relink = early_test.is_none()
+            && deferred_dev_names.is_empty()
             && can_relink_dependencies
             && relink_cache
                 .as_ref()
@@ -1410,6 +1432,7 @@ fn rustc(
         if let (Some(fingerprint), Some(namespace)) =
             (fingerprint.as_ref(), worktree_seed_namespace.as_deref())
             && early_test.is_none()
+            && deferred_dev_names.is_empty()
             && fingerprint::can_reuse_after_scripts(
                 fingerprint,
                 &pkg_root,
@@ -1553,6 +1576,82 @@ fn rustc(
         }
 
         let mut accepted_early_test = false;
+        if !deferred_dev_names.is_empty() {
+            let output = std::cell::RefCell::new(ohm_early_tests::Output::default());
+            let result = exec.exec(
+                &rustc,
+                package_id,
+                &target,
+                mode,
+                &mut |line| {
+                    output.borrow_mut().push(line, false);
+                    Ok(())
+                },
+                &mut |line| {
+                    output.borrow_mut().push(line, true);
+                    Ok(())
+                },
+            );
+            let output = output.into_inner();
+            if result.is_err()
+                || !deferred_dev_names
+                    .iter()
+                    .all(|name| output.proves_unused(*name))
+            {
+                if let Some(cache) = &relink_cache {
+                    cache.clear_codegen_temps()?;
+                    if cache.rlink.exists() {
+                        paths::remove_file(&cache.rlink)?;
+                    }
+                }
+                for output in outputs.iter() {
+                    if output.path.is_dir() {
+                        // macOS debug bundles are directories.
+                        paths::remove_dir_all(&output.path)?;
+                    } else if output.path.exists() {
+                        paths::remove_file(&output.path)?;
+                    }
+                }
+                // Only ordinary compiler diagnostics can be repaired by
+                // building the deferred dependencies. Preserve interruption,
+                // crashes, launch failures, and errors from custom executors.
+                if let Err(error) = result
+                    && error
+                        .downcast_ref::<ProcessError>()
+                        .and_then(|error| error.code)
+                        != Some(1)
+                {
+                    for line in output.stderr {
+                        on_stderr_line(
+                            state,
+                            &line,
+                            package_id,
+                            &manifest,
+                            &target,
+                            &mut output_options,
+                        )?;
+                    }
+                    return Err(error);
+                }
+                deferred_dev_retry.store(true, std::sync::atomic::Ordering::Relaxed);
+                return Err(ohm_deferred_dev_deps::Retry.into());
+            }
+            tracing::info!(target: "cargo::compiler::ohm_deferred_dev_deps", "accepted current unused-dependency proof");
+            for line in output.stdout {
+                on_stdout_line(state, &line, package_id, &target)?;
+            }
+            for line in output.stderr {
+                on_stderr_line(
+                    state,
+                    &line,
+                    package_id,
+                    &manifest,
+                    &target,
+                    &mut output_options,
+                )?;
+            }
+            accepted_early_test = true;
+        }
         if let Some((completion, extern_name)) = &early_test {
             let output = std::cell::RefCell::new(ohm_early_tests::Output::default());
             let result = exec.exec(
@@ -1706,8 +1805,9 @@ fn rustc(
         }
 
         if let Some(cache) = &relink_cache {
-            let unused_externs =
-                unused_integration_dependency.and_then(|_| state.recorded_unused_externs());
+            let unused_externs = (unused_integration_dependency.is_some() || record_dev_unused)
+                .then(|| state.recorded_unused_externs())
+                .flatten();
             cache.initialize(unused_externs.as_ref())?;
         }
 
@@ -2591,7 +2691,9 @@ fn add_error_format_and_color(
     let mut json = String::from("--json=diagnostic-rendered-ansi,artifacts,future-incompat");
     if build_runner.bcx.gctx.cli_unstable().cargo_lints {
         json.push_str(",unused-externs-silent");
-    } else if unused_integration_self_dependency(build_runner, unit).is_some() {
+    } else if unused_integration_self_dependency(build_runner, unit).is_some()
+        || ohm_deferred_dev_deps::supported(build_runner, unit)
+    {
         json.push_str(",unused-externs-transparent");
     }
     if let MessageFormat::Short | MessageFormat::Json { short: true, .. } =

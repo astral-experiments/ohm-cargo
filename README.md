@@ -92,6 +92,36 @@ Use `cargo +ohm -Zohm-early-tests=no test` to opt out, or set
 `[unstable] ohm-early-tests = false` in Cargo configuration. The explicit override
 is inherited by external Cargo subcommands. `-Zohm-defaults=no` also disables it.
 
+## Unused development dependencies in targeted tests
+
+Ohm defaults can skip previously unused workspace dev dependencies when rebuilding
+one native library test target, for example `cargo +ohm test -p app --lib selected`.
+This avoids paths such as compiling the ordinary library solely to build a test
+helper that the unit-test executable never uses. Feature resolution, compiler
+arguments, and optimization settings retain the complete dependency graph.
+
+These targeted rebuilds validate the code their executable uses. Errors and
+warnings inside skipped dependencies are not reported. Disable deferral when
+validating the complete declared dependency graph.
+
+A previous executable's unused-dependency report only permits an attempt. Cargo
+accepts the new executable after its successful compiler invocation proves every
+deferred dependency unused. Missing or inconsistent proof, new dependency usage,
+or compiler diagnostics discard the provisional output and retry once with the
+complete graph. Interruption and compiler launch failures stop the command.
+
+Initial builds, up-to-date and dependency-only builds, multiple test targets,
+explicit targets, and unsupported compilers use ordinary scheduling. Build
+scripts, proc macros, native links, artifact dependencies, and opaque linker
+inputs in the skipped closure also prevent deferral. A discarded attempt can add
+compilation work.
+
+Use `cargo +ohm -Zohm-defer-dev-deps=no test -p app --lib` to opt out, or set
+`ohm-defer-dev-deps = false` in the `[unstable]` configuration table.
+`CARGO_UNSTABLE_OHM_DEFER_DEV_DEPS=false` is the environment equivalent. External
+Cargo subcommands inherit explicit overrides. `-Zohm-defaults=no` disables the
+optimization with the other Ohm defaults.
+
 ## License
 
 Cargo is primarily distributed under the terms of both the MIT license
