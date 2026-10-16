@@ -692,7 +692,12 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
             .canonical_build_path(self.ws.configured_build_dir().as_path_unlocked());
         crate::workspace::build_cache_gc_roots::register_root(self.ws.gctx(), &root)?;
         if let Some((compiler, driver)) = &cache.provenance {
-            build_cache_gc::record_context(&root, &cache.rustc, compiler.clone(), driver.clone())?;
+            let tracker = build_cache_gc::record_context(
+                &root,
+                &cache.rustc,
+                compiler.clone(),
+                driver.clone(),
+            )?;
             let build_root = self.ws.configured_build_dir();
             let entries = cache
                 .immutable_units
@@ -707,7 +712,7 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
                         .map(Path::to_path_buf)
                 })
                 .collect::<Result<Vec<_>, _>>()?;
-            return build_cache_gc::ContextUse::new(&root, &cache.rustc, Some(entries)).map(Some);
+            return build_cache_gc::ContextUse::new(tracker, &cache.rustc, Some(entries)).map(Some);
         }
         Ok(None)
     }

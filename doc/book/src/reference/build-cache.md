@@ -157,23 +157,27 @@ applies to the current release's contexts. Legacy namespaces without records are
 also discarded immediately, even if their artifacts could still be reused.
 They rebuild on demand if needed again.
 
-Ohm records each shared context once. Normal builds refresh a separate empty
-`.ohm-gc-v1/last-used/<context>` file at start and completion, including cache hits
-and failures. The selected shared dependency directories are recorded once in
-`.ohm-gc-v1/dependencies/<context>/<set>.json`. Worktrees using the same dependency
-set share this record. Repeated builds refresh only its timestamp, including for
-fresh transitive dependencies, so filesystem bookkeeping does not grow with the
-number of dependencies in a warm build. No artifacts are scanned during builds,
-and no per-worktree records or usage database are maintained.
+Ohm keeps compiler provenance, context activity, and dependency activity in one
+SQLite database at `.ohm-gc-v1/cache.sqlite` inside each shared build root. Each
+compiled dependency variant has one row, shared by all worktrees that use it.
+Builds batch last-use updates in a transaction at start and completion, including
+fresh transitive dependencies, cache hits, and failures. No artifact scan or
+per-worktree ownership record is needed. The database uses Cargo's existing
+SQLite dependency and migration helpers; it has the shared root's locking scope,
+independent of Cargo's downloaded-source cache.
 
-Only explicit GC reads these sets to find each dependency's latest use. It scans
-outside build locks and rechecks context activity before retiring entries, keeping
-lock holds bounded. Dependency records disappear with their compiler context.
-Importing a worktree snapshot conservatively refreshes the entire context's
-dependencies for one hour because an import does not resolve a build graph.
-Missing, malformed, or unfamiliar usage records never prove inactivity. Individual
-entries without usage history are preserved until used by a tracking build or
-until their entire context is reclaimed.
+Explicit GC queries expired entries, scans outside build locks, and rechecks their
+usage before bounded retirement. Rows are removed with their artifacts, including
+all dependency rows when their compiler context is retired. Importing a worktree
+snapshot conservatively refreshes the entire context's dependencies for one hour
+because an import does not resolve a build graph.
+
+Earlier file-based context records remain readable for cleanup. New builds write
+only the database; legacy dependency-set files disappear when their context is
+retired. Missing or unfamiliar usage never proves inactivity, and an unreadable
+or newer-format database stops collection of that root. Individual entries without
+usage history are preserved until used by a tracking build or until their entire
+context is reclaimed. Dry runs open the database read-only.
 Cleanup runs only when you explicitly invoke `cargo +ohm gc`; builds, tests,
 worktree commands, and upgrades do not trigger it.
 
