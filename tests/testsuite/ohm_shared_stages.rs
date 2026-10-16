@@ -1,4 +1,5 @@
 use crate::prelude::*;
+use cargo_test_support::registry::Package;
 use cargo_test_support::{Execs, Project, basic_manifest, paths, project};
 use std::path::{Path, PathBuf};
 use std::{env, fs};
@@ -14,11 +15,13 @@ fn compiler() -> PathBuf {
 
             fn main() {
                 let mut args: Vec<String> = env::args().skip(1).collect();
-                if args.first().is_some_and(|arg| !arg.starts_with('-')) {
+                let wrapped = args.first().is_some_and(|arg| !arg.starts_with('-'));
+                if wrapped {
                     args.remove(0);
                 }
                 if args.iter().any(|arg| arg == "-Zohm-shared-stages")
-                    && env::var_os("OHM_STAGES_UNSUPPORTED").is_some()
+                    && (env::var_os("OHM_STAGES_UNSUPPORTED").is_some()
+                        || (wrapped && env::var_os("OHM_WRAPPER_STAGES_UNSUPPORTED").is_some()))
                 {
                     exit(1);
                 }
@@ -220,6 +223,69 @@ fn unsupported_compilers_wrappers_and_default_commands_keep_modes_separate() {
             option(&phases[0], "metadata="),
             option(&phases[1], "metadata=")
         );
+    }
+}
+
+#[cargo_test]
+fn workspace_wrapper_reuses_unwrapped_dependencies() {
+    let compiler = compiler();
+    Package::new("stage-dep", "0.1.0")
+        .file("src/lib.rs", "pub fn value() -> u32 { 41 }")
+        .publish();
+
+    for action in ["check", "build"] {
+        let p = project()
+            .at(action)
+            .file(
+                "Cargo.toml",
+                &format!(
+                    "{}\n[dependencies]\nstage-dep = \"0.1.0\"\n\
+                     [build-dependencies]\nstage-dep = \"0.1.0\"\n",
+                    basic_manifest("stage-app", "0.1.0")
+                ),
+            )
+            .file("src/lib.rs", "pub fn value() -> u32 { stage_dep::value() }")
+            .file(
+                "build.rs",
+                "fn main() { assert_eq!(stage_dep::value(), 41); }",
+            )
+            .build();
+        let command = format!("-Zohm-shared-stages {action}");
+
+        clear_invocations();
+        cargo(&p, &compiler, &command).run();
+        let ordinary = invocations();
+        assert!(ordinary.iter().any(|args| {
+            args.windows(2)
+                .any(|pair| pair == ["--crate-name", "stage_dep"])
+        }));
+
+        clear_invocations();
+        cargo(&p, &compiler, &command)
+            .env("RUSTC_WORKSPACE_WRAPPER", &compiler)
+            .env("OHM_WRAPPER_STAGES_UNSUPPORTED", "1")
+            .run();
+        let wrapped = invocations();
+        assert!(
+            wrapped.iter().all(|args| !args
+                .windows(2)
+                .any(|pair| pair == ["--crate-name", "stage_dep"])),
+            "the registry dependency should stay fresh"
+        );
+        let wrapped = app_library(&wrapped);
+        assert!(wrapped.iter().all(|arg| arg != "-Zohm-shared-stages"));
+        assert_ne!(
+            option(app_library(&ordinary), "metadata="),
+            option(wrapped, "metadata=")
+        );
+
+        clear_invocations();
+        cargo(&p, &compiler, &command)
+            .env("RUSTC_WORKSPACE_WRAPPER", &compiler)
+            .env("OHM_WRAPPER_STAGES_UNSUPPORTED", "1")
+            .run();
+        cargo(&p, &compiler, &command).run();
+        assert!(invocations().is_empty());
     }
 }
 
