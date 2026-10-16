@@ -17,7 +17,7 @@ use crate::CargoResult;
 use crate::util::sqlite::{self, basic_migration};
 
 pub(super) const DATABASE: &str = "cache.sqlite";
-const SCHEMA_VERSION: u32 = 3;
+const SCHEMA_VERSION: u32 = 2;
 
 /// Nanoseconds preserve the one-hour boundary without rounding recent use down.
 pub(super) type Timestamp = i64;
@@ -73,9 +73,6 @@ impl Tracker {
                                 PRIMARY KEY (context, entry)
                             ) WITHOUT ROWID",
                         ),
-                    basic_migration(
-                        "CREATE INDEX dependencies_last_used ON dependencies(context, last_used)",
-                    ),
                 ],
             )?;
         }
@@ -231,6 +228,13 @@ impl Tracker {
         now: SystemTime,
     ) -> CargoResult<()> {
         let now = timestamp(now)?;
+        // Short Cargo invocations rebuild the WAL index on open. Keep small batches'
+        // logs small, but let larger batches amortize checkpoint synchronization.
+        let checkpoint_pages = entries.map_or(128, |entries| {
+            entries.len().saturating_mul(2).clamp(128, 1_000)
+        });
+        self.conn
+            .pragma_update(None, "wal_autocheckpoint", checkpoint_pages as u32)?;
         let tx = self.conn.transaction()?;
         let changed = tx.prepare_cached("UPDATE contexts SET last_used = max(coalesce(last_used, ?2), ?2), all_used = CASE WHEN ?3 THEN max(coalesce(all_used, ?2), ?2) ELSE all_used END WHERE context = ?1")?
             .execute(params![context, now, entries.is_none()])?;
@@ -245,6 +249,8 @@ impl Tracker {
         Ok(())
     }
 
+    /// The primary key narrows the scan to this context. A timestamp index would
+    /// add work to every cache hit just to accelerate infrequent manual GC.
     pub(super) fn idle_dependencies(
         &self,
         context: &str,
