@@ -126,6 +126,9 @@ build directories:
   context eligible immediately.
 * Other tracked registry contexts that have not been used for at least one hour.
   Private state in existing worktrees is preserved.
+* Individual tracked dependency builds that have not been used for at least one
+  hour, even while other dependencies keep their compiler context active. Versions,
+  feature combinations, profiles, and targets retain their own usage histories.
 * Recognized legacy registry namespaces with no context or usage records, and
   private intermediates, incremental state, and scratch files left in the global
   directory by the old layout. These are eligible immediately, regardless of age
@@ -134,9 +137,11 @@ build directories:
 
 A build context groups artifacts that share a compiler, build tools, and relevant
 configuration and environment. Multiple projects, crate versions, and feature
-combinations can share one context. Removing a dependency from a lockfile does not
-retire its shared artifacts: any use of a context refreshes the whole context.
-There is no per-dependency reference counting or age tracking.
+combinations can share one context. A dependency build remains reusable while any
+project uses it. After removing or updating a dependency, its old build becomes
+eligible once it has gone unused for an hour; using other dependencies in the same
+context does not extend that deadline. Cargo removes the complete build directory,
+including its fingerprints and build-script state, and rebuilds it on demand.
 
 Compiler identity already partitions the cache. The context record also captures
 the installed Ohm release, without changing cache paths or invalidating current
@@ -154,10 +159,21 @@ They rebuild on demand if needed again.
 
 Ohm records each shared context once. Normal builds refresh a separate empty
 `.ohm-gc-v1/last-used/<context>` file at start and completion, including cache hits
-and failures; importing a worktree snapshot also refreshes its contexts. Builds
-do not scan artifacts, maintain a usage database, record workspace ownership, or
-rewrite context records. Malformed or unfamiliar records are preserved; a
-tracked context without a usage marker does not expire by age.
+and failures. The selected shared dependency directories are recorded once in
+`.ohm-gc-v1/dependencies/<context>/<set>.json`. Worktrees using the same dependency
+set share this record. Repeated builds refresh only its timestamp, including for
+fresh transitive dependencies, so filesystem bookkeeping does not grow with the
+number of dependencies in a warm build. No artifacts are scanned during builds,
+and no per-worktree records or usage database are maintained.
+
+Only explicit GC reads these sets to find each dependency's latest use. It scans
+outside build locks and rechecks context activity before retiring entries, keeping
+lock holds bounded. Dependency records disappear with their compiler context.
+Importing a worktree snapshot conservatively refreshes the entire context's
+dependencies for one hour because an import does not resolve a build graph.
+Missing, malformed, or unfamiliar usage records never prove inactivity. Individual
+entries without usage history are preserved until used by a tracking build or
+until their entire context is reclaimed.
 Cleanup runs only when you explicitly invoke `cargo +ohm gc`; builds, tests,
 worktree commands, and upgrades do not trigger it.
 

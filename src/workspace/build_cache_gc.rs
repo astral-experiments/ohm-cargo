@@ -1,7 +1,7 @@
 //! Conservative reclamation of retired shared-build namespaces.
 //!
-//! Builds enroll immutable provenance and refresh one timestamp per context.
-//! Explicit GC reclaims legacy layouts, obsolete compilers, and idle contexts.
+//! Builds refresh context and dependency-set timestamps without scanning artifacts.
+//! Explicit GC reclaims legacy layouts, obsolete compilers, and idle dependencies.
 
 use std::fs::{self, File, Metadata, OpenOptions, TryLockError};
 use std::io;
@@ -13,12 +13,14 @@ use serde::{Deserialize, Serialize};
 
 use crate::CargoResult;
 use crate::compiler::Layout;
-use crate::util::data_structures::HashSet;
+use crate::util::data_structures::{HashMap, HashSet};
 use crate::util::flock::try_lock_exclusive;
 
 pub(crate) const DIRECTORY: &str = ".ohm-gc-v1";
 pub(crate) const CONSUMERS_LOCK: &str = "consumers.lock";
 const TRASH: &str = ".ohm-gc-trash-v1";
+const METADATA_TRASH: &str = ".ohm-gc-metadata-trash-v1";
+const DEPENDENCIES: &str = "dependencies";
 const DELETE_BUDGET: usize = 256;
 const RENAME_BUDGET: usize = 8;
 const CONTEXT_MAX_IDLE: Duration = Duration::from_secs(60 * 60);
@@ -27,27 +29,75 @@ const LAST_USED: &str = "last-used";
 /// Refreshes a context at build start and completion, including failures and cache hits.
 ///
 /// The caller must hold a consumer lease until this guard has been dropped.
-/// Only this empty file's mtime changes; ownership records and artifacts are untouched.
-pub(crate) struct ContextUse(File);
+/// Only usage timestamps change; provenance, dependency lists, and artifacts are untouched.
+pub(crate) struct ContextUse(File, Option<File>);
 
 impl ContextUse {
-    /// Opens one usage marker while the caller holds the root's consumer lease.
-    pub(crate) fn new(root: &Path, context: &str) -> CargoResult<Self> {
+    /// One immutable record describes the selected shared units, including fresh
+    /// transitive dependencies. Repeated builds only touch that record's timestamp.
+    /// `None` conservatively protects the whole context when importing a snapshot.
+    pub(crate) fn new(
+        root: &Path,
+        context: &str,
+        entries: Option<Vec<PathBuf>>,
+    ) -> CargoResult<Self> {
         ensure!(component(context), "invalid build context");
-        let directory = metadata_dir(root, false)?.join(LAST_USED);
+        let metadata = metadata_dir(root, false)?;
+        let dependencies = match entries {
+            Some(entries) if entries.is_empty() => None,
+            entries => {
+                let directory = metadata.join(DEPENDENCIES);
+                create_plain(&directory)?;
+                let directory = directory.join(context);
+                create_plain(&directory)?;
+                let path = if let Some(mut entries) = entries {
+                    entries.sort();
+                    entries.dedup();
+                    let path =
+                        directory.join(format!("{}.json", crate::util::short_hash(&entries)));
+                    if absent(&path) {
+                        write_new(
+                            &path,
+                            &DependencySet {
+                                version: 1,
+                                entries,
+                            },
+                        )?;
+                    }
+                    path
+                } else {
+                    directory.join("all")
+                };
+                Some(touch_usage(&path)?)
+            }
+        };
+        // Publish context activity after the dependency set. GC can invalidate a
+        // scan with one context-file identity check under the consumer lease.
+        let directory = metadata.join(LAST_USED);
         create_plain(&directory)?;
-        let mut options = OpenOptions::new();
-        options.read(true).write(true).create(true).truncate(false);
-        #[cfg(unix)]
-        {
-            use std::os::unix::fs::OpenOptionsExt as _;
-            options.custom_flags(libc::O_NOFOLLOW);
-        }
-        let file = options.open(directory.join(context))?;
-        ensure!(file.metadata()?.is_file(), "invalid context usage record");
-        file.set_modified(SystemTime::now())?;
-        Ok(Self(file))
+        Ok(Self(touch_usage(&directory.join(context))?, dependencies))
     }
+}
+
+fn touch_usage(path: &Path) -> CargoResult<File> {
+    let mut options = OpenOptions::new();
+    options.read(true).write(true).create(true).truncate(false);
+    #[cfg(unix)]
+    {
+        use std::os::unix::fs::OpenOptionsExt as _;
+        options.custom_flags(libc::O_NOFOLLOW);
+    }
+    let file = options.open(path)?;
+    ensure!(file.metadata()?.is_file(), "invalid cache usage record");
+    file.set_modified(SystemTime::now())?;
+    Ok(file)
+}
+
+#[derive(Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+struct DependencySet {
+    version: u32,
+    entries: Vec<PathBuf>,
 }
 
 /// Counts importing private snapshots as use of their tracked contexts too.
@@ -72,7 +122,7 @@ pub(crate) fn record_seed_contexts(root: &Path, source: &Path) -> CargoResult<Ve
                 && read_record::<ContextRecord>(&records.join(format!("{context}.json")))
                     .is_some_and(|record| record.version == 1 && record.context == context)
             {
-                usage.push(ContextUse::new(root, context)?);
+                usage.push(ContextUse::new(root, context, None)?);
             }
         }
     }
@@ -81,6 +131,11 @@ pub(crate) fn record_seed_contexts(root: &Path, source: &Path) -> CargoResult<Ve
 
 impl Drop for ContextUse {
     fn drop(&mut self) {
+        if let Some(dependencies) = &self.1
+            && let Err(error) = dependencies.set_modified(SystemTime::now())
+        {
+            tracing::debug!(?error, "could not refresh dependency usage");
+        }
         if let Err(error) = self.0.set_modified(SystemTime::now()) {
             tracing::debug!(?error, "could not refresh build-context usage");
         }
@@ -102,7 +157,7 @@ fn context_expired(directory: &Path, context: &str, now: SystemTime) -> bool {
 }
 
 /// The same concrete compiler-file identity used to partition shared artifacts.
-#[derive(Clone, Debug, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub(crate) struct FileIdentity {
     pub path: PathBuf,
@@ -368,7 +423,7 @@ impl FileCounts {
     }
 }
 
-/// Retires legacy layouts, obsolete compilers, and contexts idle for at least an hour.
+/// Retires legacy layouts, obsolete compilers, and contexts or dependencies idle for an hour.
 pub(crate) fn collect(
     root: &Path,
     dry_run: bool,
@@ -451,6 +506,14 @@ fn collect_with_lock_budget(
             .is_none()
         {
             summary.retained += 1;
+            if let Namespace::Context(context) = &namespace {
+                for dependency in
+                    idle_dependencies(root, &profiles, context, now).unwrap_or_default()
+                {
+                    let paths = dependency.paths(root, &profiles);
+                    ready.push((dependency, paths));
+                }
+            }
             continue;
         }
         let paths = namespace.paths(root, &profiles);
@@ -486,6 +549,9 @@ fn collect_with_lock_budget(
             };
             let before = sources.len();
             for (source, trash) in paths {
+                if trash == root.join(METADATA_TRASH) {
+                    continue;
+                }
                 if retire(root, &source, &trash, true)? {
                     sources.push(source);
                 }
@@ -586,6 +652,15 @@ fn collect_with_lock_budget(
         for trash in trash_roots {
             drain_trash(&trash, &mut remaining, &mut summary, false)?;
         }
+        let mut metadata_summary = Summary::default();
+        drain_trash(
+            &root.join(METADATA_TRASH),
+            &mut remaining,
+            &mut metadata_summary,
+            false,
+        )?;
+        summary.deleted_entries += metadata_summary.deleted_entries;
+        summary.pending |= metadata_summary.pending;
     } else {
         summary.busy = true;
     }
@@ -596,6 +671,116 @@ fn collect_with_lock_budget(
 enum Namespace {
     Context(String),
     LegacyWorkspace(String),
+    Dependency {
+        context: String,
+        entry: PathBuf,
+        usage: FileIdentity,
+    },
+}
+
+/// Reads usage sets outside build locks. Any malformed set could conceal a live
+/// reference, so it prevents dependency-level eviction throughout this context.
+fn idle_dependencies(
+    root: &Path,
+    profiles: &[PathBuf],
+    context: &str,
+    now: SystemTime,
+) -> Option<Vec<Namespace>> {
+    let metadata = root.join(DIRECTORY);
+    let record: ContextRecord =
+        read_record(&metadata.join("contexts").join(format!("{context}.json")))?;
+    if record.version != 1 || record.context != context {
+        return None;
+    }
+    let usage = context_usage(root, context)?;
+    let directory = metadata.join(DEPENDENCIES).join(context);
+    if !plain_ancestors(root, &directory).ok()? || !plain_directory(&directory) {
+        return None;
+    }
+    let prefixes = profiles
+        .iter()
+        .map(|profile| {
+            profile
+                .strip_prefix(root)
+                .unwrap()
+                .join("build/registries")
+                .join(context)
+        })
+        .collect::<HashSet<_>>();
+    let mut last_used: HashMap<PathBuf, SystemTime> = HashMap::default();
+    for record in fs::read_dir(directory).ok()? {
+        let record = record.ok()?;
+        if !record.file_type().ok()?.is_file() {
+            return None;
+        }
+        let modified = record.metadata().ok()?.modified().ok()?;
+        if record.file_name() == "all" {
+            if now.duration_since(modified).ok()? < CONTEXT_MAX_IDLE {
+                return None;
+            }
+            continue;
+        }
+        let set: DependencySet = read_record(&record.path())?;
+        if set.version != 1
+            || record.file_name()
+                != format!("{}.json", crate::util::short_hash(&set.entries)).as_str()
+            || !set.entries.iter().all(|entry| {
+                entry
+                    .components()
+                    .all(|part| matches!(part, Component::Normal(_)))
+                    && entry
+                        .file_name()
+                        .and_then(|name| name.to_str())
+                        .is_some_and(namespace_hash)
+                    && entry
+                        .parent()
+                        .and_then(Path::file_name)
+                        .and_then(|name| name.to_str())
+                        .is_some_and(component)
+                    && entry
+                        .ancestors()
+                        .nth(2)
+                        .is_some_and(|parent| prefixes.contains(parent))
+            })
+        {
+            return None;
+        }
+        for entry in set.entries {
+            last_used
+                .entry(entry)
+                .and_modify(|used| *used = (*used).max(modified))
+                .or_insert(modified);
+        }
+    }
+    let mut idle = last_used
+        .into_iter()
+        .filter_map(|(entry, used)| {
+            (now.duration_since(used).ok()? >= CONTEXT_MAX_IDLE
+                && plain_ancestors(root, &root.join(&entry)).ok()?
+                && plain_directory(&root.join(&entry)))
+            .then(|| Namespace::Dependency {
+                context: context.to_owned(),
+                entry,
+                usage: usage.clone(),
+            })
+        })
+        .collect::<Vec<_>>();
+    idle.sort();
+    Some(idle)
+}
+
+/// Detects activity between the unlocked scan and bounded retirement without
+/// rescanning every usage set while builds are excluded.
+fn context_usage(root: &Path, context: &str) -> Option<FileIdentity> {
+    let path = root.join(DIRECTORY).join(LAST_USED).join(context);
+    if !plain_ancestors(root, &path).ok()? {
+        return None;
+    }
+    let metadata = fs::symlink_metadata(&path).ok()?;
+    metadata
+        .is_file()
+        .then(|| FileIdentity::from_metadata(path, &metadata).ok())
+        .flatten()
 }
 
 impl Namespace {
@@ -609,6 +794,16 @@ impl Namespace {
     ) -> Option<String> {
         let directory = root.join(DIRECTORY);
         match self {
+            Self::Dependency {
+                context,
+                entry,
+                usage,
+            } => (context_usage(root, context).as_ref() == Some(usage)).then(|| {
+                format!(
+                    "dependency {} (unused for at least 1 hour)",
+                    entry.display()
+                )
+            }),
             Self::Context(id) => {
                 let path = directory.join("contexts").join(format!("{id}.json"));
                 if legacy_context_name(id)
@@ -650,6 +845,11 @@ impl Namespace {
     }
 
     fn paths(&self, root: &Path, profiles: &[PathBuf]) -> Vec<(PathBuf, PathBuf)> {
+        if let Self::Dependency { entry, .. } = self {
+            // Validated entries have profile/build/registries/context/package/hash.
+            let profile = root.join(entry.ancestors().nth(5).unwrap());
+            return vec![(root.join(entry), profile.join(TRASH))];
+        }
         let mut paths = Vec::new();
         for profile in profiles {
             let sources = match self {
@@ -660,12 +860,19 @@ impl Namespace {
                     profile.join("build/workspaces").join(id),
                     profile.join("incremental").join(id),
                 ],
+                Self::Dependency { .. } => unreachable!(),
             };
             paths.extend(
                 sources
                     .into_iter()
                     .map(|source| (source, profile.join(TRASH))),
             );
+        }
+        if let Self::Context(id) = self {
+            paths.push((
+                root.join(DIRECTORY).join(DEPENDENCIES).join(id),
+                root.join(METADATA_TRASH),
+            ));
         }
         if let Self::LegacyWorkspace(id) = self {
             for base in std::iter::once(root).chain(profiles.iter().filter_map(|p| p.parent())) {
@@ -684,6 +891,7 @@ impl Namespace {
 
     fn finish(&self, directory: &Path) -> CargoResult<()> {
         let paths = match self {
+            Self::Dependency { .. } => return Ok(()),
             Self::Context(id) => vec![
                 directory.join(LAST_USED).join(id),
                 directory.join("contexts").join(format!("{id}.json")),
@@ -1181,7 +1389,7 @@ mod tests {
         let shared = cache.artifact("build/registries/abcdef")?;
         let private = cache.artifact("build/workspaces/owner/abcdef")?;
         let incremental = cache.artifact("incremental/owner")?;
-        drop(ContextUse::new(&cache.root, "abcdef")?);
+        drop(ContextUse::new(&cache.root, "abcdef", Some(Vec::new()))?);
         let usage = cache.root.join(DIRECTORY).join(LAST_USED).join("abcdef");
         let last_used = fs::metadata(&usage)?.modified()?;
         let expires = last_used + CONTEXT_MAX_IDLE;
@@ -1216,13 +1424,141 @@ mod tests {
         Ok(())
     }
 
+    /// Records a build graph, then ages its last-use timestamp without sleeping.
+    fn dependency_set(cache: &Cache, entries: &[&str], used: SystemTime) -> CargoResult<PathBuf> {
+        let entries = entries.iter().map(PathBuf::from).collect::<Vec<_>>();
+        let usage = ContextUse::new(&cache.root, "abcdef", Some(entries.clone()))?;
+        drop(usage);
+        let mut entries = entries;
+        entries.sort();
+        entries.dedup();
+        let path = cache
+            .root
+            .join(DIRECTORY)
+            .join(DEPENDENCIES)
+            .join("abcdef")
+            .join(format!("{}.json", crate::util::short_hash(&entries)));
+        File::options()
+            .write(true)
+            .open(&path)?
+            .set_modified(used)?;
+        Ok(path)
+    }
+
+    #[test]
+    fn idle_dependency_variants_expire_while_overlapping_graphs_stay_warm() -> CargoResult<()> {
+        let cache = Cache::new()?;
+        cache.enroll()?;
+        let old = "debug/build/registries/abcdef/dep/1111111111111111";
+        let current = "debug/build/registries/abcdef/dep/2222222222222222";
+        let transitive = "debug/build/registries/abcdef/leaf/3333333333333333";
+        let unknown = cache.artifact("build/registries/abcdef/unknown/4444444444444444")?;
+        for entry in [old, current, transitive] {
+            cache.artifact(entry.strip_prefix("debug/").unwrap())?;
+        }
+        let now = SystemTime::now();
+        let expired = now - CONTEXT_MAX_IDLE;
+        let record = dependency_set(&cache, &[old, transitive], expired)?;
+        dependency_set(&cache, &[current, transitive], now)?;
+        assert_eq!(
+            collect_at(&cache.root, true, now - Duration::from_nanos(1), None)?.retired,
+            0
+        );
+        let before = fs::read(&record)?;
+        let dry_run = collect_at(&cache.root, true, now, None)?;
+        assert_eq!(dry_run.retired, 1);
+        assert_eq!(dry_run.counts.files, 1);
+        assert_eq!(dry_run.counts.bytes, 6);
+        assert!(
+            dry_run.details[0]
+                .contains("dependency debug/build/registries/abcdef/dep/1111111111111111")
+        );
+        assert!(cache.root.join(old).is_dir());
+        assert_eq!(fs::metadata(&record)?.modified()?, expired);
+        assert_eq!(fs::read(&record)?, before);
+        let removed = collect_at(&cache.root, false, now, None)?;
+        assert_eq!(removed.counts, dry_run.counts);
+        assert!(!cache.root.join(old).exists());
+        assert!(cache.root.join(current).is_dir());
+        assert!(cache.root.join(transitive).is_dir());
+        assert!(
+            unknown.is_dir(),
+            "untracked entries have no proven last use"
+        );
+        Ok(())
+    }
+
+    #[test]
+    fn dependency_usage_revalidates_activity_and_survives_long_builds() -> CargoResult<()> {
+        let cache = Cache::new()?;
+        cache.enroll()?;
+        let entry = "debug/build/registries/abcdef/dep/1111111111111111";
+        cache.artifact(entry.strip_prefix("debug/").unwrap())?;
+        let now = SystemTime::now();
+        let record = dependency_set(&cache, &[entry], now - CONTEXT_MAX_IDLE)?;
+        let profiles = profiles(&cache.root)?;
+        let candidates = idle_dependencies(&cache.root, &profiles, "abcdef", now).unwrap();
+        assert_eq!(candidates.len(), 1);
+        let lease = crate::workspace::build_cache_gc_lease::ConsumerLease::acquire(&cache.root)?;
+        let usage = ContextUse::new(&cache.root, "abcdef", Some(vec![entry.into()]))?;
+        assert!(
+            candidates[0]
+                .detail(&cache.root, &profiles, now, None)
+                .is_none()
+        );
+        assert!(collect(&cache.root, false, None)?.busy);
+        usage
+            .1
+            .as_ref()
+            .unwrap()
+            .set_modified(now - CONTEXT_MAX_IDLE * 2)?;
+        let completed = SystemTime::now();
+        drop(usage);
+        drop(lease);
+        assert!(fs::metadata(&record)?.modified()? >= completed);
+        assert_eq!(collect(&cache.root, false, None)?.retired, 0);
+        assert_eq!(fs::read_dir(record.parent().unwrap())?.count(), 1);
+        Ok(())
+    }
+
+    #[test]
+    fn snapshot_import_and_ambiguous_dependency_records_preserve_entries() -> CargoResult<()> {
+        let cache = Cache::new()?;
+        cache.enroll()?;
+        let entry = "debug/build/registries/abcdef/dep/1111111111111111";
+        let artifact = cache.artifact(entry.strip_prefix("debug/").unwrap())?;
+        let now = SystemTime::now();
+        let record = dependency_set(&cache, &[entry], now - CONTEXT_MAX_IDLE * 2)?;
+        drop(ContextUse::new(&cache.root, "abcdef", None)?);
+        assert_eq!(collect(&cache.root, false, None)?.retired, 0);
+        let all = record.parent().unwrap().join("all");
+        fs::remove_file(all)?;
+        let original = fs::read(&record)?;
+        fs::write(&record, b"malformed")?;
+        assert_eq!(collect(&cache.root, false, None)?.retired, 0);
+        fs::write(&record, original)?;
+        File::options()
+            .write(true)
+            .open(&record)?
+            .set_modified(now - CONTEXT_MAX_IDLE * 2)?;
+        assert_eq!(collect(&cache.root, true, None)?.retired, 1);
+        let link = record.parent().unwrap().join("unexpected.json");
+        symlink(&cache.compiler, &link)?;
+        assert_eq!(collect(&cache.root, false, None)?.retired, 0);
+        fs::remove_file(link)?;
+        dependency_set(&cache, &["../../outside"], now - CONTEXT_MAX_IDLE * 2)?;
+        assert_eq!(collect(&cache.root, false, None)?.retired, 0);
+        assert!(artifact.is_dir());
+        Ok(())
+    }
+
     #[test]
     fn long_build_is_protected_and_refreshes_usage_on_completion() -> CargoResult<()> {
         let cache = Cache::new()?;
         cache.enroll()?;
         cache.artifact("build/registries/abcdef")?;
         let lease = crate::workspace::build_cache_gc_lease::ConsumerLease::acquire(&cache.root)?;
-        let usage = ContextUse::new(&cache.root, "abcdef")?;
+        let usage = ContextUse::new(&cache.root, "abcdef", Some(Vec::new()))?;
         usage
             .0
             .set_modified(SystemTime::now() - CONTEXT_MAX_IDLE * 2)?;
@@ -1241,7 +1577,7 @@ mod tests {
         let cache = Cache::new()?;
         cache.enroll()?;
         cache.artifact("build/registries/abcdef")?;
-        drop(ContextUse::new(&cache.root, "abcdef")?);
+        drop(ContextUse::new(&cache.root, "abcdef", Some(Vec::new()))?);
         let usage = cache.root.join(DIRECTORY).join(LAST_USED).join("abcdef");
         File::options()
             .write(true)
@@ -1251,7 +1587,7 @@ mod tests {
         fs::remove_file(&usage)?;
         symlink(&cache.compiler, &usage)?;
         let before = fs::metadata(&cache.compiler)?.modified()?;
-        assert!(ContextUse::new(&cache.root, "abcdef").is_err());
+        assert!(ContextUse::new(&cache.root, "abcdef", Some(Vec::new())).is_err());
         assert_eq!(
             collect_at(
                 &cache.root,
@@ -1581,7 +1917,7 @@ mod tests {
             let mut record = read_record::<ContextRecord>(&path).unwrap();
             record.ohm_version = version.map(str::to_owned);
             fs::write(path, serde_json::to_vec(&record)?)?;
-            drop(ContextUse::new(&cache.root, id)?);
+            drop(ContextUse::new(&cache.root, id, Some(Vec::new()))?);
             cache.artifact(&format!("build/registries/{id}"))?;
         }
         assert_eq!(collect(&cache.root, true, None)?.retired, 0);
@@ -1632,7 +1968,7 @@ mod tests {
         assert_eq!(record.ohm_version.as_deref(), Some("ohm-1.98.1-1"));
         record.ohm_version = None;
         fs::write(path, serde_json::to_vec(&record)?)?;
-        drop(ContextUse::new(&cache.root, "abcdef")?);
+        drop(ContextUse::new(&cache.root, "abcdef", Some(Vec::new()))?);
         cache.artifact("build/registries/abcdef")?;
         let verbose = "rustc 1.98.1-dev (abcdef 2026-09-08) (ohm-1.98.1-2)\nbinary: rustc\n";
         assert_eq!(
@@ -1683,7 +2019,7 @@ mod tests {
             inner.identity(&inner.compiler)?,
             inner.identity(&inner.driver)?,
         )?;
-        drop(ContextUse::new(&inner.root, id)?);
+        drop(ContextUse::new(&inner.root, id, Some(Vec::new()))?);
         inner.artifact(&format!("build/registries/{id}"))?;
         let nested = outer.root.join("nested");
         fs::rename(&inner.root, &nested)?;
