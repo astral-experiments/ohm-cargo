@@ -110,6 +110,41 @@ fn json_files(directory: &Path) -> Vec<PathBuf> {
         .collect()
 }
 
+fn tracker() -> rusqlite::Connection {
+    rusqlite::Connection::open(shared_root().join(".ohm-gc-v1/cache.sqlite")).unwrap()
+}
+
+fn context() -> String {
+    tracker()
+        .query_row("SELECT context FROM contexts", [], |row| row.get(0))
+        .unwrap()
+}
+
+fn context_record() -> serde_json::Value {
+    let bytes: Vec<u8> = tracker()
+        .query_row("SELECT record FROM contexts", [], |row| row.get(0))
+        .unwrap();
+    serde_json::from_slice(&bytes).unwrap()
+}
+
+fn dependency_paths() -> Vec<PathBuf> {
+    tracker()
+        .prepare("SELECT entry FROM dependencies")
+        .unwrap()
+        .query_map([], |row| row.get::<_, Vec<u8>>(0))
+        .unwrap()
+        .map(|row| shared_root().join(cargo_util::paths::bytes2path(&row.unwrap()).unwrap()))
+        .collect()
+}
+
+fn timestamp(time: SystemTime) -> i64 {
+    time.duration_since(SystemTime::UNIX_EPOCH)
+        .unwrap()
+        .as_nanos()
+        .try_into()
+        .unwrap()
+}
+
 #[cargo_test]
 fn empty_gc_uses_cargo_clean_summaries() {
     cargo_process("gc --dry-run")
@@ -184,31 +219,15 @@ fn dependency_gc_preserves_reused_transitive_dependencies_and_rebuilds_evicted_v
         .file("src/main.rs", "fn main() { println!(\"{}\", gc_dependency::value()); }")
         .build();
     cargo(&project, "build").run();
-    let metadata = shared_root().join(".ohm-gc-v1");
-    let context = json_files(&metadata.join("contexts"))[0]
-        .file_stem()
-        .unwrap()
-        .to_owned();
-    let usage = metadata.join("dependencies").join(&context);
-    let old_record = json_files(&usage).pop().unwrap();
-    let old_bytes = fs::read(&old_record).unwrap();
-    let old_set: serde_json::Value = serde_json::from_slice(&old_bytes).unwrap();
-    let old_paths = old_set["entries"]
-        .as_array()
-        .unwrap()
-        .iter()
-        .map(|entry| shared_root().join(entry.as_str().unwrap()))
-        .collect::<Vec<_>>();
+    let old_paths = dependency_paths();
     assert_eq!(old_paths.len(), 2, "record the transitive dependency too");
-    filetime::set_file_mtime(
-        &old_record,
-        filetime::FileTime::from_unix_time(946_684_800, 0),
-    )
-    .unwrap();
+    tracker()
+        .execute("UPDATE dependencies SET last_used = 0", [])
+        .unwrap();
 
     project.change_file("Cargo.toml", "[package]\nname = \"foo\"\nversion = \"0.0.1\"\n[dependencies]\ngc-dependency = \"1.0.0\"\n");
     cargo(&project, "build").run();
-    assert_eq!(json_files(&usage).len(), 2);
+    assert_eq!(dependency_paths().len(), 3);
     cargo(&project, "gc --dry-run")
         .with_stderr_contains(
             "Would remove dependency [..]/gc-dependency/[..] (unused for at least 1 hour)",
@@ -237,14 +256,9 @@ fn dependency_gc_preserves_reused_transitive_dependencies_and_rebuilds_evicted_v
         .run();
     assert!(old.is_dir());
     assert_eq!(
-        json_files(&usage).len(),
-        2,
-        "the same dependency set reuses its record"
-    );
-    assert_eq!(
-        fs::read(old_record).unwrap(),
-        old_bytes,
-        "warm use leaves the dependency list immutable"
+        dependency_paths().len(),
+        3,
+        "each compiled variant has one row"
     );
     collect(&project, false);
     assert!(
@@ -265,18 +279,10 @@ fn checking_reused_build_artifacts_refreshes_their_dependency_usage() {
         ])
         .env(cargo_util::paths::dylib_path_envvar(), project.root())
         .run();
-    let metadata = shared_root().join(".ohm-gc-v1");
-    let context = json_files(&metadata.join("contexts"))[0]
-        .file_stem()
-        .unwrap()
-        .to_owned();
-    let records = json_files(&metadata.join("dependencies").join(context));
-    assert_eq!(records.len(), 1);
-    filetime::set_file_mtime(
-        &records[0],
-        filetime::FileTime::from_unix_time(946_684_800, 0),
-    )
-    .unwrap();
+    assert_eq!(dependency_paths().len(), 1);
+    tracker()
+        .execute("UPDATE dependencies SET last_used = 0", [])
+        .unwrap();
     let started = SystemTime::now();
     cargo(&project, "-Zohm-reuse-built-deps check -v")
         .masquerade_as_nightly_cargo(&[
@@ -288,7 +294,12 @@ fn checking_reused_build_artifacts_refreshes_their_dependency_usage() {
         .with_stderr_contains("[FRESH] gc-dependency v1.0.0")
         .with_stderr_does_not_contain("[CHECKING] gc-dependency [..]")
         .run();
-    assert!(fs::metadata(&records[0]).unwrap().modified().unwrap() >= started);
+    let used: i64 = tracker()
+        .query_row("SELECT min(last_used) FROM dependencies", [], |row| {
+            row.get(0)
+        })
+        .unwrap();
+    assert!(used >= timestamp(started));
     cargo(&project, "gc --dry-run")
         .with_stderr_contains("[SUMMARY] 0 files")
         .run();
@@ -300,12 +311,14 @@ fn upgrades_retire_fresh_contexts_without_removing_installed_compilers() {
 
     let project = donor();
     cargo(&project, "build").run();
-    let records = json_files(&shared_root().join(".ohm-gc-v1/contexts"));
-    assert_eq!(records.len(), 1);
-    let mut record: serde_json::Value =
-        serde_json::from_slice(&fs::read(&records[0]).unwrap()).unwrap();
+    let mut record = context_record();
     record["ohm_version"] = "ohm-1.98.1-1".into();
-    fs::write(&records[0], serde_json::to_vec(&record).unwrap()).unwrap();
+    tracker()
+        .execute(
+            "UPDATE contexts SET record = ?1",
+            [serde_json::to_vec(&record).unwrap()],
+        )
+        .unwrap();
     let registry = shared_root()
         .join("debug/build/registries")
         .join(record["context"].as_str().unwrap());
@@ -332,23 +345,18 @@ fn upgrades_retire_fresh_contexts_without_removing_installed_compilers() {
 fn preview_and_cleanup_report_the_same_payload_sizes_and_respect_quiet() {
     let project = donor();
     cargo(&project, "build").run();
-    let metadata = shared_root().join(".ohm-gc-v1");
-    let records = json_files(&metadata.join("contexts"));
-    assert_eq!(records.len(), 1);
-    let context = records[0].file_stem().unwrap();
-    let registry = shared_root().join("debug/build/registries").join(context);
+    let database = shared_root().join(".ohm-gc-v1/cache.sqlite");
+    let registry = shared_root().join("debug/build/registries").join(context());
     // Use known payload lengths so the summary can be checked without redactions.
     fs::remove_dir_all(&registry).unwrap();
     fs::create_dir_all(registry.join("nested/empty")).unwrap();
     fs::write(registry.join("first"), [0; 1024]).unwrap();
     fs::write(registry.join("nested/second"), [0; 512]).unwrap();
     fs::write(registry.join("empty-file"), b"").unwrap();
-    filetime::set_file_mtime(
-        metadata.join("last-used").join(context),
-        filetime::FileTime::from_unix_time(946_684_800, 0),
-    )
-    .unwrap();
-    let before = fs::read(&records[0]).unwrap();
+    tracker()
+        .execute("UPDATE contexts SET last_used = 0", [])
+        .unwrap();
+    let before = fs::read(&database).unwrap();
     let preview = cargo(&project, "gc --dry-run --color never")
         .cwd(paths::root())
         .with_stdout_data("")
@@ -364,7 +372,7 @@ Would remove context [..] (unused for at least 1 hour)
             .unwrap()
             .contains("Summary 3 files, 1.5KiB total")
     );
-    assert_eq!(fs::read(&records[0]).unwrap(), before);
+    assert_eq!(fs::read(&database).unwrap(), before);
     assert_eq!(fs::read(registry.join("first")).unwrap().len(), 1024);
     cargo(&project, "gc --dry-run --quiet")
         .with_stdout_data("")
@@ -402,14 +410,9 @@ fn fresh_builds_preserve_ownership_records_and_in_tree_targets() {
     assert!(local_private_artifacts(&worktree.join("target")).is_dir());
     assert!(!shared_root().join("debug/build/workspaces").exists());
     assert!(!shared_root().join("debug/incremental").exists());
-    let mut records = json_files(&metadata.join("contexts"));
-    records.extend(json_files(
-        &paths::home().join(".cargo/.ohm-build-roots-v1"),
-    ));
-    assert!(
-        records.len() >= 2,
-        "only context and shared root need registration"
-    );
+    let provenance = context_record();
+    let records = json_files(&paths::home().join(".cargo/.ohm-build-roots-v1"));
+    assert_eq!(records.len(), 1);
     let old_mtime = filetime::FileTime::from_unix_time(946_684_800, 0);
     let before = records
         .into_iter()
@@ -419,45 +422,32 @@ fn fresh_builds_preserve_ownership_records_and_in_tree_targets() {
             (path, contents)
         })
         .collect::<Vec<_>>();
-
-    let mut usage = fs::read_dir(metadata.join("last-used"))
-        .unwrap()
-        .map(|entry| entry.unwrap().path())
-        .collect::<Vec<_>>();
-    assert!(!usage.is_empty());
-    for context in fs::read_dir(metadata.join("dependencies")).unwrap() {
-        usage.extend(json_files(&context.unwrap().path()));
-    }
-    let dependency_bytes = usage
-        .iter()
-        .filter(|path| {
-            path.extension()
-                .is_some_and(|extension| extension == "json")
-        })
-        .map(|path| (path.clone(), fs::read(path).unwrap()))
-        .collect::<Vec<_>>();
-    for path in &usage {
-        filetime::set_file_mtime(path, old_mtime).unwrap();
-    }
-    let started = SystemTime::now();
+    tracker()
+        .execute_batch("UPDATE contexts SET last_used = 0; UPDATE dependencies SET last_used = 0;")
+        .unwrap();
+    let started = timestamp(SystemTime::now());
     cargo(&project, "build -v")
         .cwd(&worktree)
         .with_stderr_contains("[FRESH] foo v0.0.1 [..]")
         .with_stderr_does_not_contain("[COMPILING] [..]")
         .run();
-    for path in usage {
-        assert!(fs::metadata(path).unwrap().modified().unwrap() >= started);
+    for table in ["contexts", "dependencies"] {
+        let used: i64 = tracker()
+            .query_row(&format!("SELECT min(last_used) FROM {table}"), [], |row| {
+                row.get(0)
+            })
+            .unwrap();
+        assert!(used >= started);
     }
-    for (path, contents) in dependency_bytes {
-        assert_eq!(fs::read(path).unwrap(), contents);
-    }
+    assert_eq!(context_record(), provenance, "provenance remains immutable");
+    assert!(!metadata.join("contexts").exists());
+    assert!(!metadata.join("dependencies").exists());
+    assert!(!metadata.join("last-used").exists());
     for (path, contents) in before {
-        assert_eq!(fs::read(&path).unwrap(), contents, "{}", path.display());
+        assert_eq!(fs::read(&path).unwrap(), contents);
         assert_eq!(
             filetime::FileTime::from_last_modification_time(&fs::metadata(&path).unwrap()),
-            old_mtime,
-            "fresh builds must not rewrite {}",
-            path.display()
+            old_mtime
         );
     }
 }
@@ -466,16 +456,14 @@ fn fresh_builds_preserve_ownership_records_and_in_tree_targets() {
 fn idle_context_is_collected_globally_and_rebuilds_on_demand() {
     let project = donor();
     cargo(&project, "build").run();
-    let metadata = shared_root().join(".ohm-gc-v1");
-    let records = json_files(&metadata.join("contexts"));
-    assert_eq!(records.len(), 1);
-    let context = records[0].file_stem().unwrap();
-    let registry = shared_root().join("debug/build/registries").join(context);
-    let private = local_private_artifacts(&project.root().join("target")).join(context);
-    let usage = metadata.join("last-used").join(context);
+    let context = context();
+    let registry = shared_root().join("debug/build/registries").join(&context);
+    let private = local_private_artifacts(&project.root().join("target")).join(&context);
     assert!(registry.is_dir());
     assert!(private.is_dir());
-    filetime::set_file_mtime(&usage, filetime::FileTime::from_unix_time(946_684_800, 0)).unwrap();
+    tracker()
+        .execute("UPDATE contexts SET last_used = 0", [])
+        .unwrap();
     collect(&project, true);
     assert!(registry.is_dir());
     assert!(private.is_dir());
@@ -488,8 +476,14 @@ fn idle_context_is_collected_globally_and_rebuilds_on_demand() {
         private.is_dir(),
         "global GC preserves worktree-private state"
     );
-    assert!(!records[0].exists());
-    assert!(!usage.exists());
+    assert_eq!(
+        tracker()
+            .query_row("SELECT count(*) FROM contexts", [], |row| row
+                .get::<_, usize>(0))
+            .unwrap(),
+        0
+    );
+    assert!(dependency_paths().is_empty());
     assert!(project.root().join("target/debug/foo").is_file());
     cargo(&project, "build")
         .with_stderr_contains("[COMPILING] gc-dependency v1.0.0")
@@ -792,11 +786,10 @@ fn running_test_retains_lease_after_its_cargo_parent_exits() {
         .unwrap();
     stream.read_exact(&mut [0; 5]).unwrap();
     let private = local_private_artifacts(&worktree.join("target"));
-    let context = json_files(&shared_root().join(".ohm-gc-v1/contexts"))[0].clone();
-    let context = context.file_stem().unwrap();
-    let registry = shared_root().join("debug/build/registries").join(context);
-    let usage = shared_root().join(".ohm-gc-v1/last-used").join(context);
-    filetime::set_file_mtime(usage, filetime::FileTime::from_unix_time(946_684_800, 0)).unwrap();
+    let registry = shared_root().join("debug/build/registries").join(context());
+    tracker()
+        .execute("UPDATE contexts SET last_used = 0", [])
+        .unwrap();
 
     // Kill Cargo alone: its test retains both the global and the private lease.
     running.0.kill().unwrap();
