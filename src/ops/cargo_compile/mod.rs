@@ -656,6 +656,8 @@ fn create_bcx_with_registry_reuse<'a, 'gctx>(
         })
         .collect::<Vec<_>>();
     root_units.extend(candidates.into_iter().map(|(_, native)| native));
+    let shared_stages = gctx.cli_unstable().ohm_shared_stages()
+        && target_data.rustc.supports_ohm_shared_stages(gctx);
     let (mut root_units, scrape_units, unit_graph) = rebuild_unit_graph_shared(
         interner,
         unit_graph,
@@ -663,9 +665,10 @@ fn create_bcx_with_registry_reuse<'a, 'gctx>(
         &scrape_units,
         host_kind_requested.then_some(explicit_host_kind),
         build_config.compile_time_deps_only,
-        gctx.cli_unstable().ohm_shared_stages()
-            && target_data.rustc.workspace_wrapper.is_none()
-            && target_data.rustc.supports_ohm_shared_stages(gctx),
+        &|unit| {
+            shared_stages
+                && (target_data.rustc.workspace_wrapper.is_none() || !ws.is_member(&unit.pkg))
+        },
     );
     let native_candidates = root_units.split_off(root_count);
     let test_check_candidates = candidate_root_indices
@@ -1038,7 +1041,7 @@ fn rebuild_unit_graph_shared(
     scrape_units: &[Unit],
     to_host: Option<CompileKind>,
     compile_time_deps_only: bool,
-    shared_stages: bool,
+    shared_stages: &impl Fn(&Unit) -> bool,
 ) -> (Vec<Unit>, Vec<Unit>, UnitGraph) {
     let mut result = UnitGraph::default();
     // Map of the old unit to the new unit, used to avoid recursing into units
@@ -1086,7 +1089,7 @@ fn traverse_and_share(
     unit_is_for_host: bool,
     to_host: Option<CompileKind>,
     compile_time_deps_only: bool,
-    shared_stages: bool,
+    shared_stages: &impl Fn(&Unit) -> bool,
 ) -> Unit {
     if let Some(new_unit) = memo.get(unit) {
         // Already computed, no need to recompute.
@@ -1185,7 +1188,7 @@ fn traverse_and_share(
 
         // A runtime dependency is checked, while its build-time counterpart is built.
         // Keep the same resolved profile in both command modes so their identities agree.
-        let checked_counterpart = shared_stages
+        let checked_counterpart = shared_stages(unit)
             && profile.root == ProfileRoot::Debug
             && unit.mode == CompileMode::Build
             && !unit.is_std
