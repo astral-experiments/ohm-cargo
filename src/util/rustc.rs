@@ -188,7 +188,8 @@ impl Rustc {
     /// Whether this compiler tracks check/build output mode as a query dependency.
     pub fn supports_ohm_shared_stages(&self, gctx: &GlobalContext) -> bool {
         *self.ohm_shared_stages.get_or_init(|| {
-            let mut process = self.workspace_process();
+            // Units compiled through a workspace wrapper do not share stages.
+            let mut process = self.process();
             if let Err(error) = apply_env_config(gctx, &mut process) {
                 debug!("unable to configure shared stages capability probe: {error}");
                 return false;
