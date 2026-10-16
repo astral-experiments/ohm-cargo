@@ -1546,10 +1546,12 @@ mod tests {
         drop(usage);
         drop(lease);
         assert!(cache.used("abcdef")? >= completed);
+        // Completion can share a clock tick with the preceding read. Expiry is
+        // inclusive, so use a cutoff strictly before that tick.
         assert!(!tracker.dependency_expired(
             "abcdef",
             Path::new(entry),
-            tracker::timestamp(completed)?
+            tracker::timestamp(completed - Duration::from_nanos(1))?
         )?);
         assert_eq!(collect(&cache.root, false, None)?.retired, 0);
         Ok(())
