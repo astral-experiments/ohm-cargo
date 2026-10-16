@@ -1556,7 +1556,7 @@ fn new_layout_opt_out_stable() {
 "#]]);
 }
 
-fn selected_compiler_supports_ohm_defaults() -> bool {
+pub(super) fn selected_compiler_supports_ohm_defaults() -> bool {
     static SUPPORTED: std::sync::OnceLock<bool> = std::sync::OnceLock::new();
 
     *SUPPORTED.get_or_init(|| {
@@ -1997,7 +1997,7 @@ fn shared_registry_clean_waits_only_for_its_own_workspace() {
             .run();
         project
     });
-    let guards = ["debug/.cargo-build-lock"].map(|path| {
+    let guards = [".ohm-gc-v1/consumers.lock", "debug/.cargo-build-lock"].map(|path| {
         let guard = std::fs::File::open(shared.join(path)).unwrap();
         guard.lock_shared().unwrap();
         guard

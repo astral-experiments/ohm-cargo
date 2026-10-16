@@ -99,7 +99,7 @@ you use bash, it makes sense to add `export RUSTC_WRAPPER=sccache` to
 `.bashrc`. Alternatively, you can set [`build.rustc-wrapper`] in the [Cargo
 configuration][config]. Refer to sccache documentation for more details.
 
-## Ohm shared build storage
+## Ohm shared build cleanup
 
 With a separate `CARGO_BUILD_BUILD_DIR`, Ohm shares compatible registry builds
 and keeps each workspace's private state in its own `target` directory. This
@@ -117,13 +117,74 @@ state from the donor's target into the recipient's target. Removing a worktree
 also removes its default target, so this private state needs no global ownership
 record or GC pass. Explicit targets outside the checkout need separate cleanup.
 
+On Linux and macOS, `cargo +ohm gc` reclaims two kinds of retired state from
+registered shared build directories:
+
+* Legacy private build and incremental state left in the global directory by
+  earlier Ohm versions, once both the owning linked Git worktree's
+  checkout and Git registration have been removed. A moved worktree, a missing
+  checkout still registered with Git, or an unavailable filesystem is preserved.
+* A build context's global registry and legacy private artifacts, once it has not been used for
+  at least one hour, or its concrete compiler executable or driver library has
+  been removed or replaced. Inactivity can expire a context even if its compiler
+  remains installed. Private state in existing worktrees is preserved. Legacy
+  incremental state for an existing workspace is also preserved because it is
+  not partitioned by context.
+
+A build context groups artifacts that share a compiler, build tools, and relevant
+environment and configuration. Multiple projects, crate versions, and feature
+combinations can share one context. Removing a dependency from a lockfile does not
+retire its shared artifacts: any use of a context refreshes the whole context.
+There is no per-dependency reference counting or age tracking. Ohm's installer
+keeps versioned toolchain directories when updating the `ohm` alias. Running
+`cargo +ohm gc` after an upgrade can remove tracked old contexts once they have
+been unused for an hour, even while those older toolchains remain installed.
+Upgrading does not invoke GC automatically, and recently used contexts remain.
+
+There is no grace period: a cleanup pass can reclaim state as soon as it verifies
+retirement and acquires the necessary locks. Ohm records each shared context once
+and only enrolls workspace ownership when it finds a legacy global namespace.
+Fresh builds do not update per-artifact access times or rewrite these records.
+A separate empty `.ohm-gc-v1/last-used/<context>` file records context
+use through its modification time. Builds refresh it at start and completion,
+including cache hits and failures; importing a worktree snapshot also refreshes
+its contexts. No artifact scans or usage database are needed on the build path.
+Contexts without usage records are not expired by age, and unknown legacy
+namespaces are preserved. Using a context with this version starts its tracking.
+Cleanup runs only when you explicitly invoke `cargo +ohm gc`; builds, tests,
+worktree commands, and upgrades do not trigger it. An evicted context rebuilds
+on demand if used again.
+
+Cleanup skips a root while it is in use. Builds, tests, and programs launched by
+this version of Cargo retain a shared lease for their lifetime, including after
+Cargo exits. Older Cargo versions may only hold compilation locks, so their
+running programs do not have the same protection.
+
 `cargo clean` cleans the current workspace's target, including private
 intermediates and incremental state. A target-local lock prevents cleaning state
 still used by its builds or launched programs, without blocking other worktrees.
 The tiny `.ohm-build-lock` and `CACHEDIR.TAG` files remain after a full clean.
-Shared registry artifacts and legacy global state remain in the global directory.
+Shared registry artifacts and legacy global state are left for `cargo +ohm gc`.
 The first build after switching to this layout rebuilds private intermediates;
 existing global registry artifacts remain reusable.
+
+`cargo +ohm gc` performs global maintenance across registered shared build roots.
+It can run from any directory, without a Cargo workspace:
+
+```console
+cargo +ohm gc --dry-run
+cargo +ohm gc
+```
+
+To select one root explicitly, add `--build-dir /path/to/shared-build`.
+`--dry-run` neither removes artifacts nor changes ownership records. Collection
+uses small batches and yields to active builds. If a root is busy or work remains
+after the per-root budget, invoke `cargo +ohm gc` again to continue.
+
+Cleanup only removes tracked intermediate state inside shared build roots. It
+preserves external target directories, untracked state from older versions,
+ordinary checkout targets, and downloaded sources in `CARGO_HOME`. It does not
+apply a disk-size limit to the active build cache.
 
 [`RUSTFLAGS`]: ../reference/config.md#buildrustflags
 [`build.dep-info-basedir`]: ../reference/config.md#builddep-info-basedir

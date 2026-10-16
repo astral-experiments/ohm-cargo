@@ -143,6 +143,7 @@ mod multitarget;
 mod net_config;
 mod new;
 mod offline;
+mod ohm_build_gc;
 mod ohm_linker;
 mod ohm_ready_tests;
 mod ohm_shared_stages;
