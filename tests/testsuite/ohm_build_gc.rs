@@ -11,8 +11,9 @@ use std::process::{Child, Stdio};
 use std::time::{Duration, Instant, SystemTime};
 
 use crate::prelude::*;
+use crate::utils::cargo_process;
 use cargo_test_support::registry::Package;
-use cargo_test_support::{Execs, Project, git, paths, slow_cpu_multiplier};
+use cargo_test_support::{Execs, Project, git, paths, slow_cpu_multiplier, str};
 
 fn shared_root() -> PathBuf {
     paths::root().join("shared-build")
@@ -126,6 +127,83 @@ fn json_files(directory: &Path) -> Vec<PathBuf> {
 }
 
 #[cargo_test]
+fn empty_gc_uses_cargo_clean_summaries() {
+    cargo_process("gc --dry-run")
+        .with_stdout_data("")
+        .with_stderr_data(str![[r#"
+[SUMMARY] 0 files
+[WARNING] no files deleted due to --dry-run
+
+"#]])
+        .run();
+    cargo_process("gc")
+        .with_stdout_data("")
+        .with_stderr_data(str![[r#"
+[REMOVED] 0 files
+
+"#]])
+        .run();
+}
+
+#[cargo_test]
+fn preview_and_cleanup_report_the_same_payload_sizes_and_respect_quiet() {
+    let project = donor();
+    cargo(&project, "build").run();
+    let metadata = shared_root().join(".ohm-gc-v1");
+    let records = json_files(&metadata.join("contexts"));
+    assert_eq!(records.len(), 1);
+    let context = records[0].file_stem().unwrap();
+    let registry = shared_root().join("debug/build/registries").join(context);
+    // Use known payload lengths so the summary can be checked without redactions.
+    fs::remove_dir_all(&registry).unwrap();
+    fs::create_dir_all(registry.join("nested/empty")).unwrap();
+    fs::write(registry.join("first"), [0; 1024]).unwrap();
+    fs::write(registry.join("nested/second"), [0; 512]).unwrap();
+    fs::write(registry.join("empty-file"), b"").unwrap();
+    filetime::set_file_mtime(
+        metadata.join("last-used").join(context),
+        filetime::FileTime::from_unix_time(946_684_800, 0),
+    )
+    .unwrap();
+    let before = fs::read(&records[0]).unwrap();
+    let preview = cargo(&project, "gc --dry-run --color never")
+        .cwd(paths::root())
+        .with_stdout_data("")
+        .with_stderr_data(str![[r#"
+Would remove context [..] (unused for at least 1 hour)
+[SUMMARY] [FILE_NUM] files, [FILE_SIZE]B total
+[WARNING] no files deleted due to --dry-run
+
+"#]])
+        .run();
+    assert!(
+        std::str::from_utf8(&preview.stderr)
+            .unwrap()
+            .contains("Summary 3 files, 1.5KiB total")
+    );
+    assert_eq!(fs::read(&records[0]).unwrap(), before);
+    assert_eq!(fs::read(registry.join("first")).unwrap().len(), 1024);
+    cargo(&project, "gc --dry-run --quiet")
+        .with_stdout_data("")
+        .with_stderr_data("")
+        .run();
+    let collected = cargo(&project, "gc --color never")
+        .with_stdout_data("")
+        .with_stderr_data(str![[r#"
+[REMOVING] context [..] (unused for at least 1 hour)
+[REMOVED] [FILE_NUM] files, [FILE_SIZE]B total
+
+"#]])
+        .run();
+    assert!(
+        std::str::from_utf8(&collected.stderr)
+            .unwrap()
+            .contains("Removed 3 files, 1.5KiB total")
+    );
+    assert!(!registry.exists());
+}
+
+#[cargo_test]
 fn fresh_builds_preserve_ownership_records_and_in_tree_targets() {
     let project = donor();
     let worktree = add_worktree(&project, "fresh-worktree");
@@ -206,9 +284,7 @@ fn idle_context_is_collected_globally_and_rebuilds_on_demand() {
     assert!(private.is_dir());
     cargo(&project, "gc")
         .cwd(paths::root())
-        .with_stderr_contains(
-            "[..]Cache retiring contexts/[..]: context unused for at least one hour",
-        )
+        .with_stderr_contains("[REMOVING] context [..] (unused for at least 1 hour)")
         .run();
     assert!(!registry.exists());
     assert!(
@@ -269,7 +345,7 @@ fn removed_worktrees_retire_legacy_state_without_touching_external_targets() {
     let before = fs::read(&record).unwrap();
     cargo(&project, "gc --dry-run")
         .cwd(paths::root())
-        .with_stderr_contains("[..]Cache would retire workspaces/[..]")
+        .with_stderr_contains("Would remove worktree [..] (directory and Git registration removed)")
         .run();
     assert!(private.is_dir(), "dry run preserves artifacts");
     assert_eq!(fs::read(&record).unwrap(), before);

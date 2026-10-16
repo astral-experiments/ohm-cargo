@@ -3,8 +3,8 @@ use std::path::PathBuf;
 
 pub fn cli() -> Command {
     subcommand("gc")
-        .about("Reclaim retired state across Ohm shared build caches")
-        .arg_dry_run("Explain retirement without changing the cache")
+        .about("Remove unused artifacts from Ohm shared build caches")
+        .arg_dry_run("Show what would be removed without deleting any files")
         .arg(
             opt(
                 "build-dir",
