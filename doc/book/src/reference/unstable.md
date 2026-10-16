@@ -2187,6 +2187,20 @@ running the remaining tests and preserves their failure status.
 Overlap can be slower when tests compete with compilation for CPU, memory, or
 disk bandwidth, or when little compilation remains to overlap.
 
+## ohm-cgu-split-limit
+
+Set `CARGO_UNSTABLE_OHM_CGU_SPLIT_LIMIT` to a positive integer to limit how many
+shards Ohm creates from each oversized incremental codegen unit. The same limit
+applies at optimization levels 0 and 1. A value of `1` disables splitting.
+Leaving the setting unset uses the compiler's defaults. The existing total
+codegen-unit budget and size threshold still apply.
+
+The setting is also available as `-Zohm-cgu-split-limit=<limit>` or
+`ohm-cgu-split-limit = <limit>` in the `[unstable]` configuration table. A value
+supplied through `RUSTFLAGS` takes precedence. Changing the limit changes Cargo's
+artifact identity; unchanged settings retain normal reuse. This requires an Ohm
+compiler that supports `-Zohm-cgu-split-limit`.
+
 ## ohm-linker
 
 Ohm selects the bundled Wild linker by default for native

@@ -41,6 +41,7 @@ fn ohm_defaults_wrapper() -> PathBuf {
                         || arg.starts_with("-Zohm-caller-local-cgus")
                         || arg.starts_with("-Zohm-stable-cgu-merging")
                         || arg.starts_with("-Zohm-incremental-mono-partitions")
+                        || arg.starts_with("-Zohm-cgu-split-limit=")
                         || arg.starts_with("-Zthreads=")
                 }
 
@@ -103,6 +104,137 @@ fn ohm_defaults_wrapper() -> PathBuf {
         .masquerade_as_nightly_cargo(&["ohm-defaults"])
         .run();
     wrapper.bin("ohm-defaults-wrapper")
+}
+
+#[cargo_test]
+fn ohm_cgu_split_limit_tracks_settings() {
+    let wrapper = ohm_defaults_wrapper();
+    let p = project()
+        .file(
+            "Cargo.toml",
+            &format!(
+                "{}\n[profile.dev]\nopt-level = 1\n",
+                basic_manifest("foo", "0.1.0")
+            ),
+        )
+        .file("src/lib.rs", "pub fn value() -> u32 { 42 }")
+        .file(
+            "build.rs",
+            "fn main() { println!(\"cargo::rerun-if-changed=build.rs\"); }",
+        )
+        .build();
+    let log = p.root().join("split-limit.log");
+    for (limit, rebuilt) in [
+        (Some("4"), true),
+        (Some("4"), false),
+        (Some("2"), true),
+        (Some("2"), false),
+        (None, true),
+    ] {
+        fs::write(&log, "").unwrap();
+        let mut build = p.cargo("-Zohm-defaults=no build --target");
+        build
+            .arg(rustc_host())
+            .masquerade_as_nightly_cargo(&["ohm-defaults", "ohm-cgu-split-limit"])
+            .env("RUSTC_WRAPPER", &wrapper)
+            .env("OHM_DEFAULTS_LOG", &log);
+        if let Some(limit) = limit {
+            build.env("CARGO_UNSTABLE_OHM_CGU_SPLIT_LIMIT", limit);
+        }
+        build.run();
+        let invocations = fs::read_to_string(&log).unwrap();
+        assert_eq!(invocations.contains("--crate-name\tfoo\t"), rebuilt);
+        if rebuilt {
+            for (crate_name, optimized) in [("foo", true), ("build_script_build", false)] {
+                let invocation = rustc_invocation(&invocations, crate_name);
+                assert_eq!(invocation.contains(&"opt-level=1"), optimized);
+                let limits = invocation
+                    .iter()
+                    .filter(|arg| arg.starts_with("-Zohm-cgu-split-limit="))
+                    .copied()
+                    .collect::<Vec<_>>();
+                let expected = limit
+                    .map(|limit| format!("-Zohm-cgu-split-limit={limit}"))
+                    .into_iter()
+                    .collect::<Vec<_>>();
+                assert_eq!(limits, expected);
+            }
+        }
+    }
+}
+
+#[cargo_test]
+fn ohm_cgu_split_limit_precedence() {
+    let wrapper = ohm_defaults_wrapper();
+    let p = project()
+        .file("src/lib.rs", "pub fn value() -> u32 { 42 }")
+        .file(
+            ".cargo/config.toml",
+            "[unstable]\nohm-cgu-split-limit = 8\n",
+        )
+        .build();
+    let log = p.root().join("split-limit.log");
+    for (environment, cli, rustflags, expected) in [
+        (None, None, None, vec!["-Zohm-cgu-split-limit=8"]),
+        (Some("4"), None, None, vec!["-Zohm-cgu-split-limit=4"]),
+        (Some("4"), Some("2"), None, vec!["-Zohm-cgu-split-limit=2"]),
+        (
+            Some("4"),
+            Some("2"),
+            Some("-Zohm-cgu-split-limit=1"),
+            vec!["-Zohm-cgu-split-limit=2", "-Zohm-cgu-split-limit=1"],
+        ),
+    ] {
+        fs::write(&log, "").unwrap();
+        let mut build = p.cargo("-Zohm-defaults=yes build");
+        build
+            .masquerade_as_nightly_cargo(&["ohm-defaults", "ohm-cgu-split-limit"])
+            .env("RUSTC_WRAPPER", &wrapper)
+            .env("OHM_DEFAULTS_LOG", &log);
+        if let Some(limit) = environment {
+            build.env("CARGO_UNSTABLE_OHM_CGU_SPLIT_LIMIT", limit);
+        }
+        if let Some(limit) = cli {
+            build.arg(format!("-Zohm-cgu-split-limit={limit}"));
+        }
+        if let Some(rustflags) = rustflags {
+            build.env("RUSTFLAGS", rustflags);
+        }
+        build.run();
+        let invocations = fs::read_to_string(&log).unwrap();
+        let invocation = rustc_invocation(&invocations, "foo");
+        let limits = invocation
+            .iter()
+            .filter(|arg| arg.starts_with("-Zohm-cgu-split-limit="))
+            .copied()
+            .collect::<Vec<_>>();
+        assert_eq!(limits, expected);
+    }
+    for (value, error) in [
+        ("0", "number would be zero for non-zero type"),
+        ("-1", "invalid digit found in string"),
+        ("invalid", "invalid digit found in string"),
+    ] {
+        p.cargo("-Zohm-defaults=no build")
+            .masquerade_as_nightly_cargo(&["ohm-defaults", "ohm-cgu-split-limit"])
+            .env("CARGO_UNSTABLE_OHM_CGU_SPLIT_LIMIT", value)
+            .with_stderr_contains(
+                "[ERROR] error in environment variable `CARGO_UNSTABLE_OHM_CGU_SPLIT_LIMIT`: [..]",
+            )
+            .with_status(101)
+            .run();
+        p.cargo("-Zohm-defaults=no build")
+            .arg(format!("-Zohm-cgu-split-limit={value}"))
+            .masquerade_as_nightly_cargo(&["ohm-defaults", "ohm-cgu-split-limit"])
+            .with_stderr_contains(format!("[ERROR] {error}"))
+            .with_status(101)
+            .run();
+    }
+    p.cargo("-Zohm-defaults=no -Zohm-cgu-split-limit build")
+        .masquerade_as_nightly_cargo(&["ohm-defaults", "ohm-cgu-split-limit"])
+        .with_stderr_contains("[ERROR] -Zohm-cgu-split-limit expected a positive integer")
+        .with_status(101)
+        .run();
 }
 
 #[cargo_test]

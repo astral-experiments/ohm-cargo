@@ -830,6 +830,11 @@ fn with_ohm_default_rustflags(
     flags: Flags,
     mut rustflags: Vec<String>,
 ) -> Vec<String> {
+    if matches!(flags, Flags::Rust)
+        && let Some(limit) = gctx.cli_unstable().ohm_cgu_split_limit
+    {
+        rustflags.insert(0, format!("-Zohm-cgu-split-limit={limit}"));
+    }
     if matches!(flags, Flags::Rust) && gctx.cli_unstable().headstart() {
         rustflags.insert(0, OHM_EARLY_METADATA_RUSTFLAG.to_owned());
     }

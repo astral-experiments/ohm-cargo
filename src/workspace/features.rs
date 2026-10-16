@@ -121,6 +121,7 @@
 use std::collections::BTreeSet;
 use std::env;
 use std::fmt::{self, Write};
+use std::num::NonZeroUsize;
 use std::path::PathBuf;
 use std::str::FromStr;
 
@@ -960,6 +961,7 @@ unstable_cli_options!(
     next_lockfile_bump: bool,
     no_embed_metadata: Option<bool> = ("Avoid embedding metadata in library artifacts"),
     no_index_update: bool = ("Do not update the registry index even if the cache is outdated"),
+    ohm_cgu_split_limit: Option<NonZeroUsize> = ("Limit the shards per oversized incremental codegen unit at opt-level 0 or 1; 1 disables splitting"),
     ohm_clippy_seed_isolation: Option<bool> = ("Isolate bundled Clippy outputs from worktree snapshots (automatic when cloning is available)"),
     ohm_defaults: Option<bool> = ("Enable the defaults packaged with Ohm"),
     ohm_defer_dev_deps: Option<bool> = ("Skip proven-unused dev dependencies in targeted test rebuilds (enabled by Ohm defaults)"),
@@ -1601,6 +1603,14 @@ impl CliUnstable {
             "mtime-on-use" => self.mtime_on_use = parse_empty(k, v)?,
             "no-embed-metadata" => self.no_embed_metadata = Some(parse_bool(k, v)?),
             "no-index-update" => self.no_index_update = parse_empty(k, v)?,
+            "ohm-cgu-split-limit" => {
+                self.ohm_cgu_split_limit = Some(
+                    v.ok_or_else(|| {
+                        anyhow::anyhow!("-Zohm-cgu-split-limit expected a positive integer")
+                    })?
+                    .parse()?,
+                );
+            }
             "ohm-defaults" => self.ohm_defaults = Some(parse_bool(k, v)?),
             "ohm-defer-dev-deps" => self.ohm_defer_dev_deps = Some(parse_bool(k, v)?),
             "ohm-early-tests" => self.ohm_early_tests = Some(parse_bool(k, v)?),
