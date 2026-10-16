@@ -170,6 +170,136 @@ fn legacy_registry_cleanup_preserves_current_dependencies_and_warm_builds() {
 }
 
 #[cargo_test]
+fn dependency_gc_preserves_reused_transitive_dependencies_and_rebuilds_evicted_variants() {
+    Package::new("gc-leaf", "1.0.0")
+        .file("src/lib.rs", "pub fn value() -> u32 { 42 }")
+        .publish();
+    Package::new("gc-dependency", "1.0.0")
+        .dep("gc-leaf", "1.0.0")
+        .feature("extra", &[])
+        .file("src/lib.rs", "pub fn value() -> u32 { gc_leaf::value() }")
+        .publish();
+    let project = cargo_test_support::project()
+        .file("Cargo.toml", "[package]\nname = \"foo\"\nversion = \"0.0.1\"\n[dependencies]\ngc-dependency = { version = \"1.0.0\", features = [\"extra\"] }\n")
+        .file("src/main.rs", "fn main() { println!(\"{}\", gc_dependency::value()); }")
+        .build();
+    cargo(&project, "build").run();
+    let metadata = shared_root().join(".ohm-gc-v1");
+    let context = json_files(&metadata.join("contexts"))[0]
+        .file_stem()
+        .unwrap()
+        .to_owned();
+    let usage = metadata.join("dependencies").join(&context);
+    let old_record = json_files(&usage).pop().unwrap();
+    let old_bytes = fs::read(&old_record).unwrap();
+    let old_set: serde_json::Value = serde_json::from_slice(&old_bytes).unwrap();
+    let old_paths = old_set["entries"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .map(|entry| shared_root().join(entry.as_str().unwrap()))
+        .collect::<Vec<_>>();
+    assert_eq!(old_paths.len(), 2, "record the transitive dependency too");
+    filetime::set_file_mtime(
+        &old_record,
+        filetime::FileTime::from_unix_time(946_684_800, 0),
+    )
+    .unwrap();
+
+    project.change_file("Cargo.toml", "[package]\nname = \"foo\"\nversion = \"0.0.1\"\n[dependencies]\ngc-dependency = \"1.0.0\"\n");
+    cargo(&project, "build").run();
+    assert_eq!(json_files(&usage).len(), 2);
+    cargo(&project, "gc --dry-run")
+        .with_stderr_contains(
+            "Would remove dependency [..]/gc-dependency/[..] (unused for at least 1 hour)",
+        )
+        .with_stderr_does_not_contain("Would remove dependency [..]/gc-leaf/[..]")
+        .run();
+    assert!(old_paths.iter().all(|path| path.is_dir()));
+    collect(&project, false);
+    let old = old_paths
+        .iter()
+        .find(|path| path.parent().unwrap().ends_with("gc-dependency"))
+        .unwrap();
+    let leaf = old_paths
+        .iter()
+        .find(|path| path.parent().unwrap().ends_with("gc-leaf"))
+        .unwrap();
+    assert!(!old.exists());
+    assert!(leaf.is_dir());
+    cargo(&project, "run")
+        .with_stderr_does_not_contain("[COMPILING] [..]")
+        .with_stdout_data("42\n")
+        .run();
+    cargo(&project, "build --features gc-dependency/extra")
+        .with_stderr_contains("[COMPILING] gc-dependency v1.0.0")
+        .with_stderr_does_not_contain("[COMPILING] gc-leaf [..]")
+        .run();
+    assert!(old.is_dir());
+    assert_eq!(
+        json_files(&usage).len(),
+        2,
+        "the same dependency set reuses its record"
+    );
+    assert_eq!(
+        fs::read(old_record).unwrap(),
+        old_bytes,
+        "warm use leaves the dependency list immutable"
+    );
+    collect(&project, false);
+    assert!(
+        old.is_dir(),
+        "reusing an evicted variant refreshes its usage"
+    );
+}
+
+#[cargo_test]
+fn checking_reused_build_artifacts_refreshes_their_dependency_usage() {
+    let project = donor();
+    // A concrete loader search path permits authenticated build-to-check reuse.
+    cargo(&project, "-Zohm-reuse-built-deps -Zno-embed-metadata build")
+        .masquerade_as_nightly_cargo(&[
+            "ohm-defaults",
+            "ohm-shared-registry-cache",
+            "ohm-reuse-built-deps",
+            "no-embed-metadata",
+        ])
+        .env(cargo_util::paths::dylib_path_envvar(), project.root())
+        .run();
+    let metadata = shared_root().join(".ohm-gc-v1");
+    let context = json_files(&metadata.join("contexts"))[0]
+        .file_stem()
+        .unwrap()
+        .to_owned();
+    let records = json_files(&metadata.join("dependencies").join(context));
+    assert_eq!(records.len(), 1);
+    filetime::set_file_mtime(
+        &records[0],
+        filetime::FileTime::from_unix_time(946_684_800, 0),
+    )
+    .unwrap();
+    let started = SystemTime::now();
+    cargo(
+        &project,
+        "-Zohm-reuse-built-deps -Zno-embed-metadata check -v",
+    )
+    .masquerade_as_nightly_cargo(&[
+        "ohm-defaults",
+        "ohm-shared-registry-cache",
+        "ohm-reuse-built-deps",
+        "no-embed-metadata",
+    ])
+    .env(cargo_util::paths::dylib_path_envvar(), project.root())
+    .with_stderr_contains("[FRESH] gc-dependency v1.0.0")
+    .with_stderr_does_not_contain("[CHECKING] gc-dependency [..]")
+    .run();
+    assert!(fs::metadata(&records[0]).unwrap().modified().unwrap() >= started);
+    cargo(&project, "gc --dry-run")
+        .with_stderr_contains("[SUMMARY] 0 files")
+        .run();
+}
+
+#[cargo_test]
 fn upgrades_retire_fresh_contexts_without_removing_installed_compilers() {
     use std::os::unix::fs::PermissionsExt as _;
 
@@ -295,11 +425,22 @@ fn fresh_builds_preserve_ownership_records_and_in_tree_targets() {
         })
         .collect::<Vec<_>>();
 
-    let usage = fs::read_dir(metadata.join("last-used"))
+    let mut usage = fs::read_dir(metadata.join("last-used"))
         .unwrap()
         .map(|entry| entry.unwrap().path())
         .collect::<Vec<_>>();
     assert!(!usage.is_empty());
+    for context in fs::read_dir(metadata.join("dependencies")).unwrap() {
+        usage.extend(json_files(&context.unwrap().path()));
+    }
+    let dependency_bytes = usage
+        .iter()
+        .filter(|path| {
+            path.extension()
+                .is_some_and(|extension| extension == "json")
+        })
+        .map(|path| (path.clone(), fs::read(path).unwrap()))
+        .collect::<Vec<_>>();
     for path in &usage {
         filetime::set_file_mtime(path, old_mtime).unwrap();
     }
@@ -311,6 +452,9 @@ fn fresh_builds_preserve_ownership_records_and_in_tree_targets() {
         .run();
     for path in usage {
         assert!(fs::metadata(path).unwrap().modified().unwrap() >= started);
+    }
+    for (path, contents) in dependency_bytes {
+        assert_eq!(fs::read(path).unwrap(), contents);
     }
     for (path, contents) in before {
         assert_eq!(fs::read(&path).unwrap(), contents, "{}", path.display());
