@@ -1698,10 +1698,9 @@ mod tests {
         }
         drop(tracker);
         // Automatic checkpoints still recycle the WAL even though exiting a build
-        // no longer forces a checkpoint. Without them this grows past 20 MiB.
+        // no longer forces a checkpoint. Without them it grows with every update.
         assert!(
-            fs::metadata(cache.root.join(DIRECTORY).join("cache.sqlite-wal"))?.len()
-                < 8 * 1024 * 1024
+            fs::metadata(cache.root.join(DIRECTORY).join("cache.sqlite-wal"))?.len() < 1024 * 1024
         );
         assert_eq!(cache.used("abcdef")?, now + Duration::from_nanos(1_999));
         Ok(())
