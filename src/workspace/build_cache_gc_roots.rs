@@ -8,6 +8,7 @@ use std::time::{Duration, Instant};
 use anyhow::{Context as _, ensure};
 
 use super::build_cache_gc;
+use crate::compiler::Layout;
 use crate::util::{CargoResult, GlobalContext, HumanBytes};
 
 const ROOTS: &str = ".ohm-build-roots-v1";
@@ -19,6 +20,9 @@ pub(crate) fn register_root(gctx: &GlobalContext, root: &Path) -> CargoResult<()
     match fs::create_dir(&directory) {
         Ok(()) => {}
         Err(error) if error.kind() == std::io::ErrorKind::AlreadyExists => {}
+        Err(error) if error.kind() == std::io::ErrorKind::NotFound => {
+            fs::create_dir_all(&directory)?
+        }
         Err(error) => return Err(error.into()),
     }
     validate_directory(&directory)?;
@@ -87,7 +91,7 @@ fn validate_directory(directory: &Path) -> CargoResult<fs::Metadata> {
     Ok(metadata)
 }
 
-/// Collects registered roots, or one explicit root, without loading a workspace.
+/// Collects registered and discoverable legacy roots without loading a workspace.
 pub fn collect(gctx: &GlobalContext, root: Option<&Path>, dry_run: bool) -> CargoResult<()> {
     ensure!(
         cfg!(any(target_os = "linux", target_os = "macos")),
@@ -96,14 +100,49 @@ pub fn collect(gctx: &GlobalContext, root: Option<&Path>, dry_run: bool) -> Carg
     let directory = gctx.home().as_path_unlocked().join(ROOTS);
     let roots = match root {
         Some(root) => vec![gctx.cwd().join(root).canonicalize()?],
-        None => registered_roots(&directory)?,
+        None => {
+            let mut roots = registered_roots(&directory)?;
+            if let Some(build) = &gctx.build_config()?.build_dir
+                && !build.raw_value().contains("{workspace-")
+                && let Some(path) = gctx.build_dir(&gctx.cwd().join("Cargo.toml"))?
+            {
+                discover_roots(path.as_path_unlocked(), 0, &mut roots)?;
+            }
+            let mut caches = Vec::new();
+            if let Some(home) = gctx.get_env_os("HOME") {
+                caches.push(Path::new(home).join(".cache"));
+                #[cfg(target_os = "macos")]
+                caches.push(Path::new(home).join("Library/Caches"));
+            }
+            if let Some(cache) = gctx.get_env_os("XDG_CACHE_HOME")
+                && Path::new(cache).is_absolute()
+            {
+                caches.push(PathBuf::from(cache));
+            }
+            for cache in caches {
+                discover_roots(&cache, 4, &mut roots)?;
+            }
+            roots.sort();
+            roots.dedup();
+            roots
+        }
+    };
+    let current_ohm = if roots.is_empty() {
+        None
+    } else {
+        gctx.load_global_rustc(None).ok().and_then(|rustc| {
+            build_cache_gc::ohm_version(&rustc.verbose_version).map(str::to_owned)
+        })
     };
     let mut counts = build_cache_gc::FileCounts::default();
     for root in roots {
         gctx.shell()
             .verbose(|shell| shell.status("Checking", root.display()))?;
-        let summary = collect_root(&root, dry_run)
+        let summary = collect_root(&root, dry_run, current_ohm.as_deref())
             .with_context(|| format!("failed to inspect {}", root.display()))?;
+        if !dry_run {
+            register_root(gctx, &root)?;
+        }
         counts.include(&summary.counts);
         for detail in &summary.details {
             gctx.shell()
@@ -140,15 +179,50 @@ pub fn collect(gctx: &GlobalContext, root: Option<&Path>, dry_run: bool) -> Carg
     Ok(())
 }
 
+/// Finds marked roots near cache-directory tops without traversing artifact trees.
+/// Symlinks and inaccessible directories never expand discovery's reach.
+fn discover_roots(path: &Path, depth: usize, roots: &mut Vec<PathBuf>) -> CargoResult<()> {
+    if !fs::symlink_metadata(path).is_ok_and(|metadata| metadata.is_dir()) {
+        return Ok(());
+    }
+    if fs::symlink_metadata(path.join(Layout::SHARED_REGISTRY_CACHE_MARKER))
+        .is_ok_and(|metadata| metadata.is_file())
+    {
+        roots.push(path.canonicalize()?);
+    }
+    if depth == 0 || path.join(".cargo-build-lock").exists() {
+        return Ok(());
+    }
+    let Ok(entries) = fs::read_dir(path) else {
+        return Ok(());
+    };
+    for entry in entries {
+        let Ok(entry) = entry else { continue };
+        if entry.file_type().is_ok_and(|kind| kind.is_dir())
+            && !matches!(
+                entry.file_name().to_str(),
+                Some(".git" | "registry" | "node_modules")
+            )
+        {
+            discover_roots(&entry.path(), depth - 1, roots)?;
+        }
+    }
+    Ok(())
+}
+
 /// Drains productive batches while yielding to new builds and bounding I/O.
-fn collect_root(root: &Path, dry_run: bool) -> CargoResult<build_cache_gc::Summary> {
+fn collect_root(
+    root: &Path,
+    dry_run: bool,
+    current_ohm: Option<&str>,
+) -> CargoResult<build_cache_gc::Summary> {
     if dry_run {
-        return build_cache_gc::collect(root, true);
+        return build_cache_gc::collect(root, true, current_ohm);
     }
     let started = Instant::now();
     let mut total = build_cache_gc::Summary::default();
     loop {
-        let summary = build_cache_gc::collect(root, false)?;
+        let summary = build_cache_gc::collect(root, false, current_ohm)?;
         let progress = summary.retired > 0 || summary.deleted_entries > 0;
         total.retired += summary.retired;
         total.deleted_entries += summary.deleted_entries;
@@ -206,6 +280,32 @@ fn registered_roots(directory: &Path) -> CargoResult<Vec<PathBuf>> {
 mod tests {
     use super::*;
     use std::os::unix::fs::symlink;
+
+    #[test]
+    fn discovery_finds_nested_marked_roots_without_entering_profiles_or_symlinks() -> CargoResult<()>
+    {
+        let directory = tempfile::tempdir()?;
+        let outer = directory.path().join("ohm-build");
+        let nested = outer.join("project");
+        let profile = nested.join("debug");
+        let payload = profile.join("payload");
+        let unmarked = directory.path().join("unmarked");
+        for path in [&outer, &nested, &payload, &unmarked] {
+            fs::create_dir_all(path)?;
+            if path != &unmarked {
+                File::create(path.join(Layout::SHARED_REGISTRY_CACHE_MARKER))?;
+            }
+        }
+        File::create(profile.join(".cargo-build-lock"))?;
+        let external = tempfile::tempdir()?;
+        File::create(external.path().join(Layout::SHARED_REGISTRY_CACHE_MARKER))?;
+        symlink(external.path(), directory.path().join("alias"))?;
+        let mut roots = Vec::new();
+        discover_roots(directory.path(), 4, &mut roots)?;
+        roots.sort();
+        assert_eq!(roots, [outer.canonicalize()?, nested.canonicalize()?]);
+        Ok(())
+    }
 
     #[test]
     fn rejects_symlinked_registry_and_records() -> CargoResult<()> {
