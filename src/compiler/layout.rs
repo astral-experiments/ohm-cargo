@@ -234,6 +234,37 @@ impl Layout {
     /// Durable ownership marker for build roots shared by multiple workspaces.
     pub(crate) const SHARED_REGISTRY_CACHE_MARKER: &str = ".ohm-shared-registry-cache-v1";
 
+    /// Stable local guard retained by clean so a newly created profile cannot race deletion.
+    pub(crate) const PRIVATE_BUILD_LOCK: &str = ".ohm-build-lock";
+
+    /// Locks one target tree without locking any other workspace's registry consumers.
+    pub(crate) fn lock_private_root(ws: &Workspace<'_>, exclusive: bool) -> CargoResult<FileLock> {
+        let root = ws.target_dir();
+        paths::create_dir_all_excluded_from_backups_atomic(root.as_path_unlocked())?;
+        if shared_registry_directory_is_nfs(root.as_path_unlocked())? {
+            anyhow::bail!(
+                "shared registry caching requires reliable locks on the private target directory"
+            );
+        }
+        verify_shared_registry_file_lock(
+            &root.as_path_unlocked().join(Self::PRIVATE_BUILD_LOCK),
+            root.as_path_unlocked(),
+        )?;
+        if exclusive {
+            root.open_rw_exclusive_create(
+                Self::PRIVATE_BUILD_LOCK,
+                ws.gctx(),
+                "workspace build directory",
+            )
+        } else {
+            root.open_ro_shared_create(
+                Self::PRIVATE_BUILD_LOCK,
+                ws.gctx(),
+                "workspace build directory",
+            )
+        }
+    }
+
     /// Identifies one workspace and target directory across private artifacts and cleaning.
     ///
     /// Independent target directories must not share mutable workspace state, even when their
@@ -282,10 +313,17 @@ impl Layout {
         let is_new_layout = ws.gctx().cli_unstable().build_dir_new_layout;
         let mut root = ws.target_dir();
         let mut build_root = ws.build_dir();
+        let mut shared_root = ws
+            .shared_registry_cache_enabled()
+            .then(|| ws.configured_build_dir());
         if let Some(target) = target {
             root.push(target.short_name());
             build_root.push(target.short_name());
+            if let Some(shared_root) = &mut shared_root {
+                shared_root.push(target.short_name());
+            }
         }
+        let shared_dest = shared_root.as_ref().map(|root| root.join(dest));
         let build_dest = build_root.join(dest);
         let dest = root.join(dest);
         ws.validate_shared_cache_layout(
@@ -300,11 +338,12 @@ impl Layout {
         if root != build_root {
             paths::create_dir_all_excluded_from_backups_atomic(build_root.as_path_unlocked())?;
         }
-        if ws.shared_registry_cache_enabled() {
-            let shared_root = ws.build_dir();
-            if shared_registry_directory_is_nfs(shared_root.as_path_unlocked())?
-                || shared_registry_directory_is_nfs(build_root.as_path_unlocked())?
-            {
+        let shared_dir_lock = if let Some(shared_dest) = &shared_dest
+            && !must_take_build_dir_lock_exclusively
+        {
+            let shared_root = ws.configured_build_dir();
+            paths::create_dir_all_excluded_from_backups_atomic(shared_root.as_path_unlocked())?;
+            if shared_registry_directory_is_nfs(shared_root.as_path_unlocked())? {
                 anyhow::bail!(
                     "shared registry caching requires reliable filesystem locks; \
                      NFS build directories are unsupported: {}",
@@ -339,19 +378,39 @@ impl Layout {
             // A cross-target or profile directory can itself be a separate unsupported mount.
             // Verify the exact lock Cargo is about to use, without relying on `FileLock`'s
             // intentional unsupported-lock fallback.
-            paths::create_dir_all(build_dest.as_path_unlocked())?;
-            if shared_registry_directory_is_nfs(build_dest.as_path_unlocked())? {
+            paths::create_dir_all(shared_dest.as_path_unlocked())?;
+            if shared_registry_directory_is_nfs(shared_dest.as_path_unlocked())? {
                 anyhow::bail!(
                     "shared registry caching requires reliable filesystem locks; \
                      NFS build directories are unsupported: {}",
-                    build_dest.display()
+                    shared_dest.display()
                 );
             }
             verify_shared_registry_file_lock(
-                &build_dest.as_path_unlocked().join(".cargo-build-lock"),
-                build_dest.as_path_unlocked(),
+                &shared_dest.as_path_unlocked().join(".cargo-build-lock"),
+                shared_dest.as_path_unlocked(),
             )?;
-        }
+            let shared_lock = shared_dest.as_path_unlocked().join(".cargo-build-lock");
+            ws.validate_shared_cache_layout(
+                &shared_lock,
+                &dest.as_path_unlocked().join(".cargo-lock"),
+            )?;
+            // A cache colocated with the target needs only one profile lock. Otherwise,
+            // take the global guard first; cleaning private targets never needs this guard.
+            if ws.canonical_build_path(&shared_lock)
+                == ws.canonical_build_path(&build_dest.as_path_unlocked().join(".cargo-build-lock"))
+            {
+                None
+            } else {
+                Some(shared_dest.open_ro_shared_create(
+                    ".cargo-build-lock",
+                    ws.gctx(),
+                    "shared registry build directory",
+                )?)
+            }
+        } else {
+            None
+        };
 
         // Now that the excluded from backups target root is created we can create the
         // actual destination (sub)subdirectory.
@@ -459,18 +518,19 @@ impl Layout {
         let workspace_is_locked = workspace_lock.is_some()
             || (ws.shared_registry_cache_enabled() && must_take_build_dir_lock_exclusively);
         #[cfg(unix)]
-        let (workspace_lock, build_dir_lock, inherited_locks) =
+        let (workspace_lock, build_dir_lock, shared_dir_lock, inherited_locks) =
             if ws.shared_registry_cache_enabled() {
                 // Keep the profile guard until the workspace guard has been released. On
                 // parent death the same open file descriptions remain owned by children.
                 let locks = workspace_lock
                     .into_iter()
                     .chain(build_dir_lock)
+                    .chain(shared_dir_lock)
                     .map(|lock| Arc::new(lock.into_file()))
                     .collect();
-                (None, None, locks)
+                (None, None, None, locks)
             } else {
-                (workspace_lock, build_dir_lock, Vec::new())
+                (workspace_lock, build_dir_lock, shared_dir_lock, Vec::new())
             };
         Ok(Layout {
             artifact_dir,
@@ -478,6 +538,7 @@ impl Layout {
                 root: build_root.clone(),
                 deps,
                 build: build_dest.join("build"),
+                shared_build: shared_dest.map(|dest| dest.join("build").into_path_unlocked()),
                 artifact,
                 incremental,
                 fingerprint: build_dest.join(".fingerprint"),
@@ -486,6 +547,7 @@ impl Layout {
                 _workspace_lock: workspace_lock,
                 workspace_is_locked,
                 _lock: build_dir_lock,
+                _shared_lock: shared_dir_lock,
                 is_new_layout,
             },
             _lock: lock,
@@ -518,6 +580,36 @@ impl Layout {
         for lock in &self.inherited_locks {
             command.inherit_file(Arc::clone(lock));
         }
+    }
+}
+
+/// Keeps private outputs alive through compilation and any processes using its results.
+pub(crate) struct PrivateBuildLease {
+    #[cfg(unix)]
+    file: Arc<File>,
+    #[cfg(not(unix))]
+    _lock: FileLock,
+}
+
+impl PrivateBuildLease {
+    /// Acquires the local guard before profile locks and without serializing ordinary builds.
+    pub(crate) fn acquire(ws: &Workspace<'_>) -> CargoResult<Self> {
+        ws.validate_shared_cache_target()?;
+        let lock = Layout::lock_private_root(ws, false)?;
+        Ok(Self {
+            #[cfg(unix)]
+            file: Arc::new(lock.into_file()),
+            #[cfg(not(unix))]
+            _lock: lock,
+        })
+    }
+
+    /// Lets children retain the same lock description if Cargo exits first.
+    pub(crate) fn inherit(&self, command: &mut cargo_util::ProcessBuilder) {
+        #[cfg(unix)]
+        command.inherit_file(Arc::clone(&self.file));
+        #[cfg(not(unix))]
+        let _ = command;
     }
 }
 
@@ -628,6 +720,8 @@ pub struct BuildDirLayout {
     deps: PathBuf,
     /// The primary directory for build files
     build: PathBuf,
+    /// Registry units can be shared while every mutable workspace path remains private.
+    shared_build: Option<PathBuf>,
     /// The directory for artifacts, i.e. binaries, cdylibs, staticlibs
     artifact: PathBuf,
     /// The directory for incremental files
@@ -649,6 +743,7 @@ pub struct BuildDirLayout {
     /// Will be `None` when the build-dir and target-dir are the same path as we cannot
     /// lock the same path twice.
     _lock: Option<FileLock>,
+    _shared_lock: Option<FileLock>,
     is_new_layout: bool,
 }
 
@@ -714,6 +809,10 @@ impl BuildDirLayout {
     pub fn build(&self) -> &Path {
         &self.build
     }
+    /// Returns the optional registry build directory for this profile and target.
+    pub(crate) fn shared_build(&self) -> Option<&Path> {
+        self.shared_build.as_deref()
+    }
     /// Fetch the build script path.
     pub fn build_script(&self, pkg_dir: &str) -> PathBuf {
         if self.is_new_layout {
@@ -740,7 +839,13 @@ impl BuildDirLayout {
     }
     /// Fetch the build unit path
     pub fn build_unit(&self, pkg_dir: &str) -> PathBuf {
-        self.build().join(pkg_dir)
+        if pkg_dir.starts_with("registries/")
+            && let Some(shared_build) = &self.shared_build
+        {
+            shared_build.join(pkg_dir)
+        } else {
+            self.build().join(pkg_dir)
+        }
     }
     /// Create and return the tmp path.
     pub fn prepare_tmp(&self) -> CargoResult<&Path> {

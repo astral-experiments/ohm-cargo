@@ -1890,6 +1890,7 @@ fn spawn_shared_registry_cargo(
                     && (line.contains("Compiling") || line.contains("Checking")))
                     || line.contains(lock)
             }) || line.contains("Blocking waiting for file lock on build directory")
+                || line.contains("Blocking waiting for file lock on workspace build directory")
             {
                 let _ = ready.send(index);
             }
@@ -1974,6 +1975,56 @@ fn finish_shared_registry_cargos(mut children: Vec<SharedRegistryChild>) -> Vec<
         "concurrent Cargo processes deadlocked: {outputs:#?}"
     );
     outputs
+}
+
+#[cargo_test]
+#[cfg(any(target_os = "linux", target_os = "macos"))]
+fn shared_registry_clean_waits_only_for_its_own_workspace() {
+    Package::new("clean-dependency", "1.0.0").publish();
+    let shared = paths::root().join("shared-build");
+    let [active, other] = ["active", "other"].map(|name| {
+        let project = project_in(name)
+            .file(
+                "Cargo.toml",
+                "[package]\nname = \"foo\"\nversion = \"0.1.0\"\n\n[dependencies]\nclean-dependency = \"1.0.0\"\n",
+            )
+            .file("src/lib.rs", "")
+            .build();
+        project
+            .shared_registry_cargo("-Zohm-shared-registry-cache build")
+            .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+            .env("CARGO_BUILD_BUILD_DIR", &shared)
+            .run();
+        project
+    });
+    let guards = ["debug/.cargo-build-lock"].map(|path| {
+        let guard = std::fs::File::open(shared.join(path)).unwrap();
+        guard.lock_shared().unwrap();
+        guard
+    });
+    let private = std::fs::File::open(active.root().join("target/.ohm-build-lock")).unwrap();
+    private.lock_shared().unwrap();
+    let clean = |project: &cargo_test_support::Project| {
+        project
+            .shared_registry_cargo("-Zohm-shared-registry-cache clean")
+            .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+            .env("CARGO_BUILD_BUILD_DIR", &shared)
+            .build_command()
+    };
+    let (ready, queued) = mpsc::channel();
+    let other_clean = spawn_shared_registry_cargo(clean(&other), 0, &[], ready.clone());
+    execs().run_output(&finish_shared_registry_cargos(vec![other_clean])[0]);
+    assert!(!other.root().join("target/debug").exists());
+    assert!(active.root().join("target/debug").exists());
+
+    let mut active_clean = [spawn_shared_registry_cargo(clean(&active), 0, &[], ready)];
+    wait_for_shared_registry_barriers(&queued, &mut active_clean);
+    assert!(active.root().join("target/debug").exists());
+    private.unlock().unwrap();
+    execs().run_output(&finish_shared_registry_cargos(Vec::from(active_clean))[0]);
+    assert!(!active.root().join("target/debug").exists());
+    assert!(shared.join("debug/build/registries").is_dir());
+    drop(guards);
 }
 
 #[cargo_test]
@@ -2689,21 +2740,27 @@ fn shared_registry_cache_automatically_shares_explicit_build_directories() {
 
     assert!(shared.join(".ohm-shared-registry-cache-v1").is_file());
     assert!(shared.join("debug/build/registries").is_dir());
-    for workspace in std::fs::read_dir(shared.join("debug/build/workspaces")).unwrap() {
-        assert!(
-            !workspace
+    assert!(!shared.join("debug/build/workspaces").exists());
+    assert!(!shared.join("debug/incremental").exists());
+    for project in [&left, &right] {
+        for workspace in
+            std::fs::read_dir(project.root().join("target/debug/build/workspaces")).unwrap()
+        {
+            assert!(
+                !workspace
+                    .unwrap()
+                    .path()
+                    .join(".ohm-worktree-seed-deny-v7")
+                    .exists()
+            );
+        }
+        assert_eq!(
+            std::fs::read_dir(project.root().join("target/debug/incremental"))
                 .unwrap()
-                .path()
-                .join(".ohm-worktree-seed-deny-v7")
-                .exists()
+                .count(),
+            1
         );
     }
-    assert_eq!(
-        std::fs::read_dir(shared.join("debug/incremental"))
-            .expect("read workspace-private incremental directories")
-            .count(),
-        2,
-    );
 
     right
         .cargo("check -v")
@@ -2784,7 +2841,7 @@ fn shared_registry_cache_preserves_cross_workspace_reuse_and_private_early_cutof
         .with_stderr_contains("[CHECKING] cutoff-shared-registry v1.0.0")
         .run();
 
-    let workspace_root = shared.join("debug/build/workspaces");
+    let workspace_root = left.root().join("target/debug/build/workspaces");
     let left_namespaces = std::fs::read_dir(&workspace_root)
         .expect("left workspace namespace should exist")
         .map(|entry| {
@@ -2827,7 +2884,7 @@ fn shared_registry_cache_preserves_cross_workspace_reuse_and_private_early_cutof
         .run();
     drop(left_workspace_lock);
 
-    let right_namespace = std::fs::read_dir(&workspace_root)
+    let right_namespace = std::fs::read_dir(right.root().join("target/debug/build/workspaces"))
         .expect("right workspace namespace should exist")
         .filter_map(Result::ok)
         .find(|entry| !left_namespaces.contains(&entry.file_name()))
@@ -3136,7 +3193,7 @@ fn shared_registry_cache_allows_nested_builds_with_distinct_target_directories()
 
     assert!(parent_target.is_dir());
     assert!(nested_target.is_dir());
-    let namespaces = std::fs::read_dir(shared.join("debug/build/workspaces"))
+    let namespaces = std::fs::read_dir(parent_target.join("debug/build/workspaces"))
         .expect("the outer workspace should have a private namespace")
         .map(|entry| entry.expect("workspace namespace should be readable"))
         .collect::<Vec<_>>();
@@ -3205,7 +3262,7 @@ fn shared_registry_cache_isolates_target_directories_and_cleans_only_their_priva
         .with_stderr_contains("[CHECKING] target-isolation-registry v1.0.0")
         .run();
 
-    let workspace_root = shared.join("debug/build/workspaces");
+    let workspace_root = left_target.join("debug/build/workspaces");
     let left_namespace = std::fs::read_dir(&workspace_root)
         .expect("left target namespace should exist")
         .next()
@@ -3234,7 +3291,7 @@ fn shared_registry_cache_isolates_target_directories_and_cleans_only_their_priva
         .with_stderr_contains("[CHECKING] target-isolation-app v0.1.0 ([..])")
         .run();
 
-    let right_namespace = std::fs::read_dir(&workspace_root)
+    let right_namespace = std::fs::read_dir(right_target.join("debug/build/workspaces"))
         .expect("both target namespaces should exist")
         .filter_map(Result::ok)
         .find(|entry| entry.path() != left_namespace)
@@ -3322,7 +3379,7 @@ fn shared_registry_cache_canonicalizes_symlinked_target_directories() {
         .run();
 
     assert_eq!(
-        std::fs::read_dir(shared.join("debug/build/workspaces"))
+        std::fs::read_dir(target.join("debug/build/workspaces"))
             .expect("canonical target aliases should share one namespace")
             .count(),
         1,
@@ -3791,14 +3848,11 @@ registry:left:left
 "#]])
         .run();
 
-    let incremental = shared_build_dir.join("debug/incremental");
-    assert_eq!(
-        std::fs::read_dir(&incremental)
-            .expect("read private workspace incremental directories")
-            .count(),
-        2,
-        "each worktree must retain a separate incremental directory",
-    );
+    assert!(!shared_build_dir.join("debug/incremental").exists());
+    for project in [&left, &right] {
+        let incremental = project.root().join("target/debug/incremental");
+        assert_eq!(std::fs::read_dir(incremental).unwrap().count(), 1);
+    }
 }
 
 #[cargo_test]
@@ -4947,7 +5001,7 @@ fn native_tool_closure_sharing(http_mirror: bool) {
     }
 
     assert!(shared.join("debug/build/registries").is_dir());
-    assert!(shared.join("debug/build/workspaces").is_dir());
+    assert!(!shared.join("debug/build/workspaces").exists());
 }
 
 #[cfg(unix)]
@@ -6224,10 +6278,10 @@ fn shared_registry_cache_rebuilds_docs_after_rustdoc_invalidation() {
     let doc = project.root().join("target/doc/registry_doc/index.html");
     assert!(doc.is_file());
     assert_exists_patterns_with_base_dir(
-        &shared,
-        &["debug/build/registries/*/registry-doc/*/fingerprint/doc-lib-registry_doc"],
+        &project.root().join("target"),
+        &["debug/build/workspaces/*/*/registry-doc/*/fingerprint/doc-lib-registry_doc"],
     );
-    let fingerprint = std::fs::read_dir(&shared)
+    let fingerprint = std::fs::read_dir(project.root().join("target"))
         .unwrap()
         .map(Result::unwrap)
         .find(|entry| {
@@ -6324,20 +6378,20 @@ fn shared_registry_cache_keeps_rustdoc_merge_state_private() {
             .is_file()
     );
     assert!(!right.root().join("target/doc/left_doc/index.html").exists());
-    assert_eq!(
-        std::fs::read_dir(&shared_build_dir)
-            .expect("read shared rustdoc build directory")
-            .filter_map(Result::ok)
-            .filter(|entry| {
-                entry
+    for project in [&left, &right] {
+        assert_eq!(
+            std::fs::read_dir(project.root().join("target"))
+                .unwrap()
+                .map(Result::unwrap)
+                .filter(|entry| entry
                     .file_name()
                     .to_string_lossy()
-                    .starts_with(".rustdoc_fingerprint-")
-            })
-            .count(),
-        2,
-        "each worktree must retain a separate rustdoc merge fingerprint",
-    );
+                    .starts_with(".rustdoc_fingerprint-"))
+                .count(),
+            1,
+            "each worktree keeps its own rustdoc merge fingerprint",
+        );
+    }
 }
 
 #[cargo_test]
@@ -6384,9 +6438,11 @@ fn shared_registry_cache_keeps_test_temporary_directories_private() {
         .env("CARGO_BUILD_BUILD_DIR", &shared_build_dir)
         .run();
 
-    let mut contents = std::fs::read_dir(shared_build_dir.join("tmp"))
-        .expect("read private test temporary directories")
-        .filter_map(Result::ok)
+    assert!(!shared_build_dir.join("tmp").exists());
+    let mut contents = [&left, &right]
+        .into_iter()
+        .flat_map(|project| std::fs::read_dir(project.root().join("target/tmp")).unwrap())
+        .map(Result::unwrap)
         .map(|entry| {
             std::fs::read_to_string(entry.path().join("workspace-marker"))
                 .expect("read private workspace marker")
@@ -6456,7 +6512,14 @@ fn shared_registry_cache_plain_clean_preserves_other_workspaces_and_registries()
         .env("CARGO_BUILD_BUILD_DIR", &shared)
         .run();
 
-    assert!(!left.root().join("target").exists());
+    assert!(left.root().join("target/.ohm-build-lock").is_file());
+    assert!(
+        std::fs::read_dir(left.root().join("target"))
+            .unwrap()
+            .map(Result::unwrap)
+            .all(|entry| entry.file_name() == ".ohm-build-lock"
+                || entry.file_name() == "CACHEDIR.TAG")
+    );
     assert!(
         right
             .root()

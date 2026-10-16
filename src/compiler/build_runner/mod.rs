@@ -1033,18 +1033,21 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
                 target.push(target_kind.short_name());
             }
             let build = self.files().layout(kind).build_dir();
-            let build_profile = build
-                .build()
-                .parent()
-                .expect("build directory has a profile");
             let artifact_profile = target.join(self.bcx.profiles.get_dir_name().as_str());
-            ancestors.push(SharedCacheAncestor {
-                build_root: ws.canonical_build_path(build.root()),
-                target_root: ws.canonical_build_path(target.as_path_unlocked()),
-                build_lock: ws.canonical_build_path(&build_profile.join(".cargo-build-lock")),
-                artifact_lock: ws
-                    .canonical_build_path(&artifact_profile.as_path_unlocked().join(".cargo-lock")),
-            });
+            for build in std::iter::once(build.build())
+                .chain(build.shared_build())
+                .dedup()
+            {
+                let profile = build.parent().expect("build directory has a profile");
+                ancestors.push(SharedCacheAncestor {
+                    build_root: ws.canonical_build_path(profile.parent().unwrap()),
+                    target_root: ws.canonical_build_path(target.as_path_unlocked()),
+                    build_lock: ws.canonical_build_path(&profile.join(".cargo-build-lock")),
+                    artifact_lock: ws.canonical_build_path(
+                        &artifact_profile.as_path_unlocked().join(".cargo-lock"),
+                    ),
+                });
+            }
         }
         command.env(
             crate::CARGO_SHARED_CACHE_ANCESTORS_ENV,
@@ -1162,18 +1165,25 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
                 .sorted()
                 .dedup()
             {
-                let mut root = self.bcx.ws.build_dir();
-                if let CompileKind::Target(target) = kind {
-                    root.push(target.short_name());
-                }
-                let lock = root.join(dest.as_str()).join(".cargo-build-lock");
-                let lock = self.bcx.ws.canonical_build_path(lock.as_path_unlocked());
-                if !profile_locks.insert(lock.clone()) {
-                    bail!(
-                        "shared registry build profiles alias the same lock: {}; \
-                         use distinct host and target build directories",
-                        lock.display()
-                    );
+                let roots = [self.bcx.ws.build_dir(), self.bcx.ws.configured_build_dir()];
+                for lock in roots
+                    .into_iter()
+                    .map(|mut root| {
+                        if let CompileKind::Target(target) = kind {
+                            root.push(target.short_name());
+                        }
+                        let lock = root.join(dest.as_str()).join(".cargo-build-lock");
+                        self.bcx.ws.canonical_build_path(lock.as_path_unlocked())
+                    })
+                    .unique()
+                {
+                    if !profile_locks.insert(lock.clone()) {
+                        bail!(
+                            "shared registry build profiles alias the same lock: {}; \
+                             use distinct host and target build directories",
+                            lock.display()
+                        );
+                    }
                 }
             }
         }

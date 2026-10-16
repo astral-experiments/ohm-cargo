@@ -6,7 +6,7 @@ use crate::util::data_structures::{IndexMap, IndexSet};
 use crate::util::edit_distance;
 use crate::util::errors::CargoResult;
 use crate::util::interning::InternedString;
-use crate::util::{Filesystem, GlobalContext, Progress, ProgressStyle};
+use crate::util::{GlobalContext, Progress, ProgressStyle};
 use crate::workspace::profiles::Profiles;
 use crate::workspace::{PackageIdSpec, PackageIdSpecQuery, TargetKind, Workspace};
 use anyhow::bail;
@@ -66,13 +66,18 @@ pub fn clean(ws: &Workspace<'_>, opts: &CleanOptions<'_>) -> CargoResult<()> {
             );
         }
     }
-    let mut build_dir = ws.build_dir();
+    let configured_build_dir = ws.configured_build_dir();
     let gctx = opts.gctx;
     let shared_registry_cache = ws.shared_registry_cache_enabled()
-        || build_dir
+        || configured_build_dir
             .as_path_unlocked()
             .join(Layout::SHARED_REGISTRY_CACHE_MARKER)
             .is_file();
+    let mut build_dir = if shared_registry_cache {
+        target_dir.clone()
+    } else {
+        ws.build_dir()
+    };
     let mut clean_ctx = CleanContext::new(gctx);
     clean_ctx.dry_run = opts.dry_run;
 
@@ -113,8 +118,8 @@ pub fn clean(ws: &Workspace<'_>, opts: &CleanOptions<'_>) -> CargoResult<()> {
     if shared_registry_cache {
         let target_root = fs::canonicalize(target_dir.as_path_unlocked())
             .unwrap_or_else(|_| paths::normalize_path(target_dir.as_path_unlocked()));
-        let build_root = fs::canonicalize(build_dir.as_path_unlocked())
-            .unwrap_or_else(|_| paths::normalize_path(build_dir.as_path_unlocked()));
+        let build_root = fs::canonicalize(configured_build_dir.as_path_unlocked())
+            .unwrap_or_else(|_| paths::normalize_path(configured_build_dir.as_path_unlocked()));
         if target_root.starts_with(&build_root) || build_root.starts_with(&target_root) {
             bail!(
                 "cannot safely clean overlapping target and shared registry build directories; \
@@ -128,6 +133,10 @@ pub fn clean(ws: &Workspace<'_>, opts: &CleanOptions<'_>) -> CargoResult<()> {
             );
         }
     }
+
+    let _private_lease = shared_registry_cache
+        .then(|| Layout::lock_private_root(ws, true))
+        .transpose()?;
 
     if opts.doc {
         if !opts.spec.is_empty() {
@@ -170,13 +179,7 @@ pub fn clean(ws: &Workspace<'_>, opts: &CleanOptions<'_>) -> CargoResult<()> {
         // blow it all away anyway.
         if opts.spec.is_empty() {
             if shared_registry_cache {
-                clean_shared_registry_workspace(
-                    &mut clean_ctx,
-                    ws,
-                    target_dir.as_path_unlocked(),
-                    opts.profile_specified
-                        .then(|| profiles.get_dir_name().as_str()),
-                )?;
+                clean_shared_registry_workspace(&mut clean_ctx, ws, target_dir.as_path_unlocked())?;
             } else {
                 let paths: &[PathBuf] = if build_dir != target_dir {
                     &[
@@ -206,91 +209,25 @@ pub fn clean(ws: &Workspace<'_>, opts: &CleanOptions<'_>) -> CargoResult<()> {
 
 /// Cleans only the calling workspace while preserving shared registry artifacts.
 ///
-/// Every affected profile is locked exclusively before its private build outputs
-/// are removed. Compilers using fine-grained locking hold the same profile lock
-/// in shared mode, so the deletion cannot race an active build in any worktree.
-/// Host profiles are locked first to match the compiler's cross-target lock ordering.
+/// The caller holds this target tree's exclusive guard. Preserve that guard and
+/// the cache tag when cleaning the whole tree, so later builds and cleans use
+/// the same lock file even while profiles are being removed.
 fn clean_shared_registry_workspace(
     clean_ctx: &mut CleanContext<'_>,
     ws: &Workspace<'_>,
     target_directory: &Path,
-    requested_profile: Option<&str>,
 ) -> CargoResult<()> {
-    let build_directory = ws.build_dir();
-    let build_root = build_directory.as_path_unlocked();
-    let workspaces = Layout::shared_workspace_cleanup_namespaces(ws);
-    let mut profile_directories = Vec::new();
-
-    if build_root.is_dir() {
-        for entry in fs::read_dir(build_root)? {
-            let entry = entry?;
-            if !entry.file_type()?.is_dir() {
-                continue;
-            }
-
-            let path = entry.path();
-            if path.join(".cargo-build-lock").is_file() {
-                if requested_profile
-                    .is_none_or(|profile| path.file_name().is_some_and(|name| name == profile))
-                {
-                    profile_directories.push(path);
-                }
-                continue;
-            }
-
-            // Cross-compilation stores profiles one level below the target triple.
-            for nested in fs::read_dir(&path)? {
-                let nested = nested?;
-                if !nested.file_type()?.is_dir() {
-                    continue;
-                }
-                let nested_path = nested.path();
-                if nested_path.join(".cargo-build-lock").is_file()
-                    && requested_profile.is_none_or(|profile| {
-                        nested_path.file_name().is_some_and(|name| name == profile)
-                    })
-                {
-                    profile_directories.push(nested_path);
-                }
-            }
+    if target_directory != ws.target_dir().as_path_unlocked()
+        || !fs::symlink_metadata(target_directory)?.file_type().is_dir()
+    {
+        return clean_ctx.remove_paths(&[target_directory.to_path_buf()]);
+    }
+    for entry in fs::read_dir(target_directory)? {
+        let entry = entry?;
+        if entry.file_name() != Layout::PRIVATE_BUILD_LOCK && entry.file_name() != "CACHEDIR.TAG" {
+            clean_ctx.rm_rf(&entry.path())?;
         }
     }
-
-    // Builds always acquire the host profile lock before any cross-target
-    // profile locks. Preserve that lock ordering while holding every profile
-    // lock, otherwise a concurrent cross-target build and clean can deadlock.
-    profile_directories.sort_unstable_by(|left, right| {
-        let left_is_target = left.parent() != Some(build_root);
-        let right_is_target = right.parent() != Some(build_root);
-        left_is_target
-            .cmp(&right_is_target)
-            .then_with(|| left.cmp(right))
-    });
-    profile_directories.dedup();
-    let mut locks = Vec::with_capacity(profile_directories.len());
-    for profile in &profile_directories {
-        locks.push(Filesystem::new(profile.clone()).open_rw_exclusive_create(
-            ".cargo-build-lock",
-            clean_ctx.gctx,
-            "shared build directory",
-        )?);
-    }
-
-    clean_ctx.remove_paths(&[target_directory.to_path_buf()])?;
-    for profile in &profile_directories {
-        for workspace in &workspaces {
-            clean_ctx.rm_rf(&profile.join("build/workspaces").join(workspace))?;
-            clean_ctx.rm_rf(&profile.join("incremental").join(workspace))?;
-            if requested_profile.is_none()
-                && let Some(root) = profile.parent()
-            {
-                clean_ctx.rm_rf(&root.join("tmp").join(workspace))?;
-                clean_ctx.rm_rf(&root.join(format!(".rustdoc_fingerprint-{workspace}.json")))?;
-            }
-        }
-    }
-    drop(locks);
-
     Ok(())
 }
 

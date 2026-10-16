@@ -113,7 +113,7 @@ pub(crate) fn trim_paths_remap(build_runner: &BuildRunner<'_, '_>, unit: &Unit) 
             .into_iter()
             .map(join_remap),
     );
-    remaps.push(join_remap(build_dir_remap(build_runner)));
+    remaps.extend(build_dir_remaps(build_runner).into_iter().map(join_remap));
     remaps.push(join_remap(sysroot_remap(build_runner, unit)));
     remaps
 }
@@ -262,10 +262,19 @@ fn git_checkout<'a>(
 ///   [`file!`] macro in-place via the `OUT_DIR` environment.
 /// * On Linux, `DW_AT_GNU_dwo_name` that contains paths to split debuginfo
 ///   files (dwp and dwo).
-fn build_dir_remap(build_runner: &BuildRunner<'_, '_>) -> RemapPair {
-    let from = build_runner.bcx.ws.build_dir().into_path_unlocked();
-    let to = "/cargo/build-dir".to_owned();
-    (from, to)
+fn build_dir_remaps(build_runner: &BuildRunner<'_, '_>) -> Vec<RemapPair> {
+    let ws = build_runner.bcx.ws;
+    let private = ws.build_dir().into_path_unlocked();
+    let shared = ws.configured_build_dir().into_path_unlocked();
+    if ws.shared_registry_cache_enabled() && shared != private {
+        // Preserve the virtual path recorded in reusable registry artifacts.
+        vec![
+            (private, "/cargo/workspace-build-dir".to_owned()),
+            (shared, "/cargo/build-dir".to_owned()),
+        ]
+    } else {
+        vec![(private, "/cargo/build-dir".to_owned())]
+    }
 }
 
 #[derive(Serialize)]
@@ -327,7 +336,9 @@ pub(crate) fn write_unremap_file(
     };
 
     insert(sysroot_remap(build_runner, unit));
-    insert(build_dir_remap(build_runner));
+    for remap in build_dir_remaps(build_runner) {
+        insert(remap);
+    }
 
     let mut seen = HashSet::default();
     let mut stack = vec![unit.clone()];

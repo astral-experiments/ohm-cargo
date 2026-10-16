@@ -635,8 +635,8 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
                                 let namespace =
                                     Layout::shared_workspace_namespace(build_runner.bcx.ws);
                                 let incremental = layout.build_dir().incremental();
-                                // Snapshot destinations are siblings in the same separate build
-                                // directory, regardless of the recipient's final target directory.
+                                // Probe this target's filesystem. Importing also verifies that
+                                // the recipient's target supports cloning from this donor.
                                 util::file_clone::supported_between(
                                     &workspaces.join(namespace),
                                     &workspaces,
@@ -952,9 +952,13 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
         self.host.artifact_dir().map(|v| v.dest())
     }
 
-    /// Returns the root of the build output tree for the host (`/…/build-dir`)
-    pub fn host_build_root(&self) -> &Path {
-        self.host.build_dir().root()
+    /// Returns the root against which this unit's fingerprint paths are encoded.
+    pub(crate) fn build_root(&self, unit: &Unit) -> PathBuf {
+        if self.is_shared_registry_unit(unit) {
+            self.ws.configured_build_dir().into_path_unlocked()
+        } else {
+            self.ws.build_dir().into_path_unlocked()
+        }
     }
 
     /// The actual canonical compiler driver trusted by the shared registry namespace.
@@ -1610,6 +1614,12 @@ fn is_immutable_registry_unit(
 
     let source_id = package_id.source_id();
     let eligible = source_id.is_remote_registry()
+        // Documentation and integration-test scratch paths refer to this target tree.
+        && !unit.mode.is_doc()
+        && !unit.mode.is_doc_scrape()
+        && !unit.mode.is_doc_test()
+        && !unit.target.is_test()
+        && !unit.target.is_bench()
         && native_tool_policy_allows_unit(
             native_trust,
             native_helper,

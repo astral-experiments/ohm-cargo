@@ -99,6 +99,32 @@ you use bash, it makes sense to add `export RUSTC_WRAPPER=sccache` to
 `.bashrc`. Alternatively, you can set [`build.rustc-wrapper`] in the [Cargo
 configuration][config]. Refer to sccache documentation for more details.
 
+## Ohm shared build storage
+
+With a separate `CARGO_BUILD_BUILD_DIR`, Ohm shares compatible registry builds
+and keeps each workspace's private state in its own `target` directory. This
+includes final outputs, private intermediates, incremental compiler state,
+documentation, and test scratch files. An explicit `CARGO_TARGET_DIR` or
+`--target-dir` selects the location of all that workspace's private state;
+keep it distinct for each worktree.
+
+The global directory holds compatible registry artifacts under
+`<profile>/build/registries/<context>` and reusable ThinLTO backend cache entries.
+Private intermediates live under
+`target/<profile>/build/workspaces/<workspace>/<context>`, and incremental state
+under `target/<profile>/incremental/<workspace>`. Worktree seeding clones private
+state from the donor's target into the recipient's target. Removing a worktree
+also removes its default target, so this private state needs no global ownership
+record or GC pass. Explicit targets outside the checkout need separate cleanup.
+
+`cargo clean` cleans the current workspace's target, including private
+intermediates and incremental state. A target-local lock prevents cleaning state
+still used by its builds or launched programs, without blocking other worktrees.
+The tiny `.ohm-build-lock` and `CACHEDIR.TAG` files remain after a full clean.
+Shared registry artifacts and legacy global state remain in the global directory.
+The first build after switching to this layout rebuilds private intermediates;
+existing global registry artifacts remain reusable.
+
 [`RUSTFLAGS`]: ../reference/config.md#buildrustflags
 [`build.dep-info-basedir`]: ../reference/config.md#builddep-info-basedir
 [`build.rustc-wrapper`]: ../reference/config.md#buildrustc-wrapper

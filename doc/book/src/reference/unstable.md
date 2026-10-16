@@ -2067,18 +2067,18 @@ changes compiler arguments and therefore invalidates existing build fingerprints
 ## ohm-clippy-seed-isolation
 
 When worktree preparation is enabled, Ohm automatically keeps the selected
-compiler's matching bundled Clippy outputs in a private namespace if the shared
-build storage supports copy-on-write cloning. Ordinary build and test snapshots
+compiler's matching bundled Clippy outputs in a private namespace if the donor's
+target storage supports copy-on-write cloning. Ordinary build and test snapshots
 then remain usable after `cargo clippy`. Lint state and Clippy incremental caches
 stay in the donor; they are never imported into another worktree.
 
-Cargo checks cloning with a small temporary file using the same operation as
-snapshot import. It probes the actual source and destination storage once per
-Cargo invocation that needs this policy, removes the temporary files, and falls
-back conservatively if cloning or cleanup fails. Snapshot source and destination
-namespaces must use the same separate build directory. The final
-`CARGO_TARGET_DIR` can use a different filesystem without changing where snapshots
-are cloned.
+Cargo probes the donor's target with a small temporary file once per invocation
+that needs this policy, using the same operation as snapshot import. It removes
+the temporary files and falls back conservatively if cloning or cleanup fails.
+Snapshot import additionally verifies cloning into the recipient's target. The
+worktrees must use the same separate registry build directory, but private state
+is cloned between their target directories. A recipient target on a different
+filesystem may prevent cloning and cause import to be skipped.
 
 Use `-Zohm-clippy-seed-isolation=no` or
 `unstable.ohm-clippy-seed-isolation = false` to disable isolation. This also skips
@@ -2223,8 +2223,9 @@ command while retaining the other Ohm defaults. Setting
 explicitly overridden with `-Zohm-worktree-seeds=yes`. Cargo builds without Ohm's
 packaged defaults continue to require explicit enablement.
 
-Use the same separate `CARGO_BUILD_BUILD_DIR` for both worktrees and a distinct
-`CARGO_TARGET_DIR` for each:
+Use the same separate `CARGO_BUILD_BUILD_DIR` for both worktrees' reusable registry
+artifacts. Final outputs, private intermediates, and incremental state default to
+each workspace's own `target` directory:
 
 ```console
 export CARGO_BUILD_BUILD_DIR=/path/to/shared-build
@@ -2302,7 +2303,10 @@ errors still surface as errors.
 Imported files are independently writable; no mutable file is hardlinked to the
 donor. Metadata relocation and new session lock files are still written
 independently. Seeding is a one-time operation and does not share later workspace
-compilations or collect abandoned worktrees.
+compilations. Removing the recipient worktree also removes its default target,
+including an imported snapshot that has never been built. An explicit target
+outside the checkout needs separate cleanup. See [shared build
+storage](build-cache.md#ohm-shared-build-storage) for the directory layout.
 
 ## compile-time-deps
 

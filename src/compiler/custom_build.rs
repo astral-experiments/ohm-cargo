@@ -529,7 +529,7 @@ fn build_work(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResul
     let shared_registry_root = bcx
         .ws
         .shared_registry_cache_enabled()
-        .then(|| bcx.ws.build_dir().into_path_unlocked());
+        .then(|| bcx.ws.configured_build_dir().into_path_unlocked());
     let validate_shared_registry_environment = build_runner.files().is_shared_registry_unit(unit);
     let shared_registry_compiler_driver = build_runner
         .files()
