@@ -1471,6 +1471,7 @@ pub trait TestEnvCommandExt: Sized {
             .env_remove("SSH_AUTH_SOCK") // ensure an outer agent is never contacted
             .env_remove("USER") // not set on some rust-lang docker images
             .env_remove("XDG_CONFIG_HOME") // see #2345
+            .env_remove("XDG_CACHE_HOME") // keep GC discovery inside the test home
             .env_remove("OUT_DIR"); // see #13204
         if cfg!(windows) {
             self = self.env("USERPROFILE", paths::home());

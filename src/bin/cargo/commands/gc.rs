@@ -8,14 +8,14 @@ pub fn cli() -> Command {
         .arg(
             opt(
                 "build-dir",
-                "Collect one shared build root instead of all registered roots",
+                "Collect one shared build root instead of all known and discovered roots",
             )
             .value_name("PATH")
             .value_parser(clap::value_parser!(PathBuf)),
         )
         .after_help(
-            "Explicitly reclaims tracked state for removed worktrees, obsolete compilers, and \
-             build contexts unused for at least one hour, respecting active builds. \
+            "Explicitly reclaims legacy caches, contexts from older Ohm releases or removed \
+             compilers, and build contexts unused for at least one hour, respecting active builds. \
              Runs from any directory.\n\n\
              Use `cargo clean` to remove the current project's outputs and private build state.",
         )
