@@ -1416,6 +1416,8 @@ mod tests {
         );
         let database = cache.root.join(DIRECTORY).join(tracker::DATABASE);
         let before = fs::read(&database)?;
+        let wal = cache.root.join(DIRECTORY).join("cache.sqlite-wal");
+        let wal_before = fs::read(&wal)?;
         let dry_run = collect_at(&cache.root, true, expires, None)?;
         assert_eq!(dry_run.retired, 1);
         assert!(
@@ -1430,6 +1432,11 @@ mod tests {
             fs::read(database)?,
             before,
             "dry run leaves the database unchanged"
+        );
+        assert_eq!(
+            fs::read(wal)?,
+            wal_before,
+            "dry run does not checkpoint usage"
         );
         assert!(shared.exists());
         let collected = collect_at(&cache.root, false, expires, None)?;
@@ -1601,23 +1608,30 @@ mod tests {
 
     #[test]
     fn corrupt_and_newer_databases_never_become_untracked_legacy_caches() -> CargoResult<()> {
-        for corrupt in [false, true] {
+        for state in ["corrupt", "newer", "missing"] {
             let cache = Cache::new()?;
             cache.enroll()?;
             let artifact = cache.artifact("build/registries/0123456789abcdef")?;
-            if corrupt {
+            if state == "corrupt" {
+                // Checkpoint first: an intact WAL can recover damaged main-file pages.
+                cache
+                    .tracker()?
+                    .conn
+                    .execute_batch("PRAGMA wal_checkpoint(TRUNCATE)")?;
                 fs::write(
                     cache.root.join(DIRECTORY).join(tracker::DATABASE),
                     b"invalid sqlite",
                 )?;
-            } else {
+            } else if state == "newer" {
                 cache
                     .tracker()?
                     .conn
                     .pragma_update(None, "user_version", 999)?;
+            } else {
+                fs::remove_file(cache.root.join(DIRECTORY).join(tracker::DATABASE))?;
             }
-            assert!(collect(&cache.root, true, None).is_err());
-            assert!(collect(&cache.root, false, None).is_err());
+            assert!(collect(&cache.root, true, None).is_err(), "{state}");
+            assert!(collect(&cache.root, false, None).is_err(), "{state}");
             assert!(artifact.is_dir());
         }
         Ok(())
@@ -1671,12 +1685,37 @@ mod tests {
     }
 
     #[test]
+    fn repeated_warm_usage_keeps_the_write_ahead_log_bounded() -> CargoResult<()> {
+        let cache = Cache::new()?;
+        cache.enroll()?;
+        let mut tracker = cache.tracker()?;
+        let entries = [PathBuf::from(
+            "debug/build/registries/abcdef/dep/0123456789abcdef",
+        )];
+        let now = SystemTime::now();
+        for index in 0..2_000 {
+            tracker.touch("abcdef", Some(&entries), now + Duration::from_nanos(index))?;
+        }
+        drop(tracker);
+        // Automatic checkpoints still recycle the WAL even though exiting a build
+        // no longer forces a checkpoint. Without them this grows past 20 MiB.
+        assert!(
+            fs::metadata(cache.root.join(DIRECTORY).join("cache.sqlite-wal"))?.len()
+                < 8 * 1024 * 1024
+        );
+        assert_eq!(cache.used("abcdef")?, now + Duration::from_nanos(1_999));
+        Ok(())
+    }
+
+    #[test]
     fn file_based_contexts_remain_collectable_without_creating_a_database() -> CargoResult<()> {
         let cache = Cache::new()?;
         cache.enroll()?;
         let record = cache.record("abcdef")?;
         let directory = cache.root.join(DIRECTORY);
-        fs::remove_file(directory.join(tracker::DATABASE))?;
+        for suffix in ["", "-wal", "-shm"] {
+            fs::remove_file(directory.join(format!("{}{suffix}", tracker::DATABASE)))?;
+        }
         fs::create_dir(directory.join("contexts"))?;
         fs::write(
             directory.join("contexts/abcdef.json"),

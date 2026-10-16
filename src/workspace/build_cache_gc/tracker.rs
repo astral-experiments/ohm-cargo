@@ -9,6 +9,7 @@ use std::time::{SystemTime, UNIX_EPOCH};
 
 use anyhow::ensure;
 use cargo_util::paths;
+use rusqlite::config::DbConfig;
 use rusqlite::{Connection, OpenFlags, OptionalExtension as _, params};
 
 use super::{Anchor, ContextRecord, FileIdentity, absent, installed_ohm_version, metadata_dir};
@@ -41,6 +42,17 @@ impl Tracker {
         metadata_dir(root, true)?;
         let mut conn = Self::connect(root, OpenFlags::default())?;
         let version: u32 = conn.pragma_query_value(None, "user_version", |row| row.get(0))?;
+        ensure!(
+            version <= SCHEMA_VERSION,
+            "unsupported build-cache database version {version}"
+        );
+        let mode: String =
+            conn.pragma_update_and_check(None, "journal_mode", "WAL", |row| row.get(0))?;
+        ensure!(
+            mode == "wal",
+            "shared build-cache database requires WAL support"
+        );
+        conn.pragma_update(None, "synchronous", "NORMAL")?;
         if version < SCHEMA_VERSION {
             sqlite::migrate(
                 &mut conn,
@@ -66,11 +78,6 @@ impl Tracker {
                     ),
                 ],
             )?;
-        } else {
-            ensure!(
-                version == SCHEMA_VERSION,
-                "unsupported build-cache database version {version}"
-            );
         }
         Ok(Self { conn })
     }
@@ -83,6 +90,12 @@ impl Tracker {
         }
         metadata_dir(root, false)?;
         if absent(&directory.join(DATABASE)) {
+            ensure!(
+                ["-journal", "-wal", "-shm"]
+                    .iter()
+                    .all(|suffix| absent(&directory.join(format!("{DATABASE}{suffix}")))),
+                "build-cache database is missing but its journal remains"
+            );
             return Ok(None);
         }
         let flags = if dry_run {
@@ -138,6 +151,17 @@ impl Tracker {
         #[cfg(not(unix))]
         let _ = before;
         conn.pragma_update(None, "foreign_keys", true)?;
+        // These are reconstructible cache timestamps, like the unsynced mtime
+        // markers they replace. WAL + NORMAL keeps transactions atomic without
+        // syncing every warm build. Keep SQLite's automatic size-based checkpoints,
+        // but do not force another checkpoint whenever a Cargo process exits.
+        conn.set_db_config(DbConfig::SQLITE_DBCONFIG_NO_CKPT_ON_CLOSE, true)?;
+        if !flags.contains(OpenFlags::SQLITE_OPEN_READ_ONLY) {
+            let mode: String = conn.pragma_query_value(None, "journal_mode", |row| row.get(0))?;
+            if mode == "wal" {
+                conn.pragma_update(None, "synchronous", "NORMAL")?;
+            }
+        }
         Ok(conn)
     }
 
