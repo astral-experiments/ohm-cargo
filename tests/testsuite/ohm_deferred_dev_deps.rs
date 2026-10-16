@@ -161,6 +161,88 @@ fn default_preserves_features_and_opt_out_checks_unused_helpers() {
 }
 
 #[cargo_test]
+fn native_link_inputs_rebuild_unused_archives_before_running_tests() {
+    let wrapper = relink_only_wrapper();
+    let p = fixture("native-link-inputs");
+    p.change_file(
+        "helper/Cargo.toml",
+        "[package]\nname=\"helper\"\nversion=\"0.1.0\"\nedition=\"2024\"\n",
+    );
+    let app_manifest = fs::read_to_string(p.root().join("app/Cargo.toml")).unwrap();
+    p.change_file(
+        "app/Cargo.toml",
+        &app_manifest.replace("[features]", "[features]\ndefault = [\"from-helper\"]"),
+    );
+    p.change_file(
+        "app/build.rs",
+        r#"fn main() {
+            println!("cargo:rustc-check-cfg=cfg(script_ready)");
+            println!("cargo:rustc-cfg=script_ready");
+            println!("cargo:rustc-env=SCRIPT_VALUE=ready");
+        }"#,
+    );
+    let helper = |value| {
+        format!("#[unsafe(no_mangle)] pub extern \"C\" fn helper_value() -> u32 {{ {value} }}\n")
+    };
+    p.change_file("helper/src/lib.rs", &helper(1));
+    let manifest = seed(&p, &wrapper);
+
+    // Harmless script outputs still allow deferring a dirty helper.
+    p.change_file("app/src/lib.rs", &source(2, false));
+    p.change_file("helper/src/lib.rs", &helper(2));
+    command(&p, &wrapper, "")
+        .with_stderr_contains("[..]accepted current unused-dependency proof[..]")
+        .run();
+    assert_eq!(log(&p, "compiler.log"), "compile-link:app\n");
+
+    let archive = walkdir::WalkDir::new(p.root().join("target"))
+        .into_iter()
+        .filter_map(Result::ok)
+        .map(|entry| entry.into_path())
+        .find(|path| {
+            path.file_name()
+                .unwrap()
+                .to_str()
+                .is_some_and(|name| name.starts_with("libhelper-") && name.ends_with(".rlib"))
+        })
+        .expect("previously compiled helper archive");
+    p.change_file(
+        "app/build.rs",
+        &format!("fn main() {{ println!(\"cargo:rustc-link-arg={{}}\", {archive:?}); }}"),
+    );
+    let native_test = |value| {
+        format!(
+            "{}\n#[cfg(test)] unsafe extern \"C\" {{ fn helper_value() -> u32; }}\n",
+            source(value, false).replace(
+                "assert_eq!(value(),",
+                "assert_eq!(unsafe { helper_value() },"
+            )
+        )
+    };
+    p.change_file("app/src/lib.rs", &native_test(2));
+    clear(&p);
+    command(&p, &wrapper, "")
+        .with_stderr_contains("[..]native linker inputs require complete graph[..]")
+        .with_stderr_contains("[..]retrying complete graph[..]")
+        .run();
+    assert!(log(&p, "compiler.log").contains("compile:helper\n"));
+    assert_eq!(log(&p, "results.log"), "0\n", "retry before invoking rustc");
+    assert_eq!(log(&p, "runs.log"), "ran\n");
+    let proof: serde_json::Value = serde_json::from_slice(&fs::read(&manifest).unwrap()).unwrap();
+    assert!(proof.get("unused_extern_names").is_none());
+
+    // Established native-link builds must not repeatedly speculate and retry.
+    p.change_file("app/src/lib.rs", &native_test(3));
+    p.change_file("helper/src/lib.rs", &helper(3));
+    clear(&p);
+    command(&p, &wrapper, "")
+        .with_stderr_does_not_contain("[..]deferring unused dev dependencies[..]")
+        .run();
+    assert_eq!(log(&p, "results.log"), "0\n");
+    assert_eq!(log(&p, "runs.log"), "ran\n");
+}
+
+#[cargo_test]
 fn new_usage_retries_even_when_stale_artifacts_compile_successfully() {
     let wrapper = relink_only_wrapper();
     let p = fixture("new-usage");

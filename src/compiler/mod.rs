@@ -1220,6 +1220,27 @@ fn rustc(
             .is_some_and(|fingerprint| fingerprint.is_early_cutoff_candidate());
 
     return Ok(Work::new(move |state| {
+        // Build-script outputs are only authoritative after their jobs finish.
+        // An unused Rust extern can still be consumed through native linking.
+        let record_dev_unused = record_dev_unused
+            && build_scripts.as_ref().is_none_or(|scripts| {
+                let script_outputs = build_script_outputs.lock().unwrap();
+                scripts.to_link.iter().all(|(_, metadata)| {
+                    script_outputs.get(*metadata).is_some_and(|output| {
+                        output.library_paths.is_empty()
+                            && output.library_links.is_empty()
+                            && !output
+                                .linker_args
+                                .iter()
+                                .any(|(link_target, _)| link_target.applies_to(&target, mode))
+                    })
+                })
+            });
+        if !deferred_dev_names.is_empty() && !record_dev_unused {
+            tracing::info!(target: "cargo::compiler::ohm_deferred_dev_deps", "native linker inputs require complete graph");
+            deferred_dev_retry.store(true, std::sync::atomic::Ordering::Relaxed);
+            return Err(ohm_deferred_dev_deps::Retry.into());
+        }
         let unused_integration_dependency = unused_integration_dependency.filter(|_| {
             let Some(build_scripts) = build_scripts.as_ref() else {
                 return true;
