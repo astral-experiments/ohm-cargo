@@ -61,11 +61,23 @@ pub(super) fn seed_was_imported(output: &cargo_test_support::RawOutput) -> bool 
 }
 
 fn workspace_caches() -> Vec<PathBuf> {
-    fs::read_dir(paths::root().join("shared-build/debug/build/workspaces"))
+    fs::read_dir(paths::root())
         .unwrap()
+        .map(|entry| entry.unwrap().path().join("target/debug/build/workspaces"))
+        .filter_map(|path| fs::read_dir(path).ok())
+        .flatten()
         .map(|entry| entry.unwrap().path())
         .filter(|path| path.is_dir())
         .collect()
+}
+
+fn incremental_for(namespace: &Path) -> PathBuf {
+    namespace
+        .ancestors()
+        .nth(3)
+        .unwrap()
+        .join("incremental")
+        .join(namespace.file_name().unwrap())
 }
 
 fn binary(workspace: &Path) -> PathBuf {
@@ -95,7 +107,7 @@ fn worktree_import_requires_cloning() {
         assert_eq!(workspace_caches().len(), before + usize::from(cloned));
         assert!(git2::Repository::open(&destination).unwrap().is_worktree());
         assert!(
-            !walkdir::WalkDir::new(paths::root().join("shared-build"))
+            !walkdir::WalkDir::new(paths::root())
                 .into_iter()
                 .map(Result::unwrap)
                 .any(|entry| entry.file_type().is_dir()
@@ -410,9 +422,7 @@ fn seeds_an_unchanged_build_and_keeps_the_worktrees_independent() {
         !same_file::is_same_file(&artifact, &seeded_artifact).unwrap(),
         "seeding must not hard-link mutable files between worktrees"
     );
-    let seeded_incremental = paths::root()
-        .join("shared-build/debug/incremental")
-        .join(seeded_cache.file_name().unwrap());
+    let seeded_incremental = incremental_for(seeded_cache);
     assert!(
         walkdir::WalkDir::new(&seeded_incremental)
             .into_iter()
@@ -491,7 +501,7 @@ fn bundled_clippy_isolation_defaults_follow_actual_snapshot_cloning() {
         .with_stderr_contains("[FRESH] foo v0.0.1 ([ROOT]/donor)")
         .run();
     assert!(
-        !walkdir::WalkDir::new(paths::root().join("shared-build"))
+        !walkdir::WalkDir::new(paths::root())
             .into_iter()
             .map(Result::unwrap)
             .any(|entry| entry
@@ -556,9 +566,7 @@ fn bundled_clippy_preserves_ordinary_seeds_without_importing_lint_state() {
         .find(|cache| *cache != donor_cache)
         .unwrap();
     assert!(!recipient_cache.join(".ohm-clippy-v1").exists());
-    let incremental = paths::root()
-        .join("shared-build/debug/incremental")
-        .join(recipient_cache.file_name().unwrap());
+    let incremental = incremental_for(&recipient_cache);
     assert!(!incremental.join(".ohm-clippy-v1").exists());
     assert!(
         walkdir::WalkDir::new(&incremental)
@@ -620,9 +628,7 @@ fn bundled_clippy_preserves_ordinary_seeds_without_importing_lint_state() {
         .with_stderr_contains("[..](no compatible build snapshot seeded)")
         .run();
 
-    let donor_incremental = paths::root()
-        .join("shared-build/debug/incremental")
-        .join(donor_cache.file_name().unwrap());
+    let donor_incremental = incremental_for(&donor_cache);
     assert!(donor_incremental.join(".ohm-clippy-v1").is_dir());
     seeded_cargo(&donor, "clean -p foo").run();
     for root in [&donor_cache, &donor_incremental] {
@@ -861,7 +867,7 @@ fn symlinked_cache_parent_is_rejected_without_writing_through_it() {
     let destination = paths::root().join("seeded");
     seeded_cargo(&donor, "build").run();
 
-    let workspaces = paths::root().join("shared-build/debug/build/workspaces");
+    let workspaces = donor.root().join("target/debug/build/workspaces");
     let moved = paths::root().join("moved-workspace-caches");
     fs::rename(&workspaces, &moved).unwrap();
     std::os::unix::fs::symlink(&moved, &workspaces).unwrap();
@@ -890,13 +896,13 @@ fn symlinked_cache_parent_is_rejected_without_writing_through_it() {
             "[ERROR] worktree was created at [ROOT]/seeded, but build-state seeding failed",
         )
         .with_stderr_contains(
-            "[..]snapshot path is not a plain directory: [ROOT]/shared-build/debug/build/workspaces",
+            "[..]snapshot path is not a plain directory: [ROOT]/donor/target/debug/build/workspaces",
         )
         .run();
 
     assert_eq!(snapshot(), before);
     assert!(destination.join(".git").is_file());
-    assert!(!destination.join("target").exists());
+    assert!(!destination.join("target/debug").exists());
     fs::remove_file(&workspaces).unwrap();
     fs::rename(&moved, &workspaces).unwrap();
     seeded_cargo(&donor, "build -v")

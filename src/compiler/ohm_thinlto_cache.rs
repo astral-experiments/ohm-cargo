@@ -42,11 +42,14 @@ pub(super) fn configure(runner: &BuildRunner<'_, '_>, unit: &Unit, command: &mut
     }
 
     let cache = runner.thinlto_cache.get_or_init(|| Cache {
-        root: bcx
-            .ws
-            .build_dir()
-            .join(".ohm-thinlto-cache")
-            .into_path_unlocked(),
+        // Backend objects are content-addressed and reusable across worktrees.
+        root: if bcx.ws.shared_registry_cache_enabled() {
+            bcx.ws.configured_build_dir()
+        } else {
+            bcx.ws.build_dir()
+        }
+        .join(".ohm-thinlto-cache")
+        .into_path_unlocked(),
     });
     let mut option = OsString::from("-Zthinlto-cache=");
     option.push(&cache.root);
