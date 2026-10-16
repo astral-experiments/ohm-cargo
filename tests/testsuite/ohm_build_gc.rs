@@ -74,19 +74,6 @@ fn collect(project: &Project, dry_run: bool) {
     command.run();
 }
 
-fn namespace(worktree: &Path) -> String {
-    let worktree = worktree.canonicalize().unwrap();
-    let record = json_files(&shared_root().join(".ohm-gc-v1/workspaces"))
-        .into_iter()
-        .find(|path| {
-            let value: serde_json::Value =
-                serde_json::from_slice(&fs::read(path).unwrap()).unwrap();
-            value["workspace_root"].as_str() == worktree.to_str()
-        })
-        .expect("linked worktree is registered");
-    record.file_stem().unwrap().to_str().unwrap().to_owned()
-}
-
 fn private_artifacts(namespace: &str) -> PathBuf {
     shared_root().join("debug/build/workspaces").join(namespace)
 }
@@ -100,8 +87,8 @@ fn local_private_artifacts(target: &Path) -> PathBuf {
         .unwrap()
 }
 
-/// Models retained data from the old layout, then lets a warm build enroll its ownership.
-fn enroll_legacy_private_state(project: &Project, worktree: &Path, target: &Path) {
+/// Models worktree state left in the shared root by Cargo before the layout change.
+fn legacy_private_state(target: &Path) -> String {
     let local = local_private_artifacts(target);
     let namespace = local.file_name().unwrap().to_str().unwrap();
     let private = private_artifacts(namespace);
@@ -109,10 +96,7 @@ fn enroll_legacy_private_state(project: &Project, worktree: &Path, target: &Path
     fs::write(private.join("legacy-artifact"), b"old build").unwrap();
     let incremental = shared_root().join("debug/incremental").join(namespace);
     fs::create_dir_all(incremental).unwrap();
-    cargo(project, "build")
-        .cwd(worktree)
-        .env("CARGO_TARGET_DIR", target)
-        .run();
+    namespace.to_owned()
 }
 
 fn json_files(directory: &Path) -> Vec<PathBuf> {
@@ -143,6 +127,80 @@ fn empty_gc_uses_cargo_clean_summaries() {
 
 "#]])
         .run();
+}
+
+#[cargo_test]
+fn discovers_legacy_caches_without_writing_during_preview() {
+    let root = paths::home().join(".cache/ohm-build/old-project");
+    let context = root.join("debug/build/registries/0123456789abcdef-all");
+    fs::create_dir_all(&context).unwrap();
+    fs::write(root.join(".ohm-shared-registry-cache-v1"), b"").unwrap();
+    fs::write(root.join("debug/.cargo-build-lock"), b"").unwrap();
+    fs::write(context.join("artifact"), [0; 1024]).unwrap();
+    let registry = paths::cargo_home().join(".ohm-build-roots-v1");
+    cargo_process("gc --dry-run")
+        .with_stderr_contains("Would remove legacy context [..] (no usage records)")
+        .with_stderr_contains("[SUMMARY] 1 file, [FILE_SIZE]B total")
+        .with_stderr_contains("[WARNING] no files deleted due to --dry-run")
+        .run();
+    assert!(!root.join(".ohm-gc-v1").exists());
+    assert!(!registry.exists());
+    assert!(context.join("artifact").is_file());
+    cargo_process("gc")
+        .with_stderr_contains("[REMOVING] legacy context [..] (no usage records)")
+        .with_stderr_contains("[REMOVED] 1 file, [FILE_SIZE]B total")
+        .run();
+    assert!(!context.exists());
+    assert_eq!(json_files(&registry).len(), 1);
+}
+
+#[cargo_test]
+fn legacy_registry_cleanup_preserves_current_dependencies_and_warm_builds() {
+    let project = donor();
+    cargo(&project, "build").run();
+    let legacy = shared_root().join("debug/build/registries/0000000000000000");
+    fs::create_dir(&legacy).unwrap();
+    fs::write(legacy.join("artifact"), b"old dependency").unwrap();
+    collect(&project, false);
+    assert!(!legacy.exists());
+    cargo(&project, "run -v")
+        .with_stderr_does_not_contain("[COMPILING] [..]")
+        .with_stdout_data("hello\n")
+        .run();
+}
+
+#[cargo_test]
+fn upgrades_retire_fresh_contexts_without_removing_installed_compilers() {
+    use std::os::unix::fs::PermissionsExt as _;
+
+    let project = donor();
+    cargo(&project, "build").run();
+    let records = json_files(&shared_root().join(".ohm-gc-v1/contexts"));
+    assert_eq!(records.len(), 1);
+    let mut record: serde_json::Value =
+        serde_json::from_slice(&fs::read(&records[0]).unwrap()).unwrap();
+    record["ohm_version"] = "ohm-1.98.1-1".into();
+    fs::write(&records[0], serde_json::to_vec(&record).unwrap()).unwrap();
+    let registry = shared_root()
+        .join("debug/build/registries")
+        .join(record["context"].as_str().unwrap());
+    let private = local_private_artifacts(&project.root().join("target"));
+    let compiler = paths::root().join("upgraded-rustc");
+    fs::write(&compiler, "#!/bin/sh\ncat <<'VERSION'\nrustc 1.98.1-dev (ohm-1.98.1-2)\nbinary: rustc\ncommit-hash: unknown\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1-dev\nLLVM version: 22.1.8\nVERSION\n").unwrap();
+    fs::set_permissions(&compiler, fs::Permissions::from_mode(0o755)).unwrap();
+    cargo(&project, "gc --dry-run")
+        .env("RUSTC", &compiler)
+        .with_stderr_contains(
+            "Would remove context [..] (from ohm-1.98.1-1; current is ohm-1.98.1-2)",
+        )
+        .run();
+    assert!(registry.is_dir());
+    cargo(&project, "gc").env("RUSTC", &compiler).run();
+    assert!(!registry.exists());
+    assert!(private.is_dir());
+    for file in ["compiler", "driver"] {
+        assert!(Path::new(record[file]["path"].as_str().unwrap()).is_file());
+    }
 }
 
 #[cargo_test]
@@ -330,8 +388,7 @@ fn removed_worktrees_retire_legacy_state_without_touching_external_targets() {
         .cwd(&worktree)
         .env("CARGO_TARGET_DIR", &external_target)
         .run();
-    enroll_legacy_private_state(&project, &worktree, &external_target);
-    let namespace = namespace(&worktree);
+    let namespace = legacy_private_state(&external_target);
     let private = private_artifacts(&namespace);
     let incremental = shared_root().join("debug/incremental").join(&namespace);
     assert!(private.is_dir());
@@ -339,16 +396,13 @@ fn removed_worktrees_retire_legacy_state_without_touching_external_targets() {
     assert!(!worktree.join("target").exists());
 
     remove_worktree(&project, &worktree);
-    let record = shared_root()
-        .join(".ohm-gc-v1/workspaces")
-        .join(format!("{namespace}.json"));
-    let before = fs::read(&record).unwrap();
     cargo(&project, "gc --dry-run")
         .cwd(paths::root())
-        .with_stderr_contains("Would remove worktree [..] (directory and Git registration removed)")
+        .with_stderr_contains(
+            "Would remove legacy workspace [..] (private state now lives in target)",
+        )
         .run();
     assert!(private.is_dir(), "dry run preserves artifacts");
-    assert_eq!(fs::read(&record).unwrap(), before);
     assert!(!shared_root().join(".ohm-gc-v1/candidates.json").exists());
     cargo(&project, "gc")
         .cwd(paths::root())
@@ -356,7 +410,6 @@ fn removed_worktrees_retire_legacy_state_without_touching_external_targets() {
         .run();
     assert!(!private.exists());
     assert!(!incremental.exists());
-    assert!(!record.exists());
     assert!(external_target.join("debug/foo").is_file());
     for dependency in retained_dependencies {
         assert!(
@@ -389,26 +442,32 @@ fn removing_a_worktree_removes_its_private_state_without_gc() {
 }
 
 #[cargo_test]
-fn moved_and_registered_missing_worktrees_are_preserved() {
+fn legacy_private_state_is_disposable_even_for_live_or_moved_worktrees() {
     let project = donor();
     let moved = add_worktree(&project, "before-move");
     let missing = add_worktree(&project, "registered-missing");
+    let mut legacy = Vec::new();
     for worktree in [&moved, &missing] {
         cargo(&project, "build").cwd(worktree).run();
-        enroll_legacy_private_state(&project, worktree, &worktree.join("target"));
+        legacy.push(legacy_private_state(&worktree.join("target")));
     }
-    let retained = [namespace(&moved), namespace(&missing)];
+    let destination = paths::root().join("after-move");
+    let unavailable = paths::root().join("temporarily-unavailable");
     project
         .process("git")
         .args(&["worktree", "move"])
         .arg(&moved)
-        .arg(paths::root().join("after-move"))
+        .arg(&destination)
         .run();
-    fs::rename(&missing, paths::root().join("temporarily-unavailable")).unwrap();
+    fs::rename(&missing, &unavailable).unwrap();
 
     collect(&project, false);
-    for namespace in retained {
-        assert!(private_artifacts(&namespace).is_dir());
+    for namespace in legacy {
+        assert!(!private_artifacts(&namespace).exists());
+    }
+    for worktree in [destination, unavailable] {
+        assert!(local_private_artifacts(&worktree.join("target")).is_dir());
+        assert!(worktree.join("target/debug/foo").is_file());
     }
 }
 
@@ -417,8 +476,7 @@ fn busy_consumers_and_profiles_postpone_retirement() {
     let project = donor();
     let worktree = add_worktree(&project, "busy");
     cargo(&project, "build").cwd(&worktree).run();
-    enroll_legacy_private_state(&project, &worktree, &worktree.join("target"));
-    let private = private_artifacts(&namespace(&worktree));
+    let private = private_artifacts(&legacy_private_state(&worktree.join("target")));
     remove_worktree(&project, &worktree);
 
     for path in [".ohm-gc-v1/consumers.lock", "debug/.cargo-build-lock"] {
@@ -438,8 +496,7 @@ fn builds_leave_retired_state_until_explicit_gc() {
     cargo(&project, "build").run();
     let worktree = add_worktree(&project, "retired");
     cargo(&project, "build").cwd(&worktree).run();
-    enroll_legacy_private_state(&project, &worktree, &worktree.join("target"));
-    let private = private_artifacts(&namespace(&worktree));
+    let private = private_artifacts(&legacy_private_state(&worktree.join("target")));
     let payload = private.join("large-fixture");
     fs::create_dir(&payload).unwrap();
     for index in 0..300 {

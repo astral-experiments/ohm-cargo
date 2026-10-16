@@ -1,7 +1,7 @@
 //! Conservative reclamation of retired shared-build namespaces.
 //!
 //! Builds enroll immutable provenance and refresh one timestamp per context.
-//! Explicit GC reclaims removed owners, obsolete compilers, and idle contexts.
+//! Explicit GC reclaims legacy layouts, obsolete compilers, and idle contexts.
 
 use std::fs::{self, File, Metadata, OpenOptions, TryLockError};
 use std::io;
@@ -13,10 +13,8 @@ use serde::{Deserialize, Serialize};
 
 use crate::CargoResult;
 use crate::compiler::Layout;
-use crate::util;
 use crate::util::data_structures::HashSet;
 use crate::util::flock::try_lock_exclusive;
-use crate::workspace::Workspace;
 
 pub(crate) const DIRECTORY: &str = ".ohm-gc-v1";
 pub(crate) const CONSUMERS_LOCK: &str = "consumers.lock";
@@ -224,61 +222,47 @@ impl Anchor {
 
 #[derive(Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
-struct WorkspaceRecord {
-    version: u32,
-    namespace: String,
-    workspace_root: PathBuf,
-    target_root: PathBuf,
-    worktree_root: PathBuf,
-    git_common_dir: PathBuf,
-    git_worktree_id: String,
-    anchor: Anchor,
-}
-
-impl WorkspaceRecord {
-    fn valid(&self, namespace: &str) -> bool {
-        self.version == 1
-            && self.namespace == namespace
-            && Path::new(&self.git_worktree_id)
-                .file_name()
-                .is_some_and(|name| name == self.git_worktree_id.as_str())
-            && self.workspace_root.is_absolute()
-            && self.target_root.is_absolute()
-            && self.worktree_root.is_absolute()
-            && self.git_common_dir.is_absolute()
-            && self.workspace_root.starts_with(&self.worktree_root)
-            && namespace
-                == util::short_hash(&(
-                    "ohm-shared-workspace-v3",
-                    &self.workspace_root,
-                    &self.target_root,
-                ))
-    }
-
-    fn retired(&self) -> bool {
-        self.anchor.covers(&self.worktree_root)
-            && absent(&self.worktree_root)
-            && plain_directory(&self.git_common_dir)
-            && git2::Repository::open(&self.git_common_dir).is_ok()
-            && plain_or_absent(&self.git_common_dir.join("worktrees"))
-            && absent(
-                &self
-                    .git_common_dir
-                    .join("worktrees")
-                    .join(&self.git_worktree_id),
-            )
-    }
-}
-
-#[derive(Serialize, Deserialize)]
-#[serde(deny_unknown_fields)]
 struct ContextRecord {
     version: u32,
     context: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    ohm_version: Option<String>,
     compiler: FileIdentity,
     driver: FileIdentity,
     compiler_anchor: Anchor,
     driver_anchor: Anchor,
+}
+
+/// Orders published Ohm releases, including the numeric revision after Rust's version.
+fn ohm_release(version: &str) -> Option<(semver::Version, u64)> {
+    let (rust, revision) = version.strip_prefix("ohm-")?.rsplit_once('-')?;
+    Some((semver::Version::parse(rust).ok()?, revision.parse().ok()?))
+}
+
+/// Recognizes the release tag printed by a packaged Ohm compiler's `-vV`.
+pub(crate) fn ohm_version(verbose_version: &str) -> Option<&str> {
+    verbose_version
+        .lines()
+        .next()?
+        .split_whitespace()
+        .find_map(|word| {
+            let version = word.strip_prefix('(')?.strip_suffix(')')?;
+            ohm_release(version).map(|_| version)
+        })
+}
+
+/// Captures installation provenance once, without changing existing context hashes.
+fn installed_ohm_version(compiler: &FileIdentity, driver: &FileIdentity) -> Option<String> {
+    let bin = compiler.path.parent()?;
+    if bin.file_name()? != "bin" {
+        return None;
+    }
+    let sysroot = bin.parent()?;
+    if !driver.path.starts_with(sysroot) {
+        return None;
+    }
+    let version = String::from_utf8(read_regular(&sysroot.join(".ohm-version"))?).ok()?;
+    ohm_release(version.trim()).map(|_| version.trim().to_owned())
 }
 
 impl ContextRecord {
@@ -321,59 +305,6 @@ pub(crate) fn metadata_dir(root: &Path, create: bool) -> CargoResult<PathBuf> {
     Ok(directory)
 }
 
-/// Enrolls a linked worktree once; ordinary checkouts need no orphan tracking.
-pub(crate) fn record_workspace(ws: &Workspace<'_>) -> CargoResult<()> {
-    let root = ws.canonical_build_path(ws.configured_build_dir().as_path_unlocked());
-    let namespace = Layout::shared_workspace_namespace(ws);
-    let directory = metadata_dir(&root, true)?.join("workspaces");
-    create_plain(&directory)?;
-    let destination = directory.join(format!("{namespace}.json"));
-    if fs::symlink_metadata(&destination).is_ok() {
-        return Ok(());
-    }
-    let repo = git2::Repository::discover(ws.root())
-        .ok()
-        .filter(|repo| repo.is_worktree());
-    let Some(repo) = repo else {
-        // Negative enrollment is immutable too: ordinary checkouts and non-Git
-        // projects do not need Git discovery again on each warm build.
-        return write_new(
-            &destination,
-            &serde_json::json!({
-                "version": 1,
-                "namespace": namespace,
-                "workspace_root": ws.canonical_build_path(ws.root()),
-                "target_root": ws.canonical_build_path(ws.target_dir().as_path_unlocked()),
-                "untracked": true,
-            }),
-        );
-    };
-    let git_dir = repo.path().canonicalize()?;
-    let common = fs::read_to_string(git_dir.join("commondir"))?;
-    let git_common_dir = git_dir.join(common.trim()).canonicalize()?;
-    let git_worktree_id = git_dir
-        .file_name()
-        .and_then(|name| name.to_str())
-        .context("Git worktree ID is not UTF-8")?
-        .to_owned();
-    ensure!(
-        git_dir == git_common_dir.join("worktrees").join(&git_worktree_id),
-        "unrecognized Git worktree registration"
-    );
-    let worktree_root = repo.workdir().context("bare worktree")?.canonicalize()?;
-    let record = WorkspaceRecord {
-        version: 1,
-        namespace,
-        workspace_root: ws.canonical_build_path(ws.root()),
-        target_root: ws.canonical_build_path(ws.target_dir().as_path_unlocked()),
-        anchor: Anchor::for_path(&worktree_root)?,
-        worktree_root,
-        git_common_dir,
-        git_worktree_id,
-    };
-    write_new(&destination, &record)
-}
-
 /// Records provenance supplied by the context hasher without touching fresh records.
 pub(crate) fn record_context(
     root: &Path,
@@ -391,6 +322,7 @@ pub(crate) fn record_context(
     let record = ContextRecord {
         version: 1,
         context: context.to_owned(),
+        ohm_version: installed_ohm_version(&compiler, &driver),
         compiler_anchor: Anchor::for_path(&compiler.path)?,
         driver_anchor: Anchor::for_path(&driver.path)?,
         compiler,
@@ -436,13 +368,22 @@ impl FileCounts {
     }
 }
 
-/// Retires removed owners, obsolete compilers, and contexts idle for at least an hour.
-pub(crate) fn collect(root: &Path, dry_run: bool) -> CargoResult<Summary> {
-    collect_at(root, dry_run, SystemTime::now())
+/// Retires legacy layouts, obsolete compilers, and contexts idle for at least an hour.
+pub(crate) fn collect(
+    root: &Path,
+    dry_run: bool,
+    current_ohm: Option<&str>,
+) -> CargoResult<Summary> {
+    collect_at(root, dry_run, SystemTime::now(), current_ohm)
 }
 
-fn collect_at(root: &Path, dry_run: bool, now: SystemTime) -> CargoResult<Summary> {
-    collect_with_lock_budget(root, dry_run, now, Duration::from_millis(10))
+fn collect_at(
+    root: &Path,
+    dry_run: bool,
+    now: SystemTime,
+    current_ohm: Option<&str>,
+) -> CargoResult<Summary> {
+    collect_with_lock_budget(root, dry_run, now, Duration::from_millis(10), current_ohm)
 }
 
 /// Applies a soft deadline between bounded retirement steps, always allowing progress.
@@ -451,9 +392,10 @@ fn collect_with_lock_budget(
     dry_run: bool,
     now: SystemTime,
     lock_budget: Duration,
+    current_ohm: Option<&str>,
 ) -> CargoResult<Summary> {
     let mut summary = Summary::default();
-    if !cfg!(any(target_os = "linux", target_os = "macos")) || !root.join(DIRECTORY).exists() {
+    if !cfg!(any(target_os = "linux", target_os = "macos")) {
         return Ok(summary);
     }
     ensure!(
@@ -464,7 +406,12 @@ fn collect_with_lock_budget(
         !crate::compiler::layout::shared_registry_directory_is_nfs(root)?,
         "build-cache reclamation does not support NFS"
     );
-    let directory = metadata_dir(root, false)?;
+    // Previewing a legacy cache must not enroll it or create locks. Real collection
+    // installs the same consumer lock used by new builds before inspecting profiles.
+    let directory = root.join(DIRECTORY);
+    if !dry_run || !absent(&directory) {
+        metadata_dir(root, !dry_run)?;
+    }
     let _collector = if dry_run {
         None
     } else {
@@ -474,11 +421,14 @@ fn collect_with_lock_budget(
         };
         Some(collector)
     };
-    let Some(probe) = try_lock(&directory.join(CONSUMERS_LOCK), false)? else {
-        summary.busy = true;
-        return Ok(summary);
-    };
-    drop(probe);
+    let consumers_path = directory.join(CONSUMERS_LOCK);
+    if !dry_run || !absent(&consumers_path) {
+        let Some(probe) = try_lock(&consumers_path, !dry_run)? else {
+            summary.busy = true;
+            return Ok(summary);
+        };
+        drop(probe);
+    }
     let profiles = profiles(root)?;
     let mut ready = Vec::new();
     let mut trash_roots = profiles
@@ -494,36 +444,27 @@ fn collect_with_lock_budget(
             }
         }
     }
-    // Potentially slow Git and filesystem discovery never holds consumer locks.
-    for kind in ["workspaces", "contexts"] {
-        let records = directory.join(kind);
-        if !plain_directory(&records) {
+    // Namespace discovery never holds consumer or build locks.
+    for namespace in namespaces(root, &profiles)? {
+        if namespace
+            .detail(root, &profiles, now, current_ohm)
+            .is_none()
+        {
+            summary.retained += 1;
             continue;
         }
-        for entry in fs::read_dir(records)? {
-            let entry = entry?;
-            if !entry.file_type()?.is_file() {
-                continue;
-            }
-            let path = entry.path();
-            let Some(id) = path.file_stem().and_then(|name| name.to_str()) else {
-                continue;
-            };
-            if !component(id) || path.extension().is_none_or(|extension| extension != "json") {
-                continue;
-            }
-            if retirement_detail(&path, kind, id, now).is_none() {
-                summary.retained += 1;
-                continue;
-            }
-            let paths = owned_paths(root, &profiles, kind, id)?;
-            ready.push((path.clone(), kind, id.to_owned(), paths));
-        }
+        let paths = namespace.paths(root, &profiles);
+        ready.push((namespace, paths));
     }
     if dry_run {
-        let Some(probe) = try_lock(&directory.join(CONSUMERS_LOCK), false)? else {
-            summary.busy = true;
-            return Ok(summary);
+        let probe = if absent(&consumers_path) {
+            None
+        } else {
+            let Some(probe) = try_lock(&consumers_path, false)? else {
+                summary.busy = true;
+                return Ok(summary);
+            };
+            Some(probe)
         };
         for profile in &profiles {
             ensure!(
@@ -537,11 +478,10 @@ fn collect_with_lock_budget(
         }
         drop(probe);
 
-        // Preview every candidate, without deletion budgets or locks that block builds.
-        // A later build may change this estimate; real collection rechecks ownership.
+        // Preview every candidate without holding locks while counting artifacts.
         let mut sources = Vec::new();
-        for (record_path, kind, id, paths) in ready {
-            let Some(detail) = retirement_detail(&record_path, kind, &id, now) else {
+        for (namespace, paths) in ready {
+            let Some(detail) = namespace.detail(root, &profiles, now, current_ohm) else {
                 continue;
             };
             let before = sources.len();
@@ -555,7 +495,6 @@ fn collect_with_lock_budget(
                 summary.details.push(detail);
             }
         }
-        // A retired worktree and compiler context can own overlapping private paths.
         sources.sort_by_key(|path| path.components().count());
         let mut counted = HashSet::default();
         let mut remaining = usize::MAX;
@@ -574,13 +513,11 @@ fn collect_with_lock_budget(
     }
     if !ready.is_empty() {
         let deadline = Instant::now() + lock_budget;
-        let Some(consumers) = try_lock(&directory.join(CONSUMERS_LOCK), false)? else {
+        let Some(consumers) = try_lock(&consumers_path, false)? else {
             summary.busy = true;
             summary.pending = true;
             return Ok(summary);
         };
-        // New consumers cannot create profiles now. If discovery raced a build,
-        // retry with its complete layout instead of forgetting any owned paths.
         if profiles != self::profiles(root)? {
             summary.pending = true;
             return Ok(summary);
@@ -593,14 +530,13 @@ fn collect_with_lock_budget(
             );
             let Some(guard) = try_lock(&profile.join(".cargo-build-lock"), false)? else {
                 summary.busy = true;
-                summary.pending = true;
                 return Ok(summary);
             };
             guards.push(guard);
         }
         let mut remaining = RENAME_BUDGET;
         let mut records_remaining = RENAME_BUDGET;
-        for (record_path, kind, id, paths) in ready {
+        for (namespace, paths) in ready {
             if remaining == 0
                 || records_remaining == 0
                 || (records_remaining < RENAME_BUDGET && Instant::now() >= deadline)
@@ -609,8 +545,9 @@ fn collect_with_lock_budget(
                 break;
             }
             records_remaining -= 1;
-            // Only this bounded batch is revalidated while readers are excluded.
-            let Some(detail) = retirement_detail(&record_path, kind, &id, now) else {
+            // A build may have enrolled a legacy context since discovery. Recheck
+            // while both new consumers and older Cargo builds are excluded.
+            let Some(detail) = namespace.detail(root, &profiles, now, current_ohm) else {
                 continue;
             };
             let mut retired = false;
@@ -627,24 +564,13 @@ fn collect_with_lock_budget(
             if retired && summary.details.len() < 32 {
                 summary.details.push(detail);
             }
-            // Keep ambiguous entries (symlinks, mount points, interrupted batches).
-            // A future scan must still prove ownership before trying them again.
-            // Finish this record's ownership proof even if the soft deadline elapsed.
-            // Otherwise a slow filesystem can rename its last payload but never remove
-            // the provenance, or make no progress at all after acquiring profile locks.
             let completed = paths.iter().all(|(source, _)| safely_absent(root, source))
-                && owned_paths(root, &profiles, kind, &id)?
+                && namespace
+                    .paths(root, &profiles)
                     .iter()
                     .all(|(source, _)| safely_absent(root, source));
             if completed {
-                if kind == "contexts" && plain_directory(&directory.join(LAST_USED)) {
-                    match fs::remove_file(directory.join(LAST_USED).join(&id)) {
-                        Ok(()) => {}
-                        Err(error) if error.kind() == io::ErrorKind::NotFound => {}
-                        Err(error) => return Err(error.into()),
-                    }
-                }
-                fs::remove_file(record_path)?;
+                namespace.finish(&directory)?;
             } else if remaining == 0 {
                 summary.pending = true;
             }
@@ -653,9 +579,8 @@ fn collect_with_lock_budget(
         drop(guards);
         drop(consumers);
     }
-    // One small unlink chunk per pass, and no I/O when a consumer has arrived.
-    // Explicit collection repeats productive passes within its wall-time budget.
-    if let Some(probe) = try_lock(&directory.join(CONSUMERS_LOCK), false)? {
+    // Unlink only retired payloads, outside the build locks and in small batches.
+    if let Some(probe) = try_lock(&consumers_path, false)? {
         drop(probe);
         let mut remaining = DELETE_BUDGET;
         for trash in trash_roots {
@@ -667,72 +592,220 @@ fn collect_with_lock_budget(
     Ok(summary)
 }
 
-/// Rechecks provenance and last use under the exclusive consumer lease before renaming.
-fn retirement_detail(path: &Path, kind: &str, id: &str, now: SystemTime) -> Option<String> {
-    if kind == "workspaces" {
-        let record = read_record::<WorkspaceRecord>(path)?;
-        (record.valid(id) && record.retired()).then(|| {
-            format!(
-                "worktree {} (directory and Git registration removed)",
-                record.worktree_root.display()
-            )
-        })
-    } else {
-        let record = read_record::<ContextRecord>(path)?;
-        if record.version != 1 || record.context != id {
-            return None;
+#[derive(PartialEq, Eq, PartialOrd, Ord, Hash)]
+enum Namespace {
+    Context(String),
+    LegacyWorkspace(String),
+}
+
+impl Namespace {
+    /// Missing legacy records permit eviction; malformed or newer records do not.
+    fn detail(
+        &self,
+        root: &Path,
+        profiles: &[PathBuf],
+        now: SystemTime,
+        current_ohm: Option<&str>,
+    ) -> Option<String> {
+        let directory = root.join(DIRECTORY);
+        match self {
+            Self::Context(id) => {
+                let path = directory.join("contexts").join(format!("{id}.json"));
+                if legacy_context_name(id)
+                    && safely_absent(root, &path)
+                    && safely_absent(root, &directory.join(LAST_USED).join(id))
+                {
+                    return Some(format!("legacy context {id} (no usage records)"));
+                }
+                let record = read_record::<ContextRecord>(&path)?;
+                if record.version != 1 || record.context != *id {
+                    return None;
+                }
+                let previous = record
+                    .ohm_version
+                    .clone()
+                    .or_else(|| installed_ohm_version(&record.compiler, &record.driver));
+                if let (Some(previous), Some(current)) = (previous.as_deref(), current_ohm)
+                    && let (Some(previous_release), Some(current_release)) =
+                        (ohm_release(previous), ohm_release(current))
+                    && previous_release < current_release
+                {
+                    return Some(format!(
+                        "context {id} (from {previous}; current is {current})"
+                    ));
+                }
+                if record.retired() {
+                    Some(format!(
+                        "context {id} (compiler or driver changed or removed)"
+                    ))
+                } else if context_expired(&directory, id, now) {
+                    Some(format!("context {id} (unused for at least 1 hour)"))
+                } else {
+                    None
+                }
+            }
+            Self::LegacyWorkspace(id) => legacy_private_state(root, profiles)
+                .then(|| format!("legacy workspace {id} (private state now lives in target)")),
         }
-        if record.retired() {
-            Some(format!(
-                "context {id} (compiler or driver changed or removed)"
-            ))
-        } else if context_expired(path.parent()?.parent()?, id, now) {
-            Some(format!("context {id} (unused for at least 1 hour)"))
-        } else {
-            None
+    }
+
+    fn paths(&self, root: &Path, profiles: &[PathBuf]) -> Vec<(PathBuf, PathBuf)> {
+        let mut paths = Vec::new();
+        for profile in profiles {
+            let sources = match self {
+                Self::Context(id) => {
+                    vec![profile.join("build/registries").join(id)]
+                }
+                Self::LegacyWorkspace(id) => vec![
+                    profile.join("build/workspaces").join(id),
+                    profile.join("incremental").join(id),
+                ],
+            };
+            paths.extend(
+                sources
+                    .into_iter()
+                    .map(|source| (source, profile.join(TRASH))),
+            );
         }
+        if let Self::LegacyWorkspace(id) = self {
+            for base in std::iter::once(root).chain(profiles.iter().filter_map(|p| p.parent())) {
+                for source in [
+                    base.join("tmp").join(id),
+                    base.join(format!(".rustdoc_fingerprint-{id}.json")),
+                ] {
+                    if !paths.iter().any(|(existing, _)| existing == &source) {
+                        paths.push((source, base.join(TRASH)));
+                    }
+                }
+            }
+        }
+        paths
+    }
+
+    fn finish(&self, directory: &Path) -> CargoResult<()> {
+        let paths = match self {
+            Self::Context(id) => vec![
+                directory.join(LAST_USED).join(id),
+                directory.join("contexts").join(format!("{id}.json")),
+            ],
+            Self::LegacyWorkspace(id) => {
+                vec![directory.join("workspaces").join(format!("{id}.json"))]
+            }
+        };
+        for path in paths {
+            if plain_ancestors(directory, &path)? && regular(&path) {
+                fs::remove_file(path)?;
+            }
+        }
+        Ok(())
     }
 }
 
-fn owned_paths(
-    root: &Path,
-    profiles: &[PathBuf],
-    kind: &str,
-    id: &str,
-) -> CargoResult<Vec<(PathBuf, PathBuf)>> {
-    let mut paths = Vec::new();
-    for profile in profiles {
-        let sources = if kind == "workspaces" {
-            vec![
-                profile.join("build/workspaces").join(id),
-                profile.join("incremental").join(id),
-            ]
-        } else {
-            context_paths(profile, id)?
-        };
-        paths.extend(
-            sources
-                .into_iter()
-                .map(|source| (source, profile.join(TRASH))),
-        );
+/// The old shared layout is disposable, but a colocated target is still private state.
+fn legacy_private_state(root: &Path, profiles: &[PathBuf]) -> bool {
+    absent(&root.join(Layout::PRIVATE_BUILD_LOCK))
+        && profiles.iter().all(|profile| {
+            absent(&profile.join(".cargo-lock")) && absent(&profile.join(".cargo-artifact-lock"))
+        })
+}
+
+/// Discovers only known Ohm namespace shapes inside a marked shared cache.
+fn namespaces(root: &Path, profiles: &[PathBuf]) -> CargoResult<Vec<Namespace>> {
+    let mut namespaces = HashSet::default();
+    let records = root.join(DIRECTORY).join("contexts");
+    if plain_ancestors(root, &records)? && plain_directory(&records) {
+        for entry in fs::read_dir(records)? {
+            let entry = entry?;
+            let path = entry.path();
+            if entry.file_type()?.is_file()
+                && path
+                    .extension()
+                    .is_some_and(|extension| extension == "json")
+                && let Some(id) = path
+                    .file_stem()
+                    .and_then(|name| name.to_str())
+                    .filter(|id| component(id))
+            {
+                namespaces.insert(Namespace::Context(id.to_owned()));
+            }
+        }
     }
-    if kind == "workspaces" {
-        for base in std::iter::once(root.to_path_buf()).chain(
-            profiles
-                .iter()
-                .filter_map(|p| p.parent().map(Path::to_path_buf)),
-        ) {
-            for source in [
-                base.join("tmp").join(id),
-                base.join(format!(".rustdoc_fingerprint-{id}.json")),
+    for profile in profiles {
+        for id in directory_names(root, &profile.join("build/registries"))? {
+            if legacy_context_name(&id) {
+                namespaces.insert(Namespace::Context(id));
+            }
+        }
+        if legacy_private_state(root, profiles) {
+            for parent in [
+                profile.join("build/workspaces"),
+                profile.join("incremental"),
             ] {
-                if !paths.iter().any(|(existing, _)| existing == &source) {
-                    paths.push((source, base.join(TRASH)));
+                for id in directory_names(root, &parent)? {
+                    if namespace_hash(&id) {
+                        namespaces.insert(Namespace::LegacyWorkspace(id));
+                    }
                 }
             }
         }
     }
-    Ok(paths)
+    if legacy_private_state(root, profiles) {
+        for base in std::iter::once(root).chain(profiles.iter().filter_map(|p| p.parent())) {
+            for id in directory_names(root, &base.join("tmp"))? {
+                if namespace_hash(&id) {
+                    namespaces.insert(Namespace::LegacyWorkspace(id));
+                }
+            }
+            for entry in fs::read_dir(base)? {
+                let entry = entry?;
+                let name = entry.file_name();
+                if entry.file_type()?.is_file()
+                    && let Some(id) = name
+                        .to_str()
+                        .and_then(|name| name.strip_prefix(".rustdoc_fingerprint-"))
+                        .and_then(|name| name.strip_suffix(".json"))
+                        .filter(|id| namespace_hash(id))
+                {
+                    namespaces.insert(Namespace::LegacyWorkspace(id.to_owned()));
+                }
+            }
+        }
+    }
+    let mut namespaces = namespaces.into_iter().collect::<Vec<_>>();
+    namespaces.sort();
+    Ok(namespaces)
+}
+
+fn directory_names(root: &Path, parent: &Path) -> CargoResult<Vec<String>> {
+    let mut names = Vec::new();
+    if plain_ancestors(root, parent)? && plain_directory(parent) {
+        for entry in fs::read_dir(parent)? {
+            let entry = entry?;
+            if entry.file_type()?.is_dir()
+                && let Some(name) = entry.file_name().to_str()
+            {
+                names.push(name.to_owned());
+            }
+        }
+    }
+    Ok(names)
+}
+
+fn namespace_hash(name: &str) -> bool {
+    name.len() == 16 && name.bytes().all(|byte| byte.is_ascii_hexdigit())
+}
+
+fn legacy_context_name(name: &str) -> bool {
+    let (hash, suffix) = name.split_at_checked(16).unwrap_or(("", ""));
+    namespace_hash(hash)
+        && matches!(
+            suffix,
+            "" | "-all"
+                | "-native-all"
+                | "-native-build-scripts"
+                | "-all-native-all"
+                | "-all-native-build-scripts"
+        )
 }
 
 /// Absence behind a symlink is not proof that the owned payload was removed.
@@ -753,30 +826,6 @@ fn safely_absent(root: &Path, path: &Path) -> bool {
         }
     }
     false
-}
-
-fn context_paths(profile: &Path, context: &str) -> CargoResult<Vec<PathBuf>> {
-    let mut paths = vec![profile.join("build/registries").join(context)];
-    let owners = profile.join("build/workspaces");
-    if plain_ancestors(profile, &owners)? && plain_directory(&owners) {
-        for entry in fs::read_dir(owners)? {
-            let entry = entry?;
-            paths.push(entry.path().join(context));
-            if entry.file_type()?.is_dir() {
-                paths.push(
-                    entry
-                        .path()
-                        .join(crate::compiler::OHM_WORKTREE_CLIPPY_DIRECTORY)
-                        .join(context),
-                );
-            }
-        }
-    } else {
-        // Preserve provenance if an uninspectable private owner could still
-        // contain this context. Missing parents are proved absent separately.
-        paths.push(owners.join(context));
-    }
-    Ok(paths)
 }
 
 fn retire(root: &Path, source: &Path, trash: &Path, dry_run: bool) -> CargoResult<bool> {
@@ -908,6 +957,10 @@ fn profiles(root: &Path) -> CargoResult<Vec<PathBuf>> {
             continue;
         }
         let path = entry.path();
+        // A nested shared root has its own provenance and consumer leases.
+        if regular(&path.join(Layout::SHARED_REGISTRY_CACHE_MARKER)) {
+            continue;
+        }
         if regular(&path.join(".cargo-build-lock")) {
             result.push(path);
             continue;
@@ -998,9 +1051,6 @@ fn absent(path: &Path) -> bool {
 }
 fn plain_directory(path: &Path) -> bool {
     fs::symlink_metadata(path).is_ok_and(|m| m.is_dir())
-}
-fn plain_or_absent(path: &Path) -> bool {
-    plain_directory(path) || absent(path)
 }
 fn filesystem_device(metadata: &Metadata) -> u64 {
     #[cfg(unix)]
@@ -1117,7 +1167,7 @@ mod tests {
         let before = fs::metadata(&record)?.modified()?;
         cache.enroll()?;
         assert_eq!(before, fs::metadata(&record)?.modified()?);
-        let summary = collect(&cache.root, false)?;
+        let summary = collect(&cache.root, false, None)?;
         assert_eq!(summary.retired, 0);
         assert!(path.exists());
         assert!(!cache.root.join(DIRECTORY).join("candidates.json").exists());
@@ -1136,10 +1186,10 @@ mod tests {
         let last_used = fs::metadata(&usage)?.modified()?;
         let expires = last_used + CONTEXT_MAX_IDLE;
         assert_eq!(
-            collect_at(&cache.root, false, expires - Duration::from_nanos(1))?.retired,
+            collect_at(&cache.root, false, expires - Duration::from_nanos(1), None)?.retired,
             0
         );
-        let dry_run = collect_at(&cache.root, true, expires)?;
+        let dry_run = collect_at(&cache.root, true, expires, None)?;
         assert_eq!(dry_run.retired, 1);
         assert!(
             dry_run
@@ -1147,15 +1197,18 @@ mod tests {
                 .iter()
                 .any(|line| line.contains("unused for at least 1 hour"))
         );
-        assert_eq!(dry_run.counts.files, 2);
-        assert_eq!(dry_run.counts.bytes, 12);
+        assert_eq!(dry_run.counts.files, 1);
+        assert_eq!(dry_run.counts.bytes, 6);
         assert_eq!(fs::metadata(&usage)?.modified()?, last_used);
         assert!(shared.exists());
-        let collected = collect_at(&cache.root, false, expires)?;
+        let collected = collect_at(&cache.root, false, expires, None)?;
         assert_eq!(collected.retired, 1);
         assert_eq!(collected.counts, dry_run.counts);
         assert!(!shared.exists());
-        assert!(!private.exists());
+        assert!(
+            private.exists(),
+            "unrecognized private namespace is preserved"
+        );
         assert!(!usage.exists());
         assert!(incremental.exists());
         assert!(cache.compiler.exists());
@@ -1173,13 +1226,13 @@ mod tests {
         usage
             .0
             .set_modified(SystemTime::now() - CONTEXT_MAX_IDLE * 2)?;
-        assert!(collect(&cache.root, false)?.busy);
+        assert!(collect(&cache.root, false, None)?.busy);
         let completed = SystemTime::now();
         drop(usage);
         drop(lease);
         let timestamp = cache.root.join(DIRECTORY).join(LAST_USED).join("abcdef");
         assert!(fs::metadata(&timestamp)?.modified()? >= completed);
-        assert_eq!(collect(&cache.root, false)?.retired, 0);
+        assert_eq!(collect(&cache.root, false, None)?.retired, 0);
         Ok(())
     }
 
@@ -1194,13 +1247,19 @@ mod tests {
             .write(true)
             .open(&usage)?
             .set_modified(SystemTime::now() + CONTEXT_MAX_IDLE)?;
-        assert_eq!(collect(&cache.root, false)?.retired, 0);
+        assert_eq!(collect(&cache.root, false, None)?.retired, 0);
         fs::remove_file(&usage)?;
         symlink(&cache.compiler, &usage)?;
         let before = fs::metadata(&cache.compiler)?.modified()?;
         assert!(ContextUse::new(&cache.root, "abcdef").is_err());
         assert_eq!(
-            collect_at(&cache.root, false, SystemTime::now() + CONTEXT_MAX_IDLE * 2)?.retired,
+            collect_at(
+                &cache.root,
+                false,
+                SystemTime::now() + CONTEXT_MAX_IDLE * 2,
+                None
+            )?
+            .retired,
             0
         );
         assert_eq!(fs::metadata(&cache.compiler)?.modified()?, before);
@@ -1216,7 +1275,7 @@ mod tests {
         let other = cache.artifact("build/registries/other")?;
         let incremental = cache.artifact("incremental/owner")?;
         fs::remove_file(&cache.driver)?;
-        let dry = collect(&cache.root, true)?;
+        let dry = collect(&cache.root, true, None)?;
         assert_eq!(dry.retired, 1);
         assert!(shared.exists());
         assert!(
@@ -1224,9 +1283,12 @@ mod tests {
                 .iter()
                 .any(|line| line.contains("compiler or driver changed or removed"))
         );
-        assert_eq!(collect(&cache.root, false)?.retired, 1);
+        assert_eq!(collect(&cache.root, false, None)?.retired, 1);
         assert!(!shared.exists());
-        assert!(!private.exists());
+        assert!(
+            private.exists(),
+            "unrecognized private namespace is preserved"
+        );
         assert!(other.exists());
         assert!(incremental.exists());
         Ok(())
@@ -1263,7 +1325,7 @@ mod tests {
         assert!(!record.retired());
         fs::write(record_path, serde_json::to_vec(&record)?)?;
         let path = cache.artifact("build/registries/abcdef")?;
-        assert_eq!(collect(&cache.root, false)?.retired, 0);
+        assert_eq!(collect(&cache.root, false, None)?.retired, 0);
         assert!(path.exists());
         Ok(())
     }
@@ -1291,7 +1353,7 @@ mod tests {
             .write(true)
             .open(cache.root.join(DIRECTORY).join(CONSUMERS_LOCK))?;
         crate::util::flock::lock_shared(&consumers)?;
-        assert!(collect(&cache.root, false)?.busy);
+        assert!(collect(&cache.root, false, None)?.busy);
         assert!(artifact.exists());
         crate::util::flock::unlock(&consumers)?;
         drop(consumers);
@@ -1300,11 +1362,11 @@ mod tests {
             .write(true)
             .open(cache.profile.join(".cargo-build-lock"))?;
         crate::util::flock::lock_shared(&profile)?;
-        assert!(collect(&cache.root, false)?.busy);
+        assert!(collect(&cache.root, false, None)?.busy);
         assert!(artifact.exists());
         crate::util::flock::unlock(&profile)?;
         drop(profile);
-        assert!(!collect(&cache.root, false)?.busy);
+        assert!(!collect(&cache.root, false, None)?.busy);
         assert!(!artifact.exists());
         Ok(())
     }
@@ -1323,11 +1385,11 @@ mod tests {
             cache.artifact(&format!("build/registries/{context}"))?;
         }
         fs::remove_file(&cache.driver)?;
-        let preview = collect(&cache.root, true)?;
+        let preview = collect(&cache.root, true, None)?;
         assert_eq!(preview.retired, RENAME_BUDGET + 2);
         assert_eq!(preview.counts.files, (RENAME_BUDGET + 2) as u64);
         assert_eq!(preview.counts.bytes, ((RENAME_BUDGET + 2) * 6) as u64);
-        let first = collect(&cache.root, false)?;
+        let first = collect(&cache.root, false, None)?;
         assert!(first.retired <= RENAME_BUDGET);
         assert!(first.pending);
         assert_eq!(
@@ -1336,7 +1398,7 @@ mod tests {
         );
         let mut completed = first.retired;
         for _ in 0..32 {
-            let next = collect(&cache.root, false)?;
+            let next = collect(&cache.root, false, None)?;
             assert!(next.retired <= RENAME_BUDGET);
             completed += next.retired;
             if !next.pending {
@@ -1357,14 +1419,17 @@ mod tests {
         let cache = Cache::new()?;
         cache.enroll()?;
         cache.artifact("build/registries/abcdef")?;
-        cache.artifact("build/workspaces/owner/abcdef")?;
+        let release = cache.root.join("release");
+        fs::create_dir_all(release.join("build/registries/abcdef"))?;
+        File::create(release.join(".cargo-build-lock"))?;
+        fs::write(release.join("build/registries/abcdef/artifact"), b"cached")?;
         fs::remove_file(&cache.driver)?;
         let first =
-            collect_with_lock_budget(&cache.root, false, SystemTime::now(), Duration::ZERO)?;
+            collect_with_lock_budget(&cache.root, false, SystemTime::now(), Duration::ZERO, None)?;
         assert!(first.pending);
         assert_eq!(first.retired, 0);
         let second =
-            collect_with_lock_budget(&cache.root, false, SystemTime::now(), Duration::ZERO)?;
+            collect_with_lock_budget(&cache.root, false, SystemTime::now(), Duration::ZERO, None)?;
         assert_eq!(second.retired, 1);
         assert!(
             !cache
@@ -1381,15 +1446,18 @@ mod tests {
         let cache = Cache::new()?;
         cache.enroll()?;
         for index in 0..RENAME_BUDGET + 2 {
-            cache.artifact(&format!("build/workspaces/owner-{index}/abcdef"))?;
+            let profile = cache.root.join(format!("profile-{index}"));
+            fs::create_dir_all(profile.join("build/registries/abcdef"))?;
+            File::create(profile.join(".cargo-build-lock"))?;
+            fs::write(profile.join("build/registries/abcdef/artifact"), b"cached")?;
         }
         fs::remove_file(&cache.driver)?;
-        let first = collect(&cache.root, false)?;
+        let first = collect(&cache.root, false, None)?;
         assert_eq!(first.retired, 0);
         assert!(first.pending);
         let mut completed = 0;
         for _ in 0..10 {
-            let next = collect(&cache.root, false)?;
+            let next = collect(&cache.root, false, None)?;
             completed += next.retired;
             if !next.pending {
                 break;
@@ -1432,20 +1500,20 @@ mod tests {
         }
         symlink(&cache.compiler, path.join("external"))?;
         fs::remove_file(&cache.driver)?;
-        let dry_run = collect(&cache.root, true)?;
+        let dry_run = collect(&cache.root, true, None)?;
         assert_eq!(dry_run.counts.files, (DELETE_BUDGET + 7) as u64);
         assert_eq!(
             dry_run.counts.bytes,
             (DELETE_BUDGET + 11) as u64 + fs::symlink_metadata(path.join("external"))?.len()
         );
-        let first = collect(&cache.root, false)?;
+        let first = collect(&cache.root, false, None)?;
         assert!(first.pending);
         assert_eq!(first.deleted_entries, DELETE_BUDGET);
         assert!(!path.exists());
         assert!(cache.compiler.exists());
-        let pending = collect(&cache.root, true)?;
+        let pending = collect(&cache.root, true, None)?;
         assert_eq!(pending.retired, 0);
-        let next = collect(&cache.root, false)?;
+        let next = collect(&cache.root, false, None)?;
         assert!(!next.pending);
         assert_eq!(pending.counts, next.counts);
         let mut counts = first.counts;
@@ -1456,42 +1524,187 @@ mod tests {
     }
 
     #[test]
-    fn preview_counts_overlapping_worktree_and_context_payloads_once() -> CargoResult<()> {
+    fn legacy_cleanup_needs_no_records_or_age_and_preview_is_read_only() -> CargoResult<()> {
         let cache = Cache::new()?;
-        cache.enroll()?;
-        let checkout = cache.root.parent().unwrap().join("removed-worktree");
-        let target = checkout.join("target");
-        let namespace = util::short_hash(&("ohm-shared-workspace-v3", &checkout, &target));
-        let repo = git2::Repository::init(cache.root.parent().unwrap().join("repo"))?;
-        let record = WorkspaceRecord {
-            version: 1,
-            namespace: namespace.clone(),
-            workspace_root: checkout.clone(),
-            target_root: target,
-            worktree_root: checkout.clone(),
-            git_common_dir: repo.path().to_path_buf(),
-            git_worktree_id: "removed-worktree".to_owned(),
-            anchor: Anchor::for_path(&checkout)?,
-        };
-        let records = metadata_dir(&cache.root, true)?.join("workspaces");
-        fs::create_dir(&records)?;
-        write_new(&records.join(format!("{namespace}.json")), &record)?;
-        cache.artifact("build/registries/abcdef")?;
-        cache.artifact(&format!("build/workspaces/{namespace}/abcdef"))?;
-        cache.artifact(&format!("incremental/{namespace}"))?;
-        fs::remove_file(&cache.driver)?;
-        let preview = collect(&cache.root, true)?;
+        fs::remove_dir_all(cache.root.join(DIRECTORY))?;
+        let registry = cache.artifact("build/registries/0123456789abcdef-all-native-all")?;
+        let private = cache.artifact("build/workspaces/0123456789abcdef/context")?;
+        let incremental = cache.artifact("incremental/0123456789abcdef")?;
+        let unknown = cache.artifact("build/registries/not-a-context")?;
+        let thinlto = cache.artifact("thinlto/0123456789abcdef")?;
+        let preview = collect(&cache.root, true, None)?;
         assert_eq!(preview.retired, 2);
         assert_eq!(preview.counts.files, 3);
         assert_eq!(preview.counts.bytes, 18);
-        let collected = collect(&cache.root, false)?;
-        assert_eq!(collected.retired, 2);
+        assert!(!cache.root.join(DIRECTORY).exists());
+        assert!(registry.exists());
+        assert!(private.exists());
+        assert!(incremental.exists());
+        let profile_lock = File::open(cache.profile.join(".cargo-build-lock"))?;
+        crate::util::flock::lock_shared(&profile_lock)?;
+        assert!(collect(&cache.root, true, None)?.busy);
+        assert!(collect(&cache.root, false, None)?.busy);
+        assert!(registry.exists());
+        crate::util::flock::unlock(&profile_lock)?;
+        drop(profile_lock);
+        let collected = collect(&cache.root, false, None)?;
         assert_eq!(collected.counts, preview.counts);
+        assert!(!registry.exists());
+        assert!(!private.exists());
+        assert!(!incremental.exists());
+        assert!(unknown.exists());
+        assert!(thinlto.exists());
         Ok(())
     }
 
     #[test]
-    fn ambiguous_private_owners_keep_context_provenance() -> CargoResult<()> {
+    fn older_ohm_releases_expire_immediately_even_while_installed() -> CargoResult<()> {
+        let cache = Cache::new()?;
+        for (id, version) in [
+            ("old-rust", Some("ohm-1.98.1-9")),
+            ("old-ohm", Some("ohm-1.99.0-1")),
+            ("current", Some("ohm-1.99.0-2")),
+            ("newer", Some("ohm-1.99.0-10")),
+            ("unknown", None),
+        ] {
+            record_context(
+                &cache.root,
+                id,
+                cache.identity(&cache.compiler)?,
+                cache.identity(&cache.driver)?,
+            )?;
+            let path = cache
+                .root
+                .join(DIRECTORY)
+                .join("contexts")
+                .join(format!("{id}.json"));
+            let mut record = read_record::<ContextRecord>(&path).unwrap();
+            record.ohm_version = version.map(str::to_owned);
+            fs::write(path, serde_json::to_vec(&record)?)?;
+            drop(ContextUse::new(&cache.root, id)?);
+            cache.artifact(&format!("build/registries/{id}"))?;
+        }
+        assert_eq!(collect(&cache.root, true, None)?.retired, 0);
+        let current = Some("ohm-1.99.0-2");
+        let lease = crate::workspace::build_cache_gc_lease::ConsumerLease::acquire(&cache.root)?;
+        assert!(collect(&cache.root, false, current)?.busy);
+        drop(lease);
+        let preview = collect(&cache.root, true, current)?;
+        assert_eq!(preview.retired, 2);
+        assert!(
+            preview
+                .details
+                .iter()
+                .all(|line| line.contains("current is ohm-1.99.0-2"))
+        );
+        assert_eq!(collect(&cache.root, false, current)?.counts, preview.counts);
+        for id in ["old-rust", "old-ohm"] {
+            assert!(!cache.profile.join("build/registries").join(id).exists());
+        }
+        for id in ["current", "newer", "unknown"] {
+            assert!(cache.profile.join("build/registries").join(id).exists());
+        }
+        assert!(cache.compiler.exists());
+        assert!(cache.driver.exists());
+        Ok(())
+    }
+
+    #[test]
+    fn installed_version_is_recorded_and_old_records_can_use_the_install_marker() -> CargoResult<()>
+    {
+        let cache = Cache::new()?;
+        let sysroot = cache._temporary.path().canonicalize()?.join("toolchain");
+        fs::create_dir_all(sysroot.join("bin"))?;
+        fs::create_dir_all(sysroot.join("lib"))?;
+        let compiler = sysroot.join("bin/rustc");
+        let driver = sysroot.join("lib/librustc_driver.so");
+        fs::write(&compiler, b"compiler")?;
+        fs::write(&driver, b"driver")?;
+        fs::write(sysroot.join(".ohm-version"), b"ohm-1.98.1-1\n")?;
+        record_context(
+            &cache.root,
+            "abcdef",
+            cache.identity(&compiler)?,
+            cache.identity(&driver)?,
+        )?;
+        let path = cache.root.join(DIRECTORY).join("contexts/abcdef.json");
+        let mut record = read_record::<ContextRecord>(&path).unwrap();
+        assert_eq!(record.ohm_version.as_deref(), Some("ohm-1.98.1-1"));
+        record.ohm_version = None;
+        fs::write(path, serde_json::to_vec(&record)?)?;
+        drop(ContextUse::new(&cache.root, "abcdef")?);
+        cache.artifact("build/registries/abcdef")?;
+        let verbose = "rustc 1.98.1-dev (abcdef 2026-09-08) (ohm-1.98.1-2)\nbinary: rustc\n";
+        assert_eq!(
+            collect(&cache.root, false, ohm_version(verbose))?.retired,
+            1
+        );
+        assert!(compiler.exists());
+        assert!(driver.exists());
+        assert_eq!(ohm_version("rustc 1.98.1 (abcdef 2026-09-08)"), None);
+        assert_eq!(ohm_version("rustc 1.98.1-dev (ohm-unknown)"), None);
+        Ok(())
+    }
+
+    #[test]
+    fn legacy_cleanup_preserves_local_targets_and_ambiguous_context_records() -> CargoResult<()> {
+        for lock in [
+            ".ohm-build-lock",
+            "debug/.cargo-lock",
+            "debug/.cargo-artifact-lock",
+        ] {
+            let cache = Cache::new()?;
+            File::create(cache.root.join(lock))?;
+            let private = cache.artifact("build/workspaces/0123456789abcdef/context")?;
+            let incremental = cache.artifact("incremental/0123456789abcdef")?;
+            let registry = cache.artifact("build/registries/0123456789abcdef")?;
+            let contexts = cache.root.join(DIRECTORY).join("contexts");
+            fs::create_dir(&contexts)?;
+            fs::write(
+                contexts.join("0123456789abcdef.json"),
+                b"unrecognized record",
+            )?;
+            assert_eq!(collect(&cache.root, false, None)?.retired, 0);
+            assert!(private.exists());
+            assert!(incremental.exists());
+            assert!(registry.exists());
+        }
+        Ok(())
+    }
+
+    #[test]
+    fn nested_roots_keep_their_own_context_records_and_consumer_locks() -> CargoResult<()> {
+        let outer = Cache::new()?;
+        let inner = Cache::new()?;
+        let id = "0123456789abcdef";
+        record_context(
+            &inner.root,
+            id,
+            inner.identity(&inner.compiler)?,
+            inner.identity(&inner.driver)?,
+        )?;
+        drop(ContextUse::new(&inner.root, id)?);
+        inner.artifact(&format!("build/registries/{id}"))?;
+        let nested = outer.root.join("nested");
+        fs::rename(&inner.root, &nested)?;
+        let lease = crate::workspace::build_cache_gc_lease::ConsumerLease::acquire(&nested)?;
+        assert_eq!(collect(&outer.root, true, None)?.counts.files, 0);
+        assert_eq!(collect(&outer.root, false, None)?.counts.files, 0);
+        assert!(collect(&nested, false, None)?.busy);
+        drop(lease);
+        assert_eq!(collect(&nested, false, None)?.retired, 0);
+        assert!(
+            nested
+                .join("debug/build/registries")
+                .join(id)
+                .join("artifact")
+                .exists()
+        );
+        Ok(())
+    }
+
+    #[test]
+    fn private_directory_symlinks_are_preserved() -> CargoResult<()> {
         let cache = Cache::new()?;
         cache.enroll()?;
         let shared = cache.artifact("build/registries/abcdef")?;
@@ -1499,10 +1712,10 @@ mod tests {
         fs::create_dir(&outside)?;
         symlink(&outside, cache.profile.join("build/workspaces"))?;
         fs::remove_file(&cache.driver)?;
-        assert_eq!(collect(&cache.root, false)?.retired, 0);
+        assert_eq!(collect(&cache.root, false, None)?.retired, 1);
         assert!(!shared.exists());
         assert!(
-            cache
+            !cache
                 .root
                 .join(DIRECTORY)
                 .join("contexts/abcdef.json")

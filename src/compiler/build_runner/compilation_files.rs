@@ -690,20 +690,6 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
         let root = self
             .ws
             .canonical_build_path(self.ws.configured_build_dir().as_path_unlocked());
-        // New private state lives with the target and needs no global ownership record.
-        // Enroll only an existing namespace from the old layout, without scanning the cache.
-        let namespace = Layout::shared_workspace_namespace(self.ws);
-        if std::iter::once(&self.host)
-            .chain(self.target.values())
-            .any(|layout| {
-                layout
-                    .build_dir()
-                    .shared_build()
-                    .is_some_and(|build| build.join("workspaces").join(&namespace).is_dir())
-            })
-        {
-            build_cache_gc::record_workspace(self.ws)?;
-        }
         crate::workspace::build_cache_gc_roots::register_root(self.ws.gctx(), &root)?;
         if let Some((compiler, driver)) = &cache.provenance {
             build_cache_gc::record_context(&root, &cache.rustc, compiler.clone(), driver.clone())?;
