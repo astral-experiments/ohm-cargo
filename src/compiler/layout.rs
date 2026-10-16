@@ -637,7 +637,7 @@ fn verify_shared_registry_file_lock(lock: &Path, root: &Path) -> CargoResult<()>
 }
 
 /// Detects NFS before invoking `flock`, which can block forever even in nonblocking mode.
-fn shared_registry_directory_is_nfs(path: &Path) -> CargoResult<bool> {
+pub(crate) fn shared_registry_directory_is_nfs(path: &Path) -> CargoResult<bool> {
     #[cfg(any(target_os = "linux", target_os = "macos"))]
     {
         use std::ffi::CString;

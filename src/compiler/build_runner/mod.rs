@@ -342,6 +342,8 @@ impl RegistryMessageProvenance {
 pub struct BuildRunner<'a, 'gctx> {
     /// Mostly static information about the build task.
     pub bcx: &'a BuildContext<'a, 'gctx>,
+    /// Drops before Compilation's consumer lease, recording the end of cache use.
+    context_use: Option<crate::workspace::build_cache_gc::ContextUse>,
     /// A large collection of information about the result of the entire compilation.
     pub compilation: Compilation<'gctx>,
     /// Output from build scripts, updated after each build script runs.
@@ -506,6 +508,7 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
 
         Ok(Self {
             bcx,
+            context_use: None,
             compilation: Compilation::new(bcx)?,
             build_script_outputs: Arc::new(Mutex::new(BuildScriptOutputs::default())),
             fingerprints: HashMap::default(),
@@ -1240,6 +1243,13 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
             );
         }
         self.files().record_worktree_seed_policy(self)?;
+        match self.files().record_gc_metadata() {
+            Ok(usage) => self.context_use = usage,
+            Err(error) => tracing::debug!(
+                ?error,
+                "could not enroll build-cache namespaces for cleanup"
+            ),
+        }
         Ok(())
     }
 
