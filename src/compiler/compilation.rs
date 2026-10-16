@@ -14,6 +14,7 @@ use crate::compiler::BuildContext;
 use crate::compiler::CompileTarget;
 use crate::compiler::RustdocFingerprint;
 use crate::compiler::apply_env_config;
+use crate::compiler::layout::PrivateBuildLease;
 use crate::compiler::{CompileKind, Unit, UnitHash};
 use crate::util::{CargoResult, GlobalContext};
 use crate::workspace::Package;
@@ -143,12 +144,22 @@ pub struct Compilation<'gctx> {
     /// Registry build-script outputs may live outside the workspace target directory.
     shared_registry_root: Option<PathBuf>,
 
+    /// Keeps this target's private files alive while tests and launched programs use them.
+    private_lease: Option<PrivateBuildLease>,
+
     /// The total number of lint warnings emitted by the compilation.
     pub lint_warning_count: usize,
 }
 
 impl<'gctx> Compilation<'gctx> {
     pub fn new<'a>(bcx: &BuildContext<'a, 'gctx>) -> CargoResult<Compilation<'gctx>> {
+        // Acquire the target-local lease before Layout takes profile/workspace locks.
+        // It belongs to Compilation so cargo run/test/doc retain it after BuildRunner exits.
+        let private_lease = bcx
+            .ws
+            .shared_registry_cache_enabled()
+            .then(|| PrivateBuildLease::acquire(bcx.ws))
+            .transpose()?;
         let rustc_process = bcx.rustc().process();
         let primary_rustc_process = bcx.build_config.primary_unit_rustc.clone();
         let rustc_workspace_wrapper_process = bcx.rustc().workspace_process();
@@ -216,7 +227,8 @@ impl<'gctx> Compilation<'gctx> {
             shared_registry_root: bcx
                 .ws
                 .shared_registry_cache_enabled()
-                .then(|| bcx.ws.build_dir().into_path_unlocked()),
+                .then(|| bcx.ws.configured_build_dir().into_path_unlocked()),
+            private_lease,
             lint_warning_count: 0,
             ready_tests: None,
         })
@@ -395,6 +407,9 @@ impl<'gctx> Compilation<'gctx> {
         kind: CompileKind,
         tool_kind: ToolKind,
     ) -> CargoResult<ProcessBuilder> {
+        if let Some(lease) = &self.private_lease {
+            lease.inherit(&mut cmd);
+        }
         let mut search_path = Vec::new();
         if tool_kind.is_rustc_tool() {
             if matches!(tool_kind, ToolKind::Rustdoc) {
