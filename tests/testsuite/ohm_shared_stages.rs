@@ -32,7 +32,9 @@ fn compiler() -> PathBuf {
                     if name != "___" {
                         let mut log = OpenOptions::new().create(true).append(true)
                             .open(env::var_os("OHM_STAGES_LOG").unwrap()).unwrap();
-                        writeln!(log, "{}", args.join("\u{1f}")).unwrap();
+                        // Keep concurrent compiler calls from interleaving arguments and newlines.
+                        let record = format!("{}\n", args.join("\u{1f}"));
+                        log.write_all(record.as_bytes()).unwrap();
                     }
                 }
                 args.retain(|arg| arg != "-Zohm-shared-stages");
