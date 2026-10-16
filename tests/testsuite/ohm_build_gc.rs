@@ -257,12 +257,11 @@ fn dependency_gc_preserves_reused_transitive_dependencies_and_rebuilds_evicted_v
 fn checking_reused_build_artifacts_refreshes_their_dependency_usage() {
     let project = donor();
     // A concrete loader search path permits authenticated build-to-check reuse.
-    cargo(&project, "-Zohm-reuse-built-deps -Zno-embed-metadata build")
+    cargo(&project, "-Zohm-reuse-built-deps build")
         .masquerade_as_nightly_cargo(&[
             "ohm-defaults",
             "ohm-shared-registry-cache",
             "ohm-reuse-built-deps",
-            "no-embed-metadata",
         ])
         .env(cargo_util::paths::dylib_path_envvar(), project.root())
         .run();
@@ -279,20 +278,16 @@ fn checking_reused_build_artifacts_refreshes_their_dependency_usage() {
     )
     .unwrap();
     let started = SystemTime::now();
-    cargo(
-        &project,
-        "-Zohm-reuse-built-deps -Zno-embed-metadata check -v",
-    )
-    .masquerade_as_nightly_cargo(&[
-        "ohm-defaults",
-        "ohm-shared-registry-cache",
-        "ohm-reuse-built-deps",
-        "no-embed-metadata",
-    ])
-    .env(cargo_util::paths::dylib_path_envvar(), project.root())
-    .with_stderr_contains("[FRESH] gc-dependency v1.0.0")
-    .with_stderr_does_not_contain("[CHECKING] gc-dependency [..]")
-    .run();
+    cargo(&project, "-Zohm-reuse-built-deps check -v")
+        .masquerade_as_nightly_cargo(&[
+            "ohm-defaults",
+            "ohm-shared-registry-cache",
+            "ohm-reuse-built-deps",
+        ])
+        .env(cargo_util::paths::dylib_path_envvar(), project.root())
+        .with_stderr_contains("[FRESH] gc-dependency v1.0.0")
+        .with_stderr_does_not_contain("[CHECKING] gc-dependency [..]")
+        .run();
     assert!(fs::metadata(&records[0]).unwrap().modified().unwrap() >= started);
     cargo(&project, "gc --dry-run")
         .with_stderr_contains("[SUMMARY] 0 files")
