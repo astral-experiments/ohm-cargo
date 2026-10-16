@@ -18,6 +18,7 @@ use crate::compiler::layout::PrivateBuildLease;
 use crate::compiler::{CompileKind, Unit, UnitHash};
 use crate::util::{CargoResult, GlobalContext};
 use crate::workspace::Package;
+use crate::workspace::build_cache_gc_lease::ConsumerLease;
 
 /// Represents the kind of process we are creating.
 #[derive(Debug)]
@@ -147,14 +148,22 @@ pub struct Compilation<'gctx> {
     /// Keeps this target's private files alive while tests and launched programs use them.
     private_lease: Option<PrivateBuildLease>,
 
+    /// Keeps shared artifacts alive after build locks are released, including during tests.
+    consumer_lease: Option<ConsumerLease>,
+
     /// The total number of lint warnings emitted by the compilation.
     pub lint_warning_count: usize,
 }
 
 impl<'gctx> Compilation<'gctx> {
     pub fn new<'a>(bcx: &BuildContext<'a, 'gctx>) -> CargoResult<Compilation<'gctx>> {
-        // Acquire the target-local lease before Layout takes profile/workspace locks.
+        // Acquire the root-wide lease before Layout takes profile/workspace locks.
         // It belongs to Compilation so cargo run/test/doc retain it after BuildRunner exits.
+        let consumer_lease = bcx
+            .ws
+            .shared_registry_cache_enabled()
+            .then(|| ConsumerLease::acquire(bcx.ws.configured_build_dir().as_path_unlocked()))
+            .transpose()?;
         let private_lease = bcx
             .ws
             .shared_registry_cache_enabled()
@@ -228,6 +237,7 @@ impl<'gctx> Compilation<'gctx> {
                 .ws
                 .shared_registry_cache_enabled()
                 .then(|| bcx.ws.configured_build_dir().into_path_unlocked()),
+            consumer_lease,
             private_lease,
             lint_warning_count: 0,
             ready_tests: None,
@@ -407,6 +417,9 @@ impl<'gctx> Compilation<'gctx> {
         kind: CompileKind,
         tool_kind: ToolKind,
     ) -> CargoResult<ProcessBuilder> {
+        if let Some(lease) = &self.consumer_lease {
+            lease.inherit(&mut cmd);
+        }
         if let Some(lease) = &self.private_lease {
             lease.inherit(&mut cmd);
         }
