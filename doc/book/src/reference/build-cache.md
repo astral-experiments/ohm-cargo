@@ -164,7 +164,11 @@ Builds batch last-use updates in a transaction at start and completion, includin
 fresh transitive dependencies, cache hits, and failures. No artifact scan or
 per-worktree ownership record is needed. The database uses Cargo's existing
 SQLite dependency and migration helpers; it has the shared root's locking scope,
-independent of Cargo's downloaded-source cache.
+independent of Cargo's downloaded-source cache. SQLite uses write-ahead logging
+with automatic size-based checkpoints, so warm builds do not force each timestamp
+update to durable storage. Transactions remain atomic; after a machine crash,
+some recent cache-usage timestamps may be lost, as with the old unsynced file
+markers. This can cause reusable artifacts to be reclaimed and rebuilt.
 
 Explicit GC queries expired entries, scans outside build locks, and rechecks their
 usage before bounded retirement. Rows are removed with their artifacts, including
