@@ -1288,6 +1288,21 @@ mod tests {
     use super::*;
     use std::os::unix::fs::symlink;
 
+    /// Eligibility assertions should not depend on runner scheduling. Count limits
+    /// remain active; the deadline test supplies its own explicit time budget.
+    fn collect(root: &Path, dry_run: bool, current_ohm: Option<&str>) -> CargoResult<Summary> {
+        collect_at(root, dry_run, SystemTime::now(), current_ohm)
+    }
+
+    fn collect_at(
+        root: &Path,
+        dry_run: bool,
+        now: SystemTime,
+        current_ohm: Option<&str>,
+    ) -> CargoResult<Summary> {
+        collect_with_lock_budget(root, dry_run, now, Duration::from_secs(60), current_ohm)
+    }
+
     struct Cache {
         _temporary: tempfile::TempDir,
         root: PathBuf,
