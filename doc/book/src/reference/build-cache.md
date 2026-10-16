@@ -177,9 +177,23 @@ cargo +ohm gc
 ```
 
 To select one root explicitly, add `--build-dir /path/to/shared-build`.
-`--dry-run` neither removes artifacts nor changes ownership records. Collection
-uses small batches and yields to active builds. If a root is busy or work remains
-after the per-root budget, invoke `cargo +ohm gc` again to continue.
+`--dry-run` lists eligible contexts and worktrees, estimates their file and byte
+totals, and leaves artifacts and ownership records unchanged. For example:
+
+```text
+Would remove context 6f4e82a9c1d037ab (unused for at least 1 hour)
+     Summary 1248 files, 842.6MiB total
+warning: no files deleted due to --dry-run
+```
+
+The preview includes all eligible artifacts and files left by interrupted
+cleanup, without holding build locks while counting them. Actual collection
+reports `Removing` and `Removed`, counts files as it deletes them, and uses small
+batches to yield to active builds. Counts exclude GC bookkeeping; like
+`cargo clean`, byte totals use file lengths rather than physical disk usage.
+Concurrent builds or cleanup can change the preview's estimate.
+If a root is busy or work remains after the per-root budget, invoke
+`cargo +ohm gc` again to continue. `--quiet` suppresses the output.
 
 Cleanup only removes tracked intermediate state inside shared build roots. It
 preserves external target directories, untracked state from older versions,

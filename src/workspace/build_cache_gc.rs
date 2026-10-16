@@ -14,6 +14,7 @@ use serde::{Deserialize, Serialize};
 use crate::CargoResult;
 use crate::compiler::Layout;
 use crate::util;
+use crate::util::data_structures::HashSet;
 use crate::util::flock::try_lock_exclusive;
 use crate::workspace::Workspace;
 
@@ -402,10 +403,37 @@ pub(crate) fn record_context(
 pub(crate) struct Summary {
     pub retired: usize,
     pub retained: usize,
-    pub deleted_files: usize,
+    pub deleted_entries: usize,
+    pub counts: FileCounts,
     pub pending: bool,
     pub busy: bool,
     pub details: Vec<String>,
+}
+
+/// Cache payload totals exclude GC's own provenance and temporary staging files.
+#[derive(Default, Debug, PartialEq, Eq)]
+pub(crate) struct FileCounts {
+    pub files: u64,
+    pub directories: u64,
+    pub bytes: u64,
+}
+
+impl FileCounts {
+    fn record(&mut self, metadata: &Metadata) {
+        if metadata.is_dir() {
+            self.directories += 1;
+        } else {
+            self.files += 1;
+            // Match cargo clean: logical lengths, including symlinks, rather than disk blocks.
+            self.bytes = self.bytes.saturating_add(metadata.len());
+        }
+    }
+
+    pub(crate) fn include(&mut self, other: &Self) {
+        self.files += other.files;
+        self.directories += other.directories;
+        self.bytes = self.bytes.saturating_add(other.bytes);
+    }
 }
 
 /// Retires removed owners, obsolete compilers, and contexts idle for at least an hour.
@@ -484,13 +512,65 @@ fn collect_with_lock_budget(
             if !component(id) || path.extension().is_none_or(|extension| extension != "json") {
                 continue;
             }
-            if retirement_reason(&path, kind, id, now).is_none() {
+            if retirement_detail(&path, kind, id, now).is_none() {
                 summary.retained += 1;
                 continue;
             }
             let paths = owned_paths(root, &profiles, kind, id)?;
             ready.push((path.clone(), kind, id.to_owned(), paths));
         }
+    }
+    if dry_run {
+        let Some(probe) = try_lock(&directory.join(CONSUMERS_LOCK), false)? else {
+            summary.busy = true;
+            return Ok(summary);
+        };
+        for profile in &profiles {
+            ensure!(
+                !crate::compiler::layout::shared_registry_directory_is_nfs(profile)?,
+                "build-cache reclamation does not support NFS profiles"
+            );
+            let Some(_guard) = try_lock(&profile.join(".cargo-build-lock"), false)? else {
+                summary.busy = true;
+                return Ok(summary);
+            };
+        }
+        drop(probe);
+
+        // Preview every candidate, without deletion budgets or locks that block builds.
+        // A later build may change this estimate; real collection rechecks ownership.
+        let mut sources = Vec::new();
+        for (record_path, kind, id, paths) in ready {
+            let Some(detail) = retirement_detail(&record_path, kind, &id, now) else {
+                continue;
+            };
+            let before = sources.len();
+            for (source, trash) in paths {
+                if retire(root, &source, &trash, true)? {
+                    sources.push(source);
+                }
+            }
+            if sources.len() != before {
+                summary.retired += 1;
+                summary.details.push(detail);
+            }
+        }
+        // A retired worktree and compiler context can own overlapping private paths.
+        sources.sort_by_key(|path| path.components().count());
+        let mut counted = HashSet::default();
+        let mut remaining = usize::MAX;
+        for source in sources {
+            if source.ancestors().any(|parent| counted.contains(parent)) {
+                continue;
+            }
+            counted.insert(source.clone());
+            let device = filesystem_device(&fs::symlink_metadata(&source)?);
+            remove_bounded(&source, device, &mut remaining, &mut summary, true)?;
+        }
+        for trash in trash_roots {
+            drain_trash(&trash, &mut remaining, &mut summary, true)?;
+        }
+        return Ok(summary);
     }
     if !ready.is_empty() {
         let deadline = Instant::now() + lock_budget;
@@ -530,7 +610,7 @@ fn collect_with_lock_budget(
             }
             records_remaining -= 1;
             // Only this bounded batch is revalidated while readers are excluded.
-            let Some(reason) = retirement_reason(&record_path, kind, &id, now) else {
+            let Some(detail) = retirement_detail(&record_path, kind, &id, now) else {
                 continue;
             };
             let mut retired = false;
@@ -539,16 +619,13 @@ fn collect_with_lock_budget(
                     summary.pending = true;
                     break;
                 }
-                if retire(root, source, trash, dry_run)? {
+                if retire(root, source, trash, false)? {
                     remaining -= 1;
                     retired = true;
                 }
             }
             if retired && summary.details.len() < 32 {
-                summary.details.push(format!(
-                    "{} {kind}/{id}: {reason}",
-                    if dry_run { "would retire" } else { "retiring" }
-                ));
+                summary.details.push(detail);
             }
             // Keep ambiguous entries (symlinks, mount points, interrupted batches).
             // A future scan must still prove ownership before trying them again.
@@ -560,55 +637,57 @@ fn collect_with_lock_budget(
                     .iter()
                     .all(|(source, _)| safely_absent(root, source));
             if completed {
-                if !dry_run {
-                    if kind == "contexts" && plain_directory(&directory.join(LAST_USED)) {
-                        match fs::remove_file(directory.join(LAST_USED).join(&id)) {
-                            Ok(()) => {}
-                            Err(error) if error.kind() == io::ErrorKind::NotFound => {}
-                            Err(error) => return Err(error.into()),
-                        }
+                if kind == "contexts" && plain_directory(&directory.join(LAST_USED)) {
+                    match fs::remove_file(directory.join(LAST_USED).join(&id)) {
+                        Ok(()) => {}
+                        Err(error) if error.kind() == io::ErrorKind::NotFound => {}
+                        Err(error) => return Err(error.into()),
                     }
-                    fs::remove_file(record_path)?;
                 }
+                fs::remove_file(record_path)?;
             } else if remaining == 0 {
                 summary.pending = true;
             }
-            summary.retired += usize::from(completed || (dry_run && retired));
+            summary.retired += usize::from(completed);
         }
         drop(guards);
         drop(consumers);
     }
-    if !dry_run {
-        // One small unlink chunk per pass, and no I/O when a consumer has arrived.
-        // Explicit collection repeats productive passes within its wall-time budget.
-        if let Some(probe) = try_lock(&directory.join(CONSUMERS_LOCK), false)? {
-            drop(probe);
-            let mut remaining = DELETE_BUDGET;
-            for trash in trash_roots {
-                drain_trash(&trash, &mut remaining, &mut summary)?;
-            }
-        } else {
-            summary.busy = true;
+    // One small unlink chunk per pass, and no I/O when a consumer has arrived.
+    // Explicit collection repeats productive passes within its wall-time budget.
+    if let Some(probe) = try_lock(&directory.join(CONSUMERS_LOCK), false)? {
+        drop(probe);
+        let mut remaining = DELETE_BUDGET;
+        for trash in trash_roots {
+            drain_trash(&trash, &mut remaining, &mut summary, false)?;
         }
+    } else {
+        summary.busy = true;
     }
     Ok(summary)
 }
 
 /// Rechecks provenance and last use under the exclusive consumer lease before renaming.
-fn retirement_reason(path: &Path, kind: &str, id: &str, now: SystemTime) -> Option<&'static str> {
+fn retirement_detail(path: &Path, kind: &str, id: &str, now: SystemTime) -> Option<String> {
     if kind == "workspaces" {
-        read_record::<WorkspaceRecord>(path)
-            .is_some_and(|record| record.valid(id) && record.retired())
-            .then_some("Git worktree deregistered and directory absent")
+        let record = read_record::<WorkspaceRecord>(path)?;
+        (record.valid(id) && record.retired()).then(|| {
+            format!(
+                "worktree {} (directory and Git registration removed)",
+                record.worktree_root.display()
+            )
+        })
     } else {
         let record = read_record::<ContextRecord>(path)?;
         if record.version != 1 || record.context != id {
             return None;
         }
         if record.retired() {
-            Some("concrete compiler or driver replaced or removed")
+            Some(format!(
+                "context {id} (compiler or driver changed or removed)"
+            ))
         } else if context_expired(path.parent()?.parent()?, id, now) {
-            Some("context unused for at least one hour")
+            Some(format!("context {id} (unused for at least 1 hour)"))
         } else {
             None
         }
@@ -708,6 +787,11 @@ fn retire(root: &Path, source: &Path, trash: &Path, dry_run: bool) -> CargoResul
     if !metadata.is_dir() && !metadata.is_file() {
         return Ok(false);
     }
+    if filesystem_device(&metadata)
+        != filesystem_device(&fs::symlink_metadata(trash.parent().unwrap())?)
+    {
+        return Ok(false);
+    }
     if dry_run {
         return Ok(true);
     }
@@ -727,7 +811,12 @@ fn retire(root: &Path, source: &Path, trash: &Path, dry_run: bool) -> CargoResul
     Ok(true)
 }
 
-fn drain_trash(trash: &Path, remaining: &mut usize, summary: &mut Summary) -> CargoResult<()> {
+fn drain_trash(
+    trash: &Path,
+    remaining: &mut usize,
+    summary: &mut Summary,
+    dry_run: bool,
+) -> CargoResult<()> {
     if !plain_directory(trash) {
         return Ok(());
     }
@@ -750,13 +839,17 @@ fn drain_trash(trash: &Path, remaining: &mut usize, summary: &mut Summary) -> Ca
             &payload,
             filesystem_device(&fs::symlink_metadata(trash)?),
             remaining,
-            &mut summary.deleted_files,
+            summary,
+            dry_run,
         )?;
+        if dry_run {
+            continue;
+        }
         if absent(&payload) && *remaining >= 2 {
             fs::remove_file(path.join("owner"))?;
             fs::remove_dir(path)?;
             *remaining -= 2;
-            summary.deleted_files += 2;
+            summary.deleted_entries += 2;
         } else {
             summary.pending = true;
         }
@@ -772,7 +865,8 @@ fn remove_bounded(
     path: &Path,
     device: u64,
     remaining: &mut usize,
-    removed: &mut usize,
+    summary: &mut Summary,
+    dry_run: bool,
 ) -> CargoResult<()> {
     if *remaining == 0 || absent(path) {
         return Ok(());
@@ -786,22 +880,23 @@ fn remove_bounded(
             if *remaining == 0 {
                 return Ok(());
             }
-            remove_bounded(&child?.path(), device, remaining, removed)?;
+            remove_bounded(&child?.path(), device, remaining, summary, dry_run)?;
         }
         if *remaining == 0 {
             return Ok(());
         }
-        if let Err(error) = fs::remove_dir(path) {
+        if !dry_run && let Err(error) = fs::remove_dir(path) {
             if error.kind() == io::ErrorKind::DirectoryNotEmpty {
                 return Ok(());
             }
             return Err(error.into());
         }
-    } else {
+    } else if !dry_run {
         fs::remove_file(path)?;
     }
     *remaining -= 1;
-    *removed += 1;
+    summary.deleted_entries += 1;
+    summary.counts.record(&metadata);
     Ok(())
 }
 
@@ -1050,11 +1145,15 @@ mod tests {
             dry_run
                 .details
                 .iter()
-                .any(|line| line.contains("unused for at least one hour"))
+                .any(|line| line.contains("unused for at least 1 hour"))
         );
+        assert_eq!(dry_run.counts.files, 2);
+        assert_eq!(dry_run.counts.bytes, 12);
         assert_eq!(fs::metadata(&usage)?.modified()?, last_used);
         assert!(shared.exists());
-        assert_eq!(collect_at(&cache.root, false, expires)?.retired, 1);
+        let collected = collect_at(&cache.root, false, expires)?;
+        assert_eq!(collected.retired, 1);
+        assert_eq!(collected.counts, dry_run.counts);
         assert!(!shared.exists());
         assert!(!private.exists());
         assert!(!usage.exists());
@@ -1120,7 +1219,11 @@ mod tests {
         let dry = collect(&cache.root, true)?;
         assert_eq!(dry.retired, 1);
         assert!(shared.exists());
-        assert!(dry.details.iter().any(|line| line.contains("would retire")));
+        assert!(
+            dry.details
+                .iter()
+                .any(|line| line.contains("compiler or driver changed or removed"))
+        );
         assert_eq!(collect(&cache.root, false)?.retired, 1);
         assert!(!shared.exists());
         assert!(!private.exists());
@@ -1220,6 +1323,10 @@ mod tests {
             cache.artifact(&format!("build/registries/{context}"))?;
         }
         fs::remove_file(&cache.driver)?;
+        let preview = collect(&cache.root, true)?;
+        assert_eq!(preview.retired, RENAME_BUDGET + 2);
+        assert_eq!(preview.counts.files, (RENAME_BUDGET + 2) as u64);
+        assert_eq!(preview.counts.bytes, ((RENAME_BUDGET + 2) * 6) as u64);
         let first = collect(&cache.root, false)?;
         assert!(first.retired <= RENAME_BUDGET);
         assert!(first.pending);
@@ -1305,11 +1412,13 @@ mod tests {
         let payload = cache.artifact("payload")?;
         let wrong_device = filesystem_device(&fs::symlink_metadata(&payload)?) ^ 1;
         let mut remaining = DELETE_BUDGET;
-        let mut removed = 0;
-        remove_bounded(&payload, wrong_device, &mut remaining, &mut removed)?;
+        let mut summary = Summary::default();
+        remove_bounded(&payload, wrong_device, &mut remaining, &mut summary, false)?;
         assert!(payload.join("artifact").exists());
         assert_eq!(remaining, DELETE_BUDGET);
-        assert_eq!(removed, 0);
+        assert_eq!(summary.deleted_entries, 0);
+        remove_bounded(&payload, wrong_device, &mut remaining, &mut summary, true)?;
+        assert_eq!(summary.counts, FileCounts::default());
         Ok(())
     }
 
@@ -1323,14 +1432,61 @@ mod tests {
         }
         symlink(&cache.compiler, path.join("external"))?;
         fs::remove_file(&cache.driver)?;
+        let dry_run = collect(&cache.root, true)?;
+        assert_eq!(dry_run.counts.files, (DELETE_BUDGET + 7) as u64);
+        assert_eq!(
+            dry_run.counts.bytes,
+            (DELETE_BUDGET + 11) as u64 + fs::symlink_metadata(path.join("external"))?.len()
+        );
         let first = collect(&cache.root, false)?;
         assert!(first.pending);
-        assert_eq!(first.deleted_files, DELETE_BUDGET);
+        assert_eq!(first.deleted_entries, DELETE_BUDGET);
         assert!(!path.exists());
         assert!(cache.compiler.exists());
+        let pending = collect(&cache.root, true)?;
+        assert_eq!(pending.retired, 0);
         let next = collect(&cache.root, false)?;
         assert!(!next.pending);
+        assert_eq!(pending.counts, next.counts);
+        let mut counts = first.counts;
+        counts.include(&next.counts);
+        assert_eq!(counts, dry_run.counts);
         assert!(cache.compiler.exists());
+        Ok(())
+    }
+
+    #[test]
+    fn preview_counts_overlapping_worktree_and_context_payloads_once() -> CargoResult<()> {
+        let cache = Cache::new()?;
+        cache.enroll()?;
+        let checkout = cache.root.parent().unwrap().join("removed-worktree");
+        let target = checkout.join("target");
+        let namespace = util::short_hash(&("ohm-shared-workspace-v3", &checkout, &target));
+        let repo = git2::Repository::init(cache.root.parent().unwrap().join("repo"))?;
+        let record = WorkspaceRecord {
+            version: 1,
+            namespace: namespace.clone(),
+            workspace_root: checkout.clone(),
+            target_root: target,
+            worktree_root: checkout.clone(),
+            git_common_dir: repo.path().to_path_buf(),
+            git_worktree_id: "removed-worktree".to_owned(),
+            anchor: Anchor::for_path(&checkout)?,
+        };
+        let records = metadata_dir(&cache.root, true)?.join("workspaces");
+        fs::create_dir(&records)?;
+        write_new(&records.join(format!("{namespace}.json")), &record)?;
+        cache.artifact("build/registries/abcdef")?;
+        cache.artifact(&format!("build/workspaces/{namespace}/abcdef"))?;
+        cache.artifact(&format!("incremental/{namespace}"))?;
+        fs::remove_file(&cache.driver)?;
+        let preview = collect(&cache.root, true)?;
+        assert_eq!(preview.retired, 2);
+        assert_eq!(preview.counts.files, 3);
+        assert_eq!(preview.counts.bytes, 18);
+        let collected = collect(&cache.root, false)?;
+        assert_eq!(collected.retired, 2);
+        assert_eq!(collected.counts, preview.counts);
         Ok(())
     }
 

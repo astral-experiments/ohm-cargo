@@ -8,7 +8,7 @@ use std::time::{Duration, Instant};
 use anyhow::{Context as _, ensure};
 
 use super::build_cache_gc;
-use crate::util::{CargoResult, GlobalContext};
+use crate::util::{CargoResult, GlobalContext, HumanBytes};
 
 const ROOTS: &str = ".ohm-build-roots-v1";
 
@@ -98,41 +98,61 @@ pub fn collect(gctx: &GlobalContext, root: Option<&Path>, dry_run: bool) -> Carg
         Some(root) => vec![gctx.cwd().join(root).canonicalize()?],
         None => registered_roots(&directory)?,
     };
+    let mut counts = build_cache_gc::FileCounts::default();
     for root in roots {
+        gctx.shell()
+            .verbose(|shell| shell.status("Checking", root.display()))?;
         let summary = collect_root(&root, dry_run)
             .with_context(|| format!("failed to inspect {}", root.display()))?;
+        counts.include(&summary.counts);
         for detail in &summary.details {
-            gctx.shell().status("Cache", detail)?;
+            gctx.shell()
+                .status(if dry_run { "Would remove" } else { "Removing" }, detail)?;
         }
-        gctx.shell().status(
-            if dry_run { "Would clean" } else { "Cleaned" },
-            format!(
-                "{} namespaces in {} ({} files removed{})",
-                summary.retired,
-                root.display(),
-                summary.deleted_files,
-                if summary.busy {
-                    "; active consumers, skipped"
-                } else if summary.pending {
-                    "; retirement pending; run cargo gc again"
-                } else {
-                    ""
-                }
-            ),
-        )?;
+        if summary.busy {
+            gctx.shell()
+                .status("Skipping", format!("{} (cache is in use)", root.display()))?;
+        } else if summary.pending {
+            gctx.shell().warn(format!(
+                "cleanup of {} is incomplete; run `cargo gc` again to continue",
+                root.display()
+            ))?;
+        }
+    }
+    let file_count = match (counts.files, counts.directories) {
+        (0, 1) => "1 directory".to_owned(),
+        (0, 2..) => format!("{} directories", counts.directories),
+        (1, _) => "1 file".to_owned(),
+        (files, _) => format!("{files} files"),
+    };
+    let byte_count = if counts.bytes == 0 {
+        String::new()
+    } else {
+        format!(", {:.1} total", HumanBytes(counts.bytes))
+    };
+    gctx.shell().status(
+        if dry_run { "Summary" } else { "Removed" },
+        format!("{file_count}{byte_count}"),
+    )?;
+    if dry_run {
+        gctx.shell().warn("no files deleted due to --dry-run")?;
     }
     Ok(())
 }
 
 /// Drains productive batches while yielding to new builds and bounding I/O.
 fn collect_root(root: &Path, dry_run: bool) -> CargoResult<build_cache_gc::Summary> {
+    if dry_run {
+        return build_cache_gc::collect(root, true);
+    }
     let started = Instant::now();
     let mut total = build_cache_gc::Summary::default();
     loop {
-        let summary = build_cache_gc::collect(root, dry_run)?;
-        let progress = summary.retired > 0 || summary.deleted_files > 0;
+        let summary = build_cache_gc::collect(root, false)?;
+        let progress = summary.retired > 0 || summary.deleted_entries > 0;
         total.retired += summary.retired;
-        total.deleted_files += summary.deleted_files;
+        total.deleted_entries += summary.deleted_entries;
+        total.counts.include(&summary.counts);
         total.retained = summary.retained;
         total.busy = summary.busy;
         total.pending = summary.pending;
@@ -141,11 +161,7 @@ fn collect_root(root: &Path, dry_run: bool) -> CargoResult<build_cache_gc::Summa
                 total.details.push(detail);
             }
         }
-        if dry_run
-            || !progress
-            || total.busy
-            || !total.pending
-            || started.elapsed() >= Duration::from_secs(10)
+        if !progress || total.busy || !total.pending || started.elapsed() >= Duration::from_secs(10)
         {
             return Ok(total);
         }
