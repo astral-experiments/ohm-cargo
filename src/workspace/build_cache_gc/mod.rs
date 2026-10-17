@@ -18,6 +18,7 @@ use crate::util::flock::try_lock_exclusive;
 
 pub(crate) const DIRECTORY: &str = ".ohm-gc-v1";
 pub(crate) const CONSUMERS_LOCK: &str = "consumers.lock";
+pub(crate) const THINLTO: &str = ".ohm-thinlto-cache";
 const TRASH: &str = ".ohm-gc-trash-v1";
 const METADATA_TRASH: &str = ".ohm-gc-metadata-trash-v1";
 const DELETE_BUDGET: usize = 256;
@@ -38,6 +39,10 @@ pub(crate) struct ContextUse {
 }
 
 impl ContextUse {
+    pub(crate) fn context(&self) -> &str {
+        &self.context
+    }
+
     /// `None` protects every dependency when importing an unresolved snapshot.
     pub(crate) fn new(
         mut tracker: Tracker,
@@ -446,6 +451,19 @@ fn collect_with_lock_budget(
         drop(probe);
     }
     let tracker = Tracker::existing(root, dry_run)?;
+    // Older Cargo versions prune the legacy ThinLTO layout at build completion,
+    // after releasing their profile locks. Coordinate with that pruner too.
+    let thinlto = root.join(THINLTO);
+    let prune_lock = thinlto.join(".prune-lock");
+    let _thinlto_pruner = if plain_directory(&thinlto) && (!dry_run || !absent(&prune_lock)) {
+        let Some(guard) = try_lock(&prune_lock, !dry_run)? else {
+            summary.busy = true;
+            return Ok(summary);
+        };
+        Some(guard)
+    } else {
+        None
+    };
     let profiles = profiles(root)?;
     let mut ready = Vec::new();
     let mut trash_roots = profiles
@@ -474,6 +492,21 @@ fn collect_with_lock_budget(
                 {
                     let paths = dependency.paths(root, &profiles);
                     ready.push((dependency, paths));
+                }
+                // One extra candidate distinguishes a full batch from completion.
+                let limit = if dry_run {
+                    usize::MAX
+                } else {
+                    DELETE_BUDGET + 1
+                };
+                for entry in thinlto_entries(root, context, now, limit)? {
+                    if entry
+                        .detail(root, &profiles, now, current_ohm, tracker.as_ref())
+                        .is_some()
+                    {
+                        let paths = entry.paths(root, &profiles);
+                        ready.push((entry, paths));
+                    }
                 }
             }
             continue;
@@ -522,7 +555,9 @@ fn collect_with_lock_budget(
             }
             if sources.len() != before {
                 summary.retired += 1;
-                summary.details.push(detail);
+                if !summary.details.contains(&detail) {
+                    summary.details.push(detail);
+                }
             }
         }
         sources.sort_by_key(|path| path.components().count());
@@ -542,6 +577,16 @@ fn collect_with_lock_budget(
         return Ok(summary);
     }
     if !ready.is_empty() {
+        // Individual objects have no rows to delete. Retire a file-sized batch,
+        // still yielding at the same short deadline as other namespaces.
+        let rename_budget = if ready
+            .iter()
+            .all(|(namespace, _)| matches!(namespace, Namespace::ThinLto { .. }))
+        {
+            DELETE_BUDGET
+        } else {
+            RENAME_BUDGET
+        };
         let deadline = Instant::now() + lock_budget;
         let Some(consumers) = try_lock(&consumers_path, false)? else {
             summary.busy = true;
@@ -572,12 +617,12 @@ fn collect_with_lock_budget(
             .as_ref()
             .map(|tracker| tracker.conn.unchecked_transaction())
             .transpose()?;
-        let mut remaining = RENAME_BUDGET;
-        let mut records_remaining = RENAME_BUDGET;
+        let mut remaining = rename_budget;
+        let mut records_remaining = rename_budget;
         for (namespace, paths) in ready {
             if remaining == 0
                 || records_remaining == 0
-                || (records_remaining < RENAME_BUDGET && Instant::now() >= deadline)
+                || (records_remaining < rename_budget && Instant::now() >= deadline)
             {
                 summary.pending = true;
                 break;
@@ -592,7 +637,7 @@ fn collect_with_lock_budget(
             };
             let mut retired = false;
             for (source, trash) in &paths {
-                if remaining == 0 || (remaining < RENAME_BUDGET && Instant::now() >= deadline) {
+                if remaining == 0 || (remaining < rename_budget && Instant::now() >= deadline) {
                     summary.pending = true;
                     break;
                 }
@@ -601,7 +646,7 @@ fn collect_with_lock_budget(
                     retired = true;
                 }
             }
-            if retired && summary.details.len() < 32 {
+            if retired && summary.details.len() < 32 && !summary.details.contains(&detail) {
                 summary.details.push(detail);
             }
             let completed = paths.iter().all(|(source, _)| safely_absent(root, source))
@@ -649,6 +694,63 @@ enum Namespace {
     Context(String),
     LegacyWorkspace(String),
     Dependency { context: String, entry: PathBuf },
+    ThinLto { context: String, entry: PathBuf },
+    LegacyThinLto(String),
+}
+
+/// Discovers backend objects only during explicit GC, outside build locks.
+fn thinlto_entries(
+    root: &Path,
+    context: &str,
+    now: SystemTime,
+    limit: usize,
+) -> CargoResult<Vec<Namespace>> {
+    let parent = Path::new(THINLTO).join(context);
+    let mut entries = Vec::new();
+    for namespace in directory_names(root, &root.join(&parent))? {
+        if !thinlto_key(&namespace) {
+            continue;
+        }
+        let directory = parent.join(namespace);
+        for entry in fs::read_dir(root.join(&directory))? {
+            let entry = entry?;
+            let name = entry.file_name();
+            let Some(name) = name.to_str() else { continue };
+            let kind = entry.file_type()?;
+            if (kind.is_file() && name.strip_suffix(".cache").is_some_and(thinlto_key))
+                || (kind.is_dir() && name.starts_with("ohm-thinlto-"))
+            {
+                if !entry
+                    .metadata()
+                    .is_ok_and(|metadata| thinlto_expired(&metadata, now))
+                {
+                    continue;
+                }
+                entries.push(Namespace::ThinLto {
+                    context: context.to_owned(),
+                    entry: directory.join(name),
+                });
+                if entries.len() == limit {
+                    return Ok(entries);
+                }
+            }
+        }
+    }
+    entries.sort();
+    Ok(entries)
+}
+
+fn thinlto_key(name: &str) -> bool {
+    name.len() == 32 && name.bytes().all(|byte| byte.is_ascii_hexdigit())
+}
+
+/// Rustc refreshes object mtimes on backend cache hits, including read-only reuse.
+fn thinlto_expired(metadata: &Metadata, now: SystemTime) -> bool {
+    metadata
+        .modified()
+        .ok()
+        .and_then(|used| now.duration_since(used).ok())
+        .is_some_and(|idle| idle >= CONTEXT_MAX_IDLE)
 }
 
 /// Selects expired rows outside build locks and validates their artifact paths.
@@ -746,6 +848,27 @@ impl Namespace {
     ) -> Option<String> {
         let directory = root.join(DIRECTORY);
         match self {
+            Self::ThinLto { context, entry } => {
+                // An unknown or malformed context never permits partial eviction.
+                let state = tracker?.context(context).ok()??;
+                if state.record.version != 1 || state.record.context != *context {
+                    return None;
+                }
+                let path = root.join(entry);
+                if !plain_ancestors(root, &path).ok()? {
+                    return None;
+                }
+                let metadata = fs::symlink_metadata(path).ok()?;
+                if !metadata.is_file() && !metadata.is_dir() {
+                    return None;
+                }
+                thinlto_expired(&metadata, now).then(|| {
+                    format!("ThinLTO objects for context {context} (unused for at least 1 hour)")
+                })
+            }
+            Self::LegacyThinLto(id) => {
+                Some(format!("legacy ThinLTO context {id} (no usage records)"))
+            }
             Self::Dependency { context, entry } => {
                 let cutoff = tracker::timestamp(now.checked_sub(CONTEXT_MAX_IDLE)?).ok()?;
                 if legacy_usage(root, context)?.is_some_and(|used| used > cutoff) {
@@ -825,6 +948,15 @@ impl Namespace {
     }
 
     fn paths(&self, root: &Path, profiles: &[PathBuf]) -> Vec<(PathBuf, PathBuf)> {
+        match self {
+            Self::ThinLto { entry, .. } => {
+                return vec![(root.join(entry), root.join(TRASH))];
+            }
+            Self::LegacyThinLto(id) => {
+                return vec![(root.join(THINLTO).join(id), root.join(TRASH))];
+            }
+            _ => {}
+        }
         if let Self::Dependency { entry, .. } = self {
             // Validated entries have profile/build/registries/context/package/hash.
             let profile = root.join(entry.ancestors().nth(5).unwrap());
@@ -840,7 +972,9 @@ impl Namespace {
                     profile.join("build/workspaces").join(id),
                     profile.join("incremental").join(id),
                 ],
-                Self::Dependency { .. } => unreachable!(),
+                Self::Dependency { .. } | Self::ThinLto { .. } | Self::LegacyThinLto(_) => {
+                    unreachable!()
+                }
             };
             paths.extend(
                 sources
@@ -849,6 +983,7 @@ impl Namespace {
             );
         }
         if let Self::Context(id) = self {
+            paths.push((root.join(THINLTO).join(id), root.join(TRASH)));
             paths.push((
                 root.join(DIRECTORY).join("dependencies").join(id),
                 root.join(METADATA_TRASH),
@@ -874,11 +1009,13 @@ impl Namespace {
             match self {
                 Self::Context(id) => tracker.forget_context(id)?,
                 Self::Dependency { context, entry } => tracker.forget_dependency(context, entry)?,
-                Self::LegacyWorkspace(_) => {}
+                Self::LegacyWorkspace(_) | Self::ThinLto { .. } | Self::LegacyThinLto(_) => {}
             }
         }
         let paths = match self {
-            Self::Dependency { .. } => return Ok(()),
+            Self::Dependency { .. } | Self::ThinLto { .. } | Self::LegacyThinLto(_) => {
+                return Ok(());
+            }
             Self::Context(id) => vec![
                 directory.join(LAST_USED).join(id),
                 directory.join("contexts").join(format!("{id}.json")),
@@ -953,6 +1090,13 @@ fn namespaces(
                     }
                 }
             }
+        }
+    }
+    for id in directory_names(root, &root.join(THINLTO))? {
+        if legacy_context_name(&id) {
+            namespaces.insert(Namespace::Context(id));
+        } else if thinlto_key(&id) && !namespaces.contains(&Namespace::Context(id.clone())) {
+            namespaces.insert(Namespace::LegacyThinLto(id));
         }
     }
     if legacy_private_state(root, profiles) {
@@ -1403,6 +1547,162 @@ mod tests {
             fs::write(path.join("artifact"), b"cached")?;
             Ok(path)
         }
+
+        fn thinlto(&self, context: &str, key: usize, used: SystemTime) -> CargoResult<PathBuf> {
+            let directory = self.root.join(THINLTO).join(context).join("0".repeat(32));
+            fs::create_dir_all(&directory)?;
+            let path = directory.join(format!("{key:032x}.cache"));
+            fs::write(&path, b"backend")?;
+            File::open(&path)?.set_modified(used)?;
+            Ok(path)
+        }
+    }
+
+    #[test]
+    fn thinlto_uses_object_activity_within_a_live_context() -> CargoResult<()> {
+        let cache = Cache::new()?;
+        cache.enroll()?;
+        let now = SystemTime::UNIX_EPOCH + Duration::from_secs(1_800_000_000);
+        cache.age_context("abcdef", now)?;
+        let cold = cache.thinlto("abcdef", 0, now - CONTEXT_MAX_IDLE)?;
+        let hot = cache.thinlto("abcdef", 1, now - CONTEXT_MAX_IDLE + Duration::from_secs(1))?;
+        let refreshed = cache.thinlto("abcdef", 2, now - CONTEXT_MAX_IDLE)?;
+        let staging = cold.parent().unwrap().join("ohm-thinlto-abandoned");
+        fs::create_dir(&staging)?;
+        fs::write(staging.join("entry"), b"unfinished")?;
+        File::open(&staging)?.set_modified(now - CONTEXT_MAX_IDLE)?;
+        let unrelated = cold.parent().unwrap().join("keep.txt");
+        fs::write(&unrelated, b"unrecognized")?;
+
+        let preview = collect_at(&cache.root, true, now, None)?;
+        assert_eq!(preview.counts.files, 3);
+        assert_eq!(preview.counts.bytes, 24);
+        assert_eq!(
+            preview.details.len(),
+            1,
+            "objects share a concise context summary"
+        );
+        assert!(!cache.root.join(THINLTO).join(".prune-lock").exists());
+        assert!(cold.exists());
+        assert!(staging.exists());
+        // A compiler hit after discovery must be rechecked before retirement.
+        File::open(&refreshed)?.set_modified(now)?;
+        let lease = crate::workspace::build_cache_gc_lease::ConsumerLease::acquire(&cache.root)?;
+        assert!(collect_at(&cache.root, false, now, None)?.busy);
+        drop(lease);
+        let collected = collect_at(&cache.root, false, now, None)?;
+        assert_eq!(collected.counts.files, 2);
+        assert_eq!(collected.counts.bytes, 17);
+        assert!(!cold.exists());
+        assert!(!staging.exists());
+        assert!(hot.exists());
+        assert!(refreshed.exists());
+        assert!(unrelated.exists());
+        assert!(cache.tracker()?.context("abcdef")?.is_some());
+        Ok(())
+    }
+
+    #[test]
+    fn thinlto_retirement_is_bounded_and_resumable() -> CargoResult<()> {
+        let cache = Cache::new()?;
+        cache.enroll()?;
+        let now = SystemTime::now();
+        cache.age_context("abcdef", now)?;
+        for key in 0..DELETE_BUDGET + 3 {
+            cache.thinlto(
+                "abcdef",
+                key,
+                now - CONTEXT_MAX_IDLE - Duration::from_secs(1),
+            )?;
+        }
+        let preview = collect_at(&cache.root, true, now, None)?;
+        let limited = collect_with_lock_budget(&cache.root, false, now, Duration::ZERO, None)?;
+        assert_eq!(limited.retired, 1);
+        assert!(limited.pending);
+        let first = collect_at(&cache.root, false, now, None)?;
+        assert_eq!(first.retired, DELETE_BUDGET);
+        assert!(first.pending);
+        let second = collect_at(&cache.root, false, now, None)?;
+        assert_eq!(second.retired, 2);
+        let mut counts = limited.counts;
+        counts.include(&first.counts);
+        counts.include(&second.counts);
+        let mut pending = second.pending;
+        while pending {
+            let next = collect_at(&cache.root, false, now, None)?;
+            assert_eq!(next.retired, 0);
+            assert!(next.deleted_entries > 0);
+            counts.include(&next.counts);
+            pending = next.pending;
+        }
+        assert_eq!(counts, preview.counts);
+        Ok(())
+    }
+
+    #[test]
+    fn thinlto_preserves_unknown_records_and_symlinked_objects() -> CargoResult<()> {
+        let cache = Cache::new()?;
+        cache.enroll()?;
+        let now = SystemTime::now();
+        let object = cache.thinlto("abcdef", 0, now - CONTEXT_MAX_IDLE - Duration::from_secs(1))?;
+        let mut record = cache.record("abcdef")?;
+        record.version = 2;
+        cache.set_record(&record)?;
+        assert_eq!(collect(&cache.root, false, None)?.retired, 0);
+        assert!(object.exists());
+        record.version = 1;
+        cache.set_record(&record)?;
+        fs::remove_file(&object)?;
+        symlink(&cache.compiler, &object)?;
+        assert_eq!(collect(&cache.root, false, None)?.retired, 0);
+        assert!(cache.compiler.exists());
+        // A tracked context with a future name shape is not untracked legacy data.
+        let future = "f".repeat(32);
+        record_context(
+            &cache.root,
+            &future,
+            cache.identity(&cache.compiler)?,
+            cache.identity(&cache.driver)?,
+        )?;
+        let mut record = cache.record(&future)?;
+        record.version = 2;
+        cache.set_record(&record)?;
+        let object = cache.thinlto(&future, 0, now - CONTEXT_MAX_IDLE - Duration::from_secs(1))?;
+        assert_eq!(collect(&cache.root, false, None)?.retired, 0);
+        assert!(object.exists());
+        Ok(())
+    }
+
+    #[test]
+    fn legacy_thinlto_obeys_the_old_pruner_lock_and_preserves_unknown_paths() -> CargoResult<()> {
+        let cache = Cache::new()?;
+        fs::remove_dir_all(cache.root.join(DIRECTORY))?;
+        let legacy = cache.root.join(THINLTO).join("0".repeat(32));
+        fs::create_dir_all(&legacy)?;
+        fs::write(legacy.join("1".repeat(32) + ".cache"), b"legacy")?;
+        let unknown = cache.root.join(THINLTO).join("keep-me");
+        fs::create_dir(&unknown)?;
+        symlink(
+            &cache._temporary.path(),
+            cache.root.join(THINLTO).join("2".repeat(32)),
+        )?;
+        let preview = collect(&cache.root, true, None)?;
+        assert_eq!(preview.counts.files, 1);
+        assert_eq!(preview.counts.bytes, 6);
+        assert!(!cache.root.join(DIRECTORY).exists());
+        let lock_path = cache.root.join(THINLTO).join(".prune-lock");
+        assert!(!lock_path.exists());
+        let lock = File::create(lock_path)?;
+        crate::util::flock::lock_exclusive(&lock)?;
+        assert!(collect(&cache.root, true, None)?.busy);
+        assert!(collect(&cache.root, false, None)?.busy);
+        assert!(legacy.exists());
+        drop(lock);
+        assert_eq!(collect(&cache.root, false, None)?.counts, preview.counts);
+        assert!(!legacy.exists());
+        assert!(unknown.exists());
+        assert!(cache.compiler.exists());
+        Ok(())
     }
 
     #[test]
@@ -2168,6 +2468,7 @@ mod tests {
             cache.set_record(&record)?;
             drop(ContextUse::new(cache.tracker()?, id, Some(Vec::new()))?);
             cache.artifact(&format!("build/registries/{id}"))?;
+            cache.thinlto(id, 0, SystemTime::now())?;
         }
         assert_eq!(collect(&cache.root, true, None)?.retired, 0);
         let current = Some("ohm-1.99.0-2");
@@ -2185,9 +2486,11 @@ mod tests {
         assert_eq!(collect(&cache.root, false, current)?.counts, preview.counts);
         for id in ["old-rust", "old-ohm"] {
             assert!(!cache.profile.join("build/registries").join(id).exists());
+            assert!(!cache.root.join(THINLTO).join(id).exists());
         }
         for id in ["current", "newer", "unknown"] {
             assert!(cache.profile.join("build/registries").join(id).exists());
+            assert!(cache.root.join(THINLTO).join(id).exists());
         }
         assert!(cache.compiler.exists());
         assert!(cache.driver.exists());
