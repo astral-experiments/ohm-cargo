@@ -297,6 +297,9 @@ unsigned native_value(void);
             println!("cargo:rerun-if-changed=native.c");
             println!("cargo:rustc-link-search=native={}", out.display());
             println!("cargo:rustc-link-lib=static=retained");
+            // Like jemalloc, the producer has a link argument that Cargo does
+            // not forward to a dependent package's library-test executable.
+            println!("cargo:rustc-link-arg=-pthread");
         }
     "##;
         p.change_file("retained/build.rs", script);
