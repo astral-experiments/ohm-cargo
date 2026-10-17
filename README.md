@@ -119,8 +119,10 @@ compilation work.
 Cargo revalidates retained build-script outputs before invoking the test
 compiler. On Linux, dependency scripts may contribute ordinary static archives
 and ELF objects through native search directories inside their own `OUT_DIR`.
-Those dependencies still build normally. Root-package native inputs, opaque
-linker arguments, external search directories, and unsupported files retry the
+Bounded source/header trees and extensionless ELF object probes are also allowed;
+auxiliary files are checked for aliases, renamed archives, and file-loading
+linker directives. Those dependencies still build normally. Root-package native
+inputs, opaque linker arguments, external search directories, and unsupported files retry the
 complete graph and prevent recording unused-dependency evidence. Configuration
 and environment outputs alone do not prevent deferral.
 

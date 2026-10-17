@@ -54,9 +54,8 @@ pub(crate) fn native_output_dirs(runner: &BuildRunner<'_, '_>) -> HashMap<UnitHa
 }
 
 /// Admit only Linux native search directories containing self-contained native
-/// archives or ELF objects owned by a retained script. In particular, reject
-/// Rust archives, thin archives, linker scripts, and symlink/path escapes that
-/// could reach an omitted dependency's old artifact.
+/// archives, ELF objects, or bounded auxiliary source/header trees owned by a
+/// retained script. Reject aliases and inputs that can load another artifact.
 pub(crate) fn native_search_paths_supported(output: &BuildOutput, out_dir: &Path) -> bool {
     let supported = || -> Option<()> {
         if !cfg!(target_os = "linux")
@@ -72,23 +71,69 @@ pub(crate) fn native_search_paths_supported(output: &BuildOutput, out_dir: &Path
             if !path.starts_with(&out_dir) {
                 return None;
             }
-            for entry in fs::read_dir(&path).ok()? {
+            let mut auxiliary_bytes = 0;
+            for (index, entry) in walkdir::WalkDir::new(&path)
+                .min_depth(1)
+                .into_iter()
+                .enumerate()
+            {
                 let entry = entry.ok()?;
-                if !entry.file_type().ok()?.is_file() {
+                if index >= 4096 || entry.depth() > 8 {
+                    return None;
+                }
+                if entry.file_type().is_dir() {
+                    continue;
+                }
+                if !entry.file_type().is_file() {
                     return None;
                 }
                 #[cfg(target_os = "linux")]
                 if std::os::unix::fs::MetadataExt::nlink(&entry.metadata().ok()?) != 1 {
                     return None;
                 }
-                let mut header = [0; 8];
-                fs::File::open(entry.path())
-                    .ok()?
-                    .read_exact(&mut header)
-                    .ok()?;
-                match entry.path().extension()?.to_str()? {
-                    "a" if &header == b"!<arch>\n" => {}
-                    "o" if &header[..4] == b"\x7fELF" => {}
+                match entry
+                    .path()
+                    .extension()
+                    .and_then(|extension| extension.to_str())
+                {
+                    Some("a") => {
+                        let mut header = [0; 8];
+                        fs::File::open(entry.path())
+                            .ok()?
+                            .read_exact(&mut header)
+                            .ok()?;
+                        if &header != b"!<arch>\n" {
+                            return None;
+                        }
+                    }
+                    Some("o") | None => {
+                        // Compiler feature probes may omit the .o suffix. Only
+                        // ELF relocatable objects are self-contained inputs.
+                        let mut header = [0; 18];
+                        fs::File::open(entry.path())
+                            .ok()?
+                            .read_exact(&mut header)
+                            .ok()?;
+                        if &header[..4] != b"\x7fELF"
+                            || !matches!((header[5], &header[16..18]), (1, [1, 0]) | (2, [0, 1]))
+                        {
+                            return None;
+                        }
+                    }
+                    Some("c" | "h" | "inc" | "in") => {
+                        let mut text = String::new();
+                        fs::File::open(entry.path())
+                            .ok()?
+                            .take(8 * 1024 * 1024 - auxiliary_bytes + 1)
+                            .read_to_string(&mut text)
+                            .ok()?;
+                        auxiliary_bytes += text.len() as u64;
+                        if auxiliary_bytes > 8 * 1024 * 1024
+                            || !native_auxiliary_text_supported(&text)
+                        {
+                            return None;
+                        }
+                    }
                     _ => return None,
                 }
             }
@@ -110,6 +155,85 @@ pub(crate) fn native_search_paths_supported(output: &BuildOutput, out_dir: &Path
         Some(())
     };
     supported().is_some()
+}
+
+/// A verbatim native library name can select a header or source file too. Do
+/// not admit renamed archives or text that can load files as a linker script.
+/// Require both literal and escaped string interpretations to be safe;
+/// malformed text conservatively retains the full graph.
+fn native_auxiliary_text_supported(text: &str) -> bool {
+    if text.starts_with("!<arch>\n")
+        || text.starts_with("!<thin>\n")
+        || text
+            .chars()
+            .any(|c| c.is_control() && !c.is_ascii_whitespace())
+    {
+        return false;
+    }
+    for escapes in [false, true] {
+        let mut text = text;
+        let mut file_command = false;
+        loop {
+            text = text.trim_start();
+            if text.is_empty() {
+                break;
+            }
+            if let Some(comment) = text.strip_prefix("/*") {
+                let Some((_, rest)) = comment.split_once("*/") else {
+                    return false;
+                };
+                text = rest;
+                continue;
+            }
+            if text.starts_with('#') {
+                text = text.split_once(['\r', '\n']).map_or("", |(_, rest)| rest);
+                continue;
+            }
+            if text.starts_with('(') && file_command {
+                return false;
+            }
+            file_command = false;
+            let mut quoted = String::new();
+            let (word, rest) = if text.starts_with('"') {
+                let mut chars = text.char_indices().skip(1);
+                let end = loop {
+                    let Some((index, c)) = chars.next() else {
+                        return false;
+                    };
+                    if escapes && c == '\\' {
+                        let Some((_, c)) = chars.next() else {
+                            return false;
+                        };
+                        quoted.push(c);
+                    } else if c == '"' {
+                        break index + 1;
+                    } else {
+                        quoted.push(c);
+                    }
+                };
+                (quoted.as_str(), &text[end..])
+            } else {
+                let length = text
+                    .bytes()
+                    .take_while(|c| c.is_ascii_alphanumeric() || *c == b'_')
+                    .count();
+                if length == 0 {
+                    text = &text[text.chars().next().unwrap().len_utf8()..];
+                    continue;
+                }
+                text.split_at(length)
+            };
+            if word == "INCLUDE" {
+                return false;
+            }
+            file_command = matches!(
+                word,
+                "INPUT" | "GROUP" | "AS_NEEDED" | "SEARCH_DIR" | "STARTUP"
+            );
+            text = rest;
+        }
+    }
+    true
 }
 
 /// Record proof even when opted out, without altering rustc's tracked inputs.
