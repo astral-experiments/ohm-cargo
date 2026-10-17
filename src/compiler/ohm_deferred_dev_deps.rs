@@ -91,6 +91,7 @@ pub(crate) fn native_search_paths_supported(output: &BuildOutput, out_dir: &Path
                 if std::os::unix::fs::MetadataExt::nlink(&entry.metadata().ok()?) != 1 {
                     return None;
                 }
+                let mut file = fs::File::open(entry.path()).ok()?;
                 match entry
                     .path()
                     .extension()
@@ -98,10 +99,7 @@ pub(crate) fn native_search_paths_supported(output: &BuildOutput, out_dir: &Path
                 {
                     Some("a") => {
                         let mut header = [0; 8];
-                        fs::File::open(entry.path())
-                            .ok()?
-                            .read_exact(&mut header)
-                            .ok()?;
+                        file.read_exact(&mut header).ok()?;
                         if &header != b"!<arch>\n" {
                             return None;
                         }
@@ -110,10 +108,7 @@ pub(crate) fn native_search_paths_supported(output: &BuildOutput, out_dir: &Path
                         // Compiler feature probes may omit the .o suffix. Only
                         // ELF relocatable objects are self-contained inputs.
                         let mut header = [0; 18];
-                        fs::File::open(entry.path())
-                            .ok()?
-                            .read_exact(&mut header)
-                            .ok()?;
+                        file.read_exact(&mut header).ok()?;
                         if &header[..4] != b"\x7fELF"
                             || !matches!((header[5], &header[16..18]), (1, [1, 0]) | (2, [0, 1]))
                         {
@@ -122,9 +117,7 @@ pub(crate) fn native_search_paths_supported(output: &BuildOutput, out_dir: &Path
                     }
                     Some("c" | "h" | "inc" | "in") => {
                         let mut text = String::new();
-                        fs::File::open(entry.path())
-                            .ok()?
-                            .take(8 * 1024 * 1024 - auxiliary_bytes + 1)
+                        file.take(8 * 1024 * 1024 - auxiliary_bytes + 1)
                             .read_to_string(&mut text)
                             .ok()?;
                         auxiliary_bytes += text.len() as u64;

@@ -1230,23 +1230,26 @@ fn rustc(
                 let script_outputs = build_script_outputs.lock().unwrap();
                 scripts.to_link.iter().all(|(package, metadata)| {
                     script_outputs.get(*metadata).is_some_and(|output| {
-                        !output.linker_args.iter().any(|(link_target, _)| {
+                        let has_linker_args = output.linker_args.iter().any(|(link_target, _)| {
                             // Match add_native_deps: a dependency's ordinary
                             // link arguments do not reach this test compiler.
                             link_target.applies_to(&target, mode)
                                 && (*package == current_id || *link_target == LinkArgTarget::Cdylib)
-                        }) && if *package == current_id {
-                            output.library_paths.is_empty() && output.library_links.is_empty()
-                        } else {
-                            // Dependency -l flags belong to their retained Rust
-                            // libraries; only their -L paths reach this compiler.
-                            (output.library_paths.is_empty() && output.library_links.is_empty())
-                                || dev_native_output_dirs.get(metadata).is_some_and(|out_dir| {
-                                    ohm_deferred_dev_deps::native_search_paths_supported(
-                                        output, out_dir,
-                                    )
-                                })
+                        });
+                        if has_linker_args {
+                            return false;
                         }
+                        if output.library_paths.is_empty() && output.library_links.is_empty() {
+                            return true;
+                        }
+                        // Dependency -l flags belong to their retained Rust
+                        // libraries; only their -L paths reach this compiler.
+                        *package != current_id
+                            && dev_native_output_dirs.get(metadata).is_some_and(|out_dir| {
+                                ohm_deferred_dev_deps::native_search_paths_supported(
+                                    output, out_dir,
+                                )
+                            })
                     })
                 })
             });
@@ -1611,7 +1614,7 @@ fn rustc(
         }
 
         let mut accepted_early_test = false;
-        if !deferred_dev_names.is_empty() {
+        if !deferred_dev_names.is_empty() || early_test.is_some() {
             let output = std::cell::RefCell::new(ohm_early_tests::Output::default());
             let result = exec.exec(
                 &rustc,
@@ -1623,83 +1626,9 @@ fn rustc(
                     Ok(())
                 },
                 &mut |line| {
-                    output.borrow_mut().push(line, true);
-                    Ok(())
-                },
-            );
-            let output = output.into_inner();
-            if result.is_err()
-                || !deferred_dev_names
-                    .iter()
-                    .all(|name| output.proves_unused(*name))
-            {
-                if let Some(cache) = &relink_cache {
-                    cache.clear_codegen_temps()?;
-                    if cache.rlink.exists() {
-                        paths::remove_file(&cache.rlink)?;
-                    }
-                }
-                for output in outputs.iter() {
-                    if output.path.is_dir() {
-                        // macOS debug bundles are directories.
-                        paths::remove_dir_all(&output.path)?;
-                    } else if output.path.exists() {
-                        paths::remove_file(&output.path)?;
-                    }
-                }
-                // Only ordinary compiler diagnostics can be repaired by
-                // building the deferred dependencies. Preserve interruption,
-                // crashes, launch failures, and errors from custom executors.
-                if let Err(error) = result
-                    && error
-                        .downcast_ref::<ProcessError>()
-                        .and_then(|error| error.code)
-                        != Some(1)
-                {
-                    for line in output.stderr {
-                        on_stderr_line(
-                            state,
-                            &line,
-                            package_id,
-                            &manifest,
-                            &target,
-                            &mut output_options,
-                        )?;
-                    }
-                    return Err(error);
-                }
-                deferred_dev_retry.store(true, std::sync::atomic::Ordering::Relaxed);
-                return Err(ohm_deferred_dev_deps::Retry.into());
-            }
-            tracing::info!(target: "cargo::compiler::ohm_deferred_dev_deps", "accepted current unused-dependency proof");
-            for line in output.stdout {
-                on_stdout_line(state, &line, package_id, &target)?;
-            }
-            for line in output.stderr {
-                on_stderr_line(
-                    state,
-                    &line,
-                    package_id,
-                    &manifest,
-                    &target,
-                    &mut output_options,
-                )?;
-            }
-            accepted_early_test = true;
-        }
-        if let Some((completion, extern_name)) = &early_test {
-            let output = std::cell::RefCell::new(ohm_early_tests::Output::default());
-            let result = exec.exec(
-                &rustc,
-                package_id,
-                &target,
-                mode,
-                &mut |line| {
-                    output.borrow_mut().push(line, false);
-                    Ok(())
-                },
-                &mut |line| {
-                    if let Ok(timing) = serde_json::from_str::<SectionTiming>(line) {
+                    if early_test.is_some()
+                        && let Ok(timing) = serde_json::from_str::<SectionTiming>(line)
+                    {
                         state.on_section_timing_emitted(timing);
                     } else {
                         output.borrow_mut().push(line, true);
@@ -1707,24 +1636,82 @@ fn rustc(
                     Ok(())
                 },
             );
-            // No diagnostics, relink manifest, or Cargo fingerprint from the
-            // provisional invocation is published before its producer succeeds.
-            let producer_result = completion.wait();
             let output = output.into_inner();
-            accepted_early_test =
-                producer_result.is_ok() && result.is_ok() && output.proves_unused(*extern_name);
-            if accepted_early_test {
-                // The executable may have been linked before its producer. Mark
-                // the acceptance time so the next build does not mistake that
-                // ordering for a dependency changed after a successful build.
-                let accepted_at = filetime::FileTime::now();
-                for artifact in outputs
-                    .iter()
-                    .filter(|output| output.flavor == FileFlavor::Normal)
-                {
-                    filetime::set_file_mtime(&artifact.path, accepted_at)?;
+            if let Some((completion, extern_name)) = &early_test {
+                // Wait for the producer before publishing provisional output.
+                let producer_result = completion.wait();
+                accepted_early_test =
+                    producer_result.is_ok() && result.is_ok() && output.proves_unused(*extern_name);
+                if accepted_early_test {
+                    // Linking may have finished before the producer. Record the
+                    // acceptance time so the next build sees a fresh executable.
+                    let accepted_at = filetime::FileTime::now();
+                    for artifact in outputs
+                        .iter()
+                        .filter(|output| output.flavor == FileFlavor::Normal)
+                    {
+                        filetime::set_file_mtime(&artifact.path, accepted_at)?;
+                    }
+                    tracing::info!(target: "cargo::compiler::ohm_early_tests", "accepted early {}", target.name());
+                } else {
+                    if let Some(cache) = &relink_cache {
+                        cache.clear_codegen_temps()?;
+                    }
+                    for output in outputs.iter() {
+                        if output.path.exists() {
+                            paths::remove_file(&output.path)?;
+                        }
+                    }
+                    producer_result?;
+                    tracing::info!(target: "cargo::compiler::ohm_early_tests", "retrying {} after dependency completion", target.name());
                 }
-                tracing::info!(target: "cargo::compiler::ohm_early_tests", "accepted early {}", target.name());
+            } else {
+                if result.is_err()
+                    || !deferred_dev_names
+                        .iter()
+                        .all(|name| output.proves_unused(*name))
+                {
+                    if let Some(cache) = &relink_cache {
+                        cache.clear_codegen_temps()?;
+                        if cache.rlink.exists() {
+                            paths::remove_file(&cache.rlink)?;
+                        }
+                    }
+                    for output in outputs.iter() {
+                        if output.path.is_dir() {
+                            // macOS debug bundles are directories.
+                            paths::remove_dir_all(&output.path)?;
+                        } else if output.path.exists() {
+                            paths::remove_file(&output.path)?;
+                        }
+                    }
+                    // Only ordinary diagnostics can be repaired by building
+                    // deferred dependencies. Preserve crashes and interruptions.
+                    if let Err(error) = result
+                        && error
+                            .downcast_ref::<ProcessError>()
+                            .and_then(|error| error.code)
+                            != Some(1)
+                    {
+                        for line in output.stderr {
+                            on_stderr_line(
+                                state,
+                                &line,
+                                package_id,
+                                &manifest,
+                                &target,
+                                &mut output_options,
+                            )?;
+                        }
+                        return Err(error);
+                    }
+                    deferred_dev_retry.store(true, std::sync::atomic::Ordering::Relaxed);
+                    return Err(ohm_deferred_dev_deps::Retry.into());
+                }
+                tracing::info!(target: "cargo::compiler::ohm_deferred_dev_deps", "accepted current unused-dependency proof");
+                accepted_early_test = true;
+            }
+            if accepted_early_test {
                 for line in output.stdout {
                     on_stdout_line(state, &line, package_id, &target)?;
                 }
@@ -1738,17 +1725,6 @@ fn rustc(
                         &mut output_options,
                     )?;
                 }
-            } else {
-                if let Some(cache) = &relink_cache {
-                    cache.clear_codegen_temps()?;
-                }
-                for output in outputs.iter() {
-                    if output.path.exists() {
-                        paths::remove_file(&output.path)?;
-                    }
-                }
-                producer_result?;
-                tracing::info!(target: "cargo::compiler::ohm_early_tests", "retrying {} after dependency completion", target.name());
             }
         }
 
