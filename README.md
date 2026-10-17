@@ -116,10 +116,13 @@ scripts, proc macros, native links, artifact dependencies, and opaque linker
 inputs in the skipped closure also prevent deferral. A discarded attempt can add
 compilation work.
 
-Native-link outputs from retained build scripts also prevent deferral. If a
-script adds those inputs after scheduling, Cargo retries the complete graph
-before invoking the test compiler. Configuration and environment outputs alone
-do not prevent deferral.
+Cargo revalidates retained build-script outputs before invoking the test
+compiler. On Linux, dependency scripts may contribute ordinary static archives
+and ELF objects through native search directories inside their own `OUT_DIR`.
+Those dependencies still build normally. Root-package native inputs, opaque
+linker arguments, external search directories, and unsupported files retry the
+complete graph and prevent recording unused-dependency evidence. Configuration
+and environment outputs alone do not prevent deferral.
 
 Use `cargo +ohm -Zohm-defer-dev-deps=no test -p app --lib` to opt out, or set
 `ohm-defer-dev-deps = false` in the `[unstable]` configuration table.
