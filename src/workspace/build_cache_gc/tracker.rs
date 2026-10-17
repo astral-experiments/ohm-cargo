@@ -5,7 +5,7 @@
 
 use std::fs;
 use std::path::{Path, PathBuf};
-use std::time::{SystemTime, UNIX_EPOCH};
+use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
 use anyhow::ensure;
 use cargo_util::paths;
@@ -15,11 +15,12 @@ use rusqlite::{Connection, OpenFlags, OptionalExtension as _, params};
 use super::{Anchor, ContextRecord, FileIdentity, absent, installed_ohm_version, metadata_dir};
 use crate::CargoResult;
 use crate::util::sqlite::{self, basic_migration};
+use crate::workspace::global_cache_tracker::UPDATE_RESOLUTION;
 
 pub(super) const DATABASE: &str = "cache.sqlite";
 const SCHEMA_VERSION: u32 = 2;
 
-/// Nanoseconds preserve the one-hour boundary without rounding recent use down.
+/// Nanoseconds preserve exact GC cutoffs; recorded use is rounded upward.
 pub(super) type Timestamp = i64;
 
 pub(super) fn timestamp(time: SystemTime) -> CargoResult<Timestamp> {
@@ -219,15 +220,52 @@ impl Tracker {
         .transpose()
     }
 
-    /// Updates all selected units in one transaction, including fresh cache hits.
+    /// Records selected units, including fresh hits, at Cargo's update resolution.
+    /// Rounding upward guarantees a full hour of inactivity despite skipped writes.
     /// A snapshot import has no resolved graph and protects the whole context.
     pub(super) fn touch(
         &mut self,
         context: &str,
         entries: Option<&[PathBuf]>,
         now: SystemTime,
-    ) -> CargoResult<()> {
-        let now = timestamp(now)?;
+    ) -> CargoResult<Timestamp> {
+        let resolution = Duration::from_secs(UPDATE_RESOLUTION).as_nanos();
+        let now: Timestamp = (now
+            .duration_since(UNIX_EPOCH)?
+            .as_nanos()
+            .div_ceil(resolution)
+            * resolution)
+            .try_into()?;
+        // Keep warm builds read-only. End this snapshot before writing so another
+        // consumer's commit cannot make a read-to-write upgrade fail as busy.
+        let (update_context, pending) = {
+            let tx = self.conn.transaction()?;
+            let (last_used, all_used): (Option<Timestamp>, Option<Timestamp>) = tx
+                .prepare_cached("SELECT last_used, all_used FROM contexts WHERE context = ?1")?
+                .query_row([context], |row| Ok((row.get(0)?, row.get(1)?)))?;
+            let update_context = last_used.is_none_or(|used| used < now)
+                || (entries.is_none() && all_used.is_none_or(|used| used < now));
+            let mut pending = Vec::new();
+            if let Some(entries) = entries {
+                let mut statement = tx.prepare_cached(
+                    "SELECT last_used FROM dependencies WHERE context = ?1 AND entry = ?2",
+                )?;
+                for entry in entries {
+                    let used: Option<Timestamp> = statement
+                        .query_row(params![context, paths::path2bytes(entry)?], |row| {
+                            row.get(0)
+                        })
+                        .optional()?;
+                    if used.is_none_or(|used| used < now) {
+                        pending.push(entry);
+                    }
+                }
+            }
+            (update_context, pending)
+        };
+        if !update_context && pending.is_empty() {
+            return Ok(now);
+        }
         // Short Cargo invocations rebuild the WAL index on open. Keep small batches'
         // logs small, but let larger batches amortize checkpoint synchronization.
         let checkpoint_pages = entries.map_or(128, |entries| {
@@ -236,17 +274,19 @@ impl Tracker {
         self.conn
             .pragma_update(None, "wal_autocheckpoint", checkpoint_pages as u32)?;
         let tx = self.conn.transaction()?;
-        let changed = tx.prepare_cached("UPDATE contexts SET last_used = max(coalesce(last_used, ?2), ?2), all_used = CASE WHEN ?3 THEN max(coalesce(all_used, ?2), ?2) ELSE all_used END WHERE context = ?1")?
-            .execute(params![context, now, entries.is_none()])?;
-        ensure!(changed == 1, "missing build-context provenance");
-        if let Some(entries) = entries {
+        if update_context {
+            let changed = tx.prepare_cached("UPDATE contexts SET last_used = max(coalesce(last_used, ?2), ?2), all_used = CASE WHEN ?3 THEN max(coalesce(all_used, ?2), ?2) ELSE all_used END WHERE context = ?1")?
+                .execute(params![context, now, entries.is_none()])?;
+            ensure!(changed == 1, "missing build-context provenance");
+        }
+        if !pending.is_empty() {
             let mut statement = tx.prepare_cached("INSERT INTO dependencies (context, entry, last_used) VALUES (?1, ?2, ?3) ON CONFLICT (context, entry) DO UPDATE SET last_used = max(last_used, excluded.last_used)")?;
-            for entry in entries {
+            for entry in pending {
                 statement.execute(params![context, paths::path2bytes(entry)?, now])?;
             }
         }
         tx.commit()?;
-        Ok(())
+        Ok(now)
     }
 
     /// The primary key narrows the scan to this context. A timestamp index would
