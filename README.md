@@ -94,43 +94,20 @@ is inherited by external Cargo subcommands. `-Zohm-defaults=no` also disables it
 
 ## Unused development dependencies in targeted tests
 
-Ohm defaults can skip previously unused workspace dev dependencies when rebuilding
-one native library test target, for example `cargo +ohm test -p app --lib selected`.
-This avoids paths such as compiling the ordinary library solely to build a test
-helper that the unit-test executable never uses. Feature resolution, compiler
-arguments, and optimization settings retain the complete dependency graph.
+When rebuilding a single library test target, Ohm can skip unused workspace dev
+dependencies. For example, `cargo +ohm test -p app --lib selected` can avoid
+rebuilding a helper and the ordinary library used only by that helper. Features,
+compiler arguments, and optimization settings stay the same.
 
-These targeted rebuilds validate the code their executable uses. Errors and
-warnings inside skipped dependencies are not reported. Disable deferral when
-validating the complete declared dependency graph.
+The current compilation must confirm that the skipped dependencies are unused.
+Otherwise, Cargo discards its output and retries once with the complete graph.
+Initial builds and unsupported inputs use ordinary scheduling.
 
-A previous executable's unused-dependency report only permits an attempt. Cargo
-accepts the new executable after its successful compiler invocation proves every
-deferred dependency unused. Missing or inconsistent proof, new dependency usage,
-or compiler diagnostics discard the provisional output and retry once with the
-complete graph. Interruption and compiler launch failures stop the command.
-
-Initial builds, up-to-date and dependency-only builds, multiple test targets,
-explicit targets, and unsupported compilers use ordinary scheduling. Build
-scripts, proc macros, native links, artifact dependencies, and opaque linker
-inputs in the skipped closure also prevent deferral. A discarded attempt can add
-compilation work.
-
-Cargo revalidates retained build-script outputs before invoking the test
-compiler. On Linux, dependency scripts may contribute ordinary static archives
-and ELF objects through native search directories inside their own `OUT_DIR`.
-Bounded source/header trees and extensionless ELF object probes are also allowed;
-auxiliary files are checked for aliases, renamed archives, and file-loading
-linker directives. Those dependencies still build normally. Root-package native
-inputs, opaque linker arguments, external search directories, and unsupported files retry the
-complete graph and prevent recording unused-dependency evidence. Configuration
-and environment outputs alone do not prevent deferral.
-
-Use `cargo +ohm -Zohm-defer-dev-deps=no test -p app --lib` to opt out, or set
-`ohm-defer-dev-deps = false` in the `[unstable]` configuration table.
-`CARGO_UNSTABLE_OHM_DEFER_DEV_DEPS=false` is the environment equivalent. External
-Cargo subcommands inherit explicit overrides. `-Zohm-defaults=no` disables the
-optimization with the other Ohm defaults.
+Skipped dependencies' errors and warnings are not reported. Use
+`cargo +ohm -Zohm-defer-dev-deps=no test -p app --lib` to validate the complete
+declared graph. This optimization is enabled by Ohm defaults; see the
+[reference](doc/book/src/reference/unstable.md#ohm-defer-dev-deps) for supported
+builds, native-input checks, and configuration options.
 
 ## License
 
