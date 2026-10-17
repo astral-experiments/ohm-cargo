@@ -145,6 +145,108 @@ fn timestamp(time: SystemTime) -> i64 {
         .unwrap()
 }
 
+fn thinlto_object(context: &str) -> PathBuf {
+    let directory = shared_root()
+        .join(".ohm-thinlto-cache")
+        .join(context)
+        .join("0".repeat(32));
+    fs::create_dir_all(&directory).unwrap();
+    let object = directory.join("1".repeat(32) + ".cache");
+    fs::write(&object, b"backend").unwrap();
+    object
+}
+
+#[cargo_test]
+fn thinlto_gc_reports_objects_without_invalidating_warm_builds() {
+    let project = donor();
+    cargo(&project, "build").run();
+    let object = thinlto_object(&context());
+    fs::File::open(&object)
+        .unwrap()
+        .set_modified(SystemTime::now() - Duration::from_secs(3601))
+        .unwrap();
+    cargo(&project, "gc --dry-run")
+        .with_stderr_data(str![[r#"
+Would remove ThinLTO objects for context [..] (unused for at least 1 hour)
+[SUMMARY] 1 file, [FILE_SIZE]B total
+[WARNING] no files deleted due to --dry-run
+
+"#]])
+        .run();
+    assert!(object.exists());
+    cargo(&project, "gc")
+        .with_stderr_data(str![[r#"
+[REMOVING] ThinLTO objects for context [..] (unused for at least 1 hour)
+[REMOVED] 1 file, [FILE_SIZE]B total
+
+"#]])
+        .run();
+    assert!(!object.exists());
+    cargo(&project, "run -v")
+        .with_stderr_does_not_contain("[COMPILING] [..]")
+        .with_stdout_data("hello\n")
+        .run();
+}
+
+#[cfg(target_os = "linux")]
+#[cargo_test]
+fn thinlto_compiler_uses_the_registered_context_and_waits_for_manual_gc() {
+    use std::os::unix::fs::PermissionsExt as _;
+
+    let project = donor();
+    let compiler = project.root().join("thinlto-rustc");
+    // Exercise Cargo's cache wiring with stock and older Ohm compilers too.
+    // The compiler-side cache format and hit behavior have their own rustc tests.
+    fs::write(&compiler, r#"#!/bin/bash
+args=()
+cache=
+compile=false
+for arg in "$@"; do
+    case "$arg" in
+        -Zthinlto-cache=*) cache="${arg#*=}" ;;
+        --emit=*) compile=true; args+=("$arg") ;;
+        *) args+=("$arg") ;;
+    esac
+done
+"$OHM_TEST_REAL_RUSTC" "${args[@]}" || exit $?
+if $compile && [ -n "$cache" ]; then
+    mkdir -p "$cache/00000000000000000000000000000000"
+    printf backend > "$cache/00000000000000000000000000000000/11111111111111111111111111111111.cache"
+fi
+"#).unwrap();
+    fs::set_permissions(&compiler, fs::Permissions::from_mode(0o755)).unwrap();
+    let build = || {
+        let mut command = cargo(&project, "-Zohm-thinlto-cache=yes build --release -v");
+        command
+            .env("RUSTC", &compiler)
+            .env(
+                "OHM_TEST_REAL_RUSTC",
+                Path::new(&paths::sysroot()).join("bin/rustc"),
+            )
+            .env("CARGO_INCREMENTAL", "0");
+        command
+    };
+    build().run();
+    let cache = shared_root().join(".ohm-thinlto-cache").join(context());
+    let object = cache.join("0".repeat(32)).join("1".repeat(32) + ".cache");
+    assert_eq!(fs::read(&object).unwrap(), b"backend");
+    fs::File::open(&object)
+        .unwrap()
+        .set_modified(SystemTime::now() - Duration::from_secs(31 * 24 * 3600))
+        .unwrap();
+    build()
+        .with_stderr_does_not_contain("[COMPILING] [..]")
+        .run();
+    assert!(object.exists(), "warm builds do not prune the shared cache");
+    cargo(&project, "clean").run();
+    assert!(
+        object.exists(),
+        "cargo clean preserves shared ThinLTO state"
+    );
+    collect(&project, false);
+    assert!(!object.exists());
+}
+
 #[cargo_test]
 fn empty_gc_uses_cargo_clean_summaries() {
     cargo_process("gc --dry-run")
@@ -322,6 +424,7 @@ fn upgrades_retire_fresh_contexts_without_removing_installed_compilers() {
     let registry = shared_root()
         .join("debug/build/registries")
         .join(record["context"].as_str().unwrap());
+    let thinlto = thinlto_object(record["context"].as_str().unwrap());
     let private = local_private_artifacts(&project.root().join("target"));
     let compiler = paths::root().join("upgraded-rustc");
     fs::write(&compiler, "#!/bin/sh\ncat <<'VERSION'\nrustc 1.98.1-dev (ohm-1.98.1-2)\nbinary: rustc\ncommit-hash: unknown\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1-dev\nLLVM version: 22.1.8\nVERSION\n").unwrap();
@@ -335,6 +438,7 @@ fn upgrades_retire_fresh_contexts_without_removing_installed_compilers() {
     assert!(registry.is_dir());
     cargo(&project, "gc").env("RUSTC", &compiler).run();
     assert!(!registry.exists());
+    assert!(!thinlto.exists());
     assert!(private.is_dir());
     for file in ["compiler", "driver"] {
         assert!(Path::new(record[file]["path"].as_str().unwrap()).is_file());

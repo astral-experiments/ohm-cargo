@@ -10,6 +10,7 @@ use cargo_platform::Cfg;
 use cargo_util::ProcessBuilder;
 
 use crate::util::flock;
+use crate::workspace::build_cache_gc;
 
 use super::{BuildRunner, CompileMode, Unit};
 
@@ -19,6 +20,7 @@ const MAX_AGE: Duration = Duration::from_secs(30 * 24 * 60 * 60);
 
 pub(super) struct Cache {
     root: PathBuf,
+    shared: bool,
 }
 
 pub(super) fn configure(runner: &BuildRunner<'_, '_>, unit: &Unit, command: &mut ProcessBuilder) {
@@ -41,15 +43,29 @@ pub(super) fn configure(runner: &BuildRunner<'_, '_>, unit: &Unit, command: &mut
         return;
     }
 
-    let cache = runner.thinlto_cache.get_or_init(|| Cache {
-        // Backend objects are content-addressed and reusable across worktrees.
-        root: if bcx.ws.shared_registry_cache_enabled() {
-            bcx.ws.configured_build_dir()
-        } else {
-            bcx.ws.build_dir()
+    let cache = runner.thinlto_cache.get_or_init(|| {
+        if let Some(usage) = &runner.context_use {
+            // Reuse the enrolled compiler context and its consumer lease. Rustc's
+            // inner keys still distinguish backend options and individual objects.
+            return Cache {
+                root: bcx
+                    .ws
+                    .configured_build_dir()
+                    .join(build_cache_gc::THINLTO)
+                    .join(usage.context())
+                    .into_path_unlocked(),
+                shared: true,
+            };
         }
-        .join(".ohm-thinlto-cache")
-        .into_path_unlocked(),
+        // If provenance could not be recorded, keep optional state private too.
+        Cache {
+            root: bcx
+                .ws
+                .build_dir()
+                .join(build_cache_gc::THINLTO)
+                .into_path_unlocked(),
+            shared: false,
+        }
     });
     let mut option = OsString::from("-Zthinlto-cache=");
     option.push(&cache.root);
@@ -101,6 +117,10 @@ fn eligible_args<'a>(args: impl IntoIterator<Item = &'a OsString>) -> bool {
 
 impl Drop for Cache {
     fn drop(&mut self) {
+        if self.shared {
+            // Shared objects are collected only by `cargo gc`.
+            return;
+        }
         // Run once after the graph finishes, including failed builds. Concurrent
         // writers publish atomically; an evicted object is just a compiler miss.
         if let Err(error) = prune(&self.root, MAX_BYTES, MAX_ENTRIES, MAX_AGE) {
@@ -279,6 +299,23 @@ mod tests {
         prune(root.path(), 0, 0, MAX_AGE).unwrap();
         assert!(!cached.exists());
         assert!(unrelated.exists());
+    }
+
+    #[test]
+    fn shared_cache_waits_for_explicit_gc() {
+        let root = tempfile::tempdir().unwrap();
+        let cached = entry(root.path(), 0, 8, MAX_AGE + Duration::from_secs(1));
+        drop(Cache {
+            root: root.path().to_path_buf(),
+            shared: true,
+        });
+        assert!(cached.exists());
+        assert!(!root.path().join(".prune-lock").exists());
+        drop(Cache {
+            root: root.path().to_path_buf(),
+            shared: false,
+        });
+        assert!(!cached.exists());
     }
 
     #[test]
