@@ -2192,7 +2192,7 @@ disk bandwidth, or when little compilation remains to overlap.
 Set `CARGO_UNSTABLE_OHM_CGU_SPLIT_LIMIT` to a positive integer to limit how many
 shards Ohm creates from each oversized incremental codegen unit. The same limit
 applies at optimization levels 0 and 1. A value of `1` disables splitting.
-Leaving the setting unset uses the compiler's defaults. The existing total
+Leaving the setting unset uses the default limit of eight. The existing total
 codegen-unit budget and size threshold still apply.
 
 The setting is also available as `-Zohm-cgu-split-limit=<limit>` or
@@ -2200,6 +2200,18 @@ The setting is also available as `-Zohm-cgu-split-limit=<limit>` or
 supplied through `RUSTFLAGS` takes precedence. Changing the limit changes Cargo's
 artifact identity; unchanged settings retain normal reuse. This requires an Ohm
 compiler that supports `-Zohm-cgu-split-limit`.
+
+With Ohm defaults enabled, incremental workspace debug builds at `opt-level=1`
+also infer small leaf functions up to eight statements and reject splits whose
+estimated code-size growth exceeds 10%. Integration-test targets using Rust's
+test harness omit the growth limit so edits can rebuild smaller chunks. Library
+unit tests, benchmarks, examples, and custom test harnesses retain the limit.
+Cargo checks compiler support before applying this policy. Release profiles,
+non-incremental builds, build scripts, procedural macros, and instrumented builds
+keep their existing behavior.
+
+Explicit compiler flags override these defaults. `-Zohm-defaults=no` disables the
+automatic policy; `CARGO_UNSTABLE_OHM_CGU_SPLIT_LIMIT` remains an explicit setting.
 
 ## ohm-linker
 

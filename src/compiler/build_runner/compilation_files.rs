@@ -2630,6 +2630,10 @@ fn compute_metadata(
     if crate::compiler::unit_uses_ohm_incremental_mono_partitions(build_runner, unit) {
         "ohm-incremental-mono-partition-defaults".hash(&mut unit_id_hasher);
     }
+    let cgu_rustflags = crate::compiler::unit_ohm_cgu_rustflags(build_runner, unit);
+    if !cgu_rustflags.is_empty() {
+        cgu_rustflags.hash(&mut unit_id_hasher);
+    }
 
     let c_metadata = UnitHash(Hasher::finish(&c_metadata_hasher));
     let unit_id = UnitHash(Hasher::finish(&unit_id_hasher));

@@ -270,6 +270,13 @@ fn unit_uses_ohm_shared_stages(build_runner: &BuildRunner<'_, '_>, unit: &Unit) 
 }
 
 fn unit_uses_ohm_incremental_codegen(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> bool {
+    unit_ohm_incremental_opt_level(build_runner, unit).is_some()
+}
+
+fn unit_ohm_incremental_opt_level(
+    build_runner: &BuildRunner<'_, '_>,
+    unit: &Unit,
+) -> Option<&'static str> {
     let gctx = build_runner.bcx.gctx;
     if !gctx.cli_unstable().ohm_defaults()
         || unit.profile.root != ProfileRoot::Debug
@@ -281,8 +288,14 @@ fn unit_uses_ohm_incremental_codegen(build_runner: &BuildRunner<'_, '_>, unit: &
         || unit.target.is_compile_time_dependency()
         || !build_runner.bcx.ws.is_member(&unit.pkg)
     {
-        return false;
+        return None;
     }
+
+    let mut opt_level = if unit.profile.opt_level.as_str() == "1" {
+        "1"
+    } else {
+        "0"
+    };
 
     let extra_args = build_runner
         .bcx
@@ -316,11 +329,15 @@ fn unit_uses_ohm_incremental_codegen(build_runner: &BuildRunner<'_, '_>, unit: &
             || option.starts_with("profile-use")
             || option.starts_with("sanitizer")
             || option.starts_with("codegen-backend")
-            || option
-                .strip_prefix("opt-level=")
-                .is_some_and(|level| !matches!(level, "0" | "1"))
         {
-            return false;
+            return None;
+        }
+        if let Some(level) = option.strip_prefix("opt-level=") {
+            opt_level = match level {
+                "0" => "0",
+                "1" => "1",
+                _ => return None,
+            };
         }
     }
 
@@ -328,6 +345,34 @@ fn unit_uses_ohm_incremental_codegen(build_runner: &BuildRunner<'_, '_>, unit: &
         .bcx
         .rustc()
         .supports_ohm_incremental_codegen(gctx)
+        .then_some(opt_level)
+}
+
+fn unit_ohm_cgu_rustflags(
+    build_runner: &BuildRunner<'_, '_>,
+    unit: &Unit,
+) -> &'static [&'static str] {
+    if unit_ohm_incremental_opt_level(build_runner, unit) != Some("1")
+        || !build_runner
+            .bcx
+            .rustc()
+            .supports_ohm_cgu_policy(build_runner.bcx.gctx)
+    {
+        return &[];
+    }
+
+    if unit.mode.is_rustc_test() && unit.target.is_test() && unit.target.harness() {
+        &[
+            "-Zohm-cgu-split-limit=8",
+            "-Zohm-incremental-inline-threshold=8",
+        ]
+    } else {
+        &[
+            "-Zohm-cgu-split-limit=8",
+            "-Zohm-incremental-inline-threshold=8",
+            "-Zohm-cgu-split-max-growth=10",
+        ]
+    }
 }
 
 /// Enables local monomorphization reuse without requiring a public API hash.
@@ -2238,6 +2283,7 @@ fn prepare_rustc(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> CargoResult
         if unit_uses_ohm_incremental_mono_partitions(build_runner, unit) {
             base.arg("-Zohm-incremental-mono-partitions");
         }
+        base.args(unit_ohm_cgu_rustflags(build_runner, unit));
         if unit_suppresses_default_public_api_hash(build_runner, unit) {
             base.arg("-Zpublic-api-hash=no");
         }

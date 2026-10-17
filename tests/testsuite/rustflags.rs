@@ -42,6 +42,8 @@ fn ohm_defaults_wrapper() -> PathBuf {
                         || arg.starts_with("-Zohm-stable-cgu-merging")
                         || arg.starts_with("-Zohm-incremental-mono-partitions")
                         || arg.starts_with("-Zohm-cgu-split-limit=")
+                        || arg.starts_with("-Zohm-cgu-split-max-growth=")
+                        || arg.starts_with("-Zohm-incremental-inline-threshold=")
                         || arg.starts_with("-Zthreads=")
                 }
 
@@ -71,6 +73,13 @@ fn ohm_defaults_wrapper() -> PathBuf {
                         .is_some_and(|value| value == "1")
                         && args.iter().any(|arg| arg == "--print=sysroot")
                         && args.iter().any(|arg| arg == "-Zohm-incremental-mono-partitions")
+                    {
+                        exit(1);
+                    }
+                    if env::var_os("OHM_CGU_POLICY_UNSUPPORTED")
+                        .is_some_and(|value| value == "1")
+                        && args.iter().any(|arg| arg == "--print=sysroot")
+                        && args.iter().any(|arg| arg == "-Zohm-cgu-split-max-growth=10")
                     {
                         exit(1);
                     }
@@ -104,6 +113,285 @@ fn ohm_defaults_wrapper() -> PathBuf {
         .masquerade_as_nightly_cargo(&["ohm-defaults"])
         .run();
     wrapper.bin("ohm-defaults-wrapper")
+}
+
+#[cargo_test]
+fn ohm_cgu_policy_selects_integration_test_targets() {
+    let wrapper = ohm_defaults_wrapper();
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "foo"
+                version = "0.1.0"
+                edition = "2024"
+
+                [profile.dev]
+                opt-level = 1
+
+                [[test]]
+                name = "custom"
+                harness = false
+
+                [[test]]
+                name = "relocated"
+                path = "integration/relocated.rs"
+            "#,
+        )
+        .file(
+            "src/lib.rs",
+            "#[test] fn unit_test() { assert_eq!(2 + 2, 4); }",
+        )
+        .file("src/main.rs", "fn main() {}")
+        .file("examples/demo.rs", "fn main() {}")
+        .file("benches/benchmark.rs", "#[test] fn benchmark() {}")
+        .file("tests/integration.rs", "#[test] fn integration() {}")
+        .file("tests/custom.rs", "fn main() {}")
+        .file("integration/relocated.rs", "#[test] fn relocated() {}")
+        .file(
+            "build.rs",
+            "fn main() { println!(\"cargo::rerun-if-changed=build.rs\"); }",
+        )
+        .build();
+    let log = p.root().join("cgu-policy.log");
+    let mut command = p.cargo("-Zohm-defaults -Zrelink-only=no test --all-targets --no-run");
+    command
+        .masquerade_as_nightly_cargo(&["ohm-defaults", "relink-only"])
+        .env("CARGO_INCREMENTAL", "1")
+        .env("RUSTC_WORKSPACE_WRAPPER", &wrapper)
+        .env("OHM_DEFAULTS_LOG", &log);
+    command.run();
+    let invocations = fs::read_to_string(&log).unwrap();
+    for crate_name in [
+        "foo",
+        "demo",
+        "benchmark",
+        "custom",
+        "integration",
+        "relocated",
+    ] {
+        let matching = invocations
+            .lines()
+            .map(|line| line.split('\t').collect::<Vec<_>>())
+            .filter(|args| {
+                args.windows(2)
+                    .any(|pair| pair == ["--crate-name", crate_name])
+            })
+            .collect::<Vec<_>>();
+        assert!(!matching.is_empty(), "missing target {crate_name}");
+        for invocation in matching {
+            let exception = matches!(crate_name, "integration" | "relocated");
+            assert_eq!(
+                ohm_cgu_rustflags(&invocation),
+                if exception {
+                    vec![
+                        "-Zohm-cgu-split-limit=8",
+                        "-Zohm-incremental-inline-threshold=8",
+                    ]
+                } else {
+                    vec![
+                        "-Zohm-cgu-split-limit=8",
+                        "-Zohm-incremental-inline-threshold=8",
+                        "-Zohm-cgu-split-max-growth=10",
+                    ]
+                },
+                "target {crate_name}"
+            );
+            if exception {
+                assert!(invocation.contains(&"--test"));
+            }
+        }
+    }
+    assert!(ohm_cgu_rustflags(&rustc_invocation(&invocations, "build_script_build")).is_empty());
+
+    fs::write(&log, "").unwrap();
+    command.run();
+    assert!(!fs::read_to_string(&log).unwrap().contains("--crate-name\t"));
+
+    p.change_file(
+        "tests/integration.rs",
+        "#[test] fn integration() { assert_eq!(3 + 3, 6); }",
+    );
+    fs::write(&log, "").unwrap();
+    command.run();
+    let invocations = fs::read_to_string(&log).unwrap();
+    let compiled = invocations
+        .lines()
+        .filter(|line| line.contains("--crate-name\t"))
+        .collect::<Vec<_>>();
+    assert_eq!(compiled.len(), 1, "{invocations}");
+    assert_eq!(
+        ohm_cgu_rustflags(&rustc_invocation(&invocations, "integration")),
+        [
+            "-Zohm-cgu-split-limit=8",
+            "-Zohm-incremental-inline-threshold=8"
+        ]
+    );
+}
+
+#[cargo_test]
+fn ohm_cgu_policy_respects_scope_and_overrides() {
+    let wrapper = ohm_defaults_wrapper();
+    let p = project()
+        .file("src/lib.rs", "pub fn value() -> u32 { 42 }")
+        .build();
+    let log = p.root().join("cgu-policy.log");
+    for (defaults, profile, level, incremental, unsupported, flags, enabled) in [
+        ("yes", "dev", "1", "1", "0", "", true),
+        ("no", "dev", "1", "1", "0", "", false),
+        ("yes", "dev", "0", "1", "0", "", false),
+        ("yes", "dev", "2", "1", "0", "", false),
+        ("yes", "release", "1", "1", "0", "", false),
+        ("yes", "dev", "1", "0", "0", "", false),
+        ("yes", "dev", "1", "1", "1", "", false),
+        ("yes", "dev", "1", "1", "0", "-Copt-level=0", false),
+        ("yes", "dev", "0", "1", "0", "-C opt-level=1", true),
+        (
+            "yes",
+            "dev",
+            "1",
+            "1",
+            "0",
+            "-Cinstrument-coverage=no",
+            false,
+        ),
+    ] {
+        p.cargo("clean").run();
+        fs::write(&log, "").unwrap();
+        p.cargo(&format!(
+            "-Zohm-defaults={defaults} build --profile {profile}"
+        ))
+        .masquerade_as_nightly_cargo(&["ohm-defaults"])
+        .env(
+            &format!("CARGO_PROFILE_{}_OPT_LEVEL", profile.to_uppercase()),
+            level,
+        )
+        .env("CARGO_INCREMENTAL", incremental)
+        .env("OHM_CGU_POLICY_UNSUPPORTED", unsupported)
+        .env("RUSTC_WRAPPER", &wrapper)
+        .env("OHM_DEFAULTS_LOG", &log)
+        .env("RUSTFLAGS", flags)
+        .run();
+        let invocations = fs::read_to_string(&log).unwrap();
+        let invocation = rustc_invocation(&invocations, "foo");
+        assert_eq!(
+            ohm_cgu_rustflags(&invocation).is_empty(),
+            !enabled,
+            "{defaults} {profile} {level} {incremental} {unsupported} {flags}"
+        );
+    }
+
+    fs::write(&log, "").unwrap();
+    p.cargo("-Zohm-defaults -Zohm-cgu-split-limit=4 rustc --lib -- -Zohm-incremental-inline-threshold=0")
+        .masquerade_as_nightly_cargo(&["ohm-defaults", "ohm-cgu-split-limit"])
+        .env("CARGO_PROFILE_DEV_OPT_LEVEL", "1")
+        .env("CARGO_INCREMENTAL", "1")
+        .env("RUSTC_WRAPPER", &wrapper)
+        .env("OHM_DEFAULTS_LOG", &log)
+        .env("RUSTFLAGS", "-Zohm-cgu-split-max-growth=0")
+        .run();
+    let invocations = fs::read_to_string(&log).unwrap();
+    assert_eq!(
+        ohm_cgu_rustflags(&rustc_invocation(&invocations, "foo")),
+        [
+            "-Zohm-cgu-split-limit=8",
+            "-Zohm-incremental-inline-threshold=8",
+            "-Zohm-cgu-split-max-growth=10",
+            "-Zohm-incremental-inline-threshold=0",
+            "-Zohm-cgu-split-limit=4",
+            "-Zohm-cgu-split-max-growth=0",
+        ]
+    );
+}
+
+#[cargo_test]
+fn ohm_cgu_policy_invalidates_artifacts() {
+    let wrapper = ohm_defaults_wrapper();
+    for crate_type in ["rlib", "cdylib"] {
+        let p = project()
+            .at(crate_type)
+            .file(
+                "Cargo.toml",
+                &format!(
+                    "{}\n[lib]\ncrate-type = [\"{crate_type}\"]\n[profile.dev]\nopt-level = 1\n",
+                    basic_manifest("foo", "0.1.0")
+                ),
+            )
+            .file("src/lib.rs", "pub fn value() -> u32 { 42 }")
+            .build();
+        let log = p.root().join("cgu-policy.log");
+        let mut identities = Vec::new();
+        for (unsupported, fresh) in [
+            (false, false),
+            (false, true),
+            (true, false),
+            (true, true),
+            (false, crate_type == "rlib"),
+        ] {
+            p.change_file(
+                ".cargo/config.toml",
+                &format!(
+                    "[env]\nOHM_CGU_POLICY_UNSUPPORTED = {{ value = \"{}\", force = true }}\n",
+                    u8::from(unsupported)
+                ),
+            );
+            fs::write(&log, "").unwrap();
+            p.cargo("-Zohm-defaults build --lib")
+                .masquerade_as_nightly_cargo(&["ohm-defaults"])
+                .env("CARGO_INCREMENTAL", "1")
+                .env("CARGO_UNSTABLE_BUILD_DIR_NEW_LAYOUT", "false")
+                .env("CARGO_UNSTABLE_FINE_GRAIN_LOCKING", "false")
+                .env("CARGO_UNSTABLE_OHM_SHARED_REGISTRY_CACHE", "false")
+                .env("RUSTC_WORKSPACE_WRAPPER", &wrapper)
+                .env("OHM_DEFAULTS_LOG", &log)
+                .run();
+            let invocations = fs::read_to_string(&log).unwrap();
+            assert_eq!(
+                !invocations.contains("--crate-name\tfoo\t"),
+                fresh,
+                "{crate_type}: {invocations}"
+            );
+            if !fresh {
+                let invocation = rustc_invocation(&invocations, "foo");
+                assert_eq!(
+                    invocation.contains(&"-Zohm-cgu-split-max-growth=10"),
+                    !unsupported
+                );
+                if crate_type == "rlib" {
+                    identities.push((
+                        invocation
+                            .iter()
+                            .find(|arg| arg.starts_with("metadata="))
+                            .unwrap()
+                            .to_string(),
+                        invocation
+                            .iter()
+                            .find(|arg| arg.starts_with("extra-filename="))
+                            .unwrap()
+                            .to_string(),
+                    ));
+                }
+            }
+        }
+        if crate_type == "rlib" {
+            assert_eq!(identities.len(), 2);
+            assert_eq!(identities[0].0, identities[1].0);
+            assert_ne!(identities[0].1, identities[1].1);
+        }
+    }
+}
+
+fn ohm_cgu_rustflags<'a>(invocation: &[&'a str]) -> Vec<&'a str> {
+    invocation
+        .iter()
+        .copied()
+        .filter(|flag| {
+            flag.starts_with("-Zohm-cgu-split-limit=")
+                || flag.starts_with("-Zohm-cgu-split-max-growth=")
+                || flag.starts_with("-Zohm-incremental-inline-threshold=")
+        })
+        .collect()
 }
 
 #[cargo_test]

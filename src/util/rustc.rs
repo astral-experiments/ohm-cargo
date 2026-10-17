@@ -36,6 +36,7 @@ pub struct Rustc {
     transparent_unused_externs: OnceLock<bool>,
     ohm_incremental_codegen: OnceLock<bool>,
     ohm_incremental_mono_partitions: OnceLock<bool>,
+    ohm_cgu_policy: OnceLock<bool>,
     ohm_shared_stages: OnceLock<bool>,
     ohm_thinlto_cache: OnceLock<bool>,
     bundled_clippy_wrapper: OnceLock<bool>,
@@ -123,6 +124,7 @@ impl Rustc {
             transparent_unused_externs: OnceLock::new(),
             ohm_incremental_codegen: OnceLock::new(),
             ohm_incremental_mono_partitions: OnceLock::new(),
+            ohm_cgu_policy: OnceLock::new(),
             ohm_shared_stages: OnceLock::new(),
             ohm_thinlto_cache: OnceLock::new(),
             bundled_clippy_wrapper: OnceLock::new(),
@@ -180,6 +182,23 @@ impl Rustc {
             }
             process
                 .arg("-Zohm-incremental-mono-partitions")
+                .arg("--print=sysroot");
+            self.cached_output(&process, 0).is_ok()
+        })
+    }
+
+    /// Whether this compiler supports all controls used by the guarded splitting policy.
+    pub fn supports_ohm_cgu_policy(&self, gctx: &GlobalContext) -> bool {
+        *self.ohm_cgu_policy.get_or_init(|| {
+            let mut process = self.workspace_process();
+            if let Err(error) = apply_env_config(gctx, &mut process) {
+                debug!("unable to configure CGU policy capability probe: {error}");
+                return false;
+            }
+            process
+                .arg("-Zohm-cgu-split-limit=8")
+                .arg("-Zohm-incremental-inline-threshold=8")
+                .arg("-Zohm-cgu-split-max-growth=10")
                 .arg("--print=sysroot");
             self.cached_output(&process, 0).is_ok()
         })
