@@ -1040,6 +1040,9 @@ fn rustc(
         .collect::<HashSet<_>>();
     let unused_integration_dependency = unused_integration_self_dependency(build_runner, unit);
     let record_dev_unused = ohm_deferred_dev_deps::supported(build_runner, unit);
+    let dev_native_output_dirs = record_dev_unused
+        .then(|| ohm_deferred_dev_deps::native_output_dirs(build_runner))
+        .unwrap_or_default();
     let previous_dev_unused = record_dev_unused
         .then(|| {
             relink_cache
@@ -1225,14 +1228,24 @@ fn rustc(
         let record_dev_unused = record_dev_unused
             && build_scripts.as_ref().is_none_or(|scripts| {
                 let script_outputs = build_script_outputs.lock().unwrap();
-                scripts.to_link.iter().all(|(_, metadata)| {
+                scripts.to_link.iter().all(|(package, metadata)| {
                     script_outputs.get(*metadata).is_some_and(|output| {
-                        output.library_paths.is_empty()
-                            && output.library_links.is_empty()
-                            && !output
-                                .linker_args
-                                .iter()
-                                .any(|(link_target, _)| link_target.applies_to(&target, mode))
+                        !output
+                            .linker_args
+                            .iter()
+                            .any(|(link_target, _)| link_target.applies_to(&target, mode))
+                            && if *package == current_id {
+                                output.library_paths.is_empty() && output.library_links.is_empty()
+                            } else {
+                                // Dependency -l flags belong to their retained Rust
+                                // libraries; only their -L paths reach this compiler.
+                                (output.library_paths.is_empty() && output.library_links.is_empty())
+                                    || dev_native_output_dirs.get(metadata).is_some_and(|out_dir| {
+                                        ohm_deferred_dev_deps::native_search_paths_supported(
+                                            output, out_dir,
+                                        )
+                                    })
+                            }
                     })
                 })
             });

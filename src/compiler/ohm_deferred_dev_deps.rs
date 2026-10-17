@@ -3,11 +3,15 @@
 //! omits previously unused pure-Rust dev dependencies. Fresh proof is mandatory
 //! before accepting any output, and an inconclusive attempt retries once normally.
 
+use std::fs;
+use std::io::Read;
+use std::path::{Path, PathBuf};
 use std::sync::Arc;
 use std::sync::atomic::{AtomicBool, Ordering};
 
-use super::{BuildRunner, CompileKind, CompileMode, Unit};
-use crate::util::data_structures::HashSet;
+use super::custom_build::BuildOutput;
+use super::{BuildRunner, CompileKind, CompileMode, Unit, UnitHash};
+use crate::util::data_structures::{HashMap, HashSet};
 use crate::util::interning::InternedString;
 use crate::workspace::dependency::DepKind;
 
@@ -28,6 +32,85 @@ impl State {
 #[derive(Debug, thiserror::Error)]
 #[error("retrying with the complete development dependency graph")]
 pub(crate) struct Retry;
+
+/// Identify each script's output directory before its job runs. `plan` rejects
+/// removing any script, so every directory admitted here is still produced by
+/// the ordinary dependency graph before the test compiler starts.
+pub(crate) fn native_output_dirs(runner: &BuildRunner<'_, '_>) -> HashMap<UnitHash, PathBuf> {
+    runner
+        .bcx
+        .unit_graph
+        .keys()
+        .filter(|unit| unit.mode.is_run_custom_build())
+        .map(|unit| {
+            let path = if runner.bcx.gctx.cli_unstable().build_dir_new_layout {
+                runner.files().out_dir_new_layout(unit)
+            } else {
+                runner.files().build_script_out_dir(unit)
+            };
+            (runner.get_run_build_script_metadata(unit), path)
+        })
+        .collect()
+}
+
+/// Admit only Linux native search directories containing self-contained native
+/// archives or ELF objects owned by a retained script. In particular, reject
+/// Rust archives, thin archives, linker scripts, and symlink/path escapes that
+/// could reach an omitted dependency's old artifact.
+pub(crate) fn native_search_paths_supported(output: &BuildOutput, out_dir: &Path) -> bool {
+    let supported = || -> Option<()> {
+        if !cfg!(target_os = "linux")
+            || fs::symlink_metadata(out_dir).ok()?.file_type().is_symlink()
+        {
+            return None;
+        }
+        let out_dir = out_dir.canonicalize().ok()?;
+        let mut search_dirs = Vec::new();
+        for path in &output.library_paths {
+            let path = Path::new(path.as_ref().to_str()?.strip_prefix("native=")?);
+            let path = path.canonicalize().ok()?;
+            if !path.starts_with(&out_dir) {
+                return None;
+            }
+            for entry in fs::read_dir(&path).ok()? {
+                let entry = entry.ok()?;
+                if !entry.file_type().ok()?.is_file() {
+                    return None;
+                }
+                #[cfg(target_os = "linux")]
+                if std::os::unix::fs::MetadataExt::nlink(&entry.metadata().ok()?) != 1 {
+                    return None;
+                }
+                let mut header = [0; 8];
+                fs::File::open(entry.path())
+                    .ok()?
+                    .read_exact(&mut header)
+                    .ok()?;
+                match entry.path().extension()?.to_str()? {
+                    "a" if &header == b"!<arch>\n" => {}
+                    "o" if &header[..4] == b"\x7fELF" => {}
+                    _ => return None,
+                }
+            }
+            search_dirs.push(path);
+        }
+        for library in &output.library_links {
+            let name = library.strip_prefix("static=")?;
+            if name.is_empty()
+                || !name
+                    .bytes()
+                    .all(|c| c.is_ascii_alphanumeric() || matches!(c, b'_' | b'-'))
+                || !search_dirs
+                    .iter()
+                    .any(|dir| dir.join(format!("lib{name}.a")).is_file())
+            {
+                return None;
+            }
+        }
+        Some(())
+    };
+    supported().is_some()
+}
 
 /// Record proof even when opted out, without altering rustc's tracked inputs.
 /// Unsupported commands retain the ordinary build path.

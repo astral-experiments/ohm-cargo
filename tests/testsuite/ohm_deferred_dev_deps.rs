@@ -242,6 +242,106 @@ fn native_link_inputs_rebuild_unused_archives_before_running_tests() {
     assert_eq!(log(&p, "runs.log"), "ran\n");
 }
 
+#[cfg(target_os = "linux")]
+#[cargo_test(requires = "cc", requires = "ar")]
+fn retained_native_archive_is_rebuilt_and_unsafe_inputs_retry() {
+    let wrapper = relink_only_wrapper();
+    for case in ["search-path", "hard-link"] {
+        let p = fixture(&format!("retained-native-inputs-{case}"));
+        let manifest = fs::read_to_string(p.root().join("app/Cargo.toml")).unwrap();
+        p.change_file(
+            "app/Cargo.toml",
+            &format!("{manifest}\n[dependencies]\nretained = {{ path = \"../retained\" }}\n"),
+        );
+        fs::create_dir_all(p.root().join("retained/src")).unwrap();
+        p.change_file(
+            "retained/Cargo.toml",
+            "[package]\nname=\"retained\"\nversion=\"0.1.0\"\nedition=\"2024\"\n",
+        );
+        p.change_file(
+        "retained/src/lib.rs",
+        "unsafe extern \"C\" { fn native_value() -> u32; }\npub fn value() -> u32 { unsafe { native_value() } }\n",
+    );
+        let script = r#"
+        fn main() {
+            let out = std::path::PathBuf::from(std::env::var_os("OUT_DIR").unwrap());
+            assert!(std::process::Command::new("cc").args(["-c", "native.c", "-o"])
+                .arg(out.join("native.o")).status().unwrap().success());
+            assert!(std::process::Command::new("ar").arg("crs")
+                .arg(out.join("libretained.a")).arg(out.join("native.o"))
+                .status().unwrap().success());
+            println!("cargo:rerun-if-changed=native.c");
+            println!("cargo:rustc-link-search=native={}", out.display());
+            println!("cargo:rustc-link-lib=static=retained");
+        }
+    "#;
+        p.change_file("retained/build.rs", script);
+        let app = |value| {
+            source(value, false).replace("assert_eq!(value(),", "assert_eq!(retained::value(),")
+        };
+        p.change_file(
+            "retained/native.c",
+            "unsigned native_value(void) { return 1; }\n",
+        );
+        p.change_file("app/src/lib.rs", &app(1));
+        let proof = seed(&p, &wrapper);
+        let proof: serde_json::Value = serde_json::from_slice(&fs::read(proof).unwrap()).unwrap();
+        assert!(
+            proof["unused_extern_names"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .any(|name| name == "helper")
+        );
+
+        p.change_file(
+            "retained/native.c",
+            "unsigned native_value(void) { return 2; }\n",
+        );
+        p.change_file("app/src/lib.rs", &app(2));
+        p.change_file(
+            "helper/src/lib.rs",
+            "compile_error!(\"unused helper is broken\");\n",
+        );
+        command(&p, &wrapper, "")
+            .with_stderr_contains("[..]accepted current unused-dependency proof[..]")
+            .run();
+        assert!(!log(&p, "compiler.log").contains("compile:helper\n"));
+        assert!(!log(&p, "compiler.log").contains("compile:app\n"));
+        assert!(log(&p, "compiler.log").contains("compile:retained\n"));
+        assert_eq!(log(&p, "runs.log"), "ran\n");
+
+        // Retaining a script does not make arbitrary paths or file aliases safe.
+        // Revalidate its current outputs before invoking the test compiler.
+        let unsafe_input = match case {
+            "search-path" => {
+                "println!(\"cargo:rustc-link-search=native={}\", out.join(\"..\").display());"
+            }
+            "hard-link" => {
+                "std::fs::hard_link(out.join(\"libretained.a\"), out.join(\"alias.a\")).unwrap();"
+            }
+            _ => unreachable!(),
+        };
+        p.change_file(
+            "retained/build.rs",
+            &script.replace(
+                "println!(\"cargo:rustc-link-lib=static=retained\");",
+                &format!("println!(\"cargo:rustc-link-lib=static=retained\");\n{unsafe_input}"),
+            ),
+        );
+        p.change_file("app/src/lib.rs", &format!("{}\n// another edit\n", app(2)));
+        clear(&p);
+        command(&p, &wrapper, "")
+            .with_status(101)
+            .with_stderr_contains("[..]native linker inputs require complete graph[..]")
+            .with_stderr_contains("[..]retrying complete graph[..]")
+            .with_stderr_contains("[..]unused helper is broken[..]")
+            .run();
+        assert!(log(&p, "results.log").is_empty());
+        assert!(log(&p, "runs.log").is_empty());
+    }
+}
+
 #[cargo_test]
 fn new_usage_retries_even_when_stale_artifacts_compile_successfully() {
     let wrapper = relink_only_wrapper();
