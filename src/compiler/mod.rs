@@ -1230,22 +1230,23 @@ fn rustc(
                 let script_outputs = build_script_outputs.lock().unwrap();
                 scripts.to_link.iter().all(|(package, metadata)| {
                     script_outputs.get(*metadata).is_some_and(|output| {
-                        !output
-                            .linker_args
-                            .iter()
-                            .any(|(link_target, _)| link_target.applies_to(&target, mode))
-                            && if *package == current_id {
-                                output.library_paths.is_empty() && output.library_links.is_empty()
-                            } else {
-                                // Dependency -l flags belong to their retained Rust
-                                // libraries; only their -L paths reach this compiler.
-                                (output.library_paths.is_empty() && output.library_links.is_empty())
-                                    || dev_native_output_dirs.get(metadata).is_some_and(|out_dir| {
-                                        ohm_deferred_dev_deps::native_search_paths_supported(
-                                            output, out_dir,
-                                        )
-                                    })
-                            }
+                        !output.linker_args.iter().any(|(link_target, _)| {
+                            // Match add_native_deps: a dependency's ordinary
+                            // link arguments do not reach this test compiler.
+                            link_target.applies_to(&target, mode)
+                                && (*package == current_id || *link_target == LinkArgTarget::Cdylib)
+                        }) && if *package == current_id {
+                            output.library_paths.is_empty() && output.library_links.is_empty()
+                        } else {
+                            // Dependency -l flags belong to their retained Rust
+                            // libraries; only their -L paths reach this compiler.
+                            (output.library_paths.is_empty() && output.library_links.is_empty())
+                                || dev_native_output_dirs.get(metadata).is_some_and(|out_dir| {
+                                    ohm_deferred_dev_deps::native_search_paths_supported(
+                                        output, out_dir,
+                                    )
+                                })
+                        }
                     })
                 })
             });
