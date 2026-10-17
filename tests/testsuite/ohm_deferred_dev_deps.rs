@@ -246,7 +246,14 @@ fn native_link_inputs_rebuild_unused_archives_before_running_tests() {
 #[cargo_test(requires = "cc", requires = "ar")]
 fn retained_native_archive_is_rebuilt_and_unsafe_inputs_retry() {
     let wrapper = relink_only_wrapper();
-    for case in ["search-path", "hard-link"] {
+    for case in [
+        "search-path",
+        "hard-link",
+        "header-linker-script",
+        "header-quoted-linker-script",
+        "header-archive",
+        "header-symlink",
+    ] {
         let p = fixture(&format!("retained-native-inputs-{case}"));
         let manifest = fs::read_to_string(p.root().join("app/Cargo.toml")).unwrap();
         p.change_file(
@@ -262,7 +269,7 @@ fn retained_native_archive_is_rebuilt_and_unsafe_inputs_retry() {
         "retained/src/lib.rs",
         "unsafe extern \"C\" { fn native_value() -> u32; }\npub fn value() -> u32 { unsafe { native_value() } }\n",
     );
-        let script = r#"
+        let script = r##"
         fn main() {
             let out = std::path::PathBuf::from(std::env::var_os("OUT_DIR").unwrap());
             assert!(std::process::Command::new("cc").args(["-c", "native.c", "-o"])
@@ -270,11 +277,28 @@ fn retained_native_archive_is_rebuilt_and_unsafe_inputs_retry() {
             assert!(std::process::Command::new("ar").arg("crs")
                 .arg(out.join("libretained.a")).arg(out.join("native.o"))
                 .status().unwrap().success());
+            // Native crates also leave headers, templates, and extensionless
+            // compiler feature-probe objects in their search directories.
+            std::fs::create_dir_all(out.join("include/nested")).unwrap();
+            std::fs::write(out.join("include/native.h"),
+                r#"/* INPUT and GROUP describe the API, not linker commands. */
+// The caller's include paths can contain this header.
+#define IGNORE_DEPRECATIONS \
+  _Pragma("GCC diagnostic ignored \"-Wdeprecated-declarations\"")
+unsigned native_value(void);
+"#).unwrap();
+            std::fs::write(out.join("include/nested/native.h.in"),
+                "#define INPUT @INPUT@\n").unwrap();
+            std::fs::write(out.join("include/nested/native.inc"),
+                "%define native_value prefixed_native_value\n").unwrap();
+            std::fs::write(out.join("flag_check.c"), "int main(void) { return 0; }\n").unwrap();
+            assert!(std::process::Command::new("cc").arg("-c").arg(out.join("flag_check.c"))
+                .arg("-o").arg(out.join("flag_check")).status().unwrap().success());
             println!("cargo:rerun-if-changed=native.c");
             println!("cargo:rustc-link-search=native={}", out.display());
             println!("cargo:rustc-link-lib=static=retained");
         }
-    "#;
+    "##;
         p.change_file("retained/build.rs", script);
         let app = |value| {
             source(value, false).replace("assert_eq!(value(),", "assert_eq!(retained::value(),")
@@ -319,6 +343,20 @@ fn retained_native_archive_is_rebuilt_and_unsafe_inputs_retry() {
             }
             "hard-link" => {
                 "std::fs::hard_link(out.join(\"libretained.a\"), out.join(\"alias.a\")).unwrap();"
+            }
+            "header-linker-script" => {
+                // A verbatim native library name can select a misleadingly
+                // named header. Quoted comment markers must not hide INPUT.
+                r##"std::fs::write(out.join("include/forward.h"), "ASSERT(1, \"# /*\"); INPUT /* a comment */ (old-helper.rlib)\n").unwrap();"##
+            }
+            "header-quoted-linker-script" => {
+                r#"std::fs::write(out.join("include/forward.h"), "\"INPUT\" (old-helper.rlib)\n").unwrap();"#
+            }
+            "header-archive" => {
+                "std::fs::copy(out.join(\"libretained.a\"), out.join(\"include/forward.h\")).unwrap();"
+            }
+            "header-symlink" => {
+                "std::os::unix::fs::symlink(out.join(\"native.o\"), out.join(\"include/forward.h\")).unwrap();"
             }
             _ => unreachable!(),
         };

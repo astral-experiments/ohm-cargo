@@ -2133,7 +2133,10 @@ complete build path.
 Cargo checks current retained build-script outputs before invoking a deferred
 test compiler. On Linux, dependency scripts may contribute ordinary static
 archives and ELF objects through native search directories inside their own
-`OUT_DIR`; their producing dependencies still build normally. Root-package
+`OUT_DIR`; their producing dependencies still build normally. Bounded trees of
+auxiliary C sources, headers, and templates, plus extensionless ELF object probes,
+are also supported. Auxiliary files must not be aliases, renamed archives, or
+text that can load files through linker-script directives. Root-package
 native inputs, applicable linker arguments, external search directories, Rust
 or thin archive paths, file aliases, and unsupported files retry the complete graph
 before compilation and prevent recording unused-extern evidence for subsequent
