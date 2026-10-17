@@ -34,6 +34,7 @@ pub(crate) struct ContextUse {
     tracker: Tracker,
     context: String,
     entries: Option<Vec<PathBuf>>,
+    used_through: tracker::Timestamp,
 }
 
 impl ContextUse {
@@ -48,12 +49,23 @@ impl ContextUse {
             entries.sort();
             entries.dedup();
         }
-        tracker.touch(context, entries.as_deref(), SystemTime::now())?;
+        let used_through = tracker.touch(context, entries.as_deref(), SystemTime::now())?;
         Ok(Self {
             tracker,
             context: context.to_owned(),
             entries,
+            used_through,
         })
+    }
+
+    /// Long builds renew activity at completion; short builds need no second query.
+    fn refresh(&mut self, now: SystemTime) -> CargoResult<()> {
+        if tracker::timestamp(now)? > self.used_through {
+            self.used_through = self
+                .tracker
+                .touch(&self.context, self.entries.as_deref(), now)?;
+        }
+        Ok(())
     }
 }
 
@@ -98,10 +110,7 @@ pub(crate) fn record_seed_contexts(root: &Path, source: &Path) -> CargoResult<Ve
 
 impl Drop for ContextUse {
     fn drop(&mut self) {
-        if let Err(error) =
-            self.tracker
-                .touch(&self.context, self.entries.as_deref(), SystemTime::now())
-        {
+        if let Err(error) = self.refresh(SystemTime::now()) {
             tracing::debug!(?error, "could not refresh build-cache usage");
         }
     }
@@ -1548,7 +1557,7 @@ mod tests {
             idle_dependencies(&cache.root, &profiles, "abcdef", now, Some(&tracker)).unwrap();
         assert_eq!(candidates.len(), 1);
         let lease = crate::workspace::build_cache_gc_lease::ConsumerLease::acquire(&cache.root)?;
-        let usage = ContextUse::new(cache.tracker()?, "abcdef", Some(vec![entry.into()]))?;
+        let mut usage = ContextUse::new(cache.tracker()?, "abcdef", Some(vec![entry.into()]))?;
         assert!(
             candidates[0]
                 .detail(&cache.root, &profiles, now, None, Some(&tracker))
@@ -1556,6 +1565,7 @@ mod tests {
         );
         dependency_use(&cache, &[entry], now - CONTEXT_MAX_IDLE * 2)?;
         cache.age_context("abcdef", now - CONTEXT_MAX_IDLE * 2)?;
+        usage.used_through = tracker::timestamp(now - CONTEXT_MAX_IDLE * 2)?;
         assert!(collect(&cache.root, false, None)?.busy);
         let completed = SystemTime::now();
         drop(usage);
@@ -1702,6 +1712,91 @@ mod tests {
     }
 
     #[test]
+    fn throttled_usage_never_expires_early_or_blocks_on_a_writer() -> CargoResult<()> {
+        let cache = Cache::new()?;
+        cache.enroll()?;
+        let mut tracker = cache.tracker()?;
+        let entries = [
+            PathBuf::from("debug/build/registries/abcdef/dep/1111111111111111"),
+            PathBuf::from("debug/build/registries/abcdef/dep/2222222222222222"),
+        ];
+        let resolution =
+            Duration::from_secs(crate::workspace::global_cache_tracker::UPDATE_RESOLUTION);
+        let boundary = std::time::UNIX_EPOCH + resolution * 1_000;
+        let first = boundary + Duration::from_nanos(1);
+        let last = boundary + resolution - Duration::from_nanos(1);
+        let used_through = tracker.touch("abcdef", Some(&entries[..1]), first)?;
+        assert_eq!(used_through, tracker::timestamp(boundary + resolution)?);
+        let changes = tracker.conn.total_changes();
+        let wal = cache.root.join(DIRECTORY).join("cache.sqlite-wal");
+        let before = fs::read(&wal)?;
+
+        // A warm reader neither acquires the writer lock nor changes the WAL.
+        let mut writer = cache.tracker()?;
+        let transaction = writer
+            .conn
+            .transaction_with_behavior(rusqlite::TransactionBehavior::Immediate)?;
+        tracker.touch("abcdef", Some(&entries[..1]), last)?;
+        assert_eq!(tracker.conn.total_changes(), changes);
+        assert_eq!(fs::read(&wal)?, before);
+        drop(transaction);
+
+        // A newly selected variant is registered even inside the same interval.
+        tracker.touch("abcdef", Some(&entries), last)?;
+        assert_eq!(tracker.conn.total_changes(), changes + 1);
+        assert!(!tracker.dependency_expired("abcdef", &entries[0], tracker::timestamp(last)?)?);
+        assert!(tracker.dependency_expired("abcdef", &entries[0], used_through)?);
+        let expires = boundary + resolution + CONTEXT_MAX_IDLE;
+        assert!(expires >= last + CONTEXT_MAX_IDLE);
+        assert!(expires < first + CONTEXT_MAX_IDLE + resolution);
+
+        // Crossing a bucket renews only the selected variant, not its sibling.
+        tracker.touch(
+            "abcdef",
+            Some(&entries[..1]),
+            boundary + resolution + Duration::from_nanos(1),
+        )?;
+        assert_eq!(
+            tracker.idle_dependencies("abcdef", used_through)?,
+            vec![entries[1].clone()]
+        );
+        Ok(())
+    }
+
+    #[test]
+    fn completion_refreshes_only_after_the_recorded_interval() -> CargoResult<()> {
+        let cache = Cache::new()?;
+        cache.enroll()?;
+        let mut tracker = cache.tracker()?;
+        let entries = Some(vec![PathBuf::from(
+            "debug/build/registries/abcdef/dep/1111111111111111",
+        )]);
+        let used_through = tracker.touch("abcdef", entries.as_deref(), SystemTime::now())?;
+        let mut usage = ContextUse {
+            tracker,
+            context: "abcdef".into(),
+            entries,
+            used_through,
+        };
+        let boundary = std::time::UNIX_EPOCH + Duration::from_nanos(used_through.try_into()?);
+        let changes = usage.tracker.conn.total_changes();
+        usage.refresh(boundary)?;
+        assert_eq!(usage.tracker.conn.total_changes(), changes);
+        usage.refresh(boundary + CONTEXT_MAX_IDLE)?;
+        assert_eq!(
+            usage.used_through,
+            tracker::timestamp(boundary + CONTEXT_MAX_IDLE)?
+        );
+        assert_eq!(usage.tracker.conn.total_changes(), changes + 2);
+        assert!(!usage.tracker.dependency_expired(
+            "abcdef",
+            &usage.entries.as_ref().unwrap()[0],
+            used_through,
+        )?);
+        Ok(())
+    }
+
+    #[test]
     fn repeated_warm_usage_keeps_the_write_ahead_log_bounded() -> CargoResult<()> {
         let cache = Cache::new()?;
         cache.enroll()?;
@@ -1709,9 +1804,11 @@ mod tests {
         let entries = [PathBuf::from(
             "debug/build/registries/abcdef/dep/0123456789abcdef",
         )];
-        let now = SystemTime::now();
+        let resolution =
+            Duration::from_secs(crate::workspace::global_cache_tracker::UPDATE_RESOLUTION);
+        let now = std::time::UNIX_EPOCH + resolution * 1_000;
         for index in 0..2_000 {
-            tracker.touch("abcdef", Some(&entries), now + Duration::from_nanos(index))?;
+            tracker.touch("abcdef", Some(&entries), now + resolution * index)?;
         }
         drop(tracker);
         // Automatic checkpoints still recycle the WAL even though exiting a build
@@ -1719,7 +1816,7 @@ mod tests {
         assert!(
             fs::metadata(cache.root.join(DIRECTORY).join("cache.sqlite-wal"))?.len() < 1024 * 1024
         );
-        assert_eq!(cache.used("abcdef")?, now + Duration::from_nanos(1_999));
+        assert_eq!(cache.used("abcdef")?, now + resolution * 1_999);
         Ok(())
     }
 

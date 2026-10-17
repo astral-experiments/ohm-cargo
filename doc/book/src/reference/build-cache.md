@@ -150,7 +150,7 @@ can use the installation's `.ohm-version` marker while that compiler is still
 installed. Unknown releases are not assumed obsolete, and selecting an older
 Ohm release does not immediately evict newer releases' contexts.
 
-There is no grace period. After upgrading, explicitly running `cargo +ohm gc`
+Older releases have no grace period. After upgrading, explicitly running `cargo +ohm gc`
 can reclaim the previous release's global registry contexts immediately; an
 upgrade does not invoke GC automatically. The one-hour inactivity rule still
 applies to the current release's contexts. Legacy namespaces without records are
@@ -160,8 +160,13 @@ They rebuild on demand if needed again.
 Ohm keeps compiler provenance, context activity, and dependency activity in one
 SQLite database at `.ohm-gc-v1/cache.sqlite` inside each shared build root. Each
 compiled dependency variant has one row, shared by all worktrees that use it.
-Builds batch last-use updates in a transaction at start and completion, including
-fresh transitive dependencies, cache hits, and failures. No artifact scan or
+Builds check last use at start and completion, including fresh transitive
+dependencies, cache hits, and failures. Like Cargo's downloaded-source tracker,
+timestamps use a five-minute update resolution. Ohm rounds use upward, so an entry
+always gets a full hour of inactivity before eviction and may remain for up to
+five additional minutes. Repeated warm builds within that interval only read the
+database; new dependencies and elapsed intervals are recorded in one transaction.
+Short builds skip the completion query entirely. No artifact scan or
 per-worktree ownership record is needed. The database uses Cargo's existing
 SQLite dependency and migration helpers; it has the shared root's locking scope,
 independent of Cargo's downloaded-source cache. SQLite uses write-ahead logging
