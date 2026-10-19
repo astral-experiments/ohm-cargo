@@ -2460,11 +2460,11 @@ fn shared_registry_cache_rejects_unit_lock_aliases() {
     let original = paths::root().join("original-lock-alias-cache");
     cargo(&original).run();
     let original_registries = original.join("debug/build/registries");
-    for internal in [false, true] {
-        let shared = paths::root().join(format!("aliased-lock-cache-{internal}"));
+    for alias in ["registries", "namespace", "unit", "lock"] {
+        let shared = paths::root().join(format!("aliased-lock-cache-{alias}"));
         cargo(&shared).run();
         let registries = shared.join("debug/build/registries");
-        if internal {
+        if alias == "lock" {
             let unit_lock = walkdir::WalkDir::new(&registries)
                 .into_iter()
                 .map(Result::unwrap)
@@ -2474,9 +2474,22 @@ fn shared_registry_cache_rejects_unit_lock_aliases() {
             std::fs::remove_dir_all(unit_lock.parent().unwrap().join("out")).unwrap();
             std::fs::remove_file(&unit_lock).unwrap();
             std::os::unix::fs::symlink(shared.join("debug/.cargo-build-lock"), unit_lock).unwrap();
-        } else {
+        } else if alias == "registries" {
             std::fs::remove_dir_all(&registries).unwrap();
             std::os::unix::fs::symlink(&original_registries, &registries).unwrap();
+        } else {
+            let directory = walkdir::WalkDir::new(&registries)
+                .min_depth(if alias == "namespace" { 1 } else { 3 })
+                .max_depth(if alias == "namespace" { 1 } else { 3 })
+                .into_iter()
+                .map(Result::unwrap)
+                .find(|entry| entry.file_type().is_dir())
+                .unwrap()
+                .into_path();
+            let original_directory =
+                original_registries.join(directory.strip_prefix(&registries).unwrap());
+            std::fs::remove_dir_all(&directory).unwrap();
+            std::os::unix::fs::symlink(original_directory, directory).unwrap();
         }
         let (ready, _queued) = mpsc::channel();
         let child =
