@@ -1143,15 +1143,36 @@ fn connect_run_custom_build_deps(state: &mut State<'_, '_>) {
 }
 
 impl<'a, 'gctx> State<'a, 'gctx> {
-    /// Adds a native test only for validation, never as a job to execute.
+    /// Adds a native root only for validation, never as a job to execute.
     /// Its complete graph preserves the original native fingerprint, including
     /// package binaries that an ordinary integration-test check does not build.
     fn native_test_check_candidate(&self, unit: &Unit) -> Option<Unit> {
+        let native_mode = match unit.mode {
+            CompileMode::Check { test: true }
+                if unit.target.harness()
+                    && (unit.target.is_lib()
+                        || unit.target.is_executable()
+                        || unit.target.is_test()
+                        || unit.target.is_bench()) =>
+            {
+                CompileMode::Test
+            }
+            CompileMode::Check { test: false }
+                if unit.target.is_executable()
+                    || (unit.target.is_lib()
+                        && unit
+                            .target
+                            .rustc_crate_types()
+                            .iter()
+                            .all(|kind| matches!(kind, CrateType::Lib | CrateType::Rlib))) =>
+            {
+                CompileMode::Build
+            }
+            _ => return None,
+        };
         if !self.reuse_built_registry_dependencies
             || !matches!(self.intent, UserIntent::Check { .. })
-            || unit.mode != (CompileMode::Check { test: true })
-            || !unit.target.is_test()
-            || !unit.target.harness()
+            || unit.target.for_host()
             || !self.ws.is_member(&unit.pkg)
             || unit.profile.root != ProfileRoot::Debug
             || !matches!(
@@ -1179,7 +1200,7 @@ impl<'a, 'gctx> State<'a, 'gctx> {
             &unit.target,
             unit.profile.clone(),
             unit.kind,
-            CompileMode::Test,
+            native_mode,
             unit.features.clone(),
             unit.rustflags.clone(),
             unit.rustdocflags.clone(),

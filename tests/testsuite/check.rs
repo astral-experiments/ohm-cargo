@@ -154,6 +154,32 @@ fn assert_ohm_reused_test(output: &cargo_test_support::RawOutput, name: &str) {
     assert_eq!(path.metadata().unwrap().len(), 0);
 }
 
+fn assert_ohm_reused_root(
+    output: &cargo_test_support::RawOutput,
+    name: &str,
+    kind: &str,
+    test: bool,
+) -> std::path::PathBuf {
+    let artifact = std::str::from_utf8(&output.stdout)
+        .unwrap()
+        .lines()
+        .map(|line| serde_json::from_str::<serde_json::Value>(line).unwrap())
+        .find(|event| {
+            event["reason"] == "compiler-artifact"
+                && event["target"]["name"] == name
+                && event["target"]["kind"] == serde_json::json!([kind])
+                && event["profile"]["test"] == test
+        })
+        .expect("root artifact");
+    assert_eq!(artifact["fresh"], true, "root must be reused: {artifact}");
+    assert_eq!(artifact["executable"], serde_json::Value::Null);
+    let files = artifact["filenames"].as_array().unwrap();
+    assert_eq!(files.len(), 1);
+    let metadata = std::path::PathBuf::from(files[0].as_str().unwrap());
+    assert_eq!(metadata.extension().unwrap(), "rmeta");
+    metadata
+}
+
 fn ohm_workspace_macro_project() -> Project {
     let project = ohm_workspace_project();
     project.change_file(
@@ -1335,8 +1361,7 @@ fn ohm_built_registry_dependency_reuse_is_enabled_by_ohm_defaults() {
         .env("__CARGO_OHM_DEFAULTS", "yes")
         .with_stderr_data(str![[r#"
 [FRESH] dependency v1.0.0
-[CHECKING] foo v0.0.1 ([ROOT]/foo)
-[RUNNING] `rustc -Zpublic-api-hash -Zcache-proc-macros -Zthreads=8 -Zpublic-api-hash=no [..]--crate-name foo [..]`
+[FRESH] foo v0.0.1 ([ROOT]/foo)
 [FINISHED] `dev` profile [unoptimized + debuginfo] target(s) in [ELAPSED]s
 
 "#]])
@@ -2353,8 +2378,275 @@ fn ohm_own_library_reuse_preserves_checked_targets_and_warnings() {
 }
 
 #[cargo_test]
-fn ohm_own_library_reuse_keeps_explicit_library_roots_checked() {
-    for selection in ["--lib", "--lib --test integration"] {
+fn ohm_native_root_reuse_after_check_only_warmup() {
+    let project = ohm_workspace_project();
+    ohm_own_library_cargo(&project, "check -p application --lib").run();
+    ohm_own_library_cargo(&project, "build -p application --lib").run();
+
+    for _ in 0..2 {
+        let output = ohm_own_library_cargo(
+            &project,
+            "check -p application --lib -v --message-format=json",
+        )
+        .with_stderr_does_not_contain("[..]--crate-name application [..]")
+        .with_stderr_does_not_contain("[..]--crate-name local [..]")
+        .run();
+        let metadata = assert_ohm_reused_root(&output, "application", "lib", false);
+        assert!(metadata.metadata().unwrap().len() > 0);
+    }
+
+    project.change_file(
+        "local/src/lib.rs",
+        "pub fn value() -> &'static str { \"changed interface\" }",
+    );
+    ohm_own_library_cargo(&project, "check -p application --lib")
+        .with_status(101)
+        .with_stderr_contains("[..]mismatched types[..]")
+        .run();
+}
+
+#[cargo_test]
+fn ohm_native_root_reuse_with_shared_build_directories() {
+    let project = ohm_own_library_project();
+    let shared = paths::root().join("shared-build");
+    let cargo = |command: &str| {
+        let mut cargo = ohm_own_library_cargo(&project, command);
+        cargo.env("CARGO_BUILD_BUILD_DIR", &shared);
+        cargo
+    };
+    cargo("build --lib").run();
+    let output = cargo("check --lib -v --message-format=json")
+        .with_stderr_does_not_contain("[..]--crate-name foo [..]")
+        .run();
+    let metadata = assert_ohm_reused_root(&output, "foo", "lib", false);
+    assert!(metadata.metadata().unwrap().len() > 0);
+
+    project.change_file("src/lib.rs", "compile_error!(\"changed root\");");
+    cargo("check --lib")
+        .with_status(101)
+        .with_stderr_contains("[ERROR] changed root")
+        .run();
+}
+
+#[cargo_test]
+fn ohm_native_root_reuse_preserves_library_metadata_and_warnings() {
+    let project = ohm_own_library_project();
+    ohm_own_library_cargo(&project, "build --lib").run();
+    let native_metadata = project
+        .glob("target/debug/deps/libfoo-*.rmeta")
+        .next()
+        .unwrap()
+        .unwrap();
+    let native_contents = std::fs::read(&native_metadata).unwrap();
+    assert!(!native_contents.is_empty());
+
+    for _ in 0..2 {
+        let output = ohm_own_library_cargo(&project, "check --lib -v --message-format=json")
+            .with_stderr_does_not_contain("[..]--crate-name foo [..]")
+            .run();
+        let metadata = assert_ohm_reused_root(&output, "foo", "lib", false);
+        assert_ne!(metadata, native_metadata);
+        assert_eq!(std::fs::read(&metadata).unwrap(), native_contents);
+        assert_eq!(
+            std::str::from_utf8(&output.stdout)
+                .unwrap()
+                .lines()
+                .map(|line| serde_json::from_str::<serde_json::Value>(line).unwrap())
+                .filter(|event| event["reason"] == "compiler-message"
+                    && event["message"]["code"]["code"] == "dead_code")
+                .count(),
+            1,
+        );
+        project.change_file("consumer.rs", "pub fn value() -> u32 { foo::value() }");
+        cargo_test_support::process("rustc")
+            .cwd(project.root())
+            .args(&["--edition=2021", "--crate-type=lib", "--emit=metadata"])
+            .arg("--extern")
+            .arg(format!("foo={}", metadata.display()))
+            .arg("consumer.rs")
+            .exec()
+            .unwrap();
+    }
+}
+
+#[cargo_test]
+fn ohm_native_root_reuse_covers_executables_and_unit_tests() {
+    for (build, check, source, name, kind, test) in [
+        (
+            "build --bin foo",
+            "check --bin foo",
+            "src/main.rs",
+            "foo",
+            "bin",
+            false,
+        ),
+        (
+            "build --example example",
+            "check --example example",
+            "examples/example.rs",
+            "example",
+            "example",
+            false,
+        ),
+        (
+            "test --no-run --lib",
+            "check --tests",
+            "src/lib.rs",
+            "foo",
+            "lib",
+            true,
+        ),
+        (
+            "test --no-run --bin foo",
+            "check --tests",
+            "src/main.rs",
+            "foo",
+            "bin",
+            true,
+        ),
+    ] {
+        let project = project()
+            .file("Cargo.toml", &basic_manifest("foo", "0.0.1"))
+            .file(source, "fn unused_root() {} fn main() { panic!(\"do not run\"); } #[test] fn test() { panic!(\"do not run\"); }")
+            .build();
+        ohm_own_library_cargo(&project, build).run();
+        for _ in 0..2 {
+            let output =
+                ohm_own_library_cargo(&project, &format!("{check} -v --message-format=json"))
+                    .with_stderr_does_not_contain("[RUNNING]")
+                    .run();
+            let metadata = assert_ohm_reused_root(&output, name, kind, test);
+            assert_eq!(metadata.metadata().unwrap().len(), 0);
+            assert!(
+                std::str::from_utf8(&output.stdout)
+                    .unwrap()
+                    .contains("function `unused_root` is never used")
+            );
+        }
+    }
+}
+
+#[cargo_test]
+fn ohm_native_root_reuse_requires_metadata_and_provenance() {
+    for missing in ["metadata", "provenance", "messages"] {
+        let project = ohm_own_library_project();
+        ohm_own_library_cargo(&project, "build --lib").run();
+        let pattern = match missing {
+            "metadata" => "target/debug/deps/libfoo-*.rmeta",
+            "provenance" => "target/debug/.fingerprint/foo-*/ohm-message-provenance-lib-foo",
+            "messages" => "target/debug/.fingerprint/foo-*/output-lib-foo",
+            _ => unreachable!(),
+        };
+        let path = project.glob(pattern).next().unwrap().unwrap();
+        std::fs::remove_file(path).unwrap();
+        let output = ohm_own_library_cargo(&project, "check --lib -v").run();
+        assert_ohm_metadata_only_check(&output, "foo");
+    }
+}
+
+#[cargo_test]
+fn ohm_native_root_reuse_rechecks_source_dependencies_and_configuration() {
+    for change in ["source", "dependency", "feature"] {
+        let project = project()
+            .file("Cargo.toml", &format!("{}\n[workspace]\nmembers = ['dep']\n[features]\nchanged = []\n[dependencies]\ndep = {{ path = 'dep' }}\n", basic_manifest("foo", "0.0.1")))
+            .file("src/lib.rs", "extern crate dep; #[cfg(feature = \"changed\")] compile_error!(\"changed feature\"); pub fn value() -> u32 { dep::value() }")
+            .file("dep/Cargo.toml", &basic_manifest("dep", "0.0.1"))
+            .file("dep/src/lib.rs", "pub fn value() -> u32 { 42 }")
+            .build();
+        ohm_own_library_cargo(&project, "build --lib").run();
+        let output = ohm_own_library_cargo(&project, "check --lib --message-format=json").run();
+        assert_ohm_reused_root(&output, "foo", "lib", false);
+        let (check, error) = match change {
+            "source" => {
+                project.change_file("src/lib.rs", "compile_error!(\"changed source\");");
+                ("check --lib -v", "changed source")
+            }
+            "dependency" => {
+                project.change_file(
+                    "dep/src/lib.rs",
+                    "pub fn value() -> &'static str { \"changed\" }",
+                );
+                ("check --lib -v", "mismatched types")
+            }
+            "feature" => ("check --lib --features changed -v", "changed feature"),
+            _ => unreachable!(),
+        };
+        let output = ohm_own_library_cargo(&project, check)
+            .with_status(101)
+            .with_stderr_contains(format!("[..]{error}[..]"))
+            .run();
+        assert_ohm_metadata_only_check(&output, "foo");
+    }
+}
+
+#[cargo_test]
+fn ohm_native_root_reuse_recovers_after_source_changes() {
+    for (build, check, test) in [
+        ("build --lib", "check --lib", false),
+        ("test --no-run --lib", "check --tests", true),
+    ] {
+        let project = project()
+            .file("Cargo.toml", &basic_manifest("foo", "0.0.1"))
+            .file("src/lib.rs", "pub fn value() -> u32 { 1 }")
+            .build();
+        ohm_own_library_cargo(&project, build).run();
+        let output = ohm_own_library_cargo(&project, &format!("{check} -v --message-format=json"))
+            .with_stderr_does_not_contain("[RUNNING]")
+            .run();
+        assert_ohm_reused_root(&output, "foo", "lib", test);
+
+        let cfg = if test { "#[cfg(test)]" } else { "" };
+        project.change_file(
+            "src/lib.rs",
+            &format!(
+                "{cfg} compile_error!(\"edited native root must be checked\"); pub fn value() -> u32 {{ 1 }}"
+            ),
+        );
+        let output = ohm_own_library_cargo(&project, &format!("{check} -v"))
+            .with_status(101)
+            .with_stderr_contains("[ERROR] edited native root must be checked")
+            .run();
+        assert_ohm_metadata_only_check(&output, "foo");
+
+        project.change_file(
+            "src/lib.rs",
+            "pub fn value() -> u32 { 2 } fn unused_after_edit() {}",
+        );
+        ohm_own_library_cargo(&project, build).run();
+        let output = ohm_own_library_cargo(&project, &format!("{check} -v --message-format=json"))
+            .with_stderr_does_not_contain("[RUNNING]")
+            .run();
+        assert_ohm_reused_root(&output, "foo", "lib", test);
+        assert!(
+            std::str::from_utf8(&output.stdout)
+                .unwrap()
+                .contains("function `unused_after_edit` is never used")
+        );
+    }
+}
+
+#[cargo_test]
+fn ohm_native_root_reuse_keeps_test_and_ordinary_cfg_separate() {
+    for (build, check, cfg) in [
+        ("build --lib", "check --tests -v", "test"),
+        ("test --no-run --lib", "check --lib -v", "not(test)"),
+    ] {
+        let project = project()
+            .file("Cargo.toml", &basic_manifest("foo", "0.0.1"))
+            .file("src/lib.rs", &format!("#[cfg({cfg})] compile_error!(\"different cfg\"); pub fn value() -> u32 {{ 42 }}"))
+            .build();
+        ohm_own_library_cargo(&project, build).run();
+        let output = ohm_own_library_cargo(&project, check)
+            .with_status(101)
+            .with_stderr_contains("[ERROR] different cfg")
+            .run();
+        assert_ohm_metadata_only_check(&output, "foo");
+    }
+}
+
+#[cargo_test]
+fn ohm_own_library_reuse_keeps_nonterminal_library_roots_checked() {
+    for selection in ["--lib --test integration", "--lib --bin foo"] {
         let project = ohm_own_library_project();
         ohm_own_library_cargo(&project, "test --no-run --test integration").run();
         let output = ohm_own_library_cargo(
@@ -2534,7 +2826,7 @@ fn ohm_reuses_fresh_built_workspace_members_during_checks() {
         .masquerade_as_nightly_cargo(&["ohm-reuse-built-deps"])
         .with_stderr_contains("[FRESH] dependency v1.0.0")
         .with_stderr_contains("[FRESH] local v1.0.0 ([ROOT]/foo/local)")
-        .with_stderr_contains("[CHECKING] application v0.0.1 ([ROOT]/foo/application)")
+        .with_stderr_contains("[FRESH] application v0.0.1 ([ROOT]/foo/application)")
         .with_stderr_does_not_contain("[CHECKING] local v1.0.0")
         .with_stderr_does_not_contain("[COMPILING]")
         .run();
@@ -2671,7 +2963,7 @@ fn ohm_defaults_reuse_test_built_workspace_members_in_shared_builds() {
         .env("CARGO_BUILD_BUILD_DIR", &build_directory)
         .with_stderr_contains("[FRESH] dependency v1.0.0")
         .with_stderr_contains("[FRESH] local v1.0.0 ([ROOT]/foo/local)")
-        .with_stderr_contains("[CHECKING] application v0.0.1 ([ROOT]/foo/application)")
+        .with_stderr_contains("[FRESH] application v0.0.1 ([ROOT]/foo/application)")
         .with_stderr_does_not_contain("[CHECKING] local v1.0.0")
         .with_stderr_does_not_contain("[COMPILING]")
         .run();
