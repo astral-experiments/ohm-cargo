@@ -146,8 +146,14 @@ fn rustc_info_cache_with_wrappers() {
 
         p.cargo("build")
             .env("CARGO_LOG", "cargo::util::rustc=debug")
+            .with_stderr_contains(MISS)
+            .with_stderr_does_not_contain(HIT)
+            .run();
+
+        p.cargo("build")
+            .env("CARGO_LOG", "cargo::util::rustc=debug")
             .env(wrapper_env, &wrapper)
-            .with_stderr_contains("[..]failed to read rustc info cache[..]")
+            .with_stderr_contains("[..]different compiler, creating new rustc info cache[..]")
             .with_stderr_contains(MISS)
             .with_stderr_contains(UPDATE)
             .with_stderr_does_not_contain(HIT)
@@ -163,6 +169,25 @@ fn rustc_info_cache_with_wrappers() {
             .with_status(0)
             .run();
 
+        for use_wrapper in [false, true] {
+            let mut build = p.cargo("build");
+            if use_wrapper {
+                build.env(wrapper_env, &wrapper);
+            }
+            build
+                .env("CARGO_LOG", "cargo::util::rustc=debug")
+                .with_stderr_contains("[..]reusing previous rustc info cache[..]")
+                .with_stderr_contains(HIT)
+                .with_stderr_contains(UPDATE)
+                .with_stderr_does_not_contain(MISS)
+                .run();
+        }
+        let cache_path = p.root().join("target/.rustc_info.json");
+        let cache: serde_json::Value =
+            serde_json::from_slice(&std::fs::read(&cache_path).unwrap()).unwrap();
+        let wrapper_fingerprint = &cache["rustc_fingerprint"];
+        assert_ne!(wrapper_fingerprint, &cache["previous"]["rustc_fingerprint"]);
+
         wrapper_project.change_file("src/main.rs", r#"fn main() { panic!() }"#);
         wrapper_project.cargo("build").with_status(0).run();
 
@@ -175,6 +200,14 @@ fn rustc_info_cache_with_wrappers() {
             .with_stderr_does_not_contain(HIT)
             .with_status(101)
             .run();
+        let changed_cache: serde_json::Value =
+            serde_json::from_slice(&std::fs::read(cache_path).unwrap()).unwrap();
+        assert_ne!(&changed_cache["rustc_fingerprint"], wrapper_fingerprint);
+        assert_eq!(
+            &changed_cache["previous"]["rustc_fingerprint"],
+            wrapper_fingerprint
+        );
+        assert!(changed_cache["previous"].get("previous").is_none());
         p.cargo("build")
             .env("CARGO_LOG", "cargo::util::rustc=debug")
             .env(wrapper_env, &wrapper)

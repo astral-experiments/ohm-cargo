@@ -327,6 +327,17 @@ struct CacheData {
     rustc_fingerprint: u64,
     outputs: HashMap<u64, Output>,
     successes: HashMap<u64, bool>,
+    // Keep the active compiler in the legacy top-level format. One separate,
+    // nonrecursive context supports alternating between rustc and a wrapper.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    previous: Option<CompilerCacheData>,
+}
+
+#[derive(Serialize, Deserialize, Debug, Default)]
+struct CompilerCacheData {
+    rustc_fingerprint: u64,
+    outputs: HashMap<u64, Output>,
+    successes: HashMap<u64, bool>,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -352,26 +363,50 @@ impl Cache {
             rustc_fingerprint(wrapper, workspace_wrapper, rustc, rustup_rustc, gctx),
         ) {
             (Some(cache_location), Ok(rustc_fingerprint)) => {
-                let empty = CacheData {
+                let empty = CompilerCacheData {
                     rustc_fingerprint,
                     outputs: HashMap::default(),
                     successes: HashMap::default(),
                 };
                 let mut dirty = true;
                 let data = match read(&cache_location) {
-                    Ok(data) => {
+                    Ok(mut data) => {
                         if data.rustc_fingerprint == rustc_fingerprint {
                             debug!("reusing existing rustc info cache");
                             dirty = false;
                             data
                         } else {
-                            debug!("different compiler, creating new rustc info cache");
-                            empty
+                            let selected = if let Some(previous) = data.previous.take()
+                                && previous.rustc_fingerprint == rustc_fingerprint
+                            {
+                                debug!("reusing previous rustc info cache");
+                                previous
+                            } else {
+                                debug!("different compiler, creating new rustc info cache");
+                                empty
+                            };
+                            data.previous = Some(CompilerCacheData {
+                                rustc_fingerprint: std::mem::replace(
+                                    &mut data.rustc_fingerprint,
+                                    selected.rustc_fingerprint,
+                                ),
+                                outputs: std::mem::replace(&mut data.outputs, selected.outputs),
+                                successes: std::mem::replace(
+                                    &mut data.successes,
+                                    selected.successes,
+                                ),
+                            });
+                            data
                         }
                     }
                     Err(e) => {
                         debug!("failed to read rustc info cache: {}", e);
-                        empty
+                        CacheData {
+                            rustc_fingerprint: empty.rustc_fingerprint,
+                            outputs: empty.outputs,
+                            successes: empty.successes,
+                            previous: None,
+                        }
                     }
                 };
                 return Cache {
@@ -536,6 +571,41 @@ fn process_fingerprint(cmd: &ProcessBuilder, extra_fingerprint: u64) -> u64 {
     env.sort_unstable();
     env.hash(&mut hasher);
     Hasher::finish(&hasher)
+}
+
+#[cfg(test)]
+mod cache_tests {
+    use super::*;
+
+    #[test]
+    fn compiler_cache_preserves_legacy_json() {
+        let legacy = serde_json::json!({
+            "rustc_fingerprint": 123,
+            "outputs": {
+                "2": {
+                    "success": true,
+                    "status": "",
+                    "code": 0,
+                    "stdout": "rustc 1.99.0\n",
+                    "stderr": "probe diagnostic\n",
+                },
+            },
+            "successes": {"1": true},
+        });
+        let mut cache: CacheData = serde_json::from_value(legacy.clone()).unwrap();
+        assert!(cache.previous.is_none());
+        assert_eq!(serde_json::to_value(&cache).unwrap(), legacy);
+
+        cache.previous = Some(CompilerCacheData {
+            rustc_fingerprint: 456,
+            ..CompilerCacheData::default()
+        });
+        let serialized = serde_json::to_value(&cache).unwrap();
+        let old_reader: CompilerCacheData = serde_json::from_value(serialized.clone()).unwrap();
+        assert_eq!(serde_json::to_value(old_reader).unwrap(), legacy);
+        let new_reader: CacheData = serde_json::from_value(serialized).unwrap();
+        assert_eq!(new_reader.previous.unwrap().rustc_fingerprint, 456);
+    }
 }
 
 #[cfg(all(test, unix))]
