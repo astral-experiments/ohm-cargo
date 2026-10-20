@@ -41,7 +41,7 @@ use std::sync::Arc;
 
 use crate::compiler::OHM_BUILT_REGISTRY_READY_MARKER;
 use crate::compiler::UserIntent;
-use crate::compiler::build_runner::StaleBuiltRegistryDependency;
+use crate::compiler::build_runner::RegistryReuseNeedsFallback;
 use crate::compiler::unit_dependencies::{
     audited_proc_macro_package_identity, build_unit_dependencies,
 };
@@ -212,15 +212,14 @@ fn compile_ws<'a>(
         return build_runner.dry_run();
     }
 
-    match build_runner.compile(exec) {
-        Err(error) if error.is::<StaleBuiltRegistryDependency>() => {
-            let Some(stale_registry_dependencies) =
-                error.downcast_ref::<StaleBuiltRegistryDependency>()
+    match build_runner.compile(exec, true) {
+        Err(error) if error.is::<RegistryReuseNeedsFallback>() => {
+            let Some(registry_reuse_fallback) = error.downcast_ref::<RegistryReuseNeedsFallback>()
             else {
                 return Err(error);
             };
-            let rejected_registry_packages = stale_registry_dependencies.packages.clone();
-            let ordinary_check_might_exist = stale_registry_dependencies.ordinary_check_might_exist;
+            let rejected_registry_packages = registry_reuse_fallback.packages.clone();
+            let ordinary_check_might_exist = registry_reuse_fallback.ordinary_check_might_exist;
             drop(bcx);
 
             if ordinary_check_might_exist {
@@ -254,8 +253,8 @@ fn compile_ws<'a>(
                 true,
                 &rejected_registry_packages,
             )?;
-            match BuildRunner::new(&fallback_bcx)?.compile(exec) {
-                Err(error) if error.is::<StaleBuiltRegistryDependency>() => {
+            match BuildRunner::new(&fallback_bcx)?.compile(exec, false) {
+                Err(error) if error.is::<RegistryReuseNeedsFallback>() => {
                     // Artifact races or a newly exposed incompatible closure
                     // must never turn a check into an ordinary codegen build.
                     // Preserve the original fail-closed full fallback.
@@ -269,7 +268,7 @@ fn compile_ws<'a>(
                         false,
                         &HashSet::default(),
                     )?;
-                    BuildRunner::new(&final_bcx)?.compile(exec)
+                    BuildRunner::new(&final_bcx)?.compile(exec, false)
                 }
                 result => result,
             }

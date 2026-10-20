@@ -43,13 +43,14 @@ mod compilation_files;
 use self::compilation_files::CompilationFiles;
 pub use self::compilation_files::{Metadata, OutputFile, UnitHash};
 
-/// Registry packages whose built artifacts cannot safely satisfy a check.
+/// A speculative registry-reuse graph needs an existing or fallback check graph.
 ///
-/// Regenerating the graph without these packages preserves independently fresh
-/// registry builds instead of disabling reuse for the entire dependency graph.
+/// Rejecting stale packages preserves independently fresh registry builds.
+/// An empty package set lets an established check graph take precedence over
+/// otherwise-valid native artifacts that would change its root fingerprints.
 #[derive(Debug, thiserror::Error)]
-#[error("an existing registry build artifact is missing or stale")]
-pub(crate) struct StaleBuiltRegistryDependency {
+#[error("registry build reuse requires another check graph")]
+pub(crate) struct RegistryReuseNeedsFallback {
     pub(crate) packages: HashSet<PackageId>,
     pub(crate) ordinary_check_might_exist: bool,
 }
@@ -743,25 +744,36 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
             }
         }
 
-        self.compile_prepared(exec, queue).map(Some)
+        self.compile_prepared(exec, queue, false).map(Some)
     }
 
     /// Starts compilation, waits for it to finish, and returns information
     /// about the result of compilation.
     ///
+    /// Set `preserve_existing_check_graph` for the initial graph only. Fallbacks
+    /// have already tried the ordinary check graph and must not request it again.
+    ///
     /// See [`ops::cargo_compile`] for a higher-level view of the compile process.
     ///
     /// [`ops::cargo_compile`]: crate::ops::cargo_compile
     #[tracing::instrument(skip_all)]
-    pub fn compile(self, exec: &Arc<dyn Executor>) -> CargoResult<Compilation<'gctx>> {
+    pub fn compile(
+        self,
+        exec: &Arc<dyn Executor>,
+        preserve_existing_check_graph: bool,
+    ) -> CargoResult<Compilation<'gctx>> {
         let bcx = self.bcx;
         let retry = self.deferred_dev_deps.retry.clone();
-        let result = self.retry_with_shared_cache_write_locks(|runner| runner.compile_inner(exec));
+        let result = self.retry_with_shared_cache_write_locks(|runner| {
+            runner.compile_inner(exec, preserve_existing_check_graph)
+        });
         if result.is_err() && retry.load(std::sync::atomic::Ordering::Relaxed) {
             tracing::info!(target: "cargo::compiler::ohm_deferred_dev_deps", "retrying complete graph");
             let mut runner = Self::new(bcx)?;
             runner.deferred_dev_deps.disabled = true;
-            return runner.retry_with_shared_cache_write_locks(|runner| runner.compile_inner(exec));
+            return runner.retry_with_shared_cache_write_locks(|runner| {
+                runner.compile_inner(exec, preserve_existing_check_graph)
+            });
         }
         result
     }
@@ -795,7 +807,11 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
         }
     }
 
-    fn compile_inner(mut self, exec: &Arc<dyn Executor>) -> CargoResult<Compilation<'gctx>> {
+    fn compile_inner(
+        mut self,
+        exec: &Arc<dyn Executor>,
+        preserve_existing_check_graph: bool,
+    ) -> CargoResult<Compilation<'gctx>> {
         // A shared lock is held during the duration of the build since rustc
         // needs to read from the `src` cache, and we don't want other
         // commands modifying the `src` cache while it is running.
@@ -806,7 +822,7 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
         self.prepare_units()?;
         self.prepare()?;
         custom_build::build_map(&mut self)?;
-        self.compile_prepared(exec, queue)
+        self.compile_prepared(exec, queue, preserve_existing_check_graph)
     }
 
     /// Executes a graph after its layouts, fingerprints, and build scripts are prepared.
@@ -816,12 +832,23 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
         mut self,
         exec: &Arc<dyn Executor>,
         mut queue: JobQueue<'gctx>,
+        preserve_existing_check_graph: bool,
     ) -> CargoResult<Compilation<'gctx>> {
         let stale_registry_packages = self.stale_reused_registry_dependencies()?;
-        if !stale_registry_packages.is_empty() {
-            return Err(StaleBuiltRegistryDependency {
+        // Even compatible native dependencies can change a root's fingerprint
+        // directory. Before creating a new check graph, give an established
+        // ordinary graph a chance to pass its full freshness and lock checks.
+        let new_check_graph = preserve_existing_check_graph
+            && !self.reused_registry_units.is_empty()
+            && self.bcx.roots.iter().any(|unit| {
+                unit.mode.is_check() && !self.files().fingerprint_file_path(unit, "").is_file()
+            });
+        let ordinary_check_might_exist = (!stale_registry_packages.is_empty() || new_check_graph)
+            && self.ordinary_check_might_exist();
+        if !stale_registry_packages.is_empty() || ordinary_check_might_exist {
+            return Err(RegistryReuseNeedsFallback {
                 packages: stale_registry_packages,
-                ordinary_check_might_exist: self.ordinary_check_might_exist(),
+                ordinary_check_might_exist,
             }
             .into());
         }
