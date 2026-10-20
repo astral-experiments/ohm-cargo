@@ -37,6 +37,7 @@
 
 use crate::util::data_structures::{HashMap, HashSet};
 use std::hash::{Hash, Hasher};
+use std::path::{Path, PathBuf};
 use std::sync::Arc;
 
 use crate::compiler::OHM_BUILT_REGISTRY_READY_MARKER;
@@ -200,6 +201,28 @@ fn compile_ws<'a>(
         }
     }
 
+    let check_graph_hint = ordinary_check_graph_hint(ws, options);
+    let ordinary_graph_tried = check_graph_hint.as_ref().is_some_and(|hint| hint.is_file());
+    if ordinary_graph_tried {
+        let ordinary_interner = UnitInterner::new();
+        let ordinary_bcx = create_bcx_with_registry_reuse(
+            ws,
+            options,
+            &ordinary_interner,
+            logger.as_ref(),
+            false,
+            &HashSet::default(),
+        )?;
+        crate::workspace::gc::auto_gc(ordinary_bcx.gctx);
+        if let Some(compilation) =
+            BuildRunner::new(&ordinary_bcx)?.compile_if_check_graph_is_reusable(exec)?
+        {
+            return Ok(compilation);
+        }
+        // A stale hint must not repeatedly delay a newly selected native graph.
+        let _ = std::fs::remove_file(check_graph_hint.as_ref().unwrap());
+    }
+
     let bcx = create_bcx(ws, options, &interner, logger.as_ref())?;
 
     if options.build_config.unit_graph {
@@ -212,7 +235,8 @@ fn compile_ws<'a>(
         return build_runner.dry_run();
     }
 
-    match build_runner.compile(exec, true) {
+    let mut ordinary_graph_selected = !build_runner.reuses_registry_builds();
+    let result = match build_runner.compile(exec, !ordinary_graph_tried) {
         Err(error) if error.is::<RegistryReuseNeedsFallback>() => {
             let Some(registry_reuse_fallback) = error.downcast_ref::<RegistryReuseNeedsFallback>()
             else {
@@ -222,7 +246,7 @@ fn compile_ws<'a>(
             let ordinary_check_might_exist = registry_reuse_fallback.ordinary_check_might_exist;
             drop(bcx);
 
-            if ordinary_check_might_exist {
+            if ordinary_check_might_exist && !ordinary_graph_tried {
                 // A previous ordinary check may already have built the exact graph
                 // requested now. Selectively promoting compatible registry units
                 // would change its dependency fingerprints and rebuild otherwise
@@ -240,6 +264,7 @@ fn compile_ws<'a>(
                 if let Some(compilation) =
                     BuildRunner::new(&ordinary_bcx)?.compile_if_check_graph_is_reusable(exec)?
                 {
+                    record_check_graph_hint(check_graph_hint.as_deref());
                     return Ok(compilation);
                 }
             }
@@ -253,7 +278,9 @@ fn compile_ws<'a>(
                 true,
                 &rejected_registry_packages,
             )?;
-            match BuildRunner::new(&fallback_bcx)?.compile(exec, false) {
+            let fallback_runner = BuildRunner::new(&fallback_bcx)?;
+            ordinary_graph_selected = !fallback_runner.reuses_registry_builds();
+            match fallback_runner.compile(exec, false) {
                 Err(error) if error.is::<RegistryReuseNeedsFallback>() => {
                     // Artifact races or a newly exposed incompatible closure
                     // must never turn a check into an ordinary codegen build.
@@ -268,12 +295,71 @@ fn compile_ws<'a>(
                         false,
                         &HashSet::default(),
                     )?;
+                    ordinary_graph_selected = true;
                     BuildRunner::new(&final_bcx)?.compile(exec, false)
                 }
                 result => result,
             }
         }
         result => result,
+    };
+    if ordinary_graph_selected && result.is_ok() {
+        record_check_graph_hint(check_graph_hint.as_deref());
+    }
+    result
+}
+
+/// Hints that this selection has an ordinary check graph worth validating first.
+///
+/// The hint never establishes freshness: compiler, configuration, source, and
+/// artifact changes still pass the complete locked graph validation. Keying the
+/// selection avoids probing unrelated packages, targets, features, and profiles.
+fn ordinary_check_graph_hint(ws: &Workspace<'_>, options: &CompileOptions) -> Option<PathBuf> {
+    let config = &options.build_config;
+    let UserIntent::Check { test } = config.intent else {
+        return None;
+    };
+    if !ws.gctx().cli_unstable().ohm_reuse_built_deps()
+        || config.force_rebuild
+        || config.unit_graph
+        || config.dry_run
+    {
+        return None;
+    }
+    let key = crate::util::hash_u64((
+        ws.root_manifest(),
+        ws.current_opt().map(|package| package.package_id()),
+        &options.spec,
+        &options.filter,
+        &options.cli_features,
+        test,
+        config.requested_profile,
+        &config.requested_kinds,
+    ));
+    Some(
+        ws.build_dir()
+            .join(".ohm-check-graphs")
+            .join(format!("{key:016x}"))
+            .into_path_unlocked(),
+    )
+}
+
+/// Records successful ordinary checks without making an advisory cache write fatal.
+fn record_check_graph_hint(hint: Option<&Path>) {
+    let Some(hint) = hint else {
+        return;
+    };
+    let result = std::fs::create_dir_all(hint.parent().unwrap()).and_then(|()| {
+        std::fs::OpenOptions::new()
+            .write(true)
+            .create_new(true)
+            .open(hint)
+            .map(|_| ())
+    });
+    if let Err(error) = result
+        && error.kind() != std::io::ErrorKind::AlreadyExists
+    {
+        tracing::debug!(path = %hint.display(), %error, "could not record ordinary check graph");
     }
 }
 
