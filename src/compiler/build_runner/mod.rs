@@ -566,6 +566,10 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
         Ok(self.compilation)
     }
 
+    pub(crate) fn reuses_registry_builds(&self) -> bool {
+        !self.reused_registry_units.is_empty()
+    }
+
     /// Conservatively checks whether every root has an existing same-profile check.
     ///
     /// A speculative graph changes dependency metadata and therefore the root's
