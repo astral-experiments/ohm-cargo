@@ -1739,7 +1739,7 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
         .then_some(provenance)
     }
 
-    /// Validates native tests without scheduling any of their additional units.
+    /// Validates native roots without scheduling any of their additional units.
     /// A missing proof simply leaves the requested metadata-only job unchanged.
     fn validate_test_check_reuse(&mut self) -> CargoResult<()> {
         if self.bcx.test_check_candidates.is_empty() {
@@ -1760,6 +1760,9 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
             }
             if fingerprint::existing_unit_is_fresh(self, &check)?
                 || self.test_check_has_unsupported_flags(&check)
+                // Native metadata retains its native crate identity. Do not
+                // expose it to a consumer planned with the check identity.
+                || !self.is_terminal_check_unit(&check)
             {
                 continue;
             }
@@ -1784,29 +1787,33 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
                     self.lock_manager.lock_shared(self, unit)?;
                 }
             }
-            if closure
-                .iter()
-                .any(|unit| self.unit_uses_custom_codegen_backend(unit))
-            {
+            // Source edits commonly invalidate a root while leaving its large
+            // dependency closure unchanged. Reject it before inspecting every
+            // dependency's compiler environment.
+            if !self.outputs(&native)?.iter().any(|output| {
+                matches!(output.flavor, FileFlavor::Normal | FileFlavor::Linkable)
+                    && output.path.is_file()
+            }) {
                 continue;
             }
             let Some(provenance) = self.matching_message_provenance(&native, &expected) else {
                 continue;
             };
-            if !provenance
-                .compiler_search_directories
+            if !fingerprint::existing_unit_is_fresh(self, &native)? {
+                continue;
+            }
+            if closure
                 .iter()
-                .all(|directory| {
-                    compiler_driver_search_directory_is_unshadowed(
-                        &expected.compiler_driver.path,
-                        directory,
-                    )
-                })
-                || !self
-                    .outputs(&native)?
+                .any(|unit| self.unit_uses_custom_codegen_backend(unit))
+                || !provenance
+                    .compiler_search_directories
                     .iter()
-                    .any(|output| output.flavor == FileFlavor::Normal && output.path.is_file())
-                || !fingerprint::existing_unit_is_fresh(self, &native)?
+                    .all(|directory| {
+                        compiler_driver_search_directory_is_unshadowed(
+                            &expected.compiler_driver.path,
+                            directory,
+                        )
+                    })
             {
                 continue;
             }
@@ -1822,6 +1829,15 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
             }
             let outputs = self.outputs(&check)?;
             if fresh_scripts
+                && (native.mode == CompileMode::Test
+                    || !native.target.is_lib()
+                    || self.outputs(&native)?.iter().any(|output| {
+                        output.flavor == FileFlavor::Rmeta
+                            && output
+                                .path
+                                .metadata()
+                                .is_ok_and(|metadata| metadata.len() > 0)
+                    }))
                 && !outputs.is_empty()
                 && outputs.iter().all(|output| {
                     output
