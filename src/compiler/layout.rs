@@ -212,7 +212,11 @@ use crate::util::flock::{self, is_on_nfs_mount};
 use crate::util::{self, CargoResult, FileLock};
 use crate::workspace::Workspace;
 use cargo_util::paths;
+#[cfg(unix)]
+use std::fs::File;
 use std::path::{Path, PathBuf};
+#[cfg(unix)]
+use std::sync::Arc;
 
 /// Contains the paths of all target output locations.
 ///
@@ -221,6 +225,9 @@ pub struct Layout {
     artifact_dir: Option<ArtifactDirLayout>,
     build_dir: BuildDirLayout,
     _lock: Option<FileLock>,
+    /// Shared-cache guards are closed, never explicitly unlocked, while children use them.
+    #[cfg(unix)]
+    inherited_locks: Vec<Arc<File>>,
 }
 
 impl Layout {
@@ -233,45 +240,12 @@ impl Layout {
     /// registry artifacts use the same build directory. The version also separates this locking
     /// protocol from older Cargo versions that only namespaced the workspace root.
     pub(crate) fn shared_workspace_namespace(ws: &Workspace<'_>) -> String {
-        let canonicalize = |path: &Path| {
-            let path = if path.is_absolute() {
-                path.to_path_buf()
-            } else {
-                ws.gctx().cwd().join(path)
-            };
-            let mut existing = path.as_path();
-            let mut missing = Vec::new();
-
-            loop {
-                match existing.canonicalize() {
-                    Ok(mut canonical) => {
-                        for component in missing.iter().rev() {
-                            canonical.push(component);
-                        }
-                        return paths::normalize_path(&canonical);
-                    }
-                    Err(error) if error.kind() == std::io::ErrorKind::NotFound => {
-                        let Some(component) = existing.file_name() else {
-                            break;
-                        };
-                        let Some(parent) = existing.parent() else {
-                            break;
-                        };
-                        missing.push(component.to_os_string());
-                        existing = parent;
-                    }
-                    Err(_) => break,
-                }
-            }
-
-            paths::normalize_path(&path)
-        };
         let target = ws.target_dir();
 
         util::short_hash(&(
             "ohm-shared-workspace-v2",
-            canonicalize(ws.root()),
-            canonicalize(target.as_path_unlocked()),
+            ws.canonical_build_path(ws.root()),
+            ws.canonical_build_path(target.as_path_unlocked()),
         ))
     }
 
@@ -288,6 +262,7 @@ impl Layout {
         must_take_artifact_dir_lock: bool,
         must_take_build_dir_lock_exclusively: bool,
     ) -> CargoResult<Layout> {
+        ws.validate_shared_cache_target()?;
         let is_new_layout = ws.gctx().cli_unstable().build_dir_new_layout;
         let mut root = ws.target_dir();
         let mut build_root = ws.build_dir();
@@ -297,6 +272,10 @@ impl Layout {
         }
         let build_dest = build_root.join(dest);
         let dest = root.join(dest);
+        ws.validate_shared_cache_layout(
+            &build_dest.as_path_unlocked().join(".cargo-build-lock"),
+            &dest.as_path_unlocked().join(".cargo-lock"),
+        )?;
         // If the root directory doesn't already exist go ahead and create it
         // here. Use this opportunity to exclude it from backups as well if the
         // system supports it since this is a freshly created folder.
@@ -305,7 +284,7 @@ impl Layout {
         if root != build_root {
             paths::create_dir_all_excluded_from_backups_atomic(build_root.as_path_unlocked())?;
         }
-        if ws.gctx().cli_unstable().ohm_shared_registry_cache {
+        if ws.shared_registry_cache_enabled() {
             let shared_root = ws.build_dir();
             if shared_registry_directory_is_nfs(shared_root.as_path_unlocked())?
                 || shared_registry_directory_is_nfs(build_root.as_path_unlocked())?
@@ -381,9 +360,7 @@ impl Layout {
             }
         };
         let workspace_namespace = ws
-            .gctx()
-            .cli_unstable()
-            .ohm_shared_registry_cache
+            .shared_registry_cache_enabled()
             .then(|| Self::shared_workspace_namespace(ws));
         let workspace_lock = workspace_namespace
             .as_ref()
@@ -463,6 +440,22 @@ impl Layout {
         } else {
             None
         };
+        let workspace_is_locked = workspace_lock.is_some()
+            || (ws.shared_registry_cache_enabled() && must_take_build_dir_lock_exclusively);
+        #[cfg(unix)]
+        let (workspace_lock, build_dir_lock, inherited_locks) =
+            if ws.shared_registry_cache_enabled() {
+                // Keep the profile guard until the workspace guard has been released. On
+                // parent death the same open file descriptions remain owned by children.
+                let locks = workspace_lock
+                    .into_iter()
+                    .chain(build_dir_lock)
+                    .map(|lock| Arc::new(lock.into_file()))
+                    .collect();
+                (None, None, locks)
+            } else {
+                (workspace_lock, build_dir_lock, Vec::new())
+            };
         Ok(Layout {
             artifact_dir,
             build_dir: BuildDirLayout {
@@ -474,11 +467,14 @@ impl Layout {
                 fingerprint: build_dest.join(".fingerprint"),
                 examples: build_dest.join("examples"),
                 tmp,
-                workspace_lock,
+                _workspace_lock: workspace_lock,
+                workspace_is_locked,
                 _lock: build_dir_lock,
                 is_new_layout,
             },
             _lock: lock,
+            #[cfg(unix)]
+            inherited_locks,
         })
     }
 
@@ -498,6 +494,14 @@ impl Layout {
 
     pub fn build_dir(&self) -> &BuildDirLayout {
         &self.build_dir
+    }
+
+    /// Keeps build and workspace leases alive in a child which may outlive Cargo.
+    #[cfg(unix)]
+    pub(crate) fn inherit_locks(&self, command: &mut cargo_util::ProcessBuilder) {
+        for lock in &self.inherited_locks {
+            command.inherit_file(Arc::clone(lock));
+        }
     }
 }
 
@@ -621,7 +625,8 @@ pub struct BuildDirLayout {
     /// Serializes private workspace builds without blocking shared registry users.
     ///
     /// Declared before the profile lock so it is released first when this layout is dropped.
-    workspace_lock: Option<FileLock>,
+    _workspace_lock: Option<FileLock>,
+    workspace_is_locked: bool,
     /// The lockfile for a build (`.cargo-lock`). Will be unlocked when this
     /// struct is `drop`ped.
     ///
@@ -665,9 +670,9 @@ impl BuildDirLayout {
     pub fn root(&self) -> &Path {
         &self.root
     }
-    /// Whether this invocation holds the exclusive workspace-private namespace lock.
+    /// Whether this invocation prevents concurrent writes to workspace-private metadata.
     pub(crate) fn has_workspace_lock(&self) -> bool {
-        self.workspace_lock.is_some()
+        self.workspace_is_locked
     }
     /// Fetch the build examples path.
     pub fn examples(&self) -> &Path {

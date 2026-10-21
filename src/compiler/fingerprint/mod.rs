@@ -525,12 +525,12 @@ fn unit_has_exclusive_metadata_access(build_runner: &BuildRunner<'_, '_>, unit: 
         return true;
     }
 
-    // Shared registry units remain protected only by their individual locks, which are
-    // released between fingerprint preparation and job execution. Workspace-private
-    // units additionally have an invocation-lifetime namespace lock on the host layout.
-    // Every invocation acquires that layout first, so the lock also protects target
-    // layouts without attempting to lock duplicate target directories twice.
-    unstable.ohm_shared_registry_cache
+    // Preserve the existing restriction to workspace-private early cutoff even when
+    // the shared cache has an exclusive profile lease. A workspace namespace lock or
+    // an exclusive profile lease on the host layout protects private metadata for the
+    // whole invocation. Every invocation acquires that layout first, so it also
+    // protects target layouts without locking duplicate target directories twice.
+    build_runner.bcx.ws.shared_registry_cache_enabled()
         && !build_runner.files().is_shared_registry_unit(unit)
         && build_runner
             .files()
@@ -1043,6 +1043,10 @@ pub fn prepare_target(
         FingerprintComparison::Fresh => None,
         FingerprintComparison::Dirty { reason } => Some(reason),
     };
+
+    if dirty_reason.is_some() {
+        build_runner.require_shared_cache_write_access(unit)?;
+    }
 
     if let Some(logger) = bcx.logger {
         let index = bcx.unit_to_index[unit];

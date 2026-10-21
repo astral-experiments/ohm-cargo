@@ -1000,9 +1000,8 @@ fn rustc(
     let build_dir = build_runner.bcx.ws.build_dir().into_path_unlocked();
     let shared_registry_root = build_runner
         .bcx
-        .gctx
-        .cli_unstable()
-        .ohm_shared_registry_cache
+        .ws
+        .shared_registry_cache_enabled()
         .then(|| build_dir.clone());
     let pkg_root = unit.pkg.root().to_path_buf();
     let cwd = rustc
@@ -1888,6 +1887,7 @@ fn prepare_rustc(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> CargoResult
         base.arg("--force-warn=unused_crate_dependencies");
     }
 
+    build_runner.inherit_shared_cache_locks(&mut base)?;
     Ok(base)
 }
 
@@ -2023,6 +2023,7 @@ fn prepare_rustdoc(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> CargoResu
         append_crate_version_flag(unit, &mut rustdoc);
     }
 
+    build_runner.inherit_shared_cache_locks(&mut rustdoc)?;
     Ok(rustdoc)
 }
 
