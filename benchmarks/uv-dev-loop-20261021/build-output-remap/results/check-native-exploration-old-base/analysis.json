@@ -1,0 +1,162 @@
+{
+  "pairs": 8,
+  "baseline_median_seconds": 6.5136860599999995,
+  "candidate_median_seconds": 6.513299419,
+  "baseline_mean_seconds": 6.521251975875,
+  "candidate_mean_seconds": 6.5051831255,
+  "paired_geometric_mean_speedup": 1.002468640984408,
+  "paired_median_speedup": 0.9964318374086936,
+  "paired_geometric_mean_time_reduction": 0.002462561803413421,
+  "confidence": 0.99,
+  "bootstrap_speedup_interval": [
+    0.991754576459637,
+    1.0154699394464828
+  ],
+  "bootstrap_time_reduction_interval": [
+    -0.008313975792072936,
+    0.015234266269777752
+  ],
+  "bootstrap_resamples": 20000,
+  "bootstrap_seed": 1701,
+  "wins": 3,
+  "losses": 5,
+  "ties": 0,
+  "exact_two_sided_sign_p": 0.7265625,
+  "log_ratios": [
+    -0.008785485264574625,
+    -0.010671373319297742,
+    -0.006896815338634128,
+    0.02220738634813999,
+    0.008810814449253827,
+    -0.009487788705252184,
+    0.024811325943144266,
+    -0.00026327294658536895
+  ],
+  "order": {
+    "AB": {
+      "pairs": 4,
+      "geometric_mean_speedup": 1.0031913131385763
+    },
+    "BA": {
+      "pairs": 4,
+      "geometric_mean_speedup": 1.0017464894239045
+    }
+  },
+  "child_cpu_seconds": {
+    "pairs": 8,
+    "baseline_median_seconds": 6.34404,
+    "candidate_median_seconds": 6.332225500000002,
+    "baseline_mean_seconds": 6.358411124999998,
+    "candidate_mean_seconds": 6.332682375000001,
+    "paired_geometric_mean_speedup": 1.004051453687865,
+    "paired_median_speedup": 0.999813200803138,
+    "paired_geometric_mean_time_reduction": 0.004035105644221826,
+    "confidence": 0.99,
+    "bootstrap_speedup_interval": [
+      0.991904807786771,
+      1.0177399931894755
+    ],
+    "bootstrap_time_reduction_interval": [
+      -0.008161259174952251,
+      0.017430771423141644
+    ],
+    "bootstrap_resamples": 20000,
+    "bootstrap_seed": 1701,
+    "wins": 4,
+    "losses": 4,
+    "ties": 0,
+    "exact_two_sided_sign_p": 1.0,
+    "log_ratios": [
+      -0.011791642885887946,
+      -0.012055901197125648,
+      -0.004806604126698844,
+      0.025502679301090157,
+      0.01246741912770061,
+      -0.007246921625722689,
+      0.025865394097330748,
+      0.004411726505000296
+    ],
+    "order": {
+      "AB": {
+        "pairs": 4,
+        "geometric_mean_speedup": 1.0047441012628144
+      },
+      "BA": {
+        "pairs": 4,
+        "geometric_mean_speedup": 1.0033592836082925
+      }
+    }
+  },
+  "phase": "exploratory",
+  "variant_sha256": {
+    "baseline": "26bf4671e7fe34108029d7fdc27e9b23b47e37b158f19a1ca63bc92b1b6f7438",
+    "candidate": "c28fdc6ccbf38d36d386cc3aa3c7c67f26ee49804fc7c19b3e09edb12c31d3bb"
+  },
+  "screen": {
+    "minimum_pairs": 30,
+    "minimum_time_reduction": 0.01,
+    "alpha": 0.010000000000000009,
+    "passes": false,
+    "note": "This screens one workload only. Require an independently run confirmation batch, correctness validation, and regression checks before a PR performance claim. Repeated candidate selection invalidates treating exploratory p-values as confirmatory evidence. Repetition-position summaries are descriptive only. A passing group screen does not establish a dirty-build speedup."
+  },
+  "grouping": {
+    "repetitions_per_variant": 8,
+    "aggregation": "sum of individually timed native subprocesses",
+    "statistical_unit": "one baseline/candidate group pair",
+    "prepare_executions_per_variant_group": 1,
+    "subrun_count": 160,
+    "workload": "noop",
+    "measurement_group_pairs": 8,
+    "measurement_subruns": 128,
+    "inference": "Bootstrap and exact paired sign test use group aggregates; individual repetitions are not independent samples."
+  },
+  "per_invocation_seconds": {
+    "baseline_median_seconds": 0.8142107574999999,
+    "candidate_median_seconds": 0.814162427375,
+    "baseline_mean_seconds": 0.815156496984375,
+    "candidate_mean_seconds": 0.8131478906875,
+    "basis": "Group sums divided by the fixed repetition count; medians are across group means."
+  },
+  "repetition_position_seconds": [
+    {
+      "repetition": 1,
+      "baseline_median": 0.82081194,
+      "candidate_median": 0.807131528
+    },
+    {
+      "repetition": 2,
+      "baseline_median": 0.8124667865,
+      "candidate_median": 0.8095187660000001
+    },
+    {
+      "repetition": 3,
+      "baseline_median": 0.817350844,
+      "candidate_median": 0.8062777065
+    },
+    {
+      "repetition": 4,
+      "baseline_median": 0.8134471050000001,
+      "candidate_median": 0.8146707275
+    },
+    {
+      "repetition": 5,
+      "baseline_median": 0.803781168,
+      "candidate_median": 0.81674344
+    },
+    {
+      "repetition": 6,
+      "baseline_median": 0.81610653,
+      "candidate_median": 0.8113484565
+    },
+    {
+      "repetition": 7,
+      "baseline_median": 0.8096734665,
+      "candidate_median": 0.8103101755
+    },
+    {
+      "repetition": 8,
+      "baseline_median": 0.8142950085,
+      "candidate_median": 0.8061672995
+    }
+  ]
+}

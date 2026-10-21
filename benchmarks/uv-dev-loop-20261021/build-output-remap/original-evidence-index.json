@@ -1,0 +1,735 @@
+{
+  "schema_version": 1,
+  "prepared_at": "2026-10-21T03:53:13.097592+00:00",
+  "status": "review inventory; secondary instruction confirmation remains pending",
+  "plan": "work/benchmark/first-pr-evidence-plan.md",
+  "claim_scope": "fresh unchanged uv Cargo process instructions; no established native wall-time improvement",
+  "source_commit": "5e5d271d763d7beb38b48755e22bd59e93f02b97",
+  "uv_commit": "3d82a6ad5a7eab8c68236553b7846517767c4b61",
+  "upstream_patch_commit": "efc8b51502f8a8d1fe76997dc984481edde2740e",
+  "variants": {
+    "baseline": {
+      "binary": "work/production-build/results/cargo-pr175",
+      "measured_stripped_sha256": "63495905e7b0b11ad99fa4c2c2674e43657b9902a2e3142ef735fd83efa44cf8",
+      "original_linker_output_sha256": "5c9d297695dc87efc622e99936ccb71c08e7f9fd09aa9e181d8dc0532ad43804",
+      "source_tree": "3d67bfb965bc0b6452ab78205045c5154db0acf7",
+      "embedded_source_commit": "5e5d271d763d7beb38b48755e22bd59e93f02b97",
+      "source_diff_sha256": "68524f8a81f7f286b3c3fce7e4e55c86f26245879cf8fca5ab622db7948e1ecd",
+      "patch_sha256": {
+        "pr175.patch": "30332415e2fdc6735719868cddeeb717cc856415f8cd1731ab5696c109f697dc"
+      },
+      "build_metadata": {
+        "path": "work/production-build/results/cargo-pr175.build.json",
+        "role": "build provenance",
+        "sha256": "d718b54a37a25d640567826d500307c70bd7280896418c2fa77726fc31390670",
+        "bytes": 1596
+      },
+      "strip_metadata": {
+        "path": "work/production-build/results/cargo-pr175.strip.json",
+        "role": "allocated ELF section invariance",
+        "sha256": "4ab5cb33619d710b96163f3339e99f88cfaaea5faf25ac1b277b32dbf0484c58",
+        "bytes": 7436
+      }
+    },
+    "candidate": {
+      "binary": "work/production-build/results/cargo-pr175-build-output-remap",
+      "measured_stripped_sha256": "2805f47db54fbd35e4218c1ce232861aa7e8c6efede1684ccce8e999d5cf03f3",
+      "original_linker_output_sha256": "4d2a667e1c27f4704188b51f85f21fcd672cdf7148f543492007c1ff91cf5d1a",
+      "source_tree": "1df4917fb98e449198b61c502b799793d9aabffb",
+      "embedded_source_commit": "5e5d271d763d7beb38b48755e22bd59e93f02b97",
+      "source_diff_sha256": "a1814d45aff2e2b58c3afc875f7e91e957d89544ebad02c48d8987a52abd4add",
+      "patch_sha256": {
+        "pr175.patch": "30332415e2fdc6735719868cddeeb717cc856415f8cd1731ab5696c109f697dc",
+        "build-output-remap.patch": "a967d4353a4dc3dc252a45231dada1a3f01b27d7f206c0c16f69c61e9796d265"
+      },
+      "build_metadata": {
+        "path": "work/production-build/results/cargo-pr175-build-output-remap.build.json",
+        "role": "build provenance",
+        "sha256": "0306d66ce25ee1441bdbd5b1d47f8a2c9486d374c706a733b9cc12b2a926ae5b",
+        "bytes": 1734
+      },
+      "strip_metadata": {
+        "path": "work/production-build/results/cargo-pr175-build-output-remap.strip.json",
+        "role": "allocated ELF section invariance",
+        "sha256": "e5c7cf5ea345971131fba707d22c6b6ce479906f1597db106ce76715b7457708",
+        "bytes": 7474
+      }
+    }
+  },
+  "binary_hash_basis": "Read from immutable run/build/strip metadata; large binaries were not rehashed during the active measurement lease.",
+  "original_roots": {
+    "local": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on",
+    "native_check": "/tmp/ohm-hillclimb-20261021/native-pr175-confirmation"
+  },
+  "recorded_primary_input_sha256": {
+    "work/ohm/bin/rustc": "6109cff145371a50c4f62b61908d2ffbf6d259b180c8effde07baa426aab682a",
+    "work/ohm/lib/librustc_driver-b03bf00bec23bb9a.so": "a3a5d8cc86af464504170220d142c4ea1129434e2d5e741755feec6f9f35a436",
+    "work/uv/Cargo.lock": "747296375bb1889689f3bbb1e0303bddd071d6a65117c00be50856448260d014",
+    "work/profiling-tools/ohm-valgrind-env.c": "503c8612d9972ed2ce4ef7b4431e569a8c98d0d5f0d1149dd0fff364513e691b",
+    "work/profiling-tools/ohm-valgrind-env.so": "42f912fe052732ef964681579a3bc1acbc50966f04babb5a452f25dfe4825973",
+    "work/benchmark/frozen/paired.py": "50d0cb2d4f595ccfa72d463fedb3ff4dadf9dfc1446c749d482d9ede8418c7cf",
+    "work/benchmark/protocol.md": "94f556b260f8fd927a33a2573f7a42bb9f2d3c63c11ba7bac5c8ea69f2166aa1",
+    "work/benchmark/protocol-instruction-restored.md": "be4deb715ea05ba5f8472e7890558d9830b416f6ca6bedbafc1e44fc9b4190e8",
+    "work/patches/build-output-remap.patch": "a967d4353a4dc3dc252a45231dada1a3f01b27d7f206c0c16f69c61e9796d265",
+    "work/benchmark/protocol-upstream-175.md": "92372e9eb4c41a7f864960d2330626c1df80684e35662bd86272c4f3a435d35a",
+    "work/production-build/results/cargo-pr175.strip.json": "4ab5cb33619d710b96163f3339e99f88cfaaea5faf25ac1b277b32dbf0484c58",
+    "work/production-build/results/cargo-pr175.build.json": "d718b54a37a25d640567826d500307c70bd7280896418c2fa77726fc31390670",
+    "work/production-build/results/cargo-pr175-build-output-remap.strip.json": "e5c7cf5ea345971131fba707d22c6b6ce479906f1597db106ce76715b7457708",
+    "work/production-build/results/cargo-pr175-build-output-remap.build.json": "0306d66ce25ee1441bdbd5b1d47f8a2c9486d374c706a733b9cc12b2a926ae5b",
+    "work/production-build/results/provenance-pr175.json": "6bd964ff9511508354a7d695e159ea0ebf6f1e6222b3fefabf3835b41daaab99",
+    "work/production-build/results/pr175.source.patch": "68524f8a81f7f286b3c3fce7e4e55c86f26245879cf8fca5ab622db7948e1ecd",
+    "work/production-build/results/pr175-build-output-remap.source.patch": "a1814d45aff2e2b58c3afc875f7e91e957d89544ebad02c48d8987a52abd4add",
+    "work/production-build/pr175.patch": "30332415e2fdc6735719868cddeeb717cc856415f8cd1731ab5696c109f697dc",
+    "/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2": "c20a2dc8917c755f02b94049356320fe1f62ac7d9f8994731f807d9df39302da",
+    "/usr/lib/x86_64-linux-gnu/libc.so.6": "3a15d66867d83762c7f2f1e37359cb8f6c5743edb369c65285cb0b1c4f7498bf",
+    "/usr/lib/x86_64-linux-gnu/libgcc_s.so.1": "d93224d2b0dab4247598be683adca02f5cf00586f99c187579cd7e92058fb7cb",
+    "/usr/lib/x86_64-linux-gnu/libm.so.6": "fce00b6f25f459cf4ae0b7fae4257909a1a8a86f9149e7c029a5d617baf1ccd0",
+    "/etc/ssl/certs/ca-certificates.crt": "a613f481e5bd4aa1731a7db47f97f6a63654e5246b5a9f5446363936cd1a1ffa"
+  },
+  "small_asset_inventory": [
+    {
+      "path": "work/benchmark/frozen/paired.py",
+      "role": "frozen core runner",
+      "sha256": "50d0cb2d4f595ccfa72d463fedb3ff4dadf9dfc1446c749d482d9ede8418c7cf",
+      "bytes": 26221
+    },
+    {
+      "path": "work/benchmark/frozen/paired_repeated.py",
+      "role": "frozen grouped native adapter",
+      "sha256": "50547460e030aa73e1f48121bf477cf8f4a4538bf1bb577851af54176750b6d3",
+      "bytes": 12346
+    },
+    {
+      "path": "work/benchmark/frozen/validate_build_output_production-abd95160f8a7.py",
+      "role": "frozen exact-binary correctness runner source",
+      "sha256": "abd95160f8a721ca727b2d7cc047d6de0fd653b75c5541a13f3b7e1ee47fb699",
+      "bytes": 10214
+    },
+    {
+      "path": "work/benchmark/protocol.md",
+      "role": "original prospective protocol",
+      "sha256": "94f556b260f8fd927a33a2573f7a42bb9f2d3c63c11ba7bac5c8ea69f2166aa1",
+      "bytes": 2864
+    },
+    {
+      "path": "work/benchmark/protocol-instruction-restored.md",
+      "role": "profiling environment amendment",
+      "sha256": "be4deb715ea05ba5f8472e7890558d9830b416f6ca6bedbafc1e44fc9b4190e8",
+      "bytes": 1833
+    },
+    {
+      "path": "work/benchmark/protocol-upstream-175.md",
+      "role": "external baseline change recorded before effect inspection",
+      "sha256": "92372e9eb4c41a7f864960d2330626c1df80684e35662bd86272c4f3a435d35a",
+      "bytes": 2576
+    },
+    {
+      "path": "work/benchmark/protocol-native-groups.md",
+      "role": "grouped native protocol",
+      "sha256": "722c5e0ea21a6aec7c90d4c3b9e65958a57822f23a1d9b2c1350b7d3ca5061e9",
+      "bytes": 2528
+    },
+    {
+      "path": "work/production-build/build_driver_pr175.py",
+      "role": "matched same-source-path production build driver",
+      "sha256": "455edcb03913df410294e130c4182138e675f6b889275f86b725171a5ba4ad3a",
+      "bytes": 12281
+    },
+    {
+      "path": "work/production-build/results/provenance-pr175.json",
+      "role": "compiler, profile, source and host provenance",
+      "sha256": "6bd964ff9511508354a7d695e159ea0ebf6f1e6222b3fefabf3835b41daaab99",
+      "bytes": 5359
+    },
+    {
+      "path": "work/production-build/pr175.patch",
+      "role": "upstream baseline patch",
+      "sha256": "30332415e2fdc6735719868cddeeb717cc856415f8cd1731ab5696c109f697dc",
+      "bytes": 3997
+    },
+    {
+      "path": "work/patches/build-output-remap.patch",
+      "role": "candidate-only patch",
+      "sha256": "a967d4353a4dc3dc252a45231dada1a3f01b27d7f206c0c16f69c61e9796d265",
+      "bytes": 1509
+    },
+    {
+      "path": "work/production-build/results/pr175.source.patch",
+      "role": "exact baseline source diff",
+      "sha256": "68524f8a81f7f286b3c3fce7e4e55c86f26245879cf8fca5ab622db7948e1ecd",
+      "bytes": 4026
+    },
+    {
+      "path": "work/production-build/results/pr175-build-output-remap.source.patch",
+      "role": "exact measured candidate source diff",
+      "sha256": "a1814d45aff2e2b58c3afc875f7e91e957d89544ebad02c48d8987a52abd4add",
+      "bytes": 5535
+    },
+    {
+      "path": "work/benchmark/check-build-output-pr175-production-ir.json",
+      "role": "frozen primary run configuration",
+      "sha256": "fc33e008476c8dfd06c859eb566a1ef2d415e487bcb6530b8ec82a882356f012",
+      "bytes": 5756
+    },
+    {
+      "path": "work/logs/build-output-remap-supported-tests.log",
+      "role": "15 supported original-base cases",
+      "sha256": "7329e3b4bc4599a138191d8d11170fbba070961a0f50d3428af1105e8ce3868f",
+      "bytes": 995
+    },
+    {
+      "path": "work/logs/build-output-remap-tests.log",
+      "role": "retained original-base i686 unavailable-target failure",
+      "sha256": "9efc2128b3bb5a3a47e9576c387236a5a10077123560bfb02b201d0d37060ecd",
+      "bytes": 3076
+    },
+    {
+      "path": "work/remote-confirmation/external-pr175-priority-change.json",
+      "role": "external reason for holding the unstarted earlier secondary batch",
+      "sha256": "d7aa61d26525ec8cf32e3be2a1a3c4487faae26f9b653623e8436c1574228b3d",
+      "bytes": 804
+    }
+  ],
+  "completed_confirmations": [
+    {
+      "directory": "work/benchmark/results/check-build-output-pr175-production-ir-confirmation",
+      "role": "primary independent instruction confirmation",
+      "statistics": {
+        "pairs": 12,
+        "confidence": 0.99,
+        "bootstrap_resamples": 20000,
+        "bootstrap_seed": 1701,
+        "wins": 12,
+        "losses": 0,
+        "ties": 0,
+        "exact_two_sided_sign_p": 0.00048828125,
+        "order": {
+          "AB": {
+            "pairs": 6,
+            "geometric_mean_ratio": 1.0378349227896961
+          },
+          "BA": {
+            "pairs": 6,
+            "geometric_mean_ratio": 1.0380960950854485
+          }
+        },
+        "metric": "Cargo process Ir",
+        "paired_geometric_reduction": 0.036576842579663205,
+        "bootstrap_reduction_interval": [
+          0.03630245444043201,
+          0.036845159572427844
+        ]
+      },
+      "manifest": {
+        "path": "work/benchmark/results/check-build-output-pr175-production-ir-confirmation/manifest.json",
+        "role": "complete counter manifest",
+        "sha256": "b5a33cbaa840d1fd52a00e7f4871c748d7fcbc8d630b9ef47a19d4945f9a1d54",
+        "bytes": 59959
+      },
+      "analysis": {
+        "path": "work/benchmark/results/check-build-output-pr175-production-ir-confirmation/analysis.json",
+        "role": "counter analysis",
+        "sha256": "df9058090eb634a159eef827e92e48fca4e32df5a97ff64fbc5ae2594c7362ca",
+        "bytes": 5318
+      },
+      "configuration_path": "work/benchmark/check-build-output-pr175-production-ir.json",
+      "configuration_sha256": "fc33e008476c8dfd06c859eb566a1ef2d415e487bcb6530b8ec82a882356f012",
+      "pairs": 12,
+      "warmup_pairs": 2,
+      "run_seed": 2026102118,
+      "decision": "Passes frozen instruction gate; no native wall claim"
+    },
+    {
+      "directory": "work/remote-native-8/remote/results/check-build-output-pr175-native-confirmation",
+      "role": "independent native check confirmation",
+      "statistics": {
+        "pairs": 30,
+        "confidence": 0.99,
+        "bootstrap_resamples": 20000,
+        "bootstrap_seed": 1701,
+        "wins": 17,
+        "losses": 13,
+        "ties": 0,
+        "exact_two_sided_sign_p": 0.584664711728692,
+        "order": {
+          "AB": {
+            "pairs": 15,
+            "geometric_mean_speedup": 1.0474650640591396
+          },
+          "BA": {
+            "pairs": 15,
+            "geometric_mean_speedup": 1.0034266867818773
+          }
+        },
+        "metric": "native wall seconds per paired group",
+        "paired_geometric_reduction": 0.024589552522775615,
+        "bootstrap_reduction_interval": [
+          -0.05509224895509601,
+          0.10141072823033326
+        ]
+      },
+      "manifest": {
+        "path": "work/remote-native-8/remote/results/check-build-output-pr175-native-confirmation/manifest.json",
+        "role": "complete native manifest",
+        "sha256": "1370ca937d9bce4f62f02c350cc7fd85764ca6c1f8c2f875195be81a3cb48d25",
+        "bytes": 57063
+      },
+      "analysis": {
+        "path": "work/remote-native-8/remote/results/check-build-output-pr175-native-confirmation/analysis.json",
+        "role": "native analysis",
+        "sha256": "22f6823f5899463aa8a149d67955572cbfd4e037d5cb3a208435f2df50cd61c6",
+        "bytes": 6096
+      },
+      "configuration_path_as_measured": "/tmp/ohm-hillclimb-20261021/native-pr175-confirmation/benchmark/check-build-output-remap-production.json",
+      "configuration_sha256": "c012d55e68821251871fee5d7857b67feda91810b2ca9b4bd922debb298327e1",
+      "pairs": 30,
+      "warmup_pairs": 2,
+      "run_seed": 2026102116,
+      "grouping": {
+        "repetitions_per_variant": 8,
+        "aggregation": "sum of individually timed native subprocesses",
+        "statistical_unit": "one baseline/candidate group pair",
+        "prepare_executions_per_variant_group": 1,
+        "subrun_count": 512,
+        "workload": "noop",
+        "measurement_group_pairs": 30,
+        "measurement_subruns": 480,
+        "inference": "Bootstrap and exact paired sign test use group aggregates; individual repetitions are not independent samples."
+      },
+      "decision": "Inconclusive; native wall improvement is not established",
+      "raw_log_transfer": "complete; parent verified all 2,597 native check and test result files locally"
+    },
+    {
+      "directory": "work/remote-native-8/remote/results/test-build-output-pr175-native-confirmation",
+      "role": "independent native test-build confirmation",
+      "statistics": {
+        "pairs": 30,
+        "confidence": 0.99,
+        "bootstrap_resamples": 20000,
+        "bootstrap_seed": 1701,
+        "wins": 21,
+        "losses": 9,
+        "ties": 0,
+        "exact_two_sided_sign_p": 0.04277394525706768,
+        "order": {
+          "AB": {
+            "pairs": 15,
+            "geometric_mean_speedup": 1.0328833225964225
+          },
+          "BA": {
+            "pairs": 15,
+            "geometric_mean_speedup": 0.9809675078853343
+          }
+        },
+        "metric": "native wall seconds per paired group",
+        "paired_geometric_reduction": 0.006547616488674968,
+        "bootstrap_reduction_interval": [
+          -0.02390495812029303,
+          0.03840283943389844
+        ]
+      },
+      "manifest": {
+        "path": "work/remote-native-8/remote/results/test-build-output-pr175-native-confirmation/manifest.json",
+        "role": "complete native manifest",
+        "sha256": "df975df3c563746c6f03b52aef3bbe491e7a85a8bdadcdfdc1f65260d65cf905",
+        "bytes": 57096
+      },
+      "analysis": {
+        "path": "work/remote-native-8/remote/results/test-build-output-pr175-native-confirmation/analysis.json",
+        "role": "native analysis",
+        "sha256": "806f0a077cae761e3e25499e485795c1594e94ac9eed1d04f77cf0fed7a348cb",
+        "bytes": 6081
+      },
+      "configuration_path_as_measured": "/tmp/ohm-hillclimb-20261021/native-pr175-confirmation/benchmark/test-build-output-remap-production.json",
+      "configuration_sha256": "9df1206feee821c5eea1f9c1c82ccf7647d89d6da40b9c9721a85be3582e0ed4",
+      "pairs": 30,
+      "warmup_pairs": 2,
+      "run_seed": 2026102117,
+      "grouping": {
+        "repetitions_per_variant": 8,
+        "aggregation": "sum of individually timed native subprocesses",
+        "statistical_unit": "one baseline/candidate group pair",
+        "prepare_executions_per_variant_group": 1,
+        "subrun_count": 512,
+        "workload": "noop",
+        "measurement_group_pairs": 30,
+        "measurement_subruns": 480,
+        "inference": "Bootstrap and exact paired sign test use group aggregates; individual repetitions are not independent samples."
+      },
+      "decision": "Inconclusive; native wall improvement is not established",
+      "raw_log_transfer": "complete; parent verified all 2,597 native check and test result files locally"
+    }
+  ],
+  "prior_evidence_retained": [
+    {
+      "directory": "work/benchmark/results/check-build-output-ir-exploratory",
+      "role": "original-base instruction selection evidence",
+      "analysis": {
+        "path": "work/benchmark/results/check-build-output-ir-exploratory/analysis.json",
+        "role": "retained prior analysis",
+        "sha256": "e8ba6f7e8abcb6ff2516034633dbe5eb544b94cc6e6a7f6eba271f31b0dad181",
+        "bytes": 4930
+      },
+      "statistics": {
+        "pairs": 8,
+        "confidence": 0.99,
+        "bootstrap_resamples": 20000,
+        "bootstrap_seed": 1701,
+        "wins": 8,
+        "losses": 0,
+        "ties": 0,
+        "exact_two_sided_sign_p": 0.0078125,
+        "order": {
+          "AB": {
+            "pairs": 4,
+            "geometric_mean_ratio": 1.0260483564290193
+          },
+          "BA": {
+            "pairs": 4,
+            "geometric_mean_ratio": 1.0252990643593538
+          }
+        },
+        "metric": "Cargo process Ir",
+        "paired_geometric_reduction": 0.025031004912730026,
+        "bootstrap_reduction_interval": [
+          0.023908445688857416,
+          0.025544061937004425
+        ]
+      },
+      "phase": "exploratory",
+      "variant_sha256": {
+        "baseline": "26bf4671e7fe34108029d7fdc27e9b23b47e37b158f19a1ca63bc92b1b6f7438",
+        "candidate": "c28fdc6ccbf38d36d386cc3aa3c7c67f26ee49804fc7c19b3e09edb12c31d3bb"
+      }
+    },
+    {
+      "directory": "work/benchmark/results/check-path-cache-exploratory",
+      "role": "noisy native pilot, failed gate; retain noted lightweight test overlap",
+      "analysis": {
+        "path": "work/benchmark/results/check-path-cache-exploratory/analysis.json",
+        "role": "retained prior analysis",
+        "sha256": "9f9e0c2bbc142b45a3d3d26cb5d54a178cfd030f145f07a17b78b44d0ee11ed2",
+        "bytes": 4149
+      },
+      "statistics": {
+        "pairs": 30,
+        "confidence": 0.99,
+        "bootstrap_resamples": 20000,
+        "bootstrap_seed": 1701,
+        "wins": 22,
+        "losses": 8,
+        "ties": 0,
+        "exact_two_sided_sign_p": 0.016124801710247993,
+        "order": {
+          "AB": {
+            "pairs": 15,
+            "geometric_mean_speedup": 1.0650921756031322
+          },
+          "BA": {
+            "pairs": 15,
+            "geometric_mean_speedup": 1.1573590165129455
+          }
+        },
+        "metric": "native wall seconds per paired group",
+        "paired_geometric_reduction": 0.09931619645100631,
+        "bootstrap_reduction_interval": [
+          -0.006826116729068188,
+          0.1865175035703006
+        ]
+      },
+      "phase": "exploratory",
+      "variant_sha256": {
+        "baseline": "9507d44c0b7955aef935fa72bfe4d0a4640bebdeb37424bf8d485466591e545f",
+        "candidate": "aad2fb99fb7917b16bf31f99de8e7dd5986091dee6672bcc435ff1b0511789c3"
+      }
+    },
+    {
+      "directory": "work/benchmark/results/check-path-cache-ir-exploratory",
+      "role": "original-base path-cache instruction screen",
+      "analysis": {
+        "path": "work/benchmark/results/check-path-cache-ir-exploratory/analysis.json",
+        "role": "retained prior analysis",
+        "sha256": "aad5f2dae5e084d7247eb2c0a4dca59230b8364aa75b88d18840ae78245444ff",
+        "bytes": 4961
+      },
+      "statistics": {
+        "pairs": 8,
+        "confidence": 0.99,
+        "bootstrap_resamples": 20000,
+        "bootstrap_seed": 1701,
+        "wins": 8,
+        "losses": 0,
+        "ties": 0,
+        "exact_two_sided_sign_p": 0.0078125,
+        "order": {
+          "AB": {
+            "pairs": 4,
+            "geometric_mean_ratio": 1.0117430525680653
+          },
+          "BA": {
+            "pairs": 4,
+            "geometric_mean_ratio": 1.0109626779123397
+          }
+        },
+        "metric": "Cargo process Ir",
+        "paired_geometric_reduction": 0.011225350920282429,
+        "bootstrap_reduction_interval": [
+          0.010804386061674442,
+          0.012162558374539278
+        ]
+      },
+      "phase": "exploratory",
+      "variant_sha256": {
+        "baseline": "26bf4671e7fe34108029d7fdc27e9b23b47e37b158f19a1ca63bc92b1b6f7438",
+        "candidate": "b7fc8fd4d52662ca0f6362de6b86452cd09f4868c069f416b6f71336c4396eba"
+      }
+    },
+    {
+      "directory": "work/benchmark/results/check-path-cache-pr175-ir-diagnostic",
+      "role": "two-pair diagnostic, not significance evidence",
+      "analysis": {
+        "path": "work/benchmark/results/check-path-cache-pr175-ir-diagnostic/analysis.json",
+        "role": "retained prior analysis",
+        "sha256": "65d02ba0fd915360ffb0eaaec39b3fa892141eed2a951e781068e158a20e69da",
+        "bytes": 4387
+      },
+      "statistics": {
+        "pairs": 2,
+        "confidence": 0.99,
+        "bootstrap_resamples": 20000,
+        "bootstrap_seed": 1701,
+        "wins": 2,
+        "losses": 0,
+        "ties": 0,
+        "exact_two_sided_sign_p": 0.5,
+        "order": {
+          "AB": {
+            "pairs": 1,
+            "geometric_mean_ratio": 1.0121293200878005
+          },
+          "BA": {
+            "pairs": 1,
+            "geometric_mean_ratio": 1.0124726532338455
+          }
+        },
+        "metric": "Cargo process Ir",
+        "paired_geometric_reduction": 0.012151496880996482,
+        "bootstrap_reduction_interval": [
+          0.0119839627674736,
+          0.012319002586398509
+        ]
+      },
+      "phase": "exploratory",
+      "variant_sha256": {
+        "baseline": "dce914c275bc0af42719d92c74477e964e51c27cd5c5aa57260627fbbf747136",
+        "candidate": "f442e74947f83a9db1304073b635b320b0117595caa2bf89f5904a9806dd735e"
+      }
+    },
+    {
+      "directory": "work/remote-confirmation/remote/results/check-path-cache-native-confirmation",
+      "role": "native path-cache confirmation failed predeclared gate",
+      "analysis": {
+        "path": "work/remote-confirmation/remote/results/check-path-cache-native-confirmation/analysis.json",
+        "role": "retained prior analysis",
+        "sha256": "91d0b1d8e5470a68e3ccf2a27b333b625d03e7448f3687a02feeb10eb0840afb",
+        "bytes": 6133
+      },
+      "statistics": {
+        "pairs": 30,
+        "confidence": 0.99,
+        "bootstrap_resamples": 20000,
+        "bootstrap_seed": 1701,
+        "wins": 21,
+        "losses": 9,
+        "ties": 0,
+        "exact_two_sided_sign_p": 0.04277394525706768,
+        "order": {
+          "AB": {
+            "pairs": 15,
+            "geometric_mean_speedup": 1.0081192555968477
+          },
+          "BA": {
+            "pairs": 15,
+            "geometric_mean_speedup": 1.003114686468634
+          }
+        },
+        "metric": "native wall seconds per paired group",
+        "paired_geometric_reduction": 0.005582518336695874,
+        "bootstrap_reduction_interval": [
+          0.00042935604959748463,
+          0.010581232284766262
+        ]
+      },
+      "phase": "confirmation",
+      "variant_sha256": {
+        "baseline": "26bf4671e7fe34108029d7fdc27e9b23b47e37b158f19a1ca63bc92b1b6f7438",
+        "candidate": "b7fc8fd4d52662ca0f6362de6b86452cd09f4868c069f416b6f71336c4396eba"
+      }
+    },
+    {
+      "directory": "work/remote-confirmation/remote/results/check-build-output-native-exploration",
+      "role": "native build-output exploration inconclusive",
+      "analysis": {
+        "path": "work/remote-confirmation/remote/results/check-build-output-native-exploration/analysis.json",
+        "role": "retained prior analysis",
+        "sha256": "cb38715e63ab99137b14547921627521e58b3923ffd4052c95a8dd05b614ab67",
+        "bytes": 4866
+      },
+      "statistics": {
+        "pairs": 8,
+        "confidence": 0.99,
+        "bootstrap_resamples": 20000,
+        "bootstrap_seed": 1701,
+        "wins": 3,
+        "losses": 5,
+        "ties": 0,
+        "exact_two_sided_sign_p": 0.7265625,
+        "order": {
+          "AB": {
+            "pairs": 4,
+            "geometric_mean_speedup": 1.0031913131385763
+          },
+          "BA": {
+            "pairs": 4,
+            "geometric_mean_speedup": 1.0017464894239045
+          }
+        },
+        "metric": "native wall seconds per paired group",
+        "paired_geometric_reduction": 0.002462561803413421,
+        "bootstrap_reduction_interval": [
+          -0.008313975792072936,
+          0.015234266269777752
+        ]
+      },
+      "phase": "exploratory",
+      "variant_sha256": {
+        "baseline": "26bf4671e7fe34108029d7fdc27e9b23b47e37b158f19a1ca63bc92b1b6f7438",
+        "candidate": "c28fdc6ccbf38d36d386cc3aa3c7c67f26ee49804fc7c19b3e09edb12c31d3bb"
+      }
+    }
+  ],
+  "correctness_attempts": [
+    {
+      "directory": "work/benchmark/results/build-output-production-candidate-validation",
+      "interpretation": "stock-compiler harness failure before parser coverage",
+      "status": "failed",
+      "report": {
+        "path": "work/benchmark/results/build-output-production-candidate-validation/report.json",
+        "role": "complete correctness attempt",
+        "sha256": "6a3f7016a0b16d64574bc93f2a05e110f0df5e7d27d0b2b3764355b013fa0ddf",
+        "bytes": 4892
+      },
+      "log": {
+        "path": "work/benchmark/results/build-output-production-candidate-validation/tests.log",
+        "role": "all test output",
+        "sha256": "a347f4e2ca8701f9770b05a2b6b036f03a589935fc0635954fc19879d2f497c3",
+        "bytes": 28334
+      },
+      "restored": true,
+      "restored_cli_sha256": "b70f184bf9ed5da7363bcc99b849a9890a8ac2382092071e1792e3380882c32c",
+      "source_unchanged": true,
+      "runner_sha256": "ad9dfa332b70e66058e77ae898aacc77e855e784207c9c4810c1953f1504464a",
+      "actual_cli_sha256": "2805f47db54fbd35e4218c1ce232861aa7e8c6efede1684ccce8e999d5cf03f3"
+    },
+    {
+      "directory": "work/benchmark/results/build-output-production-candidate-validation-ohm",
+      "interpretation": "11 Ohm-enabled passes; four verbose compiler-command snapshot mismatches",
+      "status": "failed",
+      "report": {
+        "path": "work/benchmark/results/build-output-production-candidate-validation-ohm/report.json",
+        "role": "complete correctness attempt",
+        "sha256": "c605b2359a708f3b15d3b20d6d050ed30915c7704cff21e4bcfcb95f2ec7fd39",
+        "bytes": 5770
+      },
+      "log": {
+        "path": "work/benchmark/results/build-output-production-candidate-validation-ohm/tests.log",
+        "role": "all test output",
+        "sha256": "fb40e64f71b07dcd56723983c97a44a4a4723a84a4d8bc239d43c9876e0b88ab",
+        "bytes": 17403
+      },
+      "restored": true,
+      "restored_cli_sha256": "b70f184bf9ed5da7363bcc99b849a9890a8ac2382092071e1792e3380882c32c",
+      "source_unchanged": true,
+      "runner_sha256": "844515b7da2208c05468ad256929d4be6ce70c052399eabd4aeec42ad1270e51",
+      "actual_cli_sha256": "2805f47db54fbd35e4218c1ce232861aa7e8c6efede1684ccce8e999d5cf03f3",
+      "ohm_enabled_passed_test_names": [
+        "build_script::rebuild_continues_to_pass_env_vars",
+        "build_script::rename_with_link_search_path",
+        "build_script::test_invalid_new_syntax",
+        "build_script::test_invalid_old_syntax",
+        "build_script::test_new_syntax_with_compatible_partial_msrv",
+        "build_script::test_new_syntax_with_old_msrv",
+        "build_script::test_new_syntax_with_old_msrv_and_reserved_prefix",
+        "build_script::test_new_syntax_with_old_msrv_and_unknown_prefix",
+        "build_script::test_old_syntax",
+        "build_script::test_old_syntax_with_old_msrv",
+        "freshness::move_target_directory_with_path_deps"
+      ],
+      "verbose_snapshot_mismatch_test_names": [
+        "build_script::custom_build_script_rustc_flags",
+        "build_script::custom_build_script_rustc_flags_no_space",
+        "build_script::output_separate_lines",
+        "build_script::output_separate_lines_new"
+      ],
+      "summary_basis": "Complete tests.log footer and per-case names; the older runner passed_tests field missed interleaved nocapture output."
+    },
+    {
+      "directory": "work/benchmark/results/build-output-production-candidate-validation-classic",
+      "interpretation": "15 exact production CLI parser/relocation passes with supported classic defaults and dev channel",
+      "status": "passed",
+      "report": {
+        "path": "work/benchmark/results/build-output-production-candidate-validation-classic/report.json",
+        "role": "complete correctness attempt",
+        "sha256": "bc6ba4779fb47078a4743463bdeefc97efe81ffc98bebd01d5b5b539403fb545",
+        "bytes": 7995
+      },
+      "log": {
+        "path": "work/benchmark/results/build-output-production-candidate-validation-classic/tests.log",
+        "role": "all test output",
+        "sha256": "0c4e1f3b1e2ac2921e498ccfcec3cf0fc8dea278090a4437709969f4beab0857",
+        "bytes": 3349
+      },
+      "restored": true,
+      "restored_cli_sha256": "b70f184bf9ed5da7363bcc99b849a9890a8ac2382092071e1792e3380882c32c",
+      "source_unchanged": true,
+      "runner_sha256": "abd95160f8a721ca727b2d7cc047d6de0fd653b75c5541a13f3b7e1ee47fb699",
+      "actual_cli_sha256": "2805f47db54fbd35e4218c1ce232861aa7e8c6efede1684ccce8e999d5cf03f3"
+    }
+  ],
+  "additional_retained_invalid_profiler_batch": "work/benchmark/results/check-path-cache-ir-smoke",
+  "restored_profiler_diagnostic": "work/benchmark/results/check-path-cache-ir-ssl-smoke",
+  "pending": [
+    "completed test-build instruction confirmation",
+    "final private artifact seal and links"
+  ],
+  "reproduction_invariants": [
+    "one regular canonical Cargo path for both variants",
+    "freshly seed uv generated artifacts at each new prefix",
+    "immutable original metadata; relocate only runnable configuration",
+    "same compiler, source, cache, env, flags, affinity and jobs within each pair",
+    "Cargo test uses --no-run for every uv performance sample",
+    "12 independent counter pairs; 30 native group pairs of eight runs",
+    "all observations retained; no cross-host pooling, adaptive stopping, or pseudo-replication"
+  ],
+  "native_result_transfer": {
+    "status": "complete",
+    "verified_files": 2597,
+    "verification_basis": "Parent completion report at 2026-10-21 03:52 UTC; no large rehash during active measurement lease."
+  },
+  "analysis_cli_verified_by_source": {
+    "core": "work/benchmark/frozen/paired.py:490",
+    "repeated": "work/benchmark/frozen/paired_repeated.py:252",
+    "arguments": [
+      "analyze",
+      "DIRECTORY",
+      "--confidence",
+      "0.99",
+      "--resamples",
+      "20000",
+      "--seed",
+      "1701"
+    ],
+    "note": "Counter acceptance remains the external predeclared instruction protocol; the analyzer screen concerns instrumented wall time."
+  },
+  "plan_sha256": "8b9fbe87d3c2dd3710b9458184e6c3f29026643e9c9c41211a46d1fd14e2368d"
+}

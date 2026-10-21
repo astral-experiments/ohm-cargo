@@ -1,0 +1,20 @@
+{
+  "variant": "pr175-build-output-remap",
+  "built_at": "2026-10-21T03:27:58.423652+00:00",
+  "elapsed_build_seconds": 352.661701204,
+  "original_linker_output_sha256": "4d2a667e1c27f4704188b51f85f21fcd672cdf7148f543492007c1ff91cf5d1a",
+  "path": "/tmp/ohm-hillclimb-20261021-production/binaries/cargo-pr175-build-output-remap",
+  "bytes": 240026512,
+  "patch_sha256": {
+    "pr175.patch": "30332415e2fdc6735719868cddeeb717cc856415f8cd1731ab5696c109f697dc",
+    "build-output-remap.patch": "a967d4353a4dc3dc252a45231dada1a3f01b27d7f206c0c16f69c61e9796d265"
+  },
+  "observed_source_tree": "1df4917fb98e449198b61c502b799793d9aabffb",
+  "embedded_source_commit": "5e5d271d763d7beb38b48755e22bd59e93f02b97",
+  "upstream_patch_commit": "efc8b51502f8a8d1fe76997dc984481edde2740e",
+  "observed_diff_sha256": "a1814d45aff2e2b58c3afc875f7e91e957d89544ebad02c48d8987a52abd4add",
+  "version": "cargo 1.99.0 (5e5d271d7 2026-10-20)\nrelease: 1.99.0\ncommit-hash: 5e5d271d763d7beb38b48755e22bd59e93f02b97\ncommit-date: 2026-10-20\nhost: x86_64-unknown-linux-gnu\nlibgit2: 1.9.6 (sys:0.21.0 vendored)\nlibcurl: 8.21.0-DEV (sys:0.4.90+curl-8.21.0 vendored ssl:OpenSSL/3.6.3)\nssl: OpenSSL 3.6.3 9 Jun 2026\nos: Ubuntu 24.4.0 (noble) [64-bit]",
+  "dynamic_libraries": "linux-vdso.so.1 (0x00007fff3e192000)\n\tlibgcc_s.so.1 => /lib/x86_64-linux-gnu/libgcc_s.so.1 (0x00007d1fe6150000)\n\tlibm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x00007d1fe6067000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007d1fe3a00000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007d1fe618b000)",
+  "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stderr_sha256": "168e5093dc6893fcf99ec7c9d31a757e14d6a73267e7843fef6a5b8e13cbf5b6"
+}
