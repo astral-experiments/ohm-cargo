@@ -1178,6 +1178,7 @@ impl GlobalContext {
             self.merge_cli_args()?;
         }
 
+        self.target_dir = target_dir.as_ref().map(|dir| Filesystem::new(dir.clone()));
         self.load_unstable_flags_from_config()?;
 
         // Ignore errors in the configuration files. We don't want basic
@@ -1223,9 +1224,6 @@ impl GlobalContext {
                 .ok()
                 .and_then(|n| n.offline)
                 .unwrap_or(false);
-        let cli_target_dir = target_dir.as_ref().map(|dir| Filesystem::new(dir.clone()));
-        self.target_dir = cli_target_dir;
-
         self.shell()
             .set_unstable_flags_rustc_unicode(self.unstable_flags.rustc_unicode)?;
 
@@ -1267,9 +1265,105 @@ impl GlobalContext {
                 //     control config parsing behavior.
                 self.unstable_flags.parse(unstable_flags_cli, true)?;
             }
+            // Config-only unstable flags must enable their dependent features as well.
+            self.unstable_flags.implicitly_enable_features_if_needed();
+        }
+
+        if self.unstable_flags.ohm_defaults()
+            && self
+                .get_env_os("CARGO_BUILD_BUILD_DIR")
+                .is_some_and(|build_directory| {
+                    !build_directory.is_empty()
+                        && self.automatic_shared_build_directory_is_safe(build_directory)
+                })
+        {
+            self.unstable_flags.ohm_shared_registry_cache = true;
+            self.unstable_flags.implicitly_enable_features_if_needed();
         }
 
         Ok(())
+    }
+
+    /// Shared caches require build and target roots that can be cleaned independently.
+    fn automatic_shared_build_directory_is_safe(&self, build_directory: &OsStr) -> bool {
+        let Some(build_directory_text) = build_directory.to_str() else {
+            return false;
+        };
+        if build_directory_text.contains('{') || build_directory_text.contains('}') {
+            return false;
+        }
+
+        let normalize_directory = |directory: &Path| {
+            let directory = if directory.is_absolute() {
+                directory.to_path_buf()
+            } else {
+                self.cwd.join(directory)
+            };
+            let mut existing = directory.as_path();
+            let mut missing = Vec::new();
+
+            loop {
+                match fs::canonicalize(existing) {
+                    Ok(mut canonical) => {
+                        for component in missing.iter().rev() {
+                            canonical.push(component);
+                        }
+                        return Some(paths::normalize_path(&canonical));
+                    }
+                    Err(error) if error.kind() == std::io::ErrorKind::NotFound => {
+                        missing.push(existing.file_name()?.to_os_string());
+                        existing = existing.parent()?;
+                    }
+                    Err(_) => return None,
+                }
+            }
+        };
+        let Some(build_directory) = normalize_directory(Path::new(build_directory)) else {
+            return false;
+        };
+        if !matches!(build_directory.join("Cargo.toml").try_exists(), Ok(false)) {
+            return false;
+        }
+        if build_directory.components().any(|component| {
+            component.as_os_str().to_str().is_none_or(|component| {
+                if cfg!(windows) {
+                    component.eq_ignore_ascii_case("target")
+                } else {
+                    component == "target"
+                }
+            })
+        }) {
+            // An explicit manifest can select a workspace outside the current
+            // directory, so its ordinary target root is not discoverable yet.
+            return false;
+        }
+        let overlaps = |target: &Path| {
+            normalize_directory(target).is_none_or(|target| {
+                if cfg!(windows) {
+                    let (Some(build), Some(target)) = (build_directory.to_str(), target.to_str())
+                    else {
+                        return true;
+                    };
+                    if !build.is_ascii() || !target.is_ascii() {
+                        return true;
+                    }
+                    let build = build.to_ascii_lowercase();
+                    let target = target.to_ascii_lowercase();
+                    Path::new(&build).starts_with(&target) || Path::new(&target).starts_with(&build)
+                } else {
+                    build_directory.starts_with(&target) || target.starts_with(&build_directory)
+                }
+            })
+        };
+
+        match self.target_dir() {
+            Ok(Some(target)) => !overlaps(target.as_path_unlocked()),
+            Ok(None) => !self
+                .cwd
+                .ancestors()
+                .any(|ancestor| overlaps(&ancestor.join("target"))),
+            Err(_) => false,
+        }
     }
 
     pub fn cli_unstable(&self) -> &CliUnstable {
