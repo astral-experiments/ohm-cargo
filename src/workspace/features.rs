@@ -140,6 +140,20 @@ pub const SEE_CHANNELS: &str = "See https://doc.rust-lang.org/book/appendix-07-n
 /// Value of [`allow-features`](CliUnstable::allow_features)
 pub type AllowFeatures = BTreeSet<String>;
 
+/// Procedural-macro policy for registry artifacts shared between worktrees.
+#[derive(Clone, Copy, Debug, Default, Deserialize, Eq, Hash, PartialEq)]
+#[serde(rename_all = "kebab-case")]
+pub enum OhmProcMacroTrust {
+    /// Reuse only exact procedural-macro and helper releases that have been audited.
+    #[default]
+    Audited,
+    /// Trust every authenticated crates.io macro, even when expansion observes untracked inputs.
+    ///
+    /// This explicit opt-in is potentially unsound: macros can inspect files, environment
+    /// variables, randomness, or emit observable output without recording those dependencies.
+    All,
+}
+
 /// The edition of the compiler ([RFC 2052])
 ///
 /// The following sections will guide you how to add and stabilize an edition.
@@ -916,6 +930,7 @@ unstable_cli_options!(
     no_index_update: bool = ("Do not update the registry index even if the cache is outdated"),
     ohm_defaults: Option<bool> = ("Enable the defaults packaged with Ohm"),
     ohm_focused_tests: bool = ("Compile only an explicitly selected exact library test"),
+    ohm_proc_macro_trust: OhmProcMacroTrust = ("Set procedural-macro trust for shared registry artifacts: audited (default) or all (potentially unsound)"),
     ohm_reuse_built_deps: bool = ("Reuse already-built registry dependencies when checking a package"),
     ohm_shared_registry_cache: bool = ("Share deterministic registry artifacts across isolated workspaces without global compiler wrappers"),
     panic_abort_tests: bool = ("Enable support to run tests with -Cpanic=abort"),
@@ -1501,6 +1516,16 @@ impl CliUnstable {
             "no-index-update" => self.no_index_update = parse_empty(k, v)?,
             "ohm-defaults" => self.ohm_defaults = Some(parse_bool(k, v)?),
             "ohm-focused-tests" => self.ohm_focused_tests = parse_empty(k, v)?,
+            "ohm-proc-macro-trust" => {
+                self.ohm_proc_macro_trust = match v {
+                    Some("audited") => OhmProcMacroTrust::Audited,
+                    Some("all") => OhmProcMacroTrust::All,
+                    Some(value) => {
+                        bail!("flag -Z{k} expected `audited` or `all`, found: `{value}`")
+                    }
+                    None => bail!("flag -Z{k} requires `audited` or `all`"),
+                };
+            }
             "ohm-reuse-built-deps" => self.ohm_reuse_built_deps = parse_empty(k, v)?,
             "ohm-shared-registry-cache" => self.ohm_shared_registry_cache = parse_empty(k, v)?,
             "panic-abort-tests" => self.panic_abort_tests = parse_empty(k, v)?,
