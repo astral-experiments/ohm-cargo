@@ -1,0 +1,44 @@
+{
+  "check-ir-confirmation": {
+    "gate_checks": {
+      "at_least_one_percent": true,
+      "both_orders_positive": true,
+      "fixed_12_pairs": true,
+      "positive_99_percent_lower_bound": true,
+      "two_sided_sign_p_at_most_0_01": true
+    },
+    "interval_99_percent": [
+      1.4571072568010601,
+      1.6321006543628003
+    ],
+    "losses": 0,
+    "pairs": 12,
+    "passes_instruction_gate": true,
+    "reduction_percent": 1.571362042253821,
+    "seed": 2026102161,
+    "sign_p": 0.00048828125,
+    "warmup_pairs": 2,
+    "wins": 12
+  },
+  "test-ir-confirmation": {
+    "gate_checks": {
+      "at_least_one_percent": true,
+      "both_orders_positive": true,
+      "fixed_12_pairs": true,
+      "positive_99_percent_lower_bound": true,
+      "two_sided_sign_p_at_most_0_01": true
+    },
+    "interval_99_percent": [
+      1.4604249740659547,
+      1.5963934975361416
+    ],
+    "losses": 0,
+    "pairs": 12,
+    "passes_instruction_gate": true,
+    "reduction_percent": 1.553730710403911,
+    "seed": 2026102162,
+    "sign_p": 0.00048828125,
+    "warmup_pairs": 2,
+    "wins": 12
+  }
+}
