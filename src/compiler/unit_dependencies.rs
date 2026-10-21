@@ -1790,6 +1790,12 @@ fn audited_proc_macro_checksum(name: &str, version: &semver::Version, checksum: 
         ("thiserror-impl", 2, 0, 19) => {
             "43cbfe0cf76104d42a574802844187e84a305e531ed54455f11fbde0f10541cd"
         }
+        // Audited against 2.0.19: only generated Clippy attributes changed;
+        // runtime dependencies and features are unchanged.
+        // https://static.crates.io/crates/thiserror-impl/thiserror-impl-2.0.20.crate
+        ("thiserror-impl", 2, 0, 20) => {
+            "bc04cd3e1236dd4a98afca4569f2deb3f120e5422a4023be2cb683f8486292af"
+        }
         ("tokio-macros", 2, 7, 0) => {
             "385a6cb71ab9ab790c5fe8d67f1645e6c450a7ce006a33de03daa956cf70a496"
         }
@@ -1865,6 +1871,10 @@ fn audited_proc_macro_runtime_dependency_checksum(
         ("syn", 2, 0, 118) => "1b9ae57f904213ebb649ce6895b8a66c66f0203b9319718f69a5612a065b1422",
         ("syn", 2, 0, 119) => "872831b642d1a07999a962a351ed35b955ea2cfc8f3862091e2a240a84f17297",
         ("syn", 3, 0, 3) => "53e9bae58849f64dfa4f5d5ae372c8341f7305f82a3868709269343628b659a3",
+        // Audited against 3.0.3: token parsing, error spans, and documentation;
+        // runtime dependencies and features are unchanged.
+        // https://static.crates.io/crates/syn/syn-3.0.6.crate
+        ("syn", 3, 0, 6) => "8593e8e72159ed2257d083c7a454a85cbf854f37a0966d8d483aff8c8a3ebcee",
         ("synstructure", 0, 13, 2) => {
             "728a70f3dbaf5bab7f0c4b1ac8d7ae5ea60a4b5549c8a5914361c99147a709d2"
         }
@@ -1926,6 +1936,106 @@ mod audited_proc_macro_tests {
             &semver::Version::parse("2.0.19-prerelease").expect("valid test version"),
             checksum,
         ));
+    }
+
+    #[test]
+    fn newly_audited_releases_preserve_package_identity_boundaries() {
+        let canonical = SourceId::from_url("registry+https://github.com/rust-lang/crates.io-index")
+            .expect("canonical registry source");
+        let alternative = SourceId::from_url("registry+file:///tmp/alternative-registry")
+            .expect("alternate registry source");
+
+        for (name, version, checksum, is_proc_macro) in [
+            (
+                "thiserror-impl",
+                semver::Version::new(2, 0, 20),
+                "bc04cd3e1236dd4a98afca4569f2deb3f120e5422a4023be2cb683f8486292af",
+                true,
+            ),
+            (
+                "syn",
+                semver::Version::new(3, 0, 6),
+                "8593e8e72159ed2257d083c7a454a85cbf854f37a0966d8d483aff8c8a3ebcee",
+                false,
+            ),
+        ] {
+            let is_trusted = |source,
+                              effective_source,
+                              version: &semver::Version,
+                              resolved,
+                              downloaded,
+                              is_proc_macro| {
+                audited_proc_macro_package_identity(
+                    source,
+                    effective_source,
+                    name,
+                    version,
+                    resolved,
+                    downloaded,
+                    is_proc_macro,
+                    OhmProcMacroTrust::Audited,
+                )
+            };
+            assert!(is_trusted(
+                canonical,
+                canonical,
+                &version,
+                Some(checksum),
+                Some(checksum),
+                is_proc_macro,
+            ));
+            assert!(!is_trusted(
+                canonical,
+                canonical,
+                &version,
+                Some(checksum),
+                Some(checksum),
+                !is_proc_macro,
+            ));
+
+            for (source, effective_source, resolved, downloaded) in [
+                (canonical, alternative, Some(checksum), Some(checksum)),
+                (alternative, alternative, Some(checksum), Some(checksum)),
+                (canonical, canonical, None, Some(checksum)),
+                (canonical, canonical, Some(checksum), None),
+                (
+                    canonical,
+                    canonical,
+                    Some("changed-checksum"),
+                    Some("changed-checksum"),
+                ),
+                (
+                    canonical,
+                    canonical,
+                    Some(checksum),
+                    Some("changed-download"),
+                ),
+            ] {
+                assert!(!is_trusted(
+                    source,
+                    effective_source,
+                    &version,
+                    resolved,
+                    downloaded,
+                    is_proc_macro,
+                ));
+            }
+
+            for unaudited in [
+                semver::Version::new(version.major, version.minor, version.patch + 1),
+                semver::Version::parse(&format!("{version}-prerelease")).unwrap(),
+                semver::Version::parse(&format!("{version}+build")).unwrap(),
+            ] {
+                assert!(!is_trusted(
+                    canonical,
+                    canonical,
+                    &unaudited,
+                    Some(checksum),
+                    Some(checksum),
+                    is_proc_macro,
+                ));
+            }
+        }
     }
 
     #[test]
