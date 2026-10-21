@@ -1,0 +1,17 @@
+{
+  "recorded_at": "2026-10-21T03:00:04Z",
+  "source": "parent coordination message",
+  "external_change": {
+    "pull_request": 175,
+    "commit": "efc8b51502f8a8d1fe76997dc984481edde2740e",
+    "description": "removes unused dep-info work, potentially reducing the incremental benefit of the path-cache candidate",
+    "opened_at_approximate_minute": "2026-10-21T02:46Z"
+  },
+  "decisions": [
+    "Complete the fixed path-cache check confirmation unchanged.",
+    "Retain every recorded group, subrun, and raw log.",
+    "Hold the unstarted path-cache test-build confirmation because the comparison baseline is changing.",
+    "Only after the check batch finishes, stage build-output-remap for review; start no further benchmark without review."
+  ],
+  "interim_effects_inspected_at_decision": false
+}

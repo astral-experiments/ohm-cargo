@@ -1,0 +1,60 @@
+{
+  "passes_instruction_gate": true,
+  "gate_checks": {
+    "fixed_12_pairs": true,
+    "at_least_one_percent": true,
+    "positive_99_percent_lower_bound": true,
+    "two_sided_sign_p_at_most_0_01": true,
+    "both_orders_positive": true
+  },
+  "statistics": {
+    "pairs": 12,
+    "baseline_median_count": 1356024633.0,
+    "candidate_median_count": 1336308553.5,
+    "baseline_mean_count": 1355990376.4166667,
+    "candidate_mean_count": 1336915853.8333333,
+    "paired_geometric_mean_ratio": 1.0142689981221407,
+    "paired_median_ratio": 1.014837349603411,
+    "paired_geometric_mean_count_reduction": 0.01406825817269275,
+    "confidence": 0.99,
+    "bootstrap_ratio_interval": [
+      1.0126793205460425,
+      1.015033809042166
+    ],
+    "bootstrap_count_reduction_interval": [
+      0.012520568247809893,
+      0.014811141174058684
+    ],
+    "bootstrap_resamples": 20000,
+    "bootstrap_seed": 1701,
+    "wins": 12,
+    "losses": 0,
+    "ties": 0,
+    "exact_two_sided_sign_p": 0.00048828125,
+    "log_ratios": [
+      0.014977889422838727,
+      0.01497391526709253,
+      0.008598481089530007,
+      0.014709015681430506,
+      0.013812641681683755,
+      0.014462001485558021,
+      0.014494939001738509,
+      0.014767569101794017,
+      0.014747689858107142,
+      0.015430616691400537,
+      0.014281607149888886,
+      0.014761483146910656
+    ],
+    "order": {
+      "AB": {
+        "pairs": 6,
+        "geometric_mean_ratio": 1.0147655786086653
+      },
+      "BA": {
+        "pairs": 6,
+        "geometric_mean_ratio": 1.0137726606396997
+      }
+    }
+  },
+  "scope": "Cargo-only instruction gate; no native wall-time inference, no pooling."
+}

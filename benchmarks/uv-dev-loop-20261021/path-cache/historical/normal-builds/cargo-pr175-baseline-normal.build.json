@@ -1,0 +1,33 @@
+{
+  "name": "cargo-pr175-baseline-normal",
+  "started_at": "2026-10-21T03:13:16.187014+00:00",
+  "base_commit": "5e5d271d763d7beb38b48755e22bd59e93f02b97",
+  "source_path": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/ohm-cargo",
+  "target_path": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/cargo-build",
+  "source_tree": "3d67bfb965bc0b6452ab78205045c5154db0acf7",
+  "source_diff_sha256": "68524f8a81f7f286b3c3fce7e4e55c86f26245879cf8fca5ab622db7948e1ecd",
+  "patch_sha256": {
+    "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/production-build/pr175.patch": "30332415e2fdc6735719868cddeeb717cc856415f8cd1731ab5696c109f697dc"
+  },
+  "command": [
+    "cargo",
+    "+1.99.0",
+    "build",
+    "--release",
+    "--locked",
+    "-p",
+    "cargo",
+    "-j16"
+  ],
+  "explicit_build_environment": {
+    "CARGO_HOME": "/tmp/codex-cargo-home",
+    "CARGO_TARGET_DIR": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/cargo-build",
+    "CARGO_PROFILE_RELEASE_DEBUG": "1"
+  },
+  "pgo": false,
+  "finished_at": "2026-10-21T03:14:43.310176+00:00",
+  "returncode": 0,
+  "log_sha256": "fa4da5333580c273d2e2d2e71fc51b0a09e00658341e2f4b476ad46a270a7626",
+  "sha256": "b69da07e3067e64acd56062a9435b35e2a0f7f2b4ed6819c0b82a48fa6d78080",
+  "bytes": 265234856
+}

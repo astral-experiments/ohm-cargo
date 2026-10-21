@@ -1,0 +1,10 @@
+{
+  "status": "archive verification failed before copying evidence; passing test attempt remains unchanged",
+  "collector_sha256": "f28815ed35f65b7f144b8f18f90a29fcf0a996883ca0f96c559f9ffa64261f41",
+  "error": "Archive symlink text differs after Python tar data filter normalized a trailing slash",
+  "path": "tests/testsuite/cargo_add/missing_at_in_crate_spec/in",
+  "archive_link": "../add-basic.in/",
+  "actual_link": "../add-basic.in",
+  "canonical_destinations_equal": true,
+  "next_step": "Compare the exact extraction filter output and preserve all normalization details; do not edit source or rerun tests"
+}

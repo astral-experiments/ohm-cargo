@@ -1,0 +1,180 @@
+{
+  "scope": "Exact original-PR175 production CLI correctness, collected separately on host4 after performance measurement; includes initial collection-only rejection. No current-stack claim.",
+  "files": [
+    {
+      "source": "work/path-cache-validation/evidence/attempt-candidate/cli-execve.log",
+      "destination": "validation/production/evidence/attempt-candidate/cli-execve.log",
+      "archive": true
+    },
+    {
+      "source": "work/path-cache-validation/evidence/attempt-candidate/cli-version.txt",
+      "destination": "validation/production/evidence/attempt-candidate/cli-version.txt",
+      "archive": true
+    },
+    {
+      "source": "work/path-cache-validation/evidence/attempt-candidate/launcher.sh",
+      "destination": "validation/production/evidence/attempt-candidate/launcher.sh",
+      "archive": true
+    },
+    {
+      "source": "work/path-cache-validation/evidence/attempt-candidate/report.json",
+      "destination": "validation/production/evidence/attempt-candidate/report.json",
+      "archive": true
+    },
+    {
+      "source": "work/path-cache-validation/evidence/attempt-candidate/test-list.txt",
+      "destination": "validation/production/evidence/attempt-candidate/test-list.txt",
+      "archive": true
+    },
+    {
+      "source": "work/path-cache-validation/evidence/attempt-candidate/tests.log",
+      "destination": "validation/production/evidence/attempt-candidate/tests.log",
+      "archive": true
+    },
+    {
+      "source": "work/path-cache-validation/evidence/candidate-driver.log",
+      "destination": "validation/production/evidence/candidate-driver.log",
+      "archive": true
+    },
+    {
+      "source": "work/path-cache-validation/evidence/evidence-manifest.json",
+      "destination": "validation/production/evidence/evidence-manifest.json",
+      "archive": true
+    },
+    {
+      "source": "work/path-cache-validation/evidence/inputs.json",
+      "destination": "validation/production/evidence/inputs.json",
+      "archive": true
+    },
+    {
+      "source": "work/path-cache-validation/evidence/metadata/cargo-pr175-path-cache.build.json",
+      "destination": "validation/production/evidence/metadata/cargo-pr175-path-cache.build.json",
+      "archive": true
+    },
+    {
+      "source": "work/path-cache-validation/evidence/metadata/cargo-pr175-path-cache.strip.json",
+      "destination": "validation/production/evidence/metadata/cargo-pr175-path-cache.strip.json",
+      "archive": true
+    },
+    {
+      "source": "work/path-cache-validation/evidence/metadata/cargo-pr175.build.json",
+      "destination": "validation/production/evidence/metadata/cargo-pr175.build.json",
+      "archive": true
+    },
+    {
+      "source": "work/path-cache-validation/evidence/metadata/cargo-pr175.strip.json",
+      "destination": "validation/production/evidence/metadata/cargo-pr175.strip.json",
+      "archive": true
+    },
+    {
+      "source": "work/path-cache-validation/evidence/metadata/pr175-path-cache.source.patch",
+      "destination": "validation/production/evidence/metadata/pr175-path-cache.source.patch",
+      "archive": true
+    },
+    {
+      "source": "work/path-cache-validation/evidence/metadata/pr175.source.patch",
+      "destination": "validation/production/evidence/metadata/pr175.source.patch",
+      "archive": true
+    },
+    {
+      "source": "work/path-cache-validation/evidence/ownership.json",
+      "destination": "validation/production/evidence/ownership.json",
+      "archive": true
+    },
+    {
+      "source": "work/path-cache-validation/evidence/run_remote.py",
+      "destination": "validation/production/evidence/run_remote.py",
+      "archive": true
+    },
+    {
+      "source": "work/path-cache-validation/evidence/source-verification.json",
+      "destination": "validation/production/evidence/source-verification.json",
+      "archive": true
+    },
+    {
+      "source": "work/path-cache-validation/evidence/tests.json",
+      "destination": "validation/production/evidence/tests.json",
+      "archive": true
+    },
+    {
+      "source": "work/path-cache-validation/README.md",
+      "destination": "validation/production/README.md",
+      "archive": false
+    },
+    {
+      "source": "work/path-cache-validation/inputs.json",
+      "destination": "validation/production/inputs.json",
+      "archive": false
+    },
+    {
+      "source": "work/path-cache-validation/tests.json",
+      "destination": "validation/production/tests.json",
+      "archive": false
+    },
+    {
+      "source": "work/path-cache-validation/run_remote.py",
+      "destination": "validation/production/run_remote.py",
+      "archive": false
+    },
+    {
+      "source": "work/path-cache-validation/stage.py",
+      "destination": "validation/production/stage.py",
+      "archive": false
+    },
+    {
+      "source": "work/path-cache-validation/collect.py",
+      "destination": "validation/production/collect.py",
+      "archive": false
+    },
+    {
+      "source": "work/path-cache-validation/collect-attempt-01.py",
+      "destination": "validation/production/collect-attempt-01.py",
+      "archive": false
+    },
+    {
+      "source": "work/path-cache-validation/collection-attempt-01.json",
+      "destination": "validation/production/collection-attempt-01.json",
+      "archive": false
+    },
+    {
+      "source": "work/path-cache-validation/production-path-cache-correctness.tar",
+      "destination": "validation/production/production-path-cache-correctness.tar",
+      "archive": true
+    },
+    {
+      "source": "work/path-cache-validation/collection-attempt-01-empty.tar",
+      "destination": "validation/production/collection-attempt-01-empty.tar",
+      "archive": true
+    },
+    {
+      "source": "work/path-cache-validation/stage.stdout",
+      "destination": "validation/production/stage.stdout",
+      "archive": true
+    },
+    {
+      "source": "work/path-cache-validation/stage.stderr",
+      "destination": "validation/production/stage.stderr",
+      "archive": true
+    },
+    {
+      "source": "work/path-cache-validation/evidence/attempt-candidate/report.json",
+      "destination": "validation/production/report.json",
+      "archive": false
+    },
+    {
+      "source": "work/path-cache-validation/evidence/source-verification.json",
+      "destination": "validation/production/source-verification.json",
+      "archive": false
+    },
+    {
+      "source": "work/path-cache-validation/evidence/ownership.json",
+      "destination": "validation/production/ownership.json",
+      "archive": false
+    },
+    {
+      "source": "work/path-cache-validation/evidence/evidence-manifest.json",
+      "destination": "validation/production/evidence-manifest.json",
+      "archive": false
+    }
+  ]
+}

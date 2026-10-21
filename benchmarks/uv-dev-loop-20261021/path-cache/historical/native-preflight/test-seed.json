@@ -1,0 +1,20 @@
+{
+  "state": "complete",
+  "started_at": "2026-10-21T02:47:38.600647+00:00",
+  "command": [
+    "taskset",
+    "-c",
+    "0-7",
+    "/tmp/ohm-hillclimb-20261021/confirmation-path-cache/active/bin/cargo",
+    "-Zohm-defaults=yes",
+    "test",
+    "--no-run",
+    "--locked",
+    "--offline",
+    "-j",
+    "8"
+  ],
+  "configuration_sha256": "d785a4a607a5dfbd218d8f5467abdd80650f2dc4b3c2bea07b79c097f22e78a6",
+  "finished_at": "2026-10-21T02:49:48.622012+00:00",
+  "returncode": 0
+}

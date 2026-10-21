@@ -1,0 +1,34 @@
+{
+  "name": "cargo-pr175-path-cache-normal",
+  "started_at": "2026-10-21T03:14:45.932358+00:00",
+  "base_commit": "5e5d271d763d7beb38b48755e22bd59e93f02b97",
+  "source_path": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/ohm-cargo",
+  "target_path": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/cargo-build",
+  "source_tree": "b0dfb3fe2cfd8d310efa04a345f58886296f712a",
+  "source_diff_sha256": "6f038fde1e7022a95b5f326f277cecc67037f97777e660d6295e4cfc36763ece",
+  "patch_sha256": {
+    "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/production-build/pr175.patch": "30332415e2fdc6735719868cddeeb717cc856415f8cd1731ab5696c109f697dc",
+    "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/patches/path-cache.patch": "0ad07b5922f9fdd60f772368e8621c679f1fb0163c245fdd484aee58cd599bb0"
+  },
+  "command": [
+    "cargo",
+    "+1.99.0",
+    "build",
+    "--release",
+    "--locked",
+    "-p",
+    "cargo",
+    "-j16"
+  ],
+  "explicit_build_environment": {
+    "CARGO_HOME": "/tmp/codex-cargo-home",
+    "CARGO_TARGET_DIR": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/cargo-build",
+    "CARGO_PROFILE_RELEASE_DEBUG": "1"
+  },
+  "pgo": false,
+  "finished_at": "2026-10-21T03:16:11.438397+00:00",
+  "returncode": 0,
+  "log_sha256": "c3afeddb70abe3d526930951d4fc7bf4be04dd488d381669a99289e1ac3f6e07",
+  "sha256": "d5f9d4af6913333a9649d7978319bc69aa775ae9df0fedac80279b34f0fcd0e7",
+  "bytes": 265070160
+}

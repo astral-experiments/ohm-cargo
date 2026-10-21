@@ -1,0 +1,146 @@
+{
+  "pairs": 30,
+  "baseline_median_seconds": 1.105260975,
+  "candidate_median_seconds": 1.0095973905,
+  "baseline_mean_seconds": 1.1072192250666668,
+  "candidate_mean_seconds": 0.9941473647,
+  "paired_geometric_mean_speedup": 1.1102675501209942,
+  "paired_median_speedup": 1.2010522146826637,
+  "paired_geometric_mean_time_reduction": 0.09931619645100631,
+  "confidence": 0.99,
+  "bootstrap_speedup_interval": [
+    0.9932201632281406,
+    1.2292827496460084
+  ],
+  "bootstrap_time_reduction_interval": [
+    -0.006826116729068188,
+    0.1865175035703006
+  ],
+  "bootstrap_resamples": 20000,
+  "bootstrap_seed": 1701,
+  "wins": 22,
+  "losses": 8,
+  "ties": 0,
+  "exact_two_sided_sign_p": 0.016124801710247993,
+  "log_ratios": [
+    0.18974679302433348,
+    0.28456347721219116,
+    0.14477928616218433,
+    0.17660607397868808,
+    0.27615436956886275,
+    0.42421093246321323,
+    0.24606624740892713,
+    0.24528033945091457,
+    -0.332685402067022,
+    0.2196362169563624,
+    -0.4300556506038661,
+    -0.3143992013718735,
+    -0.24549956960787422,
+    0.009317316010784503,
+    -0.10996774513629315,
+    0.043638161814880866,
+    0.3794909089654764,
+    0.20165733264175584,
+    0.02916596586975271,
+    -0.2014827743762543,
+    -0.010603496740242474,
+    0.2987762938959297,
+    -0.0193055702185173,
+    0.42319643713018706,
+    0.02384652880810211,
+    0.29593010324393426,
+    0.03233729227526505,
+    0.3007199930118509,
+    0.22016913539877134,
+    0.3367408775717201
+  ],
+  "order": {
+    "AB": {
+      "pairs": 15,
+      "geometric_mean_speedup": 1.0650921756031322
+    },
+    "BA": {
+      "pairs": 15,
+      "geometric_mean_speedup": 1.1573590165129455
+    }
+  },
+  "child_cpu_seconds": {
+    "pairs": 30,
+    "baseline_median_seconds": 1.0792074999999999,
+    "candidate_median_seconds": 0.9649155000000018,
+    "baseline_mean_seconds": 1.0768527,
+    "candidate_mean_seconds": 0.9679270666666677,
+    "paired_geometric_mean_speedup": 1.107951860144775,
+    "paired_median_speedup": 1.2019794020221086,
+    "paired_geometric_mean_time_reduction": 0.09743370991828937,
+    "confidence": 0.99,
+    "bootstrap_speedup_interval": [
+      0.9910486904471939,
+      1.2282884230835884
+    ],
+    "bootstrap_time_reduction_interval": [
+      -0.009032159205787371,
+      0.18585897155203646
+    ],
+    "bootstrap_resamples": 20000,
+    "bootstrap_seed": 1701,
+    "wins": 21,
+    "losses": 9,
+    "ties": 0,
+    "exact_two_sided_sign_p": 0.04277394525706768,
+    "log_ratios": [
+      0.19106744766427589,
+      0.29215344473905597,
+      0.14308508351351723,
+      0.17682121305527781,
+      0.2729255940581084,
+      0.4076772387718924,
+      0.2506079212461666,
+      0.26652486458216906,
+      -0.3281660658133289,
+      0.22299028712232727,
+      -0.43030385059064025,
+      -0.31643099242137607,
+      -0.2416927892786904,
+      0.015133311080013815,
+      -0.1159787207703553,
+      0.04651919434002481,
+      0.38368878197405376,
+      0.19933926097096347,
+      0.020784897379932343,
+      -0.2089448591252086,
+      -0.04085782240155923,
+      0.2794206094686641,
+      -0.024818177309591613,
+      0.4330887618756122,
+      -0.016866241003532442,
+      0.3033396804757095,
+      0.03213928595744258,
+      0.2905422522530217,
+      0.2247039120490539,
+      0.3469006718906514
+    ],
+    "order": {
+      "AB": {
+        "pairs": 15,
+        "geometric_mean_speedup": 1.0577887883626245
+      },
+      "BA": {
+        "pairs": 15,
+        "geometric_mean_speedup": 1.1604937941329778
+      }
+    }
+  },
+  "phase": "exploratory",
+  "variant_sha256": {
+    "baseline": "9507d44c0b7955aef935fa72bfe4d0a4640bebdeb37424bf8d485466591e545f",
+    "candidate": "aad2fb99fb7917b16bf31f99de8e7dd5986091dee6672bcc435ff1b0511789c3"
+  },
+  "screen": {
+    "minimum_pairs": 30,
+    "minimum_time_reduction": 0.01,
+    "alpha": 0.010000000000000009,
+    "passes": false,
+    "note": "This screens one workload only. Require an independently run confirmation batch, correctness validation, and regression checks before a PR performance claim. Repeated candidate selection invalidates treating exploratory p-values as confirmatory evidence."
+  }
+}

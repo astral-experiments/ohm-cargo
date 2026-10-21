@@ -1,0 +1,123 @@
+{
+  "pairs": 1,
+  "baseline_median_seconds": 21.424838779,
+  "candidate_median_seconds": 21.405327178,
+  "baseline_mean_seconds": 21.424838779,
+  "candidate_mean_seconds": 21.405327178,
+  "paired_geometric_mean_speedup": 1.0009115301456384,
+  "paired_median_speedup": 1.0009115301456384,
+  "paired_geometric_mean_time_reduction": 0.0009107000151209466,
+  "confidence": 0.99,
+  "bootstrap_speedup_interval": [
+    1.0009115301456384,
+    1.0009115301456384
+  ],
+  "bootstrap_time_reduction_interval": [
+    0.0009107000151209466,
+    0.0009107000151209466
+  ],
+  "bootstrap_resamples": 20000,
+  "bootstrap_seed": 1701,
+  "wins": 1,
+  "losses": 0,
+  "ties": 0,
+  "exact_two_sided_sign_p": 1.0,
+  "log_ratios": [
+    0.0009111149543222913
+  ],
+  "order": {
+    "BA": {
+      "pairs": 1,
+      "geometric_mean_speedup": 1.0009115301456384
+    }
+  },
+  "child_cpu_seconds": {
+    "pairs": 1,
+    "baseline_median_seconds": 21.418206,
+    "candidate_median_seconds": 21.408877999999998,
+    "baseline_mean_seconds": 21.418206,
+    "candidate_mean_seconds": 21.408877999999998,
+    "paired_geometric_mean_speedup": 1.0004357070931043,
+    "paired_median_speedup": 1.0004357070931043,
+    "paired_geometric_mean_time_reduction": 0.0004355173351121566,
+    "confidence": 0.99,
+    "bootstrap_speedup_interval": [
+      1.0004357070931043,
+      1.0004357070931043
+    ],
+    "bootstrap_time_reduction_interval": [
+      0.0004355173351121566,
+      0.0004355173351121566
+    ],
+    "bootstrap_resamples": 20000,
+    "bootstrap_seed": 1701,
+    "wins": 1,
+    "losses": 0,
+    "ties": 0,
+    "exact_two_sided_sign_p": 1.0,
+    "log_ratios": [
+      0.0004356122003313988
+    ],
+    "order": {
+      "BA": {
+        "pairs": 1,
+        "geometric_mean_speedup": 1.0004357070931043
+      }
+    }
+  },
+  "phase": "exploratory",
+  "variant_sha256": {
+    "baseline": "26bf4671e7fe34108029d7fdc27e9b23b47e37b158f19a1ca63bc92b1b6f7438",
+    "candidate": "b7fc8fd4d52662ca0f6362de6b86452cd09f4868c069f416b6f71336c4396eba"
+  },
+  "metrics": {
+    "cargo_ir": {
+      "format": "callgrind",
+      "event": "Ir",
+      "scope": "Instrumented Cargo process only; child rustc, linker, build-script, and test processes are excluded (--trace-children=no).",
+      "statistics": {
+        "pairs": 1,
+        "baseline_median_count": 1962895360,
+        "candidate_median_count": 1941450945,
+        "baseline_mean_count": 1962895360.0,
+        "candidate_mean_count": 1941450945.0,
+        "paired_geometric_mean_ratio": 1.0110455610816373,
+        "paired_median_ratio": 1.0110455610816373,
+        "paired_geometric_mean_count_reduction": 0.010924889546837568,
+        "confidence": 0.99,
+        "bootstrap_ratio_interval": [
+          1.0110455610816373,
+          1.0110455610816373
+        ],
+        "bootstrap_count_reduction_interval": [
+          0.010924889546837568,
+          0.010924889546837568
+        ],
+        "bootstrap_resamples": 20000,
+        "bootstrap_seed": 1701,
+        "wins": 1,
+        "losses": 0,
+        "ties": 0,
+        "exact_two_sided_sign_p": 1.0,
+        "log_ratios": [
+          0.01098500438556963
+        ],
+        "order": {
+          "BA": {
+            "pairs": 1,
+            "geometric_mean_ratio": 1.0110455610816373
+          }
+        }
+      },
+      "acceptance": "No acceptance decision. Instruction comparisons screen candidates; confirm native wall time and correctness independently."
+    }
+  },
+  "screen": {
+    "minimum_pairs": 30,
+    "minimum_time_reduction": 0.01,
+    "alpha": 0.010000000000000009,
+    "passes": false,
+    "note": "This screens one workload only. Require an independently run confirmation batch, correctness validation, and regression checks before a PR performance claim. Repeated candidate selection invalidates treating exploratory p-values as confirmatory evidence. Callgrind elapsed times are instrumented costs, not native dev-loop timings; this screen cannot establish a native wall-time improvement.",
+    "measurement_kind": "instrumented wall time"
+  }
+}

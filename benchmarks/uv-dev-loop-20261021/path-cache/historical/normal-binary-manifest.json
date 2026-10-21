@@ -1,0 +1,201 @@
+{
+  "cargo-baseline": {
+    "sha256": "87aa5c884543ba3f20c7d5b846d70fdd33fa409854ae787cde154f3e1366e89c",
+    "bytes": 264424856,
+    "original_linker_output_sha256": "9507d44c0b7955aef935fa72bfe4d0a4640bebdeb37424bf8d485466591e545f",
+    "note": "objcopy --dump-section unintentionally normalized ELF metadata after the exploratory batch. Runtime .text bytes remained unchanged; subsequent benchmark inputs are separately frozen stripped binaries."
+  },
+  "cargo-gc-batch": {
+    "sha256": "44fa36d6ced2345db74d54c62e02e7a013d24780977212045a1dadd97780297b",
+    "bytes": 264103880,
+    "original_linker_output_sha256": "552e690dede4c8098c233ff917c7dcfbf0b2777d6caac7c36c0802dc81f9098f",
+    "note": "objcopy --dump-section unintentionally normalized ELF metadata after the exploratory batch. Runtime .text bytes remained unchanged; subsequent benchmark inputs are separately frozen stripped binaries."
+  },
+  "cargo-path-cache": {
+    "sha256": "f6b58a8fd7c809ff14dc8efe1f5fc7cb9837f0bcdb61b24491b48c75835a0d4c",
+    "bytes": 264242432,
+    "original_linker_output_sha256": "aad2fb99fb7917b16bf31f99de8e7dd5986091dee6672bcc435ff1b0511789c3",
+    "note": "objcopy --dump-section unintentionally normalized ELF metadata after the exploratory batch. Runtime .text bytes remained unchanged; subsequent benchmark inputs are separately frozen stripped binaries."
+  },
+  "cargo-release": {
+    "sha256": "ba03ac96ba5ebfff69a37d8a898e4bba90e29c1a62141cef8a759b91232b7b7e",
+    "bytes": 37815904
+  },
+  "build": {
+    "cargo_source": "5e5d271d763d7beb38b48755e22bd59e93f02b97",
+    "compiler": "rustup 1.99.0",
+    "flags": "--release --locked -p cargo -j16, CARGO_PROFILE_RELEASE_DEBUG=1",
+    "source_path": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/ohm-cargo",
+    "target_path": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/cargo-build",
+    "runtime_ohm_defaults": "-Zohm-defaults=yes",
+    "pgo": false
+  },
+  "cargo-lazy-sbom-test": {
+    "sha256": "046bf93928b4df8232ca76f191a05aac946bd1bb49dc6f9ab71623231456959c",
+    "bytes": 266834256,
+    "note": "Built by test --no-run; correctness-only artifact, not a matched benchmark binary."
+  },
+  "cargo-lazy-sbom": {
+    "sha256": "6ae19261ccb7b73c20a5b03293a6b741353b5c465c63793e11b48dbf7e4faa5a",
+    "bytes": 265246856,
+    "build": "cargo +1.99.0 build --release --locked -p cargo -j16; CARGO_PROFILE_RELEASE_DEBUG=1; same source/target directory as baseline",
+    "patch": "work/patches/lazy-sbom.patch"
+  },
+  "cargo-loader-path": {
+    "sha256": "d98e4ee4f08e8d39d3e1ca874321d310b0e1f991d219edfedb69b3db168a7bb2",
+    "bytes": 265259752,
+    "build": "normal matched cargo +1.99.0 build --release --locked -p cargo -j16; CARGO_PROFILE_RELEASE_DEBUG=1",
+    "patch": "work/patches/loader-path.patch"
+  },
+  "cargo-loader-path-v2": {
+    "sha256": "bdab252d2872eda045ae16dcccdbd36b8ec05a5eab7bfdfd3602a7015fae9fa3",
+    "bytes": 265262464,
+    "build": "normal matched cargo +1.99.0 build --release --locked -p cargo -j16; CARGO_PROFILE_RELEASE_DEBUG=1",
+    "patch": "work/patches/loader-path-v2.patch"
+  },
+  "cargo-build-output": {
+    "sha256": "35e6d18eee7e70176b12793b18b4c8b81695abc0fdbc3d39a4d69a11522042b9",
+    "bytes": 264917352,
+    "build": "normal matched cargo +1.99.0 build --release --locked -p cargo -j16; CARGO_PROFILE_RELEASE_DEBUG=1",
+    "patch": "work/patches/build-output-remap.patch"
+  },
+  "cargo-pr175-baseline-normal": {
+    "name": "cargo-pr175-baseline-normal",
+    "started_at": "2026-10-21T03:13:16.187014+00:00",
+    "base_commit": "5e5d271d763d7beb38b48755e22bd59e93f02b97",
+    "source_path": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/ohm-cargo",
+    "target_path": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/cargo-build",
+    "source_tree": "3d67bfb965bc0b6452ab78205045c5154db0acf7",
+    "source_diff_sha256": "68524f8a81f7f286b3c3fce7e4e55c86f26245879cf8fca5ab622db7948e1ecd",
+    "patch_sha256": {
+      "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/production-build/pr175.patch": "30332415e2fdc6735719868cddeeb717cc856415f8cd1731ab5696c109f697dc"
+    },
+    "command": [
+      "cargo",
+      "+1.99.0",
+      "build",
+      "--release",
+      "--locked",
+      "-p",
+      "cargo",
+      "-j16"
+    ],
+    "explicit_build_environment": {
+      "CARGO_HOME": "/tmp/codex-cargo-home",
+      "CARGO_TARGET_DIR": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/cargo-build",
+      "CARGO_PROFILE_RELEASE_DEBUG": "1"
+    },
+    "pgo": false,
+    "finished_at": "2026-10-21T03:14:43.310176+00:00",
+    "returncode": 0,
+    "log_sha256": "fa4da5333580c273d2e2d2e71fc51b0a09e00658341e2f4b476ad46a270a7626",
+    "sha256": "b69da07e3067e64acd56062a9435b35e2a0f7f2b4ed6819c0b82a48fa6d78080",
+    "bytes": 265234856
+  },
+  "cargo-pr175-path-cache-normal": {
+    "name": "cargo-pr175-path-cache-normal",
+    "started_at": "2026-10-21T03:14:45.932358+00:00",
+    "base_commit": "5e5d271d763d7beb38b48755e22bd59e93f02b97",
+    "source_path": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/ohm-cargo",
+    "target_path": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/cargo-build",
+    "source_tree": "b0dfb3fe2cfd8d310efa04a345f58886296f712a",
+    "source_diff_sha256": "6f038fde1e7022a95b5f326f277cecc67037f97777e660d6295e4cfc36763ece",
+    "patch_sha256": {
+      "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/production-build/pr175.patch": "30332415e2fdc6735719868cddeeb717cc856415f8cd1731ab5696c109f697dc",
+      "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/patches/path-cache.patch": "0ad07b5922f9fdd60f772368e8621c679f1fb0163c245fdd484aee58cd599bb0"
+    },
+    "command": [
+      "cargo",
+      "+1.99.0",
+      "build",
+      "--release",
+      "--locked",
+      "-p",
+      "cargo",
+      "-j16"
+    ],
+    "explicit_build_environment": {
+      "CARGO_HOME": "/tmp/codex-cargo-home",
+      "CARGO_TARGET_DIR": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/cargo-build",
+      "CARGO_PROFILE_RELEASE_DEBUG": "1"
+    },
+    "pgo": false,
+    "finished_at": "2026-10-21T03:16:11.438397+00:00",
+    "returncode": 0,
+    "log_sha256": "c3afeddb70abe3d526930951d4fc7bf4be04dd488d381669a99289e1ac3f6e07",
+    "sha256": "d5f9d4af6913333a9649d7978319bc69aa775ae9df0fedac80279b34f0fcd0e7",
+    "bytes": 265070160
+  },
+  "cargo-pr175-loader-v2-normal": {
+    "name": "cargo-pr175-loader-v2-normal",
+    "started_at": "2026-10-21T03:20:18.749851+00:00",
+    "base_commit": "5e5d271d763d7beb38b48755e22bd59e93f02b97",
+    "source_path": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/ohm-cargo",
+    "target_path": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/cargo-build",
+    "source_tree": "fce366b238ace1b2021808769d857aa56eadcd56",
+    "source_diff_sha256": "714656051b9beb7aaeae0502164196f12aa40257cc217ced1112d9935a4a2086",
+    "source_patch": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/binaries/cargo-pr175-loader-v2-normal.source.patch",
+    "patch_sha256": {
+      "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/production-build/pr175.patch": "30332415e2fdc6735719868cddeeb717cc856415f8cd1731ab5696c109f697dc",
+      "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/patches/loader-path-v2-final.patch": "be2146042f257eb1e36f3d5de804a2ff991f87676b5fe38fe4a5d6a30c4ea1e9"
+    },
+    "command": [
+      "cargo",
+      "+1.99.0",
+      "build",
+      "--release",
+      "--locked",
+      "-p",
+      "cargo",
+      "-j16"
+    ],
+    "explicit_build_environment": {
+      "CARGO_HOME": "/tmp/codex-cargo-home",
+      "CARGO_TARGET_DIR": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/cargo-build",
+      "CARGO_PROFILE_RELEASE_DEBUG": "1"
+    },
+    "runner_sha256": "daf3b6fffef1192c2f08e3a446a9c7eb56539959d3b7e41f82c48b1387a5bef9",
+    "pgo": false,
+    "finished_at": "2026-10-21T03:21:44.097751+00:00",
+    "returncode": 0,
+    "log_sha256": "c3afeddb70abe3d526930951d4fc7bf4be04dd488d381669a99289e1ac3f6e07",
+    "sha256": "8bd7a3dbaf066c440637e67366f9d4cf0b14b181a9b6c0ce26fd1b820f8ef413",
+    "bytes": 265233904
+  },
+  "cargo-pr175-lazy-git-normal": {
+    "name": "cargo-pr175-lazy-git-normal",
+    "started_at": "2026-10-21T03:25:17.092380+00:00",
+    "base_commit": "5e5d271d763d7beb38b48755e22bd59e93f02b97",
+    "source_path": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/ohm-cargo",
+    "target_path": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/cargo-build",
+    "source_tree": "c692e3c07d295e596b9f10eb4b1c89bb498caf68",
+    "source_diff_sha256": "14f83b4f589bb62b143a55587093b8e6befbd678411bb90f92a4e5166625dac2",
+    "source_patch": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/binaries/cargo-pr175-lazy-git-normal.source.patch",
+    "patch_sha256": {
+      "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/production-build/pr175.patch": "30332415e2fdc6735719868cddeeb717cc856415f8cd1731ab5696c109f697dc",
+      "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/patches/lazy-git-final-3707975b6b13.patch": "3707975b6b134ecce3c811963ffe65a96c1c564e9000ae4255d1bdd56cb76deb"
+    },
+    "command": [
+      "cargo",
+      "+1.99.0",
+      "build",
+      "--release",
+      "--locked",
+      "-p",
+      "cargo",
+      "-j16"
+    ],
+    "explicit_build_environment": {
+      "CARGO_HOME": "/tmp/codex-cargo-home",
+      "CARGO_TARGET_DIR": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/cargo-build",
+      "CARGO_PROFILE_RELEASE_DEBUG": "1"
+    },
+    "runner_sha256": "f66fb232d2939784058536b034bca54083664380d3cece490f6edec77653efa0",
+    "pgo": false,
+    "finished_at": "2026-10-21T03:26:44.904500+00:00",
+    "returncode": 0,
+    "log_sha256": "7fae9d939ca96e445d4d67eeea0808130124a0e29cdc32e075d6c32e74f7d30c",
+    "sha256": "52d733d6395ab7c0043b6d45f47c8138eab6f9c3570bbdcb312dcdecba2f68a1",
+    "bytes": 265187208
+  }
+}
