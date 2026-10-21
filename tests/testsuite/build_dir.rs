@@ -1997,6 +1997,8 @@ fn shared_registry_clean_waits_only_for_its_own_workspace() {
             .run();
         project
     });
+    // New builds use context leases; retain coverage for older root-wide consumers.
+    std::fs::File::create(shared.join(".ohm-gc-v1/consumers.lock")).unwrap();
     let guards = [".ohm-gc-v1/consumers.lock", "debug/.cargo-build-lock"].map(|path| {
         let guard = std::fs::File::open(shared.join(path)).unwrap();
         guard.lock_shared().unwrap();

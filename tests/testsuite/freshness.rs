@@ -4127,7 +4127,8 @@ fn early_cutoff_skips_dependent_rebuild() {
     p.change_file("dep/native.c", "int native_value(void) { return 3; }");
 
     // Replayed diagnostics must retain their normal policy effects, not merely be displayed.
-    p.cargo("build")
+    // Keep unrelated running jobs from adding a timing-dependent failure warning.
+    p.cargo("build -j1")
         .arg("--config")
         .arg("build.warnings='deny'")
         .env("RUSTC_WRAPPER", &wrapper)
