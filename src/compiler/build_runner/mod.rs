@@ -894,6 +894,10 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
 
         self.collect_doc_merge_info()?;
 
+        // Compilation can replace dep-info, so share parsed dependencies only after all jobs finish.
+        // A single root cannot reuse these paths and should not pay to retain them.
+        let mut dep_info_cache = (self.bcx.roots.len() > 1).then(HashMap::default);
+
         // Collect the result of the build into `self.compilation`.
         for unit in &self.bcx.roots {
             self.collect_tests_and_executables(unit)?;
@@ -954,7 +958,7 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
                 });
             }
 
-            super::output_depinfo(&mut self, unit)?;
+            super::output_depinfo(&self, unit, &mut dep_info_cache)?;
         }
 
         Ok(self.compilation)
