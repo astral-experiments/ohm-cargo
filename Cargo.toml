@@ -243,6 +243,9 @@ libc.workspace = true
 [target.'cfg(target_os = "linux")'.dependencies]
 cargo-credential-libsecret.workspace = true
 
+[target.'cfg(all(target_os = "linux", target_env = "gnu", target_arch = "x86_64"))'.dependencies]
+tikv-jemallocator = { version = "0.6.1", optional = true, default-features = false }
+
 [target.'cfg(target_os = "macos")'.dependencies]
 cargo-credential-macos-keychain.workspace = true
 
@@ -291,7 +294,7 @@ doc = false
 
 [features]
 default = ["http-transport-curl"]
-ohm-defaults = []
+ohm-defaults = ["dep:tikv-jemallocator"]
 vendored-openssl = ["openssl/vendored"]
 vendored-libgit2 = ["libgit2-sys/vendored"]
 # This is primarily used by rust-lang/rust distributing cargo the executable.

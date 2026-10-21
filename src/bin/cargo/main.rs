@@ -12,6 +12,16 @@ use std::path::{Path, PathBuf};
 mod cli;
 mod commands;
 
+// The CLI owns the allocator so library consumers keep their allocator choice.
+#[cfg(all(
+    feature = "ohm-defaults",
+    target_os = "linux",
+    target_env = "gnu",
+    target_arch = "x86_64"
+))]
+#[global_allocator]
+static ALLOCATOR: tikv_jemallocator::Jemalloc = tikv_jemallocator::Jemalloc;
+
 use crate::command_prelude::*;
 
 fn main() {
