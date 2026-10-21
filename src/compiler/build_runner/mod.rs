@@ -1285,7 +1285,8 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
 
         self.record_units_requiring_metadata();
 
-        let files = CompilationFiles::new(self, host_layout, targets);
+        let mut files = CompilationFiles::new(self, host_layout, targets);
+        files.prepare_shared_context(self)?;
         self.files = Some(files);
         self.lock_manager
             .reserve_shared_cache(self, &self.exclusive_shared_cache_units)?;

@@ -157,13 +157,6 @@ pub struct Compilation<'gctx> {
 
 impl<'gctx> Compilation<'gctx> {
     pub fn new<'a>(bcx: &BuildContext<'a, 'gctx>) -> CargoResult<Compilation<'gctx>> {
-        // Acquire the root-wide lease before Layout takes profile/workspace locks.
-        // It belongs to Compilation so cargo run/test/doc retain it after BuildRunner exits.
-        let consumer_lease = bcx
-            .ws
-            .shared_registry_cache_enabled()
-            .then(|| ConsumerLease::acquire(bcx.ws.configured_build_dir().as_path_unlocked()))
-            .transpose()?;
         let private_lease = bcx
             .ws
             .shared_registry_cache_enabled()
@@ -237,11 +230,20 @@ impl<'gctx> Compilation<'gctx> {
                 .ws
                 .shared_registry_cache_enabled()
                 .then(|| bcx.ws.configured_build_dir().into_path_unlocked()),
-            consumer_lease,
+            consumer_lease: None,
             private_lease,
             lint_warning_count: 0,
             ready_tests: None,
         })
+    }
+
+    /// Acquires protection once the context is known, before inspecting its artifacts.
+    /// The context lease remains with run/test/doc after BuildRunner exits.
+    pub(super) fn scope_consumer_lease(&mut self, context: &str) -> CargoResult<()> {
+        if let Some(root) = &self.shared_registry_root {
+            self.consumer_lease = Some(ConsumerLease::acquire_context(root, context)?);
+        }
+        Ok(())
     }
 
     /// Install early-test signal handling only once the scheduler can service it.

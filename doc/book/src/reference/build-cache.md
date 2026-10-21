@@ -206,10 +206,24 @@ context is reclaimed. Dry runs open the database read-only.
 Cleanup runs only when you explicitly invoke `cargo +ohm gc`; builds, tests,
 worktree commands, and upgrades do not trigger it.
 
-Cleanup skips a root while it is in use. Builds, tests, and programs launched by
-this version of Cargo retain a shared lease for their lifetime, including after
-Cargo exits. Older Cargo versions may only hold compilation locks, so their
-running programs do not have the same protection.
+Cleanup skips contexts that are in use and continues reclaiming unrelated
+contexts. Builds, tests, and programs launched by this version of Cargo retain a
+shared lease on their compiler context for their lifetime, including after Cargo
+exits. A running program therefore does not prevent cleanup of obsolete compiler
+contexts elsewhere in the same shared directory. Dependencies and ThinLTO objects
+within an actively leased context remain protected. GC reports each busy context
+alongside the files and bytes it reclaimed; already-retired trash can be removed
+even while a context is busy.
+
+New contexts use a `v2-` namespace and a versioned provenance record so older
+collectors preserve them. Existing caches remain eligible under their original
+root and profile locks: an older build can still postpone legacy cleanup, without
+blocking cleanup of unused `v2-` contexts. Older Cargo versions may only hold
+compilation locks, so their running programs do not have the same protection.
+Context lock files have stable names outside artifact directories and remain
+after collection; they need no timestamp updates or per-build records.
+Recognized contexts without usage records are reclaimable under the same locks,
+including when a build could not enroll its new context in the database.
 
 `cargo clean` cleans the current workspace's target, including private
 intermediates and incremental state. A target-local lock prevents cleaning state
