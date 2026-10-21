@@ -913,13 +913,14 @@ unstable_cli_options!(
     mtime_on_use: bool = ("Configure Cargo to update the mtime of used files"),
     next_lockfile_bump: bool,
     no_index_update: bool = ("Do not update the registry index even if the cache is outdated"),
+    ohm_defaults: Option<bool> = ("Enable the defaults packaged with Ohm"),
     panic_abort_tests: bool = ("Enable support to run tests with -Cpanic=abort"),
     panic_immediate_abort: bool = ("Enable setting `panic = \"immediate-abort\"` in profiles"),
     profile_hint_mostly_unused: bool = ("Enable the `hint-mostly-unused` setting in profiles to mark a crate as mostly unused."),
     profile_rustflags: bool = ("Enable the `rustflags` option in profiles in .cargo/config.toml file"),
     public_dependency: bool = ("Respect a dependency's `public` field in Cargo.toml to control public/private dependencies"),
     publish_timeout: bool = ("Enable the `publish.timeout` key in .cargo/config.toml file"),
-    relink_only: bool = ("Reuse cached rustc codegen output when only dependency artifacts changed"),
+    relink_only: Option<bool> = ("Reuse cached rustc codegen output when only dependency artifacts changed"),
     root_dir: Option<PathBuf> = ("Set the root directory relative to which paths are printed (defaults to workspace root)"),
     rustc_unicode: bool = ("Enable `rustc`'s unicode error format in Cargo's error messages"),
     rustdoc_depinfo: bool = ("Use dep-info files in rustdoc rebuild detection"),
@@ -1257,6 +1258,16 @@ fn parse_gitoxide(
 }
 
 impl CliUnstable {
+    /// Whether defaults packaged with Ohm are enabled for this invocation.
+    pub fn ohm_defaults(&self) -> bool {
+        self.ohm_defaults.unwrap_or(cfg!(feature = "ohm-defaults"))
+    }
+
+    /// Whether cached rustc codegen should be reused when only dependencies changed.
+    pub fn relink_only(&self) -> bool {
+        self.relink_only.unwrap_or_else(|| self.ohm_defaults())
+    }
+
     /// Parses `-Z` flags from the command line, and returns messages that warn
     /// if any flag has already been stabilized.
     pub fn parse(
@@ -1470,13 +1481,14 @@ impl CliUnstable {
             // can also be set in .cargo/config or with and ENV
             "mtime-on-use" => self.mtime_on_use = parse_empty(k, v)?,
             "no-index-update" => self.no_index_update = parse_empty(k, v)?,
+            "ohm-defaults" => self.ohm_defaults = Some(parse_bool(k, v)?),
             "panic-abort-tests" => self.panic_abort_tests = parse_empty(k, v)?,
             "public-dependency" => self.public_dependency = parse_empty(k, v)?,
             "profile-hint-mostly-unused" => self.profile_hint_mostly_unused = parse_empty(k, v)?,
             "profile-rustflags" => self.profile_rustflags = parse_empty(k, v)?,
             "trim-paths" => self.trim_paths = parse_empty(k, v)?,
             "publish-timeout" => self.publish_timeout = parse_empty(k, v)?,
-            "relink-only" => self.relink_only = parse_empty(k, v)?,
+            "relink-only" => self.relink_only = Some(parse_bool(k, v)?),
             "root-dir" => self.root_dir = v.map(|v| v.into()),
             "rustc-unicode" => self.rustc_unicode = parse_empty(k, v)?,
             "rustdoc-depinfo" => self.rustdoc_depinfo = parse_empty(k, v)?,

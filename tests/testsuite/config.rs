@@ -1282,6 +1282,68 @@ unstable.print-im-a-teapot = true
 }
 
 #[cargo_test]
+fn relink_only_accepts_boolean_values() {
+    let gctx = GlobalContextBuilder::new()
+        .unstable_flag("relink-only")
+        .build();
+    assert!(gctx.cli_unstable().relink_only());
+
+    let gctx = GlobalContextBuilder::new()
+        .unstable_flag("relink-only=no")
+        .build();
+    assert!(!gctx.cli_unstable().relink_only());
+}
+
+#[cargo_test]
+fn ohm_defaults_can_be_disabled_for_one_invocation() {
+    let gctx = GlobalContextBuilder::new().build();
+    assert_eq!(
+        gctx.cli_unstable().ohm_defaults(),
+        cfg!(feature = "ohm-defaults")
+    );
+    assert_eq!(
+        gctx.cli_unstable().relink_only(),
+        cfg!(feature = "ohm-defaults")
+    );
+
+    let gctx = GlobalContextBuilder::new()
+        .unstable_flag("ohm-defaults=no")
+        .build();
+    assert!(!gctx.cli_unstable().ohm_defaults());
+    assert!(!gctx.cli_unstable().relink_only());
+
+    let gctx = GlobalContextBuilder::new()
+        .unstable_flag("ohm-defaults")
+        .build();
+    assert!(gctx.cli_unstable().ohm_defaults());
+    assert!(gctx.cli_unstable().relink_only());
+
+    let gctx = GlobalContextBuilder::new()
+        .env("__CARGO_OHM_DEFAULTS", "no")
+        .env("__CARGO_RELINK_ONLY", "no")
+        .unstable_flag("ohm-defaults")
+        .unstable_flag("relink-only")
+        .build();
+    assert!(gctx.cli_unstable().ohm_defaults());
+    assert!(gctx.cli_unstable().relink_only());
+
+    write_config_toml(
+        "\
+[unstable]
+ohm-defaults = false
+relink-only = false
+",
+    );
+    let gctx = GlobalContextBuilder::new()
+        .env("__CARGO_OHM_DEFAULTS", "invalid")
+        .env("__CARGO_RELINK_ONLY", "invalid")
+        .nightly_features_allowed(true)
+        .build();
+    assert!(!gctx.cli_unstable().ohm_defaults());
+    assert!(!gctx.cli_unstable().relink_only());
+}
+
+#[cargo_test]
 /// Assert that attempting to set an unstable flag that doesn't exist via config
 /// is ignored on stable
 fn unstable_invalid_flag_ignored_on_stable() {

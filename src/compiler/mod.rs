@@ -54,6 +54,7 @@ pub mod unit_dependencies;
 pub mod unit_graph;
 pub mod unused_deps;
 
+use crate::GlobalContext;
 use crate::util::data_structures::{HashMap, HashSet};
 use std::borrow::Cow;
 use std::cell::OnceCell;
@@ -124,6 +125,24 @@ use cargo_util_terminal::Verbosity;
 use rustfix::diagnostics::Applicability;
 
 const RUSTDOC_CRATE_VERSION_FLAG: &str = "--crate-version";
+const OHM_DEFAULT_RUSTFLAGS: [&str; 2] = ["-Zpublic-api-hash", "-Zcache-proc-macros"];
+
+fn unit_rustflags_without_ohm_defaults<'a>(
+    gctx: &GlobalContext,
+    rustflags: &'a [String],
+) -> &'a [String] {
+    if gctx.cli_unstable().ohm_defaults()
+        && rustflags.len() >= OHM_DEFAULT_RUSTFLAGS.len()
+        && rustflags
+            .iter()
+            .zip(OHM_DEFAULT_RUSTFLAGS)
+            .all(|(actual, expected)| actual == expected)
+    {
+        &rustflags[OHM_DEFAULT_RUSTFLAGS.len()..]
+    } else {
+        rustflags
+    }
+}
 
 /// A glorified callback for executing calls to rustc. Rather than calling rustc
 /// directly, we'll use an `Executor`, giving clients an opportunity to intercept
@@ -488,8 +507,8 @@ fn rustc(
 
     let outputs = build_runner.outputs(unit)?;
     let root = build_runner.files().output_dir(unit);
-    let relink_cache = (build_runner.bcx.gctx.cli_unstable().relink_only
-        && fingerprint::unit_can_use_relink_only(unit)
+    let relink_cache = (build_runner.bcx.gctx.cli_unstable().relink_only()
+        && fingerprint::unit_can_use_relink_only(build_runner, unit)
         && matches!(build_runner.lto[unit], lto::Lto::Off | lto::Lto::OnlyObject))
     .then(|| {
         outputs
@@ -601,7 +620,7 @@ fn rustc(
 
     let fingerprint = build_runner.fingerprints.get(unit).cloned();
     let unit_name = format!("{} v{}", unit.pkg.name(), unit.pkg.version());
-    let can_skip_compilation = fingerprint::unit_can_use_early_cutoff(unit)
+    let can_skip_compilation = fingerprint::unit_can_use_early_cutoff(build_runner, unit)
         && fingerprint
             .as_ref()
             .is_some_and(|fingerprint| fingerprint.is_early_cutoff_candidate());
@@ -1216,6 +1235,9 @@ fn prepare_rustc(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> CargoResult
     let mut base = build_runner
         .compilation
         .rustc_process(unit, is_primary, is_workspace)?;
+    if gctx.cli_unstable().ohm_defaults() {
+        base.args(&OHM_DEFAULT_RUSTFLAGS);
+    }
     build_base_args(build_runner, &mut base, unit)?;
     if unit.pkg.manifest().is_embedded() {
         if !gctx.cli_unstable().script {
@@ -1234,7 +1256,7 @@ fn prepare_rustc(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> CargoResult
     if let Some(args) = build_runner.bcx.extra_args_for(unit) {
         base.args(args);
     }
-    base.args(&unit.rustflags);
+    base.args(unit_rustflags_without_ohm_defaults(gctx, &unit.rustflags));
     if gctx.cli_unstable().binary_dep_depinfo {
         base.arg("-Z").arg("binary-dep-depinfo");
     }
