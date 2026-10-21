@@ -1,0 +1,37 @@
+diff --git a/src/compiler/custom_build.rs b/src/compiler/custom_build.rs
+index 1e25fcc..b246ee0 100644
+--- a/src/compiler/custom_build.rs
++++ b/src/compiler/custom_build.rs
+@@ -1127,6 +1127,13 @@ impl BuildOutput {
+             }
+         }
+ 
++        // Compare the exact strings: Path equality can normalize components that
++        // still need to be rewritten in the build script's output.
++        let unchanged_output_directory = script_out_dir_when_generated
++            .to_str()
++            .zip(script_out_dir.to_str())
++            .is_some_and(|(old, new)| old == new);
++
+         for line in input.split(|b| *b == b'\n') {
+             let line = match str::from_utf8(line) {
+                 Ok(line) => line.trim(),
+@@ -1151,10 +1158,14 @@ impl BuildOutput {
+                 continue;
+             };
+             // This will rewrite paths if the target directory has been moved.
+-            let value = value.replace(
+-                script_out_dir_when_generated.to_str().unwrap(),
+-                script_out_dir.to_str().unwrap(),
+-            );
++            let value = if unchanged_output_directory {
++                value.to_owned()
++            } else {
++                value.replace(
++                    script_out_dir_when_generated.to_str().unwrap(),
++                    script_out_dir.to_str().unwrap(),
++                )
++            };
+ 
+             let syntax_prefix = if old_syntax { "cargo:" } else { "cargo::" };
+             macro_rules! check_and_add_target {

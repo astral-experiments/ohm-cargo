@@ -1,0 +1,918 @@
+{
+  "check-ir-confirmation": {
+    "recorded_file_sha256": {
+      "/etc/ssl/certs/ca-certificates.crt": {
+        "availability": "external runtime or historical input; provision and hash for replication",
+        "package_locations": [],
+        "sha256": "a613f481e5bd4aa1731a7db47f97f6a63654e5246b5a9f5446363936cd1a1ffa"
+      },
+      "/home/dev-user/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/bin/python3.12": {
+        "availability": "external runtime or historical input; provision and hash for replication",
+        "package_locations": [],
+        "sha256": "021044895e95be79dc2f110367607e684119afbc8ce75f6f0eec94844e0acec7"
+      },
+      "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/check-build-output-pr175-production-ir.json": {
+        "availability": "packaged",
+        "package_locations": [
+          "historical/configs/check-ir-derivation-source.json"
+        ],
+        "sha256": "fc33e008476c8dfd06c859eb566a1ef2d415e487bcb6530b8ec82a882356f012"
+      },
+      "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/check-build-output-remap-loader-v2-pr175-production-ir.json": {
+        "availability": "packaged",
+        "package_locations": [
+          "configs/check-ir-original.json"
+        ],
+        "sha256": "dd25833a52408caba0b43f7b93833272b09ca00f951915b414a000f6d2ad0ebb"
+      },
+      "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/cumulative-177-178-production-ir-seal.json": {
+        "availability": "packaged",
+        "package_locations": [
+          "validation/static-ir-seal.json"
+        ],
+        "sha256": "44d42fc339d9789688fcc0833ea3c97adf5d6c490eaa47e1400e15b625d0e3eb"
+      },
+      "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/frozen/paired.py": {
+        "availability": "packaged",
+        "package_locations": [
+          "harness/paired.py"
+        ],
+        "sha256": "50d0cb2d4f595ccfa72d463fedb3ff4dadf9dfc1446c749d482d9ede8418c7cf"
+      },
+      "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/frozen/run_cumulative_ir-122eff40292d.py": {
+        "availability": "packaged",
+        "package_locations": [
+          "historical/harness/run_cumulative_ir-122eff40292d.py"
+        ],
+        "sha256": "122eff40292d1e3d43b2196955887c31c4a41f2262c4ee4e5f2327bca3e14d6b"
+      },
+      "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/frozen/run_followon_ir-d78f4b06a398.py": {
+        "availability": "packaged",
+        "package_locations": [
+          "historical/harness/run_followon_ir-d78f4b06a398.py"
+        ],
+        "sha256": "d78f4b06a398ac8632324b9440531090c022abacec24b295fa5b0566e0029e25"
+      },
+      "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/protocol-cumulative-177-178.md": {
+        "availability": "packaged",
+        "package_locations": [
+          "protocols/protocol-cumulative-177-178.md"
+        ],
+        "sha256": "a3eea99c4278b25baf8062bed0a76009f5b605aad76c686cd599202feddf7a67"
+      },
+      "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/protocol-instruction-restored.md": {
+        "availability": "packaged",
+        "package_locations": [
+          "protocols/protocol-instruction-restored.md"
+        ],
+        "sha256": "be4deb715ea05ba5f8472e7890558d9830b416f6ca6bedbafc1e44fc9b4190e8"
+      },
+      "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/protocol-upstream-175.md": {
+        "availability": "packaged",
+        "package_locations": [
+          "protocols/protocol-upstream-175.md"
+        ],
+        "sha256": "92372e9eb4c41a7f864960d2330626c1df80684e35662bd86272c4f3a435d35a"
+      },
+      "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/protocol.md": {
+        "availability": "packaged",
+        "package_locations": [
+          "protocols/protocol.md"
+        ],
+        "sha256": "94f556b260f8fd927a33a2573f7a42bb9f2d3c63c11ba7bac5c8ea69f2166aa1"
+      },
+      "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/results/check-build-output-remap-loader-v2-pr175-production-ir-preflight/report.json": {
+        "availability": "packaged",
+        "package_locations": [
+          "validation/check-ir-preflight.json",
+          "validation/check-ir-preflight/report.json"
+        ],
+        "sha256": "a543eba30b977b6a9adbae18e9916c6afd6e4b042b1fb566fa5447095d864d28"
+      },
+      "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/ohm/bin/rustc": {
+        "availability": "external runtime or historical input; provision and hash for replication",
+        "package_locations": [],
+        "sha256": "6109cff145371a50c4f62b61908d2ffbf6d259b180c8effde07baa426aab682a"
+      },
+      "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/ohm/lib/librustc_driver-b03bf00bec23bb9a.so": {
+        "availability": "external runtime or historical input; provision and hash for replication",
+        "package_locations": [],
+        "sha256": "a3a5d8cc86af464504170220d142c4ea1129434e2d5e741755feec6f9f35a436"
+      },
+      "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/patches/build-output-remap.patch": {
+        "availability": "packaged",
+        "package_locations": [
+          "build/frozen/build-output-remap.patch",
+          "build/patches/build-output-remap.patch"
+        ],
+        "sha256": "a967d4353a4dc3dc252a45231dada1a3f01b27d7f206c0c16f69c61e9796d265"
+      },
+      "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/patches/loader-path-v2-final.patch": {
+        "availability": "packaged",
+        "package_locations": [
+          "build/frozen/loader-path-v2-final.patch",
+          "build/patches/loader-path-v2-final.patch"
+        ],
+        "sha256": "be2146042f257eb1e36f3d5de804a2ff991f87676b5fe38fe4a5d6a30c4ea1e9"
+      },
+      "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/production-build/frozen/accepted-sbom/audit_accepted_sbom.py": {
+        "availability": "packaged",
+        "package_locations": [
+          "build/frozen/audit_accepted_sbom.py"
+        ],
+        "sha256": "f45df33111d2e3f33c7596a69e5c8d26e41b28ccb5371aac3fa88fc187201b60"
+      },
+      "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/production-build/frozen/accepted-sbom/build_driver_accepted_sbom.py": {
+        "availability": "packaged",
+        "package_locations": [
+          "build/frozen/build_driver_accepted_sbom.py"
+        ],
+        "sha256": "cae3aab7ba0e7c2ff89b536f75c7a761b94d635233120a4494cdc7280489aaab"
+      },
+      "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/production-build/frozen/accepted-sbom/manifest.json": {
+        "availability": "packaged",
+        "package_locations": [
+          "build/frozen/manifest.json"
+        ],
+        "sha256": "ec563d1e0f2df89730fc44a99a64b1aeddd3d0d252c9b391cd45ad223cd17e58"
+      },
+      "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/production-build/frozen/accepted-sbom/verification-scripts.json": {
+        "availability": "packaged",
+        "package_locations": [
+          "build/frozen/verification-scripts.json"
+        ],
+        "sha256": "4e3d5d93c6f430252e77398a5f736216fd8cf75e5bc1b1587360d23f30436e51"
+      },
+      "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/production-build/pr175.patch": {
+        "availability": "packaged",
+        "package_locations": [
+          "build/frozen/pr175.patch",
+          "build/patches/pr175.patch"
+        ],
+        "sha256": "30332415e2fdc6735719868cddeeb717cc856415f8cd1731ab5696c109f697dc"
+      },
+      "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/production-build/results/audit-pr175-build-output-remap-loader-v2.json": {
+        "availability": "packaged",
+        "package_locations": [
+          "build/audit-pr175-build-output-remap-loader-v2.json"
+        ],
+        "sha256": "48a15ab8cc6e28ec2241ac35929e2e83bae6894dc528c6b1655ee0b2d25546ef"
+      },
+      "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/production-build/results/cargo-pr175-build-output-remap-loader-v2.build.json": {
+        "availability": "packaged",
+        "package_locations": [
+          "build/cargo-pr175-build-output-remap-loader-v2.build.json"
+        ],
+        "sha256": "2b58e38f6887065ad93f8ebcd989556ba7f1f7d5cca08bd530433b355db60a4d"
+      },
+      "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/production-build/results/cargo-pr175-build-output-remap-loader-v2.strip.json": {
+        "availability": "packaged",
+        "package_locations": [
+          "build/cargo-pr175-build-output-remap-loader-v2.strip.json"
+        ],
+        "sha256": "1753d7324c37719601c58a6193a3fe1d62f5502983b308b9ccf58c9817162051"
+      },
+      "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/production-build/results/cargo-pr175.build.json": {
+        "availability": "packaged",
+        "package_locations": [
+          "build/cargo-pr175.build.json"
+        ],
+        "sha256": "d718b54a37a25d640567826d500307c70bd7280896418c2fa77726fc31390670"
+      },
+      "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/production-build/results/cargo-pr175.strip.json": {
+        "availability": "packaged",
+        "package_locations": [
+          "build/cargo-pr175.strip.json"
+        ],
+        "sha256": "4ab5cb33619d710b96163f3339e99f88cfaaea5faf25ac1b277b32dbf0484c58"
+      },
+      "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/production-build/results/pr175-build-output-remap-loader-v2.source.patch": {
+        "availability": "packaged",
+        "package_locations": [
+          "build/frozen/pr175-build-output-remap-loader-v2.source.patch",
+          "build/pr175-build-output-remap-loader-v2.source.patch"
+        ],
+        "sha256": "d1a0eaab62124c18ebd898e83f1f92f5463749bd2ccb8d8e20f989c3ca687c1b"
+      },
+      "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/production-build/results/pr175.source.patch": {
+        "availability": "packaged",
+        "package_locations": [
+          "build/pr175.source.patch"
+        ],
+        "sha256": "68524f8a81f7f286b3c3fce7e4e55c86f26245879cf8fca5ab622db7948e1ecd"
+      },
+      "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/production-build/results/provenance-pr175-build-output-remap-loader-v2.json": {
+        "availability": "packaged",
+        "package_locations": [
+          "build/provenance-pr175-build-output-remap-loader-v2.json"
+        ],
+        "sha256": "635c0296edb306049a3040e3bd90d52553557a19f6c9bc6097c9a2c6350df3b2"
+      },
+      "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/production-build/results/provenance-pr175.json": {
+        "availability": "packaged",
+        "package_locations": [
+          "build/provenance-pr175.json"
+        ],
+        "sha256": "6bd964ff9511508354a7d695e159ea0ebf6f1e6222b3fefabf3835b41daaab99"
+      },
+      "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/profiling-tools/ohm-valgrind-env.c": {
+        "availability": "packaged",
+        "package_locations": [
+          "harness/ohm-valgrind-env.c"
+        ],
+        "sha256": "503c8612d9972ed2ce4ef7b4431e569a8c98d0d5f0d1149dd0fff364513e691b"
+      },
+      "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/profiling-tools/ohm-valgrind-env.so": {
+        "availability": "external runtime or historical input; provision and hash for replication",
+        "package_locations": [],
+        "sha256": "42f912fe052732ef964681579a3bc1acbc50966f04babb5a452f25dfe4825973"
+      },
+      "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/profiling-tools/valgrind/usr/bin/valgrind": {
+        "availability": "external runtime or historical input; provision and hash for replication",
+        "package_locations": [],
+        "sha256": "4652774bd116cb49951ef74115ad4237cad5021b2bd4d80002f09d986ec438b9"
+      },
+      "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/profiling-tools/valgrind/usr/libexec/valgrind/callgrind-amd64-linux": {
+        "availability": "external runtime or historical input; provision and hash for replication",
+        "package_locations": [],
+        "sha256": "825eb197d519240c112e03ed00f40a8bbe1a0a0614f79ea95e28c67e8695cb03"
+      },
+      "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/profiling-tools/valgrind/usr/libexec/valgrind/vgpreload_core-amd64-linux.so": {
+        "availability": "external runtime or historical input; provision and hash for replication",
+        "package_locations": [],
+        "sha256": "87edd6ad90b12bb5fe58f2ea2235db5b6a3d637657488f3e06d07e482354a8c5"
+      },
+      "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/uv/Cargo.lock": {
+        "availability": "external runtime or historical input; provision and hash for replication",
+        "package_locations": [],
+        "sha256": "747296375bb1889689f3bbb1e0303bddd071d6a65117c00be50856448260d014"
+      },
+      "/usr/bin/env": {
+        "availability": "external runtime or historical input; provision and hash for replication",
+        "package_locations": [],
+        "sha256": "886e5fa8be716b03eeda48856e0f04493f2969fc148fb7812594ffac647fa050"
+      },
+      "/usr/bin/strace": {
+        "availability": "external runtime or historical input; provision and hash for replication",
+        "package_locations": [],
+        "sha256": "28f957c227012de0b18d1bd7fff2d396cb693ea60ed8013be68de071e84b5001"
+      },
+      "/usr/bin/taskset": {
+        "availability": "external runtime or historical input; provision and hash for replication",
+        "package_locations": [],
+        "sha256": "a431738fadddc2e2326c8ab81843e72f4011658379381aef1502a6ddb1c1115b"
+      },
+      "/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2": {
+        "availability": "external runtime or historical input; provision and hash for replication",
+        "package_locations": [],
+        "sha256": "c20a2dc8917c755f02b94049356320fe1f62ac7d9f8994731f807d9df39302da"
+      },
+      "/usr/lib/x86_64-linux-gnu/libc.so.6": {
+        "availability": "external runtime or historical input; provision and hash for replication",
+        "package_locations": [],
+        "sha256": "3a15d66867d83762c7f2f1e37359cb8f6c5743edb369c65285cb0b1c4f7498bf"
+      },
+      "/usr/lib/x86_64-linux-gnu/libgcc_s.so.1": {
+        "availability": "external runtime or historical input; provision and hash for replication",
+        "package_locations": [],
+        "sha256": "d93224d2b0dab4247598be683adca02f5cf00586f99c187579cd7e92058fb7cb"
+      },
+      "/usr/lib/x86_64-linux-gnu/libm.so.6": {
+        "availability": "external runtime or historical input; provision and hash for replication",
+        "package_locations": [],
+        "sha256": "fce00b6f25f459cf4ae0b7fae4257909a1a8a86f9149e7c029a5d617baf1ccd0"
+      }
+    },
+    "variant_sha256": {
+      "baseline": "63495905e7b0b11ad99fa4c2c2674e43657b9902a2e3142ef735fd83efa44cf8",
+      "candidate": "a60f7c6ccb37c582263a02b462673de9b7d5e7a68127258d150be49f1b1721be"
+    }
+  },
+  "check-native-confirmation": {
+    "recorded_file_sha256": {
+      "/etc/ssl/certs/ca-certificates.crt": {
+        "availability": "external runtime or historical input; provision and hash for replication",
+        "package_locations": [],
+        "sha256": "ce2a3d8dea2c81bda0adb002cdc91c978d3730f3478d12bba0482a9f746c69b6"
+      },
+      "/tmp/ohm-hillclimb-20261021/native-pr175-confirmation/benchmark/frozen/paired.py": {
+        "availability": "packaged",
+        "package_locations": [
+          "harness/paired.py"
+        ],
+        "sha256": "50d0cb2d4f595ccfa72d463fedb3ff4dadf9dfc1446c749d482d9ede8418c7cf"
+      },
+      "/tmp/ohm-hillclimb-20261021/native-pr175-confirmation/benchmark/frozen/paired_repeated.py": {
+        "availability": "packaged",
+        "package_locations": [
+          "harness/paired_repeated.py"
+        ],
+        "sha256": "50547460e030aa73e1f48121bf477cf8f4a4538bf1bb577851af54176750b6d3"
+      },
+      "/tmp/ohm-hillclimb-20261021/native-pr175-confirmation/benchmark/protocol-cumulative-177-178.md": {
+        "availability": "packaged",
+        "package_locations": [
+          "protocols/protocol-cumulative-177-178.md"
+        ],
+        "sha256": "a3eea99c4278b25baf8062bed0a76009f5b605aad76c686cd599202feddf7a67"
+      },
+      "/tmp/ohm-hillclimb-20261021/native-pr175-confirmation/benchmark/protocol-native-groups.md": {
+        "availability": "packaged",
+        "package_locations": [
+          "protocols/protocol-native-groups.md"
+        ],
+        "sha256": "722c5e0ea21a6aec7c90d4c3b9e65958a57822f23a1d9b2c1350b7d3ca5061e9"
+      },
+      "/tmp/ohm-hillclimb-20261021/native-pr175-confirmation/benchmark/protocol-native-host8.md": {
+        "availability": "packaged",
+        "package_locations": [
+          "protocols/protocol-native-host8.md"
+        ],
+        "sha256": "2f9df2d71153ec36519bb39af3f8cd94d3ee58b4c960f59cca9b00c91df69a1e"
+      },
+      "/tmp/ohm-hillclimb-20261021/native-pr175-confirmation/benchmark/protocol-upstream-175.md": {
+        "availability": "packaged",
+        "package_locations": [
+          "protocols/protocol-upstream-175.md"
+        ],
+        "sha256": "92372e9eb4c41a7f864960d2330626c1df80684e35662bd86272c4f3a435d35a"
+      },
+      "/tmp/ohm-hillclimb-20261021/native-pr175-confirmation/binaries/stripped/audit-pr175-build-output-remap-loader-v2.json": {
+        "availability": "packaged",
+        "package_locations": [
+          "build/audit-pr175-build-output-remap-loader-v2.json"
+        ],
+        "sha256": "48a15ab8cc6e28ec2241ac35929e2e83bae6894dc528c6b1655ee0b2d25546ef"
+      },
+      "/tmp/ohm-hillclimb-20261021/native-pr175-confirmation/binaries/stripped/cargo-pr175-build-output-remap-loader-v2.build.json": {
+        "availability": "packaged",
+        "package_locations": [
+          "build/cargo-pr175-build-output-remap-loader-v2.build.json"
+        ],
+        "sha256": "2b58e38f6887065ad93f8ebcd989556ba7f1f7d5cca08bd530433b355db60a4d"
+      },
+      "/tmp/ohm-hillclimb-20261021/native-pr175-confirmation/binaries/stripped/cargo-pr175-build-output-remap-loader-v2.strip.json": {
+        "availability": "packaged",
+        "package_locations": [
+          "build/cargo-pr175-build-output-remap-loader-v2.strip.json"
+        ],
+        "sha256": "1753d7324c37719601c58a6193a3fe1d62f5502983b308b9ccf58c9817162051"
+      },
+      "/tmp/ohm-hillclimb-20261021/native-pr175-confirmation/binaries/stripped/cargo-pr175.build.json": {
+        "availability": "packaged",
+        "package_locations": [
+          "build/cargo-pr175.build.json"
+        ],
+        "sha256": "d718b54a37a25d640567826d500307c70bd7280896418c2fa77726fc31390670"
+      },
+      "/tmp/ohm-hillclimb-20261021/native-pr175-confirmation/binaries/stripped/cargo-pr175.strip.json": {
+        "availability": "packaged",
+        "package_locations": [
+          "build/cargo-pr175.strip.json"
+        ],
+        "sha256": "4ab5cb33619d710b96163f3339e99f88cfaaea5faf25ac1b277b32dbf0484c58"
+      },
+      "/tmp/ohm-hillclimb-20261021/native-pr175-confirmation/binaries/stripped/pr175-build-output-remap-loader-v2.source.patch": {
+        "availability": "packaged",
+        "package_locations": [
+          "build/frozen/pr175-build-output-remap-loader-v2.source.patch",
+          "build/pr175-build-output-remap-loader-v2.source.patch"
+        ],
+        "sha256": "d1a0eaab62124c18ebd898e83f1f92f5463749bd2ccb8d8e20f989c3ca687c1b"
+      },
+      "/tmp/ohm-hillclimb-20261021/native-pr175-confirmation/binaries/stripped/pr175.source.patch": {
+        "availability": "packaged",
+        "package_locations": [
+          "build/pr175.source.patch"
+        ],
+        "sha256": "68524f8a81f7f286b3c3fce7e4e55c86f26245879cf8fca5ab622db7948e1ecd"
+      },
+      "/tmp/ohm-hillclimb-20261021/native-pr175-confirmation/binaries/stripped/provenance-pr175.json": {
+        "availability": "packaged",
+        "package_locations": [
+          "build/provenance-pr175.json"
+        ],
+        "sha256": "6bd964ff9511508354a7d695e159ea0ebf6f1e6222b3fefabf3835b41daaab99"
+      },
+      "/tmp/ohm-hillclimb-20261021/native-pr175-confirmation/diagnose-build-output-remap-loader-v2.py": {
+        "availability": "packaged",
+        "package_locations": [
+          "native/diagnose-build-output-remap-loader-v2.py"
+        ],
+        "sha256": "d12495edbc840039f76c67f3e54b4f8785d02ea69c0d44124ae6f1164f43e74f"
+      },
+      "/tmp/ohm-hillclimb-20261021/native-pr175-confirmation/native_combined_driver.py": {
+        "availability": "packaged",
+        "package_locations": [
+          "native/native_combined_driver.py"
+        ],
+        "sha256": "5978542dae1622ba15dffe9e879305aba7a0810813ae998daf8f0b22f3324c78"
+      },
+      "/tmp/ohm-hillclimb-20261021/native-pr175-confirmation/ohm/bin/rustc": {
+        "availability": "external runtime or historical input; provision and hash for replication",
+        "package_locations": [],
+        "sha256": "6109cff145371a50c4f62b61908d2ffbf6d259b180c8effde07baa426aab682a"
+      },
+      "/tmp/ohm-hillclimb-20261021/native-pr175-confirmation/ohm/lib/librustc_driver-b03bf00bec23bb9a.so": {
+        "availability": "external runtime or historical input; provision and hash for replication",
+        "package_locations": [],
+        "sha256": "a3a5d8cc86af464504170220d142c4ea1129434e2d5e741755feec6f9f35a436"
+      },
+      "/tmp/ohm-hillclimb-20261021/native-pr175-confirmation/patches/pr175.patch": {
+        "availability": "packaged",
+        "package_locations": [
+          "build/frozen/pr175.patch",
+          "build/patches/pr175.patch"
+        ],
+        "sha256": "30332415e2fdc6735719868cddeeb717cc856415f8cd1731ab5696c109f697dc"
+      },
+      "/tmp/ohm-hillclimb-20261021/native-pr175-confirmation/uv/Cargo.lock": {
+        "availability": "external runtime or historical input; provision and hash for replication",
+        "package_locations": [],
+        "sha256": "747296375bb1889689f3bbb1e0303bddd071d6a65117c00be50856448260d014"
+      },
+      "/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2": {
+        "availability": "external runtime or historical input; provision and hash for replication",
+        "package_locations": [],
+        "sha256": "c20a2dc8917c755f02b94049356320fe1f62ac7d9f8994731f807d9df39302da"
+      },
+      "/usr/lib/x86_64-linux-gnu/libc.so.6": {
+        "availability": "external runtime or historical input; provision and hash for replication",
+        "package_locations": [],
+        "sha256": "3a15d66867d83762c7f2f1e37359cb8f6c5743edb369c65285cb0b1c4f7498bf"
+      },
+      "/usr/lib/x86_64-linux-gnu/libgcc_s.so.1": {
+        "availability": "external runtime or historical input; provision and hash for replication",
+        "package_locations": [],
+        "sha256": "d93224d2b0dab4247598be683adca02f5cf00586f99c187579cd7e92058fb7cb"
+      },
+      "/usr/lib/x86_64-linux-gnu/libm.so.6": {
+        "availability": "external runtime or historical input; provision and hash for replication",
+        "package_locations": [],
+        "sha256": "fce00b6f25f459cf4ae0b7fae4257909a1a8a86f9149e7c029a5d617baf1ccd0"
+      }
+    },
+    "variant_sha256": {
+      "baseline": "63495905e7b0b11ad99fa4c2c2674e43657b9902a2e3142ef735fd83efa44cf8",
+      "candidate": "a60f7c6ccb37c582263a02b462673de9b7d5e7a68127258d150be49f1b1721be"
+    }
+  },
+  "test-ir-confirmation": {
+    "recorded_file_sha256": {
+      "/etc/ssl/certs/ca-certificates.crt": {
+        "availability": "external runtime or historical input; provision and hash for replication",
+        "package_locations": [],
+        "sha256": "a613f481e5bd4aa1731a7db47f97f6a63654e5246b5a9f5446363936cd1a1ffa"
+      },
+      "/home/dev-user/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/bin/python3.12": {
+        "availability": "external runtime or historical input; provision and hash for replication",
+        "package_locations": [],
+        "sha256": "021044895e95be79dc2f110367607e684119afbc8ce75f6f0eec94844e0acec7"
+      },
+      "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/cumulative-177-178-production-ir-seal.json": {
+        "availability": "packaged",
+        "package_locations": [
+          "validation/static-ir-seal.json"
+        ],
+        "sha256": "44d42fc339d9789688fcc0833ea3c97adf5d6c490eaa47e1400e15b625d0e3eb"
+      },
+      "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/frozen/paired.py": {
+        "availability": "packaged",
+        "package_locations": [
+          "harness/paired.py"
+        ],
+        "sha256": "50d0cb2d4f595ccfa72d463fedb3ff4dadf9dfc1446c749d482d9ede8418c7cf"
+      },
+      "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/frozen/run_cumulative_ir-122eff40292d.py": {
+        "availability": "packaged",
+        "package_locations": [
+          "historical/harness/run_cumulative_ir-122eff40292d.py"
+        ],
+        "sha256": "122eff40292d1e3d43b2196955887c31c4a41f2262c4ee4e5f2327bca3e14d6b"
+      },
+      "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/frozen/run_followon_ir-d78f4b06a398.py": {
+        "availability": "packaged",
+        "package_locations": [
+          "historical/harness/run_followon_ir-d78f4b06a398.py"
+        ],
+        "sha256": "d78f4b06a398ac8632324b9440531090c022abacec24b295fa5b0566e0029e25"
+      },
+      "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/protocol-cumulative-177-178.md": {
+        "availability": "packaged",
+        "package_locations": [
+          "protocols/protocol-cumulative-177-178.md"
+        ],
+        "sha256": "a3eea99c4278b25baf8062bed0a76009f5b605aad76c686cd599202feddf7a67"
+      },
+      "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/protocol-instruction-restored.md": {
+        "availability": "packaged",
+        "package_locations": [
+          "protocols/protocol-instruction-restored.md"
+        ],
+        "sha256": "be4deb715ea05ba5f8472e7890558d9830b416f6ca6bedbafc1e44fc9b4190e8"
+      },
+      "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/protocol-upstream-175.md": {
+        "availability": "packaged",
+        "package_locations": [
+          "protocols/protocol-upstream-175.md"
+        ],
+        "sha256": "92372e9eb4c41a7f864960d2330626c1df80684e35662bd86272c4f3a435d35a"
+      },
+      "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/protocol.md": {
+        "availability": "packaged",
+        "package_locations": [
+          "protocols/protocol.md"
+        ],
+        "sha256": "94f556b260f8fd927a33a2573f7a42bb9f2d3c63c11ba7bac5c8ea69f2166aa1"
+      },
+      "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/results/test-build-output-remap-loader-v2-pr175-production-ir-preflight/report.json": {
+        "availability": "packaged",
+        "package_locations": [
+          "validation/test-ir-preflight.json",
+          "validation/test-ir-preflight/report.json"
+        ],
+        "sha256": "e17de59c3ff1d5ce6c31308e045adb1d19a4a0796c0ea0f999c9dd121a1e7ed1"
+      },
+      "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/test-build-output-pr175-production-ir.json": {
+        "availability": "packaged",
+        "package_locations": [
+          "historical/configs/test-ir-derivation-source.json"
+        ],
+        "sha256": "5b864083e265af3876d2718175f3cf21e810a3831e9381ecb623aa1d6eb0bdc1"
+      },
+      "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/test-build-output-remap-loader-v2-pr175-production-ir.json": {
+        "availability": "packaged",
+        "package_locations": [
+          "configs/test-ir-original.json"
+        ],
+        "sha256": "24c45e1424156489da807370767c548528e71abfc3e223be0868297588a78b4c"
+      },
+      "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/ohm/bin/rustc": {
+        "availability": "external runtime or historical input; provision and hash for replication",
+        "package_locations": [],
+        "sha256": "6109cff145371a50c4f62b61908d2ffbf6d259b180c8effde07baa426aab682a"
+      },
+      "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/ohm/lib/librustc_driver-b03bf00bec23bb9a.so": {
+        "availability": "external runtime or historical input; provision and hash for replication",
+        "package_locations": [],
+        "sha256": "a3a5d8cc86af464504170220d142c4ea1129434e2d5e741755feec6f9f35a436"
+      },
+      "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/patches/build-output-remap.patch": {
+        "availability": "packaged",
+        "package_locations": [
+          "build/frozen/build-output-remap.patch",
+          "build/patches/build-output-remap.patch"
+        ],
+        "sha256": "a967d4353a4dc3dc252a45231dada1a3f01b27d7f206c0c16f69c61e9796d265"
+      },
+      "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/patches/loader-path-v2-final.patch": {
+        "availability": "packaged",
+        "package_locations": [
+          "build/frozen/loader-path-v2-final.patch",
+          "build/patches/loader-path-v2-final.patch"
+        ],
+        "sha256": "be2146042f257eb1e36f3d5de804a2ff991f87676b5fe38fe4a5d6a30c4ea1e9"
+      },
+      "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/production-build/frozen/accepted-sbom/audit_accepted_sbom.py": {
+        "availability": "packaged",
+        "package_locations": [
+          "build/frozen/audit_accepted_sbom.py"
+        ],
+        "sha256": "f45df33111d2e3f33c7596a69e5c8d26e41b28ccb5371aac3fa88fc187201b60"
+      },
+      "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/production-build/frozen/accepted-sbom/build_driver_accepted_sbom.py": {
+        "availability": "packaged",
+        "package_locations": [
+          "build/frozen/build_driver_accepted_sbom.py"
+        ],
+        "sha256": "cae3aab7ba0e7c2ff89b536f75c7a761b94d635233120a4494cdc7280489aaab"
+      },
+      "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/production-build/frozen/accepted-sbom/manifest.json": {
+        "availability": "packaged",
+        "package_locations": [
+          "build/frozen/manifest.json"
+        ],
+        "sha256": "ec563d1e0f2df89730fc44a99a64b1aeddd3d0d252c9b391cd45ad223cd17e58"
+      },
+      "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/production-build/frozen/accepted-sbom/verification-scripts.json": {
+        "availability": "packaged",
+        "package_locations": [
+          "build/frozen/verification-scripts.json"
+        ],
+        "sha256": "4e3d5d93c6f430252e77398a5f736216fd8cf75e5bc1b1587360d23f30436e51"
+      },
+      "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/production-build/pr175.patch": {
+        "availability": "packaged",
+        "package_locations": [
+          "build/frozen/pr175.patch",
+          "build/patches/pr175.patch"
+        ],
+        "sha256": "30332415e2fdc6735719868cddeeb717cc856415f8cd1731ab5696c109f697dc"
+      },
+      "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/production-build/results/audit-pr175-build-output-remap-loader-v2.json": {
+        "availability": "packaged",
+        "package_locations": [
+          "build/audit-pr175-build-output-remap-loader-v2.json"
+        ],
+        "sha256": "48a15ab8cc6e28ec2241ac35929e2e83bae6894dc528c6b1655ee0b2d25546ef"
+      },
+      "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/production-build/results/cargo-pr175-build-output-remap-loader-v2.build.json": {
+        "availability": "packaged",
+        "package_locations": [
+          "build/cargo-pr175-build-output-remap-loader-v2.build.json"
+        ],
+        "sha256": "2b58e38f6887065ad93f8ebcd989556ba7f1f7d5cca08bd530433b355db60a4d"
+      },
+      "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/production-build/results/cargo-pr175-build-output-remap-loader-v2.strip.json": {
+        "availability": "packaged",
+        "package_locations": [
+          "build/cargo-pr175-build-output-remap-loader-v2.strip.json"
+        ],
+        "sha256": "1753d7324c37719601c58a6193a3fe1d62f5502983b308b9ccf58c9817162051"
+      },
+      "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/production-build/results/cargo-pr175.build.json": {
+        "availability": "packaged",
+        "package_locations": [
+          "build/cargo-pr175.build.json"
+        ],
+        "sha256": "d718b54a37a25d640567826d500307c70bd7280896418c2fa77726fc31390670"
+      },
+      "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/production-build/results/cargo-pr175.strip.json": {
+        "availability": "packaged",
+        "package_locations": [
+          "build/cargo-pr175.strip.json"
+        ],
+        "sha256": "4ab5cb33619d710b96163f3339e99f88cfaaea5faf25ac1b277b32dbf0484c58"
+      },
+      "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/production-build/results/pr175-build-output-remap-loader-v2.source.patch": {
+        "availability": "packaged",
+        "package_locations": [
+          "build/frozen/pr175-build-output-remap-loader-v2.source.patch",
+          "build/pr175-build-output-remap-loader-v2.source.patch"
+        ],
+        "sha256": "d1a0eaab62124c18ebd898e83f1f92f5463749bd2ccb8d8e20f989c3ca687c1b"
+      },
+      "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/production-build/results/pr175.source.patch": {
+        "availability": "packaged",
+        "package_locations": [
+          "build/pr175.source.patch"
+        ],
+        "sha256": "68524f8a81f7f286b3c3fce7e4e55c86f26245879cf8fca5ab622db7948e1ecd"
+      },
+      "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/production-build/results/provenance-pr175-build-output-remap-loader-v2.json": {
+        "availability": "packaged",
+        "package_locations": [
+          "build/provenance-pr175-build-output-remap-loader-v2.json"
+        ],
+        "sha256": "635c0296edb306049a3040e3bd90d52553557a19f6c9bc6097c9a2c6350df3b2"
+      },
+      "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/production-build/results/provenance-pr175.json": {
+        "availability": "packaged",
+        "package_locations": [
+          "build/provenance-pr175.json"
+        ],
+        "sha256": "6bd964ff9511508354a7d695e159ea0ebf6f1e6222b3fefabf3835b41daaab99"
+      },
+      "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/profiling-tools/ohm-valgrind-env.c": {
+        "availability": "packaged",
+        "package_locations": [
+          "harness/ohm-valgrind-env.c"
+        ],
+        "sha256": "503c8612d9972ed2ce4ef7b4431e569a8c98d0d5f0d1149dd0fff364513e691b"
+      },
+      "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/profiling-tools/ohm-valgrind-env.so": {
+        "availability": "external runtime or historical input; provision and hash for replication",
+        "package_locations": [],
+        "sha256": "42f912fe052732ef964681579a3bc1acbc50966f04babb5a452f25dfe4825973"
+      },
+      "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/profiling-tools/valgrind/usr/bin/valgrind": {
+        "availability": "external runtime or historical input; provision and hash for replication",
+        "package_locations": [],
+        "sha256": "4652774bd116cb49951ef74115ad4237cad5021b2bd4d80002f09d986ec438b9"
+      },
+      "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/profiling-tools/valgrind/usr/libexec/valgrind/callgrind-amd64-linux": {
+        "availability": "external runtime or historical input; provision and hash for replication",
+        "package_locations": [],
+        "sha256": "825eb197d519240c112e03ed00f40a8bbe1a0a0614f79ea95e28c67e8695cb03"
+      },
+      "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/profiling-tools/valgrind/usr/libexec/valgrind/vgpreload_core-amd64-linux.so": {
+        "availability": "external runtime or historical input; provision and hash for replication",
+        "package_locations": [],
+        "sha256": "87edd6ad90b12bb5fe58f2ea2235db5b6a3d637657488f3e06d07e482354a8c5"
+      },
+      "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/uv/Cargo.lock": {
+        "availability": "external runtime or historical input; provision and hash for replication",
+        "package_locations": [],
+        "sha256": "747296375bb1889689f3bbb1e0303bddd071d6a65117c00be50856448260d014"
+      },
+      "/usr/bin/env": {
+        "availability": "external runtime or historical input; provision and hash for replication",
+        "package_locations": [],
+        "sha256": "886e5fa8be716b03eeda48856e0f04493f2969fc148fb7812594ffac647fa050"
+      },
+      "/usr/bin/strace": {
+        "availability": "external runtime or historical input; provision and hash for replication",
+        "package_locations": [],
+        "sha256": "28f957c227012de0b18d1bd7fff2d396cb693ea60ed8013be68de071e84b5001"
+      },
+      "/usr/bin/taskset": {
+        "availability": "external runtime or historical input; provision and hash for replication",
+        "package_locations": [],
+        "sha256": "a431738fadddc2e2326c8ab81843e72f4011658379381aef1502a6ddb1c1115b"
+      },
+      "/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2": {
+        "availability": "external runtime or historical input; provision and hash for replication",
+        "package_locations": [],
+        "sha256": "c20a2dc8917c755f02b94049356320fe1f62ac7d9f8994731f807d9df39302da"
+      },
+      "/usr/lib/x86_64-linux-gnu/libc.so.6": {
+        "availability": "external runtime or historical input; provision and hash for replication",
+        "package_locations": [],
+        "sha256": "3a15d66867d83762c7f2f1e37359cb8f6c5743edb369c65285cb0b1c4f7498bf"
+      },
+      "/usr/lib/x86_64-linux-gnu/libgcc_s.so.1": {
+        "availability": "external runtime or historical input; provision and hash for replication",
+        "package_locations": [],
+        "sha256": "d93224d2b0dab4247598be683adca02f5cf00586f99c187579cd7e92058fb7cb"
+      },
+      "/usr/lib/x86_64-linux-gnu/libm.so.6": {
+        "availability": "external runtime or historical input; provision and hash for replication",
+        "package_locations": [],
+        "sha256": "fce00b6f25f459cf4ae0b7fae4257909a1a8a86f9149e7c029a5d617baf1ccd0"
+      }
+    },
+    "variant_sha256": {
+      "baseline": "63495905e7b0b11ad99fa4c2c2674e43657b9902a2e3142ef735fd83efa44cf8",
+      "candidate": "a60f7c6ccb37c582263a02b462673de9b7d5e7a68127258d150be49f1b1721be"
+    }
+  },
+  "test-native-confirmation": {
+    "recorded_file_sha256": {
+      "/etc/ssl/certs/ca-certificates.crt": {
+        "availability": "external runtime or historical input; provision and hash for replication",
+        "package_locations": [],
+        "sha256": "ce2a3d8dea2c81bda0adb002cdc91c978d3730f3478d12bba0482a9f746c69b6"
+      },
+      "/tmp/ohm-hillclimb-20261021/native-pr175-confirmation/benchmark/frozen/paired.py": {
+        "availability": "packaged",
+        "package_locations": [
+          "harness/paired.py"
+        ],
+        "sha256": "50d0cb2d4f595ccfa72d463fedb3ff4dadf9dfc1446c749d482d9ede8418c7cf"
+      },
+      "/tmp/ohm-hillclimb-20261021/native-pr175-confirmation/benchmark/frozen/paired_repeated.py": {
+        "availability": "packaged",
+        "package_locations": [
+          "harness/paired_repeated.py"
+        ],
+        "sha256": "50547460e030aa73e1f48121bf477cf8f4a4538bf1bb577851af54176750b6d3"
+      },
+      "/tmp/ohm-hillclimb-20261021/native-pr175-confirmation/benchmark/protocol-cumulative-177-178.md": {
+        "availability": "packaged",
+        "package_locations": [
+          "protocols/protocol-cumulative-177-178.md"
+        ],
+        "sha256": "a3eea99c4278b25baf8062bed0a76009f5b605aad76c686cd599202feddf7a67"
+      },
+      "/tmp/ohm-hillclimb-20261021/native-pr175-confirmation/benchmark/protocol-native-groups.md": {
+        "availability": "packaged",
+        "package_locations": [
+          "protocols/protocol-native-groups.md"
+        ],
+        "sha256": "722c5e0ea21a6aec7c90d4c3b9e65958a57822f23a1d9b2c1350b7d3ca5061e9"
+      },
+      "/tmp/ohm-hillclimb-20261021/native-pr175-confirmation/benchmark/protocol-native-host8.md": {
+        "availability": "packaged",
+        "package_locations": [
+          "protocols/protocol-native-host8.md"
+        ],
+        "sha256": "2f9df2d71153ec36519bb39af3f8cd94d3ee58b4c960f59cca9b00c91df69a1e"
+      },
+      "/tmp/ohm-hillclimb-20261021/native-pr175-confirmation/benchmark/protocol-upstream-175.md": {
+        "availability": "packaged",
+        "package_locations": [
+          "protocols/protocol-upstream-175.md"
+        ],
+        "sha256": "92372e9eb4c41a7f864960d2330626c1df80684e35662bd86272c4f3a435d35a"
+      },
+      "/tmp/ohm-hillclimb-20261021/native-pr175-confirmation/binaries/stripped/audit-pr175-build-output-remap-loader-v2.json": {
+        "availability": "packaged",
+        "package_locations": [
+          "build/audit-pr175-build-output-remap-loader-v2.json"
+        ],
+        "sha256": "48a15ab8cc6e28ec2241ac35929e2e83bae6894dc528c6b1655ee0b2d25546ef"
+      },
+      "/tmp/ohm-hillclimb-20261021/native-pr175-confirmation/binaries/stripped/cargo-pr175-build-output-remap-loader-v2.build.json": {
+        "availability": "packaged",
+        "package_locations": [
+          "build/cargo-pr175-build-output-remap-loader-v2.build.json"
+        ],
+        "sha256": "2b58e38f6887065ad93f8ebcd989556ba7f1f7d5cca08bd530433b355db60a4d"
+      },
+      "/tmp/ohm-hillclimb-20261021/native-pr175-confirmation/binaries/stripped/cargo-pr175-build-output-remap-loader-v2.strip.json": {
+        "availability": "packaged",
+        "package_locations": [
+          "build/cargo-pr175-build-output-remap-loader-v2.strip.json"
+        ],
+        "sha256": "1753d7324c37719601c58a6193a3fe1d62f5502983b308b9ccf58c9817162051"
+      },
+      "/tmp/ohm-hillclimb-20261021/native-pr175-confirmation/binaries/stripped/cargo-pr175.build.json": {
+        "availability": "packaged",
+        "package_locations": [
+          "build/cargo-pr175.build.json"
+        ],
+        "sha256": "d718b54a37a25d640567826d500307c70bd7280896418c2fa77726fc31390670"
+      },
+      "/tmp/ohm-hillclimb-20261021/native-pr175-confirmation/binaries/stripped/cargo-pr175.strip.json": {
+        "availability": "packaged",
+        "package_locations": [
+          "build/cargo-pr175.strip.json"
+        ],
+        "sha256": "4ab5cb33619d710b96163f3339e99f88cfaaea5faf25ac1b277b32dbf0484c58"
+      },
+      "/tmp/ohm-hillclimb-20261021/native-pr175-confirmation/binaries/stripped/pr175-build-output-remap-loader-v2.source.patch": {
+        "availability": "packaged",
+        "package_locations": [
+          "build/frozen/pr175-build-output-remap-loader-v2.source.patch",
+          "build/pr175-build-output-remap-loader-v2.source.patch"
+        ],
+        "sha256": "d1a0eaab62124c18ebd898e83f1f92f5463749bd2ccb8d8e20f989c3ca687c1b"
+      },
+      "/tmp/ohm-hillclimb-20261021/native-pr175-confirmation/binaries/stripped/pr175.source.patch": {
+        "availability": "packaged",
+        "package_locations": [
+          "build/pr175.source.patch"
+        ],
+        "sha256": "68524f8a81f7f286b3c3fce7e4e55c86f26245879cf8fca5ab622db7948e1ecd"
+      },
+      "/tmp/ohm-hillclimb-20261021/native-pr175-confirmation/binaries/stripped/provenance-pr175.json": {
+        "availability": "packaged",
+        "package_locations": [
+          "build/provenance-pr175.json"
+        ],
+        "sha256": "6bd964ff9511508354a7d695e159ea0ebf6f1e6222b3fefabf3835b41daaab99"
+      },
+      "/tmp/ohm-hillclimb-20261021/native-pr175-confirmation/diagnose-build-output-remap-loader-v2.py": {
+        "availability": "packaged",
+        "package_locations": [
+          "native/diagnose-build-output-remap-loader-v2.py"
+        ],
+        "sha256": "d12495edbc840039f76c67f3e54b4f8785d02ea69c0d44124ae6f1164f43e74f"
+      },
+      "/tmp/ohm-hillclimb-20261021/native-pr175-confirmation/native_combined_driver.py": {
+        "availability": "packaged",
+        "package_locations": [
+          "native/native_combined_driver.py"
+        ],
+        "sha256": "5978542dae1622ba15dffe9e879305aba7a0810813ae998daf8f0b22f3324c78"
+      },
+      "/tmp/ohm-hillclimb-20261021/native-pr175-confirmation/ohm/bin/rustc": {
+        "availability": "external runtime or historical input; provision and hash for replication",
+        "package_locations": [],
+        "sha256": "6109cff145371a50c4f62b61908d2ffbf6d259b180c8effde07baa426aab682a"
+      },
+      "/tmp/ohm-hillclimb-20261021/native-pr175-confirmation/ohm/lib/librustc_driver-b03bf00bec23bb9a.so": {
+        "availability": "external runtime or historical input; provision and hash for replication",
+        "package_locations": [],
+        "sha256": "a3a5d8cc86af464504170220d142c4ea1129434e2d5e741755feec6f9f35a436"
+      },
+      "/tmp/ohm-hillclimb-20261021/native-pr175-confirmation/patches/pr175.patch": {
+        "availability": "packaged",
+        "package_locations": [
+          "build/frozen/pr175.patch",
+          "build/patches/pr175.patch"
+        ],
+        "sha256": "30332415e2fdc6735719868cddeeb717cc856415f8cd1731ab5696c109f697dc"
+      },
+      "/tmp/ohm-hillclimb-20261021/native-pr175-confirmation/uv/Cargo.lock": {
+        "availability": "external runtime or historical input; provision and hash for replication",
+        "package_locations": [],
+        "sha256": "747296375bb1889689f3bbb1e0303bddd071d6a65117c00be50856448260d014"
+      },
+      "/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2": {
+        "availability": "external runtime or historical input; provision and hash for replication",
+        "package_locations": [],
+        "sha256": "c20a2dc8917c755f02b94049356320fe1f62ac7d9f8994731f807d9df39302da"
+      },
+      "/usr/lib/x86_64-linux-gnu/libc.so.6": {
+        "availability": "external runtime or historical input; provision and hash for replication",
+        "package_locations": [],
+        "sha256": "3a15d66867d83762c7f2f1e37359cb8f6c5743edb369c65285cb0b1c4f7498bf"
+      },
+      "/usr/lib/x86_64-linux-gnu/libgcc_s.so.1": {
+        "availability": "external runtime or historical input; provision and hash for replication",
+        "package_locations": [],
+        "sha256": "d93224d2b0dab4247598be683adca02f5cf00586f99c187579cd7e92058fb7cb"
+      },
+      "/usr/lib/x86_64-linux-gnu/libm.so.6": {
+        "availability": "external runtime or historical input; provision and hash for replication",
+        "package_locations": [],
+        "sha256": "fce00b6f25f459cf4ae0b7fae4257909a1a8a86f9149e7c029a5d617baf1ccd0"
+      }
+    },
+    "variant_sha256": {
+      "baseline": "63495905e7b0b11ad99fa4c2c2674e43657b9902a2e3142ef735fd83efa44cf8",
+      "candidate": "a60f7c6ccb37c582263a02b462673de9b7d5e7a68127258d150be49f1b1721be"
+    }
+  }
+}

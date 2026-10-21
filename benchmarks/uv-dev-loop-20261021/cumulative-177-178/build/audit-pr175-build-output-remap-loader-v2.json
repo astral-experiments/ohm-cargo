@@ -1,0 +1,55 @@
+{
+  "recorded_at": "2026-10-21T11:23:54.545824+00:00",
+  "scope": "Collected binary, source, log, strip, compiler, and build-setting verification; no Cargo or benchmarks run.",
+  "common_input_fields": [
+    "host",
+    "source",
+    "target",
+    "source_commit",
+    "source_tree",
+    "source_bundle_sha256",
+    "compiler_input_sha256",
+    "rustc_version",
+    "cargo_version",
+    "cc_version",
+    "environment",
+    "command",
+    "inherited_cargo_configuration_sha256",
+    "inherited_native_build_environment",
+    "affinity",
+    "approximation"
+  ],
+  "all_common_inputs_match": true,
+  "frozen_input_manifest_sha256": "ec563d1e0f2df89730fc44a99a64b1aeddd3d0d252c9b391cd45ad223cd17e58",
+  "build_driver_sha256": "cae3aab7ba0e7c2ff89b536f75c7a761b94d635233120a4494cdc7280489aaab",
+  "collector_sha256": "2a9c3bfd1773a3e27408dfa35594b52b32c538b046fc3f61ce7b0355af0c4855",
+  "audit_script_sha256": "f45df33111d2e3f33c7596a69e5c8d26e41b28ccb5371aac3fa88fc187201b60",
+  "provenance_sha256": "635c0296edb306049a3040e3bd90d52553557a19f6c9bc6097c9a2c6350df3b2",
+  "records": [
+    {
+      "variant": "pr175-build-output-remap-loader-v2",
+      "source_tree": "4117e012ab1e082867dcb5a4b2a227e7f5200ff6",
+      "original_linker_output_sha256": "80daabaf2cc1fa5e779ff5e9cacc30cbd3930600db5a332f90152c05b5d2c32c",
+      "stripped_sha256": "a60f7c6ccb37c582263a02b462673de9b7d5e7a68127258d150be49f1b1721be",
+      "stripped_bytes": 41942504,
+      "verified_allocated_sections": 31,
+      "actual_rustc_settings": {
+        "codegen": [
+          "opt-level=3",
+          "lto=thin",
+          "codegen-units=1",
+          "debuginfo=1"
+        ],
+        "cfg": [
+          "feature=\"all-static\"",
+          "feature=\"default\"",
+          "feature=\"http-transport-curl\"",
+          "feature=\"ohm-defaults\"",
+          "feature=\"openssl\"",
+          "feature=\"vendored-libgit2\"",
+          "feature=\"vendored-openssl\""
+        ]
+      }
+    }
+  ]
+}

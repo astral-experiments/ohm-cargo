@@ -1,0 +1,90 @@
+{
+  "audited_at": "2026-10-21T12:01:50.684011+00:00",
+  "status": "passed",
+  "scope": "Completed original-PR175 output+loader batch integrity only; no statistical re-analysis, Cargo execution, or current-stack inference.",
+  "script_sha256": "c7d181a3984692c9e4cf780399755e265a0c5f892077a85bbee74a2cc2e899f7",
+  "transfers": {
+    "combined-results-transfer-sha256.json": {
+      "sha256": "95f9041b2a0f2ace08698c81351c9edbf311a24e0ef0ca009a0917bac4c62ad4",
+      "files_verified": 2582
+    },
+    "combined-metadata-transfer-sha256.json": {
+      "sha256": "bac203bb9d4d52e0877fbd7d36f33fbf8b25b643cb82c40024ef37e59353c84b",
+      "files_verified": 18
+    },
+    "combined-preflight-transfer-sha256.json": {
+      "sha256": "60dd4ea96861ded2608e73a9965679f388b8fac86d85c506d8b4324b26d93987",
+      "files_verified": 20
+    }
+  },
+  "batches": [
+    {
+      "workflow": "check",
+      "kind": "ir",
+      "directory": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/results/check-build-output-remap-loader-v2-pr175-production-ir-confirmation",
+      "seed": 2026102141,
+      "pairs": 12,
+      "warmup_pairs": 2,
+      "invocations_verified": 28,
+      "reduction_percent": 3.629665478195232,
+      "interval_99_percent": [
+        3.536658567640172,
+        3.671840028353157
+      ],
+      "sign_p": 0.00048828125,
+      "gate_passes": true,
+      "interpretation": "Passes the predeclared Cargo-process instruction gate."
+    },
+    {
+      "workflow": "check",
+      "kind": "native",
+      "directory": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/remote-native-8/remote/results/check-build-output-remap-loader-v2-pr175-native-confirmation",
+      "seed": 2026102143,
+      "pairs": 30,
+      "warmup_pairs": 2,
+      "invocations_verified": 512,
+      "reduction_percent": 0.40698932118293785,
+      "interval_99_percent": [
+        -0.3373205038102345,
+        1.1307916044643873
+      ],
+      "sign_p": 0.016124801710247993,
+      "gate_passes": false,
+      "interpretation": "Native interval crosses zero; full native gate fails."
+    },
+    {
+      "workflow": "test",
+      "kind": "ir",
+      "directory": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/results/test-build-output-remap-loader-v2-pr175-production-ir-confirmation",
+      "seed": 2026102142,
+      "pairs": 12,
+      "warmup_pairs": 2,
+      "invocations_verified": 28,
+      "reduction_percent": 3.1824714147664968,
+      "interval_99_percent": [
+        3.0971371641944523,
+        3.2228449933969117
+      ],
+      "sign_p": 0.00048828125,
+      "gate_passes": true,
+      "interpretation": "Passes the predeclared Cargo-process instruction gate."
+    },
+    {
+      "workflow": "test",
+      "kind": "native",
+      "directory": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/remote-native-8/remote/results/test-build-output-remap-loader-v2-pr175-native-confirmation",
+      "seed": 2026102144,
+      "pairs": 30,
+      "warmup_pairs": 2,
+      "invocations_verified": 512,
+      "reduction_percent": 0.8084963878890794,
+      "interval_99_percent": [
+        0.14941270385667726,
+        1.543692469151492
+      ],
+      "sign_p": 0.005222879350185394,
+      "gate_passes": false,
+      "interpretation": "Positive statistical signal, below the predeclared 1% minimum; full native gate fails."
+    }
+  ]
+}

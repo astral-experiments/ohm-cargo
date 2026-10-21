@@ -1,0 +1,31 @@
+{
+  "driver_sha256": "cae3aab7ba0e7c2ff89b536f75c7a761b94d635233120a4494cdc7280489aaab",
+  "strip_helper_sha256": "67d6f781d1e77bbc4f9111e88589fdf0819d19c6073592b422ad832a7c41f6a1",
+  "patch_sha256": {
+    "pr175.patch": "30332415e2fdc6735719868cddeeb717cc856415f8cd1731ab5696c109f697dc",
+    "build-output-remap.patch": "a967d4353a4dc3dc252a45231dada1a3f01b27d7f206c0c16f69c61e9796d265",
+    "loader-path-v2-final.patch": "be2146042f257eb1e36f3d5de804a2ff991f87676b5fe38fe4a5d6a30c4ea1e9",
+    "lazy-sbom.patch": "eae493da9638611f628846a1b6ff9a5d6c30321138d3e1122fc24c9fad1e4bd3"
+  },
+  "expected_variants": {
+    "pr175-build-output-remap-loader-v2": {
+      "base": "5e5d271d763d7beb38b48755e22bd59e93f02b97",
+      "tree": "4117e012ab1e082867dcb5a4b2a227e7f5200ff6",
+      "patch_sha256": {
+        "pr175.patch": "30332415e2fdc6735719868cddeeb717cc856415f8cd1731ab5696c109f697dc",
+        "build-output-remap.patch": "a967d4353a4dc3dc252a45231dada1a3f01b27d7f206c0c16f69c61e9796d265",
+        "loader-path-v2-final.patch": "be2146042f257eb1e36f3d5de804a2ff991f87676b5fe38fe4a5d6a30c4ea1e9"
+      },
+      "canonical_diff_sha256": "d1a0eaab62124c18ebd898e83f1f92f5463749bd2ccb8d8e20f989c3ca687c1b"
+    },
+    "pr175-lazy-sbom": {
+      "base": "5e5d271d763d7beb38b48755e22bd59e93f02b97",
+      "tree": "ec684868eed8347beeb23d1a998e7f2cb997bc7a",
+      "patch_sha256": {
+        "pr175.patch": "30332415e2fdc6735719868cddeeb717cc856415f8cd1731ab5696c109f697dc",
+        "lazy-sbom.patch": "eae493da9638611f628846a1b6ff9a5d6c30321138d3e1122fc24c9fad1e4bd3"
+      },
+      "canonical_diff_sha256": "248cc6adc879ffc3a6cf47dc1364dc059ac8f95ba87087dac88754b27d325039"
+    }
+  }
+}

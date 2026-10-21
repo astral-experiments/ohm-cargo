@@ -1,0 +1,70 @@
+[
+  {
+    "directory": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/results/check-build-output-remap-loader-v2-pr175-production-ir-confirmation",
+    "gate_passes": true,
+    "interpretation": "Passes the predeclared Cargo-process instruction gate.",
+    "interval_99_percent": [
+      3.536658567640172,
+      3.671840028353157
+    ],
+    "invocations_verified": 28,
+    "kind": "ir",
+    "pairs": 12,
+    "reduction_percent": 3.629665478195232,
+    "seed": 2026102141,
+    "sign_p": 0.00048828125,
+    "warmup_pairs": 2,
+    "workflow": "check"
+  },
+  {
+    "directory": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/remote-native-8/remote/results/check-build-output-remap-loader-v2-pr175-native-confirmation",
+    "gate_passes": false,
+    "interpretation": "Native interval crosses zero; full native gate fails.",
+    "interval_99_percent": [
+      -0.3373205038102345,
+      1.1307916044643873
+    ],
+    "invocations_verified": 512,
+    "kind": "native",
+    "pairs": 30,
+    "reduction_percent": 0.40698932118293785,
+    "seed": 2026102143,
+    "sign_p": 0.016124801710247993,
+    "warmup_pairs": 2,
+    "workflow": "check"
+  },
+  {
+    "directory": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/results/test-build-output-remap-loader-v2-pr175-production-ir-confirmation",
+    "gate_passes": true,
+    "interpretation": "Passes the predeclared Cargo-process instruction gate.",
+    "interval_99_percent": [
+      3.0971371641944523,
+      3.2228449933969117
+    ],
+    "invocations_verified": 28,
+    "kind": "ir",
+    "pairs": 12,
+    "reduction_percent": 3.1824714147664968,
+    "seed": 2026102142,
+    "sign_p": 0.00048828125,
+    "warmup_pairs": 2,
+    "workflow": "test"
+  },
+  {
+    "directory": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/remote-native-8/remote/results/test-build-output-remap-loader-v2-pr175-native-confirmation",
+    "gate_passes": false,
+    "interpretation": "Positive statistical signal, below the predeclared 1% minimum; full native gate fails.",
+    "interval_99_percent": [
+      0.14941270385667726,
+      1.543692469151492
+    ],
+    "invocations_verified": 512,
+    "kind": "native",
+    "pairs": 30,
+    "reduction_percent": 0.8084963878890794,
+    "seed": 2026102144,
+    "sign_p": 0.005222879350185394,
+    "warmup_pairs": 2,
+    "workflow": "test"
+  }
+]
