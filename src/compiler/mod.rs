@@ -2145,8 +2145,11 @@ fn add_plugin_deps(
     shared_registry_root: Option<&Path>,
 ) -> CargoResult<()> {
     let var = paths::dylib_path_envvar();
-    let search_path = rustc.get_env(var).unwrap_or_default();
-    let mut search_path = env::split_paths(&search_path).collect::<Vec<_>>();
+    let existing_search_path = rustc.get_env(var);
+    let mut search_path = existing_search_path
+        .as_deref()
+        .map(|path| env::split_paths(path).collect::<Vec<_>>())
+        .unwrap_or_default();
     for (pkg_id, metadata) in &build_scripts.plugins {
         let output = build_script_outputs
             .get(*metadata)
@@ -2157,8 +2160,10 @@ fn add_plugin_deps(
             shared_registry_root,
         ));
     }
-    let search_path = paths::join_paths(&search_path, var)?;
-    rustc.env(var, &search_path);
+    if existing_search_path.is_some() || !search_path.is_empty() {
+        let search_path = paths::join_paths(&search_path, var)?;
+        rustc.env(var, &search_path);
+    }
     Ok(())
 }
 

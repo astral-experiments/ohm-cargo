@@ -5459,6 +5459,192 @@ fn shared_registry_cache_rejects_injected_dynamic_loaders() {
         .run();
 }
 
+#[cfg(target_os = "linux")]
+#[cargo_test]
+fn shared_registry_cache_reuses_built_dependencies_with_an_unset_loader_path() {
+    Package::new("unset-loader-registry", "1.0.0")
+        .file("src/lib.rs", "pub fn value() -> u32 { 23 }")
+        .publish();
+
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+            [package]
+            name = "unset-loader-cache-app"
+            version = "0.1.0"
+            edition = "2021"
+
+            [dependencies]
+            unset-loader-registry = "1.0.0"
+            "#,
+        )
+        .file(
+            ".cargo/config.toml",
+            r#"
+            [env]
+            LD_LIBRARY_PATH = { value = "ignored-relative-loader-directory", force = true }
+            "#,
+        )
+        .file(
+            "src/lib.rs",
+            "pub fn value() -> u32 { unset_loader_registry::value() }",
+        )
+        .build();
+    let shared = paths::root().join("unset-loader-shared-build-directory");
+    let search = paths::root().join("unset-loader-alternate-driver-directory");
+    std::fs::create_dir_all(&search).expect("create an initially empty loader search directory");
+
+    p.shared_registry_cargo("-Zohm-shared-registry-cache build")
+        .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+        .env("CARGO_BUILD_BUILD_DIR", &shared)
+        .env_remove("LD_LIBRARY_PATH")
+        .env("DYLD_LIBRARY_PATH", &search)
+        .with_stderr_contains("[COMPILING] unset-loader-registry v1.0.0")
+        .run();
+    p.shared_registry_cargo("-Zohm-shared-registry-cache -Zohm-reuse-built-deps check -v")
+        .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache", "ohm-reuse-built-deps"])
+        .env("CARGO_BUILD_BUILD_DIR", &shared)
+        .env_remove("LD_LIBRARY_PATH")
+        .env("DYLD_LIBRARY_PATH", &search)
+        .with_stderr_contains("[FRESH] unset-loader-registry v1.0.0")
+        .with_stderr_does_not_contain("[CHECKING] unset-loader-registry v1.0.0")
+        .run();
+
+    // Keep driver-shadow validation active even when Cargo has no platform
+    // loader path to synthesize. Linux ignores this alternate loader variable,
+    // so an isolated stand-in can exercise rejection without breaking rustc.
+    std::fs::write(
+        search.join(selected_runtime_compiler_driver_filename()),
+        "isolated same-basename compiler-driver stand-in",
+    )
+    .expect("introduce an alternate compiler driver without changing the search path");
+    p.shared_registry_cargo("-Zohm-shared-registry-cache -Zohm-reuse-built-deps check -v")
+        .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache", "ohm-reuse-built-deps"])
+        .env("CARGO_BUILD_BUILD_DIR", &shared)
+        .env_remove("LD_LIBRARY_PATH")
+        .env("DYLD_LIBRARY_PATH", &search)
+        .with_stderr_contains("[CHECKING] unset-loader-registry v1.0.0")
+        .run();
+}
+
+#[cfg(target_os = "linux")]
+#[cargo_test]
+fn unset_loader_path_adds_procedural_macro_library_directories() {
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+            [package]
+            name = "plugin-loader-app"
+            version = "0.1.0"
+            edition = "2021"
+
+            [dependencies]
+            loader-path-macro = { path = "loader-path-macro" }
+            "#,
+        )
+        .file("src/lib.rs", "loader_path_macro::assert_loader_path!();")
+        .file(
+            "loader-path-macro/Cargo.toml",
+            r#"
+            [package]
+            name = "loader-path-macro"
+            version = "0.1.0"
+            edition = "2021"
+
+            [lib]
+            proc-macro = true
+            "#,
+        )
+        .file(
+            "loader-path-macro/build.rs",
+            r#"fn main() {
+                let directory = std::path::PathBuf::from(std::env::var_os("OUT_DIR").unwrap())
+                    .join("plugin-libraries");
+                std::fs::create_dir_all(&directory).unwrap();
+                println!("cargo::rustc-link-search=native={}", directory.display());
+            }"#,
+        )
+        .file(
+            "loader-path-macro/src/lib.rs",
+            r#"
+            use proc_macro::TokenStream;
+
+            #[proc_macro]
+            pub fn assert_loader_path(_: TokenStream) -> TokenStream {
+                let value = std::env::var_os("LD_LIBRARY_PATH")
+                    .expect("Cargo must add the procedural macro's library directory");
+                let paths = std::env::split_paths(&value).collect::<Vec<_>>();
+                assert!(paths.iter().all(|path| path.is_absolute()), "{paths:?}");
+                assert!(paths.iter().any(|path| path.ends_with("plugin-libraries")), "{paths:?}");
+                TokenStream::new()
+            }
+            "#,
+        )
+        .build();
+
+    // A native build has a host artifact directory, so it exercises
+    // add_plugin_deps after fill_env leaves the loader path unset.
+    p.cargo("-Zbuild-dir-new-layout build")
+        .masquerade_as_nightly_cargo(&["build-dir-new-layout"])
+        .env_remove("LD_LIBRARY_PATH")
+        .run();
+}
+
+#[cfg(target_os = "linux")]
+#[cargo_test]
+fn shared_registry_cache_preserves_explicit_empty_loader_paths() {
+    Package::new("empty-loader-registry", "1.0.0")
+        .file("src/lib.rs", "pub fn value() -> u32 { 29 }")
+        .publish();
+
+    let search = paths::root().join("empty-loader-search-directory");
+    std::fs::create_dir_all(&search).expect("create an absolute loader search directory");
+    for (index, loader_path) in [
+        String::new(),
+        ":".to_owned(),
+        format!(":{}", search.display()),
+        format!("{}:", search.display()),
+    ]
+    .into_iter()
+    .enumerate()
+    {
+        let p = project_in(&format!("empty-loader-worktree-{index}"))
+            .file(
+                "Cargo.toml",
+                r#"
+                [package]
+                name = "empty-loader-cache-app"
+                version = "0.1.0"
+                edition = "2021"
+
+                [dependencies]
+                empty-loader-registry = "1.0.0"
+                "#,
+            )
+            .file(
+                "src/lib.rs",
+                "pub fn value() -> u32 { empty_loader_registry::value() }",
+            )
+            .build();
+        let shared = paths::root().join(format!("empty-loader-shared-build-directory-{index}"));
+
+        p.shared_registry_cargo("-Zohm-shared-registry-cache build")
+            .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
+            .env("CARGO_BUILD_BUILD_DIR", &shared)
+            .env("LD_LIBRARY_PATH", &loader_path)
+            .with_stderr_contains("[COMPILING] empty-loader-registry v1.0.0")
+            .run();
+        p.shared_registry_cargo("-Zohm-shared-registry-cache -Zohm-reuse-built-deps check -v")
+            .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache", "ohm-reuse-built-deps"])
+            .env("CARGO_BUILD_BUILD_DIR", &shared)
+            .env("LD_LIBRARY_PATH", &loader_path)
+            .with_stderr_contains("[CHECKING] empty-loader-registry v1.0.0")
+            .run();
+    }
+}
+
 #[cargo_test]
 fn shared_registry_cache_rejects_alternate_drivers_in_stable_loader_search_paths() {
     Package::new("loader-shadow-registry", "1.0.0")
