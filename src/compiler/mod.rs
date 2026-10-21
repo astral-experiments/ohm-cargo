@@ -131,12 +131,15 @@ const OHM_INCREMENTAL_CODEGEN_RUSTFLAGS: [&str; 2] =
     ["-Zohm-caller-local-cgus", "-Zohm-stable-cgu-merging"];
 
 /// Marks a workspace/profile namespace prepared under the current seed policy.
-pub(crate) const OHM_WORKTREE_SEED_MARKER: &str = ".ohm-worktree-seed-v5";
-/// Permanently excludes a namespace that has compiled opaque inputs from seeding.
-pub(crate) const OHM_WORKTREE_SEED_DENY_MARKER: &str = ".ohm-worktree-seed-deny-v5";
+pub(crate) const OHM_WORKTREE_SEED_MARKER: &str = ".ohm-worktree-seed-v6";
+/// Permanently excludes a namespace with unsupported inputs from seeding.
+pub(crate) const OHM_WORKTREE_SEED_DENY_MARKER: &str = ".ohm-worktree-seed-deny-v6";
+/// Requires explicit trust at import time, including when a recipient is re-exported.
+pub(crate) const OHM_WORKTREE_SEED_LOCAL_PROC_MACRO_MARKER: &str =
+    ".ohm-worktree-seed-local-proc-macro-v6";
 // Version the compiler-visible prefix too: changing only Cargo's fingerprint
 // cannot invalidate an older incremental session containing untracked macro output.
-const OHM_WORKTREE_SEED_RUSTFLAG: &str = "-Zremap-cwd-prefix=/ohm-workspace/v5";
+const OHM_WORKTREE_SEED_RUSTFLAG: &str = "-Zremap-cwd-prefix=/ohm-workspace/v6";
 
 /// A successful non-check registry build can make a later check worth speculating on.
 ///
