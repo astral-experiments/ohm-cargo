@@ -1,0 +1,92 @@
+{
+  "reviewed_at": "2026-10-21T04:04:58.095248+00:00",
+  "fixture_manifest_sha256": "d56045384fcc180d39a11452f76f457b7547f4167f92dcba40128a2eccb8b00a",
+  "variants": {
+    "baseline": {
+      "snapshot_manifest_sha256": "fbd3628eb4f9544c6f81844a2c1cec50b178822c4a6f920817132bd850a5afbd",
+      "inventory_sha256": "4c45f3d2843f24342bc4c43faaca7ceed649a00f62d9b73b85757c35ab402fa0",
+      "runlist_sha256": "37b132e96d1ab6b7b9523be61a9466e2cf7cf1abddfbd252d45489783cce5338",
+      "cargo_sha256": "63495905e7b0b11ad99fa4c2c2674e43657b9902a2e3142ef735fd83efa44cf8",
+      "native_only": true,
+      "rustc_invocations": 733,
+      "metadata_only_invocations": 0,
+      "other_invocations": 56,
+      "other_executable_basenames": [
+        "build_script_build",
+        "build_script_main"
+      ],
+      "compiled_test_executables": 92,
+      "test_executions_in_runlist": 0,
+      "provenance": [
+        {
+          "loader_injected": true,
+          "compiler_search_directories": [
+            ""
+          ],
+          "count": 432
+        }
+      ],
+      "files": 45046,
+      "logical_bytes": 16441814316
+    },
+    "candidate": {
+      "snapshot_manifest_sha256": "a3a6aad8e59156a988ef6cacd83b15b71ce8bb4f27eb9492f53cbbfec5d0aa2c",
+      "inventory_sha256": "bbddafda59b90698d458cd59832f05b91e34dbd56d0e4c96eb3d56b3e9516ca0",
+      "runlist_sha256": "e837eb7548b4b36e55708036fffe269f15555929f03ef3ba03a6436fb6a45c8a",
+      "cargo_sha256": "12b7f73177fcfbe5704d5237fb8b0ce79d868c002f5954012aa272ea56fc9869",
+      "native_only": true,
+      "rustc_invocations": 733,
+      "metadata_only_invocations": 0,
+      "other_invocations": 56,
+      "other_executable_basenames": [
+        "build_script_build",
+        "build_script_main"
+      ],
+      "compiled_test_executables": 92,
+      "test_executions_in_runlist": 0,
+      "provenance": [
+        {
+          "loader_injected": false,
+          "compiler_search_directories": [],
+          "count": 432
+        }
+      ],
+      "files": 45048,
+      "logical_bytes": 16441790281
+    }
+  },
+  "host": {
+    "process_snapshot": [
+      "2313738 python3         42.8  0.0",
+      "    897 falcon-sensor-b 33.9  1.9",
+      "1823730 codex            8.8  1.2",
+      "2268084 kworker/u64:0+f  1.8  0.0",
+      "2219269 kworker/u64:2-w  0.9  0.0",
+      "2212809 kworker/u64:3-e  0.8  0.0",
+      "      1 systemd          0.7  0.0",
+      "2212327 kworker/u64:1-w  0.4  0.0",
+      "1830005 codex-code-mode  0.4  0.0",
+      "2031066 kworker/u64:5-e  0.4  0.0",
+      "   1417 xds-server       0.3  0.0",
+      "    216 kcompactd0       0.3  0.0",
+      "   1420 envoy            0.3  0.0",
+      "2313620 sshd             0.2  0.0",
+      "3051919 applied-devbox-  0.2  0.0",
+      "1336775 redis-server     0.2  0.0",
+      "2938451 dbox-proxy       0.1  0.0",
+      "1329932 systemd-resolve  0.1  0.0",
+      "   1425 dns-responder    0.1  0.0",
+      "1560209 devbox-agent     0.1  0.0"
+    ],
+    "load_average": [
+      4.92236328125,
+      5.98876953125,
+      3.95361328125
+    ],
+    "memory": [
+      "MemAvailable:   97111088 kB",
+      "Dirty:           3907132 kB",
+      "Writeback:          6044 kB"
+    ]
+  }
+}

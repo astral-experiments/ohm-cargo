@@ -1,0 +1,108 @@
+{
+  "initialized_at": "2026-10-21T03:55:27.991851+00:00",
+  "protocol_sha256": "2ce14ba5355e38917985e573a5e659ec534713568bc1a5ff4d1d490d1f891479",
+  "archived_fixture": "/tmp/ohm-hillclimb-20261021/confirmation-path-cache/work/loader-fixtures/uv-loader-pr175-diagnostic-01-archive",
+  "archived_fixture_manifest_sha256": "4775937000a1222d7e5176946b1359daf72adc13fb39a936bb2d4f1a2d9a2a1a",
+  "historical_run_manifest_sha256": "0292bae478dc9d40d5a1570138c2bb07282eac033ce0c3ae2527785094e4417d",
+  "variant_sha256": {
+    "baseline": "63495905e7b0b11ad99fa4c2c2674e43657b9902a2e3142ef735fd83efa44cf8",
+    "candidate": "12b7f73177fcfbe5704d5237fb8b0ce79d868c002f5954012aa272ea56fc9869"
+  },
+  "matching_build_fields": [
+    "source",
+    "target",
+    "source_commit",
+    "command",
+    "environment",
+    "cleared_environment_names",
+    "rustc_version",
+    "cargo_version",
+    "compiler_input_sha256",
+    "inherited_cargo_configuration_sha256",
+    "inherited_native_build_environment",
+    "cc_version",
+    "approximation"
+  ],
+  "runtime_libraries": {
+    "baseline": [
+      "/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2",
+      "/usr/lib/x86_64-linux-gnu/libc.so.6",
+      "/usr/lib/x86_64-linux-gnu/libgcc_s.so.1",
+      "/usr/lib/x86_64-linux-gnu/libm.so.6"
+    ],
+    "candidate": [
+      "/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2",
+      "/usr/lib/x86_64-linux-gnu/libc.so.6",
+      "/usr/lib/x86_64-linux-gnu/libgcc_s.so.1",
+      "/usr/lib/x86_64-linux-gnu/libm.so.6"
+    ]
+  },
+  "record_file_sha256": {
+    "/tmp/ohm-hillclimb-20261021/confirmation-path-cache/ohm/bin/rustc": "6109cff145371a50c4f62b61908d2ffbf6d259b180c8effde07baa426aab682a",
+    "/tmp/ohm-hillclimb-20261021/confirmation-path-cache/ohm/lib/librustc_driver-b03bf00bec23bb9a.so": "a3a5d8cc86af464504170220d142c4ea1129434e2d5e741755feec6f9f35a436",
+    "/tmp/ohm-hillclimb-20261021/confirmation-path-cache/uv/Cargo.lock": "747296375bb1889689f3bbb1e0303bddd071d6a65117c00be50856448260d014",
+    "/tmp/ohm-hillclimb-20261021/confirmation-path-cache/work/benchmark/paired.py": "50d0cb2d4f595ccfa72d463fedb3ff4dadf9dfc1446c749d482d9ede8418c7cf",
+    "/tmp/ohm-hillclimb-20261021/confirmation-path-cache/work/benchmark/loader-fixture.md": "206957f1659045d0f1ad526284bbf889084e9bd47fd5aab16ba95b72daaab6dc",
+    "/etc/ssl/certs/ca-certificates.crt": "ce2a3d8dea2c81bda0adb002cdc91c978d3730f3478d12bba0482a9f746c69b6",
+    "/tmp/ohm-hillclimb-20261021/confirmation-path-cache/production-build/pr175.patch": "30332415e2fdc6735719868cddeeb717cc856415f8cd1731ab5696c109f697dc",
+    "/tmp/ohm-hillclimb-20261021/confirmation-path-cache/patches/loader-path-v2-final.patch": "be2146042f257eb1e36f3d5de804a2ff991f87676b5fe38fe4a5d6a30c4ea1e9",
+    "/tmp/ohm-hillclimb-20261021/confirmation-path-cache/work/benchmark/loader_fixture_delta.py": "e3d552d1bbbb903ade7a3dc70e7f6677bf60481be6c634b25f58d2d3b0cecb61",
+    "/tmp/ohm-hillclimb-20261021/confirmation-path-cache/work/benchmark/loader-production-confirmation-protocol.json": "2ce14ba5355e38917985e573a5e659ec534713568bc1a5ff4d1d490d1f891479",
+    "/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2": "c20a2dc8917c755f02b94049356320fe1f62ac7d9f8994731f807d9df39302da",
+    "/usr/lib/x86_64-linux-gnu/libc.so.6": "3a15d66867d83762c7f2f1e37359cb8f6c5743edb369c65285cb0b1c4f7498bf",
+    "/usr/lib/x86_64-linux-gnu/libgcc_s.so.1": "d93224d2b0dab4247598be683adca02f5cf00586f99c187579cd7e92058fb7cb",
+    "/usr/lib/x86_64-linux-gnu/libm.so.6": "fce00b6f25f459cf4ae0b7fae4257909a1a8a86f9149e7c029a5d617baf1ccd0",
+    "/tmp/ohm-hillclimb-20261021/confirmation-path-cache/production/cargo-pr175.build.json": "d718b54a37a25d640567826d500307c70bd7280896418c2fa77726fc31390670",
+    "/tmp/ohm-hillclimb-20261021/confirmation-path-cache/production/cargo-pr175.strip.json": "4ab5cb33619d710b96163f3339e99f88cfaaea5faf25ac1b277b32dbf0484c58",
+    "/tmp/ohm-hillclimb-20261021/confirmation-path-cache/production/pr175.source.patch": "68524f8a81f7f286b3c3fce7e4e55c86f26245879cf8fca5ab622db7948e1ecd",
+    "/tmp/ohm-hillclimb-20261021/confirmation-path-cache/production/cargo-pr175-loader-v2.build.json": "70e92456ce58d54886404577256af2a349d0ebeb2c751e7bd627d861e3429db1",
+    "/tmp/ohm-hillclimb-20261021/confirmation-path-cache/production/cargo-pr175-loader-v2.strip.json": "e2b1628ae37a0525833cb57cf669d96ff816fca3532b118af9ff36500985bf6f",
+    "/tmp/ohm-hillclimb-20261021/confirmation-path-cache/production/pr175-loader-v2.source.patch": "714656051b9beb7aaeae0502164196f12aa40257cc217ced1112d9935a4a2086",
+    "/tmp/ohm-hillclimb-20261021/confirmation-path-cache/production/provenance-pr175.json": "6bd964ff9511508354a7d695e159ea0ebf6f1e6222b3fefabf3835b41daaab99",
+    "/tmp/ohm-hillclimb-20261021/confirmation-path-cache/production/provenance-pr175-loader-v2.json": "ee595b01a504c19ddd7dd5171f40016d92280866a27f90d23693a52e076b7db1",
+    "/tmp/ohm-hillclimb-20261021/confirmation-path-cache/production/expected-pr175-source-trees.json": "cd4aa679520b5ba4084c0337ac0e356e9a04c831f390816586725803e9017adb",
+    "/tmp/ohm-hillclimb-20261021/confirmation-path-cache/finalize_loader_production.py": "7e081ecc63ca1675ce3adb37aca84533db21c81c67dff42dbf28850830e5b0ed",
+    "/usr/bin/rsync": "6b4fb867cb49d0332b72b234656311c807ab68b0537905fda7a3e7481a139f16"
+  },
+  "template_sha256": "d668c1cdf91699d2cc3545a96a9c779f342e97698b849d20ea4cf0e48c9d8bfe",
+  "fixture_manifest_sha256": "d56045384fcc180d39a11452f76f457b7547f4167f92dcba40128a2eccb8b00a",
+  "paired_config_sha256": "e7f2e93506ecc05dc011813424473065f46842e4dd8420ae707792c667be8c77",
+  "host": {
+    "process_snapshot": [
+      "2222447 ps               500  0.0",
+      "2222393 python3         41.9  0.0",
+      "    897 falcon-sensor-b 33.9  1.9",
+      "1823730 codex            8.8  1.3",
+      "2222287 sshd             1.9  0.0",
+      "      1 systemd          0.7  0.0",
+      "1830005 codex-code-mode  0.4  0.0",
+      "2031066 kworker/u64:5-f  0.4  0.0",
+      "   1417 xds-server       0.3  0.0",
+      "    216 kcompactd0       0.3  0.0",
+      "2106902 kworker/u64:0-f  0.3  0.0",
+      "   1420 envoy            0.3  0.0",
+      "3051919 applied-devbox-  0.2  0.0",
+      "1336775 redis-server     0.2  0.0",
+      "2938451 dbox-proxy       0.1  0.0",
+      "1329932 systemd-resolve  0.1  0.0",
+      "   1425 dns-responder    0.1  0.0",
+      "1560209 devbox-agent     0.1  0.0",
+      "     17 rcu_preempt      0.1  0.0",
+      "3532655 dbox             0.1  0.0"
+    ],
+    "load_average": [
+      0.4443359375,
+      0.451171875,
+      1.3076171875
+    ],
+    "memory": [
+      "MemAvailable:   97134528 kB",
+      "Dirty:               576 kB",
+      "Writeback:             0 kB"
+    ]
+  },
+  "native_producer_order": [
+    "candidate",
+    "baseline"
+  ]
+}

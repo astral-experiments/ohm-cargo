@@ -1,0 +1,737 @@
+{
+  "kind": "Production-settings restored-state confirmation mechanism evidence",
+  "primary_analysis": "analysis.json",
+  "pairs": 12,
+  "all_24_samples_retained": true,
+  "fixture_valid": true,
+  "frozen_inputs_unchanged": true,
+  "native_producer_order": [
+    "candidate",
+    "baseline"
+  ],
+  "no_normal_diagnostic_samples_pooled": true,
+  "statistical_unit": "New production-settings binaries and fresh native seeds, reverse producer order, no pooling with the earlier normal-build n=1 diagnostic. Statistical unit is a restored-state pair, conditional on one new native seed per variant, not twelve independent native builds.",
+  "build_regime": "Matched production settings: all-static, ohm-defaults, ThinLTO, one codegen unit, dev channel, debug1, same physical build paths and stock Rust1.99.0. No PGO; not an exact reconstruction of the published stage1-built release.",
+  "variant_sha256": {
+    "baseline": "63495905e7b0b11ad99fa4c2c2674e43657b9902a2e3142ef735fd83efa44cf8",
+    "candidate": "12b7f73177fcfbe5704d5237fb8b0ce79d868c002f5954012aa272ea56fc9869"
+  },
+  "variants": {
+    "baseline": {
+      "samples": 12,
+      "count_frequencies": {
+        "rustc_invocations": {
+          "500": 12
+        },
+        "metadata_only_rustc_invocations": {
+          "499": 12
+        },
+        "other_invocations": {
+          "1": 12
+        },
+        "cached_or_executed_build_script_output_messages": {
+          "54": 12
+        },
+        "fresh_artifacts": {
+          "149": 12
+        },
+        "compiled_artifacts": {
+          "500": 12
+        }
+      },
+      "other_executable_basenames": [
+        "build_script_build"
+      ],
+      "restore_seconds_excluded": {
+        "minimum": 24.086253382,
+        "median": 42.791262579000005,
+        "maximum": 76.323496705,
+        "sum": 486.024042322
+      }
+    },
+    "candidate": {
+      "samples": 12,
+      "count_frequencies": {
+        "rustc_invocations": {
+          "174": 12
+        },
+        "metadata_only_rustc_invocations": {
+          "173": 12
+        },
+        "other_invocations": {
+          "1": 12
+        },
+        "cached_or_executed_build_script_output_messages": {
+          "54": 12
+        },
+        "fresh_artifacts": {
+          "479": 12
+        },
+        "compiled_artifacts": {
+          "174": 12
+        }
+      },
+      "other_executable_basenames": [
+        "build_script_build"
+      ],
+      "restore_seconds_excluded": {
+        "minimum": 28.058192202,
+        "median": 44.203482392,
+        "maximum": 77.894224893,
+        "sum": 524.464420871
+      }
+    }
+  },
+  "restoration_records": [
+    {
+      "pair": 0,
+      "position": 0,
+      "variant": "baseline",
+      "restoration": {
+        "method": "rsync-checksum",
+        "fallback": null
+      },
+      "restore_wall_ns": 24086253382
+    },
+    {
+      "pair": 0,
+      "position": 1,
+      "variant": "candidate",
+      "restoration": {
+        "method": "rsync-checksum",
+        "fallback": null
+      },
+      "restore_wall_ns": 77894224893
+    },
+    {
+      "pair": 1,
+      "position": 0,
+      "variant": "candidate",
+      "restoration": {
+        "method": "rsync-checksum",
+        "fallback": null
+      },
+      "restore_wall_ns": 34234021199
+    },
+    {
+      "pair": 1,
+      "position": 1,
+      "variant": "baseline",
+      "restoration": {
+        "method": "rsync-checksum",
+        "fallback": null
+      },
+      "restore_wall_ns": 76323496705
+    },
+    {
+      "pair": 2,
+      "position": 0,
+      "variant": "candidate",
+      "restoration": {
+        "method": "rsync-checksum",
+        "fallback": null
+      },
+      "restore_wall_ns": 61098501749
+    },
+    {
+      "pair": 2,
+      "position": 1,
+      "variant": "baseline",
+      "restoration": {
+        "method": "rsync-checksum",
+        "fallback": null
+      },
+      "restore_wall_ns": 47492043183
+    },
+    {
+      "pair": 3,
+      "position": 0,
+      "variant": "candidate",
+      "restoration": {
+        "method": "rsync-checksum",
+        "fallback": null
+      },
+      "restore_wall_ns": 44698784602
+    },
+    {
+      "pair": 3,
+      "position": 1,
+      "variant": "baseline",
+      "restoration": {
+        "method": "rsync-checksum",
+        "fallback": null
+      },
+      "restore_wall_ns": 46486467970
+    },
+    {
+      "pair": 4,
+      "position": 0,
+      "variant": "baseline",
+      "restoration": {
+        "method": "rsync-checksum",
+        "fallback": null
+      },
+      "restore_wall_ns": 28966667426
+    },
+    {
+      "pair": 4,
+      "position": 1,
+      "variant": "candidate",
+      "restoration": {
+        "method": "rsync-checksum",
+        "fallback": null
+      },
+      "restore_wall_ns": 43708180182
+    },
+    {
+      "pair": 5,
+      "position": 0,
+      "variant": "candidate",
+      "restoration": {
+        "method": "rsync-checksum",
+        "fallback": null
+      },
+      "restore_wall_ns": 28270697697
+    },
+    {
+      "pair": 5,
+      "position": 1,
+      "variant": "baseline",
+      "restoration": {
+        "method": "rsync-checksum",
+        "fallback": null
+      },
+      "restore_wall_ns": 45429249035
+    },
+    {
+      "pair": 6,
+      "position": 0,
+      "variant": "baseline",
+      "restoration": {
+        "method": "rsync-checksum",
+        "fallback": null
+      },
+      "restore_wall_ns": 29316267854
+    },
+    {
+      "pair": 6,
+      "position": 1,
+      "variant": "candidate",
+      "restoration": {
+        "method": "rsync-checksum",
+        "fallback": null
+      },
+      "restore_wall_ns": 44772110962
+    },
+    {
+      "pair": 7,
+      "position": 0,
+      "variant": "candidate",
+      "restoration": {
+        "method": "rsync-checksum",
+        "fallback": null
+      },
+      "restore_wall_ns": 28058192202
+    },
+    {
+      "pair": 7,
+      "position": 1,
+      "variant": "baseline",
+      "restoration": {
+        "method": "rsync-checksum",
+        "fallback": null
+      },
+      "restore_wall_ns": 42761109515
+    },
+    {
+      "pair": 8,
+      "position": 0,
+      "variant": "baseline",
+      "restoration": {
+        "method": "rsync-checksum",
+        "fallback": null
+      },
+      "restore_wall_ns": 28613045290
+    },
+    {
+      "pair": 8,
+      "position": 1,
+      "variant": "candidate",
+      "restoration": {
+        "method": "rsync-checksum",
+        "fallback": null
+      },
+      "restore_wall_ns": 43167350906
+    },
+    {
+      "pair": 9,
+      "position": 0,
+      "variant": "candidate",
+      "restoration": {
+        "method": "rsync-checksum",
+        "fallback": null
+      },
+      "restore_wall_ns": 28103358907
+    },
+    {
+      "pair": 9,
+      "position": 1,
+      "variant": "baseline",
+      "restoration": {
+        "method": "rsync-checksum",
+        "fallback": null
+      },
+      "restore_wall_ns": 42821415643
+    },
+    {
+      "pair": 10,
+      "position": 0,
+      "variant": "baseline",
+      "restoration": {
+        "method": "rsync-checksum",
+        "fallback": null
+      },
+      "restore_wall_ns": 28905813804
+    },
+    {
+      "pair": 10,
+      "position": 1,
+      "variant": "candidate",
+      "restoration": {
+        "method": "rsync-checksum",
+        "fallback": null
+      },
+      "restore_wall_ns": 45395348310
+    },
+    {
+      "pair": 11,
+      "position": 0,
+      "variant": "baseline",
+      "restoration": {
+        "method": "rsync-checksum",
+        "fallback": null
+      },
+      "restore_wall_ns": 44822212515
+    },
+    {
+      "pair": 11,
+      "position": 1,
+      "variant": "candidate",
+      "restoration": {
+        "method": "rsync-checksum",
+        "fallback": null
+      },
+      "restore_wall_ns": 45063649262
+    }
+  ],
+  "samples": [
+    {
+      "pair": 0,
+      "position": 0,
+      "variant": "baseline",
+      "order": "AB",
+      "rustc_invocations": 500,
+      "metadata_only_rustc_invocations": 499,
+      "other_invocations": 1,
+      "other_executable_basenames": [
+        "build_script_build"
+      ],
+      "cached_or_executed_build_script_output_messages": 54,
+      "fresh_artifacts": 149,
+      "compiled_artifacts": 500,
+      "restore_seconds_excluded": 24.086253382,
+      "native_snapshot_inventory_sha256": "4c45f3d2843f24342bc4c43faaca7ceed649a00f62d9b73b85757c35ab402fa0"
+    },
+    {
+      "pair": 0,
+      "position": 1,
+      "variant": "candidate",
+      "order": "AB",
+      "rustc_invocations": 174,
+      "metadata_only_rustc_invocations": 173,
+      "other_invocations": 1,
+      "other_executable_basenames": [
+        "build_script_build"
+      ],
+      "cached_or_executed_build_script_output_messages": 54,
+      "fresh_artifacts": 479,
+      "compiled_artifacts": 174,
+      "restore_seconds_excluded": 77.894224893,
+      "native_snapshot_inventory_sha256": "bbddafda59b90698d458cd59832f05b91e34dbd56d0e4c96eb3d56b3e9516ca0"
+    },
+    {
+      "pair": 1,
+      "position": 0,
+      "variant": "candidate",
+      "order": "BA",
+      "rustc_invocations": 174,
+      "metadata_only_rustc_invocations": 173,
+      "other_invocations": 1,
+      "other_executable_basenames": [
+        "build_script_build"
+      ],
+      "cached_or_executed_build_script_output_messages": 54,
+      "fresh_artifacts": 479,
+      "compiled_artifacts": 174,
+      "restore_seconds_excluded": 34.234021199,
+      "native_snapshot_inventory_sha256": "bbddafda59b90698d458cd59832f05b91e34dbd56d0e4c96eb3d56b3e9516ca0"
+    },
+    {
+      "pair": 1,
+      "position": 1,
+      "variant": "baseline",
+      "order": "BA",
+      "rustc_invocations": 500,
+      "metadata_only_rustc_invocations": 499,
+      "other_invocations": 1,
+      "other_executable_basenames": [
+        "build_script_build"
+      ],
+      "cached_or_executed_build_script_output_messages": 54,
+      "fresh_artifacts": 149,
+      "compiled_artifacts": 500,
+      "restore_seconds_excluded": 76.323496705,
+      "native_snapshot_inventory_sha256": "4c45f3d2843f24342bc4c43faaca7ceed649a00f62d9b73b85757c35ab402fa0"
+    },
+    {
+      "pair": 2,
+      "position": 0,
+      "variant": "candidate",
+      "order": "BA",
+      "rustc_invocations": 174,
+      "metadata_only_rustc_invocations": 173,
+      "other_invocations": 1,
+      "other_executable_basenames": [
+        "build_script_build"
+      ],
+      "cached_or_executed_build_script_output_messages": 54,
+      "fresh_artifacts": 479,
+      "compiled_artifacts": 174,
+      "restore_seconds_excluded": 61.098501749,
+      "native_snapshot_inventory_sha256": "bbddafda59b90698d458cd59832f05b91e34dbd56d0e4c96eb3d56b3e9516ca0"
+    },
+    {
+      "pair": 2,
+      "position": 1,
+      "variant": "baseline",
+      "order": "BA",
+      "rustc_invocations": 500,
+      "metadata_only_rustc_invocations": 499,
+      "other_invocations": 1,
+      "other_executable_basenames": [
+        "build_script_build"
+      ],
+      "cached_or_executed_build_script_output_messages": 54,
+      "fresh_artifacts": 149,
+      "compiled_artifacts": 500,
+      "restore_seconds_excluded": 47.492043183,
+      "native_snapshot_inventory_sha256": "4c45f3d2843f24342bc4c43faaca7ceed649a00f62d9b73b85757c35ab402fa0"
+    },
+    {
+      "pair": 3,
+      "position": 0,
+      "variant": "candidate",
+      "order": "BA",
+      "rustc_invocations": 174,
+      "metadata_only_rustc_invocations": 173,
+      "other_invocations": 1,
+      "other_executable_basenames": [
+        "build_script_build"
+      ],
+      "cached_or_executed_build_script_output_messages": 54,
+      "fresh_artifacts": 479,
+      "compiled_artifacts": 174,
+      "restore_seconds_excluded": 44.698784602,
+      "native_snapshot_inventory_sha256": "bbddafda59b90698d458cd59832f05b91e34dbd56d0e4c96eb3d56b3e9516ca0"
+    },
+    {
+      "pair": 3,
+      "position": 1,
+      "variant": "baseline",
+      "order": "BA",
+      "rustc_invocations": 500,
+      "metadata_only_rustc_invocations": 499,
+      "other_invocations": 1,
+      "other_executable_basenames": [
+        "build_script_build"
+      ],
+      "cached_or_executed_build_script_output_messages": 54,
+      "fresh_artifacts": 149,
+      "compiled_artifacts": 500,
+      "restore_seconds_excluded": 46.48646797,
+      "native_snapshot_inventory_sha256": "4c45f3d2843f24342bc4c43faaca7ceed649a00f62d9b73b85757c35ab402fa0"
+    },
+    {
+      "pair": 4,
+      "position": 0,
+      "variant": "baseline",
+      "order": "AB",
+      "rustc_invocations": 500,
+      "metadata_only_rustc_invocations": 499,
+      "other_invocations": 1,
+      "other_executable_basenames": [
+        "build_script_build"
+      ],
+      "cached_or_executed_build_script_output_messages": 54,
+      "fresh_artifacts": 149,
+      "compiled_artifacts": 500,
+      "restore_seconds_excluded": 28.966667426,
+      "native_snapshot_inventory_sha256": "4c45f3d2843f24342bc4c43faaca7ceed649a00f62d9b73b85757c35ab402fa0"
+    },
+    {
+      "pair": 4,
+      "position": 1,
+      "variant": "candidate",
+      "order": "AB",
+      "rustc_invocations": 174,
+      "metadata_only_rustc_invocations": 173,
+      "other_invocations": 1,
+      "other_executable_basenames": [
+        "build_script_build"
+      ],
+      "cached_or_executed_build_script_output_messages": 54,
+      "fresh_artifacts": 479,
+      "compiled_artifacts": 174,
+      "restore_seconds_excluded": 43.708180182,
+      "native_snapshot_inventory_sha256": "bbddafda59b90698d458cd59832f05b91e34dbd56d0e4c96eb3d56b3e9516ca0"
+    },
+    {
+      "pair": 5,
+      "position": 0,
+      "variant": "candidate",
+      "order": "BA",
+      "rustc_invocations": 174,
+      "metadata_only_rustc_invocations": 173,
+      "other_invocations": 1,
+      "other_executable_basenames": [
+        "build_script_build"
+      ],
+      "cached_or_executed_build_script_output_messages": 54,
+      "fresh_artifacts": 479,
+      "compiled_artifacts": 174,
+      "restore_seconds_excluded": 28.270697697,
+      "native_snapshot_inventory_sha256": "bbddafda59b90698d458cd59832f05b91e34dbd56d0e4c96eb3d56b3e9516ca0"
+    },
+    {
+      "pair": 5,
+      "position": 1,
+      "variant": "baseline",
+      "order": "BA",
+      "rustc_invocations": 500,
+      "metadata_only_rustc_invocations": 499,
+      "other_invocations": 1,
+      "other_executable_basenames": [
+        "build_script_build"
+      ],
+      "cached_or_executed_build_script_output_messages": 54,
+      "fresh_artifacts": 149,
+      "compiled_artifacts": 500,
+      "restore_seconds_excluded": 45.429249035,
+      "native_snapshot_inventory_sha256": "4c45f3d2843f24342bc4c43faaca7ceed649a00f62d9b73b85757c35ab402fa0"
+    },
+    {
+      "pair": 6,
+      "position": 0,
+      "variant": "baseline",
+      "order": "AB",
+      "rustc_invocations": 500,
+      "metadata_only_rustc_invocations": 499,
+      "other_invocations": 1,
+      "other_executable_basenames": [
+        "build_script_build"
+      ],
+      "cached_or_executed_build_script_output_messages": 54,
+      "fresh_artifacts": 149,
+      "compiled_artifacts": 500,
+      "restore_seconds_excluded": 29.316267854,
+      "native_snapshot_inventory_sha256": "4c45f3d2843f24342bc4c43faaca7ceed649a00f62d9b73b85757c35ab402fa0"
+    },
+    {
+      "pair": 6,
+      "position": 1,
+      "variant": "candidate",
+      "order": "AB",
+      "rustc_invocations": 174,
+      "metadata_only_rustc_invocations": 173,
+      "other_invocations": 1,
+      "other_executable_basenames": [
+        "build_script_build"
+      ],
+      "cached_or_executed_build_script_output_messages": 54,
+      "fresh_artifacts": 479,
+      "compiled_artifacts": 174,
+      "restore_seconds_excluded": 44.772110962,
+      "native_snapshot_inventory_sha256": "bbddafda59b90698d458cd59832f05b91e34dbd56d0e4c96eb3d56b3e9516ca0"
+    },
+    {
+      "pair": 7,
+      "position": 0,
+      "variant": "candidate",
+      "order": "BA",
+      "rustc_invocations": 174,
+      "metadata_only_rustc_invocations": 173,
+      "other_invocations": 1,
+      "other_executable_basenames": [
+        "build_script_build"
+      ],
+      "cached_or_executed_build_script_output_messages": 54,
+      "fresh_artifacts": 479,
+      "compiled_artifacts": 174,
+      "restore_seconds_excluded": 28.058192202,
+      "native_snapshot_inventory_sha256": "bbddafda59b90698d458cd59832f05b91e34dbd56d0e4c96eb3d56b3e9516ca0"
+    },
+    {
+      "pair": 7,
+      "position": 1,
+      "variant": "baseline",
+      "order": "BA",
+      "rustc_invocations": 500,
+      "metadata_only_rustc_invocations": 499,
+      "other_invocations": 1,
+      "other_executable_basenames": [
+        "build_script_build"
+      ],
+      "cached_or_executed_build_script_output_messages": 54,
+      "fresh_artifacts": 149,
+      "compiled_artifacts": 500,
+      "restore_seconds_excluded": 42.761109515,
+      "native_snapshot_inventory_sha256": "4c45f3d2843f24342bc4c43faaca7ceed649a00f62d9b73b85757c35ab402fa0"
+    },
+    {
+      "pair": 8,
+      "position": 0,
+      "variant": "baseline",
+      "order": "AB",
+      "rustc_invocations": 500,
+      "metadata_only_rustc_invocations": 499,
+      "other_invocations": 1,
+      "other_executable_basenames": [
+        "build_script_build"
+      ],
+      "cached_or_executed_build_script_output_messages": 54,
+      "fresh_artifacts": 149,
+      "compiled_artifacts": 500,
+      "restore_seconds_excluded": 28.61304529,
+      "native_snapshot_inventory_sha256": "4c45f3d2843f24342bc4c43faaca7ceed649a00f62d9b73b85757c35ab402fa0"
+    },
+    {
+      "pair": 8,
+      "position": 1,
+      "variant": "candidate",
+      "order": "AB",
+      "rustc_invocations": 174,
+      "metadata_only_rustc_invocations": 173,
+      "other_invocations": 1,
+      "other_executable_basenames": [
+        "build_script_build"
+      ],
+      "cached_or_executed_build_script_output_messages": 54,
+      "fresh_artifacts": 479,
+      "compiled_artifacts": 174,
+      "restore_seconds_excluded": 43.167350906,
+      "native_snapshot_inventory_sha256": "bbddafda59b90698d458cd59832f05b91e34dbd56d0e4c96eb3d56b3e9516ca0"
+    },
+    {
+      "pair": 9,
+      "position": 0,
+      "variant": "candidate",
+      "order": "BA",
+      "rustc_invocations": 174,
+      "metadata_only_rustc_invocations": 173,
+      "other_invocations": 1,
+      "other_executable_basenames": [
+        "build_script_build"
+      ],
+      "cached_or_executed_build_script_output_messages": 54,
+      "fresh_artifacts": 479,
+      "compiled_artifacts": 174,
+      "restore_seconds_excluded": 28.103358907,
+      "native_snapshot_inventory_sha256": "bbddafda59b90698d458cd59832f05b91e34dbd56d0e4c96eb3d56b3e9516ca0"
+    },
+    {
+      "pair": 9,
+      "position": 1,
+      "variant": "baseline",
+      "order": "BA",
+      "rustc_invocations": 500,
+      "metadata_only_rustc_invocations": 499,
+      "other_invocations": 1,
+      "other_executable_basenames": [
+        "build_script_build"
+      ],
+      "cached_or_executed_build_script_output_messages": 54,
+      "fresh_artifacts": 149,
+      "compiled_artifacts": 500,
+      "restore_seconds_excluded": 42.821415643,
+      "native_snapshot_inventory_sha256": "4c45f3d2843f24342bc4c43faaca7ceed649a00f62d9b73b85757c35ab402fa0"
+    },
+    {
+      "pair": 10,
+      "position": 0,
+      "variant": "baseline",
+      "order": "AB",
+      "rustc_invocations": 500,
+      "metadata_only_rustc_invocations": 499,
+      "other_invocations": 1,
+      "other_executable_basenames": [
+        "build_script_build"
+      ],
+      "cached_or_executed_build_script_output_messages": 54,
+      "fresh_artifacts": 149,
+      "compiled_artifacts": 500,
+      "restore_seconds_excluded": 28.905813804,
+      "native_snapshot_inventory_sha256": "4c45f3d2843f24342bc4c43faaca7ceed649a00f62d9b73b85757c35ab402fa0"
+    },
+    {
+      "pair": 10,
+      "position": 1,
+      "variant": "candidate",
+      "order": "AB",
+      "rustc_invocations": 174,
+      "metadata_only_rustc_invocations": 173,
+      "other_invocations": 1,
+      "other_executable_basenames": [
+        "build_script_build"
+      ],
+      "cached_or_executed_build_script_output_messages": 54,
+      "fresh_artifacts": 479,
+      "compiled_artifacts": 174,
+      "restore_seconds_excluded": 45.39534831,
+      "native_snapshot_inventory_sha256": "bbddafda59b90698d458cd59832f05b91e34dbd56d0e4c96eb3d56b3e9516ca0"
+    },
+    {
+      "pair": 11,
+      "position": 0,
+      "variant": "baseline",
+      "order": "AB",
+      "rustc_invocations": 500,
+      "metadata_only_rustc_invocations": 499,
+      "other_invocations": 1,
+      "other_executable_basenames": [
+        "build_script_build"
+      ],
+      "cached_or_executed_build_script_output_messages": 54,
+      "fresh_artifacts": 149,
+      "compiled_artifacts": 500,
+      "restore_seconds_excluded": 44.822212515,
+      "native_snapshot_inventory_sha256": "4c45f3d2843f24342bc4c43faaca7ceed649a00f62d9b73b85757c35ab402fa0"
+    },
+    {
+      "pair": 11,
+      "position": 1,
+      "variant": "candidate",
+      "order": "AB",
+      "rustc_invocations": 174,
+      "metadata_only_rustc_invocations": 173,
+      "other_invocations": 1,
+      "other_executable_basenames": [
+        "build_script_build"
+      ],
+      "cached_or_executed_build_script_output_messages": 54,
+      "fresh_artifacts": 479,
+      "compiled_artifacts": 174,
+      "restore_seconds_excluded": 45.063649262,
+      "native_snapshot_inventory_sha256": "bbddafda59b90698d458cd59832f05b91e34dbd56d0e4c96eb3d56b3e9516ca0"
+    }
+  ]
+}

@@ -1,0 +1,110 @@
+{
+  "pairs": 12,
+  "baseline_median_seconds": 36.072966602,
+  "candidate_median_seconds": 22.2194159845,
+  "baseline_mean_seconds": 36.1845404085,
+  "candidate_mean_seconds": 22.25189172,
+  "paired_geometric_mean_speedup": 1.6270404022827067,
+  "paired_median_speedup": 1.623663275791015,
+  "paired_geometric_mean_time_reduction": 0.38538711233167966,
+  "confidence": 0.99,
+  "bootstrap_speedup_interval": [
+    1.5705692271737846,
+    1.686920901027945
+  ],
+  "bootstrap_time_reduction_interval": [
+    0.3632881743140448,
+    0.4072039777379969
+  ],
+  "bootstrap_resamples": 20000,
+  "bootstrap_seed": 1701,
+  "wins": 12,
+  "losses": 0,
+  "ties": 0,
+  "exact_two_sided_sign_p": 0.00048828125,
+  "log_ratios": [
+    0.4217213860263318,
+    0.5075686644402431,
+    0.39688554839572304,
+    0.4709446633862088,
+    0.4760154219758133,
+    0.5362349945173204,
+    0.5074250862710197,
+    0.5025441900537054,
+    0.4652056189007242,
+    0.587283439121481,
+    0.4778170967768367,
+    0.49150581384087466
+  ],
+  "order": {
+    "AB": {
+      "pairs": 6,
+      "geometric_mean_speedup": 1.6052535790799516
+    },
+    "BA": {
+      "pairs": 6,
+      "geometric_mean_speedup": 1.6491229206151623
+    }
+  },
+  "child_cpu_seconds": {
+    "pairs": 12,
+    "baseline_median_seconds": 248.46928200000013,
+    "candidate_median_seconds": 136.1260304999999,
+    "baseline_mean_seconds": 249.6013594166666,
+    "candidate_mean_seconds": 136.89157508333327,
+    "paired_geometric_mean_speedup": 1.8235184956565684,
+    "paired_median_speedup": 1.826625944566922,
+    "paired_geometric_mean_time_reduction": 0.451609620422334,
+    "confidence": 0.99,
+    "bootstrap_speedup_interval": [
+      1.780700986008817,
+      1.872016726688772
+    ],
+    "bootstrap_time_reduction_interval": [
+      0.43842340299852645,
+      0.4658167388446349
+    ],
+    "bootstrap_resamples": 20000,
+    "bootstrap_seed": 1701,
+    "wins": 12,
+    "losses": 0,
+    "ties": 0,
+    "exact_two_sided_sign_p": 0.00048828125,
+    "log_ratios": [
+      0.5683196691197645,
+      0.5509638333743179,
+      0.5611073400642436,
+      0.5830644597125554,
+      0.6185467441055365,
+      0.6111887649050882,
+      0.6344913937137999,
+      0.5791109522148509,
+      0.6183780288687806,
+      0.6791079777626795,
+      0.6048575992494672,
+      0.6000777268068702
+    ],
+    "order": {
+      "AB": {
+        "pairs": 6,
+        "geometric_mean_speedup": 1.835735454115172
+      },
+      "BA": {
+        "pairs": 6,
+        "geometric_mean_speedup": 1.8113828419816385
+      }
+    }
+  },
+  "phase": "confirmation",
+  "variant_sha256": {
+    "baseline": "63495905e7b0b11ad99fa4c2c2674e43657b9902a2e3142ef735fd83efa44cf8",
+    "candidate": "12b7f73177fcfbe5704d5237fb8b0ce79d868c002f5954012aa272ea56fc9869"
+  },
+  "screen": {
+    "minimum_pairs": 12,
+    "minimum_time_reduction": 0.01,
+    "alpha": 0.010000000000000009,
+    "passes": true,
+    "note": "This screens one workload only. Require an independently run confirmation batch, correctness validation, and regression checks before a PR performance claim. Repeated candidate selection invalidates treating exploratory p-values as confirmatory evidence."
+  }
+}

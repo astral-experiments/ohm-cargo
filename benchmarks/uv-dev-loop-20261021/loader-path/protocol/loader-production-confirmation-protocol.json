@@ -1,0 +1,176 @@
+{
+  "schema_version": 1,
+  "created_at": "2026-10-21T03:50:17.468971+00:00",
+  "state": "frozen measurement design; immutable production asset manifest pending",
+  "host": "charlie-oss-4",
+  "root": "/tmp/ohm-hillclimb-20261021/confirmation-path-cache",
+  "fixture_name": "uv-loader-pr175",
+  "archive_name": "uv-loader-pr175-diagnostic-01-archive",
+  "results_name": "loader-native-to-check-pr175-production-confirmation",
+  "phase": "confirmation",
+  "pairs": 12,
+  "warmup_pairs": 0,
+  "invocations_per_variant_per_pair": 1,
+  "randomization_seed": 2026102126,
+  "balanced_order_plan": [
+    [
+      "baseline",
+      "candidate"
+    ],
+    [
+      "candidate",
+      "baseline"
+    ],
+    [
+      "candidate",
+      "baseline"
+    ],
+    [
+      "candidate",
+      "baseline"
+    ],
+    [
+      "baseline",
+      "candidate"
+    ],
+    [
+      "candidate",
+      "baseline"
+    ],
+    [
+      "baseline",
+      "candidate"
+    ],
+    [
+      "candidate",
+      "baseline"
+    ],
+    [
+      "baseline",
+      "candidate"
+    ],
+    [
+      "candidate",
+      "baseline"
+    ],
+    [
+      "baseline",
+      "candidate"
+    ],
+    [
+      "baseline",
+      "candidate"
+    ]
+  ],
+  "native_producer_order": [
+    "candidate",
+    "baseline"
+  ],
+  "native_seed_count_per_variant": 1,
+  "command": [
+    "taskset",
+    "-c",
+    "0-7",
+    "{cargo}",
+    "-Zohm-defaults=yes",
+    "check",
+    "--locked",
+    "--offline",
+    "-j",
+    "8",
+    "--message-format=json",
+    "-v"
+  ],
+  "seed_command": [
+    "taskset",
+    "-c",
+    "0-7",
+    "{cargo}",
+    "-Zohm-defaults=yes",
+    "test",
+    "--no-run",
+    "--locked",
+    "--offline",
+    "-j",
+    "8",
+    "--message-format=json",
+    "-v"
+  ],
+  "scope": "Full unchanged uv workspace; default build profiles and incremental behavior. No test executables run.",
+  "uv_revision": "3d82a6ad5a7eab8c68236553b7846517767c4b61",
+  "primary_metric": "Native cargo check wall time including all compiler/build-script children, excluding restoration/verification.",
+  "secondary_metrics": [
+    "Child user+system CPU seconds",
+    "Crate rustc invocation counts",
+    "Metadata-only rustc invocation counts",
+    "Actual build-script invocation counts",
+    "Fresh and compiled artifacts"
+  ],
+  "acceptance": {
+    "confidence": 0.99,
+    "bootstrap_resamples": 20000,
+    "bootstrap_seed": 1701,
+    "minimum_pairs": 12,
+    "minimum_paired_geometric_time_reduction": 0.01,
+    "bootstrap_speedup_lower_bound_greater_than": 1,
+    "exact_two_sided_sign_p_maximum": 0.01,
+    "both_AB_and_BA_geometric_speedups_greater_than": 1
+  },
+  "analysis_command": [
+    "python3",
+    "/tmp/ohm-hillclimb-20261021/confirmation-path-cache/work/benchmark/paired.py",
+    "analyze",
+    "RESULTS",
+    "--confidence",
+    "0.99",
+    "--resamples",
+    "20000",
+    "--seed",
+    "1701",
+    "--minimum-pairs",
+    "12",
+    "--minimum-improvement",
+    "0.01"
+  ],
+  "retention": "All 24 samples retained. No interim effect inspection, early stopping, optional sample extension, or exclusions. Any failed command or input/state integrity failure invalidates the batch and is retained.",
+  "independence": "New production-settings binaries and fresh native seeds, reverse producer order, no pooling with the earlier normal-build n=1 diagnostic. Statistical unit is a restored-state pair, conditional on one new native seed per variant, not twelve independent native builds.",
+  "canonical_paths": {
+    "cargo": "/tmp/ohm-hillclimb-20261021/confirmation-path-cache/work/loader-fixtures/uv-loader-pr175/bin/cargo",
+    "target": "/tmp/ohm-hillclimb-20261021/confirmation-path-cache/work/loader-fixtures/uv-loader-pr175/live/target",
+    "shared": "/tmp/ohm-hillclimb-20261021/confirmation-path-cache/work/loader-fixtures/uv-loader-pr175/live/shared",
+    "cargo_home": "/tmp/ohm-hillclimb-20261021/confirmation-path-cache/work/loader-fixtures/uv-loader-pr175/package-home"
+  },
+  "restoration": {
+    "helper": "work/benchmark/loader_fixture_delta.py",
+    "sha256": "e3d552d1bbbb903ade7a3dc70e7f6677bf60481be6c634b25f58d2d3b0cecb61",
+    "method": "Checksum rsync without inplace/link-dest, full independent-copy fallback, mandatory full content/mode/nanosecond-mtime/symlink/hardlink inventory match before each timed command. External hardlinks force copy before inode metadata updates.",
+    "sequential": true,
+    "all_copy_hash_and_deletion_work_outside_timing": true,
+    "snapshots_share_no_writable_inodes_with_live": true,
+    "inventory": "Every unique device/inode is hashed once per inventory; all path/metadata/link rows retained, with size, nanosecond mtime/ctime, mode, link-count and inode identity consistency checked."
+  },
+  "harness_sha256": "50d0cb2d4f595ccfa72d463fedb3ff4dadf9dfc1446c749d482d9ede8418c7cf",
+  "correctness_tests": {
+    "local": "31 tests passed",
+    "host4": "31 tests passed",
+    "delta_tests_sha256": "f0c317029f32531ebdd2f418b08b3f5c6acab82b1e900c8af187e75614b37671",
+    "inherited_tests_sha256": "fae76f221a8fe74fc7c48d90f3d389ba659afa2c1bda53b8bef60de5480ffc03"
+  },
+  "expected_source_trees": {
+    "baseline": "3d67bfb965bc0b6452ab78205045c5154db0acf7",
+    "candidate": "fce366b238ace1b2021808769d857aa56eadcd56"
+  },
+  "expected_patch_sha256": {
+    "pr175.patch": "30332415e2fdc6735719868cddeeb717cc856415f8cd1731ab5696c109f697dc",
+    "loader-path-v2-final.patch": "be2146042f257eb1e36f3d5de804a2ff991f87676b5fe38fe4a5d6a30c4ea1e9"
+  },
+  "build_regime": "Matched production settings: all-static, ohm-defaults, ThinLTO, one codegen unit, dev channel, debug1, same physical build paths and stock Rust1.99.0. No PGO; not an exact reconstruction of the published stage1-built release.",
+  "pending_assets": [
+    "Real immutable production candidate binary and metadata",
+    "Both variant full/stripped hashes and source-tree verification",
+    "Matching build provenance/flags/compiler/config hashes",
+    "Resolved runtime library and CA bundle hashes on host4",
+    "Final template, ownership marker, native snapshot manifests/inventories/runlists/provenance"
+  ],
+  "preflight": "Quiet host with no unrelated builds/profilers; intact source/compiler/binaries; complete native-only seed runlists; naturally produced per-variant provenance. Producers, restore copies, and timings are serial on host4."
+}
