@@ -66,6 +66,7 @@ use std::io::{BufRead, BufWriter, Write};
 use std::ops::{Deref, Range};
 use std::path::{Path, PathBuf};
 use std::sync::{Arc, LazyLock};
+use std::time::{Instant, UNIX_EPOCH};
 
 use anyhow::{Context as _, Error};
 use cargo_platform::{Cfg, Platform};
@@ -289,6 +290,192 @@ fn make_failed_scrape_diagnostic(
     )
 }
 
+const RELINK_CACHE_VERSION: u32 = 3;
+
+#[derive(serde::Deserialize, serde::Serialize)]
+struct RelinkCacheFile {
+    path: PathBuf,
+    blake3: String,
+}
+
+#[derive(serde::Deserialize, serde::Serialize)]
+struct RelinkCacheObject {
+    path: PathBuf,
+    len: u64,
+    modified_nanos: u64,
+}
+
+#[derive(serde::Deserialize, serde::Serialize)]
+struct RelinkCacheManifest {
+    version: u32,
+    rlink: RelinkCacheFile,
+    executable: RelinkCacheObject,
+    objects: Vec<RelinkCacheObject>,
+}
+
+struct RelinkCachePaths {
+    rlink: PathBuf,
+    executable: PathBuf,
+    manifest: PathBuf,
+}
+
+impl RelinkCachePaths {
+    fn new(executable: PathBuf) -> Self {
+        let rlink = executable.with_extension("rlink");
+        let manifest = executable.with_extension("rlink-cache.json");
+        Self {
+            rlink,
+            executable,
+            manifest,
+        }
+    }
+
+    fn is_valid(&self) -> bool {
+        let manifest = self.read_manifest();
+        let Some(manifest) = manifest else {
+            return false;
+        };
+        manifest.version == RELINK_CACHE_VERSION
+            && manifest.rlink.path == self.rlink
+            && manifest.executable.path == self.executable
+            && !manifest.objects.is_empty()
+            && file_matches(&manifest.rlink)
+            && object_matches(&manifest.executable)
+            && manifest.objects.iter().all(object_matches)
+    }
+
+    fn initialize(&self) -> CargoResult<()> {
+        let mut objects = Vec::new();
+        for path in self.codegen_temps()? {
+            match path.extension().and_then(OsStr::to_str) {
+                Some("o" | "obj") => objects.push(cached_object(path)?),
+                Some("bc") => paths::remove_file(&path)?,
+                _ => {}
+            }
+        }
+        objects.sort_by(|left, right| left.path.cmp(&right.path));
+        if objects.is_empty() {
+            anyhow::bail!(
+                "rustc produced no reusable object files for `{}`",
+                self.rlink.display()
+            );
+        }
+        let manifest = RelinkCacheManifest {
+            version: RELINK_CACHE_VERSION,
+            rlink: cached_file(self.rlink.clone())?,
+            executable: cached_object(self.executable.clone())?,
+            objects,
+        };
+        paths::write_atomic(&self.manifest, serde_json::to_vec(&manifest)?)?;
+        Ok(())
+    }
+
+    fn codegen_temps(&self) -> CargoResult<Vec<PathBuf>> {
+        let object_prefix = self
+            .rlink
+            .file_stem()
+            .ok_or_else(|| internal("cached rlink path has no file stem"))?
+            .to_string_lossy();
+        let parent = self
+            .rlink
+            .parent()
+            .ok_or_else(|| internal("cached rlink path has no parent"))?;
+        Ok(fs::read_dir(parent)?
+            .filter_map(Result::ok)
+            .map(|entry| entry.path())
+            .filter(|path| {
+                let Some(file_name) = path.file_name().and_then(OsStr::to_str) else {
+                    return false;
+                };
+                file_name.starts_with(&format!("{object_prefix}."))
+                    && matches!(
+                        path.extension().and_then(OsStr::to_str),
+                        Some("bc" | "o" | "obj")
+                    )
+            })
+            .collect())
+    }
+
+    fn clear_codegen_temps(&self) -> CargoResult<()> {
+        for path in self.codegen_temps()? {
+            paths::remove_file(&path)?;
+        }
+        Ok(())
+    }
+
+    fn refresh_executable(&self) -> CargoResult<()> {
+        let mut manifest = self
+            .read_manifest()
+            .ok_or_else(|| internal("validated relink cache manifest disappeared"))?;
+        manifest.executable = cached_object(self.executable.clone())?;
+        paths::write_atomic(&self.manifest, serde_json::to_vec(&manifest)?)?;
+        Ok(())
+    }
+
+    fn read_manifest(&self) -> Option<RelinkCacheManifest> {
+        fs::read(&self.manifest)
+            .ok()
+            .and_then(|contents| serde_json::from_slice(&contents).ok())
+    }
+
+    fn invalidate(&self) {
+        if self.manifest.exists()
+            && let Err(error) = paths::remove_file(&self.manifest)
+        {
+            debug!(
+                "failed to invalidate relink cache `{}`: {error}",
+                self.manifest.display()
+            );
+        }
+    }
+}
+
+fn cached_file(path: PathBuf) -> CargoResult<RelinkCacheFile> {
+    let mut hasher = blake3::Hasher::new();
+    hasher
+        .update_reader(paths::open(&path)?)
+        .with_context(|| format!("failed to hash `{}`", path.display()))?;
+    Ok(RelinkCacheFile {
+        path,
+        blake3: hasher.finalize().to_hex().to_string(),
+    })
+}
+
+fn file_matches(expected: &RelinkCacheFile) -> bool {
+    cached_file(expected.path.clone())
+        .map(|actual| actual.blake3 == expected.blake3)
+        .unwrap_or(false)
+}
+
+fn cached_object(path: PathBuf) -> CargoResult<RelinkCacheObject> {
+    let metadata = fs::metadata(&path)?;
+    let modified_nanos = metadata
+        .modified()?
+        .duration_since(UNIX_EPOCH)
+        .map_err(|error| internal(format!("invalid mtime for `{}`: {error}", path.display())))?
+        .as_nanos()
+        .try_into()
+        .map_err(|_| {
+            internal(format!(
+                "mtime for `{}` does not fit in u64",
+                path.display()
+            ))
+        })?;
+    Ok(RelinkCacheObject {
+        path,
+        len: metadata.len(),
+        modified_nanos,
+    })
+}
+
+fn object_matches(expected: &RelinkCacheObject) -> bool {
+    cached_object(expected.path.clone())
+        .map(|actual| {
+            actual.len == expected.len && actual.modified_nanos == expected.modified_nanos
+        })
+        .unwrap_or(false)
+}
+
 /// Creates a unit of work invoking `rustc` for building the `unit`.
 fn rustc(
     build_runner: &mut BuildRunner<'_, '_>,
@@ -301,6 +488,40 @@ fn rustc(
 
     let outputs = build_runner.outputs(unit)?;
     let root = build_runner.files().output_dir(unit);
+    let relink_cache = (build_runner.bcx.gctx.cli_unstable().relink_only
+        && fingerprint::unit_can_use_relink_only(unit)
+        && matches!(build_runner.lto[unit], lto::Lto::Off | lto::Lto::OnlyObject))
+    .then(|| {
+        outputs
+            .iter()
+            .find(|output| output.flavor == FileFlavor::Normal)
+            .map(|output| RelinkCachePaths::new(output.path.clone()))
+    })
+    .flatten();
+    let source_arg = path_args(build_runner.bcx.ws, unit).0;
+    let relinkable_dependencies = build_runner
+        .unit_deps(unit)
+        .iter()
+        .filter(|dep| {
+            dep.unit.mode == CompileMode::Build
+                && !dep.unit.artifact.is_true()
+                && dep.unit.target.is_lib()
+                && dep
+                    .unit
+                    .target
+                    .rustc_crate_types()
+                    .iter()
+                    .all(|crate_type| matches!(crate_type, CrateType::Lib | CrateType::Rlib))
+        })
+        .map(|dep| build_runner.bcx.unit_to_index[&dep.unit])
+        .collect::<HashSet<_>>();
+    if relink_cache.is_some() {
+        // `link-only` normally removes its codegen objects. Saving temporaries
+        // keeps the objects referenced by the cached `.rlink` available for a
+        // later invocation.
+        rustc.arg("-C").arg("save-temps=yes");
+        rustc.arg("-Z").arg("no-link");
+    }
 
     // Prepare the native lib state (extra `-L` and `-l` flags).
     let build_script_outputs = Arc::clone(&build_runner.build_script_outputs);
@@ -454,7 +675,29 @@ fn rustc(
             }
         }
 
-        output_options.prepare_for_compiler();
+        let can_relink_dependencies = fingerprint.as_ref().is_some_and(|fingerprint| {
+            fingerprint::can_relink_due_to_early_cutoff(fingerprint, &relinkable_dependencies)
+        });
+        let validation_started = Instant::now();
+        let use_cached_relink = can_relink_dependencies
+            && relink_cache
+                .as_ref()
+                .is_some_and(RelinkCachePaths::is_valid);
+        if can_relink_dependencies {
+            tracing::info!(
+                "relink-only: cache validation for {unit_name} took {:?}",
+                validation_started.elapsed()
+            );
+        }
+        if use_cached_relink {
+            tracing::info!("relink-only: reusing cached codegen for {unit_name}");
+        } else {
+            if let Some(cache) = &relink_cache {
+                cache.invalidate();
+                cache.clear_codegen_temps()?;
+            }
+            output_options.prepare_for_compiler();
+        }
 
         // Artifacts are in a different location than typical units,
         // hence we must assure the crate- and target-dependent
@@ -487,6 +730,21 @@ fn rustc(
             add_custom_flags(&mut rustc, &script_outputs, script_metadatas)?;
         }
 
+        let link_only = if let Some(cache) = &relink_cache {
+            let mut link_only = rustc.clone();
+            if !link_only.replace_arg(&source_arg, &cache.rlink) {
+                return Err(internal(format!(
+                    "could not replace rustc input `{}` with cached rlink `{}`",
+                    source_arg.display(),
+                    cache.rlink.display()
+                )));
+            }
+            link_only.arg("-Z").arg("link-only");
+            Some(link_only)
+        } else {
+            None
+        };
+
         for output in outputs.iter() {
             // If there is both an rmeta and rlib, rustc will prefer to use the
             // rlib, even if it is older. Therefore, we must delete the rlib to
@@ -510,6 +768,51 @@ fn rustc(
                     );
                 });
             }
+        }
+
+        if use_cached_relink {
+            replay_output_cache_inner(
+                state,
+                package_id,
+                &manifest,
+                &target,
+                &cached_output_path,
+                &mut cached_output_options,
+            )?;
+            let cache = relink_cache.as_ref().expect("relink cache was validated");
+            let link_only = link_only.as_ref().expect("relink command was prepared");
+            state.running(link_only);
+            let link_started = Instant::now();
+            exec.exec(
+                link_only,
+                package_id,
+                &target,
+                mode,
+                &mut |line| on_stdout_line(state, line, package_id, &target),
+                &mut |line| {
+                    on_stderr_line(
+                        state,
+                        line,
+                        package_id,
+                        &manifest,
+                        &target,
+                        &mut cached_output_options,
+                    )
+                },
+            )
+            .map_err(verbose_if_simple_exit_code)
+            .with_context(|| format!("could not relink `{unit_name}` from cached codegen"))?;
+            tracing::info!(
+                "relink-only: rustc link for {unit_name} took {:?}",
+                link_started.elapsed()
+            );
+            let update_started = Instant::now();
+            cache.refresh_executable()?;
+            tracing::info!(
+                "relink-only: cache update for {unit_name} took {:?}",
+                update_started.elapsed()
+            );
+            return Ok(());
         }
 
         state.running(&rustc);
@@ -582,6 +885,30 @@ fn rustc(
 
         // Exec should never return with success *and* generate an error.
         debug_assert_eq!(output_options.errors_seen, 0);
+
+        if let (Some(cache), Some(link_only)) = (&relink_cache, &link_only) {
+            state.running(link_only);
+            exec.exec(
+                link_only,
+                package_id,
+                &target,
+                mode,
+                &mut |line| on_stdout_line(state, line, package_id, &target),
+                &mut |line| {
+                    on_stderr_line(
+                        state,
+                        line,
+                        package_id,
+                        &manifest,
+                        &target,
+                        &mut output_options,
+                    )
+                },
+            )
+            .map_err(verbose_if_simple_exit_code)
+            .with_context(|| format!("could not link `{unit_name}` from fresh codegen"))?;
+            cache.initialize()?;
+        }
 
         if rustc_dep_info_loc.exists() {
             fingerprint::translate_dep_info(
