@@ -1184,7 +1184,11 @@ fn rustc(
     let worktree_seed_namespace = unit_worktree_seed_namespace(build_runner, unit);
     let artifact = unit.artifact;
     let sbom_files = build_runner.sbom_output_files(unit)?;
-    let sbom = build_sbom(build_runner, unit)?;
+    let sbom = if sbom_files.is_empty() {
+        None
+    } else {
+        Some(build_sbom(build_runner, unit)?)
+    };
 
     let unremap_files = build_runner.unremap_output_files(unit)?;
     let unremap_content = if unremap_files.is_empty() {
@@ -1604,10 +1608,12 @@ fn rustc(
         }
         state.running(&rustc);
         let timestamp = paths::set_invocation_time(&fingerprint_dir)?;
-        for file in sbom_files {
-            tracing::debug!("writing sbom to {}", file.display());
-            let outfile = BufWriter::new(paths::create(&file)?);
-            serde_json::to_writer(outfile, &sbom)?;
+        if let Some(sbom) = &sbom {
+            for file in sbom_files {
+                tracing::debug!("writing sbom to {}", file.display());
+                let outfile = BufWriter::new(paths::create(&file)?);
+                serde_json::to_writer(outfile, sbom)?;
+            }
         }
 
         if let Some(content) = &unremap_content {
