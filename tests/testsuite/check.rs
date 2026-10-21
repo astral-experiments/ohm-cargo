@@ -1024,7 +1024,7 @@ fn ohm_built_registry_dependency_reuse_is_enabled_by_ohm_defaults() {
         .with_stderr_data(str![[r#"
 [FRESH] dependency v1.0.0
 [CHECKING] foo v0.0.1 ([ROOT]/foo)
-[RUNNING] `rustc -Zpublic-api-hash -Zcache-proc-macros -Zpublic-api-hash=no --crate-name foo [..]`
+[RUNNING] `rustc -Zpublic-api-hash -Zcache-proc-macros -Zthreads=8 -Zpublic-api-hash=no --crate-name foo [..]`
 [FINISHED] `dev` profile [unoptimized + debuginfo] target(s) in [ELAPSED]s
 
 "#]])
