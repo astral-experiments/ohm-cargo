@@ -1,0 +1,327 @@
+{
+  "started_at": "2026-10-21T03:32:52.321935+00:00",
+  "status": "passed",
+  "source_tree": "c692e3c07d295e596b9f10eb4b1c89bb498caf68",
+  "reason": "The prior UI snapshot failure came from inherited CARGO_TERM_COLOR; no Rust source changed.",
+  "previous_report": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/results/lazy-git-validation/report.json",
+  "runner_sha256": "05fa679f62c4be5d7493a0d056825d2ba056e9f5c3107a9a0f64c0085a525b09",
+  "artifacts": {
+    "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/cargo-build/release/deps/testsuite-af6fdb42b18789ae": "6415ee68be80518f701a6e4d0b45c1ef76bab599af203625f06b7fa4ac696182",
+    "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/cargo-build/release/cargo": "b70f184bf9ed5da7363bcc99b849a9890a8ac2382092071e1792e3380882c32c"
+  },
+  "environment": {
+    "RUSTUP_TOOLCHAIN": "1.99.0",
+    "CARGO_CONTAINER_TESTS": "1",
+    "DOCKER_HOST": "unix:///var/run/docker.sock"
+  },
+  "commands": [
+    {
+      "name": "cargo_init-simple_git-case",
+      "command": [
+        "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/cargo-build/release/deps/testsuite-af6fdb42b18789ae",
+        "cargo_init::simple_git::case",
+        "--exact",
+        "--nocapture",
+        "--test-threads=1"
+      ],
+      "started_at": "2026-10-21T03:32:53.469125+00:00",
+      "log": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/results/lazy-git-validation-resumed/00-cargo_init-simple_git-case.log",
+      "finished_at": "2026-10-21T03:33:10.564452+00:00",
+      "returncode": 0,
+      "log_sha256": "7a789f7acfecf70eec4371e21b8b4e719f608d9147e2a78fa359b0ba4156754e",
+      "passed_counts": [
+        1
+      ]
+    },
+    {
+      "name": "cargo_init-auto_git-case",
+      "command": [
+        "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/cargo-build/release/deps/testsuite-af6fdb42b18789ae",
+        "cargo_init::auto_git::case",
+        "--exact",
+        "--nocapture",
+        "--test-threads=1"
+      ],
+      "started_at": "2026-10-21T03:33:10.566608+00:00",
+      "log": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/results/lazy-git-validation-resumed/01-cargo_init-auto_git-case.log",
+      "finished_at": "2026-10-21T03:33:26.825684+00:00",
+      "returncode": 0,
+      "log_sha256": "f80a029d11eed4e0877d1f2171f7aa5429f389f2e08c45947eaa66ef90f4c73a",
+      "passed_counts": [
+        1
+      ]
+    },
+    {
+      "name": "cargo_init-git_autodetect-case",
+      "command": [
+        "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/cargo-build/release/deps/testsuite-af6fdb42b18789ae",
+        "cargo_init::git_autodetect::case",
+        "--exact",
+        "--nocapture",
+        "--test-threads=1"
+      ],
+      "started_at": "2026-10-21T03:33:26.827672+00:00",
+      "log": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/results/lazy-git-validation-resumed/02-cargo_init-git_autodetect-case.log",
+      "finished_at": "2026-10-21T03:33:44.586110+00:00",
+      "returncode": 0,
+      "log_sha256": "cbe93d8ff6cd81ac7cd5398d2a3721d266e3d2ab6d80fb0e397a6639121ee77f",
+      "passed_counts": [
+        1
+      ]
+    },
+    {
+      "name": "fix-warns_if_no_vcs_detected",
+      "command": [
+        "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/cargo-build/release/deps/testsuite-af6fdb42b18789ae",
+        "fix::warns_if_no_vcs_detected",
+        "--exact",
+        "--nocapture",
+        "--test-threads=1"
+      ],
+      "started_at": "2026-10-21T03:33:44.588278+00:00",
+      "log": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/results/lazy-git-validation-resumed/03-fix-warns_if_no_vcs_detected.log",
+      "finished_at": "2026-10-21T03:33:45.064120+00:00",
+      "returncode": 0,
+      "log_sha256": "298990048d362047479763a8853c33cb6cb169056c702e4de3cc134f866a39c3",
+      "passed_counts": [
+        1
+      ]
+    },
+    {
+      "name": "fix-warns_about_dirty_working_directory",
+      "command": [
+        "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/cargo-build/release/deps/testsuite-af6fdb42b18789ae",
+        "fix::warns_about_dirty_working_directory",
+        "--exact",
+        "--nocapture",
+        "--test-threads=1"
+      ],
+      "started_at": "2026-10-21T03:33:45.068652+00:00",
+      "log": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/results/lazy-git-validation-resumed/04-fix-warns_about_dirty_working_directory.log",
+      "finished_at": "2026-10-21T03:33:45.398246+00:00",
+      "returncode": 0,
+      "log_sha256": "c5ecaef2f4aa5becbb918ec2715992b9574f2bea0cd6e82677d85bec98783ee0",
+      "passed_counts": [
+        1
+      ]
+    },
+    {
+      "name": "fix-does_not_warn_about_clean_working_directory",
+      "command": [
+        "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/cargo-build/release/deps/testsuite-af6fdb42b18789ae",
+        "fix::does_not_warn_about_clean_working_directory",
+        "--exact",
+        "--nocapture",
+        "--test-threads=1"
+      ],
+      "started_at": "2026-10-21T03:33:45.399013+00:00",
+      "log": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/results/lazy-git-validation-resumed/05-fix-does_not_warn_about_clean_working_directory.log",
+      "finished_at": "2026-10-21T03:33:46.006594+00:00",
+      "returncode": 0,
+      "log_sha256": "744b3282ec08188e78517ff197f4db64cc9f8e660fad7a69f4ac53835bb81653",
+      "passed_counts": [
+        1
+      ]
+    },
+    {
+      "name": "fix-fixes_extra_mut",
+      "command": [
+        "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/cargo-build/release/deps/testsuite-af6fdb42b18789ae",
+        "fix::fixes_extra_mut",
+        "--exact",
+        "--nocapture",
+        "--test-threads=1"
+      ],
+      "started_at": "2026-10-21T03:33:46.008047+00:00",
+      "log": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/results/lazy-git-validation-resumed/06-fix-fixes_extra_mut.log",
+      "finished_at": "2026-10-21T03:33:46.443550+00:00",
+      "returncode": 0,
+      "log_sha256": "c84d14684ca2588de65383c3e5dd6d9aa5719a45985f3fbd968ff2a76aa6a75c",
+      "passed_counts": [
+        1
+      ]
+    },
+    {
+      "name": "ohm_worktree-creates_a_worktree_without_a_previous_build",
+      "command": [
+        "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/cargo-build/release/deps/testsuite-af6fdb42b18789ae",
+        "ohm_worktree::creates_a_worktree_without_a_previous_build",
+        "--exact",
+        "--nocapture",
+        "--test-threads=1"
+      ],
+      "started_at": "2026-10-21T03:33:46.448095+00:00",
+      "log": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/results/lazy-git-validation-resumed/07-ohm_worktree-creates_a_worktree_without_a_previous_build.log",
+      "finished_at": "2026-10-21T03:33:46.656408+00:00",
+      "returncode": 0,
+      "log_sha256": "0e8be9e8db2eeb0b0eb544573693bafd5b1bbda25ae0595f01f53a80c5775ee2",
+      "passed_counts": [
+        1
+      ]
+    },
+    {
+      "name": "ohm_worktree-existing_branches_can_be_selected_by_basename_or_operand",
+      "command": [
+        "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/cargo-build/release/deps/testsuite-af6fdb42b18789ae",
+        "ohm_worktree::existing_branches_can_be_selected_by_basename_or_operand",
+        "--exact",
+        "--nocapture",
+        "--test-threads=1"
+      ],
+      "started_at": "2026-10-21T03:33:46.660218+00:00",
+      "log": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/results/lazy-git-validation-resumed/08-ohm_worktree-existing_branches_can_be_selected_by_basename_or_operand.log",
+      "finished_at": "2026-10-21T03:33:46.898837+00:00",
+      "returncode": 0,
+      "log_sha256": "1ed69d487cc57182943fed85f52078e74d12e28660027ab20397f264ac01a63d",
+      "passed_counts": [
+        1
+      ]
+    },
+    {
+      "name": "ohm_worktree-git_failure_preserves_an_existing_destination",
+      "command": [
+        "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/cargo-build/release/deps/testsuite-af6fdb42b18789ae",
+        "ohm_worktree::git_failure_preserves_an_existing_destination",
+        "--exact",
+        "--nocapture",
+        "--test-threads=1"
+      ],
+      "started_at": "2026-10-21T03:33:46.899750+00:00",
+      "log": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/results/lazy-git-validation-resumed/09-ohm_worktree-git_failure_preserves_an_existing_destination.log",
+      "finished_at": "2026-10-21T03:33:47.127806+00:00",
+      "returncode": 0,
+      "log_sha256": "994f410307cd6e89582b5dfd928c7d41489834f6a167290718e8c9c6d6f1d34f",
+      "passed_counts": [
+        1
+      ]
+    },
+    {
+      "name": "git_auth-https_something_happens",
+      "command": [
+        "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/cargo-build/release/deps/testsuite-af6fdb42b18789ae",
+        "git_auth::https_something_happens",
+        "--exact",
+        "--nocapture",
+        "--test-threads=1"
+      ],
+      "started_at": "2026-10-21T03:33:47.131384+00:00",
+      "log": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/results/lazy-git-validation-resumed/10-git_auth-https_something_happens.log",
+      "finished_at": "2026-10-21T03:33:47.334126+00:00",
+      "returncode": 0,
+      "log_sha256": "af4e8d4542ef9efaae69be90eb4155820d4e443ab5b5e1846ab8cfc8c107e116",
+      "passed_counts": [
+        1
+      ]
+    },
+    {
+      "name": "git_auth-http_auth_offered",
+      "command": [
+        "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/cargo-build/release/deps/testsuite-af6fdb42b18789ae",
+        "git_auth::http_auth_offered",
+        "--exact",
+        "--nocapture",
+        "--test-threads=1"
+      ],
+      "started_at": "2026-10-21T03:33:47.335006+00:00",
+      "log": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/results/lazy-git-validation-resumed/11-git_auth-http_auth_offered.log",
+      "finished_at": "2026-10-21T03:33:47.721159+00:00",
+      "returncode": 0,
+      "log_sha256": "3cb359e4ae464ca75e92bb392683bdafcb053c28a4a88dae4a625744c34f74eb",
+      "passed_counts": [
+        1
+      ]
+    },
+    {
+      "name": "git_auth-ssh_something_happens",
+      "command": [
+        "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/cargo-build/release/deps/testsuite-af6fdb42b18789ae",
+        "git_auth::ssh_something_happens",
+        "--exact",
+        "--nocapture",
+        "--test-threads=1"
+      ],
+      "started_at": "2026-10-21T03:33:47.722108+00:00",
+      "log": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/results/lazy-git-validation-resumed/12-git_auth-ssh_something_happens.log",
+      "finished_at": "2026-10-21T03:33:47.846926+00:00",
+      "returncode": 0,
+      "log_sha256": "023fc171860dd75be279b1e4e93ef5bf4db1f2493d1bb6f81c92ccc0a7f8bd93",
+      "passed_counts": [
+        1
+      ]
+    },
+    {
+      "name": "local-docker-version",
+      "command": [
+        "docker",
+        "--host",
+        "unix:///var/run/docker.sock",
+        "version",
+        "--format",
+        "{{json .Server.Version}}"
+      ],
+      "started_at": "2026-10-21T03:33:47.847736+00:00",
+      "log": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/results/lazy-git-validation-resumed/13-local-docker-version.log",
+      "finished_at": "2026-10-21T03:33:47.906282+00:00",
+      "returncode": 0,
+      "log_sha256": "1633135602635a10a9f991605d282bcd81a0ba8a5eb82d05e0a5aa940485a58c",
+      "passed_counts": []
+    },
+    {
+      "name": "local-docker-collision-check",
+      "command": [
+        "docker",
+        "--host",
+        "unix:///var/run/docker.sock",
+        "ps",
+        "--all",
+        "--filter",
+        "name=^/cargo_test_",
+        "--format",
+        "{{.Names}}"
+      ],
+      "started_at": "2026-10-21T03:33:47.906932+00:00",
+      "log": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/results/lazy-git-validation-resumed/14-local-docker-collision-check.log",
+      "finished_at": "2026-10-21T03:33:47.942756+00:00",
+      "returncode": 0,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "passed_counts": []
+    },
+    {
+      "name": "https-self_signed_should_fail",
+      "command": [
+        "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/cargo-build/release/deps/testsuite-af6fdb42b18789ae",
+        "https::self_signed_should_fail",
+        "--exact",
+        "--nocapture",
+        "--test-threads=1"
+      ],
+      "started_at": "2026-10-21T03:33:47.943567+00:00",
+      "log": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/results/lazy-git-validation-resumed/15-https-self_signed_should_fail.log",
+      "finished_at": "2026-10-21T03:34:08.075850+00:00",
+      "returncode": 0,
+      "log_sha256": "6cf57db0e09e8a317e25cba7e89d19a867c5cd990f361168451dc336c39ce97c",
+      "passed_counts": [
+        1
+      ]
+    },
+    {
+      "name": "https-self_signed_with_cacert",
+      "command": [
+        "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/cargo-build/release/deps/testsuite-af6fdb42b18789ae",
+        "https::self_signed_with_cacert",
+        "--exact",
+        "--nocapture",
+        "--test-threads=1"
+      ],
+      "started_at": "2026-10-21T03:34:08.081129+00:00",
+      "log": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/results/lazy-git-validation-resumed/16-https-self_signed_with_cacert.log",
+      "finished_at": "2026-10-21T03:34:12.895949+00:00",
+      "returncode": 0,
+      "log_sha256": "9489d2f54d1bf4922faf157d5b860f130b6240b9a5d7e73e602be933a60e5e46",
+      "passed_counts": [
+        1
+      ]
+    }
+  ],
+  "finished_at": "2026-10-21T03:34:13.154200+00:00"
+}

@@ -1,0 +1,475 @@
+{
+  "started_at": "2026-10-21T03:27:48.793284+00:00",
+  "runner_sha256": "d7e6dc04baa9882ff0e89ddea1a7b3e962f5743a48663b97a2a01baacb5512b2",
+  "build_runner_sha256": "f66fb232d2939784058536b034bca54083664380d3cece490f6edec77653efa0",
+  "patch_sha256": "3707975b6b134ecce3c811963ffe65a96c1c564e9000ae4255d1bdd56cb76deb",
+  "commands": [
+    {
+      "name": "compile-tests",
+      "command": [
+        "cargo",
+        "+1.99.0",
+        "test",
+        "--release",
+        "--locked",
+        "-p",
+        "cargo",
+        "-j16",
+        "--lib",
+        "--bin",
+        "cargo",
+        "--test",
+        "testsuite",
+        "--no-run"
+      ],
+      "cwd": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/ohm-cargo",
+      "started_at": "2026-10-21T03:27:51.425719+00:00",
+      "log": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/results/lazy-git-validation/00-compile-tests.log",
+      "finished_at": "2026-10-21T03:30:06.126392+00:00",
+      "returncode": 0,
+      "log_sha256": "83503ff55f737152f8b06f058ed081e00beecbfc3854a86002dd8796c5414a9b",
+      "passed_counts": []
+    },
+    {
+      "name": "git-once-unit-tests",
+      "command": [
+        "cargo",
+        "+1.99.0",
+        "test",
+        "--release",
+        "--locked",
+        "-p",
+        "cargo",
+        "-j16",
+        "--lib",
+        "util::git::tests::",
+        "--",
+        "--nocapture",
+        "--test-threads=1"
+      ],
+      "cwd": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/ohm-cargo",
+      "started_at": "2026-10-21T03:30:06.127715+00:00",
+      "log": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/results/lazy-git-validation/01-git-once-unit-tests.log",
+      "finished_at": "2026-10-21T03:30:07.031408+00:00",
+      "returncode": 0,
+      "log_sha256": "07001c9a5492c99962110767edc1125aa3b72f4ffd22cba5c47525ecfcec81b4",
+      "passed_counts": [
+        2
+      ]
+    },
+    {
+      "name": "binary-cli-and-policy-tests",
+      "command": [
+        "cargo",
+        "+1.99.0",
+        "test",
+        "--release",
+        "--locked",
+        "-p",
+        "cargo",
+        "-j16",
+        "--bin",
+        "cargo",
+        "--",
+        "--nocapture",
+        "--test-threads=1"
+      ],
+      "cwd": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/ohm-cargo",
+      "started_at": "2026-10-21T03:30:07.035492+00:00",
+      "log": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/results/lazy-git-validation/02-binary-cli-and-policy-tests.log",
+      "finished_at": "2026-10-21T03:30:07.857386+00:00",
+      "returncode": 0,
+      "log_sha256": "7def406db682d59557bfc8634da717084f899737b1b090c8e4bf3ada194e36ea",
+      "passed_counts": [
+        5
+      ]
+    },
+    {
+      "name": "curl-compatibility-unit-test",
+      "command": [
+        "cargo",
+        "+1.99.0",
+        "test",
+        "--release",
+        "--locked",
+        "-p",
+        "cargo",
+        "-j16",
+        "--lib",
+        "context::tests::disables_multiplexing",
+        "--",
+        "--exact",
+        "--nocapture",
+        "--test-threads=1"
+      ],
+      "cwd": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/ohm-cargo",
+      "started_at": "2026-10-21T03:30:07.858116+00:00",
+      "log": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/results/lazy-git-validation/03-curl-compatibility-unit-test.log",
+      "finished_at": "2026-10-21T03:30:08.288762+00:00",
+      "returncode": 0,
+      "log_sha256": "381d6f00812c05470424e8a0868af5dda198d3ca4665b6290bd2158d42f32b6d",
+      "passed_counts": [
+        1
+      ]
+    },
+    {
+      "name": "ssl-child-environments",
+      "command": [
+        "python3",
+        "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/validate_ssl_environment.py",
+        "--baseline",
+        "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/binaries/cargo-pr175-baseline-normal",
+        "--candidate",
+        "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/binaries/cargo-pr175-lazy-git-normal",
+        "--rustc",
+        "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/ohm/bin/rustc",
+        "--cert-file",
+        "/etc/ssl/certs/ca-certificates.crt",
+        "--cert-dir",
+        "/usr/lib/ssl/certs",
+        "--output",
+        "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/results/lazy-git-validation/ssl-environments"
+      ],
+      "cwd": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/ohm-cargo",
+      "started_at": "2026-10-21T03:30:08.296881+00:00",
+      "log": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/results/lazy-git-validation/04-ssl-child-environments.log",
+      "finished_at": "2026-10-21T03:30:11.788415+00:00",
+      "returncode": 0,
+      "log_sha256": "95a938014f4308eebd712e5025437ca060fea4025605d8c010bb3de4dc83e714",
+      "passed_counts": []
+    },
+    {
+      "name": "git-cargo_compile_simple_git_dep",
+      "command": [
+        "cargo",
+        "+1.99.0",
+        "test",
+        "--release",
+        "--locked",
+        "-p",
+        "cargo",
+        "-j16",
+        "--test",
+        "testsuite",
+        "git::cargo_compile_simple_git_dep",
+        "--",
+        "--exact",
+        "--nocapture",
+        "--test-threads=1"
+      ],
+      "cwd": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/ohm-cargo",
+      "started_at": "2026-10-21T03:30:11.791199+00:00",
+      "log": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/results/lazy-git-validation/05-git-cargo_compile_simple_git_dep.log",
+      "finished_at": "2026-10-21T03:30:13.068929+00:00",
+      "returncode": 0,
+      "log_sha256": "48daefef2d53376ae77f0facfea5739ecf797b3ac60f59d1c13babb303f4d6f2",
+      "passed_counts": [
+        1
+      ]
+    },
+    {
+      "name": "git-cargo_compile_git_dep_branch",
+      "command": [
+        "cargo",
+        "+1.99.0",
+        "test",
+        "--release",
+        "--locked",
+        "-p",
+        "cargo",
+        "-j16",
+        "--test",
+        "testsuite",
+        "git::cargo_compile_git_dep_branch",
+        "--",
+        "--exact",
+        "--nocapture",
+        "--test-threads=1"
+      ],
+      "cwd": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/ohm-cargo",
+      "started_at": "2026-10-21T03:30:13.071446+00:00",
+      "log": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/results/lazy-git-validation/06-git-cargo_compile_git_dep_branch.log",
+      "finished_at": "2026-10-21T03:30:13.902709+00:00",
+      "returncode": 0,
+      "log_sha256": "b490d6fe3bdd9dd058fa6dbc74b5f21425a380a14cd60b2dd323ab87b66d4f52",
+      "passed_counts": [
+        1
+      ]
+    },
+    {
+      "name": "git-dep_with_submodule",
+      "command": [
+        "cargo",
+        "+1.99.0",
+        "test",
+        "--release",
+        "--locked",
+        "-p",
+        "cargo",
+        "-j16",
+        "--test",
+        "testsuite",
+        "git::dep_with_submodule",
+        "--",
+        "--exact",
+        "--nocapture",
+        "--test-threads=1"
+      ],
+      "cwd": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/ohm-cargo",
+      "started_at": "2026-10-21T03:30:13.910950+00:00",
+      "log": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/results/lazy-git-validation/07-git-dep_with_submodule.log",
+      "finished_at": "2026-10-21T03:30:15.005810+00:00",
+      "returncode": 0,
+      "log_sha256": "6d092578899611ecdb8eedab18c9bc5039bf01a03357c2f56d6df93fd90d5497",
+      "passed_counts": [
+        1
+      ]
+    },
+    {
+      "name": "git-dep_with_relative_submodule",
+      "command": [
+        "cargo",
+        "+1.99.0",
+        "test",
+        "--release",
+        "--locked",
+        "-p",
+        "cargo",
+        "-j16",
+        "--test",
+        "testsuite",
+        "git::dep_with_relative_submodule",
+        "--",
+        "--exact",
+        "--nocapture",
+        "--test-threads=1"
+      ],
+      "cwd": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/ohm-cargo",
+      "started_at": "2026-10-21T03:30:15.006662+00:00",
+      "log": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/results/lazy-git-validation/08-git-dep_with_relative_submodule.log",
+      "finished_at": "2026-10-21T03:30:15.826187+00:00",
+      "returncode": 0,
+      "log_sha256": "7b38ad0046d0587d5cdc5de9b668c433d08ad10f17ff7c00fc719e4eaafb04d9",
+      "passed_counts": [
+        1
+      ]
+    },
+    {
+      "name": "git-dep_with_cached_submodule",
+      "command": [
+        "cargo",
+        "+1.99.0",
+        "test",
+        "--release",
+        "--locked",
+        "-p",
+        "cargo",
+        "-j16",
+        "--test",
+        "testsuite",
+        "git::dep_with_cached_submodule",
+        "--",
+        "--exact",
+        "--nocapture",
+        "--test-threads=1"
+      ],
+      "cwd": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/ohm-cargo",
+      "started_at": "2026-10-21T03:30:15.827231+00:00",
+      "log": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/results/lazy-git-validation/09-git-dep_with_cached_submodule.log",
+      "finished_at": "2026-10-21T03:30:16.646738+00:00",
+      "returncode": 0,
+      "log_sha256": "306d7189a6d2cb00615d5899152f4c404f8999e6b659a9d44b52719668989e53",
+      "passed_counts": [
+        1
+      ]
+    },
+    {
+      "name": "git-fetch_downloads",
+      "command": [
+        "cargo",
+        "+1.99.0",
+        "test",
+        "--release",
+        "--locked",
+        "-p",
+        "cargo",
+        "-j16",
+        "--test",
+        "testsuite",
+        "git::fetch_downloads",
+        "--",
+        "--exact",
+        "--nocapture",
+        "--test-threads=1"
+      ],
+      "cwd": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/ohm-cargo",
+      "started_at": "2026-10-21T03:30:16.647717+00:00",
+      "log": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/results/lazy-git-validation/10-git-fetch_downloads.log",
+      "finished_at": "2026-10-21T03:30:17.524128+00:00",
+      "returncode": 0,
+      "log_sha256": "7766aa5c027004465d300afa4718ed4c67c6682e95e6bd9130ae030c465feb7c",
+      "passed_counts": [
+        1
+      ]
+    },
+    {
+      "name": "git-fetch_downloads_with_git2_first_then_with_gitoxide_and_vice_versa",
+      "command": [
+        "cargo",
+        "+1.99.0",
+        "test",
+        "--release",
+        "--locked",
+        "-p",
+        "cargo",
+        "-j16",
+        "--test",
+        "testsuite",
+        "git::fetch_downloads_with_git2_first_then_with_gitoxide_and_vice_versa",
+        "--",
+        "--exact",
+        "--nocapture",
+        "--test-threads=1"
+      ],
+      "cwd": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/ohm-cargo",
+      "started_at": "2026-10-21T03:30:17.529184+00:00",
+      "log": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/results/lazy-git-validation/11-git-fetch_downloads_with_git2_first_then_with_gitoxide_and_vice_versa.log",
+      "finished_at": "2026-10-21T03:30:18.502386+00:00",
+      "returncode": 0,
+      "log_sha256": "9634dc7221955803ba6d2c81fb08c0a922b18d2fdf72af4025815f21fa78e118",
+      "passed_counts": [
+        1
+      ]
+    },
+    {
+      "name": "git-corrupted_checkout",
+      "command": [
+        "cargo",
+        "+1.99.0",
+        "test",
+        "--release",
+        "--locked",
+        "-p",
+        "cargo",
+        "-j16",
+        "--test",
+        "testsuite",
+        "git::corrupted_checkout",
+        "--",
+        "--exact",
+        "--nocapture",
+        "--test-threads=1"
+      ],
+      "cwd": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/ohm-cargo",
+      "started_at": "2026-10-21T03:30:18.503284+00:00",
+      "log": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/results/lazy-git-validation/12-git-corrupted_checkout.log",
+      "finished_at": "2026-10-21T03:30:19.373121+00:00",
+      "returncode": 0,
+      "log_sha256": "64926bde908d06b7cb60bd5751ae797979dfed17a8ee8f85f953a6f4d0ac7e36",
+      "passed_counts": [
+        1
+      ]
+    },
+    {
+      "name": "registry-simple_git",
+      "command": [
+        "cargo",
+        "+1.99.0",
+        "test",
+        "--release",
+        "--locked",
+        "-p",
+        "cargo",
+        "-j16",
+        "--test",
+        "testsuite",
+        "registry::simple_git",
+        "--",
+        "--exact",
+        "--nocapture",
+        "--test-threads=1"
+      ],
+      "cwd": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/ohm-cargo",
+      "started_at": "2026-10-21T03:30:19.374079+00:00",
+      "log": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/results/lazy-git-validation/13-registry-simple_git.log",
+      "finished_at": "2026-10-21T03:30:20.465577+00:00",
+      "returncode": 0,
+      "log_sha256": "97f020c7121f118602b2b4a34e7729cb0017fdc36848a14e55c9f26d74588fe7",
+      "passed_counts": [
+        1
+      ]
+    },
+    {
+      "name": "registry-simple_http",
+      "command": [
+        "cargo",
+        "+1.99.0",
+        "test",
+        "--release",
+        "--locked",
+        "-p",
+        "cargo",
+        "-j16",
+        "--test",
+        "testsuite",
+        "registry::simple_http",
+        "--",
+        "--exact",
+        "--nocapture",
+        "--test-threads=1"
+      ],
+      "cwd": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/ohm-cargo",
+      "started_at": "2026-10-21T03:30:20.468420+00:00",
+      "log": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/results/lazy-git-validation/14-registry-simple_http.log",
+      "finished_at": "2026-10-21T03:30:21.390047+00:00",
+      "returncode": 0,
+      "log_sha256": "87bf82aac33920bf7f1cee5cd9b5766a3e0539fd893f5a854dd640fb92042b62",
+      "passed_counts": [
+        1
+      ]
+    },
+    {
+      "name": "cargo_init-simple_git-case",
+      "command": [
+        "cargo",
+        "+1.99.0",
+        "test",
+        "--release",
+        "--locked",
+        "-p",
+        "cargo",
+        "-j16",
+        "--test",
+        "testsuite",
+        "cargo_init::simple_git::case",
+        "--",
+        "--exact",
+        "--nocapture",
+        "--test-threads=1"
+      ],
+      "cwd": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/ohm-cargo",
+      "started_at": "2026-10-21T03:30:21.391040+00:00",
+      "log": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/results/lazy-git-validation/15-cargo_init-simple_git-case.log",
+      "finished_at": "2026-10-21T03:30:22.059878+00:00",
+      "returncode": 101,
+      "log_sha256": "7fce3a96ad44893b4551b35e321bb1a02f57da1c618791cf139d00599914c386",
+      "passed_counts": []
+    }
+  ],
+  "status": "failed",
+  "frozen_normal_binaries": {
+    "cargo-pr175-loader-v2-normal": {
+      "sha256": "8bd7a3dbaf066c440637e67366f9d4cf0b14b181a9b6c0ce26fd1b820f8ef413",
+      "source_tree": "fce366b238ace1b2021808769d857aa56eadcd56",
+      "stripped_sha256": "b9c111d7c637aa777c632b109ffdb1e98e246a97dc72daf4bfa418a53c054a45"
+    },
+    "cargo-pr175-lazy-git-normal": {
+      "sha256": "52d733d6395ab7c0043b6d45f47c8138eab6f9c3570bbdcb312dcdecba2f68a1",
+      "source_tree": "c692e3c07d295e596b9f10eb4b1c89bb498caf68",
+      "stripped_sha256": "8829bb1ac84c80b0dd503eef658d2fbfadaac4559c415f386db009bdc701214a"
+    }
+  },
+  "source_tree": "c692e3c07d295e596b9f10eb4b1c89bb498caf68",
+  "finished_at": "2026-10-21T03:30:22.498997+00:00",
+  "error": "Validation failed or selected zero tests: cargo_init-simple_git-case; inspect /home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/results/lazy-git-validation/15-cargo_init-simple_git-case.log"
+}

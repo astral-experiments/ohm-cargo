@@ -1,0 +1,61 @@
+{
+  "finished_at": "2026-10-21T03:34:13.154200+00:00",
+  "collated_at": "2026-10-21T03:35:34.260759+00:00",
+  "status": "passed",
+  "source_tree": "c692e3c07d295e596b9f10eb4b1c89bb498caf68",
+  "patch": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/patches/lazy-git-final-3707975b6b13.patch",
+  "patch_sha256": "3707975b6b134ecce3c811963ffe65a96c1c564e9000ae4255d1bdd56cb76deb",
+  "rust_tests_passed": 33,
+  "unit_tests_passed": 8,
+  "integration_tests_passed": 25,
+  "ssl_cargo_processes": 12,
+  "ssl_comparison_passed": true,
+  "normal_binary_sha256": "52d733d6395ab7c0043b6d45f47c8138eab6f9c3570bbdcb312dcdecba2f68a1",
+  "integration_cargo_sha256": "b70f184bf9ed5da7363bcc99b849a9890a8ac2382092071e1792e3380882c32c",
+  "integration_binary_matches_frozen_normal": false,
+  "environment": "Linux x86_64; stock Rust 1.99.0 test compiler; pinned Ohm rustc for SSL build-script fixtures; local Unix-socket Docker only.",
+  "retained_failures": [
+    "The first normal build failed on an invalid Once Default derive; corrected by an explicit const constructor before the final normal binary was built.",
+    "The first init UI snapshot failed because the runner set CARGO_TERM_COLOR=never. Removing the inherited color variables fixed the harness; the same compiled test and Cargo binaries then passed. No Rust source changed."
+  ],
+  "source_restored": "The resumer verified the original main-checkout diff before reporting success; all jobs exited before the local lease was released.",
+  "coverage": [
+    "git-once-unit-tests",
+    "binary-cli-and-policy-tests",
+    "curl-compatibility-unit-test",
+    "git-cargo_compile_simple_git_dep",
+    "git-cargo_compile_git_dep_branch",
+    "git-dep_with_submodule",
+    "git-dep_with_relative_submodule",
+    "git-dep_with_cached_submodule",
+    "git-fetch_downloads",
+    "git-fetch_downloads_with_git2_first_then_with_gitoxide_and_vice_versa",
+    "git-corrupted_checkout",
+    "registry-simple_git",
+    "registry-simple_http",
+    "cargo_init-simple_git-case",
+    "cargo_init-auto_git-case",
+    "cargo_init-git_autodetect-case",
+    "fix-warns_if_no_vcs_detected",
+    "fix-warns_about_dirty_working_directory",
+    "fix-does_not_warn_about_clean_working_directory",
+    "fix-fixes_extra_mut",
+    "ohm_worktree-creates_a_worktree_without_a_previous_build",
+    "ohm_worktree-existing_branches_can_be_selected_by_basename_or_operand",
+    "ohm_worktree-git_failure_preserves_an_existing_destination",
+    "git_auth-https_something_happens",
+    "git_auth-http_auth_offered",
+    "git_auth-ssh_something_happens",
+    "https-self_signed_should_fail",
+    "https-self_signed_with_cacert"
+  ],
+  "records": {
+    "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/results/lazy-git-validation/report.json": "0763388e3b0a97ab3a0dcec08a4dfcfece0586bb196122b5761e22aca069b0fa",
+    "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/results/lazy-git-validation-resumed/report.json": "2b28174518332fc1d22aeb65849bc975e25ee4353ed74ab973753fb74081dff8",
+    "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/results/lazy-git-validation/ssl-environments/report.json": "bc742be2e4845c0557957161869be645c20b7ed41e5ce12d904428e229e1b807"
+  },
+  "limitations": [
+    "Cross-platform CI has not run.",
+    "No successful explicit proxy CONNECT integration fixture exists in the inspected suite; existing proxy-version unit coverage and HTTP auth tests passed."
+  ]
+}

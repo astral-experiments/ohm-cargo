@@ -1,0 +1,42 @@
+{
+  "frozen_at": "2026-10-21T03:24:59.382016+00:00",
+  "base_commit": "5e5d271d763d7beb38b48755e22bd59e93f02b97",
+  "worktree": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/cargo-lazy-git",
+  "patch": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/patches/lazy-git-final-3707975b6b13.patch",
+  "sha256": "3707975b6b134ecce3c811963ffe65a96c1c564e9000ae4255d1bdd56cb76deb",
+  "files": {
+    "Cargo.lock": "151c473e1a11532946ba9421ab1beeb238f98eb1f8cd4e5f94f9811003abd5a7",
+    "Cargo.toml": "17b51068b856fea467f4ee3a109a359f2636afc429efec0823a056a30ddfd29e",
+    "src/bin/cargo/cli.rs": "f841bc76ba2e5210a902171fa03eba6cafa22b9d0ce8dfae1ee8134bba9d4416",
+    "src/bin/cargo/main.rs": "f88dbbc889477890e4ab520f11bc2aa8479182b143d8de3da702ceca93efcd79",
+    "src/context/mod.rs": "b721091f014458401603f008b18a564023590da8b950f9c286e34ad30be8f8e3",
+    "src/ops/cargo_fix/mod.rs": "a962c4fbba5e0a2cc2e78f2272f81e7622b8c6980b4f1d817e84e89f85d221e1",
+    "src/ops/cargo_worktree/mod.rs": "50ec7e201b422515fe965a431891c760e69777d53f26e6d7a7949214de0e1be4",
+    "src/sources/git/oxide.rs": "d63d8b874ed2ade78015b820b58ee6950972b05b9fdfcb278114b49fdd03a117",
+    "src/sources/git/utils.rs": "f3bc7c08979c16c463262bb615382572041a3d9a8c4884908cf1f423ec9767f1",
+    "src/sources/registry/git_remote.rs": "63ef90508078524a45c500861e2bbe0f41b1b0051cc30ede54960b96ace2c95e",
+    "src/util/git.rs": "e891873d405b8da15a63407bf89e823ee260a3af5a07a58af74af22eba39148d",
+    "src/util/mod.rs": "72f78b0843d9432a9dce42197e97fbff7e33234e73719ff87b3352ceb103db7e",
+    "src/util/network/http.rs": "e1e83585edb73c68fd7d20d431ca67505f8d99154ff665da64c9a6ffd9807359",
+    "src/util/vcs.rs": "c79efaca8856c46054afe9ee756b79920831e829b2eeca19173dc6c6e6747803"
+  },
+  "status": [
+    " M Cargo.lock",
+    " M Cargo.toml",
+    " M src/bin/cargo/cli.rs",
+    " M src/bin/cargo/main.rs",
+    " M src/context/mod.rs",
+    " M src/ops/cargo_fix/mod.rs",
+    " M src/ops/cargo_worktree/mod.rs",
+    " M src/sources/git/oxide.rs",
+    " M src/sources/git/utils.rs",
+    " M src/sources/registry/git_remote.rs",
+    " A src/util/git.rs",
+    " M src/util/mod.rs",
+    " M src/util/network/http.rs",
+    " M src/util/vcs.rs"
+  ],
+  "validation": "Source review and formatting passed. Previous normal build failed on the invalid derive; corrected build pending.",
+  "supersedes": "2e0a634725a7d26728191099059c2ee1db6982b00f6e92d504e55da890e64f90",
+  "change": "Replace the invalid Once Default derive with an explicit const constructor; no policy or runtime behavior change."
+}

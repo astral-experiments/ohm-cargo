@@ -1,0 +1,93 @@
+{
+  "cwd": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/uv",
+  "canonical_executable": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/active/bin/cargo",
+  "variants": {
+    "baseline": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/production-build/results/cargo-pr175",
+    "candidate": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/production-build/results/cargo-pr175-build-output-remap"
+  },
+  "record_files": [
+    "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/ohm/bin/rustc",
+    "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/ohm/lib/librustc_driver-b03bf00bec23bb9a.so",
+    "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/uv/Cargo.lock",
+    "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/profiling-tools/ohm-valgrind-env.c",
+    "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/profiling-tools/ohm-valgrind-env.so",
+    "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/frozen/paired.py",
+    "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/protocol.md",
+    "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/protocol-instruction-restored.md",
+    "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/patches/build-output-remap.patch",
+    "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/protocol-upstream-175.md",
+    "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/production-build/results/cargo-pr175.strip.json",
+    "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/production-build/results/cargo-pr175.build.json",
+    "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/production-build/results/cargo-pr175-build-output-remap.strip.json",
+    "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/production-build/results/cargo-pr175-build-output-remap.build.json",
+    "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/production-build/results/provenance-pr175.json",
+    "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/production-build/results/pr175.source.patch",
+    "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/production-build/results/pr175-build-output-remap.source.patch",
+    "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/production-build/pr175.patch",
+    "/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2",
+    "/usr/lib/x86_64-linux-gnu/libc.so.6",
+    "/usr/lib/x86_64-linux-gnu/libgcc_s.so.1",
+    "/usr/lib/x86_64-linux-gnu/libm.so.6",
+    "/etc/ssl/certs/ca-certificates.crt"
+  ],
+  "command": [
+    "taskset",
+    "-c",
+    "0-7",
+    "env",
+    "LD_PRELOAD=/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/profiling-tools/ohm-valgrind-env.so",
+    "OHM_BENCH_NORMALIZE_VALGRIND_ENV=1",
+    "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/profiling-tools/valgrind/usr/bin/valgrind",
+    "--tool=callgrind",
+    "--trace-children=no",
+    "--extra-debuginfo-path=/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/profiling-tools/valgrind/usr/lib/debug",
+    "--callgrind-out-file={output}/callgrind-{stage}-{pair}-{variant}.out",
+    "{cargo}",
+    "-Zohm-defaults=yes",
+    "check",
+    "--locked",
+    "--offline",
+    "-j",
+    "8"
+  ],
+  "env": {
+    "CARGO_HOME": "/tmp/codex-cargo-home",
+    "CARGO_TARGET_DIR": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/targets/check",
+    "CARGO_BUILD_BUILD_DIR": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/shared-cache",
+    "RUSTC": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/ohm/bin/rustc",
+    "RUSTDOC": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/ohm/bin/rustdoc",
+    "CARGO_BUILD_JOBS": "8",
+    "CARGO_TERM_COLOR": "never",
+    "RUSTC_WRAPPER": null,
+    "RUSTC_WORKSPACE_WRAPPER": null,
+    "RUSTFLAGS": null,
+    "CARGO_ENCODED_RUSTFLAGS": null,
+    "CARGO_LOG": null,
+    "CARGO_LOG_PROFILE": null,
+    "PATH": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/ohm/bin:/home/dev-user/.cache/dotslash/54/c27acef053b1d4b474bb903f9cdeeee0f775d6/codex-path:/usr/local/bin:/home/dev-user/.nvm/versions/node/v22.23.3/bin:/home/dev-user/.bun/bin:/home/linuxbrew/.linuxbrew/bin:/home/linuxbrew/.linuxbrew/sbin:/home/dev-user/.local/bin:/home/dev-user/.openai/bin:/home/dev-user/.virtualenvs/openai/bin:/home/dev-user/code/openai/project/dotslash-gen/bin:/usr/local/bin:/home/dev-user/.codex/tmp/arg0-linux/codex-arg0CvuGEm:/home/dev-user/.cache/dotslash/54/c27acef053b1d4b474bb903f9cdeeee0f775d6/codex-path:/home/dev-user/.cargo/bin:/usr/local/sbin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin",
+    "VALGRIND_LIB": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/profiling-tools/valgrind/usr/libexec/valgrind",
+    "LD_PRELOAD": null,
+    "LD_LIBRARY_PATH": null,
+    "SSL_CERT_FILE": "/etc/ssl/certs/ca-certificates.crt",
+    "SSL_CERT_DIR": "/usr/lib/ssl/certs"
+  },
+  "metric_files": {
+    "cargo_ir": {
+      "format": "callgrind",
+      "event": "Ir",
+      "path": "{output}/callgrind-{stage}-{pair}-{variant}.out"
+    }
+  },
+  "prepare_command": [
+    "taskset",
+    "-c",
+    "0-7",
+    "{cargo}",
+    "-Zohm-defaults=yes",
+    "check",
+    "--locked",
+    "--offline",
+    "-j",
+    "8"
+  ]
+}

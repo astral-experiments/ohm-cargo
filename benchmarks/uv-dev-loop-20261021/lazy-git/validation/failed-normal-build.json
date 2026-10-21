@@ -1,0 +1,34 @@
+{
+  "name": "cargo-pr175-lazy-git-normal",
+  "started_at": "2026-10-21T03:22:42.357670+00:00",
+  "base_commit": "5e5d271d763d7beb38b48755e22bd59e93f02b97",
+  "source_path": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/ohm-cargo",
+  "target_path": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/cargo-build",
+  "source_tree": "722ac8dbf8caa9773a6972e2637af7506286bd91",
+  "source_diff_sha256": "a8c765f8d566c70d283d98682dd0ac22b3bd23896e3290ba026c92f0628aa480",
+  "source_patch": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/binaries/cargo-pr175-lazy-git-normal.source.patch",
+  "patch_sha256": {
+    "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/production-build/pr175.patch": "30332415e2fdc6735719868cddeeb717cc856415f8cd1731ab5696c109f697dc",
+    "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/patches/lazy-git-final-2e0a634725a7.patch": "2e0a634725a7d26728191099059c2ee1db6982b00f6e92d504e55da890e64f90"
+  },
+  "command": [
+    "cargo",
+    "+1.99.0",
+    "build",
+    "--release",
+    "--locked",
+    "-p",
+    "cargo",
+    "-j16"
+  ],
+  "explicit_build_environment": {
+    "CARGO_HOME": "/tmp/codex-cargo-home",
+    "CARGO_TARGET_DIR": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/cargo-build",
+    "CARGO_PROFILE_RELEASE_DEBUG": "1"
+  },
+  "runner_sha256": "daf3b6fffef1192c2f08e3a446a9c7eb56539959d3b7e41f82c48b1387a5bef9",
+  "pgo": false,
+  "finished_at": "2026-10-21T03:23:01.022818+00:00",
+  "returncode": 101,
+  "log_sha256": "888992a0842a214f7d5dc9690c48a2a78563f338779259b82673344f3e9b8bfc"
+}

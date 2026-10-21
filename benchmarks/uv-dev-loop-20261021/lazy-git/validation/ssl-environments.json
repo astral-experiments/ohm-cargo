@@ -1,0 +1,233 @@
+{
+  "executables": {
+    "baseline": {
+      "path": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/binaries/cargo-pr175-baseline-normal",
+      "sha256": "b69da07e3067e64acd56062a9435b35e2a0f7f2b4ed6819c0b82a48fa6d78080"
+    },
+    "candidate": {
+      "path": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/binaries/cargo-pr175-lazy-git-normal",
+      "sha256": "52d733d6395ab7c0043b6d45f47c8138eab6f9c3570bbdcb312dcdecba2f68a1"
+    },
+    "rustc": {
+      "path": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/ohm/bin/rustc",
+      "sha256": "6109cff145371a50c4f62b61908d2ffbf6d259b180c8effde07baa426aab682a"
+    }
+  },
+  "script_sha256": "1aa61f2cce42273dc109ea2f18ee66cebdc169fa4efe5bc4f5f784ccb977aa6f",
+  "trust_bundle_sha256": "a613f481e5bd4aa1731a7db47f97f6a63654e5246b5a9f5446363936cd1a1ffa",
+  "scenarios": {
+    "unset": {},
+    "valid": {
+      "SSL_CERT_FILE": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/results/lazy-git-validation/ssl-environments/certificates/custom-trust.pem",
+      "SSL_CERT_DIR": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/results/lazy-git-validation/ssl-environments/certificates/custom-trust-directory"
+    },
+    "invalid": {
+      "SSL_CERT_FILE": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/results/lazy-git-validation/ssl-environments/certificates/missing.pem",
+      "SSL_CERT_DIR": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/results/lazy-git-validation/ssl-environments/certificates/missing-directory"
+    }
+  },
+  "cargo_args": [],
+  "logging_environment": {},
+  "results": [
+    {
+      "scenario": "unset",
+      "channel": "external",
+      "variant": "baseline",
+      "command": [
+        "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/binaries/cargo-pr175-baseline-normal",
+        "ssl-env-probe"
+      ],
+      "returncode": 0,
+      "certificate_environment": {
+        "SSL_CERT_FILE": "/usr/lib/ssl/cert.pem",
+        "SSL_CERT_DIR": "/usr/lib/ssl/certs"
+      }
+    },
+    {
+      "scenario": "unset",
+      "channel": "external",
+      "variant": "candidate",
+      "command": [
+        "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/binaries/cargo-pr175-lazy-git-normal",
+        "ssl-env-probe"
+      ],
+      "returncode": 0,
+      "certificate_environment": {
+        "SSL_CERT_FILE": "/usr/lib/ssl/cert.pem",
+        "SSL_CERT_DIR": "/usr/lib/ssl/certs"
+      }
+    },
+    {
+      "scenario": "unset",
+      "channel": "build-script",
+      "variant": "baseline",
+      "command": [
+        "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/binaries/cargo-pr175-baseline-normal",
+        "build",
+        "--offline",
+        "--manifest-path",
+        "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/results/lazy-git-validation/ssl-environments/fixture/Cargo.toml",
+        "--target-dir",
+        "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/results/lazy-git-validation/ssl-environments/targets/unset-build-script-baseline"
+      ],
+      "returncode": 0,
+      "certificate_environment": {
+        "SSL_CERT_FILE": "/usr/lib/ssl/cert.pem",
+        "SSL_CERT_DIR": "/usr/lib/ssl/certs"
+      }
+    },
+    {
+      "scenario": "unset",
+      "channel": "build-script",
+      "variant": "candidate",
+      "command": [
+        "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/binaries/cargo-pr175-lazy-git-normal",
+        "build",
+        "--offline",
+        "--manifest-path",
+        "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/results/lazy-git-validation/ssl-environments/fixture/Cargo.toml",
+        "--target-dir",
+        "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/results/lazy-git-validation/ssl-environments/targets/unset-build-script-candidate"
+      ],
+      "returncode": 0,
+      "certificate_environment": {
+        "SSL_CERT_FILE": "/usr/lib/ssl/cert.pem",
+        "SSL_CERT_DIR": "/usr/lib/ssl/certs"
+      }
+    },
+    {
+      "scenario": "valid",
+      "channel": "external",
+      "variant": "baseline",
+      "command": [
+        "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/binaries/cargo-pr175-baseline-normal",
+        "ssl-env-probe"
+      ],
+      "returncode": 0,
+      "certificate_environment": {
+        "SSL_CERT_FILE": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/results/lazy-git-validation/ssl-environments/certificates/custom-trust.pem",
+        "SSL_CERT_DIR": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/results/lazy-git-validation/ssl-environments/certificates/custom-trust-directory"
+      }
+    },
+    {
+      "scenario": "valid",
+      "channel": "external",
+      "variant": "candidate",
+      "command": [
+        "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/binaries/cargo-pr175-lazy-git-normal",
+        "ssl-env-probe"
+      ],
+      "returncode": 0,
+      "certificate_environment": {
+        "SSL_CERT_FILE": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/results/lazy-git-validation/ssl-environments/certificates/custom-trust.pem",
+        "SSL_CERT_DIR": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/results/lazy-git-validation/ssl-environments/certificates/custom-trust-directory"
+      }
+    },
+    {
+      "scenario": "valid",
+      "channel": "build-script",
+      "variant": "baseline",
+      "command": [
+        "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/binaries/cargo-pr175-baseline-normal",
+        "build",
+        "--offline",
+        "--manifest-path",
+        "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/results/lazy-git-validation/ssl-environments/fixture/Cargo.toml",
+        "--target-dir",
+        "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/results/lazy-git-validation/ssl-environments/targets/valid-build-script-baseline"
+      ],
+      "returncode": 0,
+      "certificate_environment": {
+        "SSL_CERT_FILE": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/results/lazy-git-validation/ssl-environments/certificates/custom-trust.pem",
+        "SSL_CERT_DIR": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/results/lazy-git-validation/ssl-environments/certificates/custom-trust-directory"
+      }
+    },
+    {
+      "scenario": "valid",
+      "channel": "build-script",
+      "variant": "candidate",
+      "command": [
+        "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/binaries/cargo-pr175-lazy-git-normal",
+        "build",
+        "--offline",
+        "--manifest-path",
+        "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/results/lazy-git-validation/ssl-environments/fixture/Cargo.toml",
+        "--target-dir",
+        "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/results/lazy-git-validation/ssl-environments/targets/valid-build-script-candidate"
+      ],
+      "returncode": 0,
+      "certificate_environment": {
+        "SSL_CERT_FILE": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/results/lazy-git-validation/ssl-environments/certificates/custom-trust.pem",
+        "SSL_CERT_DIR": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/results/lazy-git-validation/ssl-environments/certificates/custom-trust-directory"
+      }
+    },
+    {
+      "scenario": "invalid",
+      "channel": "external",
+      "variant": "baseline",
+      "command": [
+        "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/binaries/cargo-pr175-baseline-normal",
+        "ssl-env-probe"
+      ],
+      "returncode": 0,
+      "certificate_environment": {
+        "SSL_CERT_FILE": "/usr/lib/ssl/cert.pem",
+        "SSL_CERT_DIR": "/usr/lib/ssl/certs"
+      }
+    },
+    {
+      "scenario": "invalid",
+      "channel": "external",
+      "variant": "candidate",
+      "command": [
+        "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/binaries/cargo-pr175-lazy-git-normal",
+        "ssl-env-probe"
+      ],
+      "returncode": 0,
+      "certificate_environment": {
+        "SSL_CERT_FILE": "/usr/lib/ssl/cert.pem",
+        "SSL_CERT_DIR": "/usr/lib/ssl/certs"
+      }
+    },
+    {
+      "scenario": "invalid",
+      "channel": "build-script",
+      "variant": "baseline",
+      "command": [
+        "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/binaries/cargo-pr175-baseline-normal",
+        "build",
+        "--offline",
+        "--manifest-path",
+        "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/results/lazy-git-validation/ssl-environments/fixture/Cargo.toml",
+        "--target-dir",
+        "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/results/lazy-git-validation/ssl-environments/targets/invalid-build-script-baseline"
+      ],
+      "returncode": 0,
+      "certificate_environment": {
+        "SSL_CERT_FILE": "/usr/lib/ssl/cert.pem",
+        "SSL_CERT_DIR": "/usr/lib/ssl/certs"
+      }
+    },
+    {
+      "scenario": "invalid",
+      "channel": "build-script",
+      "variant": "candidate",
+      "command": [
+        "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/binaries/cargo-pr175-lazy-git-normal",
+        "build",
+        "--offline",
+        "--manifest-path",
+        "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/results/lazy-git-validation/ssl-environments/fixture/Cargo.toml",
+        "--target-dir",
+        "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/results/lazy-git-validation/ssl-environments/targets/invalid-build-script-candidate"
+      ],
+      "returncode": 0,
+      "certificate_environment": {
+        "SSL_CERT_FILE": "/usr/lib/ssl/cert.pem",
+        "SSL_CERT_DIR": "/usr/lib/ssl/certs"
+      }
+    }
+  ],
+  "errors": [],
+  "passed": true
+}

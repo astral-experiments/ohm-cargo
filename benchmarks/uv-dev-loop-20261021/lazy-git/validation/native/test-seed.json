@@ -1,0 +1,20 @@
+{
+  "state": "complete",
+  "started_at": "2026-10-21T03:29:21.958998+00:00",
+  "command": [
+    "taskset",
+    "-c",
+    "0-7",
+    "/tmp/ohm-hillclimb-20261021/native-pr175-confirmation/active/bin/cargo",
+    "-Zohm-defaults=yes",
+    "test",
+    "--no-run",
+    "--locked",
+    "--offline",
+    "-j",
+    "8"
+  ],
+  "configuration_sha256": "a56efd744274fd6e6209ef36a2df28d4ad0677fbbbb1898d6c6cb11c3628a3cb",
+  "finished_at": "2026-10-21T03:31:35.365754+00:00",
+  "returncode": 0
+}
