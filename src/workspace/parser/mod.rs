@@ -321,7 +321,7 @@ fn to_workspace_root_config(
     let package_root = manifest_file.parent().unwrap();
     let inheritable = InheritableFields {
         package: normalized_toml.package.clone(),
-        dependencies: normalized_toml.dependencies.clone(),
+        dependencies: normalized_toml.dependencies.clone().map(Arc::new),
         lints: normalized_toml.lints.clone(),
         _ws_root: package_root.to_owned(),
     };
@@ -1092,7 +1092,7 @@ macro_rules! package_field_getter {
 #[derive(Clone, Debug, Default)]
 pub struct InheritableFields {
     package: Option<manifest::InheritablePackage>,
-    dependencies: Option<BTreeMap<manifest::PackageName, manifest::TomlDependency>>,
+    dependencies: Option<Arc<BTreeMap<manifest::PackageName, manifest::TomlDependency>>>,
     lints: Option<manifest::TomlLints>,
 
     // Bookkeeping to help when resolving values from above
