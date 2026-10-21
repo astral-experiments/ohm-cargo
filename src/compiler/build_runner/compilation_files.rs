@@ -18,7 +18,7 @@ use tracing::debug;
 use super::{BuildContext, BuildRunner, CompileKind, FileFlavor, Layout};
 use crate::compiler::custom_build::OHM_SHARED_RUSTC_LOG_ENVIRONMENT;
 use crate::compiler::trim_paths;
-use crate::compiler::{CompileMode, CompileTarget, CrateType, FileType, Unit};
+use crate::compiler::{CompileMode, CompileTarget, CrateType, FileType, Unit, UserIntent};
 use crate::util::{self, CargoResult, OnceExt, StableHasher};
 use crate::workspace::features::{OhmNativeToolTrust, OhmProcMacroTrust};
 use crate::workspace::profiles::StripInner;
@@ -152,6 +152,8 @@ pub struct CompilationFiles<'a, 'gctx> {
 /// Separates verified immutable registry artifacts from workspace-private compiler outputs.
 struct SharedRegistryCache {
     workspace: String,
+    /// Keeps known Clippy invocations from changing ordinary artifact seed policy.
+    isolated_clippy: bool,
     /// Includes the compiler and every stable Cargo-provided build-script input.
     rustc: String,
     /// Canonical implementation dynamically loaded by the verified compiler launcher.
@@ -604,8 +606,47 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
                     OhmNativeToolTrust::All => format!("{rustc}-native-all"),
                 };
 
+                let isolated_clippy = trusted_context
+                    && matches!(
+                        build_runner.bcx.build_config.intent,
+                        UserIntent::Check { .. }
+                    )
+                    && context
+                        .cli_unstable()
+                        .ohm_clippy_seed_isolation
+                        .unwrap_or_else(|| context.cli_unstable().ohm_worktree_seeds())
+                    && compiler.has_bundled_clippy_wrapper(
+                        context,
+                        &build_runner.bcx.target_data.info(CompileKind::Host).sysroot,
+                    )
+                    && context
+                        .cli_unstable()
+                        .ohm_clippy_seed_isolation
+                        .unwrap_or_else(|| {
+                            std::iter::once(&host).chain(target.values()).all(|layout| {
+                                let workspaces = layout.build_dir().build().join("workspaces");
+                                let namespace =
+                                    Layout::shared_workspace_namespace(build_runner.bcx.ws);
+                                let incremental = layout.build_dir().incremental();
+                                // Snapshot destinations are siblings in the same separate build
+                                // directory, regardless of the recipient's final target directory.
+                                util::file_clone::supported_between(
+                                    &workspaces.join(namespace),
+                                    &workspaces,
+                                ) && util::file_clone::supported_between(
+                                    incremental,
+                                    incremental.parent().unwrap(),
+                                )
+                            })
+                        });
+                let mut workspace = Layout::shared_workspace_namespace(build_runner.bcx.ws);
+                if isolated_clippy {
+                    workspace.push('/');
+                    workspace.push_str(crate::compiler::OHM_WORKTREE_CLIPPY_DIRECTORY);
+                }
                 SharedRegistryCache {
-                    workspace: Layout::shared_workspace_namespace(build_runner.bcx.ws),
+                    workspace,
+                    isolated_clippy,
                     rustc,
                     compiler_driver: compiler_driver_identity.map(|driver| driver.path),
                     trusted_context,
@@ -633,6 +674,8 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
         {
             cache.immutable_units.clear();
             cache.trusted_context = false;
+            cache.isolated_clippy = false;
+            cache.workspace = Layout::shared_workspace_namespace(build_runner.bcx.ws);
         }
 
         files
@@ -641,8 +684,9 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
     /// Records the admission policy before any selected compiler can create outputs.
     ///
     /// A profile can retain units from older graphs, so opaque inputs permanently
-    /// taint the whole private namespace. Local macros are recorded independently
-    /// of the current trust setting: only the eventual import decides whether to
+    /// taint the whole private namespace. Authenticated Clippy uses an excluded
+    /// child namespace, so its denial cannot taint ordinary build outputs.
+    /// Local macros are recorded independently of the current trust setting: only the eventual import decides whether to
     /// trust their cached outputs. Deleting a macro cannot erase that history.
     pub(super) fn record_worktree_seed_policy(
         &self,
@@ -717,7 +761,7 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
                 )?;
             }
             if prepared {
-                paths::write_atomic(&marker, b"6\n")?;
+                paths::write_atomic(&marker, b"7\n")?;
             }
         }
         Ok(())
@@ -970,9 +1014,27 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
             .join(".lock")
     }
 
+    /// Private namespace whose admission policy covers this unit's outputs.
+    pub(crate) fn worktree_seed_namespace(&self, unit: &Unit) -> PathBuf {
+        self.layout(unit.kind)
+            .build_dir()
+            .build()
+            .join("workspaces")
+            .join(&self.shared_registry_cache.as_ref().unwrap().workspace)
+    }
+
     /// Directory where incremental output for the given unit should go.
-    pub fn incremental_dir(&self, unit: &Unit) -> &Path {
-        self.layout(unit.kind).build_dir().incremental()
+    pub fn incremental_dir(&self, unit: &Unit) -> PathBuf {
+        let root = self.layout(unit.kind).build_dir().incremental();
+        if self
+            .shared_registry_cache
+            .as_ref()
+            .is_some_and(|cache| cache.isolated_clippy)
+        {
+            root.join(crate::compiler::OHM_WORKTREE_CLIPPY_DIRECTORY)
+        } else {
+            root.to_path_buf()
+        }
     }
 
     /// Directory where timing output should go.

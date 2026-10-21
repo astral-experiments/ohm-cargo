@@ -1251,6 +1251,13 @@ impl GlobalContext {
                     _ => {}
                 }
             }
+            if let Ok(value) = self.get_env(crate::CARGO_INHERITED_OHM_CLIPPY_SEED_ISOLATION_ENV) {
+                match value {
+                    "yes" => self.unstable_flags.ohm_clippy_seed_isolation = Some(true),
+                    "no" => self.unstable_flags.ohm_clippy_seed_isolation = Some(false),
+                    _ => {}
+                }
+            }
             if let Ok(value) = self.get_env(crate::CARGO_INHERITED_RELINK_ONLY_ENV) {
                 match value {
                     "yes" => self.unstable_flags.relink_only = Some(true),

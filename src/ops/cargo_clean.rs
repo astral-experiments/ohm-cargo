@@ -218,7 +218,7 @@ fn clean_shared_registry_workspace(
 ) -> CargoResult<()> {
     let build_directory = ws.build_dir();
     let build_root = build_directory.as_path_unlocked();
-    let workspace = Layout::shared_workspace_namespace(ws);
+    let workspaces = Layout::shared_workspace_cleanup_namespaces(ws);
     let mut profile_directories = Vec::new();
 
     if build_root.is_dir() {
@@ -278,13 +278,15 @@ fn clean_shared_registry_workspace(
 
     clean_ctx.remove_paths(&[target_directory.to_path_buf()])?;
     for profile in &profile_directories {
-        clean_ctx.rm_rf(&profile.join("build/workspaces").join(&workspace))?;
-        clean_ctx.rm_rf(&profile.join("incremental").join(&workspace))?;
-        if requested_profile.is_none()
-            && let Some(root) = profile.parent()
-        {
-            clean_ctx.rm_rf(&root.join("tmp").join(&workspace))?;
-            clean_ctx.rm_rf(&root.join(format!(".rustdoc_fingerprint-{workspace}.json")))?;
+        for workspace in &workspaces {
+            clean_ctx.rm_rf(&profile.join("build/workspaces").join(workspace))?;
+            clean_ctx.rm_rf(&profile.join("incremental").join(workspace))?;
+            if requested_profile.is_none()
+                && let Some(root) = profile.parent()
+            {
+                clean_ctx.rm_rf(&root.join("tmp").join(workspace))?;
+                clean_ctx.rm_rf(&root.join(format!(".rustdoc_fingerprint-{workspace}.json")))?;
+            }
         }
     }
     drop(locks);
@@ -417,23 +419,32 @@ fn clean_specs(
     if clean_ctx.gctx.cli_unstable().build_dir_new_layout {
         let shared_workspace = ws
             .shared_registry_cache_enabled()
-            .then(|| Layout::shared_workspace_namespace(ws));
+            .then(|| Layout::shared_workspace_cleanup_namespaces(ws));
         for pkg in packages {
             clean_ctx.progress.on_cleaning_package(&pkg.name())?;
 
             // Remove intermediate artifacts
             for (_compile_kind, layout) in &layouts_with_host {
-                if let Some(workspace) = &shared_workspace {
-                    let workspace_directory = layout
-                        .build_dir()
-                        .build()
-                        .join("workspaces")
-                        .join(workspace);
-                    if workspace_directory.is_dir() {
-                        for context in fs::read_dir(&workspace_directory)? {
-                            let context = context?;
-                            if context.file_type()?.is_dir() {
-                                clean_ctx.rm_rf(&context.path().join(pkg.name().as_str()))?;
+                if let Some(workspaces) = &shared_workspace {
+                    for workspace in workspaces {
+                        let workspace_directory = layout
+                            .build_dir()
+                            .build()
+                            .join("workspaces")
+                            .join(workspace);
+                        let clippy_directory = workspace_directory
+                            .join(crate::compiler::OHM_WORKTREE_CLIPPY_DIRECTORY);
+                        for directory in [&workspace_directory, &clippy_directory] {
+                            if fs::symlink_metadata(directory)
+                                .is_ok_and(|metadata| metadata.is_dir())
+                            {
+                                for context in fs::read_dir(directory)? {
+                                    let context = context?;
+                                    if context.file_type()?.is_dir() {
+                                        clean_ctx
+                                            .rm_rf(&context.path().join(pkg.name().as_str()))?;
+                                    }
+                                }
                             }
                         }
                     }
@@ -494,9 +505,27 @@ fn clean_specs(
                         }
                         let path_dash = format!("{}-", crate_name);
 
-                        dirs_to_clean.mark_utf(layout.build_dir().incremental(), |filename| {
-                            filename.starts_with(&path_dash)
-                        });
+                        let incremental = layout.build_dir().incremental();
+                        let roots = match &shared_workspace {
+                            Some(workspaces) => workspaces
+                                .iter()
+                                .map(|workspace| incremental.parent().unwrap().join(workspace))
+                                .collect::<Vec<_>>(),
+                            None => vec![incremental.to_path_buf()],
+                        };
+                        for incremental in roots {
+                            let clippy =
+                                incremental.join(crate::compiler::OHM_WORKTREE_CLIPPY_DIRECTORY);
+                            for root in [incremental.as_path(), clippy.as_path()] {
+                                if !fs::symlink_metadata(root)
+                                    .is_ok_and(|metadata| metadata.is_dir())
+                                {
+                                    continue;
+                                }
+                                dirs_to_clean
+                                    .mark_utf(root, |filename| filename.starts_with(&path_dash));
+                            }
+                        }
                     }
                 }
             }

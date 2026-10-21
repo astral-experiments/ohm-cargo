@@ -2,6 +2,7 @@ use std::fs;
 use std::path::Path;
 
 use crate::CargoResult;
+use crate::util::file_clone::try_clone;
 
 /// Copies a regular file into an absent destination with independent writable state.
 /// Returns its logical size and whether an explicit copy-on-write clone succeeded.
@@ -19,50 +20,6 @@ pub(super) fn copy_file(source: &Path, destination: &Path) -> CargoResult<(u64, 
             .open(destination)?,
     );
     Ok((fs::copy(source, destination)?, false))
-}
-
-#[cfg(target_os = "macos")]
-fn try_clone(source: &Path, destination: &Path) -> CargoResult<bool> {
-    use std::ffi::CString;
-    use std::io;
-    use std::os::unix::ffi::OsStrExt;
-
-    let source = CString::new(source.as_os_str().as_bytes())?;
-    let destination = CString::new(destination.as_os_str().as_bytes())?;
-    // SAFETY: Both pointers refer to live, NUL-terminated path strings.
-    if unsafe { libc::clonefile(source.as_ptr(), destination.as_ptr(), 0) } == 0 {
-        return Ok(true);
-    }
-    let error = io::Error::last_os_error();
-    if error.kind() == io::ErrorKind::AlreadyExists {
-        return Err(error.into());
-    }
-    // clonefile is atomic: a failed call does not create a destination to remove.
-    Ok(false)
-}
-
-#[cfg(target_os = "linux")]
-fn try_clone(source: &Path, destination: &Path) -> CargoResult<bool> {
-    use std::os::fd::AsRawFd;
-
-    let input = fs::File::open(source)?;
-    let output = fs::OpenOptions::new()
-        .write(true)
-        .create_new(true)
-        .open(destination)?;
-    // SAFETY: Both descriptors remain open; FICLONE takes the source descriptor by value.
-    let cloned = unsafe { libc::ioctl(output.as_raw_fd(), libc::FICLONE, input.as_raw_fd()) } == 0;
-    drop(output);
-    if !cloned {
-        // create_new above proves this is the file created by our clone attempt.
-        fs::remove_file(destination)?;
-    }
-    Ok(cloned)
-}
-
-#[cfg(not(any(target_os = "macos", target_os = "linux")))]
-fn try_clone(_source: &Path, _destination: &Path) -> CargoResult<bool> {
-    Ok(false)
 }
 
 #[cfg(test)]

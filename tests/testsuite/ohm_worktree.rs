@@ -15,11 +15,14 @@ fn seeded_cargo(project: &Project, command: &str) -> Execs {
     };
     let mut cargo = crate::build_dir::shared_registry_cargo(project, &command);
     cargo
-        .masquerade_as_nightly_cargo(&["ohm-defaults"])
+        .masquerade_as_nightly_cargo(&["ohm-defaults", "ohm-clippy-seed-isolation"])
         .env("CARGO_BUILD_BUILD_DIR", paths::root().join("shared-build"))
         .env("CARGO_INCREMENTAL", "1")
         .env_remove(cargo::CARGO_INHERITED_OHM_DEFAULTS_ENV)
         .env_remove(cargo::CARGO_INHERITED_OHM_WORKTREE_SEEDS_ENV)
+        .env_remove(cargo::CARGO_INHERITED_OHM_CLIPPY_SEED_ISOLATION_ENV)
+        .env_remove("CARGO_UNSTABLE_OHM_CLIPPY_SEED_ISOLATION")
+        .env_remove("CARGO_EXPERIMENTAL_CLIPPY_SEED_ISOLATION")
         .env_remove("CARGO_UNSTABLE_OHM_PROC_MACRO_TRUST")
         .env_remove("CARGO_TARGET_DIR");
     cargo
@@ -370,6 +373,318 @@ fn seeds_an_unchanged_build_and_keeps_the_worktrees_independent() {
         .with_stdout_data("donor\n")
         .run();
     assert_eq!(fs::read(&artifact).unwrap(), original_artifact);
+}
+
+#[cargo_test(
+    nightly,
+    requires = "clippy-driver",
+    reason = "normal Ohm defaults require clone-capable snapshot storage"
+)]
+fn bundled_clippy_isolation_defaults_follow_actual_snapshot_cloning() {
+    let donor = git::new("donor", |p| {
+        p.file(".gitignore", "/target\n/Cargo.lock\n")
+            .file("src/lib.rs", "pub fn value() -> u32 { 42 }")
+    });
+    let clippy = PathBuf::from(paths::sysroot())
+        .join("bin/clippy-driver")
+        .with_extension(std::env::consts::EXE_EXTENSION);
+    seeded_cargo(&donor, "build").run();
+    let donor_cache = workspace_caches().pop().unwrap();
+    // Ask the snapshot importer independently whether this test filesystem clones.
+    // The same test exercises automatic admission on APFS/Btrfs and rejection on ext4.
+    let output = seeded_cargo(&donor, "worktree add -b charlie/probe")
+        .arg(paths::root().join("probe"))
+        .run();
+    let stderr = std::str::from_utf8(&output.stderr).unwrap();
+    let reflinked: u64 = stderr
+        .split(" reflinked files)")
+        .next()
+        .unwrap()
+        .rsplit(", ")
+        .next()
+        .unwrap()
+        .parse()
+        .unwrap();
+    seeded_cargo(&donor, "check --lib")
+        .env("RUSTC_WORKSPACE_WRAPPER", &clippy)
+        .run();
+    assert_eq!(donor_cache.join(".ohm-clippy-v1").is_dir(), reflinked != 0);
+    assert_eq!(
+        donor_cache.join(".ohm-worktree-seed-deny-v7").is_file(),
+        reflinked == 0,
+    );
+    seeded_cargo(&donor, "check --lib -v")
+        .env("RUSTC_WORKSPACE_WRAPPER", &clippy)
+        .with_stderr_contains("[FRESH] foo v0.0.1 ([ROOT]/donor)")
+        .run();
+    assert!(
+        !walkdir::WalkDir::new(paths::root().join("shared-build"))
+            .into_iter()
+            .map(Result::unwrap)
+            .any(|entry| entry
+                .file_name()
+                .to_string_lossy()
+                .starts_with(".ohm-clone-probe-"))
+    );
+}
+
+#[cargo_test(
+    nightly,
+    requires = "clippy-driver",
+    reason = "worktree seeds use the matching toolchain's Clippy driver and cwd remapping"
+)]
+fn bundled_clippy_preserves_ordinary_seeds_without_importing_lint_state() {
+    let donor = git::new("donor", |p| {
+        p.file(".gitignore", "/target\n/Cargo.lock\n")
+            .file("clippy.toml", "too-many-arguments-threshold = 2\n")
+            .file(
+                "src/lib.rs",
+                "pub fn sum(left: u8, right: u8) -> u8 { left + right }",
+            )
+            .file(
+                "src/main.rs",
+                "extern crate foo; fn main() { println!(\"{}\", foo::sum(1, 2)); }",
+            )
+    });
+    let clippy = PathBuf::from(paths::sysroot())
+        .join("bin/clippy-driver")
+        .with_extension(std::env::consts::EXE_EXTENSION);
+    let destination = paths::root().join("seeded");
+    seeded_cargo(&donor, "build").run();
+    let donor_cache = workspace_caches().pop().unwrap();
+    seeded_cargo(&donor, "check --lib -v")
+        .env("CARGO_UNSTABLE_OHM_CLIPPY_SEED_ISOLATION", "true")
+        .env("RUSTC_WORKSPACE_WRAPPER", &clippy)
+        .env(
+            "CLIPPY_ARGS",
+            "-W__CLIPPY_HACKERY__clippy::too_many_arguments",
+        )
+        .with_stderr_does_not_contain("[..]this function has too many arguments[..]")
+        .run();
+    assert!(
+        donor_cache
+            .join(".ohm-clippy-v1/.ohm-worktree-seed-deny-v7")
+            .is_file()
+    );
+    assert!(!donor_cache.join(".ohm-worktree-seed-deny-v7").exists());
+    seeded_cargo(&donor, "build -v")
+        .with_stderr_contains("[FRESH] foo v0.0.1 ([ROOT]/donor)")
+        .with_stderr_does_not_contain("[COMPILING] foo v0.0.1 ([ROOT]/donor)")
+        .run();
+
+    seeded_cargo(&donor, "worktree add -b charlie/seeded")
+        .arg(&destination)
+        .with_stderr_contains("[..]Seeded [..] files [..]")
+        .run();
+    let recipient_cache = workspace_caches()
+        .into_iter()
+        .find(|cache| *cache != donor_cache)
+        .unwrap();
+    assert!(!recipient_cache.join(".ohm-clippy-v1").exists());
+    let incremental = paths::root()
+        .join("shared-build/debug/incremental")
+        .join(recipient_cache.file_name().unwrap());
+    assert!(!incremental.join(".ohm-clippy-v1").exists());
+    assert!(
+        walkdir::WalkDir::new(&incremental)
+            .into_iter()
+            .map(Result::unwrap)
+            .any(|entry| entry.file_name() == "query-cache.bin")
+    );
+
+    seeded_cargo(&donor, "build -v")
+        .cwd(&destination)
+        .with_stderr_contains("[FRESH] foo v0.0.1 ([ROOT]/seeded)")
+        .with_stderr_does_not_contain("[COMPILING] foo v0.0.1 ([ROOT]/seeded)")
+        .run();
+    fs::write(
+        destination.join("clippy.toml"),
+        "too-many-arguments-threshold = 1\n",
+    )
+    .unwrap();
+    seeded_cargo(&donor, "check --lib -v")
+        .cwd(&destination)
+        .env("CARGO_UNSTABLE_OHM_CLIPPY_SEED_ISOLATION", "true")
+        .env("RUSTC_WORKSPACE_WRAPPER", &clippy)
+        .env(
+            "CLIPPY_ARGS",
+            "-W__CLIPPY_HACKERY__clippy::too_many_arguments",
+        )
+        .with_stderr_contains("[..]this function has too many arguments[..]")
+        .run();
+    fs::write(
+        destination.join("src/lib.rs"),
+        "pub fn sum(left: u8, right: u8) -> u8 { left + right + 1 }",
+    )
+    .unwrap();
+    destination.join("src/lib.rs").move_into_the_past();
+    seeded_cargo(&donor, "build -v")
+        .cwd(&destination)
+        .with_stderr_contains("[COMPILING] foo v0.0.1 ([ROOT]/seeded)")
+        .run();
+    donor
+        .process(binary(&destination))
+        .with_stdout_data("4\n")
+        .run();
+    donor
+        .process(donor.bin("foo"))
+        .with_stdout_data("3\n")
+        .run();
+
+    // Turning isolation off must restore the conservative whole-profile policy.
+    // Turning it back on cannot erase an intervening opaque compilation's history.
+    for isolation in ["false", "true"] {
+        seeded_cargo(&donor, "check --lib")
+            .env("CARGO_UNSTABLE_OHM_CLIPPY_SEED_ISOLATION", isolation)
+            .env("RUSTC_WORKSPACE_WRAPPER", &clippy)
+            .run();
+        assert!(donor_cache.join(".ohm-worktree-seed-deny-v7").is_file());
+    }
+    seeded_cargo(&donor, "worktree add -b charlie/after-disabled-clippy")
+        .arg(paths::root().join("after-disabled-clippy"))
+        .with_stderr_contains("[..](no compatible build snapshot seeded)")
+        .run();
+
+    let donor_incremental = paths::root()
+        .join("shared-build/debug/incremental")
+        .join(donor_cache.file_name().unwrap());
+    assert!(donor_incremental.join(".ohm-clippy-v1").is_dir());
+    seeded_cargo(&donor, "clean -p foo").run();
+    for root in [&donor_cache, &donor_incremental] {
+        assert!(
+            !walkdir::WalkDir::new(root)
+                .into_iter()
+                .map(Result::unwrap)
+                .any(|entry| {
+                    let name = entry.file_name().to_string_lossy();
+                    name == "foo" || name.starts_with("foo-")
+                })
+        );
+    }
+    assert!(!donor.bin("foo").exists());
+    assert!(binary(&destination).is_file());
+}
+
+#[cargo_test(
+    nightly,
+    requires = "clippy-driver",
+    reason = "Clippy isolation overrides must survive external cargo commands"
+)]
+#[cfg(unix)]
+fn clippy_isolation_overrides_are_inherited_and_child_flags_take_precedence() {
+    use std::os::unix::fs::PermissionsExt;
+
+    let donor = git::new("donor", |p| {
+        p.file(".gitignore", "/target\n/Cargo.lock\n")
+            .file(
+                ".cargo/config.toml",
+                "[unstable]\nohm-clippy-seed-isolation = true\n",
+            )
+            .file("src/lib.rs", "pub fn value() {}")
+    });
+    let tools = paths::root().join("tools");
+    fs::create_dir(&tools).unwrap();
+    let external = tools.join("cargo-isolation-reinvoke");
+    fs::write(
+        &external,
+        r#"#!/bin/sh
+if [ "$OHM_TEST_CHILD_OVERRIDE" = "1" ]; then
+    exec "$CARGO" -Zohm-clippy-seed-isolation=yes check --lib
+fi
+exec "$CARGO" check --lib
+"#,
+    )
+    .unwrap();
+    fs::set_permissions(&external, fs::Permissions::from_mode(0o755)).unwrap();
+    let mut search_path = vec![tools];
+    search_path.extend(std::env::split_paths(&std::env::var_os("PATH").unwrap()));
+    let clippy = PathBuf::from(paths::sysroot()).join("bin/clippy-driver");
+    seeded_cargo(&donor, "build").run();
+    let namespace = workspace_caches().pop().unwrap();
+    for child_override in ["0", "1"] {
+        seeded_cargo(&donor, "-Zohm-clippy-seed-isolation=no isolation-reinvoke")
+            .env("PATH", std::env::join_paths(&search_path).unwrap())
+            .env("RUSTC_WORKSPACE_WRAPPER", &clippy)
+            .env("OHM_TEST_CHILD_OVERRIDE", child_override)
+            .run();
+        assert!(namespace.join(".ohm-worktree-seed-deny-v7").is_file());
+        assert_eq!(
+            namespace.join(".ohm-clippy-v1").is_dir(),
+            child_override == "1"
+        );
+    }
+}
+
+#[cargo_test(
+    nightly,
+    requires = "clippy-driver",
+    reason = "forced Clippy isolation must not bypass compiler trust"
+)]
+#[cfg(unix)]
+fn forced_clippy_isolation_preserves_compiler_trust_rejections() {
+    use std::os::unix::fs::PermissionsExt;
+
+    let passthrough = paths::root().join("global-wrapper");
+    fs::write(&passthrough, "#!/bin/sh\nexec \"$@\"\n").unwrap();
+    fs::set_permissions(&passthrough, fs::Permissions::from_mode(0o755)).unwrap();
+    let clippy = PathBuf::from(paths::sysroot()).join("bin/clippy-driver");
+    let mut previous = Vec::new();
+    for case in ["wrapper", "logger"] {
+        let donor = git::new(case, |p| {
+            p.file(".gitignore", "/target\n/Cargo.lock\n")
+                .file("src/lib.rs", "pub fn value() {}")
+        });
+        seeded_cargo(&donor, "build").run();
+        let namespace = workspace_caches()
+            .into_iter()
+            .find(|path| !previous.contains(path))
+            .unwrap();
+        let mut command = seeded_cargo(&donor, "-Zohm-clippy-seed-isolation=yes check --lib");
+        command.env("RUSTC_WORKSPACE_WRAPPER", &clippy);
+        if case == "wrapper" {
+            command.env("RUSTC_WRAPPER", &passthrough);
+        } else {
+            command.env("RUSTC_LOG", "warn");
+        }
+        command.run();
+        assert!(!namespace.join(".ohm-clippy-v1").exists());
+        assert!(namespace.join(".ohm-worktree-seed-deny-v7").is_file());
+        previous.push(namespace);
+    }
+}
+
+#[cargo_test(
+    nightly,
+    requires = "clippy-driver",
+    reason = "opaque wrappers must keep their conservative worktree policy"
+)]
+#[cfg(unix)]
+fn clippy_wrapper_scripts_still_deny_the_whole_seed() {
+    use std::os::unix::fs::PermissionsExt;
+
+    let donor = git::new("donor", |p| {
+        p.file(".gitignore", "/target\n/Cargo.lock\n")
+            .file("src/lib.rs", "pub fn value() {}")
+    });
+    let wrapper = paths::root().join("clippy-wrapper");
+    let clippy = PathBuf::from(paths::sysroot()).join("bin/clippy-driver");
+    fs::write(
+        &wrapper,
+        format!("#!/bin/sh\nexec '{}' \"$@\"\n", clippy.display()),
+    )
+    .unwrap();
+    fs::set_permissions(&wrapper, fs::Permissions::from_mode(0o755)).unwrap();
+    seeded_cargo(&donor, "build").run();
+    seeded_cargo(&donor, "check --lib")
+        .env("CARGO_UNSTABLE_OHM_CLIPPY_SEED_ISOLATION", "true")
+        .env("RUSTC_WORKSPACE_WRAPPER", wrapper)
+        .run();
+    let cache = workspace_caches().pop().unwrap();
+    assert!(cache.join(".ohm-worktree-seed-deny-v7").is_file());
+    seeded_cargo(&donor, "worktree add -b charlie/seeded")
+        .arg(paths::root().join("seeded"))
+        .with_stderr_contains("[..](no compatible build snapshot seeded)")
+        .run();
 }
 
 #[cargo_test(
@@ -1262,7 +1577,7 @@ fn local_proc_macro_trust_does_not_admit_legacy_snapshots() {
     seeded_cargo(&donor, "build").run();
     let namespace = workspace_caches().pop().unwrap();
     fs::rename(
-        namespace.join(".ohm-worktree-seed-v6"),
+        namespace.join(".ohm-worktree-seed-v7"),
         namespace.join(".ohm-worktree-seed-v5"),
     )
     .unwrap();
