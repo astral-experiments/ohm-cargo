@@ -964,6 +964,47 @@ pub(crate) fn existing_unit_is_fresh(
     ))
 }
 
+/// Whether an existing check root can keep its established dependency graph.
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub(crate) enum ExistingCheckRoot {
+    /// The root and its complete dependency graph are already up to date.
+    Fresh,
+    /// Workspace source or an existing dependency changed and must be rebuilt.
+    WorkspaceChanged,
+}
+
+/// Validates an existing root without hiding the normal rebuild it still requires.
+///
+/// Missing artifacts and changed compiler options remain ineligible. A local
+/// source edit is checked before dependencies, so callers must independently
+/// validate registry units before preserving a dirty root's ordinary graph.
+pub(crate) fn existing_check_root(
+    build_runner: &mut BuildRunner<'_, '_>,
+    unit: &Unit,
+) -> CargoResult<Option<ExistingCheckRoot>> {
+    let fingerprint_path = build_runner.files().fingerprint_file_path(unit, "");
+    let fingerprint = calculate(build_runner, unit)?;
+
+    Ok(
+        match _compare_old_fingerprint(&fingerprint_path, &fingerprint) {
+            Ok(FingerprintComparison::Fresh) => Some(ExistingCheckRoot::Fresh),
+            Ok(FingerprintComparison::Dirty {
+                reason:
+                    DirtyReason::FsStatusOutdated(
+                        FsStatus::StaleItem(
+                            StaleItem::ChangedFile { .. }
+                            | StaleItem::ChangedChecksum { .. }
+                            | StaleItem::FileSizeChanged { .. },
+                        )
+                        | FsStatus::StaleDependency { .. }
+                        | FsStatus::StaleDepFingerprint { .. },
+                    ),
+            }) => Some(ExistingCheckRoot::WorkspaceChanged),
+            _ => None,
+        },
+    )
+}
+
 /// Determines if a [`Unit`] is up-to-date, and if not prepares necessary work to
 /// update the persisted fingerprint.
 ///
@@ -2338,6 +2379,29 @@ fn calculate(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResult
     Ok(fingerprint)
 }
 
+/// Hashes the profile and mode used by an existing compilation fingerprint.
+pub(crate) fn unit_profile_hash(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> u64 {
+    util::hash_u64((
+        &unit.profile,
+        unit.mode,
+        build_runner.bcx.extra_args_for(unit),
+        build_runner.lto[unit],
+        unit.pkg.manifest().lint_rustflags(),
+        unit.profile
+            .trim_paths
+            .as_ref()
+            .filter(|trim_paths| !trim_paths.is_none())
+            .map(|_| {
+                build_runner
+                    .bcx
+                    .gctx
+                    .get_env(super::trim_paths::WS_REMAP_ENV)
+                    .ok()
+                    .filter(|prefix| !prefix.is_empty())
+            }),
+    ))
+}
+
 /// Calculate a fingerprint for a "normal" unit, or anything that's not a build
 /// script. This is an internal helper of [`calculate`], don't call directly.
 fn calculate_normal(
@@ -2403,25 +2467,7 @@ fn calculate_normal(
     }
     .to_vec();
 
-    let profile_hash = util::hash_u64((
-        &unit.profile,
-        unit.mode,
-        build_runner.bcx.extra_args_for(unit),
-        build_runner.lto[unit],
-        unit.pkg.manifest().lint_rustflags(),
-        unit.profile
-            .trim_paths
-            .as_ref()
-            .filter(|trim_paths| !trim_paths.is_none())
-            .map(|_| {
-                build_runner
-                    .bcx
-                    .gctx
-                    .get_env(super::trim_paths::WS_REMAP_ENV)
-                    .ok()
-                    .filter(|prefix| !prefix.is_empty())
-            }),
-    ));
+    let profile_hash = unit_profile_hash(build_runner, unit);
     let mut config = StableHasher::new();
     let linker = if unit.target.for_host() && !build_runner.bcx.gctx.target_applies_to_host()? {
         build_runner.compilation.host_linker()
