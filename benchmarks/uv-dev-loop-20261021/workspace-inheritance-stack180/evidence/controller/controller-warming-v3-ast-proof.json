@@ -1,0 +1,15 @@
+{
+  "status": "passed",
+  "created_at": "2026-10-21T14:31:48.589835+00:00",
+  "old_controller_sha256": "041f59cdede32c502ca9ce9fdde00a9fdddc0192595cf1e9c1a0029b813ed763",
+  "new_controller_sha256": "318d05c1112e73625015461ff6c1000fab3cafb573c8e3e3963b16cd9ec64e6c",
+  "diff_sha256": "3f42e666d05f9631fff0744580ab1c226b05b7d3af94c34d3a64a4ee28e69faf",
+  "all_ast_nodes_outside_preflight_identical": true,
+  "new_preflight_changes": [
+    "Exactly three untimed warm commands per variant, with distinct warm-1/warm-2/warm-3 stdout/stderr files.",
+    "All three result records retained as warming_runs; legacy warm field refers to the third run.",
+    "Existing strict traced zero-child execution and cross-switch freshness proofs unchanged."
+  ],
+  "hold": "Prospective only; no runtime or measurement execution. Root approved this fixed setup. Each fresh fixture must pass the unchanged strict trace and cross-switch proofs before comparisons.",
+  "supersedes_draft_sha256": "de0e402eb20f54815f352c9595f8f8d816b17b490c5c2d60f48bbf9aaa922c3a"
+}

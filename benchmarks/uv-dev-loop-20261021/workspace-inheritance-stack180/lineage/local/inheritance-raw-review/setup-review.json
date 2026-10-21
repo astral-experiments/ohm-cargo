@@ -1,0 +1,42 @@
+{
+  "archive_sha256": "20a4a14fd2a8250be5aa319765de66efaac4b8cda7cca25205420ab6690576d5",
+  "checks": {
+    "all_four_configs_and_input_union_bound": true,
+    "ancestor_configuration_bound": true,
+    "base_record_files_preserved_with_exact_ordered_expansion": true,
+    "build_only_commands": true,
+    "fresh_production_pair_only": true,
+    "no_collected_preflight_or_measurements": true,
+    "source_build_strip_correctness_ci_bound": true
+  },
+  "configs": {
+    "ir-check": {
+      "record_files": 899,
+      "sha256": "8dfce6164795deab27cc6728d43a803732895082a99960acf33df5d037e98ba4"
+    },
+    "ir-test": {
+      "record_files": 899,
+      "sha256": "c0c3151d1bf456b4519390616732651e62f95469524f5bfc7d963c00cd293921"
+    },
+    "native-check": {
+      "record_files": 900,
+      "sha256": "23399d6333272a3f721a9bfeecfefc6273ac58f22116249218b67b526bc0184a"
+    },
+    "native-test": {
+      "record_files": 900,
+      "sha256": "b7bb60c9ec17746492b0c214fb07fe6e511ccf6f19635fca81fa7e7578a727c9"
+    }
+  },
+  "files_verified": 136,
+  "measurement_seal_sha256": "b6e765057417644e62cf7cadc4994a05172077f8c9a26bfe6343e6ad377e48ff",
+  "reviewed_at": "2026-10-21T15:04:01.389904+00:00",
+  "scope": "Independent local archive, input, source and generated-configuration review. Excluded runtime/binary payloads are bound through the frozen remote seal and audited production/delivery records. No host access, fixture execution or statistics.",
+  "sealed_input_count": 900,
+  "source_files": {
+    "evidence.py": "50fad8c5d272689a92c36985eafe533605573a641722248e3012ba74cee0eff1",
+    "review_setup.py": "dfc8fd7d5366371d8291f32c93981e33bbb3bfd1e1eedc99976b506a507bb147"
+  },
+  "source_freeze_sha256": "f52a57b667b0708413cb353b2af4164f11fec6a9b8e0025bab4ab8330135ff98",
+  "status": "passed",
+  "transfer_manifest_sha256": "4f15db28f560a5d8939e86b496b073b1674c6451dcff4ca82bbeac00aad5821e"
+}

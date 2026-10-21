@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "kind": "metadata-only-ir-postguard-closure",
+  "root": "/tmp/ohm-hillclimb-20261021-inheritance-measurement",
+  "host": "charlie-oss-2",
+  "remote_directory": "closures/ir-postguard",
+  "measurement_seal_sha256": "b6e765057417644e62cf7cadc4994a05172077f8c9a26bfe6343e6ad377e48ff",
+  "original_input_files": 900,
+  "original_driver_sha256": "1585116beaab26655de1e86459feb030ebdd31e636a613991241018ace5f3ef3",
+  "original_source_freeze_sha256": "f52a57b667b0708413cb353b2af4164f11fec6a9b8e0025bab4ab8330135ff98",
+  "failed_capture_sha256": "b5a0b1edb496ffa0749ba6e2198606c32d83c22a8d79340ca9dc3d4b0ce95ba8",
+  "failed_capture_files": 477,
+  "original_sample_count": 56,
+  "analysis_tail_ast_sha256": "3d13d0538f41f3a26ec76547ba51d2db69019daad761d608bab39ed8c3220448",
+  "only_mutable_original_path": "results/ir-status.json",
+  "new_analysis_files": [
+    "results/ir-check/analysis-stdout.json",
+    "results/ir-check/analysis.json",
+    "results/ir-check/gate.json",
+    "results/ir-test/analysis-stdout.json",
+    "results/ir-test/analysis.json",
+    "results/ir-test/gate.json"
+  ],
+  "files": {
+    "closure_contract.py": "77a48a3f0e5b2c39f11e8aa7c8102aa5459bab490672b329dd6c0f030dcd1ea5",
+    "failed-capture/ir-status.json": "f3199c1c5ee27609f56874fda658e651e1bbe174d10ea194584c2d5426f5c868",
+    "failed-capture/launch-ir.json": "765266538d3c45b28fb0caa9bfbf3055bd0737ec5a52031ca69222813c64c7f8",
+    "failed-capture/launch-ir.stderr": "6fb435c9fb0e13fe5d8e1da7a2d28cc4cc1c62b2cbec2cd6311fa3e4529495e3",
+    "failed-capture/launch-ir.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "failed-capture/measurement-seal.json": "b6e765057417644e62cf7cadc4994a05172077f8c9a26bfe6343e6ad377e48ff",
+    "failed-capture/receipt.json": "aacdc8f19ac03934db3fabe79a0194f5434219c565f1761508a2d544481828f6",
+    "failed-capture/transfer-manifest.json": "b5a0b1edb496ffa0749ba6e2198606c32d83c22a8d79340ca9dc3d4b0ce95ba8",
+    "failed-capture/transport.json": "484e1b0a929b73efec6472f2d8e08ac86a19c459baf5cc21ac6d02d53b7ce6af",
+    "finalize.py": "e97dbc84fe50cbfdf9f4b1c4f7083412ca9cc4c01c502344224af857d6412d9f",
+    "original/analysis-tail.py": "761566ff5ee794eb383ff2c656551aea6ebaecd009f658303f532409bc0a3c03",
+    "original/driver.py": "1585116beaab26655de1e86459feb030ebdd31e636a613991241018ace5f3ef3",
+    "original/source-freeze.json": "f52a57b667b0708413cb353b2af4164f11fec6a9b8e0025bab4ab8330135ff98"
+  },
+  "scope": "Close only the original post-audit metadata tail; no Cargo, warmup, sampling, sample changes, or metric/gate changes."
+}

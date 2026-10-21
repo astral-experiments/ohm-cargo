@@ -1,0 +1,43 @@
+{
+  "cohort": "host2-inheritance-stack180",
+  "build_host": "charlie-oss-2",
+  "variant_order": [
+    "inheritance-stack180-baseline",
+    "inheritance-stack180-shared"
+  ],
+  "driver_sha256": "21707e2fbcecb710adddf24c4776b0e2995a91051672f1e026b43982da68a882",
+  "strip_helper_sha256": "67d6f781d1e77bbc4f9111e88589fdf0819d19c6073592b422ad832a7c41f6a1",
+  "source_bundle_sha256": "254020def1477b48826663a5b24d1b88e3c4e9b82711c6e89cd10503a0ca8008",
+  "patch_sha256": {
+    "stack180-baseline.patch": "c6903b9c8d161553d8993b35744186a840163431f2da741c516bd12ae11b6435",
+    "stack180-shared.patch": "e03566d5109989053f94721ac430527f10b6ff079fb8dc03cb6ce8e139d8f086"
+  },
+  "expected_variants": {
+    "inheritance-stack180-baseline": {
+      "base": "5e5d271d763d7beb38b48755e22bd59e93f02b97",
+      "tree": "0a392258c801cff734d223a3f9af73d5b5a4e3c0",
+      "patch_sha256": {
+        "stack180-baseline.patch": "c6903b9c8d161553d8993b35744186a840163431f2da741c516bd12ae11b6435"
+      },
+      "canonical_diff_sha256": "01d041e708d02e336727f57cdba933409c55b0e694568b206842d2968078b3ad"
+    },
+    "inheritance-stack180-shared": {
+      "base": "5e5d271d763d7beb38b48755e22bd59e93f02b97",
+      "tree": "c4178b67e0b3a64a12b9b58f84b97323b99d734e",
+      "patch_sha256": {
+        "stack180-shared.patch": "e03566d5109989053f94721ac430527f10b6ff079fb8dc03cb6ce8e139d8f086"
+      },
+      "canonical_diff_sha256": "a11f80bf5e79fc07c7e31940f5cd85cbae964064d23c1a25d9e141898e147c48"
+    }
+  },
+  "reference_host7_provenance_sha256": "a4c666a1c498ccba967b8a663b81088abf650a39a3611026d01b305ce074d150",
+  "reviewed_driver_parent_sha256": "2bf88362cff689835a0e06d25d985c3b4b63fb611d25ab73727a9a9a6250c2e6",
+  "performance_protocol_sha256": "5a78491c347b2f8749fe6da44002c863679062e5e3c7393e9508671e813af2da",
+  "source_manifest_sha256": "9d7b4b3a14782e5011091d8e7f0aaf9264c64fa23b03891e03b796f2e96f86c9",
+  "owned_build_root": "/tmp/ohm-hillclimb-20261021-inheritance-production",
+  "reference_path_relocation": {
+    "from": "/tmp/ohm-hillclimb-20261021-production",
+    "to": "/tmp/ohm-hillclimb-20261021-inheritance-production"
+  },
+  "frozen_at": "2026-10-21T14:02:31.067270+00:00"
+}

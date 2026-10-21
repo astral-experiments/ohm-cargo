@@ -1,0 +1,96 @@
+{
+  "state": "complete",
+  "started_at": "2026-10-21T16:42:49.969558+00:00",
+  "phase": "native",
+  "seal_sha256": "b6e765057417644e62cf7cadc4994a05172077f8c9a26bfe6343e6ad377e48ff",
+  "variants": {
+    "baseline": "3164f9287711f122fa9636a7816ed8749598706ac5076d66051a036dcef51037",
+    "candidate": "3b1a2e4e3654b7b23816fbb54c51072cb356486c36052a5bcd6c4d3d2e6a07e9"
+  },
+  "integrity_complete": [
+    "check",
+    "test"
+  ],
+  "completed": [
+    {
+      "workflow": "check",
+      "directory": "/tmp/ohm-hillclimb-20261021-inheritance-measurement/results/native-check",
+      "passes_gate": false,
+      "checks": {
+        "fixed_pairs": true,
+        "at_least_one_percent": false,
+        "positive_99_percent_lower_bound": false,
+        "two_sided_sign_p_at_most_0_01": false,
+        "both_orders_positive": false
+      },
+      "reduction": -0.0017434658240063072,
+      "interval_99": [
+        -0.039962092558182505,
+        0.02794647768689218
+      ],
+      "sign_p": 0.20048842206597328,
+      "significant_native_regression": false,
+      "scope": "Fixed independent pairs; no exclusions, extensions, pooling or interim effect inspection."
+    },
+    {
+      "workflow": "test",
+      "directory": "/tmp/ohm-hillclimb-20261021-inheritance-measurement/results/native-test",
+      "passes_gate": false,
+      "checks": {
+        "fixed_pairs": true,
+        "at_least_one_percent": true,
+        "positive_99_percent_lower_bound": false,
+        "two_sided_sign_p_at_most_0_01": false,
+        "both_orders_positive": true
+      },
+      "reduction": 0.022575220767907078,
+      "interval_99": [
+        -0.009040452826539758,
+        0.05753520735225248
+      ],
+      "sign_p": 0.09873714670538902,
+      "significant_native_regression": false,
+      "scope": "Fixed independent pairs; no exclusions, extensions, pooling or interim effect inspection."
+    }
+  ],
+  "workflow": "test",
+  "quiet": {
+    "process_snapshot": [
+      "1159092  200  0.0 ps",
+      "    909 12.2  1.8 falcon-sensor-b",
+      "1088862  1.4  0.0 python3",
+      "1057057  0.8  0.4 codex",
+      "      1  0.7  0.0 systemd",
+      "1107837  0.4  0.0 kworker/u64:8-events_power_efficient",
+      "   1375  0.3  0.0 xds-server",
+      "   1379  0.3  0.0 envoy",
+      "1107836  0.3  0.0 kworker/u64:7-events_power_efficient",
+      "1344423  0.2  0.0 applied-devbox-",
+      " 532938  0.2  0.0 redis-server",
+      "    238  0.2  0.0 kswapd0",
+      "    216  0.2  0.0 kcompactd0",
+      "1107835  0.2  0.0 kworker/u64:6-writeback",
+      "   1380  0.1  0.0 containerd",
+      "   1279  0.1  0.0 dbus-daemon",
+      "1107834  0.1  0.0 kworker/u64:5-events_power_efficient",
+      "3990354  0.1  0.0 devbox-agent",
+      " 528439  0.1  0.0 systemd-resolve",
+      "   2707  0.1  0.0 git"
+    ],
+    "load_average": [
+      1.18701171875,
+      2.0068359375,
+      1.88037109375
+    ],
+    "other_workloads": []
+  },
+  "seed": 20261021114,
+  "completed_at": "2026-10-21T17:00:54.763113+00:00",
+  "uv": {
+    "commit": "3d82a6ad5a7eab8c68236553b7846517767c4b61",
+    "status": "",
+    "lock_sha256": "747296375bb1889689f3bbb1e0303bddd071d6a65117c00be50856448260d014"
+  },
+  "both_workflows_pass": false,
+  "significant_native_regression": false
+}

@@ -1,0 +1,79 @@
+{
+  "status": "passed",
+  "reviewed_at": "2026-10-21T15:01:57.862115+00:00",
+  "measurement_seal_sha256": "b6e765057417644e62cf7cadc4994a05172077f8c9a26bfe6343e6ad377e48ff",
+  "transfer_manifest_sha256": "4f15db28f560a5d8939e86b496b073b1674c6451dcff4ca82bbeac00aad5821e",
+  "source_review_sha256": "471bf6b642a113eee90925a203290e838cb1adbec40ec0fb355a4c7012307416",
+  "reviewer_sha256": "793ad3aa43f8c3d4678412f7163c6fcb47d781a935b7322ec72fdac1f68779a7",
+  "verified_transferred_files": 136,
+  "sealed_inputs": 900,
+  "configurations": {
+    "ir-check": {
+      "sha256": "8dfce6164795deab27cc6728d43a803732895082a99960acf33df5d037e98ba4",
+      "record_files": 899,
+      "base_records_retained": 760,
+      "only_record_files_augmented": true
+    },
+    "ir-test": {
+      "sha256": "c0c3151d1bf456b4519390616732651e62f95469524f5bfc7d963c00cd293921",
+      "record_files": 899,
+      "base_records_retained": 760,
+      "only_record_files_augmented": true
+    },
+    "native-check": {
+      "sha256": "23399d6333272a3f721a9bfeecfefc6273ac58f22116249218b67b526bc0184a",
+      "record_files": 900,
+      "base_records_retained": 760,
+      "only_record_files_augmented": true
+    },
+    "native-test": {
+      "sha256": "b7bb60c9ec17746492b0c214fb07fe6e511ccf6f19635fca81fa7e7578a727c9",
+      "record_files": 900,
+      "base_records_retained": 760,
+      "only_record_files_augmented": true
+    }
+  },
+  "phase_plans": {
+    "ir": {
+      "pairs": 12,
+      "phase": "confirmation",
+      "warming_order": [
+        "baseline",
+        "candidate"
+      ],
+      "plan": [
+        [
+          "check",
+          20261021111
+        ],
+        [
+          "test",
+          20261021112
+        ]
+      ]
+    },
+    "native": {
+      "pairs": 30,
+      "phase": "confirmation",
+      "warming_order": [
+        "baseline",
+        "candidate"
+      ],
+      "plan": [
+        [
+          "check",
+          20261021113
+        ],
+        [
+          "test",
+          20261021114
+        ]
+      ]
+    }
+  },
+  "exact_matched_production_pair": true,
+  "separate_initially_fresh_fixtures": true,
+  "uv_unchanged": true,
+  "source_correctness_and_ci_bound": true,
+  "decision": "Approve fixed IR phase. Native remains conditional on both complete IR integrity audits and gates."
+}

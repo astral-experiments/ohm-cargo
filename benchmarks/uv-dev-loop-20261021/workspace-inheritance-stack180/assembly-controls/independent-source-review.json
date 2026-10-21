@@ -1,0 +1,35 @@
+{
+  "advisory": [
+    {
+      "file": "assemble.py",
+      "finding": "The fixed output parent is not explicitly required to resolve canonically before OUT.mkdir. Current intended workspace layout is canonical and exclusive creation prevents overwriting an existing package; adding OUT.parent.resolve()==OUT.parent would make the output-side ancestor guard explicit, matching input-side policy.",
+      "line": 179,
+      "priority": "low"
+    }
+  ],
+  "blocking_findings": [],
+  "checks": {
+    "eligibility": "Both phases must be terminal with exact binary/seal/source identities and raw-manifest joins. Both IR gates must qualify; any significant native regression blocks assembly. Valid-negative native results remain negative and are disclosed.",
+    "lineage": "Exact failed and closed IR captures are pinned. Native admission review, before/after binding and transport closure must join the exact native review and transfer hash. Accepted IR raw bytes must be unchanged in the final native capture.",
+    "lossless_raw": "Every extracted remote member must equal the exact original tar member set and bytes. All original transport archives and local envelopes enter a lossless outer archive; full Callgrind profiles remain present. Post-write archive and source rehashes are mandatory; oversize artifacts fail without dropping observations.",
+    "paths_outputs": "Relative member names reject absolute, parent, backslash and noncanonical paths; input files and extracted/envelope trees reject symlinks/special files; duplicate archive/lineage members reject. Output package and adjacent manifest must be absent, and output files use exclusive creation.",
+    "plans": "IR requires 12 pairs, 2 warmups, and 28 observations per workflow with seeds 20261021111/112. Native requires 30 paired eight-call sums, 2 warmups, and 64 groups/512 subruns per workflow with seeds 20261021113/114. Review bootstrap is 99 percent/20,000/1701; assembler runs no statistics.",
+    "publication_compatibility": "Adjacent manifest deliberately excludes SHA256SUMS, matching the frozen publisher that adds and verifies that file. Source/head/tree/CI bindings and the distinction between default-feature tests and production binary preflight are explicit.",
+    "synthetic_record": "Read the retained 13-test synthetic record and test source; no actual assembler/preparation function was invoked."
+  },
+  "fixed_reference_hashes_verified": 8,
+  "output_parent_metadata_checked": {
+    "canonical_existing_directory": true,
+    "path": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/pr-evidence"
+  },
+  "reviewed_at": "2026-10-21T17:09:47.628572+00:00",
+  "scope_limits": [
+    "No prepare_inputs.py or assemble.py execution.",
+    "No host or compiler/workload action for this review.",
+    "No actual native effects opened or recomputed; fixed references were hashed without interpreting their result values.",
+    "Dynamic final native inputs/lineage and final-inputs/inputs.json still require the separately planned actual-input review before assembly."
+  ],
+  "source_files_verified": 9,
+  "source_freeze_sha256": "272a563aa3b3243be190e3fa3d43db1923a9c1f4f7669beaf746cf4935d3f087",
+  "status": "passed-source-review"
+}

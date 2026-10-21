@@ -1,0 +1,36 @@
+{
+  "status": "prospective-approved-with-strict-preflight-required",
+  "created_at": "2026-10-21T14:32:14.229806+00:00",
+  "fixed_untimed_warm_commands_per_variant": 3,
+  "prior_controller_sha256": "041f59cdede32c502ca9ce9fdde00a9fdddc0192595cf1e9c1a0029b813ed763",
+  "controller_sha256": "318d05c1112e73625015461ff6c1000fab3cafb573c8e3e3963b16cd9ec64e6c",
+  "files": {
+    "native_controller-v3.py": "318d05c1112e73625015461ff6c1000fab3cafb573c8e3e3963b16cd9ec64e6c",
+    "controller-warming-v3.diff": "3f42e666d05f9631fff0744580ab1c226b05b7d3af94c34d3a64a4ee28e69faf",
+    "controller-warming-v3-ast-proof.json": "df3124be3e8ceb9b7bfa06e0b1957651a8725679e2fe037d4a45657f8da0b2bb",
+    "WARMING-AMENDMENT-v3.md": "485ff33d92a5a992cfc72e79c03c4e2d26212f9ac031f77958dc89cd836b1d6b"
+  },
+  "unchanged": [
+    "pairs",
+    "grouping",
+    "warmup pairs",
+    "seeds",
+    "stage warming order",
+    "workload commands",
+    "fresh fixtures",
+    "zero-child trace",
+    "cross-switch freshness",
+    "integrity",
+    "deferred analysis",
+    "statistical gates",
+    "descriptive-only RSS"
+  ],
+  "no_performance_execution": true,
+  "supersedes_unexecuted_draft_sha256": "97a7ec4cf9273b8f4ab1a279ef1d5c936ea9b8b7c0ac32fe5ce9814ebb7feab9",
+  "observation_correction": "The observed metadata switch followed the single uv source edit. No separate no-edit convergence probe ran. Strict v3 preflight is the convergence requirement in each actual fresh cohort.",
+  "retained_drafts": {
+    "WARMING-AMENDMENT-v3-draft01.md": "9ef99de32cb69afa7baab710c4198ff2ad9d995ded93eead88881fbc13c3e254",
+    "warming-amendment-v3-draft01.json": "97a7ec4cf9273b8f4ab1a279ef1d5c936ea9b8b7c0ac32fe5ce9814ebb7feab9",
+    "controller-warming-v3-ast-proof-draft01.json": "de0e402eb20f54815f352c9595f8f8d816b17b490c5c2d60f48bbf9aaa922c3a"
+  }
+}

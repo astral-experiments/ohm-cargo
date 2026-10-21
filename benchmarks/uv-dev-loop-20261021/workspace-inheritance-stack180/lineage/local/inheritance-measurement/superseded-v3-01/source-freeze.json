@@ -1,0 +1,77 @@
+{
+  "status": "frozen-for-independent-source-review-not-executed",
+  "created_at": "2026-10-21T14:42:09.723212+00:00",
+  "host": "charlie-oss-2",
+  "root": "/tmp/ohm-hillclimb-20261021-inheritance-measurement",
+  "files": {
+    "bind_inputs.py": "a1f695c8b3fd88e4a6788cbe851864f1e0af413746160cc52e29dc8f4647e9be",
+    "check_controls.py": "3213d09e2de6511957e79e3d268d70a940319e9d13b08b6f0733424f63d6de84",
+    "collect.py": "3d619f71499a708d55fd95947f230ff937bed690b6be3c2c9e1fb1d0072a1f2c",
+    "driver.py": "29e51b91df7ee9adfcca88b8723d84547579a7380e696340fb8cbedcda09821f",
+    "occupancy.py": "4ab18ad5476cd365d755593170cffd150a7f579ed8a016d53051be4c893afd24",
+    "prepare_host.py": "9ff480c7e6eadee1917e65973aaa2aaf5145348a3a35b725f2d772b04cd8af9c",
+    "stage.py": "67982c7f92b012dfcfa83f4ccb3dfbfb7e15be18aa5932e7cd4f7c3141946655",
+    "README.md": "34ba603f8bf0ef44e4b6198bdb13cef76dde7ba4965fff6d301bc7976389f4b6",
+    "schema-guard-checks.json": "20baa0ddb7608962dce2c9a5fe28f30306dc39b1bd3482956dd9ea1f85289c7c",
+    "schema-guard-checks-v2-reference.json": "9a488b604cfec797d5b23e740148068ee22bc480c9fb745e78aa0151b26da859",
+    "static-source-checks.json": "319a56edd46cd53f56ca04241f293866b5e7c699896adcf21003b4bb93c411d2"
+  },
+  "external_inputs": {
+    "workspace-inheritance-candidate/protocol.json": "5a78491c347b2f8749fe6da44002c863679062e5e3c7393e9508671e813af2da",
+    "workspace-inheritance-candidate/correctness-seal.json": "9510ea518e14e69927b36110d7f24e55aaa9fa04fd09fbb57c55913c8b06bc43",
+    "workspace-inheritance-candidate/root-correctness-review.json": "eb5bed6a08218fddf2338020e42db803246717b9268aaabccda6505033741f29",
+    "workspace-inheritance-publication/ci-validation.json": "31919fa0176833892b97f8c38a468e0b0998d551fb675f062601c05d8a472a79",
+    "benchmark/frozen/paired.py": "50d0cb2d4f595ccfa72d463fedb3ff4dadf9dfc1446c749d482d9ede8418c7cf",
+    "benchmark/frozen/paired_repeated.py": "50547460e030aa73e1f48121bf477cf8f4a4538bf1bb577851af54176750b6d3",
+    "profiling-tools/ohm-valgrind-env.c": "503c8612d9972ed2ce4ef7b4431e569a8c98d0d5f0d1149dd0fff364513e691b",
+    "profiling-tools/ohm-valgrind-env.so": "42f912fe052732ef964681579a3bc1acbc50966f04babb5a452f25dfe4825973",
+    "ohm-1.99.0-6-x86_64-unknown-linux-gnu.tar.gz": "98a4f4f99ea1ff36e10209258724426496afbbcab14d746294fe53a2fedad37c",
+    "profiling-tools/valgrind_1%3a3.22.0-0ubuntu3_amd64.deb": "744e081e5cf3d5c598b499dbb7d2250ea3f2869dde4a4d7b231fe6114f347d7d",
+    "profiling-tools/libc6-dbg_2.39-0ubuntu8.9_amd64.deb": "c4b086cef3a6bbb6a90299969b3c0bf3867f40cb8e9bbbb0edfe5ae23f2c04f0",
+    "allocator-native/native_controller-v2.py": "041f59cdede32c502ca9ce9fdde00a9fdddc0192595cf1e9c1a0029b813ed763",
+    "allocator-native/native_controller-v3.py": "318d05c1112e73625015461ff6c1000fab3cafb573c8e3e3963b16cd9ec64e6c",
+    "allocator-native/warming-amendment-v3.json": "823d8448f15f09b5aafba4eb078132f66509e24760e95d4442761f952762975a",
+    "allocator-native/root-warming-v3-review.json": "3aa81ea81bf685148addec14b42159d585b4d6ebc3304f874766ad64c8b1c99a",
+    "allocator-native/WARMING-AMENDMENT-v3.md": "485ff33d92a5a992cfc72e79c03c4e2d26212f9ac031f77958dc89cd836b1d6b",
+    "allocator-native/controller-warming-v3.diff": "3f42e666d05f9631fff0744580ab1c226b05b7d3af94c34d3a64a4ee28e69faf",
+    "allocator-native/controller-warming-v3-ast-proof.json": "df3124be3e8ceb9b7bfa06e0b1957651a8725679e2fe037d4a45657f8da0b2bb",
+    "allocator-native/warming-amendment-v3-draft01.json": "97a7ec4cf9273b8f4ab1a279ef1d5c936ea9b8b7c0ac32fe5ce9814ebb7feab9",
+    "allocator-native/WARMING-AMENDMENT-v3-draft01.md": "9ef99de32cb69afa7baab710c4198ff2ad9d995ded93eead88881fbc13c3e254",
+    "allocator-native/controller-warming-v3-ast-proof-draft01.json": "de0e402eb20f54815f352c9595f8f8d816b17b490c5c2d60f48bbf9aaa922c3a",
+    "production-build/host2-inheritance-stack180/frozen/manifest.json": "ff3455f081f9b08c06f26fbe029fcfcdbe243b0e905a96f7237181ea5d6806cd",
+    "production-build/host2-inheritance-stack180/frozen/build_driver_host2_inheritance_stack180.py": "21707e2fbcecb710adddf24c4776b0e2995a91051672f1e026b43982da68a882",
+    "production-build/host2-inheritance-stack180/results/audit-pair.json": "00fee70efe3e5f94ee55e7a76ac1baf921659f1e1895606577b55506316f105e",
+    "production-build/host2-inheritance-stack180/results/root-pair-review.json": "972c64e88a59bebe1d34088c3c24f7bb51aed5bc3da63186eda281218104fa1f",
+    "production-build/host2-inheritance-stack180/results/provenance.json": "f25cbdb8eb0554cfce059ecdf75c0946e0acddabf9fca3c8dce962462fda974b",
+    "production-build/host2-inheritance-stack180/results/cargo-inheritance-stack180-baseline": "3164f9287711f122fa9636a7816ed8749598706ac5076d66051a036dcef51037",
+    "production-build/host2-inheritance-stack180/results/cargo-inheritance-stack180-shared": "3b1a2e4e3654b7b23816fbb54c51072cb356486c36052a5bcd6c4d3d2e6a07e9"
+  },
+  "source_trees": {
+    "baseline": "0a392258c801cff734d223a3f9af73d5b5a4e3c0",
+    "candidate": "c4178b67e0b3a64a12b9b58f84b97323b99d734e"
+  },
+  "stages": {
+    "ir": {
+      "pairs": 12,
+      "warmup_pairs": 2,
+      "seeds": {
+        "check": 20261021111,
+        "test": 20261021112
+      }
+    },
+    "native": {
+      "pairs": 30,
+      "warmup_pairs": 2,
+      "calls_per_group": 8,
+      "seeds": {
+        "check": 20261021113,
+        "test": 20261021114
+      }
+    }
+  },
+  "fixed_untimed_native_warm_commands_per_variant": 3,
+  "actual_strict_preflight_required_before_comparisons": true,
+  "source_review_required_before_packaging": true,
+  "generated_setup_review_required_before_first_warmup": true,
+  "no_host_or_cargo_execution": true
+}

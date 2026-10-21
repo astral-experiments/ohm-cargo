@@ -1,0 +1,14 @@
+{
+  "status": "failed",
+  "tests": 16,
+  "failures": 2,
+  "failed_tests": [
+    "test_exact_tail_only_two_fixed_analyses",
+    "test_post_analysis_quiet_failure_blocks_completion"
+  ],
+  "cause": "Synthetic Output mock lacked __str__, so the unchanged exact-command guard correctly rejected its object repr. The implementation and all real observations were untouched.",
+  "source_sha256": "d84d5a621cf1903c67b9beb0b72070c4d0f91954474c16681c22d9d5a48d373b",
+  "host_actions": 0,
+  "cargo_invocations": 0,
+  "real_statistics_computed": false
+}

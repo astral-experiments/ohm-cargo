@@ -1,0 +1,11 @@
+[source.crates-io]
+# >>> OPENAI DEPENDENCY-COOLDOWN - CARGO CRATES-IO >>>
+# Security related dependency cooldown setting. Visit go/dependency-cooldowns for more details.
+replace-with = "socket-firewall-see-go-blocked-3p-dep"
+# <<< OPENAI DEPENDENCY-COOLDOWN - CARGO CRATES-IO <<<
+
+[source.socket-firewall-see-go-blocked-3p-dep]
+# >>> OPENAI DEPENDENCY-COOLDOWN - CARGO SOCKET-FIREWALL >>>
+# Security related dependency cooldown setting. Visit go/dependency-cooldowns for more details.
+registry = "sparse+https://socket-firewall-registry.gateway.admin-0.internal.api.openai.org/cargo/"
+# <<< OPENAI DEPENDENCY-COOLDOWN - CARGO SOCKET-FIREWALL <<<

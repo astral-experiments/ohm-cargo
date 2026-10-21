@@ -1,0 +1,38 @@
+{
+  "analysis_tail_ast_sha256": "3d13d0538f41f3a26ec76547ba51d2db69019daad761d608bab39ed8c3220448",
+  "cargo_invocations": 0,
+  "closure_manifest_sha256": "87271d54298ea323702ef858034bc82595717d3893e8de23a2a7b8e6c6f83642",
+  "failed_archive_sha256": "ca5f6ac650e7af30024d02e20bc0498175cb39316ccb27c622792b7266123ec8",
+  "failed_capture_sha256": "b5a0b1edb496ffa0749ba6e2198606c32d83c22a8d79340ca9dc3d4b0ce95ba8",
+  "findings": [],
+  "host_actions": 0,
+  "original_failed_launch_sha256": "765266538d3c45b28fb0caa9bfbf3055bd0737ec5a52031ca69222813c64c7f8",
+  "original_launch_returncode": 1,
+  "original_tail_statements": 7,
+  "python_sources_parsed": 21,
+  "raw_capture_files_and_archive_members_verified": 477,
+  "raw_timing_values_parsed": false,
+  "real_statistics_computed": false,
+  "review_conclusions": [
+    "Exact original seven-statement post-audit tail; sample/preflight loop is excluded and direct subprocess calls are restricted to the two unchanged analyses.",
+    "Original driver, 900-input measurement seal, plans, counts, seeds, gates, occupancy guard and production pair remain unchanged.",
+    "All 477 captured bytes are bound before and after, with only the ordinary IR status path allowed to change; original failed status and launch1 remain independently retained.",
+    "Both raw workflows are re-audited before the unchanged effects; quiet failure still rejects completion and no automatic retry is added.",
+    "Collector/reviewer adaptations join closure0 to launch1 and adjust collection/chronology/native lineage only; raw/metric/statistical implementation is unchanged."
+  ],
+  "review_source_sha256": "4ceaf69142ae5656357efa35ca06324cf387eb67a94eb288b7e1f823c36767e2",
+  "reviewed_at": "2026-10-21T15:45:59.388780+00:00",
+  "reviewer_source_freeze_sha256": "6788a132f081cb510a8a3cbd0ffc1b62c3ebc29dad936d47520bf74052a6ec8e",
+  "scope": "Source, byte hashes and synthetic guards only. No host access, Cargo, real effects, finalizer or statistical reviewer execution.",
+  "source_files_verified": 47,
+  "source_freeze_sha256": "befbcd80ecdbfa09a14a39faf11891a01b65cb544522417fbbc29b3aa4352d10",
+  "status": "passed",
+  "synthetic_tests": {
+    "count": 16,
+    "returncode": 0,
+    "stderr_sha256": "96232d2afb48ff53cc344d51317243e62a1dcb6745b88e8d000490a1def277ca",
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "unchanged_original_tail_quiet_calls": 2,
+  "unchanged_raw_and_statistical_functions": true
+}

@@ -1,0 +1,66 @@
+{
+  "status": "passed",
+  "checked_at": "2026-10-21T14:45:44.990961+00:00",
+  "previous_controller_sha256": "318d05c1112e73625015461ff6c1000fab3cafb573c8e3e3963b16cd9ec64e6c",
+  "controller_sha256": "75206df60ff0a3305dd41410bf72a8f738cd1ab3a7f04adb5c2d12b8aa8c1573",
+  "check_script_sha256": "eabaca7437a6bed333911a4aba211c666b4f50776da51e8dd1a2a3ecb25011f9",
+  "every_ast_node_outside_quiet_unchanged": true,
+  "cases": [
+    {
+      "case": "normal quiet",
+      "accepted": true,
+      "expected": true
+    },
+    {
+      "case": "spaced command",
+      "accepted": true,
+      "expected": true
+    },
+    {
+      "case": "busy spaced command at threshold",
+      "accepted": false,
+      "expected": false
+    },
+    {
+      "case": "spaced command below threshold",
+      "accepted": true,
+      "expected": true
+    },
+    {
+      "case": "idle compiler",
+      "accepted": false,
+      "expected": false
+    },
+    {
+      "case": "padded idle compiler",
+      "accepted": false,
+      "expected": false
+    },
+    {
+      "case": "idle Cargo variant",
+      "accepted": false,
+      "expected": false
+    },
+    {
+      "case": "idle Callgrind helper",
+      "accepted": false,
+      "expected": false
+    },
+    {
+      "case": "self and own probe excluded",
+      "accepted": true,
+      "expected": true
+    },
+    {
+      "case": "unrelated busy probe rejected",
+      "accepted": false,
+      "expected": false
+    },
+    {
+      "case": "quiet spaced process does not mask builder",
+      "accepted": false,
+      "expected": false
+    }
+  ],
+  "no_process_probe_or_cargo_executed": true
+}

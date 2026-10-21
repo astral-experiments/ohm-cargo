@@ -1,0 +1,30 @@
+{
+  "all_10_native_workload_paths_absent": true,
+  "capture_archive": {
+    "sha256": "3771d047e9057457b32b168775d0129bf05c9e9813350c975c3a915a18cd69ba",
+    "size": 614400
+  },
+  "capture_sha256": "9203be17ef06b5836ad916765d69d097df29d9fd83df61f33645a5d6a03c8177",
+  "count_basis": "Authenticated control flow, failed-stage metadata, unchanged canonical candidate and exact absence proof; no process tracing was added.",
+  "created_at": "2026-10-21T16:37:21.439068+00:00",
+  "effects_inspected": false,
+  "failed_local_launch_sha256": "4655a40aee0f8fce994c9bb4ca59258ea9259dc6283a76d0dbda33a782e2d0b3",
+  "failed_native_status_sha256": "baa835d9404611a6b73f4b8597aeb88e26af29e9d199d9a880ca2bc4715e8dfb",
+  "native_cargo_calls": 0,
+  "native_measurements": 0,
+  "native_prerequisite_sha256": "5a9a2172c5930f35a6618ed2a361d5a135585f275085ace5c7ba42f8a08a7ea7",
+  "original_ir_500_files_preserved": true,
+  "qualifies": false,
+  "recovery_scope": "After separate approval, retain/move only the two failed remote metadata files and three local launch receipts, then replay byte-identical original phase controls.",
+  "retained_namespace_absent": true,
+  "review_source_sha256": "20281ac341bd0e364298ab8e661eb0013a327ba6c11d8917430cc8f0746f3042",
+  "source_boundary": {
+    "basis": "The quiet argument raised before status.update or the first preflight call. That preflight creates its exclusive directory before any Cargo install/run.",
+    "driver_guard_line": 388,
+    "first_preflight_call_line": 390,
+    "preflight_directory_creation_line": 248
+  },
+  "source_freeze_sha256": "767c4df6153e38245de96d6330c5679e181d515dd99b692b45289d6a19033cff",
+  "statistics_computed": false,
+  "status": "passed zero-work native admission boundary"
+}

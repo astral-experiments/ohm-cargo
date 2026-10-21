@@ -1,0 +1,58 @@
+--- reviewed-host3/collect_variant.py
++++ new-host2/collect_variant.py
+@@ -1,5 +1,5 @@
+ #!/usr/bin/env python3
+-"""Collect immutable artifacts from the isolated host3 production cohort."""
++"""Collect immutable artifacts from the isolated host2 production cohort."""
+ 
+ import hashlib
+ import json
+@@ -13,23 +13,23 @@
+ ROOT = Path(__file__).resolve().parent
+ RESULTS = ROOT / "results"
+ variant = sys.argv[1]
+-if variant not in {'sbom-stack179-baseline', 'sbom-stack179-lazy'}:
+-    raise SystemExit("unknown host3 variant")
++if variant not in {'inheritance-stack180-baseline', 'inheritance-stack180-shared'}:
++    raise SystemExit("unknown host2 variant")
+ remote = r'''
+ import io,json,os,socket,sys,tarfile
+ from pathlib import Path
+-root=Path('/tmp/ohm-hillclimb-20261021-production')
+-assert socket.gethostname()=='charlie-oss-3' and root.resolve()==root and root.stat().st_uid==os.getuid()==1000
++root=Path('/tmp/ohm-hillclimb-20261021-inheritance-production')
++assert socket.gethostname()=='charlie-oss-2' and root.resolve()==root and root.stat().st_uid==os.getuid()==1000
+ variant=sys.argv[1]
+-assert variant in {'sbom-stack179-baseline', 'sbom-stack179-lazy'}
+-status=json.loads((root/'status-host3-sbom-stack179.json').read_text())
++assert variant in {'inheritance-stack180-baseline', 'inheritance-stack180-shared'}
++status=json.loads((root/'status-host2-inheritance-stack180.json').read_text())
+ assert variant in status['completed_variants'],status
+ name=f'cargo-{variant}'
+ record=json.loads((root/'binaries/manifest.json').read_text())[name]
+ files={name:root/'binaries/stripped'/name,
+        name+'.strip.json':root/'binaries/stripped'/(name+'.json'),
+-       'provenance.json':root/'provenance-host3-sbom-stack179.json',
+-       'ownership.json':root/'ownership-host3-sbom-stack179.json'}
++       'provenance.json':root/'provenance-host2-inheritance-stack180.json',
++       'ownership.json':root/'ownership-host2-inheritance-stack180.json'}
+ for extension in ('source.patch','occupancy.json','stdout','stderr'):
+  files[f'{variant}.{extension}']=root/'logs'/f'{variant}.{extension}'
+ with tarfile.open(fileobj=sys.stdout.buffer,mode='w|') as archive:
+@@ -42,7 +42,7 @@
+ with tempfile.TemporaryFile() as output:
+     subprocess.run([
+         "/home/dev-user/.codex/skills/applied/applied-devbox/scripts/devbox_ssh",
+-        "charlie-oss-3", "--", "python3", "-c", remote, variant,
++        "charlie-oss-2", "--", "python3", "-c", remote, variant,
+     ], stdout=output, check=True)
+     output.seek(0)
+     with tarfile.open(fileobj=output, mode="r:") as archive:
+@@ -71,6 +71,6 @@
+ assert hashlib.sha256((RESULTS / f"{variant}.source.patch").read_bytes()).hexdigest() == record["observed_diff_sha256"] == expected["canonical_diff_sha256"]
+ for extension in ("stdout", "stderr"):
+     assert hashlib.sha256((RESULTS / f"{variant}.{extension}").read_bytes()).hexdigest() == record[f"{extension}_sha256"]
+-print(json.dumps({"cohort": "host3-sbom-stack179", "variant": variant,
++print(json.dumps({"cohort": "host2-inheritance-stack180", "variant": variant,
+                   "binary": str(RESULTS / name), "sha256": actual,
+                   "bytes": proof["stripped_bytes"]}, indent=2))

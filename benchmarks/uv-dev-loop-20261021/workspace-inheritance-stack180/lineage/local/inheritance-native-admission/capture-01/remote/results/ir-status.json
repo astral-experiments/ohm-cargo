@@ -1,0 +1,103 @@
+{
+  "state": "complete",
+  "started_at": "2026-10-21T15:02:56.671175+00:00",
+  "phase": "ir",
+  "seal_sha256": "b6e765057417644e62cf7cadc4994a05172077f8c9a26bfe6343e6ad377e48ff",
+  "variants": {
+    "baseline": "3164f9287711f122fa9636a7816ed8749598706ac5076d66051a036dcef51037",
+    "candidate": "3b1a2e4e3654b7b23816fbb54c51072cb356486c36052a5bcd6c4d3d2e6a07e9"
+  },
+  "integrity_complete": [
+    "check",
+    "test"
+  ],
+  "completed": [
+    {
+      "workflow": "check",
+      "directory": "/tmp/ohm-hillclimb-20261021-inheritance-measurement/results/ir-check",
+      "passes_gate": true,
+      "checks": {
+        "fixed_pairs": true,
+        "at_least_one_percent": true,
+        "positive_99_percent_lower_bound": true,
+        "two_sided_sign_p_at_most_0_01": true,
+        "both_orders_positive": true
+      },
+      "reduction": 0.03740338435303181,
+      "interval_99": [
+        0.03632069307631036,
+        0.03790602844570301
+      ],
+      "sign_p": 0.00048828125,
+      "significant_native_regression": false,
+      "scope": "Fixed independent pairs; no exclusions, extensions, pooling or interim effect inspection."
+    },
+    {
+      "workflow": "test",
+      "directory": "/tmp/ohm-hillclimb-20261021-inheritance-measurement/results/ir-test",
+      "passes_gate": true,
+      "checks": {
+        "fixed_pairs": true,
+        "at_least_one_percent": true,
+        "positive_99_percent_lower_bound": true,
+        "two_sided_sign_p_at_most_0_01": true,
+        "both_orders_positive": true
+      },
+      "reduction": 0.031866830508907595,
+      "interval_99": [
+        0.03170621534823581,
+        0.03206341475607877
+      ],
+      "sign_p": 0.00048828125,
+      "significant_native_regression": false,
+      "scope": "Fixed independent pairs; no exclusions, extensions, pooling or interim effect inspection."
+    }
+  ],
+  "workflow": "test",
+  "quiet": {
+    "process_snapshot": [
+      "1068531 90.5  0.0 python3",
+      "    909 12.2  1.8 falcon-sensor-b",
+      "1057057  2.0  0.5 codex",
+      "      1  0.7  0.0 systemd",
+      "   1375  0.3  0.0 xds-server",
+      "   1379  0.3  0.0 envoy",
+      "1344423  0.2  0.0 applied-devbox-",
+      " 532938  0.2  0.0 redis-server",
+      "    238  0.2  0.0 kswapd0",
+      "    216  0.2  0.0 kcompactd0",
+      "   1380  0.1  0.0 containerd",
+      "   1279  0.1  0.0 dbus-daemon",
+      " 976145  0.1  0.0 kworker/u64:1-flush-253:0",
+      "3990354  0.1  0.0 devbox-agent",
+      "1063804  0.1  0.0 node",
+      "1062655  0.1  0.0 node",
+      "1062290  0.1  0.0 node",
+      " 528439  0.1  0.0 systemd-resolve",
+      "   2707  0.1  0.0 git",
+      " 528190  0.1  0.2 systemd-journal"
+    ],
+    "load_average": [
+      0.23193359375,
+      0.54443359375,
+      0.78271484375
+    ],
+    "other_workloads": []
+  },
+  "seed": 20261021112,
+  "operational_closure": {
+    "manifest_sha256": "87271d54298ea323702ef858034bc82595717d3893e8de23a2a7b8e6c6f83642",
+    "failed_capture_sha256": "b5a0b1edb496ffa0749ba6e2198606c32d83c22a8d79340ca9dc3d4b0ce95ba8",
+    "failed_status_sha256": "f3199c1c5ee27609f56874fda658e651e1bbe174d10ea194584c2d5426f5c868",
+    "failed_launch_sha256": "765266538d3c45b28fb0caa9bfbf3055bd0737ec5a52031ca69222813c64c7f8",
+    "retained_failed_status_path": "/tmp/ohm-hillclimb-20261021-inheritance-measurement/closures/ir-postguard/failed-capture/ir-status.json"
+  },
+  "completed_at": "2026-10-21T16:03:20.808611+00:00",
+  "uv": {
+    "commit": "3d82a6ad5a7eab8c68236553b7846517767c4b61",
+    "status": "",
+    "lock_sha256": "747296375bb1889689f3bbb1e0303bddd071d6a65117c00be50856448260d014"
+  },
+  "both_workflows_pass": true,
+  "significant_native_regression": false
+}

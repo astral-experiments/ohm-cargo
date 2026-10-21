@@ -1,0 +1,169 @@
+--- reviewed-host3-sbom-driver
++++ build_driver_host2_inheritance_stack180.py
+@@ -11,14 +11,14 @@
+ import sys
+ import time
+ 
+-ROOT = Path("/tmp/ohm-hillclimb-20261021-production")
++ROOT = Path("/tmp/ohm-hillclimb-20261021-inheritance-production")
+ SOURCE = ROOT / "source"
+ PINNED = "5e5d271d763d7beb38b48755e22bd59e93f02b97"
+ TREE = "f359174bb51dd7adb6a6e94dac43661d27086193"
+ TOOLCHAIN = Path("/home/dev-user/.rustup/toolchains/1.99.0-x86_64-unknown-linux-gnu")
+-VARIANTS = (('sbom-stack179-baseline', ('stack179-current.patch',)), ('sbom-stack179-lazy', ('stack179-lazy-sbom.patch',)))
+-PATCH_HASHES = {'stack179-current.patch': '5db5e4a8b09ffea58d8ee7f297d2d486c7bde0d159fe51e5adcb23db72bbb573', 'stack179-lazy-sbom.patch': 'b514c63d12c25d2670a7e64e9219417d5e08d4fb43d719135067bfacc05a52d8'}
+-EXPECTED_TREES = {'sbom-stack179-baseline': 'f4ce59f92aa17461fe3c8b68923c88539136045a', 'sbom-stack179-lazy': 'c377ade816d378aa75f629313ac7b116da10c6da'}
++VARIANTS = (('inheritance-stack180-baseline', ('stack180-baseline.patch',)), ('inheritance-stack180-shared', ('stack180-shared.patch',)))
++PATCH_HASHES = {'stack180-baseline.patch': 'c6903b9c8d161553d8993b35744186a840163431f2da741c516bd12ae11b6435', 'stack180-shared.patch': 'e03566d5109989053f94721ac430527f10b6ff079fb8dc03cb6ce8e139d8f086'}
++EXPECTED_TREES = {'inheritance-stack180-baseline': '0a392258c801cff734d223a3f9af73d5b5a4e3c0', 'inheritance-stack180-shared': 'c4178b67e0b3a64a12b9b58f84b97323b99d734e'}
+ STRIP_HELPER_SHA256 = "67d6f781d1e77bbc4f9111e88589fdf0819d19c6073592b422ad832a7c41f6a1"
+ 
+ 
+@@ -69,7 +69,7 @@
+ 
+ 
+ def current_source_tree():
+-    index_path = ROOT / "tmp" / "host3-sbom-stack179.working-source.index"
++    index_path = ROOT / "tmp" / "host2-inheritance-stack180.working-source.index"
+     if index_path.exists():
+         raise RuntimeError("working source verification index already exists")
+     index_environment = os.environ.copy()
+@@ -102,15 +102,29 @@
+     return hashlib.sha256(json.dumps(observed, sort_keys=True).encode()).hexdigest()
+ 
+ 
++
++def relocated_reference(value):
++    """Compare the original reference after relocating this owned build root."""
++    old = "/tmp/ohm-hillclimb-20261021-production"
++    new = "/tmp/ohm-hillclimb-20261021-inheritance-production"
++    if isinstance(value, str) and (value == old or value.startswith(old + "/")):
++        return new + value[len(old):]
++    if isinstance(value, dict):
++        return {key: relocated_reference(item) for key, item in value.items()}
++    if isinstance(value, list):
++        return [relocated_reference(item) for item in value]
++    return value
++
++
+ def main():
+     if ROOT.resolve() != ROOT or Path(__file__).resolve().parent != ROOT:
+         raise RuntimeError("driver must remain in the authorized task directory")
+-    owner = json.loads((ROOT / "ownership-host3-sbom-stack179.json").read_text())
+-    expected_owner = {"cohort": "host3-sbom-stack179", "root": str(ROOT), "uid": os.getuid(),
+-                      "inputs_sha256": sha(ROOT / "host3-sbom-stack179-inputs.json")}
++    owner = json.loads((ROOT / "ownership-host2-inheritance-stack180.json").read_text())
++    expected_owner = {"cohort": "host2-inheritance-stack180", "root": str(ROOT), "uid": os.getuid(),
++                      "inputs_sha256": sha(ROOT / "host2-inheritance-stack180-inputs.json")}
+     if owner != expected_owner or ROOT.stat().st_uid != os.getuid() or SOURCE.resolve() != SOURCE:
+         raise RuntimeError("production root ownership or source path differs from the frozen task")
+-    for name in ("status-host3-sbom-stack179.json", "provenance-host3-sbom-stack179.json"):
++    for name in ("status-host2-inheritance-stack180.json", "provenance-host2-inheritance-stack180.json"):
+         if (ROOT / name).exists():
+             raise RuntimeError(f"refusing to overwrite an earlier attempt: {name}")
+     occupied = occupancy()
+@@ -130,8 +144,8 @@
+         raise RuntimeError("initial source differs from the pinned source bundle")
+     previous_manifest = {}
+     preserved_paths = [ROOT / filename for filename in (
+-        "reference-host7-provenance.json", "pinned.bundle", "stack179-current.patch", "stack179-lazy-sbom.patch",
+-        "host3-sbom-stack179-inputs.json", "ownership-host3-sbom-stack179.json", "build_driver_host3_sbom_stack179.py", "tools/strip_binaries.py")]
++        "reference-host7-provenance.json", "pinned.bundle", "stack180-baseline.patch", "stack180-shared.patch",
++        "host2-inheritance-stack180-inputs.json", "ownership-host2-inheritance-stack180.json", "build_driver_host2_inheritance_stack180.py", "tools/strip_binaries.py")]
+     preserved_artifacts = {str(path.relative_to(ROOT)): sha(path) for path in preserved_paths}
+     for name in ("logs", "binaries", "cargo-home", "tmp", "tools"):
+         (ROOT / name).mkdir(exist_ok=True)
+@@ -194,22 +208,23 @@
+                          "stock Rust 1.99.0 instead of release bootstrap stage1; debug=1 retained "
+                          "then removed with allocated-section invariance verification",
+     }
+-    provenance["upstream_patch_commit"] = "19718e6d1637244ffbb193334f50bae3ffca1be5"
++    provenance["upstream_patch_commit"] = "c40676e264501bc8a93095d3a273a1c300b80875"
+     provenance["expected_variant_source_trees"] = EXPECTED_TREES
+     provenance["strip_helper_sha256"] = STRIP_HELPER_SHA256
+-    provenance["frozen_input_manifest_sha256"] = sha(ROOT / "host3-sbom-stack179-inputs.json")
++    provenance["frozen_input_manifest_sha256"] = sha(ROOT / "host2-inheritance-stack180-inputs.json")
+     provenance["preserved_artifact_sha256"] = preserved_artifacts
+-    provenance["source_import"] += "; exact current179/lazy-SBOM patches atop pinned HEAD keeps embedded identity fixed"
++    provenance["source_import"] += "; exact current180/shared-workspace-dependencies patches atop pinned HEAD keeps embedded identity fixed"
+     original_provenance = json.loads((ROOT / "reference-host7-provenance.json").read_text())
+     for key in ("source", "target", "source_commit", "source_tree", "source_bundle_sha256",
+                 "compiler_input_sha256", "rustc_version", "cargo_version", "cc_version", "environment",
+                 "command", "inherited_cargo_configuration_sha256", "inherited_native_build_environment",
+                 "affinity", "approximation"):
+-        if provenance[key] != original_provenance[key]:
++        if provenance[key] != relocated_reference(original_provenance[key]):
+             raise RuntimeError(f"production build inputs changed since original batch: {key}")
+-    if provenance["host"] != "charlie-oss-3":
+-        raise RuntimeError("this frozen cohort is restricted to host3")
+-    provenance["cohort"] = "host3-sbom-stack179"
++    if provenance["host"] != "charlie-oss-2":
++        raise RuntimeError("this frozen cohort is restricted to host2")
++    provenance["reference_path_relocation"] = {"from": '/tmp/ohm-hillclimb-20261021-production', "to": '/tmp/ohm-hillclimb-20261021-inheritance-production'}
++    provenance["cohort"] = "host2-inheritance-stack180"
+     provenance["reference_host7_provenance_sha256"] = sha(ROOT / "reference-host7-provenance.json")
+     provenance["native_build_tool_sha256"] = {
+         name: sha(name) for name in ("/usr/bin/cc", "/usr/bin/ar", "/usr/bin/ld",
+@@ -219,18 +234,18 @@
+         json.dumps(environment, sort_keys=True).encode()).hexdigest()
+     common_input_identity = verify_common_inputs(provenance, environment)
+     provenance["common_build_inputs_sha256"] = common_input_identity
+-    save(ROOT / "provenance-host3-sbom-stack179.json", provenance)
++    save(ROOT / "provenance-host2-inheritance-stack180.json", provenance)
+     binary_manifest = {}
+     sealed_artifacts = {}
+     status = {"state": "preparing", "started_at": now(), "completed_variants": []}
+-    save(ROOT / "status-host3-sbom-stack179.json", status)
++    save(ROOT / "status-host2-inheritance-stack180.json", status)
+     try:
+         for variant, patches in VARIANTS:
+             occupied = occupancy()
+             save(ROOT / "logs" / f"{variant}.occupancy.json", occupied)
+             if occupied["other_workloads"]:
+                 status.update(state="blocked-by-occupancy", variant=variant, occupancy=occupied)
+-                save(ROOT / "status-host3-sbom-stack179.json", status)
++                save(ROOT / "status-host2-inheritance-stack180.json", status)
+                 return 2
+             if verify_common_inputs(provenance, environment) != common_input_identity:
+                 raise RuntimeError("non-candidate build inputs changed between variants")
+@@ -266,7 +281,7 @@
+                 raise RuntimeError(f"working source differs from frozen patches: {variant}")
+             (ROOT / "logs" / f"{variant}.source.patch").write_bytes(diff)
+             status.update(state="building", variant=variant, variant_started_at=now())
+-            save(ROOT / "status-host3-sbom-stack179.json", status)
++            save(ROOT / "status-host2-inheritance-stack180.json", status)
+             started = time.monotonic_ns()
+             with (ROOT / "logs" / f"{variant}.stdout").open("wb") as stdout, \
+                     (ROOT / "logs" / f"{variant}.stderr").open("wb") as stderr:
+@@ -289,7 +304,7 @@
+                 "bytes": destination.stat().st_size, "patch_sha256": {patch: PATCH_HASHES[patch] for patch in patches},
+                 "observed_source_tree": working_tree, "expected_source_tree_from_patches": observed_tree,
+                 "embedded_source_commit": PINNED,
+-                "upstream_patch_commit": "19718e6d1637244ffbb193334f50bae3ffca1be5",
++                "upstream_patch_commit": "c40676e264501bc8a93095d3a273a1c300b80875",
+                 "observed_diff_sha256": hashlib.sha256(diff).hexdigest(),
+                 "version": output([str(destination), "-Vv"], env=environment),
+                 "dynamic_libraries": output(["/usr/bin/ldd", str(destination)], env=environment),
+@@ -309,7 +324,7 @@
+                 sealed_artifacts[filename] = sha(ROOT / filename)
+             previous_manifest = dict(binary_manifest)
+             status["completed_variants"].append(variant)
+-            save(ROOT / "status-host3-sbom-stack179.json", status)
++            save(ROOT / "status-host2-inheritance-stack180.json", status)
+         for filename, expected in preserved_artifacts.items():
+             if sha(ROOT / filename) != expected:
+                 raise RuntimeError(f"previous artifact changed: {filename}")
+@@ -319,11 +334,11 @@
+         status["sealed_artifact_sha256"] = sealed_artifacts
+         status["preserved_artifacts_verified"] = len(preserved_artifacts)
+         status.update(state="complete", finished_at=now())
+-        save(ROOT / "status-host3-sbom-stack179.json", status)
++        save(ROOT / "status-host2-inheritance-stack180.json", status)
+         return 0
+     except BaseException as error:
+         status.update(state="failed", error=repr(error), finished_at=now())
+-        save(ROOT / "status-host3-sbom-stack179.json", status)
++        save(ROOT / "status-host2-inheritance-stack180.json", status)
+         raise
+ 
+ 

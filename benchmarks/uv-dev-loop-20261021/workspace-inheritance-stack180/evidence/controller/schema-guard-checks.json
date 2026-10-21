@@ -1,0 +1,56 @@
+{
+  "status": "passed",
+  "checked_at": "2026-10-21T14:48:08.582127+00:00",
+  "checks": [
+    "ir-check: unchanged completed schema, gate, and raw table linkage",
+    "ir-test: unchanged completed schema, gate, and raw table linkage",
+    "native-check: unchanged completed schema, gate, and raw table linkage",
+    "native-test: unchanged completed schema, gate, and raw table linkage",
+    "Synthetic negative99% interval plus sign test blocks a native regression",
+    "Occupancy: own probe and controller",
+    "Occupancy: idle unrelated process",
+    "Occupancy: compiler even while idle",
+    "Occupancy: unrelated busy ps",
+    "Occupancy: benchmark controller between children",
+    "Occupancy: build queue between children",
+    "Occupancy: idle spaced command name",
+    "Occupancy: busy spaced command name",
+    "Occupancy: padded compiler name",
+    "Occupancy: v3 controller between children",
+    "Occupancy: v4 controller between children",
+    "Exact protocol pair counts and immutable seeds",
+    "Every controller source parses without execution"
+  ],
+  "historical_schema_input_sha256": {
+    "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/results/check-four-changes-stack176-5a16c750-production-ir-confirmation": {
+      "analysis.json": "bf78e0485477b15c6ecb165e120e7159fd5552285af7a2bd1af635cd34a399c8",
+      "samples.json": "572174f0720135c489e17c35b59ac78ebab29eb257f9589843ab64711dab8fb1",
+      "samples.jsonl": "fa8c397fe286cbaebad7c4f81b4bbf270c3abe72bf60f4cc852d383077b59b4b",
+      "samples.csv": "191a4e1c3699685e800b9be9a0f242c945a8936122c98cd9b55229efea260394"
+    },
+    "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/results/test-four-changes-stack176-5a16c750-production-ir-confirmation": {
+      "analysis.json": "8e409aa2eef015a77c1da8e252fa44429a0baf06c12d1b92400d3ad5e3cdccfa",
+      "samples.json": "f8d4bcd8a55fb358cb26e85065962acabeb4dba06a2d8874553ae964fcf8ef1b",
+      "samples.jsonl": "93edc92061effb344773b85f82f02bb5e938998bbd447784b5d3be93d7265a35",
+      "samples.csv": "5fb1b71c310688afd23aba68d6d073057e03abc22b0e5ce14c35085ec0b7d8b8"
+    },
+    "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/results/check-four-changes-stack176-5a16c750-native-local-confirmation": {
+      "analysis.json": "fc7cd9d765fa881580c6ad1e5bcf20cce9496ab11e45c495fe349262f2c332b1",
+      "samples.json": "f08ccdc54ddaabfb8525479e8b50659f21a531dd460c6a53feef6653665fa606",
+      "samples.jsonl": "3e4cfd3600c824e2741ef20526035c07b5c5ce6a87bb8564be8f8c87d2150476",
+      "samples.csv": "195ef2411a654399f4ece2279bbf94fa1f8172549a6b9a611317eca8188c34e8"
+    },
+    "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/results/test-four-changes-stack176-5a16c750-native-local-confirmation": {
+      "analysis.json": "6a754db673c4ab0ff1ca7a0bccfeec30f184d0a561f5587467c9fb8608e8aba1",
+      "samples.json": "5ac4f641208018be28b95b077f5aff682ac477f51b43de58e8baeb1eced296e6",
+      "samples.jsonl": "b9694fffe15c0be9ebf749938075b1231e9fd4568b73f3282071e91e1fbc6920",
+      "samples.csv": "720097b42c3622e1a24116eeccd7f9804d4471d1602cdee207d059436c2fa1c6"
+    }
+  },
+  "source_sha256": {
+    "driver.py": "1585116beaab26655de1e86459feb030ebdd31e636a613991241018ace5f3ef3",
+    "occupancy.py": "098f4e4df9f4a9c334659a7b10d9c88b07c0213d58522040102dc003da53c4dd",
+    "check_controls.py": "1399daeb0188b823ba5e58530711013ed1ee9d059555eead65f49a197c28727d"
+  },
+  "scope": "No host commands, compiler invocation, profiling, timing, resampling or new candidate result inspection."
+}

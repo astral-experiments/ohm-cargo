@@ -1,0 +1,19 @@
+{
+  "cargo_calls": 0,
+  "checks": [
+    "accepts exact synthetic zero-work boundary",
+    "rejects an entered workflow",
+    "rejects any completed observation",
+    "rejects even an existing empty native target",
+    "actual frozen driver/traceback/preflight AST boundary matches"
+  ],
+  "host_actions": false,
+  "source_boundary": {
+    "basis": "The quiet argument raised before status.update or the first preflight call. That preflight creates its exclusive directory before any Cargo install/run.",
+    "driver_guard_line": 388,
+    "first_preflight_call_line": 390,
+    "preflight_directory_creation_line": 248
+  },
+  "statistics_computed": false,
+  "status": "passed"
+}

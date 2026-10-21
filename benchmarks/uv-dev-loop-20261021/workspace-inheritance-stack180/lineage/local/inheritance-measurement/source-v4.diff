@@ -1,0 +1,180 @@
+--- superseded-v3-01/driver.py
++++ driver.py
+@@ -22,7 +22,7 @@
+ REFERENCE = SELF.parent / 'reference-native-controller.py'
+ CORE_SHA = '50d0cb2d4f595ccfa72d463fedb3ff4dadf9dfc1446c749d482d9ede8418c7cf'
+ RUNNER_SHA = '50547460e030aa73e1f48121bf477cf8f4a4538bf1bb577851af54176750b6d3'
+-REFERENCE_SHA = '318d05c1112e73625015461ff6c1000fab3cafb573c8e3e3963b16cd9ec64e6c'
++REFERENCE_SHA = '75206df60ff0a3305dd41410bf72a8f738cd1ab3a7f04adb5c2d12b8aa8c1573'
+ PROTOCOL_SHA = '5a78491c347b2f8749fe6da44002c863679062e5e3c7393e9508671e813af2da'
+ BUILD_MANIFEST_SHA = 'ff3455f081f9b08c06f26fbe029fcfcdbe243b0e905a96f7237181ea5d6806cd'
+ BUILD_DRIVER_SHA = '21707e2fbcecb710adddf24c4776b0e2995a91051672f1e026b43982da68a882'
+@@ -113,10 +113,18 @@
+     amendment = read(SELF.parent / 'warming-amendment-v3.json')
+     amendment_review = read(SELF.parent / 'root-warming-v3-review.json')
+     assert sha(SELF.parent / 'warming-amendment-v3.json') == '823d8448f15f09b5aafba4eb078132f66509e24760e95d4442761f952762975a'
+-    assert amendment['controller_sha256'] == amendment_review['controller_sha256'] == REFERENCE_SHA
++    assert amendment['controller_sha256'] == amendment_review['controller_sha256'] == '318d05c1112e73625015461ff6c1000fab3cafb573c8e3e3963b16cd9ec64e6c'
+     assert amendment['fixed_untimed_warm_commands_per_variant'] == 3
+     assert amendment_review['status'] == 'passed' and amendment_review['strict_zero_child_trace_and_cross_switch_preserved']
+     assert amendment_review['amendment_sha256'] == sha(SELF.parent / 'warming-amendment-v3.json')
++    occupancy_amendment = read(SELF.parent / 'occupancy-amendment-v4.json')
++    occupancy_review = read(SELF.parent / 'root-occupancy-v4-review.json')
++    assert sha(SELF.parent / 'occupancy-amendment-v4.json') == '0774e8fb6e6981d06fb7b205e1d4574e24d486d86c0adfa905ce5950d5a9ff83'
++    assert occupancy_amendment['previous_controller_sha256'] == occupancy_review['previous_controller_sha256'] == amendment['controller_sha256']
++    assert occupancy_amendment['controller_sha256'] == occupancy_review['controller_sha256'] == REFERENCE_SHA
++    assert occupancy_review['status'] == 'passed'
++    assert occupancy_review['amendment_sha256'] == sha(SELF.parent / 'occupancy-amendment-v4.json')
++    assert occupancy_amendment['only_quiet_ast_changed'] and occupancy_amendment['all_workload_and_statistical_settings_unchanged']
+     cohort = SELF.parent / 'cohort'
+     manifest = read(cohort / 'frozen/manifest.json')
+     assert sha(cohort / 'frozen/manifest.json') == BUILD_MANIFEST_SHA
+@@ -168,6 +176,12 @@
+     setup = read(ROOT / 'metadata/setup.json')
+     assert setup['root'] == str(ROOT) and setup['uv_commit'] == UV_COMMIT
+     assert setup['configuration_catalog'] == configuration_catalog()
++    assert setup['known_global_configuration'] == {'path': '/.cargo/config.toml',
++        'sha256': '24095bd6315880162c8f660917100ac36638cb73778dd9ec6f1c9026ea87b178',
++        'evidence_copy': 'metadata/ancestor-root-config.toml'}
++    assert sha(ROOT / 'metadata/ancestor-root-config.toml') == setup['known_global_configuration']['sha256']
++    assert setup['configuration_catalog']['/.cargo/config.toml'] == {'lexists': True,
++        'sha256': setup['known_global_configuration']['sha256'], 'symlink': None}
+     assert setup['configuration_catalog'][str(ROOT / 'cargo-home/config')]['lexists'] is False
+     assert setup['configuration_catalog'][str(ROOT / 'cargo-home/config.toml')]['lexists'] is False
+     reference('ir').allocator_guard()
+--- superseded-v3-01/prepare_host.py
++++ prepare_host.py
+@@ -17,6 +17,7 @@
+ CONTROL = ROOT / 'controller'
+ UV_COMMIT = '3d82a6ad5a7eab8c68236553b7846517767c4b61'
+ ARCHIVE_SHA = '98a4f4f99ea1ff36e10209258724426496afbbcab14d746294fe53a2fedad37c'
++GLOBAL_CONFIG_SHA = '24095bd6315880162c8f660917100ac36638cb73778dd9ec6f1c9026ea87b178'
+ RUNTIME = {
+     'ohm/bin/rustc': '6109cff145371a50c4f62b61908d2ffbf6d259b180c8effde07baa426aab682a',
+     'ohm/bin/rustdoc': '0b7d9ded49eb9ecc73097a7bb3bb286e1722ac7143d7ca7d2d7c524c55d5684e',
+@@ -101,8 +102,14 @@
+     assert sha(ROOT / filename) == digest, filename
+ catalog = ref.configuration_presence()
+ for path, state in catalog.items():
+-    if not Path(path).is_relative_to(uv):
++    if path == '/.cargo/config.toml':
++        assert state == {'lexists': True, 'sha256': GLOBAL_CONFIG_SHA, 'symlink': None}, state
++    elif not Path(path).is_relative_to(uv):
+         assert not state['lexists'], path
++global_config = Path('/.cargo/config.toml').read_bytes()
++assert hashlib.sha256(global_config).hexdigest() == GLOBAL_CONFIG_SHA
++with (ROOT / 'metadata/ancestor-root-config.toml').open('xb') as stream:
++    stream.write(global_config)
+ copied = []
+ for kind in ('cache', 'index'):
+     source_root = Path('/home/dev-user/.cargo/registry') / kind
+@@ -188,12 +195,14 @@
+          'available_disk_bytes_at_setup': shutil.disk_usage(ROOT).free,
+          'delivery_sha256': sha(ROOT / 'delivery.json'), 'public_registry_cache_copies': copied,
+          'configuration_catalog': catalog, 'cleared_environment_names': removed,
++         'known_global_configuration': {'path': '/.cargo/config.toml', 'sha256': GLOBAL_CONFIG_SHA,
++                                        'evidence_copy': 'metadata/ancestor-root-config.toml'},
+          'configured_common_environment': common, 'tool_sha256': {path: sha(path) for path in tools.values()},
+          'tools': tools, 'ldd': ldd, 'base_config_sha256': {name: sha(CONTROL / 'base-configs' / (name + '.json')) for name in configs},
+          'scope': 'Only public source/dependency retrieval, tool inspection and sealing. No workload warmup, uv test execution or performance sample.'}
+ write(ROOT / 'metadata/setup.json', setup)
+ files = dict(delivery['files'])
+-for path in [ROOT / 'delivery.json', ROOT / 'ownership.json', ROOT / 'delivery-occupancy.json', *sorted((ROOT / 'metadata').glob('*.json')),
++for path in [ROOT / 'delivery.json', ROOT / 'ownership.json', ROOT / 'delivery-occupancy.json', *sorted((ROOT / 'metadata').iterdir()),
+              *sorted((ROOT / 'logs').iterdir()), *sorted((CONTROL / 'base-configs').glob('*.json'))]:
+     assert path.is_file() and not path.is_symlink()
+     files[str(path.relative_to(ROOT))] = sha(path)
+--- superseded-v3-01/occupancy.py
++++ occupancy.py
+@@ -7,12 +7,13 @@
+             'clang', 'clang++', 'gcc', 'g++', 'collect2', 'ninja', 'make', 'cmake', 'valgrind',
+             'perf', 'hyperfine', 'cargo-nextest'}
+ CONTROLLERS = {'paired.py', 'paired_repeated.py', 'loader_fixture.py', 'measure.py',
+-               'native_controller.py', 'native_controller-v2.py', 'native_driver.py',
++               'native_controller.py', 'native_controller-v2.py', 'native_controller-v3.py',
++               'native_controller-v4.py', 'native_driver.py',
+                'driver.py', 'run_restacked_ir.py', 'launch-linux.py', 'run-suite.py'}
+ 
+ 
+ def require_quiet():
+-    probe = subprocess.Popen(['ps', '-eo', 'pid=,comm=,pcpu=,pmem=', '--sort=-pcpu'],
++    probe = subprocess.Popen(['ps', '-eo', 'pid=,pcpu=,pmem=,comm=', '--sort=-pcpu'],
+                              stdout=subprocess.PIPE, text=True)
+     output, _ = probe.communicate()
+     assert probe.returncode == 0
+@@ -20,8 +21,8 @@
+     competing = []
+     rows = output.splitlines()
+     for row in rows:
+-        fields = row.split()
+-        pid, name, cpu = int(fields[0]), fields[1], float(fields[2])
++        pid, cpu, _memory, name = row.split(None, 3)
++        pid, cpu, name = int(pid), float(cpu), name.strip()
+         if pid in ignored:
+             continue
+         try:
+--- superseded-v3-01/bind_inputs.py
++++ bind_inputs.py
+@@ -44,7 +44,7 @@
+               'controller/source-review.json': HERE / 'source-review.json',
+               'controller/protocol.json': WORK / 'workspace-inheritance-candidate/protocol.json',
+               'controller/source-ci.json': WORK / 'workspace-inheritance-publication/ci-validation.json',
+-              'controller/reference-native-controller.py': WORK / 'allocator-native/native_controller-v3.py',
++              'controller/reference-native-controller.py': WORK / 'allocator-native/native_controller-v4.py',
+               'benchmark/frozen/paired.py': WORK / 'benchmark/frozen/paired.py',
+               'benchmark/frozen/paired_repeated.py': WORK / 'benchmark/frozen/paired_repeated.py',
+               'profiling-tools/ohm-valgrind-env.c': WORK / 'profiling-tools/ohm-valgrind-env.c',
+@@ -52,7 +52,9 @@
+               'assets/ohm-1.99.0-6-x86_64-unknown-linux-gnu.tar.gz': WORK / 'ohm-1.99.0-6-x86_64-unknown-linux-gnu.tar.gz'})
+ for name in ('valgrind_1%3a3.22.0-0ubuntu3_amd64.deb', 'libc6-dbg_2.39-0ubuntu8.9_amd64.deb'):
+     files['assets/' + name] = WORK / 'profiling-tools' / name
+-for name in ('native_controller-v2.py', 'native_controller-v3.py',
++for name in ('native_controller-v2.py', 'native_controller-v3.py', 'native_controller-v4.py',
++             'occupancy-amendment-v4.json', 'root-occupancy-v4-review.json', 'OCCUPANCY-AMENDMENT-v4.md',
++             'controller-occupancy-v4.diff', 'check_occupancy_v4.py', 'controller-occupancy-v4-checks.json',
+              'warming-amendment-v3.json', 'root-warming-v3-review.json', 'WARMING-AMENDMENT-v3.md',
+              'controller-warming-v3.diff', 'controller-warming-v3-ast-proof.json',
+              'warming-amendment-v3-draft01.json', 'WARMING-AMENDMENT-v3-draft01.md',
+--- superseded-v3-01/check_controls.py
++++ check_controls.py
+@@ -64,12 +64,17 @@
+ 
+ 
+ cases = [
+-    ('own probe and controller', '10 python3 99 0\n99 ps 100 0\n', {}, True),
+-    ('idle unrelated process', '20 python3 0 0\n', {20: b'python3\0unrelated.py\0'}, True),
+-    ('compiler even while idle', '20 rustc 0 0\n', {}, False),
+-    ('unrelated busy ps', '20 ps 100 0\n', {}, False),
+-    ('benchmark controller between children', '20 python3 0 0\n', {20: b'python3\0/tmp/other/native_driver.py\0'}, False),
+-    ('build queue between children', '20 python3 0 0\n', {20: b'python3\0/tmp/other/build_driver_cohort.py\0'}, False),
++    ('own probe and controller', '10 99 0 python3\n99 100 0 ps\n', {}, True),
++    ('idle unrelated process', '20 0 0 python3\n', {20: b'python3\0unrelated.py\0'}, True),
++    ('compiler even while idle', '20 0 0 rustc\n', {}, False),
++    ('unrelated busy ps', '20 100 0 ps\n', {}, False),
++    ('benchmark controller between children', '20 0 0 python3\n', {20: b'python3\0/tmp/other/native_driver.py\0'}, False),
++    ('build queue between children', '20 0 0 python3\n', {20: b'python3\0/tmp/other/build_driver_cohort.py\0'}, False),
++    ('idle spaced command name', '20 0 0 tmux: server\n', {}, True),
++    ('busy spaced command name', '20 50 0 tmux: server\n', {}, False),
++    ('padded compiler name', '20 0 0 rustc   \n', {}, False),
++    ('v3 controller between children', '20 0 0 python3\n', {20: b'python3\0/tmp/other/native_controller-v3.py\0'}, False),
++    ('v4 controller between children', '20 0 0 python3\n', {20: b'python3\0/tmp/other/native_controller-v4.py\0'}, False),
+ ]
+ for label, output, commands, expected in cases:
+     def command_bytes(path):
+--- superseded-v3-01/README.md
++++ README.md
+@@ -6,9 +6,13 @@
+ 
+ The four workflow configurations use distinct, initially absent target and shared-cache directories: IR check, IR test, native check and native test. Both variants execute as one canonical regular Cargo file. The native commands are `cargo -Zohm-defaults=yes check --locked --offline -j8` and the corresponding `test --no-run`, pinned to CPUs 0–7. Loader/allocator overrides are absent, compiler paths are explicit, ancestor Cargo configuration presence is sealed, and both variants use the same normal system certificate configuration. The IR command additionally uses the reviewed Callgrind wrapper and environment normalizer; child instructions are excluded. Native runs do not use that preload.
+ 
++Outside the pinned uv checkout, the only allowed existing Cargo configuration is `/.cargo/config.toml`, with SHA256 `24095bd6315880162c8f660917100ac36638cb73778dd9ec6f1c9026ea87b178`. Setup copies its exact bytes into owned evidence and seals its original path/hash alongside all ancestor presence/absence entries. Task and Cargo-home configuration paths must remain absent. The global file is never modified.
++
+ The unchanged reviewed paired.py and paired_repeated.py implement all sampling and statistics. IR has 12 fixed pairs plus 2 warmup pairs per workflow, seeds 20261021111 and 20261021112. Native is conditional on both IR gates, with 30 fixed pairs of eight invocations plus 2 warmup pairs, seeds 20261021113 and 20261021114. A native observation is the group sum. Each phase finishes and audits both workflows before any analysis. There is no exclusion, pooling, extension or interim effect inspection. The 99% bootstrap, 20,000 resamples, seed 1701, sign test, order checks and 1% threshold match the frozen protocol. Native regressions are reported separately and block publication under that protocol.
+ 
+-Preflight reuses the exact reviewed v3 function, SHA256 `318d05c1112e73625015461ff6c1000fab3cafb573c8e3e3963b16cd9ec64e6c`. It runs three fixed untimed native warm commands per variant and retains all three logs/results. Its subsequent trace must execute only taskset and canonical Cargo; both cross-switch calls must remain fresh. This strict proof establishes convergence on each actual fixture before any comparison. A separately observed metadata switch followed a deliberate uv source edit; no independent no-edit convergence probe is claimed. The prospective v3 amendment, root review and superseded draft records are packaged. Any failure stops the phase without adaptive retries.
++Preflight reuses the exact reviewed v3 function through the v4 controller, SHA256 `75206df60ff0a3305dd41410bf72a8f738cd1ab3a7f04adb5c2d12b8aa8c1573`. It runs three fixed untimed native warm commands per variant and retains all three logs/results. Its subsequent trace must execute only taskset and canonical Cargo; both cross-switch calls must remain fresh. This strict proof establishes convergence on each actual fixture before any comparison. A separately observed metadata switch followed a deliberate uv source edit; no independent no-edit convergence probe is claimed. The prospective v3 amendment, root review and superseded draft records are packaged. Any failure stops the phase without adaptive retries.
++
++Version 4 changes only the reference controller's process-table parser to accept command names containing spaces. Numeric columns precede the final command-name field; existing thresholds and probe exclusions are preserved. The separate inheritance occupancy parser receives the same correction. The first, unexecuted inheritance source freeze is retained in `superseded-v3-01/`, and both the v4 amendment and independent root review are required before setup. No workloads, sample counts or statistical gates changed.
+ 
+ The execution order is explicit:
+ 

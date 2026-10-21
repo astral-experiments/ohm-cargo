@@ -1,0 +1,26 @@
+--- native_controller-v2.py
++++ native_controller-v3.py
+@@ -260,8 +260,12 @@
+         core.install_variant(Path(config['variants'][variant]), canonical)
+         assert sha(canonical) == EXPECTED[variant]
+         command = [part.replace('{cargo}', str(canonical)) for part in config['prepare_command']]
+-        warm = core.run_command(command, config['cwd'], environment, output / (variant + '.warm.stdout'), output / (variant + '.warm.stderr'))
+-        assert warm['returncode'] == 0
++        warming_runs = []
++        for warm_index in range(1, 4):
++            label = variant + '.warm-' + str(warm_index)
++            warm = core.run_command(command, config['cwd'], environment, output / (label + '.stdout'), output / (label + '.stderr'))
++            assert warm['returncode'] == 0
++            warming_runs.append(warm)
+         trace_path = output / (variant + '.execve.log')
+         traced = [shutil.which('strace'), '-f', '-qq', '-e', 'trace=execve,execveat', '-s', '4096', '-o', str(trace_path), '--', *command]
+         trace = core.run_command(traced, config['cwd'], environment, output / (variant + '.trace.stdout'), output / (variant + '.trace.stderr'))
+@@ -276,7 +280,7 @@
+         assert executable_paths == [str(Path(shutil.which('taskset')).resolve()), str(canonical)], executable_paths
+         assert sha(canonical) == EXPECTED[variant]
+         quiet()
+-        records.append({'variant': variant, 'binary_sha256': EXPECTED[variant], 'warm': warm, 'trace': trace,
++        records.append({'variant': variant, 'binary_sha256': EXPECTED[variant], 'warm': warm, 'warming_runs': warming_runs, 'trace': trace,
+                         'trace_path': str(trace_path), 'trace_sha256': sha(trace_path), 'successful_execve_paths': executable_paths})
+     cross_switch = []
+     for variant in stage()['warming_order']:

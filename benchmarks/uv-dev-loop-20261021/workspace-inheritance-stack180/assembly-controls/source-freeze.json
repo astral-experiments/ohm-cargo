@@ -1,0 +1,83 @@
+{
+  "created_at": "2026-10-21T17:06:22.482012+00:00",
+  "fixed_reference_inputs": {
+    "work/inheritance-ir-closure-retry/transport/source-freeze.json": {
+      "bytes": 9050,
+      "sha256": "92db62095f5b381fff4062f9fb7a48d12039085d58e74f401417fc8770f037f6"
+    },
+    "work/inheritance-measurement/source-freeze.json": {
+      "bytes": 8648,
+      "sha256": "f52a57b667b0708413cb353b2af4164f11fec6a9b8e0025bab4ab8330135ff98"
+    },
+    "work/inheritance-native-admission/source-freeze.json": {
+      "bytes": 2970,
+      "sha256": "767c4df6153e38245de96d6330c5679e181d515dd99b692b45289d6a19033cff"
+    },
+    "work/inheritance-native-review/source-freeze.json": {
+      "bytes": 11824,
+      "sha256": "c47f8a475c9442ddafec725bb9a6db4b0e9b1eab7ea8d0e6227512ffb0152133"
+    },
+    "work/inheritance-raw-review/ir-transport-closed/review.json": {
+      "bytes": 79960,
+      "sha256": "0ea0f500d28c30d69fc679be7b191f108964b3464fd6dc2f20a486c8661a1834"
+    },
+    "work/workspace-inheritance-publication/ci-validation.json": {
+      "bytes": 1987,
+      "sha256": "31919fa0176833892b97f8c38a468e0b0998d551fb675f062601c05d8a472a79"
+    },
+    "work/workspace-inheritance-publication/code-publication.json": {
+      "bytes": 1270,
+      "sha256": "a785991ce9e1ff73305b5c3416fcdb932a4654809bee8b8a5e77916b0fe52833"
+    },
+    "work/workspace-inheritance-publication/publish_evidence.py": {
+      "bytes": 6252,
+      "sha256": "a942d1404ed97c0536dec0aae9243de6e1f0736778c0c2846f70fe594e2fc2d7"
+    }
+  },
+  "limits": {
+    "host_access": false,
+    "partial_native_effects_read": false,
+    "real_package_execution": false,
+    "statistics_run": false
+  },
+  "required_dynamic_inputs": "Final accepted native-admission-closed phase/review.json, lineage and review-binding outputs, final native transfer manifest, then a reviewed exact final-inputs/inputs.json.",
+  "source_files": {
+    "work/inheritance-evidence-preparation/README.md": {
+      "bytes": 3023,
+      "sha256": "0de1fd99fff37c410d159bb26edd9522b0019278f3878304c9bc8742f3809e4b"
+    },
+    "work/inheritance-evidence-preparation/REPRODUCE.draft.md": {
+      "bytes": 4731,
+      "sha256": "df64bb4e05a8bc87f2fcee528c5476aa5f5a03fd275d56eea76d678c417f5744"
+    },
+    "work/inheritance-evidence-preparation/assemble.py": {
+      "bytes": 18744,
+      "sha256": "2813af5f41a2ae89f5893fb36c20ccc8ac0f8120955c1c2655b4de72cba6da36"
+    },
+    "work/inheritance-evidence-preparation/plan.md": {
+      "bytes": 3261,
+      "sha256": "fd36b9eabe4efa3e50053f348d1174aace109f2559ea1c3c553b347ca070b3f9"
+    },
+    "work/inheritance-evidence-preparation/prepare_inputs.py": {
+      "bytes": 13002,
+      "sha256": "2bad8b76880e597470551b580a39c0f893feccc3dbfd1944fdb23e10de19b537"
+    },
+    "work/inheritance-evidence-preparation/synthetic-checks.stderr": {
+      "bytes": 1687,
+      "sha256": "856b6a3ec6daaa82e04396570b67327bcd309e1f2a222c53801cd9f373850dfb"
+    },
+    "work/inheritance-evidence-preparation/synthetic-checks.stdout": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "work/inheritance-evidence-preparation/test_assemble.py": {
+      "bytes": 11227,
+      "sha256": "1f64cf1566115ac33c2e9fb4a98c5c15b4316e01dcb6ac7d55a70045c952acb6"
+    },
+    "work/inheritance-evidence-preparation/validation.json": {
+      "bytes": 1121,
+      "sha256": "30c173d409a8b43b4764f17978534e29a763566088276b963231e6172c5a7e95"
+    }
+  },
+  "status": "source-frozen-awaiting-independent-review-and-terminal-native"
+}

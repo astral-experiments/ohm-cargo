@@ -1,0 +1,75 @@
+{
+  "schema_version": 1,
+  "created_at": "2026-10-21T13:57:37.293182+00:00",
+  "candidate": "Share immutable workspace dependency tables across member inheritance",
+  "base_commit": "c40676e264501bc8a93095d3a273a1c300b80875",
+  "base_tree": "0a392258c801cff734d223a3f9af73d5b5a4e3c0",
+  "candidate_tree": "c4178b67e0b3a64a12b9b58f84b97323b99d734e",
+  "incremental_patch_sha256": "cbace02bcebcce462e5912e832ade58e30822e0e83cece47039636fdfe58e4c9",
+  "uv_commit": "3d82a6ad5a7eab8c68236553b7846517767c4b61",
+  "runtime": "ohm-1.99.0-6",
+  "production_build": {
+    "matched_pair": true,
+    "settings": [
+      "all-static",
+      "ohm-defaults",
+      "opt-level=3",
+      "thin-lto",
+      "codegen-units=1",
+      "debug=1",
+      "no-pgo"
+    ],
+    "embedded_source_head": "5e5d271d763d7beb38b48755e22bd59e93f02b97",
+    "fresh_pair_required": true
+  },
+  "workflows": [
+    "check",
+    "test --no-run"
+  ],
+  "ir": {
+    "pairs": 12,
+    "warmup_pairs": 2,
+    "seeds": {
+      "check": 20261021111,
+      "test": 20261021112
+    },
+    "metric": "Cargo userspace Ir; Callgrind trace-children=no; one command per variant per pair",
+    "both_workflows_required": true
+  },
+  "native": {
+    "condition": "Run both fixed native workflows only if both instruction-count gates pass",
+    "pairs": 30,
+    "calls_per_group": 8,
+    "warmup_groups_per_variant": 2,
+    "seeds": {
+      "check": 20261021113,
+      "test": 20261021114
+    },
+    "statistical_unit": "paired aggregate of eight consecutive fresh calls per variant",
+    "inconclusive": "Retain and report without a wall-time claim",
+    "regression": "A negative 99% interval with sign-test p<=0.01 blocks publication pending investigation; no selective rerun"
+  },
+  "gate": {
+    "minimum_reduction": 0.01,
+    "confidence": 0.99,
+    "bootstrap_resamples": 20000,
+    "bootstrap_seed": 1701,
+    "exact_two_sided_sign_p_max": 0.01,
+    "both_order_point_effects_positive": true
+  },
+  "measurement_rules": [
+    "Fixed randomized balanced paired orders; no extensions, exclusions, pooling, or early effect inspection.",
+    "Complete both workflows and their integrity audits before opening effects for that phase.",
+    "Same canonical regular executable path and same clean uv/source/runtime/configuration inputs within each pair.",
+    "Fresh task-owned fixtures; warm both variants and verify native subprocess traces show no compiler/build-script/test execution.",
+    "Reset no source or target configuration between measured variants; record all preparation and measurement stdout/stderr and immutable input identities.",
+    "Native wall timing is separate from profiler timing. Never execute uv tests.",
+    "Preserve stopped attempts and all negative/inconclusive observations."
+  ],
+  "publication_requires": [
+    "Both fixed instruction gates",
+    "Existing inheritance correctness coverage and source CI",
+    "Completed native regression checks",
+    "Independent raw evidence/statistical audit"
+  ]
+}

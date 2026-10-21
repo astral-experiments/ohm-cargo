@@ -1,0 +1,19 @@
+{
+  "status": "passed-source-review",
+  "reviewed_at": "2026-10-21T15:14:41.573260+00:00",
+  "reviewer": "compiler_audit",
+  "source_freeze_sha256": "7e2e5924397dc5c1c52a5e15e62cc18e923233ee788dc83e3e0018e5d3467957",
+  "review_py_sha256": "570777013c34d65d746e28c91894580890777bdc6bbd2ed0475551e278c36af7",
+  "frozen_files_verified": 8,
+  "scope": "Read-only source review of review.py, evidence.py and statistics_review.py against the frozen paired and repeated harnesses and inheritance driver; no phase evidence/statistics execution and no host access.",
+  "findings": [],
+  "checks": {
+    "raw_before_effects": "Both complete workflows pass raw_workflow, counts/tables/logs/plan checks and raw-integrity.json is written before analyze; statistical opt-in is explicit.",
+    "instruction_units": "Exactly12 measured pairs plus2 warmup pairs,28 invocations/profiles per workload. Profiles independently require one events row and summary, resolve the Ir column, and join hashes/integers to JSON, JSONL and CSV.",
+    "native_units": "Exactly30 measured group pairs plus2 warmup pairs,8 repetitions per variant;512 total subruns. Nested/flat/CSV records, all additive sums, exact aggregate log bytes, command identities and no-compilation checks are enforced; inference remains30 pairs.",
+    "statistics": "Independent log-ratio bootstrap99%,20000 resamples seed1701, sign test excluding ties, AB/BA estimates and1% gates agree with the frozen formulas and all retained analysis/gate fields.",
+    "prerequisites": "Fixed fresh binary/source/build/correctness/CI/uv/seal/config identities join through transport and collected hashes; native requires accepted same-pair IR review, matching IR raw file hashes/status and exact native-prerequisite file set.",
+    "input_integrity": "Safe complete archive member set, copied controls and immutable record_files pre/post equality, terminal phase status, exact serial chronology, and final source/evidence rehash are checked for analyzed results.",
+    "execution_status": "Reviewer and statistical functions were not executed; root terminal-phase authorization remains required."
+  }
+}

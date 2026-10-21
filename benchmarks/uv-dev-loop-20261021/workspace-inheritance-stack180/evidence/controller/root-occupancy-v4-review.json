@@ -1,0 +1,38 @@
+{
+  "status": "passed",
+  "reviewed_at": "2026-10-21T14:47:25.156693+00:00",
+  "controller_sha256": "75206df60ff0a3305dd41410bf72a8f738cd1ab3a7f04adb5c2d12b8aa8c1573",
+  "previous_controller_sha256": "318d05c1112e73625015461ff6c1000fab3cafb573c8e3e3963b16cd9ec64e6c",
+  "amendment_sha256": "0774e8fb6e6981d06fb7b205e1d4574e24d486d86c0adfa905ce5950d5a9ff83",
+  "all_ast_nodes_outside_quiet_identical": true,
+  "numeric_columns_first_and_complete_command_name_preserved": true,
+  "self_and_probe_exclusions_and_cpu_threshold_unchanged": true,
+  "independent_mock_cases": [
+    {
+      "case": "spaced_idle",
+      "passed": true
+    },
+    {
+      "case": "spaced_busy",
+      "passed": true
+    },
+    {
+      "case": "builder_idle",
+      "passed": true
+    },
+    {
+      "case": "named_cargo",
+      "passed": true
+    },
+    {
+      "case": "below_threshold",
+      "passed": true
+    },
+    {
+      "case": "own_only",
+      "passed": true
+    }
+  ],
+  "preflight_and_sampling_and_statistical_gates_unchanged": true,
+  "decision": "Approved prospective parser correction. Retain and verify the failed preflight attempt before resealing or relaunching."
+}

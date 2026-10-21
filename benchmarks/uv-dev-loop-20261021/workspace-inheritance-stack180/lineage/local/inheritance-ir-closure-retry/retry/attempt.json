@@ -1,0 +1,48 @@
+{
+  "absence_probe_returncode": 0,
+  "absence_proof_sha256": "ea7cb6127570d6243472983f9a38183488164b2a12a3faf8fcd45f9e354fdd2e",
+  "error": "ValueError('original closure launcher failed; retain all bytes and stop')",
+  "failed_closure_launch_sha256": "49ae8af6b1e18d95b981c56b449cde794114d3bf1e97e1aab2b07933a2c4ee18",
+  "finished_at": "2026-10-21T16:03:23.346074+00:00",
+  "operation": "single-prestaging-closure-retry",
+  "original_closure_source_freeze_sha256": "befbcd80ecdbfa09a14a39faf11891a01b65cb544522417fbbc29b3aa4352d10",
+  "original_sources_failure_and_raw_capture_preserved": true,
+  "retained_files": {
+    "launch-finalize.json": {
+      "sha256": "17e73463fbc508debd8f1cdaefdc889d2c1a1cecc35dcb1a729d41b9e4d47a16",
+      "size": 915
+    },
+    "launch-finalize.stderr": {
+      "sha256": "7259ab47de8b3cacb6db3f7b58269e5c592d6fcbb045f3dcc39451c919b75516",
+      "size": 109
+    },
+    "launch-finalize.stdout": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    "retry/absence.stderr": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    "retry/absence.stdout": {
+      "sha256": "ea7cb6127570d6243472983f9a38183488164b2a12a3faf8fcd45f9e354fdd2e",
+      "size": 826
+    },
+    "retry/attempt-started.json": {
+      "sha256": "c0f0bff393327e202c9382c6777831ad3d94e133681d435b2448bc0fa8d9ed86",
+      "size": 465
+    },
+    "retry/launcher.stderr": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    "retry/launcher.stdout": {
+      "sha256": "17e73463fbc508debd8f1cdaefdc889d2c1a1cecc35dcb1a729d41b9e4d47a16",
+      "size": 915
+    }
+  },
+  "retry_source_freeze_sha256": "bd4a8a3cac7792b7db3feeccac1a0a5e4b609a011411d5277cb5c944c8729bb6",
+  "returncode": 255,
+  "started_at": "2026-10-21T16:03:10.485987+00:00",
+  "state": "failed"
+}

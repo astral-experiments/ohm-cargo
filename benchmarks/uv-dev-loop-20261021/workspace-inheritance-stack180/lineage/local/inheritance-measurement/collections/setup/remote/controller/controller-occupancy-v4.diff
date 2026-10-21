@@ -1,0 +1,26 @@
+--- native_controller-v3.py
++++ native_controller-v4.py
+@@ -71,14 +71,19 @@
+ 
+ 
+ def quiet():
+-    probe = subprocess.Popen(['ps', '-eo', 'pid=,comm=,pcpu=,pmem=', '--sort=-pcpu'],
++    probe = subprocess.Popen(['ps', '-eo', 'pid=,pcpu=,pmem=,comm=', '--sort=-pcpu'],
+                              stdout=subprocess.PIPE, text=True)
+     output, _ = probe.communicate()
+     assert probe.returncode == 0, probe.returncode
+     rows = output.splitlines()
+-    competing = [row for row in rows if int(row.split()[0]) not in {os.getpid(), probe.pid} and
+-                 (row.split()[1] in BUILDERS or row.split()[1].startswith(('cargo-', 'callgrind-'))
+-                  or float(row.split()[2]) >= 50)]
++    competing = []
++    for row in rows:
++        pid, cpu, _memory, name = row.split(None, 3)
++        name = name.strip()
++        if int(pid) in {os.getpid(), probe.pid}:
++            continue
++        if name in BUILDERS or name.startswith(('cargo-', 'callgrind-')) or float(cpu) >= 50:
++            competing.append(row)
+     assert not competing, competing
+     return {'process_snapshot': rows[:20], 'load_average': list(os.getloadavg())}
+ 

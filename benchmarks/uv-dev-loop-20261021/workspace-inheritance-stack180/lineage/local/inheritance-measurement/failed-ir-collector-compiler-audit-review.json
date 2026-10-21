@@ -1,0 +1,21 @@
+{
+  "status": "passed-source-review",
+  "reviewed_at": "2026-10-21T15:25:34.614856+00:00",
+  "reviewer": "compiler_audit",
+  "freeze_sha256": "2650cc56b119aef2b6271f896843052b797baeb0ff7aaff451961834d8562de6",
+  "collector_sha256": "a38c6e5a90651f2e59904f250a99c47aedc737949ac21faa25c4b7a32f580d00",
+  "diff_sha256": "c796c13c0a6d6175a90bacb5c38ca023122f538288ecf1d80fce72567d952d60",
+  "checks": {
+    "exact_six_frozen_inputs": true,
+    "requires_failed_launch_one_and_failed_ir_with_both_raw_integrity_entries": true,
+    "requires_no_completed_effect_entries_no_analysis_files_and_no_native_phase": true,
+    "retains_original_failed_state_and_separate_absent_collection_directory": true,
+    "occupancy_bypass_limited_to_read_only_preservation_record": true,
+    "unchanged_assets_seal_and_raw_profile_table_checks": true,
+    "all_payloads_hashed_before_audit_and_rechecked_after_transfer": true,
+    "safe_regular_unique_relative_archive_members_and_local_hash_joins": true,
+    "no_workload_or_statistical_function_called_by_adapter": true
+  },
+  "findings": [],
+  "scope": "Source/diff review only; no collector, phase data reviewer, statistics, host access, or workload executed."
+}

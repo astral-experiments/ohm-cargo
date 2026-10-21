@@ -1,0 +1,75 @@
+--- original/evidence.py
++++ reviewer/evidence.py
+@@ -5,6 +5,8 @@
+ import json
+ from pathlib import Path, PurePosixPath
+ import tarfile
++
++from closure_binding import verify_closed_ir
+ 
+ ROOT = '/tmp/ohm-hillclimb-20261021-inheritance-measurement'
+ HOST = 'charlie-oss-2'
+@@ -55,7 +57,7 @@
+     def __init__(self, controls, phase):
+         self.controls = Path(controls).resolve()
+         self.phase = phase
+-        self.directory = self.controls / 'collections' / phase
++        self.directory = self.controls / 'collections' / ('ir-closed-postguard' if phase == 'ir' else phase)
+         self.remote = self.directory / 'remote'
+         freeze_path = self.controls / 'source-freeze.json'
+         need(sha(freeze_path) == FREEZE, 'inheritance source freeze changed')
+@@ -108,6 +110,8 @@
+         self.assets = self.json('controller/assets.json')
+         self.setup = self.json('metadata/setup.json')
+         self.binding = read(self.controls / 'delivery/binding.json')
++        self.closure = None if phase == 'setup' else verify_closed_ir(
++            self.controls, self.remote, self.files, Path(__file__).resolve().parents[1], self.manifest)
+ 
+     def json(self, name):
+         return read(self.remote / relative(name))
+--- original/review.py
++++ reviewer/review.py
+@@ -356,10 +356,14 @@
+         report.update(source_freeze_sha256=FREEZE, measurement_seal_sha256=SEAL, variants=EXPECTED,
+                       transfer_manifest_sha256=sha(evidence.directory / 'transfer-manifest.json'))
+         launch = read(evidence.controls / ('launch-' + args.phase + '.json'))
+-        need(launch['returncode'] == 0 and launch['operation'] == 'launch-' + args.phase
++        need(launch['returncode'] == (1 if args.phase == 'ir' else 0) and launch['operation'] == 'launch-' + args.phase
+              and launch['host'] == HOST and launch['root'] == ROOT and launch['sealed_inputs_sha256'] == SEAL,
+              'phase launch is not complete/bound')
+         report['launch_receipt_sha256'] = sha(evidence.controls / ('launch-' + args.phase + '.json'))
++        completion = evidence.closure if args.phase == 'ir' else launch
++        report['operational_closure'] = {key: evidence.closure[key] for key in (
++            'receipt_sha256', 'launch_receipt_sha256', 'failed_capture_sha256', 'failed_launch_sha256',
++            'failed_status_sha256', 'original_raw_bytes_preserved', 'workload_invocations')}
+         for suffix in ('stdout', 'stderr'):
+             need(sha(evidence.controls / ('launch-' + args.phase + '.' + suffix)) == launch[suffix + '_sha256'], 'launch stream differs')
+         status_path = ROOT + '/results/' + args.phase + '-status.json'
+@@ -372,7 +376,7 @@
+             ir = read(args.ir_review)
+             need(ir['status'] == 'passed' and ir['qualifies'] is True and ir['phase'] == 'ir'
+                  and ir['variants'] == EXPECTED and ir['measurement_seal_sha256'] == SEAL, 'IR review did not qualify this fresh pair')
+-            need(ir['transfer_manifest_sha256'] == sha(evidence.controls / 'collections/ir/transfer-manifest.json'), 'IR collection binding differs')
++            need(ir['transfer_manifest_sha256'] == sha(evidence.controls / 'collections/ir-closed-postguard/transfer-manifest.json'), 'IR collection binding differs')
+             for name, digest in ir['raw_file_sha256'].items():
+                 need(evidence.files[name] == digest, 'IR evidence changed before native: ' + name)
+             prerequisite = evidence.json('metadata/native-prerequisite.json')
+@@ -389,7 +393,7 @@
+         need(timestamp(status['started_at']) <= timestamp(workloads[0]['manifest']['started_at'])
+              and timestamp(workloads[0]['integrity']['completed_at']) <= timestamp(workloads[1]['manifest']['started_at'])
+              and timestamp(workloads[1]['integrity']['completed_at']) <= timestamp(status['completed_at'])
+-             <= timestamp(launch['finished_at']), 'serial workflow/phase chronology differs')
++             <= timestamp(completion['finished_at']), 'serial workflow/phase chronology differs')
+         report['workflows'] = [workload['review'] for workload in workloads]
+         report['integrity_status'] = 'passed'
+         report['raw_file_sha256'] = evidence.files
+@@ -423,6 +427,9 @@
+              and sha(evidence.controls / ('launch-' + args.phase + '.json')) == report['launch_receipt_sha256'], 'transport/launch receipt changed during review')
+         for name, digest in freeze['files'].items():
+             need(sha(HERE / relative(name)) == digest, 'local reviewer changed during review')
++        from closure_binding import verify_closed_ir
++        need(verify_closed_ir(evidence.controls, evidence.remote, evidence.files, HERE.parent, evidence.manifest)
++             == evidence.closure, 'closure lineage changed during review')
+         report['final_evidence_and_review_source_rehash'] = 'passed'
+         return 0
+     except Exception as error:

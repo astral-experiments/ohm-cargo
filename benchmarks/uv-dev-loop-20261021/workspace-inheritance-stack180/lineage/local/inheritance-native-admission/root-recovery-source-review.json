@@ -1,0 +1,22 @@
+{
+  "status": "passed",
+  "reviewed_at": "2026-10-21T16:40:35.085889+00:00",
+  "source_freeze_sha256": "767c4df6153e38245de96d6330c5679e181d515dd99b692b45289d6a19033cff",
+  "recovery_source_sha256": "edc17ec3bbf0140fafb1ab86a68674e71f642839ef67740c16826fd59b4e22f1",
+  "remote_source_sha256": "6131674e26b36b21e6682efcf8acb0f55e0b5f4ee9a2ffa501adff9991cff80a",
+  "capture_sha256": "9203be17ef06b5836ad916765d69d097df29d9fd83df61f33645a5d6a03c8177",
+  "boundary_review_sha256": "098062f02d103e6889b3959772a60a3d025204e391d491611a282ee8371519ff",
+  "capture_source_review_sha256": "1e22c742b515ea12f61abf391b4a91c04bb6b23bb175ac6b5d70d6a4ac9228cb",
+  "review": "Actual41-file capture and exact zero-work boundary accepted. Recovery reuses identical read-only helpers, rechecks original900-file seal/500-file IR inventory and all15 captured controls, requires original quiet guard and11 absent paths, then only moves the two exact failed metadata files into an exclusive owned history. All launch streams and review bindings are retained. Each move and final inventory are recorded. Local3 launch files move only after a verified successful remote receipt. Partial/lost acknowledgment stops; no workload invocation or automatic retry.",
+  "remote_move_allowlist": [
+    "results/native-status.json",
+    "metadata/native-prerequisite.json"
+  ],
+  "local_move_allowlist": [
+    "launch-native.json",
+    "launch-native.stdout",
+    "launch-native.stderr"
+  ],
+  "original_launcher_and_driver_unchanged": true,
+  "new_benchmark_or_analysis_calls": 0
+}

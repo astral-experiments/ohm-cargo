@@ -1,0 +1,26 @@
+{
+  "status": "passed",
+  "reviewed_at": "2026-10-21T14:53:13.235459+00:00",
+  "source_freeze_sha256": "f52a57b667b0708413cb353b2af4164f11fec6a9b8e0025bab4ab8330135ff98",
+  "source_files_verified": 25,
+  "external_inputs_verified": 35,
+  "independent_input_transfer_review_sha256": "ddaaf831c39b04dcacc3a0e2b3531e0ffd564f60bcdec8e7ee72ac86d54c7b38",
+  "root_review_scope": [
+    "Full driver including identities, phases, preflight binding, exact paired plans, IR extraction, grouped-native audits and statistical gates",
+    "Fresh owned host setup and pinned global configuration without editing it",
+    "Source/correctness/CI and fresh production pair binding",
+    "Approved v4 parser amendment and unchanged v3 warmup proof",
+    "Review-before-warmup separation and no analysis before both workflow integrity audits"
+  ],
+  "checks": {
+    "source_and_binary_pair_exact": true,
+    "all_four_configs_sealed_before_warming": true,
+    "unchanged_uv_and_test_no_run": true,
+    "cargo_only_ir_and_grouped_native": true,
+    "fixed_counts_seeds_and_no_extension": true,
+    "native_launch_requires_both_ir_gates": true,
+    "significant_native_regression_blocks_publication": true,
+    "failed_incomplete_work_cannot_qualify": true
+  },
+  "decision": "Approved packaging and setup only. Actual generated seal and configurations require a separate review before any warmup or measurement."
+}

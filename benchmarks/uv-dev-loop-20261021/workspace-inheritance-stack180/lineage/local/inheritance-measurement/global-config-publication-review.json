@@ -1,0 +1,23 @@
+{
+  "status": "passed",
+  "reviewed_at": "2026-10-21T15:02:38.942085+00:00",
+  "scope": "Read-only inspection of the exact collected ancestor Cargo configuration before any future evidence publication. No host operations or Cargo execution.",
+  "configuration_sha256": "24095bd6315880162c8f660917100ac36638cb73778dd9ec6f1c9026ea87b178",
+  "collection_relative_path": "work/inheritance-measurement/collections/setup/remote/metadata/ancestor-root-config.toml",
+  "transfer_manifest_sha256": "4f15db28f560a5d8939e86b496b073b1674c6451dcff4ca82bbeac00aad5821e",
+  "setup_seal_sha256": "b6e765057417644e62cf7cadc4994a05172077f8c9a26bfe6343e6ad377e48ff",
+  "checks": {
+    "matches_frozen_known_global_config": true,
+    "transfer_and_asset_hashes_match": true,
+    "top_level_source_only": true,
+    "only_registry_and_replace_with_fields": true,
+    "replace_with_names_existing_source": true,
+    "one_https_registry_with_fixed_cargo_endpoint": true,
+    "no_url_username_or_password": true,
+    "no_url_query_or_fragment": true,
+    "no_credential_token_or_provider_fields": true,
+    "no_build_target_or_allocator_configuration": true
+  },
+  "publication_assessment": "No embedded credentials, authentication tokens, or credential-provider configuration found. The retained file contains only registry source routing and its fixed internal endpoint.",
+  "configuration_modified": false
+}

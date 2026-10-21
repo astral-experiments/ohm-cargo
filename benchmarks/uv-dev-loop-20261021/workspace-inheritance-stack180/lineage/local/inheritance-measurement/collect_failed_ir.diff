@@ -1,0 +1,80 @@
+--- collect.py
++++ collect_failed_ir.py
+@@ -1,5 +1,5 @@
+ #!/usr/bin/env python3
+-"""Collect sealed setup or completed raw evidence without sampling or analysis."""
++"""Preserve the IR attempt stopped after both raw audits; no sampling or analysis."""
+ import argparse
+ import hashlib
+ import json
+@@ -17,17 +17,17 @@
+ 
+ 
+ parser = argparse.ArgumentParser(description=__doc__)
+-parser.add_argument('--phase', choices=('setup', 'ir', 'native'), required=True)
++parser.add_argument('--phase', choices=('ir',), required=True)
+ parser.add_argument('--sealed-inputs-sha256', required=True)
+ args = parser.parse_args()
+ assert len(args.sealed_inputs_sha256) == 64 and set(args.sealed_inputs_sha256) <= set('0123456789abcdef')
+ operation = 'stage' if args.phase == 'setup' else 'launch-' + args.phase
+-assert json.loads((HERE / (operation + '.json')).read_text())['returncode'] == 0
++assert json.loads((HERE / (operation + '.json')).read_text())['returncode'] == 1
+ binding = json.loads((HERE / 'delivery/binding.json').read_text())
+ source = json.loads((HERE / 'source-freeze.json').read_text())
+ for name, digest in source['files'].items():
+     assert sha(HERE / name) == digest
+-destination = HERE / 'collections' / args.phase
++destination = HERE / 'collections' / 'ir-failed-postguard'
+ destination.mkdir(parents=True, exist_ok=False)
+ remote = r'''
+ import hashlib,importlib.util,io,json,os,socket,sys,tarfile
+@@ -43,15 +43,19 @@
+ script=root/'controller/driver.py';assert sha(script)==driver_sha
+ spec=importlib.util.spec_from_file_location('inheritance_collection_driver',script)
+ driver=importlib.util.module_from_spec(spec);spec.loader.exec_module(driver)
+-driver.reference('ir').quiet()
++try:
++ collection_quiet={'passed':True,'observation':driver.reference('ir').quiet()}
++except AssertionError as error:
++ collection_quiet={'passed':False,'error':repr(error),'scope':'Read-only preservation, no workload or statistical execution.'}
+ driver.verify_assets();driver.verify_seal(seal)
+-if phase=='setup':
+- assert all(not driver.phase_status(value).exists() for value in ('ir','native'))
+-elif phase=='ir':
+- assert driver.read(driver.phase_status('ir'))['state']=='complete'
+- assert not driver.phase_status('native').exists()
+-else:
+- assert all(driver.read(driver.phase_status(value))['state']=='complete' for value in ('ir','native'))
++status=driver.read(driver.phase_status('ir'))
++assert phase=='ir' and status['state']=='failed'
++assert status['integrity_complete']==['check','test'] and status['completed']==[]
++assert 'AnsiballZ_command.py' in status['error']
++assert not driver.phase_status('native').exists()
++for workflow in ('check','test'):
++ for name in ('analysis.json','analysis-stdout.json','gate.json'):
++  assert not (driver.paths('ir',workflow)['output']/name).exists()
+ def selected():
+  paths=[root/name for name in ('delivery.json','ownership.json','delivery-occupancy.json')]
+  for directory in ('controller','metadata','logs','benchmark','results'):
+@@ -74,7 +78,8 @@
+    directory=driver.paths('native',workflow)['output']
+    driver.audit_sample_tables(directory,driver.read(directory/'samples.json'),'native')
+ manifest={'phase':phase,'root':str(root),'seal_sha256':seal,'delivery_sha256':delivery_sha,
+-          'driver_sha256':driver_sha,'files':files,'scope':'Exact setup or completed raw collection; no resampling or analysis.'}
++          'driver_sha256':driver_sha,'files':files,'terminal_state':'failed','qualifies':False,
++          'collection_quiet':collection_quiet,'scope':'Retained IR attempt stopped after both raw audits; no resampling or analysis.'}
+ data=(json.dumps(manifest,indent=2)+'\n').encode()
+ with tarfile.open(fileobj=sys.stdout.buffer,mode='w|') as archive:
+  info=tarfile.TarInfo('transfer-manifest.json');info.size=len(data);info.mode=0o644
+@@ -125,9 +130,9 @@
+         relative = str(path.relative_to(ROOT))
+         if relative in manifest['files']:
+             assert sha(copied / relative) == digest
+-receipt = {'status': 'passed', 'phase': args.phase, 'files': len(seen),
++receipt = {'status': 'preserved', 'qualifies': False, 'phase': args.phase, 'files': len(seen),
+            'transfer_manifest_sha256': sha(destination / 'transfer-manifest.json'),
+            'measurement_seal_sha256': args.sealed_inputs_sha256,
+-           'scope': 'All transferred files verified, including their available static seal entries. No analysis or sampling.'}
++           'scope': 'Preserved failed attempt; all transferred bytes and available static seal entries verified. No qualification, analysis or sampling.'}
+ (destination / 'receipt.json').write_text(json.dumps(receipt, indent=2) + '\n')
+ print(json.dumps(receipt, indent=2))

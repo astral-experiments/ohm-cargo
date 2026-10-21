@@ -1,0 +1,13 @@
+{
+  "status": "passed",
+  "checked_at": "2026-10-21T14:35:37.430908+00:00",
+  "controller_sha256": "318d05c1112e73625015461ff6c1000fab3cafb573c8e3e3963b16cd9ec64e6c",
+  "amendment_sha256": "823d8448f15f09b5aafba4eb078132f66509e24760e95d4442761f952762975a",
+  "all_ast_nodes_outside_preflight_identical": true,
+  "fixed_untimed_warm_commands_per_variant": 3,
+  "strict_zero_child_trace_and_cross_switch_preserved": true,
+  "comparison_gates_unchanged": true,
+  "decision": "Freeze three fixed setup calls prospectively. Each actual fresh fixture must establish convergence through the unchanged zero-child trace and cross-switch proofs before any comparison. No adaptive retry or measurement extension.",
+  "evidence_limit": "The SBOM second check followed a deliberate uv edit; it switched to newly available native metadata. The separate no-edit probe did not run because another workload occupies host4. No independent no-edit convergence result is claimed.",
+  "no_performance_samples_exist": true
+}

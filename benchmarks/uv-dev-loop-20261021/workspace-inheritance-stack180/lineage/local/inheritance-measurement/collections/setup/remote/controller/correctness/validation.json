@@ -1,0 +1,167 @@
+{
+  "started_at": "2026-10-21T13:58:08.858485+00:00",
+  "status": "passed",
+  "purpose": "correctness only; default Cargo features and stock1.99; no benchmark",
+  "source": {
+    "created_at": "2026-10-21T13:56:58.093925+00:00",
+    "repository": "https://github.com/astral-sh/ohm-cargo.git",
+    "head": "c40676e264501bc8a93095d3a273a1c300b80875",
+    "base_tree": "0a392258c801cff734d223a3f9af73d5b5a4e3c0",
+    "candidate_tree": "c4178b67e0b3a64a12b9b58f84b97323b99d734e",
+    "branch": "codex/share-workspace-dependencies",
+    "source_path": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/cargo-shared-workspace-dependencies",
+    "patch_path": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/workspace-inheritance-candidate/share-workspace-dependencies.patch",
+    "patch_sha256": "cbace02bcebcce462e5912e832ade58e30822e0e83cece47039636fdfe58e4c9",
+    "changed_files": {
+      "src/workspace/parser/mod.rs": "44d814913c952fef34c97664040b4eb9c2b7a92444c7ed0b7426e6e3f8518edc"
+    },
+    "cargo_lock_sha256": "151c473e1a11532946ba9421ab1beeb238f98eb1f8cd4e5f94f9811003abd5a7",
+    "toolchain_tools": {
+      "cargo": "/home/dev-user/.rustup/toolchains/1.99.0-x86_64-unknown-linux-gnu/bin/cargo",
+      "rustc": "/home/dev-user/.rustup/toolchains/1.99.0-x86_64-unknown-linux-gnu/bin/rustc",
+      "rustdoc": "/home/dev-user/.rustup/toolchains/1.99.0-x86_64-unknown-linux-gnu/bin/rustdoc"
+    },
+    "formatter": {
+      "path": "/home/dev-user/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustfmt",
+      "version": "rustfmt 1.10.0-stable (58cf8f9c35 2026-10-13)",
+      "note": "The stock1.99 toolchain does not include rustfmt; the existing default formatter was used without installing or changing toolchains."
+    },
+    "scope": "Two-line immutable workspace dependency table sharing; no performance claim; selected dependency cloning unchanged"
+  },
+  "runner_sha256": "8cfac6a9b34fe50e66d4b172ce2600af87fce4eae171e88e79a1f10dd7e203ee",
+  "command": [
+    "taskset",
+    "-c",
+    "0-7",
+    "/home/dev-user/.rustup/toolchains/1.99.0-x86_64-unknown-linux-gnu/bin/cargo",
+    "test",
+    "--locked",
+    "--offline",
+    "-p",
+    "cargo",
+    "--test",
+    "testsuite",
+    "--no-run",
+    "-j",
+    "8",
+    "--message-format=json"
+  ],
+  "target_path": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/workspace-inheritance-candidate/compiler-build",
+  "removed_environment_keys": [],
+  "environment_overrides": {
+    "CARGO_HOME": "/tmp/codex-cargo-home",
+    "CARGO_TARGET_DIR": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/workspace-inheritance-candidate/compiler-build",
+    "CARGO_PROFILE_DEV_DEBUG": "0",
+    "CARGO_PROFILE_TEST_DEBUG": "0",
+    "CARGO_INCREMENTAL": "0",
+    "CFG_RELEASE_CHANNEL": "dev",
+    "RUSTC": "/home/dev-user/.rustup/toolchains/1.99.0-x86_64-unknown-linux-gnu/bin/rustc",
+    "RUSTDOC": "/home/dev-user/.rustup/toolchains/1.99.0-x86_64-unknown-linux-gnu/bin/rustdoc",
+    "PATH": "/home/dev-user/.rustup/toolchains/1.99.0-x86_64-unknown-linux-gnu/bin:/home/dev-user/.cache/dotslash/54/c27acef053b1d4b474bb903f9cdeeee0f775d6/codex-path:/usr/local/bin:/home/dev-user/.nvm/versions/node/v22.23.3/bin:/home/dev-user/.bun/bin:/home/linuxbrew/.linuxbrew/bin:/home/linuxbrew/.linuxbrew/sbin:/home/dev-user/.local/bin:/home/dev-user/.openai/bin:/home/dev-user/.virtualenvs/openai/bin:/home/dev-user/code/openai/project/dotslash-gen/bin:/usr/local/bin:/home/dev-user/.codex/tmp/arg0-linux/codex-arg0CvuGEm:/home/dev-user/.cache/dotslash/54/c27acef053b1d4b474bb903f9cdeeee0f775d6/codex-path:/home/dev-user/.cargo/bin:/usr/local/sbin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin"
+  },
+  "tool_sha256": {
+    "cargo": "e951141cc55a6cd7b9876d187bd30a3720e6086b99413af95e3b8de1cdd72f14",
+    "rustc": "f3834d26669b03f6855fa54bd2381443123e860167bc0c7a8dd137e5cf6e5e4f",
+    "rustdoc": "a1321a60578a6b2e3e0ff428201b8618bbd9a9fbcd475c0d0f151bbf17cb0a9e"
+  },
+  "tool_versions": {
+    "cargo": "cargo 1.99.0 (5f94df478 2026-08-27)\nrelease: 1.99.0\ncommit-hash: 5f94df4789f005f9a352888e8355ffc645b7ed0e\ncommit-date: 2026-08-27\nhost: x86_64-unknown-linux-gnu\nlibgit2: 1.9.6 (sys:0.21.0 vendored)\nlibcurl: 8.21.0-DEV (sys:0.4.90+curl-8.21.0 vendored ssl:OpenSSL/3.6.3)\nssl: OpenSSL 3.6.3 9 Jun 2026\nos: Ubuntu 24.4.0 (noble) [64-bit]\n",
+    "rustc": "rustc 1.99.0 (b940084d7 2026-09-28)\nbinary: rustc\ncommit-hash: b940084d7eb6a299eb4bfeb8e34901bc051e7ac4\ncommit-date: 2026-09-28\nhost: x86_64-unknown-linux-gnu\nrelease: 1.99.0\nLLVM version: 23.1.1\n",
+    "rustdoc": "rustdoc 1.99.0 (b940084d7 2026-09-28)\n"
+  },
+  "checks": [
+    {
+      "name": "inheritable_workspace_fields",
+      "command": [
+        "taskset",
+        "-c",
+        "0-7",
+        "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/workspace-inheritance-candidate/compiler-build/debug/deps/testsuite-a8352b8946b30246",
+        "inheritable_workspace_fields::",
+        "--nocapture",
+        "--test-threads=1"
+      ],
+      "returncode": 0,
+      "selected_tests": [
+        "inheritable_workspace_fields::cannot_inherit_in_patch",
+        "inheritable_workspace_fields::deny_optional_dependencies",
+        "inheritable_workspace_fields::error_inherit_unspecified_dependency",
+        "inheritable_workspace_fields::error_malformed_workspace_root",
+        "inheritable_workspace_fields::error_no_root_workspace",
+        "inheritable_workspace_fields::error_workspace_dependency_looked_for_workspace_itself",
+        "inheritable_workspace_fields::error_workspace_false",
+        "inheritable_workspace_fields::inherit_def_feat_false_member_def_feat_true",
+        "inheritable_workspace_fields::inherit_def_feat_true_member_def_feat_false_2024_edition",
+        "inheritable_workspace_fields::inherit_dependencies",
+        "inheritable_workspace_fields::inherit_dependency_features",
+        "inheritable_workspace_fields::inherit_dependency_override_optional",
+        "inheritable_workspace_fields::inherit_detailed_dependencies",
+        "inheritable_workspace_fields::inherit_from_own_undefined_field",
+        "inheritable_workspace_fields::inherit_own_dependencies",
+        "inheritable_workspace_fields::inherit_own_detailed_dependencies",
+        "inheritable_workspace_fields::inherit_own_workspace_fields",
+        "inheritable_workspace_fields::inherit_path_dependencies",
+        "inheritable_workspace_fields::inherit_simple_member_def_feat_false_2024_edition",
+        "inheritable_workspace_fields::inherit_target_dependencies",
+        "inheritable_workspace_fields::inherit_workspace_fields",
+        "inheritable_workspace_fields::inherited_dependencies_union_features",
+        "inheritable_workspace_fields::permit_additional_workspace_fields",
+        "inheritable_workspace_fields::warn_inherit_def_feat_true_member_def_feat_false",
+        "inheritable_workspace_fields::warn_inherit_simple_member_def_feat_false",
+        "inheritable_workspace_fields::warn_inherit_unused_manifest_key_dep",
+        "inheritable_workspace_fields::warn_inherit_unused_manifest_key_package",
+        "inheritable_workspace_fields::warn_unused_workspace_package_field"
+      ],
+      "executed_tests": [
+        "inheritable_workspace_fields::cannot_inherit_in_patch",
+        "inheritable_workspace_fields::deny_optional_dependencies",
+        "inheritable_workspace_fields::error_inherit_unspecified_dependency",
+        "inheritable_workspace_fields::error_malformed_workspace_root",
+        "inheritable_workspace_fields::error_no_root_workspace",
+        "inheritable_workspace_fields::error_workspace_dependency_looked_for_workspace_itself",
+        "inheritable_workspace_fields::error_workspace_false",
+        "inheritable_workspace_fields::inherit_def_feat_false_member_def_feat_true",
+        "inheritable_workspace_fields::inherit_def_feat_true_member_def_feat_false_2024_edition",
+        "inheritable_workspace_fields::inherit_dependencies",
+        "inheritable_workspace_fields::inherit_dependency_features",
+        "inheritable_workspace_fields::inherit_dependency_override_optional",
+        "inheritable_workspace_fields::inherit_detailed_dependencies",
+        "inheritable_workspace_fields::inherit_from_own_undefined_field",
+        "inheritable_workspace_fields::inherit_own_dependencies",
+        "inheritable_workspace_fields::inherit_own_detailed_dependencies",
+        "inheritable_workspace_fields::inherit_own_workspace_fields",
+        "inheritable_workspace_fields::inherit_path_dependencies",
+        "inheritable_workspace_fields::inherit_simple_member_def_feat_false_2024_edition",
+        "inheritable_workspace_fields::inherit_target_dependencies",
+        "inheritable_workspace_fields::inherit_workspace_fields",
+        "inheritable_workspace_fields::inherited_dependencies_union_features",
+        "inheritable_workspace_fields::permit_additional_workspace_fields",
+        "inheritable_workspace_fields::warn_inherit_def_feat_true_member_def_feat_false",
+        "inheritable_workspace_fields::warn_inherit_simple_member_def_feat_false",
+        "inheritable_workspace_fields::warn_inherit_unused_manifest_key_dep",
+        "inheritable_workspace_fields::warn_inherit_unused_manifest_key_package",
+        "inheritable_workspace_fields::warn_unused_workspace_package_field"
+      ],
+      "summary_counts": [
+        [
+          "28",
+          "0",
+          "0"
+        ]
+      ],
+      "log_sha256": "4379d2fa75c007c90a32e6e71c6ca00c4756c63e535731fac5cb91475c828b47"
+    }
+  ],
+  "build_returncode": 0,
+  "build_finished_at": "2026-10-21T13:59:55.907618+00:00",
+  "build_logs": {
+    "build.jsonl": "615bd6dc9c3ea23fc63b9354ebfd2fb0525ae664fda82a229fff90c1f8e0ad0c",
+    "build.stderr": "ca4751e5c2cb629b510dbcda10e7095406409b795822f34873c26251b401b8e1"
+  },
+  "artifacts": {
+    "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/workspace-inheritance-candidate/compiler-build/debug/cargo": "7706b241b3fa206806126a3aa909c114f988d7874163fb91fb825bbf123c8e0c",
+    "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/workspace-inheritance-candidate/compiler-build/debug/deps/testsuite-a8352b8946b30246": "498c6c722c920c2a31fc3d781aa81407037921d539c6300773ece4d1a4b4a3a3"
+  },
+  "finished_at": "2026-10-21T14:00:05.397663+00:00",
+  "source_unchanged": true
+}

@@ -1,0 +1,28 @@
+{
+  "created_at": "2026-10-21T15:59:41.377151+00:00",
+  "failed_closure_launch_sha256": "49ae8af6b1e18d95b981c56b449cde794114d3bf1e97e1aab2b07933a2c4ee18",
+  "files": {
+    "retry/README.md": "3d0d708d43ac6fb686e7f980551c317ec7cabdb609a3516621675008e1833949",
+    "retry/collect.py": "a33d6de6351655b7ce45cce454b624a950a15537be44b16828fe80ac377b745a",
+    "retry/contract.py": "a024bc64371ddc8d0403201202b7f96549e040c31944acaeaa3970310c040a60",
+    "retry/evidence.py": "3f3570d6869f1e939b87c8f94a20f39cef9ab1e9592614c74bd125aa1242a739",
+    "retry/history/launch-finalize.json": "49ae8af6b1e18d95b981c56b449cde794114d3bf1e97e1aab2b07933a2c4ee18",
+    "retry/history/launch-finalize.stderr": "2b7360d0f2efd7828e5e281ad1ecef033a594f5bc6b2a40b9e7c13b996fad345",
+    "retry/history/launch-finalize.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retry/launch.py": "a4a26a6b258b72e3583a1c97bb7bfdbff9f2f6fe3ddbac2092d9a6a2ee408e47",
+    "retry/pure-tests-01.stderr": "a7b70c4ea2929932ec5fdb4fed79f60ec78d3b61012a8210f1608dbbff946126",
+    "retry/pure-tests-01.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retry/pure-tests-02.stderr": "34ced1938402c5d8f2b374b6d4a203fe0e233c80d47c2fb44bdec1f064c684f5",
+    "retry/pure-tests-02.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "retry/review.py": "9c7051219e742188d4f54559b9046a8a24dcec492ee371d976b7ac60db8135ef",
+    "retry/source-comparison.json": "560a6031f8bf0e1a7cbe6d19fa2ef52d35c1e68dd0e26c765c9654dc8d992902",
+    "retry/test_source.py": "e01f90da79bcfcc10b0657c10a56a577978737feb0303fe9fe542f478c19f440",
+    "source-freeze.json": "befbcd80ecdbfa09a14a39faf11891a01b65cb544522417fbbc29b3aa4352d10"
+  },
+  "operation": "single-prestaging-closure-retry",
+  "original_capsule_sha256": "87271d54298ea323702ef858034bc82595717d3893e8de23a2a7b8e6c6f83642",
+  "original_closure_source_freeze_sha256": "befbcd80ecdbfa09a14a39faf11891a01b65cb544522417fbbc29b3aa4352d10",
+  "original_failed_ir_capture_sha256": "b5a0b1edb496ffa0749ba6e2198606c32d83c22a8d79340ca9dc3d4b0ce95ba8",
+  "original_source_file_count": 47,
+  "scope": "One new read-only absence proof followed by the byte-identical closure launcher; preserve every earlier byte and all raw/guard/gate/statistical behavior. No source-preparation execution of hosts or effects."
+}

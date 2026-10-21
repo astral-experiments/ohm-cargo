@@ -1,0 +1,9 @@
+The retained inheritance integration run passed all 28 selected cases under stock Rust 1.99 and the normal Cargo feature set. The exact candidate source CI completed successfully at `d81a093becb4321a975522624c2a383970f0d164`, tree `c4178b67e0b3a64a12b9b58f84b97323b99d734e`, parent `c40676e264501bc8a93095d3a273a1c300b80875`. Required jobs passed; the platform-specific APFS job was skipped.
+
+The measured production pair was built separately with the matched settings and paths recorded in its build, strip and independent cohort audits. Exact production commands passed the Ohm-enabled freshness and zero-child preflight. The normal-feature integration suite is not described as an exact production-feature test-suite pass.
+
+Cargo Ir counts cover the instrumented Cargo process only, with compiler, linker and build-script children excluded. Instrumented elapsed time is not native wall time. The production pair uses all-static and ohm-defaults, ThinLTO and one codegen unit, without release PGO. The measured commands are warm, fresh `cargo check` and `cargo test --no-run`; no test program is executed. These results do not establish a cold-build speedup.
+
+The original fixed IR observations are retained exactly. A post-integrity guard failure was followed by a metadata-only closure of the original analysis/gate tail. Its first launch stopped before staging; the retry completed remotely even though SSH returned 255. Both failed local receipts and authenticated successful remote finalization remain. The first native admission stopped before any Cargo call; exactly two remote metadata files and three local launch records were retained, after which the byte-identical original phase ran once. No measured observation was replaced, omitted, pooled or extended.
+
+All source preparation failures, raw launch and transport outcomes, recovery requests/receipts and independent source/raw reviews remain in the local lineage or original collection archives.

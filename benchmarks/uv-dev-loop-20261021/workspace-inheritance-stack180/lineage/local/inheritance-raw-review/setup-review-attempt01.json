@@ -1,0 +1,12 @@
+{
+  "status": "launcher failed before reading evidence",
+  "exit_code": 1,
+  "command": "taskset -c 8 python3 -B work/inheritance-raw-review/review_setup.py --controls work/inheritance-measurement --output work/inheritance-raw-review/setup-review.json",
+  "error": "ModuleNotFoundError: No module named 'evidence'",
+  "environment_hook": "The default Python missing-import hook attempted an automatic slackPO package installation; its lock-file open failed with OSError Errno 30 Read-only file system before installation.",
+  "blocked_lock_path": "/home/dev-user/.virtualenvs/openai/oaipkg.lock",
+  "input_audit_started": false,
+  "statistics_run": false,
+  "remote_access": false,
+  "correction": "Use /usr/bin/python3 -I -B and explicitly add the reviewer's own directory to sys.path. No experiment control or result bytes changed."
+}

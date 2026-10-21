@@ -1,0 +1,10 @@
+{
+  "status": "passed",
+  "reviewed_at": "2026-10-21T16:36:14.976154+00:00",
+  "source_freeze_sha256": "767c4df6153e38245de96d6330c5679e181d515dd99b692b45289d6a19033cff",
+  "files_verified": 19,
+  "scope": "Read-only capture and independent local zero-work boundary review. No recovery or workload authorization.",
+  "review": "Read common helpers, full remote capture, local collector and independent boundary reviewer. Original asset/seal verification is read-only; 500 accepted IR files are opaque-hashed before and after. Exact15 selected files, 10 absent native paths plus absent retained namespace, terminal status/prerequisite, canonical binary and owned-process absence are required. Transport bytes and failures are retained; extraction validates unique regular safe members and all hashes. Reviewer verifies source control flow and does not compute effects.",
+  "pure_source_checks": 5,
+  "no_effects": true
+}

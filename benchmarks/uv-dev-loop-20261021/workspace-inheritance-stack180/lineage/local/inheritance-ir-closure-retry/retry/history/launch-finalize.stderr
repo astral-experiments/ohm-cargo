@@ -1,0 +1,7 @@
+Traceback (most recent call last):
+  File "<string>", line 15, in <module>
+  File "/tmp/ohm-hillclimb-20261021-inheritance-measurement/controller/occupancy.py", line 36, in require_quiet
+    assert not competing, competing
+           ^^^^^^^^^^^^^
+AssertionError: [{'pid': 1058095, 'name': 'uv-main', 'cpu_percent': 130.0, 'controller': False, 'argv': ['/home/dev-user/Documents/Codex/uv-current-main-bench-20261021/bin/uv-main', 'lock', '--project', '/home/dev-user/Documents/Codex/uv-current-main-bench-20261021/runs/unforked', '--python', '/home/dev-user/Documents/Codex/uv-current-main-bench-20261021/python/bin/python3.12', '--default-index', 'oaipkg-default=https://socket-firewall-registry.gateway.admin-0.internal.api.openai.org/pypi/simple', '--cache-dir', '/home/dev-user/Documents/Codex/uv-current-main-bench-20261021/cache', '--offline']}]
+Error: exit status 1

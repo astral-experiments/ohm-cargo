@@ -1,0 +1,19 @@
+{
+  "authorized_action": "One metadata-only closure retry through the unchanged original launcher; no new measurement or native launch.",
+  "availability_receipt_sha256": "af9edcff91944131f7b5d03a31dbb0563d26bb293067bc634107ca82ca6f28cd",
+  "original_closure_source_freeze_sha256": "befbcd80ecdbfa09a14a39faf11891a01b65cb544522417fbbc29b3aa4352d10",
+  "original_closure_source_review_sha256": "7f128f2000220e633b5b744869a7b7e9e552c3b008028d85c46a69d2b0c9ec46",
+  "original_failed_raw_payloads_verified": 477,
+  "original_files_compared": 47,
+  "pure_tests_passed": 16,
+  "retry_source_freeze_sha256": "bd4a8a3cac7792b7db3feeccac1a0a5e4b609a011411d5277cb5c944c8729bb6",
+  "reviewed_at": "2026-10-21T16:03:06.763841+00:00",
+  "source_review": [
+    "Read full launch, contract, evidence, collection and reviewer wrappers.",
+    "Original failed closure launch stays in place and is also copied into bound history.",
+    "Exclusive local one-shot marker and fresh read-only absence proof precede unchanged remote quiet/exclusive staging guards.",
+    "All original finalizer, collector, raw reviewer and statistical sources are byte-identical.",
+    "Additional lineage archive joins both attempts and original remote collection without changing samples or statistical decisions."
+  ],
+  "status": "passed"
+}

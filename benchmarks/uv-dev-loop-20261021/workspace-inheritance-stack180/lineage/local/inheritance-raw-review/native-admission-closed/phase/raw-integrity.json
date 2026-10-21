@@ -1,0 +1,33 @@
+{
+  "analysis_files_parsed": false,
+  "phase": "native",
+  "statistics_computed": false,
+  "status": "passed",
+  "transfer_manifest_sha256": "cf28119cb9cb22c813bedabdc2575483d2de2df13d8438c6b1d96fd68074cd6f",
+  "workflows": [
+    {
+      "all_tables_logs_plans_sums_and_identities_match": true,
+      "pairs": 30,
+      "profiles": 0,
+      "samples": 64,
+      "seed": 20261021113,
+      "status": "passed",
+      "subruns": 512,
+      "unwanted_compilation_signatures": 0,
+      "warmup_pairs": 2,
+      "workflow": "check"
+    },
+    {
+      "all_tables_logs_plans_sums_and_identities_match": true,
+      "pairs": 30,
+      "profiles": 0,
+      "samples": 64,
+      "seed": 20261021114,
+      "status": "passed",
+      "subruns": 512,
+      "unwanted_compilation_signatures": 0,
+      "warmup_pairs": 2,
+      "workflow": "test"
+    }
+  ]
+}

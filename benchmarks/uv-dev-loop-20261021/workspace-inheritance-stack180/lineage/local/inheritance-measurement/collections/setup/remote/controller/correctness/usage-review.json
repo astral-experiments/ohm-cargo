@@ -1,0 +1,18 @@
+{
+  "at": "2026-10-21T13:58:42.509708+00:00",
+  "review": "author source/usage audit, not independent review",
+  "candidate_tree": "c4178b67e0b3a64a12b9b58f84b97323b99d734e",
+  "exactly_two_substitutions": true,
+  "selected_dependency_function_byte_identical": true,
+  "selected_dependency_function_sha256": "4b25febd38faac4ed330c620db4f9339e727852096afd3f2511f3f170911b492",
+  "all_usages_receipt": "inheritable-fields-usages.txt",
+  "all_usages_sha256": "b9c210bfde9201bf788a85b4ec2e85df933d5a1480b43cb09e0b3baf79e9b028",
+  "invariants": [
+    "Private table is initialized once in to_workspace_root_config and thereafter read through get_dependency; no table mutation or Arc::make_mut is introduced.",
+    "get_dependency returns an owned clone before relative-path rewriting. Downstream dependency inheritance feature unions/default-feature/optional handling remain byte-identical.",
+    "Clone shares only the table; package fields, lints and workspace root continue unchanged. Default remains None, Debug displays the same value, and Arc preserves Send/Sync for this immutable map of ordinary schema values.",
+    "Existing workspace-root cache/OnceCell lifetimes and all errors, warnings, path resolution, freshness, trust and registry checks are unchanged.",
+    "No serialization or hashing implementation exists on InheritableFields; manifest/metadata values continue through existing owned normalization."
+  ],
+  "new_test_decision": "No implementation-mirroring Arc test added. Existing multi-member/path/feature/optional/target/error/warning integration cases exercise the observable invariants; actual execution is recorded separately."
+}

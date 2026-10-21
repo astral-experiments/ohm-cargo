@@ -1,0 +1,45 @@
+{
+  "original_driver_sha256": "1585116beaab26655de1e86459feb030ebdd31e636a613991241018ace5f3ef3",
+  "tail_ast_sha256": "3d13d0538f41f3a26ec76547ba51d2db69019daad761d608bab39ed8c3220448",
+  "statement_count": 7,
+  "retained_original_quiet_checks": 2,
+  "analysis_commands": [
+    [
+      "/usr/bin/python3",
+      "-I",
+      "-B",
+      "/tmp/ohm-hillclimb-20261021-inheritance-measurement/benchmark/frozen/paired.py",
+      "analyze",
+      "/tmp/ohm-hillclimb-20261021-inheritance-measurement/results/ir-check",
+      "--confidence",
+      ".99",
+      "--resamples",
+      "20000",
+      "--seed",
+      "1701",
+      "--minimum-pairs",
+      "12"
+    ],
+    [
+      "/usr/bin/python3",
+      "-I",
+      "-B",
+      "/tmp/ohm-hillclimb-20261021-inheritance-measurement/benchmark/frozen/paired.py",
+      "analyze",
+      "/tmp/ohm-hillclimb-20261021-inheritance-measurement/results/ir-test",
+      "--confidence",
+      ".99",
+      "--resamples",
+      "20000",
+      "--seed",
+      "1701",
+      "--minimum-pairs",
+      "12"
+    ]
+  ],
+  "raw_audits_repeated_before_analysis": [
+    "check",
+    "test"
+  ],
+  "original_metric_and_gate_functions_unchanged": true
+}

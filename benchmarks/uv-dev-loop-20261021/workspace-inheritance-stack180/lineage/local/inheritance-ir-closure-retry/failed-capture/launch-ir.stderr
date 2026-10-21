@@ -1,0 +1,13 @@
+Traceback (most recent call last):
+  File "/tmp/ohm-hillclimb-20261021-inheritance-measurement/controller/driver.py", line 450, in <module>
+    main()
+  File "/tmp/ohm-hillclimb-20261021-inheritance-measurement/controller/driver.py", line 446, in main
+    run_phase(core, args.run_phase, args.sealed_inputs_sha256)
+  File "/tmp/ohm-hillclimb-20261021-inheritance-measurement/controller/driver.py", line 411, in run_phase
+    status.update(state='both workflows passed integrity', quiet=ref.quiet())
+                                                                 ^^^^^^^^^^^
+  File "/tmp/ohm-hillclimb-20261021-inheritance-measurement/controller/occupancy.py", line 36, in require_quiet
+    assert not competing, competing
+           ^^^^^^^^^^^^^
+AssertionError: [{'pid': 1043536, 'name': 'python3', 'cpu_percent': 140.0, 'controller': False, 'argv': ['/usr/bin/python3', '/root/.ansible/tmp/ansible-tmp-1792596091.3707476-1043517-150841493639108/AnsiballZ_command.py']}]
+Error: exit status 1

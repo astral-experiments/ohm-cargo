@@ -1,0 +1,69 @@
+{
+  "status": "passed",
+  "reviewed_at": "2026-10-21T16:18:04.050594+00:00",
+  "authorized_phase": "native",
+  "protocol_sha256": "5a78491c347b2f8749fe6da44002c863679062e5e3c7393e9508671e813af2da",
+  "source_freeze_sha256": "f52a57b667b0708413cb353b2af4164f11fec6a9b8e0025bab4ab8330135ff98",
+  "measurement_seal_sha256": "b6e765057417644e62cf7cadc4994a05172077f8c9a26bfe6343e6ad377e48ff",
+  "ir_independent_review_sha256": "0ea0f500d28c30d69fc679be7b191f108964b3464fd6dc2f20a486c8661a1834",
+  "transport_resolution_review_sha256": "ddc3571d1c77a8f50533caf9d27fec449148df5e1613f4828110ff531dcf1326",
+  "ir_transfer_manifest_sha256": "1eb96065ef89ab579f0aef22930bc945adcae762f28b39470c5c4b8ca9bea0dc",
+  "launcher_sha256": "67982c7f92b012dfcfa83f4ccb3dfbfb7e15be18aa5932e7cd4f7c3141946655",
+  "ir_results": [
+    {
+      "checks": {
+        "at_least_one_percent": true,
+        "both_orders_positive": true,
+        "fixed_pairs": true,
+        "positive_99_percent_lower_bound": true,
+        "two_sided_sign_p_at_most_0_01": true
+      },
+      "directory": "/tmp/ohm-hillclimb-20261021-inheritance-measurement/results/ir-check",
+      "interval_99": [
+        0.03632069307631036,
+        0.03790602844570301
+      ],
+      "passes_gate": true,
+      "reduction": 0.03740338435303181,
+      "scope": "Fixed independent pairs; no exclusions, extensions, pooling or interim effect inspection.",
+      "sign_p": 0.00048828125,
+      "significant_native_regression": false,
+      "workflow": "check"
+    },
+    {
+      "checks": {
+        "at_least_one_percent": true,
+        "both_orders_positive": true,
+        "fixed_pairs": true,
+        "positive_99_percent_lower_bound": true,
+        "two_sided_sign_p_at_most_0_01": true
+      },
+      "directory": "/tmp/ohm-hillclimb-20261021-inheritance-measurement/results/ir-test",
+      "interval_99": [
+        0.03170621534823581,
+        0.03206341475607877
+      ],
+      "passes_gate": true,
+      "reduction": 0.031866830508907595,
+      "scope": "Fixed independent pairs; no exclusions, extensions, pooling or interim effect inspection.",
+      "sign_p": 0.00048828125,
+      "significant_native_regression": false,
+      "workflow": "test"
+    }
+  ],
+  "native_plan": {
+    "condition": "Run both fixed native workflows only if both instruction-count gates pass",
+    "pairs": 30,
+    "calls_per_group": 8,
+    "warmup_groups_per_variant": 2,
+    "seeds": {
+      "check": 20261021113,
+      "test": 20261021114
+    },
+    "statistical_unit": "paired aggregate of eight consecutive fresh calls per variant",
+    "inconclusive": "Retain and report without a wall-time claim",
+    "regression": "A negative 99% interval with sign-test p<=0.01 blocks publication pending investigation; no selective rerun"
+  },
+  "scope": "Original frozen native phase only, with fresh separate fixtures, strict preparation, both fixed raw audits before effects, no sample extensions or pooling. Both IR gates independently passed.",
+  "source_review": "Re-read complete phase launcher and driver native prerequisite/run functions; original source freeze rehashed."
+}

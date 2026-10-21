@@ -1,0 +1,32 @@
+{
+  "status": "passed",
+  "reviewed_at": "2026-10-21T14:50:58.815706+00:00",
+  "reviewer": "compiler_audit",
+  "source_freeze_sha256": "f52a57b667b0708413cb353b2af4164f11fec6a9b8e0025bab4ab8330135ff98",
+  "scope": "Independent read-only review of bind_inputs.py, stage.py and collect.py, with supporting setup/driver/occupancy paths; no host access, Cargo, packaging, or workload execution. All25 source-freeze file hashes reverified; large external assets not rehashed in this slice.",
+  "reviewed_files": {
+    "bind_inputs.py": "bf66bab445eec919ebd71afaa08f093f26d0c976f6f50a8fdb65c1f97f3a2472",
+    "stage.py": "67982c7f92b012dfcfa83f4ccb3dfbfb7e15be18aa5932e7cd4f7c3141946655",
+    "collect.py": "3d619f71499a708d55fd95947f230ff937bed690b6be3c2c9e1fb1d0072a1f2c",
+    "prepare_host.py": "f140de3d9694cf5ec4653dd73f3bc92f2ed97f020a368ef0a4b08a3e24e0b99a",
+    "driver.py": "1585116beaab26655de1e86459feb030ebdd31e636a613991241018ace5f3ef3",
+    "occupancy.py": "098f4e4df9f4a9c334659a7b10d9c88b07c0213d58522040102dc003da53c4dd"
+  },
+  "checks": {
+    "exact_review_and_pair_source_binary_binding": true,
+    "fresh_owned_root_and_atomic_refusal_to_overwrite": true,
+    "quiet_host_gate_before_transfer": true,
+    "regular_only_relative_unique_tar_payload_and_content_hashes": true,
+    "setup_only_stage_then_separate_review_required_launch": true,
+    "clean_absolute_python_launches": true,
+    "completed_phase_and_static_seals_before_collection": true,
+    "raw_audits_bound_before_transfer_and_rehashed_after": true,
+    "local_received_bytes_join_delivery_source_and_measurement_seals": true,
+    "numeric_first_process_parser_handles_spaced_names": true
+  },
+  "findings": [],
+  "notes": [
+    "Tar packaging of the same v4 controller under two names was checked with an in-memory archive and produced regular entries for the actual source file; receivers continue to reject hardlinks and symlinks.",
+    "Conservative occupancy or transport failures remain operational stops; no automatic sample replacement or implicit launch was added."
+  ]
+}

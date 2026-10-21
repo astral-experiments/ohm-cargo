@@ -1,0 +1,20 @@
+{
+  "status": "passed",
+  "reviewed_at": "2026-10-21T15:48:10.485870+00:00",
+  "authorized_action": "One metadata-only closure of the existing IR attempt; no new measurements or native launch.",
+  "source_freeze_sha256": "befbcd80ecdbfa09a14a39faf11891a01b65cb544522417fbbc29b3aa4352d10",
+  "closure_manifest_sha256": "87271d54298ea323702ef858034bc82595717d3893e8de23a2a7b8e6c6f83642",
+  "independent_source_review_sha256": "0caf0d7f069defe8f68881e780fa8aac96c6fc05f4d980fdeefb3005a42864fb",
+  "root_retention_review_sha256": "2026d8bb3f490e658bec8212724ca594c71bb2905e61a04c0b144e64651d294a",
+  "source_files_verified": 47,
+  "staged_payloads_verified": 13,
+  "original_observations": 56,
+  "original_failed_launch_preserved": true,
+  "root_source_review": [
+    "Read full finalizer, immutable-data contract and launcher.",
+    "Original seven-statement tail is pinned and executed without measurement loop; subprocess wrapper permits only the two original analysis commands.",
+    "All 477 original files are checked before/after, with only status resumable and its failed bytes separately retained.",
+    "Original 900-file seal, both raw audits, quiet guards and all statistics/gates remain unchanged.",
+    "Independent reviewer/collector delta review and 16 pure tests pass."
+  ]
+}

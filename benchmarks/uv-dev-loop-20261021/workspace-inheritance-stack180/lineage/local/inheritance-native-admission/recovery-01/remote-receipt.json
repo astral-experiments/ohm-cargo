@@ -1,0 +1,93 @@
+{
+  "accepted_ir_files_unchanged": 500,
+  "capture_sha256": "9203be17ef06b5836ad916765d69d097df29d9fd83df61f33645a5d6a03c8177",
+  "completed_receipt": {
+    "sha256": "3800df6f19f590e5768b7f8917aaf3a1ad101410a53e7ac5746072d06c1ae3f5",
+    "size": 3258
+  },
+  "effects_inspected": false,
+  "finished_at": "2026-10-21T16:40:47.830372+00:00",
+  "history": "metadata/native-admission-history/attempt-01",
+  "moves": [
+    {
+      "mode": 33204,
+      "moved_at": "2026-10-21T16:40:46.025751+00:00",
+      "mtime_ns": 1792599495929610952,
+      "original": "results/native-status.json",
+      "record": {
+        "sha256": "baa835d9404611a6b73f4b8597aeb88e26af29e9d199d9a880ca2bc4715e8dfb",
+        "size": 623
+      },
+      "retained": "metadata/native-admission-history/attempt-01/native-status.json"
+    },
+    {
+      "mode": 33204,
+      "moved_at": "2026-10-21T16:40:46.026752+00:00",
+      "mtime_ns": 1792599494802615827,
+      "original": "metadata/native-prerequisite.json",
+      "record": {
+        "sha256": "5a9a2172c5930f35a6618ed2a361d5a135585f275085ace5c7ba42f8a08a7ea7",
+        "size": 2522
+      },
+      "retained": "metadata/native-admission-history/attempt-01/native-prerequisite.json"
+    }
+  ],
+  "native_cargo_calls": 0,
+  "native_workload_paths_absent": 10,
+  "original_controls_unchanged": true,
+  "recovery_review_sha256": "dda8f307b2070398fda00c72bff40e3113eaf53627d69ee3db88c687727d0fb6",
+  "remote_source_sha256": "6131674e26b36b21e6682efcf8acb0f55e0b5f4ee9a2ffa501adff9991cff80a",
+  "retained_files": {
+    "boundary-review.json": {
+      "sha256": "098062f02d103e6889b3959772a60a3d025204e391d491611a282ee8371519ff",
+      "size": 1738
+    },
+    "capture-receipt.json": {
+      "sha256": "9203be17ef06b5836ad916765d69d097df29d9fd83df61f33645a5d6a03c8177",
+      "size": 6426
+    },
+    "failed-launch-native.json": {
+      "sha256": "4655a40aee0f8fce994c9bb4ca59258ea9259dc6283a76d0dbda33a782e2d0b3",
+      "size": 608
+    },
+    "failed-launch-native.stderr": {
+      "sha256": "afc6929be95d04008e2a0751e0f05a627a21370f8c2b15d93a2ccb43035396de",
+      "size": 904
+    },
+    "failed-launch-native.stdout": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    "move-00.json": {
+      "sha256": "b1f0b8293a9aed09129241a392cc8919c660e7ca68f4ba500f65851f626fa971",
+      "size": 347
+    },
+    "move-01.json": {
+      "sha256": "2f7ffa35124b49637e18c9ea0700dfcbb619980fd5e0e86be8728715b21377a9",
+      "size": 361
+    },
+    "native-prerequisite.json": {
+      "sha256": "5a9a2172c5930f35a6618ed2a361d5a135585f275085ace5c7ba42f8a08a7ea7",
+      "size": 2522
+    },
+    "native-status.json": {
+      "sha256": "baa835d9404611a6b73f4b8597aeb88e26af29e9d199d9a880ca2bc4715e8dfb",
+      "size": 623
+    },
+    "recovery-source-review.json": {
+      "sha256": "dda8f307b2070398fda00c72bff40e3113eaf53627d69ee3db88c687727d0fb6",
+      "size": 1547
+    },
+    "source-review.json": {
+      "sha256": "1e22c742b515ea12f61abf391b4a91c04bb6b23bb175ac6b5d70d6a4ac9228cb",
+      "size": 920
+    },
+    "started.json": {
+      "sha256": "a9fbd6a15b09a94c45eebf50fff39266c8bd11ad93c1c951fe1da75b4e0001d4",
+      "size": 1920
+    }
+  },
+  "source_freeze_sha256": "767c4df6153e38245de96d6330c5679e181d515dd99b692b45289d6a19033cff",
+  "statistics_computed": false,
+  "status": "retained zero-work native admission"
+}
