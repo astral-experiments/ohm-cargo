@@ -33,6 +33,7 @@ fn ohm_defaults_apply_to_host_and_target_units() {
                 fn is_ohm_rustflag(arg: &std::ffi::OsString) -> bool {
                     let arg = arg.to_string_lossy();
                     arg.starts_with("-Zpublic-api-hash")
+                        || arg.starts_with("-Zpublic_api_hash")
                         || arg.starts_with("-Zcache-proc-macros")
                         || arg.starts_with("-Zohm-caller-local-cgus")
                         || arg.starts_with("-Zohm-stable-cgu-merging")
@@ -158,6 +159,41 @@ fn ohm_defaults_apply_to_host_and_target_units() {
         .env("OHM_DEFAULTS_LOG", &log)
         .run();
     let invocations = fs::read_to_string(&log).unwrap();
+    for crate_name in ["foo", "integration"] {
+        let invocation = invocations
+            .lines()
+            .map(|line| line.split('\t').collect::<Vec<_>>())
+            .find(|args| {
+                args.windows(2)
+                    .any(|args| args == ["--crate-name", crate_name])
+                    && args.contains(&"--test")
+            })
+            .unwrap_or_else(|| panic!("missing test invocation for {crate_name}"));
+        assert_eq!(
+            ohm_rustflags(&invocation),
+            [
+                "-Zpublic-api-hash",
+                "-Zcache-proc-macros",
+                "-Zpublic-api-hash=no",
+            ],
+            "terminal test target `{crate_name}` should not hash an unconsumed public API"
+        );
+    }
+    for crate_name in ["foo", "dep"] {
+        let library = invocations
+            .lines()
+            .map(|line| line.split('\t').collect::<Vec<_>>())
+            .find(|args| {
+                args.windows(2)
+                    .any(|args| args == ["--crate-name", crate_name])
+                    && !args.contains(&"--test")
+            })
+            .unwrap_or_else(|| panic!("missing library invocation for {crate_name}"));
+        assert!(
+            !library.contains(&"-Zpublic-api-hash=no"),
+            "library dependency `{crate_name}` must retain its public API hash"
+        );
+    }
     for crate_name in ["foo", "dep", "integration"] {
         assert_eq!(
             ohm_incremental_codegen_rustflags(&rustc_invocation(&invocations, crate_name)),
@@ -297,6 +333,42 @@ fn ohm_defaults_apply_to_host_and_target_units() {
             "-Zpublic-api-hash=yes",
         ]
     );
+
+    for public_api_hash_flag in [
+        "-Zpublic-api-hash=yes",
+        "-Zpublic_api_hash=yes",
+        "-Zpublic_api_hash=no",
+    ] {
+        p.cargo("clean").run();
+        fs::write(&log, "").unwrap();
+        p.cargo("-Zohm-defaults -Zrelink-only=no test --no-run")
+            .masquerade_as_nightly_cargo(&["ohm-defaults", "relink-only"])
+            .env("RUSTC_WRAPPER", &wrapper)
+            .env("OHM_DEFAULTS_LOG", &log)
+            .env("RUSTFLAGS", public_api_hash_flag)
+            .run();
+        let invocations = fs::read_to_string(&log).unwrap();
+        for crate_name in ["foo", "integration"] {
+            let invocation = invocations
+                .lines()
+                .map(|line| line.split('\t').collect::<Vec<_>>())
+                .find(|args| {
+                    args.windows(2)
+                        .any(|args| args == ["--crate-name", crate_name])
+                        && args.contains(&"--test")
+                })
+                .unwrap_or_else(|| panic!("missing test invocation for {crate_name}"));
+            assert_eq!(
+                ohm_rustflags(&invocation),
+                [
+                    "-Zpublic-api-hash",
+                    "-Zcache-proc-macros",
+                    public_api_hash_flag,
+                ],
+                "explicit public API hashing must override the terminal test default"
+            );
+        }
+    }
 
     p.cargo("clean").run();
     fs::write(&log, "").unwrap();
@@ -492,7 +564,9 @@ fn ohm_rustflags<'a>(invocation: &'a [&str]) -> Vec<&'a str> {
         .iter()
         .copied()
         .filter(|flag| {
-            flag.starts_with("-Zpublic-api-hash") || flag.starts_with("-Zcache-proc-macros")
+            flag.starts_with("-Zpublic-api-hash")
+                || flag.starts_with("-Zpublic_api_hash")
+                || flag.starts_with("-Zcache-proc-macros")
         })
         .collect()
 }
