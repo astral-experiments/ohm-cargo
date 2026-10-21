@@ -73,6 +73,11 @@ impl HandleConfiguration {
             )
         }
 
+        // HTTP clients may start worker threads before a Git source is needed.
+        // Complete the executable's libgit2 environment initialization before
+        // those threads can read the process environment.
+        crate::util::ensure_git_initialized();
+
         let http = gctx.http_config()?;
         let timeout = HttpTimeout::new(gctx)?;
         let useragent = if let Some(user_agent) = http.user_agent.clone() {

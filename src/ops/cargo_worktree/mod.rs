@@ -35,6 +35,7 @@ pub struct WorktreeOptions {
 /// after that validation, rather than exposing an unvalidated donor executable.
 pub fn worktree_add(gctx: &GlobalContext, opts: &WorktreeOptions) -> CargoResult<()> {
     let donor = Workspace::new(&opts.manifest_path, gctx)?;
+    crate::util::ensure_git_initialized();
     let repo = git2::Repository::discover(donor.root())
         .context("`cargo worktree` requires a Git working tree")?;
     let git_root = repo

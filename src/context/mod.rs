@@ -2731,11 +2731,12 @@ fn disables_multiplexing_for_bad_curl(
 ) {
     use crate::util::network;
 
-    if network::proxy::http_proxy_exists(http, gctx) && http.multiplexing.is_none() {
+    if http.multiplexing.is_none() {
         let bad_curl_versions = ["7.87.0", "7.88.0", "7.88.1"];
         if bad_curl_versions
             .iter()
             .any(|v| curl_version.starts_with(v))
+            && network::proxy::http_proxy_exists(http, gctx)
         {
             tracing::info!("disabling multiplexing with proxy, curl version is {curl_version}");
             http.multiplexing = Some(false);
@@ -2774,6 +2775,12 @@ mod tests {
             (Some("".into()), Some(false), "7.88.0", Some(false)),
             (Some("".into()), Some(false), "7.88.1", Some(false)),
             (Some("".into()), Some(false), "8.0.0", Some(false)),
+            (Some("".into()), Some(true), "7.87.0", Some(true)),
+            (Some("".into()), Some(true), "7.88.0", Some(true)),
+            (Some("".into()), Some(true), "7.88.1", Some(true)),
+            (Some("".into()), Some(true), "8.0.0", Some(true)),
+            (Some("".into()), None, "7.88.1-custom", Some(false)),
+            (Some("".into()), None, "8.0.0-custom", None),
         ];
 
         for (proxy, multiplexing, curl_v, result) in cases {

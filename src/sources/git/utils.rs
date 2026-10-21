@@ -153,6 +153,7 @@ impl GitRemote {
 
     /// Creates a [`GitDatabase`] of this remote at `db_path`.
     pub fn db_at(&self, db_path: &Path) -> CargoResult<GitDatabase> {
+        crate::util::ensure_git_initialized();
         let repo = git2::Repository::open(db_path)?;
         Ok(GitDatabase {
             remote: self.clone(),
@@ -176,6 +177,7 @@ impl GitDatabase {
         // A non-fresh checkout can happen if the checkout operation was
         // interrupted. In that case, the checkout gets deleted and a new
         // clone is created.
+        crate::util::ensure_git_initialized();
         let checkout = match git2::Repository::open(dest)
             .ok()
             .map(|repo| GitCheckout::new(self, rev, repo))
@@ -312,6 +314,7 @@ impl<'a> GitCheckout<'a> {
         // we're doing a local filesystem-to-filesystem clone so there should
         // be no need to respect global configuration options, so pass in
         // an empty instance of `git2::Config` below.
+        crate::util::ensure_git_initialized();
         let git_config = git2::Config::new()?;
 
         // Clone the repository, but make sure we use the "local" option in
@@ -1325,6 +1328,7 @@ fn fetch_with_gitoxide(
         },
     );
     if repo_reinitialized.load(Ordering::Relaxed) {
+        crate::util::ensure_git_initialized();
         *git2_repo = git2::Repository::open(git2_repo.path())?;
     }
     res
@@ -1473,6 +1477,7 @@ fn maybe_gc_repo(repo: &mut git2::Repository, gctx: &GlobalContext) -> CargoResu
                 String::from_utf8_lossy(&out.stderr)
             );
             if out.status.success() {
+                crate::util::ensure_git_initialized();
                 let new = git2::Repository::open(repo.path())?;
                 *repo = new;
                 return Ok(());
@@ -1547,6 +1552,7 @@ fn reinitialize(repo: &mut git2::Repository) -> CargoResult<()> {
 
 /// Initializes a Git repository at `path`.
 fn init(path: &Path, bare: bool) -> CargoResult<git2::Repository> {
+    crate::util::ensure_git_initialized();
     let mut opts = git2::RepositoryInitOptions::new();
     // Skip anything related to templates, they just call all sorts of issues as
     // we really don't want to use them yet they insist on being used. See #6240
