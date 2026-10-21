@@ -1,0 +1,153 @@
+{
+  "evidence": {
+    "collection_archive_sha256": "ee2ee353644411eff47e019537c8069ddb0afb293970daad53ce79fc9f750ae2",
+    "collection_execution_sha256": "d3a50c7a96a44dc4713ac603c31603435c7c35702eed920659a4cd51987906f0",
+    "collection_receipt_sha256": "4fdc93b31785e48ebd9a6c34c5874b537d732c71d456c9b1d112bc2f608cdc86",
+    "independent_statistics_sha256": "741d1cc40553ce6e0961079b847f6b81aaffdb8f8a2552bb8823d03a4b2b5f30",
+    "phase_execution_sha256": "659d4eca3218a03ebdc338e81d13c41da92d30a56ea81797f93a4f13f4381a6a",
+    "raw_only_integrity_sha256": "1cfe01b5d89e8d2e64cfb583870b478471db2f61f33dc62016db988b8fb3004a",
+    "raw_only_review_sha256": "ef8fbbb110fa03ccdca74fdbed27919592a2b3eb7b5a980d24642ec1ff44f305",
+    "transfer_manifest_path": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/package-id-order-measurement-controls-v2/collections/ir/transfer-manifest.json",
+    "transfer_manifest_sha256": "f3986db9b5138f4c178e0ecebd86741650a0e3b7f17f22a99505b4be239ae89d",
+    "unchanged_review_path": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/cargo-audit/package-id-order-ir-independent-review/analysis-review/review.json",
+    "unchanged_review_sha256": "1c8e7c91e20aa75a9dbb76a19eea722ea8100c3754fb8f0d0ab9fba4fd12f88a"
+  },
+  "limits": [
+    "Test Ir does not meet its own 1% claim threshold.",
+    "IR qualification permits the next reviewed stage; it is not a native-time claim or publication authorization.",
+    "Exact-source CI remains mandatory before any PR under the frozen protocol.",
+    "No host access, workloads, native stage, reruns, sample exclusions, extensions or pooling were performed."
+  ],
+  "measurement_seal_sha256": "43b4d996d8824b9897736e2ad8c711e8afabaa3f97ea23fa5370e12ada8cc84a",
+  "method": {
+    "bootstrap_resamples": 20000,
+    "bootstrap_seed": 1701,
+    "confidence": 0.99,
+    "exact_two_sided_sign_test": true,
+    "independent_inputs": "CSV identities plus full profile summary lines; no runner/reviewer statistics imports.",
+    "linear_quantiles_before_exponentiation": true,
+    "paired_log_ratios": true,
+    "pairs_per_workflow": 12,
+    "seeds": {
+      "check": 20261021141,
+      "test": 20261021142
+    },
+    "statistical_unit": "One paired Cargo-process instruction-count observation",
+    "warmup_pairs_per_workflow": 2
+  },
+  "phase": "ir",
+  "policy": {
+    "established_regressions": [],
+    "improvement_claims": {
+      "check": true,
+      "test": false
+    },
+    "primary_gate_passed": true,
+    "primary_workflow": "check",
+    "qualifies": true,
+    "rule": "primary-check-ir",
+    "secondary_gate_passed": false
+  },
+  "preservation": {
+    "complete_raw_files": 578,
+    "external_source_and_historical_bindings": 266,
+    "frozen_source_files": 57,
+    "no_source_protocol_raw_or_old_failure_mutation": true,
+    "status": "passed"
+  },
+  "protocol_sha256": "86eed951e351e0d7a96575c4a27035ec2c28675bce8793e5588202c0496f1b3b",
+  "qualifies": true,
+  "raw_integrity_before_effects": {
+    "archive_regular_members": 579,
+    "effect_review_started_at": "2026-10-21T22:29:59.697533+00:00",
+    "full_profiles": 56,
+    "independent_recomputation_started_at": "2026-10-21T22:30:57.897200+00:00",
+    "preflight": "Three fixed warm calls per variant, then retained zero-child trace and cross-switch freshness proofs.",
+    "profile_validation": "Every full Callgrind profile hash and unique Ir summary matches its raw sample.",
+    "raw_review_finished_at": "2026-10-21T22:29:41.506001+00:00",
+    "remote_files": 578,
+    "state": "Both variant hashes, canonical Cargo, commands, environment and recorded before/after inputs match the seal.",
+    "status": "passed",
+    "tables": "JSON/JSONL/CSV identities, values and exact ordered plans agree.",
+    "workflows": [
+      {
+        "all_tables_logs_plans_sums_and_identities_match": true,
+        "pairs": 12,
+        "profiles": 28,
+        "samples": 28,
+        "seed": 20261021141,
+        "status": "passed",
+        "subruns": 0,
+        "unwanted_compilation_signatures": 0,
+        "warmup_pairs": 2,
+        "workflow": "check"
+      },
+      {
+        "all_tables_logs_plans_sums_and_identities_match": true,
+        "pairs": 12,
+        "profiles": 28,
+        "samples": 28,
+        "seed": 20261021142,
+        "status": "passed",
+        "subruns": 0,
+        "unwanted_compilation_signatures": 0,
+        "warmup_pairs": 2,
+        "workflow": "test"
+      }
+    ]
+  },
+  "recorded_at": "2026-10-21T22:32:11.721345+00:00",
+  "retained_review_preparation_error": "preparation-note.json",
+  "review_type": "Independent complete raw audit and fixed-method recomputation",
+  "reviewer_source_freeze_sha256": "a36297599cbc0686a303a674a3949fb7b3222e381f8863ddc2d65a6b64a0a07f",
+  "source_freeze_sha256": "45689807d5f1ed280cb76cb623ee93639d51af38f1fbe7f144204db4775bfb62",
+  "status": "passed",
+  "variants": {
+    "baseline": "293864b23abd5a24689406f318346eaadce9938d046dbee26b8c324ae0f786bd",
+    "candidate": "e22423d41d9560885d7208dcb1a8bf50d08fcd0b6cbbd961a7de954877fa0305"
+  },
+  "workflows": {
+    "check": {
+      "interval_99_percent": [
+        0.9788697456247109,
+        1.1509917530967084
+      ],
+      "losses": 0,
+      "order": {
+        "AB": {
+          "geometric_mean_ratio": 1.0107375346169365,
+          "pairs": 6
+        },
+        "BA": {
+          "geometric_mean_ratio": 1.0101566849891215,
+          "pairs": 6
+        }
+      },
+      "passes_own_gate": true,
+      "reduction_percent": 1.0339055251823992,
+      "sign_p": 0.00048828125,
+      "wins": 12
+    },
+    "test": {
+      "interval_99_percent": [
+        0.8113398240621295,
+        0.9716391340312436
+      ],
+      "losses": 0,
+      "order": {
+        "AB": {
+          "geometric_mean_ratio": 1.009514419619097,
+          "pairs": 6
+        },
+        "BA": {
+          "geometric_mean_ratio": 1.0089058003246962,
+          "pairs": 6
+        }
+      },
+      "passes_own_gate": false,
+      "reduction_percent": 0.9126012928294958,
+      "sign_p": 0.00048828125,
+      "wins": 12
+    }
+  }
+}
