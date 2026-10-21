@@ -414,6 +414,7 @@ use crate::{CARGO_ENV, GlobalContext};
 
 use super::BuildContext;
 use super::BuildRunner;
+use super::CompileKind;
 use super::CompileMode;
 use super::FileFlavor;
 use super::Job;
@@ -512,6 +513,27 @@ fn unit_uses_public_api_hash(build_runner: &BuildRunner<'_, '_>, unit: &Unit) ->
 fn unit_consumes_public_api_hash(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> bool {
     unit_uses_public_api_hash(build_runner, unit)
         || super::unit_suppresses_default_public_api_hash(build_runner, unit)
+}
+
+/// Whether no other Cargo invocation can change this unit's metadata while it is prepared.
+fn unit_has_exclusive_metadata_access(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> bool {
+    let unstable = build_runner.bcx.gctx.cli_unstable();
+    if !unstable.fine_grain_locking {
+        return true;
+    }
+
+    // Shared registry units remain protected only by their individual locks, which are
+    // released between fingerprint preparation and job execution. Workspace-private
+    // units additionally have an invocation-lifetime namespace lock on the host layout.
+    // Every invocation acquires that layout first, so the lock also protects target
+    // layouts without attempting to lock duplicate target directories twice.
+    unstable.ohm_shared_registry_cache
+        && !build_runner.files().is_shared_registry_unit(unit)
+        && build_runner
+            .files()
+            .layout(CompileKind::Host)
+            .build_dir()
+            .has_workspace_lock()
 }
 
 #[derive(Default)]
@@ -1012,10 +1034,11 @@ pub fn prepare_target(
     fingerprint
         .previously_changed_metadata_dependency
         .store(previous_dependency_changes.metadata, Ordering::Release);
+    let has_exclusive_metadata_access = unit_has_exclusive_metadata_access(build_runner, unit);
     fingerprint.set_early_cutoff_candidate(
         is_early_cutoff_candidate(&fingerprint, &dirty_reason)
             && !previous_dependency_changes.any
-            && !bcx.gctx.cli_unstable().fine_grain_locking,
+            && has_exclusive_metadata_access,
     );
 
     // We're going to rebuild, so ensure the source of the crate passes all
@@ -1071,7 +1094,7 @@ pub fn prepare_target(
     let public_api_hash_path = loc.with_extension("public-api-hash");
     let old_public_api_hash = read_public_api_hash(&public_api_hash_path);
     let previous_metadata = (unit_uses_public_api_hash(build_runner, unit)
-        && !bcx.gctx.cli_unstable().fine_grain_locking)
+        && has_exclusive_metadata_access)
         .then(|| {
             fingerprint
                 .outputs
