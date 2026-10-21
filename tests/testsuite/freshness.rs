@@ -3740,6 +3740,63 @@ fn ohm_defaults_enable_check_early_cutoff() {
 }
 
 #[cargo_test]
+fn ohm_defaults_enable_check_test_early_cutoff() {
+    assert_early_cutoff_checks_dependents("-Zohm-defaults check --tests", None, "dep\n");
+}
+
+#[cargo_test]
+fn ohm_defaults_reuse_terminal_and_dependency_check_artifacts() {
+    let wrapper = public_api_hash_wrapper();
+    let p = project()
+        .at("terminal-check-artifacts")
+        .file(
+            "Cargo.toml",
+            r#"
+                [workspace]
+                members = ["middle"]
+
+                [package]
+                name = "app"
+                version = "0.1.0"
+                edition = "2024"
+
+                [dependencies]
+                middle = { path = "middle" }
+            "#,
+        )
+        .file("src/lib.rs", "pub fn value() -> i32 { middle::value() }")
+        .file("middle/Cargo.toml", &basic_manifest("middle", "0.1.0"))
+        .file("middle/src/lib.rs", "pub fn value() -> i32 { 1 }")
+        .build();
+    let log = p.root().join("public-api-hash-wrapper.log");
+
+    p.cargo("-Zohm-defaults check -p middle --lib")
+        .masquerade_as_nightly_cargo(&["ohm-defaults"])
+        .env("PUBLIC_API_HASH_WRAPPER_LOG", &log)
+        .env("RUSTC_WRAPPER", &wrapper)
+        .run();
+    assert_eq!(fs::read_to_string(&log).unwrap(), "middle\n");
+
+    fs::write(&log, "").unwrap();
+    p.cargo("-Zohm-defaults check -p app --lib")
+        .masquerade_as_nightly_cargo(&["ohm-defaults"])
+        .env("PUBLIC_API_HASH_WRAPPER_LOG", &log)
+        .env("RUSTC_WRAPPER", &wrapper)
+        .run();
+    assert_eq!(fs::read_to_string(&log).unwrap(), "middle\napp\n");
+
+    for package in ["middle", "app"] {
+        fs::write(&log, "").unwrap();
+        p.cargo(&format!("-Zohm-defaults check -p {package} --lib"))
+            .masquerade_as_nightly_cargo(&["ohm-defaults"])
+            .env("PUBLIC_API_HASH_WRAPPER_LOG", &log)
+            .env("RUSTC_WRAPPER", &wrapper)
+            .run();
+        assert_eq!(fs::read_to_string(&log).unwrap(), "");
+    }
+}
+
+#[cargo_test]
 fn ohm_defaults_respect_public_api_hash_opt_out() {
     assert_early_cutoff_checks_dependents(
         "-Zohm-defaults check",

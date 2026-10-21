@@ -144,6 +144,15 @@ fn unit_rustflags_without_ohm_defaults<'a>(
     }
 }
 
+fn unit_suppresses_default_public_api_hash(
+    build_runner: &BuildRunner<'_, '_>,
+    unit: &Unit,
+) -> bool {
+    build_runner.bcx.gctx.cli_unstable().ohm_defaults()
+        && build_runner.is_terminal_check_unit(unit)
+        && fingerprint::unit_public_api_hash_override(build_runner, unit).is_none()
+}
+
 /// A glorified callback for executing calls to rustc. Rather than calling rustc
 /// directly, we'll use an `Executor`, giving clients an opportunity to intercept
 /// the build calls.
@@ -1214,6 +1223,9 @@ fn prepare_rustc(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> CargoResult
         .rustc_process(unit, is_primary, is_workspace)?;
     if gctx.cli_unstable().ohm_defaults() {
         base.args(&OHM_DEFAULT_RUSTFLAGS);
+        if unit_suppresses_default_public_api_hash(build_runner, unit) {
+            base.arg("-Zpublic-api-hash=no");
+        }
     }
     build_base_args(build_runner, &mut base, unit)?;
     if unit.pkg.manifest().is_embedded() {
