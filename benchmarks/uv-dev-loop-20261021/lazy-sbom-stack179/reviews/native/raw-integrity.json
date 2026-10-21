@@ -1,0 +1,904 @@
+{
+  "accepted_ir": {
+    "review_seal_sha256": "a3f17831f17d6a9c9650ebd9ca0b83ae3a9dde7417066658407bc645e6ae33e8",
+    "review_sha256": "242bc12bdd883f25a56baf59f5e6a16666e8f8f8b7d5819dbcaa21ad8e907d17",
+    "transfer_manifest_sha256": "d61c7d5b9f2002079c265533bb400e9ba9f24316a761abf2eceb0ebd84c2ba0b",
+    "unchanged_ir_payloads": 1188
+  },
+  "both_workflows_complete_before_effects": true,
+  "completed_at": "2026-10-21T19:25:32.582483+00:00",
+  "phase": "native-confirmation",
+  "source_freeze_sha256": "97cdbcc36928777579b1b3c6e5b8adf7bdae37d97a2b0f2200a57cdd0ec4f067",
+  "transfer_manifest_sha256": "efc4ba26df04d39a9da9be5ac36fb307ec18afa85159c173e5903aeb4878b13b",
+  "valid": true,
+  "workloads": {
+    "check": {
+      "compiler_invocations_per_sample": 1,
+      "configuration_sha256": "6da12c2d26e2c483314eaf4f2258b0ae112d7bf7e7539376126088e5ee2e8b3e",
+      "expected_stage_counts": {
+        "source": 1
+      },
+      "finished_at": "2026-10-21T19:17:21.123685+00:00",
+      "invocations_per_variant_per_pair": 1,
+      "manifest_sha256": "aa6c3be6d98d53143ac3be64bb04771a3dd8b7ae8fcc8f705386e3c4417edf42",
+      "measurement_pairs": 30,
+      "native_test_executions": 0,
+      "preparation": {
+        "check_convergence": [
+          {
+            "after_mtime_ns": 1792609310464047484,
+            "all_artifacts_fresh": true,
+            "artifact_records": 650,
+            "before_mtime_ns": 1792609297883126583,
+            "compiler_build_script_test_executions": 0,
+            "fixed_native_calls": 3,
+            "proof_sha256": "6f763d6992ea3d1e6b8004b63575ac7b59ed1442b579130d7c9397cf99ed0930",
+            "successful_execve_paths": [
+              "/usr/bin/taskset",
+              "/tmp/ohm-hillclimb-20261021/lazy-sbom-current179/active/bin/cargo"
+            ]
+          },
+          {
+            "after_mtime_ns": 1792609324583504945,
+            "all_artifacts_fresh": true,
+            "artifact_records": 650,
+            "before_mtime_ns": 1792609313265861603,
+            "compiler_build_script_test_executions": 0,
+            "fixed_native_calls": 3,
+            "proof_sha256": "607cf4ccde7aa0718cd8f732ccb1d714ce365c6985eff62015a6c172bf4068d3",
+            "successful_execve_paths": [
+              "/usr/bin/taskset",
+              "/tmp/ohm-hillclimb-20261021/lazy-sbom-current179/active/bin/cargo"
+            ]
+          },
+          {
+            "after_mtime_ns": 1792609338181624510,
+            "all_artifacts_fresh": true,
+            "artifact_records": 650,
+            "before_mtime_ns": 1792609327087691415,
+            "compiler_build_script_test_executions": 0,
+            "fixed_native_calls": 3,
+            "proof_sha256": "42a631658c1a2906e618866d959e3f76b12fe257111c25f098f68ff17c252395",
+            "successful_execve_paths": [
+              "/usr/bin/taskset",
+              "/tmp/ohm-hillclimb-20261021/lazy-sbom-current179/active/bin/cargo"
+            ]
+          },
+          {
+            "after_mtime_ns": 1792609351733862514,
+            "all_artifacts_fresh": true,
+            "artifact_records": 650,
+            "before_mtime_ns": 1792609340682863389,
+            "compiler_build_script_test_executions": 0,
+            "fixed_native_calls": 3,
+            "proof_sha256": "5dca0c8cb15058df5b0a8bea8d03fa0289d2c4bf138a250f553579e5ed3e7c27",
+            "successful_execve_paths": [
+              "/usr/bin/taskset",
+              "/tmp/ohm-hillclimb-20261021/lazy-sbom-current179/active/bin/cargo"
+            ]
+          },
+          {
+            "after_mtime_ns": 1792609365360688839,
+            "all_artifacts_fresh": true,
+            "artifact_records": 650,
+            "before_mtime_ns": 1792609354227636422,
+            "compiler_build_script_test_executions": 0,
+            "fixed_native_calls": 3,
+            "proof_sha256": "f13f907442927c85c2affde426145fe779c661c9f637d0f3477f438ecd6bc0b0",
+            "successful_execve_paths": [
+              "/usr/bin/taskset",
+              "/tmp/ohm-hillclimb-20261021/lazy-sbom-current179/active/bin/cargo"
+            ]
+          },
+          {
+            "after_mtime_ns": 1792609379123236058,
+            "all_artifacts_fresh": true,
+            "artifact_records": 650,
+            "before_mtime_ns": 1792609367892690116,
+            "compiler_build_script_test_executions": 0,
+            "fixed_native_calls": 3,
+            "proof_sha256": "d0b51ce9845c821f5d13515cf10ce60bdba6f8682ac4d5880f90c1eb938f1aac",
+            "successful_execve_paths": [
+              "/usr/bin/taskset",
+              "/tmp/ohm-hillclimb-20261021/lazy-sbom-current179/active/bin/cargo"
+            ]
+          },
+          {
+            "after_mtime_ns": 1792609392736739062,
+            "all_artifacts_fresh": true,
+            "artifact_records": 650,
+            "before_mtime_ns": 1792609381589262475,
+            "compiler_build_script_test_executions": 0,
+            "fixed_native_calls": 3,
+            "proof_sha256": "12dbbfa7364cad29a94d97df99eab3d4e8fa2bb135506f0f62e128056b99fe9b",
+            "successful_execve_paths": [
+              "/usr/bin/taskset",
+              "/tmp/ohm-hillclimb-20261021/lazy-sbom-current179/active/bin/cargo"
+            ]
+          },
+          {
+            "after_mtime_ns": 1792609406576835508,
+            "all_artifacts_fresh": true,
+            "artifact_records": 650,
+            "before_mtime_ns": 1792609395243505116,
+            "compiler_build_script_test_executions": 0,
+            "fixed_native_calls": 3,
+            "proof_sha256": "1860ebfb9c6ec3db2811a1ec365539d722296fa4ba0769c32f675c0fe0a975b5",
+            "successful_execve_paths": [
+              "/usr/bin/taskset",
+              "/tmp/ohm-hillclimb-20261021/lazy-sbom-current179/active/bin/cargo"
+            ]
+          },
+          {
+            "after_mtime_ns": 1792609420356936884,
+            "all_artifacts_fresh": true,
+            "artifact_records": 650,
+            "before_mtime_ns": 1792609409159128494,
+            "compiler_build_script_test_executions": 0,
+            "fixed_native_calls": 3,
+            "proof_sha256": "33a1909aa32819de7209016d29b6dc61d3a8b56370ec8266cff9afb0f3ef153e",
+            "successful_execve_paths": [
+              "/usr/bin/taskset",
+              "/tmp/ohm-hillclimb-20261021/lazy-sbom-current179/active/bin/cargo"
+            ]
+          },
+          {
+            "after_mtime_ns": 1792609435276000934,
+            "all_artifacts_fresh": true,
+            "artifact_records": 650,
+            "before_mtime_ns": 1792609423650373927,
+            "compiler_build_script_test_executions": 0,
+            "fixed_native_calls": 3,
+            "proof_sha256": "4da6207433ba05ed37f883162d828824ee10a3c496a67efce08c9fc0cc519b76",
+            "successful_execve_paths": [
+              "/usr/bin/taskset",
+              "/tmp/ohm-hillclimb-20261021/lazy-sbom-current179/active/bin/cargo"
+            ]
+          },
+          {
+            "after_mtime_ns": 1792609449015629777,
+            "all_artifacts_fresh": true,
+            "artifact_records": 650,
+            "before_mtime_ns": 1792609438003615435,
+            "compiler_build_script_test_executions": 0,
+            "fixed_native_calls": 3,
+            "proof_sha256": "2162b09787d5eb7cf11675b5c4a1a86b5dafc7f9f70456de42769fd75e1adf65",
+            "successful_execve_paths": [
+              "/usr/bin/taskset",
+              "/tmp/ohm-hillclimb-20261021/lazy-sbom-current179/active/bin/cargo"
+            ]
+          },
+          {
+            "after_mtime_ns": 1792609462442380741,
+            "all_artifacts_fresh": true,
+            "artifact_records": 650,
+            "before_mtime_ns": 1792609451488565765,
+            "compiler_build_script_test_executions": 0,
+            "fixed_native_calls": 3,
+            "proof_sha256": "778d7337ac7c9083788a38d54456eff91d42894620ddd6c6786a24b37de57a43",
+            "successful_execve_paths": [
+              "/usr/bin/taskset",
+              "/tmp/ohm-hillclimb-20261021/lazy-sbom-current179/active/bin/cargo"
+            ]
+          },
+          {
+            "after_mtime_ns": 1792609476000009315,
+            "all_artifacts_fresh": true,
+            "artifact_records": 650,
+            "before_mtime_ns": 1792609464951422479,
+            "compiler_build_script_test_executions": 0,
+            "fixed_native_calls": 3,
+            "proof_sha256": "e531f5d2744ebacd6d98d1ad6629dea2258eebfa631ba923f5cc97814fe195c9",
+            "successful_execve_paths": [
+              "/usr/bin/taskset",
+              "/tmp/ohm-hillclimb-20261021/lazy-sbom-current179/active/bin/cargo"
+            ]
+          },
+          {
+            "after_mtime_ns": 1792609489417182335,
+            "all_artifacts_fresh": true,
+            "artifact_records": 650,
+            "before_mtime_ns": 1792609478484852212,
+            "compiler_build_script_test_executions": 0,
+            "fixed_native_calls": 3,
+            "proof_sha256": "2f49b7730821652eb66a4b3a5e91aec090b07f1bfb266b44dfa1ed6baa79b736",
+            "successful_execve_paths": [
+              "/usr/bin/taskset",
+              "/tmp/ohm-hillclimb-20261021/lazy-sbom-current179/active/bin/cargo"
+            ]
+          },
+          {
+            "after_mtime_ns": 1792609503025321968,
+            "all_artifacts_fresh": true,
+            "artifact_records": 650,
+            "before_mtime_ns": 1792609491903242926,
+            "compiler_build_script_test_executions": 0,
+            "fixed_native_calls": 3,
+            "proof_sha256": "b31d0df862a66d28f4a73280c2b1716fe54b0310dc8d9c6660b27c661d399ca7",
+            "successful_execve_paths": [
+              "/usr/bin/taskset",
+              "/tmp/ohm-hillclimb-20261021/lazy-sbom-current179/active/bin/cargo"
+            ]
+          },
+          {
+            "after_mtime_ns": 1792609518251717787,
+            "all_artifacts_fresh": true,
+            "artifact_records": 650,
+            "before_mtime_ns": 1792609506282912624,
+            "compiler_build_script_test_executions": 0,
+            "fixed_native_calls": 3,
+            "proof_sha256": "8d6c4bff4ae0b0b07975bb7593f7e1ee4cbe94f4ad039e44c50095b9e5a770fd",
+            "successful_execve_paths": [
+              "/usr/bin/taskset",
+              "/tmp/ohm-hillclimb-20261021/lazy-sbom-current179/active/bin/cargo"
+            ]
+          },
+          {
+            "after_mtime_ns": 1792609532937734269,
+            "all_artifacts_fresh": true,
+            "artifact_records": 650,
+            "before_mtime_ns": 1792609520941615753,
+            "compiler_build_script_test_executions": 0,
+            "fixed_native_calls": 3,
+            "proof_sha256": "bc508e2e0bd5e1a9fd7173ee5ac8f5264810d68562b69a256ecf23ada39c11c4",
+            "successful_execve_paths": [
+              "/usr/bin/taskset",
+              "/tmp/ohm-hillclimb-20261021/lazy-sbom-current179/active/bin/cargo"
+            ]
+          },
+          {
+            "after_mtime_ns": 1792609548218930880,
+            "all_artifacts_fresh": true,
+            "artifact_records": 650,
+            "before_mtime_ns": 1792609536020317370,
+            "compiler_build_script_test_executions": 0,
+            "fixed_native_calls": 3,
+            "proof_sha256": "2bcbafb788de207fbfff80ef9f8d086fa6792a2a31d23a7ced3c668d8fd65568",
+            "successful_execve_paths": [
+              "/usr/bin/taskset",
+              "/tmp/ohm-hillclimb-20261021/lazy-sbom-current179/active/bin/cargo"
+            ]
+          },
+          {
+            "after_mtime_ns": 1792609562753277482,
+            "all_artifacts_fresh": true,
+            "artifact_records": 650,
+            "before_mtime_ns": 1792609551307061448,
+            "compiler_build_script_test_executions": 0,
+            "fixed_native_calls": 3,
+            "proof_sha256": "db1c08bfb3de31579ee52726893031acc80fd3ac3d1c9ea1868f3a1842702889",
+            "successful_execve_paths": [
+              "/usr/bin/taskset",
+              "/tmp/ohm-hillclimb-20261021/lazy-sbom-current179/active/bin/cargo"
+            ]
+          },
+          {
+            "after_mtime_ns": 1792609576638993923,
+            "all_artifacts_fresh": true,
+            "artifact_records": 650,
+            "before_mtime_ns": 1792609565241645090,
+            "compiler_build_script_test_executions": 0,
+            "fixed_native_calls": 3,
+            "proof_sha256": "16db802b4ab3061766a378836122934c6fb584e5cc11f3c9fbf12815d3130f0c",
+            "successful_execve_paths": [
+              "/usr/bin/taskset",
+              "/tmp/ohm-hillclimb-20261021/lazy-sbom-current179/active/bin/cargo"
+            ]
+          },
+          {
+            "after_mtime_ns": 1792609593282269149,
+            "all_artifacts_fresh": true,
+            "artifact_records": 650,
+            "before_mtime_ns": 1792609579928348962,
+            "compiler_build_script_test_executions": 0,
+            "fixed_native_calls": 3,
+            "proof_sha256": "803b03c97145a2ed881b1b89575f2d1af1a4520062a3e1a410d0c27b3b744aaf",
+            "successful_execve_paths": [
+              "/usr/bin/taskset",
+              "/tmp/ohm-hillclimb-20261021/lazy-sbom-current179/active/bin/cargo"
+            ]
+          },
+          {
+            "after_mtime_ns": 1792609609240907959,
+            "all_artifacts_fresh": true,
+            "artifact_records": 650,
+            "before_mtime_ns": 1792609596753410747,
+            "compiler_build_script_test_executions": 0,
+            "fixed_native_calls": 3,
+            "proof_sha256": "6fd0c727054137ddd2d1fcb73a70776ee6b52df693b98be736db661087aaf033",
+            "successful_execve_paths": [
+              "/usr/bin/taskset",
+              "/tmp/ohm-hillclimb-20261021/lazy-sbom-current179/active/bin/cargo"
+            ]
+          },
+          {
+            "after_mtime_ns": 1792609625196177754,
+            "all_artifacts_fresh": true,
+            "artifact_records": 650,
+            "before_mtime_ns": 1792609613052573406,
+            "compiler_build_script_test_executions": 0,
+            "fixed_native_calls": 3,
+            "proof_sha256": "8a45bf4fde8c8431298cc722674b9d3e6d6a6ee9c03c01c570dffe52aed2cd4e",
+            "successful_execve_paths": [
+              "/usr/bin/taskset",
+              "/tmp/ohm-hillclimb-20261021/lazy-sbom-current179/active/bin/cargo"
+            ]
+          },
+          {
+            "after_mtime_ns": 1792609638251412076,
+            "all_artifacts_fresh": true,
+            "artifact_records": 650,
+            "before_mtime_ns": 1792609627743818346,
+            "compiler_build_script_test_executions": 0,
+            "fixed_native_calls": 3,
+            "proof_sha256": "f892335dc44572dadd2895224a286b7ea2f7d63037868496b63b82071752388e",
+            "successful_execve_paths": [
+              "/usr/bin/taskset",
+              "/tmp/ohm-hillclimb-20261021/lazy-sbom-current179/active/bin/cargo"
+            ]
+          },
+          {
+            "after_mtime_ns": 1792609649267800336,
+            "all_artifacts_fresh": true,
+            "artifact_records": 650,
+            "before_mtime_ns": 1792609640747367800,
+            "compiler_build_script_test_executions": 0,
+            "fixed_native_calls": 3,
+            "proof_sha256": "df6673d736e0fe63588e8a1e18ae268c71b275dca7cb3351b35b35e07e14d5ec",
+            "successful_execve_paths": [
+              "/usr/bin/taskset",
+              "/tmp/ohm-hillclimb-20261021/lazy-sbom-current179/active/bin/cargo"
+            ]
+          },
+          {
+            "after_mtime_ns": 1792609660423589617,
+            "all_artifacts_fresh": true,
+            "artifact_records": 650,
+            "before_mtime_ns": 1792609651768692486,
+            "compiler_build_script_test_executions": 0,
+            "fixed_native_calls": 3,
+            "proof_sha256": "56571407c76e50fa7e49ac36cd22a5a71f5dc185078c97842bd1096ea13999a3",
+            "successful_execve_paths": [
+              "/usr/bin/taskset",
+              "/tmp/ohm-hillclimb-20261021/lazy-sbom-current179/active/bin/cargo"
+            ]
+          },
+          {
+            "after_mtime_ns": 1792609671369251770,
+            "all_artifacts_fresh": true,
+            "artifact_records": 650,
+            "before_mtime_ns": 1792609662917348392,
+            "compiler_build_script_test_executions": 0,
+            "fixed_native_calls": 3,
+            "proof_sha256": "828142bd6732159bd00d42663034e4294ec61ff458429b7b9457abf4826d18fb",
+            "successful_execve_paths": [
+              "/usr/bin/taskset",
+              "/tmp/ohm-hillclimb-20261021/lazy-sbom-current179/active/bin/cargo"
+            ]
+          },
+          {
+            "after_mtime_ns": 1792609682330337382,
+            "all_artifacts_fresh": true,
+            "artifact_records": 650,
+            "before_mtime_ns": 1792609673881645669,
+            "compiler_build_script_test_executions": 0,
+            "fixed_native_calls": 3,
+            "proof_sha256": "0d734630d48fb9f1132b1f56c1c52c80a9663735a04b596fb2d1030a4372f76e",
+            "successful_execve_paths": [
+              "/usr/bin/taskset",
+              "/tmp/ohm-hillclimb-20261021/lazy-sbom-current179/active/bin/cargo"
+            ]
+          },
+          {
+            "after_mtime_ns": 1792609693556592299,
+            "all_artifacts_fresh": true,
+            "artifact_records": 650,
+            "before_mtime_ns": 1792609684870628975,
+            "compiler_build_script_test_executions": 0,
+            "fixed_native_calls": 3,
+            "proof_sha256": "e47156f84182eee095ae2474eee7f6569ddbe908574a00cbd800a7035d14222b",
+            "successful_execve_paths": [
+              "/usr/bin/taskset",
+              "/tmp/ohm-hillclimb-20261021/lazy-sbom-current179/active/bin/cargo"
+            ]
+          },
+          {
+            "after_mtime_ns": 1792609706135486656,
+            "all_artifacts_fresh": true,
+            "artifact_records": 650,
+            "before_mtime_ns": 1792609696393609740,
+            "compiler_build_script_test_executions": 0,
+            "fixed_native_calls": 3,
+            "proof_sha256": "eb44d685489df43c9529f752857bb06e5a32f752398f8619d560c4e9635101cb",
+            "successful_execve_paths": [
+              "/usr/bin/taskset",
+              "/tmp/ohm-hillclimb-20261021/lazy-sbom-current179/active/bin/cargo"
+            ]
+          },
+          {
+            "after_mtime_ns": 1792609718789069097,
+            "all_artifacts_fresh": true,
+            "artifact_records": 650,
+            "before_mtime_ns": 1792609708860712999,
+            "compiler_build_script_test_executions": 0,
+            "fixed_native_calls": 3,
+            "proof_sha256": "8eacd06591099ec834f369d1aff7bcb53314206df5359758b6a7e64ef5d61e8f",
+            "successful_execve_paths": [
+              "/usr/bin/taskset",
+              "/tmp/ohm-hillclimb-20261021/lazy-sbom-current179/active/bin/cargo"
+            ]
+          },
+          {
+            "after_mtime_ns": 1792609730494256067,
+            "all_artifacts_fresh": true,
+            "artifact_records": 650,
+            "before_mtime_ns": 1792609721612156411,
+            "compiler_build_script_test_executions": 0,
+            "fixed_native_calls": 3,
+            "proof_sha256": "0ebbeca4057071fcde91271e93c352efa6196b034f2656ac337eadbadb08d91a",
+            "successful_execve_paths": [
+              "/usr/bin/taskset",
+              "/tmp/ohm-hillclimb-20261021/lazy-sbom-current179/active/bin/cargo"
+            ]
+          },
+          {
+            "after_mtime_ns": 1792609741796880640,
+            "all_artifacts_fresh": true,
+            "artifact_records": 650,
+            "before_mtime_ns": 1792609733056512731,
+            "compiler_build_script_test_executions": 0,
+            "fixed_native_calls": 3,
+            "proof_sha256": "3f2ed5c3987b3adda3f9fa4a206535cb8739e229f4dd57ede323aef73e2cd80f",
+            "successful_execve_paths": [
+              "/usr/bin/taskset",
+              "/tmp/ohm-hillclimb-20261021/lazy-sbom-current179/active/bin/cargo"
+            ]
+          },
+          {
+            "after_mtime_ns": 1792609757376705414,
+            "all_artifacts_fresh": true,
+            "artifact_records": 650,
+            "before_mtime_ns": 1792609744430516505,
+            "compiler_build_script_test_executions": 0,
+            "fixed_native_calls": 3,
+            "proof_sha256": "cb8d98e0c823926a77836055e6c6578db9c2ccd422a05e6936f9f4a3da749bca",
+            "successful_execve_paths": [
+              "/usr/bin/taskset",
+              "/tmp/ohm-hillclimb-20261021/lazy-sbom-current179/active/bin/cargo"
+            ]
+          },
+          {
+            "after_mtime_ns": 1792609771761025664,
+            "all_artifacts_fresh": true,
+            "artifact_records": 650,
+            "before_mtime_ns": 1792609760064831232,
+            "compiler_build_script_test_executions": 0,
+            "fixed_native_calls": 3,
+            "proof_sha256": "ed0f693cb16f2f5923763714cd2617477bb90a4071ed1f0010b1825c138abcfe",
+            "successful_execve_paths": [
+              "/usr/bin/taskset",
+              "/tmp/ohm-hillclimb-20261021/lazy-sbom-current179/active/bin/cargo"
+            ]
+          },
+          {
+            "after_mtime_ns": 1792609785212777789,
+            "all_artifacts_fresh": true,
+            "artifact_records": 650,
+            "before_mtime_ns": 1792609774299402705,
+            "compiler_build_script_test_executions": 0,
+            "fixed_native_calls": 3,
+            "proof_sha256": "50d7601f2b9bc587501f290c4e8d9d8547f7912377a74d36d60a49f7ae429584",
+            "successful_execve_paths": [
+              "/usr/bin/taskset",
+              "/tmp/ohm-hillclimb-20261021/lazy-sbom-current179/active/bin/cargo"
+            ]
+          },
+          {
+            "after_mtime_ns": 1792609798612611106,
+            "all_artifacts_fresh": true,
+            "artifact_records": 650,
+            "before_mtime_ns": 1792609787675462205,
+            "compiler_build_script_test_executions": 0,
+            "fixed_native_calls": 3,
+            "proof_sha256": "f6c9e0ab81a7dc685cec2aebe7bef75d326f9a10d13c949ba8b1dc7736596b43",
+            "successful_execve_paths": [
+              "/usr/bin/taskset",
+              "/tmp/ohm-hillclimb-20261021/lazy-sbom-current179/active/bin/cargo"
+            ]
+          },
+          {
+            "after_mtime_ns": 1792609812435458432,
+            "all_artifacts_fresh": true,
+            "artifact_records": 650,
+            "before_mtime_ns": 1792609801023247067,
+            "compiler_build_script_test_executions": 0,
+            "fixed_native_calls": 3,
+            "proof_sha256": "6ad598b322ee85559ff5a84ca6d05eb22b3aaadff6dc325f54f5c2c7b8e5edea",
+            "successful_execve_paths": [
+              "/usr/bin/taskset",
+              "/tmp/ohm-hillclimb-20261021/lazy-sbom-current179/active/bin/cargo"
+            ]
+          },
+          {
+            "after_mtime_ns": 1792609828446364138,
+            "all_artifacts_fresh": true,
+            "artifact_records": 650,
+            "before_mtime_ns": 1792609815828157935,
+            "compiler_build_script_test_executions": 0,
+            "fixed_native_calls": 3,
+            "proof_sha256": "01ef8293cd3274321663419904824f31cb19b30759445bbd89fb19a78fc08ebf",
+            "successful_execve_paths": [
+              "/usr/bin/taskset",
+              "/tmp/ohm-hillclimb-20261021/lazy-sbom-current179/active/bin/cargo"
+            ]
+          },
+          {
+            "after_mtime_ns": 1792609846628725332,
+            "all_artifacts_fresh": true,
+            "artifact_records": 650,
+            "before_mtime_ns": 1792609831873992920,
+            "compiler_build_script_test_executions": 0,
+            "fixed_native_calls": 3,
+            "proof_sha256": "d577fe7879e0f95c1cfc49df49510ee0baccaa6e32fb415f84d1822eb8a9e001",
+            "successful_execve_paths": [
+              "/usr/bin/taskset",
+              "/tmp/ohm-hillclimb-20261021/lazy-sbom-current179/active/bin/cargo"
+            ]
+          },
+          {
+            "after_mtime_ns": 1792609867496070652,
+            "all_artifacts_fresh": true,
+            "artifact_records": 650,
+            "before_mtime_ns": 1792609852024373936,
+            "compiler_build_script_test_executions": 0,
+            "fixed_native_calls": 3,
+            "proof_sha256": "900b8a8f1097bbb0c9681608feaad14d6dbe657726fcd8e7189f067e11505fcb",
+            "successful_execve_paths": [
+              "/usr/bin/taskset",
+              "/tmp/ohm-hillclimb-20261021/lazy-sbom-current179/active/bin/cargo"
+            ]
+          },
+          {
+            "after_mtime_ns": 1792609885381685930,
+            "all_artifacts_fresh": true,
+            "artifact_records": 650,
+            "before_mtime_ns": 1792609871562895784,
+            "compiler_build_script_test_executions": 0,
+            "fixed_native_calls": 3,
+            "proof_sha256": "558d356d9e6dd58bb227669c22993d8a177af9c208c1dbc5b4ae015b0176cf2d",
+            "successful_execve_paths": [
+              "/usr/bin/taskset",
+              "/tmp/ohm-hillclimb-20261021/lazy-sbom-current179/active/bin/cargo"
+            ]
+          },
+          {
+            "after_mtime_ns": 1792609904889985943,
+            "all_artifacts_fresh": true,
+            "artifact_records": 650,
+            "before_mtime_ns": 1792609889539323287,
+            "compiler_build_script_test_executions": 0,
+            "fixed_native_calls": 3,
+            "proof_sha256": "03339a669c7e9708b5e78c07b24f5c2b6cc9de9911e0ea5fd5cf4c99872c2eea",
+            "successful_execve_paths": [
+              "/usr/bin/taskset",
+              "/tmp/ohm-hillclimb-20261021/lazy-sbom-current179/active/bin/cargo"
+            ]
+          },
+          {
+            "after_mtime_ns": 1792609922733730278,
+            "all_artifacts_fresh": true,
+            "artifact_records": 650,
+            "before_mtime_ns": 1792609909086402667,
+            "compiler_build_script_test_executions": 0,
+            "fixed_native_calls": 3,
+            "proof_sha256": "6b7258d6b14053e797a7bfc83a22095a56d563cb16da2c7b5f02a83aabe96922",
+            "successful_execve_paths": [
+              "/usr/bin/taskset",
+              "/tmp/ohm-hillclimb-20261021/lazy-sbom-current179/active/bin/cargo"
+            ]
+          },
+          {
+            "after_mtime_ns": 1792609938433470455,
+            "all_artifacts_fresh": true,
+            "artifact_records": 650,
+            "before_mtime_ns": 1792609925617082005,
+            "compiler_build_script_test_executions": 0,
+            "fixed_native_calls": 3,
+            "proof_sha256": "0d4401739d611f74765df513df75dea0261fd561a5f8efca168209ccab1f134e",
+            "successful_execve_paths": [
+              "/usr/bin/taskset",
+              "/tmp/ohm-hillclimb-20261021/lazy-sbom-current179/active/bin/cargo"
+            ]
+          },
+          {
+            "after_mtime_ns": 1792609955822097318,
+            "all_artifacts_fresh": true,
+            "artifact_records": 650,
+            "before_mtime_ns": 1792609942245150394,
+            "compiler_build_script_test_executions": 0,
+            "fixed_native_calls": 3,
+            "proof_sha256": "976b856f45cb9662cacc0e625e6431ab2103e3171482af67109609323d5b3cc2",
+            "successful_execve_paths": [
+              "/usr/bin/taskset",
+              "/tmp/ohm-hillclimb-20261021/lazy-sbom-current179/active/bin/cargo"
+            ]
+          },
+          {
+            "after_mtime_ns": 1792609973386336197,
+            "all_artifacts_fresh": true,
+            "artifact_records": 650,
+            "before_mtime_ns": 1792609959607068532,
+            "compiler_build_script_test_executions": 0,
+            "fixed_native_calls": 3,
+            "proof_sha256": "6f3198b7b5ff991b5dcde244ed7f4b02f41c4e25d9f6a2f36845e7b6deb488de",
+            "successful_execve_paths": [
+              "/usr/bin/taskset",
+              "/tmp/ohm-hillclimb-20261021/lazy-sbom-current179/active/bin/cargo"
+            ]
+          },
+          {
+            "after_mtime_ns": 1792609989415343461,
+            "all_artifacts_fresh": true,
+            "artifact_records": 650,
+            "before_mtime_ns": 1792609976755399910,
+            "compiler_build_script_test_executions": 0,
+            "fixed_native_calls": 3,
+            "proof_sha256": "f2a39b632fa2d0c63416abd12ee902be0c4503b121d2e42c010d81bac439c9ea",
+            "successful_execve_paths": [
+              "/usr/bin/taskset",
+              "/tmp/ohm-hillclimb-20261021/lazy-sbom-current179/active/bin/cargo"
+            ]
+          },
+          {
+            "after_mtime_ns": 1792610008065319902,
+            "all_artifacts_fresh": true,
+            "artifact_records": 650,
+            "before_mtime_ns": 1792609993377280335,
+            "compiler_build_script_test_executions": 0,
+            "fixed_native_calls": 3,
+            "proof_sha256": "00b4dd070d576f7edaa253da1cf9535c80616d63d42265f17e2f3f3d986a8a6b",
+            "successful_execve_paths": [
+              "/usr/bin/taskset",
+              "/tmp/ohm-hillclimb-20261021/lazy-sbom-current179/active/bin/cargo"
+            ]
+          },
+          {
+            "after_mtime_ns": 1792610023963536390,
+            "all_artifacts_fresh": true,
+            "artifact_records": 650,
+            "before_mtime_ns": 1792610011822572272,
+            "compiler_build_script_test_executions": 0,
+            "fixed_native_calls": 3,
+            "proof_sha256": "437985e46c7a5948212f6b77923c654ceb52d166635a8c6d86166cb32320bc75",
+            "successful_execve_paths": [
+              "/usr/bin/taskset",
+              "/tmp/ohm-hillclimb-20261021/lazy-sbom-current179/active/bin/cargo"
+            ]
+          },
+          {
+            "after_mtime_ns": 1792610039086459135,
+            "all_artifacts_fresh": true,
+            "artifact_records": 650,
+            "before_mtime_ns": 1792610026515334376,
+            "compiler_build_script_test_executions": 0,
+            "fixed_native_calls": 3,
+            "proof_sha256": "3844f8bc98bcb5f8737600a9f110a8ca0b663e4dece2abb379407d515f0fd562",
+            "successful_execve_paths": [
+              "/usr/bin/taskset",
+              "/tmp/ohm-hillclimb-20261021/lazy-sbom-current179/active/bin/cargo"
+            ]
+          },
+          {
+            "after_mtime_ns": 1792610055850210656,
+            "all_artifacts_fresh": true,
+            "artifact_records": 650,
+            "before_mtime_ns": 1792610043351919865,
+            "compiler_build_script_test_executions": 0,
+            "fixed_native_calls": 3,
+            "proof_sha256": "ffdc04d6acb422ab8a0ce0db6d6f7860acd0ea9a22e16bfb831754b418545dbd",
+            "successful_execve_paths": [
+              "/usr/bin/taskset",
+              "/tmp/ohm-hillclimb-20261021/lazy-sbom-current179/active/bin/cargo"
+            ]
+          },
+          {
+            "after_mtime_ns": 1792610073221405843,
+            "all_artifacts_fresh": true,
+            "artifact_records": 650,
+            "before_mtime_ns": 1792610059337961490,
+            "compiler_build_script_test_executions": 0,
+            "fixed_native_calls": 3,
+            "proof_sha256": "f9e314d47a701ca810f47e30f36968f6faee4692567904c27b952247b70a879a",
+            "successful_execve_paths": [
+              "/usr/bin/taskset",
+              "/tmp/ohm-hillclimb-20261021/lazy-sbom-current179/active/bin/cargo"
+            ]
+          },
+          {
+            "after_mtime_ns": 1792610087090185430,
+            "all_artifacts_fresh": true,
+            "artifact_records": 650,
+            "before_mtime_ns": 1792610075863301792,
+            "compiler_build_script_test_executions": 0,
+            "fixed_native_calls": 3,
+            "proof_sha256": "2062a7d2d1cf80e5dc43562fc1e25642f354e7a37233ffd5ba3c99aa1c6f7a5d",
+            "successful_execve_paths": [
+              "/usr/bin/taskset",
+              "/tmp/ohm-hillclimb-20261021/lazy-sbom-current179/active/bin/cargo"
+            ]
+          },
+          {
+            "after_mtime_ns": 1792610102127431813,
+            "all_artifacts_fresh": true,
+            "artifact_records": 650,
+            "before_mtime_ns": 1792610090154372740,
+            "compiler_build_script_test_executions": 0,
+            "fixed_native_calls": 3,
+            "proof_sha256": "263155603ae480fb487e0b9d2ccbef43893f549b7c99eab344e2322c39fbfd7f",
+            "successful_execve_paths": [
+              "/usr/bin/taskset",
+              "/tmp/ohm-hillclimb-20261021/lazy-sbom-current179/active/bin/cargo"
+            ]
+          },
+          {
+            "after_mtime_ns": 1792610116905281049,
+            "all_artifacts_fresh": true,
+            "artifact_records": 650,
+            "before_mtime_ns": 1792610104639883255,
+            "compiler_build_script_test_executions": 0,
+            "fixed_native_calls": 3,
+            "proof_sha256": "a9ffdede281aff7965ed2c9f42be036e107eb1d0375c8685c39c710da6895590",
+            "successful_execve_paths": [
+              "/usr/bin/taskset",
+              "/tmp/ohm-hillclimb-20261021/lazy-sbom-current179/active/bin/cargo"
+            ]
+          },
+          {
+            "after_mtime_ns": 1792610131376687364,
+            "all_artifacts_fresh": true,
+            "artifact_records": 650,
+            "before_mtime_ns": 1792610119475288296,
+            "compiler_build_script_test_executions": 0,
+            "fixed_native_calls": 3,
+            "proof_sha256": "ab85e60f0a3134c928adcab67a7e0c8d130def5bbcc1e3b02a1124dc497a0f9c",
+            "successful_execve_paths": [
+              "/usr/bin/taskset",
+              "/tmp/ohm-hillclimb-20261021/lazy-sbom-current179/active/bin/cargo"
+            ]
+          },
+          {
+            "after_mtime_ns": 1792610146332162344,
+            "all_artifacts_fresh": true,
+            "artifact_records": 650,
+            "before_mtime_ns": 1792610134999067751,
+            "compiler_build_script_test_executions": 0,
+            "fixed_native_calls": 3,
+            "proof_sha256": "70b8cebca8ce8829ffc7094737a3c646b4c738dc46187d2030ca18c27daf0ce0",
+            "successful_execve_paths": [
+              "/usr/bin/taskset",
+              "/tmp/ohm-hillclimb-20261021/lazy-sbom-current179/active/bin/cargo"
+            ]
+          },
+          {
+            "after_mtime_ns": 1792610161471399648,
+            "all_artifacts_fresh": true,
+            "artifact_records": 650,
+            "before_mtime_ns": 1792610148885240732,
+            "compiler_build_script_test_executions": 0,
+            "fixed_native_calls": 3,
+            "proof_sha256": "7842b758c29906d70ed75571c3a8596c9c6cd77abf9257d439406c28a9a21115",
+            "successful_execve_paths": [
+              "/usr/bin/taskset",
+              "/tmp/ohm-hillclimb-20261021/lazy-sbom-current179/active/bin/cargo"
+            ]
+          },
+          {
+            "after_mtime_ns": 1792610176845748906,
+            "all_artifacts_fresh": true,
+            "artifact_records": 650,
+            "before_mtime_ns": 1792610164543486898,
+            "compiler_build_script_test_executions": 0,
+            "fixed_native_calls": 3,
+            "proof_sha256": "f4d1b8cb0d156452fab7974b272decfd2083cf197e9cf71460d90ad9fc1797e6",
+            "successful_execve_paths": [
+              "/usr/bin/taskset",
+              "/tmp/ohm-hillclimb-20261021/lazy-sbom-current179/active/bin/cargo"
+            ]
+          },
+          {
+            "after_mtime_ns": 1792610190572503079,
+            "all_artifacts_fresh": true,
+            "artifact_records": 650,
+            "before_mtime_ns": 1792610179517350763,
+            "compiler_build_script_test_executions": 0,
+            "fixed_native_calls": 3,
+            "proof_sha256": "269c861b7ab5bb1d1d426b6f23a40d15e62dc821ea3a54a72ee84936b734fa51",
+            "successful_execve_paths": [
+              "/usr/bin/taskset",
+              "/tmp/ohm-hillclimb-20261021/lazy-sbom-current179/active/bin/cargo"
+            ]
+          },
+          {
+            "after_mtime_ns": 1792610204272751299,
+            "all_artifacts_fresh": true,
+            "artifact_records": 650,
+            "before_mtime_ns": 1792610193063597357,
+            "compiler_build_script_test_executions": 0,
+            "fixed_native_calls": 3,
+            "proof_sha256": "2683619eae2cac542f88ded3ccb4fe825a5f2b7903b1368765c65d0760735619",
+            "successful_execve_paths": [
+              "/usr/bin/taskset",
+              "/tmp/ohm-hillclimb-20261021/lazy-sbom-current179/active/bin/cargo"
+            ]
+          },
+          {
+            "after_mtime_ns": 1792610219890553322,
+            "all_artifacts_fresh": true,
+            "artifact_records": 650,
+            "before_mtime_ns": 1792610207877424362,
+            "compiler_build_script_test_executions": 0,
+            "fixed_native_calls": 3,
+            "proof_sha256": "083c3524d05b6d468bbcd71a294a5e293b401bbcc00b27b575cc66d433249c93",
+            "successful_execve_paths": [
+              "/usr/bin/taskset",
+              "/tmp/ohm-hillclimb-20261021/lazy-sbom-current179/active/bin/cargo"
+            ]
+          },
+          {
+            "after_mtime_ns": 1792610236929071090,
+            "all_artifacts_fresh": true,
+            "artifact_records": 650,
+            "before_mtime_ns": 1792610223478167870,
+            "compiler_build_script_test_executions": 0,
+            "fixed_native_calls": 3,
+            "proof_sha256": "c53bcb9919c478f4dc815607270a9d63c7d24a6341e337c13a53cb92b7e269fd",
+            "successful_execve_paths": [
+              "/usr/bin/taskset",
+              "/tmp/ohm-hillclimb-20261021/lazy-sbom-current179/active/bin/cargo"
+            ]
+          }
+        ],
+        "journal_sha256": "0ec6aa90ca5f40c4ce6c1d6e5f6aedb8d13b56ff5ec3275acedde3d595d45e3c",
+        "preparations": 64,
+        "restored_at": "2026-10-21T19:17:20.910483+00:00",
+        "unique_pair_edits": 32
+      },
+      "result_seal_sha256": "176b6c2762e7a14f35ae9b7f5d430cab42f8495d10f647a1a160f485962f0602",
+      "samples": 64,
+      "samples_sha256": "c87281bb56a9879b7aa053b0369de16105b20ef1847a6f774d02d71a0ee9ed4d",
+      "started_at": "2026-10-21T19:01:37.402541+00:00",
+      "test_nonexecution_evidence": "Every measured Running command is the frozen rustc; test argv has --no-run; all16 prior execve diagnostics are retained and byte-bound.",
+      "valid": true,
+      "warmup_pairs": 2,
+      "workload": "check"
+    },
+    "test": {
+      "compiler_invocations_per_sample": 6,
+      "configuration_sha256": "e9a62aa4d4aea93ec7d06fa8922074d9082a688604169fba7d0678d57bbad8a6",
+      "expected_stage_counts": {
+        "rlink": 4,
+        "source": 2
+      },
+      "finished_at": "2026-10-21T19:01:17.029891+00:00",
+      "invocations_per_variant_per_pair": 1,
+      "manifest_sha256": "89a8637f93e73d390e67a89e51cbe676b661a8c02e6d226e94b28bae34273ccd",
+      "measurement_pairs": 30,
+      "native_test_executions": 0,
+      "preparation": {
+        "check_convergence": [],
+        "journal_sha256": "78590da34bd49a6fe69b75cd7387f03dba17e6bb0651155f584f2db2215a821d",
+        "preparations": 64,
+        "restored_at": "2026-10-21T19:01:16.818713+00:00",
+        "unique_pair_edits": 32
+      },
+      "result_seal_sha256": "0323fd9028fd3da17fa6bdc96ae4bd0a59004c9107f6f25324ba53a35affbdda",
+      "samples": 64,
+      "samples_sha256": "7eb2595c58abc68fda77f4cdf91e68247c414970d694fa466ba2d9567f50cd2b",
+      "started_at": "2026-10-21T18:52:44.243886+00:00",
+      "test_nonexecution_evidence": "Every measured Running command is the frozen rustc; test argv has --no-run; all16 prior execve diagnostics are retained and byte-bound.",
+      "valid": true,
+      "warmup_pairs": 2,
+      "workload": "test"
+    }
+  }
+}

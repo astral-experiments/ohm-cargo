@@ -1,0 +1,94 @@
+{
+  "binaries": {
+    "baseline": "a25d7c3e1678a4076b7006b1ca3880da116de8ba43b93f5b1c45c8fc260c8e47",
+    "candidate": "060043e733873dfd9a27e29cdb526713479cc90079609b23df92ff088d469e90"
+  },
+  "commit": "4e5d21f61600cf333adbe5a96f51d74ea14b3060",
+  "ir": {
+    "check": {
+      "checks": {
+        "at_least_one_percent": false,
+        "both_orders_positive": true,
+        "fixed_pairs": true,
+        "positive_99_percent_lower_bound": true,
+        "two_sided_sign_p_at_most_0_01": true
+      },
+      "interval_99": [
+        0.00435102854031677,
+        0.006061599480924884
+      ],
+      "passes_gate": false,
+      "reduction": 0.005298763601303547,
+      "scope": "Fixed independent pairs; no exclusions, extensions, pooling or interim effect inspection.",
+      "sign_p": 0.00048828125,
+      "significant_native_regression": false
+    },
+    "test": {
+      "checks": {
+        "at_least_one_percent": true,
+        "both_orders_positive": true,
+        "fixed_pairs": true,
+        "positive_99_percent_lower_bound": true,
+        "two_sided_sign_p_at_most_0_01": true
+      },
+      "interval_99": [
+        0.054450896437738816,
+        0.05597544268005106
+      ],
+      "passes_gate": true,
+      "reduction": 0.055408246418347074,
+      "scope": "Fixed independent pairs; no exclusions, extensions, pooling or interim effect inspection.",
+      "sign_p": 0.00048828125,
+      "significant_native_regression": false
+    }
+  },
+  "native": {
+    "check": {
+      "checks": {
+        "at_least_one_percent": true,
+        "both_orders_positive": true,
+        "fixed_pairs": true,
+        "positive_99_percent_lower_bound": false,
+        "two_sided_sign_p_at_most_0_01": false
+      },
+      "interval_99": [
+        -0.07532242353044327,
+        0.11428833306496866
+      ],
+      "passes_gate": false,
+      "reduction": 0.026261683123120272,
+      "scope": "Fixed independent pairs; no exclusions, extensions, pooling or interim effect inspection.",
+      "sign_p": 0.361594608053565,
+      "significant_native_regression": false
+    },
+    "test": {
+      "checks": {
+        "at_least_one_percent": false,
+        "both_orders_positive": false,
+        "fixed_pairs": true,
+        "positive_99_percent_lower_bound": false,
+        "two_sided_sign_p_at_most_0_01": false
+      },
+      "interval_99": [
+        -0.18706655320495402,
+        0.09478428286443241
+      ],
+      "passes_gate": false,
+      "reduction": -0.03523361666799607,
+      "scope": "Fixed independent pairs; no exclusions, extensions, pooling or interim effect inspection.",
+      "sign_p": 0.855535551905632,
+      "significant_native_regression": false
+    }
+  },
+  "native_validation_complete": true,
+  "no_established_native_regression": true,
+  "parent": "19718e6d1637244ffbb193334f50bae3ffca1be5",
+  "primary_ir_qualifies": true,
+  "scope": "Incremental current179 dirty uv builds; PR175 archives are historical only.",
+  "secondary_check_ir_qualifies": false,
+  "statistics_recomputed_by_packager": false,
+  "trees": {
+    "baseline": "f4ce59f92aa17461fe3c8b68923c88539136045a",
+    "candidate": "c377ade816d378aa75f629313ac7b116da10c6da"
+  }
+}

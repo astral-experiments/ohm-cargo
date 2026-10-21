@@ -1,0 +1,347 @@
+{
+  "fixed_method": {
+    "bootstrap_resamples": 20000,
+    "bootstrap_seed": 1701,
+    "confidence": 0.99,
+    "maximum_sign_p": 0.01,
+    "minimum_reduction": 0.01
+  },
+  "native_wall_time_claim_allowed": true,
+  "phase": "native-confirmation",
+  "workloads": {
+    "check": {
+      "analysis_sha256": "993ed19425d0d392ecd52dfbeba646fbeceac0f2ff553080892c3a74f807510f",
+      "gate": {
+        "checks": {
+          "at_least_one_percent": true,
+          "both_orders_positive": true,
+          "fixed_pairs": true,
+          "positive_99_percent_lower_bound": false,
+          "two_sided_sign_p_at_most_0_01": false
+        },
+        "interval_99": [
+          -0.07532242353044327,
+          0.11428833306496866
+        ],
+        "passes_gate": false,
+        "reduction": 0.026261683123120272,
+        "scope": "Fixed independent pairs; no exclusions, extensions, pooling or interim effect inspection.",
+        "sign_p": 0.361594608053565,
+        "significant_native_regression": false
+      },
+      "statistics": {
+        "baseline_mean_seconds": 2.2499053216333333,
+        "baseline_median_seconds": 2.0065740915,
+        "bootstrap_resamples": 20000,
+        "bootstrap_seed": 1701,
+        "bootstrap_speedup_interval": [
+          0.9299536381998355,
+          1.129035596268545
+        ],
+        "bootstrap_time_reduction_interval": [
+          -0.07532242353044327,
+          0.11428833306496866
+        ],
+        "candidate_mean_seconds": 2.2055527838,
+        "candidate_median_seconds": 1.925567389,
+        "child_cpu_seconds": {
+          "baseline_mean_seconds": 2.2851010000000005,
+          "baseline_median_seconds": 2.0212779999999952,
+          "bootstrap_resamples": 20000,
+          "bootstrap_seed": 1701,
+          "bootstrap_speedup_interval": [
+            0.9278908394690749,
+            1.1290742239158797
+          ],
+          "bootstrap_time_reduction_interval": [
+            -0.07771297814749945,
+            0.11431863484423699
+          ],
+          "candidate_mean_seconds": 2.245339466666663,
+          "candidate_median_seconds": 1.9274244999999723,
+          "confidence": 0.99,
+          "exact_two_sided_sign_p": 0.361594608053565,
+          "log_ratios": [
+            0.022177178265909477,
+            -0.004938447948502722,
+            0.27433958331886504,
+            0.017380534335586943,
+            0.007427089279288305,
+            0.21019112503657084,
+            0.026604174984627367,
+            0.31896656430367226,
+            0.07382314273839019,
+            -0.00827454794345285,
+            -0.014104120330851844,
+            -0.02888707259902314,
+            -0.0829758905656475,
+            0.09480834800262848,
+            0.002134329764435432,
+            -0.010383404616288956,
+            -0.37667702358023897,
+            -0.41097503789630574,
+            0.11403404962000145,
+            0.40338588068112124,
+            0.025029041403418675,
+            0.4388355995933395,
+            0.34262222471947124,
+            -0.3100024221235642,
+            0.03850626289707407,
+            0.014152077676377628,
+            -0.39042008022485497,
+            -0.12172867062386555,
+            0.21955545869991624,
+            -0.12804051563702576
+          ],
+          "losses": 12,
+          "order": {
+            "AB": {
+              "geometric_mean_speedup": 1.0392652728463394,
+              "pairs": 15
+            },
+            "BA": {
+              "geometric_mean_speedup": 1.011995071046004,
+              "pairs": 15
+            }
+          },
+          "paired_geometric_mean_speedup": 1.0255395329434043,
+          "paired_geometric_mean_time_reduction": 0.024903508956015785,
+          "paired_median_speedup": 1.0158925735508788,
+          "pairs": 30,
+          "ties": 0,
+          "wins": 18
+        },
+        "confidence": 0.99,
+        "exact_two_sided_sign_p": 0.361594608053565,
+        "log_ratios": [
+          0.03265210234232683,
+          -0.01878768435364038,
+          0.25794818715167983,
+          0.024144906854886804,
+          0.0073484169823597794,
+          0.21971343501052437,
+          0.014121980726091585,
+          0.3229057072171551,
+          0.17593598156214582,
+          -0.019629831925762956,
+          -0.013129319464091673,
+          -0.020803491672530698,
+          -0.0648151122515509,
+          0.09321119425409416,
+          9.921997408924344e-05,
+          -0.01709961821973541,
+          -0.38505519017171064,
+          -0.43674415207347994,
+          0.09309350060849444,
+          0.3976804375716733,
+          0.06406136755261092,
+          0.39582318394668226,
+          0.3306090915797723,
+          -0.3158740078033878,
+          0.039666856416290315,
+          0.010903192381997606,
+          -0.37983702550704573,
+          -0.12375630323153361,
+          0.22781180014514174,
+          -0.11381842735313047
+        ],
+        "losses": 12,
+        "order": {
+          "AB": {
+            "geometric_mean_speedup": 1.0375910861229123,
+            "pairs": 15
+          },
+          "BA": {
+            "geometric_mean_speedup": 1.0164575545649672,
+            "pairs": 15
+          }
+        },
+        "paired_geometric_mean_speedup": 1.0269699596574886,
+        "paired_geometric_mean_time_reduction": 0.026261683123120272,
+        "paired_median_speedup": 1.0125925078758713,
+        "pairs": 30,
+        "phase": "confirmation",
+        "screen": {
+          "alpha": 0.010000000000000009,
+          "minimum_pairs": 30,
+          "minimum_time_reduction": 0.01,
+          "note": "This screens one workload only. Require an independently run confirmation batch, correctness validation, and regression checks before a PR performance claim. Repeated candidate selection invalidates treating exploratory p-values as confirmatory evidence.",
+          "passes": false
+        },
+        "ties": 0,
+        "variant_sha256": {
+          "baseline": "a25d7c3e1678a4076b7006b1ca3880da116de8ba43b93f5b1c45c8fc260c8e47",
+          "candidate": "060043e733873dfd9a27e29cdb526713479cc90079609b23df92ff088d469e90"
+        },
+        "wins": 18
+      }
+    },
+    "test": {
+      "analysis_sha256": "27c994870872e32620c7ead901dbc1cb89c60e4ffb458af0077e923a09456c51",
+      "gate": {
+        "checks": {
+          "at_least_one_percent": false,
+          "both_orders_positive": false,
+          "fixed_pairs": true,
+          "positive_99_percent_lower_bound": false,
+          "two_sided_sign_p_at_most_0_01": false
+        },
+        "interval_99": [
+          -0.18706655320495402,
+          0.09478428286443241
+        ],
+        "passes_gate": false,
+        "reduction": -0.03523361666799607,
+        "scope": "Fixed independent pairs; no exclusions, extensions, pooling or interim effect inspection.",
+        "sign_p": 0.855535551905632,
+        "significant_native_regression": false
+      },
+      "statistics": {
+        "baseline_mean_seconds": 3.5119015601666663,
+        "baseline_median_seconds": 3.5742002299999998,
+        "bootstrap_resamples": 20000,
+        "bootstrap_seed": 1701,
+        "bootstrap_speedup_interval": [
+          0.8424127504057004,
+          1.1047090556098214
+        ],
+        "bootstrap_time_reduction_interval": [
+          -0.18706655320495402,
+          0.09478428286443241
+        ],
+        "candidate_mean_seconds": 3.6375304204333334,
+        "candidate_median_seconds": 3.5696254405,
+        "child_cpu_seconds": {
+          "baseline_mean_seconds": 3.428489266666666,
+          "baseline_median_seconds": 3.4152169999999984,
+          "bootstrap_resamples": 20000,
+          "bootstrap_seed": 1701,
+          "bootstrap_speedup_interval": [
+            0.9620311406615418,
+            1.0242652593417205
+          ],
+          "bootstrap_time_reduction_interval": [
+            -0.03946739116194187,
+            0.0236904055081546
+          ],
+          "candidate_mean_seconds": 3.4427711666666667,
+          "candidate_median_seconds": 3.3802775000000054,
+          "confidence": 0.99,
+          "exact_two_sided_sign_p": 0.361594608053565,
+          "log_ratios": [
+            -0.042424915483600154,
+            0.06410687191295746,
+            -0.005242615489230538,
+            -0.012891030191751408,
+            0.08793650033864368,
+            0.02573167812342864,
+            -0.2805994096214293,
+            0.01968483351427055,
+            0.02685853232210809,
+            -0.04011211521123325,
+            0.03302753392570989,
+            0.01365915196684018,
+            -0.031218325515644924,
+            0.03146573321407546,
+            0.018156418546315275,
+            -0.10939314643789808,
+            0.03818395008965172,
+            0.02639921155961955,
+            -0.032371569642589255,
+            0.054514725015557465,
+            0.014502341373207292,
+            -0.039828167466357256,
+            0.02349517380569309,
+            -0.023278120362210265,
+            -0.07007976831850024,
+            0.07113031861525515,
+            0.011448104870881952,
+            -0.04374957742370324,
+            0.060459466322179044,
+            0.0354651276450613
+          ],
+          "losses": 12,
+          "order": {
+            "AB": {
+              "geometric_mean_speedup": 1.0033362462654132,
+              "pairs": 15
+            },
+            "BA": {
+              "geometric_mean_speedup": 0.9917063511119415,
+              "pairs": 15
+            }
+          },
+          "paired_geometric_mean_speedup": 0.9975043497259675,
+          "paired_geometric_mean_time_reduction": -0.0025018941267955785,
+          "paired_median_speedup": 1.0164651294716633,
+          "pairs": 30,
+          "ties": 0,
+          "wins": 18
+        },
+        "confidence": 0.99,
+        "exact_two_sided_sign_p": 0.855535551905632,
+        "log_ratios": [
+          -0.26790415505684034,
+          0.4951427600393723,
+          0.12372283462558209,
+          -0.5509106564638332,
+          0.13729253764987026,
+          0.08959249731883442,
+          -0.16630459910231252,
+          0.1213265272412939,
+          -0.004962720532249233,
+          0.06840281948301867,
+          0.21748293213993947,
+          -0.33614734753500997,
+          -0.32914345776800313,
+          -0.09835092798975058,
+          -0.319211219819859,
+          -0.6088785589039195,
+          -0.31583173324444885,
+          0.5600037490017533,
+          0.1994697954350996,
+          -0.18505338144171518,
+          0.006724801559275541,
+          -0.5860938870339856,
+          0.3310381818852996,
+          -0.23558323624715552,
+          0.21117574508331213,
+          0.33546908537023695,
+          0.06160750285329207,
+          -0.02303075621979576,
+          0.011169236814494988,
+          0.0189720958198451
+        ],
+        "losses": 14,
+        "order": {
+          "AB": {
+            "geometric_mean_speedup": 1.0239624657890936,
+            "pairs": 15
+          },
+          "BA": {
+            "geometric_mean_speedup": 0.9112535434456714,
+            "pairs": 15
+          }
+        },
+        "paired_geometric_mean_speedup": 0.9659655404338597,
+        "paired_geometric_mean_time_reduction": -0.03523361666799607,
+        "paired_median_speedup": 1.0089896547144597,
+        "pairs": 30,
+        "phase": "confirmation",
+        "screen": {
+          "alpha": 0.010000000000000009,
+          "minimum_pairs": 30,
+          "minimum_time_reduction": 0.01,
+          "note": "This screens one workload only. Require an independently run confirmation batch, correctness validation, and regression checks before a PR performance claim. Repeated candidate selection invalidates treating exploratory p-values as confirmatory evidence.",
+          "passes": false
+        },
+        "ties": 0,
+        "variant_sha256": {
+          "baseline": "a25d7c3e1678a4076b7006b1ca3880da116de8ba43b93f5b1c45c8fc260c8e47",
+          "candidate": "060043e733873dfd9a27e29cdb526713479cc90079609b23df92ff088d469e90"
+        },
+        "wins": 16
+      }
+    }
+  }
+}

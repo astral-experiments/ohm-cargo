@@ -1,0 +1,153 @@
+{
+  "fixed_method": {
+    "bootstrap_resamples": 20000,
+    "bootstrap_seed": 1701,
+    "confidence": 0.99,
+    "maximum_sign_p": 0.01,
+    "minimum_reduction": 0.01
+  },
+  "native_wall_time_claim_allowed": false,
+  "phase": "ir-confirmation",
+  "workloads": {
+    "check": {
+      "analysis_sha256": "8e915fd06956216df1e9c62f32ee129844c65a3a0056128f5e6536c3d59e41b3",
+      "gate": {
+        "checks": {
+          "at_least_one_percent": false,
+          "both_orders_positive": true,
+          "fixed_pairs": true,
+          "positive_99_percent_lower_bound": true,
+          "two_sided_sign_p_at_most_0_01": true
+        },
+        "interval_99": [
+          0.00435102854031677,
+          0.006061599480924884
+        ],
+        "passes_gate": false,
+        "reduction": 0.005298763601303547,
+        "scope": "Fixed independent pairs; no exclusions, extensions, pooling or interim effect inspection.",
+        "sign_p": 0.00048828125,
+        "significant_native_regression": false
+      },
+      "statistics": {
+        "baseline_mean_count": 3125402786.9166665,
+        "baseline_median_count": 3125171757.0,
+        "bootstrap_count_reduction_interval": [
+          0.00435102854031677,
+          0.006061599480924884
+        ],
+        "bootstrap_ratio_interval": [
+          1.004370042720918,
+          1.0060985665487512
+        ],
+        "bootstrap_resamples": 20000,
+        "bootstrap_seed": 1701,
+        "candidate_mean_count": 3108843033.9166665,
+        "candidate_median_count": 3107877687.5,
+        "confidence": 0.99,
+        "exact_two_sided_sign_p": 0.00048828125,
+        "log_ratios": [
+          0.006244600662412304,
+          0.005298714020621793,
+          0.0028188982531699527,
+          0.006060545370634399,
+          0.00586944939451021,
+          0.005328088398561456,
+          0.0030592023410962407,
+          0.005686923397284316,
+          0.0053086253046668525,
+          0.005665287123983507,
+          0.007084229237922969,
+          0.005329658551330657
+        ],
+        "losses": 0,
+        "order": {
+          "AB": {
+            "geometric_mean_ratio": 1.004818403614155,
+            "pairs": 6
+          },
+          "BA": {
+            "geometric_mean_ratio": 1.0058358339303686,
+            "pairs": 6
+          }
+        },
+        "paired_geometric_mean_count_reduction": 0.005298763601303547,
+        "paired_geometric_mean_ratio": 1.0053269900623505,
+        "paired_median_ratio": 1.0055126258289573,
+        "pairs": 12,
+        "ties": 0,
+        "wins": 12
+      }
+    },
+    "test": {
+      "analysis_sha256": "7927a6a3c0ebcd17bf3647b94b1220509f4ab447117ba7d04ed02b9a0b00e32c",
+      "gate": {
+        "checks": {
+          "at_least_one_percent": true,
+          "both_orders_positive": true,
+          "fixed_pairs": true,
+          "positive_99_percent_lower_bound": true,
+          "two_sided_sign_p_at_most_0_01": true
+        },
+        "interval_99": [
+          0.054450896437738816,
+          0.05597544268005106
+        ],
+        "passes_gate": true,
+        "reduction": 0.055408246418347074,
+        "scope": "Fixed independent pairs; no exclusions, extensions, pooling or interim effect inspection.",
+        "sign_p": 0.00048828125,
+        "significant_native_regression": false
+      },
+      "statistics": {
+        "baseline_mean_count": 2040993575.0,
+        "baseline_median_count": 2040910802.5,
+        "bootstrap_count_reduction_interval": [
+          0.054450896437738816,
+          0.05597544268005106
+        ],
+        "bootstrap_ratio_interval": [
+          1.0575865348849685,
+          1.059294477295128
+        ],
+        "bootstrap_resamples": 20000,
+        "bootstrap_seed": 1701,
+        "candidate_mean_count": 1927906896.9166667,
+        "candidate_median_count": 1927412054.5,
+        "confidence": 0.99,
+        "exact_two_sided_sign_p": 0.00048828125,
+        "log_ratios": [
+          0.05705986629651302,
+          0.053450165269102345,
+          0.05695129480137794,
+          0.05783881353556106,
+          0.05774959450563931,
+          0.05736751450865378,
+          0.05761451585262356,
+          0.05776344896773019,
+          0.05776034491754828,
+          0.05640587051560471,
+          0.05741563738599679,
+          0.05665235290901523
+        ],
+        "losses": 0,
+        "order": {
+          "AB": {
+            "geometric_mean_ratio": 1.0583850711761666,
+            "pairs": 6
+          },
+          "BA": {
+            "geometric_mean_ratio": 1.058931811059591,
+            "pairs": 6
+          }
+        },
+        "paired_geometric_mean_count_reduction": 0.055408246418347074,
+        "paired_geometric_mean_ratio": 1.0586584058226773,
+        "paired_median_ratio": 1.0590704360272774,
+        "pairs": 12,
+        "ties": 0,
+        "wins": 12
+      }
+    }
+  }
+}
