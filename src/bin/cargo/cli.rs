@@ -27,6 +27,10 @@ pub fn main(gctx: &mut GlobalContext) -> CliResult {
 
     let args = cli(gctx).try_get_matches()?;
 
+    main_with_matches(gctx, args)
+}
+
+fn main_with_matches(gctx: &mut GlobalContext, args: clap::ArgMatches) -> CliResult {
     // Update the process-level notion of cwd
     if let Some(new_cwd) = args.get_one::<std::path::PathBuf>("directory") {
         // This is a temporary hack.
@@ -94,7 +98,7 @@ pub fn main(gctx: &mut GlobalContext) -> CliResult {
             global_args,
             Some(&exec),
         )?;
-        super::init_git();
+        super::register_git_initializer();
 
         exec.exec(gctx, subcommand_args)?;
     }
@@ -800,5 +804,152 @@ fn avoid_ambiguity_between_builtins_and_manifest_commands() {
             !commands::run::is_manifest_command(&name),
             "built-in command {name} is ambiguous with manifest-commands"
         )
+    }
+}
+
+#[cfg(test)]
+mod git_policy_tests {
+    use std::path::Path;
+    use std::process::Command;
+
+    use cargo::util::GitRepo;
+
+    use super::{GlobalContext, cli, main_with_matches};
+
+    #[allow(
+        clippy::disallowed_methods,
+        reason = "the isolated child-process marker intentionally bypasses GlobalContext"
+    )]
+    fn in_fresh_process(test: &str, check: fn(&Path)) {
+        const CHILD: &str = "CARGO_TEST_GIT_POLICY_CHILD";
+        const ROOT: &str = "CARGO_TEST_GIT_POLICY_ROOT";
+
+        if let Some(child) = std::env::var_os(CHILD) {
+            assert_eq!(child, test);
+            let root = std::env::var_os(ROOT).unwrap();
+            let root = Path::new(&root);
+            check(root);
+            std::fs::write(root.join("completed"), "ok").unwrap();
+            return;
+        }
+
+        // libgit2's options and the executable's initializer are process-global.
+        // Never let another test's initialization affect either policy assertion.
+        let root = tempfile::tempdir().unwrap();
+        let git_config = root.path().join("git-config");
+        std::fs::write(&git_config, "").unwrap();
+        let cargo_home = root.path().join("cargo-home");
+        std::fs::create_dir(&cargo_home).unwrap();
+        let output = Command::new(std::env::current_exe().unwrap())
+            .args(["--exact", test, "--nocapture", "--test-threads=1"])
+            .env(CHILD, test)
+            .env(ROOT, root.path())
+            .env("CARGO_HOME", cargo_home)
+            .env("CARGO_NET_OFFLINE", "true")
+            .env("GIT_CONFIG_GLOBAL", git_config)
+            .env("GIT_CONFIG_NOSYSTEM", "1")
+            .env_remove("CARGO_COMPLETE")
+            .env_remove("CARGO_LOG_PROFILE")
+            .current_dir(root.path())
+            .output()
+            .unwrap();
+        assert!(
+            output.status.success() && root.path().join("completed").is_file(),
+            "isolated policy check failed: {}\nstdout:\n{}\nstderr:\n{}",
+            output.status,
+            String::from_utf8_lossy(&output.stdout),
+            String::from_utf8_lossy(&output.stderr),
+        );
+    }
+
+    fn owner_validation_enabled() -> bool {
+        // git2 does not expose this getter. Initialize through its supported API
+        // before querying the option through the existing libgit2-sys dependency.
+        let _config = git2::Config::new().unwrap();
+        let mut enabled: std::ffi::c_int = 0;
+        // SAFETY: libgit2 is initialized, this option takes an int pointer, and
+        // this fresh test process does not concurrently change libgit2 options.
+        let result = unsafe {
+            libgit2_sys::git_libgit2_opts(
+                libgit2_sys::GIT_OPT_GET_OWNER_VALIDATION as std::ffi::c_int,
+                &mut enabled as *mut std::ffi::c_int,
+            )
+        };
+        assert_eq!(result, 0);
+        assert!(matches!(enabled, 0 | 1));
+        enabled != 0
+    }
+
+    #[test]
+    fn library_keeps_owner_validation() {
+        in_fresh_process(
+            "cli::git_policy_tests::library_keeps_owner_validation",
+            |root| {
+                assert!(owner_validation_enabled());
+                let repository = root.join("repository");
+                GitRepo::init(&repository, root).unwrap();
+                GitRepo::discover(&repository, root).unwrap();
+                assert!(owner_validation_enabled());
+            },
+        );
+    }
+
+    #[test]
+    fn binary_registration_is_lazy_until_repository_access() {
+        in_fresh_process(
+            "cli::git_policy_tests::binary_registration_is_lazy_until_repository_access",
+            |root| {
+                assert!(owner_validation_enabled());
+                let manifest = root.join("Cargo.toml");
+                std::fs::write(
+                    &manifest,
+                    "[package]\nname = 'git-policy-fixture'\nversion = '0.1.0'\n",
+                )
+                .unwrap();
+                let mut gctx = GlobalContext::default().unwrap();
+                let args = cli(&gctx)
+                    .try_get_matches_from([
+                        std::ffi::OsStr::new("cargo"),
+                        std::ffi::OsStr::new("locate-project"),
+                        std::ffi::OsStr::new("--manifest-path"),
+                        manifest.as_os_str(),
+                    ])
+                    .unwrap();
+                // This exercises the same dispatch and real binary callback
+                // registration as main, without needing a repository yet.
+                main_with_matches(&mut gctx, args).unwrap();
+                assert!(owner_validation_enabled());
+
+                let repository = root.join("repository");
+                GitRepo::init(&repository, root).unwrap();
+                assert!(!owner_validation_enabled());
+            },
+        );
+    }
+
+    #[test]
+    fn binary_init_applies_owner_policy() {
+        in_fresh_process(
+            "cli::git_policy_tests::binary_init_applies_owner_policy",
+            |root| {
+                assert!(owner_validation_enabled());
+                let mut gctx = GlobalContext::default().unwrap();
+                let args = cli(&gctx)
+                    .try_get_matches_from([
+                        "cargo",
+                        "init",
+                        "--name",
+                        "git-policy-fixture",
+                        "--vcs",
+                        "git",
+                        "--lib",
+                        "repository",
+                    ])
+                    .unwrap();
+                main_with_matches(&mut gctx, args).unwrap();
+                assert!(root.join("repository/.git").is_dir());
+                assert!(!owner_validation_enabled());
+            },
+        );
     }
 }

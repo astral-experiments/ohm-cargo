@@ -166,6 +166,11 @@ pub fn fix(
     fix_manifests(original_ws, &members)?;
     let ws = original_ws.reload(gctx)?;
 
+    // With --allow-no-vcs, resolving a Git dependency below can be the first
+    // libgit2 access. Complete its environment initialization before starting
+    // the fix servers.
+    crate::util::ensure_git_initialized();
+
     // Spin up our lock server, which our subprocesses will use to synchronize fixes.
     let lock_server = LockServer::new()?;
     let mut wrapper = ProcessBuilder::new(env::current_exe()?);
@@ -238,6 +243,7 @@ fn check_version_control(gctx: &GlobalContext, opts: &FixOptions) -> CargoResult
 
     let mut dirty_files = Vec::new();
     let mut staged_files = Vec::new();
+    crate::util::ensure_git_initialized();
     if let Ok(repo) = git2::Repository::discover(gctx.cwd()) {
         let mut repo_opts = git2::StatusOptions::new();
         repo_opts.include_ignored(false);

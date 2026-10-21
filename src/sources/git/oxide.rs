@@ -365,6 +365,7 @@ pub fn cargo_config_to_gitoxide_overrides(gctx: &GlobalContext) -> CargoResult<V
 /// seems corrupted, and we want to start over.
 pub fn reinitialize(git_dir: &Path) -> CargoResult<()> {
     fn init(path: &Path, bare: bool) -> CargoResult<()> {
+        crate::util::ensure_git_initialized();
         let mut opts = git2::RepositoryInitOptions::new();
         // Skip anything related to templates, they just call all sorts of issues as
         // we really don't want to use them yet they insist on being used. See #6240
