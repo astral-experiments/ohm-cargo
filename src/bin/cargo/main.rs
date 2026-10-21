@@ -424,7 +424,26 @@ fn search_directories(gctx: &GlobalContext) -> Vec<PathBuf> {
     path_dirs
 }
 
-/// Initialize libgit2.
+/// Preserve the startup certificate environment without loading libgit2's TLS context.
+fn register_git_initializer() {
+    #[cfg(all(unix, not(target_os = "macos"), not(target_os = "ios")))]
+    {
+        // git2 performs this probe as part of initialization. Keep it here so
+        // subprocesses see the same certificate environment even if this command
+        // never needs a Git repository. Modern curl does not perform this probe
+        // during its global initialization.
+        //
+        // SAFETY: command execution has not started, so Cargo has not created
+        // compilation, fetch, or fix worker threads. The optional tracing-chrome
+        // writer only serializes messages to a file and does not read the process
+        // environment. This is the same setup point that previously called git2's
+        // environment initializer.
+        unsafe { openssl_probe::init_openssl_env_vars() };
+    }
+    cargo::util::register_git_initializer(init_git);
+}
+
+/// Initialize libgit2 before repository access or background network workers.
 #[tracing::instrument(skip_all)]
 fn init_git() {
     // Disabling the owner validation in git can, in theory, lead to code execution
