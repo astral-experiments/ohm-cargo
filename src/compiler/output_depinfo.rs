@@ -131,6 +131,24 @@ fn add_deps_for_unit(
 ///
 /// [`fingerprint`]: super::fingerprint#dep-info-files
 pub fn output_depinfo(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResult<()> {
+    let outputs = build_runner.outputs(unit)?;
+    let mut outputs = outputs
+        .iter()
+        .filter(|output| {
+            !matches!(
+                output.flavor,
+                FileFlavor::DebugInfo
+                    | FileFlavor::Auxiliary
+                    | FileFlavor::Sbom
+                    | FileFlavor::Unremap
+            )
+        })
+        .filter_map(|output| output.hardlink.as_ref())
+        .peekable();
+    if outputs.peek().is_none() {
+        return Ok(());
+    }
+
     let bcx = build_runner.bcx;
     let mut deps = BTreeSet::new();
     let mut visited = HashSet::default();
@@ -153,44 +171,37 @@ pub fn output_depinfo(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> Ca
         .map(|f| render_filename(f, basedir))
         .collect::<CargoResult<Vec<_>>>()?;
 
-    for output in build_runner.outputs(unit)?.iter().filter(|o| {
-        !matches!(
-            o.flavor,
-            FileFlavor::DebugInfo | FileFlavor::Auxiliary | FileFlavor::Sbom | FileFlavor::Unremap
-        )
-    }) {
-        if let Some(ref link_dst) = output.hardlink {
-            let output_path = link_dst.with_extension("d");
-            if success {
-                let target_fn = render_filename(link_dst, basedir)?;
+    for link_dst in outputs {
+        let output_path = link_dst.with_extension("d");
+        if success {
+            let target_fn = render_filename(link_dst, basedir)?;
 
-                // If nothing changed don't recreate the file which could alter
-                // its mtime
-                if let Ok(previous) = fingerprint::parse_rustc_dep_info(&output_path) {
-                    if previous
-                        .files
-                        .iter()
-                        .map(|(path, _checksum)| path)
-                        .eq(deps.iter().map(Path::new))
-                    {
-                        continue;
-                    }
+            // If nothing changed don't recreate the file which could alter
+            // its mtime
+            if let Ok(previous) = fingerprint::parse_rustc_dep_info(&output_path) {
+                if previous
+                    .files
+                    .iter()
+                    .map(|(path, _checksum)| path)
+                    .eq(deps.iter().map(Path::new))
+                {
+                    continue;
                 }
-
-                // Otherwise write it all out
-                let mut outfile = BufWriter::new(paths::create(output_path)?);
-                write!(outfile, "{}:", target_fn)?;
-                for dep in &deps {
-                    write!(outfile, " {}", dep)?;
-                }
-                writeln!(outfile)?;
-
-            // dep-info generation failed, so delete output file. This will
-            // usually cause the build system to always rerun the build
-            // rule, which is correct if inefficient.
-            } else if output_path.exists() {
-                paths::remove_file(output_path)?;
             }
+
+            // Otherwise write it all out
+            let mut outfile = BufWriter::new(paths::create(output_path)?);
+            write!(outfile, "{}:", target_fn)?;
+            for dep in &deps {
+                write!(outfile, " {}", dep)?;
+            }
+            writeln!(outfile)?;
+
+        // dep-info generation failed, so delete output file. This will
+        // usually cause the build system to always rerun the build
+        // rule, which is correct if inefficient.
+        } else if output_path.exists() {
+            paths::remove_file(output_path)?;
         }
     }
     Ok(())
