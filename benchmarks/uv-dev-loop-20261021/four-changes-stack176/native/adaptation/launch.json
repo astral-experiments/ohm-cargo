@@ -1,0 +1,39 @@
+{
+  "started_at": "2026-10-21T12:58:11.708394+00:00",
+  "hostname": "charlie-oss",
+  "uid": 1000,
+  "driver_sha256": "6cd1392609e49d9c2f08bf239d6b0b0f7e2f8c57a23d8399ac10d87c82a2502a",
+  "seal_sha256": "cd62b627b91cd6ec8d2592040cf88490a39a65c889e86cf945729f9fd560d303",
+  "command": [
+    "/home/dev-user/.virtualenvs/openai/bin/python3",
+    "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/current_stack_native_local/native_driver.py",
+    "--run",
+    "--sealed-inputs-sha256",
+    "cd62b627b91cd6ec8d2592040cf88490a39a65c889e86cf945729f9fd560d303"
+  ],
+  "occupancy_before": [
+    "1893137 ps               800  0.0",
+    "1893133 python3         55.0  0.0",
+    "  10538 falcon-sensor-b 19.9  1.7",
+    " 729286 codex            2.4  0.9",
+    "      1 systemd          0.8  0.0",
+    "   7526 xds-server       0.4  0.0",
+    "   7527 envoy            0.3  0.0",
+    " 609972 systemd-journal  0.2  0.3",
+    "  11704 applied-devbox-  0.2  0.0",
+    " 609985 redis-server     0.2  0.0",
+    "1247925 codex-code-mode  0.2  0.0",
+    "   1367 containerd       0.2  0.0",
+    "1385573 devbox-agent     0.2  0.0",
+    "   1275 dbus-daemon      0.1  0.0",
+    " 609988 systemd-resolve  0.1  0.0",
+    " 335089 dockerd          0.1  0.1",
+    "   7528 dns-responder    0.1  0.0",
+    "  13241 git              0.1  0.1",
+    "1726164 codex            0.1  0.0",
+    "     16 rcu_preempt      0.0  0.0"
+  ],
+  "metadata_affinity": [
+    8
+  ]
+}

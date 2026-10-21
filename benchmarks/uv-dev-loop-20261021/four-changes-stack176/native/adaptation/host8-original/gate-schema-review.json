@@ -1,0 +1,54 @@
+{
+  "checked_at": "2026-10-21T12:34:48.521097+00:00",
+  "scope": "Gate-schema check on existing historical analyses only; no Cargo, statistical resampling, or new observations",
+  "driver_sha256": "4e75a11fac626f36f2416ca869765d92d1ad7901e5076c3ad291e3f8dcdaf4b4",
+  "prior_driver_sha256": "454b1b3104c2f7198a84bbc3af917e41bec11aa5b46aaca480a167f18a507e4a",
+  "non_gate_ast_unchanged": true,
+  "cases": [
+    {
+      "directory": "work/remote-native-8/remote/results/check-build-output-remap-loader-v2-pr175-native-confirmation",
+      "analysis_sha256": "2c9b8ae821114ddc4bd18863d67b1b7afa1b54ceded9dfa73315627289b5244f",
+      "expected_gate_pass": false,
+      "observed_gate": {
+        "passes_native_gate": false,
+        "gate_checks": {
+          "fixed_30_group_pairs": true,
+          "at_least_one_percent": false,
+          "positive_99_percent_lower_bound": false,
+          "two_sided_sign_p_at_most_0_01": false,
+          "both_orders_positive": true
+        },
+        "reduction": 0.0040698932118293785,
+        "interval_99": [
+          -0.003373205038102345,
+          0.011307916044643873
+        ],
+        "sign_p": 0.016124801710247993,
+        "scope": "Independent 30 group pairs; eight repetitions are summed within each variant group, with no pooling or extension."
+      }
+    },
+    {
+      "directory": "work/remote-native-8/remote/results/test-build-output-remap-loader-v2-pr175-native-confirmation",
+      "analysis_sha256": "f05690ac5163081b084a2ca19dcf7667b67fbd6b827aa30072465771717f8757",
+      "expected_gate_pass": false,
+      "observed_gate": {
+        "passes_native_gate": false,
+        "gate_checks": {
+          "fixed_30_group_pairs": true,
+          "at_least_one_percent": false,
+          "positive_99_percent_lower_bound": true,
+          "two_sided_sign_p_at_most_0_01": true,
+          "both_orders_positive": true
+        },
+        "reduction": 0.008084963878890794,
+        "interval_99": [
+          0.0014941270385667726,
+          0.01543692469151492
+        ],
+        "sign_p": 0.005222879350185394,
+        "scope": "Independent 30 group pairs; eight repetitions are summed within each variant group, with no pooling or extension."
+      }
+    }
+  ],
+  "state": "passed"
+}

@@ -1,0 +1,82 @@
+{
+  "state": "complete",
+  "started_at": "2026-10-21T12:58:12.275207+00:00",
+  "seal_sha256": "cd62b627b91cd6ec8d2592040cf88490a39a65c889e86cf945729f9fd560d303",
+  "completed": [
+    {
+      "workflow": "check",
+      "directory": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/results/check-four-changes-stack176-5a16c750-native-local-confirmation",
+      "passes_native_gate": false,
+      "gate_checks": {
+        "fixed_30_group_pairs": true,
+        "at_least_one_percent": true,
+        "positive_99_percent_lower_bound": false,
+        "two_sided_sign_p_at_most_0_01": false,
+        "both_orders_positive": true
+      },
+      "reduction": 0.030765338041943258,
+      "interval_99": [
+        -0.024453000583226858,
+        0.08323601310664508
+      ],
+      "sign_p": 0.855535551905632,
+      "scope": "Independent 30 group pairs; eight repetitions are summed within each variant group, with no pooling or extension."
+    },
+    {
+      "workflow": "test",
+      "directory": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/results/test-four-changes-stack176-5a16c750-native-local-confirmation",
+      "passes_native_gate": false,
+      "gate_checks": {
+        "fixed_30_group_pairs": true,
+        "at_least_one_percent": true,
+        "positive_99_percent_lower_bound": false,
+        "two_sided_sign_p_at_most_0_01": false,
+        "both_orders_positive": false
+      },
+      "reduction": 0.010294820382232839,
+      "interval_99": [
+        -0.039185660308414416,
+        0.05324713841995121
+      ],
+      "sign_p": 0.20048842206597328,
+      "scope": "Independent 30 group pairs; eight repetitions are summed within each variant group, with no pooling or extension."
+    }
+  ],
+  "workflow": "test",
+  "quiet": {
+    "process_snapshot": [
+      "  10538 falcon-sensor-b 20.0  1.7",
+      " 729286 codex            2.5  0.9",
+      "      1 systemd          0.8  0.0",
+      "   7526 xds-server       0.4  0.0",
+      "   7527 envoy            0.3  0.0",
+      "1893138 python3          0.3  0.0",
+      " 609972 systemd-journal  0.2  0.3",
+      "  11704 applied-devbox-  0.2  0.0",
+      " 609985 redis-server     0.2  0.0",
+      "1247925 codex-code-mode  0.2  0.0",
+      "1913011 kworker/u128:2-  0.2  0.0",
+      "   1367 containerd       0.2  0.0",
+      "1385573 devbox-agent     0.2  0.0",
+      "   1275 dbus-daemon      0.1  0.0",
+      " 609988 systemd-resolve  0.1  0.0",
+      "1880792 kworker/u128:0-  0.1  0.0",
+      " 335089 dockerd          0.1  0.1",
+      "   7528 dns-responder    0.1  0.0",
+      "  13241 git              0.1  0.1",
+      "1726164 codex            0.1  0.0"
+    ],
+    "load_average": [
+      2.4140625,
+      2.47705078125,
+      2.57080078125
+    ]
+  },
+  "seed": 2026102174,
+  "completed_at": "2026-10-21T13:16:39.150876+00:00",
+  "uv": {
+    "commit": "3d82a6ad5a7eab8c68236553b7846517767c4b61",
+    "status": "",
+    "lock_sha256": "747296375bb1889689f3bbb1e0303bddd071d6a65117c00be50856448260d014"
+  }
+}

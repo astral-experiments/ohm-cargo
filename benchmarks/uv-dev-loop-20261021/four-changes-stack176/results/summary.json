@@ -1,0 +1,88 @@
+{
+  "check-ir-confirmation": {
+    "gate_checks": {
+      "at_least_one_percent": true,
+      "both_orders_positive": true,
+      "fixed_12_pairs": true,
+      "positive_99_percent_lower_bound": true,
+      "two_sided_sign_p_at_most_0_01": true
+    },
+    "interval_99_percent": [
+      9.293974942716721,
+      9.508430914081423
+    ],
+    "losses": 0,
+    "pairs": 12,
+    "passes_instruction_gate": true,
+    "reduction_percent": 9.356119510711846,
+    "seed": 2026102171,
+    "sign_p": 0.00048828125,
+    "warmup_pairs": 2,
+    "wins": 12
+  },
+  "check-native-confirmation": {
+    "gate_checks": {
+      "at_least_one_percent": true,
+      "both_orders_positive": true,
+      "fixed_30_group_pairs": true,
+      "positive_99_percent_lower_bound": false,
+      "two_sided_sign_p_at_most_0_01": false
+    },
+    "group_pairs": 30,
+    "interval_99_percent": [
+      -2.445300058322686,
+      8.323601310664507
+    ],
+    "losses": 14,
+    "passes_native_gate": false,
+    "reduction_percent": 3.0765338041943258,
+    "repetitions_per_variant": 8,
+    "seed": 2026102173,
+    "sign_p": 0.855535551905632,
+    "warmup_group_pairs": 2,
+    "wins": 16
+  },
+  "test-ir-confirmation": {
+    "gate_checks": {
+      "at_least_one_percent": true,
+      "both_orders_positive": true,
+      "fixed_12_pairs": true,
+      "positive_99_percent_lower_bound": true,
+      "two_sided_sign_p_at_most_0_01": true
+    },
+    "interval_99_percent": [
+      8.04199496707173,
+      8.345729790971102
+    ],
+    "losses": 0,
+    "pairs": 12,
+    "passes_instruction_gate": true,
+    "reduction_percent": 8.207830328351983,
+    "seed": 2026102172,
+    "sign_p": 0.00048828125,
+    "warmup_pairs": 2,
+    "wins": 12
+  },
+  "test-native-confirmation": {
+    "gate_checks": {
+      "at_least_one_percent": true,
+      "both_orders_positive": false,
+      "fixed_30_group_pairs": true,
+      "positive_99_percent_lower_bound": false,
+      "two_sided_sign_p_at_most_0_01": false
+    },
+    "group_pairs": 30,
+    "interval_99_percent": [
+      -3.9185660308414416,
+      5.324713841995122
+    ],
+    "losses": 11,
+    "passes_native_gate": false,
+    "reduction_percent": 1.0294820382232839,
+    "repetitions_per_variant": 8,
+    "seed": 2026102174,
+    "sign_p": 0.20048842206597328,
+    "warmup_group_pairs": 2,
+    "wins": 19
+  }
+}

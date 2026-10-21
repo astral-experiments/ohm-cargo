@@ -1,0 +1,1432 @@
+diff --git a/doc/book/src/reference/build-cache.md b/doc/book/src/reference/build-cache.md
+index 72e8db65d632e2bc817b256bd1d3a7b56b6ab632..e0a3429a8551217edd7e4a8df1bce7d2d1063c58 100644
+--- a/doc/book/src/reference/build-cache.md
++++ b/doc/book/src/reference/build-cache.md
+@@ -206,10 +206,24 @@ context is reclaimed. Dry runs open the database read-only.
+ Cleanup runs only when you explicitly invoke `cargo +ohm gc`; builds, tests,
+ worktree commands, and upgrades do not trigger it.
+ 
+-Cleanup skips a root while it is in use. Builds, tests, and programs launched by
+-this version of Cargo retain a shared lease for their lifetime, including after
+-Cargo exits. Older Cargo versions may only hold compilation locks, so their
+-running programs do not have the same protection.
++Cleanup skips contexts that are in use and continues reclaiming unrelated
++contexts. Builds, tests, and programs launched by this version of Cargo retain a
++shared lease on their compiler context for their lifetime, including after Cargo
++exits. A running program therefore does not prevent cleanup of obsolete compiler
++contexts elsewhere in the same shared directory. Dependencies and ThinLTO objects
++within an actively leased context remain protected. GC reports each busy context
++alongside the files and bytes it reclaimed; already-retired trash can be removed
++even while a context is busy.
++
++New contexts use a `v2-` namespace and a versioned provenance record so older
++collectors preserve them. Existing caches remain eligible under their original
++root and profile locks: an older build can still postpone legacy cleanup, without
++blocking cleanup of unused `v2-` contexts. Older Cargo versions may only hold
++compilation locks, so their running programs do not have the same protection.
++Context lock files have stable names outside artifact directories and remain
++after collection; they need no timestamp updates or per-build records.
++Recognized contexts without usage records are reclaimable under the same locks,
++including when a build could not enroll its new context in the database.
+ 
+ `cargo clean` cleans the current workspace's target, including private
+ intermediates and incremental state. A target-local lock prevents cleaning state
+diff --git a/src/compiler/build_runner/compilation_files.rs b/src/compiler/build_runner/compilation_files.rs
+index 7c719718f5ac095c9bc36332d16dfb7ae092c5e8..6495c3cac5b1876da3da213981dd24235c4a50e3 100644
+--- a/src/compiler/build_runner/compilation_files.rs
++++ b/src/compiler/build_runner/compilation_files.rs
+@@ -600,6 +600,9 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
+                     OhmNativeToolTrust::BuildScripts => format!("{rustc}-native-build-scripts"),
+                     OhmNativeToolTrust::All => format!("{rustc}-native-all"),
+                 };
++                // Older collectors must not mistake context-scoped artifacts for
++                // legacy data protected by their root-wide lock.
++                let rustc = format!("v2-{rustc}");
+ 
+                 let isolated_clippy = trusted_context
+                     && matches!(
+@@ -656,7 +659,7 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
+         } else {
+             None
+         };
+-        let mut files = CompilationFiles {
++        CompilationFiles {
+             ws: build_runner.bcx.ws,
+             host,
+             target,
+@@ -665,10 +668,22 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
+             shared_registry_cache,
+             metas,
+             outputs,
+-        };
++        }
++    }
+ 
+-        if !files.shared_cache_compiler_directories_are_safe(build_runner)
+-            && let Some(cache) = files.shared_registry_cache.as_mut()
++    /// Protects the context before inspecting generated compiler search paths.
++    pub(super) fn prepare_shared_context(
++        &mut self,
++        build_runner: &mut BuildRunner<'a, 'gctx>,
++    ) -> CargoResult<()> {
++        if let Some(cache) = &self.shared_registry_cache {
++            build_runner
++                .compilation
++                .scope_consumer_lease(&cache.rustc)?;
++        }
++
++        if !self.shared_cache_compiler_directories_are_safe(build_runner)
++            && let Some(cache) = self.shared_registry_cache.as_mut()
+         {
+             cache.immutable_units.clear();
+             cache.trusted_context = false;
+@@ -676,7 +691,7 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
+             cache.workspace = Layout::shared_workspace_namespace(build_runner.bcx.ws);
+         }
+ 
+-        files
++        Ok(())
+     }
+ 
+     /// Enrolls immutable ownership and starts context usage tracking, including cache hits.
+diff --git a/src/compiler/build_runner/mod.rs b/src/compiler/build_runner/mod.rs
+index bb2206bddd2fdac714b1d61d44ba409b8347a4ef..2ef9d0a7df24c4ec0f2ea9d4a0a2bf339d6ecf9d 100644
+--- a/src/compiler/build_runner/mod.rs
++++ b/src/compiler/build_runner/mod.rs
+@@ -894,6 +894,10 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
+ 
+         self.collect_doc_merge_info()?;
+ 
++        // Compilation can replace dep-info, so share parsed dependencies only after all jobs finish.
++        // A single root cannot reuse these paths and should not pay to retain them.
++        let mut dep_info_cache = (self.bcx.roots.len() > 1).then(HashMap::default);
++
+         // Collect the result of the build into `self.compilation`.
+         for unit in &self.bcx.roots {
+             self.collect_tests_and_executables(unit)?;
+@@ -954,7 +958,7 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
+                 });
+             }
+ 
+-            super::output_depinfo(&mut self, unit)?;
++            super::output_depinfo(&self, unit, &mut dep_info_cache)?;
+         }
+ 
+         Ok(self.compilation)
+@@ -1285,7 +1289,8 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
+ 
+         self.record_units_requiring_metadata();
+ 
+-        let files = CompilationFiles::new(self, host_layout, targets);
++        let mut files = CompilationFiles::new(self, host_layout, targets);
++        files.prepare_shared_context(self)?;
+         self.files = Some(files);
+         self.lock_manager
+             .reserve_shared_cache(self, &self.exclusive_shared_cache_units)?;
+diff --git a/src/compiler/compilation.rs b/src/compiler/compilation.rs
+index eae1bc436eee6e0e225860920398d8625862ac33..6277ec47ef51b0da33b29fe81785e08f8ab4841f 100644
+--- a/src/compiler/compilation.rs
++++ b/src/compiler/compilation.rs
+@@ -157,13 +157,6 @@ pub struct Compilation<'gctx> {
+ 
+ impl<'gctx> Compilation<'gctx> {
+     pub fn new<'a>(bcx: &BuildContext<'a, 'gctx>) -> CargoResult<Compilation<'gctx>> {
+-        // Acquire the root-wide lease before Layout takes profile/workspace locks.
+-        // It belongs to Compilation so cargo run/test/doc retain it after BuildRunner exits.
+-        let consumer_lease = bcx
+-            .ws
+-            .shared_registry_cache_enabled()
+-            .then(|| ConsumerLease::acquire(bcx.ws.configured_build_dir().as_path_unlocked()))
+-            .transpose()?;
+         let private_lease = bcx
+             .ws
+             .shared_registry_cache_enabled()
+@@ -237,13 +230,22 @@ impl<'gctx> Compilation<'gctx> {
+                 .ws
+                 .shared_registry_cache_enabled()
+                 .then(|| bcx.ws.configured_build_dir().into_path_unlocked()),
+-            consumer_lease,
++            consumer_lease: None,
+             private_lease,
+             lint_warning_count: 0,
+             ready_tests: None,
+         })
+     }
+ 
++    /// Acquires protection once the context is known, before inspecting its artifacts.
++    /// The context lease remains with run/test/doc after BuildRunner exits.
++    pub(super) fn scope_consumer_lease(&mut self, context: &str) -> CargoResult<()> {
++        if let Some(root) = &self.shared_registry_root {
++            self.consumer_lease = Some(ConsumerLease::acquire_context(root, context)?);
++        }
++        Ok(())
++    }
++
+     /// Install early-test signal handling only once the scheduler can service it.
+     /// Build preparation must retain ordinary interrupts while acquiring locks.
+     pub(crate) fn prepare_ready_tests(&mut self, bcx: &BuildContext<'_, 'gctx>) {
+diff --git a/src/compiler/fingerprint/mod.rs b/src/compiler/fingerprint/mod.rs
+index f94aaba07d58f8b2383d461c4b82027b35b798d0..1a7e8dc436499215e2a85587f9aa73a41068f967 100644
+--- a/src/compiler/fingerprint/mod.rs
++++ b/src/compiler/fingerprint/mod.rs
+@@ -3013,7 +3013,7 @@ pub fn prepare_init(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> Carg
+ 
+ /// Returns the location that the dep-info file will show up at
+ /// for the [`Unit`] specified.
+-pub fn dep_info_loc(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> PathBuf {
++pub fn dep_info_loc(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> PathBuf {
+     build_runner.files().fingerprint_file_path(unit, "dep-")
+ }
+ 
+diff --git a/src/compiler/mod.rs b/src/compiler/mod.rs
+index f5c2ed3ac2ec58e34aa9f86a4bb2eb0c88c0bd5d..4798704fe931055b998ea30c19f5b26fd5d44dbb 100644
+--- a/src/compiler/mod.rs
++++ b/src/compiler/mod.rs
+@@ -2027,6 +2027,9 @@ fn link_targets(
+ ) -> CargoResult<Work> {
+     let bcx = build_runner.bcx;
+     let outputs = build_runner.outputs(unit)?;
++    if !bcx.build_config.emit_json() && outputs.iter().all(|output| output.hardlink.is_none()) {
++        return Ok(Work::noop());
++    }
+     let export_dir = build_runner.files().export_dir();
+     let package_id = unit.pkg.package_id();
+     let manifest_path = PathBuf::from(unit.pkg.manifest_path());
+@@ -3526,12 +3529,18 @@ impl OutputOptions {
+ /// contains a `Send`-able copy of the manifest information that we need for the
+ /// enriched errors.
+ struct ManifestErrorContext {
+-    /// The path to the manifest.
++    /// The path to the manifest, also used by machine-readable compiler messages.
+     path: PathBuf,
++    /// Source information available for annotating compiler diagnostics.
++    annotation: Option<ManifestDiagnosticContext>,
++}
++
++/// Retained manifest source and dependency information for diagnostic annotations.
++struct ManifestDiagnosticContext {
+     /// The locations of various spans within the manifest.
+-    spans: Option<Arc<toml::Spanned<toml::de::DeTable<'static>>>>,
++    spans: Arc<toml::Spanned<toml::de::DeTable<'static>>>,
+     /// The raw manifest contents.
+-    contents: Option<String>,
++    contents: String,
+     /// A lookup for all the unambiguous renamings, mapping from the original package
+     /// name to the renamed one.
+     rename_table: HashMap<InternedString, InternedString>,
+@@ -3635,6 +3644,9 @@ fn on_stderr_line_inner(
+ 
+     // Returns `true` if the diagnostic was modified.
+     let add_pub_in_priv_diagnostic = |diag: &mut String| -> bool {
++        let Some(annotation) = &manifest.annotation else {
++            return false;
++        };
+         // We are parsing the compiler diagnostic here, as this information isn't
+         // currently exposed elsewhere.
+         // At the time of writing this comment, rustc emits two different
+@@ -3646,10 +3658,9 @@ fn on_stderr_line_inner(
+         static PRIV_DEP_REGEX: LazyLock<Regex> =
+             LazyLock::new(|| Regex::new("from private dependency '([A-Za-z0-9-_]+)'").unwrap());
+         if let Some(crate_name) = PRIV_DEP_REGEX.captures(diag).and_then(|m| m.get(1))
+-            && let Some(ref contents) = manifest.contents
+-            && let Some(span) = manifest.find_crate_span(crate_name.as_str())
++            && let Some(span) = annotation.find_crate_span(crate_name.as_str())
+         {
+-            let rel_path = pathdiff::diff_paths(&manifest.path, &manifest.cwd)
++            let rel_path = pathdiff::diff_paths(&manifest.path, &annotation.cwd)
+                 .unwrap_or_else(|| manifest.path.clone())
+                 .display()
+                 .to_string();
+@@ -3658,13 +3669,13 @@ fn on_stderr_line_inner(
+                 crate_name.as_str()
+             )))
+             .element(
+-                Snippet::source(contents)
++                Snippet::source(&annotation.contents)
+                     .path(rel_path)
+                     .annotation(AnnotationKind::Context.span(span)),
+             )];
+ 
+             let rendered = Renderer::styled()
+-                .term_width(manifest.term_width)
++                .term_width(annotation.term_width)
+                 .render(&report);
+             diag.push_str(&rendered);
+             diag.push('\n');
+@@ -3926,6 +3937,18 @@ fn on_stderr_line_inner(
+ 
+ impl ManifestErrorContext {
+     fn new(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> ManifestErrorContext {
++        ManifestErrorContext {
++            path: unit.pkg.manifest_path().to_owned(),
++            annotation: ManifestDiagnosticContext::new(build_runner, unit),
++        }
++    }
++}
++
++impl ManifestDiagnosticContext {
++    /// Skips annotation-only allocations when source spans or contents are unavailable.
++    fn new(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> Option<Self> {
++        let spans = unit.pkg.manifest().document_rc()?;
++        let contents = unit.pkg.manifest().contents()?;
+         let mut duplicates = HashSet::default();
+         let mut rename_table = HashMap::default();
+ 
+@@ -3946,10 +3969,9 @@ impl ManifestErrorContext {
+         }
+ 
+         let bcx = build_runner.bcx;
+-        ManifestErrorContext {
+-            path: unit.pkg.manifest_path().to_owned(),
+-            spans: unit.pkg.manifest().document_rc(),
+-            contents: unit.pkg.manifest().contents().map(String::from),
++        Some(Self {
++            spans,
++            contents: contents.to_owned(),
+             requested_kinds: bcx.target_data.requested_kinds().to_owned(),
+             host_name: bcx.rustc().host,
+             rename_table,
+@@ -3966,7 +3988,7 @@ impl ManifestErrorContext {
+                 .err_width()
+                 .diagnostic_terminal_width()
+                 .unwrap_or(cargo_util_terminal::report::renderer::DEFAULT_TERM_WIDTH),
+-        }
++        })
+     }
+ 
+     fn requested_target_names(&self) -> impl Iterator<Item = &str> {
+@@ -3990,9 +4012,7 @@ impl ManifestErrorContext {
+     /// baz = { path = "../bar", package = "bar" }
+     /// ```
+     fn find_crate_span(&self, unrenamed: &str) -> Option<Range<usize>> {
+-        let Some(ref spans) = self.spans else {
+-            return None;
+-        };
++        let spans = &self.spans;
+ 
+         let orig_name = self.rename_table.get(unrenamed)?.as_str();
+ 
+diff --git a/src/compiler/output_depinfo.rs b/src/compiler/output_depinfo.rs
+index f9580641f40592179a48e1ff2db75b819187e17e..03f32c1ce1fc77f6599525a912432d3b1bd1fd34 100644
+--- a/src/compiler/output_depinfo.rs
++++ b/src/compiler/output_depinfo.rs
+@@ -1,7 +1,7 @@
+ //! dep-info files for external build system integration.
+ //! See [`output_depinfo`] for more.
+ 
+-use crate::util::data_structures::HashSet;
++use crate::util::data_structures::{HashMap, HashSet};
+ use cargo_util::paths::normalize_path;
+ use std::collections::BTreeSet;
+ use std::io::{BufWriter, Write};
+@@ -44,9 +44,10 @@ fn render_filename<P: AsRef<Path>>(path: P, basedir: Option<&str>) -> CargoResul
+ /// [fingerprint dep-info]: super::fingerprint#fingerprint-dep-info-files
+ fn add_deps_for_unit(
+     deps: &mut BTreeSet<PathBuf>,
+-    build_runner: &mut BuildRunner<'_, '_>,
++    build_runner: &BuildRunner<'_, '_>,
+     unit: &Unit,
+     visited: &mut HashSet<Unit>,
++    dep_info_cache: &mut Option<HashMap<Unit, Vec<PathBuf>>>,
+ ) -> CargoResult<()> {
+     if !visited.insert(unit.clone()) {
+         return Ok(());
+@@ -55,23 +56,31 @@ fn add_deps_for_unit(
+     // units representing the execution of a build script don't actually
+     // generate a dep info file, so we just keep on going below
+     if !unit.mode.is_run_custom_build() {
+-        // Add dependencies from rustc dep-info output (stored in fingerprint directory)
+-        let dep_info_loc = fingerprint::dep_info_loc(build_runner, unit);
+-        if let Some(paths) = fingerprint::parse_dep_info(
+-            unit.pkg.root(),
+-            &build_runner.files().build_root(unit),
+-            &dep_info_loc,
+-        )? {
+-            for path in paths.files.into_keys() {
+-                deps.insert(path);
+-            }
++        if let Some(paths) = dep_info_cache.as_ref().and_then(|cache| cache.get(unit)) {
++            deps.extend(paths.iter().cloned());
+         } else {
+-            debug!(
+-                "can't find dep_info for {:?} {}",
+-                unit.pkg.package_id(),
+-                unit.target
+-            );
+-            return Err(internal("dep_info missing"));
++            // Add dependencies from rustc dep-info output (stored in fingerprint directory)
++            let dep_info_loc = fingerprint::dep_info_loc(build_runner, unit);
++            if let Some(paths) = fingerprint::parse_dep_info(
++                unit.pkg.root(),
++                &build_runner.files().build_root(unit),
++                &dep_info_loc,
++            )? {
++                if let Some(cache) = dep_info_cache.as_mut() {
++                    let paths: Vec<_> = paths.files.into_keys().collect();
++                    deps.extend(paths.iter().cloned());
++                    cache.insert(unit.clone(), paths);
++                } else {
++                    deps.extend(paths.files.into_keys());
++                }
++            } else {
++                debug!(
++                    "can't find dep_info for {:?} {}",
++                    unit.pkg.package_id(),
++                    unit.target
++                );
++                return Err(internal("dep_info missing"));
++            }
+         }
+     }
+ 
+@@ -104,10 +113,9 @@ fn add_deps_for_unit(
+     }
+ 
+     // Recursively traverse all transitive dependencies
+-    let unit_deps = Vec::from(build_runner.unit_deps(unit)); // Create vec due to mutable borrow.
+-    for dep in unit_deps {
++    for dep in build_runner.unit_deps(unit) {
+         if dep.unit.is_local() {
+-            add_deps_for_unit(deps, build_runner, &dep.unit, visited)?;
++            add_deps_for_unit(deps, build_runner, &dep.unit, visited, dep_info_cache)?;
+         }
+     }
+     Ok(())
+@@ -129,12 +137,37 @@ fn add_deps_for_unit(
+ /// under the assumption that changes to them can be detected via changes to
+ /// `Cargo.lock`.
+ ///
++/// Share `dep_info_cache` only across roots of the same completed build.
++///
+ /// [`fingerprint`]: super::fingerprint#dep-info-files
+-pub fn output_depinfo(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResult<()> {
++pub fn output_depinfo(
++    build_runner: &BuildRunner<'_, '_>,
++    unit: &Unit,
++    dep_info_cache: &mut Option<HashMap<Unit, Vec<PathBuf>>>,
++) -> CargoResult<()> {
++    let outputs = build_runner.outputs(unit)?;
++    let mut outputs = outputs
++        .iter()
++        .filter(|output| {
++            !matches!(
++                output.flavor,
++                FileFlavor::DebugInfo
++                    | FileFlavor::Auxiliary
++                    | FileFlavor::Sbom
++                    | FileFlavor::Unremap
++            )
++        })
++        .filter_map(|output| output.hardlink.as_ref())
++        .peekable();
++    if outputs.peek().is_none() {
++        return Ok(());
++    }
++
+     let bcx = build_runner.bcx;
+     let mut deps = BTreeSet::new();
+     let mut visited = HashSet::default();
+-    let success = add_deps_for_unit(&mut deps, build_runner, unit, &mut visited).is_ok();
++    let success =
++        add_deps_for_unit(&mut deps, build_runner, unit, &mut visited, dep_info_cache).is_ok();
+     let basedir_string;
+     let basedir = match bcx.gctx.build_config()?.dep_info_basedir.clone() {
+         Some(value) => {
+@@ -153,19 +186,28 @@ pub fn output_depinfo(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> Ca
+         .map(|f| render_filename(f, basedir))
+         .collect::<CargoResult<Vec<_>>>()?;
+ 
+-    for output in build_runner.outputs(unit)?.iter().filter(|o| {
+-        !matches!(
+-            o.flavor,
+-            FileFlavor::DebugInfo | FileFlavor::Auxiliary | FileFlavor::Sbom | FileFlavor::Unremap
+-        )
+-    }) {
+-        if let Some(ref link_dst) = output.hardlink {
+-            let output_path = link_dst.with_extension("d");
+-            if success {
+-                let target_fn = render_filename(link_dst, basedir)?;
+-
+-                // If nothing changed don't recreate the file which could alter
+-                // its mtime
++    // Preserve the legacy target selection for crate types sharing a dep-info path.
++    let single_output = outputs.clone().nth(1).is_none();
++    for link_dst in outputs {
++        let output_path = link_dst.with_extension("d");
++        if success {
++            let target_fn = render_filename(link_dst, basedir)?;
++
++            if single_output {
++                let mut contents = Vec::new();
++                write!(contents, "{}:", target_fn)?;
++                for dep in &deps {
++                    write!(contents, " {}", dep)?;
++                }
++                writeln!(contents)?;
++
++                // Preserve the mtime when the complete rendered dep-info is unchanged.
++                if paths::read_bytes(&output_path).is_ok_and(|previous| previous == contents) {
++                    continue;
++                }
++                paths::write(output_path, contents)?;
++            } else {
++                // The dependency-only comparison can retain an earlier output's target.
+                 if let Ok(previous) = fingerprint::parse_rustc_dep_info(&output_path) {
+                     if previous
+                         .files
+@@ -177,20 +219,19 @@ pub fn output_depinfo(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> Ca
+                     }
+                 }
+ 
+-                // Otherwise write it all out
+                 let mut outfile = BufWriter::new(paths::create(output_path)?);
+                 write!(outfile, "{}:", target_fn)?;
+                 for dep in &deps {
+                     write!(outfile, " {}", dep)?;
+                 }
+                 writeln!(outfile)?;
+-
+-            // dep-info generation failed, so delete output file. This will
+-            // usually cause the build system to always rerun the build
+-            // rule, which is correct if inefficient.
+-            } else if output_path.exists() {
+-                paths::remove_file(output_path)?;
+             }
++
++        // dep-info generation failed, so delete output file. This will
++        // usually cause the build system to always rerun the build
++        // rule, which is correct if inefficient.
++        } else if output_path.exists() {
++            paths::remove_file(output_path)?;
+         }
+     }
+     Ok(())
+diff --git a/src/ops/cargo_worktree/mod.rs b/src/ops/cargo_worktree/mod.rs
+index d7d1d548e651a4e07ef924b08d391ce05e1ac3ef..797670bd306e7a95cea0dcf1dc886d9b6607c4be 100644
+--- a/src/ops/cargo_worktree/mod.rs
++++ b/src/ops/cargo_worktree/mod.rs
+@@ -167,8 +167,8 @@ struct Seeded {
+ 
+ /// Clones private state between target directories while holding their local guards.
+ ///
+-/// The global consumer lease protects registry references without stopping builds
+-/// in other worktrees. The new recipient cannot be another seeding operation's donor.
++/// Consumer leases protect legacy and scoped registry references without stopping
++/// builds in other worktrees. The new recipient cannot be another seeding operation's donor.
+ fn seed_shared_build(donor: &Workspace<'_>, recipient: &Workspace<'_>) -> CargoResult<Seeded> {
+     let shared_root = donor.canonical_build_path(donor.configured_build_dir().as_path_unlocked());
+     ensure!(
+@@ -208,6 +208,8 @@ fn seed_shared_build(donor: &Workspace<'_>, recipient: &Workspace<'_>) -> CargoR
+             seeded.skipped_profiles += 1;
+             continue;
+         }
++        let _context_leases =
++            crate::workspace::build_cache_gc_lease::seed_leases(&shared_root, &source)?;
+         let _context_uses = if cfg!(any(target_os = "linux", target_os = "macos")) {
+             crate::workspace::build_cache_gc::record_seed_contexts(&shared_root, &source)
+                 .unwrap_or_else(|error| {
+diff --git a/src/workspace/build_cache_gc/mod.rs b/src/workspace/build_cache_gc/mod.rs
+index a9c35081bfa92c744117498600509b8eaa1fa47e..72233a043bc5ccf44392c588e95d750e6936eeb2 100644
+--- a/src/workspace/build_cache_gc/mod.rs
++++ b/src/workspace/build_cache_gc/mod.rs
+@@ -13,7 +13,7 @@ use serde::{Deserialize, Serialize};
+ 
+ use crate::CargoResult;
+ use crate::compiler::Layout;
+-use crate::util::data_structures::HashSet;
++use crate::util::data_structures::{HashMap, HashSet};
+ use crate::util::flock::try_lock_exclusive;
+ 
+ pub(crate) const DIRECTORY: &str = ".ohm-gc-v1";
+@@ -101,7 +101,7 @@ pub(crate) fn record_seed_contexts(root: &Path, source: &Path) -> CargoResult<Ve
+                 }
+                 let Some(record) =
+                     read_record::<ContextRecord>(&records.join(format!("{context}.json")))
+-                        .filter(|record| record.version == 1 && record.context == context)
++                        .filter(|record| record.supported() && record.context == context)
+                 else {
+                     continue;
+                 };
+@@ -300,6 +300,16 @@ fn installed_ohm_version(compiler: &FileIdentity, driver: &FileIdentity) -> Opti
+ }
+ 
+ impl ContextRecord {
++    /// Version 2 uses context-scoped leases and is opaque to older collectors.
++    fn supported(&self) -> bool {
++        self.version
++            == if scoped_context_name(&self.context) {
++                2
++            } else {
++                1
++            }
++    }
++
+     fn retired(&self) -> bool {
+         [
+             (&self.compiler, &self.compiler_anchor),
+@@ -360,9 +370,84 @@ pub(crate) struct Summary {
+     pub counts: FileCounts,
+     pub pending: bool,
+     pub busy: bool,
++    pub skipped: Vec<String>,
+     pub details: Vec<String>,
+ }
+ 
++impl Summary {
++    fn skip(&mut self, namespace: &Namespace) {
++        self.busy = true;
++        let detail = match namespace.scoped_context() {
++            Some(context) => format!("context {context} (in use)"),
++            None => "legacy caches (a build, program, or older collector is using this cache)"
++                .to_owned(),
++        };
++        if self.skipped.len() < 32 && !self.skipped.contains(&detail) {
++            self.skipped.push(detail);
++        }
++    }
++}
++
++/// One probe per protection domain; busy domains do not block unrelated ones.
++/// Dry runs release probes immediately, before counting any artifact trees.
++#[derive(Default)]
++struct CollectionLocks {
++    // A missing key context denotes legacy protection; a missing value is busy.
++    domains: HashMap<Option<String>, Option<Vec<CollectorLock>>>,
++}
++
++impl CollectionLocks {
++    fn acquire(
++        &mut self,
++        root: &Path,
++        profiles: &[PathBuf],
++        namespace: &Namespace,
++        dry_run: bool,
++    ) -> CargoResult<bool> {
++        let context = namespace.scoped_context().map(str::to_owned);
++        if let Some(guards) = self.domains.get(&context) {
++            return Ok(guards.is_some());
++        }
++        for profile in profiles {
++            ensure!(
++                !crate::compiler::layout::shared_registry_directory_is_nfs(profile)?,
++                "build-cache reclamation does not support NFS profiles"
++            );
++        }
++        let mut paths = if let Some(context) = &context {
++            vec![super::build_cache_gc_lease::context_lock(root, context)]
++        } else {
++            let mut paths = vec![root.join(DIRECTORY).join(CONSUMERS_LOCK)];
++            paths.extend(
++                profiles
++                    .iter()
++                    .map(|profile| profile.join(".cargo-build-lock")),
++            );
++            // Older Cargo's optional ThinLTO pruner runs after releasing profile locks.
++            if plain_directory(&root.join(THINLTO)) {
++                paths.push(root.join(THINLTO).join(".prune-lock"));
++            }
++            paths
++        };
++        if dry_run {
++            paths.retain(|path| !absent(path));
++        }
++        let mut guards = Vec::new();
++        for path in paths {
++            let Some(guard) = try_lock(&path, !dry_run)? else {
++                self.domains.insert(context, None);
++                return Ok(false);
++            };
++            guards.push(guard);
++        }
++        if dry_run {
++            guards.clear();
++        }
++        self.domains.insert(context, Some(guards));
++        Ok(true)
++    }
++}
++
+ /// Cache payload totals exclude GC's own provenance and temporary staging files.
+ #[derive(Default, Debug, PartialEq, Eq)]
+ pub(crate) struct FileCounts {
+@@ -438,32 +523,14 @@ fn collect_with_lock_budget(
+     } else {
+         let Some(collector) = try_lock(&directory.join("collector.lock"), true)? else {
+             summary.busy = true;
++            summary
++                .skipped
++                .push(format!("{} (another GC is running)", root.display()));
+             return Ok(summary);
+         };
+         Some(collector)
+     };
+-    let consumers_path = directory.join(CONSUMERS_LOCK);
+-    if !dry_run || !absent(&consumers_path) {
+-        let Some(probe) = try_lock(&consumers_path, !dry_run)? else {
+-            summary.busy = true;
+-            return Ok(summary);
+-        };
+-        drop(probe);
+-    }
+     let tracker = Tracker::existing(root, dry_run)?;
+-    // Older Cargo versions prune the legacy ThinLTO layout at build completion,
+-    // after releasing their profile locks. Coordinate with that pruner too.
+-    let thinlto = root.join(THINLTO);
+-    let prune_lock = thinlto.join(".prune-lock");
+-    let _thinlto_pruner = if plain_directory(&thinlto) && (!dry_run || !absent(&prune_lock)) {
+-        let Some(guard) = try_lock(&prune_lock, !dry_run)? else {
+-            summary.busy = true;
+-            return Ok(summary);
+-        };
+-        Some(guard)
+-    } else {
+-        None
+-    };
+     let profiles = profiles(root)?;
+     let mut ready = Vec::new();
+     let mut trash_roots = profiles
+@@ -515,30 +582,14 @@ fn collect_with_lock_budget(
+         ready.push((namespace, paths));
+     }
+     if dry_run {
+-        let probe = if absent(&consumers_path) {
+-            None
+-        } else {
+-            let Some(probe) = try_lock(&consumers_path, false)? else {
+-                summary.busy = true;
+-                return Ok(summary);
+-            };
+-            Some(probe)
+-        };
+-        for profile in &profiles {
+-            ensure!(
+-                !crate::compiler::layout::shared_registry_directory_is_nfs(profile)?,
+-                "build-cache reclamation does not support NFS profiles"
+-            );
+-            let Some(_guard) = try_lock(&profile.join(".cargo-build-lock"), false)? else {
+-                summary.busy = true;
+-                return Ok(summary);
+-            };
+-        }
+-        drop(probe);
+-
+         // Preview every candidate without holding locks while counting artifacts.
++        let mut locks = CollectionLocks::default();
+         let mut sources = Vec::new();
+         for (namespace, paths) in ready {
++            if !locks.acquire(root, &profiles, &namespace, true)? {
++                summary.skip(&namespace);
++                continue;
++            }
+             let Some(detail) =
+                 namespace.detail(root, &profiles, now, current_ohm, tracker.as_ref())
+             else {
+@@ -588,35 +639,15 @@ fn collect_with_lock_budget(
+             RENAME_BUDGET
+         };
+         let deadline = Instant::now() + lock_budget;
+-        let Some(consumers) = try_lock(&consumers_path, false)? else {
+-            summary.busy = true;
+-            summary.pending = true;
+-            return Ok(summary);
+-        };
+-        if profiles != self::profiles(root)? {
+-            summary.pending = true;
+-            return Ok(summary);
+-        }
+-        let mut guards = Vec::new();
+-        for profile in &profiles {
+-            ensure!(
+-                !crate::compiler::layout::shared_registry_directory_is_nfs(profile)?,
+-                "build-cache reclamation does not support NFS profiles"
+-            );
+-            let Some(guard) = try_lock(&profile.join(".cargo-build-lock"), false)? else {
+-                summary.busy = true;
+-                return Ok(summary);
+-            };
+-            guards.push(guard);
+-        }
++        let mut locks = CollectionLocks::default();
+         let tracker = match tracker {
+             Some(tracker) => Some(tracker),
+             None => Tracker::existing(root, false)?,
+         };
+-        let transaction = tracker
+-            .as_ref()
+-            .map(|tracker| tracker.conn.unchecked_transaction())
+-            .transpose()?;
++        if let Some(tracker) = &tracker {
++            tracker.conn.busy_timeout(Duration::ZERO)?;
++        }
++        let mut transaction = None;
+         let mut remaining = rename_budget;
+         let mut records_remaining = rename_budget;
+         for (namespace, paths) in ready {
+@@ -627,9 +658,41 @@ fn collect_with_lock_budget(
+                 summary.pending = true;
+                 break;
+             }
++            if !locks.acquire(root, &profiles, &namespace, false)? {
++                summary.skip(&namespace);
++                continue;
++            }
++            // Busy contexts need no writer reservation. Once work is available,
++            // reserve before rechecking usage so a deferred transaction cannot
++            // fail to upgrade while another context records its activity.
++            if transaction.is_none()
++                && let Some(tracker) = &tracker
++            {
++                match rusqlite::Transaction::new_unchecked(
++                    &tracker.conn,
++                    rusqlite::TransactionBehavior::Immediate,
++                ) {
++                    Ok(guard) => transaction = Some(guard),
++                    Err(error)
++                        if error.sqlite_error_code() == Some(rusqlite::ErrorCode::DatabaseBusy) =>
++                    {
++                        summary.busy = true;
++                        summary
++                            .skipped
++                            .push(format!("{} (usage database is busy)", root.display()));
++                        break;
++                    }
++                    Err(error) => return Err(error.into()),
++                }
++            }
++            // A build may have added another profile since discovery. Do not
++            // forget a context unless every profile was included in retirement.
++            if matches!(namespace, Namespace::Context(_)) && profiles != self::profiles(root)? {
++                summary.pending = true;
++                break;
++            }
+             records_remaining -= 1;
+-            // A build may have enrolled a legacy context since discovery. Recheck
+-            // while both new consumers and older Cargo builds are excluded.
++            // Recheck usage while consumers of this namespace are excluded.
+             let Some(detail) =
+                 namespace.detail(root, &profiles, now, current_ohm, tracker.as_ref())
+             else {
+@@ -664,28 +727,22 @@ fn collect_with_lock_budget(
+         if let Some(transaction) = transaction {
+             transaction.commit()?;
+         }
+-        drop(guards);
+-        drop(consumers);
+-    }
+-    // Unlink only retired payloads, outside the build locks and in small batches.
+-    if let Some(probe) = try_lock(&consumers_path, false)? {
+-        drop(probe);
+-        let mut remaining = DELETE_BUDGET;
+-        for trash in trash_roots {
+-            drain_trash(&trash, &mut remaining, &mut summary, false)?;
+-        }
+-        let mut metadata_summary = Summary::default();
+-        drain_trash(
+-            &root.join(METADATA_TRASH),
+-            &mut remaining,
+-            &mut metadata_summary,
+-            false,
+-        )?;
+-        summary.deleted_entries += metadata_summary.deleted_entries;
+-        summary.pending |= metadata_summary.pending;
+-    } else {
+-        summary.busy = true;
+     }
++    // Retired paths are unreachable by consumers. Drain them even if a build
++    // starts or another context remains in use.
++    let mut remaining = DELETE_BUDGET;
++    for trash in trash_roots {
++        drain_trash(&trash, &mut remaining, &mut summary, false)?;
++    }
++    let mut metadata_summary = Summary::default();
++    drain_trash(
++        &root.join(METADATA_TRASH),
++        &mut remaining,
++        &mut metadata_summary,
++        false,
++    )?;
++    summary.deleted_entries += metadata_summary.deleted_entries;
++    summary.pending |= metadata_summary.pending;
+     Ok(summary)
+ }
+ 
+@@ -763,7 +820,7 @@ fn idle_dependencies(
+ ) -> Option<Vec<Namespace>> {
+     let tracker = tracker?;
+     let state = tracker.context(context).ok()??;
+-    if state.record.version != 1 || state.record.context != context {
++    if !state.record.supported() || state.record.context != context {
+         return None;
+     }
+     let cutoff = tracker::timestamp(now.checked_sub(CONTEXT_MAX_IDLE)?).ok()?;
+@@ -837,6 +894,19 @@ fn legacy_usage(root: &Path, context: &str) -> Option<Option<tracker::Timestamp>
+ }
+ 
+ impl Namespace {
++    fn scoped_context(&self) -> Option<&str> {
++        match self {
++            Self::Context(context)
++            | Self::Dependency { context, .. }
++            | Self::ThinLto { context, .. }
++                if scoped_context_name(context) =>
++            {
++                Some(context)
++            }
++            _ => None,
++        }
++    }
++
+     /// Missing legacy records permit eviction; malformed or newer records do not.
+     fn detail(
+         &self,
+@@ -851,7 +921,7 @@ impl Namespace {
+             Self::ThinLto { context, entry } => {
+                 // An unknown or malformed context never permits partial eviction.
+                 let state = tracker?.context(context).ok()??;
+-                if state.record.version != 1 || state.record.context != *context {
++                if !state.record.supported() || state.record.context != *context {
+                     return None;
+                 }
+                 let path = root.join(entry);
+@@ -902,11 +972,16 @@ impl Namespace {
+                         .is_some_and(|cutoff| last_used.is_some_and(|used| used <= cutoff));
+                     (state.record, expired)
+                 } else {
+-                    if legacy_context_name(id)
++                    if (legacy_context_name(id) || scoped_context_name(id))
+                         && safely_absent(root, &path)
+                         && safely_absent(root, &directory.join(LAST_USED).join(id))
+                     {
+-                        return Some(format!("legacy context {id} (no usage records)"));
++                        let kind = if scoped_context_name(id) {
++                            "untracked"
++                        } else {
++                            "legacy"
++                        };
++                        return Some(format!("{kind} context {id} (no usage records)"));
+                     }
+                     if !plain_ancestors(root, &path).ok()? {
+                         return None;
+@@ -916,7 +991,7 @@ impl Namespace {
+                         context_expired(&directory, id, now),
+                     )
+                 };
+-                if record.version != 1 || record.context != *id {
++                if !record.supported() || record.context != *id {
+                     return None;
+                 }
+                 let previous = record
+@@ -1075,7 +1150,7 @@ fn namespaces(
+     }
+     for profile in profiles {
+         for id in directory_names(root, &profile.join("build/registries"))? {
+-            if legacy_context_name(&id) {
++            if legacy_context_name(&id) || scoped_context_name(&id) {
+                 namespaces.insert(Namespace::Context(id));
+             }
+         }
+@@ -1093,7 +1168,7 @@ fn namespaces(
+         }
+     }
+     for id in directory_names(root, &root.join(THINLTO))? {
+-        if legacy_context_name(&id) {
++        if legacy_context_name(&id) || scoped_context_name(&id) {
+             namespaces.insert(Namespace::Context(id));
+         } else if thinlto_key(&id) && !namespaces.contains(&Namespace::Context(id.clone())) {
+             namespaces.insert(Namespace::LegacyThinLto(id));
+@@ -1158,6 +1233,11 @@ fn legacy_context_name(name: &str) -> bool {
+         )
+ }
+ 
++/// The namespace and record version jointly keep old root-wide collectors away.
++pub(crate) fn scoped_context_name(name: &str) -> bool {
++    name.strip_prefix("v2-").is_some_and(legacy_context_name)
++}
++
+ /// Absence behind a symlink is not proof that the owned payload was removed.
+ fn safely_absent(root: &Path, path: &Path) -> bool {
+     if !path.starts_with(root) {
+@@ -1489,9 +1569,13 @@ mod tests {
+         }
+ 
+         fn enroll(&self) -> CargoResult<()> {
++            self.enroll_context("abcdef")
++        }
++
++        fn enroll_context(&self, context: &str) -> CargoResult<()> {
+             record_context(
+                 &self.root,
+-                "abcdef",
++                context,
+                 self.identity(&self.compiler)?,
+                 self.identity(&self.driver)?,
+             )
+@@ -1558,6 +1642,98 @@ mod tests {
+         }
+     }
+ 
++    #[test]
++    fn busy_context_preserves_its_artifacts_without_blocking_other_contexts_or_trash()
++    -> CargoResult<()> {
++        for recorded in [true, false] {
++            let cache = Cache::new()?;
++            let busy = "v2-0000000000000001";
++            let idle = "v2-0000000000000002";
++            for context in [busy, idle] {
++                if recorded {
++                    cache.enroll_context(context)?;
++                    cache.age_context(context, SystemTime::UNIX_EPOCH)?;
++                }
++                cache.artifact(&format!("build/registries/{context}"))?;
++                cache.thinlto(context, 0, SystemTime::UNIX_EPOCH)?;
++            }
++            let lease = crate::workspace::build_cache_gc_lease::ConsumerLease::acquire_context(
++                &cache.root,
++                busy,
++            )?;
++            let retired = cache.artifact("retired")?;
++            assert!(retire(
++                &cache.root,
++                &retired,
++                &cache.profile.join(TRASH),
++                false
++            )?);
++            for dry_run in [true, false] {
++                let summary = collect(&cache.root, dry_run, None)?;
++                assert_eq!(summary.counts.files, 3);
++                assert_eq!(summary.counts.bytes, 19);
++                assert_eq!(summary.skipped, [format!("context {busy} (in use)")]);
++                assert!(cache.profile.join("build/registries").join(busy).is_dir());
++                assert!(cache.root.join(THINLTO).join(busy).is_dir());
++                assert_eq!(
++                    cache.profile.join("build/registries").join(idle).exists(),
++                    dry_run
++                );
++            }
++            drop(lease);
++            assert_eq!(collect(&cache.root, false, None)?.counts.files, 2);
++            assert!(cache.tracker()?.contexts()?.is_empty());
++        }
++        Ok(())
++    }
++
++    #[test]
++    fn legacy_locks_only_block_legacy_namespaces() -> CargoResult<()> {
++        let cache = Cache::new()?;
++        let context = "v2-0123456789abcdef";
++        cache.enroll()?;
++        cache.enroll_context(context)?;
++        cache.age_context("abcdef", SystemTime::UNIX_EPOCH)?;
++        cache.age_context(context, SystemTime::UNIX_EPOCH)?;
++        let legacy = cache.artifact("build/registries/abcdef")?;
++        let scoped = cache.artifact(&format!("build/registries/{context}"))?;
++        let consumer = crate::workspace::build_cache_gc_lease::ConsumerLease::acquire(&cache.root)?;
++        let profile = File::open(cache.profile.join(".cargo-build-lock"))?;
++        crate::util::flock::lock_shared(&profile)?;
++        fs::create_dir(cache.root.join(THINLTO))?;
++        let pruner = File::create(cache.root.join(THINLTO).join(".prune-lock"))?;
++        crate::util::flock::lock_exclusive(&pruner)?;
++        for dry_run in [true, false] {
++            let summary = collect(&cache.root, dry_run, None)?;
++            assert_eq!(summary.counts.files, 1);
++            assert!(summary.busy);
++            assert!(legacy.exists());
++            assert_eq!(scoped.exists(), dry_run);
++        }
++        drop((consumer, profile, pruner));
++        assert_eq!(collect(&cache.root, false, None)?.counts.files, 1);
++        Ok(())
++    }
++
++    #[test]
++    fn concurrent_usage_writer_postpones_gc_without_failing_or_retiring_artifacts()
++    -> CargoResult<()> {
++        let cache = Cache::new()?;
++        let context = "v2-0123456789abcdef";
++        cache.enroll_context(context)?;
++        cache.age_context(context, SystemTime::UNIX_EPOCH)?;
++        let artifact = cache.artifact(&format!("build/registries/{context}"))?;
++        let tracker = cache.tracker()?;
++        tracker.conn.execute_batch("BEGIN IMMEDIATE")?;
++        let summary = collect(&cache.root, false, None)?;
++        assert!(summary.busy);
++        assert_eq!(summary.retired, 0);
++        assert!(artifact.exists());
++        tracker.conn.execute_batch("ROLLBACK")?;
++        assert_eq!(collect(&cache.root, false, None)?.retired, 1);
++        Ok(())
++    }
++
+     #[test]
+     fn thinlto_uses_object_activity_within_a_live_context() -> CargoResult<()> {
+         let cache = Cache::new()?;
+@@ -2574,7 +2750,7 @@ mod tests {
+             inner.identity(&inner.compiler)?,
+             inner.identity(&inner.driver)?,
+         )?;
+-        drop(ContextUse::new(inner.tracker()?, id, Some(Vec::new()))?);
++        inner.age_context(id, SystemTime::UNIX_EPOCH)?;
+         inner.artifact(&format!("build/registries/{id}"))?;
+         let nested = outer.root.join("nested");
+         fs::rename(&inner.root, &nested)?;
+@@ -2583,9 +2759,9 @@ mod tests {
+         assert_eq!(collect(&outer.root, false, None)?.counts.files, 0);
+         assert!(collect(&nested, false, None)?.busy);
+         drop(lease);
+-        assert_eq!(collect(&nested, false, None)?.retired, 0);
++        assert_eq!(collect(&nested, false, None)?.retired, 1);
+         assert!(
+-            nested
++            !nested
+                 .join("debug/build/registries")
+                 .join(id)
+                 .join("artifact")
+diff --git a/src/workspace/build_cache_gc/tracker.rs b/src/workspace/build_cache_gc/tracker.rs
+index e6c3d76c2be02b2fcb7a417e80f0c7d20dec5037..f4418dce6cff75639211101a51432f0bb6009602 100644
+--- a/src/workspace/build_cache_gc/tracker.rs
++++ b/src/workspace/build_cache_gc/tracker.rs
+@@ -178,7 +178,11 @@ impl Tracker {
+             return Ok(());
+         }
+         self.insert_context(&ContextRecord {
+-            version: 1,
++            version: if super::scoped_context_name(context) {
++                2
++            } else {
++                1
++            },
+             context: context.to_owned(),
+             ohm_version: installed_ohm_version(&compiler, &driver),
+             compiler_anchor: Anchor::for_path(&compiler.path)?,
+diff --git a/src/workspace/build_cache_gc_lease.rs b/src/workspace/build_cache_gc_lease.rs
+index be1dbac1639be41fddd68fbd0a7123b9ba4d8c0b..e83d8bc13a6c338e3996228b5b93f133e714f0dd 100644
+--- a/src/workspace/build_cache_gc_lease.rs
++++ b/src/workspace/build_cache_gc_lease.rs
+@@ -2,9 +2,9 @@
+ 
+ use crate::util::CargoResult;
+ use cargo_util::ProcessBuilder;
+-use std::path::Path;
++use std::path::{Path, PathBuf};
+ 
+-/// A root-wide shared lease, acquired before any profile or workspace locks.
++/// A shared lease for a compiler context, or an unresolved/legacy consumer.
+ ///
+ /// The file is closed rather than explicitly unlocked: children may inherit the
+ /// same open file description and continue using artifacts after Cargo exits.
+@@ -17,6 +17,19 @@ pub(crate) struct ConsumerLease {
+ impl ConsumerLease {
+     /// Acquires the stable consumer lock without following metadata symlinks.
+     pub(crate) fn acquire(root: &Path) -> CargoResult<Self> {
++        Self::acquire_inner(root, None)
++    }
++
++    /// Protects only this context, including children that outlive Cargo.
++    pub(crate) fn acquire_context(root: &Path, context: &str) -> CargoResult<Self> {
++        anyhow::ensure!(
++            super::build_cache_gc::scoped_context_name(context),
++            "invalid scoped build context"
++        );
++        Self::acquire_inner(root, Some(context))
++    }
++
++    fn acquire_inner(root: &Path, context: Option<&str>) -> CargoResult<Self> {
+         #[cfg(any(target_os = "linux", target_os = "macos"))]
+         {
+             use super::build_cache_gc::{CONSUMERS_LOCK, metadata_dir};
+@@ -34,7 +47,10 @@ impl ConsumerLease {
+             let directory = metadata_dir(&root, true)?;
+             let before = fs::symlink_metadata(&directory)?;
+ 
+-            let path = directory.join(CONSUMERS_LOCK);
++            let path = match context {
++                Some(context) => context_lock(root.as_path(), context),
++                None => directory.join(CONSUMERS_LOCK),
++            };
+             let file = OpenOptions::new()
+                 .read(true)
+                 .write(true)
+@@ -68,7 +84,7 @@ impl ConsumerLease {
+         #[cfg(not(any(target_os = "linux", target_os = "macos")))]
+         {
+             // Collection is disabled where inherited file leases are not supported.
+-            let _ = root;
++            let _ = (root, context);
+             Ok(Self {})
+         }
+     }
+@@ -82,6 +98,37 @@ impl ConsumerLease {
+     }
+ }
+ 
++/// Context locks have stable inodes, independent of the artifacts GC retires.
++pub(crate) fn context_lock(root: &Path, context: &str) -> PathBuf {
++    root.join(super::build_cache_gc::DIRECTORY)
++        .join(format!("context-{context}.lock"))
++}
++
++/// Snapshot imports also consume shared artifacts referenced by private state.
++pub(crate) fn seed_leases(root: &Path, source: &Path) -> CargoResult<Vec<ConsumerLease>> {
++    let mut leases = Vec::new();
++    for parent in [
++        source.to_path_buf(),
++        source.join(crate::compiler::OHM_WORKTREE_CLIPPY_DIRECTORY),
++    ] {
++        if !std::fs::symlink_metadata(&parent).is_ok_and(|metadata| metadata.is_dir()) {
++            continue;
++        }
++        for entry in std::fs::read_dir(parent)? {
++            let entry = entry?;
++            if entry.file_type()?.is_dir()
++                && let Some(context) = entry
++                    .file_name()
++                    .to_str()
++                    .filter(|name| super::build_cache_gc::scoped_context_name(name))
++            {
++                leases.push(ConsumerLease::acquire_context(root, context)?);
++            }
++        }
++    }
++    Ok(leases)
++}
++
+ #[cfg(all(test, any(target_os = "linux", target_os = "macos")))]
+ mod tests {
+     use super::ConsumerLease;
+diff --git a/src/workspace/build_cache_gc_roots.rs b/src/workspace/build_cache_gc_roots.rs
+index 0c142aef67e120df93f5b76ee259f3f43612e173..7eb65fa1a2ed21262b954f26e8cafe6ecb724726 100644
+--- a/src/workspace/build_cache_gc_roots.rs
++++ b/src/workspace/build_cache_gc_roots.rs
+@@ -148,7 +148,10 @@ pub fn collect(gctx: &GlobalContext, root: Option<&Path>, dry_run: bool) -> Carg
+             gctx.shell()
+                 .status(if dry_run { "Would remove" } else { "Removing" }, detail)?;
+         }
+-        if summary.busy {
++        for detail in &summary.skipped {
++            gctx.shell().status("Skipping", detail)?;
++        }
++        if summary.busy && summary.skipped.is_empty() {
+             gctx.shell()
+                 .status("Skipping", format!("{} (cache is in use)", root.display()))?;
+         } else if summary.pending {
+@@ -230,13 +233,17 @@ fn collect_root(
+         total.retained = summary.retained;
+         total.busy = summary.busy;
+         total.pending = summary.pending;
++        for detail in summary.skipped {
++            if total.skipped.len() < 32 && !total.skipped.contains(&detail) {
++                total.skipped.push(detail);
++            }
++        }
+         for detail in summary.details {
+             if total.details.len() < 32 && !total.details.contains(&detail) {
+                 total.details.push(detail);
+             }
+         }
+-        if !progress || total.busy || !total.pending || started.elapsed() >= Duration::from_secs(10)
+-        {
++        if !progress || !total.pending || started.elapsed() >= Duration::from_secs(10) {
+             return Ok(total);
+         }
+     }
+diff --git a/tests/testsuite/build_dir.rs b/tests/testsuite/build_dir.rs
+index 06256da9bf38824563931cd7de998f7b109ec9c1..c2a81ba3a05bd9a7d238b36f28af5e2ff17d1019 100644
+--- a/tests/testsuite/build_dir.rs
++++ b/tests/testsuite/build_dir.rs
+@@ -1997,6 +1997,8 @@ fn shared_registry_clean_waits_only_for_its_own_workspace() {
+             .run();
+         project
+     });
++    // New builds use context leases; retain coverage for older root-wide consumers.
++    std::fs::File::create(shared.join(".ohm-gc-v1/consumers.lock")).unwrap();
+     let guards = [".ohm-gc-v1/consumers.lock", "debug/.cargo-build-lock"].map(|path| {
+         let guard = std::fs::File::open(shared.join(path)).unwrap();
+         guard.lock_shared().unwrap();
+diff --git a/tests/testsuite/dep_info.rs b/tests/testsuite/dep_info.rs
+index 85c5d567b82d29f557f7d5e5f27c74cad36be444..c0d659b659660a5acb91f23d1f426e27d931cb88 100644
+--- a/tests/testsuite/dep_info.rs
++++ b/tests/testsuite/dep_info.rs
+@@ -151,20 +151,111 @@ fn dep_path_inside_target_has_correct_path() {
+ 
+ #[cargo_test]
+ fn no_rewrite_if_no_change() {
+-    let p = project().file("src/lib.rs", "").build();
++    let p = project()
++        .file(
++            "src/lib.rs",
++            "mod first; mod second; const _: &str = include_str!(\"data with spaces.txt\");",
++        )
++        .file("src/first.rs", "")
++        .file("src/second.rs", "")
++        .file("src/data with spaces.txt", "data")
++        .build();
+ 
+     p.cargo("build").run();
+     let dep_info = p.root().join("target/debug/libfoo.d");
+-    let metadata1 = dep_info.metadata().unwrap();
++    let preserved_mtime = FileTime::from_unix_time(1, 0);
++    filetime::set_file_mtime(&dep_info, preserved_mtime).unwrap();
++    p.cargo("build").run();
++    assert_eq!(
++        FileTime::from_last_modification_time(&dep_info.metadata().unwrap()),
++        preserved_mtime,
++    );
++
++    p.change_file(
++        "src/lib.rs",
++        "mod third; mod second; const _: &str = include_str!(\"data with spaces.txt\");",
++    );
++    p.change_file("src/third.rs", "");
+     p.cargo("build").run();
+-    let metadata2 = dep_info.metadata().unwrap();
++    let updated_contents = p.read_file(&dep_info);
++    assert!(updated_contents.contains("third.rs"));
++    assert!(!updated_contents.contains("first.rs"));
++    assert_ne!(
++        FileTime::from_last_modification_time(&dep_info.metadata().unwrap()),
++        preserved_mtime,
++    );
+ 
++    filetime::set_file_mtime(&dep_info, preserved_mtime).unwrap();
++    p.cargo("build").run();
++    assert_eq!(p.read_file(&dep_info), updated_contents);
+     assert_eq!(
+-        FileTime::from_last_modification_time(&metadata1),
+-        FileTime::from_last_modification_time(&metadata2),
++        FileTime::from_last_modification_time(&dep_info.metadata().unwrap()),
++        preserved_mtime,
+     );
+ }
+ 
++#[cargo_test]
++fn multiple_crate_types_preserve_dep_info_target() {
++    let p = project()
++        .file(
++            "Cargo.toml",
++            &format!(
++                "{}\n[lib]\ncrate-type = [\"rlib\", \"cdylib\"]\n",
++                basic_manifest("foo", "0.0.1")
++            ),
++        )
++        .file("src/lib.rs", "")
++        .build();
++
++    // Relative paths keep the single dependency unescaped even if the test root has spaces.
++    let expected = format!(
++        "{}: {}\n",
++        Path::new("target")
++            .join("debug")
++            .join("libfoo.rlib")
++            .display(),
++        Path::new("src").join("lib.rs").display(),
++    );
++    p.cargo("build")
++        .env("CARGO_BUILD_DEP_INFO_BASEDIR", p.root())
++        .run();
++    assert_eq!(p.read_file("target/debug/libfoo.d"), expected);
++
++    p.cargo("build")
++        .env("CARGO_BUILD_DEP_INFO_BASEDIR", p.root())
++        .with_stderr_data(str![[r#"
++[FINISHED] `dev` profile [unoptimized + debuginfo] target(s) in [ELAPSED]s
++
++"#]])
++        .run();
++    assert_eq!(p.read_file("target/debug/libfoo.d"), expected);
++}
++
++#[cargo_test]
++fn shared_dependencies_are_refreshed_after_rebuild() {
++    let p = project()
++        .file("src/lib.rs", "mod first;")
++        .file("src/main.rs", "extern crate foo; fn main() {}")
++        .file("src/first.rs", "")
++        .file("src/second.rs", "")
++        .build();
++
++    let dep_info_paths = [
++        p.root().join("target/debug/libfoo.d"),
++        p.bin("foo").with_extension("d"),
++    ];
++    for (module, previous) in [("first", "second"), ("second", "first")] {
++        p.root().move_into_the_past();
++        p.change_file("src/lib.rs", &format!("mod {module};"));
++        p.cargo("build").run();
++        for path in &dep_info_paths {
++            let contents = p.read_file(path);
++            assert!(contents.contains(&format!("{module}.rs")), "{contents}");
++            assert!(!contents.contains(&format!("{previous}.rs")), "{contents}");
++        }
++    }
++}
++
+ #[cargo_test(nightly, reason = "-Z binary-dep-depinfo is unstable")]
+ fn relative_depinfo_paths_ws() {
+     // Test relative dep-info paths in a workspace with --target with
+diff --git a/tests/testsuite/freshness.rs b/tests/testsuite/freshness.rs
+index c7b0049009e528b721cbfd56564aa4eeb0ed0e08..82e440caba976c94db7fbbb806d13611e667d145 100644
+--- a/tests/testsuite/freshness.rs
++++ b/tests/testsuite/freshness.rs
+@@ -4127,7 +4127,8 @@ fn early_cutoff_skips_dependent_rebuild() {
+     p.change_file("dep/native.c", "int native_value(void) { return 3; }");
+ 
+     // Replayed diagnostics must retain their normal policy effects, not merely be displayed.
+-    p.cargo("build")
++    // Keep unrelated running jobs from adding a timing-dependent failure warning.
++    p.cargo("build -j1")
+         .arg("--config")
+         .arg("build.warnings='deny'")
+         .env("RUSTC_WRAPPER", &wrapper)
+diff --git a/tests/testsuite/ohm_build_gc.rs b/tests/testsuite/ohm_build_gc.rs
+index e49599ec4dcb9cf65d792f2d85755787df2258e3..914e4f358075941742397acb3f80aa46977a3852 100644
+--- a/tests/testsuite/ohm_build_gc.rs
++++ b/tests/testsuite/ohm_build_gc.rs
+@@ -717,7 +717,13 @@ fn busy_consumers_and_profiles_postpone_retirement() {
+     remove_worktree(&project, &worktree);
+ 
+     for path in [".ohm-gc-v1/consumers.lock", "debug/.cargo-build-lock"] {
+-        let lock = fs::File::open(shared_root().join(path)).unwrap();
++        let lock = fs::OpenOptions::new()
++            .read(true)
++            .write(true)
++            .create(true)
++            .truncate(false)
++            .open(shared_root().join(path))
++            .unwrap();
+         lock.lock_shared().unwrap();
+         collect(&project, false);
+         assert!(private.is_dir(), "collection must skip a held {path}");
+@@ -895,7 +901,22 @@ fn running_test_retains_lease_after_its_cargo_parent_exits() {
+         .execute("UPDATE contexts SET last_used = 0", [])
+         .unwrap();
+ 
+-    // Kill Cargo alone: its test retains both the global and the private lease.
++    // A long-running program protects its context, not unrelated legacy state.
++    let unused = shared_root().join("debug/build/registries/0123456789abcdef");
++    fs::create_dir_all(&unused).unwrap();
++    fs::write(unused.join("old-artifact"), b"unused").unwrap();
++    let output = cargo(&project, "gc --dry-run --build-dir")
++        .arg(shared_root())
++        .run();
++    let stderr = String::from_utf8(output.stderr).unwrap();
++    assert!(stderr.contains("Skipping context v2-"), "{stderr}");
++    assert!(stderr.contains("Summary 1 file, 6B total"), "{stderr}");
++    assert!(unused.exists());
++    collect(&project, false);
++    assert!(!unused.exists());
++    assert!(registry.is_dir());
++
++    // Kill Cargo alone: its test retains both the context and the private lease.
+     running.0.kill().unwrap();
+     let local_lock = fs::File::open(worktree.join("target/.ohm-build-lock")).unwrap();
+     assert!(matches!(
+@@ -909,7 +930,8 @@ fn running_test_retains_lease_after_its_cargo_parent_exits() {
+     stream.write_all(&[1]).unwrap();
+     drop(stream);
+ 
+-    let lock = fs::File::open(shared_root().join(".ohm-gc-v1/consumers.lock")).unwrap();
++    let lock = fs::File::open(shared_root().join(format!(".ohm-gc-v1/context-{}.lock", context())))
++        .unwrap();
+     let deadline = Instant::now() + slow_cpu_multiplier(30);
+     loop {
+         match lock.try_lock() {

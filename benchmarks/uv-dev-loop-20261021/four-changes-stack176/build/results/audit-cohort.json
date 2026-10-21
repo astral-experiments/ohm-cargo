@@ -1,0 +1,109 @@
+{
+  "recorded_at": "2026-10-21T12:12:15.911964+00:00",
+  "cohort": "host2-current-stack",
+  "scope": "Collected binary, source, log, strip, compiler, and shared build-input verification; no Cargo or benchmark execution.",
+  "host7_reference_fields_except_hostname": [
+    "source",
+    "target",
+    "source_commit",
+    "source_tree",
+    "source_bundle_sha256",
+    "compiler_input_sha256",
+    "rustc_version",
+    "cargo_version",
+    "cc_version",
+    "environment",
+    "command",
+    "inherited_cargo_configuration_sha256",
+    "inherited_native_build_environment",
+    "affinity",
+    "approximation"
+  ],
+  "host7_reference_fields_match": true,
+  "common_build_inputs_sha256": "97f093ede30583b1db05c2d1e5d1d26caf70e3fb1588fb507c7871a2a3458726",
+  "frozen_input_manifest_sha256": "3ec2696f6a4c0c1e3bf9ee5ef1f16660c10d68c260a3ab6760f2a8e894b292cc",
+  "build_driver_sha256": "d11167d435955731069bf365e5e93f6a678798797139488bf590b658117caae0",
+  "collector_sha256": "85c122821e076f358445d447f9202247641205996394b6d2fda47fb534d620f9",
+  "audit_script_sha256": "66a6c3fd4cc16d85f66f2a1169b0a10aac516eada1c9d12c2ff164f089e89e13",
+  "provenance_sha256": "c4a2486c12bcbf136d7cc05a8af643e60a91ba2cf12e0796fdfef72ab7019124",
+  "records": [
+    {
+      "variant": "stack179-current",
+      "source_tree": "f4ce59f92aa17461fe3c8b68923c88539136045a",
+      "original_linker_output_sha256": "b5c90f975e7d99ed3e5e809a5d9a06d497ecffc2dc5cb71bdd03882548bd985b",
+      "stripped_sha256": "c165e35dcd0233b6b6e15d81c2bbd6ba19cd07de1352ca63614f27240edcd3c2",
+      "stripped_bytes": 41967336,
+      "verified_allocated_sections": 31,
+      "common_build_inputs_sha256": "97f093ede30583b1db05c2d1e5d1d26caf70e3fb1588fb507c7871a2a3458726",
+      "actual_rustc_settings": {
+        "codegen": [
+          "opt-level=3",
+          "lto=thin",
+          "codegen-units=1",
+          "debuginfo=1"
+        ],
+        "cfg": [
+          "feature=\"all-static\"",
+          "feature=\"default\"",
+          "feature=\"http-transport-curl\"",
+          "feature=\"ohm-defaults\"",
+          "feature=\"openssl\"",
+          "feature=\"vendored-libgit2\"",
+          "feature=\"vendored-openssl\""
+        ]
+      }
+    },
+    {
+      "variant": "stack179-path-cache",
+      "source_tree": "0a392258c801cff734d223a3f9af73d5b5a4e3c0",
+      "original_linker_output_sha256": "5de4c18d85db734cada563595c79b21181816b9f25c32b709f27efd359423b2b",
+      "stripped_sha256": "179f17531a2e9a3475c58965ad4a82248d8eb4af5ce8f1bbfe3d6be5632de86d",
+      "stripped_bytes": 41948048,
+      "verified_allocated_sections": 31,
+      "common_build_inputs_sha256": "97f093ede30583b1db05c2d1e5d1d26caf70e3fb1588fb507c7871a2a3458726",
+      "actual_rustc_settings": {
+        "codegen": [
+          "opt-level=3",
+          "lto=thin",
+          "codegen-units=1",
+          "debuginfo=1"
+        ],
+        "cfg": [
+          "feature=\"all-static\"",
+          "feature=\"default\"",
+          "feature=\"http-transport-curl\"",
+          "feature=\"ohm-defaults\"",
+          "feature=\"openssl\"",
+          "feature=\"vendored-libgit2\"",
+          "feature=\"vendored-openssl\""
+        ]
+      }
+    },
+    {
+      "variant": "stack176-current",
+      "source_tree": "06123b7a4dfa10de0abf3b5ccd520e34172bc208",
+      "original_linker_output_sha256": "dd5d2a8daae84cb023fc0a6fb9cf62d947b04509415a1c2cb9ef5185cf78022c",
+      "stripped_sha256": "59dc8bcef32b84a7ee2e84e02fbedfbcaa526783683af8cf19166723486ac27f",
+      "stripped_bytes": 41964208,
+      "verified_allocated_sections": 31,
+      "common_build_inputs_sha256": "97f093ede30583b1db05c2d1e5d1d26caf70e3fb1588fb507c7871a2a3458726",
+      "actual_rustc_settings": {
+        "codegen": [
+          "opt-level=3",
+          "lto=thin",
+          "codegen-units=1",
+          "debuginfo=1"
+        ],
+        "cfg": [
+          "feature=\"all-static\"",
+          "feature=\"default\"",
+          "feature=\"http-transport-curl\"",
+          "feature=\"ohm-defaults\"",
+          "feature=\"openssl\"",
+          "feature=\"vendored-libgit2\"",
+          "feature=\"vendored-openssl\""
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "schema_version": 2,
+  "frozen_at": "2026-10-21T12:34:48.531265+00:00",
+  "files": {
+    "native_driver.py": {
+      "sha256": "4e75a11fac626f36f2416ca869765d92d1ad7901e5076c3ad291e3f8dcdaf4b4",
+      "frozen_path": "frozen/native_driver-4e75a11fac62.py"
+    },
+    "stage_native.py": {
+      "sha256": "7fe584b190b214cb2c233f60ac370b934583bc0ef6893caf46567df764ee82ab",
+      "frozen_path": "frozen/stage_native-7fe584b190b2.py"
+    }
+  },
+  "schema_audit_sha256": "4d07a548e184035e259ecc535040958b8a43c92a90cd042ac4714f072d3d280b",
+  "gate_schema_audit_sha256": "cddced2c05e60ac0adce52af41440f37517ddb5f28f43cb8c6758aae58ea83ce",
+  "supersedes_sha256": "846fc2e4d921fa32a78ce3079020880ea1445cd3115d96480bcd8ab968e37361",
+  "review": "Independent review caught a native order-field mismatch before any staging or execution. Corrected to geometric_mean_speedup; both retained native analyses evaluate to their expected failed full gate. Every non-gate driver AST node is unchanged from the reviewed raw-group schema version. Prior source freeze and source copies are retained.",
+  "execution_gate": "Stage only after all four frozen current-stack IR batches complete with passing gates/integrity; launch separately after native inputs are sealed."
+}

@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "frozen_at": "2026-10-21T12:32:14.421511+00:00",
+  "files": {
+    "native_driver.py": {
+      "sha256": "454b1b3104c2f7198a84bbc3af917e41bec11aa5b46aaca480a167f18a507e4a",
+      "frozen_path": "frozen/native_driver-454b1b3104c2.py"
+    },
+    "stage_native.py": {
+      "sha256": "f7f0eccd80157b8f3e75fceda819ae56a8631a9e321e8d4dfa01a8f74867132c",
+      "frozen_path": "frozen/stage_native-f7f0eccd8015.py"
+    }
+  },
+  "schema_audit_sha256": "4d07a548e184035e259ecc535040958b8a43c92a90cd042ac4714f072d3d280b",
+  "review": "Independent read-only review found no remaining driver or staging provenance blocker. Added the requested pre-transfer host8 occupancy check. Historical group/raw-row schema audit passed without executing Cargo or re-analyzing statistics.",
+  "execution_gate": "Stage only after all four frozen current-stack IR batches complete with passing gates/integrity; launch separately after native inputs are sealed."
+}

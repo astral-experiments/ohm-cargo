@@ -1,0 +1,294 @@
+{
+  "source_sha256": "dd5d2a8daae84cb023fc0a6fb9cf62d947b04509415a1c2cb9ef5185cf78022c",
+  "stripped_sha256": "59dc8bcef32b84a7ee2e84e02fbedfbcaa526783683af8cf19166723486ac27f",
+  "original_linker_output_sha256": "dd5d2a8daae84cb023fc0a6fb9cf62d947b04509415a1c2cb9ef5185cf78022c",
+  "source_bytes": 240205080,
+  "stripped_bytes": 41964208,
+  "command": [
+    "objcopy",
+    "--strip-debug",
+    "/tmp/ohm-hillclimb-20261021-production/binaries/cargo-stack176-current",
+    "/tmp/ohm-hillclimb-20261021-production/binaries/stripped/cargo-stack176-current"
+  ],
+  "allocated_sections": [
+    {
+      "name": ".interp",
+      "kind": 1,
+      "flags": 2,
+      "address": 736,
+      "size": 28,
+      "alignment": 1,
+      "sha256": "9097c98ea70f6f3b01d50145eb72bf55ad1f4e9713bccf27bd6405d6254eed00"
+    },
+    {
+      "name": ".note.ABI-tag",
+      "kind": 7,
+      "flags": 2,
+      "address": 764,
+      "size": 32,
+      "alignment": 4,
+      "sha256": "6e48317ad93a8ac2dc04321465ede06d1274543fc8ab172e68171a9d684bb313"
+    },
+    {
+      "name": ".note.gnu.build-id",
+      "kind": 7,
+      "flags": 2,
+      "address": 796,
+      "size": 36,
+      "alignment": 4,
+      "sha256": "cb1a9ba17f84a87d7ff6ea70636372588372fdabd5f2420d6fd07f5435691556"
+    },
+    {
+      "name": ".dynsym",
+      "kind": 11,
+      "flags": 2,
+      "address": 832,
+      "size": 7536,
+      "alignment": 8,
+      "sha256": "8fb80d0ad07e7a02d9dfd10ff2bf9936c39bdcbb2f7b59ac11245b390b4cd24a"
+    },
+    {
+      "name": ".gnu.version",
+      "kind": 1879048191,
+      "flags": 2,
+      "address": 8368,
+      "size": 628,
+      "alignment": 2,
+      "sha256": "c8f4316152280256dff80964c6d9fbb908b6ffdb9f1f35d2198ac6309bc99bd1"
+    },
+    {
+      "name": ".gnu.version_r",
+      "kind": 1879048190,
+      "flags": 2,
+      "address": 8996,
+      "size": 560,
+      "alignment": 4,
+      "sha256": "1670c74486ccf14b9ba2dba69aaa6df442027f595718cb0eac04e5d2e9c3d6d1"
+    },
+    {
+      "name": ".gnu.hash",
+      "kind": 1879048182,
+      "flags": 2,
+      "address": 9560,
+      "size": 28,
+      "alignment": 8,
+      "sha256": "96302f42349d9b7ed0620feebd21a810a0a26c618876f90ef507e0de4eae9450"
+    },
+    {
+      "name": ".dynstr",
+      "kind": 3,
+      "flags": 2,
+      "address": 9588,
+      "size": 3943,
+      "alignment": 1,
+      "sha256": "af532990ed08430ad55d7ae4015f42f5e2af4184eb746e24c3138f994c37a651"
+    },
+    {
+      "name": ".rela.dyn",
+      "kind": 4,
+      "flags": 2,
+      "address": 13536,
+      "size": 1660440,
+      "alignment": 8,
+      "sha256": "ce0fbc4a91cb2060c602edced165414f6298ed8ef8f6336ce58282124f96aed9"
+    },
+    {
+      "name": ".rela.plt",
+      "kind": 4,
+      "flags": 66,
+      "address": 1673976,
+      "size": 4488,
+      "alignment": 8,
+      "sha256": "448b5e345bdfaf31e2a1f7de8b10c1973e60a13bb3e0d33c7293563559cabe39"
+    },
+    {
+      "name": ".rodata",
+      "kind": 1,
+      "flags": 50,
+      "address": 1679360,
+      "size": 2795948,
+      "alignment": 4096,
+      "sha256": "3df0f5b14a8a0a93f27390bf29dd15cbd240edc95ecd5f70908721641d2ed376"
+    },
+    {
+      "name": ".gcc_except_table",
+      "kind": 1,
+      "flags": 2,
+      "address": 4475308,
+      "size": 726076,
+      "alignment": 4,
+      "sha256": "85f8b2e1d80ab22846dd43375c86468901a861977ec5a70ce7182dd2f52c4cb1"
+    },
+    {
+      "name": ".debug_gdb_scripts",
+      "kind": 1,
+      "flags": 50,
+      "address": 5201384,
+      "size": 34,
+      "alignment": 1,
+      "sha256": "90b05a6111bee6fd5b996298dba2fda834c39fb2709fd7f2377455c439f84eee"
+    },
+    {
+      "name": ".eh_frame_hdr",
+      "kind": 1,
+      "flags": 2,
+      "address": 5201420,
+      "size": 336156,
+      "alignment": 4,
+      "sha256": "76f6bbf00fbe10cd48cebca8dadfde14cff2eef2c0dc38d776c00ea4f3372d95"
+    },
+    {
+      "name": ".eh_frame",
+      "kind": 1,
+      "flags": 2,
+      "address": 5537576,
+      "size": 2159048,
+      "alignment": 8,
+      "sha256": "a1dccbcb587a65284304f952b7b0b4bf133a605a2c7a6007d7fdb6603813b833"
+    },
+    {
+      "name": ".text",
+      "kind": 1,
+      "flags": 6,
+      "address": 7700736,
+      "size": 26496242,
+      "alignment": 64,
+      "sha256": "3df801368a64ac61dc8fbbbfeb40cdf2e97797133103bd1d3cbf34ac53192a80"
+    },
+    {
+      "name": ".init",
+      "kind": 1,
+      "flags": 6,
+      "address": 34196980,
+      "size": 32,
+      "alignment": 4,
+      "sha256": "9c86f4e79423c2ca2dc95cd04d405b370b18098c1f13cc4b1c7d00fb6a8c41a8"
+    },
+    {
+      "name": ".fini",
+      "kind": 1,
+      "flags": 6,
+      "address": 34197012,
+      "size": 13,
+      "alignment": 4,
+      "sha256": "6a4f3e5efc7c1f7ee7d6f21afd9ed040ba1d7f0b97bb12b016f5b176cc558bd8"
+    },
+    {
+      "name": ".plt",
+      "kind": 1,
+      "flags": 6,
+      "address": 34197040,
+      "size": 3008,
+      "alignment": 16,
+      "sha256": "c422034c40dffb2818cf745a23da82218177b19dafa9d068680c070e93f7b6b0"
+    },
+    {
+      "name": ".tdata",
+      "kind": 1,
+      "flags": 1027,
+      "address": 34204144,
+      "size": 232,
+      "alignment": 8,
+      "sha256": "3e007653485b86e56cc44441068985a4b89ad98cbc756104cda2888e614acb06"
+    },
+    {
+      "name": ".tbss",
+      "kind": 8,
+      "flags": 1027,
+      "address": 34204376,
+      "size": 448,
+      "alignment": 8,
+      "sha256": null
+    },
+    {
+      "name": ".fini_array",
+      "kind": 15,
+      "flags": 3,
+      "address": 34204376,
+      "size": 8,
+      "alignment": 8,
+      "sha256": "af5570f5a1810b7af78caf4bc70a660f0df51e42baf91d4de5b2328de0e83dfc"
+    },
+    {
+      "name": ".init_array",
+      "kind": 14,
+      "flags": 2097155,
+      "address": 34204384,
+      "size": 24,
+      "alignment": 8,
+      "sha256": "9d908ecfb6b256def8b49a7c504e6c889c4b0e41fe6ce3e01863dd7b61a20aa0"
+    },
+    {
+      "name": ".data.rel.ro",
+      "kind": 1,
+      "flags": 3,
+      "address": 34204416,
+      "size": 1151552,
+      "alignment": 32,
+      "sha256": "2052cc533723f9920ef2c0795db8b7cca082638f30f2d64c09c08b9c0da9326b"
+    },
+    {
+      "name": ".dynamic",
+      "kind": 6,
+      "flags": 3,
+      "address": 35355968,
+      "size": 480,
+      "alignment": 8,
+      "sha256": "a7b0e77c083d747627d2b224e0f308d4046c84ff601ccdfaa57c91dcd48d03a7"
+    },
+    {
+      "name": ".got",
+      "kind": 1,
+      "flags": 3,
+      "address": 35356448,
+      "size": 35656,
+      "alignment": 8,
+      "sha256": "607de11f49acf11b83fb00f33553b9c3f191e0dac39771015e0d7d6fa2ac962d"
+    },
+    {
+      "name": ".got.plt",
+      "kind": 1,
+      "flags": 3,
+      "address": 35392104,
+      "size": 1520,
+      "alignment": 8,
+      "sha256": "bb762dd40886e17fdb529916e7e083cdc7f055cc7f8d417259e5d2baaa2a5100"
+    },
+    {
+      "name": ".relro_padding",
+      "kind": 8,
+      "flags": 3,
+      "address": 35393624,
+      "size": 4008,
+      "alignment": 1,
+      "sha256": null
+    },
+    {
+      "name": ".tm_clone_table",
+      "kind": 1,
+      "flags": 3,
+      "address": 35397720,
+      "size": 0,
+      "alignment": 8,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": ".data",
+      "kind": 1,
+      "flags": 3,
+      "address": 35397728,
+      "size": 74920,
+      "alignment": 32,
+      "sha256": "62aab52dd7d96bb86c4628b4e2265ab96881fa4eddb3272df02ced216c82a62d"
+    },
+    {
+      "name": ".bss",
+      "kind": 8,
+      "flags": 3,
+      "address": 35472768,
+      "size": 24256,
+      "alignment": 128,
+      "sha256": null
+    }
+  ]
+}

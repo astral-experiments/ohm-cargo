@@ -1,0 +1,63 @@
+--- /home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/current_stack_native/frozen/native_driver-4e75a11fac62.py
++++ /home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark/current_stack_native_local/native_driver.py
+@@ -1,5 +1,5 @@
+ #!/usr/bin/env python3
+-"""Seal and run the prospective host8 current-stack native confirmation."""
++"""Seal and run the prospective local current-stack native confirmation."""
+ import argparse
+ import csv
+ import hashlib
+@@ -15,10 +15,10 @@
+ import sys
+ 
+ SELF = Path(__file__).resolve()
+-ROOT = SELF.parents[1]
++ROOT = SELF.parents[2]
+ ASSETS = SELF.parent / 'assets.json'
+ SEAL = SELF.parent / 'native-seal.json'
+-STATUS = ROOT / 'native-current-stack-status.json'
++STATUS = SELF.parent / 'status.json'
+ CORE = ROOT / 'benchmark/frozen/paired.py'
+ RUNNER = ROOT / 'benchmark/frozen/paired_repeated.py'
+ CORE_SHA = '50d0cb2d4f595ccfa72d463fedb3ff4dadf9dfc1446c749d482d9ede8418c7cf'
+@@ -34,6 +34,7 @@
+          'candidate': '0a392258c801cff734d223a3f9af73d5b5a4e3c0'}
+ PLAN = [('check', 2026102173), ('test', 2026102174)]
+ PROTOCOLS = {
++    'protocol-four-changes-stack176-native-local-amendment.md': '3424004240f5aed44ba92253ff79a32925496a3d361cc143d8dacb7217449b24',
+     'protocol-path-cache-stack179-19718e6d.md': '468bc3a8e4dc93f6c5dab3b27d48ee461d43d4be6f0f957d9a3eb14e84c324b1',
+     'protocol-four-changes-stack176-5a16c750.md': '7e89b6ae08712cb5ec6ad36c1caf05bb1cff3ba6b7737bb6f917195dd3513f03',
+     'protocol-four-changes-stack176-native-amendment.md': '5a5e48101c549dbeded3594cee8b916fc7b07f2567ca1bf5f9c9cbbda025f3c3',
+@@ -76,7 +77,7 @@
+ 
+ 
+ def verify_assets():
+-    assert socket.gethostname() == 'charlie-oss-8'
++    assert socket.gethostname() == 'charlie-oss'
+     assert os.getuid() == 1000 and ROOT.stat().st_uid == 1000 and Path('/').stat().st_uid == 0
+     assets = read(ASSETS)
+     for relative, digest in assets['files'].items():
+@@ -107,10 +108,10 @@
+ 
+ def paths(workflow):
+     label = workflow + '-four-changes-stack176-5a16c750'
+-    return {'config': ROOT / 'benchmark' / (label + '-native.json'),
+-            'preflight': ROOT / 'metadata' / (label + '-native-preflight'),
+-            'output': ROOT / 'results' / (label + '-native-confirmation'),
+-            'log': ROOT / 'logs' / (label + '-native-runner.log')}
++    return {'config': ROOT / 'benchmark' / (label + '-native-local.json'),
++            'preflight': ROOT / 'benchmark/results' / (label + '-native-local-preflight'),
++            'output': ROOT / 'benchmark/results' / (label + '-native-local-confirmation'),
++            'log': ROOT / 'logs' / (label + '-native-local-runner.log')}
+ 
+ 
+ def derive(workflow, assets):
+@@ -306,7 +307,7 @@
+ def run(core, expected_seal):
+     verify_assets()
+     verify_seal(expected_seal)
+-    assert read(ROOT / 'native-combined-status.json')['state'] == 'complete'
++    assert read(SELF.parent / 'ir-prerequisites.json')['all_four_gates_and_integrity_pass']
+     assert not STATUS.exists()
+     status = {'state': 'starting', 'started_at': core.utc_now(), 'seal_sha256': expected_seal, 'completed': []}
+     core.atomic_json(STATUS, status)

@@ -1,0 +1,287 @@
+{
+  "created_at": "2026-10-21T12:47:25.300217+00:00",
+  "seal_sha256": "9ff5aee1606282e928801701ac6a4fd7299ff12b15a748648ba256362c6140e9",
+  "all_four_gates_and_integrity_pass": true,
+  "batches": [
+    {
+      "comparison": "path-cache-stack179-19718e6d",
+      "workflow": "check",
+      "seed": 2026102161,
+      "integrity_state": "passed",
+      "gate": {
+        "passes_instruction_gate": true,
+        "gate_checks": {
+          "fixed_12_pairs": true,
+          "at_least_one_percent": true,
+          "positive_99_percent_lower_bound": true,
+          "two_sided_sign_p_at_most_0_01": true,
+          "both_orders_positive": true
+        },
+        "statistics": {
+          "pairs": 12,
+          "baseline_median_count": 1230393546.0,
+          "candidate_median_count": 1210677951.0,
+          "baseline_mean_count": 1230484840.9166667,
+          "candidate_mean_count": 1211150498.5833333,
+          "paired_geometric_mean_ratio": 1.0159644802047183,
+          "paired_median_ratio": 1.0163558084585538,
+          "paired_geometric_mean_count_reduction": 0.01571362042253821,
+          "confidence": 0.99,
+          "bootstrap_ratio_interval": [
+            1.0147865281426054,
+            1.0165918014435589
+          ],
+          "bootstrap_count_reduction_interval": [
+            0.014571072568010601,
+            0.016321006543628003
+          ],
+          "bootstrap_resamples": 20000,
+          "bootstrap_seed": 1701,
+          "wins": 12,
+          "losses": 0,
+          "ties": 0,
+          "exact_two_sided_sign_p": 0.00048828125,
+          "log_ratios": [
+            0.01621130819488104,
+            0.016769525736910467,
+            0.01600218130934942,
+            0.01632097411776919,
+            0.015651123851995654,
+            0.015395864026966015,
+            0.016235677705675588,
+            0.011834595231840472,
+            0.01604285297784025,
+            0.016444120024774703,
+            0.01627858872722353,
+            0.016873845495572422
+          ],
+          "order": {
+            "AB": {
+              "pairs": 6,
+              "geometric_mean_ratio": 1.0155074968461304
+            },
+            "BA": {
+              "pairs": 6,
+              "geometric_mean_ratio": 1.0164216692080608
+            }
+          }
+        },
+        "scope": "Cargo-only instruction gate; no native wall-time inference, no pooling."
+      },
+      "manifest_sha256": "e409b702ed0af6504226b02800ad8e17bd9b2fba89700bb17f82b904018fdd0a",
+      "samples_sha256": "3d9db39acfe08598840d8bb38e032a57f64e07ccc59ce38a43d81e10f671f7b0",
+      "analysis_sha256": "602cc5be395d717bd9d2388a15ef25683f2c73d4be454c921c6df417591e84f5",
+      "integrity_sha256": "c5ba39f3d13618428c6ebe14a22e131cef7905180e16f14971eff9618e34bcdf"
+    },
+    {
+      "comparison": "path-cache-stack179-19718e6d",
+      "workflow": "test",
+      "seed": 2026102162,
+      "integrity_state": "passed",
+      "gate": {
+        "passes_instruction_gate": true,
+        "gate_checks": {
+          "fixed_12_pairs": true,
+          "at_least_one_percent": true,
+          "positive_99_percent_lower_bound": true,
+          "two_sided_sign_p_at_most_0_01": true,
+          "both_orders_positive": true
+        },
+        "statistics": {
+          "pairs": 12,
+          "baseline_median_count": 1461940365.5,
+          "candidate_median_count": 1438764150.5,
+          "baseline_mean_count": 1461981699.8333333,
+          "candidate_mean_count": 1439267382.0,
+          "paired_geometric_mean_ratio": 1.0157825250425017,
+          "paired_median_ratio": 1.016091296208574,
+          "paired_geometric_mean_count_reduction": 0.01553730710403911,
+          "confidence": 0.99,
+          "bootstrap_ratio_interval": [
+            1.0148206948698693,
+            1.016222916560443
+          ],
+          "bootstrap_count_reduction_interval": [
+            0.014604249740659547,
+            0.015963934975361416
+          ],
+          "bootstrap_resamples": 20000,
+          "bootstrap_seed": 1701,
+          "wins": 12,
+          "losses": 0,
+          "ties": 0,
+          "exact_two_sided_sign_p": 0.00048828125,
+          "log_ratios": [
+            0.016198283182360048,
+            0.01597410931968328,
+            0.016303731863905997,
+            0.01583893807749667,
+            0.01592055060783874,
+            0.015742004996620353,
+            0.0160081545190474,
+            0.015488557476008323,
+            0.012304728810976981,
+            0.016047914146015783,
+            0.016132042325351616,
+            0.015952297745911306
+          ],
+          "order": {
+            "AB": {
+              "pairs": 6,
+              "geometric_mean_ratio": 1.0154120043956165
+            },
+            "BA": {
+              "pairs": 6,
+              "geometric_mean_ratio": 1.0161531808912054
+            }
+          }
+        },
+        "scope": "Cargo-only instruction gate; no native wall-time inference, no pooling."
+      },
+      "manifest_sha256": "c26f5ca74fcf0de67b160fc8d27a5d01a8edef86af8e41d26db5691697b55588",
+      "samples_sha256": "506acb8dd5d8335b93d23018d245bd469d869b09ffab0ef4a57bbb02853fd1d7",
+      "analysis_sha256": "a039a4c138311b08b0e09d91596d83b73b71b7746d54d90b5e9deedec7d04357",
+      "integrity_sha256": "9dc524079a880cdd855d49308130d3cc0ae7c222a0f6700c6b2f3e2a7db0608c"
+    },
+    {
+      "comparison": "four-changes-stack176-5a16c750",
+      "workflow": "check",
+      "seed": 2026102171,
+      "integrity_state": "passed",
+      "gate": {
+        "passes_instruction_gate": true,
+        "gate_checks": {
+          "fixed_12_pairs": true,
+          "at_least_one_percent": true,
+          "positive_99_percent_lower_bound": true,
+          "two_sided_sign_p_at_most_0_01": true,
+          "both_orders_positive": true
+        },
+        "statistics": {
+          "pairs": 12,
+          "baseline_median_count": 1335129293.5,
+          "candidate_median_count": 1210906510.0,
+          "baseline_mean_count": 1335777454.3333333,
+          "candidate_mean_count": 1210798727.9166667,
+          "paired_geometric_mean_ratio": 1.103218435267867,
+          "paired_median_ratio": 1.1026052413418923,
+          "paired_geometric_mean_count_reduction": 0.09356119510711847,
+          "confidence": 0.99,
+          "bootstrap_ratio_interval": [
+            1.10246259757108,
+            1.1050753237028468
+          ],
+          "bootstrap_count_reduction_interval": [
+            0.0929397494271672,
+            0.09508430914081423
+          ],
+          "bootstrap_resamples": 20000,
+          "bootstrap_seed": 1701,
+          "wins": 12,
+          "losses": 0,
+          "ties": 0,
+          "exact_two_sided_sign_p": 0.00048828125,
+          "log_ratios": [
+            0.09769428084184727,
+            0.09809702498354421,
+            0.09765515861630694,
+            0.09754949702435066,
+            0.10419628232080463,
+            0.09765728038106111,
+            0.0972821285892272,
+            0.09758598310050139,
+            0.09742112654890842,
+            0.09782738443784425,
+            0.09776272557890289,
+            0.09805222452169081
+          ],
+          "order": {
+            "AB": {
+              "pairs": 6,
+              "geometric_mean_ratio": 1.103742065269678
+            },
+            "BA": {
+              "pairs": 6,
+              "geometric_mean_ratio": 1.1026950536831337
+            }
+          }
+        },
+        "scope": "Cargo-only instruction gate; no native wall-time inference, no pooling."
+      },
+      "manifest_sha256": "58c0d2f7db6c833d0f72d15ce5273326b26ac8c7dd72e13f9dbc92474b30f18f",
+      "samples_sha256": "572174f0720135c489e17c35b59ac78ebab29eb257f9589843ab64711dab8fb1",
+      "analysis_sha256": "bf78e0485477b15c6ecb165e120e7159fd5552285af7a2bd1af635cd34a399c8",
+      "integrity_sha256": "026cf691ead8dde09e84777368f99c06da97671c46f58f9a9a481b845bc437fa"
+    },
+    {
+      "comparison": "four-changes-stack176-5a16c750",
+      "workflow": "test",
+      "seed": 2026102172,
+      "integrity_state": "passed",
+      "gate": {
+        "passes_instruction_gate": true,
+        "gate_checks": {
+          "fixed_12_pairs": true,
+          "at_least_one_percent": true,
+          "positive_99_percent_lower_bound": true,
+          "two_sided_sign_p_at_most_0_01": true,
+          "both_orders_positive": true
+        },
+        "statistics": {
+          "pairs": 12,
+          "baseline_median_count": 1567880705.0,
+          "candidate_median_count": 1438784928.5,
+          "baseline_mean_count": 1568314880.8333333,
+          "candidate_mean_count": 1439591480.5833333,
+          "paired_geometric_mean_ratio": 1.0894175435411584,
+          "paired_median_ratio": 1.0896349352514587,
+          "paired_geometric_mean_count_reduction": 0.08207830328351984,
+          "confidence": 0.99,
+          "bootstrap_ratio_interval": [
+            1.0874529081420596,
+            1.0910566389535112
+          ],
+          "bootstrap_count_reduction_interval": [
+            0.0804199496707173,
+            0.08345729790971101
+          ],
+          "bootstrap_resamples": 20000,
+          "bootstrap_seed": 1701,
+          "wins": 12,
+          "losses": 0,
+          "ties": 0,
+          "exact_two_sided_sign_p": 0.00048828125,
+          "log_ratios": [
+            0.08999021394005961,
+            0.08529529247853727,
+            0.08549578389704789,
+            0.08563145873101913,
+            0.08605931365722817,
+            0.0859101670257375,
+            0.08592881878656852,
+            0.08607148488492286,
+            0.08584725679804,
+            0.0798263688363503,
+            0.08582393740399798,
+            0.08583817989050602
+          ],
+          "order": {
+            "AB": {
+              "pairs": 6,
+              "geometric_mean_ratio": 1.090417725485544
+            },
+            "BA": {
+              "pairs": 6,
+              "geometric_mean_ratio": 1.0884182790102543
+            }
+          }
+        },
+        "scope": "Cargo-only instruction gate; no native wall-time inference, no pooling."
+      },
+      "manifest_sha256": "0ddefbb88cb744ac53e3a34736ab4249c8e0229d5cdbb85e6f34b27d8bdab0f2",
+      "samples_sha256": "f8d4bcd8a55fb358cb26e85065962acabeb4dba06a2d8874553ae964fcf8ef1b",
+      "analysis_sha256": "8e409aa2eef015a77c1da8e252fa44429a0baf06c12d1b92400d3ad5e3cdccfa",
+      "integrity_sha256": "9189ce4d2003688c1a036b0416ea967e06bbf5e6ee93180e3d19638ed366aa7b"
+    }
+  ]
+}

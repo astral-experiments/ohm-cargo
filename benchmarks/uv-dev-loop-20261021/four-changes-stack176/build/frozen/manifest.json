@@ -1,0 +1,51 @@
+{
+  "cohort": "host2-current-stack",
+  "variant_order": [
+    "stack179-current",
+    "stack179-path-cache",
+    "stack176-current"
+  ],
+  "driver_sha256": "d11167d435955731069bf365e5e93f6a678798797139488bf590b658117caae0",
+  "strip_helper_sha256": "67d6f781d1e77bbc4f9111e88589fdf0819d19c6073592b422ad832a7c41f6a1",
+  "source_bundle_sha256": "254020def1477b48826663a5b24d1b88e3c4e9b82711c6e89cd10503a0ca8008",
+  "patch_sha256": {
+    "stack179-current.patch": "5db5e4a8b09ffea58d8ee7f297d2d486c7bde0d159fe51e5adcb23db72bbb573",
+    "stack179-path-cache.patch": "c6903b9c8d161553d8993b35744186a840163431f2da741c516bd12ae11b6435",
+    "stack176-current.patch": "c93b0fb675f90f149fc6fa766c22ce885a37d2b4b163539009dba347711c198d"
+  },
+  "expected_variants": {
+    "stack179-current": {
+      "base": "5e5d271d763d7beb38b48755e22bd59e93f02b97",
+      "tree": "f4ce59f92aa17461fe3c8b68923c88539136045a",
+      "source_content_ref": "19718e6d1637244ffbb193334f50bae3ffca1be5",
+      "patch_sha256": {
+        "stack179-current.patch": "5db5e4a8b09ffea58d8ee7f297d2d486c7bde0d159fe51e5adcb23db72bbb573"
+      },
+      "canonical_diff_sha256": "1864ecf029d0bb36c102264b5648cc25848b8be7537597e16944078b562d23fb"
+    },
+    "stack179-path-cache": {
+      "base": "5e5d271d763d7beb38b48755e22bd59e93f02b97",
+      "tree": "0a392258c801cff734d223a3f9af73d5b5a4e3c0",
+      "source_content_ref": "0a392258c801cff734d223a3f9af73d5b5a4e3c0",
+      "patch_sha256": {
+        "stack179-path-cache.patch": "c6903b9c8d161553d8993b35744186a840163431f2da741c516bd12ae11b6435"
+      },
+      "canonical_diff_sha256": "01d041e708d02e336727f57cdba933409c55b0e694568b206842d2968078b3ad"
+    },
+    "stack176-current": {
+      "base": "5e5d271d763d7beb38b48755e22bd59e93f02b97",
+      "tree": "06123b7a4dfa10de0abf3b5ccd520e34172bc208",
+      "source_content_ref": "5a16c750eba7f6b7bcfd7a220a377685c62b3512",
+      "patch_sha256": {
+        "stack176-current.patch": "c93b0fb675f90f149fc6fa766c22ce885a37d2b4b163539009dba347711c198d"
+      },
+      "canonical_diff_sha256": "cf924aaa6caae770ca0c236790eb02101f5e4f94ad359dab155cd353f216dba4"
+    }
+  },
+  "initial_source_tree": "ec684868eed8347beeb23d1a998e7f2cb997bc7a",
+  "reference_host7_provenance_sha256": "a4c666a1c498ccba967b8a663b81088abf650a39a3611026d01b305ce074d150",
+  "preceding_cohort_manifest_sha256": "4182942132186639ac0d5310be1c596b405f685edb722f86f0521f776d9b7687",
+  "preceding_driver_sha256": "519396de0f3d48fe34fd3116ac04356c3a46606cead02e38095c75be6706a04d",
+  "incremental_path_patch_sha256": "0706ae28f7cfb62774755aec611689eda86c5080846e1e37b33e5bfc60163aa9",
+  "canonical_diff_format": "git diff --cached --binary --full-index --no-ext-diff --no-textconv <pinned>"
+}

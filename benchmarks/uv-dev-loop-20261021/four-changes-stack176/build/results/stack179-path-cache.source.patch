@@ -1,0 +1,2422 @@
+diff --git a/Cargo.lock b/Cargo.lock
+index 71701fbf3aa6bff6dd3a5e35ddec19bd726da1c2..278e35a2ae93880111b1e14e8355dbddf32d6448 100644
+--- a/Cargo.lock
++++ b/Cargo.lock
+@@ -422,6 +422,7 @@ dependencies = [
+  "memfd",
+  "opener",
+  "openssl",
++ "openssl-probe",
+  "openssl-src",
+  "os_info",
+  "pasetors",
+diff --git a/Cargo.toml b/Cargo.toml
+index d116af9d783b549553055c3bacb3e4ca80c29442..4a2ac33a81ce95897c77b471df24a9aec454f69e 100644
+--- a/Cargo.toml
++++ b/Cargo.toml
+@@ -78,6 +78,7 @@ memfd = "0.6.5"
+ miow = "0.6.1"
+ opener = "0.8.4"
+ openssl = "0.10.76"
++openssl-probe = "0.1.6"
+ openssl-src = "300.6.0"
+ os_info = { version = "3.14.0", default-features = false }
+ pasetors = { version = "0.7.8", features = ["v3", "paserk", "std", "serde"] }
+@@ -249,6 +250,9 @@ cargo-credential-macos-keychain.workspace = true
+ openssl = { workspace = true, optional = true }
+ openssl-src = { workspace = true, optional = true }
+ 
++[target.'cfg(all(unix, not(target_os = "macos"), not(target_os = "ios")))'.dependencies]
++openssl-probe.workspace = true
++
+ [target.'cfg(windows)'.dependencies]
+ cargo-credential-wincred.workspace = true
+ 
+@@ -283,7 +287,6 @@ tar.workspace = true
+ 
+ [[bin]]
+ name = "cargo"
+-test = false
+ doc = false
+ 
+ [features]
+diff --git a/doc/book/src/reference/build-cache.md b/doc/book/src/reference/build-cache.md
+index 72e8db65d632e2bc817b256bd1d3a7b56b6ab632..e0a3429a8551217edd7e4a8df1bce7d2d1063c58 100644
+--- a/doc/book/src/reference/build-cache.md
++++ b/doc/book/src/reference/build-cache.md
+@@ -206,10 +206,24 @@ context is reclaimed. Dry runs open the database read-only.
+ Cleanup runs only when you explicitly invoke `cargo +ohm gc`; builds, tests,
+ worktree commands, and upgrades do not trigger it.
+ 
+-Cleanup skips a root while it is in use. Builds, tests, and programs launched by
+-this version of Cargo retain a shared lease for their lifetime, including after
+-Cargo exits. Older Cargo versions may only hold compilation locks, so their
+-running programs do not have the same protection.
++Cleanup skips contexts that are in use and continues reclaiming unrelated
++contexts. Builds, tests, and programs launched by this version of Cargo retain a
++shared lease on their compiler context for their lifetime, including after Cargo
++exits. A running program therefore does not prevent cleanup of obsolete compiler
++contexts elsewhere in the same shared directory. Dependencies and ThinLTO objects
++within an actively leased context remain protected. GC reports each busy context
++alongside the files and bytes it reclaimed; already-retired trash can be removed
++even while a context is busy.
++
++New contexts use a `v2-` namespace and a versioned provenance record so older
++collectors preserve them. Existing caches remain eligible under their original
++root and profile locks: an older build can still postpone legacy cleanup, without
++blocking cleanup of unused `v2-` contexts. Older Cargo versions may only hold
++compilation locks, so their running programs do not have the same protection.
++Context lock files have stable names outside artifact directories and remain
++after collection; they need no timestamp updates or per-build records.
++Recognized contexts without usage records are reclaimable under the same locks,
++including when a build could not enroll its new context in the database.
+ 
+ `cargo clean` cleans the current workspace's target, including private
+ intermediates and incremental state. A target-local lock prevents cleaning state
+diff --git a/src/bin/cargo/cli.rs b/src/bin/cargo/cli.rs
+index b6039f4062f47cbf12fa886fddc215fb68a67a9e..6852f0c75658ba02871fff50a56abb48965abbca 100644
+--- a/src/bin/cargo/cli.rs
++++ b/src/bin/cargo/cli.rs
+@@ -27,6 +27,10 @@ pub fn main(gctx: &mut GlobalContext) -> CliResult {
+ 
+     let args = cli(gctx).try_get_matches()?;
+ 
++    main_with_matches(gctx, args)
++}
++
++fn main_with_matches(gctx: &mut GlobalContext, args: clap::ArgMatches) -> CliResult {
+     // Update the process-level notion of cwd
+     if let Some(new_cwd) = args.get_one::<std::path::PathBuf>("directory") {
+         // This is a temporary hack.
+@@ -94,7 +98,7 @@ pub fn main(gctx: &mut GlobalContext) -> CliResult {
+             global_args,
+             Some(&exec),
+         )?;
+-        super::init_git();
++        super::register_git_initializer();
+ 
+         exec.exec(gctx, subcommand_args)?;
+     }
+@@ -802,3 +806,150 @@ fn avoid_ambiguity_between_builtins_and_manifest_commands() {
+         )
+     }
+ }
++
++#[cfg(test)]
++mod git_policy_tests {
++    use std::path::Path;
++    use std::process::Command;
++
++    use cargo::util::GitRepo;
++
++    use super::{GlobalContext, cli, main_with_matches};
++
++    #[allow(
++        clippy::disallowed_methods,
++        reason = "the isolated child-process marker intentionally bypasses GlobalContext"
++    )]
++    fn in_fresh_process(test: &str, check: fn(&Path)) {
++        const CHILD: &str = "CARGO_TEST_GIT_POLICY_CHILD";
++        const ROOT: &str = "CARGO_TEST_GIT_POLICY_ROOT";
++
++        if let Some(child) = std::env::var_os(CHILD) {
++            assert_eq!(child, test);
++            let root = std::env::var_os(ROOT).unwrap();
++            let root = Path::new(&root);
++            check(root);
++            std::fs::write(root.join("completed"), "ok").unwrap();
++            return;
++        }
++
++        // libgit2's options and the executable's initializer are process-global.
++        // Never let another test's initialization affect either policy assertion.
++        let root = tempfile::tempdir().unwrap();
++        let git_config = root.path().join("git-config");
++        std::fs::write(&git_config, "").unwrap();
++        let cargo_home = root.path().join("cargo-home");
++        std::fs::create_dir(&cargo_home).unwrap();
++        let output = Command::new(std::env::current_exe().unwrap())
++            .args(["--exact", test, "--nocapture", "--test-threads=1"])
++            .env(CHILD, test)
++            .env(ROOT, root.path())
++            .env("CARGO_HOME", cargo_home)
++            .env("CARGO_NET_OFFLINE", "true")
++            .env("GIT_CONFIG_GLOBAL", git_config)
++            .env("GIT_CONFIG_NOSYSTEM", "1")
++            .env_remove("CARGO_COMPLETE")
++            .env_remove("CARGO_LOG_PROFILE")
++            .current_dir(root.path())
++            .output()
++            .unwrap();
++        assert!(
++            output.status.success() && root.path().join("completed").is_file(),
++            "isolated policy check failed: {}\nstdout:\n{}\nstderr:\n{}",
++            output.status,
++            String::from_utf8_lossy(&output.stdout),
++            String::from_utf8_lossy(&output.stderr),
++        );
++    }
++
++    fn owner_validation_enabled() -> bool {
++        // git2 does not expose this getter. Initialize through its supported API
++        // before querying the option through the existing libgit2-sys dependency.
++        let _config = git2::Config::new().unwrap();
++        let mut enabled: std::ffi::c_int = 0;
++        // SAFETY: libgit2 is initialized, this option takes an int pointer, and
++        // this fresh test process does not concurrently change libgit2 options.
++        let result = unsafe {
++            libgit2_sys::git_libgit2_opts(
++                libgit2_sys::GIT_OPT_GET_OWNER_VALIDATION as std::ffi::c_int,
++                &mut enabled as *mut std::ffi::c_int,
++            )
++        };
++        assert_eq!(result, 0);
++        assert!(matches!(enabled, 0 | 1));
++        enabled != 0
++    }
++
++    #[test]
++    fn library_keeps_owner_validation() {
++        in_fresh_process(
++            "cli::git_policy_tests::library_keeps_owner_validation",
++            |root| {
++                assert!(owner_validation_enabled());
++                let repository = root.join("repository");
++                GitRepo::init(&repository, root).unwrap();
++                GitRepo::discover(&repository, root).unwrap();
++                assert!(owner_validation_enabled());
++            },
++        );
++    }
++
++    #[test]
++    fn binary_registration_is_lazy_until_repository_access() {
++        in_fresh_process(
++            "cli::git_policy_tests::binary_registration_is_lazy_until_repository_access",
++            |root| {
++                assert!(owner_validation_enabled());
++                let manifest = root.join("Cargo.toml");
++                std::fs::write(
++                    &manifest,
++                    "[package]\nname = 'git-policy-fixture'\nversion = '0.1.0'\n",
++                )
++                .unwrap();
++                let mut gctx = GlobalContext::default().unwrap();
++                let args = cli(&gctx)
++                    .try_get_matches_from([
++                        std::ffi::OsStr::new("cargo"),
++                        std::ffi::OsStr::new("locate-project"),
++                        std::ffi::OsStr::new("--manifest-path"),
++                        manifest.as_os_str(),
++                    ])
++                    .unwrap();
++                // This exercises the same dispatch and real binary callback
++                // registration as main, without needing a repository yet.
++                main_with_matches(&mut gctx, args).unwrap();
++                assert!(owner_validation_enabled());
++
++                let repository = root.join("repository");
++                GitRepo::init(&repository, root).unwrap();
++                assert!(!owner_validation_enabled());
++            },
++        );
++    }
++
++    #[test]
++    fn binary_init_applies_owner_policy() {
++        in_fresh_process(
++            "cli::git_policy_tests::binary_init_applies_owner_policy",
++            |root| {
++                assert!(owner_validation_enabled());
++                let mut gctx = GlobalContext::default().unwrap();
++                let args = cli(&gctx)
++                    .try_get_matches_from([
++                        "cargo",
++                        "init",
++                        "--name",
++                        "git-policy-fixture",
++                        "--vcs",
++                        "git",
++                        "--lib",
++                        "repository",
++                    ])
++                    .unwrap();
++                main_with_matches(&mut gctx, args).unwrap();
++                assert!(root.join("repository/.git").is_dir());
++                assert!(!owner_validation_enabled());
++            },
++        );
++    }
++}
+diff --git a/src/bin/cargo/main.rs b/src/bin/cargo/main.rs
+index bd38358ab0090d48c449294e021403559c4d35fd..e976cc701ee9385506aeb662ab7af8c6092b35c2 100644
+--- a/src/bin/cargo/main.rs
++++ b/src/bin/cargo/main.rs
+@@ -424,7 +424,26 @@ fn search_directories(gctx: &GlobalContext) -> Vec<PathBuf> {
+     path_dirs
+ }
+ 
+-/// Initialize libgit2.
++/// Preserve the startup certificate environment without loading libgit2's TLS context.
++fn register_git_initializer() {
++    #[cfg(all(unix, not(target_os = "macos"), not(target_os = "ios")))]
++    {
++        // git2 performs this probe as part of initialization. Keep it here so
++        // subprocesses see the same certificate environment even if this command
++        // never needs a Git repository. Modern curl does not perform this probe
++        // during its global initialization.
++        //
++        // SAFETY: command execution has not started, so Cargo has not created
++        // compilation, fetch, or fix worker threads. The optional tracing-chrome
++        // writer only serializes messages to a file and does not read the process
++        // environment. This is the same setup point that previously called git2's
++        // environment initializer.
++        unsafe { openssl_probe::init_openssl_env_vars() };
++    }
++    cargo::util::register_git_initializer(init_git);
++}
++
++/// Initialize libgit2 before repository access or background network workers.
+ #[tracing::instrument(skip_all)]
+ fn init_git() {
+     // Disabling the owner validation in git can, in theory, lead to code execution
+diff --git a/src/compiler/build_runner/compilation_files.rs b/src/compiler/build_runner/compilation_files.rs
+index 7c719718f5ac095c9bc36332d16dfb7ae092c5e8..a95f5a23e9e050fb8c6d08dc8f76b7d93e5e9c81 100644
+--- a/src/compiler/build_runner/compilation_files.rs
++++ b/src/compiler/build_runner/compilation_files.rs
+@@ -145,10 +145,18 @@ pub struct CompilationFiles<'a, 'gctx> {
+     shared_registry_cache: Option<SharedRegistryCache>,
+     /// Metadata hash to use for each unit.
+     metas: HashMap<Unit, Metadata>,
++    /// Reuse the directory components shared by a unit's output, fingerprint, and lock paths.
++    unit_paths: HashMap<Unit, UnitPaths>,
+     /// For each Unit, a list all files produced.
+     outputs: HashMap<Unit, OnceCell<Arc<Vec<OutputFile>>>>,
+ }
+ 
++#[derive(Default)]
++struct UnitPaths {
++    hash: OnceCell<String>,
++    directory: OnceCell<String>,
++}
++
+ /// Separates verified immutable registry artifacts from workspace-private compiler outputs.
+ struct SharedRegistryCache {
+     workspace: String,
+@@ -214,6 +222,11 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
+             .cloned()
+             .map(|unit| (unit, OnceCell::new()))
+             .collect();
++        let unit_paths = metas
++            .keys()
++            .cloned()
++            .map(|unit| (unit, UnitPaths::default()))
++            .collect();
+         let shared_registry_cache = if build_runner.bcx.ws.shared_registry_cache_enabled() {
+             Some({
+                 let context = build_runner.bcx.gctx;
+@@ -600,6 +613,9 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
+                     OhmNativeToolTrust::BuildScripts => format!("{rustc}-native-build-scripts"),
+                     OhmNativeToolTrust::All => format!("{rustc}-native-all"),
+                 };
++                // Older collectors must not mistake context-scoped artifacts for
++                // legacy data protected by their root-wide lock.
++                let rustc = format!("v2-{rustc}");
+ 
+                 let isolated_clippy = trusted_context
+                     && matches!(
+@@ -656,7 +672,7 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
+         } else {
+             None
+         };
+-        let mut files = CompilationFiles {
++        CompilationFiles {
+             ws: build_runner.bcx.ws,
+             host,
+             target,
+@@ -664,19 +680,37 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
+             roots: build_runner.bcx.roots.clone(),
+             shared_registry_cache,
+             metas,
++            unit_paths,
+             outputs,
+-        };
++        }
++    }
++
++    /// Protects the context before inspecting generated compiler search paths.
++    pub(super) fn prepare_shared_context(
++        &mut self,
++        build_runner: &mut BuildRunner<'a, 'gctx>,
++    ) -> CargoResult<()> {
++        if let Some(cache) = &self.shared_registry_cache {
++            build_runner
++                .compilation
++                .scope_consumer_lease(&cache.rustc)?;
++        }
+ 
+-        if !files.shared_cache_compiler_directories_are_safe(build_runner)
+-            && let Some(cache) = files.shared_registry_cache.as_mut()
++        if !self.shared_cache_compiler_directories_are_safe(build_runner)
++            && let Some(cache) = self.shared_registry_cache.as_mut()
+         {
+             cache.immutable_units.clear();
+             cache.trusted_context = false;
+             cache.isolated_clippy = false;
+             cache.workspace = Layout::shared_workspace_namespace(build_runner.bcx.ws);
++            // Search-path validation used the proposed namespaces. Recompute them
++            // after falling back to private outputs; unit hashes remain unchanged.
++            for paths in self.unit_paths.values_mut() {
++                paths.directory.take();
++            }
+         }
+ 
+-        files
++        Ok(())
+     }
+ 
+     /// Enrolls immutable ownership and starts context usage tracking, including cache hits.
+@@ -707,7 +741,7 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
+                     let path = self
+                         .layout(unit.kind)
+                         .build_dir()
+-                        .build_unit(&self.pkg_dir(unit));
++                        .build_unit(self.pkg_dir(unit));
+                     path.strip_prefix(build_root.as_path_unlocked())
+                         .map(Path::to_path_buf)
+                 })
+@@ -949,31 +983,35 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
+     ///
+     /// Note that some units may share the same directory, so care should be
+     /// taken in those cases!
+-    fn pkg_dir(&self, unit: &Unit) -> String {
+-        let name = unit.pkg.package_id().name();
+-        let hash = self.unit_hash(unit);
+-        if let Some(cache) = &self.shared_registry_cache {
+-            if cache.immutable_units.get(unit).copied().unwrap_or(false) {
+-                return format!("registries/{}/{name}/{hash}", cache.rustc);
++    fn pkg_dir(&self, unit: &Unit) -> &str {
++        self.unit_paths[unit].directory.get_or_init(|| {
++            let name = unit.pkg.package_id().name();
++            let hash = self.unit_hash(unit);
++            if let Some(cache) = &self.shared_registry_cache {
++                if cache.immutable_units.get(unit).copied().unwrap_or(false) {
++                    return format!("registries/{}/{name}/{hash}", cache.rustc);
++                }
++                return format!(
++                    "workspaces/{}/{}/{name}/{hash}",
++                    cache.workspace, cache.rustc
++                );
+             }
+-            return format!(
+-                "workspaces/{}/{}/{name}/{hash}",
+-                cache.workspace, cache.rustc
+-            );
+-        }
+-        let separator = match self.ws.gctx().cli_unstable().build_dir_new_layout {
+-            true => "/",
+-            false => "-",
+-        };
+-        format!("{name}{separator}{hash}")
++            let separator = match self.ws.gctx().cli_unstable().build_dir_new_layout {
++                true => "/",
++                false => "-",
++            };
++            format!("{name}{separator}{hash}")
++        })
+     }
+ 
+     /// The directory hash to use for a given unit
+-    pub fn unit_hash(&self, unit: &Unit) -> String {
+-        self.metas[unit]
+-            .pkg_dir()
+-            .map(|h| h.to_string())
+-            .unwrap_or_else(|| self.target_short_hash(unit))
++    pub fn unit_hash(&self, unit: &Unit) -> &str {
++        self.unit_paths[unit].hash.get_or_init(|| {
++            self.metas[unit]
++                .pkg_dir()
++                .map(|h| h.to_string())
++                .unwrap_or_else(|| self.target_short_hash(unit))
++        })
+     }
+ 
+     /// Returns the final artifact path for the host (`/…/target/debug`)
+@@ -1023,14 +1061,14 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
+     /// Returns the host `deps` directory path for a given build unit.
+     pub fn host_deps(&self, unit: &Unit) -> PathBuf {
+         let dir = self.pkg_dir(unit);
+-        self.host.build_dir().deps(&dir)
++        self.host.build_dir().deps(dir)
+     }
+ 
+     /// Returns the directories where Rust crate dependencies are found for the
+     /// specified unit.
+     pub fn deps_dir(&self, unit: &Unit) -> PathBuf {
+         let dir = self.pkg_dir(unit);
+-        self.layout(unit.kind).build_dir().deps(&dir)
++        self.layout(unit.kind).build_dir().deps(dir)
+     }
+ 
+     /// Returns the directories where Rust crate dependencies are found for the
+@@ -1039,15 +1077,13 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
+     /// New features should consider using this so we can avoid their migrations.
+     pub fn out_dir_new_layout(&self, unit: &Unit) -> PathBuf {
+         let dir = self.pkg_dir(unit);
+-        self.layout(unit.kind)
+-            .build_dir()
+-            .out_force_new_layout(&dir)
++        self.layout(unit.kind).build_dir().out_force_new_layout(dir)
+     }
+ 
+     /// Directory where the fingerprint for the given unit should go.
+     pub fn fingerprint_dir(&self, unit: &Unit) -> PathBuf {
+         let dir = self.pkg_dir(unit);
+-        self.layout(unit.kind).build_dir().fingerprint(&dir)
++        self.layout(unit.kind).build_dir().fingerprint(dir)
+     }
+ 
+     /// The lock location for a given build unit.
+@@ -1055,7 +1091,7 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
+         let dir = self.pkg_dir(unit);
+         self.layout(unit.kind)
+             .build_dir()
+-            .build_unit(&dir)
++            .build_unit(dir)
+             .join(".lock")
+     }
+ 
+@@ -1119,9 +1155,7 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
+         assert!(!unit.mode.is_run_custom_build());
+         assert!(self.metas.contains_key(unit));
+         let dir = self.pkg_dir(unit);
+-        self.layout(CompileKind::Host)
+-            .build_dir()
+-            .build_script(&dir)
++        self.layout(CompileKind::Host).build_dir().build_script(dir)
+     }
+ 
+     /// Returns the directory for compiled artifacts files.
+@@ -1145,7 +1179,7 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
+                 invalid
+             ),
+         };
+-        self.layout(unit.kind).build_dir().artifact(&dir, kind)
++        self.layout(unit.kind).build_dir().artifact(dir, kind)
+     }
+ 
+     /// Returns the directory where information about running a build script
+@@ -1157,7 +1191,7 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
+         let dir = self.pkg_dir(unit);
+         self.layout(unit.kind)
+             .build_dir()
+-            .build_script_execution(&dir)
++            .build_script_execution(dir)
+     }
+ 
+     /// Returns the "`OUT_DIR`" directory for running a build script.
+diff --git a/src/compiler/build_runner/mod.rs b/src/compiler/build_runner/mod.rs
+index bb2206bddd2fdac714b1d61d44ba409b8347a4ef..2ef9d0a7df24c4ec0f2ea9d4a0a2bf339d6ecf9d 100644
+--- a/src/compiler/build_runner/mod.rs
++++ b/src/compiler/build_runner/mod.rs
+@@ -894,6 +894,10 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
+ 
+         self.collect_doc_merge_info()?;
+ 
++        // Compilation can replace dep-info, so share parsed dependencies only after all jobs finish.
++        // A single root cannot reuse these paths and should not pay to retain them.
++        let mut dep_info_cache = (self.bcx.roots.len() > 1).then(HashMap::default);
++
+         // Collect the result of the build into `self.compilation`.
+         for unit in &self.bcx.roots {
+             self.collect_tests_and_executables(unit)?;
+@@ -954,7 +958,7 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
+                 });
+             }
+ 
+-            super::output_depinfo(&mut self, unit)?;
++            super::output_depinfo(&self, unit, &mut dep_info_cache)?;
+         }
+ 
+         Ok(self.compilation)
+@@ -1285,7 +1289,8 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
+ 
+         self.record_units_requiring_metadata();
+ 
+-        let files = CompilationFiles::new(self, host_layout, targets);
++        let mut files = CompilationFiles::new(self, host_layout, targets);
++        files.prepare_shared_context(self)?;
+         self.files = Some(files);
+         self.lock_manager
+             .reserve_shared_cache(self, &self.exclusive_shared_cache_units)?;
+diff --git a/src/compiler/compilation.rs b/src/compiler/compilation.rs
+index eae1bc436eee6e0e225860920398d8625862ac33..92971ff380b9157aa50ce05a99e5f151c720fc79 100644
+--- a/src/compiler/compilation.rs
++++ b/src/compiler/compilation.rs
+@@ -157,13 +157,6 @@ pub struct Compilation<'gctx> {
+ 
+ impl<'gctx> Compilation<'gctx> {
+     pub fn new<'a>(bcx: &BuildContext<'a, 'gctx>) -> CargoResult<Compilation<'gctx>> {
+-        // Acquire the root-wide lease before Layout takes profile/workspace locks.
+-        // It belongs to Compilation so cargo run/test/doc retain it after BuildRunner exits.
+-        let consumer_lease = bcx
+-            .ws
+-            .shared_registry_cache_enabled()
+-            .then(|| ConsumerLease::acquire(bcx.ws.configured_build_dir().as_path_unlocked()))
+-            .transpose()?;
+         let private_lease = bcx
+             .ws
+             .shared_registry_cache_enabled()
+@@ -237,13 +230,22 @@ impl<'gctx> Compilation<'gctx> {
+                 .ws
+                 .shared_registry_cache_enabled()
+                 .then(|| bcx.ws.configured_build_dir().into_path_unlocked()),
+-            consumer_lease,
++            consumer_lease: None,
+             private_lease,
+             lint_warning_count: 0,
+             ready_tests: None,
+         })
+     }
+ 
++    /// Acquires protection once the context is known, before inspecting its artifacts.
++    /// The context lease remains with run/test/doc after BuildRunner exits.
++    pub(super) fn scope_consumer_lease(&mut self, context: &str) -> CargoResult<()> {
++        if let Some(root) = &self.shared_registry_root {
++            self.consumer_lease = Some(ConsumerLease::acquire_context(root, context)?);
++        }
++        Ok(())
++    }
++
+     /// Install early-test signal handling only once the scheduler can service it.
+     /// Build preparation must retain ordinary interrupts while acquiring locks.
+     pub(crate) fn prepare_ready_tests(&mut self, bcx: &BuildContext<'_, 'gctx>) {
+@@ -482,9 +484,17 @@ impl<'gctx> Compilation<'gctx> {
+             search_path.push(PathBuf::from("/usr/local/lib"));
+             search_path.push(PathBuf::from("/usr/lib"));
+         }
+-        let search_path = paths::join_paths(&search_path, paths::dylib_path_envvar())?;
+-
+-        cmd.env(paths::dylib_path_envvar(), &search_path);
++        let loader_variable = paths::dylib_path_envvar();
++        if search_path.is_empty() && self.gctx.get_env_os(loader_variable).is_none() {
++            // Preserve an unset loader path when Cargo has no directories to add.
++            // An empty path would instead appear to contain a relative directory
++            // when authenticating compiler provenance. Explicit removal also
++            // preserves Cargo's precedence over `[env]` configuration below.
++            cmd.env_remove(loader_variable);
++        } else {
++            let search_path = paths::join_paths(&search_path, loader_variable)?;
++            cmd.env(loader_variable, &search_path);
++        }
+         if let Some(meta_vec) = script_metas {
+             for meta in meta_vec {
+                 if let Some(env) = self.extra_env.get(meta) {
+diff --git a/src/compiler/custom_build.rs b/src/compiler/custom_build.rs
+index 1e25fcce78e35505bb743a84264c8c7fa946b181..b246ee0a32c7000dd5e9dfb9cf586a3f50bef21f 100644
+--- a/src/compiler/custom_build.rs
++++ b/src/compiler/custom_build.rs
+@@ -1127,6 +1127,13 @@ impl BuildOutput {
+             }
+         }
+ 
++        // Compare the exact strings: Path equality can normalize components that
++        // still need to be rewritten in the build script's output.
++        let unchanged_output_directory = script_out_dir_when_generated
++            .to_str()
++            .zip(script_out_dir.to_str())
++            .is_some_and(|(old, new)| old == new);
++
+         for line in input.split(|b| *b == b'\n') {
+             let line = match str::from_utf8(line) {
+                 Ok(line) => line.trim(),
+@@ -1151,10 +1158,14 @@ impl BuildOutput {
+                 continue;
+             };
+             // This will rewrite paths if the target directory has been moved.
+-            let value = value.replace(
+-                script_out_dir_when_generated.to_str().unwrap(),
+-                script_out_dir.to_str().unwrap(),
+-            );
++            let value = if unchanged_output_directory {
++                value.to_owned()
++            } else {
++                value.replace(
++                    script_out_dir_when_generated.to_str().unwrap(),
++                    script_out_dir.to_str().unwrap(),
++                )
++            };
+ 
+             let syntax_prefix = if old_syntax { "cargo:" } else { "cargo::" };
+             macro_rules! check_and_add_target {
+diff --git a/src/compiler/fingerprint/mod.rs b/src/compiler/fingerprint/mod.rs
+index f94aaba07d58f8b2383d461c4b82027b35b798d0..1a7e8dc436499215e2a85587f9aa73a41068f967 100644
+--- a/src/compiler/fingerprint/mod.rs
++++ b/src/compiler/fingerprint/mod.rs
+@@ -3013,7 +3013,7 @@ pub fn prepare_init(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> Carg
+ 
+ /// Returns the location that the dep-info file will show up at
+ /// for the [`Unit`] specified.
+-pub fn dep_info_loc(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> PathBuf {
++pub fn dep_info_loc(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> PathBuf {
+     build_runner.files().fingerprint_file_path(unit, "dep-")
+ }
+ 
+diff --git a/src/compiler/mod.rs b/src/compiler/mod.rs
+index f5c2ed3ac2ec58e34aa9f86a4bb2eb0c88c0bd5d..230a66c6227d39616de942cfbfb1ba602a87a644 100644
+--- a/src/compiler/mod.rs
++++ b/src/compiler/mod.rs
+@@ -2027,6 +2027,9 @@ fn link_targets(
+ ) -> CargoResult<Work> {
+     let bcx = build_runner.bcx;
+     let outputs = build_runner.outputs(unit)?;
++    if !bcx.build_config.emit_json() && outputs.iter().all(|output| output.hardlink.is_none()) {
++        return Ok(Work::noop());
++    }
+     let export_dir = build_runner.files().export_dir();
+     let package_id = unit.pkg.package_id();
+     let manifest_path = PathBuf::from(unit.pkg.manifest_path());
+@@ -2142,8 +2145,11 @@ fn add_plugin_deps(
+     shared_registry_root: Option<&Path>,
+ ) -> CargoResult<()> {
+     let var = paths::dylib_path_envvar();
+-    let search_path = rustc.get_env(var).unwrap_or_default();
+-    let mut search_path = env::split_paths(&search_path).collect::<Vec<_>>();
++    let existing_search_path = rustc.get_env(var);
++    let mut search_path = existing_search_path
++        .as_deref()
++        .map(|path| env::split_paths(path).collect::<Vec<_>>())
++        .unwrap_or_default();
+     for (pkg_id, metadata) in &build_scripts.plugins {
+         let output = build_script_outputs
+             .get(*metadata)
+@@ -2154,8 +2160,10 @@ fn add_plugin_deps(
+             shared_registry_root,
+         ));
+     }
+-    let search_path = paths::join_paths(&search_path, var)?;
+-    rustc.env(var, &search_path);
++    if existing_search_path.is_some() || !search_path.is_empty() {
++        let search_path = paths::join_paths(&search_path, var)?;
++        rustc.env(var, &search_path);
++    }
+     Ok(())
+ }
+ 
+@@ -3526,12 +3534,18 @@ impl OutputOptions {
+ /// contains a `Send`-able copy of the manifest information that we need for the
+ /// enriched errors.
+ struct ManifestErrorContext {
+-    /// The path to the manifest.
++    /// The path to the manifest, also used by machine-readable compiler messages.
+     path: PathBuf,
++    /// Source information available for annotating compiler diagnostics.
++    annotation: Option<ManifestDiagnosticContext>,
++}
++
++/// Retained manifest source and dependency information for diagnostic annotations.
++struct ManifestDiagnosticContext {
+     /// The locations of various spans within the manifest.
+-    spans: Option<Arc<toml::Spanned<toml::de::DeTable<'static>>>>,
++    spans: Arc<toml::Spanned<toml::de::DeTable<'static>>>,
+     /// The raw manifest contents.
+-    contents: Option<String>,
++    contents: String,
+     /// A lookup for all the unambiguous renamings, mapping from the original package
+     /// name to the renamed one.
+     rename_table: HashMap<InternedString, InternedString>,
+@@ -3635,6 +3649,9 @@ fn on_stderr_line_inner(
+ 
+     // Returns `true` if the diagnostic was modified.
+     let add_pub_in_priv_diagnostic = |diag: &mut String| -> bool {
++        let Some(annotation) = &manifest.annotation else {
++            return false;
++        };
+         // We are parsing the compiler diagnostic here, as this information isn't
+         // currently exposed elsewhere.
+         // At the time of writing this comment, rustc emits two different
+@@ -3646,10 +3663,9 @@ fn on_stderr_line_inner(
+         static PRIV_DEP_REGEX: LazyLock<Regex> =
+             LazyLock::new(|| Regex::new("from private dependency '([A-Za-z0-9-_]+)'").unwrap());
+         if let Some(crate_name) = PRIV_DEP_REGEX.captures(diag).and_then(|m| m.get(1))
+-            && let Some(ref contents) = manifest.contents
+-            && let Some(span) = manifest.find_crate_span(crate_name.as_str())
++            && let Some(span) = annotation.find_crate_span(crate_name.as_str())
+         {
+-            let rel_path = pathdiff::diff_paths(&manifest.path, &manifest.cwd)
++            let rel_path = pathdiff::diff_paths(&manifest.path, &annotation.cwd)
+                 .unwrap_or_else(|| manifest.path.clone())
+                 .display()
+                 .to_string();
+@@ -3658,13 +3674,13 @@ fn on_stderr_line_inner(
+                 crate_name.as_str()
+             )))
+             .element(
+-                Snippet::source(contents)
++                Snippet::source(&annotation.contents)
+                     .path(rel_path)
+                     .annotation(AnnotationKind::Context.span(span)),
+             )];
+ 
+             let rendered = Renderer::styled()
+-                .term_width(manifest.term_width)
++                .term_width(annotation.term_width)
+                 .render(&report);
+             diag.push_str(&rendered);
+             diag.push('\n');
+@@ -3926,6 +3942,18 @@ fn on_stderr_line_inner(
+ 
+ impl ManifestErrorContext {
+     fn new(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> ManifestErrorContext {
++        ManifestErrorContext {
++            path: unit.pkg.manifest_path().to_owned(),
++            annotation: ManifestDiagnosticContext::new(build_runner, unit),
++        }
++    }
++}
++
++impl ManifestDiagnosticContext {
++    /// Skips annotation-only allocations when source spans or contents are unavailable.
++    fn new(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> Option<Self> {
++        let spans = unit.pkg.manifest().document_rc()?;
++        let contents = unit.pkg.manifest().contents()?;
+         let mut duplicates = HashSet::default();
+         let mut rename_table = HashMap::default();
+ 
+@@ -3946,10 +3974,9 @@ impl ManifestErrorContext {
+         }
+ 
+         let bcx = build_runner.bcx;
+-        ManifestErrorContext {
+-            path: unit.pkg.manifest_path().to_owned(),
+-            spans: unit.pkg.manifest().document_rc(),
+-            contents: unit.pkg.manifest().contents().map(String::from),
++        Some(Self {
++            spans,
++            contents: contents.to_owned(),
+             requested_kinds: bcx.target_data.requested_kinds().to_owned(),
+             host_name: bcx.rustc().host,
+             rename_table,
+@@ -3966,7 +3993,7 @@ impl ManifestErrorContext {
+                 .err_width()
+                 .diagnostic_terminal_width()
+                 .unwrap_or(cargo_util_terminal::report::renderer::DEFAULT_TERM_WIDTH),
+-        }
++        })
+     }
+ 
+     fn requested_target_names(&self) -> impl Iterator<Item = &str> {
+@@ -3990,9 +4017,7 @@ impl ManifestErrorContext {
+     /// baz = { path = "../bar", package = "bar" }
+     /// ```
+     fn find_crate_span(&self, unrenamed: &str) -> Option<Range<usize>> {
+-        let Some(ref spans) = self.spans else {
+-            return None;
+-        };
++        let spans = &self.spans;
+ 
+         let orig_name = self.rename_table.get(unrenamed)?.as_str();
+ 
+diff --git a/src/compiler/output_depinfo.rs b/src/compiler/output_depinfo.rs
+index f9580641f40592179a48e1ff2db75b819187e17e..03f32c1ce1fc77f6599525a912432d3b1bd1fd34 100644
+--- a/src/compiler/output_depinfo.rs
++++ b/src/compiler/output_depinfo.rs
+@@ -1,7 +1,7 @@
+ //! dep-info files for external build system integration.
+ //! See [`output_depinfo`] for more.
+ 
+-use crate::util::data_structures::HashSet;
++use crate::util::data_structures::{HashMap, HashSet};
+ use cargo_util::paths::normalize_path;
+ use std::collections::BTreeSet;
+ use std::io::{BufWriter, Write};
+@@ -44,9 +44,10 @@ fn render_filename<P: AsRef<Path>>(path: P, basedir: Option<&str>) -> CargoResul
+ /// [fingerprint dep-info]: super::fingerprint#fingerprint-dep-info-files
+ fn add_deps_for_unit(
+     deps: &mut BTreeSet<PathBuf>,
+-    build_runner: &mut BuildRunner<'_, '_>,
++    build_runner: &BuildRunner<'_, '_>,
+     unit: &Unit,
+     visited: &mut HashSet<Unit>,
++    dep_info_cache: &mut Option<HashMap<Unit, Vec<PathBuf>>>,
+ ) -> CargoResult<()> {
+     if !visited.insert(unit.clone()) {
+         return Ok(());
+@@ -55,23 +56,31 @@ fn add_deps_for_unit(
+     // units representing the execution of a build script don't actually
+     // generate a dep info file, so we just keep on going below
+     if !unit.mode.is_run_custom_build() {
+-        // Add dependencies from rustc dep-info output (stored in fingerprint directory)
+-        let dep_info_loc = fingerprint::dep_info_loc(build_runner, unit);
+-        if let Some(paths) = fingerprint::parse_dep_info(
+-            unit.pkg.root(),
+-            &build_runner.files().build_root(unit),
+-            &dep_info_loc,
+-        )? {
+-            for path in paths.files.into_keys() {
+-                deps.insert(path);
+-            }
++        if let Some(paths) = dep_info_cache.as_ref().and_then(|cache| cache.get(unit)) {
++            deps.extend(paths.iter().cloned());
+         } else {
+-            debug!(
+-                "can't find dep_info for {:?} {}",
+-                unit.pkg.package_id(),
+-                unit.target
+-            );
+-            return Err(internal("dep_info missing"));
++            // Add dependencies from rustc dep-info output (stored in fingerprint directory)
++            let dep_info_loc = fingerprint::dep_info_loc(build_runner, unit);
++            if let Some(paths) = fingerprint::parse_dep_info(
++                unit.pkg.root(),
++                &build_runner.files().build_root(unit),
++                &dep_info_loc,
++            )? {
++                if let Some(cache) = dep_info_cache.as_mut() {
++                    let paths: Vec<_> = paths.files.into_keys().collect();
++                    deps.extend(paths.iter().cloned());
++                    cache.insert(unit.clone(), paths);
++                } else {
++                    deps.extend(paths.files.into_keys());
++                }
++            } else {
++                debug!(
++                    "can't find dep_info for {:?} {}",
++                    unit.pkg.package_id(),
++                    unit.target
++                );
++                return Err(internal("dep_info missing"));
++            }
+         }
+     }
+ 
+@@ -104,10 +113,9 @@ fn add_deps_for_unit(
+     }
+ 
+     // Recursively traverse all transitive dependencies
+-    let unit_deps = Vec::from(build_runner.unit_deps(unit)); // Create vec due to mutable borrow.
+-    for dep in unit_deps {
++    for dep in build_runner.unit_deps(unit) {
+         if dep.unit.is_local() {
+-            add_deps_for_unit(deps, build_runner, &dep.unit, visited)?;
++            add_deps_for_unit(deps, build_runner, &dep.unit, visited, dep_info_cache)?;
+         }
+     }
+     Ok(())
+@@ -129,12 +137,37 @@ fn add_deps_for_unit(
+ /// under the assumption that changes to them can be detected via changes to
+ /// `Cargo.lock`.
+ ///
++/// Share `dep_info_cache` only across roots of the same completed build.
++///
+ /// [`fingerprint`]: super::fingerprint#dep-info-files
+-pub fn output_depinfo(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResult<()> {
++pub fn output_depinfo(
++    build_runner: &BuildRunner<'_, '_>,
++    unit: &Unit,
++    dep_info_cache: &mut Option<HashMap<Unit, Vec<PathBuf>>>,
++) -> CargoResult<()> {
++    let outputs = build_runner.outputs(unit)?;
++    let mut outputs = outputs
++        .iter()
++        .filter(|output| {
++            !matches!(
++                output.flavor,
++                FileFlavor::DebugInfo
++                    | FileFlavor::Auxiliary
++                    | FileFlavor::Sbom
++                    | FileFlavor::Unremap
++            )
++        })
++        .filter_map(|output| output.hardlink.as_ref())
++        .peekable();
++    if outputs.peek().is_none() {
++        return Ok(());
++    }
++
+     let bcx = build_runner.bcx;
+     let mut deps = BTreeSet::new();
+     let mut visited = HashSet::default();
+-    let success = add_deps_for_unit(&mut deps, build_runner, unit, &mut visited).is_ok();
++    let success =
++        add_deps_for_unit(&mut deps, build_runner, unit, &mut visited, dep_info_cache).is_ok();
+     let basedir_string;
+     let basedir = match bcx.gctx.build_config()?.dep_info_basedir.clone() {
+         Some(value) => {
+@@ -153,19 +186,28 @@ pub fn output_depinfo(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> Ca
+         .map(|f| render_filename(f, basedir))
+         .collect::<CargoResult<Vec<_>>>()?;
+ 
+-    for output in build_runner.outputs(unit)?.iter().filter(|o| {
+-        !matches!(
+-            o.flavor,
+-            FileFlavor::DebugInfo | FileFlavor::Auxiliary | FileFlavor::Sbom | FileFlavor::Unremap
+-        )
+-    }) {
+-        if let Some(ref link_dst) = output.hardlink {
+-            let output_path = link_dst.with_extension("d");
+-            if success {
+-                let target_fn = render_filename(link_dst, basedir)?;
+-
+-                // If nothing changed don't recreate the file which could alter
+-                // its mtime
++    // Preserve the legacy target selection for crate types sharing a dep-info path.
++    let single_output = outputs.clone().nth(1).is_none();
++    for link_dst in outputs {
++        let output_path = link_dst.with_extension("d");
++        if success {
++            let target_fn = render_filename(link_dst, basedir)?;
++
++            if single_output {
++                let mut contents = Vec::new();
++                write!(contents, "{}:", target_fn)?;
++                for dep in &deps {
++                    write!(contents, " {}", dep)?;
++                }
++                writeln!(contents)?;
++
++                // Preserve the mtime when the complete rendered dep-info is unchanged.
++                if paths::read_bytes(&output_path).is_ok_and(|previous| previous == contents) {
++                    continue;
++                }
++                paths::write(output_path, contents)?;
++            } else {
++                // The dependency-only comparison can retain an earlier output's target.
+                 if let Ok(previous) = fingerprint::parse_rustc_dep_info(&output_path) {
+                     if previous
+                         .files
+@@ -177,20 +219,19 @@ pub fn output_depinfo(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> Ca
+                     }
+                 }
+ 
+-                // Otherwise write it all out
+                 let mut outfile = BufWriter::new(paths::create(output_path)?);
+                 write!(outfile, "{}:", target_fn)?;
+                 for dep in &deps {
+                     write!(outfile, " {}", dep)?;
+                 }
+                 writeln!(outfile)?;
+-
+-            // dep-info generation failed, so delete output file. This will
+-            // usually cause the build system to always rerun the build
+-            // rule, which is correct if inefficient.
+-            } else if output_path.exists() {
+-                paths::remove_file(output_path)?;
+             }
++
++        // dep-info generation failed, so delete output file. This will
++        // usually cause the build system to always rerun the build
++        // rule, which is correct if inefficient.
++        } else if output_path.exists() {
++            paths::remove_file(output_path)?;
+         }
+     }
+     Ok(())
+diff --git a/src/context/mod.rs b/src/context/mod.rs
+index 4e74a898716becc7c23d627fc8a7a87cb6c05604..4d980afc895a74c203037faae928cecf3a5110ff 100644
+--- a/src/context/mod.rs
++++ b/src/context/mod.rs
+@@ -2731,11 +2731,12 @@ fn disables_multiplexing_for_bad_curl(
+ ) {
+     use crate::util::network;
+ 
+-    if network::proxy::http_proxy_exists(http, gctx) && http.multiplexing.is_none() {
++    if http.multiplexing.is_none() {
+         let bad_curl_versions = ["7.87.0", "7.88.0", "7.88.1"];
+         if bad_curl_versions
+             .iter()
+             .any(|v| curl_version.starts_with(v))
++            && network::proxy::http_proxy_exists(http, gctx)
+         {
+             tracing::info!("disabling multiplexing with proxy, curl version is {curl_version}");
+             http.multiplexing = Some(false);
+@@ -2774,6 +2775,12 @@ mod tests {
+             (Some("".into()), Some(false), "7.88.0", Some(false)),
+             (Some("".into()), Some(false), "7.88.1", Some(false)),
+             (Some("".into()), Some(false), "8.0.0", Some(false)),
++            (Some("".into()), Some(true), "7.87.0", Some(true)),
++            (Some("".into()), Some(true), "7.88.0", Some(true)),
++            (Some("".into()), Some(true), "7.88.1", Some(true)),
++            (Some("".into()), Some(true), "8.0.0", Some(true)),
++            (Some("".into()), None, "7.88.1-custom", Some(false)),
++            (Some("".into()), None, "8.0.0-custom", None),
+         ];
+ 
+         for (proxy, multiplexing, curl_v, result) in cases {
+diff --git a/src/ops/cargo_fix/mod.rs b/src/ops/cargo_fix/mod.rs
+index 90aeb7a4b216006d34b2f66340b1b5a7de5227f8..de8ff75a73198e0a76249072f7c5ba4ffa31e167 100644
+--- a/src/ops/cargo_fix/mod.rs
++++ b/src/ops/cargo_fix/mod.rs
+@@ -166,6 +166,11 @@ pub fn fix(
+     fix_manifests(original_ws, &members)?;
+     let ws = original_ws.reload(gctx)?;
+ 
++    // With --allow-no-vcs, resolving a Git dependency below can be the first
++    // libgit2 access. Complete its environment initialization before starting
++    // the fix servers.
++    crate::util::ensure_git_initialized();
++
+     // Spin up our lock server, which our subprocesses will use to synchronize fixes.
+     let lock_server = LockServer::new()?;
+     let mut wrapper = ProcessBuilder::new(env::current_exe()?);
+@@ -238,6 +243,7 @@ fn check_version_control(gctx: &GlobalContext, opts: &FixOptions) -> CargoResult
+ 
+     let mut dirty_files = Vec::new();
+     let mut staged_files = Vec::new();
++    crate::util::ensure_git_initialized();
+     if let Ok(repo) = git2::Repository::discover(gctx.cwd()) {
+         let mut repo_opts = git2::StatusOptions::new();
+         repo_opts.include_ignored(false);
+diff --git a/src/ops/cargo_worktree/mod.rs b/src/ops/cargo_worktree/mod.rs
+index d7d1d548e651a4e07ef924b08d391ce05e1ac3ef..05029a7672744018a4eb322362a52452aeece2d1 100644
+--- a/src/ops/cargo_worktree/mod.rs
++++ b/src/ops/cargo_worktree/mod.rs
+@@ -35,6 +35,7 @@ pub struct WorktreeOptions {
+ /// after that validation, rather than exposing an unvalidated donor executable.
+ pub fn worktree_add(gctx: &GlobalContext, opts: &WorktreeOptions) -> CargoResult<()> {
+     let donor = Workspace::new(&opts.manifest_path, gctx)?;
++    crate::util::ensure_git_initialized();
+     let repo = git2::Repository::discover(donor.root())
+         .context("`cargo worktree` requires a Git working tree")?;
+     let git_root = repo
+@@ -167,8 +168,8 @@ struct Seeded {
+ 
+ /// Clones private state between target directories while holding their local guards.
+ ///
+-/// The global consumer lease protects registry references without stopping builds
+-/// in other worktrees. The new recipient cannot be another seeding operation's donor.
++/// Consumer leases protect legacy and scoped registry references without stopping
++/// builds in other worktrees. The new recipient cannot be another seeding operation's donor.
+ fn seed_shared_build(donor: &Workspace<'_>, recipient: &Workspace<'_>) -> CargoResult<Seeded> {
+     let shared_root = donor.canonical_build_path(donor.configured_build_dir().as_path_unlocked());
+     ensure!(
+@@ -208,6 +209,8 @@ fn seed_shared_build(donor: &Workspace<'_>, recipient: &Workspace<'_>) -> CargoR
+             seeded.skipped_profiles += 1;
+             continue;
+         }
++        let _context_leases =
++            crate::workspace::build_cache_gc_lease::seed_leases(&shared_root, &source)?;
+         let _context_uses = if cfg!(any(target_os = "linux", target_os = "macos")) {
+             crate::workspace::build_cache_gc::record_seed_contexts(&shared_root, &source)
+                 .unwrap_or_else(|error| {
+diff --git a/src/sources/git/oxide.rs b/src/sources/git/oxide.rs
+index 2bc4abfd41f236325b71a0341e54f3eac2401263..4d08a8224f351b5fd0180fa7aad93818a2c2966f 100644
+--- a/src/sources/git/oxide.rs
++++ b/src/sources/git/oxide.rs
+@@ -365,6 +365,7 @@ pub fn cargo_config_to_gitoxide_overrides(gctx: &GlobalContext) -> CargoResult<V
+ /// seems corrupted, and we want to start over.
+ pub fn reinitialize(git_dir: &Path) -> CargoResult<()> {
+     fn init(path: &Path, bare: bool) -> CargoResult<()> {
++        crate::util::ensure_git_initialized();
+         let mut opts = git2::RepositoryInitOptions::new();
+         // Skip anything related to templates, they just call all sorts of issues as
+         // we really don't want to use them yet they insist on being used. See #6240
+diff --git a/src/sources/git/utils.rs b/src/sources/git/utils.rs
+index b4f07784d23bddcfc84da6af0f59fcf9ca186b63..813f4b5afad13c6afb5d12a1fa29b26d66d48ef5 100644
+--- a/src/sources/git/utils.rs
++++ b/src/sources/git/utils.rs
+@@ -153,6 +153,7 @@ impl GitRemote {
+ 
+     /// Creates a [`GitDatabase`] of this remote at `db_path`.
+     pub fn db_at(&self, db_path: &Path) -> CargoResult<GitDatabase> {
++        crate::util::ensure_git_initialized();
+         let repo = git2::Repository::open(db_path)?;
+         Ok(GitDatabase {
+             remote: self.clone(),
+@@ -176,6 +177,7 @@ impl GitDatabase {
+         // A non-fresh checkout can happen if the checkout operation was
+         // interrupted. In that case, the checkout gets deleted and a new
+         // clone is created.
++        crate::util::ensure_git_initialized();
+         let checkout = match git2::Repository::open(dest)
+             .ok()
+             .map(|repo| GitCheckout::new(self, rev, repo))
+@@ -312,6 +314,7 @@ impl<'a> GitCheckout<'a> {
+         // we're doing a local filesystem-to-filesystem clone so there should
+         // be no need to respect global configuration options, so pass in
+         // an empty instance of `git2::Config` below.
++        crate::util::ensure_git_initialized();
+         let git_config = git2::Config::new()?;
+ 
+         // Clone the repository, but make sure we use the "local" option in
+@@ -1325,6 +1328,7 @@ fn fetch_with_gitoxide(
+         },
+     );
+     if repo_reinitialized.load(Ordering::Relaxed) {
++        crate::util::ensure_git_initialized();
+         *git2_repo = git2::Repository::open(git2_repo.path())?;
+     }
+     res
+@@ -1473,6 +1477,7 @@ fn maybe_gc_repo(repo: &mut git2::Repository, gctx: &GlobalContext) -> CargoResu
+                 String::from_utf8_lossy(&out.stderr)
+             );
+             if out.status.success() {
++                crate::util::ensure_git_initialized();
+                 let new = git2::Repository::open(repo.path())?;
+                 *repo = new;
+                 return Ok(());
+@@ -1547,6 +1552,7 @@ fn reinitialize(repo: &mut git2::Repository) -> CargoResult<()> {
+ 
+ /// Initializes a Git repository at `path`.
+ fn init(path: &Path, bare: bool) -> CargoResult<git2::Repository> {
++    crate::util::ensure_git_initialized();
+     let mut opts = git2::RepositoryInitOptions::new();
+     // Skip anything related to templates, they just call all sorts of issues as
+     // we really don't want to use them yet they insist on being used. See #6240
+diff --git a/src/sources/registry/git_remote.rs b/src/sources/registry/git_remote.rs
+index b030ee5d123d34d86453fbfcbee1932ff904f144..aaa7dec996152c37031400a279cb924d67ce821d 100644
+--- a/src/sources/registry/git_remote.rs
++++ b/src/sources/registry/git_remote.rs
+@@ -113,6 +113,7 @@ impl<'gctx> GitRegistry<'gctx> {
+                 .gctx
+                 .assert_package_cache_locked(CacheLockMode::DownloadExclusive, &self.index_path);
+ 
++            crate::util::ensure_git_initialized();
+             self.repo.replace(Some(match git2::Repository::open(&path) {
+                 Ok(repo) => repo,
+                 Err(_) => {
+diff --git a/src/util/git.rs b/src/util/git.rs
+new file mode 100644
+index 0000000000000000000000000000000000000000..6f8eddf73784a3a166c02d50eda6c7ffaed9a8d6
+--- /dev/null
++++ b/src/util/git.rs
+@@ -0,0 +1,87 @@
++//! Deferred configuration of libgit2 for the Cargo executable.
++
++use std::sync::{Once, OnceLock};
++
++static INITIALIZER: GitInitializer = GitInitializer::new();
++
++/// Register the executable's libgit2 configuration before running a command.
++///
++/// The callback runs once, before Cargo first opens or creates a Git repository
++/// or starts workers that may read its certificate environment.
++/// Cargo's library users do not register it, so they retain libgit2's default
++/// owner validation. The callback must not recursively call Cargo's Git helpers.
++///
++/// # Panics
++///
++/// Panics if an initializer has already been registered.
++#[doc(hidden)]
++pub fn register_git_initializer(callback: fn()) {
++    INITIALIZER.register(callback);
++}
++
++/// Apply the executable's policy before accessing a libgit2 repository.
++pub(crate) fn ensure_git_initialized() {
++    INITIALIZER.ensure_initialized();
++}
++
++struct GitInitializer {
++    callback: OnceLock<fn()>,
++    initialized: Once,
++}
++
++impl GitInitializer {
++    const fn new() -> Self {
++        Self {
++            callback: OnceLock::new(),
++            initialized: Once::new(),
++        }
++    }
++
++    fn register(&self, callback: fn()) {
++        self.callback
++            .set(callback)
++            .expect("the Git initializer must only be registered once");
++    }
++
++    fn ensure_initialized(&self) {
++        if let Some(callback) = self.callback.get() {
++            self.initialized.call_once(*callback);
++        }
++    }
++}
++
++#[cfg(test)]
++mod tests {
++    use super::GitInitializer;
++    use std::sync::atomic::{AtomicUsize, Ordering};
++
++    #[test]
++    fn registration_is_lazy_and_concurrent_access_initializes_once() {
++        static CALLS: AtomicUsize = AtomicUsize::new(0);
++        fn initialize() {
++            CALLS.fetch_add(1, Ordering::SeqCst);
++        }
++
++        let initializer = GitInitializer::new();
++        // Library access without an executable callback must not consume the Once.
++        initializer.ensure_initialized();
++        initializer.register(initialize);
++        assert_eq!(CALLS.load(Ordering::SeqCst), 0);
++
++        std::thread::scope(|scope| {
++            for _ in 0..8 {
++                scope.spawn(|| initializer.ensure_initialized());
++            }
++        });
++        initializer.ensure_initialized();
++        assert_eq!(CALLS.load(Ordering::SeqCst), 1);
++    }
++
++    #[test]
++    #[should_panic(expected = "the Git initializer must only be registered once")]
++    fn duplicate_registration_is_rejected() {
++        let initializer = GitInitializer::new();
++        initializer.register(|| {});
++        initializer.register(|| {});
++    }
++}
+diff --git a/src/util/mod.rs b/src/util/mod.rs
+index b04624f9912b9a24aaa1a72f27ebb9f841b0d902..009984b832391e82ecb2558cbfb52f96c3ca44e7 100644
+--- a/src/util/mod.rs
++++ b/src/util/mod.rs
+@@ -9,6 +9,8 @@ pub use self::edit_distance::{closest, closest_msg, edit_distance};
+ pub use self::errors::CliError;
+ pub use self::errors::{CargoResult, CliResult, internal};
+ pub use self::flock::{FileLock, Filesystem};
++pub(crate) use self::git::ensure_git_initialized;
++pub use self::git::register_git_initializer;
+ pub use self::graph::Graph;
+ pub use self::hasher::StableHasher;
+ pub use self::hex::{hash_u64, short_hash, to_hex};
+@@ -44,6 +46,7 @@ pub mod errors;
+ pub(crate) mod file_clone;
+ pub mod flock;
+ pub mod frontmatter;
++mod git;
+ pub mod graph;
+ mod hasher;
+ pub mod hex;
+diff --git a/src/util/network/http.rs b/src/util/network/http.rs
+index 0aa44a67ff8916429d880d5ce65974b6b152318d..836a941f88f244730ceec4322581321c3dec1345 100644
+--- a/src/util/network/http.rs
++++ b/src/util/network/http.rs
+@@ -73,6 +73,11 @@ impl HandleConfiguration {
+             )
+         }
+ 
++        // HTTP clients may start worker threads before a Git source is needed.
++        // Complete the executable's libgit2 environment initialization before
++        // those threads can read the process environment.
++        crate::util::ensure_git_initialized();
++
+         let http = gctx.http_config()?;
+         let timeout = HttpTimeout::new(gctx)?;
+         let useragent = if let Some(user_agent) = http.user_agent.clone() {
+diff --git a/src/util/vcs.rs b/src/util/vcs.rs
+index 2d747e1080114c80dfd526c5e382018949c23bd7..044e41bed04ec88051f284dca452e0d7cc4a138a 100644
+--- a/src/util/vcs.rs
++++ b/src/util/vcs.rs
+@@ -32,10 +32,12 @@ pub struct FossilRepo;
+ 
+ impl GitRepo {
+     pub fn init(path: &Path, _: &Path) -> CargoResult<GitRepo> {
++        crate::util::ensure_git_initialized();
+         git2::Repository::init(path)?;
+         Ok(GitRepo)
+     }
+     pub fn discover(path: &Path, _: &Path) -> Result<git2::Repository, git2::Error> {
++        crate::util::ensure_git_initialized();
+         git2::Repository::discover(path)
+     }
+ }
+diff --git a/src/workspace/build_cache_gc/mod.rs b/src/workspace/build_cache_gc/mod.rs
+index a9c35081bfa92c744117498600509b8eaa1fa47e..72233a043bc5ccf44392c588e95d750e6936eeb2 100644
+--- a/src/workspace/build_cache_gc/mod.rs
++++ b/src/workspace/build_cache_gc/mod.rs
+@@ -13,7 +13,7 @@ use serde::{Deserialize, Serialize};
+ 
+ use crate::CargoResult;
+ use crate::compiler::Layout;
+-use crate::util::data_structures::HashSet;
++use crate::util::data_structures::{HashMap, HashSet};
+ use crate::util::flock::try_lock_exclusive;
+ 
+ pub(crate) const DIRECTORY: &str = ".ohm-gc-v1";
+@@ -101,7 +101,7 @@ pub(crate) fn record_seed_contexts(root: &Path, source: &Path) -> CargoResult<Ve
+                 }
+                 let Some(record) =
+                     read_record::<ContextRecord>(&records.join(format!("{context}.json")))
+-                        .filter(|record| record.version == 1 && record.context == context)
++                        .filter(|record| record.supported() && record.context == context)
+                 else {
+                     continue;
+                 };
+@@ -300,6 +300,16 @@ fn installed_ohm_version(compiler: &FileIdentity, driver: &FileIdentity) -> Opti
+ }
+ 
+ impl ContextRecord {
++    /// Version 2 uses context-scoped leases and is opaque to older collectors.
++    fn supported(&self) -> bool {
++        self.version
++            == if scoped_context_name(&self.context) {
++                2
++            } else {
++                1
++            }
++    }
++
+     fn retired(&self) -> bool {
+         [
+             (&self.compiler, &self.compiler_anchor),
+@@ -360,9 +370,84 @@ pub(crate) struct Summary {
+     pub counts: FileCounts,
+     pub pending: bool,
+     pub busy: bool,
++    pub skipped: Vec<String>,
+     pub details: Vec<String>,
+ }
+ 
++impl Summary {
++    fn skip(&mut self, namespace: &Namespace) {
++        self.busy = true;
++        let detail = match namespace.scoped_context() {
++            Some(context) => format!("context {context} (in use)"),
++            None => "legacy caches (a build, program, or older collector is using this cache)"
++                .to_owned(),
++        };
++        if self.skipped.len() < 32 && !self.skipped.contains(&detail) {
++            self.skipped.push(detail);
++        }
++    }
++}
++
++/// One probe per protection domain; busy domains do not block unrelated ones.
++/// Dry runs release probes immediately, before counting any artifact trees.
++#[derive(Default)]
++struct CollectionLocks {
++    // A missing key context denotes legacy protection; a missing value is busy.
++    domains: HashMap<Option<String>, Option<Vec<CollectorLock>>>,
++}
++
++impl CollectionLocks {
++    fn acquire(
++        &mut self,
++        root: &Path,
++        profiles: &[PathBuf],
++        namespace: &Namespace,
++        dry_run: bool,
++    ) -> CargoResult<bool> {
++        let context = namespace.scoped_context().map(str::to_owned);
++        if let Some(guards) = self.domains.get(&context) {
++            return Ok(guards.is_some());
++        }
++        for profile in profiles {
++            ensure!(
++                !crate::compiler::layout::shared_registry_directory_is_nfs(profile)?,
++                "build-cache reclamation does not support NFS profiles"
++            );
++        }
++        let mut paths = if let Some(context) = &context {
++            vec![super::build_cache_gc_lease::context_lock(root, context)]
++        } else {
++            let mut paths = vec![root.join(DIRECTORY).join(CONSUMERS_LOCK)];
++            paths.extend(
++                profiles
++                    .iter()
++                    .map(|profile| profile.join(".cargo-build-lock")),
++            );
++            // Older Cargo's optional ThinLTO pruner runs after releasing profile locks.
++            if plain_directory(&root.join(THINLTO)) {
++                paths.push(root.join(THINLTO).join(".prune-lock"));
++            }
++            paths
++        };
++        if dry_run {
++            paths.retain(|path| !absent(path));
++        }
++        let mut guards = Vec::new();
++        for path in paths {
++            let Some(guard) = try_lock(&path, !dry_run)? else {
++                self.domains.insert(context, None);
++                return Ok(false);
++            };
++            guards.push(guard);
++        }
++        if dry_run {
++            guards.clear();
++        }
++        self.domains.insert(context, Some(guards));
++        Ok(true)
++    }
++}
++
+ /// Cache payload totals exclude GC's own provenance and temporary staging files.
+ #[derive(Default, Debug, PartialEq, Eq)]
+ pub(crate) struct FileCounts {
+@@ -438,32 +523,14 @@ fn collect_with_lock_budget(
+     } else {
+         let Some(collector) = try_lock(&directory.join("collector.lock"), true)? else {
+             summary.busy = true;
++            summary
++                .skipped
++                .push(format!("{} (another GC is running)", root.display()));
+             return Ok(summary);
+         };
+         Some(collector)
+     };
+-    let consumers_path = directory.join(CONSUMERS_LOCK);
+-    if !dry_run || !absent(&consumers_path) {
+-        let Some(probe) = try_lock(&consumers_path, !dry_run)? else {
+-            summary.busy = true;
+-            return Ok(summary);
+-        };
+-        drop(probe);
+-    }
+     let tracker = Tracker::existing(root, dry_run)?;
+-    // Older Cargo versions prune the legacy ThinLTO layout at build completion,
+-    // after releasing their profile locks. Coordinate with that pruner too.
+-    let thinlto = root.join(THINLTO);
+-    let prune_lock = thinlto.join(".prune-lock");
+-    let _thinlto_pruner = if plain_directory(&thinlto) && (!dry_run || !absent(&prune_lock)) {
+-        let Some(guard) = try_lock(&prune_lock, !dry_run)? else {
+-            summary.busy = true;
+-            return Ok(summary);
+-        };
+-        Some(guard)
+-    } else {
+-        None
+-    };
+     let profiles = profiles(root)?;
+     let mut ready = Vec::new();
+     let mut trash_roots = profiles
+@@ -515,30 +582,14 @@ fn collect_with_lock_budget(
+         ready.push((namespace, paths));
+     }
+     if dry_run {
+-        let probe = if absent(&consumers_path) {
+-            None
+-        } else {
+-            let Some(probe) = try_lock(&consumers_path, false)? else {
+-                summary.busy = true;
+-                return Ok(summary);
+-            };
+-            Some(probe)
+-        };
+-        for profile in &profiles {
+-            ensure!(
+-                !crate::compiler::layout::shared_registry_directory_is_nfs(profile)?,
+-                "build-cache reclamation does not support NFS profiles"
+-            );
+-            let Some(_guard) = try_lock(&profile.join(".cargo-build-lock"), false)? else {
+-                summary.busy = true;
+-                return Ok(summary);
+-            };
+-        }
+-        drop(probe);
+-
+         // Preview every candidate without holding locks while counting artifacts.
++        let mut locks = CollectionLocks::default();
+         let mut sources = Vec::new();
+         for (namespace, paths) in ready {
++            if !locks.acquire(root, &profiles, &namespace, true)? {
++                summary.skip(&namespace);
++                continue;
++            }
+             let Some(detail) =
+                 namespace.detail(root, &profiles, now, current_ohm, tracker.as_ref())
+             else {
+@@ -588,35 +639,15 @@ fn collect_with_lock_budget(
+             RENAME_BUDGET
+         };
+         let deadline = Instant::now() + lock_budget;
+-        let Some(consumers) = try_lock(&consumers_path, false)? else {
+-            summary.busy = true;
+-            summary.pending = true;
+-            return Ok(summary);
+-        };
+-        if profiles != self::profiles(root)? {
+-            summary.pending = true;
+-            return Ok(summary);
+-        }
+-        let mut guards = Vec::new();
+-        for profile in &profiles {
+-            ensure!(
+-                !crate::compiler::layout::shared_registry_directory_is_nfs(profile)?,
+-                "build-cache reclamation does not support NFS profiles"
+-            );
+-            let Some(guard) = try_lock(&profile.join(".cargo-build-lock"), false)? else {
+-                summary.busy = true;
+-                return Ok(summary);
+-            };
+-            guards.push(guard);
+-        }
++        let mut locks = CollectionLocks::default();
+         let tracker = match tracker {
+             Some(tracker) => Some(tracker),
+             None => Tracker::existing(root, false)?,
+         };
+-        let transaction = tracker
+-            .as_ref()
+-            .map(|tracker| tracker.conn.unchecked_transaction())
+-            .transpose()?;
++        if let Some(tracker) = &tracker {
++            tracker.conn.busy_timeout(Duration::ZERO)?;
++        }
++        let mut transaction = None;
+         let mut remaining = rename_budget;
+         let mut records_remaining = rename_budget;
+         for (namespace, paths) in ready {
+@@ -627,9 +658,41 @@ fn collect_with_lock_budget(
+                 summary.pending = true;
+                 break;
+             }
++            if !locks.acquire(root, &profiles, &namespace, false)? {
++                summary.skip(&namespace);
++                continue;
++            }
++            // Busy contexts need no writer reservation. Once work is available,
++            // reserve before rechecking usage so a deferred transaction cannot
++            // fail to upgrade while another context records its activity.
++            if transaction.is_none()
++                && let Some(tracker) = &tracker
++            {
++                match rusqlite::Transaction::new_unchecked(
++                    &tracker.conn,
++                    rusqlite::TransactionBehavior::Immediate,
++                ) {
++                    Ok(guard) => transaction = Some(guard),
++                    Err(error)
++                        if error.sqlite_error_code() == Some(rusqlite::ErrorCode::DatabaseBusy) =>
++                    {
++                        summary.busy = true;
++                        summary
++                            .skipped
++                            .push(format!("{} (usage database is busy)", root.display()));
++                        break;
++                    }
++                    Err(error) => return Err(error.into()),
++                }
++            }
++            // A build may have added another profile since discovery. Do not
++            // forget a context unless every profile was included in retirement.
++            if matches!(namespace, Namespace::Context(_)) && profiles != self::profiles(root)? {
++                summary.pending = true;
++                break;
++            }
+             records_remaining -= 1;
+-            // A build may have enrolled a legacy context since discovery. Recheck
+-            // while both new consumers and older Cargo builds are excluded.
++            // Recheck usage while consumers of this namespace are excluded.
+             let Some(detail) =
+                 namespace.detail(root, &profiles, now, current_ohm, tracker.as_ref())
+             else {
+@@ -664,28 +727,22 @@ fn collect_with_lock_budget(
+         if let Some(transaction) = transaction {
+             transaction.commit()?;
+         }
+-        drop(guards);
+-        drop(consumers);
+-    }
+-    // Unlink only retired payloads, outside the build locks and in small batches.
+-    if let Some(probe) = try_lock(&consumers_path, false)? {
+-        drop(probe);
+-        let mut remaining = DELETE_BUDGET;
+-        for trash in trash_roots {
+-            drain_trash(&trash, &mut remaining, &mut summary, false)?;
+-        }
+-        let mut metadata_summary = Summary::default();
+-        drain_trash(
+-            &root.join(METADATA_TRASH),
+-            &mut remaining,
+-            &mut metadata_summary,
+-            false,
+-        )?;
+-        summary.deleted_entries += metadata_summary.deleted_entries;
+-        summary.pending |= metadata_summary.pending;
+-    } else {
+-        summary.busy = true;
+     }
++    // Retired paths are unreachable by consumers. Drain them even if a build
++    // starts or another context remains in use.
++    let mut remaining = DELETE_BUDGET;
++    for trash in trash_roots {
++        drain_trash(&trash, &mut remaining, &mut summary, false)?;
++    }
++    let mut metadata_summary = Summary::default();
++    drain_trash(
++        &root.join(METADATA_TRASH),
++        &mut remaining,
++        &mut metadata_summary,
++        false,
++    )?;
++    summary.deleted_entries += metadata_summary.deleted_entries;
++    summary.pending |= metadata_summary.pending;
+     Ok(summary)
+ }
+ 
+@@ -763,7 +820,7 @@ fn idle_dependencies(
+ ) -> Option<Vec<Namespace>> {
+     let tracker = tracker?;
+     let state = tracker.context(context).ok()??;
+-    if state.record.version != 1 || state.record.context != context {
++    if !state.record.supported() || state.record.context != context {
+         return None;
+     }
+     let cutoff = tracker::timestamp(now.checked_sub(CONTEXT_MAX_IDLE)?).ok()?;
+@@ -837,6 +894,19 @@ fn legacy_usage(root: &Path, context: &str) -> Option<Option<tracker::Timestamp>
+ }
+ 
+ impl Namespace {
++    fn scoped_context(&self) -> Option<&str> {
++        match self {
++            Self::Context(context)
++            | Self::Dependency { context, .. }
++            | Self::ThinLto { context, .. }
++                if scoped_context_name(context) =>
++            {
++                Some(context)
++            }
++            _ => None,
++        }
++    }
++
+     /// Missing legacy records permit eviction; malformed or newer records do not.
+     fn detail(
+         &self,
+@@ -851,7 +921,7 @@ impl Namespace {
+             Self::ThinLto { context, entry } => {
+                 // An unknown or malformed context never permits partial eviction.
+                 let state = tracker?.context(context).ok()??;
+-                if state.record.version != 1 || state.record.context != *context {
++                if !state.record.supported() || state.record.context != *context {
+                     return None;
+                 }
+                 let path = root.join(entry);
+@@ -902,11 +972,16 @@ impl Namespace {
+                         .is_some_and(|cutoff| last_used.is_some_and(|used| used <= cutoff));
+                     (state.record, expired)
+                 } else {
+-                    if legacy_context_name(id)
++                    if (legacy_context_name(id) || scoped_context_name(id))
+                         && safely_absent(root, &path)
+                         && safely_absent(root, &directory.join(LAST_USED).join(id))
+                     {
+-                        return Some(format!("legacy context {id} (no usage records)"));
++                        let kind = if scoped_context_name(id) {
++                            "untracked"
++                        } else {
++                            "legacy"
++                        };
++                        return Some(format!("{kind} context {id} (no usage records)"));
+                     }
+                     if !plain_ancestors(root, &path).ok()? {
+                         return None;
+@@ -916,7 +991,7 @@ impl Namespace {
+                         context_expired(&directory, id, now),
+                     )
+                 };
+-                if record.version != 1 || record.context != *id {
++                if !record.supported() || record.context != *id {
+                     return None;
+                 }
+                 let previous = record
+@@ -1075,7 +1150,7 @@ fn namespaces(
+     }
+     for profile in profiles {
+         for id in directory_names(root, &profile.join("build/registries"))? {
+-            if legacy_context_name(&id) {
++            if legacy_context_name(&id) || scoped_context_name(&id) {
+                 namespaces.insert(Namespace::Context(id));
+             }
+         }
+@@ -1093,7 +1168,7 @@ fn namespaces(
+         }
+     }
+     for id in directory_names(root, &root.join(THINLTO))? {
+-        if legacy_context_name(&id) {
++        if legacy_context_name(&id) || scoped_context_name(&id) {
+             namespaces.insert(Namespace::Context(id));
+         } else if thinlto_key(&id) && !namespaces.contains(&Namespace::Context(id.clone())) {
+             namespaces.insert(Namespace::LegacyThinLto(id));
+@@ -1158,6 +1233,11 @@ fn legacy_context_name(name: &str) -> bool {
+         )
+ }
+ 
++/// The namespace and record version jointly keep old root-wide collectors away.
++pub(crate) fn scoped_context_name(name: &str) -> bool {
++    name.strip_prefix("v2-").is_some_and(legacy_context_name)
++}
++
+ /// Absence behind a symlink is not proof that the owned payload was removed.
+ fn safely_absent(root: &Path, path: &Path) -> bool {
+     if !path.starts_with(root) {
+@@ -1489,9 +1569,13 @@ mod tests {
+         }
+ 
+         fn enroll(&self) -> CargoResult<()> {
++            self.enroll_context("abcdef")
++        }
++
++        fn enroll_context(&self, context: &str) -> CargoResult<()> {
+             record_context(
+                 &self.root,
+-                "abcdef",
++                context,
+                 self.identity(&self.compiler)?,
+                 self.identity(&self.driver)?,
+             )
+@@ -1558,6 +1642,98 @@ mod tests {
+         }
+     }
+ 
++    #[test]
++    fn busy_context_preserves_its_artifacts_without_blocking_other_contexts_or_trash()
++    -> CargoResult<()> {
++        for recorded in [true, false] {
++            let cache = Cache::new()?;
++            let busy = "v2-0000000000000001";
++            let idle = "v2-0000000000000002";
++            for context in [busy, idle] {
++                if recorded {
++                    cache.enroll_context(context)?;
++                    cache.age_context(context, SystemTime::UNIX_EPOCH)?;
++                }
++                cache.artifact(&format!("build/registries/{context}"))?;
++                cache.thinlto(context, 0, SystemTime::UNIX_EPOCH)?;
++            }
++            let lease = crate::workspace::build_cache_gc_lease::ConsumerLease::acquire_context(
++                &cache.root,
++                busy,
++            )?;
++            let retired = cache.artifact("retired")?;
++            assert!(retire(
++                &cache.root,
++                &retired,
++                &cache.profile.join(TRASH),
++                false
++            )?);
++            for dry_run in [true, false] {
++                let summary = collect(&cache.root, dry_run, None)?;
++                assert_eq!(summary.counts.files, 3);
++                assert_eq!(summary.counts.bytes, 19);
++                assert_eq!(summary.skipped, [format!("context {busy} (in use)")]);
++                assert!(cache.profile.join("build/registries").join(busy).is_dir());
++                assert!(cache.root.join(THINLTO).join(busy).is_dir());
++                assert_eq!(
++                    cache.profile.join("build/registries").join(idle).exists(),
++                    dry_run
++                );
++            }
++            drop(lease);
++            assert_eq!(collect(&cache.root, false, None)?.counts.files, 2);
++            assert!(cache.tracker()?.contexts()?.is_empty());
++        }
++        Ok(())
++    }
++
++    #[test]
++    fn legacy_locks_only_block_legacy_namespaces() -> CargoResult<()> {
++        let cache = Cache::new()?;
++        let context = "v2-0123456789abcdef";
++        cache.enroll()?;
++        cache.enroll_context(context)?;
++        cache.age_context("abcdef", SystemTime::UNIX_EPOCH)?;
++        cache.age_context(context, SystemTime::UNIX_EPOCH)?;
++        let legacy = cache.artifact("build/registries/abcdef")?;
++        let scoped = cache.artifact(&format!("build/registries/{context}"))?;
++        let consumer = crate::workspace::build_cache_gc_lease::ConsumerLease::acquire(&cache.root)?;
++        let profile = File::open(cache.profile.join(".cargo-build-lock"))?;
++        crate::util::flock::lock_shared(&profile)?;
++        fs::create_dir(cache.root.join(THINLTO))?;
++        let pruner = File::create(cache.root.join(THINLTO).join(".prune-lock"))?;
++        crate::util::flock::lock_exclusive(&pruner)?;
++        for dry_run in [true, false] {
++            let summary = collect(&cache.root, dry_run, None)?;
++            assert_eq!(summary.counts.files, 1);
++            assert!(summary.busy);
++            assert!(legacy.exists());
++            assert_eq!(scoped.exists(), dry_run);
++        }
++        drop((consumer, profile, pruner));
++        assert_eq!(collect(&cache.root, false, None)?.counts.files, 1);
++        Ok(())
++    }
++
++    #[test]
++    fn concurrent_usage_writer_postpones_gc_without_failing_or_retiring_artifacts()
++    -> CargoResult<()> {
++        let cache = Cache::new()?;
++        let context = "v2-0123456789abcdef";
++        cache.enroll_context(context)?;
++        cache.age_context(context, SystemTime::UNIX_EPOCH)?;
++        let artifact = cache.artifact(&format!("build/registries/{context}"))?;
++        let tracker = cache.tracker()?;
++        tracker.conn.execute_batch("BEGIN IMMEDIATE")?;
++        let summary = collect(&cache.root, false, None)?;
++        assert!(summary.busy);
++        assert_eq!(summary.retired, 0);
++        assert!(artifact.exists());
++        tracker.conn.execute_batch("ROLLBACK")?;
++        assert_eq!(collect(&cache.root, false, None)?.retired, 1);
++        Ok(())
++    }
++
+     #[test]
+     fn thinlto_uses_object_activity_within_a_live_context() -> CargoResult<()> {
+         let cache = Cache::new()?;
+@@ -2574,7 +2750,7 @@ mod tests {
+             inner.identity(&inner.compiler)?,
+             inner.identity(&inner.driver)?,
+         )?;
+-        drop(ContextUse::new(inner.tracker()?, id, Some(Vec::new()))?);
++        inner.age_context(id, SystemTime::UNIX_EPOCH)?;
+         inner.artifact(&format!("build/registries/{id}"))?;
+         let nested = outer.root.join("nested");
+         fs::rename(&inner.root, &nested)?;
+@@ -2583,9 +2759,9 @@ mod tests {
+         assert_eq!(collect(&outer.root, false, None)?.counts.files, 0);
+         assert!(collect(&nested, false, None)?.busy);
+         drop(lease);
+-        assert_eq!(collect(&nested, false, None)?.retired, 0);
++        assert_eq!(collect(&nested, false, None)?.retired, 1);
+         assert!(
+-            nested
++            !nested
+                 .join("debug/build/registries")
+                 .join(id)
+                 .join("artifact")
+diff --git a/src/workspace/build_cache_gc/tracker.rs b/src/workspace/build_cache_gc/tracker.rs
+index e6c3d76c2be02b2fcb7a417e80f0c7d20dec5037..f4418dce6cff75639211101a51432f0bb6009602 100644
+--- a/src/workspace/build_cache_gc/tracker.rs
++++ b/src/workspace/build_cache_gc/tracker.rs
+@@ -178,7 +178,11 @@ impl Tracker {
+             return Ok(());
+         }
+         self.insert_context(&ContextRecord {
+-            version: 1,
++            version: if super::scoped_context_name(context) {
++                2
++            } else {
++                1
++            },
+             context: context.to_owned(),
+             ohm_version: installed_ohm_version(&compiler, &driver),
+             compiler_anchor: Anchor::for_path(&compiler.path)?,
+diff --git a/src/workspace/build_cache_gc_lease.rs b/src/workspace/build_cache_gc_lease.rs
+index be1dbac1639be41fddd68fbd0a7123b9ba4d8c0b..e83d8bc13a6c338e3996228b5b93f133e714f0dd 100644
+--- a/src/workspace/build_cache_gc_lease.rs
++++ b/src/workspace/build_cache_gc_lease.rs
+@@ -2,9 +2,9 @@
+ 
+ use crate::util::CargoResult;
+ use cargo_util::ProcessBuilder;
+-use std::path::Path;
++use std::path::{Path, PathBuf};
+ 
+-/// A root-wide shared lease, acquired before any profile or workspace locks.
++/// A shared lease for a compiler context, or an unresolved/legacy consumer.
+ ///
+ /// The file is closed rather than explicitly unlocked: children may inherit the
+ /// same open file description and continue using artifacts after Cargo exits.
+@@ -17,6 +17,19 @@ pub(crate) struct ConsumerLease {
+ impl ConsumerLease {
+     /// Acquires the stable consumer lock without following metadata symlinks.
+     pub(crate) fn acquire(root: &Path) -> CargoResult<Self> {
++        Self::acquire_inner(root, None)
++    }
++
++    /// Protects only this context, including children that outlive Cargo.
++    pub(crate) fn acquire_context(root: &Path, context: &str) -> CargoResult<Self> {
++        anyhow::ensure!(
++            super::build_cache_gc::scoped_context_name(context),
++            "invalid scoped build context"
++        );
++        Self::acquire_inner(root, Some(context))
++    }
++
++    fn acquire_inner(root: &Path, context: Option<&str>) -> CargoResult<Self> {
+         #[cfg(any(target_os = "linux", target_os = "macos"))]
+         {
+             use super::build_cache_gc::{CONSUMERS_LOCK, metadata_dir};
+@@ -34,7 +47,10 @@ impl ConsumerLease {
+             let directory = metadata_dir(&root, true)?;
+             let before = fs::symlink_metadata(&directory)?;
+ 
+-            let path = directory.join(CONSUMERS_LOCK);
++            let path = match context {
++                Some(context) => context_lock(root.as_path(), context),
++                None => directory.join(CONSUMERS_LOCK),
++            };
+             let file = OpenOptions::new()
+                 .read(true)
+                 .write(true)
+@@ -68,7 +84,7 @@ impl ConsumerLease {
+         #[cfg(not(any(target_os = "linux", target_os = "macos")))]
+         {
+             // Collection is disabled where inherited file leases are not supported.
+-            let _ = root;
++            let _ = (root, context);
+             Ok(Self {})
+         }
+     }
+@@ -82,6 +98,37 @@ impl ConsumerLease {
+     }
+ }
+ 
++/// Context locks have stable inodes, independent of the artifacts GC retires.
++pub(crate) fn context_lock(root: &Path, context: &str) -> PathBuf {
++    root.join(super::build_cache_gc::DIRECTORY)
++        .join(format!("context-{context}.lock"))
++}
++
++/// Snapshot imports also consume shared artifacts referenced by private state.
++pub(crate) fn seed_leases(root: &Path, source: &Path) -> CargoResult<Vec<ConsumerLease>> {
++    let mut leases = Vec::new();
++    for parent in [
++        source.to_path_buf(),
++        source.join(crate::compiler::OHM_WORKTREE_CLIPPY_DIRECTORY),
++    ] {
++        if !std::fs::symlink_metadata(&parent).is_ok_and(|metadata| metadata.is_dir()) {
++            continue;
++        }
++        for entry in std::fs::read_dir(parent)? {
++            let entry = entry?;
++            if entry.file_type()?.is_dir()
++                && let Some(context) = entry
++                    .file_name()
++                    .to_str()
++                    .filter(|name| super::build_cache_gc::scoped_context_name(name))
++            {
++                leases.push(ConsumerLease::acquire_context(root, context)?);
++            }
++        }
++    }
++    Ok(leases)
++}
++
+ #[cfg(all(test, any(target_os = "linux", target_os = "macos")))]
+ mod tests {
+     use super::ConsumerLease;
+diff --git a/src/workspace/build_cache_gc_roots.rs b/src/workspace/build_cache_gc_roots.rs
+index 0c142aef67e120df93f5b76ee259f3f43612e173..7eb65fa1a2ed21262b954f26e8cafe6ecb724726 100644
+--- a/src/workspace/build_cache_gc_roots.rs
++++ b/src/workspace/build_cache_gc_roots.rs
+@@ -148,7 +148,10 @@ pub fn collect(gctx: &GlobalContext, root: Option<&Path>, dry_run: bool) -> Carg
+             gctx.shell()
+                 .status(if dry_run { "Would remove" } else { "Removing" }, detail)?;
+         }
+-        if summary.busy {
++        for detail in &summary.skipped {
++            gctx.shell().status("Skipping", detail)?;
++        }
++        if summary.busy && summary.skipped.is_empty() {
+             gctx.shell()
+                 .status("Skipping", format!("{} (cache is in use)", root.display()))?;
+         } else if summary.pending {
+@@ -230,13 +233,17 @@ fn collect_root(
+         total.retained = summary.retained;
+         total.busy = summary.busy;
+         total.pending = summary.pending;
++        for detail in summary.skipped {
++            if total.skipped.len() < 32 && !total.skipped.contains(&detail) {
++                total.skipped.push(detail);
++            }
++        }
+         for detail in summary.details {
+             if total.details.len() < 32 && !total.details.contains(&detail) {
+                 total.details.push(detail);
+             }
+         }
+-        if !progress || total.busy || !total.pending || started.elapsed() >= Duration::from_secs(10)
+-        {
++        if !progress || !total.pending || started.elapsed() >= Duration::from_secs(10) {
+             return Ok(total);
+         }
+     }
+diff --git a/tests/testsuite/build_dir.rs b/tests/testsuite/build_dir.rs
+index 06256da9bf38824563931cd7de998f7b109ec9c1..2d763cf1dc4ff4ed012b483230eb749ca4a936da 100644
+--- a/tests/testsuite/build_dir.rs
++++ b/tests/testsuite/build_dir.rs
+@@ -1997,6 +1997,8 @@ fn shared_registry_clean_waits_only_for_its_own_workspace() {
+             .run();
+         project
+     });
++    // New builds use context leases; retain coverage for older root-wide consumers.
++    std::fs::File::create(shared.join(".ohm-gc-v1/consumers.lock")).unwrap();
+     let guards = [".ohm-gc-v1/consumers.lock", "debug/.cargo-build-lock"].map(|path| {
+         let guard = std::fs::File::open(shared.join(path)).unwrap();
+         guard.lock_shared().unwrap();
+@@ -5457,6 +5459,192 @@ fn shared_registry_cache_rejects_injected_dynamic_loaders() {
+         .run();
+ }
+ 
++#[cfg(target_os = "linux")]
++#[cargo_test]
++fn shared_registry_cache_reuses_built_dependencies_with_an_unset_loader_path() {
++    Package::new("unset-loader-registry", "1.0.0")
++        .file("src/lib.rs", "pub fn value() -> u32 { 23 }")
++        .publish();
++
++    let p = project()
++        .file(
++            "Cargo.toml",
++            r#"
++            [package]
++            name = "unset-loader-cache-app"
++            version = "0.1.0"
++            edition = "2021"
++
++            [dependencies]
++            unset-loader-registry = "1.0.0"
++            "#,
++        )
++        .file(
++            ".cargo/config.toml",
++            r#"
++            [env]
++            LD_LIBRARY_PATH = { value = "ignored-relative-loader-directory", force = true }
++            "#,
++        )
++        .file(
++            "src/lib.rs",
++            "pub fn value() -> u32 { unset_loader_registry::value() }",
++        )
++        .build();
++    let shared = paths::root().join("unset-loader-shared-build-directory");
++    let search = paths::root().join("unset-loader-alternate-driver-directory");
++    std::fs::create_dir_all(&search).expect("create an initially empty loader search directory");
++
++    p.shared_registry_cargo("-Zohm-shared-registry-cache build")
++        .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
++        .env("CARGO_BUILD_BUILD_DIR", &shared)
++        .env_remove("LD_LIBRARY_PATH")
++        .env("DYLD_LIBRARY_PATH", &search)
++        .with_stderr_contains("[COMPILING] unset-loader-registry v1.0.0")
++        .run();
++    p.shared_registry_cargo("-Zohm-shared-registry-cache -Zohm-reuse-built-deps check -v")
++        .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache", "ohm-reuse-built-deps"])
++        .env("CARGO_BUILD_BUILD_DIR", &shared)
++        .env_remove("LD_LIBRARY_PATH")
++        .env("DYLD_LIBRARY_PATH", &search)
++        .with_stderr_contains("[FRESH] unset-loader-registry v1.0.0")
++        .with_stderr_does_not_contain("[CHECKING] unset-loader-registry v1.0.0")
++        .run();
++
++    // Keep driver-shadow validation active even when Cargo has no platform
++    // loader path to synthesize. Linux ignores this alternate loader variable,
++    // so an isolated stand-in can exercise rejection without breaking rustc.
++    std::fs::write(
++        search.join(selected_runtime_compiler_driver_filename()),
++        "isolated same-basename compiler-driver stand-in",
++    )
++    .expect("introduce an alternate compiler driver without changing the search path");
++    p.shared_registry_cargo("-Zohm-shared-registry-cache -Zohm-reuse-built-deps check -v")
++        .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache", "ohm-reuse-built-deps"])
++        .env("CARGO_BUILD_BUILD_DIR", &shared)
++        .env_remove("LD_LIBRARY_PATH")
++        .env("DYLD_LIBRARY_PATH", &search)
++        .with_stderr_contains("[CHECKING] unset-loader-registry v1.0.0")
++        .run();
++}
++
++#[cfg(target_os = "linux")]
++#[cargo_test]
++fn unset_loader_path_adds_procedural_macro_library_directories() {
++    let p = project()
++        .file(
++            "Cargo.toml",
++            r#"
++            [package]
++            name = "plugin-loader-app"
++            version = "0.1.0"
++            edition = "2021"
++
++            [dependencies]
++            loader-path-macro = { path = "loader-path-macro" }
++            "#,
++        )
++        .file("src/lib.rs", "loader_path_macro::assert_loader_path!();")
++        .file(
++            "loader-path-macro/Cargo.toml",
++            r#"
++            [package]
++            name = "loader-path-macro"
++            version = "0.1.0"
++            edition = "2021"
++
++            [lib]
++            proc-macro = true
++            "#,
++        )
++        .file(
++            "loader-path-macro/build.rs",
++            r#"fn main() {
++                let directory = std::path::PathBuf::from(std::env::var_os("OUT_DIR").unwrap())
++                    .join("plugin-libraries");
++                std::fs::create_dir_all(&directory).unwrap();
++                println!("cargo::rustc-link-search=native={}", directory.display());
++            }"#,
++        )
++        .file(
++            "loader-path-macro/src/lib.rs",
++            r#"
++            use proc_macro::TokenStream;
++
++            #[proc_macro]
++            pub fn assert_loader_path(_: TokenStream) -> TokenStream {
++                let value = std::env::var_os("LD_LIBRARY_PATH")
++                    .expect("Cargo must add the procedural macro's library directory");
++                let paths = std::env::split_paths(&value).collect::<Vec<_>>();
++                assert!(paths.iter().all(|path| path.is_absolute()), "{paths:?}");
++                assert!(paths.iter().any(|path| path.ends_with("plugin-libraries")), "{paths:?}");
++                TokenStream::new()
++            }
++            "#,
++        )
++        .build();
++
++    // A native build has a host artifact directory, so it exercises
++    // add_plugin_deps after fill_env leaves the loader path unset.
++    p.cargo("-Zbuild-dir-new-layout build")
++        .masquerade_as_nightly_cargo(&["build-dir-new-layout"])
++        .env_remove("LD_LIBRARY_PATH")
++        .run();
++}
++
++#[cfg(target_os = "linux")]
++#[cargo_test]
++fn shared_registry_cache_preserves_explicit_empty_loader_paths() {
++    Package::new("empty-loader-registry", "1.0.0")
++        .file("src/lib.rs", "pub fn value() -> u32 { 29 }")
++        .publish();
++
++    let search = paths::root().join("empty-loader-search-directory");
++    std::fs::create_dir_all(&search).expect("create an absolute loader search directory");
++    for (index, loader_path) in [
++        String::new(),
++        ":".to_owned(),
++        format!(":{}", search.display()),
++        format!("{}:", search.display()),
++    ]
++    .into_iter()
++    .enumerate()
++    {
++        let p = project_in(&format!("empty-loader-worktree-{index}"))
++            .file(
++                "Cargo.toml",
++                r#"
++                [package]
++                name = "empty-loader-cache-app"
++                version = "0.1.0"
++                edition = "2021"
++
++                [dependencies]
++                empty-loader-registry = "1.0.0"
++                "#,
++            )
++            .file(
++                "src/lib.rs",
++                "pub fn value() -> u32 { empty_loader_registry::value() }",
++            )
++            .build();
++        let shared = paths::root().join(format!("empty-loader-shared-build-directory-{index}"));
++
++        p.shared_registry_cargo("-Zohm-shared-registry-cache build")
++            .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache"])
++            .env("CARGO_BUILD_BUILD_DIR", &shared)
++            .env("LD_LIBRARY_PATH", &loader_path)
++            .with_stderr_contains("[COMPILING] empty-loader-registry v1.0.0")
++            .run();
++        p.shared_registry_cargo("-Zohm-shared-registry-cache -Zohm-reuse-built-deps check -v")
++            .masquerade_as_nightly_cargo(&["ohm-shared-registry-cache", "ohm-reuse-built-deps"])
++            .env("CARGO_BUILD_BUILD_DIR", &shared)
++            .env("LD_LIBRARY_PATH", &loader_path)
++            .with_stderr_contains("[CHECKING] empty-loader-registry v1.0.0")
++            .run();
++    }
++}
++
+ #[cargo_test]
+ fn shared_registry_cache_rejects_alternate_drivers_in_stable_loader_search_paths() {
+     Package::new("loader-shadow-registry", "1.0.0")
+diff --git a/tests/testsuite/dep_info.rs b/tests/testsuite/dep_info.rs
+index 85c5d567b82d29f557f7d5e5f27c74cad36be444..c0d659b659660a5acb91f23d1f426e27d931cb88 100644
+--- a/tests/testsuite/dep_info.rs
++++ b/tests/testsuite/dep_info.rs
+@@ -151,20 +151,111 @@ fn dep_path_inside_target_has_correct_path() {
+ 
+ #[cargo_test]
+ fn no_rewrite_if_no_change() {
+-    let p = project().file("src/lib.rs", "").build();
++    let p = project()
++        .file(
++            "src/lib.rs",
++            "mod first; mod second; const _: &str = include_str!(\"data with spaces.txt\");",
++        )
++        .file("src/first.rs", "")
++        .file("src/second.rs", "")
++        .file("src/data with spaces.txt", "data")
++        .build();
+ 
+     p.cargo("build").run();
+     let dep_info = p.root().join("target/debug/libfoo.d");
+-    let metadata1 = dep_info.metadata().unwrap();
++    let preserved_mtime = FileTime::from_unix_time(1, 0);
++    filetime::set_file_mtime(&dep_info, preserved_mtime).unwrap();
++    p.cargo("build").run();
++    assert_eq!(
++        FileTime::from_last_modification_time(&dep_info.metadata().unwrap()),
++        preserved_mtime,
++    );
++
++    p.change_file(
++        "src/lib.rs",
++        "mod third; mod second; const _: &str = include_str!(\"data with spaces.txt\");",
++    );
++    p.change_file("src/third.rs", "");
+     p.cargo("build").run();
+-    let metadata2 = dep_info.metadata().unwrap();
++    let updated_contents = p.read_file(&dep_info);
++    assert!(updated_contents.contains("third.rs"));
++    assert!(!updated_contents.contains("first.rs"));
++    assert_ne!(
++        FileTime::from_last_modification_time(&dep_info.metadata().unwrap()),
++        preserved_mtime,
++    );
+ 
++    filetime::set_file_mtime(&dep_info, preserved_mtime).unwrap();
++    p.cargo("build").run();
++    assert_eq!(p.read_file(&dep_info), updated_contents);
+     assert_eq!(
+-        FileTime::from_last_modification_time(&metadata1),
+-        FileTime::from_last_modification_time(&metadata2),
++        FileTime::from_last_modification_time(&dep_info.metadata().unwrap()),
++        preserved_mtime,
+     );
+ }
+ 
++#[cargo_test]
++fn multiple_crate_types_preserve_dep_info_target() {
++    let p = project()
++        .file(
++            "Cargo.toml",
++            &format!(
++                "{}\n[lib]\ncrate-type = [\"rlib\", \"cdylib\"]\n",
++                basic_manifest("foo", "0.0.1")
++            ),
++        )
++        .file("src/lib.rs", "")
++        .build();
++
++    // Relative paths keep the single dependency unescaped even if the test root has spaces.
++    let expected = format!(
++        "{}: {}\n",
++        Path::new("target")
++            .join("debug")
++            .join("libfoo.rlib")
++            .display(),
++        Path::new("src").join("lib.rs").display(),
++    );
++    p.cargo("build")
++        .env("CARGO_BUILD_DEP_INFO_BASEDIR", p.root())
++        .run();
++    assert_eq!(p.read_file("target/debug/libfoo.d"), expected);
++
++    p.cargo("build")
++        .env("CARGO_BUILD_DEP_INFO_BASEDIR", p.root())
++        .with_stderr_data(str![[r#"
++[FINISHED] `dev` profile [unoptimized + debuginfo] target(s) in [ELAPSED]s
++
++"#]])
++        .run();
++    assert_eq!(p.read_file("target/debug/libfoo.d"), expected);
++}
++
++#[cargo_test]
++fn shared_dependencies_are_refreshed_after_rebuild() {
++    let p = project()
++        .file("src/lib.rs", "mod first;")
++        .file("src/main.rs", "extern crate foo; fn main() {}")
++        .file("src/first.rs", "")
++        .file("src/second.rs", "")
++        .build();
++
++    let dep_info_paths = [
++        p.root().join("target/debug/libfoo.d"),
++        p.bin("foo").with_extension("d"),
++    ];
++    for (module, previous) in [("first", "second"), ("second", "first")] {
++        p.root().move_into_the_past();
++        p.change_file("src/lib.rs", &format!("mod {module};"));
++        p.cargo("build").run();
++        for path in &dep_info_paths {
++            let contents = p.read_file(path);
++            assert!(contents.contains(&format!("{module}.rs")), "{contents}");
++            assert!(!contents.contains(&format!("{previous}.rs")), "{contents}");
++        }
++    }
++}
++
+ #[cargo_test(nightly, reason = "-Z binary-dep-depinfo is unstable")]
+ fn relative_depinfo_paths_ws() {
+     // Test relative dep-info paths in a workspace with --target with
+diff --git a/tests/testsuite/freshness.rs b/tests/testsuite/freshness.rs
+index c7b0049009e528b721cbfd56564aa4eeb0ed0e08..82e440caba976c94db7fbbb806d13611e667d145 100644
+--- a/tests/testsuite/freshness.rs
++++ b/tests/testsuite/freshness.rs
+@@ -4127,7 +4127,8 @@ fn early_cutoff_skips_dependent_rebuild() {
+     p.change_file("dep/native.c", "int native_value(void) { return 3; }");
+ 
+     // Replayed diagnostics must retain their normal policy effects, not merely be displayed.
+-    p.cargo("build")
++    // Keep unrelated running jobs from adding a timing-dependent failure warning.
++    p.cargo("build -j1")
+         .arg("--config")
+         .arg("build.warnings='deny'")
+         .env("RUSTC_WRAPPER", &wrapper)
+diff --git a/tests/testsuite/ohm_build_gc.rs b/tests/testsuite/ohm_build_gc.rs
+index e49599ec4dcb9cf65d792f2d85755787df2258e3..914e4f358075941742397acb3f80aa46977a3852 100644
+--- a/tests/testsuite/ohm_build_gc.rs
++++ b/tests/testsuite/ohm_build_gc.rs
+@@ -717,7 +717,13 @@ fn busy_consumers_and_profiles_postpone_retirement() {
+     remove_worktree(&project, &worktree);
+ 
+     for path in [".ohm-gc-v1/consumers.lock", "debug/.cargo-build-lock"] {
+-        let lock = fs::File::open(shared_root().join(path)).unwrap();
++        let lock = fs::OpenOptions::new()
++            .read(true)
++            .write(true)
++            .create(true)
++            .truncate(false)
++            .open(shared_root().join(path))
++            .unwrap();
+         lock.lock_shared().unwrap();
+         collect(&project, false);
+         assert!(private.is_dir(), "collection must skip a held {path}");
+@@ -895,7 +901,22 @@ fn running_test_retains_lease_after_its_cargo_parent_exits() {
+         .execute("UPDATE contexts SET last_used = 0", [])
+         .unwrap();
+ 
+-    // Kill Cargo alone: its test retains both the global and the private lease.
++    // A long-running program protects its context, not unrelated legacy state.
++    let unused = shared_root().join("debug/build/registries/0123456789abcdef");
++    fs::create_dir_all(&unused).unwrap();
++    fs::write(unused.join("old-artifact"), b"unused").unwrap();
++    let output = cargo(&project, "gc --dry-run --build-dir")
++        .arg(shared_root())
++        .run();
++    let stderr = String::from_utf8(output.stderr).unwrap();
++    assert!(stderr.contains("Skipping context v2-"), "{stderr}");
++    assert!(stderr.contains("Summary 1 file, 6B total"), "{stderr}");
++    assert!(unused.exists());
++    collect(&project, false);
++    assert!(!unused.exists());
++    assert!(registry.is_dir());
++
++    // Kill Cargo alone: its test retains both the context and the private lease.
+     running.0.kill().unwrap();
+     let local_lock = fs::File::open(worktree.join("target/.ohm-build-lock")).unwrap();
+     assert!(matches!(
+@@ -909,7 +930,8 @@ fn running_test_retains_lease_after_its_cargo_parent_exits() {
+     stream.write_all(&[1]).unwrap();
+     drop(stream);
+ 
+-    let lock = fs::File::open(shared_root().join(".ohm-gc-v1/consumers.lock")).unwrap();
++    let lock = fs::File::open(shared_root().join(format!(".ohm-gc-v1/context-{}.lock", context())))
++        .unwrap();
+     let deadline = Instant::now() + slow_cpu_multiplier(30);
+     loop {
+         match lock.try_lock() {

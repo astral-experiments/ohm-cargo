@@ -1,0 +1,22 @@
+[
+  {
+    "pr": 177,
+    "run_id": 39592832982,
+    "job_id": 119197797941,
+    "head": "ff1eacd2b577777ecb8a7f3e934ddac36d11928e",
+    "failure": "ohm_ready_tests::terminal_cancellation_restores_the_shell_and_stops_descendants",
+    "log_characters": 513143,
+    "failure_excerpt": "2026-10-21T11:36:59.9853760Z ---- ohm_ready_tests::terminal_cancellation_restores_the_shell_and_stops_descendants stdout ----\n2026-10-21T11:36:59.9854120Z running `/Users/runner/work/_temp/cargo-tests/debug/cargo -Zohm-defaults=no build`\n2026-10-21T11:36:59.9854510Z running `/Users/runner/work/_temp/cargo-tests/debug/cargo test --workspace --lib -j2 -Zohm-defaults=no -Zohm-ready-tests --no-run`\n2026-10-21T11:36:59.9854820Z \n2026-10-21T11:36:59.9855120Z thread 'ohm_ready_tests::terminal_cancellation_restores_the_shell_and_stops_descendants' (235524) panicked at tests/testsuite/ohm_ready_tests.rs:537:13:\n2026-10-21T11:36:59.9855570Z missing \"READY-STATUS=101\\r\\n\": READY-SHELL> set -b\n2026-10-21T11:36:59.9855760Z READY-SHELL> \n2026-10-21T11:36:59.9855910Z < '--' 'selected'; printf '\\nREADY-STATUS=%s\\n' \"$?\"\n2026-10-21T11:36:59.9856380Z    Compiling z v0.1.0 (/Users/runner/work/_temp/cargo-tests/tmp/cit/testsuite/ohm_ready_tests/terminal_cancellation_restores_the_shell_and_stops_descendants/foo/z)\n2026-10-21T11:36:59.9856890Z      Running unittests src/lib.rs (target/debug/deps/a-034c04e3a7869477)\n2026-10-21T11:36:59.9860400Z \n2026-10-21T11:36:59.9860460Z running 1 test\n2026-10-21T11:36:59.9863140Z intentional late compiler failure\n2026-10-21T11:36:59.9863240Z \n2026-10-21T11:36:59.9863240Z \n2026-10-21T11:36:59.9863250Z \n2026-10-21T11:36:59.9863290Z failures:\n2026-10-21T11:36:59.9863460Z     ohm_ready_tests::terminal_cancellation_restores_the_shell_and_stops_descendants\n2026-10-21T11:36:59.9863630Z \n2026-10-21T11:36:59.9863780Z test result: FAILED. 4348 passed; 1 failed; 420 ignored; 0 measured; 0 filtered out; finished in 125.42s\n2026-10-21T11:36:59.9863970Z \n2026-10-21T11:36:59.9866370Z error: test failed, to rerun pass `-p cargo --test testsuite`",
+    "note": "This existing terminal cancellation case also failed on the original PR177 run before the restack; an unchanged retry of that original run passed. This observation alone does not establish that the current failure is unrelated."
+  },
+  {
+    "pr": 179,
+    "run_id": 39592832923,
+    "job_id": 119198122913,
+    "head": "19718e6d1637244ffbb193334f50bae3ffca1be5",
+    "failure": "ohm_ready_tests::terminal_cancellation_restores_the_shell_and_stops_descendants",
+    "log_characters": 543862,
+    "failure_excerpt": "2026-10-21T11:38:01.2021603Z ---- ohm_ready_tests::terminal_cancellation_restores_the_shell_and_stops_descendants stdout ----\n2026-10-21T11:38:01.2021985Z running `/home/runner/work/_temp/cargo-tests/debug/cargo -Zohm-defaults=no build`\n2026-10-21T11:38:01.2022428Z running `/home/runner/work/_temp/cargo-tests/debug/cargo test --workspace --lib -j2 -Zohm-defaults=no -Zohm-ready-tests --no-run`\n2026-10-21T11:38:01.2022705Z \n2026-10-21T11:38:01.2022969Z thread 'ohm_ready_tests::terminal_cancellation_restores_the_shell_and_stops_descendants' (145506) panicked at tests/testsuite/ohm_ready_tests.rs:322:9:\n2026-10-21T11:38:01.2023430Z descendant process 148023 is still running\n2026-10-21T11:38:01.2023571Z \n2026-10-21T11:38:01.2023615Z \n2026-10-21T11:38:01.2023690Z failures:\n2026-10-21T11:38:01.2023897Z     ohm_ready_tests::terminal_cancellation_restores_the_shell_and_stops_descendants\n2026-10-21T11:38:01.2024091Z \n2026-10-21T11:38:01.2024269Z test result: FAILED. 4363 passed; 1 failed; 422 ignored; 0 measured; 0 filtered out; finished in 79.57s\n2026-10-21T11:38:01.2024495Z \n2026-10-21T11:38:01.2061367Z error: test failed, to rerun pass `-p cargo --test testsuite`",
+    "note": "This existing terminal cancellation case also failed on the original PR177 run before the restack; an unchanged retry of that original run passed. This observation alone does not establish that the current failure is unrelated."
+  }
+]

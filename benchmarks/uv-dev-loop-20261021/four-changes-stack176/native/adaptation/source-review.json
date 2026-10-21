@@ -1,0 +1,119 @@
+{
+  "original_driver_sha256": "4e75a11fac626f36f2416ca869765d92d1ad7901e5076c3ad291e3f8dcdaf4b4",
+  "local_driver_sha256": "6cd1392609e49d9c2f08bf239d6b0b0f7e2f8c57a23d8399ac10d87c82a2502a",
+  "changed_functions": [
+    "paths",
+    "run",
+    "verify_assets"
+  ],
+  "unchanged_functions": [
+    "audit_complete",
+    "derive",
+    "fresh",
+    "gate",
+    "load_core",
+    "main",
+    "preflight",
+    "prepare",
+    "quiet",
+    "read",
+    "sha",
+    "uv_identity",
+    "verify_seal"
+  ],
+  "changes": [
+    "host identity",
+    "local work prefix",
+    "local result paths",
+    "local amendment binding",
+    "replace historical host8 completion prerequisite with already-required four IR gates"
+  ],
+  "configurations": {
+    "check": {
+      "source_sha256": "c2751a7595db3a02241585394d2c63abcbbe6cc65a3dcbf141a899a8f4136573",
+      "translated_sha256": "f8833ecd626f49f50207e9a66da07d173e46e25b8117f67ab3d5acc75ef2ab9a",
+      "environment": {
+        "CARGO_HOME": "/tmp/codex-cargo-home",
+        "CARGO_TARGET_DIR": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/targets/check",
+        "CARGO_BUILD_BUILD_DIR": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/shared-cache",
+        "RUSTC": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/ohm/bin/rustc",
+        "RUSTDOC": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/ohm/bin/rustdoc",
+        "CARGO_BUILD_JOBS": "8",
+        "CARGO_TERM_COLOR": "never",
+        "RUSTC_WRAPPER": null,
+        "RUSTC_WORKSPACE_WRAPPER": null,
+        "RUSTFLAGS": null,
+        "CARGO_ENCODED_RUSTFLAGS": null,
+        "CARGO_LOG": null,
+        "CARGO_LOG_PROFILE": null,
+        "PATH": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/ohm/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin",
+        "LD_PRELOAD": null,
+        "LD_LIBRARY_PATH": null,
+        "SSL_CERT_FILE": "/etc/ssl/certs/ca-certificates.crt",
+        "SSL_CERT_DIR": "/usr/lib/ssl/certs",
+        "TMPDIR": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/tmp",
+        "LD_AUDIT": null,
+        "DYLD_LIBRARY_PATH": null,
+        "DYLD_FALLBACK_LIBRARY_PATH": null,
+        "DYLD_INSERT_LIBRARIES": null
+      },
+      "command": [
+        "taskset",
+        "-c",
+        "0-7",
+        "{cargo}",
+        "-Zohm-defaults=yes",
+        "check",
+        "--locked",
+        "--offline",
+        "-j",
+        "8"
+      ],
+      "translation_only_except_cargo_home_and_record_files": true
+    },
+    "test": {
+      "source_sha256": "d2bf0795c183a790149a54ec26bc14b59ca87428cf843d52fd4fe410f9de23c0",
+      "translated_sha256": "93c2ac759a235ab3bb2c6760f0d56c70a405dde303ccc0f78954d43db03f189b",
+      "environment": {
+        "CARGO_HOME": "/tmp/codex-cargo-home",
+        "CARGO_TARGET_DIR": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/targets/test",
+        "CARGO_BUILD_BUILD_DIR": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/shared-cache",
+        "RUSTC": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/ohm/bin/rustc",
+        "RUSTDOC": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/ohm/bin/rustdoc",
+        "CARGO_BUILD_JOBS": "8",
+        "CARGO_TERM_COLOR": "never",
+        "RUSTC_WRAPPER": null,
+        "RUSTC_WORKSPACE_WRAPPER": null,
+        "RUSTFLAGS": null,
+        "CARGO_ENCODED_RUSTFLAGS": null,
+        "CARGO_LOG": null,
+        "CARGO_LOG_PROFILE": null,
+        "PATH": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/ohm/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin",
+        "LD_PRELOAD": null,
+        "LD_LIBRARY_PATH": null,
+        "SSL_CERT_FILE": "/etc/ssl/certs/ca-certificates.crt",
+        "SSL_CERT_DIR": "/usr/lib/ssl/certs",
+        "TMPDIR": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/tmp",
+        "LD_AUDIT": null,
+        "DYLD_LIBRARY_PATH": null,
+        "DYLD_FALLBACK_LIBRARY_PATH": null,
+        "DYLD_INSERT_LIBRARIES": null
+      },
+      "command": [
+        "taskset",
+        "-c",
+        "0-7",
+        "{cargo}",
+        "-Zohm-defaults=yes",
+        "test",
+        "--no-run",
+        "--locked",
+        "--offline",
+        "-j",
+        "8"
+      ],
+      "translation_only_except_cargo_home_and_record_files": true
+    }
+  },
+  "no_cargo_or_native_observation": true
+}
