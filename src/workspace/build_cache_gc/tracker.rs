@@ -178,7 +178,11 @@ impl Tracker {
             return Ok(());
         }
         self.insert_context(&ContextRecord {
-            version: 1,
+            version: if super::scoped_context_name(context) {
+                2
+            } else {
+                1
+            },
             context: context.to_owned(),
             ohm_version: installed_ohm_version(&compiler, &driver),
             compiler_anchor: Anchor::for_path(&compiler.path)?,
