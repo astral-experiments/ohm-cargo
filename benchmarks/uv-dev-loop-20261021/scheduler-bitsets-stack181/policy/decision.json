@@ -1,0 +1,61 @@
+{
+  "amendment_sha256": "157ea49cf5fb93bf67a841ea2dc060c101247b206d53d8e3158650836898939a",
+  "applies_uniformly_to_all_three_active_candidates": true,
+  "cases": {
+    "package-id-order": {
+      "controls": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/package-id-order-measurement-controls-v2",
+      "latest_native_launch_sha256": "2607922b6cbeff1ba2425111d7bae5195479fe4f769fc287fcd02c5faf7b5a1c",
+      "latest_native_stderr_sha256": "05e94b7e60640f2cf5fb35010bdd4c1dee524321f545f0aba790754b74c4ab89",
+      "native_effects_analyzed": false,
+      "native_returncode": 1,
+      "original_full_protocol_completed": false,
+      "original_protocol_sha256": "86eed951e351e0d7a96575c4a27035ec2c28675bce8793e5588202c0496f1b3b",
+      "permitted_instruction_claims": [
+        "check"
+      ],
+      "root_ir_acceptance_sha256": "a9526fb8354342202206931e0e861435f1798ef7191a6359bf84f7a5f3b88940"
+    },
+    "parser-allocations": {
+      "controls": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/parser-allocations-measurement-controls-host4-v1",
+      "latest_native_launch_sha256": "897c103d558e24bfc89bf4126fc9cf8b47f7cdd17cfe655867873dc7520c031d",
+      "latest_native_stderr_sha256": "6eda2d3a62880681b326aa7e2550bad702b199e3db49dc6052fc4f28b5a23213",
+      "native_effects_analyzed": false,
+      "native_returncode": 1,
+      "original_full_protocol_completed": false,
+      "original_protocol_sha256": "9bb9f6348d8d845c53bf70502968e31842cebaff752a1afac1d246d8fb0367b3",
+      "permitted_instruction_claims": [
+        "check",
+        "test"
+      ],
+      "root_ir_acceptance_sha256": "6ca74836bfcba44094b4ad648b10bb5e72f5f5dc0ef6aa14a1494e7a383026a3"
+    },
+    "scheduler-bitsets": {
+      "controls": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/scheduler-bitsets-measurement-controls",
+      "latest_native_launch_sha256": "aca2d7acab8bccf25421e23b108bf361844c45bd7035f22ebd5ff990992a03d2",
+      "latest_native_stderr_sha256": "28914f3ef63a60fc634b97fda328284dc363b5a266f01c145a2a1b95ec6c26ae",
+      "native_effects_analyzed": false,
+      "native_returncode": 1,
+      "original_full_protocol_completed": false,
+      "original_protocol_sha256": "bdae6e7141f0111d1e826442c49295aec3b5420b027dd82c6a95efb833ea9dc0",
+      "permitted_instruction_claims": [
+        "test",
+        "check"
+      ],
+      "root_ir_acceptance_sha256": "95aaefc0b05fbdc6479ef190c91ec39ec74b13c734099a51c487fd8a0003b393"
+    }
+  },
+  "correctness_and_exact_source_CI_still_required": true,
+  "decision_announced_at": "2026-10-21T23:19:26Z",
+  "explicit_original_plan_departure_disclosure_required": true,
+  "interrupted_native_data_not_analyzed_or_pooled": true,
+  "native_effects_and_regressions_unverified": true,
+  "native_regression_prerequisite_waived_for_draft_publication": true,
+  "no_unredacted_foreign_process_arguments_in_publication": true,
+  "no_wall_time_claims": true,
+  "original_instruction_gates_unchanged": true,
+  "recorded_at": "2026-10-21T23:21:40.846825+00:00",
+  "rejected_primary_screens_remain_rejected": true,
+  "schema_version": 1,
+  "status": "recorded-publication-criterion-amendment-awaiting-independent-review",
+  "timing": "after_IR_results_known_before_native_effect_analysis"
+}

@@ -1,0 +1,168 @@
+{
+  "pairs": 12,
+  "baseline_median_seconds": 11.502979192,
+  "candidate_median_seconds": 11.568638121,
+  "baseline_mean_seconds": 11.659054143166665,
+  "candidate_mean_seconds": 11.604941258750001,
+  "paired_geometric_mean_speedup": 1.0044557002812982,
+  "paired_median_speedup": 0.9998395251090294,
+  "paired_geometric_mean_time_reduction": 0.004435935084096121,
+  "confidence": 0.99,
+  "bootstrap_speedup_interval": [
+    0.9932408049595715,
+    1.0176432743254509
+  ],
+  "bootstrap_time_reduction_interval": [
+    -0.00680519266493862,
+    0.01733738606698476
+  ],
+  "bootstrap_resamples": 20000,
+  "bootstrap_seed": 1701,
+  "wins": 6,
+  "losses": 6,
+  "ties": 0,
+  "exact_two_sided_sign_p": 1.0,
+  "log_ratios": [
+    0.01606032634346072,
+    -0.023447415918401573,
+    -0.0027154385426439113,
+    -0.00036308236596668635,
+    0.034369942965614936,
+    0.03764965023055769,
+    0.0019956555411413464,
+    -0.005271448705342009,
+    4.2065792822114266e-05,
+    0.0037742981068073045,
+    -0.0005089633313525366,
+    -0.008235953668564232
+  ],
+  "order": {
+    "AB": {
+      "pairs": 6,
+      "geometric_mean_speedup": 1.008986994608787
+    },
+    "BA": {
+      "pairs": 6,
+      "geometric_mean_speedup": 0.9999447556990408
+    }
+  },
+  "child_cpu_seconds": {
+    "pairs": 12,
+    "baseline_median_seconds": 11.527744000000002,
+    "candidate_median_seconds": 11.5901815,
+    "baseline_mean_seconds": 11.683158833333335,
+    "candidate_mean_seconds": 11.627963333333339,
+    "paired_geometric_mean_speedup": 1.0045433720336767,
+    "paired_median_speedup": 0.9997221025896856,
+    "paired_geometric_mean_time_reduction": 0.004522823165393763,
+    "confidence": 0.99,
+    "bootstrap_speedup_interval": [
+      0.9933674720339226,
+      1.0176179462020125
+    ],
+    "bootstrap_time_reduction_interval": [
+      -0.006676812109115415,
+      0.01731292796846473
+    ],
+    "bootstrap_resamples": 20000,
+    "bootstrap_seed": 1701,
+    "wins": 5,
+    "losses": 7,
+    "ties": 0,
+    "exact_two_sided_sign_p": 0.7744140625,
+    "log_ratios": [
+      0.016444868773194985,
+      -0.023401157390227377,
+      -0.002532815929702029,
+      -0.0005525158091705526,
+      0.0340063776439324,
+      0.0376620681098999,
+      0.0023334488744139394,
+      -0.004896743801433017,
+      -4.8417293679612385e-06,
+      0.003969227788316779,
+      -0.0005511049334129568,
+      -0.008079826701305472
+    ],
+    "order": {
+      "AB": {
+        "pairs": 6,
+        "geometric_mean_speedup": 1.0090573576091224
+      },
+      "BA": {
+        "pairs": 6,
+        "geometric_mean_speedup": 1.0000495796272535
+      }
+    }
+  },
+  "phase": "confirmation",
+  "variant_sha256": {
+    "baseline": "9659892de8f5b5c2b825273fcea8ee57d806da85dd600b80287407b43f055fef",
+    "candidate": "595a79c696ddacea7613760cd62dfc57dbaa23ec554fd7bb9a1ff08bfc85cbec"
+  },
+  "metrics": {
+    "cargo_ir": {
+      "format": "callgrind",
+      "event": "Ir",
+      "scope": "Instrumented Cargo process only; child rustc, linker, build-script, and test processes are excluded (--trace-children=no).",
+      "statistics": {
+        "pairs": 12,
+        "baseline_median_count": 1147202144.0,
+        "candidate_median_count": 1135406029.0,
+        "baseline_mean_count": 1147595952.0833333,
+        "candidate_mean_count": 1135440506.1666667,
+        "paired_geometric_mean_ratio": 1.0107047954441015,
+        "paired_median_ratio": 1.0104018730069113,
+        "paired_geometric_mean_count_reduction": 0.010591416497037431,
+        "confidence": 0.99,
+        "bootstrap_ratio_interval": [
+          1.0102100622956005,
+          1.0118123263653045
+        ],
+        "bootstrap_count_reduction_interval": [
+          0.01010687051799819,
+          0.011674424255867177
+        ],
+        "bootstrap_resamples": 20000,
+        "bootstrap_seed": 1701,
+        "wins": 12,
+        "losses": 0,
+        "ties": 0,
+        "exact_two_sided_sign_p": 0.00048828125,
+        "log_ratios": [
+          0.010120283750962055,
+          0.010480862864727996,
+          0.010616117109606436,
+          0.010104938225949265,
+          0.010576636758803371,
+          0.01033888492633402,
+          0.014565374328584128,
+          0.010391187904355403,
+          0.00989659121936607,
+          0.010124488822281934,
+          0.010357406549032989,
+          0.010202084699493637
+        ],
+        "order": {
+          "AB": {
+            "pairs": 6,
+            "geometric_mean_ratio": 1.010443299562755
+          },
+          "BA": {
+            "pairs": 6,
+            "geometric_mean_ratio": 1.0109663589988107
+          }
+        }
+      },
+      "acceptance": "No acceptance decision. Instruction comparisons screen candidates; confirm native wall time and correctness independently."
+    }
+  },
+  "screen": {
+    "minimum_pairs": 12,
+    "minimum_time_reduction": 0.01,
+    "alpha": 0.010000000000000009,
+    "passes": false,
+    "note": "This screens one workload only. Require an independently run confirmation batch, correctness validation, and regression checks before a PR performance claim. Repeated candidate selection invalidates treating exploratory p-values as confirmatory evidence. Callgrind elapsed times are instrumented costs, not native dev-loop timings; this screen cannot establish a native wall-time improvement.",
+    "measurement_kind": "instrumented wall time"
+  }
+}

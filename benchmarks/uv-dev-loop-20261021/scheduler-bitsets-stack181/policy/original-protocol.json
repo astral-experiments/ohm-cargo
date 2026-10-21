@@ -1,0 +1,147 @@
+{
+  "schema_version": 1,
+  "created_at": "2026-10-21T18:43:23.935880+00:00",
+  "status": "prospective_method_freeze_not_launch_authorization",
+  "candidate": "Bound scheduler reverse-reachability storage with indexed bitsets",
+  "base_commit": "d81a093becb4321a975522624c2a383970f0d164",
+  "base_tree": "c4178b67e0b3a64a12b9b58f84b97323b99d734e",
+  "candidate_tree": "807c36ec5326d42ca19a921819e1b3d1e2776cb2",
+  "incremental_patch_sha256": "ef953c7ea9c1231ef1b5e1cad139a11b53e2675e89ec13470e2541d9eef05494",
+  "source_manifest_sha256": "94916cbac402ba549509e8bf1f1d595f77f0dc79d6bb12515fe4b811bf97ded9",
+  "correctness_seal_sha256": "fd3472a00e364a0dc83781e0434d63bf829715e7bb1017786216f33eedfb2e11",
+  "correctness_scope": "Exact source module and FxHash aliases:13 tests in each of checked/debug and wrapping/optimized modes, plus accepted root source/correctness review, are prerequisites to measurement. Complete exact-source GitHub CI follows fixed performance qualification and is mandatory before any PR.",
+  "uv_commit": "3d82a6ad5a7eab8c68236553b7846517767c4b61",
+  "runtime": "ohm-1.99.0-6",
+  "scope": "Warm fresh Cargo dev-loop overhead; test --no-run; unchanged uv and no test execution.",
+  "production_build": {
+    "fresh_matched_pair_required": true,
+    "host": "charlie-oss-2",
+    "cohort": "host2-scheduler-bitsets-stack181",
+    "owned_root": "/tmp/ohm-hillclimb-20261021-scheduler-bitsets-production",
+    "variant_order": [
+      "scheduler-bitsets-stack181-baseline",
+      "scheduler-bitsets-stack181-reduced"
+    ],
+    "settings": [
+      "all-static",
+      "ohm-defaults",
+      "opt-level=3",
+      "thin-lto",
+      "codegen-units=1",
+      "debug=1",
+      "no-pgo"
+    ],
+    "compiler": "Stock Rust1.99.0; same physical source/target paths and complete common build inputs within the pair.",
+    "embedded_source_head": "5e5d271d763d7beb38b48755e22bd59e93f02b97",
+    "binary_bindings": "Future actual matched-pair identities required; no earlier binary may stand in for the fresh control.",
+    "separate_root_launch_approval_required": true
+  },
+  "measurement_host": {
+    "assignment": "unassigned",
+    "future_separately_frozen_host_identity_and_quiet_admission_required": true,
+    "host3_untouched_through": "2026-10-21T20:30:00+00:00",
+    "host3_not_authorized": true
+  },
+  "workflows": [
+    "test --no-run",
+    "check"
+  ],
+  "primary_workflow": "test",
+  "secondary_workflow": "check",
+  "ir": {
+    "order": [
+      "test",
+      "check"
+    ],
+    "pairs": 12,
+    "warmup_pairs": 2,
+    "seeds": {
+      "test": 20261021131,
+      "check": 20261021132
+    },
+    "calls_per_variant_sample": 1,
+    "retained_samples_per_workflow": 28,
+    "measured_samples_per_workflow": 24,
+    "metric": "Cargo process userspace Ir; --trace-children=no",
+    "both_workflow_raw_audits_required_before_effects": true,
+    "advance_condition": "Primary test instruction gate passes, no established check instruction regression, and the independent raw/statistical review is root accepted.",
+    "secondary_cannot_rescue_failed_primary": true,
+    "secondary_improvement_claim_requires_own_full_gate": true,
+    "established_check_regression": "99% reduction interval upper endpoint <0 and exact two-sided sign p <=.01; blocks qualification."
+  },
+  "native": {
+    "condition": "Accepted primary IR gate and no established secondary IR regression; no native calls until the independent IR acceptance is bound.",
+    "order": [
+      "test",
+      "check"
+    ],
+    "pairs": 30,
+    "calls_per_group": 8,
+    "warmup_pairs_of_groups": 2,
+    "seeds": {
+      "test": 20261021133,
+      "check": 20261021134
+    },
+    "retained_groups_per_workflow": 64,
+    "retained_timed_calls_per_workflow": 512,
+    "measured_timed_calls_per_workflow": 480,
+    "statistical_units_per_workflow": 30,
+    "statistical_unit": "Paired sums of eight consecutive calls per variant; no subrun pseudoreplication.",
+    "both_workflow_raw_audits_required_before_effects": true,
+    "wall_claim_requires_own_full_gate": true,
+    "significant_regression": "99% reduction interval upper endpoint <0 and exact two-sided sign p <=.01 in either workflow; blocks qualification.",
+    "inconclusive_wall_time": "Retain and report honestly; may support only the qualified primary instruction claim when neither native workflow establishes a regression."
+  },
+  "gate": {
+    "minimum_reduction": 0.01,
+    "confidence": 0.99,
+    "bootstrap_resamples": 20000,
+    "bootstrap_seed": 1701,
+    "exact_two_sided_sign_p_max": 0.01,
+    "both_order_point_effects_positive": true,
+    "both_workflow_integrity_audits_before_any_effects": true,
+    "positive_99_percent_lower_bound": true,
+    "reduction_interval_lower_endpoint_must_exceed": 0.0,
+    "equivalent_speedup_interval_lower_endpoint_must_exceed": 1.0
+  },
+  "setup_boundary": {
+    "metadata_preparation": "Root-approved read-only host/tool inspection and controlled public source/tool staging may derive the final configs. No fixture build, warmup, workload preflight or measured call is permitted before the final seal.",
+    "seal_before_workload_setup": "All four configs and exact source/build/tool/correctness/root-source-review identities must be sealed and independently reviewed before fixture builds/warming, workload preflight or measurements. Exact-source GitHub CI is a later mandatory publication gate."
+  },
+  "fixed_rules": [
+    "No pooling, exclusions, early effect inspection, sample extensions or effect-driven reruns.",
+    "Run both fixed workflows and finish both raw audits before any effect calculation.",
+    "Use identical canonical executable/source/target/cache paths within each pair; no uv source edits.",
+    "Fixed three untimed preflight calls per variant, traced zero-child proof and cross-switch freshness.",
+    "Retain the inherited per-sample untimed preparation and all logs.",
+    "Keep exact controller PATH separate from explicit taskset0-7 workload commands; bind their identities and audit affinity.",
+    "Strict unchanged quiet guard; no weakening for host contention.",
+    "Retain every operational failure; any recovery needs separate source/lineage review and may not alter observed data or fixed plans."
+  ],
+  "publication_requires": [
+    "Primary test-build instruction gate; secondary check cannot rescue it.",
+    "No established check instruction regression.",
+    "Exact candidate source/correctness review and complete source CI.",
+    "Completed independently reviewed native batches with no established regression in either workflow.",
+    "Independent raw/statistical audit and complete retained evidence; any secondary or wall-time improvement claim needs its own full gate."
+  ],
+  "pending_before_execution": [
+    "Root source/correctness review and separate production-build authorization.",
+    "Fresh matched production binaries and complete source/compiler/common-input/strip audits.",
+    "Bind the actual accepted root source/correctness review and exact candidate tree; exact-source GitHub CI is deferred until fixed performance qualification and remains mandatory before any PR.",
+    "Independently admitted measurement host and root execution approval.",
+    "Adapted measurement driver/collector/reviewer source review and sealed four-config setup readback."
+  ],
+  "amends_protocol_sha256": "063c3bdebc6df52a7229ccc3a62a133e053a72586e0398f9c229d48d3c32d681",
+  "original_root_source_review_sha256": "5889d2a0d18cfd88f2a7e68aa52fe4d77725aa67eb372d390dd1560ddeff2db2",
+  "ci_sequence": {
+    "reason": "Automatic approval review rejected GitHub create_blob for premeasurement CI because unmeasured publication was not authorized.",
+    "authority": "Parent /root prospective instruction received2026-10-21T18:42:02Z.",
+    "reported_external_state": "No blob, commit or branch was created; no GitHub retry or workaround is authorized.",
+    "before_measurement": "Existing13\u00d72 focused correctness and the exact accepted root source/correctness review.",
+    "after_fixed_performance_qualification_before_any_pr": "Publish the unchanged exact candidate source for complete GitHub CI; all required jobs must pass before any PR.",
+    "superseded_timing_only": "Initial protocol's premeasurement source-CI condition and root-source-review.json.exact_source_ci_required_before_measurement.",
+    "unchanged": "Source, local correctness findings, fixed workload/counts/seeds, both raw audits before effects, all effect/regression gates and publication's complete source-CI requirement.",
+    "comparative_observations_before_amendment": 0
+  }
+}

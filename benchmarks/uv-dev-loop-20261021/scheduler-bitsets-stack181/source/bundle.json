@@ -1,0 +1,130 @@
+{
+  "bundle": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/compiler-audit/scheduler-qualified-source-20261021/source.bundle",
+  "bundle_sha256": "461dc478ea2f072e6dba9b5db9ddbdfa2ad9f974f64ed27bb2806a3202a0a20f",
+  "bundle_size": 3082,
+  "commands": [
+    {
+      "argv": [
+        "/usr/bin/git",
+        "-c",
+        "core.hooksPath=/dev/null",
+        "-c",
+        "commit.gpgsign=false",
+        "bundle",
+        "create",
+        "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/compiler-audit/scheduler-qualified-source-20261021/source.bundle",
+        "d81a093becb4321a975522624c2a383970f0d164..refs/heads/charlie/uv-scheduler-bitsets"
+      ],
+      "cwd": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/compiler-audit/scheduler-qualified-source-20261021/repository",
+      "returncode": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "/usr/bin/git",
+        "-c",
+        "core.hooksPath=/dev/null",
+        "-c",
+        "commit.gpgsign=false",
+        "bundle",
+        "verify",
+        "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/compiler-audit/scheduler-qualified-source-20261021/source.bundle"
+      ],
+      "cwd": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/compiler-audit/scheduler-qualified-source-20261021/repository",
+      "returncode": 0,
+      "stderr_sha256": "a37514bbbb0481ada972cc7758bb8cc448d2dde2d49ef8eca9623c55e27c9911",
+      "stdout_sha256": "0afaa97dd8b658d919653cb91b47530fe658d4a5b599c1dbc6dabad139d1d7ae"
+    },
+    {
+      "argv": [
+        "/usr/bin/git",
+        "-c",
+        "core.hooksPath=/dev/null",
+        "-c",
+        "commit.gpgsign=false",
+        "bundle",
+        "list-heads",
+        "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/compiler-audit/scheduler-qualified-source-20261021/source.bundle"
+      ],
+      "cwd": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/compiler-audit/scheduler-qualified-source-20261021/repository",
+      "returncode": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "6535a1c99f7084315d504f8da37595d8b83fe4644c24cbb8191f43d1b4ef28e9"
+    },
+    {
+      "argv": [
+        "/usr/bin/git",
+        "-c",
+        "core.hooksPath=/dev/null",
+        "-c",
+        "commit.gpgsign=false",
+        "diff",
+        "--check",
+        "d81a093becb4321a975522624c2a383970f0d164",
+        "694d39ac73073f17008ce6e7bd53c1231ec6ceec"
+      ],
+      "cwd": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/compiler-audit/scheduler-qualified-source-20261021/repository",
+      "returncode": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "/usr/bin/git",
+        "-c",
+        "core.hooksPath=/dev/null",
+        "-c",
+        "commit.gpgsign=false",
+        "rev-parse",
+        "HEAD"
+      ],
+      "cwd": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/cargo-scheduler-bitsets",
+      "returncode": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "e7328f0702627412fb5b4037bbe51cd95289dd34aa7ea5d813d523a0d7b04b7a"
+    },
+    {
+      "argv": [
+        "/usr/bin/git",
+        "-c",
+        "core.hooksPath=/dev/null",
+        "-c",
+        "commit.gpgsign=false",
+        "diff",
+        "--binary",
+        "--full-index"
+      ],
+      "cwd": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/cargo-scheduler-bitsets",
+      "returncode": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "ef953c7ea9c1231ef1b5e1cad139a11b53e2675e89ec13470e2541d9eef05494"
+    },
+    {
+      "argv": [
+        "/usr/bin/git",
+        "-c",
+        "core.hooksPath=/dev/null",
+        "-c",
+        "commit.gpgsign=false",
+        "diff",
+        "--cached",
+        "--binary",
+        "--full-index"
+      ],
+      "cwd": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/cargo-scheduler-bitsets",
+      "returncode": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "heads": [
+    "694d39ac73073f17008ce6e7bd53c1231ec6ceec refs/heads/charlie/uv-scheduler-bitsets"
+  ],
+  "network_or_host_calls": false,
+  "original_head_and_complete_unstaged_patch_still_match_frozen_candidate": true,
+  "original_staged_diff_empty": true,
+  "prerequisite": "d81a093becb4321a975522624c2a383970f0d164",
+  "source_commit_record_sha256": "3443ae82697cd626490d1cf6b73f20150439814817db8262ea20dbf54e2e4b68",
+  "status": "prepared-locally-unpublished"
+}

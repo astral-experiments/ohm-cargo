@@ -1,0 +1,31 @@
+{
+  "kind": "Sanitized semantic projection; not the original phase status.",
+  "omitted_fields": [
+    "completed",
+    "policy",
+    "quiet",
+    "seed",
+    "significant_native_regression",
+    "uv",
+    "workflow"
+  ],
+  "original_path": "results/ir-status.json",
+  "original_sha256": "f58aa17e8d0f90607ae6c66863d96ac396ad00028cd85bf00ad949c3e9461968",
+  "purpose": "Expose phase completion and identities without unrelated process metadata.",
+  "selected_fields": {
+    "both_workflows_pass": true,
+    "completed_at": "2026-10-21T20:02:17.328963+00:00",
+    "integrity_complete": [
+      "test",
+      "check"
+    ],
+    "phase": "ir",
+    "seal_sha256": "ce79b88c2f2fe7cf9c2217fa84c982c6ad9473f1c38406bf5075d6d6c26f1dcf",
+    "started_at": "2026-10-21T19:44:57.909287+00:00",
+    "state": "complete",
+    "variants": {
+      "baseline": "9659892de8f5b5c2b825273fcea8ee57d806da85dd600b80287407b43f055fef",
+      "candidate": "595a79c696ddacea7613760cd62dfc57dbaa23ec554fd7bb9a1ff08bfc85cbec"
+    }
+  }
+}

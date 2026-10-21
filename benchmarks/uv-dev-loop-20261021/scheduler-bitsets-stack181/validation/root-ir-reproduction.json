@@ -1,0 +1,64 @@
+{
+  "finished_at": "2026-10-21T20:09:14.472992+00:00",
+  "frozen_inputs_rehashed": 448,
+  "independent_review_sha256": "755e5c5e7ca6a303aeb03842b821e86e7d79c089956e3c86a3f14b12eaa66ec1",
+  "measurement_seal_sha256": "ce79b88c2f2fe7cf9c2217fa84c982c6ad9473f1c38406bf5075d6d6c26f1dcf",
+  "method": "All raw files and each profile summary verified before independent fixed paired-log, 20000-draw seed-1701 bootstrap and exact sign-test reproduction.",
+  "phase": "ir",
+  "program_sha256": "2662fbdd201aa1fd8df3cbe46ce1c64ac7ab5d8780eb0b7f1cd7623d19fa8d03",
+  "qualifies": true,
+  "raw_files_rehashed": 568,
+  "source_freeze_sha256": "25965d3a2a4d087ac773727ddd600707c5fd3cb13a189d62cb8fe991ed7445fa",
+  "started_at": "2026-10-21T20:09:12.011495+00:00",
+  "status": "passed",
+  "variants": {
+    "baseline": "9659892de8f5b5c2b825273fcea8ee57d806da85dd600b80287407b43f055fef",
+    "candidate": "595a79c696ddacea7613760cd62dfc57dbaa23ec554fd7bb9a1ff08bfc85cbec"
+  },
+  "workflows": [
+    {
+      "interval_99": [
+        0.018993071233536774,
+        0.020941125206889843
+      ],
+      "losses": 0,
+      "order_ratios": {
+        "AB": 1.0195710655347237,
+        "BA": 1.0203520933462749
+      },
+      "pairs": 12,
+      "passes_gate": true,
+      "profiles_checked": 28,
+      "reduction": 0.01957084124312436,
+      "samples_sha256": "ae905c2b8f37175690ad1c8d28b774f30b38ef19249ba14784c8e98709c1eb34",
+      "seed": 20261021131,
+      "sign_p": 0.00048828125,
+      "ties": 0,
+      "warmup_pairs": 2,
+      "wins": 12,
+      "workflow": "test"
+    },
+    {
+      "interval_99": [
+        0.010106870517998079,
+        0.011674424255867177
+      ],
+      "losses": 0,
+      "order_ratios": {
+        "AB": 1.010443299562755,
+        "BA": 1.0109663589988107
+      },
+      "pairs": 12,
+      "passes_gate": true,
+      "profiles_checked": 28,
+      "reduction": 0.010591416497037431,
+      "samples_sha256": "48e9e3515349eb3dec4c151068489ff9f89ce4d07171b1c79c99c58eef054659",
+      "seed": 20261021132,
+      "sign_p": 0.00048828125,
+      "ties": 0,
+      "warmup_pairs": 2,
+      "wins": 12,
+      "workflow": "check"
+    }
+  ]
+}

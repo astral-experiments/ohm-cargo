@@ -1,0 +1,70 @@
+{
+  "amendment_independent_review_sha256": "a8439c4afec2e3331f8d4179245d180053d0b0b40a6e16f6fcac19ffc5e93be8",
+  "before_publication": [
+    "Root acceptance of the exact source/bundle and instruction-only amendment lineage",
+    "Verify private repository push permission and exact parent object",
+    "Require requested remote branch absent; no overwrite or force push",
+    "Use a new task-owned publication repository and per-command gh credential helper; no global configuration changes"
+  ],
+  "bindings": {
+    "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/benchmark-harness-reviews/instruction-only-publication-amendment-review-20261021/review.json": "a8439c4afec2e3331f8d4179245d180053d0b0b40a6e16f6fcac19ffc5e93be8",
+    "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/compiler-audit/scheduler-native-closure-20261021/closure.json": "8d1b8d28f2b5e01ba8d68713e3b454332a0e98402e64a5d9729d32e4eb5a03db",
+    "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/compiler-audit/scheduler-native-closure-20261021/seal.json": "6421cde7987048088661e46df7f6706a7f31e41d5d0d03b953471a24d9437160",
+    "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/qualification-policy/instruction-only-publication-20261021/amendment.md": "157ea49cf5fb93bf67a841ea2dc060c101247b206d53d8e3158650836898939a",
+    "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/qualification-policy/instruction-only-publication-20261021/decision.json": "d78845e725b1150f575c90b69a0fab6753e6e67a1a6f20020bab6e665d43dbb0",
+    "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/scheduler-bitsets-candidate/candidate.patch": "ef953c7ea9c1231ef1b5e1cad139a11b53e2675e89ec13470e2541d9eef05494",
+    "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/scheduler-bitsets-candidate/correctness-seal.json": "fd3472a00e364a0dc83781e0434d63bf829715e7bb1017786216f33eedfb2e11",
+    "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/scheduler-bitsets-candidate/manifest.json": "94916cbac402ba549509e8bf1f1d595f77f0dc79d6bb12515fe4b811bf97ded9",
+    "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/scheduler-bitsets-candidate/root-source-review.json": "5889d2a0d18cfd88f2a7e68aa52fe4d77725aa67eb372d390dd1560ddeff2db2",
+    "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/scheduler-bitsets-measurement-controls/protocol.json": "bdae6e7141f0111d1e826442c49295aec3b5420b027dd82c6a95efb833ea9dc0",
+    "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/scheduler-bitsets-measurement-controls/root-ir-acceptance.json": "95aaefc0b05fbdc6479ef190c91ec39ec74b13c734099a51c487fd8a0003b393",
+    "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/scheduler-bitsets-publication/rejected-source-upload.json": "1ddc6d6f982dfec43374396d94a05d7e7201111966e5d437f300f98b7fb0e5b7",
+    "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/workspace-inheritance-publication/dispatch_remote.py": "9f8044127a63c7e304f61d43c996441d60e424af17eda11c1f9a27ae38ce1681",
+    "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/workspace-inheritance-publication/publish_code.py": "148cda48d5988f702e22327ab818c03c0f66328a7c4a4ceafcc8c761568e4c5f"
+  },
+  "branch": "charlie/uv-scheduler-bitsets",
+  "bundle_path": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/compiler-audit/scheduler-qualified-source-20261021/source.bundle",
+  "bundle_prerequisite": "d81a093becb4321a975522624c2a383970f0d164",
+  "bundle_ref": "694d39ac73073f17008ce6e7bd53c1231ec6ceec refs/heads/charlie/uv-scheduler-bitsets",
+  "bundle_sha256": "461dc478ea2f072e6dba9b5db9ddbdfa2ad9f974f64ed27bb2806a3202a0a20f",
+  "changed_files": [
+    "src/util/dependency_queue.rs"
+  ],
+  "ci": {
+    "before_dispatch": "Verify published ref equals exact commit and no existing workflow_dispatch run for this commit; retain a unique dispatch receipt.",
+    "event": "workflow_dispatch",
+    "exact_head_sha_required": "694d39ac73073f17008ce6e7bd53c1231ec6ceec",
+    "inputs": {
+      "clippy_apfs_replay": "false"
+    },
+    "optional_job_expected_skipped": "Clippy APFS replay",
+    "ref": "charlie/uv-scheduler-bitsets",
+    "required_jobs": [
+      "Rustfmt",
+      "Clippy (depot-ubuntu-24.04-8)",
+      "Clippy (depot-macos-15)",
+      "Cargo tests (depot-ubuntu-24.04-16)",
+      "Cargo tests (depot-macos-15)",
+      "Workspace tests",
+      "Resolver tests",
+      "Schema tests"
+    ],
+    "successful_exact_source_CI_required_before_draft": true,
+    "workflow": "ci.yml",
+    "workflow_sha256": "ef0777032853afaa4337cce27b0e1327bf927bb2b1414d54c8af926c51538d38"
+  },
+  "claim_scope": "Cargo-process instruction counts only, under unchanged accepted fixed gates; native timing and regression effects remain unverified. The full original protocols did not complete.",
+  "create_pull_request": false,
+  "github_or_host_action_executed": false,
+  "original_prequalification_upload_rejection_retained": true,
+  "preparation_note": "The first metadata-only request preparation rejected the actual qualified review status because it expected a generic passed/accepted string. It wrote no request and ran no host action. This request instead binds and checks the exact reviewed status and scheduler claim membership.",
+  "publication_method": "Reuse established safe Git publication mechanics, import this verified single-commit bundle, verify exact parent/tree/commit, non-force push only this ref, then read it back. No repository source is changed.",
+  "ref": "refs/heads/charlie/uv-scheduler-bitsets",
+  "repository": "astral-sh/ohm-cargo",
+  "repository_private_required": true,
+  "schema_version": 1,
+  "source_commit": "694d39ac73073f17008ce6e7bd53c1231ec6ceec",
+  "source_parent": "d81a093becb4321a975522624c2a383970f0d164",
+  "source_tree": "807c36ec5326d42ca19a921819e1b3d1e2776cb2",
+  "status": "concrete-request-awaiting-root-external-publication"
+}

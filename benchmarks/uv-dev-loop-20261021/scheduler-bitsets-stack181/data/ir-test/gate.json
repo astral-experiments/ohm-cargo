@@ -1,0 +1,18 @@
+{
+  "passes_gate": true,
+  "checks": {
+    "fixed_pairs": true,
+    "at_least_one_percent": true,
+    "positive_99_percent_lower_bound": true,
+    "two_sided_sign_p_at_most_0_01": true,
+    "both_orders_positive": true
+  },
+  "reduction": 0.01957084124312425,
+  "interval_99": [
+    0.018993071233536885,
+    0.020941125206889843
+  ],
+  "sign_p": 0.00048828125,
+  "significant_native_regression": false,
+  "scope": "Fixed independent pairs; no exclusions, extensions, pooling or interim effect inspection."
+}
