@@ -717,7 +717,13 @@ fn busy_consumers_and_profiles_postpone_retirement() {
     remove_worktree(&project, &worktree);
 
     for path in [".ohm-gc-v1/consumers.lock", "debug/.cargo-build-lock"] {
-        let lock = fs::File::open(shared_root().join(path)).unwrap();
+        let lock = fs::OpenOptions::new()
+            .read(true)
+            .write(true)
+            .create(true)
+            .truncate(false)
+            .open(shared_root().join(path))
+            .unwrap();
         lock.lock_shared().unwrap();
         collect(&project, false);
         assert!(private.is_dir(), "collection must skip a held {path}");
@@ -895,7 +901,22 @@ fn running_test_retains_lease_after_its_cargo_parent_exits() {
         .execute("UPDATE contexts SET last_used = 0", [])
         .unwrap();
 
-    // Kill Cargo alone: its test retains both the global and the private lease.
+    // A long-running program protects its context, not unrelated legacy state.
+    let unused = shared_root().join("debug/build/registries/0123456789abcdef");
+    fs::create_dir_all(&unused).unwrap();
+    fs::write(unused.join("old-artifact"), b"unused").unwrap();
+    let output = cargo(&project, "gc --dry-run --build-dir")
+        .arg(shared_root())
+        .run();
+    let stderr = String::from_utf8(output.stderr).unwrap();
+    assert!(stderr.contains("Skipping context v2-"), "{stderr}");
+    assert!(stderr.contains("Summary 1 file, 6B total"), "{stderr}");
+    assert!(unused.exists());
+    collect(&project, false);
+    assert!(!unused.exists());
+    assert!(registry.is_dir());
+
+    // Kill Cargo alone: its test retains both the context and the private lease.
     running.0.kill().unwrap();
     let local_lock = fs::File::open(worktree.join("target/.ohm-build-lock")).unwrap();
     assert!(matches!(
@@ -909,7 +930,8 @@ fn running_test_retains_lease_after_its_cargo_parent_exits() {
     stream.write_all(&[1]).unwrap();
     drop(stream);
 
-    let lock = fs::File::open(shared_root().join(".ohm-gc-v1/consumers.lock")).unwrap();
+    let lock = fs::File::open(shared_root().join(format!(".ohm-gc-v1/context-{}.lock", context())))
+        .unwrap();
     let deadline = Instant::now() + slow_cpu_multiplier(30);
     loop {
         match lock.try_lock() {
