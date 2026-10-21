@@ -98,6 +98,11 @@ impl<N: Hash + Eq + Clone, E: Eq + Hash + Clone, V> DependencyQueue<N, E, V> {
     /// All nodes have been added, calculate some internal metadata and prepare
     /// for `dequeue`.
     pub fn queue_finished(&mut self) {
+        if let Some(priority) = self.bitset_priorities() {
+            self.priority = priority;
+            return;
+        }
+
         let mut out = HashMap::default();
         for key in self.dep_map.keys() {
             depth(key, &self.reverse_dep_map, &mut out);
@@ -142,6 +147,104 @@ impl<N: Hash + Eq + Clone, E: Eq + Hash + Clone, V> DependencyQueue<N, E, V> {
             let slot = results.get_mut(key).unwrap();
             *slot = set;
             &*slot
+        }
+    }
+
+    /// Avoid cloning and hashing nodes while combining small dependency graphs.
+    fn bitset_priorities(&self) -> Option<HashMap<N, usize>> {
+        let count = self.dep_map.len();
+        // Keep the sparse calculation for large graphs and calls made after nodes
+        // have been dequeued. At most 512 KiB of bitset words can be allocated,
+        // and nodes without reverse dependencies do not need a bitset at all.
+        let words = count.div_ceil(64);
+        if count == 0 || self.cost.len() != count || count.checked_mul(words)? > 64 * 1024 {
+            return None;
+        }
+
+        let nodes: Vec<_> = self.dep_map.keys().collect();
+        let indices: HashMap<_, _> = nodes.iter().enumerate().map(|(i, &key)| (key, i)).collect();
+        let costs: Vec<_> = nodes.iter().map(|key| self.cost[*key]).collect();
+        let uniform_cost = costs
+            .iter()
+            .all(|&cost| cost == costs[0])
+            .then_some(costs[0]);
+        let mut results = vec![Vec::new(); count];
+        let mut state = vec![0; count];
+        for i in 0..count {
+            depth(
+                i,
+                &nodes,
+                &indices,
+                &self.reverse_dep_map,
+                &mut results,
+                &mut state,
+            );
+        }
+
+        return Some(
+            nodes
+                .into_iter()
+                .enumerate()
+                .map(|(i, key)| {
+                    let dependents = if results[i].is_empty() {
+                        costs[i]
+                    } else if let Some(cost) = uniform_cost {
+                        results[i]
+                            .iter()
+                            .map(|word| word.count_ones() as usize)
+                            .sum::<usize>()
+                            * cost
+                    } else {
+                        results[i]
+                            .iter()
+                            .enumerate()
+                            .map(|(word_index, &word)| {
+                                let mut word = word;
+                                let mut cost = 0;
+                                while word != 0 {
+                                    cost += costs[word_index * 64 + word.trailing_zeros() as usize];
+                                    word &= word - 1;
+                                }
+                                cost
+                            })
+                            .sum()
+                    };
+                    // The closure includes this node; preserve its additional self cost.
+                    (key.clone(), costs[i] + dependents)
+                })
+                .collect(),
+        );
+
+        fn depth<N: Hash + Eq, E: Hash + Eq>(
+            index: usize,
+            nodes: &[&N],
+            indices: &HashMap<&N, usize>,
+            map: &HashMap<N, HashMap<E, HashSet<N>>>,
+            results: &mut [Vec<u64>],
+            state: &mut [u8],
+        ) {
+            assert!(state[index] != 1, "cycle in DependencyQueue");
+            if state[index] == 2 {
+                return;
+            }
+            state[index] = 1;
+            if let Some(dependents) = map.get(nodes[index]) {
+                let mut result = vec![0; nodes.len().div_ceil(64)];
+                result[index / 64] |= 1 << (index % 64);
+                for dependent in dependents.values().flatten() {
+                    let dependent = indices[dependent];
+                    depth(dependent, nodes, indices, map, results, state);
+                    if results[dependent].is_empty() {
+                        result[dependent / 64] |= 1 << (dependent % 64);
+                    } else {
+                        for (word, &other) in result.iter_mut().zip(&results[dependent]) {
+                            *word |= other;
+                        }
+                    }
+                }
+                results[index] = result;
+            }
+            state[index] = 2;
         }
     }
 
@@ -250,5 +353,122 @@ mod test {
         assert_eq!(q.dequeue(), None);
         q.finish(&4, &());
         assert_eq!(q.dequeue(), None);
+    }
+
+    #[test]
+    fn weighted_diamond_with_multiple_artifacts() {
+        let mut q = DependencyQueue::new();
+        q.queue(0, (), [], 2);
+        q.queue(1, (), [(0, 'm'), (0, 'a')], 3);
+        q.queue(2, (), [(0, 'm')], 5);
+        q.queue(3, (), [(1, 'a'), (2, 'm')], 7);
+        q.queue(4, (), [], 11);
+        q.queue_finished();
+
+        assert_eq!(q.priority[&0], 19);
+        assert_eq!(q.dequeue(), Some((4, (), 22)));
+        assert_eq!(q.dequeue(), Some((0, (), 19)));
+        q.finish(&0, &'m');
+        assert_eq!(q.dequeue(), Some((2, (), 17)));
+        assert_eq!(q.dequeue(), None);
+        q.finish(&0, &'a');
+        assert_eq!(q.dequeue(), Some((1, (), 13)));
+        q.finish(&2, &'m');
+        assert_eq!(q.dequeue(), None);
+        q.finish(&1, &'a');
+        assert_eq!(q.dequeue(), Some((3, (), 14)));
+    }
+
+    #[test]
+    fn priorities_match_reachability() {
+        // Every DAG on five ordered nodes, with uniform and nonuniform costs.
+        // The oracle uses a boolean transitive closure, independently of the
+        // representation and traversal used by queue_finished.
+        for mask in 0..1 << 10 {
+            for costs in [[100; 5], [1, 0, 7, 3, 0]] {
+                let mut q = DependencyQueue::new();
+                let mut reachable = [[false; 5]; 5];
+                let mut bit = 0;
+                for node in 0..5 {
+                    let mut dependencies = Vec::new();
+                    reachable[node][node] = true;
+                    for dependency in 0..node {
+                        if mask & (1 << bit) != 0 {
+                            dependencies.push((dependency, ()));
+                            reachable[dependency][node] = true;
+                        }
+                        bit += 1;
+                    }
+                    q.queue(node, (), dependencies, costs[node]);
+                }
+                for via in 0..5 {
+                    for from in 0..5 {
+                        for to in 0..5 {
+                            reachable[from][to] |= reachable[from][via] && reachable[via][to];
+                        }
+                    }
+                }
+                q.queue_finished();
+                for node in 0..5 {
+                    let expected = costs[node]
+                        + (0..5)
+                            .filter(|&dependent| reachable[node][dependent])
+                            .map(|dependent| costs[dependent])
+                            .sum::<usize>();
+                    assert_eq!(q.priority[&node], expected, "graph {mask}, node {node}");
+                }
+            }
+        }
+    }
+
+    #[test]
+    fn priorities_across_bitset_words() {
+        for uniform in [false, true] {
+            let mut q = DependencyQueue::new();
+            let costs: Vec<_> = (0..129)
+                .map(|i| if uniform { 100 } else { i % 7 })
+                .collect();
+            for node in 0usize..129 {
+                q.queue(
+                    node,
+                    (),
+                    node.checked_sub(1).map(|dependency| (dependency, ())),
+                    costs[node],
+                );
+            }
+            q.queue_finished();
+            for node in 0..129 {
+                assert_eq!(
+                    q.priority[&node],
+                    costs[node] + costs[node..].iter().sum::<usize>()
+                );
+            }
+        }
+    }
+
+    #[test]
+    fn bitset_memory_bound_keeps_sparse_fallback() {
+        for count in [2048, 2049] {
+            let mut q = DependencyQueue::new();
+            q.queue(0, (), [], 1);
+            for node in 1..count {
+                q.queue(node, (), [(0, ())], 1);
+            }
+            assert_eq!(q.bitset_priorities().is_some(), count == 2048);
+            q.queue_finished();
+            assert_eq!(q.priority[&0], count + 1);
+            for node in 1..count {
+                assert_eq!(q.priority[&node], 2);
+            }
+        }
+    }
+
+    #[test]
+    #[should_panic(expected = "cycle in DependencyQueue")]
+    fn rejects_cycle() {
+        let mut q = DependencyQueue::new();
+        q.queue(0, (), [(1, ())], 1);
+        q.queue(1, (), [(0, ())], 1);
+        q.queue_finished();
     }
 }
