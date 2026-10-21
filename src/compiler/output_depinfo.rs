@@ -1,7 +1,7 @@
 //! dep-info files for external build system integration.
 //! See [`output_depinfo`] for more.
 
-use crate::util::data_structures::HashSet;
+use crate::util::data_structures::{HashMap, HashSet};
 use cargo_util::paths::normalize_path;
 use std::collections::BTreeSet;
 use std::io::{BufWriter, Write};
@@ -44,9 +44,10 @@ fn render_filename<P: AsRef<Path>>(path: P, basedir: Option<&str>) -> CargoResul
 /// [fingerprint dep-info]: super::fingerprint#fingerprint-dep-info-files
 fn add_deps_for_unit(
     deps: &mut BTreeSet<PathBuf>,
-    build_runner: &mut BuildRunner<'_, '_>,
+    build_runner: &BuildRunner<'_, '_>,
     unit: &Unit,
     visited: &mut HashSet<Unit>,
+    dep_info_cache: &mut Option<HashMap<Unit, Vec<PathBuf>>>,
 ) -> CargoResult<()> {
     if !visited.insert(unit.clone()) {
         return Ok(());
@@ -55,23 +56,31 @@ fn add_deps_for_unit(
     // units representing the execution of a build script don't actually
     // generate a dep info file, so we just keep on going below
     if !unit.mode.is_run_custom_build() {
-        // Add dependencies from rustc dep-info output (stored in fingerprint directory)
-        let dep_info_loc = fingerprint::dep_info_loc(build_runner, unit);
-        if let Some(paths) = fingerprint::parse_dep_info(
-            unit.pkg.root(),
-            &build_runner.files().build_root(unit),
-            &dep_info_loc,
-        )? {
-            for path in paths.files.into_keys() {
-                deps.insert(path);
-            }
+        if let Some(paths) = dep_info_cache.as_ref().and_then(|cache| cache.get(unit)) {
+            deps.extend(paths.iter().cloned());
         } else {
-            debug!(
-                "can't find dep_info for {:?} {}",
-                unit.pkg.package_id(),
-                unit.target
-            );
-            return Err(internal("dep_info missing"));
+            // Add dependencies from rustc dep-info output (stored in fingerprint directory)
+            let dep_info_loc = fingerprint::dep_info_loc(build_runner, unit);
+            if let Some(paths) = fingerprint::parse_dep_info(
+                unit.pkg.root(),
+                &build_runner.files().build_root(unit),
+                &dep_info_loc,
+            )? {
+                if let Some(cache) = dep_info_cache.as_mut() {
+                    let paths: Vec<_> = paths.files.into_keys().collect();
+                    deps.extend(paths.iter().cloned());
+                    cache.insert(unit.clone(), paths);
+                } else {
+                    deps.extend(paths.files.into_keys());
+                }
+            } else {
+                debug!(
+                    "can't find dep_info for {:?} {}",
+                    unit.pkg.package_id(),
+                    unit.target
+                );
+                return Err(internal("dep_info missing"));
+            }
         }
     }
 
@@ -104,10 +113,9 @@ fn add_deps_for_unit(
     }
 
     // Recursively traverse all transitive dependencies
-    let unit_deps = Vec::from(build_runner.unit_deps(unit)); // Create vec due to mutable borrow.
-    for dep in unit_deps {
+    for dep in build_runner.unit_deps(unit) {
         if dep.unit.is_local() {
-            add_deps_for_unit(deps, build_runner, &dep.unit, visited)?;
+            add_deps_for_unit(deps, build_runner, &dep.unit, visited, dep_info_cache)?;
         }
     }
     Ok(())
@@ -129,8 +137,14 @@ fn add_deps_for_unit(
 /// under the assumption that changes to them can be detected via changes to
 /// `Cargo.lock`.
 ///
+/// Share `dep_info_cache` only across roots of the same completed build.
+///
 /// [`fingerprint`]: super::fingerprint#dep-info-files
-pub fn output_depinfo(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResult<()> {
+pub fn output_depinfo(
+    build_runner: &BuildRunner<'_, '_>,
+    unit: &Unit,
+    dep_info_cache: &mut Option<HashMap<Unit, Vec<PathBuf>>>,
+) -> CargoResult<()> {
     let outputs = build_runner.outputs(unit)?;
     let mut outputs = outputs
         .iter()
@@ -152,7 +166,8 @@ pub fn output_depinfo(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> Ca
     let bcx = build_runner.bcx;
     let mut deps = BTreeSet::new();
     let mut visited = HashSet::default();
-    let success = add_deps_for_unit(&mut deps, build_runner, unit, &mut visited).is_ok();
+    let success =
+        add_deps_for_unit(&mut deps, build_runner, unit, &mut visited, dep_info_cache).is_ok();
     let basedir_string;
     let basedir = match bcx.gctx.build_config()?.dep_info_basedir.clone() {
         Some(value) => {
@@ -171,31 +186,46 @@ pub fn output_depinfo(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> Ca
         .map(|f| render_filename(f, basedir))
         .collect::<CargoResult<Vec<_>>>()?;
 
+    // Preserve the legacy target selection for crate types sharing a dep-info path.
+    let single_output = outputs.clone().nth(1).is_none();
     for link_dst in outputs {
         let output_path = link_dst.with_extension("d");
         if success {
             let target_fn = render_filename(link_dst, basedir)?;
 
-            // If nothing changed don't recreate the file which could alter
-            // its mtime
-            if let Ok(previous) = fingerprint::parse_rustc_dep_info(&output_path) {
-                if previous
-                    .files
-                    .iter()
-                    .map(|(path, _checksum)| path)
-                    .eq(deps.iter().map(Path::new))
-                {
+            if single_output {
+                let mut contents = Vec::new();
+                write!(contents, "{}:", target_fn)?;
+                for dep in &deps {
+                    write!(contents, " {}", dep)?;
+                }
+                writeln!(contents)?;
+
+                // Preserve the mtime when the complete rendered dep-info is unchanged.
+                if paths::read_bytes(&output_path).is_ok_and(|previous| previous == contents) {
                     continue;
                 }
-            }
+                paths::write(output_path, contents)?;
+            } else {
+                // The dependency-only comparison can retain an earlier output's target.
+                if let Ok(previous) = fingerprint::parse_rustc_dep_info(&output_path) {
+                    if previous
+                        .files
+                        .iter()
+                        .map(|(path, _checksum)| path)
+                        .eq(deps.iter().map(Path::new))
+                    {
+                        continue;
+                    }
+                }
 
-            // Otherwise write it all out
-            let mut outfile = BufWriter::new(paths::create(output_path)?);
-            write!(outfile, "{}:", target_fn)?;
-            for dep in &deps {
-                write!(outfile, " {}", dep)?;
+                let mut outfile = BufWriter::new(paths::create(output_path)?);
+                write!(outfile, "{}:", target_fn)?;
+                for dep in &deps {
+                    write!(outfile, " {}", dep)?;
+                }
+                writeln!(outfile)?;
             }
-            writeln!(outfile)?;
 
         // dep-info generation failed, so delete output file. This will
         // usually cause the build system to always rerun the build
