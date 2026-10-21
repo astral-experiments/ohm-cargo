@@ -1,0 +1,79 @@
+diff --git a/src/workspace/parser/mod.rs b/src/workspace/parser/mod.rs
+index 5d6a1afb45e1875d77a915cdd13294f3fe2fd393..dc47ef4892fd136b43db222e39bd7b53fa307329 100644
+--- a/src/workspace/parser/mod.rs
++++ b/src/workspace/parser/mod.rs
+@@ -996,7 +996,7 @@ fn normalize_dependencies<'a>(
+ 
+         deps.insert(
+             name_in_toml.clone(),
+-            manifest::InheritableDependency::Value(resolved.clone()),
++            manifest::InheritableDependency::Value(resolved),
+         );
+     }
+     Ok(Some(deps))
+@@ -1248,7 +1248,7 @@ fn inner_dependency_inherit_with<'a>(
+             version: Some(ws_version),
+             ..Default::default()
+         },
+-        manifest::TomlDependency::Detailed(ws_dep) => ws_dep.clone(),
++        manifest::TomlDependency::Detailed(ws_dep) => ws_dep,
+     };
+     let manifest::TomlInheritedDependency {
+         workspace: _,
+@@ -2737,23 +2737,29 @@ supported tools: {}",
+         if tool == "cargo" && !gctx.cli_unstable().cargo_lints {
+             warn_for_cargo_lint_feature(gctx, warnings);
+         }
+-        let mut seen_normalized: HashMap<String, String> = HashMap::default();
++        // Without hyphens, normalization leaves the already unique map keys unchanged.
++        let mut seen_normalized = lints
++            .keys()
++            .any(|name| name.contains('-'))
++            .then(HashMap::default);
+         for (name, config) in lints {
+-            let normalized = name.replace('-', "_");
+-            if name.contains('-') {
+-                warnings.push(format!(
+-                    "`lints.{tool}.{name}` is deprecated in favor of \
+-                     `lints.{tool}.{normalized}` and will not work in a \
+-                     future edition"
+-                ));
+-            }
+-            if let Some(existing) = seen_normalized.get(&normalized) {
+-                warnings.push(format!(
+-                    "duplicate lint `{existing}` in `[lints.{tool}]`, \
+-                     conflicts with `{name}` and will not work in a future edition"
+-                ));
++            if let Some(seen_normalized) = &mut seen_normalized {
++                let normalized = name.replace('-', "_");
++                if name.contains('-') {
++                    warnings.push(format!(
++                        "`lints.{tool}.{name}` is deprecated in favor of \
++                         `lints.{tool}.{normalized}` and will not work in a \
++                         future edition"
++                    ));
++                }
++                if let Some(existing) = seen_normalized.get(&normalized) {
++                    warnings.push(format!(
++                        "duplicate lint `{existing}` in `[lints.{tool}]`, \
++                         conflicts with `{name}` and will not work in a future edition"
++                    ));
++                }
++                seen_normalized.insert(normalized, name.as_str());
+             }
+-            seen_normalized.insert(normalized.clone(), name.to_string());
+             if let Some((prefix, suffix)) = name.split_once("::") {
+                 if tool == prefix {
+                     anyhow::bail!(
+@@ -2836,9 +2842,9 @@ fn lints_to_rustflags(lints: &manifest::TomlLints) -> CargoResult<Vec<String>> {
+                 };
+ 
+                 let option = if tool == "rust" {
+-                    format!("{flag}={name}")
++                    [flag, "=", name].concat()
+                 } else {
+-                    format!("{flag}={tool}::{name}")
++                    [flag, "=", tool, "::", name].concat()
+                 };
+                 (
+                     config.priority(),

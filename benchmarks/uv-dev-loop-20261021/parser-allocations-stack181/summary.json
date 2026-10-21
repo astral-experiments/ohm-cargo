@@ -1,0 +1,49 @@
+{
+  "all_profiles_published": 56,
+  "correctness_tests_passed": 53,
+  "exact_source_CI_passed": true,
+  "instructions": {
+    "check": {
+      "both_orders_positive": true,
+      "interval_99": [
+        0.014657585600279521,
+        0.01645667879325252
+      ],
+      "pairs": 12,
+      "passes_original_instruction_gate": true,
+      "reduction": 0.015292249932406965,
+      "sign_p": 0.00048828125,
+      "warmup_pairs": 2,
+      "wins": 12
+    },
+    "test": {
+      "both_orders_positive": true,
+      "interval_99": [
+        0.012504137061071785,
+        0.014879922211409324
+      ],
+      "pairs": 12,
+      "passes_original_instruction_gate": true,
+      "reduction": 0.013283095961399316,
+      "sign_p": 0.00048828125,
+      "warmup_pairs": 2,
+      "wins": 12
+    }
+  },
+  "matched_builds_have_no_PGO": true,
+  "native": {
+    "effects_analyzed": false,
+    "regressions_assessed": false,
+    "status": "interrupted",
+    "wall_time_claim": false
+  },
+  "original_full_protocol_completed": false,
+  "parent_commit": "d81a093becb4321a975522624c2a383970f0d164",
+  "parent_tree": "c4178b67e0b3a64a12b9b58f84b97323b99d734e",
+  "publication_criterion_changed_after_IR_before_native_effect_analysis": true,
+  "scope": "Warm unchanged uv, Cargo-process instructions only; no uv test execution or compiler-child counts.",
+  "source_commit": "e546abb9353061a13a2448e7b42df52d6ac520fc",
+  "source_tree": "eaf2be878e89248d1ceabff75ce7d2d3272224dd",
+  "statistics_regenerated_by_packager": false,
+  "uv_commit": "3d82a6ad5a7eab8c68236553b7846517767c4b61"
+}
