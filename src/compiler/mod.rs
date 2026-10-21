@@ -43,6 +43,7 @@ pub(crate) mod layout;
 mod links;
 mod locking;
 mod lto;
+mod ohm_linker;
 mod output_depinfo;
 mod output_sbom;
 pub mod rustdoc;
@@ -1929,7 +1930,40 @@ fn prepare_rustc(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> CargoResult
     if let Some(args) = build_runner.bcx.extra_args_for(unit) {
         base.args(args);
     }
-    base.args(unit_rustflags_without_ohm_defaults(gctx, &unit.rustflags));
+    let info = build_runner.bcx.target_data.info(unit.kind);
+    let mut rustflags = unit_rustflags_without_ohm_defaults(gctx, &unit.rustflags);
+    if info.ohm_linker_flags != 0 {
+        // Profile flags and `cargo rustc -- ...` arrive after target discovery.
+        // Preserve their explicit linker choices too, without dropping the
+        // conservative linker identity already included in the unit fingerprint.
+        let explicit = ohm_linker::has_linker_flags(
+            unit.profile
+                .rustflags
+                .iter()
+                .map(|flag| flag.as_str())
+                .chain(
+                    build_runner
+                        .bcx
+                        .extra_args_for(unit)
+                        .into_iter()
+                        .flatten()
+                        .map(String::as_str),
+                ),
+        );
+        if explicit {
+            rustflags = &rustflags[..rustflags.len() - info.ohm_linker_flags];
+        } else if gctx.cli_unstable().ohm_linker()
+            == Some(crate::workspace::features::OhmLinker::Wild)
+        {
+            let linker = ohm_linker::wild_directory(&info.sysroot).join("ld.bfd");
+            anyhow::ensure!(
+                linker.is_file(),
+                "bundled Wild linker not found at `{}`; install an Ohm toolchain that includes Wild or use `-Zohm-linker=lld`",
+                linker.display()
+            );
+        }
+    }
+    base.args(rustflags);
     if gctx.cli_unstable().binary_dep_depinfo {
         base.arg("-Z").arg("binary-dep-depinfo");
     }

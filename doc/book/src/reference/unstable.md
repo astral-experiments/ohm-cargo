@@ -2073,6 +2073,28 @@ that existing ordinary namespace from seeding. Re-enabling isolation does not
 remove that history. `cargo clean` clears owned current and legacy namespaces;
 subsequent normal builds prepare fresh state.
 
+## ohm-linker
+
+Ohm selects the bundled Wild linker by default for native
+`x86_64-unknown-linux-gnu` Rust builds. Use `-Zohm-linker=lld` to select the
+bundled LLD instead, or `-Zohm-defaults=no` to disable automatic selection
+together with the other Ohm defaults. An explicit `-Zohm-linker=wild` still
+selects Wild when Ohm defaults are disabled. The selection can also be configured
+as `[unstable] ohm-linker = "wild"` or `CARGO_UNSTABLE_OHM_LINKER=wild`.
+
+Explicit Cargo linker configuration and linker-related compiler flags take
+precedence. Other platforms and cross-compilation targets keep their existing
+linker. The selection applies to rustc invocations, including build scripts,
+procedural macros, and test binaries; rustdoc doctests and native compilation
+inside build scripts keep their existing linker configuration.
+
+The system C compiler driver still supplies startup objects and system
+libraries. Changing the selection changes Cargo's artifact identity. Wild must
+be present in the selected compiler's sysroot for automatic selection; older
+sysroots retain their existing linker. Explicitly requesting Wild when it is
+missing produces an error. This selects Wild's full linker and does not enable
+incremental linking.
+
 ## ohm-worktree-seeds
 
 Ohm enables this feature by default to prepare reusable build state for
