@@ -63,6 +63,7 @@ use crate::util::log_message::LogMessage;
 use crate::util::machine_message;
 use crate::util::machine_message::Message as _;
 use crate::util::{CargoResult, StableHasher};
+use crate::workspace::features::{OhmNativeToolTrust, OhmProcMacroTrust};
 use crate::workspace::profiles::Profiles;
 use crate::workspace::{PackageId, PackageSet, SourceId, TargetKind, Workspace};
 
@@ -770,6 +771,34 @@ where `<compatible-ver>` is the latest version supporting rustc {rustc_version}"
     } else {
         HashSet::default()
     };
+    let authenticated_native_tool_packages = if gctx.cli_unstable().ohm_shared_registry_cache
+        && gctx.cli_unstable().ohm_native_tool_trust != OhmNativeToolTrust::Strict
+    {
+        unit_graph
+            .keys()
+            .filter_map(|unit| {
+                let package_id = unit.pkg.package_id();
+                let sources = pkg_set.sources();
+                let source = sources.get(package_id.source_id())?;
+                audited_proc_macro_package_identity(
+                    package_id.source_id(),
+                    source.is_replaced(),
+                    package_id.name().as_str(),
+                    package_id.version(),
+                    resolve
+                        .checksums()
+                        .get(&package_id)
+                        .and_then(Option::as_deref),
+                    unit.pkg.summary().checksum(),
+                    false,
+                    OhmProcMacroTrust::All,
+                )
+                .then_some(package_id)
+            })
+            .collect()
+    } else {
+        HashSet::default()
+    };
 
     let bcx = BuildContext::new(
         ws,
@@ -783,6 +812,7 @@ where `<compatible-ver>` is the latest version supporting rustc {rustc_version}"
         root_units,
         unit_graph,
         audited_proc_macro_packages,
+        authenticated_native_tool_packages,
         unit_to_index,
         scrape_units,
     )?;
