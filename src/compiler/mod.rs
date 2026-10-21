@@ -54,7 +54,6 @@ pub mod unit_dependencies;
 pub mod unit_graph;
 pub mod unused_deps;
 
-use crate::GlobalContext;
 use crate::util::data_structures::{HashMap, HashSet};
 use std::borrow::Cow;
 use std::cell::OnceCell;
@@ -103,6 +102,7 @@ use self::trim_paths::trim_paths_args;
 use self::trim_paths::trim_paths_args_rustdoc;
 use self::unit_graph::UnitDep;
 
+use crate::GlobalContext;
 use crate::compiler::future_incompat::FutureIncompatReport;
 use crate::compiler::locking::LockKey;
 use crate::compiler::timings::SectionTiming;
@@ -116,7 +116,7 @@ use crate::util::interning::InternedString;
 use crate::util::machine_message::{self, Message};
 use crate::util::{add_path_args, internal, path_args};
 use crate::workspace::manifest::TargetSourcePath;
-use crate::workspace::profiles::{PanicStrategy, Profile, StripInner};
+use crate::workspace::profiles::{PanicStrategy, Profile, ProfileRoot, StripInner};
 use crate::workspace::{Feature, PackageId, Target};
 
 use cargo_util::{ProcessBuilder, ProcessError, paths};
@@ -126,6 +126,8 @@ use rustfix::diagnostics::Applicability;
 
 const RUSTDOC_CRATE_VERSION_FLAG: &str = "--crate-version";
 const OHM_DEFAULT_RUSTFLAGS: [&str; 2] = ["-Zpublic-api-hash", "-Zcache-proc-macros"];
+const OHM_INCREMENTAL_CODEGEN_RUSTFLAGS: [&str; 2] =
+    ["-Zohm-caller-local-cgus", "-Zohm-stable-cgu-merging"];
 
 fn unit_rustflags_without_ohm_defaults<'a>(
     gctx: &GlobalContext,
@@ -151,6 +153,66 @@ fn unit_suppresses_default_public_api_hash(
     build_runner.bcx.gctx.cli_unstable().ohm_defaults()
         && build_runner.is_terminal_check_unit(unit)
         && fingerprint::unit_public_api_hash_override(build_runner, unit).is_none()
+}
+
+fn unit_uses_ohm_incremental_codegen(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> bool {
+    let gctx = build_runner.bcx.gctx;
+    if !gctx.cli_unstable().ohm_defaults()
+        || unit.profile.root != ProfileRoot::Debug
+        || !unit.profile.incremental
+        || !matches!(unit.profile.opt_level.as_str(), "0" | "1")
+        || unit.profile.codegen_backend.is_some()
+        || !matches!(unit.mode, CompileMode::Build | CompileMode::Test)
+        || unit.target.is_compile_time_dependency()
+        || !build_runner.bcx.ws.is_member(&unit.pkg)
+    {
+        return false;
+    }
+
+    let extra_args = build_runner
+        .bcx
+        .extra_args_for(unit)
+        .map(Vec::as_slice)
+        .unwrap_or_default();
+    let user_rustflags = unit_rustflags_without_ohm_defaults(gctx, &unit.rustflags);
+    let mut options = unit
+        .pkg
+        .manifest()
+        .lint_rustflags()
+        .iter()
+        .map(String::as_str)
+        .chain(unit.profile.rustflags.iter().map(|flag| flag.as_str()))
+        .chain(extra_args.iter().map(String::as_str))
+        .chain(user_rustflags.iter().map(String::as_str));
+
+    while let Some(argument) = options.next() {
+        let option = if argument == "-C" || argument == "-Z" {
+            options.next()
+        } else {
+            argument
+                .strip_prefix("-C")
+                .or_else(|| argument.strip_prefix("-Z"))
+        };
+        let Some(option) = option else {
+            continue;
+        };
+        if option.starts_with("instrument-coverage")
+            || option.starts_with("profile-generate")
+            || option.starts_with("profile-use")
+            || option.starts_with("sanitizer")
+            || option.starts_with("codegen-backend")
+            || option
+                .strip_prefix("opt-level=")
+                .is_some_and(|level| !matches!(level, "0" | "1"))
+        {
+            return false;
+        }
+    }
+
+    build_runner
+        .bcx
+        .rustc()
+        .supports_ohm_incremental_codegen(gctx)
 }
 
 /// A glorified callback for executing calls to rustc. Rather than calling rustc
@@ -1578,6 +1640,9 @@ fn prepare_rustc(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> CargoResult
         .rustc_process(unit, is_primary, is_workspace)?;
     if gctx.cli_unstable().ohm_defaults() {
         base.args(&OHM_DEFAULT_RUSTFLAGS);
+        if unit_uses_ohm_incremental_codegen(build_runner, unit) {
+            base.args(&OHM_INCREMENTAL_CODEGEN_RUSTFLAGS);
+        }
         if unit_suppresses_default_public_api_hash(build_runner, unit) {
             base.arg("-Zpublic-api-hash=no");
         }

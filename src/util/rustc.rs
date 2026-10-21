@@ -34,6 +34,7 @@ pub struct Rustc {
     pub commit_hash: Option<String>,
     cache: Mutex<Cache>,
     transparent_unused_externs: OnceLock<bool>,
+    ohm_incremental_codegen: OnceLock<bool>,
 }
 
 impl Rustc {
@@ -116,6 +117,7 @@ impl Rustc {
             commit_hash,
             cache: Mutex::new(cache),
             transparent_unused_externs: OnceLock::new(),
+            ohm_incremental_codegen: OnceLock::new(),
         })
     }
 
@@ -133,6 +135,25 @@ impl Rustc {
             process
                 .arg("--error-format=json")
                 .arg("--json=unused-externs-transparent")
+                .arg("--print=sysroot");
+            self.cached_output(&process, 0).is_ok()
+        })
+    }
+
+    /// Whether this compiler supports both of Ohm's incremental codegen optimizations.
+    ///
+    /// Use the configured workspace wrappers and persistent compiler-information
+    /// cache so older or custom compilers retain their ordinary behavior.
+    pub fn supports_ohm_incremental_codegen(&self, gctx: &GlobalContext) -> bool {
+        *self.ohm_incremental_codegen.get_or_init(|| {
+            let mut process = self.workspace_process();
+            if let Err(error) = apply_env_config(gctx, &mut process) {
+                debug!("unable to configure incremental codegen capability probe: {error}");
+                return false;
+            }
+            process
+                .arg("-Zohm-caller-local-cgus")
+                .arg("-Zohm-stable-cgu-merging")
                 .arg("--print=sysroot");
             self.cached_output(&process, 0).is_ok()
         })
