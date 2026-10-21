@@ -145,8 +145,16 @@ pub struct CompilationFiles<'a, 'gctx> {
     shared_registry_cache: Option<SharedRegistryCache>,
     /// Metadata hash to use for each unit.
     metas: HashMap<Unit, Metadata>,
+    /// Reuse the directory components shared by a unit's output, fingerprint, and lock paths.
+    unit_paths: HashMap<Unit, UnitPaths>,
     /// For each Unit, a list all files produced.
     outputs: HashMap<Unit, OnceCell<Arc<Vec<OutputFile>>>>,
+}
+
+#[derive(Default)]
+struct UnitPaths {
+    hash: OnceCell<String>,
+    directory: OnceCell<String>,
 }
 
 /// Separates verified immutable registry artifacts from workspace-private compiler outputs.
@@ -213,6 +221,11 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
             .keys()
             .cloned()
             .map(|unit| (unit, OnceCell::new()))
+            .collect();
+        let unit_paths = metas
+            .keys()
+            .cloned()
+            .map(|unit| (unit, UnitPaths::default()))
             .collect();
         let shared_registry_cache = if build_runner.bcx.ws.shared_registry_cache_enabled() {
             Some({
@@ -664,6 +677,7 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
             roots: build_runner.bcx.roots.clone(),
             shared_registry_cache,
             metas,
+            unit_paths,
             outputs,
         };
 
@@ -674,6 +688,11 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
             cache.trusted_context = false;
             cache.isolated_clippy = false;
             cache.workspace = Layout::shared_workspace_namespace(build_runner.bcx.ws);
+            // Search-path validation used the proposed namespaces. Recompute them
+            // after falling back to private outputs; unit hashes remain unchanged.
+            for paths in files.unit_paths.values_mut() {
+                paths.directory.take();
+            }
         }
 
         files
@@ -707,7 +726,7 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
                     let path = self
                         .layout(unit.kind)
                         .build_dir()
-                        .build_unit(&self.pkg_dir(unit));
+                        .build_unit(self.pkg_dir(unit));
                     path.strip_prefix(build_root.as_path_unlocked())
                         .map(Path::to_path_buf)
                 })
@@ -949,31 +968,35 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
     ///
     /// Note that some units may share the same directory, so care should be
     /// taken in those cases!
-    fn pkg_dir(&self, unit: &Unit) -> String {
-        let name = unit.pkg.package_id().name();
-        let hash = self.unit_hash(unit);
-        if let Some(cache) = &self.shared_registry_cache {
-            if cache.immutable_units.get(unit).copied().unwrap_or(false) {
-                return format!("registries/{}/{name}/{hash}", cache.rustc);
+    fn pkg_dir(&self, unit: &Unit) -> &str {
+        self.unit_paths[unit].directory.get_or_init(|| {
+            let name = unit.pkg.package_id().name();
+            let hash = self.unit_hash(unit);
+            if let Some(cache) = &self.shared_registry_cache {
+                if cache.immutable_units.get(unit).copied().unwrap_or(false) {
+                    return format!("registries/{}/{name}/{hash}", cache.rustc);
+                }
+                return format!(
+                    "workspaces/{}/{}/{name}/{hash}",
+                    cache.workspace, cache.rustc
+                );
             }
-            return format!(
-                "workspaces/{}/{}/{name}/{hash}",
-                cache.workspace, cache.rustc
-            );
-        }
-        let separator = match self.ws.gctx().cli_unstable().build_dir_new_layout {
-            true => "/",
-            false => "-",
-        };
-        format!("{name}{separator}{hash}")
+            let separator = match self.ws.gctx().cli_unstable().build_dir_new_layout {
+                true => "/",
+                false => "-",
+            };
+            format!("{name}{separator}{hash}")
+        })
     }
 
     /// The directory hash to use for a given unit
-    pub fn unit_hash(&self, unit: &Unit) -> String {
-        self.metas[unit]
-            .pkg_dir()
-            .map(|h| h.to_string())
-            .unwrap_or_else(|| self.target_short_hash(unit))
+    pub fn unit_hash(&self, unit: &Unit) -> &str {
+        self.unit_paths[unit].hash.get_or_init(|| {
+            self.metas[unit]
+                .pkg_dir()
+                .map(|h| h.to_string())
+                .unwrap_or_else(|| self.target_short_hash(unit))
+        })
     }
 
     /// Returns the final artifact path for the host (`/…/target/debug`)
@@ -1023,14 +1046,14 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
     /// Returns the host `deps` directory path for a given build unit.
     pub fn host_deps(&self, unit: &Unit) -> PathBuf {
         let dir = self.pkg_dir(unit);
-        self.host.build_dir().deps(&dir)
+        self.host.build_dir().deps(dir)
     }
 
     /// Returns the directories where Rust crate dependencies are found for the
     /// specified unit.
     pub fn deps_dir(&self, unit: &Unit) -> PathBuf {
         let dir = self.pkg_dir(unit);
-        self.layout(unit.kind).build_dir().deps(&dir)
+        self.layout(unit.kind).build_dir().deps(dir)
     }
 
     /// Returns the directories where Rust crate dependencies are found for the
@@ -1039,15 +1062,13 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
     /// New features should consider using this so we can avoid their migrations.
     pub fn out_dir_new_layout(&self, unit: &Unit) -> PathBuf {
         let dir = self.pkg_dir(unit);
-        self.layout(unit.kind)
-            .build_dir()
-            .out_force_new_layout(&dir)
+        self.layout(unit.kind).build_dir().out_force_new_layout(dir)
     }
 
     /// Directory where the fingerprint for the given unit should go.
     pub fn fingerprint_dir(&self, unit: &Unit) -> PathBuf {
         let dir = self.pkg_dir(unit);
-        self.layout(unit.kind).build_dir().fingerprint(&dir)
+        self.layout(unit.kind).build_dir().fingerprint(dir)
     }
 
     /// The lock location for a given build unit.
@@ -1055,7 +1076,7 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
         let dir = self.pkg_dir(unit);
         self.layout(unit.kind)
             .build_dir()
-            .build_unit(&dir)
+            .build_unit(dir)
             .join(".lock")
     }
 
@@ -1119,9 +1140,7 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
         assert!(!unit.mode.is_run_custom_build());
         assert!(self.metas.contains_key(unit));
         let dir = self.pkg_dir(unit);
-        self.layout(CompileKind::Host)
-            .build_dir()
-            .build_script(&dir)
+        self.layout(CompileKind::Host).build_dir().build_script(dir)
     }
 
     /// Returns the directory for compiled artifacts files.
@@ -1145,7 +1164,7 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
                 invalid
             ),
         };
-        self.layout(unit.kind).build_dir().artifact(&dir, kind)
+        self.layout(unit.kind).build_dir().artifact(dir, kind)
     }
 
     /// Returns the directory where information about running a build script
@@ -1157,7 +1176,7 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
         let dir = self.pkg_dir(unit);
         self.layout(unit.kind)
             .build_dir()
-            .build_script_execution(&dir)
+            .build_script_execution(dir)
     }
 
     /// Returns the "`OUT_DIR`" directory for running a build script.
