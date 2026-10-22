@@ -7,6 +7,8 @@ pub(crate) mod provenance;
 pub(crate) mod registry;
 
 #[cfg(any(target_os = "linux", target_os = "macos"))]
+mod at;
+#[cfg(any(target_os = "linux", target_os = "macos"))]
 mod collector;
 #[cfg(any(target_os = "linux", target_os = "macos"))]
 mod idle;

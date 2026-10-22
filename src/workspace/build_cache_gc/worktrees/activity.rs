@@ -1,9 +1,8 @@
 //! Tracks the last use of a private target across workspaces and Cargo homes.
 
-use std::ffi::{CStr, CString};
+use std::ffi::{CString, OsStr};
 use std::fs::{self, File, Metadata, OpenOptions};
 use std::io;
-use std::os::fd::{AsRawFd, FromRawFd};
 use std::os::unix::ffi::OsStrExt as _;
 use std::os::unix::fs::{MetadataExt as _, OpenOptionsExt as _};
 use std::path::Path;
@@ -13,6 +12,8 @@ use crate::compiler::Layout;
 use crate::util::{CargoResult, flock};
 use crate::workspace::build_cache_gc::CONTEXT_MAX_IDLE;
 use crate::workspace::build_cache_gc::tracker::used_through;
+
+use super::at;
 
 pub(crate) const MARKER: &str = ".ohm-target-last-use-v1";
 
@@ -29,10 +30,11 @@ impl TargetUse {
             .read(true)
             .custom_flags(libc::O_DIRECTORY)
             .open(root)?;
-        let named = open_at(
+        let named = at::open(
             &directory,
-            &CString::new(Layout::PRIVATE_BUILD_LOCK)?,
+            OsStr::new(Layout::PRIVATE_BUILD_LOCK),
             libc::O_RDONLY,
+            0,
         )?
         .metadata()?;
         let held = lock.metadata()?;
@@ -108,54 +110,26 @@ pub(crate) fn idle(root: &Path, now: SystemTime) -> bool {
             .is_some_and(|age| age >= CONTEXT_MAX_IDLE)
 }
 
-/// Relative opens keep cold writes on the target identified by the build's actual lock.
-fn open_at(directory: &File, name: &CStr, flags: libc::c_int) -> io::Result<File> {
-    // SAFETY: both borrowed arguments are valid for the call. A successful open
-    // returns a fresh fd whose ownership passes directly to File.
-    let fd = unsafe {
-        libc::openat(
-            directory.as_raw_fd(),
-            name.as_ptr(),
-            flags | libc::O_NOFOLLOW | libc::O_NONBLOCK | libc::O_CLOEXEC,
-            0o600 as libc::c_uint,
-        )
-    };
-    if fd < 0 {
-        return Err(io::Error::last_os_error());
-    }
-    Ok(unsafe { File::from_raw_fd(fd) })
-}
-
 fn record(directory: &File, now: SystemTime) -> CargoResult<Option<SystemTime>> {
     let end = used_through(now)?;
-    let name = CString::new(MARKER)?;
+    let name = OsStr::new(MARKER);
     // futimens accepts an owner's read-only fd. Warm reads produce no write-open event.
-    let file = match open_at(directory, &name, libc::O_RDONLY | libc::O_CREAT) {
+    let file = match at::open(directory, name, libc::O_RDONLY | libc::O_CREAT, 0o600) {
         Ok(file) => file,
         Err(error) => {
             // Even a mode-000 marker can become readable again after a build.
             // Forget its old timestamp when the target directory permits it.
-            let mut stat = std::mem::MaybeUninit::<libc::stat>::uninit();
-            // SAFETY: both arguments and the writable output pointer are live.
-            if unsafe {
-                libc::fstatat(
-                    directory.as_raw_fd(),
-                    name.as_ptr(),
-                    stat.as_mut_ptr(),
-                    libc::AT_SYMLINK_NOFOLLOW,
-                )
-            } == 0
-            {
-                // SAFETY: successful fstatat initialized the entire structure.
-                let stat = unsafe { stat.assume_init() };
-                if stat.st_mode & libc::S_IFMT == libc::S_IFREG
-                    && stat.st_nlink == 1
-                    && stat.st_size == 0
+            match at::stat(directory, name) {
+                Ok(stat)
+                    if stat.st_mode & libc::S_IFMT == libc::S_IFREG
+                        && stat.st_nlink == 1
+                        && stat.st_size == 0 =>
                 {
-                    unlink_marker(directory, &name)?;
+                    unlink_marker(directory, name)?;
                 }
-            } else if io::Error::last_os_error().kind() != io::ErrorKind::NotFound {
-                return Err(error.into());
+                Ok(_) => {}
+                Err(e) if e.kind() == io::ErrorKind::NotFound => {}
+                Err(_) => return Err(error.into()),
             }
             return Ok(None);
         }
@@ -185,19 +159,19 @@ fn record(directory: &File, now: SystemTime) -> CargoResult<Option<SystemTime>> 
     };
     match update() {
         Ok(used) => Ok(used),
-        Err(error) => invalidate(directory, &name, &file, now, error),
+        Err(error) => invalidate(directory, name, &file, now, error),
     }
 }
 
 /// A later GC must not trust an old timestamp when recording use fails.
 fn invalidate(
     directory: &File,
-    name: &CStr,
+    name: &OsStr,
     recorded: &File,
     used: SystemTime,
     error: anyhow::Error,
 ) -> CargoResult<Option<SystemTime>> {
-    let current = match open_at(directory, name, libc::O_RDONLY) {
+    let current = match at::open(directory, name, libc::O_RDONLY, 0) {
         Ok(file) => file.metadata()?,
         Err(error) if error.kind() == io::ErrorKind::NotFound => return Ok(None),
         Err(error) => return Err(error.into()),
@@ -214,17 +188,10 @@ fn invalidate(
     Ok(None)
 }
 
-fn unlink_marker(directory: &File, name: &CStr) -> io::Result<()> {
-    // SAFETY: the verified directory and NUL-terminated name are live.
-    if unsafe { libc::unlinkat(directory.as_raw_fd(), name.as_ptr(), 0) } == 0 {
-        Ok(())
-    } else {
-        let error = io::Error::last_os_error();
-        if error.kind() == io::ErrorKind::NotFound {
-            Ok(())
-        } else {
-            Err(error)
-        }
+fn unlink_marker(directory: &File, name: &OsStr) -> io::Result<()> {
+    match at::unlink(directory, name, false) {
+        Err(error) if error.kind() == io::ErrorKind::NotFound => Ok(()),
+        result => result,
     }
 }
 
@@ -333,7 +300,7 @@ mod tests {
     fn failed_refresh_invalidates_only_the_same_marker() -> CargoResult<()> {
         let root = tempfile::tempdir()?;
         let directory = File::open(root.path())?;
-        let name = CString::new(MARKER)?;
+        let name = OsStr::new(MARKER);
         let path = root.path().join(MARKER);
         let old = File::create_new(&path)?;
         fs::rename(&path, root.path().join("old"))?;
@@ -341,7 +308,7 @@ mod tests {
         let now = SystemTime::now() + CONTEXT_MAX_IDLE;
         invalidate(
             &directory,
-            &name,
+            name,
             &old,
             now,
             anyhow::anyhow!("failed refresh"),
@@ -349,7 +316,7 @@ mod tests {
         assert!(path.exists());
         invalidate(
             &directory,
-            &name,
+            name,
             &new,
             now,
             anyhow::anyhow!("failed refresh"),
