@@ -248,6 +248,105 @@ fi
 }
 
 #[cargo_test]
+fn gc_finishes_healthy_roots_before_reporting_errors() {
+    let cache = paths::home().join(".cache");
+    let stale = cache.join("a-reused");
+    let newer = cache.join("b-newer");
+    let healthy = cache.join("c-healthy");
+    for root in [&stale, &newer, &healthy] {
+        fs::create_dir_all(root).unwrap();
+        fs::write(root.join(".ohm-shared-registry-cache-v1"), b"").unwrap();
+    }
+    cargo_process("gc --build-dir").arg(&stale).run();
+    fs::remove_file(stale.join(".ohm-shared-registry-cache-v1")).unwrap();
+    fs::write(stale.join("unrelated"), b"keep").unwrap();
+    fs::create_dir(newer.join(".ohm-gc-v1")).unwrap();
+    rusqlite::Connection::open(newer.join(".ohm-gc-v1/cache.sqlite"))
+        .unwrap()
+        .execute_batch("PRAGMA user_version = 999")
+        .unwrap();
+    let context = healthy.join("debug/build/registries/0123456789abcdef");
+    fs::create_dir_all(&context).unwrap();
+    fs::write(healthy.join("debug/.cargo-build-lock"), b"").unwrap();
+    fs::write(context.join("artifact"), b"cached").unwrap();
+
+    for (command, summary) in [("gc --dry-run", "[SUMMARY]"), ("gc", "[REMOVED]")] {
+        cargo_process(command)
+            .with_status(101)
+            .with_stderr_contains("[SKIPPING] [..]/a-reused (shared cache marker is missing)")
+            .with_stderr_contains(format!("{summary} 1 file, [FILE_SIZE]B total"))
+            .with_stderr_contains("  [..]/b-newer (unsupported build-cache database version 999)")
+            .run();
+        assert_eq!(context.exists(), command == "gc --dry-run");
+        assert_eq!(fs::read(stale.join("unrelated")).unwrap(), b"keep");
+    }
+    cargo_process("gc --quiet --build-dir")
+        .arg(stale)
+        .with_status(101)
+        .with_stderr_contains("  [..]/a-reused (not an owned shared registry cache)")
+        .run();
+}
+
+#[cargo_test]
+fn gc_reports_inaccessible_paths_and_cleans_their_siblings() {
+    use std::os::unix::fs::PermissionsExt as _;
+
+    let root = shared_root();
+    let registry = root.join("debug/build/registries/0123456789abcdef");
+    let workspace = root.join("debug/build/workspaces/0123456789abcdef");
+    let blocked = workspace.join("unreadable");
+    fs::create_dir_all(&registry).unwrap();
+    fs::create_dir_all(&blocked).unwrap();
+    fs::write(root.join(".ohm-shared-registry-cache-v1"), b"").unwrap();
+    fs::write(root.join("debug/.cargo-build-lock"), b"").unwrap();
+    fs::write(registry.join("blocked-rename"), b"a").unwrap();
+    fs::write(blocked.join("blocked-read"), b"b").unwrap();
+    fs::write(workspace.join("writable"), b"c").unwrap();
+    let registries = registry.parent().unwrap();
+    fs::set_permissions(&blocked, fs::Permissions::from_mode(0o000)).unwrap();
+    if fs::read_dir(&blocked).is_ok() {
+        // Privileged test runners can bypass the permissions this test exercises.
+        fs::set_permissions(&blocked, fs::Permissions::from_mode(0o755)).unwrap();
+        return;
+    }
+    fs::set_permissions(registries, fs::Permissions::from_mode(0o555)).unwrap();
+
+    cargo_process("gc --dry-run --build-dir")
+        .arg(&root)
+        .with_status(101)
+        .with_stderr_contains("[SUMMARY] 2 files, [FILE_SIZE]B total")
+        .with_stderr_contains("  [..]/unreadable (Permission denied [..])")
+        .run();
+    cargo_process("gc --build-dir")
+        .arg(&root)
+        .with_status(101)
+        .with_stderr_contains("[REMOVED] 1 file, [FILE_SIZE]B total")
+        .with_stderr_contains("  [..]/registries/0123456789abcdef (Permission denied [..])")
+        .with_stderr_contains("  [..]/payload/unreadable (Permission denied [..])")
+        .run();
+    assert!(registry.join("blocked-rename").is_file());
+    let trash = root.join("debug/.ohm-gc-trash-v1");
+    let payload = fs::read_dir(trash)
+        .unwrap()
+        .next()
+        .unwrap()
+        .unwrap()
+        .path()
+        .join("payload");
+    assert!(!payload.join("writable").exists());
+    fs::set_permissions(registries, fs::Permissions::from_mode(0o755)).unwrap();
+    fs::set_permissions(
+        payload.join("unreadable"),
+        fs::Permissions::from_mode(0o755),
+    )
+    .unwrap();
+    cargo_process("gc --build-dir")
+        .arg(root)
+        .with_stderr_contains("[REMOVED] 2 files, [FILE_SIZE]B total")
+        .run();
+}
+
+#[cargo_test]
 fn empty_gc_uses_cargo_clean_summaries() {
     cargo_process("gc --dry-run")
         .with_stdout_data("")
@@ -971,8 +1070,20 @@ fn running_test_retains_lease_after_its_cargo_parent_exits() {
     let stderr = String::from_utf8(output.stderr).unwrap();
     assert!(stderr.contains("Skipping context v2-"), "{stderr}");
     assert!(stderr.contains("Summary 1 file, 6B total"), "{stderr}");
+    assert!(!stderr.contains("Busy lock"), "{stderr}");
     assert!(unused.exists());
-    collect(&project, false);
+    let context_lock = shared_root()
+        .canonicalize()
+        .unwrap()
+        .join(format!(".ohm-gc-v1/context-{}.lock", context()));
+    let output = cargo(&project, "gc -v --build-dir")
+        .arg(shared_root())
+        .run();
+    let stderr = String::from_utf8(output.stderr).unwrap();
+    assert!(
+        stderr.contains(&format!("Busy lock {}", context_lock.display())),
+        "{stderr}"
+    );
     assert!(!unused.exists());
     assert!(registry.is_dir());
 
@@ -990,8 +1101,7 @@ fn running_test_retains_lease_after_its_cargo_parent_exits() {
     stream.write_all(&[1]).unwrap();
     drop(stream);
 
-    let lock = fs::File::open(shared_root().join(format!(".ohm-gc-v1/context-{}.lock", context())))
-        .unwrap();
+    let lock = fs::File::open(context_lock).unwrap();
     let deadline = Instant::now() + slow_cpu_multiplier(30);
     loop {
         match lock.try_lock() {
