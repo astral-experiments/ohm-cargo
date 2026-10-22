@@ -155,6 +155,7 @@ pub struct CompilationFiles<'a, 'gctx> {
 struct UnitPaths {
     hash: OnceCell<String>,
     directory: OnceCell<String>,
+    dependency_search: OnceCell<PathBuf>,
 }
 
 /// Separates verified immutable registry artifacts from workspace-private compiler outputs.
@@ -707,6 +708,7 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
             // after falling back to private outputs; unit hashes remain unchanged.
             for paths in self.unit_paths.values_mut() {
                 paths.directory.take();
+                paths.dependency_search.take();
             }
         }
 
@@ -1069,6 +1071,13 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
     pub fn deps_dir(&self, unit: &Unit) -> PathBuf {
         let dir = self.pkg_dir(unit);
         self.layout(unit.kind).build_dir().deps(dir)
+    }
+
+    /// Reuses a dependency directory across new-layout search-path traversals.
+    pub(crate) fn dependency_search_dir(&self, unit: &Unit) -> &Path {
+        self.unit_paths[unit]
+            .dependency_search
+            .get_or_init(|| self.deps_dir(unit))
     }
 
     /// Returns the directories where Rust crate dependencies are found for the
@@ -3523,6 +3532,83 @@ mod shared_registry_tests {
         std::fs::remove_file(search.join(&filename)).expect("remove the external compiler driver");
         assert!(compiler_driver_search_directory_is_safe(&search, &genuine));
         assert!(compiler_driver_search_directory_is_safe(&runtime, &genuine));
+    }
+
+    #[test]
+    fn library_search_path_cache_recomputes_after_shared_context_fallback() {
+        use crate::GlobalContext;
+        use crate::compiler::{BuildRunner, Lto, UnitInterner, UserIntent};
+        use crate::ops::{CompileOptions, create_bcx};
+        use crate::workspace::Workspace;
+        use cargo_util_terminal::Shell;
+
+        let temp = tempfile::tempdir().unwrap();
+        let root = temp.path().canonicalize().unwrap();
+        std::fs::create_dir(root.join("src")).unwrap();
+        std::fs::write(
+            root.join("Cargo.toml"),
+            "[package]\nname = 'search-cache'\nversion = '0.1.0'\nedition = '2021'\n",
+        )
+        .unwrap();
+        std::fs::write(root.join("src/lib.rs"), "").unwrap();
+        let mut gctx = GlobalContext::new(Shell::new(), root.clone(), root.join("home"));
+        gctx.nightly_features_allowed = true;
+        gctx.configure(
+            0,
+            false,
+            None,
+            false,
+            false,
+            true,
+            &None,
+            &["ohm-defaults=no".into(), "build-dir-new-layout".into()],
+            &[],
+        )
+        .unwrap();
+        let ws = Workspace::new(&root.join("Cargo.toml"), &gctx).unwrap();
+        let options = CompileOptions::new(&gctx, UserIntent::Build).unwrap();
+        let interner = UnitInterner::new();
+        let bcx = create_bcx(&ws, &options, &interner, None).unwrap();
+        let unit = &bcx.roots[0];
+        let mut runner = BuildRunner::new(&bcx).unwrap();
+        runner.lto = bcx
+            .unit_graph
+            .keys()
+            .map(|unit| (unit.clone(), Lto::OnlyObject))
+            .collect();
+        let layout =
+            super::Layout::new(&ws, None, &bcx.profiles.get_dir_name(), true, false).unwrap();
+        let mut files = super::CompilationFiles::new(&runner, layout, super::HashMap::default());
+
+        let driver = root.join("compiler-driver");
+        std::fs::write(&driver, "genuine driver").unwrap();
+        // Isolate the namespace transition from registry admission: this unit
+        // starts with a proposed immutable namespace and a trusted driver.
+        files.shared_registry_cache = Some(super::SharedRegistryCache {
+            workspace: "proposed-workspace".into(),
+            isolated_clippy: false,
+            rustc: "compiler-context".into(),
+            compiler_driver: Some(driver.clone()),
+            provenance: None,
+            trusted_context: true,
+            #[cfg(windows)]
+            implicit_native_tools: Vec::new(),
+            immutable_units: [(unit.clone(), true)].into_iter().collect(),
+        });
+        assert!(files.shared_cache_compiler_directories_are_safe(&runner));
+        let shared = files.dependency_search_dir(unit).to_path_buf();
+        assert!(files.unit_paths[unit].dependency_search.get().is_some());
+        std::fs::create_dir_all(&shared).unwrap();
+        std::fs::write(shared.join(driver.file_name().unwrap()), "shadow driver").unwrap();
+
+        files.prepare_shared_context(&mut runner).unwrap();
+        assert!(!files.is_shared_registry_unit(unit));
+        let private = files.deps_dir(unit);
+        assert_ne!(shared.as_os_str(), private.as_os_str());
+        assert_eq!(
+            files.dependency_search_dir(unit).as_os_str(),
+            private.as_os_str()
+        );
     }
 
     #[cfg(unix)]

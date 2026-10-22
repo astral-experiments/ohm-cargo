@@ -217,6 +217,14 @@ fn new_layout_sorts_paths_and_respects_traversal_boundaries() {
         let expected = dependency_args(root_dependency_paths(runner));
         assert_eq!(lib_search_paths(runner, root).unwrap(), expected);
 
+        let shared = library_unit(runner, "shared");
+        for name in ["a", "b"] {
+            assert_eq!(
+                lib_search_paths(runner, &library_unit(runner, name)).unwrap(),
+                dependency_args([runner.files().deps_dir(&shared)])
+            );
+        }
+
         let derive = library_unit(runner, "derive");
         let macro_only = library_unit(runner, "macro-only");
         assert_eq!(
