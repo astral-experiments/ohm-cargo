@@ -156,14 +156,16 @@ counts even when it recompiles nothing. One timestamp covers the physical
 target across all workspaces using it. Its recorded time rounds up to the next
 five-minute boundary, so eligibility can lag by up to five minutes. Long builds
 refresh their time at completion. A newly enrolled target needs a recorded use
-before GC can establish its age. For older targets without Cargo's cache tag,
-GC recognizes the enrolled checkout's conventional `target/` directory and
-preserves ambiguous external directories.
+before GC can establish its age. An external target must carry the cache tag
+written by Cargo. The checkout's conventional `target/` can also qualify
+without a tag, for compatibility with older builds.
 
-An active build or a program holding the target lease postpones cleanup. GC
-retains the target's cache tag, synchronization files, and any colocated shared
-registry or ThinLTO cache. Detached private data can be unlinked while a new
-build starts. The next build recreates the private files it needs. Time spent
+An active build or a program holding the target lease postpones cleanup.
+GC removes observed files and empty directories in small batches and leaves
+Cargo's lock files in place. It preserves nested checkouts, other targets,
+shared registry and ThinLTO caches, and directories backing external artifact
+exports. A directory export pins its compiler context even if the export is
+later deleted. The next build recreates the private files it needs. Time spent
 running the binary does not extend the deadline after the program exits.
 
 In a recently used target, upgrading the moving `+ohm` toolchain still makes
@@ -296,8 +298,8 @@ Longer runs show a pulsing progress bar with running file and byte counts.
 A dry run labels them `eligible`. Cleanup labels them `removed` as each deletion
 succeeds. The display follows Cargo's [progress settings](config.md#termprogresswhen).
 
-The preview includes all eligible artifacts and files left by interrupted
-cleanup, without holding build locks while counting them. Actual collection
+The preview includes eligible artifacts and files left by interrupted
+cleanup. Actual collection
 reports `Removing` and `Removed`, counts files as it deletes them, and uses small
 batches to yield to active builds. Counts exclude GC bookkeeping; like
 `cargo clean`, byte totals use file lengths rather than physical disk usage.

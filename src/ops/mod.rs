@@ -1,7 +1,5 @@
 use crate::sources::CRATES_IO_DOMAIN;
 
-#[cfg(any(target_os = "linux", target_os = "macos"))]
-pub(crate) use self::cargo_clean::validate_target_dir_tag;
 pub use self::cargo_clean::{CleanContext, CleanOptions, clean};
 pub use self::cargo_compile::unit_generator::UnitGenerator;
 pub use self::cargo_compile::{CompileFilter, FilterRule, LibRule, Packages};

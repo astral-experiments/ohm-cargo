@@ -516,12 +516,16 @@ pub(crate) struct FileCounts {
 
 impl FileCounts {
     fn record(&mut self, metadata: &Metadata) {
-        if metadata.is_dir() {
+        self.record_entry(metadata.is_dir(), metadata.len());
+    }
+
+    fn record_entry(&mut self, directory: bool, len: u64) {
+        if directory {
             self.directories += 1;
         } else {
             self.files += 1;
             // Match cargo clean: logical lengths, including symlinks, rather than disk blocks.
-            self.bytes = self.bytes.saturating_add(metadata.len());
+            self.bytes = self.bytes.saturating_add(len);
         }
     }
 
@@ -1696,6 +1700,24 @@ fn try_lock_file(path: &Path, create: bool, exclusive: bool) -> CargoResult<Opti
         Err(error) if error.kind() == io::ErrorKind::NotFound => return Ok(None),
         Err(error) => return Err(error.into()),
     };
+    let Some(lock) = try_lock_opened(file, exclusive)? else {
+        return Ok(None);
+    };
+    #[cfg(unix)]
+    {
+        use std::os::unix::fs::MetadataExt as _;
+        let current = fs::symlink_metadata(path)?;
+        let opened = lock.0.metadata()?;
+        ensure!(
+            current.is_file() && current.dev() == opened.dev() && current.ino() == opened.ino(),
+            "cache lock changed during acquisition"
+        );
+    }
+    Ok(Some(lock))
+}
+
+/// Locks an opened regular file and releases the collector's lock at scope exit.
+fn try_lock_opened(file: File, exclusive: bool) -> CargoResult<Option<CollectorLock>> {
     ensure!(
         file.metadata()?.is_file(),
         "cache lock is not a regular file"
@@ -1710,18 +1732,7 @@ fn try_lock_file(path: &Path, create: bool, exclusive: bool) -> CargoResult<Opti
         Err(TryLockError::WouldBlock) => return Ok(None),
         Err(TryLockError::Error(error)) => return Err(error.into()),
     }
-    let lock = CollectorLock(file);
-    #[cfg(unix)]
-    {
-        use std::os::unix::fs::MetadataExt as _;
-        let current = fs::symlink_metadata(path)?;
-        let opened = lock.0.metadata()?;
-        ensure!(
-            current.is_file() && current.dev() == opened.dev() && current.ino() == opened.ino(),
-            "cache lock changed during acquisition"
-        );
-    }
-    Ok(Some(lock))
+    Ok(Some(CollectorLock(file)))
 }
 
 fn plain_ancestors(root: &Path, path: &Path) -> CargoResult<bool> {

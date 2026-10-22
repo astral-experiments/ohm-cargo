@@ -145,6 +145,7 @@ mod new;
 mod offline;
 mod ohm_build_gc;
 mod ohm_deferred_dev_deps;
+mod ohm_gc_exports;
 mod ohm_linker;
 mod ohm_ready_tests;
 mod ohm_shared_stages;

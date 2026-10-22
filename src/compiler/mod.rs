@@ -2094,9 +2094,10 @@ fn link_targets(
                 if let Some((root, context)) = &private_export
                     && src.is_dir()
                 {
-                    crate::workspace::build_cache_gc::worktrees::provenance::keep(
+                    crate::workspace::build_cache_gc::worktrees::provenance::keep_export(
                         root.as_path_unlocked(),
                         context,
+                        export_dir,
                     )?;
                 }
                 paths::link_or_copy(src, path)?;

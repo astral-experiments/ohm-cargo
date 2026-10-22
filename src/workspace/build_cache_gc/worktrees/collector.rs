@@ -1,4 +1,4 @@
-//! Detaches obsolete private contexts under the build lock, then unlinks their files.
+//! Removes obsolete private contexts in bounded batches under the build lock.
 
 use std::fs;
 use std::io;
@@ -9,12 +9,9 @@ use super::{mounts::Mounts, provenance, registry::ManagedTarget};
 use crate::compiler::{Layout, OHM_WORKTREE_CLIPPY_DIRECTORY};
 use crate::util::CargoResult;
 use crate::workspace::build_cache_gc::{
-    CollectorLock, RENAME_BUDGET, Summary, absent, create_plain, drain_trash, filesystem_device,
-    plain_ancestors, plain_directory, profiles, remove_bounded, retire_path, scoped_context_name,
-    try_lock, try_lock_file,
+    CollectorLock, Summary, absent, plain_ancestors, plain_directory, profiles,
+    scoped_context_name, try_lock_file,
 };
-
-pub(super) const TRASH_PREFIX: &str = ".ohm-worktree-gc-trash-v1-";
 
 /// Shared targets have one idle timestamp and one set of outputs across their registrations.
 pub(crate) fn collect(
@@ -48,12 +45,7 @@ fn collect_contexts(
     summary: &mut Summary<'_>,
 ) -> CargoResult<()> {
     let root = &target.target;
-    // Multiple workspaces can select one target. Staged payloads must be counted once.
-    let trash = root.join(format!("{TRASH_PREFIX}{}", target.namespaces[0]));
     let mounts = Mounts::read(root)?;
-    if mounts.blocked(&trash, true, summary) {
-        return Ok(());
-    }
     let mut candidates = Vec::new();
     if let Some(current) = current {
         for profile in profiles(root)? {
@@ -89,132 +81,41 @@ fn collect_contexts(
             }
         }
     }
-    let staged = plain_directory(&trash)
-        && fs::read_dir(&trash)?
-            .any(|entry| entry.is_ok_and(|entry| entry.file_type().is_ok_and(|ty| ty.is_dir())));
-    if candidates.is_empty() && !staged {
-        return Ok(());
-    }
-
-    let mounts = Mounts::read(root)?;
-    if mounts.blocked(&trash, true, summary) {
-        return Ok(());
-    }
-    // A busy target needs no new bookkeeping. Already detached trash can be drained
-    // under a shared lease, even while a build is running.
-    let Some(guard) = target_guard(target, !candidates.is_empty() && !staged, summary)? else {
-        return Ok(());
-    };
-    let collector_path = trash.join("collector.lock");
-    let collector = if !dry_run || !absent(&collector_path) {
-        if !dry_run {
-            create_plain(&trash)?;
-        }
-        let Some(lock) = try_lock(&collector_path, !dry_run)? else {
-            summary.skip_path(root, "another garbage collector is using this target");
-            summary.blocking_locks.insert(collector_path);
-            return Ok(());
-        };
-        Some(lock)
-    } else {
-        None
-    };
-    drop(guard);
-
-    let mut previews = Vec::new();
     if let Some(current) = current {
-        'profiles: for (profile, paths) in candidates {
-            // Resolving thousands of example outputs or following links onto another mount
-            // must not hold up a build. Recheck the publication directories under the lease.
+        for (profile, paths) in candidates {
             let generation = output_generation(&profile)?;
             let published = published_links(&profile)?;
-            for batch in paths.chunks(RENAME_BUDGET) {
-                let Some(_guard) = target_guard(target, true, summary)? else {
-                    break 'profiles;
+            for path in paths {
+                let context = path.file_name().unwrap().to_str().unwrap();
+                let Some(old) = provenance::obsolete(&path, context, current) else {
+                    continue;
                 };
-                if !same_collector(collector.as_ref(), &collector_path)? {
-                    return Ok(());
-                }
-                if output_generation(&profile)? != generation {
-                    summary.skip_path(&profile, "published build outputs changed during cleanup");
-                    continue 'profiles;
-                }
-                for path in batch {
-                    let context = path.file_name().unwrap().to_str().unwrap();
-                    if mounts.blocked(path, true, summary) || !plain_ancestors(root, path)? {
-                        continue;
+                let detail = format!(
+                    "private context {context} in {} (from {old}; current is {})",
+                    target.worktree.display(),
+                    current.version
+                );
+                super::idle::collect_context(target, &path, dry_run, &detail, summary, |summary| {
+                    if output_generation(&profile)? != generation {
+                        summary
+                            .skip_path(&profile, "published build outputs changed during cleanup");
+                        return Ok(false);
                     }
-                    let Some(old) = provenance::obsolete(path, context, current) else {
-                        continue;
-                    };
-                    if published.iter().any(|output| output.starts_with(path)) {
+                    if published.iter().any(|output| output.starts_with(&path)) {
                         summary.skip_path(
-                            path,
+                            &path,
                             "a published build output still refers to this context",
                         );
-                        continue;
+                        return Ok(false);
                     }
-                    if retire_path(
-                        root,
-                        path,
-                        &trash,
-                        dry_run,
-                        summary,
-                        Some("private context is no longer a plain directory"),
-                        false,
-                    )? {
-                        summary.details.push(format!(
-                            "private context {context} in {} (from {old}; current is {})",
-                            target.worktree.display(),
-                            current.version
-                        ));
-                        if dry_run {
-                            previews.push(path.clone());
-                        }
-                    }
-                }
+                    Ok(provenance::obsolete(&path, context, current).as_deref()
+                        == Some(old.as_str()))
+                })
+                .or_else(|error| summary.path_error::<()>(&path, error))?;
             }
         }
     }
-
-    // Recursive traversal can be slow. A shared lease allows ordinary builds and
-    // keeps a simultaneous local clean from replacing directories beneath the walk.
-    let Some(_guard) = target_guard(target, false, summary)? else {
-        return Ok(());
-    };
-    // A mount can move with a retired directory. Check the actual staging paths
-    // again before the recursive walk, including trash left by interrupted GC.
-    let mounts = Mounts::read(root)?;
-    if mounts.blocked(&trash, true, summary)
-        || !same_collector(collector.as_ref(), &collector_path)?
-    {
-        return Ok(());
-    }
-    let mut remaining = usize::MAX;
-    let device = filesystem_device(&fs::symlink_metadata(root)?);
-    for path in previews {
-        if mounts.blocked(&path, true, summary) {
-            continue;
-        }
-        remove_bounded(
-            &path,
-            device,
-            &mut remaining,
-            summary,
-            true,
-            Some(&path.join(provenance::MARKER)),
-        )?;
-    }
-    if dry_run && !staged {
-        return Ok(());
-    }
-    drain_trash(
-        &trash,
-        &mut remaining,
-        summary,
-        dry_run,
-        Some(provenance::MARKER),
-    )
+    Ok(())
 }
 
 pub(super) fn target_guard(
@@ -233,19 +134,6 @@ pub(super) fn target_guard(
             }
             Ok(None)
         }
-    }
-}
-
-/// A full local clean can remove the collector lock between target leases.
-pub(super) fn same_collector(lock: Option<&CollectorLock>, path: &Path) -> CargoResult<bool> {
-    let Some(lock) = lock else { return Ok(true) };
-    let opened = lock.0.metadata()?;
-    match fs::symlink_metadata(path) {
-        Ok(named) => {
-            Ok(named.is_file() && (named.dev(), named.ino()) == (opened.dev(), opened.ino()))
-        }
-        Err(error) if error.kind() == io::ErrorKind::NotFound => Ok(false),
-        Err(error) => Err(error.into()),
     }
 }
 

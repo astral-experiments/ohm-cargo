@@ -231,7 +231,7 @@ fn clean_shared_registry_workspace(
     Ok(())
 }
 
-pub(crate) fn validate_target_dir_tag(target_dir_path: &Path) -> CargoResult<()> {
+fn validate_target_dir_tag(target_dir_path: &Path) -> CargoResult<()> {
     const TAG_SIGNATURE: &[u8] = b"Signature: 8a477f597d28d172789f06886806bc55";
 
     let tag_path = target_dir_path.join("CACHEDIR.TAG");
@@ -245,19 +245,8 @@ pub(crate) fn validate_target_dir_tag(target_dir_path: &Path) -> CargoResult<()>
         bail!("missing or invalid `CACHEDIR.TAG` file");
     }
 
-    let mut options = fs::OpenOptions::new();
-    options.read(true);
-    #[cfg(unix)]
-    {
-        use std::os::unix::fs::OpenOptionsExt as _;
-        options.custom_flags(libc::O_NOFOLLOW | libc::O_NONBLOCK);
-    }
-    let mut file = options
-        .open(&tag_path)
+    let mut file = fs::File::open(&tag_path)
         .map_err(|err| anyhow::anyhow!("failed to open `{}`: {}", tag_path.display(), err))?;
-    if !file.metadata()?.is_file() {
-        bail!("missing or invalid `CACHEDIR.TAG` file");
-    }
 
     let mut buf = [0u8; TAG_SIGNATURE.len()];
     match file.read_exact(&mut buf) {
