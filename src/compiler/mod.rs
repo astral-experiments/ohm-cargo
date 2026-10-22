@@ -61,7 +61,6 @@ pub mod unused_deps;
 use crate::util::data_structures::{HashMap, HashSet};
 use std::borrow::Cow;
 use std::cell::OnceCell;
-use std::collections::BTreeMap;
 use std::env;
 use std::ffi::{OsStr, OsString};
 use std::fmt::Display;
@@ -3229,7 +3228,7 @@ fn build_deps_args(
 }
 
 fn add_dep_arg<'a, 'b: 'a>(
-    map: &mut BTreeMap<&'a Unit, PathBuf>,
+    map: &mut HashMap<&'a Unit, PathBuf>,
     build_runner: &'b BuildRunner<'b, '_>,
     unit: &'a Unit,
 ) {
@@ -3287,7 +3286,7 @@ pub fn lib_search_paths(
 ) -> CargoResult<Vec<OsString>> {
     let mut lib_search_paths = Vec::new();
     if build_runner.bcx.gctx.cli_unstable().build_dir_new_layout {
-        let mut map = BTreeMap::new();
+        let mut map = HashMap::default();
 
         // Recursively add all dependency args to rustc process
         add_dep_arg(&mut map, build_runner, unit);
