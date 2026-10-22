@@ -509,7 +509,11 @@ impl<'gctx> JobQueue<'gctx> {
         // transitively contains the `Metadata` edge.
         // Check-mode binaries and tests do not link, so early metadata from
         // their direct dependencies is sufficient even for these target kinds.
-        if unit.requires_upstream_objects()
+        // Fresh jobs only replay cached output and expose existing artifacts.
+        // Their direct dependencies still order that work, but no compiler or
+        // linker needs the additional transitive object dependencies below.
+        if job.freshness().is_dirty()
+            && unit.requires_upstream_objects()
             && !(build_runner.headstart_enabled() && unit.mode.is_check())
         {
             for dep in dependencies {
@@ -1645,6 +1649,106 @@ impl ErrorsDuringDrain {
             0 => None,
             1 => Some(format_err!("1 job failed")),
             n => Some(format_err!("{} jobs failed", n)),
+        }
+    }
+}
+
+#[cfg(test)]
+mod scheduling_tests {
+    use super::*;
+    use crate::compiler::{UnitInterner, UserIntent};
+    use crate::ops::{CompileOptions, create_bcx};
+    use crate::workspace::Workspace;
+
+    #[test]
+    fn fresh_executable_keeps_direct_edges_without_waiting_for_transitive_objects() {
+        let temp = tempfile::tempdir().unwrap();
+        let root = temp.path().join("app");
+        for (path, contents) in [
+            (
+                "Cargo.toml",
+                "[package]\nname='app'\nversion='0.1.0'\nedition='2024'\n[dependencies]\nmiddle={path='middle'}\n",
+            ),
+            ("src/main.rs", "fn main() { middle::value(); }"),
+            (
+                "middle/Cargo.toml",
+                "[package]\nname='middle'\nversion='0.1.0'\nedition='2024'\n[dependencies]\nleaf={path='../leaf'}\n",
+            ),
+            ("middle/src/lib.rs", "pub fn value() { leaf::value(); }"),
+            (
+                "leaf/Cargo.toml",
+                "[package]\nname='leaf'\nversion='0.1.0'\nedition='2024'\n",
+            ),
+            ("leaf/src/lib.rs", "pub fn value() {}"),
+        ] {
+            let path = root.join(path);
+            std::fs::create_dir_all(path.parent().unwrap()).unwrap();
+            std::fs::write(path, contents).unwrap();
+        }
+        let mut gctx = GlobalContext::new(Shell::new(), root.clone(), temp.path().join("home"));
+        gctx.nightly_features_allowed = true;
+        gctx.configure(
+            0,
+            false,
+            None,
+            false,
+            false,
+            true,
+            &None,
+            &["ohm-defaults=no".to_owned()],
+            &[],
+        )
+        .unwrap();
+        let ws = Workspace::new(&root.join("Cargo.toml"), &gctx).unwrap();
+        let options = CompileOptions::new(&gctx, UserIntent::Build).unwrap();
+        let interner = UnitInterner::new();
+        let bcx = create_bcx(&ws, &options, &interner, None).unwrap();
+        let runner = BuildRunner::new(&bcx).unwrap();
+        let unit = |name: &str| {
+            bcx.unit_graph
+                .keys()
+                .find(|unit| unit.pkg.name().as_str() == name)
+                .unwrap()
+                .clone()
+        };
+        let app = unit("app");
+        let middle = unit("middle");
+        let leaf = unit("leaf");
+        assert!(app.requires_upstream_objects());
+        assert!(runner.only_requires_rmeta(&middle, &leaf));
+
+        for dirty in [false, true] {
+            let mut jobs = JobQueue::new(&bcx);
+            for unit in [&app, &middle, &leaf] {
+                let job = if unit != &app || dirty {
+                    Job::new_dirty(Work::noop(), fingerprint::DirtyReason::Forced)
+                } else {
+                    Job::new_fresh()
+                };
+                jobs.enqueue(&runner, unit, job).unwrap();
+            }
+            jobs.queue.queue_finished();
+            assert_eq!(jobs.queue.dequeue().unwrap().0, leaf);
+            assert!(jobs.queue.dequeue().is_none());
+            jobs.queue.finish(&leaf, &Artifact::Metadata);
+            assert_eq!(jobs.queue.dequeue().unwrap().0, middle);
+            jobs.queue.finish(&middle, &Artifact::Metadata);
+            assert!(
+                jobs.queue.dequeue().is_none(),
+                "the direct edge still needs all artifacts"
+            );
+            jobs.queue.finish(&middle, &Artifact::All);
+            if dirty {
+                assert!(
+                    jobs.queue.dequeue().is_none(),
+                    "native work needs transitive objects"
+                );
+                jobs.queue.finish(&leaf, &Artifact::All);
+            }
+            let (ready, job, _) = jobs.queue.dequeue().unwrap();
+            assert_eq!(ready, app);
+            assert_eq!(job.freshness().is_dirty(), dirty);
+            assert!(jobs.queue.dequeue().is_none());
         }
     }
 }

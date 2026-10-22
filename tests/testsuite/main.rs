@@ -102,6 +102,7 @@ mod features_namespaced;
 mod fetch;
 mod fix;
 mod fix_n_times;
+mod fresh_job_dependencies;
 mod freshness;
 mod freshness_checksum;
 mod future_incompat_report;
