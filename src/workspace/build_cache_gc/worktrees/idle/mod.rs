@@ -482,7 +482,7 @@ mod tests {
 
         // Release had no lock yet. Even its preexisting output is outside this run.
         let release_lock = fs::File::create_new(release.join(".cargo-lock"))?;
-        release_lock.lock()?;
+        crate::util::flock::lock_exclusive(&release_lock)?;
         assert!(
             !plan
                 .entries
@@ -494,7 +494,7 @@ mod tests {
         // between discovery and deletion, while its original lock remains free.
         let path = debug.join(".cargo-artifact-lock");
         let held = fs::File::create_new(&path)?;
-        held.lock()?;
+        crate::util::flock::lock_exclusive(&held)?;
         for dry_run in [true, false] {
             assert!(
                 plan.lock_profiles(dry_run, &mounts, &mut HashMap::default(), &mut summary)?
