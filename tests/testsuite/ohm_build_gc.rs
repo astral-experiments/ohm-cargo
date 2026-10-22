@@ -1081,6 +1081,107 @@ fn gc_cleans_idle_targets_on_the_current_release_and_rebuilds_on_demand() {
 }
 
 #[cargo_test]
+fn gc_protects_targets_while_a_build_resolves_its_context() {
+    let project = donor();
+    cargo(&project, "build").run();
+    let wrapper = cargo_test_support::project()
+        .at("gc-resolution-wrapper")
+        .file(
+            "Cargo.toml",
+            &basic_manifest("gc-resolution-wrapper", "0.1.0"),
+        )
+        .file(
+            "src/main.rs",
+            r#"
+                use std::io::{Read, Write};
+
+                fn main() {
+                    let mut args = std::env::args_os().skip(1);
+                    let rustc = args.next().unwrap();
+                    let args: Vec<_> = args.collect();
+                    if args.iter().any(|arg| arg == "--print=cfg")
+                        && std::fs::File::options().write(true).create_new(true)
+                            .open(std::env::var_os("OHM_GC_TEST_BARRIER").unwrap()).is_ok()
+                    {
+                        let mut stream = std::net::TcpStream::connect(
+                            std::env::var("OHM_GC_TEST_LISTENER").unwrap()
+                        ).unwrap();
+                        stream.write_all(b"ready").unwrap();
+                        stream.read_exact(&mut [0]).unwrap();
+                    }
+                    let status = std::process::Command::new(rustc).args(args).status().unwrap();
+                    std::process::exit(status.code().unwrap_or(1));
+                }
+            "#,
+        )
+        .build();
+    wrapper.cargo("build").run();
+    let target = project.root().join("target");
+    let binary = target.join("debug/foo");
+    age_target(&target);
+    let started = SystemTime::now();
+    let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+    let mut command = cargo(&project, "build");
+    let mut process = command
+        .env(
+            "RUSTC_WORKSPACE_WRAPPER",
+            wrapper.bin("gc-resolution-wrapper"),
+        )
+        .env("CARGO_CACHE_RUSTC_INFO", "0")
+        .env(
+            "OHM_GC_TEST_BARRIER",
+            paths::root().join("resolution-started"),
+        )
+        .env(
+            "OHM_GC_TEST_LISTENER",
+            listener.local_addr().unwrap().to_string(),
+        )
+        .build_command();
+    let mut running = RunningCargo(
+        process
+            .process_group(0)
+            .stdout(Stdio::null())
+            .stderr(Stdio::piped())
+            .spawn()
+            .unwrap(),
+    );
+    let mut stream = accept_child(&listener);
+    stream
+        .set_read_timeout(Some(slow_cpu_multiplier(30)))
+        .unwrap();
+    stream.read_exact(&mut [0; 5]).unwrap();
+    assert!(
+        fs::metadata(target.join(".ohm-target-last-use-v1"))
+            .unwrap()
+            .modified()
+            .unwrap()
+            >= started
+    );
+
+    // Even resolution that lasts over an hour retains the same target lease.
+    age_target(&target);
+    for command in ["gc --dry-run", "gc"] {
+        let output = gc_outside_workspace(command).run();
+        let stderr = String::from_utf8(output.stderr).unwrap();
+        assert!(stderr.contains("target directory is in use"), "{stderr}");
+        assert!(binary.is_file());
+    }
+    stream.write_all(&[1]).unwrap();
+    let status = running.0.wait().unwrap();
+    let mut stderr = String::new();
+    running
+        .0
+        .stderr
+        .take()
+        .unwrap()
+        .read_to_string(&mut stderr)
+        .unwrap();
+    assert!(status.success(), "{stderr}");
+    let lock = fs::File::open(target.join(".ohm-build-lock")).unwrap();
+    lock.try_lock().unwrap();
+}
+
+#[cargo_test]
 fn gc_accepts_legacy_default_targets_but_preserves_ambiguous_external_directories() {
     let project = donor();
     cargo(&project, "build").run();

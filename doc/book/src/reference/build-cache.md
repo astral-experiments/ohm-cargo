@@ -116,7 +116,8 @@ Private intermediates live under
 under `target/<profile>/incremental/<workspace>`. Worktree seeding clones private
 state from the donor's target into the recipient's target. Removing a worktree
 also removes its default target. An explicit target outside a removed checkout
-stays at its configured path.
+stays at its configured path. GC forgets a vanished checkout's registration.
+Another live workspace using the same external target can still make it eligible.
 
 On Linux and macOS, `cargo +ohm gc` reclaims these categories from shared
 build directories:
