@@ -1,0 +1,761 @@
+{
+  "status": "passed",
+  "scope": "combined-pr183-pr184-pr185-source-ci",
+  "observed_at": "2026-10-22 00:06:09 UTC",
+  "repository": "astral-sh/ohm-cargo",
+  "head_sha": "0116a6d29f506f425d837348b26d40d6a668027d",
+  "head_tree": "86a812c401f6a8966e5d9f428775f280c19b7b90",
+  "parent": "d81a093becb4321a975522624c2a383970f0d164",
+  "run_id": 39696693562,
+  "run_url": "https://github.com/astral-sh/ohm-cargo/actions/runs/39696693562",
+  "head_branch": "codex/uv-joint-pr183-pr184-pr185",
+  "event": "workflow_dispatch",
+  "workflow": ".github/workflows/ci.yml",
+  "run_status": "completed",
+  "conclusion": "success",
+  "required_job_names": [
+    "Clippy (depot-macos-15)",
+    "Resolver tests",
+    "Cargo tests (depot-ubuntu-24.04-16)",
+    "Schema tests",
+    "Workspace tests",
+    "Rustfmt",
+    "Clippy (depot-ubuntu-24.04-8)",
+    "Cargo tests (depot-macos-15)"
+  ],
+  "required_jobs": [
+    {
+      "id": 119555690499,
+      "name": "Clippy (depot-macos-15)",
+      "run_id": 39696693562,
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 119555690684,
+      "name": "Resolver tests",
+      "run_id": 39696693562,
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 119555690685,
+      "name": "Cargo tests (depot-ubuntu-24.04-16)",
+      "run_id": 39696693562,
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 119555690714,
+      "name": "Schema tests",
+      "run_id": 39696693562,
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 119555690721,
+      "name": "Workspace tests",
+      "run_id": 39696693562,
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 119555690739,
+      "name": "Rustfmt",
+      "run_id": 39696693562,
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 119555690780,
+      "name": "Clippy (depot-ubuntu-24.04-8)",
+      "run_id": 39696693562,
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 119555690812,
+      "name": "Cargo tests (depot-macos-15)",
+      "run_id": 39696693562,
+      "status": "completed",
+      "conclusion": "success"
+    }
+  ],
+  "optional_jobs": [
+    {
+      "id": 119555692374,
+      "name": "Clippy APFS replay",
+      "status": "completed",
+      "conclusion": "skipped"
+    }
+  ],
+  "source_json_sha256": "3e109c539e7bc712ad1b12b11453984202b63f94481f05067603b408fd5107c5",
+  "source_manifest_sha256": "19c69bfe7a3a6d81e3b82fffd4405438d035a3a0997a9e4ad6bdf50ee02208ff",
+  "independent_composition_review_sha256": "0760cd52b4a9d7aab4eb297ec8eecb2d526df6e05e640e20814e98b28990f660",
+  "note": "GitHub run and all nine jobs independently fetched through the connected API. Eight required jobs passed; optional APFS replay skipped. This validates exact combined source; it is not a performance result.",
+  "raw_run": {
+    "id": 39696693562,
+    "name": "CI",
+    "node_id": "WFR_kwLOTqUFrc8AAAAJPht5Og",
+    "head_branch": "codex/uv-joint-pr183-pr184-pr185",
+    "head_sha": "0116a6d29f506f425d837348b26d40d6a668027d",
+    "path": ".github/workflows/ci.yml",
+    "display_title": "CI",
+    "run_number": 898,
+    "event": "workflow_dispatch",
+    "status": "completed",
+    "conclusion": "success",
+    "workflow_id": 325734494,
+    "check_suite_id": 107583850880,
+    "check_suite_node_id": "CS_kwDOTqUFrc8AAAAZDH9JgA",
+    "url": "https://api.github.com/repos/astral-sh/ohm-cargo/actions/runs/39696693562",
+    "html_url": "https://github.com/astral-sh/ohm-cargo/actions/runs/39696693562",
+    "pull_requests": [],
+    "created_at": "2026-10-21T23:57:22Z",
+    "updated_at": "2026-10-22T00:01:52Z",
+    "actor": {
+      "login": "charliermarsh",
+      "id": 1309177,
+      "node_id": "MDQ6VXNlcjEzMDkxNzc=",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1309177?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/charliermarsh",
+      "html_url": "https://github.com/charliermarsh",
+      "followers_url": "https://api.github.com/users/charliermarsh/followers",
+      "following_url": "https://api.github.com/users/charliermarsh/following{/other_user}",
+      "gists_url": "https://api.github.com/users/charliermarsh/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/charliermarsh/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/charliermarsh/subscriptions",
+      "organizations_url": "https://api.github.com/users/charliermarsh/orgs",
+      "repos_url": "https://api.github.com/users/charliermarsh/repos",
+      "events_url": "https://api.github.com/users/charliermarsh/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/charliermarsh/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "run_attempt": 1,
+    "referenced_workflows": [],
+    "run_started_at": "2026-10-21T23:57:22Z",
+    "triggering_actor": {
+      "login": "charliermarsh",
+      "id": 1309177,
+      "node_id": "MDQ6VXNlcjEzMDkxNzc=",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1309177?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/charliermarsh",
+      "html_url": "https://github.com/charliermarsh",
+      "followers_url": "https://api.github.com/users/charliermarsh/followers",
+      "following_url": "https://api.github.com/users/charliermarsh/following{/other_user}",
+      "gists_url": "https://api.github.com/users/charliermarsh/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/charliermarsh/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/charliermarsh/subscriptions",
+      "organizations_url": "https://api.github.com/users/charliermarsh/orgs",
+      "repos_url": "https://api.github.com/users/charliermarsh/repos",
+      "events_url": "https://api.github.com/users/charliermarsh/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/charliermarsh/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "jobs_url": "https://api.github.com/repos/astral-sh/ohm-cargo/actions/runs/39696693562/jobs",
+    "logs_url": "https://api.github.com/repos/astral-sh/ohm-cargo/actions/runs/39696693562/logs",
+    "check_suite_url": "https://api.github.com/repos/astral-sh/ohm-cargo/check-suites/107583850880",
+    "artifacts_url": "https://api.github.com/repos/astral-sh/ohm-cargo/actions/runs/39696693562/artifacts",
+    "cancel_url": "https://api.github.com/repos/astral-sh/ohm-cargo/actions/runs/39696693562/cancel",
+    "rerun_url": "https://api.github.com/repos/astral-sh/ohm-cargo/actions/runs/39696693562/rerun",
+    "previous_attempt_url": null,
+    "workflow_url": "https://api.github.com/repos/astral-sh/ohm-cargo/actions/workflows/325734494",
+    "head_commit": {
+      "id": "0116a6d29f506f425d837348b26d40d6a668027d",
+      "tree_id": "86a812c401f6a8966e5d9f428775f280c19b7b90",
+      "message": "Combine parser, scheduler, and PackageId development-loop optimizations",
+      "timestamp": "2026-10-21T23:49:23Z",
+      "author": {
+        "name": "Charlie Marsh",
+        "email": "crmarsh416@gmail.com"
+      },
+      "committer": {
+        "name": "Charlie Marsh",
+        "email": "crmarsh416@gmail.com"
+      }
+    },
+    "repository": {
+      "id": 1319437741,
+      "node_id": "R_kgDOTqUFrQ",
+      "name": "ohm-cargo",
+      "full_name": "astral-sh/ohm-cargo",
+      "private": true,
+      "owner": {
+        "login": "astral-sh",
+        "id": 115962839,
+        "node_id": "O_kgDOBulz1w",
+        "avatar_url": "https://avatars.githubusercontent.com/u/115962839?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/astral-sh",
+        "html_url": "https://github.com/astral-sh",
+        "followers_url": "https://api.github.com/users/astral-sh/followers",
+        "following_url": "https://api.github.com/users/astral-sh/following{/other_user}",
+        "gists_url": "https://api.github.com/users/astral-sh/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/astral-sh/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/astral-sh/subscriptions",
+        "organizations_url": "https://api.github.com/users/astral-sh/orgs",
+        "repos_url": "https://api.github.com/users/astral-sh/repos",
+        "events_url": "https://api.github.com/users/astral-sh/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/astral-sh/received_events",
+        "type": "Organization",
+        "user_view_type": "public",
+        "site_admin": false
+      },
+      "html_url": "https://github.com/astral-sh/ohm-cargo",
+      "description": "Cargo fork for the Ohm incremental Rust development toolchain",
+      "fork": false,
+      "url": "https://api.github.com/repos/astral-sh/ohm-cargo",
+      "forks_url": "https://api.github.com/repos/astral-sh/ohm-cargo/forks",
+      "keys_url": "https://api.github.com/repos/astral-sh/ohm-cargo/keys{/key_id}",
+      "collaborators_url": "https://api.github.com/repos/astral-sh/ohm-cargo/collaborators{/collaborator}",
+      "teams_url": "https://api.github.com/repos/astral-sh/ohm-cargo/teams",
+      "hooks_url": "https://api.github.com/repos/astral-sh/ohm-cargo/hooks",
+      "issue_events_url": "https://api.github.com/repos/astral-sh/ohm-cargo/issues/events{/number}",
+      "events_url": "https://api.github.com/repos/astral-sh/ohm-cargo/events",
+      "assignees_url": "https://api.github.com/repos/astral-sh/ohm-cargo/assignees{/user}",
+      "branches_url": "https://api.github.com/repos/astral-sh/ohm-cargo/branches{/branch}",
+      "tags_url": "https://api.github.com/repos/astral-sh/ohm-cargo/tags",
+      "blobs_url": "https://api.github.com/repos/astral-sh/ohm-cargo/git/blobs{/sha}",
+      "git_tags_url": "https://api.github.com/repos/astral-sh/ohm-cargo/git/tags{/sha}",
+      "git_refs_url": "https://api.github.com/repos/astral-sh/ohm-cargo/git/refs{/sha}",
+      "trees_url": "https://api.github.com/repos/astral-sh/ohm-cargo/git/trees{/sha}",
+      "statuses_url": "https://api.github.com/repos/astral-sh/ohm-cargo/statuses/{sha}",
+      "languages_url": "https://api.github.com/repos/astral-sh/ohm-cargo/languages",
+      "stargazers_url": "https://api.github.com/repos/astral-sh/ohm-cargo/stargazers",
+      "contributors_url": "https://api.github.com/repos/astral-sh/ohm-cargo/contributors",
+      "subscribers_url": "https://api.github.com/repos/astral-sh/ohm-cargo/subscribers",
+      "subscription_url": "https://api.github.com/repos/astral-sh/ohm-cargo/subscription",
+      "commits_url": "https://api.github.com/repos/astral-sh/ohm-cargo/commits{/sha}",
+      "git_commits_url": "https://api.github.com/repos/astral-sh/ohm-cargo/git/commits{/sha}",
+      "comments_url": "https://api.github.com/repos/astral-sh/ohm-cargo/comments{/number}",
+      "issue_comment_url": "https://api.github.com/repos/astral-sh/ohm-cargo/issues/comments{/number}",
+      "contents_url": "https://api.github.com/repos/astral-sh/ohm-cargo/contents/{+path}",
+      "compare_url": "https://api.github.com/repos/astral-sh/ohm-cargo/compare/{base}...{head}",
+      "merges_url": "https://api.github.com/repos/astral-sh/ohm-cargo/merges",
+      "archive_url": "https://api.github.com/repos/astral-sh/ohm-cargo/{archive_format}{/ref}",
+      "downloads_url": "https://api.github.com/repos/astral-sh/ohm-cargo/downloads",
+      "issues_url": "https://api.github.com/repos/astral-sh/ohm-cargo/issues{/number}",
+      "pulls_url": "https://api.github.com/repos/astral-sh/ohm-cargo/pulls{/number}",
+      "milestones_url": "https://api.github.com/repos/astral-sh/ohm-cargo/milestones{/number}",
+      "notifications_url": "https://api.github.com/repos/astral-sh/ohm-cargo/notifications{?since,all,participating}",
+      "labels_url": "https://api.github.com/repos/astral-sh/ohm-cargo/labels{/name}",
+      "releases_url": "https://api.github.com/repos/astral-sh/ohm-cargo/releases{/id}",
+      "deployments_url": "https://api.github.com/repos/astral-sh/ohm-cargo/deployments"
+    },
+    "head_repository": {
+      "id": 1319437741,
+      "node_id": "R_kgDOTqUFrQ",
+      "name": "ohm-cargo",
+      "full_name": "astral-sh/ohm-cargo",
+      "private": true,
+      "owner": {
+        "login": "astral-sh",
+        "id": 115962839,
+        "node_id": "O_kgDOBulz1w",
+        "avatar_url": "https://avatars.githubusercontent.com/u/115962839?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/astral-sh",
+        "html_url": "https://github.com/astral-sh",
+        "followers_url": "https://api.github.com/users/astral-sh/followers",
+        "following_url": "https://api.github.com/users/astral-sh/following{/other_user}",
+        "gists_url": "https://api.github.com/users/astral-sh/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/astral-sh/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/astral-sh/subscriptions",
+        "organizations_url": "https://api.github.com/users/astral-sh/orgs",
+        "repos_url": "https://api.github.com/users/astral-sh/repos",
+        "events_url": "https://api.github.com/users/astral-sh/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/astral-sh/received_events",
+        "type": "Organization",
+        "user_view_type": "public",
+        "site_admin": false
+      },
+      "html_url": "https://github.com/astral-sh/ohm-cargo",
+      "description": "Cargo fork for the Ohm incremental Rust development toolchain",
+      "fork": false,
+      "url": "https://api.github.com/repos/astral-sh/ohm-cargo",
+      "forks_url": "https://api.github.com/repos/astral-sh/ohm-cargo/forks",
+      "keys_url": "https://api.github.com/repos/astral-sh/ohm-cargo/keys{/key_id}",
+      "collaborators_url": "https://api.github.com/repos/astral-sh/ohm-cargo/collaborators{/collaborator}",
+      "teams_url": "https://api.github.com/repos/astral-sh/ohm-cargo/teams",
+      "hooks_url": "https://api.github.com/repos/astral-sh/ohm-cargo/hooks",
+      "issue_events_url": "https://api.github.com/repos/astral-sh/ohm-cargo/issues/events{/number}",
+      "events_url": "https://api.github.com/repos/astral-sh/ohm-cargo/events",
+      "assignees_url": "https://api.github.com/repos/astral-sh/ohm-cargo/assignees{/user}",
+      "branches_url": "https://api.github.com/repos/astral-sh/ohm-cargo/branches{/branch}",
+      "tags_url": "https://api.github.com/repos/astral-sh/ohm-cargo/tags",
+      "blobs_url": "https://api.github.com/repos/astral-sh/ohm-cargo/git/blobs{/sha}",
+      "git_tags_url": "https://api.github.com/repos/astral-sh/ohm-cargo/git/tags{/sha}",
+      "git_refs_url": "https://api.github.com/repos/astral-sh/ohm-cargo/git/refs{/sha}",
+      "trees_url": "https://api.github.com/repos/astral-sh/ohm-cargo/git/trees{/sha}",
+      "statuses_url": "https://api.github.com/repos/astral-sh/ohm-cargo/statuses/{sha}",
+      "languages_url": "https://api.github.com/repos/astral-sh/ohm-cargo/languages",
+      "stargazers_url": "https://api.github.com/repos/astral-sh/ohm-cargo/stargazers",
+      "contributors_url": "https://api.github.com/repos/astral-sh/ohm-cargo/contributors",
+      "subscribers_url": "https://api.github.com/repos/astral-sh/ohm-cargo/subscribers",
+      "subscription_url": "https://api.github.com/repos/astral-sh/ohm-cargo/subscription",
+      "commits_url": "https://api.github.com/repos/astral-sh/ohm-cargo/commits{/sha}",
+      "git_commits_url": "https://api.github.com/repos/astral-sh/ohm-cargo/git/commits{/sha}",
+      "comments_url": "https://api.github.com/repos/astral-sh/ohm-cargo/comments{/number}",
+      "issue_comment_url": "https://api.github.com/repos/astral-sh/ohm-cargo/issues/comments{/number}",
+      "contents_url": "https://api.github.com/repos/astral-sh/ohm-cargo/contents/{+path}",
+      "compare_url": "https://api.github.com/repos/astral-sh/ohm-cargo/compare/{base}...{head}",
+      "merges_url": "https://api.github.com/repos/astral-sh/ohm-cargo/merges",
+      "archive_url": "https://api.github.com/repos/astral-sh/ohm-cargo/{archive_format}{/ref}",
+      "downloads_url": "https://api.github.com/repos/astral-sh/ohm-cargo/downloads",
+      "issues_url": "https://api.github.com/repos/astral-sh/ohm-cargo/issues{/number}",
+      "pulls_url": "https://api.github.com/repos/astral-sh/ohm-cargo/pulls{/number}",
+      "milestones_url": "https://api.github.com/repos/astral-sh/ohm-cargo/milestones{/number}",
+      "notifications_url": "https://api.github.com/repos/astral-sh/ohm-cargo/notifications{?since,all,participating}",
+      "labels_url": "https://api.github.com/repos/astral-sh/ohm-cargo/labels{/name}",
+      "releases_url": "https://api.github.com/repos/astral-sh/ohm-cargo/releases{/id}",
+      "deployments_url": "https://api.github.com/repos/astral-sh/ohm-cargo/deployments"
+    }
+  },
+  "raw_jobs": {
+    "jobs": [
+      {
+        "id": 119555690499,
+        "name": "Clippy (depot-macos-15)",
+        "status": "completed",
+        "conclusion": "success",
+        "run_id": 39696693562,
+        "logs_url": null,
+        "steps": [
+          {
+            "name": "Set up job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 1
+          },
+          {
+            "name": "Run actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 2
+          },
+          {
+            "name": "Install Rust",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 3
+          },
+          {
+            "name": "Check lints",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 4
+          },
+          {
+            "name": "Post Run actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 8
+          },
+          {
+            "name": "Complete job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 9
+          }
+        ]
+      },
+      {
+        "id": 119555690684,
+        "name": "Resolver tests",
+        "status": "completed",
+        "conclusion": "success",
+        "run_id": 39696693562,
+        "logs_url": null,
+        "steps": [
+          {
+            "name": "Set up job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 1
+          },
+          {
+            "name": "Run actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 2
+          },
+          {
+            "name": "Install Rust",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 3
+          },
+          {
+            "name": "Run resolver tests",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 4
+          },
+          {
+            "name": "Post Run actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 8
+          },
+          {
+            "name": "Complete job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 9
+          }
+        ]
+      },
+      {
+        "id": 119555690685,
+        "name": "Cargo tests (depot-ubuntu-24.04-16)",
+        "status": "completed",
+        "conclusion": "success",
+        "run_id": 39696693562,
+        "logs_url": null,
+        "steps": [
+          {
+            "name": "Set up job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 1
+          },
+          {
+            "name": "Run actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 2
+          },
+          {
+            "name": "Install Rust",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 3
+          },
+          {
+            "name": "Install system dependencies",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 4
+          },
+          {
+            "name": "Run Cargo unit and integration tests",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 5
+          },
+          {
+            "name": "Install Ohm for shared-registry integration coverage",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 6
+          },
+          {
+            "name": "Run shared-registry integration with Ohm",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 7
+          },
+          {
+            "name": "Install Ohm for Clippy worktree coverage",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 8
+          },
+          {
+            "name": "Run profile and bundled Clippy worktree tests with Ohm",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 9
+          },
+          {
+            "name": "Post Run actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 18
+          },
+          {
+            "name": "Complete job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 19
+          }
+        ]
+      },
+      {
+        "id": 119555690714,
+        "name": "Schema tests",
+        "status": "completed",
+        "conclusion": "success",
+        "run_id": 39696693562,
+        "logs_url": null,
+        "steps": [
+          {
+            "name": "Set up job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 1
+          },
+          {
+            "name": "Run actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 2
+          },
+          {
+            "name": "Install Rust",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 3
+          },
+          {
+            "name": "Run schema tests",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 4
+          },
+          {
+            "name": "Post Run actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 8
+          },
+          {
+            "name": "Complete job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 9
+          }
+        ]
+      },
+      {
+        "id": 119555690721,
+        "name": "Workspace tests",
+        "status": "completed",
+        "conclusion": "success",
+        "run_id": 39696693562,
+        "logs_url": null,
+        "steps": [
+          {
+            "name": "Set up job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 1
+          },
+          {
+            "name": "Run actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 2
+          },
+          {
+            "name": "Install Rust",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 3
+          },
+          {
+            "name": "Run workspace tests",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 4
+          },
+          {
+            "name": "Post Run actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 8
+          },
+          {
+            "name": "Complete job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 9
+          }
+        ]
+      },
+      {
+        "id": 119555690739,
+        "name": "Rustfmt",
+        "status": "completed",
+        "conclusion": "success",
+        "run_id": 39696693562,
+        "logs_url": null,
+        "steps": [
+          {
+            "name": "Set up job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 1
+          },
+          {
+            "name": "Run actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 2
+          },
+          {
+            "name": "Install Rust",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 3
+          },
+          {
+            "name": "Check formatting",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 4
+          },
+          {
+            "name": "Post Run actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 8
+          },
+          {
+            "name": "Complete job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 9
+          }
+        ]
+      },
+      {
+        "id": 119555690780,
+        "name": "Clippy (depot-ubuntu-24.04-8)",
+        "status": "completed",
+        "conclusion": "success",
+        "run_id": 39696693562,
+        "logs_url": null,
+        "steps": [
+          {
+            "name": "Set up job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 1
+          },
+          {
+            "name": "Run actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 2
+          },
+          {
+            "name": "Install Rust",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 3
+          },
+          {
+            "name": "Check lints",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 4
+          },
+          {
+            "name": "Post Run actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 8
+          },
+          {
+            "name": "Complete job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 9
+          }
+        ]
+      },
+      {
+        "id": 119555690812,
+        "name": "Cargo tests (depot-macos-15)",
+        "status": "completed",
+        "conclusion": "success",
+        "run_id": 39696693562,
+        "logs_url": null,
+        "steps": [
+          {
+            "name": "Set up job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 1
+          },
+          {
+            "name": "Run actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 2
+          },
+          {
+            "name": "Install Rust",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 3
+          },
+          {
+            "name": "Install system dependencies",
+            "status": "completed",
+            "conclusion": "skipped",
+            "number": 4
+          },
+          {
+            "name": "Run Cargo unit and integration tests",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 5
+          },
+          {
+            "name": "Install Ohm for shared-registry integration coverage",
+            "status": "completed",
+            "conclusion": "skipped",
+            "number": 6
+          },
+          {
+            "name": "Run shared-registry integration with Ohm",
+            "status": "completed",
+            "conclusion": "skipped",
+            "number": 7
+          },
+          {
+            "name": "Install Ohm for Clippy worktree coverage",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 8
+          },
+          {
+            "name": "Run profile and bundled Clippy worktree tests with Ohm",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 9
+          },
+          {
+            "name": "Post Run actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 18
+          },
+          {
+            "name": "Complete job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 19
+          }
+        ]
+      },
+      {
+        "id": 119555692374,
+        "name": "Clippy APFS replay",
+        "status": "completed",
+        "conclusion": "skipped",
+        "run_id": 39696693562,
+        "logs_url": null,
+        "steps": null
+      }
+    ]
+  }
+}

@@ -1,0 +1,463 @@
+{
+  "actual_results": {
+    "check": null,
+    "test": null
+  },
+  "authority": {
+    "current_terminal_or_effects_read": false,
+    "host_calls": false,
+    "new_code_pr_creation": false,
+    "old_source_or_evidence_mutation": false,
+    "payload_assembly": false,
+    "pr_body_update": false,
+    "publisher_execution": false,
+    "push": false,
+    "source_only_planning": true
+  },
+  "both_primary_gates_required": true,
+  "cohort": "joint-183-185-stack181",
+  "evidence_requirements": {
+    "all_tables_logs_and_source_methods_needed_for_instruction_reproduction": true,
+    "archive_layout_and_limits_reviewed_before_publication": true,
+    "both_complete_raw_workflows_before_either_effect": true,
+    "deterministic_multi_archive_layout_allowed_if_size_requires": true,
+    "exact_original_manifest_to_public_subset_conservation": true,
+    "fresh_stderr_success_and_unchanged_uv_joins": true,
+    "full_profiles_cannot_be_replaced_by_counter_extracts": true,
+    "full_raw_profiles": 56,
+    "measured_order_counts": {
+      "AB": 6,
+      "BA": 6
+    },
+    "measured_pairs_per_workflow": 12,
+    "measured_profiles_per_workflow": 24,
+    "partition_must_depend_only_on_path_size_and_preserve_every_member": true,
+    "profiles_per_workflow": 28,
+    "source_config_binary_alias_and_zero_child_preflight_joins": true,
+    "warmup_pairs_per_workflow": 2,
+    "warmup_profiles_per_workflow": 4
+  },
+  "excluded_whole_attempts": [
+    {
+      "closure": {
+        "path": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/joint-183-185-measurement-controls-v2/root-ir01-failure-closure.json",
+        "sha256": "da868c81f7f4daa7d214f4544ab0eeb6e3198b9223a00b458783849315ac2cc6"
+      },
+      "closure_status": "closed-not-qualified",
+      "host": "host4",
+      "recompute_or_decode_excluded_effects": false,
+      "reuse_any_samples_or_profiles": false,
+      "whole_attempt_excluded": true
+    },
+    {
+      "closure": {
+        "path": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/joint-183-185-measurement-controls-host8-v3/root-ir01-entry-failure-acceptance.json",
+        "sha256": "963b91c78fce8883cc06b0966e3779b090da3ccfd8afcd03ac7387cf6c8cfd78"
+      },
+      "closure_status": "local-preservation-accepted-remote-state-pending",
+      "host": "host8",
+      "recompute_or_decode_excluded_effects": false,
+      "reuse_any_samples_or_profiles": false,
+      "whole_attempt_excluded": true
+    }
+  ],
+  "matched_build": {
+    "codegen_units": 1,
+    "compiler": "stock Rust 1.99.0 x86_64-unknown-linux-gnu",
+    "debug": 1,
+    "embedded_git_head": "5e5d271d763d7beb38b48755e22bd59e93f02b97",
+    "features": [
+      "all-static",
+      "ohm-defaults"
+    ],
+    "fresh_pair_required": true,
+    "incremental": false,
+    "lto": "thin",
+    "opt_level": 3,
+    "order": [
+      "baseline",
+      "candidate"
+    ],
+    "pgo": false,
+    "preserve_linked_and_stripped_binaries": true,
+    "published_bootstrap_pgo_build_claim": false,
+    "reuse_previous_binary_as_control": false,
+    "same_common_inputs_and_actual_compiler_flags": true,
+    "same_physical_source_and_target_paths": true,
+    "strip": "unchanged objcopy --strip-debug helper, all allocated ELF sections equivalent"
+  },
+  "measurement_placement": "host2-v4/J4",
+  "metric": {
+    "claim_wall_time": false,
+    "name": "Callgrind Ir",
+    "native_effects_and_regressions": "unverified",
+    "scope": "Cargo process only",
+    "sum_individual_pr_effects": false,
+    "trace_children": false
+  },
+  "pending_bindings": {
+    "both_workflow_integrity_checkpoint": null,
+    "collection_completion": null,
+    "concrete_evidence_payload": null,
+    "evidence_publication_execution": null,
+    "immutable_evidence_commit": null,
+    "independent_raw_review": null,
+    "independent_statistics": null,
+    "original_transfer_manifest": null,
+    "payload_source_freeze": null,
+    "portable_reproducer_schema_adapter_review": null,
+    "pr_body_update_approval": null,
+    "pr_body_update_executions": null,
+    "public_subset_conservation_review": null,
+    "public_subset_inventory": null,
+    "publication_git_blob_readback": null,
+    "published_byte_reproduction": null,
+    "publisher_execution_approval": null,
+    "publisher_operational_source_review": null,
+    "raw_56_profile_inventory": null,
+    "root_publisher_case": null,
+    "root_qualification_acceptance": null,
+    "terminal_collection": null
+  },
+  "production": {
+    "accepted_pair": {
+      "path": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/production-build/local-joint-stack181/root-pair-acceptance.json",
+      "sha256": "a62eb58f901177e578a683e7e4ea5d41f3bac14c73fe953c07b56190d9811c3c"
+    },
+    "source_input_proposal_sha256": "8944e05679457a08acca467c69e08eb2ec9138af038788e056a4a7216e903413",
+    "variant_sha256": {
+      "baseline": "4a80fa441367b53cc8489b126452865a441ef37fe4c59a0ace3fb7d5e3660ae6",
+      "candidate": "adeb8f94e62340b14a4bda2456b1b692b1c3083b9df4195c1da4d252fb7ea09a"
+    }
+  },
+  "protocol_sha256": "78f34e146b0da9a25f0d6f74bd5d339107c0c7df2aad6b4c6a606159d441936e",
+  "publication": {
+    "draft_state_preserved": true,
+    "evidence_branch_proposal": "charlie/uv-ohm-joint-183-185-stack181-evidence-20261022",
+    "evidence_prefix_proposal": "benchmarks/uv-dev-loop-20261022/joint-183-185-stack181/",
+    "existing_bodies_preserved_outside_reviewed_block": true,
+    "existing_pr_updates": [
+      {
+        "base_ref": "charlie/uv-share-workspace-dependencies",
+        "current_body_sha256": null,
+        "current_head_and_body_snapshot": null,
+        "expected_base_sha": "d81a093becb4321a975522624c2a383970f0d164",
+        "expected_head_sha": "e546abb9353061a13a2448e7b42df52d6ac520fc",
+        "head_ref": "charlie/uv-parser-allocations",
+        "historical_creation_receipt_sha256": "f489bf1688a28ec01e7653bb55f2ec41dae98b77acd3a909e811fd291725e858",
+        "number": 183,
+        "readback": null,
+        "reviewed_replacement_body_sha256": null,
+        "update_execution": null,
+        "url": "https://github.com/astral-sh/ohm-cargo/pull/183"
+      },
+      {
+        "base_ref": "charlie/uv-share-workspace-dependencies",
+        "current_body_sha256": null,
+        "current_head_and_body_snapshot": null,
+        "expected_base_sha": "d81a093becb4321a975522624c2a383970f0d164",
+        "expected_head_sha": "694d39ac73073f17008ce6e7bd53c1231ec6ceec",
+        "head_ref": "charlie/uv-scheduler-bitsets",
+        "historical_creation_receipt_sha256": "17a8e7a03d4d70bde41f8dba74d702ef85657ffc9086af79256eda71e1e1784f",
+        "number": 184,
+        "readback": null,
+        "reviewed_replacement_body_sha256": null,
+        "update_execution": null,
+        "url": "https://github.com/astral-sh/ohm-cargo/pull/184"
+      },
+      {
+        "base_ref": "charlie/uv-share-workspace-dependencies",
+        "current_body_sha256": null,
+        "current_head_and_body_snapshot": null,
+        "expected_base_sha": "d81a093becb4321a975522624c2a383970f0d164",
+        "expected_head_sha": "bcdd1f30d229eb8c66897799e76167f658126737",
+        "head_ref": "charlie/uv-package-id-ordering",
+        "historical_creation_receipt_sha256": "8f6aa0d9f8c7fec3a7dd113849b981acbf63db7ebbebcf7aa6d0cf58bc5222ab",
+        "number": 185,
+        "readback": null,
+        "reviewed_replacement_body_sha256": null,
+        "update_execution": null,
+        "url": "https://github.com/astral-sh/ohm-cargo/pull/185"
+      }
+    ],
+    "fresh_body_and_head_lease_required_for_each_update": true,
+    "fresh_evidence_only_root_commit": true,
+    "live_repository_permissions_and_identity_recheck": true,
+    "new_code_pr": false,
+    "remote_branch_absence_recheck": "required immediately before non-force push",
+    "repository": "astral-sh/ohm-cargo",
+    "retain_partial_publication_failure_without_automatic_retry": true,
+    "transport_host": null
+  },
+  "publication_qualified": false,
+  "qualification": {
+    "additive_individual_claim": false,
+    "kind": "prospective-instruction-only",
+    "native_phase_planned": false,
+    "native_phase_required": false,
+    "native_speed_and_regressions": "unverified",
+    "only_complete_integrity_checked_cohort_can_qualify": true,
+    "requires_all_primary_endpoints": true
+  },
+  "schema": 1,
+  "scope": "Direct combined validation of PR183-185 atop PR181, under the already prospective instruction-only protocol.",
+  "source": {
+    "baseline": {
+      "commit": "d81a093becb4321a975522624c2a383970f0d164",
+      "tree": "c4178b67e0b3a64a12b9b58f84b97323b99d734e"
+    },
+    "candidate": {
+      "bundle_sha256": "13a7243bc2fe50327b7fcac8c469a3023ab81e9fff653a245c587ef027b9eb18",
+      "commit": "0116a6d29f506f425d837348b26d40d6a668027d",
+      "patch_sha256": "7221273c873a8abe8ab33513cb25dfef0dea3827a7bca9f4ce33f5feb66ddad0",
+      "source_manifest_sha256": "19c69bfe7a3a6d81e3b82fffd4405438d035a3a0997a9e4ad6bdf50ee02208ff",
+      "source_record_sha256": "3e109c539e7bc712ad1b12b11453984202b63f94481f05067603b408fd5107c5",
+      "tree": "86a812c401f6a8966e5d9f428775f280c19b7b90"
+    },
+    "combined_source_ci_required_before_ir": {
+      "all_required_checks_must_succeed": true,
+      "commit": "0116a6d29f506f425d837348b26d40d6a668027d",
+      "success_receipt_must_be_frozen_before_ir": true,
+      "tree": "86a812c401f6a8966e5d9f428775f280c19b7b90"
+    },
+    "component_correctness_or_ci_does_not_test_combined_tree": true,
+    "components": [
+      {
+        "commit": "e546abb9353061a13a2448e7b42df52d6ac520fc",
+        "file_sha256": "d68ead4c02cf8edd676eaff280e0559596a1786833b399bd4818f3ebc1abaf71",
+        "name": "parser",
+        "patch_sha256": "1a8cdf6483044ce3c683313fc5bd802cade777d64d1dc62bb3f9dc2afa49d148",
+        "path": "src/workspace/parser/mod.rs",
+        "pr": 183,
+        "tree": "eaf2be878e89248d1ceabff75ce7d2d3272224dd"
+      },
+      {
+        "commit": "694d39ac73073f17008ce6e7bd53c1231ec6ceec",
+        "file_sha256": "5ca7ebbdf6011c82e4ba3a7957b09f9647a8662d8049765ba977103749b264f7",
+        "name": "scheduler",
+        "patch_sha256": "ef953c7ea9c1231ef1b5e1cad139a11b53e2675e89ec13470e2541d9eef05494",
+        "path": "src/util/dependency_queue.rs",
+        "pr": 184,
+        "tree": "807c36ec5326d42ca19a921819e1b3d1e2776cb2"
+      },
+      {
+        "commit": "bcdd1f30d229eb8c66897799e76167f658126737",
+        "file_sha256": "a5b4c58a07c73e09708a56acf176e52e88125b77fa6fbeba0fb3ed9f74492ad2",
+        "name": "package_id",
+        "patch_sha256": "bdaf1930258f5b92f3235e0d3375934c324c156304a39204effceb33cebac575",
+        "path": "src/workspace/package_id.rs",
+        "pr": 185,
+        "tree": "12f12327e7c56fb04386b7cfb4d61d5fd434bfc5"
+      }
+    ],
+    "excluded_prs": [
+      182
+    ],
+    "independent_combined_source_review_required_before_build": true,
+    "root_source_review_sha256": "9ab89067826ded2407c5223dc6d786c878161b6cad9113134f73f3bc8b37d9bf"
+  },
+  "source_ci": {
+    "all_eight_required_jobs_passed": true,
+    "exact_combined_head": "0116a6d29f506f425d837348b26d40d6a668027d",
+    "path": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/combined-warm-loop-source-ci/combined-ci-complete.json",
+    "run_id": 39696693562,
+    "sha256": "e74e9b45a1494da5a9953f41835367f7949059712ae0031bb9248158c7730ee2",
+    "source_branch": "codex/uv-joint-pr183-pr184-pr185"
+  },
+  "statistics": {
+    "adaptive_extension": false,
+    "bootstrap": "paired log ratios, percentile interval with original linear quantile",
+    "bootstrap_resamples": 20000,
+    "bootstrap_seed": 1701,
+    "both_complete_raw_workflows_required_before_any_effects": true,
+    "confidence": 0.99,
+    "effect": "1-exp(-mean(log(baseline/candidate)))",
+    "event": "Ir",
+    "gate": {
+      "each_order_geometric_mean_baseline_over_candidate_strictly_greater_than": 1,
+      "exact_measured_pairs_per_workflow": 12,
+      "maximum_two_sided_sign_p": 0.01,
+      "minimum_point_reduction": 0.01,
+      "reduction_ci_lower_bound_strictly_greater_than": 0,
+      "required_orders": [
+        "AB",
+        "BA"
+      ]
+    },
+    "interim_effect_inspection": false,
+    "metric": "cargo_ir",
+    "one_endpoint_can_rescue_other": false,
+    "pooling": false,
+    "posthoc_exclusions": false,
+    "sign_test": "exact two-sided paired sign test, ties excluded",
+    "statistical_unit": "randomized paired invocation",
+    "warmups_in_inference": false
+  },
+  "status": "source-only-unbound-publication-plan",
+  "uv": {
+    "commit": "3d82a6ad5a7eab8c68236553b7846517767c4b61",
+    "lock_sha256": "747296375bb1889689f3bbb1e0303bddd071d6a65117c00be50856448260d014",
+    "source_edits": false,
+    "tests_executed": false,
+    "workload": "warm unchanged cargo check and cargo test --no-run"
+  },
+  "workflow_order": [
+    "check",
+    "test"
+  ],
+  "workflows": [
+    {
+      "cargo_arguments": [
+        "-Zohm-defaults=yes",
+        "check",
+        "--locked",
+        "--offline",
+        "-j",
+        "8"
+      ],
+      "endpoint": "required-primary",
+      "fixed_plan": [
+        [
+          "baseline",
+          "candidate"
+        ],
+        [
+          "baseline",
+          "candidate"
+        ],
+        [
+          "baseline",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "baseline"
+        ],
+        [
+          "candidate",
+          "baseline"
+        ],
+        [
+          "baseline",
+          "candidate"
+        ],
+        [
+          "baseline",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "baseline"
+        ],
+        [
+          "candidate",
+          "baseline"
+        ],
+        [
+          "candidate",
+          "baseline"
+        ],
+        [
+          "candidate",
+          "baseline"
+        ],
+        [
+          "baseline",
+          "candidate"
+        ]
+      ],
+      "fixed_warmup_plan": [
+        [
+          "baseline",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "baseline"
+        ]
+      ],
+      "name": "check",
+      "pairs": 12,
+      "seed": 20261022151,
+      "warmup_pairs": 2,
+      "warmup_seed": 20261041104
+    },
+    {
+      "cargo_arguments": [
+        "-Zohm-defaults=yes",
+        "test",
+        "--no-run",
+        "--locked",
+        "--offline",
+        "-j",
+        "8"
+      ],
+      "endpoint": "required-primary",
+      "fixed_plan": [
+        [
+          "baseline",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "baseline"
+        ],
+        [
+          "baseline",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "baseline"
+        ],
+        [
+          "baseline",
+          "candidate"
+        ],
+        [
+          "baseline",
+          "candidate"
+        ],
+        [
+          "baseline",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "baseline"
+        ],
+        [
+          "candidate",
+          "baseline"
+        ],
+        [
+          "candidate",
+          "baseline"
+        ],
+        [
+          "baseline",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "baseline"
+        ]
+      ],
+      "fixed_warmup_plan": [
+        [
+          "candidate",
+          "baseline"
+        ],
+        [
+          "baseline",
+          "candidate"
+        ]
+      ],
+      "name": "test",
+      "pairs": 12,
+      "seed": 20261022152,
+      "warmup_pairs": 2,
+      "warmup_seed": 20261041119
+    }
+  ]
+}

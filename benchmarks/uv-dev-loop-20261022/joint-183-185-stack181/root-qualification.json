@@ -1,0 +1,131 @@
+{
+  "all_22_independent_checks_passed": true,
+  "binary_variants": {
+    "baseline": "4a80fa441367b53cc8489b126452865a441ef37fe4c59a0ace3fb7d5e3660ae6",
+    "candidate": "adeb8f94e62340b14a4bda2456b1b692b1c3083b9df4195c1da4d252fb7ea09a"
+  },
+  "both_required_primary_endpoints": true,
+  "controls_source_freeze_sha256": "6bf8ea46325ec0bea50903da22fb92ca0c39be2452aeed7844aba62f8f506aa6",
+  "created_at": "2026-10-22T04:59:46.116447+00:00",
+  "effects": [
+    {
+      "gate_checks": {
+        "at_least_one_percent": true,
+        "both_orders_positive": true,
+        "fixed_pairs": true,
+        "positive_99_percent_lower_bound": true,
+        "two_sided_sign_p_at_most_0_01": true
+      },
+      "interval_99": [
+        0.03496622291818352,
+        0.036512805422433736
+      ],
+      "losses": 0,
+      "measured_pairs": 12,
+      "metric": "Cargo-process Callgrind Ir",
+      "orders": {
+        "AB": {
+          "geometric_mean_ratio": 1.0363664788334022,
+          "pairs": 6
+        },
+        "BA": {
+          "geometric_mean_ratio": 1.037131783673008,
+          "pairs": 6
+        }
+      },
+      "passes_gate": true,
+      "reduction": 0.035446437360918126,
+      "required_primary": true,
+      "seed": 20261022151,
+      "sign_p": 0.00048828125,
+      "ties": 0,
+      "warmup_pairs_audited_excluded_from_inference": 2,
+      "wins": 12,
+      "workflow": "check"
+    },
+    {
+      "gate_checks": {
+        "at_least_one_percent": true,
+        "both_orders_positive": true,
+        "fixed_pairs": true,
+        "positive_99_percent_lower_bound": true,
+        "two_sided_sign_p_at_most_0_01": true
+      },
+      "interval_99": [
+        0.04147227840730128,
+        0.04303720863953475
+      ],
+      "losses": 0,
+      "measured_pairs": 12,
+      "metric": "Cargo-process Callgrind Ir",
+      "orders": {
+        "AB": {
+          "geometric_mean_ratio": 1.044268598989879,
+          "pairs": 6
+        },
+        "BA": {
+          "geometric_mean_ratio": 1.043498745336852,
+          "pairs": 6
+        }
+      },
+      "passes_gate": true,
+      "reduction": 0.0420387877951921,
+      "required_primary": true,
+      "seed": 20261022152,
+      "sign_p": 0.00048828125,
+      "ties": 0,
+      "warmup_pairs_audited_excluded_from_inference": 2,
+      "wins": 12,
+      "workflow": "test"
+    }
+  ],
+  "exact_source_ci": {
+    "path": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/combined-warm-loop-source-ci/combined-ci-complete.json",
+    "sha256": "e74e9b45a1494da5a9953f41835367f7949059712ae0031bb9248158c7730ee2"
+  },
+  "excluded_observations": 0,
+  "external_bindings_rehashed": 644,
+  "independent_review": {
+    "path": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/cargo-audit/joint-183-185-host2-ir-review/review.json",
+    "sha256": "006b75a64f5d326c1b188c42a7d48fcbb3918812dcdbc193c760aa7f3f3ba9de"
+  },
+  "independent_review_seal": {
+    "path": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/cargo-audit/joint-183-185-host2-ir-review/review-seal.json",
+    "sha256": "edeb09c0979ea590119b16471af57fdef69bd1865b3c22c628881b0632b4b9fb"
+  },
+  "measurement_seal_sha256": "14fe39acf1db3ea439ff5dc2b61ec40d78eabb6617d8714ae8f936154a0895f5",
+  "native_speed_and_regressions": "unverified",
+  "new_measurement_observations": 0,
+  "no_additive_claim": true,
+  "pooled_observations": 0,
+  "protocol_sha256": "78f34e146b0da9a25f0d6f74bd5d339107c0c7df2aad6b4c6a606159d441936e",
+  "publication_authority_created": false,
+  "qualifies_instruction_only": true,
+  "raw_integrity_sha256": "2f9d1d17049793e07af635a0d8559dd077d7245872d4e5985674a6b7bdbd441d",
+  "raw_profiles_verified": 56,
+  "review_files_rehashed": 17,
+  "root_collection_precheck_sha256": "710de8088df9ab8897f16ae73d48fa7fc1f02451e6881534ed95da0f063e539a",
+  "schema": 1,
+  "scope": "joint-183-185-instruction-only-qualification",
+  "source_identity": {
+    "baseline": {
+      "commit": "d81a093becb4321a975522624c2a383970f0d164",
+      "tree": "c4178b67e0b3a64a12b9b58f84b97323b99d734e"
+    },
+    "baseline_pr": 181,
+    "candidate": {
+      "commit": "0116a6d29f506f425d837348b26d40d6a668027d",
+      "tree": "86a812c401f6a8966e5d9f428775f280c19b7b90"
+    },
+    "component_prs": [
+      183,
+      184,
+      185
+    ],
+    "excluded_prs": [
+      182
+    ]
+  },
+  "status": "passed",
+  "transfer_manifest_sha256": "de81c8f1eb3d94fd63da45a3242ee385041e1c716b210b014c98cc7c45f58d1c"
+}

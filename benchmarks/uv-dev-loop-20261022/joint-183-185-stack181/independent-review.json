@@ -1,0 +1,352 @@
+{
+  "binary_variants": {
+    "baseline": "4a80fa441367b53cc8489b126452865a441ef37fe4c59a0ace3fb7d5e3660ae6",
+    "candidate": "adeb8f94e62340b14a4bda2456b1b692b1c3083b9df4195c1da4d252fb7ea09a"
+  },
+  "both_required_primary_endpoints": true,
+  "capture_authentication": {
+    "bytes": 5594,
+    "path": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/cargo-audit/joint-183-185-host2-ir-review/capture-authentication.json",
+    "sha256": "8fd5529c6836f4f5a5c169bdfe124654824bbf9bc4ad3bf405e3dfe565e94349"
+  },
+  "checks": [
+    {
+      "evidence": "Exact protocol 78f34e14 and source freeze 6bf8ea46 were authenticated before collection/effects. The baseline is PR181 d81a093b; candidate 0116a6d2 contains exactly PR183\u2013185 atop it, excluding PR182.",
+      "id": "prospective-protocol-and-source",
+      "status": "passed"
+    },
+    {
+      "evidence": "Root acceptance b9f2ef39 binds the independent initial setup review 66e53849 and seal a46a0def, both final configs, 847 input hashes, two original runtime aliases and nine absent workflow paths before warming.",
+      "id": "initial-setup-acceptance",
+      "status": "passed"
+    },
+    {
+      "evidence": "The exact IR receipt ff563c85 returned zero under approval b129b8fa. Its command, stdout/stderr byte hashes, source freeze, seal, delivery and setup acceptance are joined without reading execution streams for effects.",
+      "id": "approved-terminal-execution",
+      "status": "passed"
+    },
+    {
+      "evidence": "Collection receipt f1c7c4e9 returned zero under approval 0e0c4a75. Archive db3e0ee9, transfer de81c8f1 and completion ae1b7a28 match the root's supplied identities and independent byte replay.",
+      "id": "approved-terminal-collection",
+      "status": "passed"
+    },
+    {
+      "evidence": "All 431 collected regular files and 433 regular archive members match sizes and SHA256s. Membership is exact with no symlinks/duplicates/extra files; every archive member has the producer's mode 0644 and uid/gid zero with empty owner names.",
+      "id": "complete-archive-closure",
+      "status": "passed"
+    },
+    {
+      "evidence": "All 847 captured immutable input hashes exactly equal the initial sealed map. Both captured runtime aliases equal the independent original setup catalog, with no alias error or immutable mismatch.",
+      "id": "original-input-and-alias-equality",
+      "status": "passed"
+    },
+    {
+      "evidence": "The frozen independent Evidence validator verifies deployed controller/source bytes, actual fresh matched production pair/provenance and strip records, exact combined-tree green CI, uv identity, runtime, assets and both sealed configs.",
+      "id": "source-production-ci-runtime-joins",
+      "status": "passed"
+    },
+    {
+      "evidence": "The strict occupancy source remains 098f4e4d with no exceptions. The exact frozen driver/prepare commands and successful preparation records retain its checks; host, UID and fixed CPU affinity match the plan.",
+      "id": "strict-occupancy-unchanged",
+      "status": "passed"
+    },
+    {
+      "evidence": "Both workflows have exactly three warming calls per variant, the two fixed post-warm traces, and baseline/candidate untraced cross-switch calls. All return successfully with required fresh stderr and canonical Cargo identities; original uv identity is unchanged.",
+      "id": "fixed-untimed-preflight",
+      "status": "passed"
+    },
+    {
+      "evidence": "Before opening sample counters or effects, the already-reviewed pure strict parser d1b84fb9 accepted all four fixed traces. They contain only explicit taskset/Cargo successful executions; unknown/truncated/unpaired records are absent. No new trace or observation was collected.",
+      "id": "complete-preflight-trace-framing",
+      "status": "passed"
+    },
+    {
+      "evidence": "The frozen reviewer independently validates all 28 calls per workflow: 12 measured pairs plus two warmup pairs, fixed seeds and complete recorded order. All 56 profiles are present, with no missing or additional observations.",
+      "id": "both-complete-fixed-raw-datasets",
+      "status": "passed"
+    },
+    {
+      "evidence": "Each profile has exactly one events row and summary, a positive integer Ir, correct path/hash, and exact equality to both sample metric representations. JSON/JSONL/CSV tables, preparation/sample logs and runner logs agree.",
+      "id": "profile-and-table-identity",
+      "status": "passed"
+    },
+    {
+      "evidence": "Every invocation uses the sealed command/environment, exact installed variant hash and unchanged executable. Both configuration hashes and the complete before/after recorded input sets agree; canonical path and separate workflow target/cache rules remain fixed.",
+      "id": "per-invocation-config-and-binary",
+      "status": "passed"
+    },
+    {
+      "evidence": "All sample and preparation success/freshness checks pass with zero unwanted compilation signatures. Preflight exec allowlists contain no compiler, build-script or test executable; test remains --no-run.",
+      "id": "no-compiler-or-test-work",
+      "status": "passed"
+    },
+    {
+      "evidence": "Frozen raw-integrity 2f9d1d17 records both complete raw datasets and no effects evaluated at 04:50:51.870474 UTC. The accepted reviewer reaches neither statistics replay until both raw audits succeed; its returned result was inspected only after this record was checked.",
+      "id": "raw-audit-before-effects",
+      "status": "passed"
+    },
+    {
+      "evidence": "The independent statistics module recomputes paired log ratios with the original linear percentile quantile, 20,000 bootstrap resamples, seed 1701 and 99% intervals. Exact two-sided sign tests and AB/BA effects match the producer's retained analyses and gates.",
+      "id": "predetermined-independent-statistics",
+      "status": "passed"
+    },
+    {
+      "evidence": "Each endpoint has exactly six measured AB and six measured BA pairs. Both warmup pairs are retained and audited but excluded from inference; neither endpoint has a loss or tie.",
+      "id": "balanced-orders-and-warmups",
+      "status": "passed"
+    },
+    {
+      "evidence": "Check and test each exceed the predetermined 1% minimum, have strictly positive 99% lower bounds and both-order effects, and sign p <= 0.01. The joint decision is their logical AND; neither endpoint rescues the other.",
+      "id": "both-required-primary-gates",
+      "status": "passed"
+    },
+    {
+      "evidence": "No measurement was rerun, repaired, added, excluded, extended or pooled. Earlier host4/host8 attempts and individual PR studies supply no observations to this fresh host2 cohort.",
+      "id": "no-retry-exclusion-extension-or-pooling",
+      "status": "passed"
+    },
+    {
+      "evidence": "Qualification is the direct combined Cargo instruction effect for warmed unchanged uv check/test --no-run relative to PR181. There is no additive individual-PR claim, compiler-child effect, native-wall speed claim or established native-regression result.",
+      "id": "claim-scope",
+      "status": "passed"
+    },
+    {
+      "evidence": "All original collected/source/setup references and managed alias identities were rehashed after the successful replay. The exact local replay command, streams, receipt, raw-integrity record and independent statistics are retained; no host or workload execution occurred during review.",
+      "id": "post-review-preservation",
+      "status": "passed"
+    },
+    {
+      "evidence": "The first seal-packaging helper expected record objects where the authenticated initial setup seal uses bare SHA256 strings. It stopped before writing a review/seal; its source and error are retained. Only that metadata-schema adapter was corrected. Neither the frozen reviewer nor any measurement was rerun.",
+      "id": "packaging-history-retained",
+      "status": "passed"
+    }
+  ],
+  "collected_files_verified": 431,
+  "collection": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/joint-183-185-measurement-controls-host2-v4/executions/collect-ir01/collection",
+  "controls_source_freeze_sha256": "6bf8ea46325ec0bea50903da22fb92ca0c39be2452aeed7844aba62f8f506aa6",
+  "decisions": [
+    {
+      "checks": {
+        "at_least_one_percent": true,
+        "both_orders_positive": true,
+        "fixed_pairs": true,
+        "positive_99_percent_lower_bound": true,
+        "two_sided_sign_p_at_most_0_01": true
+      },
+      "directory": "/tmp/ohm-hillclimb-20261022-joint-183-185-stack181-host2/results/ir-check",
+      "interval_99": [
+        0.03496622291818352,
+        0.036512805422433736
+      ],
+      "native_speed_and_regressions": "unverified",
+      "passes_gate": true,
+      "reduction": 0.035446437360918126,
+      "scope": "Fixed independent pairs; no exclusions, extensions, pooling or interim effect inspection.",
+      "sign_p": 0.00048828125,
+      "workflow": "check"
+    },
+    {
+      "checks": {
+        "at_least_one_percent": true,
+        "both_orders_positive": true,
+        "fixed_pairs": true,
+        "positive_99_percent_lower_bound": true,
+        "two_sided_sign_p_at_most_0_01": true
+      },
+      "directory": "/tmp/ohm-hillclimb-20261022-joint-183-185-stack181-host2/results/ir-test",
+      "interval_99": [
+        0.04147227840730128,
+        0.04303720863953475
+      ],
+      "native_speed_and_regressions": "unverified",
+      "passes_gate": true,
+      "reduction": 0.0420387877951921,
+      "scope": "Fixed independent pairs; no exclusions, extensions, pooling or interim effect inspection.",
+      "sign_p": 0.00048828125,
+      "workflow": "test"
+    }
+  ],
+  "effects": [
+    {
+      "gate_checks": {
+        "at_least_one_percent": true,
+        "both_orders_positive": true,
+        "fixed_pairs": true,
+        "positive_99_percent_lower_bound": true,
+        "two_sided_sign_p_at_most_0_01": true
+      },
+      "interval_99": [
+        0.03496622291818352,
+        0.036512805422433736
+      ],
+      "losses": 0,
+      "measured_pairs": 12,
+      "metric": "Cargo-process Callgrind Ir",
+      "orders": {
+        "AB": {
+          "geometric_mean_ratio": 1.0363664788334022,
+          "pairs": 6
+        },
+        "BA": {
+          "geometric_mean_ratio": 1.037131783673008,
+          "pairs": 6
+        }
+      },
+      "passes_gate": true,
+      "reduction": 0.035446437360918126,
+      "required_primary": true,
+      "seed": 20261022151,
+      "sign_p": 0.00048828125,
+      "ties": 0,
+      "warmup_pairs_audited_excluded_from_inference": 2,
+      "wins": 12,
+      "workflow": "check"
+    },
+    {
+      "gate_checks": {
+        "at_least_one_percent": true,
+        "both_orders_positive": true,
+        "fixed_pairs": true,
+        "positive_99_percent_lower_bound": true,
+        "two_sided_sign_p_at_most_0_01": true
+      },
+      "interval_99": [
+        0.04147227840730128,
+        0.04303720863953475
+      ],
+      "losses": 0,
+      "measured_pairs": 12,
+      "metric": "Cargo-process Callgrind Ir",
+      "orders": {
+        "AB": {
+          "geometric_mean_ratio": 1.044268598989879,
+          "pairs": 6
+        },
+        "BA": {
+          "geometric_mean_ratio": 1.043498745336852,
+          "pairs": 6
+        }
+      },
+      "passes_gate": true,
+      "reduction": 0.0420387877951921,
+      "required_primary": true,
+      "seed": 20261022152,
+      "sign_p": 0.00048828125,
+      "ties": 0,
+      "warmup_pairs_audited_excluded_from_inference": 2,
+      "wins": 12,
+      "workflow": "test"
+    }
+  ],
+  "exact_source_ci": {
+    "path": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/combined-warm-loop-source-ci/combined-ci-complete.json",
+    "sha256": "e74e9b45a1494da5a9953f41835367f7949059712ae0031bb9248158c7730ee2"
+  },
+  "excluded_observations": 0,
+  "external_bindings_reverified": 644,
+  "files_verified": 431,
+  "finished_at": "2026-10-22T04:50:52.104198+00:00",
+  "frozen_reviewer_command": {
+    "bytes": 1272,
+    "path": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/cargo-audit/joint-183-185-host2-ir-review/replay-command.json",
+    "sha256": "68615b938173db957f1c61bccaff1457c0462ebda573882ac37336e7b3bcca70"
+  },
+  "frozen_reviewer_receipt": {
+    "bytes": 466,
+    "path": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/cargo-audit/joint-183-185-host2-ir-review/replay-receipt.json",
+    "sha256": "b81b518d889ef51a693e05877305b687669f6e22f9d8701863f541d37096d65c"
+  },
+  "frozen_reviewer_result": {
+    "bytes": 2692,
+    "path": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/cargo-audit/joint-183-185-host2-ir-review/frozen-review01/review.json",
+    "sha256": "96b94bf060683bd910a3ed221a4bfd618165f3db7fb60e4892c9db63a6b0ec09"
+  },
+  "host_or_workload_execution": false,
+  "immutable_inputs_verified": 847,
+  "independent_integrity_accepted": true,
+  "independent_qualification_accepted": true,
+  "independent_raw_integrity": {
+    "bytes": 743,
+    "path": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/cargo-audit/joint-183-185-host2-ir-review/frozen-review01/raw-integrity.json",
+    "sha256": "2f9d1d17049793e07af635a0d8559dd077d7245872d4e5985674a6b7bdbd441d"
+  },
+  "independent_statistics": {
+    "check": {
+      "bytes": 5314,
+      "path": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/cargo-audit/joint-183-185-host2-ir-review/frozen-review01/check-independent-statistics.json",
+      "sha256": "d7ba06ca32c12546520eacd3dd78473a153cfd3e50a2d3e650322b42ee399232"
+    },
+    "test": {
+      "bytes": 5291,
+      "path": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/cargo-audit/joint-183-185-host2-ir-review/frozen-review01/test-independent-statistics.json",
+      "sha256": "b47dfa15cc7adb1906ab04684709b138705683221d56a3a5e72297695ad500c5"
+    }
+  },
+  "initial_independent_setup_review": {
+    "bytes": 49817,
+    "path": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/compiler-audit/joint-host2-setup-review/review.json",
+    "sha256": "66e538497e1a9f726113f5add1fb938bb71cad47c555985dfc0cff4c24e0bec7"
+  },
+  "initial_independent_setup_seal": {
+    "bytes": 46703,
+    "path": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/compiler-audit/joint-host2-setup-review/review-seal.json",
+    "sha256": "a46a0def1a0e8f524e2d189047cb009c12540b0b63d5890c122958c60f12c5a5"
+  },
+  "initial_setup_acceptance": {
+    "bytes": 1269,
+    "path": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/joint-183-185-measurement-controls-host2-v4/root-setup-acceptance.json",
+    "sha256": "b9f2ef3943a1d0f59f8830b506be3ceb7edee42170e6bd9dcccf73769db28ace"
+  },
+  "measurement_seal_sha256": "14fe39acf1db3ea439ff5dc2b61ec40d78eabb6617d8714ae8f936154a0895f5",
+  "native_speed_and_regressions": "unverified",
+  "new_measurement_observations": 0,
+  "no_pooling_or_additive_claim": true,
+  "open_findings": [],
+  "operational_or_publication_authority_created": false,
+  "original_runtime_aliases_verified": 2,
+  "phase": "ir",
+  "pooled_observations": 0,
+  "protocol_sha256": "78f34e146b0da9a25f0d6f74bd5d339107c0c7df2aad6b4c6a606159d441936e",
+  "qualifies_instruction_only": true,
+  "raw_integrity_sha256": "2f9d1d17049793e07af635a0d8559dd077d7245872d4e5985674a6b7bdbd441d",
+  "raw_profiles_verified": 56,
+  "regular_archive_members_verified": 433,
+  "reviewer": "/root/audit_resume",
+  "root_collection_precheck": {
+    "bytes": 1471,
+    "path": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/joint-183-185-measurement-controls-host2-v4/root-ir01-collection-precheck.json",
+    "sha256": "710de8088df9ab8897f16ae73d48fa7fc1f02451e6881534ed95da0f063e539a"
+  },
+  "schema": 1,
+  "scope": "joint-183-185-host2-independent-ir-integrity-and-qualification",
+  "sealed_at": "2026-10-22T04:55:45.404092+00:00",
+  "setup": {
+    "both_configs_sealed_before_warming": true,
+    "canonical_cargo_path_shared_within_pair": true,
+    "exact_unmodified_uv": true,
+    "separate_check_and_test_target_and_cache": true,
+    "status": "passed"
+  },
+  "source_identity": {
+    "baseline": {
+      "commit": "d81a093becb4321a975522624c2a383970f0d164",
+      "tree": "c4178b67e0b3a64a12b9b58f84b97323b99d734e"
+    },
+    "baseline_pr": 181,
+    "candidate": {
+      "commit": "0116a6d29f506f425d837348b26d40d6a668027d",
+      "tree": "86a812c401f6a8966e5d9f428775f280c19b7b90"
+    },
+    "component_prs": [
+      183,
+      184,
+      185
+    ],
+    "excluded_prs": [
+      182
+    ]
+  },
+  "started_at": "2026-10-22T04:50:50.117249+00:00",
+  "status": "passed",
+  "transfer_manifest_sha256": "de81c8f1eb3d94fd63da45a3242ee385041e1c716b210b014c98cc7c45f58d1c"
+}

@@ -1,0 +1,160 @@
+{
+  "additive_claim": false,
+  "binary_variants": {
+    "baseline": "4a80fa441367b53cc8489b126452865a441ef37fe4c59a0ace3fb7d5e3660ae6",
+    "candidate": "adeb8f94e62340b14a4bda2456b1b692b1c3083b9df4195c1da4d252fb7ea09a"
+  },
+  "both_primary_gates_required": true,
+  "excluded_whole_attempts": [
+    {
+      "closure": {
+        "path": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/joint-183-185-measurement-controls-v2/root-ir01-failure-closure.json",
+        "sha256": "da868c81f7f4daa7d214f4544ab0eeb6e3198b9223a00b458783849315ac2cc6"
+      },
+      "closure_status": "closed-not-qualified",
+      "host": "host4",
+      "recompute_or_decode_excluded_effects": false,
+      "reuse_any_samples_or_profiles": false,
+      "whole_attempt_excluded": true
+    },
+    {
+      "closure": {
+        "path": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/joint-183-185-measurement-controls-host8-v3/root-ir01-entry-failure-acceptance.json",
+        "sha256": "963b91c78fce8883cc06b0966e3779b090da3ccfd8afcd03ac7387cf6c8cfd78"
+      },
+      "closure_status": "local-preservation-accepted-remote-state-pending",
+      "host": "host8",
+      "recompute_or_decode_excluded_effects": false,
+      "reuse_any_samples_or_profiles": false,
+      "whole_attempt_excluded": true
+    }
+  ],
+  "instructions": {
+    "check": {
+      "gate_checks": {
+        "at_least_one_percent": true,
+        "both_orders_positive": true,
+        "fixed_pairs": true,
+        "positive_99_percent_lower_bound": true,
+        "two_sided_sign_p_at_most_0_01": true
+      },
+      "interval_99": [
+        0.03496622291818352,
+        0.036512805422433736
+      ],
+      "losses": 0,
+      "orders": {
+        "AB": {
+          "geometric_mean_ratio": 1.0363664788334022,
+          "pairs": 6
+        },
+        "BA": {
+          "geometric_mean_ratio": 1.037131783673008,
+          "pairs": 6
+        }
+      },
+      "pairs": 12,
+      "passes_gate": true,
+      "reduction": 0.035446437360918126,
+      "seed": 20261022151,
+      "sign_p": 0.00048828125,
+      "ties": 0,
+      "wins": 12
+    },
+    "test": {
+      "gate_checks": {
+        "at_least_one_percent": true,
+        "both_orders_positive": true,
+        "fixed_pairs": true,
+        "positive_99_percent_lower_bound": true,
+        "two_sided_sign_p_at_most_0_01": true
+      },
+      "interval_99": [
+        0.04147227840730128,
+        0.04303720863953475
+      ],
+      "losses": 0,
+      "orders": {
+        "AB": {
+          "geometric_mean_ratio": 1.044268598989879,
+          "pairs": 6
+        },
+        "BA": {
+          "geometric_mean_ratio": 1.043498745336852,
+          "pairs": 6
+        }
+      },
+      "pairs": 12,
+      "passes_gate": true,
+      "reduction": 0.0420387877951921,
+      "seed": 20261022152,
+      "sign_p": 0.00048828125,
+      "ties": 0,
+      "wins": 12
+    }
+  },
+  "instrumented_elapsed_time_not_analyzed": true,
+  "measured_pairs_per_workflow": 12,
+  "native_speed_and_regressions": "unverified",
+  "protocol_sha256": "78f34e146b0da9a25f0d6f74bd5d339107c0c7df2aad6b4c6a606159d441936e",
+  "qualifies_instruction_only": true,
+  "raw_profiles": 56,
+  "schema": 1,
+  "scope": "direct combined PR183-185 Cargo instruction effect versus PR181",
+  "source": {
+    "baseline": {
+      "commit": "d81a093becb4321a975522624c2a383970f0d164",
+      "tree": "c4178b67e0b3a64a12b9b58f84b97323b99d734e"
+    },
+    "candidate": {
+      "bundle_sha256": "13a7243bc2fe50327b7fcac8c469a3023ab81e9fff653a245c587ef027b9eb18",
+      "commit": "0116a6d29f506f425d837348b26d40d6a668027d",
+      "patch_sha256": "7221273c873a8abe8ab33513cb25dfef0dea3827a7bca9f4ce33f5feb66ddad0",
+      "source_manifest_sha256": "19c69bfe7a3a6d81e3b82fffd4405438d035a3a0997a9e4ad6bdf50ee02208ff",
+      "source_record_sha256": "3e109c539e7bc712ad1b12b11453984202b63f94481f05067603b408fd5107c5",
+      "tree": "86a812c401f6a8966e5d9f428775f280c19b7b90"
+    },
+    "combined_source_ci_required_before_ir": {
+      "all_required_checks_must_succeed": true,
+      "commit": "0116a6d29f506f425d837348b26d40d6a668027d",
+      "success_receipt_must_be_frozen_before_ir": true,
+      "tree": "86a812c401f6a8966e5d9f428775f280c19b7b90"
+    },
+    "component_correctness_or_ci_does_not_test_combined_tree": true,
+    "components": [
+      {
+        "commit": "e546abb9353061a13a2448e7b42df52d6ac520fc",
+        "file_sha256": "d68ead4c02cf8edd676eaff280e0559596a1786833b399bd4818f3ebc1abaf71",
+        "name": "parser",
+        "patch_sha256": "1a8cdf6483044ce3c683313fc5bd802cade777d64d1dc62bb3f9dc2afa49d148",
+        "path": "src/workspace/parser/mod.rs",
+        "pr": 183,
+        "tree": "eaf2be878e89248d1ceabff75ce7d2d3272224dd"
+      },
+      {
+        "commit": "694d39ac73073f17008ce6e7bd53c1231ec6ceec",
+        "file_sha256": "5ca7ebbdf6011c82e4ba3a7957b09f9647a8662d8049765ba977103749b264f7",
+        "name": "scheduler",
+        "patch_sha256": "ef953c7ea9c1231ef1b5e1cad139a11b53e2675e89ec13470e2541d9eef05494",
+        "path": "src/util/dependency_queue.rs",
+        "pr": 184,
+        "tree": "807c36ec5326d42ca19a921819e1b3d1e2776cb2"
+      },
+      {
+        "commit": "bcdd1f30d229eb8c66897799e76167f658126737",
+        "file_sha256": "a5b4c58a07c73e09708a56acf176e52e88125b77fa6fbeba0fb3ed9f74492ad2",
+        "name": "package_id",
+        "patch_sha256": "bdaf1930258f5b92f3235e0d3375934c324c156304a39204effceb33cebac575",
+        "path": "src/workspace/package_id.rs",
+        "pr": 185,
+        "tree": "12f12327e7c56fb04386b7cfb4d61d5fd434bfc5"
+      }
+    ],
+    "excluded_prs": [
+      182
+    ],
+    "independent_combined_source_review_required_before_build": true,
+    "root_source_review_sha256": "9ab89067826ded2407c5223dc6d786c878161b6cad9113134f73f3bc8b37d9bf"
+  },
+  "warmup_pairs_per_workflow": 2
+}

@@ -1,0 +1,362 @@
+{
+  "cohort": "joint-183-185-stack181",
+  "execution": {
+    "build_host": "local",
+    "controller_cpu": [
+      8
+    ],
+    "existing_host3_hold_until_utc": "2026-10-22T02:00:00Z",
+    "host3_excluded": true,
+    "host_assignment_and_environment_pinned_before_operations": true,
+    "measurement_host": null,
+    "no_current_execution_authority": true,
+    "normal_uid": 1000,
+    "python_flags": [
+      "-I",
+      "-B"
+    ],
+    "workload_cpus": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ]
+  },
+  "failure_policy": {
+    "accept_other_endpoint_alone": false,
+    "automatic_retry": false,
+    "integrity_or_interruption": "retain all bytes, no qualification",
+    "performance_gate_failure": "joint cohort does not qualify",
+    "replace_partial_samples": false,
+    "retain_all_raw_profiles_logs_tables_metadata": true,
+    "separate_future_attempt_requires_prospective_decision": true
+  },
+  "fixtures": {
+    "ancestor_cargo_config_presence_hash_and_symlink_observations": true,
+    "both_ir_configs_and_all_inputs_sealed_before_warming": true,
+    "cross_switch_order": [
+      "baseline",
+      "candidate"
+    ],
+    "cross_switch_proof": "Both original untraced cross-switch calls must return zero with fresh stderr and exact canonical executable identity.",
+    "fixed_untimed_warm_calls_per_variant": 3,
+    "fresh_owned_measurement_root": true,
+    "fresh_prepare_and_sample_stderr_required": true,
+    "future_reports": "Only generated preflight report paths are reserved in the seal and bound before their fixed batch.",
+    "same_canonical_cargo_path_for_variants": true,
+    "same_target_and_cache_for_variants_within_workflow": true,
+    "separate_check_and_test_target_and_cache": true,
+    "strict_occupancy_exceptions": [],
+    "strict_occupancy_sha256": "098f4e4df9f4a9c334659a7b10d9c88b07c0213d58522040102dc003da53c4dd",
+    "target_and_shared_cache_absent_before_first_preflight": true,
+    "traced_successful_exec_allowlist": [
+      "/usr/bin/taskset",
+      "canonical Cargo path"
+    ],
+    "uv_clean_identity_before_and_after": true,
+    "zero_child_trace_scope": "Post-warmup traced probe for each variant; initial untimed warming may compile.",
+    "zero_compiler_build_script_test_exec_required": true
+  },
+  "instrumentation": {
+    "instrumented_wall_time_is_native_evidence": false,
+    "paired_sha256": "50d0cb2d4f595ccfa72d463fedb3ff4dadf9dfc1446c749d482d9ede8418c7cf",
+    "profiles_per_workflow_including_warmups": 28,
+    "scope": "Cargo process only, not compiler children",
+    "shim_binary_sha256": "42f912fe052732ef964681579a3bc1acbc50966f04babb5a452f25dfe4825973",
+    "shim_source_sha256": "503c8612d9972ed2ce4ef7b4431e569a8c98d0d5f0d1149dd0fff364513e691b",
+    "tool": "Callgrind 3.22",
+    "total_profiles": 56,
+    "trace_children": false
+  },
+  "matched_build": {
+    "codegen_units": 1,
+    "compiler": "stock Rust 1.99.0 x86_64-unknown-linux-gnu",
+    "debug": 1,
+    "embedded_git_head": "5e5d271d763d7beb38b48755e22bd59e93f02b97",
+    "features": [
+      "all-static",
+      "ohm-defaults"
+    ],
+    "fresh_pair_required": true,
+    "incremental": false,
+    "lto": "thin",
+    "opt_level": 3,
+    "order": [
+      "baseline",
+      "candidate"
+    ],
+    "pgo": false,
+    "preserve_linked_and_stripped_binaries": true,
+    "published_bootstrap_pgo_build_claim": false,
+    "reuse_previous_binary_as_control": false,
+    "same_common_inputs_and_actual_compiler_flags": true,
+    "same_physical_source_and_target_paths": true,
+    "strip": "unchanged objcopy --strip-debug helper, all allocated ELF sections equivalent"
+  },
+  "qualification": {
+    "additive_individual_claim": false,
+    "kind": "prospective-instruction-only",
+    "native_phase_planned": false,
+    "native_phase_required": false,
+    "native_speed_and_regressions": "unverified",
+    "only_complete_integrity_checked_cohort_can_qualify": true,
+    "requires_all_primary_endpoints": true
+  },
+  "schema": 1,
+  "scope": "Direct combined Cargo instruction effects of exactly PR183-185 atop PR181; independent new cohort.",
+  "source": {
+    "baseline": {
+      "commit": "d81a093becb4321a975522624c2a383970f0d164",
+      "tree": "c4178b67e0b3a64a12b9b58f84b97323b99d734e"
+    },
+    "candidate": {
+      "bundle_sha256": "13a7243bc2fe50327b7fcac8c469a3023ab81e9fff653a245c587ef027b9eb18",
+      "commit": "0116a6d29f506f425d837348b26d40d6a668027d",
+      "patch_sha256": "7221273c873a8abe8ab33513cb25dfef0dea3827a7bca9f4ce33f5feb66ddad0",
+      "source_manifest_sha256": "19c69bfe7a3a6d81e3b82fffd4405438d035a3a0997a9e4ad6bdf50ee02208ff",
+      "source_record_sha256": "3e109c539e7bc712ad1b12b11453984202b63f94481f05067603b408fd5107c5",
+      "tree": "86a812c401f6a8966e5d9f428775f280c19b7b90"
+    },
+    "combined_source_ci_required_before_ir": {
+      "all_required_checks_must_succeed": true,
+      "commit": "0116a6d29f506f425d837348b26d40d6a668027d",
+      "success_receipt_must_be_frozen_before_ir": true,
+      "tree": "86a812c401f6a8966e5d9f428775f280c19b7b90"
+    },
+    "component_correctness_or_ci_does_not_test_combined_tree": true,
+    "components": [
+      {
+        "commit": "e546abb9353061a13a2448e7b42df52d6ac520fc",
+        "file_sha256": "d68ead4c02cf8edd676eaff280e0559596a1786833b399bd4818f3ebc1abaf71",
+        "name": "parser",
+        "patch_sha256": "1a8cdf6483044ce3c683313fc5bd802cade777d64d1dc62bb3f9dc2afa49d148",
+        "path": "src/workspace/parser/mod.rs",
+        "pr": 183,
+        "tree": "eaf2be878e89248d1ceabff75ce7d2d3272224dd"
+      },
+      {
+        "commit": "694d39ac73073f17008ce6e7bd53c1231ec6ceec",
+        "file_sha256": "5ca7ebbdf6011c82e4ba3a7957b09f9647a8662d8049765ba977103749b264f7",
+        "name": "scheduler",
+        "patch_sha256": "ef953c7ea9c1231ef1b5e1cad139a11b53e2675e89ec13470e2541d9eef05494",
+        "path": "src/util/dependency_queue.rs",
+        "pr": 184,
+        "tree": "807c36ec5326d42ca19a921819e1b3d1e2776cb2"
+      },
+      {
+        "commit": "bcdd1f30d229eb8c66897799e76167f658126737",
+        "file_sha256": "a5b4c58a07c73e09708a56acf176e52e88125b77fa6fbeba0fb3ed9f74492ad2",
+        "name": "package_id",
+        "patch_sha256": "bdaf1930258f5b92f3235e0d3375934c324c156304a39204effceb33cebac575",
+        "path": "src/workspace/package_id.rs",
+        "pr": 185,
+        "tree": "12f12327e7c56fb04386b7cfb4d61d5fd434bfc5"
+      }
+    ],
+    "excluded_prs": [
+      182
+    ],
+    "independent_combined_source_review_required_before_build": true,
+    "root_source_review_sha256": "9ab89067826ded2407c5223dc6d786c878161b6cad9113134f73f3bc8b37d9bf"
+  },
+  "statistics": {
+    "adaptive_extension": false,
+    "bootstrap": "paired log ratios, percentile interval with original linear quantile",
+    "bootstrap_resamples": 20000,
+    "bootstrap_seed": 1701,
+    "both_complete_raw_workflows_required_before_any_effects": true,
+    "confidence": 0.99,
+    "effect": "1-exp(-mean(log(baseline/candidate)))",
+    "event": "Ir",
+    "gate": {
+      "each_order_geometric_mean_baseline_over_candidate_strictly_greater_than": 1,
+      "exact_measured_pairs_per_workflow": 12,
+      "maximum_two_sided_sign_p": 0.01,
+      "minimum_point_reduction": 0.01,
+      "reduction_ci_lower_bound_strictly_greater_than": 0,
+      "required_orders": [
+        "AB",
+        "BA"
+      ]
+    },
+    "interim_effect_inspection": false,
+    "metric": "cargo_ir",
+    "one_endpoint_can_rescue_other": false,
+    "pooling": false,
+    "posthoc_exclusions": false,
+    "sign_test": "exact two-sided paired sign test, ties excluded",
+    "statistical_unit": "randomized paired invocation",
+    "warmups_in_inference": false
+  },
+  "status": "prospective-source-bound-plan",
+  "uv": {
+    "commit": "3d82a6ad5a7eab8c68236553b7846517767c4b61",
+    "lock_sha256": "747296375bb1889689f3bbb1e0303bddd071d6a65117c00be50856448260d014",
+    "source_edits": false,
+    "tests_executed": false,
+    "workload": "warm unchanged cargo check and cargo test --no-run"
+  },
+  "workflow_order": [
+    "check",
+    "test"
+  ],
+  "workflows": [
+    {
+      "cargo_arguments": [
+        "-Zohm-defaults=yes",
+        "check",
+        "--locked",
+        "--offline",
+        "-j",
+        "8"
+      ],
+      "endpoint": "required-primary",
+      "fixed_plan": [
+        [
+          "baseline",
+          "candidate"
+        ],
+        [
+          "baseline",
+          "candidate"
+        ],
+        [
+          "baseline",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "baseline"
+        ],
+        [
+          "candidate",
+          "baseline"
+        ],
+        [
+          "baseline",
+          "candidate"
+        ],
+        [
+          "baseline",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "baseline"
+        ],
+        [
+          "candidate",
+          "baseline"
+        ],
+        [
+          "candidate",
+          "baseline"
+        ],
+        [
+          "candidate",
+          "baseline"
+        ],
+        [
+          "baseline",
+          "candidate"
+        ]
+      ],
+      "fixed_warmup_plan": [
+        [
+          "baseline",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "baseline"
+        ]
+      ],
+      "name": "check",
+      "pairs": 12,
+      "seed": 20261022151,
+      "warmup_pairs": 2,
+      "warmup_seed": 20261041104
+    },
+    {
+      "cargo_arguments": [
+        "-Zohm-defaults=yes",
+        "test",
+        "--no-run",
+        "--locked",
+        "--offline",
+        "-j",
+        "8"
+      ],
+      "endpoint": "required-primary",
+      "fixed_plan": [
+        [
+          "baseline",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "baseline"
+        ],
+        [
+          "baseline",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "baseline"
+        ],
+        [
+          "baseline",
+          "candidate"
+        ],
+        [
+          "baseline",
+          "candidate"
+        ],
+        [
+          "baseline",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "baseline"
+        ],
+        [
+          "candidate",
+          "baseline"
+        ],
+        [
+          "candidate",
+          "baseline"
+        ],
+        [
+          "baseline",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "baseline"
+        ]
+      ],
+      "fixed_warmup_plan": [
+        [
+          "candidate",
+          "baseline"
+        ],
+        [
+          "baseline",
+          "candidate"
+        ]
+      ],
+      "name": "test",
+      "pairs": 12,
+      "seed": 20261022152,
+      "warmup_pairs": 2,
+      "warmup_seed": 20261041119
+    }
+  ]
+}

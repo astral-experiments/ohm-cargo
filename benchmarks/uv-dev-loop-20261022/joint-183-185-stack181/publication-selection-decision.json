@@ -1,0 +1,36 @@
+{
+  "created_at": "2026-10-22T05:18:20.095458+00:00",
+  "host_or_publication_execution_authorized": false,
+  "original_archive_sha256": "db3e0ee9132c9d893833ae3271de1af47903d71ddc0e104b8534218e41964c89",
+  "original_collected_files": 431,
+  "original_regular_members": 433,
+  "public_collected_files": 430,
+  "public_regular_members": 432,
+  "public_replay_limit": "Public replay validates every selected member and the exact one-member exception. It does not claim to rehash the omitted private payload; full original closure was authenticated locally before any statistical interpretation.",
+  "requirements": [
+    "Retain the complete original archive locally unchanged.",
+    "Retain original transfer-manifest and collection-complete bytes, including the exact omitted row.",
+    "Retain all other432original members with exact names, bytes and modes.",
+    "Retain all56full profiles, all paired CSV/event/identity joins, both complete preflight workflows and setup/runtime alias evidence.",
+    "Public admission must reject every omission/addition except this exact named member, length and hash.",
+    "Preserve complete statistics and gate functions.",
+    "If further concrete out-of-scope metadata is found, report it before changing membership.",
+    "Preserve both original immutable-input hash maps and the measurement-seal entry for the omitted private provenance file without alteration."
+  ],
+  "root_qualification_sha256": "da7f203219aa9208834681eb6d007e1ce627d34f050175851169d6313bc0713c",
+  "schema": 1,
+  "scope": "joint-183-185-publication-member-selection",
+  "single_omitted_member": {
+    "bytes": 861,
+    "listed_in_original_measurement_seal": true,
+    "name": "remote/delivery-occupancy.json",
+    "reason": "The frozen public allowlist excludes the private delivery occupancy snapshot, which includes unrelated service process metadata. This is a sealed provenance input; its original row and seal entry remain intact. It contains no profile, sample, compiler trace, configuration or statistical result.",
+    "sha256": "2980ed3e4600d9d8bc5838c93dddb1c378109df07a1c7f206296c93d1e09c15c"
+  },
+  "source_plan_freeze_sha256": "ac8295edab4264c6002a5d045d1068ee7df4aa214fb73ba1f44abfc064d804db",
+  "status": "approved-local-assembly-only",
+  "supersedes_unexercised_decision": {
+    "path": "/home/dev-user/Documents/Codex/2026-10-20/i-want-you-to-hillclimb-on/work/joint-183-185-publication-selection-decision.json",
+    "sha256": "74776fdde5f69d8319166d0077978d2936cb5e5996f7aaa7ced206e4a96ded2b"
+  }
+}
