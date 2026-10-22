@@ -97,10 +97,22 @@ pub fn collect(gctx: &GlobalContext, root: Option<&Path>, dry_run: bool) -> Carg
         "Ohm build-cache cleanup requires Linux or macOS file locks"
     );
     let directory = gctx.home().as_path_unlocked().join(ROOTS);
+    let mut errors = Vec::new();
+    let mut register_roots = !dry_run;
     let roots = match root {
         Some(root) => vec![gctx.cwd().join(root).canonicalize()?],
         None => {
-            let mut roots = registered_roots(&directory)?;
+            let mut roots = match registered_roots(&directory) {
+                Ok(roots) => roots,
+                Err(error) => {
+                    errors.push(format!(
+                        "failed to read {} ({error:#})",
+                        directory.display()
+                    ));
+                    register_roots = false;
+                    Vec::new()
+                }
+            };
             if let Some(build) = &gctx.build_config()?.build_dir
                 && !build.raw_value().contains("{workspace-")
                 && let Some(path) = gctx.build_dir(&gctx.cwd().join("Cargo.toml"))?
@@ -134,15 +146,30 @@ pub fn collect(gctx: &GlobalContext, root: Option<&Path>, dry_run: bool) -> Carg
         })
     };
     let mut counts = build_cache_gc::FileCounts::default();
+    let explicit_root = root.is_some();
     for root in roots {
         gctx.shell()
             .verbose(|shell| shell.status("Checking", root.display()))?;
-        let summary = collect_root(&root, dry_run, current_ohm.as_deref())
-            .with_context(|| format!("failed to inspect {}", root.display()))?;
-        if !dry_run {
-            register_root(gctx, &root)?;
+        // A registered path can be reused for something else, especially under /tmp.
+        if !explicit_root
+            && fs::symlink_metadata(root.join(Layout::SHARED_REGISTRY_CACHE_MARKER))
+                .is_err_and(|error| error.kind() == std::io::ErrorKind::NotFound)
+        {
+            gctx.shell().status(
+                "Skipping",
+                format!("{} (shared cache marker is missing)", root.display()),
+            )?;
+            continue;
+        }
+        let mut summary = build_cache_gc::Summary::default();
+        let result = collect_root(&root, dry_run, current_ohm.as_deref(), &mut summary);
+        if let Err(error) = result {
+            errors.push(format!("{} ({error:#})", root.display()));
+        } else if register_roots && let Err(error) = register_root(gctx, &root) {
+            errors.push(format!("failed to register {} ({error:#})", root.display()));
         }
         counts.include(&summary.counts);
+        errors.extend(summary.errors);
         for detail in &summary.details {
             gctx.shell()
                 .status(if dry_run { "Would remove" } else { "Removing" }, detail)?;
@@ -154,6 +181,12 @@ pub fn collect(gctx: &GlobalContext, root: Option<&Path>, dry_run: bool) -> Carg
             gctx.shell()
                 .status("Skipping", format!("{} (cache is in use)", root.display()))?;
         }
+        gctx.shell().verbose(|shell| {
+            for path in &summary.blocking_locks {
+                shell.status("Busy lock", path.display())?;
+            }
+            Ok(())
+        })?;
     }
     let file_count = match (counts.files, counts.directories) {
         (0, 1) => "1 directory".to_owned(),
@@ -173,6 +206,11 @@ pub fn collect(gctx: &GlobalContext, root: Option<&Path>, dry_run: bool) -> Carg
     if dry_run {
         gctx.shell().warn("no files deleted due to --dry-run")?;
     }
+    ensure!(
+        errors.is_empty(),
+        "could not clean the following paths:\n  {}",
+        errors.join("\n  ")
+    );
     Ok(())
 }
 
@@ -212,18 +250,21 @@ fn collect_root(
     root: &Path,
     dry_run: bool,
     current_ohm: Option<&str>,
-) -> CargoResult<build_cache_gc::Summary> {
+    total: &mut build_cache_gc::Summary,
+) -> CargoResult<()> {
     let mut state = build_cache_gc::CollectionState::default();
     if dry_run {
-        return build_cache_gc::collect(root, true, current_ohm, &mut state);
+        return build_cache_gc::collect(root, true, current_ohm, &mut state, total);
     }
-    let mut total = build_cache_gc::Summary::default();
     loop {
-        let summary = build_cache_gc::collect(root, false, current_ohm, &mut state)?;
+        let mut summary = build_cache_gc::Summary::default();
+        let result = build_cache_gc::collect(root, false, current_ohm, &mut state, &mut summary);
         let progress = summary.retired > 0 || summary.deleted_entries > 0 || summary.advanced;
         total.retired += summary.retired;
         total.deleted_entries += summary.deleted_entries;
         total.counts.include(&summary.counts);
+        total.errors.extend(summary.errors);
+        total.blocking_locks.extend(summary.blocking_locks);
         total.retained = summary.retained;
         total.busy = summary.busy;
         total.pending = summary.pending;
@@ -237,8 +278,9 @@ fn collect_root(
                 total.details.push(detail);
             }
         }
+        result?;
         if !progress || !total.pending {
-            return Ok(total);
+            return Ok(());
         }
     }
 }
