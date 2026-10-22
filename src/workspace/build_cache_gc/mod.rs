@@ -474,13 +474,19 @@ impl CollectionLocks {
         }
         let mut guards = Vec::new();
         for path in paths {
-            let Some(guard) = try_lock(&path, !dry_run)? else {
-                summary.skip(namespace);
-                summary.blocking_locks.insert(path);
-                self.domains.insert(context, None);
-                return Ok(false);
-            };
-            guards.push(guard);
+            match try_lock(&path, !dry_run) {
+                Ok(Some(guard)) => {
+                    guards.push(guard);
+                    continue;
+                }
+                Ok(None) => {
+                    summary.skip(namespace);
+                    summary.blocking_locks.insert(path);
+                }
+                Err(error) => summary.path_error::<()>(&path, error)?,
+            }
+            self.domains.insert(context, None);
+            return Ok(false);
         }
         if dry_run {
             guards.clear();
@@ -783,7 +789,11 @@ fn collect_with_lock_budget(
                     .iter()
                     .all(|(source, _)| safely_absent(root, source));
             if completed {
-                namespace.finish(&directory, tracker.as_ref())?;
+                if namespace.finish(&directory, tracker.as_ref(), summary)? {
+                    summary.retired += 1;
+                } else {
+                    summary.advanced |= state.deferred.insert(namespace);
+                }
             } else if !partial {
                 if summary.skipped.len() + summary.errors.len() == skipped_before {
                     for (source, _) in &paths {
@@ -794,7 +804,6 @@ fn collect_with_lock_budget(
                 }
                 summary.advanced |= state.deferred.insert(namespace);
             }
-            summary.retired += usize::from(completed);
         }
         if let Some(transaction) = transaction {
             transaction.commit()?;
@@ -1166,7 +1175,30 @@ impl Namespace {
         paths
     }
 
-    fn finish(&self, directory: &Path, tracker: Option<&Tracker>) -> CargoResult<()> {
+    fn finish(
+        &self,
+        directory: &Path,
+        tracker: Option<&Tracker>,
+        summary: &mut Summary,
+    ) -> CargoResult<bool> {
+        let paths = match self {
+            Self::Dependency { .. } | Self::ThinLto { .. } | Self::LegacyThinLto(_) => Vec::new(),
+            Self::Context(id) => vec![
+                directory.join("contexts").join(format!("{id}.json")),
+                directory.join(LAST_USED).join(id),
+            ],
+            Self::LegacyWorkspace(id) => {
+                vec![directory.join("workspaces").join(format!("{id}.json"))]
+            }
+        };
+        for path in paths {
+            if plain_ancestors(directory, &path)?
+                && regular(&path)
+                && let Err(error) = fs::remove_file(&path)
+            {
+                return summary.path_error(&path, error.into());
+            }
+        }
         if let Some(tracker) = tracker {
             match self {
                 Self::Context(id) => tracker.forget_context(id)?,
@@ -1174,24 +1206,7 @@ impl Namespace {
                 Self::LegacyWorkspace(_) | Self::ThinLto { .. } | Self::LegacyThinLto(_) => {}
             }
         }
-        let paths = match self {
-            Self::Dependency { .. } | Self::ThinLto { .. } | Self::LegacyThinLto(_) => {
-                return Ok(());
-            }
-            Self::Context(id) => vec![
-                directory.join(LAST_USED).join(id),
-                directory.join("contexts").join(format!("{id}.json")),
-            ],
-            Self::LegacyWorkspace(id) => {
-                vec![directory.join("workspaces").join(format!("{id}.json"))]
-            }
-        };
-        for path in paths {
-            if plain_ancestors(directory, &path)? && regular(&path) {
-                fs::remove_file(path)?;
-            }
-        }
-        Ok(())
+        Ok(true)
     }
 }
 
@@ -1439,10 +1454,13 @@ fn drain_entry(
     dry_run: bool,
 ) -> CargoResult<()> {
     let owner = path.join("owner");
-    if absent(&owner)
-        || !fs::symlink_metadata(&owner)?.is_file()
-        || fs::read(&owner)? != b"ohm-build-gc-v1\n"
-    {
+    match fs::symlink_metadata(&owner) {
+        Ok(metadata) if !metadata.is_file() => return Ok(()),
+        Err(error) if error.kind() == io::ErrorKind::NotFound => return Ok(()),
+        Err(error) => return Err(error.into()),
+        Ok(_) => {}
+    }
+    if fs::read(&owner)? != b"ohm-build-gc-v1\n" {
         return Ok(());
     }
     if fs::read_dir(path)?.any(|child| {
@@ -2509,6 +2527,8 @@ mod tests {
 
     #[test]
     fn file_based_contexts_remain_collectable_without_creating_a_database() -> CargoResult<()> {
+        use std::os::unix::fs::PermissionsExt as _;
+
         let cache = Cache::new()?;
         cache.enroll()?;
         let record = cache.record("abcdef")?;
@@ -2527,6 +2547,34 @@ mod tests {
         let artifact = cache.artifact("build/registries/abcdef")?;
         assert_eq!(collect(&cache.root, true, None)?.retired, 1);
         assert!(artifact.is_dir());
+        let contexts = directory.join("contexts");
+        fs::set_permissions(&contexts, fs::Permissions::from_mode(0o555))?;
+        if tempfile::NamedTempFile::new_in(&contexts).is_err() {
+            let mut state = CollectionState::default();
+            let failed = collect_with_lock_budget(
+                &cache.root,
+                false,
+                SystemTime::now(),
+                Duration::from_secs(60),
+                None,
+                &mut state,
+            )?;
+            let record = contexts.join("abcdef.json");
+            assert_eq!(failed.counts.files, 1);
+            assert_eq!(failed.retired, 0);
+            assert!(failed.errors.iter().any(|error| {
+                error.starts_with(&format!("{} (Permission denied", record.display()))
+            }));
+            assert!(
+                state
+                    .deferred
+                    .contains(&Namespace::Context("abcdef".into()))
+            );
+            assert!(record.is_file());
+            assert!(directory.join("last-used/abcdef").is_file());
+            assert!(!artifact.exists());
+        }
+        fs::set_permissions(&contexts, fs::Permissions::from_mode(0o755))?;
         assert_eq!(collect(&cache.root, false, None)?.retired, 1);
         assert!(!artifact.exists());
         assert!(!directory.join("contexts/abcdef.json").exists());

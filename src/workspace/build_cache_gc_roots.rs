@@ -97,10 +97,22 @@ pub fn collect(gctx: &GlobalContext, root: Option<&Path>, dry_run: bool) -> Carg
         "Ohm build-cache cleanup requires Linux or macOS file locks"
     );
     let directory = gctx.home().as_path_unlocked().join(ROOTS);
+    let mut errors = Vec::new();
+    let mut register_roots = !dry_run;
     let roots = match root {
         Some(root) => vec![gctx.cwd().join(root).canonicalize()?],
         None => {
-            let mut roots = registered_roots(&directory)?;
+            let mut roots = match registered_roots(&directory) {
+                Ok(roots) => roots,
+                Err(error) => {
+                    errors.push(format!(
+                        "failed to read {} ({error:#})",
+                        directory.display()
+                    ));
+                    register_roots = false;
+                    Vec::new()
+                }
+            };
             if let Some(build) = &gctx.build_config()?.build_dir
                 && !build.raw_value().contains("{workspace-")
                 && let Some(path) = gctx.build_dir(&gctx.cwd().join("Cargo.toml"))?
@@ -134,7 +146,6 @@ pub fn collect(gctx: &GlobalContext, root: Option<&Path>, dry_run: bool) -> Carg
         })
     };
     let mut counts = build_cache_gc::FileCounts::default();
-    let mut errors = Vec::new();
     let explicit_root = root.is_some();
     for root in roots {
         gctx.shell()
@@ -154,7 +165,7 @@ pub fn collect(gctx: &GlobalContext, root: Option<&Path>, dry_run: bool) -> Carg
         let result = collect_root(&root, dry_run, current_ohm.as_deref(), &mut summary);
         if let Err(error) = result {
             errors.push(format!("{} ({error:#})", root.display()));
-        } else if !dry_run && let Err(error) = register_root(gctx, &root) {
+        } else if register_roots && let Err(error) = register_root(gctx, &root) {
             errors.push(format!("failed to register {} ({error:#})", root.display()));
         }
         counts.include(&summary.counts);

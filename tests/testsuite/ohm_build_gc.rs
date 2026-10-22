@@ -288,9 +288,51 @@ fn gc_finishes_healthy_roots_before_reporting_errors() {
 }
 
 #[cargo_test]
-fn gc_reports_inaccessible_paths_and_cleans_their_siblings() {
+fn gc_discovers_roots_when_the_root_registry_is_invalid() {
+    let registry = paths::cargo_home().join(".ohm-build-roots-v1");
+    fs::create_dir_all(paths::cargo_home()).unwrap();
+    fs::write(&registry, b"unrelated").unwrap();
+    let root = paths::home().join(".cache/ohm-build");
+    let context = root.join(".ohm-thinlto-cache").join("a".repeat(32));
+    fs::create_dir_all(&context).unwrap();
+    fs::write(root.join(".ohm-shared-registry-cache-v1"), b"").unwrap();
+    fs::write(context.join("artifact"), b"cached").unwrap();
+
+    cargo_process("gc --dry-run --build-dir")
+        .arg(&root)
+        .with_stderr_contains("[SUMMARY] 1 file, [FILE_SIZE]B total")
+        .run();
+    cargo_process("gc")
+        .with_status(101)
+        .with_stderr_contains("[REMOVED] 1 file, [FILE_SIZE]B total")
+        .with_stderr_contains(
+            "  failed to read [..]/.ohm-build-roots-v1 (invalid build-root registry)",
+        )
+        .run();
+    assert!(!context.exists());
+    assert_eq!(fs::read(registry).unwrap(), b"unrelated");
+}
+
+/// Restore the same inode on failure, even if GC has moved it into its trash.
+fn restrict_permissions(path: &Path, mode: u32) -> impl Drop {
     use std::os::unix::fs::PermissionsExt as _;
 
+    struct Restore(fs::File, fs::Permissions);
+    impl Drop for Restore {
+        fn drop(&mut self) {
+            self.0.set_permissions(self.1.clone()).unwrap();
+        }
+    }
+
+    let file = fs::File::open(path).unwrap();
+    let previous = file.metadata().unwrap().permissions();
+    file.set_permissions(fs::Permissions::from_mode(mode))
+        .unwrap();
+    Restore(file, previous)
+}
+
+#[cargo_test]
+fn gc_reports_inaccessible_paths_and_cleans_their_siblings() {
     let root = shared_root();
     let registry = root.join("debug/build/registries/0123456789abcdef");
     let workspace = root.join("debug/build/workspaces/0123456789abcdef");
@@ -303,27 +345,39 @@ fn gc_reports_inaccessible_paths_and_cleans_their_siblings() {
     fs::write(blocked.join("blocked-read"), b"b").unwrap();
     fs::write(workspace.join("writable"), b"c").unwrap();
     let registries = registry.parent().unwrap();
-    fs::set_permissions(&blocked, fs::Permissions::from_mode(0o000)).unwrap();
+    let blocked_mode = restrict_permissions(&blocked, 0o000);
     if fs::read_dir(&blocked).is_ok() {
         // Privileged test runners can bypass the permissions this test exercises.
-        fs::set_permissions(&blocked, fs::Permissions::from_mode(0o755)).unwrap();
         return;
     }
-    fs::set_permissions(registries, fs::Permissions::from_mode(0o555)).unwrap();
+    let registries_mode = restrict_permissions(registries, 0o555);
 
-    cargo_process("gc --dry-run --build-dir")
+    let preview = cargo_process("gc --color never --dry-run --build-dir")
         .arg(&root)
         .with_status(101)
-        .with_stderr_contains("[SUMMARY] 2 files, [FILE_SIZE]B total")
-        .with_stderr_contains("  [..]/unreadable (Permission denied [..])")
+        .with_stderr_contains("[ERROR] could not clean the following paths:")
         .run();
-    cargo_process("gc --build-dir")
+    let stderr = String::from_utf8(preview.stderr).unwrap();
+    assert!(stderr.contains("Summary 2 files, 2B total"), "{stderr}");
+    assert!(
+        stderr.contains(&format!("{} (Permission denied", blocked.display())),
+        "{stderr}"
+    );
+    let result = cargo_process("gc --color never --build-dir")
         .arg(&root)
         .with_status(101)
-        .with_stderr_contains("[REMOVED] 1 file, [FILE_SIZE]B total")
-        .with_stderr_contains("  [..]/registries/0123456789abcdef (Permission denied [..])")
-        .with_stderr_contains("  [..]/payload/unreadable (Permission denied [..])")
+        .with_stderr_contains("[ERROR] could not clean the following paths:")
         .run();
+    let stderr = String::from_utf8(result.stderr).unwrap();
+    assert!(stderr.contains("Removed 1 file, 1B total"), "{stderr}");
+    assert!(
+        stderr.contains(&format!("{} (Permission denied", registry.display())),
+        "{stderr}"
+    );
+    assert!(
+        stderr.contains("/payload/unreadable (Permission denied"),
+        "{stderr}"
+    );
     assert!(registry.join("blocked-rename").is_file());
     let trash = root.join("debug/.ohm-gc-trash-v1");
     let payload = fs::read_dir(trash)
@@ -334,16 +388,57 @@ fn gc_reports_inaccessible_paths_and_cleans_their_siblings() {
         .path()
         .join("payload");
     assert!(!payload.join("writable").exists());
-    fs::set_permissions(registries, fs::Permissions::from_mode(0o755)).unwrap();
-    fs::set_permissions(
-        payload.join("unreadable"),
-        fs::Permissions::from_mode(0o755),
-    )
-    .unwrap();
-    cargo_process("gc --build-dir")
+    drop((registries_mode, blocked_mode));
+    let retry = cargo_process("gc --color never --build-dir")
         .arg(root)
-        .with_stderr_contains("[REMOVED] 2 files, [FILE_SIZE]B total")
         .run();
+    let stderr = String::from_utf8(retry.stderr).unwrap();
+    assert!(stderr.contains("Removed 2 files, 2B total"), "{stderr}");
+    assert!(!payload.exists());
+    assert!(!registry.exists());
+}
+
+#[cargo_test]
+fn inaccessible_context_lock_preserves_only_its_context() {
+    let root = shared_root();
+    let registries = root.join("debug/build/registries");
+    let blocked = "v2-0000000000000001";
+    let peer = "v2-0000000000000002";
+    for context in [blocked, peer] {
+        fs::create_dir_all(registries.join(context)).unwrap();
+        fs::write(registries.join(context).join("artifact"), b"x").unwrap();
+    }
+    fs::write(root.join(".ohm-shared-registry-cache-v1"), b"").unwrap();
+    fs::write(root.join("debug/.cargo-build-lock"), b"").unwrap();
+    let metadata = root.join(".ohm-gc-v1");
+    fs::create_dir(&metadata).unwrap();
+    let lock = metadata.join(format!("context-{blocked}.lock"));
+    fs::write(&lock, b"").unwrap();
+    let _mode = restrict_permissions(&lock, 0o000);
+    if fs::File::open(&lock).is_ok() {
+        return;
+    }
+    for (command, summary) in [("gc --dry-run", "Summary"), ("gc", "Removed")] {
+        let result = cargo_process(command)
+            .args(&["--color", "never"])
+            .arg("--build-dir")
+            .arg(&root)
+            .with_status(101)
+            .with_stderr_contains("[ERROR] could not clean the following paths:")
+            .run();
+        let stderr = String::from_utf8(result.stderr).unwrap();
+        assert!(
+            stderr.contains(&format!("{summary} 1 file, 1B total")),
+            "{stderr}"
+        );
+        assert!(
+            stderr.contains(&format!("{} (Permission denied", lock.display())),
+            "{stderr}"
+        );
+        assert!(!stderr.contains("(in use)"), "{stderr}");
+        assert!(registries.join(blocked).join("artifact").is_file());
+        assert_eq!(registries.join(peer).exists(), command == "gc --dry-run");
+    }
 }
 
 #[cargo_test]
