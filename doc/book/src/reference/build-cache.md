@@ -119,19 +119,23 @@ also removes its default target. An explicit target outside a removed checkout
 stays at its configured path. GC forgets a vanished checkout's registration.
 Another live workspace using the same external target can still make it eligible.
 
-On Linux and macOS, `cargo +ohm gc` reclaims these categories from shared
-build directories:
+On Linux and macOS, `cargo +ohm gc` uses a **one-hour inactivity cutoff** by
+default. Pass `--max-age <DURATION>` to change the cutoff for this run. It
+applies to enrolled workspace targets, shared compiler contexts, individual
+registry dependency builds, and ThinLTO backend objects.
+
+In shared build directories, GC reclaims the following artifacts.
 
 * Global registry and ThinLTO contexts from older Ohm releases, immediately after an upgrade,
   even if the old compiler remains installed and was used recently. A concrete
   compiler executable or driver library being removed or replaced also makes its
   context eligible immediately.
-* Other tracked compiler contexts that have not been used for at least one hour.
-* Individual tracked dependency builds that have not been used for at least one
-  hour, even while other dependencies keep their compiler context active. Versions,
+* Other tracked compiler contexts whose last use meets the inactivity cutoff.
+* Individual tracked dependency builds that meet the cutoff, even while
+  other dependencies keep their compiler context active. Versions,
   feature combinations, profiles, and targets retain their own usage histories.
-* Individual ThinLTO backend objects that have not been used for at least one
-  hour, even within a context still used by other builds. Abandoned temporary
+* Individual ThinLTO backend objects that meet the cutoff, even within a
+  context still used by other builds. Abandoned temporary
   entries use the same inactivity threshold.
 * Recognized legacy registry namespaces with no context or usage records, and
   private intermediates, incremental state, and scratch files left in the global
@@ -148,7 +152,7 @@ workspace root and target paths. For a default in-tree target, the complete
 path starts in the checkout, for example
 `/code/my-worktree/target/debug/build/workspaces/…`.
 
-After a full hour without an Ohm build, check, or worktree seed using a target,
+Once a target reaches the cutoff without an Ohm build, check, or worktree seed,
 manual GC can clean its private outputs on **any compiler release**. This
 includes final binaries, documentation, incremental state and private compiler
 intermediates, including older unmarked directories. A fresh build or check
@@ -178,7 +182,7 @@ A build context groups artifacts that share a compiler, build tools, and relevan
 configuration and environment. Multiple projects, crate versions, and feature
 combinations can share one context. A dependency build remains reusable while any
 project uses it. After removing or updating a dependency, its old build becomes
-eligible once it has gone unused for an hour; using other dependencies in the same
+eligible once it reaches the cutoff. Using other dependencies in the same
 context does not extend that deadline. Cargo removes the complete build directory,
 including its fingerprints and build-script state, and rebuilds it on demand.
 
@@ -190,7 +194,7 @@ Ohm release does not immediately evict newer releases' contexts.
 
 Older releases have no grace period. After upgrading, explicitly running `cargo +ohm gc`
 can reclaim the previous release's global registry and ThinLTO contexts immediately; an
-upgrade does not invoke GC automatically. The one-hour inactivity rule still
+upgrade does not invoke GC automatically. The selected inactivity cutoff still
 applies to the current release's contexts. Legacy namespaces without records are
 also discarded immediately, even if their artifacts could still be reused.
 They rebuild on demand if needed again.
@@ -201,8 +205,10 @@ compiled dependency variant has one row, shared by all worktrees that use it.
 Builds check last use at start and completion, including fresh transitive
 dependencies, cache hits, and failures. Like Cargo's downloaded-source tracker,
 timestamps use a five-minute update resolution. Ohm rounds use upward, so an entry
-always gets a full hour of inactivity before eviction and may remain for up to
-five additional minutes. Repeated warm builds within that interval only read the
+gets the full requested period of inactivity and may remain for up to five
+additional minutes. Even with `--max-age 0s`, a build at 12:01 recorded as
+12:05 stays protected until 12:05. Active leases still postpone cleanup.
+Repeated warm builds within the five-minute interval only read the
 database; new dependencies and elapsed intervals are recorded in one transaction.
 Short builds skip the completion query entirely. No artifact scan or
 per-worktree ownership record is needed. The database uses Cargo's existing
@@ -230,7 +236,7 @@ rechecks each candidate under its lock before removal, so dependencies reused
 between batches stay available. Dependencies that become eligible after the scan
 are considered by the next invocation. Rows are removed with their artifacts, including
 all dependency rows when their compiler context is retired. Importing a worktree
-snapshot conservatively refreshes the entire context's dependencies for one hour
+snapshot conservatively refreshes the recorded use of every dependency in its context
 because an import does not resolve a build graph.
 
 Earlier file-based context records remain readable for cleanup. New builds write
@@ -273,17 +279,22 @@ existing global registry artifacts remain reusable.
 It also discovers marked legacy roots in the configured build directory and up
 to four directory levels beneath `$HOME/.cache`, `$XDG_CACHE_HOME`, and, on macOS,
 `$HOME/Library/Caches`. Discovery does not follow directory symlinks or descend
-into build profiles. Passing `--build-dir PATH` limits the entire run to that
-shared root. Collecting it registers it for subsequent runs. Dry runs do not enroll
-roots or create metadata. The command can run from any directory, without a
-Cargo workspace:
+into build profiles. Passing `--build-dir PATH` collects only that shared root
+and skips enrolled workspace targets. Collecting it registers it for subsequent
+runs. Dry runs do not enroll roots or create metadata.
+
+The command can run from any directory. For `--max-age`, use a nonnegative
+fixed duration in Jiff's syntax. A day is 24 hours and a week is seven days.
+Durations with a nonzero month or year component are rejected.
 
 ```console
 cargo +ohm gc --dry-run
+cargo +ohm gc --max-age 30min --dry-run
+cargo +ohm gc --max-age 1hr --dry-run
+cargo +ohm gc --max-age 2d --dry-run --build-dir /path/to/shared-build
 cargo +ohm gc
 ```
 
-To select one root explicitly, add `--build-dir /path/to/shared-build`.
 `--dry-run` lists idle workspace targets, eligible private or shared compiler
 contexts, and legacy namespaces. It estimates their file
 and byte totals, and leaves artifacts and records unchanged. For example:
@@ -315,8 +326,8 @@ If GC encounters a permission error or an unreadable database, it finishes
 independent work, prints the totals, and exits with an error listing the affected
 paths. `--quiet` suppresses routine output.
 
-Cleanup only removes recognized namespaces inside marked shared build roots.
-It preserves external targets, ordinary checkout targets, unknown directory
+Outside enrolled workspace targets, cleanup removes only recognized namespaces
+inside marked shared build roots. It preserves unrelated targets, unknown directory
 shapes, and downloaded sources in `CARGO_HOME`. ThinLTO caches in private build
 directories retain their separate size and age policy and are removed by
 `cargo clean`. This command does not apply a disk-size limit to active shared
