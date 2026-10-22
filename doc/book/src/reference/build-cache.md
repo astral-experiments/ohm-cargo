@@ -191,8 +191,10 @@ workspace's private build directory instead.
 The new context directory preserves reuse across compatible worktrees. Existing
 flat ThinLTO namespaces are not imported; they are legacy data for manual GC.
 
-Explicit GC queries expired entries, scans outside build locks, and rechecks their
-usage before bounded retirement. Rows are removed with their artifacts, including
+Explicit GC queues expired dependencies once in memory for each shared root. It
+rechecks each candidate under its lock before removal, so dependencies reused
+between batches stay available. Dependencies that become eligible after the scan
+are considered by the next invocation. Rows are removed with their artifacts, including
 all dependency rows when their compiler context is retired. Importing a worktree
 snapshot conservatively refreshes the entire context's dependencies for one hour
 because an import does not resolve a build graph.

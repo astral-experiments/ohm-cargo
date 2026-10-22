@@ -224,6 +224,13 @@ impl Tracker {
         .transpose()
     }
 
+    /// Only understood compiler records authorize eviction of individual artifacts.
+    pub(super) fn supported_context(&self, id: &str) -> Option<Context> {
+        self.context(id)
+            .ok()?
+            .filter(|context| context.record.supported() && context.record.context == id)
+    }
+
     /// Records selected units, including fresh hits, at Cargo's update resolution.
     /// Rounding upward guarantees a full hour of inactivity despite skipped writes.
     /// A snapshot import has no resolved graph and protects the whole context.
