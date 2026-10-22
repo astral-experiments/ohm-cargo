@@ -175,7 +175,7 @@ pub fn collect(gctx: &GlobalContext, root: Option<&Path>, dry_run: bool) -> Carg
     enum Cache<'a> {
         Shared(&'a Path),
         #[cfg(any(target_os = "linux", target_os = "macos"))]
-        Private(&'a build_cache_gc::worktrees::registry::ManagedTarget),
+        Private(&'a [build_cache_gc::worktrees::registry::ManagedTarget]),
     }
     let caches = roots.iter().map(|root| Cache::Shared(root.as_path()));
     #[cfg(any(target_os = "linux", target_os = "macos"))]
@@ -200,13 +200,17 @@ pub fn collect(gctx: &GlobalContext, root: Option<&Path>, dry_run: bool) -> Carg
         build_cache_gc::worktrees::provenance::current_moving_release(gctx)
     };
     #[cfg(any(target_os = "linux", target_os = "macos"))]
-    let caches = caches.chain(targets.iter().map(Cache::Private));
+    let caches = caches.chain(
+        targets
+            .chunk_by(|left, right| left.target == right.target)
+            .map(Cache::Private),
+    );
     let explicit_root = root.is_some();
     for cache in caches {
         let root = match &cache {
             Cache::Shared(root) => *root,
             #[cfg(any(target_os = "linux", target_os = "macos"))]
-            Cache::Private(target) => &target.target,
+            Cache::Private(owners) => &owners[0].target,
         };
         gctx.shell()
             .verbose(|shell| shell.status("Checking", root.display()))?;
@@ -230,8 +234,10 @@ pub fn collect(gctx: &GlobalContext, root: Option<&Path>, dry_run: bool) -> Carg
         let result = match &cache {
             Cache::Shared(_) => collect_root(root, dry_run, current_ohm.as_deref(), &mut summary),
             #[cfg(any(target_os = "linux", target_os = "macos"))]
-            Cache::Private(target) => build_cache_gc::worktrees::collect(
-                target,
+            Cache::Private(owners) => build_cache_gc::worktrees::collect(
+                owners,
+                &targets,
+                &roots,
                 dry_run,
                 moving_release.as_ref(),
                 &mut summary,

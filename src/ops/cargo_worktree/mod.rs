@@ -12,6 +12,7 @@ use crate::CargoResult;
 use crate::compiler::Layout;
 use crate::compiler::fingerprint::dep_info::{DepInfoPathType, EncodedDepInfo};
 use crate::compiler::fingerprint::{OHM_WORKTREE_SCRIPT_RERUN, OHM_WORKTREE_SCRIPT_RESULT};
+use crate::compiler::layout::PrivateBuildLease;
 use crate::util::file_clone::try_clone;
 use crate::util::{Filesystem, GlobalContext};
 use crate::workspace::Workspace;
@@ -104,26 +105,12 @@ pub fn worktree_add(gctx: &GlobalContext, opts: &WorktreeOptions) -> CargoResult
         ensure_absent(&target, "destination target directory")?;
         let mut recipient = Workspace::new(&manifest, gctx)?;
         recipient.set_target_dir(Filesystem::new(target.clone()));
-        let seeded =
-            if gctx.cli_unstable().ohm_worktree_seeds() && donor.shared_registry_cache_enabled() {
-                seed_shared_build(&donor, &recipient)?
-            } else {
-                Seeded::default()
-            };
-        #[cfg(any(target_os = "linux", target_os = "macos"))]
-        if let Err(error) = Layout::lock_private_root(&recipient, false).and_then(|lease| {
-            crate::workspace::build_cache_gc::worktrees::registry::register_build(
-                &recipient,
-                &Layout::shared_workspace_namespace(&recipient),
-                lease.file(),
-            )
-        }) {
-            gctx.shell().warn(format!(
-                "could not register {} for private build-cache cleanup ({error:#})",
-                target.display()
-            ))?;
+        if gctx.cli_unstable().ohm_worktree_seeds() && donor.shared_registry_cache_enabled() {
+            return seed_shared_build(&donor, &recipient);
         }
-        Ok(seeded)
+        #[cfg(any(target_os = "linux", target_os = "macos"))]
+        register_created_target(&recipient, PrivateBuildLease::acquire(&recipient, false))?;
+        Ok(Seeded::default())
     };
     let seeded = seed().with_context(|| {
         format!(
@@ -194,8 +181,8 @@ fn seed_shared_build(donor: &Workspace<'_>, recipient: &Workspace<'_>) -> CargoR
         "worktree seeding requires the same separate build directory in both worktrees"
     );
     let _consumer = crate::workspace::build_cache_gc_lease::ConsumerLease::acquire(&shared_root)?;
-    let _donor_guard = Layout::lock_private_root(donor, true)?;
-    let _recipient_guard = Layout::lock_private_root(recipient, true)?;
+    let _donor_guard = PrivateBuildLease::acquire(donor, true)?;
+    let _recipient_guard = PrivateBuildLease::acquire(recipient, true)?;
     let source_root = donor.canonical_build_path(donor.build_dir().as_path_unlocked());
     let destination_root = recipient.canonical_build_path(recipient.build_dir().as_path_unlocked());
     let source_namespace = Layout::shared_workspace_namespace(donor);
@@ -251,7 +238,29 @@ fn seed_shared_build(donor: &Workspace<'_>, recipient: &Workspace<'_>) -> CargoR
             seeded.unclonable_profiles += 1;
         }
     }
+    #[cfg(any(target_os = "linux", target_os = "macos"))]
+    register_created_target(recipient, Ok(_recipient_guard))?;
     Ok(seeded)
+}
+
+#[cfg(any(target_os = "linux", target_os = "macos"))]
+fn register_created_target(
+    ws: &Workspace<'_>,
+    lease: CargoResult<PrivateBuildLease>,
+) -> CargoResult<()> {
+    if let Err(error) = lease.and_then(|lease| {
+        crate::workspace::build_cache_gc::worktrees::registry::register_build(
+            ws,
+            &Layout::shared_workspace_namespace(ws),
+            lease.file(),
+        )
+    }) {
+        ws.gctx().shell().warn(format!(
+            "could not register {} for private build-cache cleanup ({error:#})",
+            ws.target_dir().as_path_unlocked().display()
+        ))?;
+    }
+    Ok(())
 }
 
 /// Publishes a complete profile, or discards its entire stage when cloning is unavailable.

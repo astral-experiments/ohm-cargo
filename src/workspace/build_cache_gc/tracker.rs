@@ -7,7 +7,7 @@ use std::fs;
 use std::path::{Path, PathBuf};
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
-use anyhow::ensure;
+use anyhow::{Context as _, ensure};
 use cargo_util::paths;
 use rusqlite::config::DbConfig;
 use rusqlite::{Connection, OpenFlags, OptionalExtension as _, params};
@@ -25,6 +25,19 @@ pub(super) type Timestamp = i64;
 
 pub(super) fn timestamp(time: SystemTime) -> CargoResult<Timestamp> {
     Ok(time.duration_since(UNIX_EPOCH)?.as_nanos().try_into()?)
+}
+
+/// Round upward so skipping activity writes never shortens the inactivity window.
+pub(super) fn used_through(time: SystemTime) -> CargoResult<SystemTime> {
+    let resolution = Duration::from_secs(UPDATE_RESOLUTION);
+    let buckets = time
+        .duration_since(UNIX_EPOCH)?
+        .as_nanos()
+        .div_ceil(resolution.as_nanos());
+    let seconds = (buckets * u128::from(UPDATE_RESOLUTION)).try_into()?;
+    UNIX_EPOCH
+        .checked_add(Duration::from_secs(seconds))
+        .context("activity timestamp is out of range")
 }
 
 pub(crate) struct Tracker {
@@ -240,13 +253,7 @@ impl Tracker {
         entries: Option<&[PathBuf]>,
         now: SystemTime,
     ) -> CargoResult<Timestamp> {
-        let resolution = Duration::from_secs(UPDATE_RESOLUTION).as_nanos();
-        let now: Timestamp = (now
-            .duration_since(UNIX_EPOCH)?
-            .as_nanos()
-            .div_ceil(resolution)
-            * resolution)
-            .try_into()?;
+        let now = timestamp(used_through(now)?)?;
         // Keep warm builds read-only. End this snapshot before writing so another
         // consumer's commit cannot make a read-to-write upgrade fail as busy.
         let (update_context, pending) = {
