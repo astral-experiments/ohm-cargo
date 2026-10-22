@@ -182,6 +182,7 @@ fn compile_ws<'a>(
     exec: &Arc<dyn Executor>,
     reserve_checksum_slots: bool,
 ) -> CargoResult<Compilation<'a>> {
+    let _private_lease = ws.private_build_lease()?;
     let interner = UnitInterner::new();
     let logger = BuildLogger::maybe_new(ws, &options.build_config)?;
 
