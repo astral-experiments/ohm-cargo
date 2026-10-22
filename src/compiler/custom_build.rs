@@ -352,7 +352,7 @@ fn emit_build_output(
 /// * Run the build script and store its output.
 fn build_work(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResult<Job> {
     assert!(unit.mode.is_run_custom_build());
-    let bcx = &build_runner.bcx;
+    let bcx = build_runner.bcx;
     let dependencies = build_runner.unit_deps(unit);
     let build_script_unit = dependencies
         .iter()
@@ -379,116 +379,24 @@ fn build_work(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResul
     };
     let to_exec = script_dir.join(bin_name);
 
-    // Start preparing the process to execute, starting out with some
-    // environment variables. Note that the profile-related environment
-    // variables are not set with this the build script's profile but rather the
-    // package's library profile.
-    // NOTE: if you add any profile flags, be sure to update
-    // `Profiles::get_profile_run_custom_build` so that those flags get
-    // carried over.
+    // Preserve host-process setup and its loader/configuration validation on
+    // both paths. The build-script-specific environment below is conditional.
     let to_exec = to_exec.into_os_string();
     let mut cmd = build_runner.compilation.host_process(to_exec, &unit.pkg)?;
-    let debug = unit.profile.debuginfo.is_turned_on();
-    cmd.env("OUT_DIR", &script_out_dir)
-        .env("CARGO_MANIFEST_DIR", unit.pkg.root())
-        .env("CARGO_MANIFEST_PATH", unit.pkg.manifest_path())
-        .env("NUM_JOBS", &bcx.jobs().to_string())
-        .env("TARGET", bcx.target_data.short_name(&unit.kind))
-        .env("DEBUG", debug.to_string())
-        .env("OPT_LEVEL", &unit.profile.opt_level)
-        .env(
-            "PROFILE",
-            match unit.profile.root {
-                ProfileRoot::Release => "release",
-                ProfileRoot::Debug => "debug",
-            },
-        )
-        .env("HOST", &bcx.host_triple())
-        .env("RUSTC", &bcx.rustc().path)
-        .env("RUSTDOC", &*bcx.gctx.rustdoc()?)
-        .inherit_jobserver(&build_runner.jobserver);
-
-    // Find all artifact dependencies and make their file and containing directory discoverable using environment variables.
-    for (var, value) in artifact::get_env(build_runner, unit, dependencies)? {
-        cmd.env(&var, value);
-    }
-
-    if let Some(linker) = &build_runner.compilation.target_linker(unit.kind) {
-        cmd.env("RUSTC_LINKER", linker);
-    }
-
-    if let Some(links) = unit.pkg.manifest().links() {
-        cmd.env("CARGO_MANIFEST_LINKS", links);
-    }
-
-    if let Some(trim_paths) = unit.profile.trim_paths.as_ref() {
-        cmd.env("CARGO_TRIM_PATHS_SCOPE", trim_paths.to_string());
-        if !trim_paths.is_none() {
+    // Keep fallible command preparation before fingerprint selection, including
+    // validation needed even when this invocation replays a fresh script.
+    let rustdoc = bcx.gctx.rustdoc()?;
+    let artifact_env = artifact::get_env(build_runner, unit, dependencies)?;
+    let trim_paths_remap = unit
+        .profile
+        .trim_paths
+        .as_ref()
+        .filter(|trim_paths| !trim_paths.is_none())
+        .map(|_| {
             let pairs = super::trim_paths::trim_paths_remap(build_runner, unit);
-            cmd.env(
-                "CARGO_TRIM_PATHS_REMAP",
-                paths::join_paths(&pairs, "CARGO_TRIM_PATHS_REMAP")?,
-            );
-        }
-    }
-
-    // Be sure to pass along all enabled features for this package, this is the
-    // last piece of statically known information that we have.
-    for feat in &unit.features {
-        cmd.env(&format!("CARGO_FEATURE_{}", super::envify(feat)), "1");
-    }
-
-    let mut cfg_map = HashMap::default();
-    cfg_map.insert(
-        "feature",
-        unit.features.iter().map(|s| s.as_str()).collect::<Vec<_>>(),
-    );
-    // Manually inject debug_assertions based on the profile setting.
-    // The cfg query from rustc doesn't include profile settings and would always be true,
-    // so we override it with the actual profile setting.
-    if unit.profile.debug_assertions {
-        cfg_map.insert("debug_assertions", Vec::new());
-    }
-    for cfg in bcx.target_data.cfg(unit.kind) {
-        match *cfg {
-            Cfg::Name(ref n) => {
-                // Skip debug_assertions from rustc query; we use the profile setting instead
-                if n.as_str() == "debug_assertions" {
-                    continue;
-                }
-                cfg_map.insert(n.as_str(), Vec::new());
-            }
-            Cfg::KeyPair(ref k, ref v) => {
-                let values = cfg_map.entry(k.as_str()).or_default();
-                values.push(v.as_str());
-            }
-        }
-    }
-    for (k, v) in cfg_map {
-        // FIXME: We should handle raw-idents somehow instead of pretending they
-        // don't exist here
-        let k = format!("CARGO_CFG_{}", super::envify(k));
-        cmd.env(&k, v.join(","));
-    }
-
-    // Also inform the build script of the rustc compiler context.
-    if let Some(wrapper) = bcx.rustc().wrapper.as_ref() {
-        cmd.env("RUSTC_WRAPPER", wrapper);
-    } else {
-        cmd.env_remove("RUSTC_WRAPPER");
-    }
-    cmd.env_remove("RUSTC_WORKSPACE_WRAPPER");
-    if build_runner.bcx.ws.is_member(&unit.pkg) {
-        if let Some(wrapper) = bcx.rustc().workspace_wrapper.as_ref() {
-            cmd.env("RUSTC_WORKSPACE_WRAPPER", wrapper);
-        }
-    }
-    cmd.env("CARGO_ENCODED_RUSTFLAGS", unit.rustflags.join("\x1f"));
-    cmd.env_remove("RUSTFLAGS");
-
-    if build_runner.bcx.ws.gctx().extra_verbose() {
-        cmd.display_env_vars();
-    }
+            paths::join_paths(&pairs, "CARGO_TRIM_PATHS_REMAP")
+        })
+        .transpose()?;
 
     let any_build_script_metadata = bcx.gctx.cli_unstable().any_build_script_metadata;
 
@@ -575,12 +483,153 @@ fn build_work(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResul
         .map(|dep| dep.unit.profile.debuginfo.is_turned_on())
         .unwrap_or(false);
 
-    // Prepare the unit of "dirty work" which will actually run the custom build
-    // command.
-    //
-    // Note that this has to do some extra work just before running the command
-    // to determine extra environment variables and such.
+    // Lock inheritance may validate shared-cache context, so retain it before
+    // selecting freshness even if no build-script command will run.
     build_runner.inherit_shared_cache_locks(&mut cmd)?;
+    let mut job = fingerprint::prepare_target(build_runner, unit, false)?;
+    if job.freshness().is_fresh() {
+        job.before(Work::new(move |state| {
+            let (id, library_name, pkg_descr, build_script_outputs, output_file, script_out_dir) =
+                all;
+            let output = match prev_output {
+                Some(output) => output,
+                None => BuildOutput::parse_file(
+                    &output_file,
+                    library_name,
+                    &pkg_descr,
+                    &prev_script_out_dir,
+                    &script_out_dir,
+                    nightly_features_allowed,
+                    &targets_fresh,
+                    &msrv_fresh,
+                )?,
+            };
+            validate_shared_registry_build_output(
+                validate_shared_registry_environment,
+                id,
+                &output,
+                shared_registry_compiler_driver_fresh.as_deref(),
+                shared_registry_implicit_native_tools_fresh.as_deref(),
+            )?;
+
+            if json_messages {
+                emit_build_output(state, &output, script_out_dir.as_path(), id)?;
+            }
+
+            build_script_outputs
+                .lock()
+                .unwrap()
+                .insert(id, metadata_hash, output);
+            Ok(())
+        }));
+        return Ok(job);
+    }
+
+    // A fresh job only replays saved output. Avoid assembling the discarded
+    // build-script-specific environment once the work is known to be fresh.
+    // Profile variables describe the package's library profile, not the build
+    // script's profile. New profile flags also need to be carried over by
+    // `Profiles::get_profile_run_custom_build`.
+    let debug = unit.profile.debuginfo.is_turned_on();
+    cmd.env("OUT_DIR", &script_out_dir)
+        .env("CARGO_MANIFEST_DIR", unit.pkg.root())
+        .env("CARGO_MANIFEST_PATH", unit.pkg.manifest_path())
+        .env("NUM_JOBS", &bcx.jobs().to_string())
+        .env("TARGET", bcx.target_data.short_name(&unit.kind))
+        .env("DEBUG", debug.to_string())
+        .env("OPT_LEVEL", &unit.profile.opt_level)
+        .env(
+            "PROFILE",
+            match unit.profile.root {
+                ProfileRoot::Release => "release",
+                ProfileRoot::Debug => "debug",
+            },
+        )
+        .env("HOST", &bcx.host_triple())
+        .env("RUSTC", &bcx.rustc().path)
+        .env("RUSTDOC", rustdoc)
+        .inherit_jobserver(&build_runner.jobserver);
+
+    // Find all artifact dependencies and make their file and containing directory discoverable using environment variables.
+    for (var, value) in artifact_env {
+        cmd.env(&var, value);
+    }
+
+    if let Some(linker) = &build_runner.compilation.target_linker(unit.kind) {
+        cmd.env("RUSTC_LINKER", linker);
+    }
+
+    if let Some(links) = unit.pkg.manifest().links() {
+        cmd.env("CARGO_MANIFEST_LINKS", links);
+    }
+
+    if let Some(trim_paths) = unit.profile.trim_paths.as_ref() {
+        cmd.env("CARGO_TRIM_PATHS_SCOPE", trim_paths.to_string());
+        if let Some(remap) = trim_paths_remap {
+            cmd.env("CARGO_TRIM_PATHS_REMAP", remap);
+        }
+    }
+
+    // Be sure to pass along all enabled features for this package, this is the
+    // last piece of statically known information that we have.
+    for feat in &unit.features {
+        cmd.env(&format!("CARGO_FEATURE_{}", super::envify(feat)), "1");
+    }
+
+    let mut cfg_map = HashMap::default();
+    cfg_map.insert(
+        "feature",
+        unit.features.iter().map(|s| s.as_str()).collect::<Vec<_>>(),
+    );
+    // Manually inject debug_assertions based on the profile setting.
+    // The cfg query from rustc doesn't include profile settings and would always be true,
+    // so we override it with the actual profile setting.
+    if unit.profile.debug_assertions {
+        cfg_map.insert("debug_assertions", Vec::new());
+    }
+    for cfg in bcx.target_data.cfg(unit.kind) {
+        match *cfg {
+            Cfg::Name(ref n) => {
+                // Skip debug_assertions from rustc query; we use the profile setting instead
+                if n.as_str() == "debug_assertions" {
+                    continue;
+                }
+                cfg_map.insert(n.as_str(), Vec::new());
+            }
+            Cfg::KeyPair(ref k, ref v) => {
+                let values = cfg_map.entry(k.as_str()).or_default();
+                values.push(v.as_str());
+            }
+        }
+    }
+    for (k, v) in cfg_map {
+        // FIXME: We should handle raw-idents somehow instead of pretending they
+        // don't exist here
+        let k = format!("CARGO_CFG_{}", super::envify(k));
+        cmd.env(&k, v.join(","));
+    }
+
+    // Also inform the build script of the rustc compiler context.
+    if let Some(wrapper) = bcx.rustc().wrapper.as_ref() {
+        cmd.env("RUSTC_WRAPPER", wrapper);
+    } else {
+        cmd.env_remove("RUSTC_WRAPPER");
+    }
+    cmd.env_remove("RUSTC_WORKSPACE_WRAPPER");
+    if build_runner.bcx.ws.is_member(&unit.pkg) {
+        if let Some(wrapper) = bcx.rustc().workspace_wrapper.as_ref() {
+            cmd.env("RUSTC_WORKSPACE_WRAPPER", wrapper);
+        }
+    }
+    cmd.env("CARGO_ENCODED_RUSTFLAGS", unit.rustflags.join("\x1f"));
+    cmd.env_remove("RUSTFLAGS");
+
+    if build_runner.bcx.ws.gctx().extra_verbose() {
+        cmd.display_env_vars();
+    }
+
+    // Prepare the unit of "dirty work" which will actually run the custom build
+    // command. Additional dependency environment is supplied when it executes.
     let dirty = Work::new(move |state| {
         // Make sure that OUT_DIR exists.
         //
@@ -752,49 +801,7 @@ fn build_work(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResul
         Ok(())
     });
 
-    // Now that we've prepared our work-to-do, we need to prepare the fresh work
-    // itself to run when we actually end up just discarding what we calculated
-    // above.
-    let fresh = Work::new(move |state| {
-        let (id, library_name, pkg_descr, build_script_outputs, output_file, script_out_dir) = all;
-        let output = match prev_output {
-            Some(output) => output,
-            None => BuildOutput::parse_file(
-                &output_file,
-                library_name,
-                &pkg_descr,
-                &prev_script_out_dir,
-                &script_out_dir,
-                nightly_features_allowed,
-                &targets_fresh,
-                &msrv_fresh,
-            )?,
-        };
-        validate_shared_registry_build_output(
-            validate_shared_registry_environment,
-            id,
-            &output,
-            shared_registry_compiler_driver_fresh.as_deref(),
-            shared_registry_implicit_native_tools_fresh.as_deref(),
-        )?;
-
-        if json_messages {
-            emit_build_output(state, &output, script_out_dir.as_path(), id)?;
-        }
-
-        build_script_outputs
-            .lock()
-            .unwrap()
-            .insert(id, metadata_hash, output);
-        Ok(())
-    });
-
-    let mut job = fingerprint::prepare_target(build_runner, unit, false)?;
-    if job.freshness().is_dirty() {
-        job.before(dirty);
-    } else {
-        job.before(fresh);
-    }
+    job.before(dirty);
     Ok(job)
 }
 

@@ -259,6 +259,142 @@ fn custom_build_env_vars() {
 }
 
 #[cargo_test]
+fn fresh_script_replays_output_and_dirty_script_retains_environment() {
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "app"
+                version = "0.1.0"
+                edition = "2024"
+                [features]
+                my-feature = []
+                [dependencies]
+                native = { path = "native" }
+            "#,
+        )
+        .file(
+            "src/lib.rs",
+            r#"
+                #[cfg(not(script_ready))]
+                compile_error!("missing build-script cfg");
+                pub const VALUE: &str = env!("SCRIPT_RESULT");
+            "#,
+        )
+        .file(
+            "build.rs",
+            r#"
+                use std::{env, fs::OpenOptions, io::Write};
+
+                fn main() {
+                    assert_eq!(env::var("NUM_JOBS").unwrap(), "2");
+                    assert_eq!(env::var("PROFILE").unwrap(), "debug");
+                    assert_eq!(env::var("OPT_LEVEL").unwrap(), "0");
+                    assert_eq!(env::var("CARGO_FEATURE_MY_FEATURE").unwrap(), "1");
+                    assert_eq!(env::var("CARGO_CFG_FEATURE").unwrap(), "my-feature");
+                    assert!(env::var_os("CARGO_CFG_DEBUG_ASSERTIONS").is_some());
+                    assert_eq!(env::var("DEP_NATIVE_MARKER").unwrap(), "metadata");
+                    assert!(!env::var("RUSTC").unwrap().is_empty());
+                    assert!(!env::var("RUSTDOC").unwrap().is_empty());
+                    assert!(env::var_os("RUSTFLAGS").is_none());
+                    assert_eq!(env::var("CARGO_ENCODED_RUSTFLAGS").unwrap(), "");
+
+                    let value = env::var("SCRIPT_INPUT").unwrap();
+                    let mut runs = OpenOptions::new().create(true).append(true)
+                        .open("script-runs").unwrap();
+                    writeln!(runs, "{value}").unwrap();
+                    assert_ne!(value, "fail", "expected script failure");
+                    println!("cargo::rerun-if-changed=build.rs");
+                    println!("cargo::rerun-if-env-changed=SCRIPT_INPUT");
+                    println!("cargo::rustc-check-cfg=cfg(script_ready)");
+                    println!("cargo::rustc-cfg=script_ready");
+                    println!("cargo::rustc-env=SCRIPT_RESULT={value}");
+                    println!("cargo::warning=saved script warning");
+                }
+            "#,
+        )
+        .file(
+            "native/Cargo.toml",
+            r#"
+                [package]
+                name = "native"
+                version = "0.1.0"
+                edition = "2024"
+                links = "native"
+            "#,
+        )
+        .file("native/src/lib.rs", "")
+        .file(
+            "native/build.rs",
+            "fn main() { println!(\"cargo::metadata=marker=metadata\"); }",
+        )
+        .build();
+    let invoke = |mode: &str, value: &str, require_fresh: bool| {
+        let output = p
+            .cargo(&format!(
+                "-Zohm-defaults=no {mode} -j 2 --features my-feature --message-format=json"
+            ))
+            .masquerade_as_nightly_cargo(&["ohm-defaults"])
+            .env("SCRIPT_INPUT", value)
+            .exec_with_output()
+            .unwrap();
+        assert!(
+            String::from_utf8(output.stderr)
+                .unwrap()
+                .contains("saved script warning")
+        );
+        let mut scripts = Vec::new();
+        for line in String::from_utf8(output.stdout).unwrap().lines() {
+            let message: serde_json::Value = serde_json::from_str(line).unwrap();
+            match message["reason"].as_str() {
+                Some("build-script-executed") => scripts.push(message.to_string()),
+                Some("compiler-artifact") if require_fresh => {
+                    assert_eq!(message["fresh"], true);
+                }
+                _ => {}
+            }
+        }
+        scripts.sort();
+        assert_eq!(scripts.len(), 2);
+        assert!(
+            scripts
+                .iter()
+                .any(|message| { message.contains("SCRIPT_RESULT") && message.contains(value) })
+        );
+        scripts
+    };
+    for mode in ["check", "test --no-run"] {
+        let first = invoke(mode, "first", false);
+        let runs = fs::read_to_string(p.root().join("script-runs")).unwrap();
+        assert_eq!(first, invoke(mode, "first", true));
+        assert_eq!(
+            runs,
+            fs::read_to_string(p.root().join("script-runs")).unwrap()
+        );
+    }
+    let runs = fs::read_to_string(p.root().join("script-runs")).unwrap();
+    let changed = invoke("check", "second", false);
+    assert_eq!(
+        fs::read_to_string(p.root().join("script-runs")).unwrap(),
+        format!("{runs}second\n")
+    );
+    assert_eq!(changed, invoke("check", "second", true));
+
+    p.cargo("-Zohm-defaults=no check -j 2 --features my-feature")
+        .masquerade_as_nightly_cargo(&["ohm-defaults"])
+        .env("SCRIPT_INPUT", "fail")
+        .with_status(101)
+        .with_stderr_contains("[..]expected script failure[..]")
+        .run();
+    invoke("check", "second", false);
+    assert_eq!(
+        fs::read_to_string(p.root().join("script-runs")).unwrap(),
+        format!("{runs}second\nfail\nsecond\n")
+    );
+}
+
+#[cargo_test]
 fn custom_build_env_var_rustflags() {
     let rustflags = "--cfg=special";
     let rustflags_alt = "--cfg=notspecial";
