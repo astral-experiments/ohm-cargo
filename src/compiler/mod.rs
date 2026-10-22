@@ -40,6 +40,7 @@ pub(crate) mod fingerprint;
 pub mod future_incompat;
 pub(crate) mod job_queue;
 pub(crate) mod layout;
+mod library_search_path_sort;
 mod links;
 mod locking;
 mod lto;
@@ -74,7 +75,6 @@ use std::time::{Instant, UNIX_EPOCH};
 use anyhow::{Context as _, Error};
 use cargo_platform::{Cfg, Platform};
 use cargo_util_terminal::report::{AnnotationKind, Group, Level, Renderer, Snippet};
-use itertools::Itertools;
 use regex::Regex;
 use tracing::{debug, instrument, trace};
 
@@ -3291,7 +3291,8 @@ pub fn lib_search_paths(
         // Recursively add all dependency args to rustc process
         add_dep_arg(&mut map, build_runner, unit);
 
-        let paths = map.into_iter().map(|(_, path)| path).sorted_unstable();
+        let mut paths: Vec<_> = map.into_iter().map(|(_, path)| path).collect();
+        library_search_path_sort::sort(&mut paths);
 
         for path in paths {
             let mut deps = OsString::from("dependency=");
