@@ -930,7 +930,7 @@ fn build_and_check_enroll_primary_and_existing_worktrees_for_gc() {
 }
 
 #[cargo_test]
-fn gc_resumes_private_cleanup_in_a_target_selected_by_two_non_git_projects() {
+fn gc_cleans_both_workspaces_that_share_an_external_target() {
     let target = paths::root().join("external-target");
     let mut contexts = Vec::new();
     for (index, name) in ["first", "second"].into_iter().enumerate() {
@@ -946,25 +946,14 @@ fn gc_resumes_private_cleanup_in_a_target_selected_by_two_non_git_projects() {
         fs::write(path.join("artifact"), b"data").unwrap();
         contexts.push(path);
     }
-    // A previous GC detached the first directory and was interrupted before unlinking it.
-    let namespace = contexts[0]
-        .parent()
-        .unwrap()
-        .file_name()
-        .unwrap()
-        .to_str()
-        .unwrap();
-    let stage = target.join(format!(".ohm-worktree-gc-trash-v1-{namespace}/entry-first"));
-    fs::create_dir_all(&stage).unwrap();
-    fs::write(stage.join("owner"), b"ohm-build-gc-v1\n").unwrap();
-    fs::rename(&contexts[0], stage.join("payload")).unwrap();
     let compiler = current_ohm_rustc();
     for dry_run in [true, false] {
         let result = private_gc(if dry_run { "gc --dry-run" } else { "gc" }, &compiler).run();
         let stderr = String::from_utf8(result.stderr).unwrap();
         assert!(stderr.contains("2 files, 8B total"), "{stderr}");
-        assert_eq!(stage.exists(), dry_run);
-        assert_eq!(contexts[1].exists(), dry_run);
+        for context in &contexts {
+            assert_eq!(context.exists(), dry_run);
+        }
     }
 }
 
@@ -1192,7 +1181,7 @@ fn gc_accepts_legacy_default_targets_but_preserves_ambiguous_external_directorie
     cargo(&project, "build --target-dir").arg(&external).run();
     let external_tag = external.join("CACHEDIR.TAG");
     if external_tag.exists() {
-        fs::remove_file(external_tag).unwrap();
+        fs::remove_file(&external_tag).unwrap();
     }
     age_target(&target);
     age_target(&external);
@@ -1206,6 +1195,12 @@ fn gc_accepts_legacy_default_targets_but_preserves_ambiguous_external_directorie
     assert!(target.join("debug/foo").is_file());
     fs::remove_file(target.join("CACHEDIR.TAG")).unwrap();
 
+    // A standard cache tag from another tool does not identify this as Cargo's target.
+    fs::write(
+        external_tag,
+        b"Signature: 8a477f597d28d172789f06886806bc55\n# Created by another cache manager.\n",
+    )
+    .unwrap();
     let outside = paths::root().join("outside-artifact");
     fs::write(&outside, b"preserve symlink target").unwrap();
     let linked = target.join("linked-artifact");
@@ -1243,6 +1238,85 @@ fn gc_accepts_legacy_default_targets_but_preserves_ambiguous_external_directorie
             b"preserve existing data"
         );
         assert!(external.join("debug/foo").is_file());
+    }
+}
+
+#[cargo_test]
+fn idle_target_preserves_nested_workspaces_and_targets_from_other_cargo_homes() {
+    let owner = donor();
+    cargo(&owner, "build").run();
+    let target = owner.root().join("target");
+    age_target(&target);
+    let preview_total = || {
+        let preview = gc_outside_workspace("gc --dry-run").run();
+        std::str::from_utf8(&preview.stderr)
+            .unwrap()
+            .lines()
+            .find_map(|line| line.trim_start().strip_prefix("Summary "))
+            .unwrap()
+            .to_owned()
+    };
+    let original = preview_total();
+
+    let nested = project()
+        .at(target.join("debug/build/generated/checkouts/topic"))
+        .file(
+            "Cargo.toml",
+            "[workspace]\n[package]\nname='nested'\nversion='0.1.0'",
+        )
+        .file("src/main.rs", "fn main() {}")
+        .build();
+    let nested_target = target.join("debug/incremental/another/target");
+    cargo(&nested, "build --offline --target-dir")
+        .arg(&nested_target)
+        .env("CARGO_HOME", paths::root().join("another-home"))
+        .run();
+    let lease = fs::File::open(nested_target.join(".ohm-build-lock")).unwrap();
+    lease.lock_shared().unwrap();
+
+    assert_eq!(preview_total(), original);
+    assert!(target.join("debug/foo").is_file());
+    gc_outside_workspace("gc").run();
+    assert!(!target.join("debug/foo").exists());
+    assert_eq!(
+        fs::read_to_string(nested.root().join("src/main.rs")).unwrap(),
+        "fn main() {}"
+    );
+    assert!(nested_target.join("debug/nested").is_file());
+    assert!(nested_target.join(".ohm-build-lock").is_file());
+}
+
+#[cargo_test]
+fn idle_target_inside_another_cargo_homes_shared_root_preserves_its_profile() {
+    let owner = project()
+        .at("target-owner")
+        .file("Cargo.toml", &basic_manifest("owner", "0.1.0"))
+        .file("src/main.rs", "fn main() {}")
+        .build();
+    let home = paths::root().join("owner-home");
+    let target = shared_root().join("debug");
+    // Cargo creates and tags the target before another Cargo home uses its parent.
+    cargo(&owner, "build --offline --target-dir")
+        .arg(&target)
+        .env("CARGO_HOME", &home)
+        .env("CARGO_BUILD_BUILD_DIR", paths::root().join("owner-shared"))
+        .run();
+    cargo(&donor(), "build").run();
+    let dependencies = dependency_paths();
+    assert!(!dependencies.is_empty());
+    let profile_lock = target.join(".cargo-build-lock");
+    let lease = fs::File::open(&profile_lock).unwrap();
+    lease.lock_shared().unwrap();
+    age_target(&target);
+
+    for command in ["gc --dry-run", "gc"] {
+        gc_outside_workspace(command)
+            .env("CARGO_HOME", &home)
+            .with_stderr_contains("[..]0 files[..]")
+            .run();
+        assert!(profile_lock.is_file());
+        assert!(target.join("debug/owner").is_file());
+        assert!(dependencies.iter().all(|path| path.is_dir()));
     }
 }
 

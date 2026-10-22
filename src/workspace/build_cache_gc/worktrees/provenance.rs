@@ -11,7 +11,10 @@ use crate::util::GlobalContext;
 use crate::workspace::build_cache_gc_roots::open_regular;
 
 pub(crate) const MARKER: &str = ".ohm-private-context-v1";
-pub(crate) const KEEP: &str = ".ohm-private-context-keep-v1";
+pub(crate) const KEEP: &str = ".ohm-private-context-keep-v2";
+const LEGACY_KEEP: &str = ".ohm-private-context-keep-v1";
+const EXPORT: &str = ".ohm-private-context-export-v1";
+pub(super) const EXPORT_MARKERS: [&str; 2] = [EXPORT, LEGACY_KEEP];
 
 pub(crate) struct MovingRelease {
     pub(crate) version: String,
@@ -109,7 +112,7 @@ pub(crate) fn record_new(
     Ok(())
 }
 
-/// An external directory export or opaque compiler can continue to depend on this tree.
+/// An opaque compiler can continue to reuse this context after the moving alias changes.
 pub(crate) fn keep(root: &Path, path: &Path) -> io::Result<()> {
     match fs::symlink_metadata(path.join(MARKER)) {
         Ok(metadata) if !metadata.is_file() => return Ok(()),
@@ -117,7 +120,27 @@ pub(crate) fn keep(root: &Path, path: &Path) -> io::Result<()> {
         Err(error) if error.kind() == io::ErrorKind::NotFound => return Ok(()),
         Err(error) => return Err(error),
     }
-    let keep = path.join(KEEP);
+    write_pin(root, path, KEEP)
+}
+
+/// Directory exports are symlinks, so their backing context must outlive target cleanup.
+pub(crate) fn keep_export(root: &Path, path: &Path, destination: &Path) -> io::Result<()> {
+    if destination
+        .canonicalize()?
+        .starts_with(root.canonicalize()?)
+    {
+        return Ok(());
+    }
+    write_pin(root, path, EXPORT)
+}
+
+/// Old pins could describe external exports; their ambiguity must preserve the backing tree.
+pub(crate) fn is_export_boundary(path: &Path) -> bool {
+    EXPORT_MARKERS.iter().any(|name| !absent(&path.join(name)))
+}
+
+fn write_pin(root: &Path, path: &Path, name: &str) -> io::Result<()> {
+    let keep = path.join(name);
     match fs::symlink_metadata(&keep) {
         Ok(_) => return Ok(()),
         Err(error) if error.kind() == io::ErrorKind::NotFound => {}
@@ -129,7 +152,7 @@ pub(crate) fn keep(root: &Path, path: &Path) -> io::Result<()> {
             "private context changed before protecting it",
         ));
     }
-    match fs::File::create_new(directory.join(KEEP)) {
+    match fs::File::create_new(directory.join(name)) {
         Ok(_) => Ok(()),
         Err(error) if error.kind() == io::ErrorKind::AlreadyExists => Ok(()),
         Err(error) => Err(error),
@@ -171,6 +194,7 @@ pub(crate) fn obsolete(path: &Path, context: &str, current: &MovingRelease) -> O
         || path.file_name()?.to_str()? != context
         || !fs::symlink_metadata(path).ok()?.is_dir()
         || !absent(&path.join(KEEP))
+        || is_export_boundary(path)
     {
         return None;
     }
@@ -261,6 +285,33 @@ mod tests {
         assert!(keep(&root, &path).is_err());
         assert!(!existing.join(KEEP).exists());
         assert!(root.join("workspaces").is_symlink());
+        Ok(())
+    }
+
+    #[test]
+    fn external_exports_protect_unmarked_contexts_and_legacy_pins() -> io::Result<()> {
+        let temp = tempfile::tempdir()?;
+        let root = temp.path().join("target");
+        let external = temp.path().join("published");
+        let context = root.join("context");
+        let local = root.join("published");
+        fs::create_dir_all(&context)?;
+        fs::create_dir(&external)?;
+        fs::create_dir(&local)?;
+        keep_export(&root, &context, &local)?;
+        assert!(!is_export_boundary(&context));
+        keep_export(&root, &context, &external)?;
+        assert!(is_export_boundary(&context));
+        assert!(!context.join(MARKER).exists());
+        fs::remove_file(context.join(EXPORT))?;
+        // A legacy pin's type or relative destination does not disprove an export.
+        symlink("missing", context.join(LEGACY_KEEP))?;
+        assert!(is_export_boundary(&context));
+        fs::remove_file(context.join(LEGACY_KEEP))?;
+        fs::write(context.join(MARKER), b"compiler provenance")?;
+        keep(&root, &context)?;
+        assert!(!is_export_boundary(&context));
+        assert!(context.join(KEEP).is_file());
         Ok(())
     }
 }
