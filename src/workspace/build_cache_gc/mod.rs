@@ -3,7 +3,7 @@
 //! Builds batch context and dependency activity into SQLite without scanning artifacts.
 //! Explicit GC reclaims legacy layouts, obsolete compilers, and idle dependencies.
 
-use std::collections::BTreeSet;
+use std::collections::{BTreeSet, VecDeque};
 use std::fs::{self, File, Metadata, OpenOptions, TryLockError};
 use std::io;
 use std::path::{Component, Path, PathBuf};
@@ -379,10 +379,11 @@ pub(crate) struct Summary {
     pub details: Vec<String>,
 }
 
-/// Remembers skipped candidates only for this invocation, so later batches advance.
+/// Work carried between batches of a single manual collection.
 #[derive(Default)]
 pub(crate) struct CollectionState {
     deferred: HashSet<Namespace>,
+    dependencies: Option<VecDeque<Namespace>>,
 }
 
 impl Summary {
@@ -585,6 +586,7 @@ fn collect_with_lock_budget(
     let tracker = Tracker::existing(root, dry_run)?;
     let profiles = profiles(root)?;
     let mut ready = Vec::new();
+    let mut discovered_dependencies = VecDeque::new();
     let mut trash_roots = profiles
         .iter()
         .map(|profile| profile.join(TRASH))
@@ -606,11 +608,11 @@ fn collect_with_lock_budget(
         {
             summary.retained += 1;
             if let Namespace::Context(context) = &namespace {
-                for dependency in idle_dependencies(root, &profiles, context, now, tracker.as_ref())
-                    .unwrap_or_default()
-                {
-                    let paths = dependency.paths(root, &profiles);
-                    ready.push((dependency, paths));
+                if state.dependencies.is_none() {
+                    discovered_dependencies.extend(
+                        idle_dependencies(root, &profiles, context, now, tracker.as_ref())
+                            .unwrap_or_default(),
+                    );
                 }
                 // One extra candidate distinguishes a full batch from completion.
                 let limit = if dry_run {
@@ -634,11 +636,16 @@ fn collect_with_lock_budget(
         ready.push((namespace, paths));
     }
     ready.retain(|(namespace, _)| !state.deferred.contains(namespace));
+    let dependencies = state.dependencies.get_or_insert(discovered_dependencies);
     if dry_run {
         // Preview every candidate without holding locks while counting artifacts.
         let mut locks = CollectionLocks::default();
         let mut sources = Vec::new();
-        for (namespace, paths) in ready {
+        let dependencies = dependencies.drain(..).map(|dependency| {
+            let paths = dependency.paths(root, &profiles);
+            (dependency, paths)
+        });
+        for (namespace, paths) in ready.into_iter().chain(dependencies) {
             if !locks.acquire(root, &profiles, &namespace, true, summary)? {
                 continue;
             }
@@ -652,7 +659,7 @@ fn collect_with_lock_budget(
                 if trash == root.join(METADATA_TRASH) {
                     continue;
                 }
-                if retire(root, &source, &trash, true, summary)
+                if retire(&namespace, root, &source, &trash, true, summary)
                     .or_else(|error| summary.path_error(&source, error))?
                 {
                     sources.push(source);
@@ -660,7 +667,9 @@ fn collect_with_lock_budget(
             }
             if sources.len() != before {
                 summary.retired += 1;
-                if !summary.details.contains(&detail) {
+                if matches!(namespace, Namespace::Dependency { .. })
+                    || !summary.details.contains(&detail)
+                {
                     summary.details.push(detail);
                 }
             }
@@ -681,15 +690,16 @@ fn collect_with_lock_budget(
         }
         return Ok(());
     }
-    if !ready.is_empty() {
+    if !ready.is_empty() || !dependencies.is_empty() {
         // Finish file-only work before reserving a SQLite writer. A busy
         // database can then postpone only the remaining row deletions.
         ready.sort_by_key(|(namespace, _)| namespace.writes_usage_rows());
         // Individual objects have no rows to delete. Retire a file-sized batch,
         // still yielding at the same short deadline as other namespaces.
-        let rename_budget = if ready
-            .iter()
-            .all(|(namespace, _)| matches!(namespace, Namespace::ThinLto { .. }))
+        let rename_budget = if dependencies.is_empty()
+            && ready
+                .iter()
+                .all(|(namespace, _)| matches!(namespace, Namespace::ThinLto { .. }))
         {
             DELETE_BUDGET
         } else {
@@ -707,7 +717,8 @@ fn collect_with_lock_budget(
         let mut transaction = None;
         let mut remaining = rename_budget;
         let mut records_remaining = rename_budget;
-        for (namespace, paths) in ready {
+        let mut ready = ready.into_iter();
+        while !ready.as_slice().is_empty() || !dependencies.is_empty() {
             if remaining == 0
                 || records_remaining == 0
                 || (records_remaining < rename_budget && Instant::now() >= deadline)
@@ -715,8 +726,15 @@ fn collect_with_lock_budget(
                 summary.pending = true;
                 break;
             }
+            // Dependencies come last: file-only work can proceed with a busy
+            // SQLite writer. Only take the next dependency when its batch has room.
+            let (namespace, paths) = ready.next().unwrap_or_else(|| {
+                let dependency = dependencies.pop_front().unwrap();
+                let paths = dependency.paths(root, &profiles);
+                (dependency, paths)
+            });
             if !locks.acquire(root, &profiles, &namespace, false, summary)? {
-                summary.advanced |= state.deferred.insert(namespace);
+                summary.advanced |= namespace.defer(&mut state.deferred);
                 continue;
             }
             // Reserve the writer before rechecking usage when deleting rows.
@@ -737,6 +755,9 @@ fn collect_with_lock_budget(
                             "contexts and dependencies (usage database {} is busy)",
                             directory.join(tracker::DATABASE).display()
                         ));
+                        if matches!(namespace, Namespace::Dependency { .. }) {
+                            dependencies.push_front(namespace);
+                        }
                         break;
                     }
                     Err(error) => return Err(error.into()),
@@ -757,10 +778,12 @@ fn collect_with_lock_budget(
             let Some(detail) =
                 namespace.detail(root, &profiles, now, current_ohm, tracker.as_ref())
             else {
-                if let Some((source, _)) = paths.first() {
+                if let Some((source, _)) = paths.first()
+                    && !safely_absent(root, source)
+                {
                     summary.skip_path(source, "usage or compiler metadata changed during cleanup");
                 }
-                summary.advanced |= state.deferred.insert(namespace);
+                summary.advanced |= namespace.defer(&mut state.deferred);
                 continue;
             };
             let mut retired = false;
@@ -772,7 +795,7 @@ fn collect_with_lock_budget(
                     partial = true;
                     break;
                 }
-                if retire(root, source, trash, false, summary)
+                if retire(&namespace, root, source, trash, false, summary)
                     .or_else(|error| summary.path_error(source, error))?
                 {
                     remaining -= 1;
@@ -792,8 +815,11 @@ fn collect_with_lock_budget(
                 if namespace.finish(&directory, tracker.as_ref(), summary)? {
                     summary.retired += 1;
                 } else {
-                    summary.advanced |= state.deferred.insert(namespace);
+                    summary.advanced |= namespace.defer(&mut state.deferred);
                 }
+            } else if partial && matches!(namespace, Namespace::Dependency { .. }) {
+                // The soft deadline may have elapsed while acquiring the lock.
+                dependencies.push_front(namespace);
             } else if !partial {
                 if summary.skipped.len() + summary.errors.len() == skipped_before {
                     for (source, _) in &paths {
@@ -802,7 +828,7 @@ fn collect_with_lock_budget(
                         }
                     }
                 }
-                summary.advanced |= state.deferred.insert(namespace);
+                summary.advanced |= namespace.defer(&mut state.deferred);
             }
         }
         if let Some(transaction) = transaction {
@@ -911,10 +937,7 @@ fn idle_dependencies(
     tracker: Option<&Tracker>,
 ) -> Option<Vec<Namespace>> {
     let tracker = tracker?;
-    let state = tracker.context(context).ok()??;
-    if !state.record.supported() || state.record.context != context {
-        return None;
-    }
+    let state = tracker.supported_context(context)?;
     let cutoff = tracker::timestamp(now.checked_sub(CONTEXT_MAX_IDLE)?).ok()?;
     if state.all_used.is_some_and(|used| used > cutoff) {
         return None;
@@ -955,15 +978,10 @@ fn idle_dependencies(
         {
             return None;
         }
-        if safely_absent(root, &root.join(&entry))
-            || (plain_ancestors(root, &root.join(&entry)).ok()?
-                && plain_directory(&root.join(&entry)))
-        {
-            idle.push(Namespace::Dependency {
-                context: context.to_owned(),
-                entry,
-            });
-        }
+        idle.push(Namespace::Dependency {
+            context: context.to_owned(),
+            entry,
+        });
     }
     idle.sort();
     Some(idle)
@@ -986,6 +1004,11 @@ fn legacy_usage(root: &Path, context: &str) -> Option<Option<tracker::Timestamp>
 }
 
 impl Namespace {
+    /// A dependency popped from the queue cannot be rediscovered in this run.
+    fn defer(self, deferred: &mut HashSet<Self>) -> bool {
+        matches!(self, Self::Dependency { .. }) || deferred.insert(self)
+    }
+
     fn writes_usage_rows(&self) -> bool {
         matches!(self, Self::Context(_) | Self::Dependency { .. })
     }
@@ -1016,10 +1039,7 @@ impl Namespace {
         match self {
             Self::ThinLto { context, entry } => {
                 // An unknown or malformed context never permits partial eviction.
-                let state = tracker?.context(context).ok()??;
-                if !state.record.supported() || state.record.context != *context {
-                    return None;
-                }
+                tracker?.supported_context(context)?;
                 let path = root.join(entry);
                 if !plain_ancestors(root, &path).ok()? {
                     return None;
@@ -1037,10 +1057,15 @@ impl Namespace {
             }
             Self::Dependency { context, entry } => {
                 let cutoff = tracker::timestamp(now.checked_sub(CONTEXT_MAX_IDLE)?).ok()?;
-                if legacy_usage(root, context)?.is_some_and(|used| used > cutoff) {
+                let tracker = tracker?;
+                tracker.supported_context(context)?;
+                let profile = root.join(entry.ancestors().nth(5)?);
+                if !profiles.contains(&profile)
+                    || legacy_usage(root, context)?.is_some_and(|used| used > cutoff)
+                {
                     return None;
                 }
-                tracker?
+                tracker
                     .dependency_expired(context, entry, cutoff)
                     .ok()?
                     .then(|| {
@@ -1365,6 +1390,7 @@ fn safely_absent(root: &Path, path: &Path) -> bool {
 }
 
 fn retire(
+    namespace: &Namespace,
     root: &Path,
     source: &Path,
     trash: &Path,
@@ -1379,6 +1405,10 @@ fn retire(
         return Ok(false);
     }
     let metadata = fs::symlink_metadata(source)?;
+    if matches!(namespace, Namespace::Dependency { .. }) && !metadata.is_dir() {
+        summary.skip_path(source, "dependency path is no longer a plain directory");
+        return Ok(false);
+    }
     if !metadata.is_dir() && !metadata.is_file() {
         summary.skip_path(source, "not a regular file or directory");
         return Ok(false);
@@ -1850,6 +1880,7 @@ mod tests {
             )?;
             let retired = cache.artifact("retired")?;
             assert!(retire(
+                &Namespace::Context(idle.to_owned()),
                 &cache.root,
                 &retired,
                 &cache.profile.join(TRASH),
@@ -2245,6 +2276,67 @@ mod tests {
                     .get::<_, usize>(0))?,
             2
         );
+        Ok(())
+    }
+
+    #[test]
+    fn dependency_batches_recheck_queued_entries_without_rescanning() -> CargoResult<()> {
+        let cache = Cache::new()?;
+        cache.enroll()?;
+        let now = SystemTime::now();
+        let entries: Vec<_> = (0..RENAME_BUDGET + 3)
+            .map(|i| format!("debug/build/registries/abcdef/dep/{i:016x}"))
+            .collect();
+        for entry in &entries {
+            cache.artifact(entry.strip_prefix("debug/").unwrap())?;
+        }
+        let old = now - CONTEXT_MAX_IDLE * 2;
+        dependency_use(
+            &cache,
+            &entries.iter().map(String::as_str).collect::<Vec<_>>(),
+            old,
+        )?;
+        let mut state = CollectionState::default();
+        let mut pass = || {
+            collect_with_lock_budget(
+                &cache.root,
+                false,
+                now,
+                Duration::from_secs(60),
+                None,
+                &mut state,
+            )
+        };
+        let first = pass()?;
+        assert_eq!(first.retired, RENAME_BUDGET);
+        assert!(first.pending);
+
+        // Reuse one queued variant, replace another with an unrelated file,
+        // and introduce a newly eligible row after the initial scan.
+        let refreshed = &entries[RENAME_BUDGET];
+        dependency_use(&cache, &[refreshed], now)?;
+        let replaced = cache.root.join(&entries[RENAME_BUDGET + 1]);
+        fs::remove_dir_all(&replaced)?;
+        fs::write(&replaced, b"keep")?;
+        let late = "debug/build/registries/abcdef/dep/ffffffffffffffff";
+        cache.artifact(late.strip_prefix("debug/").unwrap())?;
+        dependency_use(&cache, &[late], old)?;
+
+        let second = pass()?;
+        assert_eq!(second.retired, 1);
+        assert!(!second.pending);
+        assert!(cache.root.join(refreshed).is_dir());
+        assert_eq!(fs::read(&replaced)?, b"keep");
+        assert!(
+            second
+                .skipped
+                .iter()
+                .any(|detail| detail.ends_with("(dependency path is no longer a plain directory)"))
+        );
+        assert!(!cache.root.join(entries.last().unwrap()).exists());
+        assert!(cache.root.join(late).is_dir());
+        assert_eq!(collect_at(&cache.root, false, now, None)?.retired, 1);
+        assert!(!cache.root.join(late).exists());
         Ok(())
     }
 
@@ -3080,6 +3172,7 @@ mod tests {
         let mut summary = Summary::default();
         let source = cache.profile.join("build/registries/abcdef");
         assert!(!retire(
+            &Namespace::Context("abcdef".to_owned()),
             &cache.root,
             &source,
             &cache.profile.join(TRASH),
