@@ -159,14 +159,14 @@ impl<'gctx> Compilation<'gctx> {
     /// The opened lock binds private-cache enrollment to the target of this build.
     #[cfg(any(target_os = "linux", target_os = "macos"))]
     pub(super) fn private_build_lock(&self) -> Option<&std::fs::File> {
-        self.private_lease.as_ref().map(|lease| lease.file.as_ref())
+        self.private_lease.as_ref().map(PrivateBuildLease::file)
     }
 
     pub fn new<'a>(bcx: &BuildContext<'a, 'gctx>) -> CargoResult<Compilation<'gctx>> {
         let private_lease = bcx
             .ws
             .shared_registry_cache_enabled()
-            .then(|| PrivateBuildLease::acquire(bcx.ws))
+            .then(|| PrivateBuildLease::acquire(bcx.ws, false))
             .transpose()?;
         let rustc_process = bcx.rustc().process();
         let primary_rustc_process = bcx.build_config.primary_unit_rustc.clone();

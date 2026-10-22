@@ -120,13 +120,26 @@ fn current_ohm_rustc() -> PathBuf {
 }
 
 fn private_gc(command: &str, compiler: &Path) -> Execs {
+    let mut command = gc_outside_workspace(command);
+    command
+        .env("RUSTC", compiler)
+        .env("RUSTUP_HOME", moving_ohm("ohm-1.98.1-2"));
+    command
+}
+
+fn gc_outside_workspace(command: &str) -> Execs {
     let mut command = cargo_process(command);
     command
         .cwd(paths::root())
-        .env("RUSTC", compiler)
-        .env("RUSTUP_HOME", moving_ohm("ohm-1.98.1-2"))
         .env_remove("CARGO_BUILD_BUILD_DIR");
     command
+}
+
+fn age_target(target: &Path) {
+    fs::File::open(target.join(".ohm-target-last-use-v1"))
+        .unwrap()
+        .set_modified(SystemTime::now() - Duration::from_secs(3601))
+        .unwrap();
 }
 
 fn moving_ohm(release: &str) -> PathBuf {
@@ -953,6 +966,238 @@ fn gc_resumes_private_cleanup_in_a_target_selected_by_two_non_git_projects() {
         assert_eq!(stage.exists(), dry_run);
         assert_eq!(contexts[1].exists(), dry_run);
     }
+}
+
+#[cargo_test]
+fn gc_cleans_idle_targets_on_the_current_release_and_rebuilds_on_demand() {
+    use std::os::unix::fs::MetadataExt as _;
+
+    let project = donor();
+    let warm = add_worktree(&project, "warm-target");
+    let busy = add_worktree(&project, "busy-target");
+    cargo(&project, "build").run();
+    cargo(&project, "doc --no-deps").run();
+    for worktree in [&warm, &busy] {
+        cargo(&project, "build").cwd(worktree).run();
+    }
+    let target = project.root().join("target");
+    let binary = target.join("debug/foo");
+    let docs = target.join("doc/foo/index.html");
+    let incremental = target.join("debug/incremental/unused-session/state");
+    let unmarked = target.join("debug/build/unmarked/artifact");
+    for path in [&incremental, &unmarked] {
+        fs::create_dir_all(path.parent().unwrap()).unwrap();
+        fs::write(path, [0; 1024]).unwrap();
+    }
+    assert!(binary.is_file());
+    assert!(docs.is_file());
+    let kept = [
+        target.clone(),
+        target.join("CACHEDIR.TAG"),
+        target.join(".ohm-build-lock"),
+        target.join(".ohm-target-last-use-v1"),
+    ]
+    .map(|path| {
+        let inode = fs::symlink_metadata(&path).unwrap().ino();
+        (path, inode)
+    });
+    age_target(&target);
+    age_target(&busy.join("target"));
+    let busy_lock = fs::File::open(busy.join("target/.ohm-build-lock")).unwrap();
+    busy_lock.lock_shared().unwrap();
+
+    gc_outside_workspace("gc --build-dir")
+        .arg(shared_root())
+        .run();
+    assert!(
+        binary.is_file(),
+        "an explicit shared root excludes private targets"
+    );
+
+    let preview = gc_outside_workspace("gc --dry-run --color never").run();
+    let preview = String::from_utf8(preview.stderr).unwrap();
+    assert!(
+        preview.contains(&format!(
+            "Would remove workspace target {} (unused for at least 1 hour)",
+            target.display()
+        )),
+        "{preview}"
+    );
+    assert!(preview.contains("target directory is in use"), "{preview}");
+    let expected_counts = preview
+        .lines()
+        .find_map(|line| line.trim_start().strip_prefix("Summary "))
+        .unwrap();
+    assert!(expected_counts.contains("files,"), "{preview}");
+    for path in [&binary, &docs, &incremental, &unmarked] {
+        assert!(path.exists(), "dry run changed {}", path.display());
+    }
+
+    let collected = gc_outside_workspace("gc --color never").run();
+    let collected = String::from_utf8(collected.stderr).unwrap();
+    assert!(
+        collected.contains(&format!("Removed {expected_counts}")),
+        "{collected}"
+    );
+    for path in [&binary, &docs, &incremental, &unmarked] {
+        assert!(!path.exists(), "idle target retained {}", path.display());
+    }
+    for (path, inode) in kept {
+        assert_eq!(fs::symlink_metadata(&path).unwrap().ino(), inode);
+    }
+    assert!(warm.join("target/debug/foo").is_file());
+    assert!(busy.join("target/debug/foo").is_file());
+    drop(busy_lock);
+
+    // An enrolled target can also be used by Cargo versions without the Ohm root lease.
+    for name in [".cargo-lock", ".cargo-build-lock", ".cargo-artifact-lock"] {
+        let path = busy.join("target/debug").join(name);
+        let lock = fs::File::options()
+            .read(true)
+            .write(true)
+            .create(true)
+            .truncate(false)
+            .open(&path)
+            .unwrap();
+        lock.lock().unwrap();
+        let output = gc_outside_workspace("gc -v --color never").run();
+        let stderr = String::from_utf8(output.stderr).unwrap();
+        assert!(
+            stderr.contains(&format!("Busy lock {}", path.display())),
+            "{stderr}"
+        );
+        assert!(busy.join("target/debug/foo").is_file());
+    }
+
+    cargo(&project, "run")
+        .with_stderr_contains("[COMPILING] foo [..]")
+        .with_stdout_data("hello\n")
+        .run();
+    assert!(binary.is_file());
+    assert!(target.join("debug/incremental").is_dir());
+    gc_outside_workspace("gc").run();
+    assert!(binary.is_file(), "the rebuilt target is warm again");
+    assert!(!busy.join("target/debug/foo").exists());
+}
+
+#[cargo_test]
+fn gc_accepts_legacy_default_targets_but_preserves_ambiguous_external_directories() {
+    let project = donor();
+    cargo(&project, "build").run();
+    let target = project.root().join("target");
+    let external = paths::root().join("pre-existing-output");
+    fs::create_dir(&external).unwrap();
+    fs::write(external.join("unrelated"), b"preserve existing data").unwrap();
+    cargo(&project, "build --target-dir").arg(&external).run();
+    let external_tag = external.join("CACHEDIR.TAG");
+    if external_tag.exists() {
+        fs::remove_file(external_tag).unwrap();
+    }
+    age_target(&target);
+    age_target(&external);
+
+    // A malformed tag is not equivalent to an older conventional target with no tag.
+    fs::write(target.join("CACHEDIR.TAG"), b"not a cache tag").unwrap();
+    gc_outside_workspace("gc")
+        .with_stderr_contains("[SKIPPING] [..] (could not verify a dedicated Cargo target)")
+        .with_stderr_contains("[REMOVED] 0 files")
+        .run();
+    assert!(target.join("debug/foo").is_file());
+    fs::remove_file(target.join("CACHEDIR.TAG")).unwrap();
+
+    let outside = paths::root().join("outside-artifact");
+    fs::write(&outside, b"preserve symlink target").unwrap();
+    let linked = target.join("linked-artifact");
+    let dangling = target.join("dangling-artifact");
+    std::os::unix::fs::symlink(&outside, &linked).unwrap();
+    std::os::unix::fs::symlink(paths::root().join("missing-artifact"), &dangling).unwrap();
+    for dry_run in [true, false] {
+        let command = if dry_run {
+            "gc --dry-run --color never"
+        } else {
+            "gc --color never"
+        };
+        let output = gc_outside_workspace(command).run();
+        let stderr = String::from_utf8(output.stderr).unwrap();
+        assert!(
+            stderr.contains(&format!(
+                "workspace target {} (unused for at least 1 hour)",
+                target.display()
+            )),
+            "{stderr}"
+        );
+        assert!(
+            stderr.contains(&format!(
+                "Skipping {} (could not verify a dedicated Cargo target)",
+                external.display()
+            )),
+            "{stderr}"
+        );
+        assert_eq!(target.join("debug/foo").exists(), dry_run);
+        assert_eq!(linked.is_symlink(), dry_run);
+        assert_eq!(dangling.is_symlink(), dry_run);
+        assert_eq!(fs::read(&outside).unwrap(), b"preserve symlink target");
+        assert_eq!(
+            fs::read(external.join("unrelated")).unwrap(),
+            b"preserve existing data"
+        );
+        assert!(external.join("debug/foo").is_file());
+    }
+}
+
+#[cargo_test]
+fn gc_uses_shared_target_activity_and_preserves_colocated_shared_caches() {
+    let target = paths::root().join("shared-target");
+    let projects = ["first", "second"].map(|name| {
+        let project = project()
+            .at(name)
+            .file("Cargo.toml", &basic_manifest(name, "0.1.0"))
+            .file("src/lib.rs", "pub fn value() -> u8 { 1 }")
+            .build();
+        cargo(&project, "check --target-dir").arg(&target).run();
+        project
+    });
+    for project in &projects {
+        age_target(&target);
+        let started = SystemTime::now();
+        cargo(project, "check --target-dir")
+            .arg(&target)
+            .with_stderr_does_not_contain("[CHECKING] [..]")
+            .run();
+        let used = fs::metadata(target.join(".ohm-target-last-use-v1"))
+            .unwrap()
+            .modified()
+            .unwrap();
+        assert!(used >= started, "a warm check refreshes the shared target");
+        gc_outside_workspace("gc --dry-run")
+            .with_stderr_does_not_contain("Would remove workspace target [..]")
+            .run();
+    }
+
+    let registry = target.join("debug/build/registries/v2-0000000000000001/artifact");
+    let thinlto = target.join(".ohm-thinlto-cache/v2-0000000000000001/backend.cache");
+    fs::write(target.join(".ohm-shared-registry-cache-v1"), b"").unwrap();
+    for path in [&registry, &thinlto] {
+        fs::create_dir_all(path.parent().unwrap()).unwrap();
+        fs::write(path, b"shared cache").unwrap();
+    }
+    let private = target.join("debug/build/workspaces");
+    assert!(private.is_dir());
+    age_target(&target);
+    gc_outside_workspace("gc --dry-run")
+        .with_stderr_contains("Would remove workspace target [..] (unused for at least 1 hour)")
+        .run();
+    assert!(private.is_dir());
+    gc_outside_workspace("gc")
+        .with_stderr_contains("[REMOVING] workspace target [..] (unused for at least 1 hour)")
+        .run();
+    assert!(!private.exists());
+    for path in [&registry, &thinlto] {
+        assert_eq!(fs::read(path).unwrap(), b"shared cache");
+    }
+    assert!(target.join(".ohm-shared-registry-cache-v1").is_file());
+    assert!(target.join(".ohm-target-last-use-v1").is_file());
+    assert!(target.join(".ohm-build-lock").is_file());
 }
 
 #[cargo_test]

@@ -596,22 +596,34 @@ impl Layout {
 /// Keeps private outputs alive through compilation and any processes using its results.
 pub(crate) struct PrivateBuildLease {
     #[cfg(unix)]
-    pub(super) file: Arc<File>,
+    file: Arc<File>,
+    #[cfg(any(target_os = "linux", target_os = "macos"))]
+    activity: crate::workspace::build_cache_gc::worktrees::activity::TargetUse,
     #[cfg(not(unix))]
     _lock: FileLock,
 }
 
 impl PrivateBuildLease {
     /// Acquires the local guard before profile locks and without serializing ordinary builds.
-    pub(crate) fn acquire(ws: &Workspace<'_>) -> CargoResult<Self> {
+    pub(crate) fn acquire(ws: &Workspace<'_>, exclusive: bool) -> CargoResult<Self> {
         ws.validate_shared_cache_target()?;
-        let lock = Layout::lock_private_root(ws, false)?;
+        let lock = Layout::lock_private_root(ws, exclusive)?;
         Ok(Self {
+            #[cfg(any(target_os = "linux", target_os = "macos"))]
+            activity: crate::workspace::build_cache_gc::worktrees::activity::TargetUse::start(
+                ws.target_dir().as_path_unlocked(),
+                lock.file(),
+            )?,
             #[cfg(unix)]
             file: Arc::new(lock.into_file()),
             #[cfg(not(unix))]
             _lock: lock,
         })
+    }
+
+    #[cfg(any(target_os = "linux", target_os = "macos"))]
+    pub(crate) fn file(&self) -> &File {
+        &self.file
     }
 
     /// Lets children retain the same lock description if Cargo exits first.
@@ -620,6 +632,13 @@ impl PrivateBuildLease {
         command.inherit_file(Arc::clone(&self.file));
         #[cfg(not(unix))]
         let _ = command;
+    }
+}
+
+#[cfg(any(target_os = "linux", target_os = "macos"))]
+impl Drop for PrivateBuildLease {
+    fn drop(&mut self) {
+        self.activity.finish(&self.file);
     }
 }
 

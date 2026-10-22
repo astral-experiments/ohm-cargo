@@ -139,20 +139,37 @@ build directories:
   or whether the original worktree still exists. Private workspace namespaces
   in a colocated target follow the rule below.
 
-Running `cargo +ohm gc` also checks enrolled workspace targets. Ohm enrolls the
-target selected by a build or check, whether the workspace is a primary checkout,
-a linked worktree, or a directory outside Git. `cargo +ohm worktree add` enrolls
-its destination even before the first build. Enrollment records the paths and
-filesystem identities once. It does not track when a workspace was last used.
+Running `cargo +ohm gc` also checks enrolled workspace targets. An Ohm build or
+check enrolls the selected target in any workspace, including primary checkouts
+and linked worktrees. `cargo +ohm worktree add` enrolls the destination before
+its first build. The workspace ID in the private layout is Ohm's hash of the
+workspace root and target paths. For a default in-tree target, the complete
+path starts in the checkout, for example
+`/code/my-worktree/target/debug/build/workspaces/…`.
 
-After the moving `+ohm` toolchain advances, GC can remove private intermediate
-directories that Ohm marked when the older release created them in the same
-rustup installation. It skips a
-target in use and keeps contexts needed by published directory artifacts such
-as macOS debug symbol bundles. Final outputs, documentation, incremental state,
-contexts built with a pinned compiler, and private directories that predate
-the markers are preserved. The one-hour inactivity rule applies to shared
-caches. Use `cargo clean` to remove the rest of a workspace's build output.
+After a full hour without an Ohm build, check, or worktree seed using a target,
+manual GC can clean its private outputs on **any compiler release**. This
+includes final binaries, documentation, incremental state and private compiler
+intermediates, including older unmarked directories. A fresh build or check
+counts even when it recompiles nothing. One timestamp covers the physical
+target across all workspaces using it. Its recorded time rounds up to the next
+five-minute boundary, so eligibility can lag by up to five minutes. Long builds
+refresh their time at completion. A newly enrolled target needs a recorded use
+before GC can establish its age. For older targets without Cargo's cache tag,
+GC recognizes the enrolled checkout's conventional `target/` directory and
+preserves ambiguous external directories.
+
+An active build or a program holding the target lease postpones cleanup. GC
+retains the target's cache tag, synchronization files, and any colocated shared
+registry or ThinLTO cache. Detached private data can be unlinked while a new
+build starts. The next build recreates the private files it needs. Time spent
+running the binary does not extend the deadline after the program exits.
+
+In a recently used target, upgrading the moving `+ohm` toolchain still makes
+its older marked private compiler contexts eligible immediately. This narrower
+pass keeps final outputs, incremental state, pinned contexts, and directory
+artifacts still used by published outputs. Use `cargo clean` for an immediate
+local clean.
 
 A build context groups artifacts that share a compiler, build tools, and relevant
 configuration and environment. Multiple projects, crate versions, and feature
@@ -264,11 +281,12 @@ cargo +ohm gc
 ```
 
 To select one root explicitly, add `--build-dir /path/to/shared-build`.
-`--dry-run` lists eligible contexts and legacy workspaces, estimates their file
+`--dry-run` lists idle workspace targets, eligible private or shared compiler
+contexts, and legacy namespaces. It estimates their file
 and byte totals, and leaves artifacts and records unchanged. For example:
 
 ```text
-Would remove context 6f4e82a9c1d037ab (from ohm-1.98.1-1; current is ohm-1.98.1-2)
+Would remove workspace target /code/my-worktree/target (unused for at least 1 hour)
      Summary 1248 files, 842.6MiB total
 warning: no files deleted due to --dry-run
 ```

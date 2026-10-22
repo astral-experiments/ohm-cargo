@@ -1427,6 +1427,7 @@ fn retire(
         summary,
         matches!(namespace, Namespace::Dependency { .. })
             .then_some("dependency path is no longer a plain directory"),
+        false,
     )
 }
 
@@ -1437,6 +1438,7 @@ fn retire_path(
     dry_run: bool,
     summary: &mut Summary<'_>,
     non_directory_reason: Option<&str>,
+    allow_symlink: bool,
 ) -> CargoResult<bool> {
     if safely_absent(root, source) {
         return Ok(false);
@@ -1452,7 +1454,7 @@ fn retire_path(
         summary.skip_path(source, reason);
         return Ok(false);
     }
-    if !metadata.is_dir() && !metadata.is_file() {
+    if !(metadata.is_dir() || metadata.is_file() || allow_symlink && metadata.is_symlink()) {
         summary.skip_path(source, "not a regular file or directory");
         return Ok(false);
     }
@@ -1635,6 +1637,10 @@ fn remove_entry(
 }
 
 fn profiles(root: &Path) -> CargoResult<Vec<PathBuf>> {
+    profiles_matching(root, |path| regular(&path.join(".cargo-build-lock")))
+}
+
+fn profiles_matching(root: &Path, is_profile: impl Fn(&Path) -> bool) -> CargoResult<Vec<PathBuf>> {
     let mut result = Vec::new();
     for entry in fs::read_dir(root)? {
         let entry = entry?;
@@ -1646,13 +1652,13 @@ fn profiles(root: &Path) -> CargoResult<Vec<PathBuf>> {
         if regular(&path.join(Layout::SHARED_REGISTRY_CACHE_MARKER)) {
             continue;
         }
-        if regular(&path.join(".cargo-build-lock")) {
+        if is_profile(&path) {
             result.push(path);
             continue;
         }
         for child in fs::read_dir(path)? {
             let child = child?;
-            if child.file_type()?.is_dir() && regular(&child.path().join(".cargo-build-lock")) {
+            if child.file_type()?.is_dir() && is_profile(&child.path()) {
                 result.push(child.path());
             }
         }

@@ -14,20 +14,40 @@ use crate::workspace::build_cache_gc::{
     try_lock, try_lock_file,
 };
 
-const TRASH_PREFIX: &str = ".ohm-worktree-gc-trash-v1-";
+pub(super) const TRASH_PREFIX: &str = ".ohm-worktree-gc-trash-v1-";
+
+/// Shared targets have one idle timestamp and one set of outputs across their registrations.
+pub(crate) fn collect(
+    owners: &[ManagedTarget],
+    targets: &[ManagedTarget],
+    shared_roots: &[PathBuf],
+    dry_run: bool,
+    current: Option<&provenance::MovingRelease>,
+    summary: &mut Summary<'_>,
+) -> CargoResult<()> {
+    let target = &owners[0];
+    if crate::compiler::layout::shared_registry_directory_is_nfs(&target.target)? {
+        summary.skip_path(
+            &target.target,
+            "filesystem does not support reliable build locks",
+        );
+        return Ok(());
+    }
+    let whole_target = super::idle::collect(target, targets, shared_roots, dry_run, summary)?;
+    for owner in owners {
+        collect_contexts(owner, dry_run, current.filter(|_| !whole_target), summary)?;
+    }
+    Ok(())
+}
 
 /// Visits only the private namespaces derived from the registered workspace and target.
-pub(crate) fn collect(
+fn collect_contexts(
     target: &ManagedTarget,
     dry_run: bool,
     current: Option<&provenance::MovingRelease>,
     summary: &mut Summary<'_>,
 ) -> CargoResult<()> {
     let root = &target.target;
-    if crate::compiler::layout::shared_registry_directory_is_nfs(root)? {
-        summary.skip_path(root, "filesystem does not support reliable build locks");
-        return Ok(());
-    }
     // Multiple workspaces can select one target. Staged payloads must be counted once.
     let trash = root.join(format!("{TRASH_PREFIX}{}", target.namespaces[0]));
     let mounts = Mounts::read(root)?;
@@ -141,6 +161,7 @@ pub(crate) fn collect(
                         dry_run,
                         summary,
                         Some("private context is no longer a plain directory"),
+                        false,
                     )? {
                         summary.details.push(format!(
                             "private context {context} in {} (from {old}; current is {})",
@@ -196,7 +217,7 @@ pub(crate) fn collect(
     )
 }
 
-fn target_guard(
+pub(super) fn target_guard(
     target: &ManagedTarget,
     exclusive: bool,
     summary: &mut Summary<'_>,
@@ -216,7 +237,7 @@ fn target_guard(
 }
 
 /// A full local clean can remove the collector lock between target leases.
-fn same_collector(lock: Option<&CollectorLock>, path: &Path) -> CargoResult<bool> {
+pub(super) fn same_collector(lock: Option<&CollectorLock>, path: &Path) -> CargoResult<bool> {
     let Some(lock) = lock else { return Ok(true) };
     let opened = lock.0.metadata()?;
     match fs::symlink_metadata(path) {

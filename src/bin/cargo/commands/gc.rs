@@ -15,8 +15,9 @@ pub fn cli() -> Command {
         )
         .after_help(
             "Cleans obsolete shared build contexts and shared dependencies or ThinLTO objects \
-             unused for at least one hour. After an Ohm upgrade, also removes obsolete private \
-             intermediates from enrolled workspace targets. Skips active builds.\n\n\
+             unused for at least one hour. Cleans private outputs, including incremental state, in \
+             workspace targets unused for at least one hour. After an Ohm upgrade, also \
+             removes obsolete private contexts from recently used targets. Skips active builds.\n\n\
              Run from any directory. Use `cargo clean` to remove the current project's build outputs.",
         )
 }
