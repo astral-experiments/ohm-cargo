@@ -1425,7 +1425,8 @@ fn retire(
         trash,
         dry_run,
         summary,
-        matches!(namespace, Namespace::Dependency { .. }),
+        matches!(namespace, Namespace::Dependency { .. })
+            .then_some("dependency path is no longer a plain directory"),
     )
 }
 
@@ -1435,7 +1436,7 @@ fn retire_path(
     trash: &Path,
     dry_run: bool,
     summary: &mut Summary<'_>,
-    require_directory: bool,
+    non_directory_reason: Option<&str>,
 ) -> CargoResult<bool> {
     if safely_absent(root, source) {
         return Ok(false);
@@ -1445,8 +1446,10 @@ fn retire_path(
         return Ok(false);
     }
     let metadata = fs::symlink_metadata(source)?;
-    if require_directory && !metadata.is_dir() {
-        summary.skip_path(source, "path is no longer a plain directory");
+    if let Some(reason) = non_directory_reason
+        && !metadata.is_dir()
+    {
+        summary.skip_path(source, reason);
         return Ok(false);
     }
     if !metadata.is_dir() && !metadata.is_file() {

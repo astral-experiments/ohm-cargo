@@ -134,7 +134,14 @@ pub(crate) fn collect(
                         );
                         continue;
                     }
-                    if retire_path(root, path, &trash, dry_run, summary, true)? {
+                    if retire_path(
+                        root,
+                        path,
+                        &trash,
+                        dry_run,
+                        summary,
+                        Some("private context is no longer a plain directory"),
+                    )? {
                         summary.details.push(format!(
                             "private context {context} in {} (from {old}; current is {})",
                             target.worktree.display(),
