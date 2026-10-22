@@ -13,7 +13,9 @@ use std::time::{Duration, Instant, SystemTime};
 use crate::prelude::*;
 use crate::utils::cargo_process;
 use cargo_test_support::registry::Package;
-use cargo_test_support::{Execs, Project, git, paths, slow_cpu_multiplier, str};
+use cargo_test_support::{
+    Execs, Project, basic_manifest, git, paths, project, slow_cpu_multiplier, str,
+};
 
 fn shared_root() -> PathBuf {
     paths::root().join("shared-build")
@@ -55,6 +57,89 @@ fn add_worktree(project: &Project, name: &str) -> PathBuf {
         .arg(&path)
         .run();
     path
+}
+
+fn add_ohm_worktree(project: &Project, name: &str) -> PathBuf {
+    let path = paths::root().join(name);
+    cargo(
+        project,
+        "-Zohm-defaults=yes -Zohm-worktree-seeds=no worktree add --detach",
+    )
+    .arg(&path)
+    .run();
+    path
+}
+
+fn marked_private_context(worktree: &Path, id: u64, release: &str) -> PathBuf {
+    marked_private_context_at(worktree, &worktree.join("target"), id, release)
+}
+
+fn marked_private_context_at(worktree: &Path, target: &Path, id: u64, release: &str) -> PathBuf {
+    fs::create_dir_all(target).unwrap();
+    let namespace = cargo::util::short_hash(&(
+        "ohm-shared-workspace-v3",
+        worktree.canonicalize().unwrap(),
+        target.canonicalize().unwrap(),
+    ));
+    let context = format!("v2-{id:016x}");
+    let path = target
+        .join("debug/build/workspaces")
+        .join(namespace)
+        .join(&context);
+    fs::create_dir_all(&path).unwrap();
+    fs::File::options()
+        .write(true)
+        .create(true)
+        .truncate(false)
+        .open(target.join("debug/.cargo-build-lock"))
+        .unwrap();
+    let mut proof = format!("{context}\n{release}\n").into_bytes();
+    let toolchains = moving_ohm("ohm-1.98.1-2")
+        .join("toolchains")
+        .canonicalize()
+        .unwrap();
+    proof.extend_from_slice(cargo_util::paths::path2bytes(&toolchains).unwrap());
+    fs::write(path.join(".ohm-private-context-v1"), proof).unwrap();
+    path
+}
+
+fn current_ohm_rustc() -> PathBuf {
+    use std::os::unix::fs::PermissionsExt as _;
+
+    let compiler = paths::root().join("current-ohm-rustc");
+    fs::write(
+        &compiler,
+        format!(
+            "#!/bin/sh\ncat <<'VERSION'\nrustc 1.98.1-dev (ohm-1.98.1-2)\nbinary: rustc\ncommit-hash: unknown\nhost: {}\nrelease: 1.98.1-dev\nLLVM version: 22.1.8\nVERSION\n",
+            cargo_test_support::rustc_host()
+        ),
+    )
+    .unwrap();
+    fs::set_permissions(&compiler, fs::Permissions::from_mode(0o755)).unwrap();
+    compiler
+}
+
+fn private_gc(command: &str, compiler: &Path) -> Execs {
+    let mut command = cargo_process(command);
+    command
+        .cwd(paths::root())
+        .env("RUSTC", compiler)
+        .env("RUSTUP_HOME", moving_ohm("ohm-1.98.1-2"))
+        .env_remove("CARGO_BUILD_BUILD_DIR");
+    command
+}
+
+fn moving_ohm(release: &str) -> PathBuf {
+    let rustup = paths::root().join(format!("rustup-{release}"));
+    if !rustup.exists() {
+        let sysroot = rustup.join("installation");
+        fs::create_dir_all(sysroot.join("bin")).unwrap();
+        fs::write(sysroot.join("bin/rustc"), b"installed compiler").unwrap();
+        fs::write(sysroot.join(".ohm-version"), format!("{release}\n")).unwrap();
+        fs::create_dir(rustup.join("toolchains")).unwrap();
+        std::os::unix::fs::symlink(sysroot, rustup.join("toolchains/ohm")).unwrap();
+    }
+    rustup
 }
 
 fn remove_worktree(project: &Project, path: &Path) {
@@ -660,8 +745,6 @@ fn checking_reused_build_artifacts_refreshes_their_dependency_usage() {
 
 #[cargo_test]
 fn upgrades_retire_fresh_contexts_without_removing_installed_compilers() {
-    use std::os::unix::fs::PermissionsExt as _;
-
     let project = donor();
     cargo(&project, "build").run();
     let mut record = context_record();
@@ -677,9 +760,7 @@ fn upgrades_retire_fresh_contexts_without_removing_installed_compilers() {
         .join(record["context"].as_str().unwrap());
     let thinlto = thinlto_object(record["context"].as_str().unwrap());
     let private = local_private_artifacts(&project.root().join("target"));
-    let compiler = paths::root().join("upgraded-rustc");
-    fs::write(&compiler, "#!/bin/sh\ncat <<'VERSION'\nrustc 1.98.1-dev (ohm-1.98.1-2)\nbinary: rustc\ncommit-hash: unknown\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1-dev\nLLVM version: 22.1.8\nVERSION\n").unwrap();
-    fs::set_permissions(&compiler, fs::Permissions::from_mode(0o755)).unwrap();
+    let compiler = current_ohm_rustc();
     cargo(&project, "gc --dry-run")
         .env("RUSTC", &compiler)
         .with_stderr_contains(
@@ -693,6 +774,184 @@ fn upgrades_retire_fresh_contexts_without_removing_installed_compilers() {
     assert!(private.is_dir());
     for file in ["compiler", "driver"] {
         assert!(Path::new(record[file]["path"].as_str().unwrap()).is_file());
+    }
+}
+
+#[cargo_test]
+fn gc_discovers_private_contexts_outside_worktrees_and_respects_explicit_roots() {
+    let project = donor();
+    let worktree = add_ohm_worktree(&project, "managed");
+    let obsolete = marked_private_context(&worktree, 1, "ohm-1.98.1-1");
+    fs::write(obsolete.join("artifact"), [0; 1024]).unwrap();
+    let kept = marked_private_context(&worktree, 2, "ohm-1.98.1-1");
+    fs::write(kept.join(".ohm-private-context-keep-v1"), b"").unwrap();
+    let current = marked_private_context(&worktree, 3, "ohm-1.98.1-2");
+    let newer = marked_private_context(&worktree, 4, "ohm-1.98.1-3");
+    let unknown = marked_private_context(&worktree, 5, "unrecognized compiler");
+    let unmarked = marked_private_context(&worktree, 6, "ohm-1.98.1-1");
+    fs::remove_file(unmarked.join(".ohm-private-context-v1")).unwrap();
+
+    let symbols = marked_private_context(&worktree, 7, "ohm-1.98.1-1");
+    let symbol_payload = symbols.join("tool.dSYM");
+    fs::create_dir(&symbol_payload).unwrap();
+    fs::write(symbol_payload.join("symbols"), b"keep symbols").unwrap();
+    let examples = worktree.join("target/debug/examples");
+    fs::create_dir_all(&examples).unwrap();
+    std::os::unix::fs::symlink(&symbol_payload, examples.join("tool.dSYM")).unwrap();
+
+    let manual = add_worktree(&project, "manual");
+    let unmanaged = marked_private_context(&manual, 8, "ohm-1.98.1-1");
+    let retained = [
+        &kept, &current, &newer, &unknown, &unmarked, &symbols, &unmanaged,
+    ];
+    for path in retained {
+        fs::write(path.join("preserved"), b"keep").unwrap();
+    }
+    let final_output = worktree.join("target/debug/foo");
+    let incremental = worktree.join("target/debug/incremental/session/state");
+    fs::write(&final_output, b"keep executable").unwrap();
+    fs::create_dir_all(incremental.parent().unwrap()).unwrap();
+    fs::write(&incremental, b"keep incremental").unwrap();
+
+    // Resolving the current compiler must also work with no registered shared roots.
+    assert!(!shared_root().exists());
+    let compiler = current_ohm_rustc();
+    let alias_version = moving_ohm("ohm-1.98.1-2").join("installation/.ohm-version");
+    fs::write(&alias_version, b"ohm-1.98.1-1\n").unwrap();
+    private_gc("gc --dry-run", &compiler)
+        .with_stderr_contains("[SUMMARY] 0 files")
+        .run();
+    fs::write(&alias_version, b"ohm-1.98.1-2\n").unwrap();
+    private_gc("gc --dry-run", &compiler)
+        .env("RUSTUP_HOME", moving_ohm("ohm-1.98.1-3"))
+        .with_stderr_contains("[SUMMARY] 0 files")
+        .run();
+    let preview = private_gc("gc --dry-run --color never", &compiler).run();
+    let stderr = String::from_utf8(preview.stderr).unwrap();
+    assert!(
+        stderr.contains("Would remove private context v2-0000000000000001"),
+        "{stderr}"
+    );
+    assert!(stderr.contains(&worktree.display().to_string()), "{stderr}");
+    assert!(stderr.contains("Summary 1 file, 1.0KiB total"), "{stderr}");
+    assert!(obsolete.join("artifact").is_file());
+
+    fs::create_dir_all(shared_root()).unwrap();
+    fs::write(shared_root().join(".ohm-shared-registry-cache-v1"), b"").unwrap();
+    private_gc("gc --build-dir", &compiler)
+        .arg(shared_root())
+        .with_stderr_contains("[REMOVED] 0 files")
+        .run();
+    assert!(
+        obsolete.exists(),
+        "--build-dir only cleans the selected shared root"
+    );
+
+    let result = private_gc("gc --color never", &compiler).run();
+    let stderr = String::from_utf8(result.stderr).unwrap();
+    assert!(stderr.contains("Removed 1 file, 1.0KiB total"), "{stderr}");
+    assert!(!obsolete.exists());
+    for path in retained {
+        assert_eq!(fs::read(path.join("preserved")).unwrap(), b"keep");
+    }
+    assert_eq!(fs::read(&final_output).unwrap(), b"keep executable");
+    assert_eq!(fs::read(&incremental).unwrap(), b"keep incremental");
+    assert_eq!(
+        fs::read(examples.join("tool.dSYM/symbols")).unwrap(),
+        b"keep symbols"
+    );
+}
+
+#[cargo_test]
+fn gc_skips_busy_private_targets_and_cleans_other_worktrees() {
+    let project = donor();
+    let busy = add_ohm_worktree(&project, "busy-private");
+    let free = add_ohm_worktree(&project, "free-private");
+    let busy_context = marked_private_context(&busy, 1, "ohm-1.98.1-1");
+    let free_context = marked_private_context(&free, 2, "ohm-1.98.1-1");
+    fs::write(busy_context.join("artifact"), b"busy").unwrap();
+    fs::write(free_context.join("artifact"), b"free").unwrap();
+    let lock_path = busy.join("target/.ohm-build-lock");
+    let lock = fs::File::open(&lock_path).unwrap();
+    lock.lock_shared().unwrap();
+    let compiler = current_ohm_rustc();
+    for dry_run in [true, false] {
+        let command = if dry_run {
+            "gc -v --dry-run --color never"
+        } else {
+            "gc -v --color never"
+        };
+        let result = private_gc(command, &compiler).run();
+        let stderr = String::from_utf8(result.stderr).unwrap();
+        assert!(stderr.contains("target directory is in use"), "{stderr}");
+        assert!(
+            stderr.contains(&format!("Busy lock {}", lock_path.display())),
+            "{stderr}"
+        );
+        assert!(stderr.contains("1 file, 4B total"), "{stderr}");
+        assert!(busy_context.exists());
+        assert_eq!(free_context.exists(), dry_run);
+    }
+    drop(lock);
+    private_gc("gc", &compiler)
+        .with_stderr_contains("[REMOVED] 1 file, [FILE_SIZE]B total")
+        .run();
+    assert!(!busy_context.exists());
+}
+
+#[cargo_test]
+fn build_and_check_enroll_primary_and_existing_worktrees_for_gc() {
+    let project = donor();
+    let existing = add_worktree(&project, "existing");
+    cargo(&project, "build").run();
+    cargo(&project, "check").cwd(&existing).run();
+    let primary_context = marked_private_context(&project.root(), 1, "ohm-1.98.1-1");
+    let linked_context = marked_private_context(&existing, 2, "ohm-1.98.1-1");
+    for path in [&primary_context, &linked_context] {
+        fs::write(path.join("artifact"), b"old private state").unwrap();
+    }
+    private_gc("gc", &current_ohm_rustc()).run();
+    assert!(!primary_context.exists());
+    assert!(!linked_context.exists());
+    assert!(project.root().join("target/debug/foo").is_file());
+}
+
+#[cargo_test]
+fn gc_resumes_private_cleanup_in_a_target_selected_by_two_non_git_projects() {
+    let target = paths::root().join("external-target");
+    let mut contexts = Vec::new();
+    for (index, name) in ["first", "second"].into_iter().enumerate() {
+        let project = project()
+            .at(name)
+            .file("Cargo.toml", &basic_manifest(name, "0.1.0"))
+            .file("src/lib.rs", "")
+            .build();
+        assert!(!project.root().join(".git").exists());
+        cargo(&project, "check --target-dir").arg(&target).run();
+        let path =
+            marked_private_context_at(&project.root(), &target, index as u64, "ohm-1.98.1-1");
+        fs::write(path.join("artifact"), b"data").unwrap();
+        contexts.push(path);
+    }
+    // A previous GC detached the first directory and was interrupted before unlinking it.
+    let namespace = contexts[0]
+        .parent()
+        .unwrap()
+        .file_name()
+        .unwrap()
+        .to_str()
+        .unwrap();
+    let stage = target.join(format!(".ohm-worktree-gc-trash-v1-{namespace}/entry-first"));
+    fs::create_dir_all(&stage).unwrap();
+    fs::write(stage.join("owner"), b"ohm-build-gc-v1\n").unwrap();
+    fs::rename(&contexts[0], stage.join("payload")).unwrap();
+    let compiler = current_ohm_rustc();
+    for dry_run in [true, false] {
+        let result = private_gc(if dry_run { "gc --dry-run" } else { "gc" }, &compiler).run();
+        let stderr = String::from_utf8(result.stderr).unwrap();
+        assert!(stderr.contains("2 files, 8B total"), "{stderr}");
+        assert_eq!(stage.exists(), dry_run);
+        assert_eq!(contexts[1].exists(), dry_run);
     }
 }
 

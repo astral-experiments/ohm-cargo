@@ -231,7 +231,7 @@ pub(crate) struct SharedCacheAncestor {
 }
 
 /// Keep inherited paths lossless on Unix, including non-UTF-8 directory names.
-mod shared_cache_path {
+pub(super) mod shared_cache_path {
     use std::path::{Path, PathBuf};
 
     pub fn serialize<S: serde::Serializer>(path: &Path, serializer: S) -> Result<S::Ok, S::Error> {

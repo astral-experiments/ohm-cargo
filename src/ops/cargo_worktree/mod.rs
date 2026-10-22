@@ -104,10 +104,26 @@ pub fn worktree_add(gctx: &GlobalContext, opts: &WorktreeOptions) -> CargoResult
         ensure_absent(&target, "destination target directory")?;
         let mut recipient = Workspace::new(&manifest, gctx)?;
         recipient.set_target_dir(Filesystem::new(target.clone()));
-        if !gctx.cli_unstable().ohm_worktree_seeds() || !donor.shared_registry_cache_enabled() {
-            return Ok(Seeded::default());
+        let seeded =
+            if gctx.cli_unstable().ohm_worktree_seeds() && donor.shared_registry_cache_enabled() {
+                seed_shared_build(&donor, &recipient)?
+            } else {
+                Seeded::default()
+            };
+        #[cfg(any(target_os = "linux", target_os = "macos"))]
+        if let Err(error) = Layout::lock_private_root(&recipient, false).and_then(|lease| {
+            crate::workspace::build_cache_gc::worktrees::registry::register_build(
+                &recipient,
+                &Layout::shared_workspace_namespace(&recipient),
+                lease.file(),
+            )
+        }) {
+            gctx.shell().warn(format!(
+                "could not register {} for private build-cache cleanup ({error:#})",
+                target.display()
+            ))?;
         }
-        seed_shared_build(&donor, &recipient)
+        Ok(seeded)
     };
     let seeded = seed().with_context(|| {
         format!(

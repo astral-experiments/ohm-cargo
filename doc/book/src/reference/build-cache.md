@@ -99,7 +99,7 @@ you use bash, it makes sense to add `export RUSTC_WRAPPER=sccache` to
 `.bashrc`. Alternatively, you can set [`build.rustc-wrapper`] in the [Cargo
 configuration][config]. Refer to sccache documentation for more details.
 
-## Ohm shared build cleanup
+## Ohm build cache cleanup
 
 With a separate `CARGO_BUILD_BUILD_DIR`, Ohm shares compatible registry builds
 and keeps each workspace's private state in its own `target` directory. This
@@ -115,8 +115,8 @@ Private intermediates live under
 `target/<profile>/build/workspaces/<workspace>/<context>`, and incremental state
 under `target/<profile>/incremental/<workspace>`. Worktree seeding clones private
 state from the donor's target into the recipient's target. Removing a worktree
-also removes its default target, so this private state needs no global ownership
-record or GC pass. Explicit targets outside the checkout need separate cleanup.
+also removes its default target. An explicit target outside a removed checkout
+stays at its configured path.
 
 On Linux and macOS, `cargo +ohm gc` reclaims these categories from shared
 build directories:
@@ -126,7 +126,6 @@ build directories:
   compiler executable or driver library being removed or replaced also makes its
   context eligible immediately.
 * Other tracked compiler contexts that have not been used for at least one hour.
-  Private state in existing worktrees is preserved.
 * Individual tracked dependency builds that have not been used for at least one
   hour, even while other dependencies keep their compiler context active. Versions,
   feature combinations, profiles, and targets retain their own usage histories.
@@ -137,8 +136,23 @@ build directories:
   private intermediates, incremental state, and scratch files left in the global
   directory by the old layout, including the old flat ThinLTO namespaces. These
   are eligible immediately, regardless of age
-  or whether the original worktree still exists. A colocated target's private
-  state is preserved.
+  or whether the original worktree still exists. Private workspace namespaces
+  in a colocated target follow the rule below.
+
+Running `cargo +ohm gc` also checks enrolled workspace targets. Ohm enrolls the
+target selected by a build or check, whether the workspace is a primary checkout,
+a linked worktree, or a directory outside Git. `cargo +ohm worktree add` enrolls
+its destination even before the first build. Enrollment records the paths and
+filesystem identities once. It does not track when a workspace was last used.
+
+After the moving `+ohm` toolchain advances, GC can remove private intermediate
+directories that Ohm marked when the older release created them in the same
+rustup installation. It skips a
+target in use and keeps contexts needed by published directory artifacts such
+as macOS debug symbol bundles. Final outputs, documentation, incremental state,
+contexts built with a pinned compiler, and private directories that predate
+the markers are preserved. The one-hour inactivity rule applies to shared
+caches. Use `cargo clean` to remove the rest of a workspace's build output.
 
 A build context groups artifacts that share a compiler, build tools, and relevant
 configuration and environment. Multiple projects, crate versions, and feature
@@ -235,12 +249,12 @@ Shared registry and ThinLTO artifacts and legacy global state are left for `carg
 The first build after switching to this layout rebuilds private intermediates;
 existing global registry artifacts remain reusable.
 
-`cargo +ohm gc` performs global maintenance across registered shared build roots.
+`cargo +ohm gc` checks enrolled workspace targets and registered shared build roots.
 It also discovers marked legacy roots in the configured build directory and up
 to four directory levels beneath `$HOME/.cache`, `$XDG_CACHE_HOME`, and, on macOS,
 `$HOME/Library/Caches`. Discovery does not follow directory symlinks or descend
-into build profiles. Roots elsewhere can be selected with `--build-dir`; an
-actual collection registers them for subsequent runs. Dry runs do not enroll
+into build profiles. Passing `--build-dir PATH` limits the entire run to that
+shared root. Collecting it registers it for subsequent runs. Dry runs do not enroll
 roots or create metadata. The command can run from any directory, without a
 Cargo workspace:
 

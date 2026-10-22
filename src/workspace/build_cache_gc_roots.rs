@@ -51,7 +51,7 @@ pub(crate) fn register_root(gctx: &GlobalContext, root: &Path) -> CargoResult<()
 }
 
 /// Opens a stable root record without following directory or file symlinks.
-fn open_regular(path: &Path) -> CargoResult<File> {
+pub(crate) fn open_regular(path: &Path) -> CargoResult<File> {
     let directory = path
         .parent()
         .context("build-cache metadata has no parent")?;
@@ -61,7 +61,7 @@ fn open_regular(path: &Path) -> CargoResult<File> {
     #[cfg(unix)]
     {
         use std::os::unix::fs::OpenOptionsExt as _;
-        options.custom_flags(libc::O_NOFOLLOW);
+        options.custom_flags(libc::O_NOFOLLOW | libc::O_NONBLOCK);
     }
     let file = options.open(path)?;
     let opened = file.metadata()?;
@@ -172,12 +172,47 @@ pub fn collect(gctx: &GlobalContext, root: Option<&Path>, dry_run: bool) -> Carg
             build_cache_gc::ohm_version(&rustc.verbose_version).map(str::to_owned)
         })
     };
+    enum Cache<'a> {
+        Shared(&'a Path),
+        #[cfg(any(target_os = "linux", target_os = "macos"))]
+        Private(&'a build_cache_gc::worktrees::registry::ManagedTarget),
+    }
+    let caches = roots.iter().map(|root| Cache::Shared(root.as_path()));
+    #[cfg(any(target_os = "linux", target_os = "macos"))]
+    let targets = if root.is_some() {
+        Vec::new()
+    } else {
+        match build_cache_gc::worktrees::registry::worktrees(gctx, dry_run, &mut || update(&counts))
+        {
+            Ok(targets) => targets,
+            Err(error) => {
+                errors.push(format!(
+                    "failed to read private target registry ({error:#})"
+                ));
+                Vec::new()
+            }
+        }
+    };
+    #[cfg(any(target_os = "linux", target_os = "macos"))]
+    let moving_release = if targets.is_empty() {
+        None
+    } else {
+        build_cache_gc::worktrees::provenance::current_moving_release(gctx)
+    };
+    #[cfg(any(target_os = "linux", target_os = "macos"))]
+    let caches = caches.chain(targets.iter().map(Cache::Private));
     let explicit_root = root.is_some();
-    for root in roots {
+    for cache in caches {
+        let root = match &cache {
+            Cache::Shared(root) => *root,
+            #[cfg(any(target_os = "linux", target_os = "macos"))]
+            Cache::Private(target) => &target.target,
+        };
         gctx.shell()
             .verbose(|shell| shell.status("Checking", root.display()))?;
         // A registered path can be reused for something else, especially under /tmp.
-        if !explicit_root
+        if matches!(&cache, Cache::Shared(_))
+            && !explicit_root
             && fs::symlink_metadata(root.join(Layout::SHARED_REGISTRY_CACHE_MARKER))
                 .is_err_and(|error| error.kind() == std::io::ErrorKind::NotFound)
         {
@@ -192,10 +227,22 @@ pub fn collect(gctx: &GlobalContext, root: Option<&Path>, dry_run: bool) -> Carg
             progress: show_progress.then_some(&mut update),
             ..Default::default()
         };
-        let result = collect_root(&root, dry_run, current_ohm.as_deref(), &mut summary);
+        let result = match &cache {
+            Cache::Shared(_) => collect_root(root, dry_run, current_ohm.as_deref(), &mut summary),
+            #[cfg(any(target_os = "linux", target_os = "macos"))]
+            Cache::Private(target) => build_cache_gc::worktrees::collect(
+                target,
+                dry_run,
+                moving_release.as_ref(),
+                &mut summary,
+            ),
+        };
         if let Err(error) = result {
             errors.push(format!("{} ({error:#})", root.display()));
-        } else if register_roots && let Err(error) = register_root(gctx, &root) {
+        } else if matches!(&cache, Cache::Shared(_))
+            && register_roots
+            && let Err(error) = register_root(gctx, root)
+        {
             errors.push(format!("failed to register {} ({error:#})", root.display()));
         }
         counts = summary.counts;

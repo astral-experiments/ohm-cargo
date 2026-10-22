@@ -19,6 +19,7 @@ use crate::compiler::custom_build::OHM_SHARED_RUSTC_LOG_ENVIRONMENT;
 use crate::compiler::trim_paths;
 use crate::compiler::{CompileMode, CompileTarget, CrateType, FileType, Unit, UserIntent};
 use crate::util::{self, CargoResult, OnceExt, StableHasher};
+use crate::workspace::build_cache_gc::worktrees::provenance;
 use crate::workspace::build_cache_gc::{self, FileIdentity};
 use crate::workspace::features::{OhmNativeToolTrust, OhmProcMacroTrust};
 use crate::workspace::profiles::StripInner;
@@ -168,6 +169,8 @@ struct SharedRegistryCache {
     compiler_driver: Option<PathBuf>,
     /// Immutable provenance captured with the inputs to the context hash.
     provenance: Option<(FileIdentity, FileIdentity)>,
+    /// The selected compiler and its driver were identified independently of other build tools.
+    verified_compiler: bool,
     /// Whether compiler execution satisfies the shared cache's ambient-input checks.
     trusted_context: bool,
     #[cfg(windows)]
@@ -535,19 +538,20 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
                 } else {
                     None
                 };
-                let trusted_context = compiler.wrapper.is_none()
+                let verified_compiler = compiler.wrapper.is_none()
                     && compiler_has_verified_toolchain_identity(
                         build_runner,
                         effective_executable_path.as_deref(),
                     )
+                    && !injected_loader
+                    && compiler_file_identity.is_some()
+                    && verified_compiler_driver;
+                let trusted_context = verified_compiler
                     && verified_linkers
                     && verified_native_tools
                     && verified_rustdoc
                     && effective_host_runner.is_none()
-                    && !injected_loader
                     && !configured_compiler_logger
-                    && compiler_file_identity.is_some()
-                    && verified_compiler_driver
                     && cargo.is_some()
                     && verified_environment_spelling
                     && target_applies_to_host.is_some();
@@ -663,6 +667,7 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
                         .as_ref()
                         .map(|driver| driver.path.clone()),
                     provenance: compiler_identity.zip(compiler_driver_identity),
+                    verified_compiler,
                     trusted_context,
                     #[cfg(windows)]
                     implicit_native_tools,
@@ -701,6 +706,7 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
         {
             cache.immutable_units.clear();
             cache.trusted_context = false;
+            cache.verified_compiler = false;
             cache.isolated_clippy = false;
             cache.workspace = Layout::shared_workspace_namespace(build_runner.bcx.ws);
             // Search-path validation used the proposed namespaces. Recompute them
@@ -714,13 +720,25 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
     }
 
     /// Enrolls immutable ownership and starts context usage tracking, including cache hits.
-    pub(super) fn record_gc_metadata(&self) -> CargoResult<Option<build_cache_gc::ContextUse>> {
+    pub(super) fn record_gc_metadata(
+        &self,
+        compilation: &crate::compiler::Compilation<'_>,
+    ) -> CargoResult<Option<build_cache_gc::ContextUse>> {
         if !cfg!(any(target_os = "linux", target_os = "macos")) {
             return Ok(None);
         }
         let Some(cache) = &self.shared_registry_cache else {
             return Ok(None);
         };
+        #[cfg(any(target_os = "linux", target_os = "macos"))]
+        if let Some(lock) = compilation.private_build_lock()
+            && let Err(error) =
+                build_cache_gc::worktrees::registry::register_build(self.ws, &cache.workspace, lock)
+        {
+            tracing::debug!(?error, "could not register private build target");
+        }
+        #[cfg(not(any(target_os = "linux", target_os = "macos")))]
+        let _ = compilation;
         let root = self
             .ws
             .canonical_build_path(self.ws.configured_build_dir().as_path_unlocked());
@@ -1102,6 +1120,46 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
             .build()
             .join("workspaces")
             .join(&self.shared_registry_cache.as_ref().unwrap().workspace)
+    }
+
+    /// Private units under this directory share a compiler and an artifact lease.
+    pub(crate) fn private_context_dir(&self, unit: &Unit) -> PathBuf {
+        self.worktree_seed_namespace(unit)
+            .join(&self.shared_registry_cache.as_ref().unwrap().rustc)
+    }
+
+    /// Record the first use of a private compiler directory before any unit creates it.
+    pub(super) fn record_private_context(
+        &self,
+        unit: &Unit,
+        build_runner: &BuildRunner<'_, '_>,
+    ) -> CargoResult<()> {
+        let gctx = self.ws.gctx();
+        // The selected rustup toolchain is part of the context hash. A version pin
+        // therefore cannot share a directory with the moving alias.
+        if gctx.get_env_os("RUSTUP_TOOLCHAIN") != Some(OsStr::new("ohm")) {
+            return Ok(());
+        }
+        let cache = self.shared_registry_cache.as_ref().unwrap();
+        let rustc = build_runner.bcx.rustc();
+        let path = self.private_context_dir(unit);
+        let root = self.host.build_dir().root();
+        if !cache.verified_compiler
+            || gctx.get_env_os("RUSTC").is_some()
+            || gctx.build_config()?.rustc.is_some()
+            || (rustc.workspace_wrapper.is_some() && !cache.isolated_clippy)
+            || build_runner.bcx.build_config.primary_unit_rustc.is_some()
+        {
+            // Some wrappers and an explicit RUSTC pointing at the same executable
+            // can share this hash. Keep any previously marked directory they use.
+            provenance::keep(root, &path)?;
+        } else if let Err(error) = provenance::record_new(root, &path, &cache.rustc, || {
+            let (compiler, driver) = cache.provenance.as_ref()?;
+            provenance::moving_release(&rustc.path, &rustc.verbose_version, compiler, driver)
+        }) {
+            debug!(?error, "could not record private compiler provenance");
+        }
+        Ok(())
     }
 
     /// Directory where incremental output for the given unit should go.
