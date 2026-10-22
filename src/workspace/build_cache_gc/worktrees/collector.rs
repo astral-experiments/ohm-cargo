@@ -12,6 +12,7 @@ use crate::workspace::build_cache_gc::{
     CollectorLock, Summary, absent, plain_ancestors, plain_directory, profiles,
     scoped_context_name, try_lock_file,
 };
+use crate::workspace::build_cache_gc_roots::GcAge;
 
 /// Shared targets have one idle timestamp and one set of outputs across their registrations.
 pub(crate) fn collect(
@@ -19,6 +20,7 @@ pub(crate) fn collect(
     targets: &[ManagedTarget],
     shared_roots: &[PathBuf],
     dry_run: bool,
+    age: &mut GcAge,
     current: Option<&provenance::MovingRelease>,
     summary: &mut Summary<'_>,
 ) -> CargoResult<()> {
@@ -30,7 +32,7 @@ pub(crate) fn collect(
         );
         return Ok(());
     }
-    let whole_target = super::idle::collect(target, targets, shared_roots, dry_run, summary)?;
+    let whole_target = super::idle::collect(target, targets, shared_roots, dry_run, age, summary)?;
     for owner in owners {
         collect_contexts(owner, dry_run, current.filter(|_| !whole_target), summary)?;
     }
