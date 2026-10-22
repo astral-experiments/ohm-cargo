@@ -3,7 +3,6 @@
 use std::fs::{self, File, OpenOptions};
 use std::io::Read as _;
 use std::path::{Path, PathBuf};
-use std::time::{Duration, Instant};
 
 use anyhow::{Context as _, ensure};
 
@@ -154,11 +153,6 @@ pub fn collect(gctx: &GlobalContext, root: Option<&Path>, dry_run: bool) -> Carg
         if summary.busy && summary.skipped.is_empty() {
             gctx.shell()
                 .status("Skipping", format!("{} (cache is in use)", root.display()))?;
-        } else if summary.pending {
-            gctx.shell().warn(format!(
-                "cleanup of {} is incomplete; run `cargo gc` again to continue",
-                root.display()
-            ))?;
         }
     }
     let file_count = match (counts.files, counts.directories) {
@@ -213,20 +207,20 @@ fn discover_roots(path: &Path, depth: usize, roots: &mut Vec<PathBuf>) -> CargoR
     Ok(())
 }
 
-/// Drains productive batches while yielding to new builds and bounding I/O.
+/// Drains productive batches, releasing build locks between them.
 fn collect_root(
     root: &Path,
     dry_run: bool,
     current_ohm: Option<&str>,
 ) -> CargoResult<build_cache_gc::Summary> {
+    let mut state = build_cache_gc::CollectionState::default();
     if dry_run {
-        return build_cache_gc::collect(root, true, current_ohm);
+        return build_cache_gc::collect(root, true, current_ohm, &mut state);
     }
-    let started = Instant::now();
     let mut total = build_cache_gc::Summary::default();
     loop {
-        let summary = build_cache_gc::collect(root, false, current_ohm)?;
-        let progress = summary.retired > 0 || summary.deleted_entries > 0;
+        let summary = build_cache_gc::collect(root, false, current_ohm, &mut state)?;
+        let progress = summary.retired > 0 || summary.deleted_entries > 0 || summary.advanced;
         total.retired += summary.retired;
         total.deleted_entries += summary.deleted_entries;
         total.counts.include(&summary.counts);
@@ -234,7 +228,7 @@ fn collect_root(
         total.busy = summary.busy;
         total.pending = summary.pending;
         for detail in summary.skipped {
-            if total.skipped.len() < 32 && !total.skipped.contains(&detail) {
+            if !total.skipped.contains(&detail) {
                 total.skipped.push(detail);
             }
         }
@@ -243,7 +237,7 @@ fn collect_root(
                 total.details.push(detail);
             }
         }
-        if !progress || !total.pending || started.elapsed() >= Duration::from_secs(10) {
+        if !progress || !total.pending {
             return Ok(total);
         }
     }

@@ -263,8 +263,11 @@ reports `Removing` and `Removed`, counts files as it deletes them, and uses smal
 batches to yield to active builds. Counts exclude GC bookkeeping; like
 `cargo clean`, byte totals use file lengths rather than physical disk usage.
 Concurrent builds or cleanup can change the preview's estimate.
-If a root is busy or work remains after the per-root budget, invoke
-`cargo +ohm gc` again to continue. `--quiet` suppresses the output.
+One invocation keeps draining productive batches until cleanup finishes; there
+is no overall time limit. Busy contexts and paths that cannot be safely removed
+are reported with a reason. Retry busy contexts after their builds or programs
+exit; paths on another filesystem or behind symbolic links are left untouched.
+`--quiet` suppresses the output.
 
 Cleanup only removes recognized namespaces inside marked shared build roots.
 It preserves external targets, ordinary checkout targets, unknown directory

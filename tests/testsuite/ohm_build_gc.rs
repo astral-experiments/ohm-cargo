@@ -307,6 +307,63 @@ fn legacy_registry_cleanup_preserves_current_dependencies_and_warm_builds() {
 }
 
 #[cargo_test]
+fn gc_explains_skipped_paths_and_cleans_unrelated_artifacts() {
+    let project = donor();
+    cargo(&project, "build").run();
+    let registry = shared_root().join("debug/build/registries").join(context());
+    let outside = paths::root().join("outside-cache");
+    fs::rename(&registry, &outside).unwrap();
+    fs::write(outside.join("preserved"), b"untouched").unwrap();
+    std::os::unix::fs::symlink(&outside, &registry).unwrap();
+    tracker()
+        .execute("UPDATE contexts SET last_used = 0", [])
+        .unwrap();
+
+    // More blocked contexts than fit in one batch must not starve later work.
+    let mut record = context_record();
+    let mut skipped = vec![registry.clone()];
+    for index in 0..9 {
+        let name = format!("v2-{index:016x}");
+        record["context"] = name.clone().into();
+        tracker()
+            .execute(
+                "INSERT INTO contexts (context, record, last_used) VALUES (?1, ?2, 0)",
+                rusqlite::params![name, serde_json::to_vec(&record).unwrap()],
+            )
+            .unwrap();
+        let path = registry.parent().unwrap().join(name);
+        std::os::unix::fs::symlink(&outside, &path).unwrap();
+        skipped.push(path);
+    }
+    let unused = registry.parent().unwrap().join("v2-ffffffffffffffff");
+    fs::create_dir(&unused).unwrap();
+    fs::write(unused.join("artifact"), b"unused").unwrap();
+    for dry_run in [true, false] {
+        let command = if dry_run {
+            "gc --dry-run --color never --build-dir"
+        } else {
+            "gc --color never --build-dir"
+        };
+        let output = cargo(&project, command).arg(shared_root()).run();
+        let stderr = String::from_utf8(output.stderr).unwrap();
+        for path in &skipped {
+            assert!(
+                stderr.contains(&format!(
+                    "Skipping {} (not a regular file or directory)",
+                    path.display()
+                )),
+                "{stderr}"
+            );
+            assert!(path.is_symlink());
+        }
+        assert!(!stderr.contains("is incomplete"), "{stderr}");
+        assert!(!stderr.contains("again to continue"), "{stderr}");
+        assert_eq!(unused.exists(), dry_run);
+        assert_eq!(fs::read(outside.join("preserved")).unwrap(), b"untouched");
+    }
+}
+
+#[cargo_test]
 fn dependency_gc_preserves_reused_transitive_dependencies_and_rebuilds_evicted_variants() {
     Package::new("gc-leaf", "1.0.0")
         .file("src/lib.rs", "pub fn value() -> u32 { 42 }")
@@ -769,7 +826,10 @@ fn builds_leave_retired_state_until_explicit_gc() {
     );
 
     // An explicit invocation drains more than one deletion chunk.
-    collect(&project, false);
+    cargo(&project, "gc --build-dir")
+        .arg(shared_root())
+        .with_stderr_does_not_contain("[WARNING] cleanup [..]")
+        .run();
     assert!(!private.exists());
     let trash = shared_root().join("debug/.ohm-gc-trash-v1");
     if trash.exists() {
