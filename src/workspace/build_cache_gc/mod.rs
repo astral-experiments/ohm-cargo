@@ -3,6 +3,7 @@
 //! Builds batch context and dependency activity into SQLite without scanning artifacts.
 //! Explicit GC reclaims legacy layouts, obsolete compilers, and idle dependencies.
 
+use std::collections::BTreeSet;
 use std::fs::{self, File, Metadata, OpenOptions, TryLockError};
 use std::io;
 use std::path::{Component, Path, PathBuf};
@@ -370,9 +371,11 @@ pub(crate) struct Summary {
     pub advanced: bool,
     pub deleted_entries: usize,
     pub counts: FileCounts,
+    pub errors: BTreeSet<String>,
     pub pending: bool,
     pub busy: bool,
     pub skipped: Vec<String>,
+    pub blocking_locks: BTreeSet<PathBuf>,
     pub details: Vec<String>,
 }
 
@@ -383,6 +386,27 @@ pub(crate) struct CollectionState {
 }
 
 impl Summary {
+    fn payload_entries(&mut self, path: &Path) -> CargoResult<Option<fs::ReadDir>> {
+        match fs::read_dir(path) {
+            Ok(entries) => Ok(Some(entries)),
+            Err(error) => self.path_error(path, error.into()),
+        }
+    }
+
+    /// Preserve inaccessible payloads while collecting their independent siblings.
+    fn path_error<T: Default>(&mut self, path: &Path, error: anyhow::Error) -> CargoResult<T> {
+        if let Some(cause) = error.downcast_ref::<io::Error>()
+            && matches!(
+                cause.kind(),
+                io::ErrorKind::PermissionDenied | io::ErrorKind::ReadOnlyFilesystem
+            )
+        {
+            self.errors.insert(format!("{} ({cause})", path.display()));
+            return Ok(T::default());
+        }
+        Err(error)
+    }
+
     fn skip_path(&mut self, path: &Path, reason: &str) {
         let detail = format!("{} ({reason})", path.display());
         if !self.skipped.contains(&detail) {
@@ -418,6 +442,7 @@ impl CollectionLocks {
         profiles: &[PathBuf],
         namespace: &Namespace,
         dry_run: bool,
+        summary: &mut Summary,
     ) -> CargoResult<bool> {
         let context = namespace.scoped_context().map(str::to_owned);
         if let Some(guards) = self.domains.get(&context) {
@@ -449,11 +474,19 @@ impl CollectionLocks {
         }
         let mut guards = Vec::new();
         for path in paths {
-            let Some(guard) = try_lock(&path, !dry_run)? else {
-                self.domains.insert(context, None);
-                return Ok(false);
-            };
-            guards.push(guard);
+            match try_lock(&path, !dry_run) {
+                Ok(Some(guard)) => {
+                    guards.push(guard);
+                    continue;
+                }
+                Ok(None) => {
+                    summary.skip(namespace);
+                    summary.blocking_locks.insert(path);
+                }
+                Err(error) => summary.path_error::<()>(&path, error)?,
+            }
+            self.domains.insert(context, None);
+            return Ok(false);
         }
         if dry_run {
             guards.clear();
@@ -495,7 +528,8 @@ pub(crate) fn collect(
     dry_run: bool,
     current_ohm: Option<&str>,
     state: &mut CollectionState,
-) -> CargoResult<Summary> {
+    summary: &mut Summary,
+) -> CargoResult<()> {
     collect_with_lock_budget(
         root,
         dry_run,
@@ -503,6 +537,7 @@ pub(crate) fn collect(
         Duration::from_millis(10),
         current_ohm,
         state,
+        summary,
     )
 }
 
@@ -514,10 +549,10 @@ fn collect_with_lock_budget(
     lock_budget: Duration,
     current_ohm: Option<&str>,
     state: &mut CollectionState,
-) -> CargoResult<Summary> {
-    let mut summary = Summary::default();
+    summary: &mut Summary,
+) -> CargoResult<()> {
     if !cfg!(any(target_os = "linux", target_os = "macos")) {
-        return Ok(summary);
+        return Ok(());
     }
     ensure!(
         regular(&root.join(Layout::SHARED_REGISTRY_CACHE_MARKER)),
@@ -536,12 +571,14 @@ fn collect_with_lock_budget(
     let _collector = if dry_run {
         None
     } else {
-        let Some(collector) = try_lock(&directory.join("collector.lock"), true)? else {
+        let path = directory.join("collector.lock");
+        let Some(collector) = try_lock(&path, true)? else {
             summary.busy = true;
+            summary.blocking_locks.insert(path);
             summary
                 .skipped
                 .push(format!("{} (another GC is running)", root.display()));
-            return Ok(summary);
+            return Ok(());
         };
         Some(collector)
     };
@@ -562,7 +599,7 @@ fn collect_with_lock_budget(
         }
     }
     // Namespace discovery never holds consumer or build locks.
-    for namespace in namespaces(root, &profiles, tracker.as_ref())? {
+    for namespace in namespaces(root, &profiles, tracker.as_ref(), summary)? {
         if namespace
             .detail(root, &profiles, now, current_ohm, tracker.as_ref())
             .is_none()
@@ -581,7 +618,7 @@ fn collect_with_lock_budget(
                 } else {
                     DELETE_BUDGET + 1
                 };
-                for entry in thinlto_entries(root, context, now, limit, state)? {
+                for entry in thinlto_entries(root, context, now, limit, state, summary)? {
                     if entry
                         .detail(root, &profiles, now, current_ohm, tracker.as_ref())
                         .is_some()
@@ -602,8 +639,7 @@ fn collect_with_lock_budget(
         let mut locks = CollectionLocks::default();
         let mut sources = Vec::new();
         for (namespace, paths) in ready {
-            if !locks.acquire(root, &profiles, &namespace, true)? {
-                summary.skip(&namespace);
+            if !locks.acquire(root, &profiles, &namespace, true, summary)? {
                 continue;
             }
             let Some(detail) =
@@ -616,7 +652,9 @@ fn collect_with_lock_budget(
                 if trash == root.join(METADATA_TRASH) {
                     continue;
                 }
-                if retire(root, &source, &trash, true, &mut summary)? {
+                if retire(root, &source, &trash, true, summary)
+                    .or_else(|error| summary.path_error(&source, error))?
+                {
                     sources.push(source);
                 }
             }
@@ -636,14 +674,17 @@ fn collect_with_lock_budget(
             }
             counted.insert(source.clone());
             let device = filesystem_device(&fs::symlink_metadata(&source)?);
-            remove_bounded(&source, device, &mut remaining, &mut summary, true)?;
+            remove_bounded(&source, device, &mut remaining, summary, true)?;
         }
         for trash in trash_roots {
-            drain_trash(&trash, &mut remaining, &mut summary, true)?;
+            drain_trash(&trash, &mut remaining, summary, true)?;
         }
-        return Ok(summary);
+        return Ok(());
     }
     if !ready.is_empty() {
+        // Finish file-only work before reserving a SQLite writer. A busy
+        // database can then postpone only the remaining row deletions.
+        ready.sort_by_key(|(namespace, _)| namespace.writes_usage_rows());
         // Individual objects have no rows to delete. Retire a file-sized batch,
         // still yielding at the same short deadline as other namespaces.
         let rename_budget = if ready
@@ -674,15 +715,13 @@ fn collect_with_lock_budget(
                 summary.pending = true;
                 break;
             }
-            if !locks.acquire(root, &profiles, &namespace, false)? {
-                summary.skip(&namespace);
+            if !locks.acquire(root, &profiles, &namespace, false, summary)? {
                 summary.advanced |= state.deferred.insert(namespace);
                 continue;
             }
-            // Busy contexts need no writer reservation. Once work is available,
-            // reserve before rechecking usage so a deferred transaction cannot
-            // fail to upgrade while another context records its activity.
-            if transaction.is_none()
+            // Reserve the writer before rechecking usage when deleting rows.
+            if namespace.writes_usage_rows()
+                && transaction.is_none()
                 && let Some(tracker) = &tracker
             {
                 match rusqlite::Transaction::new_unchecked(
@@ -694,9 +733,10 @@ fn collect_with_lock_budget(
                         if error.sqlite_error_code() == Some(rusqlite::ErrorCode::DatabaseBusy) =>
                     {
                         summary.busy = true;
-                        summary
-                            .skipped
-                            .push(format!("{} (usage database is busy)", root.display()));
+                        summary.skipped.push(format!(
+                            "contexts and dependencies (usage database {} is busy)",
+                            directory.join(tracker::DATABASE).display()
+                        ));
                         break;
                     }
                     Err(error) => return Err(error.into()),
@@ -725,14 +765,16 @@ fn collect_with_lock_budget(
             };
             let mut retired = false;
             let mut partial = false;
-            let skipped_before = summary.skipped.len();
+            let skipped_before = summary.skipped.len() + summary.errors.len();
             for (source, trash) in &paths {
                 if remaining == 0 || (remaining < rename_budget && Instant::now() >= deadline) {
                     summary.pending = true;
                     partial = true;
                     break;
                 }
-                if retire(root, source, trash, false, &mut summary)? {
+                if retire(root, source, trash, false, summary)
+                    .or_else(|error| summary.path_error(source, error))?
+                {
                     remaining -= 1;
                     retired = true;
                     summary.advanced = true;
@@ -747,9 +789,13 @@ fn collect_with_lock_budget(
                     .iter()
                     .all(|(source, _)| safely_absent(root, source));
             if completed {
-                namespace.finish(&directory, tracker.as_ref())?;
+                if namespace.finish(&directory, tracker.as_ref(), summary)? {
+                    summary.retired += 1;
+                } else {
+                    summary.advanced |= state.deferred.insert(namespace);
+                }
             } else if !partial {
-                if summary.skipped.len() == skipped_before {
+                if summary.skipped.len() + summary.errors.len() == skipped_before {
                     for (source, _) in &paths {
                         if !safely_absent(root, source) {
                             summary.skip_path(source, "path changed during cleanup");
@@ -758,7 +804,6 @@ fn collect_with_lock_budget(
                 }
                 summary.advanced |= state.deferred.insert(namespace);
             }
-            summary.retired += usize::from(completed);
         }
         if let Some(transaction) = transaction {
             transaction.commit()?;
@@ -768,7 +813,7 @@ fn collect_with_lock_budget(
     // starts or another context remains in use.
     let mut remaining = DELETE_BUDGET;
     for trash in trash_roots {
-        drain_trash(&trash, &mut remaining, &mut summary, false)?;
+        drain_trash(&trash, &mut remaining, summary, false)?;
     }
     let mut metadata_summary = Summary::default();
     drain_trash(
@@ -780,7 +825,8 @@ fn collect_with_lock_budget(
     summary.deleted_entries += metadata_summary.deleted_entries;
     summary.pending |= metadata_summary.pending;
     summary.skipped.extend(metadata_summary.skipped);
-    Ok(summary)
+    summary.errors.extend(metadata_summary.errors);
+    Ok(())
 }
 
 #[derive(PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -799,15 +845,19 @@ fn thinlto_entries(
     now: SystemTime,
     limit: usize,
     state: &CollectionState,
+    summary: &mut Summary,
 ) -> CargoResult<Vec<Namespace>> {
     let parent = Path::new(THINLTO).join(context);
     let mut entries = Vec::new();
-    for namespace in directory_names(root, &root.join(&parent))? {
+    for namespace in directory_names(root, &root.join(&parent), summary)? {
         if !thinlto_key(&namespace) {
             continue;
         }
         let directory = parent.join(namespace);
-        for entry in fs::read_dir(root.join(&directory))? {
+        let Some(children) = summary.payload_entries(&root.join(&directory))? else {
+            continue;
+        };
+        for entry in children {
             let entry = entry?;
             let name = entry.file_name();
             let Some(name) = name.to_str() else { continue };
@@ -936,6 +986,10 @@ fn legacy_usage(root: &Path, context: &str) -> Option<Option<tracker::Timestamp>
 }
 
 impl Namespace {
+    fn writes_usage_rows(&self) -> bool {
+        matches!(self, Self::Context(_) | Self::Dependency { .. })
+    }
+
     fn scoped_context(&self) -> Option<&str> {
         match self {
             Self::Context(context)
@@ -1121,7 +1175,30 @@ impl Namespace {
         paths
     }
 
-    fn finish(&self, directory: &Path, tracker: Option<&Tracker>) -> CargoResult<()> {
+    fn finish(
+        &self,
+        directory: &Path,
+        tracker: Option<&Tracker>,
+        summary: &mut Summary,
+    ) -> CargoResult<bool> {
+        let paths = match self {
+            Self::Dependency { .. } | Self::ThinLto { .. } | Self::LegacyThinLto(_) => Vec::new(),
+            Self::Context(id) => vec![
+                directory.join("contexts").join(format!("{id}.json")),
+                directory.join(LAST_USED).join(id),
+            ],
+            Self::LegacyWorkspace(id) => {
+                vec![directory.join("workspaces").join(format!("{id}.json"))]
+            }
+        };
+        for path in paths {
+            if plain_ancestors(directory, &path)?
+                && regular(&path)
+                && let Err(error) = fs::remove_file(&path)
+            {
+                return summary.path_error(&path, error.into());
+            }
+        }
         if let Some(tracker) = tracker {
             match self {
                 Self::Context(id) => tracker.forget_context(id)?,
@@ -1129,24 +1206,7 @@ impl Namespace {
                 Self::LegacyWorkspace(_) | Self::ThinLto { .. } | Self::LegacyThinLto(_) => {}
             }
         }
-        let paths = match self {
-            Self::Dependency { .. } | Self::ThinLto { .. } | Self::LegacyThinLto(_) => {
-                return Ok(());
-            }
-            Self::Context(id) => vec![
-                directory.join(LAST_USED).join(id),
-                directory.join("contexts").join(format!("{id}.json")),
-            ],
-            Self::LegacyWorkspace(id) => {
-                vec![directory.join("workspaces").join(format!("{id}.json"))]
-            }
-        };
-        for path in paths {
-            if plain_ancestors(directory, &path)? && regular(&path) {
-                fs::remove_file(path)?;
-            }
-        }
-        Ok(())
+        Ok(true)
     }
 }
 
@@ -1163,6 +1223,7 @@ fn namespaces(
     root: &Path,
     profiles: &[PathBuf],
     tracker: Option<&Tracker>,
+    summary: &mut Summary,
 ) -> CargoResult<Vec<Namespace>> {
     let mut namespaces = HashSet::default();
     if let Some(tracker) = tracker {
@@ -1191,7 +1252,7 @@ fn namespaces(
         }
     }
     for profile in profiles {
-        for id in directory_names(root, &profile.join("build/registries"))? {
+        for id in directory_names(root, &profile.join("build/registries"), summary)? {
             if legacy_context_name(&id) || scoped_context_name(&id) {
                 namespaces.insert(Namespace::Context(id));
             }
@@ -1201,7 +1262,7 @@ fn namespaces(
                 profile.join("build/workspaces"),
                 profile.join("incremental"),
             ] {
-                for id in directory_names(root, &parent)? {
+                for id in directory_names(root, &parent, summary)? {
                     if namespace_hash(&id) {
                         namespaces.insert(Namespace::LegacyWorkspace(id));
                     }
@@ -1209,7 +1270,7 @@ fn namespaces(
             }
         }
     }
-    for id in directory_names(root, &root.join(THINLTO))? {
+    for id in directory_names(root, &root.join(THINLTO), summary)? {
         if legacy_context_name(&id) || scoped_context_name(&id) {
             namespaces.insert(Namespace::Context(id));
         } else if thinlto_key(&id) && !namespaces.contains(&Namespace::Context(id.clone())) {
@@ -1218,7 +1279,7 @@ fn namespaces(
     }
     if legacy_private_state(root, profiles) {
         for base in std::iter::once(root).chain(profiles.iter().filter_map(|p| p.parent())) {
-            for id in directory_names(root, &base.join("tmp"))? {
+            for id in directory_names(root, &base.join("tmp"), summary)? {
                 if namespace_hash(&id) {
                     namespaces.insert(Namespace::LegacyWorkspace(id));
                 }
@@ -1243,10 +1304,13 @@ fn namespaces(
     Ok(namespaces)
 }
 
-fn directory_names(root: &Path, parent: &Path) -> CargoResult<Vec<String>> {
+fn directory_names(root: &Path, parent: &Path, summary: &mut Summary) -> CargoResult<Vec<String>> {
     let mut names = Vec::new();
-    if plain_ancestors(root, parent)? && plain_directory(parent) {
-        for entry in fs::read_dir(parent)? {
+    if plain_ancestors(root, parent)?
+        && plain_directory(parent)
+        && let Some(entries) = summary.payload_entries(parent)?
+    {
+        for entry in entries {
             let entry = entry?;
             if entry.file_type()?.is_dir()
                 && let Some(name) = entry.file_name().to_str()
@@ -1361,38 +1425,19 @@ fn drain_trash(
     if !plain_directory(trash) {
         return Ok(());
     }
-    for entry in fs::read_dir(trash)? {
+    let Some(entries) = summary.payload_entries(trash)? else {
+        return Ok(());
+    };
+    let device = filesystem_device(&fs::symlink_metadata(trash)?);
+    for entry in entries {
         let entry = entry?;
         if !entry.file_type()?.is_dir() {
             continue;
         }
         let path = entry.path();
-        if read_regular(&path.join("owner")).as_deref() != Some(b"ohm-build-gc-v1\n") {
-            continue;
-        }
-        if fs::read_dir(&path)?.any(|child| {
-            !child.is_ok_and(|child| child.file_name() == "owner" || child.file_name() == "payload")
-        }) {
-            continue;
-        }
-        let payload = path.join("payload");
-        remove_bounded(
-            &payload,
-            filesystem_device(&fs::symlink_metadata(trash)?),
-            remaining,
-            summary,
-            dry_run,
-        )?;
-        if dry_run {
-            continue;
-        }
-        if absent(&payload) && *remaining >= 2 {
-            fs::remove_file(path.join("owner"))?;
-            fs::remove_dir(path)?;
-            *remaining -= 2;
-            summary.deleted_entries += 2;
-        }
-        if *remaining < 2 {
+        drain_entry(&path, device, remaining, summary, dry_run)
+            .or_else(|error| summary.path_error(&path, error))?;
+        if !dry_run && *remaining < 2 {
             summary.pending = true;
             break;
         }
@@ -1400,8 +1445,53 @@ fn drain_trash(
     Ok(())
 }
 
+/// A blocked entry in the trash must not prevent draining another retired path.
+fn drain_entry(
+    path: &Path,
+    device: u64,
+    remaining: &mut usize,
+    summary: &mut Summary,
+    dry_run: bool,
+) -> CargoResult<()> {
+    let owner = path.join("owner");
+    match fs::symlink_metadata(&owner) {
+        Ok(metadata) if !metadata.is_file() => return Ok(()),
+        Err(error) if error.kind() == io::ErrorKind::NotFound => return Ok(()),
+        Err(error) => return Err(error.into()),
+        Ok(_) => {}
+    }
+    if fs::read(&owner)? != b"ohm-build-gc-v1\n" {
+        return Ok(());
+    }
+    if fs::read_dir(path)?.any(|child| {
+        !child.is_ok_and(|child| child.file_name() == "owner" || child.file_name() == "payload")
+    }) {
+        return Ok(());
+    }
+    let payload = path.join("payload");
+    remove_bounded(&payload, device, remaining, summary, dry_run)?;
+    if !dry_run && absent(&payload) && *remaining >= 2 {
+        fs::remove_file(owner)?;
+        fs::remove_dir(path)?;
+        *remaining -= 2;
+        summary.deleted_entries += 2;
+    }
+    Ok(())
+}
+
 /// Visits siblings after a skipped subtree, but never removes its ancestors.
 fn remove_bounded(
+    path: &Path,
+    device: u64,
+    remaining: &mut usize,
+    summary: &mut Summary,
+    dry_run: bool,
+) -> CargoResult<bool> {
+    remove_entry(path, device, remaining, summary, dry_run)
+        .or_else(|error| summary.path_error(path, error))
+}
+
+fn remove_entry(
     path: &Path,
     device: u64,
     remaining: &mut usize,
@@ -1612,6 +1702,27 @@ mod tests {
         )
     }
 
+    fn collect_with_lock_budget(
+        root: &Path,
+        dry_run: bool,
+        now: SystemTime,
+        lock_budget: Duration,
+        current_ohm: Option<&str>,
+        state: &mut CollectionState,
+    ) -> CargoResult<Summary> {
+        let mut summary = Summary::default();
+        super::collect_with_lock_budget(
+            root,
+            dry_run,
+            now,
+            lock_budget,
+            current_ohm,
+            state,
+            &mut summary,
+        )?;
+        Ok(summary)
+    }
+
     struct Cache {
         _temporary: tempfile::TempDir,
         root: PathBuf,
@@ -1793,21 +1904,33 @@ mod tests {
     }
 
     #[test]
-    fn concurrent_usage_writer_postpones_gc_without_failing_or_retiring_artifacts()
-    -> CargoResult<()> {
+    fn busy_usage_writer_only_postpones_context_and_dependency_rows() -> CargoResult<()> {
         let cache = Cache::new()?;
         let context = "v2-0123456789abcdef";
         cache.enroll_context(context)?;
         cache.age_context(context, SystemTime::UNIX_EPOCH)?;
         let artifact = cache.artifact(&format!("build/registries/{context}"))?;
+        cache.enroll()?;
+        let entry = "debug/build/registries/abcdef/dep/1111111111111111";
+        let dependency = cache.artifact(entry.strip_prefix("debug/").unwrap())?;
+        dependency_use(&cache, &[entry], SystemTime::UNIX_EPOCH)?;
+        let file_only = [
+            cache.artifact("build/workspaces/0123456789abcdef")?,
+            cache.thinlto("abcdef", 0, SystemTime::UNIX_EPOCH)?,
+            cache.thinlto(&"d".repeat(32), 0, SystemTime::UNIX_EPOCH)?,
+        ];
         let tracker = cache.tracker()?;
         tracker.conn.execute_batch("BEGIN IMMEDIATE")?;
         let summary = collect(&cache.root, false, None)?;
         assert!(summary.busy);
-        assert_eq!(summary.retired, 0);
+        assert_eq!(summary.retired, file_only.len());
+        assert!(file_only.iter().all(|path| !path.exists()));
         assert!(artifact.exists());
+        assert!(dependency.exists());
         tracker.conn.execute_batch("ROLLBACK")?;
-        assert_eq!(collect(&cache.root, false, None)?.retired, 1);
+        assert_eq!(collect(&cache.root, false, None)?.retired, 2);
+        assert!(!artifact.exists());
+        assert!(!dependency.exists());
         Ok(())
     }
 
@@ -1876,9 +1999,18 @@ mod tests {
             now,
             DELETE_BUDGET + 1,
             &CollectionState::default(),
+            &mut Summary::default(),
         )?);
         assert_eq!(
-            thinlto_entries(&cache.root, "abcdef", now, DELETE_BUDGET + 1, &deferred)?.len(),
+            thinlto_entries(
+                &cache.root,
+                "abcdef",
+                now,
+                DELETE_BUDGET + 1,
+                &deferred,
+                &mut Summary::default()
+            )?
+            .len(),
             2
         );
         let preview = collect_at(&cache.root, true, now, None)?;
@@ -2395,6 +2527,8 @@ mod tests {
 
     #[test]
     fn file_based_contexts_remain_collectable_without_creating_a_database() -> CargoResult<()> {
+        use std::os::unix::fs::PermissionsExt as _;
+
         let cache = Cache::new()?;
         cache.enroll()?;
         let record = cache.record("abcdef")?;
@@ -2413,6 +2547,34 @@ mod tests {
         let artifact = cache.artifact("build/registries/abcdef")?;
         assert_eq!(collect(&cache.root, true, None)?.retired, 1);
         assert!(artifact.is_dir());
+        let contexts = directory.join("contexts");
+        fs::set_permissions(&contexts, fs::Permissions::from_mode(0o555))?;
+        if tempfile::NamedTempFile::new_in(&contexts).is_err() {
+            let mut state = CollectionState::default();
+            let failed = collect_with_lock_budget(
+                &cache.root,
+                false,
+                SystemTime::now(),
+                Duration::from_secs(60),
+                None,
+                &mut state,
+            )?;
+            let record = contexts.join("abcdef.json");
+            assert_eq!(failed.counts.files, 1);
+            assert_eq!(failed.retired, 0);
+            assert!(failed.errors.iter().any(|error| {
+                error.starts_with(&format!("{} (Permission denied", record.display()))
+            }));
+            assert!(
+                state
+                    .deferred
+                    .contains(&Namespace::Context("abcdef".into()))
+            );
+            assert!(record.is_file());
+            assert!(directory.join("last-used/abcdef").is_file());
+            assert!(!artifact.exists());
+        }
+        fs::set_permissions(&contexts, fs::Permissions::from_mode(0o755))?;
         assert_eq!(collect(&cache.root, false, None)?.retired, 1);
         assert!(!artifact.exists());
         assert!(!directory.join("contexts/abcdef.json").exists());
@@ -2540,7 +2702,10 @@ mod tests {
             .write(true)
             .open(cache.profile.join(".cargo-build-lock"))?;
         crate::util::flock::lock_shared(&profile)?;
-        assert!(collect(&cache.root, false, None)?.busy);
+        assert_eq!(
+            collect(&cache.root, false, None)?.blocking_locks,
+            BTreeSet::from([cache.profile.join(".cargo-build-lock")])
+        );
         assert!(artifact.exists());
         crate::util::flock::unlock(&profile)?;
         drop(profile);
