@@ -25,6 +25,14 @@ impl<N: Eq + Ord + Clone, E: Default + Clone> Graph<N, E> {
             .or_default()
     }
 
+    /// Adds a node and edges to each child, retaining existing edge values.
+    pub fn link_many(&mut self, node: N, children: impl IntoIterator<Item = N>) {
+        let edges = self.nodes.entry(node).or_insert_with(im_rc::OrdMap::new);
+        for child in children {
+            edges.entry(child).or_default();
+        }
+    }
+
     /// Returns the graph obtained by reversing all edges.
     pub fn reversed(&self) -> Graph<N, E> {
         let mut ret = Graph::new();
@@ -197,6 +205,29 @@ impl<'s, N: Eq + Ord + Clone + 's, E: Default + Clone + 's> Graph<N, E> {
         }
         result
     }
+}
+
+#[test]
+fn link_many_retains_empty_nodes() {
+    let mut graph: Graph<i32, ()> = Graph::new();
+    graph.link_many(1, []);
+    assert!(graph.contains(&1));
+    assert_eq!(graph.edges(&1).count(), 0);
+}
+
+#[test]
+fn link_many_retains_values_and_orders_children() {
+    let mut graph: Graph<i32, i32> = Graph::new();
+    *graph.link(0, 2) = 7;
+    graph.link_many(0, [3, 2, 1, 3, 0]);
+    assert_eq!(
+        graph
+            .edges(&0)
+            .map(|(node, edge)| (*node, *edge))
+            .collect::<Vec<_>>(),
+        [(0, 0), (1, 0), (2, 7), (3, 0)]
+    );
+    assert_eq!(graph.iter().copied().collect::<Vec<_>>(), [0]);
 }
 
 #[test]

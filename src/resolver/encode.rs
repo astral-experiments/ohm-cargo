@@ -291,20 +291,11 @@ pub fn into_resolve(
 
     let mut g = Graph::new();
 
-    for (id, _) in live_pkgs.values() {
-        g.add(*id);
-    }
-
-    for &(ref id, pkg) in live_pkgs.values() {
-        let Some(ref deps) = pkg.dependencies else {
-            continue;
-        };
-
-        for edge in deps.iter() {
-            if let Some(to_depend_on) = lookup_id(edge) {
-                g.link(*id, to_depend_on);
-            }
-        }
+    for (id, pkg) in live_pkgs.values() {
+        g.link_many(
+            *id,
+            pkg.dependencies.iter().flatten().filter_map(&mut lookup_id),
+        );
     }
 
     let replacements = {
