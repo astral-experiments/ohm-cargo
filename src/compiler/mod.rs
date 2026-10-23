@@ -3285,14 +3285,25 @@ pub fn lib_search_paths(
 ) -> CargoResult<Vec<OsString>> {
     let mut lib_search_paths = Vec::new();
     if build_runner.bcx.gctx.cli_unstable().build_dir_new_layout {
-        // Add all dependency args to rustc process
-        let paths = dep_paths_for_args(unit, build_runner);
+        let dependencies = build_runner
+            .unit_deps(unit)
+            .iter()
+            .filter(|dep| !dep.unit.target.is_custom_build())
+            .map(|dep| dep.unit.clone())
+            .collect();
+        lib_search_paths = build_runner
+            .files()
+            .dependency_search_args(dependencies, || {
+                let paths = dep_paths_for_args(unit, build_runner);
 
-        for path in paths {
-            let mut deps = OsString::from("dependency=");
-            deps.push(path);
-            lib_search_paths.extend(["-L".into(), deps]);
-        }
+                let mut args = Vec::new();
+                for path in paths {
+                    let mut deps = OsString::from("dependency=");
+                    deps.push(path);
+                    args.extend(["-L".into(), deps]);
+                }
+                args
+            });
     } else {
         let mut deps = OsString::from("dependency=");
         deps.push(build_runner.files().deps_dir(unit));
