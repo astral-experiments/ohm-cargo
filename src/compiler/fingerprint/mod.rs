@@ -1777,13 +1777,10 @@ impl LocalFingerprint {
                     return Ok(Some(StaleItem::MissingFile { path: dep_info }));
                 };
                 for (key, previous) in info.env.iter() {
-                    if let Some(value) = pkg.manifest().metadata().env_var(key.as_str()) {
-                        if Some(value.as_ref()) == previous.as_deref() {
-                            continue;
-                        }
-                    }
-
-                    let current = if worktree_seed && key == "CARGO_MANIFEST_DIR" {
+                    let manifest_value = pkg.manifest().metadata().env_var(key);
+                    let current = if let Some(value) = manifest_value.as_deref() {
+                        Some(OsStr::new(value))
+                    } else if worktree_seed && key == "CARGO_MANIFEST_DIR" {
                         Some(pkg.root().as_os_str())
                     } else if worktree_seed && key == "CARGO_MANIFEST_PATH" {
                         Some(pkg.manifest_path().as_os_str())
