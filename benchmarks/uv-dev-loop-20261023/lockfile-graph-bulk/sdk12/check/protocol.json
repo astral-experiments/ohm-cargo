@@ -1,0 +1,89 @@
+{
+  "admission": "Fresh archive/index-only uv seed, ordinary edit of crates/uv/src/lib.rs, source/lockfile restored, separate private state banks at the same paths and fixed actual tool bytes. Require native correctness tests, successful fresh/original/dirty convergence and equal workload/output classes in both arms. Record native exec and environment parity before instrumenting; validate count totals/self/stderr and zero-exit completion. Keep failed attempts. No sample rejection based on effect size or machine activity.",
+  "arms": {
+    "A": "baseline",
+    "B": "candidate"
+  },
+  "bootstrap_seeds": {
+    "primary": [
+      2026102385,
+      2026102386
+    ],
+    "secondary": [
+      2026102387,
+      2026102388
+    ]
+  },
+  "build": "Matched release Cargo builds at a common canonical build path, fixed SDK12 build tools, opt3, ThinLTO, CGU1, debug1, no incremental or PGO/BOLT; same SDK12 compiler, rustdoc and linker drive uv in both arms.",
+  "commands": {
+    "primary": [
+      "-Zohm-defaults=yes",
+      "check",
+      "--locked",
+      "--offline",
+      "-j",
+      "8"
+    ],
+    "secondary": [
+      "-Zohm-defaults=yes",
+      "test",
+      "--no-run",
+      "--locked",
+      "--offline",
+      "-j",
+      "8"
+    ]
+  },
+  "gate": "Each fixed eight-pair block must have eight candidate wins and a lower 99% reduction bound strictly greater than 0.1%. Stop that endpoint on its first valid failure. A check PR requires both primary blocks. Claim a test-build win only if both secondary blocks separately pass. Investigate a verified secondary regression before publication.",
+  "host": "isolated Linux x86_64 worker; original host name withheld",
+  "native": "Elapsed time from instrumented commands is unusable. Any native wall-time study needs independent fixed prospective pairs on a quiet host.",
+  "order": [
+    [
+      "AB",
+      "BA",
+      "BA",
+      "AB",
+      "BA",
+      "AB",
+      "AB",
+      "BA"
+    ],
+    [
+      "BA",
+      "AB",
+      "AB",
+      "BA",
+      "AB",
+      "BA",
+      "BA",
+      "AB"
+    ]
+  ],
+  "pins": {
+    "base_tree": "90af39c2cab717940d5b09c1a4add2aaa02734e1",
+    "baseline_binary_sha256": "99425cd759c06b2cada554ced36c2a1e106296881ffe41d27b7eac39971bff92",
+    "candidate_patch_sha256": "4eb03d69c86db91f487ffd9c49bdd2694a182c0e8598210fc8ad24468c509198",
+    "candidate_tree": "c688d8d2232d1b8bb776d589a5fdb6218df7af38",
+    "cargo": "bca8c1077b2b40b4b037edc059333d7d98f91bae",
+    "common_embedded_build_commit": "fdd26156be98618e2e01a9e02703edac71b79a35",
+    "dirty_fixture_sha256": "a89570fa6080462a772ebdbc73ab4471e0b968f7c357c23b197409fb12f282ad",
+    "sdk12_bundle_sha256": "177751bcef731909e9fa2c89983804ec6fe663101711dc46003a743914d37203",
+    "uv": "3d82a6ad5a7eab8c68236553b7846517767c4b61"
+  },
+  "premeasurement_source_evidence": {
+    "into_resolve_graph_link_inclusive_ir": 22864465,
+    "live_source_nodes": 744,
+    "note": "Released SDK12 baseline diagnostic only. Full link cost includes retained inner insertion and is not a predicted saving. No candidate observations.",
+    "outer_entries_before": 4497,
+    "outer_entries_proposed": 744,
+    "source_addition_outer_entry_inclusive_ir": 2731644,
+    "source_profile_sha256": "b09d20bdbb9af69f911e969dd7095d231f36314a4c437618b253a53d2b512f7b",
+    "successful_dependency_edges": 3753
+  },
+  "publication_note": "Only the host name is redacted; original private protocol SHA256 is 33fde87816480224d0f63b8685b9ed2ddcf78a8d9b63866013b02001638f363c.",
+  "purpose": "Test whether inserting lockfile dependency edges in source-node batches reduces Cargo-parent instructions in ordinary dirty uv check and test compilation.",
+  "recorded_utc": "2026-10-23T21:59:00.754527+00:00",
+  "schema": 1,
+  "scope": "Cargo parent Callgrind Ir with trace-children=no. The child environment is checked against native execution, using the previously validated parent-only loader adapter. Runtime is pinned to CPUs 0-7. Tests are compiled only.",
+  "statistics": "Geometric mean of paired candidate/baseline ratios; empirical 99% paired percentile bootstrap interval with 200000 resamples. Compute and report per-block two-sided exact sign p. No pooling, extension or familywise claim."
+}

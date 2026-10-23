@@ -1,0 +1,61 @@
+{
+  "baseline_commit": "bca8c1077b2b40b4b037edc059333d7d98f91bae",
+  "baseline_tree": "90af39c2cab717940d5b09c1a4add2aaa02734e1",
+  "candidate_tree": "c688d8d2232d1b8bb776d589a5fdb6218df7af38",
+  "cargo_bytes": {
+    "baseline": 41498000,
+    "candidate": 41499168
+  },
+  "cargo_sha256": {
+    "baseline": "99425cd759c06b2cada554ced36c2a1e106296881ffe41d27b7eac39971bff92",
+    "candidate": "e82fcc23bd902276e9db0e14d2f6a82c71930ab0a0bb2becbaabb57e5aac28b4"
+  },
+  "fixed_profiler_files": 640,
+  "fixed_runtime_files": 149,
+  "focused_correctness": {
+    "failed": 0,
+    "ignored": 0,
+    "new_cases": [
+      "empty source node",
+      "duplicate and self edges, existing nondefault values, deterministic child order, no implicit child node"
+    ],
+    "passed": 29,
+    "selectors": [
+      "util::graph::",
+      "lockfile_compat::"
+    ]
+  },
+  "measured_git_head_both_builds": "fdd26156be98618e2e01a9e02703edac71b79a35",
+  "patch_sha256": "4eb03d69c86db91f487ffd9c49bdd2694a182c0e8598210fc8ad24468c509198",
+  "profiler_aliases": 2,
+  "profiling_tool_identities": {
+    "profiling-tools/ohm-valgrind-env.c": {
+      "bytes": 832,
+      "mode": 436,
+      "sha256": "503c8612d9972ed2ce4ef7b4431e569a8c98d0d5f0d1149dd0fff364513e691b"
+    },
+    "profiling-tools/ohm-valgrind-env.so": {
+      "bytes": 15800,
+      "mode": 509,
+      "sha256": "42f912fe052732ef964681579a3bc1acbc50966f04babb5a452f25dfe4825973"
+    },
+    "profiling-tools/valgrind/usr/bin/valgrind.bin": {
+      "bytes": 22688,
+      "mode": 493,
+      "sha256": "def5fdcf6ae64a4d3e6af3786b622978d8313e0734ecf3f6cbe71d8be9e274c8"
+    },
+    "profiling-tools/valgrind/usr/libexec/valgrind/callgrind-amd64-linux": {
+      "bytes": 2482912,
+      "mode": 493,
+      "sha256": "825eb197d519240c112e03ed00f40a8bbe1a0a0614f79ea95e28c67e8695cb03"
+    }
+  },
+  "publication_metadata": "Candidate is identified by its complete staged tree and parent-relative patch; publication commit metadata is separate.",
+  "published_candidate_commit": "ddaa93b0da4f9b432413a26120029462f499eafc",
+  "published_source_readback_sha256": "e18ea430203180d7045e97cd0247f456a82c2a408aad43996d99f2925e60976a",
+  "rust_commit": "f93a752e3de7404107ea5908d65c8832aee5625a",
+  "scope": "Matched optimized Cargo builds; common shipped SDK12 compiler, rustdoc and linker. Cargo parent only; no compiler/linker instruction or native wall-time claim.",
+  "sdk": "Ohm 1.99.0-12 Linux x86_64",
+  "sdk_bundle_sha256": "177751bcef731909e9fa2c89983804ec6fe663101711dc46003a743914d37203",
+  "uv_commit": "3d82a6ad5a7eab8c68236553b7846517767c4b61"
+}
