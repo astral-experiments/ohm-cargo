@@ -530,7 +530,7 @@ fn make_failed_scrape_diagnostic(
     )
 }
 
-const RELINK_CACHE_VERSION: u32 = 4;
+const RELINK_CACHE_VERSION: u32 = 5;
 
 #[derive(serde::Deserialize, serde::Serialize)]
 struct RelinkCacheFile {
@@ -550,7 +550,7 @@ struct RelinkCacheManifest {
     version: u32,
     rlink: RelinkCacheFile,
     executable: RelinkCacheObject,
-    objects: Vec<RelinkCacheObject>,
+    objects: Vec<RelinkCacheFile>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     unused_extern_names: Option<Vec<String>>,
 }
@@ -586,7 +586,7 @@ impl RelinkCachePaths {
             && !manifest.objects.is_empty()
             && file_matches(&manifest.rlink)
             && object_matches(&manifest.executable)
-            && manifest.objects.iter().all(object_matches)
+            && manifest.objects.iter().all(file_matches)
     }
 
     fn initialize(
@@ -596,7 +596,7 @@ impl RelinkCachePaths {
         let mut objects = Vec::new();
         for path in self.codegen_temps()? {
             match path.extension().and_then(OsStr::to_str) {
-                Some("o" | "obj") => objects.push(cached_object(path)?),
+                Some("o" | "obj") => objects.push(cached_file(path)?),
                 Some("bc") => paths::remove_file(&path)?,
                 _ => {}
             }
@@ -721,9 +721,8 @@ fn cached_file(path: PathBuf) -> CargoResult<RelinkCacheFile> {
 }
 
 fn file_matches(expected: &RelinkCacheFile) -> bool {
-    cached_file(expected.path.clone())
-        .map(|actual| actual.blake3 == expected.blake3)
-        .unwrap_or(false)
+    fs::symlink_metadata(&expected.path).is_ok_and(|metadata| metadata.is_file())
+        && cached_file(expected.path.clone()).is_ok_and(|actual| actual.blake3 == expected.blake3)
 }
 
 fn cached_object(path: PathBuf) -> CargoResult<RelinkCacheObject> {
