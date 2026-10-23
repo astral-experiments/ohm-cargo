@@ -2341,10 +2341,11 @@ mod tests {
             let mut age = GcAge::new(now + Duration::from_hours(2), Duration::from_hours(1));
             assert!(age.expired(now));
             let mut summary = Summary::default();
-            super::collect(
+            super::collect_with_lock_budget(
                 &cache.root,
                 dry_run,
                 &mut age,
+                Duration::from_secs(60),
                 None,
                 &mut CollectionState::default(),
                 &mut summary,
