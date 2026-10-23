@@ -1,15 +1,14 @@
 //! Manage optional backend objects separately from Cargo's required build artifacts.
 
 use std::ffi::OsString;
-use std::fs::{self, OpenOptions};
-use std::io;
+use std::fs;
 use std::path::{Path, PathBuf};
 use std::time::{Duration, SystemTime};
 
 use cargo_platform::Cfg;
 use cargo_util::ProcessBuilder;
 
-use crate::util::flock;
+use crate::util::errors::CargoResult;
 use crate::workspace::build_cache_gc;
 
 use super::{BuildRunner, CompileMode, Unit};
@@ -136,7 +135,7 @@ fn is_key(name: &str) -> bool {
     name.len() == 32 && name.bytes().all(|byte| byte.is_ascii_hexdigit())
 }
 
-fn prune(root: &Path, max_bytes: u64, max_entries: usize, max_age: Duration) -> io::Result<()> {
+fn prune(root: &Path, max_bytes: u64, max_entries: usize, max_age: Duration) -> CargoResult<()> {
     // Do not create a directory for builds whose backend never used the cache.
     if !root
         .symlink_metadata()
@@ -144,15 +143,9 @@ fn prune(root: &Path, max_bytes: u64, max_entries: usize, max_age: Duration) -> 
     {
         return Ok(());
     }
-    let lock = OpenOptions::new()
-        .read(true)
-        .write(true)
-        .create(true)
-        .truncate(false)
-        .open(root.join(".prune-lock"))?;
-    if flock::try_lock_exclusive(&lock).is_err() {
+    let Some(_lock) = build_cache_gc::try_lock(&root.join(".prune-lock"), true)? else {
         return Ok(());
-    }
+    };
 
     let now = SystemTime::now();
     let expired = |modified| now.duration_since(modified).is_ok_and(|age| age > max_age);
@@ -291,8 +284,9 @@ mod tests {
         let cached = entry(root.path(), 0, 8, Duration::ZERO);
         let unrelated = cached.parent().unwrap().join("keep.txt");
         fs::write(&unrelated, "unrelated").unwrap();
-        let lock = fs::File::create(root.path().join(".prune-lock")).unwrap();
-        flock::lock_exclusive(&lock).unwrap();
+        let lock = build_cache_gc::try_lock(&root.path().join(".prune-lock"), true)
+            .unwrap()
+            .unwrap();
         prune(root.path(), 0, 0, MAX_AGE).unwrap();
         assert!(cached.exists());
         drop(lock);
