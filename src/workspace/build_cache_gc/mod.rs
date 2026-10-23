@@ -1297,12 +1297,19 @@ fn namespaces(
             }
         }
     }
-    for profile in profiles {
-        for id in directory_names(root, &profile.join("build/registries"), summary)? {
+    let dependency_records = root.join(DIRECTORY).join("dependencies");
+    for parent in profiles
+        .iter()
+        .map(|profile| profile.join("build/registries"))
+        .chain(std::iter::once(dependency_records))
+    {
+        for id in directory_names(root, &parent, summary)? {
             if legacy_context_name(&id) || scoped_context_name(&id) {
                 namespaces.insert(Namespace::Context(id));
             }
         }
+    }
+    for profile in profiles {
         if legacy_private_state(root, profiles) {
             for parent in [
                 profile.join("build/workspaces"),
@@ -3016,6 +3023,36 @@ mod tests {
         )?;
         assert_eq!(second.retired, 1);
         assert!(cache.tracker()?.context("abcdef")?.is_none());
+        Ok(())
+    }
+
+    #[test]
+    fn resumes_legacy_context_cleanup_from_dependency_records() -> CargoResult<()> {
+        let cache = Cache::new()?;
+        let id = "0123456789abcdef";
+        let payload = cache.artifact(&format!("build/registries/{id}"))?;
+        let records = cache.root.join(DIRECTORY).join("dependencies");
+        let metadata = records.join(id);
+        fs::create_dir_all(&metadata)?;
+        fs::write(metadata.join("usage"), b"bookkeeping")?;
+        fs::create_dir(records.join("unrelated"))?;
+
+        let first = collect_with_lock_budget(
+            &cache.root,
+            false,
+            SystemTime::now(),
+            Duration::ZERO,
+            None,
+            &mut CollectionState::default(),
+        )?;
+        assert!(first.pending);
+        assert!(!payload.exists());
+        assert!(metadata.exists());
+
+        let second = collect(&cache.root, false, None)?;
+        assert!(!metadata.exists());
+        assert_eq!(second.counts.files, 0);
+        assert!(records.join("unrelated").is_dir());
         Ok(())
     }
 
