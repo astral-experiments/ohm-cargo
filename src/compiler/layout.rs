@@ -323,6 +323,15 @@ impl Layout {
         let is_new_layout = ws.gctx().cli_unstable().build_dir_new_layout;
         let mut root = ws.target_dir();
         let mut build_root = ws.build_dir();
+        // The ordinary split layout uses workspace-relative package identities.
+        // An external directory needs a private location for each workspace's
+        // artifacts, fingerprints, and persistent build-script outputs.
+        let split_namespace = (ws.gctx().cli_unstable().ohm_defaults == Some(false)
+            && root != build_root
+            && !ws
+                .canonical_build_path(build_root.as_path_unlocked())
+                .starts_with(ws.canonical_build_path(ws.root())))
+        .then(|| format!(".ohm-split-{}", Self::shared_workspace_namespace(ws)));
         let mut shared_root = ws
             .shared_registry_cache_enabled()
             .then(|| ws.configured_build_dir());
@@ -480,13 +489,21 @@ impl Layout {
             .transpose()?;
         let build_root = build_root.into_path_unlocked();
         let build_dest = build_dest.as_path_unlocked();
-        let deps = build_dest.join("deps");
+        let split_dir = |name: &str| {
+            let dir = build_dest.join(name);
+            match &split_namespace {
+                Some(namespace) => dir.join(namespace),
+                None => dir,
+            }
+        };
+        let deps = split_dir("deps");
         let artifact = deps.join("artifact");
-        let incremental = workspace_namespace.as_ref().map_or_else(
+        let namespace = workspace_namespace.as_ref().or(split_namespace.as_ref());
+        let incremental = namespace.map_or_else(
             || build_dest.join("incremental"),
             |namespace| build_dest.join("incremental").join(namespace),
         );
-        let tmp = workspace_namespace.as_ref().map_or_else(
+        let tmp = namespace.map_or_else(
             || build_root.join("tmp"),
             |namespace| build_root.join("tmp").join(namespace),
         );
@@ -547,12 +564,12 @@ impl Layout {
             build_dir: BuildDirLayout {
                 root: build_root.clone(),
                 deps,
-                build: build_dest.join("build"),
+                build: split_dir("build"),
                 shared_build: shared_dest.map(|dest| dest.join("build").into_path_unlocked()),
                 artifact,
                 incremental,
-                fingerprint: build_dest.join(".fingerprint"),
-                examples: build_dest.join("examples"),
+                fingerprint: split_dir(".fingerprint"),
+                examples: split_dir("examples"),
                 tmp,
                 _workspace_lock: workspace_lock,
                 workspace_is_locked,
