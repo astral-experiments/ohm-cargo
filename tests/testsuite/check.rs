@@ -556,6 +556,68 @@ fn build_check() {
 }
 
 #[cargo_test]
+fn ohm_checks_transitive_mixed_crate_type_dependencies() {
+    Package::new("leaf", "1.0.0")
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "leaf"
+                version = "1.0.0"
+                edition = "2021"
+
+                [lib]
+                crate-type = ["rlib", "cdylib"]
+            "#,
+        )
+        .file("src/lib.rs", "pub struct Value;")
+        .publish();
+    Package::new("middle", "1.0.0")
+        .dep("leaf", "1.0.0")
+        .file(
+            "src/lib.rs",
+            "extern crate leaf; pub fn value() -> leaf::Value { leaf::Value }",
+        )
+        .publish();
+
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "foo"
+                version = "0.0.1"
+                edition = "2021"
+
+                [dependencies]
+                leaf = "1.0.0"
+                middle = "1.0.0"
+            "#,
+        )
+        .file(
+            "src/lib.rs",
+            "pub fn value() -> leaf::Value { middle::value() }",
+        )
+        .build();
+
+    p.cargo("-Zohm-defaults=no build")
+        .masquerade_as_nightly_cargo(&["ohm-defaults"])
+        .run();
+    let output = p
+        .cargo("-Zohm-defaults=no -Zohm-reuse-built-deps check -v")
+        .masquerade_as_nightly_cargo(&["ohm-defaults", "ohm-reuse-built-deps"])
+        .run();
+    // Both paths to Value must use the checked leaf's crate identity.
+    assert_ohm_metadata_only_check(&output, "leaf");
+    assert_ohm_metadata_only_check(&output, "middle");
+
+    p.cargo("-Zohm-defaults=no -Zohm-reuse-built-deps check -v")
+        .masquerade_as_nightly_cargo(&["ohm-defaults", "ohm-reuse-built-deps"])
+        .with_stderr_does_not_contain("[RUNNING]")
+        .run();
+}
+
+#[cargo_test]
 fn ohm_reuses_built_registry_dependency_closure() {
     Package::new("leaf", "1.0.0")
         .file("src/lib.rs", "pub fn value() -> u32 { 19 }")

@@ -91,8 +91,8 @@ struct State<'a, 'gctx> {
     trusted_registry_reuse_compiler: OnceCell<bool>,
 
     /// Whether the dependencies actually compiled for a registry unit form an
-    /// immutable closure for its active platform, features, and target kind.
-    immutable_registry_closures: RefCell<HashMap<(Unit, MacroRuntime), bool>>,
+    /// immutable closure for its active platform, features, target kind, and host role.
+    immutable_registry_closures: RefCell<HashMap<(Unit, MacroRuntime, bool), bool>>,
 }
 
 /// The trust boundary for code linked into a procedural macro.
@@ -1334,15 +1334,29 @@ impl<'a, 'gctx> State<'a, 'gctx> {
             .is_ok_and(|expected| expected == compiler)
     }
 
-    /// Reject unowned mutable sources and untrusted procedural macros throughout the
-    /// actual compilation closure, including active build-script dependencies.
+    /// Reject incompatible target libraries, unowned mutable sources, and untrusted
+    /// procedural macros throughout the actual compilation closure, including active
+    /// build-script dependencies.
     fn registry_closure_is_immutable(
         &self,
         unit: &Unit,
         unit_for: UnitFor,
         macro_runtime: MacroRuntime,
-        visiting: &mut HashSet<(Unit, MacroRuntime)>,
+        visiting: &mut HashSet<(Unit, MacroRuntime, bool)>,
     ) -> bool {
+        // A built parent must not pull in a mixed-crate-type library that a
+        // direct check edge cannot promote. Host dependencies remain native.
+        if !unit_for.is_for_host()
+            && unit.target.is_lib()
+            && !unit
+                .target
+                .rustc_crate_types()
+                .iter()
+                .all(|crate_type| matches!(crate_type, CrateType::Lib | CrateType::Rlib))
+        {
+            return false;
+        }
+
         let package_id = unit.pkg.package_id();
         let registry_source = package_id.source_id().is_remote_registry();
         let effective_source_id = if registry_source {
@@ -1402,7 +1416,8 @@ impl<'a, 'gctx> State<'a, 'gctx> {
             return false;
         }
 
-        let cache_key = (unit.clone(), macro_runtime);
+        // The same unit can appear in both host and ordinary dependency closures.
+        let cache_key = (unit.clone(), macro_runtime, unit_for.is_for_host());
         if let Some(immutable) = self.immutable_registry_closures.borrow().get(&cache_key) {
             return *immutable;
         }
@@ -1496,7 +1511,7 @@ impl<'a, 'gctx> State<'a, 'gctx> {
         unit: &Unit,
         unit_for: UnitFor,
         macro_runtime: MacroRuntime,
-        visiting: &mut HashSet<(Unit, MacroRuntime)>,
+        visiting: &mut HashSet<(Unit, MacroRuntime, bool)>,
     ) -> bool {
         if unit.mode.is_run_custom_build() {
             return compute_deps_custom_build(unit, unit_for, self).is_ok_and(|dependencies| {
