@@ -80,19 +80,10 @@ pub fn read_manifest(
             SourceKind::Path | SourceKind::LocalRegistry | SourceKind::Directory => true,
             SourceKind::Git(_) | SourceKind::Registry | SourceKind::SparseRegistry => false,
         };
-    let (original_toml, document) = if keep_document {
-        let document = parse_document(&contents)
-            .map_err(|e| emit_toml_diagnostic(e.into(), &contents, path, gctx))?;
-        let original_toml = deserialize_toml(toml::de::Deserializer::from(document.clone()))
-            .map_err(|e| emit_toml_diagnostic(e.into(), &contents, path, gctx))?;
-        (original_toml, Some(make_document_owned(document)))
-    } else {
-        let deserializer = toml::de::Deserializer::parse(&contents)
-            .map_err(|e| emit_toml_diagnostic(e.into(), &contents, path, gctx))?;
-        let original_toml = deserialize_toml(deserializer)
-            .map_err(|e| emit_toml_diagnostic(e.into(), &contents, path, gctx))?;
-        (original_toml, None)
-    };
+    let deserializer = toml::de::Deserializer::parse(&contents)
+        .map_err(|e| emit_toml_diagnostic(e.into(), &contents, path, gctx))?;
+    let original_toml = deserialize_toml(deserializer)
+        .map_err(|e| emit_toml_diagnostic(e.into(), &contents, path, gctx))?;
 
     let mut manifest = (|| {
         let empty = Vec::new();
@@ -117,9 +108,10 @@ pub fn read_manifest(
         )?;
 
         if normalized_toml.package().is_some() {
-            to_real_manifest(
+            to_real_manifest_inner(
                 Some(contents),
-                document,
+                None,
+                keep_document,
                 original_toml,
                 normalized_toml,
                 features,
@@ -136,7 +128,7 @@ pub fn read_manifest(
             assert!(!is_embedded);
             to_virtual_manifest(
                 Some(contents),
-                document,
+                None,
                 original_toml,
                 normalized_toml,
                 features,
@@ -159,6 +151,10 @@ pub fn read_manifest(
         )
     })?;
 
+    if keep_document {
+        manifest.retain_document_source();
+    }
+
     for warning in warnings {
         manifest.warnings_mut().add_warning(warning);
     }
@@ -171,7 +167,7 @@ pub fn read_manifest(
 
 /// Transform the parsed TOML document so that all its values are owned, so that it has a 'static
 /// lifetime, to make it easier to work with it.
-fn make_document_owned(
+pub(super) fn make_document_owned(
     mut document: toml::Spanned<toml::de::DeTable<'_>>,
 ) -> toml::Spanned<toml::de::DeTable<'static>> {
     document.get_mut().make_owned();
@@ -199,7 +195,9 @@ fn read_toml_string(path: &Path, is_embedded: bool, gctx: &GlobalContext) -> Car
 }
 
 #[tracing::instrument(skip_all)]
-fn parse_document(contents: &str) -> Result<toml::Spanned<toml::de::DeTable<'_>>, toml::de::Error> {
+pub(super) fn parse_document(
+    contents: &str,
+) -> Result<toml::Spanned<toml::de::DeTable<'_>>, toml::de::Error> {
     toml::de::DeTable::parse(&contents)
 }
 
@@ -1323,10 +1321,42 @@ fn deprecated_ws_default_features(
     ));
 }
 
-#[tracing::instrument(skip_all)]
 pub fn to_real_manifest(
     contents: Option<String>,
     document: Option<toml::Spanned<toml::de::DeTable<'static>>>,
+    original_toml: manifest::TomlManifest,
+    normalized_toml: manifest::TomlManifest,
+    features: Features,
+    workspace_config: WorkspaceConfig,
+    source_id: SourceId,
+    manifest_file: &Path,
+    is_embedded: bool,
+    gctx: &GlobalContext,
+    warnings: &mut Vec<String>,
+    _errors: &mut Vec<String>,
+) -> CargoResult<Manifest> {
+    to_real_manifest_inner(
+        contents,
+        document,
+        false,
+        original_toml,
+        normalized_toml,
+        features,
+        workspace_config,
+        source_id,
+        manifest_file,
+        is_embedded,
+        gctx,
+        warnings,
+        _errors,
+    )
+}
+
+#[tracing::instrument(name = "to_real_manifest", skip_all)]
+fn to_real_manifest_inner(
+    contents: Option<String>,
+    mut document: Option<toml::Spanned<toml::de::DeTable<'static>>>,
+    lazy_document: bool,
     original_toml: manifest::TomlManifest,
     normalized_toml: manifest::TomlManifest,
     features: Features,
@@ -1818,6 +1848,15 @@ pub fn to_real_manifest(
         // need to check whether `dep_name` is stripped as unused dependency
         if let Err(ref err) = summary {
             if let Some(missing_dep) = err.downcast_ref::<MissingDependencyError>() {
+                if lazy_document && document.is_none() {
+                    let contents = contents
+                        .as_deref()
+                        .expect("read_manifest retains its source");
+                    document = Some(make_document_owned(
+                        parse_document(contents)
+                            .expect("the captured manifest source was already parsed successfully"),
+                    ));
+                }
                 missing_dep_diagnostic(
                     missing_dep,
                     &original_toml,

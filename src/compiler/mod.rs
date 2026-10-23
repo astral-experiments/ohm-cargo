@@ -67,7 +67,7 @@ use std::ffi::{OsStr, OsString};
 use std::fmt::Display;
 use std::fs::{self, File};
 use std::io::{BufRead, BufReader, BufWriter, Write};
-use std::ops::{Deref, Range};
+use std::ops::Range;
 use std::path::{Path, PathBuf};
 use std::sync::{Arc, LazyLock};
 use std::time::{Instant, UNIX_EPOCH};
@@ -3626,7 +3626,7 @@ struct ManifestErrorContext {
 /// Retained manifest source and dependency information for diagnostic annotations.
 struct ManifestDiagnosticContext {
     /// The locations of various spans within the manifest.
-    spans: Arc<toml::Spanned<toml::de::DeTable<'static>>>,
+    spans: Arc<crate::workspace::manifest::ManifestDocument>,
     /// The raw manifest contents.
     contents: String,
     /// A lookup for all the unambiguous renamings, mapping from the original package
@@ -4035,7 +4035,7 @@ impl ManifestErrorContext {
 impl ManifestDiagnosticContext {
     /// Skips annotation-only allocations when source spans or contents are unavailable.
     fn new(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> Option<Self> {
-        let spans = unit.pkg.manifest().document_rc()?;
+        let spans = unit.pkg.manifest().diagnostic_document()?;
         let contents = unit.pkg.manifest().contents()?;
         let mut duplicates = HashSet::default();
         let mut rename_table = HashMap::default();
@@ -4100,9 +4100,8 @@ impl ManifestDiagnosticContext {
     /// baz = { path = "../bar", package = "bar" }
     /// ```
     fn find_crate_span(&self, unrenamed: &str) -> Option<Range<usize>> {
-        let spans = &self.spans;
-
         let orig_name = self.rename_table.get(unrenamed)?.as_str();
+        let spans = self.spans.get();
 
         if let Some((k, v)) = get_key_value(&spans, &["dependencies", orig_name]) {
             // We make some effort to find the unrenamed text: in
@@ -4125,7 +4124,6 @@ impl ManifestDiagnosticContext {
         // [target.'cfg(something)'.dependencies]. We filter out target tables
         // that don't match a requested target or a requested cfg.
         if let Some(target) = spans
-            .deref()
             .as_ref()
             .get("target")
             .and_then(|t| t.as_ref().as_table())
