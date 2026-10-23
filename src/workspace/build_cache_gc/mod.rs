@@ -1673,7 +1673,7 @@ fn profiles_matching(root: &Path, is_profile: impl Fn(&Path) -> bool) -> CargoRe
 
 /// GC guards end at their lexical scope, even if another thread forked while held.
 /// Consumer leases deliberately have different semantics and remain held by children.
-struct CollectorLock(File);
+pub(crate) struct CollectorLock(File);
 
 impl Drop for CollectorLock {
     fn drop(&mut self) {
@@ -1683,7 +1683,7 @@ impl Drop for CollectorLock {
     }
 }
 
-fn try_lock(path: &Path, create: bool) -> CargoResult<Option<CollectorLock>> {
+pub(crate) fn try_lock(path: &Path, create: bool) -> CargoResult<Option<CollectorLock>> {
     try_lock_file(path, create, true)
 }
 
@@ -2224,8 +2224,7 @@ mod tests {
         assert!(!cache.root.join(DIRECTORY).exists());
         let lock_path = cache.root.join(THINLTO).join(".prune-lock");
         assert!(!lock_path.exists());
-        let lock = File::create(lock_path)?;
-        crate::util::flock::lock_exclusive(&lock)?;
+        let lock = try_lock(&lock_path, true)?.unwrap();
         assert!(collect(&cache.root, true, None)?.busy);
         assert!(collect(&cache.root, false, None)?.busy);
         assert!(legacy.exists());
