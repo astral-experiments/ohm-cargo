@@ -1,0 +1,449 @@
+{
+  "gate": {
+    "checks": {
+      "all_eight_reductions_positive": true,
+      "exact_two_sided_sign_p_0_0078125": true,
+      "lower_99_percent_bound_exceeds_3_percent": true
+    },
+    "passed": true
+  },
+  "gate_passed": true,
+  "gates": {
+    "background_job_exclusion": false,
+    "cached_link_output_identity_guards": 4,
+    "contexts_unchanged": true,
+    "host_activity_observations": 36,
+    "observations_with_background_work": 5,
+    "ordinary_lib_test_executable_in_output_guards": false,
+    "pairs": 8,
+    "preflight_compiler_invocations_per_artifact": 6,
+    "profiles": 16,
+    "restored_and_converged": true
+  },
+  "geometric_instruction_reduction": 0.12420256164618815,
+  "independent_review_seal_sha256": "c13291801c79acb0c6e0796b1e747f9986cf0cab81e251271e8fa3874f78c440",
+  "independent_review_sha256": "ad36ad7dfe22f6c04f3228751b58e24416023ea53e33871d03d14c34c4a8d1f1",
+  "limits": [
+    "Eight fresh fixed pairs in this block; no discovery or other-block observations enter its estimate.",
+    "Both independently collected blocks must pass their own fixed gate; no extension or source change after effect inspection.",
+    "The existing helper resamples log(base/candidate); negating the logs and inverting the percentile interval is algebraically the plan log(candidate/base) calculation.",
+    "Scheduling can alter Cargo polling and synchronization instructions; background observations are retained without retrospective quiet filtering, subtraction, or sample extension.",
+    "Balanced order does not establish pair independence; confirmations use separate fresh fixed cohorts.",
+    "Cargo-parent instructions include unchanged reporting/startup work; source intervention changes dependency argument construction.",
+    "Kernel CPU and compiler/linker instructions are outside this metric.",
+    "Final totals are authoritative; every header difference is retained without rerunning.",
+    "Known Valgrind brk fallback warnings, if present, are disclosed; check/native sanity and publication require separate decisions."
+  ],
+  "metric": "Cargo-parent final Ir for dirty uv test-build; compiler/linker children uninstrumented",
+  "origin_integrity_sha256": "d67e4c63729d5dc4f5c74e781dd0e3e0ecaa5eed600ac59816c443f008d479ea",
+  "origin_raw_gates_sha256": "56092c53a72e04a33e3293cbfcf6a0d24aa25a7bcd0f4bed60d803a84034e6b5",
+  "origin_summary_sha256": "01ad7ee0725d83fdde3b6270b6319580f8160d58e27799cecaafe28904218aab",
+  "origin_terminal_sha256": "21a1117390c96fee356556f678671dc83fb8f54309320600bc01ce2910c39521",
+  "overall_qualification_authorized": false,
+  "pairs": [
+    {
+      "baseline_ir": 1883398585,
+      "candidate_ir": 1650086861,
+      "instruction_reduction": 0.12387803933706365,
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "pair": 0
+    },
+    {
+      "baseline_ir": 1883151666,
+      "candidate_ir": 1650305357,
+      "instruction_reduction": 0.12364713538691685,
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "pair": 1
+    },
+    {
+      "baseline_ir": 1883445543,
+      "candidate_ir": 1650085596,
+      "instruction_reduction": 0.123900554421286,
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "pair": 2
+    },
+    {
+      "baseline_ir": 1882775304,
+      "candidate_ir": 1649643684,
+      "instruction_reduction": 0.12382338960188533,
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "pair": 3
+    },
+    {
+      "baseline_ir": 1883630883,
+      "candidate_ir": 1649270694,
+      "instruction_reduction": 0.12441938126791696,
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "pair": 4
+    },
+    {
+      "baseline_ir": 1883811162,
+      "candidate_ir": 1650355633,
+      "instruction_reduction": 0.1239272458456746,
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "pair": 5
+    },
+    {
+      "baseline_ir": 1883591069,
+      "candidate_ir": 1649494553,
+      "instruction_reduction": 0.124282026949874,
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "pair": 6
+    },
+    {
+      "baseline_ir": 1887752754,
+      "candidate_ir": 1650384979,
+      "instruction_reduction": 0.12574092369725665,
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "pair": 7
+    }
+  ],
+  "profiles": [
+    {
+      "brk_overflow_warning": true,
+      "file": {
+        "bytes": 299756,
+        "path": "confirmation/block-1/profiles/pair-0-0-baseline.callgrind.gz",
+        "sha256": "67d361eb00ead490881795f77647fff77e6447a2dc013e8bb933a6c0fb537ae6"
+      },
+      "final_ir": 1883398585,
+      "final_minus_header": 1,
+      "header_summary_ir": 1883398584,
+      "label": "pair-0-0-baseline",
+      "self_cost_sum": 1883398585,
+      "stderr_collected": 1883398585,
+      "uncompressed_bytes": 1466269,
+      "uncompressed_sha256": "4567ec67a97f695694c3c60aca526cd351a95c3e95ec15200cbfe9b7df4fe581",
+      "variant": "baseline"
+    },
+    {
+      "brk_overflow_warning": true,
+      "file": {
+        "bytes": 299356,
+        "path": "confirmation/block-1/profiles/pair-0-1-candidate.callgrind.gz",
+        "sha256": "c280312b87c47fd879f626c52afe7e1c123e6387fd0eed5ea6b100e0b9842872"
+      },
+      "final_ir": 1650086861,
+      "final_minus_header": 1,
+      "header_summary_ir": 1650086860,
+      "label": "pair-0-1-candidate",
+      "self_cost_sum": 1650086861,
+      "stderr_collected": 1650086861,
+      "uncompressed_bytes": 1468624,
+      "uncompressed_sha256": "52a7e97af90c0389d156f4dbe94da0842ce6d266e1df7044090ca6e01ebd0f43",
+      "variant": "candidate"
+    },
+    {
+      "brk_overflow_warning": true,
+      "file": {
+        "bytes": 299237,
+        "path": "confirmation/block-1/profiles/pair-1-0-candidate.callgrind.gz",
+        "sha256": "0e22e143a6f4320e6ed8a9ff12b7d0a0a9eb9bbf6f7acae26c8a5bc773f6056a"
+      },
+      "final_ir": 1650305357,
+      "final_minus_header": 1,
+      "header_summary_ir": 1650305356,
+      "label": "pair-1-0-candidate",
+      "self_cost_sum": 1650305357,
+      "stderr_collected": 1650305357,
+      "uncompressed_bytes": 1467547,
+      "uncompressed_sha256": "251891579743db39df3a41be4ce06fbd13a7837b7cd46b629ab2553c9201f667",
+      "variant": "candidate"
+    },
+    {
+      "brk_overflow_warning": true,
+      "file": {
+        "bytes": 299921,
+        "path": "confirmation/block-1/profiles/pair-1-1-baseline.callgrind.gz",
+        "sha256": "d037692d4e7aa6274e789848dbc3b06287d0fed26caed3e2f8368f9f417470f6"
+      },
+      "final_ir": 1883151666,
+      "final_minus_header": 1,
+      "header_summary_ir": 1883151665,
+      "label": "pair-1-1-baseline",
+      "self_cost_sum": 1883151666,
+      "stderr_collected": 1883151666,
+      "uncompressed_bytes": 1466599,
+      "uncompressed_sha256": "25b7a10de92e3efe1900380800fad7b24192c10b3160d5f582947c33007f6fe2",
+      "variant": "baseline"
+    },
+    {
+      "brk_overflow_warning": true,
+      "file": {
+        "bytes": 300925,
+        "path": "confirmation/block-1/profiles/pair-2-0-candidate.callgrind.gz",
+        "sha256": "7ff21d36ecbacffedd77c96e13fc78cc5b6bdfe7a984e6d40f955f251e45f6b3"
+      },
+      "final_ir": 1650085596,
+      "final_minus_header": 1,
+      "header_summary_ir": 1650085595,
+      "label": "pair-2-0-candidate",
+      "self_cost_sum": 1650085596,
+      "stderr_collected": 1650085596,
+      "uncompressed_bytes": 1467838,
+      "uncompressed_sha256": "414a5ee854fe759bfd72f44a5d64d14d77782497f36098f93e05aa0c444a1ff0",
+      "variant": "candidate"
+    },
+    {
+      "brk_overflow_warning": true,
+      "file": {
+        "bytes": 298465,
+        "path": "confirmation/block-1/profiles/pair-2-1-baseline.callgrind.gz",
+        "sha256": "d606e4b7bc45d3789dceafa9e18de4ecad8d7f188460ac442a5053aa7c6d9f03"
+      },
+      "final_ir": 1883445543,
+      "final_minus_header": 1,
+      "header_summary_ir": 1883445542,
+      "label": "pair-2-1-baseline",
+      "self_cost_sum": 1883445543,
+      "stderr_collected": 1883445543,
+      "uncompressed_bytes": 1466034,
+      "uncompressed_sha256": "a82d4179dd44c4a0dd08d93006f300da3e00a14cf0e30f533261704dd6e0217c",
+      "variant": "baseline"
+    },
+    {
+      "brk_overflow_warning": true,
+      "file": {
+        "bytes": 299764,
+        "path": "confirmation/block-1/profiles/pair-3-0-baseline.callgrind.gz",
+        "sha256": "6b1738f2ed0d15db64db44a04565d44fec8575f5cab46362f7f4d0c0539caefd"
+      },
+      "final_ir": 1882775304,
+      "final_minus_header": 1,
+      "header_summary_ir": 1882775303,
+      "label": "pair-3-0-baseline",
+      "self_cost_sum": 1882775304,
+      "stderr_collected": 1882775304,
+      "uncompressed_bytes": 1464734,
+      "uncompressed_sha256": "3fcc5335090ddc344aa7b462d60cc3383b1204997367d3ccc920d368d81135a7",
+      "variant": "baseline"
+    },
+    {
+      "brk_overflow_warning": true,
+      "file": {
+        "bytes": 299456,
+        "path": "confirmation/block-1/profiles/pair-3-1-candidate.callgrind.gz",
+        "sha256": "cd357b2e04dc662d83e994119d59caf121f96d66f54f678becbc4f31c6e23187"
+      },
+      "final_ir": 1649643684,
+      "final_minus_header": 1,
+      "header_summary_ir": 1649643683,
+      "label": "pair-3-1-candidate",
+      "self_cost_sum": 1649643684,
+      "stderr_collected": 1649643684,
+      "uncompressed_bytes": 1467155,
+      "uncompressed_sha256": "ada9e1864bea52b24264b668381b143cccf8f6da5c99b497c6f293a0db4b6148",
+      "variant": "candidate"
+    },
+    {
+      "brk_overflow_warning": true,
+      "file": {
+        "bytes": 299296,
+        "path": "confirmation/block-1/profiles/pair-4-0-candidate.callgrind.gz",
+        "sha256": "39fa27d52aabcf7ed8d5fd8764981e5fa4495879860fe08df2573430c83c0306"
+      },
+      "final_ir": 1649270694,
+      "final_minus_header": 1,
+      "header_summary_ir": 1649270693,
+      "label": "pair-4-0-candidate",
+      "self_cost_sum": 1649270694,
+      "stderr_collected": 1649270694,
+      "uncompressed_bytes": 1467751,
+      "uncompressed_sha256": "1b9bfa794ec5f19e67e457ee32cddb4b245c5f164c8bc62dd0f0da3ac6d8f790",
+      "variant": "candidate"
+    },
+    {
+      "brk_overflow_warning": true,
+      "file": {
+        "bytes": 299815,
+        "path": "confirmation/block-1/profiles/pair-4-1-baseline.callgrind.gz",
+        "sha256": "2f703fe5e00e1f5b5363aa2df504390f82d0c30aa260e0ed8cd60a7c6b74727a"
+      },
+      "final_ir": 1883630883,
+      "final_minus_header": 1,
+      "header_summary_ir": 1883630882,
+      "label": "pair-4-1-baseline",
+      "self_cost_sum": 1883630883,
+      "stderr_collected": 1883630883,
+      "uncompressed_bytes": 1466472,
+      "uncompressed_sha256": "1b1c56c5f0381c09d4ace33a80e22eea423a51406da836c0ecdc1bcdf0ef5943",
+      "variant": "baseline"
+    },
+    {
+      "brk_overflow_warning": true,
+      "file": {
+        "bytes": 300265,
+        "path": "confirmation/block-1/profiles/pair-5-0-baseline.callgrind.gz",
+        "sha256": "de5fb015b602e9cc3d47748aa763b22445e96d98f23eeafb369835818e2b3b5d"
+      },
+      "final_ir": 1883811162,
+      "final_minus_header": 1,
+      "header_summary_ir": 1883811161,
+      "label": "pair-5-0-baseline",
+      "self_cost_sum": 1883811162,
+      "stderr_collected": 1883811162,
+      "uncompressed_bytes": 1466944,
+      "uncompressed_sha256": "63766d98f6b40ef95249a604af08b14bbea40bd1347074eed2d0dd0f1f4321ba",
+      "variant": "baseline"
+    },
+    {
+      "brk_overflow_warning": true,
+      "file": {
+        "bytes": 300917,
+        "path": "confirmation/block-1/profiles/pair-5-1-candidate.callgrind.gz",
+        "sha256": "addb23d37aa94f28775f68421d94738fbe8ffbd9000b7d2c2b1779e893adc686"
+      },
+      "final_ir": 1650355633,
+      "final_minus_header": 1,
+      "header_summary_ir": 1650355632,
+      "label": "pair-5-1-candidate",
+      "self_cost_sum": 1650355633,
+      "stderr_collected": 1650355633,
+      "uncompressed_bytes": 1468126,
+      "uncompressed_sha256": "3f7f0debee69c92e95b35a2d1f9827922a1dc9f3c08df9f82c8497baf747d7be",
+      "variant": "candidate"
+    },
+    {
+      "brk_overflow_warning": true,
+      "file": {
+        "bytes": 300261,
+        "path": "confirmation/block-1/profiles/pair-6-0-baseline.callgrind.gz",
+        "sha256": "4ca120768b4a26f5f1afa6dd498acb3d669cd0388da5991748a4ae5b11e19188"
+      },
+      "final_ir": 1883591069,
+      "final_minus_header": 1,
+      "header_summary_ir": 1883591068,
+      "label": "pair-6-0-baseline",
+      "self_cost_sum": 1883591069,
+      "stderr_collected": 1883591069,
+      "uncompressed_bytes": 1466328,
+      "uncompressed_sha256": "f3e0924301cf32e7bf82cf765ca41429e8e7eae54a3a5777ff20c80c9c9fd4e2",
+      "variant": "baseline"
+    },
+    {
+      "brk_overflow_warning": true,
+      "file": {
+        "bytes": 299978,
+        "path": "confirmation/block-1/profiles/pair-6-1-candidate.callgrind.gz",
+        "sha256": "47733f4698cfe2c131281db6c48680f600f789d284e0197640f73b6f523a29ac"
+      },
+      "final_ir": 1649494553,
+      "final_minus_header": 1,
+      "header_summary_ir": 1649494552,
+      "label": "pair-6-1-candidate",
+      "self_cost_sum": 1649494553,
+      "stderr_collected": 1649494553,
+      "uncompressed_bytes": 1468156,
+      "uncompressed_sha256": "cae1ec22e41d1c2f21845e8daaaaf6fdbb3b2a03e2262d661db05b6e08de7da1",
+      "variant": "candidate"
+    },
+    {
+      "brk_overflow_warning": true,
+      "file": {
+        "bytes": 299658,
+        "path": "confirmation/block-1/profiles/pair-7-0-candidate.callgrind.gz",
+        "sha256": "931a1b859595d04ab122157566dd16782fecd88ec861c089fa04fc039950718f"
+      },
+      "final_ir": 1650384979,
+      "final_minus_header": 1,
+      "header_summary_ir": 1650384978,
+      "label": "pair-7-0-candidate",
+      "self_cost_sum": 1650384979,
+      "stderr_collected": 1650384979,
+      "uncompressed_bytes": 1465315,
+      "uncompressed_sha256": "f53e9be5c08d062e99601982fccda104dffe621139fb74ec41ecf8cfaa5a7dff",
+      "variant": "candidate"
+    },
+    {
+      "brk_overflow_warning": true,
+      "file": {
+        "bytes": 300698,
+        "path": "confirmation/block-1/profiles/pair-7-1-baseline.callgrind.gz",
+        "sha256": "794be0e74b02a5979facc49a551f3d61fde16a923f11d326c7ace2cd263683f0"
+      },
+      "final_ir": 1887752754,
+      "final_minus_header": 1,
+      "header_summary_ir": 1887752753,
+      "label": "pair-7-1-baseline",
+      "self_cost_sum": 1887752754,
+      "stderr_collected": 1887752754,
+      "uncompressed_bytes": 1472028,
+      "uncompressed_sha256": "bd0aa33930d890be373817cbbd68f740f094b2dce270ae2f306d1665c6e8ce1a",
+      "variant": "baseline"
+    }
+  ],
+  "root_result_acceptance_sha256": "ae7ab38df8bdffc95f4117e4548d5e7a6c9a09fd5295a07c5b509296ee018dc2",
+  "schema": 1,
+  "state": "valid-confirmation-block",
+  "statistics": {
+    "baseline_mean_count": 1883944620.75,
+    "baseline_median_count": 1883518306.0,
+    "bootstrap_count_reduction_interval": [
+      0.12380323840083918,
+      0.12488040242070964
+    ],
+    "bootstrap_ratio_interval": [
+      1.1412961606647392,
+      1.142700955122188
+    ],
+    "bootstrap_resamples": 200000,
+    "bootstrap_seed": 20261023,
+    "candidate_mean_count": 1649953419.625,
+    "candidate_median_count": 1650086228.5,
+    "confidence": 0.99,
+    "exact_two_sided_sign_p": 0.0078125,
+    "log_ratios": [
+      0.13224997323550816,
+      0.13198645566806275,
+      0.13227567213878985,
+      0.13218759832280927,
+      0.13286804842070735,
+      0.13230613880684308,
+      0.13271118845522908,
+      0.1343785212764219
+    ],
+    "losses": 0,
+    "order": {
+      "AB": {
+        "geometric_mean_ratio": 1.141523444045137,
+        "pairs": 4
+      },
+      "BA": {
+        "geometric_mean_ratio": 1.1421097093777954,
+        "pairs": 4
+      }
+    },
+    "paired_geometric_mean_count_reduction": 0.12420256164618815,
+    "paired_geometric_mean_ratio": 1.1418165390842485,
+    "paired_median_ratio": 1.14144032234322,
+    "pairs": 8,
+    "ties": 0,
+    "wins": 8
+  },
+  "tests_executed": false,
+  "wall_time_claim": false
+}

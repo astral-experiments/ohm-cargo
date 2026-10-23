@@ -1,0 +1,111 @@
+{
+  "cases": [
+    {
+      "passed": true,
+      "passed_failed_ignored": [
+        1,
+        0,
+        0
+      ],
+      "returncode": 0,
+      "runtime": "stock 1.99.0",
+      "selector": "build_dir::dependency_search_paths_for_sibling_targets"
+    },
+    {
+      "passed": true,
+      "passed_failed_ignored": [
+        1,
+        0,
+        0
+      ],
+      "returncode": 0,
+      "runtime": "ohm-1.99.0-6",
+      "selector": "build_dir::dependency_search_paths_for_sibling_targets"
+    },
+    {
+      "passed": true,
+      "passed_failed_ignored": [
+        1,
+        0,
+        0
+      ],
+      "returncode": 0,
+      "runtime": "stock 1.99.0",
+      "selector": "build_dir::dylib_deps_output_overwrite"
+    },
+    {
+      "passed": true,
+      "passed_failed_ignored": [
+        1,
+        0,
+        0
+      ],
+      "returncode": 0,
+      "runtime": "ohm-1.99.0-6",
+      "selector": "build_dir::dylib_deps_output_overwrite"
+    },
+    {
+      "passed": true,
+      "passed_failed_ignored": [
+        1,
+        0,
+        0
+      ],
+      "returncode": 0,
+      "runtime": "stock 1.99.0",
+      "selector": "build_dir::unset_loader_path_adds_procedural_macro_library_directories"
+    },
+    {
+      "passed": true,
+      "passed_failed_ignored": [
+        1,
+        0,
+        0
+      ],
+      "returncode": 0,
+      "runtime": "ohm-1.99.0-6",
+      "selector": "build_dir::unset_loader_path_adds_procedural_macro_library_directories"
+    },
+    {
+      "passed": true,
+      "passed_failed_ignored": [
+        1,
+        0,
+        0
+      ],
+      "returncode": 0,
+      "runtime": "stock 1.99.0",
+      "selector": "build_dir_legacy::binary_with_debug"
+    },
+    {
+      "passed": true,
+      "passed_failed_ignored": [
+        1,
+        0,
+        0
+      ],
+      "returncode": 0,
+      "runtime": "ohm-1.99.0-6",
+      "selector": "build_dir_legacy::binary_with_debug"
+    }
+  ],
+  "failures": 0,
+  "freshly_compiled_cli_sha256": "9c45d7daf41353c36b9d84719c5c52b2b03756a1a62fb183c105d16f3cfeba79",
+  "freshly_compiled_testsuite_sha256": "b4ac6191a110c3622b4d781d7413d8774dc73274aec90c3b88217dbc0cf92b1a",
+  "ignored": 0,
+  "independent_review_checks": 30,
+  "independent_review_findings": 0,
+  "independent_review_sha256": "cac2699a139925062ea2b5642c6358cf013628a4292a17410cfc8ac9db19265d",
+  "limits": [
+    "Focused Linux coverage only; the whole test suite was not run.",
+    "The new fixture covers native and explicit host-triple targets, not a foreign architecture.",
+    "The native-search assertion verifies one flag; its value is preserved by unchanged source.",
+    "Duplicate dependency paths and namespace-fallback invalidation are justified by source inspection, not separately forced by this fixture."
+  ],
+  "normal_ci": null,
+  "origin_report_sha256": "00fdc263a34b689416322f0214b038c938d4b53948f8d7b8ce1f4f8e8aefbea4",
+  "schema": 1,
+  "source_commit": "b88fc34856f083af4f51fe1703e6d106a02dc01d",
+  "source_tree": "fd326f2a34a65f87a08a78202926739057788821",
+  "total_executions": 8
+}

@@ -1,0 +1,287 @@
+diff --git a/src/compiler/build_runner/compilation_files.rs b/src/compiler/build_runner/compilation_files.rs
+index a95f5a2..a4afcca 100644
+--- a/src/compiler/build_runner/compilation_files.rs
++++ b/src/compiler/build_runner/compilation_files.rs
+@@ -1,7 +1,7 @@
+ //! See [`CompilationFiles`].
+ 
+ use crate::util::data_structures::{HashMap, HashSet};
+-use std::cell::OnceCell;
++use std::cell::{OnceCell, RefCell};
+ use std::ffi::{OsStr, OsString};
+ use std::fmt;
+ use std::hash::{Hash, Hasher};
+@@ -147,6 +147,8 @@ pub struct CompilationFiles<'a, 'gctx> {
+     metas: HashMap<Unit, Metadata>,
+     /// Reuse the directory components shared by a unit's output, fingerprint, and lock paths.
+     unit_paths: HashMap<Unit, UnitPaths>,
++    /// Sorted dependency arguments shared by roots with the same ordered direct dependencies.
++    dependency_search_args: RefCell<HashMap<Vec<Unit>, Vec<OsString>>>,
+     /// For each Unit, a list all files produced.
+     outputs: HashMap<Unit, OnceCell<Arc<Vec<OutputFile>>>>,
+ }
+@@ -681,6 +683,7 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
+             shared_registry_cache,
+             metas,
+             unit_paths,
++            dependency_search_args: RefCell::default(),
+             outputs,
+         }
+     }
+@@ -708,6 +711,7 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
+             for paths in self.unit_paths.values_mut() {
+                 paths.directory.take();
+             }
++            self.dependency_search_args.get_mut().clear();
+         }
+ 
+         Ok(())
+@@ -1071,6 +1075,19 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
+         self.layout(unit.kind).build_dir().deps(dir)
+     }
+ 
++    /// Reuses only the dependency prefix; the host search path still belongs to each root.
++    pub(crate) fn dependency_search_args(
++        &self,
++        dependencies: Vec<Unit>,
++        make_args: impl FnOnce() -> Vec<OsString>,
++    ) -> Vec<OsString> {
++        self.dependency_search_args
++            .borrow_mut()
++            .entry(dependencies)
++            .or_insert_with(make_args)
++            .clone()
++    }
++
+     /// Returns the directories where Rust crate dependencies are found for the
+     /// specified unit. (new layout)
+     ///
+diff --git a/src/compiler/mod.rs b/src/compiler/mod.rs
+index e9d4f77..711ae07 100644
+--- a/src/compiler/mod.rs
++++ b/src/compiler/mod.rs
+@@ -3293,18 +3293,30 @@ pub fn lib_search_paths(
+ ) -> CargoResult<Vec<OsString>> {
+     let mut lib_search_paths = Vec::new();
+     if build_runner.bcx.gctx.cli_unstable().build_dir_new_layout {
+-        let mut map = BTreeMap::new();
++        let dependencies = build_runner
++            .unit_deps(unit)
++            .iter()
++            .filter(|dep| !dep.unit.target.is_custom_build())
++            .map(|dep| dep.unit.clone())
++            .collect();
++        lib_search_paths = build_runner
++            .files()
++            .dependency_search_args(dependencies, || {
++                let mut map = BTreeMap::new();
+ 
+-        // Recursively add all dependency args to rustc process
+-        add_dep_arg(&mut map, build_runner, unit);
++                // Recursively add all dependency args to rustc process.
++                add_dep_arg(&mut map, build_runner, unit);
+ 
+-        let paths = map.into_iter().map(|(_, path)| path).sorted_unstable();
++                let paths = map.into_iter().map(|(_, path)| path).sorted_unstable();
+ 
+-        for path in paths {
+-            let mut deps = OsString::from("dependency=");
+-            deps.push(path);
+-            lib_search_paths.extend(["-L".into(), deps]);
+-        }
++                let mut args = Vec::new();
++                for path in paths {
++                    let mut deps = OsString::from("dependency=");
++                    deps.push(path);
++                    args.extend(["-L".into(), deps]);
++                }
++                args
++            });
+     } else {
+         let mut deps = OsString::from("dependency=");
+         deps.push(build_runner.files().deps_dir(unit));
+diff --git a/tests/testsuite/build_dir.rs b/tests/testsuite/build_dir.rs
+index 2d763cf..f19fc0b 100644
+--- a/tests/testsuite/build_dir.rs
++++ b/tests/testsuite/build_dir.rs
+@@ -29,6 +29,180 @@ use cargo_test_support::{
+ };
+ use std::env::consts::{DLL_PREFIX, DLL_SUFFIX, EXE_SUFFIX};
+ 
++#[cargo_test]
++fn dependency_search_paths_for_sibling_targets() {
++    let wrapper = tools::echo_wrapper();
++    for explicit_target in [false, true] {
++        let p = project()
++            .at(paths::root().join(if explicit_target {
++                "explicit"
++            } else {
++                "native"
++            }))
++            .file(
++                "Cargo.toml",
++                r#"
++                [package]
++                name = "search_root"
++                version = "0.1.0"
++                edition = "2021"
++                [dependencies]
++                direct = { path = "direct" }
++                path_macro = { path = "path_macro" }
++                [build-dependencies]
++                build_only = { path = "build_only" }
++                "#,
++            )
++            .file(
++                ".cargo/config.toml",
++                "[build]\ntarget-dir = \"target-dir\"\nbuild-dir = \"build-dir\"\n",
++            )
++            .file(
++                "src/lib.rs",
++                "pub fn value() -> u32 { path_macro::identity!(direct::value()) }",
++            )
++            .file(
++                "build.rs",
++                r#"fn main() {
++                    build_only::value();
++                    let path = std::path::PathBuf::from(std::env::var_os("OUT_DIR").unwrap())
++                        .join("native");
++                    std::fs::create_dir_all(&path).unwrap();
++                    println!("cargo::rustc-link-search=native={}", path.display());
++                }"#,
++            )
++            .file(
++                "tests/one.rs",
++                "#[test] fn one() { assert_eq!(search_root::value(), 42); }",
++            )
++            .file(
++                "tests/two.rs",
++                "#[test] fn two() { assert_eq!(search_root::value(), 42); }",
++            )
++            .file(
++                "direct/Cargo.toml",
++                "[package]\nname = \"direct\"\nversion = \"0.1.0\"\nedition = \"2021\"\n\
++                 [dependencies]\nleaf = { path = \"../leaf\" }\n",
++            )
++            .file(
++                "direct/src/lib.rs",
++                "pub fn value() -> u32 { leaf::value() }",
++            )
++            .file(
++                "leaf/Cargo.toml",
++                "[package]\nname = \"leaf\"\nversion = \"0.1.0\"\nedition = \"2021\"\n",
++            )
++            .file("leaf/src/lib.rs", "pub fn value() -> u32 { 42 }")
++            .file(
++                "path_macro/Cargo.toml",
++                "[package]\nname = \"path_macro\"\nversion = \"0.1.0\"\nedition = \"2021\"\n\
++                 [lib]\nproc-macro = true\n\
++                 [dependencies]\nmacro_only = { path = \"../macro_only\" }\n",
++            )
++            .file(
++                "path_macro/src/lib.rs",
++                r#"extern crate proc_macro;
++                #[proc_macro]
++                pub fn identity(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
++                    macro_only::value();
++                    input
++                }"#,
++            )
++            .file(
++                "macro_only/Cargo.toml",
++                "[package]\nname = \"macro_only\"\nversion = \"0.1.0\"\nedition = \"2021\"\n",
++            )
++            .file("macro_only/src/lib.rs", "pub fn value() {}")
++            .file(
++                "build_only/Cargo.toml",
++                "[package]\nname = \"build_only\"\nversion = \"0.1.0\"\nedition = \"2021\"\n",
++            )
++            .file("build_only/src/lib.rs", "pub fn value() {}")
++            .build();
++        let mut cargo = p.cargo("-Zohm-defaults=no -Zbuild-dir-new-layout test --tests -j1");
++        cargo
++            .masquerade_as_nightly_cargo(&["ohm-defaults", "build-dir-new-layout"])
++            .env("RUSTC_WRAPPER", &wrapper);
++        if explicit_target {
++            cargo.arg("--target").arg(rustc_host());
++        }
++        let output = cargo.run();
++        let stderr = String::from_utf8(output.stderr).unwrap();
++        let command = |name: &str, test: bool| {
++            let marker = format!(" --crate-name {name} ");
++            let commands = stderr
++                .lines()
++                .filter(|line| {
++                    line.starts_with("WRAPPER CALLED: ")
++                        && line.contains(&marker)
++                        && line.contains(" --test ") == test
++                })
++                .collect::<Vec<_>>();
++            assert_eq!(commands.len(), 1, "{name}: {stderr}");
++            commands[0]
++        };
++        let out_dir = |name, test| {
++            PathBuf::from(
++                command(name, test)
++                    .split_once(" --out-dir ")
++                    .unwrap()
++                    .1
++                    .split(" -")
++                    .next()
++                    .unwrap(),
++            )
++        };
++        let search_paths = |name, test| {
++            command(name, test)
++                .split(" -L dependency=")
++                .skip(1)
++                .map(|path| PathBuf::from(path.split(" -").next().unwrap()))
++                .collect::<Vec<_>>()
++        };
++        let mut library_prefix = vec![
++            out_dir("direct", false),
++            out_dir("leaf", false),
++            out_dir("path_macro", false),
++        ];
++        library_prefix.sort_unstable();
++        let mut sibling_prefix = library_prefix.clone();
++        sibling_prefix.push(out_dir("search_root", false));
++        sibling_prefix.sort_unstable();
++        let host_path = |name, test| {
++            p.root().join("build-dir").join(
++                out_dir(name, test)
++                    .strip_prefix(p.root().join("build-dir").join(rustc_host()))
++                    .unwrap(),
++            )
++        };
++        for (name, test, prefix) in [
++            ("search_root", false, &library_prefix),
++            ("one", true, &sibling_prefix),
++            ("two", true, &sibling_prefix),
++        ] {
++            let mut expected = prefix.clone();
++            if explicit_target {
++                expected.push(host_path(name, test));
++            }
++            assert_eq!(search_paths(name, test), expected, "{name}: {stderr}");
++            assert_eq!(command(name, test).matches(" -L native=").count(), 1);
++        }
++        if explicit_target {
++            assert_ne!(host_path("one", true), host_path("two", true));
++        }
++        // The macro's own compilation sees its dependency, but its consumers do not.
++        assert_eq!(
++            search_paths("path_macro", false),
++            [out_dir("macro_only", false)]
++        );
++        // Build-script dependencies never become Rust dependency paths for the root targets.
++        assert_eq!(
++            search_paths("build_script_build", false),
++            [out_dir("build_only", false)]
++        );
++    }
++}
++
+ #[cargo_test]
+ fn binary_with_debug() {
+     let p = project()

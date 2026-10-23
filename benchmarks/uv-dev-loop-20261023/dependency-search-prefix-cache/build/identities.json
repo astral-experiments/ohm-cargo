@@ -1,0 +1,258 @@
+{
+  "baseline_affinity": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31
+  ],
+  "baseline_rebuilt": false,
+  "binaries": {
+    "baseline": {
+      "full": {
+        "bytes": 240721144,
+        "sha256": "97bb41e79d0b7903ce12d735d228c728dfdf9ee275cb31e5668dfd573681e8a3"
+      },
+      "stripped": {
+        "bytes": 42031784,
+        "sha256": "00498cb7ace0e0bc71df854dd843f671d8383502f6238f7b9a200dbbfa4ddecf"
+      }
+    },
+    "candidate": {
+      "full": {
+        "bytes": 240783728,
+        "sha256": "3f6480a4d309cffc18e656d94ba76787765df732ade46178cdffec9558784d9a"
+      },
+      "stripped": {
+        "bytes": 42039032,
+        "sha256": "77a6a04fbbd4717a5d134662cce99cbbe887a10441cfeb80386ee4c83695bcfe"
+      }
+    }
+  },
+  "build_command": [
+    "cargo",
+    "build",
+    "--release",
+    "--locked",
+    "--bin",
+    "cargo",
+    "--features",
+    "all-static,ohm-defaults",
+    "-j",
+    "8",
+    "-v"
+  ],
+  "candidate_affinity": [
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23
+  ],
+  "candidate_compiling_packages": 1,
+  "candidate_fresh_packages": 341,
+  "dependency_seed": "Preserved accepted source/target/Cargo-home and existing dependency artifacts; candidate compiled one Cargo package with 341 packages fresh.",
+  "limitations": [
+    "Build affinity differed prospectively and was authorized: baseline CPUs 0-31, candidate CPUs 8-23.",
+    "Recorded compiler-relevant settings and tool identities matched the retained baseline revalidation. Declared transport and tool-call metadata differed. Historical complete raw environment equality is not recoverable.",
+    "This record identifies the measured binaries; it does not promise byte-identical builds on another machine."
+  ],
+  "origin_pair_sha256": "274c1f3c7353f6c1ac0743b5e8f58c1f9d0fb0ec3e3302c2bae1f8e82d477d25",
+  "origin_recipe_sha256": "b2f1346984dbaf9043fdc33e9927c32bd60719966bdce2ded198bc77014d1ff2",
+  "producer_toolchain": "stock Rust 1.99.0 x86_64-unknown-linux-gnu",
+  "release_channel": "dev",
+  "release_profile": {
+    "codegen_units": 1,
+    "debug": 1,
+    "incremental": false,
+    "lto": "thin",
+    "opt_level": 3,
+    "pgo": false,
+    "strip": "none"
+  },
+  "same_build_arguments_and_19_static_inputs": true,
+  "same_physical_source_target_and_cargo_home": true,
+  "schema": 1,
+  "source": "../source/identities.json",
+  "static_inputs": [
+    {
+      "bytes": 646,
+      "exists": true,
+      "resolved_basename": "config.toml",
+      "role": "root-cargo-config",
+      "sha256": "24095bd6315880162c8f660917100ac36638cb73778dd9ec6f1c9026ea87b178"
+    },
+    {
+      "bytes": 181327,
+      "exists": true,
+      "resolved_basename": "ca-certificates.crt",
+      "role": "ca-certificates.crt",
+      "sha256": "ecc4397653649aea807d2d1182f442d1244149b111ce7b85c7e0e5695069d7a9"
+    },
+    {
+      "bytes": 36160240,
+      "exists": true,
+      "resolved_basename": "cargo",
+      "role": "cargo",
+      "sha256": "e951141cc55a6cd7b9876d187bd30a3720e6086b99413af95e3b8de1cdd72f14"
+    },
+    {
+      "bytes": 647376,
+      "exists": true,
+      "resolved_basename": "rustc",
+      "role": "rustc",
+      "sha256": "f3834d26669b03f6855fa54bd2381443123e860167bc0c7a8dd137e5cf6e5e4f"
+    },
+    {
+      "bytes": 12568360,
+      "exists": true,
+      "resolved_basename": "rustdoc",
+      "role": "rustdoc",
+      "sha256": "a1321a60578a6b2e3e0ff428201b8618bbd9a9fbcd475c0d0f151bbf17cb0a9e"
+    },
+    {
+      "bytes": 158319840,
+      "exists": true,
+      "resolved_basename": "librustc_driver-999a121de2f042be.so",
+      "role": "librustc_driver-999a121de2f042be.so",
+      "sha256": "f45c41337f1516bb9f4d504a2a507202a01c431fc2063334913dde5480ffee03"
+    },
+    {
+      "bytes": 5186945,
+      "exists": true,
+      "resolved_basename": "pinned.bundle",
+      "role": "pinned.bundle",
+      "sha256": "254020def1477b48826663a5b24d1b88e3c4e9b82711c6e89cd10503a0ca8008"
+    },
+    {
+      "exists": false,
+      "role": "temporary-parent-cargo-config"
+    },
+    {
+      "bytes": 55792,
+      "exists": true,
+      "resolved_basename": "x86_64-linux-gnu-ar",
+      "role": "ar",
+      "sha256": "6452af2eea333b8c65e1adb92964fc8f97863ab003fa13f9d12bff5345cd7dbe"
+    },
+    {
+      "bytes": 745768,
+      "exists": true,
+      "resolved_basename": "x86_64-linux-gnu-as",
+      "role": "as",
+      "sha256": "21aff249b692b5c31a44007491f922dcb49f41323e362c57d2ada3f52eddb7f0"
+    },
+    {
+      "bytes": 1023032,
+      "exists": true,
+      "resolved_basename": "x86_64-linux-gnu-gcc-13",
+      "role": "cc",
+      "sha256": "1b99826121ae6682a634e5efe09bd3e3df58ce58e0b28f849114ab5b89139c26"
+    },
+    {
+      "bytes": 4066232,
+      "exists": true,
+      "resolved_basename": "git",
+      "role": "git",
+      "sha256": "eb54b535467e0975c1284d4c4d08eea779aeb248a5d34b02e2ee171382e22201"
+    },
+    {
+      "bytes": 1359128,
+      "exists": true,
+      "resolved_basename": "x86_64-linux-gnu-ld.bfd",
+      "role": "ld",
+      "sha256": "e9ceb054c12207970f2726dfc07e9a66b411602748628baf27399f02a9bbb31b"
+    },
+    {
+      "bytes": 259808,
+      "exists": true,
+      "resolved_basename": "make",
+      "role": "make",
+      "sha256": "d78b8f1d099fbcfb6f2f49ab87223b9b68fb3956642f92d6ec6de812e8afa965"
+    },
+    {
+      "bytes": 166536,
+      "exists": true,
+      "resolved_basename": "x86_64-linux-gnu-objcopy",
+      "role": "objcopy",
+      "sha256": "9276e918e3c26d3aa7ef9dd2232cd8ac692f03d3c1f270bfa5144a2b5492b713"
+    },
+    {
+      "bytes": 4023408,
+      "exists": true,
+      "resolved_basename": "perl",
+      "role": "perl",
+      "sha256": "47bdc8a342556c1d140084417ef6cacd79a3362e4b6cc1e4754df55bdf1e3683"
+    },
+    {
+      "bytes": 8020928,
+      "exists": true,
+      "resolved_basename": "python3.12",
+      "role": "python3",
+      "sha256": "e50d468e8b0adfb05733f5b87b3cff34829c4a8c1aea50c865aa8bdfe4bb150f"
+    },
+    {
+      "bytes": 55792,
+      "exists": true,
+      "resolved_basename": "x86_64-linux-gnu-ranlib",
+      "role": "ranlib",
+      "sha256": "60254978b8ee2c1b21b41d16a18a621dbbcc72e43eb2fa9f916818256c77e9ee"
+    },
+    {
+      "bytes": 31104,
+      "exists": true,
+      "resolved_basename": "taskset",
+      "role": "taskset",
+      "sha256": "a431738fadddc2e2326c8ab81843e72f4011658379381aef1502a6ddb1c1115b"
+    }
+  ],
+  "static_zlib": true,
+  "strip_command": [
+    "objcopy",
+    "--strip-debug",
+    "FULL",
+    "STRIPPED"
+  ],
+  "strip_proof_sha256": {
+    "baseline": "d478368deef0f8d7dab43912bae0ba747ee1b8da5f403c2c5729f4dbf8bd65dd",
+    "candidate": "a2d6922ef7b24511abae94a1a9c300f9b36558000bbde26e7040de07a45e768c"
+  }
+}

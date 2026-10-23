@@ -1,0 +1,448 @@
+{
+  "gate": {
+    "checks": {
+      "all_eight_reductions_positive": true,
+      "exact_two_sided_sign_p_0_0078125": true,
+      "lower_99_percent_bound_exceeds_3_percent": true
+    },
+    "passed": true
+  },
+  "gate_passed": true,
+  "gates": {
+    "background_job_exclusion": false,
+    "cached_link_output_identity_guards": 4,
+    "contexts_unchanged": true,
+    "host_activity_observations": 36,
+    "observations_with_background_work": 2,
+    "ordinary_lib_test_executable_in_output_guards": false,
+    "pairs": 8,
+    "preflight_compiler_invocations_per_artifact": 6,
+    "profiles": 16,
+    "restored_and_converged": true
+  },
+  "geometric_instruction_reduction": 0.12347608107894625,
+  "independent_review_seal_sha256": "b083dbc1f8c03c9e1745eafc94974c6c0249df14b2d0e4eb55cb1c38f8edea66",
+  "independent_review_sha256": "71e8c39e3f51751514bc2343566f5c7af898e5b317196363b9107313ddfd061d",
+  "limits": [
+    "Eight fresh fixed pairs in this block; no discovery or other-block observations enter its estimate.",
+    "Both independently collected blocks must pass their own fixed gate; no extension or source change after effect inspection.",
+    "The existing helper resamples log(base/candidate); negating the logs and inverting the percentile interval is algebraically the plan log(candidate/base) calculation.",
+    "Scheduling can alter Cargo polling and synchronization instructions; background observations are retained without retrospective quiet filtering, subtraction, or sample extension.",
+    "Balanced order does not establish pair independence; confirmations use separate fresh fixed cohorts.",
+    "Cargo-parent instructions include unchanged reporting/startup work; source intervention changes dependency argument construction.",
+    "Kernel CPU and compiler/linker instructions are outside this metric.",
+    "Final totals are authoritative; every header difference is retained without rerunning.",
+    "Known Valgrind brk fallback warnings, if present, are disclosed; check/native sanity and publication require separate decisions."
+  ],
+  "metric": "Cargo-parent final Ir for dirty uv test-build; compiler/linker children uninstrumented",
+  "origin_integrity_sha256": "01e5dac3f9190606be5941491ab4a4e98ad2e9ced92f51e0e9fb584f2b0abc3c",
+  "origin_raw_gates_sha256": "9299ccc89f700bc8984691ad34e9eed43a6725942e2bfc449dc5e32fa7ddb93d",
+  "origin_summary_sha256": "8e7281d57ca8cc1c67d0e3ca424fcffed97dbfaaa5743acc5e0db46b245ce07a",
+  "origin_terminal_sha256": "a7132b009f3fcca28e069c0d3435c4ccdccda6630dcfb523a6ffb120d2bece4f",
+  "pairs": [
+    {
+      "baseline_ir": 1883932515,
+      "candidate_ir": 1650089946,
+      "instruction_reduction": 0.12412470570900469,
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "pair": 0
+    },
+    {
+      "baseline_ir": 1884168496,
+      "candidate_ir": 1650808343,
+      "instruction_reduction": 0.12385312327183717,
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "pair": 1
+    },
+    {
+      "baseline_ir": 1884125898,
+      "candidate_ir": 1649482908,
+      "instruction_reduction": 0.12453678931385292,
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "pair": 2
+    },
+    {
+      "baseline_ir": 1883600755,
+      "candidate_ir": 1650194434,
+      "instruction_reduction": 0.12391496466564111,
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "pair": 3
+    },
+    {
+      "baseline_ir": 1882883604,
+      "candidate_ir": 1649651584,
+      "instruction_reduction": 0.12386958997599307,
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "pair": 4
+    },
+    {
+      "baseline_ir": 1885385459,
+      "candidate_ir": 1658626252,
+      "instruction_reduction": 0.12027206740009122,
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "pair": 5
+    },
+    {
+      "baseline_ir": 1883194275,
+      "candidate_ir": 1650784373,
+      "instruction_reduction": 0.12341260011530142,
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "pair": 6
+    },
+    {
+      "baseline_ir": 1883398154,
+      "candidate_ir": 1650200059,
+      "instruction_reduction": 0.12381773577972832,
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "pair": 7
+    }
+  ],
+  "profiles": [
+    {
+      "brk_overflow_warning": true,
+      "file": {
+        "bytes": 299494,
+        "path": "confirmation/block-2/profiles/pair-0-0-candidate.callgrind.gz",
+        "sha256": "34f08067b809e999e28d70e8e9c2c94e4679f55cc4ed8c7dea5246f74a785b79"
+      },
+      "final_ir": 1650089946,
+      "final_minus_header": 1,
+      "header_summary_ir": 1650089945,
+      "label": "pair-0-0-candidate",
+      "self_cost_sum": 1650089946,
+      "stderr_collected": 1650089946,
+      "uncompressed_bytes": 1466759,
+      "uncompressed_sha256": "d4136d62c279d74e2eabbca02a1c5007bdbd21ef638ff921957d30a115e40c9f",
+      "variant": "candidate"
+    },
+    {
+      "brk_overflow_warning": true,
+      "file": {
+        "bytes": 299238,
+        "path": "confirmation/block-2/profiles/pair-0-1-baseline.callgrind.gz",
+        "sha256": "260fd53700cd81cee80c1fa255725d244adef7b5c4fae434ba60db21aa90d038"
+      },
+      "final_ir": 1883932515,
+      "final_minus_header": 1,
+      "header_summary_ir": 1883932514,
+      "label": "pair-0-1-baseline",
+      "self_cost_sum": 1883932515,
+      "stderr_collected": 1883932515,
+      "uncompressed_bytes": 1465006,
+      "uncompressed_sha256": "9ef4a730f02519e58e8d4eca679fd75db32a6ee902d92f818c751e61776b2c56",
+      "variant": "baseline"
+    },
+    {
+      "brk_overflow_warning": true,
+      "file": {
+        "bytes": 299271,
+        "path": "confirmation/block-2/profiles/pair-1-0-baseline.callgrind.gz",
+        "sha256": "9c97129d4c7b1cf693ac478bc6459ca639c8e82db5891c93b99f574e52bd15cb"
+      },
+      "final_ir": 1884168496,
+      "final_minus_header": 1,
+      "header_summary_ir": 1884168495,
+      "label": "pair-1-0-baseline",
+      "self_cost_sum": 1884168496,
+      "stderr_collected": 1884168496,
+      "uncompressed_bytes": 1465766,
+      "uncompressed_sha256": "be15747c4de515c938f226d3cd8300aa1d548b24535f41c3d3096f200780b91d",
+      "variant": "baseline"
+    },
+    {
+      "brk_overflow_warning": true,
+      "file": {
+        "bytes": 300519,
+        "path": "confirmation/block-2/profiles/pair-1-1-candidate.callgrind.gz",
+        "sha256": "81104d9395d2980125dccec9abdab6142d6cc7a23c01631396e08ad005ce994b"
+      },
+      "final_ir": 1650808343,
+      "final_minus_header": 1,
+      "header_summary_ir": 1650808342,
+      "label": "pair-1-1-candidate",
+      "self_cost_sum": 1650808343,
+      "stderr_collected": 1650808343,
+      "uncompressed_bytes": 1467465,
+      "uncompressed_sha256": "d6ecbf377c5d329743be945d1c52a05ed751dcf782cf1295bdf532252abbb59a",
+      "variant": "candidate"
+    },
+    {
+      "brk_overflow_warning": true,
+      "file": {
+        "bytes": 299710,
+        "path": "confirmation/block-2/profiles/pair-2-0-baseline.callgrind.gz",
+        "sha256": "2c25e067d958217abdd98371268fb4085eb9e2b4a3d63b98b9dfdf8f6e330834"
+      },
+      "final_ir": 1884125898,
+      "final_minus_header": 1,
+      "header_summary_ir": 1884125897,
+      "label": "pair-2-0-baseline",
+      "self_cost_sum": 1884125898,
+      "stderr_collected": 1884125898,
+      "uncompressed_bytes": 1466518,
+      "uncompressed_sha256": "f8b25259699ce015a49475eeb0fa8137c461be9a3c0884dff03629ef77b8b60d",
+      "variant": "baseline"
+    },
+    {
+      "brk_overflow_warning": true,
+      "file": {
+        "bytes": 299693,
+        "path": "confirmation/block-2/profiles/pair-2-1-candidate.callgrind.gz",
+        "sha256": "4b4b6f7600333bc0ab0534f1f2a671f85575b2cb0924e9dc933dcee36570ed17"
+      },
+      "final_ir": 1649482908,
+      "final_minus_header": 1,
+      "header_summary_ir": 1649482907,
+      "label": "pair-2-1-candidate",
+      "self_cost_sum": 1649482908,
+      "stderr_collected": 1649482908,
+      "uncompressed_bytes": 1466236,
+      "uncompressed_sha256": "63f9740cd02770e5992f04b5d48f8004429515e34a8a46fb093a4a610c318597",
+      "variant": "candidate"
+    },
+    {
+      "brk_overflow_warning": true,
+      "file": {
+        "bytes": 299444,
+        "path": "confirmation/block-2/profiles/pair-3-0-candidate.callgrind.gz",
+        "sha256": "c0137d46805130b0f9a6ca98678e13c5602681de7f5b4a8b541cdc76ccef2ffe"
+      },
+      "final_ir": 1650194434,
+      "final_minus_header": 1,
+      "header_summary_ir": 1650194433,
+      "label": "pair-3-0-candidate",
+      "self_cost_sum": 1650194434,
+      "stderr_collected": 1650194434,
+      "uncompressed_bytes": 1468017,
+      "uncompressed_sha256": "ce70da4f4ea8996090c56d8dbc8e266780d13df775fb5309068344dbb87bf58f",
+      "variant": "candidate"
+    },
+    {
+      "brk_overflow_warning": true,
+      "file": {
+        "bytes": 299346,
+        "path": "confirmation/block-2/profiles/pair-3-1-baseline.callgrind.gz",
+        "sha256": "265c2d2f53c1fdfa301ad1207c180edac2fdb36d94da8b669cdd366d75e72626"
+      },
+      "final_ir": 1883600755,
+      "final_minus_header": 1,
+      "header_summary_ir": 1883600754,
+      "label": "pair-3-1-baseline",
+      "self_cost_sum": 1883600755,
+      "stderr_collected": 1883600755,
+      "uncompressed_bytes": 1466682,
+      "uncompressed_sha256": "e955ae785fbb254c49cc4f44f3aade7d7d48f463b16aa29d969b1a50e1cee56a",
+      "variant": "baseline"
+    },
+    {
+      "brk_overflow_warning": true,
+      "file": {
+        "bytes": 299102,
+        "path": "confirmation/block-2/profiles/pair-4-0-baseline.callgrind.gz",
+        "sha256": "24dfe180be37671873ab4ff487337fe4f2d84189b08873873e9bb0ca92543e8f"
+      },
+      "final_ir": 1882883604,
+      "final_minus_header": 1,
+      "header_summary_ir": 1882883603,
+      "label": "pair-4-0-baseline",
+      "self_cost_sum": 1882883604,
+      "stderr_collected": 1882883604,
+      "uncompressed_bytes": 1466924,
+      "uncompressed_sha256": "221a8b1a5cf207d6e86fcf1f44c541ee353158ba3e19e925018c2ded203119bd",
+      "variant": "baseline"
+    },
+    {
+      "brk_overflow_warning": true,
+      "file": {
+        "bytes": 299569,
+        "path": "confirmation/block-2/profiles/pair-4-1-candidate.callgrind.gz",
+        "sha256": "6d6ec66fb3b94fc48bccb2e2e8cc858e39c6a74fc673598da34f5acef0db0ecf"
+      },
+      "final_ir": 1649651584,
+      "final_minus_header": 1,
+      "header_summary_ir": 1649651583,
+      "label": "pair-4-1-candidate",
+      "self_cost_sum": 1649651584,
+      "stderr_collected": 1649651584,
+      "uncompressed_bytes": 1467154,
+      "uncompressed_sha256": "b2e6f3887743cadab90fdb48854ba9755ed632dfc9298ec5c3c49600f5115d3f",
+      "variant": "candidate"
+    },
+    {
+      "brk_overflow_warning": true,
+      "file": {
+        "bytes": 302098,
+        "path": "confirmation/block-2/profiles/pair-5-0-candidate.callgrind.gz",
+        "sha256": "7a35ea42738879ac9513702382baa9def13df233f181baa911575356199adc77"
+      },
+      "final_ir": 1658626252,
+      "final_minus_header": 1,
+      "header_summary_ir": 1658626251,
+      "label": "pair-5-0-candidate",
+      "self_cost_sum": 1658626252,
+      "stderr_collected": 1658626252,
+      "uncompressed_bytes": 1471354,
+      "uncompressed_sha256": "463aff0575eb6d6e09e96b3c285a11f588fce2e76219a3619188f163d284cfd2",
+      "variant": "candidate"
+    },
+    {
+      "brk_overflow_warning": true,
+      "file": {
+        "bytes": 300451,
+        "path": "confirmation/block-2/profiles/pair-5-1-baseline.callgrind.gz",
+        "sha256": "ff8828c21c452987f96eb172d2cc31a75b3eb5370bd760ed65d813e305c8b46a"
+      },
+      "final_ir": 1885385459,
+      "final_minus_header": 1,
+      "header_summary_ir": 1885385458,
+      "label": "pair-5-1-baseline",
+      "self_cost_sum": 1885385459,
+      "stderr_collected": 1885385459,
+      "uncompressed_bytes": 1466194,
+      "uncompressed_sha256": "e64c54b7015e62f38d4a6f59710e997c9ea156dabf3c21d79b0a251bec56f118",
+      "variant": "baseline"
+    },
+    {
+      "brk_overflow_warning": true,
+      "file": {
+        "bytes": 299473,
+        "path": "confirmation/block-2/profiles/pair-6-0-candidate.callgrind.gz",
+        "sha256": "acf56c07779afe5147692f11d8fa0e5f27d45528d6658135f11122fde4d415ea"
+      },
+      "final_ir": 1650784373,
+      "final_minus_header": 1,
+      "header_summary_ir": 1650784372,
+      "label": "pair-6-0-candidate",
+      "self_cost_sum": 1650784373,
+      "stderr_collected": 1650784373,
+      "uncompressed_bytes": 1467717,
+      "uncompressed_sha256": "f882ee1047c9037e05484c4ccfa4ec708b3fb9222d19dfca52916178b0c4cc16",
+      "variant": "candidate"
+    },
+    {
+      "brk_overflow_warning": true,
+      "file": {
+        "bytes": 300890,
+        "path": "confirmation/block-2/profiles/pair-6-1-baseline.callgrind.gz",
+        "sha256": "b2b0a2d74ffa42f8f745d71f8474f6b539c964c5d3dfc8d33737494df34556eb"
+      },
+      "final_ir": 1883194275,
+      "final_minus_header": 1,
+      "header_summary_ir": 1883194274,
+      "label": "pair-6-1-baseline",
+      "self_cost_sum": 1883194275,
+      "stderr_collected": 1883194275,
+      "uncompressed_bytes": 1466698,
+      "uncompressed_sha256": "72df3a2c8b52d625640c4c7279e6b4cf1fb621f83b50a69d384fc023b7f7beff",
+      "variant": "baseline"
+    },
+    {
+      "brk_overflow_warning": true,
+      "file": {
+        "bytes": 298892,
+        "path": "confirmation/block-2/profiles/pair-7-0-baseline.callgrind.gz",
+        "sha256": "59296e297fc24b68171ff7af783de474982e48c3a9c1e7d7e70f68779ce64580"
+      },
+      "final_ir": 1883398154,
+      "final_minus_header": 1,
+      "header_summary_ir": 1883398153,
+      "label": "pair-7-0-baseline",
+      "self_cost_sum": 1883398154,
+      "stderr_collected": 1883398154,
+      "uncompressed_bytes": 1467728,
+      "uncompressed_sha256": "a172bf3827e2e9f22422817dd98ddafcc6bbed0180c444aec1957a6a40ac54fd",
+      "variant": "baseline"
+    },
+    {
+      "brk_overflow_warning": true,
+      "file": {
+        "bytes": 299893,
+        "path": "confirmation/block-2/profiles/pair-7-1-candidate.callgrind.gz",
+        "sha256": "9337a82e6179877c62328c28dec0300bc09f2f2a3845259f5338bcb625bacb56"
+      },
+      "final_ir": 1650200059,
+      "final_minus_header": 1,
+      "header_summary_ir": 1650200058,
+      "label": "pair-7-1-candidate",
+      "self_cost_sum": 1650200059,
+      "stderr_collected": 1650200059,
+      "uncompressed_bytes": 1466682,
+      "uncompressed_sha256": "83ae66efe7f9c62c36ad0db3c263b5f61a32d807e01bb2c22deeb0716b159c87",
+      "variant": "candidate"
+    }
+  ],
+  "root_combined_acceptance_sha256": "d523e4d52a33be95ce612a773a4ad9a37eebf71956e7a61262afc45129eaa366",
+  "schema": 1,
+  "state": "valid-confirmation-block",
+  "statistics": {
+    "baseline_mean_count": 1883836144.5,
+    "baseline_median_count": 1883766635.0,
+    "bootstrap_count_reduction_interval": [
+      0.1220728696063278,
+      0.1241851717600041
+    ],
+    "bootstrap_ratio_interval": [
+      1.1390466991851464,
+      1.1417938675570976
+    ],
+    "bootstrap_resamples": 200000,
+    "bootstrap_seed": 20261024,
+    "candidate_mean_count": 1651229737.375,
+    "candidate_median_count": 1650197246.5,
+    "confidence": 0.99,
+    "exact_two_sided_sign_p": 0.0078125,
+    "log_ratios": [
+      0.13253155629492605,
+      0.13222153460246672,
+      0.13300214905729846,
+      0.13229212045746003,
+      0.1322403292353492,
+      0.12814258681211296,
+      0.13171886494889806,
+      0.13218114550970256
+    ],
+    "losses": 0,
+    "order": {
+      "AB": {
+        "geometric_mean_ratio": 1.1415777417804793,
+        "pairs": 4
+      },
+      "BA": {
+        "geometric_mean_ratio": 1.1401630541427186,
+        "pairs": 4
+      }
+    },
+    "paired_geometric_mean_count_reduction": 0.12347608107894625,
+    "paired_geometric_mean_ratio": 1.1408701786837006,
+    "paired_median_ratio": 1.141371868081222,
+    "pairs": 8,
+    "ties": 0,
+    "wins": 8
+  },
+  "tests_executed": false,
+  "wall_time_claim": false
+}

@@ -1,0 +1,51 @@
+{
+  "baseline": {
+    "commit": "cfd816c7abd23ab589fd1cbc9c066eba314a8016",
+    "tree": "216f5a1e5a7d01a838ba51c49bb38732c104aa96"
+  },
+  "baseline_patch_from_embedded_head": {
+    "bytes": 212196,
+    "path": "source/baseline-from-embedded-head.patch",
+    "sha256": "aa6922cd4a53292c43cf6b3fd17f1ba88914b5b91db7d9dc79d39ee690fc841e"
+  },
+  "build_embedded_commit": "5e5d271d763d7beb38b48755e22bd59e93f02b97",
+  "candidate": {
+    "changed_files": [
+      {
+        "path": "src/compiler/build_runner/compilation_files.rs",
+        "sha256": "b5108b6299498ce824dac2752a1a159a5a34dbe6100bfe8199e2821a5258dbb7"
+      },
+      {
+        "path": "src/compiler/mod.rs",
+        "sha256": "786673f13acd53dafbc78b9e5663bd7a4b2e08fe77530fb93de14193c0e43e2e"
+      },
+      {
+        "path": "tests/testsuite/build_dir.rs",
+        "sha256": "3ee22f004cdbfab4e32ec6c891c4285b0db4b41f44868ca6079abaeca9549414"
+      }
+    ],
+    "commit": "b88fc34856f083af4f51fe1703e6d106a02dc01d",
+    "incremental_patch": {
+      "bytes": 11248,
+      "path": "source/candidate.diff",
+      "sha256": "74ca1d7acb46289710beea7af3afd3cc2a1c3f0abf9ae15bfead8620d7961c8c"
+    },
+    "sole_parent": "cfd816c7abd23ab589fd1cbc9c066eba314a8016",
+    "tree": "fd326f2a34a65f87a08a78202926739057788821"
+  },
+  "candidate_full_patch_from_embedded_head_sha256": "29ac638fd6acd998ac0e65147a302d5d30eb30d7d337f7170af49e657a99f640",
+  "publication_binding": {
+    "all_three_git_blobs_identical": true,
+    "commit_metadata_different": true,
+    "measured_commit": "b88fc34856f083af4f51fe1703e6d106a02dc01d",
+    "origin_record_sha256": "60283d7adeace79d473980ac8727a4492ec8511f9fdad5b54c6e4d5515470061",
+    "published_commit": "3d4b75624dad522994ff0fbede55b86d095e342e",
+    "tree_and_sole_parent_identical": true
+  },
+  "published_commit": "3d4b75624dad522994ff0fbede55b86d095e342e",
+  "published_source_branch": "charlie/uv-cache-dependency-search-prefixes",
+  "repository": "astral-sh/ohm-cargo",
+  "schema": 1,
+  "source_review_seal_sha256": "2326926cea6967d1019e50df76cdd96a26edf80f1470e351c9c934729830bd5d",
+  "source_review_sha256": "cac2699a139925062ea2b5642c6358cf013628a4292a17410cfc8ac9db19265d"
+}

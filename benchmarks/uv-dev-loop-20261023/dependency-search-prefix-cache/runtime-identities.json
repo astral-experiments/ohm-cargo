@@ -1,0 +1,55 @@
+{
+  "callgrind_version": "3.22.0",
+  "command": [
+    "cargo",
+    "-Zohm-defaults=yes",
+    "test",
+    "--no-run",
+    "--locked",
+    "--offline",
+    "-j",
+    "8"
+  ],
+  "controlled_edit": "Equal-length before/after non-doc comment appended to crates/uv/src/lib.rs; original source restored after each sample.",
+  "controller_affinity": [
+    8
+  ],
+  "explicit_cargo_incremental_override": null,
+  "explicit_rustflags": null,
+  "measurement_context": "Local shared-cache eligible context; native ownership/trust policy unchanged. This is not the dedicated-VM regime.",
+  "profile_children": false,
+  "profiler_inputs_sha256": {
+    "callgrind-amd64-linux": "825eb197d519240c112e03ed00f40a8bbe1a0a0614f79ea95e28c67e8695cb03",
+    "ohm-valgrind-env.c": "503c8612d9972ed2ce4ef7b4431e569a8c98d0d5f0d1149dd0fff364513e691b",
+    "ohm-valgrind-env.so": "42f912fe052732ef964681579a3bc1acbc50966f04babb5a452f25dfe4825973",
+    "valgrind.bin": "def5fdcf6ae64a4d3e6af3786b622978d8313e0734ecf3f6cbe71d8be9e274c8"
+  },
+  "runtime_compiler_commit": "6d4a7ee3200c5311112d433cb9d1da4a2630a66f",
+  "runtime_inputs_sha256": {
+    "Cargo.lock": "747296375bb1889689f3bbb1e0303bddd071d6a65117c00be50856448260d014",
+    "libLLVM.so.23.1-rust-1.99.0-beta": "43bac9749e539cd5988a4d5452b64582cf07ac9e7c059fde29c7bee76e106c51",
+    "librustc_driver-b03bf00bec23bb9a.so": "a3a5d8cc86af464504170220d142c4ea1129434e2d5e741755feec6f9f35a436",
+    "rustc": "6109cff145371a50c4f62b61908d2ffbf6d259b180c8effde07baa426aab682a",
+    "rustdoc": "0b7d9ded49eb9ecc73097a7bb3bb286e1722ac7143d7ca7d2d7c524c55d5684e"
+  },
+  "runtime_toolchain": "ohm-1.99.0-6",
+  "schema": 1,
+  "strace_sha256": "7088ab983a19122541e3c5cac906bc275808ab6c9a2b3fafbcca6db65062dd18",
+  "strace_version": "6.8",
+  "tests_executed": false,
+  "uv_source_optimization": false,
+  "wild_sha256": "5b2baebf62de0f8c185711b808c3f553da3b7166b1c289420df5276b027f5597",
+  "wild_version": "0.10.0",
+  "workload_affinity": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+  "workload_commit": "3d82a6ad5a7eab8c68236553b7846517767c4b61",
+  "workload_repository": "astral-sh/uv"
+}

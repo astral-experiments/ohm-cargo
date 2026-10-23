@@ -1,0 +1,95 @@
+{
+  "check_improvement_claim": false,
+  "gate": {
+    "candidate_relative_regression": -0.0024194596284730086,
+    "passed": true,
+    "requires_investigation_before_publication": false,
+    "strictly_greater_than_threshold": false,
+    "threshold": 0.005
+  },
+  "gate_passed": true,
+  "gates": {
+    "background_job_exclusion": false,
+    "check_metadata_output_identities_exact": true,
+    "contexts_unchanged": true,
+    "dirty_preflight_compiler_invocations_per_artifact": 1,
+    "host_activity_observations": 11,
+    "observations_with_background_work": 0,
+    "pairs": 1,
+    "profiles": 2,
+    "restored_and_original_test_converged": true,
+    "test_executables_unchanged_during_check": true,
+    "warm_fresh_checks": 2
+  },
+  "instruction_reduction": 0.0024194596284730086,
+  "limits": [
+    "One predeclared diagnostic instruction pair; no significance, check-gain or equivalence claim.",
+    "Scheduling can alter Cargo polling and synchronization instructions; retain all otherwise-valid observations without background filtering, subtraction or extension.",
+    "Cargo-parent instructions include unchanged reporting/startup work; kernel and compiler instructions are outside this metric.",
+    "Final totals are authoritative; header differences and known Valgrind brk fallback warnings are retained without rerunning.",
+    "Metadata and executable identities are retained live observations; output payloads were not copied into this archive.",
+    "The original test command is converged after restoration; check metadata remains in the same owned target."
+  ],
+  "metric": "Cargo-parent final Ir for dirty uv check; compiler children uninstrumented",
+  "no_regression_established": false,
+  "origin_integrity_sha256": "12cf40a1dc31fd3172777070a0d4a5c42038ec8c909ca3d7f08a964cf5b0357c",
+  "origin_raw_gates_sha256": "0f527b0bb479f2d811aabe630338c5baba2b4229f061e793766a827ad4c77310",
+  "origin_review_seal_sha256": "09661260c08c79f8fef6631721b50a0825783ff9ef8e10c3f2ee1040dc2f8ff2",
+  "origin_review_sha256": "8c7c491b337e22bf4a2120ee531a4e8b957652e9a231c05534df82b9cc972ff9",
+  "origin_summary_sha256": "d393f8f0149b92d82bc836e284651fcd14af9d97fc7739cc05d4457958ddc7d4",
+  "origin_terminal_sha256": "1d8888a93e3b441425f0ac23416b4fbb92bc6d6ec59a3c2fe0cd11bb19922693",
+  "overall_qualification_authorized": false,
+  "pairs": [
+    {
+      "baseline_ir": 3033154558,
+      "candidate_ir": 3025815963,
+      "instruction_reduction": 0.0024194596284730086,
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "pair": 0
+    }
+  ],
+  "profiles": [
+    {
+      "brk_overflow_warning": true,
+      "file": {
+        "bytes": 299219,
+        "path": "check/profiles/pair-0-0-baseline.callgrind.gz",
+        "sha256": "6508a143dc21f0cd6a01a0e76c6c399aa16d4273c2231cb10083023055b454a6"
+      },
+      "final_ir": 3033154558,
+      "final_minus_header": 1,
+      "header_summary_ir": 3033154557,
+      "label": "pair-0-0-baseline",
+      "self_cost_sum": 3033154558,
+      "stderr_collected": 3033154558,
+      "uncompressed_bytes": 1454841,
+      "uncompressed_sha256": "e44bca8a9210f07e53facc265ad674602a9e0035e4993ea2bf9222c076846d8e",
+      "variant": "baseline"
+    },
+    {
+      "brk_overflow_warning": true,
+      "file": {
+        "bytes": 302490,
+        "path": "check/profiles/pair-0-1-candidate.callgrind.gz",
+        "sha256": "8bb7febd1414d8026fa9168073d21fb781e9709a1a62a3b8244e25060f1395af"
+      },
+      "final_ir": 3025815963,
+      "final_minus_header": 1,
+      "header_summary_ir": 3025815962,
+      "label": "pair-0-1-candidate",
+      "self_cost_sum": 3025815963,
+      "stderr_collected": 3025815963,
+      "uncompressed_bytes": 1462974,
+      "uncompressed_sha256": "bb36b0f76884da70a8abcb61e73b694bc6b11459c484be74e10f241c79eb1c40",
+      "variant": "candidate"
+    }
+  ],
+  "root_result_acceptance_sha256": "7f362ca79c881d677a3cae90d6a72aff46f20c5e1b03801d9a8ab99b8e6c118a",
+  "schema": 1,
+  "state": "valid-check-sanity",
+  "tests_executed": false,
+  "wall_time_claim": false
+}

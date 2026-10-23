@@ -1,0 +1,103 @@
+{
+  "gates": {
+    "background_job_exclusion": true,
+    "cached_link_output_identity_guards": 4,
+    "contexts_unchanged": true,
+    "ordinary_lib_test_executable_in_output_guards": false,
+    "pairs": 8,
+    "preflight_compiler_invocations_per_artifact": 6,
+    "restored_and_converged": true,
+    "strict_quiet_observations": 36,
+    "timed_native_calls": 16
+  },
+  "independent_review_seal_sha256": "549af561a831e6868838ce6be8bcdce7908d42332f2f944c620f3fb2ff470c5c",
+  "independent_review_sha256": "69c3426a9eff1fedbdb84b3fc4615d9d98507cc1169b72266ae923d5afc58c6f",
+  "interpretation": "Valid but inconclusive native sanity: negative geometric point estimate and mixed pair outcomes; no wall gain or absence of regression established.",
+  "limits": [
+    "Exactly eight exploratory pairs; no sample extension or positive wall-time claim.",
+    "Candidate slowdown >=3% geometrically AND losses in >=6/8 pairs is a publication blocker.",
+    "Every timed command is the original native argv/environment with no profiler; preparation/restoration timings are excluded.",
+    "Original strict quiet-host checks remain unchanged; invalid stages stop before effect comparison.",
+    "Balanced order alone does not establish pair independence.",
+    "The ordinary library-test executable is outside the four cached-link output identity guards."
+  ],
+  "metric": "Native dirty cargo test --no-run wall; preparation, preflights and source/binary restoration excluded",
+  "native_regression_ruled_out": false,
+  "origin_raw_gates_sha256": "84f617944bda570070514dee6cc8eb576de950357b0c1c5f23642a78c956e004",
+  "origin_summary_sha256": "397adec08137a841600f48ae0dca28af7e0eda8cfa29ee5aa8613681a651eb5b",
+  "origin_terminal_sha256": "777e3017cc9b1bd75955aae3c0345299974f502f9dacd188cce1d103779be13b",
+  "origin_wall_samples_sha256": "6ed63ae4e2e1f90eb632ae9ae48b60389778f3dfc4471b013de803e0b6f4a3d3",
+  "overall_qualification_authorized": false,
+  "pairs": [
+    {
+      "baseline_seconds": 4.546948011,
+      "candidate_seconds": 5.408534789,
+      "candidate_slowdown": 0.1894868329076218,
+      "order": "AB",
+      "pair": 0
+    },
+    {
+      "baseline_seconds": 3.545735478,
+      "candidate_seconds": 6.482663386,
+      "candidate_slowdown": 0.8282986495249207,
+      "order": "BA",
+      "pair": 1
+    },
+    {
+      "baseline_seconds": 5.655268211,
+      "candidate_seconds": 6.05182364,
+      "candidate_slowdown": 0.07012141850826192,
+      "order": "BA",
+      "pair": 2
+    },
+    {
+      "baseline_seconds": 6.070605252,
+      "candidate_seconds": 4.368275293,
+      "candidate_slowdown": -0.2804217847041127,
+      "order": "AB",
+      "pair": 3
+    },
+    {
+      "baseline_seconds": 7.734898328,
+      "candidate_seconds": 5.497455148,
+      "candidate_slowdown": -0.28926601037541133,
+      "order": "BA",
+      "pair": 4
+    },
+    {
+      "baseline_seconds": 3.239988711,
+      "candidate_seconds": 5.129933017,
+      "candidate_slowdown": 0.5833181762589172,
+      "order": "AB",
+      "pair": 5
+    },
+    {
+      "baseline_seconds": 6.344946037,
+      "candidate_seconds": 4.870326152,
+      "candidate_slowdown": -0.23240857785091984,
+      "order": "AB",
+      "pair": 6
+    },
+    {
+      "baseline_seconds": 4.989769554,
+      "candidate_seconds": 4.661272133,
+      "candidate_slowdown": -0.0658341868186405,
+      "order": "BA",
+      "pair": 7
+    }
+  ],
+  "positive_wall_claim": false,
+  "predeclared_gate": {
+    "candidate_geometric_slowdown_at_least_3_percent": true,
+    "candidate_loses_at_least_6_pairs": false,
+    "candidate_losses": 4,
+    "geometric_candidate_slowdown": 0.03834912384545941,
+    "geometric_candidate_to_baseline_ratio": 1.0383491238454594,
+    "publication_blocked": false
+  },
+  "publication_blocker": false,
+  "root_result_acceptance_sha256": "274e695dc9fe06df7be928088a480f4ed45efb0b813f35f0cd72ff1b7687152f",
+  "schema": 1,
+  "state": "valid-native-sanity",
+  "tests_executed": false
+}

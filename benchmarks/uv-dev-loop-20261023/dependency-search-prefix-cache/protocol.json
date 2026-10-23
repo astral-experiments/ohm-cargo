@@ -1,0 +1,130 @@
+{
+  "all_other_guards": "Exact source/binaries/compiler argv/context, namespace/rustc-info, four cached-relink output identities, and original-state restoration remain required.",
+  "baseline_commit": "cfd816c7abd23ab589fd1cbc9c066eba314a8016",
+  "candidate_commit": "b88fc34856f083af4f51fe1703e6d106a02dc01d",
+  "check": {
+    "dirty_pairs": 1,
+    "order": "AB",
+    "positive_speedup_claim": false,
+    "regression_requiring_investigation": 0.005,
+    "warm_both_variants_fresh": true
+  },
+  "confirmation": {
+    "all_pairs_must_reduce_ir": true,
+    "blocks": 2,
+    "bootstrap": {
+      "confidence": 0.99,
+      "lower_reduction_bound_must_exceed": 0.03,
+      "quantile": "Linear interpolation at (n-1)*p, existing frozen helper.",
+      "resamples": 200000,
+      "seeds": [
+        20261023,
+        20261024
+      ],
+      "statistic": "Mean paired log(baseline / candidate), then 1 - exp(-mean)."
+    },
+    "both_blocks_required": true,
+    "extension_allowed": false,
+    "fresh_cohorts": true,
+    "orders": [
+      [
+        "AB",
+        "BA",
+        "BA",
+        "AB",
+        "BA",
+        "AB",
+        "AB",
+        "BA"
+      ],
+      [
+        "BA",
+        "AB",
+        "AB",
+        "BA",
+        "AB",
+        "BA",
+        "BA",
+        "AB"
+      ]
+    ],
+    "pairs_per_block": 8,
+    "two_sided_sign_p_for_eight_wins": 0.0078125
+  },
+  "discarded_attempt_policy": "Previously discarded attempts, including v3 and M4 effects, are excluded and remain unopened. No discarded effects, totals, timings, stderr or profiles are in this package.",
+  "discovery": {
+    "advance": "Both pairs reduce Cargo Ir and geometric reduction >= 5%.",
+    "extension_allowed": false,
+    "included_in_confirmation": false,
+    "orders": [
+      "AB",
+      "BA"
+    ],
+    "pairs": 2
+  },
+  "instruction_host_policy": {
+    "amendment_sha256": "925236227f72bcc2275a2b277bfc0ab40085226f182d167fed3567d7160f8e6a",
+    "discovery_started_at": "2026-10-23T06:14:08.304097+00:00",
+    "limitation": "Scheduling can change polling/synchronization instructions; balanced order does not prove independence. Native strict quiet policy was unchanged.",
+    "own_builds_and_tests_stopped": true,
+    "policy": "Record all host observations; do not reject otherwise-valid instruction pairs on quietness.",
+    "prepared_at": "2026-10-23T06:09:42.963934+00:00",
+    "retrospective_filtering": false,
+    "root_acceptance_sha256": "980d719e15b5aedaa26251198c4a99e497fc77f4f3b28919093e45b48df0509d",
+    "sample_extension": false,
+    "source_accepted_at": "2026-10-23T06:13:44.801958+00:00",
+    "subtraction": false
+  },
+  "native": {
+    "extension_allowed": false,
+    "metric": "Native end-to-end dirty test-build wall; preparation and restoration excluded.",
+    "orders": [
+      "AB",
+      "BA",
+      "BA",
+      "AB",
+      "BA",
+      "AB",
+      "AB",
+      "BA"
+    ],
+    "pairs": 8,
+    "positive_wall_claim": false,
+    "publication_blocker": "Geometric candidate wall slowdown >= 3% AND candidate losses >= 6/8.",
+    "strict_require_quiet": true,
+    "ties_are_losses": false,
+    "timed_profiler": false
+  },
+  "original_plan_sha256": "0af6986ffe668f4a73bff0014006b2cae7c12bbd19e5f0ca6128eb572d0fd26d",
+  "output_rule": {
+    "accepted_before_discovery": true,
+    "all_other_bytes_equal": true,
+    "allowed_complete_sha256": [
+      "2a95ffd8e63c5972733c276c6b69f93215c25c8125bb214b42d2131ff24b7847",
+      "9e16d5f6d25edd2649fe2d799b8536b2a1ba891477877bbeb9badf8dda600a37"
+    ],
+    "allowed_differences": [
+      ".rodata section-header entsize field at offset 1608",
+      "GNU build-ID descriptor at offset 3520"
+    ],
+    "bytes": 1068558,
+    "differing_byte_count": 33,
+    "full_loaded_images_byte_identical": false,
+    "general_elf_normalization": false,
+    "loaded_metadata_differs": true,
+    "mode": "0700",
+    "program_headers_equal": true,
+    "relative_path_suffix": "uv/effec4b1bf4bd279/out/uvx-effec4b1bf4bd279",
+    "root_acceptance_sha256": "fdb1e2cd58f937e99578c92d6f6d14ff24cf4821b20b6928ab7711ebf575ae64",
+    "rule_sha256": "303068b265f0bced1fb02df138e5398a1920f02253ff0c9025c090260ea7d59f",
+    "unknown_hash_rejected": true
+  },
+  "schema": 1,
+  "stage_order": [
+    "discovery",
+    "check",
+    "confirmation-1",
+    "native",
+    "confirmation-2"
+  ]
+}
