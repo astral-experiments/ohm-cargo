@@ -683,12 +683,9 @@ fn has_changed_metadata_dependency(fingerprint: &Fingerprint) -> bool {
 }
 
 pub(super) fn read_public_api_hash(path: &Path) -> Option<PublicApiHash> {
-    fs::read(path)
-        .ok()
-        .and_then(|contents| serde_json::from_slice::<PublicApiHash>(&contents).ok())
-        .and_then(|public_api_hash| {
-            PublicApiHash::new(public_api_hash.version, &public_api_hash.value)
-        })
+    let file = paths::open_regular(path).ok()?;
+    let hash: PublicApiHash = serde_json::from_reader(io::BufReader::new(file)).ok()?;
+    PublicApiHash::new(hash.version, &hash.value)
 }
 
 enum PublicApiHashUpdate {
