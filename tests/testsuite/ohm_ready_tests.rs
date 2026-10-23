@@ -310,19 +310,35 @@ fn uses_current_runtime_inputs_and_ignores_disabled_binaries() {
 }
 
 #[cfg(target_os = "linux")]
+fn process_state(pid: i32) -> Option<char> {
+    match fs::read_to_string(format!("/proc/{pid}/stat")) {
+        Ok(stat) => stat.rsplit_once(") ").unwrap().1.chars().next(),
+        Err(error) if error.kind() == std::io::ErrorKind::NotFound => None,
+        Err(error) => panic!("failed to inspect process {pid}: {error}"),
+    }
+}
+
+#[cfg(target_os = "linux")]
 fn assert_process_tree_stopped(p: &Project) {
+    let deadline = Instant::now() + Duration::from_secs(5);
     for name in ["active", "descendant", "slow-active", "test-group"] {
         if matches!(name, "slow-active" | "test-group")
             && !p.root().join("control").join(name).exists()
         {
             continue;
         }
-        let pid = fs::read_to_string(p.root().join("control").join(name)).unwrap();
-        let stat = fs::read_to_string(format!("/proc/{pid}/stat"));
-        assert!(
-            stat.is_err() || stat.unwrap().split_once(") ").unwrap().1.starts_with('Z'),
-            "{name} process {pid} is still running"
-        );
+        let pid = fs::read_to_string(p.root().join("control").join(name))
+            .unwrap()
+            .parse()
+            .unwrap();
+        // The shell can report Cargo's exit before a killed descendant exits.
+        while !matches!(process_state(pid), None | Some('Z')) {
+            assert!(
+                Instant::now() < deadline,
+                "{name} process {pid} is still running"
+            );
+            std::thread::sleep(Duration::from_millis(5));
+        }
     }
 }
 
@@ -685,6 +701,27 @@ fn terminal_cancellation_restores_the_shell_and_stops_descendants() {
         if *mode != "terminal-build-failure" {
             if *mode == "terminal-finished-build" {
                 terminal.expect("Finished");
+                #[cfg(target_os = "linux")]
+                {
+                    use std::os::fd::AsRawFd;
+                    let relay: i32 = fs::read_to_string(p.root().join("control/test-group"))
+                        .unwrap()
+                        .parse()
+                        .unwrap();
+                    // Delay only the relay. Cargo will see the interrupted test
+                    // exit before this foreground group leader can forward Ctrl-C.
+                    assert!(relay > 1);
+                    assert_eq!(
+                        unsafe { libc::tcgetpgrp(terminal.master.as_raw_fd()) },
+                        relay
+                    );
+                    assert_eq!(unsafe { libc::kill(relay, libc::SIGSTOP) }, 0);
+                    let deadline = Instant::now() + Duration::from_secs(5);
+                    while process_state(relay) != Some('T') {
+                        assert!(Instant::now() < deadline, "relay {relay} did not stop");
+                        std::thread::sleep(Duration::from_millis(5));
+                    }
+                }
             }
             terminal.interrupt(); // Ctrl-C goes to the test's foreground group.
         }
