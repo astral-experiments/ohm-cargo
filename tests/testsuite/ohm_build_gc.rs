@@ -1898,7 +1898,11 @@ fn accept_child(listener: &TcpListener) -> TcpStream {
     let deadline = Instant::now() + slow_cpu_multiplier(60);
     loop {
         match listener.accept() {
-            Ok((stream, _)) => return stream,
+            Ok((stream, _)) => {
+                // macOS inherits the listener's nonblocking mode on accept.
+                stream.set_nonblocking(false).unwrap();
+                return stream;
+            }
             Err(error) if error.kind() == std::io::ErrorKind::WouldBlock => {
                 assert!(
                     Instant::now() < deadline,
