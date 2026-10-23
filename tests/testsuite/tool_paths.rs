@@ -237,6 +237,28 @@ fn custom_runner() {
 "#]])
         .run();
 
+    p.cargo("test --test test --no-run -- --param")
+        .with_stderr_data(str![[r#"
+[FINISHED] `test` profile [unoptimized + debuginfo] target(s) in [ELAPSED]s
+[EXECUTABLE] tests/test.rs (target/debug/deps/test-[HASH][EXE])
+
+"#]])
+        .run();
+
+    p.cargo("test --test test --no-run --quiet -- --param")
+        .with_stdout_data("")
+        .with_stderr_data("")
+        .run();
+
+    p.cargo("test --test test --no-run --verbose -- --param")
+        .with_stderr_data(str![[r#"
+[FRESH] foo v0.0.1 ([ROOT]/foo)
+[FINISHED] `test` profile [unoptimized + debuginfo] target(s) in [ELAPSED]s
+[EXECUTABLE] `nonexistent-runner -r [ROOT]/foo/target/debug/deps/test-[HASH][EXE] --param`
+
+"#]])
+        .run();
+
     p.cargo("bench --bench bench --verbose -- --param")
         .with_status(101)
         .with_stderr_data(str![[r#"
@@ -246,6 +268,28 @@ fn custom_runner() {
 [FINISHED] `bench` profile [optimized] target(s) in [ELAPSED]s
 [RUNNING] `nonexistent-runner -r [ROOT]/foo/target/release/deps/bench-[HASH][EXE] --param --bench`
 ...
+"#]])
+        .run();
+
+    p.cargo("bench --bench bench --no-run -- --param")
+        .with_stderr_data(str![[r#"
+[FINISHED] `bench` profile [optimized] target(s) in [ELAPSED]s
+[EXECUTABLE] benches/bench.rs (target/release/deps/bench-[HASH][EXE])
+
+"#]])
+        .run();
+
+    p.cargo("bench --bench bench --no-run --quiet -- --param")
+        .with_stdout_data("")
+        .with_stderr_data("")
+        .run();
+
+    p.cargo("bench --bench bench --no-run --verbose -- --param")
+        .with_stderr_data(str![[r#"
+[FRESH] foo v0.0.1 ([ROOT]/foo)
+[FINISHED] `bench` profile [optimized] target(s) in [ELAPSED]s
+[EXECUTABLE] `nonexistent-runner -r [ROOT]/foo/target/release/deps/bench-[HASH][EXE] --param`
+
 "#]])
         .run();
 }

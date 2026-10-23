@@ -343,6 +343,7 @@ fn display_no_run_information(
 ) -> CargoResult<()> {
     let gctx = ws.gctx();
     let cwd = gctx.cwd();
+    let verbose = gctx.shell().verbosity() == Verbosity::Verbose;
     for UnitOutput {
         unit,
         path,
@@ -350,21 +351,25 @@ fn display_no_run_information(
         env,
     } in compilation.tests.iter()
     {
-        let (exe_display, cmd) = cmd_builds(
-            gctx,
-            cwd,
-            unit,
-            path,
-            script_metas.as_ref(),
-            env,
-            test_args,
-            compilation,
-            exec_type,
-        )?;
-        gctx.shell()
-            .concise(|shell| shell.status("Executable", &exe_display))?;
-        gctx.shell()
-            .verbose(|shell| shell.status("Executable", &cmd))?;
+        if verbose {
+            let (_, cmd) = cmd_builds(
+                gctx,
+                cwd,
+                unit,
+                path,
+                script_metas.as_ref(),
+                env,
+                test_args,
+                compilation,
+                exec_type,
+            )?;
+            gctx.shell()
+                .verbose(|shell| shell.status("Executable", &cmd))?;
+        } else {
+            let exe_display = executable_description(cwd, unit, path, exec_type);
+            gctx.shell()
+                .concise(|shell| shell.status("Executable", &exe_display))?;
+        }
     }
 
     Ok(())
@@ -386,25 +391,7 @@ fn cmd_builds(
     compilation: &Compilation<'_>,
     exec_type: &str,
 ) -> CargoResult<(String, ProcessBuilder)> {
-    let test_path = unit.target.src_path().path().unwrap();
-    let short_test_path = test_path
-        .strip_prefix(unit.pkg.root())
-        .unwrap_or(test_path)
-        .display();
-
-    let exe_display = match unit.target.kind() {
-        TargetKind::Test | TargetKind::Bench => format!(
-            "{} ({})",
-            short_test_path,
-            path.strip_prefix(cwd).unwrap_or(path).display()
-        ),
-        _ => format!(
-            "{} {} ({})",
-            exec_type,
-            short_test_path,
-            path.strip_prefix(cwd).unwrap_or(path).display()
-        ),
-    };
+    let exe_display = executable_description(cwd, unit, path, exec_type);
 
     let mut cmd = compilation.target_process(path, unit.kind, &unit.pkg, script_metas)?;
     cmd.args(test_args);
@@ -416,6 +403,29 @@ fn cmd_builds(
     }
 
     Ok((exe_display, cmd))
+}
+
+/// Formats the executable description without preparing its process environment.
+fn executable_description(cwd: &Path, unit: &Unit, path: &Path, exec_type: &str) -> String {
+    let test_path = unit.target.src_path().path().unwrap();
+    let short_test_path = test_path
+        .strip_prefix(unit.pkg.root())
+        .unwrap_or(test_path)
+        .display();
+
+    match unit.target.kind() {
+        TargetKind::Test | TargetKind::Bench => format!(
+            "{} ({})",
+            short_test_path,
+            path.strip_prefix(cwd).unwrap_or(path).display()
+        ),
+        _ => format!(
+            "{} {} ({})",
+            exec_type,
+            short_test_path,
+            path.strip_prefix(cwd).unwrap_or(path).display()
+        ),
+    }
 }
 
 /// Returns the error code to use when *not* using `--no-fail-fast`.
