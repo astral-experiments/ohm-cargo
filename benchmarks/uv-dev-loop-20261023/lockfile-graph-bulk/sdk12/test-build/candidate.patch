@@ -1,0 +1,79 @@
+diff --git a/src/resolver/encode.rs b/src/resolver/encode.rs
+index 3bc4d09..9b156bd 100644
+--- a/src/resolver/encode.rs
++++ b/src/resolver/encode.rs
+@@ -291,20 +291,11 @@ pub fn into_resolve(
+ 
+     let mut g = Graph::new();
+ 
+-    for (id, _) in live_pkgs.values() {
+-        g.add(*id);
+-    }
+-
+-    for &(ref id, pkg) in live_pkgs.values() {
+-        let Some(ref deps) = pkg.dependencies else {
+-            continue;
+-        };
+-
+-        for edge in deps.iter() {
+-            if let Some(to_depend_on) = lookup_id(edge) {
+-                g.link(*id, to_depend_on);
+-            }
+-        }
++    for (id, pkg) in live_pkgs.values() {
++        g.link_many(
++            *id,
++            pkg.dependencies.iter().flatten().filter_map(&mut lookup_id),
++        );
+     }
+ 
+     let replacements = {
+diff --git a/src/util/graph.rs b/src/util/graph.rs
+index 74cdc51..e2d304d 100644
+--- a/src/util/graph.rs
++++ b/src/util/graph.rs
+@@ -25,6 +25,14 @@ impl<N: Eq + Ord + Clone, E: Default + Clone> Graph<N, E> {
+             .or_default()
+     }
+ 
++    /// Adds a node and edges to each child, retaining existing edge values.
++    pub fn link_many(&mut self, node: N, children: impl IntoIterator<Item = N>) {
++        let edges = self.nodes.entry(node).or_insert_with(im_rc::OrdMap::new);
++        for child in children {
++            edges.entry(child).or_default();
++        }
++    }
++
+     /// Returns the graph obtained by reversing all edges.
+     pub fn reversed(&self) -> Graph<N, E> {
+         let mut ret = Graph::new();
+@@ -199,6 +207,29 @@ impl<'s, N: Eq + Ord + Clone + 's, E: Default + Clone + 's> Graph<N, E> {
+     }
+ }
+ 
++#[test]
++fn link_many_retains_empty_nodes() {
++    let mut graph: Graph<i32, ()> = Graph::new();
++    graph.link_many(1, []);
++    assert!(graph.contains(&1));
++    assert_eq!(graph.edges(&1).count(), 0);
++}
++
++#[test]
++fn link_many_retains_values_and_orders_children() {
++    let mut graph: Graph<i32, i32> = Graph::new();
++    *graph.link(0, 2) = 7;
++    graph.link_many(0, [3, 2, 1, 3, 0]);
++    assert_eq!(
++        graph
++            .edges(&0)
++            .map(|(node, edge)| (*node, *edge))
++            .collect::<Vec<_>>(),
++        [(0, 0), (1, 0), (2, 7), (3, 0)]
++    );
++    assert_eq!(graph.iter().copied().collect::<Vec<_>>(), [0]);
++}
++
+ #[test]
+ fn path_to_case() {
+     let mut new = Graph::new();

@@ -1,0 +1,189 @@
+{
+  "files": {
+    "README.md": {
+      "bytes": 6034,
+      "sha256": "3aa9e4696ee357d11775defad9f2e90c23914a3415085942de453264db15017a"
+    },
+    "REPRODUCE.md": {
+      "bytes": 10104,
+      "sha256": "a0694546ce5b8f9de0875d1776f455ee789d146ed185c7f82e3ff58799257400"
+    },
+    "build-recipe.json": {
+      "bytes": 1169,
+      "sha256": "35c1e88a3a7927f1fceb4d976879bd77bfa028d9c573b5ae0d733c223b618938"
+    },
+    "candidate.patch": {
+      "bytes": 2357,
+      "sha256": "4eb03d69c86db91f487ffd9c49bdd2694a182c0e8598210fc8ad24468c509198"
+    },
+    "counts.json": {
+      "bytes": 11572,
+      "sha256": "99f8ae0e93d9b25b9bd7f9796777154de179c9625fd950d75a71b7f90d4ed122"
+    },
+    "dirty_fixture.py": {
+      "bytes": 15310,
+      "sha256": "a89570fa6080462a772ebdbc73ab4471e0b968f7c357c23b197409fb12f282ad"
+    },
+    "env_trace.py": {
+      "bytes": 5049,
+      "sha256": "adb537e0ebc6c970e0e6a2da9813e0033148429e3c2dcd4b693b994e7f6372c0"
+    },
+    "ohm-valgrind-env.c": {
+      "bytes": 832,
+      "sha256": "503c8612d9972ed2ce4ef7b4431e569a8c98d0d5f0d1149dd0fff364513e691b"
+    },
+    "profiles/PROFILE-MANIFEST.json": {
+      "bytes": 44247,
+      "sha256": "4a19ac6c3d0912a3c6ded163711b74a6a32ab0921ec23a5f79886d1b68df9594"
+    },
+    "profiles/test-build-1/pair-0-0-baseline.callgrind.gz": {
+      "bytes": 351456,
+      "sha256": "f12274b351bdc7e8b30dcea17b4b3c3e4fd8d3070c0ea2079695bd8913e5751d"
+    },
+    "profiles/test-build-1/pair-0-1-candidate.callgrind.gz": {
+      "bytes": 351306,
+      "sha256": "68fa5b127d1b2e79c6fb059014a6915746dcaf092b71afdfdc7a06048b49eca6"
+    },
+    "profiles/test-build-1/pair-1-0-candidate.callgrind.gz": {
+      "bytes": 354670,
+      "sha256": "bd2157e740082db80c2cb9c2b5c35addca3110de83043c2f50e53dfa28fb4f40"
+    },
+    "profiles/test-build-1/pair-1-1-baseline.callgrind.gz": {
+      "bytes": 351608,
+      "sha256": "45b58fe573ba521f709875f406ea62ac5182648220e8b47af9be8d80cf82a6a6"
+    },
+    "profiles/test-build-1/pair-2-0-candidate.callgrind.gz": {
+      "bytes": 351592,
+      "sha256": "4eda3ed676e47bb809a47dc0c9aaa12922d35491cec0446b1019b3a5beadff90"
+    },
+    "profiles/test-build-1/pair-2-1-baseline.callgrind.gz": {
+      "bytes": 351251,
+      "sha256": "c971eabbac222da2c6a498c50a4942b0c0c040eec4da3d3340684a794a2c00b6"
+    },
+    "profiles/test-build-1/pair-3-0-baseline.callgrind.gz": {
+      "bytes": 353480,
+      "sha256": "796e9c5e02eb4297eafdf5cf36e0a57062d9202412486a1d22c0dae872184f2c"
+    },
+    "profiles/test-build-1/pair-3-1-candidate.callgrind.gz": {
+      "bytes": 351881,
+      "sha256": "6663c6e6bf8906735abcf230199d0955927092739df018add59670841abb2aee"
+    },
+    "profiles/test-build-1/pair-4-0-candidate.callgrind.gz": {
+      "bytes": 352005,
+      "sha256": "fd47fe2406715e7af7d7f5787fce6a3f81bf792aabdf68da11f05ac341f5704d"
+    },
+    "profiles/test-build-1/pair-4-1-baseline.callgrind.gz": {
+      "bytes": 350757,
+      "sha256": "df166dfa078d050c0daa2b2aa2c1ae54164e2056f404691240a62205b4775d2b"
+    },
+    "profiles/test-build-1/pair-5-0-baseline.callgrind.gz": {
+      "bytes": 354796,
+      "sha256": "f90a956b7eb12290fec1b4d447cf4a5793d846de578b5e8fe82d016347c8437a"
+    },
+    "profiles/test-build-1/pair-5-1-candidate.callgrind.gz": {
+      "bytes": 352602,
+      "sha256": "36a3ef9613f997274ff993669ed7a6120266d443db9ed4d7eb84291bde6cc645"
+    },
+    "profiles/test-build-1/pair-6-0-baseline.callgrind.gz": {
+      "bytes": 351354,
+      "sha256": "8f8950cce7dd5975cb8edc1ef1eebf4006a0b453897acfec3260feaa6ef8cce6"
+    },
+    "profiles/test-build-1/pair-6-1-candidate.callgrind.gz": {
+      "bytes": 352042,
+      "sha256": "30f9e70ac5caa832a187d4ec0c2c7554e78e676e767c7381684a76ccb8b86b4f"
+    },
+    "profiles/test-build-1/pair-7-0-candidate.callgrind.gz": {
+      "bytes": 351343,
+      "sha256": "9bb1c8399f09b100e9f9cc5be07cd70eeea62b7bb9f44112f8bd9b7a3469139c"
+    },
+    "profiles/test-build-1/pair-7-1-baseline.callgrind.gz": {
+      "bytes": 350466,
+      "sha256": "aea81734da2b6ee550bbfbc780c8e758159e8c2317668fd34d45aa42399e7a96"
+    },
+    "profiles/test-build-2/pair-0-0-candidate.callgrind.gz": {
+      "bytes": 352518,
+      "sha256": "3084cb360cc39b24448cd05c6175879ffa043f51cad48172cd0838319697b6c4"
+    },
+    "profiles/test-build-2/pair-0-1-baseline.callgrind.gz": {
+      "bytes": 351262,
+      "sha256": "379e690f6012664ecc23c7895a98c05a3584e556ed6c891a734394e5546e58fe"
+    },
+    "profiles/test-build-2/pair-1-0-baseline.callgrind.gz": {
+      "bytes": 351509,
+      "sha256": "ab57d6cc6f26bfd465d25e0f25bf8aa4bcfa622ebb3a4b56da3b7874d511b6ca"
+    },
+    "profiles/test-build-2/pair-1-1-candidate.callgrind.gz": {
+      "bytes": 352368,
+      "sha256": "90aaa5015f0b95bee110b0350e144d60d68b0d6374f97d805ad3bfc4733f5ad8"
+    },
+    "profiles/test-build-2/pair-2-0-baseline.callgrind.gz": {
+      "bytes": 351930,
+      "sha256": "f00ce0704abfff68aef9a192c827f15d15968b29f3996fc41116cbfb0e0adf69"
+    },
+    "profiles/test-build-2/pair-2-1-candidate.callgrind.gz": {
+      "bytes": 351513,
+      "sha256": "26893928db77d6c6cb579fc5cae3564534fe88cbfbe9974b2cdef9cbecfb53a0"
+    },
+    "profiles/test-build-2/pair-3-0-candidate.callgrind.gz": {
+      "bytes": 352458,
+      "sha256": "3bbe203e3de08d37142a3d160d2979b71ccac027e49a0d19b726716a3941940f"
+    },
+    "profiles/test-build-2/pair-3-1-baseline.callgrind.gz": {
+      "bytes": 352824,
+      "sha256": "a928e24c97e54df9b2daa6798dfa3a6ec000d2895cc8624b337a4ac93e523e51"
+    },
+    "profiles/test-build-2/pair-4-0-baseline.callgrind.gz": {
+      "bytes": 351466,
+      "sha256": "5259f98491b0be6520cb2fa3e3309528a4c2004813dbb3ddf91aed823c0b5f52"
+    },
+    "profiles/test-build-2/pair-4-1-candidate.callgrind.gz": {
+      "bytes": 352154,
+      "sha256": "3743b391eb1668768816759233d20e773aca19735673d165fee268251fc8f610"
+    },
+    "profiles/test-build-2/pair-5-0-candidate.callgrind.gz": {
+      "bytes": 352018,
+      "sha256": "12f13912c8375acc4bc0eac2950b026b898c916df0827fe66484efb20858cca3"
+    },
+    "profiles/test-build-2/pair-5-1-baseline.callgrind.gz": {
+      "bytes": 350318,
+      "sha256": "f9aaaea4592539c8db9b50d6eb838aa9597d7950c6a111441eca95f7947a6de1"
+    },
+    "profiles/test-build-2/pair-6-0-candidate.callgrind.gz": {
+      "bytes": 351919,
+      "sha256": "450e8e7549c56313ccfc160e1bf5b83f667f487df491ed55c6ea0a20378087a6"
+    },
+    "profiles/test-build-2/pair-6-1-baseline.callgrind.gz": {
+      "bytes": 350637,
+      "sha256": "72a2d210c27235b893a767e242d5a3868265a807e334cc9a88e3f20330c1f3d2"
+    },
+    "profiles/test-build-2/pair-7-0-baseline.callgrind.gz": {
+      "bytes": 351606,
+      "sha256": "679c3b9a093d577196ce49fcca31eddae96874ab1feb81084d8e8fee289c2f05"
+    },
+    "profiles/test-build-2/pair-7-1-candidate.callgrind.gz": {
+      "bytes": 352609,
+      "sha256": "f216f8da401f7fe5e8ddf9c5954ab490a30b21f7801192e953b6fda0130cacf1"
+    },
+    "protocol.json": {
+      "bytes": 4213,
+      "sha256": "39357e240553b19b9656d56c470c8d11fe24b8c392d1b8379a552bd4128fc9e0"
+    },
+    "reproduce.py": {
+      "bytes": 8294,
+      "sha256": "0293564c18bf752479efbdbeba56a6410fe7c80e912a3ac9c507f4fb1b40601c"
+    },
+    "results/test-build-1.json": {
+      "bytes": 1309,
+      "sha256": "df4e25ba7db64bbe17b767996b90a03d103c085927c64bf8fd2640ea453b520d"
+    },
+    "results/test-build-2.json": {
+      "bytes": 1313,
+      "sha256": "8738cccdb667097d7b301cca5e9bdc71159c61734a1dc6874b018bc51887ac71"
+    },
+    "source-identities.json": {
+      "bytes": 2576,
+      "sha256": "93496bebc41a1c77651a3026abcd25e71075a9d69f60b50329551dcd8b3b9293"
+    }
+  },
+  "schema": 1
+}
