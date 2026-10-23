@@ -1,0 +1,37 @@
+{
+  "command": [
+    "${SDK_ROOT}/bin/cargo",
+    "-Zohm-defaults=no",
+    "build",
+    "--release",
+    "--locked",
+    "--offline",
+    "--bin",
+    "cargo",
+    "--features",
+    "all-static,ohm-defaults",
+    "-j",
+    "24",
+    "--message-format=json-render-diagnostics",
+    "-v"
+  ],
+  "environment_settings": {
+    "CARGO_INCREMENTAL": "0",
+    "CARGO_PROFILE_RELEASE_CODEGEN_UNITS": "1",
+    "CARGO_PROFILE_RELEASE_DEBUG": "1",
+    "CARGO_PROFILE_RELEASE_INCREMENTAL": "false",
+    "CARGO_PROFILE_RELEASE_LTO": "thin",
+    "CARGO_PROFILE_RELEASE_OPT_LEVEL": "3",
+    "CARGO_PROFILE_RELEASE_STRIP": "none",
+    "CFG_RELEASE_CHANNEL": "dev",
+    "LIBZ_SYS_STATIC": "1"
+  },
+  "paths": "Both builds use the same physical source, CARGO_HOME and CARGO_TARGET_DIR; preserve baseline before applying candidate.patch to the staged tree, keeping HEAD at the baseline commit.",
+  "strip_command": [
+    "objcopy",
+    "--strip-debug",
+    "${LINKED_CARGO}",
+    "${STRIPPED_CARGO}"
+  ],
+  "strip_validation": "All 31 allocated ELF sections preserved in each arm; original linker outputs retained."
+}

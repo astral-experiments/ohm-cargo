@@ -1,0 +1,92 @@
+{
+  "admission": "Fresh archive/index-only uv seed, ordinary edit of crates/uv/src/lib.rs, source/lockfile restored, separate private state banks at the same paths and fixed actual tool bytes. Require native correctness tests, successful fresh/original/dirty convergence and equal workload/output classes in both arms. Record native exec and environment parity before instrumenting; validate count totals/self/stderr and zero-exit completion. Keep failed attempts. No sample rejection based on effect size or machine activity.",
+  "arms": {
+    "A": "baseline",
+    "B": "candidate"
+  },
+  "bootstrap_seeds": {
+    "primary": [
+      2026102381,
+      2026102382
+    ],
+    "secondary": [
+      2026102383,
+      2026102384
+    ]
+  },
+  "build": "Matched release Cargo builds at a common canonical build path, fixed SDK12 build tools, opt3, ThinLTO, CGU1, debug1, no incremental or PGO/BOLT; same SDK12 compiler, rustdoc and linker drive uv in both arms.",
+  "commands": {
+    "primary": [
+      "-Zohm-defaults=yes",
+      "check",
+      "--locked",
+      "--offline",
+      "-j",
+      "8"
+    ],
+    "secondary": [
+      "-Zohm-defaults=yes",
+      "test",
+      "--no-run",
+      "--locked",
+      "--offline",
+      "-j",
+      "8"
+    ]
+  },
+  "gate": "Each fixed eight-pair block must have eight candidate wins and a lower 99% reduction bound strictly greater than 0.1%. Stop that endpoint on its first valid failure. A check PR requires both primary blocks. Claim a test-build win only if both secondary blocks separately pass. Investigate a verified secondary regression before publication.",
+  "host": "isolated Linux x86_64 worker; original host name withheld",
+  "native": "Elapsed time from instrumented commands is unusable. Any native wall-time study needs independent fixed prospective pairs on a quiet host.",
+  "order": [
+    [
+      "AB",
+      "BA",
+      "BA",
+      "AB",
+      "BA",
+      "AB",
+      "AB",
+      "BA"
+    ],
+    [
+      "BA",
+      "AB",
+      "AB",
+      "BA",
+      "AB",
+      "BA",
+      "BA",
+      "AB"
+    ]
+  ],
+  "pins": {
+    "base_tree": "487deda53e727c16bd22ae3d7cf1c512d1005116",
+    "candidate_patch_sha256": "15cc025f4726502b3cddfa2a6d3d4b47bff2bd017223e681c8331e01b103de6f",
+    "candidate_tree": "90af39c2cab717940d5b09c1a4add2aaa02734e1",
+    "cargo": "fdd26156be98618e2e01a9e02703edac71b79a35",
+    "dirty_fixture_sha256": "a89570fa6080462a772ebdbc73ab4471e0b968f7c357c23b197409fb12f282ad",
+    "sdk12_bundle_sha256": "177751bcef731909e9fa2c89983804ec6fe663101711dc46003a743914d37203",
+    "uv": "3d82a6ad5a7eab8c68236553b7846517767c4b61"
+  },
+  "premeasurement_source_evidence": {
+    "note": "Direct entry edges in the single released SDK12 dirty-check Cargo parent. These costs identify a target and do not measure candidate savings.",
+    "raw_path_hash_calls_from_target_map_rehash": 2225,
+    "raw_path_hash_calls_from_to_real_manifest": 2565,
+    "raw_path_hash_ir_from_target_map_rehash": 3568160,
+    "raw_path_hash_ir_from_to_real_manifest": 4010524,
+    "workload": {
+      "duplicate_paths": 0,
+      "eligible_packages": 519,
+      "eligible_targets": 2100,
+      "packages": 560,
+      "shared_basename_distinct_paths": 41,
+      "targets": 2565
+    }
+  },
+  "publication_note": "Only the host name is redacted; original private protocol SHA256 is 856989189adb2e99472c096961f2bd90e14b28937ab404711d76fcd299b3c91a.",
+  "purpose": "Test whether ruling out duplicate target sources using distinct filenames reduces Cargo-parent instructions in ordinary dirty uv check and test compilation.",
+  "recorded_utc": "2026-10-23T20:07:43.284513+00:00",
+  "schema": 1,
+  "scope": "Cargo parent Callgrind Ir with trace-children=no. The child environment is checked against native execution, using the previously validated parent-only loader adapter. Runtime is pinned to CPUs 0-7. Tests are compiled only.",
+  "statistics": "Geometric mean of paired candidate/baseline ratios; empirical 99% paired percentile bootstrap interval with 200000 resamples. Compute and report per-block two-sided exact sign p. No pooling, extension or familywise claim."
+}

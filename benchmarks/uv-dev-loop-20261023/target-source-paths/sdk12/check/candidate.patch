@@ -1,0 +1,76 @@
+diff --git a/src/workspace/parser/mod.rs b/src/workspace/parser/mod.rs
+index dc47ef4892fd136b43db222e39bd7b53fa307329..fe7e6db028e2f1a3e53262ad0784527f0fc8dd67 100644
+--- a/src/workspace/parser/mod.rs
++++ b/src/workspace/parser/mod.rs
+@@ -1,4 +1,4 @@
+-use crate::util::data_structures::HashMap;
++use crate::util::data_structures::{HashMap, HashSet};
+ use crate::workspace::SourceKind;
+ use cargo_util_terminal::report::{AnnotationKind, Group, Level, Snippet};
+ use std::borrow::Cow;
+@@ -2544,6 +2544,21 @@ fn unique_build_targets(
+     targets: &[Target],
+     package_root: &Path,
+ ) -> Result<(), HashMap<PathBuf, Vec<Target>>> {
++    if targets.len() < 2 {
++        return Ok(());
++    }
++
++    // Targets with distinct file names cannot share a source path. Most manifests
++    // need only this check to rule out conflicts, without building the diagnostic map.
++    let mut names = HashSet::with_capacity_and_hasher(targets.len(), Default::default());
++    if targets
++        .iter()
++        .filter_map(|target| target.src_path().path())
++        .all(|path| path.file_name().is_some_and(|name| names.insert(name)))
++    {
++        return Ok(());
++    }
++
+     let mut source_targets = HashMap::<_, Vec<_>>::default();
+     for target in targets {
+         if let TargetSourcePath::Path(path) = target.src_path() {
+diff --git a/tests/testsuite/build.rs b/tests/testsuite/build.rs
+index 3dbd64e9cd3462ab5badee3626c9b9b1f422f370..cf8e85012a7dcccbd99451105b3b561fa801c2f2 100644
+--- a/tests/testsuite/build.rs
++++ b/tests/testsuite/build.rs
+@@ -515,6 +515,39 @@ fn cargo_compile_duplicate_build_targets() {
+         .run();
+ }
+ 
++#[cargo_test]
++fn targets_with_the_same_file_name_in_different_directories() {
++    let p = project()
++        .file(
++            "Cargo.toml",
++            r#"
++                [package]
++                name = "foo"
++                version = "1.0.0"
++                edition = "2024"
++
++                [[bin]]
++                name = "first"
++                path = "first/main.rs"
++
++                [[bin]]
++                name = "second"
++                path = "second/main.rs"
++            "#,
++        )
++        .file("first/main.rs", "fn main() {}")
++        .file("second/main.rs", "fn main() {}")
++        .build();
++
++    p.cargo("check")
++        .with_stderr_data(str![[r#"
++[CHECKING] foo v1.0.0 ([ROOT]/foo)
++[FINISHED] `dev` profile [unoptimized + debuginfo] target(s) in [ELAPSED]s
++
++"#]])
++        .run();
++}
++
+ #[cargo_test]
+ fn cargo_compile_with_invalid_version() {
+     let p = project()
