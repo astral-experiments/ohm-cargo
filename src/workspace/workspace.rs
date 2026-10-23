@@ -76,8 +76,8 @@ pub struct Workspace<'gctx> {
     /// This directory may be shared between multiple workspaces.
     build_dir: Option<Filesystem>,
 
-    /// Nested Cargo must not wait for a shared-cache lock held by its parent.
-    nested_shared_cache: bool,
+    /// Keep mutable build state in the target directory when the shared cache cannot be used.
+    private_build_only: bool,
 
     /// Shares one target lease across resolution, fallback runners, and their results.
     private_build_lease: RefCell<Weak<PrivateBuildLease>>,
@@ -278,7 +278,7 @@ impl<'gctx> Workspace<'gctx> {
             .load_workspace_config()?
             .and_then(|cfg| cfg.custom_metadata);
         ws.find_members()?;
-        ws.avoid_ancestor_shared_cache()?;
+        ws.configure_private_build_dir()?;
         ws.set_resolve_behavior()?;
         ws.validate()?;
         Ok(ws)
@@ -295,7 +295,7 @@ impl<'gctx> Workspace<'gctx> {
             root_manifest: None,
             target_dir: None,
             build_dir: None,
-            nested_shared_cache: false,
+            private_build_only: false,
             private_build_lease: RefCell::default(),
             members: IndexSet::default(),
             member_ids: HashSet::default(),
@@ -537,7 +537,7 @@ impl<'gctx> Workspace<'gctx> {
 
     /// Returns the private build directory, colocated with targets when registry caching is shared.
     pub fn build_dir(&self) -> Filesystem {
-        if self.nested_shared_cache || self.shared_registry_cache_enabled() {
+        if self.private_build_only || self.shared_registry_cache_enabled() {
             return self.target_dir();
         }
         self.configured_build_dir()
@@ -553,7 +553,7 @@ impl<'gctx> Workspace<'gctx> {
 
     /// Whether this workspace can use the configured shared registry cache.
     pub(crate) fn shared_registry_cache_enabled(&self) -> bool {
-        self.gctx.cli_unstable().ohm_shared_registry_cache && !self.nested_shared_cache
+        self.gctx.cli_unstable().ohm_shared_registry_cache && !self.private_build_only
     }
 
     /// Keeps active build state alive without retaining a lease in an idle workspace.
@@ -570,12 +570,12 @@ impl<'gctx> Workspace<'gctx> {
         Ok(Some(lease))
     }
 
-    /// Preserves the parent's private-cache fallback in a temporary workspace.
+    /// Preserves the parent's private build directory policy in a temporary workspace.
     pub(crate) fn with_shared_cache_policy_from(mut self, parent: &Workspace<'_>) -> Self {
-        if parent.nested_shared_cache {
+        if parent.private_build_only {
             // Pin the target before changing how embedded manifests derive it.
             self.target_dir = Some(self.target_dir());
-            self.nested_shared_cache = true;
+            self.private_build_only = true;
         }
         self
     }
@@ -591,27 +591,29 @@ impl<'gctx> Workspace<'gctx> {
             .map(Option::unwrap_or_default)
     }
 
-    /// Keeps nested builds private when an ancestor still owns their configured cache.
-    ///
-    /// Preserve the user's environment: build scripts may inspect it, and clearing an
-    /// environment override would not override a build directory set in configuration.
-    fn avoid_ancestor_shared_cache(&mut self) -> CargoResult<()> {
+    /// Keeps builds private when a parent owns the cache or Ohm sharing was disabled.
+    fn configure_private_build_dir(&mut self) -> CargoResult<()> {
         let ancestors = self.shared_cache_ancestors()?;
-        if ancestors.is_empty() {
+        let flags = self.gctx.cli_unstable();
+        let opted_out = flags.ohm_defaults == Some(false)
+            && !flags.ohm_shared_registry_cache
+            && self.build_dir.is_some();
+        if ancestors.is_empty() && !opted_out {
             return Ok(());
         }
         let build_root = self.canonical_build_path(self.configured_build_dir().as_path_unlocked());
-        if !ancestors
-            .iter()
-            .any(|ancestor| ancestor.build_root == build_root || ancestor.target_root == build_root)
+        let ancestor_owns_cache = ancestors.iter().any(|ancestor| {
+            ancestor.build_root == build_root || ancestor.target_root == build_root
+        });
+        // An external split directory can belong to several workspaces. Legacy
+        // Cargo fingerprints and build-script OUT_DIRs cannot distinguish them.
+        if ancestor_owns_cache
+            || (opted_out && !build_root.starts_with(self.canonical_build_path(self.root())))
         {
-            return Ok(());
+            // Pin the default first: embedded manifests derive their target from the build directory.
+            self.target_dir = Some(self.target_dir());
+            self.private_build_only = true;
         }
-        // Pin the default before enabling the override: embedded manifests derive their
-        // default target from the build directory. Later target overrides remain effective.
-        let target = self.target_dir();
-        self.target_dir = Some(target);
-        self.nested_shared_cache = true;
         Ok(())
     }
 
