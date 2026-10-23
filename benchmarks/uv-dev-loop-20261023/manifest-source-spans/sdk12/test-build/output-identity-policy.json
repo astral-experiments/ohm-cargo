@@ -1,0 +1,154 @@
+{
+  "complete_archive_members": 206,
+  "complete_canonical_archive_bytes_equal": true,
+  "elf_difference_fields": [
+    "one .rodata sh_entsize byte (0 or 8)",
+    "32-byte GNU build-ID descriptor"
+  ],
+  "every_other_elf_file_byte_exact": true,
+  "exact_elf_difference_bytes": 33,
+  "native_archive_objects": 202,
+  "only_member_name_normalization": "Exact uv-1423aea77971a7c7 prefix and seven-character rcgu member suffix in long-name/relink metadata; all other bytes and native object payloads exact.",
+  "private_output_source_freeze_sha256": "e3e37359f267e8678c7f98c5cfb0222b69ff697a96f91e390e5b1006e82cc5bc",
+  "read_only_segment_includes_metadata_difference": true,
+  "schema": 1,
+  "scope": "Fixed fresh per-arm output admission; no general semantic-equivalence claim. Private executable/rlib copies are not distributed here.",
+  "specifications": {
+    "baseline": [
+      {
+        "bytes": 11430284,
+        "kind": "uv-rlib",
+        "mode": 384,
+        "path": "fixture/target/debug/build/workspaces/0ac920132f5a238b/v2-c7fe5ffb8f360848/uv/1423aea77971a7c7/out/libuv-1423aea77971a7c7.rlib",
+        "reference": {
+          "scope": "Private authenticated immutable native-preflight rlib; not included in this public package.",
+          "sha256": "9ea878be4201ebc8a554692807d2e79ef44ee2f736b80f704d7fdc02e5043a80"
+        }
+      },
+      {
+        "bytes": 2121381,
+        "kind": "exact",
+        "mode": 384,
+        "path": "fixture/target/debug/build/workspaces/0ac920132f5a238b/v2-c7fe5ffb8f360848/uv/1423aea77971a7c7/out/libuv-1423aea77971a7c7.rmeta",
+        "sha256": [
+          "2b66dffa62536547079351f8e8889e654533895076411e68b13e0580b042171b"
+        ]
+      },
+      {
+        "bytes": 1068185,
+        "kind": "exact",
+        "mode": 448,
+        "path": "fixture/target/debug/build/workspaces/0ac920132f5a238b/v2-c7fe5ffb8f360848/uv/8c63f01d799c9c77/out/uvx-8c63f01d799c9c77",
+        "sha256": [
+          "485ec729637a7841f778468fd330afb503b290b64abe1f817b3afa02b53389c2",
+          "767ec876faeba4d5b87e74318a01ffcf5ff34e838b91b6f083db86075f3aaad1"
+        ]
+      },
+      {
+        "bytes": 151606085,
+        "kind": "exact",
+        "mode": 448,
+        "path": "fixture/target/debug/build/workspaces/0ac920132f5a238b/v2-c7fe5ffb8f360848/uv/acd6cfe0d22bbb21/out/uv-acd6cfe0d22bbb21",
+        "sha256": [
+          "a86a1cd391e6bfaaf3db8ee88904df1aea6c2f792be441a0e3b28806a582df9e"
+        ]
+      },
+      {
+        "bytes": 373545587,
+        "kind": "exact",
+        "mode": 448,
+        "path": "fixture/target/debug/build/workspaces/0ac920132f5a238b/v2-c7fe5ffb8f360848/uv/c4175568884dc326/out/uv",
+        "sha256": [
+          "8669bfd2fa68ba95b301ed971f36efcb2fd32d9f49e2dc32acb41395a3fd46c0",
+          "bb4142c2202047444b0b26051853b780a7aafe867a56d290fbc5aa154b3e313b"
+        ]
+      },
+      {
+        "bytes": 626784,
+        "kind": "exact",
+        "mode": 448,
+        "path": "fixture/target/debug/build/workspaces/0ac920132f5a238b/v2-c7fe5ffb8f360848/uv/d96af5f93c0df549/out/uvx",
+        "sha256": [
+          "15163a101428a15de2de0dab81a4d3fd596c46a13971af688d7cb0094a8f5a20"
+        ]
+      },
+      {
+        "bytes": 12631362,
+        "kind": "exact",
+        "mode": 448,
+        "path": "fixture/target/debug/build/workspaces/0ac920132f5a238b/v2-c7fe5ffb8f360848/uv/ebf6340c856e6101/out/uv-ebf6340c856e6101",
+        "sha256": [
+          "e98ae3acc1e08acf7f59d6e51e3edf0263df624e2e23e699214b491941c2e86e"
+        ]
+      }
+    ],
+    "candidate": [
+      {
+        "bytes": 11430284,
+        "kind": "uv-rlib",
+        "mode": 384,
+        "path": "fixture/target/debug/build/workspaces/0ac920132f5a238b/v2-c7fe5ffb8f360848/uv/1423aea77971a7c7/out/libuv-1423aea77971a7c7.rlib",
+        "reference": {
+          "scope": "Private authenticated immutable native-preflight rlib; not included in this public package.",
+          "sha256": "1498e3e96b69a5ad49de44a89286f6cbb05f0934ce37799aa365a7aab190031c"
+        }
+      },
+      {
+        "bytes": 2121381,
+        "kind": "exact",
+        "mode": 384,
+        "path": "fixture/target/debug/build/workspaces/0ac920132f5a238b/v2-c7fe5ffb8f360848/uv/1423aea77971a7c7/out/libuv-1423aea77971a7c7.rmeta",
+        "sha256": [
+          "2b66dffa62536547079351f8e8889e654533895076411e68b13e0580b042171b"
+        ]
+      },
+      {
+        "bytes": 1068185,
+        "kind": "exact",
+        "mode": 448,
+        "path": "fixture/target/debug/build/workspaces/0ac920132f5a238b/v2-c7fe5ffb8f360848/uv/8c63f01d799c9c77/out/uvx-8c63f01d799c9c77",
+        "sha256": [
+          "485ec729637a7841f778468fd330afb503b290b64abe1f817b3afa02b53389c2",
+          "767ec876faeba4d5b87e74318a01ffcf5ff34e838b91b6f083db86075f3aaad1"
+        ]
+      },
+      {
+        "bytes": 151606085,
+        "kind": "exact",
+        "mode": 448,
+        "path": "fixture/target/debug/build/workspaces/0ac920132f5a238b/v2-c7fe5ffb8f360848/uv/acd6cfe0d22bbb21/out/uv-acd6cfe0d22bbb21",
+        "sha256": [
+          "a86a1cd391e6bfaaf3db8ee88904df1aea6c2f792be441a0e3b28806a582df9e"
+        ]
+      },
+      {
+        "bytes": 373545587,
+        "kind": "exact",
+        "mode": 448,
+        "path": "fixture/target/debug/build/workspaces/0ac920132f5a238b/v2-c7fe5ffb8f360848/uv/c4175568884dc326/out/uv",
+        "sha256": [
+          "8669bfd2fa68ba95b301ed971f36efcb2fd32d9f49e2dc32acb41395a3fd46c0",
+          "bb4142c2202047444b0b26051853b780a7aafe867a56d290fbc5aa154b3e313b"
+        ]
+      },
+      {
+        "bytes": 626784,
+        "kind": "exact",
+        "mode": 448,
+        "path": "fixture/target/debug/build/workspaces/0ac920132f5a238b/v2-c7fe5ffb8f360848/uv/d96af5f93c0df549/out/uvx",
+        "sha256": [
+          "15163a101428a15de2de0dab81a4d3fd596c46a13971af688d7cb0094a8f5a20"
+        ]
+      },
+      {
+        "bytes": 12631362,
+        "kind": "exact",
+        "mode": 448,
+        "path": "fixture/target/debug/build/workspaces/0ac920132f5a238b/v2-c7fe5ffb8f360848/uv/ebf6340c856e6101/out/uv-ebf6340c856e6101",
+        "sha256": [
+          "e98ae3acc1e08acf7f59d6e51e3edf0263df624e2e23e699214b491941c2e86e"
+        ]
+      }
+    ]
+  }
+}
