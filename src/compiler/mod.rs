@@ -545,7 +545,7 @@ struct RelinkCacheObject {
     modified_nanos: u64,
 }
 
-#[derive(Hash, serde::Deserialize, serde::Serialize)]
+#[derive(serde::Deserialize, serde::Serialize)]
 struct RelinkCacheManifest {
     version: u32,
     rlink: RelinkCacheFile,
@@ -555,9 +555,16 @@ struct RelinkCacheManifest {
     unused_extern_names: Option<Vec<String>>,
 }
 
+impl RelinkCacheManifest {
+    fn input_checksum(&self) -> u64 {
+        crate::util::hash_u64((self.version, &self.rlink, &self.executable, &self.objects))
+    }
+}
+
 #[derive(serde::Deserialize, serde::Serialize)]
 struct CheckedRelinkManifest {
-    checksum: u64,
+    input_checksum: u64,
+    proof_checksum: u64,
     #[serde(flatten)]
     manifest: RelinkCacheManifest,
 }
@@ -663,8 +670,10 @@ impl RelinkCachePaths {
     }
 
     fn write_manifest(&self, manifest: RelinkCacheManifest) -> CargoResult<()> {
+        let input_checksum = manifest.input_checksum();
         let checked = CheckedRelinkManifest {
-            checksum: crate::util::hash_u64(&manifest),
+            input_checksum,
+            proof_checksum: crate::util::hash_u64((input_checksum, &manifest.unused_extern_names)),
             manifest,
         };
         paths::write_atomic(&self.manifest, serde_json::to_vec(&checked)?)?;
@@ -672,9 +681,20 @@ impl RelinkCachePaths {
     }
 
     fn read_manifest(&self) -> Option<RelinkCacheManifest> {
-        let checked: CheckedRelinkManifest =
+        let mut checked: CheckedRelinkManifest =
             serde_json::from_slice(&fs::read(&self.manifest).ok()?).ok()?;
-        (checked.checksum == crate::util::hash_u64(&checked.manifest)).then_some(checked.manifest)
+        if checked.input_checksum != checked.manifest.input_checksum() {
+            return None;
+        }
+        if checked.proof_checksum
+            != crate::util::hash_u64((
+                checked.input_checksum,
+                &checked.manifest.unused_extern_names,
+            ))
+        {
+            checked.manifest.unused_extern_names = None;
+        }
+        Some(checked.manifest)
     }
 
     fn proves_unused_extern(&self, extern_name: InternedString) -> bool {
