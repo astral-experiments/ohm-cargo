@@ -1,0 +1,81 @@
+{
+  "admission": "Fresh archive/index-only uv seed, ordinary edit of crates/uv/src/lib.rs, source/lockfile restored, separate private state banks at the same paths and fixed actual tool bytes. Require native correctness tests, successful fresh/original/dirty convergence and equal workload/output classes in both arms. Record native exec and environment parity before instrumenting; validate count totals/self/stderr and zero-exit completion. Keep failed attempts. No sample rejection based on effect size or machine activity.",
+  "arms": {
+    "A": "baseline",
+    "B": "candidate"
+  },
+  "bootstrap_seeds": {
+    "primary": [
+      2026102371,
+      2026102372
+    ],
+    "secondary": [
+      2026102373,
+      2026102374
+    ]
+  },
+  "build": "Matched release Cargo builds at a common canonical build path, fixed SDK12 build tools, opt3, ThinLTO, CGU1, debug1, no incremental or PGO/BOLT; same SDK12 compiler, rustdoc and linker drive uv in both arms.",
+  "commands": {
+    "primary": [
+      "-Zohm-defaults=yes",
+      "check",
+      "--locked",
+      "--offline",
+      "-j",
+      "8"
+    ],
+    "secondary": [
+      "-Zohm-defaults=yes",
+      "test",
+      "--no-run",
+      "--locked",
+      "--offline",
+      "-j",
+      "8"
+    ]
+  },
+  "correctness": "All applicable corrected native tests and exact baseline/candidate missing-dependency annotations must pass. The normal Cargo CI Linux job supplies i686 std and gcc-multilib to run the two cross-target annotation tests unavailable in the SDK12 native sysroot. Verify they pass on the identical corrected source.",
+  "gate": "Each fixed eight-pair block must have eight candidate wins and a lower 99% reduction bound strictly greater than 0.1%. Stop that endpoint on its first valid failure. A check PR requires both primary blocks. Claim a test-build win only if both secondary blocks separately pass. Investigate a verified secondary regression before publication.",
+  "host": "isolated Linux x86_64 worker; original host name withheld",
+  "host_change_reason": "Host3 remains held after its excluded ENOSPC preflight and exact source/Cargo recovery. The unexecuted fresh-VM proposal could not obtain a supported connection. Root verified host4 has 415 GiB available, 32 allowed CPUs and no competing build in its read-only entry sample. Use the identical canonical fixture path with fresh source/archive-only seed and separately warmed private banks; no compiled uv state transfers. No comparative block has begun. All source, endpoints, commands, orders, seeds, sample counts, thresholds and stop rules remain unchanged.",
+  "native": "Elapsed time from instrumented commands is unusable. Any native wall-time study needs independent fixed prospective pairs on a quiet host.",
+  "order": [
+    [
+      "AB",
+      "BA",
+      "BA",
+      "AB",
+      "BA",
+      "AB",
+      "AB",
+      "BA"
+    ],
+    [
+      "BA",
+      "AB",
+      "AB",
+      "BA",
+      "AB",
+      "BA",
+      "BA",
+      "AB"
+    ]
+  ],
+  "pins": {
+    "base_tree": "487deda53e727c16bd22ae3d7cf1c512d1005116",
+    "candidate_patch_sha256": "705c3a85c6c1e31b60440e973ee796d98b1dfd4200b470955dec19c271e49b97",
+    "candidate_tree": "ee6ffdb835f1012d3968f09be6946b88decd92fe",
+    "cargo": "fdd26156be98618e2e01a9e02703edac71b79a35",
+    "dirty_fixture_sha256": "a89570fa6080462a772ebdbc73ab4471e0b968f7c357c23b197409fb12f282ad",
+    "sdk12_bundle_sha256": "177751bcef731909e9fa2c89983804ec6fe663101711dc46003a743914d37203",
+    "uv": "3d82a6ad5a7eab8c68236553b7846517767c4b61"
+  },
+  "previous_protocol_sha256": "b69be85f67c66b71455adbad258298b5a8fe4fc6bd19a46fc6dd282cd3c4f743",
+  "publication_note": "Only the host name is redacted; original private protocol SHA256 is 0fc441fee6927400d5db59ba984606cdf619c08bbeaf43adebcbe29939736011.",
+  "purpose": "Repeatable parent-process instruction reduction for ordinary uv edit, check and test compilation with an SDK12 Cargo change.",
+  "recorded_utc": "2026-10-23T21:34:06.875690+00:00",
+  "schema": 1,
+  "scope": "Cargo parent Callgrind Ir with trace-children=no. The child environment is checked against native execution, using the previously validated parent-only loader adapter. Runtime is pinned to CPUs 0-7. Tests are compiled only.",
+  "source_change_reason": "The compiler reported a redundant dereference and unused import. Removing them leaves the corrected parser and all semantic/error-path handling exact. This is the source for matched build and normal CI, before any comparative measurement.",
+  "statistics": "Geometric mean of paired candidate/baseline ratios; empirical 99% paired percentile bootstrap interval with 200000 resamples. Compute and report per-block two-sided exact sign p. No pooling, extension or familywise claim."
+}

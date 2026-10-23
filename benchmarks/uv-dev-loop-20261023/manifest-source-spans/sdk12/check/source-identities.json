@@ -1,0 +1,88 @@
+{
+  "baseline_commit": "fdd26156be98618e2e01a9e02703edac71b79a35",
+  "baseline_tree": "487deda53e727c16bd22ae3d7cf1c512d1005116",
+  "candidate_tree": "ee6ffdb835f1012d3968f09be6946b88decd92fe",
+  "cargo_bytes": {
+    "baseline": 41494328,
+    "candidate": 41504008
+  },
+  "cargo_sha256": {
+    "baseline": "ce2b8e389a82311be2ee766da5fff1ce27a2064c3b24c9cb936c9b0374d741ee",
+    "candidate": "5a2c3a2b14b1697d9e6a795593854df1c62de07ccd12642c03d83fedaff8850c"
+  },
+  "fixed_profiler_files": 640,
+  "fixed_runtime_files": 149,
+  "focused_correctness": {
+    "correctness_completion_sha256": "bbf87b9fabce09c4edba7e77b6ffab159c3d2da67d176f7342195e66f03eb59d",
+    "ignored": 0,
+    "normal_ci_run": 40018144003,
+    "normal_stable_ci_ignored_these_two_cases": true,
+    "real_linked_i686_smoke_executed": true,
+    "sdk12_missing_i686_std_failures_preserved": 2,
+    "sdk12_native_passed": 25,
+    "separate_cross_target_ci_run": 40021102477,
+    "separate_failures": 0,
+    "separate_ignored": 0,
+    "separate_job": 120645575891,
+    "separate_real_nightly_i686_passed": 2,
+    "separate_selectors": [
+      "pub_priv::dependency_location_in_target_table",
+      "pub_priv::dependency_location_in_target_table_with_cfg"
+    ],
+    "test_compiler": "1.99.0-nightly (ad3d0bc14 2026-07-31)",
+    "testsuite_compiler": "1.99.0 stable",
+    "two_missing_dependency_annotation_diagnostics_stdout_stderr_equal": true
+  },
+  "measured_git_head_both_builds": "fdd26156be98618e2e01a9e02703edac71b79a35",
+  "patch_sha256": "705c3a85c6c1e31b60440e973ee796d98b1dfd4200b470955dec19c271e49b97",
+  "profiler_aliases": 2,
+  "profiling_tool_identities": {
+    "aux/strace-capture": {
+      "bytes": 2676104,
+      "mode": 493,
+      "sha256": "7088ab983a19122541e3c5cac906bc275808ab6c9a2b3fafbcca6db65062dd18"
+    },
+    "profiling-tools/ohm-valgrind-env.c": {
+      "bytes": 832,
+      "mode": 436,
+      "sha256": "503c8612d9972ed2ce4ef7b4431e569a8c98d0d5f0d1149dd0fff364513e691b"
+    },
+    "profiling-tools/ohm-valgrind-env.so": {
+      "bytes": 15800,
+      "mode": 509,
+      "sha256": "42f912fe052732ef964681579a3bc1acbc50966f04babb5a452f25dfe4825973"
+    },
+    "profiling-tools/valgrind/usr/bin/valgrind.bin": {
+      "bytes": 22688,
+      "mode": 493,
+      "sha256": "def5fdcf6ae64a4d3e6af3786b622978d8313e0734ecf3f6cbe71d8be9e274c8"
+    },
+    "profiling-tools/valgrind/usr/libexec/valgrind/callgrind-amd64-linux": {
+      "bytes": 2482912,
+      "mode": 493,
+      "sha256": "825eb197d519240c112e03ed00f40a8bbe1a0a0614f79ea95e28c67e8695cb03"
+    },
+    "runtime/bin/rustc": {
+      "bytes": 171720,
+      "mode": 493,
+      "sha256": "1879f05850bfcd95837087c6012c76bc0355581012686d51b2f690ce46934d6e"
+    },
+    "runtime/bin/rustdoc": {
+      "bytes": 12485528,
+      "mode": 493,
+      "sha256": "2352c0b80d07125b132a2a84983a2a67fd79641c47e8517e736ed07f740c5c51"
+    },
+    "runtime/lib/rustlib/x86_64-unknown-linux-gnu/bin/wild-ld/ld.bfd": {
+      "bytes": 7931512,
+      "mode": 493,
+      "sha256": "5b2baebf62de0f8c185711b808c3f553da3b7166b1c289420df5276b027f5597"
+    }
+  },
+  "publication_metadata": "Published candidate has the same full tree and patch; its commit metadata differs from the measured staged source.",
+  "published_candidate_commit": "fa592baf27578e348059de7fbe0eed50126d1bca",
+  "rust_commit": "f93a752e3de7404107ea5908d65c8832aee5625a",
+  "scope": "Matched optimized Cargo builds; common shipped SDK12 compiler, rustdoc and linker. Cargo parent only; no compiler/linker instruction or native wall-time claim.",
+  "sdk": "Ohm 1.99.0-12 Linux x86_64",
+  "sdk_bundle_sha256": "177751bcef731909e9fa2c89983804ec6fe663101711dc46003a743914d37203",
+  "uv_commit": "3d82a6ad5a7eab8c68236553b7846517767c4b61"
+}

@@ -1,0 +1,872 @@
+{
+  "counter_derivative": "Exact original Collected and known brk-overflow lines only; original stderr hashes are retained. This public derivative does not recreate private diagnostic or collection validation.",
+  "profiles": {
+    "check-1/pair-0-0-baseline": {
+      "bytes": 384423,
+      "command_headers_replaced": 1,
+      "counter_line": "==1277682== Collected : 1216575777",
+      "file": "check-1/pair-0-0-baseline.callgrind.gz",
+      "fixed_nonpath_record_stream_sha256": "7bc54bb8d3b5eef5659931467c2154f63a9b77c3e11e9930c51296b68a5e868a",
+      "fixed_nonpath_records_byte_identical": true,
+      "git_blob_sha1": "283a02cb21b6873eec5072fa1f5b64ab78929087",
+      "known_warning_lines": [
+        "==1277682== brk segment overflow in thread #1: can't grow to 0x4853000"
+      ],
+      "metric": {
+        "brk_overflow_warning": true,
+        "final_ir": 1216575777,
+        "final_minus_header": 1,
+        "header_summary_ir": 1216575776,
+        "self_cost_sum": 1216575777,
+        "stderr_collected": 1216575777
+      },
+      "original_gzip_sha256": "31d3c206f6784daf70535d135e770dd7e4d016d661136dc5c553f8deb87ad8b5",
+      "original_raw_sha256": "4cff93b62b0e96031bbcaa75f1c6be1e9736f681b3038f85826855c97f3613d1",
+      "original_stderr_sha256": "38e5040bba1a2bcfb0d240f3ff90b550f215b111d52d05416d03cdb5d6d21ccc",
+      "path_label_definitions_replaced": 405,
+      "raw_bytes": 1639147,
+      "raw_sha256": "e1766bcd7bad9954197ce683fb3a2072044557398ef2e48ecf8d7e1e2d1c0892",
+      "sha256": "4b67c28c64a07e3f70243c1e8703744db7a11bbfce4f0196302ef360d6a42dcf"
+    },
+    "check-1/pair-0-1-candidate": {
+      "bytes": 382768,
+      "command_headers_replaced": 1,
+      "counter_line": "==1277739== Collected : 1208084061",
+      "file": "check-1/pair-0-1-candidate.callgrind.gz",
+      "fixed_nonpath_record_stream_sha256": "a91d387e28ac4ab17e251e085f10be64d8218c21790eefb608a91487945c2865",
+      "fixed_nonpath_records_byte_identical": true,
+      "git_blob_sha1": "0a81eb19584469600371d19f46efa5c2cdc41102",
+      "known_warning_lines": [
+        "==1277739== brk segment overflow in thread #1: can't grow to 0x4853000"
+      ],
+      "metric": {
+        "brk_overflow_warning": true,
+        "final_ir": 1208084061,
+        "final_minus_header": 1,
+        "header_summary_ir": 1208084060,
+        "self_cost_sum": 1208084061,
+        "stderr_collected": 1208084061
+      },
+      "original_gzip_sha256": "31a96b3c569c93f171f1e3bd398cc51a0a42ba2e62dace6c39b01de388140885",
+      "original_raw_sha256": "d58e801bcb76ba31e77b7b35b42f9d5fb9a9c7bf02fbb8bd3c009f7f73f1355b",
+      "original_stderr_sha256": "d2c510397e4923d6ab29a4532d4f17dd88d1ff21c4bde880a2dbaff31635641a",
+      "path_label_definitions_replaced": 404,
+      "raw_bytes": 1632909,
+      "raw_sha256": "3295d17fc3ddbf5ae39fdd0980e15f2d9d90f6d8ee8426b0cf540cbbab954d49",
+      "sha256": "11bee37580ac4f98ee74a3e2c24c0465fcbc5279e37f36f3dc6b08d357f4907d"
+    },
+    "check-1/pair-1-0-candidate": {
+      "bytes": 383962,
+      "command_headers_replaced": 1,
+      "counter_line": "==1277826== Collected : 1207847506",
+      "file": "check-1/pair-1-0-candidate.callgrind.gz",
+      "fixed_nonpath_record_stream_sha256": "ac640a6705991753f947924a4c046947ef6576a2e762832fa2b62223c4d8d3dc",
+      "fixed_nonpath_records_byte_identical": true,
+      "git_blob_sha1": "1c1aec00b5bd2ebd4b23d3ebdd7f5ad745ebf273",
+      "known_warning_lines": [
+        "==1277826== brk segment overflow in thread #1: can't grow to 0x4853000"
+      ],
+      "metric": {
+        "brk_overflow_warning": true,
+        "final_ir": 1207847506,
+        "final_minus_header": 1,
+        "header_summary_ir": 1207847505,
+        "self_cost_sum": 1207847506,
+        "stderr_collected": 1207847506
+      },
+      "original_gzip_sha256": "929bc6dbef4c2da0f01a96dcd05d6d078f97ce4171fab9cea893c10e874cb019",
+      "original_raw_sha256": "abe29f9267c32a8c9c94de4b48fedd204e0cfbe50befbf9f0db5736ba843ab1c",
+      "original_stderr_sha256": "e9f2414416e3a55333c6fc9f8365f7e5f55703c51640617f11a342a5f02da74f",
+      "path_label_definitions_replaced": 405,
+      "raw_bytes": 1634826,
+      "raw_sha256": "a5b83e68e6fe80337de29c0dae196c0ebdfbadfb4f07abccc4e9f0c272f8cd02",
+      "sha256": "4b2cb15310012f7163105a1521cd0c8487140c6f03d00da15ff496622f8da4e5"
+    },
+    "check-1/pair-1-1-baseline": {
+      "bytes": 383916,
+      "command_headers_replaced": 1,
+      "counter_line": "==1277926== Collected : 1221566249",
+      "file": "check-1/pair-1-1-baseline.callgrind.gz",
+      "fixed_nonpath_record_stream_sha256": "9fc376767026773f4094f2c5a07dc411ac7be1dd075080c46db191304e95b04a",
+      "fixed_nonpath_records_byte_identical": true,
+      "git_blob_sha1": "2a8b8b8fce91543305099af03dbc1b550ff13c7e",
+      "known_warning_lines": [
+        "==1277926== brk segment overflow in thread #1: can't grow to 0x4853000"
+      ],
+      "metric": {
+        "brk_overflow_warning": true,
+        "final_ir": 1221566249,
+        "final_minus_header": 1,
+        "header_summary_ir": 1221566248,
+        "self_cost_sum": 1221566249,
+        "stderr_collected": 1221566249
+      },
+      "original_gzip_sha256": "120d419fbd935c068f73e2157ea31f36e43187d898d3a3cd976340bcd9b1f934",
+      "original_raw_sha256": "b414d3e041d02a886b2d2cbcf5777718a4d786ad8e6f3fa9842f75b950dbd3e6",
+      "original_stderr_sha256": "c3ecebad4584236ca2b1b96aa02fe86beb95e97adbea3544ca370378a4cb0caf",
+      "path_label_definitions_replaced": 405,
+      "raw_bytes": 1645941,
+      "raw_sha256": "c7d8beb37976024ad5d981b7175f8448b180e49f7aaacfbc43b35e9369f2f2b4",
+      "sha256": "e6dfbad5d411a47df99e412e0ba320ba26149eef781756380115c49baa53f7c5"
+    },
+    "check-1/pair-2-0-candidate": {
+      "bytes": 383401,
+      "command_headers_replaced": 1,
+      "counter_line": "==1278026== Collected : 1208670189",
+      "file": "check-1/pair-2-0-candidate.callgrind.gz",
+      "fixed_nonpath_record_stream_sha256": "75c974866efd3e61ff95674ba724245d88092735398feb449a469cdeeb3b9688",
+      "fixed_nonpath_records_byte_identical": true,
+      "git_blob_sha1": "42c77cdf52f64de1219b0c1260bb811786e0b87e",
+      "known_warning_lines": [
+        "==1278026== brk segment overflow in thread #1: can't grow to 0x4853000"
+      ],
+      "metric": {
+        "brk_overflow_warning": true,
+        "final_ir": 1208670189,
+        "final_minus_header": 1,
+        "header_summary_ir": 1208670188,
+        "self_cost_sum": 1208670189,
+        "stderr_collected": 1208670189
+      },
+      "original_gzip_sha256": "f66345b645ba7ded9b1f4b04f185e221b910c70fd88835ff34b7088cb16945e8",
+      "original_raw_sha256": "d222b3c2204caf5a480a12fed593caedb5aefd3f6ac40054bbd61c1800cb4083",
+      "original_stderr_sha256": "ce483cbf31f2aef85cbafa65619cfce62c443cd7a36215889e7fc0d275b759b0",
+      "path_label_definitions_replaced": 405,
+      "raw_bytes": 1635117,
+      "raw_sha256": "4af5ae929191da2777e944be73868d8556b3ff7b2bba11b8bd3f24580dff71ca",
+      "sha256": "4f6e57a7591734aac69494b2cb8074b89875d0965bd1517f0a360e6f1469535f"
+    },
+    "check-1/pair-2-1-baseline": {
+      "bytes": 385073,
+      "command_headers_replaced": 1,
+      "counter_line": "==1278131== Collected : 1216455937",
+      "file": "check-1/pair-2-1-baseline.callgrind.gz",
+      "fixed_nonpath_record_stream_sha256": "2f6aedf3cb8318317a0de54a6acd0d49a07275e18c109e299f72d8bc1e891dec",
+      "fixed_nonpath_records_byte_identical": true,
+      "git_blob_sha1": "d2d65b98cab761d364b5bd2a6d7efa2cd6c21abb",
+      "known_warning_lines": [
+        "==1278131== brk segment overflow in thread #1: can't grow to 0x4853000"
+      ],
+      "metric": {
+        "brk_overflow_warning": true,
+        "final_ir": 1216455937,
+        "final_minus_header": 1,
+        "header_summary_ir": 1216455936,
+        "self_cost_sum": 1216455937,
+        "stderr_collected": 1216455937
+      },
+      "original_gzip_sha256": "de37235e199ba80d0968439374b0c818aa83fe26e6249f4ee046d59dc09856a7",
+      "original_raw_sha256": "be0838d7a12343c9b162117d489c22d08012d8d70db65cbacdd9e7bb6cc352be",
+      "original_stderr_sha256": "88d1cfba43a8ca616cc469c85638229ca4117a10f8d477bee442165b97685d0e",
+      "path_label_definitions_replaced": 405,
+      "raw_bytes": 1637664,
+      "raw_sha256": "4b833136589b9e230ede63dcbee4fadb02a49f838bf34d11f8419fe58d187853",
+      "sha256": "f685766169161e248fca6a18608eca29a8132f26a84fb7c56317d8dc8fa8c840"
+    },
+    "check-1/pair-3-0-baseline": {
+      "bytes": 383565,
+      "command_headers_replaced": 1,
+      "counter_line": "==1278397== Collected : 1216764502",
+      "file": "check-1/pair-3-0-baseline.callgrind.gz",
+      "fixed_nonpath_record_stream_sha256": "8924f58c161651126e13900c828821672c347c2ee9ebd4856c67abf502493927",
+      "fixed_nonpath_records_byte_identical": true,
+      "git_blob_sha1": "85e3030a03b0738394b9e87c9d429788fa6f61d6",
+      "known_warning_lines": [
+        "==1278397== brk segment overflow in thread #1: can't grow to 0x4853000"
+      ],
+      "metric": {
+        "brk_overflow_warning": true,
+        "final_ir": 1216764502,
+        "final_minus_header": 1,
+        "header_summary_ir": 1216764501,
+        "self_cost_sum": 1216764502,
+        "stderr_collected": 1216764502
+      },
+      "original_gzip_sha256": "8388d23213e2bdb992709b0cb4b7f71af68354b86ea4b61e53b4b23a2d2d4d74",
+      "original_raw_sha256": "070769952dbc019f4f66a254b3f0baaf5fb206ddef9b6549cec5db7b0a303058",
+      "original_stderr_sha256": "c17d6eba1d3ff1b10bf3ba7cbd93eebdc2d681115714999b75fe0241a5d5f3c2",
+      "path_label_definitions_replaced": 405,
+      "raw_bytes": 1638402,
+      "raw_sha256": "8b8d6d9bf9ca7ced1b11a91673b302eff517bcab55ce0731560c47a7a9b48098",
+      "sha256": "90fa194b407862b20c0c54621191674d6aac0ebe059481445a37ad8b8ed490b8"
+    },
+    "check-1/pair-3-1-candidate": {
+      "bytes": 382799,
+      "command_headers_replaced": 1,
+      "counter_line": "==1278681== Collected : 1208319694",
+      "file": "check-1/pair-3-1-candidate.callgrind.gz",
+      "fixed_nonpath_record_stream_sha256": "c8f03d65486b041aca8a90faaf9d2acb34f7fea45ba1603bce3693f3643c8ab5",
+      "fixed_nonpath_records_byte_identical": true,
+      "git_blob_sha1": "645f5dd0f371bc68711c05f72c733671ee60ba9e",
+      "known_warning_lines": [
+        "==1278681== brk segment overflow in thread #1: can't grow to 0x4853000"
+      ],
+      "metric": {
+        "brk_overflow_warning": true,
+        "final_ir": 1208319694,
+        "final_minus_header": 1,
+        "header_summary_ir": 1208319693,
+        "self_cost_sum": 1208319694,
+        "stderr_collected": 1208319694
+      },
+      "original_gzip_sha256": "79f5637c6692499f45386b9114f79ff70c9652faaee9a438af2b3ca39a6d691b",
+      "original_raw_sha256": "1fd92ebf03fdaeaffaa88c435ce70fe18de4df93220083049ed11126807e7793",
+      "original_stderr_sha256": "0ae47d361ade2e12c28ecc8577dc66df1eb5eadc094b446ac588724e613e992d",
+      "path_label_definitions_replaced": 405,
+      "raw_bytes": 1633738,
+      "raw_sha256": "5e938371bc89b38d4dd1f2c3ab19112f6a4c70ed6e0ed0a9cd1e16f4d351891f",
+      "sha256": "6c2122e18db5e89f3ab17e9cc9c26c8321e94b43b6e40c7fdef7218936fff884"
+    },
+    "check-1/pair-4-0-candidate": {
+      "bytes": 384506,
+      "command_headers_replaced": 1,
+      "counter_line": "==1278740== Collected : 1208319042",
+      "file": "check-1/pair-4-0-candidate.callgrind.gz",
+      "fixed_nonpath_record_stream_sha256": "ce42ef9fc9215ee7fb70180a37784641738d2349e158120fcf4ddd7650ec32bf",
+      "fixed_nonpath_records_byte_identical": true,
+      "git_blob_sha1": "7fe53ed748dc79f9ae7fb7b395ee6be6e6017706",
+      "known_warning_lines": [
+        "==1278740== brk segment overflow in thread #1: can't grow to 0x4853000"
+      ],
+      "metric": {
+        "brk_overflow_warning": true,
+        "final_ir": 1208319042,
+        "final_minus_header": 1,
+        "header_summary_ir": 1208319041,
+        "self_cost_sum": 1208319042,
+        "stderr_collected": 1208319042
+      },
+      "original_gzip_sha256": "1b2f14f999be5721fff4badfaf6903df30a9ca4b23b1a887493f85681d8c3599",
+      "original_raw_sha256": "5e344a3e7bee518c7ccec533761316a35238328cb107dd334473ed99e4684218",
+      "original_stderr_sha256": "5e6727f50c8aa230603dc9c7e8ebab378bc9414759d7f4e256b5cd09408b14ba",
+      "path_label_definitions_replaced": 405,
+      "raw_bytes": 1633896,
+      "raw_sha256": "a1de9d6303d932b6be484ab7608c8424adab2a5aee734d6e67f9d6058371456f",
+      "sha256": "4672c63a77b57847b05cf27f7a2618989588454490630830e738620fcc351cb5"
+    },
+    "check-1/pair-4-1-baseline": {
+      "bytes": 385788,
+      "command_headers_replaced": 1,
+      "counter_line": "==1278833== Collected : 1216401076",
+      "file": "check-1/pair-4-1-baseline.callgrind.gz",
+      "fixed_nonpath_record_stream_sha256": "20c217eaffadc4e123e26dda934792107a2678f3e58f26e0d666c0b89107d6ec",
+      "fixed_nonpath_records_byte_identical": true,
+      "git_blob_sha1": "4110cfc60918549b62b4b85f018cc9fc228e341c",
+      "known_warning_lines": [
+        "==1278833== brk segment overflow in thread #1: can't grow to 0x4853000"
+      ],
+      "metric": {
+        "brk_overflow_warning": true,
+        "final_ir": 1216401076,
+        "final_minus_header": 1,
+        "header_summary_ir": 1216401075,
+        "self_cost_sum": 1216401076,
+        "stderr_collected": 1216401076
+      },
+      "original_gzip_sha256": "efc165d11e65f3f3f393b0beb757b7eb9a85935457b96df32b99710a106ecf0f",
+      "original_raw_sha256": "300066fc547d51529eac4058b857a3fab2cf185982a4dd3b670941fcb97fcd88",
+      "original_stderr_sha256": "0425c78fa1fa5fe4f8c11f5c752e15c84f94d6b7f53d438233b7ecc6588bcaf9",
+      "path_label_definitions_replaced": 405,
+      "raw_bytes": 1639236,
+      "raw_sha256": "935b50347c7aa01168c598e899af1681f38bd0305ed764ab7256bf883b6dfb0d",
+      "sha256": "1f069dd7f8ceff3e9cfba0f3631f572744a33d37912019b0930618e1a86e343a"
+    },
+    "check-1/pair-5-0-baseline": {
+      "bytes": 384321,
+      "command_headers_replaced": 1,
+      "counter_line": "==1278924== Collected : 1216702578",
+      "file": "check-1/pair-5-0-baseline.callgrind.gz",
+      "fixed_nonpath_record_stream_sha256": "5e5e73b2ba767dea0130e42e525fe1fb1824e3e7736da81c8e03ce5966aabb53",
+      "fixed_nonpath_records_byte_identical": true,
+      "git_blob_sha1": "f3805c1e2d1d73f8aee7d3c4973e591bf3d1eaf5",
+      "known_warning_lines": [
+        "==1278924== brk segment overflow in thread #1: can't grow to 0x4853000"
+      ],
+      "metric": {
+        "brk_overflow_warning": true,
+        "final_ir": 1216702578,
+        "final_minus_header": 1,
+        "header_summary_ir": 1216702577,
+        "self_cost_sum": 1216702578,
+        "stderr_collected": 1216702578
+      },
+      "original_gzip_sha256": "f53989fd9672c0173a77778b51cb4b0607b209e57f2e766dc0c0fb0c0f35ae28",
+      "original_raw_sha256": "4d1880fe5ca5a443360fc7320c6676fcd57773dd2148070ebf4a230f9b8af44d",
+      "original_stderr_sha256": "ec59e118fadd47a31a9dfb72179e82b882a11840b76d0050947ad89f33f50b4a",
+      "path_label_definitions_replaced": 405,
+      "raw_bytes": 1639253,
+      "raw_sha256": "a59c20f13de8a1b0fcff7336f4ed2966a1aae4fa6d2b1ed27edacdd3b0fdb6c6",
+      "sha256": "e6d5f22a3fe8c763fc358a5da36912d831061c391a72759c520f1c163879a2e1"
+    },
+    "check-1/pair-5-1-candidate": {
+      "bytes": 382319,
+      "command_headers_replaced": 1,
+      "counter_line": "==1278968== Collected : 1208314585",
+      "file": "check-1/pair-5-1-candidate.callgrind.gz",
+      "fixed_nonpath_record_stream_sha256": "0ca487faee90d94dfabed4ce79634e90fc4da55efde683baa87543d5eba96788",
+      "fixed_nonpath_records_byte_identical": true,
+      "git_blob_sha1": "0f50cd444c010de6f69fa110f7503362989be607",
+      "known_warning_lines": [
+        "==1278968== brk segment overflow in thread #1: can't grow to 0x4853000"
+      ],
+      "metric": {
+        "brk_overflow_warning": true,
+        "final_ir": 1208314585,
+        "final_minus_header": 1,
+        "header_summary_ir": 1208314584,
+        "self_cost_sum": 1208314585,
+        "stderr_collected": 1208314585
+      },
+      "original_gzip_sha256": "5f0c3acfa20e6f33501d88ae078ac716e58d4f994278462662cdb101aad8911f",
+      "original_raw_sha256": "4fc0a6ac4fb2c517e88cd5fa59205f640192c9374a75c01370759b4641e6e6f4",
+      "original_stderr_sha256": "9a275831b34153744575df4525af151eb33da61e1d31b06cdee3615ba5b8bb4d",
+      "path_label_definitions_replaced": 405,
+      "raw_bytes": 1633627,
+      "raw_sha256": "ef736b4815b227d9f467028cc825cf15a144b49e30bc9e1fc67f317fd730b88e",
+      "sha256": "0850a78e31a4cd4b8d2ef58b73d6bd1b6b099cbd1b3b029a1a6c2c4ad1c9a156"
+    },
+    "check-1/pair-6-0-baseline": {
+      "bytes": 385207,
+      "command_headers_replaced": 1,
+      "counter_line": "==1279102== Collected : 1216912104",
+      "file": "check-1/pair-6-0-baseline.callgrind.gz",
+      "fixed_nonpath_record_stream_sha256": "dd7b2ed407d7d752b0149f63964e7b91f0b2d27e76cb1664ad4daaf66ef0723e",
+      "fixed_nonpath_records_byte_identical": true,
+      "git_blob_sha1": "3049e00cc1232a9b350e60074cf0d8c6040df3f8",
+      "known_warning_lines": [
+        "==1279102== brk segment overflow in thread #1: can't grow to 0x4853000"
+      ],
+      "metric": {
+        "brk_overflow_warning": true,
+        "final_ir": 1216912104,
+        "final_minus_header": 1,
+        "header_summary_ir": 1216912103,
+        "self_cost_sum": 1216912104,
+        "stderr_collected": 1216912104
+      },
+      "original_gzip_sha256": "afab2c4f54c0d76bccbdcd431f3ad12c3ba0c5ed3be72cbb861fde1f2d2278c0",
+      "original_raw_sha256": "bfa17c57e1152463589a4249a5c1f9070721514cd3d02e20b8129aeedb764c55",
+      "original_stderr_sha256": "7d24855ca68306ec341c78a060a00e55bef004538ef7244345fc59a13544fbae",
+      "path_label_definitions_replaced": 405,
+      "raw_bytes": 1639304,
+      "raw_sha256": "e594bd236369fd86b9b231cae257e22ebf0793dd27a876173ce1ede915032063",
+      "sha256": "22c21e26982c94e27651828c04d179eab0527a8e7239313666c4ca41b3b7d17c"
+    },
+    "check-1/pair-6-1-candidate": {
+      "bytes": 382464,
+      "command_headers_replaced": 1,
+      "counter_line": "==1279144== Collected : 1208471036",
+      "file": "check-1/pair-6-1-candidate.callgrind.gz",
+      "fixed_nonpath_record_stream_sha256": "22290923e8eb07b8236b3c724c73975d23ce9ec908e3819f76146821332deb3e",
+      "fixed_nonpath_records_byte_identical": true,
+      "git_blob_sha1": "4c07d296d6164d2cd2ad70e252b2aae4800ab668",
+      "known_warning_lines": [
+        "==1279144== brk segment overflow in thread #1: can't grow to 0x4853000"
+      ],
+      "metric": {
+        "brk_overflow_warning": true,
+        "final_ir": 1208471036,
+        "final_minus_header": 1,
+        "header_summary_ir": 1208471035,
+        "self_cost_sum": 1208471036,
+        "stderr_collected": 1208471036
+      },
+      "original_gzip_sha256": "f39c660ccaa875e96c641ffea39512f3beeafa4fe4d2ce6cf44ed1b832d8fbbd",
+      "original_raw_sha256": "61c70c1b384fe375ea25fe7d77896c75153ee7bad894adc7429dd2e982a98eee",
+      "original_stderr_sha256": "c74aadfab5bba9b9d651ac441f159e68fbeafd1c3f24338bbd9ac00c71a057ba",
+      "path_label_definitions_replaced": 405,
+      "raw_bytes": 1635049,
+      "raw_sha256": "0580e0271ccbc3f4254a11d4ae256484eac138162404c177970fa798c73e4144",
+      "sha256": "9b6a267ae4e1828122024b4d4efa774a02b11958f03965ba33383406680f6fe4"
+    },
+    "check-1/pair-7-0-candidate": {
+      "bytes": 383208,
+      "command_headers_replaced": 1,
+      "counter_line": "==1279783== Collected : 1208932908",
+      "file": "check-1/pair-7-0-candidate.callgrind.gz",
+      "fixed_nonpath_record_stream_sha256": "ed9f189862aee7077609d2a48073e2215de8e24b146d48badadcee2142b8543e",
+      "fixed_nonpath_records_byte_identical": true,
+      "git_blob_sha1": "dfb9516ecfdffb3cbd0225083510280ff3750592",
+      "known_warning_lines": [
+        "==1279783== brk segment overflow in thread #1: can't grow to 0x4853000"
+      ],
+      "metric": {
+        "brk_overflow_warning": true,
+        "final_ir": 1208932908,
+        "final_minus_header": 1,
+        "header_summary_ir": 1208932907,
+        "self_cost_sum": 1208932908,
+        "stderr_collected": 1208932908
+      },
+      "original_gzip_sha256": "8e63907141aec5b402f7a830a5fd5f1052e552a31a86f01dd1639fbbfbb1ec96",
+      "original_raw_sha256": "2a9137d15b2f15e1524a849e1fcf172e07547072bf1258b9f86933bbff69b4a1",
+      "original_stderr_sha256": "d42da0b98c02b0f5cb0a78efdab350dcadbab0762b0f248ba61028998d0665d4",
+      "path_label_definitions_replaced": 405,
+      "raw_bytes": 1634219,
+      "raw_sha256": "b0f9e747ac1dd8ecc678872a2f801010afcd7f16b60d0f325e08d1667f01dc80",
+      "sha256": "6d07534604b6d2213807fcccbed08671b58867c11aef072533f1bb900172fa32"
+    },
+    "check-1/pair-7-1-baseline": {
+      "bytes": 383176,
+      "command_headers_replaced": 1,
+      "counter_line": "==1280299== Collected : 1216419730",
+      "file": "check-1/pair-7-1-baseline.callgrind.gz",
+      "fixed_nonpath_record_stream_sha256": "0471c13dd17fd184a59002502d41894300494c3f7da08d2375be186ac4c7a8bc",
+      "fixed_nonpath_records_byte_identical": true,
+      "git_blob_sha1": "45a9f162a085b9eab3827af55ecbeffa157ee71d",
+      "known_warning_lines": [
+        "==1280299== brk segment overflow in thread #1: can't grow to 0x4853000"
+      ],
+      "metric": {
+        "brk_overflow_warning": true,
+        "final_ir": 1216419730,
+        "final_minus_header": 1,
+        "header_summary_ir": 1216419729,
+        "self_cost_sum": 1216419730,
+        "stderr_collected": 1216419730
+      },
+      "original_gzip_sha256": "1e5bc87b695f735c03859f8a3b513b5ed112b53feff5d08927ce743aa461a93c",
+      "original_raw_sha256": "8b66cbbc7330f2952572435b24041bda871a9272e398835bc1a8522fd6295054",
+      "original_stderr_sha256": "b19f5f2ec102fd66f9a9cab3674cc55a9b7411d7cc04ce7cd022f0566b9881e7",
+      "path_label_definitions_replaced": 405,
+      "raw_bytes": 1639689,
+      "raw_sha256": "5bcd21f8e3d32d742a1a8587a297f2192a3214dc88b534a11eb27b0623407a9a",
+      "sha256": "d4c6156bb443f015fe11abfdf57c9bac8649b04af62c7113aec56f7bfba5e7a1"
+    },
+    "check-2/pair-0-0-candidate": {
+      "bytes": 381771,
+      "command_headers_replaced": 1,
+      "counter_line": "==1283199== Collected : 1208152918",
+      "file": "check-2/pair-0-0-candidate.callgrind.gz",
+      "fixed_nonpath_record_stream_sha256": "13a85ecbd09f11b3409dec986e881a3454d7bb8bfac36230f7515c85373676c1",
+      "fixed_nonpath_records_byte_identical": true,
+      "git_blob_sha1": "d64b3d37f170bce59260b9330f67aa6266442eec",
+      "known_warning_lines": [
+        "==1283199== brk segment overflow in thread #1: can't grow to 0x4853000"
+      ],
+      "metric": {
+        "brk_overflow_warning": true,
+        "final_ir": 1208152918,
+        "final_minus_header": 1,
+        "header_summary_ir": 1208152917,
+        "self_cost_sum": 1208152918,
+        "stderr_collected": 1208152918
+      },
+      "original_gzip_sha256": "e611220d051a587cdc0d6ccd4393908c7678116354351e3a2082159a36e4d3dd",
+      "original_raw_sha256": "d0df0248ff71c90fe77b0279333538e5434377c148493a43979297633714459d",
+      "original_stderr_sha256": "b7b476d8f16c54d30a937a2dccf1b7d6eb40a14a0f410510651da6071fa1fbfc",
+      "path_label_definitions_replaced": 405,
+      "raw_bytes": 1633804,
+      "raw_sha256": "a23d98c313d04ea77b7060091c0b1e8bd89e1201e2a0650ee1bed87f6fc30934",
+      "sha256": "01342eee9146722512777e6921aac1f78cba19e005de3e71f3ac3c2091a58736"
+    },
+    "check-2/pair-0-1-baseline": {
+      "bytes": 384217,
+      "command_headers_replaced": 1,
+      "counter_line": "==1283241== Collected : 1216285675",
+      "file": "check-2/pair-0-1-baseline.callgrind.gz",
+      "fixed_nonpath_record_stream_sha256": "ba1e69e46c8476a29bc04e979dd0984d86320e5b4470462fbd56fd14d56ef76b",
+      "fixed_nonpath_records_byte_identical": true,
+      "git_blob_sha1": "60f159ed1273b6b62142e16db259f3fa8dd013e0",
+      "known_warning_lines": [
+        "==1283241== brk segment overflow in thread #1: can't grow to 0x4853000"
+      ],
+      "metric": {
+        "brk_overflow_warning": true,
+        "final_ir": 1216285675,
+        "final_minus_header": 1,
+        "header_summary_ir": 1216285674,
+        "self_cost_sum": 1216285675,
+        "stderr_collected": 1216285675
+      },
+      "original_gzip_sha256": "156eee99390d5e84af569d46337eb5bc85b777fc714b4c7db76b1f8bc031eb45",
+      "original_raw_sha256": "bf36c24e0424016e229970d42f9b3d9bce90f1ccc01fa79ac4dd751729fe96db",
+      "original_stderr_sha256": "9a757e00f1879bf2cbb1b68aec7e1c00b9234198d9879f7acf048d422dd971ec",
+      "path_label_definitions_replaced": 405,
+      "raw_bytes": 1639566,
+      "raw_sha256": "886817bcbd3a4e346e4da8372e3be64a1eeb14ec690518556ef03f908aedb492",
+      "sha256": "0bfa4630f51359526edce33a745f71a5d936fed9dfc5a3346630cd58fb54f82d"
+    },
+    "check-2/pair-1-0-baseline": {
+      "bytes": 384837,
+      "command_headers_replaced": 1,
+      "counter_line": "==1283298== Collected : 1216464024",
+      "file": "check-2/pair-1-0-baseline.callgrind.gz",
+      "fixed_nonpath_record_stream_sha256": "0deca3aae23ad43ea512077aa9271fd01dd2ecf015ed40cecc77dafb00360f0c",
+      "fixed_nonpath_records_byte_identical": true,
+      "git_blob_sha1": "86d58c46cbd7cb874ff5676f66e1631b7f74cffa",
+      "known_warning_lines": [
+        "==1283298== brk segment overflow in thread #1: can't grow to 0x4853000"
+      ],
+      "metric": {
+        "brk_overflow_warning": true,
+        "final_ir": 1216464024,
+        "final_minus_header": 1,
+        "header_summary_ir": 1216464023,
+        "self_cost_sum": 1216464024,
+        "stderr_collected": 1216464024
+      },
+      "original_gzip_sha256": "cbb49a47ddeb54cb465e2c013ca45b53e4d2e338c293ff6e8ebabc9e3c5253ec",
+      "original_raw_sha256": "c37cea97d23697a5abb96f1f1178e092f213fc4001330de3baed5d302c0851e6",
+      "original_stderr_sha256": "874e34cfc80d2a9891ecac43290c75f842f976d43c77313a5548095bbc5ec010",
+      "path_label_definitions_replaced": 405,
+      "raw_bytes": 1638809,
+      "raw_sha256": "84253286cb766dd246282f614585a39082383fc171ad33ebd171965bfaec29f6",
+      "sha256": "84a157c124b5c5fb87ce6f68570508014846f8a705e25a0fad4163c73cd6664c"
+    },
+    "check-2/pair-1-1-candidate": {
+      "bytes": 383521,
+      "command_headers_replaced": 1,
+      "counter_line": "==1283962== Collected : 1208251437",
+      "file": "check-2/pair-1-1-candidate.callgrind.gz",
+      "fixed_nonpath_record_stream_sha256": "633abd9cde105f3dfaea313498ed7a99abf16ebd00423ee08977c9f463aa63c7",
+      "fixed_nonpath_records_byte_identical": true,
+      "git_blob_sha1": "0fc7863b38e572fcdbbb1a3667c3fc19bf04fed5",
+      "known_warning_lines": [
+        "==1283962== brk segment overflow in thread #1: can't grow to 0x4853000"
+      ],
+      "metric": {
+        "brk_overflow_warning": true,
+        "final_ir": 1208251437,
+        "final_minus_header": 1,
+        "header_summary_ir": 1208251436,
+        "self_cost_sum": 1208251437,
+        "stderr_collected": 1208251437
+      },
+      "original_gzip_sha256": "4a2bb50d6dac41a479711f0621b9c395b9ce62b7e9c08225a14262c537faaccc",
+      "original_raw_sha256": "c925674f1cf06e4bbd7866623b4f0b2951a06a51ac6c886d226488051ed53f7a",
+      "original_stderr_sha256": "780d84aeb8737f3df67f7ebd21b3254c2618e0553ce7a50a43a28a5490066667",
+      "path_label_definitions_replaced": 404,
+      "raw_bytes": 1634018,
+      "raw_sha256": "78da78dd686596a8a4335ddea1ed5e427249a646f0c8216771a05411b8c09287",
+      "sha256": "5f06af0882ab09af9056d987c4f7a8bf3e54932d826f880924ea93d9f1abdee4"
+    },
+    "check-2/pair-2-0-baseline": {
+      "bytes": 383696,
+      "command_headers_replaced": 1,
+      "counter_line": "==1284474== Collected : 1216662596",
+      "file": "check-2/pair-2-0-baseline.callgrind.gz",
+      "fixed_nonpath_record_stream_sha256": "ac947083aa80b56ee2c423efb0c2353496c1c97d80e982e0b0a08f20957eb646",
+      "fixed_nonpath_records_byte_identical": true,
+      "git_blob_sha1": "65d49f9fc43931b4f1796ea16b0b8a20bc3c791e",
+      "known_warning_lines": [
+        "==1284474== brk segment overflow in thread #1: can't grow to 0x4853000"
+      ],
+      "metric": {
+        "brk_overflow_warning": true,
+        "final_ir": 1216662596,
+        "final_minus_header": 1,
+        "header_summary_ir": 1216662595,
+        "self_cost_sum": 1216662596,
+        "stderr_collected": 1216662596
+      },
+      "original_gzip_sha256": "0696e692fe409bf80d899724ce9740af7555be7781679f6cbc6e75df67314265",
+      "original_raw_sha256": "07b4a00056980f580ad92bd844dbe88cbae00f7ce0bbfd65b194cffdb9048889",
+      "original_stderr_sha256": "ff0da8ee40358857751f38d2eb707f69391857df3c4bb9fba44d5773aa90c7bb",
+      "path_label_definitions_replaced": 404,
+      "raw_bytes": 1637904,
+      "raw_sha256": "e55283cc2e58e2a34fe4b44d8417b3695ff36d246bec1bbdd118390cf71a1174",
+      "sha256": "8911f2f29397b52b4c6ef06e2610f64e6b926d1e93216b36e00cb5939cbc1035"
+    },
+    "check-2/pair-2-1-candidate": {
+      "bytes": 381039,
+      "command_headers_replaced": 1,
+      "counter_line": "==1284561== Collected : 1208364043",
+      "file": "check-2/pair-2-1-candidate.callgrind.gz",
+      "fixed_nonpath_record_stream_sha256": "429f07c1b0dc49b48f5583989848daeae404f8e46ca405717be12d0d61fc20ce",
+      "fixed_nonpath_records_byte_identical": true,
+      "git_blob_sha1": "5a8d0d2d77b0b8a8985974180da44ecc3ef8f1b0",
+      "known_warning_lines": [
+        "==1284561== brk segment overflow in thread #1: can't grow to 0x4853000"
+      ],
+      "metric": {
+        "brk_overflow_warning": true,
+        "final_ir": 1208364043,
+        "final_minus_header": 1,
+        "header_summary_ir": 1208364042,
+        "self_cost_sum": 1208364043,
+        "stderr_collected": 1208364043
+      },
+      "original_gzip_sha256": "fa093cb68d9ec16c58d47caf50892911dbddea4879a559bf9ff909174e0d4b2a",
+      "original_raw_sha256": "85e98d3f24d22ce9173f06bc492556d53aef2f3bfa5081420592a9e71dc56700",
+      "original_stderr_sha256": "8e0aef1cc9d42f0a0648f10920c1e840609b77345790146227316ba11a1cd722",
+      "path_label_definitions_replaced": 405,
+      "raw_bytes": 1633401,
+      "raw_sha256": "61bd4540877bca92a1fcb42787ce84311e87978cf4e6c3147caa990ddd80b22b",
+      "sha256": "ee8f05fe9ee8027a5710d9e199a5590a00e9aa4d0a365916feb2f41afcf8ac09"
+    },
+    "check-2/pair-3-0-candidate": {
+      "bytes": 383164,
+      "command_headers_replaced": 1,
+      "counter_line": "==1284659== Collected : 1208372694",
+      "file": "check-2/pair-3-0-candidate.callgrind.gz",
+      "fixed_nonpath_record_stream_sha256": "9d42c95259fe1a5c1b1fe115b34381d582a3211233df0c3c2f2f875dfb0683dc",
+      "fixed_nonpath_records_byte_identical": true,
+      "git_blob_sha1": "57dc9d0f4e6d10ad8da0c7ba7316f46e05e3c413",
+      "known_warning_lines": [
+        "==1284659== brk segment overflow in thread #1: can't grow to 0x4853000"
+      ],
+      "metric": {
+        "brk_overflow_warning": true,
+        "final_ir": 1208372694,
+        "final_minus_header": 1,
+        "header_summary_ir": 1208372693,
+        "self_cost_sum": 1208372694,
+        "stderr_collected": 1208372694
+      },
+      "original_gzip_sha256": "3e4404f7122d4bd48bb74699ed16775c8f1878daa466467531a2658333dfe92e",
+      "original_raw_sha256": "47ea56253d110c45da3418710b0cf56ce4af6f5bd4e4ac89709a65bae0f228ca",
+      "original_stderr_sha256": "d7b091b4c75c415c895fe5bed0d12ee7233a71984d3bfcd1fdcfa7715630a6db",
+      "path_label_definitions_replaced": 405,
+      "raw_bytes": 1634235,
+      "raw_sha256": "374dbca81145cd565fd95b50ec247e3644db5f95e4744e144e7a6169cbbb9769",
+      "sha256": "cb23166fe8bac8f6ebc07db9bfd9eacaf3ba5eb3e148e2a0a11060a9d76f227f"
+    },
+    "check-2/pair-3-1-baseline": {
+      "bytes": 384497,
+      "command_headers_replaced": 1,
+      "counter_line": "==1284747== Collected : 1216484035",
+      "file": "check-2/pair-3-1-baseline.callgrind.gz",
+      "fixed_nonpath_record_stream_sha256": "e867398d6d3404e95b9aef99e55536ca7d5f44440b543556f4c3879166eac33e",
+      "fixed_nonpath_records_byte_identical": true,
+      "git_blob_sha1": "13d9058eeb30c2d5155c15df6f502e0e12010746",
+      "known_warning_lines": [
+        "==1284747== brk segment overflow in thread #1: can't grow to 0x4853000"
+      ],
+      "metric": {
+        "brk_overflow_warning": true,
+        "final_ir": 1216484035,
+        "final_minus_header": 1,
+        "header_summary_ir": 1216484034,
+        "self_cost_sum": 1216484035,
+        "stderr_collected": 1216484035
+      },
+      "original_gzip_sha256": "948e1d88cc2719df63b49ac237c244e90fb29fc591c18bae07a947f9f3cc6e8e",
+      "original_raw_sha256": "7fdc0b3d4d44367c89b8ae2ed1e74af4d4c4920e3ee662134c14393b8c0da3f7",
+      "original_stderr_sha256": "4eb491014a67da4d7a501a9d98317700fe36b16c8dffa005aecd6cf979525e45",
+      "path_label_definitions_replaced": 404,
+      "raw_bytes": 1638708,
+      "raw_sha256": "2eeabc434d978058ad1b76e001067c642d56135d8e3cd24261de2d97f0b6b830",
+      "sha256": "88791442832a39aeb05331c81aab3088e5b9645f45f83f35b03ba424c667e25a"
+    },
+    "check-2/pair-4-0-baseline": {
+      "bytes": 383864,
+      "command_headers_replaced": 1,
+      "counter_line": "==1284812== Collected : 1216971902",
+      "file": "check-2/pair-4-0-baseline.callgrind.gz",
+      "fixed_nonpath_record_stream_sha256": "8b3e359b724de69c1ebcf1e45e7a3c6ade8eca823178ca04a6a71c408eb6f989",
+      "fixed_nonpath_records_byte_identical": true,
+      "git_blob_sha1": "83a5086dcfb5940a890001644a19e1db97032661",
+      "known_warning_lines": [
+        "==1284812== brk segment overflow in thread #1: can't grow to 0x4853000"
+      ],
+      "metric": {
+        "brk_overflow_warning": true,
+        "final_ir": 1216971902,
+        "final_minus_header": 1,
+        "header_summary_ir": 1216971901,
+        "self_cost_sum": 1216971902,
+        "stderr_collected": 1216971902
+      },
+      "original_gzip_sha256": "157ad5b73d7a2d2256daef9f3cb19102f8d44215bbcb6e6cac6f5e1d7616cd06",
+      "original_raw_sha256": "a9188eb01443ec0244be604aeb225c002e670417d1f90ba6a7cf9bac38c3da78",
+      "original_stderr_sha256": "0b40b25a1f14986f121ec07f9c65d10943fa70b74ba3943d9418b1034cffcce2",
+      "path_label_definitions_replaced": 405,
+      "raw_bytes": 1636675,
+      "raw_sha256": "2584341403c10f3b9225c00e65031018723e353421461ddb6451c5c2a960dbed",
+      "sha256": "6d798104c91a9543a189ee0040078cfc34dae66fe59c365c33965560ca72ecaf"
+    },
+    "check-2/pair-4-1-candidate": {
+      "bytes": 382775,
+      "command_headers_replaced": 1,
+      "counter_line": "==1284902== Collected : 1208164863",
+      "file": "check-2/pair-4-1-candidate.callgrind.gz",
+      "fixed_nonpath_record_stream_sha256": "b4f6c47dccabc4642c32499482c9a44262adea3da63972afa47f499567055e11",
+      "fixed_nonpath_records_byte_identical": true,
+      "git_blob_sha1": "a65d16ad65472b679764ecff54900ba1aec82b68",
+      "known_warning_lines": [
+        "==1284902== brk segment overflow in thread #1: can't grow to 0x4853000"
+      ],
+      "metric": {
+        "brk_overflow_warning": true,
+        "final_ir": 1208164863,
+        "final_minus_header": 1,
+        "header_summary_ir": 1208164862,
+        "self_cost_sum": 1208164863,
+        "stderr_collected": 1208164863
+      },
+      "original_gzip_sha256": "0ceac6a6fe69f9b8e90d41e8fb6a1a9142b2652c24b6c1f7cd62cc083230fe95",
+      "original_raw_sha256": "c6c1f085e65d7fc6b7774d20125fa3a409866f7472cefb6a41c85f28f591a2fc",
+      "original_stderr_sha256": "f389027c6ca50f644c02510736a321c7c0c4aa4540ca8f8d9a4bd9022495202c",
+      "path_label_definitions_replaced": 404,
+      "raw_bytes": 1634951,
+      "raw_sha256": "e8e5bcf56ccff4df126fd288e520241d963e4548c24a21e9f4dc4f1b551234f5",
+      "sha256": "55f77ad55aa5583d706685047231c7efca68d4a5eec68c46a9dd2052e7f510fc"
+    },
+    "check-2/pair-5-0-candidate": {
+      "bytes": 382049,
+      "command_headers_replaced": 1,
+      "counter_line": "==1284958== Collected : 1207576229",
+      "file": "check-2/pair-5-0-candidate.callgrind.gz",
+      "fixed_nonpath_record_stream_sha256": "6bef6eaff29ddebabc27e8bcaaef570d8dc5f147cc83c4e0ecca93018fe5f9f3",
+      "fixed_nonpath_records_byte_identical": true,
+      "git_blob_sha1": "dabcb7164a5a43ba9f96f9667c3fecda2d76da55",
+      "known_warning_lines": [
+        "==1284958== brk segment overflow in thread #1: can't grow to 0x4853000"
+      ],
+      "metric": {
+        "brk_overflow_warning": true,
+        "final_ir": 1207576229,
+        "final_minus_header": 1,
+        "header_summary_ir": 1207576228,
+        "self_cost_sum": 1207576229,
+        "stderr_collected": 1207576229
+      },
+      "original_gzip_sha256": "09216773acc2eff40a446a1da02d08d990aac09642a87a32ddc26788145def77",
+      "original_raw_sha256": "5e96ee105066c6b685bb9ea5ff4811b096cfa7a16e50f92e4296e38a13382378",
+      "original_stderr_sha256": "e3cdea0d2d530196ae978ee4c1172ddbb430b967bd56568856cbd3cb5f91f1e0",
+      "path_label_definitions_replaced": 404,
+      "raw_bytes": 1634050,
+      "raw_sha256": "db8bc82b5fb081632d198b1f49dafb7216ef9dea329ad6e0cb08235572f92daa",
+      "sha256": "580d5f55e1b0a70ba787b86d87c0552cee2466ef2ae081a857ab82d5ce08d01a"
+    },
+    "check-2/pair-5-1-baseline": {
+      "bytes": 384432,
+      "command_headers_replaced": 1,
+      "counter_line": "==1285002== Collected : 1216555441",
+      "file": "check-2/pair-5-1-baseline.callgrind.gz",
+      "fixed_nonpath_record_stream_sha256": "2c33401f38128f878b4a7930f91a0f96fea2849d7860f565bfa6da639d0e8cdf",
+      "fixed_nonpath_records_byte_identical": true,
+      "git_blob_sha1": "590555257758552b832bfa46decd80d86da1be0e",
+      "known_warning_lines": [
+        "==1285002== brk segment overflow in thread #1: can't grow to 0x4853000"
+      ],
+      "metric": {
+        "brk_overflow_warning": true,
+        "final_ir": 1216555441,
+        "final_minus_header": 1,
+        "header_summary_ir": 1216555440,
+        "self_cost_sum": 1216555441,
+        "stderr_collected": 1216555441
+      },
+      "original_gzip_sha256": "9ada6e769dc34ebf4368ebf5d9515b27941d5b746d82d281ffb2517429190cef",
+      "original_raw_sha256": "7bf8cd4ce51fb280a3ce831cc5e98e91b1edc4b1557229875edb914aee1e5db9",
+      "original_stderr_sha256": "127152bb40ea304153149d500b7f1959db8a1ba15b531f57eea6c0330e59df80",
+      "path_label_definitions_replaced": 405,
+      "raw_bytes": 1637935,
+      "raw_sha256": "c9f640adfd3867810185fc5c26345fffbeb1c99e1ea600c13f84ef7498feb4b6",
+      "sha256": "903dcc7f83f94df39d104af56ec3d8929e84f70278093cbbfd32cad179c05044"
+    },
+    "check-2/pair-6-0-candidate": {
+      "bytes": 384922,
+      "command_headers_replaced": 1,
+      "counter_line": "==1285057== Collected : 1213705712",
+      "file": "check-2/pair-6-0-candidate.callgrind.gz",
+      "fixed_nonpath_record_stream_sha256": "089fab2dd5649336ff4428ce08c9d329822873c4bcac671b86b6bdb7e1e30e98",
+      "fixed_nonpath_records_byte_identical": true,
+      "git_blob_sha1": "ab131492062319b257956cb672b0ef33adab03d2",
+      "known_warning_lines": [
+        "==1285057== brk segment overflow in thread #1: can't grow to 0x4853000"
+      ],
+      "metric": {
+        "brk_overflow_warning": true,
+        "final_ir": 1213705712,
+        "final_minus_header": 1,
+        "header_summary_ir": 1213705711,
+        "self_cost_sum": 1213705712,
+        "stderr_collected": 1213705712
+      },
+      "original_gzip_sha256": "d1cdaa196ee1d6353cb51e6607ad04d2247714dcb4d5fa4bede20d31fd5a4054",
+      "original_raw_sha256": "a0dd9b7c9a82df7e4959a35d7090db330e28d82a784f764864c07d55035730b2",
+      "original_stderr_sha256": "b7712475799bdf36638ddbac1b027d0b8a9c0ae072f346b81d0c996b14ee11a2",
+      "path_label_definitions_replaced": 405,
+      "raw_bytes": 1641620,
+      "raw_sha256": "81cf602cf9db783fd8b368cdcc91f8c6d7ca875f76ceb440a88be47c40ca3f7a",
+      "sha256": "23351e4970426bb8097b445fb07a3213809a402b11aa2ddb4ede5ab08d4c720a"
+    },
+    "check-2/pair-6-1-baseline": {
+      "bytes": 383981,
+      "command_headers_replaced": 1,
+      "counter_line": "==1285103== Collected : 1216541962",
+      "file": "check-2/pair-6-1-baseline.callgrind.gz",
+      "fixed_nonpath_record_stream_sha256": "c7cd130c0c86465a66a15b87b44cdb7596057356421122ced6b5d40b3a5f9d65",
+      "fixed_nonpath_records_byte_identical": true,
+      "git_blob_sha1": "fc591924d513d51fcdc9bf7964bf0e34b53173a9",
+      "known_warning_lines": [
+        "==1285103== brk segment overflow in thread #1: can't grow to 0x4853000"
+      ],
+      "metric": {
+        "brk_overflow_warning": true,
+        "final_ir": 1216541962,
+        "final_minus_header": 1,
+        "header_summary_ir": 1216541961,
+        "self_cost_sum": 1216541962,
+        "stderr_collected": 1216541962
+      },
+      "original_gzip_sha256": "d264adba94d2997023fca4504c611b281b1ba2c7ce28d4f24df140a48068d937",
+      "original_raw_sha256": "8d2814587019fcb522743ca87d5ebb6b5f21df3bae5f61040a61a7812049be0e",
+      "original_stderr_sha256": "ccf943fcf40a9184ca351d884653dab09e3cdf09d59c708f2da1a172e74939fc",
+      "path_label_definitions_replaced": 405,
+      "raw_bytes": 1638724,
+      "raw_sha256": "37da00358955ddc86f01e109606dd8b9ff1b74641a1012143946952bdf49f14d",
+      "sha256": "d7d69d4020164a002b5ea417272401064d3ec8a04e1ecf93f665d4901e763d51"
+    },
+    "check-2/pair-7-0-baseline": {
+      "bytes": 384294,
+      "command_headers_replaced": 1,
+      "counter_line": "==1285191== Collected : 1216671584",
+      "file": "check-2/pair-7-0-baseline.callgrind.gz",
+      "fixed_nonpath_record_stream_sha256": "1ba436c3698909f1fd044b4c2d13eec9e6628bce86f5d7e0245dd9d458961ad6",
+      "fixed_nonpath_records_byte_identical": true,
+      "git_blob_sha1": "c1cbe037f81bdcfe87790704923fb15e27f55abc",
+      "known_warning_lines": [
+        "==1285191== brk segment overflow in thread #1: can't grow to 0x4853000"
+      ],
+      "metric": {
+        "brk_overflow_warning": true,
+        "final_ir": 1216671584,
+        "final_minus_header": 1,
+        "header_summary_ir": 1216671583,
+        "self_cost_sum": 1216671584,
+        "stderr_collected": 1216671584
+      },
+      "original_gzip_sha256": "aeb567ad202f046430bd9e4cd5c099c9fd2ad8900b2963ba44eb233c17018bdb",
+      "original_raw_sha256": "cde097d740ae5a759cd86f6516371440df286fd0e8f8aaa80beab8f45eac296c",
+      "original_stderr_sha256": "76a616c8e6e6500d882da9ea718e55d03fb1dd07afe4cdb97f18edae72f30640",
+      "path_label_definitions_replaced": 405,
+      "raw_bytes": 1638015,
+      "raw_sha256": "31bbeb666e543a81c3427053e365d538f5d4969aa1f78f915bc9cf1a6b96b0a3",
+      "sha256": "a16737933a0e16f4b654133779241c9b9e6a55267c8edf9f05435fdd4b3aa477"
+    },
+    "check-2/pair-7-1-candidate": {
+      "bytes": 383553,
+      "command_headers_replaced": 1,
+      "counter_line": "==1285255== Collected : 1208626223",
+      "file": "check-2/pair-7-1-candidate.callgrind.gz",
+      "fixed_nonpath_record_stream_sha256": "9db636a7266ecb50a8c0d44e8cc3ce4284a21ed1b79eed6307c3b3b9b9579524",
+      "fixed_nonpath_records_byte_identical": true,
+      "git_blob_sha1": "1412872c92db9e152e244f700cb5f6932a4b2a33",
+      "known_warning_lines": [
+        "==1285255== brk segment overflow in thread #1: can't grow to 0x4853000"
+      ],
+      "metric": {
+        "brk_overflow_warning": true,
+        "final_ir": 1208626223,
+        "final_minus_header": 1,
+        "header_summary_ir": 1208626222,
+        "self_cost_sum": 1208626223,
+        "stderr_collected": 1208626223
+      },
+      "original_gzip_sha256": "5b77f0b67730372f53e67c9218147510d49cc8d38336f8e288b215cf5e710698",
+      "original_raw_sha256": "81aced9a14007a9a2a34203c3c2c1cd696348f215387f695e18be20cd3e0d240",
+      "original_stderr_sha256": "362599c043cebde015f326babaa77e58d22b64f34b26147671cdb8641b96682d",
+      "path_label_definitions_replaced": 404,
+      "raw_bytes": 1633850,
+      "raw_sha256": "4128bd30ce29470287f6c99ef0219134de737fb722f6eeb5a077e29e7a06fbf0",
+      "sha256": "400a06c445ab55635fe71708daf1b3e1dc3ef10b6c48f2a9af138f129eeae2c7"
+    }
+  },
+  "sanitation": "Exactly one command header and pathname definitions are replaced. Compressed references, function names, calls, positions, costs, totals, headers and every other record byte are unchanged.",
+  "schema": 1,
+  "scope": "All 32 profiles from the two valid fixed check blocks only."
+}
