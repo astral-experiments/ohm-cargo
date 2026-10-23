@@ -532,20 +532,20 @@ fn make_failed_scrape_diagnostic(
 
 const RELINK_CACHE_VERSION: u32 = 5;
 
-#[derive(serde::Deserialize, serde::Serialize)]
+#[derive(Hash, serde::Deserialize, serde::Serialize)]
 struct RelinkCacheFile {
     path: PathBuf,
     blake3: String,
 }
 
-#[derive(serde::Deserialize, serde::Serialize)]
+#[derive(Hash, serde::Deserialize, serde::Serialize)]
 struct RelinkCacheObject {
     path: PathBuf,
     len: u64,
     modified_nanos: u64,
 }
 
-#[derive(serde::Deserialize, serde::Serialize)]
+#[derive(Hash, serde::Deserialize, serde::Serialize)]
 struct RelinkCacheManifest {
     version: u32,
     rlink: RelinkCacheFile,
@@ -553,6 +553,13 @@ struct RelinkCacheManifest {
     objects: Vec<RelinkCacheFile>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     unused_extern_names: Option<Vec<String>>,
+}
+
+#[derive(serde::Deserialize, serde::Serialize)]
+struct CheckedRelinkManifest {
+    checksum: u64,
+    #[serde(flatten)]
+    manifest: RelinkCacheManifest,
 }
 
 struct RelinkCachePaths {
@@ -619,8 +626,7 @@ impl RelinkCachePaths {
                     .collect()
             }),
         };
-        paths::write_atomic(&self.manifest, serde_json::to_vec(&manifest)?)?;
-        Ok(())
+        self.write_manifest(manifest)
     }
 
     fn codegen_temps(&self) -> CargoResult<Vec<PathBuf>> {
@@ -653,14 +659,22 @@ impl RelinkCachePaths {
             .read_manifest()
             .ok_or_else(|| internal("validated relink cache manifest disappeared"))?;
         manifest.executable = cached_object(self.executable.clone())?;
-        paths::write_atomic(&self.manifest, serde_json::to_vec(&manifest)?)?;
+        self.write_manifest(manifest)
+    }
+
+    fn write_manifest(&self, manifest: RelinkCacheManifest) -> CargoResult<()> {
+        let checked = CheckedRelinkManifest {
+            checksum: crate::util::hash_u64(&manifest),
+            manifest,
+        };
+        paths::write_atomic(&self.manifest, serde_json::to_vec(&checked)?)?;
         Ok(())
     }
 
     fn read_manifest(&self) -> Option<RelinkCacheManifest> {
-        fs::read(&self.manifest)
-            .ok()
-            .and_then(|contents| serde_json::from_slice(&contents).ok())
+        let checked: CheckedRelinkManifest =
+            serde_json::from_slice(&fs::read(&self.manifest).ok()?).ok()?;
+        (checked.checksum == crate::util::hash_u64(&checked.manifest)).then_some(checked.manifest)
     }
 
     fn proves_unused_extern(&self, extern_name: InternedString) -> bool {
@@ -4225,4 +4239,30 @@ fn rustdoc_dep_info_loc(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> Path
     let mut loc = build_runner.files().fingerprint_file_path(unit, "");
     loc.set_extension("d");
     loc
+}
+
+#[cfg(test)]
+mod relink_cache_tests {
+    use super::*;
+
+    #[test]
+    fn incomplete_object_list_invalidates_relink_manifest() -> CargoResult<()> {
+        let dir = tempfile::tempdir()?;
+        let cache = RelinkCachePaths::new(dir.path().join("app"));
+        fs::create_dir(&cache.objects)?;
+        fs::write(&cache.rlink, b"recipe")?;
+        fs::write(&cache.executable, b"exe")?;
+        for name in ["a.o", "b.o"] {
+            fs::write(cache.objects.join(name), b"codegen")?;
+        }
+        cache.initialize(None)?;
+        assert!(cache.is_valid());
+
+        let mut manifest: serde_json::Value = serde_json::from_slice(&fs::read(&cache.manifest)?)?;
+        manifest["objects"].as_array_mut().unwrap().pop();
+        fs::write(&cache.manifest, serde_json::to_vec(&manifest)?)?;
+        fs::remove_file(cache.objects.join("b.o"))?;
+        assert!(!cache.is_valid());
+        Ok(())
+    }
 }
