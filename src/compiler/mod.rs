@@ -597,6 +597,7 @@ impl RelinkCachePaths {
         manifest.version == RELINK_CACHE_VERSION
             && manifest.rlink.path == self.rlink
             && manifest.executable.path == self.executable
+            && self.has_object_directory()
             && !manifest.objects.is_empty()
             && file_matches(&manifest.rlink)
             && object_matches(&manifest.executable)
@@ -636,7 +637,16 @@ impl RelinkCachePaths {
         self.write_manifest(manifest)
     }
 
+    fn has_object_directory(&self) -> bool {
+        self.objects
+            .symlink_metadata()
+            .is_ok_and(|meta| meta.is_dir())
+    }
+
     fn codegen_temps(&self) -> CargoResult<Vec<PathBuf>> {
+        if !self.has_object_directory() {
+            return Ok(Vec::new());
+        }
         let entries = match fs::read_dir(&self.objects) {
             Ok(entries) => entries,
             Err(error) if error.kind() == std::io::ErrorKind::NotFound => return Ok(Vec::new()),
@@ -655,10 +665,15 @@ impl RelinkCachePaths {
     }
 
     fn clear_codegen_temps(&self) -> CargoResult<()> {
-        for path in self.codegen_temps()? {
-            paths::remove_file(&path)?;
+        // rustc recreates this private directory on demand. Remove the entry
+        // itself so a saved symlink cannot redirect cleanup or the next build.
+        match fs::symlink_metadata(&self.objects) {
+            Ok(meta) if meta.is_dir() => fs::remove_dir_all(&self.objects)
+                .with_context(|| format!("failed to clear `{}`", self.objects.display())),
+            Ok(_) => paths::remove_file(&self.objects),
+            Err(error) if error.kind() == std::io::ErrorKind::NotFound => Ok(()),
+            Err(error) => Err(error.into()),
         }
-        Ok(())
     }
 
     fn refresh_executable(&self) -> CargoResult<()> {
