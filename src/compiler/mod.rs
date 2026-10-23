@@ -66,7 +66,7 @@ use std::env;
 use std::ffi::{OsStr, OsString};
 use std::fmt::Display;
 use std::fs::{self, File};
-use std::io::{BufRead, BufWriter, Write};
+use std::io::{BufRead, BufReader, BufWriter, Write};
 use std::ops::{Deref, Range};
 use std::path::{Path, PathBuf};
 use std::sync::{Arc, LazyLock};
@@ -681,8 +681,9 @@ impl RelinkCachePaths {
     }
 
     fn read_manifest(&self) -> Option<RelinkCacheManifest> {
+        let file = paths::open_regular(&self.manifest).ok()?;
         let mut checked: CheckedRelinkManifest =
-            serde_json::from_slice(&fs::read(&self.manifest).ok()?).ok()?;
+            serde_json::from_reader(BufReader::new(file)).ok()?;
         if checked.input_checksum != checked.manifest.input_checksum() {
             return None;
         }
@@ -724,29 +725,25 @@ impl RelinkCachePaths {
     }
 
     fn invalidate(&self) -> CargoResult<()> {
-        match paths::remove_file(&self.manifest) {
-            Ok(()) => Ok(()),
-            Err(error)
-                if error
+        for path in [&self.manifest, &self.rlink] {
+            if let Err(error) = paths::remove_file(path)
+                && !error
                     .downcast_ref::<std::io::Error>()
-                    .is_some_and(|error| error.kind() == std::io::ErrorKind::NotFound) =>
+                    .is_some_and(|e| e.kind() == std::io::ErrorKind::NotFound)
             {
-                Ok(())
+                return Err(error).with_context(|| {
+                    format!("failed to invalidate relink cache `{}`", path.display())
+                });
             }
-            Err(error) => Err(error).with_context(|| {
-                format!(
-                    "failed to invalidate relink cache `{}`",
-                    self.manifest.display()
-                )
-            }),
         }
+        Ok(())
     }
 }
 
 fn cached_file(path: PathBuf) -> CargoResult<RelinkCacheFile> {
     let mut hasher = blake3::Hasher::new();
     hasher
-        .update_reader(paths::open(&path)?)
+        .update_reader(paths::open_regular(&path)?)
         .with_context(|| format!("failed to hash `{}`", path.display()))?;
     Ok(RelinkCacheFile {
         path,
@@ -755,8 +752,7 @@ fn cached_file(path: PathBuf) -> CargoResult<RelinkCacheFile> {
 }
 
 fn file_matches(expected: &RelinkCacheFile) -> bool {
-    fs::symlink_metadata(&expected.path).is_ok_and(|metadata| metadata.is_file())
-        && cached_file(expected.path.clone()).is_ok_and(|actual| actual.blake3 == expected.blake3)
+    cached_file(expected.path.clone()).is_ok_and(|actual| actual.blake3 == expected.blake3)
 }
 
 fn cached_object(path: PathBuf) -> CargoResult<RelinkCacheObject> {
@@ -4283,6 +4279,37 @@ mod relink_cache_tests {
         fs::write(&cache.manifest, serde_json::to_vec(&manifest)?)?;
         fs::remove_file(cache.objects.join("b.o"))?;
         assert!(!cache.is_valid());
+        Ok(())
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn cache_fifos_do_not_wait_for_a_writer() -> CargoResult<()> {
+        let dir = tempfile::tempdir()?;
+        let output = dir.path().join("out");
+        std::os::unix::fs::symlink(dir.path(), &output)?;
+        let cache = RelinkCachePaths::new(output.join("app"));
+        fs::write(&cache.rlink, b"recipe")?;
+        cached_file(cache.rlink.clone())?;
+        fs::remove_file(&cache.rlink)?;
+        let public_hash = dir.path().join("lib-dep.public-api-hash");
+        assert!(
+            std::process::Command::new("mkfifo")
+                .args([&cache.manifest, &cache.rlink, &public_hash])
+                .status()?
+                .success()
+        );
+
+        let (send, receive) = std::sync::mpsc::channel();
+        std::thread::spawn(move || {
+            let misses = fingerprint::read_public_api_hash(&public_hash).is_none()
+                && cache.read_manifest().is_none()
+                && cached_file(cache.rlink.clone()).is_err();
+            let cleared =
+                cache.invalidate().is_ok() && !cache.rlink.exists() && !cache.manifest.exists();
+            send.send(misses && cleared).unwrap();
+        });
+        assert!(receive.recv_timeout(std::time::Duration::from_secs(5))?);
         Ok(())
     }
 }
