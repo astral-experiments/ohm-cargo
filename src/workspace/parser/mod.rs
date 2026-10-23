@@ -1,4 +1,4 @@
-use crate::util::data_structures::HashMap;
+use crate::util::data_structures::{HashMap, HashSet};
 use crate::workspace::SourceKind;
 use cargo_util_terminal::report::{AnnotationKind, Group, Level, Snippet};
 use std::borrow::Cow;
@@ -2544,6 +2544,21 @@ fn unique_build_targets(
     targets: &[Target],
     package_root: &Path,
 ) -> Result<(), HashMap<PathBuf, Vec<Target>>> {
+    if targets.len() < 2 {
+        return Ok(());
+    }
+
+    // Targets with distinct file names cannot share a source path. Most manifests
+    // need only this check to rule out conflicts, without building the diagnostic map.
+    let mut names = HashSet::with_capacity_and_hasher(targets.len(), Default::default());
+    if targets
+        .iter()
+        .filter_map(|target| target.src_path().path())
+        .all(|path| path.file_name().is_some_and(|name| names.insert(name)))
+    {
+        return Ok(());
+    }
+
     let mut source_targets = HashMap::<_, Vec<_>>::default();
     for target in targets {
         if let TargetSourcePath::Path(path) = target.src_path() {
