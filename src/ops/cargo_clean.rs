@@ -6,7 +6,7 @@ use crate::util::data_structures::{IndexMap, IndexSet};
 use crate::util::edit_distance;
 use crate::util::errors::CargoResult;
 use crate::util::interning::InternedString;
-use crate::util::{GlobalContext, Progress, ProgressStyle};
+use crate::util::{Filesystem, GlobalContext, Progress, ProgressStyle};
 use crate::workspace::profiles::Profiles;
 use crate::workspace::{PackageIdSpec, PackageIdSpecQuery, TargetKind, Workspace};
 use anyhow::bail;
@@ -73,7 +73,8 @@ pub fn clean(ws: &Workspace<'_>, opts: &CleanOptions<'_>) -> CargoResult<()> {
             .as_path_unlocked()
             .join(Layout::SHARED_REGISTRY_CACHE_MARKER)
             .is_file();
-    let mut build_dir = if shared_registry_cache {
+    let split_namespace = Layout::split_workspace_namespace(ws);
+    let mut build_dir = if shared_registry_cache || split_namespace.is_some() {
         target_dir.clone()
     } else {
         ws.build_dir()
@@ -115,7 +116,7 @@ pub fn clean(ws: &Workspace<'_>, opts: &CleanOptions<'_>) -> CargoResult<()> {
         }
     }
 
-    if shared_registry_cache {
+    if shared_registry_cache || split_namespace.is_some() {
         let target_root = fs::canonicalize(target_dir.as_path_unlocked())
             .unwrap_or_else(|_| paths::normalize_path(target_dir.as_path_unlocked()));
         let build_root = fs::canonicalize(configured_build_dir.as_path_unlocked())
@@ -126,7 +127,8 @@ pub fn clean(ws: &Workspace<'_>, opts: &CleanOptions<'_>) -> CargoResult<()> {
                  configure a separate workspace-local target directory"
             );
         }
-        if !opts.spec.is_empty() && !ws.shared_registry_cache_enabled() {
+        if !opts.spec.is_empty() && !ws.shared_registry_cache_enabled() && split_namespace.is_none()
+        {
             bail!(
                 "cleaning a package in a shared registry build directory requires \
                  -Zohm-shared-registry-cache"
@@ -178,6 +180,14 @@ pub fn clean(ws: &Workspace<'_>, opts: &CleanOptions<'_>) -> CargoResult<()> {
         // Note that we don't bother grabbing a lock here as we're just going to
         // blow it all away anyway.
         if opts.spec.is_empty() {
+            if let Some(namespace) = &split_namespace {
+                clean_split_workspace(
+                    &mut clean_ctx,
+                    configured_build_dir.as_path_unlocked(),
+                    namespace,
+                    opts.profile_specified.then(|| profiles.get_dir_name()),
+                )?;
+            }
             if shared_registry_cache {
                 clean_shared_registry_workspace(&mut clean_ctx, ws, target_dir.as_path_unlocked())?;
             } else {
@@ -204,6 +214,55 @@ pub fn clean(ws: &Workspace<'_>, opts: &CleanOptions<'_>) -> CargoResult<()> {
     }
 
     clean_ctx.display_summary()?;
+    Ok(())
+}
+
+/// Removes this workspace's ordinary intermediates from host and cross-target profiles.
+fn clean_split_workspace(
+    clean_ctx: &mut CleanContext<'_>,
+    root: &Path,
+    namespace: &str,
+    profile: Option<InternedString>,
+) -> CargoResult<()> {
+    if !root.try_exists()? {
+        return Ok(());
+    }
+    let mut entries = walkdir::WalkDir::new(root)
+        .min_depth(1)
+        .max_depth(2)
+        .into_iter();
+    while let Some(entry) = entries.next() {
+        let entry = entry?;
+        if !entry.file_type().is_dir() {
+            continue;
+        }
+        let path = entry.path();
+        if entry.file_name() == "tmp" {
+            if profile.is_none() {
+                clean_ctx.rm_rf(&path.join(namespace))?;
+            }
+        } else if fs::symlink_metadata(path.join(".cargo-build-lock")).is_ok_and(|m| m.is_file()) {
+            if profile.is_none_or(|profile| entry.file_name() == profile.as_str()) {
+                let _lock = Filesystem::new(path.to_path_buf()).open_rw_exclusive_create(
+                    ".cargo-build-lock",
+                    clean_ctx.gctx,
+                    "build directory",
+                )?;
+                for bucket in ["deps", "build", ".fingerprint", "examples", "incremental"] {
+                    let directory = path.join(bucket);
+                    if fs::symlink_metadata(&directory).is_ok_and(|m| m.is_dir()) {
+                        clean_ctx.rm_rf(&directory.join(namespace))?;
+                    }
+                }
+            }
+        } else if entry.depth() == 1 && validate_target_dir_tag(path).is_ok() {
+            // Cross-target roots have their own cache tag and profile directories.
+            continue;
+        }
+        if entry.depth() == 1 {
+            entries.skip_current_dir();
+        }
+    }
     Ok(())
 }
 
