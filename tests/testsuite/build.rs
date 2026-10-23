@@ -516,6 +516,39 @@ fn cargo_compile_duplicate_build_targets() {
 }
 
 #[cargo_test]
+fn targets_with_the_same_file_name_in_different_directories() {
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "foo"
+                version = "1.0.0"
+                edition = "2024"
+
+                [[bin]]
+                name = "first"
+                path = "first/main.rs"
+
+                [[bin]]
+                name = "second"
+                path = "second/main.rs"
+            "#,
+        )
+        .file("first/main.rs", "fn main() {}")
+        .file("second/main.rs", "fn main() {}")
+        .build();
+
+    p.cargo("check")
+        .with_stderr_data(str![[r#"
+[CHECKING] foo v1.0.0 ([ROOT]/foo)
+[FINISHED] `dev` profile [unoptimized + debuginfo] target(s) in [ELAPSED]s
+
+"#]])
+        .run();
+}
+
+#[cargo_test]
 fn cargo_compile_with_invalid_version() {
     let p = project()
         .file("Cargo.toml", &basic_manifest("foo", "1.0"))
