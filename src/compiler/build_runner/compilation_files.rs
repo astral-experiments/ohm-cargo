@@ -3461,6 +3461,8 @@ mod shared_registry_tests {
             .join(host)
             .join("bin");
         std::fs::create_dir_all(&bin).expect("create isolated compiler tool directory");
+        std::fs::set_permissions(&bin, std::fs::Permissions::from_mode(0o755))
+            .expect("set isolated tool directory permissions");
         let executable = bin.join("rust-objcopy");
 
         assert!(!sysroot_contains_trusted_objcopy(sysroot.path(), host));
