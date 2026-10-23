@@ -1,254 +1,154 @@
-name: CI
+name: Manifest span nightly cross-target checks
 
 on:
-  push:
-    branches:
-      - ohm-1.99.0
-  pull_request:
   workflow_dispatch:
-    inputs:
-      clippy_apfs_replay:
-        description: Run the isolated production Clippy APFS storage and performance replay
-        type: boolean
-        default: false
 
 permissions:
   contents: read
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
-
-env:
-  RUST_VERSION: 1.99.0
-
 jobs:
-  rustfmt:
-    name: Rustfmt
-    runs-on: depot-ubuntu-24.04-4
-    steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-      - name: Install Rust
-        run: rustup toolchain install "$RUST_VERSION" --profile minimal --component rustfmt
-      - name: Check formatting
-        run: cargo +"$RUST_VERSION" fmt --all --check
-
-  clippy:
-    name: Clippy (${{ matrix.os }})
-    runs-on: ${{ matrix.os == 'depot-macos-15' && 'namespace-profile-macos-15' || matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [depot-ubuntu-24.04-8, depot-macos-15]
-    steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-      - name: Install Rust
-        run: rustup toolchain install "$RUST_VERSION" --profile minimal --component clippy
-      - name: Check lints
-        run: cargo +"$RUST_VERSION" clippy --workspace --all-targets --no-deps -- -D warnings
-
-  cargo-tests:
-    name: Cargo tests (${{ matrix.os }})
-    runs-on: ${{ matrix.os == 'depot-macos-15' && 'namespace-profile-macos-15' || matrix.os }}
+  nightly-cross-target:
+    runs-on: depot-ubuntu-24.04-16
+    timeout-minutes: 45
     env:
+      RUST_VERSION: 1.99.0
+      NIGHTLY_VERSION: nightly-2026-08-01
       CARGO_PROFILE_DEV_DEBUG: 1
       CARGO_PROFILE_TEST_DEBUG: 1
       CARGO_INCREMENTAL: 0
-      CARGO_PUBLIC_NETWORK_TESTS: 1
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - os: depot-ubuntu-24.04-16
-            other: i686-unknown-linux-gnu
-          - os: depot-macos-15
-            other: x86_64-apple-darwin
+      CARGO_BUILD_JOBS: 16
+      CARGO_TERM_COLOR: never
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-      - name: Install Rust
-        run: |
-          # Keep compiled-in test scratch paths outside this repository and any
-          # `target` component, for Git discovery and automatic shared-build admission.
-          echo "CARGO_TARGET_DIR=$RUNNER_TEMP/cargo-tests" >> "$GITHUB_ENV"
-          rustup toolchain install "$RUST_VERSION" --profile minimal --component rustfmt
-          rustup target add --toolchain "$RUST_VERSION" "${{ matrix.other }}" wasm32-unknown-unknown
-      - name: Install system dependencies
-        if: runner.os == 'Linux'
-        run: sudo apt-get update && sudo apt-get install -y gcc-multilib libsecret-1-0 libsecret-1-dev
-      - name: Run Cargo unit and integration tests
-        run: cargo +"$RUST_VERSION" test -p cargo
-      - name: Install Ohm for shared-registry integration coverage
-        if: runner.os == 'Linux'
-        env:
-          OHM_VERSION: ohm-1.97.1-16
-          OHM_INSTALLER_SHA256: e8f33de7d5a2def0205fbde4db499853f44b3444037559637d2d8ff1e6cc92a4
-        run: |
-          installer="$RUNNER_TEMP/ohm-installer.sh"
-          curl --proto '=https' --tlsv1.2 --fail --silent --show-error --location \
-            --output "$installer" \
-            "https://labs.astral.sh/ohm/releases/$OHM_VERSION/install.sh"
-          printf '%s  %s\n' "$OHM_INSTALLER_SHA256" "$installer" | sha256sum --check
-          sh "$installer"
-      - name: Run shared-registry integration with Ohm
-        if: runner.os == 'Linux'
-        env:
-          RUSTUP_TOOLCHAIN: ohm-1.97.1-16
-          # This pinned compiler predates early metadata.
-          __CARGO_HEADSTART: "no"
-        run: |
-          testsuite="$(find "$CARGO_TARGET_DIR/debug/deps" -maxdepth 1 -type f -name 'testsuite-*' -perm -u+x -print -quit)"
-          if [[ -z "$testsuite" ]]; then
-            echo 'compiled Cargo integration test binary was not found' >&2
-            exit 1
-          fi
-          "$testsuite" \
-            build_dir::shared_registry_cache_preserves_cross_workspace_reuse_and_private_early_cutoff \
-            --exact --nocapture
-          "$testsuite" \
-            build_dir::shared_registry_cache_avoids_hashing_immutable_public_apis \
-            --exact --nocapture
-          "$testsuite" \
-            check::ohm_preserves_fresh_checks_while_holding_shared_workspace_locks \
-            --exact --nocapture
-          "$testsuite" \
-            check::ohm_locks_fingerprints_before_preserving_established_check_graphs \
-            --exact --nocapture
-          "$testsuite" \
-            check::ohm_skips_cold_ordinary_check_graphs_after_test_builds \
-            --exact --nocapture
-      - name: Install Ohm for Clippy worktree coverage
-        env:
-          OHM_VERSION: ohm-1.98.0-9
-          OHM_INSTALLER_SHA256: 573e00024783ab952f7c2d629f12f9e0ba61be96843f7e692dc056642a72affe
-        run: |
-          installer="$RUNNER_TEMP/ohm-clippy-installer.sh"
-          curl --proto '=https' --tlsv1.2 --fail --silent --show-error --location \
-            --output "$installer" \
-            "https://labs.astral.sh/ohm/releases/$OHM_VERSION/install.sh"
-          printf '%s  %s\n' "$OHM_INSTALLER_SHA256" "$installer" | shasum -a 256 --check
-          sh "$installer"
-      - name: Run profile and bundled Clippy worktree tests with Ohm
-        env:
-          RUSTUP_TOOLCHAIN: ohm-1.98.0-9
-          # This pinned compiler predates early metadata.
-          __CARGO_HEADSTART: "no"
-        run: |
-          toolchain_bin="$(dirname "$(rustup which rustc)")"
-          rustup_bin="$(dirname "$(command -v rustup)")"
-          # Exclude runner-provided native-tool shims from the trusted-cache fixture.
-          export PATH="$toolchain_bin:$rustup_bin:/usr/bin:/bin:/usr/sbin:/sbin"
-          rustc -Vv
-          clippy-driver -V
-          testsuite="$(find "$CARGO_TARGET_DIR/debug/deps" -maxdepth 1 -type f -name 'testsuite-*' -perm -u+x -print -quit)"
-          if [[ -z "$testsuite" ]]; then
-            echo 'compiled Cargo integration test binary was not found' >&2
-            exit 1
-          fi
-          # The stable-built testsuite marks these nightly tests ignored at compile time.
-          "$testsuite" profiles::ohm_default_debuginfo --include-ignored --nocapture
-          for test in \
-            worktree_import_requires_cloning \
-            bundled_clippy_isolation_defaults_follow_actual_snapshot_cloning \
-            bundled_clippy_preserves_ordinary_seeds_without_importing_lint_state \
-            clippy_isolation_overrides_are_inherited_and_child_flags_take_precedence \
-            forced_clippy_isolation_preserves_compiler_trust_rejections \
-            clippy_wrapper_scripts_still_deny_the_whole_seed; do
-            "$testsuite" "ohm_worktree::$test" --exact --include-ignored --nocapture
-          done
-          if [[ "$RUNNER_OS" == Linux ]]; then
-            "$testsuite" ohm_linker::ohm_defaults_select_wild_and_allow_lld \
-              --exact --include-ignored --nocapture
-          fi
-
-  workspace-tests:
-    name: Workspace tests
-    runs-on: depot-ubuntu-24.04-8
-    steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-      - name: Install Rust
-        run: rustup toolchain install "$RUST_VERSION" --profile minimal
-      - name: Run workspace tests
-        run: cargo +"$RUST_VERSION" test --workspace --exclude cargo --exclude benchsuite --exclude resolver-tests
-
-  resolver:
-    name: Resolver tests
-    runs-on: depot-ubuntu-24.04-8
-    steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-      - name: Install Rust
-        run: rustup toolchain install "$RUST_VERSION" --profile minimal
-      - name: Run resolver tests
-        run: cargo +"$RUST_VERSION" test -p resolver-tests
-
-  schema:
-    name: Schema tests
-    runs-on: depot-ubuntu-24.04-4
-    steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-      - name: Install Rust
-        run: rustup toolchain install "$RUST_VERSION" --profile minimal
-      - name: Run schema tests
-        run: cargo +"$RUST_VERSION" test -p cargo-util-schemas --features unstable-schema
-
-  clippy-apfs-replay:
-    name: Clippy APFS replay
-    if: github.event_name == 'workflow_dispatch' && inputs.clippy_apfs_replay
-    runs-on: namespace-profile-macos-15
-    timeout-minutes: 45
-    env:
-      OHM_VERSION: ohm-1.98.0-9
-      OHM_INSTALLER_SHA256: 573e00024783ab952f7c2d629f12f9e0ba61be96843f7e692dc056642a72affe
-      CARGO_HOME: /private/tmp/codex-cargo-home
-      CARGO_TARGET_DIR: /private/tmp/codex-cargo-targets/cargo/clippy-seeding-ci/ohm
-    steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
         with:
-          python-version: '3.13'
-      - name: Install pinned Ohm
+          ref: fa592baf27578e348059de7fbe0eed50126d1bca
+          persist-credentials: false
+      - name: Verify the exact production source and host
+        shell: bash
         run: |
-          installer="$RUNNER_TEMP/ohm-clippy-installer.sh"
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = fa592baf27578e348059de7fbe0eed50126d1bca
+          test "$(git rev-parse 'HEAD^{tree}')" = ee6ffdb835f1012d3968f09be6946b88decd92fe
+          test "$(uname -s)" = Linux
+          test "$(uname -m)" = x86_64
+          test -z "${CFG_DISABLE_CROSS_TESTS+x}"
+          test -z "${RUSTC_BOOTSTRAP+x}"
+          mkdir -p "$RUNNER_TEMP/manifest-cross-evidence"
+          git rev-parse HEAD 'HEAD^{tree}' | tee "$RUNNER_TEMP/manifest-cross-evidence/source.txt"
+          echo "CARGO_TARGET_DIR=$RUNNER_TEMP/cargo-nightly-cross" >> "$GITHUB_ENV"
+      - name: Install the pinned compiler and real cross-target support
+        shell: bash
+        run: |
+          set -euo pipefail
+          evidence="$RUNNER_TEMP/manifest-cross-evidence"
           curl --proto '=https' --tlsv1.2 --fail --silent --show-error --location \
-            --output "$installer" \
-            "https://labs.astral.sh/ohm/releases/$OHM_VERSION/install.sh"
-          printf '%s  %s\n' "$OHM_INSTALLER_SHA256" "$installer" | shasum -a 256 --check
-          sh "$installer"
-      - name: Build production Cargo and prepare the Ruff fixture
+            https://static.rust-lang.org/dist/2026-08-01/channel-rust-nightly.toml \
+            --output "$evidence/channel-rust-nightly.toml"
+          printf '%s  %s\n' \
+            f4b63db200deb36a120b27ae085140637ee04af1254891308799225e5afbe8bf \
+            "$evidence/channel-rust-nightly.toml" | sha256sum --check
+          rustup toolchain install "$RUST_VERSION" --profile minimal
+          rustup toolchain install "$NIGHTLY_VERSION" --profile minimal
+          rustup target add --toolchain "$NIGHTLY_VERSION" i686-unknown-linux-gnu
+          sudo apt-get update
+          sudo apt-get install -y gcc-multilib libsecret-1-0 libsecret-1-dev
+          rustc +"$NIGHTLY_VERSION" -vV | tee "$evidence/nightly-version.txt"
+          rustup target list --toolchain "$NIGHTLY_VERSION" --installed | tee "$evidence/installed-targets.txt"
+          python3 - <<'PY'
+          import os
+          from pathlib import Path
+          evidence = Path(os.environ['RUNNER_TEMP']) / 'manifest-cross-evidence'
+          version = (evidence / 'nightly-version.txt').read_text()
+          assert version.splitlines()[0] == 'rustc 1.99.0-nightly (ad3d0bc14 2026-07-31)'
+          assert '\nhost: x86_64-unknown-linux-gnu\n' in version
+          assert '\nrelease: 1.99.0-nightly\n' in version
+          assert 'i686-unknown-linux-gnu' in (evidence / 'installed-targets.txt').read_text().splitlines()
+          assert 'CFG_DISABLE_CROSS_TESTS' not in os.environ
+          assert 'RUSTC_BOOTSTRAP' not in os.environ
+          PY
+          printf '%s\n' 'fn main() { assert_eq!(std::mem::size_of::<usize>(), 4); println!("I686_SMOKE_OK"); }' > "$evidence/cross-smoke.rs"
+          rustc +"$NIGHTLY_VERSION" --crate-name cross_smoke --target i686-unknown-linux-gnu \
+            "$evidence/cross-smoke.rs" -o "$RUNNER_TEMP/cross-smoke"
+          readelf -h "$RUNNER_TEMP/cross-smoke" | tee "$evidence/cross-smoke-elf.txt"
+          grep -Eq 'Class:.*ELF32' "$evidence/cross-smoke-elf.txt"
+          "$RUNNER_TEMP/cross-smoke" | tee "$evidence/cross-smoke.stdout"
+          grep -Fx I686_SMOKE_OK "$evidence/cross-smoke.stdout"
+          sha256sum "$RUNNER_TEMP/cross-smoke" | tee "$evidence/cross-smoke.sha256"
+      - name: Build the unchanged testsuite with stable Rust
+        shell: bash
         run: |
-          mkdir -p "$RUNNER_TEMP/clippy-apfs-results"
-          git rev-parse HEAD > "$RUNNER_TEMP/clippy-apfs-results/source-commit.txt"
-          git rev-parse HEAD^{tree} > "$RUNNER_TEMP/clippy-apfs-results/source-tree.txt"
-          df -h /private/tmp
-          cargo +"$OHM_VERSION" build --locked --release -p cargo --features ohm-defaults -j 4
-          "$CARGO_TARGET_DIR/release/cargo" -Vv > "$RUNNER_TEMP/clippy-apfs-results/cargo-version.txt"
-          shasum -a 256 "$CARGO_TARGET_DIR/release/cargo" > "$RUNNER_TEMP/clippy-apfs-results/cargo-sha256.txt"
-          git init "$RUNNER_TEMP/ruff-fixture"
-          git -C "$RUNNER_TEMP/ruff-fixture" fetch --depth=2 https://github.com/astral-sh/ruff.git \
-            0ecff877901a0377ad966ffab528488ce872b50e
-          git -C "$RUNNER_TEMP/ruff-fixture" checkout --detach 0ecff877901a0377ad966ffab528488ce872b50e
-      - name: Run four paired APFS workflows
-        env:
-          # This pinned compiler predates early metadata.
-          __CARGO_HEADSTART: "no"
+          set -euo pipefail
+          test -z "${CFG_DISABLE_CROSS_TESTS+x}"
+          test -z "${RUSTC_BOOTSTRAP+x}"
+          unset RUSTC RUSTDOC RUSTC_WRAPPER RUSTC_WORKSPACE_WRAPPER RUSTFLAGS CARGO_ENCODED_RUSTFLAGS
+          cargo +"$RUST_VERSION" test -p cargo --test testsuite --no-run --locked --message-format=json \
+            > "$RUNNER_TEMP/manifest-cross-evidence/test-build.jsonl"
+          python3 - <<'PY'
+          import json, os
+          from pathlib import Path
+          evidence = Path(os.environ['RUNNER_TEMP']) / 'manifest-cross-evidence'
+          rows = [json.loads(line) for line in (evidence / 'test-build.jsonl').read_text().splitlines()]
+          suites = [row['executable'] for row in rows if row.get('reason') == 'compiler-artifact'
+                    and row.get('target', {}).get('name') == 'testsuite' and row.get('executable')]
+          assert len(suites) == 1 and Path(suites[0]).is_file()
+          assert any(row.get('reason') == 'build-finished' and row.get('success') is True for row in rows)
+          (evidence / 'testsuite-path.txt').write_text(suites[0] + '\n')
+          PY
+          sha256sum "$(cat "$RUNNER_TEMP/manifest-cross-evidence/testsuite-path.txt")" \
+            "$CARGO_TARGET_DIR/debug/cargo" | tee "$RUNNER_TEMP/manifest-cross-evidence/test-binaries.sha256"
+          "$CARGO_TARGET_DIR/debug/cargo" -Vv | tee "$RUNNER_TEMP/manifest-cross-evidence/cargo-under-test.txt"
+      - name: Run both exact nightly tests without skips
+        shell: bash
         run: |
-          # The harness enables local macro/native-tool trust only for this pinned,
-          # trusted development fixture, using separate build storage in each arm.
-          python="$(command -v python3)"
-          export PATH="$HOME/.cargo/bin:/usr/bin:/bin:/usr/sbin:/sbin"
-          "$python" benches/clippy-seeding/run_apfs.py \
-            --cargo "$CARGO_TARGET_DIR/release/cargo" --ruff "$RUNNER_TEMP/ruff-fixture" \
-            --root /private/tmp/codex-cargo-targets/ruff/isolated/clippy-seeding-ci \
-            --evidence "$RUNNER_TEMP/clippy-apfs-results/apfs" --jobs 4 \
-            --toolchain "$OHM_VERSION" --arms off1,on1,on2,off2,on3,off3,off4,on4 \
-            --require-quiet
-          "$python" benches/clippy-seeding/summarize.py "$RUNNER_TEMP/clippy-apfs-results/apfs" \
-            --arms off1,on1,on2,off2,on3,off3,off4,on4 \
-            > "$RUNNER_TEMP/clippy-apfs-results/summary.json"
-      - name: Preserve APFS receipts and logs
+          set -euo pipefail
+          test -z "${CFG_DISABLE_CROSS_TESTS+x}"
+          test -z "${RUSTC_BOOTSTRAP+x}"
+          unset RUSTC RUSTDOC RUSTC_WRAPPER RUSTC_WORKSPACE_WRAPPER RUSTFLAGS CARGO_ENCODED_RUSTFLAGS
+          export RUSTUP_TOOLCHAIN="$NIGHTLY_VERSION"
+          nightly_bin="$(dirname "$(rustup which --toolchain "$NIGHTLY_VERSION" rustc)")"
+          rustup_bin="$(dirname "$(command -v rustup)")"
+          export PATH="$nightly_bin:$rustup_bin:/usr/bin:/bin"
+          rustc -vV | tee "$RUNNER_TEMP/manifest-cross-evidence/actual-test-rustc.txt"
+          cmp "$RUNNER_TEMP/manifest-cross-evidence/nightly-version.txt" \
+            "$RUNNER_TEMP/manifest-cross-evidence/actual-test-rustc.txt"
+          python3 - <<'PY'
+          import hashlib, json, os, re, subprocess
+          from pathlib import Path
+          assert 'CFG_DISABLE_CROSS_TESTS' not in os.environ
+          assert 'RUSTC_BOOTSTRAP' not in os.environ
+          assert os.uname().sysname == 'Linux' and os.uname().machine == 'x86_64'
+          evidence = Path(os.environ['RUNNER_TEMP']) / 'manifest-cross-evidence'
+          suite = (evidence / 'testsuite-path.txt').read_text().strip()
+          selectors = ['pub_priv::dependency_location_in_target_table',
+                       'pub_priv::dependency_location_in_target_table_with_cfg']
+          results = []
+          for index, selector in enumerate(selectors):
+              # A separate process resets the cross-compile helper's HAVE_WARNED state.
+              argv = [suite, selector, '--exact', '--include-ignored', '--test-threads=1', '--color=never']
+              result = subprocess.run(argv, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, check=False)
+              (evidence / f'test-{index}.log').write_text(result.stdout)
+              print(result.stdout, end='', flush=True)
+              assert result.returncode == 0
+              assert re.search(r'^running 1 test$', result.stdout, re.M)
+              assert re.search(r'^test ' + re.escape(selector) + r' \.\.\. ok$', result.stdout, re.M)
+              assert re.search(r'^test result: ok\. 1 passed; 0 failed; 0 ignored; 0 measured;', result.stdout, re.M)
+              results.append({'selector': selector, 'returncode': 0, 'passed': 1, 'failed': 0, 'ignored': 0,
+                              'log_sha256': hashlib.sha256(result.stdout.encode()).hexdigest()})
+          report = {'state': 'passed-two-exact-cross-target-selectors', 'source_commit': 'fa592baf27578e348059de7fbe0eed50126d1bca',
+                    'source_tree': 'ee6ffdb835f1012d3968f09be6946b88decd92fe', 'nightly': os.environ['RUSTUP_TOOLCHAIN'],
+                    'cross_disable_variable_absent': True, 'real_i686_link_and_execution_passed': True,
+                    'separate_process_per_selector': True, 'results': results}
+          (evidence / 'result.json').write_text(json.dumps(report, indent=2, sort_keys=True) + '\n')
+          print('CROSS_TARGET_RESULT=' + json.dumps(report, sort_keys=True), flush=True)
+          PY
+          git diff --exit-code
+          git diff --cached --exit-code
+          test "$(git rev-parse 'HEAD^{tree}')" = ee6ffdb835f1012d3968f09be6946b88decd92fe
+      - name: Retain selective correctness evidence
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
-          name: clippy-apfs-replay-${{ github.sha }}
-          path: ${{ runner.temp }}/clippy-apfs-results
+          name: manifest-nightly-cross-${{ github.run_id }}
+          path: ${{ runner.temp }}/manifest-cross-evidence
           if-no-files-found: error
           retention-days: 30
