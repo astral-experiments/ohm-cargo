@@ -261,6 +261,32 @@ impl ProcessGroup {
         Ok((child, group))
     }
 
+    /// After the test exits, give the relay time to forward any terminal signal.
+    /// The scheduler continues servicing job control while the relay exits.
+    pub(super) fn finish(&mut self) -> CargoResult<bool> {
+        #[cfg(unix)]
+        if let Some(relay) = &mut self.relay {
+            if let Some(mut input) = relay.stdin.take() {
+                if let Some(terminal) = &self.terminal {
+                    terminal.restore(self.id);
+                }
+                // SAFETY: resume only our relay. A stopped relay may still
+                // have the same Ctrl-C pending that just terminated the test.
+                unsafe { libc::kill(self.id, libc::SIGCONT) };
+                if let Err(error) = input.write_all(b"F")
+                    && error.kind() != std::io::ErrorKind::BrokenPipe
+                {
+                    return Err(error.into());
+                }
+            }
+            if relay.try_wait()?.is_none() {
+                return Ok(false);
+            }
+            self.relay = None;
+        }
+        Ok(true)
+    }
+
     pub(super) fn cancel(&self) {
         #[cfg(unix)]
         if self.id > 0 {
@@ -280,8 +306,7 @@ impl Drop for ProcessGroup {
                 terminal.restore(self.id);
             }
             if let Some(relay) = &mut self.relay {
-                // Kill just the relay on normal completion. Tests may have
-                // deliberately left children running, as with ordinary Cargo.
+                // Startup or teardown failed before the relay finished.
                 let _ = relay.kill();
                 let _ = relay.wait();
             }
@@ -430,14 +455,15 @@ pub fn run_ready_test_relay() -> bool {
     {
         std::process::exit(1);
     }
+    let mut command = [0];
     loop {
-        match std::io::stdin().read(&mut [0]) {
+        match std::io::stdin().read(&mut command) {
+            Ok(1) if command == *b"F" => return true,
             Err(error) if error.kind() == std::io::ErrorKind::Interrupted => continue,
             _ => break,
         }
     }
-    // The parent keeps this pipe open and kills/reaps the relay on completion.
-    // EOF means it disappeared unexpectedly: cancel the otherwise orphaned tests.
+    // EOF without a finish command means Cargo disappeared. Cancel its tests.
     unsafe { libc::kill(0, libc::SIGKILL) };
     true
 }
