@@ -2920,6 +2920,26 @@ fn build_script_tracks_non_unicode_environment_values() {
     }
 }
 
+#[cfg(unix)]
+#[cargo_test]
+fn literal_separators_in_dep_info_paths() {
+    let p = project()
+        .file(
+            "src/main.rs",
+            r#"fn main() {
+            println!("{} {}", include_str!("data\nnotes"), include_str!("trailing\\"));
+        }"#,
+        )
+        .file("src/data", "one")
+        .file("src/data\nnotes", "one")
+        .file("src/trailing\\", "two")
+        .build();
+    p.cargo("run --quiet").with_stdout_data("one two\n").run();
+    p.change_file("src/data\nnotes", "new");
+    p.change_file("src/trailing\\", "end");
+    p.cargo("run --quiet").with_stdout_data("new end\n").run();
+}
+
 #[cargo_test]
 fn env_in_code_causes_rebuild() {
     let p = project()
