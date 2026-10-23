@@ -1,7 +1,7 @@
 //! See [`CompilationFiles`].
 
 use crate::util::data_structures::{HashMap, HashSet};
-use std::cell::OnceCell;
+use std::cell::{OnceCell, RefCell};
 use std::ffi::{OsStr, OsString};
 use std::fmt;
 use std::hash::{Hash, Hasher};
@@ -148,6 +148,8 @@ pub struct CompilationFiles<'a, 'gctx> {
     metas: HashMap<Unit, Metadata>,
     /// Reuse the directory components shared by a unit's output, fingerprint, and lock paths.
     unit_paths: HashMap<Unit, UnitPaths>,
+    /// Sorted dependency arguments shared by roots with the same ordered direct dependencies.
+    dependency_search_args: RefCell<HashMap<Vec<Unit>, Vec<OsString>>>,
     /// For each Unit, a list all files produced.
     outputs: HashMap<Unit, OnceCell<Arc<Vec<OutputFile>>>>,
 }
@@ -686,6 +688,7 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
             shared_registry_cache,
             metas,
             unit_paths,
+            dependency_search_args: RefCell::default(),
             outputs,
         }
     }
@@ -714,6 +717,7 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
             for paths in self.unit_paths.values_mut() {
                 paths.directory.take();
             }
+            self.dependency_search_args.get_mut().clear();
         }
 
         Ok(())
@@ -1087,6 +1091,19 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
     pub fn deps_dir(&self, unit: &Unit) -> PathBuf {
         let dir = self.pkg_dir(unit);
         self.layout(unit.kind).build_dir().deps(dir)
+    }
+
+    /// Reuses only the dependency prefix; the host search path still belongs to each root.
+    pub(crate) fn dependency_search_args(
+        &self,
+        dependencies: Vec<Unit>,
+        make_args: impl FnOnce() -> Vec<OsString>,
+    ) -> Vec<OsString> {
+        self.dependency_search_args
+            .borrow_mut()
+            .entry(dependencies)
+            .or_insert_with(make_args)
+            .clone()
     }
 
     /// Returns the directories where Rust crate dependencies are found for the

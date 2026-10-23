@@ -30,6 +30,180 @@ use cargo_test_support::{
 use std::env::consts::{DLL_PREFIX, DLL_SUFFIX, EXE_SUFFIX};
 
 #[cargo_test]
+fn dependency_search_paths_for_sibling_targets() {
+    let wrapper = tools::echo_wrapper();
+    for explicit_target in [false, true] {
+        let p = project()
+            .at(paths::root().join(if explicit_target {
+                "explicit"
+            } else {
+                "native"
+            }))
+            .file(
+                "Cargo.toml",
+                r#"
+                [package]
+                name = "search_root"
+                version = "0.1.0"
+                edition = "2021"
+                [dependencies]
+                direct = { path = "direct" }
+                path_macro = { path = "path_macro" }
+                [build-dependencies]
+                build_only = { path = "build_only" }
+                "#,
+            )
+            .file(
+                ".cargo/config.toml",
+                "[build]\ntarget-dir = \"target-dir\"\nbuild-dir = \"build-dir\"\n",
+            )
+            .file(
+                "src/lib.rs",
+                "pub fn value() -> u32 { path_macro::identity!(direct::value()) }",
+            )
+            .file(
+                "build.rs",
+                r#"fn main() {
+                    build_only::value();
+                    let path = std::path::PathBuf::from(std::env::var_os("OUT_DIR").unwrap())
+                        .join("native");
+                    std::fs::create_dir_all(&path).unwrap();
+                    println!("cargo::rustc-link-search=native={}", path.display());
+                }"#,
+            )
+            .file(
+                "tests/one.rs",
+                "#[test] fn one() { assert_eq!(search_root::value(), 42); }",
+            )
+            .file(
+                "tests/two.rs",
+                "#[test] fn two() { assert_eq!(search_root::value(), 42); }",
+            )
+            .file(
+                "direct/Cargo.toml",
+                "[package]\nname = \"direct\"\nversion = \"0.1.0\"\nedition = \"2021\"\n\
+                 [dependencies]\nleaf = { path = \"../leaf\" }\n",
+            )
+            .file(
+                "direct/src/lib.rs",
+                "pub fn value() -> u32 { leaf::value() }",
+            )
+            .file(
+                "leaf/Cargo.toml",
+                "[package]\nname = \"leaf\"\nversion = \"0.1.0\"\nedition = \"2021\"\n",
+            )
+            .file("leaf/src/lib.rs", "pub fn value() -> u32 { 42 }")
+            .file(
+                "path_macro/Cargo.toml",
+                "[package]\nname = \"path_macro\"\nversion = \"0.1.0\"\nedition = \"2021\"\n\
+                 [lib]\nproc-macro = true\n\
+                 [dependencies]\nmacro_only = { path = \"../macro_only\" }\n",
+            )
+            .file(
+                "path_macro/src/lib.rs",
+                r#"extern crate proc_macro;
+                #[proc_macro]
+                pub fn identity(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
+                    macro_only::value();
+                    input
+                }"#,
+            )
+            .file(
+                "macro_only/Cargo.toml",
+                "[package]\nname = \"macro_only\"\nversion = \"0.1.0\"\nedition = \"2021\"\n",
+            )
+            .file("macro_only/src/lib.rs", "pub fn value() {}")
+            .file(
+                "build_only/Cargo.toml",
+                "[package]\nname = \"build_only\"\nversion = \"0.1.0\"\nedition = \"2021\"\n",
+            )
+            .file("build_only/src/lib.rs", "pub fn value() {}")
+            .build();
+        let mut cargo = p.cargo("-Zohm-defaults=no -Zbuild-dir-new-layout test --tests -j1");
+        cargo
+            .masquerade_as_nightly_cargo(&["ohm-defaults", "build-dir-new-layout"])
+            .env("RUSTC_WRAPPER", &wrapper);
+        if explicit_target {
+            cargo.arg("--target").arg(rustc_host());
+        }
+        let output = cargo.run();
+        let stderr = String::from_utf8(output.stderr).unwrap();
+        let command = |name: &str, test: bool| {
+            let marker = format!(" --crate-name {name} ");
+            let commands = stderr
+                .lines()
+                .filter(|line| {
+                    line.starts_with("WRAPPER CALLED: ")
+                        && line.contains(&marker)
+                        && line.contains(" --test ") == test
+                })
+                .collect::<Vec<_>>();
+            assert_eq!(commands.len(), 1, "{name}: {stderr}");
+            commands[0]
+        };
+        let out_dir = |name, test| {
+            PathBuf::from(
+                command(name, test)
+                    .split_once(" --out-dir ")
+                    .unwrap()
+                    .1
+                    .split(" -")
+                    .next()
+                    .unwrap(),
+            )
+        };
+        let search_paths = |name, test| {
+            command(name, test)
+                .split(" -L dependency=")
+                .skip(1)
+                .map(|path| PathBuf::from(path.split(" -").next().unwrap()))
+                .collect::<Vec<_>>()
+        };
+        let mut library_prefix = vec![
+            out_dir("direct", false),
+            out_dir("leaf", false),
+            out_dir("path_macro", false),
+        ];
+        library_prefix.sort_unstable();
+        let mut sibling_prefix = library_prefix.clone();
+        sibling_prefix.push(out_dir("search_root", false));
+        sibling_prefix.sort_unstable();
+        let host_path = |name, test| {
+            p.root().join("build-dir").join(
+                out_dir(name, test)
+                    .strip_prefix(p.root().join("build-dir").join(rustc_host()))
+                    .unwrap(),
+            )
+        };
+        for (name, test, prefix) in [
+            ("search_root", false, &library_prefix),
+            ("one", true, &sibling_prefix),
+            ("two", true, &sibling_prefix),
+        ] {
+            let mut expected = prefix.clone();
+            if explicit_target {
+                expected.push(host_path(name, test));
+            }
+            assert_eq!(search_paths(name, test), expected, "{name}: {stderr}");
+            assert_eq!(command(name, test).matches(" -L native=").count(), 1);
+        }
+        if explicit_target {
+            assert_ne!(host_path("one", true), host_path("two", true));
+        }
+        // The macro's own compilation sees its dependency, but its consumers do not.
+        assert_eq!(
+            search_paths("path_macro", false),
+            [out_dir("macro_only", false)]
+        );
+        // Build-script dependencies never become Rust dependency paths for the root targets.
+        assert_eq!(
+            search_paths("build_script_build", false),
+            [out_dir("build_only", false)]
+        );
+    }
+}
+
+#[cargo_test]
 fn binary_with_debug() {
     let p = project()
         .file("src/main.rs", r#"fn main() { println!("Hello, World!") }"#)
