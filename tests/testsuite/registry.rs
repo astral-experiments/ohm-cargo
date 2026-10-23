@@ -104,6 +104,137 @@ fn remote_registry_manifest_without_document() {
         .run();
 }
 
+#[cfg(unix)]
+#[cargo_test]
+fn registry_manifest_parse_cache_preserves_metadata_and_errors() {
+    use std::os::unix::fs::PermissionsExt;
+
+    Package::new("cached-manifest", "1.0.0")
+        .file(
+            "Cargo.toml",
+            r#"
+[package]
+name = "cached-manifest"
+version = "1.0.0"
+edition = "2021"
+[package.metadata]
+marker = "old"
+"#,
+        )
+        .file("src/lib.rs", "")
+        .publish();
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+[package]
+name = "root"
+version = "1.0.0"
+edition = "2021"
+[dependencies]
+cached-manifest = "1.0.0"
+"#,
+        )
+        .file("src/lib.rs", "")
+        .build();
+    // The checkout may have group-writable ancestors. Give this cache a
+    // genuinely private home without changing the production trust checks.
+    let home = tempfile::Builder::new()
+        .permissions(fs::Permissions::from_mode(0o700))
+        .tempdir()
+        .unwrap();
+    fs::copy(
+        paths::cargo_home().join("config.toml"),
+        home.path().join("config.toml"),
+    )
+    .unwrap();
+    p.cargo("fetch").env("CARGO_HOME", home.path()).run();
+    let cache = home.path().join(".registry-manifest-cache-v1");
+    if cache.exists() {
+        fs::remove_dir_all(&cache).unwrap();
+    }
+    // Metadata probes target information with Ohm's default rustc flags. Reuse
+    // the existing wrapper so this parser test also runs with the stock compiler.
+    let wrapper = crate::rustflags::ohm_defaults_wrapper();
+    let compiler_log = paths::root().join("manifest-cache-rustc.log");
+    let run = |enabled| {
+        p.cargo(&format!(
+            "metadata --offline --format-version=1 -Zohm-defaults={}",
+            if enabled { "yes" } else { "no" }
+        ))
+        .masquerade_as_nightly_cargo(&["ohm-defaults"])
+        .env("CARGO_HOME", home.path())
+        .env("RUSTC_WRAPPER", &wrapper)
+        .env("OHM_DEFAULTS_LOG", &compiler_log)
+        .build_command()
+        .output()
+        .unwrap()
+    };
+    let direct = run(false);
+    assert!(direct.status.success(), "{direct:?}");
+    assert!(!cache.exists());
+    let cold = run(true);
+    let hit = run(true);
+    assert!(cold.status.success(), "{cold:?}");
+    assert!(hit.status.success(), "{hit:?}");
+    assert_eq!(direct.stdout, cold.stdout);
+    assert_eq!(cold.stdout, hit.stdout);
+    assert_eq!(direct.stderr, cold.stderr);
+    assert_eq!(cold.stderr, hit.stderr);
+    assert_eq!(fs::read_dir(&cache).unwrap().count(), 1);
+    let metadata: serde_json::Value = serde_json::from_slice(&hit.stdout).unwrap();
+    let package = metadata["packages"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .find(|package| package["name"] == "cached-manifest")
+        .unwrap();
+    let path = Path::new(package["manifest_path"].as_str().unwrap());
+    let contents = fs::read_to_string(path).unwrap();
+    let original_time = fs::metadata(path).unwrap().modified().unwrap();
+    let edited = contents.replace("marker = \"old\"", "marker = \"new\"");
+    assert_ne!(contents, edited);
+    assert_eq!(contents.len(), edited.len());
+    fs::write(path, &edited).unwrap();
+    File::options()
+        .write(true)
+        .open(path)
+        .unwrap()
+        .set_modified(original_time)
+        .unwrap();
+    assert_eq!(
+        fs::metadata(path).unwrap().modified().unwrap(),
+        original_time
+    );
+    let changed = run(true);
+    assert!(changed.status.success(), "{changed:?}");
+    assert_eq!(changed.stdout, run(false).stdout);
+    let metadata: serde_json::Value = serde_json::from_slice(&changed.stdout).unwrap();
+    assert!(
+        metadata["packages"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .any(|package| package["metadata"]["marker"] == "new")
+    );
+    assert_eq!(fs::read_dir(&cache).unwrap().count(), 2);
+    for entry in fs::read_dir(&cache).unwrap() {
+        fs::write(entry.unwrap().path(), b"invalid cache entry").unwrap();
+    }
+    assert_eq!(run(true).stdout, changed.stdout);
+    fs::write(
+        path,
+        edited.replace("name = \"cached-manifest\"", "name = []"),
+    )
+    .unwrap();
+    let cached_error = run(true);
+    let direct_error = run(false);
+    assert_eq!(cached_error.status.code(), Some(101));
+    assert_eq!(cached_error.status, direct_error.status);
+    assert_eq!(cached_error.stdout, direct_error.stdout);
+    assert_eq!(cached_error.stderr, direct_error.stderr);
+}
+
 fn simple(pre_clean_expected: impl IntoData, post_clean_expected: impl IntoData) {
     let p = project()
         .file(

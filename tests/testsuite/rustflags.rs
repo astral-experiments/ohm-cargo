@@ -12,7 +12,7 @@ use serde_json::Value;
 use snapbox::assert_data_eq;
 use walkdir::WalkDir;
 
-fn ohm_defaults_wrapper() -> PathBuf {
+pub(crate) fn ohm_defaults_wrapper() -> PathBuf {
     let wrapper = project()
         .at("ohm-defaults-wrapper")
         .file(
