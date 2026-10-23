@@ -5,7 +5,7 @@ use std::fmt;
 use std::hash::{Hash, Hasher};
 use std::path::{Path, PathBuf};
 use std::rc::Rc;
-use std::sync::Arc;
+use std::sync::{Arc, OnceLock};
 
 use anyhow::Context as _;
 use cargo_util_schemas::manifest::RustVersion;
@@ -43,6 +43,19 @@ pub enum EitherManifest {
 }
 
 impl EitherManifest {
+    /// Retain the already-validated source without constructing its diagnostic spans yet.
+    pub(crate) fn retain_document_source(&mut self) {
+        let (contents, document) = match self {
+            EitherManifest::Real(manifest) => (&manifest.contents, &mut manifest.document),
+            EitherManifest::Virtual(manifest) => (&manifest.contents, &mut manifest.lazy_document),
+        };
+        let contents = contents
+            .as_deref()
+            .expect("read_manifest retains the source contents")
+            .clone();
+        *document = Some(Arc::new(ManifestDocument::from_source(contents)));
+    }
+
     pub fn warnings_mut(&mut self) -> &mut Warnings {
         match self {
             EitherManifest::Real(r) => r.warnings_mut(),
@@ -57,6 +70,106 @@ impl EitherManifest {
     }
 }
 
+/// A shared view of diagnostic spans from the exact source parsed by `read_manifest`.
+///
+/// Compiler jobs can retain this view without parsing it. The first span lookup parses the
+/// captured string once, including when different jobs request spans concurrently.
+#[derive(Debug)]
+pub(crate) struct ManifestDocument {
+    contents: Option<String>,
+    parsed: OnceLock<Arc<toml::Spanned<toml::de::DeTable<'static>>>>,
+}
+
+impl ManifestDocument {
+    fn from_source(contents: String) -> Self {
+        Self {
+            contents: Some(contents),
+            parsed: OnceLock::new(),
+        }
+    }
+
+    fn from_parsed(document: Arc<toml::Spanned<toml::de::DeTable<'static>>>) -> Self {
+        Self {
+            contents: None,
+            parsed: OnceLock::from(document),
+        }
+    }
+
+    pub(crate) fn get(&self) -> &toml::Spanned<toml::de::DeTable<'static>> {
+        self.shared().as_ref()
+    }
+
+    fn shared(&self) -> &Arc<toml::Spanned<toml::de::DeTable<'static>>> {
+        self.parsed.get_or_init(|| {
+            let contents = self
+                .contents
+                .as_deref()
+                .expect("unparsed document has source");
+            let document = super::parser::parse_document(contents)
+                .expect("the captured manifest source was already parsed successfully");
+            Arc::new(super::parser::make_document_owned(document))
+        })
+    }
+}
+
+#[cfg(test)]
+mod document_tests {
+    use super::ManifestDocument;
+    use crate::diagnostics::get_key_value_span;
+    use crate::workspace::parser::{make_document_owned, parse_document};
+    use std::sync::Arc;
+
+    #[test]
+    fn shared_document_preserves_captured_source_spans() {
+        let mut contents = String::from(
+            r#"# A non-ASCII prefix keeps byte offsets significant: π.
+[package]
+name = "example"
+version = "0.1.0"
+[target.'cfg(unix)'.dependencies]
+"dep\u002dalias" = { package = "renamed\u002ddep", version = "1" }
+"#,
+        );
+        let original = make_document_owned(parse_document(&contents).unwrap());
+        let path = [
+            "target",
+            "cfg(unix)",
+            "dependencies",
+            "dep-alias",
+            "package",
+        ];
+        let expected = get_key_value_span(&original, &path).unwrap();
+        let document = Arc::new(ManifestDocument::from_source(contents.clone()));
+
+        // A later source change must not affect annotations for the already-read manifest.
+        contents.clear();
+        contents.push_str("not valid TOML");
+
+        std::thread::scope(|scope| {
+            let jobs: Vec<_> = (0..2)
+                .map(|_| {
+                    let document = Arc::clone(&document);
+                    scope.spawn(move || {
+                        let document = document.get();
+                        let span = get_key_value_span(document, &path).unwrap();
+                        (span.key, span.value, document.span())
+                    })
+                })
+                .collect();
+            for job in jobs {
+                assert_eq!(
+                    job.join().unwrap(),
+                    (
+                        expected.key.clone(),
+                        expected.value.clone(),
+                        original.span()
+                    )
+                );
+            }
+        });
+    }
+}
+
 /// Contains all the information about a package, as loaded from a `Cargo.toml`.
 ///
 /// This is deserialized using the [`TomlManifest`] type.
@@ -64,7 +177,7 @@ impl EitherManifest {
 pub struct Manifest {
     // alternate forms of manifests:
     contents: Option<Rc<String>>,
-    document: Option<Arc<toml::Spanned<toml::de::DeTable<'static>>>>,
+    document: Option<Arc<ManifestDocument>>,
     original_toml: Option<Rc<TomlManifest>>,
     normalized_toml: Rc<TomlManifest>,
     summary: Summary,
@@ -112,6 +225,7 @@ pub struct VirtualManifest {
     // alternate forms of manifests:
     contents: Option<Rc<String>>,
     document: Option<Rc<toml::Spanned<toml::de::DeTable<'static>>>>,
+    lazy_document: Option<Arc<ManifestDocument>>,
     original_toml: Option<Rc<TomlManifest>>,
     normalized_toml: Rc<TomlManifest>,
 
@@ -528,7 +642,7 @@ impl Manifest {
     ) -> Manifest {
         Manifest {
             contents,
-            document,
+            document: document.map(|document| Arc::new(ManifestDocument::from_parsed(document))),
             original_toml,
             normalized_toml,
             summary,
@@ -570,11 +684,18 @@ impl Manifest {
     }
     /// Collection of spans for the original TOML
     pub fn document(&self) -> Option<&toml::Spanned<toml::de::DeTable<'static>>> {
-        self.document.as_deref()
+        self.document.as_deref().map(ManifestDocument::get)
     }
 
     /// Collection of spans for the original TOML, returned as a cloned Arc.
     pub fn document_rc(&self) -> Option<Arc<toml::Spanned<toml::de::DeTable<'static>>>> {
+        self.document
+            .as_deref()
+            .map(|document| document.shared().clone())
+    }
+
+    /// Retain diagnostic spans without materializing them while preparing a compiler job.
+    pub(crate) fn diagnostic_document(&self) -> Option<Arc<ManifestDocument>> {
         self.document.clone()
     }
 
@@ -772,6 +893,7 @@ impl VirtualManifest {
         VirtualManifest {
             contents,
             document,
+            lazy_document: None,
             original_toml,
             normalized_toml,
             replace,
@@ -789,7 +911,9 @@ impl VirtualManifest {
     }
     /// Collection of spans for the original TOML
     pub fn document(&self) -> Option<&toml::Spanned<toml::de::DeTable<'static>>> {
-        self.document.as_deref()
+        self.document
+            .as_deref()
+            .or_else(|| self.lazy_document.as_deref().map(ManifestDocument::get))
     }
     /// The [`TomlManifest`] as parsed from [`VirtualManifest::document`]
     pub fn original_toml(&self) -> Option<&TomlManifest> {
