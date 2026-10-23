@@ -1289,7 +1289,9 @@ fn traverse_and_share(
             unit.rustdocflags.clone(),
             unit.links_overrides.clone(),
             unit.is_std,
-            unit.dep_hash,
+            // Runtime counterparts use the normal initial graph role.
+            /*dep_hash*/
+            0,
             unit.artifact,
             unit.artifact_target_for_features,
             unit.skip_non_compile_time_dep,
@@ -1312,7 +1314,7 @@ fn traverse_and_share(
                 unit.rustdocflags.clone(),
                 unit.links_overrides.clone(),
                 unit.is_std,
-                unit.dep_hash,
+                /*dep_hash*/ 0,
                 unit.artifact,
                 unit.artifact_target_for_features,
                 unit.skip_non_compile_time_dep,

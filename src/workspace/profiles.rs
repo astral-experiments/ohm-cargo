@@ -68,6 +68,8 @@ pub struct Profiles {
     requested_profile: InternedString,
     /// The host target for rustc being used by this `Profiles`.
     rustc_host: InternedString,
+    /// Whether the selected dev profile explicitly optimizes proc-macro dependencies.
+    optimize_proc_macro_dependencies: bool,
 }
 
 impl Profiles {
@@ -90,6 +92,7 @@ impl Profiles {
             original_profiles: profiles.clone(),
             requested_profile,
             rustc_host,
+            optimize_proc_macro_dependencies: false,
         };
 
         let trim_paths_enabled = ws.unstable_features().is_enabled(Feature::trim_paths())
@@ -123,7 +126,14 @@ impl Profiles {
         // Verify that the requested profile is defined *somewhere*.
         // This simplifies the API (no need for CargoResult), and enforces
         // assumptions about how config profiles are loaded.
-        profile_makers.get_profile_maker(&requested_profile)?;
+        let maker = profile_makers.get_profile_maker(&requested_profile)?;
+        profile_makers.optimize_proc_macro_dependencies = gctx.cli_unstable().ohm_defaults()
+            && maker.default.root == ProfileRoot::Debug
+            && maker
+                .toml
+                .as_ref()
+                .and_then(|profile| profile.opt_level.as_ref())
+                .is_some_and(|level| level.0 != "0");
         Ok(profile_makers)
     }
 
@@ -298,7 +308,12 @@ impl Profiles {
         kind: CompileKind,
     ) -> Profile {
         let maker = self.get_profile_maker(&self.requested_profile).unwrap();
-        let mut profile = maker.get_profile(Some(pkg_id), is_member, unit_for.is_for_host());
+        let mut profile = maker.get_profile(
+            Some(pkg_id),
+            is_member,
+            unit_for.is_for_host(),
+            self.is_optimized_proc_macro_dependency(unit_for),
+        );
 
         // Dealing with `panic=abort` and `panic=unwind` requires some special
         // treatment. Be sure to process all the various options here.
@@ -340,6 +355,11 @@ impl Profiles {
         profile
     }
 
+    /// Whether this ordinary library executes as a normal dependency of a proc macro.
+    pub(crate) fn is_optimized_proc_macro_dependency(&self, unit_for: UnitFor) -> bool {
+        self.optimize_proc_macro_dependencies && unit_for.proc_macro_dependency
+    }
+
     /// The profile for *running* a `build.rs` script is only used for setting
     /// a few environment variables. To ensure proper de-duplication of the
     /// running `Unit`, this uses a stripped-down profile (so that unrelated
@@ -362,7 +382,9 @@ impl Profiles {
     pub fn base_profile(&self) -> Profile {
         let profile_name = self.requested_profile;
         let maker = self.get_profile_maker(&profile_name).unwrap();
-        maker.get_profile(None, /*is_member*/ true, /*is_for_host*/ false)
+        maker.get_profile(
+            None, /*is_member*/ true, /*is_for_host*/ false, false,
+        )
     }
 
     /// Gets the directory name for a profile, like `debug` or `release`.
@@ -457,6 +479,7 @@ impl ProfileMaker {
         pkg_id: Option<PackageId>,
         is_member: bool,
         is_for_host: bool,
+        preserve_host_opt_level: bool,
     ) -> Profile {
         let mut profile = self.default.clone();
 
@@ -477,7 +500,13 @@ impl ProfileMaker {
             // basically turning down the optimization level and avoid limiting
             // codegen units. This ensures that we spend little time optimizing as
             // well as enabling parallelism by not constraining codegen units.
-            profile.opt_level = "0".into();
+            // These libraries execute inside proc macros, where runtime matters.
+            // Preserve the selected dev optimization level only for that normal
+            // dependency closure. Build scripts and proc macros retain their own
+            // defaults, and explicit build/package overrides still run below.
+            if !preserve_host_opt_level {
+                profile.opt_level = "0".into();
+            }
             profile.codegen_units = None;
 
             // For build dependencies, we usually don't need debuginfo, and
@@ -1020,6 +1049,8 @@ pub struct UnitFor {
     /// sticky (and forced to `true` for all further dependencies) — which is
     /// the whole point of `UnitFor`.
     host: bool,
+    /// An ordinary library reached through normal dependency edges from a proc macro.
+    proc_macro_dependency: bool,
     /// A target for a build dependency or proc-macro (or any of its
     /// dependencies). This is used for computing features of build
     /// dependencies and proc-macros independently of other dependency kinds.
@@ -1097,6 +1128,7 @@ impl UnitFor {
     /// proc macro/plugin, or test/bench).
     pub fn new_normal(root_compile_kind: CompileKind) -> UnitFor {
         UnitFor {
+            proc_macro_dependency: false,
             host: false,
             host_features: false,
             panic_setting: PanicSetting::ReadProfile,
@@ -1113,6 +1145,7 @@ impl UnitFor {
     /// they want to use the features of the package they are running for.
     pub fn new_host(host_features: bool, root_compile_kind: CompileKind) -> UnitFor {
         UnitFor {
+            proc_macro_dependency: false,
             host: true,
             host_features,
             // Force build scripts to always use `panic=unwind` for now to
@@ -1126,6 +1159,7 @@ impl UnitFor {
     /// A unit for a compiler plugin or their dependencies.
     pub fn new_compiler(root_compile_kind: CompileKind) -> UnitFor {
         UnitFor {
+            proc_macro_dependency: false,
             host: false,
             // The feature resolver doesn't know which dependencies are
             // plugins, so for now plugins don't split features. Since plugins
@@ -1148,6 +1182,7 @@ impl UnitFor {
     /// compiler flag.
     pub fn new_test(gctx: &GlobalContext, root_compile_kind: CompileKind) -> UnitFor {
         UnitFor {
+            proc_macro_dependency: false,
             host: false,
             host_features: false,
             // We're testing out an unstable feature (`-Zpanic-abort-tests`)
@@ -1214,6 +1249,10 @@ impl UnitFor {
                 self.artifact_target_for_features
             };
         UnitFor {
+            proc_macro_dependency: dep_target.is_lib()
+                && !dep_target.for_host()
+                && parent.target.is_lib()
+                && (parent.target.proc_macro() || self.proc_macro_dependency),
             host: self.host || dep_for_host,
             host_features,
             panic_setting,
@@ -1224,6 +1263,7 @@ impl UnitFor {
 
     pub fn for_custom_build(self) -> UnitFor {
         UnitFor {
+            proc_macro_dependency: false,
             host: true,
             host_features: self.host_features,
             // Force build scripts to always use `panic=unwind` for now to
@@ -1236,6 +1276,7 @@ impl UnitFor {
 
     /// Set the artifact compile target for use in features using the given `artifact`.
     pub(crate) fn with_artifact_features(mut self, artifact: &Artifact) -> UnitFor {
+        self.proc_macro_dependency = false;
         self.artifact_target_for_features = artifact.target().and_then(|t| t.to_compile_target());
         self
     }
@@ -1245,6 +1286,7 @@ impl UnitFor {
         mut self,
         kind: Option<CompileKind>,
     ) -> UnitFor {
+        self.proc_macro_dependency = false;
         self.artifact_target_for_features = kind.and_then(|kind| match kind {
             CompileKind::Host => None,
             CompileKind::Target(triple) => Some(triple),

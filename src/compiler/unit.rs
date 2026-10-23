@@ -121,8 +121,10 @@ pub struct UnitInner {
     /// dependencies. See `rebuild_unit_graph_shared` for more on why this is
     /// done.
     ///
-    /// This value initially starts as 0, and then is filled in via a
-    /// second-pass after all the unit dependencies have been computed.
+    /// Initially this is 0, or a temporary marker separating proc-macro
+    /// dependency roles (also carried by their build-script runs). The final
+    /// graph pass replaces it with the hash of the actual dependencies and
+    /// merges units whose complete settings and dependency graphs agree.
     pub dep_hash: u64,
 
     /// This is used for target-dependent feature resolution and is copied from

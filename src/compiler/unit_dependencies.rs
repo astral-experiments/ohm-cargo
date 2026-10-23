@@ -314,8 +314,10 @@ fn deps_of_roots(roots: &[Unit], state: &mut State<'_, '_>) -> CargoResult<()> {
 ///
 /// The result is stored in `state.unit_dependencies`.
 fn deps_of(unit: &Unit, state: &mut State<'_, '_>, unit_for: UnitFor) -> CargoResult<()> {
-    // Currently the `unit_dependencies` map does not include `unit_for`. This should
-    // be safe for now. `TestDependency` only exists to clear the `panic`
+    // `unit_dependencies` does not include `unit_for`. Proc-macro dependency
+    // roles are separated by an initial `dep_hash` marker, including their
+    // build-script runs, until the final graph pass hashes the real children.
+    // The other distinctions should remain safe: `TestDependency` only exists to clear the `panic`
     // flag, and you'll never ask for a `unit` with `panic` set as a
     // `TestDependency`. `CustomBuild` should also be fine since if the
     // requested unit's settings are the same as `Any`, `CustomBuild` can't
@@ -1000,7 +1002,16 @@ fn new_unit_dep_with_profile(
             .links_overrides
             .clone(),
         state.is_std,
-        /*dep_hash*/ 0,
+        // Equal explicit profiles can still have different dependency profiles.
+        // Keep those graph origins separate until `rebuild_unit_graph_shared`
+        // computes the real dependency hash. A build-script run also needs its
+        // parent's origin to keep the correct `links` metadata dependencies;
+        // compiling the script itself clears the optimization role.
+        if mode.is_run_custom_build() {
+            parent.dep_hash
+        } else {
+            u64::from(state.profiles.is_optimized_proc_macro_dependency(unit_for))
+        },
         artifact.map_or(IsArtifact::No, |_| IsArtifact::Yes),
         artifact_target,
         false,

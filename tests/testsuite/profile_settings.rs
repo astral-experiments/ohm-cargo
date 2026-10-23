@@ -1056,3 +1056,406 @@ fn profile_hint_mostly_unused_nightly() {
         )
         .run();
 }
+
+#[cargo_test(nightly, reason = "unit-graph and Ohm defaults are unstable")]
+fn ohm_proc_macro_helper_profiles() {
+    let manifest = r#"
+        [package]
+        name = "app"
+        version = "0.1.0"
+        edition = "2024"
+        [workspace]
+        members = ["macros", "nested", "helper", "leaf", "script_helper"]
+        resolver = "2"
+        [dependencies]
+        macros = { path = "macros" }
+        [build-dependencies]
+        script_helper = { path = "script_helper" }
+        [profile.dev]
+        opt-level = 2
+        [profile.custom]
+        inherits = "dev"
+        [profile.custom-release]
+        inherits = "release"
+        opt-level = 2
+    "#;
+    let p = project()
+        .file("Cargo.toml", manifest)
+        .file("src/lib.rs", "")
+        .file("build.rs", "fn main() {}")
+        .file(
+            "macros/Cargo.toml",
+            r#"
+            [package]
+            name = "macros"
+            version = "0.1.0"
+            edition = "2024"
+            [lib]
+            proc-macro = true
+            [dependencies]
+            helper = { path = "../helper" }
+            nested = { path = "../nested" }
+        "#,
+        )
+        .file("macros/src/lib.rs", "")
+        .file(
+            "nested/Cargo.toml",
+            r#"
+            [package]
+            name = "nested"
+            version = "0.1.0"
+            edition = "2024"
+            [lib]
+            proc-macro = true
+            [dependencies]
+            leaf = { path = "../leaf" }
+        "#,
+        )
+        .file("nested/src/lib.rs", "")
+        .file(
+            "helper/Cargo.toml",
+            r#"
+            [package]
+            name = "helper"
+            version = "0.1.0"
+            edition = "2024"
+            [dependencies]
+            leaf = { path = "../leaf" }
+            [build-dependencies]
+            script_helper = { path = "../script_helper" }
+        "#,
+        )
+        .file("helper/src/lib.rs", "")
+        .file("helper/src/main.rs", "fn main() {}")
+        .file("helper/build.rs", "fn main() {}")
+        .file(
+            "leaf/Cargo.toml",
+            "[package]\nname='leaf'\nversion='0.1.0'\nedition='2024'\n",
+        )
+        .file("leaf/src/lib.rs", "")
+        .file(
+            "script_helper/Cargo.toml",
+            "[package]\nname='script_helper'\nversion='0.1.0'\nedition='2024'\n",
+        )
+        .file("script_helper/src/lib.rs", "")
+        .build();
+    let graph = |args: &str, configs: &[&str], env_opt: Option<&str>| {
+        let mut cargo = p.cargo(&format!("build {args} --unit-graph -Zunstable-options"));
+        cargo.masquerade_as_nightly_cargo(&["unit-graph", "ohm-defaults", "bindeps"]);
+        for config in configs {
+            cargo.arg("--config").arg(config);
+        }
+        if let Some(opt) = env_opt {
+            cargo.env("CARGO_PROFILE_DEV_OPT_LEVEL", opt);
+        }
+        cargo.run_json()
+    };
+    let check = |args: &str,
+                 configs: &[&str],
+                 env_opt: Option<&str>,
+                 helper: &str,
+                 leaf: &str,
+                 host: &str| {
+        let g = graph(args, configs, env_opt);
+        let mut seen = std::collections::BTreeSet::new();
+        for u in g["units"].as_array().unwrap() {
+            let name = u["target"]["name"].as_str().unwrap();
+            if u["mode"] == "run-custom-build" || name == "app" {
+                continue;
+            }
+            let expected = match name {
+                "helper" => helper,
+                "leaf" => leaf,
+                "macros" | "nested" | "script_helper" | "build-script-build" => host,
+                _ => panic!("unexpected unit {u}"),
+            };
+            assert_eq!(u["profile"]["opt_level"].as_str(), Some(expected), "{u}");
+            seen.insert(name.to_owned());
+        }
+        assert!(
+            seen.contains("helper")
+                && seen.contains("leaf")
+                && seen.contains("macros")
+                && seen.contains("nested")
+                && seen.contains("script_helper")
+        );
+    };
+    check("-p app -Zohm-defaults=yes", &[], None, "2", "2", "0");
+    check(
+        "-p app --profile test -Zohm-defaults=yes",
+        &[],
+        None,
+        "2",
+        "2",
+        "0",
+    );
+    check(
+        "-p app --profile custom -Zohm-defaults=yes",
+        &[],
+        None,
+        "2",
+        "2",
+        "0",
+    );
+    check("-p app -Zohm-defaults=no", &[], None, "0", "0", "0");
+    check(
+        "-p app --release -Zohm-defaults=yes",
+        &[],
+        None,
+        "0",
+        "0",
+        "0",
+    );
+    check(
+        "-p app --profile custom-release -Zohm-defaults=yes",
+        &[],
+        None,
+        "0",
+        "0",
+        "0",
+    );
+    check(
+        "-p app -Zohm-defaults=yes",
+        &["profile.dev.opt-level=1"],
+        None,
+        "1",
+        "1",
+        "0",
+    );
+    check(
+        "-p app -Zohm-defaults=yes",
+        &["profile.dev.build-override.opt-level=1"],
+        None,
+        "1",
+        "1",
+        "1",
+    );
+    check(
+        "-p app -Zohm-defaults=yes",
+        &["profile.dev.package.helper.opt-level=0"],
+        None,
+        "0",
+        "2",
+        "0",
+    );
+    check(
+        "-p app -Zohm-defaults=yes",
+        &["profile.dev.package.leaf.opt-level=0"],
+        None,
+        "2",
+        "0",
+        "0",
+    );
+    check(
+        "-p app -Zohm-defaults=yes",
+        &[
+            "profile.dev.build-override.opt-level=1",
+            "profile.dev.package.leaf.opt-level=0",
+        ],
+        None,
+        "1",
+        "0",
+        "1",
+    );
+    check(
+        &format!("-p app --target {} -Zohm-defaults=yes", rustc_host()),
+        &[],
+        None,
+        "2",
+        "2",
+        "0",
+    );
+    // A proc-macro selected as a root already uses the dev profile itself.
+    let direct = graph("-p macros -Zohm-defaults=yes", &[], None);
+    for u in direct["units"].as_array().unwrap() {
+        if u["target"]["name"] == "macros"
+            || u["target"]["name"] == "helper"
+            || u["target"]["name"] == "leaf"
+        {
+            assert_eq!(u["profile"]["opt_level"], "2", "{u}");
+        }
+        if u["target"]["name"] == "nested" {
+            assert_eq!(u["profile"]["opt_level"], "0");
+        }
+    }
+    p.change_file("Cargo.toml", &manifest.replace("opt-level = 2", ""));
+    check("-p app -Zohm-defaults=yes", &[], None, "0", "0", "0");
+    check("-p app -Zohm-defaults=yes", &[], Some("3"), "3", "3", "0");
+    // Runtime debug-info matching and final graph sharing must still work.
+    p.change_file(
+        "Cargo.toml",
+        &manifest.replace(
+            "macros = { path = \"macros\" }",
+            "macros = { path = \"macros\" }\nhelper = { path = \"helper\" }",
+        ),
+    );
+    let shared = graph("-p app -Zohm-defaults=yes", &[], None);
+    let helpers: Vec<_> = shared["units"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .filter(|u| u["target"]["name"] == "helper")
+        .collect();
+    assert_eq!(helpers.len(), 1, "{shared}");
+    assert_eq!(helpers[0]["profile"]["opt_level"], "2");
+    // Artifact binaries and their ordinary library edges keep the old host defaults.
+    p.change_file(
+        "Cargo.toml",
+        &manifest.replace(
+            "script_helper = { path = \"script_helper\" }",
+            "helper = { path = \"helper\", artifact = \"bin\" }",
+        ),
+    );
+    let artifacts = graph("-p app -Zohm-defaults=yes -Zbindeps", &[], None);
+    let mut saw_bin = false;
+    for u in artifacts["units"].as_array().unwrap() {
+        if u["target"]["kind"] == serde_json::json!(["bin"]) {
+            saw_bin = true;
+            assert_eq!(u["profile"]["opt_level"], "0", "{u}");
+        }
+    }
+    assert!(saw_bin);
+}
+
+#[cargo_test(nightly, reason = "unit-graph and Ohm defaults are unstable")]
+fn ohm_proc_macro_helper_build_script_origins() {
+    let p = project()
+        .file("Cargo.toml", r#"
+            [package]
+            name = "app"
+            version = "0.1.0"
+            edition = "2024"
+            [workspace]
+            members = ["macros", "helper", "leaf"]
+            resolver = "2"
+            [dependencies]
+            macros = { path = "macros" }
+            [build-dependencies]
+            helper = { path = "helper" }
+            [profile.dev]
+            opt-level = 2
+            [profile.dev.package.helper]
+            opt-level = 0
+        "#)
+        .file("src/main.rs", "macros::value!(); fn main() { assert_eq!(MACRO_LEVEL, \"2\"); }")
+        .file("build.rs", "fn main() { assert_eq!(helper::leaf_level(), \"0\"); assert_eq!(helper::own_level(), \"0\"); }")
+        .file("macros/Cargo.toml", r#"
+            [package]
+            name = "macros"
+            version = "0.1.0"
+            edition = "2024"
+            [lib]
+            proc-macro = true
+            [dependencies]
+            helper = { path = "../helper" }
+        "#)
+        .file("macros/src/lib.rs", r#"
+            extern crate proc_macro;
+            #[proc_macro]
+            pub fn value(_: proc_macro::TokenStream) -> proc_macro::TokenStream {
+                assert_eq!(helper::own_level(), "0");
+                format!("pub const MACRO_LEVEL: &str = {:?};", helper::leaf_level()).parse().unwrap()
+            }
+        "#)
+        .file("helper/Cargo.toml", r#"
+            [package]
+            name = "helper"
+            version = "0.1.0"
+            edition = "2024"
+            [dependencies]
+            leaf = { path = "../leaf" }
+        "#)
+        .file("helper/src/lib.rs", "pub fn leaf_level() -> &'static str { env!(\"LEAF_LEVEL\") } pub fn own_level() -> &'static str { env!(\"OWN_LEVEL\") }")
+        .file("helper/build.rs", r#"
+            fn main() {
+                println!("cargo:rustc-env=LEAF_LEVEL={}", std::env::var("DEP_LEAF_LINK_LEVEL").unwrap());
+                println!("cargo:rustc-env=OWN_LEVEL={}", std::env::var("OPT_LEVEL").unwrap());
+            }
+        "#)
+        .file("leaf/Cargo.toml", "[package]\nname='leaf'\nversion='0.1.0'\nedition='2024'\nlinks='leaf_link'\n")
+        .file("leaf/src/lib.rs", "")
+        .file("leaf/build.rs", "fn main() { println!(\"cargo:level={}\", std::env::var(\"OPT_LEVEL\").unwrap()); }")
+        .build();
+    let graph = |args: &str| {
+        p.cargo(&format!(
+            "build {args} --unit-graph -Zunstable-options -Zohm-defaults=yes"
+        ))
+        .masquerade_as_nightly_cargo(&["unit-graph", "ohm-defaults"])
+        .run_json()
+    };
+    let check = |g: &serde_json::Value, variants: usize| {
+        let units = g["units"].as_array().unwrap();
+        let helpers: Vec<_> = units
+            .iter()
+            .filter(|u| u["target"]["name"] == "helper")
+            .collect();
+        assert_eq!(helpers.len(), variants, "{g}");
+        let helper_id = &helpers[0]["pkg_id"];
+        let compiled_scripts: Vec<_> = units
+            .iter()
+            .filter(|u| {
+                &u["pkg_id"] == helper_id
+                    && u["target"]["kind"] == serde_json::json!(["custom-build"])
+                    && u["mode"] != "run-custom-build"
+            })
+            .collect();
+        assert_eq!(compiled_scripts.len(), 1, "{g}");
+        assert_eq!(compiled_scripts[0]["profile"]["opt_level"], "0");
+        for helper in helpers {
+            assert_eq!(helper["profile"]["opt_level"], "0");
+            let deps: Vec<_> = helper["dependencies"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .map(|d| &units[d["index"].as_u64().unwrap() as usize])
+                .collect();
+            let leaf = deps.iter().find(|u| u["target"]["name"] == "leaf").unwrap();
+            let run = deps
+                .iter()
+                .find(|u| u["mode"] == "run-custom-build")
+                .unwrap();
+            assert_eq!(run["profile"]["opt_level"], helper["profile"]["opt_level"]);
+            let leaf_runs: Vec<_> = run["dependencies"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .map(|d| &units[d["index"].as_u64().unwrap() as usize])
+                .filter(|u| u["mode"] == "run-custom-build")
+                .collect();
+            assert_eq!(leaf_runs.len(), 1, "{run}");
+            assert_eq!(
+                leaf_runs[0]["profile"]["opt_level"],
+                leaf["profile"]["opt_level"]
+            );
+        }
+    };
+    check(&graph("-p app"), 2);
+    let first = graph("-p app -p macros");
+    let reverse = graph("-p macros -p app");
+    check(&first, 2);
+    check(&reverse, 2);
+    let signatures = |g: &serde_json::Value| {
+        let mut rows: Vec<_> = g["units"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .map(|u| {
+                let mut row = u.clone();
+                row.as_object_mut().unwrap().remove("dependencies");
+                row.to_string()
+            })
+            .collect();
+        rows.sort();
+        rows
+    };
+    assert_eq!(signatures(&first), signatures(&reverse));
+    // A leaf override makes both complete closures equal, so the final pass shares them.
+    check(
+        &graph("-p app --config profile.dev.package.leaf.opt-level=0"),
+        1,
+    );
+    // This executes both build-script metadata branches and the proc macro.
+    p.cargo("run -p app -Zohm-defaults=yes")
+        .masquerade_as_nightly_cargo(&["ohm-defaults"])
+        .run();
+}
