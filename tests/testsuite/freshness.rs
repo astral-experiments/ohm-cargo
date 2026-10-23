@@ -5626,6 +5626,11 @@ fn relink_only_reuses_root_codegen() {
 
     // A corrupt sidecar must fail closed and regenerate the codegen cache.
     fs::write(&manifest, "corrupt").unwrap();
+    let external = p.root().join("external-objects");
+    fs::create_dir(&external).unwrap();
+    fs::write(external.join("keep.o"), b"other project").unwrap();
+    fs::remove_dir_all(&objects).unwrap();
+    p.symlink(&external, &objects);
     fs::write(&log, "").unwrap();
     sleep_ms(1000);
     p.change_file("dep/src/lib.rs", "pub fn value() -> i32 { 3 }");
@@ -5638,6 +5643,9 @@ fn relink_only_reuses_root_codegen() {
         fs::read_to_string(&log).unwrap(),
         "compile:dep\ncompile-link:app\n"
     );
+    assert!(fs::symlink_metadata(&objects).unwrap().is_dir());
+    assert_eq!(fs::read(external.join("keep.o")).unwrap(), b"other project");
+    assert_eq!(external.read_dir().unwrap().count(), 1);
     p.process(&p.bin("app"))
         .with_stdout_data(str![[r#"
 3
