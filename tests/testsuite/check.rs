@@ -350,10 +350,62 @@ fn remove_ohm_run_success(build_directory: &std::path::Path, package: &str) {
 fn ohm_compiler_supports_defaults() -> bool {
     cargo_test_support::process("rustc")
         .arg("-Zpublic-api-hash")
-        .arg("-Zcache-proc-macros")
         .arg("--print=sysroot")
         .exec_with_output()
         .is_ok()
+}
+
+#[cargo_test]
+fn ohm_defaults_reexpand_derives_when_tracked_inputs_change() {
+    if !ohm_compiler_supports_defaults() {
+        return;
+    }
+    let p = project()
+        .file(
+            "Cargo.toml",
+            &format!(
+                "{}\n[dependencies]\nmac = {{ path = 'mac' }}",
+                basic_manifest("foo", "0.1.0")
+            ),
+        )
+        .file(
+            "mac/Cargo.toml",
+            &format!(
+                "{}\n[lib]\nproc-macro = true",
+                basic_manifest("mac", "0.1.0")
+            ),
+        )
+        .file(
+            "mac/src/lib.rs",
+            r##"
+            #[proc_macro_derive(Value)]
+            pub fn value(_: proc_macro::TokenStream) -> proc_macro::TokenStream {
+                let value = std::env::var("OHM_DERIVE_VALUE").unwrap();
+                format!(r#"
+                    const _: &str = env!("OHM_DERIVE_VALUE");
+                    impl Item {{ const VALUE: &'static str = {value:?}; }}
+                "#).parse().unwrap()
+            }
+        "##,
+        )
+        .file(
+            "src/main.rs",
+            r#"
+            #[derive(mac::Value)]
+            struct Item;
+            fn main() {
+                assert_eq!(Item::VALUE, std::env::var("OHM_DERIVE_VALUE").unwrap());
+            }
+        "#,
+        )
+        .build();
+    for value in ["first", "second"] {
+        p.cargo("-Zohm-defaults run")
+            .masquerade_as_nightly_cargo(&["ohm-defaults"])
+            .env("CARGO_INCREMENTAL", "1")
+            .env("OHM_DERIVE_VALUE", value)
+            .run();
+    }
 }
 
 #[cargo_test]

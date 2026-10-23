@@ -1562,7 +1562,6 @@ pub(super) fn selected_compiler_supports_ohm_defaults() -> bool {
     *SUPPORTED.get_or_init(|| {
         cargo_test_support::process("rustc")
             .arg("-Zpublic-api-hash")
-            .arg("-Zcache-proc-macros")
             .arg("--print=sysroot")
             .exec_with_output()
             .is_ok()
