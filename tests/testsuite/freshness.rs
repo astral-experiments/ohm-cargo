@@ -70,6 +70,7 @@ fn shared_build_directory_distinguishes_workspace_sources() {
         .process(&second.bin("demo"))
         .with_stdout_data("second\n")
         .run();
+    assert!(shared.join("debug/build").is_dir());
 }
 
 #[cargo_test(nightly, reason = "requires -Zchecksum-hash-algorithm")]
