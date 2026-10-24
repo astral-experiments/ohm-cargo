@@ -1,0 +1,157 @@
+{
+  "bootstrap_resamples": 200000,
+  "candidate_patch_sha256": "7aeec92e150bc846c9c1ede9f45ef3f187f45e929c585d1231689f6e4f408875",
+  "candidate_tree": "085e978d381a91a08443bd11fe267a29c14215a5",
+  "cargo_base_tree": "487deda53e727c16bd22ae3d7cf1c512d1005116",
+  "cargo_source": "fdd26156be98618e2e01a9e02703edac71b79a35",
+  "cargo_source_lockfile_sha256": "151c473e1a11532946ba9421ab1beeb238f98eb1f8cd4e5f94f9811003abd5a7",
+  "confidence": 0.99,
+  "integration_cases_per_binary": [
+    "freshness::relink_only_reuses_root_codegen",
+    "freshness::relink_only_reuses_root_codegen_after_separate_transitive_dependency_build",
+    "freshness::unused_package_library_does_not_relink_integration_test",
+    "freshness::unused_workspace_integration_relinks_transitive_native_archive"
+  ],
+  "module_tests_passed": 6,
+  "order": [
+    [
+      "AB",
+      "BA",
+      "BA",
+      "AB",
+      "BA",
+      "AB",
+      "AB",
+      "BA"
+    ],
+    [
+      "BA",
+      "AB",
+      "AB",
+      "BA",
+      "AB",
+      "BA",
+      "BA",
+      "AB"
+    ]
+  ],
+  "producer_BOLT": false,
+  "producer_PGO": false,
+  "producer_features": "all-static,ohm-defaults",
+  "producer_release_environment": {
+    "CARGO_BUILD_JOBS": "24",
+    "CARGO_INCREMENTAL": "0",
+    "CARGO_PROFILE_RELEASE_CODEGEN_UNITS": "1",
+    "CARGO_PROFILE_RELEASE_DEBUG": "1",
+    "CARGO_PROFILE_RELEASE_INCREMENTAL": "false",
+    "CARGO_PROFILE_RELEASE_LTO": "thin",
+    "CARGO_PROFILE_RELEASE_OPT_LEVEL": "3",
+    "CARGO_PROFILE_RELEASE_STRIP": "none",
+    "CFG_RELEASE_CHANNEL": "dev",
+    "LIBZ_SYS_STATIC": "1"
+  },
+  "production_pair": {
+    "baseline": {
+      "allocated_sections_preserved": 31,
+      "bytes": 42316208,
+      "linked_sha256": "5dad94c5bc680855c7d1ff21ffcf6e1ba69bc47c956d08e69f062e22910aab80",
+      "stripped_sha256": "cd0e983e591e7bc02ce32e8cfcc62c9ef0aae0927676dd957914bafd9c98966f",
+      "version_stdout_sha256": "b4bf2a74bace7fa9304f31f9476b9c658735138da4bcee37aa9eaa86db13acd2"
+    },
+    "candidate": {
+      "allocated_sections_preserved": 31,
+      "bytes": 42325976,
+      "linked_sha256": "5c408de4baec273b83258dfd68770c86039da363f39e59e47a104f05395a8c56",
+      "stripped_sha256": "295399e30de8dbc97cca42f6be947ec8a6efb58cfb302b66d546be3dd852937c",
+      "version_stdout_sha256": "b4bf2a74bace7fa9304f31f9476b9c658735138da4bcee37aa9eaa86db13acd2"
+    }
+  },
+  "profiler_control": {
+    "actual_elf_launcher_sha256": "def5fdcf6ae64a4d3e6af3786b622978d8313e0734ecf3f6cbe71d8be9e274c8",
+    "adapter_sha256": "42f912fe052732ef964681579a3bc1acbc50966f04babb5a452f25dfe4825973",
+    "cores": {
+      "large-512MiB": "ccb79923aa79552778822874a7368e224f8b7ccdabdf77eff3c34acf931c55e9",
+      "stock-8MiB": "7801ef44ff068bc36d76db630d852e62b5741d8ecd54301bdc1f189e7d809835"
+    },
+    "distribution_core_sha256": "825eb197d519240c112e03ed00f40a8bbe1a0a0614f79ea95e28c67e8695cb03",
+    "expected_delta": 54,
+    "heap_MiB": [
+      64,
+      513
+    ],
+    "held_out_ir": [
+      51035,
+      51089
+    ],
+    "patch_sha256": "706a108281ffdc53800003dc416f6b9716f35532ccb6641c7e6f8f142a8221da",
+    "reservation_MiB": 512
+  },
+  "required_wins_per_host": 8,
+  "sdk_asset_sha256": "177751bcef731909e9fa2c89983804ec6fe663101711dc46003a743914d37203",
+  "sdk_asset_url": "https://github.com/astral-sh/ohm/releases/download/ohm-1.99.0-12/ohm-1.99.0-12-x86_64-unknown-linux-gnu.tar.gz",
+  "sdk_compiler_driver_sha256": "253120eeae6c051af825c4884b30b2d5d62a3a4094428d52c815cbcaf7af697a",
+  "sdk_release": "https://github.com/astral-sh/ohm/releases/tag/ohm-1.99.0-12",
+  "sdk_rustc_sha256": "1879f05850bfcd95837087c6012c76bc0355581012686d51b2f690ce46934d6e",
+  "seeds": [
+    20261024151,
+    20261024152
+  ],
+  "source_package": {
+    "dsc_sha256": "4dd9b0cdc51ee8d0809f5bf53f29549471380ebbbd965b444ef9ef437cfaba70",
+    "dsc_url": "https://archive.ubuntu.com/ubuntu/pool/main/v/valgrind/valgrind_3.22.0-0ubuntu3.dsc",
+    "files": [
+      {
+        "bytes": 16565502,
+        "file": "valgrind_3.22.0.orig.tar.bz2",
+        "sha256": "c811db5add2c5f729944caf47c4e7a65dcaabb9461e472b578765dd7bf6d2d4c",
+        "url": "https://archive.ubuntu.com/ubuntu/pool/main/v/valgrind/valgrind_3.22.0.orig.tar.bz2"
+      },
+      {
+        "bytes": 36344,
+        "file": "valgrind_3.22.0-0ubuntu3.debian.tar.xz",
+        "sha256": "f999fb9cfe72190cd90573ce7226798dd996a1f1371229436416c042cb0772d5",
+        "url": "https://archive.ubuntu.com/ubuntu/pool/main/v/valgrind/valgrind_3.22.0-0ubuntu3.debian.tar.xz"
+      }
+    ],
+    "source_package": "1:3.22.0-0ubuntu3"
+  },
+  "stock_cargo": [
+    "cargo 1.99.0 (5f94df478 2026-08-27)",
+    "release: 1.99.0",
+    "commit-hash: 5f94df4789f005f9a352888e8355ffc645b7ed0e",
+    "commit-date: 2026-08-27",
+    "host: x86_64-unknown-linux-gnu",
+    "libgit2: 1.9.6 (sys:0.21.0 vendored)",
+    "libcurl: 8.21.0-DEV (sys:0.4.90+curl-8.21.0 vendored ssl:OpenSSL/3.6.3)",
+    "ssl: OpenSSL 3.6.3 9 Jun 2026",
+    "os: Ubuntu 24.4.0 (noble) [64-bit]"
+  ],
+  "stock_rustc": [
+    "rustc 1.99.0 (b940084d7 2026-09-28)",
+    "binary: rustc",
+    "commit-hash: b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+    "commit-date: 2026-09-28",
+    "host: x86_64-unknown-linux-gnu",
+    "release: 1.99.0",
+    "LLVM version: 23.1.1"
+  ],
+  "strict_lower_reduction_minimum": 0.01,
+  "strict_two_sided_sign_p_maximum": 0.01,
+  "unit_tests_added": [
+    "relink_manifest_json_matches_streaming_at_size_boundaries",
+    "relink_manifest_json_rejects_truncation_trailing_and_invalid_data",
+    "relink_manifest_json_keeps_checksum_failures_distinct",
+    "relink_manifest_json_still_rejects_a_final_symlink"
+  ],
+  "uv_source": "3d82a6ad5a7eab8c68236553b7846517767c4b61",
+  "workload_Cargo_argv": [
+    "cargo",
+    "-Zohm-defaults=yes",
+    "test",
+    "--no-run",
+    "--locked",
+    "--offline",
+    "-j",
+    "8"
+  ]
+}

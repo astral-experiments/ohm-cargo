@@ -1,0 +1,175 @@
+diff --git a/src/compiler/mod.rs b/src/compiler/mod.rs
+index 67585636f0b1218bd3d5183a906786534f0837de..19577866b6203a1d91cc6539bde9019fc15ea75e 100644
+--- a/src/compiler/mod.rs
++++ b/src/compiler/mod.rs
+@@ -66,7 +66,7 @@ use std::env;
+ use std::ffi::{OsStr, OsString};
+ use std::fmt::Display;
+ use std::fs::{self, File};
+-use std::io::{BufRead, BufReader, BufWriter, Write};
++use std::io::{BufRead, BufReader, BufWriter, Read, Seek, Write};
+ use std::ops::{Deref, Range};
+ use std::path::{Path, PathBuf};
+ use std::sync::{Arc, LazyLock};
+@@ -569,6 +569,29 @@ struct CheckedRelinkManifest {
+     manifest: RelinkCacheManifest,
+ }
+ 
++const RELINK_MANIFEST_SLICE_LIMIT: u64 = 1024 * 1024;
++
++fn read_relink_manifest_json(
++    mut reader: impl Read + Seek,
++    len: Option<u64>,
++) -> Option<CheckedRelinkManifest> {
++    if let Some(len) = len.filter(|len| *len <= RELINK_MANIFEST_SLICE_LIMIT) {
++        // The length is only a hint: read an extra byte so a growing file cannot
++        // turn a valid JSON prefix into an accepted manifest. Bound the buffer
++        // independently of the file's current size.
++        let mut bytes = Vec::with_capacity(len as usize + 1);
++        reader.by_ref().take(len + 1).read_to_end(&mut bytes).ok()?;
++        if bytes.len() as u64 == len {
++            return serde_json::from_slice(&bytes).ok();
++        }
++        reader.rewind().ok()?;
++    }
++
++    // Keep streaming large files, or files whose length changed, from the same
++    // opened descriptor rather than reopening a potentially different path.
++    serde_json::from_reader(BufReader::new(reader)).ok()
++}
++
+ struct RelinkCachePaths {
+     rlink: PathBuf,
+     executable: PathBuf,
+@@ -697,8 +720,8 @@ impl RelinkCachePaths {
+ 
+     fn read_manifest(&self) -> Option<RelinkCacheManifest> {
+         let file = paths::open_regular(&self.manifest).ok()?;
+-        let mut checked: CheckedRelinkManifest =
+-            serde_json::from_reader(BufReader::new(file)).ok()?;
++        let len = file.metadata().ok().map(|metadata| metadata.len());
++        let mut checked = read_relink_manifest_json(file, len)?;
+         if checked.input_checksum != checked.manifest.input_checksum() {
+             return None;
+         }
+@@ -4276,6 +4299,120 @@ fn rustdoc_dep_info_loc(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> Path
+ mod relink_cache_tests {
+     use super::*;
+ 
++    fn manifest_json() -> CargoResult<Vec<u8>> {
++        let manifest = RelinkCacheManifest {
++            version: RELINK_CACHE_VERSION,
++            rlink: RelinkCacheFile {
++                path: PathBuf::from("quoted-\"-雪.rlink"),
++                blake3: "hash".to_owned(),
++            },
++            executable: RelinkCacheObject {
++                path: PathBuf::from("app"),
++                len: 42,
++                modified_nanos: u64::MAX,
++            },
++            objects: Vec::new(),
++            unused_extern_names: Some(vec!["unused".to_owned()]),
++        };
++        let input_checksum = manifest.input_checksum();
++        Ok(serde_json::to_vec(&CheckedRelinkManifest {
++            input_checksum,
++            proof_checksum: crate::util::hash_u64((input_checksum, &manifest.unused_extern_names)),
++            manifest,
++        })?)
++    }
++
++    #[test]
++    fn relink_manifest_json_matches_streaming_at_size_boundaries() -> CargoResult<()> {
++        let original = manifest_json()?;
++        let expected: serde_json::Value = serde_json::from_slice(&original)?;
++        for size in [
++            original.len(),
++            RELINK_MANIFEST_SLICE_LIMIT as usize,
++            RELINK_MANIFEST_SLICE_LIMIT as usize + 1,
++        ] {
++            let mut bytes = original.clone();
++            bytes.resize(size, b' ');
++            // Include unknown, accurate, stale-short and stale-long file sizes.
++            for len in [
++                None,
++                Some(size as u64),
++                Some(1),
++                Some(size as u64 - 1),
++                Some(size as u64 + 1),
++            ] {
++                let actual = read_relink_manifest_json(std::io::Cursor::new(&bytes), len).unwrap();
++                let streaming: CheckedRelinkManifest =
++                    serde_json::from_reader(BufReader::new(bytes.as_slice()))?;
++                assert_eq!(serde_json::to_value(actual)?, expected);
++                assert_eq!(serde_json::to_value(streaming)?, expected);
++            }
++        }
++        Ok(())
++    }
++
++    #[test]
++    fn relink_manifest_json_rejects_truncation_trailing_and_invalid_data() -> CargoResult<()> {
++        let original = manifest_json()?;
++        let mut wrong_type: serde_json::Value = serde_json::from_slice(&original)?;
++        wrong_type["version"] = serde_json::json!("not an integer");
++        let mut large_trailing = original.clone();
++        large_trailing.resize(RELINK_MANIFEST_SLICE_LIMIT as usize + 1, b' ');
++        large_trailing.extend_from_slice(b"false");
++        let invalid = [
++            Vec::new(),
++            original[..original.len() - 1].to_vec(),
++            [original.as_slice(), b"{}"].concat(),
++            [original.as_slice(), b"\0"].concat(),
++            serde_json::to_vec(&wrong_type)?,
++            large_trailing,
++        ];
++        for bytes in invalid {
++            for len in [None, Some(bytes.len() as u64), Some(original.len() as u64)] {
++                assert!(read_relink_manifest_json(std::io::Cursor::new(&bytes), len).is_none());
++                assert!(
++                    serde_json::from_reader::<_, CheckedRelinkManifest>(BufReader::new(
++                        bytes.as_slice()
++                    ))
++                    .is_err()
++                );
++            }
++        }
++        Ok(())
++    }
++
++    #[test]
++    fn relink_manifest_json_keeps_checksum_failures_distinct() -> CargoResult<()> {
++        let dir = tempfile::tempdir()?;
++        let cache = RelinkCachePaths::new(dir.path().join("app"));
++        let original = manifest_json()?;
++        fs::write(&cache.manifest, &original)?;
++        assert!(cache.read_manifest().unwrap().unused_extern_names.is_some());
++
++        let mut value: serde_json::Value = serde_json::from_slice(&original)?;
++        value["input_checksum"] = serde_json::json!(value["input_checksum"].as_u64().unwrap() ^ 1);
++        fs::write(&cache.manifest, serde_json::to_vec(&value)?)?;
++        assert!(cache.read_manifest().is_none());
++
++        let mut value: serde_json::Value = serde_json::from_slice(&original)?;
++        value["proof_checksum"] = serde_json::json!(value["proof_checksum"].as_u64().unwrap() ^ 1);
++        fs::write(&cache.manifest, serde_json::to_vec(&value)?)?;
++        assert!(cache.read_manifest().unwrap().unused_extern_names.is_none());
++        Ok(())
++    }
++
++    #[cfg(unix)]
++    #[test]
++    fn relink_manifest_json_still_rejects_a_final_symlink() -> CargoResult<()> {
++        let dir = tempfile::tempdir()?;
++        let cache = RelinkCachePaths::new(dir.path().join("app"));
++        let target = dir.path().join("manifest.json");
++        fs::write(&target, manifest_json()?)?;
++        std::os::unix::fs::symlink(target, &cache.manifest)?;
++        assert!(cache.read_manifest().is_none());
++        Ok(())
++    }
++
+     #[test]
+     fn incomplete_object_list_invalidates_relink_manifest() -> CargoResult<()> {
+         let dir = tempfile::tempdir()?;

@@ -1,0 +1,48 @@
+{
+  "all_profiles": 32,
+  "blocks": [
+    {
+      "adapter_sha256": "c1c9e206ba5572256ce1a02bf4587005b9fcb0e0abe44a2de902ffcde938e71a",
+      "after_launch_schema_repair": true,
+      "analyzer_sha256": "fb953770589709f02153ddbd9cbd378f709eb8be4de8a8e385d632d2e6a1d615",
+      "cohort_sha256": "953549e298b4e1b2da380589ed98a150066b876cc4bdf5ea17815c9421e18c48",
+      "complete_adapter_execution_sha256": "34e0d3bda9d27df6d7a5ecc150aeedd92adaa7970bef7b4eb3b6bd9b2ab5ad5e",
+      "completion_sha256": "2f1daa5d02bdeace315769b966df61b8512c70ce1229ad1226b28464f019471f",
+      "helper_sha256": "4beed260c89780b382ab3179b1f3e92c59a24dee17071f178d928bb7c1112a4b",
+      "inputs_sha256": "d21ee3d34b284fee81f5d3e143528de24026854b1670e1c4df207b05e92f8534",
+      "only_added_fields": [
+        "native_stderr",
+        "native_stdout"
+      ],
+      "original_outcome_sha256": "b26dee2b1af98cc7b4314bd5daa101378c4b53e02587ed8c8ff2bd9e1539ac1b",
+      "raw_gate_reproduced_byte_for_byte": true,
+      "raw_gate_sha256": "a20cc15b6f4a236809520d5d7ec03d98e4741177fabb4ba9bc0519d318be26fa",
+      "second_bookkeeping_fix": "replace runtime-sensitive marshal serialization with immutable identity and co_code",
+      "validator_sha256": "d811d87d8f61dc6e71ebbcbbb55de88975efaeac58bf1bcd63e20e45698d029f"
+    },
+    {
+      "adapter_sha256": "c1c9e206ba5572256ce1a02bf4587005b9fcb0e0abe44a2de902ffcde938e71a",
+      "after_launch_schema_repair": true,
+      "analyzer_sha256": "fb953770589709f02153ddbd9cbd378f709eb8be4de8a8e385d632d2e6a1d615",
+      "cohort_sha256": "953549e298b4e1b2da380589ed98a150066b876cc4bdf5ea17815c9421e18c48",
+      "complete_adapter_execution_sha256": "19a7de2e974092ce2de8f2bb04861a372865dbbb293d2d6cb00eda8eec41f9b0",
+      "completion_sha256": "47db849c0be4a204c62c4c5128d8369ea32d110f304deae80b350eaa71872786",
+      "helper_sha256": "4beed260c89780b382ab3179b1f3e92c59a24dee17071f178d928bb7c1112a4b",
+      "inputs_sha256": "4775d775bb2d32cc1c64c5f587cafcf2fcf857587d23657e52b1b2dd22a5734f",
+      "only_added_fields": [
+        "native_stderr",
+        "native_stdout"
+      ],
+      "original_outcome_sha256": "882ca65ff22c0e5842a2d998f9e63f64a94e732b1e841c34b1bc806c857b591f",
+      "raw_gate_reproduced_byte_for_byte": true,
+      "raw_gate_sha256": "389920c2a2039ab9ebe1ad2863939d618533d8612cecb02694cc48c28a5e1a2c",
+      "second_bookkeeping_fix": "replace runtime-sensitive marshal serialization with immutable identity and co_code",
+      "validator_sha256": "d811d87d8f61dc6e71ebbcbbb55de88975efaeac58bf1bcd63e20e45698d029f"
+    }
+  ],
+  "fixed_blocks": 2,
+  "native_output_observations": 84,
+  "output_accounting_sha256": "7cb7da3f2a6f82dcaa3bb97e92168e9e1e443f6bd368be9f1497a4af5ce1a3db",
+  "public_numerical_replay": "reproduce.py",
+  "retained_output_snapshots": 42
+}
