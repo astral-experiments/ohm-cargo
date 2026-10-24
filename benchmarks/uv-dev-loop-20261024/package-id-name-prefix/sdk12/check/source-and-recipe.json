@@ -1,0 +1,286 @@
+{
+  "actual_build_recipe_sha256": "5da70d090ec2d1a0d4cd996c543fa03ebaf9cb31cf6b72dc76dce48bbdcbbb0a",
+  "bootstrap_resamples": 200000,
+  "candidate_patch_sha256": "b2032eb7f0f46684069fbb165d7f04cb793f83e34cbe87282f454a57e89dcafa",
+  "candidate_tree": "ca7507690099e7523754432ae09abb07b969c962",
+  "cargo_base_tree": "085e978d381a91a08443bd11fe267a29c14215a5",
+  "cargo_source": "13ed3e7e3d443975083a1931560267bf98161788",
+  "cargo_source_lockfile_sha256": "151c473e1a11532946ba9421ab1beeb238f98eb1f8cd4e5f94f9811003abd5a7",
+  "check_output_rule": "One exact rmeta SHA per arm per machine; no run-time metadata normalizer.",
+  "confidence": 0.99,
+  "dirty_fixture_edit": {
+    "changed_bytes": 5,
+    "equal_length": true,
+    "from": "before",
+    "to": "after_"
+  },
+  "dirty_fixture_sha256": "a89570fa6080462a772ebdbc73ab4471e0b968f7c357c23b197409fb12f282ad",
+  "endpoints": {
+    "check": {
+      "command": [
+        "cargo",
+        "-Zohm-defaults=yes",
+        "check",
+        "--locked",
+        "--offline",
+        "-j",
+        "8"
+      ],
+      "machines": 2,
+      "order": [
+        [
+          "AB",
+          "BA",
+          "BA",
+          "AB",
+          "BA",
+          "AB",
+          "AB",
+          "BA"
+        ],
+        [
+          "BA",
+          "AB",
+          "AB",
+          "BA",
+          "AB",
+          "BA",
+          "BA",
+          "AB"
+        ]
+      ],
+      "pairs_per_machine": 8,
+      "seeds": [
+        20261024201,
+        20261024202
+      ]
+    },
+    "test-build": {
+      "command": [
+        "cargo",
+        "-Zohm-defaults=yes",
+        "test",
+        "--no-run",
+        "--locked",
+        "--offline",
+        "-j",
+        "8"
+      ],
+      "machines": 2,
+      "order": [
+        [
+          "BA",
+          "AB",
+          "AB",
+          "BA",
+          "AB",
+          "BA",
+          "BA",
+          "AB"
+        ],
+        [
+          "AB",
+          "BA",
+          "BA",
+          "AB",
+          "BA",
+          "AB",
+          "AB",
+          "BA"
+        ]
+      ],
+      "pairs_per_machine": 8,
+      "seeds": [
+        20261024203,
+        20261024204
+      ]
+    }
+  },
+  "focused_correctness": [
+    {
+      "arm": "baseline",
+      "failed": 0,
+      "ignored": 0,
+      "passed": 9,
+      "selector": "workspace::package_id::tests::",
+      "source_tree": "085e978d381a91a08443bd11fe267a29c14215a5"
+    },
+    {
+      "arm": "baseline",
+      "failed": 0,
+      "ignored": 0,
+      "passed": 4,
+      "selector": "workspace::source_id::tests::",
+      "source_tree": "085e978d381a91a08443bd11fe267a29c14215a5"
+    },
+    {
+      "arm": "baseline",
+      "failed": 0,
+      "ignored": 0,
+      "passed": 6,
+      "selector": "compiler::relink_cache_tests::",
+      "source_tree": "085e978d381a91a08443bd11fe267a29c14215a5"
+    },
+    {
+      "arm": "candidate",
+      "failed": 0,
+      "ignored": 0,
+      "passed": 11,
+      "selector": "workspace::package_id::tests::",
+      "source_tree": "ca7507690099e7523754432ae09abb07b969c962"
+    },
+    {
+      "arm": "candidate",
+      "failed": 0,
+      "ignored": 0,
+      "passed": 4,
+      "selector": "workspace::source_id::tests::",
+      "source_tree": "ca7507690099e7523754432ae09abb07b969c962"
+    },
+    {
+      "arm": "candidate",
+      "failed": 0,
+      "ignored": 0,
+      "passed": 6,
+      "selector": "compiler::relink_cache_tests::",
+      "source_tree": "ca7507690099e7523754432ae09abb07b969c962"
+    }
+  ],
+  "focused_failures_total": 0,
+  "focused_ignored_total": 0,
+  "focused_passes_total": 40,
+  "matched_build_handoff_sha256": "2618a0eadfa76b762b1cf303ebf7272f567e5cae1c66c091b64073302b3cd74e",
+  "metric": "Cargo-parent final Ir, all parent threads; compiler and linker children uninstrumented",
+  "producer_BOLT": false,
+  "producer_PGO": false,
+  "producer_affinity": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23
+  ],
+  "producer_features": "all-static,ohm-defaults",
+  "producer_release_environment": {
+    "CARGO_BUILD_JOBS": "24",
+    "CARGO_INCREMENTAL": "0",
+    "CARGO_PROFILE_RELEASE_CODEGEN_UNITS": "1",
+    "CARGO_PROFILE_RELEASE_DEBUG": "1",
+    "CARGO_PROFILE_RELEASE_INCREMENTAL": "false",
+    "CARGO_PROFILE_RELEASE_LTO": "thin",
+    "CARGO_PROFILE_RELEASE_OPT_LEVEL": "3",
+    "CARGO_PROFILE_RELEASE_STRIP": "none",
+    "CFG_RELEASE_CHANNEL": "dev",
+    "LIBZ_SYS_STATIC": "1"
+  },
+  "production_pair": {
+    "baseline": {
+      "allocated_sections_preserved": 31,
+      "bytes": 42321576,
+      "source_tree": "085e978d381a91a08443bd11fe267a29c14215a5",
+      "stripped_sha256": "27e566b710a9cbfdec226626f3d4fdf6ec46f76e3d6f1399716a753313e69a5a",
+      "version_stdout_sha256": "2048ce459d714715f69a1002284d88717163dbf6e06f8b62513f5e26aed659de"
+    },
+    "candidate": {
+      "allocated_sections_preserved": 31,
+      "bytes": 42326024,
+      "source_tree": "ca7507690099e7523754432ae09abb07b969c962",
+      "stripped_sha256": "2bfe879b35b626be4ea67c133b3efc8ac76c4f517310683824c0577f6268c8b3",
+      "version_stdout_sha256": "2048ce459d714715f69a1002284d88717163dbf6e06f8b62513f5e26aed659de"
+    }
+  },
+  "profiler_control": {
+    "actual_elf_launcher_sha256": "def5fdcf6ae64a4d3e6af3786b622978d8313e0734ecf3f6cbe71d8be9e274c8",
+    "adapter_sha256": "42f912fe052732ef964681579a3bc1acbc50966f04babb5a452f25dfe4825973",
+    "cores": {
+      "large-512MiB": "ccb79923aa79552778822874a7368e224f8b7ccdabdf77eff3c34acf931c55e9",
+      "stock-8MiB": "7801ef44ff068bc36d76db630d852e62b5741d8ecd54301bdc1f189e7d809835"
+    },
+    "distribution_core_sha256": "825eb197d519240c112e03ed00f40a8bbe1a0a0614f79ea95e28c67e8695cb03",
+    "expected_delta": 54,
+    "heap_MiB": [
+      64,
+      513
+    ],
+    "held_out_ir": [
+      51035,
+      51089
+    ],
+    "patch_sha256": "706a108281ffdc53800003dc416f6b9716f35532ccb6641c7e6f8f142a8221da",
+    "reservation_MiB": 512
+  },
+  "protocol_sha256": "f637130dc330243fc39d8421a77d9b69f67f523c9a422defea50bb0d6804f8e7",
+  "required_wins_per_host": 8,
+  "root_build_acceptance_sha256": "3ae9204844753c3d116ce3083203a19ba7b4f9fbb5b00bc2bcf1429af14c8051",
+  "schema": 1,
+  "sdk_asset_sha256": "177751bcef731909e9fa2c89983804ec6fe663101711dc46003a743914d37203",
+  "sdk_asset_url": "https://github.com/astral-sh/ohm/releases/download/ohm-1.99.0-12/ohm-1.99.0-12-x86_64-unknown-linux-gnu.tar.gz",
+  "sdk_compiler_driver_sha256": "253120eeae6c051af825c4884b30b2d5d62a3a4094428d52c815cbcaf7af697a",
+  "sdk_release": "https://github.com/astral-sh/ohm/releases/tag/ohm-1.99.0-12",
+  "sdk_rustc_sha256": "1879f05850bfcd95837087c6012c76bc0355581012686d51b2f690ce46934d6e",
+  "source_checkpoint_sha256": "a01ac91deb271ffc6d7349d8745ff75fc5f2b02debe6c77b22cd41b11890e311",
+  "source_package": {
+    "dsc_sha256": "4dd9b0cdc51ee8d0809f5bf53f29549471380ebbbd965b444ef9ef437cfaba70",
+    "dsc_url": "https://archive.ubuntu.com/ubuntu/pool/main/v/valgrind/valgrind_3.22.0-0ubuntu3.dsc",
+    "files": [
+      {
+        "bytes": 16565502,
+        "file": "valgrind_3.22.0.orig.tar.bz2",
+        "sha256": "c811db5add2c5f729944caf47c4e7a65dcaabb9461e472b578765dd7bf6d2d4c",
+        "url": "https://archive.ubuntu.com/ubuntu/pool/main/v/valgrind/valgrind_3.22.0.orig.tar.bz2"
+      },
+      {
+        "bytes": 36344,
+        "file": "valgrind_3.22.0-0ubuntu3.debian.tar.xz",
+        "sha256": "f999fb9cfe72190cd90573ce7226798dd996a1f1371229436416c042cb0772d5",
+        "url": "https://archive.ubuntu.com/ubuntu/pool/main/v/valgrind/valgrind_3.22.0-0ubuntu3.debian.tar.xz"
+      }
+    ],
+    "source_package": "1:3.22.0-0ubuntu3"
+  },
+  "source_review_sha256": "26bbdd359ddd1a1e659fc862c6978eff8d9e51d2ba6e8a3aa717470e099c6d6b",
+  "stock_cargo": [
+    "cargo 1.99.0 (5f94df478 2026-08-27)",
+    "release: 1.99.0",
+    "commit-hash: 5f94df4789f005f9a352888e8355ffc645b7ed0e",
+    "commit-date: 2026-08-27",
+    "host: x86_64-unknown-linux-gnu",
+    "libgit2: 1.9.6 (sys:0.21.0 vendored)",
+    "libcurl: 8.21.0-DEV (sys:0.4.90+curl-8.21.0 vendored ssl:OpenSSL/3.6.3)",
+    "ssl: OpenSSL 3.6.3 9 Jun 2026",
+    "os: Ubuntu 24.4.0 (noble) [64-bit]"
+  ],
+  "stock_rustc": [
+    "rustc 1.99.0 (b940084d7 2026-09-28)",
+    "binary: rustc",
+    "commit-hash: b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+    "commit-date: 2026-09-28",
+    "host: x86_64-unknown-linux-gnu",
+    "release: 1.99.0",
+    "LLVM version: 23.1.1"
+  ],
+  "strict_lower_reduction_minimum": 0.01,
+  "strict_two_sided_sign_p_maximum": 0.01,
+  "uv_source": "3d82a6ad5a7eab8c68236553b7846517767c4b61",
+  "uv_source_seed_sha256": "7fe7818663d47c76dd995adbc97aa1bd8a32067188aadf14eb03b03a634beb14",
+  "wild_sha256": "5b2baebf62de0f8c185711b808c3f553da3b7166b1c289420df5276b027f5597"
+}

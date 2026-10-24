@@ -1,0 +1,95 @@
+diff --git a/src/workspace/package_id.rs b/src/workspace/package_id.rs
+index f494a68..e555d40 100644
+--- a/src/workspace/package_id.rs
++++ b/src/workspace/package_id.rs
+@@ -26,6 +26,8 @@ pub struct PackageId {
+ 
+ #[derive(PartialOrd, Eq, Ord)]
+ struct PackageIdInner {
++    // Unequal prefixes preserve name order; ties still compare the complete name.
++    name_prefix: u64,
+     name: InternedString,
+     version: semver::Version,
+     source_id: SourceId,
+@@ -152,7 +154,12 @@ impl PackageId {
+     }
+ 
+     pub fn new(name: InternedString, version: semver::Version, source_id: SourceId) -> PackageId {
++        let mut name_prefix = [0; 8];
++        let name_bytes = name.as_str().as_bytes();
++        let prefix_len = name_bytes.len().min(name_prefix.len());
++        name_prefix[..prefix_len].copy_from_slice(&name_bytes[..prefix_len]);
+         let inner = PackageIdInner {
++            name_prefix: u64::from_be_bytes(name_prefix),
+             name,
+             version,
+             source_id,
+@@ -430,6 +437,68 @@ mod tests {
+         );
+     }
+ 
++    #[test]
++    fn ordering_cached_name_prefix_matches_full_fields() {
++        let low = registry("https://a.example.invalid/index");
++        let high = registry("https://z.example.invalid/index");
++        let names = [
++            "",
++            "\0",
++            "a",
++            "a\0",
++            "a\0b",
++            "a-b",
++            "a_b",
++            "abcdefg",
++            "abcdefg\0",
++            "abcdefgh",
++            "abcdefgh0",
++            "abcdefgh1",
++            "abcdefgα",
++            "abcdefgβ",
++            "abcde界",
++            "abcde畀",
++            "é",
++            "éééé",
++            "ééééa",
++        ];
++        for left_name in names {
++            for right_name in names {
++                let left = package(left_name, "2.0.0", high);
++                let right = package(right_name, "1.0.0", low);
++                let expected = (left.name(), left.version(), left.source_id()).cmp(&(
++                    right.name(),
++                    right.version(),
++                    right.source_id(),
++                ));
++                assert_order(left, right, expected);
++            }
++        }
++    }
++
++    #[test]
++    fn cached_name_prefix_preserves_hash_inputs() {
++        let source = registry("https://example.invalid/index").with_locked_precise();
++        for name in ["short", "abcdefgh0", "abcdefgh1", "ééééa"] {
++            let id = package(name, "1.0.0+metadata", source);
++            let mut actual = DefaultHasher::new();
++            id.hash(&mut actual);
++            let mut expected = DefaultHasher::new();
++            id.name().hash(&mut expected);
++            id.version().hash(&mut expected);
++            id.source_id().hash(&mut expected);
++            assert_eq!(actual.finish(), expected.finish());
++
++            let mut actual = DefaultHasher::new();
++            id.inner.hash(&mut actual);
++            let mut expected = DefaultHasher::new();
++            id.name().hash(&mut expected);
++            id.version().hash(&mut expected);
++            id.source_id().full_hash(&mut expected);
++            assert_eq!(actual.finish(), expected.finish());
++        }
++    }
++
+     #[test]
+     fn ordering_preserves_source_semantics() {
+         let sources = [
