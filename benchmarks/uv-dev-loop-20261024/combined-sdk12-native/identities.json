@@ -1,0 +1,79 @@
+{
+  "cargo": {
+    "allocated_sections_verified_each": 31,
+    "baseline_commit": "fdd26156be98618e2e01a9e02703edac71b79a35",
+    "baseline_tree": "487deda53e727c16bd22ae3d7cf1c512d1005116",
+    "binary_sha256": {
+      "baseline": "ce2b8e389a82311be2ee766da5fff1ce27a2064c3b24c9cb936c9b0374d741ee",
+      "candidate": "4a56d4e5af167c907ea5d43ca6fba8129b7a4b8c6fd218381c0b45fe70c8e755"
+    },
+    "build_profile": {
+      "CARGO_INCREMENTAL": "0",
+      "CARGO_PROFILE_RELEASE_CODEGEN_UNITS": "1",
+      "CARGO_PROFILE_RELEASE_DEBUG": "1",
+      "CARGO_PROFILE_RELEASE_INCREMENTAL": "false",
+      "CARGO_PROFILE_RELEASE_LTO": "thin",
+      "CARGO_PROFILE_RELEASE_OPT_LEVEL": "3",
+      "CARGO_PROFILE_RELEASE_STRIP": "none",
+      "CFG_RELEASE_CHANNEL": "dev",
+      "LIBZ_SYS_STATIC": "1"
+    },
+    "bytes": {
+      "baseline": 41494328,
+      "candidate": 41507136
+    },
+    "candidate_patch_sha256": "c9e6290da29e8f419ab1bcb8c425e036fb45694e6a65efaa1bd9757ad72f6c34",
+    "candidate_tree": "c1dcfdf96b0dc1cf2d6b357d94d0e833dbde7566",
+    "changes": [
+      "https://github.com/astral-sh/ohm-cargo/pull/231",
+      "https://github.com/astral-sh/ohm-cargo/pull/232"
+    ],
+    "common_embedded_commit": "fdd26156be98618e2e01a9e02703edac71b79a35",
+    "features": [
+      "all-static",
+      "ohm-defaults"
+    ],
+    "producer": "Official Ohm SDK12; same physical source/build locations for the matched arms.",
+    "producer_ohm_defaults": false,
+    "strip": "Section-preserving strip; allocated section contents retained."
+  },
+  "runtime_manifest_sha256": "c1ced76471a75698296dee986d640fc2f05b30a75a397355751b842b74fbd0d9",
+  "rust": {
+    "baseline_tree": "c2ff29766b923dd3d339443b20fd9bc0f6d539fc",
+    "build_scope": "Matched optimized SDK12-source developer builds, not shipped distribution compiler binaries.",
+    "byte_identical_shared_runtime_files": 73,
+    "candidate_patch_sha256": "a972c29795fc6b5aa3e639dc9b6b28d31a2cc9b769e6f0e66fba5d9d64417f04",
+    "change": "https://github.com/astral-sh/ohm-rust/pull/218",
+    "driver_sha256": {
+      "baseline": "9f761910ab2aed891dc400cc798964b17e44b94cdb1ff14ab49a820e1b6920b3",
+      "candidate": "783a4150d02602620f4eef14844de8df5b945f040515c374e798d75dba2439cc"
+    },
+    "llvm_version": "23.1.1",
+    "measured_candidate_tree": "e8f15a7a03e3dffe2a62ff81daab727cd28162d5",
+    "recipe": "stage1 compiler plus freshly built matching std; opt3, ThinLTO, CGU1, debug1, no compiler-build incremental/PGO, debug assertions disabled; same physical source/build paths and pinned LLVM 23.1.1.",
+    "runtime_files_per_arm": 74,
+    "rust_commit": "f93a752e3de7404107ea5908d65c8832aee5625a"
+  },
+  "scope": "Matched optimized developer Cargo/Rust binaries, not a comparison against shipped compiler binaries. Three patches together; no per-PR wall-time attribution.",
+  "tools": {
+    "checksum_algorithm": "BLAKE3, from uv-locked blake3 1.8.7 portable C sources; stdin-only helper checked against known vectors and fresh captured checksums.",
+    "checksum_helper_sha256": "111b5d10c6cdcdc94f23419bf0f4e9c5ab7ce4c4bf99e8e6929df0f348094b6d",
+    "excluded_strace_sha256": "7088ab983a19122541e3c5cac906bc275808ab6c9a2b3fafbcca6db65062dd18",
+    "wild_sha256": "5b2baebf62de0f8c185711b808c3f553da3b7166b1c289420df5276b027f5597",
+    "wild_version": "0.10.0"
+  },
+  "uv": {
+    "commit": "3d82a6ad5a7eab8c68236553b7846517767c4b61",
+    "original_source_sha256": "ad097b233b93d8e6fcf67aa1657fa103ca79e1227781b3989d0e83dfa2a59e81",
+    "source": "crates/uv/src/lib.rs"
+  },
+  "workload": {
+    "controller_cpu": 8,
+    "cpu": "0-7",
+    "independent_runtime_target_shared_package_home_banks": true,
+    "jobs": 8,
+    "native_timing": true,
+    "profilers_wrappers_and_strace_in_timed_calls": false,
+    "test_functions_executed": false
+  }
+}

@@ -1,0 +1,91 @@
+{
+  "actual_admission_sha256": "fa99d1435276458fcc27bde0159d9f92f8ee3ded451c6088a14c6359ea91742d",
+  "controls_sha256": {
+    "analyze_native.py": "06bff8c6f4214e2fa0ff0cb8aaf93632ab1e39513bd5e57ce85fd97140ca9e70",
+    "depinfo_guard.py": "df0323a4578d83acb95ecaf249926dc5a545f663e72228f22cebb82a281718b5",
+    "measure_native_02.py": "1e6186626831f0e2d3436ae0d12b1e2b83d405fc429735a52a58dfed98633950",
+    "native_common.py": "2c06e7a4843d86064593ff3c88b724d11e4bc7e94a64d7ff8379ee6eb6f3b982",
+    "protocol.json": "b30214fb5958c89b038af794dc4b0ce826972d8f00c4628285e3e399d879080c"
+  },
+  "depinfo_sidecar_sha256": "ec55dce702322eafd81cf8e75170af2abb488f3296702457bb62e1351149751d",
+  "fresh_preflight_sha256": "7f67a6979af3e56063e2e65f3802127ffb04c13f05157b07bb51cb095e57377d",
+  "host": {
+    "controller_cpu": 8,
+    "kernel": "7.0.0-38-generic",
+    "label": "perf1022",
+    "platform": "Linux x86_64",
+    "private_host_identity_process_arguments_and_raw_environments_omitted": true,
+    "workload_cpus": "0-7"
+  },
+  "paired_source_sha256": "50d0cb2d4f595ccfa72d463fedb3ff4dadf9dfc1446c749d482d9ede8418c7cf",
+  "public_replay_python": "3.12.13",
+  "retired_host5": {
+    "both_arms_restored": true,
+    "contributed_to_results": false,
+    "effects_read": false,
+    "failure": "post-command competing-job guard",
+    "last_invalid_saved_observations": 11,
+    "selection": "Infrastructure-only host change before effects; both endpoints committed to perf1022.",
+    "valid_blocks": 0
+  },
+  "schema": 1,
+  "scope_limits": [
+    "No full cross-arm Rust-metadata equivalence claim.",
+    "No native speedup, equivalence, or excluded-regression claim.",
+    "Finite host observations are not continuous interference monitoring.",
+    "Combined-patch effect cannot identify a per-PR contribution.",
+    "No memory measurement or broader production-environment claim."
+  ],
+  "valid_cohorts": [
+    {
+      "all_48_output_and_diagnostic_checks_passed": true,
+      "all_96_before_after_observations_have_no_detected_competing_job": true,
+      "analysis_sha256": "dccfebe8d443edc34b17db838a79085ceb9b33beed9822171ed510d55a2c2975",
+      "authenticated_private_files": 247,
+      "block": 0,
+      "both_banks_restored": true,
+      "canonical_transport_manifest_sha256": "fc272e17e8891028a0059f556a2cc151f6357f141a20bc920c9fcf7727e0720b",
+      "endpoint": "check",
+      "frozen_analysis_replayed_byte_exactly": true,
+      "host_entry_busy_fractions": [
+        0.003006012024048096,
+        0.0,
+        0.002380952380952381
+      ],
+      "independent_integer_ns_point_order_sign_agreement": true,
+      "local_manifest_file_sha256": "db8ec911259a428bc5e8427baa25cb5e476c0a0fb724eb6596144417f114873e",
+      "original_check_and_test_build_fresh_in_both_banks": true,
+      "pairs": 24,
+      "private_collection_receipt_sha256": "bc124b9621e3e0b98006831135257604e25ff84e7dffed5a99cc80311fff13d1",
+      "raw_gates_passed": true,
+      "source_restored_sha256": "ad097b233b93d8e6fcf67aa1657fa103ca79e1227781b3989d0e83dfa2a59e81",
+      "terminal_sha256": "77cb509cac7ebbc41138f0c156d68232f62c6ddeca1e856f4b15ab50286f7891",
+      "valid_records": 48
+    },
+    {
+      "all_48_output_and_diagnostic_checks_passed": true,
+      "all_96_before_after_observations_have_no_detected_competing_job": true,
+      "analysis_sha256": "6fc18a924b394e3d37f7aee003d6097523661bf138afd826da9ed0a1c31ad9a7",
+      "authenticated_private_files": 247,
+      "block": 0,
+      "both_banks_restored": true,
+      "canonical_transport_manifest_sha256": "9d4a94df32e5297ce43051f4cb870d74d0d3bdabdc135f771632847c92c204ed",
+      "endpoint": "test-build",
+      "frozen_analysis_replayed_byte_exactly": true,
+      "host_entry_busy_fractions": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "independent_integer_ns_point_order_sign_agreement": true,
+      "local_manifest_file_sha256": "2806c1a7356754214bf651e3d50c7eb4b3fc2890eba4000602484ac72a15484b",
+      "original_check_and_test_build_fresh_in_both_banks": true,
+      "pairs": 24,
+      "private_collection_receipt_sha256": "8ec73044fd83518aed613deaac7a6bd8ee81c56ac7ab29115a698d024daf081b",
+      "raw_gates_passed": true,
+      "source_restored_sha256": "ad097b233b93d8e6fcf67aa1657fa103ca79e1227781b3989d0e83dfa2a59e81",
+      "terminal_sha256": "cc5590f45216121ab5cbe0fd887cceb9623b141a34a46db731586cbb0ed97fa7",
+      "valid_records": 48
+    }
+  ]
+}

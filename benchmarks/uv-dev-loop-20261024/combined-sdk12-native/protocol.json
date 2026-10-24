@@ -1,0 +1,179 @@
+{
+  "commands": {
+    "check": [
+      "-Zohm-defaults=yes",
+      "check",
+      "--locked",
+      "--offline",
+      "-j",
+      "8"
+    ],
+    "test-build": [
+      "-Zohm-defaults=yes",
+      "test",
+      "--no-run",
+      "--locked",
+      "--offline",
+      "-j",
+      "8"
+    ]
+  },
+  "date": "2026-10-24",
+  "endpoint_gate": "Both original fixed blocks must pass separately. A valid failed first block closes that endpoint without running the inverse.",
+  "endpoint_sequence": [
+    "check",
+    "test-build"
+  ],
+  "host_bound_protocol_sha256": "b30214fb5958c89b038af794dc4b0ce826972d8f00c4628285e3e399d879080c",
+  "host_port_changed_only": [
+    "host",
+    "fixture_root"
+  ],
+  "host_selection": "Infrastructure-only choice of perf1022 before learning effects; retired host5 data excluded from both endpoints.",
+  "independent_endpoints": true,
+  "metric": "Whole-command native elapsed integer nanoseconds from Cargo spawn to exit, including all selected compiler/linker children.",
+  "no_pooling": true,
+  "no_valid_failure_retry_or_extension": true,
+  "orders_per_block": {
+    "AB": 12,
+    "BA": 12
+  },
+  "pairs_per_block": 24,
+  "per_block_gate": {
+    "both_order_geometric_speedups_strictly_greater_than": 1,
+    "ci99_reduction_lower_strictly_greater_than": 0,
+    "sign_p_strictly_less_than": 0.01
+  },
+  "schedules": {
+    "check": [
+      {
+        "orders": [
+          "BA",
+          "BA",
+          "AB",
+          "BA",
+          "BA",
+          "AB",
+          "AB",
+          "AB",
+          "AB",
+          "BA",
+          "AB",
+          "AB",
+          "BA",
+          "BA",
+          "AB",
+          "AB",
+          "BA",
+          "AB",
+          "BA",
+          "BA",
+          "AB",
+          "AB",
+          "BA",
+          "BA"
+        ],
+        "seed": 2026102391
+      },
+      {
+        "orders": [
+          "AB",
+          "AB",
+          "BA",
+          "AB",
+          "AB",
+          "BA",
+          "BA",
+          "BA",
+          "BA",
+          "AB",
+          "BA",
+          "BA",
+          "AB",
+          "AB",
+          "BA",
+          "BA",
+          "AB",
+          "BA",
+          "AB",
+          "AB",
+          "BA",
+          "BA",
+          "AB",
+          "AB"
+        ],
+        "seed": 2026102392
+      }
+    ],
+    "test-build": [
+      {
+        "orders": [
+          "BA",
+          "BA",
+          "BA",
+          "AB",
+          "AB",
+          "BA",
+          "BA",
+          "BA",
+          "BA",
+          "BA",
+          "AB",
+          "BA",
+          "AB",
+          "AB",
+          "BA",
+          "AB",
+          "AB",
+          "BA",
+          "AB",
+          "BA",
+          "AB",
+          "AB",
+          "AB",
+          "AB"
+        ],
+        "seed": 2026102393
+      },
+      {
+        "orders": [
+          "AB",
+          "AB",
+          "AB",
+          "BA",
+          "BA",
+          "AB",
+          "AB",
+          "AB",
+          "AB",
+          "AB",
+          "BA",
+          "AB",
+          "BA",
+          "BA",
+          "AB",
+          "BA",
+          "BA",
+          "AB",
+          "BA",
+          "AB",
+          "BA",
+          "BA",
+          "BA",
+          "BA"
+        ],
+        "seed": 2026102394
+      }
+    ]
+  },
+  "schema": 1,
+  "source_protocol_sha256": "2fad304c909f70bd996c63bef4b6f7b129e4a0289d597883b69ffdfa7409ff87",
+  "statistics": {
+    "bootstrap_resamples": 200000,
+    "confidence": 0.99,
+    "interval": "99% percentile interval over 200000 resampled paired mean log ratios, transformed to time reduction",
+    "point": "1 - exp(-mean(log(baseline_seconds/candidate_seconds)))",
+    "sign": "exact two-sided sign test; ties excluded"
+  },
+  "study": "SDK12 whole-command native wall time on unchanged uv with three confirmed Ohm patches"
+}

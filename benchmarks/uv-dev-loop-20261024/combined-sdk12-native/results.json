@@ -1,0 +1,179 @@
+{
+  "blocks": [
+    {
+      "block": 0,
+      "ci99": [
+        -0.05286769265972713,
+        0.29110223784309663
+      ],
+      "endpoint": "check",
+      "gate_passed": false,
+      "geometric_reduction": 0.12749518160621964,
+      "median_ms": {
+        "baseline": 2039.2446345,
+        "candidate": 2003.872969
+      },
+      "seed": 2026102391,
+      "state": "valid-fixed-block",
+      "statistics": {
+        "baseline_mean_seconds": 2.171372687083333,
+        "baseline_median_seconds": 2.0392446345,
+        "bootstrap_resamples": 200000,
+        "bootstrap_seed": 2026102391,
+        "bootstrap_speedup_interval": [
+          0.9497869551622635,
+          1.4106406500104958
+        ],
+        "bootstrap_time_reduction_interval": [
+          -0.05286769265972713,
+          0.29110223784309663
+        ],
+        "candidate_mean_seconds": 1.9513366527083333,
+        "candidate_median_seconds": 2.003872969,
+        "confidence": 0.99,
+        "exact_two_sided_sign_p": 0.30745625495910645,
+        "log_ratios": [
+          0.03758866844145922,
+          0.0975330412961045,
+          0.740467591533056,
+          0.055220726605411156,
+          0.2587605298190707,
+          0.6182820198346096,
+          -0.289637640695047,
+          0.10489285555204836,
+          -0.07818436234753777,
+          0.5234279321059325,
+          -0.22327373670263367,
+          1.1137977314545955,
+          0.24036356159144223,
+          -0.4013953362443107,
+          0.3384895888716331,
+          0.5865121596763379,
+          -0.4257700110181616,
+          -0.3036436408703151,
+          -0.0630148524407088,
+          -0.22757862988549682,
+          0.33147020816728806,
+          -0.07169491140646989,
+          0.0588216116014654,
+          0.2518553528148441
+        ],
+        "losses": 9,
+        "order": {
+          "AB": {
+            "geometric_mean_speedup": 1.2699232792278956,
+            "pairs": 12
+          },
+          "BA": {
+            "geometric_mean_speedup": 1.0343960359265514,
+            "pairs": 12
+          }
+        },
+        "paired_geometric_mean_speedup": 1.1461254756631938,
+        "paired_geometric_mean_time_reduction": 0.12749518160621964,
+        "paired_median_speedup": 1.0815169474444706,
+        "pairs": 24,
+        "ties": 0,
+        "wins": 15
+      }
+    },
+    {
+      "block": 0,
+      "ci99": [
+        -0.389189373899252,
+        0.1790167186195062
+      ],
+      "endpoint": "test-build",
+      "gate_passed": false,
+      "geometric_reduction": -0.0666032348955965,
+      "median_ms": {
+        "baseline": 5853.166276999999,
+        "candidate": 7354.318014500001
+      },
+      "seed": 2026102393,
+      "state": "valid-fixed-block",
+      "statistics": {
+        "baseline_mean_seconds": 6.492272528583334,
+        "baseline_median_seconds": 5.853166277,
+        "bootstrap_resamples": 200000,
+        "bootstrap_seed": 2026102393,
+        "bootstrap_speedup_interval": [
+          0.7198442622643634,
+          1.2180516006592574
+        ],
+        "bootstrap_time_reduction_interval": [
+          -0.389189373899252,
+          0.1790167186195062
+        ],
+        "candidate_mean_seconds": 7.080657655958333,
+        "candidate_median_seconds": 7.3543180145000004,
+        "confidence": 0.99,
+        "exact_two_sided_sign_p": 0.5412561893463135,
+        "log_ratios": [
+          0.08916362166774139,
+          0.6796609013779396,
+          0.04144111208783312,
+          0.5077808503464666,
+          0.04335006853919346,
+          0.8304798023083306,
+          0.42380409592828644,
+          -0.46093557607287833,
+          -0.6356959048143763,
+          0.21295871394262833,
+          0.21437191505573888,
+          0.125072076842576,
+          -0.4834112154134082,
+          -0.5209565993057909,
+          -0.8174851064049007,
+          0.3092153272002964,
+          0.09070803819818182,
+          -0.5708865404619708,
+          0.6497945367873417,
+          -0.7872034124923142,
+          0.19704137596152638,
+          -0.3851396787770766,
+          -0.946198614329897,
+          -0.35442703818611815
+        ],
+        "losses": 10,
+        "order": {
+          "AB": {
+            "geometric_mean_speedup": 0.9450766413427666,
+            "pairs": 12
+          },
+          "BA": {
+            "geometric_mean_speedup": 0.9300947174123358,
+            "pairs": 12
+          }
+        },
+        "paired_geometric_mean_speedup": 0.937555753895575,
+        "paired_geometric_mean_time_reduction": -0.0666032348955965,
+        "paired_median_speedup": 1.0687814656386374,
+        "pairs": 24,
+        "ties": 0,
+        "wins": 14
+      }
+    }
+  ],
+  "endpoints": {
+    "check": {
+      "disposition": "closed at first valid gate failure",
+      "inverse_block": "not run under fixed stop rule",
+      "qualified": false,
+      "valid_blocks": [
+        0
+      ]
+    },
+    "test-build": {
+      "disposition": "closed at first valid gate failure",
+      "inverse_block": "not run under fixed stop rule",
+      "qualified": false,
+      "valid_blocks": [
+        0
+      ]
+    }
+  },
+  "metric": "whole_command_native_elapsed_ns",
+  "pooled_result": null,
+  "schema": 1
+}
