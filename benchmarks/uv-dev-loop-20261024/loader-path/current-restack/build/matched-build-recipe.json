@@ -1,0 +1,60 @@
+{
+  "argv": [
+    "/home/dev-user/ohm-loader-restack-20261024/tools/stock/bin/cargo",
+    "build",
+    "--release",
+    "--locked",
+    "--bin",
+    "cargo",
+    "--features",
+    "all-static,ohm-defaults",
+    "-j",
+    "8",
+    "-v"
+  ],
+  "builds": [
+    "baseline",
+    "candidate"
+  ],
+  "cpu_affinity": [
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31
+  ],
+  "cwd": "/home/dev-user/ohm-loader-restack-20261024/producer/source",
+  "embedded_head": "5e5d271d763d7beb38b48755e22bd59e93f02b97",
+  "environment": {
+    "CARGO_BUILD_JOBS": "8",
+    "CARGO_HOME": "/home/dev-user/ohm-loader-restack-20261024/producer/cargo-home",
+    "CARGO_INCREMENTAL": "0",
+    "CARGO_PROFILE_RELEASE_CODEGEN_UNITS": "1",
+    "CARGO_PROFILE_RELEASE_DEBUG": "1",
+    "CARGO_PROFILE_RELEASE_INCREMENTAL": "false",
+    "CARGO_PROFILE_RELEASE_LTO": "thin",
+    "CARGO_PROFILE_RELEASE_OPT_LEVEL": "3",
+    "CARGO_PROFILE_RELEASE_STRIP": "none",
+    "CARGO_TARGET_DIR": "/home/dev-user/ohm-loader-restack-20261024/producer/target",
+    "CARGO_TERM_COLOR": "never",
+    "CFG_RELEASE_CHANNEL": "dev",
+    "GIT_CONFIG_GLOBAL": "/home/dev-user/ohm-loader-restack-20261024/control/gitconfig",
+    "HOME": "/home/dev-user",
+    "LANG": "C.UTF-8",
+    "LC_ALL": "C.UTF-8",
+    "LIBZ_SYS_STATIC": "1",
+    "LOGNAME": "charliemarsh",
+    "PATH": "/home/dev-user/ohm-loader-restack-20261024/tools/stock/bin:/usr/bin:/bin",
+    "RUSTC": "/home/dev-user/ohm-loader-restack-20261024/tools/stock/bin/rustc",
+    "RUSTDOC": "/home/dev-user/ohm-loader-restack-20261024/tools/stock/bin/rustdoc",
+    "SHELL": "/usr/bin/zsh",
+    "SSL_CERT_DIR": "/usr/lib/ssl/certs",
+    "SSL_CERT_FILE": "/etc/ssl/certs/ca-certificates.crt",
+    "TMPDIR": "/home/dev-user/ohm-loader-restack-20261024/producer/tmp",
+    "USER": "charliemarsh"
+  },
+  "pgo": false
+}

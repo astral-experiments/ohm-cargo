@@ -1,0 +1,16 @@
+{
+  "state": "offline-auditor-join-corrected",
+  "original_sha256": "9ff99821bbeb4ad1791435a2763491aaeff862b24cc5a2f1fbececa2dd9b0ba2",
+  "successor_sha256": "5f7f765b24503b607a7dbb28f7916640549c54b54588b792494f6bfef68bf693",
+  "original_failure": "exact prepare-return versus journal-object equality omitted the journal-only at timestamp",
+  "source_evidence": "unchanged loader_fixture_delta.journal writes {at: utc_now(), **entry}; prepare returns entry without at",
+  "observed_difference_keys": [
+    "at"
+  ],
+  "other_common_fields_exact": true,
+  "data_changed": false,
+  "statistical_code_changed": false,
+  "workload_repeated": false,
+  "effects_computed": false,
+  "reverse_bytes_pass": true
+}

@@ -1,0 +1,210 @@
+{
+  "acceptance": {
+    "bootstrap_resamples": 20000,
+    "bootstrap_seed": 1701,
+    "bootstrap_speedup_lower_bound_greater_than": 1,
+    "both_AB_and_BA_geometric_speedups_greater_than": 1,
+    "confidence": 0.99,
+    "exact_two_sided_sign_p_maximum": 0.01,
+    "minimum_paired_geometric_time_reduction": 0.01,
+    "minimum_pairs": 12
+  },
+  "analysis_command": [
+    "python3",
+    "/home/dev-user/ohm-loader-restack-20261024/work/benchmark/paired.py",
+    "analyze",
+    "RESULTS",
+    "--confidence",
+    "0.99",
+    "--resamples",
+    "20000",
+    "--seed",
+    "1701",
+    "--minimum-pairs",
+    "12",
+    "--minimum-improvement",
+    "0.01"
+  ],
+  "archive_name": "loader-restack-confirmation-01-archive",
+  "balanced_order_plan": [
+    [
+      "baseline",
+      "candidate"
+    ],
+    [
+      "candidate",
+      "baseline"
+    ],
+    [
+      "candidate",
+      "baseline"
+    ],
+    [
+      "candidate",
+      "baseline"
+    ],
+    [
+      "baseline",
+      "candidate"
+    ],
+    [
+      "candidate",
+      "baseline"
+    ],
+    [
+      "baseline",
+      "candidate"
+    ],
+    [
+      "candidate",
+      "baseline"
+    ],
+    [
+      "baseline",
+      "candidate"
+    ],
+    [
+      "candidate",
+      "baseline"
+    ],
+    [
+      "baseline",
+      "candidate"
+    ],
+    [
+      "baseline",
+      "candidate"
+    ]
+  ],
+  "build_regime": "Matched production settings: all-static, ohm-defaults, ThinLTO, one codegen unit, dev channel, debug1, same physical build paths and stock Rust1.99.0. No PGO; not an exact reconstruction of the published stage1-built release.",
+  "canonical_paths": {
+    "cargo": "/home/dev-user/ohm-loader-restack-20261024/work/loader-fixtures/uv-loader-restack/bin/cargo",
+    "cargo_home": "/home/dev-user/ohm-loader-restack-20261024/work/loader-fixtures/uv-loader-restack/package-home",
+    "shared": "/home/dev-user/ohm-loader-restack-20261024/work/loader-fixtures/uv-loader-restack/live/shared",
+    "target": "/home/dev-user/ohm-loader-restack-20261024/work/loader-fixtures/uv-loader-restack/live/target"
+  },
+  "cargo_version_scope": "Both actual -Vv outputs are byte-identical and omit commit fields. The common checkout HEAD is source provenance, not an assertion that a commit appears in the emitted version.",
+  "command": [
+    "taskset",
+    "-c",
+    "0-7",
+    "{cargo}",
+    "-Zohm-defaults=yes",
+    "check",
+    "--locked",
+    "--offline",
+    "-j",
+    "8",
+    "--message-format=json",
+    "-v"
+  ],
+  "common_checkout_head": "5e5d271d763d7beb38b48755e22bd59e93f02b97",
+  "correctness_tests": {
+    "active_maintenance_cases": 11,
+    "binding_cases": 6,
+    "original_fixture_cases": 31,
+    "original_maintenance_cases": 8,
+    "raw_receipt_cases": 3,
+    "scope": "collector controls; no new Cargo testsuite claim",
+    "total_passed": 59
+  },
+  "created_at": "2026-10-24T14:38:37.345801+00:00",
+  "expected_source_trees": {
+    "baseline": "6919395c3f4732ade7d263db1d5b64fd7562845e",
+    "candidate": "45280a180bb4bea53c79d423c7cc71255dfe81c3"
+  },
+  "fixture_name": "uv-loader-restack",
+  "historical_scope": "Independent confirmation of current PR178 restack on a new Genoa host, with original uv/SDK6 and native-to-first-check endpoint; historical Milan result remains separately anchored. SDK12 already includes this behavior; this is not an SDK12 speedup claim.",
+  "host": "charlie-ohm-loader-perf-1024",
+  "independence": "New production-settings binaries and fresh native seeds, reverse producer order, no pooling with the earlier normal-build n=1 diagnostic. Statistical unit is a restored-state pair, conditional on one new native seed per variant, not twelve independent native builds.",
+  "invocations_per_variant_per_pair": 1,
+  "maintenance_decoder": "Repeated TimersMonotonic values are preserved in order; duplicate scalar, unknown and missing properties reject.",
+  "native_producer_order": [
+    "candidate",
+    "baseline"
+  ],
+  "native_seed_count_per_variant": 1,
+  "pair_reservation_rule": {
+    "during_pair": "Any new trigger/start/exit or active heavy service at native-command boundaries invalidates the entire block; CPU accounting is retained without treating delayed accounting as a new service cycle.",
+    "excluded_restores": [
+      "baseline",
+      "candidate",
+      "candidate",
+      "baseline"
+    ],
+    "formula": "ceil_to_10_seconds(1.5 * historical_max_pair_command_seconds + 2 * maximum_excluded_restore_seconds + 20)",
+    "historical_max_pair_command_wall_ns": 60255887313,
+    "maximum_wait_seconds": 1200,
+    "services": [
+      "applied-devbox-kube-proxy-reconcile",
+      "applied-devbox-azure-session",
+      "applied-devbox-teleport-reconcile"
+    ],
+    "timed_commands_in_rehearsal": 0,
+    "unavailable_deadline": "wait, never admit",
+    "wait_only_before_position_0": true
+  },
+  "pair_reservation_seconds": 210,
+  "pairs": 12,
+  "pending_assets": [],
+  "phase": "confirmation",
+  "preflight": "Dedicated charlie-ohm-loader-perf-1024; complete native-only seeds and natural provenance; 210-second heavy-service admission before each complete pair, with service-cycle checks outside each native stopwatch. Original load averages remain recorded; no new generic numerical CPU-occupancy gate is claimed.",
+  "primary_metric": "Native cargo check wall time including all compiler/build-script children, excluding restoration/verification.",
+  "randomization_seed": 2026102126,
+  "restoration": {
+    "all_copy_hash_and_deletion_work_outside_timing": true,
+    "helper": "work/benchmark/loader_fixture_delta.py",
+    "inventory": "Every unique device/inode is hashed once per inventory; all path/metadata/link rows retained, with size, nanosecond mtime/ctime, mode, link-count and inode identity consistency checked.",
+    "method": "Checksum rsync without inplace/link-dest, full independent-copy fallback, mandatory full content/mode/nanosecond-mtime/symlink/hardlink inventory match before each timed command. External hardlinks force copy before inode metadata updates.",
+    "sequential": true,
+    "sha256": "e3d552d1bbbb903ade7a3dc70e7f6677bf60481be6c634b25f58d2d3b0cecb61",
+    "snapshots_share_no_writable_inodes_with_live": true
+  },
+  "results_name": "loader-restack-confirmation-01",
+  "retention": "All 24 samples retained. No interim effect inspection, early stopping, optional sample extension, or exclusions. Any failed command or input/state integrity failure invalidates the batch and is retained.",
+  "root": "/home/dev-user/ohm-loader-restack-20261024",
+  "schema_version": 2,
+  "scope": "Full unchanged uv workspace; default build profiles and incremental behavior. No test executables run.",
+  "secondary_metrics": [
+    "Child user+system CPU seconds",
+    "Crate rustc invocation counts",
+    "Metadata-only rustc invocation counts",
+    "Actual build-script invocation counts",
+    "Fresh and compiled artifacts"
+  ],
+  "seed_command": [
+    "taskset",
+    "-c",
+    "0-7",
+    "{cargo}",
+    "-Zohm-defaults=yes",
+    "test",
+    "--no-run",
+    "--locked",
+    "--offline",
+    "-j",
+    "8",
+    "--message-format=json",
+    "-v"
+  ],
+  "source_adaptations": [
+    "Raw command/exit/elapsed receipt immediately after subprocess return and before fallible interpretation; original native stopwatch and statistics unchanged.",
+    "Prospective maintenance admission outside complete pairs and strict same-service-cycle checks outside each native stopwatch.",
+    "Persistent task-owned supervisor with file-backed stdio and passive notification."
+  ],
+  "source_commits": {
+    "baseline": "ff1eacd2b577777ecb8a7f3e934ddac36d11928e",
+    "candidate": "8fbefabb23d1b1950b9e5d224ed986ada7331192"
+  },
+  "state": "frozen-awaiting-root-authorization",
+  "stop_rules": {
+    "automatic_replacements": 0,
+    "fixed_complete_blocks": 1,
+    "no_interim_effects": true,
+    "operational_failure": "retain all raw data; no effect inspection; restore native parent and stop",
+    "sample_extension": false,
+    "valid_statistical_miss": "stop"
+  },
+  "uv_revision": "3d82a6ad5a7eab8c68236553b7846517767c4b61",
+  "warmup_pairs": 0
+}

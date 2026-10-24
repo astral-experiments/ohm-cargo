@@ -1,0 +1,42 @@
+--- maintenance.py
++++ maintenance_02.py
+@@ -1,4 +1,4 @@
+-"""Prospective waits only before complete pairs; occupancy remains decisive."""
++"""Prospective waits before complete pairs; service-cycle guards remain strict."""
+ import datetime
+ from decimal import Decimal
+ import json
+@@ -19,6 +19,22 @@
+     return int(value)
+ 
+ 
++def parse_properties(text, properties):
++    pairs = [line.split('=', 1) for line in text.splitlines()]
++    assert all(len(row) == 2 for row in pairs)
++    assert {key for key, _ in pairs} == set(properties)
++    result = {}
++    for key in properties:
++        values = [value for name, value in pairs if name == key]
++        if key == 'TimersMonotonic':
++            assert values
++            result[key] = values
++        else:
++            assert len(values) == 1, key
++            result[key] = values[0]
++    return result
++
++
+ def observe():
+     rows = {}
+     env = {'PATH': '/usr/bin:/bin', 'LANG': 'C.UTF-8', 'LC_ALL': 'C.UTF-8', 'TZ': 'UTC'}
+@@ -28,9 +44,7 @@
+             command = ['/usr/bin/systemctl', 'show', name + '.' + suffix, *['--property=' + key for key in properties]]
+             result = subprocess.run(command, stdin=subprocess.DEVNULL, capture_output=True, text=True, env=env, timeout=20)
+             assert result.returncode == 0 and not result.stderr
+-            pairs = [line.split('=', 1) for line in result.stdout.splitlines()]
+-            assert len(pairs) == len(properties) and {key for key, _ in pairs} == set(properties)
+-            rows[name][suffix] = dict(pairs)
++            rows[name][suffix] = parse_properties(result.stdout, properties)
+     return {'utc': datetime.datetime.now(datetime.timezone.utc).isoformat(), 'monotonic_us': time.monotonic_ns() // 1000, 'services': rows}
+ 
+ 

@@ -1,0 +1,114 @@
+{
+  "credential_pattern_classes": [
+    "private_key",
+    "github_credential",
+    "bearer_credential",
+    "signed_query",
+    "aws_access_key",
+    "jwt_value"
+  ],
+  "manual_review": "Only owned command PIDs/argv, declared build/workload environments, source/tool/state identities, and bounded service timing/state fields are public. The system-wide readiness process listing is omitted. No private transport, control-plane, connection, credential or authentication files are copied.",
+  "matches": [],
+  "omitted_original_members": [
+    {
+      "bytes": 357,
+      "path": "logs/final-preflight/host-readiness.command.json",
+      "reason": "Private system-wide process/readiness capture omitted; sanitized host facts and original digest retained.",
+      "scope": "preparation",
+      "sha256": "eaf5b17188bfb84a0c52e3f0871af87a06d0fb5877461a50910b9b8386cf6f2d"
+    },
+    {
+      "bytes": 521,
+      "path": "logs/final-preflight/host-readiness.receipt.json",
+      "reason": "Private system-wide process/readiness capture omitted; sanitized host facts and original digest retained.",
+      "scope": "preparation",
+      "sha256": "4acf2b49b60f16ac84fe6823b89ecb7e8d703d9300a3677eaf5ecfd82ef9300c"
+    },
+    {
+      "bytes": 0,
+      "path": "logs/final-preflight/host-readiness.stderr",
+      "reason": "Private system-wide process/readiness capture omitted; sanitized host facts and original digest retained.",
+      "scope": "preparation",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 0,
+      "path": "logs/final-preflight/host-readiness.stdin",
+      "reason": "Private system-wide process/readiness capture omitted; sanitized host facts and original digest retained.",
+      "scope": "preparation",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 33198,
+      "path": "logs/final-preflight/host-readiness.stdout",
+      "reason": "Private system-wide process/readiness capture omitted; sanitized host facts and original digest retained.",
+      "scope": "preparation",
+      "sha256": "7e0ad8b92abb630e72c1cc1538405f6c23e3718db5254c5636980bf22f135c1f"
+    },
+    {
+      "bytes": 34427,
+      "path": "records/final-host-readiness.json",
+      "reason": "Private system-wide process/readiness capture omitted; sanitized host facts and original digest retained.",
+      "scope": "preparation",
+      "sha256": "c8b348f40da5217b409223aaba77bb601fe180b31bf3dab292a19b0510b0aa9a"
+    },
+    {
+      "bytes": 41974120,
+      "path": "artifacts/baseline/cargo",
+      "reason": "Large executable body omitted; complete source, build, tool, section and byte identities retained.",
+      "scope": "build",
+      "sha256": "65a3b781f40c78150f8c4b40d5929361882acb0c05012a32d8982e47912cb7ab"
+    },
+    {
+      "bytes": 240238656,
+      "path": "artifacts/baseline/cargo.full",
+      "reason": "Large executable body omitted; complete source, build, tool, section and byte identities retained.",
+      "scope": "build",
+      "sha256": "bc8078e1c474a3018c55fa7ae2194ca68d023e0a483e0e91710ea10e37a85dd3"
+    },
+    {
+      "bytes": 41974312,
+      "path": "artifacts/candidate/cargo",
+      "reason": "Large executable body omitted; complete source, build, tool, section and byte identities retained.",
+      "scope": "build",
+      "sha256": "8ae23fe7bf9fa322b28a08295fc4f8f508c7cd20085f5a6a6315d9679da3a973"
+    },
+    {
+      "bytes": 240240952,
+      "path": "artifacts/candidate/cargo.full",
+      "reason": "Large executable body omitted; complete source, build, tool, section and byte identities retained.",
+      "scope": "build",
+      "sha256": "c923e683ca0923fe8e6cecc7160b8cde2a9a25c6f774b99996016c6ec8985ef2"
+    }
+  ],
+  "original_archive_digests": {
+    "build-collection": "2eb4c5c7bceae9b931f8d619b0754ef0aa1c5bc301eeccc1934ea432c4a5b1df",
+    "confirmation-collection": "60f2ce91482cd8910905f92ebb62df47320465d050ad7f7d492d825c4128146d",
+    "input-collection": "57fbeb1c86680ae3274bd5ee2ee1df78b0e272d64cbb2f48c804c5868b84330c"
+  },
+  "redacted_member_bytes": 0,
+  "sample_deletions": 0,
+  "scanned_files": 594,
+  "scope_records": {
+    "build": {
+      "original_manifest_sha256": "d7db4f5163337061eb90bf42dd9ba80f677f8597101b13fa49f2d2ccd8a79302",
+      "original_member_manifest": "records/build-collection-01.manifest.json",
+      "original_members": 161,
+      "published_member_bytes_unchanged": true
+    },
+    "confirmation": {
+      "original_manifest_sha256": "fd4185f25171dfe663d31858d3bcedbebc3677410dabcda96cd20e99adf0e3a6",
+      "original_member_manifest": "records/confirmation-collection-01.manifest.json",
+      "original_members": 265,
+      "published_member_bytes_unchanged": true
+    },
+    "preparation": {
+      "original_manifest_sha256": "d9472d2ceda75b658a760e15dc3727aae526d3c843d778c8a4fb12047ddb704e",
+      "original_member_manifest": "records/input-collection-01.manifest.json",
+      "original_members": 111,
+      "published_member_bytes_unchanged": true
+    }
+  },
+  "state": "passed",
+  "statistical_samples_retained": 24
+}

@@ -1,0 +1,31 @@
+--- original/paired.py
++++ controls/paired.py
+@@ -84,13 +84,16 @@
+ 
+ 
+ def run_command(command, cwd, environment, stdout_path, stderr_path):
++    receipt_path = stdout_path.with_name(stdout_path.name + ".command.json")
++    if receipt_path.exists():
++        raise ValueError(f"raw command receipt already exists: {receipt_path}")
+     before = resource.getrusage(resource.RUSAGE_CHILDREN)
+     with stdout_path.open("wb") as stdout, stderr_path.open("wb") as stderr:
+         started = time.perf_counter_ns()
+         process = subprocess.run(command, cwd=cwd, env=environment, stdout=stdout, stderr=stderr)
+         elapsed_ns = time.perf_counter_ns() - started
+     after = resource.getrusage(resource.RUSAGE_CHILDREN)
+-    return {
++    result = {
+         "returncode": process.returncode,
+         "wall_ns": elapsed_ns,
+         "user_seconds": after.ru_utime - before.ru_utime,
+@@ -102,6 +105,10 @@
+         "stdout": str(stdout_path),
+         "stderr": str(stderr_path),
+     }
++    atomic_json(receipt_path, {"schema_version": 1, "command": command, "cwd": str(cwd),
++                               "environment_sha256": hashlib.sha256(json.dumps(list(environment.items()), separators=(",", ":")).encode()).hexdigest(),
++                               "result": result})
++    return result
+ 
+ 
+ def install_variant(source, destination):

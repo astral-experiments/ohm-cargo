@@ -1,0 +1,29 @@
+{
+  "all_function_asts_identical": true,
+  "changes": [
+    {
+      "after": "assert len(sys.argv) == 2, 'usage: replay_raw.py /absolute/extracted-root'\nDATA = Path(sys.argv[1]).resolve() / 'current-restack/confirmation'",
+      "before": "DATA = ROOT / 'confirmation-collection-01'"
+    },
+    {
+      "after": "",
+      "before": "os.sched_setaffinity(0, set(range(24, 32)))\n"
+    },
+    {
+      "after": "ROOT / 'tools'",
+      "before": "ROOT / 'controls'"
+    },
+    {
+      "after": "ROOT / 'confirmation/original-collection-verification.json'",
+      "before": "ROOT / 'confirmation-collection-01-local-verification.json'"
+    },
+    {
+      "after": "",
+      "before": "with (ROOT / 'raw-gates-01.json').open('x') as stream:\n    json.dump(report, stream, indent=2)\n    stream.write('\\n')\n"
+    }
+  ],
+  "complete_reverse_bytes": true,
+  "original_sha256": "5f7f765b24503b607a7dbb28f7916640549c54b54588b792494f6bfef68bf693",
+  "portable_sha256": "978933042e9394cdb924f112e383c99c18869f99d7d4822cf7cd59292148e838",
+  "workload_or_statistics_changed": false
+}

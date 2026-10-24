@@ -1,0 +1,11 @@
+--- restack_control.py
++++ restack_control_02.py
+@@ -8,7 +8,7 @@
+ import traceback
+ sys.path.insert(0, str(Path(__file__).resolve().parent))
+ import loader_fixture_delta as fixture
+-import maintenance
++import maintenance_02 as maintenance
+ import paired
+ 
+ def read_ref(row):
