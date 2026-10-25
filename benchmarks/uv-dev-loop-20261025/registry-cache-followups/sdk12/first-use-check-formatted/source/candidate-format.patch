@@ -1,0 +1,21 @@
+diff --git a/src/workspace/parser/mod.rs b/src/workspace/parser/mod.rs
+index d4bd9096ae1348900d4055b96707a1058c844bd4..3ca3cc6a3a0b8850631c3efb0c6a21b5efece130 100644
+--- a/src/workspace/parser/mod.rs
++++ b/src/workspace/parser/mod.rs
+@@ -243,12 +243,13 @@ fn deserialize_without_document(
+     #[cfg(unix)]
+     if let Some(entry) = entry {
+         let document = parse_document(contents)?;
+-        let manifest = deserialize_toml(toml::de::Deserializer::from(document.clone()))
+-            .map_err(|mut error| {
++        let manifest = deserialize_toml(toml::de::Deserializer::from(document.clone())).map_err(
++            |mut error| {
+                 // Unlike `Deserializer::parse`, `from` does not retain the source.
+                 error.set_input(Some(contents));
+                 error
+-            })?;
++            },
++        )?;
+         entry.store(document);
+         return Ok(manifest);
+     }

@@ -1,0 +1,160 @@
+{
+  "actual_recipe_sha256": "153f609beb4679cebbc68c0febcf7e2b193adcb7ebc9b975be4a85d9ba2facbd",
+  "build_tools": [
+    {
+      "path": "${BUILD_ROOT}/tools/stock/bin/cargo",
+      "sha256": "e951141cc55a6cd7b9876d187bd30a3720e6086b99413af95e3b8de1cdd72f14"
+    },
+    {
+      "path": "${BUILD_ROOT}/tools/stock/bin/rustc",
+      "sha256": "f3834d26669b03f6855fa54bd2381443123e860167bc0c7a8dd137e5cf6e5e4f"
+    },
+    {
+      "path": "${BUILD_ROOT}/tools/stock/bin/rustdoc",
+      "sha256": "a1321a60578a6b2e3e0ff428201b8618bbd9a9fbcd475c0d0f151bbf17cb0a9e"
+    },
+    {
+      "path": "/usr/bin/objcopy",
+      "sha256": "9276e918e3c26d3aa7ef9dd2232cd8ac692f03d3c1f270bfa5144a2b5492b713"
+    },
+    {
+      "path": "/usr/bin/cc",
+      "sha256": "1b99826121ae6682a634e5efe09bd3e3df58ce58e0b28f849114ab5b89139c26"
+    },
+    {
+      "path": "/usr/bin/c++",
+      "sha256": "1353e9bdd29a7295c7226bf6c63abccce056d8cac31f112e5cdbecc3f28c2769"
+    },
+    {
+      "path": "/usr/bin/ld",
+      "sha256": "e9ceb054c12207970f2726dfc07e9a66b411602748628baf27399f02a9bbb31b"
+    },
+    {
+      "path": "/usr/bin/cmake",
+      "sha256": "1c5227af4edd22d8d689def545e18ee458260c0fd579eba2187967f38817e638"
+    },
+    {
+      "path": "/usr/bin/pkg-config",
+      "sha256": "7e8152db1b0c7e49d47b4b82a70dc9997b557951c5d4d938b0e7f208ce9eb10b"
+    },
+    {
+      "path": "/usr/bin/git",
+      "sha256": "eb54b535467e0975c1284d4c4d08eea779aeb248a5d34b02e2ee171382e22201"
+    },
+    {
+      "path": "${BUILD_ROOT}/tools/stock/lib/librustc_driver-999a121de2f042be.so",
+      "sha256": "f45c41337f1516bb9f4d504a2a507202a01c431fc2063334913dde5480ffee03"
+    }
+  ],
+  "compiler_argument_replay_sha256": "abae333d7bd51ed3a58f39bc22c84b06103ed40f32e7c0e0b6db989cef421cd3",
+  "compiler_vectors": "All four complete lib/bin vectors equal the original matched recipe; 236/238 ordered words.",
+  "current_git_raw_stdout": "fd7a25d7bed7503d628c90879ba265e173343b28 fd7a25d7b 2026-10-24\n",
+  "git_command": [
+    "git",
+    "log",
+    "-1",
+    "--date=short",
+    "--format=%H %h %cd",
+    "--abbrev=9"
+  ],
+  "git_rebinding": {
+    "consumed_fields_exact": true,
+    "current_git_sha256": "eb54b535467e0975c1284d4c4d08eea779aeb248a5d34b02e2ee171382e22201",
+    "current_raw_stdout_sha256": "e5be1457ff2ed4bb75237b157ceab4aeba20a0c8ba2b2c6143b5a320c97dd701",
+    "new_git_explicitly_bound": true,
+    "original_consumed_fields": [
+      "fd7a25d7bed7503d628c90879ba265e173343b28",
+      "fd7a25d7b",
+      "2026-10-24"
+    ],
+    "original_field_receipt": "${BUILD_ROOT}/build-logs/build/candidate-version.stdout",
+    "original_field_receipt_sha256": "68986ac4025db8c387755c2dfe41387f5c52a09c04560a9be287685cec31a5c5",
+    "original_git_sha256": "2a8c18fbf43da9f692d75474c72bea9dfd796c260b0f3dfe456376abc3bbd668",
+    "original_raw_stdout_retained": false,
+    "same_embedded_head": "fd7a25d7bed7503d628c90879ba265e173343b28",
+    "same_repository": "${BUILD_ROOT}/producer/source"
+  },
+  "measured_cargo_version": "cargo 1.99.0 (fd7a25d7b 2026-10-24)\nrelease: 1.99.0\ncommit-hash: fd7a25d7bed7503d628c90879ba265e173343b28\ncommit-date: 2026-10-24\nhost: x86_64-unknown-linux-gnu\nlibgit2: 1.9.6 (sys:0.21.0 vendored)\nlibcurl: 8.21.0-DEV (sys:0.4.90+curl-8.21.0 vendored ssl:OpenSSL/3.6.3)\nssl: OpenSSL 3.6.3 9 Jun 2026\nos: Ubuntu 24.4.0 (noble) [64-bit]\n",
+  "normalized_recipe": {
+    "argv": [
+      "${BUILD_ROOT}/tools/stock/bin/cargo",
+      "build",
+      "--release",
+      "--locked",
+      "--offline",
+      "--bin",
+      "cargo",
+      "--features",
+      "all-static,ohm-defaults",
+      "-j",
+      "16",
+      "-v"
+    ],
+    "builds": [
+      "baseline",
+      "candidate"
+    ],
+    "cpu_affinity": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15
+    ],
+    "cwd": "${BUILD_ROOT}/producer/source",
+    "diagnostic_comparative_use": false,
+    "embedded_head": "fd7a25d7bed7503d628c90879ba265e173343b28",
+    "environment": {
+      "CARGO_BUILD_JOBS": "16",
+      "CARGO_HOME": "${BUILD_ROOT}/producer/cargo-home",
+      "CARGO_INCREMENTAL": "0",
+      "CARGO_PROFILE_RELEASE_CODEGEN_UNITS": "1",
+      "CARGO_PROFILE_RELEASE_DEBUG": "1",
+      "CARGO_PROFILE_RELEASE_INCREMENTAL": "false",
+      "CARGO_PROFILE_RELEASE_LTO": "thin",
+      "CARGO_PROFILE_RELEASE_OPT_LEVEL": "3",
+      "CARGO_PROFILE_RELEASE_STRIP": "none",
+      "CARGO_TARGET_DIR": "${BUILD_ROOT}/producer/target",
+      "CARGO_TERM_COLOR": "never",
+      "CFG_RELEASE_CHANNEL": "dev",
+      "GIT_CONFIG_GLOBAL": "${BUILD_ROOT}/build-control/gitconfig",
+      "HOME": "${BUILD_HOME}",
+      "LANG": "C.UTF-8",
+      "LC_ALL": "C.UTF-8",
+      "LIBZ_SYS_STATIC": "1",
+      "LOGNAME": "${BUILD_USER}",
+      "PATH": "${BUILD_ROOT}/tools/stock/bin:/usr/bin:/bin",
+      "RUSTC": "${BUILD_ROOT}/tools/stock/bin/rustc",
+      "RUSTDOC": "${BUILD_ROOT}/tools/stock/bin/rustdoc",
+      "SHELL": "/usr/bin/zsh",
+      "SSL_CERT_DIR": "/usr/lib/ssl/certs",
+      "SSL_CERT_FILE": "/etc/ssl/certs/ca-certificates.crt",
+      "TMPDIR": "${BUILD_ROOT}/producer/tmp",
+      "USER": "${BUILD_USER}"
+    },
+    "pgo": false
+  },
+  "original_git_raw_stdout_retained": false,
+  "path_scope": "One identical physical source and target path was used sequentially. Private absolute prefixes are parameterized; rebuilding elsewhere need not reproduce binary bytes.",
+  "stock_cargo_version": "cargo 1.99.0 (5f94df478 2026-08-27)\nrelease: 1.99.0\ncommit-hash: 5f94df4789f005f9a352888e8355ffc645b7ed0e\ncommit-date: 2026-08-27\nhost: x86_64-unknown-linux-gnu\nlibgit2: 1.9.6 (sys:0.21.0 vendored)\nlibcurl: 8.21.0-DEV (sys:0.4.90+curl-8.21.0 vendored ssl:OpenSSL/3.6.3)\nssl: OpenSSL 3.6.3 9 Jun 2026\nos: Ubuntu 24.4.0 (noble) [64-bit]\n",
+  "stock_rustc_version": "rustc 1.99.0 (b940084d7 2026-09-28)\nbinary: rustc\ncommit-hash: b940084d7eb6a299eb4bfeb8e34901bc051e7ac4\ncommit-date: 2026-09-28\nhost: x86_64-unknown-linux-gnu\nrelease: 1.99.0\nLLVM version: 23.1.1\n",
+  "strip_command": [
+    "objcopy",
+    "--strip-debug",
+    "cargo.full",
+    "cargo"
+  ],
+  "strip_proof": "All 31 allocated sections preserved in each arm.",
+  "tool_identity_before_after_exact": true
+}

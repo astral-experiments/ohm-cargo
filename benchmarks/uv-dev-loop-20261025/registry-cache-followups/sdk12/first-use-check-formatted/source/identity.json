@@ -1,0 +1,61 @@
+{
+  "baseline_public_pr": "https://github.com/astral-sh/ohm-cargo/pull/237",
+  "baseline_tree": "5fbb37f329d5c185e95511832854596937899019",
+  "candidate_tree": "2f4563a9e1311f214f8031c611346e4758134548",
+  "changed_over_R1": [
+    "src/workspace/parser/mod.rs",
+    "src/workspace/parser/registry_cache.rs"
+  ],
+  "common_checkout_HEAD_and_embedded_commit": "fd7a25d7bed7503d628c90879ba265e173343b28",
+  "files": [
+    {
+      "bytes": 14643,
+      "file": "source/baseline-full.patch",
+      "sha256": "254d6f2cc6f8a5770a97d9993d4aafdf9087fad5f9aaa7e9e118eb3a97983174"
+    },
+    {
+      "bytes": 18545,
+      "file": "source/candidate-full.patch",
+      "sha256": "c71dd44e59d10fe7b0e48640d8d51d726d246c377f48b7d3e3c1aa99145afb4a"
+    },
+    {
+      "bytes": 7770,
+      "file": "source/candidate-over-r1.patch",
+      "sha256": "c883b6e783256ddb282d337d4ce4d79b472c34f478261115917bf0fe37dbf762"
+    },
+    {
+      "bytes": 917,
+      "file": "source/candidate-format.patch",
+      "sha256": "28600d5827071b3ce588bac40d7c39a620e346f8918bb18dd28eb424e7b38d02"
+    },
+    {
+      "bytes": 110518,
+      "file": "source/after/src/context/mod.rs",
+      "git_blob": "6914a72d6c9e0ddecf39cf3bde5689d3a3aa7845",
+      "sha256": "9d95e8b851ba91617373fa603e8af7a3052dfeb8c2f613a2131e884a0609e96a"
+    },
+    {
+      "bytes": 121078,
+      "file": "source/after/src/workspace/parser/mod.rs",
+      "git_blob": "3ca3cc6a3a0b8850631c3efb0c6a21b5efece130",
+      "sha256": "91b9f6d7563f9c52fe951717c46144cf8f57ee3945a4df37669b17f69b378225"
+    },
+    {
+      "bytes": 12951,
+      "file": "source/after/src/workspace/parser/registry_cache.rs",
+      "git_blob": "9919dd6a079cab20b98968298679dbbe26c27d6f",
+      "sha256": "f61f5a35e11ac2f8b8d8c6742b45c011633ced7e6a61e8fde27560953f386d5e"
+    }
+  ],
+  "formatter_sha256": "a3ab6c445b26eda8d7bcfd5cc3f4b068dd7136af96822fd21378fc6fe8c2f2a3",
+  "formatting": "Exact CI formatting correction: whitespace and an optional trailing comma; later production source positions move one line.",
+  "lock": {
+    "bytes": 136531,
+    "file": "source/Cargo.lock",
+    "sha256": "151c473e1a11532946ba9421ab1beeb238f98eb1f8cd4e5f94f9811003abd5a7"
+  },
+  "note": "Both builds kept the same fd7 HEAD and applied full-index patches at the canonical producer path. The published formatted head is source identity, not the embedded version. Its distinct executable has this separate prospective confirmation; original-head results remain separate.",
+  "previous_measured_tree": "30b4f1fb9d0fe1c215c71d92f594ba3774925df7",
+  "previous_public_commit": "54d8640826fd92a45a062213878615b0561a903c",
+  "published_candidate_commit": "a90c95c5741c77c291a13a6c8eacc8385ceb70c6"
+}
