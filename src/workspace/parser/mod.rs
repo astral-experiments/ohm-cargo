@@ -243,12 +243,13 @@ fn deserialize_without_document(
     #[cfg(unix)]
     if let Some(entry) = entry {
         let document = parse_document(contents)?;
-        let manifest = deserialize_toml(toml::de::Deserializer::from(document.clone()))
-            .map_err(|mut error| {
+        let manifest = deserialize_toml(toml::de::Deserializer::from(document.clone())).map_err(
+            |mut error| {
                 // Unlike `Deserializer::parse`, `from` does not retain the source.
                 error.set_input(Some(contents));
                 error
-            })?;
+            },
+        )?;
         entry.store(document);
         return Ok(manifest);
     }
