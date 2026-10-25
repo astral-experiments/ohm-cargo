@@ -1,0 +1,122 @@
+{
+  "artifacts": [
+    {
+      "allocated_sections_unchanged_by_stripping": 31,
+      "arm": "baseline",
+      "measurement_copy_mode": 448,
+      "source_tree": "487deda53e727c16bd22ae3d7cf1c512d1005116",
+      "stripped": {
+        "bytes": 42308672,
+        "mode": 493,
+        "sha256": "4068b2035080c1e1f04faa775f7bbfef9b39cb9e3b64daa1fbb86c9e867f0d8f"
+      },
+      "version_stdout_sha256": "b4bf2a74bace7fa9304f31f9476b9c658735138da4bcee37aa9eaa86db13acd2"
+    },
+    {
+      "allocated_sections_unchanged_by_stripping": 31,
+      "arm": "candidate",
+      "measurement_copy_mode": 448,
+      "source_tree": "8cc5186eeb53e806108ace30c0be7f4c061bfb76",
+      "stripped": {
+        "bytes": 42343248,
+        "mode": 493,
+        "sha256": "a14fc2bc9543afe387255271a0a2b407116d5e7177d4977da8948f1a37229220"
+      },
+      "version_stdout_sha256": "b4bf2a74bace7fa9304f31f9476b9c658735138da4bcee37aa9eaa86db13acd2"
+    }
+  ],
+  "base": "fdd26156be98618e2e01a9e02703edac71b79a35",
+  "baseline_tree": "487deda53e727c16bd22ae3d7cf1c512d1005116",
+  "candidate_tree": "8cc5186eeb53e806108ace30c0be7f4c061bfb76",
+  "combined_patch_sha256": "ae07f10e722bb5ad435c6a7b7fb563c6ca046704f419841ed085d0fe57a10694",
+  "full_private_result_handoff_sha256": "7788e87ddeac482fbab748f6a8e3ae8406e03c7bc86235a2bd58cfb212e2bc5e",
+  "functional_acceptance_sha256": "3d0ea2a37f144df285e12c69e046dc0f02896d473a613b6e7a13dcad054a1e93",
+  "functional_counts": {
+    "core_units_passed": 41,
+    "integration_cases_per_arm": 50,
+    "nightly_marked_executed_per_arm": 12,
+    "production_diagnostic_pairs": 4
+  },
+  "independent_replay_sha256": "1549d2d04eb5b5cd9e30fd7333678011ab9e67f78d078b2e95428a67997a6822",
+  "matched_build_handoff_sha256": "14594296099ed8ef8d925bab52629723045c02856ae894f1fff819395fdffd28",
+  "measurement_protocol_sha256": "6d54e21edf274a3a119ef3de3a067df2185f3481e59db3476549f736a5793f67",
+  "pre_numbered_setup_correction_sha256": "36632934a77569a1be3b1b807842c339a2f7440c73b7bd2073b67441836d23e1",
+  "preflight_acceptance_sha256": "2efe263a68963aa4de3e963c7b32b53c5163ec305ea01cbd11b419455cd6f768",
+  "primary_confirmation_sha256": "752e1452335d43568e6143ce8bd63eaed302fa1fcab55a2fce6e028a4e5d8e52",
+  "producer": {
+    "argv": [
+      "<stock>/bin/cargo",
+      "build",
+      "--release",
+      "--locked",
+      "--offline",
+      "--bin",
+      "cargo",
+      "--features",
+      "all-static,ohm-defaults",
+      "-j",
+      "16",
+      "-v"
+    ],
+    "cpu_affinity": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15
+    ],
+    "dependency_reuse": "Only dependencies built on this new host from authenticated stock/source/registry bytes; no archived Cargo target artifacts.",
+    "fresh_build_start": true,
+    "llvm": "23.1.1",
+    "matching_checks": [
+      "Full source tree before/after each build",
+      "Exact recipe/environment/tool/package identities",
+      "Identical Cargo -Vv and dynamic library identities",
+      "Separate immutable full/stripped binaries; every allocated section unchanged by stripping",
+      "Actual libcargo/bin-cargo compiler argv comparison",
+      "Zero ignored in each required focused regression"
+    ],
+    "pgo": false,
+    "release": "1.99.0",
+    "release_environment": {
+      "CARGO_INCREMENTAL": "0",
+      "CARGO_PROFILE_RELEASE_CODEGEN_UNITS": "1",
+      "CARGO_PROFILE_RELEASE_DEBUG": "1",
+      "CARGO_PROFILE_RELEASE_INCREMENTAL": "false",
+      "CARGO_PROFILE_RELEASE_LTO": "thin",
+      "CARGO_PROFILE_RELEASE_OPT_LEVEL": "3",
+      "CARGO_PROFILE_RELEASE_STRIP": "none",
+      "CFG_RELEASE_CHANNEL": "dev",
+      "LIBZ_SYS_STATIC": "1"
+    },
+    "same_physical_source_target_tmp_and_cargo_home": true,
+    "source_head_for_both": "fdd26156be98618e2e01a9e02703edac71b79a35",
+    "stock_cargo_commit": "5f94df4789f005f9a352888e8355ffc645b7ed0e",
+    "stock_rustc_commit": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4"
+  },
+  "production_build_protocol_sha256": "b7777a34ed4e11cc577ea9d470f1646a898563e08db2cfac84f51b05a225cf83",
+  "profiler_acceptance_sha256": "76c34f6d1b2f5bfaa8af924adf42b2711208ecb0585e5d331a1e3c96164e1ed7",
+  "protocol_redaction": "Only the two host names and benchmark root are replaced; reversing those fields reproduces the original JSON value exactly.",
+  "public_scope": "Numerical profile replay and source/build provenance. Private host/process/connection records and transferable credentials are excluded.",
+  "published_heads": {
+    "231": "bca8c1077b2b40b4b037edc059333d7d98f91bae",
+    "232": "fa592baf27578e348059de7fbe0eed50126d1bca",
+    "233": "ddaa93b0da4f9b432413a26120029462f499eafc",
+    "234": "13ed3e7e3d443975083a1931560267bf98161788",
+    "235": "fd7a25d7bed7503d628c90879ba265e173343b28"
+  },
+  "qualified_callgrind_core_sha256": "ccb79923aa79552778822874a7368e224f8b7ccdabdf77eff3c34acf931c55e9",
+  "schema": 1,
+  "scope": "Combined published Cargo changes; separate dirty test-build endpoint."
+}

@@ -1,0 +1,810 @@
+diff --git a/src/compiler/mod.rs b/src/compiler/mod.rs
+index 67585636f0b1218bd3d5183a906786534f0837de..d9f64a87a6ec3307918a229dc8d602e6ee3914e9 100644
+--- a/src/compiler/mod.rs
++++ b/src/compiler/mod.rs
+@@ -66,8 +66,8 @@ use std::env;
+ use std::ffi::{OsStr, OsString};
+ use std::fmt::Display;
+ use std::fs::{self, File};
+-use std::io::{BufRead, BufReader, BufWriter, Write};
+-use std::ops::{Deref, Range};
++use std::io::{BufRead, BufReader, BufWriter, Read, Seek, Write};
++use std::ops::Range;
+ use std::path::{Path, PathBuf};
+ use std::sync::{Arc, LazyLock};
+ use std::time::{Instant, UNIX_EPOCH};
+@@ -569,6 +569,29 @@ struct CheckedRelinkManifest {
+     manifest: RelinkCacheManifest,
+ }
+ 
++const RELINK_MANIFEST_SLICE_LIMIT: u64 = 1024 * 1024;
++
++fn read_relink_manifest_json(
++    mut reader: impl Read + Seek,
++    len: Option<u64>,
++) -> Option<CheckedRelinkManifest> {
++    if let Some(len) = len.filter(|len| *len <= RELINK_MANIFEST_SLICE_LIMIT) {
++        // The length is only a hint: read an extra byte so a growing file cannot
++        // turn a valid JSON prefix into an accepted manifest. Bound the buffer
++        // independently of the file's current size.
++        let mut bytes = Vec::with_capacity(len as usize + 1);
++        reader.by_ref().take(len + 1).read_to_end(&mut bytes).ok()?;
++        if bytes.len() as u64 == len {
++            return serde_json::from_slice(&bytes).ok();
++        }
++        reader.rewind().ok()?;
++    }
++
++    // Keep streaming large files, or files whose length changed, from the same
++    // opened descriptor rather than reopening a potentially different path.
++    serde_json::from_reader(BufReader::new(reader)).ok()
++}
++
+ struct RelinkCachePaths {
+     rlink: PathBuf,
+     executable: PathBuf,
+@@ -697,8 +720,8 @@ impl RelinkCachePaths {
+ 
+     fn read_manifest(&self) -> Option<RelinkCacheManifest> {
+         let file = paths::open_regular(&self.manifest).ok()?;
+-        let mut checked: CheckedRelinkManifest =
+-            serde_json::from_reader(BufReader::new(file)).ok()?;
++        let len = file.metadata().ok().map(|metadata| metadata.len());
++        let mut checked = read_relink_manifest_json(file, len)?;
+         if checked.input_checksum != checked.manifest.input_checksum() {
+             return None;
+         }
+@@ -3626,7 +3649,7 @@ struct ManifestErrorContext {
+ /// Retained manifest source and dependency information for diagnostic annotations.
+ struct ManifestDiagnosticContext {
+     /// The locations of various spans within the manifest.
+-    spans: Arc<toml::Spanned<toml::de::DeTable<'static>>>,
++    spans: Arc<crate::workspace::manifest::ManifestDocument>,
+     /// The raw manifest contents.
+     contents: String,
+     /// A lookup for all the unambiguous renamings, mapping from the original package
+@@ -4035,7 +4058,7 @@ impl ManifestErrorContext {
+ impl ManifestDiagnosticContext {
+     /// Skips annotation-only allocations when source spans or contents are unavailable.
+     fn new(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> Option<Self> {
+-        let spans = unit.pkg.manifest().document_rc()?;
++        let spans = unit.pkg.manifest().diagnostic_document()?;
+         let contents = unit.pkg.manifest().contents()?;
+         let mut duplicates = HashSet::default();
+         let mut rename_table = HashMap::default();
+@@ -4100,9 +4123,8 @@ impl ManifestDiagnosticContext {
+     /// baz = { path = "../bar", package = "bar" }
+     /// ```
+     fn find_crate_span(&self, unrenamed: &str) -> Option<Range<usize>> {
+-        let spans = &self.spans;
+-
+         let orig_name = self.rename_table.get(unrenamed)?.as_str();
++        let spans = self.spans.get();
+ 
+         if let Some((k, v)) = get_key_value(&spans, &["dependencies", orig_name]) {
+             // We make some effort to find the unrenamed text: in
+@@ -4125,7 +4147,6 @@ impl ManifestDiagnosticContext {
+         // [target.'cfg(something)'.dependencies]. We filter out target tables
+         // that don't match a requested target or a requested cfg.
+         if let Some(target) = spans
+-            .deref()
+             .as_ref()
+             .get("target")
+             .and_then(|t| t.as_ref().as_table())
+@@ -4276,6 +4297,120 @@ fn rustdoc_dep_info_loc(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> Path
+ mod relink_cache_tests {
+     use super::*;
+ 
++    fn manifest_json() -> CargoResult<Vec<u8>> {
++        let manifest = RelinkCacheManifest {
++            version: RELINK_CACHE_VERSION,
++            rlink: RelinkCacheFile {
++                path: PathBuf::from("quoted-\"-雪.rlink"),
++                blake3: "hash".to_owned(),
++            },
++            executable: RelinkCacheObject {
++                path: PathBuf::from("app"),
++                len: 42,
++                modified_nanos: u64::MAX,
++            },
++            objects: Vec::new(),
++            unused_extern_names: Some(vec!["unused".to_owned()]),
++        };
++        let input_checksum = manifest.input_checksum();
++        Ok(serde_json::to_vec(&CheckedRelinkManifest {
++            input_checksum,
++            proof_checksum: crate::util::hash_u64((input_checksum, &manifest.unused_extern_names)),
++            manifest,
++        })?)
++    }
++
++    #[test]
++    fn relink_manifest_json_matches_streaming_at_size_boundaries() -> CargoResult<()> {
++        let original = manifest_json()?;
++        let expected: serde_json::Value = serde_json::from_slice(&original)?;
++        for size in [
++            original.len(),
++            RELINK_MANIFEST_SLICE_LIMIT as usize,
++            RELINK_MANIFEST_SLICE_LIMIT as usize + 1,
++        ] {
++            let mut bytes = original.clone();
++            bytes.resize(size, b' ');
++            // Include unknown, accurate, stale-short and stale-long file sizes.
++            for len in [
++                None,
++                Some(size as u64),
++                Some(1),
++                Some(size as u64 - 1),
++                Some(size as u64 + 1),
++            ] {
++                let actual = read_relink_manifest_json(std::io::Cursor::new(&bytes), len).unwrap();
++                let streaming: CheckedRelinkManifest =
++                    serde_json::from_reader(BufReader::new(bytes.as_slice()))?;
++                assert_eq!(serde_json::to_value(actual)?, expected);
++                assert_eq!(serde_json::to_value(streaming)?, expected);
++            }
++        }
++        Ok(())
++    }
++
++    #[test]
++    fn relink_manifest_json_rejects_truncation_trailing_and_invalid_data() -> CargoResult<()> {
++        let original = manifest_json()?;
++        let mut wrong_type: serde_json::Value = serde_json::from_slice(&original)?;
++        wrong_type["version"] = serde_json::json!("not an integer");
++        let mut large_trailing = original.clone();
++        large_trailing.resize(RELINK_MANIFEST_SLICE_LIMIT as usize + 1, b' ');
++        large_trailing.extend_from_slice(b"false");
++        let invalid = [
++            Vec::new(),
++            original[..original.len() - 1].to_vec(),
++            [original.as_slice(), b"{}"].concat(),
++            [original.as_slice(), b"\0"].concat(),
++            serde_json::to_vec(&wrong_type)?,
++            large_trailing,
++        ];
++        for bytes in invalid {
++            for len in [None, Some(bytes.len() as u64), Some(original.len() as u64)] {
++                assert!(read_relink_manifest_json(std::io::Cursor::new(&bytes), len).is_none());
++                assert!(
++                    serde_json::from_reader::<_, CheckedRelinkManifest>(BufReader::new(
++                        bytes.as_slice()
++                    ))
++                    .is_err()
++                );
++            }
++        }
++        Ok(())
++    }
++
++    #[test]
++    fn relink_manifest_json_keeps_checksum_failures_distinct() -> CargoResult<()> {
++        let dir = tempfile::tempdir()?;
++        let cache = RelinkCachePaths::new(dir.path().join("app"));
++        let original = manifest_json()?;
++        fs::write(&cache.manifest, &original)?;
++        assert!(cache.read_manifest().unwrap().unused_extern_names.is_some());
++
++        let mut value: serde_json::Value = serde_json::from_slice(&original)?;
++        value["input_checksum"] = serde_json::json!(value["input_checksum"].as_u64().unwrap() ^ 1);
++        fs::write(&cache.manifest, serde_json::to_vec(&value)?)?;
++        assert!(cache.read_manifest().is_none());
++
++        let mut value: serde_json::Value = serde_json::from_slice(&original)?;
++        value["proof_checksum"] = serde_json::json!(value["proof_checksum"].as_u64().unwrap() ^ 1);
++        fs::write(&cache.manifest, serde_json::to_vec(&value)?)?;
++        assert!(cache.read_manifest().unwrap().unused_extern_names.is_none());
++        Ok(())
++    }
++
++    #[cfg(unix)]
++    #[test]
++    fn relink_manifest_json_still_rejects_a_final_symlink() -> CargoResult<()> {
++        let dir = tempfile::tempdir()?;
++        let cache = RelinkCachePaths::new(dir.path().join("app"));
++        let target = dir.path().join("manifest.json");
++        fs::write(&target, manifest_json()?)?;
++        std::os::unix::fs::symlink(target, &cache.manifest)?;
++        assert!(cache.read_manifest().is_none());
++        Ok(())
++    }
++
+     #[test]
+     fn incomplete_object_list_invalidates_relink_manifest() -> CargoResult<()> {
+         let dir = tempfile::tempdir()?;
+diff --git a/src/resolver/encode.rs b/src/resolver/encode.rs
+index 3bc4d0921afdbadd0d97eddd6e324a12015c3bc0..9b156bd3b417fbb8d95bd4803ed1da8dbd2242ff 100644
+--- a/src/resolver/encode.rs
++++ b/src/resolver/encode.rs
+@@ -291,20 +291,11 @@ pub fn into_resolve(
+ 
+     let mut g = Graph::new();
+ 
+-    for (id, _) in live_pkgs.values() {
+-        g.add(*id);
+-    }
+-
+-    for &(ref id, pkg) in live_pkgs.values() {
+-        let Some(ref deps) = pkg.dependencies else {
+-            continue;
+-        };
+-
+-        for edge in deps.iter() {
+-            if let Some(to_depend_on) = lookup_id(edge) {
+-                g.link(*id, to_depend_on);
+-            }
+-        }
++    for (id, pkg) in live_pkgs.values() {
++        g.link_many(
++            *id,
++            pkg.dependencies.iter().flatten().filter_map(&mut lookup_id),
++        );
+     }
+ 
+     let replacements = {
+diff --git a/src/util/graph.rs b/src/util/graph.rs
+index 74cdc51a0c36f21ce64f291540be571c05b12d63..e2d304de3380ffeb1a51d4f6abd57206bfcb202b 100644
+--- a/src/util/graph.rs
++++ b/src/util/graph.rs
+@@ -25,6 +25,14 @@ impl<N: Eq + Ord + Clone, E: Default + Clone> Graph<N, E> {
+             .or_default()
+     }
+ 
++    /// Adds a node and edges to each child, retaining existing edge values.
++    pub fn link_many(&mut self, node: N, children: impl IntoIterator<Item = N>) {
++        let edges = self.nodes.entry(node).or_insert_with(im_rc::OrdMap::new);
++        for child in children {
++            edges.entry(child).or_default();
++        }
++    }
++
+     /// Returns the graph obtained by reversing all edges.
+     pub fn reversed(&self) -> Graph<N, E> {
+         let mut ret = Graph::new();
+@@ -199,6 +207,29 @@ impl<'s, N: Eq + Ord + Clone + 's, E: Default + Clone + 's> Graph<N, E> {
+     }
+ }
+ 
++#[test]
++fn link_many_retains_empty_nodes() {
++    let mut graph: Graph<i32, ()> = Graph::new();
++    graph.link_many(1, []);
++    assert!(graph.contains(&1));
++    assert_eq!(graph.edges(&1).count(), 0);
++}
++
++#[test]
++fn link_many_retains_values_and_orders_children() {
++    let mut graph: Graph<i32, i32> = Graph::new();
++    *graph.link(0, 2) = 7;
++    graph.link_many(0, [3, 2, 1, 3, 0]);
++    assert_eq!(
++        graph
++            .edges(&0)
++            .map(|(node, edge)| (*node, *edge))
++            .collect::<Vec<_>>(),
++        [(0, 0), (1, 0), (2, 7), (3, 0)]
++    );
++    assert_eq!(graph.iter().copied().collect::<Vec<_>>(), [0]);
++}
++
+ #[test]
+ fn path_to_case() {
+     let mut new = Graph::new();
+diff --git a/src/workspace/manifest.rs b/src/workspace/manifest.rs
+index 180167eb4b2d0962a32c984be20900bf84fa6252..ed895c9d8b143e881bf18fb93d4348c3e853fc16 100644
+--- a/src/workspace/manifest.rs
++++ b/src/workspace/manifest.rs
+@@ -5,7 +5,7 @@ use std::fmt;
+ use std::hash::{Hash, Hasher};
+ use std::path::{Path, PathBuf};
+ use std::rc::Rc;
+-use std::sync::Arc;
++use std::sync::{Arc, OnceLock};
+ 
+ use anyhow::Context as _;
+ use cargo_util_schemas::manifest::RustVersion;
+@@ -43,6 +43,19 @@ pub enum EitherManifest {
+ }
+ 
+ impl EitherManifest {
++    /// Retain the already-validated source without constructing its diagnostic spans yet.
++    pub(crate) fn retain_document_source(&mut self) {
++        let (contents, document) = match self {
++            EitherManifest::Real(manifest) => (&manifest.contents, &mut manifest.document),
++            EitherManifest::Virtual(manifest) => (&manifest.contents, &mut manifest.lazy_document),
++        };
++        let contents = contents
++            .as_deref()
++            .expect("read_manifest retains the source contents")
++            .clone();
++        *document = Some(Arc::new(ManifestDocument::from_source(contents)));
++    }
++
+     pub fn warnings_mut(&mut self) -> &mut Warnings {
+         match self {
+             EitherManifest::Real(r) => r.warnings_mut(),
+@@ -57,6 +70,106 @@ impl EitherManifest {
+     }
+ }
+ 
++/// A shared view of diagnostic spans from the exact source parsed by `read_manifest`.
++///
++/// Compiler jobs can retain this view without parsing it. The first span lookup parses the
++/// captured string once, including when different jobs request spans concurrently.
++#[derive(Debug)]
++pub(crate) struct ManifestDocument {
++    contents: Option<String>,
++    parsed: OnceLock<Arc<toml::Spanned<toml::de::DeTable<'static>>>>,
++}
++
++impl ManifestDocument {
++    fn from_source(contents: String) -> Self {
++        Self {
++            contents: Some(contents),
++            parsed: OnceLock::new(),
++        }
++    }
++
++    fn from_parsed(document: Arc<toml::Spanned<toml::de::DeTable<'static>>>) -> Self {
++        Self {
++            contents: None,
++            parsed: OnceLock::from(document),
++        }
++    }
++
++    pub(crate) fn get(&self) -> &toml::Spanned<toml::de::DeTable<'static>> {
++        self.shared().as_ref()
++    }
++
++    fn shared(&self) -> &Arc<toml::Spanned<toml::de::DeTable<'static>>> {
++        self.parsed.get_or_init(|| {
++            let contents = self
++                .contents
++                .as_deref()
++                .expect("unparsed document has source");
++            let document = super::parser::parse_document(contents)
++                .expect("the captured manifest source was already parsed successfully");
++            Arc::new(super::parser::make_document_owned(document))
++        })
++    }
++}
++
++#[cfg(test)]
++mod document_tests {
++    use super::ManifestDocument;
++    use crate::diagnostics::get_key_value_span;
++    use crate::workspace::parser::{make_document_owned, parse_document};
++    use std::sync::Arc;
++
++    #[test]
++    fn shared_document_preserves_captured_source_spans() {
++        let mut contents = String::from(
++            r#"# A non-ASCII prefix keeps byte offsets significant: π.
++[package]
++name = "example"
++version = "0.1.0"
++[target.'cfg(unix)'.dependencies]
++"dep\u002dalias" = { package = "renamed\u002ddep", version = "1" }
++"#,
++        );
++        let original = make_document_owned(parse_document(&contents).unwrap());
++        let path = [
++            "target",
++            "cfg(unix)",
++            "dependencies",
++            "dep-alias",
++            "package",
++        ];
++        let expected = get_key_value_span(&original, &path).unwrap();
++        let document = Arc::new(ManifestDocument::from_source(contents.clone()));
++
++        // A later source change must not affect annotations for the already-read manifest.
++        contents.clear();
++        contents.push_str("not valid TOML");
++
++        std::thread::scope(|scope| {
++            let jobs: Vec<_> = (0..2)
++                .map(|_| {
++                    let document = Arc::clone(&document);
++                    scope.spawn(move || {
++                        let document = document.get();
++                        let span = get_key_value_span(document, &path).unwrap();
++                        (span.key, span.value, document.span())
++                    })
++                })
++                .collect();
++            for job in jobs {
++                assert_eq!(
++                    job.join().unwrap(),
++                    (
++                        expected.key.clone(),
++                        expected.value.clone(),
++                        original.span()
++                    )
++                );
++            }
++        });
++    }
++}
++
+ /// Contains all the information about a package, as loaded from a `Cargo.toml`.
+ ///
+ /// This is deserialized using the [`TomlManifest`] type.
+@@ -64,7 +177,7 @@ impl EitherManifest {
+ pub struct Manifest {
+     // alternate forms of manifests:
+     contents: Option<Rc<String>>,
+-    document: Option<Arc<toml::Spanned<toml::de::DeTable<'static>>>>,
++    document: Option<Arc<ManifestDocument>>,
+     original_toml: Option<Rc<TomlManifest>>,
+     normalized_toml: Rc<TomlManifest>,
+     summary: Summary,
+@@ -112,6 +225,7 @@ pub struct VirtualManifest {
+     // alternate forms of manifests:
+     contents: Option<Rc<String>>,
+     document: Option<Rc<toml::Spanned<toml::de::DeTable<'static>>>>,
++    lazy_document: Option<Arc<ManifestDocument>>,
+     original_toml: Option<Rc<TomlManifest>>,
+     normalized_toml: Rc<TomlManifest>,
+ 
+@@ -528,7 +642,7 @@ impl Manifest {
+     ) -> Manifest {
+         Manifest {
+             contents,
+-            document,
++            document: document.map(|document| Arc::new(ManifestDocument::from_parsed(document))),
+             original_toml,
+             normalized_toml,
+             summary,
+@@ -570,11 +684,18 @@ impl Manifest {
+     }
+     /// Collection of spans for the original TOML
+     pub fn document(&self) -> Option<&toml::Spanned<toml::de::DeTable<'static>>> {
+-        self.document.as_deref()
++        self.document.as_deref().map(ManifestDocument::get)
+     }
+ 
+     /// Collection of spans for the original TOML, returned as a cloned Arc.
+     pub fn document_rc(&self) -> Option<Arc<toml::Spanned<toml::de::DeTable<'static>>>> {
++        self.document
++            .as_deref()
++            .map(|document| document.shared().clone())
++    }
++
++    /// Retain diagnostic spans without materializing them while preparing a compiler job.
++    pub(crate) fn diagnostic_document(&self) -> Option<Arc<ManifestDocument>> {
+         self.document.clone()
+     }
+ 
+@@ -772,6 +893,7 @@ impl VirtualManifest {
+         VirtualManifest {
+             contents,
+             document,
++            lazy_document: None,
+             original_toml,
+             normalized_toml,
+             replace,
+@@ -789,7 +911,9 @@ impl VirtualManifest {
+     }
+     /// Collection of spans for the original TOML
+     pub fn document(&self) -> Option<&toml::Spanned<toml::de::DeTable<'static>>> {
+-        self.document.as_deref()
++        self.document
++            .as_deref()
++            .or_else(|| self.lazy_document.as_deref().map(ManifestDocument::get))
+     }
+     /// The [`TomlManifest`] as parsed from [`VirtualManifest::document`]
+     pub fn original_toml(&self) -> Option<&TomlManifest> {
+diff --git a/src/workspace/package_id.rs b/src/workspace/package_id.rs
+index f494a68086f2b4543bf4ed5058a6b47c61893a76..e555d4052d16e7c29145074c4300a86b10036b25 100644
+--- a/src/workspace/package_id.rs
++++ b/src/workspace/package_id.rs
+@@ -26,6 +26,8 @@ pub struct PackageId {
+ 
+ #[derive(PartialOrd, Eq, Ord)]
+ struct PackageIdInner {
++    // Unequal prefixes preserve name order; ties still compare the complete name.
++    name_prefix: u64,
+     name: InternedString,
+     version: semver::Version,
+     source_id: SourceId,
+@@ -152,7 +154,12 @@ impl PackageId {
+     }
+ 
+     pub fn new(name: InternedString, version: semver::Version, source_id: SourceId) -> PackageId {
++        let mut name_prefix = [0; 8];
++        let name_bytes = name.as_str().as_bytes();
++        let prefix_len = name_bytes.len().min(name_prefix.len());
++        name_prefix[..prefix_len].copy_from_slice(&name_bytes[..prefix_len]);
+         let inner = PackageIdInner {
++            name_prefix: u64::from_be_bytes(name_prefix),
+             name,
+             version,
+             source_id,
+@@ -430,6 +437,68 @@ mod tests {
+         );
+     }
+ 
++    #[test]
++    fn ordering_cached_name_prefix_matches_full_fields() {
++        let low = registry("https://a.example.invalid/index");
++        let high = registry("https://z.example.invalid/index");
++        let names = [
++            "",
++            "\0",
++            "a",
++            "a\0",
++            "a\0b",
++            "a-b",
++            "a_b",
++            "abcdefg",
++            "abcdefg\0",
++            "abcdefgh",
++            "abcdefgh0",
++            "abcdefgh1",
++            "abcdefgα",
++            "abcdefgβ",
++            "abcde界",
++            "abcde畀",
++            "é",
++            "éééé",
++            "ééééa",
++        ];
++        for left_name in names {
++            for right_name in names {
++                let left = package(left_name, "2.0.0", high);
++                let right = package(right_name, "1.0.0", low);
++                let expected = (left.name(), left.version(), left.source_id()).cmp(&(
++                    right.name(),
++                    right.version(),
++                    right.source_id(),
++                ));
++                assert_order(left, right, expected);
++            }
++        }
++    }
++
++    #[test]
++    fn cached_name_prefix_preserves_hash_inputs() {
++        let source = registry("https://example.invalid/index").with_locked_precise();
++        for name in ["short", "abcdefgh0", "abcdefgh1", "ééééa"] {
++            let id = package(name, "1.0.0+metadata", source);
++            let mut actual = DefaultHasher::new();
++            id.hash(&mut actual);
++            let mut expected = DefaultHasher::new();
++            id.name().hash(&mut expected);
++            id.version().hash(&mut expected);
++            id.source_id().hash(&mut expected);
++            assert_eq!(actual.finish(), expected.finish());
++
++            let mut actual = DefaultHasher::new();
++            id.inner.hash(&mut actual);
++            let mut expected = DefaultHasher::new();
++            id.name().hash(&mut expected);
++            id.version().hash(&mut expected);
++            id.source_id().full_hash(&mut expected);
++            assert_eq!(actual.finish(), expected.finish());
++        }
++    }
++
+     #[test]
+     fn ordering_preserves_source_semantics() {
+         let sources = [
+diff --git a/src/workspace/parser/mod.rs b/src/workspace/parser/mod.rs
+index dc47ef4892fd136b43db222e39bd7b53fa307329..1d7b9d99982cf470f4d12eaa446f89e6c6d4a3d7 100644
+--- a/src/workspace/parser/mod.rs
++++ b/src/workspace/parser/mod.rs
+@@ -1,4 +1,4 @@
+-use crate::util::data_structures::HashMap;
++use crate::util::data_structures::{HashMap, HashSet};
+ use crate::workspace::SourceKind;
+ use cargo_util_terminal::report::{AnnotationKind, Group, Level, Snippet};
+ use std::borrow::Cow;
+@@ -80,19 +80,10 @@ pub fn read_manifest(
+             SourceKind::Path | SourceKind::LocalRegistry | SourceKind::Directory => true,
+             SourceKind::Git(_) | SourceKind::Registry | SourceKind::SparseRegistry => false,
+         };
+-    let (original_toml, document) = if keep_document {
+-        let document = parse_document(&contents)
+-            .map_err(|e| emit_toml_diagnostic(e.into(), &contents, path, gctx))?;
+-        let original_toml = deserialize_toml(toml::de::Deserializer::from(document.clone()))
+-            .map_err(|e| emit_toml_diagnostic(e.into(), &contents, path, gctx))?;
+-        (original_toml, Some(make_document_owned(document)))
+-    } else {
+-        let deserializer = toml::de::Deserializer::parse(&contents)
+-            .map_err(|e| emit_toml_diagnostic(e.into(), &contents, path, gctx))?;
+-        let original_toml = deserialize_toml(deserializer)
+-            .map_err(|e| emit_toml_diagnostic(e.into(), &contents, path, gctx))?;
+-        (original_toml, None)
+-    };
++    let deserializer = toml::de::Deserializer::parse(&contents)
++        .map_err(|e| emit_toml_diagnostic(e.into(), &contents, path, gctx))?;
++    let original_toml = deserialize_toml(deserializer)
++        .map_err(|e| emit_toml_diagnostic(e.into(), &contents, path, gctx))?;
+ 
+     let mut manifest = (|| {
+         let empty = Vec::new();
+@@ -117,9 +108,10 @@ pub fn read_manifest(
+         )?;
+ 
+         if normalized_toml.package().is_some() {
+-            to_real_manifest(
++            to_real_manifest_inner(
+                 Some(contents),
+-                document,
++                None,
++                keep_document,
+                 original_toml,
+                 normalized_toml,
+                 features,
+@@ -136,7 +128,7 @@ pub fn read_manifest(
+             assert!(!is_embedded);
+             to_virtual_manifest(
+                 Some(contents),
+-                document,
++                None,
+                 original_toml,
+                 normalized_toml,
+                 features,
+@@ -159,6 +151,10 @@ pub fn read_manifest(
+         )
+     })?;
+ 
++    if keep_document {
++        manifest.retain_document_source();
++    }
++
+     for warning in warnings {
+         manifest.warnings_mut().add_warning(warning);
+     }
+@@ -171,7 +167,7 @@ pub fn read_manifest(
+ 
+ /// Transform the parsed TOML document so that all its values are owned, so that it has a 'static
+ /// lifetime, to make it easier to work with it.
+-fn make_document_owned(
++pub(super) fn make_document_owned(
+     mut document: toml::Spanned<toml::de::DeTable<'_>>,
+ ) -> toml::Spanned<toml::de::DeTable<'static>> {
+     document.get_mut().make_owned();
+@@ -199,7 +195,9 @@ fn read_toml_string(path: &Path, is_embedded: bool, gctx: &GlobalContext) -> Car
+ }
+ 
+ #[tracing::instrument(skip_all)]
+-fn parse_document(contents: &str) -> Result<toml::Spanned<toml::de::DeTable<'_>>, toml::de::Error> {
++pub(super) fn parse_document(
++    contents: &str,
++) -> Result<toml::Spanned<toml::de::DeTable<'_>>, toml::de::Error> {
+     toml::de::DeTable::parse(&contents)
+ }
+ 
+@@ -1323,7 +1321,6 @@ fn deprecated_ws_default_features(
+     ));
+ }
+ 
+-#[tracing::instrument(skip_all)]
+ pub fn to_real_manifest(
+     contents: Option<String>,
+     document: Option<toml::Spanned<toml::de::DeTable<'static>>>,
+@@ -1337,6 +1334,39 @@ pub fn to_real_manifest(
+     gctx: &GlobalContext,
+     warnings: &mut Vec<String>,
+     _errors: &mut Vec<String>,
++) -> CargoResult<Manifest> {
++    to_real_manifest_inner(
++        contents,
++        document,
++        false,
++        original_toml,
++        normalized_toml,
++        features,
++        workspace_config,
++        source_id,
++        manifest_file,
++        is_embedded,
++        gctx,
++        warnings,
++        _errors,
++    )
++}
++
++#[tracing::instrument(name = "to_real_manifest", skip_all)]
++fn to_real_manifest_inner(
++    contents: Option<String>,
++    mut document: Option<toml::Spanned<toml::de::DeTable<'static>>>,
++    lazy_document: bool,
++    original_toml: manifest::TomlManifest,
++    normalized_toml: manifest::TomlManifest,
++    features: Features,
++    workspace_config: WorkspaceConfig,
++    source_id: SourceId,
++    manifest_file: &Path,
++    is_embedded: bool,
++    gctx: &GlobalContext,
++    warnings: &mut Vec<String>,
++    _errors: &mut Vec<String>,
+ ) -> CargoResult<Manifest> {
+     let package_root = manifest_file.parent().unwrap();
+     if !package_root.is_dir() {
+@@ -1818,6 +1848,15 @@ pub fn to_real_manifest(
+         // need to check whether `dep_name` is stripped as unused dependency
+         if let Err(ref err) = summary {
+             if let Some(missing_dep) = err.downcast_ref::<MissingDependencyError>() {
++                if lazy_document && document.is_none() {
++                    let contents = contents
++                        .as_deref()
++                        .expect("read_manifest retains its source");
++                    document = Some(make_document_owned(
++                        parse_document(contents)
++                            .expect("the captured manifest source was already parsed successfully"),
++                    ));
++                }
+                 missing_dep_diagnostic(
+                     missing_dep,
+                     &original_toml,
+@@ -2544,6 +2583,21 @@ fn unique_build_targets(
+     targets: &[Target],
+     package_root: &Path,
+ ) -> Result<(), HashMap<PathBuf, Vec<Target>>> {
++    if targets.len() < 2 {
++        return Ok(());
++    }
++
++    // Targets with distinct file names cannot share a source path. Most manifests
++    // need only this check to rule out conflicts, without building the diagnostic map.
++    let mut names = HashSet::with_capacity_and_hasher(targets.len(), Default::default());
++    if targets
++        .iter()
++        .filter_map(|target| target.src_path().path())
++        .all(|path| path.file_name().is_some_and(|name| names.insert(name)))
++    {
++        return Ok(());
++    }
++
+     let mut source_targets = HashMap::<_, Vec<_>>::default();
+     for target in targets {
+         if let TargetSourcePath::Path(path) = target.src_path() {
+diff --git a/tests/testsuite/build.rs b/tests/testsuite/build.rs
+index 3dbd64e9cd3462ab5badee3626c9b9b1f422f370..cf8e85012a7dcccbd99451105b3b561fa801c2f2 100644
+--- a/tests/testsuite/build.rs
++++ b/tests/testsuite/build.rs
+@@ -515,6 +515,39 @@ fn cargo_compile_duplicate_build_targets() {
+         .run();
+ }
+ 
++#[cargo_test]
++fn targets_with_the_same_file_name_in_different_directories() {
++    let p = project()
++        .file(
++            "Cargo.toml",
++            r#"
++                [package]
++                name = "foo"
++                version = "1.0.0"
++                edition = "2024"
++
++                [[bin]]
++                name = "first"
++                path = "first/main.rs"
++
++                [[bin]]
++                name = "second"
++                path = "second/main.rs"
++            "#,
++        )
++        .file("first/main.rs", "fn main() {}")
++        .file("second/main.rs", "fn main() {}")
++        .build();
++
++    p.cargo("check")
++        .with_stderr_data(str![[r#"
++[CHECKING] foo v1.0.0 ([ROOT]/foo)
++[FINISHED] `dev` profile [unoptimized + debuginfo] target(s) in [ELAPSED]s
++
++"#]])
++        .run();
++}
++
+ #[cargo_test]
+ fn cargo_compile_with_invalid_version() {
+     let p = project()

@@ -1,0 +1,22 @@
+# Test compilation on the five-change stack
+
+This reproduction packet reports the separate test-build endpoint for the combined published Cargo #231 through #235 changes against SDK12 Cargo fdd26156. It preserves all 32 complete sanitized Cargo-parent profiles from the two registered eight-pair blocks. This is cumulative evidence, not another optimization PR.
+
+| Machine | Fewer Cargo-parent instructions | 99% interval | Wins | Exact sign p | Registered gate passed |
+| --- | ---: | ---: | ---: | ---: | --- |
+| Host 1 | 13.0641444493% | 12.9527154256% to 13.1426490213% | 8/8 | 0.0078125 | True |
+| Host 2 | 13.1079580745% | 12.9201423364% to 13.2695502526% | 8/8 | 0.0078125 | True |
+
+Run `python3 -I -S -B reproduce.py` in this directory. It authenticates every numerical core member and profile, checks final/self/stderr instruction counts, and reproduces both original 200,000-draw paired bootstrap summaries with seeds 20261025263 and 20261025264. Each registered gate requires eight wins, a two-sided exact sign p below .01 and a 99% lower reduction bound above 1%. All complete valid results are reported at either sign. Results are unpooled and are not added to the individual PR results or to the separate check result.
+
+The metric includes the complete Cargo parent and its threads. Rust compiler, linker, build-script and other child processes run normally without instruction instrumentation. This is not whole-command wall time. The command is `cargo -Zohm-defaults=yes test --no-run --locked --offline -j 8`; no test body executes.
+
+The workload is uv 3d82a6ad5a7eab8c68236553b7846517767c4b61 with the frozen equal-length five-byte ordinary-comment edit. Independent native test-build parent banks were prepared for each arm, with the same absolute active paths, SDK12 compiler/Wild and valid live jobserver. Native/profile/restored output references were captured before numbering. Each six-event compiler set is matched as a multiset of whole events, preserving the complete ordered arguments/environment and multiplicity. Concurrent outer arrival order can differ; no event or field is discarded. Forty successful excluded native Wild dispatches were joined to their actual output roles.
+
+Fresh output accounting covers 84 observations and 43 saved files. Standalone/embedded metadata and all 202 native object payloads agree within each host; each rlib has 206 members. The ordinary uv and uvx test ELF each had two observed forms per host. All fourteen observed final ELF forms and eight reciprocal whole-file reconstructions were verified with LLVM BLAKE3: only the .rodata section-header entry size 0/8, with flags 0x32, and the corresponding GNU build ID differ. All other bytes and all program headers agree. Runtime admission uses exact predeclared full-file hashes and the original bounded rlib rule. No historical or predicted ELF variant is admitted. Twenty deliberate output mutations were refused. The full private output proof is retained separately.
+
+A data-only final binder initially retained the donor helper checksum. It stopped at its first import check, before either final input or numbered owner existed. A versioned successor corrected that one dependency pin and used fresh preparation logs; both final input proposals stayed byte-identical. Both actual-input synthetic validator rehearsals then passed before numbering. The collector, output gates, schedules and statistics were unchanged.
+
+`source-and-build.json`, `combined.patch` and `cargo-Vv.txt` retain the exact source/build identities. The candidate tree is 8cc5186eeb53e806108ace30c0be7f4c061bfb76. Both production Cargo builds use stock Rust 1.99, ThinLTO, opt-level 3, one codegen unit, debug level 1, no incremental compilation, no PGO/BOLT and the same embedded fdd26156 version. The SDK12 compiler that builds uv is separately pinned.
+
+Every non-path profile byte is preserved. Only command/path labels are sanitized; call edges and instructions remain available for attribution. The protocol replaces only host names and the benchmark root, with exact reversal of those fields. This is a self-contained numerical replay; a new capture additionally requires independently prepared native banks and the complete host/tool/context/output admission controls. Private process and connection records and transferable credentials are excluded. No new run or external publication is authorized by this packet.

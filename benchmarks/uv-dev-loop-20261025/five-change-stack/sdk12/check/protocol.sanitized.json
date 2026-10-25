@@ -1,0 +1,206 @@
+{
+  "activity": "Initial quiet readiness; retain entry/before/after/terminal host observations. As in the accepted Cargo-parent protocol, background activity never selects or rejects instruction samples based on effect. No native elapsed claim.",
+  "affinity": {
+    "controller": "8",
+    "preparation": "24-31",
+    "workload": "0-7"
+  },
+  "arms": {
+    "A": "baseline",
+    "B": "candidate"
+  },
+  "authority": {
+    "baseline_source_only_preparation": true,
+    "candidate_execution": false,
+    "comparative_execution": false,
+    "note": "This protocol authorizes no Cargo/preflight/comparative launch; each requires a concrete Root authority. Source/tool-only preparation is separately approved.",
+    "publication": false
+  },
+  "bootstrap_seeds": {
+    "primary": [
+      20261025261,
+      20261025262
+    ],
+    "secondary": [
+      20261025263,
+      20261025264
+    ]
+  },
+  "budget": {
+    "cold_warm_timeout_seconds": 1800,
+    "comparative_blocks": 4,
+    "comparative_samples_total": 64,
+    "extensions": 0,
+    "native_command_timeout_seconds": 150,
+    "profile_command_timeout_seconds": 300,
+    "replacements": 0,
+    "setup_profiles": "One excluded native reference and one opaque profile per endpoint/arm/host. Test-build preparation follows a valid sealed check decision."
+  },
+  "child_environment": "Keep the original live jobserver. Only differing CARGO_MAKEFLAGS descriptor values are omitted from comparison; raw ordered environment is retained. The validated loader removes its own instrumentation environment before native children.",
+  "commands": {
+    "primary": [
+      "-Zohm-defaults=yes",
+      "check",
+      "--locked",
+      "--offline",
+      "-j",
+      "8"
+    ],
+    "secondary": [
+      "-Zohm-defaults=yes",
+      "test",
+      "--no-run",
+      "--locked",
+      "--offline",
+      "-j",
+      "8"
+    ]
+  },
+  "decision_table": [
+    {
+      "condition": "A prerequisite, exact binary/context/output, trace, exit, completeness, integrity or restoration guard fails; any observation is missing",
+      "decision": "Cohort invalid/unqualified. Preserve every record; restore and park owned states. Keep incomplete/invalid effects unread. No replacement, extension, alternate host or retry of measured work."
+    },
+    {
+      "condition": "Both complete raw/restoration gates pass, but either block has any tie/loss, sign p >= .01 or lower 99% reduction bound <= .01",
+      "decision": "Valid negative for this endpoint; report both fixed host results separately. A valid check miss still permits the separately frozen test-build study after Root accepts its validity. No additional samples or changed gates."
+    },
+    {
+      "condition": "Both complete raw/restoration and metric gates pass and each block has 8/8 wins, p < .01 and lower 99% reduction bound > .01",
+      "decision": "Qualifies only this endpoint Cargo-parent instruction claim after both machines and independent replay pass. Keep check and test-build claims separate; no duplicate PR for this aggregate."
+    }
+  ],
+  "endpoint_entry": "Every test-build phase requires Root acceptance of the complete valid two-host check decision, whether that valid check result qualifies or misses. An invalid/incomplete check cohort cannot enter. Each endpoint must independently pass on both hosts to support its own instruction claim.",
+  "hosts": [
+    {
+      "hostname": "host-1",
+      "ordinal": 0
+    },
+    {
+      "hostname": "host-2",
+      "ordinal": 1
+    }
+  ],
+  "masking": "Per endpoint, both complete16-record raw/restoration gates precede all32 metric joins, which precede either estimate. Excluded profiles are never samples. Check results are retained and reported independently before test-build entry.",
+  "metric": "Final Callgrind Ir for the complete Cargo parent, all parent threads, trace-children=no; compiler/linker/build-script/test children excluded.",
+  "metric_integrity": "Both complete raw/restoration gates before decoding; all 32 final/self/stderr and raw/gzip joins, exact command/Ir format, and no brk segment overflow warning before either statistical comparison.",
+  "native": "Whole-command native wall time is a separate future protocol. Instrumented elapsed is diagnostic only.",
+  "order": {
+    "primary": [
+      [
+        "BA",
+        "AB",
+        "BA",
+        "AB",
+        "BA",
+        "AB",
+        "AB",
+        "BA"
+      ],
+      [
+        "AB",
+        "BA",
+        "AB",
+        "BA",
+        "AB",
+        "BA",
+        "BA",
+        "AB"
+      ]
+    ],
+    "secondary": [
+      [
+        "AB",
+        "BA",
+        "AB",
+        "AB",
+        "AB",
+        "BA",
+        "BA",
+        "BA"
+      ],
+      [
+        "BA",
+        "AB",
+        "BA",
+        "BA",
+        "BA",
+        "AB",
+        "AB",
+        "AB"
+      ]
+    ]
+  },
+  "pairs_per_host": 8,
+  "pins": {
+    "base_tree": "487deda53e727c16bd22ae3d7cf1c512d1005116",
+    "candidate_patch_sha256": "ae07f10e722bb5ad435c6a7b7fb563c6ca046704f419841ed085d0fe57a10694",
+    "candidate_tree": "8cc5186eeb53e806108ace30c0be7f4c061bfb76",
+    "capture_tool_sha256": "7088ab983a19122541e3c5cac906bc275808ab6c9a2b3fafbcca6db65062dd18",
+    "cargo": "fdd26156be98618e2e01a9e02703edac71b79a35",
+    "common_embedded_build_commit": "fdd26156be98618e2e01a9e02703edac71b79a35",
+    "dirty_fixture_sha256": "a89570fa6080462a772ebdbc73ab4471e0b968f7c357c23b197409fb12f282ad",
+    "sdk12_bundle_sha256": "177751bcef731909e9fa2c89983804ec6fe663101711dc46003a743914d37203",
+    "sdk12_driver_sha256": "253120eeae6c051af825c4884b30b2d5d62a3a4094428d52c815cbcaf7af697a",
+    "sdk12_rustc_sha256": "1879f05850bfcd95837087c6012c76bc0355581012686d51b2f690ce46934d6e",
+    "source_checkpoint_sha256": "8ef131603718f24a979459c79cd0b41c587d01066cf566e5485053c795c53a8a",
+    "uv": "3d82a6ad5a7eab8c68236553b7846517767c4b61",
+    "uv_seed_sha256": "7fe7818663d47c76dd995adbc97aa1bd8a32067188aadf14eb03b03a634beb14",
+    "wild_sha256": "5b2baebf62de0f8c185711b808c3f553da3b7166b1c289420df5276b027f5597"
+  },
+  "preflight": "Each endpoint/arm has its own source-only warmed bank. Warm and prove both original commands fresh before capturing that bank. One native dirty reference and one opaque Cargo-parent profile establish the exact selected endpoint compiler vectors, outputs, diagnostics and restoration. The native stdout/stderr references are explicit in the pinned preflight and joined to its completion manifest before collection and offline validation.",
+  "producer": {
+    "accepted_checks": {
+      "core_units_passed": 41,
+      "integration_cases_per_arm": 50,
+      "production_diagnostic_pairs": 4
+    },
+    "binary_pair": "Exact4068b203 baseline and a14fc2bc candidate bytes on both VMs; one common matched producer.",
+    "bolt": false,
+    "channel": "dev",
+    "codegen_units": 1,
+    "debug": 1,
+    "embedded_commit": "fdd26156be98618e2e01a9e02703edac71b79a35",
+    "features": [
+      "all-static",
+      "ohm-defaults"
+    ],
+    "incremental": false,
+    "lto": "thin",
+    "opt_level": 3,
+    "pgo": false,
+    "physical_paths": "one common source/target path for both builds",
+    "toolchain": "Stock Rust1.99; exact production build and functional receipts are bound by the Root matched-pair acceptance."
+  },
+  "profiler_prerequisite": {
+    "allowed_prospective_tool_change": "Root owns a pinned 3.22 source build changing only the documented Linux brk ceiling. Cargo allocator, workload, source, command, loader normalizer, statistical gates and samples remain unchanged.",
+    "original_staged_tools": "Stock3.22 staging is unqualified until both fresh guest controls and the common core-only installation are accepted.",
+    "reason": "Keep the qualified512MiB-ceiling Callgrind core; reject any brk-overflow warning.",
+    "required": "Fresh per-host held-out controls and exact common 640-file expanded-brk profiler plus two aliases; explicit Root acceptance before excluded profiling.",
+    "state": "not-yet-qualified"
+  },
+  "publication": "Combined evidence and next-hillclimb attribution only; no duplicative performance PR for already published changes.",
+  "purpose": "Measure the cumulative Cargo-parent instruction behavior of published #231\u2013#235 against exact SDK12 Cargo; check then independent test-build.",
+  "recorded_utc": "2026-10-25T04:15:27.603448+00:00",
+  "root": "<BENCHMARK_ROOT>",
+  "root_measurement_design_sha256": "5c19712c2fb66ccc148b84ae2d048651146469c6ac184d411e9fa38bd891f2a4",
+  "samples_per_host": 16,
+  "schema": 1,
+  "state": "prospective-protocol-no-execution-authority",
+  "state_banks": "Four separate source/archive-only native banks per host: check/test-build crossed with baseline/candidate, at identical active paths. No compiled uv state is copied between arms or endpoints. Prepare check first; test-build banks follow a valid sealed two-host check result.",
+  "statistics": {
+    "bootstrap": "paired percentile using unchanged paired_count_statistics",
+    "bootstrap_resamples": 200000,
+    "confidence": 0.99,
+    "estimator": "geometric mean of paired candidate/baseline counts",
+    "lower_reduction_bound_strictly_greater_than": 0.01,
+    "multiple_testing": "Both independent fixed VM blocks must pass separately; no pooled or additive claim.",
+    "pooling": false,
+    "sign": "two-sided exact sign test, ties excluded in p and disqualifying for the 8/8 gate",
+    "sign_p_strictly_less_than": 0.01,
+    "wins_required": 8
+  },
+  "study": "T-five-published-Cargo-changes",
+  "workload_edit": "Use the exact accepted donor fixture: append a deterministic ordinary non-doc comment, warm its state=before form, then change it to state=after_. The strings have equal length and five changed bytes. All Rust tokens and source positions remain unchanged. Restore the original source afterward; no production uv change.",
+  "workload_tools": "Published SDK12 f93 Rust/rustdoc and fixed Wild execute uv, distinct from the stock producer compiler. Only Cargo varies."
+}
