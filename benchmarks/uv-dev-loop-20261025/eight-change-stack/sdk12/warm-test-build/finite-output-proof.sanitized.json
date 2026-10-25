@@ -1,0 +1,492 @@
+{
+  "LLVM": {
+    "bytes": 94492544,
+    "path": "<WORKSPACE>/work/rustc-sdk12-next-check-scout-20261023/artifacts/candidate/sysroot/lib/libLLVM.so.23.1-rust-dev",
+    "sha256": "e79195cf3d08c82bf0c0edaf8f40aa766bb00c1978a4278c2b753539f5a3a904"
+  },
+  "decoder_bytecode_unchanged": true,
+  "focused_checks": [
+    {
+      "accepted": true,
+      "case": "positive-derived-0"
+    },
+    {
+      "accepted": true,
+      "case": "positive-derived-8"
+    },
+    {
+      "case": "text-payload",
+      "refused": true
+    },
+    {
+      "case": "data-payload",
+      "refused": true
+    },
+    {
+      "case": "rodata-payload",
+      "refused": true
+    },
+    {
+      "case": "program-header",
+      "refused": true
+    },
+    {
+      "case": "unrelated-ELF-header",
+      "refused": true
+    },
+    {
+      "case": "rodata-flags",
+      "refused": true
+    },
+    {
+      "case": "rodata-type",
+      "refused": true
+    },
+    {
+      "case": "entry-size-third-value",
+      "refused": true
+    },
+    {
+      "case": "GNU-note-type",
+      "refused": true
+    },
+    {
+      "case": "GNU-descriptor-width",
+      "refused": true
+    },
+    {
+      "case": "GNU-name",
+      "refused": true
+    },
+    {
+      "case": "build-id-only",
+      "refused": true
+    },
+    {
+      "case": "truncated",
+      "refused": true
+    },
+    {
+      "case": "appended",
+      "refused": true
+    },
+    {
+      "case": "wrong-mode",
+      "refused": true
+    },
+    {
+      "case": "wrong-path",
+      "refused": true
+    },
+    {
+      "case": "alternate-entry-size-stale-build-ID",
+      "refused": true
+    }
+  ],
+  "guest_calls": 0,
+  "instruction_profiles_opened": false,
+  "known_vectors_passed": 2,
+  "new_generated_variants_explicitly_distinct_from_original_observations": true,
+  "old_original_cohort_remains_ineligible": true,
+  "output_specs": {
+    "producer": {
+      "bytes": 6823,
+      "path": "<WORKSPACE>/work/cargo-cumulative-registry-stack-20261025/secondary-replacement-design-01/finite-output-specs-producer.json",
+      "sha256": "ab1921fe3eb62d649d17d857206bf3f1bed4e49370b8a015d70cd1a22be24ad9"
+    },
+    "replication": {
+      "bytes": 6823,
+      "path": "<WORKSPACE>/work/cargo-cumulative-registry-stack-20261025/secondary-replacement-design-01/finite-output-specs-replication.json",
+      "sha256": "f8dc56af33cfb0f951fe00ad38154f3738ede7006f66f950ffae9571d2161a37"
+    }
+  },
+  "pinned_BLAKE3_helper": {
+    "bytes": 858,
+    "path": "<WORKSPACE>/work/cargo-cumulative-registry-stack-20261025/secondary-elf-method-01/blake3_llvm.py",
+    "sha256": "f1af914ce9e20af137019d842552e17fbde2ddd4714066048034d55efbd0dcd9"
+  },
+  "pinned_decoder": {
+    "bytes": 2341,
+    "path": "<WORKSPACE>/work/cargo-cumulative-registry-stack-20261025/secondary-output-accounting-01/elf_decode.py",
+    "sha256": "b3ac57b84c26b036de15286388db1ba07d50e9020aecda88127af8b1a87668a1"
+  },
+  "proofs": [
+    {
+      "host": "producer",
+      "observed_original_hashes": [
+        "15163a101428a15de2de0dab81a4d3fd596c46a13971af688d7cb0094a8f5a20"
+      ],
+      "path": "<BENCHMARK_ROOT>/target/debug/build/workspaces/307ee4ee76c7d84c/v2-5b73252ed827b64f/uv/1d92e5ea0e3d9665/out/uvx",
+      "reference": {
+        "bytes": 626784,
+        "path": "<WORKSPACE>/work/cargo-cumulative-registry-stack-20261025/measurement-preparation-01/hosts/producer/test-build-preflight-baseline-collection-01/authenticated/collection/records/test-build-preflight-baseline-01/native-output-copies/2-uvx",
+        "sha256": "15163a101428a15de2de0dab81a4d3fd596c46a13971af688d7cb0094a8f5a20"
+      },
+      "variants": [
+        {
+          "all_program_headers_and_other_bytes_exact": true,
+          "build_id": "3d8b5abd5a24f455130f94298e7ddb25323897957264af5c674e9e70c57a3485",
+          "build_id_offset": 3520,
+          "bytes": 626784,
+          "descriptor_bytes": 32,
+          "entry_size": 0,
+          "note_type": 3,
+          "section_entry_size_offset": 1608,
+          "sha256": "15163a101428a15de2de0dab81a4d3fd596c46a13971af688d7cb0094a8f5a20"
+        },
+        {
+          "all_program_headers_and_other_bytes_exact": true,
+          "build_id": "b793017a776ab874751bd01a9a55280068b2d9f967e26809695ccad5bacd0904",
+          "build_id_offset": 3520,
+          "bytes": 626784,
+          "descriptor_bytes": 32,
+          "entry_size": 8,
+          "note_type": 3,
+          "section_entry_size_offset": 1608,
+          "sha256": "20e929cf48728ded24cae097033bad4ad1e7fec958c9f0a057ab1fb43bce7e7a"
+        }
+      ]
+    },
+    {
+      "host": "producer",
+      "observed_original_hashes": [
+        "13af56ac3e2d96f2fc003f0616f661245abf92a78f49985d878b166a301bfe16",
+        "92573dd98db4bf288561cc3be7c5b4e09a02bdebf9dd6ea811654d5c1c46fdce"
+      ],
+      "path": "<BENCHMARK_ROOT>/target/debug/build/workspaces/307ee4ee76c7d84c/v2-5b73252ed827b64f/uv/833120dc1da6df33/out/uv",
+      "reference": {
+        "bytes": 373818619,
+        "path": "<WORKSPACE>/work/cargo-cumulative-registry-stack-20261025/measurement-preparation-01/hosts/producer/test-build-preflight-baseline-collection-01/authenticated/collection/records/test-build-preflight-baseline-01/native-output-copies/3-uv",
+        "sha256": "92573dd98db4bf288561cc3be7c5b4e09a02bdebf9dd6ea811654d5c1c46fdce"
+      },
+      "variants": [
+        {
+          "all_program_headers_and_other_bytes_exact": true,
+          "build_id": "bfae0e06158ea57e8cb427f99b07da5b2d01cc8bb737d6070db6422794ba0277",
+          "build_id_offset": 3584,
+          "bytes": 373818619,
+          "descriptor_bytes": 32,
+          "entry_size": 0,
+          "note_type": 3,
+          "section_entry_size_offset": 1608,
+          "sha256": "13af56ac3e2d96f2fc003f0616f661245abf92a78f49985d878b166a301bfe16"
+        },
+        {
+          "all_program_headers_and_other_bytes_exact": true,
+          "build_id": "45945f07afe896af49c9ff59b59097dfa7cc2f4558b30a1ea8d0c0477d5f9f9a",
+          "build_id_offset": 3584,
+          "bytes": 373818619,
+          "descriptor_bytes": 32,
+          "entry_size": 8,
+          "note_type": 3,
+          "section_entry_size_offset": 1608,
+          "sha256": "92573dd98db4bf288561cc3be7c5b4e09a02bdebf9dd6ea811654d5c1c46fdce"
+        }
+      ]
+    },
+    {
+      "host": "producer",
+      "observed_original_hashes": [
+        "485ec729637a7841f778468fd330afb503b290b64abe1f817b3afa02b53389c2",
+        "767ec876faeba4d5b87e74318a01ffcf5ff34e838b91b6f083db86075f3aaad1"
+      ],
+      "path": "<BENCHMARK_ROOT>/target/debug/build/workspaces/307ee4ee76c7d84c/v2-5b73252ed827b64f/uv/a9e8eb8b5cc2c44c/out/uvx-a9e8eb8b5cc2c44c",
+      "reference": {
+        "bytes": 1068185,
+        "path": "<WORKSPACE>/work/cargo-cumulative-registry-stack-20261025/measurement-preparation-01/hosts/producer/test-build-preflight-baseline-collection-01/authenticated/collection/records/test-build-preflight-baseline-01/native-output-copies/4-uvx-a9e8eb8b5cc2c44c",
+        "sha256": "485ec729637a7841f778468fd330afb503b290b64abe1f817b3afa02b53389c2"
+      },
+      "variants": [
+        {
+          "all_program_headers_and_other_bytes_exact": true,
+          "build_id": "ae6a36d00a79a262993e53f09f4f3ab334b5c017b5401d4d06fd6527c8ac6c87",
+          "build_id_offset": 3520,
+          "bytes": 1068185,
+          "descriptor_bytes": 32,
+          "entry_size": 0,
+          "note_type": 3,
+          "section_entry_size_offset": 1608,
+          "sha256": "767ec876faeba4d5b87e74318a01ffcf5ff34e838b91b6f083db86075f3aaad1"
+        },
+        {
+          "all_program_headers_and_other_bytes_exact": true,
+          "build_id": "882952482d4f70118f1623bf452e19fdc7a50fa1cd7568814fe7b98429e29406",
+          "build_id_offset": 3520,
+          "bytes": 1068185,
+          "descriptor_bytes": 32,
+          "entry_size": 8,
+          "note_type": 3,
+          "section_entry_size_offset": 1608,
+          "sha256": "485ec729637a7841f778468fd330afb503b290b64abe1f817b3afa02b53389c2"
+        }
+      ]
+    },
+    {
+      "host": "producer",
+      "observed_original_hashes": [
+        "4563895cacb51950121d91ab245051c5f9c369dd5d9816095cf74fe5d55d0a5b"
+      ],
+      "path": "<BENCHMARK_ROOT>/target/debug/build/workspaces/307ee4ee76c7d84c/v2-5b73252ed827b64f/uv/d232d576c69ae65d/out/uv-d232d576c69ae65d",
+      "reference": {
+        "bytes": 151872637,
+        "path": "<WORKSPACE>/work/cargo-cumulative-registry-stack-20261025/measurement-preparation-01/hosts/producer/test-build-preflight-baseline-collection-01/authenticated/collection/records/test-build-preflight-baseline-01/native-output-copies/5-uv-d232d576c69ae65d",
+        "sha256": "4563895cacb51950121d91ab245051c5f9c369dd5d9816095cf74fe5d55d0a5b"
+      },
+      "variants": [
+        {
+          "all_program_headers_and_other_bytes_exact": true,
+          "build_id": "e54d9bfbad4f9365eb2a37e374bef090c063abe039357b64fa62d740f252b593",
+          "build_id_offset": 3520,
+          "bytes": 151872637,
+          "descriptor_bytes": 32,
+          "entry_size": 0,
+          "note_type": 3,
+          "section_entry_size_offset": 1608,
+          "sha256": "4563895cacb51950121d91ab245051c5f9c369dd5d9816095cf74fe5d55d0a5b"
+        },
+        {
+          "all_program_headers_and_other_bytes_exact": true,
+          "build_id": "1b0b01b8c68c635861012e8cfe789998609c13445418ae3a6941916747621db3",
+          "build_id_offset": 3520,
+          "bytes": 151872637,
+          "descriptor_bytes": 32,
+          "entry_size": 8,
+          "note_type": 3,
+          "section_entry_size_offset": 1608,
+          "sha256": "8c8493e64764f15842e36e2f5f4664c77a3ec65e01eaf447752d47005cfa58a4"
+        }
+      ]
+    },
+    {
+      "host": "producer",
+      "observed_original_hashes": [
+        "4f06c07f68a17575e7fde78ff94aeb4a62f193bd7f1a582672b8a9460a717811"
+      ],
+      "path": "<BENCHMARK_ROOT>/target/debug/build/workspaces/307ee4ee76c7d84c/v2-5b73252ed827b64f/uv/f17589ffdf6d2ebb/out/uv-f17589ffdf6d2ebb",
+      "reference": {
+        "bytes": 12631498,
+        "path": "<WORKSPACE>/work/cargo-cumulative-registry-stack-20261025/measurement-preparation-01/hosts/producer/test-build-preflight-baseline-collection-01/authenticated/collection/records/test-build-preflight-baseline-01/native-output-copies/6-uv-f17589ffdf6d2ebb",
+        "sha256": "4f06c07f68a17575e7fde78ff94aeb4a62f193bd7f1a582672b8a9460a717811"
+      },
+      "variants": [
+        {
+          "all_program_headers_and_other_bytes_exact": true,
+          "build_id": "582d961e5cc6d82f061d6fee59d79181d7b553dcaf36121c7b815285572865bf",
+          "build_id_offset": 3584,
+          "bytes": 12631498,
+          "descriptor_bytes": 32,
+          "entry_size": 0,
+          "note_type": 3,
+          "section_entry_size_offset": 1608,
+          "sha256": "4f06c07f68a17575e7fde78ff94aeb4a62f193bd7f1a582672b8a9460a717811"
+        },
+        {
+          "all_program_headers_and_other_bytes_exact": true,
+          "build_id": "b4f27d5b3583a29f7dec69e4094a71a71bf8481f46de3b588a74ff48f12a28c9",
+          "build_id_offset": 3584,
+          "bytes": 12631498,
+          "descriptor_bytes": 32,
+          "entry_size": 8,
+          "note_type": 3,
+          "section_entry_size_offset": 1608,
+          "sha256": "8906308342dca2a070551d5e3768c3fd7d6e118925b7ceb7d9f086e6442c56df"
+        }
+      ]
+    },
+    {
+      "host": "replication",
+      "observed_original_hashes": [
+        "15163a101428a15de2de0dab81a4d3fd596c46a13971af688d7cb0094a8f5a20"
+      ],
+      "path": "<BENCHMARK_ROOT>/target/debug/build/workspaces/307ee4ee76c7d84c/v2-0f7e5e17ccd02c36/uv/1d92e5ea0e3d9665/out/uvx",
+      "reference": {
+        "bytes": 626784,
+        "path": "<WORKSPACE>/work/cargo-cumulative-registry-stack-20261025/measurement-preparation-01/hosts/replication/test-build-preflight-baseline-collection-01/authenticated/collection/records/test-build-preflight-baseline-01/native-output-copies/2-uvx",
+        "sha256": "15163a101428a15de2de0dab81a4d3fd596c46a13971af688d7cb0094a8f5a20"
+      },
+      "variants": [
+        {
+          "all_program_headers_and_other_bytes_exact": true,
+          "build_id": "3d8b5abd5a24f455130f94298e7ddb25323897957264af5c674e9e70c57a3485",
+          "build_id_offset": 3520,
+          "bytes": 626784,
+          "descriptor_bytes": 32,
+          "entry_size": 0,
+          "note_type": 3,
+          "section_entry_size_offset": 1608,
+          "sha256": "15163a101428a15de2de0dab81a4d3fd596c46a13971af688d7cb0094a8f5a20"
+        },
+        {
+          "all_program_headers_and_other_bytes_exact": true,
+          "build_id": "b793017a776ab874751bd01a9a55280068b2d9f967e26809695ccad5bacd0904",
+          "build_id_offset": 3520,
+          "bytes": 626784,
+          "descriptor_bytes": 32,
+          "entry_size": 8,
+          "note_type": 3,
+          "section_entry_size_offset": 1608,
+          "sha256": "20e929cf48728ded24cae097033bad4ad1e7fec958c9f0a057ab1fb43bce7e7a"
+        }
+      ]
+    },
+    {
+      "host": "replication",
+      "observed_original_hashes": [
+        "dd18ac975693c5e26f820ca99e969ae2c4a82baef84ab56f7e62161773f103d5"
+      ],
+      "path": "<BENCHMARK_ROOT>/target/debug/build/workspaces/307ee4ee76c7d84c/v2-0f7e5e17ccd02c36/uv/833120dc1da6df33/out/uv",
+      "reference": {
+        "bytes": 373818619,
+        "path": "<WORKSPACE>/work/cargo-cumulative-registry-stack-20261025/measurement-preparation-01/hosts/replication/test-build-preflight-baseline-collection-01/authenticated/collection/records/test-build-preflight-baseline-01/native-output-copies/3-uv",
+        "sha256": "dd18ac975693c5e26f820ca99e969ae2c4a82baef84ab56f7e62161773f103d5"
+      },
+      "variants": [
+        {
+          "all_program_headers_and_other_bytes_exact": true,
+          "build_id": "9057bf14129a970ced5cba09a867a2217c213b727e4e00a36a49197f2f981883",
+          "build_id_offset": 3584,
+          "bytes": 373818619,
+          "descriptor_bytes": 32,
+          "entry_size": 0,
+          "note_type": 3,
+          "section_entry_size_offset": 1608,
+          "sha256": "dd18ac975693c5e26f820ca99e969ae2c4a82baef84ab56f7e62161773f103d5"
+        },
+        {
+          "all_program_headers_and_other_bytes_exact": true,
+          "build_id": "1fef27957f12d3aecd39949fd683678ca0f20aee18f5a607a20025635679db7f",
+          "build_id_offset": 3584,
+          "bytes": 373818619,
+          "descriptor_bytes": 32,
+          "entry_size": 8,
+          "note_type": 3,
+          "section_entry_size_offset": 1608,
+          "sha256": "8ace419cbfbe51ad6cb73e71f0bc6f0ed4862577c24109825f573da657aa35ee"
+        }
+      ]
+    },
+    {
+      "host": "replication",
+      "observed_original_hashes": [
+        "485ec729637a7841f778468fd330afb503b290b64abe1f817b3afa02b53389c2",
+        "767ec876faeba4d5b87e74318a01ffcf5ff34e838b91b6f083db86075f3aaad1"
+      ],
+      "path": "<BENCHMARK_ROOT>/target/debug/build/workspaces/307ee4ee76c7d84c/v2-0f7e5e17ccd02c36/uv/a9e8eb8b5cc2c44c/out/uvx-a9e8eb8b5cc2c44c",
+      "reference": {
+        "bytes": 1068185,
+        "path": "<WORKSPACE>/work/cargo-cumulative-registry-stack-20261025/measurement-preparation-01/hosts/replication/test-build-preflight-baseline-collection-01/authenticated/collection/records/test-build-preflight-baseline-01/native-output-copies/4-uvx-a9e8eb8b5cc2c44c",
+        "sha256": "767ec876faeba4d5b87e74318a01ffcf5ff34e838b91b6f083db86075f3aaad1"
+      },
+      "variants": [
+        {
+          "all_program_headers_and_other_bytes_exact": true,
+          "build_id": "ae6a36d00a79a262993e53f09f4f3ab334b5c017b5401d4d06fd6527c8ac6c87",
+          "build_id_offset": 3520,
+          "bytes": 1068185,
+          "descriptor_bytes": 32,
+          "entry_size": 0,
+          "note_type": 3,
+          "section_entry_size_offset": 1608,
+          "sha256": "767ec876faeba4d5b87e74318a01ffcf5ff34e838b91b6f083db86075f3aaad1"
+        },
+        {
+          "all_program_headers_and_other_bytes_exact": true,
+          "build_id": "882952482d4f70118f1623bf452e19fdc7a50fa1cd7568814fe7b98429e29406",
+          "build_id_offset": 3520,
+          "bytes": 1068185,
+          "descriptor_bytes": 32,
+          "entry_size": 8,
+          "note_type": 3,
+          "section_entry_size_offset": 1608,
+          "sha256": "485ec729637a7841f778468fd330afb503b290b64abe1f817b3afa02b53389c2"
+        }
+      ]
+    },
+    {
+      "host": "replication",
+      "observed_original_hashes": [
+        "1f15a96c7bfad244cf6460c20744aacee429089a686e1c891c979165bacb35e3"
+      ],
+      "path": "<BENCHMARK_ROOT>/target/debug/build/workspaces/307ee4ee76c7d84c/v2-0f7e5e17ccd02c36/uv/d232d576c69ae65d/out/uv-d232d576c69ae65d",
+      "reference": {
+        "bytes": 151872637,
+        "path": "<WORKSPACE>/work/cargo-cumulative-registry-stack-20261025/measurement-preparation-01/hosts/replication/test-build-preflight-baseline-collection-01/authenticated/collection/records/test-build-preflight-baseline-01/native-output-copies/5-uv-d232d576c69ae65d",
+        "sha256": "1f15a96c7bfad244cf6460c20744aacee429089a686e1c891c979165bacb35e3"
+      },
+      "variants": [
+        {
+          "all_program_headers_and_other_bytes_exact": true,
+          "build_id": "43cb83a1283bd70bc4d38a5baa0bbbd677a6ac5a17428d48f7673bee3b8c2cfd",
+          "build_id_offset": 3520,
+          "bytes": 151872637,
+          "descriptor_bytes": 32,
+          "entry_size": 0,
+          "note_type": 3,
+          "section_entry_size_offset": 1608,
+          "sha256": "1f15a96c7bfad244cf6460c20744aacee429089a686e1c891c979165bacb35e3"
+        },
+        {
+          "all_program_headers_and_other_bytes_exact": true,
+          "build_id": "55f3b0afe79513ce9be6fad0fba7b515eb8c7f045970b80cfb5b5f862a3a0a96",
+          "build_id_offset": 3520,
+          "bytes": 151872637,
+          "descriptor_bytes": 32,
+          "entry_size": 8,
+          "note_type": 3,
+          "section_entry_size_offset": 1608,
+          "sha256": "01f50a0fd76c9b46e25d6cea30872dd4f358921bd628a4a0d224a1223cefd62d"
+        }
+      ]
+    },
+    {
+      "host": "replication",
+      "observed_original_hashes": [
+        "0a415f2b4a50f2aaa43d865b3c18efd2c2f6f7e61a034a13572681bbbf4b2dfe"
+      ],
+      "path": "<BENCHMARK_ROOT>/target/debug/build/workspaces/307ee4ee76c7d84c/v2-0f7e5e17ccd02c36/uv/f17589ffdf6d2ebb/out/uv-f17589ffdf6d2ebb",
+      "reference": {
+        "bytes": 12631498,
+        "path": "<WORKSPACE>/work/cargo-cumulative-registry-stack-20261025/measurement-preparation-01/hosts/replication/test-build-preflight-baseline-collection-01/authenticated/collection/records/test-build-preflight-baseline-01/native-output-copies/6-uv-f17589ffdf6d2ebb",
+        "sha256": "0a415f2b4a50f2aaa43d865b3c18efd2c2f6f7e61a034a13572681bbbf4b2dfe"
+      },
+      "variants": [
+        {
+          "all_program_headers_and_other_bytes_exact": true,
+          "build_id": "54ea3c70ed49af581413aa95b817f98c471b9e7ff04227e1eaa57c00a535c2d7",
+          "build_id_offset": 3584,
+          "bytes": 12631498,
+          "descriptor_bytes": 32,
+          "entry_size": 0,
+          "note_type": 3,
+          "section_entry_size_offset": 1608,
+          "sha256": "0a415f2b4a50f2aaa43d865b3c18efd2c2f6f7e61a034a13572681bbbf4b2dfe"
+        },
+        {
+          "all_program_headers_and_other_bytes_exact": true,
+          "build_id": "139f2d122351f57e21cab8e1e70b5b1f0f4c1de28574f17f1424362d4da86626",
+          "build_id_offset": 3584,
+          "bytes": 12631498,
+          "descriptor_bytes": 32,
+          "entry_size": 8,
+          "note_type": 3,
+          "section_entry_size_offset": 1608,
+          "sha256": "d4f94f3b0a5b014031e394fcb7a9bb168b9fd3a854f50cc60d61d4970bcaf744"
+        }
+      ]
+    }
+  ],
+  "protocol_sha256": "b19455cd67e093539bcabebe5ebbe4496de302fc85640ba1eb0e5fb4da87ca36",
+  "runtime_helper_unchanged": true,
+  "runtime_output_helper": {
+    "bytes": 5248,
+    "path": "<WORKSPACE>/work/cargo-cumulative-registry-stack-20261025/secondary-output-accounting-01/output_admission_test_build.py",
+    "sha256": "38cbba8363958c4e1bbbb79fba11e06830a8246aed1c21b3bc22588641b665bc"
+  },
+  "source": {
+    "bytes": 8590,
+    "path": "<WORKSPACE>/work/cargo-cumulative-registry-stack-20261025/secondary-replacement-design-01/derive_finite_outputs.py",
+    "sha256": "96520a8301a0de4ce7c6a531b5922102d67e20242ad5b0d03428b8d3dc60b3da"
+  },
+  "state": "ten-own-host-finite-two-hash-output-rules-derived-before-entry",
+  "workloads": 0
+}

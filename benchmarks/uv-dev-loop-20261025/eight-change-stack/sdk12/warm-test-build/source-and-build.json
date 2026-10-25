@@ -1,0 +1,189 @@
+{
+  "actual_complete_lib_and_bin_rustc_vectors_equal": true,
+  "artifacts": [
+    {
+      "allocated_sections_unchanged_by_stripping": 31,
+      "arm": "baseline",
+      "dynamic_libraries": [
+        {
+          "bytes": 183024,
+          "path": "/lib/x86_64-linux-gnu/libgcc_s.so.1",
+          "resolved": "/usr/lib/x86_64-linux-gnu/libgcc_s.so.1",
+          "sha256": "d93224d2b0dab4247598be683adca02f5cf00586f99c187579cd7e92058fb7cb"
+        },
+        {
+          "bytes": 952616,
+          "path": "/lib/x86_64-linux-gnu/libm.so.6",
+          "resolved": "/usr/lib/x86_64-linux-gnu/libm.so.6",
+          "sha256": "fce00b6f25f459cf4ae0b7fae4257909a1a8a86f9149e7c029a5d617baf1ccd0"
+        },
+        {
+          "bytes": 2129424,
+          "path": "/lib/x86_64-linux-gnu/libc.so.6",
+          "resolved": "/usr/lib/x86_64-linux-gnu/libc.so.6",
+          "sha256": "3a15d66867d83762c7f2f1e37359cb8f6c5743edb369c65285cb0b1c4f7498bf"
+        },
+        {
+          "bytes": 236616,
+          "path": "/lib64/ld-linux-x86-64.so.2",
+          "resolved": "/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2",
+          "sha256": "c20a2dc8917c755f02b94049356320fe1f62ac7d9f8994731f807d9df39302da"
+        }
+      ],
+      "embedded_head": "fdd26156be98618e2e01a9e02703edac71b79a35",
+      "full": {
+        "bytes": 242374416,
+        "mode": 493,
+        "sha256": "0e6f101932f27e85aa1a9af4ef2aebdd23fc262be82f15eee25d5274d8eedcc4"
+      },
+      "measurement_copy_mode": 448,
+      "source_tree": "487deda53e727c16bd22ae3d7cf1c512d1005116",
+      "stripped": {
+        "bytes": 42311680,
+        "mode": 493,
+        "sha256": "8f285e02cd1c05ad0531c8b4f152066b70a993711377e0899970b8253d106bf4"
+      },
+      "version_stdout_sha256": "b4bf2a74bace7fa9304f31f9476b9c658735138da4bcee37aa9eaa86db13acd2"
+    },
+    {
+      "allocated_sections_unchanged_by_stripping": 31,
+      "arm": "candidate",
+      "dynamic_libraries": [
+        {
+          "bytes": 183024,
+          "path": "/lib/x86_64-linux-gnu/libgcc_s.so.1",
+          "resolved": "/usr/lib/x86_64-linux-gnu/libgcc_s.so.1",
+          "sha256": "d93224d2b0dab4247598be683adca02f5cf00586f99c187579cd7e92058fb7cb"
+        },
+        {
+          "bytes": 952616,
+          "path": "/lib/x86_64-linux-gnu/libm.so.6",
+          "resolved": "/usr/lib/x86_64-linux-gnu/libm.so.6",
+          "sha256": "fce00b6f25f459cf4ae0b7fae4257909a1a8a86f9149e7c029a5d617baf1ccd0"
+        },
+        {
+          "bytes": 2129424,
+          "path": "/lib/x86_64-linux-gnu/libc.so.6",
+          "resolved": "/usr/lib/x86_64-linux-gnu/libc.so.6",
+          "sha256": "3a15d66867d83762c7f2f1e37359cb8f6c5743edb369c65285cb0b1c4f7498bf"
+        },
+        {
+          "bytes": 236616,
+          "path": "/lib64/ld-linux-x86-64.so.2",
+          "resolved": "/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2",
+          "sha256": "c20a2dc8917c755f02b94049356320fe1f62ac7d9f8994731f807d9df39302da"
+        }
+      ],
+      "embedded_head": "fdd26156be98618e2e01a9e02703edac71b79a35",
+      "full": {
+        "bytes": 248003368,
+        "mode": 493,
+        "sha256": "49d614cbca398fa63378dab5147546d149ba5d910a1b89f26469fb4b148cd6c0"
+      },
+      "measurement_copy_mode": 448,
+      "source_tree": "8a4b0c3cb9bafb6a04510366bbaf011502122418",
+      "stripped": {
+        "bytes": 43470856,
+        "mode": 493,
+        "sha256": "28e8349749ac82648c7a6ba331f38892d00311e3718ffee5dbf8a0dc8c93b67b"
+      },
+      "version_stdout_sha256": "b4bf2a74bace7fa9304f31f9476b9c658735138da4bcee37aa9eaa86db13acd2"
+    }
+  ],
+  "base": "fdd26156be98618e2e01a9e02703edac71b79a35",
+  "baseline_label": "SDK12 Cargo source fdd26156 rebuilt with the same stock producer; not the literal shipped SDK12 Cargo executable",
+  "baseline_tree": "487deda53e727c16bd22ae3d7cf1c512d1005116",
+  "build_recipe_redaction": "Only task paths, home/user and host labels are parameterized; exact reversible JSON transformation.",
+  "build_recipe_sha256": "ccd537a8c0e41e757bcbe742b27162d68cafe8269686472bb30d9fd3d39e9b4b",
+  "candidate_tree": "8a4b0c3cb9bafb6a04510366bbaf011502122418",
+  "combined_patch_sha256": "9d282a88b50f8940261866e038eaf54ec0886261f4384a417f2e5829fa597a66",
+  "complete_changed_files": [
+    {
+      "bytes": 173104,
+      "git_blob": "d9f64a87a6ec3307918a229dc8d602e6ee3914e9",
+      "path": "src/compiler/mod.rs",
+      "sha256": "b25ee4072ab671a704c1f95f219e7146cbc1039ee57def6572442ae79d19356d"
+    },
+    {
+      "bytes": 110518,
+      "git_blob": "6914a72d6c9e0ddecf39cf3bde5689d3a3aa7845",
+      "path": "src/context/mod.rs",
+      "sha256": "9d95e8b851ba91617373fa603e8af7a3052dfeb8c2f613a2131e884a0609e96a"
+    },
+    {
+      "bytes": 25832,
+      "git_blob": "9b156bd3b417fbb8d95bd4803ed1da8dbd2242ff",
+      "path": "src/resolver/encode.rs",
+      "sha256": "3f30b3c0e66f3070334bd3f6548a5f3da71d8fe8cc50f705e0e53ff6d1abff23"
+    },
+    {
+      "bytes": 9890,
+      "git_blob": "e2d304de3380ffeb1a51d4f6abd57206bfcb202b",
+      "path": "src/util/graph.rs",
+      "sha256": "2db395fcbfa9e76497c2157d777a6ae358fd35ef6cee57ecf3b6b9f4481ba64b"
+    },
+    {
+      "bytes": 43347,
+      "git_blob": "ed895c9d8b143e881bf18fb93d4348c3e853fc16",
+      "path": "src/workspace/manifest.rs",
+      "sha256": "f80590fd82ad7c501629aaf52931c45d0a4a3ba820b55c13d65813c8dfa971ab"
+    },
+    {
+      "bytes": 21142,
+      "git_blob": "e555d4052d16e7c29145074c4300a86b10036b25",
+      "path": "src/workspace/package_id.rs",
+      "sha256": "1d5f062d770ae214ddb0ccc2c559a9f4747b73dcedfe83b359dd0c813ad8cb7e"
+    },
+    {
+      "bytes": 122525,
+      "git_blob": "b1e5e3a4d944dc4c323543307f418bbc135f8163",
+      "path": "src/workspace/parser/mod.rs",
+      "sha256": "8b6db61a180e0bcc111cdc47ce71b68130091803520585c91d201752a2508928"
+    },
+    {
+      "bytes": 27187,
+      "git_blob": "f1d35270f29da23fa38f6cc5eef4e483def3d4ef",
+      "path": "src/workspace/parser/registry_cache.rs",
+      "sha256": "4b224febe47577a83d7739c1f187d173bafa11dab4fd7a0d272c5f89bceabdf9"
+    },
+    {
+      "bytes": 194855,
+      "git_blob": "cf8e85012a7dcccbd99451105b3b561fa801c2f2",
+      "path": "tests/testsuite/build.rs",
+      "sha256": "6648daea18596925bc082e841ea46f9eea9705a301b47dc66e34ed89b3a21af0"
+    }
+  ],
+  "components": {
+    "published_Cargo_PRs": [
+      231,
+      232,
+      233,
+      234,
+      235,
+      237
+    ],
+    "registry_manifest_cache_tree": "5fbb37f329d5c185e95511832854596937899019",
+    "single_parse_formatted_public_head": "a90c95c5741c77c291a13a6c8eacc8385ceb70c6",
+    "single_parse_formatted_tree": "2f4563a9e1311f214f8031c611346e4758134548",
+    "two_choice_tree": "eba53f95bcf93818dc07490b5b8867d75a683cfd"
+  },
+  "functional_acceptance_sha256": "ad1355880f163452b314d4e3ec3f5ac2dd4a2fb5f0cb95331b1c46ac62950fcf",
+  "functional_counts": {
+    "focused_baseline": 16,
+    "focused_candidate": 41,
+    "integration_cases_each_arm": 50,
+    "paired_production_diagnostics": 4,
+    "real_i686_nightly_cases_each_arm": 12
+  },
+  "matched_build_handoff_sha256": "5a5658dd7e51464d96e3103654264904b10804204b811da251b310d8b955f6ac",
+  "matched_setup_acceptance_sha256": "1fef4efa4d81fee45f2ec5dd2a1b94ddab760648537b65cd45f49df9de147ddc",
+  "measurement_protocol_sha256": "b19455cd67e093539bcabebe5ebbe4496de302fc85640ba1eb0e5fb4da87ca36",
+  "new_source_PR": false,
+  "primary_measurement_protocol_sha256": "1889dd3492e5bb29a20f8b38afbac1855ea1bd15570749b1f9ccb42eb0c23e7f",
+  "same_physical_source_target_tmp_and_cargo_home": true,
+  "schema": 1,
+  "scope": "Separate eight-change warm dirty test-build confirmation; Cargo-parent instructions only.",
+  "source_identity_sha256": "c5cffb550b2278abcdaf02ba30f804d5833c25250bf968efda1c832a2d3574d4",
+  "stock_cargo_commit": "5f94df4789f005f9a352888e8355ffc645b7ed0e",
+  "stock_rustc_commit": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4"
+}

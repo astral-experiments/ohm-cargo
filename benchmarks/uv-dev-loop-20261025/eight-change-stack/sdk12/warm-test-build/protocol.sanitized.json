@@ -1,0 +1,306 @@
+{
+  "activity": "Initial quiet readiness; retain entry/before/after/terminal host observations. As in the accepted Cargo-parent protocol, background activity never selects or rejects instruction samples based on effect. No native elapsed claim.",
+  "actual_inputs": null,
+  "affinity": {
+    "controller": "8",
+    "preparation": "9-15",
+    "workload": "0-7"
+  },
+  "arms": {
+    "A": "baseline",
+    "B": "candidate"
+  },
+  "authority": {
+    "comparative_execution": false,
+    "guest_preflights": false,
+    "matched_producer": true,
+    "publication": false,
+    "source_preparation": true
+  },
+  "baseline_label": "SDK12 Cargo source fdd26156 rebuilt with the same stock producer; not the literal shipped SDK12 Cargo executable",
+  "bootstrap_seeds": {
+    "first_use": [
+      20261025325,
+      20261025326
+    ],
+    "primary": [
+      20261025321,
+      20261025322
+    ],
+    "secondary": [
+      20261025327,
+      20261025328
+    ]
+  },
+  "budget": {
+    "cold_warm_timeout_seconds": 1800,
+    "comparative_blocks": 2,
+    "comparative_samples_total": 32,
+    "extensions": 0,
+    "native_command_timeout_seconds": 150,
+    "profile_command_timeout_seconds": 300,
+    "replacements": 0,
+    "setup_profiles": "No repeated profiling rehearsal by default. Reuse exact admitted source/runtime/native/profile contexts, with fresh post-native-slot identity/freshness/data bindings and Root joint GO before any comparison."
+  },
+  "child_environment": "Keep the original live jobserver. Only differing CARGO_MAKEFLAGS descriptor values are omitted from comparison; raw ordered environment is retained. The validated loader removes its own instrumentation environment before native children.",
+  "commands": {
+    "first_use": [
+      "-Zohm-defaults=yes",
+      "check",
+      "--locked",
+      "--offline",
+      "-j",
+      "8"
+    ],
+    "primary": [
+      "-Zohm-defaults=yes",
+      "check",
+      "--locked",
+      "--offline",
+      "-j",
+      "8"
+    ],
+    "secondary": [
+      "-Zohm-defaults=yes",
+      "test",
+      "--no-run",
+      "--locked",
+      "--offline",
+      "-j",
+      "8"
+    ]
+  },
+  "decision_table": [
+    {
+      "condition": "A prerequisite, exact binary/context/output, trace, exit, completeness, integrity or restoration guard fails; any observation is missing",
+      "decision": "This distinct cohort closes on any invalid guard or incomplete observation. Preserve every record and both arms; no replacement, extension, alternate host or retry. Keep both effects unread unless both full raw/restoration gates pass."
+    },
+    {
+      "condition": "Both complete raw/restoration gates pass, but either block has any tie/loss, sign p >= .01 or lower 99% reduction bound <= .01",
+      "decision": "A valid secondary miss is reported independently and closes this distinct study; the original primary remains separately qualified. No retry or pooling."
+    },
+    {
+      "condition": "Both complete raw/restoration and metric gates pass and each block has 8/8 wins, p < .01 and lower 99% reduction bound > .01",
+      "decision": "Both independent blocks must pass to qualify their own warm endpoint. No duplicate source PR. First-use cost is reported with either sign after complete gates."
+    }
+  ],
+  "endpoint_entry": "Only test-build is entered by this protocol. Original warm-check qualification is authenticated under primary_qualification_protocol_sha256. Root native check calibration receives both guests first. After explicit return, freshly attest both original independent source-built test banks, fixed tools/contexts/output references, both-command freshness and unused outputs; bind one joint authority. First-use and all other endpoints remain separate and unarmed.",
+  "finite_elf_method": {
+    "decision_sha256": "de7f53a716ec4e4d8ff37932cba901d93c615b6eedb5da9dfb6a7069ff823e02",
+    "derivation": "Before entry, derive both whole-file SHA256 values from each immutable own-host admitted ELF by changing only the8-byte sh_entsize cell to0/8 and recomputing the zero-filled48-byte GNU note. Require original-form reconstruction, exact program headers and all other bytes; all observed admitted variants and the single rejected output must join.",
+    "negative_checks": "Positive exact original/derived variants; reject text/data/rodata payload, program header, unrelated header, wrong flags/type/entry-size, descriptor/header/name changes, stale/foreign build ID, size/mode/path and unknown whole hashes.",
+    "rejected_output_proof_sha256": "b7c013d41db2d5652a5cfa01d573f15a4ab98cd3ab640d35b3caf3354f3b20f3",
+    "runtime_guard": "Unchanged exact-size/mode/path/full-SHA guard; only two finite preregistered hashes per ELF. No byte masks, dynamic normalization, wildcard hashes or future learning. Rlib and rmeta guards remain unchanged.",
+    "source": "Exact pinned Wild0.10.0 e9a9b0cb; actual ELF64 little-endian x86_64 SHT_PROGBITS .rodata flags0x32 with sh_entsize0/8 and GNU type3 note/32-byte BLAKE3 descriptor."
+  },
+  "first_use_statistics": {
+    "bootstrap_resamples": 200000,
+    "confidence": 0.99,
+    "descriptive_either_sign": true,
+    "pairs_per_host": 8,
+    "per_host_break_even": "ceil(max(0, mean paired first-use candidate-minus-baseline Ir / mean paired warm-check baseline-minus-candidate Ir)); retain signed numerator and denominator.",
+    "reader_donor": {
+      "bytes": 4258,
+      "path": "<WORKSPACE>/work/cargo-post-235-scout-20261025/root-cold-replay-support-02/amortize.py",
+      "sha256": "ef8aaba5dbda0d51231eb32b3ee15219e0d629a78bec46b4ed26e409723858e4"
+    },
+    "uncertainty": "Independent paired resampling within each phase, separately on each host; no pooling."
+  },
+  "hosts": [
+    {
+      "hostname": "<HOST_1>",
+      "machine": "b83fd4285ce742f5ce3c9448db3ff0b20df6c9366fad1db5774c64551d0d467f",
+      "ordinal": 0
+    },
+    {
+      "hostname": "<HOST_2>",
+      "machine": "716ef3cc83238cfc2ed846de915b3c1083f03133831bf74f3cb60ef2a3af2e12",
+      "ordinal": 1
+    }
+  ],
+  "joint_authorities": {
+    "first_use": null,
+    "primary": null,
+    "secondary": null
+  },
+  "literal_shipped_binary_extra_comparison": null,
+  "masking": "Per endpoint, both complete16-record raw/restoration gates precede all32 metric joins, which precede either estimate. Excluded profiles are never samples. Check results are retained and reported independently before test-build entry.",
+  "matched_build": null,
+  "metric": "Final Callgrind Ir for the complete Cargo parent, all parent threads, trace-children=no; compiler/linker/build-script/test children excluded.",
+  "metric_integrity": "Both complete raw/restoration gates before decoding; all 32 final/self/stderr and raw/gzip joins, exact command/Ir format, and no brk segment overflow warning before either statistical comparison.",
+  "native": "Whole-command native wall time is a separate future protocol. Instrumented elapsed is diagnostic only.",
+  "order": {
+    "first_use": [
+      [
+        "AB",
+        "BA",
+        "AB",
+        "BA",
+        "BA",
+        "AB",
+        "BA",
+        "AB"
+      ],
+      [
+        "BA",
+        "AB",
+        "BA",
+        "AB",
+        "AB",
+        "BA",
+        "AB",
+        "BA"
+      ]
+    ],
+    "primary": [
+      [
+        "AB",
+        "BA",
+        "BA",
+        "AB",
+        "BA",
+        "AB",
+        "AB",
+        "BA"
+      ],
+      [
+        "BA",
+        "AB",
+        "AB",
+        "BA",
+        "AB",
+        "BA",
+        "BA",
+        "AB"
+      ]
+    ],
+    "secondary": [
+      [
+        "BA",
+        "AB",
+        "BA",
+        "AB",
+        "AB",
+        "BA",
+        "BA",
+        "AB"
+      ],
+      [
+        "AB",
+        "BA",
+        "AB",
+        "BA",
+        "BA",
+        "AB",
+        "AB",
+        "BA"
+      ]
+    ]
+  },
+  "original_secondary": {
+    "all_effects_permanently_unread": true,
+    "closure_sha256": "fafbf2a7a5217534953b84159a98f6ed7cde37d0436645728e8f35e813d5ee20",
+    "cohort_sha256": "bd76aaeddec6fa9211d56e0075ecfd391b35e29dcb3dda974dacc447bc98189d",
+    "eligible": false,
+    "protocol_sha256": "1889dd3492e5bb29a20f8b38afbac1855ea1bd15570749b1f9ccb42eb0c23e7f"
+  },
+  "outputs": [
+    "<BENCHMARK_ROOT>/records/test-build-confirmation-block-0-01",
+    "<BENCHMARK_ROOT>/records/test-build-confirmation-block-1-01"
+  ],
+  "pairs_per_host": 8,
+  "pins": {
+    "base_tree": "487deda53e727c16bd22ae3d7cf1c512d1005116",
+    "candidate_patch_sha256": "9d282a88b50f8940261866e038eaf54ec0886261f4384a417f2e5829fa597a66",
+    "candidate_tree": "8a4b0c3cb9bafb6a04510366bbaf011502122418",
+    "capture_tool_sha256": "7088ab983a19122541e3c5cac906bc275808ab6c9a2b3fafbcca6db65062dd18",
+    "cargo": "fdd26156be98618e2e01a9e02703edac71b79a35",
+    "common_embedded_build_commit": "fdd26156be98618e2e01a9e02703edac71b79a35",
+    "dirty_fixture_sha256": "a89570fa6080462a772ebdbc73ab4471e0b968f7c357c23b197409fb12f282ad",
+    "sdk12_bundle_sha256": "177751bcef731909e9fa2c89983804ec6fe663101711dc46003a743914d37203",
+    "sdk12_driver_sha256": "253120eeae6c051af825c4884b30b2d5d62a3a4094428d52c815cbcaf7af697a",
+    "sdk12_rustc_sha256": "1879f05850bfcd95837087c6012c76bc0355581012686d51b2f690ce46934d6e",
+    "source_checkpoint_sha256": "c5cffb550b2278abcdaf02ba30f804d5833c25250bf968efda1c832a2d3574d4",
+    "uv": "3d82a6ad5a7eab8c68236553b7846517767c4b61",
+    "uv_seed_sha256": "7fe7818663d47c76dd995adbc97aa1bd8a32067188aadf14eb03b03a634beb14",
+    "wild_sha256": "5b2baebf62de0f8c185711b808c3f553da3b7166b1c289420df5276b027f5597"
+  },
+  "predecessor_protocol": {
+    "bytes": 12651,
+    "path": "<WORKSPACE>/work/cargo-cumulative-registry-stack-20261025/protocol.json",
+    "sha256": "1889dd3492e5bb29a20f8b38afbac1855ea1bd15570749b1f9ccb42eb0c23e7f"
+  },
+  "preflight": "Each endpoint/arm has its own source-only warmed bank. Warm and prove both original commands fresh before capturing that bank. One native dirty reference and one opaque Cargo-parent profile establish the exact selected endpoint compiler vectors, outputs, diagnostics and restoration. The native stdout/stderr references are explicit in the pinned preflight and joined to its completion manifest before collection and offline validation.",
+  "primary_qualification_protocol_sha256": "1889dd3492e5bb29a20f8b38afbac1855ea1bd15570749b1f9ccb42eb0c23e7f",
+  "producer": {
+    "accepted_checks": null,
+    "binary_pair": null,
+    "bolt": false,
+    "channel": "dev",
+    "codegen_units": 1,
+    "debug": 1,
+    "embedded_commit": "fdd26156be98618e2e01a9e02703edac71b79a35",
+    "features": [
+      "all-static",
+      "ohm-defaults"
+    ],
+    "incremental": false,
+    "lto": "thin",
+    "opt_level": 3,
+    "pgo": false,
+    "physical_paths": "one common source/target path for both builds",
+    "planned_checks": {
+      "focused_baseline": 16,
+      "focused_candidate": 41,
+      "integration_cases_per_arm": 50,
+      "production_diagnostic_cases_per_arm": 4
+    },
+    "toolchain": "Stock Rust1.99; exact production build and functional receipts are bound by the Root matched-pair acceptance."
+  },
+  "profiler_prerequisite": {
+    "brk": "Fail on any brk-overflow warning; no source, allocator or counter changes.",
+    "predecessor_protocol": {
+      "bytes": 10815,
+      "path": "<WORKSPACE>/work/cargo-registry-cache-first-use-parse-20261025/confirmation-source-02/protocol.json",
+      "sha256": "a2e6301870ec205ed9b27733fafb6b45b607e3aebb778fe082508403addda18a"
+    },
+    "state": "new-study-admission-pending",
+    "tools": "Reuse the accepted R/Y expanded-brk 3.22 Callgrind and exact preload adapter; same tools on both machines, with fresh held-out controls and full file/alias verification before profiling."
+  },
+  "publication": "Combined evidence and next-hillclimb attribution only; no duplicative performance PR for already published changes.",
+  "purpose": "Distinct fixed secondary Cargo-parent test-build confirmation after a completely explained original exact-output rejection; original cohort remains permanently opaque and ineligible.",
+  "qualification_design_sha256": null,
+  "recorded_utc": "2026-10-25T09:35:47.141153+00:00",
+  "registry_cache": {
+    "baseline": "fdd has no R1 cache; require absent before and after every sample.",
+    "candidate_first_use": "Retire only the task-owned document directory by same-filesystem rename before the profile; retain all records. Require absent before and populated after.",
+    "candidate_warm": "Full cache populated before and after, with exact X two-choice key[:3] or key[3:6] placement, file/ancestor trust, size and JSON guards.",
+    "exact_write_claim": false,
+    "format": "R1 unchanged magic/format; new fdd embedded commit changes codec-key digest, which is observed freshly."
+  },
+  "root": "<BENCHMARK_ROOT>",
+  "samples_per_host": 16,
+  "schema": 1,
+  "source_identity": {
+    "bytes": 5729,
+    "path": "<WORKSPACE>/work/cargo-cumulative-registry-stack-20261025/source.json",
+    "sha256": "c5cffb550b2278abcdaf02ba30f804d5833c25250bf968efda1c832a2d3574d4"
+  },
+  "state": "prospective-distinct-secondary-method-frozen-live-bindings-pending",
+  "state_banks": "Fresh independent source-only check banks per arm/host. Fresh independent test-build banks only after both primary passes. No compiled uv, target, shared, document cache or package-home state crosses arms/hosts. Fixed SDK/runtime leaves remain pinned; capture actual compiler namespaces rather than infer them.",
+  "statistics": {
+    "bootstrap": "paired percentile using unchanged paired_count_statistics",
+    "bootstrap_resamples": 200000,
+    "confidence": 0.99,
+    "estimator": "geometric mean of paired candidate/baseline counts",
+    "lower_reduction_bound_strictly_greater_than": 0.01,
+    "multiple_testing": "Both independent fixed VM blocks must pass separately; no pooled or additive claim.",
+    "pooling": false,
+    "sign": "two-sided exact sign test, ties excluded in p and disqualifying for the 8/8 gate",
+    "sign_p_strictly_less_than": 0.01,
+    "wins_required": 8
+  },
+  "study": "eight-change-cumulative-cargo-parent-distinct-secondary-finite-ELF",
+  "workload_edit": "Use the exact accepted donor fixture: append a deterministic ordinary non-doc comment, warm its state=before form, then change it to state=after_. The strings have equal length and five changed bytes. All Rust tokens and source positions remain unchanged. Restore the original source afterward; no production uv change.",
+  "workload_tools": "Published SDK12 f93 Rust/rustdoc and fixed Wild execute uv, distinct from the stock producer compiler. Only Cargo varies."
+}
