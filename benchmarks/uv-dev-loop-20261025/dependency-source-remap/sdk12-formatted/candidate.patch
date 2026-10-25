@@ -1,0 +1,147 @@
+diff --git a/src/workspace/dependency.rs b/src/workspace/dependency.rs
+index b4f4b9c8095b0e173f24a9c873aff0e355b477a7..70d5ac5e90a86d08f8ebeac81379674ba024679e 100644
+--- a/src/workspace/dependency.rs
++++ b/src/workspace/dependency.rs
+@@ -20,14 +20,15 @@ use crate::workspace::{CliUnstable, Feature, Features, PackageId, SourceId, Summ
+ /// Cheap to copy.
+ #[derive(PartialEq, Eq, Hash, Clone, Debug)]
+ pub struct Dependency {
++    // A resolver may remap the source while other summaries still share the manifest data.
++    name: InternedString,
++    source_id: SourceId,
+     inner: Arc<Inner>,
+ }
+ 
+ /// The data underlying a `Dependency`.
+ #[derive(PartialEq, Eq, Hash, Clone, Debug)]
+ struct Inner {
+-    name: InternedString,
+-    source_id: SourceId,
+     /// Source ID for the registry as specified in the manifest.
+     ///
+     /// This will be None if it is not specified (crates.io dependency).
+@@ -147,9 +148,9 @@ impl Dependency {
+     pub fn new_override(name: InternedString, source_id: SourceId) -> Dependency {
+         assert!(!name.is_empty());
+         Dependency {
++            name,
++            source_id,
+             inner: Arc::new(Inner {
+-                name,
+-                source_id,
+                 registry_id: None,
+                 req: OptVersionReq::Any,
+                 kind: DepKind::Normal,
+@@ -219,7 +220,7 @@ impl Dependency {
+     /// foo = { version = "0.1", package = 'bar' }
+     /// ```
+     pub fn name_in_toml(&self) -> InternedString {
+-        self.explicit_name_in_toml().unwrap_or(self.inner.name)
++        self.explicit_name_in_toml().unwrap_or(self.name)
+     }
+ 
+     /// The name of the package that this `Dependency` depends on.
+@@ -241,11 +242,11 @@ impl Dependency {
+     /// bar = { version = "0.1", package = 'foo' }
+     /// ```
+     pub fn package_name(&self) -> InternedString {
+-        self.inner.name
++        self.name
+     }
+ 
+     pub fn source_id(&self) -> SourceId {
+-        self.inner.source_id
++        self.source_id
+     }
+ 
+     pub fn registry_id(&self) -> Option<SourceId> {
+@@ -337,7 +338,7 @@ impl Dependency {
+ 
+     /// Sets the source ID for this dependency.
+     pub fn set_source_id(&mut self, id: SourceId) -> &mut Dependency {
+-        Arc::make_mut(&mut self.inner).source_id = id;
++        self.source_id = id;
+         self
+     }
+ 
+@@ -362,7 +363,7 @@ impl Dependency {
+ 
+     /// Locks this dependency to depending on the specified package ID.
+     pub fn lock_to(&mut self, id: PackageId) -> &mut Dependency {
+-        assert_eq!(self.inner.source_id, id.source_id());
++        assert_eq!(self.source_id, id.source_id());
+         trace!(
+             "locking dep from `{}` with `{}` at {} to {}",
+             self.package_name(),
+@@ -370,13 +371,12 @@ impl Dependency {
+             self.source_id(),
+             id
+         );
+-        let me = Arc::make_mut(&mut self.inner);
+-        me.req.lock_to(id.version());
++        Arc::make_mut(&mut self.inner).req.lock_to(id.version());
+ 
+         // Only update the `precise` of this source to preserve other
+         // information about dependency's source which may not otherwise be
+         // tested during equality/hashing.
+-        me.source_id = me.source_id.with_precise_from(id.source_id());
++        self.source_id = self.source_id.with_precise_from(id.source_id());
+         self
+     }
+ 
+@@ -428,10 +428,10 @@ impl Dependency {
+ 
+     pub fn matches_prerelease(&self, sum: &Summary) -> bool {
+         let id = sum.package_id();
+-        self.inner.name == id.name()
++        self.name == id.name()
+             && (self.inner.only_match_name
+                 || (self.inner.req.matches_prerelease(id.version())
+-                    && self.inner.source_id == id.source_id()))
++                    && self.source_id == id.source_id()))
+     }
+ 
+     /// Returns `true` if the package (`id`) can fulfill this dependency request.
+@@ -441,9 +441,9 @@ impl Dependency {
+ 
+     /// Returns `true` if the package (`id`) can fulfill this dependency request.
+     pub fn matches_id(&self, id: PackageId) -> bool {
+-        self.inner.name == id.name()
++        self.name == id.name()
+             && (self.inner.only_match_name
+-                || (self.inner.req.matches(id.version()) && self.inner.source_id == id.source_id()))
++                || (self.inner.req.matches(id.version()) && self.source_id == id.source_id()))
+     }
+ 
+     pub fn map_source(mut self, to_replace: SourceId, replace_with: SourceId) -> Dependency {
+@@ -707,3 +707,30 @@ impl Display for PatchLocation {
+         }
+     }
+ }
++
++#[cfg(test)]
++mod tests {
++    use super::*;
++
++    #[test]
++    fn remapping_a_shared_dependency_preserves_its_manifest_data() {
++        let root = std::env::current_dir().unwrap();
++        let original_source = SourceId::for_path(&root.join("original")).unwrap();
++        let replacement = SourceId::for_path(&root.join("replacement")).unwrap();
++        let mut original = Dependency::parse("example", Some("^1.2"), original_source).unwrap();
++        original.set_optional(true);
++
++        let mut remapped = original.clone().map_source(original_source, replacement);
++        assert_eq!(original.source_id(), original_source);
++        assert_eq!(remapped.source_id(), replacement);
++        assert!(Arc::ptr_eq(&original.inner, &remapped.inner));
++        assert_eq!(
++            remapped.clone().map_source(replacement, original_source),
++            original
++        );
++
++        remapped.set_optional(false);
++        assert!(original.is_optional());
++        assert!(!remapped.is_optional());
++    }
++}

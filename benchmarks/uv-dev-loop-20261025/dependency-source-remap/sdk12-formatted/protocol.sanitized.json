@@ -1,0 +1,190 @@
+{
+  "activity": "Initial quiet readiness; retain entry/before/after/terminal host observations. As in the accepted Cargo-parent protocol, background activity never selects or rejects instruction samples based on effect. No native elapsed claim.",
+  "affinity": {
+    "controller": "8",
+    "preparation": "24-31",
+    "workload": "0-7"
+  },
+  "arms": {
+    "A": "baseline",
+    "B": "candidate"
+  },
+  "authority": {
+    "baseline_source_only_preparation": true,
+    "candidate_execution": false,
+    "comparative_execution": false,
+    "note": "Excluded preparation follows the accepted current-runtime pair. Numbered work still requires exact new inputs/cohort and Root authority.",
+    "publication": false
+  },
+  "bootstrap_seeds": {
+    "primary": [
+      20261025343,
+      20261025344
+    ]
+  },
+  "budget": {
+    "cold_warm_timeout_seconds": 1800,
+    "comparative_blocks": 2,
+    "comparative_samples_total": 32,
+    "extensions": 0,
+    "native_command_timeout_seconds": 150,
+    "pilot_pairs": 0,
+    "pilot_samples": 0,
+    "profile_command_timeout_seconds": 300,
+    "replacements": 0,
+    "setup_profiles": "Exactly one excluded baseline and candidate parity profile per host, permanently outside eligibility and statistics.",
+    "setup_profiles_total": 4
+  },
+  "child_environment": "Keep the original live jobserver. Only differing CARGO_MAKEFLAGS descriptor values are omitted from comparison; raw ordered environment is retained. The validated loader removes its own instrumentation environment before native children.",
+  "commands": {
+    "primary": [
+      "-Zohm-defaults=yes",
+      "check",
+      "--locked",
+      "--offline",
+      "-j",
+      "8"
+    ]
+  },
+  "decision_table": [
+    {
+      "condition": "A prerequisite, exact binary/context/output, trace, exit, completeness, integrity or restoration guard fails; any observation is missing",
+      "decision": "Cohort invalid/unqualified. Preserve every record; restore and park owned states. Keep incomplete/invalid effects unread. No replacement, extension, alternate host or retry of measured work."
+    },
+    {
+      "condition": "Both complete raw/restoration gates pass, but either block has any tie/loss, sign p >= .01 or lower 99% reduction bound <= .0025",
+      "decision": "Valid negative. No extra samples, changed threshold or new pilot."
+    },
+    {
+      "condition": "Both complete raw/restoration and metric gates pass and each block has 8/8 wins, p < .01 and lower 99% reduction bound > .0025",
+      "decision": "Qualifies the Cargo-parent Ir endpoint only after both independent blocks and raw replay. No whole-command wall claim or automatic publication."
+    }
+  ],
+  "endpoint_entry": "Only dirty check. The independently accepted original D cohort and the separately tested formatted artifact are prerequisites; no new eligibility pilot.",
+  "host_capacity": {
+    "read_only_entry_gib": 100,
+    "reason": "Two check-only banks per host; no test-build banks. Preserve trait\u2019s earlier T-donor150GiB readiness refusal.",
+    "source_install_gib": 95
+  },
+  "hosts": [
+    {
+      "hostname": "host-1",
+      "ordinal": 0
+    },
+    {
+      "hostname": "host-2",
+      "ordinal": 1
+    }
+  ],
+  "masking": "Both complete 16-record raw/restoration gates, including actual cache witnesses, precede all 32 metric joins; these precede either unpooled host estimate. Excluded setup profiles stay outside statistics.",
+  "metric": "Final Callgrind Ir for the complete Cargo parent, all parent threads, trace-children=no; compiler/linker/build-script/test children excluded.",
+  "metric_integrity": "Both complete raw/restoration gates before decoding; all 32 final/self/stderr and raw/gzip joins, exact command/Ir format, and no brk segment overflow warning before either statistical comparison.",
+  "native": "No native-wall supplement is part of this design.",
+  "order": {
+    "primary": [
+      [
+        "BA",
+        "AB",
+        "AB",
+        "BA",
+        "BA",
+        "AB",
+        "BA",
+        "AB"
+      ],
+      [
+        "AB",
+        "BA",
+        "BA",
+        "AB",
+        "AB",
+        "BA",
+        "AB",
+        "BA"
+      ]
+    ]
+  },
+  "original_cohort_sha256": "6766992443c0d8ae657bdd73ff81589c7a718602a19084e6a9faf28057f46398",
+  "original_confirmation_sha256": "3037d68536a584f6cf179e37b0f6c994e4374959219237a9d629ab279a896427",
+  "original_decision_sha256": "06bfdfa8f30fd6531909745c3e4280a6ff9a0529926269518096bb39c62f8025",
+  "original_protocol_sha256": "257f504aa1624c256613feb279405b90069edece3a0881203db5037c043e9e4d",
+  "pairs_per_host": 8,
+  "pins": {
+    "base_tree": "5fbb37f329d5c185e95511832854596937899019",
+    "candidate_patch_sha256": "3f4e932692689d35d1ca519719fa7ac7e361bf655418e095c53e6a4831f8ae20",
+    "candidate_tree": "70dbee538c9ccaf6c5d348550ddd0aa239e4126b",
+    "capture_tool_sha256": "7088ab983a19122541e3c5cac906bc275808ab6c9a2b3fafbcca6db65062dd18",
+    "cargo": "fd7a25d7bed7503d628c90879ba265e173343b28",
+    "cargo_sha256": {
+      "baseline": "2f0c63ee330ca1f372de6a7500a10bc8a9025678deb46ff220e6741053851be1",
+      "candidate": "c76a42fdaa6b91e76ab866a4a1a662ed679d2aa81b15bf91109cf5497c989995"
+    },
+    "common_embedded_build_commit": "fd7a25d7bed7503d628c90879ba265e173343b28",
+    "dirty_fixture_sha256": "a89570fa6080462a772ebdbc73ab4471e0b968f7c357c23b197409fb12f282ad",
+    "matched_pair_acceptance_sha256": "9c018629c98fd912e76595059c546bb6ce29c46f120f8ae94b06db0de4bf3a59",
+    "sdk12_bundle_sha256": "177751bcef731909e9fa2c89983804ec6fe663101711dc46003a743914d37203",
+    "sdk12_driver_sha256": "253120eeae6c051af825c4884b30b2d5d62a3a4094428d52c815cbcaf7af697a",
+    "sdk12_rustc_sha256": "1879f05850bfcd95837087c6012c76bc0355581012686d51b2f690ce46934d6e",
+    "source_checkpoint_sha256": "36b9239df215bfed7293b77a6c42c78e8100c82f274e748b3dd88e191e680990",
+    "uv": "3d82a6ad5a7eab8c68236553b7846517767c4b61",
+    "uv_seed_sha256": "7fe7818663d47c76dd995adbc97aa1bd8a32067188aadf14eb03b03a634beb14",
+    "wild_sha256": "5b2baebf62de0f8c185711b808c3f553da3b7166b1c289420df5276b027f5597"
+  },
+  "preflight": "Independently copied same-host, same-arm byte-authenticated warm banks; two native warm/fresh cycles, then one native dirty reference and one opaque Cargo-parent profile per arm per host. Fresh exact contexts, diagnostics, outputs and restoration; excluded counters remain unread.",
+  "producer": {
+    "binary_pair": "Unchanged authenticated original baseline and the separately built/tested exact formatted current executable; same bytes on both hosts.",
+    "bolt": false,
+    "channel": "dev",
+    "codegen_units": 1,
+    "debug": 1,
+    "embedded_commit": "fd7a25d7bed7503d628c90879ba265e173343b28",
+    "features": [
+      "all-static",
+      "ohm-defaults"
+    ],
+    "incremental": false,
+    "lto": "thin",
+    "opt_level": 3,
+    "pgo": false,
+    "physical_paths": "one common source/target path for both builds",
+    "toolchain": "Same original stock Rust 1.99 compiler and native tools. The observed Git upgrade is separately bound through unchanged actual build-script fields."
+  },
+  "profiler_prerequisite": {
+    "allowed_prospective_tool_change": "None in this study. Reuse only the already qualified ceiling-only Callgrind core, after fresh guest controls and exact identities.",
+    "original_staged_tools": "Private expanded-brk 3.22 runtime; fresh per-host qualification and exact common payload required.",
+    "reason": "Reuse the qualified ceiling-only Callgrind core with fresh per-host controls and reject every brk overflow warning.",
+    "required": "Fresh readback of all 640 exact profiler files and two aliases on these same hosts, joined to their accepted original guest controls and a new protocol-specific Root receipt.",
+    "state": "existing-qualified-payload-awaiting-fresh-two-host-identity-binding"
+  },
+  "purpose": "A separately registered direct confirmation of the formatted current executable on both original hosts.",
+  "qualification_design_sha256": "cd16d2d47d916d564bed1a9933d7d8d33257e0692e132a6470de7e95e061da27",
+  "recorded_utc": "2026-10-25T08:18:00Z",
+  "registry_cache": {
+    "baseline": "Actual private committed records required before/after every dirty native/profiled command. Record count, bytes and SHA inventory; collision replacements may alter slots.",
+    "candidate": "Actual private committed records required before/after every dirty native/profiled command. Record count, bytes and SHA inventory; collision replacements may alter slots.",
+    "directory": ".ohm-registry-json-v1",
+    "maximum_entry_bytes": 65536,
+    "maximum_slots": 4096,
+    "witness_scope": "Magic, key-to-slot relation, bounded private regular files and supported JSON shape; no independent keyed-BLAKE3 or hit-count claim."
+  },
+  "root": "<BENCHMARK_ROOT>",
+  "samples_per_host": 16,
+  "schema": 1,
+  "state": "frozen-current-formatted-executable-confirmation-before-new-workloads",
+  "state_banks": "Authenticate each host\u2019s original complete independently warmed per-arm bank and populated 445-slot/803161-byte cache; make independent copies into fresh bank paths. Restore the same canonical active paths, verify unchanged compiler/runtime/source inputs and zero-compiler parent freshness, then acquire new native/profile/context/diagnostic/output references per arm. No cross-host or cross-arm state import.",
+  "statistics": {
+    "bootstrap": "paired percentile using unchanged paired_count_statistics",
+    "bootstrap_resamples": 200000,
+    "confidence": 0.99,
+    "estimator": "geometric mean of paired candidate/baseline counts",
+    "lower_reduction_bound_strictly_greater_than": 0.0025,
+    "multiple_testing": "Both independent fixed VM blocks must pass separately; no pooled or additive claim.",
+    "pooling": false,
+    "sign": "two-sided exact sign test, ties excluded in p and disqualifying for the 8/8 gate",
+    "sign_p_strictly_less_than": 0.01,
+    "wins_required": 8
+  },
+  "study": "dependency-source-cow-formatted-current-executable",
+  "workload_edit": "Use the exact accepted donor fixture: append a deterministic ordinary non-doc comment, warm its state=before form, then change it to state=after_. The strings have equal length and five changed bytes. All Rust tokens and source positions remain unchanged. Restore the original source afterward; no production uv change.",
+  "workload_tools": "Published SDK12 f93 Rust/rustdoc and fixed Wild execute uv, distinct from the stock producer compiler. Only Cargo varies."
+}

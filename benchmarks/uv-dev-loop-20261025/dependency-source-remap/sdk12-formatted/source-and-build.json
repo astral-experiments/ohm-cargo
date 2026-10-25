@@ -1,0 +1,247 @@
+{
+  "actual_focused_passes": {
+    "baseline_unchanged_original": 23,
+    "formatted_candidate_new": 24
+  },
+  "actual_production_compiler_vectors_sha256": "0c265270a09aa04773cecd8bab7289a8b0f741e26ed2c2d63bc503862635bfa0",
+  "artifacts": [
+    {
+      "allocated_sections_unchanged_by_stripping": 31,
+      "arm": "baseline",
+      "dynamic_libraries": [
+        {
+          "bytes": 183024,
+          "path": "/lib/x86_64-linux-gnu/libgcc_s.so.1",
+          "resolved": "/usr/lib/x86_64-linux-gnu/libgcc_s.so.1",
+          "sha256": "d93224d2b0dab4247598be683adca02f5cf00586f99c187579cd7e92058fb7cb"
+        },
+        {
+          "bytes": 952616,
+          "path": "/lib/x86_64-linux-gnu/libm.so.6",
+          "resolved": "/usr/lib/x86_64-linux-gnu/libm.so.6",
+          "sha256": "fce00b6f25f459cf4ae0b7fae4257909a1a8a86f9149e7c029a5d617baf1ccd0"
+        },
+        {
+          "bytes": 2129424,
+          "path": "/lib/x86_64-linux-gnu/libc.so.6",
+          "resolved": "/usr/lib/x86_64-linux-gnu/libc.so.6",
+          "sha256": "3a15d66867d83762c7f2f1e37359cb8f6c5743edb369c65285cb0b1c4f7498bf"
+        },
+        {
+          "bytes": 236616,
+          "path": "/lib64/ld-linux-x86-64.so.2",
+          "resolved": "/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2",
+          "sha256": "c20a2dc8917c755f02b94049356320fe1f62ac7d9f8994731f807d9df39302da"
+        }
+      ],
+      "embedded_head": "fd7a25d7bed7503d628c90879ba265e173343b28",
+      "full": {
+        "bytes": 247841392,
+        "mode": 493,
+        "sha256": "549bd3280dc2dea6e9853e9ca39d5ec81b004b2d46e1819aa337fd260db8a74c"
+      },
+      "measurement_copy_mode": 448,
+      "source_tree": "5fbb37f329d5c185e95511832854596937899019",
+      "stripped": {
+        "bytes": 43444288,
+        "mode": 493,
+        "sha256": "2f0c63ee330ca1f372de6a7500a10bc8a9025678deb46ff220e6741053851be1"
+      },
+      "version_stdout_sha256": "68986ac4025db8c387755c2dfe41387f5c52a09c04560a9be287685cec31a5c5"
+    },
+    {
+      "allocated_sections_unchanged_by_stripping": 31,
+      "arm": "candidate",
+      "dynamic_libraries": [
+        {
+          "bytes": 183024,
+          "path": "/lib/x86_64-linux-gnu/libgcc_s.so.1",
+          "resolved": "/usr/lib/x86_64-linux-gnu/libgcc_s.so.1",
+          "sha256": "d93224d2b0dab4247598be683adca02f5cf00586f99c187579cd7e92058fb7cb"
+        },
+        {
+          "bytes": 952616,
+          "path": "/lib/x86_64-linux-gnu/libm.so.6",
+          "resolved": "/usr/lib/x86_64-linux-gnu/libm.so.6",
+          "sha256": "fce00b6f25f459cf4ae0b7fae4257909a1a8a86f9149e7c029a5d617baf1ccd0"
+        },
+        {
+          "bytes": 2129424,
+          "path": "/lib/x86_64-linux-gnu/libc.so.6",
+          "resolved": "/usr/lib/x86_64-linux-gnu/libc.so.6",
+          "sha256": "3a15d66867d83762c7f2f1e37359cb8f6c5743edb369c65285cb0b1c4f7498bf"
+        },
+        {
+          "bytes": 236616,
+          "path": "/lib64/ld-linux-x86-64.so.2",
+          "resolved": "/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2",
+          "sha256": "c20a2dc8917c755f02b94049356320fe1f62ac7d9f8994731f807d9df39302da"
+        }
+      ],
+      "embedded_head": "fd7a25d7bed7503d628c90879ba265e173343b28",
+      "full": {
+        "bytes": 247835496,
+        "mode": 493,
+        "sha256": "201bfebe731a3fe33ed6c4405b227f4e6c589e4882ca6db65d36a34bb98e4b18"
+      },
+      "measurement_copy_mode": 448,
+      "source_tree": "70dbee538c9ccaf6c5d348550ddd0aa239e4126b",
+      "stripped": {
+        "bytes": 43449080,
+        "mode": 493,
+        "sha256": "c76a42fdaa6b91e76ab866a4a1a662ed679d2aa81b15bf91109cf5497c989995"
+      },
+      "version_stdout_sha256": "68986ac4025db8c387755c2dfe41387f5c52a09c04560a9be287685cec31a5c5"
+    }
+  ],
+  "baseline_patch_sha256": "254d6f2cc6f8a5770a97d9993d4aafdf9087fad5f9aaa7e9e118eb3a97983174",
+  "baseline_tree": "5fbb37f329d5c185e95511832854596937899019",
+  "candidate_patch_sha256": "3f4e932692689d35d1ca519719fa7ac7e361bf655418e095c53e6a4831f8ae20",
+  "embedded_head": "fd7a25d7bed7503d628c90879ba265e173343b28",
+  "full_private_result_handoff_sha256": "cd0a819f0edeb40d968bf3a8ab7032894bec52f6211ec660a01af4c8db7955a8",
+  "functional_acceptance_sha256": "9c018629c98fd912e76595059c546bb6ce29c46f120f8ae94b06db0de4bf3a59",
+  "independent_replay_sha256": "30802bb104fe0e21dd3f4687bc6a7b8a1797f034db34c8c1989b32c56533c405",
+  "matched_build_handoff_sha256": "d67a48a7539ad00bd806250659d72b9eb73f05faaa047e7c9e080b9b9cf9bdd2",
+  "measured_candidate_tree": "70dbee538c9ccaf6c5d348550ddd0aa239e4126b",
+  "measurement_protocol_sha256": "e99d6c20352016a2f998844221c4815af12340141d4d9dbb100b1899ab12ab9f",
+  "memory_tradeoff": "On x86-64 the outer Dependency grows from 8 to 32 bytes and its shared payload shrinks by 24 bytes. Peak memory was not measured.",
+  "numbered_cache_audit_sha256": "faa80f97839b1f0c4193d000680cdf4fc0a7a71ffe70e93ba1a3d6ef1a3a7d3a",
+  "original_confirmation_sha256": "3037d68536a584f6cf179e37b0f6c994e4374959219237a9d629ab279a896427",
+  "producer_recipe": {
+    "argv": [
+      "<PRODUCER_ROOT>/tools/stock/bin/cargo",
+      "build",
+      "--release",
+      "--locked",
+      "--offline",
+      "--bin",
+      "cargo",
+      "--features",
+      "all-static,ohm-defaults",
+      "-j",
+      "16",
+      "-v"
+    ],
+    "cpu_affinity": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15
+    ],
+    "cwd": "<PRODUCER_ROOT>/producer/source",
+    "embedded_head": "fd7a25d7bed7503d628c90879ba265e173343b28",
+    "environment": {
+      "CARGO_BUILD_JOBS": "16",
+      "CARGO_HOME": "<PRODUCER_ROOT>/producer/cargo-home",
+      "CARGO_INCREMENTAL": "0",
+      "CARGO_PROFILE_RELEASE_CODEGEN_UNITS": "1",
+      "CARGO_PROFILE_RELEASE_DEBUG": "1",
+      "CARGO_PROFILE_RELEASE_INCREMENTAL": "false",
+      "CARGO_PROFILE_RELEASE_LTO": "thin",
+      "CARGO_PROFILE_RELEASE_OPT_LEVEL": "3",
+      "CARGO_PROFILE_RELEASE_STRIP": "none",
+      "CARGO_TARGET_DIR": "<PRODUCER_ROOT>/producer/target",
+      "CARGO_TERM_COLOR": "never",
+      "CFG_RELEASE_CHANNEL": "dev",
+      "GIT_CONFIG_GLOBAL": "<PRODUCER_ROOT>/build-control/gitconfig",
+      "LANG": "C.UTF-8",
+      "LC_ALL": "C.UTF-8",
+      "LIBZ_SYS_STATIC": "1",
+      "PATH": "<PRODUCER_ROOT>/tools/stock/bin:/usr/bin:/bin",
+      "RUSTC": "<PRODUCER_ROOT>/tools/stock/bin/rustc",
+      "RUSTDOC": "<PRODUCER_ROOT>/tools/stock/bin/rustdoc",
+      "SSL_CERT_DIR": "/usr/lib/ssl/certs",
+      "SSL_CERT_FILE": "/etc/ssl/certs/ca-certificates.crt",
+      "TMPDIR": "<PRODUCER_ROOT>/producer/tmp"
+    },
+    "pgo": false
+  },
+  "producer_tools": [
+    {
+      "bytes": 36160240,
+      "path": "<PRODUCER_ROOT>/tools/stock/bin/cargo",
+      "resolved": "<PRODUCER_ROOT>/tools/stock/bin/cargo",
+      "sha256": "e951141cc55a6cd7b9876d187bd30a3720e6086b99413af95e3b8de1cdd72f14"
+    },
+    {
+      "bytes": 647376,
+      "path": "<PRODUCER_ROOT>/tools/stock/bin/rustc",
+      "resolved": "<PRODUCER_ROOT>/tools/stock/bin/rustc",
+      "sha256": "f3834d26669b03f6855fa54bd2381443123e860167bc0c7a8dd137e5cf6e5e4f"
+    },
+    {
+      "bytes": 12568360,
+      "path": "<PRODUCER_ROOT>/tools/stock/bin/rustdoc",
+      "resolved": "<PRODUCER_ROOT>/tools/stock/bin/rustdoc",
+      "sha256": "a1321a60578a6b2e3e0ff428201b8618bbd9a9fbcd475c0d0f151bbf17cb0a9e"
+    },
+    {
+      "bytes": 166536,
+      "path": "/usr/bin/objcopy",
+      "resolved": "/usr/bin/x86_64-linux-gnu-objcopy",
+      "sha256": "9276e918e3c26d3aa7ef9dd2232cd8ac692f03d3c1f270bfa5144a2b5492b713"
+    },
+    {
+      "bytes": 1023032,
+      "path": "/usr/bin/cc",
+      "resolved": "/usr/bin/x86_64-linux-gnu-gcc-13",
+      "sha256": "1b99826121ae6682a634e5efe09bd3e3df58ce58e0b28f849114ab5b89139c26"
+    },
+    {
+      "bytes": 1027128,
+      "path": "/usr/bin/c++",
+      "resolved": "/usr/bin/x86_64-linux-gnu-g++-13",
+      "sha256": "1353e9bdd29a7295c7226bf6c63abccce056d8cac31f112e5cdbecc3f28c2769"
+    },
+    {
+      "bytes": 1359128,
+      "path": "/usr/bin/ld",
+      "resolved": "/usr/bin/x86_64-linux-gnu-ld.bfd",
+      "sha256": "e9ceb054c12207970f2726dfc07e9a66b411602748628baf27399f02a9bbb31b"
+    },
+    {
+      "bytes": 11796472,
+      "path": "/usr/bin/cmake",
+      "resolved": "/usr/bin/cmake",
+      "sha256": "1c5227af4edd22d8d689def545e18ee458260c0fd579eba2187967f38817e638"
+    },
+    {
+      "bytes": 45168,
+      "path": "/usr/bin/pkg-config",
+      "resolved": "/usr/bin/pkgconf",
+      "sha256": "7e8152db1b0c7e49d47b4b82a70dc9997b557951c5d4d938b0e7f208ce9eb10b"
+    },
+    {
+      "bytes": 4066232,
+      "path": "/usr/bin/git",
+      "resolved": "/usr/bin/git",
+      "sha256": "eb54b535467e0975c1284d4c4d08eea779aeb248a5d34b02e2ee171382e22201"
+    },
+    {
+      "bytes": 158319840,
+      "path": "<PRODUCER_ROOT>/tools/stock/lib/librustc_driver-999a121de2f042be.so",
+      "resolved": "<PRODUCER_ROOT>/tools/stock/lib/librustc_driver-999a121de2f042be.so",
+      "sha256": "f45c41337f1516bb9f4d504a2a507202a01c431fc2063334913dde5480ffee03"
+    }
+  ],
+  "production_recipe_sha256": "36177cd2e7ca8ce915ddad386d012d3d7c3c63b40e6438571ca0b10815a280e6",
+  "profiler_acceptance_sha256": "20d80549d1c46f7b16cfda236751d9680be04b7434ad013359ad97a8202e89e0",
+  "protocol_redaction": "Only the two host names and benchmark root are replaced. Reversing those fields restores the original JSON value exactly.",
+  "public_scope": "Full numerical profile replay and allowlisted source/build provenance; private process, connection, environment identity and credential records are excluded.",
+  "qualified_callgrind_core_sha256": "ccb79923aa79552778822874a7368e224f8b7ccdabdf77eff3c34acf931c55e9",
+  "schema": 1,
+  "scope": "Dependency source remapping on the R1 registry-cache baseline; dirty check only.",
+  "source_publication_gate": "These profiles directly measure the formatted executable and exact tree above. The earlier source/binary cohort stays separate; its results are not pooled or substituted."
+}
