@@ -1,0 +1,49 @@
+{
+  "all_32_metric_joins_before_estimates": true,
+  "baseline_cache": "Absent before and after every sample.",
+  "candidate_cache": "Retained by rename immediately before each counted command; absent before and populated after.",
+  "hosts": [
+    {
+      "authority_sha256": "5b2088c13a46f79d194e57e44c411d17ef5b5dc6cd02a8aa7019e2073e4138eb",
+      "banks_parked": true,
+      "completion_sha256": "1a2e95befbc88b6bf79cf2c73aa379583c2386f96b3131a6da02c483869edd1f",
+      "host": "host-1",
+      "inputs_sha256": "f23881884d440a7ea1083fd0e75ffcf748f56343265c6c2fe5a69c70aeea7a5b",
+      "original_check_and_test_build_fresh_after_restore": true,
+      "raw_custody_handoff_sha256": "98bc7dfce8bb9befe1a3ce0ba5ae81e0f60465bb0b95f6aa66cf82c69dccaa8f",
+      "raw_gate_sha256": "2357f0a225c8a9adeef32ef104a1ebb605993c74788caf35653b6f482a6d39c0",
+      "raw_members": 4143,
+      "raw_transfer_manifest_sha256": "b9bbaf91088f51126522febc5bfbb3b195374ea1590821329a3512aa5213f4ed",
+      "samples": 16,
+      "source_and_cargo_restored": true,
+      "terminal_sha256": "5f1dfa547c321c48392a6c61d5524d1480c0c7272a6578fd81d679ed2f69f825"
+    },
+    {
+      "authority_sha256": "12c95b2fd3d0b1f9d86752fd749504c4fb7f7a39999c749b44d7cfcd45eebd40",
+      "banks_parked": true,
+      "completion_sha256": "5948ca4da96c6fdfd03394fbfd7c7ecf27f7f204512c6a9a24862818b22b916a",
+      "host": "host-2",
+      "inputs_sha256": "c58930968f56082500542c41a3a10c4b43f017275bfb1b88a79e041a6ba3e9ba",
+      "original_check_and_test_build_fresh_after_restore": true,
+      "raw_custody_handoff_sha256": "0b86876eb3c6d3453a986762ffc483f258804a96574448884917b66dc3a3810d",
+      "raw_gate_sha256": "020af8d6199bb390316a35a77886fc7aee9554b1dce10ed6b186ec3ed2d35b8a",
+      "raw_members": 4143,
+      "raw_transfer_manifest_sha256": "158d21b7b577ea835e037ac0c0ab1687360793173f77a3f8cb8ff50b3d18fd70",
+      "samples": 16,
+      "source_and_cargo_restored": true,
+      "terminal_sha256": "188696f7da270270c0a856cd732bd37400937bbbd4a1d7a6b92689eb3cf47454"
+    }
+  ],
+  "joint_decision_sha256": "ad31a4f5723eadf74741c102501b778f1388c817e0360d421fb1fe400afce28e",
+  "keyed_blake3_independently_recomputed": false,
+  "post_cache_typed_inventory_hashes_retained": true,
+  "private_amortization_sha256": "a8d0a04646bd7e9b814bde14e0bb081a7beb4726b6e62d28cfc67f8922afccb3",
+  "raw_and_restoration_before_metrics": true,
+  "retired_cache_payloads_retained_and_rehashed": true,
+  "root_independent_reader_sha256": "0cb23e85ff81aeb246ea84f245e8a759212f5155eff38063064a9c3db185d7a3",
+  "root_independent_replay_sha256": "9e34fce6cf2b5477fbd177c342314714319793bec1d5356b6a9c31b8d17bd2ec",
+  "schema": 1,
+  "scope": "Privacy-safe custody summary; complete private raw records remain retained.",
+  "secondary_root_replay_sha256": "b921d90581173ceb5caf740e83057bc983d509032a55d46fd654d687e65fe92f",
+  "warm_root_replay_sha256": "e32eca54f3d3bcf80cc5e796db86a884748f65eaefa95632a8e5b17a0c6ef5d7"
+}

@@ -1,0 +1,77 @@
+{
+  "hosts": [
+    {
+      "additional_warm_checks_to_break_even": 1,
+      "bootstrap_draws": 200000,
+      "descriptive_ratio_interval99": [
+        0.4734739928478419,
+        0.49995204522385983
+      ],
+      "first_use_cost_in_warm_checks": 0.48881607296386004,
+      "first_use_signed_costs": [
+        64407305,
+        64639167,
+        64199952,
+        64069728,
+        63988928,
+        64739707,
+        64700113,
+        59421524
+      ],
+      "host": "host-1",
+      "mean_first_use_additional_cargo_ir": 63770803.0,
+      "mean_warm_saved_cargo_ir": 130459709.75,
+      "seed": 202610250301,
+      "warm_signed_savings": [
+        131872574,
+        131091384,
+        131358166,
+        125849060,
+        130593749,
+        131076015,
+        130610903,
+        131225827
+      ]
+    },
+    {
+      "additional_warm_checks_to_break_even": 1,
+      "bootstrap_draws": 200000,
+      "descriptive_ratio_interval99": [
+        0.48972979469648337,
+        0.49644888155637035
+      ],
+      "first_use_cost_in_warm_checks": 0.4929641066286111,
+      "first_use_signed_costs": [
+        64090996,
+        65460953,
+        65010394,
+        65540855,
+        64721678,
+        64458537,
+        64632410,
+        64417902
+      ],
+      "host": "host-2",
+      "mean_first_use_additional_cargo_ir": 64791715.625,
+      "mean_warm_saved_cargo_ir": 131432927.375,
+      "seed": 202610250302,
+      "warm_signed_savings": [
+        131525744,
+        131468435,
+        131273382,
+        131357931,
+        131102474,
+        132036625,
+        131241132,
+        131457696
+      ]
+    }
+  ],
+  "pooled_statistics": null,
+  "schema": 1,
+  "scope": "Modeled number of separately measured 507-entry warm checks to repay signed first-use cost; not a measured immediate check-only sequence.",
+  "wall_time_claim": false,
+  "warm_counts_sha256": "4b1cd4c0cfb6c8789dc6746775f9d90dd48a182ccd47a1ba9c10603ff48bc3c7",
+  "warm_reference_commit": "d9310610fa4fa6e2b9c40213b8e0979125cf7973",
+  "warm_reference_prefix": "benchmarks/uv-dev-loop-20261025/eight-change-stack/sdk12/warm-check"
+}

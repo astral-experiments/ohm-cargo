@@ -1,0 +1,368 @@
+{
+  "exact_physical_or_total_logical_write_claim": false,
+  "hosts": [
+    {
+      "host": "host-1",
+      "samples": [
+        {
+          "arm": "baseline",
+          "committed_bytes": 0,
+          "committed_entries": 0,
+          "label": "pair-0-0-baseline",
+          "logical_bytes_not_physical_io": true,
+          "minimum_additional_bytes_written": 0,
+          "minimum_additional_private_file_creations": 0,
+          "reason": "Final committed records omit collision replacements and transient writes.",
+          "total_writes_or_syscalls_measured": false
+        },
+        {
+          "arm": "candidate",
+          "committed_bytes": 844980,
+          "committed_entries": 467,
+          "label": "pair-0-1-candidate",
+          "logical_bytes_not_physical_io": true,
+          "minimum_additional_bytes_written": 844980,
+          "minimum_additional_private_file_creations": 467,
+          "reason": "Final committed records omit collision replacements and transient writes.",
+          "total_writes_or_syscalls_measured": false
+        },
+        {
+          "arm": "candidate",
+          "committed_bytes": 844980,
+          "committed_entries": 467,
+          "label": "pair-1-0-candidate",
+          "logical_bytes_not_physical_io": true,
+          "minimum_additional_bytes_written": 844980,
+          "minimum_additional_private_file_creations": 467,
+          "reason": "Final committed records omit collision replacements and transient writes.",
+          "total_writes_or_syscalls_measured": false
+        },
+        {
+          "arm": "baseline",
+          "committed_bytes": 0,
+          "committed_entries": 0,
+          "label": "pair-1-1-baseline",
+          "logical_bytes_not_physical_io": true,
+          "minimum_additional_bytes_written": 0,
+          "minimum_additional_private_file_creations": 0,
+          "reason": "Final committed records omit collision replacements and transient writes.",
+          "total_writes_or_syscalls_measured": false
+        },
+        {
+          "arm": "baseline",
+          "committed_bytes": 0,
+          "committed_entries": 0,
+          "label": "pair-2-0-baseline",
+          "logical_bytes_not_physical_io": true,
+          "minimum_additional_bytes_written": 0,
+          "minimum_additional_private_file_creations": 0,
+          "reason": "Final committed records omit collision replacements and transient writes.",
+          "total_writes_or_syscalls_measured": false
+        },
+        {
+          "arm": "candidate",
+          "committed_bytes": 844980,
+          "committed_entries": 467,
+          "label": "pair-2-1-candidate",
+          "logical_bytes_not_physical_io": true,
+          "minimum_additional_bytes_written": 844980,
+          "minimum_additional_private_file_creations": 467,
+          "reason": "Final committed records omit collision replacements and transient writes.",
+          "total_writes_or_syscalls_measured": false
+        },
+        {
+          "arm": "candidate",
+          "committed_bytes": 844980,
+          "committed_entries": 467,
+          "label": "pair-3-0-candidate",
+          "logical_bytes_not_physical_io": true,
+          "minimum_additional_bytes_written": 844980,
+          "minimum_additional_private_file_creations": 467,
+          "reason": "Final committed records omit collision replacements and transient writes.",
+          "total_writes_or_syscalls_measured": false
+        },
+        {
+          "arm": "baseline",
+          "committed_bytes": 0,
+          "committed_entries": 0,
+          "label": "pair-3-1-baseline",
+          "logical_bytes_not_physical_io": true,
+          "minimum_additional_bytes_written": 0,
+          "minimum_additional_private_file_creations": 0,
+          "reason": "Final committed records omit collision replacements and transient writes.",
+          "total_writes_or_syscalls_measured": false
+        },
+        {
+          "arm": "candidate",
+          "committed_bytes": 844980,
+          "committed_entries": 467,
+          "label": "pair-4-0-candidate",
+          "logical_bytes_not_physical_io": true,
+          "minimum_additional_bytes_written": 844980,
+          "minimum_additional_private_file_creations": 467,
+          "reason": "Final committed records omit collision replacements and transient writes.",
+          "total_writes_or_syscalls_measured": false
+        },
+        {
+          "arm": "baseline",
+          "committed_bytes": 0,
+          "committed_entries": 0,
+          "label": "pair-4-1-baseline",
+          "logical_bytes_not_physical_io": true,
+          "minimum_additional_bytes_written": 0,
+          "minimum_additional_private_file_creations": 0,
+          "reason": "Final committed records omit collision replacements and transient writes.",
+          "total_writes_or_syscalls_measured": false
+        },
+        {
+          "arm": "baseline",
+          "committed_bytes": 0,
+          "committed_entries": 0,
+          "label": "pair-5-0-baseline",
+          "logical_bytes_not_physical_io": true,
+          "minimum_additional_bytes_written": 0,
+          "minimum_additional_private_file_creations": 0,
+          "reason": "Final committed records omit collision replacements and transient writes.",
+          "total_writes_or_syscalls_measured": false
+        },
+        {
+          "arm": "candidate",
+          "committed_bytes": 844980,
+          "committed_entries": 467,
+          "label": "pair-5-1-candidate",
+          "logical_bytes_not_physical_io": true,
+          "minimum_additional_bytes_written": 844980,
+          "minimum_additional_private_file_creations": 467,
+          "reason": "Final committed records omit collision replacements and transient writes.",
+          "total_writes_or_syscalls_measured": false
+        },
+        {
+          "arm": "candidate",
+          "committed_bytes": 844980,
+          "committed_entries": 467,
+          "label": "pair-6-0-candidate",
+          "logical_bytes_not_physical_io": true,
+          "minimum_additional_bytes_written": 844980,
+          "minimum_additional_private_file_creations": 467,
+          "reason": "Final committed records omit collision replacements and transient writes.",
+          "total_writes_or_syscalls_measured": false
+        },
+        {
+          "arm": "baseline",
+          "committed_bytes": 0,
+          "committed_entries": 0,
+          "label": "pair-6-1-baseline",
+          "logical_bytes_not_physical_io": true,
+          "minimum_additional_bytes_written": 0,
+          "minimum_additional_private_file_creations": 0,
+          "reason": "Final committed records omit collision replacements and transient writes.",
+          "total_writes_or_syscalls_measured": false
+        },
+        {
+          "arm": "baseline",
+          "committed_bytes": 0,
+          "committed_entries": 0,
+          "label": "pair-7-0-baseline",
+          "logical_bytes_not_physical_io": true,
+          "minimum_additional_bytes_written": 0,
+          "minimum_additional_private_file_creations": 0,
+          "reason": "Final committed records omit collision replacements and transient writes.",
+          "total_writes_or_syscalls_measured": false
+        },
+        {
+          "arm": "candidate",
+          "committed_bytes": 844980,
+          "committed_entries": 467,
+          "label": "pair-7-1-candidate",
+          "logical_bytes_not_physical_io": true,
+          "minimum_additional_bytes_written": 844980,
+          "minimum_additional_private_file_creations": 467,
+          "reason": "Final committed records omit collision replacements and transient writes.",
+          "total_writes_or_syscalls_measured": false
+        }
+      ]
+    },
+    {
+      "host": "host-2",
+      "samples": [
+        {
+          "arm": "candidate",
+          "committed_bytes": 844980,
+          "committed_entries": 467,
+          "label": "pair-0-0-candidate",
+          "logical_bytes_not_physical_io": true,
+          "minimum_additional_bytes_written": 844980,
+          "minimum_additional_private_file_creations": 467,
+          "reason": "Final committed records omit collision replacements and transient writes.",
+          "total_writes_or_syscalls_measured": false
+        },
+        {
+          "arm": "baseline",
+          "committed_bytes": 0,
+          "committed_entries": 0,
+          "label": "pair-0-1-baseline",
+          "logical_bytes_not_physical_io": true,
+          "minimum_additional_bytes_written": 0,
+          "minimum_additional_private_file_creations": 0,
+          "reason": "Final committed records omit collision replacements and transient writes.",
+          "total_writes_or_syscalls_measured": false
+        },
+        {
+          "arm": "baseline",
+          "committed_bytes": 0,
+          "committed_entries": 0,
+          "label": "pair-1-0-baseline",
+          "logical_bytes_not_physical_io": true,
+          "minimum_additional_bytes_written": 0,
+          "minimum_additional_private_file_creations": 0,
+          "reason": "Final committed records omit collision replacements and transient writes.",
+          "total_writes_or_syscalls_measured": false
+        },
+        {
+          "arm": "candidate",
+          "committed_bytes": 844980,
+          "committed_entries": 467,
+          "label": "pair-1-1-candidate",
+          "logical_bytes_not_physical_io": true,
+          "minimum_additional_bytes_written": 844980,
+          "minimum_additional_private_file_creations": 467,
+          "reason": "Final committed records omit collision replacements and transient writes.",
+          "total_writes_or_syscalls_measured": false
+        },
+        {
+          "arm": "candidate",
+          "committed_bytes": 844980,
+          "committed_entries": 467,
+          "label": "pair-2-0-candidate",
+          "logical_bytes_not_physical_io": true,
+          "minimum_additional_bytes_written": 844980,
+          "minimum_additional_private_file_creations": 467,
+          "reason": "Final committed records omit collision replacements and transient writes.",
+          "total_writes_or_syscalls_measured": false
+        },
+        {
+          "arm": "baseline",
+          "committed_bytes": 0,
+          "committed_entries": 0,
+          "label": "pair-2-1-baseline",
+          "logical_bytes_not_physical_io": true,
+          "minimum_additional_bytes_written": 0,
+          "minimum_additional_private_file_creations": 0,
+          "reason": "Final committed records omit collision replacements and transient writes.",
+          "total_writes_or_syscalls_measured": false
+        },
+        {
+          "arm": "baseline",
+          "committed_bytes": 0,
+          "committed_entries": 0,
+          "label": "pair-3-0-baseline",
+          "logical_bytes_not_physical_io": true,
+          "minimum_additional_bytes_written": 0,
+          "minimum_additional_private_file_creations": 0,
+          "reason": "Final committed records omit collision replacements and transient writes.",
+          "total_writes_or_syscalls_measured": false
+        },
+        {
+          "arm": "candidate",
+          "committed_bytes": 844980,
+          "committed_entries": 467,
+          "label": "pair-3-1-candidate",
+          "logical_bytes_not_physical_io": true,
+          "minimum_additional_bytes_written": 844980,
+          "minimum_additional_private_file_creations": 467,
+          "reason": "Final committed records omit collision replacements and transient writes.",
+          "total_writes_or_syscalls_measured": false
+        },
+        {
+          "arm": "baseline",
+          "committed_bytes": 0,
+          "committed_entries": 0,
+          "label": "pair-4-0-baseline",
+          "logical_bytes_not_physical_io": true,
+          "minimum_additional_bytes_written": 0,
+          "minimum_additional_private_file_creations": 0,
+          "reason": "Final committed records omit collision replacements and transient writes.",
+          "total_writes_or_syscalls_measured": false
+        },
+        {
+          "arm": "candidate",
+          "committed_bytes": 844980,
+          "committed_entries": 467,
+          "label": "pair-4-1-candidate",
+          "logical_bytes_not_physical_io": true,
+          "minimum_additional_bytes_written": 844980,
+          "minimum_additional_private_file_creations": 467,
+          "reason": "Final committed records omit collision replacements and transient writes.",
+          "total_writes_or_syscalls_measured": false
+        },
+        {
+          "arm": "candidate",
+          "committed_bytes": 844980,
+          "committed_entries": 467,
+          "label": "pair-5-0-candidate",
+          "logical_bytes_not_physical_io": true,
+          "minimum_additional_bytes_written": 844980,
+          "minimum_additional_private_file_creations": 467,
+          "reason": "Final committed records omit collision replacements and transient writes.",
+          "total_writes_or_syscalls_measured": false
+        },
+        {
+          "arm": "baseline",
+          "committed_bytes": 0,
+          "committed_entries": 0,
+          "label": "pair-5-1-baseline",
+          "logical_bytes_not_physical_io": true,
+          "minimum_additional_bytes_written": 0,
+          "minimum_additional_private_file_creations": 0,
+          "reason": "Final committed records omit collision replacements and transient writes.",
+          "total_writes_or_syscalls_measured": false
+        },
+        {
+          "arm": "baseline",
+          "committed_bytes": 0,
+          "committed_entries": 0,
+          "label": "pair-6-0-baseline",
+          "logical_bytes_not_physical_io": true,
+          "minimum_additional_bytes_written": 0,
+          "minimum_additional_private_file_creations": 0,
+          "reason": "Final committed records omit collision replacements and transient writes.",
+          "total_writes_or_syscalls_measured": false
+        },
+        {
+          "arm": "candidate",
+          "committed_bytes": 844980,
+          "committed_entries": 467,
+          "label": "pair-6-1-candidate",
+          "logical_bytes_not_physical_io": true,
+          "minimum_additional_bytes_written": 844980,
+          "minimum_additional_private_file_creations": 467,
+          "reason": "Final committed records omit collision replacements and transient writes.",
+          "total_writes_or_syscalls_measured": false
+        },
+        {
+          "arm": "candidate",
+          "committed_bytes": 844980,
+          "committed_entries": 467,
+          "label": "pair-7-0-candidate",
+          "logical_bytes_not_physical_io": true,
+          "minimum_additional_bytes_written": 844980,
+          "minimum_additional_private_file_creations": 467,
+          "reason": "Final committed records omit collision replacements and transient writes.",
+          "total_writes_or_syscalls_measured": false
+        },
+        {
+          "arm": "baseline",
+          "committed_bytes": 0,
+          "committed_entries": 0,
+          "label": "pair-7-1-baseline",
+          "logical_bytes_not_physical_io": true,
+          "minimum_additional_bytes_written": 0,
+          "minimum_additional_private_file_creations": 0,
+          "reason": "Final committed records omit collision replacements and transient writes.",
+          "total_writes_or_syscalls_measured": false
+        }
+      ]
+    }
+  ],
+  "reason": "Final committed records exclude collision replacements and transient writes."
+}

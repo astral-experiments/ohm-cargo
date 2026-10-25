@@ -1,0 +1,54 @@
+{
+  "cold_block_valid": true,
+  "first_use_overhead_99_interval": [
+    0.052955485788470424,
+    0.055406900470506226
+  ],
+  "geometric_first_use_overhead": 0.0546562399906807,
+  "performance_accepted": false,
+  "statistics": {
+    "baseline_mean_count": 1166785197.375,
+    "baseline_median_count": 1166296620.5,
+    "bootstrap_count_reduction_interval": [
+      -0.055406900470506226,
+      -0.052955485788470424
+    ],
+    "bootstrap_ratio_interval": [
+      0.9475018588131218,
+      0.949707764000283
+    ],
+    "bootstrap_resamples": 200000,
+    "bootstrap_seed": 20261025325,
+    "candidate_mean_count": 1230556000.375,
+    "candidate_median_count": 1230518022.5,
+    "confidence": 0.99,
+    "exact_two_sided_sign_p": 0.0078125,
+    "log_ratios": [
+      -0.053771369664178455,
+      -0.05396101604561351,
+      -0.05357788643574051,
+      -0.05347366913535191,
+      -0.05341651810059142,
+      -0.05401920046835372,
+      -0.054011363542320445,
+      -0.04948797628479192
+    ],
+    "losses": 8,
+    "order": {
+      "AB": {
+        "geometric_mean_ratio": 0.9486511852997631,
+        "pairs": 4
+      },
+      "BA": {
+        "geometric_mean_ratio": 0.9477015549874532,
+        "pairs": 4
+      }
+    },
+    "paired_geometric_mean_count_reduction": -0.0546562399906807,
+    "paired_geometric_mean_ratio": 0.9481762512577903,
+    "paired_median_ratio": 0.9477404289250371,
+    "pairs": 8,
+    "ties": 0,
+    "wins": 0
+  }
+}
