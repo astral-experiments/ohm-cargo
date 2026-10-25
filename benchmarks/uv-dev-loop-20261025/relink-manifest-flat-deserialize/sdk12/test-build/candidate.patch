@@ -1,0 +1,196 @@
+diff --git a/src/compiler/mod.rs b/src/compiler/mod.rs
+index 1957786..ea9aed5 100644
+--- a/src/compiler/mod.rs
++++ b/src/compiler/mod.rs
+@@ -569,6 +569,69 @@ struct CheckedRelinkManifest {
+     manifest: RelinkCacheManifest,
+ }
+ 
++fn read_relink_manifest_slice(bytes: &[u8]) -> Option<CheckedRelinkManifest> {
++    #[derive(serde::Deserialize)]
++    #[serde(deny_unknown_fields)]
++    struct File {
++        path: PathBuf,
++        blake3: String,
++    }
++
++    #[derive(serde::Deserialize)]
++    #[serde(deny_unknown_fields)]
++    struct Object {
++        path: PathBuf,
++        len: u64,
++        modified_nanos: u64,
++    }
++
++    #[derive(serde::Deserialize)]
++    #[serde(deny_unknown_fields)]
++    struct Fields {
++        input_checksum: u64,
++        proof_checksum: u64,
++        version: u32,
++        rlink: File,
++        executable: Object,
++        objects: Vec<File>,
++        #[serde(default)]
++        unused_extern_names: Option<Vec<String>>,
++    }
++
++    fn file(value: File) -> RelinkCacheFile {
++        RelinkCacheFile {
++            path: value.path,
++            blake3: value.blake3,
++        }
++    }
++
++    // The writer emits a compact object. Read its fields directly rather than
++    // buffering the manifest in serde's intermediate flatten representation.
++    if bytes.first() == Some(&b'{') {
++        if let Ok(fields) = serde_json::from_slice::<Fields>(bytes) {
++            return Some(CheckedRelinkManifest {
++                input_checksum: fields.input_checksum,
++                proof_checksum: fields.proof_checksum,
++                manifest: RelinkCacheManifest {
++                    version: fields.version,
++                    rlink: file(fields.rlink),
++                    executable: RelinkCacheObject {
++                        path: fields.executable.path,
++                        len: fields.executable.len,
++                        modified_nanos: fields.executable.modified_nanos,
++                    },
++                    objects: fields.objects.into_iter().map(file).collect(),
++                    unused_extern_names: fields.unused_extern_names,
++                },
++            });
++        }
++    }
++
++    // Flatten also validates unknown values, including nested out-of-range
++    // numbers. Preserve that behavior and the original map-only root format.
++    serde_json::from_slice(bytes).ok()
++}
++
+ const RELINK_MANIFEST_SLICE_LIMIT: u64 = 1024 * 1024;
+ 
+ fn read_relink_manifest_json(
+@@ -582,7 +645,7 @@ fn read_relink_manifest_json(
+         let mut bytes = Vec::with_capacity(len as usize + 1);
+         reader.by_ref().take(len + 1).read_to_end(&mut bytes).ok()?;
+         if bytes.len() as u64 == len {
+-            return serde_json::from_slice(&bytes).ok();
++            return read_relink_manifest_slice(&bytes);
+         }
+         reader.rewind().ok()?;
+     }
+@@ -4381,6 +4444,112 @@ mod relink_cache_tests {
+         Ok(())
+     }
+ 
++    fn assert_manifest_decoder_parity(bytes: &[u8], accepted: bool) -> CargoResult<()> {
++        let expected = serde_json::from_slice::<CheckedRelinkManifest>(bytes)
++            .ok()
++            .map(|value| serde_json::to_vec(&value))
++            .transpose()?;
++        assert_eq!(expected.is_some(), accepted);
++        for len in [
++            None,
++            Some(bytes.len() as u64),
++            Some(1),
++            Some(bytes.len() as u64 + 1),
++        ] {
++            let actual = read_relink_manifest_json(std::io::Cursor::new(bytes), len)
++                .map(|value| serde_json::to_vec(&value))
++                .transpose()?;
++            assert_eq!(actual, expected);
++        }
++        Ok(())
++    }
++
++    #[test]
++    fn relink_manifest_json_preserves_field_and_sequence_behavior() -> CargoResult<()> {
++        let original = manifest_json()?;
++        let mut value: serde_json::Value = serde_json::from_slice(&original)?;
++        value["objects"] = serde_json::json!([{"path": "object.o", "blake3": "hash"}]);
++        let bytes = serde_json::to_vec(&value)?;
++        assert_manifest_decoder_parity(&bytes, true)?;
++        assert_manifest_decoder_parity(&[b" \n\t\r".as_slice(), &bytes].concat(), true)?;
++
++        for field in [
++            "input_checksum",
++            "proof_checksum",
++            "version",
++            "rlink",
++            "executable",
++            "objects",
++        ] {
++            let mut missing = value.clone();
++            missing.as_object_mut().unwrap().remove(field);
++            assert_manifest_decoder_parity(&serde_json::to_vec(&missing)?, false)?;
++        }
++        for (field, contents) in value.as_object().unwrap() {
++            let duplicate = format!("{{{}:{},", serde_json::to_string(field)?, contents);
++            assert_manifest_decoder_parity(&[duplicate.as_bytes(), &bytes[1..]].concat(), false)?;
++        }
++
++        let mut optional = value.clone();
++        optional
++            .as_object_mut()
++            .unwrap()
++            .remove("unused_extern_names");
++        assert_manifest_decoder_parity(&serde_json::to_vec(&optional)?, true)?;
++        optional["unused_extern_names"] = serde_json::Value::Null;
++        assert_manifest_decoder_parity(&serde_json::to_vec(&optional)?, true)?;
++        let duplicate_null = b"{\"unused_extern_names\":null,";
++        assert_manifest_decoder_parity(&[duplicate_null.as_slice(), &bytes[1..]].concat(), false)?;
++
++        let mut sequences = value.clone();
++        sequences["rlink"] = serde_json::json!(["recipe.rlink", "hash"]);
++        sequences["executable"] = serde_json::json!(["app", 42, u64::MAX]);
++        sequences["objects"] = serde_json::json!([["object.o", "hash"]]);
++        assert_manifest_decoder_parity(&serde_json::to_vec(&sequences)?, true)?;
++        let root_sequence = serde_json::json!([
++            value["input_checksum"],
++            value["proof_checksum"],
++            value["version"],
++            value["rlink"],
++            value["executable"],
++            value["objects"],
++            value["unused_extern_names"]
++        ]);
++        assert_manifest_decoder_parity(&serde_json::to_vec(&root_sequence)?, false)?;
++        sequences["rlink"] = serde_json::json!(["recipe.rlink", "hash", "extra"]);
++        assert_manifest_decoder_parity(&serde_json::to_vec(&sequences)?, false)?;
++        Ok(())
++    }
++
++    #[test]
++    fn relink_manifest_json_preserves_unknown_value_validation() -> CargoResult<()> {
++        let mut value: serde_json::Value = serde_json::from_slice(&manifest_json()?)?;
++        value["objects"] = serde_json::json!([{"path": "object.o", "blake3": "hash"}]);
++        let original = serde_json::to_string(&value)?;
++        let deep = format!("{}0{}", "[".repeat(130), "]".repeat(130));
++        for (unknown, accepted) in [
++            ("{\"nested\":[null,true,1.5,\"text\"]}", true),
++            ("1e400", false),
++            ("\"\\ud800\"", false),
++            (deep.as_str(), false),
++        ] {
++            for prefix in ["{", "\"rlink\":{", "\"executable\":{", "\"objects\":[{"] {
++                let replacement = format!("{prefix}\"future\":{unknown},");
++                let bytes = original.replacen(prefix, &replacement, 1);
++                assert_manifest_decoder_parity(bytes.as_bytes(), accepted)?;
++            }
++        }
++        let duplicate_unknown = format!("{{\"future\":1,\"future\":null,{}", &original[1..]);
++        assert_manifest_decoder_parity(duplicate_unknown.as_bytes(), true)?;
++        let invalid_utf8 = [
++            b"{\"future\":\"\xff\",".as_slice(),
++            &original.as_bytes()[1..],
++        ]
++        .concat();
++        assert_manifest_decoder_parity(&invalid_utf8, false)?;
++        Ok(())
++    }
++
+     #[test]
+     fn relink_manifest_json_keeps_checksum_failures_distinct() -> CargoResult<()> {
+         let dir = tempfile::tempdir()?;

@@ -1,0 +1,62 @@
+{
+  "archived_binary_integration_cases": 8,
+  "blocks": [
+    {
+      "arm_convergence": {
+        "baseline": true,
+        "candidate": true
+      },
+      "block": 1,
+      "cargo_restored": true,
+      "completion_sha256": "d73bec7d866d88195038e851cf0786dee1aed43190c348be9bcacaee884ae62a",
+      "inputs_sha256": "dc359341f36ac0dbe42bd570aaf95d81992fc51abfcf4468b7fa67b4792aa1af",
+      "lock_restored": true,
+      "raw_gates_sha256": "e135b8c58ccab5ddab5e445e9662c568e8b2df78dedc5468b7ceec1143628d49",
+      "samples": 16,
+      "source_mode_restored": true,
+      "source_restored": true,
+      "states_parked": true,
+      "terminal_sha256": "25aea09ba80fe6264f41f4ecd76df27c5fd6932fda3181a9f90dc218e6c1c161",
+      "tests_executed": false
+    },
+    {
+      "arm_convergence": {
+        "baseline": true,
+        "candidate": true
+      },
+      "block": 2,
+      "cargo_restored": true,
+      "completion_sha256": "f27508c2bd484fab10eb5675b63fc1658ed3799acb9b4afe02c6de4bdef847aa",
+      "inputs_sha256": "be771ff8d318bcd575bd23959222a6e170451529ad6e04af9bbf9344da165871",
+      "lock_restored": true,
+      "raw_gates_sha256": "98af66f7e1bb9408f88a3983df8b4bfbd24a2a55b33645d3f53006304489e576",
+      "samples": 16,
+      "source_mode_restored": true,
+      "source_restored": true,
+      "states_parked": true,
+      "terminal_sha256": "0005efd1a51afff98c5e5df77f670a2f1f9f61dfc4b1a75b8a3c2060dfc503ed",
+      "tests_executed": false
+    }
+  ],
+  "both_metric_gates_sha256": "f560499aa18574125052073f4c993839a45df17c0c477eeb265fb973c388d537",
+  "both_raw_gates_sha256": "27aae90874214aad9952eae6eb68fdb35d8cb576f2ef8dca3d7fce6fc67554f1",
+  "cargo_sha256": {
+    "baseline": "71a5dc74ce035699e1fa6d3f218e66d6e37d090c92981d23194c788d38edc175",
+    "candidate": "c4dfc8cf23bdef83caa63881c5c5abd2bc97e8e12d401331fc7c6f582c8971c2"
+  },
+  "cohort_sha256": "0462b8a0dd599ada6432b03167dd0fe7245daf2f5b84e9e0f21ab119b70bb1c6",
+  "decision_sha256": "493f687bbccb3f35bad8de1c0675914e553bec98afba0c9abd5b2fd2897a5e56",
+  "endpoint": "test-build",
+  "excluded_preflight_profiles": 4,
+  "excluded_profile_counts_opened": false,
+  "focused_module_cases": 8,
+  "metric_scope": "Cargo parent and its threads; children uninstrumented",
+  "native_elapsed_claim": false,
+  "pooled_statistics": null,
+  "protocol_sha256": "d75739feeacada613fb25848a461ff43059a222bbbe41c77558ccab5d97e4ed3",
+  "registration_evidence_sha256": "2985f85431a0a31cada1aafe83d20ef1be64a39114bf2bbcc40b6920a7c1d16f",
+  "root_independent_replay_sha256": "c211833ed9aa1587ef2103ca6d6de73664c719e58527cad111d7d8e9c96d7eca",
+  "same_host_cross_arm_baseline_ELF_cases": 2,
+  "schema": 1,
+  "whole_process_tree_claim": false
+}

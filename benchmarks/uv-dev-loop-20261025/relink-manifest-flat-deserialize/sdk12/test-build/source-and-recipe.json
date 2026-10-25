@@ -1,0 +1,462 @@
+{
+  "baseline_description": "Source-built published Cargo #235; SDK12 rustc and Wild remain fixed.",
+  "bootstrap_resamples": 200000,
+  "candidate_description": "Direct normal-size V5 relink JSON decode; the original flattened decoder handles unknown, malformed and fallback representations.",
+  "candidate_patch_sha256": "ac143a19290cbe7b57da54d702d3f7b1e1c979e87fb8d2994a85b82a27e31acf",
+  "candidate_tree": "d7d6bfacf88bd31caf2591e82e3446f226151afa",
+  "cargo_base_tree": "ca7507690099e7523754432ae09abb07b969c962",
+  "cargo_source": "fd7a25d7bed7503d628c90879ba265e173343b28",
+  "cargo_source_lockfile_sha256": "151c473e1a11532946ba9421ab1beeb238f98eb1f8cd4e5f94f9811003abd5a7",
+  "confidence": 0.99,
+  "integration_cases_passed": 8,
+  "integration_cases_per_binary": [
+    "freshness::relink_only_reuses_root_codegen",
+    "freshness::relink_only_reuses_root_codegen_after_separate_transitive_dependency_build",
+    "freshness::unused_package_library_does_not_relink_integration_test",
+    "freshness::unused_workspace_integration_relinks_transitive_native_archive"
+  ],
+  "module_tests_passed": 8,
+  "order": [
+    [
+      "BA",
+      "AB",
+      "AB",
+      "BA",
+      "BA",
+      "AB",
+      "AB",
+      "BA"
+    ],
+    [
+      "AB",
+      "BA",
+      "BA",
+      "AB",
+      "AB",
+      "BA",
+      "BA",
+      "AB"
+    ]
+  ],
+  "output_rule_scope": {
+    "ELF": "Only same-host/path whole-file hashes observed in the excluded preflights; no byte mask or predicted hash.",
+    "cross_arm_basis": "Exact within-host compiler vectors and complete byte accounting: .rodata sh_entsize 0/8 plus GNU build ID only.",
+    "cross_arm_cases": [
+      {
+        "alternate_form_observed_on": "candidate",
+        "baseline_role": "uv",
+        "block": 2
+      },
+      {
+        "alternate_form_observed_on": "candidate",
+        "baseline_role": "uvx test harness",
+        "block": 1
+      }
+    ],
+    "excluded_profile_counts_opened": false,
+    "excluded_profiles": 4,
+    "output_and_context_checks": "Private authenticated records; the public replay checks numerical profiles, not the unpublished full executable snapshots.",
+    "rlib": "206 ordered members, including 202 exact native object payloads; only the fixed seven-character object-name suffix may change consistently in the archive names and lib.rmeta-link. All other bytes remain fixed.",
+    "rmeta": "Exact standalone metadata per host; no normalization."
+  },
+  "output_rules": {
+    "block-1": {
+      "test-build": {
+        "baseline": [
+          {
+            "bytes": 151872637,
+            "kind": "exact",
+            "mode": 448,
+            "path": "${STUDY_ROOT}/target/debug/build/workspaces/f4be7390f39b4845/v2-6b52b68945746769/uv/4328a28cb5718334/out/uv-4328a28cb5718334",
+            "sha256": [
+              "77fb42422ecb16f214cc3020e000ebfe72184b420214918dd091f41268315966"
+            ]
+          },
+          {
+            "bytes": 11435084,
+            "kind": "uv-rlib",
+            "mode": 384,
+            "path": "${STUDY_ROOT}/target/debug/build/workspaces/f4be7390f39b4845/v2-6b52b68945746769/uv/52e7ac72e94c4523/out/libuv-52e7ac72e94c4523.rlib",
+            "reference": {
+              "path": "${STUDY_ROOT}/records/preflight-test-build-baseline-01/native-output-copies/1-libuv-52e7ac72e94c4523.rlib",
+              "sha256": "73e08dbcfa89e4878b463e2d24077e5855f6abdda7911447054a3b020f7b4389"
+            }
+          },
+          {
+            "bytes": 2121381,
+            "kind": "exact",
+            "mode": 384,
+            "path": "${STUDY_ROOT}/target/debug/build/workspaces/f4be7390f39b4845/v2-6b52b68945746769/uv/52e7ac72e94c4523/out/libuv-52e7ac72e94c4523.rmeta",
+            "sha256": [
+              "23d66953804bbf098983e1bf4461c7f0ad12e47bd8d31b6912c8e31b9d8556f0"
+            ]
+          },
+          {
+            "bytes": 12631498,
+            "kind": "exact",
+            "mode": 448,
+            "path": "${STUDY_ROOT}/target/debug/build/workspaces/f4be7390f39b4845/v2-6b52b68945746769/uv/62ec0b2e4eb3ed9e/out/uv-62ec0b2e4eb3ed9e",
+            "sha256": [
+              "d213f49b4d9d6bf8de5ed056c58b2f1d84f864b0c967519b5b92ee35efa99164"
+            ]
+          },
+          {
+            "bytes": 373818619,
+            "kind": "exact",
+            "mode": 448,
+            "path": "${STUDY_ROOT}/target/debug/build/workspaces/f4be7390f39b4845/v2-6b52b68945746769/uv/8cd725e310d57e7f/out/uv",
+            "sha256": [
+              "92270377335746447f4993c31088b7d79c2a36f0e90d0263eda23dc08bd0facc",
+              "c35fb342543fe65ad2e05878c5a6767d2de7bfb3b85395205d947036a1f612c6"
+            ]
+          },
+          {
+            "bytes": 1068185,
+            "kind": "exact",
+            "mode": 448,
+            "path": "${STUDY_ROOT}/target/debug/build/workspaces/f4be7390f39b4845/v2-6b52b68945746769/uv/af8987b3dec25474/out/uvx-af8987b3dec25474",
+            "sha256": [
+              "485ec729637a7841f778468fd330afb503b290b64abe1f817b3afa02b53389c2",
+              "767ec876faeba4d5b87e74318a01ffcf5ff34e838b91b6f083db86075f3aaad1"
+            ]
+          },
+          {
+            "bytes": 626784,
+            "kind": "exact",
+            "mode": 448,
+            "path": "${STUDY_ROOT}/target/debug/build/workspaces/f4be7390f39b4845/v2-6b52b68945746769/uv/e67963b043a16a34/out/uvx",
+            "sha256": [
+              "15163a101428a15de2de0dab81a4d3fd596c46a13971af688d7cb0094a8f5a20"
+            ]
+          }
+        ],
+        "candidate": [
+          {
+            "bytes": 151872637,
+            "kind": "exact",
+            "mode": 448,
+            "path": "${STUDY_ROOT}/target/debug/build/workspaces/f4be7390f39b4845/v2-6b52b68945746769/uv/4328a28cb5718334/out/uv-4328a28cb5718334",
+            "sha256": [
+              "77fb42422ecb16f214cc3020e000ebfe72184b420214918dd091f41268315966"
+            ]
+          },
+          {
+            "bytes": 11435084,
+            "kind": "uv-rlib",
+            "mode": 384,
+            "path": "${STUDY_ROOT}/target/debug/build/workspaces/f4be7390f39b4845/v2-6b52b68945746769/uv/52e7ac72e94c4523/out/libuv-52e7ac72e94c4523.rlib",
+            "reference": {
+              "path": "${STUDY_ROOT}/records/preflight-test-build-candidate-01/native-output-copies/1-libuv-52e7ac72e94c4523.rlib",
+              "sha256": "ce8cfa1a233c4492d2a3a490cd326f2ba2bb947da21c20032586f6c73c22458f"
+            }
+          },
+          {
+            "bytes": 2121381,
+            "kind": "exact",
+            "mode": 384,
+            "path": "${STUDY_ROOT}/target/debug/build/workspaces/f4be7390f39b4845/v2-6b52b68945746769/uv/52e7ac72e94c4523/out/libuv-52e7ac72e94c4523.rmeta",
+            "sha256": [
+              "23d66953804bbf098983e1bf4461c7f0ad12e47bd8d31b6912c8e31b9d8556f0"
+            ]
+          },
+          {
+            "bytes": 12631498,
+            "kind": "exact",
+            "mode": 448,
+            "path": "${STUDY_ROOT}/target/debug/build/workspaces/f4be7390f39b4845/v2-6b52b68945746769/uv/62ec0b2e4eb3ed9e/out/uv-62ec0b2e4eb3ed9e",
+            "sha256": [
+              "d213f49b4d9d6bf8de5ed056c58b2f1d84f864b0c967519b5b92ee35efa99164"
+            ]
+          },
+          {
+            "bytes": 373818619,
+            "kind": "exact",
+            "mode": 448,
+            "path": "${STUDY_ROOT}/target/debug/build/workspaces/f4be7390f39b4845/v2-6b52b68945746769/uv/8cd725e310d57e7f/out/uv",
+            "sha256": [
+              "92270377335746447f4993c31088b7d79c2a36f0e90d0263eda23dc08bd0facc",
+              "c35fb342543fe65ad2e05878c5a6767d2de7bfb3b85395205d947036a1f612c6"
+            ]
+          },
+          {
+            "bytes": 1068185,
+            "kind": "exact",
+            "mode": 448,
+            "path": "${STUDY_ROOT}/target/debug/build/workspaces/f4be7390f39b4845/v2-6b52b68945746769/uv/af8987b3dec25474/out/uvx-af8987b3dec25474",
+            "sha256": [
+              "485ec729637a7841f778468fd330afb503b290b64abe1f817b3afa02b53389c2",
+              "767ec876faeba4d5b87e74318a01ffcf5ff34e838b91b6f083db86075f3aaad1"
+            ]
+          },
+          {
+            "bytes": 626784,
+            "kind": "exact",
+            "mode": 448,
+            "path": "${STUDY_ROOT}/target/debug/build/workspaces/f4be7390f39b4845/v2-6b52b68945746769/uv/e67963b043a16a34/out/uvx",
+            "sha256": [
+              "15163a101428a15de2de0dab81a4d3fd596c46a13971af688d7cb0094a8f5a20"
+            ]
+          }
+        ]
+      }
+    },
+    "block-2": {
+      "test-build": {
+        "baseline": [
+          {
+            "bytes": 151872637,
+            "kind": "exact",
+            "mode": 448,
+            "path": "${STUDY_ROOT}/target/debug/build/workspaces/f4be7390f39b4845/v2-bfd8eecfb3950ffa/uv/4328a28cb5718334/out/uv-4328a28cb5718334",
+            "sha256": [
+              "a48c097141ee6aea03b80be4af56ac8e4f176b878ac47fab856f5b8144af3809"
+            ]
+          },
+          {
+            "bytes": 11435084,
+            "kind": "uv-rlib",
+            "mode": 384,
+            "path": "${STUDY_ROOT}/target/debug/build/workspaces/f4be7390f39b4845/v2-bfd8eecfb3950ffa/uv/52e7ac72e94c4523/out/libuv-52e7ac72e94c4523.rlib",
+            "reference": {
+              "path": "${STUDY_ROOT}/records/preflight-test-build-baseline-01/native-output-copies/1-libuv-52e7ac72e94c4523.rlib",
+              "sha256": "80e37e562991f356f1075c46df6d0e6a7a7db97f5a87a178a85d2d6e80b943e9"
+            }
+          },
+          {
+            "bytes": 2121381,
+            "kind": "exact",
+            "mode": 384,
+            "path": "${STUDY_ROOT}/target/debug/build/workspaces/f4be7390f39b4845/v2-bfd8eecfb3950ffa/uv/52e7ac72e94c4523/out/libuv-52e7ac72e94c4523.rmeta",
+            "sha256": [
+              "7f8cfdbaa6f48ed92f83cf84ca145a0b170a125fe44d98f1d7484d2f8c0b4c41"
+            ]
+          },
+          {
+            "bytes": 12631498,
+            "kind": "exact",
+            "mode": 448,
+            "path": "${STUDY_ROOT}/target/debug/build/workspaces/f4be7390f39b4845/v2-bfd8eecfb3950ffa/uv/62ec0b2e4eb3ed9e/out/uv-62ec0b2e4eb3ed9e",
+            "sha256": [
+              "ab7907d37fa9ac369e28ab2eb831c7fdee7b67d3ff11d0a2b6877f6d19069e5f"
+            ]
+          },
+          {
+            "bytes": 373818619,
+            "kind": "exact",
+            "mode": 448,
+            "path": "${STUDY_ROOT}/target/debug/build/workspaces/f4be7390f39b4845/v2-bfd8eecfb3950ffa/uv/8cd725e310d57e7f/out/uv",
+            "sha256": [
+              "ad1bee10369595e9270fc8acd0c81b3c342c576493c5aa7e38334e0100cc861b",
+              "b88affb6bcceb62387ee86746fdbf11c4f739e5ca33dd197956a9420c69013cc"
+            ]
+          },
+          {
+            "bytes": 1068185,
+            "kind": "exact",
+            "mode": 448,
+            "path": "${STUDY_ROOT}/target/debug/build/workspaces/f4be7390f39b4845/v2-bfd8eecfb3950ffa/uv/af8987b3dec25474/out/uvx-af8987b3dec25474",
+            "sha256": [
+              "485ec729637a7841f778468fd330afb503b290b64abe1f817b3afa02b53389c2",
+              "767ec876faeba4d5b87e74318a01ffcf5ff34e838b91b6f083db86075f3aaad1"
+            ]
+          },
+          {
+            "bytes": 626784,
+            "kind": "exact",
+            "mode": 448,
+            "path": "${STUDY_ROOT}/target/debug/build/workspaces/f4be7390f39b4845/v2-bfd8eecfb3950ffa/uv/e67963b043a16a34/out/uvx",
+            "sha256": [
+              "15163a101428a15de2de0dab81a4d3fd596c46a13971af688d7cb0094a8f5a20"
+            ]
+          }
+        ],
+        "candidate": [
+          {
+            "bytes": 151872637,
+            "kind": "exact",
+            "mode": 448,
+            "path": "${STUDY_ROOT}/target/debug/build/workspaces/f4be7390f39b4845/v2-bfd8eecfb3950ffa/uv/4328a28cb5718334/out/uv-4328a28cb5718334",
+            "sha256": [
+              "a48c097141ee6aea03b80be4af56ac8e4f176b878ac47fab856f5b8144af3809"
+            ]
+          },
+          {
+            "bytes": 11435084,
+            "kind": "uv-rlib",
+            "mode": 384,
+            "path": "${STUDY_ROOT}/target/debug/build/workspaces/f4be7390f39b4845/v2-bfd8eecfb3950ffa/uv/52e7ac72e94c4523/out/libuv-52e7ac72e94c4523.rlib",
+            "reference": {
+              "path": "${STUDY_ROOT}/records/preflight-test-build-candidate-01/native-output-copies/1-libuv-52e7ac72e94c4523.rlib",
+              "sha256": "92957f8c37f503692198990494b3df01c04c94e0a771143dd3d8e84edb982854"
+            }
+          },
+          {
+            "bytes": 2121381,
+            "kind": "exact",
+            "mode": 384,
+            "path": "${STUDY_ROOT}/target/debug/build/workspaces/f4be7390f39b4845/v2-bfd8eecfb3950ffa/uv/52e7ac72e94c4523/out/libuv-52e7ac72e94c4523.rmeta",
+            "sha256": [
+              "7f8cfdbaa6f48ed92f83cf84ca145a0b170a125fe44d98f1d7484d2f8c0b4c41"
+            ]
+          },
+          {
+            "bytes": 12631498,
+            "kind": "exact",
+            "mode": 448,
+            "path": "${STUDY_ROOT}/target/debug/build/workspaces/f4be7390f39b4845/v2-bfd8eecfb3950ffa/uv/62ec0b2e4eb3ed9e/out/uv-62ec0b2e4eb3ed9e",
+            "sha256": [
+              "ab7907d37fa9ac369e28ab2eb831c7fdee7b67d3ff11d0a2b6877f6d19069e5f"
+            ]
+          },
+          {
+            "bytes": 373818619,
+            "kind": "exact",
+            "mode": 448,
+            "path": "${STUDY_ROOT}/target/debug/build/workspaces/f4be7390f39b4845/v2-bfd8eecfb3950ffa/uv/8cd725e310d57e7f/out/uv",
+            "sha256": [
+              "ad1bee10369595e9270fc8acd0c81b3c342c576493c5aa7e38334e0100cc861b",
+              "b88affb6bcceb62387ee86746fdbf11c4f739e5ca33dd197956a9420c69013cc"
+            ]
+          },
+          {
+            "bytes": 1068185,
+            "kind": "exact",
+            "mode": 448,
+            "path": "${STUDY_ROOT}/target/debug/build/workspaces/f4be7390f39b4845/v2-bfd8eecfb3950ffa/uv/af8987b3dec25474/out/uvx-af8987b3dec25474",
+            "sha256": [
+              "485ec729637a7841f778468fd330afb503b290b64abe1f817b3afa02b53389c2",
+              "767ec876faeba4d5b87e74318a01ffcf5ff34e838b91b6f083db86075f3aaad1"
+            ]
+          },
+          {
+            "bytes": 626784,
+            "kind": "exact",
+            "mode": 448,
+            "path": "${STUDY_ROOT}/target/debug/build/workspaces/f4be7390f39b4845/v2-bfd8eecfb3950ffa/uv/e67963b043a16a34/out/uvx",
+            "sha256": [
+              "15163a101428a15de2de0dab81a4d3fd596c46a13971af688d7cb0094a8f5a20"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "producer_BOLT": false,
+  "producer_PGO": false,
+  "producer_features": "all-static,ohm-defaults",
+  "producer_release_environment": {
+    "CARGO_BUILD_JOBS": "24",
+    "CARGO_INCREMENTAL": "0",
+    "CARGO_PROFILE_RELEASE_CODEGEN_UNITS": "1",
+    "CARGO_PROFILE_RELEASE_DEBUG": "1",
+    "CARGO_PROFILE_RELEASE_INCREMENTAL": "false",
+    "CARGO_PROFILE_RELEASE_LTO": "thin",
+    "CARGO_PROFILE_RELEASE_OPT_LEVEL": "3",
+    "CARGO_PROFILE_RELEASE_STRIP": "none",
+    "CFG_RELEASE_CHANNEL": "dev",
+    "LIBZ_SYS_STATIC": "1"
+  },
+  "production_pair": {
+    "baseline": {
+      "allocated_sections_preserved": 31,
+      "bytes": 42338176,
+      "linked_sha256": "72bcce6ffd51a0e459cf1bb9f3aaaa93dd1a61e1ee1b20121af92ee775096bbd",
+      "stripped_sha256": "71a5dc74ce035699e1fa6d3f218e66d6e37d090c92981d23194c788d38edc175",
+      "version_stdout_sha256": "68986ac4025db8c387755c2dfe41387f5c52a09c04560a9be287685cec31a5c5"
+    },
+    "candidate": {
+      "allocated_sections_preserved": 31,
+      "bytes": 42367064,
+      "linked_sha256": "113dbd05d3827268fae32a5099d3ed592e745c998dcdf185e7b528b85347062e",
+      "stripped_sha256": "c4dfc8cf23bdef83caa63881c5c5abd2bc97e8e12d401331fc7c6f582c8971c2",
+      "version_stdout_sha256": "68986ac4025db8c387755c2dfe41387f5c52a09c04560a9be287685cec31a5c5"
+    }
+  },
+  "profiler_control": {
+    "actual_elf_launcher_sha256": "def5fdcf6ae64a4d3e6af3786b622978d8313e0734ecf3f6cbe71d8be9e274c8",
+    "adapter_sha256": "42f912fe052732ef964681579a3bc1acbc50966f04babb5a452f25dfe4825973",
+    "cores": {
+      "large-512MiB": "ccb79923aa79552778822874a7368e224f8b7ccdabdf77eff3c34acf931c55e9",
+      "stock-8MiB": "7801ef44ff068bc36d76db630d852e62b5741d8ecd54301bdc1f189e7d809835"
+    },
+    "distribution_core_sha256": "825eb197d519240c112e03ed00f40a8bbe1a0a0614f79ea95e28c67e8695cb03",
+    "expected_delta": 54,
+    "heap_MiB": [
+      64,
+      513
+    ],
+    "held_out_ir": [
+      51035,
+      51089
+    ],
+    "patch_sha256": "706a108281ffdc53800003dc416f6b9716f35532ccb6641c7e6f8f142a8221da",
+    "reservation_MiB": 512
+  },
+  "protocol_sha256": "d75739feeacada613fb25848a461ff43059a222bbbe41c77558ccab5d97e4ed3",
+  "required_wins_per_host": 8,
+  "sdk_asset_sha256": "177751bcef731909e9fa2c89983804ec6fe663101711dc46003a743914d37203",
+  "sdk_asset_url": "https://github.com/astral-sh/ohm/releases/download/ohm-1.99.0-12/ohm-1.99.0-12-x86_64-unknown-linux-gnu.tar.gz",
+  "sdk_compiler_driver_sha256": "253120eeae6c051af825c4884b30b2d5d62a3a4094428d52c815cbcaf7af697a",
+  "sdk_release": "https://github.com/astral-sh/ohm/releases/tag/ohm-1.99.0-12",
+  "sdk_rustc_sha256": "1879f05850bfcd95837087c6012c76bc0355581012686d51b2f690ce46934d6e",
+  "seeds": [
+    20261024221,
+    20261024222
+  ],
+  "source_package": {
+    "dsc_sha256": "4dd9b0cdc51ee8d0809f5bf53f29549471380ebbbd965b444ef9ef437cfaba70",
+    "dsc_url": "https://archive.ubuntu.com/ubuntu/pool/main/v/valgrind/valgrind_3.22.0-0ubuntu3.dsc",
+    "files": [
+      {
+        "bytes": 16565502,
+        "file": "valgrind_3.22.0.orig.tar.bz2",
+        "sha256": "c811db5add2c5f729944caf47c4e7a65dcaabb9461e472b578765dd7bf6d2d4c",
+        "url": "https://archive.ubuntu.com/ubuntu/pool/main/v/valgrind/valgrind_3.22.0.orig.tar.bz2"
+      },
+      {
+        "bytes": 36344,
+        "file": "valgrind_3.22.0-0ubuntu3.debian.tar.xz",
+        "sha256": "f999fb9cfe72190cd90573ce7226798dd996a1f1371229436416c042cb0772d5",
+        "url": "https://archive.ubuntu.com/ubuntu/pool/main/v/valgrind/valgrind_3.22.0-0ubuntu3.debian.tar.xz"
+      }
+    ],
+    "source_package": "1:3.22.0-0ubuntu3"
+  },
+  "stock_cargo": [
+    "cargo 1.99.0 (5f94df478 2026-08-27)",
+    "release: 1.99.0",
+    "commit-hash: 5f94df4789f005f9a352888e8355ffc645b7ed0e",
+    "commit-date: 2026-08-27",
+    "host: x86_64-unknown-linux-gnu",
+    "libgit2: 1.9.6 (sys:0.21.0 vendored)",
+    "libcurl: 8.21.0-DEV (sys:0.4.90+curl-8.21.0 vendored ssl:OpenSSL/3.6.3)",
+    "ssl: OpenSSL 3.6.3 9 Jun 2026",
+    "os: Ubuntu 24.4.0 (noble) [64-bit]"
+  ],
+  "stock_rustc": [
+    "rustc 1.99.0 (b940084d7 2026-09-28)",
+    "binary: rustc",
+    "commit-hash: b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+    "commit-date: 2026-09-28",
+    "host: x86_64-unknown-linux-gnu",
+    "release: 1.99.0",
+    "LLVM version: 23.1.1"
+  ],
+  "strict_lower_reduction_minimum": 0.0025,
+  "strict_two_sided_sign_p_maximum": 0.01,
+  "unit_tests_added": [
+    "relink_manifest_json_preserves_field_and_sequence_behavior",
+    "relink_manifest_json_preserves_unknown_value_validation"
+  ],
+  "uv_source": "3d82a6ad5a7eab8c68236553b7846517767c4b61",
+  "workload_Cargo_argv": [
+    "cargo",
+    "-Zohm-defaults=yes",
+    "test",
+    "--no-run",
+    "--locked",
+    "--offline",
+    "-j",
+    "8"
+  ]
+}
