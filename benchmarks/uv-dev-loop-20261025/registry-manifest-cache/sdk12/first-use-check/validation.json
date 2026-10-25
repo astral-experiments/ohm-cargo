@@ -1,0 +1,57 @@
+{
+  "blocks": [
+    {
+      "arm_convergence": {
+        "baseline": true,
+        "candidate": true
+      },
+      "block": 1,
+      "cargo_restored": true,
+      "completion_sha256": "a979053030a7f009ad862ec25cfc6668fb49be8eb1a47e0334b0c6b227097c2e",
+      "inputs_sha256": "80a3ddbe86d56a2b8d36701b89ba68c324234b230f7a603874964ee39a03f7df",
+      "lock_restored": true,
+      "raw_gates_sha256": "f6ecac1b2e76ff07cc2614a827cce5771690da2387a9785166773b605beec081",
+      "samples": 16,
+      "source_mode_restored": true,
+      "source_restored": true,
+      "states_parked": true,
+      "terminal_sha256": "7c98472765c99532405693b41ca5716e2896d9172ed415f152b502168ef6a49b",
+      "tests_executed": false
+    },
+    {
+      "arm_convergence": {
+        "baseline": true,
+        "candidate": true
+      },
+      "block": 2,
+      "cargo_restored": true,
+      "completion_sha256": "0db94f55658f6adc5eb995828ac20575d96baf4c5efdcb580c116763d0c3ed71",
+      "inputs_sha256": "751ec1d94187629575573c400ec416803a09f3f2c0bac0de915222fde7e4e4fc",
+      "lock_restored": true,
+      "raw_gates_sha256": "e9cb7db9ee4134063208e5841a7023bb253404fbcba78e8f1a0a6a4b8fec2179",
+      "samples": 16,
+      "source_mode_restored": true,
+      "source_restored": true,
+      "states_parked": true,
+      "terminal_sha256": "d9f7d7eae8898262c6348dec7c261d16f4d281c615cfa0dd63d9315fab21ac58",
+      "tests_executed": false
+    }
+  ],
+  "both_metric_gates_sha256": "a62857376ab6c5d4c897567d4acc307aabf4b203c38ff884727999567e50dda9",
+  "both_raw_gates_sha256": "1f5f3fa0790ec3c30f7672fb50888db0c18726ca906785768b2ccc5db7f4eea3",
+  "cargo_sha256": {
+    "baseline": "4f7104d7aaf0dec561d8e1457d136f02e0dcdd479fe0bb0957724fba46060306",
+    "candidate": "19a28bb010372c23ba289f1e2a88c9c519155cb25ab0bb412e88069b2bf15af7"
+  },
+  "cohort_sha256": "549a931e4002b904bf824a53577f8def6ee4594c25f57d6df1035947d55b3422",
+  "cold_result_included": true,
+  "decision_sha256": "5e9a9fbe2286b2709de5c4417d309ac78a5303873acc0de0932d44684f0354bd",
+  "independent_replay_sha256": "e92bf85e1a3013530a48588a986816c2ca6025eed576167dc7a42483fc0da908",
+  "kind": "cold",
+  "metric_scope": "Cargo parent and all its threads; native children uninstrumented",
+  "native_elapsed_claim": false,
+  "pooled_statistics": null,
+  "privacy": "Only path labels and command executable spelling were substituted; all other raw profile bytes remain exact.",
+  "protocol_sha256": "64d5d280995f0b3bb49adbcd229cb45a781461451ce83e15bed3855a9869868e",
+  "public_writes": 0
+}

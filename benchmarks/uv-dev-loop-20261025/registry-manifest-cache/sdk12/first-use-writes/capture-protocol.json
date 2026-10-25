@@ -1,0 +1,154 @@
+{
+  "activity": "Initial quiet readiness; retain entry/before/after/terminal host observations. As in the accepted Cargo-parent protocol, background activity never selects or rejects instruction samples based on effect. No native elapsed claim.",
+  "affinity": {
+    "controller": "8",
+    "preparation": "9-15",
+    "workload": "0-7"
+  },
+  "arms": {
+    "A": "baseline",
+    "B": "candidate"
+  },
+  "authority": {
+    "execution": false,
+    "note": "A separate exact-input Root release is required; current instruction and native-wall authorities do not cover this witness.",
+    "publication": false
+  },
+  "bootstrap_seeds": {},
+  "budget": {
+    "capture_calls_total": 4,
+    "extensions": 0,
+    "native_command_timeout_seconds": 150,
+    "replacements": 0,
+    "retries": 0
+  },
+  "capture": {
+    "all_numeric_pid_files_authenticated": true,
+    "cross_pid_order_inference": false,
+    "fd_paths": true,
+    "maximum_pid_files": 1024,
+    "maximum_trace_bytes": 536870912,
+    "per_pid": true,
+    "physical_io_inferred": false,
+    "seccomp_bpf": true,
+    "single_cache_mutating_pid_required": true,
+    "string_limit": 65536,
+    "trace_syscalls": "execve,execveat,open,openat,openat2,close,write,writev,pwrite64,pwritev,pwritev2,rename,renameat,renameat2,unlink,unlinkat,ftruncate,truncate,lseek,mmap,msync,copy_file_range,sendfile,splice"
+  },
+  "child_environment": "Keep the exact ordinary native Cargo environment and live jobserver. No instrumentation preload. Retain ordered compiler environments; only original accepted jobserver descriptor comparison omission applies.",
+  "cold_cache": {
+    "bank_copy_must_preserve_primary_banks": true,
+    "retirement": "Unchanged same-filesystem private-cache retirement after untimed before-build; original primary and numbered cold banks preserved.",
+    "total_write_or_syscall_count_claimed": "Only after complete raw trace and payload reconciliation; otherwise lower bound only."
+  },
+  "commands": {
+    "primary": [
+      "-Zohm-defaults=yes",
+      "check",
+      "--locked",
+      "--offline",
+      "-j",
+      "8"
+    ]
+  },
+  "decision_table": [
+    {
+      "condition": "All numeric PID files decode, a single cache-mutating PID supplies complete payload writes and commits, and final committed slot bytes reconcile",
+      "decision": "Report exact successful logical write total, commit count, partial/failed writes and last payload reconciliation."
+    },
+    {
+      "condition": "Any syscall is undecodable, ordering is ambiguous, or observed mutations are unsupported",
+      "decision": "Preserve raw evidence and restoration; retain only the independently verified footprint lower bound and name the missing proof. No replacement witness."
+    }
+  ],
+  "endpoint_entry": "Separate exact Root authority, accepted two-host warm primary, authenticated independent witness-bank copies and copied zero-work freshness.",
+  "hosts": [
+    {
+      "hostname": "host-1",
+      "ordinal": 0
+    },
+    {
+      "hostname": "host-2",
+      "ordinal": 1
+    }
+  ],
+  "masking": "No Callgrind profile or native-wall result is read; trace parsing is operational only.",
+  "metric": "Successful cache-temp write/writev/pwrite bytes and successful commit renames; no instruction or elapsed comparison.",
+  "metric_integrity": "All numeric PID files, local ordering, fd paths, payload reconstruction, commit renames and final slot bytes must reconcile. No Callgrind or elapsed metric.",
+  "native": "No native wall time or comparative claim; raw diagnostic command receipts retained without scalar duration inspection.",
+  "order": {
+    "witness": [
+      [
+        "baseline",
+        "candidate"
+      ],
+      [
+        "candidate",
+        "baseline"
+      ]
+    ]
+  },
+  "pairs_per_host": 0,
+  "pins": {
+    "base_tree": "ca7507690099e7523754432ae09abb07b969c962",
+    "candidate_patch_sha256": "254d6f2cc6f8a5770a97d9993d4aafdf9087fad5f9aaa7e9e118eb3a97983174",
+    "candidate_tree": "5fbb37f329d5c185e95511832854596937899019",
+    "capture_tool_sha256": "7088ab983a19122541e3c5cac906bc275808ab6c9a2b3fafbcca6db65062dd18",
+    "cargo": "fd7a25d7bed7503d628c90879ba265e173343b28",
+    "common_embedded_build_commit": "fd7a25d7bed7503d628c90879ba265e173343b28",
+    "design_identity_correction_sha256": "a86731941b281b9746fd3d3fc284820d18a7d1be381d5e3da510d99e7dc41c99",
+    "dirty_fixture_sha256": "a89570fa6080462a772ebdbc73ab4471e0b968f7c357c23b197409fb12f282ad",
+    "matched_pair_acceptance_sha256": "28a3c989dd2351726e79131de8a8a6b913bde45670bb405b55af3a728f4995de",
+    "sdk12_bundle_sha256": "177751bcef731909e9fa2c89983804ec6fe663101711dc46003a743914d37203",
+    "sdk12_driver_sha256": "253120eeae6c051af825c4884b30b2d5d62a3a4094428d52c815cbcaf7af697a",
+    "sdk12_rustc_sha256": "1879f05850bfcd95837087c6012c76bc0355581012686d51b2f690ce46934d6e",
+    "source_checkpoint_sha256": "98e7aaf65f91d005a8331f85666fef60728708cbf78aeabd965ab3416f7fc26c",
+    "uv": "3d82a6ad5a7eab8c68236553b7846517767c4b61",
+    "uv_seed_sha256": "7fe7818663d47c76dd995adbc97aa1bd8a32067188aadf14eb03b03a634beb14",
+    "wild_sha256": "5b2baebf62de0f8c185711b808c3f553da3b7166b1c289420df5276b027f5597"
+  },
+  "preflight": "One single native syscall capture per arm, after exact copied-bank zero-work freshness; original Cargo argv/environment and output/diagnostic/context guards.",
+  "primary_protocol_sha256": "61ef7109939c2c979bd4bce5f0abc8e0234348da7ceede7232b0211bb5e2bfed",
+  "producer": {
+    "binary_pair": "The exact production pair accepted by root-build-acceptance-01.json; identical artifacts on both hosts.",
+    "bolt": false,
+    "channel": "dev",
+    "codegen_units": 1,
+    "debug": 1,
+    "embedded_commit": "fd7a25d7bed7503d628c90879ba265e173343b28",
+    "features": [
+      "all-static",
+      "ohm-defaults"
+    ],
+    "incremental": false,
+    "lto": "thin",
+    "opt_level": 3,
+    "pgo": false,
+    "physical_paths": "one common source/target path for both builds",
+    "toolchain": "stock Rust 1.99; actual matched build and focused/corpus correctness require Root acceptance"
+  },
+  "profiler_prerequisite": {
+    "required": "All original profiling tools remain exact, but no profiler is executed in this witness.",
+    "state": "qualified-files-preserved-not-invoked"
+  },
+  "purpose": "One separately traced cold-cache baseline and candidate check per VM, on new private copied banks; exact logical temp-file bytes and commits where provable.",
+  "qualification_design_sha256": "98e7aaf65f91d005a8331f85666fef60728708cbf78aeabd965ab3416f7fc26c",
+  "recorded_utc": "2026-10-25T01:52:29.491103+00:00",
+  "registry_cache": {
+    "baseline": "Must remain absent.",
+    "candidate": "After the untimed before-build, atomically move the existing private cache into this execution\u2019s retained-cache directory. Require no private cache immediately before the actual endpoint and committed records afterward.",
+    "directory": ".ohm-registry-json-v1",
+    "maximum_entry_bytes": 65536,
+    "maximum_slots": 4096,
+    "witness_scope": "Magic, key-to-slot relation, bounded private regular files and supported JSON shape; no independent keyed-BLAKE3 or hit-count claim."
+  },
+  "root": "/WITNESS____________________________________________________",
+  "samples_per_host": 0,
+  "schema": 1,
+  "state": "prospective-protocol-no-execution-authority",
+  "state_banks": "New independent state-bank/write-witness-check/{arm}; same active paths. Copies authenticate to each arm's own pristine primary bank.",
+  "statistics": null,
+  "study": "registry-json-excluded-logical-write-witness",
+  "workload_edit": "Use the exact accepted donor fixture: append a deterministic ordinary non-doc comment, warm its state=before form, then change it to state=after_. The strings have equal length and five changed bytes. All Rust tokens and source positions remain unchanged. Restore the original source afterward; no production uv change.",
+  "workload_tools": "Published SDK12 f93 Rust/rustdoc and fixed Wild execute uv, distinct from the stock producer compiler. Only Cargo varies."
+}

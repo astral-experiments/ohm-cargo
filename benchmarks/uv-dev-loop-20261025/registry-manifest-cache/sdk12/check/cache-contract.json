@@ -1,0 +1,35 @@
+{
+  "binary_size_increase_bytes": 1122888,
+  "committed_bytes_upper_bound": 268435456,
+  "directory": ".ohm-registry-json-v1",
+  "document_path": "Workspace/package-edit document behavior is unchanged. Cache hits retain typed fields and unused-key diagnostics.",
+  "fallback": "Collisions, invalid/truncated/trailing/corrupt entries, unsupported float/datetime/reserved datetime key/depth/size, permission/path errors and I/O failures retain the original TOML path.",
+  "first_use": "Misses retain original TOML deserialization and may additionally parse to a TOML value, encode JSON and write a slot.",
+  "footprint_limits": "Committed records only, not total writes, temporary files, syscall count, or measured production hit count.",
+  "key": "Keyed BLAKE3 of exact manifest contents; parser key includes magic, Cargo.lock, package version and embedded Cargo commit.",
+  "max_entry_bytes": 65536,
+  "max_source_bytes": 262144,
+  "maximum_depth": 32,
+  "observed_warm_footprint": [
+    {
+      "baseline_bytes": 0,
+      "baseline_slots": 0,
+      "block": 1,
+      "candidate_bytes": 803161,
+      "candidate_slots": 445,
+      "states": 32
+    },
+    {
+      "baseline_bytes": 0,
+      "baseline_slots": 0,
+      "block": 2,
+      "candidate_bytes": 803161,
+      "candidate_slots": 445,
+      "states": 32
+    }
+  ],
+  "payload": "JSON of supported TOML values; exact content key plus keyed payload checksum precede typed deserialization.",
+  "platform": "Unix only; registry and sparse-registry manifests with ohm-defaults enabled",
+  "private_files": "Owned private directory and regular files; trusted ancestors; no-follow/nonblocking entry open; atomic temporary-file persistence.",
+  "slots": 4096
+}

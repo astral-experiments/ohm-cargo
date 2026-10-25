@@ -1,0 +1,44 @@
+{
+  "AA_banks": "Two isolated full copies of the authenticated source-only baseline warm bank; baseline Cargo in both; private registry cache absent.",
+  "actual_pair_margin": {
+    "entry_window_seconds": 40,
+    "finish_budget_seconds": 10,
+    "maximum_wait_seconds": 1200
+  },
+  "cache": "Candidate-only registry cache absent in both baseline A/A banks at every boundary.",
+  "controller_cpus": [
+    8
+  ],
+  "elapsed_unit": "integer nanoseconds",
+  "fixed_pairs_per_host": 8,
+  "independent_hosts": 2,
+  "native_candidate_comparisons": 0,
+  "numbered_samples": 32,
+  "output_gate": "Fresh per-host, per-label singleton exact uv check rmeta rules and complete ordinary diagnostics; no inherited rlib/ELF or metadata equivalence exceptions. Preserve raw outputs/exit before decoder; complete child and freshness/restoration gates.",
+  "public_replay_limit": "Numerical replay and hash/typed-sample joins are portable; complete private host/output admission is summarized and digest-bound, not independently reconstructible from this small addendum.",
+  "quietness": "Original occupancy checks retained before and after each sample; three maintenance services and apt locks/timers checked.",
+  "raw_scope": "Public raw files contain only the original unit and integer elapsed_ns. Private command environments, paths, process inventories, traces and full output copies are excluded; their authenticated custody digests are retained in provenance.json.",
+  "restoration": "Both full 16-sample blocks passed source/runtime/original-Cargo/bank/freshness and positive descendant-quiescence checks. All records are retained privately.",
+  "source_edit": "Use the exact accepted donor fixture: append a deterministic ordinary non-doc comment, warm its state=before form, then change it to state=after_. The strings have equal length and five changed bytes. All Rust tokens and source positions remain unchanged. Restore the original source afterward; no production uv change.",
+  "state": "both-complete-raw-restoration-gates-passed-before-calibration-effects",
+  "timed_command": [
+    "cargo",
+    "-Zohm-defaults=yes",
+    "check",
+    "--locked",
+    "--offline",
+    "-j",
+    "8"
+  ],
+  "timer_boundary": "perf_counter_ns immediately before Popen through ordinary Cargo wait; all descendants must positively drain before moving or reusing any path",
+  "workload_cpus": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ]
+}

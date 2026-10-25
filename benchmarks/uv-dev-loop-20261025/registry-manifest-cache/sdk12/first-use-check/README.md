@@ -1,0 +1,11 @@
+Private registry-manifest cache: first-use supplement
+
+Run `python3 -I -S -B reproduce.py` here to authenticate all 32 complete Cargo-parent profiles and replay the two independent eight-pair descriptive cold blocks. Signed first-use overhead and its 99% interval are reported separately per host. A negative, positive or mixed result is permitted by this descriptive endpoint; it has no performance qualification gate.
+
+The compiler targets were already warm. After each untimed before-build, only the candidate's private registry JSON cache was retired by same-filesystem rename and retained intact. It had to be absent immediately before the measured Cargo command and populated afterward. The baseline cache stayed absent. Source, Cargo binary pair, SDK12 compiler/Wild, actual dirty edit, native child contexts, diagnostics, output identities and restoration remained bound. This measures first use of the new document cache, not a clean compiler build.
+
+The warm and cold blocks remain distinct. `break-even.json` is required in a completed cold package and is reproduced with `python3 -I -S -B break_even.py --warm PATH_TO_WARM_EVIDENCE --cold .`. It uses per-host arithmetic paired instruction differences to estimate how many subsequent commands with the observed warm-cache mixture offset one first-use cost. Its descriptive ratio interval resamples the eight complete pairs from each phase independently, using the separately frozen 200,000-draw method. There is no pooled inference, wall-time interpretation or production hit-rate guarantee.
+
+Committed private cache entries/bytes are lower bounds on additional creations/writes, not an exact syscall or total-write count. Collisions, temporary files and retries prevent that interpretation. See `cold-committed-footprint.json` and `cache-contract.json`; the matched candidate binary is 1,122,888 bytes larger.
+
+The warm prerequisite was accepted independently before this supplement. Both cold raw/restoration gates and all 32 metric joins, plus a separate independent replay/private release, preceded import. Excluded preflights and scout observations are absent. Source/build/correctness are recorded in `REPRODUCE.md`, `source-and-recipe.json` and `correctness.json`. No public write, native elapsed claim or PR authority is conferred here; the independent native safeguards remain in force.

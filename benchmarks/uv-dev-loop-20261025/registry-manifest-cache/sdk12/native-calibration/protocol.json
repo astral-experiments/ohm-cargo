@@ -1,0 +1,217 @@
+{
+  "AA_cargo_by_label": {
+    "baseline": "4f7104d7aaf0dec561d8e1457d136f02e0dcdd479fe0bb0957724fba46060306",
+    "candidate": "4f7104d7aaf0dec561d8e1457d136f02e0dcdd479fe0bb0957724fba46060306"
+  },
+  "AB_cargo_by_label": {
+    "baseline": "4f7104d7aaf0dec561d8e1457d136f02e0dcdd479fe0bb0957724fba46060306",
+    "candidate": "19a28bb010372c23ba289f1e2a88c9c519155cb25ab0bb412e88069b2bf15af7"
+  },
+  "authority": {
+    "aa_measurement": false,
+    "ab_measurement": false,
+    "excluded_rehearsal": false,
+    "guest_setup": false,
+    "publication": false
+  },
+  "bootstrap_resamples": 200000,
+  "cache_witness": {
+    "baseline": "Must remain absent.",
+    "candidate": "Actual private committed records required before/after every native command boundary. Record count, bytes and SHA inventory; do not require collision slots to remain unchanged.",
+    "directory": ".ohm-registry-json-v1",
+    "maximum_entry_bytes": 65536,
+    "maximum_slots": 4096,
+    "witness_scope": "Magic, key-to-slot relation, bounded private regular files and supported JSON shape; no independent keyed-BLAKE3 or hit-count claim."
+  },
+  "command": [
+    "/benchmark/bin/cargo",
+    "-Zohm-defaults=yes",
+    "check",
+    "--locked",
+    "--offline",
+    "-j",
+    "8"
+  ],
+  "confidence": 0.99,
+  "controller_cpus": [
+    8
+  ],
+  "disk": {
+    "capacity_rule": "Both private AA baseline copies plus separate AB arm copies, all 68 full output sets for two 8-pair phases plus excluded pairs, original banks preserved; bind actual sizes before setup.",
+    "growth_bytes": 8589934592,
+    "reserve_bytes": 34359738368
+  },
+  "effect_barrier": "Both complete 16-record raw/restoration gates before reading any durations; validate every typed duration across both hosts before either summary. AA and AB are disjoint.",
+  "host_substitution_sha256": "d37a8aa92b2bf10da04fbfe13d14450947407f44b7d2a87b850106734a8977fb",
+  "hosts": [
+    "host-1",
+    "host-2"
+  ],
+  "identity_correction_sha256": "a86731941b281b9746fd3d3fc284820d18a7d1be381d5e3da510d99e7dc41c99",
+  "labels": {
+    "A": "baseline",
+    "B": "candidate"
+  },
+  "margin_formula": "One excluded full AA pair per host; discard individual timer returns. Common finish=ceil_to_10s(1.5*max(host aggregate pair ns)); entry=finish+30, entry<=240. No timed comparisons before exact aggregate/raw acceptance.",
+  "matched_pair_acceptance_sha256": "28a3c989dd2351726e79131de8a8a6b913bde45670bb405b55af3a728f4995de",
+  "maximum_command_seconds": 300,
+  "maximum_idle_wait_seconds": 1200,
+  "native_has_trace_or_wrapper": false,
+  "native_root": "/benchmark/native-study-01",
+  "output_rule": "Fresh per-host, per-label singleton exact uv check rmeta rules and complete ordinary diagnostics; no inherited rlib/ELF or metadata equivalence exceptions. Preserve raw outputs/exit before decoder; complete child and freshness/restoration gates.",
+  "phases": {
+    "aa": {
+      "bootstrap_seeds": [
+        20261025251,
+        20261025252
+      ],
+      "gate": {
+        "absolute_bias_max": 0.0035,
+        "interval_contains_zero": true,
+        "interval_full_width_max": 0.015
+      },
+      "maximum_owner_seconds": 21600,
+      "orders": {
+        "0": [
+          "AB",
+          "BA",
+          "BA",
+          "AB",
+          "BA",
+          "AB",
+          "AB",
+          "BA"
+        ],
+        "1": [
+          "BA",
+          "AB",
+          "AB",
+          "BA",
+          "AB",
+          "BA",
+          "BA",
+          "AB"
+        ]
+      },
+      "pairs_per_host": 8
+    },
+    "ab": {
+      "bootstrap_seeds": [
+        20261025253,
+        20261025254
+      ],
+      "gain_gate": {
+        "exact_two_sided_sign_p_strictly_less_than": 0.01,
+        "lower_bound_strictly_greater_than": 0.0025,
+        "point_reduction_min": 0.01,
+        "wins_required": 8
+      },
+      "maximum_owner_seconds": 21600,
+      "orders": {
+        "0": [
+          "BA",
+          "BA",
+          "AB",
+          "BA",
+          "BA",
+          "AB",
+          "AB",
+          "AB"
+        ],
+        "1": [
+          "AB",
+          "AB",
+          "BA",
+          "AB",
+          "AB",
+          "BA",
+          "BA",
+          "BA"
+        ]
+      },
+      "pairs_per_host": 8,
+      "regression_gate": {
+        "exact_two_sided_sign_p_strictly_less_than": 0.01,
+        "losses_required": 8,
+        "point_reduction_strictly_less_than": 0,
+        "replication": "both hosts independently; withhold PR even for a small statistically replicated slowdown",
+        "upper_bound_strictly_less_than": 0
+      }
+    }
+  },
+  "pins": {
+    "base_tree": "ca7507690099e7523754432ae09abb07b969c962",
+    "candidate_patch_sha256": "254d6f2cc6f8a5770a97d9993d4aafdf9087fad5f9aaa7e9e118eb3a97983174",
+    "candidate_tree": "5fbb37f329d5c185e95511832854596937899019",
+    "capture_tool_sha256": "7088ab983a19122541e3c5cac906bc275808ab6c9a2b3fafbcca6db65062dd18",
+    "cargo": "fd7a25d7bed7503d628c90879ba265e173343b28",
+    "common_embedded_build_commit": "fd7a25d7bed7503d628c90879ba265e173343b28",
+    "design_identity_correction_sha256": "a86731941b281b9746fd3d3fc284820d18a7d1be381d5e3da510d99e7dc41c99",
+    "dirty_fixture_sha256": "a89570fa6080462a772ebdbc73ab4471e0b968f7c357c23b197409fb12f282ad",
+    "matched_pair_acceptance_sha256": "28a3c989dd2351726e79131de8a8a6b913bde45670bb405b55af3a728f4995de",
+    "sdk12_bundle_sha256": "177751bcef731909e9fa2c89983804ec6fe663101711dc46003a743914d37203",
+    "sdk12_driver_sha256": "253120eeae6c051af825c4884b30b2d5d62a3a4094428d52c815cbcaf7af697a",
+    "sdk12_rustc_sha256": "1879f05850bfcd95837087c6012c76bc0355581012686d51b2f690ce46934d6e",
+    "source_checkpoint_sha256": "98e7aaf65f91d005a8331f85666fef60728708cbf78aeabd965ab3416f7fc26c",
+    "uv": "3d82a6ad5a7eab8c68236553b7846517767c4b61",
+    "uv_seed_sha256": "7fe7818663d47c76dd995adbc97aa1bd8a32067188aadf14eb03b03a634beb14",
+    "wild_sha256": "5b2baebf62de0f8c185711b808c3f553da3b7166b1c289420df5276b027f5597"
+  },
+  "primary_protocol_sha256": "61ef7109939c2c979bd4bce5f0abc8e0234348da7ceede7232b0211bb5e2bfed",
+  "publication": "Both native gain gates are needed for a wall-speed claim. Both replicated regression gates withhold the PR. Any other AB result is inconclusive, not proof of no regression; one-host regression requires explicit review. AA failure closes native without AB. Primary/cold/source decisions remain independently required.",
+  "qualification_design_sha256": "98e7aaf65f91d005a8331f85666fef60728708cbf78aeabd965ab3416f7fc26c",
+  "quiescence": {
+    "ambiguity": "preserve both roots; never guess a kill target or reuse paths",
+    "failure_cleanup_seconds": 10,
+    "identity": "live parent/start-time and pidfd",
+    "subreaper": "worker-local only",
+    "success_drain_seconds": 5
+  },
+  "raw_unit": "nanoseconds",
+  "rehearsal_margin": {
+    "entry_window_seconds": 120,
+    "finish_budget_seconds": 90
+  },
+  "root": "/benchmark",
+  "schema": 1,
+  "services": [
+    "maintenance-reconcile-1",
+    "maintenance-reconcile-2",
+    "maintenance-reconcile-3",
+    "apt-daily",
+    "apt-daily-upgrade"
+  ],
+  "setup_cpus": [
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15
+  ],
+  "source_edit": "Use the exact accepted donor fixture: append a deterministic ordinary non-doc comment, warm its state=before form, then change it to state=after_. The strings have equal length and five changed bytes. All Rust tokens and source positions remain unchanged. Restore the original source afterward; no production uv change.",
+  "state": "prospective-registry-native-AA-then-conditional-AB-no-execution-authority",
+  "state_recipe": {
+    "aa": "Two isolated full copies of the authenticated source-only baseline warm bank; baseline Cargo in both; private registry cache absent.",
+    "ab": "Separate new full copies of each authenticated source-only primary arm bank; candidate cache actually populated; no reuse of AA-mutated banks.",
+    "both": "Rolling equal-length comment edit, before-state native warm and zero-compiler freshness before each pair; canonical paths, driver dev/inode/ctime, content/mode/mtime and namespace bound; copied rustc_info inode explicitly rebound; no cross-host compiled state."
+  },
+  "stopping": {
+    "aa_failure": "Close native; no AB, no wall claim.",
+    "ab_failure": "Report valid negative or inconclusive without extra samples; never pool hosts.",
+    "operational": "Preserve invalid packet/effects unread, restore only positively owned state and close; no replacement/retry/extension."
+  },
+  "timed_argv_has_taskset": false,
+  "timer": "perf_counter_ns immediately before Popen through ordinary Cargo wait; all descendants must positively drain before moving or reusing any path",
+  "workload_cpus": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ]
+}

@@ -1,0 +1,287 @@
+{
+  "baseline_Cargo_sha256": "4f7104d7aaf0dec561d8e1457d136f02e0dcdd479fe0bb0957724fba46060306",
+  "both_raw_gates_sha256": "48e8058783a40d6fdcda1085e071959ad75ed8e99d180d75085533885afb640e",
+  "hosts": [
+    {
+      "collection_handoff_sha256": "753d69251256f48f31fe8124f0db77656e31b91624e262e9ffea7269241ef5f9",
+      "collection_manifest_sha256": "222e20a3fe7aadcface9af1d55db8744d027ab7024946384d52a655b0198ae76",
+      "completion_sha256": "90b6e000f1fea99ba56558dbb2529b727417b5d76000667a5d9cd4eb2ff6f114",
+      "host": "host-1",
+      "inputs_sha256": "e7d313ebcc10f6805bee73ac399cbad57178f686035d409e81ea28385fd9348f",
+      "original_summary_sha256": "38497f99e7c23ccfe8f5b782adf619f0a1c09bdd83cf61c314061ab7a34621d1",
+      "private_collection_files": 1251,
+      "private_raw_records_retained": true,
+      "raw_gate": {
+        "completion_sha256": "90b6e000f1fea99ba56558dbb2529b727417b5d76000667a5d9cd4eb2ff6f114",
+        "elapsed_payloads_decoded": false,
+        "inputs_sha256": "e7d313ebcc10f6805bee73ac399cbad57178f686035d409e81ea28385fd9348f",
+        "manifest_sha256": "9e2e6614dbde3be1ec3aee8868853830168578c4a6c300114d5d9e4b032b4bc7",
+        "mode": "measure",
+        "phase": "aa",
+        "samples": 16,
+        "source_sha256": "2a04e8d0c016309d05ababa75e290f5a93edeed13bd2043b7bb5b8534aa08e28",
+        "state": "all-native-raw-gates-passed"
+      },
+      "role": "producer",
+      "samples": 16
+    },
+    {
+      "collection_handoff_sha256": "c2bc5c2be35039a3c62afc4f6d48bab3409a2f0571c004e4c001c9e7d69e79ef",
+      "collection_manifest_sha256": "8bf8b2dac9a15b0130dad6b59af3f68d9cd0f03cab470acfd4b7c6f9a589413d",
+      "completion_sha256": "97a10e85855e8cb2d328438b01278d5dd451b00178b30e1455b045ab41b0adea",
+      "host": "host-2",
+      "inputs_sha256": "059a544c12354ff63f8fba67130bfe52aeaf5747aa567db75826c064cba2ed0b",
+      "original_summary_sha256": "a8a23576f3de8681f48213b542450ecd809a2f1993dd7ff8a8be9e63388e9237",
+      "private_collection_files": 1249,
+      "private_raw_records_retained": true,
+      "raw_gate": {
+        "completion_sha256": "97a10e85855e8cb2d328438b01278d5dd451b00178b30e1455b045ab41b0adea",
+        "elapsed_payloads_decoded": false,
+        "inputs_sha256": "059a544c12354ff63f8fba67130bfe52aeaf5747aa567db75826c064cba2ed0b",
+        "manifest_sha256": "86933191c98a438d8ee29c7a151ef4478d3fe3ba0d4a94968e0c44a0b344b77e",
+        "mode": "measure",
+        "phase": "aa",
+        "samples": 16,
+        "source_sha256": "2a04e8d0c016309d05ababa75e290f5a93edeed13bd2043b7bb5b8534aa08e28",
+        "state": "all-native-raw-gates-passed"
+      },
+      "role": "replication",
+      "samples": 16
+    }
+  ],
+  "native_candidate_comparison_calls": 0,
+  "native_closure_sha256": "2a0052ba609e6b289d4c13b504dbea010c51f6124313a15bbe728f9db8900c30",
+  "original_decision_sha256": "301ca3a85e9db4d134cc5a85b1a2f1b622332f0d2dae2fdfe03e88d420556c8d",
+  "original_decision_transformation": "Only the two hostname fields are replaced by host-1 and host-2; every decision value is unchanged.",
+  "original_protocol_sha256": "e1079dd8ae483086035de32246371f6729ee060bad5e49256cb2516d49825d82",
+  "original_source_freeze_sha256": "fe217f37f23e642058ca37eb5b1f2146c634a0896f28d733f9ae98b657e8783a",
+  "original_summary_transformation": "Only hostname is pseudonymized; every sample/statistic/gate is unchanged.",
+  "python_version_used_for_replay": "3.12.3",
+  "root_raw_replay_admission_sha256": "3fb2386c18640d954de77d5d35e24d5dbcd727489702db6b7428e2b60ae9e9ae",
+  "sample_custody": [
+    {
+      "elapsed_sha256": "c15fa396c840b491556db9dcb9d9235c541c60e7dec5c817f0e3e9f1d22d5fdd",
+      "host": "host-1",
+      "label": "A",
+      "pair": 0,
+      "position": 0
+    },
+    {
+      "elapsed_sha256": "56afa03a190b7220a749a8cea82175f006c396e44132746d12471be5e45ec68a",
+      "host": "host-1",
+      "label": "B",
+      "pair": 0,
+      "position": 1
+    },
+    {
+      "elapsed_sha256": "cf6013eb921b31520eb62e9683a10afe6e61b3f5bb1170b0b963992a136cb874",
+      "host": "host-1",
+      "label": "B",
+      "pair": 1,
+      "position": 0
+    },
+    {
+      "elapsed_sha256": "d6773836c8a6654f900f5c26f38a610b6fa37e6876b16e910cd50ea2229976e1",
+      "host": "host-1",
+      "label": "A",
+      "pair": 1,
+      "position": 1
+    },
+    {
+      "elapsed_sha256": "1100654e03576172e626fab5fa646d56c6acbe21718ddcf0a5c76171cd21b2dd",
+      "host": "host-1",
+      "label": "B",
+      "pair": 2,
+      "position": 0
+    },
+    {
+      "elapsed_sha256": "2ba4a64a54db2e3740dc42a8f4ad2f973f4f098909d9168c2da1cf03dcb88233",
+      "host": "host-1",
+      "label": "A",
+      "pair": 2,
+      "position": 1
+    },
+    {
+      "elapsed_sha256": "9107624d9a2610326c2d7be731689ad21fa87af29cef61f02d0fa54399b4b839",
+      "host": "host-1",
+      "label": "A",
+      "pair": 3,
+      "position": 0
+    },
+    {
+      "elapsed_sha256": "b0f9aaf6557a84dc5ae7972e7224635f199fc5382cf81fa45cbfe57cd0069cf9",
+      "host": "host-1",
+      "label": "B",
+      "pair": 3,
+      "position": 1
+    },
+    {
+      "elapsed_sha256": "7fa1eab1827ab155f10115e041a6d15ba9f22d7939af583c927dff1d0c7e554a",
+      "host": "host-1",
+      "label": "B",
+      "pair": 4,
+      "position": 0
+    },
+    {
+      "elapsed_sha256": "eaaca5634cf76386c967bdda2b9f729d74beac84ec742843bcf5d267dc48a9ff",
+      "host": "host-1",
+      "label": "A",
+      "pair": 4,
+      "position": 1
+    },
+    {
+      "elapsed_sha256": "24bfca67df40380acc99c2fb93daedc2cf2f5784f8702d2a47961bed56e46d10",
+      "host": "host-1",
+      "label": "A",
+      "pair": 5,
+      "position": 0
+    },
+    {
+      "elapsed_sha256": "28ee957b09b158186aae448d6484866556ea26079bbcdf30750e6140f3e19dc2",
+      "host": "host-1",
+      "label": "B",
+      "pair": 5,
+      "position": 1
+    },
+    {
+      "elapsed_sha256": "9f35bff1b27d37e4bbe365c9a7cfe8443d9f4c752b69857f8079dea0eeb53357",
+      "host": "host-1",
+      "label": "A",
+      "pair": 6,
+      "position": 0
+    },
+    {
+      "elapsed_sha256": "37504ee3f263b6502b1f7fae93705d2154bdb01eb959c861dfebdbae355cba21",
+      "host": "host-1",
+      "label": "B",
+      "pair": 6,
+      "position": 1
+    },
+    {
+      "elapsed_sha256": "2d2cc301a67c53401645fbd3a2aa8c31d60d7045d893495c2c06247c57fe6a79",
+      "host": "host-1",
+      "label": "B",
+      "pair": 7,
+      "position": 0
+    },
+    {
+      "elapsed_sha256": "c20fb91333bcad0a7a993c02bc9865f251c52e5372214075cb4b422630699889",
+      "host": "host-1",
+      "label": "A",
+      "pair": 7,
+      "position": 1
+    },
+    {
+      "elapsed_sha256": "6302fab665890d1e56711bd720d01e6a38599e598de97dd7b535d4b48d9b8968",
+      "host": "host-2",
+      "label": "B",
+      "pair": 0,
+      "position": 0
+    },
+    {
+      "elapsed_sha256": "0a6b698beec754ebbb0c9d7bb7ae560290fb464fe4322314635cb77542550888",
+      "host": "host-2",
+      "label": "A",
+      "pair": 0,
+      "position": 1
+    },
+    {
+      "elapsed_sha256": "2696e460689ca78939d21ea8e1645554a8d90771690452e7a860fe3378be15ee",
+      "host": "host-2",
+      "label": "A",
+      "pair": 1,
+      "position": 0
+    },
+    {
+      "elapsed_sha256": "4ba9fe803590abe1475cb42319d87b3eb5108fd96ace4ff6c9bc3e30ea92165b",
+      "host": "host-2",
+      "label": "B",
+      "pair": 1,
+      "position": 1
+    },
+    {
+      "elapsed_sha256": "d9aab0114e69b6e34b44bf374f4f3a3f15d92528c1fe22422c186e26e38b1098",
+      "host": "host-2",
+      "label": "A",
+      "pair": 2,
+      "position": 0
+    },
+    {
+      "elapsed_sha256": "5ddaccc03b43c4cf5b859fb5d3fbe9d3fefd370cb0ae55b1be839d953b89b0a2",
+      "host": "host-2",
+      "label": "B",
+      "pair": 2,
+      "position": 1
+    },
+    {
+      "elapsed_sha256": "2d765fcda1913741f68979973cca3eaede9d33de8738a6f8977e92afa79b80e5",
+      "host": "host-2",
+      "label": "B",
+      "pair": 3,
+      "position": 0
+    },
+    {
+      "elapsed_sha256": "c414f50c5f28ce0979fa8b4fff95498d7cddb83c1ab28f53f02f12577e39a26f",
+      "host": "host-2",
+      "label": "A",
+      "pair": 3,
+      "position": 1
+    },
+    {
+      "elapsed_sha256": "35aaf70a875c71e79441b7d48c379ea3312e02d8efd1453d2152977cb95ed629",
+      "host": "host-2",
+      "label": "A",
+      "pair": 4,
+      "position": 0
+    },
+    {
+      "elapsed_sha256": "1db40f74da060fcc8357d80ca792b2ef8658f8a28ea8c04acaea88d1b03d72c1",
+      "host": "host-2",
+      "label": "B",
+      "pair": 4,
+      "position": 1
+    },
+    {
+      "elapsed_sha256": "da1a9ef2459265e80ec05af88fd96803aa1fd22813f74404a50ab0f3d33cc6c8",
+      "host": "host-2",
+      "label": "B",
+      "pair": 5,
+      "position": 0
+    },
+    {
+      "elapsed_sha256": "a177fb630c631dcae143e415b275dc90f3e69f1bbf602a5281cdaf8c7d91e3da",
+      "host": "host-2",
+      "label": "A",
+      "pair": 5,
+      "position": 1
+    },
+    {
+      "elapsed_sha256": "95dc59850442796486f1bddbae7891a90f5bd262a23e9b579c3e6e3742e80bb6",
+      "host": "host-2",
+      "label": "B",
+      "pair": 6,
+      "position": 0
+    },
+    {
+      "elapsed_sha256": "832a8d554e3a23500e52688374db499bf3858638d7b6e053e0002892cfddcf87",
+      "host": "host-2",
+      "label": "A",
+      "pair": 6,
+      "position": 1
+    },
+    {
+      "elapsed_sha256": "242fb088398c8396dbe761ee371523eded347b6f69a20cbf205d70d187bba88f",
+      "host": "host-2",
+      "label": "A",
+      "pair": 7,
+      "position": 0
+    },
+    {
+      "elapsed_sha256": "27b79f8e4167a707fce25c3d5a2481f4f17be32a73b2eb0efdfd452c445d2e83",
+      "host": "host-2",
+      "label": "B",
+      "pair": 7,
+      "position": 1
+    }
+  ]
+}

@@ -1,0 +1,100 @@
+{
+  "display_seconds": {
+    "baseline_mean_seconds": 1.251114235,
+    "baseline_median_seconds": 1.27126311,
+    "candidate_mean_seconds": 1.197738826875,
+    "candidate_median_seconds": 1.210867173
+  },
+  "gate_passed": false,
+  "hostname": "host-2",
+  "pairs": [
+    {
+      "baseline": 1358341106,
+      "candidate": 1235279685,
+      "order": "BA"
+    },
+    {
+      "baseline": 1139675868,
+      "candidate": 1257656249,
+      "order": "AB"
+    },
+    {
+      "baseline": 1271827812,
+      "candidate": 1122634172,
+      "order": "AB"
+    },
+    {
+      "baseline": 1206799062,
+      "candidate": 1266409827,
+      "order": "BA"
+    },
+    {
+      "baseline": 1118865582,
+      "candidate": 1313472710,
+      "order": "AB"
+    },
+    {
+      "baseline": 1322809815,
+      "candidate": 1115866565,
+      "order": "BA"
+    },
+    {
+      "baseline": 1270698408,
+      "candidate": 1084136746,
+      "order": "BA"
+    },
+    {
+      "baseline": 1319896227,
+      "candidate": 1186454661,
+      "order": "AB"
+    }
+  ],
+  "phase": "aa",
+  "raw_unit": "nanoseconds",
+  "regression_gate_passed": false,
+  "statistics": {
+    "baseline_mean_nanoseconds": 1251114235.0,
+    "baseline_median_nanoseconds": 1271263110.0,
+    "bootstrap_count_reduction_interval": [
+      -0.0708915965710275,
+      0.1301823147706176
+    ],
+    "bootstrap_ratio_interval": [
+      0.9338013326484016,
+      1.149666208196591
+    ],
+    "bootstrap_resamples": 200000,
+    "bootstrap_seed": 20261025252,
+    "candidate_mean_nanoseconds": 1197738826.875,
+    "candidate_median_nanoseconds": 1210867173.0,
+    "confidence": 0.99,
+    "exact_two_sided_sign_p": 0.7265625,
+    "log_ratios": [
+      0.09496677018940869,
+      -0.09850597328861646,
+      0.12477722471778044,
+      -0.04821453830580743,
+      -0.1603592545864159,
+      0.17012683056650343,
+      0.1587826323670319,
+      0.10658353382460724
+    ],
+    "losses": 3,
+    "order": {
+      "AB": {
+        "geometric_mean_ratio": 0.9931474690697074,
+        "pairs": 4
+      },
+      "BA": {
+        "geometric_mean_ratio": 1.098466837732212,
+        "pairs": 4
+      }
+    },
+    "paired_geometric_mean_count_reduction": 0.04258626232377938,
+    "paired_geometric_mean_ratio": 1.0444805214798174,
+    "paired_median_ratio": 1.106046582893593,
+    "pairs": 8,
+    "ties": 0,
+    "wins": 5
+  }
+}

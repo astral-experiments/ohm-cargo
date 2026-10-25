@@ -1,0 +1,82 @@
+{
+  "corpus_fields": "Full typed Debug representation, including metadata and ignored-key sets, matched.",
+  "corpus_manifests": 470,
+  "corpus_source_bytes": 1116536,
+  "failed": 0,
+  "focused": [
+    {
+      "arm": "baseline",
+      "failed": 0,
+      "ignored": 0,
+      "passed": 11,
+      "receipt_sha256": "6b4dd47174f70904afeee45b78a2040789bd4099efacdbc8d11d3d048e8477ae",
+      "selector": "workspace::package_id::tests::",
+      "source_tree": "ca7507690099e7523754432ae09abb07b969c962",
+      "stdout_sha256": "9ccf0132cf19e329760fad2a2f95f6f77a5857a3311318f6cf964acdc5b299bf"
+    },
+    {
+      "arm": "baseline",
+      "failed": 0,
+      "ignored": 0,
+      "passed": 1,
+      "receipt_sha256": "eb3a6ac58d78225e1e5e1fce88aad0d1b0f0c6bd8ff0a59c7ec78619c58525de",
+      "selector": "workspace::parser::tests::direct_deserialize_preserves_diagnostics",
+      "source_tree": "ca7507690099e7523754432ae09abb07b969c962",
+      "stdout_sha256": "464d702634816937c45a75ecdd5e6a34e150ec129f8b23a990c480b1169c0735"
+    },
+    {
+      "arm": "baseline",
+      "failed": 0,
+      "ignored": 0,
+      "passed": 6,
+      "receipt_sha256": "a3eebbde8ea10fdd510394a275890e7e2e6806a18a8626c1a9dbe4effbc5f298",
+      "selector": "compiler::relink_cache_tests::",
+      "source_tree": "ca7507690099e7523754432ae09abb07b969c962",
+      "stdout_sha256": "d35440e946ba1770036bd4cdaba6e9ed79c5993bf8cc0cd029f2863e0ff02544"
+    },
+    {
+      "arm": "candidate",
+      "failed": 0,
+      "ignored": 0,
+      "passed": 11,
+      "receipt_sha256": "c75ad15afa259d4b90856586a5bafe450e4dcd6f9a473191a7f7b5033e5d6243",
+      "selector": "workspace::package_id::tests::",
+      "source_tree": "5fbb37f329d5c185e95511832854596937899019",
+      "stdout_sha256": "39f91ed75d0c5c6b8c540dfb001c280434176114ffa9353fdf7ca7fabd3ab7b8"
+    },
+    {
+      "arm": "candidate",
+      "failed": 0,
+      "ignored": 0,
+      "passed": 1,
+      "receipt_sha256": "0511969468a64fb1b6d112e1e38a7ae42b9484f140241f8ddbd5720039506900",
+      "selector": "workspace::parser::tests::direct_deserialize_preserves_diagnostics",
+      "source_tree": "5fbb37f329d5c185e95511832854596937899019",
+      "stdout_sha256": "34c37edbb25e96cd7336289ce50c2eb17a450e979f3120ae0d8ae45eb212f26a"
+    },
+    {
+      "arm": "candidate",
+      "failed": 0,
+      "ignored": 0,
+      "passed": 6,
+      "receipt_sha256": "1d3befec09792c266a6d2d987e7a9483da067e00f15e7506162ea1aba4bd63d3",
+      "selector": "compiler::relink_cache_tests::",
+      "source_tree": "5fbb37f329d5c185e95511832854596937899019",
+      "stdout_sha256": "e6100755097fea0d9fdc13c8741bc4357b5ca147af6e4823f9367d4da9de39b1"
+    },
+    {
+      "arm": "candidate",
+      "failed": 0,
+      "ignored": 0,
+      "passed": 4,
+      "receipt_sha256": "82c4135a9d973e4867598053870e88ba4cf75d7e1c5461c452261f33ec8f7621",
+      "selector": "workspace::parser::registry_cache::tests::",
+      "source_tree": "5fbb37f329d5c185e95511832854596937899019",
+      "stdout_sha256": "13328aa09080ecf8101f3cb6f11405a53779642263c59db15a3a2f0feae0f7b5"
+    }
+  ],
+  "ignored": 0,
+  "passed": 40,
+  "root_build_acceptance_sha256": "28a3c989dd2351726e79131de8a8a6b913bde45670bb405b55af3a728f4995de",
+  "three_passes_scope": "Separate codec correctness probe, not production hit-rate measurement or primary performance evidence."
+}

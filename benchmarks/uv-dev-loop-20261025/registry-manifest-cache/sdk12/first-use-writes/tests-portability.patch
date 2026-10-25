@@ -1,0 +1,19 @@
+--- test_decoder.original.py
++++ test_decoder.py
+@@ -11,12 +11,11 @@
+ module = importlib.util.module_from_spec(spec)
+ spec.loader.exec_module(module)
+ os.umask(0o077)
+-os.sched_setaffinity(0, set(range(24, 32)))
+-smoke = HERE / 'capability-smoke-02'
+-cache = smoke / '.ohm-registry-json-v1'
+-source, = smoke.glob('trace.[0-9]*')
++smoke = HERE / 'tests'
++cache = Path(json.loads((smoke / 'expected.json').read_bytes())['cache_directory'])
++source = smoke / 'trace.1'
+ original = source.read_text()
+-final = {p.name: p for p in cache.iterdir()}
++final = {p.name: p for p in (smoke / 'final').iterdir()}
+ expected = json.loads((smoke / 'expected.json').read_bytes())
+ checks = []
+ 

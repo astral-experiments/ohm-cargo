@@ -1,0 +1,42 @@
+--- a/src/strace.c
++++ b/src/strace.c
+@@ -177,6 +177,8 @@
+ 
+ static struct tcb **tcbtab;
+ static unsigned int nprocs;
++/* Private capture contract: a fresh tracer process and no attached tracees. */
++static bool inherit_seccomp_filter;
+ static size_t tcbtabsize;
+ 
+ static struct tcb_wait_data *tcb_wait_tab;
+@@ -1666,6 +1668,7 @@
+ static void
+ startup_child(char **argv, char **env)
+ {
++	const bool launch_only = nprocs == 0 && !daemonized_tracer;
+ 	strace_stat_t statbuf;
+ 	const char *filename;
+ 	size_t filename_len;
+@@ -1827,8 +1830,10 @@
+ 		 */
+ 	}
+ 
+-	if (seccomp_filtering)
++	if (seccomp_filtering) {
+ 		tcp->flags |= TCB_SECCOMP_FILTER;
++		inherit_seccomp_filter = launch_only;
++	}
+ 
+ 	/*
+ 	 * A case where straced process is part of a pipe:
+@@ -3306,7 +3311,9 @@
+ 	if (followfork) {
+ 		/* We assume it's a fork/vfork/clone child */
+ 		struct tcb *tcp = alloctcb(pid);
+-		after_successful_attach(tcp, post_attach_sigstop);
++		const unsigned int flags = post_attach_sigstop
++			| (inherit_seccomp_filter ? TCB_SECCOMP_FILTER : 0);
++		after_successful_attach(tcp, flags);
+ 		if (!is_number_in_set(QUIET_ATTACH, quiet_set))
+ 			error_msg("Process %d attached", pid);
+ 		return tcp;

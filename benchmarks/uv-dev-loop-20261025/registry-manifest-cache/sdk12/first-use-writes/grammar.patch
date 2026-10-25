@@ -1,0 +1,13 @@
+--- decode_writes.original.py
++++ decode_writes.py
+@@ -30,6 +30,10 @@
+             quoted = True
+         elif char in '([{<':
+             stack.append(char)
++        elif (char == '>' and stack[-2:] == ['<', '[']
++              and re.search(r'<UNIX:\[[0-9]+-$', text[:index])
++              and re.match(r'[0-9]+\]>', text[index + 1:])):
++            continue
+         elif char in ')]}>':
+             assert stack and stack.pop() == pairs[char], 'unbalanced syscall arguments'
+         elif char == ',' and not stack:

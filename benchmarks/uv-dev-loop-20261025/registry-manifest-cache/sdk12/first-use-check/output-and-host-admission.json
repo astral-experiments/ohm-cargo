@@ -1,0 +1,75 @@
+{
+  "children": "Original compiler argv, ordered usable environment and live jobserver were validated against excluded native captures; children were uninstrumented.",
+  "cross_arm_byte_identity_claim": false,
+  "hosts": [
+    {
+      "block": 1,
+      "host": {
+        "architecture": "x86_64",
+        "kernel": "7.0.0-38-generic",
+        "machine_id_sha256": "3c6156e0c04275e8bd18ab75c0e3c1acc41b483f062c528f4962d73df6b4502c",
+        "uid": 1000
+      },
+      "inputs_sha256": "09fe37b5053262b5a96f96de1efb563930b592454d6d191ac71c32cc10752c4f",
+      "outputs": [
+        {
+          "arm": "baseline",
+          "bytes": 384191,
+          "kind": "exact",
+          "mode": 384,
+          "path_relative_to_study": "target/debug/build/workspaces/190428b55b6bbda7/v2-384b467dfc363e29/uv/a284868e5a77bf24/out/libuv-a284868e5a77bf24.rmeta",
+          "sha256": [
+            "b31232e71a4c312185f400370f6ff07a5428b8f665a78fa29524adc7da67bff7"
+          ]
+        },
+        {
+          "arm": "candidate",
+          "bytes": 384191,
+          "kind": "exact",
+          "mode": 384,
+          "path_relative_to_study": "target/debug/build/workspaces/190428b55b6bbda7/v2-384b467dfc363e29/uv/a284868e5a77bf24/out/libuv-a284868e5a77bf24.rmeta",
+          "sha256": [
+            "5f9f82bb9623c43b2959febd60d25bbc30f567d105050b8ff4cc6a90341c9598"
+          ]
+        }
+      ],
+      "preflight_acceptance_sha256": "2fd4719aa32e3f92907ce3f2617a3696a730943b33aa6a6467ab515163bf841e",
+      "profiler_acceptance_sha256": "7962517cd91a8ab2069c091bc87096468ddb2c1bbeda5ee11dcf8f49f7960012"
+    },
+    {
+      "block": 2,
+      "host": {
+        "architecture": "x86_64",
+        "kernel": "7.0.0-38-generic",
+        "machine_id_sha256": "b83fd4285ce742f5ce3c9448db3ff0b20df6c9366fad1db5774c64551d0d467f",
+        "uid": 1000
+      },
+      "inputs_sha256": "fd5ed1c9b4b66dfbea0a3a13f2e2a02d29f6d547c27c1f2f2435e6e3475a9045",
+      "outputs": [
+        {
+          "arm": "baseline",
+          "bytes": 384191,
+          "kind": "exact",
+          "mode": 384,
+          "path_relative_to_study": "target/debug/build/workspaces/190428b55b6bbda7/v2-26f7153173b23e13/uv/a284868e5a77bf24/out/libuv-a284868e5a77bf24.rmeta",
+          "sha256": [
+            "e9b5bd7a3f66deacc6ccaae8fda2ecf1f4cd3ab691789d2260f6e4790c5467a6"
+          ]
+        },
+        {
+          "arm": "candidate",
+          "bytes": 384191,
+          "kind": "exact",
+          "mode": 384,
+          "path_relative_to_study": "target/debug/build/workspaces/190428b55b6bbda7/v2-26f7153173b23e13/uv/a284868e5a77bf24/out/libuv-a284868e5a77bf24.rmeta",
+          "sha256": [
+            "274c3a80b592bfb83f18ad7a870353085a3a8d4c4d83bd9897c06c458c2ea9f8"
+          ]
+        }
+      ],
+      "preflight_acceptance_sha256": "2fd4719aa32e3f92907ce3f2617a3696a730943b33aa6a6467ab515163bf841e",
+      "profiler_acceptance_sha256": "7962517cd91a8ab2069c091bc87096468ddb2c1bbeda5ee11dcf8f49f7960012"
+    }
+  ],
+  "rule": "Each arm and machine retains its own exact native/profile rmeta hash; no runtime mask or metadata normalizer."
+}
