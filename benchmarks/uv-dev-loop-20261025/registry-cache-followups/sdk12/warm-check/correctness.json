@@ -1,0 +1,196 @@
+{
+  "allocated_sections_exact_after_stripping_per_arm": 31,
+  "cross_arm_metadata": {
+    "first_host": "whole-file exact",
+    "second_host": {
+      "changed_bytes": 202,
+      "moved_opaque_lifetime_definitions": 7,
+      "mutation_refusals": 16,
+      "scope": "Stable-key fingerprints, both spans and all other bytes matched. Each arm still uses its own exact full-file hash; no measured metadata normalization.",
+      "stable_definitions": 1135,
+      "unexplained_bytes": 0
+    }
+  },
+  "exact_own_arm_metadata_observations": 12,
+  "failures": 0,
+  "focused_invocations": [
+    {
+      "argv": [
+        "stock-cargo",
+        "test",
+        "--release",
+        "--locked",
+        "--offline",
+        "--lib",
+        "--features",
+        "all-static,ohm-defaults",
+        "-j",
+        "16",
+        "workspace::package_id::tests::",
+        "--",
+        "--nocapture",
+        "--test-threads=1"
+      ],
+      "arm": "baseline",
+      "command_sha256": "8902ca3b0b98bd18088b8f6171d5718e98be3bb96eab8327329342eeec77dc93",
+      "receipt_sha256": "6131d3326978b7d0b06ab0c70e129d328964e1afb194aa8e72a20551c67010b0"
+    },
+    {
+      "argv": [
+        "stock-cargo",
+        "test",
+        "--release",
+        "--locked",
+        "--offline",
+        "--lib",
+        "--features",
+        "all-static,ohm-defaults",
+        "-j",
+        "16",
+        "workspace::parser::tests::direct_deserialize_preserves_diagnostics",
+        "--",
+        "--nocapture",
+        "--test-threads=1"
+      ],
+      "arm": "baseline",
+      "command_sha256": "6e5bb7e5701020deae35eddd400d8a030f4455cec3e7267a422cac18303da854",
+      "receipt_sha256": "3f62247dc2b7cff12414eda2c1a86d8cbcab664af3098e6d3fb4b5983b951cca"
+    },
+    {
+      "argv": [
+        "stock-cargo",
+        "test",
+        "--release",
+        "--locked",
+        "--offline",
+        "--lib",
+        "--features",
+        "all-static,ohm-defaults",
+        "-j",
+        "16",
+        "compiler::relink_cache_tests::",
+        "--",
+        "--nocapture",
+        "--test-threads=1"
+      ],
+      "arm": "baseline",
+      "command_sha256": "38b7abf7d4708c2391257518cd25065444f5a2024bd5377c65abd058c5d4503b",
+      "receipt_sha256": "e0b459d676c16de5c7a370223ae97555a8eea3276e95a8b9dd7bcfe0c59f7728"
+    },
+    {
+      "argv": [
+        "stock-cargo",
+        "test",
+        "--release",
+        "--locked",
+        "--offline",
+        "--lib",
+        "--features",
+        "all-static,ohm-defaults",
+        "-j",
+        "16",
+        "workspace::parser::registry_cache::tests::",
+        "--",
+        "--nocapture",
+        "--test-threads=1"
+      ],
+      "arm": "baseline",
+      "command_sha256": "aea6bd2d11b945cb6b3e07a04cc33867a3992bff8f94cbc40db5b5b477be13a5",
+      "receipt_sha256": "f539e48b9e9faba15c20edb49ab41191b24daf3d9ca092318f5e5d7cc2dfdd7c"
+    },
+    {
+      "argv": [
+        "stock-cargo",
+        "test",
+        "--release",
+        "--locked",
+        "--offline",
+        "--lib",
+        "--features",
+        "all-static,ohm-defaults",
+        "-j",
+        "16",
+        "workspace::package_id::tests::",
+        "--",
+        "--nocapture",
+        "--test-threads=1"
+      ],
+      "arm": "candidate",
+      "command_sha256": "9be1a1b88b55f1d0daea661cfff3d9e9b7afea1baf5efa132755f8dbcf3cda6f",
+      "receipt_sha256": "2f2d46edcf79834fd581581690c45cdae1083697db76d80e0a1775e0b4eee794"
+    },
+    {
+      "argv": [
+        "stock-cargo",
+        "test",
+        "--release",
+        "--locked",
+        "--offline",
+        "--lib",
+        "--features",
+        "all-static,ohm-defaults",
+        "-j",
+        "16",
+        "workspace::parser::tests::direct_deserialize_preserves_diagnostics",
+        "--",
+        "--nocapture",
+        "--test-threads=1"
+      ],
+      "arm": "candidate",
+      "command_sha256": "6ef0d8f92e94b24ebab0c76c4089a08c5e4d8461f785a89e0bf20d66a9cdaa9a",
+      "receipt_sha256": "225006c15035981b5ef189aa0a2e58eed0c91c29f69ffe2d9e3d2cb82c1ed67b"
+    },
+    {
+      "argv": [
+        "stock-cargo",
+        "test",
+        "--release",
+        "--locked",
+        "--offline",
+        "--lib",
+        "--features",
+        "all-static,ohm-defaults",
+        "-j",
+        "16",
+        "compiler::relink_cache_tests::",
+        "--",
+        "--nocapture",
+        "--test-threads=1"
+      ],
+      "arm": "candidate",
+      "command_sha256": "ef09fbe4c3d9a05f54e6281bf69690fe7ca7c1074a0d37798ca1f4da69a3fcfe",
+      "receipt_sha256": "df5c4075b8399f0e193b65490dd58ee485c17bf7278ae6fa9c963f01772d24e8"
+    },
+    {
+      "argv": [
+        "stock-cargo",
+        "test",
+        "--release",
+        "--locked",
+        "--offline",
+        "--lib",
+        "--features",
+        "all-static,ohm-defaults",
+        "-j",
+        "16",
+        "workspace::parser::registry_cache::tests::",
+        "--",
+        "--nocapture",
+        "--test-threads=1"
+      ],
+      "arm": "candidate",
+      "command_sha256": "3cd2a1cb7951f5e5781ba352967d698b55528c0cde67a31f889e11c9c61c4623",
+      "receipt_sha256": "611cd50db3d9b6ff0a05f3116473511a5d1d422fc6c8488e8a8967ddde1a66d5"
+    }
+  ],
+  "ignored": 0,
+  "joint_preflight_acceptance_sha256": "4fa181e57e75f281ba43ecad805834c3c397958bd15ad02541c516f3bf6579ce",
+  "metadata_proof_sha256": "61c4732ad1f26c0e463e700c47c83f40e92e351c3e04dfcac174b30a47c70286",
+  "module_passes": {
+    "baseline": 22,
+    "candidate": 30
+  },
+  "native_profile_compiler_vectors": 8,
+  "root_build_acceptance_sha256": "374901b48ad3b6ba09406d539f4a2945957c99c66b6bf2e5706a9c97d2937b03",
+  "zero_compiler_restoration_traces": 4
+}

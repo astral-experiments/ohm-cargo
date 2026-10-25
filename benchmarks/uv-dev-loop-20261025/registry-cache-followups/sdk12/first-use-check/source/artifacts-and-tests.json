@@ -1,0 +1,118 @@
+{
+  "actual_GlobalContext_tests": [
+    "workspace::parser::registry_cache::tests::registry_miss_preserves_complete_typed_and_syntax_errors",
+    "workspace::parser::registry_cache::tests::registry_miss_and_hit_preserve_metadata_and_ignored_keys"
+  ],
+  "artifacts": [
+    {
+      "allocated_sections_preserved": 31,
+      "arm": "baseline",
+      "bytes": 43452656,
+      "producer_mode": 493,
+      "sha256": "863d60cec75d0caac6428458a1867809aa4682dcb94ac13805f5f5bc5ee8eada",
+      "source_tree": "5fbb37f329d5c185e95511832854596937899019",
+      "version_stdout_sha256": "68986ac4025db8c387755c2dfe41387f5c52a09c04560a9be287685cec31a5c5"
+    },
+    {
+      "allocated_sections_preserved": 31,
+      "arm": "candidate",
+      "bytes": 43453088,
+      "producer_mode": 493,
+      "sha256": "ac0dc9890891ddcf270514c6c0a105a17713c61101039fc351bdd144f855470a",
+      "source_tree": "30b4f1fb9d0fe1c215c71d92f594ba3774925df7",
+      "version_stdout_sha256": "68986ac4025db8c387755c2dfe41387f5c52a09c04560a9be287685cec31a5c5"
+    }
+  ],
+  "binary_size_change_bytes": 432,
+  "cache_contract": {
+    "format_and_security": "Unchanged from R1; private ownership/ancestor checks, O_NOFOLLOW/O_NONBLOCK, bounded size and atomic persistence remain.",
+    "key_inputs": "Magic, Cargo.lock, package version and embedded Cargo commit identify the codec; keyed BLAKE3 hashes the source bytes.",
+    "max_depth": 32,
+    "max_entry_bytes": 65536,
+    "max_source_bytes": 262144,
+    "slot": "key[:3]",
+    "slots": 4096,
+    "unsupported": "Float, datetime, excessive depth and the reserved datetime key fall back without a cache write.",
+    "warm_hit_path": "Source unchanged; no Y warm-performance or native-elapsed claim."
+  },
+  "corpus_witness": {
+    "complete_cache_body_comparisons": 940,
+    "complete_error_equalities": 9,
+    "context_limit": "The standalone corpus witness used a minimal GlobalContext/source-kind stub. The two named regressions subsequently passed in actual full Cargo test binaries.",
+    "handoff_sha256": "dbd4c9bd5fa457b0998ebbdf6ff9caeb449e77f826d2dfc380ee4147cba25360",
+    "passes": [
+      "cold",
+      "repeat"
+    ],
+    "real_manifests": 470,
+    "synthetic_cases": 24
+  },
+  "focused_checks": [
+    {
+      "arm": "baseline",
+      "failed": 0,
+      "ignored": 0,
+      "passed": 11,
+      "selector": "workspace::package_id::tests::",
+      "source_tree": "5fbb37f329d5c185e95511832854596937899019"
+    },
+    {
+      "arm": "baseline",
+      "failed": 0,
+      "ignored": 0,
+      "passed": 2,
+      "selector": "workspace::parser::tests::",
+      "source_tree": "5fbb37f329d5c185e95511832854596937899019"
+    },
+    {
+      "arm": "baseline",
+      "failed": 0,
+      "ignored": 0,
+      "passed": 6,
+      "selector": "compiler::relink_cache_tests::",
+      "source_tree": "5fbb37f329d5c185e95511832854596937899019"
+    },
+    {
+      "arm": "baseline",
+      "failed": 0,
+      "ignored": 0,
+      "passed": 4,
+      "selector": "workspace::parser::registry_cache::tests::",
+      "source_tree": "5fbb37f329d5c185e95511832854596937899019"
+    },
+    {
+      "arm": "candidate",
+      "failed": 0,
+      "ignored": 0,
+      "passed": 11,
+      "selector": "workspace::package_id::tests::",
+      "source_tree": "30b4f1fb9d0fe1c215c71d92f594ba3774925df7"
+    },
+    {
+      "arm": "candidate",
+      "failed": 0,
+      "ignored": 0,
+      "passed": 2,
+      "selector": "workspace::parser::tests::",
+      "source_tree": "30b4f1fb9d0fe1c215c71d92f594ba3774925df7"
+    },
+    {
+      "arm": "candidate",
+      "failed": 0,
+      "ignored": 0,
+      "passed": 6,
+      "selector": "compiler::relink_cache_tests::",
+      "source_tree": "30b4f1fb9d0fe1c215c71d92f594ba3774925df7"
+    },
+    {
+      "arm": "candidate",
+      "failed": 0,
+      "ignored": 0,
+      "passed": 6,
+      "selector": "workspace::parser::registry_cache::tests::",
+      "source_tree": "30b4f1fb9d0fe1c215c71d92f594ba3774925df7"
+    }
+  ],
+  "matched_handoff_sha256": "e6f76cd94662faf8b8bf43d66ff1f251aeacbd3266a33969207cd5d41c26295c",
+  "root_acceptance_sha256": "d7cf5dd1aa2ade445be9f4bb26d0da0d6af70afc303886f9ab8b1925c4dab7f2"
+}

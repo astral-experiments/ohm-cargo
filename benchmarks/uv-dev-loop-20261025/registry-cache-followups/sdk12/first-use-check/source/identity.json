@@ -1,0 +1,52 @@
+{
+  "baseline_public_pr": "https://github.com/astral-sh/ohm-cargo/pull/237",
+  "baseline_tree": "5fbb37f329d5c185e95511832854596937899019",
+  "candidate_tree": "30b4f1fb9d0fe1c215c71d92f594ba3774925df7",
+  "changed_over_R1": [
+    "src/workspace/parser/mod.rs",
+    "src/workspace/parser/registry_cache.rs"
+  ],
+  "common_checkout_HEAD_and_embedded_commit": "fd7a25d7bed7503d628c90879ba265e173343b28",
+  "files": [
+    {
+      "bytes": 14643,
+      "file": "source/baseline-full.patch",
+      "sha256": "254d6f2cc6f8a5770a97d9993d4aafdf9087fad5f9aaa7e9e118eb3a97983174"
+    },
+    {
+      "bytes": 18534,
+      "file": "source/candidate-full.patch",
+      "sha256": "39be266f893728240ea447c0a268db54b806bc11a125b705f000fcd6112ae7b0"
+    },
+    {
+      "bytes": 7759,
+      "file": "source/candidate-over-r1.patch",
+      "sha256": "de02603b596f851de56175f0edfe523ee780e8cf621db016e1741b76ddc88e45"
+    },
+    {
+      "bytes": 110518,
+      "file": "source/after/src/context/mod.rs",
+      "git_blob": "6914a72d6c9e0ddecf39cf3bde5689d3a3aa7845",
+      "sha256": "9d95e8b851ba91617373fa603e8af7a3052dfeb8c2f613a2131e884a0609e96a"
+    },
+    {
+      "bytes": 121068,
+      "file": "source/after/src/workspace/parser/mod.rs",
+      "git_blob": "d4bd9096ae1348900d4055b96707a1058c844bd4",
+      "sha256": "14a081c15f49728ea94f5b54fa2be50e63ea2e17fff453e4c98326dd62271b94"
+    },
+    {
+      "bytes": 12951,
+      "file": "source/after/src/workspace/parser/registry_cache.rs",
+      "git_blob": "9919dd6a079cab20b98968298679dbbe26c27d6f",
+      "sha256": "f61f5a35e11ac2f8b8d8c6742b45c011633ced7e6a61e8fde27560953f386d5e"
+    }
+  ],
+  "lock": {
+    "bytes": 136531,
+    "file": "source/Cargo.lock",
+    "sha256": "151c473e1a11532946ba9421ab1beeb238f98eb1f8cd4e5f94f9811003abd5a7"
+  },
+  "note": "Both builds kept the same HEAD and applied full-index patches. A future publication commit is not the embedded measured version.",
+  "published_candidate_commit": null
+}

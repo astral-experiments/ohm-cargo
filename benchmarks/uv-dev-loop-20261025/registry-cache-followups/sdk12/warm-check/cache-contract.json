@@ -1,0 +1,49 @@
+{
+  "alternate": "Next 12 key bits",
+  "entry_limit_bytes": 65536,
+  "limitation": "Committed inventory is not a syscall or total-write counter. These corpus facts do not measure first-use instruction or elapsed overhead.",
+  "module_corpus": {
+    "additional_retained_bytes": 44268,
+    "additional_retained_slots": 25,
+    "baseline_final_bytes": 803161,
+    "baseline_final_slots": 445,
+    "candidate_final_bytes": 847429,
+    "candidate_final_slots": 470,
+    "extra_logical_lookups": 27,
+    "first_write_bytes_each": 847429,
+    "first_write_count_each": 470,
+    "manifests": 470,
+    "repeat_baseline_hits": 421,
+    "repeat_baseline_write_bytes": 78344,
+    "repeat_baseline_writes": 49,
+    "repeat_candidate_hits": 470,
+    "repeat_candidate_writes": 0,
+    "typed_payload_comparisons": 1880
+  },
+  "module_handoff_sha256": "a80aa58b70ce9977ef8e1f03eccbf7369913af5838550e05bb245bf428a418f0",
+  "new_regression_cases": [
+    "adjacent twelve-bit choices",
+    "primary collision keeps both",
+    "full choices replace alternate",
+    "matching primary avoids alternate",
+    "equal choices use one slot",
+    "alternate full key/digest/end",
+    "alternate permissions/symlink/FIFO",
+    "missing primary is filled"
+  ],
+  "ordinary_warm_cache_on_both_hosts": "Full committed file contents matched the corresponding module witness exactly.",
+  "preserved": [
+    "full key",
+    "payload checksum",
+    "complete typed JSON",
+    "private regular-file checks",
+    "atomic replacement",
+    "original fallback"
+  ],
+  "primary": "First 12 key bits",
+  "slots_maximum": 4096,
+  "warm_cache_handoffs_sha256": [
+    "30348c590593f7f759c5fc770ee4cb10fd0b189a57253bfbbff9821abc5188df",
+    "59e0a72347727cd81526a6e7ef6e4ccf73a424d2cca33c195e2b34a3d38b8cbd"
+  ]
+}

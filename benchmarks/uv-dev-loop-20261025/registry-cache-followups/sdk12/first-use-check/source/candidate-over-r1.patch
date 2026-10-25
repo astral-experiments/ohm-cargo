@@ -1,0 +1,184 @@
+diff --git a/src/workspace/parser/mod.rs b/src/workspace/parser/mod.rs
+index 577c6d6010aaf02975061c0d0bc5aeb2803a0a07..d4bd9096ae1348900d4055b96707a1058c844bd4 100644
+--- a/src/workspace/parser/mod.rs
++++ b/src/workspace/parser/mod.rs
+@@ -240,12 +240,19 @@ fn deserialize_without_document(
+         return Ok(manifest);
+     }
+ 
+-    let manifest = deserialize_toml(toml::de::Deserializer::parse(contents)?)?;
+     #[cfg(unix)]
+     if let Some(entry) = entry {
+-        entry.store(contents);
++        let document = parse_document(contents)?;
++        let manifest = deserialize_toml(toml::de::Deserializer::from(document.clone()))
++            .map_err(|mut error| {
++                // Unlike `Deserializer::parse`, `from` does not retain the source.
++                error.set_input(Some(contents));
++                error
++            })?;
++        entry.store(document);
++        return Ok(manifest);
+     }
+-    Ok(manifest)
++    deserialize_toml(toml::de::Deserializer::parse(contents)?)
+ }
+ 
+ #[cfg(test)]
+diff --git a/src/workspace/parser/registry_cache.rs b/src/workspace/parser/registry_cache.rs
+index 4087afe9be33239ee777c2f6e7546c522f698811..9919dd6a079cab20b98968298679dbbe26c27d6f 100644
+--- a/src/workspace/parser/registry_cache.rs
++++ b/src/workspace/parser/registry_cache.rs
+@@ -7,6 +7,7 @@ use std::path::{Path, PathBuf};
+ use std::sync::LazyLock;
+ 
+ use cargo_util_schemas::manifest::TomlManifest;
++use serde::Deserialize;
+ 
+ use super::deserialize_toml;
+ use crate::util::GlobalContext;
+@@ -109,12 +110,12 @@ impl<'a> Entry<'a> {
+         Some(manifest)
+     }
+ 
+-    pub(super) fn store(&self, contents: &str) {
+-        let _ = self.try_store(contents);
++    pub(super) fn store(&self, document: toml::Spanned<toml::de::DeTable<'_>>) {
++        let _ = self.try_store(document);
+     }
+ 
+-    fn try_store(&self, contents: &str) -> Option<()> {
+-        let value: toml::Value = toml::from_str(contents).ok()?;
++    fn try_store(&self, document: toml::Spanned<toml::de::DeTable<'_>>) -> Option<()> {
++        let value = toml::Value::deserialize(toml::de::Deserializer::from(document)).ok()?;
+         if !supported(&value, 0) {
+             return None;
+         }
+@@ -192,7 +193,7 @@ path = "src/lib.rs"
+         let expected = deserialize_toml(toml::de::Deserializer::parse(SOURCE).unwrap()).unwrap();
+         assert!(expected._unused_keys.contains("package.unknown"));
+         assert!(entry.read().is_none());
+-        entry.store(SOURCE);
++        entry.store(toml::de::DeTable::parse(SOURCE).unwrap());
+         assert_eq!(
+             format!("{:?}", entry.read().unwrap()),
+             format!("{expected:?}")
+@@ -204,7 +205,7 @@ path = "src/lib.rs"
+         let home = private_home();
+         let dir = directory(home.path()).unwrap();
+         let entry = Entry::at(&dir, SOURCE);
+-        entry.store(SOURCE);
++        entry.store(toml::de::DeTable::parse(SOURCE).unwrap());
+         let bytes = fs::read(&entry.path).unwrap();
+         let mut other = Entry::at(&dir, "[package]\nname = 'other'\nversion = '2'\n");
+         other.path = entry.path.clone();
+@@ -239,7 +240,7 @@ path = "src/lib.rs"
+         ] {
+             let source = format!("[package]\nname='p'\nversion='1'\n[package.metadata]\n{field}\n");
+             let entry = Entry::at(&dir, &source);
+-            entry.store(&source);
++            entry.store(toml::de::DeTable::parse(&source).unwrap());
+             assert!(!entry.path.exists(), "{field}");
+         }
+         assert!(!supported(&toml::Value::String("x".into()), MAX_DEPTH + 1));
+@@ -250,17 +251,98 @@ path = "src/lib.rs"
+         let home = private_home();
+         let dir = directory(home.path()).unwrap();
+         let entry = Entry::at(&dir, SOURCE);
+-        entry.store(SOURCE);
++        entry.store(toml::de::DeTable::parse(SOURCE).unwrap());
+         fs::set_permissions(&entry.path, fs::Permissions::from_mode(0o644)).unwrap();
+         assert!(entry.read().is_none());
+         let external = home.path().join("sentinel");
+         fs::write(&external, b"untouched").unwrap();
+         fs::remove_file(&entry.path).unwrap();
+         symlink(&external, &entry.path).unwrap();
+-        entry.store(SOURCE);
++        entry.store(toml::de::DeTable::parse(SOURCE).unwrap());
+         assert!(entry.read().is_none());
+         assert_eq!(fs::read(&external).unwrap(), b"untouched");
+         fs::set_permissions(&dir, fs::Permissions::from_mode(0o755)).unwrap();
+         assert!(directory(home.path()).is_none());
+     }
++
++    fn registry_context(home: &Path) -> GlobalContext {
++        let mut gctx = GlobalContext::new(
++            cargo_util_terminal::Shell::new(),
++            home.to_path_buf(),
++            home.to_path_buf(),
++        );
++        gctx.nightly_features_allowed = true;
++        gctx.configure(
++            0,
++            false,
++            None,
++            false,
++            false,
++            true,
++            &None,
++            &["ohm-defaults=yes".into()],
++            &[],
++        )
++        .unwrap();
++        assert!(gctx.registry_manifest_cache().is_some());
++        gctx
++    }
++
++    #[test]
++    fn registry_miss_preserves_complete_typed_and_syntax_errors() {
++        let home = private_home();
++        let gctx = registry_context(home.path());
++        let source_id = crate::workspace::SourceId::for_registry(
++            &url::Url::parse("https://example.invalid/index").unwrap(),
++        )
++        .unwrap();
++        for contents in [
++            "[package]\nname = []\n",
++            "[package]\nname = 'p'\nversion = []\n",
++            "[package]\nname = 'p'\nversion = '1.0.0'\n[dependencies]\na = 17\n",
++            "# Καλημέρα\n[package]\nname = []\n",
++            "# header\r\n[package]\r\nname = []\r\n",
++            "[package]\nname = 'p'\nname = 'q'\n",
++            "[package]\nname = \"bad\\q\"\n",
++        ] {
++            let expected = toml::de::Deserializer::parse(contents)
++                .and_then(deserialize_toml)
++                .unwrap_err();
++            let actual =
++                super::super::deserialize_without_document(contents, source_id, &gctx).unwrap_err();
++            assert_eq!(actual, expected);
++            assert_eq!(actual.to_string(), expected.to_string());
++        }
++        assert_eq!(
++            fs::read_dir(gctx.registry_manifest_cache().unwrap())
++                .unwrap()
++                .count(),
++            0
++        );
++    }
++
++    #[test]
++    fn registry_miss_and_hit_preserve_metadata_and_ignored_keys() {
++        let home = private_home();
++        let gctx = registry_context(home.path());
++        let source_id = crate::workspace::SourceId::for_registry(
++            &url::Url::parse("https://example.invalid/index").unwrap(),
++        )
++        .unwrap();
++        let expected = deserialize_toml(toml::de::Deserializer::parse(SOURCE).unwrap()).unwrap();
++        let cold = super::super::deserialize_without_document(SOURCE, source_id, &gctx).unwrap();
++        assert_eq!(format!("{cold:?}"), format!("{expected:?}"));
++        let paths = fs::read_dir(gctx.registry_manifest_cache().unwrap())
++            .unwrap()
++            .map(|entry| entry.unwrap().path())
++            .collect::<Vec<_>>();
++        assert_eq!(paths.len(), 1);
++        let before = fs::read(&paths[0]).unwrap();
++        let inode = fs::metadata(&paths[0]).unwrap().ino();
++        let warm = super::super::deserialize_without_document(SOURCE, source_id, &gctx).unwrap();
++        assert_eq!(format!("{warm:?}"), format!("{expected:?}"));
++        assert!(warm._unused_keys.contains("package.unknown"));
++        assert_eq!(fs::read(&paths[0]).unwrap(), before);
++        assert_eq!(fs::metadata(&paths[0]).unwrap().ino(), inode);
++    }
+ }
