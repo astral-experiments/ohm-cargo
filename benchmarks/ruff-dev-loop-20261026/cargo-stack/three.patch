@@ -1,0 +1,136 @@
+diff --git a/src/resolver/encode.rs b/src/resolver/encode.rs
+index 3bc4d0921a..c92ccd982d 100644
+--- a/src/resolver/encode.rs
++++ b/src/resolver/encode.rs
+@@ -173,34 +173,32 @@ pub fn into_resolve(
+ 
+     // `PackageId`s in the lock file don't include the `source` part
+     // for workspace members, so we reconstruct proper IDs.
++    let mut last_source = None;
+     let live_pkgs = {
+-        let mut live_pkgs = HashMap::default();
+-        let mut all_pkgs = HashSet::default();
+-        for pkg in packages.iter() {
+-            let enc_id = TomlLockfilePackageId {
+-                name: pkg.name.clone(),
+-                version: Some(pkg.version.clone()),
+-                source: pkg.source.clone(),
+-            };
+-
+-            if !all_pkgs.insert(enc_id.clone()) {
++        let mut live_pkgs = Vec::with_capacity(packages.len());
++        let mut all_pkgs = HashSet::with_capacity_and_hasher(packages.len(), Default::default());
++        for pkg in &packages {
++            if !all_pkgs.insert((&pkg.name, &pkg.version, &pkg.source)) {
+                 anyhow::bail!("package `{}` is specified twice in the lockfile", pkg.name);
+             }
+-            let id = match pkg
+-                .source
+-                .as_ref()
+-                .map(|source| SourceId::from_url(&source.source_str()))
+-                .transpose()?
+-                .or_else(|| get_source_id(&path_deps, &pkg).copied())
+-            {
++            let source = if let Some(source) = &pkg.source {
++                // Most packages in a lockfile come from the same registry.
++                let raw = source.source_str();
++                let id = match last_source {
++                    Some((previous, id)) if previous == raw => id,
++                    _ => SourceId::from_url(raw)?,
++                };
++                last_source = Some((raw, id));
++                id
++            } else if let Some(source) = get_source_id(&path_deps, pkg) {
++                *source
++            } else {
+                 // We failed to find a local package in the workspace.
+                 // It must have been removed and should be ignored.
+-                None => {
+-                    debug!("path dependency now missing {} v{}", pkg.name, pkg.version);
+-                    continue;
+-                }
+-                Some(source) => PackageId::try_new(&pkg.name, &pkg.version, source)?,
++                debug!("path dependency now missing {} v{}", pkg.name, pkg.version);
++                continue;
+             };
++            let id = PackageId::try_new(&pkg.name, &pkg.version, source)?;
+ 
+             // If a package has a checksum listed directly on it then record
+             // that here, and we also bump our version up to 2 since V1
+@@ -210,7 +208,7 @@ pub fn into_resolve(
+                 checksums.insert(id, Some(cksum.clone()));
+             }
+ 
+-            assert!(live_pkgs.insert(enc_id, (id, pkg)).is_none())
++            live_pkgs.push((id, pkg));
+         }
+         live_pkgs
+     };
+@@ -221,7 +219,7 @@ pub fn into_resolve(
+     // information. This map is from name to version to source to actual
+     // package ID. (various levels to drill down step by step)
+     let mut map = HashMap::default();
+-    for (id, _) in live_pkgs.values() {
++    for (id, _) in &live_pkgs {
+         map.entry(id.name().as_str())
+             .or_insert_with(HashMap::default)
+             .entry(id.version().to_string())
+@@ -291,11 +289,11 @@ pub fn into_resolve(
+ 
+     let mut g = Graph::new();
+ 
+-    for (id, _) in live_pkgs.values() {
++    for (id, _) in &live_pkgs {
+         g.add(*id);
+     }
+ 
+-    for &(ref id, pkg) in live_pkgs.values() {
++    for &(ref id, pkg) in &live_pkgs {
+         let Some(ref deps) = pkg.dependencies else {
+             continue;
+         };
+@@ -309,7 +307,7 @@ pub fn into_resolve(
+ 
+     let replacements = {
+         let mut replacements = HashMap::default();
+-        for &(ref id, pkg) in live_pkgs.values() {
++        for &(ref id, pkg) in &live_pkgs {
+             if let Some(ref replace) = pkg.replace {
+                 assert!(pkg.dependencies.is_none());
+                 if let Some(replace_id) = lookup_id(replace) {
+diff --git a/src/sources/registry/mod.rs b/src/sources/registry/mod.rs
+index 4394af7ea9..d884d4fda7 100644
+--- a/src/sources/registry/mod.rs
++++ b/src/sources/registry/mod.rs
+@@ -649,9 +649,10 @@ impl<'gctx> RegistrySource<'gctx> {
+         let path = self
+             .unpack_package(package, path)
+             .with_context(|| format!("failed to unpack package `{}`", package))?;
+-        let src = PathSource::new(&path, self.source_id, self.gctx);
+-        src.load()?;
+-        let mut pkg = match src.download(package).await? {
++        let mut pkg = match PathSource::new(&path, self.source_id, self.gctx)
++            .download(package)
++            .await?
++        {
+             MaybePackage::Ready(pkg) => pkg,
+             MaybePackage::Download { .. } => unreachable!(),
+         };
+diff --git a/src/workspace/package.rs b/src/workspace/package.rs
+index 378e9fdb70..3517e887d1 100644
+--- a/src/workspace/package.rs
++++ b/src/workspace/package.rs
+@@ -184,10 +184,11 @@ impl Package {
+     }
+ 
+     pub fn map_source(self, to_replace: SourceId, replace_with: SourceId) -> Package {
++        let inner = Rc::unwrap_or_clone(self.inner);
+         Package {
+             inner: Rc::new(PackageInner {
+-                manifest: self.manifest().clone().map_source(to_replace, replace_with),
+-                manifest_path: self.manifest_path().to_owned(),
++                manifest: inner.manifest.map_source(to_replace, replace_with),
++                ..inner
+             }),
+         }
+     }
