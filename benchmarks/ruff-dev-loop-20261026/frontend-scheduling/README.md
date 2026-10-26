@@ -37,3 +37,14 @@ The separate complete scoped parser check saved **2.084%** instructions, with a 
 ## Frozen native replication
 
 Repeat the two byte-equivalent parser endpoints using the same unmodified release-PGO binaries, fixed search path, inputs, checkpoints and 16-vCPU host in a separate quiet observation window. Use 16 independently ordered ABBA or BAAB blocks per endpoint, 32 pairs each, seed 619913. All 128 timed commands will be retained. Apply the same complete output and roster gates, block-level exact randomization, 50,000-draw block bootstrap, and a two-endpoint Holm adjustment. The replication tests the elapsed effects observed in the first cohort, with no change to the threshold or code. The earlier disqualified linter endpoint remains excluded.
+
+## Independent native replication
+
+The second timing window completed all 128 ordinary commands. The workspace and package checks each had 16 independently randomized four-command blocks. Every emitted metadata file and every available API hash matched the reference. The workspace had 520 artifacts, 442 metadata files and 61 stored API hashes. The package had 90 artifacts, 72 metadata files and 67 stored API hashes.
+
+| Holdout | Median control | Median candidate | Geometric elapsed reduction | 95% block-bootstrap interval | Exact p | Holm p |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| Workspace check after the public parser edit | 12.004 s | 11.707 s | 3.20% | 1.29–5.08% | 0.00723 | 0.01447 |
+| Parser package check after the same edit | 0.579 s | 0.550 s | 5.16% | −4.52–14.75% | 0.34750 | 0.34750 |
+
+Fourteen of 16 workspace blocks improved. Summed compiler and other child user/system CPU fell 14.19% on the workspace and 21.46% on the package. The package wall-time interval includes zero. The separate instrumented package experiment above measured the complete Cargo and rustc process counts under its own controlled toolchain alias. [Frozen replication plan](https://github.com/astral-sh/ohm-cargo/tree/92a48a156ee3a2709f95bcacf6482ea95089e2ee/benchmarks/ruff-dev-loop-20261026/frontend-scheduling), [all 128 native observations](repeat.csv), [block-level inference](repeat-summary.json)
