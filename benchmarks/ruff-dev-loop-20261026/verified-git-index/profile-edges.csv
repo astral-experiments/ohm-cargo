@@ -1,0 +1,6 @@
+binary,caller,callee,calls,inclusive_instructions
+release,<gix_index::File>::at::<std::path::PathBuf>,gix_hash::io::_impl::bytes,1,57061965
+selected,"<gix_fs::snapshot::SharedFileSnapshotMut<gix_index::File>>::recent_snapshot::<anyhow::Error, <cargo::sources::path::PackageRepository>::index::{closure#0}, <cargo::sources::path::PackageRepository>::index::{closure#1}>",cargo::sources::path::verified_index::open,1,7101481
+selected,cargo::sources::path::verified_index::open,blake3::keyed_hash,1,4292250
+selected,cargo::sources::path::verified_index::open,<gix_index::State>::from_bytes,1,2435474
+selected,cargo::sources::path::verified_index::open,<std::sys::sync::once::futex::Once>::call,1,357028

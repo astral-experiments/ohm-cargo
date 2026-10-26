@@ -1,0 +1,36 @@
+ohm-disabled-first ok returncode 0 files 5 miss False hit False
+cold ok returncode 0 files 5 miss True hit False
+warm ok returncode 0 files 5 miss False hit True
+ohm-disabled-known-receipt ok returncode 0 files 5 miss False hit False
+backdated-body-corruption ok returncode 101 files 0 miss False hit False
+backdated-trailer-corruption ok returncode 101 files 0 miss False hit False
+valid-new-body ok returncode 0 files 5 miss True hit False
+valid-new-body-warm ok returncode 0 files 5 miss False hit True
+valid-original-restored ok returncode 0 files 5 miss False hit True
+live-untracked ok returncode 0 files 6 miss False hit True
+unsigned-index ok returncode 0 files 5 miss False hit False
+index-threads-1 ok returncode 0 files 5 miss False hit True
+index-threads-0 ok returncode 0 files 5 miss False hit True
+index-threads-true ok returncode 0 files 5 miss False hit True
+index-threads-false ok returncode 0 files 5 miss False hit True
+index-threads-4 ok returncode 0 files 5 miss False hit True
+index.threads ok returncode 0 files 5 miss False hit False
+index.skipHash ok returncode 0 files 5 miss False hit False
+gitoxide.objects.allocLimit ok returncode 0 files 5 miss False hit False
+implicit-skipHash ok returncode 0 files 5 miss False hit False
+implicit-skipHash-corruption ok returncode 0 files 5 miss False hit False
+configured-unsigned-corruption ok returncode 0 files 5 miss False hit False
+tampered-certificate ok returncode 0 files 5 miss True hit False
+world-readable-certificate ok returncode 0 files 5 miss True hit False
+nonprivate-cert-directory ok returncode 0 files 5 miss False hit False
+symlink-certificate ok returncode 0 files 5 miss True hit False
+fifo-certificate ok returncode 0 files 5 miss True hit False
+split-index ok returncode 0 files 5 miss False hit False
+split main bytes 504300
+large-split-index ok returncode 0 files 5 miss False hit False
+tampered-split-base ok returncode 101 files 0 miss False hit False
+shattered-1.pdf 38762cf7f55934b34d179ae6a4c80cadccbb7f0a   Detected SHA-1 collision attack with digest 38762cf7f55934b34d179ae6a4c80cadccbb7f0a
+shattered-2.pdf 38762cf7f55934b34d179ae6a4c80cadccbb7f0a   Detected SHA-1 collision attack with digest 38762cf7f55934b34d179ae6a4c80cadccbb7f0a
+sha-mbles-1.bin 87cf07a1cb770538541fe6e94cbb8b219db63332   Detected SHA-1 collision attack with digest 87cf07a1cb770538541fe6e94cbb8b219db63332
+sha-mbles-2.bin 87cf07a1cb770538541fe6e94cbb8b219db63332   Detected SHA-1 collision attack with digest 87cf07a1cb770538541fe6e94cbb8b219db63332
+All package file-list, fallback, opt-out and collision checks passed.

@@ -1,0 +1,265 @@
+diff --git a/src/sources/path.rs b/src/sources/path.rs
+index 1d235237bc..16dbe2bd72 100644
+--- a/src/sources/path.rs
++++ b/src/sources/path.rs
+@@ -26,6 +26,9 @@ use ignore::gitignore::GitignoreBuilder;
+ use tracing::{debug, info, trace, warn};
+ use walkdir::WalkDir;
+ 
++#[cfg(unix)]
++mod verified_index;
++
+ /// A source that represents a package gathered at the root
+ /// path on the filesystem.
+ ///
+@@ -579,7 +582,7 @@ fn _list_files(pkg: &Package, gctx: &GlobalContext) -> CargoResult<Vec<PathEntry
+     let root = pkg.root();
+     let no_include_option = pkg.manifest().include().is_empty();
+     let git_repo = if no_include_option {
+-        discover_gix_repo(root)?
++        discover_gix_repo(root, gctx)?
+     } else {
+         None
+     };
+@@ -646,7 +649,7 @@ fn _list_files(pkg: &Package, gctx: &GlobalContext) -> CargoResult<Vec<PathEntry
+ /// Returns [`Some(gix::Repository)`](gix::Repository) if the discovered repository
+ /// (searched upwards from `root`) contains a tracked `<root>/Cargo.toml`.
+ /// Otherwise, the caller should fall back on full file list.
+-fn discover_gix_repo(root: &Path) -> CargoResult<Option<gix::Repository>> {
++fn discover_gix_repo(root: &Path, gctx: &GlobalContext) -> CargoResult<Option<gix::Repository>> {
+     let repo = match gix::ThreadSafeRepository::discover(root) {
+         Ok(repo) => repo.to_thread_local(),
+         Err(e) => {
+@@ -658,8 +661,7 @@ fn discover_gix_repo(root: &Path) -> CargoResult<Option<gix::Repository>> {
+             return Ok(None);
+         }
+     };
+-    let index = repo
+-        .index_or_empty()
++    let index = package_index(&repo, gctx)
+         .with_context(|| format!("failed to open git index at {}", repo.path().display()))?;
+     let repo_root = repo.workdir().ok_or_else(|| {
+         anyhow::format_err!(
+@@ -688,6 +690,17 @@ fn discover_gix_repo(root: &Path) -> CargoResult<Option<gix::Repository>> {
+     Ok(None)
+ }
+ 
++fn package_index(
++    repo: &gix::Repository,
++    _gctx: &GlobalContext,
++) -> CargoResult<gix::worktree::Index> {
++    #[cfg(unix)]
++    if let Some(index) = verified_index::open(repo, _gctx) {
++        return Ok(gix::worktree::Index::new(gix::fs::FileSnapshot::new(index)));
++    }
++    Ok(repo.index_or_empty()?)
++}
++
+ /// Lists files relevant to building this package inside this source by
+ /// traversing the git working tree, while avoiding ignored files.
+ ///
+@@ -709,7 +722,7 @@ fn list_files_gix(
+         .recurse_repositories(false)
+         .symlinks_to_directories_are_ignored_like_directories(true)
+         .emit_empty_directories(false);
+-    let index = repo.index_or_empty()?;
++    let index = package_index(repo, gctx)?;
+     let root = repo
+         .workdir()
+         .ok_or_else(|| anyhow::format_err!("can't list files on a bare repository"))?;
+diff --git a/src/sources/path/verified_index.rs b/src/sources/path/verified_index.rs
+new file mode 100644
+index 0000000000..9a727d91cb
+--- /dev/null
++++ b/src/sources/path/verified_index.rs
+@@ -0,0 +1,100 @@
++//! Reuse a successful Git index checksum verification for the exact same index bytes.
++
++use std::fs::OpenOptions;
++use std::io::{Read, Write};
++use std::os::unix::fs::OpenOptionsExt as _;
++use std::sync::LazyLock;
++
++use crate::util::GlobalContext;
++use crate::workspace::parser::registry_cache::{private_directory, read_private};
++
++const MIN: u64 = 256 * 1024;
++const MAX: u64 = 8 * 1024 * 1024;
++
++// A new dependency graph may have different Git collision checks or decoding behavior.
++static DOMAIN: LazyLock<[u8; 32]> = LazyLock::new(|| {
++    blake3::derive_key(
++        "Ohm Git SHA1DC index verification v1",
++        include_bytes!("../../../Cargo.lock"),
++    )
++});
++
++pub(super) fn open(repo: &gix::Repository, gctx: &GlobalContext) -> Option<gix::index::File> {
++    let kind = repo.object_hash();
++    if kind != gix::hash::Kind::Sha1 || repo.git_dir_trust() != gix::sec::Trust::Full {
++        return None;
++    }
++    let config = repo.config_snapshot();
++    // Git permits implicit values, such as a bare `skipHash` key.
++    if ["index.skipHash", "gitoxide.objects.allocLimit"]
++        .iter()
++        .any(|key| config.try_boolean(*key).is_some())
++    {
++        return None;
++    }
++    let thread_limit = config
++        .string("index.threads")
++        .map(|value| gix::config::tree::Index::THREADS.try_into_index_threads(value))
++        .transpose()
++        .ok()?;
++    let path = repo.index_path();
++    let file = OpenOptions::new()
++        .read(true)
++        .custom_flags(libc::O_NOFOLLOW | libc::O_NONBLOCK)
++        .open(&path)
++        .ok()?;
++    let meta = file.metadata().ok()?;
++    if !meta.is_file() || !(MIN..=MAX).contains(&meta.len()) {
++        return None;
++    }
++    let dir = private_directory(gctx.home().as_path_unlocked(), ".ohm-git-index-sha1dc-v1")?;
++    let mut data = Vec::with_capacity(meta.len() as usize);
++    file.take(meta.len() + 1).read_to_end(&mut data).ok()?;
++    if data.len() as u64 != meta.len() {
++        return None;
++    }
++    let (body, trailer) = data.split_at(data.len() - kind.len_in_bytes());
++    let expected = gix::hash::ObjectId::from_bytes_or_panic(trailer);
++    if expected.is_null() {
++        return None;
++    }
++    let key = blake3::keyed_hash(&DOMAIN, &data);
++    let slot = u16::from_be_bytes([key.as_bytes()[0], key.as_bytes()[1]]) >> 4;
++    let record = dir.join(format!("{slot:03x}"));
++    let hit = read_private(&record, 32).is_some_and(|stored| stored == key.as_bytes());
++    if !hit {
++        gix::hash::bytes(
++            &mut &*body,
++            body.len() as u64,
++            kind,
++            &mut gix::progress::Discard,
++            &Default::default(),
++        )
++        .ok()?
++        .verify(&expected)
++        .ok()?;
++    }
++    let (state, checksum) = gix::index::State::from_bytes(
++        &data,
++        filetime::FileTime::from_last_modification_time(&meta),
++        kind,
++        gix::index::decode::Options {
++            thread_limit,
++            expected_checksum: Some(expected),
++            ..Default::default()
++        },
++    )
++    .ok()?;
++    if state.link().is_some() || checksum != Some(expected) {
++        return None;
++    }
++    if !hit {
++        if let Ok(mut tmp) = tempfile::NamedTempFile::new_in(dir) {
++            if tmp.write_all(key.as_bytes()).is_ok() {
++                let _ = tmp.persist(record);
++            }
++        }
++    }
++    tracing::debug!(target: "cargo::sources::path::verified_index", hit, "verified Git index");
++    Some(gix::index::File::from_state(state, path))
++}
+diff --git a/src/workspace/parser/registry_cache.rs b/src/workspace/parser/registry_cache.rs
+index f1d35270f2..a663a056d2 100644
+--- a/src/workspace/parser/registry_cache.rs
++++ b/src/workspace/parser/registry_cache.rs
+@@ -30,11 +30,15 @@ static PARSER: LazyLock<blake3::Hash> = LazyLock::new(|| {
+ });
+ 
+ pub(crate) fn directory(home: &Path) -> Option<PathBuf> {
++    private_directory(home, DIRECTORY)
++}
++
++pub(crate) fn private_directory(home: &Path, name: &str) -> Option<PathBuf> {
+     let home = home.canonicalize().ok()?;
+     if !trusted_ancestors(&home) {
+         return None;
+     }
+-    let directory = home.join(DIRECTORY);
++    let directory = home.join(name);
+     let _ = fs::DirBuilder::new().mode(0o700).create(&directory);
+     let meta = directory.symlink_metadata().ok()?;
+     (meta.is_dir() && private(&meta)).then_some(directory)
+@@ -58,6 +62,24 @@ fn trusted_ancestors(dir: &Path) -> bool {
+     })
+ }
+ 
++pub(crate) fn read_private(path: &Path, limit: usize) -> Option<Vec<u8>> {
++    let file = OpenOptions::new()
++        .read(true)
++        .custom_flags(libc::O_NOFOLLOW | libc::O_NONBLOCK)
++        .open(path)
++        .ok()?;
++    let meta = file.metadata().ok()?;
++    if !meta.is_file() || !private(&meta) || meta.len() > limit as u64 {
++        return None;
++    }
++    let mut bytes = Vec::with_capacity(meta.len() as usize);
++    file.take(meta.len() + 1).read_to_end(&mut bytes).ok()?;
++    if bytes.len() as u64 != meta.len() {
++        return None;
++    }
++    Some(bytes)
++}
++
+ pub(super) struct Entry<'a> {
+     directory: &'a Path,
+     path: PathBuf,
+@@ -90,32 +112,14 @@ impl<'a> Entry<'a> {
+ 
+     pub(super) fn read(&self) -> Option<TomlManifest> {
+         self.store_in_alternate.set(Some(false));
+-        let mut bytes = Self::read_bytes(&self.path)?;
++        let mut bytes = read_private(&self.path, MAX_ENTRY)?;
+         if self.path != self.alternate && self.collides(&bytes) {
+             self.store_in_alternate.set(Some(true));
+-            bytes = Self::read_bytes(&self.alternate)?;
++            bytes = read_private(&self.alternate, MAX_ENTRY)?;
+         }
+         self.decode(&bytes)
+     }
+ 
+-    fn read_bytes(path: &Path) -> Option<Vec<u8>> {
+-        let file = OpenOptions::new()
+-            .read(true)
+-            .custom_flags(libc::O_NOFOLLOW | libc::O_NONBLOCK)
+-            .open(path)
+-            .ok()?;
+-        let meta = file.metadata().ok()?;
+-        if !meta.is_file() || !private(&meta) || meta.len() > MAX_ENTRY as u64 {
+-            return None;
+-        }
+-        let mut bytes = Vec::with_capacity(meta.len() as usize);
+-        file.take(meta.len() + 1).read_to_end(&mut bytes).ok()?;
+-        if bytes.len() as u64 != meta.len() {
+-            return None;
+-        }
+-        Some(bytes)
+-    }
+-
+     fn collides(&self, bytes: &[u8]) -> bool {
+         bytes
+             .strip_prefix(MAGIC)
+@@ -158,7 +162,7 @@ impl<'a> Entry<'a> {
+         // writer can only cause another cache miss; every read checks the full key.
+         let alternate = self.store_in_alternate.get().unwrap_or_else(|| {
+             self.path != self.alternate
+-                && Self::read_bytes(&self.path).is_some_and(|bytes| self.collides(&bytes))
++                && read_private(&self.path, MAX_ENTRY).is_some_and(|bytes| self.collides(&bytes))
+         });
+         let path = if alternate {
+             &self.alternate
