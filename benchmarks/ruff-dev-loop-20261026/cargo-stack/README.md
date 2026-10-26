@@ -27,6 +27,8 @@ Six changes against the release-PGO baseline used seed 191017 for the CLI edit. 
 
 For the six-change ordinary-output holdout, use the same fresh benchmark with `--design paired --pairs 12`. The check cohort used seed 881307, the test compilation used seed 861529, and the build used seed 861530. These cohorts preserve the already-warm targets, validate the 520, 619 and 501 fresh artifacts before and after measurement, and count the complete ordinary-output command with Callgrind.
 
+The seventh change reuses per-unit checksum prefetch counts. `seven.patch` contains the seven runtime changes as measured. The seven-change release-PGO subject has SHA-256 `60aa0b17facf297b21d08dfa82d0a6f804f96a08f092f4cc3e9ee83c04fe322e`. Its full CLI edit comparison used the same pre-edit checkpoint, seed 439721, and 12 balanced pairs. [Checksum prefetch change](https://github.com/astral-sh/ohm-cargo/pull/248)
+
 ## Measured results
 
 | Ruff command and Cargo changes | Favorable pairs | Median instruction reduction | 95% median interval | Randomization p |
@@ -36,6 +38,7 @@ For the six-change ordinary-output holdout, use the same fresh benchmark with `-
 | CLI edit, four PGO changes | 12/12 | 2.28% | 2.18–2.48% | 0.00216 |
 | CLI edit, six PGO changes | 12/12 | 2.98% | 2.88–3.05% | 0.00216 |
 | CLI edit, six PGO changes versus the four-change PGO stack | 12/12 | 0.69% | 0.61–0.87% | 0.00216 |
+| CLI edit, seven PGO changes | 12/12 | 3.41% | 3.36–3.49% | 0.00216 |
 | CLI edit, four Cargo changes on a second checkout | 12/12 | 1.89% | 1.84–1.93% | 0.00216 |
 | Fresh check of ruff_text_size, four PGO changes, Cargo JSON | 12/12 | 8.37% | 8.37–8.37% | 0.00216 |
 | Fresh default check, four PGO changes, Cargo JSON | 12/12 | 2.68% | 2.65–2.69% | 0.00216 |

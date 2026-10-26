@@ -1,0 +1,285 @@
+diff --git a/src/resolver/encode.rs b/src/resolver/encode.rs
+index 3bc4d0921a..7b36186a68 100644
+--- a/src/resolver/encode.rs
++++ b/src/resolver/encode.rs
+@@ -173,34 +173,32 @@ pub fn into_resolve(
+ 
+     // `PackageId`s in the lock file don't include the `source` part
+     // for workspace members, so we reconstruct proper IDs.
++    let mut last_source = None;
+     let live_pkgs = {
+-        let mut live_pkgs = HashMap::default();
+-        let mut all_pkgs = HashSet::default();
+-        for pkg in packages.iter() {
+-            let enc_id = TomlLockfilePackageId {
+-                name: pkg.name.clone(),
+-                version: Some(pkg.version.clone()),
+-                source: pkg.source.clone(),
+-            };
+-
+-            if !all_pkgs.insert(enc_id.clone()) {
++        let mut live_pkgs = Vec::with_capacity(packages.len());
++        let mut all_pkgs = HashSet::with_capacity_and_hasher(packages.len(), Default::default());
++        for pkg in &packages {
++            if !all_pkgs.insert((&pkg.name, &pkg.version, &pkg.source)) {
+                 anyhow::bail!("package `{}` is specified twice in the lockfile", pkg.name);
+             }
+-            let id = match pkg
+-                .source
+-                .as_ref()
+-                .map(|source| SourceId::from_url(&source.source_str()))
+-                .transpose()?
+-                .or_else(|| get_source_id(&path_deps, &pkg).copied())
+-            {
++            let source = if let Some(source) = &pkg.source {
++                // Most packages in a lockfile come from the same registry.
++                let raw = source.source_str();
++                let id = match last_source {
++                    Some((previous, id)) if previous == raw => id,
++                    _ => SourceId::from_url(raw)?,
++                };
++                last_source = Some((raw, id));
++                id
++            } else if let Some(source) = get_source_id(&path_deps, pkg) {
++                *source
++            } else {
+                 // We failed to find a local package in the workspace.
+                 // It must have been removed and should be ignored.
+-                None => {
+-                    debug!("path dependency now missing {} v{}", pkg.name, pkg.version);
+-                    continue;
+-                }
+-                Some(source) => PackageId::try_new(&pkg.name, &pkg.version, source)?,
++                debug!("path dependency now missing {} v{}", pkg.name, pkg.version);
++                continue;
+             };
++            let id = PackageId::try_new(&pkg.name, &pkg.version, source)?;
+ 
+             // If a package has a checksum listed directly on it then record
+             // that here, and we also bump our version up to 2 since V1
+@@ -210,7 +208,7 @@ pub fn into_resolve(
+                 checksums.insert(id, Some(cksum.clone()));
+             }
+ 
+-            assert!(live_pkgs.insert(enc_id, (id, pkg)).is_none())
++            live_pkgs.push((id, pkg));
+         }
+         live_pkgs
+     };
+@@ -221,7 +219,7 @@ pub fn into_resolve(
+     // information. This map is from name to version to source to actual
+     // package ID. (various levels to drill down step by step)
+     let mut map = HashMap::default();
+-    for (id, _) in live_pkgs.values() {
++    for (id, _) in &live_pkgs {
+         map.entry(id.name().as_str())
+             .or_insert_with(HashMap::default)
+             .entry(id.version().to_string())
+@@ -291,11 +289,11 @@ pub fn into_resolve(
+ 
+     let mut g = Graph::new();
+ 
+-    for (id, _) in live_pkgs.values() {
++    for (id, _) in &live_pkgs {
+         g.add(*id);
+     }
+ 
+-    for &(ref id, pkg) in live_pkgs.values() {
++    for &(ref id, pkg) in &live_pkgs {
+         let Some(ref deps) = pkg.dependencies else {
+             continue;
+         };
+@@ -309,7 +307,7 @@ pub fn into_resolve(
+ 
+     let replacements = {
+         let mut replacements = HashMap::default();
+-        for &(ref id, pkg) in live_pkgs.values() {
++        for &(ref id, pkg) in &live_pkgs {
+             if let Some(ref replace) = pkg.replace {
+                 assert!(pkg.dependencies.is_none());
+                 if let Some(replace_id) = lookup_id(replace) {
+@@ -633,7 +631,18 @@ pub fn encodable_package_id(
+     state: &EncodeState<'_>,
+     resolve_version: ResolveVersion,
+ ) -> TomlLockfilePackageId {
+-    let mut version = Some(id.version().to_string());
++    let name = id.name().to_string();
++    if let Some(counts) = &state.counts {
++        let versions = &counts[&id.name()];
++        if versions[id.version()] == 1 {
++            return TomlLockfilePackageId {
++                name,
++                version: (versions.len() > 1).then(|| id.version().to_string()),
++                source: None,
++            };
++        }
++    }
++
+     let mut id_to_encode = id.source_id();
+     if resolve_version <= ResolveVersion::V2 {
+         if let Some(GitReference::Branch(b)) = id_to_encode.git_reference() {
+@@ -643,20 +652,10 @@ pub fn encodable_package_id(
+             }
+         }
+     }
+-    let mut source = encodable_source_id(id_to_encode.without_precise(), resolve_version);
+-    if let Some(counts) = &state.counts {
+-        let version_counts = &counts[&id.name()];
+-        if version_counts[&id.version()] == 1 {
+-            source = None;
+-            if version_counts.len() == 1 {
+-                version = None;
+-            }
+-        }
+-    }
+     TomlLockfilePackageId {
+-        name: id.name().to_string(),
+-        version,
+-        source,
++        name,
++        version: Some(id.version().to_string()),
++        source: encodable_source_id(id_to_encode.without_precise(), resolve_version),
+     }
+ }
+ 
+diff --git a/src/sources/registry/mod.rs b/src/sources/registry/mod.rs
+index 4394af7ea9..d884d4fda7 100644
+--- a/src/sources/registry/mod.rs
++++ b/src/sources/registry/mod.rs
+@@ -649,9 +649,10 @@ impl<'gctx> RegistrySource<'gctx> {
+         let path = self
+             .unpack_package(package, path)
+             .with_context(|| format!("failed to unpack package `{}`", package))?;
+-        let src = PathSource::new(&path, self.source_id, self.gctx);
+-        src.load()?;
+-        let mut pkg = match src.download(package).await? {
++        let mut pkg = match PathSource::new(&path, self.source_id, self.gctx)
++            .download(package)
++            .await?
++        {
+             MaybePackage::Ready(pkg) => pkg,
+             MaybePackage::Download { .. } => unreachable!(),
+         };
+diff --git a/src/workspace/dependency.rs b/src/workspace/dependency.rs
+index 70d5ac5e90..d4558b9d85 100644
+--- a/src/workspace/dependency.rs
++++ b/src/workspace/dependency.rs
+@@ -373,10 +373,8 @@ impl Dependency {
+         );
+         Arc::make_mut(&mut self.inner).req.lock_to(id.version());
+ 
+-        // Only update the `precise` of this source to preserve other
+-        // information about dependency's source which may not otherwise be
+-        // tested during equality/hashing.
+-        self.source_id = self.source_id.with_precise_from(id.source_id());
++        // Equal sources with the same precise value share an interned SourceId.
++        self.source_id = id.source_id();
+         self
+     }
+ 
+diff --git a/src/workspace/package.rs b/src/workspace/package.rs
+index 378e9fdb70..3517e887d1 100644
+--- a/src/workspace/package.rs
++++ b/src/workspace/package.rs
+@@ -184,10 +184,11 @@ impl Package {
+     }
+ 
+     pub fn map_source(self, to_replace: SourceId, replace_with: SourceId) -> Package {
++        let inner = Rc::unwrap_or_clone(self.inner);
+         Package {
+             inner: Rc::new(PackageInner {
+-                manifest: self.manifest().clone().map_source(to_replace, replace_with),
+-                manifest_path: self.manifest_path().to_owned(),
++                manifest: inner.manifest.map_source(to_replace, replace_with),
++                ..inner
+             }),
+         }
+     }
+diff --git a/src/workspace/parser/mod.rs b/src/workspace/parser/mod.rs
+index 3ca3cc6a3a..464f002d07 100644
+--- a/src/workspace/parser/mod.rs
++++ b/src/workspace/parser/mod.rs
+@@ -361,7 +361,7 @@ fn to_workspace_root_config(
+     let inheritable = InheritableFields {
+         package: normalized_toml.package.clone(),
+         dependencies: normalized_toml.dependencies.clone().map(Arc::new),
+-        lints: normalized_toml.lints.clone(),
++        lints: normalized_toml.lints.clone().map(Arc::new),
+         _ws_root: package_root.to_owned(),
+     };
+     let ws_root_config = WorkspaceRootConfig::new(
+@@ -1132,7 +1132,7 @@ macro_rules! package_field_getter {
+ pub struct InheritableFields {
+     package: Option<manifest::InheritablePackage>,
+     dependencies: Option<Arc<BTreeMap<manifest::PackageName, manifest::TomlDependency>>>,
+-    lints: Option<manifest::TomlLints>,
++    lints: Option<Arc<manifest::TomlLints>>,
+ 
+     // Bookkeeping to help when resolving values from above
+     _ws_root: PathBuf,
+@@ -1189,7 +1189,7 @@ impl InheritableFields {
+ 
+     /// Gets the field `workspace.lints`.
+     pub fn lints(&self) -> CargoResult<manifest::TomlLints> {
+-        let Some(val) = &self.lints else {
++        let Some(val) = self.lints.as_deref() else {
+             bail!("`workspace.lints` was not defined");
+         };
+         Ok(val.clone())
+diff --git a/src/compiler/fingerprint/mod.rs b/src/compiler/fingerprint/mod.rs
+index 4b3f5a322f..6abeb71990 100644
+--- a/src/compiler/fingerprint/mod.rs
++++ b/src/compiler/fingerprint/mod.rs
+@@ -3397,7 +3397,7 @@ fn prefetch_checksum(
+ #[cfg(unix)]
+ fn prefetch_checksums<P: AsRef<Path> + Sync>(
+     paths: &[(P, Option<(u64, Checksum)>)],
+-    cache: &HashMap<PathBuf, Checksum>,
++    cache: &mut HashMap<PathBuf, Checksum>,
+     skippable_dirs: Option<&[PathBuf]>,
+     parallelism: ChecksumParallelism<'_>,
+ ) -> Option<PrefetchedChecksums> {
+@@ -3413,6 +3413,7 @@ fn prefetch_checksums<P: AsRef<Path> + Sync>(
+     if misses < MIN_PARALLEL_CHECKSUM_FILES {
+         return None;
+     }
++    let all_uncached = misses == paths.len();
+     let workers = (parallelism.jobs as usize).min(4).min(misses.div_ceil(64));
+     let mut tokens = Vec::new();
+     if parallelism.reserved_tokens.is_empty() {
+@@ -3456,7 +3457,7 @@ fn prefetch_checksums<P: AsRef<Path> + Sync>(
+                 first_unconfirmed.fetch_min(index, Ordering::Relaxed);
+                 continue;
+             };
+-            if let Some(actual) = cache.get(path) {
++            if !all_uncached && let Some(actual) = cache.get(path) {
+                 if *actual != prior {
+                     first_unconfirmed.fetch_min(index, Ordering::Relaxed);
+                 }
+@@ -3487,13 +3488,16 @@ fn prefetch_checksums<P: AsRef<Path> + Sync>(
+         }
+         read_chunk(0, main_paths, main_results);
+     });
++    if first_unconfirmed.into_inner() == paths.len() {
++        cache.reserve(misses);
++    }
+     Some(results.into_iter())
+ }
+ 
+ #[cfg(not(unix))]
+ fn prefetch_checksums<P: AsRef<Path> + Sync>(
+     _paths: &[(P, Option<(u64, Checksum)>)],
+-    _cache: &HashMap<PathBuf, Checksum>,
++    _cache: &mut HashMap<PathBuf, Checksum>,
+     _skippable_dirs: Option<&[PathBuf]>,
+     _parallelism: ChecksumParallelism<'_>,
+ ) -> Option<PrefetchedChecksums> {
+@@ -3583,7 +3587,7 @@ mod parallel_checksum_tests {
+             let workers_started = AtomicUsize::new(0);
+             let results: Vec<_> = prefetch_checksums(
+                 &paths,
+-                &HashMap::default(),
++                &mut HashMap::default(),
+                 None,
+                 ChecksumParallelism {
+                     jobserver: &jobserver,
