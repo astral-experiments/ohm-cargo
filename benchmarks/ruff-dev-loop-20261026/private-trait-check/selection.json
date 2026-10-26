@@ -1,0 +1,808 @@
+{
+  "original_scan": {
+    "all": {
+      "008bbfdf5ae43e407287b100b7823723a15a55b2": {
+        "rank": "0c2dcc771ba70b095f245788f17070e4a62be08cce0c8a2a1656a7782b2ee323",
+        "reject": "one Rust file below parser/ required"
+      },
+      "014abe1ee19e617c13ac498d09de5ae2f932f6e8": {
+        "rank": "efce26c06e3825b4ed2a096847b8224f1d68b732955c3bed8601857861206021",
+        "reject": "one Rust file below parser/ required"
+      },
+      "038235c6dbd931c0e37d5dd6cfe4cc6b60a81253": {
+        "changed_lines": 9,
+        "file": "crates/ruff_python_parser/src/parser/statement.rs",
+        "paths": [
+          "crates/ruff_python_parser/resources/inline/ok/match_annotated_assignment.py",
+          "crates/ruff_python_parser/src/parser/statement.rs",
+          "crates/ruff_python_parser/tests/snapshots/valid_syntax@match_annotated_assignment.py.snap"
+        ],
+        "rank": "c1cf3ba640d68e54d190c265cb70d0aa1bc6a1961436e76527020e71c3a94bae",
+        "reject": "does not reverse-apply in full",
+        "reverse_check": 1
+      },
+      "04a922866a96c2ebe962466e5095d31d42ee4f9a": {
+        "rank": "ecdc370ba14f7d3f7cf6fb0c14f166db5b688710a00e255dc5fd299de22ac117",
+        "reject": "one Rust file below parser/ required"
+      },
+      "0ecff877901a0377ad966ffab528488ce872b50e": {
+        "rank": "e1b7dca28ab859fa84c6b39008770461cfd30bf59a59e9d14209e502bb42e70d",
+        "reject": "previously identified corpus"
+      },
+      "0eeb02c0c1ec8ee2a253b6aef5a1a9cd86744af6": {
+        "rank": "631bbf73da72d76b0b9f53e8950afb6ad1d12d68dc1b70ab083d01ff64956345",
+        "reject": "one Rust file below parser/ required"
+      },
+      "10ccd511e94a81d1e836b174f1c553a73ff3f1b3": {
+        "rank": "64fe5d2781e3b3d0f520888646cf9689c9d7435eff1843e27a5920be20d897c5",
+        "reject": "one Rust file below parser/ required"
+      },
+      "138e70bd5c01d61061247c43b1bbb33d0290a18f": {
+        "rank": "94a7e81c7104e49c2f0092ca6ef5da330ce174cda642a70394f8581aeb5230b8",
+        "reject": "one Rust file below parser/ required"
+      },
+      "13ffb5bc1936493816f01fb5583359e3d8fffca7": {
+        "rank": "02b73de5e509cfc1ff8cf2dcae318f4c7c90ad015f1a4f3607a33c044ce427d7",
+        "reject": "one Rust file below parser/ required"
+      },
+      "1518f1d5fdcc92d207c5018bac6d0b9110643240": {
+        "rank": "7db565cb3b2ce93439d63ae595a903daae5c54a8970acf4c387dd5ab844e0a93",
+        "reject": "one Rust file below parser/ required"
+      },
+      "1889a5e6ebeed97d9e8fbd1fd005258172954bbf": {
+        "changed_lines": 24,
+        "file": "crates/ruff_python_parser/src/parser/expression.rs",
+        "paths": [
+          "crates/ruff_python_parser/resources/inline/err/template_strings_py313.py",
+          "crates/ruff_python_parser/resources/inline/ok/template_strings_py314.py",
+          "crates/ruff_python_parser/src/parser/expression.rs",
+          "crates/ruff_python_parser/tests/snapshots/invalid_syntax@template_strings_py313.py.snap",
+          "crates/ruff_python_parser/tests/snapshots/valid_syntax@template_strings_py314.py.snap"
+        ],
+        "rank": "8a5f8803b9504e53e47391561f212b24bd7542f354796a5035681c859b1d5d2d",
+        "reject": "does not reverse-apply in full",
+        "reverse_check": 1
+      },
+      "1b7d08c2c9d2211926158f3358eae962c551cbc9": {
+        "changed_lines": 21,
+        "file": "crates/ruff_python_parser/src/parser/mod.rs",
+        "paths": [
+          "crates/ruff_python_parser/src/parser/mod.rs"
+        ],
+        "rank": "ce69c9e32709b38f08c17cf47af5947d3490a376b590275deac940689c9febbf",
+        "reject": "outside inherent Parser impl"
+      },
+      "1e0642fac8e98a93c4e416886eb8af93a187984d": {
+        "changed_lines": 19,
+        "file": "crates/ruff_python_parser/src/parser/mod.rs",
+        "paths": [
+          "crates/ruff_python_parser/resources/invalid/re_lex_logical_token.py",
+          "crates/ruff_python_parser/src/parser/mod.rs",
+          "crates/ruff_python_parser/tests/snapshots/invalid_syntax@f_string_unclosed_lbrace.py.snap",
+          "crates/ruff_python_parser/tests/snapshots/invalid_syntax@f_string_unclosed_lbrace_in_format_spec.py.snap",
+          "crates/ruff_python_parser/tests/snapshots/invalid_syntax@re_lex_logical_token.py.snap",
+          "crates/ruff_python_parser/tests/snapshots/invalid_syntax@unterminated_fstring_newline_recovery.py.snap"
+        ],
+        "rank": "aceeb150eaa08cc8f95a1af2aab596842a7fae8649cd7807104c32b0a681e52d",
+        "reject": "does not reverse-apply in full",
+        "reverse_check": 1
+      },
+      "2382fe1f256049615a8914a3778660acc45fc74c": {
+        "rank": "0058d9245c784b53bb5ff0bb77bc7d3fc5ca835b2b808bcdcf55c7c51ad78161",
+        "reject": "one Rust file below parser/ required"
+      },
+      "269014a539170ebae8a20b566d99d5c0a5e0d83a": {
+        "rank": "7769789cdb55c3c15a2adbe4f1ca6b8478bd1798b79522b4a91bdce4e6a459ff",
+        "reject": "one Rust file below parser/ required"
+      },
+      "2711e08eb8eb38d1ce323aae0517fede371cba15": {
+        "changed_lines": 11,
+        "file": "crates/ruff_python_parser/src/parser/expression.rs",
+        "paths": [
+          "crates/ruff_python_parser/resources/inline/ok/parenthesized_star_index_py310.py",
+          "crates/ruff_python_parser/src/parser/expression.rs",
+          "crates/ruff_python_parser/tests/snapshots/valid_syntax@parenthesized_star_index_py310.py.snap"
+        ],
+        "rank": "f1c7f76236d4b55e3fb5e36afa9161111ee9279d0ddfcf5db554b33dddb99369",
+        "reject": "does not reverse-apply in full",
+        "reverse_check": 1
+      },
+      "2a4d8351325d97e3a2dd4a0fcc489cce15561dc1": {
+        "rank": "927fa415eca2a354ba5c9da1ec25b853516f0519e9bee3894d7a7b184e9d440e",
+        "reject": "one Rust file below parser/ required"
+      },
+      "2e696c7c86483642ab3042e050a024f54679786b": {
+        "rank": "da0cf8686da1c5c4be8d0f43a6f50501bc3d4096dc88c0916b4bd1ec37437197",
+        "reject": "one Rust file below parser/ required"
+      },
+      "301b7ed4d623458bc70d9e194ec6dd9e7ae26959": {
+        "rank": "88b5c4e84c0ecdaca7099edbe1e812525bc7d40859241fe2e3455c765bbf91aa",
+        "reject": "one Rust file below parser/ required"
+      },
+      "318f5037145bebfcd7a4e7fc3d39c5bfefa567d5": {
+        "rank": "37ca7d4c4504e79225006a76e2585e805a899525107c9dd9b554b5fa7f711b56",
+        "reject": "one Rust file below parser/ required"
+      },
+      "32a86842a6e53d14bee71cec03e506121af28704": {
+        "rank": "8781d033c7c2e5f74b72a15dc44403a3ac0f0a5e28b12a30a000f57ce5566a65",
+        "reject": "one Rust file below parser/ required"
+      },
+      "32c66ec4b714905fd781aca502560c90cc2bae1d": {
+        "rank": "d751833649b377817d42833ceaf54f34fa43b19b9fe923628a4fc4042ca9b09b",
+        "reject": "one Rust file below parser/ required"
+      },
+      "34d0944f3b1d0ce51db6a583e17faeb933df9be6": {
+        "rank": "343546a5b34c207a87a758af812b3848e756a48fac39afedf29fe6052b65e5a7",
+        "reject": "other source or metadata outside allowed fixtures"
+      },
+      "366fe21ba369ccdd01eb99c1043c9a969c99230b": {
+        "rank": "08d455ff548a7effafc5b3224361369e31ae16aecbf685f5507c3b9dd13c7daa",
+        "reject": "one Rust file below parser/ required"
+      },
+      "38bfda94cedbbc3e79f00930f4469c6a157fc722": {
+        "rank": "6703b46ea4adf7829101533088375c0709c5a2273996fa18f47fd252baa72006",
+        "reject": "one Rust file below parser/ required"
+      },
+      "38c074e67d8306e4635b8e9d365bf4c007c8d5b3": {
+        "changed_lines": 196,
+        "file": "crates/ruff_python_parser/src/parser/expression.rs",
+        "paths": [
+          "crates/ruff_python_parser/resources/inline/err/pep701_nested_interpolation_py311.py",
+          "crates/ruff_python_parser/src/parser/expression.rs",
+          "crates/ruff_python_parser/tests/snapshots/invalid_syntax@pep701_nested_interpolation_py311.py.snap"
+        ],
+        "rank": "187ac466935624ff6decfab46e69ec169ffe58535a847f254e2011818f400b7b",
+        "reject": "line bound"
+      },
+      "38d2562f41caa042f088489ac00dc75bf922bb5b": {
+        "rank": "0556d09ccc2412f4e13cdf4a460f514b3ed19d086bec8e5e9cd14fa6dda76820",
+        "reject": "one Rust file below parser/ required"
+      },
+      "3a32e564451aabbc810596f29fa7f049a2ed7994": {
+        "rank": "23b6ef92288c8f93067ef3e4928697d49ad6dd4a7850217d553867e53c4ffdcd",
+        "reject": "one Rust file below parser/ required"
+      },
+      "3b0584449d2cab6dbbde9b77c5b6a690867b95f6": {
+        "rank": "6500f7107ee90563137f15ff087f10e25f8a3305524039ee49a9e13555f94a03",
+        "reject": "other source or metadata outside allowed fixtures"
+      },
+      "3b19df04d71dc5abde62a90cb2ca363f0d7e08ab": {
+        "rank": "a76689bd64ee0b2293f3bcb68e9eeb7c0b55d6b02340e7918a1cfc3aabd82c2f",
+        "reject": "one Rust file below parser/ required"
+      },
+      "3c460a7b9ab0361e3109216de10b4b0293222480": {
+        "rank": "96c76799c401167dc7d73dedf9183a9f8aed19a3443a90de2f1ea3690e64a21e",
+        "reject": "one Rust file below parser/ required"
+      },
+      "3cef3416c52c7fb06715dafb38eecfd87a63c14b": {
+        "rank": "c640df13cb934e5ac51aa97bee6d4561bf141c5093bd9e73d1fd02b26386e115",
+        "reject": "one Rust file below parser/ required"
+      },
+      "3ea20f6161cbf59cb56595dfb634ec24bfa82f0b": {
+        "changed_lines": 47,
+        "file": "crates/ruff_python_parser/src/parser/expression.rs",
+        "paths": [
+          "crates/ruff_python_parser/resources/inline/err/mixed_tstring_and_bytes_literals.py",
+          "crates/ruff_python_parser/src/parser/expression.rs",
+          "crates/ruff_python_parser/tests/snapshots/invalid_syntax@mixed_tstring_and_bytes_literals.py.snap"
+        ],
+        "rank": "5ec95bd32e9ea94da2a8fd13013a0e832ac66151bfc7d3af3d8cd562fd49a7c3",
+        "reject": "line bound"
+      },
+      "409c13f3ec502b1549cda3eadbbe82679b03563f": {
+        "rank": "111723484b3121035fc95c1f542cf75f72677f55d8625bdda5d7b9bab43dffa6",
+        "reject": "one Rust file below parser/ required"
+      },
+      "42cbce538b57961231b20fca524bbc16e857f5c3": {
+        "changed_lines": 21,
+        "file": "crates/ruff_python_parser/src/parser/statement.rs",
+        "paths": [
+          "crates/ruff_python_parser/resources/inline/ok/param_with_star_annotation_py310.py",
+          "crates/ruff_python_parser/src/parser/statement.rs",
+          "crates/ruff_python_parser/tests/snapshots/valid_syntax@param_with_star_annotation_py310.py.snap"
+        ],
+        "rank": "80ee60757a61001376b428bc09c4b9df026dec1757acd29e54319aedc3c60ad7",
+        "reject": "does not reverse-apply in full",
+        "reverse_check": 1
+      },
+      "4431978262ba27c991bc4a1b92884f9873b8e542": {
+        "rank": "201d3b7f8ee7ac6574be087c87d11e15451c58023515e08632946d7dfbf4e6f4",
+        "reject": "one Rust file below parser/ required"
+      },
+      "4712503c6d66ebe84bc86e4a26aa620104cd37d7": {
+        "rank": "aede9112b4d182852f0a0991070e2ae371c98984b1865777af24647cc02920b9",
+        "reject": "one Rust file below parser/ required"
+      },
+      "474b00568ad78f02ad8e19b8166cbeb6d69f8511": {
+        "changed_lines": 22,
+        "file": "crates/ruff_python_parser/src/parser/mod.rs",
+        "paths": [
+          "crates/ruff_python_parser/resources/inline/err/ipython_help_escape_command_error_recovery_1.py",
+          "crates/ruff_python_parser/resources/inline/err/ipython_help_escape_command_error_recovery_2.py",
+          "crates/ruff_python_parser/resources/inline/err/ipython_help_escape_command_error_recovery_3.py",
+          "crates/ruff_python_parser/src/parser/mod.rs",
+          "crates/ruff_python_parser/tests/snapshots/invalid_syntax@ipython_help_escape_command_error_recovery_1.py.snap",
+          "crates/ruff_python_parser/tests/snapshots/invalid_syntax@ipython_help_escape_command_error_recovery_2.py.snap",
+          "crates/ruff_python_parser/tests/snapshots/invalid_syntax@ipython_help_escape_command_error_recovery_3.py.snap"
+        ],
+        "rank": "a34ccf986560c3d8ef1f97030fdc51385b977366146cdcaa3fad27476d567640",
+        "reject": "outside inherent Parser impl"
+      },
+      "4b41e4de7f22c36808c04bede8d1204c81cca550": {
+        "rank": "5feb17823dd5a6aab56534aae25cd42f78df5457864f06dac415b42582c789ff",
+        "reject": "one Rust file below parser/ required"
+      },
+      "4d813d53cdedbfef2c284278b349d9883c01ffb5": {
+        "rank": "a6d63a63717d9806474533ea8872edfc1f7d3a8fafdaf9e83bc9982be7e396d1",
+        "reject": "one Rust file below parser/ required"
+      },
+      "4f2851982ddd3e8dc7e8e8fcb228f86cae19ce4d": {
+        "rank": "6db81b9919865553573a1e9f760661bc69dc8d17a09a061e8e53b540e3b7aea0",
+        "reject": "one Rust file below parser/ required"
+      },
+      "4fc7dd300c493fc16ea279928a2ad353e070c92e": {
+        "rank": "e2adefcc0b48469f3f11f55dc962396aa486acf784a6d085c6a5387defc1284c",
+        "reject": "one Rust file below parser/ required"
+      },
+      "4fda309ba2cb04816dcd3c5526936874d923ce39": {
+        "changed_lines": 6,
+        "file": "crates/ruff_python_parser/src/parser/mod.rs",
+        "paths": [
+          "crates/ruff_python_parser/src/parser/mod.rs"
+        ],
+        "rank": "4b6e220356f9d0fcec143a7f09f920afb58cc6c4a096f0facd23b7e737f88a43",
+        "reject": "declaration or attribute change"
+      },
+      "5109b50bb3847738eeb209352cf26bda392adf62": {
+        "rank": "2acd012b28a580036172e5ce3317cb9ff832302775f5e43bcf689c51a65493be",
+        "reject": "one Rust file below parser/ required"
+      },
+      "515de2d062c4d2fe7c69ca928d4456cb82fa33f8": {
+        "rank": "a2679c4caca5f38d788ab51af3e5c322cfb750e9813d376ba70bf8839d65ba81",
+        "reject": "one Rust file below parser/ required"
+      },
+      "53a80a5c1191c4056d2fcb7fa5e47556b015fcf7": {
+        "rank": "a9e2bad66e971e4c9c023d4b153842f68fc69abbe104fe8fee5a4db89552396e",
+        "reject": "one Rust file below parser/ required"
+      },
+      "53fc0614dac7753eaaccf8e04d89c0a384c51fc1": {
+        "rank": "10992cd201d45a9ed616d74673d6a460466d4ba1524666a8b96f2507b74dc384",
+        "reject": "one Rust file below parser/ required"
+      },
+      "549cc1e437479ec7fde0dcf3e7360fb95d06076d": {
+        "rank": "03daf1d26dafe54ab8c301c8cb3fa53317366d0ad3049691e64274f69a9a7aa3",
+        "reject": "one Rust file below parser/ required"
+      },
+      "5697d21fca8e7146fb08ebe6eebf8c1402b7e4e3": {
+        "rank": "f47989595e6c8c5e66e6a713cb3e41c4d5590b6436581882363fb0295802020e",
+        "reject": "one Rust file below parser/ required"
+      },
+      "59145098d6bc541ce7b4428c3b5f2db59bcb7167": {
+        "rank": "da7f6eb588cbfb8172f91adf0dea639f87feb817ae4e67208fb1c134b066c2fa",
+        "reject": "one Rust file below parser/ required"
+      },
+      "5b81b8368dde859d648b0a2fb7c9ce94fcc7204b": {
+        "rank": "8b7ebd1dcd3e230e090a4211efb386c53d0bf127db766f7abb75ea0d8b2b4ad4",
+        "reject": "one Rust file below parser/ required"
+      },
+      "5f284d1f525ab93e77c3a6d2c16aac65a7bea459": {
+        "rank": "82b56da7efc6aab011d49030f095e9577391fa9982bed94b6131e64edef3ebc5",
+        "reject": "one Rust file below parser/ required"
+      },
+      "5f88756ee10e3faf0e96c883c34c95fc78200536": {
+        "changed_lines": 16,
+        "file": "crates/ruff_python_parser/src/parser/expression.rs",
+        "paths": [
+          "crates/ruff_python_parser/resources/inline/err/starred_starred_expression.py",
+          "crates/ruff_python_parser/src/parser/expression.rs",
+          "crates/ruff_python_parser/tests/snapshots/invalid_syntax@starred_starred_expression.py.snap"
+        ],
+        "rank": "c0b6bba9d47f8d2b977b4617cd58568e1ce4881a0ff4da9f9b7eed2cbd1ea454",
+        "reject": "declaration or attribute change"
+      },
+      "60ea72a6bc8c4c6f83ebd0fc5aa604b61a561bcd": {
+        "changed_lines": 104,
+        "file": "crates/ruff_python_parser/src/parser/mod.rs",
+        "paths": [
+          "crates/ruff_python_parser/src/parser/mod.rs"
+        ],
+        "rank": "3846e18d54241b2d513a3fbec44fbf72a76e66fdc62d53a3885463a75415ea00",
+        "reject": "line bound"
+      },
+      "63114123735cc95d06cf2d6e31fe9667385271ee": {
+        "rank": "2974d171f0389cd372d74eb6e7b8a7c020be20d56fd60dadb118194a72851276",
+        "reject": "one Rust file below parser/ required"
+      },
+      "6774f27f4b96725084b04711aa5aec2c6ac2a597": {
+        "rank": "d553cdbbf149bfa5628156cf05683647dc843c4e5b153ff1e076f9c09c9061da",
+        "reject": "one Rust file below parser/ required"
+      },
+      "689dc812f3cbf53b7b3336b04f00ef58eed45ce6": {
+        "rank": "698ba028118279e94ed080e15afec57838756e9b4622a1aae518c38674bd45f0",
+        "reject": "one Rust file below parser/ required"
+      },
+      "6ab8b737c5407bc1896ce97e56dd168b918a83f0": {
+        "rank": "60968908a4b3aeb059084b7827171162f68e462afb8e48f8fb3b029af53d6d4a",
+        "reject": "one Rust file below parser/ required"
+      },
+      "6c14225c662148d680f7026d52d01de2e47f3938": {
+        "rank": "e50e1507b5fc9d01f1e2034a401ceddfe15707ff9d789c3b39bb1557d843970f",
+        "reject": "one Rust file below parser/ required"
+      },
+      "6c1fa1d440e8033f39243b3f30d4c72f995c8219": {
+        "rank": "26a1ba5e862b3448cc5feca7564b0295a2ee35a99132958cbd86e665fe6d765f",
+        "reject": "one Rust file below parser/ required"
+      },
+      "6c4d779140e0e16b041029000a96e8317f76624f": {
+        "rank": "e9ec3f828781037d385f3d55e1603209e5849c50e99812ec2d8a5d3641e5fda7",
+        "reject": "one Rust file below parser/ required"
+      },
+      "6cfeb8aa07306cf06d7ab552d4190a5d24b6ff8d": {
+        "rank": "ec6d8e57fc978aa328de80d06d9aa408c58ea85470053ae0a70a49141c3c7d11",
+        "reject": "one Rust file below parser/ required"
+      },
+      "6ded4bed1651e30b34dd04cdaa50c763036abb0d": {
+        "rank": "716ac635a90c096dc5d9784fe319e137e12c7b7721e53426f7a2deb8d5bbeab8",
+        "reject": "one Rust file below parser/ required"
+      },
+      "6ecb4776de10db222360d5d75e5eac93d9710340": {
+        "rank": "73575631c6de838fce4e0c85a2b29a0ac0dcd57594fbe9955c1e51967274f5a1",
+        "reject": "one Rust file below parser/ required"
+      },
+      "71f8389f61a243a0c7584adffc49134ccf792aba": {
+        "rank": "16326f0dbbdb178b6a50c46176f960a8c26a58b9497f77c9be4f6efe238c160b",
+        "reject": "other source or metadata outside allowed fixtures"
+      },
+      "75a562d313fad175e9896bd766baede5619e87b8": {
+        "rank": "2be6bd2f08758708b84c4fd5c8e056e9eb593d4b5e4c14fc0a5f080af41c2b46",
+        "reject": "one Rust file below parser/ required"
+      },
+      "764aa0e6a1b16284c1c939332c19d742dae8aee1": {
+        "rank": "1d5984deb152a6fcda61bd3e69dcf8371bcf15724ef66eb100917c42e198ed8f",
+        "reject": "one Rust file below parser/ required"
+      },
+      "78806361fd5b23a814d3d16af36b04304e586952": {
+        "rank": "987eb7ba0a86e6e0325e1d35bbf55527be0fb813e694acab1ce0df32b8085347",
+        "reject": "one Rust file below parser/ required"
+      },
+      "7a7bfd84c4a60b6f3d0bdfe4ac13395bd65e65da": {
+        "rank": "6b9dc40ac4eeae84310bcf021d45d25aef271da1d812c8c1f4807ca5e00d6313",
+        "reject": "one Rust file below parser/ required"
+      },
+      "7a9aed24ffa150677657f9dde0eb252a8377c09d": {
+        "rank": "d7f9a63a479d6567b2f4c32a3fdb4dfcacc00d606b3ae868fc578a8855727add",
+        "reject": "one Rust file below parser/ required"
+      },
+      "7abc41727b93fedb298f917451650fec435fecb7": {
+        "rank": "dcb58e902c2bca111fd64c3481647718ec3507b44ce70e8ef30a2ab1182af210",
+        "reject": "one Rust file below parser/ required"
+      },
+      "7b13f01ba1569887a25670820764b24c206da8e5": {
+        "rank": "648e8fc9a32e7b0f442e2ddbacb86fdae8cacb9b13107c0b0d85abc163e07835",
+        "reject": "one Rust file below parser/ required"
+      },
+      "7cb2619ef5b31fe517b7695d0eb38c25e85baaf7": {
+        "rank": "2f7a6fcb79e43f25fe82e24a00aeafb7e0bc522ef31d05b6ce420ac94d668032",
+        "reject": "one Rust file below parser/ required"
+      },
+      "7dfde3b929c70b5f5fb9933ef09b8005717a8d85": {
+        "rank": "c02803c41742d475e1ff086ac00f136b364e4386e0ea2505c123ca1a92bb8ef1",
+        "reject": "one Rust file below parser/ required"
+      },
+      "7eba967e16c4c7c8a905b5bcb491e568ce9d9d4f": {
+        "rank": "98afe579e45bf899b58309a0fde145d4a873d5ff971beb8084d21ce4b203df39",
+        "reject": "one Rust file below parser/ required"
+      },
+      "8020d486f67505bcd3fc95d13868065e92ed92fe": {
+        "changed_lines": 73,
+        "file": "crates/ruff_python_parser/src/parser/expression.rs",
+        "paths": [
+          "crates/ruff_python_parser/resources/inline/err/for_in_target_postfix_expr.py",
+          "crates/ruff_python_parser/resources/inline/err/parenthesized_compare_expr_in_for.py",
+          "crates/ruff_python_parser/resources/inline/ok/for_in_target_postfix_expr.py",
+          "crates/ruff_python_parser/src/parser/expression.rs",
+          "crates/ruff_python_parser/tests/snapshots/invalid_syntax@for_in_target_postfix_expr.py.snap",
+          "crates/ruff_python_parser/tests/snapshots/invalid_syntax@parenthesized_compare_expr_in_for.py.snap",
+          "crates/ruff_python_parser/tests/snapshots/valid_syntax@for_in_target_postfix_expr.py.snap"
+        ],
+        "rank": "0c142a3cf37158fde970a82c3fec48e97cf2d8688486daf5db3082f8fd2ad93a",
+        "reject": "line bound"
+      },
+      "81bcdcebd306c1ebf3678d406d4f402255248333": {
+        "rank": "c15f1adb08be96c49f5df5b9d354b2b907f7e2fe30cebcc9b6c4c3e338557b3c",
+        "reject": "one Rust file below parser/ required"
+      },
+      "845ba7cf5f04a01c5471025c2e2a90ccc79b14fc": {
+        "rank": "1b9e9c89bab9cfb005b0024085112c46b8e5e7cb6c7a59f9e6ec3a6fff552ba8",
+        "reject": "one Rust file below parser/ required"
+      },
+      "8499abfa7feec5b496a438c4dc310ee9130d4745": {
+        "rank": "8b993f2e076a8e2614eabd38966dafffad08d4b289f516417541a3e3e37af89c",
+        "reject": "one Rust file below parser/ required"
+      },
+      "87929ad5f1306cb889cbc85ddfdb9404d9b5c6ad": {
+        "rank": "ec0e6b0fb00e8080ee36ffa7c7886642329b73d1fc2b5f9ea8cab339dc4b8c70",
+        "reject": "one Rust file below parser/ required"
+      },
+      "88d56e5feb43137d431210b54047ce6d5001682d": {
+        "rank": "3e3bec0c006abcf40fe7a7ce0e445d4a633e299e306933c54e5faa2dd7b39f80",
+        "reject": "one Rust file below parser/ required"
+      },
+      "8a10b6743c1aedc56c44899edacbe0d3341db927": {
+        "rank": "628622e3ca2d592803b7b4d71b6ecff4dd31e45b5d1fb0beabb1f5c9e595f2c8",
+        "reject": "one Rust file below parser/ required"
+      },
+      "8a4158c5f828b4391db91a2177af8490813dd3d2": {
+        "rank": "e67fd056e516610f0c7e235357473a5a5314b7ef8ababc74365c73be1ea4cc92",
+        "reject": "one Rust file below parser/ required"
+      },
+      "8b9ab48ac61b7c73df7d03ccda06085e61e62a5e": {
+        "rank": "242b2fcca284a16064f617986bd05f99834cd8e2df969424bb981606f5973b7a",
+        "reject": "other source or metadata outside allowed fixtures"
+      },
+      "8bc437ef902b4cb26eb531c63112f25eb1c9b1fc": {
+        "rank": "1db3f10d6cbc261fa6938a514d0f4a75e039bbe0ef505d2a4f26fa86eed343e6",
+        "reject": "one Rust file below parser/ required"
+      },
+      "8fb1123c54bac673e6dbcd2c3d0ffbe9c8b40b9d": {
+        "rank": "1dda6544cea70a62b7ac8a4483e816d4608ebb21fc5f9c6bfc1dcb93583e79e3",
+        "reject": "one Rust file below parser/ required"
+      },
+      "96da136e6af9791e574219099412393485f6ceca": {
+        "rank": "c0b44e5b42aa0e827f14c5039f8da1a99764fd01fb5efd19bba630735aedbdd9",
+        "reject": "one Rust file below parser/ required"
+      },
+      "978909fcf45b2e6e4dddb5d00149ab5a922638eb": {
+        "rank": "eb6753fe52f53a92190e758a24b542c705395c831f5fe9db7bb1e831f539025e",
+        "reject": "one Rust file below parser/ required"
+      },
+      "97d0659ce3e3977245ca202770078a9df60849dd": {
+        "rank": "6e1792b4c984c0c555da7f95ea0d926e7863e5a6263aede25bcd8e332a663e51",
+        "reject": "one Rust file below parser/ required"
+      },
+      "9a5220ecdbafa12e2f17a4dd061ea381ad549e9b": {
+        "rank": "59492cfb5fc389a1bd3f0d2bb3ccb182b4e0cf790449c3534c6c02b663636b76",
+        "reject": "one Rust file below parser/ required"
+      },
+      "9a55bc6568caeba0c78c6f3358cd2f9475006f72": {
+        "rank": "39d320129dae7f871c52ca4fba92dcce5d72b97520464dcd4b81ee1cdb3159a6",
+        "reject": "one Rust file below parser/ required"
+      },
+      "9ae698fe30cf3526f0e7ae237b800b3ed19a819f": {
+        "rank": "9c1fa394330d3b32e925682a10aa2b14e0b7f7e8c4e52eb2250ba4a53e4f5cd5",
+        "reject": "one Rust file below parser/ required"
+      },
+      "9bb23b0a38bd0532dc70c018b99a1ad30774f31c": {
+        "changed_lines": 11,
+        "file": "crates/ruff_python_parser/src/parser/statement.rs",
+        "paths": [
+          "crates/ruff_python_parser/resources/inline/err/case_expect_indented_block.py",
+          "crates/ruff_python_parser/src/parser/statement.rs",
+          "crates/ruff_python_parser/tests/snapshots/invalid_syntax@case_expect_indented_block.py.snap"
+        ],
+        "rank": "69f30430e45cdc58326c5ae2627280e64840f9f53af73c8a6a6c6b358dcbee4d",
+        "reject": "outside inherent Parser impl"
+      },
+      "9bbf4987e86690b7181aaa7992d7c757e2fac64d": {
+        "rank": "0e555af420074230ef74dc3a717add0e8be266875b0829272a393279105b93cc",
+        "reject": "one Rust file below parser/ required"
+      },
+      "a0819f0c5187266322c10aed4588af52b9193379": {
+        "rank": "2695d00f3f6df255c89a53a04ee083205ce146e35351af4a92a3238eb112eb68",
+        "reject": "one Rust file below parser/ required"
+      },
+      "a3bb0cd5ec4d4dffea5d42d184e8c4a062976663": {
+        "changed_lines": 31,
+        "file": "crates/ruff_python_parser/src/parser/statement.rs",
+        "paths": [
+          "crates/ruff_python_parser/resources/inline/err/try_stmt_mixed_except_kind.py",
+          "crates/ruff_python_parser/src/parser/statement.rs",
+          "crates/ruff_python_parser/tests/snapshots/invalid_syntax@try_stmt_mixed_except_kind.py.snap"
+        ],
+        "rank": "17f06953d3844d4a30ca38b93c6c797aea972b10bf3038532aabfeb4bf704c81",
+        "reject": "does not reverse-apply in full",
+        "reverse_check": 1
+      },
+      "a50dc58628691ee00a21809e19bdea71958e4f3c": {
+        "changed_lines": 9,
+        "file": "crates/ruff_python_parser/src/parser/statement.rs",
+        "paths": [
+          "crates/ruff_python_parser/resources/inline/err/from_import_parenthesized_star.py",
+          "crates/ruff_python_parser/src/parser/statement.rs",
+          "crates/ruff_python_parser/tests/snapshots/invalid_syntax@from_import_parenthesized_star.py.snap"
+        ],
+        "rank": "a7004692c377ab157616c33eb921e68e313310e3d0cdb21612a87b247d097f3b",
+        "reject": "does not reverse-apply in full",
+        "reverse_check": 1
+      },
+      "a525b4be3d55130467805b8e5873d9bc77e5b8b9": {
+        "rank": "a65b76b5fd4eea47b79b0ae1ba8cf4034b0321b48b2ad4c78e5776c6ca5476b3",
+        "reject": "one Rust file below parser/ required"
+      },
+      "aa894ffa4198bdaa415bb7ea70c71d7dee8d127b": {
+        "rank": "19b95be2273821ec32bbaa19a0b0c23952f7a23072de71e4de74d9952f8c079d",
+        "reject": "one Rust file below parser/ required"
+      },
+      "adef89eb7cfb6eb7c3e0646dcd120e6f1adc7af2": {
+        "rank": "ab88379829562a6c1dec07110493db9d31efb4078a9f6c6ee7731c46ab61cb28",
+        "reject": "one Rust file below parser/ required"
+      },
+      "ae306a059e3d3d0ce15f6848662407edae4027eb": {
+        "changed_lines": 106,
+        "file": "crates/ruff_python_parser/src/parser/expression.rs",
+        "paths": [
+          "crates/ruff_python_parser/src/parser/expression.rs"
+        ],
+        "rank": "5dadcefaa67ba0ab0032348cbae5d722d5c8794c9f9c1bf5254026328bc8abd6",
+        "reject": "line bound"
+      },
+      "aea5ed4d278017057c2e842c6c3a2e92ad71495f": {
+        "rank": "99d7bc05cfb7ac02279ae330d8f3084aff26273d272dff869d4ac5d3302b766b",
+        "reject": "one Rust file below parser/ required"
+      },
+      "b0a887e3676908bac3c42bd5815b0a6033187e53": {
+        "rank": "6c461b877e1896586af68dd3de31c59eb6c448c8802540fc46c30087b6971d36",
+        "reject": "one Rust file below parser/ required"
+      },
+      "b3c884f4f33a81cd08e9ebc13fd0d5a538c8afc7": {
+        "rank": "0094e7c64d4e20c710e768db9143c06826cf0797f0f97a68c6a3d29014363297",
+        "reject": "one Rust file below parser/ required"
+      },
+      "b63c2e126b928fab4180eda5d9132552beeee7fe": {
+        "rank": "545a16bc6ed92e2c55a772c7e8be7a5d6355cdf717e436c46ef170876671946c",
+        "reject": "one Rust file below parser/ required"
+      },
+      "b6ab2b32fb6d6d118be3f52f3d15570cc27c798e": {
+        "rank": "3b66bb8bd0cc0a0b83c5c479582edbe38c924cf70f606cf7bca6f03a879788db",
+        "reject": "one Rust file below parser/ required"
+      },
+      "b7066e64e716c2bd83350fd83e94f2a95cdf9d67": {
+        "rank": "d6a123020e99c0f76452f72926c07fa66d6d48b94e0069adf6696a371ae6f177",
+        "reject": "one Rust file below parser/ required"
+      },
+      "b8ae5978c2f0574b3fe460e66b639fdee86d2428": {
+        "changed_lines": 15,
+        "file": "crates/ruff_python_parser/src/parser/expression.rs",
+        "paths": [
+          "crates/ruff_python_parser/src/parser/expression.rs"
+        ],
+        "rank": "a731ed058f8d69015325f5b4d47a22399da6c1a00c9037669d0f817d58c3ad86",
+        "reject": "outside inherent Parser impl"
+      },
+      "bf5b62edaccdc007dfcf559ab9e870be66c19877": {
+        "rank": "2107cdce104f9f0ae00605b489adf0e0bf16b4a0b138fa57cf82b57d3f6ba3ac",
+        "reject": "one Rust file below parser/ required"
+      },
+      "c0824de94a1c9bf7c0042625c8a46ed5eafe9794": {
+        "rank": "97e535189e1083f8ee36b9111d404bde46b9033508a6af4bdc9ed1b04925d5c2",
+        "reject": "one Rust file below parser/ required"
+      },
+      "c1eaf6ff72875a68e2585d50deaff220ea1d8ce9": {
+        "changed_lines": 55,
+        "file": "crates/ruff_python_parser/src/parser/statement.rs",
+        "paths": [
+          "crates/ruff_python_parser/resources/inline/err/raise_stmt_from_without_exc.py",
+          "crates/ruff_python_parser/src/parser/statement.rs",
+          "crates/ruff_python_parser/tests/snapshots/invalid_syntax@raise_stmt_from_without_exc.py.snap"
+        ],
+        "rank": "8fe158f196ccc8d44324248ce4749c480128c6a220c3145b0802397410a02256",
+        "reject": "line bound"
+      },
+      "c2b2e42ad3f83617a75565fb5e4a6bb1b129212c": {
+        "rank": "e1cc569ea1132ad8aa56979fa9b137cae69527ee10a101d6870b6218ed2df49a",
+        "reject": "one Rust file below parser/ required"
+      },
+      "c30735d4a7bb1cb53d3df441468aa7eacccc9046": {
+        "rank": "1060005fc13fc9888d3e8517e7ad538594343c2b52b3929761d0aef4eab8f125",
+        "reject": "one Rust file below parser/ required"
+      },
+      "c423054dc09e5b644c926b6b527b6accfbe693e9": {
+        "rank": "243b5e8a1bcc40b3a4b7d14d8c134f1a6917842b0c47ea026f6634d22a9eeb1a",
+        "reject": "one Rust file below parser/ required"
+      },
+      "c56aad17fda103e987b0fe8bfd85e5cae2b0751d": {
+        "rank": "0cc471de9585c0f174962d7f68b6d521d9fdec3865d6ad185e33080fb71c73af",
+        "reject": "one Rust file below parser/ required"
+      },
+      "c5b58187da1809c778d886595ec50f7db68fd3b9": {
+        "rank": "cac0b072524e1198202859c004fd0143b1a084c4cb8f1eaba459f03cf59d7dfd",
+        "reject": "one Rust file below parser/ required"
+      },
+      "c80b9a4a9025eb65d0b129b2ab9897f955270f04": {
+        "rank": "fc3a809ac1eea5216915be70e7c8ae53ea74eb483fbe9e3a02b9dc89ebd0f29d",
+        "reject": "one Rust file below parser/ required"
+      },
+      "c847cad389f202edae868765e690cb7042e88264": {
+        "rank": "c212f38b3a4c6c992032ef069a1116a912deeba80a04ccdd71b8d35c413d60e6",
+        "reject": "one Rust file below parser/ required"
+      },
+      "c8a06a9be8aa2147ec9c8c888c0be8cc04a6434f": {
+        "changed_lines": 23,
+        "file": "crates/ruff_python_parser/src/parser/statement.rs",
+        "paths": [
+          "crates/ruff_python_parser/resources/inline/err/except_star_py310.py",
+          "crates/ruff_python_parser/src/parser/statement.rs",
+          "crates/ruff_python_parser/tests/snapshots/invalid_syntax@except_star_py310.py.snap"
+        ],
+        "rank": "4af95547b8b587a2dfe26c13ed993d01253843490cf5a73b553656b507035c22",
+        "reject": "outside inherent Parser impl"
+      },
+      "c9dff5c7d5bcab2a83f1c3b4a1a80af230ece541": {
+        "rank": "4930f4db32774707284bff6e5a5ea4c471f0ac14cc57378a67efab1adbad8bb2",
+        "reject": "one Rust file below parser/ required"
+      },
+      "cb7139333200f1df19c4b06c361049fc6db6f1aa": {
+        "rank": "286b6df2f6ad1142d6e5a7dfc2b8dd9d71957a05f9efbea577aa0ae505196b92",
+        "reject": "one Rust file below parser/ required"
+      },
+      "cd3e319538d75268bf5af4d35b75c8bea7785f5a": {
+        "rank": "f87ec9f014498e4cfff6f5f6cd2566277a4eccaba1305ab620a33f7a84166397",
+        "reject": "one Rust file below parser/ required"
+      },
+      "cf4ab7cba16b25f42d9d6b2464e22eb57df0fa8c": {
+        "rank": "d8d271823933423da38fb2f6d84f068e496c6bcc421bba578a611e4b0753699a",
+        "reject": "one Rust file below parser/ required"
+      },
+      "cf59cee928c8429c5b88eda8f752af92e5e5f4c8": {
+        "rank": "65ef664e55a900600fb3b1bc1fd5f55c08f3259410261a6adf3315e29bd330f0",
+        "reject": "one Rust file below parser/ required"
+      },
+      "d0623888b3231fdda09bfa7079d67f8162faa10c": {
+        "rank": "55515682faeefa94efd6c5fdd5d5d254b28f9f9650306e323dacc442b1bbdb24",
+        "reject": "one Rust file below parser/ required"
+      },
+      "d3cd61f804bae7428c8bd3ac8d4a2b8bb3640e4c": {
+        "rank": "197640a0ca0fe49424639ed379e90b57a4bbb5095c3cc18fc3b84e2667587b8f",
+        "reject": "one Rust file below parser/ required"
+      },
+      "d5410ef9feaf9b3c35f7da98d8314c1a30af7fa9": {
+        "rank": "5c6fc0db0ceeab36cb82b3a40a92b2126474172c8916cf139cba92366d662b2a",
+        "reject": "one Rust file below parser/ required"
+      },
+      "da78de043964fc9ac64b81ead68f2dacdb1fae46": {
+        "changed_lines": 2,
+        "file": "crates/ruff_python_parser/src/parser/expression.rs",
+        "paths": [
+          "crates/ruff_python_parser/src/parser/expression.rs"
+        ],
+        "rank": "48ed1fc1bc1e364f51e076bc457255630a6aa3d0e2266bf8c51317251525bbb5",
+        "reject": "does not reverse-apply in full",
+        "reverse_check": 1
+      },
+      "dcf31c93480a026bc51d6a8b0c3c4d72ee079cd3": {
+        "rank": "949bcda9595b51f133a79c8dcfec7ce4d4842b031cf68051ba8b536ae662b034",
+        "reject": "one Rust file below parser/ required"
+      },
+      "e28e73729698a985556239a578ae1325cdb3fb73": {
+        "rank": "e5511126dd69a084c7fb86f694873440e71ea15063245d44c42d0d33e2d82b66",
+        "reject": "one Rust file below parser/ required"
+      },
+      "e4f5fe8cf735a57951397e56af688f1f01c4b7b0": {
+        "rank": "e5a0180b80113553bee26931fc6e15d83331e44ec4a3e135df6e347b36f14992",
+        "reject": "one Rust file below parser/ required"
+      },
+      "e7adf82ff005f3ab3051c363464cf65bf8a6e2f3": {
+        "rank": "ae4104cf085f2c774a157f6cd927b17d3bc0624534651e2a91f3f0ffa2b37f2f",
+        "reject": "other source or metadata outside allowed fixtures"
+      },
+      "e7b93f93efe1da9402e3e886cbdd4ec248d2785a": {
+        "rank": "9a534c229f3570a56a83f8e2527f866f3d9546f0a56194cecc7313e0dcfad122",
+        "reject": "one Rust file below parser/ required"
+      },
+      "e924ecbdac0a12b083222859599dcaa066b4512f": {
+        "rank": "4c2c066dd090c5355793fc17f91c6ddd6dd247a0aca5a1cc8462d5dab0f30a5f",
+        "reject": "one Rust file below parser/ required"
+      },
+      "e96caa26b709a3bff8eea43e9d47b4335f1bfddc": {
+        "rank": "5442136b6522f384451a83d613ac4a141f6b2644dfcc9f895d0f1a9bf802b3af",
+        "reject": "one Rust file below parser/ required"
+      },
+      "eef403f6cf0f4ca54c53ab76f3bade7651d4f5e7": {
+        "rank": "f151c431ad36d7216e439c1b05fb9ce83d133ed078a72297c2ef63f005b4be88",
+        "reject": "one Rust file below parser/ required"
+      },
+      "eff1c88d7018293a52edf5e61d99a1a9061fc1e4": {
+        "rank": "fcd5a36e380460cf2676d95ed28ad3c4973851735c2f599b548c6f04aa7c09d4",
+        "reject": "one Rust file below parser/ required"
+      },
+      "f32733c063bd906e29aaa192f149c32455da0675": {
+        "rank": "6208aa3e3fdd1249c33c4556350a88f72f2e4d4f2b9f2cbe36d407705f69cc51",
+        "reject": "one Rust file below parser/ required"
+      },
+      "f5096f205006c11ec12094cbd293cce0c4a1f730": {
+        "rank": "9f28149f92c3d9215f093617090946984423b81b44864328d18c3d10cc87c21b",
+        "reject": "one Rust file below parser/ required"
+      },
+      "fcef46ccdff561f41fa4d9371e0178dcc4f12e73": {
+        "rank": "396308c659849a1140fd1b3be7bb7c1c9d39a9abdd982efa455a9c927b97ece9",
+        "reject": "one Rust file below parser/ required"
+      }
+    },
+    "expected_candidate_count": 180,
+    "pin": "93526150df078af7dd8fc4226cdcc469539d2001",
+    "ranked": [],
+    "seed": "ohm-private-trait-20261026-holdout-v1",
+    "selected": null
+  },
+  "rank_after_source_applicability": {
+    "chosen": "42cbce538b57961231b20fca524bbc16e857f5c3",
+    "direction": "historical adjacent commit forward; diagnostic Rust-only reversal at current pin",
+    "full_sha256": "832a99cd764bbbe27d712691975a33fb0394871095dd47ee96f4d9345f7ca74c",
+    "parent": "67602512b6cc90dad377b8b8709b981a6184fe37",
+    "ranked": [
+      [
+        "17f06953d3844d4a30ca38b93c6c797aea972b10bf3038532aabfeb4bf704c81",
+        "a3bb0cd5ec4d4dffea5d42d184e8c4a062976663",
+        "crates/ruff_python_parser/src/parser/statement.rs",
+        31,
+        1,
+        "821c12adedb26a78f22f7e7030fe23c0834a77ebd426fa3c50064ab87a62bffa",
+        "adb2afe4601109422ef1ea0b452e409c216bf2accb236535b565adfe7940f82c"
+      ],
+      [
+        "48ed1fc1bc1e364f51e076bc457255630a6aa3d0e2266bf8c51317251525bbb5",
+        "da78de043964fc9ac64b81ead68f2dacdb1fae46",
+        "crates/ruff_python_parser/src/parser/expression.rs",
+        2,
+        1,
+        "a13c3fe8a4f6034f3bf20b3c347aa8eaa33b8a09524030b311fc1464bc3981ec",
+        "a13c3fe8a4f6034f3bf20b3c347aa8eaa33b8a09524030b311fc1464bc3981ec"
+      ],
+      [
+        "80ee60757a61001376b428bc09c4b9df026dec1757acd29e54319aedc3c60ad7",
+        "42cbce538b57961231b20fca524bbc16e857f5c3",
+        "crates/ruff_python_parser/src/parser/statement.rs",
+        21,
+        0,
+        "832a99cd764bbbe27d712691975a33fb0394871095dd47ee96f4d9345f7ca74c",
+        "7f554303ee8f64feb88ebab57abfe07b39294017043f7ebcc4c778b84c9055e1"
+      ],
+      [
+        "8a5f8803b9504e53e47391561f212b24bd7542f354796a5035681c859b1d5d2d",
+        "1889a5e6ebeed97d9e8fbd1fd005258172954bbf",
+        "crates/ruff_python_parser/src/parser/expression.rs",
+        24,
+        1,
+        "294f2bbe6d1d2ba84681018c753d427c4b1234d6c3584a68792459f936db8252",
+        "a8c89170d0f1cd188b2ac185be275437b1cc0c98e2a83ea5f074991f7de93a95"
+      ],
+      [
+        "a7004692c377ab157616c33eb921e68e313310e3d0cdb21612a87b247d097f3b",
+        "a50dc58628691ee00a21809e19bdea71958e4f3c",
+        "crates/ruff_python_parser/src/parser/statement.rs",
+        9,
+        0,
+        "28bc53570ed84097975df2a666cebd02dda19650bfe6dea7e0ca250ca66bff06",
+        "7ce887e7ae27f961ce52f47e2da86bf7e7d7f7cca00f914c43f6ac498775034b"
+      ],
+      [
+        "aceeb150eaa08cc8f95a1af2aab596842a7fae8649cd7807104c32b0a681e52d",
+        "1e0642fac8e98a93c4e416886eb8af93a187984d",
+        "crates/ruff_python_parser/src/parser/mod.rs",
+        19,
+        1,
+        "fbecfd2b38233b25f0be82705db39469a8534eb2bc13c44c8564720af4b9ded4",
+        "ceea7244140629dbf341801ae1fd44f2476ee400f1dc63201511c08460ac9813"
+      ],
+      [
+        "c1cf3ba640d68e54d190c265cb70d0aa1bc6a1961436e76527020e71c3a94bae",
+        "038235c6dbd931c0e37d5dd6cfe4cc6b60a81253",
+        "crates/ruff_python_parser/src/parser/statement.rs",
+        9,
+        0,
+        "013801d485398697180db6754fc4e3ba5a89f1adc04d8b3d7c8e694b0c7ca4db",
+        "6b51a50f111c7150b7da754ed23e54df3ef5f1049c3b1003e7b77ade58975805"
+      ],
+      [
+        "f1c7f76236d4b55e3fb5e36afa9161111ee9279d0ddfcf5db554b33dddb99369",
+        "2711e08eb8eb38d1ce323aae0517fede371cba15",
+        "crates/ruff_python_parser/src/parser/expression.rs",
+        11,
+        0,
+        "47609da837fb638fe05a2ddb49781f33f8a53bf2045d0eb5d1eb3e20491e2d03",
+        "314b2e522aaf4b8c709f187263f652ebc620499b9041fa0a859175c1e31f726d"
+      ]
+    ],
+    "rust_only_sha256": "7f554303ee8f64feb88ebab57abfe07b39294017043f7ebcc4c778b84c9055e1"
+  }
+}

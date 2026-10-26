@@ -1,0 +1,402 @@
+{
+  "cargo_units": 520,
+  "rmeta_count": 442,
+  "public_api_files": 435,
+  "actual_compilers": {
+    "warm-original": 0,
+    "warm-edit": 1,
+    "cold-original": 35,
+    "cold-edit": 35,
+    "cold-edit-repeat": 35
+  },
+  "comparisons": {
+    "warm-original vs warm-edit": {
+      "metadata": [
+        "libruff_python_parser-5e9f0fcdc33ae8db.rmeta"
+      ],
+      "api": []
+    },
+    "warm-edit vs cold-edit": {
+      "metadata": [
+        "libruff_db-6d727237185d6a9a.rmeta",
+        "libruff_linter-6e45cf3219ababad.rmeta",
+        "libruff_python_parser-5e9f0fcdc33ae8db.rmeta",
+        "libruff_python_semantic-8015b9bb2dabf4c9.rmeta",
+        "libty_module_resolver-6508e2857c903705.rmeta",
+        "libty_python_core-9d440a8ce88bc181.rmeta",
+        "libty_python_semantic-e8c06e8a1d6b1096.rmeta"
+      ],
+      "api": []
+    },
+    "warm-original vs cold-original": {
+      "metadata": [
+        "libruff_db-6d727237185d6a9a.rmeta",
+        "libruff_linter-6e45cf3219ababad.rmeta",
+        "libty_ide-682dff4f9474ae9e.rmeta",
+        "libty_python_core-9d440a8ce88bc181.rmeta",
+        "libty_python_semantic-e8c06e8a1d6b1096.rmeta"
+      ],
+      "api": []
+    },
+    "cold-original vs cold-edit": {
+      "metadata": [
+        "libruff_db-6d727237185d6a9a.rmeta",
+        "libruff_linter-6e45cf3219ababad.rmeta",
+        "libruff_python_parser-5e9f0fcdc33ae8db.rmeta",
+        "libruff_python_semantic-8015b9bb2dabf4c9.rmeta",
+        "libty_ide-682dff4f9474ae9e.rmeta",
+        "libty_module_resolver-6508e2857c903705.rmeta",
+        "libty_python_core-9d440a8ce88bc181.rmeta",
+        "libty_python_semantic-e8c06e8a1d6b1096.rmeta"
+      ],
+      "api": []
+    },
+    "cold-edit vs cold-edit-repeat": {
+      "metadata": [
+        "libruff_db-6d727237185d6a9a.rmeta",
+        "libruff_linter-6e45cf3219ababad.rmeta",
+        "libruff_python_semantic-8015b9bb2dabf4c9.rmeta",
+        "libty_module_resolver-6508e2857c903705.rmeta",
+        "libty_project-84a17f75f09a510a.rmeta",
+        "libty_python_core-9d440a8ce88bc181.rmeta",
+        "libty_python_semantic-e8c06e8a1d6b1096.rmeta"
+      ],
+      "api": []
+    }
+  },
+  "decoded": {
+    "libruff_db-6d727237185d6a9a.rmeta": {
+      "warm-original": {
+        "private_hash": "ddb950370480732cd402046e3b35e7d5",
+        "root_without_private_hash": "a4e91270c5d9c8b4e088c9fa003cee554a5609f2d6564c2421706839f30f9217",
+        "n_definitions": 5194,
+        "retained_rows_sha256": "9e54c884147f65c7b9f45b7396ee58374342b9d865c1d207b25762e343abe6e3",
+        "changed_rows_vs_cold_original": 0
+      },
+      "warm-edit": {
+        "private_hash": "ddb950370480732cd402046e3b35e7d5",
+        "root_without_private_hash": "a4e91270c5d9c8b4e088c9fa003cee554a5609f2d6564c2421706839f30f9217",
+        "n_definitions": 5194,
+        "retained_rows_sha256": "9e54c884147f65c7b9f45b7396ee58374342b9d865c1d207b25762e343abe6e3",
+        "changed_rows_vs_cold_original": 0
+      },
+      "cold-original": {
+        "private_hash": "ddb950370480732cd402046e3b35e7d5",
+        "root_without_private_hash": "a4e91270c5d9c8b4e088c9fa003cee554a5609f2d6564c2421706839f30f9217",
+        "n_definitions": 5194,
+        "retained_rows_sha256": "9e54c884147f65c7b9f45b7396ee58374342b9d865c1d207b25762e343abe6e3",
+        "changed_rows_vs_cold_original": 0
+      },
+      "cold-edit": {
+        "private_hash": "ddb950370480732cd402046e3b35e7d5",
+        "root_without_private_hash": "a4e91270c5d9c8b4e088c9fa003cee554a5609f2d6564c2421706839f30f9217",
+        "n_definitions": 5194,
+        "retained_rows_sha256": "9e54c884147f65c7b9f45b7396ee58374342b9d865c1d207b25762e343abe6e3",
+        "changed_rows_vs_cold_original": 0
+      },
+      "cold-edit-repeat": {
+        "private_hash": "ddb950370480732cd402046e3b35e7d5",
+        "root_without_private_hash": "a4e91270c5d9c8b4e088c9fa003cee554a5609f2d6564c2421706839f30f9217",
+        "n_definitions": 5194,
+        "retained_rows_sha256": "9e54c884147f65c7b9f45b7396ee58374342b9d865c1d207b25762e343abe6e3",
+        "changed_rows_vs_cold_original": 0
+      }
+    },
+    "libruff_linter-6e45cf3219ababad.rmeta": {
+      "warm-original": {
+        "private_hash": "7a0419a61a2a3488d7b3c9203cbf616b",
+        "root_without_private_hash": "0d11094e8e46764524457eef94065cd9f98c2a982409e35da64a78142b8ab567",
+        "n_definitions": 42514,
+        "retained_rows_sha256": "4ced5c5477e5ba07802f2ece0cc842f6f7f67550cef5393085aa53a6851e527a",
+        "changed_rows_vs_cold_original": 0
+      },
+      "warm-edit": {
+        "private_hash": "7a0419a61a2a3488d7b3c9203cbf616b",
+        "root_without_private_hash": "0d11094e8e46764524457eef94065cd9f98c2a982409e35da64a78142b8ab567",
+        "n_definitions": 42514,
+        "retained_rows_sha256": "4ced5c5477e5ba07802f2ece0cc842f6f7f67550cef5393085aa53a6851e527a",
+        "changed_rows_vs_cold_original": 0
+      },
+      "cold-original": {
+        "private_hash": "7a0419a61a2a3488d7b3c9203cbf616b",
+        "root_without_private_hash": "0d11094e8e46764524457eef94065cd9f98c2a982409e35da64a78142b8ab567",
+        "n_definitions": 42514,
+        "retained_rows_sha256": "4ced5c5477e5ba07802f2ece0cc842f6f7f67550cef5393085aa53a6851e527a",
+        "changed_rows_vs_cold_original": 0
+      },
+      "cold-edit": {
+        "private_hash": "7a0419a61a2a3488d7b3c9203cbf616b",
+        "root_without_private_hash": "0d11094e8e46764524457eef94065cd9f98c2a982409e35da64a78142b8ab567",
+        "n_definitions": 42514,
+        "retained_rows_sha256": "4ced5c5477e5ba07802f2ece0cc842f6f7f67550cef5393085aa53a6851e527a",
+        "changed_rows_vs_cold_original": 0
+      },
+      "cold-edit-repeat": {
+        "private_hash": "7a0419a61a2a3488d7b3c9203cbf616b",
+        "root_without_private_hash": "0d11094e8e46764524457eef94065cd9f98c2a982409e35da64a78142b8ab567",
+        "n_definitions": 42514,
+        "retained_rows_sha256": "4ced5c5477e5ba07802f2ece0cc842f6f7f67550cef5393085aa53a6851e527a",
+        "changed_rows_vs_cold_original": 0
+      }
+    },
+    "libruff_python_parser-5e9f0fcdc33ae8db.rmeta": {
+      "warm-original": {
+        "private_hash": "c48d5cbc717b991a8879e0a8004d1c51",
+        "root_without_private_hash": "1f708ae0f7ef8761d3214c7c281696f3094a9d5df4476e193fbda022d99386a7",
+        "n_definitions": 3570,
+        "retained_rows_sha256": "507285362e6799361a74618a13b074424d3242f384287b75aad727b7d86a2dde",
+        "changed_rows_vs_cold_original": 0
+      },
+      "warm-edit": {
+        "private_hash": "612f66ebe8ba1f87deb05d9593b35296",
+        "root_without_private_hash": "1f708ae0f7ef8761d3214c7c281696f3094a9d5df4476e193fbda022d99386a7",
+        "n_definitions": 3570,
+        "retained_rows_sha256": "93b67ef5984b2e9faac67ddb876319eb1a2922f432d370a17e9397504f7a8b27",
+        "changed_rows_vs_cold_original": 435
+      },
+      "cold-original": {
+        "private_hash": "c48d5cbc717b991a8879e0a8004d1c51",
+        "root_without_private_hash": "1f708ae0f7ef8761d3214c7c281696f3094a9d5df4476e193fbda022d99386a7",
+        "n_definitions": 3570,
+        "retained_rows_sha256": "507285362e6799361a74618a13b074424d3242f384287b75aad727b7d86a2dde",
+        "changed_rows_vs_cold_original": 0
+      },
+      "cold-edit": {
+        "private_hash": "1b6a7bd3fbbdf352baa9ee21583ea249",
+        "root_without_private_hash": "1f708ae0f7ef8761d3214c7c281696f3094a9d5df4476e193fbda022d99386a7",
+        "n_definitions": 3570,
+        "retained_rows_sha256": "93b67ef5984b2e9faac67ddb876319eb1a2922f432d370a17e9397504f7a8b27",
+        "changed_rows_vs_cold_original": 435
+      },
+      "cold-edit-repeat": {
+        "private_hash": "1b6a7bd3fbbdf352baa9ee21583ea249",
+        "root_without_private_hash": "1f708ae0f7ef8761d3214c7c281696f3094a9d5df4476e193fbda022d99386a7",
+        "n_definitions": 3570,
+        "retained_rows_sha256": "93b67ef5984b2e9faac67ddb876319eb1a2922f432d370a17e9397504f7a8b27",
+        "changed_rows_vs_cold_original": 435
+      }
+    },
+    "libruff_python_semantic-8015b9bb2dabf4c9.rmeta": {
+      "warm-original": {
+        "private_hash": "16035a657b55fcaac1a458ca8283f3f2",
+        "root_without_private_hash": "edbff0c4e17d7ae031f3969ec9d6b12a85805fed1ef1c614d274cedb8a4ae34d",
+        "n_definitions": 5791,
+        "retained_rows_sha256": "c8110b670ad3c2005363e96109c910c8c8b207dfe29b254483718380d9b7418e",
+        "changed_rows_vs_cold_original": 0
+      },
+      "warm-edit": {
+        "private_hash": "16035a657b55fcaac1a458ca8283f3f2",
+        "root_without_private_hash": "edbff0c4e17d7ae031f3969ec9d6b12a85805fed1ef1c614d274cedb8a4ae34d",
+        "n_definitions": 5791,
+        "retained_rows_sha256": "c8110b670ad3c2005363e96109c910c8c8b207dfe29b254483718380d9b7418e",
+        "changed_rows_vs_cold_original": 0
+      },
+      "cold-original": {
+        "private_hash": "16035a657b55fcaac1a458ca8283f3f2",
+        "root_without_private_hash": "edbff0c4e17d7ae031f3969ec9d6b12a85805fed1ef1c614d274cedb8a4ae34d",
+        "n_definitions": 5791,
+        "retained_rows_sha256": "c8110b670ad3c2005363e96109c910c8c8b207dfe29b254483718380d9b7418e",
+        "changed_rows_vs_cold_original": 0
+      },
+      "cold-edit": {
+        "private_hash": "16035a657b55fcaac1a458ca8283f3f2",
+        "root_without_private_hash": "edbff0c4e17d7ae031f3969ec9d6b12a85805fed1ef1c614d274cedb8a4ae34d",
+        "n_definitions": 5791,
+        "retained_rows_sha256": "c8110b670ad3c2005363e96109c910c8c8b207dfe29b254483718380d9b7418e",
+        "changed_rows_vs_cold_original": 0
+      },
+      "cold-edit-repeat": {
+        "private_hash": "16035a657b55fcaac1a458ca8283f3f2",
+        "root_without_private_hash": "edbff0c4e17d7ae031f3969ec9d6b12a85805fed1ef1c614d274cedb8a4ae34d",
+        "n_definitions": 5791,
+        "retained_rows_sha256": "c8110b670ad3c2005363e96109c910c8c8b207dfe29b254483718380d9b7418e",
+        "changed_rows_vs_cold_original": 0
+      }
+    },
+    "libty_ide-682dff4f9474ae9e.rmeta": {
+      "warm-original": {
+        "private_hash": "84ac4b0af29ec6e71736f82ef8250a28",
+        "root_without_private_hash": "a070b805195fc90e4c1d5476315e463780a116d0a64f8637ec46b1d7fbac7dc2",
+        "n_definitions": 5198,
+        "retained_rows_sha256": "9385aba7ab6079a03acd81201328e349c252e91b4fed39e33d20d706e0d7a28f",
+        "changed_rows_vs_cold_original": 0
+      },
+      "warm-edit": {
+        "private_hash": "84ac4b0af29ec6e71736f82ef8250a28",
+        "root_without_private_hash": "a070b805195fc90e4c1d5476315e463780a116d0a64f8637ec46b1d7fbac7dc2",
+        "n_definitions": 5198,
+        "retained_rows_sha256": "9385aba7ab6079a03acd81201328e349c252e91b4fed39e33d20d706e0d7a28f",
+        "changed_rows_vs_cold_original": 0
+      },
+      "cold-original": {
+        "private_hash": "84ac4b0af29ec6e71736f82ef8250a28",
+        "root_without_private_hash": "a070b805195fc90e4c1d5476315e463780a116d0a64f8637ec46b1d7fbac7dc2",
+        "n_definitions": 5198,
+        "retained_rows_sha256": "9385aba7ab6079a03acd81201328e349c252e91b4fed39e33d20d706e0d7a28f",
+        "changed_rows_vs_cold_original": 0
+      },
+      "cold-edit": {
+        "private_hash": "84ac4b0af29ec6e71736f82ef8250a28",
+        "root_without_private_hash": "a070b805195fc90e4c1d5476315e463780a116d0a64f8637ec46b1d7fbac7dc2",
+        "n_definitions": 5198,
+        "retained_rows_sha256": "9385aba7ab6079a03acd81201328e349c252e91b4fed39e33d20d706e0d7a28f",
+        "changed_rows_vs_cold_original": 0
+      },
+      "cold-edit-repeat": {
+        "private_hash": "84ac4b0af29ec6e71736f82ef8250a28",
+        "root_without_private_hash": "a070b805195fc90e4c1d5476315e463780a116d0a64f8637ec46b1d7fbac7dc2",
+        "n_definitions": 5198,
+        "retained_rows_sha256": "9385aba7ab6079a03acd81201328e349c252e91b4fed39e33d20d706e0d7a28f",
+        "changed_rows_vs_cold_original": 0
+      }
+    },
+    "libty_module_resolver-6508e2857c903705.rmeta": {
+      "warm-original": {
+        "private_hash": "f50c831db03abfbf9a0506239570105d",
+        "root_without_private_hash": "ede50807731f96d0b8570dcd0074de95137908ac1bd6dbf02569f9a90ccde4f4",
+        "n_definitions": 3691,
+        "retained_rows_sha256": "8f5a9d639a0e22b4c16a893bf8ba211b8f448947124f02ad11dd2a413e231469",
+        "changed_rows_vs_cold_original": 0
+      },
+      "warm-edit": {
+        "private_hash": "f50c831db03abfbf9a0506239570105d",
+        "root_without_private_hash": "ede50807731f96d0b8570dcd0074de95137908ac1bd6dbf02569f9a90ccde4f4",
+        "n_definitions": 3691,
+        "retained_rows_sha256": "8f5a9d639a0e22b4c16a893bf8ba211b8f448947124f02ad11dd2a413e231469",
+        "changed_rows_vs_cold_original": 0
+      },
+      "cold-original": {
+        "private_hash": "f50c831db03abfbf9a0506239570105d",
+        "root_without_private_hash": "ede50807731f96d0b8570dcd0074de95137908ac1bd6dbf02569f9a90ccde4f4",
+        "n_definitions": 3691,
+        "retained_rows_sha256": "8f5a9d639a0e22b4c16a893bf8ba211b8f448947124f02ad11dd2a413e231469",
+        "changed_rows_vs_cold_original": 0
+      },
+      "cold-edit": {
+        "private_hash": "f50c831db03abfbf9a0506239570105d",
+        "root_without_private_hash": "ede50807731f96d0b8570dcd0074de95137908ac1bd6dbf02569f9a90ccde4f4",
+        "n_definitions": 3691,
+        "retained_rows_sha256": "8f5a9d639a0e22b4c16a893bf8ba211b8f448947124f02ad11dd2a413e231469",
+        "changed_rows_vs_cold_original": 0
+      },
+      "cold-edit-repeat": {
+        "private_hash": "f50c831db03abfbf9a0506239570105d",
+        "root_without_private_hash": "ede50807731f96d0b8570dcd0074de95137908ac1bd6dbf02569f9a90ccde4f4",
+        "n_definitions": 3691,
+        "retained_rows_sha256": "8f5a9d639a0e22b4c16a893bf8ba211b8f448947124f02ad11dd2a413e231469",
+        "changed_rows_vs_cold_original": 0
+      }
+    },
+    "libty_project-84a17f75f09a510a.rmeta": {
+      "warm-original": {
+        "private_hash": "e1ad40b14edc3dd40b426ee62a17a3f1",
+        "root_without_private_hash": "0740b75c0cabf908cd77e0467a8f7f144e580ec2a579c259aebf35fddc432f1c",
+        "n_definitions": 6617,
+        "retained_rows_sha256": "3e35f1bbfed4a8494174980c46307a10070aacabd45b2b54ca3ea8dde6679f83",
+        "changed_rows_vs_cold_original": 0
+      },
+      "warm-edit": {
+        "private_hash": "e1ad40b14edc3dd40b426ee62a17a3f1",
+        "root_without_private_hash": "0740b75c0cabf908cd77e0467a8f7f144e580ec2a579c259aebf35fddc432f1c",
+        "n_definitions": 6617,
+        "retained_rows_sha256": "3e35f1bbfed4a8494174980c46307a10070aacabd45b2b54ca3ea8dde6679f83",
+        "changed_rows_vs_cold_original": 0
+      },
+      "cold-original": {
+        "private_hash": "e1ad40b14edc3dd40b426ee62a17a3f1",
+        "root_without_private_hash": "0740b75c0cabf908cd77e0467a8f7f144e580ec2a579c259aebf35fddc432f1c",
+        "n_definitions": 6617,
+        "retained_rows_sha256": "3e35f1bbfed4a8494174980c46307a10070aacabd45b2b54ca3ea8dde6679f83",
+        "changed_rows_vs_cold_original": 0
+      },
+      "cold-edit": {
+        "private_hash": "e1ad40b14edc3dd40b426ee62a17a3f1",
+        "root_without_private_hash": "0740b75c0cabf908cd77e0467a8f7f144e580ec2a579c259aebf35fddc432f1c",
+        "n_definitions": 6617,
+        "retained_rows_sha256": "3e35f1bbfed4a8494174980c46307a10070aacabd45b2b54ca3ea8dde6679f83",
+        "changed_rows_vs_cold_original": 0
+      },
+      "cold-edit-repeat": {
+        "private_hash": "e1ad40b14edc3dd40b426ee62a17a3f1",
+        "root_without_private_hash": "0740b75c0cabf908cd77e0467a8f7f144e580ec2a579c259aebf35fddc432f1c",
+        "n_definitions": 6617,
+        "retained_rows_sha256": "3e35f1bbfed4a8494174980c46307a10070aacabd45b2b54ca3ea8dde6679f83",
+        "changed_rows_vs_cold_original": 0
+      }
+    },
+    "libty_python_core-9d440a8ce88bc181.rmeta": {
+      "warm-original": {
+        "private_hash": "efe8eba70f43fd5c1c7871ba61745974",
+        "root_without_private_hash": "451c9aa9ec93edce03b12f3841dd99f83be1e242316482740a8e025c57ee4729",
+        "n_definitions": 11161,
+        "retained_rows_sha256": "5ab2cdee5ae78f978058dfc0ec56cea8467fea1264040f0313e6033c258a4b9d",
+        "changed_rows_vs_cold_original": 0
+      },
+      "warm-edit": {
+        "private_hash": "efe8eba70f43fd5c1c7871ba61745974",
+        "root_without_private_hash": "451c9aa9ec93edce03b12f3841dd99f83be1e242316482740a8e025c57ee4729",
+        "n_definitions": 11161,
+        "retained_rows_sha256": "5ab2cdee5ae78f978058dfc0ec56cea8467fea1264040f0313e6033c258a4b9d",
+        "changed_rows_vs_cold_original": 0
+      },
+      "cold-original": {
+        "private_hash": "efe8eba70f43fd5c1c7871ba61745974",
+        "root_without_private_hash": "451c9aa9ec93edce03b12f3841dd99f83be1e242316482740a8e025c57ee4729",
+        "n_definitions": 11161,
+        "retained_rows_sha256": "5ab2cdee5ae78f978058dfc0ec56cea8467fea1264040f0313e6033c258a4b9d",
+        "changed_rows_vs_cold_original": 0
+      },
+      "cold-edit": {
+        "private_hash": "efe8eba70f43fd5c1c7871ba61745974",
+        "root_without_private_hash": "451c9aa9ec93edce03b12f3841dd99f83be1e242316482740a8e025c57ee4729",
+        "n_definitions": 11161,
+        "retained_rows_sha256": "5ab2cdee5ae78f978058dfc0ec56cea8467fea1264040f0313e6033c258a4b9d",
+        "changed_rows_vs_cold_original": 0
+      },
+      "cold-edit-repeat": {
+        "private_hash": "efe8eba70f43fd5c1c7871ba61745974",
+        "root_without_private_hash": "451c9aa9ec93edce03b12f3841dd99f83be1e242316482740a8e025c57ee4729",
+        "n_definitions": 11161,
+        "retained_rows_sha256": "5ab2cdee5ae78f978058dfc0ec56cea8467fea1264040f0313e6033c258a4b9d",
+        "changed_rows_vs_cold_original": 0
+      }
+    },
+    "libty_python_semantic-e8c06e8a1d6b1096.rmeta": {
+      "warm-original": {
+        "private_hash": "f605888436038cdb5d89b8e568b7a19c",
+        "root_without_private_hash": "4e2a062e94d794b4a529aafafe4f437968a8e6a9790da15819419cd5752f52ed",
+        "n_definitions": 62945,
+        "retained_rows_sha256": "1d8a3f095d8d1ea12d233ea1ad9db67ef963c6326a9145fa72fa0d54f4e720b4",
+        "changed_rows_vs_cold_original": 0
+      },
+      "warm-edit": {
+        "private_hash": "f605888436038cdb5d89b8e568b7a19c",
+        "root_without_private_hash": "4e2a062e94d794b4a529aafafe4f437968a8e6a9790da15819419cd5752f52ed",
+        "n_definitions": 62945,
+        "retained_rows_sha256": "1d8a3f095d8d1ea12d233ea1ad9db67ef963c6326a9145fa72fa0d54f4e720b4",
+        "changed_rows_vs_cold_original": 0
+      },
+      "cold-original": {
+        "private_hash": "f605888436038cdb5d89b8e568b7a19c",
+        "root_without_private_hash": "4e2a062e94d794b4a529aafafe4f437968a8e6a9790da15819419cd5752f52ed",
+        "n_definitions": 62945,
+        "retained_rows_sha256": "1d8a3f095d8d1ea12d233ea1ad9db67ef963c6326a9145fa72fa0d54f4e720b4",
+        "changed_rows_vs_cold_original": 0
+      },
+      "cold-edit": {
+        "private_hash": "f605888436038cdb5d89b8e568b7a19c",
+        "root_without_private_hash": "4e2a062e94d794b4a529aafafe4f437968a8e6a9790da15819419cd5752f52ed",
+        "n_definitions": 62945,
+        "retained_rows_sha256": "1d8a3f095d8d1ea12d233ea1ad9db67ef963c6326a9145fa72fa0d54f4e720b4",
+        "changed_rows_vs_cold_original": 0
+      },
+      "cold-edit-repeat": {
+        "private_hash": "f605888436038cdb5d89b8e568b7a19c",
+        "root_without_private_hash": "4e2a062e94d794b4a529aafafe4f437968a8e6a9790da15819419cd5752f52ed",
+        "n_definitions": 62945,
+        "retained_rows_sha256": "1d8a3f095d8d1ea12d233ea1ad9db67ef963c6326a9145fa72fa0d54f4e720b4",
+        "changed_rows_vs_cold_original": 0
+      }
+    }
+  }
+}

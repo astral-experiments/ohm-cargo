@@ -1,0 +1,21 @@
+--- a/compiler/rustc_metadata/src/rmeta/decoder.rs
++++ b/compiler/rustc_metadata/src/rmeta/decoder.rs
+@@ -792,6 +792,18 @@
+             match &**kind {
+                 "public_hash" => {
+                     writeln!(out, "Public hash: {}", root.public_hash())?;
++                    if std::env::var_os("OHM_INSPECT_PER_DEFINITION_RDR").is_some()
++                        && let Some(hashes) = &root.rdr_hashes
++                    {
++                        writeln!(out, "global\t{:?}\t{:016x}", hashes.public_global_hash, root.stable_crate_id.as_u64())?;
++                        for n in 0..root.tables.def_keys.size() {
++                            let id = DefIndex::from_usize(n);
++                            let Some(hash) = hashes.local.get(self, id) else { continue };
++                            let key = root.tables.def_path_hashes.get(self, id);
++                            let path = DefPath::make(LOCAL_CRATE, id, |parent| root.tables.def_keys.get(self, parent).unwrap().decode(self));
++                            writeln!(out, "item\t{key:016x}\t{hash:?}\t{}", path.to_string_no_crate_verbose())?;
++                        }
++                    }
+                 }
+                 "root" => {
+                     writeln!(out, "Crate info:")?;

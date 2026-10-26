@@ -1,0 +1,83 @@
+{
+  "A": {
+    "arm": "A",
+    "driver": "244cf510684e96c444fae9be8b91f7a9b11b83388a5c843f5e310adf3c2f3962",
+    "prebolt": "7aa423d3136c93d6db89b97dbe26e866f7f81b94f7bef616195141eef45080c9",
+    "previous_base_matches": true,
+    "profiles": {
+      "clippy-pgo.profdata": "e98375c08ba000ec664f9aaa91f6557092e67682ff6554e23892a09406130dfc",
+      "rustc-bolt.profdata": "34cd73280713b4cfad9183f5d36ec29e4884b00ec4aac3594d6f1ef194c444f4",
+      "rustc-pgo.profdata": "481ada8a40c70dad11b3c7e8871e9a52207d78447ca5e8ace06fc4aec2d2b5a7",
+      "rustdoc-pgo.profdata": "8499f73f1fa169f858f3e7a2b4e047c53d14a0248097ddf70d2092805b57a0d1",
+      "rustfmt-pgo.profdata": "d8980c31367e4e3bd59e61f3c57619c9ab246b3effc3fcd585a30b8068395d99"
+    },
+    "sources": {
+      "compiler/rustc_lint/src/levels.rs": [
+        "2bb78c805dbb746bff033d4c022fdfdcd065128ddd4cd942c62a80d2c04dd68f",
+        "fee6e9344c706444f98319801eb4ed6f3ca3ddd79cbba74cf8526979c14b230f",
+        "fee6e9344c706444f98319801eb4ed6f3ca3ddd79cbba74cf8526979c14b230f"
+      ],
+      "compiler/rustc_metadata/src/rmeta/encoder.rs": [
+        "b8eff80b9421f194e6517e86e13be8145f190c7caa9a2555b7386e2b16081e16",
+        "b8eff80b9421f194e6517e86e13be8145f190c7caa9a2555b7386e2b16081e16",
+        "55d958424e9849a4c1b14055152c1abdf8eb7a03b88fc6f0c6aa29a1ad566511"
+      ],
+      "compiler/rustc_metadata/src/rmeta/encoder/public_api_hasher.rs": [
+        "9f63998b6c477e776fc4675e8f11d9d1769cf94051400a8971abe066597a0c9c",
+        "9f63998b6c477e776fc4675e8f11d9d1769cf94051400a8971abe066597a0c9c",
+        "827a5f716fa52f4c3686da3de0852540687988d730aebe6dccf863e280f08a7d"
+      ],
+      "compiler/rustc_middle/src/dep_graph/serialized.rs": [
+        "e6c73285a2ecb08b9ba3b552737319c657cb79c61b74c63c09de335b675138b7",
+        "10eaa4971f0dc780ec66373051754d1f8624bd8bcd43081dec4f74c7220b4d8b",
+        "10eaa4971f0dc780ec66373051754d1f8624bd8bcd43081dec4f74c7220b4d8b"
+      ]
+    }
+  },
+  "B": {
+    "arm": "B",
+    "driver": "051b9d3f5861f984faa0f8c1d2ab9b5c28e483a05c728051de837291c83fd518",
+    "prebolt": "69cf3f1145d51029e98e9316715913826acda03355d657494db01b1b27792115",
+    "previous_base_matches": false,
+    "profiles": {
+      "clippy-pgo.profdata": "e98375c08ba000ec664f9aaa91f6557092e67682ff6554e23892a09406130dfc",
+      "rustc-bolt.profdata": "34cd73280713b4cfad9183f5d36ec29e4884b00ec4aac3594d6f1ef194c444f4",
+      "rustc-pgo.profdata": "481ada8a40c70dad11b3c7e8871e9a52207d78447ca5e8ace06fc4aec2d2b5a7",
+      "rustdoc-pgo.profdata": "8499f73f1fa169f858f3e7a2b4e047c53d14a0248097ddf70d2092805b57a0d1",
+      "rustfmt-pgo.profdata": "d8980c31367e4e3bd59e61f3c57619c9ab246b3effc3fcd585a30b8068395d99"
+    },
+    "sources": {
+      "compiler/rustc_lint/src/levels.rs": [
+        "2bb78c805dbb746bff033d4c022fdfdcd065128ddd4cd942c62a80d2c04dd68f",
+        "fee6e9344c706444f98319801eb4ed6f3ca3ddd79cbba74cf8526979c14b230f",
+        "fee6e9344c706444f98319801eb4ed6f3ca3ddd79cbba74cf8526979c14b230f"
+      ],
+      "compiler/rustc_metadata/src/rmeta/encoder.rs": [
+        "b8eff80b9421f194e6517e86e13be8145f190c7caa9a2555b7386e2b16081e16",
+        "b8eff80b9421f194e6517e86e13be8145f190c7caa9a2555b7386e2b16081e16",
+        "55d958424e9849a4c1b14055152c1abdf8eb7a03b88fc6f0c6aa29a1ad566511"
+      ],
+      "compiler/rustc_metadata/src/rmeta/encoder/public_api_hasher.rs": [
+        "9f63998b6c477e776fc4675e8f11d9d1769cf94051400a8971abe066597a0c9c",
+        "9f63998b6c477e776fc4675e8f11d9d1769cf94051400a8971abe066597a0c9c",
+        "827a5f716fa52f4c3686da3de0852540687988d730aebe6dccf863e280f08a7d"
+      ],
+      "compiler/rustc_middle/src/dep_graph/serialized.rs": [
+        "e6c73285a2ecb08b9ba3b552737319c657cb79c61b74c63c09de335b675138b7",
+        "10eaa4971f0dc780ec66373051754d1f8624bd8bcd43081dec4f74c7220b4d8b",
+        "10eaa4971f0dc780ec66373051754d1f8624bd8bcd43081dec4f74c7220b4d8b"
+      ]
+    }
+  },
+  "base": "1a34d106ed0e73e8a9074ffd36a6963de86b6a27",
+  "fixed_inputs": {
+    "cargo-native": "71da9dfcb3ba440297f84705ff7e3a676634ced7d7b6ca9b525a439b7f748f58",
+    "libLLVM.so.23.1-rust-1.99.0-beta": "43bac9749e539cd5988a4d5452b64582cf07ac9e7c059fde29c7bee76e106c51",
+    "libstd-150b24506f9fb8c9.rlib": "bb1da52e02b3bf34996fb9bc50c6d80b9244a23b8fe6d3b47f7eabd5953d4191",
+    "libstd-150b24506f9fb8c9.rmeta": "88fbc0dcf152f1122ee039e7f80c1fcf7728cec59bb40ae7a23639ba12104928",
+    "libstd-150b24506f9fb8c9.so": "258ecb17343b1593523c76f2faf0a90e6af015b9042c8c2c56eaa75a09b8eab8",
+    "rustc": "4fa9a18b77430bcc416e88561b6fe5797d98b996a7698b9f3bd11d4e7817a19f"
+  },
+  "private_rebuild_control_matches_prior_release_profile_231_before_and_after_bolt": true,
+  "treatment_commit": "2fab350c4786367432b5e1d767ed8e1ced431f41"
+}
