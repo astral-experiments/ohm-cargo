@@ -1,0 +1,173 @@
+{
+  "ruff": "93526150df078af7dd8fc4226cdcc469539d2001",
+  "seed": "ohm-ruff-entropy-20261026-stage2",
+  "direction": "reverse",
+  "candidates": {
+    "linter": 105,
+    "parser-ast": 8,
+    "formatter": 2,
+    "shared-library": 35,
+    "cli-workspace": 9,
+    "test-target": 9
+  },
+  "fixtures": [
+    {
+      "label": "linter-discovery",
+      "stratum": "linter",
+      "split": "discovery",
+      "commit": "c2b2eda972b16f000249e30f3bc590ded81d3d82",
+      "title": "[`flake8-async`] Document thread offloading (`ASYNC240`) (#28008)",
+      "rust_delta_lines": 46,
+      "paths": [
+        "crates/ruff_linter/src/rules/flake8_async/rules/blocking_path_methods.rs",
+        "crates/ruff_linter/src/rules/flake8_async/snapshots/ruff_linter__rules__flake8_async__tests__blocking-path-method-in-async-function_ASYNC240.py.snap"
+      ],
+      "patch_sha256": "fb81523128c7ca0fedd6503c61e55488fec9f428a005c1da4904d83b5fc2afb0",
+      "rank": "00228d58432346a0a0809fe5f0dc49bc9e570b1741b7ff44a21b77e9b339e815"
+    },
+    {
+      "label": "linter-holdout",
+      "stratum": "linter",
+      "split": "holdout",
+      "commit": "88b8c7a504caf06387cc8697618820e9a0be2d23",
+      "title": "[`flake8-datetimez`] Reject `tzinfo=None` for datetime bounds (`DTZ901`) (#28022)",
+      "rust_delta_lines": 6,
+      "paths": [
+        "crates/ruff_linter/resources/mdtest/flake8-datetimez/datetime-min-max.md",
+        "crates/ruff_linter/src/rules/flake8_datetimez/rules/datetime_min_max.rs"
+      ],
+      "patch_sha256": "346749cdf616edf44751f69c324aa4d5934ce3050b5ebeede2a9c7a7dcfcf2d5",
+      "rank": "022e2f1115f8ef0d3b5a40f962f724eec9179ca2c209e4b11d70a74d664c11e1"
+    },
+    {
+      "label": "parser-ast-discovery",
+      "stratum": "parser-ast",
+      "split": "discovery",
+      "commit": "0ecff877901a0377ad966ffab528488ce872b50e",
+      "title": "Validate unary expressions when parsing (#28233)",
+      "rust_delta_lines": 20,
+      "paths": [
+        "crates/ruff_python_parser/resources/inline/err/signed_pattern_non_literal_operand.py",
+        "crates/ruff_python_parser/src/parser/pattern.rs",
+        "crates/ruff_python_parser/tests/snapshots/invalid_syntax@signed_pattern_non_literal_operand.py.snap"
+      ],
+      "patch_sha256": "e98e3786c9911e16a5c515d7100bff55851c0e0b78a4acb5ed0053251080264c",
+      "rank": "bf3dc1dad226833d3aa63f2afe3484bb53b73b353d84ff2c9e0d4fa9bb5dfb29"
+    },
+    {
+      "label": "parser-ast-holdout",
+      "stratum": "parser-ast",
+      "split": "holdout",
+      "commit": "6e29838d4bd65a2ece1d93d44ce85d8ee0105117",
+      "title": "Avoid redundant pending-indentation writes (#26774)",
+      "rust_delta_lines": 5,
+      "paths": [
+        "crates/ruff_python_parser/src/lexer.rs"
+      ],
+      "patch_sha256": "8e26eef22165dae5bd873943c1b7d05123392d285d0754cd757d4007b49b89fa",
+      "rank": "f3ad3ef1f6000990568a1b4beab9235687b2f339e79b330b66cf54fb46079fc7"
+    },
+    {
+      "label": "formatter-discovery",
+      "stratum": "formatter",
+      "split": "discovery",
+      "commit": "1fcdb82be0169fc79f492f03728f52215af563c0",
+      "title": "Move formatter line terminators into test module (#27384)",
+      "rust_delta_lines": 9,
+      "paths": [
+        "crates/ruff_formatter/src/format_element.rs"
+      ],
+      "patch_sha256": "9aa17b56a251d1eae2145bd6027489880bcc0febbc05f4aa50bc1f6c39fe228d",
+      "rank": "d028e1d58d6a7aa1700f9885c751ed4f5f769546b33c51b62af6a5b669b0d4d5"
+    },
+    {
+      "label": "formatter-holdout",
+      "stratum": "formatter",
+      "split": "holdout",
+      "commit": "b3fb43af25f3d07758f953ce20ec900fc8812da2",
+      "title": "Alternate nested quotes inside format spec interpolations (#28259)",
+      "rust_delta_lines": 81,
+      "paths": [
+        "crates/ruff_python_formatter/resources/test/fixtures/ruff/expression/nested_string_quote_style.py",
+        "crates/ruff_python_formatter/src/context.rs",
+        "crates/ruff_python_formatter/src/other/f_string.rs",
+        "crates/ruff_python_formatter/src/other/interpolated_string_element.rs",
+        "crates/ruff_python_formatter/src/other/t_string.rs",
+        "crates/ruff_python_formatter/src/string/implicit.rs",
+        "crates/ruff_python_formatter/tests/snapshots/format@expression__fstring.py.snap",
+        "crates/ruff_python_formatter/tests/snapshots/format@expression__nested_string_quote_style.py.snap"
+      ],
+      "patch_sha256": "d6030e06cd87b11edf5d06321518805c69baf906b344db83444a82b544aff1f2",
+      "rank": "df9ca6e092726660b5e097f96455f577cdbbc4765f2269de3b481d3812fdd82a"
+    },
+    {
+      "label": "shared-library-discovery",
+      "stratum": "shared-library",
+      "split": "discovery",
+      "commit": "103168bd42584b777a8afaaa0d3ed0ca77e84a8d",
+      "title": "Remove unused APIs from ruff_python_stdlib (#27390)",
+      "rust_delta_lines": 6,
+      "paths": [
+        "crates/ruff_python_stdlib/src/path.rs"
+      ],
+      "patch_sha256": "760f232bfbbc7da2188086f8f71cac17861ac11f528bfbc28342a6811a9abcc3",
+      "rank": "09c582c58ec55dcbdfc5d0b1418431e902a7c4c77827bb87b2ce76c2b73821e6"
+    },
+    {
+      "label": "shared-library-holdout",
+      "stratum": "shared-library",
+      "split": "holdout",
+      "commit": "83a3afc3156d73ae4296f3fa74ede28e4c72bfcd",
+      "title": "Fix dedent with multiple leading comments (#29382)",
+      "rust_delta_lines": 32,
+      "paths": [
+        "crates/ruff_linter/resources/mdtest/flake8-return/superfluous-else-return.md",
+        "crates/ruff_linter/src/rules/pylint/snapshots/ruff_linter__rules__pylint__tests__collapsible-else-if_collapsible_else_if.py.snap",
+        "crates/ruff_python_trivia/src/textwrap.rs"
+      ],
+      "patch_sha256": "9dc8166f1280da1c57cdfce63c5e78fb9b1b67f0c5ed9769fc5f7c619c785f6a",
+      "rank": "12b3df8e7c8ca343ece637e47b9c362bce2db58fd3bf49853d9f884f152efb3d"
+    },
+    {
+      "label": "cli-workspace-discovery",
+      "stratum": "cli-workspace",
+      "split": "discovery",
+      "commit": "f304bc0cac91e33b8031fc78403e3ce886f4d215",
+      "title": "Support pull diagnostics for notebook cells (#27779)",
+      "rust_delta_lines": 88,
+      "paths": [
+        "crates/ruff_server/src/server/api/requests/diagnostic.rs",
+        "crates/ruff_server/tests/e2e/notebook.rs"
+      ],
+      "patch_sha256": "7d2c415075cfe51d1422e403b3d42cefb436fec2f0d7c1439b165964517eb2fe",
+      "rank": "2be405bf749167be48114e708ba797d5177e7364faa51f1bfed573286b4a808d"
+    },
+    {
+      "label": "cli-workspace-holdout",
+      "stratum": "cli-workspace",
+      "split": "holdout",
+      "commit": "fca5c7cf2cd2f8338f18b9485f936b8e9f07bd0b",
+      "title": "Fix duplicated \"of\" in ClientOptions doc comment (#27978)",
+      "rust_delta_lines": 2,
+      "paths": [
+        "crates/ruff_server/src/session/options.rs"
+      ],
+      "patch_sha256": "a8039aa2f1ac63b37ecb3e0fdd33fe54b26ca8ee604303581c8446e74ed2cde1",
+      "rank": "7af230179307791a827320efc411601a9290b5787df8d7edc4c59f6515fde29a"
+    },
+    {
+      "label": "test-target-discovery",
+      "stratum": "test-target",
+      "split": "discovery",
+      "commit": "2fb7c8ddd806aec98f8bba8f4c78d4a7c22f9d56",
+      "title": "Sort formatter diagnostics in snapshots (#24375)",
+      "rust_delta_lines": 9,
+      "paths": [
+        "crates/ruff_python_formatter/tests/fixtures.rs",
+        "crates/ruff_python_formatter/tests/snapshots/format@expression__nested_string_quote_style.py.snap"
+      ],
+      "patch_sha256": "778a9988053c6b1cd9a68c2092c3b9fe1c8768fb074aee1363e5c60e746edd09",
+      "rank": "4b3e73778a1185f9d6943182485a6c3dc222db700b381f4db3cbd334d00b7534"
+    }
+  ]
+}
