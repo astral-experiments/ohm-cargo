@@ -1,5 +1,7 @@
 """Prepare an isolated Ohm alias whose Cargo path is stable across both arms."""
 
+import atexit
+import fcntl
 import hashlib
 import os
 import shlex
@@ -10,6 +12,9 @@ from pathlib import Path
 def prepare(args, output):
     state = args.state.resolve() if args.state else output
     state.mkdir(parents=True, exist_ok=True)
+    lock = (state / ".run-lock").open("a")
+    fcntl.flock(lock, fcntl.LOCK_EX)
+    atexit.register(lock.close)
     tool = state / "rustup/toolchains/ohm"
     cargo = state / "runtime/bin/cargo"
     wrapper = tool / "bin/cargo"
