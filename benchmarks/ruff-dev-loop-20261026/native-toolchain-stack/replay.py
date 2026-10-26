@@ -36,7 +36,7 @@ def save(path,value):
 
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('phase', choices=['prepare','measure'])
+    parser.add_argument('phase', choices=['prepare','rewarm','measure'])
     for name in ['ruff','state','results','sysroot','registry','patches','parent_cargo','candidate_cargo','parent_driver','candidate_driver']:
         parser.add_argument('--'+name.replace('_','-'),type=Path,required=True)
     a=parser.parse_args()
@@ -67,7 +67,8 @@ def main():
         (rustup/'toolchains/ohm').symlink_to(tc)
         (rustup/'settings.toml').write_text('version = "12"\nprofile = "minimal"\n')
         shutil.copytree(a.registry.resolve()/'registry',home/'registry',symlinks=True)
-        wrapper.write_text('#!/bin/sh\ncase " $* " in\n*" --crate-name "*) printf "%s\\0" "$@" > "$RECEIPT/compile.$$.argv";;\nesac\nexec "$@"\n')
+    if a.phase in ('prepare','rewarm'):
+        wrapper.write_text('#!/bin/sh\ncase " $* " in\n*" --crate-name "*) printf "%s\\0" "$@" > "$RECEIPT/compile.$$.argv";;\nesac\nexec "$@" --sysroot "$OHM_SYSROOT"\n')
         wrapper.chmod(0o755)
     overlays={}
     for case,(name,digest,_) in WANTED.items():
@@ -112,30 +113,45 @@ def main():
         finally:idle.rename(store)
     @contextmanager
     def source_edit(case):
-        originals=[]
         assert not git(repo,'status','--porcelain')
-        try:
-            for src,dst in overlays[case]:
-                original=dst.read_bytes(); stat=dst.stat()
-                assert original!=src.read_bytes()
-                originals.append((dst,original,stat))
-                dst.write_bytes(src.read_bytes())
-            yield
-        finally:
-            for dst,original,stat in reversed(originals):
-                dst.write_bytes(original);os.utime(dst,ns=(stat.st_atime_ns,stat.st_mtime_ns))
-            assert sha(index)==index_sha and not git(repo,'status','--porcelain')
+        with tempfile.TemporaryDirectory(prefix='ohm-fixture-',dir=repo.parent) as saved:
+            originals=[]
+            try:
+                for i,(src,dst) in enumerate(overlays[case]):
+                    stat=dst.stat()
+                    if src.is_file():
+                        original=dst.read_bytes(); replacement=src.read_bytes()
+                        assert original!=replacement
+                        originals.append((dst,original,None,stat))
+                        dst.write_bytes(replacement)
+                    else:
+                        backup=Path(saved)/str(i); dst.rename(backup)
+                        originals.append((dst,None,backup,stat))
+                yield
+            finally:
+                for dst,original,backup,stat in reversed(originals):
+                    if backup is None:
+                        dst.write_bytes(original);os.utime(dst,ns=(stat.st_atime_ns,stat.st_mtime_ns))
+                    else:
+                        backup.rename(dst)
+                assert sha(index)==index_sha and not git(repo,'status','--porcelain')
     def invoke(arm,target,tag,case=None,verify=False):
         r=out/tag;r.mkdir()
         for dest,suffix in [(cargo,'cargo'),(driver,'driver')]:
             subject=q/'subjects'/(arm+'_'+suffix)
             if not dest.exists() or not dest.samefile(subject):
                 temp=dest.with_name(dest.name+'.next')
-                os.link(subject,temp);temp.replace(dest)
+                if suffix=='driver':
+                    # Cargo fingerprints the driver inode's ctime. Changing its hard-link
+                    # count on arm switches would invalidate the just-restored checkpoint.
+                    temp.symlink_to(subject)
+                else:
+                    os.link(subject,temp)
+                temp.replace(dest)
         command=['taskset','-c','0-15',proxy,'+ohm','check','--locked','--offline']
         if verify:command.append('--message-format=json')
         env=dict(os.environ,CARGO_HOME=str(home),RUSTUP_HOME=str(rustup),RUSTUP_AUTO_INSTALL='0',RUSTUP_TOOLCHAIN='ohm',
-            LD_LIBRARY_PATH=str(tc/'lib'),RUSTC=str(tc/'bin/rustc'),RUSTC_WRAPPER=str(wrapper),RECEIPT=str(r),CARGO_TARGET_DIR=str(store/'target'),
+            OHM_SYSROOT=str(tc),LD_LIBRARY_PATH=str(tc/'lib'),RUSTC=str(tc/'bin/rustc'),RUSTC_WRAPPER=str(wrapper),RECEIPT=str(r),CARGO_TARGET_DIR=str(store/'target'),
             CARGO_BUILD_BUILD_DIR=str(store/'shared'),CARGO_BUILD_JOBS='6',CARGO_UNSTABLE_OHM_PROC_MACRO_TRUST='all',
             CARGO_UNSTABLE_OHM_NATIVE_TOOL_TRUST='all',CARGO_TERM_COLOR='never',LC_ALL='C.UTF-8',GIT_OPTIONAL_LOCKS='0')
         for key in ['RUSTFLAGS','CARGO_ENCODED_RUSTFLAGS','CARGO_BUILD_RUSTFLAGS','RUSTC_WORKSPACE_WRAPPER']:
@@ -160,7 +176,7 @@ def main():
         save(r/'summary.json',result)
         print(tag,round(ns_total/1e9,3),len(names),flush=True)
         return result
-    if a.phase=='prepare':
+    if a.phase in ('prepare','rewarm'):
         ref=None
         for arm in ARMS:
             seed=q/('seed-'+arm);seed.mkdir()

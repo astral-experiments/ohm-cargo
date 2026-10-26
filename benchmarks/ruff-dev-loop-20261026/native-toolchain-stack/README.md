@@ -10,4 +10,17 @@ Warm separate native checkpoints for the two arms. Before each observation, rest
 
 Each endpoint runs 12 pairs with six control-first and six candidate-first assignments. Shuffle the two schedules with seeds 814137 and 814138, then shuffle the interleaved pair labels with seed 814139. Save all 48 observations. Compute the median paired elapsed reduction, a distribution-free 95% median interval, and an exact two-sided randomization test across the 924 allowed orders. Adjust the two endpoint p-values with Holm. The public edit provides a negative control for accidental cutoff and its timing will be reported even if it is neutral.
 
-The namespace preflight ran zero scored commands. In the user namespace, Linux exposed the root directory as UID 65534. Ohm correctly disabled both private caches, which require trustworthy ancestors. The native replay consequently uses an isolated Rustup alias and hard-links each frozen binary at its stable pathname. It swaps per-arm checkpoint copies into the stable target directory before timing and replays the patch in its dedicated Ruff worktree. The worktree contents, file timestamps and index are restored after each observation. The inputs, outputs, schedule and statistics above are fixed.
+The namespace preflight ran zero scored commands. In the user namespace, Linux exposed the root directory as UID 65534. Ohm correctly disabled both private caches, which require trustworthy ancestors. The native replay consequently uses an isolated Rustup alias and places each frozen binary at its stable pathname. Cargo is hard-linked and the driver is selected through a symlink to an immutable file. A preliminary hard-link switch changed the driver’s ctime and triggered a full rebuild. The process-roster guard rejected that preflight before any scored sample. It swaps per-arm checkpoint copies into the stable target directory before timing and replays the patch in its dedicated Ruff worktree. The worktree contents, file timestamps and index are restored after each observation. The inputs, outputs, schedule and statistics above are fixed.
+
+A separate launcher preflight could not locate the standard library when the driver followed its symlink. The final launcher supplies the identical toolchain sysroot explicitly. Neither setup launch entered the timing file. The private home contained 370 records for each registry cache format and one Git index proof.
+
+## Results
+
+| Historical Ruff edit | Compiler processes | Median control | Median candidate | Median paired elapsed reduction | 95% median interval | Holm-adjusted p |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| Private parser implementation | 35 → 1 | 12.121 s | 0.932 s | 92.22% | 92.00–92.44% | 0.00433 |
+| Exported lexer | 35 → 35 | 11.855 s | 11.744 s | 2.15% | −2.68–3.80% | 0.28139 |
+
+Every private-edit pair improved. Seven of 12 public-edit pairs improved, and the public timing interval includes zero. The public edit rebuilt the same 35 targets in each arm. All 48 commands exited successfully. An untimed check after every command reported the same 520 fresh artifacts with the same feature and target graph. The disposable Ruff checkout and its index were clean at the pinned revision afterward. [Individual native timings](observations.csv), [per-command verification](verification.csv), [compiler rosters](validation.json), [exact inference](summary.json)
+
+These two patches exercise different invalidation paths. The separate compiler-only experiment includes a second historically independent private parser edit, a clean rebuild comparison and rejected unsafe language forms. [Compiler confirmation](../private-trait-check/), [23 additional source and diagnostic cases](../private-trait-inference/)
