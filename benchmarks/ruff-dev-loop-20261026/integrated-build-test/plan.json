@@ -1,0 +1,72 @@
+{
+  "recorded_utc": "2026-10-26 22:46 UTC, before native/counted benchmark observations",
+  "ruff": "93526150df078af7dd8fc4226cdcc469539d2001",
+  "cpu": "0-3",
+  "inputs": {
+    "parent": {
+      "cargo": {
+        "path": "/home/dev-user/.cache/ohm-ruff-loop-20261026/subjects/parent-pgo",
+        "sha256": "211465de4b9e4589da2be06871acd9304dd3b94c849c1304f723484cb4f71dfc"
+      },
+      "driver": {
+        "path": "/home/dev-user/.cache/ohm-ruff-empty-lint-scope-20261026/release/drivers/A/librustc_driver-774a793a844d5500.so",
+        "sha256": "539e8623c70298849aa3043f35374ea3c7dc7215aac44011e64fccdc818f91a4"
+      },
+      "wild": {
+        "path": "/home/dev-user/.cache/ohm-wild-regular-reloc-20261026/bin/shipped",
+        "sha256": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5"
+      }
+    },
+    "candidate": {
+      "cargo": {
+        "path": "/home/dev-user/.cache/ohm-ruff-loop-20261026/subjects/cargo-stack-nine-layout-pgo",
+        "sha256": "3f5223265e4f51af56ecc1ef8737a2d2744b21faf6c3168a28012b9eba1ccb60"
+      },
+      "driver": {
+        "path": "/home/dev-user/.cache/ohm-ruff-packed-edges-20261026/nonleaf/trait-pgo-state/armB/librustc_driver-774a793a844d5500.so",
+        "sha256": "051b9d3f5861f984faa0f8c1d2ab9b5c28e483a05c728051de837291c83fd518"
+      },
+      "wild": {
+        "path": "/home/dev-user/.cache/ohm-wild-regular-reloc-20261026/structural-scout/pr42-pair-final-package/wild",
+        "sha256": "97cd2b7445d07159a210194340a0f8bdbfc08344fa4ea3afbd547f3309cd0cb4"
+      }
+    }
+  },
+  "commands": {
+    "build": "ordinary cargo +ohm build --locked --offline on the seven-line CLI patch from da8ee78491 (reverse to prepare, forward to measure), 501 units, all 6 graph-keyed ELFs, exactly one ruff rustc and native link",
+    "test": "ordinary cargo +ohm test --no-run --locked --offline, 2fb7c8ddd8 fixtures edit as historical selection, 619 units, 102 graph-keyed ELFs, one fixtures rustc and native link"
+  },
+  "primary_metric": "Sum of measured actual native Cargo (DynamoRIO), rustc, clang and Wild (Cachegrind) dynamic instructions in one complete invocation; separately disclose wrapper/launcher, native ancillary processes, cold fallback, component counts. No claimed wall latency from instrumented execution. Validate ordinary terminal output, oracle audit via same-context JSON outside score, pin registry trust and native compile environment. Do not score unless matching cross-arm native output and instrumented raw ELFs, same exact graph/target keys and complete process roster with terminal success in every observation. Pin Git index, per-arm positive immutable manifest proof stores and treatment verified Git index, all installed binaries, unedited files and C/C++ tool dependencies. Reject changes in inventory across measured observations, unexpected crates, partial instrumentation, corrupt or incompatible reset. Optional dedicated native timed cohort only with complete isolation and preregistered schedule.",
+  "schedule": {
+    "build": [
+      "parent,candidate",
+      "candidate,parent",
+      "candidate,parent",
+      "parent,candidate",
+      "candidate,parent",
+      "candidate,parent",
+      "parent,candidate",
+      "parent,candidate",
+      "candidate,parent",
+      "candidate,parent",
+      "parent,candidate",
+      "parent,candidate"
+    ],
+    "test": [
+      "parent,candidate",
+      "candidate,parent",
+      "candidate,parent",
+      "parent,candidate",
+      "candidate,parent",
+      "candidate,parent",
+      "parent,candidate",
+      "parent,candidate",
+      "candidate,parent",
+      "parent,candidate",
+      "parent,candidate",
+      "candidate,parent"
+    ]
+  },
+  "decision": "12 pairs per endpoint, six of each order; median percentage of paired reductions; distribution-free 95% median interval, exact two-sided balanced randomization across 924 orders, Holm over the two endpoints, each lower bound >0 and adjusted p<.05. All observations or exclusions retained, publish only if both native/byte/process/cache gates and each endpoint statistical gate pass. Start one independent target at a time; stop after reproducible gate failure if no eligible correction.",
+  "minimum_scratch_free_GiB": 24
+}
