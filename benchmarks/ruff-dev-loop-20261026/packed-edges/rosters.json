@@ -1,0 +1,167 @@
+{
+  "stage2-check": {
+    "units": 90,
+    "dirty": [
+      [
+        "ruff_python_parser",
+        [
+          "lib"
+        ],
+        false
+      ]
+    ],
+    "artifact_sha256": {
+      ".public-api-hash": "69aa0aeab6d46b6cfcc81299dc54063a5470459f1b53372ba155d04d716c3116",
+      ".rmeta": "904edf66426d8d73ebb231dc66423b1e2ae26c1899ba7a38f3c900c414733a4e"
+    }
+  },
+  "stage2-ast-build": {
+    "units": 39,
+    "dirty": [
+      [
+        "ruff_python_ast",
+        [
+          "lib"
+        ],
+        false
+      ]
+    ],
+    "processes": [
+      [
+        "ruff_python_ast",
+        false
+      ]
+    ],
+    "hashes": {
+      "lib-ruff_python_ast.public-api-hash": "437bb6772a6b6618089a2447506a56dcff203a9fdfdc5037dc4db2978cc6e5ec",
+      "libruff_python_ast-17b1df149de6d015.rmeta": "4a774bf0ea7661327cda7196a922d226e46a1e8f496d072495d3cceb1113060d"
+    }
+  },
+  "stage2-parser-test": {
+    "units": 148,
+    "dirty": [
+      [
+        "fixtures",
+        [
+          "test"
+        ],
+        true
+      ],
+      [
+        "generate_inline_tests",
+        [
+          "test"
+        ],
+        true
+      ],
+      [
+        "ruff_python_parser",
+        [
+          "lib"
+        ],
+        false
+      ],
+      [
+        "ruff_python_parser",
+        [
+          "lib"
+        ],
+        true
+      ]
+    ],
+    "processes": [
+      [
+        "fixtures",
+        false
+      ],
+      [
+        "ruff_python_parser",
+        false
+      ],
+      [
+        "ruff_python_parser",
+        true
+      ]
+    ],
+    "hashes": {
+      "lib-ruff_python_parser.public-api-hash": "5b49585effb3f4f7bae16e8ac5db3433fd2e5393912945ac85509d793bc5c9ac",
+      "libruff_python_parser-75f90dea5cf19ce8.rmeta": "fddfa2d7dc3ba5cbc6cd37ccf1055e9c7f16199a4c5a0b2a8a01d6600267aea2"
+    }
+  },
+  "peer-parser-check": {
+    "units": 90,
+    "dirty": [
+      [
+        "ruff_python_parser",
+        [
+          "lib"
+        ],
+        false
+      ]
+    ],
+    "processes": [
+      [
+        "",
+        false
+      ]
+    ],
+    "hashes": {
+      ".public-api-hash": "d31762099277e1fb1cfab6e934edbd68628a2c95846facaf05ab7ea8cd3a8a0f",
+      ".rmeta": "8caa90c80d42096f3334f4e45ce2b8cdb93d49be33c12dde7f57d6585e78d11e"
+    }
+  },
+  "peer-ast-check": {
+    "units": 39,
+    "dirty": [
+      [
+        "ruff_python_ast",
+        [
+          "lib"
+        ],
+        false
+      ]
+    ],
+    "processes": [
+      [
+        "",
+        false
+      ]
+    ],
+    "hashes": {
+      ".public-api-hash": "1b5f69be8609e360248ce0788602efe8c125115c54318f9f0d22c75756cc7ad6",
+      ".rmeta": "e217a9f8e5bb74ab397ea87f6fd52a3f9f70f9b7e9f01c4c1fc9b1c84ced6b15"
+    }
+  },
+  "stage1-parser-check": {
+    "units": 90,
+    "dirty": [
+      [
+        "ruff_python_parser",
+        [
+          "lib"
+        ],
+        false
+      ]
+    ],
+    "artifact_sha256": {
+      ".public-api-hash": "0ca7d4a383955a1be44e51ca8adbd5042b9aab0fd7c729ed1cb46bae91fd38cd",
+      ".rmeta": "6334a0433eb4e225597f06aea1c47538957be91811a6dde0326bd2a1168af957"
+    }
+  },
+  "stage1-ast-check": {
+    "units": 39,
+    "dirty": [
+      [
+        "ruff_python_ast",
+        [
+          "lib"
+        ],
+        false
+      ]
+    ],
+    "artifact_sha256": {
+      ".public-api-hash": "2994f765ea2a529de12ea304253dee04b89c340640c205e2cb6fbd2f23e970e8",
+      ".rmeta": "1cb54314aae033424efe0a47de4987bdc747f684cc3250e472d1ae0c442ff3af"
+    }
+  }
+}

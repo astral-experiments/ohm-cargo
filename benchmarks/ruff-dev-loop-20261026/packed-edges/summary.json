@@ -1,0 +1,135 @@
+[
+  {
+    "id": "stage2-check",
+    "compiler": "Release PGO+BOLT",
+    "command": "cargo check -p ruff_python_parser",
+    "coverage": "Cargo + rustc",
+    "baseline": 1116687978.5,
+    "candidate": 1111279512.0,
+    "median": 0.49480211583593503,
+    "min": 0.25998679288301574,
+    "max": 0.696420138057996,
+    "n": 16,
+    "wins": 16,
+    "p": 0.0078125,
+    "geomean": 0.4922099481027731,
+    "geomean95": [
+      0.45158695367791823,
+      0.5305784321431029
+    ]
+  },
+  {
+    "id": "stage2-ast-build",
+    "compiler": "Release PGO+BOLT",
+    "command": "cargo build -p ruff_python_ast",
+    "coverage": "All rustc processes",
+    "baseline": 3868977700.0,
+    "candidate": 3842823540.0,
+    "median": 0.6723610351743126,
+    "min": 0.5890059016936511,
+    "max": 0.7680291553870067,
+    "n": 12,
+    "wins": 12,
+    "p": 0.03125,
+    "geomean": 0.6710144064676515,
+    "geomean95": [
+      0.6465299985435324,
+      0.6952450327705528
+    ]
+  },
+  {
+    "id": "stage2-parser-test",
+    "compiler": "Release PGO+BOLT",
+    "command": "cargo test --no-run -p ruff_python_parser",
+    "coverage": "All rustc processes",
+    "baseline": 3927598881.5,
+    "candidate": 3906006569.0,
+    "median": 0.548341211203035,
+    "min": 0.5165401629917965,
+    "max": 0.5921415165965338,
+    "n": 12,
+    "wins": 12,
+    "p": 0.03125,
+    "geomean": 0.548817679023561,
+    "geomean95": [
+      0.5354004347334129,
+      0.5608835376402999
+    ]
+  },
+  {
+    "id": "peer-parser-check",
+    "compiler": "Release PGO+BOLT, second host",
+    "command": "cargo check -p ruff_python_parser",
+    "coverage": "rustc",
+    "baseline": 832741798.0,
+    "candidate": 826805225.5,
+    "median": 0.6716537452846671,
+    "min": 0.5742921741267781,
+    "max": 0.8463252182562386,
+    "n": 16,
+    "wins": 16,
+    "p": 0.0078125,
+    "geomean": 0.6875635946708925,
+    "geomean95": [
+      0.6677604378983348,
+      0.7102093425652378
+    ]
+  },
+  {
+    "id": "peer-ast-check",
+    "compiler": "Release PGO+BOLT, second host",
+    "command": "cargo check -p ruff_python_ast",
+    "coverage": "rustc",
+    "baseline": 2556033082.0,
+    "candidate": 2535500944.5,
+    "median": 0.8027182727986582,
+    "min": 0.7202243138056619,
+    "max": 0.9268716208193473,
+    "n": 16,
+    "wins": 16,
+    "p": 0.0078125,
+    "geomean": 0.8143732530303649,
+    "geomean95": [
+      0.7885251063890819,
+      0.8438703796760705
+    ]
+  },
+  {
+    "id": "stage1-parser-check",
+    "compiler": "Stage 1",
+    "command": "cargo check -p ruff_python_parser",
+    "coverage": "Cargo + rustc",
+    "baseline": 1558595798.0,
+    "candidate": 1555681318.5,
+    "median": 0.1713685511219698,
+    "min": -0.015170565362487842,
+    "max": 0.39232870490374383,
+    "n": 16,
+    "wins": 15,
+    "p": 0.0078125,
+    "geomean": 0.19497733981613807,
+    "geomean95": [
+      0.1383133178829432,
+      0.2511987293941864
+    ]
+  },
+  {
+    "id": "stage1-ast-check",
+    "compiler": "Stage 1",
+    "command": "cargo check -p ruff_python_ast",
+    "coverage": "Cargo + rustc",
+    "baseline": 5020088305.5,
+    "candidate": 5010875874.5,
+    "median": 0.1732279062545028,
+    "min": 0.08990073572889834,
+    "max": 0.26390976500618724,
+    "n": 16,
+    "wins": 16,
+    "p": 0.0078125,
+    "geomean": 0.1830062142927913,
+    "geomean95": [
+      0.16252068674003084,
+      0.20654320854884833
+    ]
+  }
+]
