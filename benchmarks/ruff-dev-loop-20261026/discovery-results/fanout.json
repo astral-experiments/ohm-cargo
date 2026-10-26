@@ -1,0 +1,1076 @@
+{
+  "linter-discovery": {
+    "argv": [
+      "cargo",
+      "+ohm",
+      "check",
+      "--locked",
+      "--offline",
+      "--message-format=json"
+    ],
+    "exit": 0,
+    "wall_ns": 14747561279,
+    "total_artifacts": 520,
+    "dirty": [
+      {
+        "package": "0.17.0",
+        "target": "ruff_linter",
+        "kind": [
+          "lib"
+        ]
+      },
+      {
+        "package": "0.0.17",
+        "target": "ruff_graph",
+        "kind": [
+          "lib"
+        ]
+      },
+      {
+        "package": "0.0.0",
+        "target": "ruff_benchmark",
+        "kind": [
+          "lib"
+        ]
+      },
+      {
+        "package": "0.0.17",
+        "target": "ruff_workspace",
+        "kind": [
+          "lib"
+        ]
+      },
+      {
+        "package": "0.0.17",
+        "target": "ruff_markdown",
+        "kind": [
+          "lib"
+        ]
+      },
+      {
+        "package": "0.0.0",
+        "target": "ruff_mdtest",
+        "kind": [
+          "lib"
+        ]
+      },
+      {
+        "package": "0.17.0",
+        "target": "ruff_wasm",
+        "kind": [
+          "cdylib",
+          "rlib"
+        ]
+      },
+      {
+        "package": "0.0.17",
+        "target": "ruff_server",
+        "kind": [
+          "lib"
+        ]
+      },
+      {
+        "package": "0.17.0",
+        "target": "ruff",
+        "kind": [
+          "lib"
+        ]
+      },
+      {
+        "package": "0.17.0",
+        "target": "ruff",
+        "kind": [
+          "bin"
+        ]
+      },
+      {
+        "package": "0.0.0",
+        "target": "ruff_dev",
+        "kind": [
+          "bin"
+        ]
+      }
+    ],
+    "cargo_instructions": 1096153421,
+    "errors": [],
+    "commit": "c2b2eda972b16f000249e30f3bc590ded81d3d82",
+    "compiler_invocations": [
+      "ruff_linter",
+      "ruff_graph",
+      "ruff_benchmark",
+      "ruff_workspace",
+      "ruff_markdown",
+      "ruff_mdtest",
+      "ruff_wasm",
+      "ruff_server",
+      "ruff",
+      "ruff_dev",
+      "ruff"
+    ],
+    "distinct_public_hash_files": 61,
+    "changed_public_hash_files": 7
+  },
+  "parser-ast-discovery": {
+    "argv": [
+      "cargo",
+      "+ohm",
+      "check",
+      "--locked",
+      "--offline",
+      "--message-format=json"
+    ],
+    "exit": 0,
+    "wall_ns": 20908399990,
+    "total_artifacts": 520,
+    "dirty": [
+      {
+        "package": "0.0.17",
+        "target": "ruff_python_parser",
+        "kind": [
+          "lib"
+        ]
+      },
+      {
+        "package": "0.0.17",
+        "target": "ruff_python_codegen",
+        "kind": [
+          "lib"
+        ]
+      },
+      {
+        "package": "0.0.17",
+        "target": "ruff_python_importer",
+        "kind": [
+          "lib"
+        ]
+      },
+      {
+        "package": "0.0.17",
+        "target": "ruff_db",
+        "kind": [
+          "lib"
+        ]
+      },
+      {
+        "package": "0.0.17",
+        "target": "ruff_python_semantic",
+        "kind": [
+          "lib"
+        ]
+      },
+      {
+        "package": "0.0.17",
+        "target": "ruff_ranged_value",
+        "kind": [
+          "lib"
+        ]
+      },
+      {
+        "package": "0.0.17",
+        "target": "ty_site_packages",
+        "kind": [
+          "lib"
+        ]
+      },
+      {
+        "package": "0.0.17",
+        "target": "ty_vendored",
+        "kind": [
+          "lib"
+        ]
+      },
+      {
+        "package": "0.0.17",
+        "target": "ty_combine",
+        "kind": [
+          "lib"
+        ]
+      },
+      {
+        "package": "0.0.17",
+        "target": "ty_module_resolver",
+        "kind": [
+          "lib"
+        ]
+      },
+      {
+        "package": "0.0.0",
+        "target": "mdtest",
+        "kind": [
+          "lib"
+        ]
+      },
+      {
+        "package": "0.0.17",
+        "target": "ruff_python_formatter",
+        "kind": [
+          "lib"
+        ]
+      },
+      {
+        "package": "0.0.17",
+        "target": "ruff_python_formatter",
+        "kind": [
+          "bin"
+        ]
+      },
+      {
+        "package": "0.0.17",
+        "target": "ty_python_core",
+        "kind": [
+          "lib"
+        ]
+      },
+      {
+        "package": "0.17.0",
+        "target": "ruff_linter",
+        "kind": [
+          "lib"
+        ]
+      },
+      {
+        "package": "0.0.17",
+        "target": "ruff_graph",
+        "kind": [
+          "lib"
+        ]
+      },
+      {
+        "package": "0.0.17",
+        "target": "ruff_workspace",
+        "kind": [
+          "lib"
+        ]
+      },
+      {
+        "package": "0.0.17",
+        "target": "ruff_markdown",
+        "kind": [
+          "lib"
+        ]
+      },
+      {
+        "package": "0.0.0",
+        "target": "ruff_mdtest",
+        "kind": [
+          "lib"
+        ]
+      },
+      {
+        "package": "0.17.0",
+        "target": "ruff_wasm",
+        "kind": [
+          "cdylib",
+          "rlib"
+        ]
+      },
+      {
+        "package": "0.0.17",
+        "target": "ruff_server",
+        "kind": [
+          "lib"
+        ]
+      },
+      {
+        "package": "0.17.0",
+        "target": "ruff",
+        "kind": [
+          "lib"
+        ]
+      },
+      {
+        "package": "0.17.0",
+        "target": "ruff",
+        "kind": [
+          "bin"
+        ]
+      },
+      {
+        "package": "0.0.17",
+        "target": "ty_python_semantic",
+        "kind": [
+          "lib"
+        ]
+      },
+      {
+        "package": "0.0.0",
+        "target": "ty_test",
+        "kind": [
+          "lib"
+        ]
+      },
+      {
+        "package": "0.0.0",
+        "target": "ty_project",
+        "kind": [
+          "lib"
+        ]
+      },
+      {
+        "package": "0.0.0",
+        "target": "ty_ide",
+        "kind": [
+          "lib"
+        ]
+      },
+      {
+        "package": "0.0.0",
+        "target": "ty_completion_bench",
+        "kind": [
+          "bin"
+        ]
+      },
+      {
+        "package": "0.0.0",
+        "target": "ty_completion_eval",
+        "kind": [
+          "bin"
+        ]
+      },
+      {
+        "package": "0.0.0",
+        "target": "ruff_benchmark",
+        "kind": [
+          "lib"
+        ]
+      },
+      {
+        "package": "0.0.0",
+        "target": "ty_wasm",
+        "kind": [
+          "cdylib",
+          "rlib"
+        ]
+      },
+      {
+        "package": "0.0.0",
+        "target": "ty_server",
+        "kind": [
+          "lib"
+        ]
+      },
+      {
+        "package": "0.0.0",
+        "target": "ty",
+        "kind": [
+          "lib"
+        ]
+      },
+      {
+        "package": "0.0.0",
+        "target": "ty",
+        "kind": [
+          "bin"
+        ]
+      },
+      {
+        "package": "0.0.0",
+        "target": "ruff_dev",
+        "kind": [
+          "bin"
+        ]
+      }
+    ],
+    "cargo_instructions": 1245497364,
+    "errors": [],
+    "commit": "0ecff877901a0377ad966ffab528488ce872b50e",
+    "compiler_invocations": [
+      "ruff_python_parser",
+      "ruff_db",
+      "ruff_python_codegen",
+      "ruff_python_semantic",
+      "ruff_python_importer",
+      "ruff_ranged_value",
+      "ty_site_packages",
+      "ty_module_resolver",
+      "ruff_python_formatter",
+      "ty_combine",
+      "ty_vendored",
+      "ruff_linter",
+      "mdtest",
+      "ty_python_core",
+      "ruff_python_formatter",
+      "ty_python_semantic",
+      "ruff_graph",
+      "ruff_workspace",
+      "ruff_markdown",
+      "ruff_mdtest",
+      "ruff_wasm",
+      "ruff_server",
+      "ruff",
+      "ruff",
+      "ty_test",
+      "ty_project",
+      "ty_ide",
+      "ty_server",
+      "ty_completion_bench",
+      "ty_completion_eval",
+      "ty_wasm",
+      "ruff_benchmark",
+      "ty",
+      "ruff_dev",
+      "ty"
+    ],
+    "distinct_public_hash_files": 61,
+    "changed_public_hash_files": 28
+  },
+  "formatter-discovery": {
+    "argv": [
+      "cargo",
+      "+ohm",
+      "build",
+      "--locked",
+      "--offline",
+      "--message-format=json"
+    ],
+    "exit": 0,
+    "wall_ns": 17095714725,
+    "total_artifacts": 501,
+    "dirty": [
+      {
+        "package": "0.0.17",
+        "target": "ruff_formatter",
+        "kind": [
+          "lib"
+        ]
+      },
+      {
+        "package": "0.0.17",
+        "target": "ruff_python_formatter",
+        "kind": [
+          "lib"
+        ]
+      },
+      {
+        "package": "0.0.17",
+        "target": "ruff_python_formatter",
+        "kind": [
+          "bin"
+        ]
+      },
+      {
+        "package": "0.0.17",
+        "target": "ruff_workspace",
+        "kind": [
+          "lib"
+        ]
+      },
+      {
+        "package": "0.0.17",
+        "target": "ruff_markdown",
+        "kind": [
+          "lib"
+        ]
+      },
+      {
+        "package": "0.0.0",
+        "target": "ruff_mdtest",
+        "kind": [
+          "lib"
+        ]
+      },
+      {
+        "package": "0.0.0",
+        "target": "ty_project",
+        "kind": [
+          "lib"
+        ]
+      },
+      {
+        "package": "0.0.0",
+        "target": "ty_ide",
+        "kind": [
+          "lib"
+        ]
+      },
+      {
+        "package": "0.0.17",
+        "target": "ruff_server",
+        "kind": [
+          "lib"
+        ]
+      },
+      {
+        "package": "0.17.0",
+        "target": "ruff_wasm",
+        "kind": [
+          "cdylib",
+          "rlib"
+        ]
+      },
+      {
+        "package": "0.17.0",
+        "target": "ruff",
+        "kind": [
+          "lib"
+        ]
+      },
+      {
+        "package": "0.0.0",
+        "target": "ruff_benchmark",
+        "kind": [
+          "lib"
+        ]
+      },
+      {
+        "package": "0.0.0",
+        "target": "ty_server",
+        "kind": [
+          "lib"
+        ]
+      },
+      {
+        "package": "0.17.0",
+        "target": "ruff",
+        "kind": [
+          "bin"
+        ]
+      },
+      {
+        "package": "0.0.0",
+        "target": "ty_wasm",
+        "kind": [
+          "cdylib",
+          "rlib"
+        ]
+      },
+      {
+        "package": "0.0.0",
+        "target": "ty_completion_eval",
+        "kind": [
+          "bin"
+        ]
+      },
+      {
+        "package": "0.0.0",
+        "target": "ty_completion_bench",
+        "kind": [
+          "bin"
+        ]
+      },
+      {
+        "package": "0.0.0",
+        "target": "ty",
+        "kind": [
+          "lib"
+        ]
+      },
+      {
+        "package": "0.0.0",
+        "target": "ty",
+        "kind": [
+          "bin"
+        ]
+      },
+      {
+        "package": "0.0.0",
+        "target": "ruff_dev",
+        "kind": [
+          "bin"
+        ]
+      }
+    ],
+    "cargo_instructions": 1757665491,
+    "errors": [],
+    "commit": "1fcdb82be0169fc79f492f03728f52215af563c0"
+  },
+  "shared-library-discovery": {
+    "argv": [
+      "cargo",
+      "+ohm",
+      "test",
+      "--no-run",
+      "--locked",
+      "--offline",
+      "--message-format=json"
+    ],
+    "exit": 0,
+    "wall_ns": 46633425864,
+    "total_artifacts": 619,
+    "dirty": [
+      {
+        "package": "0.0.17",
+        "target": "ruff_python_stdlib",
+        "kind": [
+          "lib"
+        ]
+      },
+      {
+        "package": "0.0.17",
+        "target": "ruff_python_stdlib",
+        "kind": [
+          "lib"
+        ]
+      },
+      {
+        "package": "0.0.17",
+        "target": "ty_module_resolver",
+        "kind": [
+          "lib"
+        ]
+      },
+      {
+        "package": "0.0.17",
+        "target": "ruff_python_semantic",
+        "kind": [
+          "lib"
+        ]
+      },
+      {
+        "package": "0.0.17",
+        "target": "ruff_python_semantic",
+        "kind": [
+          "lib"
+        ]
+      },
+      {
+        "package": "0.0.17",
+        "target": "ty_module_resolver",
+        "kind": [
+          "lib"
+        ]
+      },
+      {
+        "package": "0.0.17",
+        "target": "ty_python_core",
+        "kind": [
+          "lib"
+        ]
+      },
+      {
+        "package": "0.0.17",
+        "target": "ty_python_core",
+        "kind": [
+          "lib"
+        ]
+      },
+      {
+        "package": "0.17.0",
+        "target": "ruff_linter",
+        "kind": [
+          "lib"
+        ]
+      },
+      {
+        "package": "0.0.17",
+        "target": "ruff_graph",
+        "kind": [
+          "lib"
+        ]
+      },
+      {
+        "package": "0.17.0",
+        "target": "ruff_linter",
+        "kind": [
+          "lib"
+        ]
+      },
+      {
+        "package": "0.0.17",
+        "target": "ruff_workspace",
+        "kind": [
+          "lib"
+        ]
+      },
+      {
+        "package": "0.0.17",
+        "target": "ruff_workspace",
+        "kind": [
+          "lib"
+        ]
+      },
+      {
+        "package": "0.0.17",
+        "target": "ruff_markdown",
+        "kind": [
+          "lib"
+        ]
+      },
+      {
+        "package": "0.0.0",
+        "target": "ruff_mdtest",
+        "kind": [
+          "lib"
+        ]
+      },
+      {
+        "package": "0.0.17",
+        "target": "ruff_markdown",
+        "kind": [
+          "lib"
+        ]
+      },
+      {
+        "package": "0.17.0",
+        "target": "ruff_wasm",
+        "kind": [
+          "cdylib",
+          "rlib"
+        ]
+      },
+      {
+        "package": "0.17.0",
+        "target": "api",
+        "kind": [
+          "test"
+        ]
+      },
+      {
+        "package": "0.0.0",
+        "target": "mdtest",
+        "kind": [
+          "test"
+        ]
+      },
+      {
+        "package": "0.0.17",
+        "target": "ruff_server",
+        "kind": [
+          "lib"
+        ]
+      },
+      {
+        "package": "0.0.17",
+        "target": "ruff_server",
+        "kind": [
+          "lib"
+        ]
+      },
+      {
+        "package": "0.0.17",
+        "target": "document",
+        "kind": [
+          "test"
+        ]
+      },
+      {
+        "package": "0.17.0",
+        "target": "ruff",
+        "kind": [
+          "lib"
+        ]
+      },
+      {
+        "package": "0.0.17",
+        "target": "ty_python_semantic",
+        "kind": [
+          "lib"
+        ]
+      },
+      {
+        "package": "0.17.0",
+        "target": "direxist_guard",
+        "kind": [
+          "test"
+        ]
+      },
+      {
+        "package": "0.17.0",
+        "target": "config",
+        "kind": [
+          "test"
+        ]
+      },
+      {
+        "package": "0.17.0",
+        "target": "ruff",
+        "kind": [
+          "lib"
+        ]
+      },
+      {
+        "package": "0.0.17",
+        "target": "e2e",
+        "kind": [
+          "test"
+        ]
+      },
+      {
+        "package": "0.17.0",
+        "target": "resolve_files",
+        "kind": [
+          "test"
+        ]
+      },
+      {
+        "package": "0.0.0",
+        "target": "ty_test",
+        "kind": [
+          "lib"
+        ]
+      },
+      {
+        "package": "0.17.0",
+        "target": "ruff",
+        "kind": [
+          "bin"
+        ]
+      },
+      {
+        "package": "0.0.0",
+        "target": "ty_test",
+        "kind": [
+          "lib"
+        ]
+      },
+      {
+        "package": "0.0.17",
+        "target": "corpus",
+        "kind": [
+          "test"
+        ]
+      },
+      {
+        "package": "0.0.0",
+        "target": "ty_project",
+        "kind": [
+          "lib"
+        ]
+      },
+      {
+        "package": "0.17.0",
+        "target": "cli",
+        "kind": [
+          "test"
+        ]
+      },
+      {
+        "package": "0.0.17",
+        "target": "mdtest",
+        "kind": [
+          "test"
+        ]
+      },
+      {
+        "package": "0.0.0",
+        "target": "ty_project",
+        "kind": [
+          "lib"
+        ]
+      },
+      {
+        "package": "0.17.0",
+        "target": "ruff",
+        "kind": [
+          "bin"
+        ]
+      },
+      {
+        "package": "0.0.0",
+        "target": "ty_ide",
+        "kind": [
+          "lib"
+        ]
+      },
+      {
+        "package": "0.17.0",
+        "target": "integration_test",
+        "kind": [
+          "test"
+        ]
+      },
+      {
+        "package": "0.17.0",
+        "target": "analyze_graph",
+        "kind": [
+          "test"
+        ]
+      },
+      {
+        "package": "0.0.0",
+        "target": "ty_completion_bench",
+        "kind": [
+          "bin"
+        ]
+      },
+      {
+        "package": "0.0.0",
+        "target": "ty_wasm",
+        "kind": [
+          "cdylib",
+          "rlib"
+        ]
+      },
+      {
+        "package": "0.0.0",
+        "target": "ty_server",
+        "kind": [
+          "lib"
+        ]
+      },
+      {
+        "package": "0.0.0",
+        "target": "api",
+        "kind": [
+          "test"
+        ]
+      },
+      {
+        "package": "0.0.0",
+        "target": "ty_server",
+        "kind": [
+          "lib"
+        ]
+      },
+      {
+        "package": "0.0.0",
+        "target": "ty",
+        "kind": [
+          "lib"
+        ]
+      },
+      {
+        "package": "0.0.0",
+        "target": "ty_completion_eval",
+        "kind": [
+          "bin"
+        ]
+      },
+      {
+        "package": "0.0.0",
+        "target": "ty_ide",
+        "kind": [
+          "lib"
+        ]
+      },
+      {
+        "package": "0.0.0",
+        "target": "ty",
+        "kind": [
+          "lib"
+        ]
+      },
+      {
+        "package": "0.0.0",
+        "target": "ty",
+        "kind": [
+          "bin"
+        ]
+      },
+      {
+        "package": "0.0.0",
+        "target": "ty",
+        "kind": [
+          "bin"
+        ]
+      },
+      {
+        "package": "0.0.0",
+        "target": "self_environment",
+        "kind": [
+          "test"
+        ]
+      },
+      {
+        "package": "0.0.0",
+        "target": "ruff_dev",
+        "kind": [
+          "bin"
+        ]
+      },
+      {
+        "package": "0.0.0",
+        "target": "e2e",
+        "kind": [
+          "test"
+        ]
+      },
+      {
+        "package": "0.0.0",
+        "target": "cli",
+        "kind": [
+          "test"
+        ]
+      },
+      {
+        "package": "0.0.0",
+        "target": "file_watching",
+        "kind": [
+          "test"
+        ]
+      },
+      {
+        "package": "0.0.17",
+        "target": "ty_python_semantic",
+        "kind": [
+          "lib"
+        ]
+      }
+    ],
+    "cargo_instructions": 3062102462,
+    "errors": [],
+    "commit": "103168bd42584b777a8afaaa0d3ed0ca77e84a8d"
+  },
+  "cli-workspace-discovery": {
+    "argv": [
+      "cargo",
+      "+ohm",
+      "build",
+      "--locked",
+      "--offline",
+      "--message-format=json"
+    ],
+    "exit": 0,
+    "wall_ns": 11122531115,
+    "total_artifacts": 501,
+    "dirty": [
+      {
+        "package": "0.0.17",
+        "target": "ruff_server",
+        "kind": [
+          "lib"
+        ]
+      },
+      {
+        "package": "0.17.0",
+        "target": "ruff",
+        "kind": [
+          "lib"
+        ]
+      },
+      {
+        "package": "0.17.0",
+        "target": "ruff",
+        "kind": [
+          "bin"
+        ]
+      },
+      {
+        "package": "0.0.0",
+        "target": "ruff_dev",
+        "kind": [
+          "bin"
+        ]
+      }
+    ],
+    "cargo_instructions": 1619260898,
+    "errors": [],
+    "commit": "f304bc0cac91e33b8031fc78403e3ce886f4d215"
+  },
+  "test-target-discovery": {
+    "argv": [
+      "cargo",
+      "+ohm",
+      "test",
+      "--no-run",
+      "--locked",
+      "--offline",
+      "--message-format=json"
+    ],
+    "exit": 0,
+    "wall_ns": 6330779553,
+    "total_artifacts": 619,
+    "dirty": [
+      {
+        "package": "0.0.17",
+        "target": "fixtures",
+        "kind": [
+          "test"
+        ]
+      }
+    ],
+    "cargo_instructions": 1200397899,
+    "errors": [],
+    "commit": "2fb7c8ddd806aec98f8bba8f4c78d4a7c22f9d56"
+  }
+}
