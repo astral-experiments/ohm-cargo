@@ -30,11 +30,15 @@ static PARSER: LazyLock<blake3::Hash> = LazyLock::new(|| {
 });
 
 pub(crate) fn directory(home: &Path) -> Option<PathBuf> {
+    private_directory(home, DIRECTORY)
+}
+
+pub(crate) fn private_directory(home: &Path, name: &str) -> Option<PathBuf> {
     let home = home.canonicalize().ok()?;
     if !trusted_ancestors(&home) {
         return None;
     }
-    let directory = home.join(DIRECTORY);
+    let directory = home.join(name);
     let _ = fs::DirBuilder::new().mode(0o700).create(&directory);
     let meta = directory.symlink_metadata().ok()?;
     (meta.is_dir() && private(&meta)).then_some(directory)
