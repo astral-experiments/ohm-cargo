@@ -250,7 +250,7 @@ fn deserialize_without_document(
                 error
             },
         )?;
-        entry.store(document);
+        entry.store(document, &manifest._unused_keys);
         return Ok(manifest);
     }
     deserialize_toml(toml::de::Deserializer::parse(contents)?)
