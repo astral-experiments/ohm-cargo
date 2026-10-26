@@ -173,6 +173,7 @@ pub fn into_resolve(
 
     // `PackageId`s in the lock file don't include the `source` part
     // for workspace members, so we reconstruct proper IDs.
+    let mut last_source = None;
     let live_pkgs = {
         let mut live_pkgs = HashMap::default();
         let mut all_pkgs = HashSet::default();
@@ -186,21 +187,24 @@ pub fn into_resolve(
             if !all_pkgs.insert(enc_id.clone()) {
                 anyhow::bail!("package `{}` is specified twice in the lockfile", pkg.name);
             }
-            let id = match pkg
-                .source
-                .as_ref()
-                .map(|source| SourceId::from_url(&source.source_str()))
-                .transpose()?
-                .or_else(|| get_source_id(&path_deps, &pkg).copied())
-            {
+            let source = if let Some(source) = &pkg.source {
+                // Most packages in a lockfile come from the same registry.
+                let raw = source.source_str();
+                let id = match last_source {
+                    Some((previous, id)) if previous == raw => id,
+                    _ => SourceId::from_url(raw)?,
+                };
+                last_source = Some((raw, id));
+                id
+            } else if let Some(source) = get_source_id(&path_deps, pkg) {
+                *source
+            } else {
                 // We failed to find a local package in the workspace.
                 // It must have been removed and should be ignored.
-                None => {
-                    debug!("path dependency now missing {} v{}", pkg.name, pkg.version);
-                    continue;
-                }
-                Some(source) => PackageId::try_new(&pkg.name, &pkg.version, source)?,
+                debug!("path dependency now missing {} v{}", pkg.name, pkg.version);
+                continue;
             };
+            let id = PackageId::try_new(&pkg.name, &pkg.version, source)?;
 
             // If a package has a checksum listed directly on it then record
             // that here, and we also bump our version up to 2 since V1
