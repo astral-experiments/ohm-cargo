@@ -9,6 +9,7 @@ import math
 import os
 from pathlib import Path
 from callgrind_runtime import prepare, select
+from proof_inventory import record_inventory
 import random
 import re
 import shutil
@@ -51,6 +52,11 @@ parser.add_argument(
     type=Path,
     help="Reuse a private toolchain and instrumented Cargo path across cohorts",
 )
+parser.add_argument(
+    "--guard-proofs",
+    action="store_true",
+    help="Verify private proof inventories around each scored Cargo command",
+)
 args = parser.parse_args()
 out = args.output.resolve()
 out.mkdir(parents=True, exist_ok=False)
@@ -66,7 +72,7 @@ git_env = dict(os.environ, GIT_OPTIONAL_LOCKS="0")
 assert not subprocess.check_output(
     ["git", "status", "--porcelain"], cwd=ruff, env=git_env
 )
-index = Path(
+git_index = Path(
     subprocess.check_output(
         ["git", "rev-parse", "--path-format=absolute", "--git-path", "index"],
         cwd=ruff,
@@ -74,7 +80,7 @@ index = Path(
         text=True,
     ).strip()
 )
-index_digest = hashlib.sha256(index.read_bytes()).digest()
+index_digest = hashlib.sha256(git_index.read_bytes()).digest()
 state, real, stages = prepare(args, out)
 env = dict(
     os.environ,
@@ -107,9 +113,18 @@ def benchmark_mode(mode, seed):
 
     receipt = None
     digest = None
+    inventory = None
 
     def run(arm, tag, prime=False, validate=False):
-        assert hashlib.sha256(index.read_bytes()).digest() == index_digest
+        assert hashlib.sha256(git_index.read_bytes()).digest() == index_digest
+        if inventory is not None:
+            record_inventory(
+                run_root / "cache-inventory.jsonl",
+                inventory,
+                env["CARGO_HOME"],
+                not args.cold,
+                tag + ":before",
+            )
         if receipt is not None and not prime and not validate:
             if receipt.exists():
                 shutil.move(receipt, run_root / ("evicted-" + tag))
@@ -129,7 +144,15 @@ def benchmark_mode(mode, seed):
                 stderr=stderr,
                 env=dict(env, CG_OUT=str(work), CG_CHILDREN="no" if prime else "yes"),
             )
-        assert hashlib.sha256(index.read_bytes()).digest() == index_digest
+        assert hashlib.sha256(git_index.read_bytes()).digest() == index_digest
+        if inventory is not None:
+            record_inventory(
+                run_root / "cache-inventory.jsonl",
+                inventory,
+                env["CARGO_HOME"],
+                not args.cold,
+                tag + ":after",
+            )
         if receipt is not None and not prime and not validate:
             if arm == "candidate":
                 assert receipt.read_bytes() == digest
@@ -166,6 +189,14 @@ def benchmark_mode(mode, seed):
     run("parent", "prime", prime=True)
     expected_units = run("parent", "verify-parent", validate=True)
     assert expected_units == run("candidate", "verify-candidate", validate=True)
+    if args.guard_proofs:
+        inventory = record_inventory(
+            run_root / "cache-inventory.jsonl",
+            None,
+            env["CARGO_HOME"],
+            not args.cold,
+            "verified-roster",
+        )
     if args.cold:
         assert args.mode == "check" and not args.package and args.design == "paired"
         private = Path(os.environ["CARGO_HOME"]) / ".ohm-git-index-sha1dc-v1"

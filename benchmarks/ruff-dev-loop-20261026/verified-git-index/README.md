@@ -10,6 +10,10 @@ The paired reduction is `100 × (1 − candidate / parent)`. A negative number i
 | --- | ---: | ---: | ---: | ---: | ---: |
 | Full check, 520 fresh units | 920,426,778 | 862,807,290 | +6.263% | +6.258 to +6.268% | 12/12 |
 | Historical ty_vendored library edit, 181 fresh and one dirty | 754,814,194 | 700,583,226 | +7.210% | +7.160 to +7.233% | 12/12 |
+| Warm ty_vendored check, 182 fresh | 417,006,864 | 362,635,801 | +13.038% | +13.017 to +13.049% | 12/12 |
+| Full build, 501 fresh | 1,504,115,202 | 1,446,539,280 | +3.829% | +3.816 to +3.844% | 12/12 |
+| Full test compilation, 619 fresh | 1,115,396,527 | 1,057,374,952 | +5.202% | +5.198 to +5.210% | 12/12 |
+| Full check with a new proof on every run | 920,412,331 | 921,496,055 | -0.117% | -0.126 to -0.109% | 0/12 |
 
 The full check and edited check are the two primary comparisons. Each cohort shuffled six parent-first and six candidate-first assignments before measurement. The two-sided exact randomization test enumerates all 924 balanced assignments. The positive median and interval gates and Holm-adjusted p < 0.05 apply across the full and edited primaries. The median interval uses the third and tenth ordered paired reductions. [pairs.csv](pairs.csv) preserves every scored pair, the order, the seed, fresh and dirty unit counts, and the child instruction totals. [summary.csv](summary.csv) also records each observed range and raw p-value.
 
@@ -21,6 +25,14 @@ The full check and edited check are the two primary comparisons. Each cohort shu
 
 The final-layout ELF retained exactly 25,340,746 bytes of machine code, with 58,806 bytes differing at the same offsets. For that reason the final head uses its own independent comparisons. [Loaded section digests and byte differences](layout-elf.csv)
 
+## Private proof inventories
+
+The experimental Cargo homes for the primary edited/scoped worktree, full default/cold worktree, full build/test worktree, and independent aggregate study each had a distinct private registry-proof directory. Across the four directories, all six pairwise intersections of mutable file inode sets were empty. We additionally recorded each private registry filename, mode, size, physical identity, modification/change times and SHA-256 immediately before and after every accepted final build, test and true-cold command. The inventory signature excludes access time. Warm build/test also check the Git record; the cold harness evicts it and requires the same 32 bytes to be re-created by successful verification. [Per-command proof inventory digests](proof-inventories.csv)
+
+The first final test command on an older private store replaced slot `ece`, which contained `termtree 0.5.1` at command exit. The Git record stayed fixed and the registry record count remained 657. That store had `zlib-rs 0.5.5` at `265` and `gix-refspec 0.43.0` at `bdc`. They occupied the primary slots for `termtree` and `codspeed-divan-compat-walltime 5.0.1`, which share alternate slot `ece`. In the naturally primed Ruff-only store, `termtree` and `codspeed-divan-compat-walltime` occupied their primary slots, and `zlib-rs` used its own alternate `641`. Its command measured 1,058,506,574 instructions. The inventory gate rejected this attempt before a complete pair. We retained the entire older directory, created only a new owner-private registry-proof directory at the same absolute Cargo home, and primed it with ordinary Ruff commands. The fixed schedules restarted from this Ruff-only inventory. [Excluded attempt](excluded.csv)
+
+The small exported historical, warm and true-cold smoke runs are reported separately from every inferential cohort. The first attempt to exercise the exported fresh runner caught a variable shadowing the Git-index path before it launched a Cargo command. The corrected runner records the index bytes around each invocation. [Portable runner samples](portable-smoke.csv)
+
 ## Gated code before the module rename
 
 The following cohorts used the separate binary built from the immediate parent at `646d5da91f`. Each primary improved in 12/12 pairs with raw p = 0.00216 and Holm-adjusted p = 0.00433.
@@ -31,6 +43,7 @@ The following cohorts used the separate binary built from the immediate parent a
 | Historical ty_vendored library edit, 181 fresh and one dirty | 754,800,898 | 700,195,120 | +7.228% | +7.187 to +7.245% | 12/12 |
 | Warm ty_vendored check, 182 fresh | 416,925,723 | 362,521,428 | +13.048% | +13.037 to +13.068% | 12/12 |
 | Full build, 501 fresh | 1,504,064,990 | 1,446,277,762 | +3.841% | +3.827 to +3.851% | 12/12 |
+| Full test compilation, 619 fresh | 1,116,728,645 | 1,058,607,758 | +5.204% | +5.194 to +5.215% | 12/12 |
 | Full check with a new proof on every run | 920,560,240 | 921,423,232 | -0.102% | -0.125 to -0.067% | 0/12 |
 
 ## Selection and cold cost
@@ -78,7 +91,7 @@ python3 "$BENCHMARK_DIR/edited.py" "${common[@]}" \
     --output "$RUNS/edited" --seed 496863
 ```
 
-For the other shipping workloads, use `--mode build --jobs 6 --seed 538591`, `--mode test --jobs 6 --seed 819229`, or `--mode check --package ty_vendored --jobs 4 --seed 386067`. The test mode passes `--no-run`. For cold measurements, use a dedicated Cargo home with one verified record and `--mode check --cold --jobs 4 --seed 652819`. Set a distinct output directory each time. The correctness fixture creates a fresh repository and private Cargo home under its output directory.
+For the other shipping workloads, use `--mode build --jobs 6 --seed 538591`, `--mode test --jobs 6 --seed 819229`, or `--mode check --package ty_vendored --jobs 4 --seed 386067`. The test mode passes `--no-run`. For the final full build, test, and cold protocol, use a private Cargo home populated only by Ruff and add `--guard-proofs`. For cold measurements, use a dedicated Cargo home with one verified record and `--mode check --cold --jobs 4 --seed 652819`. Set a distinct output directory each time. The correctness fixture creates a fresh repository and private Cargo home under its output directory.
 
 ```sh
 python3 "$BENCHMARK_DIR/semantics.py" \
