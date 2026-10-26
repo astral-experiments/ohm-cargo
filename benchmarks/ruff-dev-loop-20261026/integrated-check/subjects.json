@@ -1,0 +1,81 @@
+{
+  "arms": {
+    "A": {
+      "cargo_sha256": "211465de4b9e4589da2be06871acd9304dd3b94c849c1304f723484cb4f71dfc",
+      "rustc_driver_sha256": "58a8a5b3bd9364659d7d1e5aaff46ca44286fad2580f8dcf3e348ad4b6cdfa11",
+      "rustc_source": "f1a7cf9d20b2cae39e991b178b56ba06b43dc8fa"
+    },
+    "B": {
+      "cargo_sha256": "71da9dfcb3ba440297f84705ff7e3a676634ced7d7b6ca9b525a439b7f748f58",
+      "rustc_driver_sha256": "244cf510684e96c444fae9be8b91f7a9b11b83388a5c843f5e310adf3c2f3962",
+      "rustc_source": "1a34d106ed0e73e8a9074ffd36a6963de86b6a27"
+    }
+  },
+  "compiler_builds": {
+    "control": {
+      "prebolt": "f72738b59c8586b0010088ae04a5070a0a9c5c14f628de5030998bf970365a52",
+      "driver": "58a8a5b3bd9364659d7d1e5aaff46ca44286fad2580f8dcf3e348ad4b6cdfa11",
+      "levels": "2bb78c805dbb746bff033d4c022fdfdcd065128ddd4cd942c62a80d2c04dd68f",
+      "edges": "e6c73285a2ecb08b9ba3b552737319c657cb79c61b74c63c09de335b675138b7",
+      "profiles": {
+        "clippy-pgo.profdata": "e98375c08ba000ec664f9aaa91f6557092e67682ff6554e23892a09406130dfc",
+        "rustc-bolt.profdata": "34cd73280713b4cfad9183f5d36ec29e4884b00ec4aac3594d6f1ef194c444f4",
+        "rustc-pgo.profdata": "481ada8a40c70dad11b3c7e8871e9a52207d78447ca5e8ace06fc4aec2d2b5a7",
+        "rustdoc-pgo.profdata": "8499f73f1fa169f858f3e7a2b4e047c53d14a0248097ddf70d2092805b57a0d1",
+        "rustfmt-pgo.profdata": "d8980c31367e4e3bd59e61f3c57619c9ab246b3effc3fcd585a30b8068395d99"
+      },
+      "parent": "f1a7cf9d20b2cae39e991b178b56ba06b43dc8fa"
+    },
+    "candidate": {
+      "prebolt": "7aa423d3136c93d6db89b97dbe26e866f7f81b94f7bef616195141eef45080c9",
+      "driver": "244cf510684e96c444fae9be8b91f7a9b11b83388a5c843f5e310adf3c2f3962",
+      "levels": "fee6e9344c706444f98319801eb4ed6f3ca3ddd79cbba74cf8526979c14b230f",
+      "edges": "10eaa4971f0dc780ec66373051754d1f8624bd8bcd43081dec4f74c7220b4d8b",
+      "profiles": {
+        "clippy-pgo.profdata": "e98375c08ba000ec664f9aaa91f6557092e67682ff6554e23892a09406130dfc",
+        "rustc-bolt.profdata": "34cd73280713b4cfad9183f5d36ec29e4884b00ec4aac3594d6f1ef194c444f4",
+        "rustc-pgo.profdata": "481ada8a40c70dad11b3c7e8871e9a52207d78447ca5e8ace06fc4aec2d2b5a7",
+        "rustdoc-pgo.profdata": "8499f73f1fa169f858f3e7a2b4e047c53d14a0248097ddf70d2092805b57a0d1",
+        "rustfmt-pgo.profdata": "d8980c31367e4e3bd59e61f3c57619c9ab246b3effc3fcd585a30b8068395d99"
+      },
+      "parent": "f1a7cf9d20b2cae39e991b178b56ba06b43dc8fa"
+    },
+    "repeat": {
+      "prebolt": "f72738b59c8586b0010088ae04a5070a0a9c5c14f628de5030998bf970365a52",
+      "driver": "58a8a5b3bd9364659d7d1e5aaff46ca44286fad2580f8dcf3e348ad4b6cdfa11",
+      "levels": "2bb78c805dbb746bff033d4c022fdfdcd065128ddd4cd942c62a80d2c04dd68f",
+      "edges": "e6c73285a2ecb08b9ba3b552737319c657cb79c61b74c63c09de335b675138b7",
+      "profiles": {
+        "clippy-pgo.profdata": "e98375c08ba000ec664f9aaa91f6557092e67682ff6554e23892a09406130dfc",
+        "rustc-bolt.profdata": "34cd73280713b4cfad9183f5d36ec29e4884b00ec4aac3594d6f1ef194c444f4",
+        "rustc-pgo.profdata": "481ada8a40c70dad11b3c7e8871e9a52207d78447ca5e8ace06fc4aec2d2b5a7",
+        "rustdoc-pgo.profdata": "8499f73f1fa169f858f3e7a2b4e047c53d14a0248097ddf70d2092805b57a0d1",
+        "rustfmt-pgo.profdata": "d8980c31367e4e3bd59e61f3c57619c9ab246b3effc3fcd585a30b8068395d99"
+      },
+      "parent": "f1a7cf9d20b2cae39e991b178b56ba06b43dc8fa"
+    }
+  },
+  "rustc_version_verbose": "rustc 1.99.0-dev (f1a7cf9d2 2026-10-25) (ohm-1.99.0-14)\nbinary: rustc\ncommit-hash: f1a7cf9d20b2cae39e991b178b56ba06b43dc8fa\ncommit-date: 2026-10-25\nhost: x86_64-unknown-linux-gnu\nrelease: 1.99.0-dev\nLLVM version: 23.1.1\n",
+  "fixture": {
+    "base": "93526150df078af7dd8fc4226cdcc469539d2001",
+    "edit": "da8ee78491f784cdead4c69e83c58bc87fd0622c",
+    "path": "crates/ruff/src/main.rs",
+    "before_sha256": "bad1dbed704178750984564061c25f09940cd771b9218b7d912a7b7a3496bb82",
+    "after_sha256": "86e708be2e31f82d453530226637e4d54ef8a7c251ccdaf0801b67e573d692e3",
+    "removed_lines": [
+      "    // support FORCE_COLOR env var",
+      "    if let Some(force_color) = std::env::var_os(\"FORCE_COLOR\") {",
+      "        if !force_color.is_empty() {",
+      "            colored::control::set_override(true);",
+      "        }",
+      "    }",
+      ""
+    ]
+  },
+  "common_sysroot": {
+    "bin/rustc": "4fa9a18b77430bcc416e88561b6fe5797d98b996a7698b9f3bd11d4e7817a19f",
+    "lib/libLLVM.so.23.1-rust-1.99.0-beta": "43bac9749e539cd5988a4d5452b64582cf07ac9e7c059fde29c7bee76e106c51",
+    "lib/rustlib/x86_64-unknown-linux-gnu/lib/libstd-150b24506f9fb8c9.rlib": "bb1da52e02b3bf34996fb9bc50c6d80b9244a23b8fe6d3b47f7eabd5953d4191",
+    "lib/rustlib/x86_64-unknown-linux-gnu/lib/libstd-150b24506f9fb8c9.rmeta": "88fbc0dcf152f1122ee039e7f80c1fcf7728cec59bb40ae7a23639ba12104928"
+  }
+}
