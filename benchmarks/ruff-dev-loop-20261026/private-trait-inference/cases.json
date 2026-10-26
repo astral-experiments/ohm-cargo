@@ -1,0 +1,189 @@
+{
+  "contract": "pub trait For<K>{type Out; const N:usize;} pub trait Bridge<X>{} pub trait Owner {type Item;} pub trait Key{}",
+  "cases": {
+    "associated-const-default": {
+      "producer_before": "mod sealed {pub struct Hidden;} use sealed::Hidden;\npub struct Carrier; trait Forward{const N:usize = <Hidden as contract::For<u8>>::N;} impl Forward for Carrier{} pub const N:usize=<Carrier as Forward>::N;\nimpl contract::For<u8> for Hidden {type Out=u8; const N:usize=1;}\n",
+      "producer_after": "mod sealed {pub struct Hidden;} use sealed::Hidden;\npub struct Carrier; trait Forward{const N:usize = <Hidden as contract::For<u8>>::N;} impl Forward for Carrier{} pub const N:usize=<Carrier as Forward>::N;\nimpl contract::For<u8> for Hidden {type Out=u8; const N:usize=2;}\n",
+      "consumer": "const _:[();1]=[();api::N];",
+      "passes_before": true,
+      "passes_after": false,
+      "changes_public_hash": true
+    },
+    "bridge-coherence": {
+      "producer_before": "mod sealed {pub struct Hidden;} use sealed::Hidden;\npub struct Carrier; impl contract::Bridge<sealed::Hidden> for Carrier {}\nimpl contract::For<u8> for Hidden {type Out=u8; const N:usize=1;}\n",
+      "producer_after": "mod sealed {pub struct Hidden;} use sealed::Hidden;\npub struct Carrier; impl contract::Bridge<sealed::Hidden> for Carrier {}\nimpl contract::For<u8> for Hidden {type Out=u16; const N:usize=1;}\n",
+      "consumer": "pub struct Key; pub trait Q<A>{} impl<T> Q<T> for Key where T:contract::For<u8,Out=u8>{} impl<T> Q<T> for Key where api::Carrier:contract::Bridge<T> {}",
+      "passes_before": false,
+      "passes_after": false,
+      "changes_public_hash": true
+    },
+    "bridge-inference-nameable-in-private-mod": {
+      "producer_before": "mod sealed {pub struct Hidden;} use sealed::Hidden;\npub struct Carrier; impl contract::Bridge<sealed::Hidden> for Carrier {}\nimpl contract::For<u8> for Hidden {type Out=u8; const N:usize=1;}\n",
+      "producer_after": "mod sealed {pub struct Hidden;} use sealed::Hidden;\npub struct Carrier; impl contract::Bridge<sealed::Hidden> for Carrier {}\nimpl contract::For<u8> for Hidden {type Out=u16; const N:usize=1;}\n",
+      "consumer": "fn pick<T:contract::For<u8>>() -> T::Out where api::Carrier:contract::Bridge<T>{panic!()} pub fn f(){let _:u8=pick::<_>();}",
+      "passes_before": true,
+      "passes_after": false,
+      "changes_public_hash": true
+    },
+    "enum-discriminant": {
+      "producer_before": "struct Hidden;\n#[repr(usize)] pub enum E {A=<Hidden as contract::For<u8>>::N}\nimpl contract::For<u8> for Hidden {type Out=u8; const N:usize=1;}\n",
+      "producer_after": "struct Hidden;\n#[repr(usize)] pub enum E {A=<Hidden as contract::For<u8>>::N}\nimpl contract::For<u8> for Hidden {type Out=u8; const N:usize=2;}\n",
+      "consumer": "const _: [(); 1]=[();api::E::A as usize];",
+      "passes_before": true,
+      "passes_after": false,
+      "changes_public_hash": true
+    },
+    "fn-bound": {
+      "producer_before": "struct Hidden;\npub fn accept<T>(_:T) where Hidden:contract::For<u8,Out=T> {}\nimpl contract::For<u8> for Hidden {type Out=u8; const N:usize=1;}\n",
+      "producer_after": "struct Hidden;\npub fn accept<T>(_:T) where Hidden:contract::For<u8,Out=T> {}\nimpl contract::For<u8> for Hidden {type Out=u16; const N:usize=1;}\n",
+      "consumer": "pub fn f(){api::accept(1u8);}",
+      "passes_before": true,
+      "passes_after": false,
+      "changes_public_hash": true
+    },
+    "fn-output-indirect-const": {
+      "producer_before": "mod sealed {pub struct Hidden;} use sealed::Hidden;\nconst fn get_n()->usize { <Hidden as contract::For<u8>>::N } pub const N:usize=get_n();\nimpl contract::For<u8> for Hidden {type Out=u8; const N:usize=1;}\n",
+      "producer_after": "mod sealed {pub struct Hidden;} use sealed::Hidden;\nconst fn get_n()->usize { <Hidden as contract::For<u8>>::N } pub const N:usize=get_n();\nimpl contract::For<u8> for Hidden {type Out=u8; const N:usize=2;}\n",
+      "consumer": "const _:[();1]=[();api::N];",
+      "passes_before": true,
+      "passes_after": false,
+      "changes_public_hash": true
+    },
+    "fn-private-bound": {
+      "producer_before": "struct Hidden;\ntrait Private<T>{} impl<T> Private<T> for () where Hidden:contract::For<u8,Out=T> {}pub fn accept<T>(_:T) where ():Private<T>{}\nimpl contract::For<u8> for Hidden {type Out=u8; const N:usize=1;}\n",
+      "producer_after": "struct Hidden;\ntrait Private<T>{} impl<T> Private<T> for () where Hidden:contract::For<u8,Out=T> {}pub fn accept<T>(_:T) where ():Private<T>{}\nimpl contract::For<u8> for Hidden {type Out=u16; const N:usize=1;}\n",
+      "consumer": "pub fn f(){api::accept(1u8);}",
+      "passes_before": true,
+      "passes_after": false,
+      "changes_public_hash": true
+    },
+    "inferred-return-through-foreign": {
+      "producer_before": "struct Hidden;\npub struct Carrier; impl contract::Bridge<Hidden> for Carrier {}\nimpl contract::For<u8> for Hidden {type Out=u8; const N:usize=1;}\n",
+      "producer_after": "struct Hidden;\npub struct Carrier; impl contract::Bridge<Hidden> for Carrier {}\nimpl contract::For<u8> for Hidden {type Out=u16; const N:usize=1;}\n",
+      "consumer": "pub fn f(){fn key<T>() -> T where api::Carrier:contract::Bridge<T>{panic!()} fn project<T:contract::For<u8>>(_:T)->T::Out{panic!()} let _:u8=project(key());}",
+      "passes_before": false,
+      "passes_after": false,
+      "changes_public_hash": true
+    },
+    "inferred-self": {
+      "producer_before": "struct Hidden;\npub struct Other;\nimpl contract::For<u8> for Hidden {type Out=u8; const N:usize=1;}\n",
+      "producer_after": "struct Hidden;\npub struct Other;\nimpl contract::For<u8> for Hidden {type Out=u16; const N:usize=1;}\n",
+      "consumer": "use api as _; fn accept<T:contract::For<u8>>() -> T::Out {panic!()} pub fn f(){let _:u8=accept::<_>();}",
+      "passes_before": false,
+      "passes_after": false,
+      "changes_public_hash": false
+    },
+    "isolated-control": {
+      "producer_before": "struct Hidden;\npub struct Carrier;\nimpl contract::For<u8> for Hidden {type Out=u8; const N:usize=1;}\n",
+      "producer_after": "struct Hidden;\npub struct Carrier;\nimpl contract::For<u8> for Hidden {type Out=u16; const N:usize=1;}\n",
+      "consumer": "pub fn f(){let _=api::Carrier;}",
+      "passes_before": true,
+      "passes_after": true,
+      "changes_public_hash": false
+    },
+    "private-2trait-bound": {
+      "producer_before": "struct Hidden;\npub struct Carrier; pub trait Gate<T>{}trait Private<T>{} impl<T> Private<T> for () where Hidden:contract::For<u8,Out=T> {}trait Private2<T>{} impl<T> Private2<T> for () where ():Private<T>{} impl<T> Gate<T> for Carrier where ():Private2<T> {}\nimpl contract::For<u8> for Hidden {type Out=u8; const N:usize=1;}\n",
+      "producer_after": "struct Hidden;\npub struct Carrier; pub trait Gate<T>{}trait Private<T>{} impl<T> Private<T> for () where Hidden:contract::For<u8,Out=T> {}trait Private2<T>{} impl<T> Private2<T> for () where ():Private<T>{} impl<T> Gate<T> for Carrier where ():Private2<T> {}\nimpl contract::For<u8> for Hidden {type Out=u16; const N:usize=1;}\n",
+      "consumer": "pub fn f(){fn accept<T:api::Gate<u8>>(){} accept::<api::Carrier>();}",
+      "passes_before": true,
+      "passes_after": false,
+      "changes_public_hash": true
+    },
+    "private-array-size": {
+      "producer_before": "struct Hidden;\npub struct Carrier { inner: [u8;<Hidden as contract::For<u8>>::N] }\nimpl contract::For<u8> for Hidden {type Out=u8; const N:usize=1;}\n",
+      "producer_after": "struct Hidden;\npub struct Carrier { inner: [u8;<Hidden as contract::For<u8>>::N] }\nimpl contract::For<u8> for Hidden {type Out=u8; const N:usize=2;}\n",
+      "consumer": "const _: [(); 1]=[();core::mem::size_of::<api::Carrier>()];",
+      "passes_before": true,
+      "passes_after": false,
+      "changes_public_hash": true
+    },
+    "private-field-send": {
+      "producer_before": "struct Hidden;\npub struct Carrier { inner: <Hidden as contract::For<u8>>::Out }\nimpl contract::For<u8> for Hidden {type Out=(); const N:usize=1;}\n",
+      "producer_after": "struct Hidden;\npub struct Carrier { inner: <Hidden as contract::For<u8>>::Out }\nimpl contract::For<u8> for Hidden {type Out=std::rc::Rc<()>; const N:usize=1;}\n",
+      "consumer": "pub fn f(){fn send<T:Send>(){} send::<api::Carrier>();}",
+      "passes_before": true,
+      "passes_after": false,
+      "changes_public_hash": true
+    },
+    "private-field-size": {
+      "producer_before": "struct Hidden;\npub struct Carrier { inner: <Hidden as contract::For<u8>>::Out }\nimpl contract::For<u8> for Hidden {type Out=u8; const N:usize=1;}\n",
+      "producer_after": "struct Hidden;\npub struct Carrier { inner: <Hidden as contract::For<u8>>::Out }\nimpl contract::For<u8> for Hidden {type Out=u16; const N:usize=1;}\n",
+      "consumer": "const _: [(); 1] = [(); core::mem::size_of::<api::Carrier>()];",
+      "passes_before": true,
+      "passes_after": false,
+      "changes_public_hash": true
+    },
+    "private-phantom-send": {
+      "producer_before": "struct Hidden;\npub struct Carrier { inner: core::marker::PhantomData<<Hidden as contract::For<u8>>::Out> }\nimpl contract::For<u8> for Hidden {type Out=(); const N:usize=1;}\n",
+      "producer_after": "struct Hidden;\npub struct Carrier { inner: core::marker::PhantomData<<Hidden as contract::For<u8>>::Out> }\nimpl contract::For<u8> for Hidden {type Out=std::rc::Rc<()>; const N:usize=1;}\n",
+      "consumer": "pub fn f(){fn send<T:Send>(){} send::<api::Carrier>();}",
+      "passes_before": true,
+      "passes_after": false,
+      "changes_public_hash": true
+    },
+    "private-projected-2hop": {
+      "producer_before": "struct Hidden;\npub struct Carrier; pub trait Gate<T>{}trait Proxy {type Ty;} impl Proxy for () {type Ty=Hidden;} impl<T> Gate<T> for Carrier where <() as Proxy>::Ty:contract::For<u8,Out=T>{}\nimpl contract::For<u8> for Hidden {type Out=u8; const N:usize=1;}\n",
+      "producer_after": "struct Hidden;\npub struct Carrier; pub trait Gate<T>{}trait Proxy {type Ty;} impl Proxy for () {type Ty=Hidden;} impl<T> Gate<T> for Carrier where <() as Proxy>::Ty:contract::For<u8,Out=T>{}\nimpl contract::For<u8> for Hidden {type Out=u16; const N:usize=1;}\n",
+      "consumer": "pub fn f(){fn accept<T:api::Gate<u8>>(){} accept::<api::Carrier>();}",
+      "passes_before": true,
+      "passes_after": false,
+      "changes_public_hash": true
+    },
+    "private-projection-drop-const": {
+      "producer_before": "mod sealed {pub struct Hidden;} use sealed::Hidden;\nconst HAS_DROP:bool=core::mem::needs_drop::<<Hidden as contract::For<u8>>::Out>(); pub const SIZE:usize=HAS_DROP as usize;\nimpl contract::For<u8> for Hidden {type Out=u8; const N:usize=1;}\n",
+      "producer_after": "mod sealed {pub struct Hidden;} use sealed::Hidden;\nconst HAS_DROP:bool=core::mem::needs_drop::<<Hidden as contract::For<u8>>::Out>(); pub const SIZE:usize=HAS_DROP as usize;\nimpl contract::For<u8> for Hidden {type Out=String; const N:usize=1;}\n",
+      "consumer": "const _:[();0] = [();api::SIZE];",
+      "passes_before": true,
+      "passes_after": false,
+      "changes_public_hash": true
+    },
+    "private-trait-bound": {
+      "producer_before": "struct Hidden;\npub struct Carrier; pub trait Gate<T>{}trait Private<T>{} impl<T> Private<T> for () where Hidden:contract::For<u8,Out=T> {}impl<T> Gate<T> for Carrier where ():Private<T> {}\nimpl contract::For<u8> for Hidden {type Out=u8; const N:usize=1;}\n",
+      "producer_after": "struct Hidden;\npub struct Carrier; pub trait Gate<T>{}trait Private<T>{} impl<T> Private<T> for () where Hidden:contract::For<u8,Out=T> {}impl<T> Gate<T> for Carrier where ():Private<T> {}\nimpl contract::For<u8> for Hidden {type Out=u16; const N:usize=1;}\n",
+      "consumer": "pub fn f(){fn accept<T:api::Gate<u8>>(){} accept::<api::Carrier>();}",
+      "passes_before": true,
+      "passes_after": false,
+      "changes_public_hash": true
+    },
+    "projected-local-impl-disjoint": {
+      "producer_before": "mod sealed {pub struct Hidden;} use sealed::Hidden;\npub struct Carrier; impl contract::Bridge<<Hidden as contract::For<u8>>::Out> for Carrier {}\nimpl contract::For<u8> for Hidden {type Out=u8; const N:usize=1;}\n",
+      "producer_after": "mod sealed {pub struct Hidden;} use sealed::Hidden;\npub struct Carrier; impl contract::Bridge<<Hidden as contract::For<u8>>::Out> for Carrier {}\nimpl contract::For<u8> for Hidden {type Out=u16; const N:usize=1;}\n",
+      "consumer": "trait Local<T>{} impl<T> Local<T> for () where api::Carrier:contract::Bridge<T>{} impl Local<u16> for (){}",
+      "passes_before": false,
+      "passes_after": false,
+      "changes_public_hash": true
+    },
+    "public-impl-bound": {
+      "producer_before": "struct Hidden;\npub struct Carrier; pub trait Gate<T>{}impl<T> Gate<T> for Carrier where Hidden:contract::For<u8,Out=T> {}\nimpl contract::For<u8> for Hidden {type Out=u8; const N:usize=1;}\n",
+      "producer_after": "struct Hidden;\npub struct Carrier; pub trait Gate<T>{}impl<T> Gate<T> for Carrier where Hidden:contract::For<u8,Out=T> {}\nimpl contract::For<u8> for Hidden {type Out=u16; const N:usize=1;}\n",
+      "consumer": "pub fn f(){fn accept<T:api::Gate<u8>>(){} accept::<api::Carrier>();}",
+      "passes_before": true,
+      "passes_after": false,
+      "changes_public_hash": true
+    },
+    "public-union-private-projection": {
+      "producer_before": "mod sealed {pub struct Hidden;} use sealed::Hidden;\npub union Carrier { a: core::mem::ManuallyDrop<<Hidden as contract::For<u8>>::Out> }\nimpl contract::For<u8> for Hidden {type Out=u8; const N:usize=1;}\n",
+      "producer_after": "mod sealed {pub struct Hidden;} use sealed::Hidden;\npub union Carrier { a: core::mem::ManuallyDrop<<Hidden as contract::For<u8>>::Out> }\nimpl contract::For<u8> for Hidden {type Out=u16; const N:usize=1;}\n",
+      "consumer": "const _: [(); 1]=[();core::mem::size_of::<api::Carrier>()];",
+      "passes_before": true,
+      "passes_after": false,
+      "changes_public_hash": true
+    },
+    "relation-inference": {
+      "producer_before": "struct Hidden;\npub struct Carrier; impl contract::Bridge<Hidden> for Carrier {}\nimpl contract::For<u8> for Hidden {type Out=u8; const N:usize=1;}\n",
+      "producer_after": "struct Hidden;\npub struct Carrier; impl contract::Bridge<Hidden> for Carrier {}\nimpl contract::For<u8> for Hidden {type Out=u16; const N:usize=1;}\n",
+      "consumer": "pub fn f(){fn accept<T:contract::For<u8>>() -> T::Out where api::Carrier:contract::Bridge<T>{panic!()} let _:u8=accept::<_>();}",
+      "passes_before": false,
+      "passes_after": false,
+      "changes_public_hash": true
+    },
+    "unknown-self-coherence": {
+      "producer_before": "mod sealed {pub struct Hidden;} use sealed::Hidden;\npub struct Carrier;\nimpl contract::For<u8> for Hidden {type Out=u8; const N:usize=1;}\n",
+      "producer_after": "mod sealed {pub struct Hidden;} use sealed::Hidden;\npub struct Carrier;\nimpl contract::For<u8> for Hidden {type Out=u16; const N:usize=1;}\n",
+      "consumer": "use api as _;pub trait Q<T>{} impl<T:contract::For<u8,Out=u8>> Q<T> for (){} impl<T:contract::For<u8,Out=u16>> Q<T> for (){}",
+      "passes_before": false,
+      "passes_after": false,
+      "changes_public_hash": false
+    }
+  }
+}

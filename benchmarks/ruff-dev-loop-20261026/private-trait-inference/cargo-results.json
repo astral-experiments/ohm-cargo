@@ -1,0 +1,632 @@
+{
+  "associated-const-default": {
+    "before": {
+      "passes": true,
+      "public_hash": "Public hash: 2ec3e512ee8d61c2987980ab69a31b96",
+      "errors": [],
+      "diagnostic_bytes": 2,
+      "diagnostic_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "after": {
+      "passes": false,
+      "public_hash": "Public hash: bd3d65bcf8fcee57006e4adb07a3e18d",
+      "errors": [
+        "E0308"
+      ],
+      "diagnostic_bytes": 2630,
+      "diagnostic_sha256": "44e3865f83f5a65d379d553d4e14fd785ae64f275f1e23659f5ab6eb7f422ecb"
+    },
+    "clean_after": {
+      "passes": false,
+      "public_hash": "Public hash: bd3d65bcf8fcee57006e4adb07a3e18d",
+      "errors": [
+        "E0308"
+      ],
+      "diagnostic_bytes": 2630,
+      "diagnostic_sha256": "44e3865f83f5a65d379d553d4e14fd785ae64f275f1e23659f5ab6eb7f422ecb"
+    }
+  },
+  "bridge-coherence": {
+    "before": {
+      "passes": false,
+      "public_hash": "Public hash: a542047b7b40b88213425b169e5cb4c5",
+      "errors": [
+        "E0119"
+      ],
+      "diagnostic_bytes": 2927,
+      "diagnostic_sha256": "d9acef57e6efdc7dda7175f7567e4150670559a5b1b09447a411eae62734e1c7"
+    },
+    "after": {
+      "passes": false,
+      "public_hash": "Public hash: 8bd0d25ab6a76b1ed17bfa8bc5022147",
+      "errors": [
+        "E0119"
+      ],
+      "diagnostic_bytes": 2927,
+      "diagnostic_sha256": "d9acef57e6efdc7dda7175f7567e4150670559a5b1b09447a411eae62734e1c7"
+    },
+    "clean_after": {
+      "passes": false,
+      "public_hash": "Public hash: 8bd0d25ab6a76b1ed17bfa8bc5022147",
+      "errors": [
+        "E0119"
+      ],
+      "diagnostic_bytes": 2927,
+      "diagnostic_sha256": "d9acef57e6efdc7dda7175f7567e4150670559a5b1b09447a411eae62734e1c7"
+    }
+  },
+  "bridge-inference-nameable-in-private-mod": {
+    "before": {
+      "passes": true,
+      "public_hash": "Public hash: a542047b7b40b88213425b169e5cb4c5",
+      "errors": [],
+      "diagnostic_bytes": 2,
+      "diagnostic_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "after": {
+      "passes": false,
+      "public_hash": "Public hash: 8bd0d25ab6a76b1ed17bfa8bc5022147",
+      "errors": [
+        "E0308"
+      ],
+      "diagnostic_bytes": 3526,
+      "diagnostic_sha256": "316739542a20100c409700eb36cbbfdf8e7535ddcd779e01be7dd23b339fc304"
+    },
+    "clean_after": {
+      "passes": false,
+      "public_hash": "Public hash: 8bd0d25ab6a76b1ed17bfa8bc5022147",
+      "errors": [
+        "E0308"
+      ],
+      "diagnostic_bytes": 3526,
+      "diagnostic_sha256": "316739542a20100c409700eb36cbbfdf8e7535ddcd779e01be7dd23b339fc304"
+    }
+  },
+  "enum-discriminant": {
+    "before": {
+      "passes": true,
+      "public_hash": "Public hash: 8345502488ef29b1d142f1ea01e04597",
+      "errors": [],
+      "diagnostic_bytes": 2,
+      "diagnostic_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "after": {
+      "passes": false,
+      "public_hash": "Public hash: 2cb26f8abd05c17021d4638ad14c6f8d",
+      "errors": [
+        "E0308"
+      ],
+      "diagnostic_bytes": 2732,
+      "diagnostic_sha256": "234fc2a6a57f89117fd3c02d1d2ad9ca616b90a763ec3d962590066a0d954c26"
+    },
+    "clean_after": {
+      "passes": false,
+      "public_hash": "Public hash: 2cb26f8abd05c17021d4638ad14c6f8d",
+      "errors": [
+        "E0308"
+      ],
+      "diagnostic_bytes": 2732,
+      "diagnostic_sha256": "234fc2a6a57f89117fd3c02d1d2ad9ca616b90a763ec3d962590066a0d954c26"
+    }
+  },
+  "fn-bound": {
+    "before": {
+      "passes": true,
+      "public_hash": "Public hash: b016601b622a7ff3724db356dcf0e064",
+      "errors": [],
+      "diagnostic_bytes": 2,
+      "diagnostic_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "after": {
+      "passes": false,
+      "public_hash": "Public hash: f3adc2a9496184f4280a2ad8b18163d6",
+      "errors": [
+        "E0308"
+      ],
+      "diagnostic_bytes": 3247,
+      "diagnostic_sha256": "7d8cdcd3ccd2f1e399986368d282431986e906b125665f070ceeb41a78e1b989"
+    },
+    "clean_after": {
+      "passes": false,
+      "public_hash": "Public hash: f3adc2a9496184f4280a2ad8b18163d6",
+      "errors": [
+        "E0308"
+      ],
+      "diagnostic_bytes": 3247,
+      "diagnostic_sha256": "7d8cdcd3ccd2f1e399986368d282431986e906b125665f070ceeb41a78e1b989"
+    }
+  },
+  "fn-output-indirect-const": {
+    "before": {
+      "passes": true,
+      "public_hash": "Public hash: 7129ddc70e4918609324893f028c059b",
+      "errors": [],
+      "diagnostic_bytes": 2,
+      "diagnostic_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "after": {
+      "passes": false,
+      "public_hash": "Public hash: 6e822f871733c0cd537c2fd1f09da966",
+      "errors": [
+        "E0308"
+      ],
+      "diagnostic_bytes": 2630,
+      "diagnostic_sha256": "44e3865f83f5a65d379d553d4e14fd785ae64f275f1e23659f5ab6eb7f422ecb"
+    },
+    "clean_after": {
+      "passes": false,
+      "public_hash": "Public hash: 6e822f871733c0cd537c2fd1f09da966",
+      "errors": [
+        "E0308"
+      ],
+      "diagnostic_bytes": 2630,
+      "diagnostic_sha256": "44e3865f83f5a65d379d553d4e14fd785ae64f275f1e23659f5ab6eb7f422ecb"
+    }
+  },
+  "fn-private-bound": {
+    "before": {
+      "passes": true,
+      "public_hash": "Public hash: 45724a01af78fe8ac416df0f6698c6fe",
+      "errors": [],
+      "diagnostic_bytes": 2,
+      "diagnostic_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "after": {
+      "passes": false,
+      "public_hash": "Public hash: 782fe7d3d161c9e6a6b45b0a5f82796a",
+      "errors": [
+        "E0308"
+      ],
+      "diagnostic_bytes": 3468,
+      "diagnostic_sha256": "679a7d4c39fe55cd5cf7408a3b00f06a092dffbec13b838179aaabb3d13a6789"
+    },
+    "clean_after": {
+      "passes": false,
+      "public_hash": "Public hash: 782fe7d3d161c9e6a6b45b0a5f82796a",
+      "errors": [
+        "E0308"
+      ],
+      "diagnostic_bytes": 3468,
+      "diagnostic_sha256": "679a7d4c39fe55cd5cf7408a3b00f06a092dffbec13b838179aaabb3d13a6789"
+    }
+  },
+  "inferred-return-through-foreign": {
+    "before": {
+      "passes": false,
+      "public_hash": "Public hash: 25b4a9dab9265c884265b7b256e2680a",
+      "errors": [
+        null,
+        null
+      ],
+      "diagnostic_bytes": 1782,
+      "diagnostic_sha256": "8bcf8383527a498b3c191c0479f32e631048a42d8888c04c7707951cc2e9eb33"
+    },
+    "after": {
+      "passes": false,
+      "public_hash": "Public hash: b786edd988d3191a4cfcee3b49f069aa",
+      "errors": [
+        "E0308"
+      ],
+      "diagnostic_bytes": 3458,
+      "diagnostic_sha256": "86aae5e7fb3f5f3fd01d8ed38c5d73b03c31ee06ff972691d1e6dffae3c37901"
+    },
+    "clean_after": {
+      "passes": false,
+      "public_hash": "Public hash: b786edd988d3191a4cfcee3b49f069aa",
+      "errors": [
+        "E0308"
+      ],
+      "diagnostic_bytes": 3458,
+      "diagnostic_sha256": "86aae5e7fb3f5f3fd01d8ed38c5d73b03c31ee06ff972691d1e6dffae3c37901"
+    }
+  },
+  "inferred-self": {
+    "before": {
+      "passes": false,
+      "public_hash": "Public hash: 01cb3cacfb60d00fd3bd1a18d902781e",
+      "errors": [
+        "E0283"
+      ],
+      "diagnostic_bytes": 4104,
+      "diagnostic_sha256": "c38c7e381b56edb137908d7270e528a2988269174997dccbddd6eb136e6960d6"
+    },
+    "after": {
+      "passes": false,
+      "public_hash": "Public hash: 01cb3cacfb60d00fd3bd1a18d902781e",
+      "errors": [
+        "E0283"
+      ],
+      "diagnostic_bytes": 4104,
+      "diagnostic_sha256": "c38c7e381b56edb137908d7270e528a2988269174997dccbddd6eb136e6960d6"
+    },
+    "clean_after": {
+      "passes": false,
+      "public_hash": "Public hash: 01cb3cacfb60d00fd3bd1a18d902781e",
+      "errors": [
+        "E0283"
+      ],
+      "diagnostic_bytes": 4104,
+      "diagnostic_sha256": "c38c7e381b56edb137908d7270e528a2988269174997dccbddd6eb136e6960d6"
+    }
+  },
+  "isolated-control": {
+    "before": {
+      "passes": true,
+      "public_hash": "Public hash: 1fa9e0ea0f116f267c05d9d634deecda",
+      "errors": [],
+      "diagnostic_bytes": 2,
+      "diagnostic_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "after": {
+      "passes": true,
+      "public_hash": "Public hash: 1fa9e0ea0f116f267c05d9d634deecda",
+      "errors": [],
+      "diagnostic_bytes": 2,
+      "diagnostic_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "clean_after": {
+      "passes": true,
+      "public_hash": "Public hash: 1fa9e0ea0f116f267c05d9d634deecda",
+      "errors": [],
+      "diagnostic_bytes": 2,
+      "diagnostic_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    }
+  },
+  "private-2trait-bound": {
+    "before": {
+      "passes": true,
+      "public_hash": "Public hash: 8662e1fb4ef669c80c016cb475f6460a",
+      "errors": [],
+      "diagnostic_bytes": 2,
+      "diagnostic_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "after": {
+      "passes": false,
+      "public_hash": "Public hash: dea0541d2781ba34c6648b56447be0c2",
+      "errors": [
+        "E0271"
+      ],
+      "diagnostic_bytes": 4324,
+      "diagnostic_sha256": "a2eac5899f4446d7edc24a36e0c05d51efb29012fcc353744cac35ded9b46b46"
+    },
+    "clean_after": {
+      "passes": false,
+      "public_hash": "Public hash: dea0541d2781ba34c6648b56447be0c2",
+      "errors": [
+        "E0271"
+      ],
+      "diagnostic_bytes": 4324,
+      "diagnostic_sha256": "a2eac5899f4446d7edc24a36e0c05d51efb29012fcc353744cac35ded9b46b46"
+    }
+  },
+  "private-array-size": {
+    "before": {
+      "passes": true,
+      "public_hash": "Public hash: 32993814d5162e1e9ae9d6b99e7d6fde",
+      "errors": [],
+      "diagnostic_bytes": 2,
+      "diagnostic_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "after": {
+      "passes": false,
+      "public_hash": "Public hash: db9671755612a1fdf3c2592f65fdc047",
+      "errors": [
+        "E0308"
+      ],
+      "diagnostic_bytes": 2858,
+      "diagnostic_sha256": "780500d076741df03a3d4f0afcd52d70e1c099f214df8bfc69a97ff6b2912baf"
+    },
+    "clean_after": {
+      "passes": false,
+      "public_hash": "Public hash: db9671755612a1fdf3c2592f65fdc047",
+      "errors": [
+        "E0308"
+      ],
+      "diagnostic_bytes": 2858,
+      "diagnostic_sha256": "780500d076741df03a3d4f0afcd52d70e1c099f214df8bfc69a97ff6b2912baf"
+    }
+  },
+  "private-field-send": {
+    "before": {
+      "passes": true,
+      "public_hash": "Public hash: 65dae7a9f2e90d05e132efbc0ef5d481",
+      "errors": [],
+      "diagnostic_bytes": 2,
+      "diagnostic_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "after": {
+      "passes": false,
+      "public_hash": "Public hash: 96ff8143a3bfbd0159e5ef6354e7e941",
+      "errors": [
+        "E0277"
+      ],
+      "diagnostic_bytes": 4843,
+      "diagnostic_sha256": "e1e96b7f86c46961f6db63d9ca5eedc792f61775177a294f83c6f165d23c2faa"
+    },
+    "clean_after": {
+      "passes": false,
+      "public_hash": "Public hash: 96ff8143a3bfbd0159e5ef6354e7e941",
+      "errors": [
+        "E0277"
+      ],
+      "diagnostic_bytes": 4843,
+      "diagnostic_sha256": "e1e96b7f86c46961f6db63d9ca5eedc792f61775177a294f83c6f165d23c2faa"
+    }
+  },
+  "private-field-size": {
+    "before": {
+      "passes": true,
+      "public_hash": "Public hash: b5d37262b551e6ec8c38f7ed94b8dc8d",
+      "errors": [],
+      "diagnostic_bytes": 2,
+      "diagnostic_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "after": {
+      "passes": false,
+      "public_hash": "Public hash: c1458eb67d1d85ae1567efb04f91b3fd",
+      "errors": [
+        "E0308"
+      ],
+      "diagnostic_bytes": 2879,
+      "diagnostic_sha256": "0a9e695a891efd609f1f74c784901380a54d5f89ce2ac75daec60ef49ab83c48"
+    },
+    "clean_after": {
+      "passes": false,
+      "public_hash": "Public hash: c1458eb67d1d85ae1567efb04f91b3fd",
+      "errors": [
+        "E0308"
+      ],
+      "diagnostic_bytes": 2879,
+      "diagnostic_sha256": "0a9e695a891efd609f1f74c784901380a54d5f89ce2ac75daec60ef49ab83c48"
+    }
+  },
+  "private-phantom-send": {
+    "before": {
+      "passes": true,
+      "public_hash": "Public hash: 1a6dff744eaf210f8fcc5b9cd58022fe",
+      "errors": [],
+      "diagnostic_bytes": 2,
+      "diagnostic_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "after": {
+      "passes": false,
+      "public_hash": "Public hash: 0bb1e0aa1f25403c72556e3961e49a51",
+      "errors": [
+        "E0277"
+      ],
+      "diagnostic_bytes": 5554,
+      "diagnostic_sha256": "ed9db45007ae64adfc91c598440ce88061284d4f637b7446d1de199f5a540dd6"
+    },
+    "clean_after": {
+      "passes": false,
+      "public_hash": "Public hash: 0bb1e0aa1f25403c72556e3961e49a51",
+      "errors": [
+        "E0277"
+      ],
+      "diagnostic_bytes": 5554,
+      "diagnostic_sha256": "ed9db45007ae64adfc91c598440ce88061284d4f637b7446d1de199f5a540dd6"
+    }
+  },
+  "private-projected-2hop": {
+    "before": {
+      "passes": true,
+      "public_hash": "Public hash: 1469650230bef56404028540fd5d7963",
+      "errors": [],
+      "diagnostic_bytes": 2,
+      "diagnostic_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "after": {
+      "passes": false,
+      "public_hash": "Public hash: de1739d4cabd6b6e0433c8ba17de59a9",
+      "errors": [
+        "E0271"
+      ],
+      "diagnostic_bytes": 3912,
+      "diagnostic_sha256": "ddb5caa483c6559c54df21e190dd34e436b572abf4be8b8c232be4a20dc8090e"
+    },
+    "clean_after": {
+      "passes": false,
+      "public_hash": "Public hash: de1739d4cabd6b6e0433c8ba17de59a9",
+      "errors": [
+        "E0271"
+      ],
+      "diagnostic_bytes": 3912,
+      "diagnostic_sha256": "ddb5caa483c6559c54df21e190dd34e436b572abf4be8b8c232be4a20dc8090e"
+    }
+  },
+  "private-projection-drop-const": {
+    "before": {
+      "passes": true,
+      "public_hash": "Public hash: f8cb66b7cd755637b95ff352436368b0",
+      "errors": [],
+      "diagnostic_bytes": 2,
+      "diagnostic_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "after": {
+      "passes": false,
+      "public_hash": "Public hash: 3b7e738c3d5c39424e70d61501c347d4",
+      "errors": [
+        "E0308"
+      ],
+      "diagnostic_bytes": 2665,
+      "diagnostic_sha256": "7c9ab290f8673b086e2c09598d95bfbf16b57ad03f1a1382acf554dc4120ce28"
+    },
+    "clean_after": {
+      "passes": false,
+      "public_hash": "Public hash: 3b7e738c3d5c39424e70d61501c347d4",
+      "errors": [
+        "E0308"
+      ],
+      "diagnostic_bytes": 2665,
+      "diagnostic_sha256": "7c9ab290f8673b086e2c09598d95bfbf16b57ad03f1a1382acf554dc4120ce28"
+    }
+  },
+  "private-trait-bound": {
+    "before": {
+      "passes": true,
+      "public_hash": "Public hash: 13d48159278cbd90cf4dca9425b9252f",
+      "errors": [],
+      "diagnostic_bytes": 2,
+      "diagnostic_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "after": {
+      "passes": false,
+      "public_hash": "Public hash: eefcf346b1149e1745e8716a5cee8783",
+      "errors": [
+        "E0271"
+      ],
+      "diagnostic_bytes": 4117,
+      "diagnostic_sha256": "719c712eee3834362dce4767df4b6cc6356fc8766b99b70a41304ff4da761dc4"
+    },
+    "clean_after": {
+      "passes": false,
+      "public_hash": "Public hash: eefcf346b1149e1745e8716a5cee8783",
+      "errors": [
+        "E0271"
+      ],
+      "diagnostic_bytes": 4117,
+      "diagnostic_sha256": "719c712eee3834362dce4767df4b6cc6356fc8766b99b70a41304ff4da761dc4"
+    }
+  },
+  "projected-local-impl-disjoint": {
+    "before": {
+      "passes": false,
+      "public_hash": "Public hash: 901351c354422c9cc93de3420e6d6ac5",
+      "errors": [
+        "E0119"
+      ],
+      "diagnostic_bytes": 3154,
+      "diagnostic_sha256": "ed87ae2ff374584b664e6522cc3eb383fb3baebe5ff9b7be0f45ff4d4fa988e2"
+    },
+    "after": {
+      "passes": false,
+      "public_hash": "Public hash: bf0a3aa38c5a41d003829fd1c54d8987",
+      "errors": [
+        "E0119"
+      ],
+      "diagnostic_bytes": 2824,
+      "diagnostic_sha256": "86e4e6ffeedda8a2105f1a1bf16ca8029a95acfa7d3f6a41bb883ed80956e7d3"
+    },
+    "clean_after": {
+      "passes": false,
+      "public_hash": "Public hash: bf0a3aa38c5a41d003829fd1c54d8987",
+      "errors": [
+        "E0119"
+      ],
+      "diagnostic_bytes": 2824,
+      "diagnostic_sha256": "86e4e6ffeedda8a2105f1a1bf16ca8029a95acfa7d3f6a41bb883ed80956e7d3"
+    }
+  },
+  "public-impl-bound": {
+    "before": {
+      "passes": true,
+      "public_hash": "Public hash: d2649cc42f70238284f6f2ecf506f665",
+      "errors": [],
+      "diagnostic_bytes": 2,
+      "diagnostic_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "after": {
+      "passes": false,
+      "public_hash": "Public hash: f975b62783edb54c8decaa82a6458372",
+      "errors": [
+        "E0271"
+      ],
+      "diagnostic_bytes": 3912,
+      "diagnostic_sha256": "ddb5caa483c6559c54df21e190dd34e436b572abf4be8b8c232be4a20dc8090e"
+    },
+    "clean_after": {
+      "passes": false,
+      "public_hash": "Public hash: f975b62783edb54c8decaa82a6458372",
+      "errors": [
+        "E0271"
+      ],
+      "diagnostic_bytes": 3912,
+      "diagnostic_sha256": "ddb5caa483c6559c54df21e190dd34e436b572abf4be8b8c232be4a20dc8090e"
+    }
+  },
+  "public-union-private-projection": {
+    "before": {
+      "passes": true,
+      "public_hash": "Public hash: 3cd7765f9f86892c3370b3d0e8e3e0a1",
+      "errors": [],
+      "diagnostic_bytes": 2,
+      "diagnostic_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "after": {
+      "passes": false,
+      "public_hash": "Public hash: 041c48f4880287df609f7d5fd7780470",
+      "errors": [
+        "E0308"
+      ],
+      "diagnostic_bytes": 2858,
+      "diagnostic_sha256": "780500d076741df03a3d4f0afcd52d70e1c099f214df8bfc69a97ff6b2912baf"
+    },
+    "clean_after": {
+      "passes": false,
+      "public_hash": "Public hash: 041c48f4880287df609f7d5fd7780470",
+      "errors": [
+        "E0308"
+      ],
+      "diagnostic_bytes": 2858,
+      "diagnostic_sha256": "780500d076741df03a3d4f0afcd52d70e1c099f214df8bfc69a97ff6b2912baf"
+    }
+  },
+  "relation-inference": {
+    "before": {
+      "passes": false,
+      "public_hash": "Public hash: 25b4a9dab9265c884265b7b256e2680a",
+      "errors": [
+        null
+      ],
+      "diagnostic_bytes": 976,
+      "diagnostic_sha256": "4172f1aad090817f034087229e7c9e188aaa085ec98d3b53e83d177109dfef2d"
+    },
+    "after": {
+      "passes": false,
+      "public_hash": "Public hash: b786edd988d3191a4cfcee3b49f069aa",
+      "errors": [
+        "E0308"
+      ],
+      "diagnostic_bytes": 3558,
+      "diagnostic_sha256": "ff21d1aa65463ca1a432b18a471adb2ada81d8f59408cc392a89379ffc5141e4"
+    },
+    "clean_after": {
+      "passes": false,
+      "public_hash": "Public hash: b786edd988d3191a4cfcee3b49f069aa",
+      "errors": [
+        "E0308"
+      ],
+      "diagnostic_bytes": 3558,
+      "diagnostic_sha256": "ff21d1aa65463ca1a432b18a471adb2ada81d8f59408cc392a89379ffc5141e4"
+    }
+  },
+  "unknown-self-coherence": {
+    "before": {
+      "passes": false,
+      "public_hash": "Public hash: 2b72174d4f0ce377ac19ccf6ceb3cd30",
+      "errors": [
+        "E0119"
+      ],
+      "diagnostic_bytes": 2910,
+      "diagnostic_sha256": "50896025d4b05c106e332b1fb82273511536cfa048c56246927425fca9a487f9"
+    },
+    "after": {
+      "passes": false,
+      "public_hash": "Public hash: 2b72174d4f0ce377ac19ccf6ceb3cd30",
+      "errors": [
+        "E0119"
+      ],
+      "diagnostic_bytes": 2910,
+      "diagnostic_sha256": "50896025d4b05c106e332b1fb82273511536cfa048c56246927425fca9a487f9"
+    },
+    "clean_after": {
+      "passes": false,
+      "public_hash": "Public hash: 2b72174d4f0ce377ac19ccf6ceb3cd30",
+      "errors": [
+        "E0119"
+      ],
+      "diagnostic_bytes": 2910,
+      "diagnostic_sha256": "50896025d4b05c106e332b1fb82273511536cfa048c56246927425fca9a487f9"
+    }
+  }
+}
