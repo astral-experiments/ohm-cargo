@@ -225,6 +225,7 @@ nested = [{ text = "a\tb", flag = true }]
 [dependencies.other]
 version = "1"
 default-features = false
+unknown-option = "keep this dependency warning"
 [lib]
 path = "src/lib.rs"
 "#;
@@ -259,6 +260,14 @@ path = "src/lib.rs"
         let entry = Entry::at(&dir, SOURCE);
         let expected = deserialize_toml(toml::de::Deserializer::parse(SOURCE).unwrap()).unwrap();
         assert!(expected._unused_keys.contains("package.unknown"));
+        let dependency = expected
+            .dependencies
+            .as_ref()
+            .unwrap()
+            .values()
+            .next()
+            .unwrap();
+        assert_eq!(dependency.unused_keys(), ["unknown-option"]);
         assert!(entry.read().is_none());
         entry.store_source(SOURCE).unwrap();
         assert_eq!(
