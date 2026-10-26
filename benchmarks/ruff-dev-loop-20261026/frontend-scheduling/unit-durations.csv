@@ -1,0 +1,142 @@
+workload,arm,package,target,start_s,duration_s
+lint,double,ruff_linter, (check),0.92,5.76
+lint,double,ruff_benchmark, (check),5.95,0.19
+lint,double,ruff_graph, (check),5.95,0.24
+lint,double,ruff_workspace, (check),6.14,0.68
+lint,double,ruff_markdown, (check),6.7,0.16
+lint,double,ruff_mdtest, (check),6.7,0.2
+lint,double,ruff_wasm, (check),6.7,0.24
+lint,double,ruff_server, (check),6.81,0.64
+lint,double,ruff, (check),7.33,0.53
+lint,double,ruff," ruff ""bin"" (check)",7.73,0.15
+lint,double,ruff_dev," ruff_dev ""bin"" (check)",7.73,0.35
+lint,default,ruff_linter, (check),0.49,5.22
+lint,default,ruff_benchmark, (check),5.01,0.18
+lint,default,ruff_graph, (check),5.01,0.22
+lint,default,ruff_workspace, (check),5.18,0.67
+lint,default,ruff_markdown, (check),5.72,0.16
+lint,default,ruff_mdtest, (check),5.72,0.2
+lint,default,ruff_wasm, (check),5.72,0.25
+lint,default,ruff_server, (check),5.83,0.67
+lint,default,ruff, (check),6.35,0.52
+lint,default,ruff," ruff ""bin"" (check)",6.75,0.16
+lint,default,ruff_dev," ruff_dev ""bin"" (check)",6.75,0.34
+lint,single,ruff_linter, (check),0.49,4.52
+lint,single,ruff_benchmark, (check),4.24,0.13
+lint,single,ruff_graph, (check),4.24,0.16
+lint,single,ruff_workspace, (check),4.37,0.59
+lint,single,ruff_markdown, (check),4.83,0.12
+lint,single,ruff_mdtest, (check),4.83,0.14
+lint,single,ruff_wasm, (check),4.83,0.22
+lint,single,ruff_server, (check),4.92,0.56
+lint,single,ruff, (check),5.37,0.45
+lint,single,ruff," ruff ""bin"" (check)",5.7,0.13
+lint,single,ruff_dev," ruff_dev ""bin"" (check)",5.7,0.32
+parser,default,ruff_python_parser, (check),0.52,0.43
+parser,default,ruff_db, (check),0.84,0.56
+parser,default,ruff_python_codegen, (check),0.85,0.18
+parser,default,ruff_python_semantic, (check),0.85,0.65
+parser,default,ruff_python_importer, (check),0.96,0.13
+parser,default,mdtest, (check),1.32,0.25
+parser,default,ty_vendored, (check),1.32,0.12
+parser,default,ty_site_packages, (check),1.32,0.26
+parser,default,ruff_python_formatter, (check),1.32,0.74
+parser,default,ty_module_resolver, (check),1.32,0.51
+parser,default,ruff_ranged_value, (check),1.32,0.13
+parser,default,ty_combine, (check),1.41,0.11
+parser,default,ruff_linter, (check),1.5,4.42
+parser,default,ty_python_core, (check),1.76,0.86
+parser,default,ruff_python_formatter," ruff_python_formatter ""bin"" (check)",1.95,0.13
+parser,default,ty_python_semantic, (check),2.51,6.8
+parser,default,ruff_graph, (check),5.47,0.21
+parser,default,ruff_workspace, (check),5.63,0.67
+parser,default,ruff_wasm, (check),6.17,0.28
+parser,default,ruff_markdown, (check),6.17,0.17
+parser,default,ruff_mdtest, (check),6.17,0.2
+parser,default,ruff_server, (check),6.28,0.67
+parser,default,ruff, (check),6.81,0.51
+parser,default,ruff," ruff ""bin"" (check)",7.19,0.16
+parser,default,ty_project, (check),8.72,1.03
+parser,default,ty_test, (check),8.72,0.31
+parser,default,ty_ide, (check),9.6,0.67
+parser,default,ty_completion_bench," ty_completion_bench ""bin"" (check)",10.15,0.19
+parser,default,ty_server, (check),10.15,0.81
+parser,default,ty_wasm, (check),10.15,0.41
+parser,default,ty_completion_eval," ty_completion_eval ""bin"" (check)",10.16,0.22
+parser,default,ruff_benchmark, (check),10.16,0.24
+parser,default,ty, (check),10.84,0.33
+parser,default,ty," ty ""bin"" (check)",11.08,0.15
+parser,default,ruff_dev," ruff_dev ""bin"" (check)",11.08,0.36
+parser,double,ruff_python_parser, (check),0.94,0.53
+parser,double,ruff_python_codegen, (check),1.37,0.18
+parser,double,ruff_python_semantic, (check),1.37,0.62
+parser,double,ruff_db, (check),1.37,0.64
+parser,double,ruff_python_importer, (check),1.49,0.12
+parser,double,ty_module_resolver, (check),1.89,0.68
+parser,double,ruff_ranged_value, (check),1.89,0.12
+parser,double,mdtest, (check),1.9,0.27
+parser,double,ty_vendored, (check),1.9,0.12
+parser,double,ty_site_packages, (check),1.9,0.25
+parser,double,ruff_python_formatter, (check),1.9,0.95
+parser,double,ty_combine, (check),1.97,0.12
+parser,double,ruff_linter, (check),1.99,4.55
+parser,double,ty_python_core, (check),2.43,0.98
+parser,double,ruff_python_formatter," ruff_python_formatter ""bin"" (check)",2.7,0.17
+parser,double,ty_python_semantic, (check),3.3,7.32
+parser,double,ruff_graph, (check),6.1,0.2
+parser,double,ruff_workspace, (check),6.25,0.65
+parser,double,ruff_markdown, (check),6.77,0.15
+parser,double,ruff_mdtest, (check),6.77,0.2
+parser,double,ruff_wasm, (check),6.78,0.26
+parser,double,ruff_server, (check),6.88,0.63
+parser,double,ruff, (check),7.4,0.51
+parser,double,ruff," ruff ""bin"" (check)",7.79,0.16
+parser,double,ty_project, (check),10.0,1.0
+parser,double,ty_test, (check),10.0,0.33
+parser,double,ty_ide, (check),10.85,0.67
+parser,double,ty_completion_bench," ty_completion_bench ""bin"" (check)",11.4,0.18
+parser,double,ty_completion_eval," ty_completion_eval ""bin"" (check)",11.4,0.24
+parser,double,ruff_benchmark, (check),11.4,0.23
+parser,double,ty_server, (check),11.4,0.88
+parser,double,ty_wasm, (check),11.4,0.45
+parser,double,ty, (check),12.1,0.32
+parser,double,ty," ty ""bin"" (check)",12.35,0.14
+parser,double,ruff_dev," ruff_dev ""bin"" (check)",12.35,0.39
+parser,single,ruff_python_parser, (check),0.9,0.47
+parser,single,ruff_python_codegen, (check),1.28,0.15
+parser,single,ruff_db, (check),1.28,0.54
+parser,single,ruff_python_semantic, (check),1.28,0.56
+parser,single,ruff_python_importer, (check),1.38,0.1
+parser,single,ty_vendored, (check),1.71,0.11
+parser,single,ty_site_packages, (check),1.71,0.22
+parser,single,ty_module_resolver, (check),1.71,0.46
+parser,single,ruff_ranged_value, (check),1.71,0.11
+parser,single,ruff_python_formatter, (check),1.71,0.7
+parser,single,mdtest, (check),1.72,0.21
+parser,single,ty_combine, (check),1.8,0.09
+parser,single,ruff_linter, (check),1.84,4.68
+parser,single,ty_python_core, (check),2.11,0.8
+parser,single,ruff_python_formatter," ruff_python_formatter ""bin"" (check)",2.3,0.1
+parser,single,ty_python_semantic, (check),2.8,7.0
+parser,single,ruff_graph, (check),5.99,0.19
+parser,single,ruff_workspace, (check),6.14,0.61
+parser,single,ruff_mdtest, (check),6.62,0.16
+parser,single,ruff_markdown, (check),6.62,0.12
+parser,single,ruff_wasm, (check),6.63,0.21
+parser,single,ruff_server, (check),6.71,0.56
+parser,single,ruff, (check),7.16,0.45
+parser,single,ruff," ruff ""bin"" (check)",7.49,0.13
+parser,single,ty_test, (check),9.07,0.22
+parser,single,ty_project, (check),9.07,0.97
+parser,single,ty_ide, (check),9.88,0.62
+parser,single,ty_completion_eval," ty_completion_eval ""bin"" (check)",10.37,0.2
+parser,single,ty_server, (check),10.37,0.93
+parser,single,ruff_benchmark, (check),10.37,0.22
+parser,single,ty_completion_bench," ty_completion_bench ""bin"" (check)",10.37,0.15
+parser,single,ty_wasm, (check),10.38,0.38
+parser,single,ty, (check),11.02,0.55
+parser,single,ruff_dev," ruff_dev ""bin"" (check)",11.48,0.38
+parser,single,ty," ty ""bin"" (check)",11.48,0.17
+scoped,default,ruff_python_parser, (check),0.22,0.46
+scoped,single,ruff_python_parser, (check),0.18,0.4
+scoped,double,ruff_python_parser, (check),0.14,0.9
