@@ -175,16 +175,10 @@ pub fn into_resolve(
     // for workspace members, so we reconstruct proper IDs.
     let mut last_source = None;
     let live_pkgs = {
-        let mut live_pkgs = HashMap::default();
-        let mut all_pkgs = HashSet::default();
-        for pkg in packages.iter() {
-            let enc_id = TomlLockfilePackageId {
-                name: pkg.name.clone(),
-                version: Some(pkg.version.clone()),
-                source: pkg.source.clone(),
-            };
-
-            if !all_pkgs.insert(enc_id.clone()) {
+        let mut live_pkgs = Vec::with_capacity(packages.len());
+        let mut all_pkgs = HashSet::with_capacity_and_hasher(packages.len(), Default::default());
+        for pkg in &packages {
+            if !all_pkgs.insert((&pkg.name, &pkg.version, &pkg.source)) {
                 anyhow::bail!("package `{}` is specified twice in the lockfile", pkg.name);
             }
             let source = if let Some(source) = &pkg.source {
@@ -214,7 +208,7 @@ pub fn into_resolve(
                 checksums.insert(id, Some(cksum.clone()));
             }
 
-            assert!(live_pkgs.insert(enc_id, (id, pkg)).is_none())
+            live_pkgs.push((id, pkg));
         }
         live_pkgs
     };
@@ -225,7 +219,7 @@ pub fn into_resolve(
     // information. This map is from name to version to source to actual
     // package ID. (various levels to drill down step by step)
     let mut map = HashMap::default();
-    for (id, _) in live_pkgs.values() {
+    for (id, _) in &live_pkgs {
         map.entry(id.name().as_str())
             .or_insert_with(HashMap::default)
             .entry(id.version().to_string())
@@ -295,11 +289,11 @@ pub fn into_resolve(
 
     let mut g = Graph::new();
 
-    for (id, _) in live_pkgs.values() {
+    for (id, _) in &live_pkgs {
         g.add(*id);
     }
 
-    for &(ref id, pkg) in live_pkgs.values() {
+    for &(ref id, pkg) in &live_pkgs {
         let Some(ref deps) = pkg.dependencies else {
             continue;
         };
@@ -313,7 +307,7 @@ pub fn into_resolve(
 
     let replacements = {
         let mut replacements = HashMap::default();
-        for &(ref id, pkg) in live_pkgs.values() {
+        for &(ref id, pkg) in &live_pkgs {
             if let Some(ref replace) = pkg.replace {
                 assert!(pkg.dependencies.is_none());
                 if let Some(replace_id) = lookup_id(replace) {
