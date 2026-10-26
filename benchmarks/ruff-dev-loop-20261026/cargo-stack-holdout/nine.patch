@@ -1,0 +1,893 @@
+diff --git a/src/compiler/fingerprint/mod.rs b/src/compiler/fingerprint/mod.rs
+index 4b3f5a322ff4d88135edf0f40c953ab41c2c3a20..6abeb719909542b76f7773a0d12c3f8ee64c5243 100644
+--- a/src/compiler/fingerprint/mod.rs
++++ b/src/compiler/fingerprint/mod.rs
+@@ -3397,7 +3397,7 @@ fn prefetch_checksum(
+ #[cfg(unix)]
+ fn prefetch_checksums<P: AsRef<Path> + Sync>(
+     paths: &[(P, Option<(u64, Checksum)>)],
+-    cache: &HashMap<PathBuf, Checksum>,
++    cache: &mut HashMap<PathBuf, Checksum>,
+     skippable_dirs: Option<&[PathBuf]>,
+     parallelism: ChecksumParallelism<'_>,
+ ) -> Option<PrefetchedChecksums> {
+@@ -3413,6 +3413,7 @@ fn prefetch_checksums<P: AsRef<Path> + Sync>(
+     if misses < MIN_PARALLEL_CHECKSUM_FILES {
+         return None;
+     }
++    let all_uncached = misses == paths.len();
+     let workers = (parallelism.jobs as usize).min(4).min(misses.div_ceil(64));
+     let mut tokens = Vec::new();
+     if parallelism.reserved_tokens.is_empty() {
+@@ -3456,7 +3457,7 @@ fn prefetch_checksums<P: AsRef<Path> + Sync>(
+                 first_unconfirmed.fetch_min(index, Ordering::Relaxed);
+                 continue;
+             };
+-            if let Some(actual) = cache.get(path) {
++            if !all_uncached && let Some(actual) = cache.get(path) {
+                 if *actual != prior {
+                     first_unconfirmed.fetch_min(index, Ordering::Relaxed);
+                 }
+@@ -3487,13 +3488,16 @@ fn prefetch_checksums<P: AsRef<Path> + Sync>(
+         }
+         read_chunk(0, main_paths, main_results);
+     });
++    if first_unconfirmed.into_inner() == paths.len() {
++        cache.reserve(misses);
++    }
+     Some(results.into_iter())
+ }
+ 
+ #[cfg(not(unix))]
+ fn prefetch_checksums<P: AsRef<Path> + Sync>(
+     _paths: &[(P, Option<(u64, Checksum)>)],
+-    _cache: &HashMap<PathBuf, Checksum>,
++    _cache: &mut HashMap<PathBuf, Checksum>,
+     _skippable_dirs: Option<&[PathBuf]>,
+     _parallelism: ChecksumParallelism<'_>,
+ ) -> Option<PrefetchedChecksums> {
+@@ -3583,7 +3587,7 @@ mod parallel_checksum_tests {
+             let workers_started = AtomicUsize::new(0);
+             let results: Vec<_> = prefetch_checksums(
+                 &paths,
+-                &HashMap::default(),
++                &mut HashMap::default(),
+                 None,
+                 ChecksumParallelism {
+                     jobserver: &jobserver,
+diff --git a/src/resolver/encode.rs b/src/resolver/encode.rs
+index 3bc4d0921afdbadd0d97eddd6e324a12015c3bc0..7b36186a6898b134610511bc74cadf62ea6cc105 100644
+--- a/src/resolver/encode.rs
++++ b/src/resolver/encode.rs
+@@ -173,34 +173,32 @@ pub fn into_resolve(
+ 
+     // `PackageId`s in the lock file don't include the `source` part
+     // for workspace members, so we reconstruct proper IDs.
++    let mut last_source = None;
+     let live_pkgs = {
+-        let mut live_pkgs = HashMap::default();
+-        let mut all_pkgs = HashSet::default();
+-        for pkg in packages.iter() {
+-            let enc_id = TomlLockfilePackageId {
+-                name: pkg.name.clone(),
+-                version: Some(pkg.version.clone()),
+-                source: pkg.source.clone(),
+-            };
+-
+-            if !all_pkgs.insert(enc_id.clone()) {
++        let mut live_pkgs = Vec::with_capacity(packages.len());
++        let mut all_pkgs = HashSet::with_capacity_and_hasher(packages.len(), Default::default());
++        for pkg in &packages {
++            if !all_pkgs.insert((&pkg.name, &pkg.version, &pkg.source)) {
+                 anyhow::bail!("package `{}` is specified twice in the lockfile", pkg.name);
+             }
+-            let id = match pkg
+-                .source
+-                .as_ref()
+-                .map(|source| SourceId::from_url(&source.source_str()))
+-                .transpose()?
+-                .or_else(|| get_source_id(&path_deps, &pkg).copied())
+-            {
++            let source = if let Some(source) = &pkg.source {
++                // Most packages in a lockfile come from the same registry.
++                let raw = source.source_str();
++                let id = match last_source {
++                    Some((previous, id)) if previous == raw => id,
++                    _ => SourceId::from_url(raw)?,
++                };
++                last_source = Some((raw, id));
++                id
++            } else if let Some(source) = get_source_id(&path_deps, pkg) {
++                *source
++            } else {
+                 // We failed to find a local package in the workspace.
+                 // It must have been removed and should be ignored.
+-                None => {
+-                    debug!("path dependency now missing {} v{}", pkg.name, pkg.version);
+-                    continue;
+-                }
+-                Some(source) => PackageId::try_new(&pkg.name, &pkg.version, source)?,
++                debug!("path dependency now missing {} v{}", pkg.name, pkg.version);
++                continue;
+             };
++            let id = PackageId::try_new(&pkg.name, &pkg.version, source)?;
+ 
+             // If a package has a checksum listed directly on it then record
+             // that here, and we also bump our version up to 2 since V1
+@@ -210,7 +208,7 @@ pub fn into_resolve(
+                 checksums.insert(id, Some(cksum.clone()));
+             }
+ 
+-            assert!(live_pkgs.insert(enc_id, (id, pkg)).is_none())
++            live_pkgs.push((id, pkg));
+         }
+         live_pkgs
+     };
+@@ -221,7 +219,7 @@ pub fn into_resolve(
+     // information. This map is from name to version to source to actual
+     // package ID. (various levels to drill down step by step)
+     let mut map = HashMap::default();
+-    for (id, _) in live_pkgs.values() {
++    for (id, _) in &live_pkgs {
+         map.entry(id.name().as_str())
+             .or_insert_with(HashMap::default)
+             .entry(id.version().to_string())
+@@ -291,11 +289,11 @@ pub fn into_resolve(
+ 
+     let mut g = Graph::new();
+ 
+-    for (id, _) in live_pkgs.values() {
++    for (id, _) in &live_pkgs {
+         g.add(*id);
+     }
+ 
+-    for &(ref id, pkg) in live_pkgs.values() {
++    for &(ref id, pkg) in &live_pkgs {
+         let Some(ref deps) = pkg.dependencies else {
+             continue;
+         };
+@@ -309,7 +307,7 @@ pub fn into_resolve(
+ 
+     let replacements = {
+         let mut replacements = HashMap::default();
+-        for &(ref id, pkg) in live_pkgs.values() {
++        for &(ref id, pkg) in &live_pkgs {
+             if let Some(ref replace) = pkg.replace {
+                 assert!(pkg.dependencies.is_none());
+                 if let Some(replace_id) = lookup_id(replace) {
+@@ -633,7 +631,18 @@ pub fn encodable_package_id(
+     state: &EncodeState<'_>,
+     resolve_version: ResolveVersion,
+ ) -> TomlLockfilePackageId {
+-    let mut version = Some(id.version().to_string());
++    let name = id.name().to_string();
++    if let Some(counts) = &state.counts {
++        let versions = &counts[&id.name()];
++        if versions[id.version()] == 1 {
++            return TomlLockfilePackageId {
++                name,
++                version: (versions.len() > 1).then(|| id.version().to_string()),
++                source: None,
++            };
++        }
++    }
++
+     let mut id_to_encode = id.source_id();
+     if resolve_version <= ResolveVersion::V2 {
+         if let Some(GitReference::Branch(b)) = id_to_encode.git_reference() {
+@@ -643,20 +652,10 @@ pub fn encodable_package_id(
+             }
+         }
+     }
+-    let mut source = encodable_source_id(id_to_encode.without_precise(), resolve_version);
+-    if let Some(counts) = &state.counts {
+-        let version_counts = &counts[&id.name()];
+-        if version_counts[&id.version()] == 1 {
+-            source = None;
+-            if version_counts.len() == 1 {
+-                version = None;
+-            }
+-        }
+-    }
+     TomlLockfilePackageId {
+-        name: id.name().to_string(),
+-        version,
+-        source,
++        name,
++        version: Some(id.version().to_string()),
++        source: encodable_source_id(id_to_encode.without_precise(), resolve_version),
+     }
+ }
+ 
+diff --git a/src/sources/path.rs b/src/sources/path/mod.rs
+similarity index 95%
+rename from src/sources/path.rs
+rename to src/sources/path/mod.rs
+index 1d235237bc3fceef1bbf351acb15e0dfc8d4480c..598e7b8c564e80bc0b52c9f0bb84e46b0e4d01c7 100644
+--- a/src/sources/path.rs
++++ b/src/sources/path/mod.rs
+@@ -26,6 +26,9 @@ use ignore::gitignore::GitignoreBuilder;
+ use tracing::{debug, info, trace, warn};
+ use walkdir::WalkDir;
+ 
++#[cfg(unix)]
++mod verified_index;
++
+ /// A source that represents a package gathered at the root
+ /// path on the filesystem.
+ ///
+@@ -579,7 +582,7 @@ fn _list_files(pkg: &Package, gctx: &GlobalContext) -> CargoResult<Vec<PathEntry
+     let root = pkg.root();
+     let no_include_option = pkg.manifest().include().is_empty();
+     let git_repo = if no_include_option {
+-        discover_gix_repo(root)?
++        discover_gix_repo(root, gctx)?
+     } else {
+         None
+     };
+@@ -643,12 +646,47 @@ fn _list_files(pkg: &Package, gctx: &GlobalContext) -> CargoResult<Vec<PathEntry
+     Ok(ret)
+ }
+ 
+-/// Returns [`Some(gix::Repository)`](gix::Repository) if the discovered repository
++struct PackageRepository {
++    repo: gix::Repository,
++    #[cfg(unix)]
++    verified: gix::fs::SharedFileSnapshotMut<gix::index::File>,
++}
++
++impl PackageRepository {
++    fn new(repo: gix::Repository) -> Self {
++        Self {
++            repo,
++            #[cfg(unix)]
++            verified: gix::fs::SharedFileSnapshotMut::new(),
++        }
++    }
++
++    fn index(&self, _gctx: &GlobalContext) -> CargoResult<gix::worktree::Index> {
++        #[cfg(unix)]
++        if _gctx.cli_unstable().ohm_defaults()
++            && let Some(index) = self.verified.recent_snapshot(
++                || {
++                    self.repo
++                        .index_path()
++                        .metadata()
++                        .and_then(|m| m.modified())
++                        .ok()
++                },
++                || Ok::<_, anyhow::Error>(verified_index::open(&self.repo, _gctx)),
++            )?
++        {
++            return Ok(index);
++        }
++        Ok(self.repo.index_or_empty()?)
++    }
++}
++
++/// Returns the repository if the discovered repository
+ /// (searched upwards from `root`) contains a tracked `<root>/Cargo.toml`.
+ /// Otherwise, the caller should fall back on full file list.
+-fn discover_gix_repo(root: &Path) -> CargoResult<Option<gix::Repository>> {
++fn discover_gix_repo(root: &Path, gctx: &GlobalContext) -> CargoResult<Option<PackageRepository>> {
+     let repo = match gix::ThreadSafeRepository::discover(root) {
+-        Ok(repo) => repo.to_thread_local(),
++        Ok(repo) => PackageRepository::new(repo.to_thread_local()),
+         Err(e) => {
+             tracing::debug!(
+                 "could not discover git repo at or above {}: {}",
+@@ -659,12 +697,12 @@ fn discover_gix_repo(root: &Path) -> CargoResult<Option<gix::Repository>> {
+         }
+     };
+     let index = repo
+-        .index_or_empty()
+-        .with_context(|| format!("failed to open git index at {}", repo.path().display()))?;
+-    let repo_root = repo.workdir().ok_or_else(|| {
++        .index(gctx)
++        .with_context(|| format!("failed to open git index at {}", repo.repo.path().display()))?;
++    let repo_root = repo.repo.workdir().ok_or_else(|| {
+         anyhow::format_err!(
+             "did not expect repo at {} to be bare",
+-            repo.path().display()
++            repo.repo.path().display()
+         )
+     })?;
+     let repo_relative_path = match paths::strip_prefix_canonical(root, repo_root) {
+@@ -696,11 +734,12 @@ fn discover_gix_repo(root: &Path) -> CargoResult<Option<gix::Repository>> {
+ /// point to one to avoid picking up `.git` directories.
+ fn list_files_gix(
+     pkg: &Package,
+-    repo: &gix::Repository,
++    repository: &PackageRepository,
+     filter: &dyn Fn(&Path, bool) -> bool,
+     gctx: &GlobalContext,
+ ) -> CargoResult<Vec<PathEntry>> {
+     debug!("list_files_gix {}", pkg.package_id());
++    let repo = &repository.repo;
+     let options = repo
+         .dirwalk_options()?
+         .emit_untracked(gix::dir::walk::EmissionMode::Matching)
+@@ -709,7 +748,7 @@ fn list_files_gix(
+         .recurse_repositories(false)
+         .symlinks_to_directories_are_ignored_like_directories(true)
+         .emit_empty_directories(false);
+-    let index = repo.index_or_empty()?;
++    let index = repository.index(gctx)?;
+     let root = repo
+         .workdir()
+         .ok_or_else(|| anyhow::format_err!("can't list files on a bare repository"))?;
+@@ -829,7 +868,12 @@ fn list_files_gix(
+             // .git repositories.
+             match gix::open(&file_path) {
+                 Ok(sub_repo) => {
+-                    files.extend(list_files_gix(pkg, &sub_repo, filter, gctx)?);
++                    files.extend(list_files_gix(
++                        pkg,
++                        &PackageRepository::new(sub_repo),
++                        filter,
++                        gctx,
++                    )?);
+                 }
+                 Err(_) => {
+                     list_files_walk(&file_path, &mut files, false, filter, gctx)?;
+diff --git a/src/sources/path/verified_index.rs b/src/sources/path/verified_index.rs
+new file mode 100644
+index 0000000000000000000000000000000000000000..fd4f2b7bc6d5da5c9482e75dfbbd723df0f6fa56
+--- /dev/null
++++ b/src/sources/path/verified_index.rs
+@@ -0,0 +1,119 @@
++//! Reuse a successful Git index checksum verification for the exact same index bytes.
++
++use std::fs::OpenOptions;
++use std::io::{Read, Write};
++use std::os::unix::fs::{MetadataExt as _, OpenOptionsExt as _};
++use std::sync::LazyLock;
++
++use crate::util::GlobalContext;
++use crate::workspace::parser::registry_cache::private_directory;
++
++const MIN: u64 = 256 * 1024;
++const MAX: u64 = 8 * 1024 * 1024;
++
++// A new dependency graph may have different Git collision checks or decoding behavior.
++static DOMAIN: LazyLock<[u8; 32]> = LazyLock::new(|| {
++    blake3::derive_key(
++        "Ohm Git SHA1DC index verification v1",
++        include_bytes!("../../../Cargo.lock"),
++    )
++});
++
++pub(super) fn open(repo: &gix::Repository, gctx: &GlobalContext) -> Option<gix::index::File> {
++    let kind = repo.object_hash();
++    if kind != gix::hash::Kind::Sha1 || repo.git_dir_trust() != gix::sec::Trust::Full {
++        return None;
++    }
++    let config = repo.config_snapshot();
++    // Git permits implicit values, such as a bare `skipHash` key.
++    if ["index.skipHash", "gitoxide.objects.allocLimit"]
++        .iter()
++        .any(|key| config.try_boolean(*key).is_some())
++    {
++        return None;
++    }
++    let thread_limit = config
++        .string("index.threads")
++        .map(|value| gix::config::tree::Index::THREADS.try_into_index_threads(value))
++        .transpose()
++        .ok()?;
++    let path = repo.index_path();
++    let file = OpenOptions::new()
++        .read(true)
++        .custom_flags(libc::O_NOFOLLOW | libc::O_NONBLOCK)
++        .open(&path)
++        .ok()?;
++    let meta = file.metadata().ok()?;
++    if !meta.is_file() || !(MIN..=MAX).contains(&meta.len()) {
++        return None;
++    }
++    let dir = private_directory(gctx.home().as_path_unlocked(), ".ohm-git-index-sha1dc-v1")?;
++    let mut data = Vec::with_capacity(meta.len() as usize);
++    file.take(meta.len() + 1).read_to_end(&mut data).ok()?;
++    if data.len() as u64 != meta.len() {
++        return None;
++    }
++    let (body, trailer) = data.split_at(data.len() - kind.len_in_bytes());
++    let expected = gix::hash::ObjectId::from_bytes_or_panic(trailer);
++    if expected.is_null() {
++        return None;
++    }
++    let key = blake3::keyed_hash(&DOMAIN, &data);
++    let slot = u16::from_be_bytes([key.as_bytes()[0], key.as_bytes()[1]]) >> 4;
++    let record = dir.join(format!("{slot:03x}"));
++    let hit = OpenOptions::new()
++        .read(true)
++        .custom_flags(libc::O_NOFOLLOW | libc::O_NONBLOCK)
++        .open(&record)
++        .ok()
++        .and_then(|mut file| {
++            let meta = file.metadata().ok()?;
++            // SAFETY: geteuid has no arguments or memory-safety requirements.
++            if !meta.is_file()
++                || meta.len() != 32
++                || meta.uid() != unsafe { libc::geteuid() }
++                || meta.mode() & 0o077 != 0
++            {
++                return None;
++            }
++            let mut stored = [0; 32];
++            file.read_exact(&mut stored).ok()?;
++            Some(stored)
++        })
++        .is_some_and(|stored| &stored == key.as_bytes());
++    if !hit {
++        gix::hash::bytes(
++            &mut &*body,
++            body.len() as u64,
++            kind,
++            &mut gix::progress::Discard,
++            &Default::default(),
++        )
++        .ok()?
++        .verify(&expected)
++        .ok()?;
++    }
++    let (state, checksum) = gix::index::State::from_bytes(
++        &data,
++        filetime::FileTime::from_last_modification_time(&meta),
++        kind,
++        gix::index::decode::Options {
++            thread_limit,
++            expected_checksum: Some(expected),
++            ..Default::default()
++        },
++    )
++    .ok()?;
++    if state.link().is_some() || checksum != Some(expected) {
++        return None;
++    }
++    if !hit {
++        if let Ok(mut tmp) = tempfile::NamedTempFile::new_in(dir) {
++            if tmp.write_all(key.as_bytes()).is_ok() {
++                let _ = tmp.persist(record);
++            }
++        }
++    }
++    tracing::debug!(target: "cargo::sources::path::verified_index", hit, "verified Git index");
++    Some(gix::index::File::from_state(state, path))
++}
+diff --git a/src/sources/registry/mod.rs b/src/sources/registry/mod.rs
+index 4394af7ea941dfe072958e5355b69fa59fed8b29..d884d4fda768aad4928b6140a07fd27ebfe7e156 100644
+--- a/src/sources/registry/mod.rs
++++ b/src/sources/registry/mod.rs
+@@ -649,9 +649,10 @@ impl<'gctx> RegistrySource<'gctx> {
+         let path = self
+             .unpack_package(package, path)
+             .with_context(|| format!("failed to unpack package `{}`", package))?;
+-        let src = PathSource::new(&path, self.source_id, self.gctx);
+-        src.load()?;
+-        let mut pkg = match src.download(package).await? {
++        let mut pkg = match PathSource::new(&path, self.source_id, self.gctx)
++            .download(package)
++            .await?
++        {
+             MaybePackage::Ready(pkg) => pkg,
+             MaybePackage::Download { .. } => unreachable!(),
+         };
+diff --git a/src/workspace/dependency.rs b/src/workspace/dependency.rs
+index 70d5ac5e90a86d08f8ebeac81379674ba024679e..d4558b9d85bea4f03148073e71c797a69b7b6ec2 100644
+--- a/src/workspace/dependency.rs
++++ b/src/workspace/dependency.rs
+@@ -373,10 +373,8 @@ impl Dependency {
+         );
+         Arc::make_mut(&mut self.inner).req.lock_to(id.version());
+ 
+-        // Only update the `precise` of this source to preserve other
+-        // information about dependency's source which may not otherwise be
+-        // tested during equality/hashing.
+-        self.source_id = self.source_id.with_precise_from(id.source_id());
++        // Equal sources with the same precise value share an interned SourceId.
++        self.source_id = id.source_id();
+         self
+     }
+ 
+diff --git a/src/workspace/package.rs b/src/workspace/package.rs
+index 378e9fdb7053892aa7d56bee8af25026f36d09e5..3517e887d1d84f616b608837a4186ee70c6a48a8 100644
+--- a/src/workspace/package.rs
++++ b/src/workspace/package.rs
+@@ -184,10 +184,11 @@ impl Package {
+     }
+ 
+     pub fn map_source(self, to_replace: SourceId, replace_with: SourceId) -> Package {
++        let inner = Rc::unwrap_or_clone(self.inner);
+         Package {
+             inner: Rc::new(PackageInner {
+-                manifest: self.manifest().clone().map_source(to_replace, replace_with),
+-                manifest_path: self.manifest_path().to_owned(),
++                manifest: inner.manifest.map_source(to_replace, replace_with),
++                ..inner
+             }),
+         }
+     }
+diff --git a/src/workspace/parser/mod.rs b/src/workspace/parser/mod.rs
+index 3ca3cc6a3a0b8850631c3efb0c6a21b5efece130..e661188ee3530274f4ee6d0b3d70da10a8dcddaa 100644
+--- a/src/workspace/parser/mod.rs
++++ b/src/workspace/parser/mod.rs
+@@ -250,7 +250,7 @@ fn deserialize_without_document(
+                 error
+             },
+         )?;
+-        entry.store(document);
++        entry.store(document, &manifest._unused_keys);
+         return Ok(manifest);
+     }
+     deserialize_toml(toml::de::Deserializer::parse(contents)?)
+@@ -361,7 +361,7 @@ fn to_workspace_root_config(
+     let inheritable = InheritableFields {
+         package: normalized_toml.package.clone(),
+         dependencies: normalized_toml.dependencies.clone().map(Arc::new),
+-        lints: normalized_toml.lints.clone(),
++        lints: normalized_toml.lints.clone().map(Arc::new),
+         _ws_root: package_root.to_owned(),
+     };
+     let ws_root_config = WorkspaceRootConfig::new(
+@@ -1132,7 +1132,7 @@ macro_rules! package_field_getter {
+ pub struct InheritableFields {
+     package: Option<manifest::InheritablePackage>,
+     dependencies: Option<Arc<BTreeMap<manifest::PackageName, manifest::TomlDependency>>>,
+-    lints: Option<manifest::TomlLints>,
++    lints: Option<Arc<manifest::TomlLints>>,
+ 
+     // Bookkeeping to help when resolving values from above
+     _ws_root: PathBuf,
+@@ -1189,7 +1189,7 @@ impl InheritableFields {
+ 
+     /// Gets the field `workspace.lints`.
+     pub fn lints(&self) -> CargoResult<manifest::TomlLints> {
+-        let Some(val) = &self.lints else {
++        let Some(val) = self.lints.as_deref() else {
+             bail!("`workspace.lints` was not defined");
+         };
+         Ok(val.clone())
+diff --git a/src/workspace/parser/registry_cache.rs b/src/workspace/parser/registry_cache.rs
+index f1d35270f29da23fa38f6cc5eef4e483def3d4ef..06ea0b05194917e8130d2bb9904caafa155ce0f3 100644
+--- a/src/workspace/parser/registry_cache.rs
++++ b/src/workspace/parser/registry_cache.rs
+@@ -1,6 +1,7 @@
+ //! Read published registry manifests from a compact representation on subsequent runs.
+ 
+ use std::cell::Cell;
++use std::collections::BTreeSet;
+ use std::fs::{self, OpenOptions};
+ use std::io::{Read, Write};
+ use std::os::unix::fs::{DirBuilderExt, MetadataExt, OpenOptionsExt};
+@@ -10,11 +11,10 @@ use std::sync::LazyLock;
+ use cargo_util_schemas::manifest::TomlManifest;
+ use serde::Deserialize;
+ 
+-use super::deserialize_toml;
+ use crate::util::GlobalContext;
+ 
+-const MAGIC: &[u8] = b"ohm-registry-json-v1\0";
+-const DIRECTORY: &str = ".ohm-registry-json-v1";
++const MAGIC: &[u8] = b"ohm-registry-json-v2\0";
++const DIRECTORY: &str = ".ohm-registry-json-v2";
+ const MAX_SOURCE: usize = 256 * 1024;
+ const MAX_ENTRY: usize = 64 * 1024;
+ const MAX_DEPTH: usize = 32;
+@@ -30,11 +30,15 @@ static PARSER: LazyLock<blake3::Hash> = LazyLock::new(|| {
+ });
+ 
+ pub(crate) fn directory(home: &Path) -> Option<PathBuf> {
++    private_directory(home, DIRECTORY)
++}
++
++pub(crate) fn private_directory(home: &Path, name: &str) -> Option<PathBuf> {
+     let home = home.canonicalize().ok()?;
+     if !trusted_ancestors(&home) {
+         return None;
+     }
+-    let directory = home.join(DIRECTORY);
++    let directory = home.join(name);
+     let _ = fs::DirBuilder::new().mode(0o700).create(&directory);
+     let meta = directory.symlink_metadata().ok()?;
+     (meta.is_dir() && private(&meta)).then_some(directory)
+@@ -131,22 +135,30 @@ impl<'a> Entry<'a> {
+         if digest != blake3::keyed_hash(self.key.as_bytes(), payload).as_bytes() {
+             return None;
+         }
+-        let mut de = serde_json::Deserializer::from_slice(payload);
+-        let manifest = deserialize_toml(&mut de).ok()?;
+-        de.end().ok()?;
++        let (mut manifest, unused_keys): (TomlManifest, BTreeSet<String>) =
++            serde_json::from_slice(payload).ok()?;
++        manifest._unused_keys = unused_keys;
+         Some(manifest)
+     }
+ 
+-    pub(super) fn store(&self, document: toml::Spanned<toml::de::DeTable<'_>>) {
+-        let _ = self.try_store(document);
++    pub(super) fn store(
++        &self,
++        document: toml::Spanned<toml::de::DeTable<'_>>,
++        unused_keys: &BTreeSet<String>,
++    ) {
++        let _ = self.try_store(document, unused_keys);
+     }
+ 
+-    fn try_store(&self, document: toml::Spanned<toml::de::DeTable<'_>>) -> Option<()> {
++    fn try_store(
++        &self,
++        document: toml::Spanned<toml::de::DeTable<'_>>,
++        unused_keys: &BTreeSet<String>,
++    ) -> Option<()> {
+         let value = toml::Value::deserialize(toml::de::Deserializer::from(document)).ok()?;
+         if !supported(&value, 0) {
+             return None;
+         }
+-        let payload = serde_json::to_vec(&value).ok()?;
++        let payload = serde_json::to_vec(&(&value, unused_keys)).ok()?;
+         if MAGIC.len() + 64 + payload.len() > MAX_ENTRY {
+             return None;
+         }
+@@ -199,6 +211,7 @@ fn supported(value: &toml::Value, depth: usize) -> bool {
+ #[cfg(test)]
+ mod tests {
+     use super::*;
++    use crate::workspace::parser::deserialize_toml;
+     use std::os::unix::fs::{PermissionsExt, symlink};
+ 
+     const SOURCE: &str = r#"
+@@ -212,10 +225,27 @@ nested = [{ text = "a\tb", flag = true }]
+ [dependencies.other]
+ version = "1"
+ default-features = false
++unknown-option = "keep this dependency warning"
+ [lib]
+ path = "src/lib.rs"
+ "#;
+ 
++    const INVALID_PAYLOADS: &[&[u8]] = &[
++        b"{",
++        b"{}",
++        b"[{}, []] null",
++        br#"[{"package":{"name":17}}, []]"#,
++        b"[{}, [17]]",
++    ];
++
++    impl Entry<'_> {
++        fn store_source(&self, contents: &str) -> Option<()> {
++            let document = toml::de::DeTable::parse(contents).unwrap();
++            let manifest = deserialize_toml(toml::de::Deserializer::from(document.clone())).ok()?;
++            self.try_store(document, &manifest._unused_keys)
++        }
++    }
++
+     fn private_home() -> tempfile::TempDir {
+         tempfile::Builder::new()
+             .permissions(fs::Permissions::from_mode(0o700))
+@@ -230,8 +260,16 @@ path = "src/lib.rs"
+         let entry = Entry::at(&dir, SOURCE);
+         let expected = deserialize_toml(toml::de::Deserializer::parse(SOURCE).unwrap()).unwrap();
+         assert!(expected._unused_keys.contains("package.unknown"));
++        let dependency = expected
++            .dependencies
++            .as_ref()
++            .unwrap()
++            .values()
++            .next()
++            .unwrap();
++        assert_eq!(dependency.unused_keys(), ["unknown-option"]);
+         assert!(entry.read().is_none());
+-        entry.store(toml::de::DeTable::parse(SOURCE).unwrap());
++        entry.store_source(SOURCE).unwrap();
+         assert_eq!(
+             format!("{:?}", entry.read().unwrap()),
+             format!("{expected:?}")
+@@ -243,7 +281,7 @@ path = "src/lib.rs"
+         let home = private_home();
+         let dir = directory(home.path()).unwrap();
+         let entry = Entry::at(&dir, SOURCE);
+-        entry.store(toml::de::DeTable::parse(SOURCE).unwrap());
++        entry.store_source(SOURCE).unwrap();
+         let bytes = fs::read(&entry.path).unwrap();
+         let mut other = Entry::at(&dir, "[package]\nname = 'other'\nversion = '2'\n");
+         other.path = entry.path.clone();
+@@ -254,7 +292,7 @@ path = "src/lib.rs"
+             fs::write(&entry.path, corrupt).unwrap();
+             assert!(entry.read().is_none());
+         }
+-        for payload in [b"{".as_slice(), b"{} null", br#"{"package":{"name":17}}"#] {
++        for &payload in INVALID_PAYLOADS {
+             let mut bad = bytes[..MAGIC.len() + 32].to_vec();
+             bad.extend_from_slice(blake3::keyed_hash(entry.key.as_bytes(), payload).as_bytes());
+             bad.extend_from_slice(payload);
+@@ -278,7 +316,7 @@ path = "src/lib.rs"
+         ] {
+             let source = format!("[package]\nname='p'\nversion='1'\n[package.metadata]\n{field}\n");
+             let entry = Entry::at(&dir, &source);
+-            entry.store(toml::de::DeTable::parse(&source).unwrap());
++            assert!(entry.store_source(&source).is_none());
+             assert!(!entry.path.exists(), "{field}");
+         }
+         assert!(!supported(&toml::Value::String("x".into()), MAX_DEPTH + 1));
+@@ -289,14 +327,14 @@ path = "src/lib.rs"
+         let home = private_home();
+         let dir = directory(home.path()).unwrap();
+         let entry = Entry::at(&dir, SOURCE);
+-        entry.store(toml::de::DeTable::parse(SOURCE).unwrap());
++        entry.store_source(SOURCE).unwrap();
+         fs::set_permissions(&entry.path, fs::Permissions::from_mode(0o644)).unwrap();
+         assert!(entry.read().is_none());
+         let external = home.path().join("sentinel");
+         fs::write(&external, b"untouched").unwrap();
+         fs::remove_file(&entry.path).unwrap();
+         symlink(&external, &entry.path).unwrap();
+-        entry.store(toml::de::DeTable::parse(SOURCE).unwrap());
++        assert!(entry.store_source(SOURCE).is_none());
+         assert!(entry.read().is_none());
+         assert_eq!(fs::read(&external).unwrap(), b"untouched");
+         fs::set_permissions(&dir, fs::Permissions::from_mode(0o755)).unwrap();
+@@ -338,15 +376,11 @@ path = "src/lib.rs"
+         let first = at_slots(&cache, SOURCE, "001", "002");
+         let second = at_slots(&cache, &other, "001", "003");
+         assert!(first.read().is_none());
+-        first
+-            .try_store(toml::de::DeTable::parse(SOURCE).unwrap())
+-            .unwrap();
++        first.store_source(SOURCE).unwrap();
+         let original = fs::read(&first.path).unwrap();
+         assert!(second.read().is_none());
+         assert_eq!(second.store_in_alternate.get(), Some(true));
+-        second
+-            .try_store(toml::de::DeTable::parse(&other).unwrap())
+-            .unwrap();
++        second.store_source(&other).unwrap();
+         assert_eq!(fs::read(&first.path).unwrap(), original);
+         assert_manifest(&first, SOURCE);
+         assert_manifest(&second, &other);
+@@ -362,17 +396,11 @@ path = "src/lib.rs"
+         let first = at_slots(&cache, SOURCE, "001", "002");
+         let second = at_slots(&cache, &second_source, "003", "004");
+         let third = at_slots(&cache, &third_source, "001", "003");
+-        first
+-            .try_store(toml::de::DeTable::parse(SOURCE).unwrap())
+-            .unwrap();
+-        second
+-            .try_store(toml::de::DeTable::parse(&second_source).unwrap())
+-            .unwrap();
++        first.store_source(SOURCE).unwrap();
++        second.store_source(&second_source).unwrap();
+         let primary = fs::read(&first.path).unwrap();
+         assert!(third.read().is_none());
+-        third
+-            .try_store(toml::de::DeTable::parse(&third_source).unwrap())
+-            .unwrap();
++        third.store_source(&third_source).unwrap();
+         assert_eq!(fs::read(&first.path).unwrap(), primary);
+         assert_manifest(&first, SOURCE);
+         assert_manifest(&third, &third_source);
+@@ -385,9 +413,7 @@ path = "src/lib.rs"
+         let home = private_home();
+         let cache = directory(home.path()).unwrap();
+         let entry = at_slots(&cache, SOURCE, "001", "002");
+-        entry
+-            .try_store(toml::de::DeTable::parse(SOURCE).unwrap())
+-            .unwrap();
++        entry.store_source(SOURCE).unwrap();
+         symlink(home.path().join("missing"), &entry.alternate).unwrap();
+         assert_manifest(&entry, SOURCE);
+         assert_eq!(entry.store_in_alternate.get(), Some(false));
+@@ -400,14 +426,10 @@ path = "src/lib.rs"
+         let other = SOURCE.replace("example", "second-fixture");
+         let first = at_slots(&cache, SOURCE, "001", "001");
+         let second = at_slots(&cache, &other, "001", "001");
+-        first
+-            .try_store(toml::de::DeTable::parse(SOURCE).unwrap())
+-            .unwrap();
++        first.store_source(SOURCE).unwrap();
+         assert!(second.read().is_none());
+         assert_eq!(second.store_in_alternate.get(), Some(false));
+-        second
+-            .try_store(toml::de::DeTable::parse(&other).unwrap())
+-            .unwrap();
++        second.store_source(&other).unwrap();
+         assert!(first.read().is_none());
+         assert_manifest(&second, &other);
+         assert_eq!(fs::read_dir(&cache).unwrap().count(), 1);
+@@ -420,13 +442,9 @@ path = "src/lib.rs"
+         let other = SOURCE.replace("example", "second-fixture");
+         let first = at_slots(&cache, SOURCE, "001", "002");
+         let second = at_slots(&cache, &other, "001", "003");
+-        first
+-            .try_store(toml::de::DeTable::parse(SOURCE).unwrap())
+-            .unwrap();
++        first.store_source(SOURCE).unwrap();
+         assert!(second.read().is_none());
+-        second
+-            .try_store(toml::de::DeTable::parse(&other).unwrap())
+-            .unwrap();
++        second.store_source(&other).unwrap();
+         let original = fs::read(&second.alternate).unwrap();
+         for offset in [0, MAGIC.len(), MAGIC.len() + 32, original.len() - 1] {
+             let mut bytes = original.clone();
+@@ -434,7 +452,7 @@ path = "src/lib.rs"
+             fs::write(&second.alternate, bytes).unwrap();
+             assert!(second.read().is_none());
+         }
+-        for payload in [b"{".as_slice(), b"{} null", br#"{"package":{"name":12}}"#] {
++        for &payload in INVALID_PAYLOADS {
+             let mut bytes = original[..MAGIC.len() + 32].to_vec();
+             bytes.extend_from_slice(blake3::keyed_hash(second.key.as_bytes(), payload).as_bytes());
+             bytes.extend_from_slice(payload);
+@@ -456,40 +474,24 @@ path = "src/lib.rs"
+         let other = SOURCE.replace("example", "second-fixture");
+         let first = at_slots(&cache, SOURCE, "001", "002");
+         let second = at_slots(&cache, &other, "001", "003");
+-        first
+-            .try_store(toml::de::DeTable::parse(SOURCE).unwrap())
+-            .unwrap();
++        first.store_source(SOURCE).unwrap();
+         assert!(second.read().is_none());
+-        second
+-            .try_store(toml::de::DeTable::parse(&other).unwrap())
+-            .unwrap();
++        second.store_source(&other).unwrap();
+         fs::set_permissions(&second.alternate, fs::Permissions::from_mode(0o644)).unwrap();
+         assert!(second.read().is_none());
+-        assert!(
+-            second
+-                .try_store(toml::de::DeTable::parse(&other).unwrap())
+-                .is_none()
+-        );
++        assert!(second.store_source(&other).is_none());
+         fs::remove_file(&second.alternate).unwrap();
+         let outside = home.path().join("outside");
+         fs::write(&outside, b"sentinel").unwrap();
+         symlink(&outside, &second.alternate).unwrap();
+         assert!(second.read().is_none());
+-        assert!(
+-            second
+-                .try_store(toml::de::DeTable::parse(&other).unwrap())
+-                .is_none()
+-        );
++        assert!(second.store_source(&other).is_none());
+         assert_eq!(fs::read(&outside).unwrap(), b"sentinel");
+         fs::remove_file(&second.alternate).unwrap();
+         let name = CString::new(second.alternate.as_os_str().as_encoded_bytes()).unwrap();
+         assert_eq!(unsafe { libc::mkfifo(name.as_ptr(), 0o600) }, 0);
+         assert!(second.read().is_none());
+-        assert!(
+-            second
+-                .try_store(toml::de::DeTable::parse(&other).unwrap())
+-                .is_none()
+-        );
++        assert!(second.store_source(&other).is_none());
+         assert!(
+             second
+                 .alternate
+@@ -507,14 +509,10 @@ path = "src/lib.rs"
+         let cache = directory(home.path()).unwrap();
+         let existing = at_slots(&cache, SOURCE, "002", "003");
+         let entry = at_slots(&cache, SOURCE, "001", "002");
+-        existing
+-            .try_store(toml::de::DeTable::parse(SOURCE).unwrap())
+-            .unwrap();
++        existing.store_source(SOURCE).unwrap();
+         assert!(entry.read().is_none());
+         assert_eq!(entry.store_in_alternate.get(), Some(false));
+-        entry
+-            .try_store(toml::de::DeTable::parse(SOURCE).unwrap())
+-            .unwrap();
++        entry.store_source(SOURCE).unwrap();
+         assert_manifest(&entry, SOURCE);
+         assert_manifest(&existing, SOURCE);
+         assert_eq!(fs::read_dir(&cache).unwrap().count(), 2);
+@@ -639,7 +637,7 @@ path = "src/lib.rs"
+         let value: toml::Value = toml::from_str(&source).unwrap();
+         assert_eq!(
+             &alternate[MAGIC.len() + 64..],
+-            serde_json::to_vec(&value).unwrap()
++            serde_json::to_vec(&(&value, &expected._unused_keys)).unwrap()
+         );
+         let alternate_inode = fs::metadata(&second.alternate).unwrap().ino();
+         let warm = super::super::deserialize_without_document(&source, source_id, &gctx).unwrap();
