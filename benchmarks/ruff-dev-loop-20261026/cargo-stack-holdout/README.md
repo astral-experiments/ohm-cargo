@@ -23,3 +23,16 @@ These results use the exact nine-draft Cargo binary `3f5223265e4f51af56ecc1ef873
 All 12 pairs improved for each command. The two-sided exact order-balanced p-value was 0.002165 per command and the three-way Holm-adjusted value was 0.006494. [36 randomized pairs](fresh-pairs.csv), [confidence intervals and cache checks](fresh-summary.json), [combined source patch](nine.patch)
 
 For a clean reproduction, use the [standalone fresh harness](../registry-manifests/fresh.py) to create the stable Cargo executable shim, warmed target and separate build directory. Use a private Cargo home with trusted ancestors. Run the two control/treatment binaries through `fresh.py --mode all --sequence check build test --design paired --pairs 12 --seed 946271` using the same absolute tool-search path for all invocations.
+
+## Historical server edit results
+
+Ordinary `cargo check` after changing the doc comment ran one Cargo and one rustc for `ruff_server`. Cargo reported checking `ruff_server`, `ruff` and `ruff_dev`. All 36 observations had the same two complete command lines. The full 520-artifact roster, all 442 metadata files and all 435 emitted public API hashes matched. The Git index retained the same SHA-256 and the active 370 v1 records, 370 v2 records and one Git proof retained their contents and file identities.
+
+| Combined nine-draft Cargo compared with | Parent median instructions | Nine-draft median instructions | Median paired reduction | 95% median interval | Adjusted p |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Release PGO control | 2,423.30M | 2,326.75M | 4.000% | 3.883–4.118% | 0.01852 |
+| First seven Cargo drafts | 2,385.41M | 2,326.75M | 2.442% | 2.408–2.517% | 0.01852 |
+
+Both comparisons improved in every one of 12 matched blocks. The two-sided tests enumerate the 216 order-preserving assignments possible when conditioning on the third subject’s position. [Every complete command](blocks.csv), [per-process counts](processes.csv), [the two exact command lines](commands.json), [all output digests](roster.json)
+
+The first setup tried native Cargo for warm-up and instrumented Cargo for scoring. Ohm assigned the collector its own build namespace. The initial instrumented command started rebuilding dependencies and was excluded before it completed. The corrected setup used Callgrind for Cargo in all phases and enabled tracing of every child during scoring. A preliminary private home created under the host’s default umask was group-writable. Ohm correctly bypassed its private caches. We retained all ten resulting observations as exclusions, restored private ownership permissions, and required both registry formats and the Git proof to exist and stop changing before collecting a new complete schedule. [Excluded untrusted-home observations](excluded-untrusted-blocks.csv), [frozen initial design](https://github.com/astral-sh/ohm-cargo/tree/68a1ed8c4a9dd83c9662912406c2d9fdd580936b/benchmarks/ruff-dev-loop-20261026/cargo-stack-holdout)

@@ -4,6 +4,7 @@ Pass the directory containing replay.py's measured block receipts, the fresh
 three-mode directory, and the evidence output directory on the command line.
 """
 import csv
+import hashlib
 import itertools
 import json
 import math
@@ -75,6 +76,7 @@ def heldout(run, output):
     assert len(rows) == 36 and len(plan['schedule']) == 12
     blocks = defaultdict(dict)
     processes = []
+    commands = {}
     for r in rows:
         b, pos, arm = int(r['block']), int(r['position']), r['arm']
         assert arm == plan['schedule'][b][pos] and arm not in blocks[b]
@@ -83,7 +85,10 @@ def heldout(run, output):
         receipt = read(run / f'{b:02}-{pos}-{arm}.json')
         assert receipt['arm'] == arm and receipt['total_ir'] == total and sum(ir for cmd, ir in receipt['counts']) == total
         for cmd, ir in receipt['counts']:
-            processes.append(dict(block=b, position=pos, arm=arm, argv=cmd, instructions=ir))
+            key=hashlib.sha256(cmd.encode()).hexdigest()
+            commands[key]=cmd
+            processes.append(dict(block=b, position=pos, arm=arm, program=Path(cmd.split()[0]).name,
+                                  command_sha256=key, instructions=ir))
     comparisons = {}
     for baseline, third in [('parent', 'seven'), ('seven', 'parent')]:
         values, strata = [], defaultdict(list)
@@ -102,6 +107,7 @@ def heldout(run, output):
     adjust(comparisons)
     write_table(output / 'blocks.csv', rows)
     write_table(output / 'processes.csv', processes)
+    save(output / 'commands.json', commands)
     save(output / 'subjects.json', plan)
     save(output / 'roster.json', read(run / 'artifact-roster.json'))
     return dict(comparisons=comparisons, validation=read(run / 'cache-validation.json'))
