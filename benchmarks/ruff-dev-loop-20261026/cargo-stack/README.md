@@ -25,6 +25,8 @@ A second build of the PGO control after compiling all candidates reproduced ever
 
 Six changes against the release-PGO baseline used seed 191017 for the CLI edit. The incremental comparison of six versus four changes used seed 611276 on the same frozen edit fixture. For the ordinary-output four-change warm matrix, run [the fresh harness](../registry-manifests/) with `--mode all --design paired --pairs 12 --seed 127841`. Validation runs process Cargo JSON before and after each cohort. A scored command is rejected if child tracing sees any executable other than Cargo.
 
+For the six-change ordinary-output holdout, use the same fresh benchmark with `--design paired --pairs 12`. The check cohort used seed 881307, the test compilation used seed 861529, and the build used seed 861530. These cohorts preserve the already-warm targets, validate the 520, 619 and 501 fresh artifacts before and after measurement, and count the complete ordinary-output command with Callgrind.
+
 ## Measured results
 
 | Ruff command and Cargo changes | Favorable pairs | Median instruction reduction | 95% median interval | Randomization p |
@@ -45,3 +47,6 @@ Six changes against the release-PGO baseline used seed 191017 for the CLI edit. 
 | Fresh default check, six PGO changes, Cargo JSON | 12/12 | 3.40% | 3.37–3.43% | 0.00216 |
 | Fresh default build, six PGO changes, Cargo JSON | 12/12 | 1.50% | 1.46–1.52% | 0.00216 |
 | Fresh default test --no-run, six PGO changes, Cargo JSON | 12/12 | 3.14% | 3.11–3.19% | 0.00216 |
+| Fresh default check, six PGO changes, ordinary Cargo output | 12/12 | 3.72% | 3.71–3.73% | 0.00216 |
+| Fresh default build, six PGO changes, ordinary Cargo output | 12/12 | 1.56% | 1.55–1.57% | 0.00216 |
+| Fresh default test --no-run, six PGO changes, ordinary Cargo output | 12/12 | 3.32% | 3.31–3.34% | 0.00216 |
