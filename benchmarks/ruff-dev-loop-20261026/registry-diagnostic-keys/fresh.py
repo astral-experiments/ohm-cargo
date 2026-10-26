@@ -101,6 +101,17 @@ def benchmark_mode(mode, seed):
         return {version: {f.name: (f.stat().st_ino, f.stat().st_size, f.stat().st_mtime_ns)
                 for f in (home / ('.ohm-registry-json-' + version)).iterdir()}
                 for version in ('v1', 'v2')}
+    # Cargo's ordinary output can visit another manifest after the JSON graph is
+    # already fresh. Require both arms to stop writing before randomization.
+    stable = 0
+    for cycle in range(6):
+        previous = records()
+        run('parent', f'settle-{cycle}-parent')
+        run('candidate', f'settle-{cycle}-candidate')
+        stable = stable + 1 if previous == records() else 0
+        if stable == 2:
+            break
+    assert stable == 2, 'registry working set did not settle before scoring'
     initial = records()
     rng = random.Random(seed)
     rows = []

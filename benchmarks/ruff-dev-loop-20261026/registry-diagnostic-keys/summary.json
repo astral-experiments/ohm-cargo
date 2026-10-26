@@ -17,6 +17,40 @@
       "exact_p": 0.0021645021645021645,
       "holm_p": 0.004329004329004329
     },
+    "fresh-build": {
+      "pairs": 12,
+      "favorable": 12,
+      "median_reduction": 0.7365413567236412,
+      "interval": [
+        0.7202431975063428,
+        0.7515544635629423
+      ],
+      "full_range": [
+        0.7096161104974574,
+        0.7551929248815537
+      ],
+      "parent_median_ir": 1485139298.0,
+      "candidate_median_ir": 1474199684.0,
+      "exact_p": 0.0021645021645021645,
+      "holm_p": 0.004329004329004329
+    },
+    "fresh-test": {
+      "pairs": 12,
+      "favorable": 12,
+      "median_reduction": 1.0457455442787422,
+      "interval": [
+        1.0304995758025903,
+        1.0550544017379537
+      ],
+      "full_range": [
+        1.0083784263599793,
+        1.0806471769559511
+      ],
+      "parent_median_ir": 1114900471.0,
+      "candidate_median_ir": 1103243421.0,
+      "exact_p": 0.0021645021645021645,
+      "holm_p": 0.004329004329004329
+    },
     "cli-edit": {
       "pairs": 12,
       "favorable": 12,
@@ -33,7 +67,36 @@
       "candidate_median_ir": 1108417729.0,
       "exact_p": 0.0021645021645021645,
       "holm_p": 0.004329004329004329
+    },
+    "fresh-check-independent": {
+      "pairs": 12,
+      "favorable": 12,
+      "median_reduction": 1.1762018370627847,
+      "interval": [
+        1.1592739943985353,
+        1.1869611885806042
+      ],
+      "full_range": [
+        1.1552334189088853,
+        1.2549688335145803
+      ],
+      "parent_median_ir": 909762719.5,
+      "candidate_median_ir": 899101687.5,
+      "exact_p": 0.0021645021645021645
     }
   },
-  "independent_check": null
+  "independent_check": {
+    "units": 520,
+    "metadata_files": 442,
+    "api_files": 435,
+    "cargo_metadata_packages": 547,
+    "resolved_nodes": 547,
+    "cargo_metadata_sha256": "0e66411e482997b720e81fef6d5b5caf2b1e7d8df22da07abf3db23d1347d404",
+    "registry_cache_counts": {
+      "v1": 370,
+      "v2": 370
+    },
+    "stable_cache_records": true,
+    "seed": 897215
+  }
 }
