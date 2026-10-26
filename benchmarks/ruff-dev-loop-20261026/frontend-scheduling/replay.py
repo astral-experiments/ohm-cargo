@@ -14,7 +14,7 @@ import subprocess
 import time
 
 ap = argparse.ArgumentParser(description=__doc__)
-ap.add_argument('phase', choices=['screen', 'holdout', 'guard'])
+ap.add_argument('phase', choices=['screen', 'holdout', 'guard', 'repeat'])
 ap.add_argument('--blocks', type=int, required=True)
 ap.add_argument('--seed', type=int, required=True)
 ap.add_argument('--out', required=True, type=Path)
@@ -44,6 +44,8 @@ cargo = ['cargo', '+ohm', 'check', '--locked', '--offline']
 workloads = dict(parser=('parser-ast', []), lint=('linter', []), scoped=('parser-ast', ['-p', 'ruff_python_parser']))
 if a.phase == 'guard':
     workloads = {'scoped': workloads['scoped']}
+if a.phase == 'repeat':
+    workloads = {key:workloads[key] for key in ('parser','scoped')}
 rng = random.Random(a.seed)
 plan = []
 for block in range(a.blocks):
@@ -58,7 +60,7 @@ def write(path, obj):
 def sha(path):
     with path.open('rb') as stream:
         return hashlib.file_digest(stream, 'sha256').hexdigest()
-real = pool/'rustup/toolchains/ohm/bin/cargo'
+real = pool/'runtime/bin/cargo' if (pool/'runtime/bin/cargo').is_file() else pool/'rustup/toolchains/ohm/bin/cargo'
 write(a.out/'plan.json', dict(host=socket.gethostname(), affinity=sorted(os.sched_getaffinity(0)),
       ruff=pinned, seed=a.seed, phase=a.phase, plan=plan,
       drivers={p.name:sha(p) for p in sorted((pool/'frozen-toolchain/lib').glob('librustc_driver*.so'))},
@@ -72,12 +74,16 @@ def choose(arm):
             tmp = real.with_name('cargo.subject')
             os.link(subject, tmp)
             tmp.replace(real)
-def grouped(paths):
+def grouped(paths, inventory):
     total = hashlib.sha256()
+    files = {}
     for path in sorted(set(paths)):
         assert any(path.is_relative_to(s) for s in store),path
-        total.update(str(path.relative_to(pool)).encode() + b'\0')
-        total.update(bytes.fromhex(sha(path)))
+        relative = str(path.relative_to(pool))
+        files[relative] = sha(path)
+        total.update(relative.encode() + b'\0')
+        total.update(bytes.fromhex(files[relative]))
+    write(inventory, files)
     return total.hexdigest()
 def run(directory, flags, *, message, artifacts):
     directory.mkdir()
@@ -100,7 +106,7 @@ def run(directory, flags, *, message, artifacts):
             metas = {Path(f) for j in data for f in j['filenames'] if f.endswith('.rmeta')}
             apis = {f for s in store for f in s.rglob('*.public-api-hash')}
             assert metas and apis,(len(metas),len(apis))
-            row.update(metas=len(metas),apis=len(apis),meta_digest=grouped(metas),api_digest=grouped(apis))
+            row.update(metas=len(metas),apis=len(apis),meta_digest=grouped(metas,directory/'metadata.json'),api_digest=grouped(apis,directory/'api.json'))
             if a.timings:
                 row['rmeta_sizes'] = {j['target']['name']: sum(Path(f).stat().st_size for f in j['filenames'] if f.endswith('.rmeta')) for j in data if not j['fresh']}
     if a.timings:
@@ -140,6 +146,13 @@ try:
                 subprocess.run(['cp','-a',s,stamp/s.name],check=True)
         if name=='workspace':
             restore(name)
+        if a.phase in ('holdout','repeat'):
+            for arm in ('parent','candidate'):
+                choose(arm)
+                restore(name)
+                control_run=run(a.out/f'guard-{name}-{arm}',flags,message=True,artifacts=False)
+                assert not control_run['dirty'] and control_run['units']==(90 if flags else 520),control_run
+            choose(control)
     expected={}
     for i,(block, key, arm) in enumerate(plan):
         label,flags=workloads[key]; fixture=label+'-'+select
@@ -154,10 +167,15 @@ try:
                 result=run(a.out/tag,flags,message=False,artifacts=False)
                 check=run(a.out/(tag+'-verify'),flags,message=True,artifacts=True)
                 assert not check['dirty'] and result['compile_lines']
+                assert all(str(ruff) in line for line in result['compile_lines']),(tag,result['compile_lines'])
                 result.update({k:v for k,v in check.items() if k in ('roster','units','meta_digest','api_digest','metas','apis')})
             sig={k:v for k,v in result.items() if k in ('dirty','roster','units','meta_digest','api_digest','metas','apis','compile_lines')}
-            assert sig == expected.setdefault(key,sig),(tag,{k for k in sig if sig[k]!=expected[key][k]})
-            row=dict(block=block, index=i, workload=key, arm=arm, **result)
+            reference=expected.setdefault(key,sig)
+            differences=sorted(k for k in sig if sig[k]!=reference[k])
+            # Retain a parity failure for the entire endpoint, and keep the other
+            # predeclared endpoints in their original randomized order.
+            assert not differences or a.phase in ('holdout','repeat'),(tag,differences)
+            row=dict(block=block, index=i, workload=key, arm=arm, parity_failures=differences, **result)
             with (a.out/'samples.jsonl').open('a') as stream:
                 stream.write(json.dumps(row)+'\n')
             print(tag,'wall',round(row['wall_ns']/1e9,3),'CPU',round(row['user_s']+row['sys_s'],3),'artifacts',row['units'],'rebuilt',len(row['compile_lines']),flush=True)

@@ -20,3 +20,20 @@ The replay script accepts paths to the disposable Ruff worktree and private meas
 python3 replay.py holdout --blocks 8 --seed 737807 --out "$RESULTS" \
   --pool "$POOL" --ruff "$RUFF" --parent "$PARENT" --candidate "$CANDIDATE"
 ```
+
+## First release-PGO confirmation
+
+The 16-vCPU host completed all 96 observations using the fixed Linux executable search path `/home/dev-user/.cargo/bin:/usr/local/bin:/usr/bin:/bin`. Before timing, both programs reported 520/520 fresh artifacts on the workspace and 90/90 on the scoped command. A trace of the discovery parser's 35 compiler invocations confirmed that 32 received one frontend thread and three retained eight. All samples restored both the private target and the separate build directory.
+
+| Holdout | Median control | Median candidate | Geometric elapsed reduction | 95% block-bootstrap interval | Exact p | Holm p |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| Workspace check after the parser edit | 13.018 s | 12.347 s | 5.34% | 2.02–8.30% | 0.03125 | 0.09375 |
+| Parser package check after the same edit | 0.606 s | 0.553 s | 16.66% | 7.30–24.29% | 0.03125 | 0.09375 |
+
+The workspace linter endpoint failed its byte-equivalence gate. Exactly one of 442 metadata files, `ruff_linter.rmeta`, varied. All API files agreed. In six extra controlled rebuilds, stock Cargo also produced different bytes for that file from identical inputs. Its elapsed observations remain in `native.csv` and are excluded from inference. The native family retained all three endpoints for Holm, using p = 1 for the disqualified endpoint. Neither eligible elapsed result cleared 0.05 after adjustment. Two setup launches using an incompatible executable search path rebuilt registry units. Those launches were discarded before this complete run.
+
+The separate complete scoped parser check saved **2.084%** instructions, with a conservative 95% median interval of **2.038–2.177%**. All 12 pairs improved (two-sided exact p = 0.002165). Each observation saw one Cargo and one rustc, 90 artifacts and exactly one dirty parser unit. All 72 metadata files and 72 API hashes agreed.
+
+## Frozen native replication
+
+Repeat the two byte-equivalent parser endpoints using the same unmodified release-PGO binaries, fixed search path, inputs, checkpoints and 16-vCPU host in a separate quiet observation window. Use 16 independently ordered ABBA or BAAB blocks per endpoint, 32 pairs each, seed 619913. All 128 timed commands will be retained. Apply the same complete output and roster gates, block-level exact randomization, 50,000-draw block bootstrap, and a two-endpoint Holm adjustment. The replication tests the elapsed effects observed in the first cohort, with no change to the threshold or code. The earlier disqualified linter endpoint remains excluded.
