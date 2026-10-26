@@ -48,3 +48,9 @@ The second timing window completed all 128 ordinary commands. The workspace and 
 | Parser package check after the same edit | 0.579 s | 0.550 s | 5.16% | −4.52–14.75% | 0.34750 | 0.34750 |
 
 Fourteen of 16 workspace blocks improved. Summed compiler and other child user/system CPU fell 14.19% on the workspace and 21.46% on the package. The package wall-time interval includes zero. The separate instrumented package experiment above measured the complete Cargo and rustc process counts under its own controlled toolchain alias. [Frozen replication plan](https://github.com/astral-sh/ohm-cargo/tree/92a48a156ee3a2709f95bcacf6482ea95089e2ee/benchmarks/ruff-dev-loop-20261026/frontend-scheduling), [all 128 native observations](repeat.csv), [block-level inference](repeat-summary.json)
+
+## Cost of an already-fresh check
+
+The same standalone Cargo change increased instructions on a fully fresh workspace check by **0.03394%** (95% median interval 0.02810–0.04659%). All 12 pairs showed an increase, with exact two-sided p = 0.002165. Median counts were 920,916,359 for the control and 921,258,362.5 for the candidate. Each ordinary command ran just Cargo. Separate JSON verification showed 520 fresh artifacts in both arms, and the registry cache files remained stable. This control measures instructions on the fresh path. The 3.20% elapsed reduction above measures a public source edit.
+
+The control used a separate 12-pair schedule with six control-first and six candidate-first assignments, seed 731901 and CPUs 16–19. Use the shared fresh runner with `--design paired --pairs 12 --sequence check --seed 731901`. [Plan](fresh-control-plan.json), [raw pairs](fresh-control.csv), [registry and statistical checks](fresh-control-summary.json), [runner](../cargo-stack-holdout/fresh.py)
