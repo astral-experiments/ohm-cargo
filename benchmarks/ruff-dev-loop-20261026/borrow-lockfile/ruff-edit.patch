@@ -1,0 +1,30 @@
+diff --git a/crates/ruff_text_size/src/size.rs b/crates/ruff_text_size/src/size.rs
+index e4e45be7a8..aa4a8571e3 100644
+--- a/crates/ruff_text_size/src/size.rs
++++ b/crates/ruff_text_size/src/size.rs
+@@ -106,6 +106,25 @@ impl TextSize {
+     pub fn checked_sub(self, rhs: TextSize) -> Option<TextSize> {
+         self.raw.checked_sub(rhs.raw).map(|raw| TextSize { raw })
+     }
++
++    /// Saturating addition. Returns maximum `TextSize` if overflow occurred.
++    #[inline]
++    #[must_use]
++    pub fn saturating_add(self, rhs: TextSize) -> TextSize {
++        TextSize {
++            raw: self.raw.saturating_add(rhs.raw),
++        }
++    }
++
++    /// Saturating subtraction. Returns minimum `TextSize` if overflow
++    /// occurred.
++    #[inline]
++    #[must_use]
++    pub fn saturating_sub(self, rhs: TextSize) -> TextSize {
++        TextSize {
++            raw: self.raw.saturating_sub(rhs.raw),
++        }
++    }
+ }
+ 
+ impl From<u32> for TextSize {
