@@ -631,7 +631,18 @@ pub fn encodable_package_id(
     state: &EncodeState<'_>,
     resolve_version: ResolveVersion,
 ) -> TomlLockfilePackageId {
-    let mut version = Some(id.version().to_string());
+    let name = id.name().to_string();
+    if let Some(counts) = &state.counts {
+        let versions = &counts[&id.name()];
+        if versions[id.version()] == 1 {
+            return TomlLockfilePackageId {
+                name,
+                version: (versions.len() > 1).then(|| id.version().to_string()),
+                source: None,
+            };
+        }
+    }
+
     let mut id_to_encode = id.source_id();
     if resolve_version <= ResolveVersion::V2 {
         if let Some(GitReference::Branch(b)) = id_to_encode.git_reference() {
@@ -641,20 +652,10 @@ pub fn encodable_package_id(
             }
         }
     }
-    let mut source = encodable_source_id(id_to_encode.without_precise(), resolve_version);
-    if let Some(counts) = &state.counts {
-        let version_counts = &counts[&id.name()];
-        if version_counts[&id.version()] == 1 {
-            source = None;
-            if version_counts.len() == 1 {
-                version = None;
-            }
-        }
-    }
     TomlLockfilePackageId {
-        name: id.name().to_string(),
-        version,
-        source,
+        name,
+        version: Some(id.version().to_string()),
+        source: encodable_source_id(id_to_encode.without_precise(), resolve_version),
     }
 }
 
