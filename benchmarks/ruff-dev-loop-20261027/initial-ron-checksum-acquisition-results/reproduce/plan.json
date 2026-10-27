@@ -1,0 +1,20 @@
+{
+  "label": "Unscored untouched Ruff cold-to-unchanged training of the foreign-span observer",
+  "date": "2026-10-27T15:54Z",
+  "expected_failure": "The first unchanged test-compilation command recompiles registry ron 0.12.0 with the complete extra source and native metadata checksums and fans out to relink-only test targets. The following unchanged command is fresh.",
+  "populations": ["whole Ruff with Ohm's default trust policies and no user opt-ins", "whole Ruff with the two published local registry/native trust opt-ins", "separate minimal ron package with four independent test targets, default and trusted"],
+  "host": "charlie-ohm-generic-perf-1024",
+  "source": "93526150df078af7dd8fc4226cdcc469539d2001",
+  "tree": "62d3f106c5e41f6022847f26ff8c7dc00139f7b1",
+  "cargo_git": "d38fdd02503662de04c52f5f370f5dd81bddf868",
+  "cargo": "dd5cab154b8dcd09ccc2753160d314cade80979b2d055ee66aa9e2217e05e7e1",
+  "rustc_driver": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+  "rustc_frontend": "4fa9a18b77430bcc416e88561b6fe5797d98b996a7698b9f3bd11d4e7817a19f",
+  "wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5",
+  "ron_version": "0.12.0",
+  "ron_crates_io_sha256": "fd490c5b18261893f14449cbd28cb9c0b637aebf161cd77900bfdedaff21ec32",
+  "command": ["cargo", "+ohm", "test", "--no-run", "--locked", "--offline", "--message-format=json"],
+  "controls": "Each series starts with an empty private target and shared-build directory under the H4 lock. All run with identical canonical input and output paths, source, compiler, jobs and flags and the same Cargo fingerprint logger in all three commands. No snapshot imports or source changes. Tiny Cargo fixture includes four distinct executables and a live ordinary RON serialization Rust caller. Whole source is unaltered pinned Ruff. Separate setup validates 619 artifacts/102 test executables/110 products. Package tests are not executed by Cargo.",
+  "observations": ["all three command wall times, descriptive only, including cold plus first unchanged cost", "full and relink-only rustc and actual Wild outputs from execve, especially ron full argv and flags", "all raw native output hashes and diagnostic/roster hashes", "actual Cargo dirty reason for every reported stale target", "preserve phase copies of ron archive/rmeta and rustc dep-info, predecessor receipt and the Cargo fingerprint, including whether an authenticated observer record was complete", "single on-disk and product-authentic first observed source change, root source or explicit API behavior; never upgrade an incomplete receipt as a hit"],
+  "success": "Causal attribution only if the same-state no-edit repeat independently reproduces with both authentic tool hashes and the held-over real observer. Distinguish any dependence on non-default trust. Gate any product and stats separately, including first cold results, first unchanged and their sum, extra cold input/hash work, actual fully fresh run and new/removed/reintroduced true-position readers and source-mutating controls."
+}
