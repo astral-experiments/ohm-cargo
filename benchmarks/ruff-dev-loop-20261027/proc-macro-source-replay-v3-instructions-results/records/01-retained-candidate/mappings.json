@@ -1,0 +1,63 @@
+{
+  "captured": {
+    "client": {
+      "device": 64800,
+      "inode": 18654875,
+      "logical": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/parser-counter-sdk-v1/client/libpidcounter.so",
+      "path": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/parser-counter-sdk-v1/client/libpidcounter.so",
+      "pid": 3195073
+    },
+    "derive": {
+      "device": 64800,
+      "inode": 406458,
+      "logical": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-af643f15a35fd262-all-native-all/get-size-derive2/16667a986d3ac90d/out/libget_size_derive2-16667a986d3ac90d.so",
+      "path": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-af643f15a35fd262-all-native-all/get-size-derive2/16667a986d3ac90d/out/libget_size_derive2-16667a986d3ac90d.so",
+      "pid": 3195073
+    },
+    "driver": {
+      "device": 64800,
+      "inode": 11015480,
+      "logical": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/lib/librustc_driver-774a793a844d5500.so",
+      "path": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/lib/librustc_driver-774a793a844d5500.so",
+      "pid": 3195073
+    },
+    "frontend": {
+      "device": 64800,
+      "inode": 18088031,
+      "logical": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/bin/rustc",
+      "path": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/bin/rustc",
+      "pid": 3195073
+    },
+    "runtime": {
+      "device": 64800,
+      "inode": 18654871,
+      "logical": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/parser-counter-sdk-v1/sdk/lib64/release/libdynamorio.so",
+      "path": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/parser-counter-sdk-v1/sdk/lib64/release/libdynamorio.so",
+      "pid": 3195073
+    }
+  },
+  "complete": true,
+  "expected": {
+    "client": [
+      64800,
+      18654875
+    ],
+    "derive": [
+      64800,
+      406458
+    ],
+    "driver": [
+      64800,
+      11015480
+    ],
+    "frontend": [
+      64800,
+      18088031
+    ],
+    "runtime": [
+      64800,
+      18654871
+    ]
+  },
+  "timed_out": false
+}
