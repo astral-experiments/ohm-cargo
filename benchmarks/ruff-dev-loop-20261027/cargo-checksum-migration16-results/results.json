@@ -1,0 +1,734 @@
+{
+  "build": {
+    "seed/cold": {
+      "all_ELF_files": 90,
+      "artifact_profile_counts": {
+        "all-executable-records": 6,
+        "other-executable": 6
+      },
+      "diagnostics": 0,
+      "encoded_classes": null,
+      "file_count": 922,
+      "fresh": 0,
+      "processes": {
+        "build-script": 51,
+        "cc": 691,
+        "collect2": 152,
+        "rustc-full": 501,
+        "rustc-query": 38,
+        "wild": 90
+      },
+      "status": 0,
+      "units": 501
+    },
+    "seed/noop-1": {
+      "actual-jobs-by-old-class": {},
+      "all_ELF_files": 90,
+      "artifact_profile_counts": {
+        "all-executable-records": 6,
+        "other-executable": 6
+      },
+      "diagnostics": 0,
+      "encoded_classes": {
+        "legacy-ordinary-checksum-retrain": 68,
+        "ordinary-mtime": 433
+      },
+      "file_count": 922,
+      "fresh": 501,
+      "initial_inventory_by_source": {
+        "legacy-ordinary-checksum-retrain:workspace": 68,
+        "ordinary-mtime:external": 433
+      },
+      "new-record-ids": 0,
+      "processes": {},
+      "record-transitions": {},
+      "status": 0,
+      "units": 501
+    },
+    "stock-repeat/first": {
+      "actual-jobs-by-old-class": {},
+      "all_ELF_files": 90,
+      "artifact_profile_counts": {
+        "all-executable-records": 6,
+        "other-executable": 6
+      },
+      "changed-ELF": [],
+      "changed-output-paths": 0,
+      "diagnostics": 0,
+      "encoded_classes": {
+        "legacy-ordinary-checksum-retrain": 68,
+        "ordinary-mtime": 433
+      },
+      "file_count": 922,
+      "fresh": 501,
+      "initial_inventory_by_source": {
+        "legacy-ordinary-checksum-retrain:workspace": 68,
+        "ordinary-mtime:external": 433
+      },
+      "new-record-ids": 0,
+      "ordinary-readers": {
+        "ruff-F821": {
+          "exit": 1,
+          "stderr_sha": "ccda1a7e4df207008042a41a3867dc00ba612fe7dfb48cce3d7affc8acf24981",
+          "stdout_sha": "915edb666a8ab1dbb6f4d2b181f9ffeeea3a549e3ada102fe76ef2c29aa07bca"
+        },
+        "ruff-version": {
+          "exit": 0,
+          "stderr_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdout_sha": "d1ccb1573d6c2a91d2fa990d76269a7c9f5953e436c2ee5636e8721fd2b4d942"
+        },
+        "ty-version": {
+          "exit": 0,
+          "stderr_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdout_sha": "f126dc2036f541907afdd336b76d33120c3a85b4a644b2687e4f27b59a145fc6"
+        }
+      },
+      "processes": {},
+      "record-transitions": {},
+      "status": 0,
+      "units": 501
+    },
+    "stock-repeat/second": {
+      "actual-jobs-by-old-class": {},
+      "all_ELF_files": 90,
+      "artifact_profile_counts": {
+        "all-executable-records": 6,
+        "other-executable": 6
+      },
+      "changed-ELF": [],
+      "changed-output-paths": 0,
+      "diagnostics": 0,
+      "encoded_classes": {
+        "legacy-ordinary-checksum-retrain": 68,
+        "ordinary-mtime": 433
+      },
+      "file_count": 922,
+      "fresh": 501,
+      "initial_inventory_by_source": {
+        "legacy-ordinary-checksum-retrain:workspace": 68,
+        "ordinary-mtime:external": 433
+      },
+      "new-record-ids": 0,
+      "ordinary-readers": {
+        "ruff-F821": {
+          "exit": 1,
+          "stderr_sha": "ccda1a7e4df207008042a41a3867dc00ba612fe7dfb48cce3d7affc8acf24981",
+          "stdout_sha": "915edb666a8ab1dbb6f4d2b181f9ffeeea3a549e3ada102fe76ef2c29aa07bca"
+        },
+        "ruff-version": {
+          "exit": 0,
+          "stderr_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdout_sha": "d1ccb1573d6c2a91d2fa990d76269a7c9f5953e436c2ee5636e8721fd2b4d942"
+        },
+        "ty-version": {
+          "exit": 0,
+          "stderr_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdout_sha": "f126dc2036f541907afdd336b76d33120c3a85b4a644b2687e4f27b59a145fc6"
+        }
+      },
+      "processes": {},
+      "record-transitions": {},
+      "status": 0,
+      "units": 501
+    },
+    "upgraded/first": {
+      "actual-jobs-by-old-class": {
+        "rustc-full:legacy-ordinary-checksum-retrain": 68
+      },
+      "all_ELF_files": 90,
+      "artifact_profile_counts": {
+        "all-executable-records": 6,
+        "other-executable": 6
+      },
+      "changed-ELF": [],
+      "changed-output-paths": 86,
+      "diagnostics": 0,
+      "encoded_classes": {
+        "current-ordinary-checksum": 68,
+        "ordinary-mtime": 433
+      },
+      "file_count": 922,
+      "fresh": 433,
+      "initial_inventory_by_source": {
+        "legacy-ordinary-checksum-retrain:workspace": 68,
+        "ordinary-mtime:external": 433
+      },
+      "new-record-ids": 0,
+      "ordinary-readers": {
+        "ruff-F821": {
+          "exit": 1,
+          "stderr_sha": "ccda1a7e4df207008042a41a3867dc00ba612fe7dfb48cce3d7affc8acf24981",
+          "stdout_sha": "915edb666a8ab1dbb6f4d2b181f9ffeeea3a549e3ada102fe76ef2c29aa07bca"
+        },
+        "ruff-version": {
+          "exit": 0,
+          "stderr_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdout_sha": "d1ccb1573d6c2a91d2fa990d76269a7c9f5953e436c2ee5636e8721fd2b4d942"
+        },
+        "ty-version": {
+          "exit": 0,
+          "stderr_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdout_sha": "f126dc2036f541907afdd336b76d33120c3a85b4a644b2687e4f27b59a145fc6"
+        }
+      },
+      "processes": {
+        "build-script": 5,
+        "cc": 15,
+        "collect2": 15,
+        "rustc-full": 68,
+        "wild": 15
+      },
+      "record-transitions": {
+        "legacy-ordinary-checksum-retrain:current-ordinary-checksum": 68
+      },
+      "status": 0,
+      "units": 501
+    },
+    "upgraded/second": {
+      "actual-jobs-by-old-class": {},
+      "all_ELF_files": 90,
+      "artifact_profile_counts": {
+        "all-executable-records": 6,
+        "other-executable": 6
+      },
+      "changed-ELF": [],
+      "changed-output-paths": 86,
+      "diagnostics": 0,
+      "encoded_classes": {
+        "current-ordinary-checksum": 68,
+        "ordinary-mtime": 433
+      },
+      "file_count": 922,
+      "fresh": 501,
+      "initial_inventory_by_source": {
+        "legacy-ordinary-checksum-retrain:workspace": 68,
+        "ordinary-mtime:external": 433
+      },
+      "new-record-ids": 0,
+      "ordinary-readers": {
+        "ruff-F821": {
+          "exit": 1,
+          "stderr_sha": "ccda1a7e4df207008042a41a3867dc00ba612fe7dfb48cce3d7affc8acf24981",
+          "stdout_sha": "915edb666a8ab1dbb6f4d2b181f9ffeeea3a549e3ada102fe76ef2c29aa07bca"
+        },
+        "ruff-version": {
+          "exit": 0,
+          "stderr_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdout_sha": "d1ccb1573d6c2a91d2fa990d76269a7c9f5953e436c2ee5636e8721fd2b4d942"
+        },
+        "ty-version": {
+          "exit": 0,
+          "stderr_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdout_sha": "f126dc2036f541907afdd336b76d33120c3a85b4a644b2687e4f27b59a145fc6"
+        }
+      },
+      "processes": {},
+      "record-transitions": {
+        "legacy-ordinary-checksum-retrain:current-ordinary-checksum": 68
+      },
+      "status": 0,
+      "units": 501
+    }
+  },
+  "check": {
+    "seed/cold": {
+      "all_ELF_files": 78,
+      "artifact_profile_counts": {},
+      "diagnostics": 0,
+      "encoded_classes": null,
+      "file_count": 596,
+      "fresh": 0,
+      "processes": {
+        "build-script": 51,
+        "cc": 679,
+        "collect2": 140,
+        "rustc-full": 520,
+        "rustc-query": 38,
+        "wild": 78
+      },
+      "status": 0,
+      "units": 520
+    },
+    "seed/noop-1": {
+      "actual-jobs-by-old-class": {},
+      "all_ELF_files": 78,
+      "artifact_profile_counts": {},
+      "diagnostics": 0,
+      "encoded_classes": {
+        "legacy-ordinary-checksum-retrain": 71,
+        "ordinary-mtime": 449
+      },
+      "file_count": 596,
+      "fresh": 520,
+      "initial_inventory_by_source": {
+        "legacy-ordinary-checksum-retrain:workspace": 71,
+        "ordinary-mtime:external": 449
+      },
+      "new-record-ids": 0,
+      "processes": {},
+      "record-transitions": {},
+      "status": 0,
+      "units": 520
+    },
+    "stock-repeat/first": {
+      "actual-jobs-by-old-class": {},
+      "all_ELF_files": 78,
+      "artifact_profile_counts": {},
+      "changed-ELF": [],
+      "changed-output-paths": 0,
+      "diagnostics": 0,
+      "encoded_classes": {
+        "legacy-ordinary-checksum-retrain": 71,
+        "ordinary-mtime": 449
+      },
+      "file_count": 596,
+      "fresh": 520,
+      "initial_inventory_by_source": {
+        "legacy-ordinary-checksum-retrain:workspace": 71,
+        "ordinary-mtime:external": 449
+      },
+      "new-record-ids": 0,
+      "ordinary-readers": {
+        "ordinary-error": {
+          "error_message": "this function takes 2 arguments but 0 arguments were supplied",
+          "exit": 1,
+          "stderr_sha": "40b1cdf4cc68715de0d8494196134179e3d7a2b9ce4684cd18a332dcca1c45f2",
+          "stdout_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "ordinary-success": {
+          "exit": 0,
+          "output_hash": "d0411a22bca6b7c1464c9c58fc26e310c35f3798581e26613e9fb1b15275a350",
+          "stderr_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdout_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      },
+      "processes": {},
+      "record-transitions": {},
+      "status": 0,
+      "units": 520
+    },
+    "stock-repeat/second": {
+      "actual-jobs-by-old-class": {},
+      "all_ELF_files": 78,
+      "artifact_profile_counts": {},
+      "changed-ELF": [],
+      "changed-output-paths": 0,
+      "diagnostics": 0,
+      "encoded_classes": {
+        "legacy-ordinary-checksum-retrain": 71,
+        "ordinary-mtime": 449
+      },
+      "file_count": 596,
+      "fresh": 520,
+      "initial_inventory_by_source": {
+        "legacy-ordinary-checksum-retrain:workspace": 71,
+        "ordinary-mtime:external": 449
+      },
+      "new-record-ids": 0,
+      "ordinary-readers": {
+        "ordinary-error": {
+          "error_message": "this function takes 2 arguments but 0 arguments were supplied",
+          "exit": 1,
+          "stderr_sha": "40b1cdf4cc68715de0d8494196134179e3d7a2b9ce4684cd18a332dcca1c45f2",
+          "stdout_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "ordinary-success": {
+          "exit": 0,
+          "output_hash": "d0411a22bca6b7c1464c9c58fc26e310c35f3798581e26613e9fb1b15275a350",
+          "stderr_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdout_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      },
+      "processes": {},
+      "record-transitions": {},
+      "status": 0,
+      "units": 520
+    },
+    "upgraded/first": {
+      "actual-jobs-by-old-class": {
+        "rustc-full:legacy-ordinary-checksum-retrain": 71
+      },
+      "all_ELF_files": 78,
+      "artifact_profile_counts": {},
+      "changed-ELF": [],
+      "changed-output-paths": 35,
+      "diagnostics": 0,
+      "encoded_classes": {
+        "current-ordinary-checksum": 71,
+        "ordinary-mtime": 449
+      },
+      "file_count": 596,
+      "fresh": 449,
+      "initial_inventory_by_source": {
+        "legacy-ordinary-checksum-retrain:workspace": 71,
+        "ordinary-mtime:external": 449
+      },
+      "new-record-ids": 0,
+      "ordinary-readers": {
+        "ordinary-error": {
+          "error_message": "this function takes 2 arguments but 0 arguments were supplied",
+          "exit": 1,
+          "stderr_sha": "40b1cdf4cc68715de0d8494196134179e3d7a2b9ce4684cd18a332dcca1c45f2",
+          "stdout_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "ordinary-success": {
+          "exit": 0,
+          "output_hash": "1912621e6ea4de5ca7ed186b8141d6c10eb4e083dac9b0ff700d78f2419bd63e",
+          "stderr_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdout_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      },
+      "processes": {
+        "build-script": 5,
+        "cc": 6,
+        "collect2": 6,
+        "rustc-full": 71,
+        "wild": 6
+      },
+      "record-transitions": {
+        "legacy-ordinary-checksum-retrain:current-ordinary-checksum": 71
+      },
+      "status": 0,
+      "units": 520
+    },
+    "upgraded/second": {
+      "actual-jobs-by-old-class": {},
+      "all_ELF_files": 78,
+      "artifact_profile_counts": {},
+      "changed-ELF": [],
+      "changed-output-paths": 35,
+      "diagnostics": 0,
+      "encoded_classes": {
+        "current-ordinary-checksum": 71,
+        "ordinary-mtime": 449
+      },
+      "file_count": 596,
+      "fresh": 520,
+      "initial_inventory_by_source": {
+        "legacy-ordinary-checksum-retrain:workspace": 71,
+        "ordinary-mtime:external": 449
+      },
+      "new-record-ids": 0,
+      "ordinary-readers": {
+        "ordinary-error": {
+          "error_message": "this function takes 2 arguments but 0 arguments were supplied",
+          "exit": 1,
+          "stderr_sha": "40b1cdf4cc68715de0d8494196134179e3d7a2b9ce4684cd18a332dcca1c45f2",
+          "stdout_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "ordinary-success": {
+          "exit": 0,
+          "output_hash": "1912621e6ea4de5ca7ed186b8141d6c10eb4e083dac9b0ff700d78f2419bd63e",
+          "stderr_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdout_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      },
+      "processes": {},
+      "record-transitions": {
+        "legacy-ordinary-checksum-retrain:current-ordinary-checksum": 71
+      },
+      "status": 0,
+      "units": 520
+    }
+  },
+  "test": {
+    "seed/cold": {
+      "all_ELF_files": 188,
+      "artifact_profile_counts": {
+        "all-executable-records": 102,
+        "other-executable": 18,
+        "test-profile-executable": 84
+      },
+      "diagnostics": 1,
+      "encoded_classes": null,
+      "file_count": 1060,
+      "fresh": 0,
+      "processes": {
+        "build-script": 51,
+        "cc": 795,
+        "collect2": 262,
+        "rustc-full": 632,
+        "rustc-query": 40,
+        "wild": 200
+      },
+      "status": 0,
+      "units": 619
+    },
+    "seed/noop-1": {
+      "all_ELF_files": 188,
+      "artifact_profile_counts": {
+        "all-executable-records": 102,
+        "other-executable": 18,
+        "test-profile-executable": 84
+      },
+      "diagnostics": 1,
+      "encoded_classes": null,
+      "file_count": 1060,
+      "fresh": 563,
+      "processes": {
+        "cc": 50,
+        "collect2": 50,
+        "rustc-full": 1,
+        "rustc-link-only": 50,
+        "wild": 50
+      },
+      "status": 0,
+      "units": 619
+    },
+    "seed/noop-2": {
+      "actual-jobs-by-old-class": {},
+      "all_ELF_files": 188,
+      "artifact_profile_counts": {
+        "all-executable-records": 102,
+        "other-executable": 18,
+        "test-profile-executable": 84
+      },
+      "diagnostics": 1,
+      "encoded_classes": {
+        "legacy-ordinary-checksum-retrain": 162,
+        "obs1-safe-complete": 1,
+        "ordinary-mtime": 456
+      },
+      "file_count": 1060,
+      "fresh": 619,
+      "initial_inventory_by_source": {
+        "legacy-ordinary-checksum-retrain:workspace": 162,
+        "obs1-safe-complete:external": 1,
+        "ordinary-mtime:external": 456
+      },
+      "new-record-ids": 0,
+      "processes": {},
+      "record-transitions": {},
+      "status": 0,
+      "units": 619
+    },
+    "stock-repeat/first": {
+      "actual-jobs-by-old-class": {},
+      "all_ELF_files": 188,
+      "artifact_profile_counts": {
+        "all-executable-records": 102,
+        "other-executable": 18,
+        "test-profile-executable": 84
+      },
+      "changed-ELF": [],
+      "changed-output-paths": 0,
+      "diagnostics": 1,
+      "encoded_classes": {
+        "legacy-ordinary-checksum-retrain": 162,
+        "obs1-safe-complete": 1,
+        "ordinary-mtime": 456
+      },
+      "file_count": 1060,
+      "fresh": 619,
+      "initial_inventory_by_source": {
+        "legacy-ordinary-checksum-retrain:workspace": 162,
+        "obs1-safe-complete:external": 1,
+        "ordinary-mtime:external": 456
+      },
+      "new-record-ids": 0,
+      "ordinary-readers": {
+        "parser-list": {
+          "exit": 0,
+          "names": 246,
+          "stderr_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdout_sha": "abf9421fe257430900f0c9e2dfa177bd3d29d8313ec7bc7a2b353d1801d8a8b0"
+        },
+        "ruff-F821": {
+          "exit": 1,
+          "stderr_sha": "ccda1a7e4df207008042a41a3867dc00ba612fe7dfb48cce3d7affc8acf24981",
+          "stdout_sha": "915edb666a8ab1dbb6f4d2b181f9ffeeea3a549e3ada102fe76ef2c29aa07bca"
+        },
+        "ruff-version": {
+          "exit": 0,
+          "stderr_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdout_sha": "d1ccb1573d6c2a91d2fa990d76269a7c9f5953e436c2ee5636e8721fd2b4d942"
+        },
+        "ty-version": {
+          "exit": 0,
+          "stderr_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdout_sha": "f126dc2036f541907afdd336b76d33120c3a85b4a644b2687e4f27b59a145fc6"
+        }
+      },
+      "processes": {},
+      "record-transitions": {},
+      "status": 0,
+      "units": 619
+    },
+    "stock-repeat/second": {
+      "actual-jobs-by-old-class": {},
+      "all_ELF_files": 188,
+      "artifact_profile_counts": {
+        "all-executable-records": 102,
+        "other-executable": 18,
+        "test-profile-executable": 84
+      },
+      "changed-ELF": [],
+      "changed-output-paths": 0,
+      "diagnostics": 1,
+      "encoded_classes": {
+        "legacy-ordinary-checksum-retrain": 162,
+        "obs1-safe-complete": 1,
+        "ordinary-mtime": 456
+      },
+      "file_count": 1060,
+      "fresh": 619,
+      "initial_inventory_by_source": {
+        "legacy-ordinary-checksum-retrain:workspace": 162,
+        "obs1-safe-complete:external": 1,
+        "ordinary-mtime:external": 456
+      },
+      "new-record-ids": 0,
+      "ordinary-readers": {
+        "parser-list": {
+          "exit": 0,
+          "names": 246,
+          "stderr_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdout_sha": "abf9421fe257430900f0c9e2dfa177bd3d29d8313ec7bc7a2b353d1801d8a8b0"
+        },
+        "ruff-F821": {
+          "exit": 1,
+          "stderr_sha": "ccda1a7e4df207008042a41a3867dc00ba612fe7dfb48cce3d7affc8acf24981",
+          "stdout_sha": "915edb666a8ab1dbb6f4d2b181f9ffeeea3a549e3ada102fe76ef2c29aa07bca"
+        },
+        "ruff-version": {
+          "exit": 0,
+          "stderr_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdout_sha": "d1ccb1573d6c2a91d2fa990d76269a7c9f5953e436c2ee5636e8721fd2b4d942"
+        },
+        "ty-version": {
+          "exit": 0,
+          "stderr_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdout_sha": "f126dc2036f541907afdd336b76d33120c3a85b4a644b2687e4f27b59a145fc6"
+        }
+      },
+      "processes": {},
+      "record-transitions": {},
+      "status": 0,
+      "units": 619
+    },
+    "upgraded/first": {
+      "actual-jobs-by-old-class": {
+        "rustc-full:legacy-ordinary-checksum-retrain": 162
+      },
+      "all_ELF_files": 188,
+      "artifact_profile_counts": {
+        "all-executable-records": 102,
+        "other-executable": 18,
+        "test-profile-executable": 84
+      },
+      "changed-ELF": [
+        "@cache/target/debug/build/workspaces/31bcfd2e3c9f30ae/v2-c947b805345b4cbf/ruff_annotate_snippets/8ae260e78382292d/out/ruff-8ae260e78382292d",
+        "@cache/target/debug/build/workspaces/31bcfd2e3c9f30ae/v2-c947b805345b4cbf/ruff_python_stdlib/09978b48e8f13d6a/out/ruff_python_stdlib-09978b48e8f13d6a",
+        "@cache/target/debug/build/workspaces/31bcfd2e3c9f30ae/v2-c947b805345b4cbf/ty_server/dd9b7f57d7ba4f6b/out/e2e-dd9b7f57d7ba4f6b"
+      ],
+      "changed-output-paths": 88,
+      "diagnostics": 1,
+      "encoded_classes": {
+        "current-ordinary-checksum": 162,
+        "obs1-safe-complete": 1,
+        "ordinary-mtime": 456
+      },
+      "file_count": 1060,
+      "fresh": 457,
+      "initial_inventory_by_source": {
+        "legacy-ordinary-checksum-retrain:workspace": 162,
+        "obs1-safe-complete:external": 1,
+        "ordinary-mtime:external": 456
+      },
+      "new-record-ids": 0,
+      "ordinary-readers": {
+        "parser-list": {
+          "exit": 0,
+          "names": 246,
+          "stderr_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdout_sha": "abf9421fe257430900f0c9e2dfa177bd3d29d8313ec7bc7a2b353d1801d8a8b0"
+        },
+        "ruff-F821": {
+          "exit": 1,
+          "stderr_sha": "ccda1a7e4df207008042a41a3867dc00ba612fe7dfb48cce3d7affc8acf24981",
+          "stdout_sha": "915edb666a8ab1dbb6f4d2b181f9ffeeea3a549e3ada102fe76ef2c29aa07bca"
+        },
+        "ruff-version": {
+          "exit": 0,
+          "stderr_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdout_sha": "d1ccb1573d6c2a91d2fa990d76269a7c9f5953e436c2ee5636e8721fd2b4d942"
+        },
+        "ty-version": {
+          "exit": 0,
+          "stderr_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdout_sha": "f126dc2036f541907afdd336b76d33120c3a85b4a644b2687e4f27b59a145fc6"
+        }
+      },
+      "processes": {
+        "build-script": 5,
+        "cc": 110,
+        "collect2": 110,
+        "rustc-full": 162,
+        "wild": 110
+      },
+      "record-transitions": {
+        "legacy-ordinary-checksum-retrain:current-ordinary-checksum": 162
+      },
+      "status": 0,
+      "units": 619
+    },
+    "upgraded/second": {
+      "actual-jobs-by-old-class": {},
+      "all_ELF_files": 188,
+      "artifact_profile_counts": {
+        "all-executable-records": 102,
+        "other-executable": 18,
+        "test-profile-executable": 84
+      },
+      "changed-ELF": [
+        "@cache/target/debug/build/workspaces/31bcfd2e3c9f30ae/v2-c947b805345b4cbf/ruff_annotate_snippets/8ae260e78382292d/out/ruff-8ae260e78382292d",
+        "@cache/target/debug/build/workspaces/31bcfd2e3c9f30ae/v2-c947b805345b4cbf/ruff_python_stdlib/09978b48e8f13d6a/out/ruff_python_stdlib-09978b48e8f13d6a",
+        "@cache/target/debug/build/workspaces/31bcfd2e3c9f30ae/v2-c947b805345b4cbf/ty_server/dd9b7f57d7ba4f6b/out/e2e-dd9b7f57d7ba4f6b"
+      ],
+      "changed-output-paths": 88,
+      "diagnostics": 1,
+      "encoded_classes": {
+        "current-ordinary-checksum": 162,
+        "obs1-safe-complete": 1,
+        "ordinary-mtime": 456
+      },
+      "file_count": 1060,
+      "fresh": 619,
+      "initial_inventory_by_source": {
+        "legacy-ordinary-checksum-retrain:workspace": 162,
+        "obs1-safe-complete:external": 1,
+        "ordinary-mtime:external": 456
+      },
+      "new-record-ids": 0,
+      "ordinary-readers": {
+        "parser-list": {
+          "exit": 0,
+          "names": 246,
+          "stderr_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdout_sha": "abf9421fe257430900f0c9e2dfa177bd3d29d8313ec7bc7a2b353d1801d8a8b0"
+        },
+        "ruff-F821": {
+          "exit": 1,
+          "stderr_sha": "ccda1a7e4df207008042a41a3867dc00ba612fe7dfb48cce3d7affc8acf24981",
+          "stdout_sha": "915edb666a8ab1dbb6f4d2b181f9ffeeea3a549e3ada102fe76ef2c29aa07bca"
+        },
+        "ruff-version": {
+          "exit": 0,
+          "stderr_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdout_sha": "d1ccb1573d6c2a91d2fa990d76269a7c9f5953e436c2ee5636e8721fd2b4d942"
+        },
+        "ty-version": {
+          "exit": 0,
+          "stderr_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdout_sha": "f126dc2036f541907afdd336b76d33120c3a85b4a644b2687e4f27b59a145fc6"
+        }
+      },
+      "processes": {},
+      "record-transitions": {
+        "legacy-ordinary-checksum-retrain:current-ordinary-checksum": 162
+      },
+      "status": 0,
+      "units": 619
+    }
+  }
+}

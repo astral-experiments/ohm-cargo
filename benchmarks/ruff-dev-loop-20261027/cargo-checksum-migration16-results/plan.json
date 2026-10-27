@@ -1,0 +1,71 @@
+{
+  "admission": "Each independent new seed starts from an empty target and shared directory with the offline registry only. Execute up to four stock no-op settling commands, record each, admit only all expected cargo artifacts fresh with no full rustc, link-only rustc, build scripts or Wild. Hash the selected official files and actual source. Capture private exact original encoded records and all descriptors. Compare cloned whole-state outputs before mutation with checksums, preserving mtime, symlinks, mode, hardlink structure and identical logical paths. Independently run stock first/second no-op, candidate first/second no-op. Save any straggling third no-op for diagnosis, excluding it from first/second classification. Candidate must be demonstrated to consume the existing stock seed without a global compiler identity or source change.",
+  "before": {
+    "archive_bytes": 359705529,
+    "archive_sha256": "957ca8144205008ddaee75ef35f9775b2e428271c6b044e38bbdd8196c6bbf3e",
+    "cargo": "42e90992cec21a29956e20fd52ab952472a9dbc1dcc7a3b60c92aad101b5f568",
+    "driver": "c442c2a36e1f37c92f138a8fb367fc09982931b5f1055e9742fb402566ad46a4",
+    "frontend": "b0c412a7a8010a768f00546419a0b1bcfca382d7e70191df3ae72e30ac1ef3e5",
+    "version": {
+      "cargo": "cargo 1.99.0-dev (4c07cbf6b 2026-10-27) (ohm-1.99.0-16)\nrelease: 1.99.0-dev\ncommit-hash: 4c07cbf6bd91e170e3b8904eeb82436a6dbde358\ncommit-date: 2026-10-27\nhost: x86_64-unknown-linux-gnu\nlibgit2: 1.9.6 (sys:0.21.0 vendored)\nlibcurl: 8.21.0-DEV (sys:0.4.90+curl-8.21.0 vendored ssl:OpenSSL/3.6.3)\nssl: OpenSSL 3.6.3 9 Jun 2026\nos: Ubuntu 24.4.0 (noble) [64-bit]\n",
+      "rustc": "rustc 1.99.0-dev (9a1b7cb6a 2026-10-27) (ohm-1.99.0-16)\nbinary: rustc\ncommit-hash: 9a1b7cb6a356d5380fdf80714523cb434c34dccb\ncommit-date: 2026-10-27\nhost: x86_64-unknown-linux-gnu\nrelease: 1.99.0-dev\nLLVM version: 23.1.1\n"
+    },
+    "wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5"
+  },
+  "candidate": "Release-profile broadened Cargo reader rejecting every ordinary legacy v2 record with any checksum; excludes superseded dc377742, subject source and ELF hash bound before the first candidate command. Identical installed -16 rustc, LLVM, std, target and standard GCC/bundled Wild remain on both arms.",
+  "cargo_lock_sha256": "c9e345325bec5ff08dbbe3916edd39ad0c3d1c7797a8c241ae32f62754e764bf",
+  "commands": {
+    "build": [
+      "cargo",
+      "+ohm",
+      "build",
+      "--workspace",
+      "--locked",
+      "--offline",
+      "--message-format=json"
+    ],
+    "check": [
+      "cargo",
+      "+ohm",
+      "check",
+      "--workspace",
+      "--locked",
+      "--offline",
+      "--message-format=json"
+    ],
+    "test": [
+      "cargo",
+      "+ohm",
+      "test",
+      "--no-run",
+      "--workspace",
+      "--locked",
+      "--offline",
+      "--message-format=json"
+    ]
+  },
+  "correctness": [
+    "complete scoped workspace output filenames, sizes and SHA256 for native libs, metadata, executables, build scripts and cdylibs; physical ELF byte checks distinguished from any history changes and registry-only products. Preserve regular command status and normalized diagnostics",
+    "ruff and ty versions plus an actual Ruff F821 stdin program on the build, test harness --list and same Ruff/ty runtime check if available. Check uses a genuine fresh external rustc +ohm reader for successful lex symbol use and E0061 secondary diagnostic from zero-argument lex() against the retained actual parser metadata and full native extern dirs. Compare source and diagnostics across all states.",
+    "Separately retain first stock cold/settle runs, which have real startup semantics; no change to Ruff itself."
+  ],
+  "disposition": "Report equally if no units retrain, if first upgraded native commands relaunch many units, if retraining displaces work to next command or if the existing SDK cannot be compared reliably. No PR from this study.",
+  "expected_artifacts": {
+    "build": 501,
+    "check": 520,
+    "test": 619
+  },
+  "host": "independent H5 Linux x86_64; H3 scratch outside the primary progression complements the scoped inventory",
+  "limits": [
+    "H5 primary native-measure.lock, taskset 0-23, CARGO_BUILD_JOBS=8. Each full physical storage volume retains at least 25 GiB; pause before unsafe copy. No interventions in old study states or H4.",
+    "Strictly an unscored Cargo-only version transition with unchanged production rustc and Wild. No package-wide compiler upgrade or steady-state elapsed-time claims."
+  ],
+  "phase": "prospective native migration footprint; full workspace, default unspaced paths; no wall-time hypothesis or inference",
+  "primary_metrics": [
+    "actual full rustc, -Zlink-only rustc, build scripts and GCC/collect2/bundled Wild invocations per command",
+    "Cargo total/fresh and complete target+profile+output roster (established 84 test-profile harness and 18 other executables)",
+    "structurally decoded v2/v3 depinfo class by checksum presence, preserved OBS1 marker/checksum, complete vs pending state, raw name with space, and body hashes before/after. Separate all persisted records from physical launches, including cache-sharing or transitive dirtiness. Count records paired by normalized file path; report any missing or unsupported classes."
+  ],
+  "ruff": "93526150df078af7dd8fc4226cdcc469539d2001",
+  "source_scheme": "Existing clean, linked Ruff checkout; original revision; read-only source mount; each endpoint and each arm has physically private target, shared build and private registry; identical canonical paths per arm and endpoint. Official authenticated SDK. No Cargo/Rustflags/native or procedural macro trust overrides."
+}

@@ -1,0 +1,33 @@
+{
+  "dest_sha256": "d7dfa671c8ec6ca2b50c7b0e41af4c0046e19bc02f18145d97d98455af2f722c",
+  "inference": "staged only; no candidate Ruff launch",
+  "launch_order": "all three settled stock seeds; independently verified full-state copies and two stock no-ops plus ordinary readers for every endpoint before first candidate command; corrected Cargo first and second no-ops; unchanged official native compiler and Wild; no wall-time inference",
+  "old_cargo": {
+    "archive_bytes": 359705529,
+    "archive_sha256": "957ca8144205008ddaee75ef35f9775b2e428271c6b044e38bbdd8196c6bbf3e",
+    "cargo": "42e90992cec21a29956e20fd52ab952472a9dbc1dcc7a3b60c92aad101b5f568",
+    "driver": "c442c2a36e1f37c92f138a8fb367fc09982931b5f1055e9742fb402566ad46a4",
+    "frontend": "b0c412a7a8010a768f00546419a0b1bcfca382d7e70191df3ae72e30ac1ef3e5",
+    "version": {
+      "cargo": "cargo 1.99.0-dev (4c07cbf6b 2026-10-27) (ohm-1.99.0-16)\nrelease: 1.99.0-dev\ncommit-hash: 4c07cbf6bd91e170e3b8904eeb82436a6dbde358\ncommit-date: 2026-10-27\nhost: x86_64-unknown-linux-gnu\nlibgit2: 1.9.6 (sys:0.21.0 vendored)\nlibcurl: 8.21.0-DEV (sys:0.4.90+curl-8.21.0 vendored ssl:OpenSSL/3.6.3)\nssl: OpenSSL 3.6.3 9 Jun 2026\nos: Ubuntu 24.4.0 (noble) [64-bit]\n",
+      "rustc": "rustc 1.99.0-dev (9a1b7cb6a 2026-10-27) (ohm-1.99.0-16)\nbinary: rustc\ncommit-hash: 9a1b7cb6a356d5380fdf80714523cb434c34dccb\ncommit-date: 2026-10-27\nhost: x86_64-unknown-linux-gnu\nrelease: 1.99.0-dev\nLLVM version: 23.1.1\n"
+    },
+    "wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5"
+  },
+  "plan": "https://github.com/astral-sh/ohm-cargo/tree/ae916e2b71f000eadcbc99bc0596f7ed6a65236b/benchmarks/ruff-dev-loop-20261027/cargo-checksum-migration16-plan",
+  "protocol_sha256": {
+    "b3helper.py": "61ff331ceff0c95e63e8e92c541268b558883e7c5c3140a88589403bb11e902d",
+    "census.py": "fa4e6b97f2255119256a140c978e1c3779b9285031d9f810320da78404df7c53",
+    "compare.py": "c0338d7aee22d5d38e499232795da091965b2af6fe09e7a5ff3f81c35f337132",
+    "export.py": "756c92014f8c79bde04ac8fd6a63e0b779bb0c2521ddeb80395060f9fd42ad09",
+    "joins2.py": "0a4834082edf3f5387c071bab069ab7c4c2ac6c29bbb6aaca1d6533b981d5e4f",
+    "libcargo_depinfo_b3.so": "fd777ceb54147d29e152beed0bfa42e9c60b122c83dd6aeb2058c7db8d995332",
+    "runner.py": "1bb4b4301ef1fa57c4b4cf2c6c70ddb5eed6958ea4d4ce1fb281d00c5a0c8a14"
+  },
+  "size": 43455088,
+  "source_base": "canceled RC17",
+  "source_commit": "01742c822d9153473d35566bd1c4fc987bcb5642",
+  "source_name": "rc17-complete-v3",
+  "source_sha256": "d7dfa671c8ec6ca2b50c7b0e41af4c0046e19bc02f18145d97d98455af2f722c",
+  "status": "bound for the prospective Cargo-only transition after all untouched stock admissions"
+}

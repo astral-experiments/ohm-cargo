@@ -1,0 +1,133 @@
+{
+  "build": {
+    "first": {
+      "ELF_changed": 0,
+      "changed_raw_rlibs": 55,
+      "changed_raw_rmetas": 31,
+      "fresh": 433,
+      "mutated_class": {
+        "legacy-ordinary-checksum-retrain:current-ordinary-checksum": 68
+      },
+      "native": {
+        "build-script": 5,
+        "rustc-full": 68,
+        "rustc-link-only": 0,
+        "wild": 15
+      },
+      "ordinary_semantic_oracles_equal": true,
+      "raw_products_changed": 86,
+      "remaining_classes": {
+        "current-ordinary-checksum": 68,
+        "ordinary-mtime": 433
+      },
+      "workspace_elfs": 15
+    },
+    "second": {
+      "ELF_changed": 0,
+      "fresh": 501,
+      "mutated_class": {
+        "legacy-ordinary-checksum-retrain:current-ordinary-checksum": 68
+      },
+      "native": {
+        "build-script": 0,
+        "rustc-full": 0,
+        "rustc-link-only": 0,
+        "wild": 0
+      },
+      "ordinary_semantic_oracles_equal": true,
+      "raw_products_changed": 86,
+      "remaining_classes": {
+        "current-ordinary-checksum": 68,
+        "ordinary-mtime": 433
+      }
+    }
+  },
+  "check": {
+    "first": {
+      "ELF_changed": 0,
+      "changed_raw_rlibs": 4,
+      "changed_raw_rmetas": 31,
+      "fresh": 449,
+      "mutated_class": {
+        "legacy-ordinary-checksum-retrain:current-ordinary-checksum": 71
+      },
+      "native": {
+        "build-script": 5,
+        "rustc-full": 71,
+        "rustc-link-only": 0,
+        "wild": 6
+      },
+      "ordinary_semantic_oracles_equal": true,
+      "raw_products_changed": 35,
+      "remaining_classes": {
+        "current-ordinary-checksum": 71,
+        "ordinary-mtime": 449
+      },
+      "workspace_elfs": 6
+    },
+    "second": {
+      "ELF_changed": 0,
+      "fresh": 520,
+      "mutated_class": {
+        "legacy-ordinary-checksum-retrain:current-ordinary-checksum": 71
+      },
+      "native": {
+        "build-script": 0,
+        "rustc-full": 0,
+        "rustc-link-only": 0,
+        "wild": 0
+      },
+      "ordinary_semantic_oracles_equal": true,
+      "raw_products_changed": 35,
+      "remaining_classes": {
+        "current-ordinary-checksum": 71,
+        "ordinary-mtime": 449
+      }
+    }
+  },
+  "test": {
+    "first": {
+      "ELF_changed": 3,
+      "changed_raw_rlibs": 54,
+      "changed_raw_rmetas": 31,
+      "fresh": 457,
+      "mutated_class": {
+        "legacy-ordinary-checksum-retrain:current-ordinary-checksum": 162
+      },
+      "native": {
+        "build-script": 5,
+        "rustc-full": 162,
+        "rustc-link-only": 0,
+        "wild": 110
+      },
+      "ordinary_semantic_oracles_equal": true,
+      "raw_products_changed": 88,
+      "remaining_classes": {
+        "current-ordinary-checksum": 162,
+        "obs1-safe-complete": 1,
+        "ordinary-mtime": 456
+      },
+      "workspace_elfs": 110
+    },
+    "second": {
+      "ELF_changed": 3,
+      "fresh": 619,
+      "mutated_class": {
+        "legacy-ordinary-checksum-retrain:current-ordinary-checksum": 162
+      },
+      "native": {
+        "build-script": 0,
+        "rustc-full": 0,
+        "rustc-link-only": 0,
+        "wild": 0
+      },
+      "ordinary_semantic_oracles_equal": true,
+      "raw_products_changed": 88,
+      "remaining_classes": {
+        "current-ordinary-checksum": 162,
+        "obs1-safe-complete": 1,
+        "ordinary-mtime": 456
+      }
+    }
+  }
+}
