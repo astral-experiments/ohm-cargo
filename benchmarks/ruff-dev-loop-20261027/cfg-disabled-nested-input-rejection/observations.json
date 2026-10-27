@@ -1,0 +1,1255 @@
+{
+  "arms": {
+    "a9b": {
+      "added_object_sha": "ee59b9dea7188bd45e0f34693bca4a80f52680f4ac97bdb2a47ecc27c973985a",
+      "arm": "a9b",
+      "cargo": "991d983a45416c63bc637511ccc584ea2ca6486d1a0b190108577ef00770768f",
+      "ordinary_fallback_sha": "f0a17a43c74d2fe5474fa2fd29c8f14799e777d7d75a2cc4d11c20a6e7b161c5",
+      "phases": {
+        "cold": {
+          "cargo_messages_digest": "0d95dfa078e7cb3933a7adc1a8d2d6b922281ecf0ca024044037a019a30159d7",
+          "elf": "c61f735cdc27ab84f207dadadddcb1655bfbada8a74cf8862afbbe9797a2afac",
+          "fixed": [],
+          "full": [
+            "full"
+          ],
+          "includes_nested_directory": false,
+          "includes_sdk_directory": true,
+          "marker": [],
+          "native_certificate": {
+            "elf": "affcaee02b5c48d4272091496428c8b253322c1aca00e8e46a8dcbca6eef9e60",
+            "fixed_worker": false,
+            "input_digest": "514fb359cffe41c89d7e68f7467b2305e67dcbba8c1550de65a28ed73b0e6a15",
+            "source": "879d4c0c2824e512d8b8531a9b70df5981cb1ef5815cda98933a930c9f1a9649"
+          },
+          "physical": [
+            {
+              "crate": "build_script_build",
+              "exec_record_sha256": "05108c13a43335968a49aca48fe816a60cfc732fa4dc50bd3b63fe975a6f5dc9",
+              "file_sha256": "8e12750eac9d16a61f16e2ade24d107817ca771049cb5d99fd849ce9cde7d368",
+              "one_worker": false,
+              "process": "exec.2899096",
+              "role": "rustc"
+            },
+            {
+              "crate": "kit",
+              "exec_record_sha256": "077c9a4185383fdd0ff8c1e72e4cdfd570ca7539423dc06e8ad0871a2500f8ac",
+              "file_sha256": "485d59ce86256f945e8a23b4d6dc0355dd33c4b5ade5789dd6931f863244d523",
+              "one_worker": false,
+              "process": "exec.2899158",
+              "role": "rustc"
+            },
+            {
+              "crate": "mark",
+              "exec_record_sha256": "1452d73c5c38747442bf709b7d72acb2b07bcca38e82672edccf911a6770a633",
+              "file_sha256": "f25b21805b44c17491a0ab0e8121fc5125fb440a858f9df19e63e09b3d0f32be",
+              "one_worker": false,
+              "process": "exec.2899178",
+              "role": "rustc"
+            },
+            {
+              "crate": "leaf",
+              "exec_record_sha256": "a095d40275445e79a549fa3c94564bb8e4a96bb0224e5fd614dc8e931507af4b",
+              "file_sha256": "87dd9a5f9dc164ad471f4b5df9bfd5a4ce5be573cd07dc449a18616aed82973b",
+              "one_worker": false,
+              "process": "exec.2899223",
+              "role": "rustc"
+            },
+            {
+              "crate": "api",
+              "exec_record_sha256": "851f19c236f46e413924cfc09245e2956a4f5b54c55899563b54da7a3336d0bc",
+              "file_sha256": "fb82251ca14787f0995d01fe4d71e5374b8bbd3b0a93cc1b93db62ea3ea88eb3",
+              "one_worker": false,
+              "process": "exec.2899240",
+              "role": "rustc"
+            },
+            {
+              "crate": "api",
+              "exec_record_sha256": "d9cd21e7daf00e2294b4d3ec817a8390127dc1ffb19ca7e1c1a848a0bc4354d4",
+              "file_sha256": "935c9e01fab2a1623591364cf020dd43135d0db3e1a56fcc41927488a0ad4bb5",
+              "one_worker": false,
+              "process": "exec.2899258",
+              "role": "cc"
+            },
+            {
+              "crate": "api",
+              "exec_record_sha256": "44bc9c6213f2421b723402556c0300cd9eb8f19d590a05894c689ffc2902b757",
+              "file_sha256": "7384f772a66944b4d8c727ba5e9d8907beea3f419a35b4b78ee4aa009f9a7186",
+              "one_worker": false,
+              "process": "exec.2899259",
+              "role": "collect2"
+            },
+            {
+              "crate": "api",
+              "exec_record_sha256": "d8ca023107f2fcda4299b5e9320d4af4b3140ec5228e9afe6447f9af858d36df",
+              "file_sha256": "26ecee71473f9d7501baf3f378999ed1b1748ae83f731c757ee5895a588335c0",
+              "one_worker": false,
+              "process": "exec.2899260",
+              "role": "Wild"
+            }
+          ],
+          "rc": 0,
+          "resolved_compatibility_archives": [
+            "/usr/lib/gcc/x86_64-linux-gnu/13/../../../../lib/x86_64-linux-gnu/librt.a",
+            "/usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu/librt.a",
+            "/usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu/libutil.a"
+          ],
+          "rustcs": [
+            "api",
+            "leaf",
+            "mark",
+            "kit",
+            "build_script_build"
+          ],
+          "stderr_digest": "23e19abcc10c8d1679aabc3a49d35bbc1d0ea1a404d1b39ea8f4ee70807162b9",
+          "tests": "0 tests, 0 benchmarks\n",
+          "unresolved_input_errors": [],
+          "wild": [
+            "api-d85fd6b3c1ff5f15",
+            "libmark-1c2e766d0626af38.so",
+            "libkit.so",
+            "build_script_build"
+          ]
+        },
+        "earlier-member-now-exists": {
+          "cargo_messages_digest": "1bbfbf10ada6b306700cf62347cafaae23dbda4ffc9c3826c3bb367d087b360e",
+          "elf": "1b89d1eb74af3b9d5e356ad8966c02e45d12f90838f26f735e2575e66122f8e2",
+          "fixed": [
+            "api-d85fd6b3c1ff5f15"
+          ],
+          "full": [
+            "full"
+          ],
+          "marker": [
+            "0000000000000097"
+          ],
+          "physical": [
+            {
+              "crate": "leaf",
+              "exec_record_sha256": "6cbf307498e0b23ac83a7b2b803f520367b5a0d8e5add8477906e9fd26dedd08",
+              "file_sha256": "dbce4f62946767ca570c3c9b3fcc2237a11802bdc324197725383c844b668ea9",
+              "one_worker": false,
+              "process": "exec.2899388",
+              "role": "rustc"
+            },
+            {
+              "crate": "api",
+              "exec_record_sha256": "6a14c88779e86c7d63d9658074c925478eb1102e4534e32f9217cf58c0ada02a",
+              "file_sha256": "4909e89c2b05fe5308fadd9decf0b49236e36f56854641e5b72325fae3f161e9",
+              "one_worker": false,
+              "process": "exec.2899405",
+              "role": "rustc"
+            },
+            {
+              "crate": "api",
+              "exec_record_sha256": "8bd019b1967716395484f284891005a36aeb91c6a5890d0aa0538bc0fa40ac86",
+              "file_sha256": "9eba956d7e839f55e862aef22ad571dc067c510ac1247ecb327c92d14af03ace",
+              "one_worker": false,
+              "process": "exec.2899423",
+              "role": "cc"
+            },
+            {
+              "crate": "api",
+              "exec_record_sha256": "f1ed0ce1a8769a834bde3fc665da63211bde1a8055512c518873ce5289893b36",
+              "file_sha256": "d68ba69d8ba6d5de47095c2656487862170ca0c6bbb1763d98bcad6b0b70fd87",
+              "one_worker": true,
+              "process": "exec.2899424",
+              "role": "collect2"
+            },
+            {
+              "crate": "api",
+              "exec_record_sha256": "8398bd14f56b712dde0d0b88611d8bc7576f71ef9570c7d87217e9db688f451b",
+              "file_sha256": "007886709e6aaad1d4fac78c8964a5d43c8ef65d3137fed2c322773e31ac322d",
+              "one_worker": true,
+              "process": "exec.2899425",
+              "role": "Wild"
+            }
+          ],
+          "rc": 0,
+          "rustcs": [
+            "api",
+            "leaf"
+          ],
+          "stderr_digest": "3e195ef954d789fcb6ebb6490b3538511c924965655a422b719c622e4e66951b",
+          "tests": "0 tests, 0 benchmarks\n",
+          "unresolved_input_errors": [],
+          "wild": [
+            "api-d85fd6b3c1ff5f15"
+          ]
+        },
+        "earlier-member-now-invalid": {
+          "cargo_messages_digest": "2bba7357226d5b562560f8789dc7f02be47bd14d85f23ba3b008973587f2ebed",
+          "elf": null,
+          "fixed": [],
+          "full": [
+            "full"
+          ],
+          "marker": null,
+          "physical": [
+            {
+              "crate": "leaf",
+              "exec_record_sha256": "fc2c479e293e4ae6ff51f03292eb77fa1e7cffbe88cf0faad6880ac0920c9afb",
+              "file_sha256": "dedb4507f4871c8b68f9a99c7bbd934f082eda3803f3418081975626117d1c77",
+              "one_worker": false,
+              "process": "exec.2899443",
+              "role": "rustc"
+            },
+            {
+              "crate": "api",
+              "exec_record_sha256": "aee9d5f54bee34c467e118bfdd3603d65a09d12896f572fc8fc666771ae69af0",
+              "file_sha256": "057d7f2d85cc86a1aadd1f50571312aa4645ddb4f5a2eb1e8a2706eb5acc63b0",
+              "one_worker": false,
+              "process": "exec.2899460",
+              "role": "rustc"
+            },
+            {
+              "crate": "api",
+              "exec_record_sha256": "44f10b54b8bdf27da50ab9b68545c1e69e67bfbe9641239626bece5435d8a3e3",
+              "file_sha256": "6c5735cfe56e193107c1beca95a5041fb5ba44752ca00c812dfb3c3a61aa1fc2",
+              "one_worker": false,
+              "process": "exec.2899471",
+              "role": "cc"
+            },
+            {
+              "crate": "api",
+              "exec_record_sha256": "0f9321a44d5b6d52ad6a301cc11af959e8472319b32b22fabef9a79d7057f954",
+              "file_sha256": "01dae4635c25c6ed841c19d357f321deda25a0cb5cca33e6043aec8fe401ea7e",
+              "one_worker": false,
+              "process": "exec.2899472",
+              "role": "collect2"
+            },
+            {
+              "crate": "api",
+              "exec_record_sha256": "a8e2ea36a7165d95aabcca609c9506c968411c29da78de9c644327dee70289e5",
+              "file_sha256": "6e5d924167572a733e01bd68e3c2b409b2c88896f694a31ffe297b3f7ad041af",
+              "one_worker": false,
+              "process": "exec.2899473",
+              "role": "Wild"
+            }
+          ],
+          "rc": 101,
+          "rustcs": [
+            "api",
+            "leaf"
+          ],
+          "stderr_digest": "f10f36cbc1c53ba0072b60a3549a4a9a2d5494522606a6b70dbdea53374bb05d",
+          "tests": null,
+          "unresolved_input_errors": [
+            {
+              "evidence": [
+                "Failed to open input file `/__ohm_nested_input_no_such_file__.o`"
+              ],
+              "level": "error",
+              "message": "linking with `cc` failed: exit status: 1"
+            }
+          ],
+          "wild": [
+            "api-d85fd6b3c1ff5f15"
+          ]
+        },
+        "first-changed": {
+          "cargo_messages_digest": "1bbfbf10ada6b306700cf62347cafaae23dbda4ffc9c3826c3bb367d087b360e",
+          "elf": "c61f735cdc27ab84f207dadadddcb1655bfbada8a74cf8862afbbe9797a2afac",
+          "fixed": [
+            "api-d85fd6b3c1ff5f15"
+          ],
+          "full": [
+            "full"
+          ],
+          "includes_nested_directory": false,
+          "includes_sdk_directory": true,
+          "marker": [],
+          "native_certificate": {
+            "elf": "affcaee02b5c48d4272091496428c8b253322c1aca00e8e46a8dcbca6eef9e60",
+            "fixed_worker": true,
+            "input_digest": "efd920c590bc80ac0d94cfaec8e4d446e755db7debb31cedc4e81e9b4c79cc79",
+            "source": "879d4c0c2824e512d8b8531a9b70df5981cb1ef5815cda98933a930c9f1a9649"
+          },
+          "physical": [
+            {
+              "crate": "leaf",
+              "exec_record_sha256": "e030a506dce6805025867c039642767af6c750b5251355f63660f69c4448b3a9",
+              "file_sha256": "1fba58fb887c4c04a3137744abbf7fdbb4333382ce00a1144962de8881c42c82",
+              "one_worker": false,
+              "process": "exec.2899278",
+              "role": "rustc"
+            },
+            {
+              "crate": "api",
+              "exec_record_sha256": "41041d3b7a749176cf2a58392380fbb220a705771bbfbd89c812e14e11090db5",
+              "file_sha256": "a3c7a6fa1686cea97f1b30b55a61e6ba2f074d094e1c309ea851aa13b8cf1e50",
+              "one_worker": false,
+              "process": "exec.2899295",
+              "role": "rustc"
+            },
+            {
+              "crate": "api",
+              "exec_record_sha256": "5d12e89b4b7ab42fcfe75ed8434ab31053dd676114adc087fd7d532e19a3fa21",
+              "file_sha256": "1048eb743859ddebbb9cac1bfdb293830652804ea2ae2c9b7302b790b92616ae",
+              "one_worker": false,
+              "process": "exec.2899313",
+              "role": "cc"
+            },
+            {
+              "crate": "api",
+              "exec_record_sha256": "5e308d7e4d4b286ab0fc6b2d5ff892767663406d048aae184fb49bd1bd7b7e42",
+              "file_sha256": "91f8752c6aa17ec26bd92c17ef4750e6bdf8388068e2f4d9ac86349d69c79aa3",
+              "one_worker": true,
+              "process": "exec.2899314",
+              "role": "collect2"
+            },
+            {
+              "crate": "api",
+              "exec_record_sha256": "377abc42d1786e2004d27824386124fb9d4316f126acac0763eab8412718cf11",
+              "file_sha256": "14106a68015f7d1e428b70d079dcee8e6eb2b4ee366c7533dfaf71e6b18c049d",
+              "one_worker": true,
+              "process": "exec.2899315",
+              "role": "Wild"
+            }
+          ],
+          "rc": 0,
+          "resolved_compatibility_archives": [
+            "/usr/lib/gcc/x86_64-linux-gnu/13/../../../../lib/x86_64-linux-gnu/librt.a",
+            "/usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu/librt.a",
+            "/usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu/libutil.a"
+          ],
+          "rustcs": [
+            "api",
+            "leaf"
+          ],
+          "stderr_digest": "af98805a916ef8a020750f4a0c1fa2da6ecc9285769fffadc9eb04d47991c6c5",
+          "tests": "0 tests, 0 benchmarks\n",
+          "unresolved_input_errors": [],
+          "wild": [
+            "api-d85fd6b3c1ff5f15"
+          ]
+        },
+        "ordinary-or-reuse": {
+          "cargo_messages_digest": "1bbfbf10ada6b306700cf62347cafaae23dbda4ffc9c3826c3bb367d087b360e",
+          "elf": "c61f735cdc27ab84f207dadadddcb1655bfbada8a74cf8862afbbe9797a2afac",
+          "fixed": [
+            "api-d85fd6b3c1ff5f15"
+          ],
+          "full": [
+            "full"
+          ],
+          "includes_nested_directory": false,
+          "includes_sdk_directory": true,
+          "marker": [],
+          "native_certificate": {
+            "elf": "affcaee02b5c48d4272091496428c8b253322c1aca00e8e46a8dcbca6eef9e60",
+            "fixed_worker": true,
+            "input_digest": "83afd2db3e488ead9fec684b872fd9d00dd3862bc0c24c047ee66fa7d60e4023",
+            "source": "879d4c0c2824e512d8b8531a9b70df5981cb1ef5815cda98933a930c9f1a9649"
+          },
+          "physical": [
+            {
+              "crate": "leaf",
+              "exec_record_sha256": "c7205015ec1a97f07887ad71ac8e8ba3f93f3e18d5c63a917cb8bf76951d4c46",
+              "file_sha256": "5db2067913cef26ce739b792c0f328e65b00aa3c10fb3511727a883bbfb12893",
+              "one_worker": false,
+              "process": "exec.2899333",
+              "role": "rustc"
+            },
+            {
+              "crate": "api",
+              "exec_record_sha256": "ce345c9a512d0d58872ef69e306ae50232fccd1d48d14a80314eeeed955521b3",
+              "file_sha256": "8a1bd5fd94e999b5499f00e6c9c9e9cff5b3f77fe36ca6e6b6ca29ebc4224607",
+              "one_worker": false,
+              "process": "exec.2899350",
+              "role": "rustc"
+            },
+            {
+              "crate": "api",
+              "exec_record_sha256": "8383b0e1a4136ea1b4d4226044de91780d403fb864ecead202b5ca5a1913607b",
+              "file_sha256": "162a82a8080ca09059ca8ae0e87c960956eef130b25ebf1c5a44809d0a6ce014",
+              "one_worker": false,
+              "process": "exec.2899368",
+              "role": "cc"
+            },
+            {
+              "crate": "api",
+              "exec_record_sha256": "78029ce61cf7a81471abc5cdd7e43f6fbd3aa6702d74a7bd3eede0b07b686834",
+              "file_sha256": "ec3bce749d661044add27ac3f278544920eb92d1d7d721261dd47dcc45f6c107",
+              "one_worker": true,
+              "process": "exec.2899369",
+              "role": "collect2"
+            },
+            {
+              "crate": "api",
+              "exec_record_sha256": "8343e7949027ac352e34e30cc1923ed70e66d152f8dac4c272c608c9aa34aa36",
+              "file_sha256": "6d76afc431503ff01c798f90ed83ebb6f5b6cd6cf5c8e027b19067fb10166780",
+              "one_worker": true,
+              "process": "exec.2899370",
+              "role": "Wild"
+            }
+          ],
+          "rc": 0,
+          "resolved_compatibility_archives": [
+            "/usr/lib/gcc/x86_64-linux-gnu/13/../../../../lib/x86_64-linux-gnu/librt.a",
+            "/usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu/librt.a",
+            "/usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu/libutil.a"
+          ],
+          "rustcs": [
+            "api",
+            "leaf"
+          ],
+          "stderr_digest": "27702a35ad285119bcd5084b0da48cf3075b31e71f9f415937878c23b5db1e24",
+          "tests": "0 tests, 0 benchmarks\n",
+          "unresolved_input_errors": [],
+          "wild": [
+            "api-d85fd6b3c1ff5f15"
+          ]
+        },
+        "removed-earlier-member": {
+          "cargo_messages_digest": "e878b01e46cc2fba528f08290c2ca44fe2f61d5a5bd853470ee75a0afc22d2d2",
+          "elf": "c61f735cdc27ab84f207dadadddcb1655bfbada8a74cf8862afbbe9797a2afac",
+          "fixed": [],
+          "full": [
+            "full"
+          ],
+          "includes_nested_directory": false,
+          "includes_sdk_directory": true,
+          "marker": [],
+          "native_certificate": {
+            "elf": "affcaee02b5c48d4272091496428c8b253322c1aca00e8e46a8dcbca6eef9e60",
+            "fixed_worker": false,
+            "input_digest": "55b08bf39e3cf17f87086e242779e5e26554d9c95dd31aab382c7ec3feaf60db",
+            "source": "879d4c0c2824e512d8b8531a9b70df5981cb1ef5815cda98933a930c9f1a9649"
+          },
+          "physical": [
+            {
+              "crate": "leaf",
+              "exec_record_sha256": "e64036c8297208b8ea6050efa66edc315250d87a4294b4e8b3cb248ead8ab668",
+              "file_sha256": "cb96789cdf1e405dc85bb2228319047dc1eab8a361666fddf681c8e469c46452",
+              "one_worker": false,
+              "process": "exec.2899488",
+              "role": "rustc"
+            },
+            {
+              "crate": "api",
+              "exec_record_sha256": "0562e872878cf430f16c6e75369fb4542ea4c4c0255d4d1b44773f197575cc07",
+              "file_sha256": "8e7b9cb16a194a5f3e33256b1630d76d54c80087e993b9bf7ee3d31c41acd6c5",
+              "one_worker": false,
+              "process": "exec.2899506",
+              "role": "rustc"
+            },
+            {
+              "crate": "api",
+              "exec_record_sha256": "776b75af56e78388f8ce8b3967cbe033335e2a80e355064ca66f0c0e65c59031",
+              "file_sha256": "3be4789818035ed380874b56f9711580493fa6c14e96351d3f87e9c1f38be7ed",
+              "one_worker": false,
+              "process": "exec.2899524",
+              "role": "cc"
+            },
+            {
+              "crate": "api",
+              "exec_record_sha256": "26942230ce04e20a181643bd0fc2a8a55b17790fcfac5be831754f3c182c11ce",
+              "file_sha256": "adf71c2c673c8974b5abd16635673cbb477f52201b27eec1ea397fcd7e689bc2",
+              "one_worker": false,
+              "process": "exec.2899525",
+              "role": "collect2"
+            },
+            {
+              "crate": "api",
+              "exec_record_sha256": "62d480748abad90ce556234853c15facd171cdb43a7291b4e32c2d440f1783c0",
+              "file_sha256": "27705ae11828470f9e801717483457bfdcdf4efd61efa5f8334d1b374be4d6b2",
+              "one_worker": false,
+              "process": "exec.2899526",
+              "role": "Wild"
+            }
+          ],
+          "rc": 0,
+          "resolved_compatibility_archives": [
+            "/usr/lib/gcc/x86_64-linux-gnu/13/../../../../lib/x86_64-linux-gnu/librt.a",
+            "/usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu/librt.a",
+            "/usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu/libutil.a"
+          ],
+          "rustcs": [
+            "api",
+            "leaf"
+          ],
+          "stderr_digest": "c7b3bb65e7cfb26bd1755ed2ee636a69f08d8a14aa36a8f1d186b7fd696f35a0",
+          "tests": "0 tests, 0 benchmarks\n",
+          "unresolved_input_errors": [],
+          "wild": [
+            "api-d85fd6b3c1ff5f15"
+          ]
+        }
+      },
+      "rust": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+      "system_script_sha": "0acf9bd0b19f5cf45ace80750633b077d94a14dd0c69c7bf159446328535dd69",
+      "wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5"
+    },
+    "a9c": {
+      "added_object_sha": "ee59b9dea7188bd45e0f34693bca4a80f52680f4ac97bdb2a47ecc27c973985a",
+      "arm": "a9c",
+      "cargo": "5227d7a8222366077a451f8d08d6e267108e16708db0326275fce212a180cf76",
+      "ordinary_fallback_sha": "f0a17a43c74d2fe5474fa2fd29c8f14799e777d7d75a2cc4d11c20a6e7b161c5",
+      "phases": {
+        "cold": {
+          "cargo_messages_digest": "0adab8ac3f915677ec8cb9b77b6cb8202662c3d6328e6dd456892c2b87349bdb",
+          "elf": "c61f735cdc27ab84f207dadadddcb1655bfbada8a74cf8862afbbe9797a2afac",
+          "fixed": [],
+          "full": [
+            "full"
+          ],
+          "includes_nested_directory": false,
+          "includes_sdk_directory": true,
+          "marker": [],
+          "native_certificate": {
+            "elf": "affcaee02b5c48d4272091496428c8b253322c1aca00e8e46a8dcbca6eef9e60",
+            "fixed_worker": false,
+            "input_digest": "f4ab1353dfc9b171083b625c6a8b51722ed0670408435a4c6422e846dcdc2199",
+            "source": "394542397399b65d4759695e40c2d48e1b214855ee2c813c0b790825e48d835c"
+          },
+          "physical": [
+            {
+              "crate": "build_script_build",
+              "exec_record_sha256": "b523855c7680b269d5ce00eba6efa92d51e7ce642b4ce04efac3c07a8cf50f86",
+              "file_sha256": "53d3b4ed76d1a5c32c65c073a1cf346356c8772727bfde23660a045e13edddaa",
+              "one_worker": false,
+              "process": "exec.2899579",
+              "role": "rustc"
+            },
+            {
+              "crate": "kit",
+              "exec_record_sha256": "71bc86d0ed661b2d9227817b641d1abe35cdda66d57f40c1d4822c9ec58d81b5",
+              "file_sha256": "6df4efbf7d3aa244edf0c1702792d0253f2bc225af04d3ca206e1344836f79f4",
+              "one_worker": false,
+              "process": "exec.2899641",
+              "role": "rustc"
+            },
+            {
+              "crate": "leaf",
+              "exec_record_sha256": "72233723846bf4453463a61b7f64724c3356fc769dd8d549d9c374b4da005e57",
+              "file_sha256": "e0b95e58fb70d5ed5726634ed83a37bfd35238b502f3251487b7db3217b23188",
+              "one_worker": false,
+              "process": "exec.2899661",
+              "role": "rustc"
+            },
+            {
+              "crate": "mark",
+              "exec_record_sha256": "065f177db75eeb2f9e7be4df09719b272e45dad5d5854ba6dbd11d7af1b1aba4",
+              "file_sha256": "d4afc98a3c8929a460bb06bd2191b354738df2c8ac51dc874cabc3c49d2a0b43",
+              "one_worker": false,
+              "process": "exec.2899676",
+              "role": "rustc"
+            },
+            {
+              "crate": "api",
+              "exec_record_sha256": "2d1c0152e59174a5a9d1c5471403403910137117b1fd071523dfdcb2832f08d3",
+              "file_sha256": "9265e0107bddfeb48e8ad310e0b06e8808219aba3a8701b4a33f72445390f54b",
+              "one_worker": false,
+              "process": "exec.2899724",
+              "role": "rustc"
+            },
+            {
+              "crate": "api",
+              "exec_record_sha256": "7740154fa112e6b1f058cdd1a65bf46e3912f6e5712135cc5fcbaabac67ce6a5",
+              "file_sha256": "09c1871a1a233227eaae573bba46ed12fb656d45319b3bcbe7f134f72756c272",
+              "one_worker": false,
+              "process": "exec.2899742",
+              "role": "cc"
+            },
+            {
+              "crate": "api",
+              "exec_record_sha256": "381ea29ced28d010a9ea58e21db59543cba6bee3f27751807e559cc17ba7e6ca",
+              "file_sha256": "fea1d763e9e52c1a5d4831473a83d098d28545f9be1d3ab8e72a2281087010af",
+              "one_worker": false,
+              "process": "exec.2899744",
+              "role": "collect2"
+            },
+            {
+              "crate": "api",
+              "exec_record_sha256": "ec501182981be6dc63dccd19e0297c413a82045835385959850cfb86cf5b0091",
+              "file_sha256": "813c8e54bf50ff1a1f549a6ea9e15cfe2c472fb03357ec6427be8581bbc77ca1",
+              "one_worker": false,
+              "process": "exec.2899745",
+              "role": "Wild"
+            }
+          ],
+          "rc": 0,
+          "resolved_compatibility_archives": [
+            "/usr/lib/gcc/x86_64-linux-gnu/13/../../../../lib/x86_64-linux-gnu/librt.a",
+            "/usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu/librt.a",
+            "/usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu/libutil.a"
+          ],
+          "rustcs": [
+            "api",
+            "mark",
+            "leaf",
+            "kit",
+            "build_script_build"
+          ],
+          "stderr_digest": "a17de1fa7f8436991a223ff4ac4dba3e516130abc44c46d665919df5f09157a6",
+          "tests": "0 tests, 0 benchmarks\n",
+          "unresolved_input_errors": [],
+          "wild": [
+            "api-d85fd6b3c1ff5f15",
+            "libmark-1c2e766d0626af38.so",
+            "libkit.so",
+            "build_script_build"
+          ]
+        },
+        "earlier-member-now-exists": {
+          "cargo_messages_digest": "c92c67d3e7ab5ec5c8ecf96c4312e04cfa29dadf7efdd36d3a3cfbf81054f2d4",
+          "elf": "c61f735cdc27ab84f207dadadddcb1655bfbada8a74cf8862afbbe9797a2afac",
+          "fixed": [],
+          "full": [],
+          "includes_nested_directory": false,
+          "includes_sdk_directory": true,
+          "marker": [],
+          "native_certificate": {
+            "elf": "affcaee02b5c48d4272091496428c8b253322c1aca00e8e46a8dcbca6eef9e60",
+            "fixed_worker": true,
+            "input_digest": "a4be8fe17f9536ac36e4178cc77e7104e45b2c2320b976aab3e8bf27aed9a823",
+            "source": "394542397399b65d4759695e40c2d48e1b214855ee2c813c0b790825e48d835c"
+          },
+          "physical": [
+            {
+              "crate": "leaf",
+              "exec_record_sha256": "746990bea86af5cfdd549cdeaa6fedc7df092d2cddc95cc879dc9e9794188ba5",
+              "file_sha256": "da5f109d0ce992f348b47774a0e7c768ea37cad819526cfbd0ed2c4ef10acab7",
+              "one_worker": false,
+              "process": "exec.2899851",
+              "role": "rustc"
+            }
+          ],
+          "rc": 0,
+          "resolved_compatibility_archives": [
+            "/usr/lib/gcc/x86_64-linux-gnu/13/../../../../lib/x86_64-linux-gnu/librt.a",
+            "/usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu/librt.a",
+            "/usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu/libutil.a"
+          ],
+          "rustcs": [
+            "leaf"
+          ],
+          "stderr_digest": "cbfe727d6f9ddf05d0043ec2dd5dc959224e91b2a317149e94d324127e54306b",
+          "tests": "0 tests, 0 benchmarks\n",
+          "unresolved_input_errors": [],
+          "wild": []
+        },
+        "earlier-member-now-invalid": {
+          "cargo_messages_digest": "c92c67d3e7ab5ec5c8ecf96c4312e04cfa29dadf7efdd36d3a3cfbf81054f2d4",
+          "elf": "c61f735cdc27ab84f207dadadddcb1655bfbada8a74cf8862afbbe9797a2afac",
+          "fixed": [],
+          "full": [],
+          "includes_nested_directory": false,
+          "includes_sdk_directory": true,
+          "marker": [],
+          "native_certificate": {
+            "elf": "affcaee02b5c48d4272091496428c8b253322c1aca00e8e46a8dcbca6eef9e60",
+            "fixed_worker": true,
+            "input_digest": "a4be8fe17f9536ac36e4178cc77e7104e45b2c2320b976aab3e8bf27aed9a823",
+            "source": "394542397399b65d4759695e40c2d48e1b214855ee2c813c0b790825e48d835c"
+          },
+          "physical": [
+            {
+              "crate": "leaf",
+              "exec_record_sha256": "c376a7d02c68ea63302696dd5ca18408f4d4089a01a3add1f99c27f0d6a2f324",
+              "file_sha256": "48d849e4564e935372a1f13b10544bf41ba31140b9f7bd1acec695d4daa6bf0d",
+              "one_worker": false,
+              "process": "exec.2899881",
+              "role": "rustc"
+            }
+          ],
+          "rc": 0,
+          "resolved_compatibility_archives": [
+            "/usr/lib/gcc/x86_64-linux-gnu/13/../../../../lib/x86_64-linux-gnu/librt.a",
+            "/usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu/librt.a",
+            "/usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu/libutil.a"
+          ],
+          "rustcs": [
+            "leaf"
+          ],
+          "stderr_digest": "e1763b3d96fc071008eba24b5421a059d5a595a7d9348054e918961ed0a8a5d1",
+          "tests": "0 tests, 0 benchmarks\n",
+          "unresolved_input_errors": [],
+          "wild": []
+        },
+        "first-changed": {
+          "cargo_messages_digest": "c92c67d3e7ab5ec5c8ecf96c4312e04cfa29dadf7efdd36d3a3cfbf81054f2d4",
+          "elf": "c61f735cdc27ab84f207dadadddcb1655bfbada8a74cf8862afbbe9797a2afac",
+          "fixed": [
+            "api-d85fd6b3c1ff5f15"
+          ],
+          "full": [
+            "full"
+          ],
+          "includes_nested_directory": false,
+          "includes_sdk_directory": true,
+          "marker": [],
+          "native_certificate": {
+            "elf": "affcaee02b5c48d4272091496428c8b253322c1aca00e8e46a8dcbca6eef9e60",
+            "fixed_worker": true,
+            "input_digest": "a4be8fe17f9536ac36e4178cc77e7104e45b2c2320b976aab3e8bf27aed9a823",
+            "source": "394542397399b65d4759695e40c2d48e1b214855ee2c813c0b790825e48d835c"
+          },
+          "physical": [
+            {
+              "crate": "leaf",
+              "exec_record_sha256": "d490f4ef444eb29c6d369db3e05e47dab76d55c78ba4849e9bd27cfe2d9b7c8d",
+              "file_sha256": "ba6527afc9b0c9eeb5f92e324f9bc04da64aafdfb2f3e7deb1e9c008b83cee83",
+              "one_worker": false,
+              "process": "exec.2899763",
+              "role": "rustc"
+            },
+            {
+              "crate": "api",
+              "exec_record_sha256": "c9f83f584793c0fbd9f1796e11c7f9a7048a8d0f95691a255fa24f4462c43602",
+              "file_sha256": "c1086bb59c6b7490a1644e2464e90dec4bc967e5052307831c24ff93bc6db186",
+              "one_worker": false,
+              "process": "exec.2899783",
+              "role": "rustc"
+            },
+            {
+              "crate": "api",
+              "exec_record_sha256": "7de8e96cb86efb551301f3ca0f67da6dc1a8e1cf977766c3f14f5abe1f494184",
+              "file_sha256": "1b9e2f30de453ab0328f27c90215341ec6af1046bd0c512d16e6ced1b5b167f6",
+              "one_worker": false,
+              "process": "exec.2899801",
+              "role": "cc"
+            },
+            {
+              "crate": "api",
+              "exec_record_sha256": "a6fe1d71edde6766aaac1beeb37439471f4888285acb15b8c924c56cf3668059",
+              "file_sha256": "834f036e3719e8f46dc4539f14449380b8c98f863f899e644b2269f8e30659b3",
+              "one_worker": true,
+              "process": "exec.2899802",
+              "role": "collect2"
+            },
+            {
+              "crate": "api",
+              "exec_record_sha256": "01e9367caa0b60afd999eb0ad23c79307f7a15059da4039ed3e01b20bde41eda",
+              "file_sha256": "d2ec59340d7a891a66b9669ded90574205d6adcc77bc610f2fa31d188d7a4589",
+              "one_worker": true,
+              "process": "exec.2899803",
+              "role": "Wild"
+            }
+          ],
+          "rc": 0,
+          "resolved_compatibility_archives": [
+            "/usr/lib/gcc/x86_64-linux-gnu/13/../../../../lib/x86_64-linux-gnu/librt.a",
+            "/usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu/librt.a",
+            "/usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu/libutil.a"
+          ],
+          "rustcs": [
+            "api",
+            "leaf"
+          ],
+          "stderr_digest": "d1d69c50ed392c2aae067b6c77a348593ac263520a70d0d81c25e0c5d8229021",
+          "tests": "0 tests, 0 benchmarks\n",
+          "unresolved_input_errors": [],
+          "wild": [
+            "api-d85fd6b3c1ff5f15"
+          ]
+        },
+        "ordinary-or-reuse": {
+          "cargo_messages_digest": "c92c67d3e7ab5ec5c8ecf96c4312e04cfa29dadf7efdd36d3a3cfbf81054f2d4",
+          "elf": "c61f735cdc27ab84f207dadadddcb1655bfbada8a74cf8862afbbe9797a2afac",
+          "fixed": [],
+          "full": [],
+          "includes_nested_directory": false,
+          "includes_sdk_directory": true,
+          "marker": [],
+          "native_certificate": {
+            "elf": "affcaee02b5c48d4272091496428c8b253322c1aca00e8e46a8dcbca6eef9e60",
+            "fixed_worker": true,
+            "input_digest": "a4be8fe17f9536ac36e4178cc77e7104e45b2c2320b976aab3e8bf27aed9a823",
+            "source": "394542397399b65d4759695e40c2d48e1b214855ee2c813c0b790825e48d835c"
+          },
+          "physical": [
+            {
+              "crate": "leaf",
+              "exec_record_sha256": "ed1108f7871534c6725b109d39ae1fe5adec03c7c63291a38e45d580d8942462",
+              "file_sha256": "9d1c5fae03ac982d8b4eccd3b360e70cede5a961f50a6f90fe497cfa9d03036f",
+              "one_worker": false,
+              "process": "exec.2899821",
+              "role": "rustc"
+            }
+          ],
+          "rc": 0,
+          "resolved_compatibility_archives": [
+            "/usr/lib/gcc/x86_64-linux-gnu/13/../../../../lib/x86_64-linux-gnu/librt.a",
+            "/usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu/librt.a",
+            "/usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu/libutil.a"
+          ],
+          "rustcs": [
+            "leaf"
+          ],
+          "stderr_digest": "12dbe0ed74957c72742b3d4512137e5fa04b13135c65c34940dcb7d463918e56",
+          "tests": "0 tests, 0 benchmarks\n",
+          "unresolved_input_errors": [],
+          "wild": []
+        },
+        "removed-earlier-member": {
+          "cargo_messages_digest": "c92c67d3e7ab5ec5c8ecf96c4312e04cfa29dadf7efdd36d3a3cfbf81054f2d4",
+          "elf": "c61f735cdc27ab84f207dadadddcb1655bfbada8a74cf8862afbbe9797a2afac",
+          "fixed": [],
+          "full": [],
+          "includes_nested_directory": false,
+          "includes_sdk_directory": true,
+          "marker": [],
+          "native_certificate": {
+            "elf": "affcaee02b5c48d4272091496428c8b253322c1aca00e8e46a8dcbca6eef9e60",
+            "fixed_worker": true,
+            "input_digest": "a4be8fe17f9536ac36e4178cc77e7104e45b2c2320b976aab3e8bf27aed9a823",
+            "source": "394542397399b65d4759695e40c2d48e1b214855ee2c813c0b790825e48d835c"
+          },
+          "physical": [
+            {
+              "crate": "leaf",
+              "exec_record_sha256": "d19ff0ffcb22b460f647f6b4999be937c9ebb70b7ee46624aad4894e8ca59815",
+              "file_sha256": "0e3955a6e6caf90c4bb171f24e3bfe5b0a98c811fe3a92e0a8e7e62482cf4999",
+              "one_worker": false,
+              "process": "exec.2899912",
+              "role": "rustc"
+            }
+          ],
+          "rc": 0,
+          "resolved_compatibility_archives": [
+            "/usr/lib/gcc/x86_64-linux-gnu/13/../../../../lib/x86_64-linux-gnu/librt.a",
+            "/usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu/librt.a",
+            "/usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu/libutil.a"
+          ],
+          "rustcs": [
+            "leaf"
+          ],
+          "stderr_digest": "2541c21ab6d7687679705fb49d14741d48e7f324a134c8722b43ff33cf5639f9",
+          "tests": "0 tests, 0 benchmarks\n",
+          "unresolved_input_errors": [],
+          "wild": []
+        }
+      },
+      "rust": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+      "system_script_sha": "0acf9bd0b19f5cf45ace80750633b077d94a14dd0c69c7bf159446328535dd69",
+      "wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5"
+    },
+    "baseline": {
+      "added_object_sha": "ee59b9dea7188bd45e0f34693bca4a80f52680f4ac97bdb2a47ecc27c973985a",
+      "arm": "baseline",
+      "cargo": "dd5cab154b8dcd09ccc2753160d314cade80979b2d055ee66aa9e2217e05e7e1",
+      "ordinary_fallback_sha": "f0a17a43c74d2fe5474fa2fd29c8f14799e777d7d75a2cc4d11c20a6e7b161c5",
+      "phases": {
+        "cold": {
+          "cargo_messages_digest": "bea2815064883e1b1d984a820625d02c91159eb13b848f7ae08fada75bfdf5c9",
+          "elf": "c61f735cdc27ab84f207dadadddcb1655bfbada8a74cf8862afbbe9797a2afac",
+          "fixed": [],
+          "full": [
+            "full"
+          ],
+          "marker": [],
+          "physical": [
+            {
+              "crate": "build_script_build",
+              "exec_record_sha256": "0b6e8b0b5bc1142a1f33938072885a123b6b961fce1fe8e9e113c0844a58e496",
+              "file_sha256": "e5b53a7f5a22cf19d73b5e81dc978ea960ea95767559827fe063439358f3628d",
+              "one_worker": false,
+              "process": "exec.2898642",
+              "role": "rustc"
+            },
+            {
+              "crate": "kit",
+              "exec_record_sha256": "fd0a55081d28f333121be2bda208f89841e860126dea90b2e170775970d9fa49",
+              "file_sha256": "9cb8ae68dce2a18c613f290f866df113b9d6370686604107b715590c174c8a77",
+              "one_worker": false,
+              "process": "exec.2898706",
+              "role": "rustc"
+            },
+            {
+              "crate": "leaf",
+              "exec_record_sha256": "4ff9dbfc3bfe3d7c638c0539548753557237b7d7d25869ee8f04bcdbb5356f77",
+              "file_sha256": "3e3e413aeb25eb60067789a0387e971e46792a0d84e158594f5beca8a89dd944",
+              "one_worker": false,
+              "process": "exec.2898731",
+              "role": "rustc"
+            },
+            {
+              "crate": "mark",
+              "exec_record_sha256": "e0ba880f9bba9b838ed9c98171bfc7949ad331a2b73f5e3270a736754a193e84",
+              "file_sha256": "b0e0a3b7b16e68369da2f8effea11be232d2e494129c25156b10d49cbb3559ef",
+              "one_worker": false,
+              "process": "exec.2898746",
+              "role": "rustc"
+            },
+            {
+              "crate": "api",
+              "exec_record_sha256": "c41e99ddd01ac175b9d1c12cc2a0f65257b668720edf2d89c65933e35b0b04ae",
+              "file_sha256": "85da1caf0509056f27a62a6da75619e8ceb833d21c7fc3a1c008733700741da8",
+              "one_worker": false,
+              "process": "exec.2898791",
+              "role": "rustc"
+            },
+            {
+              "crate": "api",
+              "exec_record_sha256": "86d6dfa4017221ca8d65aeee4705b50e7f3abb873f9443b68892060278054e82",
+              "file_sha256": "cca0ef9832272eaad011ce98dd91bf3e4e9b8eab97dc26c14b96b7da746dabbc",
+              "one_worker": false,
+              "process": "exec.2898809",
+              "role": "cc"
+            },
+            {
+              "crate": "api",
+              "exec_record_sha256": "d753d5606e7dd456d14e38998d99712ecda0d87c0a8ad69bbacbd0280fc6a901",
+              "file_sha256": "5369bec9fe14f6e08883ec8e60ac76531e1a92186ff82e0e876d17f8a7b1a91b",
+              "one_worker": false,
+              "process": "exec.2898810",
+              "role": "collect2"
+            },
+            {
+              "crate": "api",
+              "exec_record_sha256": "6249eb24a8f4bb56a32bce531450c1af0afe39788ca088b00336dd67d7c5a9bb",
+              "file_sha256": "9af89212085658a0d7a6c5b9365bab4dcf3250e7e79b70d16472688b0d21bed0",
+              "one_worker": false,
+              "process": "exec.2898811",
+              "role": "Wild"
+            }
+          ],
+          "rc": 0,
+          "rustcs": [
+            "api",
+            "mark",
+            "leaf",
+            "kit",
+            "build_script_build"
+          ],
+          "stderr_digest": "b2d93aa88737c42ba334e3935e10da4eaf9f28e8159d262469374999ff0725fc",
+          "tests": "0 tests, 0 benchmarks\n",
+          "unresolved_input_errors": [],
+          "wild": [
+            "api-d85fd6b3c1ff5f15",
+            "libmark-1c2e766d0626af38.so",
+            "libkit.so",
+            "build_script_build"
+          ]
+        },
+        "earlier-member-now-exists": {
+          "cargo_messages_digest": "88a01e66d8ff2a4f89475c0895b6770b15b77999fe10992e44fe8b2ad152d615",
+          "elf": "1b89d1eb74af3b9d5e356ad8966c02e45d12f90838f26f735e2575e66122f8e2",
+          "fixed": [],
+          "full": [
+            "full"
+          ],
+          "marker": [
+            "0000000000000097"
+          ],
+          "physical": [
+            {
+              "crate": "leaf",
+              "exec_record_sha256": "5a0b0a36384f9136cafcbb87ae3b2fd6ef8f96f2d9e680b11d8f9405ac1a999c",
+              "file_sha256": "bdb85a78ae7427afe45651450c2fecddb49d403abba97ff79432ae77335af681",
+              "one_worker": false,
+              "process": "exec.2898921",
+              "role": "rustc"
+            },
+            {
+              "crate": "api",
+              "exec_record_sha256": "f66aaf57e1400dcc72372083017fb15d5584c1b32ddd4944f1b9f7d6036a12c7",
+              "file_sha256": "a66c2aa5670c18a1adf94acd832be689592c0c52fcde5582a4144e62257ada93",
+              "one_worker": false,
+              "process": "exec.2898937",
+              "role": "rustc"
+            },
+            {
+              "crate": "api",
+              "exec_record_sha256": "03ed5cd0fb9691e8e31660f9fa58233ef5c5298c5dc09992560dd8b717faebc5",
+              "file_sha256": "03afbee3240075c71d3e99699b35b29aace5a5806fc073b9b3440f6c2d6e273b",
+              "one_worker": false,
+              "process": "exec.2898948",
+              "role": "cc"
+            },
+            {
+              "crate": "api",
+              "exec_record_sha256": "3f5e0f4be8aacb9ce9fb3e77cc3a4306e92f34eeaa0198cc3688754dba269255",
+              "file_sha256": "6366d9bd202d8068df4f2926df7d603e48640ef98023ec19764dc8f2d09162bc",
+              "one_worker": false,
+              "process": "exec.2898949",
+              "role": "collect2"
+            },
+            {
+              "crate": "api",
+              "exec_record_sha256": "b847162d5e14ad78b658d628cea32f4da4deb1e2b11198f971a115705b1f3a42",
+              "file_sha256": "2398af5b7e23eedc208b16a26a00cb0e2ac9c064729cb6e1fd1f2d1d38b6a926",
+              "one_worker": false,
+              "process": "exec.2898950",
+              "role": "Wild"
+            }
+          ],
+          "rc": 0,
+          "rustcs": [
+            "api",
+            "leaf"
+          ],
+          "stderr_digest": "61b675a0bba7c9045ace77e3a1aa615b2d72c81f8431bd7641feb9e36319027e",
+          "tests": "0 tests, 0 benchmarks\n",
+          "unresolved_input_errors": [],
+          "wild": [
+            "api-d85fd6b3c1ff5f15"
+          ]
+        },
+        "earlier-member-now-invalid": {
+          "cargo_messages_digest": "51ee77163022867ef40523d4b87868a681626f3d4f02005dc0644eb0d47a46af",
+          "elf": null,
+          "fixed": [],
+          "full": [
+            "full"
+          ],
+          "marker": null,
+          "physical": [
+            {
+              "crate": "leaf",
+              "exec_record_sha256": "80fd6ac4b76e3ad0c47820d60e080c0b42bfa107bade3b6007d45424dc026037",
+              "file_sha256": "1b652a06fe8fd653ae843da2ba03fdc26c772539c132cc958878f7c2be1824e9",
+              "one_worker": false,
+              "process": "exec.2898969",
+              "role": "rustc"
+            },
+            {
+              "crate": "api",
+              "exec_record_sha256": "cef40fa306fc27293f29c46496dae24540ee0b1af6efbfa3f0dc957e4f9f8631",
+              "file_sha256": "f2969227fc2d82cfa33e99f38fbe32d6457e983af33d163a94600c08e0429e1f",
+              "one_worker": false,
+              "process": "exec.2898984",
+              "role": "rustc"
+            },
+            {
+              "crate": "api",
+              "exec_record_sha256": "536b894221a3be76eae4d6f939ca726a1ae3c7482973b5195cf487c5568d8e5f",
+              "file_sha256": "41c142663da5382b3bccdc9bdc2427c9aee7d5ac025871a317f6ef716ad1599b",
+              "one_worker": false,
+              "process": "exec.2898995",
+              "role": "cc"
+            },
+            {
+              "crate": "api",
+              "exec_record_sha256": "443abb70d9acf1cd36428d7cca72042a9f093bd609fc8738e8a39c324a2f8071",
+              "file_sha256": "f7a585adf230ffb00d7a711684b5f4fcdef5530e71087e58decd0529642d3fb9",
+              "one_worker": false,
+              "process": "exec.2898996",
+              "role": "collect2"
+            },
+            {
+              "crate": "api",
+              "exec_record_sha256": "d4d4d7d8a7f8f23e29f42d10e412b9fdf2b699820e250567b408b0b682473a83",
+              "file_sha256": "12e76eb3e225f2d73c5013462707e9f5b3230b695b51e5da47488e2ac0ae4dcd",
+              "one_worker": false,
+              "process": "exec.2898997",
+              "role": "Wild"
+            }
+          ],
+          "rc": 101,
+          "rustcs": [
+            "api",
+            "leaf"
+          ],
+          "stderr_digest": "54b7f169e99053d756685d6cab16c234ffe6a84e9aabbe5b05b86f8b73ee4c38",
+          "tests": null,
+          "unresolved_input_errors": [
+            {
+              "evidence": [
+                "Failed to open input file `/__ohm_nested_input_no_such_file__.o`"
+              ],
+              "level": "error",
+              "message": "linking with `cc` failed: exit status: 1"
+            }
+          ],
+          "wild": [
+            "api-d85fd6b3c1ff5f15"
+          ]
+        },
+        "first-changed": {
+          "cargo_messages_digest": "3ee997170ce563c144ce760dbea6104e3c72c99829e3c9bb1adfccadc6663fc9",
+          "elf": "c61f735cdc27ab84f207dadadddcb1655bfbada8a74cf8862afbbe9797a2afac",
+          "fixed": [],
+          "full": [
+            "full"
+          ],
+          "marker": [],
+          "physical": [
+            {
+              "crate": "leaf",
+              "exec_record_sha256": "f91be97bd3c079a600581b0bdf7ddca8026a014df4dde3fa99d49b8556ae798e",
+              "file_sha256": "49f3b6eb062fcb3bf18e0aa5d94536b38a5201521dfc48fed996fc63ff0d023b",
+              "one_worker": false,
+              "process": "exec.2898829",
+              "role": "rustc"
+            },
+            {
+              "crate": "api",
+              "exec_record_sha256": "7d2488be3cade1635428e3cd0d2160e0e309f374b7b8ddd1a094df92e16b4a97",
+              "file_sha256": "383ba035f6d791ac9f30850b74b5bc38095fa94bbdb524297626bb7444dc74d8",
+              "one_worker": false,
+              "process": "exec.2898844",
+              "role": "rustc"
+            },
+            {
+              "crate": "api",
+              "exec_record_sha256": "b0d2c119cfc058908f10b3614d84ca6e340c1335633966ec0c70188e8b5ee65b",
+              "file_sha256": "0e695acb6f953ceb6c36547c129c3f0da4b914e0896440452dfd560a772c56f1",
+              "one_worker": false,
+              "process": "exec.2898855",
+              "role": "cc"
+            },
+            {
+              "crate": "api",
+              "exec_record_sha256": "8eca98a5266ba5569e37c1edb857ad7ac9c798351334559e9ed5b7fa821cde94",
+              "file_sha256": "0a744e7dc021603c7202f8fda55c4ed1e7436c9affcf09ac753b44416450fdc2",
+              "one_worker": false,
+              "process": "exec.2898856",
+              "role": "collect2"
+            },
+            {
+              "crate": "api",
+              "exec_record_sha256": "901be5949b8c3b3d7771960ae5d463d80151d5250c9585f10c8c42fcf1a727d4",
+              "file_sha256": "5f7019a0ab3456db4e3d7f87631934a676a44d8605b91b902ecc77415039ffb8",
+              "one_worker": false,
+              "process": "exec.2898857",
+              "role": "Wild"
+            }
+          ],
+          "rc": 0,
+          "rustcs": [
+            "api",
+            "leaf"
+          ],
+          "stderr_digest": "5145fc4d28f2a575cbad9b35f9b3614523163450df4529304def05ce478c7f9a",
+          "tests": "0 tests, 0 benchmarks\n",
+          "unresolved_input_errors": [],
+          "wild": [
+            "api-d85fd6b3c1ff5f15"
+          ]
+        },
+        "ordinary-or-reuse": {
+          "cargo_messages_digest": "88a01e66d8ff2a4f89475c0895b6770b15b77999fe10992e44fe8b2ad152d615",
+          "elf": "c61f735cdc27ab84f207dadadddcb1655bfbada8a74cf8862afbbe9797a2afac",
+          "fixed": [],
+          "full": [
+            "full"
+          ],
+          "marker": [],
+          "physical": [
+            {
+              "crate": "leaf",
+              "exec_record_sha256": "fb3e076b57163559c3131ea4236077bacd3e209871fbbb4b43566cfcf58eb100",
+              "file_sha256": "bcd417eda2f3d8c8001b728ca977e402b594b7bc3fd4d146b14f375fd40bac83",
+              "one_worker": false,
+              "process": "exec.2898875",
+              "role": "rustc"
+            },
+            {
+              "crate": "api",
+              "exec_record_sha256": "f90796a851eb8b2683e496d91e7f476e1c89f6a5a6dbdd1b4f70ca36c1e3e562",
+              "file_sha256": "bb0f2a132113ad949f8722d4ccae9a0bb8432300ddb9eb3d0fcce44d76bc841c",
+              "one_worker": false,
+              "process": "exec.2898890",
+              "role": "rustc"
+            },
+            {
+              "crate": "api",
+              "exec_record_sha256": "32e8f55cd35aa941ff7f5b6e0bed00b9a5e4e996975502b0a1cf0631ffef6c6c",
+              "file_sha256": "9ea31b259ca0e754b15dff01f40aa8669554d9d372ec91ede4af7de4341bb08a",
+              "one_worker": false,
+              "process": "exec.2898901",
+              "role": "cc"
+            },
+            {
+              "crate": "api",
+              "exec_record_sha256": "76c177a74f788f4e89fa9f55b2614c125b61d07d8011e8aa105cbb38ae01396f",
+              "file_sha256": "952650d6a77a1d82aacdf272cd6d59588802159e437916036736f798e6919b69",
+              "one_worker": false,
+              "process": "exec.2898902",
+              "role": "collect2"
+            },
+            {
+              "crate": "api",
+              "exec_record_sha256": "71c68048e0ceb1a8e2b386d3a207c33751be7b9f43146827d078500e88123bf3",
+              "file_sha256": "49c58432b4c0f434df904a27f0cc1f7f16f5ede4c8f74f040b65bc00fa8992fc",
+              "one_worker": false,
+              "process": "exec.2898903",
+              "role": "Wild"
+            }
+          ],
+          "rc": 0,
+          "rustcs": [
+            "api",
+            "leaf"
+          ],
+          "stderr_digest": "415e8e736456bbff2047de77852999035399876ca0286bcf4400154c5e1d4013",
+          "tests": "0 tests, 0 benchmarks\n",
+          "unresolved_input_errors": [],
+          "wild": [
+            "api-d85fd6b3c1ff5f15"
+          ]
+        },
+        "removed-earlier-member": {
+          "cargo_messages_digest": "88a01e66d8ff2a4f89475c0895b6770b15b77999fe10992e44fe8b2ad152d615",
+          "elf": "c61f735cdc27ab84f207dadadddcb1655bfbada8a74cf8862afbbe9797a2afac",
+          "fixed": [],
+          "full": [
+            "full"
+          ],
+          "marker": [],
+          "physical": [
+            {
+              "crate": "leaf",
+              "exec_record_sha256": "8cacf86506ab1d6e25343d1f9aa31dc416f6fb2d78e8c7ed3ce4de84bede244e",
+              "file_sha256": "ff44bc85e08d44e0551ab9d7de46c776caca6ce36f0ba6e426d11d338a9bd492",
+              "one_worker": false,
+              "process": "exec.2899012",
+              "role": "rustc"
+            },
+            {
+              "crate": "api",
+              "exec_record_sha256": "2da20a253be6a234221a2a843a8268232be002bb4ac4a73132a43d856e4e0208",
+              "file_sha256": "dd01c6143f8371a8ca7d7c6ab8e12d73a1868d67e327ba9409ae945408e64b30",
+              "one_worker": false,
+              "process": "exec.2899027",
+              "role": "rustc"
+            },
+            {
+              "crate": "api",
+              "exec_record_sha256": "b5ab66efe946d5fb7fc075f41d1e2cb5f68eec28edd159212891bfb7909b88fd",
+              "file_sha256": "2060b03edcf7cb007714cd02b45faca5914ba9d6feb4880fbabd84b5a1b2dd67",
+              "one_worker": false,
+              "process": "exec.2899046",
+              "role": "cc"
+            },
+            {
+              "crate": "api",
+              "exec_record_sha256": "62ce90c2589ddcb74ea02d416e643ff8fb599d8f095dc824f43041890e388de6",
+              "file_sha256": "3a80e55d7ae1b432932e5f8ef24740f750c6fa1c93ef1e00807c8c6f03c5b762",
+              "one_worker": false,
+              "process": "exec.2899047",
+              "role": "collect2"
+            },
+            {
+              "crate": "api",
+              "exec_record_sha256": "62a62c609d385d9e3f5bac3cdebde2020a7a01eb2ece9f270a87358d4814297d",
+              "file_sha256": "56c351517f74d519b9be90be5d02ff78aa3605f95b608e353833479d2ba20994",
+              "one_worker": false,
+              "process": "exec.2899048",
+              "role": "Wild"
+            }
+          ],
+          "rc": 0,
+          "rustcs": [
+            "api",
+            "leaf"
+          ],
+          "stderr_digest": "a85dbd06de0af592ea3845746d806ce870b4977d896e93640d9811d3d8e10f30",
+          "tests": "0 tests, 0 benchmarks\n",
+          "unresolved_input_errors": [],
+          "wild": [
+            "api-d85fd6b3c1ff5f15"
+          ]
+        }
+      },
+      "rust": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+      "system_script_sha": "0acf9bd0b19f5cf45ace80750633b077d94a14dd0c69c7bf159446328535dd69",
+      "wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5"
+    }
+  },
+  "base_fixture_sha256": "86850093592ae28f0430e2b44bb0c46a37964d5be1a9e8d8ccbbb3aac38c4198",
+  "fixture_sha256": "25916cfd2a50d645c46ed46c64c74a588265f883d6c57b26a57aa050b657c8d3"
+}
