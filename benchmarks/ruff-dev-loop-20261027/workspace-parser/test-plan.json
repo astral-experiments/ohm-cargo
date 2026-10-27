@@ -1,0 +1,79 @@
+{
+  "command": [
+    "taskset",
+    "-c",
+    "0-23",
+    "cargo",
+    "+ohm",
+    "test",
+    "--no-run",
+    "--locked",
+    "--offline"
+  ],
+  "edit_sha": "08bb20f14fde4db57dd12ec3de3855021ddf6284b4a1957b54f4d06fb3c8f9ff",
+  "exact_elf_oracles": "separate JSON gate before and after timings",
+  "mode": "test",
+  "orders": [
+    [
+      "candidate",
+      "parent"
+    ],
+    [
+      "parent",
+      "candidate"
+    ],
+    [
+      "candidate",
+      "parent"
+    ],
+    [
+      "candidate",
+      "parent"
+    ],
+    [
+      "parent",
+      "candidate"
+    ],
+    [
+      "parent",
+      "candidate"
+    ],
+    [
+      "parent",
+      "candidate"
+    ],
+    [
+      "candidate",
+      "parent"
+    ],
+    [
+      "parent",
+      "candidate"
+    ],
+    [
+      "candidate",
+      "parent"
+    ],
+    [
+      "parent",
+      "candidate"
+    ],
+    [
+      "candidate",
+      "parent"
+    ]
+  ],
+  "pin": "93526150df078af7dd8fc4226cdcc469539d2001",
+  "planned_pairs": 12,
+  "seed": 1102918,
+  "subjects": {
+    "cargo": {
+      "candidate": "13396fe1c6886f41155ac24f507210c7a5f655e5b3279a28f45bf3a5e6bcaf08",
+      "parent": "13396fe1c6886f41155ac24f507210c7a5f655e5b3279a28f45bf3a5e6bcaf08"
+    },
+    "driver": {
+      "candidate": "55e123a9e87f16a449d260ab65449eab743cd30ba356a7f10ffdd1fa6f8a2484",
+      "parent": "051b9d3f5861f984faa0f8c1d2ab9b5c28e483a05c728051de837291c83fd518"
+    }
+  }
+}
