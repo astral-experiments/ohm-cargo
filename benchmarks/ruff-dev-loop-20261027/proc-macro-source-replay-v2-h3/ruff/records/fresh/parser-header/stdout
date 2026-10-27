@@ -1,0 +1,119 @@
+Crate info:
+name ruff_python_parser-73e0badb2a828505
+private hash 1b4fd1f54b406e0949255df95d1206d4 stable_crate_id StableCrateId(6850405913612383189)
+public_hash 7ea2990c4811bcb01cfb69867e811a4f
+proc_macro false
+triple x86_64-unknown-linux-gnu
+edition 2024
+symbol_mangling_version V0
+required_panic_strategy None panic_in_drop_strategy Unwind
+has_global_allocator false has_alloc_error_handler false has_panic_handler false has_default_lib_allocator false
+compiler_builtins false needs_allocator false needs_panic_runtime false no_builtins false panic_runtime false profiler_runtime false
+=External Dependencies=
+1 std-150b24506f9fb8c9 hash 07979e33167a0145120283b9b6fdfb62 host_hash None kind Unconditional public
+2 core-af9b82d80b4c5cea hash 1cd4ebce3cab1750c73668cabddedb2c host_hash None kind Unconditional public
+3 alloc-ceaf650e740e6b21 hash 745e80684e794093baa0e91a77fa2b65 host_hash None kind Unconditional public
+4 compiler_builtins-2c8a5c6ff1eaecd1 hash 96498e921b3115387111de96294346ca host_hash None kind Unconditional private
+5 libc-52cdc9c541b3dea4 hash 6d3a73e370f49c17b5b4ef121cec9226 host_hash None kind Unconditional public
+6 rustc_std_workspace_core-e028bb23ebd6da1d hash b8602024ba80e938927e1540898287d9 host_hash None kind Unconditional public
+7 unwind-28cd8f9e486f9d47 hash 11a44173175eada55999b86b88df392a host_hash None kind Unconditional private
+8 miniz_oxide-fc49c1744f1ac992 hash edfa8180506cdcdefe0f34bd516a4a64 host_hash None kind Unconditional private
+9 adler2-061b410ce31495b0 hash 329bf6ecb9caebdaa48ffa533fe4a486 host_hash None kind Unconditional private
+10 hashbrown-69dd7c608e7eae5b hash 0a89a36605930483c5e22dfc7ced66ac host_hash None kind Unconditional public
+11 rustc_std_workspace_alloc-e826499affc09fd7 hash 6d9b7fe95907d97470a547110a79535a host_hash None kind Unconditional public
+12 std_detect-90b5259d92b4976a hash 45749203115afbca125d4f913624ec5b host_hash None kind Unconditional public
+13 rustc_demangle-d5626ad46d0989b2 hash f803b9d3772bbfcafcc470dd48422ab7 host_hash None kind Unconditional private
+14 cfg_if-0ddfb9c272d7e0b4 hash 2fe195f10fc8b0a502de7c0ff3d0aa8e host_hash None kind Unconditional public
+15 addr2line-aafa1109f88da3f8 hash 232275f878f1bef8d6c4b50dbde24b0e host_hash None kind Unconditional private
+16 gimli-08731c403f2b9d57 hash 4853b3559e5cc8aa596cb775b7c2eb31 host_hash None kind Unconditional private
+17 object-42fce7ad72bc2079 hash 1b76b18b9b0007e5d5eb832643fbe4b8 host_hash None kind Unconditional private
+18 memchr-0cf20948ba2d409c hash 015d120cef6da2980fd54e90320ccd86 host_hash None kind Unconditional public
+19 panic_unwind-13030d89678fa2ed hash 0355b954ef76bcbf446e8a9fcbb9615e host_hash None kind Conditional private
+20 ruff_python_ast-0dd7773cc4c245d4 hash 2aa31be47f56cbd2e4df0a451b3f5a00 host_hash None kind Unconditional public
+21 ruff_text_size-838d74980e36c862 hash fb2cea9196bf6de7545be3163e3fee35 host_hash None kind Unconditional public
+22 schemars-99a5004149f22149 hash f8b5e3941f9008e7ade48ec2f6c16655 host_hash None kind Unconditional public
+23 serde_json-17cdfeb8cf2681b9 hash b3bf8e067060f9544f119e08a29e44aa host_hash None kind Unconditional public
+24 serde_core-5673d89936f64dc4 hash 914c3fad1222d0224b30fa2ab6940eab host_hash None kind Unconditional public
+25 zmij-6e44901227df9f7d hash 2e6983b9be649bd349bdffc5b7f7f85f host_hash None kind Unconditional public
+26 itoa-7e3d7333b2e9eb03 hash 65c100b615a839bec43ba22b9433fe71 host_hash None kind Unconditional public
+27 memchr-f5face5a8d6e8192 hash d0ad9a980a6e645a1066b10151cc5a95 host_hash None kind Unconditional public
+28 schemars_derive-c359fdf7cc45bfef hash ef962cdab0935b28e1533ac65bff0a9d host_hash None kind MacrosOnly public
+29 ref_cast-8f7269a68b5c19a1 hash 0f659abad58d98a6f2bb7e9bb3c96970 host_hash None kind Unconditional public
+30 ref_cast_impl-ba94cf92603f2979 hash d9a617fd88767f3ee1322cde38ba2dc9 host_hash None kind MacrosOnly public
+31 serde-504c94950bb30370 hash 3a5ce54671bb1d55adabe0b25d3bda5c host_hash None kind Unconditional public
+32 serde_derive-7399d26c5af355c6 hash 73749c5eb1c19c71a34db9f8121f7600 host_hash None kind MacrosOnly public
+33 dyn_clone-f801d03edfd627d2 hash d71495e2ebfa9a74528b8f63df8ce74f host_hash None kind Unconditional public
+34 get_size2-a7a3d24e16bca700 hash 113f900b70fb5d403c6aefa393a0af5e host_hash None kind Unconditional public
+35 get_size_derive2-16667a986d3ac90d hash 3d53b75d6e6b698f850b92249a9027ba host_hash None kind MacrosOnly public
+36 compact_str-bf39f932b645872d hash 223596d08f89e4a11d0ce6732241f4eb host_hash None kind Unconditional public
+37 castaway-710cccff43d9a4c3 hash 71bee0c832bb2010f288a85626c3db05 host_hash None kind Unconditional public
+38 rustversion-9454b21a0ad115f8 hash bded059522dd5f697df5d092bbc709a3 host_hash None kind MacrosOnly public
+39 static_assertions-d1bc51a124efd9c4 hash 6da274ed6e5a13efcb91ded3602d4f7b host_hash None kind Unconditional public
+40 cfg_if-ad2e5c805db16ffc hash 13489f5688a40bec8da8c24d985bbe50 host_hash None kind Unconditional public
+41 hashbrown-c302bb4911095c48 hash 932de0289d9d3badff08f10a9705fc14 host_hash None kind Unconditional public
+42 allocator_api2-8ca9f7d5c8cbd8a3 hash 055f7a20d69a742f30165458c89c3991 host_hash None kind Unconditional public
+43 foldhash-3050b62f8615bd12 hash c976137f91f289c955754608ae52e02a host_hash None kind Unconditional public
+44 equivalent-66656e4c46249649 hash afbfc80560ca639f849fc8526a0fb1b6 host_hash None kind Unconditional public
+45 indexmap-6b1573e3097fc96f hash f495e5bef61548589266b96b5ad0d6af host_hash None kind Unconditional public
+46 ordermap-8c5b096a52f9f811 hash 2cb131dbba02ea43209e7cb9a0d74b84 host_hash None kind Unconditional public
+47 parking_lot-8c9b57f63c701e00 hash ad9941e1a922df3346d7ac97b1497c9f host_hash None kind Unconditional public
+48 lock_api-08718600d6021dfe hash 941f90c297d48b92b00663c67b23f495 host_hash None kind Unconditional public
+49 scopeguard-4e5235a4192b7fab hash 119da8758e73228c6109b06b7277ee0d host_hash None kind Unconditional public
+50 parking_lot_core-42c89730a6185c7f hash 47de3a2eb38d41a8d049b6c292e2173d host_hash None kind Unconditional public
+51 smallvec-de260f1748149fae hash 2fd26a599d1f64c56a371294a8dce0b2 host_hash None kind Unconditional public
+52 libc-8b74d84ccc5cc7ac hash b624363d9a250b384000c1f3d9f1aa99 host_hash None kind Unconditional public
+53 thin_vec-f9e34f452f2490bf hash 17816fabfb78e70eb7d7ef42abff8a88 host_hash None kind Unconditional public
+54 rustc_hash-324ded724e85ffdb hash 5cea1ead4b89c500c3b3de4c0f95ff82 host_hash None kind Unconditional public
+55 ruff_python_trivia-aa26beec357c4ea1 hash f278d92e506bf0d7df5ab66ce09e3649 host_hash None kind Unconditional public
+56 itertools-055f7d9af178b983 hash 98ab5285bb0781a1eb1f566410d5a734 host_hash None kind Unconditional public
+57 either-e698b5e1cc90ef10 hash a06523ca0255532600486c8e0bf73600 host_hash None kind Unconditional public
+58 ruff_source_file-7d12936906587d28 hash 8e894897333682effb0e3b8fe66767ef host_hash None kind Unconditional public
+59 unicode_normalization-947537532284eb83 hash 53ffedda3c05403e5ad7f70ff50edba2 host_hash None kind Unconditional public
+60 tinyvec-55c0967d300acd57 hash 1b0eea5b0f1e5a356480c022d1c03ad7 host_hash None kind Unconditional public
+61 tinyvec_macros-91adbbc5b23960dc hash cba8a750eb281fa2b836720ae940bd4f host_hash None kind Unconditional public
+62 unicode_ident-878a6751f4a8e3b3 hash 99c60a0597dcb97a4359c9c446a8c51b host_hash None kind Unconditional public
+63 arrayvec-23838f16e74775cb hash 21eace8c75a1b55c594b9c81548bef54 host_hash None kind Unconditional public
+64 char_str-58d7c1e373f4868a hash e7e5dfb969c807b55ad7b361e54a75e5 host_hash None kind Unconditional public
+65 ryu-9deadc2d355d365e hash dcd81010e3f02a297be56fc3ce24a8d7 host_hash None kind Unconditional public
+66 bitflags-7d158093896dbe86 hash 035299528efd46a98a770d3f8e049414 host_hash None kind Unconditional public
+67 aho_corasick-325495cd62b4f4cb hash cea76f439049b14b1e5528cb9714d019 host_hash None kind Unconditional public
+68 is_macro-f5d9c9ffad08cfb2 hash 35b65605f7aa7a515aed6ae261775b94 host_hash None kind MacrosOnly public
+69 salsa-b1af6b5ccfe4e475 hash b466d426d6ca5d78e59366cb361a4533 host_hash None kind Unconditional public
+70 tracing-3b1b34a715ec8189 hash 9b5a3d0304f520571d8afe914e334545 host_hash None kind Unconditional public
+71 tracing_core-826b3e7a2e28be9e hash 171238e65d8efc7bce9ff5154ad66d46 host_hash None kind Unconditional public
+72 once_cell-798a63ec2814ab45 hash e40b240b49ca10ef7fa9e0bfbaba7445 host_hash None kind Unconditional public
+73 tracing_attributes-d0f60239b8499b7b hash 8dbc061b02ead73ae134333a47ab7104 host_hash None kind MacrosOnly public
+74 pin_project_lite-ff6983d7d1049ee7 hash b577f91bd716213e327c1437459c43d5 host_hash None kind Unconditional public
+75 log-3f76dbe5381647a8 hash 6b183e98f531ed549f7cd09a201d61d9 host_hash None kind Unconditional public
+76 crossbeam_utils-ad2c4ffad6d15b44 hash cd4edc350dec66d12483b74a14c93658 host_hash None kind Unconditional public
+77 intrusive_collections-1f000f68d63c1937 hash 5295517460c339fcb802f6f7ae8b2fcc host_hash None kind Unconditional public
+78 memoffset-61f282a772ab0416 hash 3ccb475df4a09488ada00c40a6cecfa2 host_hash None kind Unconditional public
+79 portable_atomic-a3986b6c202361ed hash fc4a90538cede2f667dc182bebe91e79 host_hash None kind Unconditional public
+80 crossbeam_queue-a1caeafca3379c2d hash de0dd09eab829420cecdb4660d642e35 host_hash None kind Unconditional public
+81 inventory-5fd2519aa59583de hash 890e8b809a86ddcf8f01f80aca2dd1a3 host_hash None kind Unconditional public
+82 salsa_macros-d537f63e4a84ef3d hash bafbe9965244e08e5ebb923a4db079e2 host_hash None kind MacrosOnly public
+83 typeid-96ef3adb156abdfa hash 2ec081ee74dc89d2bad8a58b640a0d4f host_hash None kind Unconditional public
+84 salsa_macro_rules-792fa5321f68f7c9 hash d68638a3d10e2983321685a5fa27954e host_hash None kind Unconditional public
+85 boxcar-92a7b94fd209d7dd hash a2b1ff73c9ae14db99078c1e0b9a1a47 host_hash None kind Unconditional public
+86 hashlink-c6bccd4253ea2dfa hash 5033628204fa7c661ca4a5c657a9aacf host_hash None kind Unconditional public
+87 ruff_macros-0df74ae72023ec23 hash 65f1af88d9177b9a05bdda32f0f541f4 host_hash None kind MacrosOnly public
+88 thiserror-b72d4e5d8e4826c2 hash 376f8f975d5cf43ff1fe21b42c1d5d64 host_hash None kind Unconditional public
+89 thiserror_impl-9067d24d4493955a hash 0fa77160669fa1d059334840b8bd7a99 host_hash None kind MacrosOnly public
+90 ruff_cache-b3670b43b541f826 hash 21449988062f6ca9005859649f8d8ab2 host_hash None kind Unconditional public
+91 glob-9c49039146a64f9f hash a80eb17882129f821f5cc3bad819c40f host_hash None kind Unconditional public
+92 regex-59c0a9fd1aa1d17c hash 70d90673f724af62f909d0e9cb830cb7 host_hash None kind Unconditional public
+93 regex_automata-94d72633b4cfc6dd hash 4c11c203d90982434fbfe71c6428e64b host_hash None kind Unconditional public
+94 regex_syntax-fefe7d780529d6a1 hash 2ccc9ed8843178c29958a00671f6098a host_hash None kind Unconditional public
+95 seahash-d077b239c82372c8 hash 2ee30a6177277290c8a1ee3f3286695e host_hash None kind Unconditional public
+96 filetime-18c10ffb91d37199 hash b0f7c367babd9370cca2450b2a233f01 host_hash None kind Unconditional public
+97 globset-86f747f4eea5e82a hash f65623e18c893a691a0b1b110b839132 host_hash None kind Unconditional public
+98 bstr-36d12bdd8e07869f hash cfd4dd245d957a5db8af61526fd1cb1d host_hash None kind Unconditional public
+99 drop_bomb-b6aec18b28b5192a hash 1f3aadf4936c8f98703a4bc59d2cd25a host_hash None kind Unconditional public
+100 stacker-a12b417c411491f4 hash 941c0acb447f10c36674a816983fd78f host_hash None kind Unconditional public
+101 psm-d593abbb4d6b1838 hash 2346765c38d0bc06667209d3b00f31e7 host_hash None kind Unconditional public
+102 unicode_names2-11492eae17605eaf hash 59cd0be5851564d7d8eced74e03d83ea host_hash None kind Unconditional public
+103 phf-bbf8be76e896f7c4 hash 79b1d9bfe3ce133037507e19cf119f1f host_hash None kind Unconditional public
+104 phf_shared-f6b571dd1307b1f6 hash 0d43a52519f8eb46e0151631b82e69d8 host_hash None kind Unconditional public
+105 siphasher-0dad027bfa32df71 hash c752d153d6dfd07119a2c7d286e7ab50 host_hash None kind Unconditional public
+
+

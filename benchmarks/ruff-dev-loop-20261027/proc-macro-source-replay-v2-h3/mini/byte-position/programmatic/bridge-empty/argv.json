@@ -1,0 +1,18 @@
+[
+  "rustc",
+  "+ohm",
+  "--edition=2024",
+  "--crate-name",
+  "bridge",
+  "--crate-type",
+  "rlib",
+  "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/fixed-v2-minimal-transient-positions-v2/workspace/bridge.rs",
+  "--extern",
+  "test_unit=/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/fixed-v2-minimal-transient-positions-v2/active/target/debug/libtest_unit.rlib",
+  "-L",
+  "dependency=/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/fixed-v2-minimal-transient-positions-v2/active/target/debug/build/workspaces/8647b57837cd103b/v2-de9f09e0adcfbdf3/test_unit/9a75da8fc9e5d1d2/out",
+  "-L",
+  "dependency=/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/fixed-v2-minimal-transient-positions-v2/active/target/debug/build/workspaces/8647b57837cd103b/v2-de9f09e0adcfbdf3/macro_maker/0e665fbd9d3baebd/out",
+  "-o",
+  "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/fixed-v2-minimal-transient-positions-v2/evidence/programmatic/bridge-empty/libbridge.rlib"
+]

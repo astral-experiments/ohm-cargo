@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/home/dev-user/.cache/ohm-233-position-qualified-20261027/mixed-registry-seed-programs-20261027/fixed-ruff-parser-source.py", line 76, in <module>
+    for k in ['parser','externs','get_size_sha256','header','rmeta_sha256','native_ruff_diagnostic_sha256']: assert arow[k]==brow[k],(k,arow[k],brow[k])
+                                                                                                                    ^^^^^^^^^^^^^^^^
+AssertionError: ('rmeta_sha256', '1ba786237818e41731a77831049e21e4d6fe7651afb0c99873002ab432f4ca24', '27f42cea5bf80e4653734b7486497cf248f407f6c01367a79f177617db8ad6e4')

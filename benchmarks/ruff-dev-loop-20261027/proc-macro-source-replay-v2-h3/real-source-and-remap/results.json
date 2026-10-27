@@ -1,0 +1,27 @@
+{
+  "changed": {
+    "derive_executed": false,
+    "expected": "updated_token|/alpha/late.rs|late.rs",
+    "observed": "updated_token|/alpha/late.rs|late.rs"
+  },
+  "cold": {
+    "derive_executed": true,
+    "expected": "updated_token|/alpha/late.rs|late.rs",
+    "observed": "updated_token|/alpha/late.rs|late.rs"
+  },
+  "cold-remapped": {
+    "derive_executed": true,
+    "expected": "updated_token|/beta/late.rs|late.rs",
+    "observed": "updated_token|/beta/late.rs|late.rs"
+  },
+  "initial": {
+    "derive_executed": true,
+    "expected": "original_token|/alpha/late.rs|late.rs",
+    "observed": "original_token|/alpha/late.rs|late.rs"
+  },
+  "remapped": {
+    "derive_executed": true,
+    "expected": "updated_token|/beta/late.rs|late.rs",
+    "observed": "updated_token|/beta/late.rs|late.rs"
+  }
+}

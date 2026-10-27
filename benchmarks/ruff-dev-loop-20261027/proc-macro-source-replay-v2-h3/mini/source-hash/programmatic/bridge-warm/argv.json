@@ -1,0 +1,18 @@
+[
+  "rustc",
+  "+ohm",
+  "--edition=2024",
+  "--crate-name",
+  "bridge",
+  "--crate-type",
+  "rlib",
+  "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/fixed-v2-minimal-proc-source-hash-v2/workspace/bridge.rs",
+  "--extern",
+  "test_unit=/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/fixed-v2-minimal-proc-source-hash-v2/active/target/debug/libtest_unit.rlib",
+  "-L",
+  "dependency=/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/fixed-v2-minimal-proc-source-hash-v2/active/target/debug/build/workspaces/2638e1989b0b02f3/v2-a32cb92f35be9fba/test_unit/9a75da8fc9e5d1d2/out",
+  "-L",
+  "dependency=/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/fixed-v2-minimal-proc-source-hash-v2/active/target/debug/build/workspaces/2638e1989b0b02f3/v2-a32cb92f35be9fba/macro_maker/0e665fbd9d3baebd/out",
+  "-o",
+  "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/fixed-v2-minimal-proc-source-hash-v2/evidence/programmatic/bridge-warm/libbridge.rlib"
+]

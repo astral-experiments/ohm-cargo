@@ -1,0 +1,258 @@
+{
+  "call": {
+    "builds": {
+      "empty": {
+        "header": {
+          "private": "18c0129fa62a965054088c0b71f74078",
+          "public": "ca51df599e3f9404180591cb2ba54b13",
+          "stable": "18226602572035524194"
+        },
+        "proc_macro": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/fixed-v2-minimal-hygiene-sites/active/target/debug/build/workspaces/b554c12667fe98ef/v2-728c0af401a9d04b/macro_maker/0e665fbd9d3baebd/out/libmacro_maker-0e665fbd9d3baebd.so",
+        "proc_macro_sha256": "c81a811baf811f1e65bf22d0ffb21fa43211e159c3afd199915d29b27cd6e0b3",
+        "rlib": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/fixed-v2-minimal-hygiene-sites/active/target/debug/libtest_unit.rlib",
+        "rlib_sha256": "7dc3f83b4c9c6e4d7956e2690c32a3676842396e947e11e7a416a61dc9c13fa5",
+        "rmeta": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/fixed-v2-minimal-hygiene-sites/active/target/debug/build/workspaces/b554c12667fe98ef/v2-728c0af401a9d04b/test_unit/9a75da8fc9e5d1d2/out/libtest_unit-9a75da8fc9e5d1d2.rmeta",
+        "rmeta_sha256": "7e742bfbf4d99080691ceec94bce161b761920be6861ff6d74923eca53c2fc7a",
+        "unit_fresh": {
+          "macro_maker": true,
+          "test_unit": false
+        }
+      },
+      "warm": {
+        "header": {
+          "private": "e48e7d2ea57704c20f9abbc92dfe9124",
+          "public": "ca51df599e3f9404180591cb2ba54b13",
+          "stable": "18226602572035524194"
+        },
+        "proc_macro": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/fixed-v2-minimal-hygiene-sites/active/target/debug/build/workspaces/b554c12667fe98ef/v2-728c0af401a9d04b/macro_maker/0e665fbd9d3baebd/out/libmacro_maker-0e665fbd9d3baebd.so",
+        "proc_macro_sha256": "c81a811baf811f1e65bf22d0ffb21fa43211e159c3afd199915d29b27cd6e0b3",
+        "rlib": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/fixed-v2-minimal-hygiene-sites/active/target/debug/libtest_unit.rlib",
+        "rlib_sha256": "ce9a74eabe611129e58ffe24289c4cdaaa77925a42323e0777f89ed207976fe7",
+        "rmeta": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/fixed-v2-minimal-hygiene-sites/active/target/debug/build/workspaces/b554c12667fe98ef/v2-728c0af401a9d04b/test_unit/9a75da8fc9e5d1d2/out/libtest_unit-9a75da8fc9e5d1d2.rmeta",
+        "rmeta_sha256": "841ef78a0589bf4df224ff87cba47be81e971c80daa330c4e07c1e95dac0c8f2",
+        "unit_fresh": {
+          "macro_maker": true,
+          "test_unit": false
+        }
+      }
+    },
+    "readers": {
+      "empty/from-empty": {
+        "bridge_sha256": "263b2700bcea48b2be24f03afd655749655f45abde36263a0770408ec200bdc6",
+        "compiler_status": 0,
+        "diagnostics_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "runtime": "8:#9 bytes(373748..373780)"
+      },
+      "empty/from-warm": {
+        "bridge_sha256": "aaeb9dda8246b38277a512f4ea9caec6fd05237e221e840955809ebe7d192148",
+        "compiler_status": 1,
+        "diagnostics_sha256": "1a731bdc377c1bbc33a3415df6eefbf4288164e8bce27e11b5c230ca86bbe64c",
+        "runtime": null
+      },
+      "warm/from-empty": {
+        "bridge_sha256": "263b2700bcea48b2be24f03afd655749655f45abde36263a0770408ec200bdc6",
+        "compiler_status": 1,
+        "diagnostics_sha256": "1a731bdc377c1bbc33a3415df6eefbf4288164e8bce27e11b5c230ca86bbe64c",
+        "runtime": null
+      },
+      "warm/from-warm": {
+        "bridge_sha256": "aaeb9dda8246b38277a512f4ea9caec6fd05237e221e840955809ebe7d192148",
+        "compiler_status": 0,
+        "diagnostics_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "runtime": "8:#6 bytes(373748..373780)"
+      }
+    }
+  },
+  "legacy": {
+    "builds": {
+      "empty": {
+        "header": {
+          "private": "1cc869748679c4800d1faa0d9e04d27e",
+          "public": "1cc869748679c4800d1faa0d9e04d27e",
+          "stable": "12864635159902840537"
+        },
+        "proc_macro": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/fixed-v2-minimal-hygiene-sites/active/shared/debug/build/.ohm-split-b554c12667fe98ef/macro_maker/aec39e0076360243/out/libmacro_maker-aec39e0076360243.so",
+        "proc_macro_sha256": "c9bf6384ac311f71b1d9f5819169a19212b138da1cdd84e3a7eb333bb057d1ef",
+        "rlib": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/fixed-v2-minimal-hygiene-sites/active/target/debug/libtest_unit.rlib",
+        "rlib_sha256": "03e1c5a8fc7fb0b9672a5307ae093b953c563793134815b97b1d1e589d5102d5",
+        "rmeta": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/fixed-v2-minimal-hygiene-sites/active/shared/debug/build/.ohm-split-b554c12667fe98ef/test_unit/d95e95409259d8fc/out/libtest_unit-d95e95409259d8fc.rmeta",
+        "rmeta_sha256": "b439670ab15ac4bc00bf90487d9623a79931bcb43ce81f125bb3b2ef8e81c398",
+        "unit_fresh": {
+          "macro_maker": true,
+          "test_unit": false
+        }
+      },
+      "warm": {
+        "header": {
+          "private": "1cc869748679c4800d1faa0d9e04d27e",
+          "public": "1cc869748679c4800d1faa0d9e04d27e",
+          "stable": "12864635159902840537"
+        },
+        "proc_macro": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/fixed-v2-minimal-hygiene-sites/active/shared/debug/build/.ohm-split-b554c12667fe98ef/macro_maker/aec39e0076360243/out/libmacro_maker-aec39e0076360243.so",
+        "proc_macro_sha256": "c9bf6384ac311f71b1d9f5819169a19212b138da1cdd84e3a7eb333bb057d1ef",
+        "rlib": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/fixed-v2-minimal-hygiene-sites/active/target/debug/libtest_unit.rlib",
+        "rlib_sha256": "fa57286043a7e7e201f3ca1f1fa1e3eb58dbd93feec896c89a18e5208174181d",
+        "rmeta": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/fixed-v2-minimal-hygiene-sites/active/shared/debug/build/.ohm-split-b554c12667fe98ef/test_unit/d95e95409259d8fc/out/libtest_unit-d95e95409259d8fc.rmeta",
+        "rmeta_sha256": "b439670ab15ac4bc00bf90487d9623a79931bcb43ce81f125bb3b2ef8e81c398",
+        "unit_fresh": {
+          "macro_maker": true,
+          "test_unit": false
+        }
+      }
+    },
+    "readers": {
+      "empty/from-empty": {
+        "bridge_sha256": "595c6fb6d85d02d09a37d59b7a925f7e4074c6f119b2f0eb20051206a9d7154e",
+        "compiler_status": 0,
+        "diagnostics_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "runtime": "8:#9 bytes(373748..373780)"
+      },
+      "empty/from-warm": {
+        "bridge_sha256": "595c6fb6d85d02d09a37d59b7a925f7e4074c6f119b2f0eb20051206a9d7154e",
+        "compiler_status": 0,
+        "diagnostics_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "runtime": "8:#9 bytes(373748..373780)"
+      },
+      "warm/from-empty": {
+        "bridge_sha256": "595c6fb6d85d02d09a37d59b7a925f7e4074c6f119b2f0eb20051206a9d7154e",
+        "compiler_status": 0,
+        "diagnostics_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "runtime": "8:#9 bytes(373748..373780)"
+      },
+      "warm/from-warm": {
+        "bridge_sha256": "595c6fb6d85d02d09a37d59b7a925f7e4074c6f119b2f0eb20051206a9d7154e",
+        "compiler_status": 0,
+        "diagnostics_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "runtime": "8:#9 bytes(373748..373780)"
+      }
+    }
+  },
+  "mixed": {
+    "builds": {
+      "empty": {
+        "header": {
+          "private": "b92774fbd6280df576f064796f11be3e",
+          "public": "4b13cc6fb13e526783c16feaac7aba47",
+          "stable": "18226602572035524194"
+        },
+        "proc_macro": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/fixed-v2-minimal-hygiene-sites/active/target/debug/build/workspaces/b554c12667fe98ef/v2-728c0af401a9d04b/macro_maker/0e665fbd9d3baebd/out/libmacro_maker-0e665fbd9d3baebd.so",
+        "proc_macro_sha256": "c7b41d9c8d80eca21132bd0bb2b658825776cd2e2cd2d42ab790402961bccc1a",
+        "rlib": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/fixed-v2-minimal-hygiene-sites/active/target/debug/libtest_unit.rlib",
+        "rlib_sha256": "1a9141212ba84d47cc47d122a43fa52b1124dc0f163a316c307570a913308b3d",
+        "rmeta": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/fixed-v2-minimal-hygiene-sites/active/target/debug/build/workspaces/b554c12667fe98ef/v2-728c0af401a9d04b/test_unit/9a75da8fc9e5d1d2/out/libtest_unit-9a75da8fc9e5d1d2.rmeta",
+        "rmeta_sha256": "79a392fdad7679ec25848dbed397f2a83b29a0d63662bdb9245dee8c1efb495d",
+        "unit_fresh": {
+          "macro_maker": true,
+          "test_unit": false
+        }
+      },
+      "warm": {
+        "header": {
+          "private": "fb7cfd72d6891073f4decd9d9e280c20",
+          "public": "4b13cc6fb13e526783c16feaac7aba47",
+          "stable": "18226602572035524194"
+        },
+        "proc_macro": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/fixed-v2-minimal-hygiene-sites/active/target/debug/build/workspaces/b554c12667fe98ef/v2-728c0af401a9d04b/macro_maker/0e665fbd9d3baebd/out/libmacro_maker-0e665fbd9d3baebd.so",
+        "proc_macro_sha256": "c7b41d9c8d80eca21132bd0bb2b658825776cd2e2cd2d42ab790402961bccc1a",
+        "rlib": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/fixed-v2-minimal-hygiene-sites/active/target/debug/libtest_unit.rlib",
+        "rlib_sha256": "863b72ac5ddd608063ec5f1431338c28b02793bfe0da0feddb5eb3aef4efca68",
+        "rmeta": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/fixed-v2-minimal-hygiene-sites/active/target/debug/build/workspaces/b554c12667fe98ef/v2-728c0af401a9d04b/test_unit/9a75da8fc9e5d1d2/out/libtest_unit-9a75da8fc9e5d1d2.rmeta",
+        "rmeta_sha256": "ee7d8aa8e4a1eb3fdbc85e6bc7c6f1cba7e8e97b047f302fc75fe5eb75cd96bc",
+        "unit_fresh": {
+          "macro_maker": true,
+          "test_unit": false
+        }
+      }
+    },
+    "readers": {
+      "empty/from-empty": {
+        "bridge_sha256": "70a2138711b15ba95297f0d8a479f689e45dc9756969a299c834c5d74d867aef",
+        "compiler_status": 0,
+        "diagnostics_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "runtime": "8:#10 bytes(373749..373781)"
+      },
+      "empty/from-warm": {
+        "bridge_sha256": "d265114410dd6498d900b6b9d01eb8f0775a301010d14a203b2652212719d4e8",
+        "compiler_status": 1,
+        "diagnostics_sha256": "1a731bdc377c1bbc33a3415df6eefbf4288164e8bce27e11b5c230ca86bbe64c",
+        "runtime": null
+      },
+      "warm/from-empty": {
+        "bridge_sha256": "70a2138711b15ba95297f0d8a479f689e45dc9756969a299c834c5d74d867aef",
+        "compiler_status": 1,
+        "diagnostics_sha256": "1a731bdc377c1bbc33a3415df6eefbf4288164e8bce27e11b5c230ca86bbe64c",
+        "runtime": null
+      },
+      "warm/from-warm": {
+        "bridge_sha256": "d265114410dd6498d900b6b9d01eb8f0775a301010d14a203b2652212719d4e8",
+        "compiler_status": 0,
+        "diagnostics_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "runtime": "8:#7 bytes(373749..373781)"
+      }
+    }
+  },
+  "root": {
+    "builds": {
+      "empty": {
+        "header": {
+          "private": "816023e0aae3aec87935edae4fe42da4",
+          "public": "34c55e0c6f88159d55669ce449f38111",
+          "stable": "18226602572035524194"
+        },
+        "proc_macro": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/fixed-v2-minimal-hygiene-sites/active/target/debug/build/workspaces/b554c12667fe98ef/v2-728c0af401a9d04b/macro_maker/0e665fbd9d3baebd/out/libmacro_maker-0e665fbd9d3baebd.so",
+        "proc_macro_sha256": "7f07b180689961949796c7024af120f7eb70a1a542599d2ec717bef7523fbde1",
+        "rlib": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/fixed-v2-minimal-hygiene-sites/active/target/debug/libtest_unit.rlib",
+        "rlib_sha256": "f6f90ddf02234949107a0b7768cfffe2920f6154e66f800e1cb42174121db794",
+        "rmeta": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/fixed-v2-minimal-hygiene-sites/active/target/debug/build/workspaces/b554c12667fe98ef/v2-728c0af401a9d04b/test_unit/9a75da8fc9e5d1d2/out/libtest_unit-9a75da8fc9e5d1d2.rmeta",
+        "rmeta_sha256": "ed08b0289613d3484d9cb2987fadc5e9a739ca1b3ff7b8530c91f7f17e36f3bb",
+        "unit_fresh": {
+          "macro_maker": true,
+          "test_unit": false
+        }
+      },
+      "warm": {
+        "header": {
+          "private": "816023e0aae3aec87935edae4fe42da4",
+          "public": "34c55e0c6f88159d55669ce449f38111",
+          "stable": "18226602572035524194"
+        },
+        "proc_macro": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/fixed-v2-minimal-hygiene-sites/active/target/debug/build/workspaces/b554c12667fe98ef/v2-728c0af401a9d04b/macro_maker/0e665fbd9d3baebd/out/libmacro_maker-0e665fbd9d3baebd.so",
+        "proc_macro_sha256": "7f07b180689961949796c7024af120f7eb70a1a542599d2ec717bef7523fbde1",
+        "rlib": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/fixed-v2-minimal-hygiene-sites/active/target/debug/libtest_unit.rlib",
+        "rlib_sha256": "cfe20cb1f2143ca33c2efd5413d5ca9e30e14e6b200f88c4d696afb5cc1478c8",
+        "rmeta": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/fixed-v2-minimal-hygiene-sites/active/target/debug/build/workspaces/b554c12667fe98ef/v2-728c0af401a9d04b/test_unit/9a75da8fc9e5d1d2/out/libtest_unit-9a75da8fc9e5d1d2.rmeta",
+        "rmeta_sha256": "ed08b0289613d3484d9cb2987fadc5e9a739ca1b3ff7b8530c91f7f17e36f3bb",
+        "unit_fresh": {
+          "macro_maker": true,
+          "test_unit": false
+        }
+      }
+    },
+    "readers": {
+      "empty/from-empty": {
+        "bridge_sha256": "f6c0222d3bb4c87ac2618d5f2f68815780ab40ee2dacd04a2f25ddb4655a2e74",
+        "compiler_status": 0,
+        "diagnostics_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "runtime": "8:#0 bytes(373776..373786)"
+      },
+      "empty/from-warm": {
+        "bridge_sha256": "f6c0222d3bb4c87ac2618d5f2f68815780ab40ee2dacd04a2f25ddb4655a2e74",
+        "compiler_status": 0,
+        "diagnostics_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "runtime": "8:#0 bytes(373776..373786)"
+      },
+      "warm/from-empty": {
+        "bridge_sha256": "f6c0222d3bb4c87ac2618d5f2f68815780ab40ee2dacd04a2f25ddb4655a2e74",
+        "compiler_status": 0,
+        "diagnostics_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "runtime": "8:#0 bytes(373776..373786)"
+      },
+      "warm/from-warm": {
+        "bridge_sha256": "f6c0222d3bb4c87ac2618d5f2f68815780ab40ee2dacd04a2f25ddb4655a2e74",
+        "compiler_status": 0,
+        "diagnostics_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "runtime": "8:#0 bytes(373776..373786)"
+      }
+    }
+  }
+}

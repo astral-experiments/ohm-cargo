@@ -1,0 +1,16 @@
+[
+  "rustc",
+  "+ohm",
+  "--edition=2024",
+  "--crate-name",
+  "app",
+  "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/fixed-v2-minimal-transient-positions-v2/workspace/main.rs",
+  "--extern",
+  "bridge=/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/fixed-v2-minimal-transient-positions-v2/libbridge_input.rlib",
+  "-L",
+  "dependency=/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/fixed-v2-minimal-transient-positions-v2/active/shared/debug/build/.ohm-split-8647b57837cd103b/test_unit/d95e95409259d8fc/out",
+  "-L",
+  "dependency=/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/fixed-v2-minimal-transient-positions-v2/active/shared/debug/build/.ohm-split-8647b57837cd103b/macro_maker/aec39e0076360243/out",
+  "-o",
+  "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/fixed-v2-minimal-transient-positions-v2/evidence/legacy/warm-caller-warm/app"
+]
