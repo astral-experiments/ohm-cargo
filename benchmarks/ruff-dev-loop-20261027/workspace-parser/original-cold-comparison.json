@@ -1,0 +1,708 @@
+{
+  "build": {
+    "samples": [
+      [
+        "t'first' b'second'",
+        1,
+        [
+          {
+            "cell": null,
+            "code": "invalid-syntax",
+            "end_location": {
+              "column": 19,
+              "row": 1
+            },
+            "filename": "-",
+            "fix": null,
+            "location": {
+              "column": 1,
+              "row": 1
+            },
+            "message": "Bytes literal cannot be mixed with non-bytes literals",
+            "name": "invalid-syntax",
+            "noqa_row": null,
+            "severity": "error",
+            "url": null
+          }
+        ]
+      ],
+      [
+        "b'first' 'second'",
+        1,
+        [
+          {
+            "cell": null,
+            "code": "invalid-syntax",
+            "end_location": {
+              "column": 18,
+              "row": 1
+            },
+            "filename": "-",
+            "fix": null,
+            "location": {
+              "column": 1,
+              "row": 1
+            },
+            "message": "Bytes literal cannot be mixed with non-bytes literals",
+            "name": "invalid-syntax",
+            "noqa_row": null,
+            "severity": "error",
+            "url": null
+          }
+        ]
+      ],
+      [
+        "print('ok')",
+        0,
+        []
+      ],
+      [
+        "import os",
+        1,
+        [
+          {
+            "cell": null,
+            "code": "F401",
+            "end_location": {
+              "column": 10,
+              "row": 1
+            },
+            "filename": "-",
+            "fix": {
+              "applicability": "safe",
+              "edits": [
+                {
+                  "content": "",
+                  "end_location": {
+                    "column": 1,
+                    "row": 2
+                  },
+                  "location": {
+                    "column": 1,
+                    "row": 1
+                  }
+                }
+              ],
+              "message": "Remove unused import: `os`"
+            },
+            "location": {
+              "column": 8,
+              "row": 1
+            },
+            "message": "`os` imported but unused",
+            "name": "unused-import",
+            "noqa_row": 1,
+            "severity": "error",
+            "url": "https://docs.astral.sh/ruff/rules/unused-import"
+          }
+        ]
+      ]
+    ],
+    "parent-warm--candidate-warm": {
+      "identical_raw": 11,
+      "total": 15,
+      "executable_keys": 6,
+      "paths_with_different_toolchain_namespace": 0,
+      "toolchain_namespaces": [],
+      "exact_compiler_diagnostics": true,
+      "differences": {
+        "ohm-whole-skips-20261027/native-target/debug/libruff_macros.so": {
+          "missing_sections": [],
+          "changed_sections": [
+            ".note.gnu.build-id",
+            ".rustc"
+          ],
+          "allocated": [
+            ".note.gnu.build-id"
+          ],
+          "symbols": {}
+        },
+        "ohm-whole-skips-20261027/native-target/debug/ruff": {
+          "missing_sections": [],
+          "changed_sections": [
+            ".debug_info",
+            ".debug_macro",
+            ".debug_str",
+            ".note.gnu.build-id"
+          ],
+          "allocated": [
+            ".note.gnu.build-id"
+          ],
+          "symbols": {}
+        },
+        "ohm-whole-skips-20261027/native-target/debug/ty": {
+          "missing_sections": [],
+          "changed_sections": [
+            ".debug_info",
+            ".debug_macro",
+            ".debug_str",
+            ".note.gnu.build-id"
+          ],
+          "allocated": [
+            ".note.gnu.build-id"
+          ],
+          "symbols": {}
+        },
+        "ruff_macros/0df74ae72023ec23/out/libruff_macros-0df74ae72023ec23.so": {
+          "missing_sections": [],
+          "changed_sections": [
+            ".note.gnu.build-id",
+            ".rustc"
+          ],
+          "allocated": [
+            ".note.gnu.build-id"
+          ],
+          "symbols": {}
+        }
+      }
+    },
+    "parent-cold--candidate-cold": {
+      "identical_raw": 11,
+      "total": 15,
+      "executable_keys": 6,
+      "paths_with_different_toolchain_namespace": 0,
+      "toolchain_namespaces": [],
+      "exact_compiler_diagnostics": true,
+      "differences": {
+        "ohm-whole-skips-20261027/native-target/debug/libruff_macros.so": {
+          "missing_sections": [],
+          "changed_sections": [
+            ".note.gnu.build-id",
+            ".rustc"
+          ],
+          "allocated": [
+            ".note.gnu.build-id"
+          ],
+          "symbols": {}
+        },
+        "ohm-whole-skips-20261027/native-target/debug/ruff": {
+          "missing_sections": [],
+          "changed_sections": [
+            ".debug_info",
+            ".debug_macro",
+            ".debug_str",
+            ".note.gnu.build-id"
+          ],
+          "allocated": [
+            ".note.gnu.build-id"
+          ],
+          "symbols": {}
+        },
+        "ohm-whole-skips-20261027/native-target/debug/ty": {
+          "missing_sections": [],
+          "changed_sections": [
+            ".debug_info",
+            ".debug_macro",
+            ".debug_str",
+            ".note.gnu.build-id"
+          ],
+          "allocated": [
+            ".note.gnu.build-id"
+          ],
+          "symbols": {}
+        },
+        "ruff_macros/0df74ae72023ec23/out/libruff_macros-0df74ae72023ec23.so": {
+          "missing_sections": [],
+          "changed_sections": [
+            ".note.gnu.build-id",
+            ".rustc"
+          ],
+          "allocated": [
+            ".note.gnu.build-id"
+          ],
+          "symbols": {}
+        }
+      }
+    },
+    "parent-warm--parent-cold": {
+      "identical_raw": 15,
+      "total": 15,
+      "executable_keys": 6,
+      "paths_with_different_toolchain_namespace": 0,
+      "toolchain_namespaces": [],
+      "exact_compiler_diagnostics": true,
+      "differences": {}
+    },
+    "candidate-warm--candidate-cold": {
+      "identical_raw": 15,
+      "total": 15,
+      "executable_keys": 6,
+      "paths_with_different_toolchain_namespace": 0,
+      "toolchain_namespaces": [],
+      "exact_compiler_diagnostics": true,
+      "differences": {}
+    },
+    "parent-cold--candidate-warm": {
+      "identical_raw": 11,
+      "total": 15,
+      "executable_keys": 6,
+      "paths_with_different_toolchain_namespace": 0,
+      "toolchain_namespaces": [],
+      "exact_compiler_diagnostics": true,
+      "differences": {
+        "ohm-whole-skips-20261027/native-target/debug/libruff_macros.so": {
+          "missing_sections": [],
+          "changed_sections": [
+            ".note.gnu.build-id",
+            ".rustc"
+          ],
+          "allocated": [
+            ".note.gnu.build-id"
+          ],
+          "symbols": {}
+        },
+        "ohm-whole-skips-20261027/native-target/debug/ruff": {
+          "missing_sections": [],
+          "changed_sections": [
+            ".debug_info",
+            ".debug_macro",
+            ".debug_str",
+            ".note.gnu.build-id"
+          ],
+          "allocated": [
+            ".note.gnu.build-id"
+          ],
+          "symbols": {}
+        },
+        "ohm-whole-skips-20261027/native-target/debug/ty": {
+          "missing_sections": [],
+          "changed_sections": [
+            ".debug_info",
+            ".debug_macro",
+            ".debug_str",
+            ".note.gnu.build-id"
+          ],
+          "allocated": [
+            ".note.gnu.build-id"
+          ],
+          "symbols": {}
+        },
+        "ruff_macros/0df74ae72023ec23/out/libruff_macros-0df74ae72023ec23.so": {
+          "missing_sections": [],
+          "changed_sections": [
+            ".note.gnu.build-id",
+            ".rustc"
+          ],
+          "allocated": [
+            ".note.gnu.build-id"
+          ],
+          "symbols": {}
+        }
+      }
+    }
+  },
+  "test": {
+    "samples": [
+      [
+        "t'first' b'second'",
+        1,
+        [
+          {
+            "cell": null,
+            "code": "invalid-syntax",
+            "end_location": {
+              "column": 19,
+              "row": 1
+            },
+            "filename": "-",
+            "fix": null,
+            "location": {
+              "column": 1,
+              "row": 1
+            },
+            "message": "Bytes literal cannot be mixed with non-bytes literals",
+            "name": "invalid-syntax",
+            "noqa_row": null,
+            "severity": "error",
+            "url": null
+          }
+        ]
+      ],
+      [
+        "b'first' 'second'",
+        1,
+        [
+          {
+            "cell": null,
+            "code": "invalid-syntax",
+            "end_location": {
+              "column": 18,
+              "row": 1
+            },
+            "filename": "-",
+            "fix": null,
+            "location": {
+              "column": 1,
+              "row": 1
+            },
+            "message": "Bytes literal cannot be mixed with non-bytes literals",
+            "name": "invalid-syntax",
+            "noqa_row": null,
+            "severity": "error",
+            "url": null
+          }
+        ]
+      ],
+      [
+        "print('ok')",
+        0,
+        []
+      ],
+      [
+        "import os",
+        1,
+        [
+          {
+            "cell": null,
+            "code": "F401",
+            "end_location": {
+              "column": 10,
+              "row": 1
+            },
+            "filename": "-",
+            "fix": {
+              "applicability": "safe",
+              "edits": [
+                {
+                  "content": "",
+                  "end_location": {
+                    "column": 1,
+                    "row": 2
+                  },
+                  "location": {
+                    "column": 1,
+                    "row": 1
+                  }
+                }
+              ],
+              "message": "Remove unused import: `os`"
+            },
+            "location": {
+              "column": 8,
+              "row": 1
+            },
+            "message": "`os` imported but unused",
+            "name": "unused-import",
+            "noqa_row": 1,
+            "severity": "error",
+            "url": "https://docs.astral.sh/ruff/rules/unused-import"
+          }
+        ]
+      ]
+    ],
+    "parent-warm--candidate-warm": {
+      "identical_raw": 103,
+      "total": 110,
+      "executable_keys": 102,
+      "paths_with_different_toolchain_namespace": 84,
+      "toolchain_namespaces": [
+        [
+          "v2-fb01a9213afbef39-all-native-all",
+          "v2-32c45f0bb283bc24-all-native-all"
+        ]
+      ],
+      "exact_compiler_diagnostics": true,
+      "differences": {
+        "ohm-whole-skips-20261027/native-target/debug/ruff": {
+          "missing_sections": [],
+          "changed_sections": [
+            ".debug_info",
+            ".debug_macro",
+            ".debug_str",
+            ".note.gnu.build-id"
+          ],
+          "allocated": [
+            ".note.gnu.build-id"
+          ],
+          "symbols": {}
+        },
+        "ohm-whole-skips-20261027/native-target/debug/ty": {
+          "missing_sections": [],
+          "changed_sections": [
+            ".debug_info",
+            ".debug_macro",
+            ".debug_str",
+            ".note.gnu.build-id"
+          ],
+          "allocated": [
+            ".note.gnu.build-id"
+          ],
+          "symbols": {}
+        },
+        "ruff/079e9dbd47e4f7c7/out/ruff-079e9dbd47e4f7c7": {
+          "missing_sections": [],
+          "changed_sections": [
+            ".debug_info",
+            ".debug_macro",
+            ".debug_str",
+            ".note.gnu.build-id"
+          ],
+          "allocated": [
+            ".note.gnu.build-id"
+          ],
+          "symbols": {}
+        },
+        "ruff_macros/0df74ae72023ec23/out/libruff_macros-0df74ae72023ec23.so": {
+          "missing_sections": [],
+          "changed_sections": [
+            ".note.gnu.build-id",
+            ".rustc"
+          ],
+          "allocated": [
+            ".note.gnu.build-id"
+          ],
+          "symbols": {}
+        },
+        "ty/ed6b57e4ab076002/out/ty-ed6b57e4ab076002": {
+          "missing_sections": [],
+          "changed_sections": [
+            ".debug_info",
+            ".debug_macro",
+            ".debug_str",
+            ".note.gnu.build-id"
+          ],
+          "allocated": [
+            ".note.gnu.build-id"
+          ],
+          "symbols": {}
+        },
+        "ty_python_semantic/e77bf8e779c1bd16/out/ty_python_semantic-e77bf8e779c1bd16": {
+          "missing_sections": [],
+          "changed_sections": [
+            ".note.gnu.build-id",
+            ".rodata"
+          ],
+          "allocated": [
+            ".note.gnu.build-id",
+            ".rodata"
+          ],
+          "symbols": {}
+        },
+        "ty_wasm/af65d95beac5d41b/out/api-af65d95beac5d41b": {
+          "missing_sections": [],
+          "changed_sections": [
+            ".note.gnu.build-id",
+            ".rodata"
+          ],
+          "allocated": [
+            ".note.gnu.build-id",
+            ".rodata"
+          ],
+          "symbols": {}
+        }
+      }
+    },
+    "parent-cold--candidate-cold": {
+      "identical_raw": 105,
+      "total": 110,
+      "executable_keys": 102,
+      "paths_with_different_toolchain_namespace": 84,
+      "toolchain_namespaces": [
+        [
+          "v2-fb01a9213afbef39-all-native-all",
+          "v2-32c45f0bb283bc24-all-native-all"
+        ]
+      ],
+      "exact_compiler_diagnostics": true,
+      "differences": {
+        "ohm-whole-skips-20261027/native-target/debug/ruff": {
+          "missing_sections": [],
+          "changed_sections": [
+            ".debug_info",
+            ".debug_macro",
+            ".debug_str",
+            ".note.gnu.build-id"
+          ],
+          "allocated": [
+            ".note.gnu.build-id"
+          ],
+          "symbols": {}
+        },
+        "ohm-whole-skips-20261027/native-target/debug/ty": {
+          "missing_sections": [],
+          "changed_sections": [
+            ".debug_info",
+            ".debug_macro",
+            ".debug_str",
+            ".note.gnu.build-id"
+          ],
+          "allocated": [
+            ".note.gnu.build-id"
+          ],
+          "symbols": {}
+        },
+        "ruff/079e9dbd47e4f7c7/out/ruff-079e9dbd47e4f7c7": {
+          "missing_sections": [],
+          "changed_sections": [
+            ".debug_info",
+            ".debug_macro",
+            ".debug_str",
+            ".note.gnu.build-id"
+          ],
+          "allocated": [
+            ".note.gnu.build-id"
+          ],
+          "symbols": {}
+        },
+        "ruff_macros/0df74ae72023ec23/out/libruff_macros-0df74ae72023ec23.so": {
+          "missing_sections": [],
+          "changed_sections": [
+            ".note.gnu.build-id",
+            ".rustc"
+          ],
+          "allocated": [
+            ".note.gnu.build-id"
+          ],
+          "symbols": {}
+        },
+        "ty/ed6b57e4ab076002/out/ty-ed6b57e4ab076002": {
+          "missing_sections": [],
+          "changed_sections": [
+            ".debug_info",
+            ".debug_macro",
+            ".debug_str",
+            ".note.gnu.build-id"
+          ],
+          "allocated": [
+            ".note.gnu.build-id"
+          ],
+          "symbols": {}
+        }
+      }
+    },
+    "parent-warm--parent-cold": {
+      "identical_raw": 109,
+      "total": 110,
+      "executable_keys": 102,
+      "paths_with_different_toolchain_namespace": 0,
+      "toolchain_namespaces": [],
+      "exact_compiler_diagnostics": true,
+      "differences": {
+        "ty_wasm/af65d95beac5d41b/out/api-af65d95beac5d41b": {
+          "missing_sections": [],
+          "changed_sections": [
+            ".note.gnu.build-id",
+            ".rodata"
+          ],
+          "allocated": [
+            ".note.gnu.build-id",
+            ".rodata"
+          ],
+          "symbols": {}
+        }
+      }
+    },
+    "candidate-warm--candidate-cold": {
+      "identical_raw": 109,
+      "total": 110,
+      "executable_keys": 102,
+      "paths_with_different_toolchain_namespace": 0,
+      "toolchain_namespaces": [],
+      "exact_compiler_diagnostics": true,
+      "differences": {
+        "ty_python_semantic/e77bf8e779c1bd16/out/ty_python_semantic-e77bf8e779c1bd16": {
+          "missing_sections": [],
+          "changed_sections": [
+            ".note.gnu.build-id",
+            ".rodata"
+          ],
+          "allocated": [
+            ".note.gnu.build-id",
+            ".rodata"
+          ],
+          "symbols": {}
+        }
+      }
+    },
+    "parent-cold--candidate-warm": {
+      "identical_raw": 104,
+      "total": 110,
+      "executable_keys": 102,
+      "paths_with_different_toolchain_namespace": 84,
+      "toolchain_namespaces": [
+        [
+          "v2-fb01a9213afbef39-all-native-all",
+          "v2-32c45f0bb283bc24-all-native-all"
+        ]
+      ],
+      "exact_compiler_diagnostics": true,
+      "differences": {
+        "ohm-whole-skips-20261027/native-target/debug/ruff": {
+          "missing_sections": [],
+          "changed_sections": [
+            ".debug_info",
+            ".debug_macro",
+            ".debug_str",
+            ".note.gnu.build-id"
+          ],
+          "allocated": [
+            ".note.gnu.build-id"
+          ],
+          "symbols": {}
+        },
+        "ohm-whole-skips-20261027/native-target/debug/ty": {
+          "missing_sections": [],
+          "changed_sections": [
+            ".debug_info",
+            ".debug_macro",
+            ".debug_str",
+            ".note.gnu.build-id"
+          ],
+          "allocated": [
+            ".note.gnu.build-id"
+          ],
+          "symbols": {}
+        },
+        "ruff/079e9dbd47e4f7c7/out/ruff-079e9dbd47e4f7c7": {
+          "missing_sections": [],
+          "changed_sections": [
+            ".debug_info",
+            ".debug_macro",
+            ".debug_str",
+            ".note.gnu.build-id"
+          ],
+          "allocated": [
+            ".note.gnu.build-id"
+          ],
+          "symbols": {}
+        },
+        "ruff_macros/0df74ae72023ec23/out/libruff_macros-0df74ae72023ec23.so": {
+          "missing_sections": [],
+          "changed_sections": [
+            ".note.gnu.build-id",
+            ".rustc"
+          ],
+          "allocated": [
+            ".note.gnu.build-id"
+          ],
+          "symbols": {}
+        },
+        "ty/ed6b57e4ab076002/out/ty-ed6b57e4ab076002": {
+          "missing_sections": [],
+          "changed_sections": [
+            ".debug_info",
+            ".debug_macro",
+            ".debug_str",
+            ".note.gnu.build-id"
+          ],
+          "allocated": [
+            ".note.gnu.build-id"
+          ],
+          "symbols": {}
+        },
+        "ty_python_semantic/e77bf8e779c1bd16/out/ty_python_semantic-e77bf8e779c1bd16": {
+          "missing_sections": [],
+          "changed_sections": [
+            ".note.gnu.build-id",
+            ".rodata"
+          ],
+          "allocated": [
+            ".note.gnu.build-id",
+            ".rodata"
+          ],
+          "symbols": {}
+        }
+      }
+    }
+  }
+}
