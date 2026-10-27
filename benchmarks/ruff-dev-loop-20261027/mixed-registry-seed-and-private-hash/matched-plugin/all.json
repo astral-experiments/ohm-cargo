@@ -1,0 +1,974 @@
+{
+  "A": {
+    "actual_cargo": "0f237cc3b506aa90c1224e6ed80f646566b424b78c8d74f288f6523d17fc8aa1",
+    "actual_driver": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+    "actual_plugin_file": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-eef92bd5c3205d8d-all-native-all/get-size-derive2/16667a986d3ac90d/out/libget_size_derive2-16667a986d3ac90d.so",
+    "compiled_extern_receipt": {
+      "executable": null,
+      "features": [],
+      "filenames": [
+        "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-eef92bd5c3205d8d-all-native-all/get-size-derive2/16667a986d3ac90d/out/libget_size_derive2-16667a986d3ac90d.so"
+      ],
+      "fresh": true,
+      "manifest_path": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/registry-home/registry/src/socket-firewall-registry.gateway.admin-0.internal.api.openai.org-42b3aaa0d2956984/get-size-derive2-0.11.0/Cargo.toml",
+      "package_id": "registry+https://github.com/rust-lang/crates.io-index#get-size-derive2@0.11.0",
+      "profile": {
+        "debug_assertions": true,
+        "debuginfo": 0,
+        "opt_level": "0",
+        "overflow_checks": true,
+        "test": false
+      },
+      "reason": "compiler-artifact",
+      "target": {
+        "crate_types": [
+          "proc-macro"
+        ],
+        "doc": true,
+        "doctest": true,
+        "edition": "2024",
+        "kind": [
+          "proc-macro"
+        ],
+        "name": "get_size_derive2",
+        "src_path": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/registry-home/registry/src/socket-firewall-registry.gateway.admin-0.internal.api.openai.org-42b3aaa0d2956984/get-size-derive2-0.11.0/src/lib.rs",
+        "test": true
+      }
+    },
+    "compiler_exit": 1,
+    "diagnostic": [
+      "`ignore` conflicts with mutually exclusive `size`"
+    ],
+    "header_sha256": "d331bcd453916b135c49f14907fe9a09040f68d359bf5c752f7af46a06ad7eb8",
+    "independent_rustc_cmd": [
+      "rustc",
+      "+ohm",
+      "--edition=2024",
+      "--crate-name",
+      "demonstrate_conflict",
+      "--crate-type=lib",
+      "--emit=metadata",
+      "--error-format=json",
+      "--extern",
+      "get_size_derive2=/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-eef92bd5c3205d8d-all-native-all/get-size-derive2/16667a986d3ac90d/out/libget_size_derive2-16667a986d3ac90d.so",
+      "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/winner-native-plugin-and-leaves-v2/conflict.rs",
+      "-o",
+      "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/winner-native-plugin-and-leaves-v2/A/conflict.rmeta"
+    ],
+    "leaves": {
+      "ref-cast": {
+        "generated": {
+          "private.rs": {
+            "logical_path": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-eef92bd5c3205d8d-all-native-all/ref-cast/8a4c8402e0e13832/out/private.rs",
+            "rustc_dep_files_containing_full_path": [
+              "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-eef92bd5c3205d8d-all-native-all/ref-cast/8f7269a68b5c19a1/out/ref_cast-8f7269a68b5c19a1.d"
+            ],
+            "sha256": "6a36d7f9721fdf6fc969493d0546811e40184300cb335c3f86fb882e62db74d2",
+            "size": 89,
+            "source": "#[doc(hidden)]\npub mod __private25 {\n    #[doc(hidden)]\n    pub use crate::private::*;\n}\n"
+          }
+        },
+        "package": "registry+https://github.com/rust-lang/crates.io-index#ref-cast@1.0.25",
+        "real_dep_info": {
+          "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-eef92bd5c3205d8d-all-native-all/ref-cast/8f7269a68b5c19a1/out/ref_cast-8f7269a68b5c19a1.d": "cd5d6af06f85e2416ef23ae1593f90033057bcf863be776420fe166ad543bb4f"
+        },
+        "script_output_root": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-eef92bd5c3205d8d-all-native-all/ref-cast/8a4c8402e0e13832/out",
+        "target": {
+          "executable": null,
+          "features": [],
+          "filenames": [
+            "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-eef92bd5c3205d8d-all-native-all/ref-cast/8f7269a68b5c19a1/out/libref_cast-8f7269a68b5c19a1.rlib",
+            "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-eef92bd5c3205d8d-all-native-all/ref-cast/8f7269a68b5c19a1/out/libref_cast-8f7269a68b5c19a1.rmeta"
+          ],
+          "fresh": true,
+          "manifest_path": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/registry-home/registry/src/socket-firewall-registry.gateway.admin-0.internal.api.openai.org-42b3aaa0d2956984/ref-cast-1.0.25/Cargo.toml",
+          "package_id": "registry+https://github.com/rust-lang/crates.io-index#ref-cast@1.0.25",
+          "profile": {
+            "debug_assertions": true,
+            "debuginfo": "line-tables-only",
+            "opt_level": "1",
+            "overflow_checks": true,
+            "test": false
+          },
+          "reason": "compiler-artifact",
+          "target": {
+            "crate_types": [
+              "lib"
+            ],
+            "doc": true,
+            "doctest": true,
+            "edition": "2021",
+            "kind": [
+              "lib"
+            ],
+            "name": "ref_cast",
+            "src_path": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/registry-home/registry/src/socket-firewall-registry.gateway.admin-0.internal.api.openai.org-42b3aaa0d2956984/ref-cast-1.0.25/src/lib.rs",
+            "test": true
+          }
+        }
+      },
+      "rustversion": {
+        "generated": {
+          "version.expr": {
+            "logical_path": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-eef92bd5c3205d8d-all-native-all/rustversion/62a854d4f2e38084/out/version.expr",
+            "rustc_dep_files_containing_full_path": [
+              "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-eef92bd5c3205d8d-all-native-all/rustversion/9454b21a0ad115f8/out/rustversion-9454b21a0ad115f8.d"
+            ],
+            "sha256": "e12d7bfba40176d6d6d9b855b2e956199e57e5f8a733251133fdbd8da1e30bb9",
+            "size": 100,
+            "source": "crate::version::Version {\n    minor: 99,\n    patch: 0,\n    channel: crate::version::Channel::Dev,\n}\n"
+          }
+        },
+        "package": "registry+https://github.com/rust-lang/crates.io-index#rustversion@1.0.22",
+        "real_dep_info": {
+          "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-eef92bd5c3205d8d-all-native-all/rustversion/9454b21a0ad115f8/out/rustversion-9454b21a0ad115f8.d": "9c299fdd4e98ecf0ba7ca2ccbeaa3a6a6042e03e6873f32637440974a06c3d39"
+        },
+        "script_output_root": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-eef92bd5c3205d8d-all-native-all/rustversion/62a854d4f2e38084/out",
+        "target": {
+          "executable": null,
+          "features": [],
+          "filenames": [
+            "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-eef92bd5c3205d8d-all-native-all/rustversion/9454b21a0ad115f8/out/librustversion-9454b21a0ad115f8.so"
+          ],
+          "fresh": true,
+          "manifest_path": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/registry-home/registry/src/socket-firewall-registry.gateway.admin-0.internal.api.openai.org-42b3aaa0d2956984/rustversion-1.0.22/Cargo.toml",
+          "package_id": "registry+https://github.com/rust-lang/crates.io-index#rustversion@1.0.22",
+          "profile": {
+            "debug_assertions": true,
+            "debuginfo": 0,
+            "opt_level": "0",
+            "overflow_checks": true,
+            "test": false
+          },
+          "reason": "compiler-artifact",
+          "target": {
+            "crate_types": [
+              "proc-macro"
+            ],
+            "doc": true,
+            "doctest": true,
+            "edition": "2018",
+            "kind": [
+              "proc-macro"
+            ],
+            "name": "rustversion",
+            "src_path": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/registry-home/registry/src/socket-firewall-registry.gateway.admin-0.internal.api.openai.org-42b3aaa0d2956984/rustversion-1.0.22/src/lib.rs",
+            "test": true
+          }
+        }
+      },
+      "serde_core": {
+        "generated": {
+          "private.rs": {
+            "logical_path": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-eef92bd5c3205d8d-all-native-all/serde_core/e5fe59208acb5b22/out/private.rs",
+            "rustc_dep_files_containing_full_path": [
+              "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-eef92bd5c3205d8d-all-native-all/serde_core/5673d89936f64dc4/out/serde_core-5673d89936f64dc4.d"
+            ],
+            "sha256": "899563ce84b59b13cd7036e25f7897c1e730906f62a43aff14472d11c4229f34",
+            "size": 90,
+            "source": "#[doc(hidden)]\npub mod __private229 {\n    #[doc(hidden)]\n    pub use crate::private::*;\n}\n"
+          }
+        },
+        "package": "registry+https://github.com/rust-lang/crates.io-index#serde_core@1.0.229",
+        "real_dep_info": {
+          "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-eef92bd5c3205d8d-all-native-all/serde_core/5673d89936f64dc4/out/serde_core-5673d89936f64dc4.d": "defad2e3f393ebcab440b6211d4b8d017a5fe1e92914aaea650ca7fc1611acf1"
+        },
+        "script_output_root": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-eef92bd5c3205d8d-all-native-all/serde_core/e5fe59208acb5b22/out",
+        "target": {
+          "executable": null,
+          "features": [
+            "alloc",
+            "default",
+            "rc",
+            "result",
+            "std"
+          ],
+          "filenames": [
+            "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-eef92bd5c3205d8d-all-native-all/serde_core/5673d89936f64dc4/out/libserde_core-5673d89936f64dc4.rlib",
+            "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-eef92bd5c3205d8d-all-native-all/serde_core/5673d89936f64dc4/out/libserde_core-5673d89936f64dc4.rmeta"
+          ],
+          "fresh": true,
+          "manifest_path": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/registry-home/registry/src/socket-firewall-registry.gateway.admin-0.internal.api.openai.org-42b3aaa0d2956984/serde_core-1.0.229/Cargo.toml",
+          "package_id": "registry+https://github.com/rust-lang/crates.io-index#serde_core@1.0.229",
+          "profile": {
+            "debug_assertions": true,
+            "debuginfo": "line-tables-only",
+            "opt_level": "1",
+            "overflow_checks": true,
+            "test": false
+          },
+          "reason": "compiler-artifact",
+          "target": {
+            "crate_types": [
+              "lib"
+            ],
+            "doc": true,
+            "doctest": true,
+            "edition": "2021",
+            "kind": [
+              "lib"
+            ],
+            "name": "serde_core",
+            "src_path": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/registry-home/registry/src/socket-firewall-registry.gateway.admin-0.internal.api.openai.org-42b3aaa0d2956984/serde_core-1.0.229/src/lib.rs",
+            "test": true
+          }
+        }
+      },
+      "terminfo": {
+        "generated": {
+          "names.rs": {
+            "logical_path": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-eef92bd5c3205d8d-all-native-all/terminfo/d3aa77474e8d5895/out/names.rs",
+            "rustc_dep_files_containing_full_path": [
+              "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-eef92bd5c3205d8d-all-native-all/terminfo/0623c128bc9080b9/out/terminfo-0623c128bc9080b9.d"
+            ],
+            "sha256": "513a5d1a536da91bec3b9a8013bad10fad2fb2991f89e1d5a5c689043cc3db2e",
+            "size": 93468
+          }
+        },
+        "package": "registry+https://github.com/rust-lang/crates.io-index#terminfo@0.9.0",
+        "real_dep_info": {
+          "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-eef92bd5c3205d8d-all-native-all/terminfo/0623c128bc9080b9/out/terminfo-0623c128bc9080b9.d": "6877c081a1cfe61f8530bafc14e43a4eed97fede5061fe21045e91fe478948fc"
+        },
+        "script_output_root": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-eef92bd5c3205d8d-all-native-all/terminfo/d3aa77474e8d5895/out",
+        "target": {
+          "executable": null,
+          "features": [],
+          "filenames": [
+            "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-eef92bd5c3205d8d-all-native-all/terminfo/0623c128bc9080b9/out/libterminfo-0623c128bc9080b9.rlib",
+            "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-eef92bd5c3205d8d-all-native-all/terminfo/0623c128bc9080b9/out/libterminfo-0623c128bc9080b9.rmeta"
+          ],
+          "fresh": true,
+          "manifest_path": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/registry-home/registry/src/socket-firewall-registry.gateway.admin-0.internal.api.openai.org-42b3aaa0d2956984/terminfo-0.9.0/Cargo.toml",
+          "package_id": "registry+https://github.com/rust-lang/crates.io-index#terminfo@0.9.0",
+          "profile": {
+            "debug_assertions": true,
+            "debuginfo": "line-tables-only",
+            "opt_level": "1",
+            "overflow_checks": true,
+            "test": false
+          },
+          "reason": "compiler-artifact",
+          "target": {
+            "crate_types": [
+              "lib"
+            ],
+            "doc": true,
+            "doctest": true,
+            "edition": "2021",
+            "kind": [
+              "lib"
+            ],
+            "name": "terminfo",
+            "src_path": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/registry-home/registry/src/socket-firewall-registry.gateway.admin-0.internal.api.openai.org-42b3aaa0d2956984/terminfo-0.9.0/src/lib.rs",
+            "test": true
+          }
+        }
+      },
+      "thiserror": {
+        "generated": {
+          "private.rs": {
+            "logical_path": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-eef92bd5c3205d8d-all-native-all/thiserror/37420569b10ad77d/out/private.rs",
+            "rustc_dep_files_containing_full_path": [
+              "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-eef92bd5c3205d8d-all-native-all/thiserror/b72d4e5d8e4826c2/out/thiserror-b72d4e5d8e4826c2.d"
+            ],
+            "sha256": "c2ecb9a0205121ce129c369a8ba8abdab85c8658153dabff7b6b2b0d5a57c065",
+            "size": 89,
+            "source": "#[doc(hidden)]\npub mod __private20 {\n    #[doc(hidden)]\n    pub use crate::private::*;\n}\n"
+          }
+        },
+        "package": "registry+https://github.com/rust-lang/crates.io-index#thiserror@2.0.20",
+        "real_dep_info": {
+          "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-eef92bd5c3205d8d-all-native-all/thiserror/b72d4e5d8e4826c2/out/thiserror-b72d4e5d8e4826c2.d": "4c543daff4063c49e81e4fad09cbd55c5d269afabfc596d2cf03f56c91fc35cd"
+        },
+        "script_output_root": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-eef92bd5c3205d8d-all-native-all/thiserror/37420569b10ad77d/out",
+        "target": {
+          "executable": null,
+          "features": [
+            "default",
+            "std"
+          ],
+          "filenames": [
+            "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-eef92bd5c3205d8d-all-native-all/thiserror/b72d4e5d8e4826c2/out/libthiserror-b72d4e5d8e4826c2.rlib",
+            "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-eef92bd5c3205d8d-all-native-all/thiserror/b72d4e5d8e4826c2/out/libthiserror-b72d4e5d8e4826c2.rmeta"
+          ],
+          "fresh": true,
+          "manifest_path": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/registry-home/registry/src/socket-firewall-registry.gateway.admin-0.internal.api.openai.org-42b3aaa0d2956984/thiserror-2.0.20/Cargo.toml",
+          "package_id": "registry+https://github.com/rust-lang/crates.io-index#thiserror@2.0.20",
+          "profile": {
+            "debug_assertions": true,
+            "debuginfo": "line-tables-only",
+            "opt_level": "1",
+            "overflow_checks": true,
+            "test": false
+          },
+          "reason": "compiler-artifact",
+          "target": {
+            "crate_types": [
+              "lib"
+            ],
+            "doc": true,
+            "doctest": true,
+            "edition": "2021",
+            "kind": [
+              "lib"
+            ],
+            "name": "thiserror",
+            "src_path": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/registry-home/registry/src/socket-firewall-registry.gateway.admin-0.internal.api.openai.org-42b3aaa0d2956984/thiserror-2.0.20/src/lib.rs",
+            "test": true
+          }
+        }
+      }
+    },
+    "native_product_sha256": "b4fdb51067de47fa7ba8a6139de59a52d3ff09e8bce1356844b597bba179c1f4",
+    "source": "67c1fe7287d78cfa1e910865b62d685d1da8ab11ec8fc41d1574271079d69b00",
+    "text_sha256": "f68f920c1dcada5904a1bc6def17805e3157edcba9c21c4218243508dacf9ba2"
+  },
+  "B": {
+    "actual_cargo": "dd5cab154b8dcd09ccc2753160d314cade80979b2d055ee66aa9e2217e05e7e1",
+    "actual_driver": "7c31057e86f800e313b7d32080c7a5abaa7b92fef92254ac21b2e43febf16384",
+    "actual_plugin_file": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/get-size-derive2/16667a986d3ac90d/out/libget_size_derive2-16667a986d3ac90d.so",
+    "compiled_extern_receipt": {
+      "executable": null,
+      "features": [],
+      "filenames": [
+        "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/get-size-derive2/16667a986d3ac90d/out/libget_size_derive2-16667a986d3ac90d.so"
+      ],
+      "fresh": true,
+      "manifest_path": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/registry-home/registry/src/socket-firewall-registry.gateway.admin-0.internal.api.openai.org-42b3aaa0d2956984/get-size-derive2-0.11.0/Cargo.toml",
+      "package_id": "registry+https://github.com/rust-lang/crates.io-index#get-size-derive2@0.11.0",
+      "profile": {
+        "debug_assertions": true,
+        "debuginfo": 0,
+        "opt_level": "0",
+        "overflow_checks": true,
+        "test": false
+      },
+      "reason": "compiler-artifact",
+      "target": {
+        "crate_types": [
+          "proc-macro"
+        ],
+        "doc": true,
+        "doctest": true,
+        "edition": "2024",
+        "kind": [
+          "proc-macro"
+        ],
+        "name": "get_size_derive2",
+        "src_path": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/registry-home/registry/src/socket-firewall-registry.gateway.admin-0.internal.api.openai.org-42b3aaa0d2956984/get-size-derive2-0.11.0/src/lib.rs",
+        "test": true
+      }
+    },
+    "compiler_exit": 1,
+    "diagnostic": [
+      "`ignore` conflicts with mutually exclusive `size`"
+    ],
+    "header_sha256": "d331bcd453916b135c49f14907fe9a09040f68d359bf5c752f7af46a06ad7eb8",
+    "independent_rustc_cmd": [
+      "rustc",
+      "+ohm",
+      "--edition=2024",
+      "--crate-name",
+      "demonstrate_conflict",
+      "--crate-type=lib",
+      "--emit=metadata",
+      "--error-format=json",
+      "--extern",
+      "get_size_derive2=/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/get-size-derive2/16667a986d3ac90d/out/libget_size_derive2-16667a986d3ac90d.so",
+      "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/winner-native-plugin-and-leaves-v2/conflict.rs",
+      "-o",
+      "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/winner-native-plugin-and-leaves-v2/B/conflict.rmeta"
+    ],
+    "leaves": {
+      "ref-cast": {
+        "generated": {
+          "private.rs": {
+            "logical_path": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/ref-cast/8a4c8402e0e13832/out/private.rs",
+            "rustc_dep_files_containing_full_path": [
+              "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/ref-cast/8f7269a68b5c19a1/out/ref_cast-8f7269a68b5c19a1.d"
+            ],
+            "sha256": "6a36d7f9721fdf6fc969493d0546811e40184300cb335c3f86fb882e62db74d2",
+            "size": 89,
+            "source": "#[doc(hidden)]\npub mod __private25 {\n    #[doc(hidden)]\n    pub use crate::private::*;\n}\n"
+          }
+        },
+        "package": "registry+https://github.com/rust-lang/crates.io-index#ref-cast@1.0.25",
+        "real_dep_info": {
+          "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/ref-cast/8f7269a68b5c19a1/out/ref_cast-8f7269a68b5c19a1.d": "ac259a1166023d8b884355334178f46137cf92a405efed421c0e46437898efb2"
+        },
+        "script_output_root": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/ref-cast/8a4c8402e0e13832/out",
+        "target": {
+          "executable": null,
+          "features": [],
+          "filenames": [
+            "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/ref-cast/8f7269a68b5c19a1/out/libref_cast-8f7269a68b5c19a1.rlib",
+            "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/ref-cast/8f7269a68b5c19a1/out/libref_cast-8f7269a68b5c19a1.rmeta"
+          ],
+          "fresh": true,
+          "manifest_path": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/registry-home/registry/src/socket-firewall-registry.gateway.admin-0.internal.api.openai.org-42b3aaa0d2956984/ref-cast-1.0.25/Cargo.toml",
+          "package_id": "registry+https://github.com/rust-lang/crates.io-index#ref-cast@1.0.25",
+          "profile": {
+            "debug_assertions": true,
+            "debuginfo": "line-tables-only",
+            "opt_level": "1",
+            "overflow_checks": true,
+            "test": false
+          },
+          "reason": "compiler-artifact",
+          "target": {
+            "crate_types": [
+              "lib"
+            ],
+            "doc": true,
+            "doctest": true,
+            "edition": "2021",
+            "kind": [
+              "lib"
+            ],
+            "name": "ref_cast",
+            "src_path": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/registry-home/registry/src/socket-firewall-registry.gateway.admin-0.internal.api.openai.org-42b3aaa0d2956984/ref-cast-1.0.25/src/lib.rs",
+            "test": true
+          }
+        }
+      },
+      "rustversion": {
+        "generated": {
+          "version.expr": {
+            "logical_path": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/rustversion/62a854d4f2e38084/out/version.expr",
+            "rustc_dep_files_containing_full_path": [
+              "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/rustversion/9454b21a0ad115f8/out/rustversion-9454b21a0ad115f8.d"
+            ],
+            "sha256": "e12d7bfba40176d6d6d9b855b2e956199e57e5f8a733251133fdbd8da1e30bb9",
+            "size": 100,
+            "source": "crate::version::Version {\n    minor: 99,\n    patch: 0,\n    channel: crate::version::Channel::Dev,\n}\n"
+          }
+        },
+        "package": "registry+https://github.com/rust-lang/crates.io-index#rustversion@1.0.22",
+        "real_dep_info": {
+          "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/rustversion/9454b21a0ad115f8/out/rustversion-9454b21a0ad115f8.d": "9bf22f0ffd1e5c0aadeeb47c4415478a89cd00bd7a72c6d6545b9bab3c38c767"
+        },
+        "script_output_root": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/rustversion/62a854d4f2e38084/out",
+        "target": {
+          "executable": null,
+          "features": [],
+          "filenames": [
+            "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/rustversion/9454b21a0ad115f8/out/librustversion-9454b21a0ad115f8.so"
+          ],
+          "fresh": true,
+          "manifest_path": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/registry-home/registry/src/socket-firewall-registry.gateway.admin-0.internal.api.openai.org-42b3aaa0d2956984/rustversion-1.0.22/Cargo.toml",
+          "package_id": "registry+https://github.com/rust-lang/crates.io-index#rustversion@1.0.22",
+          "profile": {
+            "debug_assertions": true,
+            "debuginfo": 0,
+            "opt_level": "0",
+            "overflow_checks": true,
+            "test": false
+          },
+          "reason": "compiler-artifact",
+          "target": {
+            "crate_types": [
+              "proc-macro"
+            ],
+            "doc": true,
+            "doctest": true,
+            "edition": "2018",
+            "kind": [
+              "proc-macro"
+            ],
+            "name": "rustversion",
+            "src_path": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/registry-home/registry/src/socket-firewall-registry.gateway.admin-0.internal.api.openai.org-42b3aaa0d2956984/rustversion-1.0.22/src/lib.rs",
+            "test": true
+          }
+        }
+      },
+      "serde_core": {
+        "generated": {
+          "private.rs": {
+            "logical_path": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/serde_core/e5fe59208acb5b22/out/private.rs",
+            "rustc_dep_files_containing_full_path": [
+              "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/serde_core/5673d89936f64dc4/out/serde_core-5673d89936f64dc4.d"
+            ],
+            "sha256": "899563ce84b59b13cd7036e25f7897c1e730906f62a43aff14472d11c4229f34",
+            "size": 90,
+            "source": "#[doc(hidden)]\npub mod __private229 {\n    #[doc(hidden)]\n    pub use crate::private::*;\n}\n"
+          }
+        },
+        "package": "registry+https://github.com/rust-lang/crates.io-index#serde_core@1.0.229",
+        "real_dep_info": {
+          "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/serde_core/5673d89936f64dc4/out/serde_core-5673d89936f64dc4.d": "90cd817b648f9b9c7205e1a772e4c38c39c81a5aee39e3043eaaf11635ea96d9"
+        },
+        "script_output_root": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/serde_core/e5fe59208acb5b22/out",
+        "target": {
+          "executable": null,
+          "features": [
+            "alloc",
+            "default",
+            "rc",
+            "result",
+            "std"
+          ],
+          "filenames": [
+            "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/serde_core/5673d89936f64dc4/out/libserde_core-5673d89936f64dc4.rlib",
+            "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/serde_core/5673d89936f64dc4/out/libserde_core-5673d89936f64dc4.rmeta"
+          ],
+          "fresh": true,
+          "manifest_path": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/registry-home/registry/src/socket-firewall-registry.gateway.admin-0.internal.api.openai.org-42b3aaa0d2956984/serde_core-1.0.229/Cargo.toml",
+          "package_id": "registry+https://github.com/rust-lang/crates.io-index#serde_core@1.0.229",
+          "profile": {
+            "debug_assertions": true,
+            "debuginfo": "line-tables-only",
+            "opt_level": "1",
+            "overflow_checks": true,
+            "test": false
+          },
+          "reason": "compiler-artifact",
+          "target": {
+            "crate_types": [
+              "lib"
+            ],
+            "doc": true,
+            "doctest": true,
+            "edition": "2021",
+            "kind": [
+              "lib"
+            ],
+            "name": "serde_core",
+            "src_path": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/registry-home/registry/src/socket-firewall-registry.gateway.admin-0.internal.api.openai.org-42b3aaa0d2956984/serde_core-1.0.229/src/lib.rs",
+            "test": true
+          }
+        }
+      },
+      "terminfo": {
+        "generated": {
+          "names.rs": {
+            "logical_path": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/terminfo/d3aa77474e8d5895/out/names.rs",
+            "rustc_dep_files_containing_full_path": [
+              "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/terminfo/0623c128bc9080b9/out/terminfo-0623c128bc9080b9.d"
+            ],
+            "sha256": "513a5d1a536da91bec3b9a8013bad10fad2fb2991f89e1d5a5c689043cc3db2e",
+            "size": 93468
+          }
+        },
+        "package": "registry+https://github.com/rust-lang/crates.io-index#terminfo@0.9.0",
+        "real_dep_info": {
+          "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/terminfo/0623c128bc9080b9/out/terminfo-0623c128bc9080b9.d": "496b24eff052d7027db9c6b98cc2ed41f4f1aca023e4a01c722400e008973758"
+        },
+        "script_output_root": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/terminfo/d3aa77474e8d5895/out",
+        "target": {
+          "executable": null,
+          "features": [],
+          "filenames": [
+            "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/terminfo/0623c128bc9080b9/out/libterminfo-0623c128bc9080b9.rlib",
+            "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/terminfo/0623c128bc9080b9/out/libterminfo-0623c128bc9080b9.rmeta"
+          ],
+          "fresh": true,
+          "manifest_path": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/registry-home/registry/src/socket-firewall-registry.gateway.admin-0.internal.api.openai.org-42b3aaa0d2956984/terminfo-0.9.0/Cargo.toml",
+          "package_id": "registry+https://github.com/rust-lang/crates.io-index#terminfo@0.9.0",
+          "profile": {
+            "debug_assertions": true,
+            "debuginfo": "line-tables-only",
+            "opt_level": "1",
+            "overflow_checks": true,
+            "test": false
+          },
+          "reason": "compiler-artifact",
+          "target": {
+            "crate_types": [
+              "lib"
+            ],
+            "doc": true,
+            "doctest": true,
+            "edition": "2021",
+            "kind": [
+              "lib"
+            ],
+            "name": "terminfo",
+            "src_path": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/registry-home/registry/src/socket-firewall-registry.gateway.admin-0.internal.api.openai.org-42b3aaa0d2956984/terminfo-0.9.0/src/lib.rs",
+            "test": true
+          }
+        }
+      },
+      "thiserror": {
+        "generated": {
+          "private.rs": {
+            "logical_path": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/thiserror/37420569b10ad77d/out/private.rs",
+            "rustc_dep_files_containing_full_path": [
+              "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/thiserror/b72d4e5d8e4826c2/out/thiserror-b72d4e5d8e4826c2.d"
+            ],
+            "sha256": "c2ecb9a0205121ce129c369a8ba8abdab85c8658153dabff7b6b2b0d5a57c065",
+            "size": 89,
+            "source": "#[doc(hidden)]\npub mod __private20 {\n    #[doc(hidden)]\n    pub use crate::private::*;\n}\n"
+          }
+        },
+        "package": "registry+https://github.com/rust-lang/crates.io-index#thiserror@2.0.20",
+        "real_dep_info": {
+          "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/thiserror/b72d4e5d8e4826c2/out/thiserror-b72d4e5d8e4826c2.d": "8e7e478fd92f4dccb6c6ff44ae695845cdbf9e9769e2c3c49cdb1be4decc676b"
+        },
+        "script_output_root": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/thiserror/37420569b10ad77d/out",
+        "target": {
+          "executable": null,
+          "features": [
+            "default",
+            "std"
+          ],
+          "filenames": [
+            "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/thiserror/b72d4e5d8e4826c2/out/libthiserror-b72d4e5d8e4826c2.rlib",
+            "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/thiserror/b72d4e5d8e4826c2/out/libthiserror-b72d4e5d8e4826c2.rmeta"
+          ],
+          "fresh": true,
+          "manifest_path": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/registry-home/registry/src/socket-firewall-registry.gateway.admin-0.internal.api.openai.org-42b3aaa0d2956984/thiserror-2.0.20/Cargo.toml",
+          "package_id": "registry+https://github.com/rust-lang/crates.io-index#thiserror@2.0.20",
+          "profile": {
+            "debug_assertions": true,
+            "debuginfo": "line-tables-only",
+            "opt_level": "1",
+            "overflow_checks": true,
+            "test": false
+          },
+          "reason": "compiler-artifact",
+          "target": {
+            "crate_types": [
+              "lib"
+            ],
+            "doc": true,
+            "doctest": true,
+            "edition": "2021",
+            "kind": [
+              "lib"
+            ],
+            "name": "thiserror",
+            "src_path": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/registry-home/registry/src/socket-firewall-registry.gateway.admin-0.internal.api.openai.org-42b3aaa0d2956984/thiserror-2.0.20/src/lib.rs",
+            "test": true
+          }
+        }
+      }
+    },
+    "native_product_sha256": "b4fdb51067de47fa7ba8a6139de59a52d3ff09e8bce1356844b597bba179c1f4",
+    "source": "67c1fe7287d78cfa1e910865b62d685d1da8ab11ec8fc41d1574271079d69b00",
+    "text_sha256": "f68f920c1dcada5904a1bc6def17805e3157edcba9c21c4218243508dacf9ba2"
+  },
+  "C": {
+    "actual_cargo": "0f237cc3b506aa90c1224e6ed80f646566b424b78c8d74f288f6523d17fc8aa1",
+    "actual_driver": "7c31057e86f800e313b7d32080c7a5abaa7b92fef92254ac21b2e43febf16384",
+    "actual_plugin_file": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/get-size-derive2/16667a986d3ac90d/out/libget_size_derive2-16667a986d3ac90d.so",
+    "compiled_extern_receipt": {
+      "executable": null,
+      "features": [],
+      "filenames": [
+        "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/get-size-derive2/16667a986d3ac90d/out/libget_size_derive2-16667a986d3ac90d.so"
+      ],
+      "fresh": true,
+      "manifest_path": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/registry-home/registry/src/socket-firewall-registry.gateway.admin-0.internal.api.openai.org-42b3aaa0d2956984/get-size-derive2-0.11.0/Cargo.toml",
+      "package_id": "registry+https://github.com/rust-lang/crates.io-index#get-size-derive2@0.11.0",
+      "profile": {
+        "debug_assertions": true,
+        "debuginfo": 0,
+        "opt_level": "0",
+        "overflow_checks": true,
+        "test": false
+      },
+      "reason": "compiler-artifact",
+      "target": {
+        "crate_types": [
+          "proc-macro"
+        ],
+        "doc": true,
+        "doctest": true,
+        "edition": "2024",
+        "kind": [
+          "proc-macro"
+        ],
+        "name": "get_size_derive2",
+        "src_path": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/registry-home/registry/src/socket-firewall-registry.gateway.admin-0.internal.api.openai.org-42b3aaa0d2956984/get-size-derive2-0.11.0/src/lib.rs",
+        "test": true
+      }
+    },
+    "compiler_exit": 1,
+    "diagnostic": [
+      "`ignore` conflicts with mutually exclusive `size`"
+    ],
+    "header_sha256": "d331bcd453916b135c49f14907fe9a09040f68d359bf5c752f7af46a06ad7eb8",
+    "independent_rustc_cmd": [
+      "rustc",
+      "+ohm",
+      "--edition=2024",
+      "--crate-name",
+      "demonstrate_conflict",
+      "--crate-type=lib",
+      "--emit=metadata",
+      "--error-format=json",
+      "--extern",
+      "get_size_derive2=/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/get-size-derive2/16667a986d3ac90d/out/libget_size_derive2-16667a986d3ac90d.so",
+      "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/winner-native-plugin-and-leaves-v2/conflict.rs",
+      "-o",
+      "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/winner-native-plugin-and-leaves-v2/C/conflict.rmeta"
+    ],
+    "leaves": {
+      "ref-cast": {
+        "generated": {
+          "private.rs": {
+            "logical_path": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/ref-cast/8a4c8402e0e13832/out/private.rs",
+            "rustc_dep_files_containing_full_path": [
+              "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/ref-cast/8f7269a68b5c19a1/out/ref_cast-8f7269a68b5c19a1.d"
+            ],
+            "sha256": "6a36d7f9721fdf6fc969493d0546811e40184300cb335c3f86fb882e62db74d2",
+            "size": 89,
+            "source": "#[doc(hidden)]\npub mod __private25 {\n    #[doc(hidden)]\n    pub use crate::private::*;\n}\n"
+          }
+        },
+        "package": "registry+https://github.com/rust-lang/crates.io-index#ref-cast@1.0.25",
+        "real_dep_info": {
+          "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/ref-cast/8f7269a68b5c19a1/out/ref_cast-8f7269a68b5c19a1.d": "ac259a1166023d8b884355334178f46137cf92a405efed421c0e46437898efb2"
+        },
+        "script_output_root": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/ref-cast/8a4c8402e0e13832/out",
+        "target": {
+          "executable": null,
+          "features": [],
+          "filenames": [
+            "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/ref-cast/8f7269a68b5c19a1/out/libref_cast-8f7269a68b5c19a1.rlib",
+            "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/ref-cast/8f7269a68b5c19a1/out/libref_cast-8f7269a68b5c19a1.rmeta"
+          ],
+          "fresh": true,
+          "manifest_path": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/registry-home/registry/src/socket-firewall-registry.gateway.admin-0.internal.api.openai.org-42b3aaa0d2956984/ref-cast-1.0.25/Cargo.toml",
+          "package_id": "registry+https://github.com/rust-lang/crates.io-index#ref-cast@1.0.25",
+          "profile": {
+            "debug_assertions": true,
+            "debuginfo": "line-tables-only",
+            "opt_level": "1",
+            "overflow_checks": true,
+            "test": false
+          },
+          "reason": "compiler-artifact",
+          "target": {
+            "crate_types": [
+              "lib"
+            ],
+            "doc": true,
+            "doctest": true,
+            "edition": "2021",
+            "kind": [
+              "lib"
+            ],
+            "name": "ref_cast",
+            "src_path": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/registry-home/registry/src/socket-firewall-registry.gateway.admin-0.internal.api.openai.org-42b3aaa0d2956984/ref-cast-1.0.25/src/lib.rs",
+            "test": true
+          }
+        }
+      },
+      "rustversion": {
+        "generated": {
+          "version.expr": {
+            "logical_path": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/rustversion/62a854d4f2e38084/out/version.expr",
+            "rustc_dep_files_containing_full_path": [
+              "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/rustversion/9454b21a0ad115f8/out/rustversion-9454b21a0ad115f8.d"
+            ],
+            "sha256": "e12d7bfba40176d6d6d9b855b2e956199e57e5f8a733251133fdbd8da1e30bb9",
+            "size": 100,
+            "source": "crate::version::Version {\n    minor: 99,\n    patch: 0,\n    channel: crate::version::Channel::Dev,\n}\n"
+          }
+        },
+        "package": "registry+https://github.com/rust-lang/crates.io-index#rustversion@1.0.22",
+        "real_dep_info": {
+          "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/rustversion/9454b21a0ad115f8/out/rustversion-9454b21a0ad115f8.d": "9bf22f0ffd1e5c0aadeeb47c4415478a89cd00bd7a72c6d6545b9bab3c38c767"
+        },
+        "script_output_root": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/rustversion/62a854d4f2e38084/out",
+        "target": {
+          "executable": null,
+          "features": [],
+          "filenames": [
+            "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/rustversion/9454b21a0ad115f8/out/librustversion-9454b21a0ad115f8.so"
+          ],
+          "fresh": true,
+          "manifest_path": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/registry-home/registry/src/socket-firewall-registry.gateway.admin-0.internal.api.openai.org-42b3aaa0d2956984/rustversion-1.0.22/Cargo.toml",
+          "package_id": "registry+https://github.com/rust-lang/crates.io-index#rustversion@1.0.22",
+          "profile": {
+            "debug_assertions": true,
+            "debuginfo": 0,
+            "opt_level": "0",
+            "overflow_checks": true,
+            "test": false
+          },
+          "reason": "compiler-artifact",
+          "target": {
+            "crate_types": [
+              "proc-macro"
+            ],
+            "doc": true,
+            "doctest": true,
+            "edition": "2018",
+            "kind": [
+              "proc-macro"
+            ],
+            "name": "rustversion",
+            "src_path": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/registry-home/registry/src/socket-firewall-registry.gateway.admin-0.internal.api.openai.org-42b3aaa0d2956984/rustversion-1.0.22/src/lib.rs",
+            "test": true
+          }
+        }
+      },
+      "serde_core": {
+        "generated": {
+          "private.rs": {
+            "logical_path": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/serde_core/e5fe59208acb5b22/out/private.rs",
+            "rustc_dep_files_containing_full_path": [
+              "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/serde_core/5673d89936f64dc4/out/serde_core-5673d89936f64dc4.d"
+            ],
+            "sha256": "899563ce84b59b13cd7036e25f7897c1e730906f62a43aff14472d11c4229f34",
+            "size": 90,
+            "source": "#[doc(hidden)]\npub mod __private229 {\n    #[doc(hidden)]\n    pub use crate::private::*;\n}\n"
+          }
+        },
+        "package": "registry+https://github.com/rust-lang/crates.io-index#serde_core@1.0.229",
+        "real_dep_info": {
+          "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/serde_core/5673d89936f64dc4/out/serde_core-5673d89936f64dc4.d": "90cd817b648f9b9c7205e1a772e4c38c39c81a5aee39e3043eaaf11635ea96d9"
+        },
+        "script_output_root": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/serde_core/e5fe59208acb5b22/out",
+        "target": {
+          "executable": null,
+          "features": [
+            "alloc",
+            "default",
+            "rc",
+            "result",
+            "std"
+          ],
+          "filenames": [
+            "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/serde_core/5673d89936f64dc4/out/libserde_core-5673d89936f64dc4.rlib",
+            "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/serde_core/5673d89936f64dc4/out/libserde_core-5673d89936f64dc4.rmeta"
+          ],
+          "fresh": true,
+          "manifest_path": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/registry-home/registry/src/socket-firewall-registry.gateway.admin-0.internal.api.openai.org-42b3aaa0d2956984/serde_core-1.0.229/Cargo.toml",
+          "package_id": "registry+https://github.com/rust-lang/crates.io-index#serde_core@1.0.229",
+          "profile": {
+            "debug_assertions": true,
+            "debuginfo": "line-tables-only",
+            "opt_level": "1",
+            "overflow_checks": true,
+            "test": false
+          },
+          "reason": "compiler-artifact",
+          "target": {
+            "crate_types": [
+              "lib"
+            ],
+            "doc": true,
+            "doctest": true,
+            "edition": "2021",
+            "kind": [
+              "lib"
+            ],
+            "name": "serde_core",
+            "src_path": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/registry-home/registry/src/socket-firewall-registry.gateway.admin-0.internal.api.openai.org-42b3aaa0d2956984/serde_core-1.0.229/src/lib.rs",
+            "test": true
+          }
+        }
+      },
+      "terminfo": {
+        "generated": {
+          "names.rs": {
+            "logical_path": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/terminfo/d3aa77474e8d5895/out/names.rs",
+            "rustc_dep_files_containing_full_path": [
+              "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/terminfo/0623c128bc9080b9/out/terminfo-0623c128bc9080b9.d"
+            ],
+            "sha256": "513a5d1a536da91bec3b9a8013bad10fad2fb2991f89e1d5a5c689043cc3db2e",
+            "size": 93468
+          }
+        },
+        "package": "registry+https://github.com/rust-lang/crates.io-index#terminfo@0.9.0",
+        "real_dep_info": {
+          "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/terminfo/0623c128bc9080b9/out/terminfo-0623c128bc9080b9.d": "496b24eff052d7027db9c6b98cc2ed41f4f1aca023e4a01c722400e008973758"
+        },
+        "script_output_root": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/terminfo/d3aa77474e8d5895/out",
+        "target": {
+          "executable": null,
+          "features": [],
+          "filenames": [
+            "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/terminfo/0623c128bc9080b9/out/libterminfo-0623c128bc9080b9.rlib",
+            "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/terminfo/0623c128bc9080b9/out/libterminfo-0623c128bc9080b9.rmeta"
+          ],
+          "fresh": true,
+          "manifest_path": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/registry-home/registry/src/socket-firewall-registry.gateway.admin-0.internal.api.openai.org-42b3aaa0d2956984/terminfo-0.9.0/Cargo.toml",
+          "package_id": "registry+https://github.com/rust-lang/crates.io-index#terminfo@0.9.0",
+          "profile": {
+            "debug_assertions": true,
+            "debuginfo": "line-tables-only",
+            "opt_level": "1",
+            "overflow_checks": true,
+            "test": false
+          },
+          "reason": "compiler-artifact",
+          "target": {
+            "crate_types": [
+              "lib"
+            ],
+            "doc": true,
+            "doctest": true,
+            "edition": "2021",
+            "kind": [
+              "lib"
+            ],
+            "name": "terminfo",
+            "src_path": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/registry-home/registry/src/socket-firewall-registry.gateway.admin-0.internal.api.openai.org-42b3aaa0d2956984/terminfo-0.9.0/src/lib.rs",
+            "test": true
+          }
+        }
+      },
+      "thiserror": {
+        "generated": {
+          "private.rs": {
+            "logical_path": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/thiserror/37420569b10ad77d/out/private.rs",
+            "rustc_dep_files_containing_full_path": [
+              "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/thiserror/b72d4e5d8e4826c2/out/thiserror-b72d4e5d8e4826c2.d"
+            ],
+            "sha256": "c2ecb9a0205121ce129c369a8ba8abdab85c8658153dabff7b6b2b0d5a57c065",
+            "size": 89,
+            "source": "#[doc(hidden)]\npub mod __private20 {\n    #[doc(hidden)]\n    pub use crate::private::*;\n}\n"
+          }
+        },
+        "package": "registry+https://github.com/rust-lang/crates.io-index#thiserror@2.0.20",
+        "real_dep_info": {
+          "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/thiserror/b72d4e5d8e4826c2/out/thiserror-b72d4e5d8e4826c2.d": "8e7e478fd92f4dccb6c6ff44ae695845cdbf9e9769e2c3c49cdb1be4decc676b"
+        },
+        "script_output_root": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/thiserror/37420569b10ad77d/out",
+        "target": {
+          "executable": null,
+          "features": [
+            "default",
+            "std"
+          ],
+          "filenames": [
+            "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/thiserror/b72d4e5d8e4826c2/out/libthiserror-b72d4e5d8e4826c2.rlib",
+            "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/thiserror/b72d4e5d8e4826c2/out/libthiserror-b72d4e5d8e4826c2.rmeta"
+          ],
+          "fresh": true,
+          "manifest_path": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/registry-home/registry/src/socket-firewall-registry.gateway.admin-0.internal.api.openai.org-42b3aaa0d2956984/thiserror-2.0.20/Cargo.toml",
+          "package_id": "registry+https://github.com/rust-lang/crates.io-index#thiserror@2.0.20",
+          "profile": {
+            "debug_assertions": true,
+            "debuginfo": "line-tables-only",
+            "opt_level": "1",
+            "overflow_checks": true,
+            "test": false
+          },
+          "reason": "compiler-artifact",
+          "target": {
+            "crate_types": [
+              "lib"
+            ],
+            "doc": true,
+            "doctest": true,
+            "edition": "2021",
+            "kind": [
+              "lib"
+            ],
+            "name": "thiserror",
+            "src_path": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/registry-home/registry/src/socket-firewall-registry.gateway.admin-0.internal.api.openai.org-42b3aaa0d2956984/thiserror-2.0.20/src/lib.rs",
+            "test": true
+          }
+        }
+      }
+    },
+    "native_product_sha256": "b4fdb51067de47fa7ba8a6139de59a52d3ff09e8bce1356844b597bba179c1f4",
+    "source": "67c1fe7287d78cfa1e910865b62d685d1da8ab11ec8fc41d1574271079d69b00",
+    "text_sha256": "f68f920c1dcada5904a1bc6def17805e3157edcba9c21c4218243508dacf9ba2"
+  }
+}

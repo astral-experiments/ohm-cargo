@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/home/dev-user/.cache/ohm-233-position-qualified-20261027/mixed-registry-seed-programs-20261027/inspect-winning-registry.py", line 30, in <module>
+    so=actual.read_bytes();tab=elf(so);t=hashlib.sha256(tab[".text"]["data"]).hexdigest();assert t==reference["text_sha256"]
+                               ^^^^^^^
+  File "/home/dev-user/.cache/ohm-233-position-qualified-20261027/mixed-native-abc-protocol-h3-v2/archive_audit.py", line 18, in elf
+    assert data[:7]==b'\x7fELF\x02\x01\x01';assert int.from_bytes(data[16:18],'little')==1 and int.from_bytes(data[18:20],'little')==62
+                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError

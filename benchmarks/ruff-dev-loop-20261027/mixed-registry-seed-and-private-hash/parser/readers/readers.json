@@ -1,0 +1,222 @@
+[
+  {
+    "argv_sha": "dbb08393cbc831b31b4f6c8941e4c36c66cb6006671e400467af41b6733f4f21",
+    "bridge": null,
+    "bridge_sha": "1aef33611faed123d8e384fcf91240896544f32b0ec38f358f73bccf4143ca30",
+    "compiler_exit": 0,
+    "diagnostics": "",
+    "kind": "bridge",
+    "recipient": "retained-ich_warm-ast",
+    "runtime": null,
+    "target_rlib_sha": "bacf904f398d6b288484b904142a29009dadbf14ee98c805d21900eb80289246"
+  },
+  {
+    "argv_sha": "dbb08393cbc831b31b4f6c8941e4c36c66cb6006671e400467af41b6733f4f21",
+    "bridge": null,
+    "bridge_sha": "fb24c0ae94417487be167f70048740b5113f88d0a89bed981e87480140da1638",
+    "compiler_exit": 0,
+    "diagnostics": "",
+    "kind": "bridge",
+    "recipient": "empty-ich_warm-ast",
+    "runtime": null,
+    "target_rlib_sha": "5cd23dcf94ed52d192d6a6909f66f6587c174c5443499954ba8ace8406baec08"
+  },
+  {
+    "argv_sha": "dbb08393cbc831b31b4f6c8941e4c36c66cb6006671e400467af41b6733f4f21",
+    "bridge": null,
+    "bridge_sha": "1aef33611faed123d8e384fcf91240896544f32b0ec38f358f73bccf4143ca30",
+    "compiler_exit": 0,
+    "diagnostics": "",
+    "kind": "bridge",
+    "recipient": "retained-ich_cold-ast",
+    "runtime": null,
+    "target_rlib_sha": "f70774b1bd2f59f6269fdb10c40521fc237e0ca10e5e89729493559c8d78794a"
+  },
+  {
+    "argv_sha": "dbb08393cbc831b31b4f6c8941e4c36c66cb6006671e400467af41b6733f4f21",
+    "bridge": null,
+    "bridge_sha": "fb24c0ae94417487be167f70048740b5113f88d0a89bed981e87480140da1638",
+    "compiler_exit": 0,
+    "diagnostics": "",
+    "kind": "bridge",
+    "recipient": "empty-ich_cold-ast",
+    "runtime": null,
+    "target_rlib_sha": "ba387847c17400c4666aeccedaa20ae731ef75abc34c57f747fa0c4717a8d50e"
+  },
+  {
+    "argv_sha": "09cbf7f39cdcab170a0947c88aed1435c4a17e4552a88e4c3a38337e182f5fd0",
+    "bridge": "retained-ich_warm-ast",
+    "bridge_sha": "1aef33611faed123d8e384fcf91240896544f32b0ec38f358f73bccf4143ca30",
+    "compiler_exit": 0,
+    "diagnostics": "",
+    "kind": "caller",
+    "recipient": "retained-ich_warm-ast",
+    "runtime": "Bytes literal cannot be mixed with non-bytes literals at byte range 0..18",
+    "target_rlib_sha": "bacf904f398d6b288484b904142a29009dadbf14ee98c805d21900eb80289246"
+  },
+  {
+    "argv_sha": "09cbf7f39cdcab170a0947c88aed1435c4a17e4552a88e4c3a38337e182f5fd0",
+    "bridge": "empty-ich_warm-ast",
+    "bridge_sha": "fb24c0ae94417487be167f70048740b5113f88d0a89bed981e87480140da1638",
+    "compiler_exit": 1,
+    "diagnostics": "error[E0460]: found possibly newer version of crate `ruff_python_parser` which `ordinary_parser_bridge` depends on\n --> /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/parser-ich-callers-v2/caller.rs:1:28\n  |\n1 | fn main() { println!(\"{}\", ordinary_parser_bridge::observed()); }\n  |                            ^^^^^^^^^^^^^^^^^^^^^^\n  |\n  = note: perhaps that crate needs to be recompiled?\n  = note: the following crate versions were found:\n          crate `ruff_python_parser`: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/ruff_python_parser/73e0badb2a828505/out/libruff_python_parser-73e0badb2a828505.rmeta\n          crate `ruff_python_parser`: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/ruff_python_parser/73e0badb2a828505/out/libruff_python_parser-73e0badb2a828505.rlib\n          crate `ordinary_parser_bridge`: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/parser-ich-callers-v2/libordinary_parser_bridge_input.rlib\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0460`.\n",
+    "kind": "caller",
+    "recipient": "retained-ich_warm-ast",
+    "runtime": null,
+    "target_rlib_sha": "bacf904f398d6b288484b904142a29009dadbf14ee98c805d21900eb80289246"
+  },
+  {
+    "argv_sha": "09cbf7f39cdcab170a0947c88aed1435c4a17e4552a88e4c3a38337e182f5fd0",
+    "bridge": "retained-ich_cold-ast",
+    "bridge_sha": "1aef33611faed123d8e384fcf91240896544f32b0ec38f358f73bccf4143ca30",
+    "compiler_exit": 0,
+    "diagnostics": "",
+    "kind": "caller",
+    "recipient": "retained-ich_warm-ast",
+    "runtime": "Bytes literal cannot be mixed with non-bytes literals at byte range 0..18",
+    "target_rlib_sha": "bacf904f398d6b288484b904142a29009dadbf14ee98c805d21900eb80289246"
+  },
+  {
+    "argv_sha": "09cbf7f39cdcab170a0947c88aed1435c4a17e4552a88e4c3a38337e182f5fd0",
+    "bridge": "empty-ich_cold-ast",
+    "bridge_sha": "fb24c0ae94417487be167f70048740b5113f88d0a89bed981e87480140da1638",
+    "compiler_exit": 1,
+    "diagnostics": "error[E0460]: found possibly newer version of crate `ruff_python_parser` which `ordinary_parser_bridge` depends on\n --> /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/parser-ich-callers-v2/caller.rs:1:28\n  |\n1 | fn main() { println!(\"{}\", ordinary_parser_bridge::observed()); }\n  |                            ^^^^^^^^^^^^^^^^^^^^^^\n  |\n  = note: perhaps that crate needs to be recompiled?\n  = note: the following crate versions were found:\n          crate `ruff_python_parser`: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/ruff_python_parser/73e0badb2a828505/out/libruff_python_parser-73e0badb2a828505.rmeta\n          crate `ruff_python_parser`: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/ruff_python_parser/73e0badb2a828505/out/libruff_python_parser-73e0badb2a828505.rlib\n          crate `ordinary_parser_bridge`: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/parser-ich-callers-v2/libordinary_parser_bridge_input.rlib\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0460`.\n",
+    "kind": "caller",
+    "recipient": "retained-ich_warm-ast",
+    "runtime": null,
+    "target_rlib_sha": "bacf904f398d6b288484b904142a29009dadbf14ee98c805d21900eb80289246"
+  },
+  {
+    "argv_sha": "09cbf7f39cdcab170a0947c88aed1435c4a17e4552a88e4c3a38337e182f5fd0",
+    "bridge": "retained-ich_warm-ast",
+    "bridge_sha": "1aef33611faed123d8e384fcf91240896544f32b0ec38f358f73bccf4143ca30",
+    "compiler_exit": 1,
+    "diagnostics": "error[E0460]: found possibly newer version of crate `ruff_python_parser` which `ordinary_parser_bridge` depends on\n --> /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/parser-ich-callers-v2/caller.rs:1:28\n  |\n1 | fn main() { println!(\"{}\", ordinary_parser_bridge::observed()); }\n  |                            ^^^^^^^^^^^^^^^^^^^^^^\n  |\n  = note: perhaps that crate needs to be recompiled?\n  = note: the following crate versions were found:\n          crate `ruff_python_parser`: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/ruff_python_parser/73e0badb2a828505/out/libruff_python_parser-73e0badb2a828505.rmeta\n          crate `ruff_python_parser`: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/ruff_python_parser/73e0badb2a828505/out/libruff_python_parser-73e0badb2a828505.rlib\n          crate `ordinary_parser_bridge`: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/parser-ich-callers-v2/libordinary_parser_bridge_input.rlib\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0460`.\n",
+    "kind": "caller",
+    "recipient": "empty-ich_warm-ast",
+    "runtime": null,
+    "target_rlib_sha": "5cd23dcf94ed52d192d6a6909f66f6587c174c5443499954ba8ace8406baec08"
+  },
+  {
+    "argv_sha": "09cbf7f39cdcab170a0947c88aed1435c4a17e4552a88e4c3a38337e182f5fd0",
+    "bridge": "empty-ich_warm-ast",
+    "bridge_sha": "fb24c0ae94417487be167f70048740b5113f88d0a89bed981e87480140da1638",
+    "compiler_exit": 0,
+    "diagnostics": "",
+    "kind": "caller",
+    "recipient": "empty-ich_warm-ast",
+    "runtime": "Bytes literal cannot be mixed with non-bytes literals at byte range 0..18",
+    "target_rlib_sha": "5cd23dcf94ed52d192d6a6909f66f6587c174c5443499954ba8ace8406baec08"
+  },
+  {
+    "argv_sha": "09cbf7f39cdcab170a0947c88aed1435c4a17e4552a88e4c3a38337e182f5fd0",
+    "bridge": "retained-ich_cold-ast",
+    "bridge_sha": "1aef33611faed123d8e384fcf91240896544f32b0ec38f358f73bccf4143ca30",
+    "compiler_exit": 1,
+    "diagnostics": "error[E0460]: found possibly newer version of crate `ruff_python_parser` which `ordinary_parser_bridge` depends on\n --> /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/parser-ich-callers-v2/caller.rs:1:28\n  |\n1 | fn main() { println!(\"{}\", ordinary_parser_bridge::observed()); }\n  |                            ^^^^^^^^^^^^^^^^^^^^^^\n  |\n  = note: perhaps that crate needs to be recompiled?\n  = note: the following crate versions were found:\n          crate `ruff_python_parser`: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/ruff_python_parser/73e0badb2a828505/out/libruff_python_parser-73e0badb2a828505.rmeta\n          crate `ruff_python_parser`: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/ruff_python_parser/73e0badb2a828505/out/libruff_python_parser-73e0badb2a828505.rlib\n          crate `ordinary_parser_bridge`: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/parser-ich-callers-v2/libordinary_parser_bridge_input.rlib\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0460`.\n",
+    "kind": "caller",
+    "recipient": "empty-ich_warm-ast",
+    "runtime": null,
+    "target_rlib_sha": "5cd23dcf94ed52d192d6a6909f66f6587c174c5443499954ba8ace8406baec08"
+  },
+  {
+    "argv_sha": "09cbf7f39cdcab170a0947c88aed1435c4a17e4552a88e4c3a38337e182f5fd0",
+    "bridge": "empty-ich_cold-ast",
+    "bridge_sha": "fb24c0ae94417487be167f70048740b5113f88d0a89bed981e87480140da1638",
+    "compiler_exit": 0,
+    "diagnostics": "",
+    "kind": "caller",
+    "recipient": "empty-ich_warm-ast",
+    "runtime": "Bytes literal cannot be mixed with non-bytes literals at byte range 0..18",
+    "target_rlib_sha": "5cd23dcf94ed52d192d6a6909f66f6587c174c5443499954ba8ace8406baec08"
+  },
+  {
+    "argv_sha": "09cbf7f39cdcab170a0947c88aed1435c4a17e4552a88e4c3a38337e182f5fd0",
+    "bridge": "retained-ich_warm-ast",
+    "bridge_sha": "1aef33611faed123d8e384fcf91240896544f32b0ec38f358f73bccf4143ca30",
+    "compiler_exit": 0,
+    "diagnostics": "",
+    "kind": "caller",
+    "recipient": "retained-ich_cold-ast",
+    "runtime": "Bytes literal cannot be mixed with non-bytes literals at byte range 0..18",
+    "target_rlib_sha": "f70774b1bd2f59f6269fdb10c40521fc237e0ca10e5e89729493559c8d78794a"
+  },
+  {
+    "argv_sha": "09cbf7f39cdcab170a0947c88aed1435c4a17e4552a88e4c3a38337e182f5fd0",
+    "bridge": "empty-ich_warm-ast",
+    "bridge_sha": "fb24c0ae94417487be167f70048740b5113f88d0a89bed981e87480140da1638",
+    "compiler_exit": 1,
+    "diagnostics": "error[E0460]: found possibly newer version of crate `ruff_python_parser` which `ordinary_parser_bridge` depends on\n --> /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/parser-ich-callers-v2/caller.rs:1:28\n  |\n1 | fn main() { println!(\"{}\", ordinary_parser_bridge::observed()); }\n  |                            ^^^^^^^^^^^^^^^^^^^^^^\n  |\n  = note: perhaps that crate needs to be recompiled?\n  = note: the following crate versions were found:\n          crate `ruff_python_parser`: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/ruff_python_parser/73e0badb2a828505/out/libruff_python_parser-73e0badb2a828505.rmeta\n          crate `ruff_python_parser`: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/ruff_python_parser/73e0badb2a828505/out/libruff_python_parser-73e0badb2a828505.rlib\n          crate `ordinary_parser_bridge`: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/parser-ich-callers-v2/libordinary_parser_bridge_input.rlib\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0460`.\n",
+    "kind": "caller",
+    "recipient": "retained-ich_cold-ast",
+    "runtime": null,
+    "target_rlib_sha": "f70774b1bd2f59f6269fdb10c40521fc237e0ca10e5e89729493559c8d78794a"
+  },
+  {
+    "argv_sha": "09cbf7f39cdcab170a0947c88aed1435c4a17e4552a88e4c3a38337e182f5fd0",
+    "bridge": "retained-ich_cold-ast",
+    "bridge_sha": "1aef33611faed123d8e384fcf91240896544f32b0ec38f358f73bccf4143ca30",
+    "compiler_exit": 0,
+    "diagnostics": "",
+    "kind": "caller",
+    "recipient": "retained-ich_cold-ast",
+    "runtime": "Bytes literal cannot be mixed with non-bytes literals at byte range 0..18",
+    "target_rlib_sha": "f70774b1bd2f59f6269fdb10c40521fc237e0ca10e5e89729493559c8d78794a"
+  },
+  {
+    "argv_sha": "09cbf7f39cdcab170a0947c88aed1435c4a17e4552a88e4c3a38337e182f5fd0",
+    "bridge": "empty-ich_cold-ast",
+    "bridge_sha": "fb24c0ae94417487be167f70048740b5113f88d0a89bed981e87480140da1638",
+    "compiler_exit": 1,
+    "diagnostics": "error[E0460]: found possibly newer version of crate `ruff_python_parser` which `ordinary_parser_bridge` depends on\n --> /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/parser-ich-callers-v2/caller.rs:1:28\n  |\n1 | fn main() { println!(\"{}\", ordinary_parser_bridge::observed()); }\n  |                            ^^^^^^^^^^^^^^^^^^^^^^\n  |\n  = note: perhaps that crate needs to be recompiled?\n  = note: the following crate versions were found:\n          crate `ruff_python_parser`: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/ruff_python_parser/73e0badb2a828505/out/libruff_python_parser-73e0badb2a828505.rmeta\n          crate `ruff_python_parser`: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/ruff_python_parser/73e0badb2a828505/out/libruff_python_parser-73e0badb2a828505.rlib\n          crate `ordinary_parser_bridge`: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/parser-ich-callers-v2/libordinary_parser_bridge_input.rlib\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0460`.\n",
+    "kind": "caller",
+    "recipient": "retained-ich_cold-ast",
+    "runtime": null,
+    "target_rlib_sha": "f70774b1bd2f59f6269fdb10c40521fc237e0ca10e5e89729493559c8d78794a"
+  },
+  {
+    "argv_sha": "09cbf7f39cdcab170a0947c88aed1435c4a17e4552a88e4c3a38337e182f5fd0",
+    "bridge": "retained-ich_warm-ast",
+    "bridge_sha": "1aef33611faed123d8e384fcf91240896544f32b0ec38f358f73bccf4143ca30",
+    "compiler_exit": 1,
+    "diagnostics": "error[E0460]: found possibly newer version of crate `ruff_python_parser` which `ordinary_parser_bridge` depends on\n --> /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/parser-ich-callers-v2/caller.rs:1:28\n  |\n1 | fn main() { println!(\"{}\", ordinary_parser_bridge::observed()); }\n  |                            ^^^^^^^^^^^^^^^^^^^^^^\n  |\n  = note: perhaps that crate needs to be recompiled?\n  = note: the following crate versions were found:\n          crate `ruff_python_parser`: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/ruff_python_parser/73e0badb2a828505/out/libruff_python_parser-73e0badb2a828505.rmeta\n          crate `ruff_python_parser`: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/ruff_python_parser/73e0badb2a828505/out/libruff_python_parser-73e0badb2a828505.rlib\n          crate `ordinary_parser_bridge`: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/parser-ich-callers-v2/libordinary_parser_bridge_input.rlib\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0460`.\n",
+    "kind": "caller",
+    "recipient": "empty-ich_cold-ast",
+    "runtime": null,
+    "target_rlib_sha": "ba387847c17400c4666aeccedaa20ae731ef75abc34c57f747fa0c4717a8d50e"
+  },
+  {
+    "argv_sha": "09cbf7f39cdcab170a0947c88aed1435c4a17e4552a88e4c3a38337e182f5fd0",
+    "bridge": "empty-ich_warm-ast",
+    "bridge_sha": "fb24c0ae94417487be167f70048740b5113f88d0a89bed981e87480140da1638",
+    "compiler_exit": 0,
+    "diagnostics": "",
+    "kind": "caller",
+    "recipient": "empty-ich_cold-ast",
+    "runtime": "Bytes literal cannot be mixed with non-bytes literals at byte range 0..18",
+    "target_rlib_sha": "ba387847c17400c4666aeccedaa20ae731ef75abc34c57f747fa0c4717a8d50e"
+  },
+  {
+    "argv_sha": "09cbf7f39cdcab170a0947c88aed1435c4a17e4552a88e4c3a38337e182f5fd0",
+    "bridge": "retained-ich_cold-ast",
+    "bridge_sha": "1aef33611faed123d8e384fcf91240896544f32b0ec38f358f73bccf4143ca30",
+    "compiler_exit": 1,
+    "diagnostics": "error[E0460]: found possibly newer version of crate `ruff_python_parser` which `ordinary_parser_bridge` depends on\n --> /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/parser-ich-callers-v2/caller.rs:1:28\n  |\n1 | fn main() { println!(\"{}\", ordinary_parser_bridge::observed()); }\n  |                            ^^^^^^^^^^^^^^^^^^^^^^\n  |\n  = note: perhaps that crate needs to be recompiled?\n  = note: the following crate versions were found:\n          crate `ruff_python_parser`: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/ruff_python_parser/73e0badb2a828505/out/libruff_python_parser-73e0badb2a828505.rmeta\n          crate `ruff_python_parser`: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/ruff_python_parser/73e0badb2a828505/out/libruff_python_parser-73e0badb2a828505.rlib\n          crate `ordinary_parser_bridge`: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/parser-ich-callers-v2/libordinary_parser_bridge_input.rlib\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0460`.\n",
+    "kind": "caller",
+    "recipient": "empty-ich_cold-ast",
+    "runtime": null,
+    "target_rlib_sha": "ba387847c17400c4666aeccedaa20ae731ef75abc34c57f747fa0c4717a8d50e"
+  },
+  {
+    "argv_sha": "09cbf7f39cdcab170a0947c88aed1435c4a17e4552a88e4c3a38337e182f5fd0",
+    "bridge": "empty-ich_cold-ast",
+    "bridge_sha": "fb24c0ae94417487be167f70048740b5113f88d0a89bed981e87480140da1638",
+    "compiler_exit": 0,
+    "diagnostics": "",
+    "kind": "caller",
+    "recipient": "empty-ich_cold-ast",
+    "runtime": "Bytes literal cannot be mixed with non-bytes literals at byte range 0..18",
+    "target_rlib_sha": "ba387847c17400c4666aeccedaa20ae731ef75abc34c57f747fa0c4717a8d50e"
+  }
+]

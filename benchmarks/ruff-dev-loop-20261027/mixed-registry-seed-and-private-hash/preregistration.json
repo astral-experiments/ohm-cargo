@@ -1,0 +1,29 @@
+{
+  "purpose": "Unscored authentic cross-compiler registry input construction for the 93526150df Ruff workspace. This record registers no timing experiment.",
+  "prerequisite_failure_commit": "2574186849c7a41c9bc6d29698ef3101af5909d9",
+  "rust_older": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+  "rust_newer": "7c31057e86f800e313b7d32080c7a5abaa7b92fef92254ac21b2e43febf16384",
+  "scope": "Cargo's native build of get-size-derive2@0.11.0 as a dependency of the unmodified full Ruff workspace, original package ID, context and native artifact on each driver. No changes to registry sources, Rust flags, compiler credentials or artifact mappings.",
+  "fixed_reference": {
+    "donor_command": "H3-v2 build/B/cold native full workspace",
+    "cargo": "dd5cab154b8dcd09ccc2753160d314cade80979b2d055ee66aa9e2217e05e7e1",
+    "rustc_crate_disambiguator": "14aee8f643886389",
+    "unit_directory": "get-size-derive2/16667a986d3ac90d",
+    "entire_shared_object_sha256": "b4fdb51067de47fa7ba8a6139de59a52d3ff09e8bce1356844b597bba179c1f4",
+    "text_sha256": "f68f920c1dcada5904a1bc6def17805e3157edcba9c21c4218243508dacf9ba2",
+    "public_and_private_rust_hash": "5a1d7836694cdcaa64b8157ba0d0da68",
+    "expected_first_conflict": "`ignore` conflicts with mutually exclusive `size`"
+  },
+  "order": [
+    "First check whether a physically separate unmodified B-context registry projection maps naturally to the older compiler's full Cargo namespace, without writing any artifact below the other compiler's credential.",
+    "If it does not, run at most 24 genuine cargo +ohm build --locked --offline attempts in the older compiler's native workspace context with the producer explicitly cold. Use disjoint unscored directories or restore only the owned starting donor. Log every attempted producer and actual command/exit. A failed or interrupted attempt that began compiling the producer counts toward the cap. A rejected producer may end the unscored command as soon as Cargo advertises it.",
+    "Stop at the first ordinary-Cargo producer whose entire .so SHA256 exactly equals the fixed reference. Verify its decoded root/sections, three-conflict behavior and transitive compiler argv/extern/build-script closure. Complete that whole ordinary Cargo command successfully. Keep all earlier rejected receipts.",
+    "If the cap is exhausted, or if a required input fails to materialize, report the unmatched Rust marginal and do not score it. The already separate same-compiler B/C investigation can still proceed."
+  ],
+  "eligibility": [
+    "All matching work is unscored. Timing never participates in seed selection and cannot start without another immutable plan and release.",
+    "Take only authenticated registry compiler and run-build-script unit directories from a terminal genuine Cargo build. Check archive sha256 against Cargo.lock, actual unpacked source, exact .so bytes, dependent registry .rmeta and pinned host tools/argv. Require zero initial workspace products, script results and fingerprints.",
+    "Create independent physical workspace-cold states; verify their complete first-diverging graph. Repeated independent cold controls, raw external and embedded metadata, both mixed .so, native archive payload/symbol associations, direct and transitive ordinary Rust callers across arms, expected diagnostics and same-state forced-full gates remain in force.",
+    "Hold 25 GiB usable on each physical pilot medium and preserve the unchanged 107 GiB primary H3 formal admission floor. Keep all historical records."
+  ]
+}

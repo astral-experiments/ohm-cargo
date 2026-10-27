@@ -1,0 +1,222 @@
+[
+  {
+    "argv_sha": "48f5e1c33f9c6a60683876577765ca99e8848bdeb5619f46e86423fb65dc8b4b",
+    "bridge": null,
+    "bridge_sha": "0e44cf8cf9e61229b2994d86e4d78976b7c46e888d06560cbb158bed5c2fe8d6",
+    "compiler_exit": 0,
+    "diagnostics": "",
+    "kind": "bridge",
+    "recipient": "retained-ich_warm-ast",
+    "runtime": null,
+    "target_rlib_sha": "bacf904f398d6b288484b904142a29009dadbf14ee98c805d21900eb80289246"
+  },
+  {
+    "argv_sha": "48f5e1c33f9c6a60683876577765ca99e8848bdeb5619f46e86423fb65dc8b4b",
+    "bridge": null,
+    "bridge_sha": "dd7a6a9405e716e8bd1e05e6fdd09f0d9e1cbe7729204b00dc59198aa18eba18",
+    "compiler_exit": 0,
+    "diagnostics": "",
+    "kind": "bridge",
+    "recipient": "empty-ich_warm-ast",
+    "runtime": null,
+    "target_rlib_sha": "5cd23dcf94ed52d192d6a6909f66f6587c174c5443499954ba8ace8406baec08"
+  },
+  {
+    "argv_sha": "48f5e1c33f9c6a60683876577765ca99e8848bdeb5619f46e86423fb65dc8b4b",
+    "bridge": null,
+    "bridge_sha": "0e44cf8cf9e61229b2994d86e4d78976b7c46e888d06560cbb158bed5c2fe8d6",
+    "compiler_exit": 0,
+    "diagnostics": "",
+    "kind": "bridge",
+    "recipient": "retained-ich_cold-ast",
+    "runtime": null,
+    "target_rlib_sha": "f70774b1bd2f59f6269fdb10c40521fc237e0ca10e5e89729493559c8d78794a"
+  },
+  {
+    "argv_sha": "48f5e1c33f9c6a60683876577765ca99e8848bdeb5619f46e86423fb65dc8b4b",
+    "bridge": null,
+    "bridge_sha": "dd7a6a9405e716e8bd1e05e6fdd09f0d9e1cbe7729204b00dc59198aa18eba18",
+    "compiler_exit": 0,
+    "diagnostics": "",
+    "kind": "bridge",
+    "recipient": "empty-ich_cold-ast",
+    "runtime": null,
+    "target_rlib_sha": "ba387847c17400c4666aeccedaa20ae731ef75abc34c57f747fa0c4717a8d50e"
+  },
+  {
+    "argv_sha": "dd25a95993a5f14ad7a7364bc2b8a40920de7ad764c61eab1b53270a0884c1b7",
+    "bridge": "retained-ich_warm-ast",
+    "bridge_sha": "0e44cf8cf9e61229b2994d86e4d78976b7c46e888d06560cbb158bed5c2fe8d6",
+    "compiler_exit": 1,
+    "diagnostics": "error: extern location for ordinary_parser_bridge is of an unknown type: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/parser-ich-callers/bridge-input.rlib\n --> /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/parser-ich-callers/caller.rs:1:28\n  |\n1 | fn main() { println!(\"{}\", ordinary_parser_bridge::observed()); }\n  |                            ^^^^^^^^^^^^^^^^^^^^^^\n\nerror: file name should be lib*.rlib or lib*.so\n --> /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/parser-ich-callers/caller.rs:1:28\n  |\n1 | fn main() { println!(\"{}\", ordinary_parser_bridge::observed()); }\n  |                            ^^^^^^^^^^^^^^^^^^^^^^\n\nerror[E0463]: can't find crate for `ordinary_parser_bridge`\n --> /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/parser-ich-callers/caller.rs:1:28\n  |\n1 | fn main() { println!(\"{}\", ordinary_parser_bridge::observed()); }\n  |                            ^^^^^^^^^^^^^^^^^^^^^^ can't find crate\n\nerror: aborting due to 3 previous errors\n\nFor more information about this error, try `rustc --explain E0463`.\n",
+    "kind": "caller",
+    "recipient": "retained-ich_warm-ast",
+    "runtime": null,
+    "target_rlib_sha": "bacf904f398d6b288484b904142a29009dadbf14ee98c805d21900eb80289246"
+  },
+  {
+    "argv_sha": "dd25a95993a5f14ad7a7364bc2b8a40920de7ad764c61eab1b53270a0884c1b7",
+    "bridge": "empty-ich_warm-ast",
+    "bridge_sha": "dd7a6a9405e716e8bd1e05e6fdd09f0d9e1cbe7729204b00dc59198aa18eba18",
+    "compiler_exit": 1,
+    "diagnostics": "error: extern location for ordinary_parser_bridge is of an unknown type: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/parser-ich-callers/bridge-input.rlib\n --> /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/parser-ich-callers/caller.rs:1:28\n  |\n1 | fn main() { println!(\"{}\", ordinary_parser_bridge::observed()); }\n  |                            ^^^^^^^^^^^^^^^^^^^^^^\n\nerror: file name should be lib*.rlib or lib*.so\n --> /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/parser-ich-callers/caller.rs:1:28\n  |\n1 | fn main() { println!(\"{}\", ordinary_parser_bridge::observed()); }\n  |                            ^^^^^^^^^^^^^^^^^^^^^^\n\nerror[E0463]: can't find crate for `ordinary_parser_bridge`\n --> /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/parser-ich-callers/caller.rs:1:28\n  |\n1 | fn main() { println!(\"{}\", ordinary_parser_bridge::observed()); }\n  |                            ^^^^^^^^^^^^^^^^^^^^^^ can't find crate\n\nerror: aborting due to 3 previous errors\n\nFor more information about this error, try `rustc --explain E0463`.\n",
+    "kind": "caller",
+    "recipient": "retained-ich_warm-ast",
+    "runtime": null,
+    "target_rlib_sha": "bacf904f398d6b288484b904142a29009dadbf14ee98c805d21900eb80289246"
+  },
+  {
+    "argv_sha": "dd25a95993a5f14ad7a7364bc2b8a40920de7ad764c61eab1b53270a0884c1b7",
+    "bridge": "retained-ich_cold-ast",
+    "bridge_sha": "0e44cf8cf9e61229b2994d86e4d78976b7c46e888d06560cbb158bed5c2fe8d6",
+    "compiler_exit": 1,
+    "diagnostics": "error: extern location for ordinary_parser_bridge is of an unknown type: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/parser-ich-callers/bridge-input.rlib\n --> /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/parser-ich-callers/caller.rs:1:28\n  |\n1 | fn main() { println!(\"{}\", ordinary_parser_bridge::observed()); }\n  |                            ^^^^^^^^^^^^^^^^^^^^^^\n\nerror: file name should be lib*.rlib or lib*.so\n --> /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/parser-ich-callers/caller.rs:1:28\n  |\n1 | fn main() { println!(\"{}\", ordinary_parser_bridge::observed()); }\n  |                            ^^^^^^^^^^^^^^^^^^^^^^\n\nerror[E0463]: can't find crate for `ordinary_parser_bridge`\n --> /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/parser-ich-callers/caller.rs:1:28\n  |\n1 | fn main() { println!(\"{}\", ordinary_parser_bridge::observed()); }\n  |                            ^^^^^^^^^^^^^^^^^^^^^^ can't find crate\n\nerror: aborting due to 3 previous errors\n\nFor more information about this error, try `rustc --explain E0463`.\n",
+    "kind": "caller",
+    "recipient": "retained-ich_warm-ast",
+    "runtime": null,
+    "target_rlib_sha": "bacf904f398d6b288484b904142a29009dadbf14ee98c805d21900eb80289246"
+  },
+  {
+    "argv_sha": "dd25a95993a5f14ad7a7364bc2b8a40920de7ad764c61eab1b53270a0884c1b7",
+    "bridge": "empty-ich_cold-ast",
+    "bridge_sha": "dd7a6a9405e716e8bd1e05e6fdd09f0d9e1cbe7729204b00dc59198aa18eba18",
+    "compiler_exit": 1,
+    "diagnostics": "error: extern location for ordinary_parser_bridge is of an unknown type: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/parser-ich-callers/bridge-input.rlib\n --> /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/parser-ich-callers/caller.rs:1:28\n  |\n1 | fn main() { println!(\"{}\", ordinary_parser_bridge::observed()); }\n  |                            ^^^^^^^^^^^^^^^^^^^^^^\n\nerror: file name should be lib*.rlib or lib*.so\n --> /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/parser-ich-callers/caller.rs:1:28\n  |\n1 | fn main() { println!(\"{}\", ordinary_parser_bridge::observed()); }\n  |                            ^^^^^^^^^^^^^^^^^^^^^^\n\nerror[E0463]: can't find crate for `ordinary_parser_bridge`\n --> /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/parser-ich-callers/caller.rs:1:28\n  |\n1 | fn main() { println!(\"{}\", ordinary_parser_bridge::observed()); }\n  |                            ^^^^^^^^^^^^^^^^^^^^^^ can't find crate\n\nerror: aborting due to 3 previous errors\n\nFor more information about this error, try `rustc --explain E0463`.\n",
+    "kind": "caller",
+    "recipient": "retained-ich_warm-ast",
+    "runtime": null,
+    "target_rlib_sha": "bacf904f398d6b288484b904142a29009dadbf14ee98c805d21900eb80289246"
+  },
+  {
+    "argv_sha": "dd25a95993a5f14ad7a7364bc2b8a40920de7ad764c61eab1b53270a0884c1b7",
+    "bridge": "retained-ich_warm-ast",
+    "bridge_sha": "0e44cf8cf9e61229b2994d86e4d78976b7c46e888d06560cbb158bed5c2fe8d6",
+    "compiler_exit": 1,
+    "diagnostics": "error: extern location for ordinary_parser_bridge is of an unknown type: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/parser-ich-callers/bridge-input.rlib\n --> /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/parser-ich-callers/caller.rs:1:28\n  |\n1 | fn main() { println!(\"{}\", ordinary_parser_bridge::observed()); }\n  |                            ^^^^^^^^^^^^^^^^^^^^^^\n\nerror: file name should be lib*.rlib or lib*.so\n --> /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/parser-ich-callers/caller.rs:1:28\n  |\n1 | fn main() { println!(\"{}\", ordinary_parser_bridge::observed()); }\n  |                            ^^^^^^^^^^^^^^^^^^^^^^\n\nerror[E0463]: can't find crate for `ordinary_parser_bridge`\n --> /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/parser-ich-callers/caller.rs:1:28\n  |\n1 | fn main() { println!(\"{}\", ordinary_parser_bridge::observed()); }\n  |                            ^^^^^^^^^^^^^^^^^^^^^^ can't find crate\n\nerror: aborting due to 3 previous errors\n\nFor more information about this error, try `rustc --explain E0463`.\n",
+    "kind": "caller",
+    "recipient": "empty-ich_warm-ast",
+    "runtime": null,
+    "target_rlib_sha": "5cd23dcf94ed52d192d6a6909f66f6587c174c5443499954ba8ace8406baec08"
+  },
+  {
+    "argv_sha": "dd25a95993a5f14ad7a7364bc2b8a40920de7ad764c61eab1b53270a0884c1b7",
+    "bridge": "empty-ich_warm-ast",
+    "bridge_sha": "dd7a6a9405e716e8bd1e05e6fdd09f0d9e1cbe7729204b00dc59198aa18eba18",
+    "compiler_exit": 1,
+    "diagnostics": "error: extern location for ordinary_parser_bridge is of an unknown type: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/parser-ich-callers/bridge-input.rlib\n --> /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/parser-ich-callers/caller.rs:1:28\n  |\n1 | fn main() { println!(\"{}\", ordinary_parser_bridge::observed()); }\n  |                            ^^^^^^^^^^^^^^^^^^^^^^\n\nerror: file name should be lib*.rlib or lib*.so\n --> /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/parser-ich-callers/caller.rs:1:28\n  |\n1 | fn main() { println!(\"{}\", ordinary_parser_bridge::observed()); }\n  |                            ^^^^^^^^^^^^^^^^^^^^^^\n\nerror[E0463]: can't find crate for `ordinary_parser_bridge`\n --> /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/parser-ich-callers/caller.rs:1:28\n  |\n1 | fn main() { println!(\"{}\", ordinary_parser_bridge::observed()); }\n  |                            ^^^^^^^^^^^^^^^^^^^^^^ can't find crate\n\nerror: aborting due to 3 previous errors\n\nFor more information about this error, try `rustc --explain E0463`.\n",
+    "kind": "caller",
+    "recipient": "empty-ich_warm-ast",
+    "runtime": null,
+    "target_rlib_sha": "5cd23dcf94ed52d192d6a6909f66f6587c174c5443499954ba8ace8406baec08"
+  },
+  {
+    "argv_sha": "dd25a95993a5f14ad7a7364bc2b8a40920de7ad764c61eab1b53270a0884c1b7",
+    "bridge": "retained-ich_cold-ast",
+    "bridge_sha": "0e44cf8cf9e61229b2994d86e4d78976b7c46e888d06560cbb158bed5c2fe8d6",
+    "compiler_exit": 1,
+    "diagnostics": "error: extern location for ordinary_parser_bridge is of an unknown type: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/parser-ich-callers/bridge-input.rlib\n --> /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/parser-ich-callers/caller.rs:1:28\n  |\n1 | fn main() { println!(\"{}\", ordinary_parser_bridge::observed()); }\n  |                            ^^^^^^^^^^^^^^^^^^^^^^\n\nerror: file name should be lib*.rlib or lib*.so\n --> /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/parser-ich-callers/caller.rs:1:28\n  |\n1 | fn main() { println!(\"{}\", ordinary_parser_bridge::observed()); }\n  |                            ^^^^^^^^^^^^^^^^^^^^^^\n\nerror[E0463]: can't find crate for `ordinary_parser_bridge`\n --> /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/parser-ich-callers/caller.rs:1:28\n  |\n1 | fn main() { println!(\"{}\", ordinary_parser_bridge::observed()); }\n  |                            ^^^^^^^^^^^^^^^^^^^^^^ can't find crate\n\nerror: aborting due to 3 previous errors\n\nFor more information about this error, try `rustc --explain E0463`.\n",
+    "kind": "caller",
+    "recipient": "empty-ich_warm-ast",
+    "runtime": null,
+    "target_rlib_sha": "5cd23dcf94ed52d192d6a6909f66f6587c174c5443499954ba8ace8406baec08"
+  },
+  {
+    "argv_sha": "dd25a95993a5f14ad7a7364bc2b8a40920de7ad764c61eab1b53270a0884c1b7",
+    "bridge": "empty-ich_cold-ast",
+    "bridge_sha": "dd7a6a9405e716e8bd1e05e6fdd09f0d9e1cbe7729204b00dc59198aa18eba18",
+    "compiler_exit": 1,
+    "diagnostics": "error: extern location for ordinary_parser_bridge is of an unknown type: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/parser-ich-callers/bridge-input.rlib\n --> /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/parser-ich-callers/caller.rs:1:28\n  |\n1 | fn main() { println!(\"{}\", ordinary_parser_bridge::observed()); }\n  |                            ^^^^^^^^^^^^^^^^^^^^^^\n\nerror: file name should be lib*.rlib or lib*.so\n --> /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/parser-ich-callers/caller.rs:1:28\n  |\n1 | fn main() { println!(\"{}\", ordinary_parser_bridge::observed()); }\n  |                            ^^^^^^^^^^^^^^^^^^^^^^\n\nerror[E0463]: can't find crate for `ordinary_parser_bridge`\n --> /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/parser-ich-callers/caller.rs:1:28\n  |\n1 | fn main() { println!(\"{}\", ordinary_parser_bridge::observed()); }\n  |                            ^^^^^^^^^^^^^^^^^^^^^^ can't find crate\n\nerror: aborting due to 3 previous errors\n\nFor more information about this error, try `rustc --explain E0463`.\n",
+    "kind": "caller",
+    "recipient": "empty-ich_warm-ast",
+    "runtime": null,
+    "target_rlib_sha": "5cd23dcf94ed52d192d6a6909f66f6587c174c5443499954ba8ace8406baec08"
+  },
+  {
+    "argv_sha": "dd25a95993a5f14ad7a7364bc2b8a40920de7ad764c61eab1b53270a0884c1b7",
+    "bridge": "retained-ich_warm-ast",
+    "bridge_sha": "0e44cf8cf9e61229b2994d86e4d78976b7c46e888d06560cbb158bed5c2fe8d6",
+    "compiler_exit": 1,
+    "diagnostics": "error: extern location for ordinary_parser_bridge is of an unknown type: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/parser-ich-callers/bridge-input.rlib\n --> /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/parser-ich-callers/caller.rs:1:28\n  |\n1 | fn main() { println!(\"{}\", ordinary_parser_bridge::observed()); }\n  |                            ^^^^^^^^^^^^^^^^^^^^^^\n\nerror: file name should be lib*.rlib or lib*.so\n --> /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/parser-ich-callers/caller.rs:1:28\n  |\n1 | fn main() { println!(\"{}\", ordinary_parser_bridge::observed()); }\n  |                            ^^^^^^^^^^^^^^^^^^^^^^\n\nerror[E0463]: can't find crate for `ordinary_parser_bridge`\n --> /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/parser-ich-callers/caller.rs:1:28\n  |\n1 | fn main() { println!(\"{}\", ordinary_parser_bridge::observed()); }\n  |                            ^^^^^^^^^^^^^^^^^^^^^^ can't find crate\n\nerror: aborting due to 3 previous errors\n\nFor more information about this error, try `rustc --explain E0463`.\n",
+    "kind": "caller",
+    "recipient": "retained-ich_cold-ast",
+    "runtime": null,
+    "target_rlib_sha": "f70774b1bd2f59f6269fdb10c40521fc237e0ca10e5e89729493559c8d78794a"
+  },
+  {
+    "argv_sha": "dd25a95993a5f14ad7a7364bc2b8a40920de7ad764c61eab1b53270a0884c1b7",
+    "bridge": "empty-ich_warm-ast",
+    "bridge_sha": "dd7a6a9405e716e8bd1e05e6fdd09f0d9e1cbe7729204b00dc59198aa18eba18",
+    "compiler_exit": 1,
+    "diagnostics": "error: extern location for ordinary_parser_bridge is of an unknown type: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/parser-ich-callers/bridge-input.rlib\n --> /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/parser-ich-callers/caller.rs:1:28\n  |\n1 | fn main() { println!(\"{}\", ordinary_parser_bridge::observed()); }\n  |                            ^^^^^^^^^^^^^^^^^^^^^^\n\nerror: file name should be lib*.rlib or lib*.so\n --> /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/parser-ich-callers/caller.rs:1:28\n  |\n1 | fn main() { println!(\"{}\", ordinary_parser_bridge::observed()); }\n  |                            ^^^^^^^^^^^^^^^^^^^^^^\n\nerror[E0463]: can't find crate for `ordinary_parser_bridge`\n --> /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/parser-ich-callers/caller.rs:1:28\n  |\n1 | fn main() { println!(\"{}\", ordinary_parser_bridge::observed()); }\n  |                            ^^^^^^^^^^^^^^^^^^^^^^ can't find crate\n\nerror: aborting due to 3 previous errors\n\nFor more information about this error, try `rustc --explain E0463`.\n",
+    "kind": "caller",
+    "recipient": "retained-ich_cold-ast",
+    "runtime": null,
+    "target_rlib_sha": "f70774b1bd2f59f6269fdb10c40521fc237e0ca10e5e89729493559c8d78794a"
+  },
+  {
+    "argv_sha": "dd25a95993a5f14ad7a7364bc2b8a40920de7ad764c61eab1b53270a0884c1b7",
+    "bridge": "retained-ich_cold-ast",
+    "bridge_sha": "0e44cf8cf9e61229b2994d86e4d78976b7c46e888d06560cbb158bed5c2fe8d6",
+    "compiler_exit": 1,
+    "diagnostics": "error: extern location for ordinary_parser_bridge is of an unknown type: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/parser-ich-callers/bridge-input.rlib\n --> /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/parser-ich-callers/caller.rs:1:28\n  |\n1 | fn main() { println!(\"{}\", ordinary_parser_bridge::observed()); }\n  |                            ^^^^^^^^^^^^^^^^^^^^^^\n\nerror: file name should be lib*.rlib or lib*.so\n --> /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/parser-ich-callers/caller.rs:1:28\n  |\n1 | fn main() { println!(\"{}\", ordinary_parser_bridge::observed()); }\n  |                            ^^^^^^^^^^^^^^^^^^^^^^\n\nerror[E0463]: can't find crate for `ordinary_parser_bridge`\n --> /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/parser-ich-callers/caller.rs:1:28\n  |\n1 | fn main() { println!(\"{}\", ordinary_parser_bridge::observed()); }\n  |                            ^^^^^^^^^^^^^^^^^^^^^^ can't find crate\n\nerror: aborting due to 3 previous errors\n\nFor more information about this error, try `rustc --explain E0463`.\n",
+    "kind": "caller",
+    "recipient": "retained-ich_cold-ast",
+    "runtime": null,
+    "target_rlib_sha": "f70774b1bd2f59f6269fdb10c40521fc237e0ca10e5e89729493559c8d78794a"
+  },
+  {
+    "argv_sha": "dd25a95993a5f14ad7a7364bc2b8a40920de7ad764c61eab1b53270a0884c1b7",
+    "bridge": "empty-ich_cold-ast",
+    "bridge_sha": "dd7a6a9405e716e8bd1e05e6fdd09f0d9e1cbe7729204b00dc59198aa18eba18",
+    "compiler_exit": 1,
+    "diagnostics": "error: extern location for ordinary_parser_bridge is of an unknown type: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/parser-ich-callers/bridge-input.rlib\n --> /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/parser-ich-callers/caller.rs:1:28\n  |\n1 | fn main() { println!(\"{}\", ordinary_parser_bridge::observed()); }\n  |                            ^^^^^^^^^^^^^^^^^^^^^^\n\nerror: file name should be lib*.rlib or lib*.so\n --> /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/parser-ich-callers/caller.rs:1:28\n  |\n1 | fn main() { println!(\"{}\", ordinary_parser_bridge::observed()); }\n  |                            ^^^^^^^^^^^^^^^^^^^^^^\n\nerror[E0463]: can't find crate for `ordinary_parser_bridge`\n --> /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/parser-ich-callers/caller.rs:1:28\n  |\n1 | fn main() { println!(\"{}\", ordinary_parser_bridge::observed()); }\n  |                            ^^^^^^^^^^^^^^^^^^^^^^ can't find crate\n\nerror: aborting due to 3 previous errors\n\nFor more information about this error, try `rustc --explain E0463`.\n",
+    "kind": "caller",
+    "recipient": "retained-ich_cold-ast",
+    "runtime": null,
+    "target_rlib_sha": "f70774b1bd2f59f6269fdb10c40521fc237e0ca10e5e89729493559c8d78794a"
+  },
+  {
+    "argv_sha": "dd25a95993a5f14ad7a7364bc2b8a40920de7ad764c61eab1b53270a0884c1b7",
+    "bridge": "retained-ich_warm-ast",
+    "bridge_sha": "0e44cf8cf9e61229b2994d86e4d78976b7c46e888d06560cbb158bed5c2fe8d6",
+    "compiler_exit": 1,
+    "diagnostics": "error: extern location for ordinary_parser_bridge is of an unknown type: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/parser-ich-callers/bridge-input.rlib\n --> /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/parser-ich-callers/caller.rs:1:28\n  |\n1 | fn main() { println!(\"{}\", ordinary_parser_bridge::observed()); }\n  |                            ^^^^^^^^^^^^^^^^^^^^^^\n\nerror: file name should be lib*.rlib or lib*.so\n --> /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/parser-ich-callers/caller.rs:1:28\n  |\n1 | fn main() { println!(\"{}\", ordinary_parser_bridge::observed()); }\n  |                            ^^^^^^^^^^^^^^^^^^^^^^\n\nerror[E0463]: can't find crate for `ordinary_parser_bridge`\n --> /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/parser-ich-callers/caller.rs:1:28\n  |\n1 | fn main() { println!(\"{}\", ordinary_parser_bridge::observed()); }\n  |                            ^^^^^^^^^^^^^^^^^^^^^^ can't find crate\n\nerror: aborting due to 3 previous errors\n\nFor more information about this error, try `rustc --explain E0463`.\n",
+    "kind": "caller",
+    "recipient": "empty-ich_cold-ast",
+    "runtime": null,
+    "target_rlib_sha": "ba387847c17400c4666aeccedaa20ae731ef75abc34c57f747fa0c4717a8d50e"
+  },
+  {
+    "argv_sha": "dd25a95993a5f14ad7a7364bc2b8a40920de7ad764c61eab1b53270a0884c1b7",
+    "bridge": "empty-ich_warm-ast",
+    "bridge_sha": "dd7a6a9405e716e8bd1e05e6fdd09f0d9e1cbe7729204b00dc59198aa18eba18",
+    "compiler_exit": 1,
+    "diagnostics": "error: extern location for ordinary_parser_bridge is of an unknown type: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/parser-ich-callers/bridge-input.rlib\n --> /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/parser-ich-callers/caller.rs:1:28\n  |\n1 | fn main() { println!(\"{}\", ordinary_parser_bridge::observed()); }\n  |                            ^^^^^^^^^^^^^^^^^^^^^^\n\nerror: file name should be lib*.rlib or lib*.so\n --> /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/parser-ich-callers/caller.rs:1:28\n  |\n1 | fn main() { println!(\"{}\", ordinary_parser_bridge::observed()); }\n  |                            ^^^^^^^^^^^^^^^^^^^^^^\n\nerror[E0463]: can't find crate for `ordinary_parser_bridge`\n --> /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/parser-ich-callers/caller.rs:1:28\n  |\n1 | fn main() { println!(\"{}\", ordinary_parser_bridge::observed()); }\n  |                            ^^^^^^^^^^^^^^^^^^^^^^ can't find crate\n\nerror: aborting due to 3 previous errors\n\nFor more information about this error, try `rustc --explain E0463`.\n",
+    "kind": "caller",
+    "recipient": "empty-ich_cold-ast",
+    "runtime": null,
+    "target_rlib_sha": "ba387847c17400c4666aeccedaa20ae731ef75abc34c57f747fa0c4717a8d50e"
+  },
+  {
+    "argv_sha": "dd25a95993a5f14ad7a7364bc2b8a40920de7ad764c61eab1b53270a0884c1b7",
+    "bridge": "retained-ich_cold-ast",
+    "bridge_sha": "0e44cf8cf9e61229b2994d86e4d78976b7c46e888d06560cbb158bed5c2fe8d6",
+    "compiler_exit": 1,
+    "diagnostics": "error: extern location for ordinary_parser_bridge is of an unknown type: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/parser-ich-callers/bridge-input.rlib\n --> /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/parser-ich-callers/caller.rs:1:28\n  |\n1 | fn main() { println!(\"{}\", ordinary_parser_bridge::observed()); }\n  |                            ^^^^^^^^^^^^^^^^^^^^^^\n\nerror: file name should be lib*.rlib or lib*.so\n --> /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/parser-ich-callers/caller.rs:1:28\n  |\n1 | fn main() { println!(\"{}\", ordinary_parser_bridge::observed()); }\n  |                            ^^^^^^^^^^^^^^^^^^^^^^\n\nerror[E0463]: can't find crate for `ordinary_parser_bridge`\n --> /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/parser-ich-callers/caller.rs:1:28\n  |\n1 | fn main() { println!(\"{}\", ordinary_parser_bridge::observed()); }\n  |                            ^^^^^^^^^^^^^^^^^^^^^^ can't find crate\n\nerror: aborting due to 3 previous errors\n\nFor more information about this error, try `rustc --explain E0463`.\n",
+    "kind": "caller",
+    "recipient": "empty-ich_cold-ast",
+    "runtime": null,
+    "target_rlib_sha": "ba387847c17400c4666aeccedaa20ae731ef75abc34c57f747fa0c4717a8d50e"
+  },
+  {
+    "argv_sha": "dd25a95993a5f14ad7a7364bc2b8a40920de7ad764c61eab1b53270a0884c1b7",
+    "bridge": "empty-ich_cold-ast",
+    "bridge_sha": "dd7a6a9405e716e8bd1e05e6fdd09f0d9e1cbe7729204b00dc59198aa18eba18",
+    "compiler_exit": 1,
+    "diagnostics": "error: extern location for ordinary_parser_bridge is of an unknown type: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/parser-ich-callers/bridge-input.rlib\n --> /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/parser-ich-callers/caller.rs:1:28\n  |\n1 | fn main() { println!(\"{}\", ordinary_parser_bridge::observed()); }\n  |                            ^^^^^^^^^^^^^^^^^^^^^^\n\nerror: file name should be lib*.rlib or lib*.so\n --> /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/parser-ich-callers/caller.rs:1:28\n  |\n1 | fn main() { println!(\"{}\", ordinary_parser_bridge::observed()); }\n  |                            ^^^^^^^^^^^^^^^^^^^^^^\n\nerror[E0463]: can't find crate for `ordinary_parser_bridge`\n --> /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/parser-ich-callers/caller.rs:1:28\n  |\n1 | fn main() { println!(\"{}\", ordinary_parser_bridge::observed()); }\n  |                            ^^^^^^^^^^^^^^^^^^^^^^ can't find crate\n\nerror: aborting due to 3 previous errors\n\nFor more information about this error, try `rustc --explain E0463`.\n",
+    "kind": "caller",
+    "recipient": "empty-ich_cold-ast",
+    "runtime": null,
+    "target_rlib_sha": "ba387847c17400c4666aeccedaa20ae731ef75abc34c57f747fa0c4717a8d50e"
+  }
+]
