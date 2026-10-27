@@ -1,0 +1,96 @@
+{
+  "expected_E0080": 12,
+  "native_callers": 16,
+  "outcomes": {
+    "candidate": {
+      "literal/stats": {
+        "counts": [
+          52,
+          52,
+          52
+        ],
+        "expected_rejections": [
+          0,
+          0,
+          0
+        ],
+        "stats_reproduced_plain": true,
+        "warm_empty_equal": true
+      },
+      "separate-offset/stats": {
+        "counts": [
+          null,
+          null,
+          null
+        ],
+        "expected_rejections": [
+          1,
+          1,
+          1
+        ],
+        "stats_reproduced_plain": true,
+        "warm_empty_equal": true
+      },
+      "separate/stats": {
+        "counts": [
+          17,
+          17,
+          17
+        ],
+        "expected_rejections": [
+          0,
+          0,
+          0
+        ],
+        "stats_reproduced_plain": true,
+        "warm_empty_equal": true
+      }
+    },
+    "parent": {
+      "literal/stats": {
+        "counts": [
+          104,
+          52,
+          52
+        ],
+        "expected_rejections": [
+          0,
+          0,
+          0
+        ],
+        "stats_reproduced_plain": true,
+        "warm_empty_equal": false
+      },
+      "separate-offset/stats": {
+        "counts": [
+          null,
+          null,
+          null
+        ],
+        "expected_rejections": [
+          1,
+          1,
+          1
+        ],
+        "stats_reproduced_plain": true,
+        "warm_empty_equal": true
+      },
+      "separate/stats": {
+        "counts": [
+          17,
+          17,
+          17
+        ],
+        "expected_rejections": [
+          0,
+          0,
+          0
+        ],
+        "stats_reproduced_plain": true,
+        "warm_empty_equal": true
+      }
+    }
+  },
+  "successful_producers": 60,
+  "timed_commands": 0
+}

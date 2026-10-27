@@ -1,0 +1,7 @@
+# Retained and empty incremental allocation identity
+
+The same two Rust functions refer to a 43-byte string literal. The parent compiler wrote 104 bytes of allocation-index metadata after changing an adjacent integer in a warm compile. Two independent empty compiles wrote 52 bytes. The candidate wrote 52 bytes in all three histories. The complete metadata matched across both edit and restoration histories on the candidate.
+
+Two additional programs create an independent heap allocation with the same bytes as a literal. The successful program checks two distinct static addresses when run. The invalid program attempted to calculate a pointer offset between distinct allocations. Both compilers rejected this in all three edited histories under ordinary compilation and metadata instrumentation.
+
+Run `python3 verify.py` with GNU binutils installed. The archive contains all 72 producer receipts, all 60 successful rlibs and separate metadata outputs, all native caller and bridge command receipts, and the source of each producer. The verifier extracts and compares the raw ELF metadata from every successful rlib. All 16 native callers printed `8:8`. This study measures compiler correctness. No elapsed or instruction samples were scored. [Registered protocol, source and exact release inputs](https://github.com/astral-sh/ohm-cargo/tree/a88268e2e35a5d1b65f1ec93131eb1d0442e77fd/benchmarks/ruff-dev-loop-20261027/alloc-identity-structural-plan)
