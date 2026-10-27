@@ -1,0 +1,67 @@
+[
+  {
+    "endpoint": "results-wild-package-v7-miss-build",
+    "pairs": 12,
+    "parent_median_s": 33.766580379000004,
+    "candidate_median_s": 34.341321427500006,
+    "geometric_elapsed_reduction_pct": -2.0440927119858454,
+    "paired_bootstrap_95_pct": [
+      -3.832354566991669,
+      -0.15895210321885678
+    ],
+    "faster_pairs": 3,
+    "order_balanced_exact_two_sided_p": 0.023809523809523808,
+    "assignments": 924,
+    "qualification": {
+      "parent": [
+        {
+          "processes": {
+            "rustc_full": 12,
+            "wild": 5
+          },
+          "wild_events": {},
+          "full_links": 5,
+          "roster_sha": "97f9aa0390c8981fa6ab6acb6bed1212a0d47ac1810fe040d96b43b101aeff22",
+          "parser_diagnostics": null
+        },
+        {
+          "processes": {
+            "rustc_full": 12,
+            "wild": 5
+          },
+          "wild_events": {},
+          "full_links": 5,
+          "roster_sha": "97f9aa0390c8981fa6ab6acb6bed1212a0d47ac1810fe040d96b43b101aeff22",
+          "parser_diagnostics": null
+        }
+      ],
+      "candidate": [
+        {
+          "processes": {
+            "rustc_full": 12,
+            "wild": 5
+          },
+          "wild_events": {
+            "miss": 4
+          },
+          "full_links": 5,
+          "roster_sha": "97f9aa0390c8981fa6ab6acb6bed1212a0d47ac1810fe040d96b43b101aeff22",
+          "parser_diagnostics": null
+        },
+        {
+          "processes": {
+            "rustc_full": 12,
+            "wild": 5
+          },
+          "wild_events": {
+            "miss": 4
+          },
+          "full_links": 5,
+          "roster_sha": "97f9aa0390c8981fa6ab6acb6bed1212a0d47ac1810fe040d96b43b101aeff22",
+          "parser_diagnostics": null
+        }
+      ]
+    },
+    "holm_p_across_submitted_endpoints": 0.023809523809523808
+  }
+]
