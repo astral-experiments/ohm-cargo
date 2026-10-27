@@ -1,0 +1,11 @@
+# Fresh preflight before the new release timing series
+
+Independent, default-trust `cargo +ohm test --no-run --locked --offline --message-format=json` reference triplets run on unmodified Ruff 93526150df078af7dd8fc4226cdcc469539d2001. All repetitions use fresh target and shared build stores, the exact registered images, and the same canonical build/tool paths across arms. Executions are traced outside the timing series. Each reported 619 units and 102 executables, including 84 test-profile harnesses and 18 ordinary binaries or examples. The ELF oracle covers 110 first-party products. Frozen, small Rust/Cargo source and compile checks include genuine changing and removed observers, ordinary callers, a writer-free FIFO, explicit flags, missing and backdated files and same-frontend version rollback.
+
+The cooperating pair needs no rustc or linker on either unchanged command and retains the exact cold ELF bytes across the two repeats. Each single-component or all-stock control performs a full compile of `ron` and 50 cached Rust linkage jobs/real Wild links on first repeat, then settles with zero physical compilers/linkers. Cold subjects' genuine dispatch counts, the raw distinct numeric ELF fields and build IDs, output rosters/diagnostics, proof digests and BLAKE3 source checks are all included.
+
+The admitted independent-link difference is the 0↔N .rodata field contrast with a genuine altered GNU build ID and every other byte matched, only in PROGBITS allocated mergeable read-only, non-executable .rodata. The signed values are N = 1, 2, 4, 8, 16, 32, 64, 128 and 256. The two previous stopped study datasets are excluded. The candidate requires complete raw equality between all three commands in each slot and admission still requires all paired timing and safety criteria.
+
+Run `python3 -B verify.py` to check this unscored gate. The full private traces and all typed command/product receipts stay on the respective measurement host. SHA-256 binds the archive files. The independently verified BLAKE3 footer authenticates Cargo's OBS1 payload and rustc's reported input bytes and lengths.
+
+The three arms A, B and C and this exact host are specified by the H4 revision registration b958edb54d0bc8528b690a6867f2113b790292e9, study manifest 45d9876d4fc3325f80125c302890ca22b4752a7a930c6cde2926a4887b21b004.
