@@ -1,0 +1,673 @@
+{
+  "subject": {
+    "cargo": "9be48c4b02669047975662348a3f134d0abcd247d70d13c55ab024f806320590",
+    "front": "a63a2a6506be83dfd6cd853e9807897b120660c056a8774011d82396ef549b13",
+    "driver": "97a8910a6d8a8ac54936f9373f7940525b2f46ec5f005421b3913a21d9a6fa9b"
+  },
+  "unset": [
+    "CARGO_UNSTABLE_OHM_PROC_MACRO_TRUST",
+    "CARGO_UNSTABLE_OHM_NATIVE_TOOL_TRUST"
+  ],
+  "runs": {
+    "ruff-mixed": [
+      {
+        "stage": "build",
+        "mode": "build",
+        "status": 0,
+        "args": [
+          "/home/dev-user/.cargo/bin/cargo",
+          "+ohm",
+          "build",
+          "--offline",
+          "--message-format=json",
+          "-v"
+        ],
+        "units": [
+          [
+            "mixed",
+            false,
+            [
+              "libmixed.rlib",
+              "libmixed.so",
+              "libmixed.rmeta"
+            ]
+          ],
+          [
+            "bridge",
+            false,
+            [
+              "libbridge.rlib",
+              "libbridge-167d6ce8e1a3b854.rmeta"
+            ]
+          ],
+          [
+            "consumer",
+            false,
+            [
+              "consumer"
+            ]
+          ]
+        ],
+        "errors": []
+      },
+      {
+        "stage": "check",
+        "mode": "check",
+        "status": 101,
+        "args": [
+          "/home/dev-user/.cargo/bin/cargo",
+          "+ohm",
+          "check",
+          "--offline",
+          "--message-format=json",
+          "-v"
+        ],
+        "units": [
+          [
+            "mixed",
+            true,
+            [
+              "libmixed.rlib",
+              "libmixed.so",
+              "libmixed.rmeta"
+            ]
+          ],
+          [
+            "bridge",
+            true,
+            [
+              "libbridge-167d6ce8e1a3b854.rmeta"
+            ]
+          ],
+          [
+            "mixed",
+            false,
+            [
+              "libmixed-7f4384aa753c2182.rmeta"
+            ]
+          ],
+          [
+            "bridge",
+            false,
+            [
+              "libbridge-c22623fdcde5b86b.rmeta"
+            ]
+          ]
+        ],
+        "errors": [
+          "found crates (`mixed` and `mixed`) with colliding StableCrateId values"
+        ]
+      },
+      {
+        "stage": "empty",
+        "mode": "check",
+        "status": 0,
+        "args": [
+          "/home/dev-user/.cargo/bin/cargo",
+          "+ohm",
+          "check",
+          "--offline",
+          "--message-format=json",
+          "-v"
+        ],
+        "units": [
+          [
+            "mixed",
+            false,
+            [
+              "libmixed-7f4384aa753c2182.rmeta"
+            ]
+          ],
+          [
+            "bridge",
+            false,
+            [
+              "libbridge-c22623fdcde5b86b.rmeta"
+            ]
+          ],
+          [
+            "consumer",
+            false,
+            [
+              "libconsumer-535fb1d46164041e.rmeta"
+            ]
+          ]
+        ],
+        "errors": []
+      },
+      {
+        "stage": "fresh-empty",
+        "mode": "check",
+        "status": 0,
+        "args": [
+          "/home/dev-user/.cargo/bin/cargo",
+          "+ohm",
+          "check",
+          "--offline",
+          "--message-format=json",
+          "-v"
+        ],
+        "units": [
+          [
+            "mixed",
+            true,
+            [
+              "libmixed-7f4384aa753c2182.rmeta"
+            ]
+          ],
+          [
+            "bridge",
+            true,
+            [
+              "libbridge-c22623fdcde5b86b.rmeta"
+            ]
+          ],
+          [
+            "consumer",
+            true,
+            [
+              "libconsumer-535fb1d46164041e.rmeta"
+            ]
+          ]
+        ],
+        "errors": []
+      }
+    ],
+    "ruff-pure": [
+      {
+        "stage": "build",
+        "mode": "build",
+        "status": 0,
+        "args": [
+          "/home/dev-user/.cargo/bin/cargo",
+          "+ohm",
+          "build",
+          "--offline",
+          "--message-format=json",
+          "-v"
+        ],
+        "units": [
+          [
+            "mixed",
+            false,
+            [
+              "libmixed.rlib",
+              "libmixed-5ffee16f67c2a726.rmeta"
+            ]
+          ],
+          [
+            "bridge",
+            false,
+            [
+              "libbridge.rlib",
+              "libbridge-f3763eb943e363dd.rmeta"
+            ]
+          ],
+          [
+            "consumer",
+            false,
+            [
+              "consumer"
+            ]
+          ]
+        ],
+        "errors": []
+      },
+      {
+        "stage": "check",
+        "mode": "check",
+        "status": 0,
+        "args": [
+          "/home/dev-user/.cargo/bin/cargo",
+          "+ohm",
+          "check",
+          "--offline",
+          "--message-format=json",
+          "-v"
+        ],
+        "units": [
+          [
+            "mixed",
+            true,
+            [
+              "libmixed-5ffee16f67c2a726.rmeta"
+            ]
+          ],
+          [
+            "bridge",
+            true,
+            [
+              "libbridge-f3763eb943e363dd.rmeta"
+            ]
+          ],
+          [
+            "consumer",
+            true,
+            [
+              "libconsumer-57e52d7883ce617d.rmeta"
+            ]
+          ],
+          [
+            "bridge",
+            true,
+            [
+              "libbridge-8946b5d048d8585e.rmeta"
+            ]
+          ],
+          [
+            "mixed",
+            true,
+            [
+              "libmixed-81aaf56ec0a7c413.rmeta"
+            ]
+          ]
+        ],
+        "errors": []
+      },
+      {
+        "stage": "empty",
+        "mode": "check",
+        "status": 0,
+        "args": [
+          "/home/dev-user/.cargo/bin/cargo",
+          "+ohm",
+          "check",
+          "--offline",
+          "--message-format=json",
+          "-v"
+        ],
+        "units": [
+          [
+            "mixed",
+            false,
+            [
+              "libmixed-81aaf56ec0a7c413.rmeta"
+            ]
+          ],
+          [
+            "bridge",
+            false,
+            [
+              "libbridge-1e5c5f5b1068b69f.rmeta"
+            ]
+          ],
+          [
+            "consumer",
+            false,
+            [
+              "libconsumer-756bd785827d1c31.rmeta"
+            ]
+          ]
+        ],
+        "errors": []
+      },
+      {
+        "stage": "fresh-empty",
+        "mode": "check",
+        "status": 0,
+        "args": [
+          "/home/dev-user/.cargo/bin/cargo",
+          "+ohm",
+          "check",
+          "--offline",
+          "--message-format=json",
+          "-v"
+        ],
+        "units": [
+          [
+            "mixed",
+            true,
+            [
+              "libmixed-81aaf56ec0a7c413.rmeta"
+            ]
+          ],
+          [
+            "bridge",
+            true,
+            [
+              "libbridge-1e5c5f5b1068b69f.rmeta"
+            ]
+          ],
+          [
+            "consumer",
+            true,
+            [
+              "libconsumer-756bd785827d1c31.rmeta"
+            ]
+          ]
+        ],
+        "errors": []
+      }
+    ],
+    "cargo-default-mixed": [
+      {
+        "stage": "build",
+        "mode": "build",
+        "status": 0,
+        "args": [
+          "/home/dev-user/.cargo/bin/cargo",
+          "+ohm",
+          "build",
+          "--offline",
+          "--message-format=json",
+          "-v"
+        ],
+        "units": [
+          [
+            "mixed",
+            false,
+            [
+              "libmixed.rlib",
+              "libmixed.so",
+              "libmixed.rmeta"
+            ]
+          ],
+          [
+            "bridge",
+            false,
+            [
+              "libbridge.rlib",
+              "libbridge-7374a6184cc40fb3.rmeta"
+            ]
+          ],
+          [
+            "consumer",
+            false,
+            [
+              "consumer"
+            ]
+          ]
+        ],
+        "errors": []
+      },
+      {
+        "stage": "check",
+        "mode": "check",
+        "status": 101,
+        "args": [
+          "/home/dev-user/.cargo/bin/cargo",
+          "+ohm",
+          "check",
+          "--offline",
+          "--message-format=json",
+          "-v"
+        ],
+        "units": [
+          [
+            "mixed",
+            true,
+            [
+              "libmixed.rlib",
+              "libmixed.so",
+              "libmixed.rmeta"
+            ]
+          ],
+          [
+            "bridge",
+            true,
+            [
+              "libbridge-7374a6184cc40fb3.rmeta"
+            ]
+          ],
+          [
+            "mixed",
+            false,
+            [
+              "libmixed-f852c795524d4195.rmeta"
+            ]
+          ],
+          [
+            "bridge",
+            false,
+            [
+              "libbridge-c8bd317b4752f9b7.rmeta"
+            ]
+          ]
+        ],
+        "errors": [
+          "found crates (`mixed` and `mixed`) with colliding StableCrateId values"
+        ]
+      },
+      {
+        "stage": "empty",
+        "mode": "check",
+        "status": 0,
+        "args": [
+          "/home/dev-user/.cargo/bin/cargo",
+          "+ohm",
+          "check",
+          "--offline",
+          "--message-format=json",
+          "-v"
+        ],
+        "units": [
+          [
+            "mixed",
+            false,
+            [
+              "libmixed-f852c795524d4195.rmeta"
+            ]
+          ],
+          [
+            "bridge",
+            false,
+            [
+              "libbridge-c8bd317b4752f9b7.rmeta"
+            ]
+          ],
+          [
+            "consumer",
+            false,
+            [
+              "libconsumer-88e6df500cbe47a8.rmeta"
+            ]
+          ]
+        ],
+        "errors": []
+      },
+      {
+        "stage": "fresh-empty",
+        "mode": "check",
+        "status": 0,
+        "args": [
+          "/home/dev-user/.cargo/bin/cargo",
+          "+ohm",
+          "check",
+          "--offline",
+          "--message-format=json",
+          "-v"
+        ],
+        "units": [
+          [
+            "mixed",
+            true,
+            [
+              "libmixed-f852c795524d4195.rmeta"
+            ]
+          ],
+          [
+            "bridge",
+            true,
+            [
+              "libbridge-c8bd317b4752f9b7.rmeta"
+            ]
+          ],
+          [
+            "consumer",
+            true,
+            [
+              "libconsumer-88e6df500cbe47a8.rmeta"
+            ]
+          ]
+        ],
+        "errors": []
+      }
+    ],
+    "cargo-default-pure": [
+      {
+        "stage": "build",
+        "mode": "build",
+        "status": 0,
+        "args": [
+          "/home/dev-user/.cargo/bin/cargo",
+          "+ohm",
+          "build",
+          "--offline",
+          "--message-format=json",
+          "-v"
+        ],
+        "units": [
+          [
+            "mixed",
+            false,
+            [
+              "libmixed.rlib",
+              "libmixed-93140a6dabc37b88.rmeta"
+            ]
+          ],
+          [
+            "bridge",
+            false,
+            [
+              "libbridge.rlib",
+              "libbridge-dd0cdd4553e0cebd.rmeta"
+            ]
+          ],
+          [
+            "consumer",
+            false,
+            [
+              "consumer"
+            ]
+          ]
+        ],
+        "errors": []
+      },
+      {
+        "stage": "check",
+        "mode": "check",
+        "status": 0,
+        "args": [
+          "/home/dev-user/.cargo/bin/cargo",
+          "+ohm",
+          "check",
+          "--offline",
+          "--message-format=json",
+          "-v"
+        ],
+        "units": [
+          [
+            "mixed",
+            true,
+            [
+              "libmixed-93140a6dabc37b88.rmeta"
+            ]
+          ],
+          [
+            "bridge",
+            true,
+            [
+              "libbridge-dd0cdd4553e0cebd.rmeta"
+            ]
+          ],
+          [
+            "consumer",
+            true,
+            [
+              "libconsumer-667c47b03c36bb94.rmeta"
+            ]
+          ],
+          [
+            "bridge",
+            true,
+            [
+              "libbridge-d65865b6f3d74226.rmeta"
+            ]
+          ],
+          [
+            "mixed",
+            true,
+            [
+              "libmixed-2c6e5c273fdc8663.rmeta"
+            ]
+          ]
+        ],
+        "errors": []
+      },
+      {
+        "stage": "empty",
+        "mode": "check",
+        "status": 0,
+        "args": [
+          "/home/dev-user/.cargo/bin/cargo",
+          "+ohm",
+          "check",
+          "--offline",
+          "--message-format=json",
+          "-v"
+        ],
+        "units": [
+          [
+            "mixed",
+            false,
+            [
+              "libmixed-2c6e5c273fdc8663.rmeta"
+            ]
+          ],
+          [
+            "bridge",
+            false,
+            [
+              "libbridge-c7288b824994d800.rmeta"
+            ]
+          ],
+          [
+            "consumer",
+            false,
+            [
+              "libconsumer-6da28dcd9ab52640.rmeta"
+            ]
+          ]
+        ],
+        "errors": []
+      },
+      {
+        "stage": "fresh-empty",
+        "mode": "check",
+        "status": 0,
+        "args": [
+          "/home/dev-user/.cargo/bin/cargo",
+          "+ohm",
+          "check",
+          "--offline",
+          "--message-format=json",
+          "-v"
+        ],
+        "units": [
+          [
+            "mixed",
+            true,
+            [
+              "libmixed-2c6e5c273fdc8663.rmeta"
+            ]
+          ],
+          [
+            "bridge",
+            true,
+            [
+              "libbridge-c7288b824994d800.rmeta"
+            ]
+          ],
+          [
+            "consumer",
+            true,
+            [
+              "libconsumer-6da28dcd9ab52640.rmeta"
+            ]
+          ]
+        ],
+        "errors": []
+      }
+    ]
+  }
+}

@@ -1,0 +1,138 @@
+{
+  "parent": [
+    {
+      "case": "native",
+      "root": [
+        "name pep440_rs",
+        "private hash 295c9c18b22fe5f6ee53aa0d29ee0196 stable_crate_id StableCrateId(17039135813190892047)",
+        "public_hash ce6dcf5b37349ad647e42d570e9460c2"
+      ],
+      "input_delta": [
+        "--emit=dep-info,metadata,link",
+        "embed-metadata=no",
+        "metadata=b1ba6ee5bddd20aa"
+      ]
+    },
+    {
+      "case": "native-add-checked-filename",
+      "root": [
+        "name pep440_rs-8c0d3653cf873f7d",
+        "private hash 295c9c18b22fe5f6ee53aa0d29ee0196 stable_crate_id StableCrateId(17039135813190892047)",
+        "public_hash f4afcc708b0398d5b6421da6f436c99e"
+      ],
+      "input_delta": [
+        "--emit=dep-info,metadata,link",
+        "embed-metadata=no",
+        "metadata=b1ba6ee5bddd20aa",
+        "extra-filename=-8c0d3653cf873f7d"
+      ]
+    },
+    {
+      "case": "native-only-metadata",
+      "root": [
+        "name pep440_rs",
+        "private hash b669ea30200e2848137092921ea4371c stable_crate_id StableCrateId(17039135813190892047)",
+        "public_hash 5cc3782b0dfbe54e0e56df5d75811058"
+      ],
+      "input_delta": [
+        "--emit=dep-info,metadata",
+        "embed-metadata=no",
+        "metadata=b1ba6ee5bddd20aa"
+      ]
+    },
+    {
+      "case": "native-only-embed-enabled",
+      "root": [
+        "name pep440_rs",
+        "private hash 532d429608ae4c933e277c17ddcaec45 stable_crate_id StableCrateId(17039135813190892047)",
+        "public_hash ce6dcf5b37349ad647e42d570e9460c2"
+      ],
+      "input_delta": [
+        "--emit=dep-info,metadata,link",
+        "embed-metadata=yes",
+        "metadata=b1ba6ee5bddd20aa"
+      ]
+    },
+    {
+      "case": "check",
+      "root": [
+        "name pep440_rs-8c0d3653cf873f7d",
+        "private hash 2742ef0f40598a8233ea15b833686142 stable_crate_id StableCrateId(17039135813190892047)",
+        "public_hash eb22430612b051473520931fcb8efcd4"
+      ],
+      "input_delta": [
+        "--emit=dep-info,metadata",
+        "metadata=b1ba6ee5bddd20aa",
+        "extra-filename=-8c0d3653cf873f7d"
+      ]
+    }
+  ],
+  "candidate": [
+    {
+      "case": "native",
+      "root": [
+        "name pep440_rs",
+        "private hash 94abce0b95a4c2ad7ab79b774f41ea72 stable_crate_id StableCrateId(17039135813190892047)",
+        "public_hash 387bd6af7274774afce611d005f00eff"
+      ],
+      "input_delta": [
+        "--emit=dep-info,metadata,link",
+        "embed-metadata=no",
+        "metadata=b1ba6ee5bddd20aa"
+      ]
+    },
+    {
+      "case": "native-add-checked-filename",
+      "root": [
+        "name pep440_rs-8c0d3653cf873f7d",
+        "private hash 94abce0b95a4c2ad7ab79b774f41ea72 stable_crate_id StableCrateId(17039135813190892047)",
+        "public_hash 626e65c76dfd8672bf82f7c33e3fe46d"
+      ],
+      "input_delta": [
+        "--emit=dep-info,metadata,link",
+        "embed-metadata=no",
+        "metadata=b1ba6ee5bddd20aa",
+        "extra-filename=-8c0d3653cf873f7d"
+      ]
+    },
+    {
+      "case": "native-only-metadata",
+      "root": [
+        "name pep440_rs",
+        "private hash 6eaa065d5405aa733bbc64fc9e9c1201 stable_crate_id StableCrateId(17039135813190892047)",
+        "public_hash 05dd093d62b48e9894198d2c2c47ca92"
+      ],
+      "input_delta": [
+        "--emit=dep-info,metadata",
+        "embed-metadata=no",
+        "metadata=b1ba6ee5bddd20aa"
+      ]
+    },
+    {
+      "case": "native-only-embed-enabled",
+      "root": [
+        "name pep440_rs",
+        "private hash 107ffa63148193e83536e8ee21171216 stable_crate_id StableCrateId(17039135813190892047)",
+        "public_hash 387bd6af7274774afce611d005f00eff"
+      ],
+      "input_delta": [
+        "--emit=dep-info,metadata,link",
+        "embed-metadata=yes",
+        "metadata=b1ba6ee5bddd20aa"
+      ]
+    },
+    {
+      "case": "check",
+      "root": [
+        "name pep440_rs-8c0d3653cf873f7d",
+        "private hash d1ce5f08dfc0e48ad5dd42decd11a5df stable_crate_id StableCrateId(17039135813190892047)",
+        "public_hash b9191b10db5149d780310021c3e3f1af"
+      ],
+      "input_delta": [
+        "--emit=dep-info,metadata",
+        "metadata=b1ba6ee5bddd20aa",
+        "extra-filename=-8c0d3653cf873f7d"
+      ]
+    }
+  ]
+}

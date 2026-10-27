@@ -1,0 +1,668 @@
+{
+  "base-candidate": [
+    {
+      "mode": "build",
+      "status": 0,
+      "units": [
+        [
+          "pep440_rs",
+          false,
+          [
+            "libpep440_rs.rlib",
+            "libpep440_rs.so",
+            "libpep440_rs.rmeta"
+          ]
+        ],
+        [
+          "pyproject_toml",
+          false,
+          [
+            "libpyproject_toml-c402ef0b432c9f79.rlib",
+            "libpyproject_toml-c402ef0b432c9f79.rmeta"
+          ]
+        ],
+        [
+          "registry_pair",
+          false,
+          [
+            "libregistry_pair.rlib",
+            "libregistry_pair-c0454f90b69436b7.rmeta"
+          ]
+        ]
+      ],
+      "errors": [],
+      "emitted": 75,
+      "all_fresh": false,
+      "stdout_sha256": "3aee9c2c654b6c8c04f107fb6b767f8482e5c250f2d45817531b18d4c94eec8f",
+      "stderr_sha256": "0169ecbda73f5c08cbe169e68cae0beda115c2892d3dfda8c366e526ff2d34f5"
+    },
+    {
+      "mode": "check",
+      "status": 101,
+      "units": [
+        [
+          "pep440_rs",
+          true,
+          [
+            "libpep440_rs.rlib",
+            "libpep440_rs.so",
+            "libpep440_rs.rmeta"
+          ]
+        ],
+        [
+          "pyproject_toml",
+          true,
+          [
+            "libpyproject_toml-c402ef0b432c9f79.rmeta"
+          ]
+        ],
+        [
+          "pep440_rs",
+          false,
+          [
+            "libpep440_rs-16ec76c91ab7ec53.rmeta"
+          ]
+        ]
+      ],
+      "errors": [
+        "found crates (`pep440_rs` and `pep440_rs`) with colliding StableCrateId values"
+      ],
+      "emitted": 85,
+      "all_fresh": false,
+      "stdout_sha256": "04fb01b4422da302be217deed0d28dfef05c9ce536eef4611507be8051d5de0f",
+      "stderr_sha256": "d83f68d4e938a0e70bd2f63f35012788226ad0df92dea4b661740200a2e7c596"
+    }
+  ],
+  "base-parent": [
+    {
+      "mode": "build",
+      "status": 0,
+      "units": [
+        [
+          "pep440_rs",
+          false,
+          [
+            "libpep440_rs.rlib",
+            "libpep440_rs.so",
+            "libpep440_rs.rmeta"
+          ]
+        ],
+        [
+          "pyproject_toml",
+          false,
+          [
+            "libpyproject_toml-c402ef0b432c9f79.rlib",
+            "libpyproject_toml-c402ef0b432c9f79.rmeta"
+          ]
+        ],
+        [
+          "registry_pair",
+          false,
+          [
+            "libregistry_pair.rlib",
+            "libregistry_pair-c0454f90b69436b7.rmeta"
+          ]
+        ]
+      ],
+      "errors": [],
+      "emitted": 75,
+      "all_fresh": false,
+      "stdout_sha256": "583a1bae7d000f79471dc41017c0e5411b55f0109601355db60027e257cc0c4d",
+      "stderr_sha256": "f8d576695bc75a46a0cc033725a3921b965ca0b70f23738ae1eba48bce6212ea"
+    },
+    {
+      "mode": "check",
+      "status": 101,
+      "units": [
+        [
+          "pep440_rs",
+          true,
+          [
+            "libpep440_rs.rlib",
+            "libpep440_rs.so",
+            "libpep440_rs.rmeta"
+          ]
+        ],
+        [
+          "pyproject_toml",
+          true,
+          [
+            "libpyproject_toml-c402ef0b432c9f79.rmeta"
+          ]
+        ],
+        [
+          "pep440_rs",
+          false,
+          [
+            "libpep440_rs-16ec76c91ab7ec53.rmeta"
+          ]
+        ]
+      ],
+      "errors": [
+        "found crates (`pep440_rs` and `pep440_rs`) with colliding StableCrateId values"
+      ],
+      "emitted": 85,
+      "all_fresh": false,
+      "stdout_sha256": "3c9dbb0d7899ca081134f731590e32d68adc2a35506079f971c4172c8782146f",
+      "stderr_sha256": "b53cebc45433426dff9dcde18ebc620abd8b21641b9bf32385f17b4cd712b7a6"
+    }
+  ],
+  "fixed-candidate": [
+    {
+      "mode": "build",
+      "empty_control": false,
+      "status": 0,
+      "units": [
+        [
+          "pep440_rs",
+          false,
+          [
+            "libpep440_rs.rlib",
+            "libpep440_rs.so",
+            "libpep440_rs.rmeta"
+          ]
+        ],
+        [
+          "pyproject_toml",
+          false,
+          [
+            "libpyproject_toml-c402ef0b432c9f79.rlib",
+            "libpyproject_toml-c402ef0b432c9f79.rmeta"
+          ]
+        ],
+        [
+          "registry_pair",
+          false,
+          [
+            "libregistry_pair.rlib",
+            "libregistry_pair-c0454f90b69436b7.rmeta"
+          ]
+        ]
+      ],
+      "errors": [],
+      "emitted": 75,
+      "all_fresh": false,
+      "stdout_sha256": "1d646ff22694ec78e3d31eb29476b2e1cf0ffa9f83746bd0d054cd1db78033d5",
+      "stderr_sha256": "09752d2c31977483ee55afa1f2b69c21523454f9172757635377ef2b5c338939"
+    },
+    {
+      "mode": "check",
+      "empty_control": false,
+      "status": 0,
+      "units": [
+        [
+          "pep440_rs",
+          false,
+          [
+            "libpep440_rs-16ec76c91ab7ec53.rmeta"
+          ]
+        ],
+        [
+          "pyproject_toml",
+          false,
+          [
+            "libpyproject_toml-db9f787738578445.rmeta"
+          ]
+        ],
+        [
+          "registry_pair",
+          false,
+          [
+            "libregistry_pair-c7e961851ca00523.rmeta"
+          ]
+        ]
+      ],
+      "errors": [],
+      "emitted": 75,
+      "all_fresh": false,
+      "stdout_sha256": "967a5baad1d760ec00f7e3ec56995edce1799dd3a1b50f39b3b5f4addda03ff5",
+      "stderr_sha256": "08de618910e1225f9b4b25400a2c3955fb16bc8e4a2515cfb3a90e354c7bc50c"
+    },
+    {
+      "mode": "check",
+      "empty_control": false,
+      "status": 0,
+      "units": [
+        [
+          "pep440_rs",
+          true,
+          [
+            "libpep440_rs-16ec76c91ab7ec53.rmeta"
+          ]
+        ],
+        [
+          "pyproject_toml",
+          true,
+          [
+            "libpyproject_toml-db9f787738578445.rmeta"
+          ]
+        ],
+        [
+          "registry_pair",
+          true,
+          [
+            "libregistry_pair-c7e961851ca00523.rmeta"
+          ]
+        ]
+      ],
+      "errors": [],
+      "emitted": 75,
+      "all_fresh": true,
+      "stdout_sha256": "30c7d968589619d16e53f9e042118f687ae88d1d0b652f0c7644fe9cc64001eb",
+      "stderr_sha256": "40f3fe25ad5cfd52257cae2be9978789f74f81e58e1a4faa712539ff3c82866b"
+    },
+    {
+      "mode": "check",
+      "empty_control": true,
+      "status": 0,
+      "units": [
+        [
+          "pep440_rs",
+          false,
+          [
+            "libpep440_rs-2ac22689f7a00222.rmeta"
+          ]
+        ],
+        [
+          "pyproject_toml",
+          false,
+          [
+            "libpyproject_toml-eb7462373c1dc1e1.rmeta"
+          ]
+        ],
+        [
+          "registry_pair",
+          false,
+          [
+            "libregistry_pair-c3cf4db1ba50f28c.rmeta"
+          ]
+        ]
+      ],
+      "errors": [],
+      "emitted": 75,
+      "all_fresh": false,
+      "stdout_sha256": "c33836aff85f4b00d1834b9980911b3d1eecba07e494bd0db5928967d7f74a91",
+      "stderr_sha256": "12eace712a04c93a4569dd8677ee3193757c714af4820e4147c763ca3d7331ff"
+    },
+    {
+      "mode": "check",
+      "empty_control": true,
+      "status": 0,
+      "units": [
+        [
+          "pep440_rs",
+          true,
+          [
+            "libpep440_rs-2ac22689f7a00222.rmeta"
+          ]
+        ],
+        [
+          "pyproject_toml",
+          true,
+          [
+            "libpyproject_toml-eb7462373c1dc1e1.rmeta"
+          ]
+        ],
+        [
+          "registry_pair",
+          true,
+          [
+            "libregistry_pair-c3cf4db1ba50f28c.rmeta"
+          ]
+        ]
+      ],
+      "errors": [],
+      "emitted": 75,
+      "all_fresh": true,
+      "stdout_sha256": "fecf5b407303a2e9459d566309a1dfdd3ef709df982da20ad299f3cbddfe933c",
+      "stderr_sha256": "e81b87f11322122c55f9ea3ee87f8b24e6bdecdbb6ae44daf7cd2c0b731b10a0"
+    }
+  ],
+  "fixed-parent": [
+    {
+      "mode": "build",
+      "empty_control": false,
+      "status": 0,
+      "units": [
+        [
+          "pep440_rs",
+          false,
+          [
+            "libpep440_rs.rlib",
+            "libpep440_rs.so",
+            "libpep440_rs.rmeta"
+          ]
+        ],
+        [
+          "pyproject_toml",
+          false,
+          [
+            "libpyproject_toml-c402ef0b432c9f79.rlib",
+            "libpyproject_toml-c402ef0b432c9f79.rmeta"
+          ]
+        ],
+        [
+          "registry_pair",
+          false,
+          [
+            "libregistry_pair.rlib",
+            "libregistry_pair-c0454f90b69436b7.rmeta"
+          ]
+        ]
+      ],
+      "errors": [],
+      "emitted": 75,
+      "all_fresh": false,
+      "stdout_sha256": "a9802f6bd38a32660c53d1211ff57fb1fedf2f369dab24d71e4bd40afb00ab21",
+      "stderr_sha256": "04edf3deaf807d23094c511b1dd552b064b70a2f4acc548e52d2637b2efb4695"
+    },
+    {
+      "mode": "check",
+      "empty_control": false,
+      "status": 0,
+      "units": [
+        [
+          "pep440_rs",
+          false,
+          [
+            "libpep440_rs-16ec76c91ab7ec53.rmeta"
+          ]
+        ],
+        [
+          "pyproject_toml",
+          false,
+          [
+            "libpyproject_toml-db9f787738578445.rmeta"
+          ]
+        ],
+        [
+          "registry_pair",
+          false,
+          [
+            "libregistry_pair-c7e961851ca00523.rmeta"
+          ]
+        ]
+      ],
+      "errors": [],
+      "emitted": 75,
+      "all_fresh": false,
+      "stdout_sha256": "f1de873586708462c37fe1f5798a23557abaa9031ca9704d1e6f97d1891c072b",
+      "stderr_sha256": "5c010b02ef27f621337628fd179b398fde901d747ff5312497781ba0c3974891"
+    },
+    {
+      "mode": "check",
+      "empty_control": false,
+      "status": 0,
+      "units": [
+        [
+          "pep440_rs",
+          true,
+          [
+            "libpep440_rs-16ec76c91ab7ec53.rmeta"
+          ]
+        ],
+        [
+          "pyproject_toml",
+          true,
+          [
+            "libpyproject_toml-db9f787738578445.rmeta"
+          ]
+        ],
+        [
+          "registry_pair",
+          true,
+          [
+            "libregistry_pair-c7e961851ca00523.rmeta"
+          ]
+        ]
+      ],
+      "errors": [],
+      "emitted": 75,
+      "all_fresh": true,
+      "stdout_sha256": "700c3bbbb4b3e61051720c853153a4e14aa48f9440553f63d3f79172f2e61c42",
+      "stderr_sha256": "4162c8c0178d5680d1df55a3ef3343ccf52540478287ac67c8f73b9c5b932891"
+    },
+    {
+      "mode": "check",
+      "empty_control": true,
+      "status": 0,
+      "units": [
+        [
+          "pep440_rs",
+          false,
+          [
+            "libpep440_rs-2ac22689f7a00222.rmeta"
+          ]
+        ],
+        [
+          "pyproject_toml",
+          false,
+          [
+            "libpyproject_toml-eb7462373c1dc1e1.rmeta"
+          ]
+        ],
+        [
+          "registry_pair",
+          false,
+          [
+            "libregistry_pair-c3cf4db1ba50f28c.rmeta"
+          ]
+        ]
+      ],
+      "errors": [],
+      "emitted": 75,
+      "all_fresh": false,
+      "stdout_sha256": "4a8a9335b4e20048da440541ebe16406a51650a11ae3d9c1be470fef5ee88b32",
+      "stderr_sha256": "cffae01455911d8dfb7f5cdd984fe4a279920084cb12a04889da611e42e13779"
+    },
+    {
+      "mode": "check",
+      "empty_control": true,
+      "status": 0,
+      "units": [
+        [
+          "pep440_rs",
+          true,
+          [
+            "libpep440_rs-2ac22689f7a00222.rmeta"
+          ]
+        ],
+        [
+          "pyproject_toml",
+          true,
+          [
+            "libpyproject_toml-eb7462373c1dc1e1.rmeta"
+          ]
+        ],
+        [
+          "registry_pair",
+          true,
+          [
+            "libregistry_pair-c3cf4db1ba50f28c.rmeta"
+          ]
+        ]
+      ],
+      "errors": [],
+      "emitted": 75,
+      "all_fresh": true,
+      "stdout_sha256": "777a859be6c163820388d89a69c8c505d42adf390a79542abb85e5f538c765f3",
+      "stderr_sha256": "007aaad80b755c69c6ca81effed8f9036a6ff0ed034e512e28b89c0c5cebb441"
+    }
+  ],
+  "r14-default-trust-released": [
+    {
+      "mode": "build",
+      "status": 0,
+      "units": [
+        [
+          "pep440_rs",
+          false,
+          [
+            "libpep440_rs.rlib",
+            "libpep440_rs.so",
+            "libpep440_rs.rmeta"
+          ]
+        ],
+        [
+          "pyproject_toml",
+          false,
+          [
+            "libpyproject_toml-e5f287f418bf3e66.rlib",
+            "libpyproject_toml-e5f287f418bf3e66.rmeta"
+          ]
+        ],
+        [
+          "registry_pair",
+          false,
+          [
+            "libregistry_pair.rlib",
+            "libregistry_pair-d83457e97333fefd.rmeta"
+          ]
+        ]
+      ],
+      "errors": [],
+      "emitted": 75,
+      "all_fresh": false,
+      "stdout_sha256": "179e504117b4992ea0ad2f2672f753570f8f4d2eeb472f01306d8e7c03c3b0dd",
+      "stderr_sha256": "0fa16abd2a8b5c949ccd1da56a477da554e083ac97ec4caf00ac04e29a90c55d"
+    },
+    {
+      "mode": "check",
+      "status": 0,
+      "units": [
+        [
+          "pep440_rs",
+          false,
+          [
+            "libpep440_rs-a1464cc06eb3da9e.rmeta"
+          ]
+        ],
+        [
+          "pyproject_toml",
+          false,
+          [
+            "libpyproject_toml-5833def7c957cbe1.rmeta"
+          ]
+        ],
+        [
+          "registry_pair",
+          false,
+          [
+            "libregistry_pair-1a6f22a0d86b84f0.rmeta"
+          ]
+        ]
+      ],
+      "errors": [],
+      "emitted": 75,
+      "all_fresh": false,
+      "stdout_sha256": "d5d28f838bc3f70e8b877482d39404e110a51e748375dbca4bc3e9225f4c65a2",
+      "stderr_sha256": "0b937f82f17acc92574bff448d1bac703c3a22d72990349942caba48633301fb"
+    },
+    {
+      "mode": "check",
+      "status": 0,
+      "units": [
+        [
+          "pep440_rs",
+          true,
+          [
+            "libpep440_rs-a1464cc06eb3da9e.rmeta"
+          ]
+        ],
+        [
+          "pyproject_toml",
+          true,
+          [
+            "libpyproject_toml-5833def7c957cbe1.rmeta"
+          ]
+        ],
+        [
+          "registry_pair",
+          true,
+          [
+            "libregistry_pair-1a6f22a0d86b84f0.rmeta"
+          ]
+        ]
+      ],
+      "errors": [],
+      "emitted": 75,
+      "all_fresh": true,
+      "stdout_sha256": "b4de4c12fca7ccb411d37f4c2423e366392032d9728618dfce2a02a5e46c2835",
+      "stderr_sha256": "c8a14a99d79aaed926c45fbf7571f98c98d7d29988602bfcf4b07295bbbdb5fb"
+    }
+  ],
+  "r14-released": [
+    {
+      "mode": "build",
+      "status": 0,
+      "units": [
+        [
+          "pep440_rs",
+          false,
+          [
+            "libpep440_rs.rlib",
+            "libpep440_rs.so",
+            "libpep440_rs.rmeta"
+          ]
+        ],
+        [
+          "pyproject_toml",
+          false,
+          [
+            "libpyproject_toml-e5f287f418bf3e66.rlib",
+            "libpyproject_toml-e5f287f418bf3e66.rmeta"
+          ]
+        ],
+        [
+          "registry_pair",
+          false,
+          [
+            "libregistry_pair.rlib",
+            "libregistry_pair-d83457e97333fefd.rmeta"
+          ]
+        ]
+      ],
+      "errors": [],
+      "emitted": 75,
+      "all_fresh": false,
+      "stdout_sha256": "b6518f2901a66d363e77e195d7f16daa532dfa8ad7d6ca595ad3bb97eaa073bc",
+      "stderr_sha256": "7aa902f51192f8cdf6a2c8291112c04af303beb3ac414ee9924ac1aeaf1a7602"
+    },
+    {
+      "mode": "check",
+      "status": 101,
+      "units": [
+        [
+          "pep440_rs",
+          true,
+          [
+            "libpep440_rs.rlib",
+            "libpep440_rs.so",
+            "libpep440_rs.rmeta"
+          ]
+        ],
+        [
+          "pyproject_toml",
+          true,
+          [
+            "libpyproject_toml-e5f287f418bf3e66.rmeta"
+          ]
+        ],
+        [
+          "pep440_rs",
+          false,
+          [
+            "libpep440_rs-48cb9485f3356f70.rmeta"
+          ]
+        ]
+      ],
+      "errors": [
+        "found crates (`pep440_rs` and `pep440_rs`) with colliding StableCrateId values"
+      ],
+      "emitted": 85,
+      "all_fresh": false,
+      "stdout_sha256": "7e4d6ffdfc5a53b3f095aefda9dc96e9fe946494141496ad171f0df4ba094390",
+      "stderr_sha256": "a05790ac7dc128cc7fb9d3328894b966d9f76ae69882dae0e1f8736e8df0a01a"
+    }
+  ]
+}

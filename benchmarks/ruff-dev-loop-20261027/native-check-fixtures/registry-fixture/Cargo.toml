@@ -1,0 +1,12 @@
+[workspace]
+[package]
+name="registry_pair"
+version="0.0.0"
+edition="2024"
+[dependencies]
+pyproject-toml={version="=0.13.7",default-features=false}
+pep440_rs={version="=0.7.3",default-features=false}
+[profile.dev]
+opt-level=1
+debug="line-tables-only"
+lto="off"

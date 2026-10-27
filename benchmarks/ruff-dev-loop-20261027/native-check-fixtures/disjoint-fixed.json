@@ -1,0 +1,132 @@
+[
+  {
+    "mode": "build",
+    "status": 0,
+    "units": [
+      [
+        "mixed",
+        false,
+        [
+          "libmixed.rlib",
+          "libmixed.so",
+          "libmixed.rmeta"
+        ]
+      ],
+      [
+        "bridge",
+        false,
+        [
+          "libbridge-f2e3b6d94e982ef2.rlib",
+          "libbridge-f2e3b6d94e982ef2.rmeta"
+        ]
+      ],
+      [
+        "uses_mixed",
+        false,
+        [
+          "uses_mixed"
+        ]
+      ],
+      [
+        "uses_bridge",
+        false,
+        [
+          "uses_bridge"
+        ]
+      ]
+    ],
+    "errors": [],
+    "programs": {
+      "uses_mixed": 7,
+      "uses_bridge": 7
+    }
+  },
+  {
+    "mode": "check",
+    "status": 0,
+    "units": [
+      [
+        "mixed",
+        true,
+        [
+          "libmixed.rlib",
+          "libmixed.so",
+          "libmixed.rmeta"
+        ]
+      ],
+      [
+        "bridge",
+        true,
+        [
+          "libbridge-f2e3b6d94e982ef2.rmeta"
+        ]
+      ],
+      [
+        "uses_bridge",
+        true,
+        [
+          "libuses_bridge-73b53eb797c3562f.rmeta"
+        ]
+      ],
+      [
+        "mixed",
+        false,
+        [
+          "libmixed-575a6ffec9ac9841.rmeta"
+        ]
+      ],
+      [
+        "uses_mixed",
+        false,
+        [
+          "libuses_mixed-afa800a9da5b15e8.rmeta"
+        ]
+      ]
+    ],
+    "errors": []
+  },
+  {
+    "mode": "check",
+    "status": 0,
+    "units": [
+      [
+        "mixed",
+        true,
+        [
+          "libmixed.rlib",
+          "libmixed.so",
+          "libmixed.rmeta"
+        ]
+      ],
+      [
+        "bridge",
+        true,
+        [
+          "libbridge-f2e3b6d94e982ef2.rmeta"
+        ]
+      ],
+      [
+        "mixed",
+        true,
+        [
+          "libmixed-575a6ffec9ac9841.rmeta"
+        ]
+      ],
+      [
+        "uses_bridge",
+        true,
+        [
+          "libuses_bridge-73b53eb797c3562f.rmeta"
+        ]
+      ],
+      [
+        "uses_mixed",
+        true,
+        [
+          "libuses_mixed-afa800a9da5b15e8.rmeta"
+        ]
+      ]
+    ],
+    "errors": []
+  }
+]

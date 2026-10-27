@@ -1,0 +1,258 @@
+{
+  "parent": {
+    "experiments": {
+      "empty-check": [
+        {
+          "mode": "check",
+          "status": 0,
+          "emitted": 20,
+          "pep440": [
+            [
+              "pep440_rs",
+              false
+            ]
+          ],
+          "errors": []
+        },
+        {
+          "mode": "check",
+          "status": 0,
+          "emitted": 20,
+          "pep440": [
+            [
+              "pep440_rs",
+              true
+            ]
+          ],
+          "errors": []
+        }
+      ],
+      "native-first": [
+        {
+          "mode": "build",
+          "status": 0,
+          "emitted": 20,
+          "pep440": [
+            [
+              "pep440_rs",
+              false
+            ]
+          ],
+          "errors": []
+        },
+        {
+          "mode": "check",
+          "status": 101,
+          "emitted": 28,
+          "pep440": [
+            [
+              "pep440_rs",
+              true
+            ],
+            [
+              "pep440_rs",
+              false
+            ]
+          ],
+          "errors": [
+            "found crates (`pep440_rs` and `pep440_rs`) with colliding StableCrateId values"
+          ]
+        }
+      ]
+    },
+    "headers": [
+      {
+        "path": "/dev/shm/ohm-check-after-native-20261027/active/target/debug/build/workspaces/2dde92ac32eabe2f/v2-bb454cdc3077a522-all-native-all/pep440_rs/3740c62f32c737c3/out/libpep440_rs.rmeta",
+        "header": [
+          "name pep440_rs",
+          "private hash d09d99b5b3edb3f33c8d054ff66e73f2 stable_crate_id StableCrateId(17039135813190892047)",
+          "public_hash e8ff89a7be593208ff6ac48c512cbd37"
+        ],
+        "pep440_deps": [
+          "name pep440_rs"
+        ]
+      },
+      {
+        "path": "/dev/shm/ohm-check-after-native-20261027/active/target/debug/build/workspaces/2dde92ac32eabe2f/v2-bb454cdc3077a522-all-native-all/ruff_linter/9bd3979def2a3d0f/out/libruff_linter-9bd3979def2a3d0f.rmeta",
+        "header": [
+          "name ruff_linter-9bd3979def2a3d0f",
+          "private hash 97bc3288db0ad364f79289fb67466006 stable_crate_id StableCrateId(17713710348355293254)",
+          "public_hash 4f71f68c3eae9c2db6ed0548ed9d9e99"
+        ],
+        "pep440_deps": [
+          "20 pep440_rs hash e8ff89a7be593208ff6ac48c512cbd37 host_hash None kind Unconditional public"
+        ]
+      },
+      {
+        "path": "/dev/shm/ohm-check-after-native-20261027/active/target/debug/build/workspaces/2dde92ac32eabe2f/v2-bb454cdc3077a522-all-native-all/pep440_rs/8c0d3653cf873f7d/out/libpep440_rs-8c0d3653cf873f7d.rmeta",
+        "header": [
+          "name pep440_rs-8c0d3653cf873f7d",
+          "private hash 5ca1c4731e2fcb295d582f6fed72bc6e stable_crate_id StableCrateId(17039135813190892047)",
+          "public_hash c8f5a628b694ce51e089400dec034013"
+        ],
+        "pep440_deps": [
+          "name pep440_rs-8c0d3653cf873f7d"
+        ]
+      },
+      {
+        "path": "/dev/shm/ohm-check-after-native-20261027/active/target/debug/build/workspaces/2dde92ac32eabe2f/v2-bb454cdc3077a522-all-native-all/ruff_linter/3d7069930b12093d/out/libruff_linter-3d7069930b12093d.rmeta",
+        "header": [
+          "name ruff_linter-3d7069930b12093d",
+          "private hash d8e70e746db2d6316af4841268c604d1 stable_crate_id StableCrateId(17713710348355293254)",
+          "public_hash fcbcc2a868a86e2a51fd6e3ba57b7221"
+        ],
+        "pep440_deps": [
+          "20 pep440_rs-8c0d3653cf873f7d hash c8f5a628b694ce51e089400dec034013 host_hash None kind Unconditional public"
+        ]
+      },
+      {
+        "path": "/dev/shm/ohm-check-after-native-20261027/active/target/debug/build/workspaces/2dde92ac32eabe2f/v2-bb454cdc3077a522-all-native-all/ty_project/abafef48ac16427d/out/libty_project-abafef48ac16427d.rmeta",
+        "header": [
+          "name ty_project-abafef48ac16427d",
+          "private hash 319f67626c037f712cb543da0d61ba7b stable_crate_id StableCrateId(8517179889062242564)",
+          "public_hash 45ae5246e4d2144562764b6f4ee0398b"
+        ],
+        "pep440_deps": [
+          "20 pep440_rs-8c0d3653cf873f7d hash c8f5a628b694ce51e089400dec034013 host_hash None kind Unconditional public"
+        ]
+      }
+    ],
+    "selected_rustc_log": [
+      " INFO rustc_metadata::locator rmeta reading metadata from: /dev/shm/ohm-check-after-native-20261027/active/target/debug/build/workspaces/2dde92ac32eabe2f/v2-bb454cdc3077a522-all-native-all/pep440_rs/8c0d3653cf873f7d/out/libpep440_rs-8c0d3653cf873f7d.rmeta",
+      " INFO rustc_metadata::creader register crate `pep440_rs` (cnum = 20. private_dep = false)",
+      " INFO rustc_metadata::creader resolving dep `ruff_linter`->`pep440_rs` hash: `e8ff89a7be593208ff6ac48c512cbd37` extra filename: `` private false",
+      " INFO rustc_metadata::locator rmeta reading metadata from: /dev/shm/ohm-check-after-native-20261027/active/target/debug/build/workspaces/2dde92ac32eabe2f/v2-bb454cdc3077a522-all-native-all/pep440_rs/3740c62f32c737c3/out/libpep440_rs.rmeta",
+      " INFO rustc_metadata::locator rmeta reading metadata from: /dev/shm/ohm-check-after-native-20261027/active/target/debug/build/workspaces/2dde92ac32eabe2f/v2-bb454cdc3077a522-all-native-all/pep440_rs/8c0d3653cf873f7d/out/libpep440_rs-8c0d3653cf873f7d.rmeta"
+    ],
+    "child_stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "child_stderr_sha256": "1b0d6340811515088b8fb57d67db8910b880dc630b58c61130e3452e2b29a871"
+  },
+  "candidate": {
+    "experiments": {
+      "empty-check": [
+        {
+          "mode": "check",
+          "status": 0,
+          "emitted": 20,
+          "pep440": [
+            [
+              "pep440_rs",
+              false
+            ]
+          ],
+          "errors": []
+        },
+        {
+          "mode": "check",
+          "status": 0,
+          "emitted": 20,
+          "pep440": [
+            [
+              "pep440_rs",
+              true
+            ]
+          ],
+          "errors": []
+        }
+      ],
+      "native-first": [
+        {
+          "mode": "build",
+          "status": 0,
+          "emitted": 20,
+          "pep440": [
+            [
+              "pep440_rs",
+              false
+            ]
+          ],
+          "errors": []
+        },
+        {
+          "mode": "check",
+          "status": 101,
+          "emitted": 28,
+          "pep440": [
+            [
+              "pep440_rs",
+              true
+            ],
+            [
+              "pep440_rs",
+              false
+            ]
+          ],
+          "errors": [
+            "found crates (`pep440_rs` and `pep440_rs`) with colliding StableCrateId values"
+          ]
+        }
+      ]
+    },
+    "headers": [
+      {
+        "path": "/dev/shm/ohm-check-after-native-20261027/active/target/debug/build/workspaces/2dde92ac32eabe2f/v2-d29817a29a94f0bf-all-native-all/pep440_rs/3740c62f32c737c3/out/libpep440_rs.rmeta",
+        "header": [
+          "name pep440_rs",
+          "private hash 44326200e41aa13827eeb12147c2c4f7 stable_crate_id StableCrateId(17039135813190892047)",
+          "public_hash 7bae518d24fda0167f5fb36c8d0d78d4"
+        ],
+        "pep440_deps": [
+          "name pep440_rs"
+        ]
+      },
+      {
+        "path": "/dev/shm/ohm-check-after-native-20261027/active/target/debug/build/workspaces/2dde92ac32eabe2f/v2-d29817a29a94f0bf-all-native-all/ruff_linter/9bd3979def2a3d0f/out/libruff_linter-9bd3979def2a3d0f.rmeta",
+        "header": [
+          "name ruff_linter-9bd3979def2a3d0f",
+          "private hash 623f221e001ca8f81d883649878178bd stable_crate_id StableCrateId(17713710348355293254)",
+          "public_hash 79dd984d1f0e0e0ec8c8c9c8f159d041"
+        ],
+        "pep440_deps": [
+          "20 pep440_rs hash 7bae518d24fda0167f5fb36c8d0d78d4 host_hash None kind Unconditional public"
+        ]
+      },
+      {
+        "path": "/dev/shm/ohm-check-after-native-20261027/active/target/debug/build/workspaces/2dde92ac32eabe2f/v2-d29817a29a94f0bf-all-native-all/pep440_rs/8c0d3653cf873f7d/out/libpep440_rs-8c0d3653cf873f7d.rmeta",
+        "header": [
+          "name pep440_rs-8c0d3653cf873f7d",
+          "private hash 11639e418e4cb2ac03c506bfef677468 stable_crate_id StableCrateId(17039135813190892047)",
+          "public_hash e45dc7ee66af335a3e270e93ed4a9405"
+        ],
+        "pep440_deps": [
+          "name pep440_rs-8c0d3653cf873f7d"
+        ]
+      },
+      {
+        "path": "/dev/shm/ohm-check-after-native-20261027/active/target/debug/build/workspaces/2dde92ac32eabe2f/v2-d29817a29a94f0bf-all-native-all/ty_project/abafef48ac16427d/out/libty_project-abafef48ac16427d.rmeta",
+        "header": [
+          "name ty_project-abafef48ac16427d",
+          "private hash a0db5ba370d6df8bee8e7fdffc2ad65d stable_crate_id StableCrateId(8517179889062242564)",
+          "public_hash 0feeca4ce0cbdba42872a1cb180f53b8"
+        ],
+        "pep440_deps": [
+          "20 pep440_rs-8c0d3653cf873f7d hash e45dc7ee66af335a3e270e93ed4a9405 host_hash None kind Unconditional public"
+        ]
+      },
+      {
+        "path": "/dev/shm/ohm-check-after-native-20261027/active/target/debug/build/workspaces/2dde92ac32eabe2f/v2-d29817a29a94f0bf-all-native-all/ruff_linter/3d7069930b12093d/out/libruff_linter-3d7069930b12093d.rmeta",
+        "header": [
+          "name ruff_linter-3d7069930b12093d",
+          "private hash 8cce4e642dc871d6f4b840e3f9ad0cb7 stable_crate_id StableCrateId(17713710348355293254)",
+          "public_hash 29881aa49bae8e56782e91d4e8e17bf1"
+        ],
+        "pep440_deps": [
+          "20 pep440_rs-8c0d3653cf873f7d hash e45dc7ee66af335a3e270e93ed4a9405 host_hash None kind Unconditional public"
+        ]
+      }
+    ],
+    "selected_rustc_log": [
+      " INFO rustc_metadata::locator rmeta reading metadata from: /dev/shm/ohm-check-after-native-20261027/active/target/debug/build/workspaces/2dde92ac32eabe2f/v2-d29817a29a94f0bf-all-native-all/pep440_rs/8c0d3653cf873f7d/out/libpep440_rs-8c0d3653cf873f7d.rmeta",
+      " INFO rustc_metadata::creader register crate `pep440_rs` (cnum = 20. private_dep = false)",
+      " INFO rustc_metadata::creader resolving dep `ruff_linter`->`pep440_rs` hash: `7bae518d24fda0167f5fb36c8d0d78d4` extra filename: `` private false",
+      " INFO rustc_metadata::locator rmeta reading metadata from: /dev/shm/ohm-check-after-native-20261027/active/target/debug/build/workspaces/2dde92ac32eabe2f/v2-d29817a29a94f0bf-all-native-all/pep440_rs/3740c62f32c737c3/out/libpep440_rs.rmeta",
+      " INFO rustc_metadata::locator rmeta reading metadata from: /dev/shm/ohm-check-after-native-20261027/active/target/debug/build/workspaces/2dde92ac32eabe2f/v2-d29817a29a94f0bf-all-native-all/pep440_rs/8c0d3653cf873f7d/out/libpep440_rs-8c0d3653cf873f7d.rmeta"
+    ],
+    "child_stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "child_stderr_sha256": "ea8e03128053cd6950d12b31ffa102754f72b027c6a49fd51910ff6f19eaebdf"
+  }
+}
