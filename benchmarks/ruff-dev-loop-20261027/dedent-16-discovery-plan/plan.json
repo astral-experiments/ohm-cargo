@@ -1,0 +1,39 @@
+{
+  "cargo": "42e90992cec21a29956e20fd52ab952472a9dbc1dcc7a3b60c92aad101b5f568",
+  "directions": [
+    "original",
+    "reversed",
+    "restored"
+  ],
+  "driver": "c442c2a36e1f37c92f138a8fb367fc09982931b5f1055e9742fb402566ad46a4",
+  "frontend": "b0c412a7a8010a768f00546419a0b1bcfca382d7e70191df3ae72e30ac1ef3e5",
+  "historical_commit": "83a3afc3156d73ae4296f3fa74ede28e4c72bfcd",
+  "history": "Independent target and build directories per requested Cargo command. Begin empty, reach a 100% fresh followup, reverse the whole patch, require changed native output from an ordinary consumer and fresh followup, restore and repeat. Preserve complete reported artifacts and actual compiler/linker command receipts. No Ruff test runs, no timing or selection by output.",
+  "oracles": {
+    "original": "       # foo\n       # bar\n    return 2",
+    "restored": "       # foo\n       # bar\n    return 2",
+    "reversed": "    # foo\n    # bar\n     return 2"
+  },
+  "package_sha256": "957ca8144205008ddaee75ef35f9775b2e428271c6b044e38bbdd8196c6bbf3e",
+  "patch_sha256": "9dc8166f1280da1c57cdfce63c5e78fb9b1b67f0c5ed9769fc5f7c619c785f6a",
+  "ruff": "93526150df078af7dd8fc4226cdcc469539d2001",
+  "safety": "Use a disposable git-archive copy of the pinned Ruff tree, fixed native lane and isolated writable roots. Keep at least 8 GiB on the benchmark volume. If a product or freshness oracle fails, retain the receipts and report the termination.",
+  "selection": "Newest commit at this fixed Ruff tree touching crates/ruff_python_trivia; a complete three-file behavior change to dedent when leading comments have different indentation. Selected by Git history before native commands.",
+  "source": {
+    "crates/ruff_linter/resources/mdtest/flake8-return/superfluous-else-return.md": {
+      "original": "f540703fc021735d0439e7c369ff4cb78e5fee682eb3f841d4b742860cf874f3",
+      "reversed": null
+    },
+    "crates/ruff_linter/src/rules/pylint/snapshots/ruff_linter__rules__pylint__tests__collapsible-else-if_collapsible_else_if.py.snap": {
+      "original": "c6a3506a96f7de2fc25ab42cab1aca854f61ad6b0dffcbff48ffc34f654fd863",
+      "reversed": "9e6bde6977d07a569d5bd5d6aa079922e5b227528ba6289db3e2f21c4a46f1ea"
+    },
+    "crates/ruff_python_trivia/src/textwrap.rs": {
+      "original": "28924b3e970299c42f667703bf8fc803f5ed17f28363d0821f7a571275dbd273",
+      "reversed": "a4b093032e40a7253daa36bfb8fdaf522bee0c037baf0066e47588669cf238d5"
+    }
+  },
+  "subject": "Official unmodified Linux x86-64 Ohm 1.99.0-16",
+  "wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5",
+  "workload": "Run cargo +ohm build -p ruff_python_parser and cargo +ohm test --no-run -p ruff_python_parser, with --locked --offline -j8 and JSON receipts. The parser directly depends on the edited trivia library but does not call dedent_to. The full historical change affects the linter as well. This discovery is restricted to the parser package graph; it does not estimate a workspace effect."
+}
