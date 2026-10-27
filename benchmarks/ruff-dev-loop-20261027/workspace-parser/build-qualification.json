@@ -1,0 +1,478 @@
+{
+  "identical_edited_elf": 13,
+  "n_edited_elf": 15,
+  "name": "results-parser-confirm-build",
+  "traces": {
+    "candidate": [
+      {
+        "crates": [
+          [
+            "rustc_full",
+            "ruff_python_parser"
+          ],
+          [
+            "rustc_full",
+            "ruff_wasm"
+          ],
+          [
+            "rustc_full",
+            "ty_wasm"
+          ],
+          [
+            "rustc_link_only",
+            "ruff"
+          ],
+          [
+            "rustc_link_only",
+            "ruff_dev"
+          ],
+          [
+            "rustc_link_only",
+            "ruff_python_formatter"
+          ],
+          [
+            "rustc_link_only",
+            "ty"
+          ],
+          [
+            "rustc_link_only",
+            "ty_completion_bench"
+          ],
+          [
+            "rustc_link_only",
+            "ty_completion_eval"
+          ]
+        ],
+        "elf": {
+          "ohm-whole-skips-20261027/native-target/debug/libruff_macros.so": "9f1c3bf00aee7d5c1a4fed593eb7443caf6e36f1fef2f2835a17d1672adbd71a",
+          "ohm-whole-skips-20261027/native-target/debug/libruff_wasm.so": "044e43bc4e6ec5fb3c34bfb5837ca221f1313f7283dfd50f7abd0cd896387090",
+          "ohm-whole-skips-20261027/native-target/debug/libty_wasm.so": "4a72c52fba2865d899b5e1674fcf8f9ebc987ff7f3b6184501d4bfad1c50db6c",
+          "ohm-whole-skips-20261027/native-target/debug/ruff": "2e45dca1c36bacb6a2fec04a5fce8c8fcc39004f654ff13a43500704af30364e",
+          "ohm-whole-skips-20261027/native-target/debug/ruff_dev": "14dcf5483cce5b6663b5bf07d24950267c4e367085d04f436dc633486060de4e",
+          "ohm-whole-skips-20261027/native-target/debug/ruff_python_formatter": "b9546b24e16f62af5598a62094a8f4253f7eb4a06a2daa644392d0546d101c77",
+          "ohm-whole-skips-20261027/native-target/debug/ty": "ebb7a93145a6e6f1eb05ccb85ab7b86a333cc57e92c29227db11f2c5ee18590b",
+          "ohm-whole-skips-20261027/native-target/debug/ty_completion_bench": "a5a9be1653f54961faaabef64a4ad5c4082b0a06517a7c5d5ae79bf765514a0b",
+          "ohm-whole-skips-20261027/native-target/debug/ty_completion_eval": "9599529eee208f307a7c9320660e8108ff0c16fd4046f21b199ac31cd5be8bd7",
+          "ruff/4722aa02840a44c3/out/build_script_build": "b52715e7707d60b35ad4b7ff9237f8bd654448318102d1a2cd6f8fa45f064408",
+          "ruff_macros/0df74ae72023ec23/out/libruff_macros-0df74ae72023ec23.so": "dfa4d2920456060ed70de9b977150c013ab01cd34d2939a6824b89d728ebd64c",
+          "ruff_unicode_names2/8f05ff94e787857d/out/build_script_build": "86615881897806375c3c6b4ca1c38c325ed89379037f9a43bff857cb72de43df",
+          "ty/70696aae414a7369/out/build_script_build": "c30cbcb47f5ca2a3fc6ce2f5581629289b3018834f85df02fcb1763d6f4367a8",
+          "ty_vendored/a2417fe62c568aae/out/build_script_build": "587c2cb1be7fdde2caa9d3f99dc66d8e2222ed612053544d1e59ae5be58f63a1",
+          "ty_wasm/e988932c4bd2143f/out/build_script_build": "c1473433a44aefd5eda6f2edfc7b1816920bb7a5f5f0dc27062927c0a1651624"
+        },
+        "events": [],
+        "full_links": null,
+        "processes": {
+          "rustc_full": 3,
+          "rustc_link_only": 6,
+          "wild": 8
+        },
+        "roster_sha": "97f9aa0390c8981fa6ab6acb6bed1212a0d47ac1810fe040d96b43b101aeff22"
+      },
+      {
+        "crates": [
+          [
+            "rustc_full",
+            "ruff_python_parser"
+          ],
+          [
+            "rustc_full",
+            "ruff_wasm"
+          ],
+          [
+            "rustc_full",
+            "ty_wasm"
+          ],
+          [
+            "rustc_link_only",
+            "ruff"
+          ],
+          [
+            "rustc_link_only",
+            "ruff_dev"
+          ],
+          [
+            "rustc_link_only",
+            "ruff_python_formatter"
+          ],
+          [
+            "rustc_link_only",
+            "ty"
+          ],
+          [
+            "rustc_link_only",
+            "ty_completion_bench"
+          ],
+          [
+            "rustc_link_only",
+            "ty_completion_eval"
+          ]
+        ],
+        "elf": {
+          "ohm-whole-skips-20261027/native-target/debug/libruff_macros.so": "9f1c3bf00aee7d5c1a4fed593eb7443caf6e36f1fef2f2835a17d1672adbd71a",
+          "ohm-whole-skips-20261027/native-target/debug/libruff_wasm.so": "044e43bc4e6ec5fb3c34bfb5837ca221f1313f7283dfd50f7abd0cd896387090",
+          "ohm-whole-skips-20261027/native-target/debug/libty_wasm.so": "4a72c52fba2865d899b5e1674fcf8f9ebc987ff7f3b6184501d4bfad1c50db6c",
+          "ohm-whole-skips-20261027/native-target/debug/ruff": "2e45dca1c36bacb6a2fec04a5fce8c8fcc39004f654ff13a43500704af30364e",
+          "ohm-whole-skips-20261027/native-target/debug/ruff_dev": "14dcf5483cce5b6663b5bf07d24950267c4e367085d04f436dc633486060de4e",
+          "ohm-whole-skips-20261027/native-target/debug/ruff_python_formatter": "b9546b24e16f62af5598a62094a8f4253f7eb4a06a2daa644392d0546d101c77",
+          "ohm-whole-skips-20261027/native-target/debug/ty": "ebb7a93145a6e6f1eb05ccb85ab7b86a333cc57e92c29227db11f2c5ee18590b",
+          "ohm-whole-skips-20261027/native-target/debug/ty_completion_bench": "a5a9be1653f54961faaabef64a4ad5c4082b0a06517a7c5d5ae79bf765514a0b",
+          "ohm-whole-skips-20261027/native-target/debug/ty_completion_eval": "9599529eee208f307a7c9320660e8108ff0c16fd4046f21b199ac31cd5be8bd7",
+          "ruff/4722aa02840a44c3/out/build_script_build": "b52715e7707d60b35ad4b7ff9237f8bd654448318102d1a2cd6f8fa45f064408",
+          "ruff_macros/0df74ae72023ec23/out/libruff_macros-0df74ae72023ec23.so": "dfa4d2920456060ed70de9b977150c013ab01cd34d2939a6824b89d728ebd64c",
+          "ruff_unicode_names2/8f05ff94e787857d/out/build_script_build": "86615881897806375c3c6b4ca1c38c325ed89379037f9a43bff857cb72de43df",
+          "ty/70696aae414a7369/out/build_script_build": "c30cbcb47f5ca2a3fc6ce2f5581629289b3018834f85df02fcb1763d6f4367a8",
+          "ty_vendored/a2417fe62c568aae/out/build_script_build": "587c2cb1be7fdde2caa9d3f99dc66d8e2222ed612053544d1e59ae5be58f63a1",
+          "ty_wasm/e988932c4bd2143f/out/build_script_build": "c1473433a44aefd5eda6f2edfc7b1816920bb7a5f5f0dc27062927c0a1651624"
+        },
+        "events": [],
+        "full_links": null,
+        "processes": {
+          "rustc_full": 3,
+          "rustc_link_only": 6,
+          "wild": 8
+        },
+        "roster_sha": "97f9aa0390c8981fa6ab6acb6bed1212a0d47ac1810fe040d96b43b101aeff22"
+      }
+    ],
+    "parent": [
+      {
+        "crates": [
+          [
+            "rustc_full",
+            "mdtest"
+          ],
+          [
+            "rustc_full",
+            "ruff"
+          ],
+          [
+            "rustc_full",
+            "ruff"
+          ],
+          [
+            "rustc_full",
+            "ruff_benchmark"
+          ],
+          [
+            "rustc_full",
+            "ruff_db"
+          ],
+          [
+            "rustc_full",
+            "ruff_dev"
+          ],
+          [
+            "rustc_full",
+            "ruff_graph"
+          ],
+          [
+            "rustc_full",
+            "ruff_linter"
+          ],
+          [
+            "rustc_full",
+            "ruff_markdown"
+          ],
+          [
+            "rustc_full",
+            "ruff_mdtest"
+          ],
+          [
+            "rustc_full",
+            "ruff_python_codegen"
+          ],
+          [
+            "rustc_full",
+            "ruff_python_formatter"
+          ],
+          [
+            "rustc_full",
+            "ruff_python_formatter"
+          ],
+          [
+            "rustc_full",
+            "ruff_python_importer"
+          ],
+          [
+            "rustc_full",
+            "ruff_python_parser"
+          ],
+          [
+            "rustc_full",
+            "ruff_python_semantic"
+          ],
+          [
+            "rustc_full",
+            "ruff_ranged_value"
+          ],
+          [
+            "rustc_full",
+            "ruff_server"
+          ],
+          [
+            "rustc_full",
+            "ruff_wasm"
+          ],
+          [
+            "rustc_full",
+            "ruff_workspace"
+          ],
+          [
+            "rustc_full",
+            "ty"
+          ],
+          [
+            "rustc_full",
+            "ty"
+          ],
+          [
+            "rustc_full",
+            "ty_combine"
+          ],
+          [
+            "rustc_full",
+            "ty_completion_bench"
+          ],
+          [
+            "rustc_full",
+            "ty_completion_eval"
+          ],
+          [
+            "rustc_full",
+            "ty_ide"
+          ],
+          [
+            "rustc_full",
+            "ty_module_resolver"
+          ],
+          [
+            "rustc_full",
+            "ty_project"
+          ],
+          [
+            "rustc_full",
+            "ty_python_core"
+          ],
+          [
+            "rustc_full",
+            "ty_python_semantic"
+          ],
+          [
+            "rustc_full",
+            "ty_server"
+          ],
+          [
+            "rustc_full",
+            "ty_site_packages"
+          ],
+          [
+            "rustc_full",
+            "ty_test"
+          ],
+          [
+            "rustc_full",
+            "ty_vendored"
+          ],
+          [
+            "rustc_full",
+            "ty_wasm"
+          ]
+        ],
+        "elf": {
+          "ohm-whole-skips-20261027/native-target/debug/libruff_macros.so": "9f1c3bf00aee7d5c1a4fed593eb7443caf6e36f1fef2f2835a17d1672adbd71a",
+          "ohm-whole-skips-20261027/native-target/debug/libruff_wasm.so": "044e43bc4e6ec5fb3c34bfb5837ca221f1313f7283dfd50f7abd0cd896387090",
+          "ohm-whole-skips-20261027/native-target/debug/libty_wasm.so": "4a72c52fba2865d899b5e1674fcf8f9ebc987ff7f3b6184501d4bfad1c50db6c",
+          "ohm-whole-skips-20261027/native-target/debug/ruff": "102527054b64790fd793696f0f8be122b9629477da65a02521270a756cb43e42",
+          "ohm-whole-skips-20261027/native-target/debug/ruff_dev": "14dcf5483cce5b6663b5bf07d24950267c4e367085d04f436dc633486060de4e",
+          "ohm-whole-skips-20261027/native-target/debug/ruff_python_formatter": "b9546b24e16f62af5598a62094a8f4253f7eb4a06a2daa644392d0546d101c77",
+          "ohm-whole-skips-20261027/native-target/debug/ty": "f1586f2a7f314b35183780ff0b205606f4376b26ba7d10c9f089f0cfd6d0444b",
+          "ohm-whole-skips-20261027/native-target/debug/ty_completion_bench": "a5a9be1653f54961faaabef64a4ad5c4082b0a06517a7c5d5ae79bf765514a0b",
+          "ohm-whole-skips-20261027/native-target/debug/ty_completion_eval": "9599529eee208f307a7c9320660e8108ff0c16fd4046f21b199ac31cd5be8bd7",
+          "ruff/4722aa02840a44c3/out/build_script_build": "b52715e7707d60b35ad4b7ff9237f8bd654448318102d1a2cd6f8fa45f064408",
+          "ruff_macros/0df74ae72023ec23/out/libruff_macros-0df74ae72023ec23.so": "dfa4d2920456060ed70de9b977150c013ab01cd34d2939a6824b89d728ebd64c",
+          "ruff_unicode_names2/8f05ff94e787857d/out/build_script_build": "86615881897806375c3c6b4ca1c38c325ed89379037f9a43bff857cb72de43df",
+          "ty/70696aae414a7369/out/build_script_build": "c30cbcb47f5ca2a3fc6ce2f5581629289b3018834f85df02fcb1763d6f4367a8",
+          "ty_vendored/a2417fe62c568aae/out/build_script_build": "587c2cb1be7fdde2caa9d3f99dc66d8e2222ed612053544d1e59ae5be58f63a1",
+          "ty_wasm/e988932c4bd2143f/out/build_script_build": "c1473433a44aefd5eda6f2edfc7b1816920bb7a5f5f0dc27062927c0a1651624"
+        },
+        "events": [],
+        "full_links": null,
+        "processes": {
+          "rustc_full": 35,
+          "wild": 8
+        },
+        "roster_sha": "97f9aa0390c8981fa6ab6acb6bed1212a0d47ac1810fe040d96b43b101aeff22"
+      },
+      {
+        "crates": [
+          [
+            "rustc_full",
+            "mdtest"
+          ],
+          [
+            "rustc_full",
+            "ruff"
+          ],
+          [
+            "rustc_full",
+            "ruff"
+          ],
+          [
+            "rustc_full",
+            "ruff_benchmark"
+          ],
+          [
+            "rustc_full",
+            "ruff_db"
+          ],
+          [
+            "rustc_full",
+            "ruff_dev"
+          ],
+          [
+            "rustc_full",
+            "ruff_graph"
+          ],
+          [
+            "rustc_full",
+            "ruff_linter"
+          ],
+          [
+            "rustc_full",
+            "ruff_markdown"
+          ],
+          [
+            "rustc_full",
+            "ruff_mdtest"
+          ],
+          [
+            "rustc_full",
+            "ruff_python_codegen"
+          ],
+          [
+            "rustc_full",
+            "ruff_python_formatter"
+          ],
+          [
+            "rustc_full",
+            "ruff_python_formatter"
+          ],
+          [
+            "rustc_full",
+            "ruff_python_importer"
+          ],
+          [
+            "rustc_full",
+            "ruff_python_parser"
+          ],
+          [
+            "rustc_full",
+            "ruff_python_semantic"
+          ],
+          [
+            "rustc_full",
+            "ruff_ranged_value"
+          ],
+          [
+            "rustc_full",
+            "ruff_server"
+          ],
+          [
+            "rustc_full",
+            "ruff_wasm"
+          ],
+          [
+            "rustc_full",
+            "ruff_workspace"
+          ],
+          [
+            "rustc_full",
+            "ty"
+          ],
+          [
+            "rustc_full",
+            "ty"
+          ],
+          [
+            "rustc_full",
+            "ty_combine"
+          ],
+          [
+            "rustc_full",
+            "ty_completion_bench"
+          ],
+          [
+            "rustc_full",
+            "ty_completion_eval"
+          ],
+          [
+            "rustc_full",
+            "ty_ide"
+          ],
+          [
+            "rustc_full",
+            "ty_module_resolver"
+          ],
+          [
+            "rustc_full",
+            "ty_project"
+          ],
+          [
+            "rustc_full",
+            "ty_python_core"
+          ],
+          [
+            "rustc_full",
+            "ty_python_semantic"
+          ],
+          [
+            "rustc_full",
+            "ty_server"
+          ],
+          [
+            "rustc_full",
+            "ty_site_packages"
+          ],
+          [
+            "rustc_full",
+            "ty_test"
+          ],
+          [
+            "rustc_full",
+            "ty_vendored"
+          ],
+          [
+            "rustc_full",
+            "ty_wasm"
+          ]
+        ],
+        "elf": {
+          "ohm-whole-skips-20261027/native-target/debug/libruff_macros.so": "9f1c3bf00aee7d5c1a4fed593eb7443caf6e36f1fef2f2835a17d1672adbd71a",
+          "ohm-whole-skips-20261027/native-target/debug/libruff_wasm.so": "044e43bc4e6ec5fb3c34bfb5837ca221f1313f7283dfd50f7abd0cd896387090",
+          "ohm-whole-skips-20261027/native-target/debug/libty_wasm.so": "4a72c52fba2865d899b5e1674fcf8f9ebc987ff7f3b6184501d4bfad1c50db6c",
+          "ohm-whole-skips-20261027/native-target/debug/ruff": "102527054b64790fd793696f0f8be122b9629477da65a02521270a756cb43e42",
+          "ohm-whole-skips-20261027/native-target/debug/ruff_dev": "14dcf5483cce5b6663b5bf07d24950267c4e367085d04f436dc633486060de4e",
+          "ohm-whole-skips-20261027/native-target/debug/ruff_python_formatter": "b9546b24e16f62af5598a62094a8f4253f7eb4a06a2daa644392d0546d101c77",
+          "ohm-whole-skips-20261027/native-target/debug/ty": "f1586f2a7f314b35183780ff0b205606f4376b26ba7d10c9f089f0cfd6d0444b",
+          "ohm-whole-skips-20261027/native-target/debug/ty_completion_bench": "a5a9be1653f54961faaabef64a4ad5c4082b0a06517a7c5d5ae79bf765514a0b",
+          "ohm-whole-skips-20261027/native-target/debug/ty_completion_eval": "9599529eee208f307a7c9320660e8108ff0c16fd4046f21b199ac31cd5be8bd7",
+          "ruff/4722aa02840a44c3/out/build_script_build": "b52715e7707d60b35ad4b7ff9237f8bd654448318102d1a2cd6f8fa45f064408",
+          "ruff_macros/0df74ae72023ec23/out/libruff_macros-0df74ae72023ec23.so": "dfa4d2920456060ed70de9b977150c013ab01cd34d2939a6824b89d728ebd64c",
+          "ruff_unicode_names2/8f05ff94e787857d/out/build_script_build": "86615881897806375c3c6b4ca1c38c325ed89379037f9a43bff857cb72de43df",
+          "ty/70696aae414a7369/out/build_script_build": "c30cbcb47f5ca2a3fc6ce2f5581629289b3018834f85df02fcb1763d6f4367a8",
+          "ty_vendored/a2417fe62c568aae/out/build_script_build": "587c2cb1be7fdde2caa9d3f99dc66d8e2222ed612053544d1e59ae5be58f63a1",
+          "ty_wasm/e988932c4bd2143f/out/build_script_build": "c1473433a44aefd5eda6f2edfc7b1816920bb7a5f5f0dc27062927c0a1651624"
+        },
+        "events": [],
+        "full_links": null,
+        "processes": {
+          "rustc_full": 35,
+          "wild": 8
+        },
+        "roster_sha": "97f9aa0390c8981fa6ab6acb6bed1212a0d47ac1810fe040d96b43b101aeff22"
+      }
+    ]
+  },
+  "units": 501
+}
