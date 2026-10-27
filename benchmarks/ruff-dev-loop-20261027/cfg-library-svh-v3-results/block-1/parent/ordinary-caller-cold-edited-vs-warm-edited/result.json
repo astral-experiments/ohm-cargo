@@ -1,0 +1,91 @@
+{
+ "args_sha256": "cfc82e18249cb3630d8a13ec2de02242ed6ed27ca2e8d65b5910b96caa064a73",
+ "bridge_metadata": "9ae101ee811b3378853bb954f5ace9db696e3389c3786e8e90ea5faa8996f119",
+ "bridge_producer": "cold-edited",
+ "caller_producer": "warm-edited",
+ "codes": [
+  "E0460"
+ ],
+ "diagnostics": [
+  {
+   "$message_type": "diagnostic",
+   "children": [
+    {
+     "children": [],
+     "code": null,
+     "level": "note",
+     "message": "perhaps that crate needs to be recompiled?",
+     "rendered": null,
+     "spans": []
+    },
+    {
+     "children": [],
+     "code": null,
+     "level": "note",
+     "message": "the following crate versions were found:\ncrate `ty_ide`: /home/dev-user/.cache/ohm-233-position-qualified-20261027/cfg-library-svh-v3-replay-v1/common/selected/libty_ide.rmeta\ncrate `ordinary_scope_bridge`: /home/dev-user/.cache/ohm-233-position-qualified-20261027/cfg-library-svh-v3-replay-v1/common/selected/libordinary_scope_bridge.rmeta",
+     "rendered": null,
+     "spans": []
+    }
+   ],
+   "code": {
+    "code": "E0460",
+    "explanation": "Found possibly newer version of crate `..` which `..` depends on.\n\nConsider these erroneous files:\n\n`a1.rs`\n```ignore (needs-linkage-with-other-tests)\n#![crate_name = \"a\"]\n\npub fn foo<T>() {}\n```\n\n`a2.rs`\n```ignore (needs-linkage-with-other-tests)\n#![crate_name = \"a\"]\n\npub fn foo<T>() {\n    println!(\"foo<T>()\");\n}\n```\n\n`b.rs`\n```ignore (needs-linkage-with-other-tests)\n#![crate_name = \"b\"]\n\nextern crate a; // linked with `a1.rs`\n\npub fn foo() {\n    a::foo::<isize>();\n}\n```\n\n`main.rs`\n```ignore (needs-linkage-with-other-tests)\nextern crate a; // linked with `a2.rs`\nextern crate b; // error: found possibly newer version of crate `a` which `b`\n                //        depends on\n\nfn main() {}\n```\n\nThe dependency graph of this program can be represented as follows:\n```text\n    crate `main`\n         |\n         +-------------+\n         |             |\n         |             v\ndepends: |         crate `b`\n `a` v1  |             |\n         |             | depends:\n         |             |  `a` v2\n         v             |\n      crate `a` <------+\n```\n\nCrate `main` depends on crate `a` (version 1) and crate `b` which in turn\ndepends on crate `a` (version 2); this discrepancy in versions cannot be\nreconciled. This difference in versions typically occurs when one crate is\ncompiled and linked, then updated and linked to another crate. The crate\n\"version\" is a SVH (Strict Version Hash) of the crate in an\nimplementation-specific way. Note that this error can *only* occur when\ndirectly compiling and linking with `rustc`; [Cargo] automatically resolves\ndependencies, without using the compiler's own dependency management that\ncauses this issue.\n\nThis error can be fixed by:\n * Using [Cargo], the Rust package manager, automatically fixing this issue.\n * Recompiling crate `a` so that both crate `b` and `main` have a uniform\n   version to depend on.\n\n[Cargo]: ../cargo/index.html\n"
+   },
+   "level": "error",
+   "message": "found possibly newer version of crate `ty_ide` which `ordinary_scope_bridge` depends on",
+   "rendered": "error[E0460]: found possibly newer version of crate `ty_ide` which `ordinary_scope_bridge` depends on\n --> /home/dev-user/.cache/ohm-233-position-qualified-20261027/cfg-library-svh-v3-replay-v1/common/ordinary_caller.rs:1:51\n  |\n1 | pub fn read(c: &ty_ide::Completion<'_>) -> bool { ordinary_scope_bridge::has_docs(c) }\n  |                                                   ^^^^^^^^^^^^^^^^^^^^^\n  |\n  = note: perhaps that crate needs to be recompiled?\n  = note: the following crate versions were found:\n          crate `ty_ide`: /home/dev-user/.cache/ohm-233-position-qualified-20261027/cfg-library-svh-v3-replay-v1/common/selected/libty_ide.rmeta\n          crate `ordinary_scope_bridge`: /home/dev-user/.cache/ohm-233-position-qualified-20261027/cfg-library-svh-v3-replay-v1/common/selected/libordinary_scope_bridge.rmeta\n\n",
+   "spans": [
+    {
+     "byte_end": 71,
+     "byte_start": 50,
+     "column_end": 72,
+     "column_start": 51,
+     "expansion": null,
+     "file_name": "/home/dev-user/.cache/ohm-233-position-qualified-20261027/cfg-library-svh-v3-replay-v1/common/ordinary_caller.rs",
+     "is_primary": true,
+     "label": null,
+     "line_end": 1,
+     "line_start": 1,
+     "suggested_replacement": null,
+     "suggestion_applicability": null,
+     "text": [
+      {
+       "highlight_end": 72,
+       "highlight_start": 51,
+       "text": "pub fn read(c: &ty_ide::Completion<'_>) -> bool { ordinary_scope_bridge::has_docs(c) }"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "$message_type": "diagnostic",
+   "children": [],
+   "code": null,
+   "level": "error",
+   "message": "aborting due to 1 previous error",
+   "rendered": "error: aborting due to 1 previous error\n\n",
+   "spans": []
+  },
+  {
+   "$message_type": "diagnostic",
+   "children": [],
+   "code": null,
+   "level": "failure-note",
+   "message": "For more information about this error, try `rustc --explain E0460`.",
+   "rendered": "For more information about this error, try `rustc --explain E0460`.\n",
+   "spans": []
+  }
+ ],
+ "out_rmeta_sha256": null,
+ "same_source_state": "edited",
+ "selected_caller_producer": {
+  "listing_sha256": "6ad04513d8a8b93bbe7c71c901a32c4155dc50345ffbc353cd3a9a5d5854685c",
+  "private": "a7432d330cd40e17fbf6302c3b54a6f5",
+  "public": "f321b448bc54bd2819e1fe053541ce11",
+  "stable_crate_id": "14980494425067579762"
+ },
+ "selector_dir": "/home/dev-user/.cache/ohm-233-position-qualified-20261027/cfg-library-svh-v3-replay-v1/common/selected",
+ "status": 1,
+ "stderr_sha256": "5046c2b53cbf8db87924f282b85a76b01349cc9fbcd05a0084d2ecb4235a8645"
+}

@@ -1,0 +1,114 @@
+{
+ "arm": "candidate",
+ "block": 2,
+ "driver_sha256": "36d1fd142355c3ad9e0ce006c1e92b7e511cba70c431b09eb1e335f572d27d05",
+ "edited_native_comparison": {
+  "all_ordered_object_bytes_equal": true,
+  "cgu_objects": [
+   171,
+   171
+  ],
+  "equal_complete_object_bytes_per_cgu_slot": 171,
+  "equal_member_name_per_cgu_slot": 0,
+  "index_and_name_tables_equal": [
+   true,
+   false
+  ],
+  "members": [
+   173,
+   173
+  ],
+  "non_cgu_changed": [
+   {
+    "after": "lib.rmeta",
+    "before": "lib.rmeta",
+    "equal": false
+   },
+   {
+    "after": "lib.rmeta-link",
+    "before": "lib.rmeta-link",
+    "equal": false
+   }
+  ],
+  "ordered_cgu_names_sha256_after": "5a0ab32b24446b7ef0844603fd164339f93698222a2d0579d3eb84efaaf39d71",
+  "ordered_cgu_names_sha256_before": "322369c8b25953c8865b45fe63b887f942bbaee7a5fda330720ef69aad85e941",
+  "per_section_group_differences": {
+   "#alloc": 0,
+   "#other": 0,
+   ".debug_abbrev": 0,
+   ".debug_aranges": 0,
+   ".debug_info": 0,
+   ".debug_line": 0,
+   ".debug_ranges": 0,
+   ".debug_str": 0
+  },
+  "producer_library_hashes": [
+   "0c967d552924fc2aaab353b0d44533005d583d15978e14bfbe78aab75ddbcf88",
+   "ff774fd0f38cf1242ac98b9a7d55caa216a43ba86f993dfae1dc0c565fc25bc7"
+  ],
+  "same_cgu_object_payload_multiset": true,
+  "total_source_basename_hits_in_raw_debug_bytes": [
+   1,
+   1
+  ],
+  "total_source_md5_in_raw_debug_bytes": {
+   "edited": [
+    0,
+    0
+   ],
+   "original": [
+    0,
+    0
+   ]
+  }
+ },
+ "metadata": {
+  "chain-edited": "445f6778f91a2e63621696425e200a215eb15558569e70c98547a6e642638bb0",
+  "chain-original": "f20b5d6967f81f2a876ce47d9695841874abef99420e1248c69b70ae7cf5ae0a",
+  "chain-restored": "ca219ae9f5fb8dc9cd68fc188ba79fc990c9a22fcf450dfe5f6fca0011a82ccb",
+  "empty-edited": "15828d8c3137b67385556873e78b89049ec087e7ce7d0f28b41a66483d50a4ce",
+  "empty-original": "4fac7e794d34b4162fe237ae882c30c15eac1b6aa49005264ae693c99daa8257"
+ },
+ "ordinary_cross": [
+  {
+   "bridge": "warm-edited",
+   "caller": "warm-edited",
+   "codes": [],
+   "status": 0
+  },
+  {
+   "bridge": "warm-edited",
+   "caller": "cold-edited",
+   "codes": [],
+   "status": 0
+  },
+  {
+   "bridge": "cold-edited",
+   "caller": "warm-edited",
+   "codes": [],
+   "status": 0
+  },
+  {
+   "bridge": "cold-edited",
+   "caller": "cold-edited",
+   "codes": [],
+   "status": 0
+  }
+ ],
+ "private": {
+  "chain-edited": "f917b38ccfeddca65fba88b84ab1d2db",
+  "chain-original": "5f16b3d295732da637d2f3cf122af171",
+  "chain-restored": "5f16b3d295732da637d2f3cf122af171",
+  "empty-edited": "f917b38ccfeddca65fba88b84ab1d2db",
+  "empty-original": "5f16b3d295732da637d2f3cf122af171"
+ },
+ "public": {
+  "chain-edited": "f321b448bc54bd2819e1fe053541ce11",
+  "chain-original": "f321b448bc54bd2819e1fe053541ce11",
+  "chain-restored": "f321b448bc54bd2819e1fe053541ce11",
+  "empty-edited": "f321b448bc54bd2819e1fe053541ce11",
+  "empty-original": "f321b448bc54bd2819e1fe053541ce11"
+ },
+ "same_edited_private": true,
+ "same_restored_private": true
+}

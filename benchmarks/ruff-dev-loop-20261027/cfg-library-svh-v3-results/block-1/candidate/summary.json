@@ -1,0 +1,114 @@
+{
+ "arm": "candidate",
+ "block": 1,
+ "driver_sha256": "36d1fd142355c3ad9e0ce006c1e92b7e511cba70c431b09eb1e335f572d27d05",
+ "edited_native_comparison": {
+  "all_ordered_object_bytes_equal": true,
+  "cgu_objects": [
+   171,
+   171
+  ],
+  "equal_complete_object_bytes_per_cgu_slot": 171,
+  "equal_member_name_per_cgu_slot": 0,
+  "index_and_name_tables_equal": [
+   true,
+   false
+  ],
+  "members": [
+   173,
+   173
+  ],
+  "non_cgu_changed": [
+   {
+    "after": "lib.rmeta",
+    "before": "lib.rmeta",
+    "equal": false
+   },
+   {
+    "after": "lib.rmeta-link",
+    "before": "lib.rmeta-link",
+    "equal": false
+   }
+  ],
+  "ordered_cgu_names_sha256_after": "a0aa2679dd7fc47bb55458d4a412c62793b1229d7b0611c009cb2bc1d2e17a58",
+  "ordered_cgu_names_sha256_before": "e807b9b5badc81908ea81719723e91ff8b0d538842aa860de1d96598b6cc0e47",
+  "per_section_group_differences": {
+   "#alloc": 0,
+   "#other": 0,
+   ".debug_abbrev": 0,
+   ".debug_aranges": 0,
+   ".debug_info": 0,
+   ".debug_line": 0,
+   ".debug_ranges": 0,
+   ".debug_str": 0
+  },
+  "producer_library_hashes": [
+   "21bb118d85af3d6a0ffbb4689ae20401340bf45e1a84a8cf947be060d92a0cc1",
+   "3eed22d68337d1cf26fee1dd5d9f2873a73dd261ac6f3711d49323577824327d"
+  ],
+  "same_cgu_object_payload_multiset": true,
+  "total_source_basename_hits_in_raw_debug_bytes": [
+   1,
+   1
+  ],
+  "total_source_md5_in_raw_debug_bytes": {
+   "edited": [
+    0,
+    0
+   ],
+   "original": [
+    0,
+    0
+   ]
+  }
+ },
+ "metadata": {
+  "chain-edited": "445f6778f91a2e63621696425e200a215eb15558569e70c98547a6e642638bb0",
+  "chain-original": "ca219ae9f5fb8dc9cd68fc188ba79fc990c9a22fcf450dfe5f6fca0011a82ccb",
+  "chain-restored": "ca219ae9f5fb8dc9cd68fc188ba79fc990c9a22fcf450dfe5f6fca0011a82ccb",
+  "empty-edited": "3caa2bc437d8e87a280b32421d0ea39fc5e8aaef5a29b0e9d4f38c2366ca5a32",
+  "empty-original": "ca219ae9f5fb8dc9cd68fc188ba79fc990c9a22fcf450dfe5f6fca0011a82ccb"
+ },
+ "ordinary_cross": [
+  {
+   "bridge": "warm-edited",
+   "caller": "warm-edited",
+   "codes": [],
+   "status": 0
+  },
+  {
+   "bridge": "warm-edited",
+   "caller": "cold-edited",
+   "codes": [],
+   "status": 0
+  },
+  {
+   "bridge": "cold-edited",
+   "caller": "warm-edited",
+   "codes": [],
+   "status": 0
+  },
+  {
+   "bridge": "cold-edited",
+   "caller": "cold-edited",
+   "codes": [],
+   "status": 0
+  }
+ ],
+ "private": {
+  "chain-edited": "f917b38ccfeddca65fba88b84ab1d2db",
+  "chain-original": "5f16b3d295732da637d2f3cf122af171",
+  "chain-restored": "5f16b3d295732da637d2f3cf122af171",
+  "empty-edited": "f917b38ccfeddca65fba88b84ab1d2db",
+  "empty-original": "5f16b3d295732da637d2f3cf122af171"
+ },
+ "public": {
+  "chain-edited": "f321b448bc54bd2819e1fe053541ce11",
+  "chain-original": "f321b448bc54bd2819e1fe053541ce11",
+  "chain-restored": "f321b448bc54bd2819e1fe053541ce11",
+  "empty-edited": "f321b448bc54bd2819e1fe053541ce11",
+  "empty-original": "f321b448bc54bd2819e1fe053541ce11"
+ },
+ "same_edited_private": true,
+ "same_restored_private": true
+}

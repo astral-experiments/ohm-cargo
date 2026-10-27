@@ -1,0 +1,118 @@
+{
+ "arm": "parent",
+ "block": 1,
+ "driver_sha256": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+ "edited_native_comparison": {
+  "all_ordered_object_bytes_equal": true,
+  "cgu_objects": [
+   171,
+   171
+  ],
+  "equal_complete_object_bytes_per_cgu_slot": 171,
+  "equal_member_name_per_cgu_slot": 0,
+  "index_and_name_tables_equal": [
+   true,
+   false
+  ],
+  "members": [
+   173,
+   173
+  ],
+  "non_cgu_changed": [
+   {
+    "after": "lib.rmeta",
+    "before": "lib.rmeta",
+    "equal": false
+   },
+   {
+    "after": "lib.rmeta-link",
+    "before": "lib.rmeta-link",
+    "equal": false
+   }
+  ],
+  "ordered_cgu_names_sha256_after": "7a757e97b38b54c32e9d0bf9bdf15e4f803e4dc0d4ee9dc951dbd6b3e16ae2a7",
+  "ordered_cgu_names_sha256_before": "b2d5e5876e6c55aa3d89051641a9456deb3533b23d9084011c9671c0c7875a5c",
+  "per_section_group_differences": {
+   "#alloc": 0,
+   "#other": 0,
+   ".debug_abbrev": 0,
+   ".debug_aranges": 0,
+   ".debug_info": 0,
+   ".debug_line": 0,
+   ".debug_ranges": 0,
+   ".debug_str": 0
+  },
+  "producer_library_hashes": [
+   "0b7bd6c45a65782ac86c432577bcc0a9f1914ecb7e87aedf0137e99c2d64ee3f",
+   "28816056d1063723e9da12004593b2e9834b09a73c1b2ff92521cc2ab091199e"
+  ],
+  "same_cgu_object_payload_multiset": true,
+  "total_source_basename_hits_in_raw_debug_bytes": [
+   1,
+   1
+  ],
+  "total_source_md5_in_raw_debug_bytes": {
+   "edited": [
+    0,
+    0
+   ],
+   "original": [
+    0,
+    0
+   ]
+  }
+ },
+ "metadata": {
+  "chain-edited": "1220832994fa675ead45b0d488493493947ad25313b2d15eb68acb84ecda955a",
+  "chain-original": "ca219ae9f5fb8dc9cd68fc188ba79fc990c9a22fcf450dfe5f6fca0011a82ccb",
+  "chain-restored": "17b1fe91eadd84f3fa3b0dc3a4ff85538a3be5cd24d7ff60756c102c53e57d9c",
+  "empty-edited": "45d8733b908c9ec2044dfbacdb58968f95a4b2b63a7de449cbb0d95941200f2f",
+  "empty-original": "074863ee1f296310e4b81c1b97de0c6475c14d0e1a5624cb8ae3bef98cd7b850"
+ },
+ "ordinary_cross": [
+  {
+   "bridge": "warm-edited",
+   "caller": "warm-edited",
+   "codes": [],
+   "status": 0
+  },
+  {
+   "bridge": "warm-edited",
+   "caller": "cold-edited",
+   "codes": [
+    "E0460"
+   ],
+   "status": 1
+  },
+  {
+   "bridge": "cold-edited",
+   "caller": "warm-edited",
+   "codes": [
+    "E0460"
+   ],
+   "status": 1
+  },
+  {
+   "bridge": "cold-edited",
+   "caller": "cold-edited",
+   "codes": [],
+   "status": 0
+  }
+ ],
+ "private": {
+  "chain-edited": "a7432d330cd40e17fbf6302c3b54a6f5",
+  "chain-original": "5f16b3d295732da637d2f3cf122af171",
+  "chain-restored": "57191cedc35c627f571c00b1c36c508a",
+  "empty-edited": "f917b38ccfeddca65fba88b84ab1d2db",
+  "empty-original": "5f16b3d295732da637d2f3cf122af171"
+ },
+ "public": {
+  "chain-edited": "f321b448bc54bd2819e1fe053541ce11",
+  "chain-original": "f321b448bc54bd2819e1fe053541ce11",
+  "chain-restored": "f321b448bc54bd2819e1fe053541ce11",
+  "empty-edited": "f321b448bc54bd2819e1fe053541ce11",
+  "empty-original": "f321b448bc54bd2819e1fe053541ce11"
+ },
+ "same_edited_private": false,
+ "same_restored_private": false
+}

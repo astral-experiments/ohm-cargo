@@ -1,0 +1,474 @@
+{
+ "all_calls_reported": true,
+ "plan_sha256": "b626b6198da7c6513b1b8a3917431b90e9dbfe7bcb4e8c801f2296f19c457cd2",
+ "result": [
+  {
+   "arm": "parent",
+   "block": 1,
+   "driver_sha256": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+   "edited_native_comparison": {
+    "all_ordered_object_bytes_equal": true,
+    "cgu_objects": [
+     171,
+     171
+    ],
+    "equal_complete_object_bytes_per_cgu_slot": 171,
+    "equal_member_name_per_cgu_slot": 0,
+    "index_and_name_tables_equal": [
+     true,
+     false
+    ],
+    "members": [
+     173,
+     173
+    ],
+    "non_cgu_changed": [
+     {
+      "after": "lib.rmeta",
+      "before": "lib.rmeta",
+      "equal": false
+     },
+     {
+      "after": "lib.rmeta-link",
+      "before": "lib.rmeta-link",
+      "equal": false
+     }
+    ],
+    "ordered_cgu_names_sha256_after": "7a757e97b38b54c32e9d0bf9bdf15e4f803e4dc0d4ee9dc951dbd6b3e16ae2a7",
+    "ordered_cgu_names_sha256_before": "b2d5e5876e6c55aa3d89051641a9456deb3533b23d9084011c9671c0c7875a5c",
+    "per_section_group_differences": {
+     "#alloc": 0,
+     "#other": 0,
+     ".debug_abbrev": 0,
+     ".debug_aranges": 0,
+     ".debug_info": 0,
+     ".debug_line": 0,
+     ".debug_ranges": 0,
+     ".debug_str": 0
+    },
+    "producer_library_hashes": [
+     "0b7bd6c45a65782ac86c432577bcc0a9f1914ecb7e87aedf0137e99c2d64ee3f",
+     "28816056d1063723e9da12004593b2e9834b09a73c1b2ff92521cc2ab091199e"
+    ],
+    "same_cgu_object_payload_multiset": true,
+    "total_source_basename_hits_in_raw_debug_bytes": [
+     1,
+     1
+    ],
+    "total_source_md5_in_raw_debug_bytes": {
+     "edited": [
+      0,
+      0
+     ],
+     "original": [
+      0,
+      0
+     ]
+    }
+   },
+   "metadata": {
+    "chain-edited": "1220832994fa675ead45b0d488493493947ad25313b2d15eb68acb84ecda955a",
+    "chain-original": "ca219ae9f5fb8dc9cd68fc188ba79fc990c9a22fcf450dfe5f6fca0011a82ccb",
+    "chain-restored": "17b1fe91eadd84f3fa3b0dc3a4ff85538a3be5cd24d7ff60756c102c53e57d9c",
+    "empty-edited": "45d8733b908c9ec2044dfbacdb58968f95a4b2b63a7de449cbb0d95941200f2f",
+    "empty-original": "074863ee1f296310e4b81c1b97de0c6475c14d0e1a5624cb8ae3bef98cd7b850"
+   },
+   "ordinary_cross": [
+    {
+     "bridge": "warm-edited",
+     "caller": "warm-edited",
+     "codes": [],
+     "status": 0
+    },
+    {
+     "bridge": "warm-edited",
+     "caller": "cold-edited",
+     "codes": [
+      "E0460"
+     ],
+     "status": 1
+    },
+    {
+     "bridge": "cold-edited",
+     "caller": "warm-edited",
+     "codes": [
+      "E0460"
+     ],
+     "status": 1
+    },
+    {
+     "bridge": "cold-edited",
+     "caller": "cold-edited",
+     "codes": [],
+     "status": 0
+    }
+   ],
+   "private": {
+    "chain-edited": "a7432d330cd40e17fbf6302c3b54a6f5",
+    "chain-original": "5f16b3d295732da637d2f3cf122af171",
+    "chain-restored": "57191cedc35c627f571c00b1c36c508a",
+    "empty-edited": "f917b38ccfeddca65fba88b84ab1d2db",
+    "empty-original": "5f16b3d295732da637d2f3cf122af171"
+   },
+   "public": {
+    "chain-edited": "f321b448bc54bd2819e1fe053541ce11",
+    "chain-original": "f321b448bc54bd2819e1fe053541ce11",
+    "chain-restored": "f321b448bc54bd2819e1fe053541ce11",
+    "empty-edited": "f321b448bc54bd2819e1fe053541ce11",
+    "empty-original": "f321b448bc54bd2819e1fe053541ce11"
+   },
+   "same_edited_private": false,
+   "same_restored_private": false
+  },
+  {
+   "arm": "candidate",
+   "block": 1,
+   "driver_sha256": "36d1fd142355c3ad9e0ce006c1e92b7e511cba70c431b09eb1e335f572d27d05",
+   "edited_native_comparison": {
+    "all_ordered_object_bytes_equal": true,
+    "cgu_objects": [
+     171,
+     171
+    ],
+    "equal_complete_object_bytes_per_cgu_slot": 171,
+    "equal_member_name_per_cgu_slot": 0,
+    "index_and_name_tables_equal": [
+     true,
+     false
+    ],
+    "members": [
+     173,
+     173
+    ],
+    "non_cgu_changed": [
+     {
+      "after": "lib.rmeta",
+      "before": "lib.rmeta",
+      "equal": false
+     },
+     {
+      "after": "lib.rmeta-link",
+      "before": "lib.rmeta-link",
+      "equal": false
+     }
+    ],
+    "ordered_cgu_names_sha256_after": "a0aa2679dd7fc47bb55458d4a412c62793b1229d7b0611c009cb2bc1d2e17a58",
+    "ordered_cgu_names_sha256_before": "e807b9b5badc81908ea81719723e91ff8b0d538842aa860de1d96598b6cc0e47",
+    "per_section_group_differences": {
+     "#alloc": 0,
+     "#other": 0,
+     ".debug_abbrev": 0,
+     ".debug_aranges": 0,
+     ".debug_info": 0,
+     ".debug_line": 0,
+     ".debug_ranges": 0,
+     ".debug_str": 0
+    },
+    "producer_library_hashes": [
+     "21bb118d85af3d6a0ffbb4689ae20401340bf45e1a84a8cf947be060d92a0cc1",
+     "3eed22d68337d1cf26fee1dd5d9f2873a73dd261ac6f3711d49323577824327d"
+    ],
+    "same_cgu_object_payload_multiset": true,
+    "total_source_basename_hits_in_raw_debug_bytes": [
+     1,
+     1
+    ],
+    "total_source_md5_in_raw_debug_bytes": {
+     "edited": [
+      0,
+      0
+     ],
+     "original": [
+      0,
+      0
+     ]
+    }
+   },
+   "metadata": {
+    "chain-edited": "445f6778f91a2e63621696425e200a215eb15558569e70c98547a6e642638bb0",
+    "chain-original": "ca219ae9f5fb8dc9cd68fc188ba79fc990c9a22fcf450dfe5f6fca0011a82ccb",
+    "chain-restored": "ca219ae9f5fb8dc9cd68fc188ba79fc990c9a22fcf450dfe5f6fca0011a82ccb",
+    "empty-edited": "3caa2bc437d8e87a280b32421d0ea39fc5e8aaef5a29b0e9d4f38c2366ca5a32",
+    "empty-original": "ca219ae9f5fb8dc9cd68fc188ba79fc990c9a22fcf450dfe5f6fca0011a82ccb"
+   },
+   "ordinary_cross": [
+    {
+     "bridge": "warm-edited",
+     "caller": "warm-edited",
+     "codes": [],
+     "status": 0
+    },
+    {
+     "bridge": "warm-edited",
+     "caller": "cold-edited",
+     "codes": [],
+     "status": 0
+    },
+    {
+     "bridge": "cold-edited",
+     "caller": "warm-edited",
+     "codes": [],
+     "status": 0
+    },
+    {
+     "bridge": "cold-edited",
+     "caller": "cold-edited",
+     "codes": [],
+     "status": 0
+    }
+   ],
+   "private": {
+    "chain-edited": "f917b38ccfeddca65fba88b84ab1d2db",
+    "chain-original": "5f16b3d295732da637d2f3cf122af171",
+    "chain-restored": "5f16b3d295732da637d2f3cf122af171",
+    "empty-edited": "f917b38ccfeddca65fba88b84ab1d2db",
+    "empty-original": "5f16b3d295732da637d2f3cf122af171"
+   },
+   "public": {
+    "chain-edited": "f321b448bc54bd2819e1fe053541ce11",
+    "chain-original": "f321b448bc54bd2819e1fe053541ce11",
+    "chain-restored": "f321b448bc54bd2819e1fe053541ce11",
+    "empty-edited": "f321b448bc54bd2819e1fe053541ce11",
+    "empty-original": "f321b448bc54bd2819e1fe053541ce11"
+   },
+   "same_edited_private": true,
+   "same_restored_private": true
+  },
+  {
+   "arm": "candidate",
+   "block": 2,
+   "driver_sha256": "36d1fd142355c3ad9e0ce006c1e92b7e511cba70c431b09eb1e335f572d27d05",
+   "edited_native_comparison": {
+    "all_ordered_object_bytes_equal": true,
+    "cgu_objects": [
+     171,
+     171
+    ],
+    "equal_complete_object_bytes_per_cgu_slot": 171,
+    "equal_member_name_per_cgu_slot": 0,
+    "index_and_name_tables_equal": [
+     true,
+     false
+    ],
+    "members": [
+     173,
+     173
+    ],
+    "non_cgu_changed": [
+     {
+      "after": "lib.rmeta",
+      "before": "lib.rmeta",
+      "equal": false
+     },
+     {
+      "after": "lib.rmeta-link",
+      "before": "lib.rmeta-link",
+      "equal": false
+     }
+    ],
+    "ordered_cgu_names_sha256_after": "5a0ab32b24446b7ef0844603fd164339f93698222a2d0579d3eb84efaaf39d71",
+    "ordered_cgu_names_sha256_before": "322369c8b25953c8865b45fe63b887f942bbaee7a5fda330720ef69aad85e941",
+    "per_section_group_differences": {
+     "#alloc": 0,
+     "#other": 0,
+     ".debug_abbrev": 0,
+     ".debug_aranges": 0,
+     ".debug_info": 0,
+     ".debug_line": 0,
+     ".debug_ranges": 0,
+     ".debug_str": 0
+    },
+    "producer_library_hashes": [
+     "0c967d552924fc2aaab353b0d44533005d583d15978e14bfbe78aab75ddbcf88",
+     "ff774fd0f38cf1242ac98b9a7d55caa216a43ba86f993dfae1dc0c565fc25bc7"
+    ],
+    "same_cgu_object_payload_multiset": true,
+    "total_source_basename_hits_in_raw_debug_bytes": [
+     1,
+     1
+    ],
+    "total_source_md5_in_raw_debug_bytes": {
+     "edited": [
+      0,
+      0
+     ],
+     "original": [
+      0,
+      0
+     ]
+    }
+   },
+   "metadata": {
+    "chain-edited": "445f6778f91a2e63621696425e200a215eb15558569e70c98547a6e642638bb0",
+    "chain-original": "f20b5d6967f81f2a876ce47d9695841874abef99420e1248c69b70ae7cf5ae0a",
+    "chain-restored": "ca219ae9f5fb8dc9cd68fc188ba79fc990c9a22fcf450dfe5f6fca0011a82ccb",
+    "empty-edited": "15828d8c3137b67385556873e78b89049ec087e7ce7d0f28b41a66483d50a4ce",
+    "empty-original": "4fac7e794d34b4162fe237ae882c30c15eac1b6aa49005264ae693c99daa8257"
+   },
+   "ordinary_cross": [
+    {
+     "bridge": "warm-edited",
+     "caller": "warm-edited",
+     "codes": [],
+     "status": 0
+    },
+    {
+     "bridge": "warm-edited",
+     "caller": "cold-edited",
+     "codes": [],
+     "status": 0
+    },
+    {
+     "bridge": "cold-edited",
+     "caller": "warm-edited",
+     "codes": [],
+     "status": 0
+    },
+    {
+     "bridge": "cold-edited",
+     "caller": "cold-edited",
+     "codes": [],
+     "status": 0
+    }
+   ],
+   "private": {
+    "chain-edited": "f917b38ccfeddca65fba88b84ab1d2db",
+    "chain-original": "5f16b3d295732da637d2f3cf122af171",
+    "chain-restored": "5f16b3d295732da637d2f3cf122af171",
+    "empty-edited": "f917b38ccfeddca65fba88b84ab1d2db",
+    "empty-original": "5f16b3d295732da637d2f3cf122af171"
+   },
+   "public": {
+    "chain-edited": "f321b448bc54bd2819e1fe053541ce11",
+    "chain-original": "f321b448bc54bd2819e1fe053541ce11",
+    "chain-restored": "f321b448bc54bd2819e1fe053541ce11",
+    "empty-edited": "f321b448bc54bd2819e1fe053541ce11",
+    "empty-original": "f321b448bc54bd2819e1fe053541ce11"
+   },
+   "same_edited_private": true,
+   "same_restored_private": true
+  },
+  {
+   "arm": "parent",
+   "block": 2,
+   "driver_sha256": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+   "edited_native_comparison": {
+    "all_ordered_object_bytes_equal": true,
+    "cgu_objects": [
+     171,
+     171
+    ],
+    "equal_complete_object_bytes_per_cgu_slot": 171,
+    "equal_member_name_per_cgu_slot": 0,
+    "index_and_name_tables_equal": [
+     true,
+     false
+    ],
+    "members": [
+     173,
+     173
+    ],
+    "non_cgu_changed": [
+     {
+      "after": "lib.rmeta",
+      "before": "lib.rmeta",
+      "equal": false
+     },
+     {
+      "after": "lib.rmeta-link",
+      "before": "lib.rmeta-link",
+      "equal": false
+     }
+    ],
+    "ordered_cgu_names_sha256_after": "17dca90fb91c37aed57b14580a45ecae76ea818caf95c38a1280311af1cc256d",
+    "ordered_cgu_names_sha256_before": "3e506ba39f933e6c8e90a4c05bfa0c6f1524b4419d3ecc4bbb4038b42a76c9c5",
+    "per_section_group_differences": {
+     "#alloc": 0,
+     "#other": 0,
+     ".debug_abbrev": 0,
+     ".debug_aranges": 0,
+     ".debug_info": 0,
+     ".debug_line": 0,
+     ".debug_ranges": 0,
+     ".debug_str": 0
+    },
+    "producer_library_hashes": [
+     "5516c3533aa999a914905b112857f801d1c4ed067ea3036e93bde28f231838cf",
+     "4cf1998afae497828cbe9515b175aff5e0e06470a3b35c9cd64d765e145fd549"
+    ],
+    "same_cgu_object_payload_multiset": true,
+    "total_source_basename_hits_in_raw_debug_bytes": [
+     1,
+     1
+    ],
+    "total_source_md5_in_raw_debug_bytes": {
+     "edited": [
+      0,
+      0
+     ],
+     "original": [
+      0,
+      0
+     ]
+    }
+   },
+   "metadata": {
+    "chain-edited": "442fbd23df67a5bf0907159f118453df29237d5a02af5d57e729d7f565fb0fc7",
+    "chain-original": "4fac7e794d34b4162fe237ae882c30c15eac1b6aa49005264ae693c99daa8257",
+    "chain-restored": "2ffff6d0fdfdd11c854230cb7e3a85f05c18f7c0fc11d5ed7463723aad4dbebd",
+    "empty-edited": "2fb64c134c9557be7bdd8b8f90ee60b3d87597fc7d811a544452dcf7702052b9",
+    "empty-original": "074863ee1f296310e4b81c1b97de0c6475c14d0e1a5624cb8ae3bef98cd7b850"
+   },
+   "ordinary_cross": [
+    {
+     "bridge": "warm-edited",
+     "caller": "warm-edited",
+     "codes": [],
+     "status": 0
+    },
+    {
+     "bridge": "warm-edited",
+     "caller": "cold-edited",
+     "codes": [
+      "E0460"
+     ],
+     "status": 1
+    },
+    {
+     "bridge": "cold-edited",
+     "caller": "warm-edited",
+     "codes": [
+      "E0460"
+     ],
+     "status": 1
+    },
+    {
+     "bridge": "cold-edited",
+     "caller": "cold-edited",
+     "codes": [],
+     "status": 0
+    }
+   ],
+   "private": {
+    "chain-edited": "a7432d330cd40e17fbf6302c3b54a6f5",
+    "chain-original": "5f16b3d295732da637d2f3cf122af171",
+    "chain-restored": "57191cedc35c627f571c00b1c36c508a",
+    "empty-edited": "f917b38ccfeddca65fba88b84ab1d2db",
+    "empty-original": "5f16b3d295732da637d2f3cf122af171"
+   },
+   "public": {
+    "chain-edited": "f321b448bc54bd2819e1fe053541ce11",
+    "chain-original": "f321b448bc54bd2819e1fe053541ce11",
+    "chain-restored": "f321b448bc54bd2819e1fe053541ce11",
+    "empty-edited": "f321b448bc54bd2819e1fe053541ce11",
+    "empty-original": "f321b448bc54bd2819e1fe053541ce11"
+   },
+   "same_edited_private": false,
+   "same_restored_private": false
+  }
+ ],
+ "space_check": [
+  1634230951,
+  43398529024
+ ]
+}
