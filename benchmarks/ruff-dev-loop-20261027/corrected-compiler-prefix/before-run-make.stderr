@@ -1,0 +1,7 @@
+running: LC_ALL="C" LD_LIBRARY_PATH="/home/dev-user/.cache/ohm-build-cutoff-20261027/rmake/wire-trace-before-sealed:/home/dev-user/.cache/ohm-ruff-packed-edges-20261026/nonleaf/trait-pgo-state/sysroot/lib/rustlib/x86_64-unknown-linux-gnu/lib:/home/dev-user/.cache/ohm-build-cutoff-20261027/stage2-wire-v7a:/home/dev-user/.cache/ohm-ruff-packed-edges-20261026/nonleaf/trait-pgo-state/sysroot/lib" "/home/dev-user/.cache/ohm-build-cutoff-20261027/rmake/wire-trace-before-sealed/caller"
+
+thread 'main' (1557) panicked at /home/dev-user/.cache/ohm-build-cutoff-20261027/release-api-fixtures/before-sealed/rmake.rs:309:5:
+assertion `left == right` failed: moving by 256 columns must collide under stable hashing
+  left: "3743b32cbcd542d1214401767ac04edb"
+ right: "d236a34890c8bbe055b759f398ee5158"
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace

@@ -1,0 +1,11 @@
+--- 378b7a8202a270aac0a47610e99527125ec432ca/tests/run-make/public-api-hash-artifact/rmake.rs
++++ local-release-probe/tests/run-make/public-api-hash-artifact/rmake.rs
+@@ -189,7 +189,7 @@
+     rfs::remove_file(prefix_manifest);
+     let (green_hash, green_stderr) = compile_and_read_public_api_hash_with_flags(false, &[]);
+     assert_eq!(fresh_hash, green_hash);
+-    assert!(green_stderr.contains("copying preexisting metadata"), "{green_stderr}");
++    // Shipping rustc statically disables the one DEBUG message; retain its work-product checks.
+     assert!(!green_stderr.contains("file-system error deleting outdated file"), "{green_stderr}");
+     assert!(metadata_work_product().is_file());
+     assert!(!metadata_work_product().with_file_name("metadata-prefix-v3.ohm-prefix-v3").exists());

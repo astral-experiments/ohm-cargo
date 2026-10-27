@@ -1,0 +1,7 @@
+# Linux release replay of the CI artifact fixture
+
+The same PGO/BOLT compiler ran the fixture from PR head `66815c41574c` and its updated head `378b7a8202a2`. Both revisions have the same compiler tree. The shipping Linux build has a static log ceiling of INFO. The unmodified fixture exits at the assertion requiring the DEBUG message for copying a green metadata work product. The local copy removes that single log-text assertion on both arms. The exact diffs are included. Each traced run independently verifies that the green output has the same filesystem inode and length as the original retained metadata.
+
+The earlier fixture then reproduces the macOS CI failure at line 309. The corrected fixture passes all remaining checks against the release compiler. The metadata-only tracked declaration still collides when moved by 256 columns and the compiler re-encodes its metadata prefix. The three native cases change API hashes. Only the two private-only follow-up edits in each native sequence emit the INFO-level encoder message confirming a reused prefix. The emitted downstream private-method diagnostic moves from column 19 to 275 and stays there.
+
+The compressed trace contains the actual compiler argv, inputs, standard output, standard error, exit status and metadata hashes for all 21 before and 76 after rustc calls. The unmodified CI uses a debug-logging compiler and retains the original green-copy assertion.

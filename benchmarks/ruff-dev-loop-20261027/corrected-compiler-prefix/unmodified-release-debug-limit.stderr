@@ -1,0 +1,10 @@
+
+thread 'main' (1537) panicked at /home/dev-user/code/oss/ohm-rust-private-native-20261027/tests/run-make/public-api-hash-artifact/rmake.rs:192:5:
+[1;33mwarning[0m[1m:[0m [1msome trace filter directives would enable traces that are disabled statically[0m
+ [1;38;5;21m|[0m `ohm_metadata_reuse=debug` would enable the DEBUG level for the `ohm_metadata_reuse` target
+ [1;38;5;21m|[0m `rustc_metadata::rmeta::encoder=debug` would enable the DEBUG level for the `rustc_metadata::rmeta::encoder` target
+ [1;38;5;21m=[0m [1mnote:[0m the static max level is `info`
+ [1;38;5;21m=[0m [1mhelp:[0m to enable DEBUG logging, remove the `max_level_info` feature from the `tracing` crate
+{"$message_type":"artifact","artifact":"liblib.rmeta","emit":"metadata","public_api_hash":{"version":1,"value":"af5b1a2ba1eb811ed2bbdef6c6213e5c"}}
+
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace

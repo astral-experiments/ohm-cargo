@@ -1,0 +1,96 @@
+{
+  "before_fixture": "66815c41574c8c597fa06af78a38c4c40ca30a84",
+  "after_fixture": "378b7a8202a270aac0a47610e99527125ec432ca",
+  "compiler_tree": "9e52c043880793c40fedf3eb137a231479d9adba",
+  "driver_sha256": "3e4b168966e111b52ad1a942d364ec1335cf1cfa994f4208b0909ca215b589d2",
+  "ci_test": "tests/run-make/public-api-hash-artifact/rmake.rs",
+  "before": {
+    "invocations": 21,
+    "work_product_matches_original_inode_and_length": true
+  },
+  "after": {
+    "invocations": 76,
+    "work_product_matches_original_inode_and_length": true,
+    "prefix_and_hash": {
+      "tracked-native": {
+        "rustc_invocations": [
+          19,
+          21,
+          22,
+          24
+        ],
+        "public_hashes": [
+          "fe85f762f1e03379dd4f4c8cd69058e7",
+          "fe85f762f1e03379dd4f4c8cd69058e7",
+          "45438c6dfd77e3d27983f227b8fee2fe",
+          "45438c6dfd77e3d27983f227b8fee2fe"
+        ],
+        "actual_prefix_reuse_info": [
+          false,
+          true,
+          false,
+          true
+        ]
+      },
+      "tracked-metadata-only": {
+        "rustc_invocations": [
+          17,
+          18
+        ],
+        "public_hashes": [
+          "417fc748aa3bae62ce76e9aa740e1011",
+          "417fc748aa3bae62ce76e9aa740e1011"
+        ],
+        "actual_prefix_reuse_info": [
+          false,
+          false
+        ]
+      },
+      "private-method-native": {
+        "rustc_invocations": [
+          26,
+          28,
+          29,
+          31
+        ],
+        "public_hashes": [
+          "ef69f5269518abc2b2c89f7ee4011e1a",
+          "ef69f5269518abc2b2c89f7ee4011e1a",
+          "080cecb3f3dcd082879622a93fd239bf",
+          "080cecb3f3dcd082879622a93fd239bf"
+        ],
+        "actual_prefix_reuse_info": [
+          false,
+          true,
+          false,
+          true
+        ]
+      },
+      "exported-macro-native": {
+        "rustc_invocations": [
+          50,
+          53,
+          55,
+          57
+        ],
+        "public_hashes": [
+          "5c21d87d080d0476805abafe61f2acbc",
+          "5c21d87d080d0476805abafe61f2acbc",
+          "b2f5745c8a31a4b2a5b4f793bda92c24",
+          "b2f5745c8a31a4b2a5b4f793bda92c24"
+        ],
+        "actual_prefix_reuse_info": [
+          false,
+          true,
+          false,
+          true
+        ]
+      }
+    },
+    "real_downstream_private_method_columns": [
+      19,
+      275,
+      275
+    ]
+  }
+}
