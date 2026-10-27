@@ -1,0 +1,274 @@
+{
+  "complete_diff": "a463e443b38886e1e9eacc34d77776e6c2f37c8e50263bebd12f400b4701dc48",
+  "git_title": "[ty] Avoid builtins in inlay hints test (#25830)",
+  "graphs": {
+    "workspace-build": {
+      "command": [
+        "cargo",
+        "+ohm",
+        "-Zunstable-options",
+        "build",
+        "--workspace",
+        "--unit-graph",
+        "--locked",
+        "--offline",
+        "-j8"
+      ],
+      "test_root_names": [],
+      "ty_server_normal_library": [
+        {
+          "direct_deps": 30,
+          "features": [],
+          "profile": {
+            "codegen_backend": null,
+            "codegen_units": null,
+            "debug_assertions": true,
+            "debuginfo": "line-tables-only",
+            "incremental": true,
+            "lto": "off",
+            "name": "dev",
+            "opt_level": "1",
+            "overflow_checks": true,
+            "panic": "unwind",
+            "rpath": false,
+            "split_debuginfo": null,
+            "strip": {
+              "deferred": "None"
+            }
+          },
+          "recursive_key": "0ec8fec6cc2eb7e9f049d47c779e47a93e923dbddc7a3026abe3991b4f9afe5e"
+        }
+      ],
+      "unit_graph_sha256": "be6a4e5cd9435ed8c1832ea43c8c137fd53c47107fdcae0e5a9290daf2e17876",
+      "units_including_build_script_run_nodes": 552
+    },
+    "workspace-tests": {
+      "command": [
+        "cargo",
+        "+ohm",
+        "-Zunstable-options",
+        "test",
+        "--no-run",
+        "--workspace",
+        "--unit-graph",
+        "--locked",
+        "--offline",
+        "-j8"
+      ],
+      "test_root_names": [
+        "analyze_graph",
+        "api",
+        "api",
+        "auto_traits",
+        "block_comments",
+        "cache_key",
+        "cli",
+        "cli",
+        "color",
+        "comparable",
+        "config",
+        "constructors",
+        "corpus",
+        "direxist_guard",
+        "document",
+        "e2e",
+        "e2e",
+        "examples",
+        "file_watching",
+        "fixtures",
+        "fixtures",
+        "formatter",
+        "generate_inline_tests",
+        "identifier",
+        "indexing",
+        "integration_test",
+        "main",
+        "match_pattern",
+        "mdtest",
+        "mdtest",
+        "normalizer",
+        "parentheses",
+        "parenthesize",
+        "resolve_files",
+        "ruff",
+        "rustc_tests",
+        "self_environment",
+        "serde",
+        "simple_tokenizer",
+        "source_order",
+        "stmt_if",
+        "visitor",
+        "whitespace"
+      ],
+      "ty_server_normal_library": [
+        {
+          "direct_deps": 30,
+          "features": [],
+          "profile": {
+            "codegen_backend": null,
+            "codegen_units": null,
+            "debug_assertions": true,
+            "debuginfo": "line-tables-only",
+            "incremental": true,
+            "lto": "off",
+            "name": "test",
+            "opt_level": "1",
+            "overflow_checks": true,
+            "panic": "unwind",
+            "rpath": false,
+            "split_debuginfo": null,
+            "strip": {
+              "deferred": "None"
+            }
+          },
+          "recursive_key": "b852fa1b59d9e1be50041123d47cbcd62e43a7810e24e32beb4a24def5ec930c"
+        }
+      ],
+      "unit_graph_sha256": "de1e9bdde7a1de168c8f32b27e07473b1afac543eb795b1019bbe6a905f01032",
+      "units_including_build_script_run_nodes": 689
+    },
+    "workspace-tests-excluding-ty_server": {
+      "command": [
+        "cargo",
+        "+ohm",
+        "-Zunstable-options",
+        "test",
+        "--no-run",
+        "--workspace",
+        "--exclude",
+        "ty_server",
+        "--unit-graph",
+        "--locked",
+        "--offline",
+        "-j8"
+      ],
+      "test_root_names": [
+        "analyze_graph",
+        "api",
+        "api",
+        "auto_traits",
+        "block_comments",
+        "cache_key",
+        "cli",
+        "cli",
+        "color",
+        "comparable",
+        "config",
+        "constructors",
+        "corpus",
+        "direxist_guard",
+        "document",
+        "e2e",
+        "examples",
+        "file_watching",
+        "fixtures",
+        "fixtures",
+        "formatter",
+        "generate_inline_tests",
+        "identifier",
+        "indexing",
+        "integration_test",
+        "main",
+        "match_pattern",
+        "mdtest",
+        "mdtest",
+        "normalizer",
+        "parentheses",
+        "parenthesize",
+        "resolve_files",
+        "ruff",
+        "rustc_tests",
+        "self_environment",
+        "serde",
+        "simple_tokenizer",
+        "source_order",
+        "stmt_if",
+        "visitor",
+        "whitespace"
+      ],
+      "ty_server_normal_library": [
+        {
+          "direct_deps": 30,
+          "features": [],
+          "profile": {
+            "codegen_backend": null,
+            "codegen_units": null,
+            "debug_assertions": true,
+            "debuginfo": "line-tables-only",
+            "incremental": true,
+            "lto": "off",
+            "name": "test",
+            "opt_level": "1",
+            "overflow_checks": true,
+            "panic": "unwind",
+            "rpath": false,
+            "split_debuginfo": null,
+            "strip": {
+              "deferred": "None"
+            }
+          },
+          "recursive_key": "b852fa1b59d9e1be50041123d47cbcd62e43a7810e24e32beb4a24def5ec930c"
+        }
+      ],
+      "unit_graph_sha256": "e07027f8b63ef4ddf075efbb84b29bc322df33256f2107cf1fc1c769631af764",
+      "units_including_build_script_run_nodes": 687
+    },
+    "workspace-tests-lib-bin-only": {
+      "command": [
+        "cargo",
+        "+ohm",
+        "-Zunstable-options",
+        "test",
+        "--no-run",
+        "--workspace",
+        "--lib",
+        "--bins",
+        "--unit-graph",
+        "--locked",
+        "--offline",
+        "-j8"
+      ],
+      "test_root_names": [],
+      "ty_server_normal_library": [
+        {
+          "direct_deps": 30,
+          "features": [],
+          "profile": {
+            "codegen_backend": null,
+            "codegen_units": null,
+            "debug_assertions": true,
+            "debuginfo": "line-tables-only",
+            "incremental": true,
+            "lto": "off",
+            "name": "test",
+            "opt_level": "1",
+            "overflow_checks": true,
+            "panic": "unwind",
+            "rpath": false,
+            "split_debuginfo": null,
+            "strip": {
+              "deferred": "None"
+            }
+          },
+          "recursive_key": "b852fa1b59d9e1be50041123d47cbcd62e43a7810e24e32beb4a24def5ec930c"
+        }
+      ],
+      "unit_graph_sha256": "2433d090d1c501ed0a7606d4b50a41d2396305bf3bcbb86d1dd47b34a17d7acf",
+      "units_including_build_script_run_nodes": 651
+    }
+  },
+  "native_observations_in_selection": 0,
+  "only_modified_files": [
+    "crates/ty_server/tests/e2e/inlay_hints.rs"
+  ],
+  "real_commit": "1b9310471b7d1178633e58ee63808522609db887",
+  "registered_underlying_selection": "select from test-only commits and recursive Cargo unit graph matches prior to any candidate timings",
+  "reverse_application_at_pin": "git apply --reverse --cached --check succeeds",
+  "roles": {
+    "followup": "first selection of ty_server e2e after a genuine historical test-only change; target already exists in the pinned project",
+    "seed": "normal test-profile ty_server library is already used by other packages, own e2e executable excluded",
+    "separate_control": "libraries and bins without any integration targets then full workspace including all integrations; exact library recursive key agrees"
+  },
+  "upstream_parent": "ca8b1938d698061c740af5c3d58c94a1fdd35516",
+  "upstream_tree": "93526150df078af7dd8fc4226cdcc469539d2001"
+}

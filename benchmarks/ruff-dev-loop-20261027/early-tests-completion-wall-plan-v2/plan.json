@@ -1,0 +1,129 @@
+{
+  "affinity": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15
+  ],
+  "cargo": {
+    "A": "42e90992cec21a29956e20fd52ab952472a9dbc1dcc7a3b60c92aad101b5f568",
+    "B": "eea47e1d637a96d0d91dee825cf6a029d5123396ea1af1389aad187555fe2af3",
+    "C": "46d8d787ab0e8f346f9fc5186e6a9bbad6ccd8c822c193deed51e8c9e9452afd"
+  },
+  "command": [
+    "cargo",
+    "+ohm",
+    "test",
+    "--no-run",
+    "--workspace",
+    "--locked",
+    "--offline",
+    "-j8"
+  ],
+  "controls": "Each timed command is untraced and includes rustup dispatch and Cargo termination. Before timing, hash the physical Cargo selected from inside its namespace. After the clock, verify all 110 produced native files against that arm\u2019s independently qualified reference and list the first selected test binary with no tests executed. Check real Cargo JSON reports for all 619 units, 102 runnable outputs, diagnostics and final freshness. Preserve every terminal stream and clock; stop on failed safeguards.",
+  "edited_sha256": "24d443ea2c65e5879884b32e761fea2d5e0f3cd198fd0ea9a44bd27e52078fad",
+  "fixed_inputs": {
+    "analyze-wall.py": "81963baf4f3b072e624570b096a4d92f845a6abe46eae0116661780b443b70b7",
+    "product.patch": "2775d92632e88badf8bdbdde266d9e0ac2e38dc54e0883817e5b87469f353f7e",
+    "ruff-bindings.json": "3458620224de066ba6e8fd05a53bc4e00d0ea79d8446d15c6b1dd32d299a3e30",
+    "ruff-historical.patch": "a463e443b38886e1e9eacc34d77776e6c2f37c8e50263bebd12f400b4701dc48",
+    "run-clock.py": "4322113422772e6f3ccbed3c02803c396ab0ccc85d31d84995cc3f2d1668770a",
+    "score-h7.py": "0583576657994a896bedf77b28b3b1781ac201fd88b4553b16b54e427c64d3cd",
+    "test-native-v2.py": "f6d2cf7b91f5b02c1a90fab73b40404e28e46f4048e13a7174ee71f2b79c3896",
+    "test-native.py": "b25c84e668536de89cc63972faef368afb0e3e8f213381cc100807ab490fb703",
+    "test-ruff.py": "8c45186586ccad4906a2e6bf1fd1e6248b4da2cdb5a5b8266aa348f55be5879e",
+    "unit-graph-selection.json": "590bf165292e0467715ef4d8dcc66e4315e5acf2834f916e84c7907010d04983"
+  },
+  "fixture": "crates/ty_server/tests/e2e/inlay_hints.rs",
+  "full_source_patch": "2775d92632e88badf8bdbdde266d9e0ac2e38dc54e0883817e5b87469f353f7e",
+  "gate": "Before any clock require A/B/C successful traced cold and first-selection workspace builds, equal structural rosters and diagnostics. Preserve all 110 ELF outputs; admit a difference only if the independent bytewise check outside the two already observed Wild fields is identical. B and C must respectively compile and link the first selected e2e twice and once, with byte-identical prior ty_server rlib; cold distinct work unchanged, total full compiles and actual Wild links lower on C. Confirm independent packaged parent byte equality and the original regression tests.",
+  "host": "charlie-ohm-pkg-build-1024",
+  "jobs": 8,
+  "matched_sources": "a5f4d61e00f43733b5f5f9b724fd6844ab00a0fd",
+  "matching_profiles": "481ada8a40c70dad11b3c7e8871e9a52207d78447ca5e8ace06fc4aec2d2b5a7",
+  "medium": "The private states use the same scratch ext4 filesystem, canonical paths and unmodified release-16 rustc, driver, stdlib and Wild; no shared artifacts between scored slots. One exclusive host lock, no release build during clocks.",
+  "native_runner": "f6d2cf7b91f5b02c1a90fab73b40404e28e46f4048e13a7174ee71f2b79c3896",
+  "official_discovery": "1a7be9ac0c14e576d0d72378aac3e3cde618a52f",
+  "orders": {
+    "cold": [
+      "BC",
+      "CB",
+      "BC",
+      "CB",
+      "BC",
+      "BC",
+      "CB",
+      "CB",
+      "CB",
+      "BC",
+      "BC",
+      "CB"
+    ],
+    "selection": [
+      "CB",
+      "BC",
+      "BC",
+      "CB",
+      "CB",
+      "BC",
+      "BC",
+      "CB",
+      "BC",
+      "BC",
+      "CB",
+      "CB",
+      "BC",
+      "BC",
+      "CB",
+      "CB",
+      "CB",
+      "CB",
+      "BC",
+      "BC",
+      "CB",
+      "CB",
+      "BC",
+      "BC"
+    ]
+  },
+  "parent": "4c07cbf6bd91e170e3b8904eeb82436a6dbde358",
+  "prior_plan": "9ddf08e6e6dca13541e4f7385cb1f6c71bad7606",
+  "reader_amendment": "The original Python ELF reader used mmap.index, which is unavailable on this host. It stopped on the first file requiring field comparison in the rebuilt cold parent. The unchanged original command, binaries, receipts and failure are retained. The reader now finds each NUL-terminated section name with mmap.find, bounded by the string table. It retains exactly the previous permitted build-ID and .rodata sh_entsize rule. Its controls accept each permitted field change and reject a changed text byte. Reuse all five existing trace/product runs. Only the sixth cold-workspace arm remains. No timed observations were collected. All subjects, images, sample sizes, schedule, estimator, thresholds and original data requirements are unchanged.",
+  "release_archive": "957ca8144205008ddaee75ef35f9775b2e428271c6b044e38bbdd8196c6bbf3e",
+  "release_tools": {
+    "cargo": "42e90992cec21a29956e20fd52ab952472a9dbc1dcc7a3b60c92aad101b5f568",
+    "driver": "c442c2a36e1f37c92f138a8fb367fc09982931b5f1055e9742fb402566ad46a4",
+    "frontend": "b0c412a7a8010a768f00546419a0b1bcfca382d7e70191df3ae72e30ac1ef3e5",
+    "wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5"
+  },
+  "ruff": "93526150df078af7dd8fc4226cdcc469539d2001",
+  "scored": 72,
+  "seed_runner": "8c45186586ccad4906a2e6bf1fd1e6248b4da2cdb5a5b8266aa348f55be5879e",
+  "seeds": {
+    "cold": 2026102752,
+    "selection": 2026102751
+  },
+  "source_sha256": "a025b90170c496d6336023fa8857c4d2cb2ef77c2e601bf119e9feb3c1a71624",
+  "statistics": "Per endpoint, report arm medians and paired geometric-mean reduction 100*(1-exp(mean(log(C/B)))). Count both tails of the exact null distribution over the original balanced placement of B/C in two slots. Report 95% paired bootstrap bounds (100000 draws, fixed seed) and Holm adjustment over both endpoints. A speed claim requires Holm p<0.05, lower 95% >1%, and at least two thirds of pairs favorable. Withhold a broad benefit if the other endpoint has a Holm-significant >1% regression. Include both endpoints; no restarts, sample removal or early stop based on time.",
+  "study": "Ordinary Ruff test builds with an already-finished library producer",
+  "trial_seed": {
+    "cold": 259622821701378,
+    "selection": 259622821701377
+  },
+  "workloads": {
+    "cold": "12 pairs of the same normal whole-workspace test-build command on the unmodified pinned Ruff, with an empty build and target and independently populated crates.io source and index cache. Runtime, crate versions, physical disk and path bindings are equal for the two Cargo images.",
+    "selection": "24 pairs of first workspace test selection after reversing complete Ruff test-only change 1b9310471b7d1178633e58ee63808522609db887. Each arm starts from a separate physical copy of an independent -16 seed built with test --workspace --no-run --exclude ty_server and settled. Its normal ty_server library must be byte-identical and its e2e executable absent. Write the actual historical input after the seed with the same canonical source file path."
+  }
+}
