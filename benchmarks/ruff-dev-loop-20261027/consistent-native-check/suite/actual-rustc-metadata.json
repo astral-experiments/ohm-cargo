@@ -1,0 +1,184 @@
+{
+  "parent-mixed": {
+    "build": {
+      "exit": 0,
+      "errors": [],
+      "mixed_rustc": [
+        {
+          "metadata": "ec923e55bb4af7b1",
+          "extra_filename": [],
+          "emit": [
+            "dep-info,metadata,link"
+          ]
+        }
+      ]
+    },
+    "native-test": {
+      "exit": 0,
+      "errors": [],
+      "mixed_rustc": [
+        {
+          "metadata": "bb83c8a4539f0dd6",
+          "extra_filename": [
+            "-2420df21f657b7dd"
+          ],
+          "emit": [
+            "dep-info,link"
+          ]
+        }
+      ]
+    },
+    "native-then-check": {
+      "exit": 101,
+      "errors": [
+        [
+          "consumer",
+          "found crates (`mixed` and `mixed`) with colliding StableCrateId values"
+        ]
+      ],
+      "mixed_rustc": [
+        {
+          "metadata": "ec923e55bb4af7b1",
+          "extra_filename": [
+            "-7b5bc7bad5442d29"
+          ],
+          "emit": [
+            "dep-info,metadata"
+          ]
+        }
+      ]
+    },
+    "independent-cold-check": {
+      "exit": 0,
+      "errors": [],
+      "mixed_rustc": [
+        {
+          "metadata": "ec923e55bb4af7b1",
+          "extra_filename": [
+            "-7b5bc7bad5442d29"
+          ],
+          "emit": [
+            "dep-info,metadata"
+          ]
+        }
+      ]
+    }
+  },
+  "parent-unshared-mixed": {
+    "build": {
+      "exit": 0,
+      "errors": [],
+      "mixed_rustc": [
+        {
+          "metadata": "3a50ab49e8211ef5",
+          "extra_filename": [],
+          "emit": [
+            "dep-info,metadata,link"
+          ]
+        }
+      ]
+    },
+    "native-test": {
+      "exit": 0,
+      "errors": [],
+      "mixed_rustc": [
+        {
+          "metadata": "bb83c8a4539f0dd6",
+          "extra_filename": [
+            "-2420df21f657b7dd"
+          ],
+          "emit": [
+            "dep-info,link"
+          ]
+        }
+      ]
+    },
+    "native-then-check": {
+      "exit": 101,
+      "errors": [
+        [
+          "consumer",
+          "mismatched types"
+        ]
+      ],
+      "mixed_rustc": [
+        {
+          "metadata": "aade6e5dad7edd73",
+          "extra_filename": [
+            "-0beef4d71db0dd80"
+          ],
+          "emit": [
+            "dep-info,metadata"
+          ]
+        }
+      ]
+    },
+    "independent-cold-check": {
+      "exit": 0,
+      "errors": [],
+      "mixed_rustc": [
+        {
+          "metadata": "aade6e5dad7edd73",
+          "extra_filename": [
+            "-0beef4d71db0dd80"
+          ],
+          "emit": [
+            "dep-info,metadata"
+          ]
+        }
+      ]
+    }
+  },
+  "parent-all-rlib": {
+    "build": {
+      "exit": 0,
+      "errors": [],
+      "mixed_rustc": [
+        {
+          "metadata": "2bdcfd853f6764e6",
+          "extra_filename": [
+            "-63809143bfd45563"
+          ],
+          "emit": [
+            "dep-info,metadata,link"
+          ]
+        }
+      ]
+    },
+    "native-test": {
+      "exit": 0,
+      "errors": [],
+      "mixed_rustc": [
+        {
+          "metadata": "3e94c6f9c360ea24",
+          "extra_filename": [
+            "-4681bec80dec139f"
+          ],
+          "emit": [
+            "dep-info,link"
+          ]
+        }
+      ]
+    },
+    "native-then-check": {
+      "exit": 0,
+      "errors": [],
+      "mixed_rustc": []
+    },
+    "independent-cold-check": {
+      "exit": 0,
+      "errors": [],
+      "mixed_rustc": [
+        {
+          "metadata": "2bdcfd853f6764e6",
+          "extra_filename": [
+            "-f44fde6ec9064b0e"
+          ],
+          "emit": [
+            "dep-info,metadata"
+          ]
+        }
+      ]
+    }
+  }
+}

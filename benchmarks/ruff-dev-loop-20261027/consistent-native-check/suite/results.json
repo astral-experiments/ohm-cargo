@@ -1,0 +1,172 @@
+{
+  "registry-test": {
+    "232-parent": {
+      "passed": false,
+      "stable_id_collision": true
+    },
+    "232-fixed": {
+      "passed": true,
+      "stable_id_collision": false
+    },
+    "233-parent": {
+      "passed": false,
+      "stable_id_collision": true
+    },
+    "233-fixed": {
+      "passed": true,
+      "stable_id_collision": false
+    }
+  },
+  "established-tests": {
+    "packaged": {
+      "parent": {
+        "check::ohm_built_registry_dependency_reuse_ignores_inactive_dependency_edges": "FAILED",
+        "check::ohm_built_registry_dependency_reuse_keeps_path_dependencies_checked": "FAILED",
+        "check::ohm_built_registry_dependency_reuse_preserves_binary_artifact_dependencies": "ok",
+        "check::ohm_built_registry_dependency_reuse_preserves_build_helper_json_artifacts": "ok",
+        "check::ohm_built_registry_dependency_reuse_preserves_transitive_check_json_artifacts": "ok",
+        "check::ohm_reuses_built_registry_dependency_closure": "FAILED"
+      },
+      "candidate": {
+        "check::ohm_built_registry_dependency_reuse_ignores_inactive_dependency_edges": "FAILED",
+        "check::ohm_built_registry_dependency_reuse_keeps_path_dependencies_checked": "FAILED",
+        "check::ohm_built_registry_dependency_reuse_preserves_binary_artifact_dependencies": "ok",
+        "check::ohm_built_registry_dependency_reuse_preserves_build_helper_json_artifacts": "ok",
+        "check::ohm_built_registry_dependency_reuse_preserves_transitive_check_json_artifacts": "ok",
+        "check::ohm_reuses_built_registry_dependency_closure": "FAILED"
+      }
+    },
+    "only-nightly-calls-opt-out": {
+      "parent": {
+        "check::ohm_built_registry_dependency_reuse_ignores_inactive_dependency_edges": "FAILED",
+        "check::ohm_built_registry_dependency_reuse_keeps_path_dependencies_checked": "FAILED",
+        "check::ohm_built_registry_dependency_reuse_preserves_binary_artifact_dependencies": "ok",
+        "check::ohm_built_registry_dependency_reuse_preserves_build_helper_json_artifacts": "ok",
+        "check::ohm_built_registry_dependency_reuse_preserves_transitive_check_json_artifacts": "FAILED",
+        "check::ohm_reuses_built_registry_dependency_closure": "FAILED"
+      },
+      "candidate": {
+        "check::ohm_built_registry_dependency_reuse_ignores_inactive_dependency_edges": "FAILED",
+        "check::ohm_built_registry_dependency_reuse_keeps_path_dependencies_checked": "FAILED",
+        "check::ohm_built_registry_dependency_reuse_preserves_binary_artifact_dependencies": "ok",
+        "check::ohm_built_registry_dependency_reuse_preserves_build_helper_json_artifacts": "ok",
+        "check::ohm_built_registry_dependency_reuse_preserves_transitive_check_json_artifacts": "FAILED",
+        "check::ohm_reuses_built_registry_dependency_closure": "FAILED"
+      }
+    },
+    "uniform-opt-out": {
+      "parent": {
+        "check::ohm_built_registry_dependency_reuse_ignores_inactive_dependency_edges": "ok",
+        "check::ohm_built_registry_dependency_reuse_keeps_path_dependencies_checked": "ok",
+        "check::ohm_built_registry_dependency_reuse_preserves_binary_artifact_dependencies": "ok",
+        "check::ohm_built_registry_dependency_reuse_preserves_build_helper_json_artifacts": "ok",
+        "check::ohm_built_registry_dependency_reuse_preserves_transitive_check_json_artifacts": "ok",
+        "check::ohm_reuses_built_registry_dependency_closure": "ok"
+      },
+      "candidate": {
+        "check::ohm_built_registry_dependency_reuse_ignores_inactive_dependency_edges": "ok",
+        "check::ohm_built_registry_dependency_reuse_keeps_path_dependencies_checked": "ok",
+        "check::ohm_built_registry_dependency_reuse_preserves_binary_artifact_dependencies": "ok",
+        "check::ohm_built_registry_dependency_reuse_preserves_build_helper_json_artifacts": "ok",
+        "check::ohm_built_registry_dependency_reuse_preserves_transitive_check_json_artifacts": "ok",
+        "check::ohm_reuses_built_registry_dependency_closure": "ok"
+      }
+    }
+  },
+  "portable": {
+    "baseline": [
+      [
+        "mixed",
+        "build",
+        "0"
+      ],
+      [
+        "mixed",
+        "native-to-check",
+        "101"
+      ],
+      [
+        "mixed",
+        "cold-check",
+        "0"
+      ],
+      [
+        "pure",
+        "build",
+        "0"
+      ],
+      [
+        "pure",
+        "native-to-check",
+        "0"
+      ],
+      [
+        "pure",
+        "cold-check",
+        "0"
+      ],
+      [
+        "unshared",
+        "build",
+        "0"
+      ],
+      [
+        "unshared",
+        "native-to-check",
+        "101"
+      ],
+      [
+        "unshared",
+        "cold-check",
+        "0"
+      ]
+    ],
+    "fixed": [
+      [
+        "mixed",
+        "build",
+        "0"
+      ],
+      [
+        "mixed",
+        "native-to-check",
+        "0"
+      ],
+      [
+        "mixed",
+        "cold-check",
+        "0"
+      ],
+      [
+        "pure",
+        "build",
+        "0"
+      ],
+      [
+        "pure",
+        "native-to-check",
+        "0"
+      ],
+      [
+        "pure",
+        "cold-check",
+        "0"
+      ],
+      [
+        "unshared",
+        "build",
+        "0"
+      ],
+      [
+        "unshared",
+        "native-to-check",
+        "0"
+      ],
+      [
+        "unshared",
+        "cold-check",
+        "0"
+      ]
+    ]
+  }
+}
