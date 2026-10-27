@@ -1,0 +1,55 @@
+{
+  "analysis": "Balanced conditional permutation of elapsed pair log ratios with exactly six B-first and six C-first, all 924 assignments and two-sided significance. 100000 paired bootstrap of the geomean reduction, seed 128562991; one endpoint. Qualifies on P<.05, lower95%>1pp and at least eight favorable pairs. Report effects and raw counts even if null; any failed oracle retains its first failure with no numerical claim. H7 remains a separate preregistered timing experiment.",
+  "correctness": "Seed 617 units, 100 executables, 108 ELF. Each restored seed must have all units fresh, same ordinary ty_server features/rlib bytes, no future e2e output. Selected commands 619 units, 102 executables (84 test-profile and 18 ordinary), 110 raw ELF. A and B independently compile e2e twice and invoke two real Wilds for that destination; C once. Full selection physical total is 3/3,3/3,2/2. Immediate fresh and restore/fresh controls independently verified; exact all ELF bytes and diagnostics match between arms in each phase. Restoration changes exactly the selected e2e output; the authentic restored caller must pass. An unfamiliar raw difference stops the run without an effect estimate.",
+  "diagnostic_binding": "6d465066830c855472a3d30b1d88e0bdeb5961feac9f319f445db562ad24fa11",
+  "experiment": "Each of 12 consecutive matched blocks seeds official -16 from empty target/private build store and private verified public registry; settle workspace --exclude ty_server. Verify a positive no-op then first full workspace selection under the complete native historical test edit. Repeat both arms on independently restored identical input. One observable paired endpoint and no optional post-hoc group. No ordinary Rust or linker flags; no trust override. The fixed H2 12-pair study is independent of the distinct H7 study; no pooling.",
+  "host": "charlie-ohm-relink-b-1024",
+  "images": {
+    "A": "42e90992cec21a29956e20fd52ab952472a9dbc1dcc7a3b60c92aad101b5f568",
+    "B": "eea47e1d637a96d0d91dee825cf6a029d5123396ea1af1389aad187555fe2af3",
+    "C": "46d8d787ab0e8f346f9fc5186e6a9bbad6ccd8c822c193deed51e8c9e9452afd",
+    "driver": "c442c2a36e1f37c92f138a8fb367fc09982931b5f1055e9742fb402566ad46a4",
+    "frontend": "b0c412a7a8010a768f00546419a0b1bcfca382d7e70191df3ae72e30ac1ef3e5",
+    "wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5"
+  },
+  "orders": [
+    "BC",
+    "BC",
+    "CB",
+    "CB",
+    "CB",
+    "CB",
+    "BC",
+    "BC",
+    "BC",
+    "BC",
+    "CB",
+    "CB"
+  ],
+  "placement": "H2 fixed 0-15 affinity, -j8, 25GiB minimum free tmpfs, HOME and 35GiB MemAvailable; no swap; same-medium private states on tmpfs in both arms; acquire existing H2 native-measure.lock throughout work. H7 original comparison uses ext4. Clear only verified private states after sealing all raw receipts. No full native output sampling or wall outlier removal.",
+  "registration": "source tree, seed capture, order, analysis and output gates bound before any H2 primary wall observation",
+  "release_input_commit": "a5f4d61e00f43733b5f5f9b724fd6844ab00a0fd",
+  "release_input_manifest": "fe680a5570f105fbb285067544fb27ed6b24d9ec517ce2181ebd1c696cffa859",
+  "scripts": {
+    "analyze.py": "aab27b723fda6983f9f875ece4e28b6e2e602efefd95c75edbd032fc3e65f75d",
+    "candidate.patch": "2775d92632e88badf8bdbdde266d9e0ac2e38dc54e0883817e5b87469f353f7e",
+    "historical.patch": "a463e443b38886e1e9eacc34d77776e6c2f37c8e50263bebd12f400b4701dc48",
+    "inside.py": "ec7e814ba9f90b3169e834fa3f8a28561d7d1b962147e93178c58edc199339d7",
+    "products.py": "726c8b20d3149100442ccac7800a893bd050a6878373faacbd2654ac587b5f2f",
+    "storage.py": "02c2e99572dfc0ac31a8fde82f49ba1f8e369806e14748e9aeba7b3c85faa8fc",
+    "trace.py": "f2211ffd01b8fa25baacd585b2663350e0ef7cf5a81fcc9b14c51aecf9d8c7d5",
+    "verify.py": "423beceff7370fdca1093d470d53ba8648c3d3b2a9184996e626048b8a1fb45e",
+    "worker.py": "cc2781785d6b06d7504b3894380c23198aeef958f6f036ae52d2ed5980bb3227"
+  },
+  "seed_compiler": "official distribution A",
+  "source": {
+    "Ruff": "93526150df078af7dd8fc4226cdcc469539d2001",
+    "after": "24d443ea2c65e5879884b32e761fea2d5e0f3cd198fd0ea9a44bd27e52078fad",
+    "historical_reverse": "1b9310471b7d1178633e58ee63808522609db887",
+    "index": "fc84f15ac7401cd9bdc362e4574c6d395529766c16be2e6b032ac47fa63d21cd",
+    "original": "a025b90170c496d6336023fa8857c4d2cb2ef77c2e601bf119e9feb3c1a71624",
+    "patch_sha256": "a463e443b38886e1e9eacc34d77776e6c2f37c8e50263bebd12f400b4701dc48",
+    "tree": "62d3f106c5e41f6022847f26ff8c7dc00139f7b1"
+  },
+  "workflow": "unscored native A=distribution, B=independently repeat-built release parent, C=matched candidate, then 12 new independent paired first selections B/C"
+}

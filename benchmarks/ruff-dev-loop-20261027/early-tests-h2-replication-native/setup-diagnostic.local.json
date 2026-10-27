@@ -1,0 +1,75 @@
+{
+  "across_hosts": {
+    "H2-official-cold": {
+      "original_product_file": "fb042281e126429be3399cd5ff3611ce5915414c78aad606e56dd1a0bd5b397a",
+      "payload": [
+        "[\"path+file://$RUFF/crates/ty#0.0.0\", \"file_watching\", {\"$message_type\": \"diagnostic\", \"children\": [{\"children\": [], \"code\": null, \"level\": \"note\", \"message\": \"`#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\", \"rendered\": null, \"spans\": []}], \"code\": {\"code\": \"dead_code\", \"explanation\": null}, \"level\": \"warning\", \"message\": \"method `set_watch` is never used\", \"rendered\": \"warning: method `set_watch` is never used\\n   --> crates/ty/tests/file_watching.rs:446:8\\n    |\\n363 | impl<'a> SetupContext<'a> {\\n    | ------------------------- method in this implementation\\n...\\n446 |     fn set_watch(&mut self, watch: bool) {\\n    |        ^^^^^^^^^\\n    |\\n    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\\n\\n\", \"spans\": [{\"byte_end\": 11822, \"byte_start\": 11797, \"column_end\": 26, \"column_start\": 1, \"expansion\": null, \"file_name\": \"crates/ty/tests/file_watching.rs\", \"is_primary\": false, \"label\": \"method in this implementation\", \"line_end\": 363, \"line_start\": 363, \"suggested_replacement\": null, \"suggestion_applicability\": null, \"text\": [{\"highlight_end\": 26, \"highlight_start\": 1, \"text\": \"impl<'a> SetupContext<'a> {\"}]}, {\"byte_end\": 14256, \"byte_start\": 14247, \"column_end\": 17, \"column_start\": 8, \"expansion\": null, \"file_name\": \"crates/ty/tests/file_watching.rs\", \"is_primary\": true, \"label\": null, \"line_end\": 446, \"line_start\": 446, \"suggested_replacement\": null, \"suggestion_applicability\": null, \"text\": [{\"highlight_end\": 17, \"highlight_start\": 8, \"text\": \"    fn set_watch(&mut self, watch: bool) {\"}]}]}]"
+      ],
+      "payload_bytes": 1560,
+      "payload_sha256": "6d465066830c855472a3d30b1d88e0bdeb5961feac9f319f445db562ad24fa11",
+      "selected_native": 108,
+      "units": 617
+    },
+    "H7-candidate-selection": {
+      "original_product_file": "c9e7d939e1cb836047c20035d3674a874d543f1388950bf9005d7581c9ec4d68",
+      "payload": [
+        "[\"path+file://$RUFF/crates/ty#0.0.0\", \"file_watching\", {\"$message_type\": \"diagnostic\", \"children\": [{\"children\": [], \"code\": null, \"level\": \"note\", \"message\": \"`#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\", \"rendered\": null, \"spans\": []}], \"code\": {\"code\": \"dead_code\", \"explanation\": null}, \"level\": \"warning\", \"message\": \"method `set_watch` is never used\", \"rendered\": \"warning: method `set_watch` is never used\\n   --> crates/ty/tests/file_watching.rs:446:8\\n    |\\n363 | impl<'a> SetupContext<'a> {\\n    | ------------------------- method in this implementation\\n...\\n446 |     fn set_watch(&mut self, watch: bool) {\\n    |        ^^^^^^^^^\\n    |\\n    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\\n\\n\", \"spans\": [{\"byte_end\": 11822, \"byte_start\": 11797, \"column_end\": 26, \"column_start\": 1, \"expansion\": null, \"file_name\": \"crates/ty/tests/file_watching.rs\", \"is_primary\": false, \"label\": \"method in this implementation\", \"line_end\": 363, \"line_start\": 363, \"suggested_replacement\": null, \"suggestion_applicability\": null, \"text\": [{\"highlight_end\": 26, \"highlight_start\": 1, \"text\": \"impl<'a> SetupContext<'a> {\"}]}, {\"byte_end\": 14256, \"byte_start\": 14247, \"column_end\": 17, \"column_start\": 8, \"expansion\": null, \"file_name\": \"crates/ty/tests/file_watching.rs\", \"is_primary\": true, \"label\": null, \"line_end\": 446, \"line_start\": 446, \"suggested_replacement\": null, \"suggestion_applicability\": null, \"text\": [{\"highlight_end\": 17, \"highlight_start\": 8, \"text\": \"    fn set_watch(&mut self, watch: bool) {\"}]}]}]"
+      ],
+      "payload_bytes": 1560,
+      "payload_sha256": "6d465066830c855472a3d30b1d88e0bdeb5961feac9f319f445db562ad24fa11",
+      "selected_native": 110,
+      "units": 619
+    },
+    "H7-official-cold": {
+      "original_product_file": "4fb102e6432530534dad6d9252685fd91da3cd15f5d937d69574629bfc2be669",
+      "payload": [
+        "[\"path+file://$RUFF/crates/ty#0.0.0\", \"file_watching\", {\"$message_type\": \"diagnostic\", \"children\": [{\"children\": [], \"code\": null, \"level\": \"note\", \"message\": \"`#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\", \"rendered\": null, \"spans\": []}], \"code\": {\"code\": \"dead_code\", \"explanation\": null}, \"level\": \"warning\", \"message\": \"method `set_watch` is never used\", \"rendered\": \"warning: method `set_watch` is never used\\n   --> crates/ty/tests/file_watching.rs:446:8\\n    |\\n363 | impl<'a> SetupContext<'a> {\\n    | ------------------------- method in this implementation\\n...\\n446 |     fn set_watch(&mut self, watch: bool) {\\n    |        ^^^^^^^^^\\n    |\\n    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\\n\\n\", \"spans\": [{\"byte_end\": 11822, \"byte_start\": 11797, \"column_end\": 26, \"column_start\": 1, \"expansion\": null, \"file_name\": \"crates/ty/tests/file_watching.rs\", \"is_primary\": false, \"label\": \"method in this implementation\", \"line_end\": 363, \"line_start\": 363, \"suggested_replacement\": null, \"suggestion_applicability\": null, \"text\": [{\"highlight_end\": 26, \"highlight_start\": 1, \"text\": \"impl<'a> SetupContext<'a> {\"}]}, {\"byte_end\": 14256, \"byte_start\": 14247, \"column_end\": 17, \"column_start\": 8, \"expansion\": null, \"file_name\": \"crates/ty/tests/file_watching.rs\", \"is_primary\": true, \"label\": null, \"line_end\": 446, \"line_start\": 446, \"suggested_replacement\": null, \"suggestion_applicability\": null, \"text\": [{\"highlight_end\": 17, \"highlight_start\": 8, \"text\": \"    fn set_watch(&mut self, watch: bool) {\"}]}]}]"
+      ],
+      "payload_bytes": 1560,
+      "payload_sha256": "6d465066830c855472a3d30b1d88e0bdeb5961feac9f319f445db562ad24fa11",
+      "selected_native": 108,
+      "units": 617
+    },
+    "H7-official-selection": {
+      "original_product_file": "c9e7d939e1cb836047c20035d3674a874d543f1388950bf9005d7581c9ec4d68",
+      "payload": [
+        "[\"path+file://$RUFF/crates/ty#0.0.0\", \"file_watching\", {\"$message_type\": \"diagnostic\", \"children\": [{\"children\": [], \"code\": null, \"level\": \"note\", \"message\": \"`#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\", \"rendered\": null, \"spans\": []}], \"code\": {\"code\": \"dead_code\", \"explanation\": null}, \"level\": \"warning\", \"message\": \"method `set_watch` is never used\", \"rendered\": \"warning: method `set_watch` is never used\\n   --> crates/ty/tests/file_watching.rs:446:8\\n    |\\n363 | impl<'a> SetupContext<'a> {\\n    | ------------------------- method in this implementation\\n...\\n446 |     fn set_watch(&mut self, watch: bool) {\\n    |        ^^^^^^^^^\\n    |\\n    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\\n\\n\", \"spans\": [{\"byte_end\": 11822, \"byte_start\": 11797, \"column_end\": 26, \"column_start\": 1, \"expansion\": null, \"file_name\": \"crates/ty/tests/file_watching.rs\", \"is_primary\": false, \"label\": \"method in this implementation\", \"line_end\": 363, \"line_start\": 363, \"suggested_replacement\": null, \"suggestion_applicability\": null, \"text\": [{\"highlight_end\": 26, \"highlight_start\": 1, \"text\": \"impl<'a> SetupContext<'a> {\"}]}, {\"byte_end\": 14256, \"byte_start\": 14247, \"column_end\": 17, \"column_start\": 8, \"expansion\": null, \"file_name\": \"crates/ty/tests/file_watching.rs\", \"is_primary\": true, \"label\": null, \"line_end\": 446, \"line_start\": 446, \"suggested_replacement\": null, \"suggestion_applicability\": null, \"text\": [{\"highlight_end\": 17, \"highlight_start\": 8, \"text\": \"    fn set_watch(&mut self, watch: bool) {\"}]}]}]"
+      ],
+      "payload_bytes": 1560,
+      "payload_sha256": "6d465066830c855472a3d30b1d88e0bdeb5961feac9f319f445db562ad24fa11",
+      "selected_native": 110,
+      "units": 619
+    },
+    "H7-official-settled": {
+      "original_product_file": "670c14d8f6a840ed1462b82bca85d6b7b82eb4c129eb24eb6c106f876f9bd61f",
+      "payload": [
+        "[\"path+file://$RUFF/crates/ty#0.0.0\", \"file_watching\", {\"$message_type\": \"diagnostic\", \"children\": [{\"children\": [], \"code\": null, \"level\": \"note\", \"message\": \"`#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\", \"rendered\": null, \"spans\": []}], \"code\": {\"code\": \"dead_code\", \"explanation\": null}, \"level\": \"warning\", \"message\": \"method `set_watch` is never used\", \"rendered\": \"warning: method `set_watch` is never used\\n   --> crates/ty/tests/file_watching.rs:446:8\\n    |\\n363 | impl<'a> SetupContext<'a> {\\n    | ------------------------- method in this implementation\\n...\\n446 |     fn set_watch(&mut self, watch: bool) {\\n    |        ^^^^^^^^^\\n    |\\n    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\\n\\n\", \"spans\": [{\"byte_end\": 11822, \"byte_start\": 11797, \"column_end\": 26, \"column_start\": 1, \"expansion\": null, \"file_name\": \"crates/ty/tests/file_watching.rs\", \"is_primary\": false, \"label\": \"method in this implementation\", \"line_end\": 363, \"line_start\": 363, \"suggested_replacement\": null, \"suggestion_applicability\": null, \"text\": [{\"highlight_end\": 26, \"highlight_start\": 1, \"text\": \"impl<'a> SetupContext<'a> {\"}]}, {\"byte_end\": 14256, \"byte_start\": 14247, \"column_end\": 17, \"column_start\": 8, \"expansion\": null, \"file_name\": \"crates/ty/tests/file_watching.rs\", \"is_primary\": true, \"label\": null, \"line_end\": 446, \"line_start\": 446, \"suggested_replacement\": null, \"suggestion_applicability\": null, \"text\": [{\"highlight_end\": 17, \"highlight_start\": 8, \"text\": \"    fn set_watch(&mut self, watch: bool) {\"}]}]}]"
+      ],
+      "payload_bytes": 1560,
+      "payload_sha256": "6d465066830c855472a3d30b1d88e0bdeb5961feac9f319f445db562ad24fa11",
+      "selected_native": 108,
+      "units": 617
+    },
+    "H7-parent-selection": {
+      "original_product_file": "c9e7d939e1cb836047c20035d3674a874d543f1388950bf9005d7581c9ec4d68",
+      "payload": [
+        "[\"path+file://$RUFF/crates/ty#0.0.0\", \"file_watching\", {\"$message_type\": \"diagnostic\", \"children\": [{\"children\": [], \"code\": null, \"level\": \"note\", \"message\": \"`#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\", \"rendered\": null, \"spans\": []}], \"code\": {\"code\": \"dead_code\", \"explanation\": null}, \"level\": \"warning\", \"message\": \"method `set_watch` is never used\", \"rendered\": \"warning: method `set_watch` is never used\\n   --> crates/ty/tests/file_watching.rs:446:8\\n    |\\n363 | impl<'a> SetupContext<'a> {\\n    | ------------------------- method in this implementation\\n...\\n446 |     fn set_watch(&mut self, watch: bool) {\\n    |        ^^^^^^^^^\\n    |\\n    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\\n\\n\", \"spans\": [{\"byte_end\": 11822, \"byte_start\": 11797, \"column_end\": 26, \"column_start\": 1, \"expansion\": null, \"file_name\": \"crates/ty/tests/file_watching.rs\", \"is_primary\": false, \"label\": \"method in this implementation\", \"line_end\": 363, \"line_start\": 363, \"suggested_replacement\": null, \"suggestion_applicability\": null, \"text\": [{\"highlight_end\": 26, \"highlight_start\": 1, \"text\": \"impl<'a> SetupContext<'a> {\"}]}, {\"byte_end\": 14256, \"byte_start\": 14247, \"column_end\": 17, \"column_start\": 8, \"expansion\": null, \"file_name\": \"crates/ty/tests/file_watching.rs\", \"is_primary\": true, \"label\": null, \"line_end\": 446, \"line_start\": 446, \"suggested_replacement\": null, \"suggestion_applicability\": null, \"text\": [{\"highlight_end\": 17, \"highlight_start\": 8, \"text\": \"    fn set_watch(&mut self, watch: bool) {\"}]}]}]"
+      ],
+      "payload_bytes": 1560,
+      "payload_sha256": "6d465066830c855472a3d30b1d88e0bdeb5961feac9f319f445db562ad24fa11",
+      "selected_native": 110,
+      "units": 619
+    }
+  },
+  "h2_quarantine": {
+    "all_108_native_committed": true,
+    "archive": "c67d2bd568f47e4920fa06b945a9cd213ce5d3af2e23ccbd862e2f4ce19269e0",
+    "bytes": 3404114087,
+    "command": "419ae0070a0f87d6c42581a28d75bd3360afac77897ab2d106d35fee492e6c8d",
+    "logical_state_sha": "f968d3145bc198240627af617a23bb3b435ceedc821f889b791d83f995f55251",
+    "manifest": "46bcb5806c853e7c75fdb37fab9dd870a106b5881f1348c6a7289048bdad6f7b",
+    "product": "fb042281e126429be3399cd5ff3611ce5915414c78aad606e56dd1a0bd5b397a",
+    "retained_archive_filename": "snapshot-old-official-cold-native.tar.zst",
+    "source_backup_units": 617
+  }
+}
