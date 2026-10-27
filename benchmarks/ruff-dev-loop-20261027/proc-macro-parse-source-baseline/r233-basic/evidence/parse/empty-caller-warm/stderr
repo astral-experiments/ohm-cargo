@@ -1,0 +1,15 @@
+error[E0460]: found possibly newer version of crate `test_unit` which `bridge` depends on
+ --> /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/minimal-proc-source-hash-r233/workspace/main.rs:1:28
+  |
+1 | fn main() { println!("{}", bridge::observed()); }
+  |                            ^^^^^^
+  |
+  = note: perhaps that crate needs to be recompiled?
+  = note: the following crate versions were found:
+          crate `test_unit`: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/minimal-proc-source-hash-r233/active/target/debug/build/workspaces/d2af2c25933cd9e9/v2-0b5361721e4f707f/test_unit/9a75da8fc9e5d1d2/out/libtest_unit-9a75da8fc9e5d1d2.rmeta
+          crate `test_unit`: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/minimal-proc-source-hash-r233/active/target/debug/build/workspaces/d2af2c25933cd9e9/v2-0b5361721e4f707f/test_unit/9a75da8fc9e5d1d2/out/libtest_unit-9a75da8fc9e5d1d2.rlib
+          crate `bridge`: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/minimal-proc-source-hash-r233/libbridge_input.rlib
+
+error: aborting due to 1 previous error
+
+For more information about this error, try `rustc --explain E0460`.

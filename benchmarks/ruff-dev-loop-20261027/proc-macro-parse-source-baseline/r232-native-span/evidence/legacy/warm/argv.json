@@ -1,0 +1,11 @@
+[
+  "cargo",
+  "+ohm",
+  "-Zohm-defaults=no",
+  "build",
+  "-p",
+  "test_unit",
+  "--locked",
+  "--offline",
+  "--message-format=json"
+]

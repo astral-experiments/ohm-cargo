@@ -1,0 +1,18 @@
+[
+  "rustc",
+  "+ohm",
+  "--edition=2024",
+  "--crate-name",
+  "bridge",
+  "--crate-type",
+  "rlib",
+  "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/transient-source-late-position-r232/workspace/bridge.rs",
+  "--extern",
+  "test_unit=/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/transient-source-late-position-r232/active/target/debug/libtest_unit.rlib",
+  "-L",
+  "dependency=/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/transient-source-late-position-r232/active/target/debug/build/workspaces/d0b37b6f4de7de09/v2-bd30e4ef6ab9420e/test_unit/9a75da8fc9e5d1d2/out",
+  "-L",
+  "dependency=/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/transient-source-late-position-r232/active/target/debug/build/workspaces/d0b37b6f4de7de09/v2-bd30e4ef6ab9420e/macro_maker/0e665fbd9d3baebd/out",
+  "-o",
+  "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/transient-source-late-position-r232/evidence/parse/bridge-warm/libbridge.rlib"
+]

@@ -1,0 +1,15 @@
+error[E0460]: found possibly newer version of crate `test_unit` which `bridge` depends on
+ --> /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/transient-source-late-position-v2/workspace/main.rs:1:28
+  |
+1 | fn main() { println!("{}", bridge::observed()); }
+  |                            ^^^^^^
+  |
+  = note: perhaps that crate needs to be recompiled?
+  = note: the following crate versions were found:
+          crate `test_unit`: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/transient-source-late-position-v2/active/target/debug/build/workspaces/9e7b0f694f81e028/v2-72177061ab29ef01/test_unit/9a75da8fc9e5d1d2/out/libtest_unit-9a75da8fc9e5d1d2.rmeta
+          crate `test_unit`: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/transient-source-late-position-v2/active/target/debug/build/workspaces/9e7b0f694f81e028/v2-72177061ab29ef01/test_unit/9a75da8fc9e5d1d2/out/libtest_unit-9a75da8fc9e5d1d2.rlib
+          crate `bridge`: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/transient-source-late-position-v2/libbridge_input.rlib
+
+error: aborting due to 1 previous error
+
+For more information about this error, try `rustc --explain E0460`.

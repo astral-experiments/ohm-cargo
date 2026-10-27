@@ -1,0 +1,16 @@
+[
+  "rustc",
+  "+ohm",
+  "--edition=2024",
+  "--crate-name",
+  "app",
+  "/dev/shm/ohm-proc-parse-source-20261027/stock-r14-repro/workspace/main.rs",
+  "--extern",
+  "bridge=/dev/shm/ohm-proc-parse-source-20261027/stock-r14-repro/libbridge_input.rlib",
+  "-L",
+  "dependency=/dev/shm/ohm-proc-parse-source-20261027/stock-r14-repro/active/shared/debug/build/.ohm-split-e36f473f6dbd03d7/test_unit/d95e95409259d8fc/out",
+  "-L",
+  "dependency=/dev/shm/ohm-proc-parse-source-20261027/stock-r14-repro/active/shared/debug/build/.ohm-split-e36f473f6dbd03d7/macro_maker/aec39e0076360243/out",
+  "-o",
+  "/dev/shm/ohm-proc-parse-source-20261027/stock-r14-repro/evidence/legacy/warm-caller-empty/app"
+]
