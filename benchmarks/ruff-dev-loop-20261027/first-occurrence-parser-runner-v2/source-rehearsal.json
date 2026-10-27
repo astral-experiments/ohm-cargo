@@ -1,0 +1,106 @@
+{
+  "manifest": {
+    "lexer-pending-indentation": {
+      "crates/ruff_python_parser/resources/inline/err/signed_pattern_non_literal_operand.py": "90b9ba10524d4c742e48f288a7e9a1656f8b5597da91ab06d0be793f2f904d04",
+      "crates/ruff_python_parser/src/lexer.rs": "b0791954bfdfe702d44abb1da6e7c586b57dd3016fc34040a2c3fda38ba7c424",
+      "crates/ruff_python_parser/src/parser/expression.rs": "cb7bf925c67804a739984775bd95cfdb7436f62c43c8d5847a9875c33ef0cb7e",
+      "crates/ruff_python_parser/src/parser/pattern.rs": "4855b0a323f2698f1297926dc12df01e90b62b246859f739fb06e4261bd710d6",
+      "crates/ruff_python_parser/tests/snapshots/invalid_syntax@signed_pattern_non_literal_operand.py.snap": "e1de065cc927644726c6cee3f8c5a7825472cdd3962198456a8bf9538f5997dd"
+    },
+    "original": {
+      "crates/ruff_python_parser/resources/inline/err/signed_pattern_non_literal_operand.py": "90b9ba10524d4c742e48f288a7e9a1656f8b5597da91ab06d0be793f2f904d04",
+      "crates/ruff_python_parser/src/lexer.rs": "022f3cf7a1c2cfe546fa0361cd7ba10adfd95e8764b9ce79bd8423735c1b35ba",
+      "crates/ruff_python_parser/src/parser/expression.rs": "cb7bf925c67804a739984775bd95cfdb7436f62c43c8d5847a9875c33ef0cb7e",
+      "crates/ruff_python_parser/src/parser/pattern.rs": "4855b0a323f2698f1297926dc12df01e90b62b246859f739fb06e4261bd710d6",
+      "crates/ruff_python_parser/tests/snapshots/invalid_syntax@signed_pattern_non_literal_operand.py.snap": "e1de065cc927644726c6cee3f8c5a7825472cdd3962198456a8bf9538f5997dd"
+    },
+    "signed-pattern-diagnostic": {
+      "crates/ruff_python_parser/resources/inline/err/signed_pattern_non_literal_operand.py": null,
+      "crates/ruff_python_parser/src/lexer.rs": "022f3cf7a1c2cfe546fa0361cd7ba10adfd95e8764b9ce79bd8423735c1b35ba",
+      "crates/ruff_python_parser/src/parser/expression.rs": "cb7bf925c67804a739984775bd95cfdb7436f62c43c8d5847a9875c33ef0cb7e",
+      "crates/ruff_python_parser/src/parser/pattern.rs": "5627b4dc41fdadcb0052e98df42d228c5fe237ee66a2197d243a385c037be4bf",
+      "crates/ruff_python_parser/tests/snapshots/invalid_syntax@signed_pattern_non_literal_operand.py.snap": null
+    },
+    "single-string-allocation": {
+      "crates/ruff_python_parser/resources/inline/err/signed_pattern_non_literal_operand.py": "90b9ba10524d4c742e48f288a7e9a1656f8b5597da91ab06d0be793f2f904d04",
+      "crates/ruff_python_parser/src/lexer.rs": "022f3cf7a1c2cfe546fa0361cd7ba10adfd95e8764b9ce79bd8423735c1b35ba",
+      "crates/ruff_python_parser/src/parser/expression.rs": "259c7118d3ad77977da01cbbd1b4a39bd66368791e7ebf7f41d6dc4788c59790",
+      "crates/ruff_python_parser/src/parser/pattern.rs": "4855b0a323f2698f1297926dc12df01e90b62b246859f739fb06e4261bd710d6",
+      "crates/ruff_python_parser/tests/snapshots/invalid_syntax@signed_pattern_non_literal_operand.py.snap": "e1de065cc927644726c6cee3f8c5a7825472cdd3962198456a8bf9538f5997dd"
+    }
+  },
+  "native_compiler_calls": 0,
+  "original_pin": "93526150df078af7dd8fc4226cdcc469539d2001",
+  "plan_sha256": "c80f16d00fc1fc3abf303ed281bb3105354e68f67f7e52842bca32515fbf0dae",
+  "visits": [
+    {
+      "label": "original",
+      "touched": [],
+      "unmodified_mtimes_verified": []
+    },
+    {
+      "label": "lexer-pending-indentation",
+      "touched": [
+        "crates/ruff_python_parser/src/lexer.rs"
+      ],
+      "unmodified_mtimes_verified": [
+        "crates/ruff_python_parser/resources/inline/err/signed_pattern_non_literal_operand.py",
+        "crates/ruff_python_parser/src/parser/expression.rs",
+        "crates/ruff_python_parser/src/parser/pattern.rs",
+        "crates/ruff_python_parser/tests/snapshots/invalid_syntax@signed_pattern_non_literal_operand.py.snap"
+      ]
+    },
+    {
+      "label": "original",
+      "touched": [],
+      "unmodified_mtimes_verified": [
+        "crates/ruff_python_parser/resources/inline/err/signed_pattern_non_literal_operand.py",
+        "crates/ruff_python_parser/src/parser/expression.rs",
+        "crates/ruff_python_parser/src/parser/pattern.rs",
+        "crates/ruff_python_parser/tests/snapshots/invalid_syntax@signed_pattern_non_literal_operand.py.snap"
+      ]
+    },
+    {
+      "label": "signed-pattern-diagnostic",
+      "touched": [
+        "crates/ruff_python_parser/resources/inline/err/signed_pattern_non_literal_operand.py",
+        "crates/ruff_python_parser/src/parser/pattern.rs",
+        "crates/ruff_python_parser/tests/snapshots/invalid_syntax@signed_pattern_non_literal_operand.py.snap"
+      ],
+      "unmodified_mtimes_verified": [
+        "crates/ruff_python_parser/src/lexer.rs",
+        "crates/ruff_python_parser/src/parser/expression.rs"
+      ]
+    },
+    {
+      "label": "original",
+      "touched": [],
+      "unmodified_mtimes_verified": [
+        "crates/ruff_python_parser/src/lexer.rs",
+        "crates/ruff_python_parser/src/parser/expression.rs"
+      ]
+    },
+    {
+      "label": "single-string-allocation",
+      "touched": [
+        "crates/ruff_python_parser/src/parser/expression.rs"
+      ],
+      "unmodified_mtimes_verified": [
+        "crates/ruff_python_parser/resources/inline/err/signed_pattern_non_literal_operand.py",
+        "crates/ruff_python_parser/src/lexer.rs",
+        "crates/ruff_python_parser/src/parser/pattern.rs",
+        "crates/ruff_python_parser/tests/snapshots/invalid_syntax@signed_pattern_non_literal_operand.py.snap"
+      ]
+    },
+    {
+      "label": "original",
+      "touched": [],
+      "unmodified_mtimes_verified": [
+        "crates/ruff_python_parser/resources/inline/err/signed_pattern_non_literal_operand.py",
+        "crates/ruff_python_parser/src/lexer.rs",
+        "crates/ruff_python_parser/src/parser/pattern.rs",
+        "crates/ruff_python_parser/tests/snapshots/invalid_syntax@signed_pattern_non_literal_operand.py.snap"
+      ]
+    }
+  ]
+}

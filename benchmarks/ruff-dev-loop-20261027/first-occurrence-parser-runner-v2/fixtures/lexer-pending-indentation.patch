@@ -1,0 +1,16 @@
+diff --git a/crates/ruff_python_parser/src/lexer.rs b/crates/ruff_python_parser/src/lexer.rs
+index 85ae48535b08e6fbaaa5b5684384e94d8df4f29b..b0848d5352ab891b3ccf92f1b2f5491511f80f6d 100644
+--- a/crates/ruff_python_parser/src/lexer.rs
++++ b/crates/ruff_python_parser/src/lexer.rs
+@@ -167,7 +167,10 @@ impl<'src> Lexer<'src> {
+             }
+         }
+         // Return dedent tokens until the current indentation level matches the indentation of the next token.
+-        else if let Some(indentation) = self.pending_indentation.take() {
++        // Avoid `Option::take` here: this check runs for every token, and `take` writes `None`
++        // even when there is no pending indentation.
++        else if let Some(indentation) = self.pending_indentation {
++            self.pending_indentation = None;
+             self.cursor.start_token();
+             match self.indentations.current().try_compare(indentation) {
+                 Ok(Ordering::Greater) => {
