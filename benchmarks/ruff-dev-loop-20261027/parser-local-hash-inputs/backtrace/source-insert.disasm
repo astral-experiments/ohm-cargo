@@ -1,0 +1,62 @@
+
+/home/dev-user/.cache/ohm-233-position-qualified-20261027/drivers/driver-dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f:     file format elf64-x86-64
+
+
+Disassembly of section .text:
+
+0000000006a03800 <<rustc_span::source_map::SourceMap>::new_source_file>:
+ 6a03800:	41 57                	push   %r15
+ 6a03802:	41 56                	push   %r14
+ 6a03804:	41 55                	push   %r13
+ 6a03806:	41 54                	push   %r12
+ 6a03808:	53                   	push   %rbx
+ 6a03809:	48 81 ec 60 03 00 00 	sub    $0x360,%rsp
+ 6a03810:	49 89 d5             	mov    %rdx,%r13
+ 6a03813:	48 89 f3             	mov    %rsi,%rbx
+ 6a03816:	49 89 fe             	mov    %rdi,%r14
+ 6a03819:	48 89 f7             	mov    %rsi,%rdi
+ 6a0381c:	31 f6                	xor    %esi,%esi
+ 6a0381e:	e8 1d a1 38 ff       	call   5d8d940 <<rustc_span::StableSourceFileId>::from_filename_and_stable_crate_id>
+ 6a03823:	49 89 c7             	mov    %rax,%r15
+ 6a03826:	49 89 d4             	mov    %rdx,%r12
+ 6a03829:	4c 89 f7             	mov    %r14,%rdi
+ 6a0382c:	48 89 c6             	mov    %rax,%rsi
+ 6a0382f:	ff 15 53 55 d0 fe    	call   *-0x12faaad(%rip)        # 5708d88 <<rustc_span::source_map::SourceMap>::source_file_by_stable_id@@Base-0x12fabfc>
+ 6a03835:	48 85 c0             	test   %rax,%rax
+ 6a03838:	75 7c                	jne    6a038b6 <<rustc_span::source_map::SourceMap>::new_source_file+0xb6>
+ 6a0383a:	49 8b 45 10          	mov    0x10(%r13),%rax
+ 6a0383e:	48 89 e2             	mov    %rsp,%rdx
+ 6a03841:	48 89 42 10          	mov    %rax,0x10(%rdx)
+ 6a03845:	41 0f 10 45 00       	movups 0x0(%r13),%xmm0
+ 6a0384a:	0f 29 02             	movaps %xmm0,(%rdx)
+ 6a0384d:	45 0f b6 86 09 01 00 	movzbl 0x109(%r14),%r8d
+ 6a03854:	00 
+ 6a03855:	41 8b 8e 08 01 00 00 	mov    0x108(%r14),%ecx
+ 6a0385c:	4c 8d 6c 24 20       	lea    0x20(%rsp),%r13
+ 6a03861:	4c 89 ef             	mov    %r13,%rdi
+ 6a03864:	48 89 de             	mov    %rbx,%rsi
+ 6a03867:	ff 15 f3 a5 d0 fe    	call   *-0x12f5a0d(%rip)        # 570de60 <<rustc_span::SourceFile>::new@@Base-0x12f6668>
+ 6a0386d:	49 83 7d 10 ff       	cmpq   $0xffffffffffffffff,0x10(%r13)
+ 6a03872:	74 63                	je     6a038d7 <<rustc_span::source_map::SourceMap>::new_source_file+0xd7>
+ 6a03874:	48 8d 9c 24 c0 01 00 	lea    0x1c0(%rsp),%rbx
+ 6a0387b:	00 
+ 6a0387c:	48 8d 74 24 20       	lea    0x20(%rsp),%rsi
+ 6a03881:	ba a0 01 00 00       	mov    $0x1a0,%edx
+ 6a03886:	48 89 df             	mov    %rbx,%rdi
+ 6a03889:	ff 15 09 76 cf fe    	call   *-0x13089f7(%rip)        # 56fae98 <memcpy@GLIBC_2.14>
+ 6a0388f:	4c 89 f7             	mov    %r14,%rdi
+ 6a03892:	4c 89 fe             	mov    %r15,%rsi
+ 6a03895:	4c 89 e2             	mov    %r12,%rdx
+ 6a03898:	48 89 d9             	mov    %rbx,%rcx
+ 6a0389b:	e8 20 02 00 00       	call   6a03ac0 <<rustc_span::source_map::SourceMap>::register_source_file>
+ 6a038a0:	48 85 c0             	test   %rax,%rax
+ 6a038a3:	74 32                	je     6a038d7 <<rustc_span::source_map::SourceMap>::new_source_file+0xd7>
+ 6a038a5:	48 81 c4 60 03 00 00 	add    $0x360,%rsp
+ 6a038ac:	5b                   	pop    %rbx
+ 6a038ad:	41 5c                	pop    %r12
+ 6a038af:	41 5d                	pop    %r13
+ 6a038b1:	41 5e                	pop    %r14
+ 6a038b3:	41 5f                	pop    %r15
+ 6a038b5:	c3                   	ret
+ 6a038b6:	49 89 c6             	mov    %rax,%r14
+ 6a038b9:	49                   	rex.WB

@@ -1,0 +1,31 @@
+
+/home/dev-user/.cache/ohm-233-position-qualified-20261027/drivers/driver-dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f:     file format elf64-x86-64
+
+
+Disassembly of section .text:
+
+0000000005d8405d <rustc_middle::hir::map::crate_hash+0x111d>:
+ 5d8405d:	48 8b 05 4c a4 97 ff 	mov    -0x685bb4(%rip),%rax        # 56fe4b0 <rustc_span::SESSION_GLOBALS::FOO::{K#0}::{closure#1}::__RUST_STD_INTERNAL_VAL@@Base+0x56fb0a8>
+ 5d84064:	64 48 8b 30          	mov    %fs:(%rax),%rsi
+ 5d84068:	48 85 f6             	test   %rsi,%rsi
+ 5d8406b:	0f 84 3d 0e 00 00    	je     5d84eae <rustc_middle::hir::map::crate_hash+0x1f6e>
+ 5d84071:	48 8d bc 24 38 01 00 	lea    0x138(%rsp),%rdi
+ 5d84078:	00 
+ 5d84079:	ff 15 79 68 98 ff    	call   *-0x679787(%rip)        # 570a8f8 <<rustc_span::MetavarSpansMap>::freeze_and_get_read_spans@@Base-0x17c2648>
+ 5d8407f:	48 8b ac 24 38 01 00 	mov    0x138(%rsp),%rbp
+ 5d84086:	00 
+ 5d84087:	48 8b 9c 24 50 01 00 	mov    0x150(%rsp),%rbx
+ 5d8408e:	00 
+ 5d8408f:	66 0f 6f 45 00       	movdqa 0x0(%rbp),%xmm0
+ 5d84094:	66 0f 7f 44 24 40    	movdqa %xmm0,0x40(%rsp)
+ 5d8409a:	48 8b 84 24 c0 00 00 	mov    0xc0(%rsp),%rax
+ 5d840a1:	00 
+ 5d840a2:	48 8d 48 08          	lea    0x8(%rax),%rcx
+ 5d840a6:	48 83 f9 40          	cmp    $0x40,%rcx
+ 5d840aa:	0f 83 cf 03 00 00    	jae    5d8447f <rustc_middle::hir::map::crate_hash+0x153f>
+ 5d840b0:	48 89 9c 04 c8 00 00 	mov    %rbx,0xc8(%rsp,%rax,1)
+ 5d840b7:	00 
+ 5d840b8:	48 89 8c 24 c0 00 00 	mov    %rcx,0xc0(%rsp)
+ 5d840bf:	00 
+ 5d840c0:	48 85 db             	test   %rbx,%rbx
+ 5d840c3:	0f 85 56 ff ff ff    	jne    5d8401f <rustc_middle::hir::map::crate_hash+0x10df>

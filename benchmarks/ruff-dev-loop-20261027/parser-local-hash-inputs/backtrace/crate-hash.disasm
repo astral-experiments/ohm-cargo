@@ -1,0 +1,1027 @@
+
+/home/dev-user/.cache/ohm-233-position-qualified-20261027/drivers/driver-dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f:     file format elf64-x86-64
+
+
+Disassembly of section .text:
+
+0000000005d83180 <rustc_middle::hir::map::crate_hash+0x240>:
+ 5d83180:	00 0f                	add    %cl,(%rdi)
+ 5d83182:	84 2b                	test   %ch,(%rbx)
+ 5d83184:	ff                   	(bad)
+ 5d83185:	ff                   	(bad)
+ 5d83186:	ff 41 81             	incl   -0x7f(%rcx)
+ 5d83189:	fc                   	cld
+ 5d8318a:	00 10                	add    %dl,(%rax)
+ 5d8318c:	00 00                	add    %al,(%rax)
+ 5d8318e:	0f 83 2e 2f 7c 01    	jae    75460c2 <rustc_middle::hir::map::crate_hash+0x82>
+ 5d83194:	4c 89 e0             	mov    %r12,%rax
+ 5d83197:	31 f6                	xor    %esi,%esi
+ 5d83199:	48 8b 8c f3 00 6d 01 	mov    0x16d00(%rbx,%rsi,8),%rcx
+ 5d831a0:	00 
+ 5d831a1:	48 85 c9             	test   %rcx,%rcx
+ 5d831a4:	0f 84 fb 13 00 00    	je     5d845a5 <rustc_middle::hir::map::crate_hash+0x1665>
+ 5d831aa:	48 8d 04 80          	lea    (%rax,%rax,4),%rax
+ 5d831ae:	8b 74 81 10          	mov    0x10(%rcx,%rax,4),%esi
+ 5d831b2:	83 fe 02             	cmp    $0x2,%esi
+ 5d831b5:	0f 82 ea 13 00 00    	jb     5d845a5 <rustc_middle::hir::map::crate_hash+0x1665>
+ 5d831bb:	83 c6 fe             	add    $0xfffffffe,%esi
+ 5d831be:	81 fe 00 ff ff ff    	cmp    $0xffffff00,%esi
+ 5d831c4:	0f 87 33 15 00 00    	ja     5d846fd <rustc_middle::hir::map::crate_hash+0x17bd>
+ 5d831ca:	48 8d 04 81          	lea    (%rcx,%rax,4),%rax
+ 5d831ce:	0f 10 00             	movups (%rax),%xmm0
+ 5d831d1:	0f 29 44 24 40       	movaps %xmm0,0x40(%rsp)
+ 5d831d6:	0f b7 83 38 f4 01 00 	movzwl 0x1f438(%rbx),%eax
+ 5d831dd:	a9 04 04 00 00       	test   $0x404,%eax
+ 5d831e2:	0f 85 fe 13 00 00    	jne    5d845e6 <rustc_middle::hir::map::crate_hash+0x16a6>
+ 5d831e8:	48 8b bb f8 f8 01 00 	mov    0x1f8f8(%rbx),%rdi
+ 5d831ef:	48 85 ff             	test   %rdi,%rdi
+ 5d831f2:	0f 84 1e ff ff ff    	je     5d83116 <rustc_middle::hir::map::crate_hash+0x1d6>
+ 5d831f8:	48 8b 05 c1 b9 97 ff 	mov    -0x68463f(%rip),%rax        # 56febc0 <rustc_thread_pool::tlv::TLV::{K#0}::{closure#1}::__RUST_STD_INTERNAL_VAL@@Base+0x56fb7b0>
+ 5d831ff:	64 48 8b 10          	mov    %fs:(%rax),%rdx
+ 5d83203:	48 85 d2             	test   %rdx,%rdx
+ 5d83206:	0f 84 0a ff ff ff    	je     5d83116 <rustc_middle::hir::map::crate_hash+0x1d6>
+ 5d8320c:	e8 31 18 0a 00       	call   5e24a42 <rustc_middle::dep_graph::read_deps::<<rustc_middle::dep_graph::graph::DepGraph>::read_index::{closure#0}>::{closure#0}>
+ 5d83211:	e9 00 ff ff ff       	jmp    5d83116 <rustc_middle::hir::map::crate_hash+0x1d6>
+ 5d83216:	48 8b b4 24 b0 00 00 	mov    0xb0(%rsp),%rsi
+ 5d8321d:	00 
+ 5d8321e:	48 83 fe 01          	cmp    $0x1,%rsi
+ 5d83222:	48 8b 84 24 90 01 00 	mov    0x190(%rsp),%rax
+ 5d83229:	00 
+ 5d8322a:	0f 84 b3 00 00 00    	je     5d832e3 <rustc_middle::hir::map::crate_hash+0x3a3>
+ 5d83230:	48 83 fe 15          	cmp    $0x15,%rsi
+ 5d83234:	0f 83 9b 00 00 00    	jae    5d832d5 <rustc_middle::hir::map::crate_hash+0x395>
+ 5d8323a:	48 8b bc 24 a0 00 00 	mov    0xa0(%rsp),%rdi
+ 5d83241:	00 
+ 5d83242:	48 01 f8             	add    %rdi,%rax
+ 5d83245:	48 8d 77 18          	lea    0x18(%rdi),%rsi
+ 5d83249:	31 c9                	xor    %ecx,%ecx
+ 5d8324b:	4c 8b 9c 24 a0 00 00 	mov    0xa0(%rsp),%r11
+ 5d83252:	00 
+ 5d83253:	eb 24                	jmp    5d83279 <rustc_middle::hir::map::crate_hash+0x339>
+ 5d83255:	4c 89 df             	mov    %r11,%rdi
+ 5d83258:	48 89 37             	mov    %rsi,(%rdi)
+ 5d8325b:	66 0f 6f 84 24 d0 01 	movdqa 0x1d0(%rsp),%xmm0
+ 5d83262:	00 00 
+ 5d83264:	f3 0f 7f 47 08       	movdqu %xmm0,0x8(%rdi)
+ 5d83269:	48 8d 72 18          	lea    0x18(%rdx),%rsi
+ 5d8326d:	48 83 c1 18          	add    $0x18,%rcx
+ 5d83271:	48 89 d7             	mov    %rdx,%rdi
+ 5d83274:	48 39 c6             	cmp    %rax,%rsi
+ 5d83277:	74 6a                	je     5d832e3 <rustc_middle::hir::map::crate_hash+0x3a3>
+ 5d83279:	48 89 f2             	mov    %rsi,%rdx
+ 5d8327c:	48 8b 77 18          	mov    0x18(%rdi),%rsi
+ 5d83280:	48 3b 37             	cmp    (%rdi),%rsi
+ 5d83283:	73 e4                	jae    5d83269 <rustc_middle::hir::map::crate_hash+0x329>
+ 5d83285:	0f 10 47 20          	movups 0x20(%rdi),%xmm0
+ 5d83289:	0f 29 84 24 d0 01 00 	movaps %xmm0,0x1d0(%rsp)
+ 5d83290:	00 
+ 5d83291:	4c 8b 47 10          	mov    0x10(%rdi),%r8
+ 5d83295:	4c 89 42 10          	mov    %r8,0x10(%rdx)
+ 5d83299:	f3 0f 6f 07          	movdqu (%rdi),%xmm0
+ 5d8329d:	f3 0f 7f 02          	movdqu %xmm0,(%rdx)
+ 5d832a1:	49 89 c8             	mov    %rcx,%r8
+ 5d832a4:	4c 39 df             	cmp    %r11,%rdi
+ 5d832a7:	74 ac                	je     5d83255 <rustc_middle::hir::map::crate_hash+0x315>
+ 5d832a9:	4b 8d 3c 03          	lea    (%r11,%r8,1),%rdi
+ 5d832ad:	4b 3b 74 03 e8       	cmp    -0x18(%r11,%r8,1),%rsi
+ 5d832b2:	73 a4                	jae    5d83258 <rustc_middle::hir::map::crate_hash+0x318>
+ 5d832b4:	4f 8d 0c 03          	lea    (%r11,%r8,1),%r9
+ 5d832b8:	49 83 c1 e8          	add    $0xffffffffffffffe8,%r9
+ 5d832bc:	4d 8b 51 10          	mov    0x10(%r9),%r10
+ 5d832c0:	4c 89 57 10          	mov    %r10,0x10(%rdi)
+ 5d832c4:	f3 41 0f 6f 01       	movdqu (%r9),%xmm0
+ 5d832c9:	f3 0f 7f 07          	movdqu %xmm0,(%rdi)
+ 5d832cd:	49 83 c0 e8          	add    $0xffffffffffffffe8,%r8
+ 5d832d1:	75 d6                	jne    5d832a9 <rustc_middle::hir::map::crate_hash+0x369>
+ 5d832d3:	eb 80                	jmp    5d83255 <rustc_middle::hir::map::crate_hash+0x315>
+ 5d832d5:	48 8b bc 24 a0 00 00 	mov    0xa0(%rsp),%rdi
+ 5d832dc:	00 
+ 5d832dd:	ff 15 a5 6f 98 ff    	call   *-0x67905b(%rip)        # 570a288 <_DYNAMIC+0xf640>
+ 5d832e3:	48 8b 5c 24 58       	mov    0x58(%rsp),%rbx
+ 5d832e8:	4c 8b 44 24 08       	mov    0x8(%rsp),%r8
+ 5d832ed:	41 8b 80 98 1d 00 00 	mov    0x1d98(%r8),%eax
+ 5d832f4:	85 c0                	test   %eax,%eax
+ 5d832f6:	0f 85 74 13 00 00    	jne    5d84670 <rustc_middle::hir::map::crate_hash+0x1730>
+ 5d832fc:	41 8b b0 a4 1d 00 00 	mov    0x1da4(%r8),%esi
+ 5d83303:	83 fe ff             	cmp    $0xffffffff,%esi
+ 5d83306:	0f 84 64 13 00 00    	je     5d84670 <rustc_middle::hir::map::crate_hash+0x1730>
+ 5d8330c:	49 8b 80 9c 1d 00 00 	mov    0x1d9c(%r8),%rax
+ 5d83313:	48 89 84 24 50 02 00 	mov    %rax,0x250(%rsp)
+ 5d8331a:	00 
+ 5d8331b:	0f b7 83 38 f4 01 00 	movzwl 0x1f438(%rbx),%eax
+ 5d83322:	a9 04 04 00 00       	test   $0x404,%eax
+ 5d83327:	0f 85 2d 14 00 00    	jne    5d8475a <rustc_middle::hir::map::crate_hash+0x181a>
+ 5d8332d:	48 8b bb f8 f8 01 00 	mov    0x1f8f8(%rbx),%rdi
+ 5d83334:	48 85 ff             	test   %rdi,%rdi
+ 5d83337:	0f 85 ff f2 50 01    	jne    729263c <rustc_middle::hir::map::crate_hash+0x1fc>
+ 5d8333d:	48 8b 44 24 08       	mov    0x8(%rsp),%rax
+ 5d83342:	48 8b 80 e8 f8 01 00 	mov    0x1f8e8(%rax),%rax
+ 5d83349:	48 8b 98 88 17 00 00 	mov    0x1788(%rax),%rbx
+ 5d83350:	4c 8d b3 d8 00 00 00 	lea    0xd8(%rbx),%r14
+ 5d83357:	48 8b 83 d8 00 00 00 	mov    0xd8(%rbx),%rax
+ 5d8335e:	48 83 f8 ef          	cmp    $0xffffffffffffffef,%rax
+ 5d83362:	0f 87 94 12 00 00    	ja     5d845fc <rustc_middle::hir::map::crate_hash+0x16bc>
+ 5d83368:	89 c1                	mov    %eax,%ecx
+ 5d8336a:	83 e1 08             	and    $0x8,%ecx
+ 5d8336d:	0f 85 89 12 00 00    	jne    5d845fc <rustc_middle::hir::map::crate_hash+0x16bc>
+ 5d83373:	48 8d 48 10          	lea    0x10(%rax),%rcx
+ 5d83377:	f0 49 0f b1 0e       	lock cmpxchg %rcx,(%r14)
+ 5d8337c:	0f 85 7a 12 00 00    	jne    5d845fc <rustc_middle::hir::map::crate_hash+0x16bc>
+ 5d83382:	4c 89 74 24 40       	mov    %r14,0x40(%rsp)
+ 5d83387:	48 8b 83 f0 00 00 00 	mov    0xf0(%rbx),%rax
+ 5d8338e:	c6 44 24 06 01       	movb   $0x1,0x6(%rsp)
+ 5d83393:	48 85 c0             	test   %rax,%rax
+ 5d83396:	0f 84 a7 2e 7c 01    	je     7546243 <rustc_middle::hir::map::crate_hash+0x203>
+ 5d8339c:	4c 8b b3 e8 00 00 00 	mov    0xe8(%rbx),%r14
+ 5d833a3:	4d 8d 3c c6          	lea    (%r14,%rax,8),%r15
+ 5d833a7:	48 c1 e0 03          	shl    $0x3,%rax
+ 5d833ab:	49 83 c6 08          	add    $0x8,%r14
+ 5d833af:	49 8b 4e f8          	mov    -0x8(%r14),%rcx
+ 5d833b3:	83 b9 50 01 00 00 00 	cmpl   $0x0,0x150(%rcx)
+ 5d833ba:	0f 85 75 2e 7c 01    	jne    7546235 <rustc_middle::hir::map::crate_hash+0x1f5>
+ 5d833c0:	48 8b 59 10          	mov    0x10(%rcx),%rbx
+ 5d833c4:	4c 8b 61 18          	mov    0x18(%rcx),%r12
+ 5d833c8:	bf 40 00 00 00       	mov    $0x40,%edi
+ 5d833cd:	ff 15 a5 7a 97 ff    	call   *-0x68855b(%rip)        # 56fae78 <malloc@GLIBC_2.2.5>
+ 5d833d3:	48 85 c0             	test   %rax,%rax
+ 5d833d6:	0f 84 94 13 00 00    	je     5d84770 <rustc_middle::hir::map::crate_hash+0x1830>
+ 5d833dc:	48 89 c2             	mov    %rax,%rdx
+ 5d833df:	48 89 18             	mov    %rbx,(%rax)
+ 5d833e2:	4c 89 60 08          	mov    %r12,0x8(%rax)
+ 5d833e6:	bf 04 00 00 00       	mov    $0x4,%edi
+ 5d833eb:	48 8d 84 24 d0 01 00 	lea    0x1d0(%rsp),%rax
+ 5d833f2:	00 
+ 5d833f3:	48 89 44 24 38       	mov    %rax,0x38(%rsp)
+ 5d833f8:	bb 01 00 00 00       	mov    $0x1,%ebx
+ 5d833fd:	eb 16                	jmp    5d83415 <rustc_middle::hir::map::crate_hash+0x4d5>
+ 5d833ff:	48 89 d0             	mov    %rdx,%rax
+ 5d83402:	48 89 d9             	mov    %rbx,%rcx
+ 5d83405:	48 c1 e1 04          	shl    $0x4,%rcx
+ 5d83409:	4c 89 64 08 08       	mov    %r12,0x8(%rax,%rcx,1)
+ 5d8340e:	4c 89 2c 08          	mov    %r13,(%rax,%rcx,1)
+ 5d83412:	48 ff c3             	inc    %rbx
+ 5d83415:	4d 39 fe             	cmp    %r15,%r14
+ 5d83418:	0f 84 8e 00 00 00    	je     5d834ac <rustc_middle::hir::map::crate_hash+0x56c>
+ 5d8341e:	49 8b 06             	mov    (%r14),%rax
+ 5d83421:	49 83 c6 08          	add    $0x8,%r14
+ 5d83425:	83 b8 50 01 00 00 00 	cmpl   $0x0,0x150(%rax)
+ 5d8342c:	75 e7                	jne    5d83415 <rustc_middle::hir::map::crate_hash+0x4d5>
+ 5d8342e:	4c 8b 68 10          	mov    0x10(%rax),%r13
+ 5d83432:	4c 8b 60 18          	mov    0x18(%rax),%r12
+ 5d83436:	48 39 fb             	cmp    %rdi,%rbx
+ 5d83439:	75 c4                	jne    5d833ff <rustc_middle::hir::map::crate_hash+0x4bf>
+ 5d8343b:	48 89 54 24 28       	mov    %rdx,0x28(%rsp)
+ 5d83440:	48 8d 04 3f          	lea    (%rdi,%rdi,1),%rax
+ 5d83444:	48 85 ff             	test   %rdi,%rdi
+ 5d83447:	b9 01 00 00 00       	mov    $0x1,%ecx
+ 5d8344c:	48 0f 44 c1          	cmove  %rcx,%rax
+ 5d83450:	48 83 f8 05          	cmp    $0x5,%rax
+ 5d83454:	bd 04 00 00 00       	mov    $0x4,%ebp
+ 5d83459:	48 0f 43 e8          	cmovae %rax,%rbp
+ 5d8345d:	48 b9 ff ff ff ff ff 	movabs $0x7ffffffffffffff,%rcx
+ 5d83464:	ff ff 07 
+ 5d83467:	48 39 c8             	cmp    %rcx,%rax
+ 5d8346a:	48 89 7c 24 18       	mov    %rdi,0x18(%rsp)
+ 5d8346f:	0f 87 cd 2c 7c 01    	ja     7546142 <rustc_middle::hir::map::crate_hash+0x102>
+ 5d83475:	48 89 e8             	mov    %rbp,%rax
+ 5d83478:	48 c1 e0 04          	shl    $0x4,%rax
+ 5d8347c:	48 85 ff             	test   %rdi,%rdi
+ 5d8347f:	48 89 44 24 10       	mov    %rax,0x10(%rsp)
+ 5d83484:	0f 84 b6 2b 7c 01    	je     7546040 <rustc_middle::hir::map::crate_hash>
+ 5d8348a:	48 8b 7c 24 28       	mov    0x28(%rsp),%rdi
+ 5d8348f:	48 89 c6             	mov    %rax,%rsi
+ 5d83492:	ff 15 f8 79 97 ff    	call   *-0x688608(%rip)        # 56fae90 <realloc@GLIBC_2.2.5>
+ 5d83498:	48 85 c0             	test   %rax,%rax
+ 5d8349b:	0f 84 af 2c 7c 01    	je     7546150 <rustc_middle::hir::map::crate_hash+0x110>
+ 5d834a1:	48 89 ef             	mov    %rbp,%rdi
+ 5d834a4:	48 89 c2             	mov    %rax,%rdx
+ 5d834a7:	e9 56 ff ff ff       	jmp    5d83402 <rustc_middle::hir::map::crate_hash+0x4c2>
+ 5d834ac:	49 89 df             	mov    %rbx,%r15
+ 5d834af:	48 89 54 24 28       	mov    %rdx,0x28(%rsp)
+ 5d834b4:	48 85 ff             	test   %rdi,%rdi
+ 5d834b7:	0f 94 44 24 06       	sete   0x6(%rsp)
+ 5d834bc:	48 c7 c0 f0 ff ff ff 	mov    $0xfffffffffffffff0,%rax
+ 5d834c3:	48 8b 7c 24 40       	mov    0x40(%rsp),%rdi
+ 5d834c8:	f0 48 0f c1 07       	lock xadd %rax,(%rdi)
+ 5d834cd:	48 83 e0 f2          	and    $0xfffffffffffffff2,%rax
+ 5d834d1:	48 83 f8 12          	cmp    $0x12,%rax
+ 5d834d5:	0f 84 aa 12 00 00    	je     5d84785 <rustc_middle::hir::map::crate_hash+0x1845>
+ 5d834db:	49 83 ff 02          	cmp    $0x2,%r15
+ 5d834df:	0f 82 a6 00 00 00    	jb     5d8358b <rustc_middle::hir::map::crate_hash+0x64b>
+ 5d834e5:	4c 89 f8             	mov    %r15,%rax
+ 5d834e8:	49 83 ff 15          	cmp    $0x15,%r15
+ 5d834ec:	0f 83 8b 00 00 00    	jae    5d8357d <rustc_middle::hir::map::crate_hash+0x63d>
+ 5d834f2:	48 c1 e0 04          	shl    $0x4,%rax
+ 5d834f6:	4c 8b 44 24 28       	mov    0x28(%rsp),%r8
+ 5d834fb:	4c 01 c0             	add    %r8,%rax
+ 5d834fe:	49 8d 70 10          	lea    0x10(%r8),%rsi
+ 5d83502:	31 c9                	xor    %ecx,%ecx
+ 5d83504:	4c 8b 5c 24 28       	mov    0x28(%rsp),%r11
+ 5d83509:	eb 1a                	jmp    5d83525 <rustc_middle::hir::map::crate_hash+0x5e5>
+ 5d8350b:	4d 89 da             	mov    %r11,%r10
+ 5d8350e:	49 89 32             	mov    %rsi,(%r10)
+ 5d83511:	49 89 7a 08          	mov    %rdi,0x8(%r10)
+ 5d83515:	48 8d 72 10          	lea    0x10(%rdx),%rsi
+ 5d83519:	48 83 c1 10          	add    $0x10,%rcx
+ 5d8351d:	49 89 d0             	mov    %rdx,%r8
+ 5d83520:	48 39 c6             	cmp    %rax,%rsi
+ 5d83523:	74 66                	je     5d8358b <rustc_middle::hir::map::crate_hash+0x64b>
+ 5d83525:	48 89 f2             	mov    %rsi,%rdx
+ 5d83528:	49 8b 70 10          	mov    0x10(%r8),%rsi
+ 5d8352c:	49 8b 78 18          	mov    0x18(%r8),%rdi
+ 5d83530:	49 3b 30             	cmp    (%r8),%rsi
+ 5d83533:	49 89 f9             	mov    %rdi,%r9
+ 5d83536:	4d 1b 48 08          	sbb    0x8(%r8),%r9
+ 5d8353a:	73 d9                	jae    5d83515 <rustc_middle::hir::map::crate_hash+0x5d5>
+ 5d8353c:	66 41 0f 6f 00       	movdqa (%r8),%xmm0
+ 5d83541:	66 0f 7f 02          	movdqa %xmm0,(%rdx)
+ 5d83545:	49 89 c9             	mov    %rcx,%r9
+ 5d83548:	4d 89 da             	mov    %r11,%r10
+ 5d8354b:	4d 39 d8             	cmp    %r11,%r8
+ 5d8354e:	74 be                	je     5d8350e <rustc_middle::hir::map::crate_hash+0x5ce>
+ 5d83550:	4f 8d 14 0b          	lea    (%r11,%r9,1),%r10
+ 5d83554:	4b 3b 74 0b f0       	cmp    -0x10(%r11,%r9,1),%rsi
+ 5d83559:	49 89 f8             	mov    %rdi,%r8
+ 5d8355c:	4f 1b 44 0b f8       	sbb    -0x8(%r11,%r9,1),%r8
+ 5d83561:	73 ab                	jae    5d8350e <rustc_middle::hir::map::crate_hash+0x5ce>
+ 5d83563:	4f 8d 04 0b          	lea    (%r11,%r9,1),%r8
+ 5d83567:	49 83 c0 f0          	add    $0xfffffffffffffff0,%r8
+ 5d8356b:	66 41 0f 6f 00       	movdqa (%r8),%xmm0
+ 5d83570:	66 41 0f 7f 02       	movdqa %xmm0,(%r10)
+ 5d83575:	49 83 c1 f0          	add    $0xfffffffffffffff0,%r9
+ 5d83579:	75 d5                	jne    5d83550 <rustc_middle::hir::map::crate_hash+0x610>
+ 5d8357b:	eb 8e                	jmp    5d8350b <rustc_middle::hir::map::crate_hash+0x5cb>
+ 5d8357d:	48 8b 7c 24 28       	mov    0x28(%rsp),%rdi
+ 5d83582:	48 89 c6             	mov    %rax,%rsi
+ 5d83585:	ff 15 e5 6c 98 ff    	call   *-0x67931b(%rip)        # 570a270 <core::slice::sort::unstable::ipnsort::<rustc_span::StableSourceFileId, <rustc_span::StableSourceFileId as core::cmp::PartialOrd>::lt>@@Base-0x19a2bd0>
+ 5d8358b:	48 8b 5c 24 58       	mov    0x58(%rsp),%rbx
+ 5d83590:	48 8b 44 24 08       	mov    0x8(%rsp),%rax
+ 5d83595:	48 8b 80 a8 ae 01 00 	mov    0x1aea8(%rax),%rax
+ 5d8359c:	48 85 c0             	test   %rax,%rax
+ 5d8359f:	0f 84 1c 11 00 00    	je     5d846c1 <rustc_middle::hir::map::crate_hash+0x1781>
+ 5d835a5:	8b 70 08             	mov    0x8(%rax),%esi
+ 5d835a8:	83 fe 02             	cmp    $0x2,%esi
+ 5d835ab:	0f 82 10 11 00 00    	jb     5d846c1 <rustc_middle::hir::map::crate_hash+0x1781>
+ 5d835b1:	83 c6 fe             	add    $0xfffffffe,%esi
+ 5d835b4:	81 fe 01 ff ff ff    	cmp    $0xffffff01,%esi
+ 5d835ba:	0f 83 d0 11 00 00    	jae    5d84790 <rustc_middle::hir::map::crate_hash+0x1850>
+ 5d835c0:	4c 8b 30             	mov    (%rax),%r14
+ 5d835c3:	0f b7 83 38 f4 01 00 	movzwl 0x1f438(%rbx),%eax
+ 5d835ca:	a9 04 04 00 00       	test   $0x404,%eax
+ 5d835cf:	0f 85 d9 11 00 00    	jne    5d847ae <rustc_middle::hir::map::crate_hash+0x186e>
+ 5d835d5:	48 8b bb f8 f8 01 00 	mov    0x1f8f8(%rbx),%rdi
+ 5d835dc:	48 85 ff             	test   %rdi,%rdi
+ 5d835df:	0f 85 70 f0 50 01    	jne    7292655 <rustc_middle::hir::map::crate_hash+0x215>
+ 5d835e5:	4c 89 bc 24 58 02 00 	mov    %r15,0x258(%rsp)
+ 5d835ec:	00 
+ 5d835ed:	49 8b 4e 10          	mov    0x10(%r14),%rcx
+ 5d835f1:	48 89 c8             	mov    %rcx,%rax
+ 5d835f4:	48 c1 e0 04          	shl    $0x4,%rax
+ 5d835f8:	48 8d 04 40          	lea    (%rax,%rax,2),%rax
+ 5d835fc:	48 89 84 24 b8 01 00 	mov    %rax,0x1b8(%rsp)
+ 5d83603:	00 
+ 5d83604:	41 b8 08 00 00 00    	mov    $0x8,%r8d
+ 5d8360a:	48 85 c9             	test   %rcx,%rcx
+ 5d8360d:	0f 85 b1 11 00 00    	jne    5d847c4 <rustc_middle::hir::map::crate_hash+0x1884>
+ 5d83613:	48 bf 73 65 74 79 62 	movabs $0x7465646279746573,%rdi
+ 5d8361a:	64 65 74 
+ 5d8361d:	49 b9 75 65 73 70 65 	movabs $0x736f6d6570736575,%r9
+ 5d83624:	6d 6f 73 
+ 5d83627:	49 ba 61 72 65 6e 65 	movabs $0x6c7967656e657261,%r10
+ 5d8362e:	67 79 6c 
+ 5d83631:	49 bb 83 6f 64 6e 61 	movabs $0x646f72616e646f83,%r11
+ 5d83638:	72 6f 64 
+ 5d8363b:	48 89 8c 24 30 03 00 	mov    %rcx,0x330(%rsp)
+ 5d83642:	00 
+ 5d83643:	4c 89 84 24 a8 00 00 	mov    %r8,0xa8(%rsp)
+ 5d8364a:	00 
+ 5d8364b:	4c 89 84 24 38 03 00 	mov    %r8,0x338(%rsp)
+ 5d83652:	00 
+ 5d83653:	48 89 8c 24 70 01 00 	mov    %rcx,0x170(%rsp)
+ 5d8365a:	00 
+ 5d8365b:	48 89 8c 24 40 03 00 	mov    %rcx,0x340(%rsp)
+ 5d83662:	00 
+ 5d83663:	4c 8b 44 24 08       	mov    0x8(%rsp),%r8
+ 5d83668:	49 8b 80 e8 f8 01 00 	mov    0x1f8e8(%r8),%rax
+ 5d8366f:	49 81 c0 d0 f9 01 00 	add    $0x1f9d0,%r8
+ 5d83676:	8a 88 44 0f 00 00    	mov    0xf44(%rax),%cl
+ 5d8367c:	48 8b 80 88 17 00 00 	mov    0x1788(%rax),%rax
+ 5d83683:	48 83 c0 10          	add    $0x10,%rax
+ 5d83687:	31 d2                	xor    %edx,%edx
+ 5d83689:	48 8d b4 24 68 02 00 	lea    0x268(%rsp),%rsi
+ 5d83690:	00 
+ 5d83691:	48 89 56 f8          	mov    %rdx,-0x8(%rsi)
+ 5d83695:	48 89 06             	mov    %rax,(%rsi)
+ 5d83698:	4c 89 46 18          	mov    %r8,0x18(%rsi)
+ 5d8369c:	88 4e 20             	mov    %cl,0x20(%rsi)
+ 5d8369f:	80 f1 01             	xor    $0x1,%cl
+ 5d836a2:	88 4e 21             	mov    %cl,0x21(%rsi)
+ 5d836a5:	48 8d 84 24 10 01 00 	lea    0x110(%rsp),%rax
+ 5d836ac:	00 
+ 5d836ad:	48 89 50 b0          	mov    %rdx,-0x50(%rax)
+ 5d836b1:	48 89 50 f8          	mov    %rdx,-0x8(%rax)
+ 5d836b5:	4c 89 08             	mov    %r9,(%rax)
+ 5d836b8:	4c 89 50 08          	mov    %r10,0x8(%rax)
+ 5d836bc:	4c 89 58 10          	mov    %r11,0x10(%rax)
+ 5d836c0:	48 89 78 18          	mov    %rdi,0x18(%rax)
+ 5d836c4:	48 89 50 20          	mov    %rdx,0x20(%rax)
+ 5d836c8:	48 8b 4c 24 30       	mov    0x30(%rsp),%rcx
+ 5d836cd:	44 0f b6 b9 94 00 00 	movzbl 0x94(%rcx),%r15d
+ 5d836d4:	00 
+ 5d836d5:	41 83 f7 01          	xor    $0x1,%r15d
+ 5d836d9:	41 f7 df             	neg    %r15d
+ 5d836dc:	4c 8b 69 10          	mov    0x10(%rcx),%r13
+ 5d836e0:	48 8b 41 18          	mov    0x18(%rcx),%rax
+ 5d836e4:	48 8d 04 85 00 00 00 	lea    0x0(,%rax,4),%rax
+ 5d836eb:	00 
+ 5d836ec:	4c 01 e8             	add    %r13,%rax
+ 5d836ef:	48 89 44 24 08       	mov    %rax,0x8(%rsp)
+ 5d836f4:	48 8b 51 20          	mov    0x20(%rcx),%rdx
+ 5d836f8:	48 8b 41 28          	mov    0x28(%rcx),%rax
+ 5d836fc:	48 89 54 24 40       	mov    %rdx,0x40(%rsp)
+ 5d83701:	48 8d 04 82          	lea    (%rdx,%rax,4),%rax
+ 5d83705:	48 89 84 24 a0 02 00 	mov    %rax,0x2a0(%rsp)
+ 5d8370c:	00 
+ 5d8370d:	48 8b 51 30          	mov    0x30(%rcx),%rdx
+ 5d83711:	48 8b 41 38          	mov    0x38(%rcx),%rax
+ 5d83715:	48 89 54 24 10       	mov    %rdx,0x10(%rsp)
+ 5d8371a:	48 8d 04 82          	lea    (%rdx,%rax,4),%rax
+ 5d8371e:	48 89 84 24 b8 00 00 	mov    %rax,0xb8(%rsp)
+ 5d83725:	00 
+ 5d83726:	48 8b 51 40          	mov    0x40(%rcx),%rdx
+ 5d8372a:	48 8b 41 48          	mov    0x48(%rcx),%rax
+ 5d8372e:	48 89 94 24 98 01 00 	mov    %rdx,0x198(%rsp)
+ 5d83735:	00 
+ 5d83736:	48 8d 04 82          	lea    (%rdx,%rax,4),%rax
+ 5d8373a:	48 89 84 24 a8 02 00 	mov    %rax,0x2a8(%rsp)
+ 5d83741:	00 
+ 5d83742:	48 8d 05 b7 37 88 ff 	lea    -0x77c849(%rip),%rax        # 5606f00 <anon.ddc575f98a5aa4a0f399a20aceccc996.548.llvm.6906987939235581982+0x168>
+ 5d83749:	48 89 84 24 c0 01 00 	mov    %rax,0x1c0(%rsp)
+ 5d83750:	00 
+ 5d83751:	e9 75 01 00 00       	jmp    5d838cb <rustc_middle::hir::map::crate_hash+0x98b>
+ 5d83756:	48 8b 54 24 40       	mov    0x40(%rsp),%rdx
+ 5d8375b:	48 8b 74 24 10       	mov    0x10(%rsp),%rsi
+ 5d83760:	4c 89 e8             	mov    %r13,%rax
+ 5d83763:	48 8b 8c 24 98 01 00 	mov    0x198(%rsp),%rcx
+ 5d8376a:	00 
+ 5d8376b:	48 3b 8c 24 a8 02 00 	cmp    0x2a8(%rsp),%rcx
+ 5d83772:	00 
+ 5d83773:	0f 84 2c 02 00 00    	je     5d839a5 <rustc_middle::hir::map::crate_hash+0xa65>
+ 5d83779:	49 89 cd             	mov    %rcx,%r13
+ 5d8377c:	48 8d 79 04          	lea    0x4(%rcx),%rdi
+ 5d83780:	b9 fb ff ff ff       	mov    $0xfffffffb,%ecx
+ 5d83785:	48 89 bc 24 98 01 00 	mov    %rdi,0x198(%rsp)
+ 5d8378c:	00 
+ 5d8378d:	eb 4c                	jmp    5d837db <rustc_middle::hir::map::crate_hash+0x89b>
+ 5d8378f:	48 0f bd c8          	bsr    %rax,%rcx
+ 5d83793:	48 83 f1 3f          	xor    $0x3f,%rcx
+ 5d83797:	48 bf 00 00 00 00 00 	movabs $0x8000000000000000,%rdi
+ 5d8379e:	00 00 80 
+ 5d837a1:	48 d3 ef             	shr    %cl,%rdi
+ 5d837a4:	be 34 00 00 00       	mov    $0x34,%esi
+ 5d837a9:	48 29 ce             	sub    %rcx,%rsi
+ 5d837ac:	48 89 c2             	mov    %rax,%rdx
+ 5d837af:	48 29 fa             	sub    %rdi,%rdx
+ 5d837b2:	eb 4c                	jmp    5d83800 <rustc_middle::hir::map::crate_hash+0x8c0>
+ 5d837b4:	48 8b 54 24 40       	mov    0x40(%rsp),%rdx
+ 5d837b9:	4c 89 e8             	mov    %r13,%rax
+ 5d837bc:	31 f6                	xor    %esi,%esi
+ 5d837be:	b9 fc ff ff ff       	mov    $0xfffffffc,%ecx
+ 5d837c3:	4c 8b 6c 24 10       	mov    0x10(%rsp),%r13
+ 5d837c8:	4c 3b ac 24 b8 00 00 	cmp    0xb8(%rsp),%r13
+ 5d837cf:	00 
+ 5d837d0:	40 0f 95 c6          	setne  %sil
+ 5d837d4:	49 8d 74 b5 00       	lea    0x0(%r13,%rsi,4),%rsi
+ 5d837d9:	74 88                	je     5d83763 <rustc_middle::hir::map::crate_hash+0x823>
+ 5d837db:	45 8b 7d 00          	mov    0x0(%r13),%r15d
+ 5d837df:	49 89 c5             	mov    %rax,%r13
+ 5d837e2:	48 89 74 24 10       	mov    %rsi,0x10(%rsp)
+ 5d837e7:	48 89 54 24 40       	mov    %rdx,0x40(%rsp)
+ 5d837ec:	44 89 f8             	mov    %r15d,%eax
+ 5d837ef:	41 81 ff 00 10 00 00 	cmp    $0x1000,%r15d
+ 5d837f6:	41 89 cf             	mov    %ecx,%r15d
+ 5d837f9:	73 94                	jae    5d8378f <rustc_middle::hir::map::crate_hash+0x84f>
+ 5d837fb:	48 89 c2             	mov    %rax,%rdx
+ 5d837fe:	31 f6                	xor    %esi,%esi
+ 5d83800:	4c 8b 74 24 58       	mov    0x58(%rsp),%r14
+ 5d83805:	49 8b 8c f6 10 21 00 	mov    0x2110(%r14,%rsi,8),%rcx
+ 5d8380c:	00 
+ 5d8380d:	48 85 c9             	test   %rcx,%rcx
+ 5d83810:	0f 84 8a 11 00 00    	je     5d849a0 <rustc_middle::hir::map::crate_hash+0x1a60>
+ 5d83816:	48 8d 14 92          	lea    (%rdx,%rdx,4),%rdx
+ 5d8381a:	8b 5c 91 10          	mov    0x10(%rcx,%rdx,4),%ebx
+ 5d8381e:	83 fb 02             	cmp    $0x2,%ebx
+ 5d83821:	0f 82 79 11 00 00    	jb     5d849a0 <rustc_middle::hir::map::crate_hash+0x1a60>
+ 5d83827:	83 c3 fe             	add    $0xfffffffe,%ebx
+ 5d8382a:	81 fb 01 ff ff ff    	cmp    $0xffffff01,%ebx
+ 5d83830:	0f 83 c5 11 00 00    	jae    5d849fb <rustc_middle::hir::map::crate_hash+0x1abb>
+ 5d83836:	48 8d 04 91          	lea    (%rcx,%rdx,4),%rax
+ 5d8383a:	8b 08                	mov    (%rax),%ecx
+ 5d8383c:	89 4c 24 18          	mov    %ecx,0x18(%rsp)
+ 5d83840:	48 8b 68 08          	mov    0x8(%rax),%rbp
+ 5d83844:	41 0f b7 86 38 f4 01 	movzwl 0x1f438(%r14),%eax
+ 5d8384b:	00 
+ 5d8384c:	a9 04 04 00 00       	test   $0x404,%eax
+ 5d83851:	0f 85 75 11 00 00    	jne    5d849cc <rustc_middle::hir::map::crate_hash+0x1a8c>
+ 5d83857:	4d 8b a6 f8 f8 01 00 	mov    0x1f8f8(%r14),%r12
+ 5d8385e:	4d 85 e4             	test   %r12,%r12
+ 5d83861:	0f 85 d6 00 00 00    	jne    5d8393d <rustc_middle::hir::map::crate_hash+0x9fd>
+ 5d83867:	8b 44 24 18          	mov    0x18(%rsp),%eax
+ 5d8386b:	a8 01                	test   $0x1,%al
+ 5d8386d:	75 5c                	jne    5d838cb <rustc_middle::hir::map::crate_hash+0x98b>
+ 5d8386f:	48 83 bd 88 00 00 00 	cmpq   $0x1,0x88(%rbp)
+ 5d83876:	01 
+ 5d83877:	0f 85 63 14 00 00    	jne    5d84ce0 <rustc_middle::hir::map::crate_hash+0x1da0>
+ 5d8387d:	48 8b b5 90 00 00 00 	mov    0x90(%rbp),%rsi
+ 5d83884:	48 8b 9d 98 00 00 00 	mov    0x98(%rbp),%rbx
+ 5d8388b:	48 8b 8c 24 c0 00 00 	mov    0xc0(%rsp),%rcx
+ 5d83892:	00 
+ 5d83893:	48 8d 41 08          	lea    0x8(%rcx),%rax
+ 5d83897:	48 83 f8 40          	cmp    $0x40,%rax
+ 5d8389b:	0f 83 3f 11 00 00    	jae    5d849e0 <rustc_middle::hir::map::crate_hash+0x1aa0>
+ 5d838a1:	48 89 b4 0c c8 00 00 	mov    %rsi,0xc8(%rsp,%rcx,1)
+ 5d838a8:	00 
+ 5d838a9:	48 89 84 24 c0 00 00 	mov    %rax,0xc0(%rsp)
+ 5d838b0:	00 
+ 5d838b1:	48 8d 48 08          	lea    0x8(%rax),%rcx
+ 5d838b5:	48 83 f9 40          	cmp    $0x40,%rcx
+ 5d838b9:	73 6f                	jae    5d8392a <rustc_middle::hir::map::crate_hash+0x9ea>
+ 5d838bb:	48 89 9c 04 c8 00 00 	mov    %rbx,0xc8(%rsp,%rax,1)
+ 5d838c2:	00 
+ 5d838c3:	48 89 8c 24 c0 00 00 	mov    %rcx,0xc0(%rsp)
+ 5d838ca:	00 
+ 5d838cb:	41 83 ff fc          	cmp    $0xfffffffc,%r15d
+ 5d838cf:	0f 84 df fe ff ff    	je     5d837b4 <rustc_middle::hir::map::crate_hash+0x874>
+ 5d838d5:	41 83 ff fb          	cmp    $0xfffffffb,%r15d
+ 5d838d9:	0f 84 77 fe ff ff    	je     5d83756 <rustc_middle::hir::map::crate_hash+0x816>
+ 5d838df:	41 83 ff fd          	cmp    $0xfffffffd,%r15d
+ 5d838e3:	0f 84 84 00 00 00    	je     5d8396d <rustc_middle::hir::map::crate_hash+0xa2d>
+ 5d838e9:	0f 86 fa ec 50 01    	jbe    72925e9 <rustc_middle::hir::map::crate_hash+0x1a9>
+ 5d838ef:	b9 fe ff ff ff       	mov    $0xfffffffe,%ecx
+ 5d838f4:	41 83 ff fe          	cmp    $0xfffffffe,%r15d
+ 5d838f8:	0f 82 ee fe ff ff    	jb     5d837ec <rustc_middle::hir::map::crate_hash+0x8ac>
+ 5d838fe:	4c 3b 6c 24 08       	cmp    0x8(%rsp),%r13
+ 5d83903:	0f 84 95 00 00 00    	je     5d8399e <rustc_middle::hir::map::crate_hash+0xa5e>
+ 5d83909:	b8 04 00 00 00       	mov    $0x4,%eax
+ 5d8390e:	48 8b 7c 24 40       	mov    0x40(%rsp),%rdi
+ 5d83913:	4c 01 e8             	add    %r13,%rax
+ 5d83916:	4c 3b 6c 24 08       	cmp    0x8(%rsp),%r13
+ 5d8391b:	74 58                	je     5d83975 <rustc_middle::hir::map::crate_hash+0xa35>
+ 5d8391d:	48 8b 74 24 10       	mov    0x10(%rsp),%rsi
+ 5d83922:	48 89 fa             	mov    %rdi,%rdx
+ 5d83925:	e9 b1 fe ff ff       	jmp    5d837db <rustc_middle::hir::map::crate_hash+0x89b>
+ 5d8392a:	48 8d bc 24 c0 00 00 	lea    0xc0(%rsp),%rdi
+ 5d83931:	00 
+ 5d83932:	48 89 de             	mov    %rbx,%rsi
+ 5d83935:	ff 15 bd b2 97 ff    	call   *-0x684d43(%rip)        # 56febf8 <<rustc_stable_hash::sip128::SipHasher128>::short_write_process_buffer::<8>@@Base-0x301b48>
+ 5d8393b:	eb 8e                	jmp    5d838cb <rustc_middle::hir::map::crate_hash+0x98b>
+ 5d8393d:	48 8b 05 7c b2 97 ff 	mov    -0x684d84(%rip),%rax        # 56febc0 <rustc_thread_pool::tlv::TLV::{K#0}::{closure#1}::__RUST_STD_INTERNAL_VAL@@Base+0x56fb7b0>
+ 5d83944:	64 48 8b 00          	mov    %fs:(%rax),%rax
+ 5d83948:	48 85 c0             	test   %rax,%rax
+ 5d8394b:	0f 84 16 ff ff ff    	je     5d83867 <rustc_middle::hir::map::crate_hash+0x927>
+ 5d83951:	48 8b 08             	mov    (%rax),%rcx
+ 5d83954:	48 85 c9             	test   %rcx,%rcx
+ 5d83957:	0f 84 b0 29 7c 01    	je     754630d <rustc_middle::hir::map::crate_hash+0x2cd>
+ 5d8395d:	ff c9                	dec    %ecx
+ 5d8395f:	83 f9 02             	cmp    $0x2,%ecx
+ 5d83962:	0f 82 ff fe ff ff    	jb     5d83867 <rustc_middle::hir::map::crate_hash+0x927>
+ 5d83968:	e9 07 12 00 00       	jmp    5d84b74 <rustc_middle::hir::map::crate_hash+0x1c34>
+ 5d8396d:	4c 89 e8             	mov    %r13,%rax
+ 5d83970:	48 8b 7c 24 40       	mov    0x40(%rsp),%rdi
+ 5d83975:	31 d2                	xor    %edx,%edx
+ 5d83977:	b9 fd ff ff ff       	mov    $0xfffffffd,%ecx
+ 5d8397c:	48 3b bc 24 a0 02 00 	cmp    0x2a0(%rsp),%rdi
+ 5d83983:	00 
+ 5d83984:	0f 95 c2             	setne  %dl
+ 5d83987:	48 8d 14 97          	lea    (%rdi,%rdx,4),%rdx
+ 5d8398b:	0f 84 2b fe ff ff    	je     5d837bc <rustc_middle::hir::map::crate_hash+0x87c>
+ 5d83991:	49 89 fd             	mov    %rdi,%r13
+ 5d83994:	48 8b 74 24 10       	mov    0x10(%rsp),%rsi
+ 5d83999:	e9 3d fe ff ff       	jmp    5d837db <rustc_middle::hir::map::crate_hash+0x89b>
+ 5d8399e:	31 c0                	xor    %eax,%eax
+ 5d839a0:	e9 69 ff ff ff       	jmp    5d8390e <rustc_middle::hir::map::crate_hash+0x9ce>
+ 5d839a5:	48 8b 84 24 c0 00 00 	mov    0xc0(%rsp),%rax
+ 5d839ac:	00 
+ 5d839ad:	48 8d 48 08          	lea    0x8(%rax),%rcx
+ 5d839b1:	48 83 f9 40          	cmp    $0x40,%rcx
+ 5d839b5:	0f 83 04 12 00 00    	jae    5d84bbf <rustc_middle::hir::map::crate_hash+0x1c7f>
+ 5d839bb:	48 8b 9c 24 b0 00 00 	mov    0xb0(%rsp),%rbx
+ 5d839c2:	00 
+ 5d839c3:	48 89 9c 04 c8 00 00 	mov    %rbx,0xc8(%rsp,%rax,1)
+ 5d839ca:	00 
+ 5d839cb:	48 89 8c 24 c0 00 00 	mov    %rcx,0xc0(%rsp)
+ 5d839d2:	00 
+ 5d839d3:	4c 8b bc 24 90 01 00 	mov    0x190(%rsp),%r15
+ 5d839da:	00 
+ 5d839db:	4c 8b ac 24 58 02 00 	mov    0x258(%rsp),%r13
+ 5d839e2:	00 
+ 5d839e3:	48 85 db             	test   %rbx,%rbx
+ 5d839e6:	0f 84 b0 00 00 00    	je     5d83a9c <rustc_middle::hir::map::crate_hash+0xb5c>
+ 5d839ec:	4c 8b b4 24 a0 00 00 	mov    0xa0(%rsp),%r14
+ 5d839f3:	00 
+ 5d839f4:	4d 01 f7             	add    %r14,%r15
+ 5d839f7:	48 8d 9c 24 c0 00 00 	lea    0xc0(%rsp),%rbx
+ 5d839fe:	00 
+ 5d839ff:	eb 68                	jmp    5d83a69 <rustc_middle::hir::map::crate_hash+0xb29>
+ 5d83a01:	48 89 df             	mov    %rbx,%rdi
+ 5d83a04:	ff 15 ee b1 97 ff    	call   *-0x684e12(%rip)        # 56febf8 <<rustc_stable_hash::sip128::SipHasher128>::short_write_process_buffer::<8>@@Base-0x301b48>
+ 5d83a0a:	48 8b 8c 24 c0 00 00 	mov    0xc0(%rsp),%rcx
+ 5d83a11:	00 
+ 5d83a12:	eb 2e                	jmp    5d83a42 <rustc_middle::hir::map::crate_hash+0xb02>
+ 5d83a14:	48 89 b4 0c c8 00 00 	mov    %rsi,0xc8(%rsp,%rcx,1)
+ 5d83a1b:	00 
+ 5d83a1c:	48 89 84 24 c0 00 00 	mov    %rax,0xc0(%rsp)
+ 5d83a23:	00 
+ 5d83a24:	49 8b 76 08          	mov    0x8(%r14),%rsi
+ 5d83a28:	48 8d 48 08          	lea    0x8(%rax),%rcx
+ 5d83a2c:	48 83 f9 40          	cmp    $0x40,%rcx
+ 5d83a30:	73 cf                	jae    5d83a01 <rustc_middle::hir::map::crate_hash+0xac1>
+ 5d83a32:	48 89 b4 04 c8 00 00 	mov    %rsi,0xc8(%rsp,%rax,1)
+ 5d83a39:	00 
+ 5d83a3a:	48 89 8c 24 c0 00 00 	mov    %rcx,0xc0(%rsp)
+ 5d83a41:	00 
+ 5d83a42:	49 8b 76 10          	mov    0x10(%r14),%rsi
+ 5d83a46:	48 8d 41 08          	lea    0x8(%rcx),%rax
+ 5d83a4a:	48 83 f8 40          	cmp    $0x40,%rax
+ 5d83a4e:	73 41                	jae    5d83a91 <rustc_middle::hir::map::crate_hash+0xb51>
+ 5d83a50:	48 89 b4 0c c8 00 00 	mov    %rsi,0xc8(%rsp,%rcx,1)
+ 5d83a57:	00 
+ 5d83a58:	48 89 84 24 c0 00 00 	mov    %rax,0xc0(%rsp)
+ 5d83a5f:	00 
+ 5d83a60:	49 83 c6 18          	add    $0x18,%r14
+ 5d83a64:	4d 39 fe             	cmp    %r15,%r14
+ 5d83a67:	74 33                	je     5d83a9c <rustc_middle::hir::map::crate_hash+0xb5c>
+ 5d83a69:	49 8b 36             	mov    (%r14),%rsi
+ 5d83a6c:	48 8b 8c 24 c0 00 00 	mov    0xc0(%rsp),%rcx
+ 5d83a73:	00 
+ 5d83a74:	48 8d 41 08          	lea    0x8(%rcx),%rax
+ 5d83a78:	48 83 f8 40          	cmp    $0x40,%rax
+ 5d83a7c:	72 96                	jb     5d83a14 <rustc_middle::hir::map::crate_hash+0xad4>
+ 5d83a7e:	48 89 df             	mov    %rbx,%rdi
+ 5d83a81:	ff 15 71 b1 97 ff    	call   *-0x684e8f(%rip)        # 56febf8 <<rustc_stable_hash::sip128::SipHasher128>::short_write_process_buffer::<8>@@Base-0x301b48>
+ 5d83a87:	48 8b 84 24 c0 00 00 	mov    0xc0(%rsp),%rax
+ 5d83a8e:	00 
+ 5d83a8f:	eb 93                	jmp    5d83a24 <rustc_middle::hir::map::crate_hash+0xae4>
+ 5d83a91:	48 89 df             	mov    %rbx,%rdi
+ 5d83a94:	ff 15 5e b1 97 ff    	call   *-0x684ea2(%rip)        # 56febf8 <<rustc_stable_hash::sip128::SipHasher128>::short_write_process_buffer::<8>@@Base-0x301b48>
+ 5d83a9a:	eb c4                	jmp    5d83a60 <rustc_middle::hir::map::crate_hash+0xb20>
+ 5d83a9c:	48 8b 84 24 c0 00 00 	mov    0xc0(%rsp),%rax
+ 5d83aa3:	00 
+ 5d83aa4:	48 8d 48 08          	lea    0x8(%rax),%rcx
+ 5d83aa8:	48 83 f9 40          	cmp    $0x40,%rcx
+ 5d83aac:	0f 83 b7 09 00 00    	jae    5d84469 <rustc_middle::hir::map::crate_hash+0x1529>
+ 5d83ab2:	4c 89 ac 04 c8 00 00 	mov    %r13,0xc8(%rsp,%rax,1)
+ 5d83ab9:	00 
+ 5d83aba:	48 89 8c 24 c0 00 00 	mov    %rcx,0xc0(%rsp)
+ 5d83ac1:	00 
+ 5d83ac2:	4d 85 ed             	test   %r13,%r13
+ 5d83ac5:	4c 8b 64 24 28       	mov    0x28(%rsp),%r12
+ 5d83aca:	0f 84 80 00 00 00    	je     5d83b50 <rustc_middle::hir::map::crate_hash+0xc10>
+ 5d83ad0:	49 c1 e5 04          	shl    $0x4,%r13
+ 5d83ad4:	45 31 ff             	xor    %r15d,%r15d
+ 5d83ad7:	48 8d 9c 24 c0 00 00 	lea    0xc0(%rsp),%rbx
+ 5d83ade:	00 
+ 5d83adf:	eb 19                	jmp    5d83afa <rustc_middle::hir::map::crate_hash+0xbba>
+ 5d83ae1:	4c 89 b4 04 c8 00 00 	mov    %r14,0xc8(%rsp,%rax,1)
+ 5d83ae8:	00 
+ 5d83ae9:	48 89 8c 24 c0 00 00 	mov    %rcx,0xc0(%rsp)
+ 5d83af0:	00 
+ 5d83af1:	49 83 c7 10          	add    $0x10,%r15
+ 5d83af5:	4d 39 fd             	cmp    %r15,%r13
+ 5d83af8:	74 56                	je     5d83b50 <rustc_middle::hir::map::crate_hash+0xc10>
+ 5d83afa:	4b 8b 34 3c          	mov    (%r12,%r15,1),%rsi
+ 5d83afe:	4f 8b 74 3c 08       	mov    0x8(%r12,%r15,1),%r14
+ 5d83b03:	48 8b 8c 24 c0 00 00 	mov    0xc0(%rsp),%rcx
+ 5d83b0a:	00 
+ 5d83b0b:	48 8d 41 08          	lea    0x8(%rcx),%rax
+ 5d83b0f:	48 83 f8 40          	cmp    $0x40,%rax
+ 5d83b13:	73 28                	jae    5d83b3d <rustc_middle::hir::map::crate_hash+0xbfd>
+ 5d83b15:	48 89 b4 0c c8 00 00 	mov    %rsi,0xc8(%rsp,%rcx,1)
+ 5d83b1c:	00 
+ 5d83b1d:	48 89 84 24 c0 00 00 	mov    %rax,0xc0(%rsp)
+ 5d83b24:	00 
+ 5d83b25:	48 8d 48 08          	lea    0x8(%rax),%rcx
+ 5d83b29:	48 83 f9 40          	cmp    $0x40,%rcx
+ 5d83b2d:	72 b2                	jb     5d83ae1 <rustc_middle::hir::map::crate_hash+0xba1>
+ 5d83b2f:	48 89 df             	mov    %rbx,%rdi
+ 5d83b32:	4c 89 f6             	mov    %r14,%rsi
+ 5d83b35:	ff 15 bd b0 97 ff    	call   *-0x684f43(%rip)        # 56febf8 <<rustc_stable_hash::sip128::SipHasher128>::short_write_process_buffer::<8>@@Base-0x301b48>
+ 5d83b3b:	eb b4                	jmp    5d83af1 <rustc_middle::hir::map::crate_hash+0xbb1>
+ 5d83b3d:	48 89 df             	mov    %rbx,%rdi
+ 5d83b40:	ff 15 b2 b0 97 ff    	call   *-0x684f4e(%rip)        # 56febf8 <<rustc_stable_hash::sip128::SipHasher128>::short_write_process_buffer::<8>@@Base-0x301b48>
+ 5d83b46:	48 8b 84 24 c0 00 00 	mov    0xc0(%rsp),%rax
+ 5d83b4d:	00 
+ 5d83b4e:	eb d5                	jmp    5d83b25 <rustc_middle::hir::map::crate_hash+0xbe5>
+ 5d83b50:	48 8b 84 24 c0 00 00 	mov    0xc0(%rsp),%rax
+ 5d83b57:	00 
+ 5d83b58:	48 8d 48 08          	lea    0x8(%rax),%rcx
+ 5d83b5c:	48 83 f9 40          	cmp    $0x40,%rcx
+ 5d83b60:	0f 83 45 09 00 00    	jae    5d844ab <rustc_middle::hir::map::crate_hash+0x156b>
+ 5d83b66:	48 8b 94 24 70 01 00 	mov    0x170(%rsp),%rdx
+ 5d83b6d:	00 
+ 5d83b6e:	48 89 94 04 c8 00 00 	mov    %rdx,0xc8(%rsp,%rax,1)
+ 5d83b75:	00 
+ 5d83b76:	48 89 8c 24 c0 00 00 	mov    %rcx,0xc0(%rsp)
+ 5d83b7d:	00 
+ 5d83b7e:	48 83 bc 24 70 01 00 	cmpq   $0x0,0x170(%rsp)
+ 5d83b85:	00 00 
+ 5d83b87:	0f 85 50 2e 7c 01    	jne    75469dd <rustc_middle::hir::map::crate_hash+0x99d>
+ 5d83b8d:	4c 8b 74 24 58       	mov    0x58(%rsp),%r14
+ 5d83b92:	49 8b 86 e8 f8 01 00 	mov    0x1f8e8(%r14),%rax
+ 5d83b99:	48 83 b8 80 13 00 00 	cmpq   $0xffffffffffffffff,0x1380(%rax)
+ 5d83ba0:	ff 
+ 5d83ba1:	0f 85 15 eb 50 01    	jne    72926bc <rustc_middle::hir::map::crate_hash+0x27c>
+ 5d83ba7:	48 8b 44 24 58       	mov    0x58(%rsp),%rax
+ 5d83bac:	bf 50 0a 00 00       	mov    $0xa50,%edi
+ 5d83bb1:	48 03 b8 e8 f8 01 00 	add    0x1f8e8(%rax),%rdi
+ 5d83bb8:	be 01 00 00 00       	mov    $0x1,%esi
+ 5d83bbd:	ff 15 65 f6 97 ff    	call   *-0x68099b(%rip)        # 5703228 <<rustc_session::options::Options>::dep_tracking_hash@@Base-0x140d318>
+ 5d83bc3:	48 8b 94 24 c0 00 00 	mov    0xc0(%rsp),%rdx
+ 5d83bca:	00 
+ 5d83bcb:	48 8d 4a 08          	lea    0x8(%rdx),%rcx
+ 5d83bcf:	48 83 f9 40          	cmp    $0x40,%rcx
+ 5d83bd3:	0f 83 ed 08 00 00    	jae    5d844c6 <rustc_middle::hir::map::crate_hash+0x1586>
+ 5d83bd9:	48 89 84 14 c8 00 00 	mov    %rax,0xc8(%rsp,%rdx,1)
+ 5d83be0:	00 
+ 5d83be1:	48 89 8c 24 c0 00 00 	mov    %rcx,0xc0(%rsp)
+ 5d83be8:	00 
+ 5d83be9:	48 8b 44 24 58       	mov    0x58(%rsp),%rax
+ 5d83bee:	48 8b b0 c0 f9 01 00 	mov    0x1f9c0(%rax),%rsi
+ 5d83bf5:	48 8d 41 08          	lea    0x8(%rcx),%rax
+ 5d83bf9:	48 83 f8 40          	cmp    $0x40,%rax
+ 5d83bfd:	0f 83 4b 08 00 00    	jae    5d8444e <rustc_middle::hir::map::crate_hash+0x150e>
+ 5d83c03:	48 89 b4 0c c8 00 00 	mov    %rsi,0xc8(%rsp,%rcx,1)
+ 5d83c0a:	00 
+ 5d83c0b:	48 89 84 24 c0 00 00 	mov    %rax,0xc0(%rsp)
+ 5d83c12:	00 
+ 5d83c13:	48 8b 8c 24 50 02 00 	mov    0x250(%rsp),%rcx
+ 5d83c1a:	00 
+ 5d83c1b:	4c 8b 69 08          	mov    0x8(%rcx),%r13
+ 5d83c1f:	48 8b 59 10          	mov    0x10(%rcx),%rbx
+ 5d83c23:	48 8d 48 08          	lea    0x8(%rax),%rcx
+ 5d83c27:	48 83 f9 40          	cmp    $0x40,%rcx
+ 5d83c2b:	0f 83 64 08 00 00    	jae    5d84495 <rustc_middle::hir::map::crate_hash+0x1555>
+ 5d83c31:	48 89 9c 04 c8 00 00 	mov    %rbx,0xc8(%rsp,%rax,1)
+ 5d83c38:	00 
+ 5d83c39:	48 89 8c 24 c0 00 00 	mov    %rcx,0xc0(%rsp)
+ 5d83c40:	00 
+ 5d83c41:	48 85 db             	test   %rbx,%rbx
+ 5d83c44:	0f 84 13 04 00 00    	je     5d8405d <rustc_middle::hir::map::crate_hash+0x111d>
+ 5d83c4a:	48 c1 e3 03          	shl    $0x3,%rbx
+ 5d83c4e:	31 ed                	xor    %ebp,%ebp
+ 5d83c50:	e9 d0 00 00 00       	jmp    5d83d25 <rustc_middle::hir::map::crate_hash+0xde5>
+ 5d83c55:	4d 8d b7 78 01 00 00 	lea    0x178(%r15),%r14
+ 5d83c5c:	49 8b 87 78 01 00 00 	mov    0x178(%r15),%rax
+ 5d83c63:	48 83 f8 ef          	cmp    $0xffffffffffffffef,%rax
+ 5d83c67:	0f 87 d4 11 00 00    	ja     5d84e41 <rustc_middle::hir::map::crate_hash+0x1f01>
+ 5d83c6d:	89 c1                	mov    %eax,%ecx
+ 5d83c6f:	83 e1 08             	and    $0x8,%ecx
+ 5d83c72:	0f 85 c9 11 00 00    	jne    5d84e41 <rustc_middle::hir::map::crate_hash+0x1f01>
+ 5d83c78:	48 8d 48 10          	lea    0x10(%rax),%rcx
+ 5d83c7c:	f0 49 0f b1 0e       	lock cmpxchg %rcx,(%r14)
+ 5d83c81:	0f 85 ba 11 00 00    	jne    5d84e41 <rustc_middle::hir::map::crate_hash+0x1f01>
+ 5d83c87:	49 8b b7 58 01 00 00 	mov    0x158(%r15),%rsi
+ 5d83c8e:	4c 39 e6             	cmp    %r12,%rsi
+ 5d83c91:	0f 86 f0 11 00 00    	jbe    5d84e87 <rustc_middle::hir::map::crate_hash+0x1f47>
+ 5d83c97:	49 8b 87 50 01 00 00 	mov    0x150(%r15),%rax
+ 5d83c9e:	4e 8b 24 e0          	mov    (%rax,%r12,8),%r12
+ 5d83ca2:	48 c7 c0 f0 ff ff ff 	mov    $0xfffffffffffffff0,%rax
+ 5d83ca9:	f0 49 0f c1 87 78 01 	lock xadd %rax,0x178(%r15)
+ 5d83cb0:	00 00 
+ 5d83cb2:	48 83 e0 f2          	and    $0xfffffffffffffff2,%rax
+ 5d83cb6:	48 83 f8 12          	cmp    $0x12,%rax
+ 5d83cba:	0f 85 9d 00 00 00    	jne    5d83d5d <rustc_middle::hir::map::crate_hash+0xe1d>
+ 5d83cc0:	e9 a6 11 00 00       	jmp    5d84e6b <rustc_middle::hir::map::crate_hash+0x1f2b>
+ 5d83cc5:	48 8d bc 24 c0 00 00 	lea    0xc0(%rsp),%rdi
+ 5d83ccc:	00 
+ 5d83ccd:	4c 89 e6             	mov    %r12,%rsi
+ 5d83cd0:	ff 15 22 af 97 ff    	call   *-0x6850de(%rip)        # 56febf8 <<rustc_stable_hash::sip128::SipHasher128>::short_write_process_buffer::<8>@@Base-0x301b48>
+ 5d83cd6:	eb 40                	jmp    5d83d18 <rustc_middle::hir::map::crate_hash+0xdd8>
+ 5d83cd8:	49 8b b7 58 01 00 00 	mov    0x158(%r15),%rsi
+ 5d83cdf:	44 89 e7             	mov    %r12d,%edi
+ 5d83ce2:	48 39 fe             	cmp    %rdi,%rsi
+ 5d83ce5:	0f 86 74 2f 7c 01    	jbe    7546c5f <rustc_middle::hir::map::crate_hash+0xc1f>
+ 5d83ceb:	49 8b 87 50 01 00 00 	mov    0x150(%r15),%rax
+ 5d83cf2:	4c 8b 24 f8          	mov    (%rax,%rdi,8),%r12
+ 5d83cf6:	48 8b 84 24 c0 00 00 	mov    0xc0(%rsp),%rax
+ 5d83cfd:	00 
+ 5d83cfe:	48 8d 48 08          	lea    0x8(%rax),%rcx
+ 5d83d02:	48 83 f9 40          	cmp    $0x40,%rcx
+ 5d83d06:	73 bd                	jae    5d83cc5 <rustc_middle::hir::map::crate_hash+0xd85>
+ 5d83d08:	4c 89 a4 04 c8 00 00 	mov    %r12,0xc8(%rsp,%rax,1)
+ 5d83d0f:	00 
+ 5d83d10:	48 89 8c 24 c0 00 00 	mov    %rcx,0xc0(%rsp)
+ 5d83d17:	00 
+ 5d83d18:	48 83 c5 08          	add    $0x8,%rbp
+ 5d83d1c:	48 39 eb             	cmp    %rbp,%rbx
+ 5d83d1f:	0f 84 38 03 00 00    	je     5d8405d <rustc_middle::hir::map::crate_hash+0x111d>
+ 5d83d25:	45 8b 64 2d 00       	mov    0x0(%r13,%rbp,1),%r12d
+ 5d83d2a:	4c 8b bc 24 80 02 00 	mov    0x280(%rsp),%r15
+ 5d83d31:	00 
+ 5d83d32:	41 0f b6 87 80 01 00 	movzbl 0x180(%r15),%eax
+ 5d83d39:	00 
+ 5d83d3a:	84 c0                	test   %al,%al
+ 5d83d3c:	0f 84 13 ff ff ff    	je     5d83c55 <rustc_middle::hir::map::crate_hash+0xd15>
+ 5d83d42:	49 8b b7 58 01 00 00 	mov    0x158(%r15),%rsi
+ 5d83d49:	4c 39 e6             	cmp    %r12,%rsi
+ 5d83d4c:	0f 86 05 2f 7c 01    	jbe    7546c57 <rustc_middle::hir::map::crate_hash+0xc17>
+ 5d83d52:	49 8b 87 50 01 00 00 	mov    0x150(%r15),%rax
+ 5d83d59:	4e 8b 24 e0          	mov    (%rax,%r12,8),%r12
+ 5d83d5d:	48 8b 8c 24 c0 00 00 	mov    0xc0(%rsp),%rcx
+ 5d83d64:	00 
+ 5d83d65:	48 8d 41 08          	lea    0x8(%rcx),%rax
+ 5d83d69:	48 83 f8 40          	cmp    $0x40,%rax
+ 5d83d6d:	0f 83 d0 00 00 00    	jae    5d83e43 <rustc_middle::hir::map::crate_hash+0xf03>
+ 5d83d73:	4c 89 a4 0c c8 00 00 	mov    %r12,0xc8(%rsp,%rcx,1)
+ 5d83d7a:	00 
+ 5d83d7b:	48 89 84 24 c0 00 00 	mov    %rax,0xc0(%rsp)
+ 5d83d82:	00 
+ 5d83d83:	45 8b 64 2d 04       	mov    0x4(%r13,%rbp,1),%r12d
+ 5d83d88:	31 f6                	xor    %esi,%esi
+ 5d83d8a:	41 83 fc ff          	cmp    $0xffffffff,%r12d
+ 5d83d8e:	0f 95 c1             	setne  %cl
+ 5d83d91:	48 8d 50 01          	lea    0x1(%rax),%rdx
+ 5d83d95:	48 83 fa 40          	cmp    $0x40,%rdx
+ 5d83d99:	0f 83 c2 00 00 00    	jae    5d83e61 <rustc_middle::hir::map::crate_hash+0xf21>
+ 5d83d9f:	88 8c 04 c8 00 00 00 	mov    %cl,0xc8(%rsp,%rax,1)
+ 5d83da6:	48 89 94 24 c0 00 00 	mov    %rdx,0xc0(%rsp)
+ 5d83dad:	00 
+ 5d83dae:	41 83 fc ff          	cmp    $0xffffffff,%r12d
+ 5d83db2:	0f 84 60 ff ff ff    	je     5d83d18 <rustc_middle::hir::map::crate_hash+0xdd8>
+ 5d83db8:	4c 8b bc 24 80 02 00 	mov    0x280(%rsp),%r15
+ 5d83dbf:	00 
+ 5d83dc0:	41 0f b6 87 80 01 00 	movzbl 0x180(%r15),%eax
+ 5d83dc7:	00 
+ 5d83dc8:	84 c0                	test   %al,%al
+ 5d83dca:	0f 85 08 ff ff ff    	jne    5d83cd8 <rustc_middle::hir::map::crate_hash+0xd98>
+ 5d83dd0:	4d 8d b7 78 01 00 00 	lea    0x178(%r15),%r14
+ 5d83dd7:	49 8b 87 78 01 00 00 	mov    0x178(%r15),%rax
+ 5d83dde:	48 83 f8 ef          	cmp    $0xffffffffffffffef,%rax
+ 5d83de2:	0f 87 6e 10 00 00    	ja     5d84e56 <rustc_middle::hir::map::crate_hash+0x1f16>
+ 5d83de8:	89 c1                	mov    %eax,%ecx
+ 5d83dea:	83 e1 08             	and    $0x8,%ecx
+ 5d83ded:	0f 85 63 10 00 00    	jne    5d84e56 <rustc_middle::hir::map::crate_hash+0x1f16>
+ 5d83df3:	48 8d 48 10          	lea    0x10(%rax),%rcx
+ 5d83df7:	f0 49 0f b1 0e       	lock cmpxchg %rcx,(%r14)
+ 5d83dfc:	0f 85 54 10 00 00    	jne    5d84e56 <rustc_middle::hir::map::crate_hash+0x1f16>
+ 5d83e02:	49 8b b7 58 01 00 00 	mov    0x158(%r15),%rsi
+ 5d83e09:	44 89 e7             	mov    %r12d,%edi
+ 5d83e0c:	48 39 fe             	cmp    %rdi,%rsi
+ 5d83e0f:	0f 86 87 10 00 00    	jbe    5d84e9c <rustc_middle::hir::map::crate_hash+0x1f5c>
+ 5d83e15:	49 8b 87 50 01 00 00 	mov    0x150(%r15),%rax
+ 5d83e1c:	4c 8b 24 f8          	mov    (%rax,%rdi,8),%r12
+ 5d83e20:	48 c7 c0 f0 ff ff ff 	mov    $0xfffffffffffffff0,%rax
+ 5d83e27:	f0 49 0f c1 87 78 01 	lock xadd %rax,0x178(%r15)
+ 5d83e2e:	00 00 
+ 5d83e30:	48 83 e0 f2          	and    $0xfffffffffffffff2,%rax
+ 5d83e34:	48 83 f8 12          	cmp    $0x12,%rax
+ 5d83e38:	0f 85 b8 fe ff ff    	jne    5d83cf6 <rustc_middle::hir::map::crate_hash+0xdb6>
+ 5d83e3e:	e9 36 10 00 00       	jmp    5d84e79 <rustc_middle::hir::map::crate_hash+0x1f39>
+ 5d83e43:	48 8d bc 24 c0 00 00 	lea    0xc0(%rsp),%rdi
+ 5d83e4a:	00 
+ 5d83e4b:	4c 89 e6             	mov    %r12,%rsi
+ 5d83e4e:	ff 15 a4 ad 97 ff    	call   *-0x68525c(%rip)        # 56febf8 <<rustc_stable_hash::sip128::SipHasher128>::short_write_process_buffer::<8>@@Base-0x301b48>
+ 5d83e54:	48 8b 84 24 c0 00 00 	mov    0xc0(%rsp),%rax
+ 5d83e5b:	00 
+ 5d83e5c:	e9 22 ff ff ff       	jmp    5d83d83 <rustc_middle::hir::map::crate_hash+0xe43>
+ 5d83e61:	40 88 ce             	mov    %cl,%sil
+ 5d83e64:	48 8d bc 24 c0 00 00 	lea    0xc0(%rsp),%rdi
+ 5d83e6b:	00 
+ 5d83e6c:	ff 15 96 ad 97 ff    	call   *-0x68526a(%rip)        # 56fec08 <<rustc_stable_hash::sip128::SipHasher128>::short_write_process_buffer::<1>@@Base-0x3043f8>
+ 5d83e72:	45 8b 64 2d 04       	mov    0x4(%r13,%rbp,1),%r12d
+ 5d83e77:	e9 32 ff ff ff       	jmp    5d83dae <rustc_middle::hir::map::crate_hash+0xe6e>
+ 5d83e7c:	f3 41 0f bc c7       	tzcnt  %r15d,%eax
+ 5d83e81:	c1 e0 04             	shl    $0x4,%eax
+ 5d83e84:	4c 8b 74 24 18       	mov    0x18(%rsp),%r14
+ 5d83e89:	49 29 c6             	sub    %rax,%r14
+ 5d83e8c:	31 c9                	xor    %ecx,%ecx
+ 5d83e8e:	48 89 8c 24 b0 02 00 	mov    %rcx,0x2b0(%rsp)
+ 5d83e95:	00 
+ 5d83e96:	48 89 8c 24 f8 02 00 	mov    %rcx,0x2f8(%rsp)
+ 5d83e9d:	00 
+ 5d83e9e:	48 b8 75 65 73 70 65 	movabs $0x736f6d6570736575,%rax
+ 5d83ea5:	6d 6f 73 
+ 5d83ea8:	48 89 84 24 00 03 00 	mov    %rax,0x300(%rsp)
+ 5d83eaf:	00 
+ 5d83eb0:	48 b8 61 72 65 6e 65 	movabs $0x6c7967656e657261,%rax
+ 5d83eb7:	67 79 6c 
+ 5d83eba:	48 89 84 24 08 03 00 	mov    %rax,0x308(%rsp)
+ 5d83ec1:	00 
+ 5d83ec2:	48 b8 83 6f 64 6e 61 	movabs $0x646f72616e646f83,%rax
+ 5d83ec9:	72 6f 64 
+ 5d83ecc:	48 89 84 24 10 03 00 	mov    %rax,0x310(%rsp)
+ 5d83ed3:	00 
+ 5d83ed4:	48 b8 73 65 74 79 62 	movabs $0x7465646279746573,%rax
+ 5d83edb:	64 65 74 
+ 5d83ede:	48 89 84 24 18 03 00 	mov    %rax,0x318(%rsp)
+ 5d83ee5:	00 
+ 5d83ee6:	48 89 8c 24 20 03 00 	mov    %rcx,0x320(%rsp)
+ 5d83eed:	00 
+ 5d83eee:	49 8b 76 f0          	mov    -0x10(%r14),%rsi
+ 5d83ef2:	48 89 fd             	mov    %rdi,%rbp
+ 5d83ef5:	49 89 d4             	mov    %rdx,%r12
+ 5d83ef8:	e8 21 16 02 00       	call   5da551e <<rustc_middle::ich::StableHashState as rustc_data_structures::stable_hash::StableHashCtxt>::stable_hash_span>
+ 5d83efd:	49 8b 76 f8          	mov    -0x8(%r14),%rsi
+ 5d83f01:	48 89 ef             	mov    %rbp,%rdi
+ 5d83f04:	4c 89 e2             	mov    %r12,%rdx
+ 5d83f07:	e8 12 16 02 00       	call   5da551e <<rustc_middle::ich::StableHashState as rustc_data_structures::stable_hash::StableHashCtxt>::stable_hash_span>
+ 5d83f0c:	45 8d 77 ff          	lea    -0x1(%r15),%r14d
+ 5d83f10:	45 21 fe             	and    %r15d,%r14d
+ 5d83f13:	48 ff cb             	dec    %rbx
+ 5d83f16:	b9 0f 00 00 00       	mov    $0xf,%ecx
+ 5d83f1b:	48 8d bc 24 d0 01 00 	lea    0x1d0(%rsp),%rdi
+ 5d83f22:	00 
+ 5d83f23:	4c 89 e6             	mov    %r12,%rsi
+ 5d83f26:	f3 48 a5             	rep movsq %ds:(%rsi),%es:(%rdi)
+ 5d83f29:	48 8b b4 24 d0 01 00 	mov    0x1d0(%rsp),%rsi
+ 5d83f30:	00 
+ 5d83f31:	4c 8b 84 24 40 02 00 	mov    0x240(%rsp),%r8
+ 5d83f38:	00 
+ 5d83f39:	48 8d 84 24 00 03 00 	lea    0x300(%rsp),%rax
+ 5d83f40:	00 
+ 5d83f41:	f3 0f 6f 00          	movdqu (%rax),%xmm0
+ 5d83f45:	0f 10 48 10          	movups 0x10(%rax),%xmm1
+ 5d83f49:	0f 29 4c 24 70       	movaps %xmm1,0x70(%rsp)
+ 5d83f4e:	66 0f 7f 44 24 60    	movdqa %xmm0,0x60(%rsp)
+ 5d83f54:	48 8d bc 24 a0 01 00 	lea    0x1a0(%rsp),%rdi
+ 5d83f5b:	00 
+ 5d83f5c:	48 8d 94 24 d8 01 00 	lea    0x1d8(%rsp),%rdx
+ 5d83f63:	00 
+ 5d83f64:	48 8d 4c 24 60       	lea    0x60(%rsp),%rcx
+ 5d83f69:	e8 a0 15 00 00       	call   5d8550e <<rustc_stable_hash::sip128::SipHasher128>::finish128_inner>
+ 5d83f6e:	4c 03 ac 24 a0 01 00 	add    0x1a0(%rsp),%r13
+ 5d83f75:	00 
+ 5d83f76:	4c 8b 64 24 40       	mov    0x40(%rsp),%r12
+ 5d83f7b:	4c 13 a4 24 a8 01 00 	adc    0x1a8(%rsp),%r12
+ 5d83f82:	00 
+ 5d83f83:	45 89 f7             	mov    %r14d,%r15d
+ 5d83f86:	48 85 db             	test   %rbx,%rbx
+ 5d83f89:	48 89 ef             	mov    %rbp,%rdi
+ 5d83f8c:	74 43                	je     5d83fd1 <rustc_middle::hir::map::crate_hash+0x1091>
+ 5d83f8e:	66 45 85 ff          	test   %r15w,%r15w
+ 5d83f92:	4c 89 64 24 40       	mov    %r12,0x40(%rsp)
+ 5d83f97:	48 8d 94 24 b0 02 00 	lea    0x2b0(%rsp),%rdx
+ 5d83f9e:	00 
+ 5d83f9f:	0f 85 d7 fe ff ff    	jne    5d83e7c <rustc_middle::hir::map::crate_hash+0xf3c>
+ 5d83fa5:	48 8b 44 24 10       	mov    0x10(%rsp),%rax
+ 5d83faa:	66 0f 6f 00          	movdqa (%rax),%xmm0
+ 5d83fae:	66 44 0f d7 f8       	pmovmskb %xmm0,%r15d
+ 5d83fb3:	48 81 44 24 18 00 ff 	addq   $0xffffffffffffff00,0x18(%rsp)
+ 5d83fba:	ff ff 
+ 5d83fbc:	48 83 c0 10          	add    $0x10,%rax
+ 5d83fc0:	48 89 44 24 10       	mov    %rax,0x10(%rsp)
+ 5d83fc5:	66 41 83 f7 ff       	xor    $0xffff,%r15w
+ 5d83fca:	74 d9                	je     5d83fa5 <rustc_middle::hir::map::crate_hash+0x1065>
+ 5d83fcc:	e9 ab fe ff ff       	jmp    5d83e7c <rustc_middle::hir::map::crate_hash+0xf3c>
+ 5d83fd1:	48 8b 8c 24 c0 00 00 	mov    0xc0(%rsp),%rcx
+ 5d83fd8:	00 
+ 5d83fd9:	48 8d 41 08          	lea    0x8(%rcx),%rax
+ 5d83fdd:	48 83 f8 40          	cmp    $0x40,%rax
+ 5d83fe1:	0f 83 7d 05 00 00    	jae    5d84564 <rustc_middle::hir::map::crate_hash+0x1624>
+ 5d83fe7:	4c 89 ac 0c c8 00 00 	mov    %r13,0xc8(%rsp,%rcx,1)
+ 5d83fee:	00 
+ 5d83fef:	48 89 84 24 c0 00 00 	mov    %rax,0xc0(%rsp)
+ 5d83ff6:	00 
+ 5d83ff7:	48 8b 6c 24 08       	mov    0x8(%rsp),%rbp
+ 5d83ffc:	48 8d 48 08          	lea    0x8(%rax),%rcx
+ 5d84000:	48 83 f9 40          	cmp    $0x40,%rcx
+ 5d84004:	0f 83 02 05 00 00    	jae    5d8450c <rustc_middle::hir::map::crate_hash+0x15cc>
+ 5d8400a:	4c 89 a4 04 c8 00 00 	mov    %r12,0xc8(%rsp,%rax,1)
+ 5d84011:	00 
+ 5d84012:	48 89 8c 24 c0 00 00 	mov    %rcx,0xc0(%rsp)
+ 5d84019:	00 
+ 5d8401a:	e9 aa 00 00 00       	jmp    5d840c9 <rustc_middle::hir::map::crate_hash+0x1189>
+ 5d8401f:	48 8d 45 10          	lea    0x10(%rbp),%rax
+ 5d84023:	66 0f 6f 44 24 40    	movdqa 0x40(%rsp),%xmm0
+ 5d84029:	66 44 0f d7 f8       	pmovmskb %xmm0,%r15d
+ 5d8402e:	41 f7 d7             	not    %r15d
+ 5d84031:	48 83 fb 01          	cmp    $0x1,%rbx
+ 5d84035:	0f 84 33 e6 50 01    	je     729266e <rustc_middle::hir::map::crate_hash+0x22e>
+ 5d8403b:	48 89 44 24 10       	mov    %rax,0x10(%rsp)
+ 5d84040:	48 8d bc 24 60 02 00 	lea    0x260(%rsp),%rdi
+ 5d84047:	00 
+ 5d84048:	45 31 e4             	xor    %r12d,%r12d
+ 5d8404b:	45 31 ed             	xor    %r13d,%r13d
+ 5d8404e:	48 89 6c 24 08       	mov    %rbp,0x8(%rsp)
+ 5d84053:	48 89 6c 24 18       	mov    %rbp,0x18(%rsp)
+ 5d84058:	e9 31 ff ff ff       	jmp    5d83f8e <rustc_middle::hir::map::crate_hash+0x104e>
+ 5d8405d:	48 8b 05 4c a4 97 ff 	mov    -0x685bb4(%rip),%rax        # 56fe4b0 <rustc_span::SESSION_GLOBALS::FOO::{K#0}::{closure#1}::__RUST_STD_INTERNAL_VAL@@Base+0x56fb0a8>
+ 5d84064:	64 48 8b 30          	mov    %fs:(%rax),%rsi
+ 5d84068:	48 85 f6             	test   %rsi,%rsi
+ 5d8406b:	0f 84 3d 0e 00 00    	je     5d84eae <rustc_middle::hir::map::crate_hash+0x1f6e>
+ 5d84071:	48 8d bc 24 38 01 00 	lea    0x138(%rsp),%rdi
+ 5d84078:	00 
+ 5d84079:	ff 15 79 68 98 ff    	call   *-0x679787(%rip)        # 570a8f8 <<rustc_span::MetavarSpansMap>::freeze_and_get_read_spans@@Base-0x17c2648>
+ 5d8407f:	48 8b ac 24 38 01 00 	mov    0x138(%rsp),%rbp
+ 5d84086:	00 
+ 5d84087:	48 8b 9c 24 50 01 00 	mov    0x150(%rsp),%rbx
+ 5d8408e:	00 
+ 5d8408f:	66 0f 6f 45 00       	movdqa 0x0(%rbp),%xmm0
+ 5d84094:	66 0f 7f 44 24 40    	movdqa %xmm0,0x40(%rsp)
+ 5d8409a:	48 8b 84 24 c0 00 00 	mov    0xc0(%rsp),%rax
+ 5d840a1:	00 
+ 5d840a2:	48 8d 48 08          	lea    0x8(%rax),%rcx
+ 5d840a6:	48 83 f9 40          	cmp    $0x40,%rcx
+ 5d840aa:	0f 83 cf 03 00 00    	jae    5d8447f <rustc_middle::hir::map::crate_hash+0x153f>
+ 5d840b0:	48 89 9c 04 c8 00 00 	mov    %rbx,0xc8(%rsp,%rax,1)
+ 5d840b7:	00 
+ 5d840b8:	48 89 8c 24 c0 00 00 	mov    %rcx,0xc0(%rsp)
+ 5d840bf:	00 
+ 5d840c0:	48 85 db             	test   %rbx,%rbx
+ 5d840c3:	0f 85 56 ff ff ff    	jne    5d8401f <rustc_middle::hir::map::crate_hash+0x10df>
+ 5d840c9:	48 8b 8c 24 40 01 00 	mov    0x140(%rsp),%rcx
+ 5d840d0:	00 
+ 5d840d1:	48 85 c9             	test   %rcx,%rcx
+ 5d840d4:	74 20                	je     5d840f6 <rustc_middle::hir::map::crate_hash+0x11b6>
+ 5d840d6:	48 89 c8             	mov    %rcx,%rax
+ 5d840d9:	48 c1 e0 04          	shl    $0x4,%rax
+ 5d840dd:	48 01 c1             	add    %rax,%rcx
+ 5d840e0:	48 83 f9 df          	cmp    $0xffffffffffffffdf,%rcx
+ 5d840e4:	74 10                	je     5d840f6 <rustc_middle::hir::map::crate_hash+0x11b6>
+ 5d840e6:	48 29 c5             	sub    %rax,%rbp
+ 5d840e9:	48 83 c5 f0          	add    $0xfffffffffffffff0,%rbp
+ 5d840ed:	48 89 ef             	mov    %rbp,%rdi
+ 5d840f0:	ff 15 92 6d 97 ff    	call   *-0x68926e(%rip)        # 56fae88 <free@GLIBC_2.2.5>
+ 5d840f6:	48 8d bc 24 d0 01 00 	lea    0x1d0(%rsp),%rdi
+ 5d840fd:	00 
+ 5d840fe:	48 8d b4 24 c0 00 00 	lea    0xc0(%rsp),%rsi
+ 5d84105:	00 
+ 5d84106:	b9 0f 00 00 00       	mov    $0xf,%ecx
+ 5d8410b:	f3 48 a5             	rep movsq %ds:(%rsi),%es:(%rdi)
+ 5d8410e:	48 8d 94 24 d8 01 00 	lea    0x1d8(%rsp),%rdx
+ 5d84115:	00 
+ 5d84116:	48 8b 72 f8          	mov    -0x8(%rdx),%rsi
+ 5d8411a:	4c 8b 42 68          	mov    0x68(%rdx),%r8
+ 5d8411e:	48 8d 84 24 10 01 00 	lea    0x110(%rsp),%rax
+ 5d84125:	00 
+ 5d84126:	f3 0f 6f 00          	movdqu (%rax),%xmm0
+ 5d8412a:	0f 10 48 10          	movups 0x10(%rax),%xmm1
+ 5d8412e:	48 8d 8c 24 b0 02 00 	lea    0x2b0(%rsp),%rcx
+ 5d84135:	00 
+ 5d84136:	0f 29 49 10          	movaps %xmm1,0x10(%rcx)
+ 5d8413a:	66 0f 7f 01          	movdqa %xmm0,(%rcx)
+ 5d8413e:	4c 8d 74 24 60       	lea    0x60(%rsp),%r14
+ 5d84143:	4c 89 f7             	mov    %r14,%rdi
+ 5d84146:	e8 c3 13 00 00       	call   5d8550e <<rustc_stable_hash::sip128::SipHasher128>::finish128_inner>
+ 5d8414b:	49 8b 1e             	mov    (%r14),%rbx
+ 5d8414e:	4d 8b 76 08          	mov    0x8(%r14),%r14
+ 5d84152:	48 83 bc 24 60 02 00 	cmpq   $0x0,0x260(%rsp)
+ 5d84159:	00 00 
+ 5d8415b:	48 8b 7c 24 28       	mov    0x28(%rsp),%rdi
+ 5d84160:	74 12                	je     5d84174 <rustc_middle::hir::map::crate_hash+0x1234>
+ 5d84162:	48 8b 84 24 68 02 00 	mov    0x268(%rsp),%rax
+ 5d84169:	00 
+ 5d8416a:	f0 48 ff 08          	lock decq (%rax)
+ 5d8416e:	0f 84 22 2b 7c 01    	je     7546c96 <rustc_middle::hir::map::crate_hash+0xc56>
+ 5d84174:	48 8b 84 24 70 01 00 	mov    0x170(%rsp),%rax
+ 5d8417b:	00 
+ 5d8417c:	48 85 c0             	test   %rax,%rax
+ 5d8417f:	0f 85 e2 2a 7c 01    	jne    7546c67 <rustc_middle::hir::map::crate_hash+0xc27>
+ 5d84185:	48 85 c0             	test   %rax,%rax
+ 5d84188:	0f 85 ef 2a 7c 01    	jne    7546c7d <rustc_middle::hir::map::crate_hash+0xc3d>
+ 5d8418e:	80 7c 24 06 00       	cmpb   $0x0,0x6(%rsp)
+ 5d84193:	75 06                	jne    5d8419b <rustc_middle::hir::map::crate_hash+0x125b>
+ 5d84195:	ff 15 ed 6c 97 ff    	call   *-0x689313(%rip)        # 56fae88 <free@GLIBC_2.2.5>
+ 5d8419b:	48 83 bc 24 c8 01 00 	cmpq   $0x0,0x1c8(%rsp)
+ 5d841a2:	00 00 
+ 5d841a4:	74 0e                	je     5d841b4 <rustc_middle::hir::map::crate_hash+0x1274>
+ 5d841a6:	48 8b bc 24 a0 00 00 	mov    0xa0(%rsp),%rdi
+ 5d841ad:	00 
+ 5d841ae:	ff 15 d4 6c 97 ff    	call   *-0x68932c(%rip)        # 56fae88 <free@GLIBC_2.2.5>
+ 5d841b4:	48 89 d8             	mov    %rbx,%rax
+ 5d841b7:	4c 89 f2             	mov    %r14,%rdx
+ 5d841ba:	48 81 c4 48 03 00 00 	add    $0x348,%rsp
+ 5d841c1:	5b                   	pop    %rbx
+ 5d841c2:	41 5c                	pop    %r12
+ 5d841c4:	41 5d                	pop    %r13
+ 5d841c6:	41 5e                	pop    %r14
+ 5d841c8:	41 5f                	pop    %r15
+ 5d841ca:	5d                   	pop    %rbp
+ 5d841cb:	c3                   	ret
+ 5d841cc:	4c 89 f7             	mov    %r14,%rdi
+ 5d841cf:	ff 15 23 aa 97 ff    	call   *-0x6855dd(%rip)        # 56febf8 <<rustc_stable_hash::sip128::SipHasher128>::short_write_process_buffer::<8>@@Base-0x301b48>
+ 5d841d5:	eb 2e                	jmp    5d84205 <rustc_middle::hir::map::crate_hash+0x12c5>
+ 5d841d7:	48 89 b4 0c c8 00 00 	mov    %rsi,0xc8(%rsp,%rcx,1)
+ 5d841de:	00 
+ 5d841df:	48 89 84 24 c0 00 00 	mov    %rax,0xc0(%rsp)
+ 5d841e6:	00 
+ 5d841e7:	48 8b 75 08          	mov    0x8(%rbp),%rsi
+ 5d841eb:	48 8d 48 08          	lea    0x8(%rax),%rcx
+ 5d841ef:	48 83 f9 40          	cmp    $0x40,%rcx
+ 5d841f3:	73 d7                	jae    5d841cc <rustc_middle::hir::map::crate_hash+0x128c>
+ 5d841f5:	48 89 b4 04 c8 00 00 	mov    %rsi,0xc8(%rsp,%rax,1)
+ 5d841fc:	00 
+ 5d841fd:	48 89 8c 24 c0 00 00 	mov    %rcx,0xc0(%rsp)
+ 5d84204:	00 
+ 5d84205:	48 8b 75 10          	mov    0x10(%rbp),%rsi
+ 5d84209:	48 89 df             	mov    %rbx,%rdi
+ 5d8420c:	4c 89 f2             	mov    %r14,%rdx
+ 5d8420f:	e8 0a 13 02 00       	call   5da551e <<rustc_middle::ich::StableHashState as rustc_data_structures::stable_hash::StableHashCtxt>::stable_hash_span>
+ 5d84214:	48 83 c5 18          	add    $0x18,%rbp
+ 5d84218:	4c 39 ed             	cmp    %r13,%rbp
+ 5d8421b:	0f 84 d2 e3 50 01    	je     72925f3 <rustc_middle::hir::map::crate_hash+0x1b3>
+ 5d84221:	48 8b 75 00          	mov    0x0(%rbp),%rsi
+ 5d84225:	48                   	rex.W
+ 5d84226:	8b                   	.byte 0x8b
+ 5d84227:	8c 24 c0             	mov    %fs,(%rax,%rax,8)
+	...

@@ -1,0 +1,27 @@
+
+/home/dev-user/.cache/ohm-233-position-qualified-20261027/drivers/driver-dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f:     file format elf64-x86-64
+
+
+Disassembly of section .text:
+
+0000000006a03940 <core::ptr::drop_glue::<rustc_span::FileName>>:
+ 6a03940:	41 56                	push   %r14
+ 6a03942:	53                   	push   %rbx
+ 6a03943:	50                   	push   %rax
+ 6a03944:	48 89 fb             	mov    %rdi,%rbx
+ 6a03947:	4c 8b 37             	mov    (%rdi),%r14
+ 6a0394a:	48 b9 01 00 00 00 00 	movabs $0x8000000000000001,%rcx
+ 6a03951:	00 00 80 
+ 6a03954:	4c 01 f1             	add    %r14,%rcx
+ 6a03957:	4c 89 f0             	mov    %r14,%rax
+ 6a0395a:	48 c1 f8 3f          	sar    $0x3f,%rax
+ 6a0395e:	48 21 c8             	and    %rcx,%rax
+ 6a03961:	0f 84 19 37 08 01    	je     7a87080 <core::ptr::drop_glue::<rustc_span::FileName>>
+ 6a03967:	48 83 f8 06          	cmp    $0x6,%rax
+ 6a0396b:	0f 84 92 37 08 01    	je     7a87103 <core::ptr::drop_glue::<rustc_span::FileName>+0x83>
+ 6a03971:	48 83 f8 07          	cmp    $0x7,%rax
+ 6a03975:	0f 84 88 37 08 01    	je     7a87103 <core::ptr::drop_glue::<rustc_span::FileName>+0x83>
+ 6a0397b:	48 83 c4 08          	add    $0x8,%rsp
+ 6a0397f:	5b                   	pop    %rbx
+ 6a03980:	41 5e                	pop    %r14
+ 6a03982:	c3                   	ret

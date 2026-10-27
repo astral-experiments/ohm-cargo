@@ -1,0 +1,209 @@
+{
+  "actual_driver": {
+    "frames": {
+      "162809d": {
+        "source": "??:?",
+        "symbol": "<rustc_expand::expand::MacroExpander>::fully_expand_fragment"
+      },
+      "41942dd": {
+        "source": "??:?",
+        "symbol": "std::sys::backtrace::__rust_begin_short_backtrace::<<rustc_thread_pool::ThreadPoolBuilder>::build_scoped<rustc_interface::util::run_in_thread_pool_with_globals<rustc_interface::interface::run_compiler<(), rustc_driver_impl::run_compiler::{closure#0}>::{closure#2}, ()>::{closure#5}::{closure#0}::{closure#0}, rustc_interface::util::run_in_thread_pool_with_globals<rustc_interface::interface::run_compiler<(), rustc_driver_impl::run_compiler::{closure#0}>::{closure#2}, ()>::{closure#5}::{closure#0}::{closure#1}, ()>::{closure#0}::{closure#0}::{closure#0}, ()>"
+      },
+      "419e36c": {
+        "source": "??:?",
+        "symbol": "<std::thread::lifecycle::spawn_unchecked<<rustc_thread_pool::ThreadPoolBuilder>::build_scoped<rustc_interface::util::run_in_thread_pool_with_globals<rustc_interface::interface::run_compiler<(), rustc_driver_impl::run_compiler::{closure#0}>::{closure#2}, ()>::{closure#5}::{closure#0}::{closure#0}, rustc_interface::util::run_in_thread_pool_with_globals<rustc_interface::interface::run_compiler<(), rustc_driver_impl::run_compiler::{closure#0}>::{closure#2}, ()>::{closure#5}::{closure#0}::{closure#1}, ()>::{closure#0}::{closure#0}::{closure#0}, ()>::{closure#1} as core::ops::function::FnOnce<()>>::call_once::{shim:vtable#0}"
+      },
+      "41b093a": {
+        "source": "??:?",
+        "symbol": "<rustc_thread_pool::job::StackJob<rustc_thread_pool::latch::LatchRef<rustc_thread_pool::latch::LockLatch>, <rustc_thread_pool::registry::Registry>::in_worker_cold<<rustc_thread_pool::thread_pool::ThreadPool>::install<rustc_interface::util::run_in_thread_pool_with_globals<rustc_interface::interface::run_compiler<(), rustc_driver_impl::run_compiler::{closure#0}>::{closure#2}, ()>::{closure#5}::{closure#0}::{closure#1}::{closure#0}, ()>::{closure#0}, ()>::{closure#0}::{closure#0}, ()> as rustc_thread_pool::job::Job>::execute"
+      },
+      "50dae24": {
+        "source": "??:?",
+        "symbol": "<rustc_thread_pool::registry::ThreadBuilder>::run"
+      },
+      "50dc49f": {
+        "source": "??:?",
+        "symbol": "<rustc_thread_pool::registry::WorkerThread>::wait_or_steal_until_cold"
+      },
+      "615bbd6": {
+        "source": "??:?",
+        "symbol": "rustc_query_impl::query_vtables::resolver_for_lowering_raw::invoke_provider_fn::__rust_begin_short_backtrace"
+      },
+      "615c423": {
+        "source": "??:?",
+        "symbol": "rustc_interface::passes::resolver_for_lowering_raw"
+      },
+      "68bdaf0": {
+        "source": "??:?",
+        "symbol": "<rustc_proc_macro::bridge::closure::Closure as core::convert::From<&mut _>>::from::call::<<rustc_proc_macro::bridge::server::MaybeCrossThread as rustc_proc_macro::bridge::server::ExecutionStrategy>::run_bridge_and_client<rustc_expand::proc_macro_server::Rustc>::{closure#1}>"
+      },
+      "68bed61": {
+        "source": "??:?",
+        "symbol": "<rustc_proc_macro::bridge::server::Dispatcher<rustc_expand::proc_macro_server::Rustc>>::dispatch"
+      },
+      "69058f6": {
+        "source": "??:?",
+        "symbol": "<rustc_proc_macro::bridge::client::Client>::run1::<rustc_expand::proc_macro_server::Rustc, rustc_proc_macro::bridge::server::MaybeCrossThread>"
+      },
+      "6905bc6": {
+        "source": "??:?",
+        "symbol": "<rustc_proc_macro::bridge::server::MaybeCrossThread as rustc_proc_macro::bridge::server::ExecutionStrategy>::run_bridge_and_client::<rustc_expand::proc_macro_server::Rustc>"
+      },
+      "69076b1": {
+        "source": "??:?",
+        "symbol": "rustc_expand::proc_macro::provide_derive_macro_expansion"
+      },
+      "6907b45": {
+        "source": "??:?",
+        "symbol": "rustc_expand::proc_macro::expand_derive_macro"
+      },
+      "69082f7": {
+        "source": "??:?",
+        "symbol": "<rustc_expand::proc_macro::DeriveProcMacro as rustc_expand::base::MultiItemModifier>::expand"
+      },
+      "690db2b": {
+        "source": "??:?",
+        "symbol": "rustc_query_impl::query_vtables::derive_macro_expansion::execute_query_incr::__rust_end_short_backtrace"
+      },
+      "690e213": {
+        "source": "??:?",
+        "symbol": "rustc_query_impl::execution::try_execute_query::<rustc_middle::query::caches::DefaultCache<(rustc_span::hygiene::LocalExpnId, &rustc_ast::tokenstream::TokenStream), rustc_middle::query::erase::ErasedData<[u8; 8]>>, true>"
+      },
+      "69f545c": {
+        "source": "??:?",
+        "symbol": "rustc_interface::interface::run_compiler::<(), rustc_driver_impl::run_compiler::{closure#0}>::{closure#2}"
+      },
+      "6a036b5": {
+        "source": "??:?",
+        "symbol": "<rustc_expand::proc_macro_server::Rustc as rustc_proc_macro::bridge::server::Server>::ts_from_str"
+      },
+      "6a03835": {
+        "source": "??:?",
+        "symbol": "<rustc_span::source_map::SourceMap>::new_source_file"
+      },
+      "6d06007": {
+        "source": "??:?",
+        "symbol": "<std::sys::thread::unix::Thread>::new::thread_start"
+      },
+      "6df3a10": {
+        "source": "??:?",
+        "symbol": "<rustc_expand::expand::MacroExpander>::expand_crate"
+      },
+      "6e7ae4c": {
+        "source": "??:?",
+        "symbol": "rustc_query_impl::query_vtables::resolver_for_lowering_raw::execute_query_incr::__rust_end_short_backtrace"
+      },
+      "6e7b1e8": {
+        "source": "??:?",
+        "symbol": "rustc_query_impl::execution::try_execute_query::<rustc_middle::query::caches::SingleCache<rustc_middle::query::erase::ErasedData<[u8; 24]>>, true>"
+      }
+    },
+    "sha256": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f"
+  },
+  "proc_macro": {
+    "frames": {
+      "17c2fe": {
+        "source": "quote.6d901a4dcba22a4f-cgu.0:?",
+        "symbol": "<str>::parse::<proc_macro2::TokenStream>"
+      },
+      "17e776": {
+        "source": "quote.6d901a4dcba22a4f-cgu.0:?",
+        "symbol": "quote::__private::parse"
+      },
+      "18117b": {
+        "source": "proc_macro2.b0fe5b0c582e4b85-cgu.0:?",
+        "symbol": "std::panicking::catch_unwind::do_call::<<proc_macro::TokenStream as proc_macro2::fallback::FromStr2>::from_str_checked::{closure#0}, core::result::Result<proc_macro::TokenStream, proc_macro::LexError>>"
+      },
+      "18936e": {
+        "source": "proc_macro2.b0fe5b0c582e4b85-cgu.1:?",
+        "symbol": "<proc_macro::TokenStream as proc_macro2::fallback::FromStr2>::from_str_checked::{closure#0}"
+      },
+      "19000b": {
+        "source": "proc_macro2.b0fe5b0c582e4b85-cgu.2:?",
+        "symbol": "<proc_macro2::TokenStream as core::str::traits::FromStr>::from_str"
+      },
+      "192268": {
+        "source": "proc_macro2.b0fe5b0c582e4b85-cgu.3:?",
+        "symbol": "<proc_macro2::imp::TokenStream>::from_str_checked"
+      },
+      "19689f": {
+        "source": "proc_macro2.b0fe5b0c582e4b85-cgu.4:?",
+        "symbol": "std::panic::catch_unwind::<<proc_macro::TokenStream as proc_macro2::fallback::FromStr2>::from_str_checked::{closure#0}, core::result::Result<proc_macro::TokenStream, proc_macro::LexError>>"
+      },
+      "1999f7": {
+        "source": "proc_macro2.b0fe5b0c582e4b85-cgu.4:?",
+        "symbol": "<proc_macro::TokenStream as proc_macro2::fallback::FromStr2>::from_str_checked"
+      },
+      "199e3b": {
+        "source": "proc_macro2.b0fe5b0c582e4b85-cgu.4:?",
+        "symbol": "__rust_try"
+      },
+      "1a31ee": {
+        "source": "proc_macro.d4ddeb7505e064f8-cgu.0:?",
+        "symbol": "<proc_macro::TokenStream as core::str::traits::FromStr>::from_str"
+      },
+      "1ccca6": {
+        "source": "get_size_derive2.33b72d5941d037fa-cgu.0:?",
+        "symbol": "proc_macro::bridge::client::run_client::<proc_macro::TokenStream, get_size_derive2::derive_get_size>::{closure#0}::{closure#0}"
+      },
+      "80122": {
+        "source": "get_size_derive2.33b72d5941d037fa-cgu.0:?",
+        "symbol": "proc_macro::bridge::client::run_client::<proc_macro::TokenStream, get_size_derive2::derive_get_size>"
+      },
+      "802e6": {
+        "source": "get_size_derive2.33b72d5941d037fa-cgu.0:?",
+        "symbol": "proc_macro::bridge::client::state::set::<proc_macro::TokenStream, proc_macro::bridge::client::run_client<proc_macro::TokenStream, get_size_derive2::derive_get_size>::{closure#0}::{closure#0}>"
+      },
+      "80375": {
+        "source": "get_size_derive2.33b72d5941d037fa-cgu.0:?",
+        "symbol": "std::panicking::catch_unwind::do_call::<core::panic::unwind_safe::AssertUnwindSafe<proc_macro::bridge::client::run_client<proc_macro::TokenStream, get_size_derive2::derive_get_size>::{closure#0}>, proc_macro::TokenStream>"
+      },
+      "80500": {
+        "source": "get_size_derive2.33b72d5941d037fa-cgu.0:?",
+        "symbol": "<proc_macro::bridge::client::Client>::expand1::<get_size_derive2::derive_get_size>::{closure#0}"
+      },
+      "807a9": {
+        "source": "get_size_derive2.33b72d5941d037fa-cgu.0:?",
+        "symbol": "proc_macro::bridge::client::run_client::<proc_macro::TokenStream, get_size_derive2::derive_get_size>::{closure#0}"
+      },
+      "85031": {
+        "source": "get_size_derive2.33b72d5941d037fa-cgu.0:?",
+        "symbol": "<core::panic::unwind_safe::AssertUnwindSafe<proc_macro::bridge::client::run_client<proc_macro::TokenStream, get_size_derive2::derive_get_size>::{closure#0}> as core::ops::function::FnOnce<()>>::call_once"
+      },
+      "8606b": {
+        "source": "get_size_derive2.33b72d5941d037fa-cgu.0:?",
+        "symbol": "__rust_try"
+      },
+      "87100": {
+        "source": "get_size_derive2.33b72d5941d037fa-cgu.1:?",
+        "symbol": "get_size_derive2::derive_get_size"
+      },
+      "88589": {
+        "source": "get_size_derive2.33b72d5941d037fa-cgu.1:?",
+        "symbol": "get_size_derive2::derive_get_size_impl"
+      },
+      "8a975": {
+        "source": "get_size_derive2.33b72d5941d037fa-cgu.1:?",
+        "symbol": "get_size_derive2::derive_get_size_impl"
+      },
+      "8b953": {
+        "source": "get_size_derive2.33b72d5941d037fa-cgu.1:?",
+        "symbol": "get_size_derive2::derive_get_size_impl"
+      },
+      "8c780": {
+        "source": "get_size_derive2.33b72d5941d037fa-cgu.1:?",
+        "symbol": "get_size_derive2::derive_get_size_impl"
+      },
+      "92dac": {
+        "source": "get_size_derive2.33b72d5941d037fa-cgu.2:?",
+        "symbol": "proc_macro::bridge::selfless_reify::reify_to_extern_c_fn_hrt_bridge::wrapper::<proc_macro::bridge::buffer::Buffer, <proc_macro::bridge::client::Client>::expand1<get_size_derive2::derive_get_size>::{closure#0}>"
+      },
+      "9684e": {
+        "source": "get_size_derive2.33b72d5941d037fa-cgu.2:?",
+        "symbol": "<get_size_derive2::derive_get_size as core::ops::function::FnOnce<(proc_macro::TokenStream,)>>::call_once"
+      }
+    },
+    "logical_path": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-eef92bd5c3205d8d-all-native-all/get-size-derive2/16667a986d3ac90d/out/libget_size_derive2-16667a986d3ac90d.so",
+    "sha256": "056eb80114e17f1b1c834813683c4efaa746d18bd1d88f4ac481fee1385c69d7"
+  }
+}

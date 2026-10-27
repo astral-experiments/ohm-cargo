@@ -1,0 +1,106 @@
+
+/home/dev-user/.cache/ohm-233-position-qualified-20261027/drivers/driver-dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f:     file format elf64-x86-64
+
+
+Disassembly of section .text:
+
+0000000006a035a0 <<rustc_span::FileName>::proc_macro_source_code+0x120>:
+ 6a035a0:	48 89 d8             	mov    %rbx,%rax
+ 6a035a3:	48 81 c4 28 01 00 00 	add    $0x128,%rsp
+ 6a035aa:	5b                   	pop    %rbx
+ 6a035ab:	41 5e                	pop    %r14
+ 6a035ad:	c3                   	ret
+ 6a035ae:	8b 06                	mov    (%rsi),%eax
+ 6a035b0:	89 44 24 10          	mov    %eax,0x10(%rsp)
+ 6a035b4:	b8 04 00 00 00       	mov    $0x4,%eax
+ 6a035b9:	e9 46 ff ff ff       	jmp    6a03504 <<rustc_span::FileName>::proc_macro_source_code+0x84>
+ 6a035be:	48 8d 7c 24 10       	lea    0x10(%rsp),%rdi
+ 6a035c3:	49 89 d6             	mov    %rdx,%r14
+ 6a035c6:	ff 15 cc 78 cf fe    	call   *-0x1308734(%rip)        # 56fae98 <memcpy@GLIBC_2.14>
+ 6a035cc:	4c 89 f2             	mov    %r14,%rdx
+ 6a035cf:	e9 49 ff ff ff       	jmp    6a0351d <<rustc_span::FileName>::proc_macro_source_code+0x9d>
+ 6a035d4:	0f b7 0c 06          	movzwl (%rsi,%rax,1),%ecx
+ 6a035d8:	66 89 4c 04 10       	mov    %cx,0x10(%rsp,%rax,1)
+ 6a035dd:	48 83 c8 02          	or     $0x2,%rax
+ 6a035e1:	e9 2b ff ff ff       	jmp    6a03511 <<rustc_span::FileName>::proc_macro_source_code+0x91>
+ 6a035e6:	48 8b 06             	mov    (%rsi),%rax
+ 6a035e9:	48 89 44 24 10       	mov    %rax,0x10(%rsp)
+ 6a035ee:	e9 2a ff ff ff       	jmp    6a0351d <<rustc_span::FileName>::proc_macro_source_code+0x9d>
+ 6a035f3:	4c 8d 74 24 08       	lea    0x8(%rsp),%r14
+ 6a035f8:	4c 89 f7             	mov    %r14,%rdi
+ 6a035fb:	ff 15 ff b5 cf fe    	call   *-0x1304a01(%rip)        # 56fec00 <<rustc_stable_hash::sip128::SipHasher128>::slice_write_process_buffer@@Base-0x68f4d4>
+ 6a03601:	49 8b 16             	mov    (%r14),%rdx
+ 6a03604:	e9 19 ff ff ff       	jmp    6a03522 <<rustc_span::FileName>::proc_macro_source_code+0xa2>
+ 6a03609:	90                   	nop
+
+0000000006a0360a <<rustc_expand::proc_macro_server::Rustc as rustc_proc_macro::bridge::server::Server>::ts_from_str>:
+ 6a0360a:	55                   	push   %rbp
+ 6a0360b:	41 57                	push   %r15
+ 6a0360d:	41 56                	push   %r14
+ 6a0360f:	41 55                	push   %r13
+ 6a03611:	41 54                	push   %r12
+ 6a03613:	53                   	push   %rbx
+ 6a03614:	48 81 ec 08 01 00 00 	sub    $0x108,%rsp
+ 6a0361b:	49 89 ce             	mov    %rcx,%r14
+ 6a0361e:	49 89 d5             	mov    %rdx,%r13
+ 6a03621:	49 89 f4             	mov    %rsi,%r12
+ 6a03624:	48 89 3c 24          	mov    %rdi,(%rsp)
+ 6a03628:	48 8b 06             	mov    (%rsi),%rax
+ 6a0362b:	48 8b 98 d8 00 00 00 	mov    0xd8(%rax),%rbx
+ 6a03632:	48 8d 7c 24 70       	lea    0x70(%rsp),%rdi
+ 6a03637:	48 89 d6             	mov    %rdx,%rsi
+ 6a0363a:	48 89 ca             	mov    %rcx,%rdx
+ 6a0363d:	ff 15 0d 30 d0 fe    	call   *-0x12fcff3(%rip)        # 5706650 <<rustc_span::FileName>::proc_macro_source_code@@Base-0x12fce30>
+ 6a03643:	4c 8d bb 68 17 00 00 	lea    0x1768(%rbx),%r15
+ 6a0364a:	4d 85 f6             	test   %r14,%r14
+ 6a0364d:	0f 88 c3 39 08 01    	js     7a87016 <<rustc_expand::proc_macro_server::Rustc as rustc_proc_macro::bridge::server::Server>::ts_from_str>
+ 6a03653:	0f 84 c4 39 08 01    	je     7a8701d <<rustc_expand::proc_macro_server::Rustc as rustc_proc_macro::bridge::server::Server>::ts_from_str+0x7>
+ 6a03659:	4c 89 f7             	mov    %r14,%rdi
+ 6a0365c:	ff 15 16 78 cf fe    	call   *-0x13087ea(%rip)        # 56fae78 <malloc@GLIBC_2.2.5>
+ 6a03662:	48 85 c0             	test   %rax,%rax
+ 6a03665:	0f 84 bc 39 08 01    	je     7a87027 <<rustc_expand::proc_macro_server::Rustc as rustc_proc_macro::bridge::server::Server>::ts_from_str+0x11>
+ 6a0366b:	48 89 c5             	mov    %rax,%rbp
+ 6a0366e:	48 89 c7             	mov    %rax,%rdi
+ 6a03671:	4c 89 ee             	mov    %r13,%rsi
+ 6a03674:	4c 89 f2             	mov    %r14,%rdx
+ 6a03677:	ff 15 1b 78 cf fe    	call   *-0x13087e5(%rip)        # 56fae98 <memcpy@GLIBC_2.14>
+ 6a0367d:	48 8d 54 24 58       	lea    0x58(%rsp),%rdx
+ 6a03682:	4c 89 32             	mov    %r14,(%rdx)
+ 6a03685:	48 89 6a 08          	mov    %rbp,0x8(%rdx)
+ 6a03689:	4c 89 72 10          	mov    %r14,0x10(%rdx)
+ 6a0368d:	49 8b 44 24 30       	mov    0x30(%r12),%rax
+ 6a03692:	48 89 44 24 20       	mov    %rax,0x20(%rsp)
+ 6a03697:	c7 44 24 1c 01 00 00 	movl   $0x1,0x1c(%rsp)
+ 6a0369e:	00 
+ 6a0369f:	48 8b bb 88 17 00 00 	mov    0x1788(%rbx),%rdi
+ 6a036a6:	48 83 c7 10          	add    $0x10,%rdi
+ 6a036aa:	48 8d 74 24 70       	lea    0x70(%rsp),%rsi
+ 6a036af:	ff 15 33 bf cf fe    	call   *-0x13040cd(%rip)        # 56ff5e8 <<rustc_span::source_map::SourceMap>::new_source_file@@Base-0x1304218>
+ 6a036b5:	48 8d 7c 24 28       	lea    0x28(%rsp),%rdi
+ 6a036ba:	48 8d 4c 24 1c       	lea    0x1c(%rsp),%rcx
+ 6a036bf:	4c 89 fe             	mov    %r15,%rsi
+ 6a036c2:	48 89 c2             	mov    %rax,%rdx
+ 6a036c5:	41 b8 01 00 00 00    	mov    $0x1,%r8d
+ 6a036cb:	e8 b8 d2 ff ff       	call   6a00988 <rustc_parse::source_file_to_stream>
+ 6a036d0:	48 8b 4c 24 28       	mov    0x28(%rsp),%rcx
+ 6a036d5:	48 8b 44 24 30       	mov    0x30(%rsp),%rax
+ 6a036da:	48 83 f9 ff          	cmp    $0xffffffffffffffff,%rcx
+ 6a036de:	0f 85 4d 39 08 01    	jne    7a87031 <<rustc_expand::proc_macro_server::Rustc as rustc_proc_macro::bridge::server::Server>::ts_from_str+0x1b>
+ 6a036e4:	48 8b 0c 24          	mov    (%rsp),%rcx
+ 6a036e8:	48 89 41 08          	mov    %rax,0x8(%rcx)
+ 6a036ec:	48 c7 01 ff ff ff ff 	movq   $0xffffffffffffffff,(%rcx)
+ 6a036f3:	48 89 c8             	mov    %rcx,%rax
+ 6a036f6:	48 81 c4 08 01 00 00 	add    $0x108,%rsp
+ 6a036fd:	5b                   	pop    %rbx
+ 6a036fe:	41 5c                	pop    %r12
+ 6a03700:	41 5d                	pop    %r13
+ 6a03702:	41 5e                	pop    %r14
+ 6a03704:	41 5f                	pop    %r15
+ 6a03706:	5d                   	pop    %rbp
+ 6a03707:	c3                   	ret
+ 6a03708:	4c 89 f6             	mov    %r14,%rsi
+ 6a0370b:	ff 15 af 77 cf fe    	call   *-0x1308851(%rip)        # 56faec0 <alloc::raw_vec::handle_error@@Base+0x3fa1274>
+ 6a03711:	0f 0b                	ud2
+ 6a03713:	48 8b 54 24 38       	mov    0x38(%rsp),%rdx
+ 6a03718:	48 8d 74 24 70       	lea    0x70(%rsp),%rsi
+ 6a0371d:	48 89 0e             	mov    %rcx,(%rsi)
