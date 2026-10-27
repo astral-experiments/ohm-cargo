@@ -1,0 +1,28 @@
+# Native mixed-library qualification on Ruff
+
+Both Cargo arms used the same release-profile compiler (SHA-256 `63145e253973980f3786ce562b2342d2590b4a783256e4197e8ffacdf7d110fa`). The pinned Ruff commit was `93526150df`. The three-file historical edit was `3ea20f6161cbf59cb56595dfb634ec24bfa82f0b`. Cargo B uses `d38fdd025`, and Cargo C uses `190d261a8`. Both completed an edit and restoration as conditioning before the compared events. These 59 workspace invocations contributed zero timed samples.
+
+| Workspace command | Artifact records | Full rustc, B → C | Guarded native rustc, B → C | Ordinary link-only rustc, both arms | GCC / collect2 / Wild per arm |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| `cargo +ohm build --locked --offline` | 501 | 3 → 1 | 0 → 2 | 6 | 8 / 8 / 8 |
+| `cargo +ohm test --no-run --locked --offline` | 619 | 6 → 4 | 0 → 2 | 62 | 67 / 67 / 67 |
+
+The respective counts held in both directions. Cargo C reused the checked native path for `ruff_wasm` and `ty_wasm`. Forced C compiled both in full on a copy of its own restored state. All four edited/restored B and C states subsequently reported their entire roster fresh, with zero Rust work jobs and zero native link phases. The Ruff executable produced the expected changed and restored parser diagnostic, and two control linter diagnostics. Tests were compiled only.
+
+## Workspace and independent Rust consumers
+
+Each endpoint passed nine strict comparisons against the other Cargo, the appropriate independently compiled cold workspace, or the forced full path. All nine build comparisons matched 15 of 15 complete executable/shared-library ELF hashes. For test compilation, 106–108 of 110 ELF hashes matched in each comparison. The remaining binaries matched in size and in every byte after masking only the GNU build ID descriptor and the `.rodata` section header's entry-size field. The complete product and section hashes, which raw artifacts differed, and the exact comparisons are in the workspace records and `verified.json`.
+
+For each endpoint, the edited state produced eight ordinary bridges across B, C, an independently cold edited B, and forced C. The 32 fresh external Rust callers crossed each bridge against every state of the same mixed crate. Restoration produced six ordinary bridges and 18 fresh callers. All 128 compiler actions succeeded. The 100 new caller executables printed `0.17.0` for Ruff and `93526150d` for Ty. The bundles retain all compiler argv, exit-status JSON, stdout and stderr, and outer-worker stdout and stderr. The worker recorded each executed caller's decoded, stripped version line in its result JSON.
+
+The B source builds began with zero fresh Cargo artifact records. C and the independently edited cold B each reused only the verified registry projection (433 of 501 build artifacts, 457 of 619 test artifacts). All 68 or 162 workspace artifacts were cold. Each endpoint authenticated its registry sources and matched the actual derived macro shared library across B, C and independently edited B. The independently cloned forced state preserved bytes, mode and mtime on separate inodes for all 922 advertised build products and 1,060 test products.
+
+## Native bytes and provenance
+
+The native bundle includes all four distinct unmodified standalone Rust metadata files, all four actual `lib.rmeta` ELF members obtained from the .rlibs, and all four separately extracted `.rmeta` sections. Each standalone file and its corresponding ELF section are byte-identical. The four `rustc +ohm -Zls=root` listings bind the private/public identities and stable crate IDs to the physical input bytes. The full native ELF shared-library hashes, dynamic exports, allocation results, per-codegen-object hash/size/index and GNU symbol-index bindings appear in every detailed workload receipt. Both mixed shared libraries matched in full on every strict comparison.
+
+The 36 distinct rlibs were all separately decompressed, authenticated and audited on the benchmark host. Codegen-object payloads and ordered symbol-to-member-slot mappings matched across all 18 comparisons. Most raw rlibs differed because the codegen member nonce changed. No raw archive equality is asserted for those cases. The archived comparison checks every other byte while replacing only the observed nonce in the GNU filename table and rustc's decoded object list. Each raw archive hash and independently recomputed normalized hash appears in `retained-native-recheck.json` or `native-byte-bindings.json`.
+
+The complete private rlibs, eight mixed shared libraries, and 16 distinct ordinary-reader binaries remain hash- and size-bound on the host. All 36 rlibs, all eight shared libraries, and eight of the 16 ordinary-reader outputs contained protected-pattern matches. These files are withheld whole. No native binary was text-rewritten. Public records substitute one host-specific registry directory basename in 61 text members only. `original-records.json` includes the original and portable SHA-256 for all 1,188 members and the substitution count for each. `process-bindings` in the workspace bundles bind full original trace files for the compared edit/restore. The full Cargo JSON and physical Rust/native process records are included for the cold states and all measured-by-process phases.
+
+Run `sha256sum -c SHA256SUMS` and `python3 -B verify.py` from this directory. The verification separately checks command counts, native process classification, all cross-state ordinary readers, archive/ELF boundaries, all 18 complete comparisons and extracted bytes. The registered plan and release binding are included with the result.

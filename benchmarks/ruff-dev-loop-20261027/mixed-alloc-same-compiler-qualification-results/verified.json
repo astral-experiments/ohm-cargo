@@ -1,0 +1,446 @@
+{
+  "native_input_files": 72,
+  "original_member_hashes": 1188,
+  "public_metadata_files": 12,
+  "reader_actions": {
+    "build": {
+      "edit": {
+        "actions": 40,
+        "external_callers": 32,
+        "independent_bridges": 8
+      },
+      "restore": {
+        "actions": 24,
+        "external_callers": 18,
+        "independent_bridges": 6
+      }
+    },
+    "test": {
+      "edit": {
+        "actions": 40,
+        "external_callers": 32,
+        "independent_bridges": 8
+      },
+      "restore": {
+        "actions": 24,
+        "external_callers": 18,
+        "independent_bridges": 6
+      }
+    }
+  },
+  "strict_comparisons": {
+    "build": {
+      "edit-B-independent-full": {
+        "mixed": {
+          "ruff_wasm": {
+            "index_entries": 2547,
+            "names_changed": 66,
+            "object_count": 66,
+            "raw_archive_equal": false
+          },
+          "ty_wasm": {
+            "index_entries": 2453,
+            "names_changed": 78,
+            "object_count": 78,
+            "raw_archive_equal": false
+          }
+        },
+        "nonidentical_elf": [],
+        "raw_equal": 15,
+        "total_elf": 15
+      },
+      "edit-C-B": {
+        "mixed": {
+          "ruff_wasm": {
+            "index_entries": 2547,
+            "names_changed": 66,
+            "object_count": 66,
+            "raw_archive_equal": false
+          },
+          "ty_wasm": {
+            "index_entries": 2453,
+            "names_changed": 78,
+            "object_count": 78,
+            "raw_archive_equal": false
+          }
+        },
+        "nonidentical_elf": [],
+        "raw_equal": 15,
+        "total_elf": 15
+      },
+      "edit-C-forced-same-state": {
+        "mixed": {
+          "ruff_wasm": {
+            "index_entries": 2547,
+            "names_changed": 66,
+            "object_count": 66,
+            "raw_archive_equal": false
+          },
+          "ty_wasm": {
+            "index_entries": 2453,
+            "names_changed": 78,
+            "object_count": 78,
+            "raw_archive_equal": false
+          }
+        },
+        "nonidentical_elf": [],
+        "raw_equal": 15,
+        "total_elf": 15
+      },
+      "edit-C-independent-full": {
+        "mixed": {
+          "ruff_wasm": {
+            "index_entries": 2547,
+            "names_changed": 66,
+            "object_count": 66,
+            "raw_archive_equal": false
+          },
+          "ty_wasm": {
+            "index_entries": 2453,
+            "names_changed": 78,
+            "object_count": 78,
+            "raw_archive_equal": false
+          }
+        },
+        "nonidentical_elf": [],
+        "raw_equal": 15,
+        "total_elf": 15
+      },
+      "original-cold-C-B": {
+        "mixed": {
+          "ruff_wasm": {
+            "index_entries": 2547,
+            "names_changed": 66,
+            "object_count": 66,
+            "raw_archive_equal": false
+          },
+          "ty_wasm": {
+            "index_entries": 2453,
+            "names_changed": 78,
+            "object_count": 78,
+            "raw_archive_equal": false
+          }
+        },
+        "nonidentical_elf": [],
+        "raw_equal": 15,
+        "total_elf": 15
+      },
+      "restore-B-independent-full": {
+        "mixed": {
+          "ruff_wasm": {
+            "index_entries": 2547,
+            "names_changed": 66,
+            "object_count": 66,
+            "raw_archive_equal": false
+          },
+          "ty_wasm": {
+            "index_entries": 2453,
+            "names_changed": 78,
+            "object_count": 78,
+            "raw_archive_equal": false
+          }
+        },
+        "nonidentical_elf": [],
+        "raw_equal": 15,
+        "total_elf": 15
+      },
+      "restore-C-B": {
+        "mixed": {
+          "ruff_wasm": {
+            "index_entries": 2547,
+            "names_changed": 66,
+            "object_count": 66,
+            "raw_archive_equal": false
+          },
+          "ty_wasm": {
+            "index_entries": 2453,
+            "names_changed": 78,
+            "object_count": 78,
+            "raw_archive_equal": false
+          }
+        },
+        "nonidentical_elf": [],
+        "raw_equal": 15,
+        "total_elf": 15
+      },
+      "restore-C-forced-same-state": {
+        "mixed": {
+          "ruff_wasm": {
+            "index_entries": 2547,
+            "names_changed": 66,
+            "object_count": 66,
+            "raw_archive_equal": false
+          },
+          "ty_wasm": {
+            "index_entries": 2453,
+            "names_changed": 78,
+            "object_count": 78,
+            "raw_archive_equal": false
+          }
+        },
+        "nonidentical_elf": [],
+        "raw_equal": 15,
+        "total_elf": 15
+      },
+      "restore-C-independent-full": {
+        "mixed": {
+          "ruff_wasm": {
+            "index_entries": 2547,
+            "names_changed": 0,
+            "object_count": 66,
+            "raw_archive_equal": true
+          },
+          "ty_wasm": {
+            "index_entries": 2453,
+            "names_changed": 0,
+            "object_count": 78,
+            "raw_archive_equal": true
+          }
+        },
+        "nonidentical_elf": [],
+        "raw_equal": 15,
+        "total_elf": 15
+      }
+    },
+    "test": {
+      "edit-B-independent-full": {
+        "mixed": {
+          "ruff_wasm": {
+            "index_entries": 2547,
+            "names_changed": 66,
+            "object_count": 66,
+            "raw_archive_equal": false
+          },
+          "ty_wasm": {
+            "index_entries": 2264,
+            "names_changed": 67,
+            "object_count": 67,
+            "raw_archive_equal": false
+          }
+        },
+        "nonidentical_elf": [
+          "ruff_python_semantic/29d938dbd57eec9b/out/ruff_python_semantic-29d938dbd57eec9b",
+          "ty_python_semantic/e77bf8e779c1bd16/out/ty_python_semantic-e77bf8e779c1bd16"
+        ],
+        "raw_equal": 108,
+        "total_elf": 110
+      },
+      "edit-C-B": {
+        "mixed": {
+          "ruff_wasm": {
+            "index_entries": 2547,
+            "names_changed": 66,
+            "object_count": 66,
+            "raw_archive_equal": false
+          },
+          "ty_wasm": {
+            "index_entries": 2264,
+            "names_changed": 67,
+            "object_count": 67,
+            "raw_archive_equal": false
+          }
+        },
+        "nonidentical_elf": [
+          "ruff_python_semantic/29d938dbd57eec9b/out/ruff_python_semantic-29d938dbd57eec9b",
+          "ruff_wasm/5954b04f4610694e/out/api-5954b04f4610694e",
+          "ty_wasm/af65d95beac5d41b/out/api-af65d95beac5d41b"
+        ],
+        "raw_equal": 107,
+        "total_elf": 110
+      },
+      "edit-C-forced-same-state": {
+        "mixed": {
+          "ruff_wasm": {
+            "index_entries": 2547,
+            "names_changed": 66,
+            "object_count": 66,
+            "raw_archive_equal": false
+          },
+          "ty_wasm": {
+            "index_entries": 2264,
+            "names_changed": 67,
+            "object_count": 67,
+            "raw_archive_equal": false
+          }
+        },
+        "nonidentical_elf": [
+          "ruff_db/da57d7c1341a3cbc/out/ruff_db-da57d7c1341a3cbc",
+          "ruff_wasm/5954b04f4610694e/out/api-5954b04f4610694e",
+          "ty_wasm/af65d95beac5d41b/out/api-af65d95beac5d41b"
+        ],
+        "raw_equal": 107,
+        "total_elf": 110
+      },
+      "edit-C-independent-full": {
+        "mixed": {
+          "ruff_wasm": {
+            "index_entries": 2547,
+            "names_changed": 66,
+            "object_count": 66,
+            "raw_archive_equal": false
+          },
+          "ty_wasm": {
+            "index_entries": 2264,
+            "names_changed": 67,
+            "object_count": 67,
+            "raw_archive_equal": false
+          }
+        },
+        "nonidentical_elf": [
+          "ruff_wasm/5954b04f4610694e/out/api-5954b04f4610694e",
+          "ty_python_semantic/e77bf8e779c1bd16/out/ty_python_semantic-e77bf8e779c1bd16",
+          "ty_wasm/af65d95beac5d41b/out/api-af65d95beac5d41b"
+        ],
+        "raw_equal": 107,
+        "total_elf": 110
+      },
+      "original-cold-C-B": {
+        "mixed": {
+          "ruff_wasm": {
+            "index_entries": 2547,
+            "names_changed": 66,
+            "object_count": 66,
+            "raw_archive_equal": false
+          },
+          "ty_wasm": {
+            "index_entries": 2264,
+            "names_changed": 67,
+            "object_count": 67,
+            "raw_archive_equal": false
+          }
+        },
+        "nonidentical_elf": [
+          "ruff_server/f81f313fe27e5621/out/document-f81f313fe27e5621",
+          "ty_python_semantic/e77bf8e779c1bd16/out/ty_python_semantic-e77bf8e779c1bd16"
+        ],
+        "raw_equal": 108,
+        "total_elf": 110
+      },
+      "restore-B-independent-full": {
+        "mixed": {
+          "ruff_wasm": {
+            "index_entries": 2547,
+            "names_changed": 66,
+            "object_count": 66,
+            "raw_archive_equal": false
+          },
+          "ty_wasm": {
+            "index_entries": 2264,
+            "names_changed": 67,
+            "object_count": 67,
+            "raw_archive_equal": false
+          }
+        },
+        "nonidentical_elf": [
+          "ruff_db/da57d7c1341a3cbc/out/ruff_db-da57d7c1341a3cbc",
+          "ruff_server/f81f313fe27e5621/out/document-f81f313fe27e5621"
+        ],
+        "raw_equal": 108,
+        "total_elf": 110
+      },
+      "restore-C-B": {
+        "mixed": {
+          "ruff_wasm": {
+            "index_entries": 2547,
+            "names_changed": 66,
+            "object_count": 66,
+            "raw_archive_equal": false
+          },
+          "ty_wasm": {
+            "index_entries": 2264,
+            "names_changed": 67,
+            "object_count": 67,
+            "raw_archive_equal": false
+          }
+        },
+        "nonidentical_elf": [
+          "ruff_wasm/5954b04f4610694e/out/api-5954b04f4610694e",
+          "ty_wasm/af65d95beac5d41b/out/api-af65d95beac5d41b"
+        ],
+        "raw_equal": 108,
+        "total_elf": 110
+      },
+      "restore-C-forced-same-state": {
+        "mixed": {
+          "ruff_wasm": {
+            "index_entries": 2547,
+            "names_changed": 66,
+            "object_count": 66,
+            "raw_archive_equal": false
+          },
+          "ty_wasm": {
+            "index_entries": 2264,
+            "names_changed": 67,
+            "object_count": 67,
+            "raw_archive_equal": false
+          }
+        },
+        "nonidentical_elf": [
+          "ruff_db/da57d7c1341a3cbc/out/ruff_db-da57d7c1341a3cbc",
+          "ruff_wasm/5954b04f4610694e/out/api-5954b04f4610694e",
+          "ty_wasm/af65d95beac5d41b/out/api-af65d95beac5d41b"
+        ],
+        "raw_equal": 107,
+        "total_elf": 110
+      },
+      "restore-C-independent-full": {
+        "mixed": {
+          "ruff_wasm": {
+            "index_entries": 2547,
+            "names_changed": 0,
+            "object_count": 66,
+            "raw_archive_equal": true
+          },
+          "ty_wasm": {
+            "index_entries": 2264,
+            "names_changed": 0,
+            "object_count": 67,
+            "raw_archive_equal": true
+          }
+        },
+        "nonidentical_elf": [
+          "ruff_db/da57d7c1341a3cbc/out/ruff_db-da57d7c1341a3cbc",
+          "ruff_wasm/5954b04f4610694e/out/api-5954b04f4610694e",
+          "ty_python_semantic/e77bf8e779c1bd16/out/ty_python_semantic-e77bf8e779c1bd16",
+          "ty_wasm/af65d95beac5d41b/out/api-af65d95beac5d41b"
+        ],
+        "raw_equal": 106,
+        "total_elf": 110
+      }
+    }
+  },
+  "text_records_aliased": 61,
+  "verified_registries": {
+    "build": {
+      "artifact_records": 501,
+      "checked_registry_archives": 346,
+      "cloned_outputs": 922,
+      "cold": {
+        "fresh_registry": 433,
+        "plugin": "056eb80114e17f1b1c834813683c4efaa746d18bd1d88f4ac481fee1385c69d7",
+        "units": 501,
+        "workspace_cold": 68
+      },
+      "projected_files": 5524
+    },
+    "test": {
+      "artifact_records": 619,
+      "checked_registry_archives": 371,
+      "cloned_outputs": 1060,
+      "cold": {
+        "fresh_registry": 457,
+        "plugin": "a8a5d783781b1c7636fb9e88d817a88148615edcb9828fcbb1df85e263954dd5",
+        "units": 619,
+        "workspace_cold": 162
+      },
+      "projected_files": 5756
+    }
+  },
+  "verified_workspace_commands": 59,
+  "withheld_binary_kinds": {
+    "archive": 36,
+    "cdylib": 8,
+    "reader-output": 8
+  },
+  "zero_timed_samples": 0
+}
