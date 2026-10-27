@@ -890,6 +890,42 @@ fn ohm_parallel_frontend_flags_are_fingerprinted() {
     );
 }
 
+#[cfg(all(target_os = "linux", target_arch = "x86_64"))]
+#[cargo_test]
+fn ohm_small_incremental_checks_use_one_frontend_thread() {
+    let wrapper = ohm_defaults_wrapper();
+    let p = project().file("src/lib.rs", "").build();
+    let log = p.root().join("ohm-defaults.log");
+
+    for (value, command, flags, expected) in [
+        (1, "check", None, &["8"][..]),
+        (2, "check", None, &["8", "1"]),
+        (3, "check", Some("-Zthreads=2"), &["8", "2"]),
+        (4, "check", Some("-Zthreads=2"), &["8", "1", "2"]),
+        (5, "build", None, &["8"]),
+        (6, "build", None, &["8"]),
+    ] {
+        p.change_file("src/lib.rs", &format!("pub const VALUE: u8 = {value};"));
+        fs::write(&log, "").unwrap();
+        let mut cargo = p.cargo(&format!("-Zohm-defaults {command}"));
+        cargo
+            .masquerade_as_nightly_cargo(&["ohm-defaults"])
+            .env("CARGO_INCREMENTAL", "1")
+            .env("RUSTC_WRAPPER", &wrapper)
+            .env("OHM_DEFAULTS_LOG", &log);
+        if let Some(flags) = flags {
+            cargo.env("RUSTFLAGS", flags);
+        }
+        cargo.run();
+        let invocations = fs::read_to_string(&log).unwrap();
+        assert_eq!(
+            frontend_threads(&rustc_invocation(&invocations, "foo")),
+            expected,
+            "{command}, edit {value}"
+        );
+    }
+}
+
 #[cargo_test]
 fn ohm_incremental_mono_partitions_follow_compiler_capability() {
     let wrapper = ohm_defaults_wrapper();
