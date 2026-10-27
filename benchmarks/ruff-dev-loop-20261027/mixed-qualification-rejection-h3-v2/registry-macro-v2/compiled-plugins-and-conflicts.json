@@ -1,0 +1,368 @@
+{
+  "A": {
+    "actual_probe_diagnostics": [
+      "`size` conflicts with mutually exclusive `size_fn`"
+    ],
+    "argv": [
+      "--edition=2024",
+      "--crate-name",
+      "demonstrate_conflict",
+      "--crate-type=lib",
+      "--emit=metadata",
+      "--error-format=json",
+      "--extern",
+      "get_size_derive2=/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-eef92bd5c3205d8d-all-native-all/get-size-derive2/16667a986d3ac90d/out/libget_size_derive2-16667a986d3ac90d.so",
+      "/home/dev-user/.cache/ohm-233-position-qualified-20261027/mixed-h3-v2-rejected/registry-macro-v2/conflict.rs",
+      "-o",
+      "/home/dev-user/.cache/ohm-233-position-qualified-20261027/mixed-h3-v2-rejected/registry-macro-v2/A-conflict.rmeta"
+    ],
+    "compiled_plugins": {
+      "attribute_derive_macro": {
+        "logical": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-eef92bd5c3205d8d-all-native-all/attribute-derive-macro/d2690fbeca4c5c91/out/libattribute_derive_macro-d2690fbeca4c5c91.so",
+        "private": "e6b55895130e4c7dc972b006db616dc7",
+        "public": "e6b55895130e4c7dc972b006db616dc7",
+        "raw_sha256": "554c7cedb4f3e7205a9054831e313d1b891bd886499d35e94799279a1eaf4686",
+        "sections": {
+          ".data.rel.ro": {
+            "bytes": 58328,
+            "offset": 2295144,
+            "sha256": "7eafed448fbe345f97dbaf0ef2679ef4ee3fbbc22b1c2ae1fd7456aaf03133ce"
+          },
+          ".note.gnu.build-id": {
+            "bytes": 48,
+            "offset": 680,
+            "sha256": "6a2083113b2b34cd211bd636b0917a0e9823ccf0f4d945ba16668a8f5eea30c3"
+          },
+          ".rodata": {
+            "bytes": 102240,
+            "offset": 159488,
+            "sha256": "3c6d67fc6e87833558974a8844fc540d18fa29847c58861d82896cef6963e66b"
+          },
+          ".rustc": {
+            "bytes": 10613,
+            "offset": 2388032,
+            "sha256": "8279dd4bf8a31473b8382bb81ba14f6f8950c7cbe81e902868a7dd948afb980d"
+          },
+          ".text": {
+            "bytes": 1700730,
+            "offset": 594336,
+            "sha256": "69860f1069cc7228e441d7728f18d7a31922ba5550c7b227ac73203729867990"
+          }
+        },
+        "stable_crate_id": "5121361450068699337"
+      },
+      "derive_where": {
+        "logical": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-eef92bd5c3205d8d-all-native-all/derive-where/5e7aeb2a5f3225aa/out/libderive_where-5e7aeb2a5f3225aa.so",
+        "private": "706f9b752129bfd03fbc5364af3c3c1e",
+        "public": "706f9b752129bfd03fbc5364af3c3c1e",
+        "raw_sha256": "5e5a6fd6c7b94aca101833a2eef718db4f3f9bf127423444cc21cec4a3060660",
+        "sections": {
+          ".data.rel.ro": {
+            "bytes": 52008,
+            "offset": 2463672,
+            "sha256": "f68587a06539cf7f948d80cf0d15c6d5e5ffff40bbf6562e76bbbf8c59cb8f0d"
+          },
+          ".note.gnu.build-id": {
+            "bytes": 48,
+            "offset": 680,
+            "sha256": "1a1631742a615b38e82e261b9652dcdcb4cab3d00ae46a0c9d230321a0b5c135"
+          },
+          ".rodata": {
+            "bytes": 93443,
+            "offset": 171392,
+            "sha256": "6198f867a1ec1b240307d795fa6e9826dcdca9364772b49878fc770a17a82777"
+          },
+          ".rustc": {
+            "bytes": 54508,
+            "offset": 2555632,
+            "sha256": "a52430e739377f2c3572035996cbc5902a458657dfaa5e2ed8f22383633f721a"
+          },
+          ".text": {
+            "bytes": 1814112,
+            "offset": 649488,
+            "sha256": "ad84eadf5ba81a6bc57bdc3107426a63a9ae0f10ac42dba8860ebb216882f19a"
+          }
+        },
+        "stable_crate_id": "6888194425352875271"
+      },
+      "get_size_derive2": {
+        "logical": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-eef92bd5c3205d8d-all-native-all/get-size-derive2/16667a986d3ac90d/out/libget_size_derive2-16667a986d3ac90d.so",
+        "private": "9d3f595a53a42741b600f9368898ea6b",
+        "public": "9d3f595a53a42741b600f9368898ea6b",
+        "raw_sha256": "056eb80114e17f1b1c834813683c4efaa746d18bd1d88f4ac481fee1385c69d7",
+        "sections": {
+          ".data.rel.ro": {
+            "bytes": 46976,
+            "offset": 1953544,
+            "sha256": "029aac8f5fc46b9f8ea3b526d372190ac7db34c1137e403ec95103f9f61d59a4"
+          },
+          ".note.gnu.build-id": {
+            "bytes": 48,
+            "offset": 680,
+            "sha256": "4ca0cf060569f4c35616919d7c8b7cc2b5be5a4c41f9cf2c363126bb03dbbdb3"
+          },
+          ".rodata": {
+            "bytes": 83034,
+            "offset": 143168,
+            "sha256": "f920f808d87a993f08e2a459b3fc83bea9a928d8179fb542aadd3fffd2b18c97"
+          },
+          ".rustc": {
+            "bytes": 13372,
+            "offset": 2033280,
+            "sha256": "403dba3d99e34b7420b22ad9828da9a044f8e46b907d97829add00a7fa6ccceb"
+          },
+          ".text": {
+            "bytes": 1442313,
+            "offset": 511152,
+            "sha256": "2965b4ac7bae2d66eba9752c46ef9fb5244ce582293a0674793f7da17f8308b9"
+          }
+        },
+        "stable_crate_id": "3726497078051878906"
+      }
+    }
+  },
+  "B": {
+    "actual_probe_diagnostics": [
+      "`ignore` conflicts with mutually exclusive `size`"
+    ],
+    "argv": [
+      "--edition=2024",
+      "--crate-name",
+      "demonstrate_conflict",
+      "--crate-type=lib",
+      "--emit=metadata",
+      "--error-format=json",
+      "--extern",
+      "get_size_derive2=/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/get-size-derive2/16667a986d3ac90d/out/libget_size_derive2-16667a986d3ac90d.so",
+      "/home/dev-user/.cache/ohm-233-position-qualified-20261027/mixed-h3-v2-rejected/registry-macro-v2/conflict.rs",
+      "-o",
+      "/home/dev-user/.cache/ohm-233-position-qualified-20261027/mixed-h3-v2-rejected/registry-macro-v2/B-conflict.rmeta"
+    ],
+    "compiled_plugins": {
+      "attribute_derive_macro": {
+        "logical": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/attribute-derive-macro/d2690fbeca4c5c91/out/libattribute_derive_macro-d2690fbeca4c5c91.so",
+        "private": "e6b55895130e4c7dc972b006db616dc7",
+        "public": "e6b55895130e4c7dc972b006db616dc7",
+        "raw_sha256": "554c7cedb4f3e7205a9054831e313d1b891bd886499d35e94799279a1eaf4686",
+        "sections": {
+          ".data.rel.ro": {
+            "bytes": 58328,
+            "offset": 2295144,
+            "sha256": "7eafed448fbe345f97dbaf0ef2679ef4ee3fbbc22b1c2ae1fd7456aaf03133ce"
+          },
+          ".note.gnu.build-id": {
+            "bytes": 48,
+            "offset": 680,
+            "sha256": "6a2083113b2b34cd211bd636b0917a0e9823ccf0f4d945ba16668a8f5eea30c3"
+          },
+          ".rodata": {
+            "bytes": 102240,
+            "offset": 159488,
+            "sha256": "3c6d67fc6e87833558974a8844fc540d18fa29847c58861d82896cef6963e66b"
+          },
+          ".rustc": {
+            "bytes": 10613,
+            "offset": 2388032,
+            "sha256": "8279dd4bf8a31473b8382bb81ba14f6f8950c7cbe81e902868a7dd948afb980d"
+          },
+          ".text": {
+            "bytes": 1700730,
+            "offset": 594336,
+            "sha256": "69860f1069cc7228e441d7728f18d7a31922ba5550c7b227ac73203729867990"
+          }
+        },
+        "stable_crate_id": "5121361450068699337"
+      },
+      "derive_where": {
+        "logical": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/derive-where/5e7aeb2a5f3225aa/out/libderive_where-5e7aeb2a5f3225aa.so",
+        "private": "706f9b752129bfd03fbc5364af3c3c1e",
+        "public": "706f9b752129bfd03fbc5364af3c3c1e",
+        "raw_sha256": "5e5a6fd6c7b94aca101833a2eef718db4f3f9bf127423444cc21cec4a3060660",
+        "sections": {
+          ".data.rel.ro": {
+            "bytes": 52008,
+            "offset": 2463672,
+            "sha256": "f68587a06539cf7f948d80cf0d15c6d5e5ffff40bbf6562e76bbbf8c59cb8f0d"
+          },
+          ".note.gnu.build-id": {
+            "bytes": 48,
+            "offset": 680,
+            "sha256": "1a1631742a615b38e82e261b9652dcdcb4cab3d00ae46a0c9d230321a0b5c135"
+          },
+          ".rodata": {
+            "bytes": 93443,
+            "offset": 171392,
+            "sha256": "6198f867a1ec1b240307d795fa6e9826dcdca9364772b49878fc770a17a82777"
+          },
+          ".rustc": {
+            "bytes": 54508,
+            "offset": 2555632,
+            "sha256": "a52430e739377f2c3572035996cbc5902a458657dfaa5e2ed8f22383633f721a"
+          },
+          ".text": {
+            "bytes": 1814112,
+            "offset": 649488,
+            "sha256": "ad84eadf5ba81a6bc57bdc3107426a63a9ae0f10ac42dba8860ebb216882f19a"
+          }
+        },
+        "stable_crate_id": "6888194425352875271"
+      },
+      "get_size_derive2": {
+        "logical": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/get-size-derive2/16667a986d3ac90d/out/libget_size_derive2-16667a986d3ac90d.so",
+        "private": "5a1d7836694cdcaa64b8157ba0d0da68",
+        "public": "5a1d7836694cdcaa64b8157ba0d0da68",
+        "raw_sha256": "b4fdb51067de47fa7ba8a6139de59a52d3ff09e8bce1356844b597bba179c1f4",
+        "sections": {
+          ".data.rel.ro": {
+            "bytes": 46976,
+            "offset": 1953544,
+            "sha256": "029aac8f5fc46b9f8ea3b526d372190ac7db34c1137e403ec95103f9f61d59a4"
+          },
+          ".note.gnu.build-id": {
+            "bytes": 48,
+            "offset": 680,
+            "sha256": "365d1d5293ae252fcb0730d42c94d1e45863d8c172403e9bbf0cb9409a3e7d08"
+          },
+          ".rodata": {
+            "bytes": 83034,
+            "offset": 143168,
+            "sha256": "6c13f0437a0bec74641ea49e53880beee43e5d695646dd89efcd130f68c88007"
+          },
+          ".rustc": {
+            "bytes": 13372,
+            "offset": 2033280,
+            "sha256": "049c6a48d65f3e9d3a82ec824f556b31fbbf052a6ca6eba6f1b6db93851a5848"
+          },
+          ".text": {
+            "bytes": 1442313,
+            "offset": 511152,
+            "sha256": "f68f920c1dcada5904a1bc6def17805e3157edcba9c21c4218243508dacf9ba2"
+          }
+        },
+        "stable_crate_id": "3726497078051878906"
+      }
+    }
+  },
+  "C": {
+    "actual_probe_diagnostics": [
+      "`ignore` conflicts with mutually exclusive `size_fn`"
+    ],
+    "argv": [
+      "--edition=2024",
+      "--crate-name",
+      "demonstrate_conflict",
+      "--crate-type=lib",
+      "--emit=metadata",
+      "--error-format=json",
+      "--extern",
+      "get_size_derive2=/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/get-size-derive2/16667a986d3ac90d/out/libget_size_derive2-16667a986d3ac90d.so",
+      "/home/dev-user/.cache/ohm-233-position-qualified-20261027/mixed-h3-v2-rejected/registry-macro-v2/conflict.rs",
+      "-o",
+      "/home/dev-user/.cache/ohm-233-position-qualified-20261027/mixed-h3-v2-rejected/registry-macro-v2/C-conflict.rmeta"
+    ],
+    "compiled_plugins": {
+      "attribute_derive_macro": {
+        "logical": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/attribute-derive-macro/d2690fbeca4c5c91/out/libattribute_derive_macro-d2690fbeca4c5c91.so",
+        "private": "e6b55895130e4c7dc972b006db616dc7",
+        "public": "e6b55895130e4c7dc972b006db616dc7",
+        "raw_sha256": "554c7cedb4f3e7205a9054831e313d1b891bd886499d35e94799279a1eaf4686",
+        "sections": {
+          ".data.rel.ro": {
+            "bytes": 58328,
+            "offset": 2295144,
+            "sha256": "7eafed448fbe345f97dbaf0ef2679ef4ee3fbbc22b1c2ae1fd7456aaf03133ce"
+          },
+          ".note.gnu.build-id": {
+            "bytes": 48,
+            "offset": 680,
+            "sha256": "6a2083113b2b34cd211bd636b0917a0e9823ccf0f4d945ba16668a8f5eea30c3"
+          },
+          ".rodata": {
+            "bytes": 102240,
+            "offset": 159488,
+            "sha256": "3c6d67fc6e87833558974a8844fc540d18fa29847c58861d82896cef6963e66b"
+          },
+          ".rustc": {
+            "bytes": 10613,
+            "offset": 2388032,
+            "sha256": "8279dd4bf8a31473b8382bb81ba14f6f8950c7cbe81e902868a7dd948afb980d"
+          },
+          ".text": {
+            "bytes": 1700730,
+            "offset": 594336,
+            "sha256": "69860f1069cc7228e441d7728f18d7a31922ba5550c7b227ac73203729867990"
+          }
+        },
+        "stable_crate_id": "5121361450068699337"
+      },
+      "derive_where": {
+        "logical": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/derive-where/5e7aeb2a5f3225aa/out/libderive_where-5e7aeb2a5f3225aa.so",
+        "private": "706f9b752129bfd03fbc5364af3c3c1e",
+        "public": "706f9b752129bfd03fbc5364af3c3c1e",
+        "raw_sha256": "5e5a6fd6c7b94aca101833a2eef718db4f3f9bf127423444cc21cec4a3060660",
+        "sections": {
+          ".data.rel.ro": {
+            "bytes": 52008,
+            "offset": 2463672,
+            "sha256": "f68587a06539cf7f948d80cf0d15c6d5e5ffff40bbf6562e76bbbf8c59cb8f0d"
+          },
+          ".note.gnu.build-id": {
+            "bytes": 48,
+            "offset": 680,
+            "sha256": "1a1631742a615b38e82e261b9652dcdcb4cab3d00ae46a0c9d230321a0b5c135"
+          },
+          ".rodata": {
+            "bytes": 93443,
+            "offset": 171392,
+            "sha256": "6198f867a1ec1b240307d795fa6e9826dcdca9364772b49878fc770a17a82777"
+          },
+          ".rustc": {
+            "bytes": 54508,
+            "offset": 2555632,
+            "sha256": "a52430e739377f2c3572035996cbc5902a458657dfaa5e2ed8f22383633f721a"
+          },
+          ".text": {
+            "bytes": 1814112,
+            "offset": 649488,
+            "sha256": "ad84eadf5ba81a6bc57bdc3107426a63a9ae0f10ac42dba8860ebb216882f19a"
+          }
+        },
+        "stable_crate_id": "6888194425352875271"
+      },
+      "get_size_derive2": {
+        "logical": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/get-size-derive2/16667a986d3ac90d/out/libget_size_derive2-16667a986d3ac90d.so",
+        "private": "3d53b75d6e6b698f850b92249a9027ba",
+        "public": "3d53b75d6e6b698f850b92249a9027ba",
+        "raw_sha256": "00223c6eb554ad3cba9785b42bfbbf7d8b95d55b5750a430c6a0bf2ed39ca9e4",
+        "sections": {
+          ".data.rel.ro": {
+            "bytes": 46976,
+            "offset": 1953544,
+            "sha256": "029aac8f5fc46b9f8ea3b526d372190ac7db34c1137e403ec95103f9f61d59a4"
+          },
+          ".note.gnu.build-id": {
+            "bytes": 48,
+            "offset": 680,
+            "sha256": "f9f3561ff8cb45fbb320a9d7fa135f9adb5f72902fae1462f5f90ed4572386eb"
+          },
+          ".rodata": {
+            "bytes": 83034,
+            "offset": 143168,
+            "sha256": "279d2ca24b0050fce5c1e536755edd753a28d8013e138f5d65cf1be747880199"
+          },
+          ".rustc": {
+            "bytes": 13372,
+            "offset": 2033280,
+            "sha256": "4c09eb1ca4cb0acf1b68e0d9676f7a41dacebfca6696a4aa476529bd79b46bd8"
+          },
+          ".text": {
+            "bytes": 1442313,
+            "offset": 511152,
+            "sha256": "5400cc47544a7a6cd8e01078b56b09a7c56c1baff832c7ab7cc0672912b70899"
+          }
+        },
+        "stable_crate_id": "3726497078051878906"
+      }
+    }
+  }
+}

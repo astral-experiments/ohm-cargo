@@ -1,0 +1,15 @@
+error[E0460]: found possibly newer version of crate `ty_wasm` which `ordinary_bridge` depends on
+ --> /home/dev-user/.cache/ohm-233-position-qualified-20261027/mixed-native-full-abc-h3-v2/bridge-src/caller.rs:1:28
+  |
+1 | fn main() { println!("{}", ordinary_bridge::observed()); }
+  |                            ^^^^^^^^^^^^^^^
+  |
+  = note: perhaps that crate needs to be recompiled?
+  = note: the following crate versions were found:
+          crate `ty_wasm`: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-eef92bd5c3205d8d-all-native-all/ty_wasm/f736fda4087a11c1/out/libty_wasm.rmeta
+          crate `ty_wasm`: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-eef92bd5c3205d8d-all-native-all/ty_wasm/f736fda4087a11c1/out/libty_wasm.rlib
+          crate `ordinary_bridge`: /home/dev-user/.cache/ohm-233-position-qualified-20261027/mixed-native-full-abc-h3-v2/libordinary_bridge_input.rlib
+
+error: aborting due to 1 previous error
+
+For more information about this error, try `rustc --explain E0460`.

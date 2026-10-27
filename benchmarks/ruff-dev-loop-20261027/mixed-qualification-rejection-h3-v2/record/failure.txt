@@ -1,0 +1,13 @@
+Traceback (most recent call last):
+  File "/home/dev-user/.cache/ohm-233-position-qualified-20261027/mixed-native-abc-protocol-h3-v2/run.py", line 191, in <module>
+    for mode in ('build','test'):qualify(mode)
+                                 ^^^^^^^^^^^^^
+  File "/home/dev-user/.cache/ohm-233-position-qualified-20261027/mixed-native-abc-protocol-h3-v2/run.py", line 140, in qualify
+    bridge(mode,'forward',{arm:dest(mode,arm,'first-edit') for arm in 'BC'})
+  File "/home/dev-user/.cache/ohm-233-position-qualified-20261027/mixed-native-abc-protocol-h3-v2/run.py", line 111, in bridge
+    checked_launch([*args,sys.executable,'-B',H/'bridge_worker.py','--action','caller','--crate',cr,'--arm',arm,'--root',out,'--out',d/'receipt','--binding',binding,'--details',audits[arm]/'receipt.json','--flags',dest(mode,arm,'cold')/'receipt.json'])
+  File "/home/dev-user/.cache/ohm-233-position-qualified-20261027/mixed-native-abc-protocol-h3-v2/run.py", line 39, in checked_launch
+    need(p.returncode==0,('worker returned',p.returncode,cmd[-11:]))
+  File "/home/dev-user/.cache/ohm-233-position-qualified-20261027/mixed-native-abc-protocol-h3-v2/common.py", line 31, in need
+    raise ValueError(message)
+ValueError: ('worker returned', 1, ['C', '--root', PosixPath('/home/dev-user/.cache/ohm-233-position-qualified-20261027/mixed-native-full-abc-h3-v2'), '--out', PosixPath('/home/dev-user/.cache/ohm-233-position-qualified-20261027/mixed-native-full-abc-h3-v2/bridges/build/forward/ruff_wasm-caller-B-C/receipt'), '--binding', PosixPath('/home/dev-user/.cache/ohm-233-position-qualified-20261027/mixed-native-abc-protocol-h3-v2/runner-binding.json'), '--details', PosixPath('/home/dev-user/.cache/ohm-233-position-qualified-20261027/mixed-native-full-abc-h3-v2/receipts/build/C/first-edit/receipt.json'), '--flags', PosixPath('/home/dev-user/.cache/ohm-233-position-qualified-20261027/mixed-native-full-abc-h3-v2/receipts/build/C/cold/receipt.json')])
