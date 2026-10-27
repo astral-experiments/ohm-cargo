@@ -1,0 +1,382 @@
+{
+  "protocol": "ohm-ruff-native-observed-sources-v2",
+  "created_utc": "2026-10-27T07:19:57.322188+00:00",
+  "pin": "93526150df078af7dd8fc4226cdcc469539d2001",
+  "target": "x86_64-unknown-linux-gnu",
+  "cargo": "a99a694c680f474bef2ae17de20533890dc536606021db93aaf531e3ef40919a",
+  "drivers": {
+    "parent232": "051b9d3f5861f984faa0f8c1d2ab9b5c28e483a05c728051de837291c83fd518",
+    "current233": "3e4b168966e111b52ad1a942d364ec1335cf1cfa994f4208b0909ca215b589d2"
+  },
+  "edits": {
+    "doc": {
+      "commit": "36029f1c9a48690bc014c55007cf1ca69f479264",
+      "patch": "3f1869c672cf721af6ff04f0b84fe437212f0c7718bf96473caaf61d51bec1d1"
+    },
+    "parser": {
+      "commit": "3ea20f6161cbf59cb56595dfb634ec24bfa82f0b",
+      "patch": "08bb20f14fde4db57dd12ec3de3855021ddf6284b4a1957b54f4d06fb3c8f9ff"
+    }
+  },
+  "endpoints": {
+    "doc-build": {
+      "control": "current233",
+      "candidate": "position fix, source and driver hashes must be frozen before timing",
+      "edit": "doc",
+      "mode": "build",
+      "seed": 271027101,
+      "orders": [
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "parent"
+        ],
+        [
+          "candidate",
+          "parent"
+        ],
+        [
+          "candidate",
+          "parent"
+        ],
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "parent"
+        ],
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "parent"
+        ],
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "parent"
+        ]
+      ]
+    },
+    "doc-test": {
+      "control": "current233",
+      "candidate": "position fix, source and driver hashes must be frozen before timing",
+      "edit": "doc",
+      "mode": "test",
+      "seed": 271027102,
+      "orders": [
+        [
+          "candidate",
+          "parent"
+        ],
+        [
+          "candidate",
+          "parent"
+        ],
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "parent"
+        ],
+        [
+          "candidate",
+          "parent"
+        ],
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "parent"
+        ],
+        [
+          "candidate",
+          "parent"
+        ],
+        [
+          "parent",
+          "candidate"
+        ]
+      ]
+    },
+    "parser-build": {
+      "control": "parent232",
+      "candidate": "position fix, source and driver hashes must be frozen before timing",
+      "edit": "parser",
+      "mode": "build",
+      "seed": 271027103,
+      "orders": [
+        [
+          "candidate",
+          "parent"
+        ],
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "parent"
+        ],
+        [
+          "candidate",
+          "parent"
+        ],
+        [
+          "candidate",
+          "parent"
+        ],
+        [
+          "candidate",
+          "parent"
+        ],
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "parent"
+        ],
+        [
+          "parent",
+          "candidate"
+        ]
+      ]
+    },
+    "parser-test": {
+      "control": "parent232",
+      "candidate": "position fix, source and driver hashes must be frozen before timing",
+      "edit": "parser",
+      "mode": "test",
+      "seed": 271027104,
+      "orders": [
+        [
+          "candidate",
+          "parent"
+        ],
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "parent"
+        ],
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "parent"
+        ],
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "parent"
+        ],
+        [
+          "candidate",
+          "parent"
+        ],
+        [
+          "candidate",
+          "parent"
+        ]
+      ]
+    }
+  },
+  "measurement": "Four primary edit endpoints use ordinary untraced Cargo wall time, with 12 balanced pairs per endpoint from the fixed orders. After the cold setup each arm gets the same single training command, retaining its output and physical trace. The following run must be fully fresh. After each timed edit, measure its ordinary immediate no-op and require a subsequent fully fresh JSON run. Time and store restore commands independently. An invalid integrity check interrupts the endpoint; preserve and disclose the full attempt. Use the original exact balanced randomization test, paired log ratio bootstrap 95%, and Holm correction over four primary edit endpoints. Disclose all four results. Two secondary no-edit controls (the immediate doc-build and doc-test repeats) report ordinary matched wall times, confidence intervals and physical process counts; report Holm over those two if claiming a no-op change.",
+  "claims": "Count actual compiler and linker execve invocations in independent initial and final traces. Doc case requires no more full compiles than the verified optimized parent (#232, 2 build and 4 test). Parser case requires reducing full Rust compiles vs #232. Disclose all four paired wall times even when inconclusive. Only claim significant reductions with a positive log-ratio paired-bootstrap 95% interval and a balanced exact two-sided randomization test significant at Holm-adjusted 0.05 across all four endpoints.",
+  "controls": [
+    "Parent #232 linter-doc scheduled separately as count control",
+    "Require all 501 or 619 units fresh after edits and restored builds",
+    "Read and compare the complete Ruff JSON diagnostic for mixed literals on both sides of both edits and a dataclass lint functional oracle for the private doc change",
+    "Compare fresh corrected binaries and diagnostics to independent corrected clean builds; qualify nondeterministic ELF sections if needed",
+    "Original private pattern-recovery edit must retain #232 single-rustc workspace check",
+    "Existing foreign macro diagnostics, proc macro source positions, source-file identity, expansion order, raw-index epochs, hidden-type/opaque controls",
+    "Trace initial and final no-op. Require zero rustcs and native links, and complete 501 or 619 fresh unit roster. Compare original source/corrected clean ELF, full diagnostics, and original private-pattern 520-unit cargo check across these exact drivers. Record initial capture/training separately; do not average it into steady-state results.",
+    "In an additional real behavioral edit, change the private dataclasses.field matcher and restore it. Confirm RUF008 output goes 2 to 1 to 2 with a fresh repeat at each step."
+  ],
+  "compiler_commit": "95a95164a2f944faa5cdfae1f76a92f72302c6da",
+  "compiler_source_patch": "9ee26b94444bf992260c1733e5e11036ce0a360e005fc89848e47a7805642a3d",
+  "reason": "The original protocol retains the compiler-only result. Old Cargo deliberately recompiled the actual ron proc-macro observer and 55 other Ruff test units on an unchanged run; no valid paired timing was collected. This cohort tests the cooperating toolchain. Both compiler arms use identical Cargo, linker, flags, state preparation and machine. Each subject gets its own initially empty target and build directory. No tests run.",
+  "cargo_companion_support": {
+    "question": "Holding the corrected compiler fixed, does Cargo stop real Ruff test no-op recompiles?",
+    "control_cargo": "fd9bfe1178f30d12d412f4736eea9e0a7d68e8f687ab2653681d0181049f3025",
+    "candidate_cargo": {
+      "control_and_candidate": "same matched PGO Cargo, exact binary SHA256 bound before any scored run",
+      "commit_base": "d577be8eb1db7a3a4e4a82246d64644aaf3e0bff",
+      "source_patch": "c175135cddf58321029829f0f5d05ded081c4bd26ed185650d52b1a9025965b9"
+    },
+    "setup": "Separate initially empty arm stores; cold build plus up to two recorded training/preflight invocations on the same pinned source. For plain build and test --no-run, record all steps and exact physical warm repeated counts. Run 12 ordinary untraced no-op pairs. Only the control is allowed to rebuild in this cohort. Validate binary rosters/diagnostics and zero candidate work after training, and test that genuine edits update the functional observer. Report both endpoints with exact randomization, paired-bootstrap 95% and Holm across two.",
+    "build": {
+      "seed": 271027201,
+      "orders": [
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "parent"
+        ],
+        [
+          "candidate",
+          "parent"
+        ],
+        [
+          "candidate",
+          "parent"
+        ],
+        [
+          "candidate",
+          "parent"
+        ],
+        [
+          "candidate",
+          "parent"
+        ],
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "parent"
+        ],
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "parent",
+          "candidate"
+        ]
+      ]
+    },
+    "test": {
+      "seed": 271027202,
+      "orders": [
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "parent"
+        ],
+        [
+          "candidate",
+          "parent"
+        ],
+        [
+          "candidate",
+          "parent"
+        ],
+        [
+          "candidate",
+          "parent"
+        ],
+        [
+          "candidate",
+          "parent"
+        ],
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "parent"
+        ],
+        [
+          "parent",
+          "candidate"
+        ]
+      ]
+    }
+  }
+}
