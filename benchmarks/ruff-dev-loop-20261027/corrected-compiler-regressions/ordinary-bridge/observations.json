@@ -1,0 +1,386 @@
+{
+  "macro": {
+    "prime": {
+      "warm": {
+        "exit": 0,
+        "children": {
+          "review_producer": {
+            "public_flags": [
+              "-Zpublic-api-hash"
+            ],
+            "link_only": false
+          },
+          "review_consumer": {
+            "public_flags": [
+              "-Zpublic-api-hash"
+            ],
+            "link_only": false
+          },
+          "review_bridge": {
+            "public_flags": [
+              "-Zpublic-api-hash",
+              "-Zpublic-api-hash=no"
+            ],
+            "link_only": false
+          }
+        },
+        "run_exit": 0,
+        "stdout": "7",
+        "elf": "2d41098179306c2fb8e58f194d3422b35983eb5f2aaccfd89cb986430c7b04fd",
+        "producer_hash": "2a9cc334697d61b2d565b0b40119d005",
+        "bridge_rmeta": "0ec2e3673a59c489be41f6fa888bee1b975eca64eecb4d0f42a69b1efe2be855"
+      },
+      "cold": null
+    },
+    "producer-edit": {
+      "warm": {
+        "exit": 0,
+        "children": {
+          "review_producer": {
+            "public_flags": [
+              "-Zpublic-api-hash"
+            ],
+            "link_only": false
+          },
+          "review_consumer": {
+            "public_flags": [
+              "-Zpublic-api-hash"
+            ],
+            "link_only": false
+          },
+          "review_bridge": {
+            "public_flags": [
+              "-Zpublic-api-hash",
+              "-Zpublic-api-hash=no"
+            ],
+            "link_only": false
+          }
+        },
+        "run_exit": 0,
+        "stdout": "7",
+        "elf": "2d41098179306c2fb8e58f194d3422b35983eb5f2aaccfd89cb986430c7b04fd",
+        "producer_hash": "2a9cc334697d61b2d565b0b40119d005",
+        "bridge_rmeta": "b4669ed0cf6748df6b1e0ddccc8ba89e47d6a0979299bfa5bf2103230053fb28"
+      },
+      "cold": null
+    },
+    "caller-edit": {
+      "warm": {
+        "exit": 0,
+        "children": {
+          "review_consumer": {
+            "public_flags": [
+              "-Zpublic-api-hash"
+            ],
+            "link_only": false
+          }
+        },
+        "run_exit": 0,
+        "stdout": "11",
+        "elf": "7d72bafcd73cc4785b744ac22d19cd289b2ac6328196b248ea8e19712f4c4bb8",
+        "producer_hash": "2a9cc334697d61b2d565b0b40119d005",
+        "bridge_rmeta": "b4669ed0cf6748df6b1e0ddccc8ba89e47d6a0979299bfa5bf2103230053fb28"
+      },
+      "cold": {
+        "exit": 0,
+        "children": {
+          "review_producer": {
+            "public_flags": [
+              "-Zpublic-api-hash"
+            ],
+            "link_only": false
+          },
+          "review_bridge": {
+            "public_flags": [
+              "-Zpublic-api-hash",
+              "-Zpublic-api-hash=no"
+            ],
+            "link_only": false
+          },
+          "review_consumer": {
+            "public_flags": [
+              "-Zpublic-api-hash"
+            ],
+            "link_only": false
+          }
+        },
+        "run_exit": 0,
+        "stdout": "11",
+        "elf": "7d72bafcd73cc4785b744ac22d19cd289b2ac6328196b248ea8e19712f4c4bb8",
+        "producer_hash": "2a9cc334697d61b2d565b0b40119d005",
+        "bridge_rmeta": "b4669ed0cf6748df6b1e0ddccc8ba89e47d6a0979299bfa5bf2103230053fb28"
+      }
+    },
+    "producer-restore": {
+      "warm": {
+        "exit": 0,
+        "children": {
+          "review_producer": {
+            "public_flags": [
+              "-Zpublic-api-hash"
+            ],
+            "link_only": false
+          },
+          "review_bridge": {
+            "public_flags": [
+              "-Zpublic-api-hash",
+              "-Zpublic-api-hash=no"
+            ],
+            "link_only": false
+          },
+          "review_consumer": {
+            "public_flags": [
+              "-Zpublic-api-hash"
+            ],
+            "link_only": false
+          }
+        },
+        "run_exit": 0,
+        "stdout": "11",
+        "elf": "7d72bafcd73cc4785b744ac22d19cd289b2ac6328196b248ea8e19712f4c4bb8",
+        "producer_hash": "2a9cc334697d61b2d565b0b40119d005",
+        "bridge_rmeta": "0ec2e3673a59c489be41f6fa888bee1b975eca64eecb4d0f42a69b1efe2be855"
+      },
+      "cold": null
+    },
+    "caller-restore": {
+      "warm": {
+        "exit": 0,
+        "children": {
+          "review_consumer": {
+            "public_flags": [
+              "-Zpublic-api-hash"
+            ],
+            "link_only": false
+          }
+        },
+        "run_exit": 0,
+        "stdout": "7",
+        "elf": "2d41098179306c2fb8e58f194d3422b35983eb5f2aaccfd89cb986430c7b04fd",
+        "producer_hash": "2a9cc334697d61b2d565b0b40119d005",
+        "bridge_rmeta": "0ec2e3673a59c489be41f6fa888bee1b975eca64eecb4d0f42a69b1efe2be855"
+      },
+      "cold": {
+        "exit": 0,
+        "children": {
+          "review_producer": {
+            "public_flags": [
+              "-Zpublic-api-hash"
+            ],
+            "link_only": false
+          },
+          "review_bridge": {
+            "public_flags": [
+              "-Zpublic-api-hash",
+              "-Zpublic-api-hash=no"
+            ],
+            "link_only": false
+          },
+          "review_consumer": {
+            "public_flags": [
+              "-Zpublic-api-hash"
+            ],
+            "link_only": false
+          }
+        },
+        "run_exit": 0,
+        "stdout": "7",
+        "elf": "2d41098179306c2fb8e58f194d3422b35983eb5f2aaccfd89cb986430c7b04fd",
+        "producer_hash": "2a9cc334697d61b2d565b0b40119d005",
+        "bridge_rmeta": "0ec2e3673a59c489be41f6fa888bee1b975eca64eecb4d0f42a69b1efe2be855"
+      }
+    }
+  },
+  "private-impl": {
+    "prime": {
+      "warm": {
+        "exit": 0,
+        "children": {
+          "review_bridge": {
+            "public_flags": [
+              "-Zpublic-api-hash",
+              "-Zpublic-api-hash=no"
+            ],
+            "link_only": false
+          },
+          "review_producer": {
+            "public_flags": [
+              "-Zpublic-api-hash"
+            ],
+            "link_only": false
+          },
+          "review_consumer": {
+            "public_flags": [
+              "-Zpublic-api-hash"
+            ],
+            "link_only": false
+          }
+        },
+        "run_exit": 0,
+        "stdout": "7",
+        "elf": "2d41098179306c2fb8e58f194d3422b35983eb5f2aaccfd89cb986430c7b04fd",
+        "producer_hash": "25e65961e0accd328da7f73d7945ef3f",
+        "bridge_rmeta": "eba5f4a2af548867f9fe436bdb833ded81f1060929a7d05655f7107ab556333c"
+      },
+      "cold": null
+    },
+    "producer-edit": {
+      "warm": {
+        "exit": 0,
+        "children": {
+          "review_consumer": {
+            "public_flags": [
+              "-Zpublic-api-hash"
+            ],
+            "link_only": false
+          },
+          "review_producer": {
+            "public_flags": [
+              "-Zpublic-api-hash"
+            ],
+            "link_only": false
+          },
+          "review_bridge": {
+            "public_flags": [
+              "-Zpublic-api-hash",
+              "-Zpublic-api-hash=no"
+            ],
+            "link_only": false
+          }
+        },
+        "run_exit": 0,
+        "stdout": "7",
+        "elf": "2d41098179306c2fb8e58f194d3422b35983eb5f2aaccfd89cb986430c7b04fd",
+        "producer_hash": "25e65961e0accd328da7f73d7945ef3f",
+        "bridge_rmeta": "af89703a509d17b66328fa13324213a7b4b88cc7e3996ec10a766edd528a1861"
+      },
+      "cold": null
+    },
+    "caller-edit": {
+      "warm": {
+        "exit": 0,
+        "children": {
+          "review_consumer": {
+            "public_flags": [
+              "-Zpublic-api-hash"
+            ],
+            "link_only": false
+          }
+        },
+        "run_exit": 0,
+        "stdout": "11",
+        "elf": "7d72bafcd73cc4785b744ac22d19cd289b2ac6328196b248ea8e19712f4c4bb8",
+        "producer_hash": "25e65961e0accd328da7f73d7945ef3f",
+        "bridge_rmeta": "af89703a509d17b66328fa13324213a7b4b88cc7e3996ec10a766edd528a1861"
+      },
+      "cold": {
+        "exit": 0,
+        "children": {
+          "review_consumer": {
+            "public_flags": [
+              "-Zpublic-api-hash"
+            ],
+            "link_only": false
+          },
+          "review_producer": {
+            "public_flags": [
+              "-Zpublic-api-hash"
+            ],
+            "link_only": false
+          },
+          "review_bridge": {
+            "public_flags": [
+              "-Zpublic-api-hash",
+              "-Zpublic-api-hash=no"
+            ],
+            "link_only": false
+          }
+        },
+        "run_exit": 0,
+        "stdout": "11",
+        "elf": "7d72bafcd73cc4785b744ac22d19cd289b2ac6328196b248ea8e19712f4c4bb8",
+        "producer_hash": "25e65961e0accd328da7f73d7945ef3f",
+        "bridge_rmeta": "af89703a509d17b66328fa13324213a7b4b88cc7e3996ec10a766edd528a1861"
+      }
+    },
+    "producer-restore": {
+      "warm": {
+        "exit": 0,
+        "children": {
+          "review_producer": {
+            "public_flags": [
+              "-Zpublic-api-hash"
+            ],
+            "link_only": false
+          },
+          "review_consumer": {
+            "public_flags": [
+              "-Zpublic-api-hash"
+            ],
+            "link_only": false
+          },
+          "review_bridge": {
+            "public_flags": [
+              "-Zpublic-api-hash",
+              "-Zpublic-api-hash=no"
+            ],
+            "link_only": false
+          }
+        },
+        "run_exit": 0,
+        "stdout": "11",
+        "elf": "7d72bafcd73cc4785b744ac22d19cd289b2ac6328196b248ea8e19712f4c4bb8",
+        "producer_hash": "25e65961e0accd328da7f73d7945ef3f",
+        "bridge_rmeta": "eba5f4a2af548867f9fe436bdb833ded81f1060929a7d05655f7107ab556333c"
+      },
+      "cold": null
+    },
+    "caller-restore": {
+      "warm": {
+        "exit": 0,
+        "children": {
+          "review_consumer": {
+            "public_flags": [
+              "-Zpublic-api-hash"
+            ],
+            "link_only": false
+          }
+        },
+        "run_exit": 0,
+        "stdout": "7",
+        "elf": "2d41098179306c2fb8e58f194d3422b35983eb5f2aaccfd89cb986430c7b04fd",
+        "producer_hash": "25e65961e0accd328da7f73d7945ef3f",
+        "bridge_rmeta": "eba5f4a2af548867f9fe436bdb833ded81f1060929a7d05655f7107ab556333c"
+      },
+      "cold": {
+        "exit": 0,
+        "children": {
+          "review_bridge": {
+            "public_flags": [
+              "-Zpublic-api-hash",
+              "-Zpublic-api-hash=no"
+            ],
+            "link_only": false
+          },
+          "review_consumer": {
+            "public_flags": [
+              "-Zpublic-api-hash"
+            ],
+            "link_only": false
+          },
+          "review_producer": {
+            "public_flags": [
+              "-Zpublic-api-hash"
+            ],
+            "link_only": false
+          }
+        },
+        "run_exit": 0,
+        "stdout": "7",
+        "elf": "2d41098179306c2fb8e58f194d3422b35983eb5f2aaccfd89cb986430c7b04fd",
+        "producer_hash": "25e65961e0accd328da7f73d7945ef3f",
+        "bridge_rmeta": "eba5f4a2af548867f9fe436bdb833ded81f1060929a7d05655f7107ab556333c"
+      }
+    }
+  }
+}

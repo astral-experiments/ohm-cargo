@@ -1,0 +1,2228 @@
+{
+  "by_case": {
+    "byteoff": {
+      "endpoints": {
+        "caller": {
+          "artifacts": {
+            "bundle": {
+              ".rlib": false,
+              ".rmeta": true
+            },
+            "leaf": {
+              ".rlib": false,
+              ".rmeta": true
+            }
+          },
+          "cargo_elf": true,
+          "cargo_runtime": true,
+          "cold_cargo_exit": 0,
+          "cold_children": [
+            [
+              "app",
+              false
+            ],
+            [
+              "bundle",
+              false
+            ],
+            [
+              "leaf",
+              false
+            ]
+          ],
+          "cold_intentional_error": 1,
+          "cold_standalone_exit": 0,
+          "error_codes": [
+            "E0061",
+            "E0063"
+          ],
+          "failing_diagnostics": true,
+          "ice": false,
+          "standalone_elf": true,
+          "standalone_runtime": true,
+          "successful_diagnostics": true,
+          "successful_processes": true,
+          "warm_cargo_exit": 0,
+          "warm_children": [
+            [
+              "app",
+              false
+            ]
+          ],
+          "warm_intentional_error": 1,
+          "warm_standalone_exit": 0
+        },
+        "caller-restore": {
+          "artifacts": {
+            "bundle": {
+              ".rlib": false,
+              ".rmeta": true
+            },
+            "leaf": {
+              ".rlib": false,
+              ".rmeta": true
+            }
+          },
+          "cargo_elf": true,
+          "cargo_runtime": true,
+          "cold_cargo_exit": 0,
+          "cold_children": [
+            [
+              "app",
+              false
+            ],
+            [
+              "bundle",
+              false
+            ],
+            [
+              "leaf",
+              false
+            ]
+          ],
+          "cold_intentional_error": 1,
+          "cold_standalone_exit": 0,
+          "error_codes": [
+            "E0061",
+            "E0063"
+          ],
+          "failing_diagnostics": true,
+          "ice": false,
+          "standalone_elf": true,
+          "standalone_runtime": true,
+          "successful_diagnostics": true,
+          "successful_processes": true,
+          "warm_cargo_exit": 0,
+          "warm_children": [
+            [
+              "app",
+              false
+            ]
+          ],
+          "warm_intentional_error": 1,
+          "warm_standalone_exit": 0
+        }
+      },
+      "stages": {
+        "caller": {
+          "actual_children": [
+            [
+              "app",
+              false
+            ]
+          ],
+          "cargo_exit": 0,
+          "public_hash": "aa86aecb28c10a21deb9b8880839bed1"
+        },
+        "caller-restore": {
+          "actual_children": [
+            [
+              "app",
+              false
+            ]
+          ],
+          "cargo_exit": 0,
+          "public_hash": "3ad9e3b36d501ab7e5b38fe6ca292c54"
+        },
+        "change": {
+          "actual_children": [
+            [
+              "app",
+              false
+            ],
+            [
+              "bundle",
+              false
+            ],
+            [
+              "leaf",
+              false
+            ]
+          ],
+          "cargo_exit": 0,
+          "public_hash": "aa86aecb28c10a21deb9b8880839bed1"
+        },
+        "prime": {
+          "actual_children": [
+            [
+              "app",
+              false
+            ],
+            [
+              "bundle",
+              false
+            ],
+            [
+              "leaf",
+              false
+            ]
+          ],
+          "cargo_exit": 0,
+          "public_hash": "3ad9e3b36d501ab7e5b38fe6ca292c54"
+        },
+        "restore": {
+          "actual_children": [
+            [
+              "app",
+              false
+            ],
+            [
+              "bundle",
+              false
+            ],
+            [
+              "leaf",
+              false
+            ]
+          ],
+          "cargo_exit": 0,
+          "public_hash": "3ad9e3b36d501ab7e5b38fe6ca292c54"
+        }
+      }
+    },
+    "column": {
+      "endpoints": {
+        "caller": {
+          "artifacts": {
+            "bundle": {
+              ".rlib": false,
+              ".rmeta": true
+            },
+            "leaf": {
+              ".rlib": false,
+              ".rmeta": true
+            }
+          },
+          "cargo_elf": true,
+          "cargo_runtime": true,
+          "cold_cargo_exit": 0,
+          "cold_children": [
+            [
+              "app",
+              false
+            ],
+            [
+              "bundle",
+              false
+            ],
+            [
+              "leaf",
+              false
+            ]
+          ],
+          "cold_intentional_error": 1,
+          "cold_standalone_exit": 0,
+          "error_codes": [
+            "E0061",
+            "E0063"
+          ],
+          "failing_diagnostics": true,
+          "ice": false,
+          "standalone_elf": true,
+          "standalone_runtime": true,
+          "successful_diagnostics": true,
+          "successful_processes": true,
+          "warm_cargo_exit": 0,
+          "warm_children": [
+            [
+              "app",
+              false
+            ]
+          ],
+          "warm_intentional_error": 1,
+          "warm_standalone_exit": 0
+        },
+        "caller-restore": {
+          "artifacts": {
+            "bundle": {
+              ".rlib": false,
+              ".rmeta": true
+            },
+            "leaf": {
+              ".rlib": false,
+              ".rmeta": true
+            }
+          },
+          "cargo_elf": true,
+          "cargo_runtime": true,
+          "cold_cargo_exit": 0,
+          "cold_children": [
+            [
+              "app",
+              false
+            ],
+            [
+              "bundle",
+              false
+            ],
+            [
+              "leaf",
+              false
+            ]
+          ],
+          "cold_intentional_error": 1,
+          "cold_standalone_exit": 0,
+          "error_codes": [
+            "E0061",
+            "E0063"
+          ],
+          "failing_diagnostics": true,
+          "ice": false,
+          "standalone_elf": true,
+          "standalone_runtime": true,
+          "successful_diagnostics": true,
+          "successful_processes": true,
+          "warm_cargo_exit": 0,
+          "warm_children": [
+            [
+              "app",
+              false
+            ]
+          ],
+          "warm_intentional_error": 1,
+          "warm_standalone_exit": 0
+        }
+      },
+      "stages": {
+        "caller": {
+          "actual_children": [
+            [
+              "app",
+              false
+            ]
+          ],
+          "cargo_exit": 0,
+          "public_hash": "6b378b7ea312750c95ecee7188087c45"
+        },
+        "caller-restore": {
+          "actual_children": [
+            [
+              "app",
+              false
+            ]
+          ],
+          "cargo_exit": 0,
+          "public_hash": "23a00ae121b69f15f31cd815c7dff7a8"
+        },
+        "change": {
+          "actual_children": [
+            [
+              "app",
+              false
+            ],
+            [
+              "bundle",
+              false
+            ],
+            [
+              "leaf",
+              false
+            ]
+          ],
+          "cargo_exit": 0,
+          "public_hash": "6b378b7ea312750c95ecee7188087c45"
+        },
+        "prime": {
+          "actual_children": [
+            [
+              "app",
+              false
+            ],
+            [
+              "bundle",
+              false
+            ],
+            [
+              "leaf",
+              false
+            ]
+          ],
+          "cargo_exit": 0,
+          "public_hash": "23a00ae121b69f15f31cd815c7dff7a8"
+        },
+        "restore": {
+          "actual_children": [
+            [
+              "app",
+              false
+            ],
+            [
+              "bundle",
+              false
+            ],
+            [
+              "leaf",
+              false
+            ]
+          ],
+          "cargo_exit": 0,
+          "public_hash": "23a00ae121b69f15f31cd815c7dff7a8"
+        }
+      }
+    },
+    "expn": {
+      "endpoints": {
+        "caller": {
+          "artifacts": {
+            "bundle": {
+              ".rlib": false,
+              ".rmeta": false
+            },
+            "leaf": {
+              ".rlib": false,
+              ".rmeta": true
+            }
+          },
+          "cargo_elf": true,
+          "cargo_runtime": true,
+          "cold_cargo_exit": 0,
+          "cold_children": [
+            [
+              "app",
+              false
+            ],
+            [
+              "bundle",
+              false
+            ],
+            [
+              "leaf",
+              false
+            ]
+          ],
+          "cold_intentional_error": 1,
+          "cold_standalone_exit": 0,
+          "error_codes": [
+            "E0061",
+            "E0063"
+          ],
+          "failing_diagnostics": true,
+          "ice": false,
+          "standalone_elf": true,
+          "standalone_runtime": true,
+          "successful_diagnostics": true,
+          "successful_processes": true,
+          "warm_cargo_exit": 0,
+          "warm_children": [
+            [
+              "app",
+              false
+            ]
+          ],
+          "warm_intentional_error": 1,
+          "warm_standalone_exit": 0
+        },
+        "caller-restore": {
+          "artifacts": {
+            "bundle": {
+              ".rlib": false,
+              ".rmeta": true
+            },
+            "leaf": {
+              ".rlib": false,
+              ".rmeta": true
+            }
+          },
+          "cargo_elf": true,
+          "cargo_runtime": true,
+          "cold_cargo_exit": 0,
+          "cold_children": [
+            [
+              "app",
+              false
+            ],
+            [
+              "bundle",
+              false
+            ],
+            [
+              "leaf",
+              false
+            ]
+          ],
+          "cold_intentional_error": 1,
+          "cold_standalone_exit": 0,
+          "error_codes": [
+            "E0061",
+            "E0063"
+          ],
+          "failing_diagnostics": true,
+          "ice": false,
+          "standalone_elf": true,
+          "standalone_runtime": true,
+          "successful_diagnostics": true,
+          "successful_processes": true,
+          "warm_cargo_exit": 0,
+          "warm_children": [
+            [
+              "app",
+              false
+            ]
+          ],
+          "warm_intentional_error": 1,
+          "warm_standalone_exit": 0
+        }
+      },
+      "stages": {
+        "caller": {
+          "actual_children": [
+            [
+              "app",
+              false
+            ]
+          ],
+          "cargo_exit": 0,
+          "public_hash": "68c15c4856acebb359e35d71d2155d5c"
+        },
+        "caller-restore": {
+          "actual_children": [
+            [
+              "app",
+              false
+            ]
+          ],
+          "cargo_exit": 0,
+          "public_hash": "68c15c4856acebb359e35d71d2155d5c"
+        },
+        "change": {
+          "actual_children": [
+            [
+              "app",
+              true
+            ],
+            [
+              "leaf",
+              false
+            ]
+          ],
+          "cargo_exit": 0,
+          "public_hash": "68c15c4856acebb359e35d71d2155d5c"
+        },
+        "prime": {
+          "actual_children": [
+            [
+              "app",
+              false
+            ],
+            [
+              "bundle",
+              false
+            ],
+            [
+              "leaf",
+              false
+            ]
+          ],
+          "cargo_exit": 0,
+          "public_hash": "68c15c4856acebb359e35d71d2155d5c"
+        },
+        "restore": {
+          "actual_children": [
+            [
+              "app",
+              true
+            ],
+            [
+              "leaf",
+              false
+            ]
+          ],
+          "cargo_exit": 0,
+          "public_hash": "68c15c4856acebb359e35d71d2155d5c"
+        }
+      }
+    },
+    "files": {
+      "endpoints": {
+        "caller": {
+          "artifacts": {
+            "bundle": {
+              ".rlib": false,
+              ".rmeta": true
+            },
+            "leaf": {
+              ".rlib": false,
+              ".rmeta": true
+            }
+          },
+          "cargo_elf": true,
+          "cargo_runtime": true,
+          "cold_cargo_exit": 0,
+          "cold_children": [
+            [
+              "app",
+              false
+            ],
+            [
+              "bundle",
+              false
+            ],
+            [
+              "leaf",
+              false
+            ]
+          ],
+          "cold_intentional_error": 1,
+          "cold_standalone_exit": 0,
+          "error_codes": [
+            "E0061",
+            "E0063"
+          ],
+          "failing_diagnostics": true,
+          "ice": false,
+          "standalone_elf": true,
+          "standalone_runtime": true,
+          "successful_diagnostics": true,
+          "successful_processes": true,
+          "warm_cargo_exit": 0,
+          "warm_children": [
+            [
+              "app",
+              false
+            ]
+          ],
+          "warm_intentional_error": 1,
+          "warm_standalone_exit": 0
+        },
+        "caller-restore": {
+          "artifacts": {
+            "bundle": {
+              ".rlib": false,
+              ".rmeta": true
+            },
+            "leaf": {
+              ".rlib": false,
+              ".rmeta": true
+            }
+          },
+          "cargo_elf": true,
+          "cargo_runtime": true,
+          "cold_cargo_exit": 0,
+          "cold_children": [
+            [
+              "app",
+              false
+            ],
+            [
+              "bundle",
+              false
+            ],
+            [
+              "leaf",
+              false
+            ]
+          ],
+          "cold_intentional_error": 1,
+          "cold_standalone_exit": 0,
+          "error_codes": [
+            "E0061",
+            "E0063"
+          ],
+          "failing_diagnostics": true,
+          "ice": false,
+          "standalone_elf": true,
+          "standalone_runtime": true,
+          "successful_diagnostics": true,
+          "successful_processes": true,
+          "warm_cargo_exit": 0,
+          "warm_children": [
+            [
+              "app",
+              false
+            ]
+          ],
+          "warm_intentional_error": 1,
+          "warm_standalone_exit": 0
+        }
+      },
+      "stages": {
+        "caller": {
+          "actual_children": [
+            [
+              "app",
+              false
+            ]
+          ],
+          "cargo_exit": 0,
+          "public_hash": "ebb873a4e70a7a8b8c6ab8d8b959ff88"
+        },
+        "caller-restore": {
+          "actual_children": [
+            [
+              "app",
+              false
+            ]
+          ],
+          "cargo_exit": 0,
+          "public_hash": "57249bc9c9051258753db7e130bdb62d"
+        },
+        "change": {
+          "actual_children": [
+            [
+              "app",
+              false
+            ],
+            [
+              "bundle",
+              false
+            ],
+            [
+              "leaf",
+              false
+            ]
+          ],
+          "cargo_exit": 0,
+          "public_hash": "ebb873a4e70a7a8b8c6ab8d8b959ff88"
+        },
+        "prime": {
+          "actual_children": [
+            [
+              "app",
+              false
+            ],
+            [
+              "bundle",
+              false
+            ],
+            [
+              "leaf",
+              false
+            ]
+          ],
+          "cargo_exit": 0,
+          "public_hash": "57249bc9c9051258753db7e130bdb62d"
+        },
+        "restore": {
+          "actual_children": [
+            [
+              "app",
+              false
+            ],
+            [
+              "bundle",
+              false
+            ],
+            [
+              "leaf",
+              false
+            ]
+          ],
+          "cargo_exit": 0,
+          "public_hash": "57249bc9c9051258753db7e130bdb62d"
+        }
+      }
+    },
+    "files-shrink": {
+      "endpoints": {
+        "caller": {
+          "artifacts": {
+            "bundle": {
+              ".rlib": false,
+              ".rmeta": true
+            },
+            "leaf": {
+              ".rlib": false,
+              ".rmeta": true
+            }
+          },
+          "cargo_elf": true,
+          "cargo_runtime": true,
+          "cold_cargo_exit": 0,
+          "cold_children": [
+            [
+              "app",
+              false
+            ],
+            [
+              "bundle",
+              false
+            ],
+            [
+              "leaf",
+              false
+            ]
+          ],
+          "cold_intentional_error": 1,
+          "cold_standalone_exit": 0,
+          "error_codes": [
+            "E0061",
+            "E0063"
+          ],
+          "failing_diagnostics": true,
+          "ice": false,
+          "standalone_elf": true,
+          "standalone_runtime": true,
+          "successful_diagnostics": true,
+          "successful_processes": true,
+          "warm_cargo_exit": 0,
+          "warm_children": [
+            [
+              "app",
+              false
+            ]
+          ],
+          "warm_intentional_error": 1,
+          "warm_standalone_exit": 0
+        },
+        "caller-restore": {
+          "artifacts": {
+            "bundle": {
+              ".rlib": false,
+              ".rmeta": true
+            },
+            "leaf": {
+              ".rlib": false,
+              ".rmeta": true
+            }
+          },
+          "cargo_elf": true,
+          "cargo_runtime": true,
+          "cold_cargo_exit": 0,
+          "cold_children": [
+            [
+              "app",
+              false
+            ],
+            [
+              "bundle",
+              false
+            ],
+            [
+              "leaf",
+              false
+            ]
+          ],
+          "cold_intentional_error": 1,
+          "cold_standalone_exit": 0,
+          "error_codes": [
+            "E0061",
+            "E0063"
+          ],
+          "failing_diagnostics": true,
+          "ice": false,
+          "standalone_elf": true,
+          "standalone_runtime": true,
+          "successful_diagnostics": true,
+          "successful_processes": true,
+          "warm_cargo_exit": 0,
+          "warm_children": [
+            [
+              "app",
+              false
+            ]
+          ],
+          "warm_intentional_error": 1,
+          "warm_standalone_exit": 0
+        }
+      },
+      "stages": {
+        "caller": {
+          "actual_children": [
+            [
+              "app",
+              false
+            ]
+          ],
+          "cargo_exit": 0,
+          "public_hash": "1ed542920dc05cd7b5ab3fa10deebc6c"
+        },
+        "caller-restore": {
+          "actual_children": [
+            [
+              "app",
+              false
+            ]
+          ],
+          "cargo_exit": 0,
+          "public_hash": "646b4336936975158207577fc1881a33"
+        },
+        "change": {
+          "actual_children": [
+            [
+              "app",
+              false
+            ],
+            [
+              "bundle",
+              false
+            ],
+            [
+              "leaf",
+              false
+            ]
+          ],
+          "cargo_exit": 0,
+          "public_hash": "1ed542920dc05cd7b5ab3fa10deebc6c"
+        },
+        "prime": {
+          "actual_children": [
+            [
+              "app",
+              false
+            ],
+            [
+              "bundle",
+              false
+            ],
+            [
+              "leaf",
+              false
+            ]
+          ],
+          "cargo_exit": 0,
+          "public_hash": "646b4336936975158207577fc1881a33"
+        },
+        "restore": {
+          "actual_children": [
+            [
+              "app",
+              false
+            ],
+            [
+              "bundle",
+              false
+            ],
+            [
+              "leaf",
+              false
+            ]
+          ],
+          "cargo_exit": 0,
+          "public_hash": "646b4336936975158207577fc1881a33"
+        }
+      }
+    },
+    "files_types": {
+      "endpoints": {
+        "caller": {
+          "artifacts": {
+            "bundle": {
+              ".rlib": false,
+              ".rmeta": true
+            },
+            "leaf": {
+              ".rlib": false,
+              ".rmeta": true
+            }
+          },
+          "cargo_elf": true,
+          "cargo_runtime": true,
+          "cold_cargo_exit": 0,
+          "cold_children": [
+            [
+              "app",
+              false
+            ],
+            [
+              "bundle",
+              false
+            ],
+            [
+              "leaf",
+              false
+            ]
+          ],
+          "cold_intentional_error": 1,
+          "cold_standalone_exit": 0,
+          "error_codes": [
+            "E0061",
+            "E0063"
+          ],
+          "failing_diagnostics": true,
+          "ice": false,
+          "standalone_elf": true,
+          "standalone_runtime": true,
+          "successful_diagnostics": true,
+          "successful_processes": true,
+          "warm_cargo_exit": 0,
+          "warm_children": [
+            [
+              "app",
+              false
+            ]
+          ],
+          "warm_intentional_error": 1,
+          "warm_standalone_exit": 0
+        },
+        "caller-restore": {
+          "artifacts": {
+            "bundle": {
+              ".rlib": false,
+              ".rmeta": true
+            },
+            "leaf": {
+              ".rlib": false,
+              ".rmeta": true
+            }
+          },
+          "cargo_elf": true,
+          "cargo_runtime": true,
+          "cold_cargo_exit": 0,
+          "cold_children": [
+            [
+              "app",
+              false
+            ],
+            [
+              "bundle",
+              false
+            ],
+            [
+              "leaf",
+              false
+            ]
+          ],
+          "cold_intentional_error": 1,
+          "cold_standalone_exit": 0,
+          "error_codes": [
+            "E0061",
+            "E0063"
+          ],
+          "failing_diagnostics": true,
+          "ice": false,
+          "standalone_elf": true,
+          "standalone_runtime": true,
+          "successful_diagnostics": true,
+          "successful_processes": true,
+          "warm_cargo_exit": 0,
+          "warm_children": [
+            [
+              "app",
+              false
+            ]
+          ],
+          "warm_intentional_error": 1,
+          "warm_standalone_exit": 0
+        }
+      },
+      "stages": {
+        "caller": {
+          "actual_children": [
+            [
+              "app",
+              false
+            ]
+          ],
+          "cargo_exit": 0,
+          "public_hash": "ebb873a4e70a7a8b8c6ab8d8b959ff88"
+        },
+        "caller-restore": {
+          "actual_children": [
+            [
+              "app",
+              false
+            ]
+          ],
+          "cargo_exit": 0,
+          "public_hash": "57249bc9c9051258753db7e130bdb62d"
+        },
+        "change": {
+          "actual_children": [
+            [
+              "app",
+              false
+            ],
+            [
+              "bundle",
+              false
+            ],
+            [
+              "leaf",
+              false
+            ]
+          ],
+          "cargo_exit": 0,
+          "public_hash": "ebb873a4e70a7a8b8c6ab8d8b959ff88"
+        },
+        "prime": {
+          "actual_children": [
+            [
+              "app",
+              false
+            ],
+            [
+              "bundle",
+              false
+            ],
+            [
+              "leaf",
+              false
+            ]
+          ],
+          "cargo_exit": 0,
+          "public_hash": "57249bc9c9051258753db7e130bdb62d"
+        },
+        "restore": {
+          "actual_children": [
+            [
+              "app",
+              false
+            ],
+            [
+              "bundle",
+              false
+            ],
+            [
+              "leaf",
+              false
+            ]
+          ],
+          "cargo_exit": 0,
+          "public_hash": "57249bc9c9051258753db7e130bdb62d"
+        }
+      }
+    },
+    "foreign-expn-disappears": {
+      "endpoints": {
+        "caller": {
+          "artifacts": {
+            "bundle": {
+              ".rlib": false,
+              ".rmeta": true
+            },
+            "facade": {
+              ".rlib": false,
+              ".rmeta": true
+            },
+            "leaf": {
+              ".rlib": false,
+              ".rmeta": true
+            }
+          },
+          "cargo_elf": true,
+          "cargo_runtime": true,
+          "cold_cargo_exit": 0,
+          "cold_children": [
+            [
+              "app",
+              false
+            ],
+            [
+              "bundle",
+              false
+            ],
+            [
+              "facade",
+              false
+            ],
+            [
+              "leaf",
+              false
+            ]
+          ],
+          "cold_intentional_error": 1,
+          "cold_standalone_exit": 0,
+          "error_codes": [
+            "E0061",
+            "E0063"
+          ],
+          "failing_diagnostics": true,
+          "ice": false,
+          "standalone_elf": true,
+          "standalone_runtime": true,
+          "successful_diagnostics": true,
+          "successful_processes": true,
+          "warm_cargo_exit": 0,
+          "warm_children": [
+            [
+              "app",
+              false
+            ]
+          ],
+          "warm_intentional_error": 1,
+          "warm_standalone_exit": 0
+        },
+        "caller-restore": {
+          "artifacts": {
+            "bundle": {
+              ".rlib": false,
+              ".rmeta": true
+            },
+            "facade": {
+              ".rlib": false,
+              ".rmeta": true
+            },
+            "leaf": {
+              ".rlib": false,
+              ".rmeta": true
+            }
+          },
+          "cargo_elf": true,
+          "cargo_runtime": true,
+          "cold_cargo_exit": 0,
+          "cold_children": [
+            [
+              "app",
+              false
+            ],
+            [
+              "bundle",
+              false
+            ],
+            [
+              "facade",
+              false
+            ],
+            [
+              "leaf",
+              false
+            ]
+          ],
+          "cold_intentional_error": 1,
+          "cold_standalone_exit": 0,
+          "error_codes": [
+            "E0061",
+            "E0063"
+          ],
+          "failing_diagnostics": true,
+          "ice": false,
+          "standalone_elf": true,
+          "standalone_runtime": true,
+          "successful_diagnostics": true,
+          "successful_processes": true,
+          "warm_cargo_exit": 0,
+          "warm_children": [
+            [
+              "app",
+              false
+            ]
+          ],
+          "warm_intentional_error": 1,
+          "warm_standalone_exit": 0
+        }
+      },
+      "stages": {
+        "caller": {
+          "actual_children": [
+            [
+              "app",
+              false
+            ]
+          ],
+          "cargo_exit": 0,
+          "public_hash": "1e1c1cb05c31d70d20c9e45c2f8bc90e"
+        },
+        "caller-restore": {
+          "actual_children": [
+            [
+              "app",
+              false
+            ]
+          ],
+          "cargo_exit": 0,
+          "public_hash": "833ab0e6b7da90e8b61940e9e4cd678e"
+        },
+        "change": {
+          "actual_children": [
+            [
+              "app",
+              false
+            ],
+            [
+              "bundle",
+              false
+            ],
+            [
+              "facade",
+              false
+            ],
+            [
+              "leaf",
+              false
+            ]
+          ],
+          "cargo_exit": 0,
+          "public_hash": "1e1c1cb05c31d70d20c9e45c2f8bc90e"
+        },
+        "prime": {
+          "actual_children": [
+            [
+              "app",
+              false
+            ],
+            [
+              "bundle",
+              false
+            ],
+            [
+              "facade",
+              false
+            ],
+            [
+              "leaf",
+              false
+            ]
+          ],
+          "cargo_exit": 0,
+          "public_hash": "833ab0e6b7da90e8b61940e9e4cd678e"
+        },
+        "restore": {
+          "actual_children": [
+            [
+              "app",
+              false
+            ],
+            [
+              "bundle",
+              false
+            ],
+            [
+              "facade",
+              false
+            ],
+            [
+              "leaf",
+              false
+            ]
+          ],
+          "cargo_exit": 0,
+          "public_hash": "833ab0e6b7da90e8b61940e9e4cd678e"
+        }
+      }
+    },
+    "foreign-expn-shrink": {
+      "endpoints": {
+        "caller": {
+          "artifacts": {
+            "bundle": {
+              ".rlib": false,
+              ".rmeta": false
+            },
+            "facade": {
+              ".rlib": false,
+              ".rmeta": false
+            },
+            "leaf": {
+              ".rlib": false,
+              ".rmeta": true
+            }
+          },
+          "cargo_elf": true,
+          "cargo_runtime": true,
+          "cold_cargo_exit": 0,
+          "cold_children": [
+            [
+              "app",
+              false
+            ],
+            [
+              "bundle",
+              false
+            ],
+            [
+              "facade",
+              false
+            ],
+            [
+              "leaf",
+              false
+            ]
+          ],
+          "cold_intentional_error": 1,
+          "cold_standalone_exit": 0,
+          "error_codes": [
+            "E0061",
+            "E0063"
+          ],
+          "failing_diagnostics": true,
+          "ice": false,
+          "standalone_elf": true,
+          "standalone_runtime": true,
+          "successful_diagnostics": true,
+          "successful_processes": true,
+          "warm_cargo_exit": 0,
+          "warm_children": [
+            [
+              "app",
+              false
+            ]
+          ],
+          "warm_intentional_error": 1,
+          "warm_standalone_exit": 0
+        },
+        "caller-restore": {
+          "artifacts": {
+            "bundle": {
+              ".rlib": false,
+              ".rmeta": true
+            },
+            "facade": {
+              ".rlib": false,
+              ".rmeta": true
+            },
+            "leaf": {
+              ".rlib": false,
+              ".rmeta": true
+            }
+          },
+          "cargo_elf": true,
+          "cargo_runtime": true,
+          "cold_cargo_exit": 0,
+          "cold_children": [
+            [
+              "app",
+              false
+            ],
+            [
+              "bundle",
+              false
+            ],
+            [
+              "facade",
+              false
+            ],
+            [
+              "leaf",
+              false
+            ]
+          ],
+          "cold_intentional_error": 1,
+          "cold_standalone_exit": 0,
+          "error_codes": [
+            "E0061",
+            "E0063"
+          ],
+          "failing_diagnostics": true,
+          "ice": false,
+          "standalone_elf": true,
+          "standalone_runtime": true,
+          "successful_diagnostics": true,
+          "successful_processes": true,
+          "warm_cargo_exit": 0,
+          "warm_children": [
+            [
+              "app",
+              false
+            ]
+          ],
+          "warm_intentional_error": 1,
+          "warm_standalone_exit": 0
+        }
+      },
+      "stages": {
+        "caller": {
+          "actual_children": [
+            [
+              "app",
+              false
+            ]
+          ],
+          "cargo_exit": 0,
+          "public_hash": "68c15c4856acebb359e35d71d2155d5c"
+        },
+        "caller-restore": {
+          "actual_children": [
+            [
+              "app",
+              false
+            ]
+          ],
+          "cargo_exit": 0,
+          "public_hash": "68c15c4856acebb359e35d71d2155d5c"
+        },
+        "change": {
+          "actual_children": [
+            [
+              "app",
+              true
+            ],
+            [
+              "leaf",
+              false
+            ]
+          ],
+          "cargo_exit": 0,
+          "public_hash": "68c15c4856acebb359e35d71d2155d5c"
+        },
+        "prime": {
+          "actual_children": [
+            [
+              "app",
+              false
+            ],
+            [
+              "bundle",
+              false
+            ],
+            [
+              "facade",
+              false
+            ],
+            [
+              "leaf",
+              false
+            ]
+          ],
+          "cargo_exit": 0,
+          "public_hash": "68c15c4856acebb359e35d71d2155d5c"
+        },
+        "restore": {
+          "actual_children": [
+            [
+              "app",
+              true
+            ],
+            [
+              "leaf",
+              false
+            ]
+          ],
+          "cargo_exit": 0,
+          "public_hash": "68c15c4856acebb359e35d71d2155d5c"
+        }
+      }
+    },
+    "local-expn-disappears": {
+      "endpoints": {
+        "caller": {
+          "artifacts": {
+            "bundle": {
+              ".rlib": false,
+              ".rmeta": true
+            },
+            "facade": {
+              ".rlib": false,
+              ".rmeta": true
+            },
+            "leaf": {
+              ".rlib": false,
+              ".rmeta": true
+            }
+          },
+          "cargo_elf": true,
+          "cargo_runtime": true,
+          "cold_cargo_exit": 0,
+          "cold_children": [
+            [
+              "app",
+              false
+            ],
+            [
+              "bundle",
+              false
+            ],
+            [
+              "facade",
+              false
+            ],
+            [
+              "leaf",
+              false
+            ]
+          ],
+          "cold_intentional_error": 1,
+          "cold_standalone_exit": 0,
+          "error_codes": [
+            "E0061",
+            "E0063"
+          ],
+          "failing_diagnostics": true,
+          "ice": false,
+          "standalone_elf": true,
+          "standalone_runtime": true,
+          "successful_diagnostics": true,
+          "successful_processes": true,
+          "warm_cargo_exit": 0,
+          "warm_children": [
+            [
+              "app",
+              false
+            ]
+          ],
+          "warm_intentional_error": 1,
+          "warm_standalone_exit": 0
+        },
+        "caller-restore": {
+          "artifacts": {
+            "bundle": {
+              ".rlib": false,
+              ".rmeta": true
+            },
+            "facade": {
+              ".rlib": false,
+              ".rmeta": true
+            },
+            "leaf": {
+              ".rlib": false,
+              ".rmeta": true
+            }
+          },
+          "cargo_elf": true,
+          "cargo_runtime": true,
+          "cold_cargo_exit": 0,
+          "cold_children": [
+            [
+              "app",
+              false
+            ],
+            [
+              "bundle",
+              false
+            ],
+            [
+              "facade",
+              false
+            ],
+            [
+              "leaf",
+              false
+            ]
+          ],
+          "cold_intentional_error": 1,
+          "cold_standalone_exit": 0,
+          "error_codes": [
+            "E0061",
+            "E0063"
+          ],
+          "failing_diagnostics": true,
+          "ice": false,
+          "standalone_elf": true,
+          "standalone_runtime": true,
+          "successful_diagnostics": true,
+          "successful_processes": true,
+          "warm_cargo_exit": 0,
+          "warm_children": [
+            [
+              "app",
+              false
+            ]
+          ],
+          "warm_intentional_error": 1,
+          "warm_standalone_exit": 0
+        }
+      },
+      "stages": {
+        "caller": {
+          "actual_children": [
+            [
+              "app",
+              false
+            ]
+          ],
+          "cargo_exit": 0,
+          "public_hash": "68c15c4856acebb359e35d71d2155d5c"
+        },
+        "caller-restore": {
+          "actual_children": [
+            [
+              "app",
+              false
+            ]
+          ],
+          "cargo_exit": 0,
+          "public_hash": "68c15c4856acebb359e35d71d2155d5c"
+        },
+        "change": {
+          "actual_children": [
+            [
+              "app",
+              false
+            ],
+            [
+              "bundle",
+              false
+            ],
+            [
+              "facade",
+              false
+            ]
+          ],
+          "cargo_exit": 0,
+          "public_hash": "68c15c4856acebb359e35d71d2155d5c"
+        },
+        "prime": {
+          "actual_children": [
+            [
+              "app",
+              false
+            ],
+            [
+              "bundle",
+              false
+            ],
+            [
+              "facade",
+              false
+            ],
+            [
+              "leaf",
+              false
+            ]
+          ],
+          "cargo_exit": 0,
+          "public_hash": "68c15c4856acebb359e35d71d2155d5c"
+        },
+        "restore": {
+          "actual_children": [
+            [
+              "app",
+              false
+            ],
+            [
+              "bundle",
+              false
+            ],
+            [
+              "facade",
+              false
+            ]
+          ],
+          "cargo_exit": 0,
+          "public_hash": "68c15c4856acebb359e35d71d2155d5c"
+        }
+      }
+    },
+    "local-expn-shrink": {
+      "endpoints": {
+        "caller": {
+          "artifacts": {
+            "bundle": {
+              ".rlib": false,
+              ".rmeta": true
+            },
+            "facade": {
+              ".rlib": false,
+              ".rmeta": false
+            },
+            "leaf": {
+              ".rlib": false,
+              ".rmeta": true
+            }
+          },
+          "cargo_elf": true,
+          "cargo_runtime": true,
+          "cold_cargo_exit": 0,
+          "cold_children": [
+            [
+              "app",
+              false
+            ],
+            [
+              "bundle",
+              false
+            ],
+            [
+              "facade",
+              false
+            ],
+            [
+              "leaf",
+              false
+            ]
+          ],
+          "cold_intentional_error": 1,
+          "cold_standalone_exit": 0,
+          "error_codes": [
+            "E0061",
+            "E0063"
+          ],
+          "failing_diagnostics": true,
+          "ice": false,
+          "standalone_elf": true,
+          "standalone_runtime": true,
+          "successful_diagnostics": true,
+          "successful_processes": true,
+          "warm_cargo_exit": 0,
+          "warm_children": [
+            [
+              "app",
+              false
+            ]
+          ],
+          "warm_intentional_error": 1,
+          "warm_standalone_exit": 0
+        },
+        "caller-restore": {
+          "artifacts": {
+            "bundle": {
+              ".rlib": false,
+              ".rmeta": true
+            },
+            "facade": {
+              ".rlib": false,
+              ".rmeta": true
+            },
+            "leaf": {
+              ".rlib": false,
+              ".rmeta": true
+            }
+          },
+          "cargo_elf": true,
+          "cargo_runtime": true,
+          "cold_cargo_exit": 0,
+          "cold_children": [
+            [
+              "app",
+              false
+            ],
+            [
+              "bundle",
+              false
+            ],
+            [
+              "facade",
+              false
+            ],
+            [
+              "leaf",
+              false
+            ]
+          ],
+          "cold_intentional_error": 1,
+          "cold_standalone_exit": 0,
+          "error_codes": [
+            "E0061",
+            "E0063"
+          ],
+          "failing_diagnostics": true,
+          "ice": false,
+          "standalone_elf": true,
+          "standalone_runtime": true,
+          "successful_diagnostics": true,
+          "successful_processes": true,
+          "warm_cargo_exit": 0,
+          "warm_children": [
+            [
+              "app",
+              false
+            ]
+          ],
+          "warm_intentional_error": 1,
+          "warm_standalone_exit": 0
+        }
+      },
+      "stages": {
+        "caller": {
+          "actual_children": [
+            [
+              "app",
+              false
+            ]
+          ],
+          "cargo_exit": 0,
+          "public_hash": "68c15c4856acebb359e35d71d2155d5c"
+        },
+        "caller-restore": {
+          "actual_children": [
+            [
+              "app",
+              false
+            ]
+          ],
+          "cargo_exit": 0,
+          "public_hash": "68c15c4856acebb359e35d71d2155d5c"
+        },
+        "change": {
+          "actual_children": [
+            [
+              "app",
+              true
+            ],
+            [
+              "bundle",
+              false
+            ]
+          ],
+          "cargo_exit": 0,
+          "public_hash": "68c15c4856acebb359e35d71d2155d5c"
+        },
+        "prime": {
+          "actual_children": [
+            [
+              "app",
+              false
+            ],
+            [
+              "bundle",
+              false
+            ],
+            [
+              "facade",
+              false
+            ],
+            [
+              "leaf",
+              false
+            ]
+          ],
+          "cargo_exit": 0,
+          "public_hash": "68c15c4856acebb359e35d71d2155d5c"
+        },
+        "restore": {
+          "actual_children": [
+            [
+              "app",
+              true
+            ],
+            [
+              "bundle",
+              false
+            ]
+          ],
+          "cargo_exit": 0,
+          "public_hash": "68c15c4856acebb359e35d71d2155d5c"
+        }
+      }
+    },
+    "newline": {
+      "endpoints": {
+        "caller": {
+          "artifacts": {
+            "bundle": {
+              ".rlib": false,
+              ".rmeta": true
+            },
+            "leaf": {
+              ".rlib": false,
+              ".rmeta": true
+            }
+          },
+          "cargo_elf": true,
+          "cargo_runtime": true,
+          "cold_cargo_exit": 0,
+          "cold_children": [
+            [
+              "app",
+              false
+            ],
+            [
+              "bundle",
+              false
+            ],
+            [
+              "leaf",
+              false
+            ]
+          ],
+          "cold_intentional_error": 1,
+          "cold_standalone_exit": 0,
+          "error_codes": [
+            "E0061",
+            "E0063"
+          ],
+          "failing_diagnostics": true,
+          "ice": false,
+          "standalone_elf": true,
+          "standalone_runtime": true,
+          "successful_diagnostics": true,
+          "successful_processes": true,
+          "warm_cargo_exit": 0,
+          "warm_children": [
+            [
+              "app",
+              false
+            ]
+          ],
+          "warm_intentional_error": 1,
+          "warm_standalone_exit": 0
+        },
+        "caller-restore": {
+          "artifacts": {
+            "bundle": {
+              ".rlib": false,
+              ".rmeta": true
+            },
+            "leaf": {
+              ".rlib": false,
+              ".rmeta": true
+            }
+          },
+          "cargo_elf": true,
+          "cargo_runtime": true,
+          "cold_cargo_exit": 0,
+          "cold_children": [
+            [
+              "app",
+              false
+            ],
+            [
+              "bundle",
+              false
+            ],
+            [
+              "leaf",
+              false
+            ]
+          ],
+          "cold_intentional_error": 1,
+          "cold_standalone_exit": 0,
+          "error_codes": [
+            "E0061",
+            "E0063"
+          ],
+          "failing_diagnostics": true,
+          "ice": false,
+          "standalone_elf": true,
+          "standalone_runtime": true,
+          "successful_diagnostics": true,
+          "successful_processes": true,
+          "warm_cargo_exit": 0,
+          "warm_children": [
+            [
+              "app",
+              false
+            ]
+          ],
+          "warm_intentional_error": 1,
+          "warm_standalone_exit": 0
+        }
+      },
+      "stages": {
+        "caller": {
+          "actual_children": [
+            [
+              "app",
+              false
+            ]
+          ],
+          "cargo_exit": 0,
+          "public_hash": "683aba42f9f155e480bf71d037426bd1"
+        },
+        "caller-restore": {
+          "actual_children": [
+            [
+              "app",
+              false
+            ]
+          ],
+          "cargo_exit": 0,
+          "public_hash": "edb93aceb17c9d7986e6ee88e353cbf9"
+        },
+        "change": {
+          "actual_children": [
+            [
+              "app",
+              false
+            ],
+            [
+              "bundle",
+              false
+            ],
+            [
+              "leaf",
+              false
+            ]
+          ],
+          "cargo_exit": 0,
+          "public_hash": "683aba42f9f155e480bf71d037426bd1"
+        },
+        "prime": {
+          "actual_children": [
+            [
+              "app",
+              false
+            ],
+            [
+              "bundle",
+              false
+            ],
+            [
+              "leaf",
+              false
+            ]
+          ],
+          "cargo_exit": 0,
+          "public_hash": "edb93aceb17c9d7986e6ee88e353cbf9"
+        },
+        "restore": {
+          "actual_children": [
+            [
+              "app",
+              false
+            ],
+            [
+              "bundle",
+              false
+            ],
+            [
+              "leaf",
+              false
+            ]
+          ],
+          "cargo_exit": 0,
+          "public_hash": "edb93aceb17c9d7986e6ee88e353cbf9"
+        }
+      }
+    },
+    "types": {
+      "endpoints": {
+        "caller": {
+          "artifacts": {
+            "bundle": {
+              ".rlib": false,
+              ".rmeta": true
+            },
+            "leaf": {
+              ".rlib": false,
+              ".rmeta": true
+            }
+          },
+          "cargo_elf": true,
+          "cargo_runtime": true,
+          "cold_cargo_exit": 0,
+          "cold_children": [
+            [
+              "app",
+              false
+            ],
+            [
+              "bundle",
+              false
+            ],
+            [
+              "leaf",
+              false
+            ]
+          ],
+          "cold_intentional_error": 1,
+          "cold_standalone_exit": 0,
+          "error_codes": [
+            "E0061",
+            "E0063"
+          ],
+          "failing_diagnostics": true,
+          "ice": false,
+          "standalone_elf": true,
+          "standalone_runtime": true,
+          "successful_diagnostics": true,
+          "successful_processes": true,
+          "warm_cargo_exit": 0,
+          "warm_children": [
+            [
+              "app",
+              false
+            ]
+          ],
+          "warm_intentional_error": 1,
+          "warm_standalone_exit": 0
+        },
+        "caller-restore": {
+          "artifacts": {
+            "bundle": {
+              ".rlib": false,
+              ".rmeta": true
+            },
+            "leaf": {
+              ".rlib": false,
+              ".rmeta": true
+            }
+          },
+          "cargo_elf": true,
+          "cargo_runtime": true,
+          "cold_cargo_exit": 0,
+          "cold_children": [
+            [
+              "app",
+              false
+            ],
+            [
+              "bundle",
+              false
+            ],
+            [
+              "leaf",
+              false
+            ]
+          ],
+          "cold_intentional_error": 1,
+          "cold_standalone_exit": 0,
+          "error_codes": [
+            "E0061",
+            "E0063"
+          ],
+          "failing_diagnostics": true,
+          "ice": false,
+          "standalone_elf": true,
+          "standalone_runtime": true,
+          "successful_diagnostics": true,
+          "successful_processes": true,
+          "warm_cargo_exit": 0,
+          "warm_children": [
+            [
+              "app",
+              false
+            ]
+          ],
+          "warm_intentional_error": 1,
+          "warm_standalone_exit": 0
+        }
+      },
+      "stages": {
+        "caller": {
+          "actual_children": [
+            [
+              "app",
+              false
+            ]
+          ],
+          "cargo_exit": 0,
+          "public_hash": "57249bc9c9051258753db7e130bdb62d"
+        },
+        "caller-restore": {
+          "actual_children": [
+            [
+              "app",
+              false
+            ]
+          ],
+          "cargo_exit": 0,
+          "public_hash": "57249bc9c9051258753db7e130bdb62d"
+        },
+        "change": {
+          "actual_children": [
+            [
+              "app",
+              true
+            ],
+            [
+              "leaf",
+              false
+            ]
+          ],
+          "cargo_exit": 0,
+          "public_hash": "57249bc9c9051258753db7e130bdb62d"
+        },
+        "prime": {
+          "actual_children": [
+            [
+              "app",
+              false
+            ],
+            [
+              "bundle",
+              false
+            ],
+            [
+              "leaf",
+              false
+            ]
+          ],
+          "cargo_exit": 0,
+          "public_hash": "57249bc9c9051258753db7e130bdb62d"
+        },
+        "restore": {
+          "actual_children": [
+            [
+              "app",
+              true
+            ],
+            [
+              "leaf",
+              false
+            ]
+          ],
+          "cargo_exit": 0,
+          "public_hash": "57249bc9c9051258753db7e130bdb62d"
+        }
+      }
+    }
+  },
+  "cases": 12,
+  "driver": {
+    "cargo": "9be48c4b02669047975662348a3f134d0abcd247d70d13c55ab024f806320590",
+    "driver": "3e4b168966e111b52ad1a942d364ec1335cf1cfa994f4208b0909ca215b589d2",
+    "frontend": "4fa9a18b77430bcc416e88561b6fe5797d98b996a7698b9f3bd11d4e7817a19f"
+  },
+  "issues": [],
+  "warm_and_cold_paired_endpoints": 24
+}
