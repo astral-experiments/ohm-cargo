@@ -1,0 +1,35 @@
+{
+  "replay1-baseline": {
+    "cargo": "dd5cab154b8dcd09ccc2753160d314cade80979b2d055ee66aa9e2217e05e7e1",
+    "cases": {
+      "span-after": {
+        "callers": {
+          "empty/from-empty": "8:#0 bytes(374517..374527):379",
+          "empty/from-warm": "E0460",
+          "warm/from-empty": "E0460",
+          "warm/from-warm": "8:#0 bytes(374520..374530):379"
+        },
+        "metadata_equal": false
+      },
+      "track-after": {
+        "callers": {
+          "empty/from-empty": "8:#0 bytes(374523..374533):379",
+          "empty/from-warm": "E0460",
+          "warm/from-empty": "E0460",
+          "warm/from-warm": "8:#0 bytes(374526..374536):379"
+        },
+        "metadata_equal": false
+      },
+      "track-before": {
+        "callers": {
+          "empty/from-empty": "8:#0 bytes(374523..374533):379",
+          "empty/from-warm": "8:#0 bytes(374523..374533):379",
+          "warm/from-empty": "8:#0 bytes(374523..374533):379",
+          "warm/from-warm": "8:#0 bytes(374523..374533):379"
+        },
+        "metadata_equal": true
+      }
+    },
+    "driver": "60c5b4e6e5005ecdd895dede45bcff5b6785be4fc1c5d85af2bfc67e79392c02"
+  }
+}
