@@ -1,0 +1,362 @@
+[
+  {
+    "mode": "build",
+    "control": "shipped",
+    "blocks": 18,
+    "orders": 6,
+    "assignments": 8000,
+    "control_median_s": 3.9319371935,
+    "candidate_median_s": 3.2375049625,
+    "reduction_pct": 15.982239306924617,
+    "bootstrap95": [
+      9.713418404564688,
+      21.55054947980061
+    ],
+    "faster_blocks": 14,
+    "exact_p": 0.00175,
+    "gate": {
+      "shipped": [
+        {
+          "full_links": 5,
+          "wild_events": {},
+          "processes": {
+            "rustc_full": 2,
+            "rustc_link_only": 4,
+            "wild": 5
+          },
+          "roster_sha": "97f9aa0390c8981fa6ab6acb6bed1212a0d47ac1810fe040d96b43b101aeff22"
+        },
+        {
+          "full_links": 5,
+          "wild_events": {},
+          "processes": {
+            "rustc_full": 2,
+            "rustc_link_only": 4,
+            "wild": 5
+          },
+          "roster_sha": "97f9aa0390c8981fa6ab6acb6bed1212a0d47ac1810fe040d96b43b101aeff22"
+        }
+      ],
+      "parent": [
+        {
+          "full_links": 5,
+          "wild_events": {},
+          "processes": {
+            "rustc_full": 2,
+            "rustc_link_only": 4,
+            "wild": 5
+          },
+          "roster_sha": "97f9aa0390c8981fa6ab6acb6bed1212a0d47ac1810fe040d96b43b101aeff22"
+        },
+        {
+          "full_links": 5,
+          "wild_events": {},
+          "processes": {
+            "rustc_full": 2,
+            "rustc_link_only": 4,
+            "wild": 5
+          },
+          "roster_sha": "97f9aa0390c8981fa6ab6acb6bed1212a0d47ac1810fe040d96b43b101aeff22"
+        }
+      ],
+      "candidate": [
+        {
+          "full_links": 2,
+          "wild_events": {
+            "hit": 3,
+            "miss": 1
+          },
+          "processes": {
+            "rustc_full": 2,
+            "rustc_link_only": 4,
+            "wild": 5
+          },
+          "roster_sha": "97f9aa0390c8981fa6ab6acb6bed1212a0d47ac1810fe040d96b43b101aeff22"
+        },
+        {
+          "full_links": 2,
+          "wild_events": {
+            "hit": 3,
+            "miss": 1
+          },
+          "processes": {
+            "rustc_full": 2,
+            "rustc_link_only": 4,
+            "wild": 5
+          },
+          "roster_sha": "97f9aa0390c8981fa6ab6acb6bed1212a0d47ac1810fe040d96b43b101aeff22"
+        }
+      ]
+    },
+    "holm_p_four_tests": 0.007
+  },
+  {
+    "mode": "build",
+    "control": "parent",
+    "blocks": 18,
+    "orders": 6,
+    "assignments": 8000,
+    "control_median_s": 3.986465806,
+    "candidate_median_s": 3.2375049625,
+    "reduction_pct": 16.071824525065935,
+    "bootstrap95": [
+      9.795695878560807,
+      21.542212138864315
+    ],
+    "faster_blocks": 16,
+    "exact_p": 0.002,
+    "gate": {
+      "shipped": [
+        {
+          "full_links": 5,
+          "wild_events": {},
+          "processes": {
+            "rustc_full": 2,
+            "rustc_link_only": 4,
+            "wild": 5
+          },
+          "roster_sha": "97f9aa0390c8981fa6ab6acb6bed1212a0d47ac1810fe040d96b43b101aeff22"
+        },
+        {
+          "full_links": 5,
+          "wild_events": {},
+          "processes": {
+            "rustc_full": 2,
+            "rustc_link_only": 4,
+            "wild": 5
+          },
+          "roster_sha": "97f9aa0390c8981fa6ab6acb6bed1212a0d47ac1810fe040d96b43b101aeff22"
+        }
+      ],
+      "parent": [
+        {
+          "full_links": 5,
+          "wild_events": {},
+          "processes": {
+            "rustc_full": 2,
+            "rustc_link_only": 4,
+            "wild": 5
+          },
+          "roster_sha": "97f9aa0390c8981fa6ab6acb6bed1212a0d47ac1810fe040d96b43b101aeff22"
+        },
+        {
+          "full_links": 5,
+          "wild_events": {},
+          "processes": {
+            "rustc_full": 2,
+            "rustc_link_only": 4,
+            "wild": 5
+          },
+          "roster_sha": "97f9aa0390c8981fa6ab6acb6bed1212a0d47ac1810fe040d96b43b101aeff22"
+        }
+      ],
+      "candidate": [
+        {
+          "full_links": 2,
+          "wild_events": {
+            "hit": 3,
+            "miss": 1
+          },
+          "processes": {
+            "rustc_full": 2,
+            "rustc_link_only": 4,
+            "wild": 5
+          },
+          "roster_sha": "97f9aa0390c8981fa6ab6acb6bed1212a0d47ac1810fe040d96b43b101aeff22"
+        },
+        {
+          "full_links": 2,
+          "wild_events": {
+            "hit": 3,
+            "miss": 1
+          },
+          "processes": {
+            "rustc_full": 2,
+            "rustc_link_only": 4,
+            "wild": 5
+          },
+          "roster_sha": "97f9aa0390c8981fa6ab6acb6bed1212a0d47ac1810fe040d96b43b101aeff22"
+        }
+      ]
+    },
+    "holm_p_four_tests": 0.007
+  },
+  {
+    "mode": "test",
+    "control": "shipped",
+    "blocks": 18,
+    "orders": 6,
+    "assignments": 8000,
+    "control_median_s": 5.988565946,
+    "candidate_median_s": 6.1170685475,
+    "reduction_pct": -1.1300257917556733,
+    "bootstrap95": [
+      -3.9666366107848905,
+      1.7635823443963305
+    ],
+    "faster_blocks": 8,
+    "exact_p": 0.57025,
+    "gate": {
+      "shipped": [
+        {
+          "full_links": 14,
+          "wild_events": {},
+          "processes": {
+            "rustc_full": 4,
+            "rustc_link_only": 11,
+            "wild": 14
+          },
+          "roster_sha": "07f5421bfdaf0f0b868400592bd3eb8fb1fbe0941e440cd2a13929dc5fc5cb26"
+        },
+        {
+          "full_links": 14,
+          "wild_events": {},
+          "processes": {
+            "rustc_full": 4,
+            "rustc_link_only": 11,
+            "wild": 14
+          },
+          "roster_sha": "07f5421bfdaf0f0b868400592bd3eb8fb1fbe0941e440cd2a13929dc5fc5cb26"
+        }
+      ],
+      "parent": [
+        {
+          "full_links": 14,
+          "wild_events": {},
+          "processes": {
+            "rustc_full": 4,
+            "rustc_link_only": 11,
+            "wild": 14
+          },
+          "roster_sha": "07f5421bfdaf0f0b868400592bd3eb8fb1fbe0941e440cd2a13929dc5fc5cb26"
+        },
+        {
+          "full_links": 14,
+          "wild_events": {},
+          "processes": {
+            "rustc_full": 4,
+            "rustc_link_only": 11,
+            "wild": 14
+          },
+          "roster_sha": "07f5421bfdaf0f0b868400592bd3eb8fb1fbe0941e440cd2a13929dc5fc5cb26"
+        }
+      ],
+      "candidate": [
+        {
+          "full_links": 13,
+          "wild_events": {
+            "hit": 1
+          },
+          "processes": {
+            "rustc_full": 4,
+            "rustc_link_only": 11,
+            "wild": 14
+          },
+          "roster_sha": "07f5421bfdaf0f0b868400592bd3eb8fb1fbe0941e440cd2a13929dc5fc5cb26"
+        },
+        {
+          "full_links": 13,
+          "wild_events": {
+            "hit": 1
+          },
+          "processes": {
+            "rustc_full": 4,
+            "rustc_link_only": 11,
+            "wild": 14
+          },
+          "roster_sha": "07f5421bfdaf0f0b868400592bd3eb8fb1fbe0941e440cd2a13929dc5fc5cb26"
+        }
+      ]
+    },
+    "holm_p_four_tests": 0.57025
+  },
+  {
+    "mode": "test",
+    "control": "parent",
+    "blocks": 18,
+    "orders": 6,
+    "assignments": 8000,
+    "control_median_s": 5.9292461875,
+    "candidate_median_s": 6.1170685475,
+    "reduction_pct": -2.1156193580408766,
+    "bootstrap95": [
+      -4.684090713718181,
+      0.4513257939666948
+    ],
+    "faster_blocks": 5,
+    "exact_p": 0.235,
+    "gate": {
+      "shipped": [
+        {
+          "full_links": 14,
+          "wild_events": {},
+          "processes": {
+            "rustc_full": 4,
+            "rustc_link_only": 11,
+            "wild": 14
+          },
+          "roster_sha": "07f5421bfdaf0f0b868400592bd3eb8fb1fbe0941e440cd2a13929dc5fc5cb26"
+        },
+        {
+          "full_links": 14,
+          "wild_events": {},
+          "processes": {
+            "rustc_full": 4,
+            "rustc_link_only": 11,
+            "wild": 14
+          },
+          "roster_sha": "07f5421bfdaf0f0b868400592bd3eb8fb1fbe0941e440cd2a13929dc5fc5cb26"
+        }
+      ],
+      "parent": [
+        {
+          "full_links": 14,
+          "wild_events": {},
+          "processes": {
+            "rustc_full": 4,
+            "rustc_link_only": 11,
+            "wild": 14
+          },
+          "roster_sha": "07f5421bfdaf0f0b868400592bd3eb8fb1fbe0941e440cd2a13929dc5fc5cb26"
+        },
+        {
+          "full_links": 14,
+          "wild_events": {},
+          "processes": {
+            "rustc_full": 4,
+            "rustc_link_only": 11,
+            "wild": 14
+          },
+          "roster_sha": "07f5421bfdaf0f0b868400592bd3eb8fb1fbe0941e440cd2a13929dc5fc5cb26"
+        }
+      ],
+      "candidate": [
+        {
+          "full_links": 13,
+          "wild_events": {
+            "hit": 1
+          },
+          "processes": {
+            "rustc_full": 4,
+            "rustc_link_only": 11,
+            "wild": 14
+          },
+          "roster_sha": "07f5421bfdaf0f0b868400592bd3eb8fb1fbe0941e440cd2a13929dc5fc5cb26"
+        },
+        {
+          "full_links": 13,
+          "wild_events": {
+            "hit": 1
+          },
+          "processes": {
+            "rustc_full": 4,
+            "rustc_link_only": 11,
+            "wild": 14
+          },
+          "roster_sha": "07f5421bfdaf0f0b868400592bd3eb8fb1fbe0941e440cd2a13929dc5fc5cb26"
+        }
+      ]
+    },
+    "holm_p_four_tests": 0.47
+  }
+]
