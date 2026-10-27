@@ -1,0 +1,194 @@
+{
+  "version": 2,
+  "source": {
+    "parent": "3bb0dac23569fb607e781ca8e401c6eba71b14dd",
+    "child": "c1eaf6ff72875a68e2585d50deaff220ea1d8ce9",
+    "complete_diff_sha256": "608a751103bf1f118e360981b807923f4f35ae2457000e2bde79173828da49a2",
+    "selection": "Lowest preselected digest among ten qualifying complete private parser edits. The original parent and child are used."
+  },
+  "subjects": {
+    "A": "051b9d3f5861f984faa0f8c1d2ab9b5c28e483a05c728051de837291c83fd518",
+    "B": "55e123a9e87f16a449d260ab65449eab743cd30ba356a7f10ffdd1fa6f8a2484",
+    "shared_rustc_frontend": "4fa9a18b77430bcc416e88561b6fe5797d98b996a7698b9f3bd11d4e7817a19f",
+    "shared_cargo": "71da9dfcb3ba440297f84705ff7e3a676634ced7d7b6ca9b525a439b7f748f58"
+  },
+  "host": "charlie-oss-8",
+  "cpus": "20-23",
+  "cargo_jobs": 4,
+  "ordinary_profile": "Ruff original dev/test defaults, unoptimized + full debuginfo. Native Cargo flags on a fixed four-CPU allocation. The harness adds --locked --offline --message-format=json and the test mode adds --no-run.",
+  "package": "ruff_python_formatter",
+  "endpoint_units": {
+    "build": 94,
+    "test": 107
+  },
+  "design": "16 blocks per endpoint, four timed commands each. Exactly eight ABBA and eight BAAB per endpoint. Independently shuffled then interleaved. Each command receives a disposable copy of the matching independently warmed arm; an unscored no-op validates it before the full edit.",
+  "timing": "Native Python CLOCK_MONOTONIC nanoseconds around one complete Cargo process, including its consistent bwrap/taskset launch and the rustc argv recorder. Setup, untimed no-op, output inspection and execution of the CLI verification samples are outside timing.",
+  "required_guard": "All original products fresh with zero rustcs. On each edit full/relink counts must be A build 3/0, A test 7/0, B build 1/1, B test 1/4. All expected 94/107 units must complete and the one/five binaries must match their frozen per-endpoint ELF section digest across treatments except .strtab and .note.gnu.build-id, which varied in unscored unchanged-compiler repeats. Every compiler diagnostic and the four independent CLI semantic samples must match the reference for that source. Raw ELF digests are still retained.",
+  "statistics": "For each block subtract the mean log time of its two candidate commands from the mean log time of its two control commands. Report 100*(1-exp(-mean(blocks))), raw endpoint medians, and a two-sided exact randomization test under all C(16,8) permitted endpoint allocations using absolute mean log ratio. Two endpoint P-values receive Holm correction at family alpha 0.05. Use 20,000 within-order stratified resamples of matched blocks to report the 95% percentile interval of the same effect; seed ohm-private-native-history-ci-v1 separately per endpoint.",
+  "stopping": "Collect every planned block without result-dependent stopping. A failed guard stops scoring; retain and disclose failed rows and diagnose before a separately frozen restart. No substitution of edits or endpoints.",
+  "assignment_seed": "ohm-native-private-historical-c1eaf6ff-v1-20261027",
+  "blocks": [
+    {
+      "endpoint": "test",
+      "within_endpoint": 14,
+      "order": "ABBA"
+    },
+    {
+      "endpoint": "test",
+      "within_endpoint": 2,
+      "order": "ABBA"
+    },
+    {
+      "endpoint": "test",
+      "within_endpoint": 10,
+      "order": "ABBA"
+    },
+    {
+      "endpoint": "build",
+      "within_endpoint": 10,
+      "order": "ABBA"
+    },
+    {
+      "endpoint": "build",
+      "within_endpoint": 3,
+      "order": "BAAB"
+    },
+    {
+      "endpoint": "test",
+      "within_endpoint": 6,
+      "order": "ABBA"
+    },
+    {
+      "endpoint": "build",
+      "within_endpoint": 5,
+      "order": "ABBA"
+    },
+    {
+      "endpoint": "build",
+      "within_endpoint": 7,
+      "order": "ABBA"
+    },
+    {
+      "endpoint": "build",
+      "within_endpoint": 16,
+      "order": "BAAB"
+    },
+    {
+      "endpoint": "build",
+      "within_endpoint": 8,
+      "order": "BAAB"
+    },
+    {
+      "endpoint": "build",
+      "within_endpoint": 2,
+      "order": "BAAB"
+    },
+    {
+      "endpoint": "test",
+      "within_endpoint": 8,
+      "order": "BAAB"
+    },
+    {
+      "endpoint": "build",
+      "within_endpoint": 9,
+      "order": "ABBA"
+    },
+    {
+      "endpoint": "build",
+      "within_endpoint": 14,
+      "order": "BAAB"
+    },
+    {
+      "endpoint": "test",
+      "within_endpoint": 15,
+      "order": "ABBA"
+    },
+    {
+      "endpoint": "build",
+      "within_endpoint": 6,
+      "order": "BAAB"
+    },
+    {
+      "endpoint": "test",
+      "within_endpoint": 7,
+      "order": "BAAB"
+    },
+    {
+      "endpoint": "test",
+      "within_endpoint": 9,
+      "order": "BAAB"
+    },
+    {
+      "endpoint": "build",
+      "within_endpoint": 11,
+      "order": "ABBA"
+    },
+    {
+      "endpoint": "test",
+      "within_endpoint": 13,
+      "order": "BAAB"
+    },
+    {
+      "endpoint": "build",
+      "within_endpoint": 12,
+      "order": "BAAB"
+    },
+    {
+      "endpoint": "test",
+      "within_endpoint": 16,
+      "order": "BAAB"
+    },
+    {
+      "endpoint": "build",
+      "within_endpoint": 15,
+      "order": "ABBA"
+    },
+    {
+      "endpoint": "build",
+      "within_endpoint": 1,
+      "order": "BAAB"
+    },
+    {
+      "endpoint": "build",
+      "within_endpoint": 4,
+      "order": "ABBA"
+    },
+    {
+      "endpoint": "test",
+      "within_endpoint": 3,
+      "order": "BAAB"
+    },
+    {
+      "endpoint": "test",
+      "within_endpoint": 12,
+      "order": "ABBA"
+    },
+    {
+      "endpoint": "test",
+      "within_endpoint": 1,
+      "order": "BAAB"
+    },
+    {
+      "endpoint": "test",
+      "within_endpoint": 4,
+      "order": "ABBA"
+    },
+    {
+      "endpoint": "test",
+      "within_endpoint": 11,
+      "order": "BAAB"
+    },
+    {
+      "endpoint": "test",
+      "within_endpoint": 5,
+      "order": "ABBA"
+    },
+    {
+      "endpoint": "build",
+      "within_endpoint": 13,
+      "order": "ABBA"
+    }
+  ],
+  "previous_plan_sha256": "bbefecde3358a05a6a863bf064f6d0d0dabc4246b173707d34584f7ee421ba0b",
+  "guard_clarification": "Before scoring, an unscored cross-arm guard found a single emission-order distinction among 270 historical Cargo test warnings. For the mismatched_lifetime_syntaxes default-lint note only, the spanless note may be attached to a different warning from the same package, target and lint. Compare its complete JSON payload and count per package and target separately, remove exactly its one rendered note line from that warning, and compare all other diagnostic JSON including rendered lines, spans, suggestions, paths, child notes and counts exactly. Keep original full-JSON hashes and note locations. All case, subject, command, block, endpoint, order, statistic and exclusion choices remain exactly those in v1. No scored observations preceded this clarification."
+}

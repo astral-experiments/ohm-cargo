@@ -1,0 +1,446 @@
+{
+  "candidate/late-edited/build": {
+    "api": [
+      "{\"version\":1,\"value\":\"5868041630850c6f78fa1a7b58a1c024\"}"
+    ],
+    "diagnostics": 250,
+    "diagnostics_raw_sha256": "6ff52718505dcea61160c36ea59b91170b555c7378a6234d0dd7a7a37801f3fe",
+    "diagnostics_sha256": "2bba73449d9cd2232b9af55b54df6461f8d6d54ab129e3bef091af3e553e14ec",
+    "dirty": 3,
+    "elapsed_ns": 1862993909,
+    "full": 1,
+    "link_only": 1,
+    "lint_note_locations": [
+      [
+        "ruff_formatter",
+        "crates/ruff_formatter/src/lib.rs",
+        196
+      ],
+      [
+        "ruff_python_ast",
+        "crates/ruff_python_ast/src/comparable.rs",
+        1711
+      ],
+      [
+        "ruff_python_formatter",
+        "crates/ruff_python_formatter/src/comments/mod.rs",
+        361
+      ],
+      [
+        "ruff_python_parser",
+        "crates/ruff_python_parser/src/lib.rs",
+        375
+      ],
+      [
+        "ruff_source_file",
+        "crates/ruff_source_file/src/lib.rs",
+        181
+      ],
+      [
+        "ruff_source_file",
+        "crates/ruff_source_file/src/lib.rs",
+        181
+      ]
+    ],
+    "products": 1,
+    "raw_elf": {
+      "ruff_python_formatter": "2fd23952a7579540ec95f1de2a0061dfc9b026417c455f96a97bf05b8b8ebeab"
+    },
+    "sections_sha256": "b23f4edc5498800294f602c7d6e8281f27cd5bbe247d5d1278fc2b7223076261",
+    "semantics_sha256": "e517ceee53b5ca68ab305824adff0201b2be9855cd02b36cddcba16694b7331e",
+    "units": 94
+  },
+  "candidate/late-edited/test": {
+    "api": [
+      "{\"version\":1,\"value\":\"5868041630850c6f78fa1a7b58a1c024\"}"
+    ],
+    "diagnostics": 270,
+    "diagnostics_raw_sha256": "e9e90a84052044deb6374310244b9d354384d696e9f29c24fc0405a2d5bb15dd",
+    "diagnostics_sha256": "4f5b1ad35aa284f4ee6ea3f6410365119745161b6c13a3b3805c1992b0be59db",
+    "dirty": 7,
+    "elapsed_ns": 2084371851,
+    "full": 1,
+    "link_only": 4,
+    "lint_note_locations": [
+      [
+        "ruff_formatter",
+        "crates/ruff_formatter/src/lib.rs",
+        196
+      ],
+      [
+        "ruff_python_ast",
+        "crates/ruff_python_ast/src/comparable.rs",
+        1711
+      ],
+      [
+        "ruff_python_formatter",
+        "crates/ruff_python_formatter/src/comments/mod.rs",
+        361
+      ],
+      [
+        "ruff_python_formatter",
+        "crates/ruff_python_formatter/src/comments/mod.rs",
+        361
+      ],
+      [
+        "ruff_python_parser",
+        "crates/ruff_python_parser/src/lib.rs",
+        375
+      ],
+      [
+        "ruff_source_file",
+        "crates/ruff_source_file/src/lib.rs",
+        181
+      ],
+      [
+        "ruff_source_file",
+        "crates/ruff_source_file/src/lib.rs",
+        181
+      ]
+    ],
+    "products": 5,
+    "raw_elf": {
+      "normalizer-75fc832175095c40": "d3a8c934b6ed4b7b9bcc9ef08c32fae5c0085f0b422424326c28c5a77d92f7f8",
+      "ruff_python_formatter": "02d40758bb539328a29acde8a1849accdb46e9189bcf5ff75700c2422dee99c3",
+      "ruff_python_formatter-677aed5919ba807e": "d3db5159026c2b652dc2f7b6bc8fdbe6527184fe5e0b3a8d916792e31409aaa2",
+      "ruff_python_formatter-f47627620c659ef5": "2d305b32b408f9bfedfe9f653f93c41ed22d310922cada596d9a3647d999229f",
+      "ruff_python_formatter_fixtures-f5e61f34a274dd74": "db72855d897bebacb217658916dfb317d8f66d7630a10f440b4781ec2bd293cc"
+    },
+    "sections_sha256": "2fbbbff0661e8faff59c73e45de69ccd6a4788365cd6892f287ef3aa98ec0dc0",
+    "semantics_sha256": "e517ceee53b5ca68ab305824adff0201b2be9855cd02b36cddcba16694b7331e",
+    "units": 107
+  },
+  "candidate/late-original/build": {
+    "api": [
+      "{\"version\":1,\"value\":\"5868041630850c6f78fa1a7b58a1c024\"}"
+    ],
+    "diagnostics": 250,
+    "diagnostics_raw_sha256": "6ff52718505dcea61160c36ea59b91170b555c7378a6234d0dd7a7a37801f3fe",
+    "diagnostics_sha256": "2bba73449d9cd2232b9af55b54df6461f8d6d54ab129e3bef091af3e553e14ec",
+    "dirty": 0,
+    "elapsed_ns": 265277411,
+    "full": 0,
+    "link_only": 0,
+    "lint_note_locations": [
+      [
+        "ruff_formatter",
+        "crates/ruff_formatter/src/lib.rs",
+        196
+      ],
+      [
+        "ruff_python_ast",
+        "crates/ruff_python_ast/src/comparable.rs",
+        1711
+      ],
+      [
+        "ruff_python_formatter",
+        "crates/ruff_python_formatter/src/comments/mod.rs",
+        361
+      ],
+      [
+        "ruff_python_parser",
+        "crates/ruff_python_parser/src/lib.rs",
+        375
+      ],
+      [
+        "ruff_source_file",
+        "crates/ruff_source_file/src/lib.rs",
+        181
+      ],
+      [
+        "ruff_source_file",
+        "crates/ruff_source_file/src/lib.rs",
+        181
+      ]
+    ],
+    "products": 1,
+    "raw_elf": {
+      "ruff_python_formatter": "04c806ca5f4c5ac25aeb5fc54662cbd47f6de14912e399cb85849be34ed5ee90"
+    },
+    "sections_sha256": "da4c673c0db6b3a3d459978e3ad3887b9bec1707dd7461046062ffb1369bedb1",
+    "semantics_sha256": "9455e2c6c8ba2d4f0a5ee55899e58b55481710de0ac83ed89f0aecd4c341d7b4",
+    "units": 94
+  },
+  "candidate/late-original/test": {
+    "api": [
+      "{\"version\":1,\"value\":\"5868041630850c6f78fa1a7b58a1c024\"}"
+    ],
+    "diagnostics": 270,
+    "diagnostics_raw_sha256": "e9e90a84052044deb6374310244b9d354384d696e9f29c24fc0405a2d5bb15dd",
+    "diagnostics_sha256": "4f5b1ad35aa284f4ee6ea3f6410365119745161b6c13a3b3805c1992b0be59db",
+    "dirty": 0,
+    "elapsed_ns": 200992272,
+    "full": 0,
+    "link_only": 0,
+    "lint_note_locations": [
+      [
+        "ruff_formatter",
+        "crates/ruff_formatter/src/lib.rs",
+        196
+      ],
+      [
+        "ruff_python_ast",
+        "crates/ruff_python_ast/src/comparable.rs",
+        1711
+      ],
+      [
+        "ruff_python_formatter",
+        "crates/ruff_python_formatter/src/comments/mod.rs",
+        361
+      ],
+      [
+        "ruff_python_formatter",
+        "crates/ruff_python_formatter/src/comments/mod.rs",
+        361
+      ],
+      [
+        "ruff_python_parser",
+        "crates/ruff_python_parser/src/lib.rs",
+        375
+      ],
+      [
+        "ruff_source_file",
+        "crates/ruff_source_file/src/lib.rs",
+        181
+      ],
+      [
+        "ruff_source_file",
+        "crates/ruff_source_file/src/lib.rs",
+        181
+      ]
+    ],
+    "products": 5,
+    "raw_elf": {
+      "normalizer-75fc832175095c40": "d3a8c934b6ed4b7b9bcc9ef08c32fae5c0085f0b422424326c28c5a77d92f7f8",
+      "ruff_python_formatter": "04c806ca5f4c5ac25aeb5fc54662cbd47f6de14912e399cb85849be34ed5ee90",
+      "ruff_python_formatter-677aed5919ba807e": "6fb7238a382dbeabdb3519a9a45e8592f4a9fb9032b6285d5ffd90eb5420d89b",
+      "ruff_python_formatter-f47627620c659ef5": "2d305b32b408f9bfedfe9f653f93c41ed22d310922cada596d9a3647d999229f",
+      "ruff_python_formatter_fixtures-f5e61f34a274dd74": "a5bc3870d8d6193588376d745f9f91e5ea14cf6df689ddb966912b92447027e8"
+    },
+    "sections_sha256": "fef71b2c7c81786027b2ef5228f3bf3bc4b825f507f2eb0dbb3dd5fd5e9353f7",
+    "semantics_sha256": "9455e2c6c8ba2d4f0a5ee55899e58b55481710de0ac83ed89f0aecd4c341d7b4",
+    "units": 107
+  },
+  "control/late-edited/build": {
+    "api": [
+      "{\"version\":1,\"value\":\"2f998a323ee5feadf0b8e8de47773bbf\"}"
+    ],
+    "diagnostics": 250,
+    "diagnostics_raw_sha256": "6ff52718505dcea61160c36ea59b91170b555c7378a6234d0dd7a7a37801f3fe",
+    "diagnostics_sha256": "2bba73449d9cd2232b9af55b54df6461f8d6d54ab129e3bef091af3e553e14ec",
+    "dirty": 3,
+    "elapsed_ns": 2193036756,
+    "full": 3,
+    "link_only": 0,
+    "lint_note_locations": [
+      [
+        "ruff_formatter",
+        "crates/ruff_formatter/src/lib.rs",
+        196
+      ],
+      [
+        "ruff_python_ast",
+        "crates/ruff_python_ast/src/comparable.rs",
+        1711
+      ],
+      [
+        "ruff_python_formatter",
+        "crates/ruff_python_formatter/src/comments/mod.rs",
+        361
+      ],
+      [
+        "ruff_python_parser",
+        "crates/ruff_python_parser/src/lib.rs",
+        375
+      ],
+      [
+        "ruff_source_file",
+        "crates/ruff_source_file/src/lib.rs",
+        181
+      ],
+      [
+        "ruff_source_file",
+        "crates/ruff_source_file/src/lib.rs",
+        181
+      ]
+    ],
+    "products": 1,
+    "raw_elf": {
+      "ruff_python_formatter": "02d40758bb539328a29acde8a1849accdb46e9189bcf5ff75700c2422dee99c3"
+    },
+    "sections_sha256": "b23f4edc5498800294f602c7d6e8281f27cd5bbe247d5d1278fc2b7223076261",
+    "semantics_sha256": "e517ceee53b5ca68ab305824adff0201b2be9855cd02b36cddcba16694b7331e",
+    "units": 94
+  },
+  "control/late-edited/test": {
+    "api": [
+      "{\"version\":1,\"value\":\"2f998a323ee5feadf0b8e8de47773bbf\"}"
+    ],
+    "diagnostics": 270,
+    "diagnostics_raw_sha256": "f256d3e375165e2f7efaab30315de1fcbac33c6a1e9b1d2eb1912dc9c885e477",
+    "diagnostics_sha256": "4f5b1ad35aa284f4ee6ea3f6410365119745161b6c13a3b3805c1992b0be59db",
+    "dirty": 7,
+    "elapsed_ns": 3008929965,
+    "full": 7,
+    "link_only": 0,
+    "lint_note_locations": [
+      [
+        "ruff_formatter",
+        "crates/ruff_formatter/src/lib.rs",
+        196
+      ],
+      [
+        "ruff_python_ast",
+        "crates/ruff_python_ast/src/comparable.rs",
+        1711
+      ],
+      [
+        "ruff_python_formatter",
+        "crates/ruff_python_formatter/src/comments/mod.rs",
+        361
+      ],
+      [
+        "ruff_python_formatter",
+        "crates/ruff_python_formatter/src/string/normalize.rs",
+        634
+      ],
+      [
+        "ruff_python_parser",
+        "crates/ruff_python_parser/src/lib.rs",
+        375
+      ],
+      [
+        "ruff_source_file",
+        "crates/ruff_source_file/src/lib.rs",
+        181
+      ],
+      [
+        "ruff_source_file",
+        "crates/ruff_source_file/src/lib.rs",
+        181
+      ]
+    ],
+    "products": 5,
+    "raw_elf": {
+      "normalizer-75fc832175095c40": "d3a8c934b6ed4b7b9bcc9ef08c32fae5c0085f0b422424326c28c5a77d92f7f8",
+      "ruff_python_formatter": "02d40758bb539328a29acde8a1849accdb46e9189bcf5ff75700c2422dee99c3",
+      "ruff_python_formatter-677aed5919ba807e": "ca51e47af03978046e0add9242bc7d25ea81e721ddccebe8fcd5309d1acf9832",
+      "ruff_python_formatter-f47627620c659ef5": "2d305b32b408f9bfedfe9f653f93c41ed22d310922cada596d9a3647d999229f",
+      "ruff_python_formatter_fixtures-f5e61f34a274dd74": "db72855d897bebacb217658916dfb317d8f66d7630a10f440b4781ec2bd293cc"
+    },
+    "sections_sha256": "2fbbbff0661e8faff59c73e45de69ccd6a4788365cd6892f287ef3aa98ec0dc0",
+    "semantics_sha256": "e517ceee53b5ca68ab305824adff0201b2be9855cd02b36cddcba16694b7331e",
+    "units": 107
+  },
+  "control/late-original/build": {
+    "api": [
+      "{\"version\":1,\"value\":\"77c2f198c074b098994f3636e5ceee1e\"}"
+    ],
+    "diagnostics": 250,
+    "diagnostics_raw_sha256": "6ff52718505dcea61160c36ea59b91170b555c7378a6234d0dd7a7a37801f3fe",
+    "diagnostics_sha256": "2bba73449d9cd2232b9af55b54df6461f8d6d54ab129e3bef091af3e553e14ec",
+    "dirty": 0,
+    "elapsed_ns": 179770305,
+    "full": 0,
+    "link_only": 0,
+    "lint_note_locations": [
+      [
+        "ruff_formatter",
+        "crates/ruff_formatter/src/lib.rs",
+        196
+      ],
+      [
+        "ruff_python_ast",
+        "crates/ruff_python_ast/src/comparable.rs",
+        1711
+      ],
+      [
+        "ruff_python_formatter",
+        "crates/ruff_python_formatter/src/comments/mod.rs",
+        361
+      ],
+      [
+        "ruff_python_parser",
+        "crates/ruff_python_parser/src/lib.rs",
+        375
+      ],
+      [
+        "ruff_source_file",
+        "crates/ruff_source_file/src/lib.rs",
+        181
+      ],
+      [
+        "ruff_source_file",
+        "crates/ruff_source_file/src/lib.rs",
+        181
+      ]
+    ],
+    "products": 1,
+    "raw_elf": {
+      "ruff_python_formatter": "00196bc2de7fd9821bb2e3a5ce450122da0e29867f5fc199e4a5722518689e08"
+    },
+    "sections_sha256": "da4c673c0db6b3a3d459978e3ad3887b9bec1707dd7461046062ffb1369bedb1",
+    "semantics_sha256": "9455e2c6c8ba2d4f0a5ee55899e58b55481710de0ac83ed89f0aecd4c341d7b4",
+    "units": 94
+  },
+  "control/late-original/test": {
+    "api": [
+      "{\"version\":1,\"value\":\"77c2f198c074b098994f3636e5ceee1e\"}"
+    ],
+    "diagnostics": 270,
+    "diagnostics_raw_sha256": "e9e90a84052044deb6374310244b9d354384d696e9f29c24fc0405a2d5bb15dd",
+    "diagnostics_sha256": "4f5b1ad35aa284f4ee6ea3f6410365119745161b6c13a3b3805c1992b0be59db",
+    "dirty": 0,
+    "elapsed_ns": 233608005,
+    "full": 0,
+    "link_only": 0,
+    "lint_note_locations": [
+      [
+        "ruff_formatter",
+        "crates/ruff_formatter/src/lib.rs",
+        196
+      ],
+      [
+        "ruff_python_ast",
+        "crates/ruff_python_ast/src/comparable.rs",
+        1711
+      ],
+      [
+        "ruff_python_formatter",
+        "crates/ruff_python_formatter/src/comments/mod.rs",
+        361
+      ],
+      [
+        "ruff_python_formatter",
+        "crates/ruff_python_formatter/src/comments/mod.rs",
+        361
+      ],
+      [
+        "ruff_python_parser",
+        "crates/ruff_python_parser/src/lib.rs",
+        375
+      ],
+      [
+        "ruff_source_file",
+        "crates/ruff_source_file/src/lib.rs",
+        181
+      ],
+      [
+        "ruff_source_file",
+        "crates/ruff_source_file/src/lib.rs",
+        181
+      ]
+    ],
+    "products": 5,
+    "raw_elf": {
+      "normalizer-75fc832175095c40": "d3a8c934b6ed4b7b9bcc9ef08c32fae5c0085f0b422424326c28c5a77d92f7f8",
+      "ruff_python_formatter": "00196bc2de7fd9821bb2e3a5ce450122da0e29867f5fc199e4a5722518689e08",
+      "ruff_python_formatter-677aed5919ba807e": "ef440889ff70b9ac75ad0724c20c29ed2b0bda16f30e13279990dfbb77bd94a5",
+      "ruff_python_formatter-f47627620c659ef5": "2d305b32b408f9bfedfe9f653f93c41ed22d310922cada596d9a3647d999229f",
+      "ruff_python_formatter_fixtures-f5e61f34a274dd74": "b3d84bd4aa7bd7d8f8f3e533caa139b9e46401b6cde9e4c861ae8474cb648ea6"
+    },
+    "sections_sha256": "fef71b2c7c81786027b2ef5228f3bf3bc4b825f507f2eb0dbb3dd5fd5e9353f7",
+    "semantics_sha256": "9455e2c6c8ba2d4f0a5ee55899e58b55481710de0ac83ed89f0aecd4c341d7b4",
+    "units": 107
+  }
+}
