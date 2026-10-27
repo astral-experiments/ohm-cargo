@@ -1,0 +1,15 @@
+{
+  "argv": [
+    "rustc",
+    "+ohm",
+    "--edition=2024",
+    "producer.rs",
+    "--extern",
+    "maker=libmaker.so",
+    "-Cincremental=/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/parse-cache-upgrade-v3/same",
+    "-Zcache-proc-macros",
+    "-Zpublic-api-hash",
+    "--emit=link,metadata"
+  ],
+  "returncode": 0
+}

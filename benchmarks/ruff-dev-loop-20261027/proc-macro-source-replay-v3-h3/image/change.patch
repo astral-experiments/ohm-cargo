@@ -1,0 +1,339 @@
+diff --git a/compiler/rustc_expand/src/proc_macro.rs b/compiler/rustc_expand/src/proc_macro.rs
+index f248d30630c5c..db2681f8419bd 100644
+--- a/compiler/rustc_expand/src/proc_macro.rs
++++ b/compiler/rustc_expand/src/proc_macro.rs
+@@ -1,15 +1,18 @@
++use std::cell::RefCell;
++
+ use rustc_ast as ast;
+ use rustc_ast::tokenstream::TokenStream;
+ use rustc_data_structures::profiling::TimingGuard;
+ use rustc_errors::ErrorGuaranteed;
+ use rustc_middle::dep_graph::DepNodeIndex;
++use rustc_middle::query::ProcMacroExpansion;
+ use rustc_middle::ty::{self, TyCtxt};
+ use rustc_parse::parser::{AllowConstBlockItems, ForceCollect, Parser};
+ use rustc_proc_macro as pm;
+ use rustc_session::Session;
+ use rustc_session::config::ProcMacroExecutionStrategy;
+ use rustc_span::profiling::SpannedEventArgRecorder;
+-use rustc_span::{LocalExpnId, Span};
++use rustc_span::{FileName, LocalExpnId, Span, Symbol};
+ 
+ use crate::base::{self, *};
+ use crate::{diagnostics, proc_macro_server};
+@@ -79,7 +82,7 @@ fn expand(
+                 let key = (ecx.current_expansion.id, annotation, annotated);
+ 
+                 QueryProcMacroExpandCtx::enter(ecx, self.client, || {
+-                    tcx.attribute_macro_expansion(key).cloned()
++                    tcx.attribute_macro_expansion(key)
+                 })
+             })
+         } else {
+@@ -119,7 +122,7 @@ fn expand(
+                 let key: (LocalExpnId, &TokenStream) = (invoc_id, input);
+ 
+                 QueryProcMacroExpandCtx::enter(ecx, self.client, move || {
+-                    tcx.derive_macro_expansion(key).cloned()
++                    tcx.derive_macro_expansion(key)
+                 })
+             })
+         } else {
+@@ -168,12 +171,12 @@ fn expand(
+ pub(super) fn provide_attribute_macro_expansion<'tcx>(
+     tcx: TyCtxt<'tcx>,
+     key: (LocalExpnId, &'tcx TokenStream, &'tcx TokenStream),
+-) -> Result<&'tcx TokenStream, ErrorGuaranteed> {
++) -> ProcMacroExpansion<'tcx, ErrorGuaranteed> {
+     let (invoc_id, annotation, annotated) = key;
+     let expn_data = invoc_id.expn_data();
+     let _ = tcx.crate_hash(expn_data.macro_def_id.unwrap().krate);
+ 
+-    QueryProcMacroExpandCtx::with(|ecx, client| {
++    QueryProcMacroExpandCtx::with(tcx, |ecx, client| {
+         expand_attribute_macro(
+             expn_data.call_site,
+             annotation.clone(),
+@@ -189,13 +192,13 @@ pub(super) fn provide_attribute_macro_expansion<'tcx>(
+ pub(super) fn provide_derive_macro_expansion<'tcx>(
+     tcx: TyCtxt<'tcx>,
+     key: (LocalExpnId, &'tcx TokenStream),
+-) -> Result<&'tcx TokenStream, ()> {
++) -> ProcMacroExpansion<'tcx, ()> {
+     let (invoc_id, input) = key;
+ 
+     // Make sure that we invalidate the query when the crate defining the proc macro changes
+     let _ = tcx.crate_hash(invoc_id.expn_data().macro_def_id.unwrap().krate);
+ 
+-    QueryProcMacroExpandCtx::with(|ecx, client| {
++    QueryProcMacroExpandCtx::with(tcx, |ecx, client| {
+         expand_derive_macro(invoc_id, input.clone(), ecx, client).map(|ts| &*tcx.arena.alloc(ts))
+     })
+ }
+@@ -260,6 +263,16 @@ fn expand_derive_macro(
+     }
+ }
+ 
++/// Remember what parsing this string adds to the source map, including on a lexer error.
++pub(super) fn proc_macro_source_code(src: &str) -> FileName {
++    if PROC_MACRO_EXPAND_CTX.is_set() {
++        PROC_MACRO_EXPAND_CTX.with(|ctx| {
++            ctx.parsed_sources.borrow_mut().as_mut().unwrap().push(Symbol::intern(src));
++        });
++    }
++    FileName::proc_macro_source_code(src)
++}
++
+ /// Prevent reuse when a queried macro observes state that its token inputs do not capture.
+ pub(super) fn invalidate_cached_expansion() {
+     if PROC_MACRO_EXPAND_CTX.is_set() {
+@@ -272,23 +285,45 @@ struct QueryProcMacroExpandCtx {
+     /// Type-erased version of `&mut ExtCtxt`
+     expansion_ctx: *mut (),
+     client: ProcMacroClient,
++    /// The provider takes these sources on a miss. A hit leaves the collector untouched.
++    parsed_sources: RefCell<Option<Vec<Symbol>>>,
+ }
+ 
+ impl QueryProcMacroExpandCtx {
+     /// Store the extension context and the client into the thread local value.
+     /// It will be accessible via the `with` method while `f` is active.
+-    fn enter<F, R>(ecx: &mut ExtCtxt<'_>, client: ProcMacroClient, f: F) -> R
+-    where
+-        F: FnOnce() -> R,
+-    {
++    fn enter<'tcx, E>(
++        ecx: &mut ExtCtxt<'_>,
++        client: ProcMacroClient,
++        f: impl FnOnce() -> ProcMacroExpansion<'tcx, E>,
++    ) -> Result<TokenStream, E> {
++        // Constructing a fresh server interns all three hygiene contexts. Do this before
++        // decoding a cached token stream, which can intern a subset in a different order.
++        let data = ecx.current_expansion.id.expn_data();
++        proc_macro_server::Rustc::expansion_globals(ecx, &data);
+         // We need erasure to get rid of the lifetime
+-        let ctx = Self { expansion_ctx: ecx as *mut _ as *mut (), client };
+-        PROC_MACRO_EXPAND_CTX.set(&ctx, f)
++        let ctx = Self {
++            expansion_ctx: ecx as *mut _ as *mut (),
++            client,
++            parsed_sources: RefCell::new(Some(Vec::new())),
++        };
++        let (tokens, sources) = PROC_MACRO_EXPAND_CTX.set(&ctx, f);
++        // Expanding a different result can allocate different files. Replay only when this
++        // particular cached result is actually consumed, after all its dependencies validated.
++        if ctx.parsed_sources.into_inner().is_some() {
++            for &source in sources {
++                let src = source.as_str();
++                ecx.sess
++                    .source_map()
++                    .new_source_file(FileName::proc_macro_source_code(src), src.to_owned());
++            }
++        }
++        tokens.cloned()
+     }
+ 
+     /// Accesses the thread local value of the procedural macro expansion context.
+     /// Must be called while the `enter` function is active.
+-    fn with<F, R>(f: F) -> R
++    fn with<'tcx, F, R>(tcx: TyCtxt<'tcx>, f: F) -> (R, &'tcx [Symbol])
+     where
+         F: for<'a, 'b> FnOnce(&'b mut ExtCtxt<'a>, ProcMacroClient) -> R,
+     {
+@@ -303,7 +338,9 @@ fn with<F, R>(f: F) -> R
+                 unsafe { casted.as_mut().unwrap() }
+             };
+ 
+-            f(ectx, ctx.client)
++            let result = f(ectx, ctx.client);
++            let sources = ctx.parsed_sources.borrow_mut().take().unwrap();
++            (result, &*tcx.arena.alloc_from_iter(sources))
+         })
+     }
+ }
+diff --git a/compiler/rustc_expand/src/proc_macro_server.rs b/compiler/rustc_expand/src/proc_macro_server.rs
+index 0dbe2aa2b7c4d..b2d939800eaf0 100644
+--- a/compiler/rustc_expand/src/proc_macro_server.rs
++++ b/compiler/rustc_expand/src/proc_macro_server.rs
+@@ -18,11 +18,11 @@
+ use rustc_session::Session;
+ use rustc_session::parse::ParseSess;
+ use rustc_span::def_id::CrateNum;
+-use rustc_span::{BytePos, FileName, Pos, Span, Symbol, sym};
++use rustc_span::{BytePos, ExpnData, Pos, Span, Symbol, sym};
+ use smallvec::{SmallVec, smallvec};
+ 
+ use crate::base::ExtCtxt;
+-use crate::proc_macro::invalidate_cached_expansion;
++use crate::proc_macro::{invalidate_cached_expansion, proc_macro_source_code};
+ 
+ trait FromInternal<T> {
+     fn from_internal(x: T) -> Self;
+@@ -433,12 +433,22 @@ pub(crate) struct Rustc<'a, 'b> {
+ }
+ 
+ impl<'a, 'b> Rustc<'a, 'b> {
++    pub(super) fn expansion_globals(ecx: &ExtCtxt<'_>, data: &ExpnData) -> ExpnGlobals<Span> {
++        ExpnGlobals {
++            def_site: ecx.with_def_site_ctxt(data.def_site),
++            call_site: ecx.with_call_site_ctxt(data.call_site),
++            mixed_site: ecx.with_mixed_site_ctxt(data.call_site),
++        }
++    }
++
+     pub(crate) fn new(ecx: &'a mut ExtCtxt<'b>) -> Self {
+         let expn_data = ecx.current_expansion.id.expn_data();
++        let ExpnGlobals { def_site, call_site, mixed_site } =
++            Self::expansion_globals(ecx, &expn_data);
+         Rustc {
+-            def_site: ecx.with_def_site_ctxt(expn_data.def_site),
+-            call_site: ecx.with_call_site_ctxt(expn_data.call_site),
+-            mixed_site: ecx.with_mixed_site_ctxt(expn_data.call_site),
++            def_site,
++            call_site,
++            mixed_site,
+             krate: expn_data.macro_def_id.unwrap().krate,
+             rebased_spans: FxHashMap::default(),
+             ecx,
+@@ -501,7 +511,7 @@ fn track_path(&mut self, path: &str) {
+     }
+ 
+     fn literal_from_str(&mut self, s: &str) -> Result<Literal<Self::Span, Self::Symbol>, String> {
+-        let name = FileName::proc_macro_source_code(s);
++        let name = proc_macro_source_code(s);
+ 
+         let mut parser = rustc_errors::catch_fatal_errors(|| {
+             new_parser_from_source_str(self.psess(), name, s.to_owned(), StripTokens::Nothing)
+@@ -587,7 +597,7 @@ fn ts_from_str(&mut self, src: &str) -> Result<Self::TokenStream, String> {
+         rustc_errors::catch_fatal_errors(|| {
+             source_str_to_stream(
+                 self.psess(),
+-                FileName::proc_macro_source_code(src),
++                proc_macro_source_code(src),
+                 src.to_string(),
+                 Some(self.call_site),
+             )
+diff --git a/compiler/rustc_incremental/src/persist/file_format.rs b/compiler/rustc_incremental/src/persist/file_format.rs
+index bfebdcba6601b..b315aea19d21c 100644
+--- a/compiler/rustc_incremental/src/persist/file_format.rs
++++ b/compiler/rustc_incremental/src/persist/file_format.rs
+@@ -26,8 +26,8 @@
+ const FILE_MAGIC: &[u8] = b"RSIC";
+ 
+ /// Change this if the header format changes.
+-// Older metadata work products omit the checksums of their serialized source files.
+-const HEADER_FORMAT_VERSION: u16 = 2;
++// Older proc-macro queries do not replay their virtual source files.
++const HEADER_FORMAT_VERSION: u16 = 3;
+ 
+ pub(crate) fn write_file_header(stream: &mut FileEncoder<'_>, sess: &Session) {
+     stream.emit_raw_bytes(FILE_MAGIC);
+diff --git a/compiler/rustc_middle/src/arena.rs b/compiler/rustc_middle/src/arena.rs
+index 03f6b4fc499de..63f0f5742e07c 100644
+--- a/compiler/rustc_middle/src/arena.rs
++++ b/compiler/rustc_middle/src/arena.rs
+@@ -217,6 +217,7 @@ fn decode(decoder: &mut D) -> &'tcx Self {
+     rustc_middle::ty::Variance,
+     rustc_span::Ident,
+     rustc_span::Span,
++    rustc_span::Symbol,
+     rustc_span::def_id::DefId,
+     rustc_span::def_id::LocalDefId,
+     // tidy-alphabetical-end
+diff --git a/compiler/rustc_middle/src/queries.rs b/compiler/rustc_middle/src/queries.rs
+index 8e5de746138fe..bb59eb6d7cddb 100644
+--- a/compiler/rustc_middle/src/queries.rs
++++ b/compiler/rustc_middle/src/queries.rs
+@@ -100,8 +100,8 @@
+ use crate::mono::{
+     CodegenUnit, CollectionMode, MonoItem, MonoItemPartitions, NormalizationErrorInMono,
+ };
+-use crate::query::describe_as_module;
+ use crate::query::plumbing::{define_callbacks, maybe_into_query_key};
++use crate::query::{ProcMacroExpansion, describe_as_module};
+ use crate::traits::query::{
+     CanonicalAliasGoal, CanonicalDropckOutlivesGoal, CanonicalImpliedOutlivesBoundsGoal,
+     CanonicalMethodAutoderefStepsGoal, CanonicalPredicateGoal, CanonicalTypeOpAscribeUserTypeGoal,
+@@ -139,16 +139,14 @@
+     /// The key is:
+     /// - A unique key corresponding to the invocation of a macro.
+     /// - Token stream which serves as an input to the macro.
+-    ///
+-    /// The output is the token stream generated by the proc macro.
+-    query derive_macro_expansion(key: (LocalExpnId, &'tcx TokenStream)) -> Result<&'tcx TokenStream, ()> {
++    query derive_macro_expansion(key: (LocalExpnId, &'tcx TokenStream)) -> ProcMacroExpansion<'tcx, ()> {
+         desc { "expanding a derive (proc) macro" }
+         cache_on_disk
+     }
+ 
+-    /// The annotation and annotated item are separate inputs; only output tokens are cached.
++    /// The annotation and annotated item are separate inputs.
+     query attribute_macro_expansion(key: (LocalExpnId, &'tcx TokenStream, &'tcx TokenStream))
+-        -> Result<&'tcx TokenStream, ErrorGuaranteed>
++        -> ProcMacroExpansion<'tcx, ErrorGuaranteed>
+     {
+         desc { "expanding an attribute (proc) macro" }
+         cache_on_disk
+diff --git a/compiler/rustc_middle/src/query/erase.rs b/compiler/rustc_middle/src/query/erase.rs
+index 45cda6b82ee91..ff2ba508b0ec6 100644
+--- a/compiler/rustc_middle/src/query/erase.rs
++++ b/compiler/rustc_middle/src/query/erase.rs
+@@ -10,13 +10,13 @@
+ use std::marker::PhantomData;
+ use std::mem::MaybeUninit;
+ 
+-use rustc_ast::tokenstream::TokenStream;
+ use rustc_data_structures::steal::Steal;
+ use rustc_data_structures::sync::{DynSend, DynSync};
+ use rustc_span::def_id::ModId;
+ use rustc_span::{ErrorGuaranteed, Spanned};
+ 
+ use crate::mono::{MonoItem, NormalizationErrorInMono};
++use crate::query::ProcMacroExpansion;
+ use crate::ty::{self, Ty, TyCtxt};
+ use crate::{mir, thir, traits};
+ 
+@@ -202,7 +202,8 @@ impl Erasable for $ty {
+     Option<ty::EarlyBinder<'_, Ty<'_>>>,
+     Option<ty::Value<'_>>,
+     Option<usize>,
+-    Result<&'_ TokenStream, ()>,
++    ProcMacroExpansion<'_, ()>,
++    ProcMacroExpansion<'_, ErrorGuaranteed>,
+     Result<&'_ rustc_target::callconv::FnAbi<'_, Ty<'_>>, &'_ ty::layout::FnAbiError<'_>>,
+     Result<&'_ traits::ImplSource<'_, ()>, traits::CodegenObligationError>,
+     Result<&'_ ty::List<Ty<'_>>, ty::util::AlwaysRequiresDrop>,
+diff --git a/compiler/rustc_middle/src/query/mod.rs b/compiler/rustc_middle/src/query/mod.rs
+index 7e9686941765f..271f256fff34c 100644
+--- a/compiler/rustc_middle/src/query/mod.rs
++++ b/compiler/rustc_middle/src/query/mod.rs
+@@ -1,4 +1,6 @@
++use rustc_ast::tokenstream::TokenStream;
+ use rustc_hir::def_id::LocalDefId;
++use rustc_span::Symbol;
+ 
+ pub use self::caches::{DefIdCache, DefaultCache, QueryCache, SingleCache, VecCache};
+ pub use self::into_query_key::IntoQueryKey;
+@@ -24,6 +26,9 @@
+ pub(crate) mod plumbing;
+ mod stack;
+ 
++/// Expanded tokens and the virtual source files allocated by this macro, in parse order.
++pub type ProcMacroExpansion<'tcx, E> = (Result<&'tcx TokenStream, E>, &'tcx [Symbol]);
++
+ pub fn describe_as_module(def_id: impl Into<LocalDefId>, tcx: TyCtxt<'_>) -> String {
+     let def_id = def_id.into();
+     if def_id.is_top_level_module() {
+diff --git a/compiler/rustc_middle/src/query/on_disk_cache.rs b/compiler/rustc_middle/src/query/on_disk_cache.rs
+index 80197dff2421d..54c5fb7a4ff43 100644
+--- a/compiler/rustc_middle/src/query/on_disk_cache.rs
++++ b/compiler/rustc_middle/src/query/on_disk_cache.rs
+@@ -1014,6 +1014,7 @@ fn decode(d: &mut CacheDecoder<'a, $tcx>) -> Self {
+ 
+ impl_ref_decoder! {<'tcx>
+     Span,
++    Symbol,
+     CodegenUnit<'tcx>,
+     rustc_hir::Attribute,
+     rustc_span::Ident,

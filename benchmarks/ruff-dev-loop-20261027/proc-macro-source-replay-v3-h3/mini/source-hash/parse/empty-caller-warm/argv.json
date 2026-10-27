@@ -1,0 +1,16 @@
+[
+  "rustc",
+  "+ohm",
+  "--edition=2024",
+  "--crate-name",
+  "app",
+  "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/fixed-v3-minimal-proc-source-hash-v2/workspace/main.rs",
+  "--extern",
+  "bridge=/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/fixed-v3-minimal-proc-source-hash-v2/libbridge_input.rlib",
+  "-L",
+  "dependency=/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/fixed-v3-minimal-proc-source-hash-v2/active/target/debug/build/workspaces/74fac09a430c18ab/v2-a4428149364dcd3d/test_unit/9a75da8fc9e5d1d2/out",
+  "-L",
+  "dependency=/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/fixed-v3-minimal-proc-source-hash-v2/active/target/debug/build/workspaces/74fac09a430c18ab/v2-a4428149364dcd3d/macro_maker/0e665fbd9d3baebd/out",
+  "-o",
+  "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/fixed-v3-minimal-proc-source-hash-v2/evidence/parse/empty-caller-warm/app"
+]

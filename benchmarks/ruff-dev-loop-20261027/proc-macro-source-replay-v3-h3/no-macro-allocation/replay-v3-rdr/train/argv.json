@@ -1,0 +1,16 @@
+[
+  "rustc",
+  "+ohm",
+  "--sysroot",
+  "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain",
+  "--edition=2024",
+  "--emit=link,metadata",
+  "-Copt-level=1",
+  "-Cdebuginfo=2",
+  "-Ccodegen-units=16",
+  "-Cincremental=/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/minimal-plain-allocation-identity/replay-v3-rdr/retained",
+  "-Zpublic-api-hash",
+  "-Zcache-proc-macros",
+  "-Zmeta-stats",
+  "plain.rs"
+]
