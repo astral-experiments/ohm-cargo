@@ -1,0 +1,94 @@
+{
+  "build-candidate-traces.tar.gz": {
+    "original_bytes": 2676317,
+    "original_sha256": "d1dfe90a81bb35ec47895c1632f4cdbccb02078f05eddf63df4b7db499fba107",
+    "phases": {
+      "candidate-verify-edit": {
+        "processes": {
+          "rustc_full": 3,
+          "rustc_link_only": 6,
+          "wild": 8
+        },
+        "roster_sha": "97f9aa0390c8981fa6ab6acb6bed1212a0d47ac1810fe040d96b43b101aeff22"
+      },
+      "candidate-verify-final-edit": {
+        "processes": {
+          "rustc_full": 3,
+          "rustc_link_only": 6,
+          "wild": 8
+        },
+        "roster_sha": "97f9aa0390c8981fa6ab6acb6bed1212a0d47ac1810fe040d96b43b101aeff22"
+      }
+    },
+    "retained_bytes": 305021,
+    "retained_sha256": "a78c6e538b4a60ca164249e43083ba68ad3f287ef59123062319c097fb9777d9"
+  },
+  "build-parent-traces.tar.gz": {
+    "original_bytes": 2940351,
+    "original_sha256": "3b8fb12e484a978b773dd98d9226fb26ec09630614ef28462ed6415e65a35ee6",
+    "phases": {
+      "parent-verify-edit": {
+        "processes": {
+          "rustc_full": 35,
+          "wild": 8
+        },
+        "roster_sha": "97f9aa0390c8981fa6ab6acb6bed1212a0d47ac1810fe040d96b43b101aeff22"
+      },
+      "parent-verify-final-edit": {
+        "processes": {
+          "rustc_full": 35,
+          "wild": 8
+        },
+        "roster_sha": "97f9aa0390c8981fa6ab6acb6bed1212a0d47ac1810fe040d96b43b101aeff22"
+      }
+    },
+    "retained_bytes": 546387,
+    "retained_sha256": "17d11af175423e48d5e60fbf74b2d5007d7a005ee38d619478c783acc2a4c408"
+  },
+  "test-candidate-traces.tar.gz": {
+    "original_bytes": 14662091,
+    "original_sha256": "605fecdc02f9da78b8d9cf0316fd34be8d333728c4986f92dbf30a5f85f1f22b",
+    "phases": {
+      "candidate-verify-edit": {
+        "processes": {
+          "rustc_full": 6,
+          "rustc_link_only": 62,
+          "wild": 67
+        },
+        "roster_sha": "07f5421bfdaf0f0b868400592bd3eb8fb1fbe0941e440cd2a13929dc5fc5cb26"
+      },
+      "candidate-verify-final-edit": {
+        "processes": {
+          "rustc_full": 6,
+          "rustc_link_only": 62,
+          "wild": 67
+        },
+        "roster_sha": "07f5421bfdaf0f0b868400592bd3eb8fb1fbe0941e440cd2a13929dc5fc5cb26"
+      }
+    },
+    "retained_bytes": 1547806,
+    "retained_sha256": "5919940c32018cc430d22970eaadeee7f7119ef9a4b03f28aa4d275259846bb4"
+  },
+  "test-parent-traces.tar.gz": {
+    "original_bytes": 14945162,
+    "original_sha256": "aa5db2acabc2b2deee7f8e42edd3df154093fb61cb5087dff6741f052a208ca9",
+    "phases": {
+      "parent-verify-edit": {
+        "processes": {
+          "rustc_full": 93,
+          "wild": 67
+        },
+        "roster_sha": "07f5421bfdaf0f0b868400592bd3eb8fb1fbe0941e440cd2a13929dc5fc5cb26"
+      },
+      "parent-verify-final-edit": {
+        "processes": {
+          "rustc_full": 93,
+          "wild": 67
+        },
+        "roster_sha": "07f5421bfdaf0f0b868400592bd3eb8fb1fbe0941e440cd2a13929dc5fc5cb26"
+      }
+    },
+    "retained_bytes": 1780132,
+    "retained_sha256": "e02dadf2378f660d7964872c73926a63fc3a6e126c8d5938341b9bcdb659cd8d"
+  }
+}
