@@ -1,0 +1,7 @@
+# Correcting the rustc mode on the small nested linker-input control
+
+The earlier nested-input fixture recognized a single `-Zlink-only` argument. Shipped Cargo passes separate `-Z` and `link-only` arguments and replaces the integration source with its authenticated `.rlink` recipe. An invocation that was counted as a full source compile by the old fixture can therefore be a real link-only rustc. Each row in observations.json contains the successful rustc exec PID, the source or recipe basename, both-token check, and the genuine Wild PID and output. The prior mode field is retained for comparison.
+
+The official baseline, A10 in both native contexts, and later A11 compiled the source on cold setup, used real link-only rustcs on four subsequent edits including both the successful new native symbol and failing linker input, then compiled fully on recovery. A9B trained using full and used link-only on the invalid member. A9C still elided both Rust and Wild on the genuinely changed/failing native inputs. The fixed mutant consequently still missed the added symbol and returned success on the invalid file. This correction does not affect link count, ELF behavior, linker failure, or any whole-workspace observation. The real 619-unit process auditor recognizes both rustc flag spellings.
+
+Run `python3 -B verify.py` to verify the public records. The reclassify script is the original capture audit for the retained H1 raw exec files. Exact stage source, binary and flags are in the corresponding candidate reports.

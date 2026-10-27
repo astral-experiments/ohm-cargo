@@ -1,0 +1,748 @@
+{
+  "tiny-a10c-nested-original": {
+    "cargo": "ac48669832ab75e97cb8f498d3302e28100a6a634662dab275f4add4d1594bf3",
+    "phases": {
+      "cold": {
+        "actual_api_jobs": [
+          {
+            "mode": "full",
+            "pid": "exec.2905198",
+            "separate_Z_link_only": false,
+            "source_or_recipe": "api.rs"
+          }
+        ],
+        "exit": 0,
+        "marker": [],
+        "prior_mode_label": [
+          "full"
+        ],
+        "wild": [
+          {
+            "output": "api-d85fd6b3c1ff5f15",
+            "pid": "exec.2905218"
+          }
+        ]
+      },
+      "earlier-member-now-exists": {
+        "actual_api_jobs": [
+          {
+            "mode": "link-only",
+            "pid": "exec.2905349",
+            "separate_Z_link_only": true,
+            "source_or_recipe": "api-d85fd6b3c1ff5f15.rlink"
+          }
+        ],
+        "exit": 0,
+        "marker": [
+          "0000000000000097"
+        ],
+        "prior_mode_label": [
+          "full"
+        ],
+        "wild": [
+          {
+            "output": "api-d85fd6b3c1ff5f15",
+            "pid": "exec.2905362"
+          }
+        ]
+      },
+      "earlier-member-now-invalid": {
+        "actual_api_jobs": [
+          {
+            "mode": "link-only",
+            "pid": "exec.2905397",
+            "separate_Z_link_only": true,
+            "source_or_recipe": "api-d85fd6b3c1ff5f15.rlink"
+          }
+        ],
+        "exit": 101,
+        "marker": null,
+        "prior_mode_label": [
+          "full"
+        ],
+        "wild": [
+          {
+            "output": "api-d85fd6b3c1ff5f15",
+            "pid": "exec.2905410"
+          }
+        ]
+      },
+      "first-changed": {
+        "actual_api_jobs": [
+          {
+            "mode": "link-only",
+            "pid": "exec.2905253",
+            "separate_Z_link_only": true,
+            "source_or_recipe": "api-d85fd6b3c1ff5f15.rlink"
+          }
+        ],
+        "exit": 0,
+        "marker": [],
+        "prior_mode_label": [
+          "full"
+        ],
+        "wild": [
+          {
+            "output": "api-d85fd6b3c1ff5f15",
+            "pid": "exec.2905266"
+          }
+        ]
+      },
+      "ordinary-or-reuse": {
+        "actual_api_jobs": [
+          {
+            "mode": "link-only",
+            "pid": "exec.2905301",
+            "separate_Z_link_only": true,
+            "source_or_recipe": "api-d85fd6b3c1ff5f15.rlink"
+          }
+        ],
+        "exit": 0,
+        "marker": [],
+        "prior_mode_label": [
+          "full"
+        ],
+        "wild": [
+          {
+            "output": "api-d85fd6b3c1ff5f15",
+            "pid": "exec.2905314"
+          }
+        ]
+      },
+      "removed-earlier-member": {
+        "actual_api_jobs": [
+          {
+            "mode": "full",
+            "pid": "exec.2905442",
+            "separate_Z_link_only": false,
+            "source_or_recipe": "api.rs"
+          }
+        ],
+        "exit": 0,
+        "marker": [],
+        "prior_mode_label": [
+          "full"
+        ],
+        "wild": [
+          {
+            "output": "api-d85fd6b3c1ff5f15",
+            "pid": "exec.2905462"
+          }
+        ]
+      }
+    },
+    "raw_summary_sha256": "290d5387cc14a9aa7fe9fe0962e704058254c681f70b040bb4eff3e7bbca13fa"
+  },
+  "tiny-a10c-nested-supported": {
+    "cargo": "ac48669832ab75e97cb8f498d3302e28100a6a634662dab275f4add4d1594bf3",
+    "phases": {
+      "cold": {
+        "actual_api_jobs": [
+          {
+            "mode": "full",
+            "pid": "exec.2905660",
+            "separate_Z_link_only": false,
+            "source_or_recipe": "api.rs"
+          }
+        ],
+        "exit": 0,
+        "marker": [],
+        "prior_mode_label": [
+          "full"
+        ],
+        "wild": [
+          {
+            "output": "api-d85fd6b3c1ff5f15",
+            "pid": "exec.2905680"
+          }
+        ]
+      },
+      "earlier-member-now-exists": {
+        "actual_api_jobs": [
+          {
+            "mode": "link-only",
+            "pid": "exec.2905812",
+            "separate_Z_link_only": true,
+            "source_or_recipe": "api-d85fd6b3c1ff5f15.rlink"
+          }
+        ],
+        "exit": 0,
+        "marker": [
+          "0000000000000097"
+        ],
+        "prior_mode_label": [
+          "full"
+        ],
+        "wild": [
+          {
+            "output": "api-d85fd6b3c1ff5f15",
+            "pid": "exec.2905825"
+          }
+        ]
+      },
+      "earlier-member-now-invalid": {
+        "actual_api_jobs": [
+          {
+            "mode": "link-only",
+            "pid": "exec.2905860",
+            "separate_Z_link_only": true,
+            "source_or_recipe": "api-d85fd6b3c1ff5f15.rlink"
+          }
+        ],
+        "exit": 101,
+        "marker": null,
+        "prior_mode_label": [
+          "full"
+        ],
+        "wild": [
+          {
+            "output": "api-d85fd6b3c1ff5f15",
+            "pid": "exec.2905873"
+          }
+        ]
+      },
+      "first-changed": {
+        "actual_api_jobs": [
+          {
+            "mode": "link-only",
+            "pid": "exec.2905715",
+            "separate_Z_link_only": true,
+            "source_or_recipe": "api-d85fd6b3c1ff5f15.rlink"
+          }
+        ],
+        "exit": 0,
+        "marker": [],
+        "prior_mode_label": [
+          "full"
+        ],
+        "wild": [
+          {
+            "output": "api-d85fd6b3c1ff5f15",
+            "pid": "exec.2905729"
+          }
+        ]
+      },
+      "ordinary-or-reuse": {
+        "actual_api_jobs": [
+          {
+            "mode": "link-only",
+            "pid": "exec.2905764",
+            "separate_Z_link_only": true,
+            "source_or_recipe": "api-d85fd6b3c1ff5f15.rlink"
+          }
+        ],
+        "exit": 0,
+        "marker": [],
+        "prior_mode_label": [
+          "full"
+        ],
+        "wild": [
+          {
+            "output": "api-d85fd6b3c1ff5f15",
+            "pid": "exec.2905777"
+          }
+        ]
+      },
+      "removed-earlier-member": {
+        "actual_api_jobs": [
+          {
+            "mode": "full",
+            "pid": "exec.2905905",
+            "separate_Z_link_only": false,
+            "source_or_recipe": "api.rs"
+          }
+        ],
+        "exit": 0,
+        "marker": [],
+        "prior_mode_label": [
+          "full"
+        ],
+        "wild": [
+          {
+            "output": "api-d85fd6b3c1ff5f15",
+            "pid": "exec.2905925"
+          }
+        ]
+      }
+    },
+    "raw_summary_sha256": "d2d3a82b3fdd2441fd46c2d1163aad87b533e24347d055b336805677b4a14196"
+  },
+  "tiny-a11c-nested-v2": {
+    "cargo": "a0acc664af50231926f1b69bc64fdc02dd7c4fcc7c232f5e70f8ba451a354db4",
+    "phases": {
+      "cold": {
+        "actual_api_jobs": [
+          {
+            "mode": "full",
+            "pid": "exec.2916884",
+            "separate_Z_link_only": false,
+            "source_or_recipe": "api.rs"
+          }
+        ],
+        "exit": 0,
+        "marker": [],
+        "prior_mode_label": [
+          "full"
+        ],
+        "wild": [
+          {
+            "output": "api-d85fd6b3c1ff5f15",
+            "pid": "exec.2916904"
+          }
+        ]
+      },
+      "earlier-member-now-exists": {
+        "actual_api_jobs": [
+          {
+            "mode": "link-only",
+            "pid": "exec.2917031",
+            "separate_Z_link_only": true,
+            "source_or_recipe": "api-d85fd6b3c1ff5f15.rlink"
+          }
+        ],
+        "exit": 0,
+        "marker": [
+          "0000000000000097"
+        ],
+        "prior_mode_label": [
+          "link-only"
+        ],
+        "wild": [
+          {
+            "output": "api-d85fd6b3c1ff5f15",
+            "pid": "exec.2917044"
+          }
+        ]
+      },
+      "earlier-member-now-invalid": {
+        "actual_api_jobs": [
+          {
+            "mode": "link-only",
+            "pid": "exec.2917077",
+            "separate_Z_link_only": true,
+            "source_or_recipe": "api-d85fd6b3c1ff5f15.rlink"
+          }
+        ],
+        "exit": 101,
+        "marker": null,
+        "prior_mode_label": [
+          "link-only"
+        ],
+        "wild": [
+          {
+            "output": "api-d85fd6b3c1ff5f15",
+            "pid": "exec.2917090"
+          }
+        ]
+      },
+      "first-changed": {
+        "actual_api_jobs": [
+          {
+            "mode": "link-only",
+            "pid": "exec.2916938",
+            "separate_Z_link_only": true,
+            "source_or_recipe": "api-d85fd6b3c1ff5f15.rlink"
+          }
+        ],
+        "exit": 0,
+        "marker": [],
+        "prior_mode_label": [
+          "link-only"
+        ],
+        "wild": [
+          {
+            "output": "api-d85fd6b3c1ff5f15",
+            "pid": "exec.2916951"
+          }
+        ]
+      },
+      "ordinary-or-reuse": {
+        "actual_api_jobs": [
+          {
+            "mode": "link-only",
+            "pid": "exec.2916984",
+            "separate_Z_link_only": true,
+            "source_or_recipe": "api-d85fd6b3c1ff5f15.rlink"
+          }
+        ],
+        "exit": 0,
+        "marker": [],
+        "prior_mode_label": [
+          "link-only"
+        ],
+        "wild": [
+          {
+            "output": "api-d85fd6b3c1ff5f15",
+            "pid": "exec.2916997"
+          }
+        ]
+      },
+      "removed-earlier-member": {
+        "actual_api_jobs": [
+          {
+            "mode": "full",
+            "pid": "exec.2917120",
+            "separate_Z_link_only": false,
+            "source_or_recipe": "api.rs"
+          }
+        ],
+        "exit": 0,
+        "marker": [],
+        "prior_mode_label": [
+          "full"
+        ],
+        "wild": [
+          {
+            "output": "api-d85fd6b3c1ff5f15",
+            "pid": "exec.2917140"
+          }
+        ]
+      }
+    },
+    "raw_summary_sha256": "5c58382dfd33c4f15976071caec8dfe3ca0cd3953162145e63a8cf8ee4ff001a"
+  },
+  "tiny-a9b-nested-root-v1": {
+    "cargo": "991d983a45416c63bc637511ccc584ea2ca6486d1a0b190108577ef00770768f",
+    "phases": {
+      "cold": {
+        "actual_api_jobs": [
+          {
+            "mode": "full",
+            "pid": "exec.2899240",
+            "separate_Z_link_only": false,
+            "source_or_recipe": "api.rs"
+          }
+        ],
+        "exit": 0,
+        "marker": [],
+        "prior_mode_label": [
+          "full"
+        ],
+        "wild": [
+          {
+            "output": "api-d85fd6b3c1ff5f15",
+            "pid": "exec.2899260"
+          }
+        ]
+      },
+      "earlier-member-now-exists": {
+        "actual_api_jobs": [
+          {
+            "mode": "full",
+            "pid": "exec.2899405",
+            "separate_Z_link_only": false,
+            "source_or_recipe": "api.rs"
+          }
+        ],
+        "exit": 0,
+        "marker": [
+          "0000000000000097"
+        ],
+        "prior_mode_label": [
+          "full"
+        ],
+        "wild": [
+          {
+            "output": "api-d85fd6b3c1ff5f15",
+            "pid": "exec.2899425"
+          }
+        ]
+      },
+      "earlier-member-now-invalid": {
+        "actual_api_jobs": [
+          {
+            "mode": "link-only",
+            "pid": "exec.2899460",
+            "separate_Z_link_only": true,
+            "source_or_recipe": "api-d85fd6b3c1ff5f15.rlink"
+          }
+        ],
+        "exit": 101,
+        "marker": null,
+        "prior_mode_label": [
+          "full"
+        ],
+        "wild": [
+          {
+            "output": "api-d85fd6b3c1ff5f15",
+            "pid": "exec.2899473"
+          }
+        ]
+      },
+      "first-changed": {
+        "actual_api_jobs": [
+          {
+            "mode": "full",
+            "pid": "exec.2899295",
+            "separate_Z_link_only": false,
+            "source_or_recipe": "api.rs"
+          }
+        ],
+        "exit": 0,
+        "marker": [],
+        "prior_mode_label": [
+          "full"
+        ],
+        "wild": [
+          {
+            "output": "api-d85fd6b3c1ff5f15",
+            "pid": "exec.2899315"
+          }
+        ]
+      },
+      "ordinary-or-reuse": {
+        "actual_api_jobs": [
+          {
+            "mode": "full",
+            "pid": "exec.2899350",
+            "separate_Z_link_only": false,
+            "source_or_recipe": "api.rs"
+          }
+        ],
+        "exit": 0,
+        "marker": [],
+        "prior_mode_label": [
+          "full"
+        ],
+        "wild": [
+          {
+            "output": "api-d85fd6b3c1ff5f15",
+            "pid": "exec.2899370"
+          }
+        ]
+      },
+      "removed-earlier-member": {
+        "actual_api_jobs": [
+          {
+            "mode": "full",
+            "pid": "exec.2899506",
+            "separate_Z_link_only": false,
+            "source_or_recipe": "api.rs"
+          }
+        ],
+        "exit": 0,
+        "marker": [],
+        "prior_mode_label": [
+          "full"
+        ],
+        "wild": [
+          {
+            "output": "api-d85fd6b3c1ff5f15",
+            "pid": "exec.2899526"
+          }
+        ]
+      }
+    },
+    "raw_summary_sha256": "b09a1893f23b25cdd2e2323de0507219496231cdd9b61153cb6d2b4db157e2db"
+  },
+  "tiny-a9c-nested-root-v1": {
+    "cargo": "5227d7a8222366077a451f8d08d6e267108e16708db0326275fce212a180cf76",
+    "phases": {
+      "cold": {
+        "actual_api_jobs": [
+          {
+            "mode": "full",
+            "pid": "exec.2899724",
+            "separate_Z_link_only": false,
+            "source_or_recipe": "api.rs"
+          }
+        ],
+        "exit": 0,
+        "marker": [],
+        "prior_mode_label": [
+          "full"
+        ],
+        "wild": [
+          {
+            "output": "api-d85fd6b3c1ff5f15",
+            "pid": "exec.2899745"
+          }
+        ]
+      },
+      "earlier-member-now-exists": {
+        "actual_api_jobs": [],
+        "exit": 0,
+        "marker": [],
+        "prior_mode_label": [],
+        "wild": []
+      },
+      "earlier-member-now-invalid": {
+        "actual_api_jobs": [],
+        "exit": 0,
+        "marker": [],
+        "prior_mode_label": [],
+        "wild": []
+      },
+      "first-changed": {
+        "actual_api_jobs": [
+          {
+            "mode": "full",
+            "pid": "exec.2899783",
+            "separate_Z_link_only": false,
+            "source_or_recipe": "api.rs"
+          }
+        ],
+        "exit": 0,
+        "marker": [],
+        "prior_mode_label": [
+          "full"
+        ],
+        "wild": [
+          {
+            "output": "api-d85fd6b3c1ff5f15",
+            "pid": "exec.2899803"
+          }
+        ]
+      },
+      "ordinary-or-reuse": {
+        "actual_api_jobs": [],
+        "exit": 0,
+        "marker": [],
+        "prior_mode_label": [],
+        "wild": []
+      },
+      "removed-earlier-member": {
+        "actual_api_jobs": [],
+        "exit": 0,
+        "marker": [],
+        "prior_mode_label": [],
+        "wild": []
+      }
+    },
+    "raw_summary_sha256": "64d31d4350ceee7a2d58361bc1755eb956b3c57215c3a8e995f1efd729d0b858"
+  },
+  "tiny-baseline-nested-root-v1": {
+    "cargo": "dd5cab154b8dcd09ccc2753160d314cade80979b2d055ee66aa9e2217e05e7e1",
+    "phases": {
+      "cold": {
+        "actual_api_jobs": [
+          {
+            "mode": "full",
+            "pid": "exec.2898791",
+            "separate_Z_link_only": false,
+            "source_or_recipe": "api.rs"
+          }
+        ],
+        "exit": 0,
+        "marker": [],
+        "prior_mode_label": [
+          "full"
+        ],
+        "wild": [
+          {
+            "output": "api-d85fd6b3c1ff5f15",
+            "pid": "exec.2898811"
+          }
+        ]
+      },
+      "earlier-member-now-exists": {
+        "actual_api_jobs": [
+          {
+            "mode": "link-only",
+            "pid": "exec.2898937",
+            "separate_Z_link_only": true,
+            "source_or_recipe": "api-d85fd6b3c1ff5f15.rlink"
+          }
+        ],
+        "exit": 0,
+        "marker": [
+          "0000000000000097"
+        ],
+        "prior_mode_label": [
+          "full"
+        ],
+        "wild": [
+          {
+            "output": "api-d85fd6b3c1ff5f15",
+            "pid": "exec.2898950"
+          }
+        ]
+      },
+      "earlier-member-now-invalid": {
+        "actual_api_jobs": [
+          {
+            "mode": "link-only",
+            "pid": "exec.2898984",
+            "separate_Z_link_only": true,
+            "source_or_recipe": "api-d85fd6b3c1ff5f15.rlink"
+          }
+        ],
+        "exit": 101,
+        "marker": null,
+        "prior_mode_label": [
+          "full"
+        ],
+        "wild": [
+          {
+            "output": "api-d85fd6b3c1ff5f15",
+            "pid": "exec.2898997"
+          }
+        ]
+      },
+      "first-changed": {
+        "actual_api_jobs": [
+          {
+            "mode": "link-only",
+            "pid": "exec.2898844",
+            "separate_Z_link_only": true,
+            "source_or_recipe": "api-d85fd6b3c1ff5f15.rlink"
+          }
+        ],
+        "exit": 0,
+        "marker": [],
+        "prior_mode_label": [
+          "full"
+        ],
+        "wild": [
+          {
+            "output": "api-d85fd6b3c1ff5f15",
+            "pid": "exec.2898857"
+          }
+        ]
+      },
+      "ordinary-or-reuse": {
+        "actual_api_jobs": [
+          {
+            "mode": "link-only",
+            "pid": "exec.2898890",
+            "separate_Z_link_only": true,
+            "source_or_recipe": "api-d85fd6b3c1ff5f15.rlink"
+          }
+        ],
+        "exit": 0,
+        "marker": [],
+        "prior_mode_label": [
+          "full"
+        ],
+        "wild": [
+          {
+            "output": "api-d85fd6b3c1ff5f15",
+            "pid": "exec.2898903"
+          }
+        ]
+      },
+      "removed-earlier-member": {
+        "actual_api_jobs": [
+          {
+            "mode": "full",
+            "pid": "exec.2899027",
+            "separate_Z_link_only": false,
+            "source_or_recipe": "api.rs"
+          }
+        ],
+        "exit": 0,
+        "marker": [],
+        "prior_mode_label": [
+          "full"
+        ],
+        "wild": [
+          {
+            "output": "api-d85fd6b3c1ff5f15",
+            "pid": "exec.2899048"
+          }
+        ]
+      }
+    },
+    "raw_summary_sha256": "694f3eb6ce8ef8f32a5a7af3b25bf6224fd56c7a2b14acdb8ce14cec873e5bd5"
+  }
+}
