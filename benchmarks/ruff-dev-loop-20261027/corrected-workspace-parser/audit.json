@@ -1,0 +1,46 @@
+[
+  {
+    "mode": "build",
+    "units": 501,
+    "elf_targets": 15,
+    "pairs": 12,
+    "fully_fresh_repetitions": 58,
+    "trace_processes": {
+      "parent": {
+        "rustc_full": 35,
+        "wild": 8
+      },
+      "candidate": {
+        "rustc_full": 3,
+        "rustc_link_only": 6,
+        "wild": 8
+      }
+    },
+    "skipped_full_compiles": 32,
+    "roster_sha": "97f9aa0390c8981fa6ab6acb6bed1212a0d47ac1810fe040d96b43b101aeff22",
+    "graph_and_diagnostics_match": true,
+    "restored_index_sha": "7b9a4485fd6d3072f9d34f84ef85c01fd9e809924c4fb288b19cc8ba409c069d"
+  },
+  {
+    "mode": "test",
+    "units": 619,
+    "elf_targets": 110,
+    "pairs": 12,
+    "fully_fresh_repetitions": 58,
+    "trace_processes": {
+      "parent": {
+        "rustc_full": 93,
+        "wild": 67
+      },
+      "candidate": {
+        "rustc_full": 6,
+        "rustc_link_only": 62,
+        "wild": 67
+      }
+    },
+    "skipped_full_compiles": 87,
+    "roster_sha": "07f5421bfdaf0f0b868400592bd3eb8fb1fbe0941e440cd2a13929dc5fc5cb26",
+    "graph_and_diagnostics_match": true,
+    "restored_index_sha": "7b9a4485fd6d3072f9d34f84ef85c01fd9e809924c4fb288b19cc8ba409c069d"
+  }
+]
