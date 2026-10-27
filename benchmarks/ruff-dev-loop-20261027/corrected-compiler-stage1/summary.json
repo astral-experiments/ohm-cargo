@@ -1,0 +1,26 @@
+{
+  "source_head": "3a9e8ee19f74e4d0860da3ed60f9bb663332ec19",
+  "driver_sha256": {
+    "prior_pr": "55e123a9e87f16a449d260ab65449eab743cd30ba356a7f10ffdd1fa6f8a2484",
+    "ordinary_unbound": "8893e9015bd075aa568fd282d467e2803dbfccb2372cde8275a6f92251e9601a",
+    "corrected_stage1": "265a5d34e49d0e3fd86f05341d9597625cfddd939950f2909b78b26602303fc6"
+  },
+  "parser": {
+    "ruff_head": "93526150df",
+    "reversed_edit": "3ea20f6161",
+    "scope": "cargo build --locked --offline -p ruff_python_parser from empty target/build, source patch privately mounted",
+    "units": 90,
+    "dirty_counts": [
+      90,
+      0,
+      1
+    ],
+    "public_api_hash": "c913f0ce22a7d17e85eb63dfd9df8dc6"
+  },
+  "rmake": {
+    "prior_pr": "failed new source-ordinal inequality; 575d3a0eac8eeb1f81db49218cab5a6a in both states",
+    "v4": "negative ordinary bridge got E0071 for public type misresolved as u8 instead of E0460",
+    "corrected": "pass, including byte-identical retained RDR intermediate, genuinely fresh caller, clean E0460 for stale ordinary intermediate, and missing/relocated expansion"
+  },
+  "release_source_manifest_sha256": "03bb40867534fac1a1ba764a056c3572839489e0ceea54a391483067cd41f41b"
+}

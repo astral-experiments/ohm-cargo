@@ -1,0 +1,24 @@
+running: LC_ALL="C" LD_LIBRARY_PATH="/home/dev-user/.cache/ohm-build-cutoff-20261027/rmake/wire-v4:/mnt/devbox-scratch/dev-user/ohm-nonleaf-perflint-20261026/stage-score/sysroot/lib/rustlib/x86_64-unknown-linux-gnu/lib:/home/dev-user/.cache/ohm-build-cutoff-20261027/stage-stable-expn-v4:/mnt/devbox-scratch/dev-user/ohm-nonleaf-perflint-20261026/stage-score/sysroot/lib" "/home/dev-user/.cache/ohm-build-cutoff-20261027/rmake/wire-v4/main"
+running: LC_ALL="C" LD_LIBRARY_PATH="/home/dev-user/.cache/ohm-build-cutoff-20261027/rmake/wire-v4:/mnt/devbox-scratch/dev-user/ohm-nonleaf-perflint-20261026/stage-score/sysroot/lib/rustlib/x86_64-unknown-linux-gnu/lib:/home/dev-user/.cache/ohm-build-cutoff-20261027/stage-stable-expn-v4:/mnt/devbox-scratch/dev-user/ohm-nonleaf-perflint-20261026/stage-score/sysroot/lib" "/home/dev-user/.cache/ohm-build-cutoff-20261027/rmake/wire-v4/main"
+running: LC_ALL="C" LD_LIBRARY_PATH="/home/dev-user/.cache/ohm-build-cutoff-20261027/rmake/wire-v4:/mnt/devbox-scratch/dev-user/ohm-nonleaf-perflint-20261026/stage-score/sysroot/lib/rustlib/x86_64-unknown-linux-gnu/lib:/home/dev-user/.cache/ohm-build-cutoff-20261027/stage-stable-expn-v4:/mnt/devbox-scratch/dev-user/ohm-nonleaf-perflint-20261026/stage-score/sysroot/lib" "/home/dev-user/.cache/ohm-build-cutoff-20261027/rmake/wire-v4/main"
+running: LC_ALL="C" LD_LIBRARY_PATH="/home/dev-user/.cache/ohm-build-cutoff-20261027/rmake/wire-v4:/mnt/devbox-scratch/dev-user/ohm-nonleaf-perflint-20261026/stage-score/sysroot/lib/rustlib/x86_64-unknown-linux-gnu/lib:/home/dev-user/.cache/ohm-build-cutoff-20261027/stage-stable-expn-v4:/mnt/devbox-scratch/dev-user/ohm-nonleaf-perflint-20261026/stage-score/sysroot/lib" "/home/dev-user/.cache/ohm-build-cutoff-20261027/rmake/wire-v4/consumer"
+running: LC_ALL="C" LD_LIBRARY_PATH="/home/dev-user/.cache/ohm-build-cutoff-20261027/rmake/wire-v4:/mnt/devbox-scratch/dev-user/ohm-nonleaf-perflint-20261026/stage-score/sysroot/lib/rustlib/x86_64-unknown-linux-gnu/lib:/home/dev-user/.cache/ohm-build-cutoff-20261027/stage-stable-expn-v4:/mnt/devbox-scratch/dev-user/ohm-nonleaf-perflint-20261026/stage-score/sysroot/lib" "/home/dev-user/.cache/ohm-build-cutoff-20261027/rmake/wire-v4/consumer"
+running: LC_ALL="C" LD_LIBRARY_PATH="/home/dev-user/.cache/ohm-build-cutoff-20261027/rmake/wire-v4:/mnt/devbox-scratch/dev-user/ohm-nonleaf-perflint-20261026/stage-score/sysroot/lib/rustlib/x86_64-unknown-linux-gnu/lib:/home/dev-user/.cache/ohm-build-cutoff-20261027/stage-stable-expn-v4:/mnt/devbox-scratch/dev-user/ohm-nonleaf-perflint-20261026/stage-score/sysroot/lib" "/home/dev-user/.cache/ohm-build-cutoff-20261027/rmake/wire-v4/consumer"
+assert_contains:
+=== HAYSTACK ===
+error[E0071]: expected struct, variant or union type, found `u8`
+ --> locations/consumer.rs:4:20
+  |
+4 |     println!("{}", bridge::Public { value: 7 }.value);
+  |                    ^^^^^^^^^^^^^^ not a struct
+
+error: aborting due to 1 previous error
+
+For more information about this error, try `rustc --explain E0071`.
+
+=== NEEDLE ===
+E0460
+
+thread 'main' (1379) panicked at /home/dev-user/code/oss/ohm-rust-private-native-20261027/tests/run-make/rdr-public-hash-private-native-impls/rmake.rs:102:10:
+needle was not found in haystack
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
