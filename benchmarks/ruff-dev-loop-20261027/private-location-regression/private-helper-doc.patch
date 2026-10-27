@@ -1,0 +1,13 @@
+diff --git a/crates/ruff_linter/src/rules/ruff/helpers.rs b/crates/ruff_linter/src/rules/ruff/helpers.rs
+index 943bb2b68f..a94ece694c 100644
+--- a/crates/ruff_linter/src/rules/ruff/helpers.rs
++++ b/crates/ruff_linter/src/rules/ruff/helpers.rs
+@@ -44,7 +44,7 @@ fn is_attrs_field(func: &Expr, semantic: &SemanticModel) -> bool {
+ /// I.e., if `DataclassKind::Attrs` is passed in,
+ /// return `true` if `func` represents a call to `attr.ib()` or `attrs.field()`;
+ /// if `DataclassKind::Stdlib` is passed in,
+-/// return `true` if `func` represents a call to `dataclass.field()`.
++/// return `true` if `func` represents a call to `dataclasses.field()`.
+ pub(super) fn is_dataclass_field(
+     func: &Expr,
+     semantic: &SemanticModel,
