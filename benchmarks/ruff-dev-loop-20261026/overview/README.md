@@ -6,17 +6,39 @@ The primary devbox was a 32-vCPU AMD EPYC Milan KVM guest running Linux 6.8 and 
 
 ## Native workspace checks after edits
 
-On a second 16-vCPU host, nine Cargo changes and three compiler changes reduced an ordinary full `cargo check` after a private Ruff parser edit from 12.12 s to 0.93 s. The median paired reduction was 92.22% (95% interval 92.00–92.44%, Holm-adjusted p = 0.00433). Every one of 12 pairs improved. The optimized compiler checked the parser once and allowed Cargo to reuse 34 dependents. An exported lexer edit still needed all 35 compiler invocations. Its 2.15% estimated elapsed reduction had a 95% interval of −2.68–3.80% and remained inconclusive. All 48 commands passed and all 48 verification runs had the same 520 fresh artifacts. [Timings, rosters and replay](../native-toolchain-stack/)
+The complete ten-Cargo and three-compiler stack ran on a dedicated 16-vCPU Linux host. Each four-command block independently used ABBA or BAAB order. These are ordinary workspace checks including every compiler child. [96 native measurements and replay](../native-toolchain-stack-ten/)
+
+| Historical Ruff edit | Median control | Median candidate | Compiler invocations | Median elapsed reduction across blocks | Conservative 95% interval | Favorable blocks | Holm-adjusted p |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| Private parser implementation | 11.58 s | 0.87 s | 35 → 1 | 92.50% | 92.30–92.59% | 8/8 | 0.00781 |
+| Exported lexer | 11.55 s | 10.98 s | 35 → 35 | 4.16% | 3.14–5.30% | 16/16 | 0.0000610 |
+
+The scheduler selected one frontend thread for 32 public-edit compiler invocations and retained eight for the three larger ones. The nine- and ten-Cargo arms used the same optimized compiler and agreed on all 442 raw metadata files and 435 API sidecars on both source states. Across the two distinct compiler versions, the same 226 raw files and 197 API sidecars differed before and after both edits. The private edit changed zero API sidecars under the optimized compiler. The public edit changed 28 under either compiler.
+
+An earlier independent schedule on the same host compared nine Cargo changes and three compiler changes. An ordinary full `cargo check` after the private Ruff parser edit went from 12.12 s to 0.93 s. The median paired reduction was 92.22% (95% interval 92.00–92.44%, Holm-adjusted p = 0.00433). Every one of 12 pairs improved. The optimized compiler checked the parser once and allowed Cargo to reuse 34 dependents. The exported lexer edit still needed all 35 compiler invocations. Its 2.15% estimated elapsed reduction had a 95% interval of −2.68–3.80% and remained inconclusive. All 48 commands passed and all 48 verification runs had the same 520 fresh artifacts. [Timings, rosters and replay](../native-toolchain-stack/)
+
+## Workspace builds after edits
+
+Nine Cargo changes, three compiler changes and the packaged Wild linker together reduced instructions for two complete ordinary workspace commands. Each restored a previously built workspace, replayed the same historical edit, and kept native dependencies fixed. Both arms produced the same six build executables and the same 102 test-compilation executables as their same-context native references. [Raw counts, checksums, counter calibration and reproduction](../integrated-build-test/)
+
+| Source edit and workspace command | Median paired instruction reduction | 95% median interval | Favorable pairs | Holm-adjusted p |
+| --- | ---: | ---: | ---: | ---: |
+| Seven-line CLI change, `cargo build` | 9.69% | 9.65–9.72% | 12/12 | 0.00433 |
+| Formatter fixture change, `cargo test --no-run` | 5.55% | 5.35–5.66% | 12/12 | 0.00433 |
+
+Cargo used DynamoRIO instruction counts. Cachegrind counted the actual rustc, Clang and Wild processes. The two collector groups each improved in all 12 pairs on both workloads. Cargo alone used 6.46% and 8.95% fewer instructions. The three other images together used 10.91% and 4.65% fewer. The recorded host replay and a toolchain-independent verifier are included. The separate portable adapter passed fixture and terminal smoke tests. Its full clean bootstrap is untested.
 
 ## Cargo changes together
 
-The nine Cargo drafts #242–#250 used the same release-PGO control, nine-draft candidate, default Ruff workspace and ordinary command output. All 36 fresh pairs improved with Holm-adjusted p = 0.00649 for each command. The native scheduling draft is a separate comparison.
+Two independent release-PGO comparisons used the same control, default Ruff workspace and ordinary command output. The first measured Cargo drafts #242–#250. The second included #251, the selective frontend scheduler. Every command improved in all 12 fresh pairs in each cohort, with Holm-adjusted p = 0.00649 across the three commands in both. [Nine-draft observations](../cargo-stack-holdout/), [ten-draft observations, source reconstruction and exclusions](../ten-cargo-fresh/)
 
-| Workspace command | Already-built artifact count | Whole-command instruction reduction | 95% median interval |
-| --- | ---: | ---: | ---: |
-| `cargo check` | 520 | 10.52% | 10.51–10.53% |
-| `cargo build` | 501 | 6.53% | 6.52–6.55% |
-| `cargo test --no-run` | 619 | 8.93% | 8.91–8.94% |
+| Workspace command | Already-built artifact count | Nine-draft instruction reduction | Ten-draft instruction reduction | Ten-draft 95% median interval |
+| --- | ---: | ---: | ---: | ---: |
+| `cargo check` | 520 | 10.52% | 10.52% | 10.51–10.52% |
+| `cargo build` | 501 | 6.53% | 6.54% | 6.53–6.55% |
+| `cargo test --no-run` | 619 | 8.93% | 8.93% | 8.92–8.94% |
+
+An independent release rebuild from the ten exact PR tips reproduced the workspace check reduction at 10.51% (95% interval 10.48–10.52%, 12/12 pairs). The reconstruction added 170 test-only lines to the measured sources. All executable bytes and runtime data matched. The GNU build ID and non-loaded symbol names differed. [Independent counts and byte comparison](../ten-cargo-fresh/)
 
 On a separately selected historical Ruff server doc edit, nine drafts saved 4.00% over the control (3.88–4.12%) and 2.44% beyond the first seven (2.41–2.52%). Each comparison improved in all 12 matched blocks and had order-conditioned Holm-adjusted p = 0.01852. Every observation included Cargo and the real compiler child. All 442 emitted metadata files and 435 API hashes matched. [Combined patch, individual counts and rerun scripts](../cargo-stack-holdout/)
 
@@ -69,8 +91,23 @@ The seventh Cargo change improved all 48 pairs across four full-workspace compar
 
 Combining six Cargo changes, both compiler changes and the ThinLTO linker reduced the complete edited CLI build by 2.49% (95% interval 2.48–2.50%) and test compilation by 1.81% (1.69–1.93%). All 12 independently ordered pairs improved in each command. Both arms used the same previously built native dependencies, and the final executables were byte-identical in every comparison. An independent from-source build produced different paths in jemalloc debug information for two executables and was excluded. [Whole-command counts, raw binaries' checksums and reproduction](https://github.com/astral-sh/ohm/blob/0efa3139d4eb7be2344fd205d6e4dff7a0bc6c46/benchmarks/ruff-dev-loop-20261026/wild/integrated.md)
 
-The two linker confirmation schedules each used every arm order twice. All 24 matched triplets favored the new packaged Wild for both comparisons. All 102 test executables matched byte-for-byte. [Whole-command comparison and independent repeat](https://github.com/astral-sh/ohm/blob/44d5fb2604340650a2bdf49d85500a2007e7d1d4/benchmarks/ruff-dev-loop-20261026/wild/range-pairs/results/README.md)
+The two linker confirmation schedules each used every arm order twice. All 24 matched triplets favored the new packaged Wild for both comparisons. All 102 test executables matched byte-for-byte. Two independent native test-compilation schedules were inconclusive for wall time. On a broader historical formatter edit with 19 compiler invocations and eight links, packaging #186 saved 3.70% over #185 (95% interval 2.65–4.69%, 12/12 pairs). The additional source change in #43 compared with #42 had an inconclusive −0.02% whole-command reduction (−1.19–1.31%). The final packaged binary reproduced from three clean builds. [Whole-command results](https://github.com/astral-sh/ohm/blob/a24023cd2971a71386094f9d746b97ae68b7db36/benchmarks/ruff-dev-loop-20261026/wild/range-pairs/results/README.md), [native elapsed runs](https://github.com/astral-sh/ohm/blob/d6cdfaac2851ee4b5cc62f69cdca4f2ef48b0790/benchmarks/ruff-dev-loop-20261026/wild/range-pairs/results/native-latency.md), [packaging reproduction](https://github.com/astral-sh/ohm/blob/ba42bf6436a45c5d2e0b5b07e6a32176d3c86f99/benchmarks/ruff-dev-loop-20261026/wild/range-pairs/packaging.json)
+
+Fifteen of the 16 draft heads passed their hosted checks. Wild #43 and its unchanged base #42 both failed before checkout under the repository’s GitHub Actions pin policy. The Wild source passed its native integration and unit suites. [Source CI](https://github.com/astral-sh/ohm-wild/actions/runs/40411410568), [base CI](https://github.com/astral-sh/ohm-wild/actions/runs/40312984428), [passing package CI](https://github.com/astral-sh/ohm/actions/runs/40418668827)
 
 ## Historical edit coverage
 
 Eleven source patches were selected by a fixed hash rank. Six were used to profile the rebuild work and five were reserved for confirmation. Across the six real edits, ordinary workspace commands reported between one and 58 dirty artifacts. The parser edit launched 35 distinct rustc processes. [Selection rules](../entropy-corpus/), [all discovery receipts](../discovery-results/)
+
+## Rechecking the reported results
+
+From this evidence revision of `ohm-cargo`, these commands recalculate the principal statistics, confirm randomized orders and check the recorded process and artifact receipts using Python’s standard library.
+
+```sh
+cd benchmarks/ruff-dev-loop-20261026
+python3 native-toolchain-stack-ten/verify_receipts.py
+python3 integrated-build-test/verify.py
+python3 ten-cargo-fresh/analyze.py
+```
+
+Each study includes its command replay, the exact toolchain revisions and binary hashes, and the checks for a valid run. The fresh Cargo study also reconstructs the ten draft tips and compares every byte of its independently built binary with the measured one. [Native checks](../native-toolchain-stack-ten/), [edited builds](../integrated-build-test/), [fresh commands and Cargo source reconstruction](../ten-cargo-fresh/)
