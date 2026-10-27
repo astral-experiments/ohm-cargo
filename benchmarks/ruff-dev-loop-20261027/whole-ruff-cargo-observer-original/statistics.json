@@ -1,0 +1,438 @@
+{
+  "build": {
+    "assignments": 924,
+    "bootstrap_reps": 20000,
+    "bootstrap_seed": 831361,
+    "elf_comparisons": {
+      "candidate-unexplained_rejected_known_fields_reported": [],
+      "cross_arm_masked_only_differences": {
+        "edit": [],
+        "final": [],
+        "preflight": [],
+        "restore": []
+      },
+      "parent-unexplained_rejected_known_fields_reported": []
+    },
+    "exact_two_sided_balanced_p": 0.4696969696969697,
+    "extreme_assignments": 434,
+    "faster_pairs": 7,
+    "geometric_wall_time_reduction_pct": -12.967230578561944,
+    "holm_p": 0.4696969696969697,
+    "mechanism": {
+      "candidate": {
+        "cold": {
+          "dirty_units": 501,
+          "elf_products": 15,
+          "executable_paths": 6,
+          "linkers": 152,
+          "rustc_full": 505,
+          "rustc_link_only": 0,
+          "total_units": 501
+        },
+        "edit": {
+          "dirty_units": 11,
+          "elf_products": 15,
+          "executable_paths": 6,
+          "linkers": 3,
+          "rustc_full": 2,
+          "rustc_link_only": 2,
+          "total_units": 501
+        },
+        "final": {
+          "dirty_units": 0,
+          "elf_products": 15,
+          "executable_paths": 6,
+          "linkers": 0,
+          "rustc_full": 0,
+          "rustc_link_only": 0,
+          "total_units": 501
+        },
+        "preflight": {
+          "dirty_units": 0,
+          "elf_products": 15,
+          "executable_paths": 6,
+          "linkers": 0,
+          "rustc_full": 0,
+          "rustc_link_only": 0,
+          "total_units": 501
+        },
+        "restore": {
+          "dirty_units": 11,
+          "elf_products": 15,
+          "executable_paths": 6,
+          "linkers": 3,
+          "rustc_full": 2,
+          "rustc_link_only": 2,
+          "total_units": 501
+        },
+        "restored-noop": {
+          "dirty_units": 0,
+          "elf_products": 15,
+          "executable_paths": 6,
+          "linkers": 0,
+          "rustc_full": 0,
+          "rustc_link_only": 0,
+          "total_units": 501
+        },
+        "training": {
+          "dirty_units": 0,
+          "elf_products": 15,
+          "executable_paths": 6,
+          "linkers": 0,
+          "rustc_full": 0,
+          "rustc_link_only": 0,
+          "total_units": 501
+        }
+      },
+      "parent": {
+        "cold": {
+          "dirty_units": 501,
+          "elf_products": 15,
+          "executable_paths": 6,
+          "linkers": 152,
+          "rustc_full": 505,
+          "rustc_link_only": 0,
+          "total_units": 501
+        },
+        "edit": {
+          "dirty_units": 11,
+          "elf_products": 15,
+          "executable_paths": 6,
+          "linkers": 3,
+          "rustc_full": 2,
+          "rustc_link_only": 2,
+          "total_units": 501
+        },
+        "final": {
+          "dirty_units": 0,
+          "elf_products": 15,
+          "executable_paths": 6,
+          "linkers": 0,
+          "rustc_full": 0,
+          "rustc_link_only": 0,
+          "total_units": 501
+        },
+        "preflight": {
+          "dirty_units": 0,
+          "elf_products": 15,
+          "executable_paths": 6,
+          "linkers": 0,
+          "rustc_full": 0,
+          "rustc_link_only": 0,
+          "total_units": 501
+        },
+        "restore": {
+          "dirty_units": 11,
+          "elf_products": 15,
+          "executable_paths": 6,
+          "linkers": 3,
+          "rustc_full": 2,
+          "rustc_link_only": 2,
+          "total_units": 501
+        },
+        "restored-noop": {
+          "dirty_units": 0,
+          "elf_products": 15,
+          "executable_paths": 6,
+          "linkers": 0,
+          "rustc_full": 0,
+          "rustc_link_only": 0,
+          "total_units": 501
+        },
+        "training": {
+          "dirty_units": 0,
+          "elf_products": 15,
+          "executable_paths": 6,
+          "linkers": 0,
+          "rustc_full": 0,
+          "rustc_link_only": 0,
+          "total_units": 501
+        }
+      }
+    },
+    "median_s": {
+      "candidate": 1.1398672725,
+      "parent": 1.090755353
+    },
+    "paired_bootstrap_95_pct": [
+      -51.24999946596549,
+      11.05031151680427
+    ],
+    "qualifies_for_speedup": false,
+    "registered_orders": [
+      [
+        "parent",
+        "candidate"
+      ],
+      [
+        "parent",
+        "candidate"
+      ],
+      [
+        "candidate",
+        "parent"
+      ],
+      [
+        "candidate",
+        "parent"
+      ],
+      [
+        "candidate",
+        "parent"
+      ],
+      [
+        "candidate",
+        "parent"
+      ],
+      [
+        "candidate",
+        "parent"
+      ],
+      [
+        "parent",
+        "candidate"
+      ],
+      [
+        "candidate",
+        "parent"
+      ],
+      [
+        "parent",
+        "candidate"
+      ],
+      [
+        "parent",
+        "candidate"
+      ],
+      [
+        "parent",
+        "candidate"
+      ]
+    ]
+  },
+  "test": {
+    "assignments": 924,
+    "bootstrap_reps": 20000,
+    "bootstrap_seed": 831361,
+    "elf_comparisons": {
+      "candidate-unexplained_rejected_known_fields_reported": [],
+      "cross_arm_masked_only_differences": {
+        "edit": [
+          "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d7ca8397fb96807d-all-native-all/ruff_wasm/5954b04f4610694e/out/api-5954b04f4610694e"
+        ],
+        "final": [
+          "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d7ca8397fb96807d-all-native-all/ruff_dev/bae0aed7593827fd/out/ruff_dev-bae0aed7593827fd",
+          "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d7ca8397fb96807d-all-native-all/ty_server/c1c481f014f6bbfa/out/e2e-c1c481f014f6bbfa"
+        ],
+        "preflight": [
+          "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d7ca8397fb96807d-all-native-all/ruff_dev/bae0aed7593827fd/out/ruff_dev-bae0aed7593827fd",
+          "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d7ca8397fb96807d-all-native-all/ruff_python_formatter/9c163d83ac07ad02/out/ruff_python_formatter-9c163d83ac07ad02"
+        ],
+        "restore": [
+          "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d7ca8397fb96807d-all-native-all/ruff_python_trivia_integration_tests/8fde74c9c7c8ef48/out/simple_tokenizer-8fde74c9c7c8ef48",
+          "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d7ca8397fb96807d-all-native-all/ruff_server/5fb728229e01709b/out/ruff_server-5fb728229e01709b"
+        ]
+      },
+      "parent-unexplained_rejected_known_fields_reported": [
+        "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d7ca8397fb96807d-all-native-all/ruff_python_formatter/9c163d83ac07ad02/out/ruff_python_formatter-9c163d83ac07ad02",
+        "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d7ca8397fb96807d-all-native-all/ty_server/c1c481f014f6bbfa/out/e2e-c1c481f014f6bbfa"
+      ]
+    },
+    "exact_two_sided_balanced_p": 0.0021645021645021645,
+    "extreme_assignments": 2,
+    "faster_pairs": 12,
+    "geometric_wall_time_reduction_pct": 83.27524492512197,
+    "holm_p": 0.004329004329004329,
+    "mechanism": {
+      "candidate": {
+        "cold": {
+          "dirty_units": 619,
+          "elf_products": 110,
+          "executable_paths": 102,
+          "linkers": 262,
+          "rustc_full": 636,
+          "rustc_link_only": 0,
+          "total_units": 619
+        },
+        "edit": {
+          "dirty_units": 26,
+          "elf_products": 110,
+          "executable_paths": 102,
+          "linkers": 19,
+          "rustc_full": 4,
+          "rustc_link_only": 16,
+          "total_units": 619
+        },
+        "final": {
+          "dirty_units": 0,
+          "elf_products": 110,
+          "executable_paths": 102,
+          "linkers": 0,
+          "rustc_full": 0,
+          "rustc_link_only": 0,
+          "total_units": 619
+        },
+        "preflight": {
+          "dirty_units": 0,
+          "elf_products": 110,
+          "executable_paths": 102,
+          "linkers": 0,
+          "rustc_full": 0,
+          "rustc_link_only": 0,
+          "total_units": 619
+        },
+        "restore": {
+          "dirty_units": 26,
+          "elf_products": 110,
+          "executable_paths": 102,
+          "linkers": 19,
+          "rustc_full": 4,
+          "rustc_link_only": 16,
+          "total_units": 619
+        },
+        "restored-noop": {
+          "dirty_units": 0,
+          "elf_products": 110,
+          "executable_paths": 102,
+          "linkers": 0,
+          "rustc_full": 0,
+          "rustc_link_only": 0,
+          "total_units": 619
+        },
+        "training": {
+          "dirty_units": 56,
+          "elf_products": 110,
+          "executable_paths": 102,
+          "linkers": 50,
+          "rustc_full": 1,
+          "rustc_link_only": 50,
+          "total_units": 619
+        }
+      },
+      "parent": {
+        "cold": {
+          "dirty_units": 619,
+          "elf_products": 110,
+          "executable_paths": 102,
+          "linkers": 262,
+          "rustc_full": 636,
+          "rustc_link_only": 0,
+          "total_units": 619
+        },
+        "edit": {
+          "dirty_units": 67,
+          "elf_products": 110,
+          "executable_paths": 102,
+          "linkers": 55,
+          "rustc_full": 5,
+          "rustc_link_only": 52,
+          "total_units": 619
+        },
+        "final": {
+          "dirty_units": 56,
+          "elf_products": 110,
+          "executable_paths": 102,
+          "linkers": 50,
+          "rustc_full": 1,
+          "rustc_link_only": 50,
+          "total_units": 619
+        },
+        "preflight": {
+          "dirty_units": 56,
+          "elf_products": 110,
+          "executable_paths": 102,
+          "linkers": 50,
+          "rustc_full": 1,
+          "rustc_link_only": 50,
+          "total_units": 619
+        },
+        "restore": {
+          "dirty_units": 67,
+          "elf_products": 110,
+          "executable_paths": 102,
+          "linkers": 55,
+          "rustc_full": 5,
+          "rustc_link_only": 52,
+          "total_units": 619
+        },
+        "restored-noop": {
+          "dirty_units": 56,
+          "elf_products": 110,
+          "executable_paths": 102,
+          "linkers": 50,
+          "rustc_full": 1,
+          "rustc_link_only": 50,
+          "total_units": 619
+        },
+        "training": {
+          "dirty_units": 56,
+          "elf_products": 110,
+          "executable_paths": 102,
+          "linkers": 50,
+          "rustc_full": 1,
+          "rustc_link_only": 50,
+          "total_units": 619
+        }
+      }
+    },
+    "median_s": {
+      "candidate": 1.2180512815,
+      "parent": 6.216941189
+    },
+    "paired_bootstrap_95_pct": [
+      79.97144441459233,
+      86.13573802978367
+    ],
+    "qualifies_for_speedup": true,
+    "registered_orders": [
+      [
+        "parent",
+        "candidate"
+      ],
+      [
+        "candidate",
+        "parent"
+      ],
+      [
+        "candidate",
+        "parent"
+      ],
+      [
+        "candidate",
+        "parent"
+      ],
+      [
+        "candidate",
+        "parent"
+      ],
+      [
+        "candidate",
+        "parent"
+      ],
+      [
+        "parent",
+        "candidate"
+      ],
+      [
+        "parent",
+        "candidate"
+      ],
+      [
+        "parent",
+        "candidate"
+      ],
+      [
+        "parent",
+        "candidate"
+      ],
+      [
+        "candidate",
+        "parent"
+      ],
+      [
+        "parent",
+        "candidate"
+      ]
+    ]
+  }
+}
