@@ -1,0 +1,149 @@
+{
+  "doc-build": {
+    "outputs": {
+      "verify-edit": {
+        "byte_identical": 15,
+        "differing_sections": {},
+        "total": 15
+      },
+      "verify-final-edit": {
+        "byte_identical": 15,
+        "differing_sections": {},
+        "total": 15
+      }
+    },
+    "samples": 24,
+    "traces": {
+      "candidate": {
+        "rustc_full": 2,
+        "rustc_link_only": 2,
+        "wild": 3
+      },
+      "parent": {
+        "rustc_full": 11,
+        "wild": 3
+      }
+    }
+  },
+  "doc-test": {
+    "outputs": {
+      "verify-edit": {
+        "byte_identical": 109,
+        "differing_sections": {
+          "ruff_python_semantic/29d938dbd57eec9b/out/ruff_python_semantic-29d938dbd57eec9b": {
+            ".note.gnu.build-id": [
+              "digest"
+            ],
+            ".rodata": [
+              "entsize"
+            ]
+          }
+        },
+        "total": 110
+      },
+      "verify-final-edit": {
+        "byte_identical": 107,
+        "differing_sections": {
+          "ruff_python_semantic/29d938dbd57eec9b/out/ruff_python_semantic-29d938dbd57eec9b": {
+            ".note.gnu.build-id": [
+              "digest"
+            ],
+            ".rodata": [
+              "entsize"
+            ]
+          },
+          "ruff_server/f81f313fe27e5621/out/document-f81f313fe27e5621": {
+            ".note.gnu.build-id": [
+              "digest"
+            ],
+            ".rodata": [
+              "entsize"
+            ]
+          },
+          "ruff_wasm/5954b04f4610694e/out/api-5954b04f4610694e": {
+            ".note.gnu.build-id": [
+              "digest"
+            ],
+            ".rodata": [
+              "entsize"
+            ]
+          }
+        },
+        "total": 110
+      }
+    },
+    "samples": 24,
+    "traces": {
+      "candidate": {
+        "rustc_full": 4,
+        "rustc_link_only": 16,
+        "wild": 19
+      },
+      "parent": {
+        "rustc_full": 26,
+        "wild": 19
+      }
+    }
+  },
+  "parser-build": {
+    "outputs": {
+      "verify-edit": {
+        "byte_identical": 15,
+        "differing_sections": {},
+        "total": 15
+      },
+      "verify-final-edit": {
+        "byte_identical": 15,
+        "differing_sections": {},
+        "total": 15
+      }
+    },
+    "samples": 24,
+    "traces": {
+      "candidate": {
+        "rustc_full": 3,
+        "rustc_link_only": 6,
+        "wild": 8
+      },
+      "parent": {
+        "rustc_full": 35,
+        "wild": 8
+      }
+    }
+  },
+  "parser-test": {
+    "outputs": {
+      "verify-edit": {
+        "byte_identical": 110,
+        "differing_sections": {},
+        "total": 110
+      },
+      "verify-final-edit": {
+        "byte_identical": 109,
+        "differing_sections": {
+          "ruff_python_ast_integration_tests/2e794818cd90abe0/out/source_order-2e794818cd90abe0": {
+            ".note.gnu.build-id": [
+              "digest"
+            ],
+            ".rodata": [
+              "entsize"
+            ]
+          }
+        },
+        "total": 110
+      }
+    },
+    "samples": 24,
+    "traces": {
+      "candidate": {
+        "rustc_full": 6,
+        "rustc_link_only": 62,
+        "wild": 67
+      },
+      "parent": {
+        "rustc_full": 93,
+        "wild": 67
+      }
+    }
+  }
+}

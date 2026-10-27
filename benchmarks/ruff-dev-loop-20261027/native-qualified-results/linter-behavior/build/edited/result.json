@@ -1,0 +1,65 @@
+{
+  "crates": [
+    [
+      "rustc_full",
+      "ruff_linter"
+    ],
+    [
+      "rustc_full",
+      "ruff_wasm"
+    ],
+    [
+      "rustc_link_only",
+      "ruff"
+    ],
+    [
+      "rustc_link_only",
+      "ruff_dev"
+    ]
+  ],
+  "diagnostics": [
+    {
+      "cell": null,
+      "code": "RUF008",
+      "end_location": {
+        "column": 22,
+        "row": 6
+      },
+      "filename": "/home/dev-user/code/oss/ruff-ohm-whole-native-20261027/helper.py",
+      "fix": null,
+      "location": {
+        "column": 20,
+        "row": 6
+      },
+      "message": "Do not use mutable default values for dataclass attributes",
+      "name": "mutable-dataclass-default",
+      "noqa_row": 6,
+      "severity": "error",
+      "url": "https://docs.astral.sh/ruff/rules/mutable-dataclass-default"
+    }
+  ],
+  "elf": {
+    "ohm-whole-skips-20261027/native-target/debug/libruff_macros.so": "9b28f50631f2d22542769a623f5fe1f7794d5178c55f6b99d55b6a160b95c530",
+    "ohm-whole-skips-20261027/native-target/debug/libruff_wasm.so": "ea474c864b24e4346babd270fe2d38f1bb7fb7ed26536b0914d4a8587ff6dfee",
+    "ohm-whole-skips-20261027/native-target/debug/libty_wasm.so": "d8b609ec20a103713c711e11c841f98ae66abd85b6648a7f8b493bf2474fd7fc",
+    "ohm-whole-skips-20261027/native-target/debug/ruff": "b5f4251a79c27fd0b64d4f6b206aba8c9552c522e6ede7b4c2efc0f31b85639b",
+    "ohm-whole-skips-20261027/native-target/debug/ruff_dev": "362d3e905ef209d160327b9ab36e197f2d1feec3dc9cbbf43b3dc078f0be1ccb",
+    "ohm-whole-skips-20261027/native-target/debug/ruff_python_formatter": "b456c23f8d86f6710673f10c6997890aebc9174f1df2cade5ea95af1b86f84ab",
+    "ohm-whole-skips-20261027/native-target/debug/ty": "3476271a7d3dca526050303c32fdc1f63836e5ece205aa09358023a8caa8de10",
+    "ohm-whole-skips-20261027/native-target/debug/ty_completion_bench": "99e626d70b6297991f9fd0518c7b3388c83f4e7d7ee8886d49082fb1069f7ad6",
+    "ohm-whole-skips-20261027/native-target/debug/ty_completion_eval": "4e14a2214c3c353f8e6b71e36c243058ad934998ee426322da4651faa6c1c2bd",
+    "ruff/4722aa02840a44c3/out/build_script_build": "b52715e7707d60b35ad4b7ff9237f8bd654448318102d1a2cd6f8fa45f064408",
+    "ruff_macros/0df74ae72023ec23/out/libruff_macros-0df74ae72023ec23.so": "daab39a4047294540e0142eeb2ac30d2330fabf181fec55a5df6c4b3e0421ad3",
+    "ruff_unicode_names2/8f05ff94e787857d/out/build_script_build": "86615881897806375c3c6b4ca1c38c325ed89379037f9a43bff857cb72de43df",
+    "ty/70696aae414a7369/out/build_script_build": "c30cbcb47f5ca2a3fc6ce2f5581629289b3018834f85df02fcb1763d6f4367a8",
+    "ty_vendored/a2417fe62c568aae/out/build_script_build": "587c2cb1be7fdde2caa9d3f99dc66d8e2222ed612053544d1e59ae5be58f63a1",
+    "ty_wasm/e988932c4bd2143f/out/build_script_build": "c1473433a44aefd5eda6f2edfc7b1816920bb7a5f5f0dc27062927c0a1651624"
+  },
+  "processes": {
+    "rustc_full": 2,
+    "rustc_link_only": 2,
+    "wild": 3
+  },
+  "sha": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+  "source": "314c989cbe8dd5d4bf2b91f0e5ff9b0e00ea9ac9174b62610546aee68c2c9db0"
+}
