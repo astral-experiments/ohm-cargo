@@ -1,0 +1,2349 @@
+{
+  "controls/after-standalone-producer": {
+    "products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "reader_completeness": [
+      true,
+      true
+    ],
+    "roster": [
+      {
+        "capture": true,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": true,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_plain",
+        "mode": "full"
+      }
+    ],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "controls/backdated-producer-now": {
+    "products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374094..374116)",
+        "sha256": "bb46ff22f9640a67401676f894df61fd1485d3bc4fcba37c63e4543972c98c46"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273191..273213)",
+        "sha256": "7b7d83f9ac360e8893a88e6a567960769096bc2694ed6190427b26af1286e301"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "reader_completeness": [
+      true,
+      true
+    ],
+    "roster": [
+      {
+        "capture": true,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": true,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_plain",
+        "mode": "relink"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_shapes",
+        "mode": "full"
+      }
+    ],
+    "source_sha256": "e27e925f288b958f810e597fbc9e08780535b2baa165c80997167060bcca9c8f",
+    "status": 0
+  },
+  "controls/check-0": {
+    "products": {},
+    "reader_completeness": [
+      false,
+      false
+    ],
+    "roster": [
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_plain",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_probe",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_shapes",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_tokens",
+        "mode": "full"
+      }
+    ],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "controls/check-1": {
+    "products": {},
+    "reader_completeness": [
+      true,
+      true
+    ],
+    "roster": [
+      {
+        "capture": true,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": true,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      }
+    ],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "controls/check-2": {
+    "products": {},
+    "reader_completeness": [
+      true,
+      true
+    ],
+    "roster": [],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "controls/check-3": {
+    "products": {},
+    "reader_completeness": [
+      true,
+      true
+    ],
+    "roster": [],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "controls/check-real-edit": {
+    "products": {},
+    "reader_completeness": [
+      true,
+      true
+    ],
+    "roster": [
+      {
+        "capture": true,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": true,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_shapes",
+        "mode": "full"
+      }
+    ],
+    "source_sha256": "e27e925f288b958f810e597fbc9e08780535b2baa165c80997167060bcca9c8f",
+    "status": 0
+  },
+  "controls/confirm": {
+    "products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "reader_completeness": [
+      true,
+      true
+    ],
+    "roster": [],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "controls/corrupt-pending-first": {
+    "products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "reader_completeness": [
+      false,
+      true
+    ],
+    "roster": [
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "relink"
+      }
+    ],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "controls/corrupt-pending-restore-0": {
+    "products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "reader_completeness": [
+      true,
+      true
+    ],
+    "roster": [
+      {
+        "capture": true,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "relink"
+      }
+    ],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "controls/corrupt-pending-restore-1": {
+    "products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "reader_completeness": [
+      true,
+      true
+    ],
+    "roster": [],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "controls/corrupt-pending-steady": {
+    "products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "reader_completeness": [
+      true,
+      true
+    ],
+    "roster": [],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "controls/discover": {
+    "products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "reader_completeness": [
+      true,
+      true
+    ],
+    "roster": [
+      {
+        "capture": true,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": true,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "relink"
+      }
+    ],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "controls/downgrade": {
+    "products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "reader_completeness": [
+      null,
+      null
+    ],
+    "roster": [
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "relink"
+      }
+    ],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "controls/earlier-producer": {
+    "products": {},
+    "reader_completeness": [
+      true,
+      true
+    ],
+    "roster": [
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_shapes",
+        "mode": "full"
+      }
+    ],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "controls/empty-0": {
+    "products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "reader_completeness": [
+      null,
+      null
+    ],
+    "roster": [
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_plain",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_probe",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_shapes",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_tokens",
+        "mode": "full"
+      }
+    ],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "controls/empty-1": {
+    "products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374094..374116)",
+        "sha256": "bb46ff22f9640a67401676f894df61fd1485d3bc4fcba37c63e4543972c98c46"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273191..273213)",
+        "sha256": "7b7d83f9ac360e8893a88e6a567960769096bc2694ed6190427b26af1286e301"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "reader_completeness": [
+      null,
+      null
+    ],
+    "roster": [
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_plain",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_probe",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_shapes",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_tokens",
+        "mode": "full"
+      }
+    ],
+    "source_sha256": "e27e925f288b958f810e597fbc9e08780535b2baa165c80997167060bcca9c8f",
+    "status": 0
+  },
+  "controls/fill-old": {
+    "products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "reader_completeness": [
+      null,
+      null
+    ],
+    "roster": [
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_plain",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_probe",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_shapes",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_tokens",
+        "mode": "full"
+      }
+    ],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "controls/inherit-old": {
+    "products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "reader_completeness": [
+      false,
+      false
+    ],
+    "roster": [
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "relink"
+      }
+    ],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "controls/invalid-trailer-first": {
+    "products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "reader_completeness": [
+      false,
+      true
+    ],
+    "roster": [
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "relink"
+      }
+    ],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "controls/invalid-trailer-restore-0": {
+    "products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "reader_completeness": [
+      true,
+      true
+    ],
+    "roster": [
+      {
+        "capture": true,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "relink"
+      }
+    ],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "controls/invalid-trailer-restore-1": {
+    "products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "reader_completeness": [
+      true,
+      true
+    ],
+    "roster": [],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "controls/invalid-trailer-steady": {
+    "products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "reader_completeness": [
+      true,
+      true
+    ],
+    "roster": [],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "controls/legacy-trailer-first": {
+    "products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "reader_completeness": [
+      false,
+      true
+    ],
+    "roster": [
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "relink"
+      }
+    ],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "controls/legacy-trailer-restore-0": {
+    "products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "reader_completeness": [
+      true,
+      true
+    ],
+    "roster": [
+      {
+        "capture": true,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "relink"
+      }
+    ],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "controls/legacy-trailer-restore-1": {
+    "products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "reader_completeness": [
+      true,
+      true
+    ],
+    "roster": [],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "controls/legacy-trailer-steady": {
+    "products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "reader_completeness": [
+      true,
+      true
+    ],
+    "roster": [],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "controls/missing-checksum-first": {
+    "products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "reader_completeness": [
+      false,
+      true
+    ],
+    "roster": [
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "relink"
+      }
+    ],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "controls/missing-checksum-restore-0": {
+    "products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "reader_completeness": [
+      true,
+      true
+    ],
+    "roster": [
+      {
+        "capture": true,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "relink"
+      }
+    ],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "controls/missing-checksum-restore-1": {
+    "products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "reader_completeness": [
+      true,
+      true
+    ],
+    "roster": [],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "controls/missing-checksum-steady": {
+    "products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "reader_completeness": [
+      true,
+      true
+    ],
+    "roster": [],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "controls/missing-receipt-first": {
+    "products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "reader_completeness": [
+      false,
+      true
+    ],
+    "roster": [
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "relink"
+      }
+    ],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "controls/missing-receipt-restore-0": {
+    "products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "reader_completeness": [
+      true,
+      true
+    ],
+    "roster": [
+      {
+        "capture": true,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "relink"
+      }
+    ],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "controls/missing-receipt-restore-1": {
+    "products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "reader_completeness": [
+      true,
+      true
+    ],
+    "roster": [],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "controls/missing-receipt-steady": {
+    "products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "reader_completeness": [
+      true,
+      true
+    ],
+    "roster": [],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "controls/mtime-0": {
+    "products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "03eb39009a8486cd1be1500b33b6230926c1ff5f08972f41f031754548157a34"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "bab6137d5f0dc681c3414089431c85cf874131077494ec46d1f6132c56546b6d"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "14b3f95f9636a52857417e62fe0c6a940b0c94812518aa70c3b87c6fdb9f00a3"
+      }
+    },
+    "reader_completeness": [
+      false,
+      false
+    ],
+    "roster": [
+      {
+        "capture": false,
+        "checksum": false,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": false,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": false,
+        "crate": "hold_indirect",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": false,
+        "crate": "hold_plain",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": false,
+        "crate": "hold_probe",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": false,
+        "crate": "hold_shapes",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": false,
+        "crate": "hold_tokens",
+        "mode": "full"
+      }
+    ],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "controls/mtime-1": {
+    "products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "03eb39009a8486cd1be1500b33b6230926c1ff5f08972f41f031754548157a34"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "bab6137d5f0dc681c3414089431c85cf874131077494ec46d1f6132c56546b6d"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "14b3f95f9636a52857417e62fe0c6a940b0c94812518aa70c3b87c6fdb9f00a3"
+      }
+    },
+    "reader_completeness": [
+      true,
+      true
+    ],
+    "roster": [
+      {
+        "capture": true,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": true,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": false,
+        "crate": "hold_indirect",
+        "mode": "relink"
+      }
+    ],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "controls/mtime-2": {
+    "products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "03eb39009a8486cd1be1500b33b6230926c1ff5f08972f41f031754548157a34"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "bab6137d5f0dc681c3414089431c85cf874131077494ec46d1f6132c56546b6d"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "14b3f95f9636a52857417e62fe0c6a940b0c94812518aa70c3b87c6fdb9f00a3"
+      }
+    },
+    "reader_completeness": [
+      true,
+      true
+    ],
+    "roster": [],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "controls/mtime-real-edit": {
+    "products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374094..374116)",
+        "sha256": "b4e9d6f6491a1691acfde148ada3844fffc884df3f096db1dec17d71f77f9568"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273191..273213)",
+        "sha256": "101d621da9030f35520c9f7b2dee0d215cfc54e4e96d4755ab33ed7f6c6f87e8"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "14b3f95f9636a52857417e62fe0c6a940b0c94812518aa70c3b87c6fdb9f00a3"
+      }
+    },
+    "reader_completeness": [
+      true,
+      true
+    ],
+    "roster": [
+      {
+        "capture": true,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": true,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": false,
+        "crate": "hold_indirect",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": false,
+        "crate": "hold_plain",
+        "mode": "relink"
+      },
+      {
+        "capture": false,
+        "checksum": false,
+        "crate": "hold_shapes",
+        "mode": "full"
+      }
+    ],
+    "source_sha256": "e27e925f288b958f810e597fbc9e08780535b2baa165c80997167060bcca9c8f",
+    "status": 0
+  },
+  "controls/recover-noop": {
+    "products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "reader_completeness": [
+      true,
+      true
+    ],
+    "roster": [],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "controls/recover-old": {
+    "products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "reader_completeness": [
+      false,
+      false
+    ],
+    "roster": [
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "relink"
+      }
+    ],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "controls/retrain": {
+    "products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "reader_completeness": [
+      true,
+      true
+    ],
+    "roster": [
+      {
+        "capture": true,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": true,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "relink"
+      }
+    ],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "controls/test-no-run-0": {
+    "products": {},
+    "reader_completeness": [
+      false,
+      false
+    ],
+    "roster": [
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_plain",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_probe",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_shapes",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_tokens",
+        "mode": "full"
+      }
+    ],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "controls/test-no-run-1": {
+    "products": {},
+    "reader_completeness": [
+      true,
+      true
+    ],
+    "roster": [
+      {
+        "capture": true,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": true,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "relink"
+      }
+    ],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "controls/test-no-run-2": {
+    "products": {},
+    "reader_completeness": [
+      true,
+      true
+    ],
+    "roster": [],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "controls/test-no-run-3": {
+    "products": {},
+    "reader_completeness": [
+      true,
+      true
+    ],
+    "roster": [],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "controls/test-no-run-real-edit": {
+    "products": {},
+    "reader_completeness": [
+      true,
+      true
+    ],
+    "roster": [
+      {
+        "capture": true,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": true,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_plain",
+        "mode": "relink"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_shapes",
+        "mode": "full"
+      }
+    ],
+    "source_sha256": "e27e925f288b958f810e597fbc9e08780535b2baa165c80997167060bcca9c8f",
+    "status": 0
+  },
+  "controls/wrapper-0": {
+    "products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "reader_completeness": [
+      false,
+      false
+    ],
+    "roster": [
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_plain",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_probe",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_shapes",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_tokens",
+        "mode": "full"
+      }
+    ],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "controls/wrapper-1": {
+    "products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "reader_completeness": [
+      false,
+      false
+    ],
+    "roster": [
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "relink"
+      }
+    ],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "controls/wrapper-2": {
+    "products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "reader_completeness": [
+      false,
+      false
+    ],
+    "roster": [
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "relink"
+      }
+    ],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "flipped/corrupted-early-edit": {
+    "products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374094..374116)",
+        "sha256": "bb46ff22f9640a67401676f894df61fd1485d3bc4fcba37c63e4543972c98c46"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273191..273213)",
+        "sha256": "7b7d83f9ac360e8893a88e6a567960769096bc2694ed6190427b26af1286e301"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "reader_completeness": [
+      false,
+      false
+    ],
+    "roster": [
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_plain",
+        "mode": "relink"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_shapes",
+        "mode": "full"
+      }
+    ],
+    "source_sha256": "e27e925f288b958f810e597fbc9e08780535b2baa165c80997167060bcca9c8f",
+    "status": 0
+  },
+  "flipped/empty-0": {
+    "products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "reader_completeness": [
+      null,
+      null
+    ],
+    "roster": [
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_plain",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_probe",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_shapes",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_tokens",
+        "mode": "full"
+      }
+    ],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "flipped/empty-1": {
+    "products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374094..374116)",
+        "sha256": "bb46ff22f9640a67401676f894df61fd1485d3bc4fcba37c63e4543972c98c46"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273191..273213)",
+        "sha256": "7b7d83f9ac360e8893a88e6a567960769096bc2694ed6190427b26af1286e301"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "reader_completeness": [
+      null,
+      null
+    ],
+    "roster": [
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_plain",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_probe",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_shapes",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_tokens",
+        "mode": "full"
+      }
+    ],
+    "source_sha256": "e27e925f288b958f810e597fbc9e08780535b2baa165c80997167060bcca9c8f",
+    "status": 0
+  },
+  "flipped/pending-receipts": {
+    "products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "reader_completeness": [
+      false,
+      false
+    ],
+    "roster": [
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_plain",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_probe",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_shapes",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_tokens",
+        "mode": "full"
+      }
+    ],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "simultaneous/check-prime-0": {
+    "products": {},
+    "reader_completeness": [
+      false,
+      false
+    ],
+    "roster": [
+      {
+        "capture": false,
+        "checksum": false,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": false,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": false,
+        "crate": "hold_indirect",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": false,
+        "crate": "hold_plain",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": false,
+        "crate": "hold_probe",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": false,
+        "crate": "hold_shapes",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": false,
+        "crate": "hold_tokens",
+        "mode": "full"
+      }
+    ],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "simultaneous/check-prime-1": {
+    "products": {},
+    "reader_completeness": [
+      true,
+      true
+    ],
+    "roster": [
+      {
+        "capture": true,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": true,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      }
+    ],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "simultaneous/check-prime-2": {
+    "products": {},
+    "reader_completeness": [
+      true,
+      true
+    ],
+    "roster": [],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "simultaneous/retarget-preserved-mtime": {
+    "products": {
+      "hold_direct": {
+        "output": "19=#6 bytes(374093..374115)",
+        "sha256": "21d139ac84c79da9cf207bab6669421085477e00b8891403260a144c2145abbd"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "91121b8319dd7de92b67f8adcb25eb88419b5548517f20ac15cd5f4544626cdd"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "2d7668b170795e4d48af38644882b8e827e2452e4002dd0cd59487db2084fd32"
+      }
+    },
+    "reader_completeness": [
+      true,
+      true
+    ],
+    "roster": [
+      {
+        "capture": true,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      }
+    ],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "simultaneous/simultaneous-check": {
+    "products": {},
+    "reader_completeness": [
+      true,
+      true
+    ],
+    "roster": [
+      {
+        "capture": true,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": false,
+        "crate": "hold_shapes",
+        "mode": "full"
+      }
+    ],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 101
+  },
+  "simultaneous/symlink-empty": {
+    "products": {},
+    "reader_completeness": [
+      true,
+      true
+    ],
+    "roster": [
+      {
+        "capture": false,
+        "checksum": false,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": false,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": false,
+        "crate": "hold_indirect",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": false,
+        "crate": "hold_plain",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": false,
+        "crate": "hold_probe",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": false,
+        "crate": "hold_shapes",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": false,
+        "crate": "hold_tokens",
+        "mode": "full"
+      }
+    ],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "simultaneous/symlink-prime-0": {
+    "products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "2ad4d258425c38448ab7bc67032fb17209904020bb02a1605e8f98299305ea1a"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "91121b8319dd7de92b67f8adcb25eb88419b5548517f20ac15cd5f4544626cdd"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "2d7668b170795e4d48af38644882b8e827e2452e4002dd0cd59487db2084fd32"
+      }
+    },
+    "reader_completeness": [
+      false,
+      false
+    ],
+    "roster": [
+      {
+        "capture": false,
+        "checksum": false,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": false,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": false,
+        "crate": "hold_indirect",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": false,
+        "crate": "hold_plain",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": false,
+        "crate": "hold_probe",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": false,
+        "crate": "hold_shapes",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": false,
+        "crate": "hold_tokens",
+        "mode": "full"
+      }
+    ],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "simultaneous/symlink-prime-1": {
+    "products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "2ad4d258425c38448ab7bc67032fb17209904020bb02a1605e8f98299305ea1a"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "91121b8319dd7de92b67f8adcb25eb88419b5548517f20ac15cd5f4544626cdd"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "2d7668b170795e4d48af38644882b8e827e2452e4002dd0cd59487db2084fd32"
+      }
+    },
+    "reader_completeness": [
+      true,
+      true
+    ],
+    "roster": [
+      {
+        "capture": true,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": true,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": false,
+        "crate": "hold_indirect",
+        "mode": "relink"
+      }
+    ],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "simultaneous/symlink-prime-2": {
+    "products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "2ad4d258425c38448ab7bc67032fb17209904020bb02a1605e8f98299305ea1a"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "91121b8319dd7de92b67f8adcb25eb88419b5548517f20ac15cd5f4544626cdd"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "2d7668b170795e4d48af38644882b8e827e2452e4002dd0cd59487db2084fd32"
+      }
+    },
+    "reader_completeness": [
+      true,
+      true
+    ],
+    "roster": [],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  }
+}

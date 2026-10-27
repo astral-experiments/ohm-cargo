@@ -1,0 +1,120 @@
+{
+  "cargo_sha256": "90efada2bf15f4ce846117b252d04ded63295dc2662b0f74356b736351a27ea5",
+  "driver_sha256": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+  "subject": "/home/dev-user/.cache/ohm-ruff-cargo-link-skip-20261027/native-span-observer/ruff-sdk-prefetch-corrected-subjects/stackv5",
+  "prior_proof_sha": "cef74856c6744394065a5d2abb412c6c8c23b474de7501f476049d821d0e44ce",
+  "initial_complete": true,
+  "input": "/dev/shm/ohm-cargo-scout-ruff-prefetch-corrected-0934/stackv5/fifo/target/debug/build/workspaces/52acc43acd2f0405/v2-e0e1694cad1b8cad/hold_shapes/ea9fdfd679f09848/out/libhold_shapes-ea9fdfd679f09848.rlib",
+  "input_sha256": "a02b1d10ab489f12cc1b1bb7bdae90e98e6dfa50204e2c33e6f8b088f6cc5d20",
+  "initial": [
+    [
+      [
+        "full",
+        "hold_tokens"
+      ],
+      [
+        "full",
+        "hold_probe"
+      ],
+      [
+        "full",
+        "hold_shapes"
+      ],
+      [
+        "full",
+        "hold_direct"
+      ]
+    ],
+    [
+      [
+        "full",
+        "hold_direct"
+      ]
+    ],
+    []
+  ],
+  "symlink": [
+    [],
+    []
+  ],
+  "no_writer_ever": true,
+  "timed_out_in_open": false,
+  "kernel_witness": null,
+  "open_flags": [
+    526592
+  ],
+  "command_returncode": 101,
+  "diagnostics": [
+    "extern location for hold_shapes is not a file: /dev/shm/ohm-cargo-scout-ruff-prefetch-corrected-0934/stackv5/fifo/target/debug/build/workspaces/52acc43acd2f0405/v2-e0e1694cad1b8cad/hold_shapes/ea9fdfd679f09848/out/libhold_shapes-ea9fdfd679f09848.rlib"
+  ],
+  "roster": [
+    [
+      "full",
+      "hold_direct"
+    ]
+  ],
+  "recovery_roster": [
+    [
+      "full",
+      "hold_direct"
+    ]
+  ],
+  "programs_equal": true,
+  "program_stdout": "19 #6 bytes(374093..374115)",
+  "downgrade": {
+    "cargo_sha": "529813f90cdd7c369e347701f8c4497edc5dad8adcc44b58301661fd4b786c4a",
+    "old": [
+      [
+        [
+          "full",
+          "hold_direct"
+        ]
+      ],
+      [
+        [
+          "full",
+          "hold_direct"
+        ]
+      ]
+    ],
+    "return": [
+      [
+        [
+          "full",
+          "hold_direct"
+        ]
+      ],
+      [
+        [
+          "full",
+          "hold_direct"
+        ]
+      ],
+      []
+    ],
+    "output": "19 #6 bytes(374093..374115)"
+  },
+  "stack": [
+    "std::sys::fs::unix::try_statx at std.e7761cc09d227e9b-cgu.0:?",
+    "std::sys::fs::metadata at ??:?",
+    "cargo::compiler::fingerprint::changed_observed_input at cargo.22f0611f6448182b-cgu.07:?",
+    "<cargo::compiler::fingerprint::Fingerprint>::check_filesystem at cargo.22f0611f6448182b-cgu.07:?",
+    "cargo::compiler::fingerprint::calculate at ??:?",
+    "cargo::compiler::fingerprint::prepare_target at cargo.22f0611f6448182b-cgu.07:?",
+    "cargo::compiler::compile at cargo.22f0611f6448182b-cgu.06:?",
+    "<cargo::compiler::build_runner::BuildRunner>::compile_prepared at cargo.22f0611f6448182b-cgu.08:?",
+    "<cargo::compiler::build_runner::BuildRunner>::compile_inner at cargo.22f0611f6448182b-cgu.08:?",
+    "<cargo::compiler::build_runner::BuildRunner>::compile at ??:?",
+    "cargo::ops::cargo_compile::compile_with_exec_inner at cargo.22f0611f6448182b-cgu.08:?",
+    "cargo::ops::cargo_compile::compile at ??:?",
+    "cargo::commands::build::exec at cargo.3d690ebf2898d8ef-cgu.06:?",
+    "<cargo::cli::Exec>::exec at cargo.3d690ebf2898d8ef-cgu.13:?",
+    "cargo::cli::main at cargo.3d690ebf2898d8ef-cgu.13:?",
+    "cargo::main at ??:?",
+    "std::sys::backtrace::__rust_begin_short_backtrace::<fn(), ()> at cargo.3d690ebf2898d8ef-cgu.00:?",
+    "std::rt::lang_start::<()>::{closure#0} at ??:?",
+    "std::rt::lang_start_internal at ??:?",
+    "main at ??:?",
+    "_start at ??:?"
+  ]
+}

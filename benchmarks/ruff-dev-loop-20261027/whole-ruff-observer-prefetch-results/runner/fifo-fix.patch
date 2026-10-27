@@ -1,0 +1,91 @@
+diff --git a/src/compiler/fingerprint/mod.rs b/src/compiler/fingerprint/mod.rs
+index b2b6287598..0fb50b634a 100644
+--- a/src/compiler/fingerprint/mod.rs
++++ b/src/compiler/fingerprint/mod.rs
+@@ -3411,7 +3411,7 @@ fn changed_observed_input(
+         let actual = if let Some(cached) = cache.get(path).filter(|c| c.algo() == expected.algo()) {
+             *cached
+         } else {
+-            let Ok(file) = File::open(path) else {
++            let Some(file) = open_regular_checksum_file(path, size) else {
+                 return Some(StaleItem::UnableToReadFile { path: path.clone() });
+             };
+             match read_checksum(path, expected, file, &mut buf) {
+@@ -3446,6 +3446,20 @@ fn read_checksum(
+     })
+ }
+ 
++/// Rechecks the opened file because a regular input can be replaced after the path lookup.
++fn open_regular_checksum_file(path: &Path, expected: u64) -> Option<File> {
++    let mut options = File::options();
++    options.read(true);
++    #[cfg(unix)]
++    {
++        use std::os::unix::fs::OpenOptionsExt;
++        options.custom_flags(libc::O_NONBLOCK | libc::O_NOCTTY);
++    }
++    let file = options.open(path).ok()?;
++    let opened = file.metadata().ok()?;
++    (opened.is_file() && opened.len() == expected).then_some(file)
++}
++
+ /// Opens only regular files speculatively; uncertain reads stay in the serial path.
+ #[cfg(unix)]
+ fn prefetch_checksum(
+@@ -3454,8 +3468,6 @@ fn prefetch_checksum(
+     prior: Checksum,
+     buffer: &mut Vec<u8>,
+ ) -> Option<Result<Checksum, StaleItem>> {
+-    use std::os::unix::fs::OpenOptionsExt;
+-
+     let metadata = match checksum_metadata(path, expected) {
+         Ok(metadata) => metadata,
+         Err(item) => return Some(Err(item)),
+@@ -3463,17 +3475,7 @@ fn prefetch_checksum(
+     if !metadata.is_file() {
+         return None;
+     }
+-    // A regular path can be replaced with a FIFO between metadata and open.
+-    // Never block on that replacement or acquire a controlling terminal.
+-    let file = fs::OpenOptions::new()
+-        .read(true)
+-        .custom_flags(libc::O_NONBLOCK | libc::O_NOCTTY)
+-        .open(path)
+-        .ok()?;
+-    let opened = file.metadata().ok()?;
+-    if !opened.is_file() || opened.len() != expected {
+-        return None;
+-    }
++    let file = open_regular_checksum_file(path, expected)?;
+     // A speculative nonblocking read may fail where an ordinary read succeeds.
+     // Retry all read errors in the original ordered consumer.
+     read_checksum(path, prior, file, buffer).ok().map(Ok)
+@@ -3596,6 +3598,28 @@ mod parallel_checksum_tests {
+         Checksum::compute(ChecksumAlgo::Blake3, bytes, &mut [0; 64]).unwrap()
+     }
+ 
++    #[test]
++    fn checksum_open_follows_symlinks_and_rejects_a_fifo_replacement() {
++        let directory = tempfile::tempdir().unwrap();
++        let target = directory.path().join("target");
++        let link = directory.path().join("link");
++        fs::write(&target, b"").unwrap();
++        std::os::unix::fs::symlink(&target, &link).unwrap();
++        assert!(open_regular_checksum_file(&link, 0).is_some());
++        assert!(open_regular_checksum_file(&link, 1).is_none());
++
++        let fifo = directory.path().join("fifo");
++        let name = std::ffi::CString::new(fifo.as_os_str().as_bytes()).unwrap();
++        assert_eq!(unsafe { libc::mkfifo(name.as_ptr(), 0o600) }, 0);
++        fs::rename(fifo, target).unwrap();
++        let (tx, rx) = std::sync::mpsc::channel();
++        std::thread::spawn(move || {
++            let rejected = open_regular_checksum_file(&link, 0).is_none();
++            tx.send(rejected).unwrap();
++        });
++        assert!(rx.recv_timeout(std::time::Duration::from_secs(5)).unwrap());
++    }
++
+     fn fixture() -> (
+         tempfile::TempDir,
+         PathBuf,

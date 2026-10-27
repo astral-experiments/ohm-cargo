@@ -1,0 +1,132 @@
+{
+  "cargo": "dd5cab154b8dcd09ccc2753160d314cade80979b2d055ee66aa9e2217e05e7e1",
+  "driver": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+  "endpoints": {
+    "add": {
+      "empty": {
+        "hold_direct": {
+          "output": "19 #6 bytes(374094..374116)",
+          "sha256": "bb46ff22f9640a67401676f894df61fd1485d3bc4fcba37c63e4543972c98c46"
+        },
+        "hold_indirect": {
+          "output": "19 #4 bytes(273191..273213)",
+          "sha256": "7b7d83f9ac360e8893a88e6a567960769096bc2694ed6190427b26af1286e301"
+        },
+        "hold_plain": {
+          "output": "19",
+          "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+        }
+      },
+      "jobs": [
+        {
+          "capture": true,
+          "checksum": true,
+          "crate": "hold_bridge",
+          "mode": "full"
+        },
+        {
+          "capture": true,
+          "checksum": true,
+          "crate": "hold_direct",
+          "mode": "full"
+        },
+        {
+          "capture": false,
+          "checksum": true,
+          "crate": "hold_indirect",
+          "mode": "full"
+        },
+        {
+          "capture": false,
+          "checksum": true,
+          "crate": "hold_plain",
+          "mode": "relink"
+        },
+        {
+          "capture": false,
+          "checksum": true,
+          "crate": "hold_shapes",
+          "mode": "full"
+        }
+      ],
+      "products": {
+        "hold_direct": {
+          "output": "19 #6 bytes(374094..374116)",
+          "sha256": "bb46ff22f9640a67401676f894df61fd1485d3bc4fcba37c63e4543972c98c46"
+        },
+        "hold_indirect": {
+          "output": "19 #4 bytes(273191..273213)",
+          "sha256": "7b7d83f9ac360e8893a88e6a567960769096bc2694ed6190427b26af1286e301"
+        },
+        "hold_plain": {
+          "output": "19",
+          "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+        }
+      },
+      "repeat_jobs": []
+    },
+    "remove": {
+      "empty": {
+        "hold_direct": {
+          "output": "19 #6 bytes(374093..374115)",
+          "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+        },
+        "hold_indirect": {
+          "output": "19 #4 bytes(273190..273212)",
+          "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+        },
+        "hold_plain": {
+          "output": "19",
+          "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+        }
+      },
+      "jobs": [
+        {
+          "capture": true,
+          "checksum": true,
+          "crate": "hold_bridge",
+          "mode": "full"
+        },
+        {
+          "capture": true,
+          "checksum": true,
+          "crate": "hold_direct",
+          "mode": "full"
+        },
+        {
+          "capture": false,
+          "checksum": true,
+          "crate": "hold_indirect",
+          "mode": "full"
+        },
+        {
+          "capture": false,
+          "checksum": true,
+          "crate": "hold_plain",
+          "mode": "relink"
+        },
+        {
+          "capture": false,
+          "checksum": true,
+          "crate": "hold_shapes",
+          "mode": "full"
+        }
+      ],
+      "products": {
+        "hold_direct": {
+          "output": "19 #6 bytes(374093..374115)",
+          "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+        },
+        "hold_indirect": {
+          "output": "19 #4 bytes(273190..273212)",
+          "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+        },
+        "hold_plain": {
+          "output": "19",
+          "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+        }
+      },
+      "repeat_jobs": []
+    }
+  }
+}
