@@ -3,9 +3,40 @@ from pathlib import Path
 from functools import lru_cache
 import bisect,json,re,runpy,sys
 E=Path(__file__).resolve().parent
-W=Path('/home/dev-user/code/oss/ohm-rust-private-native-20261027')
-Reader=runpy.run_path('/home/dev-user/.cache/ohm-ruff-cargo-link-skip-20261027/link-export-inventory.py')['Reader']
-names=re.findall(r'^\s*(\w+): Table<',(W/'compiler/rustc_metadata/src/rmeta/mod.rs').read_text().split('\ndefine_tables! {',1)[1].split('\n}',1)[0],re.M)
+def uleb128(data, offset):
+    value = 0
+    shift = 0
+    while offset < len(data) and shift <= 63:
+        byte = data[offset]
+        offset += 1
+        value |= (byte & 127) << shift
+        if byte < 128:
+            return value, offset
+        shift += 7
+    raise ValueError("Invalid unsigned LEB128")
+
+class Reader:
+ def __init__(self,data):self.b=data;self.root=int.from_bytes(data[8:16],'little');self.i=self.root;self.prev=None
+ def u(self):v,self.i=uleb128(self.b,self.i);return v
+ def raw(self,n):v=self.b[self.i:self.i+n];self.i+=n;assert len(v)==n;return v
+ def text(self):
+  n=self.u();s=self.raw(n).decode();assert self.raw(1)==b'\xc1';return s
+ def symbol(self):
+  t=self.u()
+  if t==0:return self.text()
+  n=self.u()
+  if t==2:return n
+  assert t==1
+  u=self.i;self.i=n;s=self.text();self.i=u;return s
+ def array(self):
+  n=self.u()
+  if not n:return (0,0)
+  delta=self.u()
+  self.prev=self.root-delta if self.prev is None else self.prev+delta
+  assert 0<self.prev<self.root
+  return (n,self.prev)
+
+names=['intrinsic', 'is_macro_rules', 'type_alias_is_checked', 'attr_flags', 'def_path_hashes', 'explicit_item_bounds', 'explicit_item_self_bounds', 'inferred_outlives_of', 'explicit_super_clauses_of', 'explicit_implied_clauses_of', 'explicit_implied_const_bounds', 'inherent_impls', 'opt_rpitit_info', 'module_children_reexports', 'ambig_module_children', 'cross_crate_inlinable', 'asyncness', 'constness', 'safety', 'defaultness', 'impl_is_fully_generic_for_reflection', 'is_exportable', 'is_reachable_non_generic', 'is_reachable_non_generic_with_export_level_c', 'attributes', 'module_children_non_reexports', 'associated_item_or_field_def_ids', 'def_kind', 'visibility', 'def_span', 'def_ident_span', 'lookup_stability', 'lookup_const_stability', 'lookup_default_body_stability', 'lookup_deprecation_entry', 'explicit_clauses_of', 'generics_of', 'type_of', 'variances_of', 'fn_sig', 'codegen_fn_attrs', 'impl_trait_header', 'const_param_default', 'object_lifetime_default', 'optimized_mir', 'mir_for_ctfe', 'trivial_const', 'closure_saved_names_of_captured_variables', 'mir_coroutine_witnesses', 'mir_coroutine_runtime_info', 'promoted_mir', 'thir_abstract_const', 'impl_parent', 'const_conditions', 'coerce_unsized_info', 'mir_const_qualif', 'rendered_const', 'rendered_precise_capturing_args', 'fn_arg_idents', 'coroutine_kind', 'coroutine_for_closure', 'adt_destructor', 'adt_async_destructor', 'coroutine_by_move_body_def_id', 'eval_static_initializer', 'trait_def', 'expn_that_defined', 'default_fields', 'params_in_repr', 'repr_options', 'def_keys', 'proc_macro_quoted_spans', 'variant_data', 'assoc_container', 'macro_definition', 'deduced_param_attrs', 'collect_return_position_impl_trait_in_trait_tys', 'doc_link_resolutions', 'doc_link_traits_in_scope', 'assumed_wf_types_for_rpitit', 'opaque_ty_origin', 'anon_const_kind', 'const_of_item', 'associated_types_for_impl_traits_in_trait_or_impl', 'live_args_for_alias_from_outlives_bounds', 'args_known_to_outlive_alias_params', 'mut_restriction', 'proc_macro']
 kinds="CrateRoot Impl ForeignMod Use GlobalAsm TypeNs ValueNs MacroNs LifetimeNs Closure Ctor AnonConst OpaqueTy OpaqueLifetime AnonAssocTy SyntheticCoroutineBody NestedStatic".split()
 
 def decode(p, source_fragment):
