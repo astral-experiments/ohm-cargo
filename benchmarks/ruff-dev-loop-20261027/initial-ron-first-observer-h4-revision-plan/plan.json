@@ -1,0 +1,161 @@
+{
+  "admission": "Each necessary peer must have qualified wall reductions (adjusted p<0.05 and positive lower 95% paired bootstrap reduction) on both primary endpoints, plus all four guard comparisons and all native correctness controls. Neither marginal may be rescued by switching to the stock/stock diagnostic. Report all results if these gates fail.",
+  "arms": {
+    "A": "new Cargo + stock Rust",
+    "B": "stock Cargo + new Rust",
+    "C": "both new"
+  },
+  "cargo_base": {
+    "commit": "d38fdd02503662de04c52f5f370f5dd81bddf868",
+    "sha": "dd5cab154b8dcd09ccc2753160d314cade80979b2d055ee66aa9e2217e05e7e1"
+  },
+  "cargo_new": {
+    "commit": "c28c6934504f05d5a6a4b9083be93a20714d29ee",
+    "sha": "51e2e21a219004007a2d51e19e5a8edc57b47c7eb290383f4bbc13428e0f7d9c"
+  },
+  "cold_guard": "C relative to A and B. The one-sided upper 98.75% paired block-bootstrap bound on multiplicative cold overhead must be below 3.0% in each comparison.",
+  "command": [
+    "cargo",
+    "+ohm",
+    "test",
+    "--no-run",
+    "--locked",
+    "--offline",
+    "--message-format=json"
+  ],
+  "environment": "No local registry procedural-macro or native-tool trust opt-ins. No strace, compiler wrappers, fingerprint logger, PMU, added user rustc flags, or running tests in a timed command. Input registry files are available offline. Cold refers to initially empty target and shared build stores, not an empty kernel page cache. Every arm uses the same frozen logical source, toolchain, target, shared, registry, jobs and affinity, on the same private ext4 device.",
+  "family": "For each of first unchanged and cold+first combined, estimate C:A and C:B as the percentage reduction in geometric mean of paired elapsed ratios. Report per-command medians, paired 95% bootstrap intervals (20,000 resamples), fraction of faster blocks, and an exact two-sided schedule-constrained randomization test. Holding the third arm slot fixed gives 20 cubed = 8,000 assignments for each marginal. Apply Holm across the four predeclared claims at 0.05.",
+  "host": "charlie-ohm-generic-perf-1024 H4, Linux x86_64 AMD EPYC Milan, 32 logical cores. Affinity 0\u201323 and CARGO_BUILD_JOBS=8. The original trace and qualification hosts are distinct from the optional H5 independent corroboration.",
+  "independent": "H5 stock/stock vs C is a separately prospective study if its host/release/space gates are met. It cannot change the H4 population or bounds.",
+  "measurement": "A slot has three consecutive native Cargo subprocesses, each timed with monotonic_ns. Identical out-of-timer output hashing and correctness checks follow each command, including between cold and first. The combined endpoint sums the two command durations and excludes these audits. No source or flags change between commands. The ELF checks scan the same roster in each arm. The single fixed ordinary stdlib test and CLI oracles execute only after all timed commands.",
+  "native_reference_lifetime": "Each all-process preflight retains every compiler/linker exec trace, output roster, 110 per-phase raw ELF and distinct ELF-field digests, both ron archive/metadata and physical source receipt. After those verifications only, its newly created temporary target/build stores may be retired to keep the 25 GiB physical reserve. The failed slot, if any, is retained; unrelated data and the original rejected study stay untouched.",
+  "phase_order": [
+    "empty cold",
+    "first unchanged",
+    "second unchanged"
+  ],
+  "previous_stop": {
+    "disposition": "Original six accepted and seventh rejected triplet remain unscored and disjoint. All observations and all three native references for this new 18-block enrollment use fresh private stores. The previous schedule, results and states are never read by the new worker.",
+    "receipts_manifest": "8cfdce48725400f27301102300aa8e9d4c84b98761d71410a355f7a24195cfba",
+    "runner": "641fda0d5ffe6fdba6f6c358952ac24133896a5e86511009081a174539f15329"
+  },
+  "registration": "All artifact identities, dispatch, eligibility, blocking, stopping rules, cold/settled margins and four marginal claims are fixed before untraced native wall measurements.",
+  "release": {
+    "cargo_profile": "481ada8a40c70dad11b3c7e8871e9a52207d78447ca5e8ace06fc4aec2d2b5a7",
+    "rust_profile_files": 5,
+    "rustc_frontend": "4fa9a18b77430bcc416e88561b6fe5797d98b996a7698b9f3bd11d4e7817a19f",
+    "wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5"
+  },
+  "ruff": "93526150df078af7dd8fc4226cdcc469539d2001",
+  "rust_base": {
+    "commit": "27029b4bce40f3b5497add5019c02a11c16c4c18",
+    "sha": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f"
+  },
+  "rust_new": {
+    "commit": "d4898e3a0ca2c661284059c080923f30c881c275",
+    "sha": "185629fabec9baacfd8fd7e61d6d84e79f69aa9abf4a4a9bb431c24f0a89d040"
+  },
+  "schedule": {
+    "blocks": 18,
+    "commands": 162,
+    "initially_empty_triplets": 54,
+    "orders": [
+      [
+        "C",
+        "A",
+        "B"
+      ],
+      [
+        "A",
+        "B",
+        "C"
+      ],
+      [
+        "B",
+        "C",
+        "A"
+      ],
+      [
+        "A",
+        "C",
+        "B"
+      ],
+      [
+        "B",
+        "C",
+        "A"
+      ],
+      [
+        "C",
+        "B",
+        "A"
+      ],
+      [
+        "C",
+        "A",
+        "B"
+      ],
+      [
+        "B",
+        "A",
+        "C"
+      ],
+      [
+        "C",
+        "B",
+        "A"
+      ],
+      [
+        "B",
+        "C",
+        "A"
+      ],
+      [
+        "C",
+        "A",
+        "B"
+      ],
+      [
+        "A",
+        "B",
+        "C"
+      ],
+      [
+        "C",
+        "B",
+        "A"
+      ],
+      [
+        "A",
+        "C",
+        "B"
+      ],
+      [
+        "B",
+        "A",
+        "C"
+      ],
+      [
+        "A",
+        "C",
+        "B"
+      ],
+      [
+        "B",
+        "A",
+        "C"
+      ],
+      [
+        "A",
+        "B",
+        "C"
+      ]
+    ],
+    "seed": 14978256200114674978
+  },
+  "settled_guard": "C relative to A and B. Both one-sided 98.75% paired block-bootstrap upper bounds must rule out 5.0% multiplicative overhead and 100 ms mean absolute regression on the settled command. The quantile is conservative across the two cold and two settled comparisons. Bootstrap resampling is paired by block, with deterministic seeds.",
+  "space": "Require at least 25 GiB free throughout, allow 16 GiB incremental private state per initialized slot, and retain all qualification evidence and native hashes. Scored targets may be retired only after verifying all output, metadata and receipt commitments; never retire any shared/resource donor. Estimated 4\u20136 hours for 54 fresh workspaces on H4.",
+  "stop": "Preserve failed attempts and suspend before using any effect sizes on a failed freshness, native, source, host, input, output, or clean-start oracle. Do not discard outliers. Verify release tool hashes and source HEAD/tree under the H4 exclusive borrowed-host lock; take the next scheduled slot only after freezing the previous private observation. No studies share the scoring CPU lane. Store full untouched native traces in private qualification roots and compact typed commitments for every scored observation.",
+  "tree": "62d3f106c5e41f6022847f26ff8c7dc00139f7b1",
+  "within_cycle": "Every successfully scored phase must have 619 Cargo artifacts, 102 test executables and 110 recorded native products, the same target roster/diagnostics, a valid complete sealed ron receipt on candidate cold and all trained arms, and the expected fresh count. Require raw cold\u2192first\u2192settled identity for C. In A/B trained output may differ from cold only in a shipped Wild GNU build ID and a 0-to-N (or N-to-0) .rodata sh_entsize transition. The observed finite N values are 1,2,4,8,16,32,64,128,256. Require a 32-byte GNU build ID that actually changed, SHT_PROGBITS, ALLOC+MERGE and non-writable/non-executable .rodata, the same type and flags in both images, and every single other ELF byte matched, and then must be byte-stable. An unknown difference stops scoring. Separately collect complete exec rosters for all three exact arms in unscored native controls, including optional rustc probes distinct from full and link-only jobs. Run an ordinary Ruff lint, Ruff/ty versions and a real stdlib test caller out of timing after every triplet. All arms must return the same results."
+}
