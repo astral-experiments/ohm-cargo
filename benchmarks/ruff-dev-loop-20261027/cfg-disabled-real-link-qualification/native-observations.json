@@ -1,0 +1,1286 @@
+{
+  "direct": {
+    "candidate": {
+      "false-after-removed": {
+        "Wild": [
+          "api-d85fd6b3c1ff5f15",
+          "libkit.so"
+        ],
+        "cfg_disabled_proof": false,
+        "exit": 0,
+        "list": "0 tests, 0 benchmarks",
+        "modes": [
+          "full"
+        ],
+        "rustcs": [
+          "api",
+          "leaf",
+          "kit"
+        ]
+      },
+      "forwarded-false": {
+        "Wild": [
+          "api-d85fd6b3c1ff5f15",
+          "libmark-1c2e766d0626af38.so",
+          "libkit.so",
+          "build_script_build"
+        ],
+        "cfg_disabled_proof": false,
+        "exit": 0,
+        "list": "0 tests, 0 benchmarks",
+        "modes": [
+          "full"
+        ],
+        "rustcs": [
+          "api",
+          "leaf",
+          "mark",
+          "kit",
+          "build_script_build"
+        ]
+      },
+      "true-after-public-self": {
+        "Wild": [
+          "api-d85fd6b3c1ff5f15",
+          "libkit.so"
+        ],
+        "cfg_disabled_proof": false,
+        "exit": 101,
+        "list": "active: test\n\n1 test, 0 benchmarks",
+        "modes": [
+          "full"
+        ],
+        "rustcs": [
+          "api",
+          "leaf",
+          "kit"
+        ]
+      },
+      "true-after-public-self-pass": {
+        "Wild": [
+          "api-d85fd6b3c1ff5f15",
+          "libkit.so"
+        ],
+        "cfg_disabled_proof": false,
+        "exit": 0,
+        "list": "active: test\n\n1 test, 0 benchmarks",
+        "modes": [
+          "full"
+        ],
+        "rustcs": [
+          "api",
+          "leaf",
+          "kit"
+        ]
+      },
+      "true-after-unused-leaf": {
+        "Wild": [
+          "api-d85fd6b3c1ff5f15"
+        ],
+        "cfg_disabled_proof": false,
+        "exit": 0,
+        "list": "0 tests, 0 benchmarks",
+        "modes": [
+          "link-only"
+        ],
+        "rustcs": [
+          "api",
+          "leaf"
+        ]
+      }
+    },
+    "stock": {
+      "false-after-removed": {
+        "Wild": [
+          "api-d85fd6b3c1ff5f15",
+          "libkit.so"
+        ],
+        "cfg_disabled_proof": false,
+        "exit": 0,
+        "list": "0 tests, 0 benchmarks",
+        "modes": [
+          "full"
+        ],
+        "rustcs": [
+          "api",
+          "leaf",
+          "kit"
+        ]
+      },
+      "forwarded-false": {
+        "Wild": [
+          "api-d85fd6b3c1ff5f15",
+          "libmark-1c2e766d0626af38.so",
+          "libkit.so",
+          "build_script_build"
+        ],
+        "cfg_disabled_proof": false,
+        "exit": 0,
+        "list": "0 tests, 0 benchmarks",
+        "modes": [
+          "full"
+        ],
+        "rustcs": [
+          "api",
+          "mark",
+          "leaf",
+          "kit",
+          "build_script_build"
+        ]
+      },
+      "true-after-public-self": {
+        "Wild": [
+          "api-d85fd6b3c1ff5f15",
+          "libkit.so"
+        ],
+        "cfg_disabled_proof": false,
+        "exit": 101,
+        "list": "active: test\n\n1 test, 0 benchmarks",
+        "modes": [
+          "full"
+        ],
+        "rustcs": [
+          "api",
+          "leaf",
+          "kit"
+        ]
+      },
+      "true-after-public-self-pass": {
+        "Wild": [
+          "api-d85fd6b3c1ff5f15",
+          "libkit.so"
+        ],
+        "cfg_disabled_proof": false,
+        "exit": 0,
+        "list": "active: test\n\n1 test, 0 benchmarks",
+        "modes": [
+          "full"
+        ],
+        "rustcs": [
+          "api",
+          "leaf",
+          "kit"
+        ]
+      },
+      "true-after-unused-leaf": {
+        "Wild": [
+          "api-d85fd6b3c1ff5f15"
+        ],
+        "cfg_disabled_proof": false,
+        "exit": 0,
+        "list": "0 tests, 0 benchmarks",
+        "modes": [
+          "link-only"
+        ],
+        "rustcs": [
+          "api",
+          "leaf"
+        ]
+      }
+    }
+  },
+  "functional": {
+    "active-attr-env-include": {
+      "api_modes": [
+        "full"
+      ],
+      "elf": "13b8762a4b4328f9bfc857a1b6f1df7e47066e6a4020ef8eacf582a9b0b7f7d1",
+      "execution_rc": 0,
+      "fixed": [],
+      "messages": [],
+      "native": [],
+      "native_probes": [],
+      "rc": 0,
+      "rustcs": [
+        "api",
+        "kit"
+      ],
+      "tests": "external_case: test\n\n1 test, 0 benchmarks\n",
+      "wild": [
+        "api-2e6fae8a2794841b",
+        "libkit.so"
+      ]
+    },
+    "active-env-changed": {
+      "api_modes": [
+        "full"
+      ],
+      "elf": "244f6439221257b69359cd9387cda55089d919ae2c3ac3e38d4e46f181894d49",
+      "execution_rc": 0,
+      "fixed": [],
+      "messages": [],
+      "native": [],
+      "native_probes": [],
+      "rc": 0,
+      "rustcs": [
+        "api"
+      ],
+      "tests": "external_case: test\n\n1 test, 0 benchmarks\n",
+      "wild": [
+        "api-2e6fae8a2794841b"
+      ]
+    },
+    "active-include-changed": {
+      "api_modes": [
+        "full"
+      ],
+      "elf": "1df5b8ed83a82b474e123f84f0e2d6e363a2383eb078ac2c684d0cb8156973fd",
+      "execution_rc": 101,
+      "fixed": [],
+      "messages": [],
+      "native": [],
+      "native_probes": [],
+      "rc": 0,
+      "rustcs": [
+        "api"
+      ],
+      "tests": "external_case: test\n\n1 test, 0 benchmarks\n",
+      "wild": [
+        "api-2e6fae8a2794841b"
+      ]
+    },
+    "active-raw-native-missing": {
+      "api_modes": [
+        "full"
+      ],
+      "fixed": [],
+      "messages": [
+        [
+          "api",
+          "error",
+          null,
+          "linking with `cc` failed: exit status: 1"
+        ]
+      ],
+      "native_probes": [],
+      "rc": 101,
+      "rustcs": [
+        "api"
+      ],
+      "wild": [
+        "api-2e6fae8a2794841b"
+      ]
+    },
+    "cfg-active-fail": {
+      "api_modes": [
+        "full"
+      ],
+      "elf": "b558b36c84876c8c11f0c5f342f22e3c0ab4dc504d1b9b8bf1e4865af17be4d7",
+      "execution_rc": 101,
+      "fixed": [],
+      "messages": [],
+      "native": [],
+      "native_probes": [],
+      "rc": 0,
+      "rustcs": [
+        "api",
+        "kit"
+      ],
+      "tests": "active: test\n\n1 test, 0 benchmarks\n",
+      "wild": [
+        "api-2e6fae8a2794841b",
+        "libkit.so"
+      ]
+    },
+    "cfg-active-pass": {
+      "api_modes": [
+        "full"
+      ],
+      "elf": "edc7eb4d85da1c320753d1fb1030c55034bc416f0456408aa94ef4c5636e3aea",
+      "execution_rc": 0,
+      "fixed": [],
+      "messages": [],
+      "native": [],
+      "native_probes": [],
+      "rc": 0,
+      "rustcs": [
+        "api",
+        "kit"
+      ],
+      "tests": "active: test\n\n1 test, 0 benchmarks\n",
+      "wild": [
+        "api-2e6fae8a2794841b",
+        "libkit.so"
+      ]
+    },
+    "cfg-removed": {
+      "api_modes": [
+        "full"
+      ],
+      "elf": "e1426a00d1a5656d8bb87ff4f6e1069c724b4e8b2f1c6410015ad55d3e576e84",
+      "fixed": [],
+      "messages": [],
+      "native": [],
+      "native_probes": [],
+      "rc": 0,
+      "rustcs": [
+        "api",
+        "kit"
+      ],
+      "tests": "0 tests, 0 benchmarks\n",
+      "wild": [
+        "api-2e6fae8a2794841b",
+        "libkit.so"
+      ]
+    },
+    "explicit-map-depfile": {
+      "api_modes": [
+        "full"
+      ],
+      "elf": "0fcb5a92ab9bf38a65c0818cb65ef6d645af367e9a2b56d6a38acbac9b63ef86",
+      "fixed": [],
+      "messages": [],
+      "native": [],
+      "native_probes": [],
+      "rc": 0,
+      "rustcs": [
+        "api",
+        "mark",
+        "kit",
+        "build_script_build"
+      ],
+      "tests": "0 tests, 0 benchmarks\n",
+      "wild": []
+    },
+    "first-dep-change": {
+      "api_modes": [
+        "link-only"
+      ],
+      "elf": "e1426a00d1a5656d8bb87ff4f6e1069c724b4e8b2f1c6410015ad55d3e576e84",
+      "execution_rc": 0,
+      "fixed": [],
+      "messages": [],
+      "native": [],
+      "native_probes": [],
+      "rc": 0,
+      "rustcs": [
+        "api",
+        "kit"
+      ],
+      "tests": "0 tests, 0 benchmarks\n",
+      "wild": [
+        "api-2e6fae8a2794841b",
+        "libkit.so"
+      ]
+    },
+    "fresh-before-side-output": {
+      "api_modes": [],
+      "elf": "e1426a00d1a5656d8bb87ff4f6e1069c724b4e8b2f1c6410015ad55d3e576e84",
+      "fixed": [],
+      "messages": [],
+      "native": [],
+      "native_probes": [],
+      "rc": 0,
+      "rustcs": [],
+      "tests": "0 tests, 0 benchmarks\n",
+      "wild": []
+    },
+    "layout-again": {
+      "api_modes": [
+        "link-only"
+      ],
+      "auxiliary": {
+        "bytes": 40405,
+        "sha256": "0f0f9f1bbca050d6237d7eaf3bf9fc19906ce1096920b6577f4a432c4c709ce8"
+      },
+      "elf": "e1426a00d1a5656d8bb87ff4f6e1069c724b4e8b2f1c6410015ad55d3e576e84",
+      "fixed": [],
+      "messages": [],
+      "native": [],
+      "native_probes": [],
+      "rc": 0,
+      "rustcs": [
+        "api",
+        "kit"
+      ],
+      "tests": "0 tests, 0 benchmarks\n",
+      "wild": [
+        "api-2e6fae8a2794841b",
+        "libkit.so"
+      ]
+    },
+    "layout-prime": {
+      "api_modes": [
+        "link-only"
+      ],
+      "elf": "e1426a00d1a5656d8bb87ff4f6e1069c724b4e8b2f1c6410015ad55d3e576e84",
+      "fixed": [],
+      "messages": [],
+      "native": [],
+      "native_probes": [],
+      "rc": 0,
+      "rustcs": [
+        "api",
+        "kit"
+      ],
+      "tests": "0 tests, 0 benchmarks\n",
+      "wild": [
+        "api-2e6fae8a2794841b",
+        "libkit.so"
+      ]
+    },
+    "map-depfile-regenerated": {
+      "api_modes": [
+        "full"
+      ],
+      "auxiliary": {
+        "linker.d": [
+          11456,
+          "3864be3be1b17282a86fcb3b483a60591f58ee7867959b786dc598a548d7afbb"
+        ],
+        "map": [
+          1686027,
+          "b3066fbda1198258537d86e851e331bc3b12649ad0cc4b990aea1973d77eb2e0"
+        ]
+      },
+      "elf": "0fcb5a92ab9bf38a65c0818cb65ef6d645af367e9a2b56d6a38acbac9b63ef86",
+      "fixed": [],
+      "messages": [],
+      "native": [],
+      "native_probes": [],
+      "rc": 0,
+      "rustcs": [
+        "api",
+        "kit"
+      ],
+      "tests": "0 tests, 0 benchmarks\n",
+      "wild": []
+    },
+    "native-140": {
+      "api_modes": [
+        "full"
+      ],
+      "elf": "dc570d3e6dfdab3f745e18b387f232b9c1589438810f735efb7821c9e9846a76",
+      "fixed": [],
+      "messages": [],
+      "native": [
+        "000000000000008c"
+      ],
+      "native_probes": [],
+      "rc": 0,
+      "rustcs": [
+        "api",
+        "kit"
+      ],
+      "tests": "0 tests, 0 benchmarks\n",
+      "wild": [
+        "api-2e6fae8a2794841b",
+        "libkit.so"
+      ]
+    },
+    "native-141": {
+      "api_modes": [
+        "full"
+      ],
+      "elf": "6ec7b4db3a0394a033dfc0d994739b3a7e74c395e4a92e968201398cf34faecd",
+      "fixed": [],
+      "messages": [],
+      "native": [
+        "000000000000008d"
+      ],
+      "native_probes": [],
+      "rc": 0,
+      "rustcs": [
+        "api",
+        "kit"
+      ],
+      "tests": "0 tests, 0 benchmarks\n",
+      "wild": [
+        "api-2e6fae8a2794841b",
+        "libkit.so"
+      ]
+    },
+    "native-removed": {
+      "api_modes": [
+        "full"
+      ],
+      "elf": "e1426a00d1a5656d8bb87ff4f6e1069c724b4e8b2f1c6410015ad55d3e576e84",
+      "fixed": [],
+      "messages": [],
+      "native": [],
+      "native_probes": [],
+      "rc": 0,
+      "rustcs": [
+        "api",
+        "kit"
+      ],
+      "tests": "0 tests, 0 benchmarks\n",
+      "wild": [
+        "api-2e6fae8a2794841b",
+        "libkit.so"
+      ]
+    },
+    "normal-fresh": {
+      "api_modes": [],
+      "elf": "e1426a00d1a5656d8bb87ff4f6e1069c724b4e8b2f1c6410015ad55d3e576e84",
+      "fixed": [],
+      "messages": [],
+      "native": [],
+      "native_probes": [],
+      "rc": 0,
+      "rustcs": [],
+      "tests": "0 tests, 0 benchmarks\n",
+      "wild": []
+    },
+    "normal-recovery": {
+      "api_modes": [
+        "full"
+      ],
+      "elf": "e1426a00d1a5656d8bb87ff4f6e1069c724b4e8b2f1c6410015ad55d3e576e84",
+      "execution_rc": 0,
+      "fixed": [],
+      "messages": [],
+      "native": [],
+      "native_probes": [],
+      "rc": 0,
+      "rustcs": [
+        "api"
+      ],
+      "tests": "0 tests, 0 benchmarks\n",
+      "wild": [
+        "api-2e6fae8a2794841b"
+      ]
+    },
+    "positive": {
+      "api_modes": [
+        "link-only"
+      ],
+      "elf": "e1426a00d1a5656d8bb87ff4f6e1069c724b4e8b2f1c6410015ad55d3e576e84",
+      "execution_rc": 0,
+      "fixed": [],
+      "messages": [],
+      "native": [],
+      "native_probes": [],
+      "rc": 0,
+      "rustcs": [
+        "api",
+        "kit"
+      ],
+      "tests": "0 tests, 0 benchmarks\n",
+      "wild": [
+        "api-2e6fae8a2794841b",
+        "libkit.so"
+      ]
+    },
+    "prime": {
+      "api_modes": [
+        "full"
+      ],
+      "elf": "e1426a00d1a5656d8bb87ff4f6e1069c724b4e8b2f1c6410015ad55d3e576e84",
+      "fixed": [],
+      "messages": [],
+      "native": [],
+      "native_probes": [],
+      "rc": 0,
+      "rustcs": [
+        "api",
+        "mark",
+        "kit",
+        "build_script_build"
+      ],
+      "tests": "0 tests, 0 benchmarks\n",
+      "wild": [
+        "api-2e6fae8a2794841b",
+        "libmark-1c2e766d0626af38.so",
+        "libkit.so",
+        "build_script_build"
+      ]
+    },
+    "prime-fresh": {
+      "api_modes": [],
+      "elf": "e1426a00d1a5656d8bb87ff4f6e1069c724b4e8b2f1c6410015ad55d3e576e84",
+      "fixed": [],
+      "messages": [],
+      "native": [],
+      "native_probes": [],
+      "rc": 0,
+      "rustcs": [],
+      "tests": "0 tests, 0 benchmarks\n",
+      "wild": []
+    },
+    "reset-proof": {
+      "api_modes": [
+        "link-only"
+      ],
+      "elf": "e1426a00d1a5656d8bb87ff4f6e1069c724b4e8b2f1c6410015ad55d3e576e84",
+      "fixed": [],
+      "messages": [],
+      "native": [],
+      "native_probes": [],
+      "rc": 0,
+      "rustcs": [
+        "api",
+        "kit"
+      ],
+      "tests": "0 tests, 0 benchmarks\n",
+      "wild": [
+        "api-2e6fae8a2794841b",
+        "libkit.so"
+      ]
+    },
+    "restore": {
+      "api_modes": [
+        "link-only"
+      ],
+      "elf": "e1426a00d1a5656d8bb87ff4f6e1069c724b4e8b2f1c6410015ad55d3e576e84",
+      "execution_rc": 0,
+      "fixed": [],
+      "messages": [],
+      "native": [],
+      "native_probes": [],
+      "rc": 0,
+      "rustcs": [
+        "api",
+        "kit"
+      ],
+      "tests": "0 tests, 0 benchmarks\n",
+      "wild": [
+        "api-2e6fae8a2794841b",
+        "libkit.so"
+      ]
+    },
+    "target-override-dirty": {
+      "api_modes": [
+        "full"
+      ],
+      "elf": "c8f37fdb4a0da235e9a379cbf8bcf1bf51f308a8884a428e07b0b3a960e8759d",
+      "fixed": [],
+      "messages": [],
+      "native": [],
+      "native_probes": [],
+      "rc": 0,
+      "rustcs": [
+        "api",
+        "kit"
+      ],
+      "tests": "0 tests, 0 benchmarks\n",
+      "wild": [
+        "api-19708e53bdab7bf7",
+        "libkit.so"
+      ]
+    },
+    "target-override-prime": {
+      "api_modes": [
+        "full"
+      ],
+      "elf": "c8f37fdb4a0da235e9a379cbf8bcf1bf51f308a8884a428e07b0b3a960e8759d",
+      "fixed": [],
+      "messages": [],
+      "native": [],
+      "native_probes": [],
+      "rc": 0,
+      "rustcs": [
+        "api",
+        "mark",
+        "kit",
+        "build_script_build"
+      ],
+      "tests": "0 tests, 0 benchmarks\n",
+      "wild": [
+        "api-19708e53bdab7bf7",
+        "libmark-54d2c0baa741f99c.so",
+        "libkit.so",
+        "build_script_build"
+      ]
+    },
+    "trained-before-layout": {
+      "api_modes": [
+        "link-only"
+      ],
+      "elf": "e1426a00d1a5656d8bb87ff4f6e1069c724b4e8b2f1c6410015ad55d3e576e84",
+      "fixed": [],
+      "messages": [],
+      "native": [],
+      "native_probes": [],
+      "rc": 0,
+      "rustcs": [
+        "api",
+        "kit"
+      ],
+      "tests": "0 tests, 0 benchmarks\n",
+      "wild": [
+        "api-2e6fae8a2794841b",
+        "libkit.so"
+      ]
+    },
+    "user-rustflags": {
+      "api_modes": [
+        "full"
+      ],
+      "elf": "e1426a00d1a5656d8bb87ff4f6e1069c724b4e8b2f1c6410015ad55d3e576e84",
+      "fixed": [],
+      "messages": [],
+      "native": [],
+      "native_probes": [],
+      "rc": 0,
+      "rustcs": [
+        "api",
+        "mark",
+        "kit",
+        "build_script_build"
+      ],
+      "tests": "0 tests, 0 benchmarks\n",
+      "wild": [
+        "api-ead17eec2015bc65",
+        "libmark-f3e45f3ecaa775c7.so",
+        "libkit.so",
+        "build_script_build"
+      ]
+    },
+    "user-rustflags-dirty": {
+      "api_modes": [
+        "full"
+      ],
+      "elf": "e1426a00d1a5656d8bb87ff4f6e1069c724b4e8b2f1c6410015ad55d3e576e84",
+      "fixed": [],
+      "messages": [],
+      "native": [],
+      "native_probes": [],
+      "rc": 0,
+      "rustcs": [
+        "api",
+        "kit"
+      ],
+      "tests": "0 tests, 0 benchmarks\n",
+      "wild": [
+        "api-ead17eec2015bc65",
+        "libkit.so"
+      ]
+    },
+    "warn-removed": {
+      "api_modes": [
+        "full"
+      ],
+      "elf": "e1426a00d1a5656d8bb87ff4f6e1069c724b4e8b2f1c6410015ad55d3e576e84",
+      "fixed": [],
+      "messages": [],
+      "native": [],
+      "native_probes": [],
+      "rc": 0,
+      "rustcs": [
+        "api"
+      ],
+      "tests": "0 tests, 0 benchmarks\n",
+      "wild": [
+        "api-2e6fae8a2794841b"
+      ]
+    },
+    "warning-dirty": {
+      "api_modes": [
+        "full"
+      ],
+      "elf": "e1426a00d1a5656d8bb87ff4f6e1069c724b4e8b2f1c6410015ad55d3e576e84",
+      "fixed": [],
+      "messages": [
+        [
+          "api",
+          "warning",
+          {
+            "code": "unexpected_cfgs",
+            "explanation": null
+          },
+          "unexpected `cfg` condition value: `not_a_real_host_arch`"
+        ]
+      ],
+      "native": [],
+      "native_probes": [],
+      "rc": 0,
+      "rustcs": [
+        "api",
+        "kit"
+      ],
+      "tests": "0 tests, 0 benchmarks\n",
+      "wild": [
+        "api-2e6fae8a2794841b",
+        "libkit.so"
+      ]
+    },
+    "warning-prime": {
+      "api_modes": [
+        "full"
+      ],
+      "elf": "e1426a00d1a5656d8bb87ff4f6e1069c724b4e8b2f1c6410015ad55d3e576e84",
+      "fixed": [],
+      "messages": [
+        [
+          "api",
+          "warning",
+          {
+            "code": "unexpected_cfgs",
+            "explanation": null
+          },
+          "unexpected `cfg` condition value: `not_a_real_host_arch`"
+        ]
+      ],
+      "native": [],
+      "native_probes": [],
+      "rc": 0,
+      "rustcs": [
+        "api"
+      ],
+      "tests": "0 tests, 0 benchmarks\n",
+      "wild": [
+        "api-2e6fae8a2794841b"
+      ]
+    },
+    "wrapper-dirty": {
+      "api_modes": [
+        "full"
+      ],
+      "elf": "f990b26e1647b651a94d0f80c77b23b01de8c7bcb0a4c3bc5faa317d73cf587d",
+      "fixed": [],
+      "messages": [],
+      "native": [],
+      "native_probes": [],
+      "rc": 0,
+      "rustcs": [
+        "api",
+        "kit"
+      ],
+      "tests": "0 tests, 0 benchmarks\n",
+      "wild": [
+        "api-2a94a40c3a43a48f",
+        "libkit.so"
+      ]
+    },
+    "wrapper-prime": {
+      "api_modes": [
+        "full"
+      ],
+      "elf": "f990b26e1647b651a94d0f80c77b23b01de8c7bcb0a4c3bc5faa317d73cf587d",
+      "fixed": [],
+      "messages": [],
+      "native": [],
+      "native_probes": [],
+      "rc": 0,
+      "rustcs": [
+        "api",
+        "mark",
+        "kit",
+        "build_script_build"
+      ],
+      "tests": "0 tests, 0 benchmarks\n",
+      "wild": [
+        "api-2a94a40c3a43a48f",
+        "libmark-6633df7f215fd7e3.so",
+        "libkit.so",
+        "build_script_build"
+      ]
+    }
+  },
+  "helper": {
+    "backdated-codegen-object": {
+      "api_modes": [
+        "full"
+      ],
+      "elf": "c61f735cdc27ab84f207dadadddcb1655bfbada8a74cf8862afbbe9797a2afac",
+      "fixed": [],
+      "messages": [],
+      "native": [],
+      "native_probes": [],
+      "rc": 0,
+      "requested_rejected_object": {
+        "bytes": 3032,
+        "modified_sha256": "8ce2ec92efe7e4c57edae4857b4b65fda6ae26b54789e760adbfd7b7f26d550b",
+        "old_links": 2,
+        "old_sha256": "21e69bcbe6401eb2c5abff338317b83a6cc89068dc34fb5448e12c37cc6f4aa9",
+        "substitution": "atomic replacement of cache member only"
+      },
+      "rustcs": [
+        "api",
+        "leaf"
+      ],
+      "tests": "0 tests, 0 benchmarks\n",
+      "wild": [
+        "api-d85fd6b3c1ff5f15"
+      ]
+    },
+    "before-loader": {
+      "api_modes": [
+        "link-only"
+      ],
+      "elf": "c61f735cdc27ab84f207dadadddcb1655bfbada8a74cf8862afbbe9797a2afac",
+      "fixed": [],
+      "messages": [],
+      "native": [],
+      "native_probes": [],
+      "rc": 0,
+      "rustcs": [
+        "api",
+        "leaf"
+      ],
+      "tests": "0 tests, 0 benchmarks\n",
+      "wild": [
+        "api-d85fd6b3c1ff5f15"
+      ]
+    },
+    "cold": {
+      "api_modes": [
+        "full"
+      ],
+      "elf": "c61f735cdc27ab84f207dadadddcb1655bfbada8a74cf8862afbbe9797a2afac",
+      "fixed": [],
+      "messages": [],
+      "native": [],
+      "native_probes": [],
+      "rc": 0,
+      "rustcs": [
+        "api",
+        "leaf",
+        "mark",
+        "kit",
+        "build_script_build"
+      ],
+      "tests": "0 tests, 0 benchmarks\n",
+      "wild": [
+        "api-d85fd6b3c1ff5f15",
+        "libmark-1c2e766d0626af38.so",
+        "libkit.so",
+        "build_script_build"
+      ]
+    },
+    "fully-fresh": {
+      "api_modes": [],
+      "elf": "c61f735cdc27ab84f207dadadddcb1655bfbada8a74cf8862afbbe9797a2afac",
+      "fixed": [],
+      "messages": [],
+      "native": [],
+      "native_probes": [],
+      "rc": 0,
+      "rustcs": [],
+      "tests": "0 tests, 0 benchmarks\n",
+      "wild": []
+    },
+    "loader-debug": {
+      "api_modes": [
+        "full"
+      ],
+      "elf": "c61f735cdc27ab84f207dadadddcb1655bfbada8a74cf8862afbbe9797a2afac",
+      "fixed": [],
+      "messages": [],
+      "native": [],
+      "native_probes": [],
+      "rc": 0,
+      "rustcs": [
+        "api",
+        "leaf"
+      ],
+      "side_outputs": [
+        [
+          "ld.bfd",
+          3392
+        ],
+        [
+          "rustc",
+          14275
+        ]
+      ],
+      "tests": "0 tests, 0 benchmarks\n",
+      "wild": [
+        "api-d85fd6b3c1ff5f15"
+      ]
+    },
+    "natural-hit": {
+      "api_modes": [
+        "link-only"
+      ],
+      "elf": "c61f735cdc27ab84f207dadadddcb1655bfbada8a74cf8862afbbe9797a2afac",
+      "fixed": [],
+      "messages": [],
+      "native": [],
+      "native_probes": [],
+      "rc": 0,
+      "rustcs": [
+        "api",
+        "leaf"
+      ],
+      "tests": "0 tests, 0 benchmarks\n",
+      "wild": [
+        "api-d85fd6b3c1ff5f15"
+      ]
+    },
+    "noexec-collect2": {
+      "api_modes": [
+        "link-only"
+      ],
+      "elf": "65f1d17913a748e70b62db815cf1c80ec7667e1215a53d28c617cf8da13410e2",
+      "fixed": [],
+      "helper": {
+        "mode": "0o644",
+        "normal": "0o755",
+        "sha256": "4d1f341ae5b763b513258ee2812422a45e063c30a2f1924a0cf63d3699f3a158"
+      },
+      "messages": [],
+      "native": [],
+      "native_probes": [],
+      "rc": 0,
+      "rustcs": [
+        "api",
+        "leaf"
+      ],
+      "tests": "0 tests, 0 benchmarks\n",
+      "wild": []
+    },
+    "noexec-ld.bfd": {
+      "api_modes": [
+        "link-only"
+      ],
+      "elf": "65f1d17913a748e70b62db815cf1c80ec7667e1215a53d28c617cf8da13410e2",
+      "fixed": [],
+      "helper": {
+        "mode": "0o444",
+        "normal": "0o555",
+        "sha256": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5"
+      },
+      "messages": [],
+      "native": [],
+      "native_probes": [],
+      "rc": 0,
+      "rustcs": [
+        "api",
+        "leaf"
+      ],
+      "tests": "0 tests, 0 benchmarks\n",
+      "wild": []
+    },
+    "reauth-after-loader": {
+      "api_modes": [
+        "link-only"
+      ],
+      "elf": "c61f735cdc27ab84f207dadadddcb1655bfbada8a74cf8862afbbe9797a2afac",
+      "fixed": [],
+      "messages": [],
+      "native": [],
+      "native_probes": [],
+      "rc": 0,
+      "rustcs": [
+        "api",
+        "leaf"
+      ],
+      "tests": "0 tests, 0 benchmarks\n",
+      "wild": [
+        "api-d85fd6b3c1ff5f15"
+      ]
+    },
+    "restored-collect2": {
+      "api_modes": [
+        "link-only"
+      ],
+      "elf": "c61f735cdc27ab84f207dadadddcb1655bfbada8a74cf8862afbbe9797a2afac",
+      "fixed": [],
+      "messages": [],
+      "native": [],
+      "native_probes": [],
+      "rc": 0,
+      "rustcs": [
+        "api",
+        "leaf"
+      ],
+      "tests": "0 tests, 0 benchmarks\n",
+      "wild": [
+        "api-d85fd6b3c1ff5f15"
+      ]
+    },
+    "restored-ld.bfd": {
+      "api_modes": [
+        "link-only"
+      ],
+      "elf": "c61f735cdc27ab84f207dadadddcb1655bfbada8a74cf8862afbbe9797a2afac",
+      "fixed": [],
+      "messages": [],
+      "native": [],
+      "native_probes": [],
+      "rc": 0,
+      "rustcs": [
+        "api",
+        "leaf"
+      ],
+      "tests": "0 tests, 0 benchmarks\n",
+      "wild": [
+        "api-d85fd6b3c1ff5f15"
+      ]
+    },
+    "retrain-after-checksum": {
+      "api_modes": [
+        "link-only"
+      ],
+      "elf": "c61f735cdc27ab84f207dadadddcb1655bfbada8a74cf8862afbbe9797a2afac",
+      "fixed": [],
+      "messages": [],
+      "native": [],
+      "native_probes": [],
+      "rc": 0,
+      "rustcs": [
+        "api",
+        "leaf"
+      ],
+      "tests": "0 tests, 0 benchmarks\n",
+      "wild": [
+        "api-d85fd6b3c1ff5f15"
+      ]
+    },
+    "train-after-loader": {
+      "api_modes": [
+        "full"
+      ],
+      "elf": "c61f735cdc27ab84f207dadadddcb1655bfbada8a74cf8862afbbe9797a2afac",
+      "fixed": [],
+      "messages": [],
+      "native": [],
+      "native_probes": [],
+      "rc": 0,
+      "rustcs": [
+        "api",
+        "leaf"
+      ],
+      "tests": "0 tests, 0 benchmarks\n",
+      "wild": [
+        "api-d85fd6b3c1ff5f15"
+      ]
+    }
+  },
+  "in_place_alias_negative": {
+    "actual": "source rustc full fallback, actual bundled Wild, Cargo exit 101; the intentionally modified shared object also poisoned rustc\u2019s incremental input",
+    "atomic_replacement_control": "helper/backdated-codegen-object",
+    "procedure": "modified a shared, 2-link CGU inode in place in a private, disposable target, including rustc incremental storage",
+    "sealed_input_hash": null
+  },
+  "nested": {
+    "added_object_sha": "ee59b9dea7188bd45e0f34693bca4a80f52680f4ac97bdb2a47ecc27c973985a",
+    "arm": "a11c",
+    "cargo": "a0acc664af50231926f1b69bc64fdc02dd7c4fcc7c232f5e70f8ba451a354db4",
+    "ordinary_fallback_sha": "f0a17a43c74d2fe5474fa2fd29c8f14799e777d7d75a2cc4d11c20a6e7b161c5",
+    "rust": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+    "samples": {
+      "cold": {
+        "diagnostics": [],
+        "elf": "c61f735cdc27ab84f207dadadddcb1655bfbada8a74cf8862afbbe9797a2afac",
+        "fixed": [],
+        "full": [
+          "full"
+        ],
+        "marker": [],
+        "rc": 0,
+        "rustc_evidence": "11ececfa31de2a709a4c6608f358f8748520ffa4e2ba81501813bcc0f4e36396",
+        "rustcs": [
+          "api",
+          "mark",
+          "leaf",
+          "kit",
+          "build_script_build"
+        ],
+        "tests": "0 tests, 0 benchmarks\n",
+        "wild": [
+          "api-d85fd6b3c1ff5f15",
+          "libmark-1c2e766d0626af38.so",
+          "libkit.so",
+          "build_script_build"
+        ]
+      },
+      "earlier-member-now-exists": {
+        "diagnostics": [],
+        "elf": "1b89d1eb74af3b9d5e356ad8966c02e45d12f90838f26f735e2575e66122f8e2",
+        "fixed": [],
+        "full": [
+          "link-only"
+        ],
+        "marker": [
+          "0000000000000097"
+        ],
+        "rc": 0,
+        "rustc_evidence": "11ececfa31de2a709a4c6608f358f8748520ffa4e2ba81501813bcc0f4e36396",
+        "rustcs": [
+          "api",
+          "leaf"
+        ],
+        "tests": "0 tests, 0 benchmarks\n",
+        "wild": [
+          "api-d85fd6b3c1ff5f15"
+        ]
+      },
+      "earlier-member-now-invalid": {
+        "diagnostics": [
+          [
+            "api",
+            "error",
+            null,
+            "linking with `cc` failed: exit status: 1"
+          ]
+        ],
+        "elf": null,
+        "fixed": [],
+        "full": [
+          "link-only"
+        ],
+        "rc": 101,
+        "rustcs": [
+          "api",
+          "leaf"
+        ],
+        "tests": null,
+        "wild": [
+          "api-d85fd6b3c1ff5f15"
+        ]
+      },
+      "first-changed": {
+        "diagnostics": [],
+        "elf": "c61f735cdc27ab84f207dadadddcb1655bfbada8a74cf8862afbbe9797a2afac",
+        "fixed": [],
+        "full": [
+          "link-only"
+        ],
+        "marker": [],
+        "rc": 0,
+        "rustc_evidence": "11ececfa31de2a709a4c6608f358f8748520ffa4e2ba81501813bcc0f4e36396",
+        "rustcs": [
+          "api",
+          "leaf"
+        ],
+        "tests": "0 tests, 0 benchmarks\n",
+        "wild": [
+          "api-d85fd6b3c1ff5f15"
+        ]
+      },
+      "ordinary-or-reuse": {
+        "diagnostics": [],
+        "elf": "c61f735cdc27ab84f207dadadddcb1655bfbada8a74cf8862afbbe9797a2afac",
+        "fixed": [],
+        "full": [
+          "link-only"
+        ],
+        "marker": [],
+        "rc": 0,
+        "rustc_evidence": "11ececfa31de2a709a4c6608f358f8748520ffa4e2ba81501813bcc0f4e36396",
+        "rustcs": [
+          "api",
+          "leaf"
+        ],
+        "tests": "0 tests, 0 benchmarks\n",
+        "wild": [
+          "api-d85fd6b3c1ff5f15"
+        ]
+      },
+      "removed-earlier-member": {
+        "diagnostics": [],
+        "elf": "c61f735cdc27ab84f207dadadddcb1655bfbada8a74cf8862afbbe9797a2afac",
+        "fixed": [],
+        "full": [
+          "full"
+        ],
+        "marker": [],
+        "rc": 0,
+        "rustc_evidence": "11ececfa31de2a709a4c6608f358f8748520ffa4e2ba81501813bcc0f4e36396",
+        "rustcs": [
+          "api",
+          "leaf"
+        ],
+        "tests": "0 tests, 0 benchmarks\n",
+        "wild": [
+          "api-d85fd6b3c1ff5f15"
+        ]
+      }
+    },
+    "system_script_sha": "0acf9bd0b19f5cf45ace80750633b077d94a14dd0c69c7bf159446328535dd69",
+    "wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5"
+  }
+}

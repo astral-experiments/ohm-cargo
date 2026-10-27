@@ -1,0 +1,49 @@
+{
+  "measurement": "Elapsed duration printed by Cargo in each instrumented qualification invocation, including tracing overhead and reporting precision; not a randomized wall performance comparison.",
+  "cargo_reported": {
+    "parser": {
+      "Stock11": {
+        "seed": "27.24s",
+        "fresh-seed": "4.56s",
+        "edit": "36.53s",
+        "fresh-edit": "3.99s",
+        "restore": "35.78s",
+        "fresh-restore": "4.93s",
+        "edit-again": "37.16s",
+        "fresh-again": "4.61s"
+      },
+      "A11": {
+        "seed": "30.02s",
+        "fresh-seed": "4.05s",
+        "edit": "35.67s",
+        "fresh-edit": "3.77s",
+        "restore": "36.32s",
+        "fresh-restore": "3.92s",
+        "edit-again": "36.57s",
+        "fresh-again": "3.93s"
+      }
+    },
+    "wasm-only": {
+      "Stock11": {
+        "seed": "28.38s",
+        "fresh-seed": "4.09s",
+        "edit": "9.09s",
+        "fresh-edit": "4.14s",
+        "restore": "10.76s",
+        "fresh-restore": "4.24s",
+        "edit-again": "9.61s",
+        "fresh-again": "4.14s"
+      },
+      "A11": {
+        "seed": "27.57s",
+        "fresh-seed": "5.16s",
+        "edit": "9.13s",
+        "fresh-edit": "4.12s",
+        "restore": "8.70s",
+        "fresh-restore": "4.15s",
+        "edit-again": "8.89s",
+        "fresh-again": "4.26s"
+      }
+    }
+  }
+}
