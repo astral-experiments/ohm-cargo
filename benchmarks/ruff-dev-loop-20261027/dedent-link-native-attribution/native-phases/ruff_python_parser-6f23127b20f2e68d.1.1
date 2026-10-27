@@ -1,0 +1,55 @@
+└─    0.14 Build thread pool
+┌───   10.10 Open input files
+│ ┌───    0.00 Process linker scripts
+│ ├───    0.07 Group files
+│ ├───    4.10 Read symbols
+│ ├───    1.54 Populate symbol map
+├─┴─    5.89 Load inputs into symbol DB
+│ │ ┌───    0.01 Assign COMDAT metadata to objects
+│ │ ├───    0.03 Bucket COMDAT candidates
+│ │ ├───    0.00 Accumulate COMDAT candidates
+│ │ ├───    0.00 Select native COMDAT winners
+│ │ ├───    0.00 Select IR COMDAT winners
+│ │ ├───    0.19 Apply COMDAT selection
+│ │ ├───    0.00 Drop COMDAT winner maps
+│ ┌─┴─    0.31 Select COMDAT groups
+├─┴─    2.19 Resolve symbols
+├───    0.06 Resolve alternative symbol definitions
+│ ┌───    5.76 Resolve sections
+│ ├───    0.15 Assign section IDs
+│ ├───    0.01 Canonicalise undefined symbols
+├─┴─    5.97 Section resolution
+│ ┌───    0.00 Build SONAME index
+│ ├───   10.66 Merge strings and traverse reference graph
+│ ├───    0.00 Finalise copy relocations
+│ ├───    0.00 Merge dynamic symbol definitions
+│ ├───    0.00 Create canonical PLT entries
+│ ├───    0.00 Harvest and sort script sections
+│ ├───    0.01 Merge GNU property notes
+│ ├───    0.01 Merge .riscv.attributes sections
+│ ├───    0.00 Merge e_flags
+│ ├───    1.48 Finalise per-object sizes
+│ ├───    0.00 Apply non-addressable indexes
+│ ├───    0.00 Propagate section attributes
+│ ├───    0.02 Compute output order
+│ ├───    0.01 Compute total section sizes
+│ ├───    0.01 Computing segment alignments
+│ ├───    0.02 Layout sections
+│ ├───    0.01 Compute segment layouts
+│ ├───    0.00 Compute per-alignment offsets
+│ ├───    0.00 Compute per-group start offsets
+│ ├───    0.00 Compute merged string section start addresses
+│ ├───    2.86 Assign symbol addresses
+│ ├───    0.00 Update dynamic symbol resolutions
+├─┴─   15.44 Layout
+│ ┌───    2.35 Delete old output
+│ ├───    0.10 Create output file
+│ │ ┌───    0.08 Fill padding for sections
+│ │ ├───    0.01 Split buffers by alignment
+│ │ ├───    0.01 Split output buffers by group
+│ ├─┴─   29.38 Write data to file
+│ ├───    0.15 Sort .eh_frame_hdr
+│ ├───    3.82 Compute build ID
+│ ├───    1.01 Flush and unmap output file
+├─┴─   36.96 Write output file
+│ ┌───    0.93 Verify inputs unchanged
