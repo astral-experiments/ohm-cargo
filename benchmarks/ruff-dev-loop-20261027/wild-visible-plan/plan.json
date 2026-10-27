@@ -1,0 +1,39 @@
+{
+  "experiment": "Ohm Wild 0.11.0 reuse-output with stock-compatible verification of visible test executables",
+  "ruff": "93526150df078af7dd8fc4226cdcc469539d2001",
+  "candidate_source_commit": "c7eda769d31171dcb3f1965d3511b1e7a8981e71",
+  "candidate_patch": "6919b2d2bf5de15529235ec1cba818bbdc0000133319918230acb884a50138dd",
+  "candidate_wild": "c813de15da27872ce0a294a321053674fa8e7c08b4443798b831a6da5d37374c",
+  "shipped_wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5",
+  "source_matched_wild": "1079dffdaee2bc9f81a8aebd800339fdbc3922c08c31cb319c7cc70cec2bb76b",
+  "ordinary_environment": "Uninstrumented cargo +ohm with default GCC and no WILD_* setting. Release 14 Cargo and compiler, 8 Cargo jobs, CPUs 0-23, dedicated devbox and independently trained targets at identical absolute paths.",
+  "reuse_targets": "Carry forward the finished v7 subject targets, switch to the registered binary, then settle, train both edited/restored states, and explicitly verify both states before scoring. Preserve every earlier receipt and measurement.",
+  "endpoints": [
+    [
+      "ide-build",
+      1738071,
+      "build",
+      "1797ed542380c5aa0f7832e3877b1df56ddb2e08",
+      "ide-unit-test.patch"
+    ],
+    [
+      "ide-test",
+      1738072,
+      "test --no-run",
+      "1797ed542380c5aa0f7832e3877b1df56ddb2e08",
+      "ide-unit-test.patch"
+    ],
+    [
+      "snapshot-test",
+      1738073,
+      "test --no-run",
+      "00ba5d70ce12da81409636a268d45d0ea4251ad6",
+      "edit.patch"
+    ]
+  ],
+  "snapshot_patch": "2a6a045a42706dd59a332c2e6a910ee8771c7b55f5b303c041c0ca6bec4378e0",
+  "stats": "Each endpoint has 18 three-subject blocks containing three of each of six permutations, independently shuffled using its listed seed. Condition on each other subject's position and enumerate all 8000 balanced exchanges for a two-sided exact randomization test. Holm correction across all six primary contrasts. Report stratified paired bootstrap 95% intervals and unadjusted arm medians.",
+  "gates": "Match complete build/test rosters, restore exact source and Git index, allow zero registry compiles after settling, require a next all-fresh command after every sample. Trace the actual linker/rustc invocations and authenticated hits on first/last edits separately. A reported improvement must show fewer authentic full links on both traces and be significant against both controls. For a large test skip claim, require at least half of full links avoided in both traces, and independent full-link byte-for-byte verification of representative hits.",
+  "genuine_miss": "Use the complete historical Pydantic edit, checksum 467330a56398032bfaed34cca5a89ed7de1a6459ddb95756180b16de69b912b1, one separate full-workspace build series of 12 paired balanced blocks against the source-matched parent, seed 1738074. Default-activation gate requires the upper end of the pointwise paired bootstrap 95% time-overhead interval below 2%. Keep negative and failed tests in evidence.",
+  "v7": "Immutable predecessor and earlier exact-input experiments remain separate. No old samples enter the v8 analysis. Do not condition the test family or stopping on interim times."
+}
