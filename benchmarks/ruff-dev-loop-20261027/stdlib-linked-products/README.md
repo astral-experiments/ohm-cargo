@@ -1,0 +1,7 @@
+# Which Ruff stdlib edits changed a linked product
+
+Reversing the historical stdlib matcher change launched seven Wild links under `cargo build` and 41 under `cargo test --no-run` on fixed #233. Each was recorded twice in both directions. The verifier matches each successful Wild process's output to the native Cargo artifact, either at its direct path or at the one top-level executable or shared library for the same package and filename. All 48 mappings are unique in every phase. [Workspace edits and diagnostic controls](https://github.com/astral-sh/ohm-cargo/tree/bf818ec9504eab29c29c9869e8216ee78d1d8ef8/benchmarks/ruff-dev-loop-20261027/stdlib-mutable-heldout-results)
+
+All seven ordinary-build link outputs changed bytes in both edit/restore pairs. Of the 41 test-build link outputs, 29 changed and twelve stayed byte-identical in each pair. Eleven stayed identical across both pairs. They were Ruff's `analyze_graph` and `direxist_guard` integration tests and its binary test harness, the `ruff_python_semantic`, `ruff_python_stdlib`, `ty_module_resolver` and `ty_python_core` unit tests, the two wasm packages’ `api` integration tests, and ty's `cli` and `self_environment` integration tests. Ruff's `config` and `resolve_files` tests alternated as the twelfth.
+
+These are raw ELF comparisons, including build IDs. They identify outputs worth examining for an input proof. They provide no before-link test for skipping the linker. Run `python3 -B verify.py` to enumerate the unique mappings, exact product hashes, and both repetitions.
