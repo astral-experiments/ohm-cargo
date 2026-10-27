@@ -1,0 +1,11 @@
+# Measuring mixed Rust/C library rebuilds in Ruff
+
+Two packages in Ruff, `ruff_wasm` and `ty_wasm`, build both a shared library and an rlib. This study tests a compiler path that checks the current crate hash and incremental metadata, then links directly when the stored work is valid. A guarded hit still runs rustc and the native linker. The question is how much time it saves by avoiding the full analysis and code-generation phases.
+
+The historical parser diagnostic edit already produced repeatable full-workspace measurements on the parent compiler. A prototype in the two affected packages produced an obsolete private crate hash, which an ordinary transitive Rust consumer rejected. The new study requires that consumer, the Rust metadata and the native library to agree with a forced full build. [Parent measurement](https://github.com/astral-sh/ohm-cargo/tree/2f07518331735487c84aaeadab58ce98d7c5a71b/benchmarks/ruff-dev-loop-20261027/native-qualified-results) · [Rejected prototype and transitive consumer](https://github.com/astral-sh/ohm-cargo/tree/7020f3a4a0ee88b0a1a45b83ce34cf7351bf5aa8/benchmarks/ruff-dev-loop-20261027/rejected-mixed-crate-metadata)
+
+Each full-workspace endpoint runs 18 blocks with three arms per block. A has the new Cargo and the baseline compiler. B has baseline Cargo and the new compiler. C has both changes. C versus A measures the compiler's contribution with Cargo held fixed. C versus B measures Cargo's contribution with the compiler held fixed. The new Cargo and compiler are both required to request the mixed-library path.
+
+For each comparison the third arm keeps its observed slot. Across the six blocks where it occupied each slot, three put C after its paired control. The exact test enumerates all 8,000 balanced assignments and Holm adjusts the four component-by-command comparisons. The four null and known-effect examples can be checked with `python3 -B check-analysis.py`. To recompute measured results, run `python3 -B analyze.py plan.json build.csv test.csv`.
+
+The registration fixes the edit, arm order, diagnostics, physical process accounting, artifact controls and analysis before scoring. It requires binding the final product source and binary hashes, host, and independent same-medium writable stores before the first ordinary timed command. No whole-workspace result is claimed by this registration.
