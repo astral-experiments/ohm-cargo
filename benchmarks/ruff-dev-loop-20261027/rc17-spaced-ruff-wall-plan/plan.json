@@ -1,0 +1,94 @@
+{
+  "actual_extra_qualification": "Compare both corrected Cargo and Rust source branches to the hosted pins before submitting them. Keep the demonstrated correction of prior incorrect binary/check outputs separate from the steady-state time endpoints.",
+  "affinity": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+  "assignment_seeds": {
+    "package": 34222938007297,
+    "workspace": 34222938007298
+  },
+  "clock": "On the dedicated host, run one fresh private copy of each trained state, preserving logical paths. After confirming all original ELF digests on those copies, prime once per arm with ordinary Cargo JSON, outside the clock. Run 24 adjacent pairs per workflow in the registered balanced order. Preserve each command stdout, stderr, monotonic nanoseconds and exit status. After each clock, hash all native files and list the selected test executable. Verify the full unit roster, diagnostics and expected dirty set once more at the end. Do not run test bodies. The acquisition runs under an exclusive lock with the same CPU affinity and jobs. No wrapper, tracer or Cargo JSON in scored commands.",
+  "controls": {
+    "package": "cargo +ohm test --no-run -p ty_project --locked --offline -j4, with ruff target and Ohm-SDK",
+    "workspace": "cargo +ohm test --no-run --workspace --locked --offline -j4, with ruff-target and Ohm SDK"
+  },
+  "eligible_native_runner": "4ba3f0518b9ab8efab0fefb13cb4bf1c1fc7c5c96a447008ae4b7e1a0a1e0356",
+  "gate": "Require unchanged Ruff source and index. Before any clock in either workflow require both matched native qualifications to finish successfully. Each parent must reproduce the repeated released rustc and Wild counts twice; each candidate must be fully fresh with zero compiler and Wild processes twice. Verify identical unit/target/profile/feature/output roster, exact diagnostics, exact selected harness listing, and all 4 or 110 native files. Allow equivalence across different real links only when all ELF bytes outside the GNU build ID and .rodata sh_entsize agree. Check original workspaces again after the clock. If an integrity check fails, preserve the failure and withhold scores.",
+  "index": "fc84f15ac7401cd9bdc362e4574c6d395529766c16be2e6b032ac47fa63d21cd",
+  "jobs": 4,
+  "orders": {
+    "package": [
+      "CB",
+      "BC",
+      "CB",
+      "BC",
+      "BC",
+      "CB",
+      "BC",
+      "CB",
+      "CB",
+      "BC",
+      "CB",
+      "CB",
+      "BC",
+      "BC",
+      "CB",
+      "CB",
+      "BC",
+      "BC",
+      "BC",
+      "BC",
+      "BC",
+      "CB",
+      "CB",
+      "CB"
+    ],
+    "workspace": [
+      "CB",
+      "CB",
+      "CB",
+      "BC",
+      "BC",
+      "BC",
+      "BC",
+      "CB",
+      "CB",
+      "BC",
+      "CB",
+      "BC",
+      "BC",
+      "BC",
+      "CB",
+      "BC",
+      "BC",
+      "CB",
+      "BC",
+      "CB",
+      "BC",
+      "CB",
+      "CB",
+      "CB"
+    ]
+  },
+  "profile": "Use the matching compiler frontend/driver pair and a fixed standard library. Bind exact Cargo, compiler frontend, driver, linker, source patch, and native qualification manifests before opening times. Require candidate profile coverage at least 95% of matched parent profiled-function count, at least 95% of its BOLT covered sample weight, and no more than two percentage points extra stale profile weight. Retain the full original BOLT diagnostics and unoptimized version of the helper as a separate excluded experiment.",
+  "scope": "New cold states separately built and trained for each source arm and workflow, then consecutive unchanged local development commands. Includes the rustup dispatch and the entire Cargo subprocess. Compare source edits on the canceled RC17 release inputs with the same donor PGO, BOLT, standard library, compiler version stamp and Wild. These source experiments are distinct from a packaged 1.99.0-17 and do not estimate upgrade or clean-build wall time.",
+  "seeds": {
+    "package": 2026102781,
+    "workspace": 2026102782
+  },
+  "source": "93526150df078af7dd8fc4226cdcc469539d2001",
+  "sources": {
+    "B_cargo": "db24aef819477e2fa46a50299bb23d5020dd518a",
+    "B_rust": "d6497b5469d81dd23cf010416c82c9443a04c61c",
+    "C_cargo": "01742c822d9153473d35566bd1c4fc987bcb5642",
+    "C_rust_overlay_sha256": "6ffa5b12efec5389f31625540794581be1ad33dd27a9141fa722ef8bc0a70f9d"
+  },
+  "statistics": "Always report both endpoints. Per endpoint report medians, paired geometric-mean percent reduction, a two-sided exact test of all 2,704,156 balanced slot assignments, 100,000 paired fixed-seed bootstrap resamples and the fraction favorable. Adjust the two p-values using Holm. Claim a benefit only at Holm p < 0.05, 95% interval lower bound > 1%, and at least two thirds favorable. Withhold a broad claim in the presence of a significant material regression in the other endpoint. No interim estimates, outlier deletions or stopping on a time. An infrastructure failure remains part of the record."
+}
