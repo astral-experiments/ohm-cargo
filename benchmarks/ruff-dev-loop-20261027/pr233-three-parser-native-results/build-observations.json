@@ -1,0 +1,3159 @@
+{
+  "cold": {
+    "B": {
+      "elf_count": 15,
+      "executable_count": 6,
+      "fresh_units": 0,
+      "native_totals": {
+        "cc": 691,
+        "collect2": 152,
+        "wild": 90
+      },
+      "phase": "cold",
+      "process_totals": {
+        "full": 505
+      },
+      "source_view": "original",
+      "unit_count": 501
+    },
+    "C": {
+      "elf_count": 15,
+      "executable_count": 6,
+      "fresh_units": 0,
+      "native_totals": {
+        "cc": 691,
+        "collect2": 152,
+        "wild": 90
+      },
+      "phase": "cold",
+      "process_totals": {
+        "full": 505
+      },
+      "source_view": "original",
+      "unit_count": 501
+    }
+  },
+  "cross_arm": {
+    "lexer-pending-indentation-edit": {
+      "elf_count": 15,
+      "mixed": {
+        "ruff_wasm": {
+          "different_properties": {
+            "embedded_object_sha256": [
+              "05e8c2ac524403fdc64049ca8ded54bc8d4c6f49cd22653c0b5c3d26c5c8f7c3",
+              "eb21ce10936528db0d0977e4718e27c3dc6f07a5cdf5202d3595d3db18d6b9ac"
+            ],
+            "normalized_archive_sha256": [
+              "172a6d44c9ec9e5e18ff53f35114be0b70b77a704ae2af23c47d2ddb8f4bec3a",
+              "ac246414860be688cf43951439c624632e95a27084ab7c10784bbf206c2a108a"
+            ],
+            "private_svh": [
+              "85e5fbad2402df9bd37c2e0b2a467ff7",
+              "3bece62e118d27c0b38460a8b5a266e6"
+            ],
+            "public_svh": [
+              "8616fc707aa81cd8447707679876383c",
+              "162e96d06b0a4547cac8020ec5fd999b"
+            ],
+            "rmeta_bytes": [
+              506638,
+              506660
+            ],
+            "rmeta_sha256": [
+              "51265d2695e87f80b212c1f6c28e3e6d0a5577b90ac7e46597aa5686af782a3c",
+              "ecd9b3db8352ff6d83de35b9d2dcae70b4abf168a22c68b40715290d9a10386a"
+            ],
+            "root_listing_sha256": [
+              "54986453c843d0fb9ccfd74e2a38847bc9d1bee645b0b9cbf647b94ac3da567b",
+              "08fe205d2d6e8c43135138f00ba9b709af9200642830094ffeeb992e7991b17b"
+            ]
+          },
+          "native": {
+            "identical_member_names": 0,
+            "identical_ordered_symbol_to_member_index": true,
+            "index_entries": 2547,
+            "metadata_wrapper_differences": {
+              "lib.rmeta": [
+                ".rmeta"
+              ],
+              "lib.rmeta-link": [
+                ".rmeta-link"
+              ]
+            },
+            "object_count": 66,
+            "rmeta_link_semantics": [
+              {
+                "native_lib_filenames": [],
+                "object_names": 66,
+                "rust_object_order_matches_archive": true
+              },
+              {
+                "native_lib_filenames": [],
+                "object_names": 66,
+                "rust_object_order_matches_archive": true
+              }
+            ],
+            "same_slot_cgu_prefixes": 66,
+            "same_slot_payloads": 66,
+            "symbol_witness": [
+              "d517297c7bf1d54899e69cfaf1f662fd082689dd13303b3bb581ccd99849e9e4",
+              "d517297c7bf1d54899e69cfaf1f662fd082689dd13303b3bb581ccd99849e9e4"
+            ]
+          },
+          "raw_cdylib": [
+            "dd4e69c372f3e391725f1c28cb1416ce644e222db4f08fded9667609195735b8",
+            "dd4e69c372f3e391725f1c28cb1416ce644e222db4f08fded9667609195735b8"
+          ],
+          "raw_rlibs": [
+            "23cb2b6ab96c15572bbb099c7c21b22b62264448771a22e197e08c2369be5e9c",
+            "073645ac5eac627c7f456c8ba009bcd5bed705b642faf877a44daa78c6ded709"
+          ]
+        },
+        "ty_wasm": {
+          "different_properties": {
+            "embedded_object_sha256": [
+              "04cfa637c756d3db0a9d92ecba9b70417f11c189e1438edcd95a597736c96604",
+              "84484aeb23e5a2907879dcc25a5a4937eca82d5eef1c6e599759f4af96c45926"
+            ],
+            "normalized_archive_sha256": [
+              "71fa65c16365a075a3dc76d7f030ca25c3547a987d3459188861060fbc525dfe",
+              "f8016cde5aabf36fc16400f2931591a575433ab543fb2957b39ad58ba7c4b016"
+            ],
+            "private_svh": [
+              "ac1563707c90382cc7ac86448ae80119",
+              "c2fe207ec0e64c06e3ce19e7b1844b2f"
+            ],
+            "public_svh": [
+              "c4652b26ea7ed143e629508fdb1b7343",
+              "afea6b8458b708bfa953da9e03778f5c"
+            ],
+            "rmeta_bytes": [
+              705235,
+              705252
+            ],
+            "rmeta_sha256": [
+              "93f7b1531db2ad07df74524c5ada6150bb07f5798fea9d4a62507d147a006cd2",
+              "55b8f399bcc2cdab065e046f6e37ca71f41b44a455f6b022ff2cad0a95cc944d"
+            ],
+            "root_listing_sha256": [
+              "52778afd9d4a30173c00ad9afb4e79124589d7caeaf44a32706be71bd129a055",
+              "66401d519afd5c92c53cb0f862863db05b98cd87cc699fb55683a8f4561405db"
+            ]
+          },
+          "native": {
+            "identical_member_names": 0,
+            "identical_ordered_symbol_to_member_index": true,
+            "index_entries": 2453,
+            "metadata_wrapper_differences": {
+              "lib.rmeta": [
+                ".rmeta"
+              ],
+              "lib.rmeta-link": [
+                ".rmeta-link"
+              ]
+            },
+            "object_count": 78,
+            "rmeta_link_semantics": [
+              {
+                "native_lib_filenames": [],
+                "object_names": 78,
+                "rust_object_order_matches_archive": true
+              },
+              {
+                "native_lib_filenames": [],
+                "object_names": 78,
+                "rust_object_order_matches_archive": true
+              }
+            ],
+            "same_slot_cgu_prefixes": 78,
+            "same_slot_payloads": 78,
+            "symbol_witness": [
+              "ba7640ed5a2a66a0af9a77505ed063d7d30914da22aec9cd6355cc1083fa15e6",
+              "ba7640ed5a2a66a0af9a77505ed063d7d30914da22aec9cd6355cc1083fa15e6"
+            ]
+          },
+          "raw_cdylib": [
+            "ac170be1edb3f0070f875f4a84aba4a1bd830b994433af66325454a33c747990",
+            "ac170be1edb3f0070f875f4a84aba4a1bd830b994433af66325454a33c747990"
+          ],
+          "raw_rlibs": [
+            "f217c4392b838e32a3108032c739907dc1a85d99c9ce3a9a61429f50e9643f6c",
+            "2ab4bf38c13c4a6cc78cc0bac658f40312376daa50346602c70a93780103dda9"
+          ]
+        }
+      },
+      "raw_elf_differences": {
+        "debug/libruff_macros.so": {
+          "different_sections": [
+            ".dynsym",
+            ".note.gnu.build-id",
+            ".rustc",
+            ".symtab"
+          ],
+          "matches_after_gnu_id_and_rodata_entsize_mask": false,
+          "raw": [
+            "dc3bf45df5d819537c6d4b947b0dcbce3a44bd0cfedf0f8c4a4c9b120b3f8e43",
+            "9b28f50631f2d22542769a623f5fe1f7794d5178c55f6b99d55b6a160b95c530"
+          ],
+          "size": [
+            10367736,
+            10367752
+          ]
+        },
+        "debug/ruff": {
+          "different_sections": [
+            ".debug_info",
+            ".debug_macro",
+            ".debug_str",
+            ".note.gnu.build-id"
+          ],
+          "matches_after_gnu_id_and_rodata_entsize_mask": false,
+          "raw": [
+            "fd4a399cbf7e459ee27c181b930dd4fe8e98c05bdbe629ceb625565001337585",
+            "a0f78a36be701143ab09b0c30b11b3f79bc045d4313431ea8e5253418c8619ec"
+          ],
+          "size": [
+            159684160,
+            159684160
+          ]
+        },
+        "debug/ty": {
+          "different_sections": [
+            ".debug_info",
+            ".debug_macro",
+            ".debug_str",
+            ".note.gnu.build-id"
+          ],
+          "matches_after_gnu_id_and_rodata_entsize_mask": false,
+          "raw": [
+            "f307b55b12d3736107ed15ba976a05928a9fe10e6d4f7929214c9062decd8509",
+            "c51a1a2bc995de3860698d8892afb8237a75155d54f10dc0000359884955a20d"
+          ],
+          "size": [
+            225763112,
+            225763112
+          ]
+        },
+        "ruff_macros/0df74ae72023ec23/out/libruff_macros-0df74ae72023ec23.so": {
+          "different_sections": [
+            ".dynsym",
+            ".note.gnu.build-id",
+            ".rustc",
+            ".symtab"
+          ],
+          "matches_after_gnu_id_and_rodata_entsize_mask": false,
+          "raw": [
+            "f404f0266e44b16248a2a5bcad3d0843cd75af9859619255af72e5e8ac68de7a",
+            "daab39a4047294540e0142eeb2ac30d2330fabf181fec55a5df6c4b3e0421ad3"
+          ],
+          "size": [
+            9768000,
+            9768016
+          ]
+        }
+      },
+      "release_output_rosters": [
+        {
+          "mapped_output_path_count": 862,
+          "sha256": "7cc7e6c508a9dc7468ec812806dc2363b64552c99a9123639fb9b0bb4e7f120f",
+          "units": 501
+        },
+        {
+          "mapped_output_path_count": 862,
+          "sha256": "7cc7e6c508a9dc7468ec812806dc2363b64552c99a9123639fb9b0bb4e7f120f",
+          "units": 501
+        }
+      ],
+      "same_compiler_messages": true,
+      "same_novel_cli": true,
+      "same_old_cli": true,
+      "same_unit_paths": false,
+      "same_unit_paths_across_registered_namespaces": true
+    },
+    "lexer-pending-indentation-restore": {
+      "elf_count": 15,
+      "mixed": {
+        "ruff_wasm": {
+          "different_properties": {
+            "embedded_object_sha256": [
+              "6ed3615e11f012bb10cac62bf69d41063e2844baa188d49df93674d6858e7a22",
+              "ead8c098909223e9b4b92d065f297415986f6807f4e672833c5f8f043171087e"
+            ],
+            "normalized_archive_sha256": [
+              "795427c685ac54b6ab497df6e11eb175444e042cfed5471375fc4b1b9bcf5f77",
+              "eb7dc871048a2d791607e89af79006a1c5927d60b53c0f0e7d43ae73afe28300"
+            ],
+            "private_svh": [
+              "7b5aea88e5c671d7591e735e61da81d7",
+              "33e5c4905aa98adcfecebad0ed7d5034"
+            ],
+            "public_svh": [
+              "c14f4defb928611513ec9daeb2aaa629",
+              "e45072b6fbd8f575b9f0a26c83c2c7ab"
+            ],
+            "rmeta_bytes": [
+              506638,
+              506660
+            ],
+            "rmeta_sha256": [
+              "f7b1d50174a154bf9c4c2768e97e02a195e41ffa63695cdd760e87bf4aefba23",
+              "1de26bcddd34e0c4a83e77c27c24da37f311709033f7e7f5f2adead13201946f"
+            ],
+            "root_listing_sha256": [
+              "e46e01112843eb04017eb4befd6350286cd4f2765aa2af19c8600ed993c07789",
+              "575188e76f721c06ef77d5dd8b3a6f383a45c631515ecd3a094e6e24500b5403"
+            ]
+          },
+          "native": {
+            "identical_member_names": 0,
+            "identical_ordered_symbol_to_member_index": true,
+            "index_entries": 2547,
+            "metadata_wrapper_differences": {
+              "lib.rmeta": [
+                ".rmeta"
+              ],
+              "lib.rmeta-link": [
+                ".rmeta-link"
+              ]
+            },
+            "object_count": 66,
+            "rmeta_link_semantics": [
+              {
+                "native_lib_filenames": [],
+                "object_names": 66,
+                "rust_object_order_matches_archive": true
+              },
+              {
+                "native_lib_filenames": [],
+                "object_names": 66,
+                "rust_object_order_matches_archive": true
+              }
+            ],
+            "same_slot_cgu_prefixes": 66,
+            "same_slot_payloads": 66,
+            "symbol_witness": [
+              "d517297c7bf1d54899e69cfaf1f662fd082689dd13303b3bb581ccd99849e9e4",
+              "d517297c7bf1d54899e69cfaf1f662fd082689dd13303b3bb581ccd99849e9e4"
+            ]
+          },
+          "raw_cdylib": [
+            "ea474c864b24e4346babd270fe2d38f1bb7fb7ed26536b0914d4a8587ff6dfee",
+            "ea474c864b24e4346babd270fe2d38f1bb7fb7ed26536b0914d4a8587ff6dfee"
+          ],
+          "raw_rlibs": [
+            "3a6c39b8b6b8ca2bcdfe447f4cd455c90d70402a4ed4e24939e5038a983399ce",
+            "84f2ab4f2ab2e6ada7e03986e82cbae18a6c1135b6adcdf0297ff9bd5ba8742e"
+          ]
+        },
+        "ty_wasm": {
+          "different_properties": {
+            "embedded_object_sha256": [
+              "1d04cf2d8b34fc29527a5663e952c6e2f2fea4122e0480d61eb80cf767f8fab0",
+              "17b95902713c7347611f45cbf709327e571bdb96a82d82197a913b3b66a66b8f"
+            ],
+            "normalized_archive_sha256": [
+              "23ba310ddb434c0f673479bd6b9bbeb60570ac3bcf2c7bd20cc0fe9f1f2c4b61",
+              "3eb022bee3d23ab3dc6111dc18f06d3775ac5064b1e08fd35e526b25c183345a"
+            ],
+            "private_svh": [
+              "2f93b6211b0edd453bd7dfb5f6c72c46",
+              "6dab90b4e8189aa1b68bfa24228a5952"
+            ],
+            "public_svh": [
+              "709ee92f883012c3f015d5985200884d",
+              "76dcc1a901f921ce19cc2cd40de795ba"
+            ],
+            "rmeta_bytes": [
+              705235,
+              705252
+            ],
+            "rmeta_sha256": [
+              "efb187d02196e97d38e935d6a8fd0e4b2e316712b1c7df25a9ab4d19dc30fd21",
+              "d9b58cf9c76768ac39c2525e05d76809fb3392f1b847af77b3136f156653b97d"
+            ],
+            "root_listing_sha256": [
+              "4dc55fa47e058c22a577cd08295ec7e26db68ae49bdd5ac710a132ee49596f0d",
+              "d547cc8468966e27f0c36e932635d20ba69e3ef4b12d7ddc476eebb42418af04"
+            ]
+          },
+          "native": {
+            "identical_member_names": 0,
+            "identical_ordered_symbol_to_member_index": true,
+            "index_entries": 2453,
+            "metadata_wrapper_differences": {
+              "lib.rmeta": [
+                ".rmeta"
+              ],
+              "lib.rmeta-link": [
+                ".rmeta-link"
+              ]
+            },
+            "object_count": 78,
+            "rmeta_link_semantics": [
+              {
+                "native_lib_filenames": [],
+                "object_names": 78,
+                "rust_object_order_matches_archive": true
+              },
+              {
+                "native_lib_filenames": [],
+                "object_names": 78,
+                "rust_object_order_matches_archive": true
+              }
+            ],
+            "same_slot_cgu_prefixes": 78,
+            "same_slot_payloads": 78,
+            "symbol_witness": [
+              "ba7640ed5a2a66a0af9a77505ed063d7d30914da22aec9cd6355cc1083fa15e6",
+              "ba7640ed5a2a66a0af9a77505ed063d7d30914da22aec9cd6355cc1083fa15e6"
+            ]
+          },
+          "raw_cdylib": [
+            "d8b609ec20a103713c711e11c841f98ae66abd85b6648a7f8b493bf2474fd7fc",
+            "d8b609ec20a103713c711e11c841f98ae66abd85b6648a7f8b493bf2474fd7fc"
+          ],
+          "raw_rlibs": [
+            "06047a69ae4e6958bcf324aa9edd864e69febac322b395a4f915c4f7243a3298",
+            "9fee3a0e0371104d11e8f1365dbf05d25e66e1d15dc0c3d455c67da3208e01b9"
+          ]
+        }
+      },
+      "raw_elf_differences": {
+        "debug/libruff_macros.so": {
+          "different_sections": [
+            ".dynsym",
+            ".note.gnu.build-id",
+            ".rustc",
+            ".symtab"
+          ],
+          "matches_after_gnu_id_and_rodata_entsize_mask": false,
+          "raw": [
+            "dc3bf45df5d819537c6d4b947b0dcbce3a44bd0cfedf0f8c4a4c9b120b3f8e43",
+            "9b28f50631f2d22542769a623f5fe1f7794d5178c55f6b99d55b6a160b95c530"
+          ],
+          "size": [
+            10367736,
+            10367752
+          ]
+        },
+        "debug/ruff": {
+          "different_sections": [
+            ".debug_info",
+            ".debug_macro",
+            ".debug_str",
+            ".note.gnu.build-id"
+          ],
+          "matches_after_gnu_id_and_rodata_entsize_mask": false,
+          "raw": [
+            "be3eedceaf724921580cc1c83e1a056fdfd8e58b59d41c3c111aa564067091ef",
+            "316f8d2ac1b2cf4ae0c727a11c8a2168ed1482c76f3921157a39855383a2cfb8"
+          ],
+          "size": [
+            159683912,
+            159683912
+          ]
+        },
+        "debug/ty": {
+          "different_sections": [
+            ".debug_info",
+            ".debug_macro",
+            ".debug_str",
+            ".note.gnu.build-id"
+          ],
+          "matches_after_gnu_id_and_rodata_entsize_mask": false,
+          "raw": [
+            "760db9a31945fd5b91d557c82df553e982bfb9536b8ae5fb890e447166e3566e",
+            "a4fe2793c1f2f7985c6a3b35674f972b9ba95687eb667e3cb705eddb711af888"
+          ],
+          "size": [
+            225762888,
+            225762888
+          ]
+        },
+        "ruff_macros/0df74ae72023ec23/out/libruff_macros-0df74ae72023ec23.so": {
+          "different_sections": [
+            ".dynsym",
+            ".note.gnu.build-id",
+            ".rustc",
+            ".symtab"
+          ],
+          "matches_after_gnu_id_and_rodata_entsize_mask": false,
+          "raw": [
+            "f404f0266e44b16248a2a5bcad3d0843cd75af9859619255af72e5e8ac68de7a",
+            "daab39a4047294540e0142eeb2ac30d2330fabf181fec55a5df6c4b3e0421ad3"
+          ],
+          "size": [
+            9768000,
+            9768016
+          ]
+        }
+      },
+      "release_output_rosters": [
+        {
+          "mapped_output_path_count": 862,
+          "sha256": "7cc7e6c508a9dc7468ec812806dc2363b64552c99a9123639fb9b0bb4e7f120f",
+          "units": 501
+        },
+        {
+          "mapped_output_path_count": 862,
+          "sha256": "7cc7e6c508a9dc7468ec812806dc2363b64552c99a9123639fb9b0bb4e7f120f",
+          "units": 501
+        }
+      ],
+      "same_compiler_messages": true,
+      "same_novel_cli": true,
+      "same_old_cli": true,
+      "same_unit_paths": false,
+      "same_unit_paths_across_registered_namespaces": true
+    },
+    "original-baseline": {
+      "elf_count": 15,
+      "mixed": {
+        "ruff_wasm": {
+          "different_properties": {
+            "embedded_object_sha256": [
+              "4c9ad4e36acf811f99c55fe8ba624208fec21e5880be1fad1bcea050bf0c3de9",
+              "9a7d0f0c73507dcf3b89b7681aade3a0aea39f58321ab4a781c074a0064d62db"
+            ],
+            "normalized_archive_sha256": [
+              "b3035d59322b89fdf87968f67b922c1de5074bbb383d4c8fdf071709b9d339a9",
+              "a80d09af34bc61c0045395001051b9bc7302aa84b5063bc942da8639d39ea08a"
+            ],
+            "private_svh": [
+              "785a81961e0e6b92369fdef74d4dc680",
+              "e4a5f4a2b476427d186efd9ab73a2441"
+            ],
+            "public_svh": [
+              "c14f4defb928611513ec9daeb2aaa629",
+              "953a1bd873def0c00f3fe0644c976d4d"
+            ],
+            "rmeta_bytes": [
+              506858,
+              506880
+            ],
+            "rmeta_sha256": [
+              "5c12f2b8c865d24bcc4da12a2a276d544d572dc4fd096ffeec89f3d12dabfa01",
+              "bb9598968463fcfdd4ec4690d337bdf9a3435357860c6d51047bae048e09fe75"
+            ],
+            "root_listing_sha256": [
+              "e18c4566b7dd64715be56ff1ab1750620e3e924f185354d80451d6bc98930963",
+              "bb2d2e788bd3b8611a9662d3c969d66f4ea48f967fc1f84ba0dbbcbac127f161"
+            ]
+          },
+          "native": {
+            "identical_member_names": 0,
+            "identical_ordered_symbol_to_member_index": true,
+            "index_entries": 2547,
+            "metadata_wrapper_differences": {
+              "lib.rmeta": [
+                ".rmeta"
+              ],
+              "lib.rmeta-link": [
+                ".rmeta-link"
+              ]
+            },
+            "object_count": 66,
+            "rmeta_link_semantics": [
+              {
+                "native_lib_filenames": [],
+                "object_names": 66,
+                "rust_object_order_matches_archive": true
+              },
+              {
+                "native_lib_filenames": [],
+                "object_names": 66,
+                "rust_object_order_matches_archive": true
+              }
+            ],
+            "same_slot_cgu_prefixes": 66,
+            "same_slot_payloads": 66,
+            "symbol_witness": [
+              "d517297c7bf1d54899e69cfaf1f662fd082689dd13303b3bb581ccd99849e9e4",
+              "d517297c7bf1d54899e69cfaf1f662fd082689dd13303b3bb581ccd99849e9e4"
+            ]
+          },
+          "raw_cdylib": [
+            "ea474c864b24e4346babd270fe2d38f1bb7fb7ed26536b0914d4a8587ff6dfee",
+            "ea474c864b24e4346babd270fe2d38f1bb7fb7ed26536b0914d4a8587ff6dfee"
+          ],
+          "raw_rlibs": [
+            "e56a61a4e51b927b0662e83458303c2885a99afd700fba0e9e11c78ad7c51d35",
+            "0a3cad682fb7f4417c8baac27aa83c35170149720f436d80c0e46190051b0e9e"
+          ]
+        },
+        "ty_wasm": {
+          "different_properties": {
+            "embedded_object_sha256": [
+              "400c0b20c383a8335edb1384fb38bfd2ecbaf850a4ca28bbcb82d04e5e7249b9",
+              "d5da509a3075456b0791e561c5e2fa6e537ef574ae8e9d25e6fcecc72bf640d4"
+            ],
+            "normalized_archive_sha256": [
+              "cb653326109f6529f3ce166f4bd5f91ff0041b0ce1e1fdba6d9e4d644b5b4018",
+              "4b9881e911334ef16b62238ffde2adef766b1eae621442fd201d3339e1104d39"
+            ],
+            "private_svh": [
+              "29e87213086852cb732d9499183a84f9",
+              "c2514634a51db9ddb8282715d70e0a51"
+            ],
+            "public_svh": [
+              "709ee92f883012c3f015d5985200884d",
+              "df3a81efb28dc6bea418a2c0be3eed12"
+            ],
+            "rmeta_bytes": [
+              705295,
+              705312
+            ],
+            "rmeta_sha256": [
+              "07f4a7bcc731c92f2ad9d3cf36574b60219611be0dc95f9c3249fbc86c81d7d0",
+              "05db8f08ca2d69fc35f1c1b9953e43a240f6d221269591f21e34059b59ea5b2d"
+            ],
+            "root_listing_sha256": [
+              "ac961b55a9948c81e4d6f2fb9100bd763627bc9c34b3bdf9abb940e849eab9b1",
+              "f739cb75103ac0bfb1eb3951d6e5fc51872643b182a1ce60b687d2502d6f3572"
+            ]
+          },
+          "native": {
+            "identical_member_names": 0,
+            "identical_ordered_symbol_to_member_index": true,
+            "index_entries": 2453,
+            "metadata_wrapper_differences": {
+              "lib.rmeta": [
+                ".rmeta"
+              ],
+              "lib.rmeta-link": [
+                ".rmeta-link"
+              ]
+            },
+            "object_count": 78,
+            "rmeta_link_semantics": [
+              {
+                "native_lib_filenames": [],
+                "object_names": 78,
+                "rust_object_order_matches_archive": true
+              },
+              {
+                "native_lib_filenames": [],
+                "object_names": 78,
+                "rust_object_order_matches_archive": true
+              }
+            ],
+            "same_slot_cgu_prefixes": 78,
+            "same_slot_payloads": 78,
+            "symbol_witness": [
+              "ba7640ed5a2a66a0af9a77505ed063d7d30914da22aec9cd6355cc1083fa15e6",
+              "ba7640ed5a2a66a0af9a77505ed063d7d30914da22aec9cd6355cc1083fa15e6"
+            ]
+          },
+          "raw_cdylib": [
+            "d8b609ec20a103713c711e11c841f98ae66abd85b6648a7f8b493bf2474fd7fc",
+            "d8b609ec20a103713c711e11c841f98ae66abd85b6648a7f8b493bf2474fd7fc"
+          ],
+          "raw_rlibs": [
+            "95b444d941845fec38a66dcf2c42ea8e4004e3898f8bc7a374dad1583eebd707",
+            "561cc4e6d7daddcd5efb46f54aa11e34d810cbaf4bee019f5f965d17220fc34e"
+          ]
+        }
+      },
+      "raw_elf_differences": {
+        "debug/libruff_macros.so": {
+          "different_sections": [
+            ".dynsym",
+            ".note.gnu.build-id",
+            ".rustc",
+            ".symtab"
+          ],
+          "matches_after_gnu_id_and_rodata_entsize_mask": false,
+          "raw": [
+            "dc3bf45df5d819537c6d4b947b0dcbce3a44bd0cfedf0f8c4a4c9b120b3f8e43",
+            "9b28f50631f2d22542769a623f5fe1f7794d5178c55f6b99d55b6a160b95c530"
+          ],
+          "size": [
+            10367736,
+            10367752
+          ]
+        },
+        "debug/ruff": {
+          "different_sections": [
+            ".debug_info",
+            ".debug_macro",
+            ".debug_str",
+            ".note.gnu.build-id"
+          ],
+          "matches_after_gnu_id_and_rodata_entsize_mask": false,
+          "raw": [
+            "be3eedceaf724921580cc1c83e1a056fdfd8e58b59d41c3c111aa564067091ef",
+            "316f8d2ac1b2cf4ae0c727a11c8a2168ed1482c76f3921157a39855383a2cfb8"
+          ],
+          "size": [
+            159683912,
+            159683912
+          ]
+        },
+        "debug/ty": {
+          "different_sections": [
+            ".debug_info",
+            ".debug_macro",
+            ".debug_str",
+            ".note.gnu.build-id"
+          ],
+          "matches_after_gnu_id_and_rodata_entsize_mask": false,
+          "raw": [
+            "760db9a31945fd5b91d557c82df553e982bfb9536b8ae5fb890e447166e3566e",
+            "a4fe2793c1f2f7985c6a3b35674f972b9ba95687eb667e3cb705eddb711af888"
+          ],
+          "size": [
+            225762888,
+            225762888
+          ]
+        },
+        "ruff_macros/0df74ae72023ec23/out/libruff_macros-0df74ae72023ec23.so": {
+          "different_sections": [
+            ".dynsym",
+            ".note.gnu.build-id",
+            ".rustc",
+            ".symtab"
+          ],
+          "matches_after_gnu_id_and_rodata_entsize_mask": false,
+          "raw": [
+            "f404f0266e44b16248a2a5bcad3d0843cd75af9859619255af72e5e8ac68de7a",
+            "daab39a4047294540e0142eeb2ac30d2330fabf181fec55a5df6c4b3e0421ad3"
+          ],
+          "size": [
+            9768000,
+            9768016
+          ]
+        }
+      },
+      "release_output_rosters": [
+        {
+          "mapped_output_path_count": 862,
+          "sha256": "7cc7e6c508a9dc7468ec812806dc2363b64552c99a9123639fb9b0bb4e7f120f",
+          "units": 501
+        },
+        {
+          "mapped_output_path_count": 862,
+          "sha256": "7cc7e6c508a9dc7468ec812806dc2363b64552c99a9123639fb9b0bb4e7f120f",
+          "units": 501
+        }
+      ],
+      "same_compiler_messages": true,
+      "same_novel_cli": true,
+      "same_old_cli": true,
+      "same_unit_paths": false,
+      "same_unit_paths_across_registered_namespaces": true
+    },
+    "signed-pattern-diagnostic-edit": {
+      "elf_count": 15,
+      "mixed": {
+        "ruff_wasm": {
+          "different_properties": {
+            "embedded_object_sha256": [
+              "1f41dfa4b980000f40c0e128270799fe8845feb7b644d3ea5e25812f559c3b5a",
+              "ead8c098909223e9b4b92d065f297415986f6807f4e672833c5f8f043171087e"
+            ],
+            "normalized_archive_sha256": [
+              "e9eaa1397ea796d979c9c264d474f0a4b4855c264d8e69c4abb1a9a8f67a0ebd",
+              "eb7dc871048a2d791607e89af79006a1c5927d60b53c0f0e7d43ae73afe28300"
+            ],
+            "private_svh": [
+              "e859af5b66a3bfb242ddbff537c2329e",
+              "33e5c4905aa98adcfecebad0ed7d5034"
+            ],
+            "public_svh": [
+              "b46316c5dfaac13c9e707daa09bbd06e",
+              "e45072b6fbd8f575b9f0a26c83c2c7ab"
+            ],
+            "rmeta_bytes": [
+              506638,
+              506660
+            ],
+            "rmeta_sha256": [
+              "f45c1d09568ed6fc400f64fc8a7a36cef3324ec33e6e6d71e2bfc71ed0a3d8d7",
+              "1de26bcddd34e0c4a83e77c27c24da37f311709033f7e7f5f2adead13201946f"
+            ],
+            "root_listing_sha256": [
+              "f4fb7949ee46e335423f57b1d89151a594d6635f6d8545b18f206c0a4169fb73",
+              "575188e76f721c06ef77d5dd8b3a6f383a45c631515ecd3a094e6e24500b5403"
+            ]
+          },
+          "native": {
+            "identical_member_names": 0,
+            "identical_ordered_symbol_to_member_index": true,
+            "index_entries": 2547,
+            "metadata_wrapper_differences": {
+              "lib.rmeta": [
+                ".rmeta"
+              ],
+              "lib.rmeta-link": [
+                ".rmeta-link"
+              ]
+            },
+            "object_count": 66,
+            "rmeta_link_semantics": [
+              {
+                "native_lib_filenames": [],
+                "object_names": 66,
+                "rust_object_order_matches_archive": true
+              },
+              {
+                "native_lib_filenames": [],
+                "object_names": 66,
+                "rust_object_order_matches_archive": true
+              }
+            ],
+            "same_slot_cgu_prefixes": 66,
+            "same_slot_payloads": 66,
+            "symbol_witness": [
+              "d517297c7bf1d54899e69cfaf1f662fd082689dd13303b3bb581ccd99849e9e4",
+              "d517297c7bf1d54899e69cfaf1f662fd082689dd13303b3bb581ccd99849e9e4"
+            ]
+          },
+          "raw_cdylib": [
+            "49ea33b0837fdc2545e405613ff7ddb7e911e1cf90a493e6c5812968b684e02e",
+            "49ea33b0837fdc2545e405613ff7ddb7e911e1cf90a493e6c5812968b684e02e"
+          ],
+          "raw_rlibs": [
+            "200dd76f19d3d908ed89cc93f90461720bdb7d06d031e565f9840dca37c3bf20",
+            "01ce5a09889f17227350f9109633300009a5f52f98da27e49c3fae9b9710fbf2"
+          ]
+        },
+        "ty_wasm": {
+          "different_properties": {
+            "embedded_object_sha256": [
+              "a40386edaf8789a91ac746cec501af513a1dfc43a478b884b8d5476d273ab2d6",
+              "17b95902713c7347611f45cbf709327e571bdb96a82d82197a913b3b66a66b8f"
+            ],
+            "normalized_archive_sha256": [
+              "f6b1e06a87edee6d416a71edceb7d579c42657c81bd1a51130add54c8a0d3e00",
+              "3eb022bee3d23ab3dc6111dc18f06d3775ac5064b1e08fd35e526b25c183345a"
+            ],
+            "private_svh": [
+              "2bf09cc3564a30f2c9d7689e963ddffd",
+              "6dab90b4e8189aa1b68bfa24228a5952"
+            ],
+            "public_svh": [
+              "d09d0b9acf50b62b8026a27cbc1dcb43",
+              "76dcc1a901f921ce19cc2cd40de795ba"
+            ],
+            "rmeta_bytes": [
+              705235,
+              705252
+            ],
+            "rmeta_sha256": [
+              "af8ebd665dd2a3892ece252ae08bc955ea86836edfc750907a0d2b0a887123d1",
+              "d9b58cf9c76768ac39c2525e05d76809fb3392f1b847af77b3136f156653b97d"
+            ],
+            "root_listing_sha256": [
+              "121a8da5c737bb86c8055df4ebbd673e21181679ea3c28507604d6be87ebdcb7",
+              "d547cc8468966e27f0c36e932635d20ba69e3ef4b12d7ddc476eebb42418af04"
+            ]
+          },
+          "native": {
+            "identical_member_names": 0,
+            "identical_ordered_symbol_to_member_index": true,
+            "index_entries": 2453,
+            "metadata_wrapper_differences": {
+              "lib.rmeta": [
+                ".rmeta"
+              ],
+              "lib.rmeta-link": [
+                ".rmeta-link"
+              ]
+            },
+            "object_count": 78,
+            "rmeta_link_semantics": [
+              {
+                "native_lib_filenames": [],
+                "object_names": 78,
+                "rust_object_order_matches_archive": true
+              },
+              {
+                "native_lib_filenames": [],
+                "object_names": 78,
+                "rust_object_order_matches_archive": true
+              }
+            ],
+            "same_slot_cgu_prefixes": 78,
+            "same_slot_payloads": 78,
+            "symbol_witness": [
+              "ba7640ed5a2a66a0af9a77505ed063d7d30914da22aec9cd6355cc1083fa15e6",
+              "ba7640ed5a2a66a0af9a77505ed063d7d30914da22aec9cd6355cc1083fa15e6"
+            ]
+          },
+          "raw_cdylib": [
+            "bb0d265932f8055b86a785a7344bc522d01e4bf83c93a96e551dba04073b39ea",
+            "bb0d265932f8055b86a785a7344bc522d01e4bf83c93a96e551dba04073b39ea"
+          ],
+          "raw_rlibs": [
+            "74e90b8eaf267abbab884a2d1ff299a14235cf3c3e710858c06dd36f69986b98",
+            "8a27ff0b3b48aef3bca9f9c0b2ccc7c6237d50189fcada513338576389426790"
+          ]
+        }
+      },
+      "raw_elf_differences": {
+        "debug/libruff_macros.so": {
+          "different_sections": [
+            ".dynsym",
+            ".note.gnu.build-id",
+            ".rustc",
+            ".symtab"
+          ],
+          "matches_after_gnu_id_and_rodata_entsize_mask": false,
+          "raw": [
+            "dc3bf45df5d819537c6d4b947b0dcbce3a44bd0cfedf0f8c4a4c9b120b3f8e43",
+            "9b28f50631f2d22542769a623f5fe1f7794d5178c55f6b99d55b6a160b95c530"
+          ],
+          "size": [
+            10367736,
+            10367752
+          ]
+        },
+        "debug/ruff": {
+          "different_sections": [
+            ".debug_info",
+            ".debug_macro",
+            ".debug_str",
+            ".note.gnu.build-id"
+          ],
+          "matches_after_gnu_id_and_rodata_entsize_mask": false,
+          "raw": [
+            "c2caa6413eabd690323a60a8c9b0408464f3aa9a8bf92bd033320f4f3f398b37",
+            "86b7be22960ccffe9fc49847893121e7728ced0b2a759e91eafce198ab923d74"
+          ],
+          "size": [
+            159683488,
+            159683488
+          ]
+        },
+        "debug/ty": {
+          "different_sections": [
+            ".debug_info",
+            ".debug_macro",
+            ".debug_str",
+            ".note.gnu.build-id"
+          ],
+          "matches_after_gnu_id_and_rodata_entsize_mask": false,
+          "raw": [
+            "321dcd760a4eea4acf3b4d33319336e56491ae29893ff736d7c68fe7c084c79b",
+            "9849a0f6d7b26fc3903e4777a4526969886e840e46fcd515af5fc2a4a1f43718"
+          ],
+          "size": [
+            225762328,
+            225762328
+          ]
+        },
+        "ruff_macros/0df74ae72023ec23/out/libruff_macros-0df74ae72023ec23.so": {
+          "different_sections": [
+            ".dynsym",
+            ".note.gnu.build-id",
+            ".rustc",
+            ".symtab"
+          ],
+          "matches_after_gnu_id_and_rodata_entsize_mask": false,
+          "raw": [
+            "f404f0266e44b16248a2a5bcad3d0843cd75af9859619255af72e5e8ac68de7a",
+            "daab39a4047294540e0142eeb2ac30d2330fabf181fec55a5df6c4b3e0421ad3"
+          ],
+          "size": [
+            9768000,
+            9768016
+          ]
+        }
+      },
+      "release_output_rosters": [
+        {
+          "mapped_output_path_count": 862,
+          "sha256": "7cc7e6c508a9dc7468ec812806dc2363b64552c99a9123639fb9b0bb4e7f120f",
+          "units": 501
+        },
+        {
+          "mapped_output_path_count": 862,
+          "sha256": "7cc7e6c508a9dc7468ec812806dc2363b64552c99a9123639fb9b0bb4e7f120f",
+          "units": 501
+        }
+      ],
+      "same_compiler_messages": true,
+      "same_novel_cli": true,
+      "same_old_cli": true,
+      "same_unit_paths": false,
+      "same_unit_paths_across_registered_namespaces": true
+    },
+    "signed-pattern-diagnostic-restore": {
+      "elf_count": 15,
+      "mixed": {
+        "ruff_wasm": {
+          "different_properties": {
+            "embedded_object_sha256": [
+              "dcd865d40bdc3cc6c7f54c9f15dbd9e9c9b8a4c9653add4fa74796b97efd6307",
+              "ead8c098909223e9b4b92d065f297415986f6807f4e672833c5f8f043171087e"
+            ],
+            "normalized_archive_sha256": [
+              "e02822a0f351c75a8b1861827d30e980b213f6252b6b8cba3fa218efa5b2f7a9",
+              "eb7dc871048a2d791607e89af79006a1c5927d60b53c0f0e7d43ae73afe28300"
+            ],
+            "private_svh": [
+              "9272ab898645a680770e5ccb23f7c76b",
+              "33e5c4905aa98adcfecebad0ed7d5034"
+            ],
+            "public_svh": [
+              "c14f4defb928611513ec9daeb2aaa629",
+              "e45072b6fbd8f575b9f0a26c83c2c7ab"
+            ],
+            "rmeta_bytes": [
+              506638,
+              506660
+            ],
+            "rmeta_sha256": [
+              "29947c76c005a4d647b4b7b4ad01283ae3386c8022e5957e97031a8d5a45e154",
+              "1de26bcddd34e0c4a83e77c27c24da37f311709033f7e7f5f2adead13201946f"
+            ],
+            "root_listing_sha256": [
+              "120a06c607569bf7dd086199391894c3eee8089fc991de10f6a60b96462ad0cd",
+              "575188e76f721c06ef77d5dd8b3a6f383a45c631515ecd3a094e6e24500b5403"
+            ]
+          },
+          "native": {
+            "identical_member_names": 0,
+            "identical_ordered_symbol_to_member_index": true,
+            "index_entries": 2547,
+            "metadata_wrapper_differences": {
+              "lib.rmeta": [
+                ".rmeta"
+              ],
+              "lib.rmeta-link": [
+                ".rmeta-link"
+              ]
+            },
+            "object_count": 66,
+            "rmeta_link_semantics": [
+              {
+                "native_lib_filenames": [],
+                "object_names": 66,
+                "rust_object_order_matches_archive": true
+              },
+              {
+                "native_lib_filenames": [],
+                "object_names": 66,
+                "rust_object_order_matches_archive": true
+              }
+            ],
+            "same_slot_cgu_prefixes": 66,
+            "same_slot_payloads": 66,
+            "symbol_witness": [
+              "d517297c7bf1d54899e69cfaf1f662fd082689dd13303b3bb581ccd99849e9e4",
+              "d517297c7bf1d54899e69cfaf1f662fd082689dd13303b3bb581ccd99849e9e4"
+            ]
+          },
+          "raw_cdylib": [
+            "ea474c864b24e4346babd270fe2d38f1bb7fb7ed26536b0914d4a8587ff6dfee",
+            "ea474c864b24e4346babd270fe2d38f1bb7fb7ed26536b0914d4a8587ff6dfee"
+          ],
+          "raw_rlibs": [
+            "69f72fcb201644871bcfc7e7cc1bc0dd0b063f18d907aeca2d33f04d799bf1c3",
+            "acc86948f4086cf7b83156a706ed0df4045050a4284ac5b87494cc630e630b74"
+          ]
+        },
+        "ty_wasm": {
+          "different_properties": {
+            "embedded_object_sha256": [
+              "8a82f411aa74a4609bb5a1bdc83f287687ec16e9804ac96160157cde1d16b729",
+              "17b95902713c7347611f45cbf709327e571bdb96a82d82197a913b3b66a66b8f"
+            ],
+            "normalized_archive_sha256": [
+              "86a302b6b682be9571fbb4f553106663d3e7105ee034c3eba3b38638afd8a1b5",
+              "3eb022bee3d23ab3dc6111dc18f06d3775ac5064b1e08fd35e526b25c183345a"
+            ],
+            "private_svh": [
+              "5338db726cbb23cd5b21b20333a56b6f",
+              "6dab90b4e8189aa1b68bfa24228a5952"
+            ],
+            "public_svh": [
+              "709ee92f883012c3f015d5985200884d",
+              "76dcc1a901f921ce19cc2cd40de795ba"
+            ],
+            "rmeta_bytes": [
+              705235,
+              705252
+            ],
+            "rmeta_sha256": [
+              "280f6fd7b650dc6d0a474db25bcebd02b1f5261bbdc0141696f33596bdf35333",
+              "d9b58cf9c76768ac39c2525e05d76809fb3392f1b847af77b3136f156653b97d"
+            ],
+            "root_listing_sha256": [
+              "c39605fc58f2251e12ea6dea21f0802c6bd77305bc443ad10de6a5665e5a7cfd",
+              "d547cc8468966e27f0c36e932635d20ba69e3ef4b12d7ddc476eebb42418af04"
+            ]
+          },
+          "native": {
+            "identical_member_names": 0,
+            "identical_ordered_symbol_to_member_index": true,
+            "index_entries": 2453,
+            "metadata_wrapper_differences": {
+              "lib.rmeta": [
+                ".rmeta"
+              ],
+              "lib.rmeta-link": [
+                ".rmeta-link"
+              ]
+            },
+            "object_count": 78,
+            "rmeta_link_semantics": [
+              {
+                "native_lib_filenames": [],
+                "object_names": 78,
+                "rust_object_order_matches_archive": true
+              },
+              {
+                "native_lib_filenames": [],
+                "object_names": 78,
+                "rust_object_order_matches_archive": true
+              }
+            ],
+            "same_slot_cgu_prefixes": 78,
+            "same_slot_payloads": 78,
+            "symbol_witness": [
+              "ba7640ed5a2a66a0af9a77505ed063d7d30914da22aec9cd6355cc1083fa15e6",
+              "ba7640ed5a2a66a0af9a77505ed063d7d30914da22aec9cd6355cc1083fa15e6"
+            ]
+          },
+          "raw_cdylib": [
+            "d8b609ec20a103713c711e11c841f98ae66abd85b6648a7f8b493bf2474fd7fc",
+            "d8b609ec20a103713c711e11c841f98ae66abd85b6648a7f8b493bf2474fd7fc"
+          ],
+          "raw_rlibs": [
+            "21652945ac6216fb5cb25cb0a624034b5b65e45469b68ece36af5e97d3b14106",
+            "2efe1486c4cb082b9b051102268f72a30504bc3c81fde7661f1e791f9ac468db"
+          ]
+        }
+      },
+      "raw_elf_differences": {
+        "debug/libruff_macros.so": {
+          "different_sections": [
+            ".dynsym",
+            ".note.gnu.build-id",
+            ".rustc",
+            ".symtab"
+          ],
+          "matches_after_gnu_id_and_rodata_entsize_mask": false,
+          "raw": [
+            "dc3bf45df5d819537c6d4b947b0dcbce3a44bd0cfedf0f8c4a4c9b120b3f8e43",
+            "9b28f50631f2d22542769a623f5fe1f7794d5178c55f6b99d55b6a160b95c530"
+          ],
+          "size": [
+            10367736,
+            10367752
+          ]
+        },
+        "debug/ruff": {
+          "different_sections": [
+            ".debug_info",
+            ".debug_macro",
+            ".debug_str",
+            ".note.gnu.build-id"
+          ],
+          "matches_after_gnu_id_and_rodata_entsize_mask": false,
+          "raw": [
+            "be3eedceaf724921580cc1c83e1a056fdfd8e58b59d41c3c111aa564067091ef",
+            "316f8d2ac1b2cf4ae0c727a11c8a2168ed1482c76f3921157a39855383a2cfb8"
+          ],
+          "size": [
+            159683912,
+            159683912
+          ]
+        },
+        "debug/ty": {
+          "different_sections": [
+            ".debug_info",
+            ".debug_macro",
+            ".debug_str",
+            ".note.gnu.build-id"
+          ],
+          "matches_after_gnu_id_and_rodata_entsize_mask": false,
+          "raw": [
+            "760db9a31945fd5b91d557c82df553e982bfb9536b8ae5fb890e447166e3566e",
+            "a4fe2793c1f2f7985c6a3b35674f972b9ba95687eb667e3cb705eddb711af888"
+          ],
+          "size": [
+            225762888,
+            225762888
+          ]
+        },
+        "ruff_macros/0df74ae72023ec23/out/libruff_macros-0df74ae72023ec23.so": {
+          "different_sections": [
+            ".dynsym",
+            ".note.gnu.build-id",
+            ".rustc",
+            ".symtab"
+          ],
+          "matches_after_gnu_id_and_rodata_entsize_mask": false,
+          "raw": [
+            "f404f0266e44b16248a2a5bcad3d0843cd75af9859619255af72e5e8ac68de7a",
+            "daab39a4047294540e0142eeb2ac30d2330fabf181fec55a5df6c4b3e0421ad3"
+          ],
+          "size": [
+            9768000,
+            9768016
+          ]
+        }
+      },
+      "release_output_rosters": [
+        {
+          "mapped_output_path_count": 862,
+          "sha256": "7cc7e6c508a9dc7468ec812806dc2363b64552c99a9123639fb9b0bb4e7f120f",
+          "units": 501
+        },
+        {
+          "mapped_output_path_count": 862,
+          "sha256": "7cc7e6c508a9dc7468ec812806dc2363b64552c99a9123639fb9b0bb4e7f120f",
+          "units": 501
+        }
+      ],
+      "same_compiler_messages": true,
+      "same_novel_cli": true,
+      "same_old_cli": true,
+      "same_unit_paths": false,
+      "same_unit_paths_across_registered_namespaces": true
+    },
+    "single-string-allocation-edit": {
+      "elf_count": 15,
+      "mixed": {
+        "ruff_wasm": {
+          "different_properties": {
+            "embedded_object_sha256": [
+              "10695237c3a43cc0af0101399cda1365220dd2f486ccff8d48d72f2c57826b97",
+              "ead8c098909223e9b4b92d065f297415986f6807f4e672833c5f8f043171087e"
+            ],
+            "normalized_archive_sha256": [
+              "c8ae96483099c55ca7a02169da53f4a642e7381c37e3788c8d644d2489099ef8",
+              "eb7dc871048a2d791607e89af79006a1c5927d60b53c0f0e7d43ae73afe28300"
+            ],
+            "private_svh": [
+              "0ff189dd2a2c3c0c3263794d1e1fb5f2",
+              "33e5c4905aa98adcfecebad0ed7d5034"
+            ],
+            "public_svh": [
+              "9000d74defc8538e9011368845494918",
+              "e45072b6fbd8f575b9f0a26c83c2c7ab"
+            ],
+            "rmeta_bytes": [
+              506638,
+              506660
+            ],
+            "rmeta_sha256": [
+              "b240befb30c5d3696c2101eb42c0befdbb71664b7ed545d5d41d519ee013f118",
+              "1de26bcddd34e0c4a83e77c27c24da37f311709033f7e7f5f2adead13201946f"
+            ],
+            "root_listing_sha256": [
+              "b3c046222e5d930b677244830517b6fe5fc4106723893c5097c84155e9b11272",
+              "575188e76f721c06ef77d5dd8b3a6f383a45c631515ecd3a094e6e24500b5403"
+            ]
+          },
+          "native": {
+            "identical_member_names": 0,
+            "identical_ordered_symbol_to_member_index": true,
+            "index_entries": 2547,
+            "metadata_wrapper_differences": {
+              "lib.rmeta": [
+                ".rmeta"
+              ],
+              "lib.rmeta-link": [
+                ".rmeta-link"
+              ]
+            },
+            "object_count": 66,
+            "rmeta_link_semantics": [
+              {
+                "native_lib_filenames": [],
+                "object_names": 66,
+                "rust_object_order_matches_archive": true
+              },
+              {
+                "native_lib_filenames": [],
+                "object_names": 66,
+                "rust_object_order_matches_archive": true
+              }
+            ],
+            "same_slot_cgu_prefixes": 66,
+            "same_slot_payloads": 66,
+            "symbol_witness": [
+              "d517297c7bf1d54899e69cfaf1f662fd082689dd13303b3bb581ccd99849e9e4",
+              "d517297c7bf1d54899e69cfaf1f662fd082689dd13303b3bb581ccd99849e9e4"
+            ]
+          },
+          "raw_cdylib": [
+            "575ba8362e1a0997d86ce75d656e09e7dc6d01d8917f6f1a6c48012e7c19a4a2",
+            "575ba8362e1a0997d86ce75d656e09e7dc6d01d8917f6f1a6c48012e7c19a4a2"
+          ],
+          "raw_rlibs": [
+            "b3f89a16de2b36517211b304030a66bce3dcbae7c48199380a27c853dc445ca4",
+            "f0fb16264b8a7498d29652c41883eb25d35786ab2e361ca2ebc4b18d4773a9da"
+          ]
+        },
+        "ty_wasm": {
+          "different_properties": {
+            "embedded_object_sha256": [
+              "e3bfddba1f02a69acc90b46340bb339a9c28f56f82b93d4ce3e69914ee25f55c",
+              "17b95902713c7347611f45cbf709327e571bdb96a82d82197a913b3b66a66b8f"
+            ],
+            "normalized_archive_sha256": [
+              "006306675fb655d9beb0b0ac4d78fb941f538750b4d6e99545f8947bdc3a486e",
+              "3eb022bee3d23ab3dc6111dc18f06d3775ac5064b1e08fd35e526b25c183345a"
+            ],
+            "private_svh": [
+              "73917be453f7fd229cce67c5ec10c093",
+              "6dab90b4e8189aa1b68bfa24228a5952"
+            ],
+            "public_svh": [
+              "2168c177d98d3426d296d99e2605406e",
+              "76dcc1a901f921ce19cc2cd40de795ba"
+            ],
+            "rmeta_bytes": [
+              705235,
+              705252
+            ],
+            "rmeta_sha256": [
+              "75377afbfe7b517c97d4fe66e6becb4274925faa8da3208f695cc4f4f62d1fce",
+              "d9b58cf9c76768ac39c2525e05d76809fb3392f1b847af77b3136f156653b97d"
+            ],
+            "root_listing_sha256": [
+              "88d0f6ce3c65dce5db7f6cece405c52b2cb7931cd1b299ededba3e3223bb1362",
+              "d547cc8468966e27f0c36e932635d20ba69e3ef4b12d7ddc476eebb42418af04"
+            ]
+          },
+          "native": {
+            "identical_member_names": 0,
+            "identical_ordered_symbol_to_member_index": true,
+            "index_entries": 2453,
+            "metadata_wrapper_differences": {
+              "lib.rmeta": [
+                ".rmeta"
+              ],
+              "lib.rmeta-link": [
+                ".rmeta-link"
+              ]
+            },
+            "object_count": 78,
+            "rmeta_link_semantics": [
+              {
+                "native_lib_filenames": [],
+                "object_names": 78,
+                "rust_object_order_matches_archive": true
+              },
+              {
+                "native_lib_filenames": [],
+                "object_names": 78,
+                "rust_object_order_matches_archive": true
+              }
+            ],
+            "same_slot_cgu_prefixes": 78,
+            "same_slot_payloads": 78,
+            "symbol_witness": [
+              "ba7640ed5a2a66a0af9a77505ed063d7d30914da22aec9cd6355cc1083fa15e6",
+              "ba7640ed5a2a66a0af9a77505ed063d7d30914da22aec9cd6355cc1083fa15e6"
+            ]
+          },
+          "raw_cdylib": [
+            "8ab2dbf7a29650fe04a89036812a12bccce74aca5a9d1182e348ca85939a7afe",
+            "8ab2dbf7a29650fe04a89036812a12bccce74aca5a9d1182e348ca85939a7afe"
+          ],
+          "raw_rlibs": [
+            "d794676120a266214b556a2e0cbd62392f97b8438a155a59e498374e5c5f3268",
+            "ef293e230ebdc9cda5fa83f04b234e21f3bd85f97d1cc6d34670864d7e1ed5a9"
+          ]
+        }
+      },
+      "raw_elf_differences": {
+        "debug/libruff_macros.so": {
+          "different_sections": [
+            ".dynsym",
+            ".note.gnu.build-id",
+            ".rustc",
+            ".symtab"
+          ],
+          "matches_after_gnu_id_and_rodata_entsize_mask": false,
+          "raw": [
+            "dc3bf45df5d819537c6d4b947b0dcbce3a44bd0cfedf0f8c4a4c9b120b3f8e43",
+            "9b28f50631f2d22542769a623f5fe1f7794d5178c55f6b99d55b6a160b95c530"
+          ],
+          "size": [
+            10367736,
+            10367752
+          ]
+        },
+        "debug/ruff": {
+          "different_sections": [
+            ".debug_info",
+            ".debug_macro",
+            ".debug_str",
+            ".note.gnu.build-id"
+          ],
+          "matches_after_gnu_id_and_rodata_entsize_mask": false,
+          "raw": [
+            "05e32a9b0c6147c28f95370ceed573c3a6fe24ae390e7202c9bed76cf90d2e33",
+            "d2a77676c6e4668eff82651cab03ce4f5e32557298e52c5a2838ec20e1c20d8d"
+          ],
+          "size": [
+            159683576,
+            159683576
+          ]
+        },
+        "debug/ty": {
+          "different_sections": [
+            ".debug_info",
+            ".debug_macro",
+            ".debug_str",
+            ".note.gnu.build-id"
+          ],
+          "matches_after_gnu_id_and_rodata_entsize_mask": false,
+          "raw": [
+            "44a0bddc3a63f6bc114e90a43b149def3a5587b39fa5c0deab3f330f3a1bbf9b",
+            "57f78352eb3002b11b8ef70fd227ab4b6dfa5eedf41da06bd56f28ee27356d8b"
+          ],
+          "size": [
+            225761360,
+            225761360
+          ]
+        },
+        "ruff_macros/0df74ae72023ec23/out/libruff_macros-0df74ae72023ec23.so": {
+          "different_sections": [
+            ".dynsym",
+            ".note.gnu.build-id",
+            ".rustc",
+            ".symtab"
+          ],
+          "matches_after_gnu_id_and_rodata_entsize_mask": false,
+          "raw": [
+            "f404f0266e44b16248a2a5bcad3d0843cd75af9859619255af72e5e8ac68de7a",
+            "daab39a4047294540e0142eeb2ac30d2330fabf181fec55a5df6c4b3e0421ad3"
+          ],
+          "size": [
+            9768000,
+            9768016
+          ]
+        }
+      },
+      "release_output_rosters": [
+        {
+          "mapped_output_path_count": 862,
+          "sha256": "7cc7e6c508a9dc7468ec812806dc2363b64552c99a9123639fb9b0bb4e7f120f",
+          "units": 501
+        },
+        {
+          "mapped_output_path_count": 862,
+          "sha256": "7cc7e6c508a9dc7468ec812806dc2363b64552c99a9123639fb9b0bb4e7f120f",
+          "units": 501
+        }
+      ],
+      "same_compiler_messages": true,
+      "same_novel_cli": true,
+      "same_old_cli": true,
+      "same_unit_paths": false,
+      "same_unit_paths_across_registered_namespaces": true
+    },
+    "single-string-allocation-restore": {
+      "elf_count": 15,
+      "mixed": {
+        "ruff_wasm": {
+          "different_properties": {
+            "embedded_object_sha256": [
+              "69d797ce7e8e3160026c112fea4ad00b25bbdc088fd9a12e649a9273fd4d137a",
+              "ead8c098909223e9b4b92d065f297415986f6807f4e672833c5f8f043171087e"
+            ],
+            "normalized_archive_sha256": [
+              "0a59871ac97e9c4c65ccdc11edbd362cc82e00c25c04f2aa84dba2b96c2655a6",
+              "eb7dc871048a2d791607e89af79006a1c5927d60b53c0f0e7d43ae73afe28300"
+            ],
+            "private_svh": [
+              "4d028df82a2f73843f5b2444f531e755",
+              "33e5c4905aa98adcfecebad0ed7d5034"
+            ],
+            "public_svh": [
+              "c14f4defb928611513ec9daeb2aaa629",
+              "e45072b6fbd8f575b9f0a26c83c2c7ab"
+            ],
+            "rmeta_bytes": [
+              506638,
+              506660
+            ],
+            "rmeta_sha256": [
+              "d464d3fa9f9d6f06741e78e327c6635443f6632f76fba7008a2a66d4c6ad05d7",
+              "1de26bcddd34e0c4a83e77c27c24da37f311709033f7e7f5f2adead13201946f"
+            ],
+            "root_listing_sha256": [
+              "0cb835c02be676504c4da931dddf69da0576d7fcf3b0a76af556d69019445249",
+              "575188e76f721c06ef77d5dd8b3a6f383a45c631515ecd3a094e6e24500b5403"
+            ]
+          },
+          "native": {
+            "identical_member_names": 0,
+            "identical_ordered_symbol_to_member_index": true,
+            "index_entries": 2547,
+            "metadata_wrapper_differences": {
+              "lib.rmeta": [
+                ".rmeta"
+              ],
+              "lib.rmeta-link": [
+                ".rmeta-link"
+              ]
+            },
+            "object_count": 66,
+            "rmeta_link_semantics": [
+              {
+                "native_lib_filenames": [],
+                "object_names": 66,
+                "rust_object_order_matches_archive": true
+              },
+              {
+                "native_lib_filenames": [],
+                "object_names": 66,
+                "rust_object_order_matches_archive": true
+              }
+            ],
+            "same_slot_cgu_prefixes": 66,
+            "same_slot_payloads": 66,
+            "symbol_witness": [
+              "d517297c7bf1d54899e69cfaf1f662fd082689dd13303b3bb581ccd99849e9e4",
+              "d517297c7bf1d54899e69cfaf1f662fd082689dd13303b3bb581ccd99849e9e4"
+            ]
+          },
+          "raw_cdylib": [
+            "ea474c864b24e4346babd270fe2d38f1bb7fb7ed26536b0914d4a8587ff6dfee",
+            "ea474c864b24e4346babd270fe2d38f1bb7fb7ed26536b0914d4a8587ff6dfee"
+          ],
+          "raw_rlibs": [
+            "64e31277292db431ec841b14beb1a86f6b9fc378974125b2c23b35ba86232359",
+            "daefd843e035aabcad532ef06361dd4416d63b1546d8cd066eb4f84e4515c92a"
+          ]
+        },
+        "ty_wasm": {
+          "different_properties": {
+            "embedded_object_sha256": [
+              "ae1257a2f3dce55bd032a216fd879a9c6a4764d5b5b3d249684f4e934449a4ea",
+              "17b95902713c7347611f45cbf709327e571bdb96a82d82197a913b3b66a66b8f"
+            ],
+            "normalized_archive_sha256": [
+              "69ac51b17aaeb6f772eeb53555edca501757a685770691b73edaea4d450c24e9",
+              "3eb022bee3d23ab3dc6111dc18f06d3775ac5064b1e08fd35e526b25c183345a"
+            ],
+            "private_svh": [
+              "fc7ac6247425c3d7826d49568109a9a9",
+              "6dab90b4e8189aa1b68bfa24228a5952"
+            ],
+            "public_svh": [
+              "709ee92f883012c3f015d5985200884d",
+              "76dcc1a901f921ce19cc2cd40de795ba"
+            ],
+            "rmeta_bytes": [
+              705235,
+              705252
+            ],
+            "rmeta_sha256": [
+              "cdad78a246b421e11d049cacaf5089e71e9ab0414f8fb3d76ddeb50e0afcadb5",
+              "d9b58cf9c76768ac39c2525e05d76809fb3392f1b847af77b3136f156653b97d"
+            ],
+            "root_listing_sha256": [
+              "0beb0530384113204112aec0c0f30fb42b3341ce127166e98a968883b1f39189",
+              "d547cc8468966e27f0c36e932635d20ba69e3ef4b12d7ddc476eebb42418af04"
+            ]
+          },
+          "native": {
+            "identical_member_names": 0,
+            "identical_ordered_symbol_to_member_index": true,
+            "index_entries": 2453,
+            "metadata_wrapper_differences": {
+              "lib.rmeta": [
+                ".rmeta"
+              ],
+              "lib.rmeta-link": [
+                ".rmeta-link"
+              ]
+            },
+            "object_count": 78,
+            "rmeta_link_semantics": [
+              {
+                "native_lib_filenames": [],
+                "object_names": 78,
+                "rust_object_order_matches_archive": true
+              },
+              {
+                "native_lib_filenames": [],
+                "object_names": 78,
+                "rust_object_order_matches_archive": true
+              }
+            ],
+            "same_slot_cgu_prefixes": 78,
+            "same_slot_payloads": 78,
+            "symbol_witness": [
+              "ba7640ed5a2a66a0af9a77505ed063d7d30914da22aec9cd6355cc1083fa15e6",
+              "ba7640ed5a2a66a0af9a77505ed063d7d30914da22aec9cd6355cc1083fa15e6"
+            ]
+          },
+          "raw_cdylib": [
+            "d8b609ec20a103713c711e11c841f98ae66abd85b6648a7f8b493bf2474fd7fc",
+            "d8b609ec20a103713c711e11c841f98ae66abd85b6648a7f8b493bf2474fd7fc"
+          ],
+          "raw_rlibs": [
+            "8b6182526d3c7536d43b59e924f22e6fadd7561c17dbb6c8aea0449df3277f5d",
+            "024579e768a30212663e4dcc9be9bf9d1c412c4040e57f66abb6c3a002512780"
+          ]
+        }
+      },
+      "raw_elf_differences": {
+        "debug/libruff_macros.so": {
+          "different_sections": [
+            ".dynsym",
+            ".note.gnu.build-id",
+            ".rustc",
+            ".symtab"
+          ],
+          "matches_after_gnu_id_and_rodata_entsize_mask": false,
+          "raw": [
+            "dc3bf45df5d819537c6d4b947b0dcbce3a44bd0cfedf0f8c4a4c9b120b3f8e43",
+            "9b28f50631f2d22542769a623f5fe1f7794d5178c55f6b99d55b6a160b95c530"
+          ],
+          "size": [
+            10367736,
+            10367752
+          ]
+        },
+        "debug/ruff": {
+          "different_sections": [
+            ".debug_info",
+            ".debug_macro",
+            ".debug_str",
+            ".note.gnu.build-id"
+          ],
+          "matches_after_gnu_id_and_rodata_entsize_mask": false,
+          "raw": [
+            "be3eedceaf724921580cc1c83e1a056fdfd8e58b59d41c3c111aa564067091ef",
+            "316f8d2ac1b2cf4ae0c727a11c8a2168ed1482c76f3921157a39855383a2cfb8"
+          ],
+          "size": [
+            159683912,
+            159683912
+          ]
+        },
+        "debug/ty": {
+          "different_sections": [
+            ".debug_info",
+            ".debug_macro",
+            ".debug_str",
+            ".note.gnu.build-id"
+          ],
+          "matches_after_gnu_id_and_rodata_entsize_mask": false,
+          "raw": [
+            "760db9a31945fd5b91d557c82df553e982bfb9536b8ae5fb890e447166e3566e",
+            "a4fe2793c1f2f7985c6a3b35674f972b9ba95687eb667e3cb705eddb711af888"
+          ],
+          "size": [
+            225762888,
+            225762888
+          ]
+        },
+        "ruff_macros/0df74ae72023ec23/out/libruff_macros-0df74ae72023ec23.so": {
+          "different_sections": [
+            ".dynsym",
+            ".note.gnu.build-id",
+            ".rustc",
+            ".symtab"
+          ],
+          "matches_after_gnu_id_and_rodata_entsize_mask": false,
+          "raw": [
+            "f404f0266e44b16248a2a5bcad3d0843cd75af9859619255af72e5e8ac68de7a",
+            "daab39a4047294540e0142eeb2ac30d2330fabf181fec55a5df6c4b3e0421ad3"
+          ],
+          "size": [
+            9768000,
+            9768016
+          ]
+        }
+      },
+      "release_output_rosters": [
+        {
+          "mapped_output_path_count": 862,
+          "sha256": "7cc7e6c508a9dc7468ec812806dc2363b64552c99a9123639fb9b0bb4e7f120f",
+          "units": 501
+        },
+        {
+          "mapped_output_path_count": 862,
+          "sha256": "7cc7e6c508a9dc7468ec812806dc2363b64552c99a9123639fb9b0bb4e7f120f",
+          "units": 501
+        }
+      ],
+      "same_compiler_messages": true,
+      "same_novel_cli": true,
+      "same_old_cli": true,
+      "same_unit_paths": false,
+      "same_unit_paths_across_registered_namespaces": true
+    }
+  },
+  "first_occurrences": {
+    "lexer-pending-indentation-edit": {
+      "B": {
+        "elf_count": 15,
+        "executable_count": 6,
+        "fresh_units": 466,
+        "native_totals": {
+          "cc": 8,
+          "collect2": 8,
+          "wild": 8
+        },
+        "phase": "edit",
+        "process_totals": {
+          "full": 35
+        },
+        "source_view": "lexer-pending-indentation",
+        "unit_count": 501
+      },
+      "C": {
+        "elf_count": 15,
+        "executable_count": 6,
+        "fresh_units": 466,
+        "native_totals": {
+          "cc": 8,
+          "collect2": 8,
+          "wild": 8
+        },
+        "phase": "edit",
+        "process_totals": {
+          "full": 35
+        },
+        "source_view": "lexer-pending-indentation",
+        "unit_count": 501
+      }
+    },
+    "lexer-pending-indentation-restore": {
+      "B": {
+        "elf_count": 15,
+        "executable_count": 6,
+        "fresh_units": 466,
+        "native_totals": {
+          "cc": 8,
+          "collect2": 8,
+          "wild": 8
+        },
+        "phase": "restore",
+        "process_totals": {
+          "full": 35
+        },
+        "source_view": "original",
+        "unit_count": 501
+      },
+      "C": {
+        "elf_count": 15,
+        "executable_count": 6,
+        "fresh_units": 466,
+        "native_totals": {
+          "cc": 8,
+          "collect2": 8,
+          "wild": 8
+        },
+        "phase": "restore",
+        "process_totals": {
+          "full": 35
+        },
+        "source_view": "original",
+        "unit_count": 501
+      }
+    },
+    "signed-pattern-diagnostic-edit": {
+      "B": {
+        "elf_count": 15,
+        "executable_count": 6,
+        "fresh_units": 466,
+        "native_totals": {
+          "cc": 8,
+          "collect2": 8,
+          "wild": 8
+        },
+        "phase": "edit",
+        "process_totals": {
+          "full": 35
+        },
+        "source_view": "signed-pattern-diagnostic",
+        "unit_count": 501
+      },
+      "C": {
+        "elf_count": 15,
+        "executable_count": 6,
+        "fresh_units": 466,
+        "native_totals": {
+          "cc": 8,
+          "collect2": 8,
+          "wild": 8
+        },
+        "phase": "edit",
+        "process_totals": {
+          "full": 3,
+          "link-only": 6
+        },
+        "source_view": "signed-pattern-diagnostic",
+        "unit_count": 501
+      }
+    },
+    "signed-pattern-diagnostic-restore": {
+      "B": {
+        "elf_count": 15,
+        "executable_count": 6,
+        "fresh_units": 466,
+        "native_totals": {
+          "cc": 8,
+          "collect2": 8,
+          "wild": 8
+        },
+        "phase": "restore",
+        "process_totals": {
+          "full": 35
+        },
+        "source_view": "original",
+        "unit_count": 501
+      },
+      "C": {
+        "elf_count": 15,
+        "executable_count": 6,
+        "fresh_units": 466,
+        "native_totals": {
+          "cc": 8,
+          "collect2": 8,
+          "wild": 8
+        },
+        "phase": "restore",
+        "process_totals": {
+          "full": 3,
+          "link-only": 6
+        },
+        "source_view": "original",
+        "unit_count": 501
+      }
+    },
+    "single-string-allocation-edit": {
+      "B": {
+        "elf_count": 15,
+        "executable_count": 6,
+        "fresh_units": 466,
+        "native_totals": {
+          "cc": 8,
+          "collect2": 8,
+          "wild": 8
+        },
+        "phase": "edit",
+        "process_totals": {
+          "full": 35
+        },
+        "source_view": "single-string-allocation",
+        "unit_count": 501
+      },
+      "C": {
+        "elf_count": 15,
+        "executable_count": 6,
+        "fresh_units": 466,
+        "native_totals": {
+          "cc": 8,
+          "collect2": 8,
+          "wild": 8
+        },
+        "phase": "edit",
+        "process_totals": {
+          "full": 3,
+          "link-only": 6
+        },
+        "source_view": "single-string-allocation",
+        "unit_count": 501
+      }
+    },
+    "single-string-allocation-restore": {
+      "B": {
+        "elf_count": 15,
+        "executable_count": 6,
+        "fresh_units": 466,
+        "native_totals": {
+          "cc": 8,
+          "collect2": 8,
+          "wild": 8
+        },
+        "phase": "restore",
+        "process_totals": {
+          "full": 35
+        },
+        "source_view": "original",
+        "unit_count": 501
+      },
+      "C": {
+        "elf_count": 15,
+        "executable_count": 6,
+        "fresh_units": 466,
+        "native_totals": {
+          "cc": 8,
+          "collect2": 8,
+          "wild": 8
+        },
+        "phase": "restore",
+        "process_totals": {
+          "full": 3,
+          "link-only": 6
+        },
+        "source_view": "original",
+        "unit_count": 501
+      }
+    }
+  },
+  "ordinary_callers": {
+    "lexer-pending-indentation-edit": [
+      {
+        "crate": "ruff_wasm",
+        "exit": 0,
+        "input_arm": "B",
+        "kind": "bridge"
+      },
+      {
+        "crate": "ruff_wasm",
+        "exit": 0,
+        "input_arm": "C",
+        "kind": "bridge"
+      },
+      {
+        "bridge_from": "B",
+        "crate": "ruff_wasm",
+        "current_arm": "B",
+        "exit": 0,
+        "kind": "caller",
+        "observed": {
+          "action": "caller",
+          "arm": "B",
+          "crate": "ruff_wasm",
+          "current_rlib_sha256": "23cb2b6ab96c15572bbb099c7c21b22b62264448771a22e197e08c2369be5e9c",
+          "public_hash_opt_in": false,
+          "result_sha256": "925e9f7d2242428de2237210d6b17ed1bf7faa19c108287c1afbec2326c67527",
+          "runtime": "0.17.0"
+        }
+      },
+      {
+        "bridge_from": "C",
+        "crate": "ruff_wasm",
+        "current_arm": "C",
+        "exit": 0,
+        "kind": "caller",
+        "observed": {
+          "action": "caller",
+          "arm": "C",
+          "crate": "ruff_wasm",
+          "current_rlib_sha256": "073645ac5eac627c7f456c8ba009bcd5bed705b642faf877a44daa78c6ded709",
+          "public_hash_opt_in": false,
+          "result_sha256": "925e9f7d2242428de2237210d6b17ed1bf7faa19c108287c1afbec2326c67527",
+          "runtime": "0.17.0"
+        }
+      },
+      {
+        "crate": "ty_wasm",
+        "exit": 0,
+        "input_arm": "B",
+        "kind": "bridge"
+      },
+      {
+        "crate": "ty_wasm",
+        "exit": 0,
+        "input_arm": "C",
+        "kind": "bridge"
+      },
+      {
+        "bridge_from": "B",
+        "crate": "ty_wasm",
+        "current_arm": "B",
+        "exit": 0,
+        "kind": "caller",
+        "observed": {
+          "action": "caller",
+          "arm": "B",
+          "crate": "ty_wasm",
+          "current_rlib_sha256": "f217c4392b838e32a3108032c739907dc1a85d99c9ce3a9a61429f50e9643f6c",
+          "public_hash_opt_in": false,
+          "result_sha256": "31a59e73d10fa43801350a7a46b4b3644c4930f88d5b7557b09f36e31a29be04",
+          "runtime": "93526150d"
+        }
+      },
+      {
+        "bridge_from": "C",
+        "crate": "ty_wasm",
+        "current_arm": "C",
+        "exit": 0,
+        "kind": "caller",
+        "observed": {
+          "action": "caller",
+          "arm": "C",
+          "crate": "ty_wasm",
+          "current_rlib_sha256": "2ab4bf38c13c4a6cc78cc0bac658f40312376daa50346602c70a93780103dda9",
+          "public_hash_opt_in": false,
+          "result_sha256": "31a59e73d10fa43801350a7a46b4b3644c4930f88d5b7557b09f36e31a29be04",
+          "runtime": "93526150d"
+        }
+      }
+    ],
+    "signed-pattern-diagnostic-edit": [
+      {
+        "crate": "ruff_wasm",
+        "exit": 0,
+        "input_arm": "B",
+        "kind": "bridge"
+      },
+      {
+        "crate": "ruff_wasm",
+        "exit": 0,
+        "input_arm": "C",
+        "kind": "bridge"
+      },
+      {
+        "bridge_from": "B",
+        "crate": "ruff_wasm",
+        "current_arm": "B",
+        "exit": 0,
+        "kind": "caller",
+        "observed": {
+          "action": "caller",
+          "arm": "B",
+          "crate": "ruff_wasm",
+          "current_rlib_sha256": "200dd76f19d3d908ed89cc93f90461720bdb7d06d031e565f9840dca37c3bf20",
+          "public_hash_opt_in": false,
+          "result_sha256": "cfe82bbf0e8dc88fa2d45b5d8f0c60a3b9a9e4b7216e52e3d47d2d92345a7779",
+          "runtime": "0.17.0"
+        }
+      },
+      {
+        "bridge_from": "C",
+        "crate": "ruff_wasm",
+        "current_arm": "C",
+        "exit": 0,
+        "kind": "caller",
+        "observed": {
+          "action": "caller",
+          "arm": "C",
+          "crate": "ruff_wasm",
+          "current_rlib_sha256": "01ce5a09889f17227350f9109633300009a5f52f98da27e49c3fae9b9710fbf2",
+          "public_hash_opt_in": false,
+          "result_sha256": "cfe82bbf0e8dc88fa2d45b5d8f0c60a3b9a9e4b7216e52e3d47d2d92345a7779",
+          "runtime": "0.17.0"
+        }
+      },
+      {
+        "crate": "ty_wasm",
+        "exit": 0,
+        "input_arm": "B",
+        "kind": "bridge"
+      },
+      {
+        "crate": "ty_wasm",
+        "exit": 0,
+        "input_arm": "C",
+        "kind": "bridge"
+      },
+      {
+        "bridge_from": "B",
+        "crate": "ty_wasm",
+        "current_arm": "B",
+        "exit": 0,
+        "kind": "caller",
+        "observed": {
+          "action": "caller",
+          "arm": "B",
+          "crate": "ty_wasm",
+          "current_rlib_sha256": "74e90b8eaf267abbab884a2d1ff299a14235cf3c3e710858c06dd36f69986b98",
+          "public_hash_opt_in": false,
+          "result_sha256": "742126975587a6b4f6b0000ea91d6fbd5ebed28e79933f77f0b668f1893a4dc5",
+          "runtime": "93526150d"
+        }
+      },
+      {
+        "bridge_from": "C",
+        "crate": "ty_wasm",
+        "current_arm": "C",
+        "exit": 0,
+        "kind": "caller",
+        "observed": {
+          "action": "caller",
+          "arm": "C",
+          "crate": "ty_wasm",
+          "current_rlib_sha256": "8a27ff0b3b48aef3bca9f9c0b2ccc7c6237d50189fcada513338576389426790",
+          "public_hash_opt_in": false,
+          "result_sha256": "742126975587a6b4f6b0000ea91d6fbd5ebed28e79933f77f0b668f1893a4dc5",
+          "runtime": "93526150d"
+        }
+      }
+    ],
+    "single-string-allocation-edit": [
+      {
+        "crate": "ruff_wasm",
+        "exit": 0,
+        "input_arm": "B",
+        "kind": "bridge"
+      },
+      {
+        "crate": "ruff_wasm",
+        "exit": 0,
+        "input_arm": "C",
+        "kind": "bridge"
+      },
+      {
+        "bridge_from": "B",
+        "crate": "ruff_wasm",
+        "current_arm": "B",
+        "exit": 0,
+        "kind": "caller",
+        "observed": {
+          "action": "caller",
+          "arm": "B",
+          "crate": "ruff_wasm",
+          "current_rlib_sha256": "b3f89a16de2b36517211b304030a66bce3dcbae7c48199380a27c853dc445ca4",
+          "public_hash_opt_in": false,
+          "result_sha256": "e6a5eb9846ed7040407b14eeb6b4f7456fc3c7c8f74c79e87a3ffadc0dc5e3be",
+          "runtime": "0.17.0"
+        }
+      },
+      {
+        "bridge_from": "C",
+        "crate": "ruff_wasm",
+        "current_arm": "C",
+        "exit": 0,
+        "kind": "caller",
+        "observed": {
+          "action": "caller",
+          "arm": "C",
+          "crate": "ruff_wasm",
+          "current_rlib_sha256": "f0fb16264b8a7498d29652c41883eb25d35786ab2e361ca2ebc4b18d4773a9da",
+          "public_hash_opt_in": false,
+          "result_sha256": "e6a5eb9846ed7040407b14eeb6b4f7456fc3c7c8f74c79e87a3ffadc0dc5e3be",
+          "runtime": "0.17.0"
+        }
+      },
+      {
+        "crate": "ty_wasm",
+        "exit": 0,
+        "input_arm": "B",
+        "kind": "bridge"
+      },
+      {
+        "crate": "ty_wasm",
+        "exit": 0,
+        "input_arm": "C",
+        "kind": "bridge"
+      },
+      {
+        "bridge_from": "B",
+        "crate": "ty_wasm",
+        "current_arm": "B",
+        "exit": 0,
+        "kind": "caller",
+        "observed": {
+          "action": "caller",
+          "arm": "B",
+          "crate": "ty_wasm",
+          "current_rlib_sha256": "d794676120a266214b556a2e0cbd62392f97b8438a155a59e498374e5c5f3268",
+          "public_hash_opt_in": false,
+          "result_sha256": "f01d13bc86ba559aff3e5419585860b543f573bc032e115ef5a5735bce63cdab",
+          "runtime": "93526150d"
+        }
+      },
+      {
+        "bridge_from": "C",
+        "crate": "ty_wasm",
+        "current_arm": "C",
+        "exit": 0,
+        "kind": "caller",
+        "observed": {
+          "action": "caller",
+          "arm": "C",
+          "crate": "ty_wasm",
+          "current_rlib_sha256": "ef293e230ebdc9cda5fa83f04b234e21f3bd85f97d1cc6d34670864d7e1ed5a9",
+          "public_hash_opt_in": false,
+          "result_sha256": "f01d13bc86ba559aff3e5419585860b543f573bc032e115ef5a5735bce63cdab",
+          "runtime": "93526150d"
+        }
+      }
+    ]
+  },
+  "original_vs_own_restores": {
+    "lexer-pending-indentation-restore": {
+      "B": {
+        "elf_count": 15,
+        "mixed": {
+          "ruff_wasm": {
+            "different_properties": {
+              "embedded_object_sha256": [
+                "6ed3615e11f012bb10cac62bf69d41063e2844baa188d49df93674d6858e7a22",
+                "4c9ad4e36acf811f99c55fe8ba624208fec21e5880be1fad1bcea050bf0c3de9"
+              ],
+              "normalized_archive_sha256": [
+                "795427c685ac54b6ab497df6e11eb175444e042cfed5471375fc4b1b9bcf5f77",
+                "b3035d59322b89fdf87968f67b922c1de5074bbb383d4c8fdf071709b9d339a9"
+              ],
+              "private_svh": [
+                "7b5aea88e5c671d7591e735e61da81d7",
+                "785a81961e0e6b92369fdef74d4dc680"
+              ],
+              "rmeta_bytes": [
+                506638,
+                506858
+              ],
+              "rmeta_sha256": [
+                "f7b1d50174a154bf9c4c2768e97e02a195e41ffa63695cdd760e87bf4aefba23",
+                "5c12f2b8c865d24bcc4da12a2a276d544d572dc4fd096ffeec89f3d12dabfa01"
+              ],
+              "root_listing_sha256": [
+                "e46e01112843eb04017eb4befd6350286cd4f2765aa2af19c8600ed993c07789",
+                "e18c4566b7dd64715be56ff1ab1750620e3e924f185354d80451d6bc98930963"
+              ]
+            },
+            "native": {
+              "identical_member_names": 0,
+              "identical_ordered_symbol_to_member_index": true,
+              "index_entries": 2547,
+              "metadata_wrapper_differences": {
+                "lib.rmeta": [
+                  ".rmeta"
+                ],
+                "lib.rmeta-link": [
+                  ".rmeta-link"
+                ]
+              },
+              "object_count": 66,
+              "rmeta_link_semantics": [
+                {
+                  "native_lib_filenames": [],
+                  "object_names": 66,
+                  "rust_object_order_matches_archive": true
+                },
+                {
+                  "native_lib_filenames": [],
+                  "object_names": 66,
+                  "rust_object_order_matches_archive": true
+                }
+              ],
+              "same_slot_cgu_prefixes": 66,
+              "same_slot_payloads": 66,
+              "symbol_witness": [
+                "d517297c7bf1d54899e69cfaf1f662fd082689dd13303b3bb581ccd99849e9e4",
+                "d517297c7bf1d54899e69cfaf1f662fd082689dd13303b3bb581ccd99849e9e4"
+              ]
+            },
+            "raw_cdylib": [
+              "ea474c864b24e4346babd270fe2d38f1bb7fb7ed26536b0914d4a8587ff6dfee",
+              "ea474c864b24e4346babd270fe2d38f1bb7fb7ed26536b0914d4a8587ff6dfee"
+            ],
+            "raw_rlibs": [
+              "3a6c39b8b6b8ca2bcdfe447f4cd455c90d70402a4ed4e24939e5038a983399ce",
+              "e56a61a4e51b927b0662e83458303c2885a99afd700fba0e9e11c78ad7c51d35"
+            ]
+          },
+          "ty_wasm": {
+            "different_properties": {
+              "embedded_object_sha256": [
+                "1d04cf2d8b34fc29527a5663e952c6e2f2fea4122e0480d61eb80cf767f8fab0",
+                "400c0b20c383a8335edb1384fb38bfd2ecbaf850a4ca28bbcb82d04e5e7249b9"
+              ],
+              "normalized_archive_sha256": [
+                "23ba310ddb434c0f673479bd6b9bbeb60570ac3bcf2c7bd20cc0fe9f1f2c4b61",
+                "cb653326109f6529f3ce166f4bd5f91ff0041b0ce1e1fdba6d9e4d644b5b4018"
+              ],
+              "private_svh": [
+                "2f93b6211b0edd453bd7dfb5f6c72c46",
+                "29e87213086852cb732d9499183a84f9"
+              ],
+              "rmeta_bytes": [
+                705235,
+                705295
+              ],
+              "rmeta_sha256": [
+                "efb187d02196e97d38e935d6a8fd0e4b2e316712b1c7df25a9ab4d19dc30fd21",
+                "07f4a7bcc731c92f2ad9d3cf36574b60219611be0dc95f9c3249fbc86c81d7d0"
+              ],
+              "root_listing_sha256": [
+                "4dc55fa47e058c22a577cd08295ec7e26db68ae49bdd5ac710a132ee49596f0d",
+                "ac961b55a9948c81e4d6f2fb9100bd763627bc9c34b3bdf9abb940e849eab9b1"
+              ]
+            },
+            "native": {
+              "identical_member_names": 0,
+              "identical_ordered_symbol_to_member_index": true,
+              "index_entries": 2453,
+              "metadata_wrapper_differences": {
+                "lib.rmeta": [
+                  ".rmeta"
+                ],
+                "lib.rmeta-link": [
+                  ".rmeta-link"
+                ]
+              },
+              "object_count": 78,
+              "rmeta_link_semantics": [
+                {
+                  "native_lib_filenames": [],
+                  "object_names": 78,
+                  "rust_object_order_matches_archive": true
+                },
+                {
+                  "native_lib_filenames": [],
+                  "object_names": 78,
+                  "rust_object_order_matches_archive": true
+                }
+              ],
+              "same_slot_cgu_prefixes": 78,
+              "same_slot_payloads": 78,
+              "symbol_witness": [
+                "ba7640ed5a2a66a0af9a77505ed063d7d30914da22aec9cd6355cc1083fa15e6",
+                "ba7640ed5a2a66a0af9a77505ed063d7d30914da22aec9cd6355cc1083fa15e6"
+              ]
+            },
+            "raw_cdylib": [
+              "d8b609ec20a103713c711e11c841f98ae66abd85b6648a7f8b493bf2474fd7fc",
+              "d8b609ec20a103713c711e11c841f98ae66abd85b6648a7f8b493bf2474fd7fc"
+            ],
+            "raw_rlibs": [
+              "06047a69ae4e6958bcf324aa9edd864e69febac322b395a4f915c4f7243a3298",
+              "95b444d941845fec38a66dcf2c42ea8e4004e3898f8bc7a374dad1583eebd707"
+            ]
+          }
+        },
+        "raw_elf_differences": {},
+        "release_output_rosters": [
+          {
+            "mapped_output_path_count": 862,
+            "sha256": "7cc7e6c508a9dc7468ec812806dc2363b64552c99a9123639fb9b0bb4e7f120f",
+            "units": 501
+          },
+          {
+            "mapped_output_path_count": 862,
+            "sha256": "7cc7e6c508a9dc7468ec812806dc2363b64552c99a9123639fb9b0bb4e7f120f",
+            "units": 501
+          }
+        ],
+        "same_compiler_messages": true,
+        "same_novel_cli": true,
+        "same_old_cli": true,
+        "same_unit_paths": true,
+        "same_unit_paths_across_registered_namespaces": true
+      },
+      "C": {
+        "elf_count": 15,
+        "mixed": {
+          "ruff_wasm": {
+            "different_properties": {
+              "embedded_object_sha256": [
+                "ead8c098909223e9b4b92d065f297415986f6807f4e672833c5f8f043171087e",
+                "9a7d0f0c73507dcf3b89b7681aade3a0aea39f58321ab4a781c074a0064d62db"
+              ],
+              "normalized_archive_sha256": [
+                "eb7dc871048a2d791607e89af79006a1c5927d60b53c0f0e7d43ae73afe28300",
+                "a80d09af34bc61c0045395001051b9bc7302aa84b5063bc942da8639d39ea08a"
+              ],
+              "private_svh": [
+                "33e5c4905aa98adcfecebad0ed7d5034",
+                "e4a5f4a2b476427d186efd9ab73a2441"
+              ],
+              "public_svh": [
+                "e45072b6fbd8f575b9f0a26c83c2c7ab",
+                "953a1bd873def0c00f3fe0644c976d4d"
+              ],
+              "rmeta_bytes": [
+                506660,
+                506880
+              ],
+              "rmeta_sha256": [
+                "1de26bcddd34e0c4a83e77c27c24da37f311709033f7e7f5f2adead13201946f",
+                "bb9598968463fcfdd4ec4690d337bdf9a3435357860c6d51047bae048e09fe75"
+              ],
+              "root_listing_sha256": [
+                "575188e76f721c06ef77d5dd8b3a6f383a45c631515ecd3a094e6e24500b5403",
+                "bb2d2e788bd3b8611a9662d3c969d66f4ea48f967fc1f84ba0dbbcbac127f161"
+              ]
+            },
+            "native": {
+              "identical_member_names": 0,
+              "identical_ordered_symbol_to_member_index": true,
+              "index_entries": 2547,
+              "metadata_wrapper_differences": {
+                "lib.rmeta": [
+                  ".rmeta"
+                ],
+                "lib.rmeta-link": [
+                  ".rmeta-link"
+                ]
+              },
+              "object_count": 66,
+              "rmeta_link_semantics": [
+                {
+                  "native_lib_filenames": [],
+                  "object_names": 66,
+                  "rust_object_order_matches_archive": true
+                },
+                {
+                  "native_lib_filenames": [],
+                  "object_names": 66,
+                  "rust_object_order_matches_archive": true
+                }
+              ],
+              "same_slot_cgu_prefixes": 66,
+              "same_slot_payloads": 66,
+              "symbol_witness": [
+                "d517297c7bf1d54899e69cfaf1f662fd082689dd13303b3bb581ccd99849e9e4",
+                "d517297c7bf1d54899e69cfaf1f662fd082689dd13303b3bb581ccd99849e9e4"
+              ]
+            },
+            "raw_cdylib": [
+              "ea474c864b24e4346babd270fe2d38f1bb7fb7ed26536b0914d4a8587ff6dfee",
+              "ea474c864b24e4346babd270fe2d38f1bb7fb7ed26536b0914d4a8587ff6dfee"
+            ],
+            "raw_rlibs": [
+              "84f2ab4f2ab2e6ada7e03986e82cbae18a6c1135b6adcdf0297ff9bd5ba8742e",
+              "0a3cad682fb7f4417c8baac27aa83c35170149720f436d80c0e46190051b0e9e"
+            ]
+          },
+          "ty_wasm": {
+            "different_properties": {
+              "embedded_object_sha256": [
+                "17b95902713c7347611f45cbf709327e571bdb96a82d82197a913b3b66a66b8f",
+                "d5da509a3075456b0791e561c5e2fa6e537ef574ae8e9d25e6fcecc72bf640d4"
+              ],
+              "normalized_archive_sha256": [
+                "3eb022bee3d23ab3dc6111dc18f06d3775ac5064b1e08fd35e526b25c183345a",
+                "4b9881e911334ef16b62238ffde2adef766b1eae621442fd201d3339e1104d39"
+              ],
+              "private_svh": [
+                "6dab90b4e8189aa1b68bfa24228a5952",
+                "c2514634a51db9ddb8282715d70e0a51"
+              ],
+              "public_svh": [
+                "76dcc1a901f921ce19cc2cd40de795ba",
+                "df3a81efb28dc6bea418a2c0be3eed12"
+              ],
+              "rmeta_bytes": [
+                705252,
+                705312
+              ],
+              "rmeta_sha256": [
+                "d9b58cf9c76768ac39c2525e05d76809fb3392f1b847af77b3136f156653b97d",
+                "05db8f08ca2d69fc35f1c1b9953e43a240f6d221269591f21e34059b59ea5b2d"
+              ],
+              "root_listing_sha256": [
+                "d547cc8468966e27f0c36e932635d20ba69e3ef4b12d7ddc476eebb42418af04",
+                "f739cb75103ac0bfb1eb3951d6e5fc51872643b182a1ce60b687d2502d6f3572"
+              ]
+            },
+            "native": {
+              "identical_member_names": 0,
+              "identical_ordered_symbol_to_member_index": true,
+              "index_entries": 2453,
+              "metadata_wrapper_differences": {
+                "lib.rmeta": [
+                  ".rmeta"
+                ],
+                "lib.rmeta-link": [
+                  ".rmeta-link"
+                ]
+              },
+              "object_count": 78,
+              "rmeta_link_semantics": [
+                {
+                  "native_lib_filenames": [],
+                  "object_names": 78,
+                  "rust_object_order_matches_archive": true
+                },
+                {
+                  "native_lib_filenames": [],
+                  "object_names": 78,
+                  "rust_object_order_matches_archive": true
+                }
+              ],
+              "same_slot_cgu_prefixes": 78,
+              "same_slot_payloads": 78,
+              "symbol_witness": [
+                "ba7640ed5a2a66a0af9a77505ed063d7d30914da22aec9cd6355cc1083fa15e6",
+                "ba7640ed5a2a66a0af9a77505ed063d7d30914da22aec9cd6355cc1083fa15e6"
+              ]
+            },
+            "raw_cdylib": [
+              "d8b609ec20a103713c711e11c841f98ae66abd85b6648a7f8b493bf2474fd7fc",
+              "d8b609ec20a103713c711e11c841f98ae66abd85b6648a7f8b493bf2474fd7fc"
+            ],
+            "raw_rlibs": [
+              "9fee3a0e0371104d11e8f1365dbf05d25e66e1d15dc0c3d455c67da3208e01b9",
+              "561cc4e6d7daddcd5efb46f54aa11e34d810cbaf4bee019f5f965d17220fc34e"
+            ]
+          }
+        },
+        "raw_elf_differences": {},
+        "release_output_rosters": [
+          {
+            "mapped_output_path_count": 862,
+            "sha256": "7cc7e6c508a9dc7468ec812806dc2363b64552c99a9123639fb9b0bb4e7f120f",
+            "units": 501
+          },
+          {
+            "mapped_output_path_count": 862,
+            "sha256": "7cc7e6c508a9dc7468ec812806dc2363b64552c99a9123639fb9b0bb4e7f120f",
+            "units": 501
+          }
+        ],
+        "same_compiler_messages": true,
+        "same_novel_cli": true,
+        "same_old_cli": true,
+        "same_unit_paths": true,
+        "same_unit_paths_across_registered_namespaces": true
+      }
+    },
+    "signed-pattern-diagnostic-restore": {
+      "B": {
+        "elf_count": 15,
+        "mixed": {
+          "ruff_wasm": {
+            "different_properties": {
+              "embedded_object_sha256": [
+                "dcd865d40bdc3cc6c7f54c9f15dbd9e9c9b8a4c9653add4fa74796b97efd6307",
+                "4c9ad4e36acf811f99c55fe8ba624208fec21e5880be1fad1bcea050bf0c3de9"
+              ],
+              "normalized_archive_sha256": [
+                "e02822a0f351c75a8b1861827d30e980b213f6252b6b8cba3fa218efa5b2f7a9",
+                "b3035d59322b89fdf87968f67b922c1de5074bbb383d4c8fdf071709b9d339a9"
+              ],
+              "private_svh": [
+                "9272ab898645a680770e5ccb23f7c76b",
+                "785a81961e0e6b92369fdef74d4dc680"
+              ],
+              "rmeta_bytes": [
+                506638,
+                506858
+              ],
+              "rmeta_sha256": [
+                "29947c76c005a4d647b4b7b4ad01283ae3386c8022e5957e97031a8d5a45e154",
+                "5c12f2b8c865d24bcc4da12a2a276d544d572dc4fd096ffeec89f3d12dabfa01"
+              ],
+              "root_listing_sha256": [
+                "120a06c607569bf7dd086199391894c3eee8089fc991de10f6a60b96462ad0cd",
+                "e18c4566b7dd64715be56ff1ab1750620e3e924f185354d80451d6bc98930963"
+              ]
+            },
+            "native": {
+              "identical_member_names": 0,
+              "identical_ordered_symbol_to_member_index": true,
+              "index_entries": 2547,
+              "metadata_wrapper_differences": {
+                "lib.rmeta": [
+                  ".rmeta"
+                ],
+                "lib.rmeta-link": [
+                  ".rmeta-link"
+                ]
+              },
+              "object_count": 66,
+              "rmeta_link_semantics": [
+                {
+                  "native_lib_filenames": [],
+                  "object_names": 66,
+                  "rust_object_order_matches_archive": true
+                },
+                {
+                  "native_lib_filenames": [],
+                  "object_names": 66,
+                  "rust_object_order_matches_archive": true
+                }
+              ],
+              "same_slot_cgu_prefixes": 66,
+              "same_slot_payloads": 66,
+              "symbol_witness": [
+                "d517297c7bf1d54899e69cfaf1f662fd082689dd13303b3bb581ccd99849e9e4",
+                "d517297c7bf1d54899e69cfaf1f662fd082689dd13303b3bb581ccd99849e9e4"
+              ]
+            },
+            "raw_cdylib": [
+              "ea474c864b24e4346babd270fe2d38f1bb7fb7ed26536b0914d4a8587ff6dfee",
+              "ea474c864b24e4346babd270fe2d38f1bb7fb7ed26536b0914d4a8587ff6dfee"
+            ],
+            "raw_rlibs": [
+              "69f72fcb201644871bcfc7e7cc1bc0dd0b063f18d907aeca2d33f04d799bf1c3",
+              "e56a61a4e51b927b0662e83458303c2885a99afd700fba0e9e11c78ad7c51d35"
+            ]
+          },
+          "ty_wasm": {
+            "different_properties": {
+              "embedded_object_sha256": [
+                "8a82f411aa74a4609bb5a1bdc83f287687ec16e9804ac96160157cde1d16b729",
+                "400c0b20c383a8335edb1384fb38bfd2ecbaf850a4ca28bbcb82d04e5e7249b9"
+              ],
+              "normalized_archive_sha256": [
+                "86a302b6b682be9571fbb4f553106663d3e7105ee034c3eba3b38638afd8a1b5",
+                "cb653326109f6529f3ce166f4bd5f91ff0041b0ce1e1fdba6d9e4d644b5b4018"
+              ],
+              "private_svh": [
+                "5338db726cbb23cd5b21b20333a56b6f",
+                "29e87213086852cb732d9499183a84f9"
+              ],
+              "rmeta_bytes": [
+                705235,
+                705295
+              ],
+              "rmeta_sha256": [
+                "280f6fd7b650dc6d0a474db25bcebd02b1f5261bbdc0141696f33596bdf35333",
+                "07f4a7bcc731c92f2ad9d3cf36574b60219611be0dc95f9c3249fbc86c81d7d0"
+              ],
+              "root_listing_sha256": [
+                "c39605fc58f2251e12ea6dea21f0802c6bd77305bc443ad10de6a5665e5a7cfd",
+                "ac961b55a9948c81e4d6f2fb9100bd763627bc9c34b3bdf9abb940e849eab9b1"
+              ]
+            },
+            "native": {
+              "identical_member_names": 0,
+              "identical_ordered_symbol_to_member_index": true,
+              "index_entries": 2453,
+              "metadata_wrapper_differences": {
+                "lib.rmeta": [
+                  ".rmeta"
+                ],
+                "lib.rmeta-link": [
+                  ".rmeta-link"
+                ]
+              },
+              "object_count": 78,
+              "rmeta_link_semantics": [
+                {
+                  "native_lib_filenames": [],
+                  "object_names": 78,
+                  "rust_object_order_matches_archive": true
+                },
+                {
+                  "native_lib_filenames": [],
+                  "object_names": 78,
+                  "rust_object_order_matches_archive": true
+                }
+              ],
+              "same_slot_cgu_prefixes": 78,
+              "same_slot_payloads": 78,
+              "symbol_witness": [
+                "ba7640ed5a2a66a0af9a77505ed063d7d30914da22aec9cd6355cc1083fa15e6",
+                "ba7640ed5a2a66a0af9a77505ed063d7d30914da22aec9cd6355cc1083fa15e6"
+              ]
+            },
+            "raw_cdylib": [
+              "d8b609ec20a103713c711e11c841f98ae66abd85b6648a7f8b493bf2474fd7fc",
+              "d8b609ec20a103713c711e11c841f98ae66abd85b6648a7f8b493bf2474fd7fc"
+            ],
+            "raw_rlibs": [
+              "21652945ac6216fb5cb25cb0a624034b5b65e45469b68ece36af5e97d3b14106",
+              "95b444d941845fec38a66dcf2c42ea8e4004e3898f8bc7a374dad1583eebd707"
+            ]
+          }
+        },
+        "raw_elf_differences": {},
+        "release_output_rosters": [
+          {
+            "mapped_output_path_count": 862,
+            "sha256": "7cc7e6c508a9dc7468ec812806dc2363b64552c99a9123639fb9b0bb4e7f120f",
+            "units": 501
+          },
+          {
+            "mapped_output_path_count": 862,
+            "sha256": "7cc7e6c508a9dc7468ec812806dc2363b64552c99a9123639fb9b0bb4e7f120f",
+            "units": 501
+          }
+        ],
+        "same_compiler_messages": true,
+        "same_novel_cli": true,
+        "same_old_cli": true,
+        "same_unit_paths": true,
+        "same_unit_paths_across_registered_namespaces": true
+      },
+      "C": {
+        "elf_count": 15,
+        "mixed": {
+          "ruff_wasm": {
+            "different_properties": {
+              "embedded_object_sha256": [
+                "ead8c098909223e9b4b92d065f297415986f6807f4e672833c5f8f043171087e",
+                "9a7d0f0c73507dcf3b89b7681aade3a0aea39f58321ab4a781c074a0064d62db"
+              ],
+              "normalized_archive_sha256": [
+                "eb7dc871048a2d791607e89af79006a1c5927d60b53c0f0e7d43ae73afe28300",
+                "a80d09af34bc61c0045395001051b9bc7302aa84b5063bc942da8639d39ea08a"
+              ],
+              "private_svh": [
+                "33e5c4905aa98adcfecebad0ed7d5034",
+                "e4a5f4a2b476427d186efd9ab73a2441"
+              ],
+              "public_svh": [
+                "e45072b6fbd8f575b9f0a26c83c2c7ab",
+                "953a1bd873def0c00f3fe0644c976d4d"
+              ],
+              "rmeta_bytes": [
+                506660,
+                506880
+              ],
+              "rmeta_sha256": [
+                "1de26bcddd34e0c4a83e77c27c24da37f311709033f7e7f5f2adead13201946f",
+                "bb9598968463fcfdd4ec4690d337bdf9a3435357860c6d51047bae048e09fe75"
+              ],
+              "root_listing_sha256": [
+                "575188e76f721c06ef77d5dd8b3a6f383a45c631515ecd3a094e6e24500b5403",
+                "bb2d2e788bd3b8611a9662d3c969d66f4ea48f967fc1f84ba0dbbcbac127f161"
+              ]
+            },
+            "native": {
+              "identical_member_names": 0,
+              "identical_ordered_symbol_to_member_index": true,
+              "index_entries": 2547,
+              "metadata_wrapper_differences": {
+                "lib.rmeta": [
+                  ".rmeta"
+                ],
+                "lib.rmeta-link": [
+                  ".rmeta-link"
+                ]
+              },
+              "object_count": 66,
+              "rmeta_link_semantics": [
+                {
+                  "native_lib_filenames": [],
+                  "object_names": 66,
+                  "rust_object_order_matches_archive": true
+                },
+                {
+                  "native_lib_filenames": [],
+                  "object_names": 66,
+                  "rust_object_order_matches_archive": true
+                }
+              ],
+              "same_slot_cgu_prefixes": 66,
+              "same_slot_payloads": 66,
+              "symbol_witness": [
+                "d517297c7bf1d54899e69cfaf1f662fd082689dd13303b3bb581ccd99849e9e4",
+                "d517297c7bf1d54899e69cfaf1f662fd082689dd13303b3bb581ccd99849e9e4"
+              ]
+            },
+            "raw_cdylib": [
+              "ea474c864b24e4346babd270fe2d38f1bb7fb7ed26536b0914d4a8587ff6dfee",
+              "ea474c864b24e4346babd270fe2d38f1bb7fb7ed26536b0914d4a8587ff6dfee"
+            ],
+            "raw_rlibs": [
+              "acc86948f4086cf7b83156a706ed0df4045050a4284ac5b87494cc630e630b74",
+              "0a3cad682fb7f4417c8baac27aa83c35170149720f436d80c0e46190051b0e9e"
+            ]
+          },
+          "ty_wasm": {
+            "different_properties": {
+              "embedded_object_sha256": [
+                "17b95902713c7347611f45cbf709327e571bdb96a82d82197a913b3b66a66b8f",
+                "d5da509a3075456b0791e561c5e2fa6e537ef574ae8e9d25e6fcecc72bf640d4"
+              ],
+              "normalized_archive_sha256": [
+                "3eb022bee3d23ab3dc6111dc18f06d3775ac5064b1e08fd35e526b25c183345a",
+                "4b9881e911334ef16b62238ffde2adef766b1eae621442fd201d3339e1104d39"
+              ],
+              "private_svh": [
+                "6dab90b4e8189aa1b68bfa24228a5952",
+                "c2514634a51db9ddb8282715d70e0a51"
+              ],
+              "public_svh": [
+                "76dcc1a901f921ce19cc2cd40de795ba",
+                "df3a81efb28dc6bea418a2c0be3eed12"
+              ],
+              "rmeta_bytes": [
+                705252,
+                705312
+              ],
+              "rmeta_sha256": [
+                "d9b58cf9c76768ac39c2525e05d76809fb3392f1b847af77b3136f156653b97d",
+                "05db8f08ca2d69fc35f1c1b9953e43a240f6d221269591f21e34059b59ea5b2d"
+              ],
+              "root_listing_sha256": [
+                "d547cc8468966e27f0c36e932635d20ba69e3ef4b12d7ddc476eebb42418af04",
+                "f739cb75103ac0bfb1eb3951d6e5fc51872643b182a1ce60b687d2502d6f3572"
+              ]
+            },
+            "native": {
+              "identical_member_names": 0,
+              "identical_ordered_symbol_to_member_index": true,
+              "index_entries": 2453,
+              "metadata_wrapper_differences": {
+                "lib.rmeta": [
+                  ".rmeta"
+                ],
+                "lib.rmeta-link": [
+                  ".rmeta-link"
+                ]
+              },
+              "object_count": 78,
+              "rmeta_link_semantics": [
+                {
+                  "native_lib_filenames": [],
+                  "object_names": 78,
+                  "rust_object_order_matches_archive": true
+                },
+                {
+                  "native_lib_filenames": [],
+                  "object_names": 78,
+                  "rust_object_order_matches_archive": true
+                }
+              ],
+              "same_slot_cgu_prefixes": 78,
+              "same_slot_payloads": 78,
+              "symbol_witness": [
+                "ba7640ed5a2a66a0af9a77505ed063d7d30914da22aec9cd6355cc1083fa15e6",
+                "ba7640ed5a2a66a0af9a77505ed063d7d30914da22aec9cd6355cc1083fa15e6"
+              ]
+            },
+            "raw_cdylib": [
+              "d8b609ec20a103713c711e11c841f98ae66abd85b6648a7f8b493bf2474fd7fc",
+              "d8b609ec20a103713c711e11c841f98ae66abd85b6648a7f8b493bf2474fd7fc"
+            ],
+            "raw_rlibs": [
+              "2efe1486c4cb082b9b051102268f72a30504bc3c81fde7661f1e791f9ac468db",
+              "561cc4e6d7daddcd5efb46f54aa11e34d810cbaf4bee019f5f965d17220fc34e"
+            ]
+          }
+        },
+        "raw_elf_differences": {},
+        "release_output_rosters": [
+          {
+            "mapped_output_path_count": 862,
+            "sha256": "7cc7e6c508a9dc7468ec812806dc2363b64552c99a9123639fb9b0bb4e7f120f",
+            "units": 501
+          },
+          {
+            "mapped_output_path_count": 862,
+            "sha256": "7cc7e6c508a9dc7468ec812806dc2363b64552c99a9123639fb9b0bb4e7f120f",
+            "units": 501
+          }
+        ],
+        "same_compiler_messages": true,
+        "same_novel_cli": true,
+        "same_old_cli": true,
+        "same_unit_paths": true,
+        "same_unit_paths_across_registered_namespaces": true
+      }
+    },
+    "single-string-allocation-restore": {
+      "B": {
+        "elf_count": 15,
+        "mixed": {
+          "ruff_wasm": {
+            "different_properties": {
+              "embedded_object_sha256": [
+                "69d797ce7e8e3160026c112fea4ad00b25bbdc088fd9a12e649a9273fd4d137a",
+                "4c9ad4e36acf811f99c55fe8ba624208fec21e5880be1fad1bcea050bf0c3de9"
+              ],
+              "normalized_archive_sha256": [
+                "0a59871ac97e9c4c65ccdc11edbd362cc82e00c25c04f2aa84dba2b96c2655a6",
+                "b3035d59322b89fdf87968f67b922c1de5074bbb383d4c8fdf071709b9d339a9"
+              ],
+              "private_svh": [
+                "4d028df82a2f73843f5b2444f531e755",
+                "785a81961e0e6b92369fdef74d4dc680"
+              ],
+              "rmeta_bytes": [
+                506638,
+                506858
+              ],
+              "rmeta_sha256": [
+                "d464d3fa9f9d6f06741e78e327c6635443f6632f76fba7008a2a66d4c6ad05d7",
+                "5c12f2b8c865d24bcc4da12a2a276d544d572dc4fd096ffeec89f3d12dabfa01"
+              ],
+              "root_listing_sha256": [
+                "0cb835c02be676504c4da931dddf69da0576d7fcf3b0a76af556d69019445249",
+                "e18c4566b7dd64715be56ff1ab1750620e3e924f185354d80451d6bc98930963"
+              ]
+            },
+            "native": {
+              "identical_member_names": 0,
+              "identical_ordered_symbol_to_member_index": true,
+              "index_entries": 2547,
+              "metadata_wrapper_differences": {
+                "lib.rmeta": [
+                  ".rmeta"
+                ],
+                "lib.rmeta-link": [
+                  ".rmeta-link"
+                ]
+              },
+              "object_count": 66,
+              "rmeta_link_semantics": [
+                {
+                  "native_lib_filenames": [],
+                  "object_names": 66,
+                  "rust_object_order_matches_archive": true
+                },
+                {
+                  "native_lib_filenames": [],
+                  "object_names": 66,
+                  "rust_object_order_matches_archive": true
+                }
+              ],
+              "same_slot_cgu_prefixes": 66,
+              "same_slot_payloads": 66,
+              "symbol_witness": [
+                "d517297c7bf1d54899e69cfaf1f662fd082689dd13303b3bb581ccd99849e9e4",
+                "d517297c7bf1d54899e69cfaf1f662fd082689dd13303b3bb581ccd99849e9e4"
+              ]
+            },
+            "raw_cdylib": [
+              "ea474c864b24e4346babd270fe2d38f1bb7fb7ed26536b0914d4a8587ff6dfee",
+              "ea474c864b24e4346babd270fe2d38f1bb7fb7ed26536b0914d4a8587ff6dfee"
+            ],
+            "raw_rlibs": [
+              "64e31277292db431ec841b14beb1a86f6b9fc378974125b2c23b35ba86232359",
+              "e56a61a4e51b927b0662e83458303c2885a99afd700fba0e9e11c78ad7c51d35"
+            ]
+          },
+          "ty_wasm": {
+            "different_properties": {
+              "embedded_object_sha256": [
+                "ae1257a2f3dce55bd032a216fd879a9c6a4764d5b5b3d249684f4e934449a4ea",
+                "400c0b20c383a8335edb1384fb38bfd2ecbaf850a4ca28bbcb82d04e5e7249b9"
+              ],
+              "normalized_archive_sha256": [
+                "69ac51b17aaeb6f772eeb53555edca501757a685770691b73edaea4d450c24e9",
+                "cb653326109f6529f3ce166f4bd5f91ff0041b0ce1e1fdba6d9e4d644b5b4018"
+              ],
+              "private_svh": [
+                "fc7ac6247425c3d7826d49568109a9a9",
+                "29e87213086852cb732d9499183a84f9"
+              ],
+              "rmeta_bytes": [
+                705235,
+                705295
+              ],
+              "rmeta_sha256": [
+                "cdad78a246b421e11d049cacaf5089e71e9ab0414f8fb3d76ddeb50e0afcadb5",
+                "07f4a7bcc731c92f2ad9d3cf36574b60219611be0dc95f9c3249fbc86c81d7d0"
+              ],
+              "root_listing_sha256": [
+                "0beb0530384113204112aec0c0f30fb42b3341ce127166e98a968883b1f39189",
+                "ac961b55a9948c81e4d6f2fb9100bd763627bc9c34b3bdf9abb940e849eab9b1"
+              ]
+            },
+            "native": {
+              "identical_member_names": 0,
+              "identical_ordered_symbol_to_member_index": true,
+              "index_entries": 2453,
+              "metadata_wrapper_differences": {
+                "lib.rmeta": [
+                  ".rmeta"
+                ],
+                "lib.rmeta-link": [
+                  ".rmeta-link"
+                ]
+              },
+              "object_count": 78,
+              "rmeta_link_semantics": [
+                {
+                  "native_lib_filenames": [],
+                  "object_names": 78,
+                  "rust_object_order_matches_archive": true
+                },
+                {
+                  "native_lib_filenames": [],
+                  "object_names": 78,
+                  "rust_object_order_matches_archive": true
+                }
+              ],
+              "same_slot_cgu_prefixes": 78,
+              "same_slot_payloads": 78,
+              "symbol_witness": [
+                "ba7640ed5a2a66a0af9a77505ed063d7d30914da22aec9cd6355cc1083fa15e6",
+                "ba7640ed5a2a66a0af9a77505ed063d7d30914da22aec9cd6355cc1083fa15e6"
+              ]
+            },
+            "raw_cdylib": [
+              "d8b609ec20a103713c711e11c841f98ae66abd85b6648a7f8b493bf2474fd7fc",
+              "d8b609ec20a103713c711e11c841f98ae66abd85b6648a7f8b493bf2474fd7fc"
+            ],
+            "raw_rlibs": [
+              "8b6182526d3c7536d43b59e924f22e6fadd7561c17dbb6c8aea0449df3277f5d",
+              "95b444d941845fec38a66dcf2c42ea8e4004e3898f8bc7a374dad1583eebd707"
+            ]
+          }
+        },
+        "raw_elf_differences": {},
+        "release_output_rosters": [
+          {
+            "mapped_output_path_count": 862,
+            "sha256": "7cc7e6c508a9dc7468ec812806dc2363b64552c99a9123639fb9b0bb4e7f120f",
+            "units": 501
+          },
+          {
+            "mapped_output_path_count": 862,
+            "sha256": "7cc7e6c508a9dc7468ec812806dc2363b64552c99a9123639fb9b0bb4e7f120f",
+            "units": 501
+          }
+        ],
+        "same_compiler_messages": true,
+        "same_novel_cli": true,
+        "same_old_cli": true,
+        "same_unit_paths": true,
+        "same_unit_paths_across_registered_namespaces": true
+      },
+      "C": {
+        "elf_count": 15,
+        "mixed": {
+          "ruff_wasm": {
+            "different_properties": {
+              "embedded_object_sha256": [
+                "ead8c098909223e9b4b92d065f297415986f6807f4e672833c5f8f043171087e",
+                "9a7d0f0c73507dcf3b89b7681aade3a0aea39f58321ab4a781c074a0064d62db"
+              ],
+              "normalized_archive_sha256": [
+                "eb7dc871048a2d791607e89af79006a1c5927d60b53c0f0e7d43ae73afe28300",
+                "a80d09af34bc61c0045395001051b9bc7302aa84b5063bc942da8639d39ea08a"
+              ],
+              "private_svh": [
+                "33e5c4905aa98adcfecebad0ed7d5034",
+                "e4a5f4a2b476427d186efd9ab73a2441"
+              ],
+              "public_svh": [
+                "e45072b6fbd8f575b9f0a26c83c2c7ab",
+                "953a1bd873def0c00f3fe0644c976d4d"
+              ],
+              "rmeta_bytes": [
+                506660,
+                506880
+              ],
+              "rmeta_sha256": [
+                "1de26bcddd34e0c4a83e77c27c24da37f311709033f7e7f5f2adead13201946f",
+                "bb9598968463fcfdd4ec4690d337bdf9a3435357860c6d51047bae048e09fe75"
+              ],
+              "root_listing_sha256": [
+                "575188e76f721c06ef77d5dd8b3a6f383a45c631515ecd3a094e6e24500b5403",
+                "bb2d2e788bd3b8611a9662d3c969d66f4ea48f967fc1f84ba0dbbcbac127f161"
+              ]
+            },
+            "native": {
+              "identical_member_names": 0,
+              "identical_ordered_symbol_to_member_index": true,
+              "index_entries": 2547,
+              "metadata_wrapper_differences": {
+                "lib.rmeta": [
+                  ".rmeta"
+                ],
+                "lib.rmeta-link": [
+                  ".rmeta-link"
+                ]
+              },
+              "object_count": 66,
+              "rmeta_link_semantics": [
+                {
+                  "native_lib_filenames": [],
+                  "object_names": 66,
+                  "rust_object_order_matches_archive": true
+                },
+                {
+                  "native_lib_filenames": [],
+                  "object_names": 66,
+                  "rust_object_order_matches_archive": true
+                }
+              ],
+              "same_slot_cgu_prefixes": 66,
+              "same_slot_payloads": 66,
+              "symbol_witness": [
+                "d517297c7bf1d54899e69cfaf1f662fd082689dd13303b3bb581ccd99849e9e4",
+                "d517297c7bf1d54899e69cfaf1f662fd082689dd13303b3bb581ccd99849e9e4"
+              ]
+            },
+            "raw_cdylib": [
+              "ea474c864b24e4346babd270fe2d38f1bb7fb7ed26536b0914d4a8587ff6dfee",
+              "ea474c864b24e4346babd270fe2d38f1bb7fb7ed26536b0914d4a8587ff6dfee"
+            ],
+            "raw_rlibs": [
+              "daefd843e035aabcad532ef06361dd4416d63b1546d8cd066eb4f84e4515c92a",
+              "0a3cad682fb7f4417c8baac27aa83c35170149720f436d80c0e46190051b0e9e"
+            ]
+          },
+          "ty_wasm": {
+            "different_properties": {
+              "embedded_object_sha256": [
+                "17b95902713c7347611f45cbf709327e571bdb96a82d82197a913b3b66a66b8f",
+                "d5da509a3075456b0791e561c5e2fa6e537ef574ae8e9d25e6fcecc72bf640d4"
+              ],
+              "normalized_archive_sha256": [
+                "3eb022bee3d23ab3dc6111dc18f06d3775ac5064b1e08fd35e526b25c183345a",
+                "4b9881e911334ef16b62238ffde2adef766b1eae621442fd201d3339e1104d39"
+              ],
+              "private_svh": [
+                "6dab90b4e8189aa1b68bfa24228a5952",
+                "c2514634a51db9ddb8282715d70e0a51"
+              ],
+              "public_svh": [
+                "76dcc1a901f921ce19cc2cd40de795ba",
+                "df3a81efb28dc6bea418a2c0be3eed12"
+              ],
+              "rmeta_bytes": [
+                705252,
+                705312
+              ],
+              "rmeta_sha256": [
+                "d9b58cf9c76768ac39c2525e05d76809fb3392f1b847af77b3136f156653b97d",
+                "05db8f08ca2d69fc35f1c1b9953e43a240f6d221269591f21e34059b59ea5b2d"
+              ],
+              "root_listing_sha256": [
+                "d547cc8468966e27f0c36e932635d20ba69e3ef4b12d7ddc476eebb42418af04",
+                "f739cb75103ac0bfb1eb3951d6e5fc51872643b182a1ce60b687d2502d6f3572"
+              ]
+            },
+            "native": {
+              "identical_member_names": 0,
+              "identical_ordered_symbol_to_member_index": true,
+              "index_entries": 2453,
+              "metadata_wrapper_differences": {
+                "lib.rmeta": [
+                  ".rmeta"
+                ],
+                "lib.rmeta-link": [
+                  ".rmeta-link"
+                ]
+              },
+              "object_count": 78,
+              "rmeta_link_semantics": [
+                {
+                  "native_lib_filenames": [],
+                  "object_names": 78,
+                  "rust_object_order_matches_archive": true
+                },
+                {
+                  "native_lib_filenames": [],
+                  "object_names": 78,
+                  "rust_object_order_matches_archive": true
+                }
+              ],
+              "same_slot_cgu_prefixes": 78,
+              "same_slot_payloads": 78,
+              "symbol_witness": [
+                "ba7640ed5a2a66a0af9a77505ed063d7d30914da22aec9cd6355cc1083fa15e6",
+                "ba7640ed5a2a66a0af9a77505ed063d7d30914da22aec9cd6355cc1083fa15e6"
+              ]
+            },
+            "raw_cdylib": [
+              "d8b609ec20a103713c711e11c841f98ae66abd85b6648a7f8b493bf2474fd7fc",
+              "d8b609ec20a103713c711e11c841f98ae66abd85b6648a7f8b493bf2474fd7fc"
+            ],
+            "raw_rlibs": [
+              "024579e768a30212663e4dcc9be9bf9d1c412c4040e57f66abb6c3a002512780",
+              "561cc4e6d7daddcd5efb46f54aa11e34d810cbaf4bee019f5f965d17220fc34e"
+            ]
+          }
+        },
+        "raw_elf_differences": {},
+        "release_output_rosters": [
+          {
+            "mapped_output_path_count": 862,
+            "sha256": "7cc7e6c508a9dc7468ec812806dc2363b64552c99a9123639fb9b0bb4e7f120f",
+            "units": 501
+          },
+          {
+            "mapped_output_path_count": 862,
+            "sha256": "7cc7e6c508a9dc7468ec812806dc2363b64552c99a9123639fb9b0bb4e7f120f",
+            "units": 501
+          }
+        ],
+        "same_compiler_messages": true,
+        "same_novel_cli": true,
+        "same_old_cli": true,
+        "same_unit_paths": true,
+        "same_unit_paths_across_registered_namespaces": true
+      }
+    }
+  },
+  "scheduling_plan": "a55a3d97d1f4880a3c516b930b77ca49e337927a1404a4e0dafa23222244d7e4"
+}

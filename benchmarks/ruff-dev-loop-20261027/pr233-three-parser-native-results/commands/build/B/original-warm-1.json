@@ -1,0 +1,161 @@
+{
+  "arm": "B",
+  "cargo_json_sha256": "b289327b57460da24e18614dc4f388a6e1b62815b3cde16a7eb38f742137342a",
+  "compiler_probe_count": 0,
+  "complete_private_receipt_sha256": "1fd04a13dee65a932eec0e7f99f64300db1143de25409d4caf38e492c231aec0",
+  "dirty_targets": [],
+  "elf_count": 15,
+  "executable_count": 6,
+  "fresh_units": 501,
+  "messages_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+  "mode": "build",
+  "name": "original-warm-1",
+  "native_process_files": {
+    "cc": [],
+    "collect2": [],
+    "wild": []
+  },
+  "native_process_trace_sha256": {},
+  "native_totals": {
+    "cc": 0,
+    "collect2": 0,
+    "wild": 0
+  },
+  "novel_cli": [
+    {
+      "diagnostics": [
+        {
+          "cell": null,
+          "code": "invalid-syntax",
+          "end_location": {
+            "column": 15,
+            "row": 2
+          },
+          "filename": "-",
+          "fix": null,
+          "location": {
+            "column": 11,
+            "row": 2
+          },
+          "message": "Expected a numeric literal after unary operator",
+          "name": "invalid-syntax",
+          "noqa_row": null,
+          "severity": "error",
+          "url": null
+        }
+      ],
+      "input": "match value:\n    case -1**2: ...\n",
+      "status": 1,
+      "stderr": ""
+    },
+    {
+      "diagnostics": [
+        {
+          "cell": null,
+          "code": "invalid-syntax",
+          "end_location": {
+            "column": 14,
+            "row": 2
+          },
+          "filename": "-",
+          "fix": null,
+          "location": {
+            "column": 11,
+            "row": 2
+          },
+          "message": "Expected a numeric literal after unary operator",
+          "name": "invalid-syntax",
+          "noqa_row": null,
+          "severity": "error",
+          "url": null
+        }
+      ],
+      "input": "match value:\n    case -1(): ...\n",
+      "status": 1,
+      "stderr": ""
+    },
+    {
+      "diagnostics": [],
+      "input": "if True:\n    one = \"one\"\n    two = \"a\" \"b\"\nthree = f\"{42}\"\n",
+      "status": 0,
+      "stderr": ""
+    }
+  ],
+  "old_cli": {
+    "linter": [
+      {
+        "cell": null,
+        "code": "RUF008",
+        "end_location": {
+          "column": 36,
+          "row": 4
+        },
+        "filename": "/home/dev-user/code/oss/ruff-ohm-whole-native-20261027/case.py",
+        "fix": null,
+        "location": {
+          "column": 34,
+          "row": 4
+        },
+        "message": "Do not use mutable default values for dataclass attributes",
+        "name": "mutable-dataclass-default",
+        "noqa_row": 4,
+        "severity": "error",
+        "url": "https://docs.astral.sh/ruff/rules/mutable-dataclass-default"
+      },
+      {
+        "cell": null,
+        "code": "RUF008",
+        "end_location": {
+          "column": 22,
+          "row": 6
+        },
+        "filename": "/home/dev-user/code/oss/ruff-ohm-whole-native-20261027/case.py",
+        "fix": null,
+        "location": {
+          "column": 20,
+          "row": 6
+        },
+        "message": "Do not use mutable default values for dataclass attributes",
+        "name": "mutable-dataclass-default",
+        "noqa_row": 6,
+        "severity": "error",
+        "url": "https://docs.astral.sh/ruff/rules/mutable-dataclass-default"
+      }
+    ],
+    "parser": [
+      {
+        "cell": null,
+        "code": "invalid-syntax",
+        "end_location": {
+          "column": 19,
+          "row": 1
+        },
+        "filename": "-",
+        "fix": null,
+        "location": {
+          "column": 1,
+          "row": 1
+        },
+        "message": "Cannot mix t-string literals with string or bytes literals",
+        "name": "invalid-syntax",
+        "noqa_row": null,
+        "severity": "error",
+        "url": null
+      }
+    ]
+  },
+  "phase": "train",
+  "physical_jobs": [],
+  "process_totals": {},
+  "recipe_after": {},
+  "recipe_before": {},
+  "release_output_roster": {
+    "mapped_output_path_count": 862,
+    "sha256": "7cc7e6c508a9dc7468ec812806dc2363b64552c99a9123639fb9b0bb4e7f120f",
+    "units": 501
+  },
+  "roster_sha256": "37e9d1fdbe16fd476eb226e12cf57dc5b7be4f45ff292de60e309b6ee6aa4b8f",
+  "source_view": "original",
+  "status": 0,
+  "unit_count": 501
+}

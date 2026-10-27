@@ -1,0 +1,178 @@
+{
+  "arm": "C",
+  "cargo_json_sha256": "7fddb22622d9d4314dc3ee939a02e11b52fff17240188a35d90c018ded33e34a",
+  "compiler_probe_count": 0,
+  "complete_private_receipt_sha256": "2c44b35b39a9dfc884d14dd130d89a06aea16a30e3415407fb5f8e0909769c42",
+  "dirty_targets": [],
+  "elf_count": 15,
+  "executable_count": 6,
+  "fresh_units": 501,
+  "messages_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+  "mode": "build",
+  "name": "lexer-pending-indentation-edit-fresh",
+  "native_process_files": {
+    "cc": [],
+    "collect2": [],
+    "wild": []
+  },
+  "native_process_trace_sha256": {},
+  "native_totals": {
+    "cc": 0,
+    "collect2": 0,
+    "wild": 0
+  },
+  "novel_cli": [
+    {
+      "diagnostics": [
+        {
+          "cell": null,
+          "code": "invalid-syntax",
+          "end_location": {
+            "column": 15,
+            "row": 2
+          },
+          "filename": "-",
+          "fix": null,
+          "location": {
+            "column": 11,
+            "row": 2
+          },
+          "message": "Expected a numeric literal after unary operator",
+          "name": "invalid-syntax",
+          "noqa_row": null,
+          "severity": "error",
+          "url": null
+        }
+      ],
+      "input": "match value:\n    case -1**2: ...\n",
+      "status": 1,
+      "stderr": ""
+    },
+    {
+      "diagnostics": [
+        {
+          "cell": null,
+          "code": "invalid-syntax",
+          "end_location": {
+            "column": 14,
+            "row": 2
+          },
+          "filename": "-",
+          "fix": null,
+          "location": {
+            "column": 11,
+            "row": 2
+          },
+          "message": "Expected a numeric literal after unary operator",
+          "name": "invalid-syntax",
+          "noqa_row": null,
+          "severity": "error",
+          "url": null
+        }
+      ],
+      "input": "match value:\n    case -1(): ...\n",
+      "status": 1,
+      "stderr": ""
+    },
+    {
+      "diagnostics": [],
+      "input": "if True:\n    one = \"one\"\n    two = \"a\" \"b\"\nthree = f\"{42}\"\n",
+      "status": 0,
+      "stderr": ""
+    }
+  ],
+  "old_cli": {
+    "linter": [
+      {
+        "cell": null,
+        "code": "RUF008",
+        "end_location": {
+          "column": 36,
+          "row": 4
+        },
+        "filename": "/home/dev-user/code/oss/ruff-ohm-whole-native-20261027/case.py",
+        "fix": null,
+        "location": {
+          "column": 34,
+          "row": 4
+        },
+        "message": "Do not use mutable default values for dataclass attributes",
+        "name": "mutable-dataclass-default",
+        "noqa_row": 4,
+        "severity": "error",
+        "url": "https://docs.astral.sh/ruff/rules/mutable-dataclass-default"
+      },
+      {
+        "cell": null,
+        "code": "RUF008",
+        "end_location": {
+          "column": 22,
+          "row": 6
+        },
+        "filename": "/home/dev-user/code/oss/ruff-ohm-whole-native-20261027/case.py",
+        "fix": null,
+        "location": {
+          "column": 20,
+          "row": 6
+        },
+        "message": "Do not use mutable default values for dataclass attributes",
+        "name": "mutable-dataclass-default",
+        "noqa_row": 6,
+        "severity": "error",
+        "url": "https://docs.astral.sh/ruff/rules/mutable-dataclass-default"
+      }
+    ],
+    "parser": [
+      {
+        "cell": null,
+        "code": "invalid-syntax",
+        "end_location": {
+          "column": 19,
+          "row": 1
+        },
+        "filename": "-",
+        "fix": null,
+        "location": {
+          "column": 1,
+          "row": 1
+        },
+        "message": "Cannot mix t-string literals with string or bytes literals",
+        "name": "invalid-syntax",
+        "noqa_row": null,
+        "severity": "error",
+        "url": null
+      }
+    ]
+  },
+  "phase": "fresh",
+  "physical_jobs": [],
+  "process_totals": {},
+  "recipe_after": {},
+  "recipe_before": {},
+  "release_output_roster": {
+    "mapped_output_path_count": 862,
+    "sha256": "7cc7e6c508a9dc7468ec812806dc2363b64552c99a9123639fb9b0bb4e7f120f",
+    "units": 501
+  },
+  "roster_sha256": "d22f354c606f0b9ece5a7e736efb076ea2ead16d7fd204af1884b971dbc8edaa",
+  "source_view": "lexer-pending-indentation",
+  "status": 0,
+  "unit_count": 501,
+  "workspace_elf_sha256": {
+    "debug/libruff_macros.so": "9b28f50631f2d22542769a623f5fe1f7794d5178c55f6b99d55b6a160b95c530",
+    "debug/libruff_wasm.so": "dd4e69c372f3e391725f1c28cb1416ce644e222db4f08fded9667609195735b8",
+    "debug/libty_wasm.so": "ac170be1edb3f0070f875f4a84aba4a1bd830b994433af66325454a33c747990",
+    "debug/ruff": "a0f78a36be701143ab09b0c30b11b3f79bc045d4313431ea8e5253418c8619ec",
+    "debug/ruff_dev": "cba5776d239b0b8ed066c0fd778331c22aebf9dfdaafe280ca33fc85cb716526",
+    "debug/ruff_python_formatter": "c83a5fdbf721a8b734e464eaa9314849c63244cbf21aed939b2ab96f6c014cb0",
+    "debug/ty": "c51a1a2bc995de3860698d8892afb8237a75155d54f10dc0000359884955a20d",
+    "debug/ty_completion_bench": "369f50b952c3236875d9a81c82ca145cdff7b300c39ddefb5178433f8802b45f",
+    "debug/ty_completion_eval": "696d26475d8008a1eccadbceaea73f905e0e60a0a4a56254c6345212e2aa4af1",
+    "ruff/4722aa02840a44c3/out/build_script_build": "b52715e7707d60b35ad4b7ff9237f8bd654448318102d1a2cd6f8fa45f064408",
+    "ruff_macros/0df74ae72023ec23/out/libruff_macros-0df74ae72023ec23.so": "daab39a4047294540e0142eeb2ac30d2330fabf181fec55a5df6c4b3e0421ad3",
+    "ruff_unicode_names2/8f05ff94e787857d/out/build_script_build": "86615881897806375c3c6b4ca1c38c325ed89379037f9a43bff857cb72de43df",
+    "ty/70696aae414a7369/out/build_script_build": "c30cbcb47f5ca2a3fc6ce2f5581629289b3018834f85df02fcb1763d6f4367a8",
+    "ty_vendored/a2417fe62c568aae/out/build_script_build": "587c2cb1be7fdde2caa9d3f99dc66d8e2222ed612053544d1e59ae5be58f63a1",
+    "ty_wasm/e988932c4bd2143f/out/build_script_build": "c1473433a44aefd5eda6f2edfc7b1816920bb7a5f5f0dc27062927c0a1651624"
+  }
+}

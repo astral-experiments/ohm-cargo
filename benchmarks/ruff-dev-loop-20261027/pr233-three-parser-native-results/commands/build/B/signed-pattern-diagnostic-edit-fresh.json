@@ -1,0 +1,138 @@
+{
+  "arm": "B",
+  "cargo_json_sha256": "7671de0c95598047944608dda86e69b5a744dd7ead26841c96a40ff455fa7583",
+  "compiler_probe_count": 0,
+  "complete_private_receipt_sha256": "937705ab0c75dc8b4a29b86df39ff9089a8225d9c4a12ea92a9125516b2d67e0",
+  "dirty_targets": [],
+  "elf_count": 15,
+  "executable_count": 6,
+  "fresh_units": 501,
+  "messages_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+  "mode": "build",
+  "name": "signed-pattern-diagnostic-edit-fresh",
+  "native_process_files": {
+    "cc": [],
+    "collect2": [],
+    "wild": []
+  },
+  "native_process_trace_sha256": {},
+  "native_totals": {
+    "cc": 0,
+    "collect2": 0,
+    "wild": 0
+  },
+  "novel_cli": [
+    {
+      "diagnostics": [],
+      "input": "match value:\n    case -1**2: ...\n",
+      "status": 0,
+      "stderr": ""
+    },
+    {
+      "diagnostics": [],
+      "input": "match value:\n    case -1(): ...\n",
+      "status": 0,
+      "stderr": ""
+    },
+    {
+      "diagnostics": [],
+      "input": "if True:\n    one = \"one\"\n    two = \"a\" \"b\"\nthree = f\"{42}\"\n",
+      "status": 0,
+      "stderr": ""
+    }
+  ],
+  "old_cli": {
+    "linter": [
+      {
+        "cell": null,
+        "code": "RUF008",
+        "end_location": {
+          "column": 36,
+          "row": 4
+        },
+        "filename": "/home/dev-user/code/oss/ruff-ohm-whole-native-20261027/case.py",
+        "fix": null,
+        "location": {
+          "column": 34,
+          "row": 4
+        },
+        "message": "Do not use mutable default values for dataclass attributes",
+        "name": "mutable-dataclass-default",
+        "noqa_row": 4,
+        "severity": "error",
+        "url": "https://docs.astral.sh/ruff/rules/mutable-dataclass-default"
+      },
+      {
+        "cell": null,
+        "code": "RUF008",
+        "end_location": {
+          "column": 22,
+          "row": 6
+        },
+        "filename": "/home/dev-user/code/oss/ruff-ohm-whole-native-20261027/case.py",
+        "fix": null,
+        "location": {
+          "column": 20,
+          "row": 6
+        },
+        "message": "Do not use mutable default values for dataclass attributes",
+        "name": "mutable-dataclass-default",
+        "noqa_row": 6,
+        "severity": "error",
+        "url": "https://docs.astral.sh/ruff/rules/mutable-dataclass-default"
+      }
+    ],
+    "parser": [
+      {
+        "cell": null,
+        "code": "invalid-syntax",
+        "end_location": {
+          "column": 19,
+          "row": 1
+        },
+        "filename": "-",
+        "fix": null,
+        "location": {
+          "column": 1,
+          "row": 1
+        },
+        "message": "Cannot mix t-string literals with string or bytes literals",
+        "name": "invalid-syntax",
+        "noqa_row": null,
+        "severity": "error",
+        "url": null
+      }
+    ]
+  },
+  "phase": "fresh",
+  "physical_jobs": [],
+  "process_totals": {},
+  "recipe_after": {},
+  "recipe_before": {},
+  "release_output_roster": {
+    "mapped_output_path_count": 862,
+    "sha256": "7cc7e6c508a9dc7468ec812806dc2363b64552c99a9123639fb9b0bb4e7f120f",
+    "units": 501
+  },
+  "roster_sha256": "37e9d1fdbe16fd476eb226e12cf57dc5b7be4f45ff292de60e309b6ee6aa4b8f",
+  "source_view": "signed-pattern-diagnostic",
+  "status": 0,
+  "unit_count": 501,
+  "workspace_elf_sha256": {
+    "debug/libruff_macros.so": "dc3bf45df5d819537c6d4b947b0dcbce3a44bd0cfedf0f8c4a4c9b120b3f8e43",
+    "debug/libruff_wasm.so": "49ea33b0837fdc2545e405613ff7ddb7e911e1cf90a493e6c5812968b684e02e",
+    "debug/libty_wasm.so": "bb0d265932f8055b86a785a7344bc522d01e4bf83c93a96e551dba04073b39ea",
+    "debug/ruff": "c2caa6413eabd690323a60a8c9b0408464f3aa9a8bf92bd033320f4f3f398b37",
+    "debug/ruff_dev": "ffc4a4d45403234d3f6d473bb96e39ee109dfed059cbaf8cf6c485cf5289d7aa",
+    "debug/ruff_python_formatter": "96a76a5a57da758a37781d17c232ef4e028c7b1c2ede3d5fbfcecd8e35b84379",
+    "debug/ty": "321dcd760a4eea4acf3b4d33319336e56491ae29893ff736d7c68fe7c084c79b",
+    "debug/ty_completion_bench": "a619497f83f842cb4aa98049d43e65a0ccf5d42f4f32672d9cce1c7b6815506a",
+    "debug/ty_completion_eval": "fa281ca5ef836db9d33c7b24f8ed56a21f139a70f262d6479ad60c9979d3a07b",
+    "ruff/4722aa02840a44c3/out/build_script_build": "b52715e7707d60b35ad4b7ff9237f8bd654448318102d1a2cd6f8fa45f064408",
+    "ruff_macros/0df74ae72023ec23/out/libruff_macros-0df74ae72023ec23.so": "f404f0266e44b16248a2a5bcad3d0843cd75af9859619255af72e5e8ac68de7a",
+    "ruff_unicode_names2/8f05ff94e787857d/out/build_script_build": "86615881897806375c3c6b4ca1c38c325ed89379037f9a43bff857cb72de43df",
+    "ty/70696aae414a7369/out/build_script_build": "c30cbcb47f5ca2a3fc6ce2f5581629289b3018834f85df02fcb1763d6f4367a8",
+    "ty_vendored/a2417fe62c568aae/out/build_script_build": "587c2cb1be7fdde2caa9d3f99dc66d8e2222ed612053544d1e59ae5be58f63a1",
+    "ty_wasm/e988932c4bd2143f/out/build_script_build": "c1473433a44aefd5eda6f2edfc7b1816920bb7a5f5f0dc27062927c0a1651624"
+  }
+}

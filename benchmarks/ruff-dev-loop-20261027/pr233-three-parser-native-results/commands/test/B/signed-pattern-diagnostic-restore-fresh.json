@@ -1,0 +1,273 @@
+{
+  "arm": "B",
+  "cargo_json_sha256": "e7368e97c5ae873831c5d07f189bed6a82eadaf1d45f817487ced68895f3a61b",
+  "compiler_probe_count": 0,
+  "complete_private_receipt_sha256": "c58aeff4a50e56b2eef62d59b11f24aaa1bb924973bc9554f76a883a151c24d1",
+  "dirty_targets": [],
+  "elf_count": 110,
+  "executable_count": 102,
+  "fresh_units": 619,
+  "messages_sha256": "cd6fea53e3f14d5f28fb58f3272dd522ad0d2536129e78ccbe936758b39999a1",
+  "mode": "test",
+  "name": "signed-pattern-diagnostic-restore-fresh",
+  "native_process_files": {
+    "cc": [],
+    "collect2": [],
+    "wild": []
+  },
+  "native_process_trace_sha256": {},
+  "native_totals": {
+    "cc": 0,
+    "collect2": 0,
+    "wild": 0
+  },
+  "novel_cli": [
+    {
+      "diagnostics": [
+        {
+          "cell": null,
+          "code": "invalid-syntax",
+          "end_location": {
+            "column": 15,
+            "row": 2
+          },
+          "filename": "-",
+          "fix": null,
+          "location": {
+            "column": 11,
+            "row": 2
+          },
+          "message": "Expected a numeric literal after unary operator",
+          "name": "invalid-syntax",
+          "noqa_row": null,
+          "severity": "error",
+          "url": null
+        }
+      ],
+      "input": "match value:\n    case -1**2: ...\n",
+      "status": 1,
+      "stderr": ""
+    },
+    {
+      "diagnostics": [
+        {
+          "cell": null,
+          "code": "invalid-syntax",
+          "end_location": {
+            "column": 14,
+            "row": 2
+          },
+          "filename": "-",
+          "fix": null,
+          "location": {
+            "column": 11,
+            "row": 2
+          },
+          "message": "Expected a numeric literal after unary operator",
+          "name": "invalid-syntax",
+          "noqa_row": null,
+          "severity": "error",
+          "url": null
+        }
+      ],
+      "input": "match value:\n    case -1(): ...\n",
+      "status": 1,
+      "stderr": ""
+    },
+    {
+      "diagnostics": [],
+      "input": "if True:\n    one = \"one\"\n    two = \"a\" \"b\"\nthree = f\"{42}\"\n",
+      "status": 0,
+      "stderr": ""
+    }
+  ],
+  "old_cli": {
+    "linter": [
+      {
+        "cell": null,
+        "code": "RUF008",
+        "end_location": {
+          "column": 36,
+          "row": 4
+        },
+        "filename": "/home/dev-user/code/oss/ruff-ohm-whole-native-20261027/case.py",
+        "fix": null,
+        "location": {
+          "column": 34,
+          "row": 4
+        },
+        "message": "Do not use mutable default values for dataclass attributes",
+        "name": "mutable-dataclass-default",
+        "noqa_row": 4,
+        "severity": "error",
+        "url": "https://docs.astral.sh/ruff/rules/mutable-dataclass-default"
+      },
+      {
+        "cell": null,
+        "code": "RUF008",
+        "end_location": {
+          "column": 22,
+          "row": 6
+        },
+        "filename": "/home/dev-user/code/oss/ruff-ohm-whole-native-20261027/case.py",
+        "fix": null,
+        "location": {
+          "column": 20,
+          "row": 6
+        },
+        "message": "Do not use mutable default values for dataclass attributes",
+        "name": "mutable-dataclass-default",
+        "noqa_row": 6,
+        "severity": "error",
+        "url": "https://docs.astral.sh/ruff/rules/mutable-dataclass-default"
+      }
+    ],
+    "parser": [
+      {
+        "cell": null,
+        "code": "invalid-syntax",
+        "end_location": {
+          "column": 19,
+          "row": 1
+        },
+        "filename": "-",
+        "fix": null,
+        "location": {
+          "column": 1,
+          "row": 1
+        },
+        "message": "Cannot mix t-string literals with string or bytes literals",
+        "name": "invalid-syntax",
+        "noqa_row": null,
+        "severity": "error",
+        "url": null
+      }
+    ]
+  },
+  "phase": "fresh",
+  "physical_jobs": [],
+  "process_totals": {},
+  "recipe_after": {},
+  "recipe_before": {},
+  "release_output_roster": {
+    "mapped_output_path_count": 1126,
+    "sha256": "d679d1aa84e9c7ad6f14b2124bf7e069affe8b2a35e3797346d725ce6d15cad2",
+    "units": 619
+  },
+  "roster_sha256": "b0ee50c7ec565908c9f96d9fc57af55d0793ee660497ea3de931c1e1970e30d1",
+  "source_view": "original",
+  "status": 0,
+  "unit_count": 619,
+  "workspace_elf_sha256": {
+    "debug/examples/character": "19c152fe72578632e7d9ef0ba11eb332bfe8d9805a889c8fd9d6075af4d02a73",
+    "debug/examples/count": "c77c07c751675fe02f7b196816eab18293c2a8e7cdbb452596e8dc5d2f5182f0",
+    "debug/examples/custom_error": "f2353ce193a90ef6a1c05b52b7bad1408597618c4f9975c9516d4af1d143ea3e",
+    "debug/examples/custom_level": "0db8a4253b92b8dbda235c173ea4372efac6e5ab4ceafb32efb1eacb317e1a74",
+    "debug/examples/elide_header": "7fb80a97c1f4cdf6b630b8e4f6d10c6084ba754447625d015b696d43faf55038",
+    "debug/examples/expected_type": "6931a6384be644b2de8b1abd9f5e76becc6d454a7e483fc44d404c1a2f03fd95",
+    "debug/examples/footer": "b948487a7e74b24e44552778a08c85afed5b6122468c244ec44388c4f0b5158b",
+    "debug/examples/format": "6f85c27b10d601207bd00847d71a81cda9d0d7c6ea8b84e806f4db9bfa683c06",
+    "debug/examples/highlight_message": "d476e75a87d470d9738d6ed56463b7f8c1882f0c696434edcf85e4fdc51d032d",
+    "debug/examples/highlight_source": "1bf8835d7f430347c777de26b7acd770c91a81a5d2d3a9e7af81b0c4ec5cae6b",
+    "debug/examples/id_hyperlink": "c9bea34b8788622a2c476569e1ecc31be1d967fb55e7c6ec110e88b846fc16e7",
+    "debug/examples/multi_suggestion": "08c82be53cddd11d64e95d4f48fb32c6085e0acf356c9ab1907cbaf7dacb31c5",
+    "debug/examples/multislice": "e32115347688d25c2116ef7916ec522983e92290b67c4e8f7befc267b52e0869",
+    "debug/examples/name": "be13c675c8e724bbe7aaed0725e00a16fe159ede4dca4233ca5d780ddb3134f7",
+    "debug/examples/struct_name_as_context": "7486db3f75605b62f1b89bb63ad8e958b385b4db34d0a9c92959756725ce2a73",
+    "debug/ruff": "628f79ebc28ec57b1f639651896dcf074abc1e4ae6eb2b65bffd63f3cbf04f87",
+    "debug/ruff_python_formatter": "cb1ae8b882103339b49bdda72f1a560e1be2e015173c7a770f029da0f03f9fc2",
+    "debug/ty": "c802d349150a89547934f46e643b0218b4a1a770a1057a34bbc854e9d04ca70f",
+    "mdtest/10d16879a5ac8a09/out/mdtest-10d16879a5ac8a09": "13149071896a781a7708360e79e38569424011ab1ef55cd3806d75a2655cd6ea",
+    "ruff/0484e04152dae56b/out/ruff-0484e04152dae56b": "3841359bd54b4c8a9f0ea7e51f1904bc22f6a5d11fe96326f638b96afdc58b0b",
+    "ruff/079e9dbd47e4f7c7/out/ruff-079e9dbd47e4f7c7": "6e78e5165d5ab505f6dc7d8e1e8bf23779061b6441b95c3c394bf4595c512c67",
+    "ruff/0ffdc1a29e0f55c4/out/cli-0ffdc1a29e0f55c4": "cd1491dc807a40852a2932849bc922eb7fd447ad61e3efd861789a4e1616312a",
+    "ruff/16e34c0e9d21d025/out/analyze_graph-16e34c0e9d21d025": "4f73420627607b555adeb3eb18c4d94d2f5a2a1cf72a8f69a7e4acdb5e7bef51",
+    "ruff/28bc11b77c4911ff/out/direxist_guard-28bc11b77c4911ff": "182d0332a12587df6fe6be2b8bd79f68484a4726c69b5b4e194c69eca7499bd3",
+    "ruff/37f4bfcd0365984a/out/integration_test-37f4bfcd0365984a": "5ae8abc947bca85b3a6e951ee90fb19e9e7ef71b66f60b30153bcad444918989",
+    "ruff/4722aa02840a44c3/out/build_script_build": "b52715e7707d60b35ad4b7ff9237f8bd654448318102d1a2cd6f8fa45f064408",
+    "ruff/9f14cd86c9ce1ffe/out/resolve_files-9f14cd86c9ce1ffe": "d926680efae2dafba3261ecf5decff0cffc628f685001a09482051fbbf078be0",
+    "ruff/a05026c35a67b25f/out/config-a05026c35a67b25f": "5ba1b30831813c149c8cb51c5302967cf35cce9b43150c32ffa2076609a5d79b",
+    "ruff_annotate_snippets/290a02820d8473e3/out/ruff-290a02820d8473e3": "1e5aa5bfc70f84e7605fbd18a63fbc809e225dca4b0f2be39c11db460fbbcb36",
+    "ruff_annotate_snippets/34fef98cde77cd07/out/formatter-34fef98cde77cd07": "acb8a878f173b0aa3af8872b20ef8ac6cbe604c2b48e0b568dc823ab27c06b67",
+    "ruff_annotate_snippets/82d07f4b4a54c3d5/out/examples-82d07f4b4a54c3d5": "479e32c93f742c044baa25638dcc3d03378860be398362d51d25035af4e6a442",
+    "ruff_annotate_snippets/900448544cbf56a3/out/color-900448544cbf56a3": "389894c9464e557b1c28e0da52b0243bb5209c7c57f9668a1a72975f460c0d71",
+    "ruff_annotate_snippets/a7b8da0b9c4749b3/out/rustc_tests-a7b8da0b9c4749b3": "aea1104806617aa9a2ed070a56e37f710798e6222279a89a33e895a42ea50435",
+    "ruff_cache/ba95d701359f07c9/out/cache_key-ba95d701359f07c9": "00b511d909f5f535079ec3b3e5bd121f767e5d17638d9da94c4325f9f36af4aa",
+    "ruff_command_line/fb207da550afc4cf/out/ruff_command_line-fb207da550afc4cf": "c2c42935224ad18b2d2afc0603f81003d4f157186557ca7d36fa392342e06397",
+    "ruff_db/da57d7c1341a3cbc/out/ruff_db-da57d7c1341a3cbc": "6fa50fe5bde7c17a920f62c197e8ba1d775311159728d630adc8ddc8ac46a261",
+    "ruff_dev/bae0aed7593827fd/out/ruff_dev-bae0aed7593827fd": "e805e049be00c75f2f9231e9d30ef4b4614b999b38bad91ddb4245c00822c637",
+    "ruff_formatter/ca232a8e79456858/out/ruff_formatter-ca232a8e79456858": "bf35678d979fad84238553f95cb5103cfdd25d4cf02fb98b4dd78ab90aaba262",
+    "ruff_index/c749123d8c665003/out/ruff_index-c749123d8c665003": "83a437b1a5ff4058ae4f941cb287fdb06d23dc8528cb3b59c92476d3b1c72a06",
+    "ruff_linter/93ff35527506cc0a/out/ruff_linter-93ff35527506cc0a": "1d0a34a5a38d142345df9edfbce76a8819d11d432692be17997ac73022b2146c",
+    "ruff_macros/0df74ae72023ec23/out/libruff_macros-0df74ae72023ec23.so": "f404f0266e44b16248a2a5bcad3d0843cd75af9859619255af72e5e8ac68de7a",
+    "ruff_markdown/8d6456532ce407fe/out/ruff_markdown-8d6456532ce407fe": "fbac91ba366a097f4a9ec87e15318b8af1bb0acb2b6960b1da91e12723caf471",
+    "ruff_mdtest/e911db4e2e1cfc32/out/mdtest-e911db4e2e1cfc32": "e6eb341c0fb21c9175ee3696552102048aa9601c23689c25ad599600e7fe53a9",
+    "ruff_notebook/290444d34fb4264e/out/ruff_notebook-290444d34fb4264e": "5a765ec728991ac34fafc481d45ed267ff51e24e8023cb3495f82c4215da41b2",
+    "ruff_python_ast/18c05f7c0f365395/out/ruff_python_ast-18c05f7c0f365395": "c075f7c0a7f8048d13ad667d44a3dc404d05f9355f2bfa67db29730e1594484f",
+    "ruff_python_ast_integration_tests/06f2e09ae20d63ef/out/identifier-06f2e09ae20d63ef": "7b4e2ea3e0179953e92afdf24d2671886f197754da7ea9eee1bb5c3c8945c4a9",
+    "ruff_python_ast_integration_tests/2e794818cd90abe0/out/source_order-2e794818cd90abe0": "86d94d224755b3ecff1933f893d6946b58e93d2674666d739fd7370f45aa9259",
+    "ruff_python_ast_integration_tests/6ff551c11be42e83/out/comparable-6ff551c11be42e83": "c6bd9ab95a93d6fdb180fdd5e7d77fbfef1823bc187f7ec6947a40e6712b7078",
+    "ruff_python_ast_integration_tests/ab4f4c4670eef8a6/out/parentheses-ab4f4c4670eef8a6": "bcdad00e7938afc722da3496978d52ee0b43f367a64528c04e81216a60c18f9c",
+    "ruff_python_ast_integration_tests/aba430225f206174/out/match_pattern-aba430225f206174": "fb225324dd8c54f7832ba514a8204e1340f94ffa4649e07f724f198c36b18ee9",
+    "ruff_python_ast_integration_tests/ee997aa74b59c841/out/stmt_if-ee997aa74b59c841": "2e1c1d27ecc81058286ab963d79d19e405845a90663ab395fbee7fedb96be6db",
+    "ruff_python_ast_integration_tests/faac883205351f44/out/visitor-faac883205351f44": "4975849a3fb656c925f5ce469e91ee27bb2962f87316476c55a4adf21f0ebb07",
+    "ruff_python_ast_integration_tests/fca9143061d113f6/out/parenthesize-fca9143061d113f6": "85e72edf3fbdfd793323acbc74213dc808aed7ab3f8c962de17e5e85965c7cd7",
+    "ruff_python_codegen/c7eb7130c538527e/out/ruff_python_codegen-c7eb7130c538527e": "7c7fc4307eb8dbe976ebecd3e97f75e3723caa19b6c76b045aa43d808adb8209",
+    "ruff_python_edits/9c998055df72c9c1/out/ruff_python_edits-9c998055df72c9c1": "fc2923e16a92f4800c1e71c72c61c3b76c2da797dcd5948e061aeb8c91435ac0",
+    "ruff_python_formatter/593309f62906c1cd/out/ruff_python_formatter-593309f62906c1cd": "ce28a9fdbc6fb29a94ee34383e843508263bcaccfd776e1d9a1c6a7d0feeb67d",
+    "ruff_python_formatter/9235f142eb65477b/out/normalizer-9235f142eb65477b": "32bcd258bf2da85803e1e9adc500104354e24ecad63111bbe4624acc8d25acaa",
+    "ruff_python_formatter/9c163d83ac07ad02/out/ruff_python_formatter-9c163d83ac07ad02": "7a83b92febeb2e2f8ef45d6b8ff59286908ed3f7f2b127ca30fc65c3abb7b4f4",
+    "ruff_python_formatter/a90e830f879e2fc3/out/fixtures-a90e830f879e2fc3": "f75f8a76d345bb92d4b221c609052910ae490b74cda9fb0c21f5edcdfda5ab2e",
+    "ruff_python_importer/ca56a45b372a77c6/out/ruff_python_importer-ca56a45b372a77c6": "cce93f4340d9d5d7c408019742e794da6177bc0bc5b4fc929e04d7716269a2ae",
+    "ruff_python_index/33bc5d00278b2c92/out/ruff_python_index-33bc5d00278b2c92": "06c14af0c400602ab225b5156575c2d17d08ee7027bd1bb4421dd9ee47984941",
+    "ruff_python_literal/8f785e5c606a59c7/out/ruff_python_literal-8f785e5c606a59c7": "72cad0a183c8368df930d16de4e9842917b1f0e2bbf076671ddff73febe61138",
+    "ruff_python_parser/448b55c2daefb7e5/out/fixtures-448b55c2daefb7e5": "96e972f82fb0531eae3af5b5661f14f4e85bff8fda642ae813634f62a25ea4cb",
+    "ruff_python_parser/a7065a1b33a47a50/out/ruff_python_parser-a7065a1b33a47a50": "76f57237aa52c3417f24473fa10fcd84b0f629bdfbb8430cf2874fc600d882c6",
+    "ruff_python_parser/c499f0c10368b369/out/generate_inline_tests-c499f0c10368b369": "0ef4ea5e14578d9999e75260495545a6069ca518574fbbd61c27b7b626ea16c5",
+    "ruff_python_semantic/29d938dbd57eec9b/out/ruff_python_semantic-29d938dbd57eec9b": "4c69ad1756d202f1dd142985f1b99d73cfe27f4d84a6729d8eff100244410b35",
+    "ruff_python_stdlib/41bccd3c81c6e36a/out/ruff_python_stdlib-41bccd3c81c6e36a": "86b86ea5c470ae2f915973963f0395a108dfe22d3820d62321ec08187844dfdf",
+    "ruff_python_trivia/7a130cb098d71d4c/out/ruff_python_trivia-7a130cb098d71d4c": "e474c0896cfd2643e195a5c7e2d0ffeb8edc03126788d83fc6adc27ff14a4d35",
+    "ruff_python_trivia_integration_tests/8fde74c9c7c8ef48/out/simple_tokenizer-8fde74c9c7c8ef48": "15034b4698ccbac622f6b0ec1889cfe1409e7b15c9c9dd22327fa962b4487500",
+    "ruff_python_trivia_integration_tests/9662851dc170d68f/out/block_comments-9662851dc170d68f": "880fca3137c30ebd960354e170b0795c39462fae56ec4209fdeb0873420829ec",
+    "ruff_python_trivia_integration_tests/e97873547d28e580/out/whitespace-e97873547d28e580": "298807f65c0f8632ec87f32e51b068a0f20f29c6a87b5d8222f0833562bfa859",
+    "ruff_server/5fb728229e01709b/out/ruff_server-5fb728229e01709b": "68fd597a816be09bc94d3697d8a3b0ce2b881ca957e6c787f9e27e1d7d1ff37d",
+    "ruff_server/bafe7b5f46b57185/out/e2e-bafe7b5f46b57185": "114a04f22c15682ea277f9d4af281cd4deeac630ace41528a55091b1842daa60",
+    "ruff_server/f81f313fe27e5621/out/document-f81f313fe27e5621": "c8089b469318f50bceeb4e18b1d55252c5b9a15998a5f08e9ae58c295c921445",
+    "ruff_source_file/4c5c85c93be371de/out/ruff_source_file-4c5c85c93be371de": "5be2a35324b903b73db2e2f272c08f011cbc3a6714d4b55bfddacc7c31e168c3",
+    "ruff_text_size/7dc337de02599b72/out/indexing-7dc337de02599b72": "983bd6009eb38a31fcda5481d15982bdb570cb904c5967e2d08f62865cbec45f",
+    "ruff_text_size/82ca24d662cea510/out/auto_traits-82ca24d662cea510": "bea3a01770bbbf8dd6733649b77c5dafcfd3654cb32db222cf5cbdbc448814f2",
+    "ruff_text_size/c78bdaaabe928f89/out/serde-c78bdaaabe928f89": "492831774dd834b48ab0677033a127c2aa5e39ccdd8c6e82e73f2042216e571b",
+    "ruff_text_size/d9d70e09cb3ac63b/out/main-d9d70e09cb3ac63b": "9a0ac0b62937a16b5bbe53ba8a79d2b94b666012f89148e2cec9027efb56c1c5",
+    "ruff_text_size/edf34e5c2fd5e9e1/out/constructors-edf34e5c2fd5e9e1": "38f0b12a20d909b0fbfca749de66198106bfeb96f62af91d1721c33a4141ad80",
+    "ruff_unicode_names2/8f05ff94e787857d/out/build_script_build": "86615881897806375c3c6b4ca1c38c325ed89379037f9a43bff857cb72de43df",
+    "ruff_unicode_names2_generator/91fc0f7bb40adacc/out/unicode_names2_generator-91fc0f7bb40adacc": "5328d68a1e2503c87bbea4112c67a1c2226f24a669fdd1ecbcdfc40098d0ffb2",
+    "ruff_wasm/22f7aab93ae9436c/out/libruff_wasm.so": "038d630efda459b2b4d7737762a46bd2c564327b8b6447ebb2ab74c38fcec7c3",
+    "ruff_wasm/5954b04f4610694e/out/api-5954b04f4610694e": "db370756c6fadef846dde0243effcea758fc478db06c3a17dffe9a4028f29a31",
+    "ruff_workspace/ef09ebe5edb5924f/out/ruff_workspace-ef09ebe5edb5924f": "f27e9d85ecd12c97c98cb7a85987c462a76cae1dfa3f1d16e14ad703471c94a8",
+    "ty/440d4bc7ce0d4c47/out/cli-440d4bc7ce0d4c47": "88fc468efa9f97e897ad8edb94e385843695137fa2bd8f09658638971a6729d4",
+    "ty/70696aae414a7369/out/build_script_build": "c30cbcb47f5ca2a3fc6ce2f5581629289b3018834f85df02fcb1763d6f4367a8",
+    "ty/7b468c94385bf9c2/out/ty-7b468c94385bf9c2": "2f8dd5b460992c4d0607ad7143934ac820acb09e265348e6ff72e52d1db346cc",
+    "ty/860e2be505c8514a/out/self_environment-860e2be505c8514a": "68763aef019938910253e7f3d93bb4e72e544332bc46223a5ab135fbe9798707",
+    "ty/db522eb3681446b6/out/file_watching-db522eb3681446b6": "3dfd4523b91c8e13a3f6c81d0d49f59493930f5ccd91759d468fdf96bc4bc303",
+    "ty/ed6b57e4ab076002/out/ty-ed6b57e4ab076002": "354017d537da01b14bef86d479519ffc1dbe2f14f8f1e07b00f21cf875a1bb05",
+    "ty_combine/36628d7a89459219/out/ty_combine-36628d7a89459219": "17ec4b3bc5793b637992aa146f994e41587358ab7c6478d1b1a5473298eff334",
+    "ty_completion_bench/a54bfaddfcb56ff6/out/ty_completion_bench-a54bfaddfcb56ff6": "9b84b892e814d8bf9f4ef241d971a23870fdfc09000fd99cc2680afb0d21d333",
+    "ty_completion_eval/30a29fc61090bd66/out/ty_completion_eval-30a29fc61090bd66": "c904f5847cdb890558abe5c0b52eefc4fa6f22a4c7d9a1d315209a46dcbc8c1e",
+    "ty_ide/3a1df486adf8781f/out/ty_ide-3a1df486adf8781f": "e10745705e914b63a541da58bb9a7cc48437dddf7c8b159eb7790dbb8c7b6876",
+    "ty_module_resolver/12dce0591ee576b7/out/ty_module_resolver-12dce0591ee576b7": "721837faf6808b094bd33744425761cc26b10bd8d2bac48650ebdbc8187b2840",
+    "ty_project/9c2720264839e981/out/ty_project-9c2720264839e981": "c0faa3ce4c78d3485197a565161b487ca421c3025a9000ebe3c3094a0cf679ee",
+    "ty_python_core/42a4941c7e439dc7/out/ty_python_core-42a4941c7e439dc7": "599efa093856e6830b1d483ae7308002cc228ce9801dc52cced70719022660bd",
+    "ty_python_semantic/0c6198693585a152/out/mdtest-0c6198693585a152": "ba8f4d221b125f525a34bf7e85bf2a2d2a1fb0fe0ec8da5e63651ed66ddbaa07",
+    "ty_python_semantic/e5c2bb0fe3770625/out/corpus-e5c2bb0fe3770625": "876d0975f7a898c23a161b7f573232cd33d15feab783ae86d757890aede836e6",
+    "ty_python_semantic/e77bf8e779c1bd16/out/ty_python_semantic-e77bf8e779c1bd16": "f63503c92368b035e8f060fc4c68edb086871104a807bd65b2b1a68a0688da55",
+    "ty_server/5f31be30b2802565/out/ty_server-5f31be30b2802565": "28efbb514fde1f8ac2c5d0d7a96f22a130f27141484aa8752fe340cec1874493",
+    "ty_server/c1c481f014f6bbfa/out/e2e-c1c481f014f6bbfa": "57361f31d48f353dc244ddaf6e76a400a5988c05f7b34304f45923e73a662701",
+    "ty_site_packages/d106317410a5cb94/out/ty_site_packages-d106317410a5cb94": "2cf9be76800e0dcef3b3e926786590a7844bb251a61834365ea73c4fe53762fc",
+    "ty_test/0373f699e784d498/out/ty_test-0373f699e784d498": "b995e619e723082055c0bc9a980bd74a9e907131389ff11866bca91e34c95811",
+    "ty_vendored/a2417fe62c568aae/out/build_script_build": "587c2cb1be7fdde2caa9d3f99dc66d8e2222ed612053544d1e59ae5be58f63a1",
+    "ty_vendored/b5cab9f3ba37f17b/out/ty_vendored-b5cab9f3ba37f17b": "1600589df470911a8ccf12186189239c823d33194617330e29be33514695e380",
+    "ty_wasm/af65d95beac5d41b/out/api-af65d95beac5d41b": "ea28d17cfe4db48db05aaf3f7df2ab45486d430650bd7f539ef43db540aa080a",
+    "ty_wasm/e3ca85013ada9fa2/out/libty_wasm.so": "47c9ceb9f9c93202857c922f1818b325d7381fe4da96c31dd36869e72229a0b5",
+    "ty_wasm/e988932c4bd2143f/out/build_script_build": "c1473433a44aefd5eda6f2edfc7b1816920bb7a5f5f0dc27062927c0a1651624"
+  }
+}

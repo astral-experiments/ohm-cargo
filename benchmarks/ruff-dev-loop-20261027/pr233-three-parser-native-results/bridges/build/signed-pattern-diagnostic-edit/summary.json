@@ -1,0 +1,90 @@
+[
+  {
+    "crate": "ruff_wasm",
+    "exit": 0,
+    "input_arm": "B",
+    "kind": "bridge"
+  },
+  {
+    "crate": "ruff_wasm",
+    "exit": 0,
+    "input_arm": "C",
+    "kind": "bridge"
+  },
+  {
+    "bridge_from": "B",
+    "crate": "ruff_wasm",
+    "current_arm": "B",
+    "exit": 0,
+    "kind": "caller",
+    "observed": {
+      "action": "caller",
+      "arm": "B",
+      "crate": "ruff_wasm",
+      "current_rlib_sha256": "200dd76f19d3d908ed89cc93f90461720bdb7d06d031e565f9840dca37c3bf20",
+      "public_hash_opt_in": false,
+      "result_sha256": "cfe82bbf0e8dc88fa2d45b5d8f0c60a3b9a9e4b7216e52e3d47d2d92345a7779",
+      "runtime": "0.17.0"
+    }
+  },
+  {
+    "bridge_from": "C",
+    "crate": "ruff_wasm",
+    "current_arm": "C",
+    "exit": 0,
+    "kind": "caller",
+    "observed": {
+      "action": "caller",
+      "arm": "C",
+      "crate": "ruff_wasm",
+      "current_rlib_sha256": "01ce5a09889f17227350f9109633300009a5f52f98da27e49c3fae9b9710fbf2",
+      "public_hash_opt_in": false,
+      "result_sha256": "cfe82bbf0e8dc88fa2d45b5d8f0c60a3b9a9e4b7216e52e3d47d2d92345a7779",
+      "runtime": "0.17.0"
+    }
+  },
+  {
+    "crate": "ty_wasm",
+    "exit": 0,
+    "input_arm": "B",
+    "kind": "bridge"
+  },
+  {
+    "crate": "ty_wasm",
+    "exit": 0,
+    "input_arm": "C",
+    "kind": "bridge"
+  },
+  {
+    "bridge_from": "B",
+    "crate": "ty_wasm",
+    "current_arm": "B",
+    "exit": 0,
+    "kind": "caller",
+    "observed": {
+      "action": "caller",
+      "arm": "B",
+      "crate": "ty_wasm",
+      "current_rlib_sha256": "74e90b8eaf267abbab884a2d1ff299a14235cf3c3e710858c06dd36f69986b98",
+      "public_hash_opt_in": false,
+      "result_sha256": "742126975587a6b4f6b0000ea91d6fbd5ebed28e79933f77f0b668f1893a4dc5",
+      "runtime": "93526150d"
+    }
+  },
+  {
+    "bridge_from": "C",
+    "crate": "ty_wasm",
+    "current_arm": "C",
+    "exit": 0,
+    "kind": "caller",
+    "observed": {
+      "action": "caller",
+      "arm": "C",
+      "crate": "ty_wasm",
+      "current_rlib_sha256": "8a27ff0b3b48aef3bca9f9c0b2ccc7c6237d50189fcada513338576389426790",
+      "public_hash_opt_in": false,
+      "result_sha256": "742126975587a6b4f6b0000ea91d6fbd5ebed28e79933f77f0b668f1893a4dc5",
+      "runtime": "93526150d"
+    }
+  }
+]

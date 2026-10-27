@@ -1,0 +1,2341 @@
+{
+  "arm": "C",
+  "cargo_json_sha256": "e0daa59abc91692b3e1f0c6c3688099772bd648fe8006444bbf47381c5fc524b",
+  "compiler_probe_count": 0,
+  "complete_private_receipt_sha256": "84c711aaea90809cd56a9213b3b34ddda315b6615480470a4385c6c72c7925fa",
+  "dirty_targets": [
+    "analyze_graph",
+    "block_comments",
+    "cli",
+    "cli",
+    "comparable",
+    "config",
+    "corpus",
+    "direxist_guard",
+    "document",
+    "e2e",
+    "e2e",
+    "file_watching",
+    "fixtures",
+    "fixtures",
+    "generate_inline_tests",
+    "identifier",
+    "insta",
+    "insta_cmd",
+    "integration_test",
+    "match_pattern",
+    "mdtest",
+    "mdtest",
+    "mdtest",
+    "mdtest",
+    "normalizer",
+    "parentheses",
+    "parenthesize",
+    "resolve_files",
+    "ron",
+    "ruff",
+    "ruff",
+    "ruff_db",
+    "ruff_linter",
+    "ruff_markdown",
+    "ruff_mdtest",
+    "ruff_python_formatter",
+    "ruff_python_formatter",
+    "ruff_python_importer",
+    "ruff_python_parser",
+    "ruff_python_semantic",
+    "ruff_server",
+    "self_environment",
+    "simple_tokenizer",
+    "source_order",
+    "stmt_if",
+    "ty",
+    "ty",
+    "ty_ide",
+    "ty_module_resolver",
+    "ty_project",
+    "ty_python_semantic",
+    "ty_server",
+    "ty_test",
+    "ty_test",
+    "visitor",
+    "whitespace"
+  ],
+  "elf_count": 110,
+  "executable_count": 102,
+  "fresh_units": 563,
+  "messages_sha256": "cd6fea53e3f14d5f28fb58f3272dd522ad0d2536129e78ccbe936758b39999a1",
+  "mode": "test",
+  "name": "original-warm-1",
+  "native_process_files": {
+    "cc": [
+      "exec.2879181",
+      "exec.2879191",
+      "exec.2879197",
+      "exec.2879204",
+      "exec.2879205",
+      "exec.2879229",
+      "exec.2879248",
+      "exec.2879339",
+      "exec.2879353",
+      "exec.2879405",
+      "exec.2879423",
+      "exec.2879486",
+      "exec.2879516",
+      "exec.2879621",
+      "exec.2879728",
+      "exec.2879730",
+      "exec.2879746",
+      "exec.2879788",
+      "exec.2879819",
+      "exec.2879932",
+      "exec.2879933",
+      "exec.2879938",
+      "exec.2880033",
+      "exec.2880096",
+      "exec.2880117",
+      "exec.2880151",
+      "exec.2880175",
+      "exec.2880209",
+      "exec.2880266",
+      "exec.2880267",
+      "exec.2880378",
+      "exec.2880379",
+      "exec.2880406",
+      "exec.2880463",
+      "exec.2880471",
+      "exec.2880530",
+      "exec.2880654",
+      "exec.2880660",
+      "exec.2880662",
+      "exec.2880673",
+      "exec.2880678",
+      "exec.2880683",
+      "exec.2880685",
+      "exec.2880738",
+      "exec.2880742",
+      "exec.2880744",
+      "exec.2880792",
+      "exec.2880807",
+      "exec.2880808",
+      "exec.2880816"
+    ],
+    "collect2": [
+      "exec.2879200",
+      "exec.2879215",
+      "exec.2879222",
+      "exec.2879226",
+      "exec.2879251",
+      "exec.2879364",
+      "exec.2879443",
+      "exec.2879447",
+      "exec.2879487",
+      "exec.2879517",
+      "exec.2879522",
+      "exec.2879574",
+      "exec.2879579",
+      "exec.2879751",
+      "exec.2879761",
+      "exec.2879784",
+      "exec.2879818",
+      "exec.2879961",
+      "exec.2879962",
+      "exec.2879969",
+      "exec.2879979",
+      "exec.2880005",
+      "exec.2880152",
+      "exec.2880176",
+      "exec.2880207",
+      "exec.2880221",
+      "exec.2880334",
+      "exec.2880345",
+      "exec.2880355",
+      "exec.2880439",
+      "exec.2880443",
+      "exec.2880447",
+      "exec.2880516",
+      "exec.2880531",
+      "exec.2880607",
+      "exec.2880655",
+      "exec.2880674",
+      "exec.2880679",
+      "exec.2880686",
+      "exec.2880702",
+      "exec.2880708",
+      "exec.2880724",
+      "exec.2880737",
+      "exec.2880747",
+      "exec.2880765",
+      "exec.2880803",
+      "exec.2880809",
+      "exec.2880817",
+      "exec.2880826",
+      "exec.2880830"
+    ],
+    "wild": [
+      "exec.2879201",
+      "exec.2879216",
+      "exec.2879223",
+      "exec.2879227",
+      "exec.2879252",
+      "exec.2879365",
+      "exec.2879444",
+      "exec.2879453",
+      "exec.2879488",
+      "exec.2879518",
+      "exec.2879523",
+      "exec.2879575",
+      "exec.2879580",
+      "exec.2879752",
+      "exec.2879762",
+      "exec.2879785",
+      "exec.2879820",
+      "exec.2879963",
+      "exec.2879964",
+      "exec.2879970",
+      "exec.2879980",
+      "exec.2880006",
+      "exec.2880163",
+      "exec.2880177",
+      "exec.2880208",
+      "exec.2880223",
+      "exec.2880342",
+      "exec.2880346",
+      "exec.2880356",
+      "exec.2880440",
+      "exec.2880444",
+      "exec.2880448",
+      "exec.2880518",
+      "exec.2880533",
+      "exec.2880613",
+      "exec.2880656",
+      "exec.2880675",
+      "exec.2880680",
+      "exec.2880687",
+      "exec.2880703",
+      "exec.2880710",
+      "exec.2880728",
+      "exec.2880739",
+      "exec.2880748",
+      "exec.2880767",
+      "exec.2880804",
+      "exec.2880810",
+      "exec.2880818",
+      "exec.2880827",
+      "exec.2880831"
+    ]
+  },
+  "native_process_trace_sha256": {
+    "exec.2879006": {
+      "process_trace_sha256": "768194baed33b5f5fcb11fa5314e5ff282ea2ecc025f842a21304dfdf11a27e2",
+      "roles": [
+        [
+          "ron",
+          "full"
+        ]
+      ]
+    },
+    "exec.2879095": {
+      "process_trace_sha256": "e14fd65e73cf1b57b50dd6aeb7494bd48c430ace22a146f7b851bff50362bd71",
+      "roles": [
+        [
+          "match_pattern",
+          "link-only"
+        ]
+      ]
+    },
+    "exec.2879096": {
+      "process_trace_sha256": "583e522b09b1a740fe5c84dd580fe08498c0299e946b1b8968c6545e66a8ba37",
+      "roles": [
+        [
+          "simple_tokenizer",
+          "link-only"
+        ]
+      ]
+    },
+    "exec.2879097": {
+      "process_trace_sha256": "e983d7c89c6fc2942f48980ad84cc244df0160deac8464b95dc337711cccd2b0",
+      "roles": [
+        [
+          "analyze_graph",
+          "link-only"
+        ]
+      ]
+    },
+    "exec.2879100": {
+      "process_trace_sha256": "c40b2d660aef745fc35cb97aca57a43ac2d096221eba68d3c6befbb5e6a7b8dd",
+      "roles": [
+        [
+          "fixtures",
+          "link-only"
+        ]
+      ]
+    },
+    "exec.2879101": {
+      "process_trace_sha256": "bf2eedfe1cc7086de928951c38d0b5ad6b292767f430d0cea9fcfdc329485bbe",
+      "roles": [
+        [
+          "mdtest",
+          "link-only"
+        ]
+      ]
+    },
+    "exec.2879104": {
+      "process_trace_sha256": "327d9407ae6edae15ed08e9e0dde11235c4c427aa24cad0d47f3fb58db422b32",
+      "roles": [
+        [
+          "generate_inline_tests",
+          "link-only"
+        ]
+      ]
+    },
+    "exec.2879136": {
+      "process_trace_sha256": "a2596e534f8081d38f982ac48c0c8e08eff6388fe659c40c7f1d6f85a28effae",
+      "roles": [
+        [
+          "e2e",
+          "link-only"
+        ]
+      ]
+    },
+    "exec.2879181": {
+      "process_trace_sha256": "7eaf3fc9f63e30c0350a1da7861bef3a6d237508bafc816acfc3f945f186003a",
+      "roles": [
+        [
+          "cc"
+        ]
+      ]
+    },
+    "exec.2879191": {
+      "process_trace_sha256": "6afb29915262074356e24800c54f41fba8553c93cca5a600e789799c51c87913",
+      "roles": [
+        [
+          "cc"
+        ]
+      ]
+    },
+    "exec.2879197": {
+      "process_trace_sha256": "7c42be3894c00d6f01279674110ce63f1d2108c29781d7f32dee4f8ff019ee65",
+      "roles": [
+        [
+          "cc"
+        ]
+      ]
+    },
+    "exec.2879198": {
+      "process_trace_sha256": "b28f39613adf866e1d835b1694ccdac46bdd115d824bfa7ab71fd63bc14925a1",
+      "roles": [
+        [
+          "ruff_linter",
+          "link-only"
+        ]
+      ]
+    },
+    "exec.2879200": {
+      "process_trace_sha256": "077f7bafd0bfadce59c0eeb1311e604789c24f35877a7e512e4f04555dad4d55",
+      "roles": [
+        [
+          "collect2"
+        ]
+      ]
+    },
+    "exec.2879201": {
+      "process_trace_sha256": "79701967eb5814ba197b1f0d00e7640cbce11b189a97e4fc76660732552ab853",
+      "roles": [
+        [
+          "wild"
+        ]
+      ]
+    },
+    "exec.2879204": {
+      "process_trace_sha256": "a70671a365874eea92ce01c7129d993f25c5d859747472fa47fe0b8633f2c4e1",
+      "roles": [
+        [
+          "cc"
+        ]
+      ]
+    },
+    "exec.2879205": {
+      "process_trace_sha256": "1a33b13b2b51ac907a8b4e23e06251c8792217f106c959b5c7ecc2642441c9dc",
+      "roles": [
+        [
+          "cc"
+        ]
+      ]
+    },
+    "exec.2879215": {
+      "process_trace_sha256": "0cde14ecb3189c0e680dba5a6a2eb1984ec0cbeba9c9873b3802c412ddf756a5",
+      "roles": [
+        [
+          "collect2"
+        ]
+      ]
+    },
+    "exec.2879216": {
+      "process_trace_sha256": "dbe8fd6e71b1217da00168b107629b2bc9b7c494f1e7f361bd5276e033ad648e",
+      "roles": [
+        [
+          "wild"
+        ]
+      ]
+    },
+    "exec.2879220": {
+      "process_trace_sha256": "e7c8e98c194f5ce5cd44ef6bc77b3ce3710f01ceeb55b14ba0569d0590fdfe19",
+      "roles": [
+        [
+          "corpus",
+          "link-only"
+        ]
+      ]
+    },
+    "exec.2879222": {
+      "process_trace_sha256": "2c077f75b28d19f64f68ef8ae46fec68f3ba1906ad029398f3ef17a81def9e8d",
+      "roles": [
+        [
+          "collect2"
+        ]
+      ]
+    },
+    "exec.2879223": {
+      "process_trace_sha256": "eb6c41790ee50c06aa4fa0c676de576dd601b902396ba7e084a4a7681c33ef83",
+      "roles": [
+        [
+          "wild"
+        ]
+      ]
+    },
+    "exec.2879226": {
+      "process_trace_sha256": "6a98d9fd91aaab1785ee7210975e35f29ab950ea3af77895f338d369849f4c3d",
+      "roles": [
+        [
+          "collect2"
+        ]
+      ]
+    },
+    "exec.2879227": {
+      "process_trace_sha256": "772bd2e44a6bebbda5af6f4fa6ed7689f7e6bae313924b2ff5b2ac0c8886f2fe",
+      "roles": [
+        [
+          "wild"
+        ]
+      ]
+    },
+    "exec.2879229": {
+      "process_trace_sha256": "a800b920615432ad4934a066a8ae128904f0f19a49bc702268d5f07f84610202",
+      "roles": [
+        [
+          "cc"
+        ]
+      ]
+    },
+    "exec.2879241": {
+      "process_trace_sha256": "00b3af4587a620de3bab48b329c1ca344b36e28911b820ff8281a9fe24b79825",
+      "roles": [
+        [
+          "mdtest",
+          "link-only"
+        ]
+      ]
+    },
+    "exec.2879248": {
+      "process_trace_sha256": "5dc434a646ec8411944f99294c2a75685efbc3a6d1686e778b24034c02c2cfe1",
+      "roles": [
+        [
+          "cc"
+        ]
+      ]
+    },
+    "exec.2879251": {
+      "process_trace_sha256": "7193a9e9f23ba1fe4caa380e37339cc3865b4b5b623050537b6363f9f380a819",
+      "roles": [
+        [
+          "collect2"
+        ]
+      ]
+    },
+    "exec.2879252": {
+      "process_trace_sha256": "8bb4951a3175182b7b11e4578e32095edaad51a3a81cd9be5dafa96aef692f09",
+      "roles": [
+        [
+          "wild"
+        ]
+      ]
+    },
+    "exec.2879307": {
+      "process_trace_sha256": "6648427209bbff560fdda36308b1dcf2fe2920d683338d724220c2de045911c7",
+      "roles": [
+        [
+          "ty_test",
+          "link-only"
+        ]
+      ]
+    },
+    "exec.2879339": {
+      "process_trace_sha256": "5b143b1dc8e4ebd9d3744115dcd4ceded2403f960d3b8f56efa377314116637a",
+      "roles": [
+        [
+          "cc"
+        ]
+      ]
+    },
+    "exec.2879353": {
+      "process_trace_sha256": "21ad9392642d22b876a4591d80ec716d54abdf69a608b2a3e41975a36e34dfa6",
+      "roles": [
+        [
+          "cc"
+        ]
+      ]
+    },
+    "exec.2879362": {
+      "process_trace_sha256": "208ec43672a369d159d42bb4b7be700ad3e0cc3a0e6b24053a86cc995e49d446",
+      "roles": [
+        [
+          "ty_python_semantic",
+          "link-only"
+        ]
+      ]
+    },
+    "exec.2879364": {
+      "process_trace_sha256": "d658ecbcf94598249b9d4ba68f009e5aad958e9ec635442abc342f55f8eafe73",
+      "roles": [
+        [
+          "collect2"
+        ]
+      ]
+    },
+    "exec.2879365": {
+      "process_trace_sha256": "fcd63e54ef061139ef7088bbc047c8f1f10771a44d768b656769cb90b3f069ad",
+      "roles": [
+        [
+          "wild"
+        ]
+      ]
+    },
+    "exec.2879367": {
+      "process_trace_sha256": "a10a1a5baa75caa09942849238e884b4fe4384480bb3e4e73ce5f0e888b95cce",
+      "roles": [
+        [
+          "ruff",
+          "link-only"
+        ]
+      ]
+    },
+    "exec.2879405": {
+      "process_trace_sha256": "709d9842bc80ab3e5e982c3fdbcf6886acc90c73375f9f5a841a5124de5197cb",
+      "roles": [
+        [
+          "cc"
+        ]
+      ]
+    },
+    "exec.2879423": {
+      "process_trace_sha256": "071903e394f0404fb99d7b0d2e6b5cb827538795ea7fc736250612ee37c5f008",
+      "roles": [
+        [
+          "cc"
+        ]
+      ]
+    },
+    "exec.2879443": {
+      "process_trace_sha256": "1141914cc7b1bc71d68a225bb7caa0b44308b40e018de7eda299c14f6308bf85",
+      "roles": [
+        [
+          "collect2"
+        ]
+      ]
+    },
+    "exec.2879444": {
+      "process_trace_sha256": "a5bd648977a076ebcaacabb0932b13fec4d9c643d75005440c21e7cccae9d8ed",
+      "roles": [
+        [
+          "wild"
+        ]
+      ]
+    },
+    "exec.2879447": {
+      "process_trace_sha256": "7665f7dcce9a83a4549bed21c1c0eff56eb564b02c5b2ae4ba9b7aee11dce96a",
+      "roles": [
+        [
+          "collect2"
+        ]
+      ]
+    },
+    "exec.2879453": {
+      "process_trace_sha256": "1899cd011b1bc8c2e50edf026dfa99288126ff45b40a46fa178bf9a6c0688234",
+      "roles": [
+        [
+          "wild"
+        ]
+      ]
+    },
+    "exec.2879486": {
+      "process_trace_sha256": "34f3534df6c3a9e52b8a6b36befed5f0a0aa8f06fefbafeedd2d28368f61a0ee",
+      "roles": [
+        [
+          "cc"
+        ]
+      ]
+    },
+    "exec.2879487": {
+      "process_trace_sha256": "a4585b21e98c75be7b20d1c88c3a47fce3f122922421d81007f42a015c08985b",
+      "roles": [
+        [
+          "collect2"
+        ]
+      ]
+    },
+    "exec.2879488": {
+      "process_trace_sha256": "b4f0bd77c7a9b5a14d77e9a3cca5795423612eee6b6f76df395f935136fe3063",
+      "roles": [
+        [
+          "wild"
+        ]
+      ]
+    },
+    "exec.2879516": {
+      "process_trace_sha256": "765ace735f308e5d3adec62b2ab2858b717a732bdf321522a882a0d213310177",
+      "roles": [
+        [
+          "cc"
+        ]
+      ]
+    },
+    "exec.2879517": {
+      "process_trace_sha256": "4cd7135af5896cf679a720bbd524af2fe38ca880508ddf31ab9f2fc93cac401a",
+      "roles": [
+        [
+          "collect2"
+        ]
+      ]
+    },
+    "exec.2879518": {
+      "process_trace_sha256": "87b6c97cdbc5a59f59d3779ed449a011cf4005fbda7632c299e79cac468d1bc4",
+      "roles": [
+        [
+          "wild"
+        ]
+      ]
+    },
+    "exec.2879522": {
+      "process_trace_sha256": "2c52be8e8f4fd5d7fe68f626cc731d2dddfd9a4ce08b6a44619847e2a159d513",
+      "roles": [
+        [
+          "collect2"
+        ]
+      ]
+    },
+    "exec.2879523": {
+      "process_trace_sha256": "c56de37254664225882306c854a518a189ef54471f113d560f59526ef97bc676",
+      "roles": [
+        [
+          "wild"
+        ]
+      ]
+    },
+    "exec.2879539": {
+      "process_trace_sha256": "11aeb022ec22f5b597e6810a6cb793587a8a750576f278dd8612e16b76e9d9ef",
+      "roles": [
+        [
+          "ty",
+          "link-only"
+        ]
+      ]
+    },
+    "exec.2879574": {
+      "process_trace_sha256": "1e5d10e784b0d4c9b2c61514be4af281eff97e54e80dd42b8456559013efbc54",
+      "roles": [
+        [
+          "collect2"
+        ]
+      ]
+    },
+    "exec.2879575": {
+      "process_trace_sha256": "2e3d438ae08207fe0efb4c70d20610f399e13c51aa2544434493e7e3d667c3bf",
+      "roles": [
+        [
+          "wild"
+        ]
+      ]
+    },
+    "exec.2879579": {
+      "process_trace_sha256": "603454b66b5ac2f032dae9f3e6f03289729fa223ca4d527075d4da038f361125",
+      "roles": [
+        [
+          "collect2"
+        ]
+      ]
+    },
+    "exec.2879580": {
+      "process_trace_sha256": "80e0150574f46ec3c9ebb5e507c0313476a40558698de3ab8b28aa97b856b746",
+      "roles": [
+        [
+          "wild"
+        ]
+      ]
+    },
+    "exec.2879588": {
+      "process_trace_sha256": "6705dd2b6e4fb324924080b39c6e1e712ed1a3cb9a80431c8d43995ca7148614",
+      "roles": [
+        [
+          "ty",
+          "link-only"
+        ]
+      ]
+    },
+    "exec.2879621": {
+      "process_trace_sha256": "eee312c8882f2cd1c478c782d632641fc285d6baca2d93d35b91267b1ce7192e",
+      "roles": [
+        [
+          "cc"
+        ]
+      ]
+    },
+    "exec.2879652": {
+      "process_trace_sha256": "d3f4bc8ac1f477ddf1157132a3edf275aa6d935d51b21123de5c807b4ae65cbb",
+      "roles": [
+        [
+          "ruff",
+          "link-only"
+        ]
+      ]
+    },
+    "exec.2879653": {
+      "process_trace_sha256": "2b377d4ecfcd037c6fec41b155d7553cd3d44850d505cc052039bd86cee8cce3",
+      "roles": [
+        [
+          "direxist_guard",
+          "link-only"
+        ]
+      ]
+    },
+    "exec.2879654": {
+      "process_trace_sha256": "21b1440a2aa6b12b870ca77833b36702436fa3b0867e61e0991064d926a48747",
+      "roles": [
+        [
+          "self_environment",
+          "link-only"
+        ]
+      ]
+    },
+    "exec.2879664": {
+      "process_trace_sha256": "bd3e678d942deb2d81aaba39b68d864de81bbfa1e3deffe4f5a0a89ca643f8c6",
+      "roles": [
+        [
+          "file_watching",
+          "link-only"
+        ]
+      ]
+    },
+    "exec.2879728": {
+      "process_trace_sha256": "60d05a7d270e22224b8381c6a7e3787786a733019b3dbadc4b30877f7d70c714",
+      "roles": [
+        [
+          "cc"
+        ]
+      ]
+    },
+    "exec.2879730": {
+      "process_trace_sha256": "e1c67bd2b91aa1095d1f4ee88bbe762b0ba06159c3c76f98180b3b6e4b9ca498",
+      "roles": [
+        [
+          "cc"
+        ]
+      ]
+    },
+    "exec.2879746": {
+      "process_trace_sha256": "ad94fd32eceaaa812b7d96b4845c0783df3cbd1a37077cec6d71b651bcfcbc76",
+      "roles": [
+        [
+          "cc"
+        ]
+      ]
+    },
+    "exec.2879751": {
+      "process_trace_sha256": "c7854a48d71911a334f509ec82080552aa3387478e7a8db24ebe849b80921ed2",
+      "roles": [
+        [
+          "collect2"
+        ]
+      ]
+    },
+    "exec.2879752": {
+      "process_trace_sha256": "bec3cee361bddaa1796749abb1af804896bb48ce4911bd7c64660c73ff1eb391",
+      "roles": [
+        [
+          "wild"
+        ]
+      ]
+    },
+    "exec.2879761": {
+      "process_trace_sha256": "59e2d8694b099bab8272f819d122ebe2a2a3a946d5e789ad6f7f3f852b4b5a25",
+      "roles": [
+        [
+          "collect2"
+        ]
+      ]
+    },
+    "exec.2879762": {
+      "process_trace_sha256": "993235f66a8cea0a11d487ce311268575b105214706b13cac676f110c611e7c7",
+      "roles": [
+        [
+          "wild"
+        ]
+      ]
+    },
+    "exec.2879784": {
+      "process_trace_sha256": "07cd8e1f88b65e92dd08d4d75a85c8796879e71d578509d15e31a4779292841f",
+      "roles": [
+        [
+          "collect2"
+        ]
+      ]
+    },
+    "exec.2879785": {
+      "process_trace_sha256": "a731463f474e53b9b53188dbb697038ae9b345a7e1bc4f43a513623c096064ab",
+      "roles": [
+        [
+          "wild"
+        ]
+      ]
+    },
+    "exec.2879788": {
+      "process_trace_sha256": "c766fbb3bf2d4a759d1660a0cf430777131749b0eaa1c36808e6ce9327cb82fe",
+      "roles": [
+        [
+          "cc"
+        ]
+      ]
+    },
+    "exec.2879791": {
+      "process_trace_sha256": "a42522dcdf9c97c6bfce06e6845ae4e40a40a8da3b59691f30ca50742d1ebc56",
+      "roles": [
+        [
+          "cli",
+          "link-only"
+        ]
+      ]
+    },
+    "exec.2879818": {
+      "process_trace_sha256": "5a834172f3376920b62c31a598284b9cd62f1bdfdd59d79150ec2efff9d68140",
+      "roles": [
+        [
+          "collect2"
+        ]
+      ]
+    },
+    "exec.2879819": {
+      "process_trace_sha256": "d63bd101fc1ce3151a6233c202b9c401668d8ba8d7b7a8216ab3bab6643eb306",
+      "roles": [
+        [
+          "cc"
+        ]
+      ]
+    },
+    "exec.2879820": {
+      "process_trace_sha256": "546976d9028df540865244ffe36c0568b786c258b0792ead5c6d8fb498798558",
+      "roles": [
+        [
+          "wild"
+        ]
+      ]
+    },
+    "exec.2879824": {
+      "process_trace_sha256": "6dedfe3509c721463ce88e54929a73f68768db4dbc2d03e0f8bb87627b1ab2a2",
+      "roles": [
+        [
+          "config",
+          "link-only"
+        ]
+      ]
+    },
+    "exec.2879836": {
+      "process_trace_sha256": "b7fc236be8e2e4fe316e67f9081005d9a978b62db61eaa6f9a7bdaf0f46f706b",
+      "roles": [
+        [
+          "resolve_files",
+          "link-only"
+        ]
+      ]
+    },
+    "exec.2879849": {
+      "process_trace_sha256": "706d5d695b57585b99eca7dc1ecc4bb841a955afc57281dcba20c225cb3a82c2",
+      "roles": [
+        [
+          "cli",
+          "link-only"
+        ]
+      ]
+    },
+    "exec.2879932": {
+      "process_trace_sha256": "8cf1ad809ea26931f1f5c69cfdd688903c4c427d898807eb051160a04905385f",
+      "roles": [
+        [
+          "cc"
+        ]
+      ]
+    },
+    "exec.2879933": {
+      "process_trace_sha256": "b500de340815e0249ca74328179128a9656e9203224a8b35a1c48904b19e408f",
+      "roles": [
+        [
+          "cc"
+        ]
+      ]
+    },
+    "exec.2879938": {
+      "process_trace_sha256": "b41cfdddb1cde5c9f7189f28a33771a86f5e48a3d46bf6dce14c585b544c8390",
+      "roles": [
+        [
+          "cc"
+        ]
+      ]
+    },
+    "exec.2879961": {
+      "process_trace_sha256": "16cedaeb8bb0fd5addcfd8dbd0b29b0867dd96b54286744f9316f1c7e59aed38",
+      "roles": [
+        [
+          "collect2"
+        ]
+      ]
+    },
+    "exec.2879962": {
+      "process_trace_sha256": "131691f52ffd798097351704c3e2f21ff483b138b2d82a2708c011b59e5015cf",
+      "roles": [
+        [
+          "collect2"
+        ]
+      ]
+    },
+    "exec.2879963": {
+      "process_trace_sha256": "7e55393e8952792c3e957b351f6ae996b1dc5aac81c4d9d78bc5d0aa16f0234c",
+      "roles": [
+        [
+          "wild"
+        ]
+      ]
+    },
+    "exec.2879964": {
+      "process_trace_sha256": "58afe15774cf3dfd746b1956fd718253fc9a75c4b708ec0dfa08bd3559125d25",
+      "roles": [
+        [
+          "wild"
+        ]
+      ]
+    },
+    "exec.2879969": {
+      "process_trace_sha256": "aff1d7ad2bca03d74315c2ba0645e2797402d886f2b8de02bedf6f379964b5a3",
+      "roles": [
+        [
+          "collect2"
+        ]
+      ]
+    },
+    "exec.2879970": {
+      "process_trace_sha256": "2befd64e013c3567aa2fedf4ba060f01d735afcffae110b6326a0e97d6795fef",
+      "roles": [
+        [
+          "wild"
+        ]
+      ]
+    },
+    "exec.2879979": {
+      "process_trace_sha256": "72f67508ce5a563c5eb642e0cd4cc819483f51f44da1a337a1fc3532edafb58b",
+      "roles": [
+        [
+          "collect2"
+        ]
+      ]
+    },
+    "exec.2879980": {
+      "process_trace_sha256": "03d881af52c6ecde729d02254cafb0e70e5c0c55a8ea32d4fbd792c3f25bc45d",
+      "roles": [
+        [
+          "wild"
+        ]
+      ]
+    },
+    "exec.2879981": {
+      "process_trace_sha256": "100be9f874aac7743bc45e03c87aff412759371499252007a288aa456097ed4d",
+      "roles": [
+        [
+          "integration_test",
+          "link-only"
+        ]
+      ]
+    },
+    "exec.2880005": {
+      "process_trace_sha256": "e069787d97b89b9be9687216ee4a6f207dabc937f10a13e51146f27d762e8383",
+      "roles": [
+        [
+          "collect2"
+        ]
+      ]
+    },
+    "exec.2880006": {
+      "process_trace_sha256": "2419a4a32eff290922dcd3ce8ab46368a54d23f9868923369de6f7b4d672e32c",
+      "roles": [
+        [
+          "wild"
+        ]
+      ]
+    },
+    "exec.2880027": {
+      "process_trace_sha256": "b877249dbf5352da36f7c453136902305a035abe27850ab4fb76c7494b6e7aac",
+      "roles": [
+        [
+          "visitor",
+          "link-only"
+        ]
+      ]
+    },
+    "exec.2880032": {
+      "process_trace_sha256": "439454719cbb1cbdeb4ab946c7c7642812a34860b5625f3815e32998250b1750",
+      "roles": [
+        [
+          "ruff_python_parser",
+          "link-only"
+        ]
+      ]
+    },
+    "exec.2880033": {
+      "process_trace_sha256": "c46977193a1892d8490b461c91008b920105e3165a208bff62ace6635472d2b3",
+      "roles": [
+        [
+          "cc"
+        ]
+      ]
+    },
+    "exec.2880079": {
+      "process_trace_sha256": "8fab6cbaf160277ad4b213c94da01d0f2617786882ea914ca386bf1097b6227e",
+      "roles": [
+        [
+          "ruff_python_importer",
+          "link-only"
+        ]
+      ]
+    },
+    "exec.2880096": {
+      "process_trace_sha256": "a770d98a17fd17a6186d802e6007b727c1e60f5fe65134394603235ada20b9dc",
+      "roles": [
+        [
+          "cc"
+        ]
+      ]
+    },
+    "exec.2880100": {
+      "process_trace_sha256": "1b981880571dd3c4630aa0ccee22b567fc332457161ff55b48d21c3ec5980293",
+      "roles": [
+        [
+          "mdtest",
+          "link-only"
+        ]
+      ]
+    },
+    "exec.2880116": {
+      "process_trace_sha256": "22bc2dc89e1fc9fba94ea8a54468e67eb611731c053ce0ee90c3fb8f3c1fadb7",
+      "roles": [
+        [
+          "document",
+          "link-only"
+        ]
+      ]
+    },
+    "exec.2880117": {
+      "process_trace_sha256": "83d4dd2b9cd429f368be197ba35d545e49bddbeca86e07ea677dd15edfaf094f",
+      "roles": [
+        [
+          "cc"
+        ]
+      ]
+    },
+    "exec.2880151": {
+      "process_trace_sha256": "bd4aac8e901510b38e79620a6d8c35fcd63d5cc849e576531b08fc1806e9d92a",
+      "roles": [
+        [
+          "cc"
+        ]
+      ]
+    },
+    "exec.2880152": {
+      "process_trace_sha256": "f106a993431d39ba018f775044f91eea3333786b97accf3daa4f633d27143b07",
+      "roles": [
+        [
+          "collect2"
+        ]
+      ]
+    },
+    "exec.2880163": {
+      "process_trace_sha256": "949b6c64b42e580591937bce45c7d5e54088c94a9f910f96433f8472d746b037",
+      "roles": [
+        [
+          "wild"
+        ]
+      ]
+    },
+    "exec.2880175": {
+      "process_trace_sha256": "8c491fe0a68d6bb567f347541e32acb0c1880b74f2b420d31ebaec0e0a8e6aa5",
+      "roles": [
+        [
+          "cc"
+        ]
+      ]
+    },
+    "exec.2880176": {
+      "process_trace_sha256": "23b905da5264e4098a508696491d9a3b5d16f0b77296e5c3a078a252167dae32",
+      "roles": [
+        [
+          "collect2"
+        ]
+      ]
+    },
+    "exec.2880177": {
+      "process_trace_sha256": "35bc7b16d8874505c4216b3a38847d9a2b0783a38e9007d074dfb8767abd0136",
+      "roles": [
+        [
+          "wild"
+        ]
+      ]
+    },
+    "exec.2880207": {
+      "process_trace_sha256": "b15f906ce389231380081fdb02e1586bfe1b85c3b5973e3a0dcac2a1de7bb809",
+      "roles": [
+        [
+          "collect2"
+        ]
+      ]
+    },
+    "exec.2880208": {
+      "process_trace_sha256": "a6615fad57d00b869a88e07350db05f96397176e5ea74edc7ef5454d98d47efc",
+      "roles": [
+        [
+          "wild"
+        ]
+      ]
+    },
+    "exec.2880209": {
+      "process_trace_sha256": "989e87ebd2ec68039be7e6eb74ba68c880c556b05c879015f63046cc60cdcea4",
+      "roles": [
+        [
+          "cc"
+        ]
+      ]
+    },
+    "exec.2880214": {
+      "process_trace_sha256": "d057a1777b2e41626523eb6cfee23116f4808654e4c5ad781d9c0b1fa0544f3d",
+      "roles": [
+        [
+          "parentheses",
+          "link-only"
+        ]
+      ]
+    },
+    "exec.2880221": {
+      "process_trace_sha256": "2f757f8d39746a1c093ee2a937969d24b11da01292cdf3d6218c3da88141acba",
+      "roles": [
+        [
+          "collect2"
+        ]
+      ]
+    },
+    "exec.2880223": {
+      "process_trace_sha256": "ede3c018b02f8fc2ab7bd95dd604341115fc4b265cbd5a950e97905d03e5b2cc",
+      "roles": [
+        [
+          "wild"
+        ]
+      ]
+    },
+    "exec.2880253": {
+      "process_trace_sha256": "62f04665fda1c6034a51dadfed587c4d26d1ebbbe10f74ecbd50434a92b5aaca",
+      "roles": [
+        [
+          "ty_ide",
+          "link-only"
+        ]
+      ]
+    },
+    "exec.2880266": {
+      "process_trace_sha256": "820841b21db997fb00bbdcf6a3846ed77db71afbc91c05648f2000471f5acaf7",
+      "roles": [
+        [
+          "cc"
+        ]
+      ]
+    },
+    "exec.2880267": {
+      "process_trace_sha256": "127373882bee0bb331d6a63ed395d2270e69a624c4796abeba0087ee653ae20e",
+      "roles": [
+        [
+          "cc"
+        ]
+      ]
+    },
+    "exec.2880294": {
+      "process_trace_sha256": "11c28ef20532ad0a4f5288fe18d262707a24d898e9723a41015cd976f2390e72",
+      "roles": [
+        [
+          "normalizer",
+          "link-only"
+        ]
+      ]
+    },
+    "exec.2880296": {
+      "process_trace_sha256": "a8d48d65e23f182f52c5bbfa1d4d233b74e8099eb3ae45b30c2e2748ea0e5b6e",
+      "roles": [
+        [
+          "whitespace",
+          "link-only"
+        ]
+      ]
+    },
+    "exec.2880334": {
+      "process_trace_sha256": "d658dd3c693a9f83d5ad8110de5add01bbe2d502fc49759db361fb71755df9c1",
+      "roles": [
+        [
+          "collect2"
+        ]
+      ]
+    },
+    "exec.2880342": {
+      "process_trace_sha256": "c7b0886150f85fd7241d3c6b30b9f120a991c7c981e2bc3a2eae802fd3fd05f1",
+      "roles": [
+        [
+          "wild"
+        ]
+      ]
+    },
+    "exec.2880345": {
+      "process_trace_sha256": "1394ccebe88dd3535cf24d8118d9830702feb4475c582f45a4dffb51eb4a145e",
+      "roles": [
+        [
+          "collect2"
+        ]
+      ]
+    },
+    "exec.2880346": {
+      "process_trace_sha256": "28080c41da14e42c249961f7759736c47ba62e2f97c9355a6685f1a8fff4f569",
+      "roles": [
+        [
+          "wild"
+        ]
+      ]
+    },
+    "exec.2880355": {
+      "process_trace_sha256": "202e149e0d7020fe20f78072e2b223e1cef84fb50d29372201d6faf123a6a1fd",
+      "roles": [
+        [
+          "collect2"
+        ]
+      ]
+    },
+    "exec.2880356": {
+      "process_trace_sha256": "eb9914aa1df0299dc88cca772a531097e6746334fb081b5afb8ab8fe2056f9f6",
+      "roles": [
+        [
+          "wild"
+        ]
+      ]
+    },
+    "exec.2880378": {
+      "process_trace_sha256": "3d98aeaa7a3e900e5fe0a73648acdeb29ff26c5b2bf43487adb1e5619e2f0ae2",
+      "roles": [
+        [
+          "cc"
+        ]
+      ]
+    },
+    "exec.2880379": {
+      "process_trace_sha256": "50ae6df72a9fb903ba2d5dc0f5ecd6dd1b85d037b29f6d9c7ab266bde9449528",
+      "roles": [
+        [
+          "cc"
+        ]
+      ]
+    },
+    "exec.2880391": {
+      "process_trace_sha256": "4dbeba782062f9552015fb9d8947f24ae585c5993d922ed6afcc35c14ffe6460",
+      "roles": [
+        [
+          "ruff_python_semantic",
+          "link-only"
+        ]
+      ]
+    },
+    "exec.2880393": {
+      "process_trace_sha256": "29cfc11879d0dee2efc7dcbf898d6737545a3c7c7156f9bb68da95c095a1ba56",
+      "roles": [
+        [
+          "parenthesize",
+          "link-only"
+        ]
+      ]
+    },
+    "exec.2880406": {
+      "process_trace_sha256": "e740b18dd48dfb0e85a1dbab5ec268299e16617aaae895764f1b850618201401",
+      "roles": [
+        [
+          "cc"
+        ]
+      ]
+    },
+    "exec.2880439": {
+      "process_trace_sha256": "a3ee5ae8dce6d7b9b6bbaa8b1e09b3b19ea3831caeea53c2e39fd64230a95e5e",
+      "roles": [
+        [
+          "collect2"
+        ]
+      ]
+    },
+    "exec.2880440": {
+      "process_trace_sha256": "e4e0640fd17f2daedaa8e4141d1c0d3e18a67ec82f401c82c70c6d536971c639",
+      "roles": [
+        [
+          "wild"
+        ]
+      ]
+    },
+    "exec.2880443": {
+      "process_trace_sha256": "a11e6a5f8d7180b64fb9f9e151f10e8646e89a651208ff85fddbff38d925027c",
+      "roles": [
+        [
+          "collect2"
+        ]
+      ]
+    },
+    "exec.2880444": {
+      "process_trace_sha256": "41859ae730c2e759897af6679679ebde2a3dfd2d17b772c1673765a7c7ccc1a1",
+      "roles": [
+        [
+          "wild"
+        ]
+      ]
+    },
+    "exec.2880447": {
+      "process_trace_sha256": "a236188b1c69ea678cab072820f7824a816fae5d678b102fd0be3887cfbe6e47",
+      "roles": [
+        [
+          "collect2"
+        ]
+      ]
+    },
+    "exec.2880448": {
+      "process_trace_sha256": "dc82f964c2bd814fe61853bb29a98dfc5856a023282284b7ae0fab949858bdd1",
+      "roles": [
+        [
+          "wild"
+        ]
+      ]
+    },
+    "exec.2880463": {
+      "process_trace_sha256": "5fc30fffe149ec8e53e6b259ba829cfa274de263b2a1bbb68690f0b3e550009d",
+      "roles": [
+        [
+          "cc"
+        ]
+      ]
+    },
+    "exec.2880471": {
+      "process_trace_sha256": "c7fd57e1f0e900b36c99602f2cfc3d2502fbe9295fb91b6bb3f906cb84c7481d",
+      "roles": [
+        [
+          "cc"
+        ]
+      ]
+    },
+    "exec.2880486": {
+      "process_trace_sha256": "751907f0333981d4cb3ea6b54085492bd4b3a88541d1514fb807676e30277c84",
+      "roles": [
+        [
+          "comparable",
+          "link-only"
+        ]
+      ]
+    },
+    "exec.2880488": {
+      "process_trace_sha256": "64af5e9b91b998b99b549f4a7f195726d9e57a44d3fed78b00476817c6914df5",
+      "roles": [
+        [
+          "e2e",
+          "link-only"
+        ]
+      ]
+    },
+    "exec.2880504": {
+      "process_trace_sha256": "036d84cacae05502f65f7dfe310206fe46d3a09c9a5dbe39800db951c5b34c1f",
+      "roles": [
+        [
+          "ty_project",
+          "link-only"
+        ]
+      ]
+    },
+    "exec.2880516": {
+      "process_trace_sha256": "311b517dfaf109111c403b59af28e7a6c8a10f38469b68001113d189e823da0b",
+      "roles": [
+        [
+          "collect2"
+        ]
+      ]
+    },
+    "exec.2880518": {
+      "process_trace_sha256": "2c3d1a84d0b54e1b800d6a002967ca6bd98b2a76d80b3af506273afc9b5fcb69",
+      "roles": [
+        [
+          "wild"
+        ]
+      ]
+    },
+    "exec.2880530": {
+      "process_trace_sha256": "ce67cddaa35a51182b302818fb6986a49764514bd8cfbcb99c46ba7da9b07624",
+      "roles": [
+        [
+          "cc"
+        ]
+      ]
+    },
+    "exec.2880531": {
+      "process_trace_sha256": "4b62a5aaf129a26706dc3132285c4a944d788d9dc34d8fa25129d1636f2a93df",
+      "roles": [
+        [
+          "collect2"
+        ]
+      ]
+    },
+    "exec.2880533": {
+      "process_trace_sha256": "e380ec6f986be504e5b54014168ba06ade2b71dd22fd1bed3e8a6014c8e65fbc",
+      "roles": [
+        [
+          "wild"
+        ]
+      ]
+    },
+    "exec.2880593": {
+      "process_trace_sha256": "b498dee30197c1c1bdc9ec431889dd3daca9da1af4ae1a5aba994799be24d9c8",
+      "roles": [
+        [
+          "block_comments",
+          "link-only"
+        ]
+      ]
+    },
+    "exec.2880605": {
+      "process_trace_sha256": "cee109c1b5ee209cd3c6a1c3d4e89ccb85becf56f69600db29fd014cec7580d5",
+      "roles": [
+        [
+          "ruff_python_formatter",
+          "link-only"
+        ]
+      ]
+    },
+    "exec.2880607": {
+      "process_trace_sha256": "aa1d1349a09c249eaa9e7fceb1bb93dee3a6e87918b8a357a8d061d6acde73d2",
+      "roles": [
+        [
+          "collect2"
+        ]
+      ]
+    },
+    "exec.2880611": {
+      "process_trace_sha256": "7063271f08c100c9f91f4a8635daac85bf46e49ab3d9302f29b65031a6186bef",
+      "roles": [
+        [
+          "ruff_markdown",
+          "link-only"
+        ]
+      ]
+    },
+    "exec.2880613": {
+      "process_trace_sha256": "80215d205e71ace4a375a552c386e9d6f05711d7355301d46644d931a889b31b",
+      "roles": [
+        [
+          "wild"
+        ]
+      ]
+    },
+    "exec.2880623": {
+      "process_trace_sha256": "83015f5af7abfdb443f44001c72d428b757b09e9dde009585fc3db1fc9cc13c3",
+      "roles": [
+        [
+          "source_order",
+          "link-only"
+        ]
+      ]
+    },
+    "exec.2880654": {
+      "process_trace_sha256": "28991cf7340ffa0d95694fcf11ffa19649e82ba9e863a55133a9d8adf4254900",
+      "roles": [
+        [
+          "cc"
+        ]
+      ]
+    },
+    "exec.2880655": {
+      "process_trace_sha256": "17cbd3a5162aa0535d0bd0305d2298ac15309be99ba6d88047755c54e2416c85",
+      "roles": [
+        [
+          "collect2"
+        ]
+      ]
+    },
+    "exec.2880656": {
+      "process_trace_sha256": "321caf885d51159c0a606b0e443d5f3060435fef8bf8366bf4eb570869119dea",
+      "roles": [
+        [
+          "wild"
+        ]
+      ]
+    },
+    "exec.2880660": {
+      "process_trace_sha256": "88d239fd9a6be5f68579b9970cfc50be713a2a2e6caa73a1d0a27c44d57bec21",
+      "roles": [
+        [
+          "cc"
+        ]
+      ]
+    },
+    "exec.2880661": {
+      "process_trace_sha256": "192a1cd10a6c4c00dbae747feba9f46d7b4a17a37980a3c42f78c03ec5a04aa0",
+      "roles": [
+        [
+          "fixtures",
+          "link-only"
+        ]
+      ]
+    },
+    "exec.2880662": {
+      "process_trace_sha256": "d44cd403345ba5961062c8b2c6e1d948bf9f31be5ff1354d17bd6aa752cd2b19",
+      "roles": [
+        [
+          "cc"
+        ]
+      ]
+    },
+    "exec.2880673": {
+      "process_trace_sha256": "d697b0ef6572cba39bda45b32b3b40906979983c8b02a124ca9a81ee7c8cbbd0",
+      "roles": [
+        [
+          "cc"
+        ]
+      ]
+    },
+    "exec.2880674": {
+      "process_trace_sha256": "88f920c88e81f8a802b10adb59f27e20965b2745c1feb5a65876a3214cc543af",
+      "roles": [
+        [
+          "collect2"
+        ]
+      ]
+    },
+    "exec.2880675": {
+      "process_trace_sha256": "4716c83a142d5ebc04c13b52804fea429424dc91d5f6b25590ee74b7091031ed",
+      "roles": [
+        [
+          "wild"
+        ]
+      ]
+    },
+    "exec.2880678": {
+      "process_trace_sha256": "cf09f9069c52386db7c1eb12e6c907db0934e9fcb76a4544ff6928314c5a5060",
+      "roles": [
+        [
+          "cc"
+        ]
+      ]
+    },
+    "exec.2880679": {
+      "process_trace_sha256": "607bd66f2546ed6d7e67dfab6246fc1fe722bd977f38180373921e5666cb6521",
+      "roles": [
+        [
+          "collect2"
+        ]
+      ]
+    },
+    "exec.2880680": {
+      "process_trace_sha256": "c2410174eab2909de4690af7f1c41f470066323f63d764258d4bb220a2955326",
+      "roles": [
+        [
+          "wild"
+        ]
+      ]
+    },
+    "exec.2880683": {
+      "process_trace_sha256": "684ec67515191cbd0618eecc665bcef7d047514415fbcfbde594016488bceb4a",
+      "roles": [
+        [
+          "cc"
+        ]
+      ]
+    },
+    "exec.2880685": {
+      "process_trace_sha256": "0831e4e917f0487defc785e332d642b297c144e6021bcdc68c73cfa0918a8841",
+      "roles": [
+        [
+          "cc"
+        ]
+      ]
+    },
+    "exec.2880686": {
+      "process_trace_sha256": "125e8af9415da2b4e4b924c36a587900289209dc2d2924ecd1dcb5af893b1a3f",
+      "roles": [
+        [
+          "collect2"
+        ]
+      ]
+    },
+    "exec.2880687": {
+      "process_trace_sha256": "c59efb225b98b978152d26d3697d6e929acdd895e397070e810ad8176337293a",
+      "roles": [
+        [
+          "wild"
+        ]
+      ]
+    },
+    "exec.2880690": {
+      "process_trace_sha256": "80ca4926227a75e5e5864177927ed1e426ff7ab3c426f3c5d409cc084eb8610f",
+      "roles": [
+        [
+          "ty_module_resolver",
+          "link-only"
+        ]
+      ]
+    },
+    "exec.2880702": {
+      "process_trace_sha256": "6c669897ec438ac06410d0dc3d4ae818b800f6d2e27846ed704933c9629722ba",
+      "roles": [
+        [
+          "collect2"
+        ]
+      ]
+    },
+    "exec.2880703": {
+      "process_trace_sha256": "9d31dad1b443c25f501a7e4ef87f702f55adecae337d8e566930baf812e6477c",
+      "roles": [
+        [
+          "wild"
+        ]
+      ]
+    },
+    "exec.2880706": {
+      "process_trace_sha256": "088d734c7a949b307a2d4c7b9837554292d4e6cd8e7b3097a433a4368e36164a",
+      "roles": [
+        [
+          "ruff_db",
+          "link-only"
+        ]
+      ]
+    },
+    "exec.2880708": {
+      "process_trace_sha256": "6050340bfed19ea1425ddab0d699a9eeb91a16c3bc7ce7fefb2e8304c2f86924",
+      "roles": [
+        [
+          "collect2"
+        ]
+      ]
+    },
+    "exec.2880710": {
+      "process_trace_sha256": "f714d02575b2398e11e3be4952b13714aad584b7e63e1245dafc8e31d29c2b01",
+      "roles": [
+        [
+          "wild"
+        ]
+      ]
+    },
+    "exec.2880711": {
+      "process_trace_sha256": "a4072054e1c4b75ec502cb65b7f9f09fa1fe17d5f065eb7036a8d623f59edb22",
+      "roles": [
+        [
+          "identifier",
+          "link-only"
+        ]
+      ]
+    },
+    "exec.2880724": {
+      "process_trace_sha256": "63ea25fa300f8e88b0bfec3377cce75c3ae7b185968d0affe00f2cf556abe48a",
+      "roles": [
+        [
+          "collect2"
+        ]
+      ]
+    },
+    "exec.2880728": {
+      "process_trace_sha256": "edcb31bc71567c8933382fc80658695bd4a293b1462e5380cc2282cf44b92af9",
+      "roles": [
+        [
+          "wild"
+        ]
+      ]
+    },
+    "exec.2880737": {
+      "process_trace_sha256": "24d5b41b36210a09dfd6f55663b21080ce90e5aa52d96ed596c016f601b6f27d",
+      "roles": [
+        [
+          "collect2"
+        ]
+      ]
+    },
+    "exec.2880738": {
+      "process_trace_sha256": "238632dfe3d90800e61518aa1506cb9f2ef011aed41589c569c4a34be3ad95fa",
+      "roles": [
+        [
+          "cc"
+        ]
+      ]
+    },
+    "exec.2880739": {
+      "process_trace_sha256": "c75edcfbe91bcfb9c1af1cbf1945574af45e69d24857f6c71d009e321885fce0",
+      "roles": [
+        [
+          "wild"
+        ]
+      ]
+    },
+    "exec.2880742": {
+      "process_trace_sha256": "d1436e03fb66c875cdeced42f409c9286674570709b4ef1f6e6ba3bfbd33c879",
+      "roles": [
+        [
+          "cc"
+        ]
+      ]
+    },
+    "exec.2880744": {
+      "process_trace_sha256": "a9656840c0931145d74f9639a610f36b5dad65571b3bc067c79f6bb2fb53b571",
+      "roles": [
+        [
+          "cc"
+        ]
+      ]
+    },
+    "exec.2880745": {
+      "process_trace_sha256": "eaa2d93c12f734027004c042ca68e62d8e1d51d8ed45672cad27f44b6406b120",
+      "roles": [
+        [
+          "ruff_server",
+          "link-only"
+        ]
+      ]
+    },
+    "exec.2880747": {
+      "process_trace_sha256": "44809e91115f799b7ecfcdc799a62fea0c7be2a2d03accef4366f468b34ef017",
+      "roles": [
+        [
+          "collect2"
+        ]
+      ]
+    },
+    "exec.2880748": {
+      "process_trace_sha256": "e10c73842fad8fecea7c817fd190be2cf8cc0c9f67271d54471542436eed625c",
+      "roles": [
+        [
+          "wild"
+        ]
+      ]
+    },
+    "exec.2880763": {
+      "process_trace_sha256": "a286fdae2dc632038ab0e4f4eb6fab5e701739b49af3975cdf467ca33af78814",
+      "roles": [
+        [
+          "ruff_python_formatter",
+          "link-only"
+        ]
+      ]
+    },
+    "exec.2880765": {
+      "process_trace_sha256": "3708321f83b2970afba3fec0d47c14bd83e69940146022d1002598c07bd2f19c",
+      "roles": [
+        [
+          "collect2"
+        ]
+      ]
+    },
+    "exec.2880767": {
+      "process_trace_sha256": "e27c1094230a6675e3dd25fd5ae6f0c574c385cd2ed3dcfd64096aaf005bf156",
+      "roles": [
+        [
+          "wild"
+        ]
+      ]
+    },
+    "exec.2880779": {
+      "process_trace_sha256": "8b3a5dbd36bf589db56f4b866577e929245386c48989d93bc3a64fa1ec2683af",
+      "roles": [
+        [
+          "ty_server",
+          "link-only"
+        ]
+      ]
+    },
+    "exec.2880791": {
+      "process_trace_sha256": "44dfdf47ae397e8162e43120bd5a8c6bf2e3a2324de37d630a4bd072759c2718",
+      "roles": [
+        [
+          "stmt_if",
+          "link-only"
+        ]
+      ]
+    },
+    "exec.2880792": {
+      "process_trace_sha256": "18b1920ca211dae9905d7c19ef16229f8af9374bf5cbcf0946f336106d9c2d66",
+      "roles": [
+        [
+          "cc"
+        ]
+      ]
+    },
+    "exec.2880803": {
+      "process_trace_sha256": "13bb97b6832fd237f212f458e328a367938470ea65f31c138bf4c02e85c4ac0f",
+      "roles": [
+        [
+          "collect2"
+        ]
+      ]
+    },
+    "exec.2880804": {
+      "process_trace_sha256": "377045352e0ce4ba367a4b331fe5b0297f870cf3a66c835faa540a264f1ff102",
+      "roles": [
+        [
+          "wild"
+        ]
+      ]
+    },
+    "exec.2880807": {
+      "process_trace_sha256": "cbfe293b4b133f5e2365ee7afd85d58b6490d751057392c72009b3e76d8f7221",
+      "roles": [
+        [
+          "cc"
+        ]
+      ]
+    },
+    "exec.2880808": {
+      "process_trace_sha256": "d14f0cc0c041fdd260275b244b66a48b94f314d2fec1632dbb3fdaad71dd1757",
+      "roles": [
+        [
+          "cc"
+        ]
+      ]
+    },
+    "exec.2880809": {
+      "process_trace_sha256": "6d6ab74a4fd636d12c9a6d8f28456479b184f5b2719b8eea59cf187c81eb410a",
+      "roles": [
+        [
+          "collect2"
+        ]
+      ]
+    },
+    "exec.2880810": {
+      "process_trace_sha256": "bcf2d1d02adc0658642b45d182274a4aea8e3c9a091cb5211b622465abe70dea",
+      "roles": [
+        [
+          "wild"
+        ]
+      ]
+    },
+    "exec.2880816": {
+      "process_trace_sha256": "3dbdc99aceedaf6926abf285d76421801884dfbb6db88eccf2a5fe875d59f3ac",
+      "roles": [
+        [
+          "cc"
+        ]
+      ]
+    },
+    "exec.2880817": {
+      "process_trace_sha256": "7922fe3b0fc6710db740ea142d59873f71c4a2a487a3330c6b236f7205daad83",
+      "roles": [
+        [
+          "collect2"
+        ]
+      ]
+    },
+    "exec.2880818": {
+      "process_trace_sha256": "7eb658c623967ab37f9faf1b79f5695eff77c863e343a765109bd2a7c70c2bb0",
+      "roles": [
+        [
+          "wild"
+        ]
+      ]
+    },
+    "exec.2880826": {
+      "process_trace_sha256": "9741a3426b1b41fe13e92095537a584c5966a69875c1f5e65635504e0298963b",
+      "roles": [
+        [
+          "collect2"
+        ]
+      ]
+    },
+    "exec.2880827": {
+      "process_trace_sha256": "45c107e513a0e346cf79eaf52088ceba924f1df164bac937c88415b5b6110d2f",
+      "roles": [
+        [
+          "wild"
+        ]
+      ]
+    },
+    "exec.2880830": {
+      "process_trace_sha256": "658883f339d90ebfb4469dd3652176d72495ea271918d19e991133908cc99711",
+      "roles": [
+        [
+          "collect2"
+        ]
+      ]
+    },
+    "exec.2880831": {
+      "process_trace_sha256": "e40ee6d198b261620f45bb8ab5d94303976cebb5bf27b9ed1982191f52db6d32",
+      "roles": [
+        [
+          "wild"
+        ]
+      ]
+    }
+  },
+  "native_totals": {
+    "cc": 50,
+    "collect2": 50,
+    "wild": 50
+  },
+  "novel_cli": [
+    {
+      "diagnostics": [
+        {
+          "cell": null,
+          "code": "invalid-syntax",
+          "end_location": {
+            "column": 15,
+            "row": 2
+          },
+          "filename": "-",
+          "fix": null,
+          "location": {
+            "column": 11,
+            "row": 2
+          },
+          "message": "Expected a numeric literal after unary operator",
+          "name": "invalid-syntax",
+          "noqa_row": null,
+          "severity": "error",
+          "url": null
+        }
+      ],
+      "input": "match value:\n    case -1**2: ...\n",
+      "status": 1,
+      "stderr": ""
+    },
+    {
+      "diagnostics": [
+        {
+          "cell": null,
+          "code": "invalid-syntax",
+          "end_location": {
+            "column": 14,
+            "row": 2
+          },
+          "filename": "-",
+          "fix": null,
+          "location": {
+            "column": 11,
+            "row": 2
+          },
+          "message": "Expected a numeric literal after unary operator",
+          "name": "invalid-syntax",
+          "noqa_row": null,
+          "severity": "error",
+          "url": null
+        }
+      ],
+      "input": "match value:\n    case -1(): ...\n",
+      "status": 1,
+      "stderr": ""
+    },
+    {
+      "diagnostics": [],
+      "input": "if True:\n    one = \"one\"\n    two = \"a\" \"b\"\nthree = f\"{42}\"\n",
+      "status": 0,
+      "stderr": ""
+    }
+  ],
+  "old_cli": {
+    "linter": [
+      {
+        "cell": null,
+        "code": "RUF008",
+        "end_location": {
+          "column": 36,
+          "row": 4
+        },
+        "filename": "/home/dev-user/code/oss/ruff-ohm-whole-native-20261027/case.py",
+        "fix": null,
+        "location": {
+          "column": 34,
+          "row": 4
+        },
+        "message": "Do not use mutable default values for dataclass attributes",
+        "name": "mutable-dataclass-default",
+        "noqa_row": 4,
+        "severity": "error",
+        "url": "https://docs.astral.sh/ruff/rules/mutable-dataclass-default"
+      },
+      {
+        "cell": null,
+        "code": "RUF008",
+        "end_location": {
+          "column": 22,
+          "row": 6
+        },
+        "filename": "/home/dev-user/code/oss/ruff-ohm-whole-native-20261027/case.py",
+        "fix": null,
+        "location": {
+          "column": 20,
+          "row": 6
+        },
+        "message": "Do not use mutable default values for dataclass attributes",
+        "name": "mutable-dataclass-default",
+        "noqa_row": 6,
+        "severity": "error",
+        "url": "https://docs.astral.sh/ruff/rules/mutable-dataclass-default"
+      }
+    ],
+    "parser": [
+      {
+        "cell": null,
+        "code": "invalid-syntax",
+        "end_location": {
+          "column": 19,
+          "row": 1
+        },
+        "filename": "-",
+        "fix": null,
+        "location": {
+          "column": 1,
+          "row": 1
+        },
+        "message": "Cannot mix t-string literals with string or bytes literals",
+        "name": "invalid-syntax",
+        "noqa_row": null,
+        "severity": "error",
+        "url": null
+      }
+    ]
+  },
+  "phase": "train",
+  "physical_jobs": [
+    {
+      "crate": "ron",
+      "file": "exec.2879006",
+      "kind": "full",
+      "recipe_basename": null
+    },
+    {
+      "crate": "match_pattern",
+      "file": "exec.2879095",
+      "kind": "link-only",
+      "recipe_basename": null
+    },
+    {
+      "crate": "simple_tokenizer",
+      "file": "exec.2879096",
+      "kind": "link-only",
+      "recipe_basename": null
+    },
+    {
+      "crate": "analyze_graph",
+      "file": "exec.2879097",
+      "kind": "link-only",
+      "recipe_basename": null
+    },
+    {
+      "crate": "fixtures",
+      "file": "exec.2879100",
+      "kind": "link-only",
+      "recipe_basename": null
+    },
+    {
+      "crate": "mdtest",
+      "file": "exec.2879101",
+      "kind": "link-only",
+      "recipe_basename": null
+    },
+    {
+      "crate": "generate_inline_tests",
+      "file": "exec.2879104",
+      "kind": "link-only",
+      "recipe_basename": null
+    },
+    {
+      "crate": "e2e",
+      "file": "exec.2879136",
+      "kind": "link-only",
+      "recipe_basename": null
+    },
+    {
+      "crate": "ruff_linter",
+      "file": "exec.2879198",
+      "kind": "link-only",
+      "recipe_basename": null
+    },
+    {
+      "crate": "corpus",
+      "file": "exec.2879220",
+      "kind": "link-only",
+      "recipe_basename": null
+    },
+    {
+      "crate": "mdtest",
+      "file": "exec.2879241",
+      "kind": "link-only",
+      "recipe_basename": null
+    },
+    {
+      "crate": "ty_test",
+      "file": "exec.2879307",
+      "kind": "link-only",
+      "recipe_basename": null
+    },
+    {
+      "crate": "ty_python_semantic",
+      "file": "exec.2879362",
+      "kind": "link-only",
+      "recipe_basename": null
+    },
+    {
+      "crate": "ruff",
+      "file": "exec.2879367",
+      "kind": "link-only",
+      "recipe_basename": null
+    },
+    {
+      "crate": "ty",
+      "file": "exec.2879539",
+      "kind": "link-only",
+      "recipe_basename": null
+    },
+    {
+      "crate": "ty",
+      "file": "exec.2879588",
+      "kind": "link-only",
+      "recipe_basename": null
+    },
+    {
+      "crate": "ruff",
+      "file": "exec.2879652",
+      "kind": "link-only",
+      "recipe_basename": null
+    },
+    {
+      "crate": "direxist_guard",
+      "file": "exec.2879653",
+      "kind": "link-only",
+      "recipe_basename": null
+    },
+    {
+      "crate": "self_environment",
+      "file": "exec.2879654",
+      "kind": "link-only",
+      "recipe_basename": null
+    },
+    {
+      "crate": "file_watching",
+      "file": "exec.2879664",
+      "kind": "link-only",
+      "recipe_basename": null
+    },
+    {
+      "crate": "cli",
+      "file": "exec.2879791",
+      "kind": "link-only",
+      "recipe_basename": null
+    },
+    {
+      "crate": "config",
+      "file": "exec.2879824",
+      "kind": "link-only",
+      "recipe_basename": null
+    },
+    {
+      "crate": "resolve_files",
+      "file": "exec.2879836",
+      "kind": "link-only",
+      "recipe_basename": null
+    },
+    {
+      "crate": "cli",
+      "file": "exec.2879849",
+      "kind": "link-only",
+      "recipe_basename": null
+    },
+    {
+      "crate": "integration_test",
+      "file": "exec.2879981",
+      "kind": "link-only",
+      "recipe_basename": null
+    },
+    {
+      "crate": "visitor",
+      "file": "exec.2880027",
+      "kind": "link-only",
+      "recipe_basename": null
+    },
+    {
+      "crate": "ruff_python_parser",
+      "file": "exec.2880032",
+      "kind": "link-only",
+      "recipe_basename": null
+    },
+    {
+      "crate": "ruff_python_importer",
+      "file": "exec.2880079",
+      "kind": "link-only",
+      "recipe_basename": null
+    },
+    {
+      "crate": "mdtest",
+      "file": "exec.2880100",
+      "kind": "link-only",
+      "recipe_basename": null
+    },
+    {
+      "crate": "document",
+      "file": "exec.2880116",
+      "kind": "link-only",
+      "recipe_basename": null
+    },
+    {
+      "crate": "parentheses",
+      "file": "exec.2880214",
+      "kind": "link-only",
+      "recipe_basename": null
+    },
+    {
+      "crate": "ty_ide",
+      "file": "exec.2880253",
+      "kind": "link-only",
+      "recipe_basename": null
+    },
+    {
+      "crate": "normalizer",
+      "file": "exec.2880294",
+      "kind": "link-only",
+      "recipe_basename": null
+    },
+    {
+      "crate": "whitespace",
+      "file": "exec.2880296",
+      "kind": "link-only",
+      "recipe_basename": null
+    },
+    {
+      "crate": "ruff_python_semantic",
+      "file": "exec.2880391",
+      "kind": "link-only",
+      "recipe_basename": null
+    },
+    {
+      "crate": "parenthesize",
+      "file": "exec.2880393",
+      "kind": "link-only",
+      "recipe_basename": null
+    },
+    {
+      "crate": "comparable",
+      "file": "exec.2880486",
+      "kind": "link-only",
+      "recipe_basename": null
+    },
+    {
+      "crate": "e2e",
+      "file": "exec.2880488",
+      "kind": "link-only",
+      "recipe_basename": null
+    },
+    {
+      "crate": "ty_project",
+      "file": "exec.2880504",
+      "kind": "link-only",
+      "recipe_basename": null
+    },
+    {
+      "crate": "block_comments",
+      "file": "exec.2880593",
+      "kind": "link-only",
+      "recipe_basename": null
+    },
+    {
+      "crate": "ruff_python_formatter",
+      "file": "exec.2880605",
+      "kind": "link-only",
+      "recipe_basename": null
+    },
+    {
+      "crate": "ruff_markdown",
+      "file": "exec.2880611",
+      "kind": "link-only",
+      "recipe_basename": null
+    },
+    {
+      "crate": "source_order",
+      "file": "exec.2880623",
+      "kind": "link-only",
+      "recipe_basename": null
+    },
+    {
+      "crate": "fixtures",
+      "file": "exec.2880661",
+      "kind": "link-only",
+      "recipe_basename": null
+    },
+    {
+      "crate": "ty_module_resolver",
+      "file": "exec.2880690",
+      "kind": "link-only",
+      "recipe_basename": null
+    },
+    {
+      "crate": "ruff_db",
+      "file": "exec.2880706",
+      "kind": "link-only",
+      "recipe_basename": null
+    },
+    {
+      "crate": "identifier",
+      "file": "exec.2880711",
+      "kind": "link-only",
+      "recipe_basename": null
+    },
+    {
+      "crate": "ruff_server",
+      "file": "exec.2880745",
+      "kind": "link-only",
+      "recipe_basename": null
+    },
+    {
+      "crate": "ruff_python_formatter",
+      "file": "exec.2880763",
+      "kind": "link-only",
+      "recipe_basename": null
+    },
+    {
+      "crate": "ty_server",
+      "file": "exec.2880779",
+      "kind": "link-only",
+      "recipe_basename": null
+    },
+    {
+      "crate": "stmt_if",
+      "file": "exec.2880791",
+      "kind": "link-only",
+      "recipe_basename": null
+    }
+  ],
+  "process_totals": {
+    "full": 1,
+    "link-only": 50
+  },
+  "recipe_after": {},
+  "recipe_before": {},
+  "release_output_roster": {
+    "mapped_output_path_count": 1126,
+    "sha256": "d679d1aa84e9c7ad6f14b2124bf7e069affe8b2a35e3797346d725ce6d15cad2",
+    "units": 619
+  },
+  "roster_sha256": "2a461dbc0e0616d5443e99c7e216b7b3514df756aa4d130f16bb18b4a896cf46",
+  "source_view": "original",
+  "status": 0,
+  "unit_count": 619
+}
