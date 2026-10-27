@@ -1,0 +1,71 @@
+{
+  "compiler_commit": "27029b4bce40f3b5497add5019c02a11c16c4c18",
+  "compiler_driver": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+  "parent_source": "d577be8eb1db7a3a4e4a82246d64644aaf3e0bff",
+  "candidate_source": "d38fdd02503662de04c52f5f370f5dd81bddf868",
+  "candidate_base": "b0a4df740b57589ecec3c83e30d5d326ab52a56d",
+  "fix_patch": "3539af0f42082ee82734ed5c114efd5bc99dd19481158f286cfd8029891ef364",
+  "fingerprint_source": "85999a122a24ecf58fd844b31219519f4576829a1b3cb4eeee72d9eadacaa5c4",
+  "parent_cargo": "529813f90cdd7c369e347701f8c4497edc5dad8adcc44b58301661fd4b786c4a",
+  "candidate_cargo": "dd5cab154b8dcd09ccc2753160d314cade80979b2d055ee66aa9e2217e05e7e1",
+  "pgo_profile": "481ada8a40c70dad11b3c7e8871e9a52207d78447ca5e8ace06fc4aec2d2b5a7",
+  "same_recipe": true,
+  "same_source_and_target_paths": true,
+  "build": {
+    "cargo_invocation": "cargo +ohm build --release --locked --offline -p cargo --bin cargo --features ohm-defaults -j6",
+    "rustflags": [
+      "-Cprofile-use=<same-external-training-profdata>",
+      "-Cllvm-args=-pgo-warn-missing-function=false"
+    ],
+    "cpu_affinity": "0-3",
+    "native_release_channel": "dev",
+    "incremental": false,
+    "version": [
+      "cargo 1.99.0 (b0a4df740 2026-10-27)",
+      "release: 1.99.0",
+      "commit-hash: b0a4df740b57589ecec3c83e30d5d326ab52a56d",
+      "commit-date: 2026-10-27",
+      "host: x86_64-unknown-linux-gnu",
+      "libgit2: 1.9.6 (sys:0.21.0 vendored)",
+      "libcurl: 8.21.0-DEV (sys:0.4.90+curl-8.21.0 vendored ssl:OpenSSL/3.0.13)",
+      "os: Ubuntu 24.4.0 (noble) [64-bit]"
+    ],
+    "scope": "Task-private host tmpfs mapped onto identical pinned canonical Cargo source, registry-home, target and shared paths for all arms. Same tarball commit metadata holds the display version and registry parser cache namespace constant."
+  },
+  "build_tools": {
+    "rustc": "a63a2a6506be83dfd6cd853e9807897b120660c056a8774011d82396ef549b13",
+    "cargo": "9be48c4b02669047975662348a3f134d0abcd247d70d13c55ab024f806320590",
+    "librustc_driver-b03bf00bec23bb9a.so": "97a8910a6d8a8ac54936f9373f7940525b2f46ec5f005421b3913a21d9a6fa9b"
+  },
+  "tarball_metadata_digest": "ad833a45f433b767ab37fe141193fdbe6e33d4bafb7c26cad6779f2ca47150af",
+  "arm_source_receipts": [
+    {
+      "name": "parent253",
+      "commit": "d577be8eb1db7a3a4e4a82246d64644aaf3e0bff",
+      "tree": "f103416eb8e283fc5545c21379f046b1c8390eb2",
+      "source_files_checked": 3107,
+      "key_source_files": {
+        "Cargo.lock": "151c473e1a11532946ba9421ab1beeb238f98eb1f8cd4e5f94f9811003abd5a7",
+        "src/compiler/fingerprint/dep_info.rs": "9fa96a49a9b9c3bb3827a3de17c29b77fc34f50bfcf7fcdd827d02d34da686f3",
+        "src/compiler/fingerprint/mod.rs": "845d381e838fae198ae888a96b8876c2057e4e895be52d77cb1e250c8599bb3a",
+        "src/compiler/mod.rs": "04698c79ff1483459f76bf86e3b929b51304528857303c7b2f88e4720c04714a",
+        "src/ops/cargo_worktree/mod.rs": "004a3aa50d81de4ebdaf7c04262f65cbbfbe8c443c47d665b969cd1d5613319d"
+      },
+      "binary": "529813f90cdd7c369e347701f8c4497edc5dad8adcc44b58301661fd4b786c4a"
+    },
+    {
+      "name": "guardv3",
+      "commit": "d38fdd02503662de04c52f5f370f5dd81bddf868",
+      "tree": "7529e79f105930b19a255867803a5053a222fb6e",
+      "source_files_checked": 3107,
+      "key_source_files": {
+        "Cargo.lock": "151c473e1a11532946ba9421ab1beeb238f98eb1f8cd4e5f94f9811003abd5a7",
+        "src/compiler/fingerprint/dep_info.rs": "a90269db31f8a274472e7f0d81bcdbfa6f353f7f374d6b10cbfccd61652a3d1e",
+        "src/compiler/fingerprint/mod.rs": "85999a122a24ecf58fd844b31219519f4576829a1b3cb4eeee72d9eadacaa5c4",
+        "src/compiler/mod.rs": "3b8c31c4e1aa1a8b9a9b0522e5e81f079dbea428af901efaff6bd657e07ab2c4",
+        "src/ops/cargo_worktree/mod.rs": "4a3c2a4331922e13ffa2507e751908667ea4ad6221457a0433c932e1a325d305"
+      },
+      "binary": "dd5cab154b8dcd09ccc2753160d314cade80979b2d055ee66aa9e2217e05e7e1"
+    }
+  ]
+}

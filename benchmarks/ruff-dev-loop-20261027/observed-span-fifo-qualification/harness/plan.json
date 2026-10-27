@@ -1,0 +1,143 @@
+{
+  "protocol": "ruff-cargo-observer-regular-inputs-v1",
+  "registration_utc": "2026-10-27T09:29:16.734751+00:00",
+  "status_at_registration": "No corrected-arm Ruff commands or timings have run. The original Cargo-only cohort has yet to start; its subjects and evidence will be kept separate.",
+  "pin": "93526150df078af7dd8fc4226cdcc469539d2001",
+  "compiler_commit": "27029b4bce40f3b5497add5019c02a11c16c4c18",
+  "compiler_driver": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+  "parent_source": "d577be8eb1db7a3a4e4a82246d64644aaf3e0bff",
+  "candidate_base": "b0a4df740b57589ecec3c83e30d5d326ab52a56d",
+  "fix_patch_sha256": "3539af0f42082ee82734ed5c114efd5bc99dd19481158f286cfd8029891ef364",
+  "candidate_fingerprint_source_sha256": "85999a122a24ecf58fd844b31219519f4576829a1b3cb4eeee72d9eadacaa5c4",
+  "candidate_source": "The b0a4df74 observed-span change plus the registered patch. If review changes that implementation, publish an amendment naming the changed paths and reason before measuring.",
+  "parent_and_candidate": "Build #253 and the fixed descendant with the identical external PGO profile, compiler, options, canonical source and target paths, and surrounding Cargo source. Bind both complete ELF hashes, commits, and recorded profile identity before scoring. Never compare Cargos built with different recipes.",
+  "old_cohort": "The original a99a694c Cargo blocked if a tracked regular input became a FIFO between stat and open. The original fd9bfe11 control did not block in Cargo. That exact historical pair has its own planned study. This plan qualifies an additional independent matched pair on the corrected source.",
+  "platform": "same isolated H2, same pinned compiler and Wild; CPUs 0-23, Cargo -j8 environment; exclusive native measurement lock",
+  "method": "Four new independent initially empty target/shared/offline registry stores, one for each arm and endpoint; fixed canonical paths in a private mount namespace, cold plus training plus preflight under each subject. Primary samples are ordinary untraced unchanged cargo +ohm build and cargo +ohm test --no-run --locked --offline, from the rustup proxy to exit. Measure 12 pairs separately per command. No tests execute.",
+  "statistics": "Exact two-sided balanced randomization over 924 assignments with Holm across the two endpoints, paired log-ratio bootstrap 95% using 20,000 draws. Report both endpoints including weak or negative results. A claimed benefit needs a positive confidence interval and adjusted p < 0.05.",
+  "integrity": "Use the original frozen harness. Compare all 501 or 619 units, executable roster, CLI behavior, cold and warm full ELF digests with only the two known Wild fields maskable, and independently recorded physical rustc/linker processes with zero candidate work on steady repeats. Preserve all partial and failed attempts. The genuine Ruff helper edit and independent foreign proc-macro observer must change and restore on both arms. Reject a changed compiler or dirty source, changed index, and filesystem reserve below 25 GiB.",
+  "safety": "A controlled stat-to-open FIFO replacement without a writer must return promptly on the corrected Cargo, including the symlink case. A stable symlink stays supported and observed edits trigger real work. The original Cargo is run as a control. Require the regression test and end-to-end controls ahead of submitting results.",
+  "harness_original_sha256": {
+    "analyze.py": "19cca2f621cbd8f7fec3418603ee7119cdcf0686b8013c594a6016eb3de79f43",
+    "common.py": "8dfac27e370a09a9809dfe46ba5b61af4c98095304d1a1feb5c17a82c0bfc114",
+    "observer.py": "ee453e97aedf1106a7001b204a011d07d5c3ed7007ed6c58fc7806cc783c9ca2",
+    "run.py": "63d37fec0d4e905bd7f399ff89f0c4ce7732a31b11151a09204df4d10706bf19",
+    "selftest.py": "062542895464856dee0daf0129e454bc96a237b5c52b0b064ac1facb6ab73019",
+    "worker.py": "4ad926c411dfa6f574eb560820ece8778a6de303e345f263597313391a207d40"
+  },
+  "original_harness_plan_sha256": "8a132346f425bea3bdf1254c3a4e23a0bb74bef4e10db2ce3918dfac94d1883b",
+  "cargo_companion_support": {
+    "build": {
+      "seed": 271027311,
+      "orders": [
+        [
+          "candidate",
+          "parent"
+        ],
+        [
+          "candidate",
+          "parent"
+        ],
+        [
+          "candidate",
+          "parent"
+        ],
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "parent"
+        ],
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "parent"
+        ],
+        [
+          "candidate",
+          "parent"
+        ]
+      ]
+    },
+    "test": {
+      "seed": 271027312,
+      "orders": [
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "parent"
+        ],
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "parent"
+        ],
+        [
+          "candidate",
+          "parent"
+        ],
+        [
+          "candidate",
+          "parent"
+        ],
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "parent"
+        ],
+        [
+          "candidate",
+          "parent"
+        ]
+      ]
+    },
+    "control_cargo": "529813f90cdd7c369e347701f8c4497edc5dad8adcc44b58301661fd4b786c4a",
+    "candidate_cargo": {
+      "source": "d38fdd02503662de04c52f5f370f5dd81bddf868",
+      "source_patch": "3539af0f42082ee82734ed5c114efd5bc99dd19481158f286cfd8029891ef364"
+    }
+  },
+  "binding": "d25414bc28e62497b5dbe50fd0c9ee64727e874ca1a94c6140612da21e7db020"
+}

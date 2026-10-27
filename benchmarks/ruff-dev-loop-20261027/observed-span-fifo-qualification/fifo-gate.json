@@ -1,0 +1,184 @@
+{
+  "cargo_sha256": "dd5cab154b8dcd09ccc2753160d314cade80979b2d055ee66aa9e2217e05e7e1",
+  "driver_sha256": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+  "source": "d38fdd02503662de04c52f5f370f5dd81bddf868",
+  "case": "Replace the regular target of an observed symlink with a FIFO between the real Cargo stat and open. No process opened the FIFO for writing. Both independent local invocations used the same binaries.",
+  "repeats": [
+    {
+      "input_sha256": "af0d5b8395f50af8d1d63930ca904ab8f62549d1fa4f164bcb2156a4c8bb7293",
+      "initial": [
+        [
+          [
+            "full",
+            "hold_probe"
+          ],
+          [
+            "full",
+            "hold_shapes"
+          ],
+          [
+            "full",
+            "hold_tokens"
+          ],
+          [
+            "full",
+            "hold_direct"
+          ]
+        ],
+        [
+          [
+            "full",
+            "hold_direct"
+          ]
+        ],
+        []
+      ],
+      "symlink": [
+        [],
+        []
+      ],
+      "open_flags": [
+        526592
+      ],
+      "no_writer_ever": true,
+      "timed_out_in_open": false,
+      "command_returncode": 101,
+      "roster": [
+        [
+          "full",
+          "hold_direct"
+        ]
+      ],
+      "recovery_roster": [
+        [
+          "full",
+          "hold_direct"
+        ]
+      ],
+      "programs_equal": true,
+      "program_stdout": "19 #6 bytes(374093..374115)",
+      "downgrade": {
+        "cargo_sha": "529813f90cdd7c369e347701f8c4497edc5dad8adcc44b58301661fd4b786c4a",
+        "old": [
+          [
+            [
+              "full",
+              "hold_direct"
+            ]
+          ],
+          [
+            [
+              "full",
+              "hold_direct"
+            ]
+          ]
+        ],
+        "return": [
+          [
+            [
+              "full",
+              "hold_direct"
+            ]
+          ],
+          [
+            [
+              "full",
+              "hold_direct"
+            ]
+          ],
+          []
+        ],
+        "output": "19 #6 bytes(374093..374115)"
+      },
+      "private_receipt_sha256": "86c8c938f7e7d23b2c95793a3893558061341bd008cf6c02311b985507f067ec"
+    },
+    {
+      "input_sha256": "f4e821c4c1f6d2820ec261556e31079f590e37fb9bba2950f323fea8efbd4da1",
+      "initial": [
+        [
+          [
+            "full",
+            "hold_shapes"
+          ],
+          [
+            "full",
+            "hold_tokens"
+          ],
+          [
+            "full",
+            "hold_probe"
+          ],
+          [
+            "full",
+            "hold_direct"
+          ]
+        ],
+        [
+          [
+            "full",
+            "hold_direct"
+          ]
+        ],
+        []
+      ],
+      "symlink": [
+        [],
+        []
+      ],
+      "open_flags": [
+        526592
+      ],
+      "no_writer_ever": true,
+      "timed_out_in_open": false,
+      "command_returncode": 101,
+      "roster": [
+        [
+          "full",
+          "hold_direct"
+        ]
+      ],
+      "recovery_roster": [
+        [
+          "full",
+          "hold_direct"
+        ]
+      ],
+      "programs_equal": true,
+      "program_stdout": "19 #6 bytes(374093..374115)",
+      "downgrade": {
+        "cargo_sha": "529813f90cdd7c369e347701f8c4497edc5dad8adcc44b58301661fd4b786c4a",
+        "old": [
+          [
+            [
+              "full",
+              "hold_direct"
+            ]
+          ],
+          [
+            [
+              "full",
+              "hold_direct"
+            ]
+          ]
+        ],
+        "return": [
+          [
+            [
+              "full",
+              "hold_direct"
+            ]
+          ],
+          [
+            [
+              "full",
+              "hold_direct"
+            ]
+          ],
+          []
+        ],
+        "output": "19 #6 bytes(374093..374115)"
+      },
+      "private_receipt_sha256": "29ec679991d9fd959d459a9ceca1d31ed6d867d53945b013e51807da9f7c1faf"
+    }
+  ]
+}
