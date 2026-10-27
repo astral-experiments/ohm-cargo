@@ -1,0 +1,749 @@
+{
+  "endpoints": {
+    "changed": {
+      "assignments": 853776,
+      "ci95": [
+        -2.034677875464178,
+        8.856823327050364
+      ],
+      "extreme_assignments": 180340,
+      "holm": 0.21122636382376642,
+      "medians_s": {
+        "candidate": 1.374291187,
+        "parent": 1.4333226505
+      },
+      "p": 0.21122636382376642,
+      "paired_reduction_pct": 3.5564035959730567,
+      "per_direction_reductions_pct": {
+        "restore": 3.85358258931926,
+        "reverse": 3.2583060519781104
+      },
+      "registered_gain": false
+    },
+    "changed-plus-first": {
+      "assignments": 853776,
+      "ci95": [
+        13.606942588511906,
+        20.07967341712312
+      ],
+      "extreme_assignments": 2,
+      "holm": 7.027604430201833e-06,
+      "medians_s": {
+        "candidate": 2.0760096465,
+        "parent": 2.4763547635
+      },
+      "p": 2.3425348100672776e-06,
+      "paired_reduction_pct": 16.754799016785814,
+      "per_direction_reductions_pct": {
+        "restore": 15.64938194187434,
+        "reverse": 17.845729571768487
+      },
+      "registered_gain": true
+    },
+    "first-unchanged": {
+      "assignments": 853776,
+      "ci95": [
+        28.914115949174512,
+        41.778766150790915
+      ],
+      "extreme_assignments": 4,
+      "holm": 9.37013924026911e-06,
+      "medians_s": {
+        "candidate": 0.619447145,
+        "parent": 1.000346786
+      },
+      "p": 4.685069620134555e-06,
+      "paired_reduction_pct": 35.734702208721444,
+      "per_direction_reductions_pct": {
+        "restore": 33.993367782701334,
+        "reverse": 37.43009813611826
+      },
+      "registered_gain": true
+    },
+    "second-unchanged": {
+      "medians_s": {
+        "candidate": 0.559247998,
+        "parent": 0.9500978255
+      },
+      "paired_reduction_pct": 41.42274545930227,
+      "per_direction_reductions_pct": {
+        "restore": 43.83266911949069,
+        "reverse": 38.909421264374345
+      }
+    }
+  },
+  "rows": [
+    {
+      "arm_order": [
+        "candidate",
+        "parent"
+      ],
+      "direction": "restore",
+      "direction_pair": 5,
+      "ns": {
+        "candidate": [
+          1380222165,
+          522774470,
+          1902996635,
+          515648404
+        ],
+        "parent": [
+          1728173055,
+          924963661,
+          2653136716,
+          870067773
+        ]
+      },
+      "order": 1,
+      "source": {
+        "crates/ruff/build.rs": "8809304381d04011ac796e2dc4530a803b0720b5b2b8b70f6fccb51d6db9a2c7",
+        "crates/ty/build.rs": "7099c6f0bdda194c3b9b1bf039b04fca5445cd0791cd9eec97d2cb16093f220a",
+        "crates/ty_wasm/build.rs": "27e4487951a136a81c0ac19074bdd9495e8caab57ee4043d1b4d28395efcd115"
+      }
+    },
+    {
+      "arm_order": [
+        "parent",
+        "candidate"
+      ],
+      "direction": "reverse",
+      "direction_pair": 5,
+      "ns": {
+        "candidate": [
+          1286363593,
+          512469747,
+          1798833340,
+          1039893851
+        ],
+        "parent": [
+          1246946557,
+          873312613,
+          2120259170,
+          1411780119
+        ]
+      },
+      "order": 2,
+      "source": {
+        "crates/ruff/build.rs": "fdea3ba58e7f8c0ad6541b68950708269577ef9c5bea83a5a5cde89a1fb9dc55",
+        "crates/ty/build.rs": "e8c5027c8f2c260df8ae221cdb2e164e8835b45ba70ff728005583359eac6363",
+        "crates/ty_wasm/build.rs": "a14ba6a4ca108ff8a4ab1b6ad1f4a6b27379500db0c78f448fd270f4e5f4376a"
+      }
+    },
+    {
+      "arm_order": [
+        "candidate",
+        "parent"
+      ],
+      "direction": "restore",
+      "direction_pair": 8,
+      "ns": {
+        "candidate": [
+          1415829189,
+          602410025,
+          2018239214,
+          516350636
+        ],
+        "parent": [
+          1583542705,
+          944035476,
+          2527578181,
+          869627892
+        ]
+      },
+      "order": 3,
+      "source": {
+        "crates/ruff/build.rs": "8809304381d04011ac796e2dc4530a803b0720b5b2b8b70f6fccb51d6db9a2c7",
+        "crates/ty/build.rs": "7099c6f0bdda194c3b9b1bf039b04fca5445cd0791cd9eec97d2cb16093f220a",
+        "crates/ty_wasm/build.rs": "27e4487951a136a81c0ac19074bdd9495e8caab57ee4043d1b4d28395efcd115"
+      }
+    },
+    {
+      "arm_order": [
+        "candidate",
+        "parent"
+      ],
+      "direction": "reverse",
+      "direction_pair": 1,
+      "ns": {
+        "candidate": [
+          1275879861,
+          549132260,
+          1825012121,
+          879216260
+        ],
+        "parent": [
+          1264775754,
+          874364513,
+          2139140267,
+          1346738396
+        ]
+      },
+      "order": 4,
+      "source": {
+        "crates/ruff/build.rs": "fdea3ba58e7f8c0ad6541b68950708269577ef9c5bea83a5a5cde89a1fb9dc55",
+        "crates/ty/build.rs": "e8c5027c8f2c260df8ae221cdb2e164e8835b45ba70ff728005583359eac6363",
+        "crates/ty_wasm/build.rs": "a14ba6a4ca108ff8a4ab1b6ad1f4a6b27379500db0c78f448fd270f4e5f4376a"
+      }
+    },
+    {
+      "arm_order": [
+        "candidate",
+        "parent"
+      ],
+      "direction": "restore",
+      "direction_pair": 2,
+      "ns": {
+        "candidate": [
+          1245204624,
+          898654553,
+          2143859177,
+          660396235
+        ],
+        "parent": [
+          1363946951,
+          972246574,
+          2336193525,
+          862162824
+        ]
+      },
+      "order": 5,
+      "source": {
+        "crates/ruff/build.rs": "8809304381d04011ac796e2dc4530a803b0720b5b2b8b70f6fccb51d6db9a2c7",
+        "crates/ty/build.rs": "7099c6f0bdda194c3b9b1bf039b04fca5445cd0791cd9eec97d2cb16093f220a",
+        "crates/ty_wasm/build.rs": "27e4487951a136a81c0ac19074bdd9495e8caab57ee4043d1b4d28395efcd115"
+      }
+    },
+    {
+      "arm_order": [
+        "parent",
+        "candidate"
+      ],
+      "direction": "restore",
+      "direction_pair": 6,
+      "ns": {
+        "candidate": [
+          1608583102,
+          581268578,
+          2189851680,
+          549143953
+        ],
+        "parent": [
+          1532360359,
+          998806435,
+          2531166794,
+          1453221090
+        ]
+      },
+      "order": 6,
+      "source": {
+        "crates/ruff/build.rs": "8809304381d04011ac796e2dc4530a803b0720b5b2b8b70f6fccb51d6db9a2c7",
+        "crates/ty/build.rs": "7099c6f0bdda194c3b9b1bf039b04fca5445cd0791cd9eec97d2cb16093f220a",
+        "crates/ty_wasm/build.rs": "27e4487951a136a81c0ac19074bdd9495e8caab57ee4043d1b4d28395efcd115"
+      }
+    },
+    {
+      "arm_order": [
+        "parent",
+        "candidate"
+      ],
+      "direction": "restore",
+      "direction_pair": 7,
+      "ns": {
+        "candidate": [
+          1612824202,
+          721651728,
+          2334475930,
+          534725345
+        ],
+        "parent": [
+          1447087580,
+          1047950078,
+          2495037658,
+          882727607
+        ]
+      },
+      "order": 7,
+      "source": {
+        "crates/ruff/build.rs": "8809304381d04011ac796e2dc4530a803b0720b5b2b8b70f6fccb51d6db9a2c7",
+        "crates/ty/build.rs": "7099c6f0bdda194c3b9b1bf039b04fca5445cd0791cd9eec97d2cb16093f220a",
+        "crates/ty_wasm/build.rs": "27e4487951a136a81c0ac19074bdd9495e8caab57ee4043d1b4d28395efcd115"
+      }
+    },
+    {
+      "arm_order": [
+        "candidate",
+        "parent"
+      ],
+      "direction": "reverse",
+      "direction_pair": 7,
+      "ns": {
+        "candidate": [
+          1252588741,
+          821173517,
+          2073762258,
+          714326476
+        ],
+        "parent": [
+          1306719503,
+          920574693,
+          2227294196,
+          1403407536
+        ]
+      },
+      "order": 8,
+      "source": {
+        "crates/ruff/build.rs": "fdea3ba58e7f8c0ad6541b68950708269577ef9c5bea83a5a5cde89a1fb9dc55",
+        "crates/ty/build.rs": "e8c5027c8f2c260df8ae221cdb2e164e8835b45ba70ff728005583359eac6363",
+        "crates/ty_wasm/build.rs": "a14ba6a4ca108ff8a4ab1b6ad1f4a6b27379500db0c78f448fd270f4e5f4376a"
+      }
+    },
+    {
+      "arm_order": [
+        "candidate",
+        "parent"
+      ],
+      "direction": "reverse",
+      "direction_pair": 12,
+      "ns": {
+        "candidate": [
+          1424763284,
+          662871002,
+          2087634286,
+          569352043
+        ],
+        "parent": [
+          1466686591,
+          1046679371,
+          2513365962,
+          899530339
+        ]
+      },
+      "order": 9,
+      "source": {
+        "crates/ruff/build.rs": "fdea3ba58e7f8c0ad6541b68950708269577ef9c5bea83a5a5cde89a1fb9dc55",
+        "crates/ty/build.rs": "e8c5027c8f2c260df8ae221cdb2e164e8835b45ba70ff728005583359eac6363",
+        "crates/ty_wasm/build.rs": "a14ba6a4ca108ff8a4ab1b6ad1f4a6b27379500db0c78f448fd270f4e5f4376a"
+      }
+    },
+    {
+      "arm_order": [
+        "candidate",
+        "parent"
+      ],
+      "direction": "restore",
+      "direction_pair": 1,
+      "ns": {
+        "candidate": [
+          1299141711,
+          516600910,
+          1815742621,
+          529114362
+        ],
+        "parent": [
+          1611821734,
+          1167343133,
+          2779164867,
+          1154316527
+        ]
+      },
+      "order": 10,
+      "source": {
+        "crates/ruff/build.rs": "8809304381d04011ac796e2dc4530a803b0720b5b2b8b70f6fccb51d6db9a2c7",
+        "crates/ty/build.rs": "7099c6f0bdda194c3b9b1bf039b04fca5445cd0791cd9eec97d2cb16093f220a",
+        "crates/ty_wasm/build.rs": "27e4487951a136a81c0ac19074bdd9495e8caab57ee4043d1b4d28395efcd115"
+      }
+    },
+    {
+      "arm_order": [
+        "parent",
+        "candidate"
+      ],
+      "direction": "restore",
+      "direction_pair": 3,
+      "ns": {
+        "candidate": [
+          1463572219,
+          613750317,
+          2077322536,
+          513011271
+        ],
+        "parent": [
+          1235235318,
+          1445721078,
+          2680956396,
+          901491150
+        ]
+      },
+      "order": 11,
+      "source": {
+        "crates/ruff/build.rs": "8809304381d04011ac796e2dc4530a803b0720b5b2b8b70f6fccb51d6db9a2c7",
+        "crates/ty/build.rs": "7099c6f0bdda194c3b9b1bf039b04fca5445cd0791cd9eec97d2cb16093f220a",
+        "crates/ty_wasm/build.rs": "27e4487951a136a81c0ac19074bdd9495e8caab57ee4043d1b4d28395efcd115"
+      }
+    },
+    {
+      "arm_order": [
+        "parent",
+        "candidate"
+      ],
+      "direction": "reverse",
+      "direction_pair": 10,
+      "ns": {
+        "candidate": [
+          1266952941,
+          511977676,
+          1778930617,
+          520699773
+        ],
+        "parent": [
+          1230247953,
+          1108905225,
+          2339153178,
+          1089979895
+        ]
+      },
+      "order": 12,
+      "source": {
+        "crates/ruff/build.rs": "fdea3ba58e7f8c0ad6541b68950708269577ef9c5bea83a5a5cde89a1fb9dc55",
+        "crates/ty/build.rs": "e8c5027c8f2c260df8ae221cdb2e164e8835b45ba70ff728005583359eac6363",
+        "crates/ty_wasm/build.rs": "a14ba6a4ca108ff8a4ab1b6ad1f4a6b27379500db0c78f448fd270f4e5f4376a"
+      }
+    },
+    {
+      "arm_order": [
+        "candidate",
+        "parent"
+      ],
+      "direction": "reverse",
+      "direction_pair": 9,
+      "ns": {
+        "candidate": [
+          1243338206,
+          831358551,
+          2074696757,
+          681407294
+        ],
+        "parent": [
+          1465080050,
+          1025116269,
+          2490196319,
+          909658051
+        ]
+      },
+      "order": 13,
+      "source": {
+        "crates/ruff/build.rs": "fdea3ba58e7f8c0ad6541b68950708269577ef9c5bea83a5a5cde89a1fb9dc55",
+        "crates/ty/build.rs": "e8c5027c8f2c260df8ae221cdb2e164e8835b45ba70ff728005583359eac6363",
+        "crates/ty_wasm/build.rs": "a14ba6a4ca108ff8a4ab1b6ad1f4a6b27379500db0c78f448fd270f4e5f4376a"
+      }
+    },
+    {
+      "arm_order": [
+        "parent",
+        "candidate"
+      ],
+      "direction": "restore",
+      "direction_pair": 11,
+      "ns": {
+        "candidate": [
+          1576801273,
+          514021795,
+          2090823068,
+          699104960
+        ],
+        "parent": [
+          1302033533,
+          907466962,
+          2209500495,
+          871971815
+        ]
+      },
+      "order": 14,
+      "source": {
+        "crates/ruff/build.rs": "8809304381d04011ac796e2dc4530a803b0720b5b2b8b70f6fccb51d6db9a2c7",
+        "crates/ty/build.rs": "7099c6f0bdda194c3b9b1bf039b04fca5445cd0791cd9eec97d2cb16093f220a",
+        "crates/ty_wasm/build.rs": "27e4487951a136a81c0ac19074bdd9495e8caab57ee4043d1b4d28395efcd115"
+      }
+    },
+    {
+      "arm_order": [
+        "parent",
+        "candidate"
+      ],
+      "direction": "reverse",
+      "direction_pair": 11,
+      "ns": {
+        "candidate": [
+          1172266848,
+          518771608,
+          1691038456,
+          518720613
+        ],
+        "parent": [
+          1457400877,
+          1005112331,
+          2462513208,
+          894253259
+        ]
+      },
+      "order": 15,
+      "source": {
+        "crates/ruff/build.rs": "fdea3ba58e7f8c0ad6541b68950708269577ef9c5bea83a5a5cde89a1fb9dc55",
+        "crates/ty/build.rs": "e8c5027c8f2c260df8ae221cdb2e164e8835b45ba70ff728005583359eac6363",
+        "crates/ty_wasm/build.rs": "a14ba6a4ca108ff8a4ab1b6ad1f4a6b27379500db0c78f448fd270f4e5f4376a"
+      }
+    },
+    {
+      "arm_order": [
+        "parent",
+        "candidate"
+      ],
+      "direction": "restore",
+      "direction_pair": 10,
+      "ns": {
+        "candidate": [
+          1471800207,
+          712792808,
+          2184593015,
+          528916781
+        ],
+        "parent": [
+          1535758075,
+          901087062,
+          2436845137,
+          1099156018
+        ]
+      },
+      "order": 16,
+      "source": {
+        "crates/ruff/build.rs": "8809304381d04011ac796e2dc4530a803b0720b5b2b8b70f6fccb51d6db9a2c7",
+        "crates/ty/build.rs": "7099c6f0bdda194c3b9b1bf039b04fca5445cd0791cd9eec97d2cb16093f220a",
+        "crates/ty_wasm/build.rs": "27e4487951a136a81c0ac19074bdd9495e8caab57ee4043d1b4d28395efcd115"
+      }
+    },
+    {
+      "arm_order": [
+        "candidate",
+        "parent"
+      ],
+      "direction": "restore",
+      "direction_pair": 12,
+      "ns": {
+        "candidate": [
+          1230604624,
+          904763794,
+          2135368418,
+          622235163
+        ],
+        "parent": [
+          1316480648,
+          895316656,
+          2211797304,
+          1121273411
+        ]
+      },
+      "order": 17,
+      "source": {
+        "crates/ruff/build.rs": "8809304381d04011ac796e2dc4530a803b0720b5b2b8b70f6fccb51d6db9a2c7",
+        "crates/ty/build.rs": "7099c6f0bdda194c3b9b1bf039b04fca5445cd0791cd9eec97d2cb16093f220a",
+        "crates/ty_wasm/build.rs": "27e4487951a136a81c0ac19074bdd9495e8caab57ee4043d1b4d28395efcd115"
+      }
+    },
+    {
+      "arm_order": [
+        "parent",
+        "candidate"
+      ],
+      "direction": "reverse",
+      "direction_pair": 4,
+      "ns": {
+        "candidate": [
+          1408884332,
+          625143973,
+          2034028305,
+          518269705
+        ],
+        "parent": [
+          1195853995,
+          1300809541,
+          2496663536,
+          982949187
+        ]
+      },
+      "order": 18,
+      "source": {
+        "crates/ruff/build.rs": "fdea3ba58e7f8c0ad6541b68950708269577ef9c5bea83a5a5cde89a1fb9dc55",
+        "crates/ty/build.rs": "e8c5027c8f2c260df8ae221cdb2e164e8835b45ba70ff728005583359eac6363",
+        "crates/ty_wasm/build.rs": "a14ba6a4ca108ff8a4ab1b6ad1f4a6b27379500db0c78f448fd270f4e5f4376a"
+      }
+    },
+    {
+      "arm_order": [
+        "parent",
+        "candidate"
+      ],
+      "direction": "reverse",
+      "direction_pair": 8,
+      "ns": {
+        "candidate": [
+          1368360209,
+          851155469,
+          2219515678,
+          684914094
+        ],
+        "parent": [
+          1504843076,
+          1066311466,
+          2571154542,
+          917246464
+        ]
+      },
+      "order": 19,
+      "source": {
+        "crates/ruff/build.rs": "fdea3ba58e7f8c0ad6541b68950708269577ef9c5bea83a5a5cde89a1fb9dc55",
+        "crates/ty/build.rs": "e8c5027c8f2c260df8ae221cdb2e164e8835b45ba70ff728005583359eac6363",
+        "crates/ty_wasm/build.rs": "a14ba6a4ca108ff8a4ab1b6ad1f4a6b27379500db0c78f448fd270f4e5f4376a"
+      }
+    },
+    {
+      "arm_order": [
+        "candidate",
+        "parent"
+      ],
+      "direction": "restore",
+      "direction_pair": 4,
+      "ns": {
+        "candidate": [
+          1385993448,
+          536804115,
+          1922797563,
+          761857257
+        ],
+        "parent": [
+          1353571009,
+          929192920,
+          2282763929,
+          1237456902
+        ]
+      },
+      "order": 20,
+      "source": {
+        "crates/ruff/build.rs": "8809304381d04011ac796e2dc4530a803b0720b5b2b8b70f6fccb51d6db9a2c7",
+        "crates/ty/build.rs": "7099c6f0bdda194c3b9b1bf039b04fca5445cd0791cd9eec97d2cb16093f220a",
+        "crates/ty_wasm/build.rs": "27e4487951a136a81c0ac19074bdd9495e8caab57ee4043d1b4d28395efcd115"
+      }
+    },
+    {
+      "arm_order": [
+        "parent",
+        "candidate"
+      ],
+      "direction": "reverse",
+      "direction_pair": 3,
+      "ns": {
+        "candidate": [
+          1247272636,
+          868847727,
+          2116120363,
+          647566404
+        ],
+        "parent": [
+          1647689822,
+          1162487427,
+          2810177249,
+          914225125
+        ]
+      },
+      "order": 21,
+      "source": {
+        "crates/ruff/build.rs": "fdea3ba58e7f8c0ad6541b68950708269577ef9c5bea83a5a5cde89a1fb9dc55",
+        "crates/ty/build.rs": "e8c5027c8f2c260df8ae221cdb2e164e8835b45ba70ff728005583359eac6363",
+        "crates/ty_wasm/build.rs": "a14ba6a4ca108ff8a4ab1b6ad1f4a6b27379500db0c78f448fd270f4e5f4376a"
+      }
+    },
+    {
+      "arm_order": [
+        "candidate",
+        "parent"
+      ],
+      "direction": "reverse",
+      "direction_pair": 6,
+      "ns": {
+        "candidate": [
+          1543689623,
+          632775461,
+          2176465084,
+          541833135
+        ],
+        "parent": [
+          1260600646,
+          1190333883,
+          2450934529,
+          1043394812
+        ]
+      },
+      "order": 22,
+      "source": {
+        "crates/ruff/build.rs": "fdea3ba58e7f8c0ad6541b68950708269577ef9c5bea83a5a5cde89a1fb9dc55",
+        "crates/ty/build.rs": "e8c5027c8f2c260df8ae221cdb2e164e8835b45ba70ff728005583359eac6363",
+        "crates/ty_wasm/build.rs": "a14ba6a4ca108ff8a4ab1b6ad1f4a6b27379500db0c78f448fd270f4e5f4376a"
+      }
+    },
+    {
+      "arm_order": [
+        "parent",
+        "candidate"
+      ],
+      "direction": "restore",
+      "direction_pair": 9,
+      "ns": {
+        "candidate": [
+          1230828375,
+          1005501674,
+          2236330049,
+          581555495
+        ],
+        "parent": [
+          1595989926,
+          965170456,
+          2561160382,
+          1251457244
+        ]
+      },
+      "order": 23,
+      "source": {
+        "crates/ruff/build.rs": "8809304381d04011ac796e2dc4530a803b0720b5b2b8b70f6fccb51d6db9a2c7",
+        "crates/ty/build.rs": "7099c6f0bdda194c3b9b1bf039b04fca5445cd0791cd9eec97d2cb16093f220a",
+        "crates/ty_wasm/build.rs": "27e4487951a136a81c0ac19074bdd9495e8caab57ee4043d1b4d28395efcd115"
+      }
+    },
+    {
+      "arm_order": [
+        "candidate",
+        "parent"
+      ],
+      "direction": "reverse",
+      "direction_pair": 2,
+      "ns": {
+        "candidate": [
+          1410118535,
+          588260205,
+          1998378740,
+          524617249
+        ],
+        "parent": [
+          1419557721,
+          1001887137,
+          2421444858,
+          904185345
+        ]
+      },
+      "order": 24,
+      "source": {
+        "crates/ruff/build.rs": "fdea3ba58e7f8c0ad6541b68950708269577ef9c5bea83a5a5cde89a1fb9dc55",
+        "crates/ty/build.rs": "e8c5027c8f2c260df8ae221cdb2e164e8835b45ba70ff728005583359eac6363",
+        "crates/ty_wasm/build.rs": "a14ba6a4ca108ff8a4ab1b6ad1f4a6b27379500db0c78f448fd270f4e5f4376a"
+      }
+    }
+  ]
+}
