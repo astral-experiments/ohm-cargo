@@ -1,0 +1,99 @@
+{
+  "schema": 1,
+  "created_utc": "2026-10-27T07:53:46Z",
+  "seed": 202610270753,
+  "purpose": "Independent confirmatory Cargo v4-versus-v3 genuine-observer edit native measurement, after a four-block explicitly exploratory pilot. The earlier v3-vs-#253 registrations remain independent, including the known real-edit tradeoff.",
+  "subject": {
+    "V": {
+      "base_commit": "b0a4df740b57589ecec3c83e30d5d326ab52a56d",
+      "cargo_sha256": "a99a694c680f474bef2ae17de20533890dc536606021db93aaf531e3ef40919a"
+    },
+    "C": {
+      "base_commit": "b0a4df740b57589ecec3c83e30d5d326ab52a56d",
+      "patch_sha256": "0331936bcd4ebc44866dcb8a630787f4a34a6330350d013e38bd1e0d15cc681f",
+      "cargo_sha256": "98bcf7ae65f677af0e6af1f31cc725741525112ea51a2245c8b0aa7d3d426115"
+    },
+    "compiler_driver_sha256": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+    "golden_Cargo_sha256": "fd9bfe1178f30d12d412f4736eea9e0a7d68e8f687ab2653681d0181049f3025",
+    "frontend_sha256": "4fa9a18b77430bcc416e88561b6fe5797d98b996a7698b9f3bd11d4e7817a19f"
+  },
+  "workload": "Frozen 7-package heldout-fixture and source-contents manifest 1a309c176ba8ea129414be486ce87a040c171d294e9d12a5388bdaaa94d6f78e from earlier registration f169b2d0ffcdf3caf531ab2bd1fe39409f65cefe379544f13e3d61f68aad1b06. Separate private stores, identical logical mount path and offline complete build of hold_direct + hold_indirect + hold_plain. The consuming intermediate actually observes raw foreign source positions. Alternate one byte inside the upstream private doc, never in the original Ruff checkout. This case is synthetic and is not an assertion about editing real Ruff source.",
+  "endpoint": "Primary is the first complete cargo +ohm build --offline after a genuine edit, time.monotonic_ns outside the ordinary terminal command, no traced native rows. Ordered V or C in each pair. 12 first-edit pairs, six additions and six removals; exactly three V-first and three C-first per direction. One-sided randomization on mean(log(V/C)) against all 20*20=400 assignments balanced inside direction. Distribution-free paired-median interval (3rd and 10th sorted reductions). Qualify if lower bound >0%, >=10/12 favorable, p<0.05, and all semantic/roster gates pass.",
+  "negative_control": "12 no-op pairs using a separate balanced 6/6 allocation, both already fully trained and expected 0 rustcs/links. No faster-no-op claim. Report medians and same paired-median interval; allow at most 5% negative lower bound for a no-op non-regression statement. If that margin is inconclusive, disclose it; do not reinterpret process equivalence as a timing win.",
+  "procedure": "Compare exact V and C under the same fully verified release driver on local reserved cores 0-3. Before scoring, warm each and verify a completely fresh repeat; derive both source states with the independently empty golden Cargo. For each numbered block run no-op before first edit. Require identical sources and expected raw output and ELF SHA at all three roots after every native command. Repeat all 48 with strace on separately primed stores; both arms require 4 full rustc + 1 link-only for each edit, zero rustcs on no-ops, flags only on the 2 true observers. Real-source and known pipeline changes must never be skipped. Keep source/control/driver/digests, counts, all native times, terminal logs and tool rosters.",
+  "gates": "Repeat missing/truncated/dirty/bit-flip receipts, noncooperating/wrapped compilation, check and test --no-run, mtime/symlink and changed-before/same-command producer. Test simultaneous reader-local compiler error while a preflight-stale producer emits byte-identical .rmeta. True fresh requires all observed SDK/source bytes. Hold scoring if known genuine Guard becomes unsound. Whole blocks invalidated by actual run failure, changed executable/lane/fixture/source or a broken observer/ELF eligibility must be preserved. No timing outlier deletion.",
+  "orders": [
+    {
+      "block": 1,
+      "edited_state": "add",
+      "noop": "VC",
+      "edit": "CV"
+    },
+    {
+      "block": 2,
+      "edited_state": "remove",
+      "noop": "VC",
+      "edit": "VC"
+    },
+    {
+      "block": 3,
+      "edited_state": "add",
+      "noop": "CV",
+      "edit": "VC"
+    },
+    {
+      "block": 4,
+      "edited_state": "remove",
+      "noop": "VC",
+      "edit": "CV"
+    },
+    {
+      "block": 5,
+      "edited_state": "add",
+      "noop": "CV",
+      "edit": "VC"
+    },
+    {
+      "block": 6,
+      "edited_state": "remove",
+      "noop": "VC",
+      "edit": "VC"
+    },
+    {
+      "block": 7,
+      "edited_state": "add",
+      "noop": "VC",
+      "edit": "VC"
+    },
+    {
+      "block": 8,
+      "edited_state": "remove",
+      "noop": "CV",
+      "edit": "CV"
+    },
+    {
+      "block": 9,
+      "edited_state": "add",
+      "noop": "CV",
+      "edit": "CV"
+    },
+    {
+      "block": 10,
+      "edited_state": "remove",
+      "noop": "VC",
+      "edit": "VC"
+    },
+    {
+      "block": 11,
+      "edited_state": "add",
+      "noop": "CV",
+      "edit": "CV"
+    },
+    {
+      "block": 12,
+      "edited_state": "remove",
+      "noop": "CV",
+      "edit": "CV"
+    }
+  ]
+}
