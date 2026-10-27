@@ -1,0 +1,5 @@
+# Release 1.99.0-16 functional qualification
+
+The official distribution was calibrated with a full historical Ruff build-script edit and restoration. Each time, the change itself ran the three scripts and their actual compiler and linker work. Its first and second unchanged checks each repeated the same three compiler invocations. The current source-built parent reproduced the distribution’s behavior, while the fix reached 520/520 fresh. The raw and packaged Cargo programs matched each other's actual compiler/script/link rosters and output bytes for their own arm. The independently authenticated before, changed and restored generated Pydantic ZIP member confirms true generated input changes remain visible. Seven native tests and two warm/empty compile-error cases exercise directive, out-of-tree and native behavior on each arm.
+
+Run `python3 -B verify.py` to check the actual ordinary release and both source-built arms against the included command receipts. Timing is reported separately.

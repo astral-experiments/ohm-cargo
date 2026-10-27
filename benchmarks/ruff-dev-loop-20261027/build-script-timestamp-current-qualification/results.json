@@ -1,0 +1,403 @@
+{
+  "diagnostic_control_commands": 28,
+  "native_control_commands": 84,
+  "paired_calibration": {
+    "candidate/restore": {
+      "change": {
+        "actual_processes": {
+          "cc": 3,
+          "collect2": 3,
+          "rustc-full": 8,
+          "wild": 3
+        },
+        "fresh": 511,
+        "scripts": [
+          "ruff",
+          "ty",
+          "ty_wasm"
+        ]
+      },
+      "change-next": {
+        "actual_processes": {},
+        "fresh": 520,
+        "scripts": []
+      },
+      "change-next-2": {
+        "actual_processes": {},
+        "fresh": 520,
+        "scripts": []
+      },
+      "preflight": {
+        "actual_processes": {},
+        "fresh": 520,
+        "scripts": []
+      }
+    },
+    "candidate/reverse": {
+      "change": {
+        "actual_processes": {
+          "cc": 3,
+          "collect2": 3,
+          "rustc-full": 8,
+          "wild": 3
+        },
+        "fresh": 511,
+        "scripts": [
+          "ruff",
+          "ty",
+          "ty_wasm"
+        ]
+      },
+      "change-next": {
+        "actual_processes": {},
+        "fresh": 520,
+        "scripts": []
+      },
+      "change-next-2": {
+        "actual_processes": {},
+        "fresh": 520,
+        "scripts": []
+      },
+      "preflight": {
+        "actual_processes": {},
+        "fresh": 520,
+        "scripts": []
+      }
+    },
+    "parent/restore": {
+      "change": {
+        "actual_processes": {
+          "cc": 3,
+          "collect2": 3,
+          "rustc-full": 8,
+          "wild": 3
+        },
+        "fresh": 511,
+        "scripts": [
+          "ruff",
+          "ty",
+          "ty_wasm"
+        ]
+      },
+      "change-next": {
+        "actual_processes": {
+          "rustc-full": 3
+        },
+        "fresh": 514,
+        "scripts": []
+      },
+      "change-next-2": {
+        "actual_processes": {
+          "rustc-full": 3
+        },
+        "fresh": 514,
+        "scripts": []
+      },
+      "preflight": {
+        "actual_processes": {},
+        "fresh": 520,
+        "scripts": []
+      }
+    },
+    "parent/reverse": {
+      "change": {
+        "actual_processes": {
+          "cc": 3,
+          "collect2": 3,
+          "rustc-full": 8,
+          "wild": 3
+        },
+        "fresh": 511,
+        "scripts": [
+          "ruff",
+          "ty",
+          "ty_wasm"
+        ]
+      },
+      "change-next": {
+        "actual_processes": {
+          "rustc-full": 3
+        },
+        "fresh": 514,
+        "scripts": []
+      },
+      "change-next-2": {
+        "actual_processes": {
+          "rustc-full": 3
+        },
+        "fresh": 514,
+        "scripts": []
+      },
+      "preflight": {
+        "actual_processes": {},
+        "fresh": 520,
+        "scripts": []
+      }
+    }
+  },
+  "pydantic": {
+    "candidate": {
+      "before": [
+        {
+          "archive_sha256": "fe924018ba42520cffff54d23d597165c27cbd50792373b1f3ed777e81d6a45b",
+          "bytes": 1830,
+          "source_member_sha256": "ef75cf9d8fe41e26eecb4c5c937983e038f715f50bee81b7d27386876dc5b811"
+        }
+      ],
+      "change": [
+        {
+          "archive_sha256": "8ad6b5a81a67ec75e5b09096a9d0aa3283ddfc132d70912946458ec599a6cff0",
+          "bytes": 1769,
+          "source_member_sha256": "e67ba66ef4884603b181f9ae4605b4726a3174d0f9d0d9ad9af300314b9d5438"
+        }
+      ],
+      "change-next-2-processes": {
+        "fresh": 520,
+        "full": 0,
+        "scripts": []
+      },
+      "change-next-processes": {
+        "fresh": 520,
+        "full": 0,
+        "scripts": []
+      },
+      "change-processes": {
+        "fresh": 506,
+        "full": 1,
+        "scripts": [
+          "ty_vendored"
+        ]
+      },
+      "restore": [
+        {
+          "archive_sha256": "fe924018ba42520cffff54d23d597165c27cbd50792373b1f3ed777e81d6a45b",
+          "bytes": 1830,
+          "source_member_sha256": "ef75cf9d8fe41e26eecb4c5c937983e038f715f50bee81b7d27386876dc5b811"
+        }
+      ],
+      "restore-next-2-processes": {
+        "fresh": 520,
+        "full": 0,
+        "scripts": []
+      },
+      "restore-next-processes": {
+        "fresh": 520,
+        "full": 0,
+        "scripts": []
+      },
+      "restore-processes": {
+        "fresh": 506,
+        "full": 1,
+        "scripts": [
+          "ty_vendored"
+        ]
+      }
+    },
+    "parent": {
+      "before": [
+        {
+          "archive_sha256": "fe924018ba42520cffff54d23d597165c27cbd50792373b1f3ed777e81d6a45b",
+          "bytes": 1830,
+          "source_member_sha256": "ef75cf9d8fe41e26eecb4c5c937983e038f715f50bee81b7d27386876dc5b811"
+        }
+      ],
+      "change": [
+        {
+          "archive_sha256": "8ad6b5a81a67ec75e5b09096a9d0aa3283ddfc132d70912946458ec599a6cff0",
+          "bytes": 1769,
+          "source_member_sha256": "e67ba66ef4884603b181f9ae4605b4726a3174d0f9d0d9ad9af300314b9d5438"
+        }
+      ],
+      "change-next-2-processes": {
+        "fresh": 506,
+        "full": 1,
+        "scripts": []
+      },
+      "change-next-processes": {
+        "fresh": 506,
+        "full": 1,
+        "scripts": []
+      },
+      "change-processes": {
+        "fresh": 506,
+        "full": 1,
+        "scripts": [
+          "ty_vendored"
+        ]
+      },
+      "restore": [
+        {
+          "archive_sha256": "fe924018ba42520cffff54d23d597165c27cbd50792373b1f3ed777e81d6a45b",
+          "bytes": 1830,
+          "source_member_sha256": "ef75cf9d8fe41e26eecb4c5c937983e038f715f50bee81b7d27386876dc5b811"
+        }
+      ],
+      "restore-next-2-processes": {
+        "fresh": 506,
+        "full": 1,
+        "scripts": []
+      },
+      "restore-next-processes": {
+        "fresh": 506,
+        "full": 1,
+        "scripts": []
+      },
+      "restore-processes": {
+        "fresh": 506,
+        "full": 1,
+        "scripts": [
+          "ty_vendored"
+        ]
+      }
+    }
+  },
+  "seeds": {
+    "candidate/edited": {
+      "fresh": 520,
+      "unit_roster_sha256": "85c2bf4a10b38eead14c8333e956bf7fc6f220c1e2ec97ad02e3c417ac0139f3"
+    },
+    "candidate/original": {
+      "fresh": 520,
+      "unit_roster_sha256": "85c2bf4a10b38eead14c8333e956bf7fc6f220c1e2ec97ad02e3c417ac0139f3"
+    },
+    "parent/edited": {
+      "fresh": 520,
+      "unit_roster_sha256": "85c2bf4a10b38eead14c8333e956bf7fc6f220c1e2ec97ad02e3c417ac0139f3"
+    },
+    "parent/original": {
+      "fresh": 520,
+      "unit_roster_sha256": "85c2bf4a10b38eead14c8333e956bf7fc6f220c1e2ec97ad02e3c417ac0139f3"
+    }
+  },
+  "subjects": {
+    "builder": "5e6ee9e3774e36b1c2e6856f4d8059e4c3a78fbbb71cb3da2c4746072e3eab9f",
+    "candidate": "300474b2df59942e3fa7ae3326023cb41c8c69d9a50acd00096bfccfd1ae8642",
+    "packager_verify": "391351fd85611585d23bbb455e86712780d31bd8885ead6db79343b85b25b25e",
+    "parent": "c2dea96d731219e5a1bb2fa99624e295d7da8a233e0035d086ae99fbc6dfd94e",
+    "parent-repeat": "c2dea96d731219e5a1bb2fa99624e295d7da8a233e0035d086ae99fbc6dfd94e",
+    "patch_sha256": "63281c57e75de5ab64a9ecd7eba0f56844f9c06f91f7d01d3e3cf09c2fd3960d",
+    "pgo": "481ada8a40c70dad11b3c7e8871e9a52207d78447ca5e8ace06fc4aec2d2b5a7",
+    "raw": {
+      "candidate": "17d22f11198db53118590098912e7557926679325b1ad25278b81acb5a435019",
+      "parent": "17ce699c4062284ab78e2d87b55a05ca94aef5d0be45fda4bd6bd2f5a554a536",
+      "parent-repeat": "04d5e2a52c634e133588869289b6534341301695e1bdea42cff4970db03c97d9"
+    },
+    "raw_source_tree": "d79cc03d5198bde82d4a774e9786fd150c8b46d0",
+    "seed_tree": "60a997f43d29e44fb0811848dae4edc8d4d7ac60d3caf03b85dec752e998541a",
+    "source": "2d352fa7b0b36cfc8ecfac6c1d6d7dc9b00be7334f08734cbb827cc8b61da54c"
+  },
+  "unmodified_distribution": {
+    "restore": {
+      "change": {
+        "fresh": 511,
+        "processes": {
+          "cc": 3,
+          "collect2": 3,
+          "rustc-full": 8,
+          "wild": 3
+        },
+        "rustcs": [
+          "build_script_build",
+          "build_script_build",
+          "build_script_build",
+          "ruff",
+          "ruff",
+          "ty",
+          "ty",
+          "ty_wasm"
+        ],
+        "scripts": [
+          "ty",
+          "ruff",
+          "ty_wasm"
+        ]
+      },
+      "change-next": {
+        "fresh": 514,
+        "processes": {
+          "rustc-full": 3
+        },
+        "rustcs": [
+          "ruff",
+          "ty",
+          "ty_wasm"
+        ],
+        "scripts": []
+      },
+      "change-next-2": {
+        "fresh": 514,
+        "processes": {
+          "rustc-full": 3
+        },
+        "rustcs": [
+          "ruff",
+          "ty",
+          "ty_wasm"
+        ],
+        "scripts": []
+      },
+      "preflight": {
+        "fresh": 520,
+        "processes": {},
+        "rustcs": [],
+        "scripts": []
+      }
+    },
+    "reverse": {
+      "change": {
+        "fresh": 511,
+        "processes": {
+          "cc": 3,
+          "collect2": 3,
+          "rustc-full": 8,
+          "wild": 3
+        },
+        "rustcs": [
+          "build_script_build",
+          "build_script_build",
+          "build_script_build",
+          "ruff",
+          "ruff",
+          "ty",
+          "ty",
+          "ty_wasm"
+        ],
+        "scripts": [
+          "ty",
+          "ruff",
+          "ty_wasm"
+        ]
+      },
+      "change-next": {
+        "fresh": 514,
+        "processes": {
+          "rustc-full": 3
+        },
+        "rustcs": [
+          "ruff",
+          "ty",
+          "ty_wasm"
+        ],
+        "scripts": []
+      },
+      "change-next-2": {
+        "fresh": 514,
+        "processes": {
+          "rustc-full": 3
+        },
+        "rustcs": [
+          "ruff",
+          "ty",
+          "ty_wasm"
+        ],
+        "scripts": []
+      },
+      "preflight": {
+        "fresh": 520,
+        "processes": {},
+        "rustcs": [],
+        "scripts": []
+      }
+    }
+  }
+}
