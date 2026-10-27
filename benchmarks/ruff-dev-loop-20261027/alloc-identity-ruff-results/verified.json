@@ -1,0 +1,50 @@
+{
+  "arms": {
+    "candidate": {
+      "fresh_controls": 3,
+      "identical": true,
+      "native_callers": 4,
+      "raw_bytes_retained_and_empty": [
+        1359384,
+        1359384
+      ],
+      "raw_sha256": [
+        "b86ec766a29da503bc6c7c40adbb3109b73bc496496be472cc4a784b313c8ba0",
+        "b86ec766a29da503bc6c7c40adbb3109b73bc496496be472cc4a784b313c8ba0"
+      ],
+      "source_commands": 6
+    },
+    "parent": {
+      "fresh_controls": 3,
+      "identical": false,
+      "native_callers": 4,
+      "raw_bytes_retained_and_empty": [
+        1359458,
+        1359384
+      ],
+      "raw_sha256": [
+        "b3706970b49b07f9f0dcefad38dd528f8f0559748fff87d98755cd8a50cc7cdc",
+        "46a10247de54cd0365be8c7b2b4f8563441c83c89df2570772c3fd5387f4fa25"
+      ],
+      "source_commands": 6
+    }
+  },
+  "cross_compiler_different_direct_externs": [
+    "get_size2",
+    "ruff_python_ast",
+    "ruff_python_trivia",
+    "ruff_text_size",
+    "thin_vec",
+    "unicode_names2"
+  ],
+  "timed_commands": 0,
+  "upgrade_and_downgrade": {
+    "accepted_wire_consumers": 8,
+    "native_transition_commands": 36,
+    "release_epochs": [
+      3,
+      4,
+      3
+    ]
+  }
+}
