@@ -1,0 +1,11 @@
+# Retraining wrong ordinary checksums on an Ohm Cargo upgrade
+
+The first corrected Cargo command repaired all five retained stale binaries and rejected all five invalid checks that the earlier migration had accepted. Each rebuilt binary printed 29 and each check produced the same complete E0308 diagnostic as its independent empty reference. Two additional build controls and two check controls also matched their references.
+
+All 14 workspaces retained the exact logical filenames, package sources, Cargo home, local environment and released Ohm 1.99.0-16 rustc. Their already-compiled target and build directories were separately copied to private physical directories before running the corrected Cargo. The original records were checked again after each first and second unchanged command. The seven test builds and seven checks each ran twice, for 28 ordinary commands. The native binaries were run after successful builds.
+
+The input set includes the original space/neighbor, a symlink with a space, an absolute spaced package root, and plain/spaced controls without a neighbor. Both default Ohm and the separately selected standard checksum mode are represented. In that mode, some old stored records had already erased the spaced pathname. All ten previously false-fresh workspaces had to be repaired without the neighboring file, which had been removed after it poisoned the old cache.
+
+The unspaced successful build retrained once on the format change and the following command was fully fresh. The tests here intentionally retained released rustc. On a spaced filename it still cannot attest the correct checksum, so the corrected Cargo keeps recompiling on later unchanged commands. Work with the corrected compiler is a separate qualification. This packet measures correctness and contains no elapsed-time estimate.
+
+Run `python3 -B verify.py` to compare the 28 Cargo streams with the corresponding original clean streams, including exact structured diagnostics, native outputs and encoded Cargo records. Both archives carry independently checked per-file digests. The source patch and the exact experimental worker are included. [Portable reproducer and earlier failing upgrade](https://github.com/astral-sh/ohm-cargo/tree/bcc7e330f3eff61eb6852e7b83b0f37a1a0e5acd/benchmarks/ruff-dev-loop-20261027/ordinary-spaced-checksum-upgrade-rejection)
