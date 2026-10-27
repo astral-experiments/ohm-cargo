@@ -1,0 +1,5 @@
+# Ruff standard-library mutable defaults
+
+This is a separate behavioral edit for the native compiler comparison. The complete historical Ruff commit changes which `collections` and `weakref` constructors are considered mutable, and adds its Markdown lint fixture. Reversing the commit on the pinned workspace should change two diagnostics from `B006` to `B008`. Restoring it should change both back. [Ruff change](https://github.com/astral-sh/ruff/commit/523d83c941cbae9b7c8a10739c839a8eeda3245d)
+
+The plan records two edit-and-restore rounds of `cargo build` and `cargo test --no-run` for #232 and the fixed #233. Each command uses the same Cargo binary and a distinct warmed state for its compiler. The recorded endpoints are physical full compiles, link-only compiles, Wild processes, fresh unit counts and executable behavior. These traced commands do not contribute wall times to the four pre-existing timed endpoints. `run.py` uses the native harness recorded with those endpoints and starts after both previously registered studies complete.

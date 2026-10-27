@@ -1,0 +1,30 @@
+{
+  "purpose": "Unscored held-out physical build/test command counts. This determines whether the compiler improvement generalizes to a separate behavioral Ruff edit. Counts, failed checks and neutral outcomes are reported. No wall-time estimate is taken from these traced commands.",
+  "created_utc": "2026-10-27T08:34:30.203474+00:00",
+  "pin": "93526150df078af7dd8fc4226cdcc469539d2001",
+  "commit": "523d83c941cbae9b7c8a10739c839a8eeda3245d",
+  "patch_sha256": "cc3eee740006b71291cac2ac93988b47deb1cfb96daf5ec5da98750a97b872b1",
+  "cargo": "a99a694c680f474bef2ae17de20533890dc536606021db93aaf531e3ef40919a",
+  "drivers": {
+    "parent232": "051b9d3f5861f984faa0f8c1d2ab9b5c28e483a05c728051de837291c83fd518",
+    "posobs4fmt-c3": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f"
+  },
+  "orders": {
+    "build": [
+      "parent232",
+      "posobs4fmt-c3"
+    ],
+    "test": [
+      "posobs4fmt-c3",
+      "parent232"
+    ]
+  },
+  "repetitions": 2,
+  "assertions": [
+    "two ordinary setup commands and a fresh JSON command for each arm",
+    "reverse the full historical commit and restore its original bytes, permissions and timestamps, retaining the index bytes",
+    "cargo build and cargo test --no-run use the ordinary profile, --locked --offline, equal logical paths and eight CPU jobs",
+    "Ruff check --select B006,B008 on two default values switches B006 to B008 on edit and restores B006 after restoring the source",
+    "All 501 or 619 units must be fresh immediately after edit and restoration. Compare full rustc, link-only rustc and Wild rosters in both repetitions, and every native executable roster."
+  ]
+}
