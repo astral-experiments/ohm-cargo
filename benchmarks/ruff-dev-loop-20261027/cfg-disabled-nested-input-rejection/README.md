@@ -2,11 +2,11 @@
 
 The small fixture originally classified only the joined rustc flag spelling. Re-reading the raw argv and authenticated .rlink inputs shows stock used link-only rustc on four middle phases. B also used link-only rustc on the invalid nested input. C skipped both rustc and Wild for the added symbol and invalid input. [Corrected process modes for all 36 runs](https://github.com/astral-sh/ohm-cargo/tree/9780bb0b68c2fba11a68c3d8986a429a785412d0/benchmarks/ruff-dev-loop-20261027/cfg-disabled-nested-native-process-correction)
 
-The three frozen Cargo binaries used the same #233 Rust compiler and Wild linker. A ran shipping Cargo #254. B included the candidate’s one-worker training support and always ran the real native link. C could skip the certified cfg-disabled integration test after training. A separate, unused registry-free Rust dependency changed on every invocation.
+The three frozen Cargo binaries used the same #233 Rust compiler and Wild linker. A ran a release-profile reference build from Cargo #254. B included the candidate’s one-worker training support and always ran the real native link. C could skip the certified cfg-disabled integration test after training. A separate, unused registry-free Rust dependency changed on every invocation.
 
 Inside private mount namespaces, the selected system libutil.a was an unchanged linker script containing `INPUT ( x86_64-linux-gnu/librt.a )`. Its initial fallback was the genuine system librt.a, an eight-byte empty archive. The candidate’s certificate covered the fallback bytes and the SDK directory, but missed the nested pathname relative to that directory.
 
-| Higher-priority SDK pathname | Shipping Cargo and fixed-width control | Candidate after training |
+| Higher-priority SDK pathname | Reference Cargo and fixed-width control | Candidate after training |
 | --- | --- | --- |
 | Absent | Successful test binary with no marker symbol | Same |
 | Contains a valid native object | Successful binary contains symbol ohm_nested_input_marker at 0x97 | Reused old binary without the symbol |
