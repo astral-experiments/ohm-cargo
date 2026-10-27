@@ -1,0 +1,187 @@
+{
+  "rejected": {
+    "ambient-layout": {
+      "cargo_exit": 0,
+      "error_levels": [],
+      "linker_and_output": [
+        [
+          "ld.bfd",
+          "libkit.so"
+        ]
+      ],
+      "rustc_crates": [
+        "kit"
+      ],
+      "test_elf_sha256": "cc606c59fd89a7c96ad6a5d3f337bed9d76137ebc94d0739ae1fd868c58df91f",
+      "test_list": "0 tests, 0 benchmarks\n"
+    }
+  },
+  "rejected_cargo_sha256": "2e55c6ac016adda320398e8b3836e8a89e26e3dd9ccc117983cdbd3e7605a3de",
+  "rejected_revision": "1b72ade16ffc5fb2fa04dc4c3013b1c9fec04d93",
+  "requested_layout": {
+    "rejected_exists": false,
+    "stock_bytes": 40398,
+    "stock_sha256": "e3dfffcb1296a9207555cd5cf6791ab639f3cf8d7d3ed7d5c1c9761197f5e3f8"
+  },
+  "rustc_driver": "7c31057e86f800e313b7d32080c7a5abaa7b92fef92254ac21b2e43febf16384",
+  "stock": {
+    "ambient-layout": {
+      "cargo_exit": 0,
+      "error_levels": [],
+      "linker_and_output": [
+        [
+          "ld.bfd",
+          "api-d85fd6b3c1ff5f15"
+        ],
+        [
+          "ld.bfd",
+          "libkit.so"
+        ]
+      ],
+      "rustc_crates": [
+        "api",
+        "kit"
+      ],
+      "test_elf_sha256": "89e3ad70042ef5eb21ac81dae7a33dc5331d89379237b8caed5ea4921cc913d3",
+      "test_list": "0 tests, 0 benchmarks\n"
+    },
+    "changed-resolved-native": {
+      "cargo_exit": 101,
+      "error_levels": [
+        "error"
+      ],
+      "linker_and_output": [
+        [
+          "ld.bfd",
+          "api-d85fd6b3c1ff5f15"
+        ]
+      ],
+      "rustc_crates": [
+        "api",
+        "leaf"
+      ],
+      "test_elf_sha256": null,
+      "test_list": null
+    },
+    "final-fresh": {
+      "cargo_exit": 0,
+      "error_levels": [],
+      "linker_and_output": [],
+      "rustc_crates": [],
+      "test_elf_sha256": "89e3ad70042ef5eb21ac81dae7a33dc5331d89379237b8caed5ea4921cc913d3",
+      "test_list": "0 tests, 0 benchmarks\n"
+    },
+    "native-recovery": {
+      "cargo_exit": 0,
+      "error_levels": [],
+      "linker_and_output": [
+        [
+          "ld.bfd",
+          "api-d85fd6b3c1ff5f15"
+        ]
+      ],
+      "rustc_crates": [
+        "api"
+      ],
+      "test_elf_sha256": "89e3ad70042ef5eb21ac81dae7a33dc5331d89379237b8caed5ea4921cc913d3",
+      "test_list": "0 tests, 0 benchmarks\n"
+    },
+    "new-sdk-shadow": {
+      "cargo_exit": 101,
+      "error_levels": [
+        "error"
+      ],
+      "linker_and_output": [
+        [
+          "ld.bfd",
+          "api-d85fd6b3c1ff5f15"
+        ]
+      ],
+      "rustc_crates": [
+        "api",
+        "leaf"
+      ],
+      "test_elf_sha256": null,
+      "test_list": null
+    },
+    "shadow-recovery": {
+      "cargo_exit": 0,
+      "error_levels": [],
+      "linker_and_output": [
+        [
+          "ld.bfd",
+          "api-d85fd6b3c1ff5f15"
+        ]
+      ],
+      "rustc_crates": [
+        "api"
+      ],
+      "test_elf_sha256": "89e3ad70042ef5eb21ac81dae7a33dc5331d89379237b8caed5ea4921cc913d3",
+      "test_list": "0 tests, 0 benchmarks\n"
+    },
+    "user-output-0-dirty": {
+      "cargo_exit": 0,
+      "error_levels": [],
+      "linker_and_output": [
+        [
+          "ld.lld",
+          "api-f64cf607299a3e84"
+        ],
+        [
+          "rust-lld",
+          "api-f64cf607299a3e84"
+        ]
+      ],
+      "rustc_crates": [
+        "api",
+        "leaf"
+      ],
+      "test_elf_sha256": "6dc392ee7cb7e157cbf3c2ec6f3453d7f0ec89da286930df12b17d963832699e",
+      "test_list": "0 tests, 0 benchmarks\n"
+    },
+    "user-output-1-dirty": {
+      "cargo_exit": 0,
+      "error_levels": [],
+      "linker_and_output": [
+        [
+          "ld.lld",
+          "api-666984cad93bc7a6"
+        ],
+        [
+          "rust-lld",
+          "api-666984cad93bc7a6"
+        ]
+      ],
+      "rustc_crates": [
+        "api",
+        "leaf"
+      ],
+      "test_elf_sha256": "6dc392ee7cb7e157cbf3c2ec6f3453d7f0ec89da286930df12b17d963832699e",
+      "test_list": "0 tests, 0 benchmarks\n"
+    }
+  },
+  "stock_cargo_revision": "d38fdd02503662de04c52f5f370f5dd81bddf868",
+  "stock_cargo_sha256": "dd5cab154b8dcd09ccc2753160d314cade80979b2d055ee66aa9e2217e05e7e1",
+  "user_requested_outputs": [
+    {
+      "user0.d": {
+        "bytes": 11441,
+        "sha256": "cde6bc6baec217d208d318a3cc5e4c18575e1b71101184ef1606e723441f623c"
+      },
+      "user0.map": {
+        "bytes": 1685984,
+        "sha256": "b627349b5d2ddd16fbd9ae5b88534ccc69b45f26f409ce1cebaac4c6429e2c72"
+      }
+    },
+    {
+      "user1.d": {
+        "bytes": 11441,
+        "sha256": "ffedf5efa08d4f39077b4f590281879e14dbe1726160bc92797e1ca46da7d505"
+      },
+      "user1.map": {
+        "bytes": 1685984,
+        "sha256": "f7c19e59f1a90a92564361fb3e423c0da450bc95dedd461ae56515bd2dac3d7a"
+      }
+    }
+  ]
+}
