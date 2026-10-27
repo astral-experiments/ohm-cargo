@@ -1,0 +1,35 @@
+{
+  "argv": [
+    "rustc",
+    "+ohm",
+    "--edition=2021",
+    "main.rs",
+    "--extern",
+    "d=/dev/shm/ohm-observer-protocol-h1-20261027/fifo-release/actual library/libd.rlib",
+    "-Zbinary-dep-depinfo",
+    "-Zchecksum-hash-algorithm=sha256",
+    "--emit=dep-info=result.d,link=app"
+  ],
+  "unmodified_frontend": "rustc 1.99.0-dev (9a1b7cb6a 2026-10-27) (ohm-1.99.0-16)\nbinary: rustc\ncommit-hash: 9a1b7cb6a356d5380fdf80714523cb434c34dccb\ncommit-date: 2026-10-27\nhost: x86_64-unknown-linux-gnu\nrelease: 1.99.0-dev\nLLVM version: 23.1.1\n",
+  "returncode_before_timeout": null,
+  "timeout_seconds": 6,
+  "native": null,
+  "kernel": {
+    "3137884": {
+      "wchan": "futex_do_wait",
+      "syscall": "202 0x7134059be990 0x109 0x2fe162 0x0 0x0 0xffffffff 0x7ffea23fedb0 0x713411298e51"
+    },
+    "3137889": {
+      "wchan": "futex_do_wait",
+      "syscall": "202 0x713416d3dd10 0x189 0x0 0x0 0x0 0xffffffff 0x713405bbb800 0x713411298e51"
+    },
+    "3137890": {
+      "wchan": "wait_for_partner",
+      "syscall": "257 0xffffff9c 0x71340592e718 0x80000 0x0 0x0 0x696c722e6462696c 0x71340592e640 0x71341131b4b5"
+    }
+  },
+  "fifo": "/dev/shm/ohm-observer-protocol-h1-20261027/fifo-release/actual\\ library/libd.rlib",
+  "genuine": "/dev/shm/ohm-observer-protocol-h1-20261027/fifo-release/actual library/libd.rlib",
+  "genuine_sha256": "be9bee8d6f2581aa6860594d3d449e344d83e4f30d8274e8e494d610e1ae07e4",
+  "no_writer_opened": true
+}
