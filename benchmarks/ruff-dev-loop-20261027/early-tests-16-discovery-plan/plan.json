@@ -1,0 +1,25 @@
+{
+  "affinity": "H2 CPUs 0\u201323, Cargo -j8, diagnostic read/transfer CPUs 28\u201331",
+  "arms": [
+    "Default early-test policy, then explicit -Zohm-early-tests=no. Separately empty workspace and shared output stores, registry source archives identical, no trust overrides.",
+    "Each arm compiles the complete cargo +ohm test --no-run --locked --offline -j8 --message-format=json workspace. Source, targets, shared, registry and all tool paths are canonically identical. No tests or examples are run."
+  ],
+  "clock": "strace -ttt on exec/signals and observed wall/monotonic arrival times of stdout plus relevant stderr; late/absent/inferred scheduler confirmation must be labelled.",
+  "floors_gib": {
+    "starting_tmpfs": 45,
+    "sustained_home": 20,
+    "sustained_secondary": 15,
+    "sustained_tmpfs": 7
+  },
+  "prior_13_unit_census": "2fd5d9a92f225c16235c491073b61b89d3790a05995f597af96c7ded50ef74b0",
+  "record": [
+    "619 Cargo artifact records; 84 test-profile executable outputs and 18 other binary/example executable outputs; complete 110 workspace ELF hashes and section tables per arm. Record any difference with no presumption that binary equality follows receipt equality.",
+    "Actual full, split/combined link-only, Rust queries, GCC/collect2 and packaged Wild execve with wall timestamp and SIGCHLD/exit status, incoming Cargo stdout/stderr arrival clock spans and digest bindings. No child environment data.",
+    "Cross each complete argv and Rust source to traces for its own upstream rlib, retry after dependency completion and metadata availability. Report overlapping vs already exited at test exec, keeping actual authoritative scheduler completion separate when log resolution is insufficient. Record declared own-crate path syntax, prior unused-extern proof, accepted early controls and stopped/unknown rows.",
+    "Report both cold processes even if the prior 13 units do not replicate or an attempted early test exits nonzero. No wall-time claim, no product changes or publication at this point."
+  ],
+  "scoring": false,
+  "sdk_manifest": "957ca8144205008ddaee75ef35f9775b2e428271c6b044e38bbdd8196c6bbf3e",
+  "source": "93526150df078af7dd8fc4226cdcc469539d2001",
+  "study": "Unscored first empty workspace test build of unchanged Ruff on exact Ohm -16"
+}
