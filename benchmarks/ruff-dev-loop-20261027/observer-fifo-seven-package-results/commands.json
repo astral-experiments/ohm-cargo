@@ -1,0 +1,5820 @@
+[
+  {
+    "arm": "C",
+    "images": {
+      "cargo": 2,
+      "cc": 3,
+      "collect2": 3,
+      "ld.bfd": 3,
+      "rustc": 5
+    },
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374094..374116)",
+        "sha256": "bb46ff22f9640a67401676f894df61fd1485d3bc4fcba37c63e4543972c98c46"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273191..273213)",
+        "sha256": "7b7d83f9ac360e8893a88e6a567960769096bc2694ed6190427b26af1286e301"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 1906414064,
+    "phase": "audit-01-edit-C",
+    "readers": [
+      {
+        "complete": true,
+        "sha256": "75f52350c928fde67caf2730c043a29244599fe12b82373dc00fbf2e6e4f56cc",
+        "valid_trailer": true
+      },
+      {
+        "complete": true,
+        "sha256": "c3b167c053c17523baa0799ce2201df5b7e204dd8d4e6d740a7d00f528373dde",
+        "valid_trailer": true
+      }
+    ],
+    "roster": [
+      {
+        "capture": true,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": true,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_plain",
+        "mode": "relink"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_shapes",
+        "mode": "full"
+      }
+    ],
+    "source": "e27e925f288b958f810e597fbc9e08780535b2baa165c80997167060bcca9c8f",
+    "status": 0,
+    "timed": false
+  },
+  {
+    "arm": "P",
+    "images": {
+      "cargo": 2,
+      "cc": 3,
+      "collect2": 3,
+      "ld.bfd": 3,
+      "rustc": 5
+    },
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374094..374116)",
+        "sha256": "bb46ff22f9640a67401676f894df61fd1485d3bc4fcba37c63e4543972c98c46"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273191..273213)",
+        "sha256": "7b7d83f9ac360e8893a88e6a567960769096bc2694ed6190427b26af1286e301"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 1328725291,
+    "phase": "audit-01-edit-P",
+    "readers": [
+      {
+        "complete": null,
+        "sha256": "47b8991439cfdad32e80170561eb69d766f860f64d1224787de91f601c219fcc",
+        "valid_trailer": false
+      },
+      {
+        "complete": null,
+        "sha256": "5da1810499120ddb88719506c302106dc634ec3da01fdb6896d19c165361c379",
+        "valid_trailer": false
+      }
+    ],
+    "roster": [
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_plain",
+        "mode": "relink"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_shapes",
+        "mode": "full"
+      }
+    ],
+    "source": "e27e925f288b958f810e597fbc9e08780535b2baa165c80997167060bcca9c8f",
+    "status": 0,
+    "timed": false
+  },
+  {
+    "arm": "C",
+    "images": {
+      "cargo": 2
+    },
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 341747233,
+    "phase": "audit-01-noop-C",
+    "readers": [
+      {
+        "complete": true,
+        "sha256": "5ba7ecda99fd92b412090c6f048b6e2d18b8b36d084793fd6893422f949b9b6a",
+        "valid_trailer": true
+      },
+      {
+        "complete": true,
+        "sha256": "243558ae22d01210b307c91423e3002a7b5c95d1186053d8e3413d609a26646f",
+        "valid_trailer": true
+      }
+    ],
+    "roster": [],
+    "source": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0,
+    "timed": false
+  },
+  {
+    "arm": "P",
+    "images": {
+      "cargo": 2,
+      "cc": 2,
+      "collect2": 2,
+      "ld.bfd": 2,
+      "rustc": 3
+    },
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 769077603,
+    "phase": "audit-01-noop-P",
+    "readers": [
+      {
+        "complete": null,
+        "sha256": "47b8991439cfdad32e80170561eb69d766f860f64d1224787de91f601c219fcc",
+        "valid_trailer": false
+      },
+      {
+        "complete": null,
+        "sha256": "5da1810499120ddb88719506c302106dc634ec3da01fdb6896d19c165361c379",
+        "valid_trailer": false
+      }
+    ],
+    "roster": [
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "relink"
+      }
+    ],
+    "source": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0,
+    "timed": false
+  },
+  {
+    "arm": "C",
+    "images": {
+      "cargo": 2,
+      "cc": 3,
+      "collect2": 3,
+      "ld.bfd": 3,
+      "rustc": 5
+    },
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 1946774041,
+    "phase": "audit-02-edit-C",
+    "readers": [
+      {
+        "complete": true,
+        "sha256": "5ba7ecda99fd92b412090c6f048b6e2d18b8b36d084793fd6893422f949b9b6a",
+        "valid_trailer": true
+      },
+      {
+        "complete": true,
+        "sha256": "9512745cfba270267db57f0ad6760d2857a879b51c8894cb0e0059d64891944e",
+        "valid_trailer": true
+      }
+    ],
+    "roster": [
+      {
+        "capture": true,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": true,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_plain",
+        "mode": "relink"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_shapes",
+        "mode": "full"
+      }
+    ],
+    "source": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0,
+    "timed": false
+  },
+  {
+    "arm": "P",
+    "images": {
+      "cargo": 2,
+      "cc": 3,
+      "collect2": 3,
+      "ld.bfd": 3,
+      "rustc": 5
+    },
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 1331027691,
+    "phase": "audit-02-edit-P",
+    "readers": [
+      {
+        "complete": null,
+        "sha256": "47b8991439cfdad32e80170561eb69d766f860f64d1224787de91f601c219fcc",
+        "valid_trailer": false
+      },
+      {
+        "complete": null,
+        "sha256": "5da1810499120ddb88719506c302106dc634ec3da01fdb6896d19c165361c379",
+        "valid_trailer": false
+      }
+    ],
+    "roster": [
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_plain",
+        "mode": "relink"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_shapes",
+        "mode": "full"
+      }
+    ],
+    "source": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0,
+    "timed": false
+  },
+  {
+    "arm": "C",
+    "images": {
+      "cargo": 2
+    },
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374094..374116)",
+        "sha256": "bb46ff22f9640a67401676f894df61fd1485d3bc4fcba37c63e4543972c98c46"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273191..273213)",
+        "sha256": "7b7d83f9ac360e8893a88e6a567960769096bc2694ed6190427b26af1286e301"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 339670386,
+    "phase": "audit-02-noop-C",
+    "readers": [
+      {
+        "complete": true,
+        "sha256": "75f52350c928fde67caf2730c043a29244599fe12b82373dc00fbf2e6e4f56cc",
+        "valid_trailer": true
+      },
+      {
+        "complete": true,
+        "sha256": "c3b167c053c17523baa0799ce2201df5b7e204dd8d4e6d740a7d00f528373dde",
+        "valid_trailer": true
+      }
+    ],
+    "roster": [],
+    "source": "e27e925f288b958f810e597fbc9e08780535b2baa165c80997167060bcca9c8f",
+    "status": 0,
+    "timed": false
+  },
+  {
+    "arm": "P",
+    "images": {
+      "cargo": 2,
+      "cc": 2,
+      "collect2": 2,
+      "ld.bfd": 2,
+      "rustc": 3
+    },
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374094..374116)",
+        "sha256": "bb46ff22f9640a67401676f894df61fd1485d3bc4fcba37c63e4543972c98c46"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273191..273213)",
+        "sha256": "7b7d83f9ac360e8893a88e6a567960769096bc2694ed6190427b26af1286e301"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 790781797,
+    "phase": "audit-02-noop-P",
+    "readers": [
+      {
+        "complete": null,
+        "sha256": "47b8991439cfdad32e80170561eb69d766f860f64d1224787de91f601c219fcc",
+        "valid_trailer": false
+      },
+      {
+        "complete": null,
+        "sha256": "5da1810499120ddb88719506c302106dc634ec3da01fdb6896d19c165361c379",
+        "valid_trailer": false
+      }
+    ],
+    "roster": [
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "relink"
+      }
+    ],
+    "source": "e27e925f288b958f810e597fbc9e08780535b2baa165c80997167060bcca9c8f",
+    "status": 0,
+    "timed": false
+  },
+  {
+    "arm": "C",
+    "images": {
+      "cargo": 2,
+      "cc": 3,
+      "collect2": 3,
+      "ld.bfd": 3,
+      "rustc": 5
+    },
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374094..374116)",
+        "sha256": "bb46ff22f9640a67401676f894df61fd1485d3bc4fcba37c63e4543972c98c46"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273191..273213)",
+        "sha256": "7b7d83f9ac360e8893a88e6a567960769096bc2694ed6190427b26af1286e301"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 1921725543,
+    "phase": "audit-03-edit-C",
+    "readers": [
+      {
+        "complete": true,
+        "sha256": "75f52350c928fde67caf2730c043a29244599fe12b82373dc00fbf2e6e4f56cc",
+        "valid_trailer": true
+      },
+      {
+        "complete": true,
+        "sha256": "f667b56e77a4476e48abd6462af1d6d98c70f7fb3ed198dd58cff9c017584b44",
+        "valid_trailer": true
+      }
+    ],
+    "roster": [
+      {
+        "capture": true,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": true,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_plain",
+        "mode": "relink"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_shapes",
+        "mode": "full"
+      }
+    ],
+    "source": "e27e925f288b958f810e597fbc9e08780535b2baa165c80997167060bcca9c8f",
+    "status": 0,
+    "timed": false
+  },
+  {
+    "arm": "P",
+    "images": {
+      "cargo": 2,
+      "cc": 3,
+      "collect2": 3,
+      "ld.bfd": 3,
+      "rustc": 5
+    },
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374094..374116)",
+        "sha256": "bb46ff22f9640a67401676f894df61fd1485d3bc4fcba37c63e4543972c98c46"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273191..273213)",
+        "sha256": "7b7d83f9ac360e8893a88e6a567960769096bc2694ed6190427b26af1286e301"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 1323421019,
+    "phase": "audit-03-edit-P",
+    "readers": [
+      {
+        "complete": null,
+        "sha256": "47b8991439cfdad32e80170561eb69d766f860f64d1224787de91f601c219fcc",
+        "valid_trailer": false
+      },
+      {
+        "complete": null,
+        "sha256": "5da1810499120ddb88719506c302106dc634ec3da01fdb6896d19c165361c379",
+        "valid_trailer": false
+      }
+    ],
+    "roster": [
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_plain",
+        "mode": "relink"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_shapes",
+        "mode": "full"
+      }
+    ],
+    "source": "e27e925f288b958f810e597fbc9e08780535b2baa165c80997167060bcca9c8f",
+    "status": 0,
+    "timed": false
+  },
+  {
+    "arm": "C",
+    "images": {
+      "cargo": 2
+    },
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 313740345,
+    "phase": "audit-03-noop-C",
+    "readers": [
+      {
+        "complete": true,
+        "sha256": "5ba7ecda99fd92b412090c6f048b6e2d18b8b36d084793fd6893422f949b9b6a",
+        "valid_trailer": true
+      },
+      {
+        "complete": true,
+        "sha256": "9512745cfba270267db57f0ad6760d2857a879b51c8894cb0e0059d64891944e",
+        "valid_trailer": true
+      }
+    ],
+    "roster": [],
+    "source": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0,
+    "timed": false
+  },
+  {
+    "arm": "P",
+    "images": {
+      "cargo": 2,
+      "cc": 2,
+      "collect2": 2,
+      "ld.bfd": 2,
+      "rustc": 3
+    },
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 784461293,
+    "phase": "audit-03-noop-P",
+    "readers": [
+      {
+        "complete": null,
+        "sha256": "47b8991439cfdad32e80170561eb69d766f860f64d1224787de91f601c219fcc",
+        "valid_trailer": false
+      },
+      {
+        "complete": null,
+        "sha256": "5da1810499120ddb88719506c302106dc634ec3da01fdb6896d19c165361c379",
+        "valid_trailer": false
+      }
+    ],
+    "roster": [
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "relink"
+      }
+    ],
+    "source": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0,
+    "timed": false
+  },
+  {
+    "arm": "C",
+    "images": {
+      "cargo": 2,
+      "cc": 3,
+      "collect2": 3,
+      "ld.bfd": 3,
+      "rustc": 5
+    },
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 1906152127,
+    "phase": "audit-04-edit-C",
+    "readers": [
+      {
+        "complete": true,
+        "sha256": "5ba7ecda99fd92b412090c6f048b6e2d18b8b36d084793fd6893422f949b9b6a",
+        "valid_trailer": true
+      },
+      {
+        "complete": true,
+        "sha256": "1acbe019729a28d7b3e36fb4dddc6c463a49dae15515faa7bb61426f56699ce5",
+        "valid_trailer": true
+      }
+    ],
+    "roster": [
+      {
+        "capture": true,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": true,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_plain",
+        "mode": "relink"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_shapes",
+        "mode": "full"
+      }
+    ],
+    "source": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0,
+    "timed": false
+  },
+  {
+    "arm": "P",
+    "images": {
+      "cargo": 2,
+      "cc": 3,
+      "collect2": 3,
+      "ld.bfd": 3,
+      "rustc": 5
+    },
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 1352652599,
+    "phase": "audit-04-edit-P",
+    "readers": [
+      {
+        "complete": null,
+        "sha256": "47b8991439cfdad32e80170561eb69d766f860f64d1224787de91f601c219fcc",
+        "valid_trailer": false
+      },
+      {
+        "complete": null,
+        "sha256": "5da1810499120ddb88719506c302106dc634ec3da01fdb6896d19c165361c379",
+        "valid_trailer": false
+      }
+    ],
+    "roster": [
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_plain",
+        "mode": "relink"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_shapes",
+        "mode": "full"
+      }
+    ],
+    "source": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0,
+    "timed": false
+  },
+  {
+    "arm": "C",
+    "images": {
+      "cargo": 2
+    },
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374094..374116)",
+        "sha256": "bb46ff22f9640a67401676f894df61fd1485d3bc4fcba37c63e4543972c98c46"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273191..273213)",
+        "sha256": "7b7d83f9ac360e8893a88e6a567960769096bc2694ed6190427b26af1286e301"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 329807972,
+    "phase": "audit-04-noop-C",
+    "readers": [
+      {
+        "complete": true,
+        "sha256": "75f52350c928fde67caf2730c043a29244599fe12b82373dc00fbf2e6e4f56cc",
+        "valid_trailer": true
+      },
+      {
+        "complete": true,
+        "sha256": "f667b56e77a4476e48abd6462af1d6d98c70f7fb3ed198dd58cff9c017584b44",
+        "valid_trailer": true
+      }
+    ],
+    "roster": [],
+    "source": "e27e925f288b958f810e597fbc9e08780535b2baa165c80997167060bcca9c8f",
+    "status": 0,
+    "timed": false
+  },
+  {
+    "arm": "P",
+    "images": {
+      "cargo": 2,
+      "cc": 2,
+      "collect2": 2,
+      "ld.bfd": 2,
+      "rustc": 3
+    },
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374094..374116)",
+        "sha256": "bb46ff22f9640a67401676f894df61fd1485d3bc4fcba37c63e4543972c98c46"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273191..273213)",
+        "sha256": "7b7d83f9ac360e8893a88e6a567960769096bc2694ed6190427b26af1286e301"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 800488644,
+    "phase": "audit-04-noop-P",
+    "readers": [
+      {
+        "complete": null,
+        "sha256": "47b8991439cfdad32e80170561eb69d766f860f64d1224787de91f601c219fcc",
+        "valid_trailer": false
+      },
+      {
+        "complete": null,
+        "sha256": "5da1810499120ddb88719506c302106dc634ec3da01fdb6896d19c165361c379",
+        "valid_trailer": false
+      }
+    ],
+    "roster": [
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "relink"
+      }
+    ],
+    "source": "e27e925f288b958f810e597fbc9e08780535b2baa165c80997167060bcca9c8f",
+    "status": 0,
+    "timed": false
+  },
+  {
+    "arm": "C",
+    "images": {
+      "cargo": 2,
+      "cc": 3,
+      "collect2": 3,
+      "ld.bfd": 3,
+      "rustc": 5
+    },
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374094..374116)",
+        "sha256": "bb46ff22f9640a67401676f894df61fd1485d3bc4fcba37c63e4543972c98c46"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273191..273213)",
+        "sha256": "7b7d83f9ac360e8893a88e6a567960769096bc2694ed6190427b26af1286e301"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 2098936631,
+    "phase": "audit-05-edit-C",
+    "readers": [
+      {
+        "complete": true,
+        "sha256": "75f52350c928fde67caf2730c043a29244599fe12b82373dc00fbf2e6e4f56cc",
+        "valid_trailer": true
+      },
+      {
+        "complete": true,
+        "sha256": "a5bc8659a5d8db765df33b77ffc2bc4c48f3d0ac40dc48d17b84fcb13e2cbe5a",
+        "valid_trailer": true
+      }
+    ],
+    "roster": [
+      {
+        "capture": true,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": true,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_plain",
+        "mode": "relink"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_shapes",
+        "mode": "full"
+      }
+    ],
+    "source": "e27e925f288b958f810e597fbc9e08780535b2baa165c80997167060bcca9c8f",
+    "status": 0,
+    "timed": false
+  },
+  {
+    "arm": "P",
+    "images": {
+      "cargo": 2,
+      "cc": 3,
+      "collect2": 3,
+      "ld.bfd": 3,
+      "rustc": 5
+    },
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374094..374116)",
+        "sha256": "bb46ff22f9640a67401676f894df61fd1485d3bc4fcba37c63e4543972c98c46"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273191..273213)",
+        "sha256": "7b7d83f9ac360e8893a88e6a567960769096bc2694ed6190427b26af1286e301"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 1463543025,
+    "phase": "audit-05-edit-P",
+    "readers": [
+      {
+        "complete": null,
+        "sha256": "47b8991439cfdad32e80170561eb69d766f860f64d1224787de91f601c219fcc",
+        "valid_trailer": false
+      },
+      {
+        "complete": null,
+        "sha256": "5da1810499120ddb88719506c302106dc634ec3da01fdb6896d19c165361c379",
+        "valid_trailer": false
+      }
+    ],
+    "roster": [
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_plain",
+        "mode": "relink"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_shapes",
+        "mode": "full"
+      }
+    ],
+    "source": "e27e925f288b958f810e597fbc9e08780535b2baa165c80997167060bcca9c8f",
+    "status": 0,
+    "timed": false
+  },
+  {
+    "arm": "C",
+    "images": {
+      "cargo": 2
+    },
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 355616363,
+    "phase": "audit-05-noop-C",
+    "readers": [
+      {
+        "complete": true,
+        "sha256": "5ba7ecda99fd92b412090c6f048b6e2d18b8b36d084793fd6893422f949b9b6a",
+        "valid_trailer": true
+      },
+      {
+        "complete": true,
+        "sha256": "1acbe019729a28d7b3e36fb4dddc6c463a49dae15515faa7bb61426f56699ce5",
+        "valid_trailer": true
+      }
+    ],
+    "roster": [],
+    "source": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0,
+    "timed": false
+  },
+  {
+    "arm": "P",
+    "images": {
+      "cargo": 2,
+      "cc": 2,
+      "collect2": 2,
+      "ld.bfd": 2,
+      "rustc": 3
+    },
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 818915659,
+    "phase": "audit-05-noop-P",
+    "readers": [
+      {
+        "complete": null,
+        "sha256": "47b8991439cfdad32e80170561eb69d766f860f64d1224787de91f601c219fcc",
+        "valid_trailer": false
+      },
+      {
+        "complete": null,
+        "sha256": "5da1810499120ddb88719506c302106dc634ec3da01fdb6896d19c165361c379",
+        "valid_trailer": false
+      }
+    ],
+    "roster": [
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "relink"
+      }
+    ],
+    "source": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0,
+    "timed": false
+  },
+  {
+    "arm": "C",
+    "images": {
+      "cargo": 2,
+      "cc": 3,
+      "collect2": 3,
+      "ld.bfd": 3,
+      "rustc": 5
+    },
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 2050420316,
+    "phase": "audit-06-edit-C",
+    "readers": [
+      {
+        "complete": true,
+        "sha256": "5ba7ecda99fd92b412090c6f048b6e2d18b8b36d084793fd6893422f949b9b6a",
+        "valid_trailer": true
+      },
+      {
+        "complete": true,
+        "sha256": "848e60fe8241fefc17afb73849b453a0716852a59ee5ed5f7a9faa37b1e2bff5",
+        "valid_trailer": true
+      }
+    ],
+    "roster": [
+      {
+        "capture": true,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": true,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_plain",
+        "mode": "relink"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_shapes",
+        "mode": "full"
+      }
+    ],
+    "source": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0,
+    "timed": false
+  },
+  {
+    "arm": "P",
+    "images": {
+      "cargo": 2,
+      "cc": 3,
+      "collect2": 3,
+      "ld.bfd": 3,
+      "rustc": 5
+    },
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 1416140451,
+    "phase": "audit-06-edit-P",
+    "readers": [
+      {
+        "complete": null,
+        "sha256": "47b8991439cfdad32e80170561eb69d766f860f64d1224787de91f601c219fcc",
+        "valid_trailer": false
+      },
+      {
+        "complete": null,
+        "sha256": "5da1810499120ddb88719506c302106dc634ec3da01fdb6896d19c165361c379",
+        "valid_trailer": false
+      }
+    ],
+    "roster": [
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_plain",
+        "mode": "relink"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_shapes",
+        "mode": "full"
+      }
+    ],
+    "source": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0,
+    "timed": false
+  },
+  {
+    "arm": "C",
+    "images": {
+      "cargo": 2
+    },
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374094..374116)",
+        "sha256": "bb46ff22f9640a67401676f894df61fd1485d3bc4fcba37c63e4543972c98c46"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273191..273213)",
+        "sha256": "7b7d83f9ac360e8893a88e6a567960769096bc2694ed6190427b26af1286e301"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 338546458,
+    "phase": "audit-06-noop-C",
+    "readers": [
+      {
+        "complete": true,
+        "sha256": "75f52350c928fde67caf2730c043a29244599fe12b82373dc00fbf2e6e4f56cc",
+        "valid_trailer": true
+      },
+      {
+        "complete": true,
+        "sha256": "a5bc8659a5d8db765df33b77ffc2bc4c48f3d0ac40dc48d17b84fcb13e2cbe5a",
+        "valid_trailer": true
+      }
+    ],
+    "roster": [],
+    "source": "e27e925f288b958f810e597fbc9e08780535b2baa165c80997167060bcca9c8f",
+    "status": 0,
+    "timed": false
+  },
+  {
+    "arm": "P",
+    "images": {
+      "cargo": 2,
+      "cc": 2,
+      "collect2": 2,
+      "ld.bfd": 2,
+      "rustc": 3
+    },
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374094..374116)",
+        "sha256": "bb46ff22f9640a67401676f894df61fd1485d3bc4fcba37c63e4543972c98c46"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273191..273213)",
+        "sha256": "7b7d83f9ac360e8893a88e6a567960769096bc2694ed6190427b26af1286e301"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 790128008,
+    "phase": "audit-06-noop-P",
+    "readers": [
+      {
+        "complete": null,
+        "sha256": "47b8991439cfdad32e80170561eb69d766f860f64d1224787de91f601c219fcc",
+        "valid_trailer": false
+      },
+      {
+        "complete": null,
+        "sha256": "5da1810499120ddb88719506c302106dc634ec3da01fdb6896d19c165361c379",
+        "valid_trailer": false
+      }
+    ],
+    "roster": [
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "relink"
+      }
+    ],
+    "source": "e27e925f288b958f810e597fbc9e08780535b2baa165c80997167060bcca9c8f",
+    "status": 0,
+    "timed": false
+  },
+  {
+    "arm": "C",
+    "images": {
+      "cargo": 2,
+      "cc": 3,
+      "collect2": 3,
+      "ld.bfd": 3,
+      "rustc": 5
+    },
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374094..374116)",
+        "sha256": "bb46ff22f9640a67401676f894df61fd1485d3bc4fcba37c63e4543972c98c46"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273191..273213)",
+        "sha256": "7b7d83f9ac360e8893a88e6a567960769096bc2694ed6190427b26af1286e301"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 2000624445,
+    "phase": "audit-07-edit-C",
+    "readers": [
+      {
+        "complete": true,
+        "sha256": "75f52350c928fde67caf2730c043a29244599fe12b82373dc00fbf2e6e4f56cc",
+        "valid_trailer": true
+      },
+      {
+        "complete": true,
+        "sha256": "8572ea8aa726bd09ce6f939deea7d895322511ffcb4feb55806505ae094e4a60",
+        "valid_trailer": true
+      }
+    ],
+    "roster": [
+      {
+        "capture": true,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": true,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_plain",
+        "mode": "relink"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_shapes",
+        "mode": "full"
+      }
+    ],
+    "source": "e27e925f288b958f810e597fbc9e08780535b2baa165c80997167060bcca9c8f",
+    "status": 0,
+    "timed": false
+  },
+  {
+    "arm": "P",
+    "images": {
+      "cargo": 2,
+      "cc": 3,
+      "collect2": 3,
+      "ld.bfd": 3,
+      "rustc": 5
+    },
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374094..374116)",
+        "sha256": "bb46ff22f9640a67401676f894df61fd1485d3bc4fcba37c63e4543972c98c46"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273191..273213)",
+        "sha256": "7b7d83f9ac360e8893a88e6a567960769096bc2694ed6190427b26af1286e301"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 1368832670,
+    "phase": "audit-07-edit-P",
+    "readers": [
+      {
+        "complete": null,
+        "sha256": "47b8991439cfdad32e80170561eb69d766f860f64d1224787de91f601c219fcc",
+        "valid_trailer": false
+      },
+      {
+        "complete": null,
+        "sha256": "5da1810499120ddb88719506c302106dc634ec3da01fdb6896d19c165361c379",
+        "valid_trailer": false
+      }
+    ],
+    "roster": [
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_plain",
+        "mode": "relink"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_shapes",
+        "mode": "full"
+      }
+    ],
+    "source": "e27e925f288b958f810e597fbc9e08780535b2baa165c80997167060bcca9c8f",
+    "status": 0,
+    "timed": false
+  },
+  {
+    "arm": "C",
+    "images": {
+      "cargo": 2
+    },
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 347299782,
+    "phase": "audit-07-noop-C",
+    "readers": [
+      {
+        "complete": true,
+        "sha256": "5ba7ecda99fd92b412090c6f048b6e2d18b8b36d084793fd6893422f949b9b6a",
+        "valid_trailer": true
+      },
+      {
+        "complete": true,
+        "sha256": "848e60fe8241fefc17afb73849b453a0716852a59ee5ed5f7a9faa37b1e2bff5",
+        "valid_trailer": true
+      }
+    ],
+    "roster": [],
+    "source": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0,
+    "timed": false
+  },
+  {
+    "arm": "P",
+    "images": {
+      "cargo": 2,
+      "cc": 2,
+      "collect2": 2,
+      "ld.bfd": 2,
+      "rustc": 3
+    },
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 771637707,
+    "phase": "audit-07-noop-P",
+    "readers": [
+      {
+        "complete": null,
+        "sha256": "47b8991439cfdad32e80170561eb69d766f860f64d1224787de91f601c219fcc",
+        "valid_trailer": false
+      },
+      {
+        "complete": null,
+        "sha256": "5da1810499120ddb88719506c302106dc634ec3da01fdb6896d19c165361c379",
+        "valid_trailer": false
+      }
+    ],
+    "roster": [
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "relink"
+      }
+    ],
+    "source": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0,
+    "timed": false
+  },
+  {
+    "arm": "C",
+    "images": {
+      "cargo": 2,
+      "cc": 3,
+      "collect2": 3,
+      "ld.bfd": 3,
+      "rustc": 5
+    },
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 2057691470,
+    "phase": "audit-08-edit-C",
+    "readers": [
+      {
+        "complete": true,
+        "sha256": "5ba7ecda99fd92b412090c6f048b6e2d18b8b36d084793fd6893422f949b9b6a",
+        "valid_trailer": true
+      },
+      {
+        "complete": true,
+        "sha256": "3cca89097ef29610900f873139577322f55f3b57f133e20c3ead08531ead975a",
+        "valid_trailer": true
+      }
+    ],
+    "roster": [
+      {
+        "capture": true,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": true,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_plain",
+        "mode": "relink"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_shapes",
+        "mode": "full"
+      }
+    ],
+    "source": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0,
+    "timed": false
+  },
+  {
+    "arm": "P",
+    "images": {
+      "cargo": 2,
+      "cc": 3,
+      "collect2": 3,
+      "ld.bfd": 3,
+      "rustc": 5
+    },
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 1377752000,
+    "phase": "audit-08-edit-P",
+    "readers": [
+      {
+        "complete": null,
+        "sha256": "47b8991439cfdad32e80170561eb69d766f860f64d1224787de91f601c219fcc",
+        "valid_trailer": false
+      },
+      {
+        "complete": null,
+        "sha256": "5da1810499120ddb88719506c302106dc634ec3da01fdb6896d19c165361c379",
+        "valid_trailer": false
+      }
+    ],
+    "roster": [
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_plain",
+        "mode": "relink"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_shapes",
+        "mode": "full"
+      }
+    ],
+    "source": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0,
+    "timed": false
+  },
+  {
+    "arm": "C",
+    "images": {
+      "cargo": 2
+    },
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374094..374116)",
+        "sha256": "bb46ff22f9640a67401676f894df61fd1485d3bc4fcba37c63e4543972c98c46"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273191..273213)",
+        "sha256": "7b7d83f9ac360e8893a88e6a567960769096bc2694ed6190427b26af1286e301"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 386027156,
+    "phase": "audit-08-noop-C",
+    "readers": [
+      {
+        "complete": true,
+        "sha256": "75f52350c928fde67caf2730c043a29244599fe12b82373dc00fbf2e6e4f56cc",
+        "valid_trailer": true
+      },
+      {
+        "complete": true,
+        "sha256": "8572ea8aa726bd09ce6f939deea7d895322511ffcb4feb55806505ae094e4a60",
+        "valid_trailer": true
+      }
+    ],
+    "roster": [],
+    "source": "e27e925f288b958f810e597fbc9e08780535b2baa165c80997167060bcca9c8f",
+    "status": 0,
+    "timed": false
+  },
+  {
+    "arm": "P",
+    "images": {
+      "cargo": 2,
+      "cc": 2,
+      "collect2": 2,
+      "ld.bfd": 2,
+      "rustc": 3
+    },
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374094..374116)",
+        "sha256": "bb46ff22f9640a67401676f894df61fd1485d3bc4fcba37c63e4543972c98c46"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273191..273213)",
+        "sha256": "7b7d83f9ac360e8893a88e6a567960769096bc2694ed6190427b26af1286e301"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 819658932,
+    "phase": "audit-08-noop-P",
+    "readers": [
+      {
+        "complete": null,
+        "sha256": "47b8991439cfdad32e80170561eb69d766f860f64d1224787de91f601c219fcc",
+        "valid_trailer": false
+      },
+      {
+        "complete": null,
+        "sha256": "5da1810499120ddb88719506c302106dc634ec3da01fdb6896d19c165361c379",
+        "valid_trailer": false
+      }
+    ],
+    "roster": [
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "relink"
+      }
+    ],
+    "source": "e27e925f288b958f810e597fbc9e08780535b2baa165c80997167060bcca9c8f",
+    "status": 0,
+    "timed": false
+  },
+  {
+    "arm": "C",
+    "images": {
+      "cargo": 2,
+      "cc": 3,
+      "collect2": 3,
+      "ld.bfd": 3,
+      "rustc": 5
+    },
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374094..374116)",
+        "sha256": "bb46ff22f9640a67401676f894df61fd1485d3bc4fcba37c63e4543972c98c46"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273191..273213)",
+        "sha256": "7b7d83f9ac360e8893a88e6a567960769096bc2694ed6190427b26af1286e301"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 1977517119,
+    "phase": "audit-09-edit-C",
+    "readers": [
+      {
+        "complete": true,
+        "sha256": "75f52350c928fde67caf2730c043a29244599fe12b82373dc00fbf2e6e4f56cc",
+        "valid_trailer": true
+      },
+      {
+        "complete": true,
+        "sha256": "7d31c730e864f3f4a400e111f2fe34f4cd7aed7376b932e1a817ba7f0b4c618c",
+        "valid_trailer": true
+      }
+    ],
+    "roster": [
+      {
+        "capture": true,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": true,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_plain",
+        "mode": "relink"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_shapes",
+        "mode": "full"
+      }
+    ],
+    "source": "e27e925f288b958f810e597fbc9e08780535b2baa165c80997167060bcca9c8f",
+    "status": 0,
+    "timed": false
+  },
+  {
+    "arm": "P",
+    "images": {
+      "cargo": 2,
+      "cc": 3,
+      "collect2": 3,
+      "ld.bfd": 3,
+      "rustc": 5
+    },
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374094..374116)",
+        "sha256": "bb46ff22f9640a67401676f894df61fd1485d3bc4fcba37c63e4543972c98c46"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273191..273213)",
+        "sha256": "7b7d83f9ac360e8893a88e6a567960769096bc2694ed6190427b26af1286e301"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 1386039472,
+    "phase": "audit-09-edit-P",
+    "readers": [
+      {
+        "complete": null,
+        "sha256": "47b8991439cfdad32e80170561eb69d766f860f64d1224787de91f601c219fcc",
+        "valid_trailer": false
+      },
+      {
+        "complete": null,
+        "sha256": "5da1810499120ddb88719506c302106dc634ec3da01fdb6896d19c165361c379",
+        "valid_trailer": false
+      }
+    ],
+    "roster": [
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_plain",
+        "mode": "relink"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_shapes",
+        "mode": "full"
+      }
+    ],
+    "source": "e27e925f288b958f810e597fbc9e08780535b2baa165c80997167060bcca9c8f",
+    "status": 0,
+    "timed": false
+  },
+  {
+    "arm": "C",
+    "images": {
+      "cargo": 2
+    },
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 337571943,
+    "phase": "audit-09-noop-C",
+    "readers": [
+      {
+        "complete": true,
+        "sha256": "5ba7ecda99fd92b412090c6f048b6e2d18b8b36d084793fd6893422f949b9b6a",
+        "valid_trailer": true
+      },
+      {
+        "complete": true,
+        "sha256": "3cca89097ef29610900f873139577322f55f3b57f133e20c3ead08531ead975a",
+        "valid_trailer": true
+      }
+    ],
+    "roster": [],
+    "source": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0,
+    "timed": false
+  },
+  {
+    "arm": "P",
+    "images": {
+      "cargo": 2,
+      "cc": 2,
+      "collect2": 2,
+      "ld.bfd": 2,
+      "rustc": 3
+    },
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 796407248,
+    "phase": "audit-09-noop-P",
+    "readers": [
+      {
+        "complete": null,
+        "sha256": "47b8991439cfdad32e80170561eb69d766f860f64d1224787de91f601c219fcc",
+        "valid_trailer": false
+      },
+      {
+        "complete": null,
+        "sha256": "5da1810499120ddb88719506c302106dc634ec3da01fdb6896d19c165361c379",
+        "valid_trailer": false
+      }
+    ],
+    "roster": [
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "relink"
+      }
+    ],
+    "source": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0,
+    "timed": false
+  },
+  {
+    "arm": "C",
+    "images": {
+      "cargo": 2,
+      "cc": 3,
+      "collect2": 3,
+      "ld.bfd": 3,
+      "rustc": 5
+    },
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 1935905789,
+    "phase": "audit-10-edit-C",
+    "readers": [
+      {
+        "complete": true,
+        "sha256": "5ba7ecda99fd92b412090c6f048b6e2d18b8b36d084793fd6893422f949b9b6a",
+        "valid_trailer": true
+      },
+      {
+        "complete": true,
+        "sha256": "10f0d7b0c7cf84e8c5c0edc6b0c0292f7670de4fb8a0c86d2830bc027b391308",
+        "valid_trailer": true
+      }
+    ],
+    "roster": [
+      {
+        "capture": true,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": true,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_plain",
+        "mode": "relink"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_shapes",
+        "mode": "full"
+      }
+    ],
+    "source": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0,
+    "timed": false
+  },
+  {
+    "arm": "P",
+    "images": {
+      "cargo": 2,
+      "cc": 3,
+      "collect2": 3,
+      "ld.bfd": 3,
+      "rustc": 5
+    },
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 1320774381,
+    "phase": "audit-10-edit-P",
+    "readers": [
+      {
+        "complete": null,
+        "sha256": "47b8991439cfdad32e80170561eb69d766f860f64d1224787de91f601c219fcc",
+        "valid_trailer": false
+      },
+      {
+        "complete": null,
+        "sha256": "5da1810499120ddb88719506c302106dc634ec3da01fdb6896d19c165361c379",
+        "valid_trailer": false
+      }
+    ],
+    "roster": [
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_plain",
+        "mode": "relink"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_shapes",
+        "mode": "full"
+      }
+    ],
+    "source": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0,
+    "timed": false
+  },
+  {
+    "arm": "C",
+    "images": {
+      "cargo": 2
+    },
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374094..374116)",
+        "sha256": "bb46ff22f9640a67401676f894df61fd1485d3bc4fcba37c63e4543972c98c46"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273191..273213)",
+        "sha256": "7b7d83f9ac360e8893a88e6a567960769096bc2694ed6190427b26af1286e301"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 333322503,
+    "phase": "audit-10-noop-C",
+    "readers": [
+      {
+        "complete": true,
+        "sha256": "75f52350c928fde67caf2730c043a29244599fe12b82373dc00fbf2e6e4f56cc",
+        "valid_trailer": true
+      },
+      {
+        "complete": true,
+        "sha256": "7d31c730e864f3f4a400e111f2fe34f4cd7aed7376b932e1a817ba7f0b4c618c",
+        "valid_trailer": true
+      }
+    ],
+    "roster": [],
+    "source": "e27e925f288b958f810e597fbc9e08780535b2baa165c80997167060bcca9c8f",
+    "status": 0,
+    "timed": false
+  },
+  {
+    "arm": "P",
+    "images": {
+      "cargo": 2,
+      "cc": 2,
+      "collect2": 2,
+      "ld.bfd": 2,
+      "rustc": 3
+    },
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374094..374116)",
+        "sha256": "bb46ff22f9640a67401676f894df61fd1485d3bc4fcba37c63e4543972c98c46"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273191..273213)",
+        "sha256": "7b7d83f9ac360e8893a88e6a567960769096bc2694ed6190427b26af1286e301"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 760630222,
+    "phase": "audit-10-noop-P",
+    "readers": [
+      {
+        "complete": null,
+        "sha256": "47b8991439cfdad32e80170561eb69d766f860f64d1224787de91f601c219fcc",
+        "valid_trailer": false
+      },
+      {
+        "complete": null,
+        "sha256": "5da1810499120ddb88719506c302106dc634ec3da01fdb6896d19c165361c379",
+        "valid_trailer": false
+      }
+    ],
+    "roster": [
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "relink"
+      }
+    ],
+    "source": "e27e925f288b958f810e597fbc9e08780535b2baa165c80997167060bcca9c8f",
+    "status": 0,
+    "timed": false
+  },
+  {
+    "arm": "C",
+    "images": {
+      "cargo": 2,
+      "cc": 3,
+      "collect2": 3,
+      "ld.bfd": 3,
+      "rustc": 5
+    },
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374094..374116)",
+        "sha256": "bb46ff22f9640a67401676f894df61fd1485d3bc4fcba37c63e4543972c98c46"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273191..273213)",
+        "sha256": "7b7d83f9ac360e8893a88e6a567960769096bc2694ed6190427b26af1286e301"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 1922393905,
+    "phase": "audit-11-edit-C",
+    "readers": [
+      {
+        "complete": true,
+        "sha256": "75f52350c928fde67caf2730c043a29244599fe12b82373dc00fbf2e6e4f56cc",
+        "valid_trailer": true
+      },
+      {
+        "complete": true,
+        "sha256": "7ffbd6326d14f3a58f986cb9256ce698081418ab13e0a5041132f7ad848e71b2",
+        "valid_trailer": true
+      }
+    ],
+    "roster": [
+      {
+        "capture": true,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": true,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_plain",
+        "mode": "relink"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_shapes",
+        "mode": "full"
+      }
+    ],
+    "source": "e27e925f288b958f810e597fbc9e08780535b2baa165c80997167060bcca9c8f",
+    "status": 0,
+    "timed": false
+  },
+  {
+    "arm": "P",
+    "images": {
+      "cargo": 2,
+      "cc": 3,
+      "collect2": 3,
+      "ld.bfd": 3,
+      "rustc": 5
+    },
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374094..374116)",
+        "sha256": "bb46ff22f9640a67401676f894df61fd1485d3bc4fcba37c63e4543972c98c46"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273191..273213)",
+        "sha256": "7b7d83f9ac360e8893a88e6a567960769096bc2694ed6190427b26af1286e301"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 1385136691,
+    "phase": "audit-11-edit-P",
+    "readers": [
+      {
+        "complete": null,
+        "sha256": "47b8991439cfdad32e80170561eb69d766f860f64d1224787de91f601c219fcc",
+        "valid_trailer": false
+      },
+      {
+        "complete": null,
+        "sha256": "5da1810499120ddb88719506c302106dc634ec3da01fdb6896d19c165361c379",
+        "valid_trailer": false
+      }
+    ],
+    "roster": [
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_plain",
+        "mode": "relink"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_shapes",
+        "mode": "full"
+      }
+    ],
+    "source": "e27e925f288b958f810e597fbc9e08780535b2baa165c80997167060bcca9c8f",
+    "status": 0,
+    "timed": false
+  },
+  {
+    "arm": "C",
+    "images": {
+      "cargo": 2
+    },
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 365151375,
+    "phase": "audit-11-noop-C",
+    "readers": [
+      {
+        "complete": true,
+        "sha256": "5ba7ecda99fd92b412090c6f048b6e2d18b8b36d084793fd6893422f949b9b6a",
+        "valid_trailer": true
+      },
+      {
+        "complete": true,
+        "sha256": "10f0d7b0c7cf84e8c5c0edc6b0c0292f7670de4fb8a0c86d2830bc027b391308",
+        "valid_trailer": true
+      }
+    ],
+    "roster": [],
+    "source": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0,
+    "timed": false
+  },
+  {
+    "arm": "P",
+    "images": {
+      "cargo": 2,
+      "cc": 2,
+      "collect2": 2,
+      "ld.bfd": 2,
+      "rustc": 3
+    },
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 734783736,
+    "phase": "audit-11-noop-P",
+    "readers": [
+      {
+        "complete": null,
+        "sha256": "47b8991439cfdad32e80170561eb69d766f860f64d1224787de91f601c219fcc",
+        "valid_trailer": false
+      },
+      {
+        "complete": null,
+        "sha256": "5da1810499120ddb88719506c302106dc634ec3da01fdb6896d19c165361c379",
+        "valid_trailer": false
+      }
+    ],
+    "roster": [
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "relink"
+      }
+    ],
+    "source": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0,
+    "timed": false
+  },
+  {
+    "arm": "C",
+    "images": {
+      "cargo": 2,
+      "cc": 3,
+      "collect2": 3,
+      "ld.bfd": 3,
+      "rustc": 5
+    },
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 1824020894,
+    "phase": "audit-12-edit-C",
+    "readers": [
+      {
+        "complete": true,
+        "sha256": "5ba7ecda99fd92b412090c6f048b6e2d18b8b36d084793fd6893422f949b9b6a",
+        "valid_trailer": true
+      },
+      {
+        "complete": true,
+        "sha256": "b6571dd44d154716ef61fe9dcdcc79f0a966be849d78b109a22db131dc62eff3",
+        "valid_trailer": true
+      }
+    ],
+    "roster": [
+      {
+        "capture": true,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": true,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_plain",
+        "mode": "relink"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_shapes",
+        "mode": "full"
+      }
+    ],
+    "source": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0,
+    "timed": false
+  },
+  {
+    "arm": "P",
+    "images": {
+      "cargo": 2,
+      "cc": 3,
+      "collect2": 3,
+      "ld.bfd": 3,
+      "rustc": 5
+    },
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 1320385873,
+    "phase": "audit-12-edit-P",
+    "readers": [
+      {
+        "complete": null,
+        "sha256": "47b8991439cfdad32e80170561eb69d766f860f64d1224787de91f601c219fcc",
+        "valid_trailer": false
+      },
+      {
+        "complete": null,
+        "sha256": "5da1810499120ddb88719506c302106dc634ec3da01fdb6896d19c165361c379",
+        "valid_trailer": false
+      }
+    ],
+    "roster": [
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_plain",
+        "mode": "relink"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_shapes",
+        "mode": "full"
+      }
+    ],
+    "source": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0,
+    "timed": false
+  },
+  {
+    "arm": "C",
+    "images": {
+      "cargo": 2
+    },
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374094..374116)",
+        "sha256": "bb46ff22f9640a67401676f894df61fd1485d3bc4fcba37c63e4543972c98c46"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273191..273213)",
+        "sha256": "7b7d83f9ac360e8893a88e6a567960769096bc2694ed6190427b26af1286e301"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 316274409,
+    "phase": "audit-12-noop-C",
+    "readers": [
+      {
+        "complete": true,
+        "sha256": "75f52350c928fde67caf2730c043a29244599fe12b82373dc00fbf2e6e4f56cc",
+        "valid_trailer": true
+      },
+      {
+        "complete": true,
+        "sha256": "7ffbd6326d14f3a58f986cb9256ce698081418ab13e0a5041132f7ad848e71b2",
+        "valid_trailer": true
+      }
+    ],
+    "roster": [],
+    "source": "e27e925f288b958f810e597fbc9e08780535b2baa165c80997167060bcca9c8f",
+    "status": 0,
+    "timed": false
+  },
+  {
+    "arm": "P",
+    "images": {
+      "cargo": 2,
+      "cc": 2,
+      "collect2": 2,
+      "ld.bfd": 2,
+      "rustc": 3
+    },
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374094..374116)",
+        "sha256": "bb46ff22f9640a67401676f894df61fd1485d3bc4fcba37c63e4543972c98c46"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273191..273213)",
+        "sha256": "7b7d83f9ac360e8893a88e6a567960769096bc2694ed6190427b26af1286e301"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 787077361,
+    "phase": "audit-12-noop-P",
+    "readers": [
+      {
+        "complete": null,
+        "sha256": "47b8991439cfdad32e80170561eb69d766f860f64d1224787de91f601c219fcc",
+        "valid_trailer": false
+      },
+      {
+        "complete": null,
+        "sha256": "5da1810499120ddb88719506c302106dc634ec3da01fdb6896d19c165361c379",
+        "valid_trailer": false
+      }
+    ],
+    "roster": [
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "relink"
+      }
+    ],
+    "source": "e27e925f288b958f810e597fbc9e08780535b2baa165c80997167060bcca9c8f",
+    "status": 0,
+    "timed": false
+  },
+  {
+    "arm": "C",
+    "images": {
+      "cargo": 2,
+      "cc": 4,
+      "collect2": 4,
+      "ld.bfd": 4,
+      "rustc": 13
+    },
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 2372919115,
+    "phase": "audit-training-C-0",
+    "readers": [
+      {
+        "complete": false,
+        "sha256": "226b3e29c67a6c2fc2bcc93acb2ce2d610233367d5286777f4c152e9ac6775b5",
+        "valid_trailer": true
+      },
+      {
+        "complete": false,
+        "sha256": "14f4d525deaa058ae11adb19b2e6174822696e615853003640c8d841422f6ea2",
+        "valid_trailer": true
+      }
+    ],
+    "roster": [
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_plain",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_probe",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_shapes",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_tokens",
+        "mode": "full"
+      }
+    ],
+    "source": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0,
+    "timed": false
+  },
+  {
+    "arm": "C",
+    "images": {
+      "cargo": 2,
+      "cc": 2,
+      "collect2": 2,
+      "ld.bfd": 2,
+      "rustc": 3
+    },
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 1155839896,
+    "phase": "audit-training-C-1",
+    "readers": [
+      {
+        "complete": true,
+        "sha256": "5ba7ecda99fd92b412090c6f048b6e2d18b8b36d084793fd6893422f949b9b6a",
+        "valid_trailer": true
+      },
+      {
+        "complete": true,
+        "sha256": "243558ae22d01210b307c91423e3002a7b5c95d1186053d8e3413d609a26646f",
+        "valid_trailer": true
+      }
+    ],
+    "roster": [
+      {
+        "capture": true,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": true,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "relink"
+      }
+    ],
+    "source": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0,
+    "timed": false
+  },
+  {
+    "arm": "C",
+    "images": {
+      "cargo": 2
+    },
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 338818870,
+    "phase": "audit-training-C-2",
+    "readers": [
+      {
+        "complete": true,
+        "sha256": "5ba7ecda99fd92b412090c6f048b6e2d18b8b36d084793fd6893422f949b9b6a",
+        "valid_trailer": true
+      },
+      {
+        "complete": true,
+        "sha256": "243558ae22d01210b307c91423e3002a7b5c95d1186053d8e3413d609a26646f",
+        "valid_trailer": true
+      }
+    ],
+    "roster": [],
+    "source": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0,
+    "timed": false
+  },
+  {
+    "arm": "C",
+    "images": {
+      "cargo": 2
+    },
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 333169618,
+    "phase": "audit-training-C-3",
+    "readers": [
+      {
+        "complete": true,
+        "sha256": "5ba7ecda99fd92b412090c6f048b6e2d18b8b36d084793fd6893422f949b9b6a",
+        "valid_trailer": true
+      },
+      {
+        "complete": true,
+        "sha256": "243558ae22d01210b307c91423e3002a7b5c95d1186053d8e3413d609a26646f",
+        "valid_trailer": true
+      }
+    ],
+    "roster": [],
+    "source": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0,
+    "timed": false
+  },
+  {
+    "arm": "P",
+    "images": {
+      "cargo": 2,
+      "cc": 4,
+      "collect2": 4,
+      "ld.bfd": 4,
+      "rustc": 13
+    },
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 2416057522,
+    "phase": "audit-training-P-0",
+    "readers": [
+      {
+        "complete": null,
+        "sha256": "47b8991439cfdad32e80170561eb69d766f860f64d1224787de91f601c219fcc",
+        "valid_trailer": false
+      },
+      {
+        "complete": null,
+        "sha256": "5da1810499120ddb88719506c302106dc634ec3da01fdb6896d19c165361c379",
+        "valid_trailer": false
+      }
+    ],
+    "roster": [
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_plain",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_probe",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_shapes",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_tokens",
+        "mode": "full"
+      }
+    ],
+    "source": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0,
+    "timed": false
+  },
+  {
+    "arm": "P",
+    "images": {
+      "cargo": 2,
+      "cc": 2,
+      "collect2": 2,
+      "ld.bfd": 2,
+      "rustc": 3
+    },
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 748628522,
+    "phase": "audit-training-P-1",
+    "readers": [
+      {
+        "complete": null,
+        "sha256": "47b8991439cfdad32e80170561eb69d766f860f64d1224787de91f601c219fcc",
+        "valid_trailer": false
+      },
+      {
+        "complete": null,
+        "sha256": "5da1810499120ddb88719506c302106dc634ec3da01fdb6896d19c165361c379",
+        "valid_trailer": false
+      }
+    ],
+    "roster": [
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "relink"
+      }
+    ],
+    "source": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0,
+    "timed": false
+  },
+  {
+    "arm": "P",
+    "images": {
+      "cargo": 2,
+      "cc": 2,
+      "collect2": 2,
+      "ld.bfd": 2,
+      "rustc": 3
+    },
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 816471007,
+    "phase": "audit-training-P-2",
+    "readers": [
+      {
+        "complete": null,
+        "sha256": "47b8991439cfdad32e80170561eb69d766f860f64d1224787de91f601c219fcc",
+        "valid_trailer": false
+      },
+      {
+        "complete": null,
+        "sha256": "5da1810499120ddb88719506c302106dc634ec3da01fdb6896d19c165361c379",
+        "valid_trailer": false
+      }
+    ],
+    "roster": [
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "relink"
+      }
+    ],
+    "source": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0,
+    "timed": false
+  },
+  {
+    "arm": "P",
+    "images": {
+      "cargo": 2,
+      "cc": 2,
+      "collect2": 2,
+      "ld.bfd": 2,
+      "rustc": 3
+    },
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 820982740,
+    "phase": "audit-training-P-3",
+    "readers": [
+      {
+        "complete": null,
+        "sha256": "47b8991439cfdad32e80170561eb69d766f860f64d1224787de91f601c219fcc",
+        "valid_trailer": false
+      },
+      {
+        "complete": null,
+        "sha256": "5da1810499120ddb88719506c302106dc634ec3da01fdb6896d19c165361c379",
+        "valid_trailer": false
+      }
+    ],
+    "roster": [
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "relink"
+      }
+    ],
+    "source": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0,
+    "timed": false
+  },
+  {
+    "arm": "P",
+    "images": {
+      "cargo": 2,
+      "cc": 4,
+      "collect2": 4,
+      "ld.bfd": 4,
+      "rustc": 13
+    },
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 2784803434,
+    "phase": "empty-0",
+    "readers": [
+      {
+        "complete": null,
+        "sha256": "47b8991439cfdad32e80170561eb69d766f860f64d1224787de91f601c219fcc",
+        "valid_trailer": false
+      },
+      {
+        "complete": null,
+        "sha256": "5da1810499120ddb88719506c302106dc634ec3da01fdb6896d19c165361c379",
+        "valid_trailer": false
+      }
+    ],
+    "roster": [
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_plain",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_probe",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_shapes",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_tokens",
+        "mode": "full"
+      }
+    ],
+    "source": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0,
+    "timed": false
+  },
+  {
+    "arm": "P",
+    "images": {
+      "cargo": 2,
+      "cc": 4,
+      "collect2": 4,
+      "ld.bfd": 4,
+      "rustc": 13
+    },
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374094..374116)",
+        "sha256": "bb46ff22f9640a67401676f894df61fd1485d3bc4fcba37c63e4543972c98c46"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273191..273213)",
+        "sha256": "7b7d83f9ac360e8893a88e6a567960769096bc2694ed6190427b26af1286e301"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 2457932217,
+    "phase": "empty-1",
+    "readers": [
+      {
+        "complete": null,
+        "sha256": "47b8991439cfdad32e80170561eb69d766f860f64d1224787de91f601c219fcc",
+        "valid_trailer": false
+      },
+      {
+        "complete": null,
+        "sha256": "5da1810499120ddb88719506c302106dc634ec3da01fdb6896d19c165361c379",
+        "valid_trailer": false
+      }
+    ],
+    "roster": [
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_plain",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_probe",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_shapes",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_tokens",
+        "mode": "full"
+      }
+    ],
+    "source": "e27e925f288b958f810e597fbc9e08780535b2baa165c80997167060bcca9c8f",
+    "status": 0,
+    "timed": false
+  },
+  {
+    "arm": "C",
+    "images": {},
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374094..374116)",
+        "sha256": "bb46ff22f9640a67401676f894df61fd1485d3bc4fcba37c63e4543972c98c46"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273191..273213)",
+        "sha256": "7b7d83f9ac360e8893a88e6a567960769096bc2694ed6190427b26af1286e301"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 503856803,
+    "phase": "native-01-edit-C",
+    "readers": [
+      {
+        "complete": true,
+        "sha256": "75f52350c928fde67caf2730c043a29244599fe12b82373dc00fbf2e6e4f56cc",
+        "valid_trailer": true
+      },
+      {
+        "complete": true,
+        "sha256": "89e0cdc421204f3b3b9ab9017dcaf4b75152a4d2ac38b3159d2ae4166673c692",
+        "valid_trailer": true
+      }
+    ],
+    "roster": [],
+    "source": "e27e925f288b958f810e597fbc9e08780535b2baa165c80997167060bcca9c8f",
+    "status": 0,
+    "timed": true
+  },
+  {
+    "arm": "P",
+    "images": {},
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374094..374116)",
+        "sha256": "bb46ff22f9640a67401676f894df61fd1485d3bc4fcba37c63e4543972c98c46"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273191..273213)",
+        "sha256": "7b7d83f9ac360e8893a88e6a567960769096bc2694ed6190427b26af1286e301"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 369927940,
+    "phase": "native-01-edit-P",
+    "readers": [
+      {
+        "complete": null,
+        "sha256": "47b8991439cfdad32e80170561eb69d766f860f64d1224787de91f601c219fcc",
+        "valid_trailer": false
+      },
+      {
+        "complete": null,
+        "sha256": "5da1810499120ddb88719506c302106dc634ec3da01fdb6896d19c165361c379",
+        "valid_trailer": false
+      }
+    ],
+    "roster": [],
+    "source": "e27e925f288b958f810e597fbc9e08780535b2baa165c80997167060bcca9c8f",
+    "status": 0,
+    "timed": true
+  },
+  {
+    "arm": "C",
+    "images": {},
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 100546434,
+    "phase": "native-01-noop-C",
+    "readers": [
+      {
+        "complete": true,
+        "sha256": "5ba7ecda99fd92b412090c6f048b6e2d18b8b36d084793fd6893422f949b9b6a",
+        "valid_trailer": true
+      },
+      {
+        "complete": true,
+        "sha256": "b84f3e556c9cf9558fa84dce65b6fcb08fcf110142286766341d2ac4a2c799db",
+        "valid_trailer": true
+      }
+    ],
+    "roster": [],
+    "source": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0,
+    "timed": true
+  },
+  {
+    "arm": "P",
+    "images": {},
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 210227296,
+    "phase": "native-01-noop-P",
+    "readers": [
+      {
+        "complete": null,
+        "sha256": "47b8991439cfdad32e80170561eb69d766f860f64d1224787de91f601c219fcc",
+        "valid_trailer": false
+      },
+      {
+        "complete": null,
+        "sha256": "5da1810499120ddb88719506c302106dc634ec3da01fdb6896d19c165361c379",
+        "valid_trailer": false
+      }
+    ],
+    "roster": [],
+    "source": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0,
+    "timed": true
+  },
+  {
+    "arm": "C",
+    "images": {},
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 491387678,
+    "phase": "native-02-edit-C",
+    "readers": [
+      {
+        "complete": true,
+        "sha256": "5ba7ecda99fd92b412090c6f048b6e2d18b8b36d084793fd6893422f949b9b6a",
+        "valid_trailer": true
+      },
+      {
+        "complete": true,
+        "sha256": "0716f2d820eb814d01783a0784b0518a629a30725e72b81def0cd8196a41474a",
+        "valid_trailer": true
+      }
+    ],
+    "roster": [],
+    "source": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0,
+    "timed": true
+  },
+  {
+    "arm": "P",
+    "images": {},
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 361031879,
+    "phase": "native-02-edit-P",
+    "readers": [
+      {
+        "complete": null,
+        "sha256": "47b8991439cfdad32e80170561eb69d766f860f64d1224787de91f601c219fcc",
+        "valid_trailer": false
+      },
+      {
+        "complete": null,
+        "sha256": "5da1810499120ddb88719506c302106dc634ec3da01fdb6896d19c165361c379",
+        "valid_trailer": false
+      }
+    ],
+    "roster": [],
+    "source": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0,
+    "timed": true
+  },
+  {
+    "arm": "C",
+    "images": {},
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374094..374116)",
+        "sha256": "bb46ff22f9640a67401676f894df61fd1485d3bc4fcba37c63e4543972c98c46"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273191..273213)",
+        "sha256": "7b7d83f9ac360e8893a88e6a567960769096bc2694ed6190427b26af1286e301"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 105050575,
+    "phase": "native-02-noop-C",
+    "readers": [
+      {
+        "complete": true,
+        "sha256": "75f52350c928fde67caf2730c043a29244599fe12b82373dc00fbf2e6e4f56cc",
+        "valid_trailer": true
+      },
+      {
+        "complete": true,
+        "sha256": "89e0cdc421204f3b3b9ab9017dcaf4b75152a4d2ac38b3159d2ae4166673c692",
+        "valid_trailer": true
+      }
+    ],
+    "roster": [],
+    "source": "e27e925f288b958f810e597fbc9e08780535b2baa165c80997167060bcca9c8f",
+    "status": 0,
+    "timed": true
+  },
+  {
+    "arm": "P",
+    "images": {},
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374094..374116)",
+        "sha256": "bb46ff22f9640a67401676f894df61fd1485d3bc4fcba37c63e4543972c98c46"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273191..273213)",
+        "sha256": "7b7d83f9ac360e8893a88e6a567960769096bc2694ed6190427b26af1286e301"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 193156810,
+    "phase": "native-02-noop-P",
+    "readers": [
+      {
+        "complete": null,
+        "sha256": "47b8991439cfdad32e80170561eb69d766f860f64d1224787de91f601c219fcc",
+        "valid_trailer": false
+      },
+      {
+        "complete": null,
+        "sha256": "5da1810499120ddb88719506c302106dc634ec3da01fdb6896d19c165361c379",
+        "valid_trailer": false
+      }
+    ],
+    "roster": [],
+    "source": "e27e925f288b958f810e597fbc9e08780535b2baa165c80997167060bcca9c8f",
+    "status": 0,
+    "timed": true
+  },
+  {
+    "arm": "C",
+    "images": {},
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374094..374116)",
+        "sha256": "bb46ff22f9640a67401676f894df61fd1485d3bc4fcba37c63e4543972c98c46"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273191..273213)",
+        "sha256": "7b7d83f9ac360e8893a88e6a567960769096bc2694ed6190427b26af1286e301"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 493010583,
+    "phase": "native-03-edit-C",
+    "readers": [
+      {
+        "complete": true,
+        "sha256": "75f52350c928fde67caf2730c043a29244599fe12b82373dc00fbf2e6e4f56cc",
+        "valid_trailer": true
+      },
+      {
+        "complete": true,
+        "sha256": "6a2bdbf64339c606676756e1bbc2abe6434b3c232c63b199768daaaf2dce2fe4",
+        "valid_trailer": true
+      }
+    ],
+    "roster": [],
+    "source": "e27e925f288b958f810e597fbc9e08780535b2baa165c80997167060bcca9c8f",
+    "status": 0,
+    "timed": true
+  },
+  {
+    "arm": "P",
+    "images": {},
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374094..374116)",
+        "sha256": "bb46ff22f9640a67401676f894df61fd1485d3bc4fcba37c63e4543972c98c46"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273191..273213)",
+        "sha256": "7b7d83f9ac360e8893a88e6a567960769096bc2694ed6190427b26af1286e301"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 342776378,
+    "phase": "native-03-edit-P",
+    "readers": [
+      {
+        "complete": null,
+        "sha256": "47b8991439cfdad32e80170561eb69d766f860f64d1224787de91f601c219fcc",
+        "valid_trailer": false
+      },
+      {
+        "complete": null,
+        "sha256": "5da1810499120ddb88719506c302106dc634ec3da01fdb6896d19c165361c379",
+        "valid_trailer": false
+      }
+    ],
+    "roster": [],
+    "source": "e27e925f288b958f810e597fbc9e08780535b2baa165c80997167060bcca9c8f",
+    "status": 0,
+    "timed": true
+  },
+  {
+    "arm": "C",
+    "images": {},
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 100101259,
+    "phase": "native-03-noop-C",
+    "readers": [
+      {
+        "complete": true,
+        "sha256": "5ba7ecda99fd92b412090c6f048b6e2d18b8b36d084793fd6893422f949b9b6a",
+        "valid_trailer": true
+      },
+      {
+        "complete": true,
+        "sha256": "0716f2d820eb814d01783a0784b0518a629a30725e72b81def0cd8196a41474a",
+        "valid_trailer": true
+      }
+    ],
+    "roster": [],
+    "source": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0,
+    "timed": true
+  },
+  {
+    "arm": "P",
+    "images": {},
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 192619163,
+    "phase": "native-03-noop-P",
+    "readers": [
+      {
+        "complete": null,
+        "sha256": "47b8991439cfdad32e80170561eb69d766f860f64d1224787de91f601c219fcc",
+        "valid_trailer": false
+      },
+      {
+        "complete": null,
+        "sha256": "5da1810499120ddb88719506c302106dc634ec3da01fdb6896d19c165361c379",
+        "valid_trailer": false
+      }
+    ],
+    "roster": [],
+    "source": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0,
+    "timed": true
+  },
+  {
+    "arm": "C",
+    "images": {},
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 466189190,
+    "phase": "native-04-edit-C",
+    "readers": [
+      {
+        "complete": true,
+        "sha256": "5ba7ecda99fd92b412090c6f048b6e2d18b8b36d084793fd6893422f949b9b6a",
+        "valid_trailer": true
+      },
+      {
+        "complete": true,
+        "sha256": "9de116f21b84abe92941380b193b1634d3cc126313d4d4c4bf857ae4c182ff2e",
+        "valid_trailer": true
+      }
+    ],
+    "roster": [],
+    "source": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0,
+    "timed": true
+  },
+  {
+    "arm": "P",
+    "images": {},
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 334518446,
+    "phase": "native-04-edit-P",
+    "readers": [
+      {
+        "complete": null,
+        "sha256": "47b8991439cfdad32e80170561eb69d766f860f64d1224787de91f601c219fcc",
+        "valid_trailer": false
+      },
+      {
+        "complete": null,
+        "sha256": "5da1810499120ddb88719506c302106dc634ec3da01fdb6896d19c165361c379",
+        "valid_trailer": false
+      }
+    ],
+    "roster": [],
+    "source": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0,
+    "timed": true
+  },
+  {
+    "arm": "C",
+    "images": {},
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374094..374116)",
+        "sha256": "bb46ff22f9640a67401676f894df61fd1485d3bc4fcba37c63e4543972c98c46"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273191..273213)",
+        "sha256": "7b7d83f9ac360e8893a88e6a567960769096bc2694ed6190427b26af1286e301"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 100734731,
+    "phase": "native-04-noop-C",
+    "readers": [
+      {
+        "complete": true,
+        "sha256": "75f52350c928fde67caf2730c043a29244599fe12b82373dc00fbf2e6e4f56cc",
+        "valid_trailer": true
+      },
+      {
+        "complete": true,
+        "sha256": "6a2bdbf64339c606676756e1bbc2abe6434b3c232c63b199768daaaf2dce2fe4",
+        "valid_trailer": true
+      }
+    ],
+    "roster": [],
+    "source": "e27e925f288b958f810e597fbc9e08780535b2baa165c80997167060bcca9c8f",
+    "status": 0,
+    "timed": true
+  },
+  {
+    "arm": "P",
+    "images": {},
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374094..374116)",
+        "sha256": "bb46ff22f9640a67401676f894df61fd1485d3bc4fcba37c63e4543972c98c46"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273191..273213)",
+        "sha256": "7b7d83f9ac360e8893a88e6a567960769096bc2694ed6190427b26af1286e301"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 193094343,
+    "phase": "native-04-noop-P",
+    "readers": [
+      {
+        "complete": null,
+        "sha256": "47b8991439cfdad32e80170561eb69d766f860f64d1224787de91f601c219fcc",
+        "valid_trailer": false
+      },
+      {
+        "complete": null,
+        "sha256": "5da1810499120ddb88719506c302106dc634ec3da01fdb6896d19c165361c379",
+        "valid_trailer": false
+      }
+    ],
+    "roster": [],
+    "source": "e27e925f288b958f810e597fbc9e08780535b2baa165c80997167060bcca9c8f",
+    "status": 0,
+    "timed": true
+  },
+  {
+    "arm": "C",
+    "images": {},
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374094..374116)",
+        "sha256": "bb46ff22f9640a67401676f894df61fd1485d3bc4fcba37c63e4543972c98c46"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273191..273213)",
+        "sha256": "7b7d83f9ac360e8893a88e6a567960769096bc2694ed6190427b26af1286e301"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 467516210,
+    "phase": "native-05-edit-C",
+    "readers": [
+      {
+        "complete": true,
+        "sha256": "75f52350c928fde67caf2730c043a29244599fe12b82373dc00fbf2e6e4f56cc",
+        "valid_trailer": true
+      },
+      {
+        "complete": true,
+        "sha256": "ac7ee57dc4e2d6d23c5aed047454282eca99be293ac7c3552333108b030f5d50",
+        "valid_trailer": true
+      }
+    ],
+    "roster": [],
+    "source": "e27e925f288b958f810e597fbc9e08780535b2baa165c80997167060bcca9c8f",
+    "status": 0,
+    "timed": true
+  },
+  {
+    "arm": "P",
+    "images": {},
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374094..374116)",
+        "sha256": "bb46ff22f9640a67401676f894df61fd1485d3bc4fcba37c63e4543972c98c46"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273191..273213)",
+        "sha256": "7b7d83f9ac360e8893a88e6a567960769096bc2694ed6190427b26af1286e301"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 348689546,
+    "phase": "native-05-edit-P",
+    "readers": [
+      {
+        "complete": null,
+        "sha256": "47b8991439cfdad32e80170561eb69d766f860f64d1224787de91f601c219fcc",
+        "valid_trailer": false
+      },
+      {
+        "complete": null,
+        "sha256": "5da1810499120ddb88719506c302106dc634ec3da01fdb6896d19c165361c379",
+        "valid_trailer": false
+      }
+    ],
+    "roster": [],
+    "source": "e27e925f288b958f810e597fbc9e08780535b2baa165c80997167060bcca9c8f",
+    "status": 0,
+    "timed": true
+  },
+  {
+    "arm": "C",
+    "images": {},
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 95013324,
+    "phase": "native-05-noop-C",
+    "readers": [
+      {
+        "complete": true,
+        "sha256": "5ba7ecda99fd92b412090c6f048b6e2d18b8b36d084793fd6893422f949b9b6a",
+        "valid_trailer": true
+      },
+      {
+        "complete": true,
+        "sha256": "9de116f21b84abe92941380b193b1634d3cc126313d4d4c4bf857ae4c182ff2e",
+        "valid_trailer": true
+      }
+    ],
+    "roster": [],
+    "source": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0,
+    "timed": true
+  },
+  {
+    "arm": "P",
+    "images": {},
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 180067627,
+    "phase": "native-05-noop-P",
+    "readers": [
+      {
+        "complete": null,
+        "sha256": "47b8991439cfdad32e80170561eb69d766f860f64d1224787de91f601c219fcc",
+        "valid_trailer": false
+      },
+      {
+        "complete": null,
+        "sha256": "5da1810499120ddb88719506c302106dc634ec3da01fdb6896d19c165361c379",
+        "valid_trailer": false
+      }
+    ],
+    "roster": [],
+    "source": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0,
+    "timed": true
+  },
+  {
+    "arm": "C",
+    "images": {},
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 490000559,
+    "phase": "native-06-edit-C",
+    "readers": [
+      {
+        "complete": true,
+        "sha256": "5ba7ecda99fd92b412090c6f048b6e2d18b8b36d084793fd6893422f949b9b6a",
+        "valid_trailer": true
+      },
+      {
+        "complete": true,
+        "sha256": "bbadccba7860acad4411b141ab93c2ac6488210ea8ea292edb97db7f488cc806",
+        "valid_trailer": true
+      }
+    ],
+    "roster": [],
+    "source": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0,
+    "timed": true
+  },
+  {
+    "arm": "P",
+    "images": {},
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 335287072,
+    "phase": "native-06-edit-P",
+    "readers": [
+      {
+        "complete": null,
+        "sha256": "47b8991439cfdad32e80170561eb69d766f860f64d1224787de91f601c219fcc",
+        "valid_trailer": false
+      },
+      {
+        "complete": null,
+        "sha256": "5da1810499120ddb88719506c302106dc634ec3da01fdb6896d19c165361c379",
+        "valid_trailer": false
+      }
+    ],
+    "roster": [],
+    "source": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0,
+    "timed": true
+  },
+  {
+    "arm": "C",
+    "images": {},
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374094..374116)",
+        "sha256": "bb46ff22f9640a67401676f894df61fd1485d3bc4fcba37c63e4543972c98c46"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273191..273213)",
+        "sha256": "7b7d83f9ac360e8893a88e6a567960769096bc2694ed6190427b26af1286e301"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 98244283,
+    "phase": "native-06-noop-C",
+    "readers": [
+      {
+        "complete": true,
+        "sha256": "75f52350c928fde67caf2730c043a29244599fe12b82373dc00fbf2e6e4f56cc",
+        "valid_trailer": true
+      },
+      {
+        "complete": true,
+        "sha256": "ac7ee57dc4e2d6d23c5aed047454282eca99be293ac7c3552333108b030f5d50",
+        "valid_trailer": true
+      }
+    ],
+    "roster": [],
+    "source": "e27e925f288b958f810e597fbc9e08780535b2baa165c80997167060bcca9c8f",
+    "status": 0,
+    "timed": true
+  },
+  {
+    "arm": "P",
+    "images": {},
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374094..374116)",
+        "sha256": "bb46ff22f9640a67401676f894df61fd1485d3bc4fcba37c63e4543972c98c46"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273191..273213)",
+        "sha256": "7b7d83f9ac360e8893a88e6a567960769096bc2694ed6190427b26af1286e301"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 194235508,
+    "phase": "native-06-noop-P",
+    "readers": [
+      {
+        "complete": null,
+        "sha256": "47b8991439cfdad32e80170561eb69d766f860f64d1224787de91f601c219fcc",
+        "valid_trailer": false
+      },
+      {
+        "complete": null,
+        "sha256": "5da1810499120ddb88719506c302106dc634ec3da01fdb6896d19c165361c379",
+        "valid_trailer": false
+      }
+    ],
+    "roster": [],
+    "source": "e27e925f288b958f810e597fbc9e08780535b2baa165c80997167060bcca9c8f",
+    "status": 0,
+    "timed": true
+  },
+  {
+    "arm": "C",
+    "images": {},
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374094..374116)",
+        "sha256": "bb46ff22f9640a67401676f894df61fd1485d3bc4fcba37c63e4543972c98c46"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273191..273213)",
+        "sha256": "7b7d83f9ac360e8893a88e6a567960769096bc2694ed6190427b26af1286e301"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 465644601,
+    "phase": "native-07-edit-C",
+    "readers": [
+      {
+        "complete": true,
+        "sha256": "75f52350c928fde67caf2730c043a29244599fe12b82373dc00fbf2e6e4f56cc",
+        "valid_trailer": true
+      },
+      {
+        "complete": true,
+        "sha256": "4552762a473866760646f2cef000c88be0b379b676f685d018fa107cf3697d8d",
+        "valid_trailer": true
+      }
+    ],
+    "roster": [],
+    "source": "e27e925f288b958f810e597fbc9e08780535b2baa165c80997167060bcca9c8f",
+    "status": 0,
+    "timed": true
+  },
+  {
+    "arm": "P",
+    "images": {},
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374094..374116)",
+        "sha256": "bb46ff22f9640a67401676f894df61fd1485d3bc4fcba37c63e4543972c98c46"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273191..273213)",
+        "sha256": "7b7d83f9ac360e8893a88e6a567960769096bc2694ed6190427b26af1286e301"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 366268807,
+    "phase": "native-07-edit-P",
+    "readers": [
+      {
+        "complete": null,
+        "sha256": "47b8991439cfdad32e80170561eb69d766f860f64d1224787de91f601c219fcc",
+        "valid_trailer": false
+      },
+      {
+        "complete": null,
+        "sha256": "5da1810499120ddb88719506c302106dc634ec3da01fdb6896d19c165361c379",
+        "valid_trailer": false
+      }
+    ],
+    "roster": [],
+    "source": "e27e925f288b958f810e597fbc9e08780535b2baa165c80997167060bcca9c8f",
+    "status": 0,
+    "timed": true
+  },
+  {
+    "arm": "C",
+    "images": {},
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 96962914,
+    "phase": "native-07-noop-C",
+    "readers": [
+      {
+        "complete": true,
+        "sha256": "5ba7ecda99fd92b412090c6f048b6e2d18b8b36d084793fd6893422f949b9b6a",
+        "valid_trailer": true
+      },
+      {
+        "complete": true,
+        "sha256": "bbadccba7860acad4411b141ab93c2ac6488210ea8ea292edb97db7f488cc806",
+        "valid_trailer": true
+      }
+    ],
+    "roster": [],
+    "source": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0,
+    "timed": true
+  },
+  {
+    "arm": "P",
+    "images": {},
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 179996891,
+    "phase": "native-07-noop-P",
+    "readers": [
+      {
+        "complete": null,
+        "sha256": "47b8991439cfdad32e80170561eb69d766f860f64d1224787de91f601c219fcc",
+        "valid_trailer": false
+      },
+      {
+        "complete": null,
+        "sha256": "5da1810499120ddb88719506c302106dc634ec3da01fdb6896d19c165361c379",
+        "valid_trailer": false
+      }
+    ],
+    "roster": [],
+    "source": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0,
+    "timed": true
+  },
+  {
+    "arm": "C",
+    "images": {},
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 460612869,
+    "phase": "native-08-edit-C",
+    "readers": [
+      {
+        "complete": true,
+        "sha256": "5ba7ecda99fd92b412090c6f048b6e2d18b8b36d084793fd6893422f949b9b6a",
+        "valid_trailer": true
+      },
+      {
+        "complete": true,
+        "sha256": "77a744036173527dff45a4686b4336645a3f8fc215368e5432d4dc4d299b032d",
+        "valid_trailer": true
+      }
+    ],
+    "roster": [],
+    "source": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0,
+    "timed": true
+  },
+  {
+    "arm": "P",
+    "images": {},
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 330516035,
+    "phase": "native-08-edit-P",
+    "readers": [
+      {
+        "complete": null,
+        "sha256": "47b8991439cfdad32e80170561eb69d766f860f64d1224787de91f601c219fcc",
+        "valid_trailer": false
+      },
+      {
+        "complete": null,
+        "sha256": "5da1810499120ddb88719506c302106dc634ec3da01fdb6896d19c165361c379",
+        "valid_trailer": false
+      }
+    ],
+    "roster": [],
+    "source": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0,
+    "timed": true
+  },
+  {
+    "arm": "C",
+    "images": {},
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374094..374116)",
+        "sha256": "bb46ff22f9640a67401676f894df61fd1485d3bc4fcba37c63e4543972c98c46"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273191..273213)",
+        "sha256": "7b7d83f9ac360e8893a88e6a567960769096bc2694ed6190427b26af1286e301"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 95027361,
+    "phase": "native-08-noop-C",
+    "readers": [
+      {
+        "complete": true,
+        "sha256": "75f52350c928fde67caf2730c043a29244599fe12b82373dc00fbf2e6e4f56cc",
+        "valid_trailer": true
+      },
+      {
+        "complete": true,
+        "sha256": "4552762a473866760646f2cef000c88be0b379b676f685d018fa107cf3697d8d",
+        "valid_trailer": true
+      }
+    ],
+    "roster": [],
+    "source": "e27e925f288b958f810e597fbc9e08780535b2baa165c80997167060bcca9c8f",
+    "status": 0,
+    "timed": true
+  },
+  {
+    "arm": "P",
+    "images": {},
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374094..374116)",
+        "sha256": "bb46ff22f9640a67401676f894df61fd1485d3bc4fcba37c63e4543972c98c46"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273191..273213)",
+        "sha256": "7b7d83f9ac360e8893a88e6a567960769096bc2694ed6190427b26af1286e301"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 178012571,
+    "phase": "native-08-noop-P",
+    "readers": [
+      {
+        "complete": null,
+        "sha256": "47b8991439cfdad32e80170561eb69d766f860f64d1224787de91f601c219fcc",
+        "valid_trailer": false
+      },
+      {
+        "complete": null,
+        "sha256": "5da1810499120ddb88719506c302106dc634ec3da01fdb6896d19c165361c379",
+        "valid_trailer": false
+      }
+    ],
+    "roster": [],
+    "source": "e27e925f288b958f810e597fbc9e08780535b2baa165c80997167060bcca9c8f",
+    "status": 0,
+    "timed": true
+  },
+  {
+    "arm": "C",
+    "images": {},
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374094..374116)",
+        "sha256": "bb46ff22f9640a67401676f894df61fd1485d3bc4fcba37c63e4543972c98c46"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273191..273213)",
+        "sha256": "7b7d83f9ac360e8893a88e6a567960769096bc2694ed6190427b26af1286e301"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 461724597,
+    "phase": "native-09-edit-C",
+    "readers": [
+      {
+        "complete": true,
+        "sha256": "75f52350c928fde67caf2730c043a29244599fe12b82373dc00fbf2e6e4f56cc",
+        "valid_trailer": true
+      },
+      {
+        "complete": true,
+        "sha256": "2ff671171a9d35e5c7f0b5070d5700f1b8342dc02f7132203896652dfd0a122b",
+        "valid_trailer": true
+      }
+    ],
+    "roster": [],
+    "source": "e27e925f288b958f810e597fbc9e08780535b2baa165c80997167060bcca9c8f",
+    "status": 0,
+    "timed": true
+  },
+  {
+    "arm": "P",
+    "images": {},
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374094..374116)",
+        "sha256": "bb46ff22f9640a67401676f894df61fd1485d3bc4fcba37c63e4543972c98c46"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273191..273213)",
+        "sha256": "7b7d83f9ac360e8893a88e6a567960769096bc2694ed6190427b26af1286e301"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 333570701,
+    "phase": "native-09-edit-P",
+    "readers": [
+      {
+        "complete": null,
+        "sha256": "47b8991439cfdad32e80170561eb69d766f860f64d1224787de91f601c219fcc",
+        "valid_trailer": false
+      },
+      {
+        "complete": null,
+        "sha256": "5da1810499120ddb88719506c302106dc634ec3da01fdb6896d19c165361c379",
+        "valid_trailer": false
+      }
+    ],
+    "roster": [],
+    "source": "e27e925f288b958f810e597fbc9e08780535b2baa165c80997167060bcca9c8f",
+    "status": 0,
+    "timed": true
+  },
+  {
+    "arm": "C",
+    "images": {},
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 97149915,
+    "phase": "native-09-noop-C",
+    "readers": [
+      {
+        "complete": true,
+        "sha256": "5ba7ecda99fd92b412090c6f048b6e2d18b8b36d084793fd6893422f949b9b6a",
+        "valid_trailer": true
+      },
+      {
+        "complete": true,
+        "sha256": "77a744036173527dff45a4686b4336645a3f8fc215368e5432d4dc4d299b032d",
+        "valid_trailer": true
+      }
+    ],
+    "roster": [],
+    "source": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0,
+    "timed": true
+  },
+  {
+    "arm": "P",
+    "images": {},
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 178944162,
+    "phase": "native-09-noop-P",
+    "readers": [
+      {
+        "complete": null,
+        "sha256": "47b8991439cfdad32e80170561eb69d766f860f64d1224787de91f601c219fcc",
+        "valid_trailer": false
+      },
+      {
+        "complete": null,
+        "sha256": "5da1810499120ddb88719506c302106dc634ec3da01fdb6896d19c165361c379",
+        "valid_trailer": false
+      }
+    ],
+    "roster": [],
+    "source": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0,
+    "timed": true
+  },
+  {
+    "arm": "C",
+    "images": {},
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 486181480,
+    "phase": "native-10-edit-C",
+    "readers": [
+      {
+        "complete": true,
+        "sha256": "5ba7ecda99fd92b412090c6f048b6e2d18b8b36d084793fd6893422f949b9b6a",
+        "valid_trailer": true
+      },
+      {
+        "complete": true,
+        "sha256": "37246d00232152e1aef105ab672286e5b09732c7003bf1a1a7a3e92357a054ea",
+        "valid_trailer": true
+      }
+    ],
+    "roster": [],
+    "source": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0,
+    "timed": true
+  },
+  {
+    "arm": "P",
+    "images": {},
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 350135183,
+    "phase": "native-10-edit-P",
+    "readers": [
+      {
+        "complete": null,
+        "sha256": "47b8991439cfdad32e80170561eb69d766f860f64d1224787de91f601c219fcc",
+        "valid_trailer": false
+      },
+      {
+        "complete": null,
+        "sha256": "5da1810499120ddb88719506c302106dc634ec3da01fdb6896d19c165361c379",
+        "valid_trailer": false
+      }
+    ],
+    "roster": [],
+    "source": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0,
+    "timed": true
+  },
+  {
+    "arm": "C",
+    "images": {},
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374094..374116)",
+        "sha256": "bb46ff22f9640a67401676f894df61fd1485d3bc4fcba37c63e4543972c98c46"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273191..273213)",
+        "sha256": "7b7d83f9ac360e8893a88e6a567960769096bc2694ed6190427b26af1286e301"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 98328180,
+    "phase": "native-10-noop-C",
+    "readers": [
+      {
+        "complete": true,
+        "sha256": "75f52350c928fde67caf2730c043a29244599fe12b82373dc00fbf2e6e4f56cc",
+        "valid_trailer": true
+      },
+      {
+        "complete": true,
+        "sha256": "2ff671171a9d35e5c7f0b5070d5700f1b8342dc02f7132203896652dfd0a122b",
+        "valid_trailer": true
+      }
+    ],
+    "roster": [],
+    "source": "e27e925f288b958f810e597fbc9e08780535b2baa165c80997167060bcca9c8f",
+    "status": 0,
+    "timed": true
+  },
+  {
+    "arm": "P",
+    "images": {},
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374094..374116)",
+        "sha256": "bb46ff22f9640a67401676f894df61fd1485d3bc4fcba37c63e4543972c98c46"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273191..273213)",
+        "sha256": "7b7d83f9ac360e8893a88e6a567960769096bc2694ed6190427b26af1286e301"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 197909551,
+    "phase": "native-10-noop-P",
+    "readers": [
+      {
+        "complete": null,
+        "sha256": "47b8991439cfdad32e80170561eb69d766f860f64d1224787de91f601c219fcc",
+        "valid_trailer": false
+      },
+      {
+        "complete": null,
+        "sha256": "5da1810499120ddb88719506c302106dc634ec3da01fdb6896d19c165361c379",
+        "valid_trailer": false
+      }
+    ],
+    "roster": [],
+    "source": "e27e925f288b958f810e597fbc9e08780535b2baa165c80997167060bcca9c8f",
+    "status": 0,
+    "timed": true
+  },
+  {
+    "arm": "C",
+    "images": {},
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374094..374116)",
+        "sha256": "bb46ff22f9640a67401676f894df61fd1485d3bc4fcba37c63e4543972c98c46"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273191..273213)",
+        "sha256": "7b7d83f9ac360e8893a88e6a567960769096bc2694ed6190427b26af1286e301"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 483719611,
+    "phase": "native-11-edit-C",
+    "readers": [
+      {
+        "complete": true,
+        "sha256": "75f52350c928fde67caf2730c043a29244599fe12b82373dc00fbf2e6e4f56cc",
+        "valid_trailer": true
+      },
+      {
+        "complete": true,
+        "sha256": "1e198b5caf8f461ca7614897bce09f2f458d7440720dd870dd8c2af03f4c553d",
+        "valid_trailer": true
+      }
+    ],
+    "roster": [],
+    "source": "e27e925f288b958f810e597fbc9e08780535b2baa165c80997167060bcca9c8f",
+    "status": 0,
+    "timed": true
+  },
+  {
+    "arm": "P",
+    "images": {},
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374094..374116)",
+        "sha256": "bb46ff22f9640a67401676f894df61fd1485d3bc4fcba37c63e4543972c98c46"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273191..273213)",
+        "sha256": "7b7d83f9ac360e8893a88e6a567960769096bc2694ed6190427b26af1286e301"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 339688736,
+    "phase": "native-11-edit-P",
+    "readers": [
+      {
+        "complete": null,
+        "sha256": "47b8991439cfdad32e80170561eb69d766f860f64d1224787de91f601c219fcc",
+        "valid_trailer": false
+      },
+      {
+        "complete": null,
+        "sha256": "5da1810499120ddb88719506c302106dc634ec3da01fdb6896d19c165361c379",
+        "valid_trailer": false
+      }
+    ],
+    "roster": [],
+    "source": "e27e925f288b958f810e597fbc9e08780535b2baa165c80997167060bcca9c8f",
+    "status": 0,
+    "timed": true
+  },
+  {
+    "arm": "C",
+    "images": {},
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 96972713,
+    "phase": "native-11-noop-C",
+    "readers": [
+      {
+        "complete": true,
+        "sha256": "5ba7ecda99fd92b412090c6f048b6e2d18b8b36d084793fd6893422f949b9b6a",
+        "valid_trailer": true
+      },
+      {
+        "complete": true,
+        "sha256": "37246d00232152e1aef105ab672286e5b09732c7003bf1a1a7a3e92357a054ea",
+        "valid_trailer": true
+      }
+    ],
+    "roster": [],
+    "source": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0,
+    "timed": true
+  },
+  {
+    "arm": "P",
+    "images": {},
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 187683189,
+    "phase": "native-11-noop-P",
+    "readers": [
+      {
+        "complete": null,
+        "sha256": "47b8991439cfdad32e80170561eb69d766f860f64d1224787de91f601c219fcc",
+        "valid_trailer": false
+      },
+      {
+        "complete": null,
+        "sha256": "5da1810499120ddb88719506c302106dc634ec3da01fdb6896d19c165361c379",
+        "valid_trailer": false
+      }
+    ],
+    "roster": [],
+    "source": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0,
+    "timed": true
+  },
+  {
+    "arm": "C",
+    "images": {},
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 485955670,
+    "phase": "native-12-edit-C",
+    "readers": [
+      {
+        "complete": true,
+        "sha256": "5ba7ecda99fd92b412090c6f048b6e2d18b8b36d084793fd6893422f949b9b6a",
+        "valid_trailer": true
+      },
+      {
+        "complete": true,
+        "sha256": "03332dadfb6665492e8f3a0d39d25b7b6bc3802e1f18597b53e70173d6988655",
+        "valid_trailer": true
+      }
+    ],
+    "roster": [],
+    "source": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0,
+    "timed": true
+  },
+  {
+    "arm": "P",
+    "images": {},
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 358423684,
+    "phase": "native-12-edit-P",
+    "readers": [
+      {
+        "complete": null,
+        "sha256": "47b8991439cfdad32e80170561eb69d766f860f64d1224787de91f601c219fcc",
+        "valid_trailer": false
+      },
+      {
+        "complete": null,
+        "sha256": "5da1810499120ddb88719506c302106dc634ec3da01fdb6896d19c165361c379",
+        "valid_trailer": false
+      }
+    ],
+    "roster": [],
+    "source": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0,
+    "timed": true
+  },
+  {
+    "arm": "C",
+    "images": {},
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374094..374116)",
+        "sha256": "bb46ff22f9640a67401676f894df61fd1485d3bc4fcba37c63e4543972c98c46"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273191..273213)",
+        "sha256": "7b7d83f9ac360e8893a88e6a567960769096bc2694ed6190427b26af1286e301"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 99471412,
+    "phase": "native-12-noop-C",
+    "readers": [
+      {
+        "complete": true,
+        "sha256": "75f52350c928fde67caf2730c043a29244599fe12b82373dc00fbf2e6e4f56cc",
+        "valid_trailer": true
+      },
+      {
+        "complete": true,
+        "sha256": "1e198b5caf8f461ca7614897bce09f2f458d7440720dd870dd8c2af03f4c553d",
+        "valid_trailer": true
+      }
+    ],
+    "roster": [],
+    "source": "e27e925f288b958f810e597fbc9e08780535b2baa165c80997167060bcca9c8f",
+    "status": 0,
+    "timed": true
+  },
+  {
+    "arm": "P",
+    "images": {},
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374094..374116)",
+        "sha256": "bb46ff22f9640a67401676f894df61fd1485d3bc4fcba37c63e4543972c98c46"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273191..273213)",
+        "sha256": "7b7d83f9ac360e8893a88e6a567960769096bc2694ed6190427b26af1286e301"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 181680014,
+    "phase": "native-12-noop-P",
+    "readers": [
+      {
+        "complete": null,
+        "sha256": "47b8991439cfdad32e80170561eb69d766f860f64d1224787de91f601c219fcc",
+        "valid_trailer": false
+      },
+      {
+        "complete": null,
+        "sha256": "5da1810499120ddb88719506c302106dc634ec3da01fdb6896d19c165361c379",
+        "valid_trailer": false
+      }
+    ],
+    "roster": [],
+    "source": "e27e925f288b958f810e597fbc9e08780535b2baa165c80997167060bcca9c8f",
+    "status": 0,
+    "timed": true
+  },
+  {
+    "arm": "C",
+    "images": {
+      "cargo": 2,
+      "cc": 4,
+      "collect2": 4,
+      "ld.bfd": 4,
+      "rustc": 13
+    },
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 2600376554,
+    "phase": "training-C-0",
+    "readers": [
+      {
+        "complete": false,
+        "sha256": "226b3e29c67a6c2fc2bcc93acb2ce2d610233367d5286777f4c152e9ac6775b5",
+        "valid_trailer": true
+      },
+      {
+        "complete": false,
+        "sha256": "14f4d525deaa058ae11adb19b2e6174822696e615853003640c8d841422f6ea2",
+        "valid_trailer": true
+      }
+    ],
+    "roster": [
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_plain",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_probe",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_shapes",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_tokens",
+        "mode": "full"
+      }
+    ],
+    "source": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0,
+    "timed": false
+  },
+  {
+    "arm": "C",
+    "images": {
+      "cargo": 2,
+      "cc": 2,
+      "collect2": 2,
+      "ld.bfd": 2,
+      "rustc": 3
+    },
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 1139507892,
+    "phase": "training-C-1",
+    "readers": [
+      {
+        "complete": true,
+        "sha256": "5ba7ecda99fd92b412090c6f048b6e2d18b8b36d084793fd6893422f949b9b6a",
+        "valid_trailer": true
+      },
+      {
+        "complete": true,
+        "sha256": "b84f3e556c9cf9558fa84dce65b6fcb08fcf110142286766341d2ac4a2c799db",
+        "valid_trailer": true
+      }
+    ],
+    "roster": [
+      {
+        "capture": true,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": true,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "relink"
+      }
+    ],
+    "source": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0,
+    "timed": false
+  },
+  {
+    "arm": "C",
+    "images": {
+      "cargo": 2
+    },
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 337593677,
+    "phase": "training-C-2",
+    "readers": [
+      {
+        "complete": true,
+        "sha256": "5ba7ecda99fd92b412090c6f048b6e2d18b8b36d084793fd6893422f949b9b6a",
+        "valid_trailer": true
+      },
+      {
+        "complete": true,
+        "sha256": "b84f3e556c9cf9558fa84dce65b6fcb08fcf110142286766341d2ac4a2c799db",
+        "valid_trailer": true
+      }
+    ],
+    "roster": [],
+    "source": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0,
+    "timed": false
+  },
+  {
+    "arm": "C",
+    "images": {
+      "cargo": 2
+    },
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 349512163,
+    "phase": "training-C-3",
+    "readers": [
+      {
+        "complete": true,
+        "sha256": "5ba7ecda99fd92b412090c6f048b6e2d18b8b36d084793fd6893422f949b9b6a",
+        "valid_trailer": true
+      },
+      {
+        "complete": true,
+        "sha256": "b84f3e556c9cf9558fa84dce65b6fcb08fcf110142286766341d2ac4a2c799db",
+        "valid_trailer": true
+      }
+    ],
+    "roster": [],
+    "source": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0,
+    "timed": false
+  },
+  {
+    "arm": "P",
+    "images": {
+      "cargo": 2,
+      "cc": 4,
+      "collect2": 4,
+      "ld.bfd": 4,
+      "rustc": 13
+    },
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 2394256727,
+    "phase": "training-P-0",
+    "readers": [
+      {
+        "complete": null,
+        "sha256": "47b8991439cfdad32e80170561eb69d766f860f64d1224787de91f601c219fcc",
+        "valid_trailer": false
+      },
+      {
+        "complete": null,
+        "sha256": "5da1810499120ddb88719506c302106dc634ec3da01fdb6896d19c165361c379",
+        "valid_trailer": false
+      }
+    ],
+    "roster": [
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_plain",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_probe",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_shapes",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_tokens",
+        "mode": "full"
+      }
+    ],
+    "source": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0,
+    "timed": false
+  },
+  {
+    "arm": "P",
+    "images": {
+      "cargo": 2,
+      "cc": 2,
+      "collect2": 2,
+      "ld.bfd": 2,
+      "rustc": 3
+    },
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 793576793,
+    "phase": "training-P-1",
+    "readers": [
+      {
+        "complete": null,
+        "sha256": "47b8991439cfdad32e80170561eb69d766f860f64d1224787de91f601c219fcc",
+        "valid_trailer": false
+      },
+      {
+        "complete": null,
+        "sha256": "5da1810499120ddb88719506c302106dc634ec3da01fdb6896d19c165361c379",
+        "valid_trailer": false
+      }
+    ],
+    "roster": [
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "relink"
+      }
+    ],
+    "source": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0,
+    "timed": false
+  },
+  {
+    "arm": "P",
+    "images": {
+      "cargo": 2,
+      "cc": 2,
+      "collect2": 2,
+      "ld.bfd": 2,
+      "rustc": 3
+    },
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 827094030,
+    "phase": "training-P-2",
+    "readers": [
+      {
+        "complete": null,
+        "sha256": "47b8991439cfdad32e80170561eb69d766f860f64d1224787de91f601c219fcc",
+        "valid_trailer": false
+      },
+      {
+        "complete": null,
+        "sha256": "5da1810499120ddb88719506c302106dc634ec3da01fdb6896d19c165361c379",
+        "valid_trailer": false
+      }
+    ],
+    "roster": [
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "relink"
+      }
+    ],
+    "source": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0,
+    "timed": false
+  },
+  {
+    "arm": "P",
+    "images": {
+      "cargo": 2,
+      "cc": 2,
+      "collect2": 2,
+      "ld.bfd": 2,
+      "rustc": 3
+    },
+    "native_products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "ns": 918351424,
+    "phase": "training-P-3",
+    "readers": [
+      {
+        "complete": null,
+        "sha256": "47b8991439cfdad32e80170561eb69d766f860f64d1224787de91f601c219fcc",
+        "valid_trailer": false
+      },
+      {
+        "complete": null,
+        "sha256": "5da1810499120ddb88719506c302106dc634ec3da01fdb6896d19c165361c379",
+        "valid_trailer": false
+      }
+    ],
+    "roster": [
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "relink"
+      }
+    ],
+    "source": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0,
+    "timed": false
+  }
+]
