@@ -1,0 +1,18 @@
+{
+  "cc": "cc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+  "cc_sha": "1b99826121ae6682a634e5efe09bd3e3df58ce58e0b28f849114ab5b89139c26",
+  "helper_c": "#include \"blake3.h\"\nvoid cargo_depinfo_b3(const void *in, size_t len, void *out) { blake3_hasher h; blake3_hasher_init(&h); blake3_hasher_update(&h, in, len); blake3_hasher_finalize(&h, out, 32); }\n",
+  "helper_sha256": "fd777ceb54147d29e152beed0bfa42e9c60b122c83dd6aeb2058c7db8d995332",
+  "known_inputs": [
+    "zero-length",
+    "abc"
+  ],
+  "source_crate": "blake3 1.8.2",
+  "source_files": {
+    "blake3.c": "0cd1d6aa002ac44cbf0b0cff5d3f23df3fd190fdc25dfc6d7f3de2afeffba5bd",
+    "blake3.h": "ca1e562d173c264c19b2a89d179f5fa94000966b6b8f4182b6682e136a8cbfdf",
+    "blake3_dispatch.c": "a6cef5c497d95c8f7fcde6e1a8e140637f3260b31e911319e69cf5069459b635",
+    "blake3_impl.h": "65cf3597897090e8ded5968e3c26304a65b0091e8fabfa434c3d1a5eef29cb17",
+    "blake3_portable.c": "2bc25b0dad67b4329d0b49cfa075ab2b0d04e424addbddc4e9c389c52a192524"
+  }
+}
