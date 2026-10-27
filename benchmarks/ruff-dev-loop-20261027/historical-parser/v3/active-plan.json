@@ -1,0 +1,197 @@
+{
+  "version": 3,
+  "source": {
+    "parent": "3bb0dac23569fb607e781ca8e401c6eba71b14dd",
+    "child": "c1eaf6ff72875a68e2585d50deaff220ea1d8ce9",
+    "complete_diff_sha256": "608a751103bf1f118e360981b807923f4f35ae2457000e2bde79173828da49a2",
+    "selection": "Lowest preselected digest among ten qualifying complete private parser edits. The original parent and child are used."
+  },
+  "subjects": {
+    "A": "051b9d3f5861f984faa0f8c1d2ab9b5c28e483a05c728051de837291c83fd518",
+    "B": "55e123a9e87f16a449d260ab65449eab743cd30ba356a7f10ffdd1fa6f8a2484",
+    "shared_rustc_frontend": "4fa9a18b77430bcc416e88561b6fe5797d98b996a7698b9f3bd11d4e7817a19f",
+    "shared_cargo": "71da9dfcb3ba440297f84705ff7e3a676634ced7d7b6ca9b525a439b7f748f58"
+  },
+  "host": "charlie-oss-8",
+  "cpus": "20-23",
+  "cargo_jobs": 4,
+  "ordinary_profile": "Ruff original dev/test defaults, unoptimized + full debuginfo. Native Cargo flags on a fixed four-CPU allocation. The harness adds --locked --offline --message-format=json and the test mode adds --no-run.",
+  "package": "ruff_python_formatter",
+  "endpoint_units": {
+    "build": 94,
+    "test": 107
+  },
+  "design": "16 blocks per endpoint, four timed commands each. Exactly eight ABBA and eight BAAB per endpoint. Independently shuffled then interleaved. Each command receives a disposable copy of the matching independently warmed arm; an unscored no-op validates it before the full edit.",
+  "timing": "Native Python CLOCK_MONOTONIC nanoseconds around one complete Cargo process, including its consistent bwrap/taskset launch and the rustc argv recorder. Setup, untimed no-op, output inspection and execution of the CLI verification samples are outside timing.",
+  "required_guard": "All original products fresh with zero rustcs. On each edit full/relink counts must be A build 3/0, A test 7/0, B build 1/1, B test 1/4. All expected 94/107 units must complete and the one/five binaries must match their frozen per-endpoint ELF section digest across treatments except .strtab, .symtab and .note.gnu.build-id, whose complete static symbols additionally pass the exact parent-witness gate specified above. Every compiler diagnostic and the four independent CLI semantic samples must match the reference for that source. Raw ELF digests are still retained.",
+  "statistics": "For each block subtract the mean log time of its two candidate commands from the mean log time of its two control commands. Report 100*(1-exp(-mean(blocks))), raw endpoint medians, and a two-sided exact randomization test under all C(16,8) permitted endpoint allocations using absolute mean log ratio. Two endpoint P-values receive Holm correction at family alpha 0.05. Use 20,000 within-order stratified resamples of matched blocks to report the 95% percentile interval of the same effect; seed ohm-private-native-history-ci-v1 separately per endpoint.",
+  "stopping": "All 32 independent four-command blocks are required. Stop immediately on any non-symbol gate failure or symbol structural change outside named hidden slots. An unseen unreduced LLVM private label must gain an exact unchanged-parent witness within the declared post-cohort bound. If it does not, the whole cohort receives no timing inference. No treatment observations are excluded. No optional stopping on elapsed time.",
+  "assignment_seed": "ohm-native-private-historical-c1eaf6ff-independent-v3-20261027",
+  "blocks": [
+    {
+      "endpoint": "test",
+      "within_endpoint": 7,
+      "order": "ABBA"
+    },
+    {
+      "endpoint": "build",
+      "within_endpoint": 13,
+      "order": "ABBA"
+    },
+    {
+      "endpoint": "build",
+      "within_endpoint": 2,
+      "order": "ABBA"
+    },
+    {
+      "endpoint": "build",
+      "within_endpoint": 10,
+      "order": "BAAB"
+    },
+    {
+      "endpoint": "test",
+      "within_endpoint": 5,
+      "order": "BAAB"
+    },
+    {
+      "endpoint": "test",
+      "within_endpoint": 8,
+      "order": "ABBA"
+    },
+    {
+      "endpoint": "build",
+      "within_endpoint": 5,
+      "order": "ABBA"
+    },
+    {
+      "endpoint": "test",
+      "within_endpoint": 9,
+      "order": "BAAB"
+    },
+    {
+      "endpoint": "build",
+      "within_endpoint": 9,
+      "order": "BAAB"
+    },
+    {
+      "endpoint": "test",
+      "within_endpoint": 12,
+      "order": "ABBA"
+    },
+    {
+      "endpoint": "build",
+      "within_endpoint": 16,
+      "order": "BAAB"
+    },
+    {
+      "endpoint": "build",
+      "within_endpoint": 1,
+      "order": "BAAB"
+    },
+    {
+      "endpoint": "build",
+      "within_endpoint": 3,
+      "order": "ABBA"
+    },
+    {
+      "endpoint": "build",
+      "within_endpoint": 14,
+      "order": "BAAB"
+    },
+    {
+      "endpoint": "test",
+      "within_endpoint": 11,
+      "order": "BAAB"
+    },
+    {
+      "endpoint": "test",
+      "within_endpoint": 1,
+      "order": "BAAB"
+    },
+    {
+      "endpoint": "build",
+      "within_endpoint": 12,
+      "order": "BAAB"
+    },
+    {
+      "endpoint": "test",
+      "within_endpoint": 3,
+      "order": "ABBA"
+    },
+    {
+      "endpoint": "test",
+      "within_endpoint": 6,
+      "order": "BAAB"
+    },
+    {
+      "endpoint": "test",
+      "within_endpoint": 16,
+      "order": "ABBA"
+    },
+    {
+      "endpoint": "test",
+      "within_endpoint": 14,
+      "order": "BAAB"
+    },
+    {
+      "endpoint": "build",
+      "within_endpoint": 7,
+      "order": "ABBA"
+    },
+    {
+      "endpoint": "build",
+      "within_endpoint": 15,
+      "order": "BAAB"
+    },
+    {
+      "endpoint": "test",
+      "within_endpoint": 10,
+      "order": "BAAB"
+    },
+    {
+      "endpoint": "build",
+      "within_endpoint": 11,
+      "order": "BAAB"
+    },
+    {
+      "endpoint": "test",
+      "within_endpoint": 2,
+      "order": "BAAB"
+    },
+    {
+      "endpoint": "build",
+      "within_endpoint": 4,
+      "order": "ABBA"
+    },
+    {
+      "endpoint": "test",
+      "within_endpoint": 15,
+      "order": "ABBA"
+    },
+    {
+      "endpoint": "build",
+      "within_endpoint": 6,
+      "order": "ABBA"
+    },
+    {
+      "endpoint": "build",
+      "within_endpoint": 8,
+      "order": "ABBA"
+    },
+    {
+      "endpoint": "test",
+      "within_endpoint": 4,
+      "order": "ABBA"
+    },
+    {
+      "endpoint": "test",
+      "within_endpoint": 13,
+      "order": "ABBA"
+    }
+  ],
+  "previous_plan_sha256": "fd5dfbb9bb8d64ffa5de9d173edc34e25bedef0fd82df0044988fd91ff69e9ea",
+  "guard_clarification": "Before scoring, an unscored cross-arm guard found a single emission-order distinction among 270 historical Cargo test warnings. For the mismatched_lifetime_syntaxes default-lint note only, the spanless note may be attached to a different warning from the same package, target and lint. Compare its complete JSON payload and count per package and target separately, remove exactly its one rendered note line from that warning, and compare all other diagnostic JSON including rendered lines, spans, suggestions, paths, child notes and counts exactly. Keep original full-JSON hashes and note locations. All case, subject, command, block, endpoint, order, statistic and exclusion choices remain exactly those in v1. No scored observations preceded this clarification.",
+  "prior_disposition": "Version 2 stopped at block 8 position 3 after 30 accepted edited observations. None enter this independent analysis.",
+  "elf_qualification": "All code, data, dynamic symbols, relocations, unwind and debug sections remain byte-exact. The previous guard checked the raw static symbol table although its name offsets refer to a changing static string table. Decode every final ELF64 static symbol to its complete unstripped name, binding, type, visibility, real section identity, virtual address, and size. Verify no other section references .symtab. For a fresh command require the same full-symbol digest as the original arm seed. For each edited command initially verify every symbol against one fixed typed-symbol invariant, with only the specifically enumerated hidden local LLVM disambiguator spellings from a preexisting parent A/A bank allowed to vary. Retain every actual full-symbol digest. Before any performance inference, every complete treatment artifact symbol multiset, with every numeric suffix intact, must have an actual exact old-compiler witness for this source, mode and binary: one of 30 preregistered independent baseline builds, scored old-compiler observations in this new cohort, or up to 64 additional untimed independent old-compiler builds per affected endpoint after the entire randomized cohort. Stop the post-cohort runs as soon as every actual variant is witnessed. If any complete actual spelling lacks an old-compiler witness within that budget, report the cohort as unqualified. Dynamic symbols and flags, relocations, instructions, all diagnostic content and the semantic fixtures retain their prior guards. Full output hashes and raw section hashes are recorded. No prior elapsed observation enters this cohort.",
+  "parent_symbol_bank_sha256": "1275d727fd3f876bad8d458b3a7b25e6e3b16446de15e6c51d5008cc823ca5ce"
+}

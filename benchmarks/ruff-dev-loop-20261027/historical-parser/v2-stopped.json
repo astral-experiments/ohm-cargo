@@ -1,0 +1,51 @@
+{
+  "status": "stopped before inference",
+  "reason": "A previously unseen raw static symbol-table digest failed the v2 section guard.",
+  "cutoff": {
+    "block": 8,
+    "position": 3,
+    "mode": "build",
+    "arm": "B"
+  },
+  "accepted_rows": 61,
+  "accepted_edited": 30,
+  "completed_blocks": 7,
+  "unguarded_raw_sample": "candidate-b08-p3-edited-build",
+  "rows_sha256": "bf0bcffd975f829f4722776864bfd1fd805cc0f3c3be674b5ad8d03d7e70fa24",
+  "different_raw_sections": {
+    ".note.gnu.build-id": {
+      "reference": {
+        "bytes": 48,
+        "hash": "29abe9808b3f0e50ca0d337711a0d2b516b90e862691ea9c6f0cfcdc0361d59f"
+      },
+      "observation": {
+        "bytes": 48,
+        "hash": "97dad54f40bb0c648d4a2d00c5c7bf7e844faa26f7d12d3d07ccc90ac49ec422"
+      }
+    },
+    ".strtab": {
+      "reference": {
+        "bytes": 4398661,
+        "hash": "d2151b186bda309014e41868f6c25bcecf4499904bc49476845aba5eea2513d9"
+      },
+      "observation": {
+        "bytes": 4398608,
+        "hash": "28adc5b5f502d36ae84a93b882913a6b91e30b450e6698a8e317f66c686c0fc5"
+      }
+    },
+    ".symtab": {
+      "reference": {
+        "bytes": 716616,
+        "hash": "ba582b756cfa01d3902f34207f8bf75a949efb9cf9d28741141a37242aad975e"
+      },
+      "observation": {
+        "bytes": 716616,
+        "hash": "e451e6ef24a793d08ab7324bab4e523c7d35e36daea001b5a9078461f3fd5847"
+      }
+    }
+  },
+  "unchanged_section_count": 33,
+  "failed_full_json_sha256": "facab0eaa8fda23e1f0b21acab207b41f5a9093709ccad0b7cd07dc5bff126d3",
+  "semantic_sample_matches": true,
+  "no_performance_inference": true
+}
