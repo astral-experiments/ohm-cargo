@@ -1,0 +1,435 @@
+{
+  "build": {
+    "assignments": 924,
+    "bootstrap_reps": 20000,
+    "bootstrap_seed": 831361,
+    "elf_comparisons": {
+      "candidate-unexplained_rejected_known_fields_reported": [],
+      "cross_arm_masked_only_differences": {
+        "edit": [],
+        "final": [],
+        "preflight": [],
+        "restore": []
+      },
+      "parent-unexplained_rejected_known_fields_reported": []
+    },
+    "exact_two_sided_balanced_p": 0.4090909090909091,
+    "extreme_assignments": 378,
+    "faster_pairs": 4,
+    "geometric_wall_time_reduction_pct": -10.458963290129422,
+    "holm_p": 0.4090909090909091,
+    "mechanism": {
+      "candidate": {
+        "cold": {
+          "dirty_units": 501,
+          "elf_products": 15,
+          "executable_paths": 6,
+          "linkers": 152,
+          "rustc_full": 505,
+          "rustc_link_only": 0,
+          "total_units": 501
+        },
+        "edit": {
+          "dirty_units": 11,
+          "elf_products": 15,
+          "executable_paths": 6,
+          "linkers": 3,
+          "rustc_full": 2,
+          "rustc_link_only": 2,
+          "total_units": 501
+        },
+        "final": {
+          "dirty_units": 0,
+          "elf_products": 15,
+          "executable_paths": 6,
+          "linkers": 0,
+          "rustc_full": 0,
+          "rustc_link_only": 0,
+          "total_units": 501
+        },
+        "preflight": {
+          "dirty_units": 0,
+          "elf_products": 15,
+          "executable_paths": 6,
+          "linkers": 0,
+          "rustc_full": 0,
+          "rustc_link_only": 0,
+          "total_units": 501
+        },
+        "restore": {
+          "dirty_units": 11,
+          "elf_products": 15,
+          "executable_paths": 6,
+          "linkers": 3,
+          "rustc_full": 2,
+          "rustc_link_only": 2,
+          "total_units": 501
+        },
+        "restored-noop": {
+          "dirty_units": 0,
+          "elf_products": 15,
+          "executable_paths": 6,
+          "linkers": 0,
+          "rustc_full": 0,
+          "rustc_link_only": 0,
+          "total_units": 501
+        },
+        "training": {
+          "dirty_units": 0,
+          "elf_products": 15,
+          "executable_paths": 6,
+          "linkers": 0,
+          "rustc_full": 0,
+          "rustc_link_only": 0,
+          "total_units": 501
+        }
+      },
+      "parent": {
+        "cold": {
+          "dirty_units": 501,
+          "elf_products": 15,
+          "executable_paths": 6,
+          "linkers": 152,
+          "rustc_full": 505,
+          "rustc_link_only": 0,
+          "total_units": 501
+        },
+        "edit": {
+          "dirty_units": 11,
+          "elf_products": 15,
+          "executable_paths": 6,
+          "linkers": 3,
+          "rustc_full": 2,
+          "rustc_link_only": 2,
+          "total_units": 501
+        },
+        "final": {
+          "dirty_units": 0,
+          "elf_products": 15,
+          "executable_paths": 6,
+          "linkers": 0,
+          "rustc_full": 0,
+          "rustc_link_only": 0,
+          "total_units": 501
+        },
+        "preflight": {
+          "dirty_units": 0,
+          "elf_products": 15,
+          "executable_paths": 6,
+          "linkers": 0,
+          "rustc_full": 0,
+          "rustc_link_only": 0,
+          "total_units": 501
+        },
+        "restore": {
+          "dirty_units": 11,
+          "elf_products": 15,
+          "executable_paths": 6,
+          "linkers": 3,
+          "rustc_full": 2,
+          "rustc_link_only": 2,
+          "total_units": 501
+        },
+        "restored-noop": {
+          "dirty_units": 0,
+          "elf_products": 15,
+          "executable_paths": 6,
+          "linkers": 0,
+          "rustc_full": 0,
+          "rustc_link_only": 0,
+          "total_units": 501
+        },
+        "training": {
+          "dirty_units": 0,
+          "elf_products": 15,
+          "executable_paths": 6,
+          "linkers": 0,
+          "rustc_full": 0,
+          "rustc_link_only": 0,
+          "total_units": 501
+        }
+      }
+    },
+    "median_s": {
+      "candidate": 0.640638295,
+      "parent": 0.6439796259999999
+    },
+    "paired_bootstrap_95_pct": [
+      -36.69366067143867,
+      9.317832986391787
+    ],
+    "qualifies_for_speedup": false,
+    "registered_orders": [
+      [
+        "candidate",
+        "parent"
+      ],
+      [
+        "candidate",
+        "parent"
+      ],
+      [
+        "candidate",
+        "parent"
+      ],
+      [
+        "parent",
+        "candidate"
+      ],
+      [
+        "parent",
+        "candidate"
+      ],
+      [
+        "candidate",
+        "parent"
+      ],
+      [
+        "parent",
+        "candidate"
+      ],
+      [
+        "parent",
+        "candidate"
+      ],
+      [
+        "parent",
+        "candidate"
+      ],
+      [
+        "parent",
+        "candidate"
+      ],
+      [
+        "candidate",
+        "parent"
+      ],
+      [
+        "candidate",
+        "parent"
+      ]
+    ]
+  },
+  "test": {
+    "assignments": 924,
+    "bootstrap_reps": 20000,
+    "bootstrap_seed": 831361,
+    "elf_comparisons": {
+      "candidate-unexplained_rejected_known_fields_reported": [],
+      "cross_arm_masked_only_differences": {
+        "edit": [
+          "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-fd0ebce955db1159-all-native-all/ruff_wasm/5954b04f4610694e/out/api-5954b04f4610694e",
+          "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-fd0ebce955db1159-all-native-all/ruff_workspace/ef09ebe5edb5924f/out/ruff_workspace-ef09ebe5edb5924f"
+        ],
+        "final": [
+          "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-fd0ebce955db1159-all-native-all/ty_server/5f31be30b2802565/out/ty_server-5f31be30b2802565"
+        ],
+        "preflight": [],
+        "restore": [
+          "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-fd0ebce955db1159-all-native-all/ruff_db/da57d7c1341a3cbc/out/ruff_db-da57d7c1341a3cbc",
+          "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-fd0ebce955db1159-all-native-all/ruff_wasm/5954b04f4610694e/out/api-5954b04f4610694e",
+          "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-fd0ebce955db1159-all-native-all/ty_server/c1c481f014f6bbfa/out/e2e-c1c481f014f6bbfa"
+        ]
+      },
+      "parent-unexplained_rejected_known_fields_reported": [
+        "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-fd0ebce955db1159-all-native-all/ty_server/5f31be30b2802565/out/ty_server-5f31be30b2802565"
+      ]
+    },
+    "exact_two_sided_balanced_p": 0.0021645021645021645,
+    "extreme_assignments": 2,
+    "faster_pairs": 12,
+    "geometric_wall_time_reduction_pct": 85.54088116601474,
+    "holm_p": 0.004329004329004329,
+    "mechanism": {
+      "candidate": {
+        "cold": {
+          "dirty_units": 619,
+          "elf_products": 110,
+          "executable_paths": 102,
+          "linkers": 263,
+          "rustc_full": 636,
+          "rustc_link_only": 0,
+          "total_units": 619
+        },
+        "edit": {
+          "dirty_units": 26,
+          "elf_products": 110,
+          "executable_paths": 102,
+          "linkers": 19,
+          "rustc_full": 4,
+          "rustc_link_only": 16,
+          "total_units": 619
+        },
+        "final": {
+          "dirty_units": 0,
+          "elf_products": 110,
+          "executable_paths": 102,
+          "linkers": 0,
+          "rustc_full": 0,
+          "rustc_link_only": 0,
+          "total_units": 619
+        },
+        "preflight": {
+          "dirty_units": 0,
+          "elf_products": 110,
+          "executable_paths": 102,
+          "linkers": 0,
+          "rustc_full": 0,
+          "rustc_link_only": 0,
+          "total_units": 619
+        },
+        "restore": {
+          "dirty_units": 26,
+          "elf_products": 110,
+          "executable_paths": 102,
+          "linkers": 19,
+          "rustc_full": 4,
+          "rustc_link_only": 16,
+          "total_units": 619
+        },
+        "restored-noop": {
+          "dirty_units": 0,
+          "elf_products": 110,
+          "executable_paths": 102,
+          "linkers": 0,
+          "rustc_full": 0,
+          "rustc_link_only": 0,
+          "total_units": 619
+        },
+        "training": {
+          "dirty_units": 56,
+          "elf_products": 110,
+          "executable_paths": 102,
+          "linkers": 50,
+          "rustc_full": 1,
+          "rustc_link_only": 50,
+          "total_units": 619
+        }
+      },
+      "parent": {
+        "cold": {
+          "dirty_units": 619,
+          "elf_products": 110,
+          "executable_paths": 102,
+          "linkers": 262,
+          "rustc_full": 636,
+          "rustc_link_only": 0,
+          "total_units": 619
+        },
+        "edit": {
+          "dirty_units": 67,
+          "elf_products": 110,
+          "executable_paths": 102,
+          "linkers": 55,
+          "rustc_full": 5,
+          "rustc_link_only": 52,
+          "total_units": 619
+        },
+        "final": {
+          "dirty_units": 56,
+          "elf_products": 110,
+          "executable_paths": 102,
+          "linkers": 50,
+          "rustc_full": 1,
+          "rustc_link_only": 50,
+          "total_units": 619
+        },
+        "preflight": {
+          "dirty_units": 56,
+          "elf_products": 110,
+          "executable_paths": 102,
+          "linkers": 50,
+          "rustc_full": 1,
+          "rustc_link_only": 50,
+          "total_units": 619
+        },
+        "restore": {
+          "dirty_units": 67,
+          "elf_products": 110,
+          "executable_paths": 102,
+          "linkers": 55,
+          "rustc_full": 5,
+          "rustc_link_only": 52,
+          "total_units": 619
+        },
+        "restored-noop": {
+          "dirty_units": 56,
+          "elf_products": 110,
+          "executable_paths": 102,
+          "linkers": 50,
+          "rustc_full": 1,
+          "rustc_link_only": 50,
+          "total_units": 619
+        },
+        "training": {
+          "dirty_units": 56,
+          "elf_products": 110,
+          "executable_paths": 102,
+          "linkers": 50,
+          "rustc_full": 1,
+          "rustc_link_only": 50,
+          "total_units": 619
+        }
+      }
+    },
+    "median_s": {
+      "candidate": 0.955763811,
+      "parent": 6.0882848880000004
+    },
+    "paired_bootstrap_95_pct": [
+      83.10057933978572,
+      87.54755836943716
+    ],
+    "qualifies_for_speedup": true,
+    "registered_orders": [
+      [
+        "parent",
+        "candidate"
+      ],
+      [
+        "parent",
+        "candidate"
+      ],
+      [
+        "parent",
+        "candidate"
+      ],
+      [
+        "candidate",
+        "parent"
+      ],
+      [
+        "parent",
+        "candidate"
+      ],
+      [
+        "candidate",
+        "parent"
+      ],
+      [
+        "candidate",
+        "parent"
+      ],
+      [
+        "candidate",
+        "parent"
+      ],
+      [
+        "parent",
+        "candidate"
+      ],
+      [
+        "parent",
+        "candidate"
+      ],
+      [
+        "candidate",
+        "parent"
+      ],
+      [
+        "candidate",
+        "parent"
+      ]
+    ]
+  }
+}
