@@ -1,0 +1,472 @@
+{
+  "compiler_driver_and_frontend": {
+    "7c31057e86f800e313b7d32080c7a5abaa7b92fef92254ac21b2e43febf16384": {
+      "actual_sha256": "7c31057e86f800e313b7d32080c7a5abaa7b92fef92254ac21b2e43febf16384",
+      "frontend_sha256": "4fa9a18b77430bcc416e88561b6fe5797d98b996a7698b9f3bd11d4e7817a19f"
+    },
+    "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f": {
+      "actual_sha256": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+      "frontend_sha256": "4fa9a18b77430bcc416e88561b6fe5797d98b996a7698b9f3bd11d4e7817a19f"
+    }
+  },
+  "dirs_with_parser_before_private_overlay": {
+    "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-88772b8328182644-all-native-all/ruff_python_parser/a9a8d6f9627e2852/out": [
+      "libruff_python_parser-a9a8d6f9627e2852.rmeta",
+      "libruff_python_parser-a9a8d6f9627e2852.rlib"
+    ]
+  },
+  "fresh_edited_codegen": {
+    "bytes": 71694,
+    "parser_edges": [
+      [
+        "ruff_python_parser",
+        20,
+        "6b3debf92b4e08f5070f7dc856df41d3",
+        "-a9a8d6f9627e2852",
+        null,
+        2,
+        0
+      ]
+    ],
+    "serialized_private_svh": "293504ef2e9c0c4c3a86a5349c32c516",
+    "serialized_public_svh": "da4661bc9c98e4a6fbe4898e6796b152",
+    "sha256": "13327db2b4e82cd41f62d05bc4423b903856d086d8271f3dbe5048c74e03f97e",
+    "target": "x86_64-unknown-linux-gnu"
+  },
+  "parser": {
+    "edited": {
+      "bytes": 1363396,
+      "parser_edges": [],
+      "serialized_private_svh": "348a0fa1f7ffca00f30544d5687f5983",
+      "serialized_public_svh": "6b3debf92b4e08f5070f7dc856df41d3",
+      "sha256": "1c1a4f2e462d9c9416ec5439f3cf826879539f6f04e15dc84fbedd60300effe8",
+      "target": "x86_64-unknown-linux-gnu"
+    },
+    "restored": {
+      "bytes": 1363399,
+      "parser_edges": [],
+      "serialized_private_svh": "a7780c9ca2b87526b91f5413afee2331",
+      "serialized_public_svh": "86aaed11b6d06646efe708477d76882c",
+      "sha256": "e89da9e9b433356d2c75e12c16a913ba8deed9bae57bb2159ea52bca6426ecc3",
+      "target": "x86_64-unknown-linux-gnu"
+    }
+  },
+  "permitted_search_path_count": 232,
+  "physical_restored": {
+    "ruff_python_codegen": {
+      "bytes": 71045,
+      "parser_edges": [
+        [
+          "ruff_python_parser",
+          20,
+          "86aaed11b6d06646efe708477d76882c",
+          "-a9a8d6f9627e2852",
+          null,
+          2,
+          0
+        ]
+      ],
+      "serialized_private_svh": "b882f2e25ef24862dce1ccc05b262e0d",
+      "serialized_public_svh": "a3e020a2d184fb2b0976bc660528e49a",
+      "sha256": "d54c07285f90af47341f69dc1159993cc060329ff6f5d060a65f93708ddde1a3",
+      "target": "x86_64-unknown-linux-gnu"
+    },
+    "ruff_python_importer": {
+      "bytes": 37187,
+      "parser_edges": [
+        [
+          "ruff_python_parser",
+          101,
+          "86aaed11b6d06646efe708477d76882c",
+          "-a9a8d6f9627e2852",
+          null,
+          2,
+          0
+        ]
+      ],
+      "serialized_private_svh": "985e5e6f8eafb79420fece544cd35fc5",
+      "serialized_public_svh": "e855c941d996c791c41aa6f4acb3f493",
+      "sha256": "3234a73420defd7264f2856fb5476b9c52849a571b0bad57a8cce37ec38c6221",
+      "target": "x86_64-unknown-linux-gnu"
+    },
+    "ruff_python_parser": {
+      "bytes": 1363482,
+      "parser_edges": [],
+      "serialized_private_svh": "a7780c9ca2b87526b91f5413afee2331",
+      "serialized_public_svh": "86aaed11b6d06646efe708477d76882c",
+      "sha256": "bb3f704a5035d3758ffc69bd50a50edae76d310437f8ae597c60a17545de9150",
+      "target": "x86_64-unknown-linux-gnu"
+    }
+  },
+  "private_parser_entries": [
+    "libruff_python_parser-a9a8d6f9627e2852.rmeta"
+  ],
+  "rows": [
+    {
+      "argv_sha256": "52f212f15a39cd82bfa6c274a7bf766ed45b83e86249c9dab49eb8caee3f4c94",
+      "caller_or_producer": "ruff_python_codegen",
+      "diagnostics": [],
+      "driver": "7c31057e86f800e313b7d32080c7a5abaa7b92fef92254ac21b2e43febf16384",
+      "emitted_metadata_sha256": "e528a39a332a44b365a1a191cea74ef9bbee506685736015e0a4b11fdda6a84e",
+      "mode": "caller",
+      "parser": "restored",
+      "status": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv_sha256": "b0c47ee50edd2d94f2f7c87af81d2ce2867d87e866204a3cb1a76dfd05f68005",
+      "caller_or_producer": "ruff_python_importer",
+      "diagnostics": [],
+      "driver": "7c31057e86f800e313b7d32080c7a5abaa7b92fef92254ac21b2e43febf16384",
+      "emitted_metadata_sha256": "29b477c7ca88131db7888d61f837e5b746a6a30a3d91f7044b9978a995e86956",
+      "mode": "caller",
+      "parser": "restored",
+      "status": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv_sha256": "7f5e487d7f29d5a7baa3795f36c945b00d73c63ba38bc760ee12d76c01125642",
+      "caller_or_producer": "ruff_python_parser",
+      "diagnostics": [],
+      "driver": "7c31057e86f800e313b7d32080c7a5abaa7b92fef92254ac21b2e43febf16384",
+      "emitted_metadata_sha256": "b28c9cb67ae729ffc5752c6a869c0540dd5367f0bb5ad2098fddd3dbc3eaf89a",
+      "mode": "caller",
+      "parser": "restored",
+      "status": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv_sha256": "41c96b4601ebaf5ddf54870683eb3ecd393c7c1c8c01e3bac97834fd0a95e9fb",
+      "caller_or_producer": "diag",
+      "diagnostics": [
+        {
+          "code": "E0061",
+          "definition_spans": [
+            {
+              "byte_end": 60317,
+              "byte_start": 60314,
+              "column_end": 11,
+              "column_start": 8,
+              "expansion": null,
+              "file_name": "crates/ruff_python_parser/src/lexer.rs",
+              "is_primary": true,
+              "label": null,
+              "line_end": 1623,
+              "line_start": 1623,
+              "suggested_replacement": null,
+              "suggestion_applicability": null,
+              "text": [
+                {
+                  "highlight_end": 11,
+                  "highlight_start": 8,
+                  "text": "pub fn lex(source: &str, mode: Mode) -> Lexer<'_> {"
+                }
+              ]
+            }
+          ],
+          "message": "this function takes 2 arguments but 0 arguments were supplied",
+          "notes": [
+            "function defined here"
+          ]
+        }
+      ],
+      "driver": "7c31057e86f800e313b7d32080c7a5abaa7b92fef92254ac21b2e43febf16384",
+      "emitted_metadata_sha256": null,
+      "mode": "caller",
+      "parser": "restored",
+      "status": 1,
+      "stderr_sha256": "12c45b9b0a11ac4c6163e494f7c796baa64b2a587a737a36e48fa30adad1afee"
+    },
+    {
+      "argv_sha256": "9932c1ae8e94a6794d55aa524d64a5f95200c5787fa81d649a19856b21f7c718",
+      "caller_or_producer": "ruff_python_codegen",
+      "diagnostics": [
+        {
+          "code": "E0460",
+          "definition_spans": [],
+          "message": "found possibly newer version of crate `ruff_python_parser` which `ruff_python_codegen` depends on",
+          "notes": [
+            "perhaps that crate needs to be recompiled?",
+            "the following crate versions were found:\ncrate `ruff_python_parser`: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-88772b8328182644-all-native-all/ruff_python_parser/a9a8d6f9627e2852/out/libruff_python_parser-a9a8d6f9627e2852.rmeta\ncrate `ruff_python_codegen`: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-88772b8328182644-all-native-all/ruff_python_codegen/89b614059a4b2e5d/out/libruff_python_codegen-89b614059a4b2e5d.rmeta"
+          ]
+        }
+      ],
+      "driver": "7c31057e86f800e313b7d32080c7a5abaa7b92fef92254ac21b2e43febf16384",
+      "emitted_metadata_sha256": null,
+      "mode": "caller",
+      "parser": "edited",
+      "status": 1,
+      "stderr_sha256": "35c53cc5610351486cab56f60cca83f61c148427145bb96f886299ca9437ef24"
+    },
+    {
+      "argv_sha256": "1e28f38c613826736d794a9df1e2275aa3f9ab0117b9ed7cc1341d41ca083190",
+      "caller_or_producer": "ruff_python_importer",
+      "diagnostics": [
+        {
+          "code": "E0460",
+          "definition_spans": [],
+          "message": "found possibly newer version of crate `ruff_python_parser` which `ruff_python_importer` depends on",
+          "notes": [
+            "perhaps that crate needs to be recompiled?",
+            "the following crate versions were found:\ncrate `ruff_python_parser`: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-88772b8328182644-all-native-all/ruff_python_parser/a9a8d6f9627e2852/out/libruff_python_parser-a9a8d6f9627e2852.rmeta\ncrate `ruff_python_importer`: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-88772b8328182644-all-native-all/ruff_python_importer/38256eafec4840ef/out/libruff_python_importer-38256eafec4840ef.rmeta"
+          ]
+        }
+      ],
+      "driver": "7c31057e86f800e313b7d32080c7a5abaa7b92fef92254ac21b2e43febf16384",
+      "emitted_metadata_sha256": null,
+      "mode": "caller",
+      "parser": "edited",
+      "status": 1,
+      "stderr_sha256": "9ffbcccb24aa5650a8642e7dd59c17e509e1106369c4ad3e9b50f51e35995430"
+    },
+    {
+      "argv_sha256": "42b742114df82e7fa5ce548ac7b4391cc184df57a0325a09c116f66fcf7698b8",
+      "caller_or_producer": "ruff_python_parser",
+      "diagnostics": [],
+      "driver": "7c31057e86f800e313b7d32080c7a5abaa7b92fef92254ac21b2e43febf16384",
+      "emitted_metadata_sha256": "e564c261746b3becf0152c80df04177fc1efc4e28edcabfed66e4c4753d8f558",
+      "mode": "caller",
+      "parser": "edited",
+      "status": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv_sha256": "266044e16623769ce42217a3e8c8626814f386b912c8f0a9ac4797a5af61ae7d",
+      "caller_or_producer": "diag",
+      "diagnostics": [
+        {
+          "code": "E0061",
+          "definition_spans": [
+            {
+              "byte_end": 60129,
+              "byte_start": 60126,
+              "column_end": 11,
+              "column_start": 8,
+              "expansion": null,
+              "file_name": "crates/ruff_python_parser/src/lexer.rs",
+              "is_primary": true,
+              "label": null,
+              "line_end": 1620,
+              "line_start": 1620,
+              "suggested_replacement": null,
+              "suggestion_applicability": null,
+              "text": [
+                {
+                  "highlight_end": 11,
+                  "highlight_start": 8,
+                  "text": "pub fn lex(source: &str, mode: Mode) -> Lexer<'_> {"
+                }
+              ]
+            }
+          ],
+          "message": "this function takes 2 arguments but 0 arguments were supplied",
+          "notes": [
+            "function defined here"
+          ]
+        }
+      ],
+      "driver": "7c31057e86f800e313b7d32080c7a5abaa7b92fef92254ac21b2e43febf16384",
+      "emitted_metadata_sha256": null,
+      "mode": "caller",
+      "parser": "edited",
+      "status": 1,
+      "stderr_sha256": "4770f091fa8b7ee0f76b32bb491e2717ef011701427eb4b880781ea595bb673c"
+    },
+    {
+      "argv_sha256": "ea4f83017b10e2b86033e4538aa1c7be7a42bb4da1613d9d12447aa82ad01019",
+      "caller_or_producer": "ruff_python_codegen",
+      "diagnostics": [],
+      "driver": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+      "emitted_metadata_sha256": "e528a39a332a44b365a1a191cea74ef9bbee506685736015e0a4b11fdda6a84e",
+      "mode": "caller",
+      "parser": "restored",
+      "status": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv_sha256": "a51e719e5c03a23b3dc4546264523d5d993ab4829850769cb0787f3f5732f751",
+      "caller_or_producer": "ruff_python_importer",
+      "diagnostics": [],
+      "driver": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+      "emitted_metadata_sha256": "29b477c7ca88131db7888d61f837e5b746a6a30a3d91f7044b9978a995e86956",
+      "mode": "caller",
+      "parser": "restored",
+      "status": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv_sha256": "b400917476ce6bd1e301ba15f49fa4ea3b777d9c90cdf65375b219fe4fb34130",
+      "caller_or_producer": "ruff_python_parser",
+      "diagnostics": [],
+      "driver": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+      "emitted_metadata_sha256": "b28c9cb67ae729ffc5752c6a869c0540dd5367f0bb5ad2098fddd3dbc3eaf89a",
+      "mode": "caller",
+      "parser": "restored",
+      "status": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv_sha256": "d5a2f394a9f4a72a4aea0d8a89fa2611f93b4da57e6901787885d1f46899bcef",
+      "caller_or_producer": "diag",
+      "diagnostics": [
+        {
+          "code": "E0061",
+          "definition_spans": [
+            {
+              "byte_end": 60317,
+              "byte_start": 60314,
+              "column_end": 11,
+              "column_start": 8,
+              "expansion": null,
+              "file_name": "crates/ruff_python_parser/src/lexer.rs",
+              "is_primary": true,
+              "label": null,
+              "line_end": 1623,
+              "line_start": 1623,
+              "suggested_replacement": null,
+              "suggestion_applicability": null,
+              "text": [
+                {
+                  "highlight_end": 11,
+                  "highlight_start": 8,
+                  "text": "pub fn lex(source: &str, mode: Mode) -> Lexer<'_> {"
+                }
+              ]
+            }
+          ],
+          "message": "this function takes 2 arguments but 0 arguments were supplied",
+          "notes": [
+            "function defined here"
+          ]
+        }
+      ],
+      "driver": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+      "emitted_metadata_sha256": null,
+      "mode": "caller",
+      "parser": "restored",
+      "status": 1,
+      "stderr_sha256": "12c45b9b0a11ac4c6163e494f7c796baa64b2a587a737a36e48fa30adad1afee"
+    },
+    {
+      "argv_sha256": "cf03a455c84775059dd9dc9a227ca1c778f945333bb4db5d706d82014c9040ac",
+      "caller_or_producer": "ruff_python_codegen",
+      "diagnostics": [
+        {
+          "code": "E0460",
+          "definition_spans": [],
+          "message": "found possibly newer version of crate `ruff_python_parser` which `ruff_python_codegen` depends on",
+          "notes": [
+            "perhaps that crate needs to be recompiled?",
+            "the following crate versions were found:\ncrate `ruff_python_parser`: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-88772b8328182644-all-native-all/ruff_python_parser/a9a8d6f9627e2852/out/libruff_python_parser-a9a8d6f9627e2852.rmeta\ncrate `ruff_python_codegen`: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-88772b8328182644-all-native-all/ruff_python_codegen/89b614059a4b2e5d/out/libruff_python_codegen-89b614059a4b2e5d.rmeta"
+          ]
+        }
+      ],
+      "driver": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+      "emitted_metadata_sha256": null,
+      "mode": "caller",
+      "parser": "edited",
+      "status": 1,
+      "stderr_sha256": "35c53cc5610351486cab56f60cca83f61c148427145bb96f886299ca9437ef24"
+    },
+    {
+      "argv_sha256": "283f8fed748d62a887e6ffe20b863e1fd6e3c24ae480d5f5a3600eb657b0f1df",
+      "caller_or_producer": "ruff_python_importer",
+      "diagnostics": [
+        {
+          "code": "E0460",
+          "definition_spans": [],
+          "message": "found possibly newer version of crate `ruff_python_parser` which `ruff_python_importer` depends on",
+          "notes": [
+            "perhaps that crate needs to be recompiled?",
+            "the following crate versions were found:\ncrate `ruff_python_parser`: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-88772b8328182644-all-native-all/ruff_python_parser/a9a8d6f9627e2852/out/libruff_python_parser-a9a8d6f9627e2852.rmeta\ncrate `ruff_python_importer`: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-88772b8328182644-all-native-all/ruff_python_importer/38256eafec4840ef/out/libruff_python_importer-38256eafec4840ef.rmeta"
+          ]
+        }
+      ],
+      "driver": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+      "emitted_metadata_sha256": null,
+      "mode": "caller",
+      "parser": "edited",
+      "status": 1,
+      "stderr_sha256": "9ffbcccb24aa5650a8642e7dd59c17e509e1106369c4ad3e9b50f51e35995430"
+    },
+    {
+      "argv_sha256": "e9153d67b7201aa68c8d4edbe2e7524b31c03db60aac9f593091299efa6ac5cb",
+      "caller_or_producer": "ruff_python_parser",
+      "diagnostics": [],
+      "driver": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+      "emitted_metadata_sha256": "e564c261746b3becf0152c80df04177fc1efc4e28edcabfed66e4c4753d8f558",
+      "mode": "caller",
+      "parser": "edited",
+      "status": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv_sha256": "91ca6b46f76d89d9a0001f1968e3fc8d62ac2b44bedf93f746d47aa306262d1d",
+      "caller_or_producer": "diag",
+      "diagnostics": [
+        {
+          "code": "E0061",
+          "definition_spans": [
+            {
+              "byte_end": 60129,
+              "byte_start": 60126,
+              "column_end": 11,
+              "column_start": 8,
+              "expansion": null,
+              "file_name": "crates/ruff_python_parser/src/lexer.rs",
+              "is_primary": true,
+              "label": null,
+              "line_end": 1620,
+              "line_start": 1620,
+              "suggested_replacement": null,
+              "suggestion_applicability": null,
+              "text": [
+                {
+                  "highlight_end": 11,
+                  "highlight_start": 8,
+                  "text": "pub fn lex(source: &str, mode: Mode) -> Lexer<'_> {"
+                }
+              ]
+            }
+          ],
+          "message": "this function takes 2 arguments but 0 arguments were supplied",
+          "notes": [
+            "function defined here"
+          ]
+        }
+      ],
+      "driver": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+      "emitted_metadata_sha256": null,
+      "mode": "caller",
+      "parser": "edited",
+      "status": 1,
+      "stderr_sha256": "4770f091fa8b7ee0f76b32bb491e2717ef011701427eb4b880781ea595bb673c"
+    },
+    {
+      "argv_sha256": "5ea3bbc2378e02690429fb1e028d9081e3d6c6e9af1799444b2a4bfa2c48b58b",
+      "caller_or_producer": "rebuild-real-codegen",
+      "diagnostics": [],
+      "driver": "7c31057e86f800e313b7d32080c7a5abaa7b92fef92254ac21b2e43febf16384",
+      "emitted_metadata_sha256": null,
+      "mode": "fresh-native-bridge",
+      "parser": "edited",
+      "status": 0,
+      "stderr_sha256": "70317ce6c41d0a8fc22882fac9d0986a802eb64f24f36ce12eda9b0812de368b"
+    },
+    {
+      "argv_sha256": "88d29a904b6c16370de2a8f3601a9a21ca442d0eedf1b0aaafe5413e15673df2",
+      "caller_or_producer": "new-caller-rebuilt-real-bridge",
+      "diagnostics": [],
+      "driver": "7c31057e86f800e313b7d32080c7a5abaa7b92fef92254ac21b2e43febf16384",
+      "emitted_metadata_sha256": "52fe0d6357b4923102529300bbca741dab8d097157969f7d83f9a239fcd6687e",
+      "mode": "caller",
+      "parser": "edited",
+      "status": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "source_trace_line_sha256": "cdce220014f9cb8ff148e29c3110d105fb0ce98edc44b92c2a0a58777edbc040",
+  "source_trace_sha256": "f625d630c93f47de807fd95ea6aa2e31b5b94ca62c240a4a5ce71dfc48682b27",
+  "unchanged_real_codegen_source": "/home/dev-user/code/oss/ruff-ohm-whole-native-20261027/crates/ruff_python_codegen/src/lib.rs",
+  "unchanged_real_codegen_source_sha256": "209993ea22349ca2a95a5529cdad84edc4f71d811dbae06ea8515fb848428a54"
+}

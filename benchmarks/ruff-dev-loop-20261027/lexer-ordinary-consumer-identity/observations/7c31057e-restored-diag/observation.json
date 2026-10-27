@@ -1,0 +1,42 @@
+{
+  "argv_sha256": "41c96b4601ebaf5ddf54870683eb3ecd393c7c1c8c01e3bac97834fd0a95e9fb",
+  "caller_or_producer": "diag",
+  "diagnostics": [
+    {
+      "code": "E0061",
+      "definition_spans": [
+        {
+          "byte_end": 60317,
+          "byte_start": 60314,
+          "column_end": 11,
+          "column_start": 8,
+          "expansion": null,
+          "file_name": "crates/ruff_python_parser/src/lexer.rs",
+          "is_primary": true,
+          "label": null,
+          "line_end": 1623,
+          "line_start": 1623,
+          "suggested_replacement": null,
+          "suggestion_applicability": null,
+          "text": [
+            {
+              "highlight_end": 11,
+              "highlight_start": 8,
+              "text": "pub fn lex(source: &str, mode: Mode) -> Lexer<'_> {"
+            }
+          ]
+        }
+      ],
+      "message": "this function takes 2 arguments but 0 arguments were supplied",
+      "notes": [
+        "function defined here"
+      ]
+    }
+  ],
+  "driver": "7c31057e86f800e313b7d32080c7a5abaa7b92fef92254ac21b2e43febf16384",
+  "emitted_metadata_sha256": null,
+  "mode": "caller",
+  "parser": "restored",
+  "status": 1,
+  "stderr_sha256": "12c45b9b0a11ac4c6163e494f7c796baa64b2a587a737a36e48fa30adad1afee"
+}

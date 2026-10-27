@@ -1,0 +1,442 @@
+ INFO rustc_metadata::creader resolving crate `std`
+ INFO rustc_metadata::creader falling back to a load
+ INFO rustc_metadata::locator lib candidate: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/lib/rustlib/x86_64-unknown-linux-gnu/lib/libstd-150b24506f9fb8c9.rlib
+ INFO rustc_metadata::locator lib candidate: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/lib/rustlib/x86_64-unknown-linux-gnu/lib/libstd_detect-90b5259d92b4976a.rlib
+ INFO rustc_metadata::locator lib candidate: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/lib/rustlib/x86_64-unknown-linux-gnu/lib/libstd-150b24506f9fb8c9.rmeta
+ INFO rustc_metadata::locator lib candidate: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/lib/rustlib/x86_64-unknown-linux-gnu/lib/libstd_detect-90b5259d92b4976a.rmeta
+ INFO rustc_metadata::locator lib candidate: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/lib/rustlib/x86_64-unknown-linux-gnu/lib/libstd-150b24506f9fb8c9.so
+ INFO rustc_metadata::locator rmeta reading metadata from: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/lib/rustlib/x86_64-unknown-linux-gnu/lib/libstd-150b24506f9fb8c9.rmeta
+ INFO rustc_metadata::locator rmeta reading metadata from: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/lib/rustlib/x86_64-unknown-linux-gnu/lib/libstd_detect-90b5259d92b4976a.rmeta
+ INFO rustc_metadata::locator Rejecting via crate name
+ INFO rustc_metadata::locator metadata mismatch
+ INFO rustc_metadata::locator rlib reading metadata from: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/lib/rustlib/x86_64-unknown-linux-gnu/lib/libstd_detect-90b5259d92b4976a.rlib
+ INFO rustc_metadata::locator Rejecting via crate name
+ INFO rustc_metadata::locator metadata mismatch
+ INFO rustc_metadata::creader register newly loaded library for `std`
+ INFO rustc_metadata::creader register crate `std` (cnum = 1. private_dep = false)
+ INFO rustc_metadata::creader resolving dep `std`->`core` hash: `1cd4ebce3cab1750c73668cabddedb2c` extra filename: `-af9b82d80b4c5cea` private false
+ INFO rustc_metadata::creader resolving crate `core`
+ INFO rustc_metadata::creader falling back to a load
+ INFO rustc_metadata::locator lib candidate: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/lib/rustlib/x86_64-unknown-linux-gnu/lib/libcore-af9b82d80b4c5cea.rlib
+ INFO rustc_metadata::locator lib candidate: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/lib/rustlib/x86_64-unknown-linux-gnu/lib/libcore-af9b82d80b4c5cea.rmeta
+ INFO rustc_metadata::locator rmeta reading metadata from: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/lib/rustlib/x86_64-unknown-linux-gnu/lib/libcore-af9b82d80b4c5cea.rmeta
+ INFO rustc_metadata::creader register newly loaded library for `core`
+ INFO rustc_metadata::creader register crate `core` (cnum = 2. private_dep = false)
+ INFO rustc_metadata::creader resolving dep `std`->`alloc` hash: `745e80684e794093baa0e91a77fa2b65` extra filename: `-ceaf650e740e6b21` private false
+ INFO rustc_metadata::creader resolving crate `alloc`
+ INFO rustc_metadata::creader falling back to a load
+ INFO rustc_metadata::locator lib candidate: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/lib/rustlib/x86_64-unknown-linux-gnu/lib/liballoc-ceaf650e740e6b21.rlib
+ INFO rustc_metadata::locator lib candidate: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/lib/rustlib/x86_64-unknown-linux-gnu/lib/liballoc-ceaf650e740e6b21.rmeta
+ INFO rustc_metadata::locator rmeta reading metadata from: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/lib/rustlib/x86_64-unknown-linux-gnu/lib/liballoc-ceaf650e740e6b21.rmeta
+ INFO rustc_metadata::creader register newly loaded library for `alloc`
+ INFO rustc_metadata::creader register crate `alloc` (cnum = 3. private_dep = false)
+ INFO rustc_metadata::creader resolving dep `alloc`->`core` hash: `1cd4ebce3cab1750c73668cabddedb2c` extra filename: `-af9b82d80b4c5cea` private false
+ INFO rustc_metadata::creader resolving crate `core`
+ INFO rustc_metadata::creader library for `core` was loaded previously, cnum 2
+ INFO rustc_metadata::creader resolving dep `alloc`->`compiler_builtins` hash: `96498e921b3115387111de96294346ca` extra filename: `-2c8a5c6ff1eaecd1` private true
+ INFO rustc_metadata::creader resolving crate `compiler_builtins`
+ INFO rustc_metadata::creader falling back to a load
+ INFO rustc_metadata::locator lib candidate: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/lib/rustlib/x86_64-unknown-linux-gnu/lib/libcompiler_builtins-2c8a5c6ff1eaecd1.rlib
+ INFO rustc_metadata::locator lib candidate: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/lib/rustlib/x86_64-unknown-linux-gnu/lib/libcompiler_builtins-2c8a5c6ff1eaecd1.rmeta
+ INFO rustc_metadata::locator rmeta reading metadata from: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/lib/rustlib/x86_64-unknown-linux-gnu/lib/libcompiler_builtins-2c8a5c6ff1eaecd1.rmeta
+ INFO rustc_metadata::creader register newly loaded library for `compiler_builtins`
+ INFO rustc_metadata::creader register crate `compiler_builtins` (cnum = 4. private_dep = true)
+ INFO rustc_metadata::creader resolving dep `compiler_builtins`->`core` hash: `1cd4ebce3cab1750c73668cabddedb2c` extra filename: `-af9b82d80b4c5cea` private false
+ INFO rustc_metadata::creader resolving crate `core`
+ INFO rustc_metadata::creader library for `core` was loaded previously, cnum 2
+ INFO rustc_metadata::creader resolving dep `std`->`compiler_builtins` hash: `96498e921b3115387111de96294346ca` extra filename: `-2c8a5c6ff1eaecd1` private true
+ INFO rustc_metadata::creader resolving crate `compiler_builtins`
+ INFO rustc_metadata::creader library for `compiler_builtins` was loaded previously, cnum 4
+ INFO rustc_metadata::creader resolving dep `std`->`libc` hash: `6d3a73e370f49c17b5b4ef121cec9226` extra filename: `-52cdc9c541b3dea4` private false
+ INFO rustc_metadata::creader resolving crate `libc`
+ INFO rustc_metadata::creader falling back to a load
+ INFO rustc_metadata::locator lib candidate: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/lib/rustlib/x86_64-unknown-linux-gnu/lib/liblibc-52cdc9c541b3dea4.rlib
+ INFO rustc_metadata::locator lib candidate: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/lib/rustlib/x86_64-unknown-linux-gnu/lib/liblibc-52cdc9c541b3dea4.rmeta
+ INFO rustc_metadata::locator rmeta reading metadata from: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/lib/rustlib/x86_64-unknown-linux-gnu/lib/liblibc-52cdc9c541b3dea4.rmeta
+ INFO rustc_metadata::creader register newly loaded library for `libc`
+ INFO rustc_metadata::creader register crate `libc` (cnum = 5. private_dep = false)
+ INFO rustc_metadata::creader resolving dep `libc`->`rustc_std_workspace_core` hash: `b8602024ba80e938927e1540898287d9` extra filename: `-e028bb23ebd6da1d` private false
+ INFO rustc_metadata::creader resolving crate `rustc_std_workspace_core`
+ INFO rustc_metadata::creader falling back to a load
+ INFO rustc_metadata::locator lib candidate: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/lib/rustlib/x86_64-unknown-linux-gnu/lib/librustc_std_workspace_core-e028bb23ebd6da1d.rlib
+ INFO rustc_metadata::locator lib candidate: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/lib/rustlib/x86_64-unknown-linux-gnu/lib/librustc_std_workspace_core-e028bb23ebd6da1d.rmeta
+ INFO rustc_metadata::locator rmeta reading metadata from: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/lib/rustlib/x86_64-unknown-linux-gnu/lib/librustc_std_workspace_core-e028bb23ebd6da1d.rmeta
+ INFO rustc_metadata::creader register newly loaded library for `rustc_std_workspace_core`
+ INFO rustc_metadata::creader register crate `rustc_std_workspace_core` (cnum = 6. private_dep = false)
+ INFO rustc_metadata::creader resolving dep `rustc_std_workspace_core`->`core` hash: `1cd4ebce3cab1750c73668cabddedb2c` extra filename: `-af9b82d80b4c5cea` private false
+ INFO rustc_metadata::creader resolving crate `core`
+ INFO rustc_metadata::creader library for `core` was loaded previously, cnum 2
+ INFO rustc_metadata::creader resolving dep `rustc_std_workspace_core`->`compiler_builtins` hash: `96498e921b3115387111de96294346ca` extra filename: `-2c8a5c6ff1eaecd1` private true
+ INFO rustc_metadata::creader resolving crate `compiler_builtins`
+ INFO rustc_metadata::creader library for `compiler_builtins` was loaded previously, cnum 4
+ INFO rustc_metadata::creader resolving dep `libc`->`core` hash: `1cd4ebce3cab1750c73668cabddedb2c` extra filename: `-af9b82d80b4c5cea` private false
+ INFO rustc_metadata::creader resolving crate `core`
+ INFO rustc_metadata::creader library for `core` was loaded previously, cnum 2
+ INFO rustc_metadata::creader resolving dep `libc`->`compiler_builtins` hash: `96498e921b3115387111de96294346ca` extra filename: `-2c8a5c6ff1eaecd1` private true
+ INFO rustc_metadata::creader resolving crate `compiler_builtins`
+ INFO rustc_metadata::creader library for `compiler_builtins` was loaded previously, cnum 4
+ INFO rustc_metadata::creader resolving dep `std`->`rustc_std_workspace_core` hash: `b8602024ba80e938927e1540898287d9` extra filename: `-e028bb23ebd6da1d` private false
+ INFO rustc_metadata::creader resolving crate `rustc_std_workspace_core`
+ INFO rustc_metadata::creader library for `rustc_std_workspace_core` was loaded previously, cnum 6
+ INFO rustc_metadata::creader resolving dep `std`->`unwind` hash: `11a44173175eada55999b86b88df392a` extra filename: `-28cd8f9e486f9d47` private true
+ INFO rustc_metadata::creader resolving crate `unwind`
+ INFO rustc_metadata::creader falling back to a load
+ INFO rustc_metadata::locator lib candidate: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/lib/rustlib/x86_64-unknown-linux-gnu/lib/libunwind-28cd8f9e486f9d47.rlib
+ INFO rustc_metadata::locator lib candidate: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/lib/rustlib/x86_64-unknown-linux-gnu/lib/libunwind-28cd8f9e486f9d47.rmeta
+ INFO rustc_metadata::locator rmeta reading metadata from: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/lib/rustlib/x86_64-unknown-linux-gnu/lib/libunwind-28cd8f9e486f9d47.rmeta
+ INFO rustc_metadata::creader register newly loaded library for `unwind`
+ INFO rustc_metadata::creader register crate `unwind` (cnum = 7. private_dep = true)
+ INFO rustc_metadata::creader resolving dep `unwind`->`rustc_std_workspace_core` hash: `b8602024ba80e938927e1540898287d9` extra filename: `-e028bb23ebd6da1d` private false
+ INFO rustc_metadata::creader resolving crate `rustc_std_workspace_core`
+ INFO rustc_metadata::creader library for `rustc_std_workspace_core` was loaded previously, cnum 6
+ INFO rustc_metadata::creader resolving dep `unwind`->`core` hash: `1cd4ebce3cab1750c73668cabddedb2c` extra filename: `-af9b82d80b4c5cea` private false
+ INFO rustc_metadata::creader resolving crate `core`
+ INFO rustc_metadata::creader library for `core` was loaded previously, cnum 2
+ INFO rustc_metadata::creader resolving dep `unwind`->`compiler_builtins` hash: `96498e921b3115387111de96294346ca` extra filename: `-2c8a5c6ff1eaecd1` private true
+ INFO rustc_metadata::creader resolving crate `compiler_builtins`
+ INFO rustc_metadata::creader library for `compiler_builtins` was loaded previously, cnum 4
+ INFO rustc_metadata::creader resolving dep `unwind`->`libc` hash: `6d3a73e370f49c17b5b4ef121cec9226` extra filename: `-52cdc9c541b3dea4` private false
+ INFO rustc_metadata::creader resolving crate `libc`
+ INFO rustc_metadata::creader library for `libc` was loaded previously, cnum 5
+ INFO rustc_metadata::creader resolving dep `std`->`miniz_oxide` hash: `edfa8180506cdcdefe0f34bd516a4a64` extra filename: `-fc49c1744f1ac992` private true
+ INFO rustc_metadata::creader resolving crate `miniz_oxide`
+ INFO rustc_metadata::creader falling back to a load
+ INFO rustc_metadata::locator lib candidate: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/lib/rustlib/x86_64-unknown-linux-gnu/lib/libminiz_oxide-fc49c1744f1ac992.rlib
+ INFO rustc_metadata::locator lib candidate: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/lib/rustlib/x86_64-unknown-linux-gnu/lib/libminiz_oxide-fc49c1744f1ac992.rmeta
+ INFO rustc_metadata::locator rmeta reading metadata from: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/lib/rustlib/x86_64-unknown-linux-gnu/lib/libminiz_oxide-fc49c1744f1ac992.rmeta
+ INFO rustc_metadata::creader register newly loaded library for `miniz_oxide`
+ INFO rustc_metadata::creader register crate `miniz_oxide` (cnum = 8. private_dep = true)
+ INFO rustc_metadata::creader resolving dep `miniz_oxide`->`rustc_std_workspace_core` hash: `b8602024ba80e938927e1540898287d9` extra filename: `-e028bb23ebd6da1d` private false
+ INFO rustc_metadata::creader resolving crate `rustc_std_workspace_core`
+ INFO rustc_metadata::creader library for `rustc_std_workspace_core` was loaded previously, cnum 6
+ INFO rustc_metadata::creader resolving dep `miniz_oxide`->`core` hash: `1cd4ebce3cab1750c73668cabddedb2c` extra filename: `-af9b82d80b4c5cea` private false
+ INFO rustc_metadata::creader resolving crate `core`
+ INFO rustc_metadata::creader library for `core` was loaded previously, cnum 2
+ INFO rustc_metadata::creader resolving dep `miniz_oxide`->`compiler_builtins` hash: `96498e921b3115387111de96294346ca` extra filename: `-2c8a5c6ff1eaecd1` private true
+ INFO rustc_metadata::creader resolving crate `compiler_builtins`
+ INFO rustc_metadata::creader library for `compiler_builtins` was loaded previously, cnum 4
+ INFO rustc_metadata::creader resolving dep `miniz_oxide`->`adler2` hash: `329bf6ecb9caebdaa48ffa533fe4a486` extra filename: `-061b410ce31495b0` private false
+ INFO rustc_metadata::creader resolving crate `adler2`
+ INFO rustc_metadata::creader falling back to a load
+ INFO rustc_metadata::locator lib candidate: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/lib/rustlib/x86_64-unknown-linux-gnu/lib/libadler2-061b410ce31495b0.rlib
+ INFO rustc_metadata::locator lib candidate: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/lib/rustlib/x86_64-unknown-linux-gnu/lib/libadler2-061b410ce31495b0.rmeta
+ INFO rustc_metadata::locator rmeta reading metadata from: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/lib/rustlib/x86_64-unknown-linux-gnu/lib/libadler2-061b410ce31495b0.rmeta
+ INFO rustc_metadata::creader register newly loaded library for `adler2`
+ INFO rustc_metadata::creader register crate `adler2` (cnum = 9. private_dep = true)
+ INFO rustc_metadata::creader resolving dep `adler2`->`rustc_std_workspace_core` hash: `b8602024ba80e938927e1540898287d9` extra filename: `-e028bb23ebd6da1d` private false
+ INFO rustc_metadata::creader resolving crate `rustc_std_workspace_core`
+ INFO rustc_metadata::creader library for `rustc_std_workspace_core` was loaded previously, cnum 6
+ INFO rustc_metadata::creader resolving dep `adler2`->`core` hash: `1cd4ebce3cab1750c73668cabddedb2c` extra filename: `-af9b82d80b4c5cea` private false
+ INFO rustc_metadata::creader resolving crate `core`
+ INFO rustc_metadata::creader library for `core` was loaded previously, cnum 2
+ INFO rustc_metadata::creader resolving dep `adler2`->`compiler_builtins` hash: `96498e921b3115387111de96294346ca` extra filename: `-2c8a5c6ff1eaecd1` private true
+ INFO rustc_metadata::creader resolving crate `compiler_builtins`
+ INFO rustc_metadata::creader library for `compiler_builtins` was loaded previously, cnum 4
+ INFO rustc_metadata::creader resolving dep `std`->`adler2` hash: `329bf6ecb9caebdaa48ffa533fe4a486` extra filename: `-061b410ce31495b0` private true
+ INFO rustc_metadata::creader resolving crate `adler2`
+ INFO rustc_metadata::creader library for `adler2` was loaded previously, cnum 9
+ INFO rustc_metadata::creader resolving dep `std`->`hashbrown` hash: `0a89a36605930483c5e22dfc7ced66ac` extra filename: `-69dd7c608e7eae5b` private true
+ INFO rustc_metadata::creader resolving crate `hashbrown`
+ INFO rustc_metadata::creader falling back to a load
+ INFO rustc_metadata::locator lib candidate: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/lib/rustlib/x86_64-unknown-linux-gnu/lib/libhashbrown-69dd7c608e7eae5b.rlib
+ INFO rustc_metadata::locator lib candidate: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/lib/rustlib/x86_64-unknown-linux-gnu/lib/libhashbrown-69dd7c608e7eae5b.rmeta
+ INFO rustc_metadata::locator rmeta reading metadata from: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/lib/rustlib/x86_64-unknown-linux-gnu/lib/libhashbrown-69dd7c608e7eae5b.rmeta
+ INFO rustc_metadata::creader register newly loaded library for `hashbrown`
+ INFO rustc_metadata::creader register crate `hashbrown` (cnum = 10. private_dep = true)
+ INFO rustc_metadata::creader resolving dep `hashbrown`->`rustc_std_workspace_core` hash: `b8602024ba80e938927e1540898287d9` extra filename: `-e028bb23ebd6da1d` private false
+ INFO rustc_metadata::creader resolving crate `rustc_std_workspace_core`
+ INFO rustc_metadata::creader library for `rustc_std_workspace_core` was loaded previously, cnum 6
+ INFO rustc_metadata::creader resolving dep `hashbrown`->`core` hash: `1cd4ebce3cab1750c73668cabddedb2c` extra filename: `-af9b82d80b4c5cea` private false
+ INFO rustc_metadata::creader resolving crate `core`
+ INFO rustc_metadata::creader library for `core` was loaded previously, cnum 2
+ INFO rustc_metadata::creader resolving dep `hashbrown`->`compiler_builtins` hash: `96498e921b3115387111de96294346ca` extra filename: `-2c8a5c6ff1eaecd1` private true
+ INFO rustc_metadata::creader resolving crate `compiler_builtins`
+ INFO rustc_metadata::creader library for `compiler_builtins` was loaded previously, cnum 4
+ INFO rustc_metadata::creader resolving dep `hashbrown`->`rustc_std_workspace_alloc` hash: `6d9b7fe95907d97470a547110a79535a` extra filename: `-e826499affc09fd7` private false
+ INFO rustc_metadata::creader resolving crate `rustc_std_workspace_alloc`
+ INFO rustc_metadata::creader falling back to a load
+ INFO rustc_metadata::locator lib candidate: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/lib/rustlib/x86_64-unknown-linux-gnu/lib/librustc_std_workspace_alloc-e826499affc09fd7.rlib
+ INFO rustc_metadata::locator lib candidate: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/lib/rustlib/x86_64-unknown-linux-gnu/lib/librustc_std_workspace_alloc-e826499affc09fd7.rmeta
+ INFO rustc_metadata::locator rmeta reading metadata from: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/lib/rustlib/x86_64-unknown-linux-gnu/lib/librustc_std_workspace_alloc-e826499affc09fd7.rmeta
+ INFO rustc_metadata::creader register newly loaded library for `rustc_std_workspace_alloc`
+ INFO rustc_metadata::creader register crate `rustc_std_workspace_alloc` (cnum = 11. private_dep = true)
+ INFO rustc_metadata::creader resolving dep `rustc_std_workspace_alloc`->`alloc` hash: `745e80684e794093baa0e91a77fa2b65` extra filename: `-ceaf650e740e6b21` private false
+ INFO rustc_metadata::creader resolving crate `alloc`
+ INFO rustc_metadata::creader library for `alloc` was loaded previously, cnum 3
+ INFO rustc_metadata::creader resolving dep `rustc_std_workspace_alloc`->`core` hash: `1cd4ebce3cab1750c73668cabddedb2c` extra filename: `-af9b82d80b4c5cea` private false
+ INFO rustc_metadata::creader resolving crate `core`
+ INFO rustc_metadata::creader library for `core` was loaded previously, cnum 2
+ INFO rustc_metadata::creader resolving dep `rustc_std_workspace_alloc`->`compiler_builtins` hash: `96498e921b3115387111de96294346ca` extra filename: `-2c8a5c6ff1eaecd1` private true
+ INFO rustc_metadata::creader resolving crate `compiler_builtins`
+ INFO rustc_metadata::creader library for `compiler_builtins` was loaded previously, cnum 4
+ INFO rustc_metadata::creader resolving dep `hashbrown`->`alloc` hash: `745e80684e794093baa0e91a77fa2b65` extra filename: `-ceaf650e740e6b21` private false
+ INFO rustc_metadata::creader resolving crate `alloc`
+ INFO rustc_metadata::creader library for `alloc` was loaded previously, cnum 3
+ INFO rustc_metadata::creader resolving dep `std`->`rustc_std_workspace_alloc` hash: `6d9b7fe95907d97470a547110a79535a` extra filename: `-e826499affc09fd7` private false
+ INFO rustc_metadata::creader resolving crate `rustc_std_workspace_alloc`
+ INFO rustc_metadata::creader library for `rustc_std_workspace_alloc` was loaded previously, cnum 11
+ INFO rustc_metadata::creader resolving dep `std`->`std_detect` hash: `45749203115afbca125d4f913624ec5b` extra filename: `-90b5259d92b4976a` private false
+ INFO rustc_metadata::creader resolving crate `std_detect`
+ INFO rustc_metadata::creader falling back to a load
+ INFO rustc_metadata::locator lib candidate: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/lib/rustlib/x86_64-unknown-linux-gnu/lib/libstd_detect-90b5259d92b4976a.rlib
+ INFO rustc_metadata::locator lib candidate: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/lib/rustlib/x86_64-unknown-linux-gnu/lib/libstd_detect-90b5259d92b4976a.rmeta
+ INFO rustc_metadata::locator rmeta reading metadata from: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/lib/rustlib/x86_64-unknown-linux-gnu/lib/libstd_detect-90b5259d92b4976a.rmeta
+ INFO rustc_metadata::creader register newly loaded library for `std_detect`
+ INFO rustc_metadata::creader register crate `std_detect` (cnum = 12. private_dep = false)
+ INFO rustc_metadata::creader resolving dep `std_detect`->`rustc_std_workspace_core` hash: `b8602024ba80e938927e1540898287d9` extra filename: `-e028bb23ebd6da1d` private false
+ INFO rustc_metadata::creader resolving crate `rustc_std_workspace_core`
+ INFO rustc_metadata::creader library for `rustc_std_workspace_core` was loaded previously, cnum 6
+ INFO rustc_metadata::creader resolving dep `std_detect`->`core` hash: `1cd4ebce3cab1750c73668cabddedb2c` extra filename: `-af9b82d80b4c5cea` private false
+ INFO rustc_metadata::creader resolving crate `core`
+ INFO rustc_metadata::creader library for `core` was loaded previously, cnum 2
+ INFO rustc_metadata::creader resolving dep `std_detect`->`compiler_builtins` hash: `96498e921b3115387111de96294346ca` extra filename: `-2c8a5c6ff1eaecd1` private true
+ INFO rustc_metadata::creader resolving crate `compiler_builtins`
+ INFO rustc_metadata::creader library for `compiler_builtins` was loaded previously, cnum 4
+ INFO rustc_metadata::creader resolving dep `std_detect`->`rustc_std_workspace_alloc` hash: `6d9b7fe95907d97470a547110a79535a` extra filename: `-e826499affc09fd7` private false
+ INFO rustc_metadata::creader resolving crate `rustc_std_workspace_alloc`
+ INFO rustc_metadata::creader library for `rustc_std_workspace_alloc` was loaded previously, cnum 11
+ INFO rustc_metadata::creader resolving dep `std_detect`->`alloc` hash: `745e80684e794093baa0e91a77fa2b65` extra filename: `-ceaf650e740e6b21` private false
+ INFO rustc_metadata::creader resolving crate `alloc`
+ INFO rustc_metadata::creader library for `alloc` was loaded previously, cnum 3
+ INFO rustc_metadata::creader resolving dep `std`->`rustc_demangle` hash: `f803b9d3772bbfcafcc470dd48422ab7` extra filename: `-d5626ad46d0989b2` private true
+ INFO rustc_metadata::creader resolving crate `rustc_demangle`
+ INFO rustc_metadata::creader falling back to a load
+ INFO rustc_metadata::locator lib candidate: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/lib/rustlib/x86_64-unknown-linux-gnu/lib/librustc_demangle-d5626ad46d0989b2.rlib
+ INFO rustc_metadata::locator lib candidate: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/lib/rustlib/x86_64-unknown-linux-gnu/lib/librustc_demangle-d5626ad46d0989b2.rmeta
+ INFO rustc_metadata::locator rmeta reading metadata from: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/lib/rustlib/x86_64-unknown-linux-gnu/lib/librustc_demangle-d5626ad46d0989b2.rmeta
+ INFO rustc_metadata::creader register newly loaded library for `rustc_demangle`
+ INFO rustc_metadata::creader register crate `rustc_demangle` (cnum = 13. private_dep = true)
+ INFO rustc_metadata::creader resolving dep `rustc_demangle`->`rustc_std_workspace_core` hash: `b8602024ba80e938927e1540898287d9` extra filename: `-e028bb23ebd6da1d` private false
+ INFO rustc_metadata::creader resolving crate `rustc_std_workspace_core`
+ INFO rustc_metadata::creader library for `rustc_std_workspace_core` was loaded previously, cnum 6
+ INFO rustc_metadata::creader resolving dep `rustc_demangle`->`core` hash: `1cd4ebce3cab1750c73668cabddedb2c` extra filename: `-af9b82d80b4c5cea` private false
+ INFO rustc_metadata::creader resolving crate `core`
+ INFO rustc_metadata::creader library for `core` was loaded previously, cnum 2
+ INFO rustc_metadata::creader resolving dep `rustc_demangle`->`compiler_builtins` hash: `96498e921b3115387111de96294346ca` extra filename: `-2c8a5c6ff1eaecd1` private true
+ INFO rustc_metadata::creader resolving crate `compiler_builtins`
+ INFO rustc_metadata::creader library for `compiler_builtins` was loaded previously, cnum 4
+ INFO rustc_metadata::creader resolving dep `std`->`cfg_if` hash: `2fe195f10fc8b0a502de7c0ff3d0aa8e` extra filename: `-0ddfb9c272d7e0b4` private true
+ INFO rustc_metadata::creader resolving crate `cfg_if`
+ INFO rustc_metadata::creader falling back to a load
+ INFO rustc_metadata::locator lib candidate: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/lib/rustlib/x86_64-unknown-linux-gnu/lib/libcfg_if-0ddfb9c272d7e0b4.rlib
+ INFO rustc_metadata::locator lib candidate: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/lib/rustlib/x86_64-unknown-linux-gnu/lib/libcfg_if-0ddfb9c272d7e0b4.rmeta
+ INFO rustc_metadata::locator rmeta reading metadata from: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/lib/rustlib/x86_64-unknown-linux-gnu/lib/libcfg_if-0ddfb9c272d7e0b4.rmeta
+ INFO rustc_metadata::creader register newly loaded library for `cfg_if`
+ INFO rustc_metadata::creader register crate `cfg_if` (cnum = 14. private_dep = true)
+ INFO rustc_metadata::creader resolving dep `cfg_if`->`rustc_std_workspace_core` hash: `b8602024ba80e938927e1540898287d9` extra filename: `-e028bb23ebd6da1d` private false
+ INFO rustc_metadata::creader resolving crate `rustc_std_workspace_core`
+ INFO rustc_metadata::creader library for `rustc_std_workspace_core` was loaded previously, cnum 6
+ INFO rustc_metadata::creader resolving dep `cfg_if`->`core` hash: `1cd4ebce3cab1750c73668cabddedb2c` extra filename: `-af9b82d80b4c5cea` private false
+ INFO rustc_metadata::creader resolving crate `core`
+ INFO rustc_metadata::creader library for `core` was loaded previously, cnum 2
+ INFO rustc_metadata::creader resolving dep `cfg_if`->`compiler_builtins` hash: `96498e921b3115387111de96294346ca` extra filename: `-2c8a5c6ff1eaecd1` private true
+ INFO rustc_metadata::creader resolving crate `compiler_builtins`
+ INFO rustc_metadata::creader library for `compiler_builtins` was loaded previously, cnum 4
+ INFO rustc_metadata::creader resolving dep `std`->`addr2line` hash: `232275f878f1bef8d6c4b50dbde24b0e` extra filename: `-aafa1109f88da3f8` private true
+ INFO rustc_metadata::creader resolving crate `addr2line`
+ INFO rustc_metadata::creader falling back to a load
+ INFO rustc_metadata::locator lib candidate: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/lib/rustlib/x86_64-unknown-linux-gnu/lib/libaddr2line-aafa1109f88da3f8.rlib
+ INFO rustc_metadata::locator lib candidate: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/lib/rustlib/x86_64-unknown-linux-gnu/lib/libaddr2line-aafa1109f88da3f8.rmeta
+ INFO rustc_metadata::locator rmeta reading metadata from: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/lib/rustlib/x86_64-unknown-linux-gnu/lib/libaddr2line-aafa1109f88da3f8.rmeta
+ INFO rustc_metadata::creader register newly loaded library for `addr2line`
+ INFO rustc_metadata::creader register crate `addr2line` (cnum = 15. private_dep = true)
+ INFO rustc_metadata::creader resolving dep `addr2line`->`rustc_std_workspace_core` hash: `b8602024ba80e938927e1540898287d9` extra filename: `-e028bb23ebd6da1d` private false
+ INFO rustc_metadata::creader resolving crate `rustc_std_workspace_core`
+ INFO rustc_metadata::creader library for `rustc_std_workspace_core` was loaded previously, cnum 6
+ INFO rustc_metadata::creader resolving dep `addr2line`->`core` hash: `1cd4ebce3cab1750c73668cabddedb2c` extra filename: `-af9b82d80b4c5cea` private false
+ INFO rustc_metadata::creader resolving crate `core`
+ INFO rustc_metadata::creader library for `core` was loaded previously, cnum 2
+ INFO rustc_metadata::creader resolving dep `addr2line`->`compiler_builtins` hash: `96498e921b3115387111de96294346ca` extra filename: `-2c8a5c6ff1eaecd1` private true
+ INFO rustc_metadata::creader resolving crate `compiler_builtins`
+ INFO rustc_metadata::creader library for `compiler_builtins` was loaded previously, cnum 4
+ INFO rustc_metadata::creader resolving dep `addr2line`->`rustc_std_workspace_alloc` hash: `6d9b7fe95907d97470a547110a79535a` extra filename: `-e826499affc09fd7` private false
+ INFO rustc_metadata::creader resolving crate `rustc_std_workspace_alloc`
+ INFO rustc_metadata::creader library for `rustc_std_workspace_alloc` was loaded previously, cnum 11
+ INFO rustc_metadata::creader resolving dep `addr2line`->`alloc` hash: `745e80684e794093baa0e91a77fa2b65` extra filename: `-ceaf650e740e6b21` private false
+ INFO rustc_metadata::creader resolving crate `alloc`
+ INFO rustc_metadata::creader library for `alloc` was loaded previously, cnum 3
+ INFO rustc_metadata::creader resolving dep `addr2line`->`gimli` hash: `4853b3559e5cc8aa596cb775b7c2eb31` extra filename: `-08731c403f2b9d57` private false
+ INFO rustc_metadata::creader resolving crate `gimli`
+ INFO rustc_metadata::creader falling back to a load
+ INFO rustc_metadata::locator lib candidate: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/lib/rustlib/x86_64-unknown-linux-gnu/lib/libgimli-08731c403f2b9d57.rlib
+ INFO rustc_metadata::locator lib candidate: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/lib/rustlib/x86_64-unknown-linux-gnu/lib/libgimli-08731c403f2b9d57.rmeta
+ INFO rustc_metadata::locator rmeta reading metadata from: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/lib/rustlib/x86_64-unknown-linux-gnu/lib/libgimli-08731c403f2b9d57.rmeta
+ INFO rustc_metadata::creader register newly loaded library for `gimli`
+ INFO rustc_metadata::creader register crate `gimli` (cnum = 16. private_dep = true)
+ INFO rustc_metadata::creader resolving dep `gimli`->`rustc_std_workspace_core` hash: `b8602024ba80e938927e1540898287d9` extra filename: `-e028bb23ebd6da1d` private false
+ INFO rustc_metadata::creader resolving crate `rustc_std_workspace_core`
+ INFO rustc_metadata::creader library for `rustc_std_workspace_core` was loaded previously, cnum 6
+ INFO rustc_metadata::creader resolving dep `gimli`->`core` hash: `1cd4ebce3cab1750c73668cabddedb2c` extra filename: `-af9b82d80b4c5cea` private false
+ INFO rustc_metadata::creader resolving crate `core`
+ INFO rustc_metadata::creader library for `core` was loaded previously, cnum 2
+ INFO rustc_metadata::creader resolving dep `gimli`->`compiler_builtins` hash: `96498e921b3115387111de96294346ca` extra filename: `-2c8a5c6ff1eaecd1` private true
+ INFO rustc_metadata::creader resolving crate `compiler_builtins`
+ INFO rustc_metadata::creader library for `compiler_builtins` was loaded previously, cnum 4
+ INFO rustc_metadata::creader resolving dep `gimli`->`rustc_std_workspace_alloc` hash: `6d9b7fe95907d97470a547110a79535a` extra filename: `-e826499affc09fd7` private false
+ INFO rustc_metadata::creader resolving crate `rustc_std_workspace_alloc`
+ INFO rustc_metadata::creader library for `rustc_std_workspace_alloc` was loaded previously, cnum 11
+ INFO rustc_metadata::creader resolving dep `gimli`->`alloc` hash: `745e80684e794093baa0e91a77fa2b65` extra filename: `-ceaf650e740e6b21` private false
+ INFO rustc_metadata::creader resolving crate `alloc`
+ INFO rustc_metadata::creader library for `alloc` was loaded previously, cnum 3
+ INFO rustc_metadata::creader resolving dep `std`->`gimli` hash: `4853b3559e5cc8aa596cb775b7c2eb31` extra filename: `-08731c403f2b9d57` private true
+ INFO rustc_metadata::creader resolving crate `gimli`
+ INFO rustc_metadata::creader library for `gimli` was loaded previously, cnum 16
+ INFO rustc_metadata::creader resolving dep `std`->`object` hash: `1b76b18b9b0007e5d5eb832643fbe4b8` extra filename: `-42fce7ad72bc2079` private true
+ INFO rustc_metadata::creader resolving crate `object`
+ INFO rustc_metadata::creader falling back to a load
+ INFO rustc_metadata::locator lib candidate: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/lib/rustlib/x86_64-unknown-linux-gnu/lib/libobject-42fce7ad72bc2079.rlib
+ INFO rustc_metadata::locator lib candidate: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/lib/rustlib/x86_64-unknown-linux-gnu/lib/libobject-42fce7ad72bc2079.rmeta
+ INFO rustc_metadata::locator rmeta reading metadata from: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/lib/rustlib/x86_64-unknown-linux-gnu/lib/libobject-42fce7ad72bc2079.rmeta
+ INFO rustc_metadata::creader register newly loaded library for `object`
+ INFO rustc_metadata::creader register crate `object` (cnum = 17. private_dep = true)
+ INFO rustc_metadata::creader resolving dep `object`->`rustc_std_workspace_core` hash: `b8602024ba80e938927e1540898287d9` extra filename: `-e028bb23ebd6da1d` private false
+ INFO rustc_metadata::creader resolving crate `rustc_std_workspace_core`
+ INFO rustc_metadata::creader library for `rustc_std_workspace_core` was loaded previously, cnum 6
+ INFO rustc_metadata::creader resolving dep `object`->`core` hash: `1cd4ebce3cab1750c73668cabddedb2c` extra filename: `-af9b82d80b4c5cea` private false
+ INFO rustc_metadata::creader resolving crate `core`
+ INFO rustc_metadata::creader library for `core` was loaded previously, cnum 2
+ INFO rustc_metadata::creader resolving dep `object`->`compiler_builtins` hash: `96498e921b3115387111de96294346ca` extra filename: `-2c8a5c6ff1eaecd1` private true
+ INFO rustc_metadata::creader resolving crate `compiler_builtins`
+ INFO rustc_metadata::creader library for `compiler_builtins` was loaded previously, cnum 4
+ INFO rustc_metadata::creader resolving dep `object`->`rustc_std_workspace_alloc` hash: `6d9b7fe95907d97470a547110a79535a` extra filename: `-e826499affc09fd7` private false
+ INFO rustc_metadata::creader resolving crate `rustc_std_workspace_alloc`
+ INFO rustc_metadata::creader library for `rustc_std_workspace_alloc` was loaded previously, cnum 11
+ INFO rustc_metadata::creader resolving dep `object`->`alloc` hash: `745e80684e794093baa0e91a77fa2b65` extra filename: `-ceaf650e740e6b21` private false
+ INFO rustc_metadata::creader resolving crate `alloc`
+ INFO rustc_metadata::creader library for `alloc` was loaded previously, cnum 3
+ INFO rustc_metadata::creader resolving dep `object`->`memchr` hash: `015d120cef6da2980fd54e90320ccd86` extra filename: `-0cf20948ba2d409c` private false
+ INFO rustc_metadata::creader resolving crate `memchr`
+ INFO rustc_metadata::creader falling back to a load
+ INFO rustc_metadata::locator lib candidate: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/lib/rustlib/x86_64-unknown-linux-gnu/lib/libmemchr-0cf20948ba2d409c.rlib
+ INFO rustc_metadata::locator lib candidate: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/lib/rustlib/x86_64-unknown-linux-gnu/lib/libmemchr-0cf20948ba2d409c.rmeta
+ INFO rustc_metadata::locator rmeta reading metadata from: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/lib/rustlib/x86_64-unknown-linux-gnu/lib/libmemchr-0cf20948ba2d409c.rmeta
+ INFO rustc_metadata::creader register newly loaded library for `memchr`
+ INFO rustc_metadata::creader register crate `memchr` (cnum = 18. private_dep = true)
+ INFO rustc_metadata::creader resolving dep `memchr`->`rustc_std_workspace_core` hash: `b8602024ba80e938927e1540898287d9` extra filename: `-e028bb23ebd6da1d` private false
+ INFO rustc_metadata::creader resolving crate `rustc_std_workspace_core`
+ INFO rustc_metadata::creader library for `rustc_std_workspace_core` was loaded previously, cnum 6
+ INFO rustc_metadata::creader resolving dep `memchr`->`core` hash: `1cd4ebce3cab1750c73668cabddedb2c` extra filename: `-af9b82d80b4c5cea` private false
+ INFO rustc_metadata::creader resolving crate `core`
+ INFO rustc_metadata::creader library for `core` was loaded previously, cnum 2
+ INFO rustc_metadata::creader resolving dep `memchr`->`compiler_builtins` hash: `96498e921b3115387111de96294346ca` extra filename: `-2c8a5c6ff1eaecd1` private true
+ INFO rustc_metadata::creader resolving crate `compiler_builtins`
+ INFO rustc_metadata::creader library for `compiler_builtins` was loaded previously, cnum 4
+ INFO rustc_metadata::creader resolving dep `std`->`memchr` hash: `015d120cef6da2980fd54e90320ccd86` extra filename: `-0cf20948ba2d409c` private true
+ INFO rustc_metadata::creader resolving crate `memchr`
+ INFO rustc_metadata::creader library for `memchr` was loaded previously, cnum 18
+ INFO rustc_metadata::creader resolving dep `std`->`panic_unwind` hash: `0355b954ef76bcbf446e8a9fcbb9615e` extra filename: `-13030d89678fa2ed` private true
+ INFO rustc_metadata::creader resolving crate `panic_unwind`
+ INFO rustc_metadata::creader falling back to a load
+ INFO rustc_metadata::locator lib candidate: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/lib/rustlib/x86_64-unknown-linux-gnu/lib/libpanic_unwind-13030d89678fa2ed.rlib
+ INFO rustc_metadata::locator lib candidate: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/lib/rustlib/x86_64-unknown-linux-gnu/lib/libpanic_unwind-13030d89678fa2ed.rmeta
+ INFO rustc_metadata::locator rmeta reading metadata from: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/lib/rustlib/x86_64-unknown-linux-gnu/lib/libpanic_unwind-13030d89678fa2ed.rmeta
+ INFO rustc_metadata::creader register newly loaded library for `panic_unwind`
+ INFO rustc_metadata::creader register crate `panic_unwind` (cnum = 19. private_dep = true)
+ INFO rustc_metadata::creader resolving dep `panic_unwind`->`rustc_std_workspace_core` hash: `b8602024ba80e938927e1540898287d9` extra filename: `-e028bb23ebd6da1d` private false
+ INFO rustc_metadata::creader resolving crate `rustc_std_workspace_core`
+ INFO rustc_metadata::creader library for `rustc_std_workspace_core` was loaded previously, cnum 6
+ INFO rustc_metadata::creader resolving dep `panic_unwind`->`core` hash: `1cd4ebce3cab1750c73668cabddedb2c` extra filename: `-af9b82d80b4c5cea` private false
+ INFO rustc_metadata::creader resolving crate `core`
+ INFO rustc_metadata::creader library for `core` was loaded previously, cnum 2
+ INFO rustc_metadata::creader resolving dep `panic_unwind`->`compiler_builtins` hash: `96498e921b3115387111de96294346ca` extra filename: `-2c8a5c6ff1eaecd1` private true
+ INFO rustc_metadata::creader resolving crate `compiler_builtins`
+ INFO rustc_metadata::creader library for `compiler_builtins` was loaded previously, cnum 4
+ INFO rustc_metadata::creader resolving dep `panic_unwind`->`alloc` hash: `745e80684e794093baa0e91a77fa2b65` extra filename: `-ceaf650e740e6b21` private false
+ INFO rustc_metadata::creader resolving crate `alloc`
+ INFO rustc_metadata::creader library for `alloc` was loaded previously, cnum 3
+ INFO rustc_metadata::creader resolving dep `panic_unwind`->`unwind` hash: `11a44173175eada55999b86b88df392a` extra filename: `-28cd8f9e486f9d47` private false
+ INFO rustc_metadata::creader resolving crate `unwind`
+ INFO rustc_metadata::creader library for `unwind` was loaded previously, cnum 7
+ INFO rustc_metadata::creader resolving dep `panic_unwind`->`libc` hash: `6d3a73e370f49c17b5b4ef121cec9226` extra filename: `-52cdc9c541b3dea4` private false
+ INFO rustc_metadata::creader resolving crate `libc`
+ INFO rustc_metadata::creader library for `libc` was loaded previously, cnum 5
+ INFO rustc_metadata::creader resolving crate `ruff_python_codegen`
+ INFO rustc_metadata::creader falling back to a load
+ INFO rustc_metadata::locator rmeta reading metadata from: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-88772b8328182644-all-native-all/ruff_python_codegen/89b614059a4b2e5d/out/libruff_python_codegen-89b614059a4b2e5d.rmeta
+ INFO rustc_metadata::creader register newly loaded library for `ruff_python_codegen`
+ INFO rustc_metadata::creader register crate `ruff_python_codegen` (cnum = 20. private_dep = false)
+ INFO rustc_metadata::creader resolving dep `ruff_python_codegen`->`std` hash: `07979e33167a0145120283b9b6fdfb62` extra filename: `-150b24506f9fb8c9` private false
+ INFO rustc_metadata::creader resolving crate `std`
+ INFO rustc_metadata::creader library for `std` was loaded previously, cnum 1
+ INFO rustc_metadata::creader resolving dep `ruff_python_codegen`->`core` hash: `1cd4ebce3cab1750c73668cabddedb2c` extra filename: `-af9b82d80b4c5cea` private false
+ INFO rustc_metadata::creader resolving crate `core`
+ INFO rustc_metadata::creader library for `core` was loaded previously, cnum 2
+ INFO rustc_metadata::creader resolving dep `ruff_python_codegen`->`alloc` hash: `745e80684e794093baa0e91a77fa2b65` extra filename: `-ceaf650e740e6b21` private false
+ INFO rustc_metadata::creader resolving crate `alloc`
+ INFO rustc_metadata::creader library for `alloc` was loaded previously, cnum 3
+ INFO rustc_metadata::creader resolving dep `ruff_python_codegen`->`compiler_builtins` hash: `96498e921b3115387111de96294346ca` extra filename: `-2c8a5c6ff1eaecd1` private true
+ INFO rustc_metadata::creader resolving crate `compiler_builtins`
+ INFO rustc_metadata::creader library for `compiler_builtins` was loaded previously, cnum 4
+ INFO rustc_metadata::creader resolving dep `ruff_python_codegen`->`libc` hash: `6d3a73e370f49c17b5b4ef121cec9226` extra filename: `-52cdc9c541b3dea4` private false
+ INFO rustc_metadata::creader resolving crate `libc`
+ INFO rustc_metadata::creader library for `libc` was loaded previously, cnum 5
+ INFO rustc_metadata::creader resolving dep `ruff_python_codegen`->`rustc_std_workspace_core` hash: `b8602024ba80e938927e1540898287d9` extra filename: `-e028bb23ebd6da1d` private false
+ INFO rustc_metadata::creader resolving crate `rustc_std_workspace_core`
+ INFO rustc_metadata::creader library for `rustc_std_workspace_core` was loaded previously, cnum 6
+ INFO rustc_metadata::creader resolving dep `ruff_python_codegen`->`unwind` hash: `11a44173175eada55999b86b88df392a` extra filename: `-28cd8f9e486f9d47` private true
+ INFO rustc_metadata::creader resolving crate `unwind`
+ INFO rustc_metadata::creader library for `unwind` was loaded previously, cnum 7
+ INFO rustc_metadata::creader resolving dep `ruff_python_codegen`->`miniz_oxide` hash: `edfa8180506cdcdefe0f34bd516a4a64` extra filename: `-fc49c1744f1ac992` private true
+ INFO rustc_metadata::creader resolving crate `miniz_oxide`
+ INFO rustc_metadata::creader library for `miniz_oxide` was loaded previously, cnum 8
+ INFO rustc_metadata::creader resolving dep `ruff_python_codegen`->`adler2` hash: `329bf6ecb9caebdaa48ffa533fe4a486` extra filename: `-061b410ce31495b0` private true
+ INFO rustc_metadata::creader resolving crate `adler2`
+ INFO rustc_metadata::creader library for `adler2` was loaded previously, cnum 9
+ INFO rustc_metadata::creader resolving dep `ruff_python_codegen`->`hashbrown` hash: `0a89a36605930483c5e22dfc7ced66ac` extra filename: `-69dd7c608e7eae5b` private false
+ INFO rustc_metadata::creader resolving crate `hashbrown`
+ INFO rustc_metadata::creader library for `hashbrown` was loaded previously, cnum 10
+ INFO rustc_metadata::creader resolving dep `ruff_python_codegen`->`rustc_std_workspace_alloc` hash: `6d9b7fe95907d97470a547110a79535a` extra filename: `-e826499affc09fd7` private false
+ INFO rustc_metadata::creader resolving crate `rustc_std_workspace_alloc`
+ INFO rustc_metadata::creader library for `rustc_std_workspace_alloc` was loaded previously, cnum 11
+ INFO rustc_metadata::creader resolving dep `ruff_python_codegen`->`std_detect` hash: `45749203115afbca125d4f913624ec5b` extra filename: `-90b5259d92b4976a` private false
+ INFO rustc_metadata::creader resolving crate `std_detect`
+ INFO rustc_metadata::creader library for `std_detect` was loaded previously, cnum 12
+ INFO rustc_metadata::creader resolving dep `ruff_python_codegen`->`rustc_demangle` hash: `f803b9d3772bbfcafcc470dd48422ab7` extra filename: `-d5626ad46d0989b2` private true
+ INFO rustc_metadata::creader resolving crate `rustc_demangle`
+ INFO rustc_metadata::creader library for `rustc_demangle` was loaded previously, cnum 13
+ INFO rustc_metadata::creader resolving dep `ruff_python_codegen`->`cfg_if` hash: `2fe195f10fc8b0a502de7c0ff3d0aa8e` extra filename: `-0ddfb9c272d7e0b4` private false
+ INFO rustc_metadata::creader resolving crate `cfg_if`
+ INFO rustc_metadata::creader library for `cfg_if` was loaded previously, cnum 14
+ INFO rustc_metadata::creader resolving dep `ruff_python_codegen`->`addr2line` hash: `232275f878f1bef8d6c4b50dbde24b0e` extra filename: `-aafa1109f88da3f8` private true
+ INFO rustc_metadata::creader resolving crate `addr2line`
+ INFO rustc_metadata::creader library for `addr2line` was loaded previously, cnum 15
+ INFO rustc_metadata::creader resolving dep `ruff_python_codegen`->`gimli` hash: `4853b3559e5cc8aa596cb775b7c2eb31` extra filename: `-08731c403f2b9d57` private true
+ INFO rustc_metadata::creader resolving crate `gimli`
+ INFO rustc_metadata::creader library for `gimli` was loaded previously, cnum 16
+ INFO rustc_metadata::creader resolving dep `ruff_python_codegen`->`object` hash: `1b76b18b9b0007e5d5eb832643fbe4b8` extra filename: `-42fce7ad72bc2079` private true
+ INFO rustc_metadata::creader resolving crate `object`
+ INFO rustc_metadata::creader library for `object` was loaded previously, cnum 17
+ INFO rustc_metadata::creader resolving dep `ruff_python_codegen`->`memchr` hash: `015d120cef6da2980fd54e90320ccd86` extra filename: `-0cf20948ba2d409c` private false
+ INFO rustc_metadata::creader resolving crate `memchr`
+ INFO rustc_metadata::creader library for `memchr` was loaded previously, cnum 18
+ INFO rustc_metadata::creader resolving dep `ruff_python_codegen`->`panic_unwind` hash: `0355b954ef76bcbf446e8a9fcbb9615e` extra filename: `-13030d89678fa2ed` private true
+ INFO rustc_metadata::creader resolving crate `panic_unwind`
+ INFO rustc_metadata::creader library for `panic_unwind` was loaded previously, cnum 19
+ INFO rustc_metadata::creader resolving dep `ruff_python_codegen`->`ruff_python_parser` hash: `2c88767d4708e7ef4666d0b611edaa86` extra filename: `-a9a8d6f9627e2852` private false
+ INFO rustc_metadata::creader resolving crate `ruff_python_parser`
+ INFO rustc_metadata::creader falling back to a load
+ INFO rustc_metadata::locator lib candidate: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-88772b8328182644-all-native-all/ruff_python_parser/a9a8d6f9627e2852/out/libruff_python_parser-a9a8d6f9627e2852.rmeta
+ INFO rustc_metadata::locator rmeta reading metadata from: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-88772b8328182644-all-native-all/ruff_python_parser/a9a8d6f9627e2852/out/libruff_python_parser-a9a8d6f9627e2852.rmeta
+ INFO rustc_metadata::locator Rejecting via hash: expected 2c88767d4708e7ef4666d0b611edaa86 got d341df56c87d0f07f5084e2bf9eb3d6b
+ INFO rustc_metadata::locator metadata mismatch
+ INFO rustc_metadata::locator lib candidate: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-88772b8328182644-all-native-all/ruff_python_parser/a9a8d6f9627e2852/out/libruff_python_parser-a9a8d6f9627e2852.rmeta
+ INFO rustc_metadata::creader falling back to loading proc_macro
+ INFO rustc_metadata::locator lib candidate: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-88772b8328182644-all-native-all/ruff_python_parser/a9a8d6f9627e2852/out/libruff_python_parser-a9a8d6f9627e2852.rmeta
+ INFO rustc_metadata::locator rmeta reading metadata from: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-88772b8328182644-all-native-all/ruff_python_parser/a9a8d6f9627e2852/out/libruff_python_parser-a9a8d6f9627e2852.rmeta
+ INFO rustc_metadata::locator Rejecting via proc macro: expected true got false
+ INFO rustc_metadata::locator metadata mismatch
+ INFO rustc_metadata::locator lib candidate: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-88772b8328182644-all-native-all/ruff_python_parser/a9a8d6f9627e2852/out/libruff_python_parser-a9a8d6f9627e2852.rmeta
+ INFO rustc_metadata::creader resolving crate `core`
+ INFO rustc_metadata::creader falling back to a load
+ INFO rustc_metadata::locator lib candidate: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/lib/rustlib/x86_64-unknown-linux-gnu/lib/libcore-af9b82d80b4c5cea.rlib
+ INFO rustc_metadata::locator lib candidate: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/lib/rustlib/x86_64-unknown-linux-gnu/lib/libcore-af9b82d80b4c5cea.rmeta
+ INFO rustc_metadata::locator rmeta reading metadata from: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/lib/rustlib/x86_64-unknown-linux-gnu/lib/libcore-af9b82d80b4c5cea.rmeta
+ INFO rustc_metadata::creader load success, going to previous cnum: 2
+ INFO rustc_metadata::creader library for `core` was loaded previously, cnum 2
+{"$message_type":"diagnostic","message":"found possibly newer version of crate `ruff_python_parser` which `ruff_python_codegen` depends on","code":{"code":"E0460","explanation":"Found possibly newer version of crate `..` which `..` depends on.\n\nConsider these erroneous files:\n\n`a1.rs`\n```ignore (needs-linkage-with-other-tests)\n#![crate_name = \"a\"]\n\npub fn foo<T>() {}\n```\n\n`a2.rs`\n```ignore (needs-linkage-with-other-tests)\n#![crate_name = \"a\"]\n\npub fn foo<T>() {\n    println!(\"foo<T>()\");\n}\n```\n\n`b.rs`\n```ignore (needs-linkage-with-other-tests)\n#![crate_name = \"b\"]\n\nextern crate a; // linked with `a1.rs`\n\npub fn foo() {\n    a::foo::<isize>();\n}\n```\n\n`main.rs`\n```ignore (needs-linkage-with-other-tests)\nextern crate a; // linked with `a2.rs`\nextern crate b; // error: found possibly newer version of crate `a` which `b`\n                //        depends on\n\nfn main() {}\n```\n\nThe dependency graph of this program can be represented as follows:\n```text\n    crate `main`\n         |\n         +-------------+\n         |             |\n         |             v\ndepends: |         crate `b`\n `a` v1  |             |\n         |             | depends:\n         |             |  `a` v2\n         v             |\n      crate `a` <------+\n```\n\nCrate `main` depends on crate `a` (version 1) and crate `b` which in turn\ndepends on crate `a` (version 2); this discrepancy in versions cannot be\nreconciled. This difference in versions typically occurs when one crate is\ncompiled and linked, then updated and linked to another crate. The crate\n\"version\" is a SVH (Strict Version Hash) of the crate in an\nimplementation-specific way. Note that this error can *only* occur when\ndirectly compiling and linking with `rustc`; [Cargo] automatically resolves\ndependencies, without using the compiler's own dependency management that\ncauses this issue.\n\nThis error can be fixed by:\n * Using [Cargo], the Rust package manager, automatically fixing this issue.\n * Recompiling crate `a` so that both crate `b` and `main` have a uniform\n   version to depend on.\n\n[Cargo]: ../cargo/index.html\n"},"level":"error","spans":[{"file_name":"/home/dev-user/.cache/ohm-233-position-qualified-20261027/lexer-identity-falsifier-v1-explicit/results/ruff_python_codegen.rs","byte_start":0,"byte_end":33,"line_start":1,"line_end":1,"column_start":1,"column_end":34,"is_primary":true,"text":[{"text":"extern crate ruff_python_codegen;","highlight_start":1,"highlight_end":34}],"label":null,"suggested_replacement":null,"suggestion_applicability":null,"expansion":null}],"children":[{"message":"perhaps that crate needs to be recompiled?","code":null,"level":"note","spans":[],"children":[],"rendered":null},{"message":"the following crate versions were found:\ncrate `ruff_python_parser`: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-88772b8328182644-all-native-all/ruff_python_parser/a9a8d6f9627e2852/out/libruff_python_parser-a9a8d6f9627e2852.rmeta\ncrate `ruff_python_codegen`: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-88772b8328182644-all-native-all/ruff_python_codegen/89b614059a4b2e5d/out/libruff_python_codegen-89b614059a4b2e5d.rmeta","code":null,"level":"note","spans":[],"children":[],"rendered":null}],"rendered":"error[E0460]: found possibly newer version of crate `ruff_python_parser` which `ruff_python_codegen` depends on\n --> /home/dev-user/.cache/ohm-233-position-qualified-20261027/lexer-identity-falsifier-v1-explicit/results/ruff_python_codegen.rs:1:1\n  |\n1 | extern crate ruff_python_codegen;\n  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  |\n  = note: perhaps that crate needs to be recompiled?\n  = note: the following crate versions were found:\n          crate `ruff_python_parser`: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-88772b8328182644-all-native-all/ruff_python_parser/a9a8d6f9627e2852/out/libruff_python_parser-a9a8d6f9627e2852.rmeta\n          crate `ruff_python_codegen`: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-88772b8328182644-all-native-all/ruff_python_codegen/89b614059a4b2e5d/out/libruff_python_codegen-89b614059a4b2e5d.rmeta\n\n"}
+ INFO rustc_metadata::creader resolving crate `ruff_python_codegen`
+ INFO rustc_metadata::creader falling back to a load
+ INFO rustc_metadata::locator rmeta reading metadata from: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-88772b8328182644-all-native-all/ruff_python_codegen/89b614059a4b2e5d/out/libruff_python_codegen-89b614059a4b2e5d.rmeta
+ INFO rustc_metadata::creader register newly loaded library for `ruff_python_codegen`
+{"$message_type":"diagnostic","message":"aborting due to 1 previous error","code":null,"level":"error","spans":[],"children":[],"rendered":"error: aborting due to 1 previous error\n\n"}
+{"$message_type":"diagnostic","message":"For more information about this error, try `rustc --explain E0460`.","code":null,"level":"failure-note","spans":[],"children":[],"rendered":"For more information about this error, try `rustc --explain E0460`.\n"}

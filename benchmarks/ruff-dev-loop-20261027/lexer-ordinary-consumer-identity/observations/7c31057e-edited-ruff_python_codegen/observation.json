@@ -1,0 +1,21 @@
+{
+  "argv_sha256": "9932c1ae8e94a6794d55aa524d64a5f95200c5787fa81d649a19856b21f7c718",
+  "caller_or_producer": "ruff_python_codegen",
+  "diagnostics": [
+    {
+      "code": "E0460",
+      "definition_spans": [],
+      "message": "found possibly newer version of crate `ruff_python_parser` which `ruff_python_codegen` depends on",
+      "notes": [
+        "perhaps that crate needs to be recompiled?",
+        "the following crate versions were found:\ncrate `ruff_python_parser`: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-88772b8328182644-all-native-all/ruff_python_parser/a9a8d6f9627e2852/out/libruff_python_parser-a9a8d6f9627e2852.rmeta\ncrate `ruff_python_codegen`: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-88772b8328182644-all-native-all/ruff_python_codegen/89b614059a4b2e5d/out/libruff_python_codegen-89b614059a4b2e5d.rmeta"
+      ]
+    }
+  ],
+  "driver": "7c31057e86f800e313b7d32080c7a5abaa7b92fef92254ac21b2e43febf16384",
+  "emitted_metadata_sha256": null,
+  "mode": "caller",
+  "parser": "edited",
+  "status": 1,
+  "stderr_sha256": "35c53cc5610351486cab56f60cca83f61c148427145bb96f886299ca9437ef24"
+}
