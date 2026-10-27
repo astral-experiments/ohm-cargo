@@ -1,0 +1,16 @@
+--- a/crates/ruff/src/main.rs
++++ b/crates/ruff/src/main.rs
+@@ -31,13 +31,6 @@
+     // Enabled ANSI colors on Windows 10.
+     #[cfg(windows)]
+     assert!(colored::control::set_virtual_terminal(true).is_ok());
+-
+-    // support FORCE_COLOR env var
+-    if let Some(force_color) = std::env::var_os("FORCE_COLOR") {
+-        if !force_color.is_empty() {
+-            colored::control::set_override(true);
+-        }
+-    }
+ 
+     let args = wild::args_os();
+     let args = match ruff_command_line::expand_args(args)

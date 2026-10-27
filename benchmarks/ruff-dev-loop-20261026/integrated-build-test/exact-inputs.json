@@ -1,0 +1,84 @@
+{
+  "common": {
+    "build": {
+      "bin/rustc": "4fa9a18b77430bcc416e88561b6fe5797d98b996a7698b9f3bd11d4e7817a19f",
+      "lib/libLLVM.so.23.1-rust-1.99.0-beta": "43bac9749e539cd5988a4d5452b64582cf07ac9e7c059fde29c7bee76e106c51",
+      "lib/rustlib/x86_64-unknown-linux-gnu/lib/libstd-150b24506f9fb8c9.rlib": "bb1da52e02b3bf34996fb9bc50c6d80b9244a23b8fe6d3b47f7eabd5953d4191",
+      "lib/rustlib/x86_64-unknown-linux-gnu/lib/libstd-150b24506f9fb8c9.rmeta": "88fbc0dcf152f1122ee039e7f80c1fcf7728cec59bb40ae7a23639ba12104928"
+    },
+    "test": {
+      "bin/rustc": "4fa9a18b77430bcc416e88561b6fe5797d98b996a7698b9f3bd11d4e7817a19f",
+      "lib/libLLVM.so.23.1-rust-1.99.0-beta": "43bac9749e539cd5988a4d5452b64582cf07ac9e7c059fde29c7bee76e106c51",
+      "lib/rustlib/x86_64-unknown-linux-gnu/lib/libstd-150b24506f9fb8c9.rlib": "bb1da52e02b3bf34996fb9bc50c6d80b9244a23b8fe6d3b47f7eabd5953d4191",
+      "lib/rustlib/x86_64-unknown-linux-gnu/lib/libstd-150b24506f9fb8c9.rmeta": "88fbc0dcf152f1122ee039e7f80c1fcf7728cec59bb40ae7a23639ba12104928"
+    }
+  },
+  "counters": {
+    "Cachegrind": {
+      "name": "valgrind",
+      "sha256": "4652774bd116cb49951ef74115ad4237cad5021b2bd4d80002f09d986ec438b9",
+      "size": 528
+    },
+    "Cachegrind-engine": {
+      "name": "cachegrind-amd64-linux",
+      "sha256": "38093b3bf8e9ffecb559a333c896a2fd2a2343bb79c3295f31c36475914deebf",
+      "size": 2363072
+    },
+    "DynamoRIO-client": {
+      "name": "libpidcounter.so",
+      "sha256": "79f0c15d45b8d6b58a657b1816d4c2db2f798a9dbba4a1d02b3f2f3a1bda8204",
+      "size": 22200
+    },
+    "DynamoRIO-launcher": {
+      "name": "drrun",
+      "sha256": "f92d796060b53c1ec14ac97e089edfb29a3ce8bd17c2c011fd763054d10f4b55",
+      "size": 1000448
+    },
+    "clang": {
+      "name": "clang",
+      "sha256": "8ef402d453d1ba4902e4ee0f0f847f6cfa01400c95aa43c24e97818b9c0e3f45",
+      "size": 140592
+    },
+    "rustup": {
+      "name": "rustup",
+      "sha256": "dda7234360b7f578ca8b0ddcb80145646fa61a67c1720a5abc7051b35c9fcb71",
+      "size": 21113232
+    }
+  },
+  "implementation": {
+    "bench.py": "8278a04e7266f8d9426a9efd1c158996e581143a3f69719c87200c9ac788e6e8",
+    "plan.json": "70bd81b52d502a89f2062d46eeba797e1d2c7c51bf94ded3dc5809e2b530bfc9",
+    "prepare-fixtures.py": "88ab71d18ccbb1faa5af5c536f9273d3fc6f69347e849bd678d7280906a1dec5",
+    "restore-build.py": "a59b9c541c626c4ec6aaca14acfd45aaabef6e3126e2e952f868c8efbc9e6702",
+    "restore-test.py": "c03dbb424e439928fd4d257ec87452cc507081fae511dbe601db59ce4a4c2f5e",
+    "score.py": "0ebeed7ab4538d9817b0dc16db55add1849bb45fa9c0f5d9b2daa60376e2a5ac"
+  },
+  "per_arm": {
+    "candidate": {
+      "cargo": "3f5223265e4f51af56ecc1ef8737a2d2744b21faf6c3168a28012b9eba1ccb60",
+      "driver": "051b9d3f5861f984faa0f8c1d2ab9b5c28e483a05c728051de837291c83fd518",
+      "wild": "97cd2b7445d07159a210194340a0f8bdbfc08344fa4ea3afbd547f3309cd0cb4"
+    },
+    "parent": {
+      "cargo": "211465de4b9e4589da2be06871acd9304dd3b94c849c1304f723484cb4f71dfc",
+      "driver": "539e8623c70298849aa3043f35374ea3c7dc7215aac44011e64fccdc818f91a4",
+      "wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5"
+    }
+  },
+  "source": {
+    "build-edited": {
+      "crates/ruff/src/main.rs": "86e708be2e31f82d453530226637e4d54ef8a7c251ccdaf0801b67e573d692e3"
+    },
+    "build-original": {
+      "crates/ruff/src/main.rs": "bad1dbed704178750984564061c25f09940cd771b9218b7d912a7b7a3496bb82"
+    },
+    "test-edited": {
+      "crates/ruff_python_formatter/tests/fixtures.rs": "912eab7dfec3ee929665202133ad66a86f0478000049c3eca111172d5e80e892",
+      "crates/ruff_python_formatter/tests/snapshots/format@expression__nested_string_quote_style.py.snap": "407e272683cdfd638ff0a14014f76567916f41f7a37da5d280b344b32c2bd63c"
+    },
+    "test-original": {
+      "crates/ruff_python_formatter/tests/fixtures.rs": "85dd7010265b8adce8354a700a6c76e908cea962280a12bc9d0157abed48978e",
+      "crates/ruff_python_formatter/tests/snapshots/format@expression__nested_string_quote_style.py.snap": "98e26b29f0e45cf2e3ed7f577a8aff895e62999cbeb147007347e65d6350abe5"
+    }
+  }
+}

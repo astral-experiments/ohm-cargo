@@ -1,0 +1,120 @@
+{
+  "build": {
+    "balanced_randomization_p": 0.0021645021645021645,
+    "collector_groups_descriptive": {
+      "Cargo_DynamoRIO": {
+        "candidate_median_ir": 1394430233.5,
+        "favorable_pairs": 12,
+        "median_paired_reduction_pct": 6.457464545920671,
+        "parent_median_ir": 1490653519.5
+      },
+      "mixed_four_process_sum": {
+        "candidate_median_ir": 4912570009.0,
+        "favorable_pairs": 12,
+        "median_paired_reduction_pct": 9.686479482871057,
+        "parent_median_ir": 5439530242.5
+      },
+      "rustc_clang_Wild_Cachegrind": {
+        "candidate_median_ir": 3518003997.5,
+        "favorable_pairs": 12,
+        "median_paired_reduction_pct": 10.90510364680738,
+        "parent_median_ir": 3948836030.0
+      }
+    },
+    "favorable": 12,
+    "holm_p": 0.004329004329004329,
+    "median_ci95_pct": [
+      9.648653957332398,
+      9.718703427310604
+    ],
+    "median_paired_reduction_pct": 9.686479482871057,
+    "metric": "mixed-counter component sum",
+    "order_count": 924,
+    "paired_range_pct": [
+      9.621410510306927,
+      9.7807416599636
+    ],
+    "passed": true,
+    "per_component_median_ir_by_arm": {
+      "cargo": {
+        "candidate": 1394430233.5,
+        "parent": 1490653519.5
+      },
+      "clang": {
+        "candidate": 88477720.0,
+        "parent": 88475073.0
+      },
+      "rustc": {
+        "candidate": 513894818.5,
+        "parent": 515115187.5
+      },
+      "sum": {
+        "candidate": 4912570009.0,
+        "parent": 5439530242.5
+      },
+      "wild": {
+        "candidate": 2915732837.0,
+        "parent": 3344878202.5
+      }
+    }
+  },
+  "test": {
+    "balanced_randomization_p": 0.0021645021645021645,
+    "collector_groups_descriptive": {
+      "Cargo_DynamoRIO": {
+        "candidate_median_ir": 1012598843.0,
+        "favorable_pairs": 12,
+        "median_paired_reduction_pct": 8.946686293582223,
+        "parent_median_ir": 1112084385.5
+      },
+      "mixed_four_process_sum": {
+        "candidate_median_ir": 5001914530.5,
+        "favorable_pairs": 12,
+        "median_paired_reduction_pct": 5.552049280703624,
+        "parent_median_ir": 5298072658.5
+      },
+      "rustc_clang_Wild_Cachegrind": {
+        "candidate_median_ir": 3989061740.5,
+        "favorable_pairs": 12,
+        "median_paired_reduction_pct": 4.647911275536016,
+        "parent_median_ir": 4186145062.5
+      }
+    },
+    "favorable": 12,
+    "holm_p": 0.004329004329004329,
+    "median_ci95_pct": [
+      5.3508408749275755,
+      5.655105984277197
+    ],
+    "median_paired_reduction_pct": 5.552049280703624,
+    "metric": "mixed-counter component sum",
+    "order_count": 924,
+    "paired_range_pct": [
+      5.198839901202357,
+      5.694582111110558
+    ],
+    "passed": true,
+    "per_component_median_ir_by_arm": {
+      "cargo": {
+        "candidate": 1012598843.0,
+        "parent": 1112084385.5
+      },
+      "clang": {
+        "candidate": 69927009.0,
+        "parent": 69925656.0
+      },
+      "rustc": {
+        "candidate": 2888039339.5,
+        "parent": 2903401288.5
+      },
+      "sum": {
+        "candidate": 5001914530.5,
+        "parent": 5298072658.5
+      },
+      "wild": {
+        "candidate": 1030935580.5,
+        "parent": 1212675437.5
+      }
+    }
+  }
+}

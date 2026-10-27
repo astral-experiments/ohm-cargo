@@ -1,0 +1,14 @@
+{
+  "runtime": "/path/to/common/Ohm/sysroot",
+  "registry": "/path/to/hydrated/registry",
+  "parent": {
+    "cargo": "/path/to/release-PGO-cargo",
+    "driver": "/path/to/release-PGO-BOLT-base-driver",
+    "wild": "/path/to/release-Wild"
+  },
+  "candidate": {
+    "cargo": "/path/to/nine-draft-PGO-cargo",
+    "driver": "/path/to/three-draft-PGO-BOLT-driver",
+    "wild": "/path/to/paired-Wild"
+  }
+}

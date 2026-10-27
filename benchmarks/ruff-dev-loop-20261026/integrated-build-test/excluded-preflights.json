@@ -1,0 +1,57 @@
+[
+  {
+    "disposition": "preflight, never scored",
+    "endpoint": "build",
+    "launched": [
+      "memchr",
+      "build_script_build",
+      "build_script_build",
+      "unicode_ident"
+    ],
+    "raw_result_sha256": "7c7f4287352433859842a5a5205dd6991b328621c369a5a690ddae156e27cee9",
+    "returncode": -15,
+    "stderr": "   Compiling unicode-ident v1.0.24\n   Compiling proc-macro2 v1.0.107\n   Compiling quote v1.0.47\n   Compiling memchr v2.8.3\n",
+    "trial": "archive-native-inherited-path"
+  },
+  {
+    "disposition": "preflight, never scored",
+    "endpoint": "build",
+    "launched": [
+      "build_script_build",
+      "memchr",
+      "build_script_build",
+      "unicode_ident",
+      "cfg_if"
+    ],
+    "raw_result_sha256": "518e83c143fdbc52c87c547579dc72836683c2349f36460e5df2e47e95b37d6f",
+    "returncode": -15,
+    "stderr": "   Compiling unicode-ident v1.0.24\n   Compiling proc-macro2 v1.0.107\n   Compiling quote v1.0.47\n   Compiling cfg-if v1.0.4\n   Compiling memchr v2.8.3\n",
+    "trial": "archive-native-offline-config"
+  },
+  {
+    "disposition": "preflight, never scored",
+    "endpoint": "build",
+    "launched": [
+      "___"
+    ],
+    "raw_result_sha256": "fe755c43f6dd28107fca9dd9c443ecfbfc592624307c0a7b1dd682c98641ff1d",
+    "returncode": 101,
+    "stderr": "error: no matching package named `anyhow` found\nlocation searched: crates.io index\nrequired by package `mdtest v0.0.0 (/home/dev-user/code/oss/ruff-ohm-wild-cli-count-20261026/crates/mdtest)`\nnote: offline mode (via `--offline`) can sometimes cause surprising resolution failures\nhelp: if this error is too confusing you may wish to retry without `--offline`\n",
+    "trial": "archive-native-preflight"
+  },
+  {
+    "disposition": "preflight, never scored",
+    "endpoint": "build",
+    "launched": [
+      "memchr",
+      "build_script_build",
+      "build_script_build",
+      "unicode_ident",
+      "cfg_if"
+    ],
+    "raw_result_sha256": "a57b5e209d9ad232593dd2602f1c612062a9ad605eef9d456c671c0ec6b9e824",
+    "returncode": -15,
+    "stderr": "   Compiling unicode-ident v1.0.24\n   Compiling proc-macro2 v1.0.107\n   Compiling quote v1.0.47\n   Compiling memchr v2.8.3\n   Compiling cfg-if v1.0.4\n",
+    "trial": "inherited-host-tools"
+  }
+]
