@@ -1,0 +1,49 @@
+diff --git a/crates/ty_wasm/src/lib.rs b/crates/ty_wasm/src/lib.rs
+index 8e05b5e15f..a1ecb73062 100644
+--- a/crates/ty_wasm/src/lib.rs
++++ b/crates/ty_wasm/src/lib.rs
+@@ -493,6 +493,19 @@ impl Workspace {
+                     self.position_encoding,
+                 ),
+                 kind: hint.kind.into(),
++                text_edits: hint
++                    .text_edits
++                    .into_iter()
++                    .map(|edit| TextEdit {
++                        range: Range::from_text_range(
++                            edit.range,
++                            &index,
++                            &source,
++                            self.position_encoding,
++                        ),
++                        new_text: edit.new_text,
++                    })
++                    .collect(),
+             })
+             .collect())
+     }
+@@ -1110,6 +1123,9 @@ pub struct InlayHint {
+     pub position: Position,
+ 
+     pub kind: InlayHintKind,
++
++    #[wasm_bindgen(getter_with_clone)]
++    pub text_edits: Vec<TextEdit>,
+ }
+ 
+ #[wasm_bindgen]
+diff --git a/playground/ty/src/Editor/Editor.tsx b/playground/ty/src/Editor/Editor.tsx
+index 5fd899b19b..9b694bb829 100644
+--- a/playground/ty/src/Editor/Editor.tsx
++++ b/playground/ty/src/Editor/Editor.tsx
+@@ -463,6 +463,10 @@ class PlaygroundServer
+           column: hint.position.column,
+         },
+         kind: mapInlayHintKind(hint.kind),
++        textEdits: hint.text_edits.map((edit: TextEdit) => ({
++          range: tyRangeToMonacoRange(edit.range),
++          text: edit.new_text,
++        })),
+       })),
+     };
+   }
