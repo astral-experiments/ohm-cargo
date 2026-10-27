@@ -1,0 +1,161 @@
+{
+  "base": "93526150df078af7dd8fc4226cdcc469539d2001",
+  "seed": "ohm-build-private-parser-independent-20261027-v1",
+  "candidates": [
+    {
+      "sha": "c1eaf6ff72875a68e2585d50deaff220ea1d8ce9",
+      "title": "Modify parsing of raise with cause when exception is absent (#15049)",
+      "applies": false,
+      "rank": "0768cc1134ea31bf4267c9dd31f00b13349519c8e2cd7a6252a2ab4cac3628b5",
+      "changed_lines": 55,
+      "files": [
+        "crates/ruff_python_parser/resources/inline/err/raise_stmt_from_without_exc.py",
+        "crates/ruff_python_parser/src/parser/statement.rs",
+        "crates/ruff_python_parser/tests/snapshots/invalid_syntax@raise_stmt_from_without_exc.py.snap"
+      ],
+      "patch_sha256": "608a751103bf1f118e360981b807923f4f35ae2457000e2bde79173828da49a2"
+    },
+    {
+      "sha": "a3bb0cd5ec4d4dffea5d42d184e8c4a062976663",
+      "title": "Raise syntax error for mixing `except` and `except*` (#14895)",
+      "applies": false,
+      "rank": "108ad94f5cf95890748b60b8108b8ba8beff056e7a45181d6dfdc5ac4a6b22ce",
+      "changed_lines": 31,
+      "files": [
+        "crates/ruff_python_parser/resources/inline/err/try_stmt_mixed_except_kind.py",
+        "crates/ruff_python_parser/src/parser/statement.rs",
+        "crates/ruff_python_parser/tests/snapshots/invalid_syntax@try_stmt_mixed_except_kind.py.snap"
+      ],
+      "patch_sha256": "821c12adedb26a78f22f7e7030fe23c0834a77ebd426fa3c50064ab87a62bffa"
+    },
+    {
+      "sha": "1889a5e6ebeed97d9e8fbd1fd005258172954bbf",
+      "title": "[syntax-errors] Raise unsupported syntax error for template strings prior to Python 3.14 (#18664)",
+      "applies": false,
+      "rank": "251f7c82d168058b0ea597b80872fe8e5f0cfaa3b89e10ead62ef6fa4bcc2fff",
+      "changed_lines": 24,
+      "files": [
+        "crates/ruff_python_parser/resources/inline/err/template_strings_py313.py",
+        "crates/ruff_python_parser/resources/inline/ok/template_strings_py314.py",
+        "crates/ruff_python_parser/src/parser/expression.rs",
+        "crates/ruff_python_parser/tests/snapshots/invalid_syntax@template_strings_py313.py.snap",
+        "crates/ruff_python_parser/tests/snapshots/valid_syntax@template_strings_py314.py.snap"
+      ],
+      "patch_sha256": "294f2bbe6d1d2ba84681018c753d427c4b1234d6c3584a68792459f936db8252"
+    },
+    {
+      "sha": "2711e08eb8eb38d1ce323aae0517fede371cba15",
+      "title": "[syntax-errors] Fix false positive for parenthesized tuple index (#16948)",
+      "applies": false,
+      "rank": "25f6ecfc9c04bfdf5da904ffe70cfa23c8b425d3e37e38879a77ec33b694593c",
+      "changed_lines": 11,
+      "files": [
+        "crates/ruff_python_parser/resources/inline/ok/parenthesized_star_index_py310.py",
+        "crates/ruff_python_parser/src/parser/expression.rs",
+        "crates/ruff_python_parser/tests/snapshots/valid_syntax@parenthesized_star_index_py310.py.snap"
+      ],
+      "patch_sha256": "47609da837fb638fe05a2ddb49781f33f8a53bf2045d0eb5d1eb3e20491e2d03"
+    },
+    {
+      "sha": "1e0642fac8e98a93c4e416886eb8af93a187984d",
+      "title": "Use re-lexing for normal list parsing (#11871)",
+      "applies": false,
+      "rank": "2d2e9c822a113de40c4df8d0b28b2431ed13f0b0df7ae0be45a7d5f2544ac0b9",
+      "changed_lines": 19,
+      "files": [
+        "crates/ruff_python_parser/resources/invalid/re_lex_logical_token.py",
+        "crates/ruff_python_parser/src/parser/mod.rs",
+        "crates/ruff_python_parser/tests/snapshots/invalid_syntax@f_string_unclosed_lbrace.py.snap",
+        "crates/ruff_python_parser/tests/snapshots/invalid_syntax@f_string_unclosed_lbrace_in_format_spec.py.snap",
+        "crates/ruff_python_parser/tests/snapshots/invalid_syntax@re_lex_logical_token.py.snap",
+        "crates/ruff_python_parser/tests/snapshots/invalid_syntax@unterminated_fstring_newline_recovery.py.snap"
+      ],
+      "patch_sha256": "fbecfd2b38233b25f0be82705db39469a8534eb2bc13c44c8564720af4b9ded4"
+    },
+    {
+      "sha": "038235c6dbd931c0e37d5dd6cfe4cc6b60a81253",
+      "title": "[parser] Fix false syntax error for match-like annotated assignments (#23297)",
+      "applies": false,
+      "rank": "4119a28ebc5989ab634c56dbe239f726b8c84ff48e9a4ed5f99e1cc8ed7a167e",
+      "changed_lines": 9,
+      "files": [
+        "crates/ruff_python_parser/resources/inline/ok/match_annotated_assignment.py",
+        "crates/ruff_python_parser/src/parser/statement.rs",
+        "crates/ruff_python_parser/tests/snapshots/valid_syntax@match_annotated_assignment.py.snap"
+      ],
+      "patch_sha256": "013801d485398697180db6754fc4e3ba5a89f1adc04d8b3d7c8e694b0c7ca4db"
+    },
+    {
+      "sha": "a50dc58628691ee00a21809e19bdea71958e4f3c",
+      "title": "Reject parenthesized star imports (#26021)",
+      "applies": false,
+      "rank": "4474ea75154cac9268de4e53e4291a6e81bffe3cfe06c12eed42e0f26adfda6c",
+      "changed_lines": 9,
+      "files": [
+        "crates/ruff_python_parser/resources/inline/err/from_import_parenthesized_star.py",
+        "crates/ruff_python_parser/src/parser/statement.rs",
+        "crates/ruff_python_parser/tests/snapshots/invalid_syntax@from_import_parenthesized_star.py.snap"
+      ],
+      "patch_sha256": "28bc53570ed84097975df2a666cebd02dda19650bfe6dea7e0ca250ca66bff06"
+    },
+    {
+      "sha": "71f8389f61a243a0c7584adffc49134ccf792aba",
+      "title": "Fix syntax error false positives on parenthesized context managers (#20846)",
+      "applies": false,
+      "rank": "7032ef5ef0ea51c2c6776df89e4783572927f35a39113bd05656c863d195dcf2",
+      "changed_lines": 40,
+      "files": [
+        "crates/ruff_python_formatter/tests/snapshots/format@statement__with.py.snap",
+        "crates/ruff_python_parser/resources/inline/err/tuple_context_manager_py38.py",
+        "crates/ruff_python_parser/resources/inline/ok/single_parenthesized_item_context_manager_py38.py",
+        "crates/ruff_python_parser/src/parser/statement.rs",
+        "crates/ruff_python_parser/tests/snapshots/invalid_syntax@tuple_context_manager_py38.py.snap",
+        "crates/ruff_python_parser/tests/snapshots/valid_syntax@single_parenthesized_item_context_manager_py38.py.snap"
+      ],
+      "patch_sha256": "0eef3ab3bf2ba78371d06a375f6ef9fa55422a8e24313fbd8644cf34aa028bad"
+    },
+    {
+      "sha": "8b9ab48ac61b7c73df7d03ccda06085e61e62a5e",
+      "title": "Fix syntax error false positives for escapes and quotes in f-strings (#20867)",
+      "applies": false,
+      "rank": "8f44cffd82d0017d97543d90daee0825160a28b01ff382853daebd1b10051a22",
+      "changed_lines": 26,
+      "files": [
+        "crates/ruff_python_formatter/resources/test/fixtures/ruff/expression/fstring.py",
+        "crates/ruff_python_formatter/tests/snapshots/format@expression__fstring.py.snap",
+        "crates/ruff_python_parser/resources/inline/err/nested_quote_in_format_spec_py312.py",
+        "crates/ruff_python_parser/resources/inline/ok/non_nested_quote_in_format_spec_py311.py",
+        "crates/ruff_python_parser/resources/inline/ok/pep701_f_string_py311.py",
+        "crates/ruff_python_parser/src/parser/expression.rs",
+        "crates/ruff_python_parser/tests/snapshots/invalid_syntax@nested_quote_in_format_spec_py312.py.snap",
+        "crates/ruff_python_parser/tests/snapshots/valid_syntax@non_nested_quote_in_format_spec_py311.py.snap",
+        "crates/ruff_python_parser/tests/snapshots/valid_syntax@pep701_f_string_py311.py.snap"
+      ],
+      "patch_sha256": "c28d42e95606b271fabe66fdb39309288cbc20f5f14bedaa9d3c698839d31146"
+    },
+    {
+      "sha": "da78de043964fc9ac64b81ead68f2dacdb1fae46",
+      "title": "Remove allcation in `parse_identifier` (#12103)",
+      "applies": false,
+      "rank": "b5feadaf20eeb0345404c56deceb96d4d15bb79c8c947c3d1d9cbd5eeeed0f9e",
+      "changed_lines": 2,
+      "files": [
+        "crates/ruff_python_parser/src/parser/expression.rs"
+      ],
+      "patch_sha256": "a13c3fe8a4f6034f3bf20b3c347aa8eaa33b8a09524030b311fc1464bc3981ec"
+    }
+  ],
+  "selected": {
+    "sha": "c1eaf6ff72875a68e2585d50deaff220ea1d8ce9",
+    "title": "Modify parsing of raise with cause when exception is absent (#15049)",
+    "applies": false,
+    "rank": "0768cc1134ea31bf4267c9dd31f00b13349519c8e2cd7a6252a2ab4cac3628b5",
+    "changed_lines": 55,
+    "files": [
+      "crates/ruff_python_parser/resources/inline/err/raise_stmt_from_without_exc.py",
+      "crates/ruff_python_parser/src/parser/statement.rs",
+      "crates/ruff_python_parser/tests/snapshots/invalid_syntax@raise_stmt_from_without_exc.py.snap"
+    ],
+    "patch_sha256": "608a751103bf1f118e360981b807923f4f35ae2457000e2bde79173828da49a2"
+  }
+}

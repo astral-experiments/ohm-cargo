@@ -1,0 +1,22 @@
+{
+  "base_commit": "8ce2f21e25c06e7f884ca7b5c4e7898180791ae4",
+  "candidate": {
+    "stderr": "running: LC_ALL=\"C\" LD_LIBRARY_PATH=\"/home/dev-user/.cache/ohm-build-cutoff-20261027/rmake/initial-candidate:/home/dev-user/.cache/ohm-ruff-packed-edges-20261026/nonleaf/trait-pgo-state/sysroot/lib/rustlib/x86_64-unknown-linux-gnu/lib:/home/dev-user/.cache/ohm-build-cutoff-20261027/stage2-candidate:/home/dev-user/.cache/ohm-ruff-packed-edges-20261026/nonleaf/trait-pgo-state/sysroot/lib\" \"/home/dev-user/.cache/ohm-build-cutoff-20261027/rmake/initial-candidate/main\"\nrunning: LC_ALL=\"C\" LD_LIBRARY_PATH=\"/home/dev-user/.cache/ohm-build-cutoff-20261027/rmake/initial-candidate:/home/dev-user/.cache/ohm-ruff-packed-edges-20261026/nonleaf/trait-pgo-state/sysroot/lib/rustlib/x86_64-unknown-linux-gnu/lib:/home/dev-user/.cache/ohm-build-cutoff-20261027/stage2-candidate:/home/dev-user/.cache/ohm-ruff-packed-edges-20261026/nonleaf/trait-pgo-state/sysroot/lib\" \"/home/dev-user/.cache/ohm-build-cutoff-20261027/rmake/initial-candidate/main\"\nrunning: LC_ALL=\"C\" LD_LIBRARY_PATH=\"/home/dev-user/.cache/ohm-build-cutoff-20261027/rmake/initial-candidate:/home/dev-user/.cache/ohm-ruff-packed-edges-20261026/nonleaf/trait-pgo-state/sysroot/lib/rustlib/x86_64-unknown-linux-gnu/lib:/home/dev-user/.cache/ohm-build-cutoff-20261027/stage2-candidate:/home/dev-user/.cache/ohm-ruff-packed-edges-20261026/nonleaf/trait-pgo-state/sysroot/lib\" \"/home/dev-user/.cache/ohm-build-cutoff-20261027/rmake/initial-candidate/main\"\n",
+    "stdout": ""
+  },
+  "candidate_expected_exit": 0,
+  "compile_ci_glob": "tests/run-make/rdr-public-hash*",
+  "compiler_commit": "8d8897ff9a15b50de615420827da6c0752dd9121",
+  "control": {
+    "stderr": "running: LC_ALL=\"C\" LD_LIBRARY_PATH=\"/home/dev-user/.cache/ohm-build-cutoff-20261027/rmake/initial-control:/home/dev-user/.cache/ohm-ruff-packed-edges-20261026/nonleaf/trait-pgo-state/sysroot/lib/rustlib/x86_64-unknown-linux-gnu/lib:/home/dev-user/.cache/ohm-ruff-packed-edges-20261026/nonleaf/trait-pgo-state/armB:/home/dev-user/.cache/ohm-ruff-packed-edges-20261026/nonleaf/trait-pgo-state/sysroot/lib\" \"/home/dev-user/.cache/ohm-build-cutoff-20261027/rmake/initial-control/main\"\n\nthread 'main' (1479128) panicked at /home/dev-user/code/oss/ohm-rust-private-native-20261027/tests/run-make/rdr-public-hash-private-native-impls/rmake.rs:34:5:\nassertion `left == right` failed\n  left: \"Public hash: b9ab2f421144923f44870912cd1a28d5\\n\\n\"\n right: \"Public hash: 3d8d4a63478d657810169e33743aa5da\\n\\n\"\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\n",
+    "stdout": ""
+  },
+  "control_expected_exit": 101,
+  "source": "tests/run-make/rdr-public-hash-private-native-impls",
+  "source_sha256": {
+    "dep.rs": "8e98d8dfaec3a02317322d5372f3a24ca4196b0787d1b3ea6805d92fe8cedb27",
+    "hidden.rs": "f132c8307928823c048af41e42af17efde4b8f660c6602c3b2fd96acf6447f0e",
+    "main.rs": "87f87f1826f07b25f2634edca8d063d6f3bab812a9f1e0077ca710a61407eed2",
+    "rmake.rs": "ed2f8840836f1c2c728bb9990c37ab448a42ac0854c55bc217dc3bfd555e77cb"
+  }
+}

@@ -1,0 +1,141 @@
+diff --git a/crates/ruff_python_parser/resources/inline/err/raise_stmt_from_without_exc.py b/crates/ruff_python_parser/resources/inline/err/raise_stmt_from_without_exc.py
+new file mode 100644
+index 0000000000..eb306042c2
+--- /dev/null
++++ b/crates/ruff_python_parser/resources/inline/err/raise_stmt_from_without_exc.py
+@@ -0,0 +1,2 @@
++raise from exc
++raise from None
+diff --git a/crates/ruff_python_parser/src/parser/statement.rs b/crates/ruff_python_parser/src/parser/statement.rs
+index fc1bb4bde4..bfa567da41 100644
+--- a/crates/ruff_python_parser/src/parser/statement.rs
++++ b/crates/ruff_python_parser/src/parser/statement.rs
+@@ -411,31 +411,44 @@ impl<'src> Parser<'src> {
+         let start = self.node_start();
+         self.bump(TokenKind::Raise);
+ 
+-        let exc = if self.at(TokenKind::Newline) {
+-            None
+-        } else {
+-            // test_err raise_stmt_invalid_exc
+-            // raise *x
+-            // raise yield x
+-            // raise x := 1
+-            let exc = self.parse_expression_list(ExpressionContext::default());
+-
+-            if let Some(ast::ExprTuple {
+-                parenthesized: false,
+-                ..
+-            }) = exc.as_tuple_expr()
+-            {
+-                // test_err raise_stmt_unparenthesized_tuple_exc
+-                // raise x,
+-                // raise x, y
+-                // raise x, y from z
+-                self.add_error(ParseErrorType::UnparenthesizedTupleExpression, &exc);
++        let exc = match self.current_token_kind() {
++            TokenKind::Newline => None,
++            TokenKind::From => {
++                // test_err raise_stmt_from_without_exc
++                // raise from exc
++                // raise from None
++                self.add_error(
++                    ParseErrorType::OtherError(
++                        "Exception missing in `raise` statement with cause".to_string(),
++                    ),
++                    self.current_token_range(),
++                );
++                None
+             }
++            _ => {
++                // test_err raise_stmt_invalid_exc
++                // raise *x
++                // raise yield x
++                // raise x := 1
++                let exc = self.parse_expression_list(ExpressionContext::default());
+ 
+-            Some(Box::new(exc.expr))
++                if let Some(ast::ExprTuple {
++                    parenthesized: false,
++                    ..
++                }) = exc.as_tuple_expr()
++                {
++                    // test_err raise_stmt_unparenthesized_tuple_exc
++                    // raise x,
++                    // raise x, y
++                    // raise x, y from z
++                    self.add_error(ParseErrorType::UnparenthesizedTupleExpression, &exc);
++                }
++
++                Some(Box::new(exc.expr))
++            }
+         };
+ 
+-        let cause = (exc.is_some() && self.eat(TokenKind::From)).then(|| {
++        let cause = self.eat(TokenKind::From).then(|| {
+             // test_err raise_stmt_invalid_cause
+             // raise x from *y
+             // raise x from yield y
+diff --git a/crates/ruff_python_parser/tests/snapshots/invalid_syntax@raise_stmt_from_without_exc.py.snap b/crates/ruff_python_parser/tests/snapshots/invalid_syntax@raise_stmt_from_without_exc.py.snap
+new file mode 100644
+index 0000000000..bfd31fbf6d
+--- /dev/null
++++ b/crates/ruff_python_parser/tests/snapshots/invalid_syntax@raise_stmt_from_without_exc.py.snap
+@@ -0,0 +1,57 @@
++---
++source: crates/ruff_python_parser/tests/fixtures.rs
++input_file: crates/ruff_python_parser/resources/inline/err/raise_stmt_from_without_exc.py
++---
++## AST
++
++```
++Module(
++    ModModule {
++        range: 0..31,
++        body: [
++            Raise(
++                StmtRaise {
++                    range: 0..14,
++                    exc: None,
++                    cause: Some(
++                        Name(
++                            ExprName {
++                                range: 11..14,
++                                id: Name("exc"),
++                                ctx: Load,
++                            },
++                        ),
++                    ),
++                },
++            ),
++            Raise(
++                StmtRaise {
++                    range: 15..30,
++                    exc: None,
++                    cause: Some(
++                        NoneLiteral(
++                            ExprNoneLiteral {
++                                range: 26..30,
++                            },
++                        ),
++                    ),
++                },
++            ),
++        ],
++    },
++)
++```
++## Errors
++
++  |
++1 | raise from exc
++  |       ^^^^ Syntax Error: Exception missing in `raise` statement with cause
++2 | raise from None
++  |
++
++
++  |
++1 | raise from exc
++2 | raise from None
++  |       ^^^^ Syntax Error: Exception missing in `raise` statement with cause
++  |
