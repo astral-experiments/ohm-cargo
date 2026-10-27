@@ -1,0 +1,38 @@
+{
+  "cmd": [
+    "/usr/bin/taskset",
+    "-c",
+    "20-23",
+    "/home/dev-user/.cargo/bin/cargo",
+    "+ohm",
+    "test",
+    "--offline",
+    "--locked",
+    "-p",
+    "cargo",
+    "--features",
+    "ohm-defaults",
+    "--lib",
+    "compiler::relink_cache_tests",
+    "-j2"
+  ],
+  "peak_private_bytes": 1032409088,
+  "result": [
+    "test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 393 filtered out; finished in 1.09s"
+  ],
+  "returncode": 0,
+  "sha": "190d261a8546f121e3aa1adf237d85e02164eb18",
+  "source_tree": "4b942fd3af052e2c1d46d1beb817c1a0cd18b4d3",
+  "tests": [
+    "test compiler::relink_cache_tests::relink_manifest_json_keeps_checksum_failures_distinct ... ok",
+    "test compiler::relink_cache_tests::incomplete_object_list_invalidates_relink_manifest ... ok",
+    "test compiler::relink_cache_tests::mixed_relink_retains_only_the_objects_in_its_recipe ... ok",
+    "test compiler::relink_cache_tests::cache_fifos_do_not_wait_for_a_writer ... ok",
+    "test compiler::relink_cache_tests::relink_manifest_json_preserves_unknown_value_validation ... ok",
+    "test compiler::relink_cache_tests::relink_manifest_json_still_rejects_a_final_symlink ... ok",
+    "test compiler::relink_cache_tests::relink_manifest_json_preserves_field_and_sequence_behavior ... ok",
+    "test compiler::relink_cache_tests::relink_manifest_json_rejects_truncation_trailing_and_invalid_data ... ok",
+    "test compiler::relink_cache_tests::relink_manifest_json_matches_streaming_at_size_boundaries ... ok"
+  ],
+  "verified_crates": 523
+}

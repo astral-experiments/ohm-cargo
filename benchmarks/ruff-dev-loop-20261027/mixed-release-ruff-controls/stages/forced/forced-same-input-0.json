@@ -1,0 +1,118 @@
+{
+  "artifacts": {
+    "ruff_python_parser": [
+      [
+        true,
+        {
+          ".rlib": "b7b1288ba303ff4695df0b48fc55298ac50f7984f7a1aa4b8add65dc127ca33c",
+          ".rmeta": "0dfef9a99b985faebe0940c117427b8bdda17d8602abf3068c6fc423ce1d349e",
+          "embedded": "768aa345b09293ab90b58c1993136d2c81ff76f0e3143c19a3a38bf118b3ade9"
+        }
+      ]
+    ],
+    "ruff_wasm": [
+      [
+        false,
+        {
+          ".rlib": "31696a9bd80a2c621715f116616fa4078b5ebc07da298878c9601af8342b61c0",
+          ".rmeta": "b0d987890ee15e4058111bdf0e367ab67b7eec56fce0f05b2aa3a231437f4b73",
+          ".so": "6bf34fae3d81e86c635958d604fcde9f7d74ba82b9b67ca3474b44da556a1574",
+          "embedded": "fc78b4fc6db48528e4a36a6a11f24775e22c7119a40b056d0af6925f4000a45b",
+          "symbols": [
+            "000000000040d6b0 B __abort_handler",
+            "000000000040d6b4 B __instance_terminated",
+            "000000000039ae20 T __wbindgen_destroy_closure",
+            "000000000039aed0 T __wbindgen_exn_store",
+            "000000000039af20 T __wbindgen_free",
+            "000000000039af80 T __wbindgen_malloc",
+            "000000000039afd0 T __wbindgen_realloc",
+            "00000000003d3a13 T __wbindgen_skip_interpret_calls"
+          ]
+        }
+      ]
+    ],
+    "ty_wasm": [
+      [
+        false,
+        {
+          ".rlib": "1965e3df8278a7765ee18969938e29b54d3f91d053c3552fae150e1a9c745df4",
+          ".rmeta": "720d142ad6e47921facf7e0abfa739f0a4e018177e02f8412d80d532f73b0d24",
+          ".so": "ddf83cda0f7ec37b624a7d74f71024c156449845957f4c7258f04a3c59318200",
+          "embedded": "fa6dff734d946e809e05567582a15d0402467f03ce12b839ff1957dfd90ce031",
+          "symbols": [
+            "0000000001da9080 B __abort_handler",
+            "0000000001da9084 B __instance_terminated",
+            "0000000001bf7e90 T __wbindgen_destroy_closure",
+            "0000000001bf7f40 T __wbindgen_exn_store",
+            "0000000001bf7f90 T __wbindgen_free",
+            "0000000001bf7ff0 T __wbindgen_malloc",
+            "0000000001bf8040 T __wbindgen_realloc",
+            "0000000001c48184 T __wbindgen_skip_interpret_calls"
+          ]
+        }
+      ]
+    ]
+  },
+  "cargo": "7d8a2d6715e0275308194508c70a4d49cb4c281d462c6d14b222ff4f5ecc1572",
+  "compiler_driver": "7c31057e86f800e313b7d32080c7a5abaa7b92fef92254ac21b2e43febf16384",
+  "crate_processes": [
+    {
+      "argv_sha256": "c58eccde80a478f60f79873ecd53627561f1c87602524a6545843a96b7f8d12f",
+      "crate": "ruff_wasm",
+      "phase": "full",
+      "pid": 2648756
+    },
+    {
+      "argv_sha256": "53354899a62de8797527953fb4f4f0f4eb146c413a46573cd6f48c7fa83f9bd8",
+      "crate": "ty_wasm",
+      "phase": "full",
+      "pid": 2648757
+    }
+  ],
+  "discovery_rustcs": [],
+  "fresh_false": [
+    [
+      "130e615f6d8a7931390d2e19d59c2466473128a67f1d95250423414043d72f69",
+      "ty_wasm"
+    ],
+    [
+      "e0982330a6d59af4a925707dc3e3f56831db2cb745100943bf85defe7b292c84",
+      "ruff_wasm"
+    ]
+  ],
+  "native_processes": [
+    {
+      "argv_sha256": "41f7971c13272d86c7fcd0a90fb444c06114bfa60f496df37bab6f57b27c62db",
+      "executable": "cc",
+      "pid": 2648926
+    },
+    {
+      "argv_sha256": "c5864c5722fd67318b432b115e1f01275c48724c2f5b0481b4b2989eb1ce8f8e",
+      "executable": "cc",
+      "pid": 2648927
+    },
+    {
+      "argv_sha256": "fcadffa7f9331525c4eafffc0ea847e26b3ee27e6e7ef1cbba83463f444993e8",
+      "executable": "collect2",
+      "pid": 2648928
+    },
+    {
+      "argv_sha256": "731e1d1d19daa42918f07949eadc15dd062495f47a2226c0e08fe3bfbfd3b446",
+      "executable": "collect2",
+      "pid": 2648938
+    },
+    {
+      "argv_sha256": "955dfa9ca4df5c69f15e9373b9531e4a3defb0037c9232cbdf78ec635fb04c7b",
+      "executable": "ld.bfd",
+      "pid": 2648929
+    },
+    {
+      "argv_sha256": "76b3bf53b4f01c3aea29fdef2a3f02c89d31d1a5d3136fa35866e172c3a96223",
+      "executable": "ld.bfd",
+      "pid": 2648939
+    }
+  ],
+  "source": "edited",
+  "unit_roster_sha256": "3e8ec81a7d8e8471b32ec7a6230fcea70aaf7da29f6862ab4a3a901fa539319c",
+  "units": 362
+}

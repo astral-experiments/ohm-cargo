@@ -1,0 +1,214 @@
+{
+  "artifacts": {
+    "ruff_python_parser": [
+      [
+        false,
+        {
+          ".rlib": "33f2751828275255ab76d76f94b7bfe520e06ca81f69800abbf7ec9189752450",
+          ".rmeta": "fe0a0412a88dc761a6057b3bb425598dbd172a4e5a1fe34f59be8d9296cfe51d",
+          "embedded": "f6728c1fd9c6a1b620ab5b9f8bf0212e01021d7c67ead29251b9bf15fd2cc052"
+        }
+      ]
+    ],
+    "ruff_wasm": [
+      [
+        false,
+        {
+          ".rlib": "c4ce84048c6481695480492e7bf92ecc482fa2640dc0bd202266c744f30a4caf",
+          ".rmeta": "b0d987890ee15e4058111bdf0e367ab67b7eec56fce0f05b2aa3a231437f4b73",
+          ".so": "9fefc099da17ee5c9aa8204e5c7f3b38a1cc00c5fe37abe3f9e30c888107bd3a",
+          "embedded": "fc78b4fc6db48528e4a36a6a11f24775e22c7119a40b056d0af6925f4000a45b",
+          "symbols": [
+            "000000000040d750 B __abort_handler",
+            "000000000040d754 B __instance_terminated",
+            "000000000039aec0 T __wbindgen_destroy_closure",
+            "000000000039af70 T __wbindgen_exn_store",
+            "000000000039afc0 T __wbindgen_free",
+            "000000000039b020 T __wbindgen_malloc",
+            "000000000039b070 T __wbindgen_realloc",
+            "00000000003d3ab3 T __wbindgen_skip_interpret_calls"
+          ]
+        }
+      ]
+    ],
+    "ty_wasm": [
+      [
+        false,
+        {
+          ".rlib": "6785fc0fa0199422eb2a50ddc909602ca6b3d81160eacd73f5169ce1e50402ac",
+          ".rmeta": "720d142ad6e47921facf7e0abfa739f0a4e018177e02f8412d80d532f73b0d24",
+          ".so": "f73a87dfbf1bd768ab3ca21568273cc5b6f35cade96d1f0c5e68956a08ed0462",
+          "embedded": "fa6dff734d946e809e05567582a15d0402467f03ce12b839ff1957dfd90ce031",
+          "symbols": [
+            "0000000001da9120 B __abort_handler",
+            "0000000001da9124 B __instance_terminated",
+            "0000000001bf7f40 T __wbindgen_destroy_closure",
+            "0000000001bf7ff0 T __wbindgen_exn_store",
+            "0000000001bf8040 T __wbindgen_free",
+            "0000000001bf80a0 T __wbindgen_malloc",
+            "0000000001bf80f0 T __wbindgen_realloc",
+            "0000000001c48234 T __wbindgen_skip_interpret_calls"
+          ]
+        }
+      ]
+    ]
+  },
+  "cargo": "7d8a2d6715e0275308194508c70a4d49cb4c281d462c6d14b222ff4f5ecc1572",
+  "compiler_driver": "7c31057e86f800e313b7d32080c7a5abaa7b92fef92254ac21b2e43febf16384",
+  "crate_processes": [
+    {
+      "argv_sha256": "2063302316b0c3d89895addfbdbba051daf85178da4f455c629babcf89dcc24d",
+      "crate": "ruff_python_parser",
+      "phase": "full",
+      "pid": 2632079
+    },
+    {
+      "argv_sha256": "a6927ce755817e133a48b09ffcd342c1820cfb4910235dc057fc17069153e515",
+      "checked_recipe_name": "ty_wasm.rlink",
+      "crate": "ty_wasm",
+      "next_sha256_mtime_ns": [
+        "0ad393d72a9467ee8a262f3297438914fb1114858b13394b22743b22402105e1",
+        1793099396897245771
+      ],
+      "phase": "HIR-and-native-link",
+      "pid": 2632208,
+      "prior_sha256_mtime_ns": [
+        "0ad393d72a9467ee8a262f3297438914fb1114858b13394b22743b22402105e1",
+        1793099396897245771
+      ]
+    },
+    {
+      "argv_sha256": "60e0342b3eaa3f6ee36b329402e4b49eecbaef3ff444bb9538258d89fc8e43be",
+      "checked_recipe_name": "ruff_wasm.rlink",
+      "crate": "ruff_wasm",
+      "next_sha256_mtime_ns": [
+        "105e20e0acc6043c17938c882d59e733e73933cc129a7ee625578ea3daacc2c8",
+        1793099398634248816
+      ],
+      "phase": "HIR-and-native-link",
+      "pid": 2632219,
+      "prior_sha256_mtime_ns": [
+        "105e20e0acc6043c17938c882d59e733e73933cc129a7ee625578ea3daacc2c8",
+        1793099398634248816
+      ]
+    }
+  ],
+  "discovery_rustcs": [],
+  "fresh_false": [
+    [
+      "02b809a45a4e4e74656b693d3c7916d7d57f3919f8159d02ba11ffe1f1a16c4f",
+      "ruff_python_parser"
+    ],
+    [
+      "0590db8d807739787af1cd59a41d6a110e184e3c7699633b7b8d550cbf64d813",
+      "ruff_graph"
+    ],
+    [
+      "130e615f6d8a7931390d2e19d59c2466473128a67f1d95250423414043d72f69",
+      "ty_wasm"
+    ],
+    [
+      "133c82682353f033f58ec5bc4fbad1d6ea301a53b06c2fe36439b51bc84c3831",
+      "ruff_python_formatter"
+    ],
+    [
+      "15e3e148918fdda92ed078a9d51606697ce4fb3d04cf5a94a5bfde9ce90f1d28",
+      "ruff_db"
+    ],
+    [
+      "234e7a5e965fc6d8d602ddaf46a8a6b5c89fc4d6c810deb80f11be0f57d0947d",
+      "ruff_python_codegen"
+    ],
+    [
+      "3793b0b4e98e40e0d0ac5e7b628858a3fc9e9054d5aed4afa316c49188781c10",
+      "ty_vendored"
+    ],
+    [
+      "65fc8fd3bfa81e9e48a46bec6a8512b2949538761676ee68a029e7a208bd448d",
+      "ty_site_packages"
+    ],
+    [
+      "7583f23c070a4b73f900797d93c277081d226d91cd0e0039be498c7bcf2fa2e6",
+      "ruff_workspace"
+    ],
+    [
+      "a7d53a727b519f4e2f6aa04939043d0095d9920f8b0445c8f538cf22e6c0cc29",
+      "ruff_linter"
+    ],
+    [
+      "ab093d6f4473cb799186145a21f6dae281e618e02274d1d9fd98972ae612e5bb",
+      "ty_python_semantic"
+    ],
+    [
+      "ab1560c6b538eee7289a2648c186ca6381f1d2fe126b9fd5a59ebd81cb8bfd3c",
+      "ty_module_resolver"
+    ],
+    [
+      "ac6d1e701c9ad7fa08eefe3dfdb972340a2f261656dfea5016664619a794473f",
+      "ruff_python_importer"
+    ],
+    [
+      "ad8696116d4e4c743dd4865af37ea0e68d5aec05fd9a5810b4da4ae063ca951e",
+      "ty_combine"
+    ],
+    [
+      "b139a991464c4c104dacbbd1e89d1e84a3c30d11f893ed66facda3440e563f7d",
+      "ty_python_core"
+    ],
+    [
+      "b5506cf9994146c0faeecf2991d4d875a091f42b2251a8c8798b3f22e86bf052",
+      "ty_project"
+    ],
+    [
+      "cb4bf259a6c59337665386f9551dcc9e3dbf1df88604803e23566475c21119d4",
+      "ruff_python_semantic"
+    ],
+    [
+      "d06609f010ffd6d5cce88b2a26f5884fb574d63a91ae9de3ea3e7eaed8614880",
+      "ruff_ranged_value"
+    ],
+    [
+      "da2b6fa5e272a4b204a48334066e9a7038d64cc0cdd7db43b663ba93b3202b30",
+      "ty_ide"
+    ],
+    [
+      "e0982330a6d59af4a925707dc3e3f56831db2cb745100943bf85defe7b292c84",
+      "ruff_wasm"
+    ]
+  ],
+  "native_processes": [
+    {
+      "argv_sha256": "6e0a1e565ebd56aa00935d87beb6efe284ffbe1047b18a8aaf36193fb9b4cbe7",
+      "executable": "cc",
+      "pid": 2632232
+    },
+    {
+      "argv_sha256": "89e165005b86c5b0e325aef9c8c4f3ac163726b0d6e916670a24024970efba14",
+      "executable": "cc",
+      "pid": 2632233
+    },
+    {
+      "argv_sha256": "25ea82df5a63d5d89f68c283d3ff53cfa7815368a74d5274b1fb231d9b67ad44",
+      "executable": "collect2",
+      "pid": 2632234
+    },
+    {
+      "argv_sha256": "2f23f4acd65954b2a076928072de53fda5bdc5f374d9aa01e3eedf54ce3f309a",
+      "executable": "collect2",
+      "pid": 2632244
+    },
+    {
+      "argv_sha256": "5b17bec847a3dcc1d3ea5f120097807f2dedae9eec6bdf5522e3b328f383516f",
+      "executable": "ld.bfd",
+      "pid": 2632235
+    },
+    {
+      "argv_sha256": "212a55a10b483ba2ca216953ffddfc3ac4c7158b402a3837921d50014826d17b",
+      "executable": "ld.bfd",
+      "pid": 2632245
+    }
+  ],
+  "source": "original",
+  "unit_roster_sha256": "3e8ec81a7d8e8471b32ec7a6230fcea70aaf7da29f6862ab4a3a901fa539319c",
+  "units": 362
+}

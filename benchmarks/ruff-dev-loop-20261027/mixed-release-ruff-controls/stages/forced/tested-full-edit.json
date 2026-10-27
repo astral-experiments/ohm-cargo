@@ -1,0 +1,196 @@
+{
+  "artifacts": {
+    "ruff_python_parser": [
+      [
+        false,
+        {
+          ".rlib": "41304e5fae505aa85a633cc24b5e9b7ad677e9ad01d5629910988bad5d5a4ce2",
+          ".rmeta": "0dfef9a99b985faebe0940c117427b8bdda17d8602abf3068c6fc423ce1d349e",
+          "embedded": "768aa345b09293ab90b58c1993136d2c81ff76f0e3143c19a3a38bf118b3ade9"
+        }
+      ]
+    ],
+    "ruff_wasm": [
+      [
+        false,
+        {
+          ".rlib": "6a6302819fe0a1f55c8c607eaa3e26a24c6ca32ae35ddf693a21f69a8388aa68",
+          ".rmeta": "b0d987890ee15e4058111bdf0e367ab67b7eec56fce0f05b2aa3a231437f4b73",
+          ".so": "6bf34fae3d81e86c635958d604fcde9f7d74ba82b9b67ca3474b44da556a1574",
+          "embedded": "fc78b4fc6db48528e4a36a6a11f24775e22c7119a40b056d0af6925f4000a45b",
+          "symbols": [
+            "000000000040d6b0 B __abort_handler",
+            "000000000040d6b4 B __instance_terminated",
+            "000000000039ae20 T __wbindgen_destroy_closure",
+            "000000000039aed0 T __wbindgen_exn_store",
+            "000000000039af20 T __wbindgen_free",
+            "000000000039af80 T __wbindgen_malloc",
+            "000000000039afd0 T __wbindgen_realloc",
+            "00000000003d3a13 T __wbindgen_skip_interpret_calls"
+          ]
+        }
+      ]
+    ],
+    "ty_wasm": [
+      [
+        false,
+        {
+          ".rlib": "de402bcfe4302c93b214308ca423ff24508265cb90a881ca3f334f7ee6ed2b8a",
+          ".rmeta": "720d142ad6e47921facf7e0abfa739f0a4e018177e02f8412d80d532f73b0d24",
+          ".so": "ddf83cda0f7ec37b624a7d74f71024c156449845957f4c7258f04a3c59318200",
+          "embedded": "fa6dff734d946e809e05567582a15d0402467f03ce12b839ff1957dfd90ce031",
+          "symbols": [
+            "0000000001da9080 B __abort_handler",
+            "0000000001da9084 B __instance_terminated",
+            "0000000001bf7e90 T __wbindgen_destroy_closure",
+            "0000000001bf7f40 T __wbindgen_exn_store",
+            "0000000001bf7f90 T __wbindgen_free",
+            "0000000001bf7ff0 T __wbindgen_malloc",
+            "0000000001bf8040 T __wbindgen_realloc",
+            "0000000001c48184 T __wbindgen_skip_interpret_calls"
+          ]
+        }
+      ]
+    ]
+  },
+  "cargo": "0f237cc3b506aa90c1224e6ed80f646566b424b78c8d74f288f6523d17fc8aa1",
+  "compiler_driver": "7c31057e86f800e313b7d32080c7a5abaa7b92fef92254ac21b2e43febf16384",
+  "crate_processes": [
+    {
+      "argv_sha256": "2063302316b0c3d89895addfbdbba051daf85178da4f455c629babcf89dcc24d",
+      "crate": "ruff_python_parser",
+      "phase": "full",
+      "pid": 2653420
+    },
+    {
+      "argv_sha256": "c58eccde80a478f60f79873ecd53627561f1c87602524a6545843a96b7f8d12f",
+      "crate": "ruff_wasm",
+      "phase": "full",
+      "pid": 2653523
+    },
+    {
+      "argv_sha256": "53354899a62de8797527953fb4f4f0f4eb146c413a46573cd6f48c7fa83f9bd8",
+      "crate": "ty_wasm",
+      "phase": "full",
+      "pid": 2653524
+    }
+  ],
+  "discovery_rustcs": [],
+  "fresh_false": [
+    [
+      "02b809a45a4e4e74656b693d3c7916d7d57f3919f8159d02ba11ffe1f1a16c4f",
+      "ruff_python_parser"
+    ],
+    [
+      "0590db8d807739787af1cd59a41d6a110e184e3c7699633b7b8d550cbf64d813",
+      "ruff_graph"
+    ],
+    [
+      "130e615f6d8a7931390d2e19d59c2466473128a67f1d95250423414043d72f69",
+      "ty_wasm"
+    ],
+    [
+      "133c82682353f033f58ec5bc4fbad1d6ea301a53b06c2fe36439b51bc84c3831",
+      "ruff_python_formatter"
+    ],
+    [
+      "15e3e148918fdda92ed078a9d51606697ce4fb3d04cf5a94a5bfde9ce90f1d28",
+      "ruff_db"
+    ],
+    [
+      "234e7a5e965fc6d8d602ddaf46a8a6b5c89fc4d6c810deb80f11be0f57d0947d",
+      "ruff_python_codegen"
+    ],
+    [
+      "3793b0b4e98e40e0d0ac5e7b628858a3fc9e9054d5aed4afa316c49188781c10",
+      "ty_vendored"
+    ],
+    [
+      "65fc8fd3bfa81e9e48a46bec6a8512b2949538761676ee68a029e7a208bd448d",
+      "ty_site_packages"
+    ],
+    [
+      "7583f23c070a4b73f900797d93c277081d226d91cd0e0039be498c7bcf2fa2e6",
+      "ruff_workspace"
+    ],
+    [
+      "a7d53a727b519f4e2f6aa04939043d0095d9920f8b0445c8f538cf22e6c0cc29",
+      "ruff_linter"
+    ],
+    [
+      "ab093d6f4473cb799186145a21f6dae281e618e02274d1d9fd98972ae612e5bb",
+      "ty_python_semantic"
+    ],
+    [
+      "ab1560c6b538eee7289a2648c186ca6381f1d2fe126b9fd5a59ebd81cb8bfd3c",
+      "ty_module_resolver"
+    ],
+    [
+      "ac6d1e701c9ad7fa08eefe3dfdb972340a2f261656dfea5016664619a794473f",
+      "ruff_python_importer"
+    ],
+    [
+      "ad8696116d4e4c743dd4865af37ea0e68d5aec05fd9a5810b4da4ae063ca951e",
+      "ty_combine"
+    ],
+    [
+      "b139a991464c4c104dacbbd1e89d1e84a3c30d11f893ed66facda3440e563f7d",
+      "ty_python_core"
+    ],
+    [
+      "b5506cf9994146c0faeecf2991d4d875a091f42b2251a8c8798b3f22e86bf052",
+      "ty_project"
+    ],
+    [
+      "cb4bf259a6c59337665386f9551dcc9e3dbf1df88604803e23566475c21119d4",
+      "ruff_python_semantic"
+    ],
+    [
+      "d06609f010ffd6d5cce88b2a26f5884fb574d63a91ae9de3ea3e7eaed8614880",
+      "ruff_ranged_value"
+    ],
+    [
+      "da2b6fa5e272a4b204a48334066e9a7038d64cc0cdd7db43b663ba93b3202b30",
+      "ty_ide"
+    ],
+    [
+      "e0982330a6d59af4a925707dc3e3f56831db2cb745100943bf85defe7b292c84",
+      "ruff_wasm"
+    ]
+  ],
+  "native_processes": [
+    {
+      "argv_sha256": "dfdeb2a7949927c1bf3d8aedddf826f799d02ad1cca0c3c568dfe0078e3e6fcb",
+      "executable": "cc",
+      "pid": 2653693
+    },
+    {
+      "argv_sha256": "1fb1e798fa49db31d2e68350a33cc2da2e98d4e4ab9499023733f7ed36f28db9",
+      "executable": "cc",
+      "pid": 2653694
+    },
+    {
+      "argv_sha256": "37ef32287af4e0f151184b0333c377021ec0eab494294fdaf508b09ab98883c8",
+      "executable": "collect2",
+      "pid": 2653696
+    },
+    {
+      "argv_sha256": "d38a066238dbc2ea57233c29122449e30ffb0e59a9a6b9b02d8c045539d7b104",
+      "executable": "collect2",
+      "pid": 2653706
+    },
+    {
+      "argv_sha256": "a3966ab51cc8e9a24247a720c398bcae4e1615d9223d2b785e5b4a7d2c328c6d",
+      "executable": "ld.bfd",
+      "pid": 2653697
+    },
+    {
+      "argv_sha256": "77689863fd698b7c8fc36ca4bff52f1575cdf07f68a80119bddd0511e4686dff",
+      "executable": "ld.bfd",
+      "pid": 2653707
+    }
+  ],
+  "source": "edited",
+  "unit_roster_sha256": "3e8ec81a7d8e8471b32ec7a6230fcea70aaf7da29f6862ab4a3a901fa539319c",
+  "units": 362
+}

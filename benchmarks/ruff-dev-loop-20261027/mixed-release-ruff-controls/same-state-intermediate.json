@@ -1,0 +1,112 @@
+[
+  {
+    "full": [
+      [
+        2632566,
+        "ruff_python_parser",
+        "full"
+      ],
+      [
+        2632669,
+        "ruff_wasm",
+        "full"
+      ],
+      [
+        2632670,
+        "ty_wasm",
+        "full"
+      ]
+    ],
+    "guarded": [
+      [
+        2632079,
+        "ruff_python_parser",
+        "full"
+      ],
+      [
+        2632208,
+        "ty_wasm",
+        "HIR-and-native-link"
+      ],
+      [
+        2632219,
+        "ruff_wasm",
+        "HIR-and-native-link"
+      ]
+    ],
+    "same_outputs": {
+      "ruff_python_parser": {
+        ".rmeta": true,
+        "embedded": true
+      },
+      "ruff_wasm": {
+        ".rmeta": true,
+        ".so": true,
+        "embedded": true,
+        "symbols": true
+      },
+      "ty_wasm": {
+        ".rmeta": true,
+        ".so": true,
+        "embedded": true,
+        "symbols": true
+      }
+    },
+    "source": "original"
+  },
+  {
+    "full": [
+      [
+        2632930,
+        "ruff_python_parser",
+        "full"
+      ],
+      [
+        2633033,
+        "ruff_wasm",
+        "full"
+      ],
+      [
+        2633044,
+        "ty_wasm",
+        "full"
+      ]
+    ],
+    "guarded": [
+      [
+        2632320,
+        "ruff_python_parser",
+        "full"
+      ],
+      [
+        2632430,
+        "ty_wasm",
+        "HIR-and-native-link"
+      ],
+      [
+        2632441,
+        "ruff_wasm",
+        "HIR-and-native-link"
+      ]
+    ],
+    "same_outputs": {
+      "ruff_python_parser": {
+        ".rmeta": true,
+        "embedded": true
+      },
+      "ruff_wasm": {
+        ".rmeta": true,
+        ".so": true,
+        "embedded": true,
+        "symbols": true
+      },
+      "ty_wasm": {
+        ".rmeta": true,
+        ".so": true,
+        "embedded": true,
+        "symbols": true
+      }
+    },
+    "source": "edited"
+  }
+]
