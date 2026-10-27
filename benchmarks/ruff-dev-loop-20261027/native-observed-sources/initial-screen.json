@@ -1,0 +1,854 @@
+{
+  "cargo": "a99a694c680f474bef2ae17de20533890dc536606021db93aaf531e3ef40919a",
+  "compiler": "27029b4bce40f3b5497add5019c02a11c16c4c18",
+  "driver": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+  "endpoints": {
+    "doc-build": {
+      "candidate": {
+        "driver": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+        "verify-edit": {
+          "crates": [
+            [
+              "rustc_full",
+              "ruff_linter"
+            ],
+            [
+              "rustc_full",
+              "ruff_wasm"
+            ],
+            [
+              "rustc_link_only",
+              "ruff"
+            ],
+            [
+              "rustc_link_only",
+              "ruff_dev"
+            ]
+          ],
+          "fresh_units": 490,
+          "full_dirty_count": 11,
+          "processes": {
+            "rustc_full": 2,
+            "rustc_link_only": 2,
+            "wild": 3
+          },
+          "receipt_sha256": "5b9f5fd6373641d45353c318da10f6b03195d64a6faf01d55df1c8ace9afa92a",
+          "roster_sha": "97f9aa0390c8981fa6ab6acb6bed1212a0d47ac1810fe040d96b43b101aeff22"
+        },
+        "verify-noop": {
+          "crates": [],
+          "fresh_units": 501,
+          "full_dirty_count": 0,
+          "processes": {},
+          "receipt_sha256": "fe7eb2747e58eadcd08c31f6629444522dc7252a030382d201a72df0d8bc196e",
+          "roster_sha": "97f9aa0390c8981fa6ab6acb6bed1212a0d47ac1810fe040d96b43b101aeff22"
+        }
+      },
+      "old233": {
+        "driver": "3e4b168966e111b52ad1a942d364ec1335cf1cfa994f4208b0909ca215b589d2",
+        "verify-edit": {
+          "crates": [
+            [
+              "rustc_full",
+              "ruff"
+            ],
+            [
+              "rustc_full",
+              "ruff"
+            ],
+            [
+              "rustc_full",
+              "ruff_benchmark"
+            ],
+            [
+              "rustc_full",
+              "ruff_dev"
+            ],
+            [
+              "rustc_full",
+              "ruff_graph"
+            ],
+            [
+              "rustc_full",
+              "ruff_linter"
+            ],
+            [
+              "rustc_full",
+              "ruff_markdown"
+            ],
+            [
+              "rustc_full",
+              "ruff_mdtest"
+            ],
+            [
+              "rustc_full",
+              "ruff_server"
+            ],
+            [
+              "rustc_full",
+              "ruff_wasm"
+            ],
+            [
+              "rustc_full",
+              "ruff_workspace"
+            ]
+          ],
+          "fresh_units": 490,
+          "full_dirty_count": 11,
+          "processes": {
+            "rustc_full": 11,
+            "wild": 3
+          },
+          "receipt_sha256": "bfd17e857a7e66f039b748b77623b14fc20a708e566f8c526f8157ada997c9b1",
+          "roster_sha": "97f9aa0390c8981fa6ab6acb6bed1212a0d47ac1810fe040d96b43b101aeff22"
+        },
+        "verify-noop": {
+          "crates": [],
+          "fresh_units": 501,
+          "full_dirty_count": 0,
+          "processes": {},
+          "receipt_sha256": "bbe775ea968b4db1ab6f34f7e7ac4f513ea6cb49474e323fbbd38fd1f681e7d0",
+          "roster_sha": "97f9aa0390c8981fa6ab6acb6bed1212a0d47ac1810fe040d96b43b101aeff22"
+        }
+      },
+      "parent232": {
+        "driver": "051b9d3f5861f984faa0f8c1d2ab9b5c28e483a05c728051de837291c83fd518",
+        "verify-edit": {
+          "crates": [
+            [
+              "rustc_full",
+              "ruff_linter"
+            ],
+            [
+              "rustc_full",
+              "ruff_wasm"
+            ],
+            [
+              "rustc_link_only",
+              "ruff"
+            ],
+            [
+              "rustc_link_only",
+              "ruff_dev"
+            ]
+          ],
+          "fresh_units": 490,
+          "full_dirty_count": 11,
+          "processes": {
+            "rustc_full": 2,
+            "rustc_link_only": 2,
+            "wild": 3
+          },
+          "receipt_sha256": "826e10442aad0a574d1b3dea59588bac142e1cdfeccaa998a1963c859f523341",
+          "roster_sha": "97f9aa0390c8981fa6ab6acb6bed1212a0d47ac1810fe040d96b43b101aeff22"
+        },
+        "verify-noop": {
+          "crates": [],
+          "fresh_units": 501,
+          "full_dirty_count": 0,
+          "processes": {},
+          "receipt_sha256": "ac2e48a1c8d0a45ad650395f4f387901bf6c82ce6e7dc433633dcfaaedbf2f27",
+          "roster_sha": "97f9aa0390c8981fa6ab6acb6bed1212a0d47ac1810fe040d96b43b101aeff22"
+        }
+      }
+    },
+    "doc-test": {
+      "candidate": {
+        "driver": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+        "verify-edit": {
+          "crates": [
+            [
+              "rustc_full",
+              "api"
+            ],
+            [
+              "rustc_full",
+              "ruff_linter"
+            ],
+            [
+              "rustc_full",
+              "ruff_linter"
+            ],
+            [
+              "rustc_full",
+              "ruff_wasm"
+            ],
+            [
+              "rustc_link_only",
+              "analyze_graph"
+            ],
+            [
+              "rustc_link_only",
+              "cli"
+            ],
+            [
+              "rustc_link_only",
+              "config"
+            ],
+            [
+              "rustc_link_only",
+              "direxist_guard"
+            ],
+            [
+              "rustc_link_only",
+              "document"
+            ],
+            [
+              "rustc_link_only",
+              "e2e"
+            ],
+            [
+              "rustc_link_only",
+              "integration_test"
+            ],
+            [
+              "rustc_link_only",
+              "mdtest"
+            ],
+            [
+              "rustc_link_only",
+              "resolve_files"
+            ],
+            [
+              "rustc_link_only",
+              "ruff"
+            ],
+            [
+              "rustc_link_only",
+              "ruff"
+            ],
+            [
+              "rustc_link_only",
+              "ruff"
+            ],
+            [
+              "rustc_link_only",
+              "ruff_dev"
+            ],
+            [
+              "rustc_link_only",
+              "ruff_markdown"
+            ],
+            [
+              "rustc_link_only",
+              "ruff_server"
+            ],
+            [
+              "rustc_link_only",
+              "ruff_workspace"
+            ]
+          ],
+          "fresh_units": 593,
+          "full_dirty_count": 26,
+          "processes": {
+            "rustc_full": 4,
+            "rustc_link_only": 16,
+            "wild": 19
+          },
+          "receipt_sha256": "e6ee581933046be129b6351a8462cd15c9dea009899a2c75f25bff19af940260",
+          "roster_sha": "07f5421bfdaf0f0b868400592bd3eb8fb1fbe0941e440cd2a13929dc5fc5cb26"
+        },
+        "verify-noop": {
+          "crates": [],
+          "fresh_units": 619,
+          "full_dirty_count": 0,
+          "processes": {},
+          "receipt_sha256": "c2b3b318bf34d6585013edb46117dc97d2873936c48e023e75dabcffa9f0ebf4",
+          "roster_sha": "07f5421bfdaf0f0b868400592bd3eb8fb1fbe0941e440cd2a13929dc5fc5cb26"
+        }
+      },
+      "old233": {
+        "driver": "3e4b168966e111b52ad1a942d364ec1335cf1cfa994f4208b0909ca215b589d2",
+        "verify-edit": {
+          "crates": [
+            [
+              "rustc_full",
+              "analyze_graph"
+            ],
+            [
+              "rustc_full",
+              "api"
+            ],
+            [
+              "rustc_full",
+              "cli"
+            ],
+            [
+              "rustc_full",
+              "config"
+            ],
+            [
+              "rustc_full",
+              "direxist_guard"
+            ],
+            [
+              "rustc_full",
+              "document"
+            ],
+            [
+              "rustc_full",
+              "e2e"
+            ],
+            [
+              "rustc_full",
+              "integration_test"
+            ],
+            [
+              "rustc_full",
+              "mdtest"
+            ],
+            [
+              "rustc_full",
+              "resolve_files"
+            ],
+            [
+              "rustc_full",
+              "ruff"
+            ],
+            [
+              "rustc_full",
+              "ruff"
+            ],
+            [
+              "rustc_full",
+              "ruff"
+            ],
+            [
+              "rustc_full",
+              "ruff"
+            ],
+            [
+              "rustc_full",
+              "ruff_dev"
+            ],
+            [
+              "rustc_full",
+              "ruff_graph"
+            ],
+            [
+              "rustc_full",
+              "ruff_linter"
+            ],
+            [
+              "rustc_full",
+              "ruff_linter"
+            ],
+            [
+              "rustc_full",
+              "ruff_markdown"
+            ],
+            [
+              "rustc_full",
+              "ruff_markdown"
+            ],
+            [
+              "rustc_full",
+              "ruff_mdtest"
+            ],
+            [
+              "rustc_full",
+              "ruff_server"
+            ],
+            [
+              "rustc_full",
+              "ruff_server"
+            ],
+            [
+              "rustc_full",
+              "ruff_wasm"
+            ],
+            [
+              "rustc_full",
+              "ruff_workspace"
+            ],
+            [
+              "rustc_full",
+              "ruff_workspace"
+            ]
+          ],
+          "fresh_units": 593,
+          "full_dirty_count": 26,
+          "processes": {
+            "rustc_full": 26,
+            "wild": 19
+          },
+          "receipt_sha256": "6a86b30e12f9a93f20da6544fe692fd5256be750dfae96a7a963ea1deb8d9d9a",
+          "roster_sha": "07f5421bfdaf0f0b868400592bd3eb8fb1fbe0941e440cd2a13929dc5fc5cb26"
+        },
+        "verify-noop": {
+          "crates": [],
+          "fresh_units": 619,
+          "full_dirty_count": 0,
+          "processes": {},
+          "receipt_sha256": "4bcb3625523dba58984ad4e13515095bfea9ac064241e7eb1ce36c2430279293",
+          "roster_sha": "07f5421bfdaf0f0b868400592bd3eb8fb1fbe0941e440cd2a13929dc5fc5cb26"
+        }
+      },
+      "parent232": {
+        "driver": "051b9d3f5861f984faa0f8c1d2ab9b5c28e483a05c728051de837291c83fd518",
+        "verify-edit": {
+          "crates": [
+            [
+              "rustc_full",
+              "api"
+            ],
+            [
+              "rustc_full",
+              "ruff_linter"
+            ],
+            [
+              "rustc_full",
+              "ruff_linter"
+            ],
+            [
+              "rustc_full",
+              "ruff_wasm"
+            ],
+            [
+              "rustc_link_only",
+              "analyze_graph"
+            ],
+            [
+              "rustc_link_only",
+              "cli"
+            ],
+            [
+              "rustc_link_only",
+              "config"
+            ],
+            [
+              "rustc_link_only",
+              "direxist_guard"
+            ],
+            [
+              "rustc_link_only",
+              "document"
+            ],
+            [
+              "rustc_link_only",
+              "e2e"
+            ],
+            [
+              "rustc_link_only",
+              "integration_test"
+            ],
+            [
+              "rustc_link_only",
+              "mdtest"
+            ],
+            [
+              "rustc_link_only",
+              "resolve_files"
+            ],
+            [
+              "rustc_link_only",
+              "ruff"
+            ],
+            [
+              "rustc_link_only",
+              "ruff"
+            ],
+            [
+              "rustc_link_only",
+              "ruff"
+            ],
+            [
+              "rustc_link_only",
+              "ruff_dev"
+            ],
+            [
+              "rustc_link_only",
+              "ruff_markdown"
+            ],
+            [
+              "rustc_link_only",
+              "ruff_server"
+            ],
+            [
+              "rustc_link_only",
+              "ruff_workspace"
+            ]
+          ],
+          "fresh_units": 593,
+          "full_dirty_count": 26,
+          "processes": {
+            "rustc_full": 4,
+            "rustc_link_only": 16,
+            "wild": 19
+          },
+          "receipt_sha256": "0458879f304ea5718874a7e62c480d3e11058526bba62d20cb7e120b13fd95e4",
+          "roster_sha": "07f5421bfdaf0f0b868400592bd3eb8fb1fbe0941e440cd2a13929dc5fc5cb26"
+        },
+        "verify-noop": {
+          "crates": [],
+          "fresh_units": 619,
+          "full_dirty_count": 0,
+          "processes": {},
+          "receipt_sha256": "41ad6588fad74d52459ca96b8f30fabced67c26f8513f2997acae0cbac1154e6",
+          "roster_sha": "07f5421bfdaf0f0b868400592bd3eb8fb1fbe0941e440cd2a13929dc5fc5cb26"
+        }
+      }
+    },
+    "parser-build": {
+      "candidate": {
+        "driver": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+        "verify-edit": {
+          "crates": [
+            [
+              "rustc_full",
+              "ruff_python_parser"
+            ],
+            [
+              "rustc_full",
+              "ruff_wasm"
+            ],
+            [
+              "rustc_full",
+              "ty_wasm"
+            ],
+            [
+              "rustc_link_only",
+              "ruff"
+            ],
+            [
+              "rustc_link_only",
+              "ruff_dev"
+            ],
+            [
+              "rustc_link_only",
+              "ruff_python_formatter"
+            ],
+            [
+              "rustc_link_only",
+              "ty"
+            ],
+            [
+              "rustc_link_only",
+              "ty_completion_bench"
+            ],
+            [
+              "rustc_link_only",
+              "ty_completion_eval"
+            ]
+          ],
+          "fresh_units": 466,
+          "full_dirty_count": 35,
+          "processes": {
+            "rustc_full": 3,
+            "rustc_link_only": 6,
+            "wild": 8
+          },
+          "receipt_sha256": "8a85c9b145d8d733585820bdb903840b1c3127878d9bcc2ae802cac8bf3ad71b",
+          "roster_sha": "97f9aa0390c8981fa6ab6acb6bed1212a0d47ac1810fe040d96b43b101aeff22"
+        },
+        "verify-noop": {
+          "crates": [],
+          "fresh_units": 501,
+          "full_dirty_count": 0,
+          "processes": {},
+          "receipt_sha256": "5beb70b82fa95a853629e7bcf5a4d1fe13d5d9341d3a2137b6501db18bfa210f",
+          "roster_sha": "97f9aa0390c8981fa6ab6acb6bed1212a0d47ac1810fe040d96b43b101aeff22"
+        }
+      }
+    },
+    "parser-test": {
+      "candidate": {
+        "driver": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+        "verify-edit": {
+          "crates": [
+            [
+              "rustc_full",
+              "api"
+            ],
+            [
+              "rustc_full",
+              "api"
+            ],
+            [
+              "rustc_full",
+              "ruff_python_parser"
+            ],
+            [
+              "rustc_full",
+              "ruff_python_parser"
+            ],
+            [
+              "rustc_full",
+              "ruff_wasm"
+            ],
+            [
+              "rustc_full",
+              "ty_wasm"
+            ],
+            [
+              "rustc_link_only",
+              "analyze_graph"
+            ],
+            [
+              "rustc_link_only",
+              "block_comments"
+            ],
+            [
+              "rustc_link_only",
+              "cli"
+            ],
+            [
+              "rustc_link_only",
+              "cli"
+            ],
+            [
+              "rustc_link_only",
+              "comparable"
+            ],
+            [
+              "rustc_link_only",
+              "config"
+            ],
+            [
+              "rustc_link_only",
+              "corpus"
+            ],
+            [
+              "rustc_link_only",
+              "direxist_guard"
+            ],
+            [
+              "rustc_link_only",
+              "document"
+            ],
+            [
+              "rustc_link_only",
+              "e2e"
+            ],
+            [
+              "rustc_link_only",
+              "e2e"
+            ],
+            [
+              "rustc_link_only",
+              "file_watching"
+            ],
+            [
+              "rustc_link_only",
+              "fixtures"
+            ],
+            [
+              "rustc_link_only",
+              "fixtures"
+            ],
+            [
+              "rustc_link_only",
+              "identifier"
+            ],
+            [
+              "rustc_link_only",
+              "integration_test"
+            ],
+            [
+              "rustc_link_only",
+              "match_pattern"
+            ],
+            [
+              "rustc_link_only",
+              "mdtest"
+            ],
+            [
+              "rustc_link_only",
+              "mdtest"
+            ],
+            [
+              "rustc_link_only",
+              "mdtest"
+            ],
+            [
+              "rustc_link_only",
+              "normalizer"
+            ],
+            [
+              "rustc_link_only",
+              "parentheses"
+            ],
+            [
+              "rustc_link_only",
+              "parenthesize"
+            ],
+            [
+              "rustc_link_only",
+              "resolve_files"
+            ],
+            [
+              "rustc_link_only",
+              "ruff"
+            ],
+            [
+              "rustc_link_only",
+              "ruff"
+            ],
+            [
+              "rustc_link_only",
+              "ruff"
+            ],
+            [
+              "rustc_link_only",
+              "ruff_db"
+            ],
+            [
+              "rustc_link_only",
+              "ruff_dev"
+            ],
+            [
+              "rustc_link_only",
+              "ruff_linter"
+            ],
+            [
+              "rustc_link_only",
+              "ruff_markdown"
+            ],
+            [
+              "rustc_link_only",
+              "ruff_python_codegen"
+            ],
+            [
+              "rustc_link_only",
+              "ruff_python_edits"
+            ],
+            [
+              "rustc_link_only",
+              "ruff_python_formatter"
+            ],
+            [
+              "rustc_link_only",
+              "ruff_python_formatter"
+            ],
+            [
+              "rustc_link_only",
+              "ruff_python_formatter"
+            ],
+            [
+              "rustc_link_only",
+              "ruff_python_importer"
+            ],
+            [
+              "rustc_link_only",
+              "ruff_python_index"
+            ],
+            [
+              "rustc_link_only",
+              "ruff_python_semantic"
+            ],
+            [
+              "rustc_link_only",
+              "ruff_server"
+            ],
+            [
+              "rustc_link_only",
+              "ruff_workspace"
+            ],
+            [
+              "rustc_link_only",
+              "self_environment"
+            ],
+            [
+              "rustc_link_only",
+              "simple_tokenizer"
+            ],
+            [
+              "rustc_link_only",
+              "source_order"
+            ],
+            [
+              "rustc_link_only",
+              "stmt_if"
+            ],
+            [
+              "rustc_link_only",
+              "ty"
+            ],
+            [
+              "rustc_link_only",
+              "ty"
+            ],
+            [
+              "rustc_link_only",
+              "ty"
+            ],
+            [
+              "rustc_link_only",
+              "ty_combine"
+            ],
+            [
+              "rustc_link_only",
+              "ty_completion_bench"
+            ],
+            [
+              "rustc_link_only",
+              "ty_completion_eval"
+            ],
+            [
+              "rustc_link_only",
+              "ty_ide"
+            ],
+            [
+              "rustc_link_only",
+              "ty_module_resolver"
+            ],
+            [
+              "rustc_link_only",
+              "ty_project"
+            ],
+            [
+              "rustc_link_only",
+              "ty_python_core"
+            ],
+            [
+              "rustc_link_only",
+              "ty_python_semantic"
+            ],
+            [
+              "rustc_link_only",
+              "ty_server"
+            ],
+            [
+              "rustc_link_only",
+              "ty_site_packages"
+            ],
+            [
+              "rustc_link_only",
+              "ty_test"
+            ],
+            [
+              "rustc_link_only",
+              "ty_vendored"
+            ],
+            [
+              "rustc_link_only",
+              "visitor"
+            ],
+            [
+              "rustc_link_only",
+              "whitespace"
+            ]
+          ],
+          "fresh_units": 525,
+          "full_dirty_count": 94,
+          "processes": {
+            "rustc_full": 6,
+            "rustc_link_only": 62,
+            "wild": 67
+          },
+          "receipt_sha256": "88858f776632980e66d7f8f09b450144daa57f5910687b368325acb08faa4c74",
+          "roster_sha": "07f5421bfdaf0f0b868400592bd3eb8fb1fbe0941e440cd2a13929dc5fc5cb26"
+        },
+        "verify-noop": {
+          "crates": [],
+          "fresh_units": 619,
+          "full_dirty_count": 0,
+          "processes": {},
+          "receipt_sha256": "bc316d9b5622992e381f401d2ada5fd88ca13d5041b12ce5b6bcd2b1808f0021",
+          "roster_sha": "07f5421bfdaf0f0b868400592bd3eb8fb1fbe0941e440cd2a13929dc5fc5cb26"
+        }
+      }
+    }
+  },
+  "ruff": "93526150df078af7dd8fc4226cdcc469539d2001"
+}
