@@ -1,0 +1,63 @@
+diff --git a/compiler/rustc_incremental/src/persist/file_format.rs b/compiler/rustc_incremental/src/persist/file_format.rs
+index b315aea19d21c..970a9d9b1e592 100644
+--- a/compiler/rustc_incremental/src/persist/file_format.rs
++++ b/compiler/rustc_incremental/src/persist/file_format.rs
+@@ -27,7 +27,7 @@
+ 
+ /// Change this if the header format changes.
+ // Older proc-macro queries do not replay their virtual source files.
+-const HEADER_FORMAT_VERSION: u16 = 3;
++const HEADER_FORMAT_VERSION: u16 = 4;
+ 
+ pub(crate) fn write_file_header(stream: &mut FileEncoder<'_>, sess: &Session) {
+     stream.emit_raw_bytes(FILE_MAGIC);
+diff --git a/compiler/rustc_middle/src/mir/interpret/mod.rs b/compiler/rustc_middle/src/mir/interpret/mod.rs
+index a89617d794b30..4be98c176271a 100644
+--- a/compiler/rustc_middle/src/mir/interpret/mod.rs
++++ b/compiler/rustc_middle/src/mir/interpret/mod.rs
+@@ -99,6 +99,7 @@ enum AllocDiscriminant {
+     VTable,
+     Static,
+     Type,
++    DedupMemory,
+ }
+ 
+ pub fn specialized_encode_alloc_id<'tcx, E: TyEncoder<'tcx>>(
+@@ -109,7 +110,18 @@ pub fn specialized_encode_alloc_id<'tcx, E: TyEncoder<'tcx>>(
+     match tcx.global_alloc(alloc_id) {
+         GlobalAlloc::Memory(alloc) => {
+             trace!("encoding {:?} with {:#?}", alloc_id, alloc);
+-            AllocDiscriminant::Alloc.encode(encoder);
++            // A freshly lowered literal shares its AllocId with identical literals. An incremental
++            // decode must rejoin that interner, while equal bytes from distinct allocations must
++            // keep their original identity. Cross-crate metadata retains its existing encoding.
++            let kind = if !E::CLEAR_CROSS_CRATE
++                && tcx.alloc_map.dedup.lock().get(&(GlobalAlloc::Memory(alloc), CTFE_ALLOC_SALT))
++                    == Some(&alloc_id)
++            {
++                AllocDiscriminant::DedupMemory
++            } else {
++                AllocDiscriminant::Alloc
++            };
++            kind.encode(encoder);
+             alloc.encode(encoder);
+         }
+         GlobalAlloc::Function { instance } => {
+@@ -242,11 +254,15 @@ pub fn decode_alloc_id<'tcx, D>(&self, decoder: &mut D) -> AllocId
+ 
+         // Now decode the actual data.
+         let alloc_id = decoder.with_position(pos, |decoder| match alloc_kind {
+-            AllocDiscriminant::Alloc => {
++            AllocDiscriminant::Alloc | AllocDiscriminant::DedupMemory => {
+                 trace!("creating memory alloc ID");
+                 let alloc = <ConstAllocation<'tcx> as Decodable<_>>::decode(decoder);
+                 trace!("decoded alloc {:?}", alloc);
+-                decoder.interner().reserve_and_set_memory_alloc(alloc)
++                if matches!(alloc_kind, AllocDiscriminant::DedupMemory) {
++                    decoder.interner().reserve_and_set_memory_dedup(alloc, CTFE_ALLOC_SALT)
++                } else {
++                    decoder.interner().reserve_and_set_memory_alloc(alloc)
++                }
+             }
+             AllocDiscriminant::Fn => {
+                 trace!("creating fn alloc ID");

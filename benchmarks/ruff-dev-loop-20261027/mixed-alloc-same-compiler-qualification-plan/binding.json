@@ -1,0 +1,112 @@
+{
+  "arms": {
+    "B": {
+      "cargo": "/home/dev-user/.cache/ohm-233-position-qualified-20261027/cargo-observer-fifo-qualification/guardv3",
+      "cargo_sha256": "dd5cab154b8dcd09ccc2753160d314cade80979b2d055ee66aa9e2217e05e7e1",
+      "driver": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-after-alloc-release-v1/candidate-driver.so",
+      "driver_sha256": "63145e253973980f3786ce562b2342d2590b4a783256e4197e8ffacdf7d110fa"
+    },
+    "C": {
+      "cargo": "/home/dev-user/.cache/ohm-233-position-qualified-20261027/drivers/cargo-0f237cc3b506aa90c1224e6ed80f646566b424b78c8d74f288f6523d17fc8aa1",
+      "cargo_sha256": "0f237cc3b506aa90c1224e6ed80f646566b424b78c8d74f288f6523d17fc8aa1",
+      "driver": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-after-alloc-release-v1/candidate-driver.so",
+      "driver_sha256": "63145e253973980f3786ce562b2342d2590b4a783256e4197e8ffacdf7d110fa"
+    }
+  },
+  "frozen_source_manifest": "f5b2ab7ed573009e1a628554ee36f2c8660a3e2471c6ac272fc6f041a02373f4",
+  "host": {
+    "arch": "x86_64",
+    "cargo_jobs": 8,
+    "cpus": 32,
+    "host_tools": {
+      "GCC_driver": {
+        "path": "/usr/bin/cc",
+        "resolved": "/usr/bin/x86_64-linux-gnu-gcc-13",
+        "sha256": "1b99826121ae6682a634e5efe09bd3e3df58ce58e0b28f849114ab5b89139c26"
+      },
+      "Wild": {
+        "path": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/lib/rustlib/x86_64-unknown-linux-gnu/bin/wild-ld/ld.bfd",
+        "resolved": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/lib/rustlib/x86_64-unknown-linux-gnu/bin/wild-ld/ld.bfd",
+        "sha256": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5"
+      },
+      "collect2": {
+        "path": "/usr/libexec/gcc/x86_64-linux-gnu/13/collect2",
+        "resolved": "/usr/libexec/gcc/x86_64-linux-gnu/13/collect2",
+        "sha256": "4d1f341ae5b763b513258ee2812422a45e063c30a2f1924a0cf63d3699f3a158"
+      },
+      "rustc_frontend": {
+        "path": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/bin/rustc",
+        "resolved": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/bin/rustc",
+        "sha256": "4fa9a18b77430bcc416e88561b6fe5797d98b996a7698b9f3bd11d4e7817a19f"
+      },
+      "rustup_cargo_proxy": {
+        "path": "/home/dev-user/.cargo/bin/cargo",
+        "resolved": "/home/dev-user/.cargo/bin/rustup",
+        "sha256": "5be191e8c70a5007074254cb74d78dbfdd25cd5a61c27de7b8e5410122ec24f4"
+      }
+    },
+    "kernel": "7.0.0-38-generic",
+    "label": "H3",
+    "logical": {
+      "registry": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/registry-home",
+      "rustup": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/rustup",
+      "shared": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/shared",
+      "target": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target",
+      "workspace": "/home/dev-user/code/oss/ruff-ohm-whole-native-20261027"
+    },
+    "measure_lock": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-measure.lock",
+    "min_free_bytes": 26843545600,
+    "model": "AMD EPYC-Milan Processor",
+    "no_scored_or_training_attempt": true,
+    "node_sha256": "22a67d8cdc143aa12cc1796ed71bc6cd84cd90c1391573d14e19e15659ddf9d6",
+    "physical_state_parent": {
+      "device_number": 64769,
+      "free_bytes_preflight": 169982324736,
+      "mount": [
+        {
+          "fstype": "ext4",
+          "maj:min": "253:1",
+          "source": "/dev/vda1",
+          "target": "/"
+        }
+      ],
+      "path": "/home/dev-user/.cache/ohm-233-position-qualified-20261027"
+    },
+    "source_index_sha256": "67c1fe7287d78cfa1e910865b62d685d1da8ab11ec8fc41d1574271079d69b00",
+    "system": "Linux",
+    "timed_affinity": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23
+    ],
+    "timestamp": "2026-10-27T12:34:29.013416+00:00"
+  },
+  "profiles": {
+    "clippy-pgo.profdata": "e98375c08ba000ec664f9aaa91f6557092e67682ff6554e23892a09406130dfc",
+    "rustc-bolt.profdata": "34cd73280713b4cfad9183f5d36ec29e4884b00ec4aac3594d6f1ef194c444f4",
+    "rustc-pgo.profdata": "481ada8a40c70dad11b3c7e8871e9a52207d78447ca5e8ace06fc4aec2d2b5a7",
+    "rustdoc-pgo.profdata": "8499f73f1fa169f858f3e7a2b4e047c53d14a0248097ddf70d2092805b57a0d1",
+    "rustfmt-pgo.profdata": "d8980c31367e4e3bd59e61f3c57619c9ab246b3effc3fcd585a30b8068395d99"
+  }
+}
