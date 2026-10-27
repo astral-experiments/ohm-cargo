@@ -1,0 +1,16 @@
+[
+  "rustc",
+  "+ohm",
+  "--edition=2024",
+  "--crate-name",
+  "app",
+  "/dev/shm/ohm-packaged-15-macro-20261027/fixture-output/workspace/main.rs",
+  "--extern",
+  "bridge=/dev/shm/ohm-packaged-15-macro-20261027/fixture-output/libbridge_input.rlib",
+  "-L",
+  "dependency=/dev/shm/ohm-packaged-15-macro-20261027/fixture-output/active/target/debug/build/workspaces/e074a10d37e0cf37/v2-ffe5a55ba0f2a511/test_unit/1feeb1c953716297/out",
+  "-L",
+  "dependency=/dev/shm/ohm-packaged-15-macro-20261027/fixture-output/active/target/debug/build/workspaces/e074a10d37e0cf37/v2-ffe5a55ba0f2a511/macro_maker/8f0b3c6208c15e12/out",
+  "-o",
+  "/dev/shm/ohm-packaged-15-macro-20261027/fixture-output/evidence/programmatic/warm-caller-warm/app"
+]

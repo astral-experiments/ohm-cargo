@@ -1,0 +1,18 @@
+[
+  "rustc",
+  "+ohm",
+  "--edition=2024",
+  "--crate-name",
+  "bridge",
+  "--crate-type",
+  "rlib",
+  "/dev/shm/ohm-packaged-15-macro-20261027/fixture-output/workspace/bridge.rs",
+  "--extern",
+  "test_unit=/dev/shm/ohm-packaged-15-macro-20261027/fixture-output/active/target/debug/libtest_unit.rlib",
+  "-L",
+  "dependency=/dev/shm/ohm-packaged-15-macro-20261027/fixture-output/active/shared/debug/build/.ohm-split-e074a10d37e0cf37/test_unit/d95e95409259d8fc/out",
+  "-L",
+  "dependency=/dev/shm/ohm-packaged-15-macro-20261027/fixture-output/active/shared/debug/build/.ohm-split-e074a10d37e0cf37/macro_maker/aec39e0076360243/out",
+  "-o",
+  "/dev/shm/ohm-packaged-15-macro-20261027/fixture-output/evidence/legacy/bridge-empty/libbridge.rlib"
+]
