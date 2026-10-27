@@ -1654,6 +1654,8 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
         let mut registry_closure_units = registry_closure_units.into_iter().collect::<Vec<_>>();
         registry_closure_units.sort_by_key(|unit| self.files().unit_hash(unit));
 
+        let mut rejected_packages = self.conflicting_check_dependencies(&registry_closure_units);
+
         // Host procedural macros, build scripts, and their dependencies have
         // independent package and build-override profiles. Check their actual
         // units too, not just the target libraries promoted by the check graph.
@@ -1736,7 +1738,7 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
         }
 
         if stale_units.is_empty() {
-            return Ok(HashSet::default());
+            return Ok(rejected_packages);
         }
 
         // A built parent cannot remain promoted when any dependency in its
@@ -1773,11 +1775,87 @@ impl<'a, 'gctx> BuildRunner<'a, 'gctx> {
             }
         }
 
-        Ok(stale_units
-            .into_iter()
-            .filter(|unit| self.reused_registry_units.contains(unit))
-            .map(|unit| unit.pkg.package_id())
-            .collect())
+        rejected_packages.extend(
+            stale_units
+                .into_iter()
+                .filter(|unit| self.reused_registry_units.contains(unit))
+                .map(|unit| unit.pkg.package_id()),
+        );
+        Ok(rejected_packages)
+    }
+
+    /// Rejects promoted libraries that would bring a second copy of a checked crate into rustc.
+    fn conflicting_check_dependencies(&self, built: &[Unit]) -> HashSet<PackageId> {
+        // Compare the logical library across modes. Without shared stages the two
+        // -Cmetadata values differ, but mixing those copies still splits Rust types.
+        let checked = self
+            .bcx
+            .unit_graph
+            .keys()
+            .filter(|unit| {
+                unit.mode == CompileMode::Check { test: false }
+                    && unit.target.is_linkable()
+                    && !self.is_terminal_check_unit(unit)
+            })
+            .map(|unit| (unit.pkg.package_id(), unit))
+            .into_group_map();
+        let mut pairs = Vec::new();
+        for native in built
+            .iter()
+            .filter(|unit| unit.mode == CompileMode::Build && unit.target.is_linkable())
+        {
+            for check in checked.get(&native.pkg.package_id()).into_iter().flatten() {
+                if native.kind == check.kind
+                    && native.profile == check.profile
+                    && native.features == check.features
+                {
+                    pairs.push((native, *check));
+                }
+            }
+        }
+
+        let mut rejected = HashSet::default();
+        if pairs.is_empty() {
+            return rejected;
+        }
+        for root in self.bcx.roots.iter().filter(|unit| unit.mode.is_check()) {
+            // Only --extern libraries share the caller's crate namespace. Build scripts
+            // and the libraries inside a procedural macro have separate consumers.
+            let mut visible = HashSet::default();
+            let mut built_parents = HashMap::<&Unit, Vec<&Unit>>::default();
+            let mut pending = vec![root];
+            while let Some(parent) = pending.pop() {
+                for dep in self.unit_deps(parent).iter().map(|dep| &dep.unit) {
+                    if !dep.target.is_linkable() || dep.target.proc_macro() || dep.mode.is_doc() {
+                        continue;
+                    }
+                    if parent.mode == CompileMode::Build && dep.mode == CompileMode::Build {
+                        built_parents.entry(dep).or_default().push(parent);
+                    }
+                    if visible.insert(dep) {
+                        pending.push(dep);
+                    }
+                }
+            }
+            let mut conflicts = pairs
+                .iter()
+                .filter(|(native, check)| visible.contains(native) && visible.contains(check))
+                .map(|(native, _)| *native)
+                .collect::<Vec<_>>();
+            let mut visited = HashSet::default();
+            while let Some(unit) = conflicts.pop() {
+                if !visited.insert(unit) {
+                    continue;
+                }
+                if self.reused_registry_units.contains(unit) {
+                    rejected.insert(unit.pkg.package_id());
+                }
+                if let Some(parents) = built_parents.get(unit) {
+                    conflicts.extend(parents);
+                }
+            }
+        }
+        rejected
     }
 
     /// Authenticates the compiler context and the exact cached diagnostics.
