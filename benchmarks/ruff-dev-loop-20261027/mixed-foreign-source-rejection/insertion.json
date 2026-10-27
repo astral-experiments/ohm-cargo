@@ -1,0 +1,64 @@
+[
+  {
+    "stage": "before",
+    "first_library_linkonly": false,
+    "producer_hash": {
+      "version": 1,
+      "value": "f5d2df9c07489465f549367dac7216be",
+      "native_rlib_hash": "2134935d61d9b40db91c5ed031fb3303"
+    },
+    "library_equal": {
+      "sha256": true,
+      "rmeta": true,
+      "exports": true,
+      "observed": true,
+      "objects": true,
+      "full_rmeta": true
+    },
+    "current_consumer": {
+      "output": [
+        "bundle/src/lib.rs:1:1",
+        "leaf/src/lib.rs:12:51"
+      ],
+      "executable": "5e18f92d7bedbc0c1140aec1af18fed43c4f904ebc2f12371857bf62c32e4098"
+    },
+    "full_consumer": {
+      "output": [
+        "bundle/src/lib.rs:1:1",
+        "leaf/src/lib.rs:12:51"
+      ],
+      "executable": "5e18f92d7bedbc0c1140aec1af18fed43c4f904ebc2f12371857bf62c32e4098"
+    }
+  },
+  {
+    "stage": "add_files_before_macro",
+    "first_library_linkonly": true,
+    "producer_hash": {
+      "version": 1,
+      "value": "f5d2df9c07489465f549367dac7216be",
+      "native_rlib_hash": "2134935d61d9b40db91c5ed031fb3303"
+    },
+    "library_equal": {
+      "sha256": true,
+      "rmeta": false,
+      "exports": true,
+      "observed": true,
+      "objects": true,
+      "full_rmeta": false
+    },
+    "current_consumer": {
+      "output": [
+        "bundle/src/lib.rs:1:1",
+        "leaf/src/lib.rs:12:51"
+      ],
+      "executable": "b75c1729a9be99e177284de6946c3ab35effff620545080bbb1c86074811602b"
+    },
+    "full_consumer": {
+      "output": [
+        "bundle/src/lib.rs:1:1",
+        "leaf/src/lib.rs:12:51"
+      ],
+      "executable": "5e18f92d7bedbc0c1140aec1af18fed43c4f904ebc2f12371857bf62c32e4098"
+    }
+  }
+]

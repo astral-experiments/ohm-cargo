@@ -1,0 +1,119 @@
+{
+  "original_insertion_rows": [
+    {
+      "stage": "before",
+      "first_library_linkonly": false,
+      "producer_hash": {
+        "version": 1,
+        "value": "f5d2df9c07489465f549367dac7216be",
+        "native_rlib_hash": "2134935d61d9b40db91c5ed031fb3303"
+      },
+      "library_equal": {
+        "sha256": true,
+        "rmeta": true,
+        "exports": true,
+        "observed": true,
+        "objects": true,
+        "full_rmeta": true
+      },
+      "current_consumer": {
+        "output": [
+          "bundle/src/lib.rs:1:1",
+          "leaf/src/lib.rs:12:51"
+        ],
+        "executable": "5e18f92d7bedbc0c1140aec1af18fed43c4f904ebc2f12371857bf62c32e4098"
+      },
+      "full_consumer": {
+        "output": [
+          "bundle/src/lib.rs:1:1",
+          "leaf/src/lib.rs:12:51"
+        ],
+        "executable": "5e18f92d7bedbc0c1140aec1af18fed43c4f904ebc2f12371857bf62c32e4098"
+      }
+    },
+    {
+      "stage": "add_files_before_macro",
+      "first_library_linkonly": true,
+      "producer_hash": {
+        "version": 1,
+        "value": "f5d2df9c07489465f549367dac7216be",
+        "native_rlib_hash": "2134935d61d9b40db91c5ed031fb3303"
+      },
+      "library_equal": {
+        "sha256": true,
+        "rmeta": false,
+        "exports": true,
+        "observed": true,
+        "objects": true,
+        "full_rmeta": false
+      },
+      "current_consumer": {
+        "output": [
+          "bundle/src/lib.rs:1:1",
+          "leaf/src/lib.rs:12:51"
+        ],
+        "executable": "b75c1729a9be99e177284de6946c3ab35effff620545080bbb1c86074811602b"
+      },
+      "full_consumer": {
+        "output": [
+          "bundle/src/lib.rs:1:1",
+          "leaf/src/lib.rs:12:51"
+        ],
+        "executable": "5e18f92d7bedbc0c1140aec1af18fed43c4f904ebc2f12371857bf62c32e4098"
+      }
+    }
+  ],
+  "removed_producer_hash": {
+    "version": 1,
+    "value": "f5d2df9c07489465f549367dac7216be",
+    "native_rlib_hash": "2134935d61d9b40db91c5ed031fb3303"
+  },
+  "cached_bundle_reused": true,
+  "cached_app_exit": 101,
+  "cached_app_diagnostic": "missing source file in decoder::get_module_children at decoder.rs:1905",
+  "full_rebuilt": true,
+  "same_app_full_compile_exit": 0,
+  "app_runtime": [
+    "bundle/src/lib.rs:1:1",
+    "leaf/src/lib.rs:12:51"
+  ],
+  "app_sha256": "5e18f92d7bedbc0c1140aec1af18fed43c4f904ebc2f12371857bf62c32e4098",
+  "cached_library": {
+    "sha256": "6076648abb59f2d0a5efe6783b3121d74bec9add879c2cbf7f8459c1a60274ca",
+    "rmeta": "14074170be1296e30283da6e5099bd3564a5f0b9d21d38371536cc85889159d7",
+    "exports": [
+      "observed"
+    ],
+    "observed": 42,
+    "objects": [
+      [
+        [
+          "bundle",
+          "bundle",
+          "e05d82eb274372da-cgu"
+        ],
+        "869a136fd672e8f3bc8d35b09f0234b4ae421078b7e12701a8176809ac600dc6"
+      ]
+    ],
+    "full_rmeta": "37ebc907ba5eba094cbeb729539bdcf85085175e70e1ab7aee69baae9aace699"
+  },
+  "forced_library": {
+    "sha256": "6076648abb59f2d0a5efe6783b3121d74bec9add879c2cbf7f8459c1a60274ca",
+    "rmeta": "ce4cd4cd10f52bba71999705bc691d852516b9d3a231ed1701a444247b6fa691",
+    "exports": [
+      "observed"
+    ],
+    "observed": 42,
+    "objects": [
+      [
+        [
+          "bundle",
+          "bundle",
+          "e05d82eb274372da-cgu"
+        ],
+        "869a136fd672e8f3bc8d35b09f0234b4ae421078b7e12701a8176809ac600dc6"
+      ]
+    ],
+    "full_rmeta": "45f5754621c95fc33ad045b72fb5d2be872c07228a36a5ccfe4dc185a0476230"
+  }
+}
