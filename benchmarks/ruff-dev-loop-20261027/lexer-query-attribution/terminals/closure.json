@@ -1,0 +1,514 @@
+{
+  "graph_sha256": "87450bc40c5fdc207e9acb13a747204958f11e2c6414be1b509e1562ed39aa48",
+  "rows": [
+    {
+      "binary_order_edges": [
+        "ruff_python_formatter"
+      ],
+      "exclusive_native_filter_hits": [
+        "psm",
+        "zstd-sys"
+      ],
+      "exe": "normalizer-9235f142eb65477b",
+      "not_proven_unused_roots": [
+        "regex",
+        "ruff_python_ast",
+        "ruff_text_size"
+      ],
+      "possible_exclusive_native_by_changed_direct_dependency": {
+        "ruff_db": [
+          "psm",
+          "zstd-sys"
+        ],
+        "ruff_python_formatter": [
+          "psm",
+          "zstd-sys"
+        ],
+        "ruff_python_parser": [
+          "psm"
+        ]
+      },
+      "producing_packages": [
+        "ruff_db",
+        "ruff_python_formatter",
+        "ruff_python_parser"
+      ],
+      "rustc_input": "crates/ruff_python_formatter/tests/normalizer.rs",
+      "unit": "a6ed3d7c1004f401",
+      "unused_proof": true,
+      "used_root_reaches_dirty_workspace_packages": []
+    },
+    {
+      "binary_order_edges": [],
+      "exe": "api-5954b04f4610694e",
+      "rustc_input": "crates/ruff_wasm/tests/api.rs",
+      "unit": "2e2b4611c2bf28f7",
+      "unused_proof": false
+    },
+    {
+      "binary_order_edges": [
+        "ruff"
+      ],
+      "exclusive_native_filter_hits": [
+        "psm",
+        "tikv-jemalloc-sys",
+        "zstd-sys"
+      ],
+      "exe": "direxist_guard-28bc11b77c4911ff",
+      "not_proven_unused_roots": [
+        "insta_cmd",
+        "tempfile"
+      ],
+      "possible_exclusive_native_by_changed_direct_dependency": {
+        "ruff": [
+          "psm",
+          "tikv-jemalloc-sys",
+          "zstd-sys"
+        ],
+        "ruff_db": [
+          "psm",
+          "zstd-sys"
+        ],
+        "ruff_graph": [
+          "psm",
+          "zstd-sys"
+        ],
+        "ruff_linter": [
+          "psm",
+          "zstd-sys"
+        ],
+        "ruff_markdown": [
+          "psm",
+          "zstd-sys"
+        ],
+        "ruff_python_formatter": [
+          "psm",
+          "zstd-sys"
+        ],
+        "ruff_python_parser": [
+          "psm"
+        ],
+        "ruff_ranged_value": [
+          "psm",
+          "zstd-sys"
+        ],
+        "ruff_server": [
+          "psm",
+          "zstd-sys"
+        ],
+        "ruff_workspace": [
+          "psm",
+          "zstd-sys"
+        ]
+      },
+      "producing_packages": [
+        "ruff",
+        "ruff_db",
+        "ruff_graph",
+        "ruff_linter",
+        "ruff_markdown",
+        "ruff_python_formatter",
+        "ruff_python_parser",
+        "ruff_ranged_value",
+        "ruff_server",
+        "ruff_workspace"
+      ],
+      "rustc_input": "crates/ruff/tests/direxist_guard.rs",
+      "unit": "773d1466a12ec1c7",
+      "unused_proof": true,
+      "used_root_reaches_dirty_workspace_packages": []
+    },
+    {
+      "binary_order_edges": [
+        "ruff"
+      ],
+      "exclusive_native_filter_hits": [
+        "psm",
+        "tikv-jemalloc-sys",
+        "zstd-sys"
+      ],
+      "exe": "config-a05026c35a67b25f",
+      "not_proven_unused_roots": [
+        "insta_cmd"
+      ],
+      "possible_exclusive_native_by_changed_direct_dependency": {
+        "ruff": [
+          "psm",
+          "tikv-jemalloc-sys",
+          "zstd-sys"
+        ],
+        "ruff_db": [
+          "psm",
+          "zstd-sys"
+        ],
+        "ruff_graph": [
+          "psm",
+          "zstd-sys"
+        ],
+        "ruff_linter": [
+          "psm",
+          "zstd-sys"
+        ],
+        "ruff_markdown": [
+          "psm",
+          "zstd-sys"
+        ],
+        "ruff_python_formatter": [
+          "psm",
+          "zstd-sys"
+        ],
+        "ruff_python_parser": [
+          "psm"
+        ],
+        "ruff_ranged_value": [
+          "psm",
+          "zstd-sys"
+        ],
+        "ruff_server": [
+          "psm",
+          "zstd-sys"
+        ],
+        "ruff_workspace": [
+          "psm",
+          "zstd-sys"
+        ]
+      },
+      "producing_packages": [
+        "ruff",
+        "ruff_db",
+        "ruff_graph",
+        "ruff_linter",
+        "ruff_markdown",
+        "ruff_python_formatter",
+        "ruff_python_parser",
+        "ruff_ranged_value",
+        "ruff_server",
+        "ruff_workspace"
+      ],
+      "rustc_input": "crates/ruff/tests/config.rs",
+      "unit": "1a0016a366b498d5",
+      "unused_proof": true,
+      "used_root_reaches_dirty_workspace_packages": []
+    },
+    {
+      "binary_order_edges": [
+        "ruff"
+      ],
+      "exclusive_native_filter_hits": [
+        "psm",
+        "tikv-jemalloc-sys",
+        "zstd-sys"
+      ],
+      "exe": "resolve_files-9f14cd86c9ce1ffe",
+      "not_proven_unused_roots": [
+        "insta",
+        "insta_cmd"
+      ],
+      "possible_exclusive_native_by_changed_direct_dependency": {
+        "ruff": [
+          "psm",
+          "tikv-jemalloc-sys",
+          "zstd-sys"
+        ],
+        "ruff_db": [
+          "psm",
+          "zstd-sys"
+        ],
+        "ruff_graph": [
+          "psm",
+          "zstd-sys"
+        ],
+        "ruff_linter": [
+          "psm",
+          "zstd-sys"
+        ],
+        "ruff_markdown": [
+          "psm",
+          "zstd-sys"
+        ],
+        "ruff_python_formatter": [
+          "psm",
+          "zstd-sys"
+        ],
+        "ruff_python_parser": [
+          "psm"
+        ],
+        "ruff_ranged_value": [
+          "psm",
+          "zstd-sys"
+        ],
+        "ruff_server": [
+          "psm",
+          "zstd-sys"
+        ],
+        "ruff_workspace": [
+          "psm",
+          "zstd-sys"
+        ]
+      },
+      "producing_packages": [
+        "ruff",
+        "ruff_db",
+        "ruff_graph",
+        "ruff_linter",
+        "ruff_markdown",
+        "ruff_python_formatter",
+        "ruff_python_parser",
+        "ruff_ranged_value",
+        "ruff_server",
+        "ruff_workspace"
+      ],
+      "rustc_input": "crates/ruff/tests/resolve_files.rs",
+      "unit": "dae5f7b97e58dd1f",
+      "unused_proof": true,
+      "used_root_reaches_dirty_workspace_packages": []
+    },
+    {
+      "binary_order_edges": [],
+      "exe": "api-af65d95beac5d41b",
+      "rustc_input": "crates/ty_wasm/tests/api.rs",
+      "unit": "b199301d19ce3084",
+      "unused_proof": false
+    },
+    {
+      "binary_order_edges": [
+        "ty"
+      ],
+      "exclusive_native_filter_hits": [
+        "psm",
+        "tikv-jemalloc-sys",
+        "zstd-sys"
+      ],
+      "exe": "self_environment-860e2be505c8514a",
+      "not_proven_unused_roots": [
+        "anyhow",
+        "dunce",
+        "insta",
+        "insta_cmd",
+        "regex",
+        "ruff_python_trivia",
+        "tempfile"
+      ],
+      "possible_exclusive_native_by_changed_direct_dependency": {
+        "ruff_db": [
+          "psm",
+          "zstd-sys"
+        ],
+        "ruff_ranged_value": [
+          "psm",
+          "zstd-sys"
+        ],
+        "ty": [
+          "psm",
+          "tikv-jemalloc-sys",
+          "zstd-sys"
+        ],
+        "ty_combine": [
+          "psm",
+          "zstd-sys"
+        ],
+        "ty_module_resolver": [
+          "psm",
+          "zstd-sys"
+        ],
+        "ty_project": [
+          "psm",
+          "zstd-sys"
+        ],
+        "ty_python_core": [
+          "psm",
+          "zstd-sys"
+        ],
+        "ty_python_semantic": [
+          "psm",
+          "zstd-sys"
+        ],
+        "ty_server": [
+          "psm",
+          "zstd-sys"
+        ],
+        "ty_site_packages": [
+          "psm",
+          "zstd-sys"
+        ]
+      },
+      "producing_packages": [
+        "ruff_db",
+        "ruff_ranged_value",
+        "ty",
+        "ty_combine",
+        "ty_module_resolver",
+        "ty_project",
+        "ty_python_core",
+        "ty_python_semantic",
+        "ty_server",
+        "ty_site_packages"
+      ],
+      "rustc_input": "crates/ty/tests/self_environment.rs",
+      "unit": "f241278b1198e1cf",
+      "unused_proof": true,
+      "used_root_reaches_dirty_workspace_packages": []
+    },
+    {
+      "binary_order_edges": [
+        "ty"
+      ],
+      "exclusive_native_filter_hits": [
+        "psm",
+        "tikv-jemalloc-sys",
+        "zstd-sys"
+      ],
+      "exe": "cli-440d4bc7ce0d4c47",
+      "not_proven_unused_roots": [
+        "anyhow",
+        "dunce",
+        "insta",
+        "insta_cmd",
+        "regex",
+        "ruff_python_ast",
+        "ruff_python_trivia",
+        "serde_json",
+        "tempfile",
+        "ty_static"
+      ],
+      "possible_exclusive_native_by_changed_direct_dependency": {
+        "ruff_db": [
+          "psm",
+          "zstd-sys"
+        ],
+        "ruff_ranged_value": [
+          "psm",
+          "zstd-sys"
+        ],
+        "ty": [
+          "psm",
+          "tikv-jemalloc-sys",
+          "zstd-sys"
+        ],
+        "ty_combine": [
+          "psm",
+          "zstd-sys"
+        ],
+        "ty_module_resolver": [
+          "psm",
+          "zstd-sys"
+        ],
+        "ty_project": [
+          "psm",
+          "zstd-sys"
+        ],
+        "ty_python_core": [
+          "psm",
+          "zstd-sys"
+        ],
+        "ty_python_semantic": [
+          "psm",
+          "zstd-sys"
+        ],
+        "ty_server": [
+          "psm",
+          "zstd-sys"
+        ],
+        "ty_site_packages": [
+          "psm",
+          "zstd-sys"
+        ]
+      },
+      "producing_packages": [
+        "ruff_db",
+        "ruff_ranged_value",
+        "ty",
+        "ty_combine",
+        "ty_module_resolver",
+        "ty_project",
+        "ty_python_core",
+        "ty_python_semantic",
+        "ty_server",
+        "ty_site_packages"
+      ],
+      "rustc_input": "crates/ty/tests/cli/main.rs",
+      "unit": "06a7fc6d39a56118",
+      "unused_proof": true,
+      "used_root_reaches_dirty_workspace_packages": []
+    },
+    {
+      "binary_order_edges": [
+        "ruff"
+      ],
+      "exclusive_native_filter_hits": [
+        "psm",
+        "tikv-jemalloc-sys",
+        "zstd-sys"
+      ],
+      "exe": "analyze_graph-16e34c0e9d21d025",
+      "not_proven_unused_roots": [
+        "anyhow",
+        "assert_fs",
+        "indoc",
+        "insta",
+        "insta_cmd",
+        "tempfile"
+      ],
+      "possible_exclusive_native_by_changed_direct_dependency": {
+        "ruff": [
+          "psm",
+          "tikv-jemalloc-sys",
+          "zstd-sys"
+        ],
+        "ruff_db": [
+          "psm",
+          "zstd-sys"
+        ],
+        "ruff_graph": [
+          "psm",
+          "zstd-sys"
+        ],
+        "ruff_linter": [
+          "psm",
+          "zstd-sys"
+        ],
+        "ruff_markdown": [
+          "psm",
+          "zstd-sys"
+        ],
+        "ruff_python_formatter": [
+          "psm",
+          "zstd-sys"
+        ],
+        "ruff_python_parser": [
+          "psm"
+        ],
+        "ruff_ranged_value": [
+          "psm",
+          "zstd-sys"
+        ],
+        "ruff_server": [
+          "psm",
+          "zstd-sys"
+        ],
+        "ruff_workspace": [
+          "psm",
+          "zstd-sys"
+        ]
+      },
+      "producing_packages": [
+        "ruff",
+        "ruff_db",
+        "ruff_graph",
+        "ruff_linter",
+        "ruff_markdown",
+        "ruff_python_formatter",
+        "ruff_python_parser",
+        "ruff_ranged_value",
+        "ruff_server",
+        "ruff_workspace"
+      ],
+      "rustc_input": "crates/ruff/tests/analyze_graph.rs",
+      "unit": "6f39fb3a4da6d38b",
+      "unused_proof": true,
+      "used_root_reaches_dirty_workspace_packages": []
+    }
+  ],
+  "source": "93526150df078af7dd8fc4226cdcc469539d2001",
+  "unit_count": 689
+}

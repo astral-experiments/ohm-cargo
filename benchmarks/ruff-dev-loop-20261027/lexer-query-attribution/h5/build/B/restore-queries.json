@@ -1,0 +1,3057 @@
+{
+  "arm": "B",
+  "bounds_us": [
+    1793110606529869,
+    1793110645114754
+  ],
+  "command_receipt": "c26b8da5c408b46542095a500e11b602e3a33f59cde251c26c421af62a0d61bd",
+  "fresh_receipt_sha256": "0d21024e9bacbd8239a76bf1afe8bfe9253e476d01478c6f497c895509bbdbdb",
+  "jobs": [
+    {
+      "crate": "ruff_python_parser",
+      "exec_line_sha256": "520e9f5fcce4b17387dad4994dbe92d76bcddffa515fef00060e19bf207958b2",
+      "explicit_parser": false,
+      "graph": {
+        "bytes": 15517327,
+        "keys": [
+          "5f1187e22819f3d5",
+          "347448d7e388ba68",
+          "b572ff01c439e1cb"
+        ],
+        "mtime_ns": 1793110611322979265,
+        "session": "s-hnlrn4edql-0lzxwqt-3bd53h37bw7cluxnb1i8knx2i"
+      },
+      "result": {
+        "direct_metadata_inputs": [
+          [
+            "root",
+            "externally_implementable_items"
+          ],
+          [
+            "root",
+            "lib_features"
+          ],
+          [
+            "root",
+            "stability_implications"
+          ],
+          [
+            "root",
+            "diagnostic_items"
+          ],
+          [
+            "root",
+            "canonical_symbols"
+          ],
+          [
+            "root",
+            "native_libraries"
+          ],
+          [
+            "root",
+            "foreign_modules"
+          ],
+          [
+            "lexer",
+            "def_kind"
+          ],
+          [
+            "lex",
+            "def_kind"
+          ],
+          [
+            "lex",
+            "generics_of"
+          ],
+          [
+            "lex",
+            "cross_crate_inlinable"
+          ],
+          [
+            "lex",
+            "constness"
+          ],
+          [
+            "root",
+            "def_kind"
+          ],
+          [
+            "root",
+            "def_span"
+          ],
+          [
+            "root",
+            "source_span"
+          ],
+          [
+            "root",
+            "hir_owner"
+          ],
+          [
+            "root",
+            "hir_attr_map"
+          ],
+          [
+            "root",
+            "expn_that_defined"
+          ],
+          [
+            "root",
+            "def_ident_span"
+          ],
+          [
+            "root",
+            "visibility"
+          ],
+          [
+            "root",
+            "lookup_deprecation_entry"
+          ],
+          [
+            "lexer",
+            "def_span"
+          ],
+          [
+            "lexer",
+            "source_span"
+          ],
+          [
+            "lexer",
+            "hir_owner"
+          ],
+          [
+            "lexer",
+            "hir_attr_map"
+          ],
+          [
+            "lexer",
+            "expn_that_defined"
+          ],
+          [
+            "lexer",
+            "def_ident_span"
+          ],
+          [
+            "lexer",
+            "visibility"
+          ],
+          [
+            "lexer",
+            "lookup_deprecation_entry"
+          ],
+          [
+            "lex",
+            "def_span"
+          ],
+          [
+            "lex",
+            "codegen_fn_attrs"
+          ],
+          [
+            "lex",
+            "source_span"
+          ],
+          [
+            "lex",
+            "hir_attr_map"
+          ],
+          [
+            "lex",
+            "def_ident_span"
+          ],
+          [
+            "lex",
+            "visibility"
+          ],
+          [
+            "lex",
+            "lookup_deprecation_entry"
+          ],
+          [
+            "lex",
+            "variances_of"
+          ],
+          [
+            "lex",
+            "fn_sig"
+          ],
+          [
+            "lex",
+            "explicit_clauses_of"
+          ],
+          [
+            "lex",
+            "inferred_outlives_of"
+          ],
+          [
+            "lex",
+            "type_of"
+          ],
+          [
+            "lex",
+            "asyncness"
+          ],
+          [
+            "lex",
+            "fn_arg_idents"
+          ],
+          [
+            "lex",
+            "intrinsic_raw"
+          ],
+          [
+            "root",
+            "debugger_visualizers"
+          ],
+          [
+            "root",
+            "exportable_items"
+          ],
+          [
+            "root",
+            "stable_order_of_exportable_impls"
+          ],
+          [
+            "root",
+            "exported_non_generic_symbols"
+          ],
+          [
+            "root",
+            "exported_generic_symbols"
+          ],
+          [
+            "root",
+            "crate_name"
+          ],
+          [
+            "root",
+            "required_panic_strategy"
+          ],
+          [
+            "root",
+            "has_global_allocator"
+          ],
+          [
+            "root",
+            "has_alloc_error_handler"
+          ],
+          [
+            "root",
+            "has_panic_handler"
+          ],
+          [
+            "root",
+            "specialization_enabled_in"
+          ],
+          [
+            "root",
+            "crate_hash"
+          ]
+        ],
+        "edges": 1749560,
+        "focus_key_count": 131,
+        "metadata_node": true,
+        "named": {
+          "lex": {
+            "assumed_wf_types": "1ed52531b9d57b269e00aa1824d09c46",
+            "asyncness": "e03cd33b8f935e8df78fdb3719b766e8",
+            "check_coroutine_obligations": "21cf0c0a17387913fea6d89d01420938",
+            "check_liveness": "6aaca6deedd20b5e02af71321214acbb",
+            "check_match": "21cf0c0a17387913fea6d89d01420938",
+            "check_tail_calls": "21cf0c0a17387913fea6d89d01420938",
+            "check_transmutes": "21cf0c0a17387913fea6d89d01420938",
+            "check_unsafety": "0db4d9615d9334210333fb31d05e1cb9",
+            "check_well_formed": "21cf0c0a17387913fea6d89d01420938",
+            "clauses_of": "2b85b370842d0243f2d80fe7ffb8b3f5",
+            "codegen_fn_attrs": "c6545af3916cc2d52b61d05b621285ce",
+            "constness": "e03cd33b8f935e8df78fdb3719b766e8",
+            "coroutine_kind": "21cf0c0a17387913fea6d89d01420938",
+            "cross_crate_inlinable": "21cf0c0a17387913fea6d89d01420938",
+            "def_ident_span": "949308f650bda70a80523cea5920dc51",
+            "def_kind": "30cbc3f1735225ac0f51f02d426d2646",
+            "def_span": "c680b7e5dcac55610085324863604a6d",
+            "effective_visibility": "553bd03bb38900099d770614c0df74bd",
+            "explicit_clauses_of": "2b85b370842d0243f2d80fe7ffb8b3f5",
+            "fn_arg_idents": "4c101c7f7716fe19dc2ef5f54b3d08d6",
+            "fn_sig": "4df214190bdd536ead57c027b7bca29b",
+            "generics_of": "89633d57ebe5f952c337b255688e49df",
+            "has_ffi_unwind_calls": "21cf0c0a17387913fea6d89d01420938",
+            "hir_attr_map": "ee6b249648c2de611523379b31bc3a76",
+            "hir_owner": "081fb2cc9b093bedca203c671fe14bb8",
+            "hir_owner_parent_q": "e5ad9eb1385a76d41a8b37d2929252b2",
+            "inferred_outlives_of": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "inherited_align": "21cf0c0a17387913fea6d89d01420938",
+            "intrinsic_raw": "21cf0c0a17387913fea6d89d01420938",
+            "is_exportable": "21cf0c0a17387913fea6d89d01420938",
+            "is_late_bound_map": "8132fbe3fe3389ab71701124a32c89ee",
+            "is_reachable_non_generic": "e03cd33b8f935e8df78fdb3719b766e8",
+            "late_bound_vars_map": "cf1a988d5c55f291a8e42dad41fbe9c8",
+            "lookup_deprecation_entry": "21cf0c0a17387913fea6d89d01420938",
+            "lower_to_hir": "132c15c7a8cba07408a37010921e95f0",
+            "mir_borrowck": "2b85b370842d0243f2d80fe7ffb8b3f5",
+            "mir_built": "be0c70b1d2317376bf6a99afd6b666b6",
+            "mir_drops_elaborated_and_const_checked": "00000000000000000000000000000000",
+            "mir_promoted": "00000000000000000000000000000000",
+            "named_variable_map": "cc567f4e67a576dcbe0c1de8bb935132",
+            "nested_bodies_within": "d57fb5ba5a40a5c55b324677dbc77a1f",
+            "opaque_types_defined_by": "d57fb5ba5a40a5c55b324677dbc77a1f",
+            "optimized_mir": "3bcefc79ac2551974ed60bc27ac12ffb",
+            "param_env": "d57fb5ba5a40a5c55b324677dbc77a1f",
+            "param_env_normalized_for_post_analysis": "d57fb5ba5a40a5c55b324677dbc77a1f",
+            "region_scope_tree": "f42ff4320173d50c666429ef872bb32f",
+            "resolve_bound_vars": "37c802537165de46dd857575d7ed6331",
+            "sanitizer_settings_for": "29d82d5cb017eca87a4575345d71b91c",
+            "shallow_lint_levels_on": "8f0ed28c7d9b1b524749d534946ffef3",
+            "should_inherit_track_caller": "21cf0c0a17387913fea6d89d01420938",
+            "source_span": "215e2b548021163ac0641d2cef74b2f9",
+            "thir_abstract_const": "8a8b5772e657ee06931b3d60e22b9b6d",
+            "thir_body": "00000000000000000000000000000000",
+            "trivial_const": "21cf0c0a17387913fea6d89d01420938",
+            "type_of": "bb1eca3f4e2c8e2b36dd963dee8e9aa4",
+            "typeck_root": "4980dc6225b1c3cea7ddac8eb7c82f49",
+            "upvars_mentioned": "21cf0c0a17387913fea6d89d01420938",
+            "used_trait_imports": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "variances_of": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "visibility": "21cf0c0a17387913fea6d89d01420938"
+          },
+          "lexer": {
+            "check_mod_attrs": "0db4d9615d9334210333fb31d05e1cb9",
+            "check_mod_deathness": "0db4d9615d9334210333fb31d05e1cb9",
+            "check_mod_privacy": "0db4d9615d9334210333fb31d05e1cb9",
+            "check_mod_unstable_api_usage": "0db4d9615d9334210333fb31d05e1cb9",
+            "check_private_in_public": "0db4d9615d9334210333fb31d05e1cb9",
+            "check_well_formed": "21cf0c0a17387913fea6d89d01420938",
+            "clauses_of": "2b85b370842d0243f2d80fe7ffb8b3f5",
+            "def_ident_span": "4d54fa00c4cf7afd11db7626fc664205",
+            "def_kind": "21cf0c0a17387913fea6d89d01420938",
+            "def_span": "be205d6d8f6a5b3f329bcd5303da3cc5",
+            "effective_visibility": "553bd03bb38900099d770614c0df74bd",
+            "explicit_clauses_of": "2b85b370842d0243f2d80fe7ffb8b3f5",
+            "expn_that_defined": "6aaca6deedd20b5e02af71321214acbb",
+            "generics_of": "ef3d004d85ea4f976d32ead40e7de8dd",
+            "hir_attr_map": "f5142898beab01f5765db59d12770d38",
+            "hir_module_items": "acc6e54e245ee3bc9c1e3b9ed7950a4b",
+            "hir_owner": "5c69f5ee3183b658d61dbc9318a626f2",
+            "hir_owner_parent_q": "d37167a264f143065c51cfb60558795d",
+            "inferred_outlives_of": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "lint_mod": "0db4d9615d9334210333fb31d05e1cb9",
+            "lookup_deprecation_entry": "21cf0c0a17387913fea6d89d01420938",
+            "lower_to_hir": "0c181cad3d54e928a6b3d04fe0452015",
+            "param_env": "d57fb5ba5a40a5c55b324677dbc77a1f",
+            "sanitizer_settings_for": "29d82d5cb017eca87a4575345d71b91c",
+            "shallow_lint_levels_on": "6aaca6deedd20b5e02af71321214acbb",
+            "source_span": "e8e5ae3fc1f96432f3f123cf9db3c638",
+            "visibility": "21cf0c0a17387913fea6d89d01420938"
+          },
+          "root": {
+            "canonical_symbols": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "check_mod_attrs": "0db4d9615d9334210333fb31d05e1cb9",
+            "check_mod_deathness": "0db4d9615d9334210333fb31d05e1cb9",
+            "check_mod_privacy": "0db4d9615d9334210333fb31d05e1cb9",
+            "check_mod_unstable_api_usage": "0db4d9615d9334210333fb31d05e1cb9",
+            "check_private_in_public": "0db4d9615d9334210333fb31d05e1cb9",
+            "crate_hash": "86ecdb29cb5ec3ed455712699a2bf891",
+            "crate_name": "3a6b64ce89833aa6255840f11c5de80f",
+            "debugger_visualizers": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "def_ident_span": "21cf0c0a17387913fea6d89d01420938",
+            "def_kind": "21cf0c0a17387913fea6d89d01420938",
+            "def_span": "dceaf7e6f549a6c6472772c69746fd0a",
+            "diagnostic_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "expn_that_defined": "6aaca6deedd20b5e02af71321214acbb",
+            "exportable_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "exported_generic_symbols": "bd8d1821ae930241a490b0cd7f2eba35",
+            "exported_non_generic_symbols": "9ddf47c1806b4e858b78e1d0d757f732",
+            "externally_implementable_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "foreign_modules": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "has_alloc_error_handler": "21cf0c0a17387913fea6d89d01420938",
+            "has_global_allocator": "21cf0c0a17387913fea6d89d01420938",
+            "has_panic_handler": "21cf0c0a17387913fea6d89d01420938",
+            "hir_attr_map": "d28efb3c62a4014170123d85cf164f1a",
+            "hir_module_items": "daaf68e0a6c976b3d2310a58ac4730f7",
+            "hir_owner": "3d07d5d0057bd2241780f2d051a78d98",
+            "is_compiler_builtins": "21cf0c0a17387913fea6d89d01420938",
+            "is_panic_runtime": "21cf0c0a17387913fea6d89d01420938",
+            "is_private_dep": "21cf0c0a17387913fea6d89d01420938",
+            "lib_features": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "lint_mod": "0db4d9615d9334210333fb31d05e1cb9",
+            "lookup_deprecation_entry": "21cf0c0a17387913fea6d89d01420938",
+            "lookup_stability": "21cf0c0a17387913fea6d89d01420938",
+            "lower_to_hir": "7853ce7879524f6f4e5cf944b2bee014",
+            "native_libraries": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "reachable_non_generics": "bf1dece588b721da0334744dfb487edc",
+            "required_panic_strategy": "21cf0c0a17387913fea6d89d01420938",
+            "rust_target_features": "622d5ed54b5dba0aaf25419e61a16eec",
+            "sanitizer_settings_for": "29d82d5cb017eca87a4575345d71b91c",
+            "shallow_lint_levels_on": "d8e3d80fb33c0eb0581b4649760db03b",
+            "source_span": "182b6e3be6ef62a74cc08c8a6b8b6b02",
+            "specialization_enabled_in": "21cf0c0a17387913fea6d89d01420938",
+            "stability_implications": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "stable_order_of_exportable_impls": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "visibility": "21cf0c0a17387913fea6d89d01420938"
+          }
+        },
+        "nodes": 279976,
+        "parser_keys": 115912
+      },
+      "stable_crate_id": "5f1187e22819f3d5",
+      "test": false,
+      "trace": "exec.2792289"
+    },
+    {
+      "crate": "ruff_db",
+      "exec_line_sha256": "f22a95f64d0d1fb3c908b76aa604c0a65c4adf5428331f71a5bd3bec2efa4343",
+      "explicit_parser": true,
+      "graph": {
+        "bytes": 39014642,
+        "keys": [
+          "5f1187e22819f3d5",
+          "347448d7e388ba68",
+          "b572ff01c439e1cb"
+        ],
+        "mtime_ns": 1793110613188022046,
+        "session": "s-hnlrn5a2fj-0suklla-3nqx6lkoq2zv5micdpsc8qok2"
+      },
+      "result": {
+        "direct_metadata_inputs": [
+          [
+            "root",
+            "crate_name"
+          ],
+          [
+            "root",
+            "public_api_hash"
+          ],
+          [
+            "root",
+            "crate_host_hash"
+          ],
+          [
+            "root",
+            "crate_dep_kind"
+          ],
+          [
+            "root",
+            "extra_filename"
+          ],
+          [
+            "root",
+            "is_private_dep"
+          ],
+          [
+            "root",
+            "public_global_hash"
+          ],
+          [
+            "root",
+            "extern_def_public_hash"
+          ]
+        ],
+        "edges": 4547352,
+        "focus_key_count": 27,
+        "metadata_node": true,
+        "named": {
+          "root": {
+            "canonical_symbols": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "crate_dep_kind": "051d9bdf24cb7633b4520cabd6c32b51",
+            "crate_host_hash": "21cf0c0a17387913fea6d89d01420938",
+            "crate_name": "3a6b64ce89833aa6255840f11c5de80f",
+            "def_kind": "21cf0c0a17387913fea6d89d01420938",
+            "defined_lang_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "diagnostic_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "exported_generic_symbols": "bd8d1821ae930241a490b0cd7f2eba35",
+            "extern_def_public_hash": "1d3b2a40616d4dc8ccd869bf740a3a36",
+            "externally_implementable_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "extra_filename": "6a1be85b614e72d537ed8deae3266124",
+            "is_compiler_builtins": "21cf0c0a17387913fea6d89d01420938",
+            "is_no_builtins": "21cf0c0a17387913fea6d89d01420938",
+            "is_private_dep": "21cf0c0a17387913fea6d89d01420938",
+            "is_profiler_runtime": "21cf0c0a17387913fea6d89d01420938",
+            "lookup_stability": "21cf0c0a17387913fea6d89d01420938",
+            "missing_lang_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "module_children": "f893e41ac52fb986e16fccfd87ec2dd9",
+            "native_libraries": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "public_api_hash": "d270c58591cf59331a9d6004b316fda7",
+            "public_global_hash": "248acbd922140259f5af0ef40495b037",
+            "specialization_enabled_in": "21cf0c0a17387913fea6d89d01420938",
+            "stable_order_of_exportable_impls": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "symbol_mangling_version": "e03cd33b8f935e8df78fdb3719b766e8",
+            "trait_impls_key_hash": "983e95e4cff4c166646ecf1f42064d03",
+            "used_crate_source": "26a8f3956f5f09504178fa7575d06091",
+            "visibility": "21cf0c0a17387913fea6d89d01420938"
+          }
+        },
+        "nodes": 679800,
+        "parser_keys": 1164
+      },
+      "stable_crate_id": "0aa34c3d1b2c02e5",
+      "test": false,
+      "trace": "exec.2792305"
+    },
+    {
+      "crate": "ruff_python_codegen",
+      "exec_line_sha256": "c02415309c265e45e39e2b6bf8967a0c986f6a562959445e1643c043c2d2deb4",
+      "explicit_parser": true,
+      "graph": {
+        "bytes": 2677381,
+        "keys": [
+          "5f1187e22819f3d5",
+          "347448d7e388ba68",
+          "b572ff01c439e1cb"
+        ],
+        "mtime_ns": 1793110611870991836,
+        "session": "s-hnlrn59a61-0llad9h-60zzzon5ypmco4hxm6a5teb4p"
+      },
+      "result": {
+        "direct_metadata_inputs": [
+          [
+            "root",
+            "crate_name"
+          ],
+          [
+            "root",
+            "public_api_hash"
+          ],
+          [
+            "root",
+            "crate_host_hash"
+          ],
+          [
+            "root",
+            "crate_dep_kind"
+          ],
+          [
+            "root",
+            "extra_filename"
+          ],
+          [
+            "root",
+            "is_private_dep"
+          ],
+          [
+            "root",
+            "public_global_hash"
+          ]
+        ],
+        "edges": 241465,
+        "focus_key_count": 25,
+        "metadata_node": true,
+        "named": {
+          "root": {
+            "canonical_symbols": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "crate_dep_kind": "051d9bdf24cb7633b4520cabd6c32b51",
+            "crate_host_hash": "21cf0c0a17387913fea6d89d01420938",
+            "crate_name": "3a6b64ce89833aa6255840f11c5de80f",
+            "def_kind": "21cf0c0a17387913fea6d89d01420938",
+            "defined_lang_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "diagnostic_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "exported_generic_symbols": "bd8d1821ae930241a490b0cd7f2eba35",
+            "externally_implementable_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "extra_filename": "6a1be85b614e72d537ed8deae3266124",
+            "is_compiler_builtins": "21cf0c0a17387913fea6d89d01420938",
+            "is_no_builtins": "21cf0c0a17387913fea6d89d01420938",
+            "is_private_dep": "21cf0c0a17387913fea6d89d01420938",
+            "is_profiler_runtime": "21cf0c0a17387913fea6d89d01420938",
+            "lookup_stability": "21cf0c0a17387913fea6d89d01420938",
+            "missing_lang_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "module_children": "f893e41ac52fb986e16fccfd87ec2dd9",
+            "native_libraries": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "public_api_hash": "d270c58591cf59331a9d6004b316fda7",
+            "public_global_hash": "248acbd922140259f5af0ef40495b037",
+            "stable_order_of_exportable_impls": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "symbol_mangling_version": "e03cd33b8f935e8df78fdb3719b766e8",
+            "trait_impls_key_hash": "983e95e4cff4c166646ecf1f42064d03",
+            "used_crate_source": "26a8f3956f5f09504178fa7575d06091",
+            "visibility": "21cf0c0a17387913fea6d89d01420938"
+          }
+        },
+        "nodes": 57757,
+        "parser_keys": 303
+      },
+      "stable_crate_id": "6e00cbec5d36e691",
+      "test": false,
+      "trace": "exec.2792306"
+    },
+    {
+      "crate": "ruff_python_semantic",
+      "exec_line_sha256": "dcd5baa8dbad5973e2a5b3bea9d6af6166ba63dd62b9c1147e38d5d4fe92d16f",
+      "explicit_parser": true,
+      "graph": {
+        "bytes": 20333643,
+        "keys": [
+          "5f1187e22819f3d5",
+          "347448d7e388ba68",
+          "b572ff01c439e1cb"
+        ],
+        "mtime_ns": 1793110612439004865,
+        "session": "s-hnlrn59atn-00dzyio-ck499lo36s5y72t144o6113os"
+      },
+      "result": {
+        "direct_metadata_inputs": [
+          [
+            "root",
+            "crate_name"
+          ],
+          [
+            "root",
+            "public_api_hash"
+          ],
+          [
+            "root",
+            "crate_host_hash"
+          ],
+          [
+            "root",
+            "crate_dep_kind"
+          ],
+          [
+            "root",
+            "extra_filename"
+          ],
+          [
+            "root",
+            "is_private_dep"
+          ],
+          [
+            "root",
+            "public_global_hash"
+          ],
+          [
+            "root",
+            "extern_def_public_hash"
+          ]
+        ],
+        "edges": 2339961,
+        "focus_key_count": 24,
+        "metadata_node": true,
+        "named": {
+          "root": {
+            "canonical_symbols": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "crate_dep_kind": "051d9bdf24cb7633b4520cabd6c32b51",
+            "crate_host_hash": "21cf0c0a17387913fea6d89d01420938",
+            "crate_name": "3a6b64ce89833aa6255840f11c5de80f",
+            "defined_lang_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "diagnostic_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "exported_generic_symbols": "bd8d1821ae930241a490b0cd7f2eba35",
+            "extern_def_public_hash": "1d3b2a40616d4dc8ccd869bf740a3a36",
+            "externally_implementable_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "extra_filename": "6a1be85b614e72d537ed8deae3266124",
+            "is_compiler_builtins": "21cf0c0a17387913fea6d89d01420938",
+            "is_no_builtins": "21cf0c0a17387913fea6d89d01420938",
+            "is_private_dep": "21cf0c0a17387913fea6d89d01420938",
+            "is_profiler_runtime": "21cf0c0a17387913fea6d89d01420938",
+            "lookup_stability": "21cf0c0a17387913fea6d89d01420938",
+            "missing_lang_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "module_children": "f893e41ac52fb986e16fccfd87ec2dd9",
+            "native_libraries": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "public_api_hash": "d270c58591cf59331a9d6004b316fda7",
+            "public_global_hash": "248acbd922140259f5af0ef40495b037",
+            "symbol_mangling_version": "e03cd33b8f935e8df78fdb3719b766e8",
+            "trait_impls_key_hash": "983e95e4cff4c166646ecf1f42064d03",
+            "used_crate_source": "26a8f3956f5f09504178fa7575d06091",
+            "visibility": "21cf0c0a17387913fea6d89d01420938"
+          }
+        },
+        "nodes": 360010,
+        "parser_keys": 268
+      },
+      "stable_crate_id": "36c24cc0838fd821",
+      "test": false,
+      "trace": "exec.2792307"
+    },
+    {
+      "crate": "ruff_python_importer",
+      "exec_line_sha256": "bbc99b641aa1a533faeeee403b3cd94daca0dae296ea89b38d4da53614215e70",
+      "explicit_parser": false,
+      "graph": {
+        "bytes": 1171730,
+        "keys": [
+          "5f1187e22819f3d5",
+          "347448d7e388ba68",
+          "b572ff01c439e1cb"
+        ],
+        "mtime_ns": 1793110612573007938,
+        "session": "s-hnlrn5mvf4-1m1yq0h-6v206vszifrexfda89ehuu0tw"
+      },
+      "result": {
+        "direct_metadata_inputs": [
+          [
+            "root",
+            "crate_name"
+          ],
+          [
+            "root",
+            "public_api_hash"
+          ],
+          [
+            "root",
+            "crate_host_hash"
+          ],
+          [
+            "root",
+            "crate_dep_kind"
+          ],
+          [
+            "root",
+            "extra_filename"
+          ],
+          [
+            "root",
+            "is_private_dep"
+          ],
+          [
+            "root",
+            "public_global_hash"
+          ]
+        ],
+        "edges": 92346,
+        "focus_key_count": 19,
+        "metadata_node": true,
+        "named": {
+          "root": {
+            "canonical_symbols": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "crate_dep_kind": "051d9bdf24cb7633b4520cabd6c32b51",
+            "crate_host_hash": "21cf0c0a17387913fea6d89d01420938",
+            "crate_name": "3a6b64ce89833aa6255840f11c5de80f",
+            "defined_lang_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "diagnostic_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "exported_generic_symbols": "bd8d1821ae930241a490b0cd7f2eba35",
+            "externally_implementable_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "extra_filename": "6a1be85b614e72d537ed8deae3266124",
+            "is_compiler_builtins": "21cf0c0a17387913fea6d89d01420938",
+            "is_no_builtins": "21cf0c0a17387913fea6d89d01420938",
+            "is_private_dep": "21cf0c0a17387913fea6d89d01420938",
+            "is_profiler_runtime": "21cf0c0a17387913fea6d89d01420938",
+            "missing_lang_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "native_libraries": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "public_api_hash": "d270c58591cf59331a9d6004b316fda7",
+            "public_global_hash": "248acbd922140259f5af0ef40495b037",
+            "trait_impls_key_hash": "983e95e4cff4c166646ecf1f42064d03",
+            "used_crate_source": "26a8f3956f5f09504178fa7575d06091"
+          }
+        },
+        "nodes": 26206,
+        "parser_keys": 19
+      },
+      "stable_crate_id": "edbd9547c516edcb",
+      "test": false,
+      "trace": "exec.2792418"
+    },
+    {
+      "crate": "ruff_ranged_value",
+      "exec_line_sha256": "a1684a3f21d0103530d31db1dc50bfe0fb5d83971f6b951eda2afaba0eacd478",
+      "explicit_parser": false,
+      "graph": {
+        "bytes": 1140756,
+        "keys": [
+          "5f1187e22819f3d5",
+          "347448d7e388ba68",
+          "b572ff01c439e1cb"
+        ],
+        "mtime_ns": 1793110614114043287,
+        "session": "s-hnlrn65fok-1ohirl1-a5twd0u6udwkhny0yvfck884k"
+      },
+      "result": {
+        "direct_metadata_inputs": [
+          [
+            "root",
+            "crate_name"
+          ],
+          [
+            "root",
+            "public_api_hash"
+          ],
+          [
+            "root",
+            "crate_host_hash"
+          ],
+          [
+            "root",
+            "crate_dep_kind"
+          ],
+          [
+            "root",
+            "extra_filename"
+          ],
+          [
+            "root",
+            "is_private_dep"
+          ],
+          [
+            "root",
+            "public_global_hash"
+          ]
+        ],
+        "edges": 99952,
+        "focus_key_count": 19,
+        "metadata_node": true,
+        "named": {
+          "root": {
+            "canonical_symbols": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "crate_dep_kind": "051d9bdf24cb7633b4520cabd6c32b51",
+            "crate_host_hash": "21cf0c0a17387913fea6d89d01420938",
+            "crate_name": "3a6b64ce89833aa6255840f11c5de80f",
+            "defined_lang_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "diagnostic_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "exported_generic_symbols": "bd8d1821ae930241a490b0cd7f2eba35",
+            "externally_implementable_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "extra_filename": "6a1be85b614e72d537ed8deae3266124",
+            "is_compiler_builtins": "21cf0c0a17387913fea6d89d01420938",
+            "is_no_builtins": "21cf0c0a17387913fea6d89d01420938",
+            "is_private_dep": "21cf0c0a17387913fea6d89d01420938",
+            "is_profiler_runtime": "21cf0c0a17387913fea6d89d01420938",
+            "missing_lang_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "native_libraries": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "public_api_hash": "d270c58591cf59331a9d6004b316fda7",
+            "public_global_hash": "248acbd922140259f5af0ef40495b037",
+            "trait_impls_key_hash": "983e95e4cff4c166646ecf1f42064d03",
+            "used_crate_source": "26a8f3956f5f09504178fa7575d06091"
+          }
+        },
+        "nodes": 24903,
+        "parser_keys": 19
+      },
+      "stable_crate_id": "4cb9f2c3794ff5ca",
+      "test": false,
+      "trace": "exec.2792511"
+    },
+    {
+      "crate": "ty_site_packages",
+      "exec_line_sha256": "940f3132085ef893f166df185f243fea7128e2277cd5479284dd5d4b0d870e3b",
+      "explicit_parser": false,
+      "graph": {
+        "bytes": 5756349,
+        "keys": [
+          "5f1187e22819f3d5",
+          "347448d7e388ba68",
+          "b572ff01c439e1cb"
+        ],
+        "mtime_ns": 1793110614314047875,
+        "session": "s-hnlrn65tr6-1x2ku40-22a0fk157iqbxve376p9l5qx1"
+      },
+      "result": {
+        "direct_metadata_inputs": [
+          [
+            "root",
+            "crate_name"
+          ],
+          [
+            "root",
+            "public_api_hash"
+          ],
+          [
+            "root",
+            "crate_host_hash"
+          ],
+          [
+            "root",
+            "crate_dep_kind"
+          ],
+          [
+            "root",
+            "extra_filename"
+          ],
+          [
+            "root",
+            "is_private_dep"
+          ],
+          [
+            "root",
+            "public_global_hash"
+          ]
+        ],
+        "edges": 627219,
+        "focus_key_count": 19,
+        "metadata_node": true,
+        "named": {
+          "root": {
+            "canonical_symbols": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "crate_dep_kind": "051d9bdf24cb7633b4520cabd6c32b51",
+            "crate_host_hash": "21cf0c0a17387913fea6d89d01420938",
+            "crate_name": "3a6b64ce89833aa6255840f11c5de80f",
+            "defined_lang_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "diagnostic_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "exported_generic_symbols": "bd8d1821ae930241a490b0cd7f2eba35",
+            "externally_implementable_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "extra_filename": "6a1be85b614e72d537ed8deae3266124",
+            "is_compiler_builtins": "21cf0c0a17387913fea6d89d01420938",
+            "is_no_builtins": "21cf0c0a17387913fea6d89d01420938",
+            "is_private_dep": "21cf0c0a17387913fea6d89d01420938",
+            "is_profiler_runtime": "21cf0c0a17387913fea6d89d01420938",
+            "missing_lang_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "native_libraries": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "public_api_hash": "d270c58591cf59331a9d6004b316fda7",
+            "public_global_hash": "248acbd922140259f5af0ef40495b037",
+            "trait_impls_key_hash": "983e95e4cff4c166646ecf1f42064d03",
+            "used_crate_source": "26a8f3956f5f09504178fa7575d06091"
+          }
+        },
+        "nodes": 112307,
+        "parser_keys": 19
+      },
+      "stable_crate_id": "322174b958a30815",
+      "test": false,
+      "trace": "exec.2792515"
+    },
+    {
+      "crate": "ty_module_resolver",
+      "exec_line_sha256": "91a9d2d898ebe2828f9474fa2d094553a77ec306b5371c41656ec4ba5618ad26",
+      "explicit_parser": false,
+      "graph": {
+        "bytes": 25138426,
+        "keys": [
+          "5f1187e22819f3d5",
+          "347448d7e388ba68",
+          "b572ff01c439e1cb"
+        ],
+        "mtime_ns": 1793110614771058358,
+        "session": "s-hnlrn660ms-15ciyv8-czz1qmm7a2271j27skm001j8d"
+      },
+      "result": {
+        "direct_metadata_inputs": [
+          [
+            "root",
+            "crate_name"
+          ],
+          [
+            "root",
+            "public_api_hash"
+          ],
+          [
+            "root",
+            "crate_host_hash"
+          ],
+          [
+            "root",
+            "crate_dep_kind"
+          ],
+          [
+            "root",
+            "extra_filename"
+          ],
+          [
+            "root",
+            "is_private_dep"
+          ],
+          [
+            "root",
+            "public_global_hash"
+          ]
+        ],
+        "edges": 2955524,
+        "focus_key_count": 22,
+        "metadata_node": true,
+        "named": {
+          "root": {
+            "canonical_symbols": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "crate_dep_kind": "051d9bdf24cb7633b4520cabd6c32b51",
+            "crate_host_hash": "21cf0c0a17387913fea6d89d01420938",
+            "crate_name": "3a6b64ce89833aa6255840f11c5de80f",
+            "defined_lang_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "diagnostic_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "exported_generic_symbols": "bd8d1821ae930241a490b0cd7f2eba35",
+            "externally_implementable_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "extra_filename": "6a1be85b614e72d537ed8deae3266124",
+            "is_compiler_builtins": "21cf0c0a17387913fea6d89d01420938",
+            "is_no_builtins": "21cf0c0a17387913fea6d89d01420938",
+            "is_private_dep": "21cf0c0a17387913fea6d89d01420938",
+            "is_profiler_runtime": "21cf0c0a17387913fea6d89d01420938",
+            "lookup_stability": "21cf0c0a17387913fea6d89d01420938",
+            "missing_lang_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "native_libraries": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "public_api_hash": "d270c58591cf59331a9d6004b316fda7",
+            "public_global_hash": "248acbd922140259f5af0ef40495b037",
+            "stable_order_of_exportable_impls": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "symbol_mangling_version": "e03cd33b8f935e8df78fdb3719b766e8",
+            "trait_impls_key_hash": "983e95e4cff4c166646ecf1f42064d03",
+            "used_crate_source": "26a8f3956f5f09504178fa7575d06091"
+          }
+        },
+        "nodes": 439276,
+        "parser_keys": 234
+      },
+      "stable_crate_id": "cb2feb00a472737a",
+      "test": false,
+      "trace": "exec.2792525"
+    },
+    {
+      "crate": "ruff_python_formatter",
+      "exec_line_sha256": "97d7dd4e47bffccba542867187f326b03bb6b05e66f162ffbf4392edb637fed8",
+      "explicit_parser": true,
+      "graph": {
+        "bytes": 33894596,
+        "keys": [
+          "5f1187e22819f3d5",
+          "347448d7e388ba68",
+          "b572ff01c439e1cb"
+        ],
+        "mtime_ns": 1793110615344071502,
+        "session": "s-hnlrn66hkq-0g52azr-4h55po6jiuzxwbreovhp3hrzp"
+      },
+      "result": {
+        "direct_metadata_inputs": [
+          [
+            "root",
+            "crate_name"
+          ],
+          [
+            "root",
+            "public_api_hash"
+          ],
+          [
+            "root",
+            "crate_host_hash"
+          ],
+          [
+            "root",
+            "crate_dep_kind"
+          ],
+          [
+            "root",
+            "extra_filename"
+          ],
+          [
+            "root",
+            "is_private_dep"
+          ],
+          [
+            "root",
+            "public_global_hash"
+          ],
+          [
+            "root",
+            "extern_def_public_hash"
+          ]
+        ],
+        "edges": 4079622,
+        "focus_key_count": 27,
+        "metadata_node": true,
+        "named": {
+          "root": {
+            "canonical_symbols": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "crate_dep_kind": "051d9bdf24cb7633b4520cabd6c32b51",
+            "crate_host_hash": "21cf0c0a17387913fea6d89d01420938",
+            "crate_name": "3a6b64ce89833aa6255840f11c5de80f",
+            "def_kind": "21cf0c0a17387913fea6d89d01420938",
+            "defined_lang_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "diagnostic_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "exported_generic_symbols": "bd8d1821ae930241a490b0cd7f2eba35",
+            "extern_def_public_hash": "1d3b2a40616d4dc8ccd869bf740a3a36",
+            "externally_implementable_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "extra_filename": "6a1be85b614e72d537ed8deae3266124",
+            "is_compiler_builtins": "21cf0c0a17387913fea6d89d01420938",
+            "is_no_builtins": "21cf0c0a17387913fea6d89d01420938",
+            "is_private_dep": "21cf0c0a17387913fea6d89d01420938",
+            "is_profiler_runtime": "21cf0c0a17387913fea6d89d01420938",
+            "lookup_stability": "21cf0c0a17387913fea6d89d01420938",
+            "missing_lang_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "module_children": "f893e41ac52fb986e16fccfd87ec2dd9",
+            "native_libraries": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "public_api_hash": "d270c58591cf59331a9d6004b316fda7",
+            "public_global_hash": "248acbd922140259f5af0ef40495b037",
+            "specialization_enabled_in": "21cf0c0a17387913fea6d89d01420938",
+            "stable_order_of_exportable_impls": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "symbol_mangling_version": "e03cd33b8f935e8df78fdb3719b766e8",
+            "trait_impls_key_hash": "983e95e4cff4c166646ecf1f42064d03",
+            "used_crate_source": "26a8f3956f5f09504178fa7575d06091",
+            "visibility": "21cf0c0a17387913fea6d89d01420938"
+          }
+        },
+        "nodes": 579663,
+        "parser_keys": 800
+      },
+      "stable_crate_id": "e76d0cda23ee711c",
+      "test": false,
+      "trace": "exec.2792528"
+    },
+    {
+      "crate": "ty_vendored",
+      "exec_line_sha256": "e13ed4a3e08b3e2e8af38c37eb9a1a09828ef9c66c78233fea6b651c28148f54",
+      "explicit_parser": false,
+      "graph": {
+        "bytes": 473655,
+        "keys": [
+          "5f1187e22819f3d5",
+          "347448d7e388ba68",
+          "b572ff01c439e1cb"
+        ],
+        "mtime_ns": 1793110614028041314,
+        "session": "s-hnlrn65ouu-00t3sgc-67ff72rpn6wyhw1nb0qr6qe9v"
+      },
+      "result": {
+        "direct_metadata_inputs": [
+          [
+            "root",
+            "crate_name"
+          ],
+          [
+            "root",
+            "public_api_hash"
+          ],
+          [
+            "root",
+            "crate_host_hash"
+          ],
+          [
+            "root",
+            "crate_dep_kind"
+          ],
+          [
+            "root",
+            "extra_filename"
+          ],
+          [
+            "root",
+            "is_private_dep"
+          ],
+          [
+            "root",
+            "public_global_hash"
+          ]
+        ],
+        "edges": 31540,
+        "focus_key_count": 19,
+        "metadata_node": true,
+        "named": {
+          "root": {
+            "canonical_symbols": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "crate_dep_kind": "051d9bdf24cb7633b4520cabd6c32b51",
+            "crate_host_hash": "21cf0c0a17387913fea6d89d01420938",
+            "crate_name": "3a6b64ce89833aa6255840f11c5de80f",
+            "defined_lang_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "diagnostic_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "exported_generic_symbols": "bd8d1821ae930241a490b0cd7f2eba35",
+            "externally_implementable_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "extra_filename": "6a1be85b614e72d537ed8deae3266124",
+            "is_compiler_builtins": "21cf0c0a17387913fea6d89d01420938",
+            "is_no_builtins": "21cf0c0a17387913fea6d89d01420938",
+            "is_private_dep": "21cf0c0a17387913fea6d89d01420938",
+            "is_profiler_runtime": "21cf0c0a17387913fea6d89d01420938",
+            "missing_lang_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "native_libraries": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "public_api_hash": "d270c58591cf59331a9d6004b316fda7",
+            "public_global_hash": "248acbd922140259f5af0ef40495b037",
+            "trait_impls_key_hash": "983e95e4cff4c166646ecf1f42064d03",
+            "used_crate_source": "26a8f3956f5f09504178fa7575d06091"
+          }
+        },
+        "nodes": 10898,
+        "parser_keys": 19
+      },
+      "stable_crate_id": "9d694672aafd7572",
+      "test": false,
+      "trace": "exec.2792530"
+    },
+    {
+      "crate": "mdtest",
+      "exec_line_sha256": "f4196ba1a852a596a12937bcf6210b1bbf82c48d8061bca500ded22a32f1c472",
+      "explicit_parser": false,
+      "graph": {
+        "bytes": 8350083,
+        "keys": [
+          "5f1187e22819f3d5",
+          "347448d7e388ba68",
+          "b572ff01c439e1cb"
+        ],
+        "mtime_ns": 1793110614502052188,
+        "session": "s-hnlrn6clsr-070h2r1-9sn6x6txoa6k7fcii7aepc6e5"
+      },
+      "result": {
+        "direct_metadata_inputs": [
+          [
+            "root",
+            "crate_name"
+          ],
+          [
+            "root",
+            "public_api_hash"
+          ],
+          [
+            "root",
+            "crate_host_hash"
+          ],
+          [
+            "root",
+            "crate_dep_kind"
+          ],
+          [
+            "root",
+            "extra_filename"
+          ],
+          [
+            "root",
+            "is_private_dep"
+          ],
+          [
+            "root",
+            "public_global_hash"
+          ]
+        ],
+        "edges": 854782,
+        "focus_key_count": 22,
+        "metadata_node": true,
+        "named": {
+          "root": {
+            "canonical_symbols": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "crate_dep_kind": "051d9bdf24cb7633b4520cabd6c32b51",
+            "crate_host_hash": "21cf0c0a17387913fea6d89d01420938",
+            "crate_name": "3a6b64ce89833aa6255840f11c5de80f",
+            "defined_lang_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "diagnostic_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "exported_generic_symbols": "bd8d1821ae930241a490b0cd7f2eba35",
+            "externally_implementable_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "extra_filename": "6a1be85b614e72d537ed8deae3266124",
+            "is_compiler_builtins": "21cf0c0a17387913fea6d89d01420938",
+            "is_no_builtins": "21cf0c0a17387913fea6d89d01420938",
+            "is_private_dep": "21cf0c0a17387913fea6d89d01420938",
+            "is_profiler_runtime": "21cf0c0a17387913fea6d89d01420938",
+            "lookup_stability": "21cf0c0a17387913fea6d89d01420938",
+            "missing_lang_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "native_libraries": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "public_api_hash": "d270c58591cf59331a9d6004b316fda7",
+            "public_global_hash": "248acbd922140259f5af0ef40495b037",
+            "stable_order_of_exportable_impls": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "symbol_mangling_version": "e03cd33b8f935e8df78fdb3719b766e8",
+            "trait_impls_key_hash": "983e95e4cff4c166646ecf1f42064d03",
+            "used_crate_source": "26a8f3956f5f09504178fa7575d06091"
+          }
+        },
+        "nodes": 161615,
+        "parser_keys": 233
+      },
+      "stable_crate_id": "de94bf8fba801d59",
+      "test": false,
+      "trace": "exec.2792667"
+    },
+    {
+      "crate": "ty_combine",
+      "exec_line_sha256": "bbf33a9f7ee62a6a2e8eec334e9ab2880f920cd7040c58ad611020968f51c47c",
+      "explicit_parser": false,
+      "graph": {
+        "bytes": 483696,
+        "keys": [
+          "5f1187e22819f3d5",
+          "347448d7e388ba68",
+          "b572ff01c439e1cb"
+        ],
+        "mtime_ns": 1793110615086065584,
+        "session": "s-hnlrn720hg-0bira89-62qki0ae44iymgxlb72omyyxz"
+      },
+      "result": {
+        "direct_metadata_inputs": [
+          [
+            "root",
+            "crate_name"
+          ],
+          [
+            "root",
+            "public_api_hash"
+          ],
+          [
+            "root",
+            "crate_host_hash"
+          ],
+          [
+            "root",
+            "crate_dep_kind"
+          ],
+          [
+            "root",
+            "extra_filename"
+          ],
+          [
+            "root",
+            "is_private_dep"
+          ],
+          [
+            "root",
+            "public_global_hash"
+          ]
+        ],
+        "edges": 37232,
+        "focus_key_count": 18,
+        "metadata_node": true,
+        "named": {
+          "root": {
+            "canonical_symbols": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "crate_dep_kind": "051d9bdf24cb7633b4520cabd6c32b51",
+            "crate_host_hash": "21cf0c0a17387913fea6d89d01420938",
+            "crate_name": "3a6b64ce89833aa6255840f11c5de80f",
+            "defined_lang_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "diagnostic_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "externally_implementable_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "extra_filename": "6a1be85b614e72d537ed8deae3266124",
+            "is_compiler_builtins": "21cf0c0a17387913fea6d89d01420938",
+            "is_no_builtins": "21cf0c0a17387913fea6d89d01420938",
+            "is_private_dep": "21cf0c0a17387913fea6d89d01420938",
+            "is_profiler_runtime": "21cf0c0a17387913fea6d89d01420938",
+            "missing_lang_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "native_libraries": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "public_api_hash": "d270c58591cf59331a9d6004b316fda7",
+            "public_global_hash": "248acbd922140259f5af0ef40495b037",
+            "trait_impls_key_hash": "983e95e4cff4c166646ecf1f42064d03",
+            "used_crate_source": "26a8f3956f5f09504178fa7575d06091"
+          }
+        },
+        "nodes": 10811,
+        "parser_keys": 18
+      },
+      "stable_crate_id": "591d2ece2868859b",
+      "test": false,
+      "trace": "exec.2792784"
+    },
+    {
+      "crate": "ruff_linter",
+      "exec_line_sha256": "8b1170d1096435b0f7b432019450209796e0429cc5833b2c527e14ebf3bdad0e",
+      "explicit_parser": true,
+      "graph": {
+        "bytes": 200593607,
+        "keys": [
+          "5f1187e22819f3d5",
+          "347448d7e388ba68",
+          "b572ff01c439e1cb"
+        ],
+        "mtime_ns": 1793110623110249656,
+        "session": "s-hnlrn75u0y-0pkpxwa-77k5eokprkxol5n4lccfghwth"
+      },
+      "result": {
+        "direct_metadata_inputs": [
+          [
+            "root",
+            "crate_name"
+          ],
+          [
+            "root",
+            "public_api_hash"
+          ],
+          [
+            "root",
+            "crate_host_hash"
+          ],
+          [
+            "root",
+            "crate_dep_kind"
+          ],
+          [
+            "root",
+            "extra_filename"
+          ],
+          [
+            "root",
+            "is_private_dep"
+          ],
+          [
+            "root",
+            "public_global_hash"
+          ],
+          [
+            "root",
+            "extern_def_public_hash"
+          ]
+        ],
+        "edges": 25061955,
+        "focus_key_count": 27,
+        "metadata_node": true,
+        "named": {
+          "root": {
+            "canonical_symbols": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "crate_dep_kind": "051d9bdf24cb7633b4520cabd6c32b51",
+            "crate_host_hash": "21cf0c0a17387913fea6d89d01420938",
+            "crate_name": "3a6b64ce89833aa6255840f11c5de80f",
+            "def_kind": "21cf0c0a17387913fea6d89d01420938",
+            "defined_lang_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "diagnostic_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "exported_generic_symbols": "bd8d1821ae930241a490b0cd7f2eba35",
+            "extern_def_public_hash": "1d3b2a40616d4dc8ccd869bf740a3a36",
+            "externally_implementable_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "extra_filename": "6a1be85b614e72d537ed8deae3266124",
+            "is_compiler_builtins": "21cf0c0a17387913fea6d89d01420938",
+            "is_no_builtins": "21cf0c0a17387913fea6d89d01420938",
+            "is_private_dep": "21cf0c0a17387913fea6d89d01420938",
+            "is_profiler_runtime": "21cf0c0a17387913fea6d89d01420938",
+            "lookup_stability": "21cf0c0a17387913fea6d89d01420938",
+            "missing_lang_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "module_children": "f893e41ac52fb986e16fccfd87ec2dd9",
+            "native_libraries": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "public_api_hash": "d270c58591cf59331a9d6004b316fda7",
+            "public_global_hash": "248acbd922140259f5af0ef40495b037",
+            "specialization_enabled_in": "21cf0c0a17387913fea6d89d01420938",
+            "stable_order_of_exportable_impls": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "symbol_mangling_version": "e03cd33b8f935e8df78fdb3719b766e8",
+            "trait_impls_key_hash": "983e95e4cff4c166646ecf1f42064d03",
+            "used_crate_source": "26a8f3956f5f09504178fa7575d06091",
+            "visibility": "21cf0c0a17387913fea6d89d01420938"
+          }
+        },
+        "nodes": 3314060,
+        "parser_keys": 3043
+      },
+      "stable_crate_id": "c3d0fde586f6ca11",
+      "test": false,
+      "trace": "exec.2792788"
+    },
+    {
+      "crate": "ty_python_core",
+      "exec_line_sha256": "ca69b32f5895342bfbc6fccf8801fdff73d4d1df70e9e73b3761b990c58c0f94",
+      "explicit_parser": true,
+      "graph": {
+        "bytes": 55114514,
+        "keys": [
+          "5f1187e22819f3d5",
+          "347448d7e388ba68",
+          "b572ff01c439e1cb"
+        ],
+        "mtime_ns": 1793110617592123070,
+        "session": "s-hnlrn7mujw-08dchca-ea0wawa65wx2yl1b998mij91v"
+      },
+      "result": {
+        "direct_metadata_inputs": [
+          [
+            "root",
+            "crate_name"
+          ],
+          [
+            "root",
+            "public_api_hash"
+          ],
+          [
+            "root",
+            "crate_host_hash"
+          ],
+          [
+            "root",
+            "crate_dep_kind"
+          ],
+          [
+            "root",
+            "extra_filename"
+          ],
+          [
+            "root",
+            "is_private_dep"
+          ],
+          [
+            "root",
+            "public_global_hash"
+          ]
+        ],
+        "edges": 6656155,
+        "focus_key_count": 24,
+        "metadata_node": true,
+        "named": {
+          "root": {
+            "canonical_symbols": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "crate_dep_kind": "051d9bdf24cb7633b4520cabd6c32b51",
+            "crate_host_hash": "21cf0c0a17387913fea6d89d01420938",
+            "crate_name": "3a6b64ce89833aa6255840f11c5de80f",
+            "defined_lang_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "diagnostic_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "exported_generic_symbols": "bd8d1821ae930241a490b0cd7f2eba35",
+            "externally_implementable_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "extra_filename": "6a1be85b614e72d537ed8deae3266124",
+            "is_compiler_builtins": "21cf0c0a17387913fea6d89d01420938",
+            "is_no_builtins": "21cf0c0a17387913fea6d89d01420938",
+            "is_private_dep": "21cf0c0a17387913fea6d89d01420938",
+            "is_profiler_runtime": "21cf0c0a17387913fea6d89d01420938",
+            "lookup_stability": "21cf0c0a17387913fea6d89d01420938",
+            "missing_lang_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "module_children": "f893e41ac52fb986e16fccfd87ec2dd9",
+            "native_libraries": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "public_api_hash": "d270c58591cf59331a9d6004b316fda7",
+            "public_global_hash": "248acbd922140259f5af0ef40495b037",
+            "stable_order_of_exportable_impls": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "symbol_mangling_version": "e03cd33b8f935e8df78fdb3719b766e8",
+            "trait_impls_key_hash": "983e95e4cff4c166646ecf1f42064d03",
+            "used_crate_source": "26a8f3956f5f09504178fa7575d06091",
+            "visibility": "21cf0c0a17387913fea6d89d01420938"
+          }
+        },
+        "nodes": 934633,
+        "parser_keys": 2141
+      },
+      "stable_crate_id": "e9d1390b84a7d749",
+      "test": false,
+      "trace": "exec.2793008"
+    },
+    {
+      "crate": "ruff_python_formatter",
+      "exec_line_sha256": "f20c64b2fe353b0756497f58755aa10adc654448f8db8523d28b1cda96cdac12",
+      "explicit_parser": true,
+      "graph": {
+        "bytes": 1167250,
+        "keys": [
+          "5f1187e22819f3d5",
+          "347448d7e388ba68",
+          "b572ff01c439e1cb"
+        ],
+        "mtime_ns": 1793110616385095382,
+        "session": "s-hnlrn7wsnn-1w01nph-ckqyhdey3gl17odgf7xy2ynud"
+      },
+      "result": {
+        "direct_metadata_inputs": [],
+        "edges": 105686,
+        "focus_key_count": 22,
+        "metadata_node": false,
+        "named": {
+          "root": {
+            "canonical_symbols": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "crate_dep_kind": "051d9bdf24cb7633b4520cabd6c32b51",
+            "crate_hash": "86ecdb29cb5ec3ed455712699a2bf891",
+            "crate_name": "3a6b64ce89833aa6255840f11c5de80f",
+            "debugger_visualizers": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "defined_lang_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "diagnostic_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "exported_generic_symbols": "bd8d1821ae930241a490b0cd7f2eba35",
+            "exported_non_generic_symbols": "9ddf47c1806b4e858b78e1d0d757f732",
+            "externally_implementable_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "is_compiler_builtins": "21cf0c0a17387913fea6d89d01420938",
+            "is_no_builtins": "21cf0c0a17387913fea6d89d01420938",
+            "is_panic_runtime": "21cf0c0a17387913fea6d89d01420938",
+            "is_private_dep": "21cf0c0a17387913fea6d89d01420938",
+            "is_profiler_runtime": "21cf0c0a17387913fea6d89d01420938",
+            "missing_lang_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "native_libraries": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "panic_in_drop_strategy": "21cf0c0a17387913fea6d89d01420938",
+            "public_api_hash": "d270c58591cf59331a9d6004b316fda7",
+            "required_panic_strategy": "21cf0c0a17387913fea6d89d01420938",
+            "trait_impls_key_hash": "983e95e4cff4c166646ecf1f42064d03",
+            "used_crate_source": "025bab3428a0357fd59cc903a59a1e1b"
+          }
+        },
+        "nodes": 25374,
+        "parser_keys": 22
+      },
+      "stable_crate_id": "03f14d0a2b9712da",
+      "test": false,
+      "trace": "exec.2793181"
+    },
+    {
+      "crate": "ty_python_semantic",
+      "exec_line_sha256": "a53d7492eae07515f3f30b2113e3c851249e646a101241b12b93d99f7cccb371",
+      "explicit_parser": true,
+      "graph": {
+        "bytes": 382260871,
+        "keys": [
+          "5f1187e22819f3d5",
+          "347448d7e388ba68",
+          "b572ff01c439e1cb"
+        ],
+        "mtime_ns": 1793110629773402516,
+        "session": "s-hnlrn90ddg-0i9bvxf-edvwin7kdkcfgrdv5r3fquccs"
+      },
+      "result": {
+        "direct_metadata_inputs": [
+          [
+            "root",
+            "crate_name"
+          ],
+          [
+            "root",
+            "public_api_hash"
+          ],
+          [
+            "root",
+            "crate_host_hash"
+          ],
+          [
+            "root",
+            "crate_dep_kind"
+          ],
+          [
+            "root",
+            "extra_filename"
+          ],
+          [
+            "root",
+            "is_private_dep"
+          ],
+          [
+            "root",
+            "public_global_hash"
+          ],
+          [
+            "root",
+            "extern_def_public_hash"
+          ]
+        ],
+        "edges": 51484785,
+        "focus_key_count": 25,
+        "metadata_node": true,
+        "named": {
+          "root": {
+            "canonical_symbols": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "crate_dep_kind": "051d9bdf24cb7633b4520cabd6c32b51",
+            "crate_host_hash": "21cf0c0a17387913fea6d89d01420938",
+            "crate_name": "3a6b64ce89833aa6255840f11c5de80f",
+            "defined_lang_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "diagnostic_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "exported_generic_symbols": "bd8d1821ae930241a490b0cd7f2eba35",
+            "extern_def_public_hash": "1d3b2a40616d4dc8ccd869bf740a3a36",
+            "externally_implementable_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "extra_filename": "6a1be85b614e72d537ed8deae3266124",
+            "is_compiler_builtins": "21cf0c0a17387913fea6d89d01420938",
+            "is_no_builtins": "21cf0c0a17387913fea6d89d01420938",
+            "is_private_dep": "21cf0c0a17387913fea6d89d01420938",
+            "is_profiler_runtime": "21cf0c0a17387913fea6d89d01420938",
+            "lookup_stability": "21cf0c0a17387913fea6d89d01420938",
+            "missing_lang_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "module_children": "f893e41ac52fb986e16fccfd87ec2dd9",
+            "native_libraries": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "public_api_hash": "d270c58591cf59331a9d6004b316fda7",
+            "public_global_hash": "248acbd922140259f5af0ef40495b037",
+            "stable_order_of_exportable_impls": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "symbol_mangling_version": "e03cd33b8f935e8df78fdb3719b766e8",
+            "trait_impls_key_hash": "983e95e4cff4c166646ecf1f42064d03",
+            "used_crate_source": "26a8f3956f5f09504178fa7575d06091",
+            "visibility": "21cf0c0a17387913fea6d89d01420938"
+          }
+        },
+        "nodes": 6005720,
+        "parser_keys": 698
+      },
+      "stable_crate_id": "83bc223fed213cd5",
+      "test": false,
+      "trace": "exec.2793313"
+    },
+    {
+      "crate": "ruff_graph",
+      "exec_line_sha256": "19c43c105a20f41be722190babb9a2cdf755f976a07b493ed64fd5260e9c942b",
+      "explicit_parser": true,
+      "graph": {
+        "bytes": 7379261,
+        "keys": [
+          "5f1187e22819f3d5",
+          "347448d7e388ba68",
+          "b572ff01c439e1cb"
+        ],
+        "mtime_ns": 1793110623697263122,
+        "session": "s-hnlrnc17xx-1mdyfgm-4bgvz3ba5892vgy3th4ok6ut2"
+      },
+      "result": {
+        "direct_metadata_inputs": [
+          [
+            "root",
+            "crate_name"
+          ],
+          [
+            "root",
+            "public_api_hash"
+          ],
+          [
+            "root",
+            "crate_host_hash"
+          ],
+          [
+            "root",
+            "crate_dep_kind"
+          ],
+          [
+            "root",
+            "extra_filename"
+          ],
+          [
+            "root",
+            "is_private_dep"
+          ],
+          [
+            "root",
+            "public_global_hash"
+          ]
+        ],
+        "edges": 727000,
+        "focus_key_count": 26,
+        "metadata_node": true,
+        "named": {
+          "root": {
+            "canonical_symbols": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "crate_dep_kind": "051d9bdf24cb7633b4520cabd6c32b51",
+            "crate_host_hash": "21cf0c0a17387913fea6d89d01420938",
+            "crate_name": "3a6b64ce89833aa6255840f11c5de80f",
+            "def_kind": "21cf0c0a17387913fea6d89d01420938",
+            "defined_lang_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "diagnostic_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "exported_generic_symbols": "bd8d1821ae930241a490b0cd7f2eba35",
+            "externally_implementable_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "extra_filename": "6a1be85b614e72d537ed8deae3266124",
+            "is_compiler_builtins": "21cf0c0a17387913fea6d89d01420938",
+            "is_no_builtins": "21cf0c0a17387913fea6d89d01420938",
+            "is_private_dep": "21cf0c0a17387913fea6d89d01420938",
+            "is_profiler_runtime": "21cf0c0a17387913fea6d89d01420938",
+            "lookup_stability": "21cf0c0a17387913fea6d89d01420938",
+            "missing_lang_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "module_children": "f893e41ac52fb986e16fccfd87ec2dd9",
+            "native_libraries": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "public_api_hash": "d270c58591cf59331a9d6004b316fda7",
+            "public_global_hash": "248acbd922140259f5af0ef40495b037",
+            "specialization_enabled_in": "21cf0c0a17387913fea6d89d01420938",
+            "stable_order_of_exportable_impls": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "symbol_mangling_version": "e03cd33b8f935e8df78fdb3719b766e8",
+            "trait_impls_key_hash": "983e95e4cff4c166646ecf1f42064d03",
+            "used_crate_source": "26a8f3956f5f09504178fa7575d06091",
+            "visibility": "21cf0c0a17387913fea6d89d01420938"
+          }
+        },
+        "nodes": 145024,
+        "parser_keys": 513
+      },
+      "stable_crate_id": "dea9fd269956cb88",
+      "test": false,
+      "trace": "exec.2793422"
+    },
+    {
+      "crate": "ruff_workspace",
+      "exec_line_sha256": "6fa76aeae02c80bb6de01a9c1f9d3b4f50f73993c33a637533b5ea7fd6553450",
+      "explicit_parser": false,
+      "graph": {
+        "bytes": 37855532,
+        "keys": [
+          "5f1187e22819f3d5",
+          "347448d7e388ba68",
+          "b572ff01c439e1cb"
+        ],
+        "mtime_ns": 1793110625581306343,
+        "session": "s-hnlrncoup3-04cpp2h-4n9gquryjp8g4pcpiuizx88vq"
+      },
+      "result": {
+        "direct_metadata_inputs": [
+          [
+            "root",
+            "crate_name"
+          ],
+          [
+            "root",
+            "public_api_hash"
+          ],
+          [
+            "root",
+            "crate_host_hash"
+          ],
+          [
+            "root",
+            "crate_dep_kind"
+          ],
+          [
+            "root",
+            "extra_filename"
+          ],
+          [
+            "root",
+            "is_private_dep"
+          ],
+          [
+            "root",
+            "public_global_hash"
+          ]
+        ],
+        "edges": 4683660,
+        "focus_key_count": 22,
+        "metadata_node": true,
+        "named": {
+          "root": {
+            "canonical_symbols": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "crate_dep_kind": "051d9bdf24cb7633b4520cabd6c32b51",
+            "crate_host_hash": "21cf0c0a17387913fea6d89d01420938",
+            "crate_name": "3a6b64ce89833aa6255840f11c5de80f",
+            "def_kind": "21cf0c0a17387913fea6d89d01420938",
+            "defined_lang_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "diagnostic_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "exported_generic_symbols": "bd8d1821ae930241a490b0cd7f2eba35",
+            "externally_implementable_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "extra_filename": "6a1be85b614e72d537ed8deae3266124",
+            "is_compiler_builtins": "21cf0c0a17387913fea6d89d01420938",
+            "is_no_builtins": "21cf0c0a17387913fea6d89d01420938",
+            "is_private_dep": "21cf0c0a17387913fea6d89d01420938",
+            "is_profiler_runtime": "21cf0c0a17387913fea6d89d01420938",
+            "missing_lang_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "native_libraries": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "public_api_hash": "d270c58591cf59331a9d6004b316fda7",
+            "public_global_hash": "248acbd922140259f5af0ef40495b037",
+            "stable_order_of_exportable_impls": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "symbol_mangling_version": "e03cd33b8f935e8df78fdb3719b766e8",
+            "trait_impls_key_hash": "983e95e4cff4c166646ecf1f42064d03",
+            "used_crate_source": "26a8f3956f5f09504178fa7575d06091"
+          }
+        },
+        "nodes": 637444,
+        "parser_keys": 124
+      },
+      "stable_crate_id": "cffc34130b730834",
+      "test": false,
+      "trace": "exec.2793697"
+    },
+    {
+      "crate": "ruff_markdown",
+      "exec_line_sha256": "15f4b0a75a60b03e3e808ac4c1f0c8bebe58d40db43c4b5b9aa95652b29801ca",
+      "explicit_parser": false,
+      "graph": {
+        "bytes": 1740168,
+        "keys": [
+          "5f1187e22819f3d5",
+          "347448d7e388ba68",
+          "b572ff01c439e1cb"
+        ],
+        "mtime_ns": 1793110626711332267,
+        "session": "s-hnlrndr8ox-1lcw0p6-cwty1aaorrolpu9m829jd6lup"
+      },
+      "result": {
+        "direct_metadata_inputs": [
+          [
+            "root",
+            "crate_name"
+          ],
+          [
+            "root",
+            "public_api_hash"
+          ],
+          [
+            "root",
+            "crate_host_hash"
+          ],
+          [
+            "root",
+            "crate_dep_kind"
+          ],
+          [
+            "root",
+            "extra_filename"
+          ],
+          [
+            "root",
+            "is_private_dep"
+          ],
+          [
+            "root",
+            "public_global_hash"
+          ]
+        ],
+        "edges": 149656,
+        "focus_key_count": 20,
+        "metadata_node": true,
+        "named": {
+          "root": {
+            "canonical_symbols": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "crate_dep_kind": "051d9bdf24cb7633b4520cabd6c32b51",
+            "crate_host_hash": "21cf0c0a17387913fea6d89d01420938",
+            "crate_name": "3a6b64ce89833aa6255840f11c5de80f",
+            "defined_lang_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "diagnostic_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "exported_generic_symbols": "bd8d1821ae930241a490b0cd7f2eba35",
+            "externally_implementable_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "extra_filename": "6a1be85b614e72d537ed8deae3266124",
+            "is_compiler_builtins": "21cf0c0a17387913fea6d89d01420938",
+            "is_no_builtins": "21cf0c0a17387913fea6d89d01420938",
+            "is_private_dep": "21cf0c0a17387913fea6d89d01420938",
+            "is_profiler_runtime": "21cf0c0a17387913fea6d89d01420938",
+            "missing_lang_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "native_libraries": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "public_api_hash": "d270c58591cf59331a9d6004b316fda7",
+            "public_global_hash": "248acbd922140259f5af0ef40495b037",
+            "symbol_mangling_version": "e03cd33b8f935e8df78fdb3719b766e8",
+            "trait_impls_key_hash": "983e95e4cff4c166646ecf1f42064d03",
+            "used_crate_source": "26a8f3956f5f09504178fa7575d06091"
+          }
+        },
+        "nodes": 38208,
+        "parser_keys": 81
+      },
+      "stable_crate_id": "8d024389c280b4b5",
+      "test": false,
+      "trace": "exec.2793791"
+    },
+    {
+      "crate": "ruff_mdtest",
+      "exec_line_sha256": "b61791b5ea163b01f11b547f26b3b9cd4a6fd7e96cca11e2d66938e456edb3de",
+      "explicit_parser": false,
+      "graph": {
+        "bytes": 6821784,
+        "keys": [
+          "5f1187e22819f3d5",
+          "347448d7e388ba68",
+          "b572ff01c439e1cb"
+        ],
+        "mtime_ns": 1793110626771333644,
+        "session": "s-hnlrndr8ab-052lmoc-8l4pocqmoand91xkogzt3l1qo"
+      },
+      "result": {
+        "direct_metadata_inputs": [
+          [
+            "root",
+            "crate_name"
+          ],
+          [
+            "root",
+            "public_api_hash"
+          ],
+          [
+            "root",
+            "crate_host_hash"
+          ],
+          [
+            "root",
+            "crate_dep_kind"
+          ],
+          [
+            "root",
+            "extra_filename"
+          ],
+          [
+            "root",
+            "is_private_dep"
+          ],
+          [
+            "root",
+            "public_global_hash"
+          ]
+        ],
+        "edges": 697466,
+        "focus_key_count": 19,
+        "metadata_node": true,
+        "named": {
+          "root": {
+            "canonical_symbols": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "crate_dep_kind": "051d9bdf24cb7633b4520cabd6c32b51",
+            "crate_host_hash": "21cf0c0a17387913fea6d89d01420938",
+            "crate_name": "3a6b64ce89833aa6255840f11c5de80f",
+            "defined_lang_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "diagnostic_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "exported_generic_symbols": "bd8d1821ae930241a490b0cd7f2eba35",
+            "externally_implementable_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "extra_filename": "6a1be85b614e72d537ed8deae3266124",
+            "is_compiler_builtins": "21cf0c0a17387913fea6d89d01420938",
+            "is_no_builtins": "21cf0c0a17387913fea6d89d01420938",
+            "is_private_dep": "21cf0c0a17387913fea6d89d01420938",
+            "is_profiler_runtime": "21cf0c0a17387913fea6d89d01420938",
+            "missing_lang_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "native_libraries": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "public_api_hash": "d270c58591cf59331a9d6004b316fda7",
+            "public_global_hash": "248acbd922140259f5af0ef40495b037",
+            "trait_impls_key_hash": "983e95e4cff4c166646ecf1f42064d03",
+            "used_crate_source": "26a8f3956f5f09504178fa7575d06091"
+          }
+        },
+        "nodes": 133647,
+        "parser_keys": 19
+      },
+      "stable_crate_id": "1368491f437794e4",
+      "test": false,
+      "trace": "exec.2793792"
+    },
+    {
+      "crate": "ruff_wasm",
+      "exec_line_sha256": "b8d6ebfd835dc4cf6e2bc8d12589e92296425f62319d628d80b8c02c62112dd8",
+      "explicit_parser": true,
+      "graph": {
+        "bytes": 12246555,
+        "keys": [
+          "5f1187e22819f3d5",
+          "347448d7e388ba68",
+          "b572ff01c439e1cb"
+        ],
+        "mtime_ns": 1793110627766356471,
+        "session": "s-hnlrne7qz0-0uujekl-7awl65ti6i4s2pp7wu06clxp3"
+      },
+      "result": {
+        "direct_metadata_inputs": [
+          [
+            "root",
+            "crate_name"
+          ],
+          [
+            "root",
+            "public_api_hash"
+          ],
+          [
+            "root",
+            "crate_host_hash"
+          ],
+          [
+            "root",
+            "crate_dep_kind"
+          ],
+          [
+            "root",
+            "extra_filename"
+          ],
+          [
+            "root",
+            "is_private_dep"
+          ],
+          [
+            "root",
+            "public_global_hash"
+          ]
+        ],
+        "edges": 1403226,
+        "focus_key_count": 36,
+        "metadata_node": true,
+        "named": {
+          "lexer": {
+            "is_doc_hidden": "21cf0c0a17387913fea6d89d01420938",
+            "module_children": "540ffe9db35f21d81bd17bdc773bf637"
+          },
+          "root": {
+            "canonical_symbols": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "crate_dep_kind": "051d9bdf24cb7633b4520cabd6c32b51",
+            "crate_hash": "86ecdb29cb5ec3ed455712699a2bf891",
+            "crate_host_hash": "21cf0c0a17387913fea6d89d01420938",
+            "crate_name": "3a6b64ce89833aa6255840f11c5de80f",
+            "debugger_visualizers": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "def_kind": "21cf0c0a17387913fea6d89d01420938",
+            "defined_lang_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "diagnostic_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "exported_generic_symbols": "bd8d1821ae930241a490b0cd7f2eba35",
+            "exported_non_generic_symbols": "9ddf47c1806b4e858b78e1d0d757f732",
+            "externally_implementable_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "extra_filename": "6a1be85b614e72d537ed8deae3266124",
+            "is_compiler_builtins": "21cf0c0a17387913fea6d89d01420938",
+            "is_doc_hidden": "21cf0c0a17387913fea6d89d01420938",
+            "is_no_builtins": "21cf0c0a17387913fea6d89d01420938",
+            "is_panic_runtime": "21cf0c0a17387913fea6d89d01420938",
+            "is_private_dep": "21cf0c0a17387913fea6d89d01420938",
+            "is_profiler_runtime": "21cf0c0a17387913fea6d89d01420938",
+            "lookup_stability": "21cf0c0a17387913fea6d89d01420938",
+            "missing_extern_crate_item": "21cf0c0a17387913fea6d89d01420938",
+            "missing_lang_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "module_children": "f893e41ac52fb986e16fccfd87ec2dd9",
+            "native_libraries": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "panic_in_drop_strategy": "21cf0c0a17387913fea6d89d01420938",
+            "public_api_hash": "d270c58591cf59331a9d6004b316fda7",
+            "public_global_hash": "248acbd922140259f5af0ef40495b037",
+            "required_panic_strategy": "21cf0c0a17387913fea6d89d01420938",
+            "specialization_enabled_in": "21cf0c0a17387913fea6d89d01420938",
+            "stable_order_of_exportable_impls": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "symbol_mangling_version": "e03cd33b8f935e8df78fdb3719b766e8",
+            "trait_impls_key_hash": "983e95e4cff4c166646ecf1f42064d03",
+            "used_crate_source": "025bab3428a0357fd59cc903a59a1e1b",
+            "visibility": "21cf0c0a17387913fea6d89d01420938"
+          }
+        },
+        "nodes": 222066,
+        "parser_keys": 609
+      },
+      "stable_crate_id": "b29684cb1fd31fe3",
+      "test": false,
+      "trace": "exec.2793941"
+    },
+    {
+      "crate": "ruff_server",
+      "exec_line_sha256": "6a1827dcbbf9e3488ec42f79f968b4351e963b5d54c23df7bf80622695ef822e",
+      "explicit_parser": true,
+      "graph": {
+        "bytes": 41317605,
+        "keys": [
+          "5f1187e22819f3d5",
+          "347448d7e388ba68",
+          "b572ff01c439e1cb"
+        ],
+        "mtime_ns": 1793110629493396092,
+        "session": "s-hnlrneish0-1if4ojz-ec2lqk1gxmykj0ym7s8a6j512"
+      },
+      "result": {
+        "direct_metadata_inputs": [
+          [
+            "root",
+            "crate_name"
+          ],
+          [
+            "root",
+            "public_api_hash"
+          ],
+          [
+            "root",
+            "crate_host_hash"
+          ],
+          [
+            "root",
+            "crate_dep_kind"
+          ],
+          [
+            "root",
+            "extra_filename"
+          ],
+          [
+            "root",
+            "is_private_dep"
+          ],
+          [
+            "root",
+            "public_global_hash"
+          ]
+        ],
+        "edges": 4864876,
+        "focus_key_count": 29,
+        "metadata_node": true,
+        "named": {
+          "lexer": {
+            "is_doc_hidden": "21cf0c0a17387913fea6d89d01420938",
+            "module_children": "540ffe9db35f21d81bd17bdc773bf637"
+          },
+          "root": {
+            "canonical_symbols": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "crate_dep_kind": "051d9bdf24cb7633b4520cabd6c32b51",
+            "crate_host_hash": "21cf0c0a17387913fea6d89d01420938",
+            "crate_name": "3a6b64ce89833aa6255840f11c5de80f",
+            "def_kind": "21cf0c0a17387913fea6d89d01420938",
+            "defined_lang_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "diagnostic_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "exported_generic_symbols": "bd8d1821ae930241a490b0cd7f2eba35",
+            "externally_implementable_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "extra_filename": "6a1be85b614e72d537ed8deae3266124",
+            "is_compiler_builtins": "21cf0c0a17387913fea6d89d01420938",
+            "is_doc_hidden": "21cf0c0a17387913fea6d89d01420938",
+            "is_no_builtins": "21cf0c0a17387913fea6d89d01420938",
+            "is_private_dep": "21cf0c0a17387913fea6d89d01420938",
+            "is_profiler_runtime": "21cf0c0a17387913fea6d89d01420938",
+            "lookup_stability": "21cf0c0a17387913fea6d89d01420938",
+            "missing_extern_crate_item": "21cf0c0a17387913fea6d89d01420938",
+            "missing_lang_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "module_children": "f893e41ac52fb986e16fccfd87ec2dd9",
+            "native_libraries": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "public_api_hash": "d270c58591cf59331a9d6004b316fda7",
+            "public_global_hash": "248acbd922140259f5af0ef40495b037",
+            "stable_order_of_exportable_impls": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "symbol_mangling_version": "e03cd33b8f935e8df78fdb3719b766e8",
+            "trait_impls_key_hash": "983e95e4cff4c166646ecf1f42064d03",
+            "used_crate_source": "26a8f3956f5f09504178fa7575d06091",
+            "visibility": "21cf0c0a17387913fea6d89d01420938"
+          }
+        },
+        "nodes": 715339,
+        "parser_keys": 346
+      },
+      "stable_crate_id": "3cf98e7c0098c701",
+      "test": false,
+      "trace": "exec.2793964"
+    },
+    {
+      "crate": "ty_project",
+      "exec_line_sha256": "1048829cee2fd82e7dd255228a430832b1673810224ed23d730d2d2cb2b77151",
+      "explicit_parser": false,
+      "graph": {
+        "bytes": 53094385,
+        "keys": [
+          "5f1187e22819f3d5",
+          "347448d7e388ba68",
+          "b572ff01c439e1cb"
+        ],
+        "mtime_ns": 1793110631584444065,
+        "session": "s-hnlrnfi9fi-1af4r3d-3dug00wj88m72rkkmjisddewb"
+      },
+      "result": {
+        "direct_metadata_inputs": [
+          [
+            "root",
+            "crate_name"
+          ],
+          [
+            "root",
+            "public_api_hash"
+          ],
+          [
+            "root",
+            "crate_host_hash"
+          ],
+          [
+            "root",
+            "crate_dep_kind"
+          ],
+          [
+            "root",
+            "extra_filename"
+          ],
+          [
+            "root",
+            "is_private_dep"
+          ],
+          [
+            "root",
+            "public_global_hash"
+          ]
+        ],
+        "edges": 6478570,
+        "focus_key_count": 21,
+        "metadata_node": true,
+        "named": {
+          "root": {
+            "canonical_symbols": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "crate_dep_kind": "051d9bdf24cb7633b4520cabd6c32b51",
+            "crate_host_hash": "21cf0c0a17387913fea6d89d01420938",
+            "crate_name": "3a6b64ce89833aa6255840f11c5de80f",
+            "defined_lang_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "diagnostic_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "exported_generic_symbols": "bd8d1821ae930241a490b0cd7f2eba35",
+            "externally_implementable_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "extra_filename": "6a1be85b614e72d537ed8deae3266124",
+            "is_compiler_builtins": "21cf0c0a17387913fea6d89d01420938",
+            "is_no_builtins": "21cf0c0a17387913fea6d89d01420938",
+            "is_private_dep": "21cf0c0a17387913fea6d89d01420938",
+            "is_profiler_runtime": "21cf0c0a17387913fea6d89d01420938",
+            "missing_extern_crate_item": "e03cd33b8f935e8df78fdb3719b766e8",
+            "missing_lang_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "native_libraries": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "public_api_hash": "d270c58591cf59331a9d6004b316fda7",
+            "public_global_hash": "248acbd922140259f5af0ef40495b037",
+            "symbol_mangling_version": "e03cd33b8f935e8df78fdb3719b766e8",
+            "trait_impls_key_hash": "983e95e4cff4c166646ecf1f42064d03",
+            "used_crate_source": "26a8f3956f5f09504178fa7575d06091"
+          }
+        },
+        "nodes": 896369,
+        "parser_keys": 21
+      },
+      "stable_crate_id": "fc67993bdbaa7a31",
+      "test": false,
+      "trace": "exec.2794106"
+    },
+    {
+      "crate": "ty_test",
+      "exec_line_sha256": "296df6777f03af78587134efad40ad0fc689baadcb0c5efb56ecc75ca756d14e",
+      "explicit_parser": false,
+      "graph": {
+        "bytes": 17918834,
+        "keys": [
+          "5f1187e22819f3d5",
+          "347448d7e388ba68",
+          "b572ff01c439e1cb"
+        ],
+        "mtime_ns": 1793110630499419173,
+        "session": "s-hnlrnfhqmh-0xjysph-2jg2hpyynkpge6tvc651k9dna"
+      },
+      "result": {
+        "direct_metadata_inputs": [
+          [
+            "root",
+            "crate_name"
+          ],
+          [
+            "root",
+            "public_api_hash"
+          ],
+          [
+            "root",
+            "crate_host_hash"
+          ],
+          [
+            "root",
+            "crate_dep_kind"
+          ],
+          [
+            "root",
+            "extra_filename"
+          ],
+          [
+            "root",
+            "is_private_dep"
+          ],
+          [
+            "root",
+            "public_global_hash"
+          ]
+        ],
+        "edges": 2046560,
+        "focus_key_count": 19,
+        "metadata_node": true,
+        "named": {
+          "root": {
+            "canonical_symbols": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "crate_dep_kind": "051d9bdf24cb7633b4520cabd6c32b51",
+            "crate_host_hash": "21cf0c0a17387913fea6d89d01420938",
+            "crate_name": "3a6b64ce89833aa6255840f11c5de80f",
+            "defined_lang_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "diagnostic_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "exported_generic_symbols": "bd8d1821ae930241a490b0cd7f2eba35",
+            "externally_implementable_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "extra_filename": "6a1be85b614e72d537ed8deae3266124",
+            "is_compiler_builtins": "21cf0c0a17387913fea6d89d01420938",
+            "is_no_builtins": "21cf0c0a17387913fea6d89d01420938",
+            "is_private_dep": "21cf0c0a17387913fea6d89d01420938",
+            "is_profiler_runtime": "21cf0c0a17387913fea6d89d01420938",
+            "missing_lang_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "native_libraries": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "public_api_hash": "d270c58591cf59331a9d6004b316fda7",
+            "public_global_hash": "248acbd922140259f5af0ef40495b037",
+            "trait_impls_key_hash": "983e95e4cff4c166646ecf1f42064d03",
+            "used_crate_source": "26a8f3956f5f09504178fa7575d06091"
+          }
+        },
+        "nodes": 322001,
+        "parser_keys": 19
+      },
+      "stable_crate_id": "5233e1ca0dc1a6a4",
+      "test": false,
+      "trace": "exec.2794107"
+    },
+    {
+      "crate": "ruff",
+      "exec_line_sha256": "72bb296dd8b6d11ab6db015d8969867fbc43c64d97eaebccc345e7f0caf4617a",
+      "explicit_parser": true,
+      "graph": {
+        "bytes": 30257987,
+        "keys": [
+          "5f1187e22819f3d5",
+          "347448d7e388ba68",
+          "b572ff01c439e1cb"
+        ],
+        "mtime_ns": 1793110631673446107,
+        "session": "s-hnlrng31uj-13onj0z-e7tjn3hpyagpud92h6m7nwagi"
+      },
+      "result": {
+        "direct_metadata_inputs": [
+          [
+            "root",
+            "crate_name"
+          ],
+          [
+            "root",
+            "public_api_hash"
+          ],
+          [
+            "root",
+            "crate_host_hash"
+          ],
+          [
+            "root",
+            "crate_dep_kind"
+          ],
+          [
+            "root",
+            "extra_filename"
+          ],
+          [
+            "root",
+            "is_private_dep"
+          ],
+          [
+            "root",
+            "public_global_hash"
+          ]
+        ],
+        "edges": 3529401,
+        "focus_key_count": 27,
+        "metadata_node": true,
+        "named": {
+          "lexer": {
+            "is_doc_hidden": "21cf0c0a17387913fea6d89d01420938",
+            "module_children": "540ffe9db35f21d81bd17bdc773bf637"
+          },
+          "root": {
+            "canonical_symbols": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "crate_dep_kind": "051d9bdf24cb7633b4520cabd6c32b51",
+            "crate_host_hash": "21cf0c0a17387913fea6d89d01420938",
+            "crate_name": "3a6b64ce89833aa6255840f11c5de80f",
+            "defined_lang_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "diagnostic_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "exported_generic_symbols": "bd8d1821ae930241a490b0cd7f2eba35",
+            "externally_implementable_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "extra_filename": "6a1be85b614e72d537ed8deae3266124",
+            "is_compiler_builtins": "21cf0c0a17387913fea6d89d01420938",
+            "is_doc_hidden": "21cf0c0a17387913fea6d89d01420938",
+            "is_no_builtins": "21cf0c0a17387913fea6d89d01420938",
+            "is_private_dep": "21cf0c0a17387913fea6d89d01420938",
+            "is_profiler_runtime": "21cf0c0a17387913fea6d89d01420938",
+            "lookup_stability": "21cf0c0a17387913fea6d89d01420938",
+            "missing_extern_crate_item": "21cf0c0a17387913fea6d89d01420938",
+            "missing_lang_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "module_children": "f893e41ac52fb986e16fccfd87ec2dd9",
+            "native_libraries": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "public_api_hash": "d270c58591cf59331a9d6004b316fda7",
+            "public_global_hash": "248acbd922140259f5af0ef40495b037",
+            "symbol_mangling_version": "e03cd33b8f935e8df78fdb3719b766e8",
+            "trait_impls_key_hash": "983e95e4cff4c166646ecf1f42064d03",
+            "used_crate_source": "26a8f3956f5f09504178fa7575d06091",
+            "visibility": "21cf0c0a17387913fea6d89d01420938"
+          }
+        },
+        "nodes": 530280,
+        "parser_keys": 258
+      },
+      "stable_crate_id": "77463a4043bdfa11",
+      "test": false,
+      "trace": "exec.2794387"
+    },
+    {
+      "crate": "ty_ide",
+      "exec_line_sha256": "db81305926fc34b7b2b6bdb6b13d97d837c4c73173c1181ef4e1dfb1b2ed8372",
+      "explicit_parser": false,
+      "graph": {
+        "bytes": 37744407,
+        "keys": [
+          "5f1187e22819f3d5",
+          "347448d7e388ba68",
+          "b572ff01c439e1cb"
+        ],
+        "mtime_ns": 1793110633983499105,
+        "session": "s-hnlrnh9oz5-0te5vdx-47abz9q7qe4w4cnrjvibn8diq"
+      },
+      "result": {
+        "direct_metadata_inputs": [
+          [
+            "root",
+            "crate_name"
+          ],
+          [
+            "root",
+            "public_api_hash"
+          ],
+          [
+            "root",
+            "crate_host_hash"
+          ],
+          [
+            "root",
+            "crate_dep_kind"
+          ],
+          [
+            "root",
+            "extra_filename"
+          ],
+          [
+            "root",
+            "is_private_dep"
+          ],
+          [
+            "root",
+            "public_global_hash"
+          ]
+        ],
+        "edges": 4550903,
+        "focus_key_count": 22,
+        "metadata_node": true,
+        "named": {
+          "root": {
+            "canonical_symbols": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "crate_dep_kind": "051d9bdf24cb7633b4520cabd6c32b51",
+            "crate_host_hash": "21cf0c0a17387913fea6d89d01420938",
+            "crate_name": "3a6b64ce89833aa6255840f11c5de80f",
+            "defined_lang_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "diagnostic_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "exported_generic_symbols": "bd8d1821ae930241a490b0cd7f2eba35",
+            "externally_implementable_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "extra_filename": "6a1be85b614e72d537ed8deae3266124",
+            "is_compiler_builtins": "21cf0c0a17387913fea6d89d01420938",
+            "is_no_builtins": "21cf0c0a17387913fea6d89d01420938",
+            "is_private_dep": "21cf0c0a17387913fea6d89d01420938",
+            "is_profiler_runtime": "21cf0c0a17387913fea6d89d01420938",
+            "lookup_stability": "21cf0c0a17387913fea6d89d01420938",
+            "missing_lang_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "native_libraries": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "public_api_hash": "d270c58591cf59331a9d6004b316fda7",
+            "public_global_hash": "248acbd922140259f5af0ef40495b037",
+            "stable_order_of_exportable_impls": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "symbol_mangling_version": "e03cd33b8f935e8df78fdb3719b766e8",
+            "trait_impls_key_hash": "983e95e4cff4c166646ecf1f42064d03",
+            "used_crate_source": "26a8f3956f5f09504178fa7575d06091"
+          }
+        },
+        "nodes": 644802,
+        "parser_keys": 312
+      },
+      "stable_crate_id": "cfe5684f3ddf6972",
+      "test": false,
+      "trace": "exec.2794753"
+    },
+    {
+      "crate": "ruff",
+      "exec_line_sha256": "c78b85483a633482910bd96c64df08292ae911864ad16038cafeecc6e2fe6286",
+      "explicit_parser": true,
+      "graph": {
+        "bytes": 1845041,
+        "keys": [
+          "5f1187e22819f3d5",
+          "347448d7e388ba68",
+          "b572ff01c439e1cb"
+        ],
+        "mtime_ns": 1793110633879496719,
+        "session": "s-hnlrnhvgxi-0q0qh5i-6oou9txq5q2urf9ffm2vwdiwj"
+      },
+      "result": {
+        "direct_metadata_inputs": [],
+        "edges": 164898,
+        "focus_key_count": 23,
+        "metadata_node": false,
+        "named": {
+          "root": {
+            "canonical_symbols": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "crate_dep_kind": "051d9bdf24cb7633b4520cabd6c32b51",
+            "crate_hash": "86ecdb29cb5ec3ed455712699a2bf891",
+            "crate_name": "3a6b64ce89833aa6255840f11c5de80f",
+            "debugger_visualizers": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "defined_lang_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "diagnostic_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "exported_generic_symbols": "bd8d1821ae930241a490b0cd7f2eba35",
+            "exported_non_generic_symbols": "9ddf47c1806b4e858b78e1d0d757f732",
+            "externally_implementable_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "is_compiler_builtins": "21cf0c0a17387913fea6d89d01420938",
+            "is_no_builtins": "21cf0c0a17387913fea6d89d01420938",
+            "is_panic_runtime": "21cf0c0a17387913fea6d89d01420938",
+            "is_private_dep": "21cf0c0a17387913fea6d89d01420938",
+            "is_profiler_runtime": "21cf0c0a17387913fea6d89d01420938",
+            "missing_extern_crate_item": "e03cd33b8f935e8df78fdb3719b766e8",
+            "missing_lang_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "native_libraries": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "panic_in_drop_strategy": "21cf0c0a17387913fea6d89d01420938",
+            "public_api_hash": "d270c58591cf59331a9d6004b316fda7",
+            "required_panic_strategy": "21cf0c0a17387913fea6d89d01420938",
+            "trait_impls_key_hash": "983e95e4cff4c166646ecf1f42064d03",
+            "used_crate_source": "025bab3428a0357fd59cc903a59a1e1b"
+          }
+        },
+        "nodes": 40223,
+        "parser_keys": 23
+      },
+      "stable_crate_id": "2c902d181960910a",
+      "test": false,
+      "trace": "exec.2795250"
+    },
+    {
+      "crate": "ruff_benchmark",
+      "exec_line_sha256": "8bc9be145e84fce790261c3f36e2765eb87ae6b2a8d04d7c2105a7766038bbb8",
+      "explicit_parser": true,
+      "graph": {
+        "bytes": 2569661,
+        "keys": [
+          "5f1187e22819f3d5",
+          "347448d7e388ba68",
+          "b572ff01c439e1cb"
+        ],
+        "mtime_ns": 1793110635464533085,
+        "session": "s-hnlrniqxxo-0zl8x7o-4jjlv2w9y5lwa8owjkiricg2g"
+      },
+      "result": {
+        "direct_metadata_inputs": [
+          [
+            "root",
+            "crate_name"
+          ],
+          [
+            "root",
+            "public_api_hash"
+          ],
+          [
+            "root",
+            "crate_host_hash"
+          ],
+          [
+            "root",
+            "crate_dep_kind"
+          ],
+          [
+            "root",
+            "extra_filename"
+          ],
+          [
+            "root",
+            "is_private_dep"
+          ],
+          [
+            "root",
+            "public_global_hash"
+          ]
+        ],
+        "edges": 258827,
+        "focus_key_count": 19,
+        "metadata_node": true,
+        "named": {
+          "root": {
+            "canonical_symbols": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "crate_dep_kind": "051d9bdf24cb7633b4520cabd6c32b51",
+            "crate_host_hash": "21cf0c0a17387913fea6d89d01420938",
+            "crate_name": "3a6b64ce89833aa6255840f11c5de80f",
+            "defined_lang_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "diagnostic_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "exported_generic_symbols": "bd8d1821ae930241a490b0cd7f2eba35",
+            "externally_implementable_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "extra_filename": "6a1be85b614e72d537ed8deae3266124",
+            "is_compiler_builtins": "21cf0c0a17387913fea6d89d01420938",
+            "is_no_builtins": "21cf0c0a17387913fea6d89d01420938",
+            "is_private_dep": "21cf0c0a17387913fea6d89d01420938",
+            "is_profiler_runtime": "21cf0c0a17387913fea6d89d01420938",
+            "missing_lang_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "native_libraries": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "public_api_hash": "d270c58591cf59331a9d6004b316fda7",
+            "public_global_hash": "248acbd922140259f5af0ef40495b037",
+            "trait_impls_key_hash": "983e95e4cff4c166646ecf1f42064d03",
+            "used_crate_source": "26a8f3956f5f09504178fa7575d06091"
+          }
+        },
+        "nodes": 54328,
+        "parser_keys": 19
+      },
+      "stable_crate_id": "3d44df5d9a1d65d1",
+      "test": false,
+      "trace": "exec.2795265"
+    },
+    {
+      "crate": "ty_server",
+      "exec_line_sha256": "00cd517e2e7f54d478ab665de2b1c5a2039f7febcefb9968c8cc2b127dcecad6",
+      "explicit_parser": false,
+      "graph": {
+        "bytes": 54145931,
+        "keys": [
+          "5f1187e22819f3d5",
+          "347448d7e388ba68",
+          "b572ff01c439e1cb"
+        ],
+        "mtime_ns": 1793110637143571608,
+        "session": "s-hnlrniq74o-0q4qmxt-86r0g5ngmpvi8arf2y6ceeosf"
+      },
+      "result": {
+        "direct_metadata_inputs": [
+          [
+            "root",
+            "crate_name"
+          ],
+          [
+            "root",
+            "public_api_hash"
+          ],
+          [
+            "root",
+            "crate_host_hash"
+          ],
+          [
+            "root",
+            "crate_dep_kind"
+          ],
+          [
+            "root",
+            "extra_filename"
+          ],
+          [
+            "root",
+            "is_private_dep"
+          ],
+          [
+            "root",
+            "public_global_hash"
+          ]
+        ],
+        "edges": 6508358,
+        "focus_key_count": 20,
+        "metadata_node": true,
+        "named": {
+          "root": {
+            "canonical_symbols": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "crate_dep_kind": "051d9bdf24cb7633b4520cabd6c32b51",
+            "crate_host_hash": "21cf0c0a17387913fea6d89d01420938",
+            "crate_name": "3a6b64ce89833aa6255840f11c5de80f",
+            "defined_lang_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "diagnostic_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "exported_generic_symbols": "bd8d1821ae930241a490b0cd7f2eba35",
+            "externally_implementable_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "extra_filename": "6a1be85b614e72d537ed8deae3266124",
+            "is_compiler_builtins": "21cf0c0a17387913fea6d89d01420938",
+            "is_no_builtins": "21cf0c0a17387913fea6d89d01420938",
+            "is_private_dep": "21cf0c0a17387913fea6d89d01420938",
+            "is_profiler_runtime": "21cf0c0a17387913fea6d89d01420938",
+            "missing_lang_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "native_libraries": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "public_api_hash": "d270c58591cf59331a9d6004b316fda7",
+            "public_global_hash": "248acbd922140259f5af0ef40495b037",
+            "symbol_mangling_version": "e03cd33b8f935e8df78fdb3719b766e8",
+            "trait_impls_key_hash": "983e95e4cff4c166646ecf1f42064d03",
+            "used_crate_source": "26a8f3956f5f09504178fa7575d06091"
+          }
+        },
+        "nodes": 923140,
+        "parser_keys": 20
+      },
+      "stable_crate_id": "3f02f21daadc6e31",
+      "test": false,
+      "trace": "exec.2795266"
+    },
+    {
+      "crate": "ty_wasm",
+      "exec_line_sha256": "5270903482550cc31273bdfd11787a9b376021904af03ea959d10d353ddc4f8d",
+      "explicit_parser": false,
+      "graph": {
+        "bytes": 19278693,
+        "keys": [
+          "5f1187e22819f3d5",
+          "347448d7e388ba68",
+          "b572ff01c439e1cb"
+        ],
+        "mtime_ns": 1793110636703561512,
+        "session": "s-hnlrnjavmm-1fr55gu-2teepqmw09ubop5x8chj9lgli"
+      },
+      "result": {
+        "direct_metadata_inputs": [
+          [
+            "root",
+            "crate_name"
+          ],
+          [
+            "root",
+            "public_api_hash"
+          ],
+          [
+            "root",
+            "crate_host_hash"
+          ],
+          [
+            "root",
+            "crate_dep_kind"
+          ],
+          [
+            "root",
+            "extra_filename"
+          ],
+          [
+            "root",
+            "is_private_dep"
+          ],
+          [
+            "root",
+            "public_global_hash"
+          ]
+        ],
+        "edges": 2279611,
+        "focus_key_count": 29,
+        "metadata_node": true,
+        "named": {
+          "root": {
+            "canonical_symbols": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "crate_dep_kind": "051d9bdf24cb7633b4520cabd6c32b51",
+            "crate_hash": "86ecdb29cb5ec3ed455712699a2bf891",
+            "crate_host_hash": "21cf0c0a17387913fea6d89d01420938",
+            "crate_name": "3a6b64ce89833aa6255840f11c5de80f",
+            "debugger_visualizers": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "defined_lang_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "diagnostic_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "exported_generic_symbols": "bd8d1821ae930241a490b0cd7f2eba35",
+            "exported_non_generic_symbols": "9ddf47c1806b4e858b78e1d0d757f732",
+            "externally_implementable_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "extra_filename": "6a1be85b614e72d537ed8deae3266124",
+            "is_compiler_builtins": "21cf0c0a17387913fea6d89d01420938",
+            "is_no_builtins": "21cf0c0a17387913fea6d89d01420938",
+            "is_panic_runtime": "21cf0c0a17387913fea6d89d01420938",
+            "is_private_dep": "21cf0c0a17387913fea6d89d01420938",
+            "is_profiler_runtime": "21cf0c0a17387913fea6d89d01420938",
+            "lookup_stability": "21cf0c0a17387913fea6d89d01420938",
+            "missing_extern_crate_item": "e03cd33b8f935e8df78fdb3719b766e8",
+            "missing_lang_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "native_libraries": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "panic_in_drop_strategy": "21cf0c0a17387913fea6d89d01420938",
+            "public_api_hash": "d270c58591cf59331a9d6004b316fda7",
+            "public_global_hash": "248acbd922140259f5af0ef40495b037",
+            "required_panic_strategy": "21cf0c0a17387913fea6d89d01420938",
+            "stable_order_of_exportable_impls": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "symbol_mangling_version": "e03cd33b8f935e8df78fdb3719b766e8",
+            "trait_impls_key_hash": "983e95e4cff4c166646ecf1f42064d03",
+            "used_crate_source": "025bab3428a0357fd59cc903a59a1e1b"
+          }
+        },
+        "nodes": 339521,
+        "parser_keys": 263
+      },
+      "stable_crate_id": "67ebeddbb9d8c585",
+      "test": false,
+      "trace": "exec.2795485"
+    },
+    {
+      "crate": "ty_completion_bench",
+      "exec_line_sha256": "6aca584697e1b59232889774504164cd81de63d23151b7b36cf16eaf0e625f6b",
+      "explicit_parser": false,
+      "graph": {
+        "bytes": 5601917,
+        "keys": [
+          "5f1187e22819f3d5",
+          "347448d7e388ba68",
+          "b572ff01c439e1cb"
+        ],
+        "mtime_ns": 1793110636528557497,
+        "session": "s-hnlrnja8pt-1c95xbb-8ck1t9pfmxoa33y7trann655x"
+      },
+      "result": {
+        "direct_metadata_inputs": [],
+        "edges": 576596,
+        "focus_key_count": 22,
+        "metadata_node": false,
+        "named": {
+          "root": {
+            "canonical_symbols": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "crate_dep_kind": "051d9bdf24cb7633b4520cabd6c32b51",
+            "crate_hash": "86ecdb29cb5ec3ed455712699a2bf891",
+            "crate_name": "3a6b64ce89833aa6255840f11c5de80f",
+            "debugger_visualizers": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "defined_lang_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "diagnostic_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "exported_generic_symbols": "bd8d1821ae930241a490b0cd7f2eba35",
+            "exported_non_generic_symbols": "9ddf47c1806b4e858b78e1d0d757f732",
+            "externally_implementable_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "is_compiler_builtins": "21cf0c0a17387913fea6d89d01420938",
+            "is_no_builtins": "21cf0c0a17387913fea6d89d01420938",
+            "is_panic_runtime": "21cf0c0a17387913fea6d89d01420938",
+            "is_private_dep": "21cf0c0a17387913fea6d89d01420938",
+            "is_profiler_runtime": "21cf0c0a17387913fea6d89d01420938",
+            "missing_lang_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "native_libraries": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "panic_in_drop_strategy": "21cf0c0a17387913fea6d89d01420938",
+            "public_api_hash": "d270c58591cf59331a9d6004b316fda7",
+            "required_panic_strategy": "21cf0c0a17387913fea6d89d01420938",
+            "trait_impls_key_hash": "983e95e4cff4c166646ecf1f42064d03",
+            "used_crate_source": "025bab3428a0357fd59cc903a59a1e1b"
+          }
+        },
+        "nodes": 110837,
+        "parser_keys": 22
+      },
+      "stable_crate_id": "720d9b153ff1cb6c",
+      "test": false,
+      "trace": "exec.2795486"
+    },
+    {
+      "crate": "ty_completion_eval",
+      "exec_line_sha256": "de4370938c16c06d6f0f443f031dda721ad1ae0016e19c19480a4b30ab40e7cf",
+      "explicit_parser": false,
+      "graph": {
+        "bytes": 8564915,
+        "keys": [
+          "5f1187e22819f3d5",
+          "347448d7e388ba68",
+          "b572ff01c439e1cb"
+        ],
+        "mtime_ns": 1793110636567558392,
+        "session": "s-hnlrnjah7c-1j3t94j-5tw5qzkvuc8g59arjcb8pumfd"
+      },
+      "result": {
+        "direct_metadata_inputs": [],
+        "edges": 929943,
+        "focus_key_count": 22,
+        "metadata_node": false,
+        "named": {
+          "root": {
+            "canonical_symbols": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "crate_dep_kind": "051d9bdf24cb7633b4520cabd6c32b51",
+            "crate_hash": "86ecdb29cb5ec3ed455712699a2bf891",
+            "crate_name": "3a6b64ce89833aa6255840f11c5de80f",
+            "debugger_visualizers": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "defined_lang_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "diagnostic_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "exported_generic_symbols": "bd8d1821ae930241a490b0cd7f2eba35",
+            "exported_non_generic_symbols": "9ddf47c1806b4e858b78e1d0d757f732",
+            "externally_implementable_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "is_compiler_builtins": "21cf0c0a17387913fea6d89d01420938",
+            "is_no_builtins": "21cf0c0a17387913fea6d89d01420938",
+            "is_panic_runtime": "21cf0c0a17387913fea6d89d01420938",
+            "is_private_dep": "21cf0c0a17387913fea6d89d01420938",
+            "is_profiler_runtime": "21cf0c0a17387913fea6d89d01420938",
+            "missing_lang_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "native_libraries": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "panic_in_drop_strategy": "21cf0c0a17387913fea6d89d01420938",
+            "public_api_hash": "d270c58591cf59331a9d6004b316fda7",
+            "required_panic_strategy": "21cf0c0a17387913fea6d89d01420938",
+            "trait_impls_key_hash": "983e95e4cff4c166646ecf1f42064d03",
+            "used_crate_source": "025bab3428a0357fd59cc903a59a1e1b"
+          }
+        },
+        "nodes": 161776,
+        "parser_keys": 22
+      },
+      "stable_crate_id": "ba7cf4424fbd70f9",
+      "test": false,
+      "trace": "exec.2795487"
+    },
+    {
+      "crate": "ty",
+      "exec_line_sha256": "1af11f905157a717acac51eb6cc033be21a47a4b9506409bc0863c7be1023ac7",
+      "explicit_parser": false,
+      "graph": {
+        "bytes": 14166817,
+        "keys": [
+          "5f1187e22819f3d5",
+          "347448d7e388ba68",
+          "b572ff01c439e1cb"
+        ],
+        "mtime_ns": 1793110639219619240,
+        "session": "s-hnlrnkloxt-0jsoc04-08jkrrm0o53k0kejxkiujxt16"
+      },
+      "result": {
+        "direct_metadata_inputs": [
+          [
+            "root",
+            "crate_name"
+          ],
+          [
+            "root",
+            "public_api_hash"
+          ],
+          [
+            "root",
+            "crate_host_hash"
+          ],
+          [
+            "root",
+            "crate_dep_kind"
+          ],
+          [
+            "root",
+            "extra_filename"
+          ],
+          [
+            "root",
+            "is_private_dep"
+          ],
+          [
+            "root",
+            "public_global_hash"
+          ]
+        ],
+        "edges": 1552468,
+        "focus_key_count": 20,
+        "metadata_node": true,
+        "named": {
+          "root": {
+            "canonical_symbols": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "crate_dep_kind": "051d9bdf24cb7633b4520cabd6c32b51",
+            "crate_host_hash": "21cf0c0a17387913fea6d89d01420938",
+            "crate_name": "3a6b64ce89833aa6255840f11c5de80f",
+            "defined_lang_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "diagnostic_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "exported_generic_symbols": "bd8d1821ae930241a490b0cd7f2eba35",
+            "externally_implementable_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "extra_filename": "6a1be85b614e72d537ed8deae3266124",
+            "is_compiler_builtins": "21cf0c0a17387913fea6d89d01420938",
+            "is_no_builtins": "21cf0c0a17387913fea6d89d01420938",
+            "is_private_dep": "21cf0c0a17387913fea6d89d01420938",
+            "is_profiler_runtime": "21cf0c0a17387913fea6d89d01420938",
+            "missing_extern_crate_item": "e03cd33b8f935e8df78fdb3719b766e8",
+            "missing_lang_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "native_libraries": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "public_api_hash": "d270c58591cf59331a9d6004b316fda7",
+            "public_global_hash": "248acbd922140259f5af0ef40495b037",
+            "trait_impls_key_hash": "983e95e4cff4c166646ecf1f42064d03",
+            "used_crate_source": "26a8f3956f5f09504178fa7575d06091"
+          }
+        },
+        "nodes": 261920,
+        "parser_keys": 20
+      },
+      "stable_crate_id": "ebde09d90194a7be",
+      "test": false,
+      "trace": "exec.2795778"
+    },
+    {
+      "crate": "ty",
+      "exec_line_sha256": "b26e036933198ab004783fb1fea956f6de7ccb891e90d803913d122a58637d55",
+      "explicit_parser": false,
+      "graph": {
+        "bytes": 919954,
+        "keys": [
+          "5f1187e22819f3d5",
+          "347448d7e388ba68",
+          "b572ff01c439e1cb"
+        ],
+        "mtime_ns": 1793110640624651477,
+        "session": "s-hnlrnm4egr-00yzhcx-2xbt9imuj6him5dwqoge1v1mi"
+      },
+      "result": {
+        "direct_metadata_inputs": [],
+        "edges": 58035,
+        "focus_key_count": 23,
+        "metadata_node": false,
+        "named": {
+          "root": {
+            "canonical_symbols": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "crate_dep_kind": "051d9bdf24cb7633b4520cabd6c32b51",
+            "crate_hash": "86ecdb29cb5ec3ed455712699a2bf891",
+            "crate_name": "3a6b64ce89833aa6255840f11c5de80f",
+            "debugger_visualizers": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "defined_lang_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "diagnostic_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "exported_generic_symbols": "bd8d1821ae930241a490b0cd7f2eba35",
+            "exported_non_generic_symbols": "9ddf47c1806b4e858b78e1d0d757f732",
+            "externally_implementable_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "is_compiler_builtins": "21cf0c0a17387913fea6d89d01420938",
+            "is_no_builtins": "21cf0c0a17387913fea6d89d01420938",
+            "is_panic_runtime": "21cf0c0a17387913fea6d89d01420938",
+            "is_private_dep": "21cf0c0a17387913fea6d89d01420938",
+            "is_profiler_runtime": "21cf0c0a17387913fea6d89d01420938",
+            "missing_extern_crate_item": "e03cd33b8f935e8df78fdb3719b766e8",
+            "missing_lang_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "native_libraries": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "panic_in_drop_strategy": "21cf0c0a17387913fea6d89d01420938",
+            "public_api_hash": "d270c58591cf59331a9d6004b316fda7",
+            "required_panic_strategy": "21cf0c0a17387913fea6d89d01420938",
+            "trait_impls_key_hash": "983e95e4cff4c166646ecf1f42064d03",
+            "used_crate_source": "025bab3428a0357fd59cc903a59a1e1b"
+          }
+        },
+        "nodes": 21314,
+        "parser_keys": 23
+      },
+      "stable_crate_id": "10831cabce1b3a60",
+      "test": false,
+      "trace": "exec.2796104"
+    },
+    {
+      "crate": "ruff_dev",
+      "exec_line_sha256": "5c0a791f1337d9fb272b55115e15b0302b2ee40917739f1c6bd08e758191cc52",
+      "explicit_parser": true,
+      "graph": {
+        "bytes": 18872464,
+        "keys": [
+          "5f1187e22819f3d5",
+          "347448d7e388ba68",
+          "b572ff01c439e1cb"
+        ],
+        "mtime_ns": 1793110641902680800,
+        "session": "s-hnlrnm4vmb-00ni4rq-48m95dhnow3mz0cekl9j7pcms"
+      },
+      "result": {
+        "direct_metadata_inputs": [],
+        "edges": 2247289,
+        "focus_key_count": 29,
+        "metadata_node": false,
+        "named": {
+          "root": {
+            "canonical_symbols": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "crate_dep_kind": "051d9bdf24cb7633b4520cabd6c32b51",
+            "crate_hash": "86ecdb29cb5ec3ed455712699a2bf891",
+            "crate_name": "3a6b64ce89833aa6255840f11c5de80f",
+            "debugger_visualizers": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "def_kind": "21cf0c0a17387913fea6d89d01420938",
+            "defined_lang_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "diagnostic_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "exported_generic_symbols": "bd8d1821ae930241a490b0cd7f2eba35",
+            "exported_non_generic_symbols": "9ddf47c1806b4e858b78e1d0d757f732",
+            "externally_implementable_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "is_compiler_builtins": "21cf0c0a17387913fea6d89d01420938",
+            "is_no_builtins": "21cf0c0a17387913fea6d89d01420938",
+            "is_panic_runtime": "21cf0c0a17387913fea6d89d01420938",
+            "is_private_dep": "21cf0c0a17387913fea6d89d01420938",
+            "is_profiler_runtime": "21cf0c0a17387913fea6d89d01420938",
+            "lookup_stability": "21cf0c0a17387913fea6d89d01420938",
+            "missing_lang_items": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "module_children": "f893e41ac52fb986e16fccfd87ec2dd9",
+            "native_libraries": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "panic_in_drop_strategy": "21cf0c0a17387913fea6d89d01420938",
+            "public_api_hash": "d270c58591cf59331a9d6004b316fda7",
+            "required_panic_strategy": "21cf0c0a17387913fea6d89d01420938",
+            "specialization_enabled_in": "21cf0c0a17387913fea6d89d01420938",
+            "stable_order_of_exportable_impls": "d6eee854ee2748ec5f3c18a2ccabdc9d",
+            "symbol_mangling_version": "e03cd33b8f935e8df78fdb3719b766e8",
+            "trait_impls_key_hash": "983e95e4cff4c166646ecf1f42064d03",
+            "used_crate_source": "025bab3428a0357fd59cc903a59a1e1b",
+            "visibility": "21cf0c0a17387913fea6d89d01420938"
+          }
+        },
+        "nodes": 331987,
+        "parser_keys": 421
+      },
+      "stable_crate_id": "367e02916e6fc407",
+      "test": false,
+      "trace": "exec.2796105"
+    }
+  ],
+  "keys": [
+    "5f1187e22819f3d5",
+    "347448d7e388ba68",
+    "b572ff01c439e1cb"
+  ],
+  "mode": "build",
+  "phase": "restore",
+  "source": {
+    "label": "original",
+    "lexer_rs_sha256": "022f3cf7a1c2cfe546fa0361cd7ba10adfd95e8764b9ce79bd8423735c1b35ba"
+  }
+}

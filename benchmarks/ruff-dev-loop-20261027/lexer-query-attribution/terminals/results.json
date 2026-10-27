@@ -1,0 +1,316 @@
+{
+  "all_full_census": 93,
+  "mode": "H2 B test, first lexer edit",
+  "proven_unused_before_native_guards_at_most": 7,
+  "retain_current_native_guards": 0,
+  "rows": [
+    {
+      "any_compile_tracked_binary": [],
+      "binary_order_edges": [
+        "ruff_python_formatter"
+      ],
+      "changed_rust_libraries_in_genuine_Wild_argv": [],
+      "crate": "normalizer",
+      "derived_from_stored_unused_extern_proof": true,
+      "dirty_rust_externs": [
+        "ruff_db",
+        "ruff_python_formatter",
+        "ruff_python_parser"
+      ],
+      "elf_sha256_by_observation": {
+        "lexer-pending-indentation-edit": "32bcd258bf2da85803e1e9adc500104354e24ecad63111bbe4624acc8d25acaa",
+        "lexer-pending-indentation-restore": "32bcd258bf2da85803e1e9adc500104354e24ecad63111bbe4624acc8d25acaa",
+        "original-baseline": "32bcd258bf2da85803e1e9adc500104354e24ecad63111bbe4624acc8d25acaa"
+      },
+      "exclusive_native_outputs": [
+        "psm",
+        "zstd-sys"
+      ],
+      "exe": "normalizer-9235f142eb65477b",
+      "native_trace": "293273aed6d42fbc238b64fd3fc8071078415e9449ce50e2e4baec88c990cfef",
+      "possible_for_frontend_only_admission": true,
+      "remaining_eligible_with_current_native_exclusion": false,
+      "source": "crates/ruff_python_formatter/tests/normalizer.rs",
+      "stable_crate_id": "a6ed3d7c1004f401"
+    },
+    {
+      "any_compile_tracked_binary": [],
+      "binary_order_edges": [],
+      "changed_rust_libraries_in_genuine_Wild_argv": [],
+      "crate": "api",
+      "derived_from_stored_unused_extern_proof": false,
+      "dirty_rust_externs": [
+        "ruff_db",
+        "ruff_linter",
+        "ruff_python_codegen",
+        "ruff_python_formatter",
+        "ruff_python_parser",
+        "ruff_ranged_value",
+        "ruff_wasm",
+        "ruff_workspace"
+      ],
+      "elf_sha256_by_observation": {
+        "lexer-pending-indentation-edit": "db370756c6fadef846dde0243effcea758fc478db06c3a17dffe9a4028f29a31",
+        "lexer-pending-indentation-restore": "db370756c6fadef846dde0243effcea758fc478db06c3a17dffe9a4028f29a31",
+        "original-baseline": "db370756c6fadef846dde0243effcea758fc478db06c3a17dffe9a4028f29a31"
+      },
+      "exe": "api-5954b04f4610694e",
+      "native_trace": "8d204509f7e84d172211ce3487d4556228ea7bdb1573cd24175a58d67ee39f6c",
+      "possible_for_frontend_only_admission": false,
+      "remaining_eligible_with_current_native_exclusion": false,
+      "source": "crates/ruff_wasm/tests/api.rs",
+      "stable_crate_id": "2e2b4611c2bf28f7"
+    },
+    {
+      "any_compile_tracked_binary": [],
+      "binary_order_edges": [
+        "ruff"
+      ],
+      "changed_rust_libraries_in_genuine_Wild_argv": [],
+      "crate": "direxist_guard",
+      "derived_from_stored_unused_extern_proof": true,
+      "dirty_rust_externs": [
+        "ruff",
+        "ruff_db",
+        "ruff_graph",
+        "ruff_linter",
+        "ruff_markdown",
+        "ruff_python_formatter",
+        "ruff_python_parser",
+        "ruff_ranged_value",
+        "ruff_server",
+        "ruff_workspace"
+      ],
+      "elf_sha256_by_observation": {
+        "lexer-pending-indentation-edit": "182d0332a12587df6fe6be2b8bd79f68484a4726c69b5b4e194c69eca7499bd3",
+        "lexer-pending-indentation-restore": "182d0332a12587df6fe6be2b8bd79f68484a4726c69b5b4e194c69eca7499bd3",
+        "original-baseline": "182d0332a12587df6fe6be2b8bd79f68484a4726c69b5b4e194c69eca7499bd3"
+      },
+      "exclusive_native_outputs": [
+        "psm",
+        "tikv-jemalloc-sys",
+        "zstd-sys"
+      ],
+      "exe": "direxist_guard-28bc11b77c4911ff",
+      "native_trace": "07e1c674e7b0e1d95e8b3be1838bba5c66af4102442e16f77ae17b1b4db8b75f",
+      "possible_for_frontend_only_admission": true,
+      "remaining_eligible_with_current_native_exclusion": false,
+      "source": "crates/ruff/tests/direxist_guard.rs",
+      "stable_crate_id": "773d1466a12ec1c7"
+    },
+    {
+      "any_compile_tracked_binary": [],
+      "binary_order_edges": [
+        "ruff"
+      ],
+      "changed_rust_libraries_in_genuine_Wild_argv": [],
+      "crate": "config",
+      "derived_from_stored_unused_extern_proof": true,
+      "dirty_rust_externs": [
+        "ruff",
+        "ruff_db",
+        "ruff_graph",
+        "ruff_linter",
+        "ruff_markdown",
+        "ruff_python_formatter",
+        "ruff_python_parser",
+        "ruff_ranged_value",
+        "ruff_server",
+        "ruff_workspace"
+      ],
+      "elf_sha256_by_observation": {
+        "lexer-pending-indentation-edit": "5ba1b30831813c149c8cb51c5302967cf35cce9b43150c32ffa2076609a5d79b",
+        "lexer-pending-indentation-restore": "5ba1b30831813c149c8cb51c5302967cf35cce9b43150c32ffa2076609a5d79b",
+        "original-baseline": "5ba1b30831813c149c8cb51c5302967cf35cce9b43150c32ffa2076609a5d79b"
+      },
+      "exclusive_native_outputs": [
+        "psm",
+        "tikv-jemalloc-sys",
+        "zstd-sys"
+      ],
+      "exe": "config-a05026c35a67b25f",
+      "native_trace": "5803d7246355849f5e577e21c48a9c96f9c4bf0d3c6e998827514cf4e5d9acf3",
+      "possible_for_frontend_only_admission": true,
+      "remaining_eligible_with_current_native_exclusion": false,
+      "source": "crates/ruff/tests/config.rs",
+      "stable_crate_id": "1a0016a366b498d5"
+    },
+    {
+      "any_compile_tracked_binary": [],
+      "binary_order_edges": [
+        "ruff"
+      ],
+      "changed_rust_libraries_in_genuine_Wild_argv": [],
+      "crate": "resolve_files",
+      "derived_from_stored_unused_extern_proof": true,
+      "dirty_rust_externs": [
+        "ruff",
+        "ruff_db",
+        "ruff_graph",
+        "ruff_linter",
+        "ruff_markdown",
+        "ruff_python_formatter",
+        "ruff_python_parser",
+        "ruff_ranged_value",
+        "ruff_server",
+        "ruff_workspace"
+      ],
+      "elf_sha256_by_observation": {
+        "lexer-pending-indentation-edit": "d926680efae2dafba3261ecf5decff0cffc628f685001a09482051fbbf078be0",
+        "lexer-pending-indentation-restore": "d926680efae2dafba3261ecf5decff0cffc628f685001a09482051fbbf078be0",
+        "original-baseline": "d926680efae2dafba3261ecf5decff0cffc628f685001a09482051fbbf078be0"
+      },
+      "exclusive_native_outputs": [
+        "psm",
+        "tikv-jemalloc-sys",
+        "zstd-sys"
+      ],
+      "exe": "resolve_files-9f14cd86c9ce1ffe",
+      "native_trace": "5d6d9f85571dcdbe1d83917727e129e045b06b43e41febb5d27039cbadbb58ce",
+      "possible_for_frontend_only_admission": true,
+      "remaining_eligible_with_current_native_exclusion": false,
+      "source": "crates/ruff/tests/resolve_files.rs",
+      "stable_crate_id": "dae5f7b97e58dd1f"
+    },
+    {
+      "any_compile_tracked_binary": [],
+      "binary_order_edges": [],
+      "changed_rust_libraries_in_genuine_Wild_argv": [],
+      "crate": "api",
+      "derived_from_stored_unused_extern_proof": false,
+      "dirty_rust_externs": [
+        "ruff_db",
+        "ruff_python_formatter",
+        "ruff_ranged_value",
+        "ty_ide",
+        "ty_project",
+        "ty_python_core",
+        "ty_python_semantic",
+        "ty_wasm"
+      ],
+      "elf_sha256_by_observation": {
+        "lexer-pending-indentation-edit": "ea28d17cfe4db48db05aaf3f7df2ab45486d430650bd7f539ef43db540aa080a",
+        "lexer-pending-indentation-restore": "ea28d17cfe4db48db05aaf3f7df2ab45486d430650bd7f539ef43db540aa080a",
+        "original-baseline": "ea28d17cfe4db48db05aaf3f7df2ab45486d430650bd7f539ef43db540aa080a"
+      },
+      "exe": "api-af65d95beac5d41b",
+      "native_trace": "4d09f4c4bbd099ca5ddac0dfffb9753430a89ceb73527cf84569dc6d2668f85e",
+      "possible_for_frontend_only_admission": false,
+      "remaining_eligible_with_current_native_exclusion": false,
+      "source": "crates/ty_wasm/tests/api.rs",
+      "stable_crate_id": "b199301d19ce3084"
+    },
+    {
+      "any_compile_tracked_binary": [],
+      "binary_order_edges": [
+        "ty"
+      ],
+      "changed_rust_libraries_in_genuine_Wild_argv": [],
+      "crate": "self_environment",
+      "derived_from_stored_unused_extern_proof": true,
+      "dirty_rust_externs": [
+        "ruff_db",
+        "ruff_ranged_value",
+        "ty",
+        "ty_combine",
+        "ty_module_resolver",
+        "ty_project",
+        "ty_python_core",
+        "ty_python_semantic",
+        "ty_server",
+        "ty_site_packages"
+      ],
+      "elf_sha256_by_observation": {
+        "lexer-pending-indentation-edit": "68763aef019938910253e7f3d93bb4e72e544332bc46223a5ab135fbe9798707",
+        "lexer-pending-indentation-restore": "68763aef019938910253e7f3d93bb4e72e544332bc46223a5ab135fbe9798707",
+        "original-baseline": "68763aef019938910253e7f3d93bb4e72e544332bc46223a5ab135fbe9798707"
+      },
+      "exclusive_native_outputs": [
+        "psm",
+        "tikv-jemalloc-sys",
+        "zstd-sys"
+      ],
+      "exe": "self_environment-860e2be505c8514a",
+      "native_trace": "08b00afb7f2aa154955f913cb42cba9052663aed7e4988147e6ca19e3964446d",
+      "possible_for_frontend_only_admission": true,
+      "remaining_eligible_with_current_native_exclusion": false,
+      "source": "crates/ty/tests/self_environment.rs",
+      "stable_crate_id": "f241278b1198e1cf"
+    },
+    {
+      "any_compile_tracked_binary": [],
+      "binary_order_edges": [
+        "ty"
+      ],
+      "changed_rust_libraries_in_genuine_Wild_argv": [],
+      "crate": "cli",
+      "derived_from_stored_unused_extern_proof": true,
+      "dirty_rust_externs": [
+        "ruff_db",
+        "ruff_ranged_value",
+        "ty",
+        "ty_combine",
+        "ty_module_resolver",
+        "ty_project",
+        "ty_python_core",
+        "ty_python_semantic",
+        "ty_server",
+        "ty_site_packages"
+      ],
+      "elf_sha256_by_observation": {
+        "lexer-pending-indentation-edit": "88fc468efa9f97e897ad8edb94e385843695137fa2bd8f09658638971a6729d4",
+        "lexer-pending-indentation-restore": "88fc468efa9f97e897ad8edb94e385843695137fa2bd8f09658638971a6729d4",
+        "original-baseline": "88fc468efa9f97e897ad8edb94e385843695137fa2bd8f09658638971a6729d4"
+      },
+      "exclusive_native_outputs": [
+        "psm",
+        "tikv-jemalloc-sys",
+        "zstd-sys"
+      ],
+      "exe": "cli-440d4bc7ce0d4c47",
+      "native_trace": "5d05999298ff862b0ea2abfc395ad664ca39c9d51ebe90c0334325fd7ce543ca",
+      "possible_for_frontend_only_admission": true,
+      "remaining_eligible_with_current_native_exclusion": false,
+      "source": "crates/ty/tests/cli/main.rs",
+      "stable_crate_id": "06a7fc6d39a56118"
+    },
+    {
+      "any_compile_tracked_binary": [],
+      "binary_order_edges": [
+        "ruff"
+      ],
+      "changed_rust_libraries_in_genuine_Wild_argv": [],
+      "crate": "analyze_graph",
+      "derived_from_stored_unused_extern_proof": true,
+      "dirty_rust_externs": [
+        "ruff",
+        "ruff_db",
+        "ruff_graph",
+        "ruff_linter",
+        "ruff_markdown",
+        "ruff_python_formatter",
+        "ruff_python_parser",
+        "ruff_ranged_value",
+        "ruff_server",
+        "ruff_workspace"
+      ],
+      "elf_sha256_by_observation": {
+        "lexer-pending-indentation-edit": "4f73420627607b555adeb3eb18c4d94d2f5a2a1cf72a8f69a7e4acdb5e7bef51",
+        "lexer-pending-indentation-restore": "4f73420627607b555adeb3eb18c4d94d2f5a2a1cf72a8f69a7e4acdb5e7bef51",
+        "original-baseline": "4f73420627607b555adeb3eb18c4d94d2f5a2a1cf72a8f69a7e4acdb5e7bef51"
+      },
+      "exclusive_native_outputs": [
+        "psm",
+        "tikv-jemalloc-sys",
+        "zstd-sys"
+      ],
+      "exe": "analyze_graph-16e34c0e9d21d025",
+      "native_trace": "a3083cc4eaf8379456dee75f441594147516e6bc3d67ccd34e45e93ff3354dbe",
+      "possible_for_frontend_only_admission": true,
+      "remaining_eligible_with_current_native_exclusion": false,
+      "source": "crates/ruff/tests/analyze_graph.rs",
+      "stable_crate_id": "6f39fb3a4da6d38b"
+    }
+  ],
+  "zero_parser_root_cases": 9
+}
