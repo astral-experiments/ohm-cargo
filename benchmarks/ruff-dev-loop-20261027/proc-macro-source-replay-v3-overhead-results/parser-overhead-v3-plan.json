@@ -1,0 +1,259 @@
+{
+  "analyzer_sha256": "4159f78d412f5d6cd5c266ab0adbd83d8498975f94310341ee50024801f7b91b",
+  "arms": {
+    "candidate": {
+      "base": "27029b4bce40f3b5497add5019c02a11c16c4c18",
+      "driver_sha256": "36d1fd142355c3ad9e0ce006c1e92b7e511cba70c431b09eb1e335f572d27d05",
+      "patch_sha256": "2d6c3209b0bec656e6db298ab9b1c6ed0c2655993177114614a90d7170c46e2e"
+    },
+    "parent": {
+      "driver_sha256": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+      "source": "27029b4bce40f3b5497add5019c02a11c16c4c18"
+    }
+  },
+  "blocks": [
+    {
+      "empty": [
+        "candidate",
+        "parent"
+      ],
+      "endpoints": [
+        "empty",
+        "retained"
+      ],
+      "retained": [
+        "candidate",
+        "parent"
+      ]
+    },
+    {
+      "empty": [
+        "candidate",
+        "parent"
+      ],
+      "endpoints": [
+        "retained",
+        "empty"
+      ],
+      "retained": [
+        "candidate",
+        "parent"
+      ]
+    },
+    {
+      "empty": [
+        "parent",
+        "candidate"
+      ],
+      "endpoints": [
+        "retained",
+        "empty"
+      ],
+      "retained": [
+        "parent",
+        "candidate"
+      ]
+    },
+    {
+      "empty": [
+        "candidate",
+        "parent"
+      ],
+      "endpoints": [
+        "empty",
+        "retained"
+      ],
+      "retained": [
+        "candidate",
+        "parent"
+      ]
+    },
+    {
+      "empty": [
+        "parent",
+        "candidate"
+      ],
+      "endpoints": [
+        "empty",
+        "retained"
+      ],
+      "retained": [
+        "candidate",
+        "parent"
+      ]
+    },
+    {
+      "empty": [
+        "parent",
+        "candidate"
+      ],
+      "endpoints": [
+        "empty",
+        "retained"
+      ],
+      "retained": [
+        "parent",
+        "candidate"
+      ]
+    },
+    {
+      "empty": [
+        "candidate",
+        "parent"
+      ],
+      "endpoints": [
+        "retained",
+        "empty"
+      ],
+      "retained": [
+        "parent",
+        "candidate"
+      ]
+    },
+    {
+      "empty": [
+        "parent",
+        "candidate"
+      ],
+      "endpoints": [
+        "empty",
+        "retained"
+      ],
+      "retained": [
+        "candidate",
+        "parent"
+      ]
+    },
+    {
+      "empty": [
+        "candidate",
+        "parent"
+      ],
+      "endpoints": [
+        "retained",
+        "empty"
+      ],
+      "retained": [
+        "parent",
+        "candidate"
+      ]
+    },
+    {
+      "empty": [
+        "parent",
+        "candidate"
+      ],
+      "endpoints": [
+        "retained",
+        "empty"
+      ],
+      "retained": [
+        "candidate",
+        "parent"
+      ]
+    },
+    {
+      "empty": [
+        "candidate",
+        "parent"
+      ],
+      "endpoints": [
+        "empty",
+        "retained"
+      ],
+      "retained": [
+        "parent",
+        "candidate"
+      ]
+    },
+    {
+      "empty": [
+        "parent",
+        "candidate"
+      ],
+      "endpoints": [
+        "empty",
+        "retained"
+      ],
+      "retained": [
+        "candidate",
+        "parent"
+      ]
+    },
+    {
+      "empty": [
+        "candidate",
+        "parent"
+      ],
+      "endpoints": [
+        "retained",
+        "empty"
+      ],
+      "retained": [
+        "parent",
+        "candidate"
+      ]
+    },
+    {
+      "empty": [
+        "candidate",
+        "parent"
+      ],
+      "endpoints": [
+        "retained",
+        "empty"
+      ],
+      "retained": [
+        "parent",
+        "candidate"
+      ]
+    },
+    {
+      "empty": [
+        "parent",
+        "candidate"
+      ],
+      "endpoints": [
+        "retained",
+        "empty"
+      ],
+      "retained": [
+        "candidate",
+        "parent"
+      ]
+    },
+    {
+      "empty": [
+        "parent",
+        "candidate"
+      ],
+      "endpoints": [
+        "empty",
+        "retained"
+      ],
+      "retained": [
+        "parent",
+        "candidate"
+      ]
+    }
+  ],
+  "cargo_sha256": "0f237cc3b506aa90c1224e6ed80f646566b424b78c8d74f288f6523d17fc8aa1",
+  "frontend_sha256": "4fa9a18b77430bcc416e88561b6fe5797d98b996a7698b9f3bd11d4e7817a19f",
+  "histories": {
+    "empty": "Same edit/argv and dependency store but an empty parser incremental directory. Every trial still creates code and .rlib.",
+    "retained": "Apply real edit after priming only the original parser source in an independent per-arm incremental directory. Untimed copy for each sample."
+  },
+  "host": "charlie-ohm-trait-perf-1024",
+  "host_binding": "charlie-ohm-trait-perf-1024 H3, ext4 scratch, native-measure.lock and CPUs 0\u201323, 25 GiB scratch reserve. Root coordinates other H3 schedules; no competing H3 timing jobs.",
+  "protocol": "Matched production compiler safety overhead on the native Ruff parser rustc child. Not a whole Cargo invocation.",
+  "qualify": "No elapsed clocks. Audit both histories per arm and a second new process per oracle. Production V3 raw rmeta must equal actual full-workspace matching-history reference. Separate/emitted ELF archived .rmeta equality, complete diagnostics, stable source/extern/SDK. Parent carries its observed private warm/empty split; corrected private and public agree. Absolute raw .rmeta can differ across histories in both arms. Training metadata must match true native training.",
+  "reverse_patch_sha256": "08bb20f14fde4db57dd12ec3de3855021ddf6284b4a1957b54f4d06fb3c8f9ff",
+  "reversed_complete_edit": "3ea20f6161cbf59cb56595dfb634ec24bfa82f0b",
+  "ruff": "93526150df078af7dd8fc4226cdcc469539d2001",
+  "runner_sha256": "3f6521682ba9dedcac9686ecafcf49773625d8e972ebb04249d4e45a78d4c65f",
+  "scores": "Fresh processes, simultaneously frozen complete block order. Timer around rustc +ohm subprocess on the inside of the fixed namespace; excludes namespace setup, verification, output/cache snapshots. Save all success and failure rows, no trimming or replacement. Abort on any changed tool, input, actual result, source/roster or unfinished invocation. Original partial data retained. Separate native strace audits for first/last block in addition to complete uninstrumented timing. Score phase requires the recorded unscored certificate and separate owner release.",
+  "seed": "historical-ruff-parser-3ea20f61-v3-source-replay",
+  "subjects": "Real native parser command captured from ordinary workspace cargo +ohm build with production Ohm dev flags, existing trusted transforms, fixed SDK, exact 16 real direct externs and the actual get_size_derive2 proc-macro DSO. Both arms use the same read-only full Cargo donor, exact source/argv/paths, optional environment receipts. Rustup dispatch + rustc measured, Cargo scheduling and remaining workspace excluded.",
+  "tests": "Co-primary paired log wall-time ratios candidate/parent for retained and empty, positive is slower. 16 independent balanced pairs each (8 AB, 8 BA). Record paired geometric median exp(median log ratio)-1. Use 13th ascending ratio for each one-sided upper median bound; 1\u2212697/65536=98.93646% per endpoint, union-bound \u226597.8729% simultaneous coverage. Pass only if each upper bound is strictly below 3% overhead. Report both raw interval directions and complete pair order; no speedup claim, no claim about full-workspace walltime.",
+  "unscored_observer_correction": "The first unscored qualification stopped after its first real trace: rustup execved rustup/toolchains/ohm/bin/rustc, which resolves to the exact frozen expected frontend. R2 explicitly checks this exact alias, realpath and digest. No pairs or timer values were recorded. Both original unscored root and script are retained."
+}
