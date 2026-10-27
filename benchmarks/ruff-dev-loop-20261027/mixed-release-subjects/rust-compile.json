@@ -1,0 +1,32 @@
+{
+  "rc": 0,
+  "elapsed_s": 426.1538320919499,
+  "minimum_tmpfs_free": 2155618304,
+  "argv": [
+    "python3",
+    "/home/dev-user/code/oss/ohm-ruff-current-20261021/work/release14-edge-shipping-v2-20261026/current/rust/x.py",
+    "build",
+    "--target",
+    "x86_64-unknown-linux-gnu,wasm32-unknown-unknown",
+    "--host",
+    "x86_64-unknown-linux-gnu",
+    "--stage",
+    "2",
+    "--keep-stage",
+    "0",
+    "--keep-stage-std",
+    "1",
+    "compiler",
+    "--set",
+    "pgo.rustc.use=\"/home/dev-user/code/oss/ohm-ruff-current-20261021/work/release14-edge-shipping-v2-20261026/current/rust/build/opt-artifacts/rustc-pgo.profdata\"",
+    "--set",
+    "pgo.cargo.use=\"/home/dev-user/code/oss/ohm-ruff-current-20261021/work/release14-edge-shipping-v2-20261026/current/rust/build/opt-artifacts/rustc-pgo.profdata\"",
+    "--set",
+    "pgo.rustdoc.use=\"/home/dev-user/code/oss/ohm-ruff-current-20261021/work/release14-edge-shipping-v2-20261026/current/rust/build/opt-artifacts/rustdoc-pgo.profdata\"",
+    "--set",
+    "pgo.clippy.use=\"/home/dev-user/code/oss/ohm-ruff-current-20261021/work/release14-edge-shipping-v2-20261026/current/rust/build/opt-artifacts/clippy-pgo.profdata\"",
+    "--set",
+    "pgo.rustfmt.use=\"/home/dev-user/code/oss/ohm-ruff-current-20261021/work/release14-edge-shipping-v2-20261026/current/rust/build/opt-artifacts/rustfmt-pgo.profdata\"",
+    "--enable-bolt-settings"
+  ]
+}

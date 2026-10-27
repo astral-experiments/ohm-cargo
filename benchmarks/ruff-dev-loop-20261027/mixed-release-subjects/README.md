@@ -1,0 +1,14 @@
+# Release builds and correctness controls for two mixed Rust libraries
+
+| Component | Control commit | Candidate commit | Control executable SHA-256 | Candidate executable SHA-256 |
+| --- | --- | --- | --- | --- |
+| rustc driver | `27029b4bce40` | `b5fb832c70e8` | `dec72d1e68fd` | `7c31057e86f8` |
+| Cargo | `d38fdd025036` | `190d261a8546` | `dd5cab154b8d` | `0f237cc3b506` |
+
+Both Rust drivers share the same stage-2 frontend, five PGO/BOLT profiles and release commands. The candidate builder checked all 26 overlaid source files. Cargo used the canonical source and target paths, external profile and packaging stamp for both releases. An independent rebuild of the original Cargo control had identical code and data, with 32 build-ID bytes differing across all loaded segments. The final Cargo candidate corrected a test fixture on its previous source. Comparing the two candidate executables found identical code and data, with 31 build-ID bytes and two ELF section-table-offset header bytes differing in loaded segments. All 69,473 symbol addresses, sizes and types agreed. `subjects.json` and the source diffs identify the exact builds.
+
+The released compiler passed the committed regression, including the explicit MIR request and two independently compiled Rust callers. The matched subjects passed 44 Cargo controls and two direct compiler checks across native C output, ordinary Rust metadata, extra output requests, upgrade and downgrade, and warnings and errors. A private dependency edit exercised reuse, while an upstream deprecation emitted the expected warning or returned 101 under `deny(deprecated)`. Changed environment, included source, proc-macro expansion and a backdated object replacement each forced full compilation.
+
+The separate Cargo fixture retained two objects totaling 6,536 bytes after each of three forced fallbacks. It also recovered from a real process kill and preserved competing Cargo invocations, stable symlinks and a writerless FIFO replacement. Run `python3 -B verify.py` to check all recorded identities and control manifests. The sources, runnable fixture and offline semantic verifier are in `cargo-release-controls.tar.gz`. The separate `independent-release-controls.tar.gz` contains the combined compiler/Cargo fixtures.
+
+The advance timing plan compares both individual components on the complete pinned Ruff workspace. It distinguishes a full compile, a rustc that checks HIR and reuses native code, and a native linker process. [Registered tests and schedule](https://github.com/astral-sh/ohm-cargo/tree/b4312782f45ec1dfa1e36e48ad69d6fa2b4114c8/benchmarks/ruff-dev-loop-20261027/mixed-workspace-marginals) · [Bound benchmark runner and storage layout](https://github.com/astral-sh/ohm-cargo/tree/366a6d82fb010059dc8d089995af8797df39f6bb/benchmarks/ruff-dev-loop-20261027/mixed-workspace-runner)
