@@ -38,3 +38,11 @@ python3 audit-revision.py \
     3e4b168966e111b52ad1a942d364ec1335cf1cfa994f4208b0909ca215b589d2 \
     "$run-build" "$run-test"
 ```
+
+## Independent warm and clean builds
+
+For each compiler, all 15 workspace build products matched a clean rebuild byte for byte. In each test build, 109 of 110 products matched byte for byte. The remaining test executable differed in its GNU build ID and in the entry-size field of its `.rodata` section header. The section bytes, including machine code and read-only data, matched in all 110 products. The four Ruff CLI probes and the compiler diagnostics agreed.
+
+Between the two independent clean compilers, 11 of 15 build outputs and 105 of 110 test outputs matched byte for byte. Some debug information and build IDs changed. The proc macro also has the versioned Rust metadata section. Its only changed dynamic or static symbol was the size of that metadata, from 17,592 to 17,609 bytes. Every other allocated section's contents, apart from the GNU build ID, matched.
+
+Extract `warm-cold-receipts.tar.gz` into a directory and run `python3 analyze-reference.py DIR` and `python3 verify-reference-sections.py DIR`. The recorded reports are `warm-cold.json`, `elf-sections.json` and `macro-symbols.json`.

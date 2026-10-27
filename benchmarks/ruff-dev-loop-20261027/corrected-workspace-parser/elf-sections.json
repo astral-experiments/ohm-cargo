@@ -1,0 +1,297 @@
+{
+  "build/candidate-warm--candidate-cold": {
+    "diagnostics_and_cli_equal": true,
+    "outputs": 15,
+    "raw_differences": {},
+    "raw_identical": 15
+  },
+  "build/parent-cold--candidate-cold": {
+    "diagnostics_and_cli_equal": true,
+    "outputs": 15,
+    "raw_differences": {
+      "ohm-whole-skips-20261027/native-target/debug/libruff_macros.so": {
+        "allocated": {
+          ".dynsym": [
+            "decoded_order",
+            "decoded_set",
+            "digest"
+          ],
+          ".note.gnu.build-id": [
+            "digest"
+          ]
+        },
+        "header_or_content_changes": {
+          ".dynsym": [
+            "decoded_order",
+            "decoded_set",
+            "digest"
+          ],
+          ".note.gnu.build-id": [
+            "digest"
+          ],
+          ".rustc": [
+            "digest",
+            "size"
+          ],
+          ".symtab": [
+            "decoded_order",
+            "decoded_set",
+            "digest"
+          ]
+        }
+      },
+      "ohm-whole-skips-20261027/native-target/debug/ruff": {
+        "allocated": {
+          ".note.gnu.build-id": [
+            "digest"
+          ]
+        },
+        "header_or_content_changes": {
+          ".debug_info": [
+            "digest"
+          ],
+          ".debug_macro": [
+            "digest"
+          ],
+          ".debug_str": [
+            "digest"
+          ],
+          ".note.gnu.build-id": [
+            "digest"
+          ]
+        }
+      },
+      "ohm-whole-skips-20261027/native-target/debug/ty": {
+        "allocated": {
+          ".note.gnu.build-id": [
+            "digest"
+          ]
+        },
+        "header_or_content_changes": {
+          ".debug_info": [
+            "digest"
+          ],
+          ".debug_macro": [
+            "digest"
+          ],
+          ".debug_str": [
+            "digest"
+          ],
+          ".note.gnu.build-id": [
+            "digest"
+          ]
+        }
+      },
+      "ruff_macros/0df74ae72023ec23/out/libruff_macros-0df74ae72023ec23.so": {
+        "allocated": {
+          ".dynsym": [
+            "decoded_order",
+            "decoded_set",
+            "digest"
+          ],
+          ".note.gnu.build-id": [
+            "digest"
+          ]
+        },
+        "header_or_content_changes": {
+          ".dynsym": [
+            "decoded_order",
+            "decoded_set",
+            "digest"
+          ],
+          ".note.gnu.build-id": [
+            "digest"
+          ],
+          ".rustc": [
+            "digest",
+            "size"
+          ],
+          ".symtab": [
+            "decoded_order",
+            "decoded_set",
+            "digest"
+          ]
+        }
+      }
+    },
+    "raw_identical": 11
+  },
+  "build/parent-warm--parent-cold": {
+    "diagnostics_and_cli_equal": true,
+    "outputs": 15,
+    "raw_differences": {},
+    "raw_identical": 15
+  },
+  "test/candidate-warm--candidate-cold": {
+    "diagnostics_and_cli_equal": true,
+    "outputs": 110,
+    "raw_differences": {
+      "ty_python_semantic/e77bf8e779c1bd16/out/ty_python_semantic-e77bf8e779c1bd16": {
+        "allocated": {
+          ".note.gnu.build-id": [
+            "digest"
+          ],
+          ".rodata": [
+            "entsize"
+          ]
+        },
+        "header_or_content_changes": {
+          ".note.gnu.build-id": [
+            "digest"
+          ],
+          ".rodata": [
+            "entsize"
+          ]
+        }
+      }
+    },
+    "raw_identical": 109
+  },
+  "test/parent-cold--candidate-cold": {
+    "diagnostics_and_cli_equal": true,
+    "outputs": 110,
+    "raw_differences": {
+      "ohm-whole-skips-20261027/native-target/debug/ruff": {
+        "allocated": {
+          ".note.gnu.build-id": [
+            "digest"
+          ]
+        },
+        "header_or_content_changes": {
+          ".debug_info": [
+            "digest"
+          ],
+          ".debug_macro": [
+            "digest"
+          ],
+          ".debug_str": [
+            "digest"
+          ],
+          ".note.gnu.build-id": [
+            "digest"
+          ]
+        }
+      },
+      "ohm-whole-skips-20261027/native-target/debug/ty": {
+        "allocated": {
+          ".note.gnu.build-id": [
+            "digest"
+          ]
+        },
+        "header_or_content_changes": {
+          ".debug_info": [
+            "digest"
+          ],
+          ".debug_macro": [
+            "digest"
+          ],
+          ".debug_str": [
+            "digest"
+          ],
+          ".note.gnu.build-id": [
+            "digest"
+          ]
+        }
+      },
+      "ruff/079e9dbd47e4f7c7/out/ruff-079e9dbd47e4f7c7": {
+        "allocated": {
+          ".note.gnu.build-id": [
+            "digest"
+          ]
+        },
+        "header_or_content_changes": {
+          ".debug_info": [
+            "digest"
+          ],
+          ".debug_macro": [
+            "digest"
+          ],
+          ".debug_str": [
+            "digest"
+          ],
+          ".note.gnu.build-id": [
+            "digest"
+          ]
+        }
+      },
+      "ruff_macros/0df74ae72023ec23/out/libruff_macros-0df74ae72023ec23.so": {
+        "allocated": {
+          ".dynsym": [
+            "decoded_order",
+            "decoded_set",
+            "digest"
+          ],
+          ".note.gnu.build-id": [
+            "digest"
+          ]
+        },
+        "header_or_content_changes": {
+          ".dynsym": [
+            "decoded_order",
+            "decoded_set",
+            "digest"
+          ],
+          ".note.gnu.build-id": [
+            "digest"
+          ],
+          ".rustc": [
+            "digest",
+            "size"
+          ],
+          ".symtab": [
+            "decoded_order",
+            "decoded_set",
+            "digest"
+          ]
+        }
+      },
+      "ty/ed6b57e4ab076002/out/ty-ed6b57e4ab076002": {
+        "allocated": {
+          ".note.gnu.build-id": [
+            "digest"
+          ]
+        },
+        "header_or_content_changes": {
+          ".debug_info": [
+            "digest"
+          ],
+          ".debug_macro": [
+            "digest"
+          ],
+          ".debug_str": [
+            "digest"
+          ],
+          ".note.gnu.build-id": [
+            "digest"
+          ]
+        }
+      }
+    },
+    "raw_identical": 105
+  },
+  "test/parent-warm--parent-cold": {
+    "diagnostics_and_cli_equal": true,
+    "outputs": 110,
+    "raw_differences": {
+      "ty_wasm/af65d95beac5d41b/out/api-af65d95beac5d41b": {
+        "allocated": {
+          ".note.gnu.build-id": [
+            "digest"
+          ],
+          ".rodata": [
+            "entsize"
+          ]
+        },
+        "header_or_content_changes": {
+          ".note.gnu.build-id": [
+            "digest"
+          ],
+          ".rodata": [
+            "entsize"
+          ]
+        }
+      }
+    },
+    "raw_identical": 109
+  }
+}
