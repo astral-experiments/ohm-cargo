@@ -250,7 +250,7 @@ fn deserialize_without_document(
                 error
             },
         )?;
-        entry.store(document);
+        entry.store(document, &manifest._unused_keys);
         return Ok(manifest);
     }
     deserialize_toml(toml::de::Deserializer::parse(contents)?)
@@ -361,7 +361,7 @@ fn to_workspace_root_config(
     let inheritable = InheritableFields {
         package: normalized_toml.package.clone(),
         dependencies: normalized_toml.dependencies.clone().map(Arc::new),
-        lints: normalized_toml.lints.clone(),
+        lints: normalized_toml.lints.clone().map(Arc::new),
         _ws_root: package_root.to_owned(),
     };
     let ws_root_config = WorkspaceRootConfig::new(
@@ -1132,7 +1132,7 @@ macro_rules! package_field_getter {
 pub struct InheritableFields {
     package: Option<manifest::InheritablePackage>,
     dependencies: Option<Arc<BTreeMap<manifest::PackageName, manifest::TomlDependency>>>,
-    lints: Option<manifest::TomlLints>,
+    lints: Option<Arc<manifest::TomlLints>>,
 
     // Bookkeeping to help when resolving values from above
     _ws_root: PathBuf,
@@ -1189,7 +1189,7 @@ impl InheritableFields {
 
     /// Gets the field `workspace.lints`.
     pub fn lints(&self) -> CargoResult<manifest::TomlLints> {
-        let Some(val) = &self.lints else {
+        let Some(val) = self.lints.as_deref() else {
             bail!("`workspace.lints` was not defined");
         };
         Ok(val.clone())

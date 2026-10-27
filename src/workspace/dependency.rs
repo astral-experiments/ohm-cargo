@@ -373,10 +373,8 @@ impl Dependency {
         );
         Arc::make_mut(&mut self.inner).req.lock_to(id.version());
 
-        // Only update the `precise` of this source to preserve other
-        // information about dependency's source which may not otherwise be
-        // tested during equality/hashing.
-        self.source_id = self.source_id.with_precise_from(id.source_id());
+        // Equal sources with the same precise value share an interned SourceId.
+        self.source_id = id.source_id();
         self
     }
 
@@ -711,6 +709,36 @@ impl Display for PatchLocation {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn locking_preserves_the_source_with_the_package_precision() {
+        let git = SourceId::from_url("git+https://github.com/lock-to/REPO.git").unwrap();
+        let rev1 = SourceId::from_url("git+https://github.com/lock-to/repo#abc123").unwrap();
+        let rev2 = rev1.with_git_precise(Some("def456".into()));
+        let index = "https://lock-to.example/index".parse().unwrap();
+        let registry = SourceId::for_alt_registry(&index, "named").unwrap();
+        let alias = "https://lock-to.example/index/".parse().unwrap();
+        let locked = SourceId::for_alt_registry(&alias, "alias")
+            .unwrap()
+            .with_locked_precise();
+        let updated = registry
+            .with_precise_registry_version("example".into(), semver::Version::new(1, 2, 3), "1.2.4")
+            .unwrap();
+
+        for (from, to) in [
+            (git, rev1),
+            (rev1, rev2),
+            (rev2, git),
+            (registry, locked),
+            (locked, updated),
+            (updated, registry),
+        ] {
+            let expected = from.with_precise_from(to);
+            let package = PackageId::try_new("example", "1.2.3", to).unwrap();
+            let mut dep = Dependency::parse("example", Some("^1.2"), from).unwrap();
+            assert!(dep.lock_to(package).source_id().full_eq(expected));
+        }
+    }
 
     #[test]
     fn remapping_a_shared_dependency_preserves_its_manifest_data() {

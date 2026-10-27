@@ -26,6 +26,9 @@ use ignore::gitignore::GitignoreBuilder;
 use tracing::{debug, info, trace, warn};
 use walkdir::WalkDir;
 
+#[cfg(unix)]
+mod verified_index;
+
 /// A source that represents a package gathered at the root
 /// path on the filesystem.
 ///
@@ -579,7 +582,7 @@ fn _list_files(pkg: &Package, gctx: &GlobalContext) -> CargoResult<Vec<PathEntry
     let root = pkg.root();
     let no_include_option = pkg.manifest().include().is_empty();
     let git_repo = if no_include_option {
-        discover_gix_repo(root)?
+        discover_gix_repo(root, gctx)?
     } else {
         None
     };
@@ -643,12 +646,47 @@ fn _list_files(pkg: &Package, gctx: &GlobalContext) -> CargoResult<Vec<PathEntry
     Ok(ret)
 }
 
-/// Returns [`Some(gix::Repository)`](gix::Repository) if the discovered repository
+struct PackageRepository {
+    repo: gix::Repository,
+    #[cfg(unix)]
+    verified: gix::fs::SharedFileSnapshotMut<gix::index::File>,
+}
+
+impl PackageRepository {
+    fn new(repo: gix::Repository) -> Self {
+        Self {
+            repo,
+            #[cfg(unix)]
+            verified: gix::fs::SharedFileSnapshotMut::new(),
+        }
+    }
+
+    fn index(&self, _gctx: &GlobalContext) -> CargoResult<gix::worktree::Index> {
+        #[cfg(unix)]
+        if _gctx.cli_unstable().ohm_defaults()
+            && let Some(index) = self.verified.recent_snapshot(
+                || {
+                    self.repo
+                        .index_path()
+                        .metadata()
+                        .and_then(|m| m.modified())
+                        .ok()
+                },
+                || Ok::<_, anyhow::Error>(verified_index::open(&self.repo, _gctx)),
+            )?
+        {
+            return Ok(index);
+        }
+        Ok(self.repo.index_or_empty()?)
+    }
+}
+
+/// Returns the repository if the discovered repository
 /// (searched upwards from `root`) contains a tracked `<root>/Cargo.toml`.
 /// Otherwise, the caller should fall back on full file list.
-fn discover_gix_repo(root: &Path) -> CargoResult<Option<gix::Repository>> {
+fn discover_gix_repo(root: &Path, gctx: &GlobalContext) -> CargoResult<Option<PackageRepository>> {
     let repo = match gix::ThreadSafeRepository::discover(root) {
-        Ok(repo) => repo.to_thread_local(),
+        Ok(repo) => PackageRepository::new(repo.to_thread_local()),
         Err(e) => {
             tracing::debug!(
                 "could not discover git repo at or above {}: {}",
@@ -659,12 +697,12 @@ fn discover_gix_repo(root: &Path) -> CargoResult<Option<gix::Repository>> {
         }
     };
     let index = repo
-        .index_or_empty()
-        .with_context(|| format!("failed to open git index at {}", repo.path().display()))?;
-    let repo_root = repo.workdir().ok_or_else(|| {
+        .index(gctx)
+        .with_context(|| format!("failed to open git index at {}", repo.repo.path().display()))?;
+    let repo_root = repo.repo.workdir().ok_or_else(|| {
         anyhow::format_err!(
             "did not expect repo at {} to be bare",
-            repo.path().display()
+            repo.repo.path().display()
         )
     })?;
     let repo_relative_path = match paths::strip_prefix_canonical(root, repo_root) {
@@ -696,11 +734,12 @@ fn discover_gix_repo(root: &Path) -> CargoResult<Option<gix::Repository>> {
 /// point to one to avoid picking up `.git` directories.
 fn list_files_gix(
     pkg: &Package,
-    repo: &gix::Repository,
+    repository: &PackageRepository,
     filter: &dyn Fn(&Path, bool) -> bool,
     gctx: &GlobalContext,
 ) -> CargoResult<Vec<PathEntry>> {
     debug!("list_files_gix {}", pkg.package_id());
+    let repo = &repository.repo;
     let options = repo
         .dirwalk_options()?
         .emit_untracked(gix::dir::walk::EmissionMode::Matching)
@@ -709,7 +748,7 @@ fn list_files_gix(
         .recurse_repositories(false)
         .symlinks_to_directories_are_ignored_like_directories(true)
         .emit_empty_directories(false);
-    let index = repo.index_or_empty()?;
+    let index = repository.index(gctx)?;
     let root = repo
         .workdir()
         .ok_or_else(|| anyhow::format_err!("can't list files on a bare repository"))?;
@@ -829,7 +868,12 @@ fn list_files_gix(
             // .git repositories.
             match gix::open(&file_path) {
                 Ok(sub_repo) => {
-                    files.extend(list_files_gix(pkg, &sub_repo, filter, gctx)?);
+                    files.extend(list_files_gix(
+                        pkg,
+                        &PackageRepository::new(sub_repo),
+                        filter,
+                        gctx,
+                    )?);
                 }
                 Err(_) => {
                     list_files_walk(&file_path, &mut files, false, filter, gctx)?;
