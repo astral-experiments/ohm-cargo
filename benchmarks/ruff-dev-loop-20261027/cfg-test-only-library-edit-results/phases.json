@@ -1,0 +1,1502 @@
+[
+ {
+  "active_tests_invoked_by_cargo": [],
+  "actual_source_entry": {
+   "bytes_per_line_delta": 1,
+   "carries_filename_near_entry": true,
+   "encoded_other_checksum": [
+    3,
+    "57c5c50f740a2bf5d9442ab3ee26a73fcdd6e815c82e09625465080b50ec22dc"
+   ],
+   "encoded_source_md5": "c52c6add9c750c8ae995f1cfcaaaac82",
+   "line_delta_sha256": "3a755ff08ffcfdb752880dbc7c42d9098e7760f8618f084452344fe1c26e1bce",
+   "line_delta_table_bytes": 1665,
+   "line_starts_equal_to_every_line_in_actual_source": true,
+   "lines": 1666,
+   "md5_payload_position": 1871962,
+   "normalized_bytes": 50483,
+   "original_bytes": 50483,
+   "rmeta_sha256": "10280a11cd6d56f8361e4e1c110d53d412d32ac3e93469524ade008e4c01e0fb"
+  },
+  "cargo_status": 0,
+  "cargo_units": 501,
+  "changed_files": 922,
+  "diagnostic_count": 0,
+  "diagnostics_sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+  "elf_roster": {
+   "changed": {},
+   "count": 15,
+   "sha256": "e65dbc2c98600b027f8d6ca183e3c73ac422fecd647027cddbd71ca6da6537a5"
+  },
+  "fresh": 0,
+  "jobs": {
+   "cc": 691,
+   "collect2": 152,
+   "other-linker": 62,
+   "rustc-full": 505,
+   "wild": 90
+  },
+  "label": "cold",
+  "missing": 0,
+  "mode": "build",
+  "physical_ty_ide": [
+   [
+    "rustc-full",
+    false,
+    "8ea2ec1234072c078e001af4c119c1396a4d38a2062bcbe651ff8f0d3e331e3b"
+   ]
+  ],
+  "processes_sha256": "f8d71faf788dec6ad08b7b7ea2acc046386b7dfeb166f6f3bf46287ffb94ed6f",
+  "producer_dep_inputs": {
+   "ty_ide-9caf941a35224b7c.d.original": {
+    "contained_observer_marker": false,
+    "input_count": 44,
+    "path": "crates/ty_ide/src/docstring.rs",
+    "raw_sha256": "74833739b29fa9a846a1ac2f6f6ea4ff6b23b59c96a20eec47c7b525bbf5c17f",
+    "source_tracked": true
+   }
+  },
+  "products": 922,
+  "setup": {
+   "cargo": "dd5cab154b8dcd09ccc2753160d314cade80979b2d055ee66aa9e2217e05e7e1",
+   "command": [
+    "cargo",
+    "+ohm",
+    "build",
+    "--locked",
+    "--offline",
+    "--message-format=json",
+    "-j8"
+   ],
+   "driver": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+   "frontend": "4fa9a18b77430bcc416e88561b6fe5797d98b996a7698b9f3bd11d4e7817a19f",
+   "mode": "build",
+   "source_sha256": "d3e61f825d158c785fa5602b85d883a9d62d1713193849ab549f2a8c38e8136b",
+   "view": "original"
+  },
+  "space_state_footprint": "three independently empty target/shared/registry homes",
+  "stdout_sha256": "dbec08c2eecde2a9961a38e437c48b88f2270bbe05137b5992569f9a66ac6be2",
+  "trace_sha256": "4f46d9183e9adc7eabe2f5471608cb25d7c7c8f82b8997f96c5b3fe4e1859a65",
+  "view": "original"
+ },
+ {
+  "active_tests_invoked_by_cargo": [],
+  "cargo_status": 0,
+  "cargo_units": 501,
+  "changed_files": 0,
+  "diagnostic_count": 0,
+  "diagnostics_sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+  "elf_roster": {
+   "changed": {},
+   "count": 15,
+   "sha256": "e65dbc2c98600b027f8d6ca183e3c73ac422fecd647027cddbd71ca6da6537a5"
+  },
+  "fresh": 501,
+  "jobs": {},
+  "label": "warm-1",
+  "missing": 0,
+  "mode": "build",
+  "physical_ty_ide": [],
+  "processes_sha256": "acebf86e69fd74ac4eb983bf7e5cd278047aa91f3df447c1e5fca77e8255430f",
+  "products": 922,
+  "setup": {
+   "cargo": "dd5cab154b8dcd09ccc2753160d314cade80979b2d055ee66aa9e2217e05e7e1",
+   "command": [
+    "cargo",
+    "+ohm",
+    "build",
+    "--locked",
+    "--offline",
+    "--message-format=json",
+    "-j8"
+   ],
+   "driver": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+   "frontend": "4fa9a18b77430bcc416e88561b6fe5797d98b996a7698b9f3bd11d4e7817a19f",
+   "mode": "build",
+   "source_sha256": "d3e61f825d158c785fa5602b85d883a9d62d1713193849ab549f2a8c38e8136b",
+   "view": "original"
+  },
+  "space_state_footprint": "three independently empty target/shared/registry homes",
+  "stdout_sha256": "b6047136255249f73352429af50428a464116ec242ed171ec66dc0bff1b5fbfd",
+  "trace_sha256": "e2a353c4c789a081e43eaf25976a786198e628462eefb3ff4760e1fe1debefb4",
+  "view": "original"
+ },
+ {
+  "active_tests_invoked_by_cargo": [],
+  "actual_source_entry": {
+   "bytes_per_line_delta": 1,
+   "carries_filename_near_entry": true,
+   "encoded_other_checksum": [
+    3,
+    "f66e85865ee123dcab572768ba90fed9c2c107aedcbbb61744ba337a333cd065"
+   ],
+   "encoded_source_md5": "1335604c7538249f0573b954ab430861",
+   "line_delta_sha256": "bb0623b4ab8688addfab288dce89bac069e21249e2acf68eb8b8087cdf95032b",
+   "line_delta_table_bytes": 1743,
+   "line_starts_equal_to_every_line_in_actual_source": true,
+   "lines": 1744,
+   "md5_payload_position": 1871962,
+   "normalized_bytes": 52874,
+   "original_bytes": 52874,
+   "rmeta_sha256": "aad01835e59bd176225d64f33331b158373fe0de0792694bdf8f960e2c7ee49b"
+  },
+  "cargo_status": 0,
+  "cargo_units": 501,
+  "changed_file_digests": {
+   "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ty_ide/9caf941a35224b7c/out/libty_ide-9caf941a35224b7c.rmeta": [
+    "10280a11cd6d56f8361e4e1c110d53d412d32ac3e93469524ade008e4c01e0fb",
+    "aad01835e59bd176225d64f33331b158373fe0de0792694bdf8f960e2c7ee49b"
+   ],
+   "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ty_wasm/f736fda4087a11c1/out/libty_wasm.rmeta": [
+    "c78970d51638dd8e090e89931cbb1bb205ee71fd41655de178877c8ee33d14df",
+    "bb17b2dc78c18d4d0e81b9816a69e2d38d5274d05be8cac46694fd636bdc8ba9"
+   ],
+   "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/libty_ide.rlib": [
+    "5f110c0b303cf950af1e60659d19af83afbcbb11e412cb9d42046b1f88c6900c",
+    "42183f5d77e7b31c5a4bd88f597e84e94b0ae973b90abf6d84f02ba5eb49f1d1"
+   ],
+   "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/libty_wasm.rlib": [
+    "c21c943b4af82ea06dd1eca2a823d8675ce91248c78009aaba69e0cea2a3691c",
+    "d45fbc25fe03facbde86ac6e855c10d2be2fcae256c1e62d671cdbb03c183ba2"
+   ]
+  },
+  "changed_files": 4,
+  "diagnostic_count": 0,
+  "diagnostics_sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+  "elf_roster": {
+   "changed": {},
+   "count": 15,
+   "sha256": "e65dbc2c98600b027f8d6ca183e3c73ac422fecd647027cddbd71ca6da6537a5"
+  },
+  "fresh": 492,
+  "jobs": {
+   "cc": 5,
+   "collect2": 5,
+   "rustc-full": 2,
+   "rustc-link-only": 4,
+   "wild": 5
+  },
+  "label": "edit",
+  "missing": 0,
+  "mode": "build",
+  "physical_ty_ide": [
+   [
+    "rustc-full",
+    false,
+    "f72bd5b0ec49bf3a2060c5b555db39dae73188213481b6c3922eef2bc320650c"
+   ]
+  ],
+  "processes_sha256": "73849d226867ecbb728e49090d22c51c93dfba715df000adf4cd7a7a07f89078",
+  "producer_dep_inputs": {
+   "ty_ide-9caf941a35224b7c.d.original": {
+    "contained_observer_marker": false,
+    "input_count": 44,
+    "path": "crates/ty_ide/src/docstring.rs",
+    "raw_sha256": "e9cbb72c0038d16d1c76acb76fa2a266027763806fef22b30971825ae35493d3",
+    "source_tracked": true
+   }
+  },
+  "products": 922,
+  "rustc_roles": [
+   [
+    "rustc-full",
+    "ty_ide",
+    false
+   ],
+   [
+    "rustc-full",
+    "ty_wasm",
+    false
+   ],
+   [
+    "rustc-link-only",
+    "ty",
+    false
+   ],
+   [
+    "rustc-link-only",
+    "ty_completion_bench",
+    false
+   ],
+   [
+    "rustc-link-only",
+    "ty_completion_eval",
+    false
+   ],
+   [
+    "rustc-link-only",
+    "ruff_dev",
+    false
+   ]
+  ],
+  "setup": {
+   "cargo": "dd5cab154b8dcd09ccc2753160d314cade80979b2d055ee66aa9e2217e05e7e1",
+   "command": [
+    "cargo",
+    "+ohm",
+    "build",
+    "--locked",
+    "--offline",
+    "--message-format=json",
+    "-j8"
+   ],
+   "driver": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+   "frontend": "4fa9a18b77430bcc416e88561b6fe5797d98b996a7698b9f3bd11d4e7817a19f",
+   "mode": "build",
+   "source_sha256": "89044ee35cc3a9e7c2cdde6cc4ed3e74df67cee1dacc967c15bf317ac02356d5",
+   "view": "edited"
+  },
+  "space_state_footprint": "three independently empty target/shared/registry homes",
+  "stdout_sha256": "79389c5da35fd880229c360c13a36ff93496f638c672424ac9db3d4e8c3b1cd3",
+  "trace_sha256": "cff755f1d9c35f9b4bc402600f93a6823c7ac27bd7dfdf0ef165c08d64285ca7",
+  "view": "edited"
+ },
+ {
+  "active_tests_invoked_by_cargo": [],
+  "cargo_status": 0,
+  "cargo_units": 501,
+  "changed_files": 0,
+  "diagnostic_count": 0,
+  "diagnostics_sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+  "elf_roster": {
+   "changed": {},
+   "count": 15,
+   "sha256": "e65dbc2c98600b027f8d6ca183e3c73ac422fecd647027cddbd71ca6da6537a5"
+  },
+  "fresh": 501,
+  "jobs": {},
+  "label": "edit-fresh",
+  "missing": 0,
+  "mode": "build",
+  "physical_ty_ide": [],
+  "processes_sha256": "22613d6f014f83c8baf77b175ad50825f7d4b05a7cbd6fcfe7394a33da0ff6f7",
+  "products": 922,
+  "setup": {
+   "cargo": "dd5cab154b8dcd09ccc2753160d314cade80979b2d055ee66aa9e2217e05e7e1",
+   "command": [
+    "cargo",
+    "+ohm",
+    "build",
+    "--locked",
+    "--offline",
+    "--message-format=json",
+    "-j8"
+   ],
+   "driver": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+   "frontend": "4fa9a18b77430bcc416e88561b6fe5797d98b996a7698b9f3bd11d4e7817a19f",
+   "mode": "build",
+   "source_sha256": "89044ee35cc3a9e7c2cdde6cc4ed3e74df67cee1dacc967c15bf317ac02356d5",
+   "view": "edited"
+  },
+  "space_state_footprint": "three independently empty target/shared/registry homes",
+  "stdout_sha256": "ace141c33a2711981dc9ed9168e758afb00a262b94857173365658a529e5a7b3",
+  "trace_sha256": "2a8ba1a1d6f106c682917b3f3be3dc3687d84a5fe1dd66242e96c2706acdd6ab",
+  "view": "edited"
+ },
+ {
+  "active_tests_invoked_by_cargo": [],
+  "actual_source_entry": {
+   "bytes_per_line_delta": 1,
+   "carries_filename_near_entry": true,
+   "encoded_other_checksum": [
+    3,
+    "57c5c50f740a2bf5d9442ab3ee26a73fcdd6e815c82e09625465080b50ec22dc"
+   ],
+   "encoded_source_md5": "c52c6add9c750c8ae995f1cfcaaaac82",
+   "line_delta_sha256": "3a755ff08ffcfdb752880dbc7c42d9098e7760f8618f084452344fe1c26e1bce",
+   "line_delta_table_bytes": 1665,
+   "line_starts_equal_to_every_line_in_actual_source": true,
+   "lines": 1666,
+   "md5_payload_position": 1871962,
+   "normalized_bytes": 50483,
+   "original_bytes": 50483,
+   "rmeta_sha256": "32e54eb54edc540721625e95b6f08d5830759ad3b161b73ee26a8669d16e124c"
+  },
+  "cargo_status": 0,
+  "cargo_units": 501,
+  "changed_file_digests": {
+   "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ty_ide/9caf941a35224b7c/out/libty_ide-9caf941a35224b7c.rmeta": [
+    "aad01835e59bd176225d64f33331b158373fe0de0792694bdf8f960e2c7ee49b",
+    "32e54eb54edc540721625e95b6f08d5830759ad3b161b73ee26a8669d16e124c"
+   ],
+   "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/libty_ide.rlib": [
+    "42183f5d77e7b31c5a4bd88f597e84e94b0ae973b90abf6d84f02ba5eb49f1d1",
+    "8b3e58f4c7457e8105c5debfcc8d932c320714e25283c52773e20ac9a03d927f"
+   ],
+   "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/libty_wasm.rlib": [
+    "d45fbc25fe03facbde86ac6e855c10d2be2fcae256c1e62d671cdbb03c183ba2",
+    "1b0719de10fa44771d536acffce84dd1909bc3186e545291e4af7912ae92afe8"
+   ]
+  },
+  "changed_files": 3,
+  "diagnostic_count": 0,
+  "diagnostics_sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+  "elf_roster": {
+   "changed": {},
+   "count": 15,
+   "sha256": "e65dbc2c98600b027f8d6ca183e3c73ac422fecd647027cddbd71ca6da6537a5"
+  },
+  "fresh": 492,
+  "jobs": {
+   "cc": 5,
+   "collect2": 5,
+   "rustc-full": 2,
+   "rustc-link-only": 4,
+   "wild": 5
+  },
+  "label": "restore",
+  "missing": 0,
+  "mode": "build",
+  "physical_ty_ide": [
+   [
+    "rustc-full",
+    false,
+    "77cecca5338987473a39f7d7a7b8934359d5565500ccf6e55f01a61196d1f492"
+   ]
+  ],
+  "processes_sha256": "679ec0e6f00ea10259c74f2a67333de4560ced1d831046cec7f2ee5fd9f66fcf",
+  "producer_dep_inputs": {
+   "ty_ide-9caf941a35224b7c.d.original": {
+    "contained_observer_marker": false,
+    "input_count": 44,
+    "path": "crates/ty_ide/src/docstring.rs",
+    "raw_sha256": "74833739b29fa9a846a1ac2f6f6ea4ff6b23b59c96a20eec47c7b525bbf5c17f",
+    "source_tracked": true
+   }
+  },
+  "products": 922,
+  "rustc_roles": [
+   [
+    "rustc-full",
+    "ty_ide",
+    false
+   ],
+   [
+    "rustc-full",
+    "ty_wasm",
+    false
+   ],
+   [
+    "rustc-link-only",
+    "ty",
+    false
+   ],
+   [
+    "rustc-link-only",
+    "ty_completion_bench",
+    false
+   ],
+   [
+    "rustc-link-only",
+    "ty_completion_eval",
+    false
+   ],
+   [
+    "rustc-link-only",
+    "ruff_dev",
+    false
+   ]
+  ],
+  "setup": {
+   "cargo": "dd5cab154b8dcd09ccc2753160d314cade80979b2d055ee66aa9e2217e05e7e1",
+   "command": [
+    "cargo",
+    "+ohm",
+    "build",
+    "--locked",
+    "--offline",
+    "--message-format=json",
+    "-j8"
+   ],
+   "driver": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+   "frontend": "4fa9a18b77430bcc416e88561b6fe5797d98b996a7698b9f3bd11d4e7817a19f",
+   "mode": "build",
+   "source_sha256": "d3e61f825d158c785fa5602b85d883a9d62d1713193849ab549f2a8c38e8136b",
+   "view": "original"
+  },
+  "space_state_footprint": "three independently empty target/shared/registry homes",
+  "stdout_sha256": "6355919f3c86b48598236e327163da6e7ea10012e1b322d4bb0ced75b66cacfb",
+  "trace_sha256": "7c2b76890aa78b421059937fa9451fb41cfce31fb4708502c45f212fd9138861",
+  "view": "original"
+ },
+ {
+  "active_tests_invoked_by_cargo": [],
+  "cargo_status": 0,
+  "cargo_units": 501,
+  "changed_files": 0,
+  "diagnostic_count": 0,
+  "diagnostics_sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+  "elf_roster": {
+   "changed": {},
+   "count": 15,
+   "sha256": "e65dbc2c98600b027f8d6ca183e3c73ac422fecd647027cddbd71ca6da6537a5"
+  },
+  "fresh": 501,
+  "jobs": {},
+  "label": "restore-fresh",
+  "missing": 0,
+  "mode": "build",
+  "physical_ty_ide": [],
+  "processes_sha256": "4a503d04c9a61b6e920394943434ad279e8d8312c30fbed13938c15f20ccaac7",
+  "products": 922,
+  "setup": {
+   "cargo": "dd5cab154b8dcd09ccc2753160d314cade80979b2d055ee66aa9e2217e05e7e1",
+   "command": [
+    "cargo",
+    "+ohm",
+    "build",
+    "--locked",
+    "--offline",
+    "--message-format=json",
+    "-j8"
+   ],
+   "driver": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+   "frontend": "4fa9a18b77430bcc416e88561b6fe5797d98b996a7698b9f3bd11d4e7817a19f",
+   "mode": "build",
+   "source_sha256": "d3e61f825d158c785fa5602b85d883a9d62d1713193849ab549f2a8c38e8136b",
+   "view": "original"
+  },
+  "space_state_footprint": "three independently empty target/shared/registry homes",
+  "stdout_sha256": "5ee7d1937e108136621d624eb326a0fb17cc345c0351d70505a6fcaf28dfee3d",
+  "trace_sha256": "40b2592758dee7b599998ce12747dd34e1915d2f1a865a7073dd7777483d9797",
+  "view": "original"
+ },
+ {
+  "active_tests_invoked_by_cargo": [],
+  "actual_source_entry": {
+   "bytes_per_line_delta": 1,
+   "carries_filename_near_entry": true,
+   "encoded_other_checksum": [
+    3,
+    "57c5c50f740a2bf5d9442ab3ee26a73fcdd6e815c82e09625465080b50ec22dc"
+   ],
+   "encoded_source_md5": "c52c6add9c750c8ae995f1cfcaaaac82",
+   "line_delta_sha256": "3a755ff08ffcfdb752880dbc7c42d9098e7760f8618f084452344fe1c26e1bce",
+   "line_delta_table_bytes": 1665,
+   "line_starts_equal_to_every_line_in_actual_source": true,
+   "lines": 1666,
+   "md5_payload_position": 1397535,
+   "normalized_bytes": 50483,
+   "original_bytes": 50483,
+   "rmeta_sha256": "d68b5830c02f5520c63a82b4ce4d5672919f16aaf5eec99257a1b23eeb6ad985"
+  },
+  "cargo_status": 0,
+  "cargo_units": 520,
+  "changed_files": 596,
+  "diagnostic_count": 0,
+  "diagnostics_sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+  "fresh": 0,
+  "jobs": {
+   "cc": 679,
+   "collect2": 140,
+   "other-linker": 62,
+   "rustc-full": 524,
+   "wild": 78
+  },
+  "label": "cold",
+  "missing": 0,
+  "mode": "check",
+  "physical_ty_ide": [
+   [
+    "rustc-full",
+    false,
+    "215ea8bff927e50674a7b0302dd7a6926930400344886ae6f311cf64d365d31d"
+   ]
+  ],
+  "processes_sha256": "893cb49b5b2bf4d9c4a231d9e738561711dd87da21ba42b9b598c350dba1651e",
+  "producer_dep_inputs": {
+   "ty_ide-3fa4131d7918bf7f.d.original": {
+    "contained_observer_marker": false,
+    "input_count": 44,
+    "path": "crates/ty_ide/src/docstring.rs",
+    "raw_sha256": "3e14aef9932a02b365e718ed586dcd52b016dd03ceb753bcd4c755198f37b3ae",
+    "source_tracked": true
+   }
+  },
+  "products": 596,
+  "setup": {
+   "cargo": "dd5cab154b8dcd09ccc2753160d314cade80979b2d055ee66aa9e2217e05e7e1",
+   "command": [
+    "cargo",
+    "+ohm",
+    "check",
+    "--locked",
+    "--offline",
+    "--message-format=json",
+    "-j8"
+   ],
+   "driver": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+   "frontend": "4fa9a18b77430bcc416e88561b6fe5797d98b996a7698b9f3bd11d4e7817a19f",
+   "mode": "check",
+   "source_sha256": "d3e61f825d158c785fa5602b85d883a9d62d1713193849ab549f2a8c38e8136b",
+   "view": "original"
+  },
+  "space_state_footprint": "three independently empty target/shared/registry homes",
+  "stdout_sha256": "72eea8f361fbcdfe12ff04526ff558324b86dfa4aa541a292fdfe7a39dd2799a",
+  "trace_sha256": "21724a95fe03242fdae5b6d247c43104a2ceeb37b41e42505e3b2a8a7bb9e67f",
+  "view": "original"
+ },
+ {
+  "active_tests_invoked_by_cargo": [],
+  "cargo_status": 0,
+  "cargo_units": 520,
+  "changed_files": 0,
+  "diagnostic_count": 0,
+  "diagnostics_sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+  "fresh": 520,
+  "jobs": {},
+  "label": "warm-1",
+  "missing": 0,
+  "mode": "check",
+  "physical_ty_ide": [],
+  "processes_sha256": "64738e89878fec9bfa60901b3bfd6616399450dc00ea2d6b7bf4f7ebb541274c",
+  "products": 596,
+  "setup": {
+   "cargo": "dd5cab154b8dcd09ccc2753160d314cade80979b2d055ee66aa9e2217e05e7e1",
+   "command": [
+    "cargo",
+    "+ohm",
+    "check",
+    "--locked",
+    "--offline",
+    "--message-format=json",
+    "-j8"
+   ],
+   "driver": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+   "frontend": "4fa9a18b77430bcc416e88561b6fe5797d98b996a7698b9f3bd11d4e7817a19f",
+   "mode": "check",
+   "source_sha256": "d3e61f825d158c785fa5602b85d883a9d62d1713193849ab549f2a8c38e8136b",
+   "view": "original"
+  },
+  "space_state_footprint": "three independently empty target/shared/registry homes",
+  "stdout_sha256": "3470a47fcf1825417c572ecffae101853489e37ebac23d76248d5c7a341d2f4e",
+  "trace_sha256": "6d5a0022811cb8867d51612182c41b0a6d93f59041052c06272ca39d2c2312a7",
+  "view": "original"
+ },
+ {
+  "active_tests_invoked_by_cargo": [],
+  "actual_source_entry": {
+   "bytes_per_line_delta": 1,
+   "carries_filename_near_entry": true,
+   "encoded_other_checksum": [
+    3,
+    "f66e85865ee123dcab572768ba90fed9c2c107aedcbbb61744ba337a333cd065"
+   ],
+   "encoded_source_md5": "1335604c7538249f0573b954ab430861",
+   "line_delta_sha256": "bb0623b4ab8688addfab288dce89bac069e21249e2acf68eb8b8087cdf95032b",
+   "line_delta_table_bytes": 1743,
+   "line_starts_equal_to_every_line_in_actual_source": true,
+   "lines": 1744,
+   "md5_payload_position": 1397535,
+   "normalized_bytes": 52874,
+   "original_bytes": 52874,
+   "rmeta_sha256": "15aa5fc61af6638da493d79188246d99759b8adc14520cb46ecf41852f930409"
+  },
+  "cargo_status": 0,
+  "cargo_units": 520,
+  "changed_file_digests": {
+   "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ty_ide/3fa4131d7918bf7f/out/libty_ide-3fa4131d7918bf7f.rmeta": [
+    "d68b5830c02f5520c63a82b4ce4d5672919f16aaf5eec99257a1b23eeb6ad985",
+    "15aa5fc61af6638da493d79188246d99759b8adc14520cb46ecf41852f930409"
+   ]
+  },
+  "changed_files": 1,
+  "diagnostic_count": 0,
+  "diagnostics_sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+  "fresh": 511,
+  "jobs": {
+   "rustc-full": 1
+  },
+  "label": "edit",
+  "missing": 0,
+  "mode": "check",
+  "physical_ty_ide": [
+   [
+    "rustc-full",
+    false,
+    "fe43d0f107be90d76fbf4ea1e67ae5b3cb2d864c8946fa77070d9ef7aa441008"
+   ]
+  ],
+  "processes_sha256": "5621b861b60c45a29c40d97d8580e12eb2b7b026bbd3f4414bca3ae4da7da6e8",
+  "producer_dep_inputs": {
+   "ty_ide-3fa4131d7918bf7f.d.original": {
+    "contained_observer_marker": false,
+    "input_count": 44,
+    "path": "crates/ty_ide/src/docstring.rs",
+    "raw_sha256": "e6f11259eafd353acd4173052217d7e9cce53b430c9213185333d87fd22d850c",
+    "source_tracked": true
+   }
+  },
+  "products": 596,
+  "rustc_roles": [
+   [
+    "rustc-full",
+    "ty_ide",
+    false
+   ]
+  ],
+  "setup": {
+   "cargo": "dd5cab154b8dcd09ccc2753160d314cade80979b2d055ee66aa9e2217e05e7e1",
+   "command": [
+    "cargo",
+    "+ohm",
+    "check",
+    "--locked",
+    "--offline",
+    "--message-format=json",
+    "-j8"
+   ],
+   "driver": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+   "frontend": "4fa9a18b77430bcc416e88561b6fe5797d98b996a7698b9f3bd11d4e7817a19f",
+   "mode": "check",
+   "source_sha256": "89044ee35cc3a9e7c2cdde6cc4ed3e74df67cee1dacc967c15bf317ac02356d5",
+   "view": "edited"
+  },
+  "space_state_footprint": "three independently empty target/shared/registry homes",
+  "stdout_sha256": "ca827d3d85a4dffbcfd500060ed27d7cef633d547e1c103c6220dc6881499f61",
+  "trace_sha256": "87cd26ae49e85e22fd4a3b35360fd96af787f36f432cf0ebe7a7e51281215b5b",
+  "view": "edited"
+ },
+ {
+  "active_tests_invoked_by_cargo": [],
+  "cargo_status": 0,
+  "cargo_units": 520,
+  "changed_files": 0,
+  "diagnostic_count": 0,
+  "diagnostics_sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+  "fresh": 520,
+  "jobs": {},
+  "label": "edit-fresh",
+  "missing": 0,
+  "mode": "check",
+  "physical_ty_ide": [],
+  "processes_sha256": "a25302a3f396b0b7dbf824022548d5395d88f6c24c4fcb27c5e1c560771780e4",
+  "products": 596,
+  "setup": {
+   "cargo": "dd5cab154b8dcd09ccc2753160d314cade80979b2d055ee66aa9e2217e05e7e1",
+   "command": [
+    "cargo",
+    "+ohm",
+    "check",
+    "--locked",
+    "--offline",
+    "--message-format=json",
+    "-j8"
+   ],
+   "driver": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+   "frontend": "4fa9a18b77430bcc416e88561b6fe5797d98b996a7698b9f3bd11d4e7817a19f",
+   "mode": "check",
+   "source_sha256": "89044ee35cc3a9e7c2cdde6cc4ed3e74df67cee1dacc967c15bf317ac02356d5",
+   "view": "edited"
+  },
+  "space_state_footprint": "three independently empty target/shared/registry homes",
+  "stdout_sha256": "e6d87a641ca331f8c6180b2718cf4b2fef34fc8162ace0a6206cc4df55ff154b",
+  "trace_sha256": "dba7d80c7f2ed091fc54ba7e37db5927d785a9a2c6d224d45abbf2dcc292bf8b",
+  "view": "edited"
+ },
+ {
+  "active_tests_invoked_by_cargo": [],
+  "actual_source_entry": {
+   "bytes_per_line_delta": 1,
+   "carries_filename_near_entry": true,
+   "encoded_other_checksum": [
+    3,
+    "57c5c50f740a2bf5d9442ab3ee26a73fcdd6e815c82e09625465080b50ec22dc"
+   ],
+   "encoded_source_md5": "c52c6add9c750c8ae995f1cfcaaaac82",
+   "line_delta_sha256": "3a755ff08ffcfdb752880dbc7c42d9098e7760f8618f084452344fe1c26e1bce",
+   "line_delta_table_bytes": 1665,
+   "line_starts_equal_to_every_line_in_actual_source": true,
+   "lines": 1666,
+   "md5_payload_position": 1397535,
+   "normalized_bytes": 50483,
+   "original_bytes": 50483,
+   "rmeta_sha256": "1b517f99ab91b60924d6cf869b1c77845a3976b1d737d0cd74f252d005fa6ca1"
+  },
+  "cargo_status": 0,
+  "cargo_units": 520,
+  "changed_file_digests": {
+   "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ty_ide/3fa4131d7918bf7f/out/libty_ide-3fa4131d7918bf7f.rmeta": [
+    "15aa5fc61af6638da493d79188246d99759b8adc14520cb46ecf41852f930409",
+    "1b517f99ab91b60924d6cf869b1c77845a3976b1d737d0cd74f252d005fa6ca1"
+   ]
+  },
+  "changed_files": 1,
+  "diagnostic_count": 0,
+  "diagnostics_sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+  "fresh": 511,
+  "jobs": {
+   "rustc-full": 1
+  },
+  "label": "restore",
+  "missing": 0,
+  "mode": "check",
+  "physical_ty_ide": [
+   [
+    "rustc-full",
+    false,
+    "d47603c412d5da6e31d5d728a63f9ab7ffdb3a2a2cf500f3bd3549a5023ce0a5"
+   ]
+  ],
+  "processes_sha256": "d245fe8f8acc371a049273771a401e26f8f31a8219d847cbbaebdee818e49395",
+  "producer_dep_inputs": {
+   "ty_ide-3fa4131d7918bf7f.d.original": {
+    "contained_observer_marker": false,
+    "input_count": 44,
+    "path": "crates/ty_ide/src/docstring.rs",
+    "raw_sha256": "3e14aef9932a02b365e718ed586dcd52b016dd03ceb753bcd4c755198f37b3ae",
+    "source_tracked": true
+   }
+  },
+  "products": 596,
+  "rustc_roles": [
+   [
+    "rustc-full",
+    "ty_ide",
+    false
+   ]
+  ],
+  "setup": {
+   "cargo": "dd5cab154b8dcd09ccc2753160d314cade80979b2d055ee66aa9e2217e05e7e1",
+   "command": [
+    "cargo",
+    "+ohm",
+    "check",
+    "--locked",
+    "--offline",
+    "--message-format=json",
+    "-j8"
+   ],
+   "driver": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+   "frontend": "4fa9a18b77430bcc416e88561b6fe5797d98b996a7698b9f3bd11d4e7817a19f",
+   "mode": "check",
+   "source_sha256": "d3e61f825d158c785fa5602b85d883a9d62d1713193849ab549f2a8c38e8136b",
+   "view": "original"
+  },
+  "space_state_footprint": "three independently empty target/shared/registry homes",
+  "stdout_sha256": "cb2a1e7989d082feb3c63a77039259218c3a75aa2b16bac6de271c700c042eed",
+  "trace_sha256": "a4bc9b096ad2b2a34e9d5da6116fdfca31a3052a58f65ae214d5a7bdfa070146",
+  "view": "original"
+ },
+ {
+  "active_tests_invoked_by_cargo": [],
+  "cargo_status": 0,
+  "cargo_units": 520,
+  "changed_files": 0,
+  "diagnostic_count": 0,
+  "diagnostics_sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+  "fresh": 520,
+  "jobs": {},
+  "label": "restore-fresh",
+  "missing": 0,
+  "mode": "check",
+  "physical_ty_ide": [],
+  "processes_sha256": "b316caeeb0ededb3e451ca0d407f482f6f10572af19e971f1d7037a57a0ac922",
+  "products": 596,
+  "setup": {
+   "cargo": "dd5cab154b8dcd09ccc2753160d314cade80979b2d055ee66aa9e2217e05e7e1",
+   "command": [
+    "cargo",
+    "+ohm",
+    "check",
+    "--locked",
+    "--offline",
+    "--message-format=json",
+    "-j8"
+   ],
+   "driver": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+   "frontend": "4fa9a18b77430bcc416e88561b6fe5797d98b996a7698b9f3bd11d4e7817a19f",
+   "mode": "check",
+   "source_sha256": "d3e61f825d158c785fa5602b85d883a9d62d1713193849ab549f2a8c38e8136b",
+   "view": "original"
+  },
+  "space_state_footprint": "three independently empty target/shared/registry homes",
+  "stdout_sha256": "be99b0d6b6f362741f157b0aa2c1dabd0cdd7f0ec7909d383ba0bccb15d70ff8",
+  "trace_sha256": "0a0b03afad5541889e2fb745381df7499d208ee60c97ca99990c76886d326801",
+  "view": "original"
+ },
+ {
+  "active_tests_invoked_by_cargo": [],
+  "actual_source_entry": {
+   "bytes_per_line_delta": 1,
+   "carries_filename_near_entry": true,
+   "encoded_other_checksum": [
+    3,
+    "57c5c50f740a2bf5d9442ab3ee26a73fcdd6e815c82e09625465080b50ec22dc"
+   ],
+   "encoded_source_md5": "c52c6add9c750c8ae995f1cfcaaaac82",
+   "line_delta_sha256": "3a755ff08ffcfdb752880dbc7c42d9098e7760f8618f084452344fe1c26e1bce",
+   "line_delta_table_bytes": 1665,
+   "line_starts_equal_to_every_line_in_actual_source": true,
+   "lines": 1666,
+   "md5_payload_position": 1875547,
+   "normalized_bytes": 50483,
+   "original_bytes": 50483,
+   "rmeta_sha256": "aedebc1e9992c73fad8270f696eed7ae34115538f7efbac36a4dbe46419da65b"
+  },
+  "cargo_status": 0,
+  "cargo_units": 619,
+  "changed_files": 1060,
+  "diagnostic_count": 1,
+  "diagnostics_sha256": "9cee12b3e3c12528c71e9ca8ad795c3168174dfa7239ce38d943c8c4d36566f3",
+  "elf_roster": {
+   "changed": {},
+   "count": 110,
+   "sha256": "f430ece61d0734d84643c7c82adb2a0306975da9db8004ccf460139ad2a003bc"
+  },
+  "fresh": 0,
+  "jobs": {
+   "cc": 795,
+   "collect2": 262,
+   "other-linker": 62,
+   "rustc-full": 636,
+   "wild": 200
+  },
+  "label": "cold",
+  "missing": 0,
+  "mode": "test",
+  "physical_ty_ide": [
+   [
+    "rustc-full",
+    false,
+    "9bdb2c35a89c9287cb27904d48ff6d1b5f6cc42ed75f3ee9f35cca7b780a0b43"
+   ],
+   [
+    "rustc-full",
+    true,
+    "efc472a31dfbe8e049cfd8759bd2b2173d6e88b59e51d27673fdf6b528dcd265"
+   ]
+  ],
+  "processes_sha256": "a410ae5693bfa78dac4409718b6b76292c48a01dc96cc8339fa117b8a6eace96",
+  "producer_dep_inputs": {
+   "ty_ide-3a1df486adf8781f.d.original": {
+    "contained_observer_marker": false,
+    "input_count": 46,
+    "path": "crates/ty_ide/src/docstring.rs",
+    "raw_sha256": "7946afe2a9635e3b15af34b3fda4d22fbdc22adf17f44c228d49895321318773",
+    "source_tracked": true
+   },
+   "ty_ide-722f0b7df3cd3743.d.original": {
+    "contained_observer_marker": false,
+    "input_count": 44,
+    "path": "crates/ty_ide/src/docstring.rs",
+    "raw_sha256": "1aa73c746b7c0409aa89979cdb22188982fa3d0da7d962e3af930ebc5059e011",
+    "source_tracked": true
+   }
+  },
+  "products": 1060,
+  "setup": {
+   "cargo": "dd5cab154b8dcd09ccc2753160d314cade80979b2d055ee66aa9e2217e05e7e1",
+   "command": [
+    "cargo",
+    "+ohm",
+    "test",
+    "--no-run",
+    "--locked",
+    "--offline",
+    "--message-format=json",
+    "-j8"
+   ],
+   "driver": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+   "frontend": "4fa9a18b77430bcc416e88561b6fe5797d98b996a7698b9f3bd11d4e7817a19f",
+   "mode": "test",
+   "source_sha256": "d3e61f825d158c785fa5602b85d883a9d62d1713193849ab549f2a8c38e8136b",
+   "view": "original"
+  },
+  "space_state_footprint": "three independently empty target/shared/registry homes",
+  "stdout_sha256": "01df7f271669a2192d808099acc91375fa6db1d3d44619aae90636f86037635c",
+  "trace_sha256": "8c2c954de543ae8256cd1ed1887d6002334492923f229ec1c64e2c119c9b2c7b",
+  "view": "original"
+ },
+ {
+  "active_tests_invoked_by_cargo": [],
+  "cargo_status": 0,
+  "cargo_units": 619,
+  "changed_files": 4,
+  "diagnostic_count": 1,
+  "diagnostics_sha256": "9cee12b3e3c12528c71e9ca8ad795c3168174dfa7239ce38d943c8c4d36566f3",
+  "elf_roster": {
+   "changed": {
+    "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ruff_python_semantic/29d938dbd57eec9b/out/ruff_python_semantic-29d938dbd57eec9b": [
+     "b02d7ff5451b98acdc4bb50f8ae4b181ff3771a2ab6a6905acc6190c3daf54aa",
+     "4c69ad1756d202f1dd142985f1b99d73cfe27f4d84a6729d8eff100244410b35"
+    ],
+    "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ty_python_semantic/e77bf8e779c1bd16/out/ty_python_semantic-e77bf8e779c1bd16": [
+     "f63503c92368b035e8f060fc4c68edb086871104a807bd65b2b1a68a0688da55",
+     "e77a76d8524ec74b6e9766daa686cc4b6dea3e962b15fb091177d14d4a17bf0d"
+    ]
+   },
+   "count": 110,
+   "sha256": "6737ff14cc48a624ae99612ecb97f9842dc8fd74b8f7383295cdb75286da7f46"
+  },
+  "fresh": 563,
+  "jobs": {
+   "cc": 50,
+   "collect2": 50,
+   "rustc-full": 1,
+   "rustc-link-only": 50,
+   "wild": 50
+  },
+  "label": "warm-1",
+  "missing": 0,
+  "mode": "test",
+  "physical_ty_ide": [
+   [
+    "rustc-link-only",
+    true,
+    "600ad62fdf0e838df92153e72634c55ecc05074e3e5bc97df59e07fbc6a11cd7"
+   ]
+  ],
+  "processes_sha256": "e5171618aec9f9f53f3e579547f27d29898cea66b52e5102084f9d99b080acec",
+  "products": 1060,
+  "setup": {
+   "cargo": "dd5cab154b8dcd09ccc2753160d314cade80979b2d055ee66aa9e2217e05e7e1",
+   "command": [
+    "cargo",
+    "+ohm",
+    "test",
+    "--no-run",
+    "--locked",
+    "--offline",
+    "--message-format=json",
+    "-j8"
+   ],
+   "driver": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+   "frontend": "4fa9a18b77430bcc416e88561b6fe5797d98b996a7698b9f3bd11d4e7817a19f",
+   "mode": "test",
+   "source_sha256": "d3e61f825d158c785fa5602b85d883a9d62d1713193849ab549f2a8c38e8136b",
+   "view": "original"
+  },
+  "space_state_footprint": "three independently empty target/shared/registry homes",
+  "stdout_sha256": "6ae9f41ef461e5321eb148d32a242c45f007a0e26a92e5b164bc87dd9c228934",
+  "trace_sha256": "db51cdced4d4008dd6a75ccfea3564c0b2d360c16cd3f8d55473deb7707bc1e9",
+  "view": "original"
+ },
+ {
+  "active_tests_invoked_by_cargo": [],
+  "cargo_status": 0,
+  "cargo_units": 619,
+  "changed_files": 0,
+  "diagnostic_count": 1,
+  "diagnostics_sha256": "9cee12b3e3c12528c71e9ca8ad795c3168174dfa7239ce38d943c8c4d36566f3",
+  "elf_roster": {
+   "changed": {},
+   "count": 110,
+   "sha256": "6737ff14cc48a624ae99612ecb97f9842dc8fd74b8f7383295cdb75286da7f46"
+  },
+  "fresh": 619,
+  "jobs": {},
+  "label": "warm-2",
+  "missing": 0,
+  "mode": "test",
+  "physical_ty_ide": [],
+  "processes_sha256": "09cf77cbf05139ae5cbacb53359d0001acec4560d97c7fc6857b3e25a24f08f1",
+  "products": 1060,
+  "setup": {
+   "cargo": "dd5cab154b8dcd09ccc2753160d314cade80979b2d055ee66aa9e2217e05e7e1",
+   "command": [
+    "cargo",
+    "+ohm",
+    "test",
+    "--no-run",
+    "--locked",
+    "--offline",
+    "--message-format=json",
+    "-j8"
+   ],
+   "driver": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+   "frontend": "4fa9a18b77430bcc416e88561b6fe5797d98b996a7698b9f3bd11d4e7817a19f",
+   "mode": "test",
+   "source_sha256": "d3e61f825d158c785fa5602b85d883a9d62d1713193849ab549f2a8c38e8136b",
+   "view": "original"
+  },
+  "space_state_footprint": "three independently empty target/shared/registry homes",
+  "stdout_sha256": "033fae56034b35c28fcea81db0c4feeb33d252f4234732fcdc97db76a53f4ce6",
+  "trace_sha256": "bd53694a74d3084c2d5467159f4541fdfb673aac8fb3c44da4becf616c946b84",
+  "view": "original"
+ },
+ {
+  "active_tests_invoked_by_cargo": [],
+  "actual_source_entry": {
+   "bytes_per_line_delta": 1,
+   "carries_filename_near_entry": true,
+   "encoded_other_checksum": [
+    3,
+    "f66e85865ee123dcab572768ba90fed9c2c107aedcbbb61744ba337a333cd065"
+   ],
+   "encoded_source_md5": "1335604c7538249f0573b954ab430861",
+   "line_delta_sha256": "bb0623b4ab8688addfab288dce89bac069e21249e2acf68eb8b8087cdf95032b",
+   "line_delta_table_bytes": 1743,
+   "line_starts_equal_to_every_line_in_actual_source": true,
+   "lines": 1744,
+   "md5_payload_position": 1875547,
+   "normalized_bytes": 52874,
+   "original_bytes": 52874,
+   "rmeta_sha256": "04d3a6acadd572c99434a6e451ae588cf4afe1c02eac4f2b91b81c78c40cbc57"
+  },
+  "cargo_status": 0,
+  "cargo_units": 619,
+  "changed_file_digests": {
+   "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ty_ide/3a1df486adf8781f/out/ty_ide-3a1df486adf8781f": [
+    "e10745705e914b63a541da58bb9a7cc48437dddf7c8b159eb7790dbb8c7b6876",
+    "19085f894aad67e1def5bbbb2b3cff09bdf0f8f46d93bad9145be13da54942b3"
+   ],
+   "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ty_ide/722f0b7df3cd3743/out/libty_ide-722f0b7df3cd3743.rlib": [
+    "f8528c083deee2d7bde7ca88b3dc6c4f0a1ed867fbcb9d6bac1dcfaa1e8f0991",
+    "26573be490112d83b98801f53725343bf74acff569b05b32d9ab89b456149eb5"
+   ],
+   "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ty_ide/722f0b7df3cd3743/out/libty_ide-722f0b7df3cd3743.rmeta": [
+    "aedebc1e9992c73fad8270f696eed7ae34115538f7efbac36a4dbe46419da65b",
+    "04d3a6acadd572c99434a6e451ae588cf4afe1c02eac4f2b91b81c78c40cbc57"
+   ],
+   "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ty_wasm/e3ca85013ada9fa2/out/libty_wasm.rlib": [
+    "ace268014da1d45aa78b3053cdfb97ecca87190ee2fa0714e5c2a16c7cca5706",
+    "b54cd22d8fcab55066a6986d4eac40cd05b2dfde406dd17bb3f9fb6846f66d3c"
+   ],
+   "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ty_wasm/e3ca85013ada9fa2/out/libty_wasm.rmeta": [
+    "ef4d1825b7912e65076c69204a102fe76448cbd1030557fc336111eae2470ec0",
+    "640c252760377a4f7571852b15c5dd496737505d582753d92f5c6ab560ac219d"
+   ]
+  },
+  "changed_files": 5,
+  "diagnostic_count": 1,
+  "diagnostics_sha256": "9cee12b3e3c12528c71e9ca8ad795c3168174dfa7239ce38d943c8c4d36566f3",
+  "elf_roster": {
+   "changed": {
+    "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ty_ide/3a1df486adf8781f/out/ty_ide-3a1df486adf8781f": [
+     "e10745705e914b63a541da58bb9a7cc48437dddf7c8b159eb7790dbb8c7b6876",
+     "19085f894aad67e1def5bbbb2b3cff09bdf0f8f46d93bad9145be13da54942b3"
+    ]
+   },
+   "count": 110,
+   "sha256": "bb1b382d6943570ab7d2af79a1e5f2cfacea6beeee885d2ea6718d045cc68489"
+  },
+  "fresh": 602,
+  "jobs": {
+   "cc": 14,
+   "collect2": 14,
+   "rustc-full": 4,
+   "rustc-link-only": 11,
+   "wild": 14
+  },
+  "label": "edit",
+  "missing": 0,
+  "mode": "test",
+  "physical_ty_ide": [
+   [
+    "rustc-full",
+    false,
+    "72f07e74df9dda2841c5223c2c4beba3f67e399c7e159263ea94241e90fae356"
+   ],
+   [
+    "rustc-full",
+    true,
+    "97fe353ec9720b9a89638d8f8027a668945ce1de014370e78006c0349d811161"
+   ]
+  ],
+  "processes_sha256": "48546e3628ffb7ff1824ae604fcc0e2f884ad8c4bbd892cc6d28939c8f21aab0",
+  "producer_dep_inputs": {
+   "ty_ide-3a1df486adf8781f.d.original": {
+    "contained_observer_marker": false,
+    "input_count": 46,
+    "path": "crates/ty_ide/src/docstring.rs",
+    "raw_sha256": "c3301323364896b57cf6c9673b4e000b2a0da789a1cdf0495c9199f29a9f1aaf",
+    "source_tracked": true
+   },
+   "ty_ide-722f0b7df3cd3743.d.original": {
+    "contained_observer_marker": false,
+    "input_count": 44,
+    "path": "crates/ty_ide/src/docstring.rs",
+    "raw_sha256": "c7bca21557fdc73dcc7a5b9b9a3763a6e596be725865b5174c92611b6c92d439",
+    "source_tracked": true
+   }
+  },
+  "products": 1060,
+  "rustc_roles": [
+   [
+    "rustc-full",
+    "ty_ide",
+    false
+   ],
+   [
+    "rustc-full",
+    "ty_ide",
+    true
+   ],
+   [
+    "rustc-full",
+    "ty_wasm",
+    false
+   ],
+   [
+    "rustc-link-only",
+    "ty_completion_bench",
+    true
+   ],
+   [
+    "rustc-link-only",
+    "ty_completion_eval",
+    true
+   ],
+   [
+    "rustc-link-only",
+    "ty",
+    true
+   ],
+   [
+    "rustc-link-only",
+    "ty",
+    true
+   ],
+   [
+    "rustc-link-only",
+    "ty_server",
+    true
+   ],
+   [
+    "rustc-link-only",
+    "e2e",
+    true
+   ],
+   [
+    "rustc-link-only",
+    "ty",
+    false
+   ],
+   [
+    "rustc-link-only",
+    "self_environment",
+    true
+   ],
+   [
+    "rustc-link-only",
+    "cli",
+    true
+   ],
+   [
+    "rustc-link-only",
+    "file_watching",
+    true
+   ],
+   [
+    "rustc-link-only",
+    "ruff_dev",
+    true
+   ],
+   [
+    "rustc-full",
+    "api",
+    true
+   ]
+  ],
+  "setup": {
+   "cargo": "dd5cab154b8dcd09ccc2753160d314cade80979b2d055ee66aa9e2217e05e7e1",
+   "command": [
+    "cargo",
+    "+ohm",
+    "test",
+    "--no-run",
+    "--locked",
+    "--offline",
+    "--message-format=json",
+    "-j8"
+   ],
+   "driver": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+   "frontend": "4fa9a18b77430bcc416e88561b6fe5797d98b996a7698b9f3bd11d4e7817a19f",
+   "mode": "test",
+   "source_sha256": "89044ee35cc3a9e7c2cdde6cc4ed3e74df67cee1dacc967c15bf317ac02356d5",
+   "view": "edited"
+  },
+  "space_state_footprint": "three independently empty target/shared/registry homes",
+  "stdout_sha256": "ba3e5f4587a3795b3be3ca349f6d17be38afe268aeb1a6d58d97334a224ac62a",
+  "trace_sha256": "77a1a3dd3dc1186ad6c936a4ce5129b72ec7a419edac4cf3c748cb6ece66a854",
+  "view": "edited"
+ },
+ {
+  "active_tests_invoked_by_cargo": [],
+  "cargo_status": 0,
+  "cargo_units": 619,
+  "changed_files": 0,
+  "diagnostic_count": 1,
+  "diagnostics_sha256": "9cee12b3e3c12528c71e9ca8ad795c3168174dfa7239ce38d943c8c4d36566f3",
+  "elf_roster": {
+   "changed": {},
+   "count": 110,
+   "sha256": "bb1b382d6943570ab7d2af79a1e5f2cfacea6beeee885d2ea6718d045cc68489"
+  },
+  "fresh": 619,
+  "jobs": {},
+  "label": "edit-fresh",
+  "missing": 0,
+  "mode": "test",
+  "physical_ty_ide": [],
+  "processes_sha256": "4e4ebe54e959f755d95a64ff6b15c48cd7735596552ecad3fb16eb3f77817bac",
+  "products": 1060,
+  "setup": {
+   "cargo": "dd5cab154b8dcd09ccc2753160d314cade80979b2d055ee66aa9e2217e05e7e1",
+   "command": [
+    "cargo",
+    "+ohm",
+    "test",
+    "--no-run",
+    "--locked",
+    "--offline",
+    "--message-format=json",
+    "-j8"
+   ],
+   "driver": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+   "frontend": "4fa9a18b77430bcc416e88561b6fe5797d98b996a7698b9f3bd11d4e7817a19f",
+   "mode": "test",
+   "source_sha256": "89044ee35cc3a9e7c2cdde6cc4ed3e74df67cee1dacc967c15bf317ac02356d5",
+   "view": "edited"
+  },
+  "space_state_footprint": "three independently empty target/shared/registry homes",
+  "stdout_sha256": "dbdb2673aacd0c56c1dc8b17093853e8a78156a875e2ab03003d03be92a50afe",
+  "trace_sha256": "35e684ac9679cb22f5d98bd056cedcd6caf4a7426a5e9500e33e4f63def485bb",
+  "view": "edited"
+ },
+ {
+  "active_tests_invoked_by_cargo": [],
+  "actual_source_entry": {
+   "bytes_per_line_delta": 1,
+   "carries_filename_near_entry": true,
+   "encoded_other_checksum": [
+    3,
+    "57c5c50f740a2bf5d9442ab3ee26a73fcdd6e815c82e09625465080b50ec22dc"
+   ],
+   "encoded_source_md5": "c52c6add9c750c8ae995f1cfcaaaac82",
+   "line_delta_sha256": "3a755ff08ffcfdb752880dbc7c42d9098e7760f8618f084452344fe1c26e1bce",
+   "line_delta_table_bytes": 1665,
+   "line_starts_equal_to_every_line_in_actual_source": true,
+   "lines": 1666,
+   "md5_payload_position": 1875547,
+   "normalized_bytes": 50483,
+   "original_bytes": 50483,
+   "rmeta_sha256": "3eeb0945775d2cbfc48ff541520dd55c64f136c851f5032fbd64e662516ef4ea"
+  },
+  "cargo_status": 0,
+  "cargo_units": 619,
+  "changed_file_digests": {
+   "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ty_ide/3a1df486adf8781f/out/ty_ide-3a1df486adf8781f": [
+    "19085f894aad67e1def5bbbb2b3cff09bdf0f8f46d93bad9145be13da54942b3",
+    "e10745705e914b63a541da58bb9a7cc48437dddf7c8b159eb7790dbb8c7b6876"
+   ],
+   "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ty_ide/722f0b7df3cd3743/out/libty_ide-722f0b7df3cd3743.rlib": [
+    "26573be490112d83b98801f53725343bf74acff569b05b32d9ab89b456149eb5",
+    "aa14592a92544f3797a0bb0a7635bd159349a141a670c01ca37e299ddcfa5d7a"
+   ],
+   "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ty_ide/722f0b7df3cd3743/out/libty_ide-722f0b7df3cd3743.rmeta": [
+    "04d3a6acadd572c99434a6e451ae588cf4afe1c02eac4f2b91b81c78c40cbc57",
+    "3eeb0945775d2cbfc48ff541520dd55c64f136c851f5032fbd64e662516ef4ea"
+   ],
+   "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ty_wasm/af65d95beac5d41b/out/api-af65d95beac5d41b": [
+    "ea28d17cfe4db48db05aaf3f7df2ab45486d430650bd7f539ef43db540aa080a",
+    "de78308d9724302b884e7571ebd520f29eb42051ef147009d13cc69b4632b509"
+   ],
+   "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ty_wasm/e3ca85013ada9fa2/out/libty_wasm.rlib": [
+    "b54cd22d8fcab55066a6986d4eac40cd05b2dfde406dd17bb3f9fb6846f66d3c",
+    "ac2ffabd11fbd5e03c24e49f3b81f581a19ca90e26d188a63fc84aa79c5d29e3"
+   ]
+  },
+  "changed_files": 5,
+  "diagnostic_count": 1,
+  "diagnostics_sha256": "9cee12b3e3c12528c71e9ca8ad795c3168174dfa7239ce38d943c8c4d36566f3",
+  "elf_roster": {
+   "changed": {
+    "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ty_ide/3a1df486adf8781f/out/ty_ide-3a1df486adf8781f": [
+     "19085f894aad67e1def5bbbb2b3cff09bdf0f8f46d93bad9145be13da54942b3",
+     "e10745705e914b63a541da58bb9a7cc48437dddf7c8b159eb7790dbb8c7b6876"
+    ],
+    "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ty_wasm/af65d95beac5d41b/out/api-af65d95beac5d41b": [
+     "ea28d17cfe4db48db05aaf3f7df2ab45486d430650bd7f539ef43db540aa080a",
+     "de78308d9724302b884e7571ebd520f29eb42051ef147009d13cc69b4632b509"
+    ]
+   },
+   "count": 110,
+   "sha256": "45bb67ed7972277fe43bb583af8894f56e755b0df4650268ffb8ce9537a9184b"
+  },
+  "fresh": 602,
+  "jobs": {
+   "cc": 14,
+   "collect2": 14,
+   "rustc-full": 4,
+   "rustc-link-only": 11,
+   "wild": 14
+  },
+  "label": "restore",
+  "missing": 0,
+  "mode": "test",
+  "physical_ty_ide": [
+   [
+    "rustc-full",
+    false,
+    "facca5a0e8bdeeef128708c73ea585a9aaff2f07a1bdb130d0997fd95d6ac5b2"
+   ],
+   [
+    "rustc-full",
+    true,
+    "954caea38d8888a8be606eacec3bd053df5468163f158b3b560baafdd16c5178"
+   ]
+  ],
+  "processes_sha256": "a4bf218b1e4717d74e65dd93369204a280681e40493c0e28342d41e6ac0315ce",
+  "producer_dep_inputs": {
+   "ty_ide-3a1df486adf8781f.d.original": {
+    "contained_observer_marker": false,
+    "input_count": 46,
+    "path": "crates/ty_ide/src/docstring.rs",
+    "raw_sha256": "7946afe2a9635e3b15af34b3fda4d22fbdc22adf17f44c228d49895321318773",
+    "source_tracked": true
+   },
+   "ty_ide-722f0b7df3cd3743.d.original": {
+    "contained_observer_marker": false,
+    "input_count": 44,
+    "path": "crates/ty_ide/src/docstring.rs",
+    "raw_sha256": "1aa73c746b7c0409aa89979cdb22188982fa3d0da7d962e3af930ebc5059e011",
+    "source_tracked": true
+   }
+  },
+  "products": 1060,
+  "rustc_roles": [
+   [
+    "rustc-full",
+    "ty_ide",
+    false
+   ],
+   [
+    "rustc-full",
+    "ty_ide",
+    true
+   ],
+   [
+    "rustc-full",
+    "ty_wasm",
+    false
+   ],
+   [
+    "rustc-link-only",
+    "ty_completion_bench",
+    true
+   ],
+   [
+    "rustc-link-only",
+    "ty_completion_eval",
+    true
+   ],
+   [
+    "rustc-link-only",
+    "ty",
+    true
+   ],
+   [
+    "rustc-link-only",
+    "self_environment",
+    true
+   ],
+   [
+    "rustc-link-only",
+    "ty_server",
+    true
+   ],
+   [
+    "rustc-link-only",
+    "e2e",
+    true
+   ],
+   [
+    "rustc-link-only",
+    "file_watching",
+    true
+   ],
+   [
+    "rustc-link-only",
+    "cli",
+    true
+   ],
+   [
+    "rustc-link-only",
+    "ruff_dev",
+    true
+   ],
+   [
+    "rustc-link-only",
+    "ty",
+    true
+   ],
+   [
+    "rustc-link-only",
+    "ty",
+    false
+   ],
+   [
+    "rustc-full",
+    "api",
+    true
+   ]
+  ],
+  "setup": {
+   "cargo": "dd5cab154b8dcd09ccc2753160d314cade80979b2d055ee66aa9e2217e05e7e1",
+   "command": [
+    "cargo",
+    "+ohm",
+    "test",
+    "--no-run",
+    "--locked",
+    "--offline",
+    "--message-format=json",
+    "-j8"
+   ],
+   "driver": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+   "frontend": "4fa9a18b77430bcc416e88561b6fe5797d98b996a7698b9f3bd11d4e7817a19f",
+   "mode": "test",
+   "source_sha256": "d3e61f825d158c785fa5602b85d883a9d62d1713193849ab549f2a8c38e8136b",
+   "view": "original"
+  },
+  "space_state_footprint": "three independently empty target/shared/registry homes",
+  "stdout_sha256": "8a1991f6b15e5d34b2259cc6f7eed7207bfa3714c152e791c490f1494248a40f",
+  "trace_sha256": "a1fde6b91f442cbf95d0799180f551a30da69168db1fd4d6fc644bed08dcc3cc",
+  "view": "original"
+ },
+ {
+  "active_tests_invoked_by_cargo": [],
+  "cargo_status": 0,
+  "cargo_units": 619,
+  "changed_files": 0,
+  "diagnostic_count": 1,
+  "diagnostics_sha256": "9cee12b3e3c12528c71e9ca8ad795c3168174dfa7239ce38d943c8c4d36566f3",
+  "elf_roster": {
+   "changed": {},
+   "count": 110,
+   "sha256": "45bb67ed7972277fe43bb583af8894f56e755b0df4650268ffb8ce9537a9184b"
+  },
+  "fresh": 619,
+  "jobs": {},
+  "label": "restore-fresh",
+  "missing": 0,
+  "mode": "test",
+  "physical_ty_ide": [],
+  "processes_sha256": "a5e607ce4abcd80cd781b4791611d732a13e4d5dceb3d5d7688e367914ab409a",
+  "products": 1060,
+  "setup": {
+   "cargo": "dd5cab154b8dcd09ccc2753160d314cade80979b2d055ee66aa9e2217e05e7e1",
+   "command": [
+    "cargo",
+    "+ohm",
+    "test",
+    "--no-run",
+    "--locked",
+    "--offline",
+    "--message-format=json",
+    "-j8"
+   ],
+   "driver": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+   "frontend": "4fa9a18b77430bcc416e88561b6fe5797d98b996a7698b9f3bd11d4e7817a19f",
+   "mode": "test",
+   "source_sha256": "d3e61f825d158c785fa5602b85d883a9d62d1713193849ab549f2a8c38e8136b",
+   "view": "original"
+  },
+  "space_state_footprint": "three independently empty target/shared/registry homes",
+  "stdout_sha256": "be3205012ac801045000a6b8a445bc23b2f79e2bfaba2d775cc7e68ceb243c27",
+  "trace_sha256": "3f3bf411175500602523d48efbe96c012b94fb299d0165dcc3b49546c49eb5e5",
+  "view": "original"
+ }
+]

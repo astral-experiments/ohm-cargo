@@ -1,0 +1,59 @@
+{
+  "base": "93526150df078af7dd8fc4226cdcc469539d2001",
+  "edits": {
+    "formatter": {
+      "commit": "40a62bc6992b1985bfdb6979512bd64d40d120f5",
+      "patch_sha256": "85526ad7a13fe8227984264a5d594e3663c611bdfd62bf125743d14a2f8c7864",
+      "paths": [
+        "crates/ruff_python_formatter/resources/test/fixtures/black/cases/comments_tab_indent.py",
+        "crates/ruff_python_formatter/resources/test/fixtures/black/cases/comments_tab_indent.py.expect",
+        "crates/ruff_python_formatter/src/comments/format.rs"
+      ],
+      "reverse_check": 0,
+      "stderr": "",
+      "topic": "formatter"
+    },
+    "ty-diagnostic": {
+      "commit": "362e2aebace4b94e78f0f3a484dc759ddbb6148a",
+      "patch_sha256": "b82c4f8195eb126a1d76417de7e718bea0d2ee2719e337f05ee2b5abc80fbae2",
+      "paths": [
+        "crates/ty_python_semantic/resources/mdtest/call/function.md",
+        "crates/ty_python_semantic/resources/mdtest/diagnostics/invalid_argument_type.md",
+        "crates/ty_python_semantic/src/types/call/bind.rs"
+      ],
+      "reverse_check": 0,
+      "stderr": "",
+      "topic": "ty-diagnostic"
+    }
+  },
+  "host": "H2 only, CPUs 0-23 under existing native-measure.lock, nice; no timing claims; remote secondary currently 22GiB free and excluded for new bytes. Root floor 25GiB, private tmpfs floor 10GiB. Limit total new data to 32GiB on root, 30GiB tmpfs; abort safely under either reserve. Private targets (separate per mode) and separately private Cargo shared/registry write state. Existing completed studies are read-only.",
+  "phase_order": [
+    "original initial full target",
+    "original until all units fresh and zero full/partial, link-only and Wild",
+    "revert all three Ty patch paths in isolation",
+    "immediate same-source fresh",
+    "restore full three Ty paths",
+    "immediate same-source fresh",
+    "revert all three formatter patch paths in isolation",
+    "immediate same-source fresh",
+    "restore full three formatter paths",
+    "immediate same-source fresh"
+  ],
+  "purpose": "Unscored real full-workspace search for an already redundant compiler or complete linker after a changed producer. No shortcut may be proposed if a single input differs or the full input contract is not demonstrated.",
+  "subject": {
+    "cargo": "#254 dd5cab154b8dcd09ccc2753160d314cade80979b2d055ee66aa9e2217e05e7e1",
+    "rustc": "#233 dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+    "rustc_frontend": "4fa9a18b; verify against authenticated installed runtime manifest"
+  },
+  "witness": [
+    "Check actual Rust argv for full, separate -Z link-only or -Zlink-only and guarded/failed invocations. Capture real Wild, collect2/GCC jobs; retain missing or unclassifiable rows.",
+    "Hash whole bytes of pre- and post-edit producer/dirty workspace artifacts, with cached/path-authenticated unchanged regular inputs and compiler/linker binaries, up to a finite disk/IO budget. Differences in full .rmeta, .rlib, native archive/object, linker script, args or sourced paths exclude a candidate irrespective of .text.",
+    "Where all enumerated direct inputs appear equal, collect targeted exhaustive actual reads, temporary-object hashes and ordered search/miss/tool/env evidence; any incomplete or indirect equality is unproven. Do not infer an input equivalency from an unchanged ELF or timestamp. Keep terminal script, native plugin, ordering and linker state conservative.",
+    "Build uses distributed Ty CLI on repeated None variadic arguments (new = one invalid-argument-type, reversed = two) and Ruff format on tab-in-comment fixture (original compared to documented expected; measure reverted literal output). Test --no-run uses physical products and independent command outputs where executable target exists; tests are not run.",
+    "If any exact untouched genuine consumer emerges, run new ordinary reader and a changed linked Rust/native/proc-macro negative using distinct storage, before proposing any product patch. Otherwise report zero proved eligible or unresolved input witnesses and stop."
+  ],
+  "workload": [
+    "cargo +ohm build --locked --offline --message-format=json -j8",
+    "cargo +ohm test --no-run --locked --offline --message-format=json -j8"
+  ]
+}

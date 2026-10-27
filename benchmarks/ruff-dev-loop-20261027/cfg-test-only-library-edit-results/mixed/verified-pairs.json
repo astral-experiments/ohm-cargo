@@ -1,0 +1,202 @@
+[
+ {
+  "from": "cold",
+  "have_both_matching_raw_archives": false,
+  "mode": "build",
+  "published": [
+   {
+    ".rlib": "c21c943b4af82ea06dd1eca2a823d8675ce91248c78009aaba69e0cea2a3691c",
+    ".rmeta": "c78970d51638dd8e090e89931cbb1bb205ee71fd41655de178877c8ee33d14df",
+    ".so": "d8b609ec20a103713c711e11c841f98ae66abd85b6648a7f8b493bf2474fd7fc"
+   },
+   {
+    ".rlib": "d45fbc25fe03facbde86ac6e855c10d2be2fcae256c1e62d671cdbb03c183ba2",
+    ".rmeta": "bb17b2dc78c18d4d0e81b9816a69e2d38d5274d05be8cac46694fd636bdc8ba9",
+    ".so": "d8b609ec20a103713c711e11c841f98ae66abd85b6648a7f8b493bf2474fd7fc"
+   }
+  ],
+  "to": "edit",
+  "whole_rmeta_equal": false,
+  "whole_so_equal": true
+ },
+ {
+  "from": "edit",
+  "have_both_matching_raw_archives": false,
+  "mode": "build",
+  "published": [
+   {
+    ".rlib": "d45fbc25fe03facbde86ac6e855c10d2be2fcae256c1e62d671cdbb03c183ba2",
+    ".rmeta": "bb17b2dc78c18d4d0e81b9816a69e2d38d5274d05be8cac46694fd636bdc8ba9",
+    ".so": "d8b609ec20a103713c711e11c841f98ae66abd85b6648a7f8b493bf2474fd7fc"
+   },
+   {
+    ".rlib": "1b0719de10fa44771d536acffce84dd1909bc3186e545291e4af7912ae92afe8",
+    ".rmeta": "bb17b2dc78c18d4d0e81b9816a69e2d38d5274d05be8cac46694fd636bdc8ba9",
+    ".so": "d8b609ec20a103713c711e11c841f98ae66abd85b6648a7f8b493bf2474fd7fc"
+   }
+  ],
+  "to": "restore",
+  "whole_rmeta_equal": true,
+  "whole_so_equal": true
+ },
+ {
+  "from": "cold",
+  "have_both_matching_raw_archives": true,
+  "mode": "test",
+  "native_members": {
+   "all_ordered_object_bytes_equal": true,
+   "cgu_objects": [
+    67,
+    67
+   ],
+   "equal_complete_object_bytes_per_cgu_slot": 67,
+   "equal_member_name_per_cgu_slot": 0,
+   "index_and_name_tables_equal": [
+    true,
+    false
+   ],
+   "members": [
+    69,
+    69
+   ],
+   "non_cgu_changed": [
+    {
+     "after": "lib.rmeta",
+     "before": "lib.rmeta",
+     "equal": false
+    },
+    {
+     "after": "lib.rmeta-link",
+     "before": "lib.rmeta-link",
+     "equal": false
+    }
+   ],
+   "ordered_cgu_names_sha256_after": "19e08b9a6508734d31012315a2c545c41ef246df77fe507b6de230a7204d2419",
+   "ordered_cgu_names_sha256_before": "73584605366e083e4c8d47adffc9b3b0e2f988f3e1725b0d347d10d4f56b931e",
+   "per_section_group_differences": {
+    "#alloc": 0,
+    "#other": 0,
+    ".debug_abbrev": 0,
+    ".debug_aranges": 0,
+    ".debug_info": 0,
+    ".debug_line": 0,
+    ".debug_ranges": 0,
+    ".debug_str": 0
+   },
+   "producer_library_hashes": [
+    "ace268014da1d45aa78b3053cdfb97ecca87190ee2fa0714e5c2a16c7cca5706",
+    "b54cd22d8fcab55066a6986d4eac40cd05b2dfde406dd17bb3f9fb6846f66d3c"
+   ],
+   "same_cgu_object_payload_multiset": true,
+   "total_source_basename_hits_in_raw_debug_bytes": [
+    0,
+    0
+   ],
+   "total_source_md5_in_raw_debug_bytes": {
+    "edited": [
+     0,
+     0
+    ],
+    "original": [
+     0,
+     0
+    ]
+   }
+  },
+  "published": [
+   {
+    ".rlib": "ace268014da1d45aa78b3053cdfb97ecca87190ee2fa0714e5c2a16c7cca5706",
+    ".rmeta": "ef4d1825b7912e65076c69204a102fe76448cbd1030557fc336111eae2470ec0",
+    ".so": "47c9ceb9f9c93202857c922f1818b325d7381fe4da96c31dd36869e72229a0b5"
+   },
+   {
+    ".rlib": "b54cd22d8fcab55066a6986d4eac40cd05b2dfde406dd17bb3f9fb6846f66d3c",
+    ".rmeta": "640c252760377a4f7571852b15c5dd496737505d582753d92f5c6ab560ac219d",
+    ".so": "47c9ceb9f9c93202857c922f1818b325d7381fe4da96c31dd36869e72229a0b5"
+   }
+  ],
+  "to": "edit",
+  "whole_rmeta_equal": false,
+  "whole_so_equal": true
+ },
+ {
+  "from": "edit",
+  "have_both_matching_raw_archives": true,
+  "mode": "test",
+  "native_members": {
+   "all_ordered_object_bytes_equal": true,
+   "cgu_objects": [
+    67,
+    67
+   ],
+   "equal_complete_object_bytes_per_cgu_slot": 67,
+   "equal_member_name_per_cgu_slot": 0,
+   "index_and_name_tables_equal": [
+    true,
+    false
+   ],
+   "members": [
+    69,
+    69
+   ],
+   "non_cgu_changed": [
+    {
+     "after": "lib.rmeta",
+     "before": "lib.rmeta",
+     "equal": true
+    },
+    {
+     "after": "lib.rmeta-link",
+     "before": "lib.rmeta-link",
+     "equal": false
+    }
+   ],
+   "ordered_cgu_names_sha256_after": "800240614771c6b701e22c96e949cf8c278bb6047696de6c5d1feb87c55496fa",
+   "ordered_cgu_names_sha256_before": "19e08b9a6508734d31012315a2c545c41ef246df77fe507b6de230a7204d2419",
+   "per_section_group_differences": {
+    "#alloc": 0,
+    "#other": 0,
+    ".debug_abbrev": 0,
+    ".debug_aranges": 0,
+    ".debug_info": 0,
+    ".debug_line": 0,
+    ".debug_ranges": 0,
+    ".debug_str": 0
+   },
+   "producer_library_hashes": [
+    "b54cd22d8fcab55066a6986d4eac40cd05b2dfde406dd17bb3f9fb6846f66d3c",
+    "ac2ffabd11fbd5e03c24e49f3b81f581a19ca90e26d188a63fc84aa79c5d29e3"
+   ],
+   "same_cgu_object_payload_multiset": true,
+   "total_source_basename_hits_in_raw_debug_bytes": [
+    0,
+    0
+   ],
+   "total_source_md5_in_raw_debug_bytes": {
+    "edited": [
+     0,
+     0
+    ],
+    "original": [
+     0,
+     0
+    ]
+   }
+  },
+  "published": [
+   {
+    ".rlib": "b54cd22d8fcab55066a6986d4eac40cd05b2dfde406dd17bb3f9fb6846f66d3c",
+    ".rmeta": "640c252760377a4f7571852b15c5dd496737505d582753d92f5c6ab560ac219d",
+    ".so": "47c9ceb9f9c93202857c922f1818b325d7381fe4da96c31dd36869e72229a0b5"
+   },
+   {
+    ".rlib": "ac2ffabd11fbd5e03c24e49f3b81f581a19ca90e26d188a63fc84aa79c5d29e3",
+    ".rmeta": "640c252760377a4f7571852b15c5dd496737505d582753d92f5c6ab560ac219d",
+    ".so": "47c9ceb9f9c93202857c922f1818b325d7381fe4da96c31dd36869e72229a0b5"
+   }
+  ],
+  "to": "restore",
+  "whole_rmeta_equal": true,
+  "whole_so_equal": true
+ }
+]

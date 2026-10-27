@@ -1,0 +1,66 @@
+{
+  "commands": [
+    "cargo +ohm build --locked --offline --message-format=json -j8",
+    "cargo +ohm check --locked --offline --message-format=json -j8",
+    "cargo +ohm test --no-run --locked --offline --message-format=json -j8"
+  ],
+  "content_witnesses": [
+    "Save authentic ty_ide producer rmeta/rlib byte hashes, raw native member names and ordered object contents/allocated ELF sections including debug_str/debug_line. Separately inspect source checksum embedded in the physical metadata or line tables before/edit/restoration. Use full content hashes, separately ordered native member names and their contents.",
+    "Two diagnostic independently clean selected producer compilations with actual build argv, same logical paths, original + edited source and privately empty per-producer output and incremental namespaces. Keep raw status if an ordinary clean replay is not reproducible. Observe warnings, .d prerequisites, native source filename/paths, and signed source bytes.",
+    "If current derived metadata changes on the disabled source, retain new ordinary erroneous external diagnostic and a small proc-macro/source-text correctness witness when mapping is genuinely exercised. If no job is provably removable, preserve the exact boundary; no performance claims."
+  ],
+  "criterion": "First reverse-applicable complete single-Rust-source patch in the audited 10,000-commit scan using filename structure and cfg(test) location only. Prefer identical file byte/line counts or within 128 bytes of module end. Neither applied candidate had that geometry.",
+  "disk": "H2 only. Fresh typed stores or private copies under H2 home/tmpfs. Hold home >=25 GiB and tmpfs >=10 GiB, never wipe or overwrite preceding campaigns or H5. Use cp and targeted SHA256, no hardlinking shared release or mutable targets.",
+  "enabled_test_control": [
+    "Compile test targets only. Inspect the real enabled test executable for the added test name. Do not run the test suite.",
+    "Compiler input is the normal library source in each Cargo mode. Record --test and actual -Z link-only independently. Keep Cargo messages, all physical compilers/linkers/absence and full changed file hashes per unit."
+  ],
+  "first_edit_original_line_1based": 1500,
+  "kind": "Unscored H2 observational first occurrence, inline-disabled item in a normal production library. No product change.",
+  "original_ruff": "93526150df078af7dd8fc4226cdcc469539d2001",
+  "selection_manifest_sha256": "ad5d96193cd5297a11f74c8c7313525bde4ad951c53e888653cb0247106f7ccb",
+  "source_module_start_line_1based": 149,
+  "source_selection": {
+    "attr": 5419,
+    "body": 5444,
+    "bytes_to_module_end": 5530,
+    "edited_bytes": 52874,
+    "edited_lines": 1744,
+    "edited_sha256": "89044ee35cc3a9e7c2cdde6cc4ed3e74df67cee1dacc967c15bf317ac02356d5",
+    "end": 50483,
+    "file": "crates/ty_ide/src/docstring.rs",
+    "first_original_byte": 44953,
+    "last_original_byte": 44953,
+    "line_ranges": [
+      [
+        1499,
+        1499,
+        1499,
+        1577
+      ]
+    ],
+    "module": "tests",
+    "original_bytes": 50483,
+    "original_lines": 1666,
+    "original_sha256": "d3e61f825d158c785fa5602b85d883a9d62d1713193849ab549f2a8c38e8136b",
+    "patch_sha256": "acdf43ea8359813bdebda310de15a963e5ce02bdc84641cc2341c7115629fc65",
+    "rank": 1432,
+    "rev": "1797ed542380c5aa0f7832e3877b1df56ddb2e08",
+    "title": "[ty] Remove duplicated docstring parsing test (#26893)"
+  },
+  "source_states": [
+    "original cold",
+    "original until fully fresh",
+    "first complete source reversal",
+    "same-source fresh",
+    "original restored",
+    "same-source fresh"
+  ],
+  "subject": {
+    "bundled_wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5",
+    "cargo_ohm_pr254": "dd5cab154b8dcd09ccc2753160d314cade80979b2d055ee66aa9e2217e05e7e1",
+    "rustc_driver_ohm_rust_pr233": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+    "rustc_frontend": "4fa9a18b77430bcc416e88561b6fe5797d98b996a7698b9f3bd11d4e7817a19f"
+  },
+  "test_control_name": "test_numpy_style_with_different_indentation"
+}

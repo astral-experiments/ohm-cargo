@@ -1,0 +1,702 @@
+[
+ {
+  "all_diagnostics": [
+   {
+    "$message_type": "diagnostic",
+    "children": [
+     {
+      "children": [],
+      "code": null,
+      "level": "note",
+      "message": "method defined here",
+      "rendered": null,
+      "spans": [
+       {
+        "byte_end": 1059,
+        "byte_start": 1053,
+        "column_end": 18,
+        "column_start": 12,
+        "expansion": null,
+        "file_name": "crates/ty_ide/src/docstring.rs",
+        "is_primary": true,
+        "label": null,
+        "line_end": 30,
+        "line_start": 30,
+        "suggested_replacement": null,
+        "suggestion_applicability": null,
+        "text": [
+         {
+          "highlight_end": 18,
+          "highlight_start": 12,
+          "text": "    pub fn render(&self, kind: MarkupKind) -> String {"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "children": [],
+      "code": null,
+      "level": "help",
+      "message": "provide the argument",
+      "rendered": null,
+      "spans": [
+       {
+        "byte_end": 99,
+        "byte_start": 97,
+        "column_end": 100,
+        "column_start": 98,
+        "expansion": null,
+        "file_name": "/home/dev-user/.cache/ohm-233-position-qualified-20261027/cfg-library-first-v1-campaign/clean-and-ordinary/reader_error.rs",
+        "is_primary": true,
+        "label": null,
+        "line_end": 1,
+        "line_start": 1,
+        "suggested_replacement": "(/* MarkupKind */)",
+        "suggestion_applicability": "HasPlaceholders",
+        "text": [
+         {
+          "highlight_end": 100,
+          "highlight_start": 98,
+          "text": "pub fn observe(c: &ty_ide::Completion<'_>) { if let Some(d) = &c.documentation { let _ = d.render(); } }"
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "code": {
+     "code": "E0061",
+     "explanation": "An invalid number of arguments was passed when calling a function.\n\nErroneous code example:\n\n```compile_fail,E0061\nfn f(u: i32) {}\n\nf(); // error!\n```\n\nThe number of arguments passed to a function must match the number of arguments\nspecified in the function signature.\n\nFor example, a function like:\n\n```\nfn f(a: u16, b: &str) {}\n```\n\nMust always be called with exactly two arguments, e.g., `f(2, \"test\")`.\n\nNote that Rust does not have a notion of optional function arguments or\nvariadic functions (except for its C-FFI).\n"
+    },
+    "level": "error",
+    "message": "this method takes 1 argument but 0 arguments were supplied",
+    "rendered": "error[E0061]: this method takes 1 argument but 0 arguments were supplied\n  --> /home/dev-user/.cache/ohm-233-position-qualified-20261027/cfg-library-first-v1-campaign/clean-and-ordinary/reader_error.rs:1:92\n   |\n 1 | pub fn observe(c: &ty_ide::Completion<'_>) { if let Some(d) = &c.documentation { let _ = d.render(); } }\n   |                                                                                            ^^^^^^-- argument #1 of type `MarkupKind` is missing\n   |\nnote: method defined here\n  --> crates/ty_ide/src/docstring.rs:30:12\n   |\n30 |     pub fn render(&self, kind: MarkupKind) -> String {\n   |            ^^^^^^\nhelp: provide the argument\n   |\n 1 | pub fn observe(c: &ty_ide::Completion<'_>) { if let Some(d) = &c.documentation { let _ = d.render(/* MarkupKind */); } }\n   |                                                                                                   ++++++++++++++++\n\n",
+    "spans": [
+     {
+      "byte_end": 99,
+      "byte_start": 97,
+      "column_end": 100,
+      "column_start": 98,
+      "expansion": null,
+      "file_name": "/home/dev-user/.cache/ohm-233-position-qualified-20261027/cfg-library-first-v1-campaign/clean-and-ordinary/reader_error.rs",
+      "is_primary": false,
+      "label": "argument #1 of type `MarkupKind` is missing",
+      "line_end": 1,
+      "line_start": 1,
+      "suggested_replacement": null,
+      "suggestion_applicability": null,
+      "text": [
+       {
+        "highlight_end": 100,
+        "highlight_start": 98,
+        "text": "pub fn observe(c: &ty_ide::Completion<'_>) { if let Some(d) = &c.documentation { let _ = d.render(); } }"
+       }
+      ]
+     },
+     {
+      "byte_end": 97,
+      "byte_start": 91,
+      "column_end": 98,
+      "column_start": 92,
+      "expansion": null,
+      "file_name": "/home/dev-user/.cache/ohm-233-position-qualified-20261027/cfg-library-first-v1-campaign/clean-and-ordinary/reader_error.rs",
+      "is_primary": true,
+      "label": null,
+      "line_end": 1,
+      "line_start": 1,
+      "suggested_replacement": null,
+      "suggestion_applicability": null,
+      "text": [
+       {
+        "highlight_end": 98,
+        "highlight_start": 92,
+        "text": "pub fn observe(c: &ty_ide::Completion<'_>) { if let Some(d) = &c.documentation { let _ = d.render(); } }"
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "$message_type": "diagnostic",
+    "children": [],
+    "code": null,
+    "level": "error",
+    "message": "aborting due to 1 previous error",
+    "rendered": "error: aborting due to 1 previous error\n\n",
+    "spans": []
+   },
+   {
+    "$message_type": "diagnostic",
+    "children": [],
+    "code": null,
+    "level": "failure-note",
+    "message": "For more information about this error, try `rustc --explain E0061`.",
+    "rendered": "For more information about this error, try `rustc --explain E0061`.\n",
+    "spans": []
+   }
+  ],
+  "compiler_argv_sha256": "23a0a8667774c54a403d51c76e701a388680ab85752d39ba3b63c142fbc3c8b6",
+  "disk_source_state": "original",
+  "foreign_definition_spans": [
+   {
+    "byte_end": 1059,
+    "byte_start": 1053,
+    "column_end": 18,
+    "column_start": 12,
+    "expansion": null,
+    "file_name": "crates/ty_ide/src/docstring.rs",
+    "is_primary": true,
+    "label": null,
+    "line_end": 30,
+    "line_start": 30,
+    "suggested_replacement": null,
+    "suggestion_applicability": null,
+    "text": [
+     {
+      "highlight_end": 18,
+      "highlight_start": 12,
+      "text": "    pub fn render(&self, kind: MarkupKind) -> String {"
+     }
+    ]
+   }
+  ],
+  "input_metadata_state": "original",
+  "metadata_sha256": "f20b5d6967f81f2a876ce47d9695841874abef99420e1248c69b70ae7cf5ae0a",
+  "reader": "reader_error.rs",
+  "source_sha256": "2b62a131d32f132dda598db067b1b49358732476768fad5657cf817a2f3ca3f0",
+  "status": 1,
+  "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+ },
+ {
+  "all_diagnostics": [],
+  "compiler_argv_sha256": "e84247f783254010a7267dfa8018fc202d8889c4e50bf3e393da13f16f3aa67e",
+  "disk_source_state": "original",
+  "foreign_definition_spans": [],
+  "input_metadata_state": "original",
+  "metadata_sha256": "f20b5d6967f81f2a876ce47d9695841874abef99420e1248c69b70ae7cf5ae0a",
+  "reader": "reader_good.rs",
+  "source_sha256": "2956c7b3f1ad9b929825c9a380171594d4484f16e493df8b7a77cccbcf8cd6d3",
+  "status": 0,
+  "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+ },
+ {
+  "all_diagnostics": [
+   {
+    "$message_type": "diagnostic",
+    "children": [
+     {
+      "children": [],
+      "code": null,
+      "level": "note",
+      "message": "method defined here",
+      "rendered": null,
+      "spans": [
+       {
+        "byte_end": 1059,
+        "byte_start": 1053,
+        "column_end": 18,
+        "column_start": 12,
+        "expansion": null,
+        "file_name": "crates/ty_ide/src/docstring.rs",
+        "is_primary": true,
+        "label": null,
+        "line_end": 30,
+        "line_start": 30,
+        "suggested_replacement": null,
+        "suggestion_applicability": null,
+        "text": [
+         {
+          "highlight_end": 18,
+          "highlight_start": 12,
+          "text": "    pub fn render(&self, kind: MarkupKind) -> String {"
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "children": [],
+      "code": null,
+      "level": "help",
+      "message": "provide the argument",
+      "rendered": null,
+      "spans": [
+       {
+        "byte_end": 99,
+        "byte_start": 97,
+        "column_end": 100,
+        "column_start": 98,
+        "expansion": null,
+        "file_name": "/home/dev-user/.cache/ohm-233-position-qualified-20261027/cfg-library-first-v1-campaign/clean-and-ordinary/reader_error.rs",
+        "is_primary": true,
+        "label": null,
+        "line_end": 1,
+        "line_start": 1,
+        "suggested_replacement": "(/* MarkupKind */)",
+        "suggestion_applicability": "HasPlaceholders",
+        "text": [
+         {
+          "highlight_end": 100,
+          "highlight_start": 98,
+          "text": "pub fn observe(c: &ty_ide::Completion<'_>) { if let Some(d) = &c.documentation { let _ = d.render(); } }"
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "code": {
+     "code": "E0061",
+     "explanation": "An invalid number of arguments was passed when calling a function.\n\nErroneous code example:\n\n```compile_fail,E0061\nfn f(u: i32) {}\n\nf(); // error!\n```\n\nThe number of arguments passed to a function must match the number of arguments\nspecified in the function signature.\n\nFor example, a function like:\n\n```\nfn f(a: u16, b: &str) {}\n```\n\nMust always be called with exactly two arguments, e.g., `f(2, \"test\")`.\n\nNote that Rust does not have a notion of optional function arguments or\nvariadic functions (except for its C-FFI).\n"
+    },
+    "level": "error",
+    "message": "this method takes 1 argument but 0 arguments were supplied",
+    "rendered": "error[E0061]: this method takes 1 argument but 0 arguments were supplied\n  --> /home/dev-user/.cache/ohm-233-position-qualified-20261027/cfg-library-first-v1-campaign/clean-and-ordinary/reader_error.rs:1:92\n   |\n 1 | pub fn observe(c: &ty_ide::Completion<'_>) { if let Some(d) = &c.documentation { let _ = d.render(); } }\n   |                                                                                            ^^^^^^-- argument #1 of type `MarkupKind` is missing\n   |\nnote: method defined here\n  --> crates/ty_ide/src/docstring.rs:30:12\n   |\n30 |     pub fn render(&self, kind: MarkupKind) -> String {\n   |            ^^^^^^\nhelp: provide the argument\n   |\n 1 | pub fn observe(c: &ty_ide::Completion<'_>) { if let Some(d) = &c.documentation { let _ = d.render(/* MarkupKind */); } }\n   |                                                                                                   ++++++++++++++++\n\n",
+    "spans": [
+     {
+      "byte_end": 99,
+      "byte_start": 97,
+      "column_end": 100,
+      "column_start": 98,
+      "expansion": null,
+      "file_name": "/home/dev-user/.cache/ohm-233-position-qualified-20261027/cfg-library-first-v1-campaign/clean-and-ordinary/reader_error.rs",
+      "is_primary": false,
+      "label": "argument #1 of type `MarkupKind` is missing",
+      "line_end": 1,
+      "line_start": 1,
+      "suggested_replacement": null,
+      "suggestion_applicability": null,
+      "text": [
+       {
+        "highlight_end": 100,
+        "highlight_start": 98,
+        "text": "pub fn observe(c: &ty_ide::Completion<'_>) { if let Some(d) = &c.documentation { let _ = d.render(); } }"
+       }
+      ]
+     },
+     {
+      "byte_end": 97,
+      "byte_start": 91,
+      "column_end": 98,
+      "column_start": 92,
+      "expansion": null,
+      "file_name": "/home/dev-user/.cache/ohm-233-position-qualified-20261027/cfg-library-first-v1-campaign/clean-and-ordinary/reader_error.rs",
+      "is_primary": true,
+      "label": null,
+      "line_end": 1,
+      "line_start": 1,
+      "suggested_replacement": null,
+      "suggestion_applicability": null,
+      "text": [
+       {
+        "highlight_end": 98,
+        "highlight_start": 92,
+        "text": "pub fn observe(c: &ty_ide::Completion<'_>) { if let Some(d) = &c.documentation { let _ = d.render(); } }"
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "$message_type": "diagnostic",
+    "children": [],
+    "code": null,
+    "level": "error",
+    "message": "aborting due to 1 previous error",
+    "rendered": "error: aborting due to 1 previous error\n\n",
+    "spans": []
+   },
+   {
+    "$message_type": "diagnostic",
+    "children": [],
+    "code": null,
+    "level": "failure-note",
+    "message": "For more information about this error, try `rustc --explain E0061`.",
+    "rendered": "For more information about this error, try `rustc --explain E0061`.\n",
+    "spans": []
+   }
+  ],
+  "compiler_argv_sha256": "01865ea1dff07a213b8a6c5f9aa82f84aa40b408844e0f3b9fe21f42db749713",
+  "disk_source_state": "edited",
+  "foreign_definition_spans": [
+   {
+    "byte_end": 1059,
+    "byte_start": 1053,
+    "column_end": 18,
+    "column_start": 12,
+    "expansion": null,
+    "file_name": "crates/ty_ide/src/docstring.rs",
+    "is_primary": true,
+    "label": null,
+    "line_end": 30,
+    "line_start": 30,
+    "suggested_replacement": null,
+    "suggestion_applicability": null,
+    "text": [
+     {
+      "highlight_end": 18,
+      "highlight_start": 12,
+      "text": "    pub fn render(&self, kind: MarkupKind) -> String {"
+     }
+    ]
+   }
+  ],
+  "input_metadata_state": "edited",
+  "metadata_sha256": "15828d8c3137b67385556873e78b89049ec087e7ce7d0f28b41a66483d50a4ce",
+  "reader": "reader_error.rs",
+  "source_sha256": "2b62a131d32f132dda598db067b1b49358732476768fad5657cf817a2f3ca3f0",
+  "status": 1,
+  "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+ },
+ {
+  "all_diagnostics": [],
+  "compiler_argv_sha256": "15113312d89904f5c19b3c6f43805a625f7a86d4f15a4480c30fb9f9d8e396b2",
+  "disk_source_state": "edited",
+  "foreign_definition_spans": [],
+  "input_metadata_state": "edited",
+  "metadata_sha256": "15828d8c3137b67385556873e78b89049ec087e7ce7d0f28b41a66483d50a4ce",
+  "reader": "reader_good.rs",
+  "source_sha256": "2956c7b3f1ad9b929825c9a380171594d4484f16e493df8b7a77cccbcf8cd6d3",
+  "status": 0,
+  "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+ },
+ {
+  "all_diagnostics": [
+   {
+    "$message_type": "diagnostic",
+    "children": [
+     {
+      "children": [],
+      "code": null,
+      "level": "note",
+      "message": "method defined here",
+      "rendered": null,
+      "spans": [
+       {
+        "byte_end": 1059,
+        "byte_start": 1053,
+        "column_end": 18,
+        "column_start": 12,
+        "expansion": null,
+        "file_name": "crates/ty_ide/src/docstring.rs",
+        "is_primary": true,
+        "label": null,
+        "line_end": 30,
+        "line_start": 30,
+        "suggested_replacement": null,
+        "suggestion_applicability": null,
+        "text": []
+       }
+      ]
+     },
+     {
+      "children": [],
+      "code": null,
+      "level": "help",
+      "message": "provide the argument",
+      "rendered": null,
+      "spans": [
+       {
+        "byte_end": 99,
+        "byte_start": 97,
+        "column_end": 100,
+        "column_start": 98,
+        "expansion": null,
+        "file_name": "/home/dev-user/.cache/ohm-233-position-qualified-20261027/cfg-library-first-v1-campaign/clean-and-ordinary/reader_error.rs",
+        "is_primary": true,
+        "label": null,
+        "line_end": 1,
+        "line_start": 1,
+        "suggested_replacement": "(/* MarkupKind */)",
+        "suggestion_applicability": "HasPlaceholders",
+        "text": [
+         {
+          "highlight_end": 100,
+          "highlight_start": 98,
+          "text": "pub fn observe(c: &ty_ide::Completion<'_>) { if let Some(d) = &c.documentation { let _ = d.render(); } }"
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "code": {
+     "code": "E0061",
+     "explanation": "An invalid number of arguments was passed when calling a function.\n\nErroneous code example:\n\n```compile_fail,E0061\nfn f(u: i32) {}\n\nf(); // error!\n```\n\nThe number of arguments passed to a function must match the number of arguments\nspecified in the function signature.\n\nFor example, a function like:\n\n```\nfn f(a: u16, b: &str) {}\n```\n\nMust always be called with exactly two arguments, e.g., `f(2, \"test\")`.\n\nNote that Rust does not have a notion of optional function arguments or\nvariadic functions (except for its C-FFI).\n"
+    },
+    "level": "error",
+    "message": "this method takes 1 argument but 0 arguments were supplied",
+    "rendered": "error[E0061]: this method takes 1 argument but 0 arguments were supplied\n --> /home/dev-user/.cache/ohm-233-position-qualified-20261027/cfg-library-first-v1-campaign/clean-and-ordinary/reader_error.rs:1:92\n  |\n1 | pub fn observe(c: &ty_ide::Completion<'_>) { if let Some(d) = &c.documentation { let _ = d.render(); } }\n  |                                                                                            ^^^^^^-- argument #1 of type `MarkupKind` is missing\n  |\nnote: method defined here\n --> crates/ty_ide/src/docstring.rs:30:11\nhelp: provide the argument\n  |\n1 | pub fn observe(c: &ty_ide::Completion<'_>) { if let Some(d) = &c.documentation { let _ = d.render(/* MarkupKind */); } }\n  |                                                                                                   ++++++++++++++++\n\n",
+    "spans": [
+     {
+      "byte_end": 99,
+      "byte_start": 97,
+      "column_end": 100,
+      "column_start": 98,
+      "expansion": null,
+      "file_name": "/home/dev-user/.cache/ohm-233-position-qualified-20261027/cfg-library-first-v1-campaign/clean-and-ordinary/reader_error.rs",
+      "is_primary": false,
+      "label": "argument #1 of type `MarkupKind` is missing",
+      "line_end": 1,
+      "line_start": 1,
+      "suggested_replacement": null,
+      "suggestion_applicability": null,
+      "text": [
+       {
+        "highlight_end": 100,
+        "highlight_start": 98,
+        "text": "pub fn observe(c: &ty_ide::Completion<'_>) { if let Some(d) = &c.documentation { let _ = d.render(); } }"
+       }
+      ]
+     },
+     {
+      "byte_end": 97,
+      "byte_start": 91,
+      "column_end": 98,
+      "column_start": 92,
+      "expansion": null,
+      "file_name": "/home/dev-user/.cache/ohm-233-position-qualified-20261027/cfg-library-first-v1-campaign/clean-and-ordinary/reader_error.rs",
+      "is_primary": true,
+      "label": null,
+      "line_end": 1,
+      "line_start": 1,
+      "suggested_replacement": null,
+      "suggestion_applicability": null,
+      "text": [
+       {
+        "highlight_end": 98,
+        "highlight_start": 92,
+        "text": "pub fn observe(c: &ty_ide::Completion<'_>) { if let Some(d) = &c.documentation { let _ = d.render(); } }"
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "$message_type": "diagnostic",
+    "children": [],
+    "code": null,
+    "level": "error",
+    "message": "aborting due to 1 previous error",
+    "rendered": "error: aborting due to 1 previous error\n\n",
+    "spans": []
+   },
+   {
+    "$message_type": "diagnostic",
+    "children": [],
+    "code": null,
+    "level": "failure-note",
+    "message": "For more information about this error, try `rustc --explain E0061`.",
+    "rendered": "For more information about this error, try `rustc --explain E0061`.\n",
+    "spans": []
+   }
+  ],
+  "compiler_argv_sha256": "23a0a8667774c54a403d51c76e701a388680ab85752d39ba3b63c142fbc3c8b6",
+  "disk_source_state": "edited",
+  "foreign_definition_spans": [
+   {
+    "byte_end": 1059,
+    "byte_start": 1053,
+    "column_end": 18,
+    "column_start": 12,
+    "expansion": null,
+    "file_name": "crates/ty_ide/src/docstring.rs",
+    "is_primary": true,
+    "label": null,
+    "line_end": 30,
+    "line_start": 30,
+    "suggested_replacement": null,
+    "suggestion_applicability": null,
+    "text": []
+   }
+  ],
+  "input_metadata_state": "original",
+  "metadata_sha256": "f20b5d6967f81f2a876ce47d9695841874abef99420e1248c69b70ae7cf5ae0a",
+  "reader": "reader_error.rs",
+  "source_sha256": "2b62a131d32f132dda598db067b1b49358732476768fad5657cf817a2f3ca3f0",
+  "status": 1,
+  "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+ },
+ {
+  "all_diagnostics": [],
+  "compiler_argv_sha256": "e84247f783254010a7267dfa8018fc202d8889c4e50bf3e393da13f16f3aa67e",
+  "disk_source_state": "edited",
+  "foreign_definition_spans": [],
+  "input_metadata_state": "original",
+  "metadata_sha256": "f20b5d6967f81f2a876ce47d9695841874abef99420e1248c69b70ae7cf5ae0a",
+  "reader": "reader_good.rs",
+  "source_sha256": "2956c7b3f1ad9b929825c9a380171594d4484f16e493df8b7a77cccbcf8cd6d3",
+  "status": 0,
+  "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+ },
+ {
+  "all_diagnostics": [
+   {
+    "$message_type": "diagnostic",
+    "children": [
+     {
+      "children": [],
+      "code": null,
+      "level": "note",
+      "message": "method defined here",
+      "rendered": null,
+      "spans": [
+       {
+        "byte_end": 1059,
+        "byte_start": 1053,
+        "column_end": 18,
+        "column_start": 12,
+        "expansion": null,
+        "file_name": "crates/ty_ide/src/docstring.rs",
+        "is_primary": true,
+        "label": null,
+        "line_end": 30,
+        "line_start": 30,
+        "suggested_replacement": null,
+        "suggestion_applicability": null,
+        "text": []
+       }
+      ]
+     },
+     {
+      "children": [],
+      "code": null,
+      "level": "help",
+      "message": "provide the argument",
+      "rendered": null,
+      "spans": [
+       {
+        "byte_end": 99,
+        "byte_start": 97,
+        "column_end": 100,
+        "column_start": 98,
+        "expansion": null,
+        "file_name": "/home/dev-user/.cache/ohm-233-position-qualified-20261027/cfg-library-first-v1-campaign/clean-and-ordinary/reader_error.rs",
+        "is_primary": true,
+        "label": null,
+        "line_end": 1,
+        "line_start": 1,
+        "suggested_replacement": "(/* MarkupKind */)",
+        "suggestion_applicability": "HasPlaceholders",
+        "text": [
+         {
+          "highlight_end": 100,
+          "highlight_start": 98,
+          "text": "pub fn observe(c: &ty_ide::Completion<'_>) { if let Some(d) = &c.documentation { let _ = d.render(); } }"
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "code": {
+     "code": "E0061",
+     "explanation": "An invalid number of arguments was passed when calling a function.\n\nErroneous code example:\n\n```compile_fail,E0061\nfn f(u: i32) {}\n\nf(); // error!\n```\n\nThe number of arguments passed to a function must match the number of arguments\nspecified in the function signature.\n\nFor example, a function like:\n\n```\nfn f(a: u16, b: &str) {}\n```\n\nMust always be called with exactly two arguments, e.g., `f(2, \"test\")`.\n\nNote that Rust does not have a notion of optional function arguments or\nvariadic functions (except for its C-FFI).\n"
+    },
+    "level": "error",
+    "message": "this method takes 1 argument but 0 arguments were supplied",
+    "rendered": "error[E0061]: this method takes 1 argument but 0 arguments were supplied\n --> /home/dev-user/.cache/ohm-233-position-qualified-20261027/cfg-library-first-v1-campaign/clean-and-ordinary/reader_error.rs:1:92\n  |\n1 | pub fn observe(c: &ty_ide::Completion<'_>) { if let Some(d) = &c.documentation { let _ = d.render(); } }\n  |                                                                                            ^^^^^^-- argument #1 of type `MarkupKind` is missing\n  |\nnote: method defined here\n --> crates/ty_ide/src/docstring.rs:30:11\nhelp: provide the argument\n  |\n1 | pub fn observe(c: &ty_ide::Completion<'_>) { if let Some(d) = &c.documentation { let _ = d.render(/* MarkupKind */); } }\n  |                                                                                                   ++++++++++++++++\n\n",
+    "spans": [
+     {
+      "byte_end": 99,
+      "byte_start": 97,
+      "column_end": 100,
+      "column_start": 98,
+      "expansion": null,
+      "file_name": "/home/dev-user/.cache/ohm-233-position-qualified-20261027/cfg-library-first-v1-campaign/clean-and-ordinary/reader_error.rs",
+      "is_primary": false,
+      "label": "argument #1 of type `MarkupKind` is missing",
+      "line_end": 1,
+      "line_start": 1,
+      "suggested_replacement": null,
+      "suggestion_applicability": null,
+      "text": [
+       {
+        "highlight_end": 100,
+        "highlight_start": 98,
+        "text": "pub fn observe(c: &ty_ide::Completion<'_>) { if let Some(d) = &c.documentation { let _ = d.render(); } }"
+       }
+      ]
+     },
+     {
+      "byte_end": 97,
+      "byte_start": 91,
+      "column_end": 98,
+      "column_start": 92,
+      "expansion": null,
+      "file_name": "/home/dev-user/.cache/ohm-233-position-qualified-20261027/cfg-library-first-v1-campaign/clean-and-ordinary/reader_error.rs",
+      "is_primary": true,
+      "label": null,
+      "line_end": 1,
+      "line_start": 1,
+      "suggested_replacement": null,
+      "suggestion_applicability": null,
+      "text": [
+       {
+        "highlight_end": 98,
+        "highlight_start": 92,
+        "text": "pub fn observe(c: &ty_ide::Completion<'_>) { if let Some(d) = &c.documentation { let _ = d.render(); } }"
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "$message_type": "diagnostic",
+    "children": [],
+    "code": null,
+    "level": "error",
+    "message": "aborting due to 1 previous error",
+    "rendered": "error: aborting due to 1 previous error\n\n",
+    "spans": []
+   },
+   {
+    "$message_type": "diagnostic",
+    "children": [],
+    "code": null,
+    "level": "failure-note",
+    "message": "For more information about this error, try `rustc --explain E0061`.",
+    "rendered": "For more information about this error, try `rustc --explain E0061`.\n",
+    "spans": []
+   }
+  ],
+  "compiler_argv_sha256": "01865ea1dff07a213b8a6c5f9aa82f84aa40b408844e0f3b9fe21f42db749713",
+  "disk_source_state": "original",
+  "foreign_definition_spans": [
+   {
+    "byte_end": 1059,
+    "byte_start": 1053,
+    "column_end": 18,
+    "column_start": 12,
+    "expansion": null,
+    "file_name": "crates/ty_ide/src/docstring.rs",
+    "is_primary": true,
+    "label": null,
+    "line_end": 30,
+    "line_start": 30,
+    "suggested_replacement": null,
+    "suggestion_applicability": null,
+    "text": []
+   }
+  ],
+  "input_metadata_state": "edited",
+  "metadata_sha256": "15828d8c3137b67385556873e78b89049ec087e7ce7d0f28b41a66483d50a4ce",
+  "reader": "reader_error.rs",
+  "source_sha256": "2b62a131d32f132dda598db067b1b49358732476768fad5657cf817a2f3ca3f0",
+  "status": 1,
+  "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+ },
+ {
+  "all_diagnostics": [],
+  "compiler_argv_sha256": "15113312d89904f5c19b3c6f43805a625f7a86d4f15a4480c30fb9f9d8e396b2",
+  "disk_source_state": "original",
+  "foreign_definition_spans": [],
+  "input_metadata_state": "edited",
+  "metadata_sha256": "15828d8c3137b67385556873e78b89049ec087e7ce7d0f28b41a66483d50a4ce",
+  "reader": "reader_good.rs",
+  "source_sha256": "2956c7b3f1ad9b929825c9a380171594d4484f16e493df8b7a77cccbcf8cd6d3",
+  "status": 0,
+  "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+ }
+]

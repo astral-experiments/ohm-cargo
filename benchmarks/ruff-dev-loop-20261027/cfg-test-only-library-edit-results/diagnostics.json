@@ -1,0 +1,609 @@
+{
+ "build/cold": [],
+ "build/edit": [],
+ "build/edit-fresh": [],
+ "build/restore": [],
+ "build/restore-fresh": [],
+ "build/warm-1": [],
+ "check/cold": [],
+ "check/edit": [],
+ "check/edit-fresh": [],
+ "check/restore": [],
+ "check/restore-fresh": [],
+ "check/warm-1": [],
+ "test/cold": [
+  {
+   "manifest_path": "/home/dev-user/code/oss/ruff-ohm-whole-native-20261027/crates/ty/Cargo.toml",
+   "message": {
+    "$message_type": "diagnostic",
+    "children": [
+     {
+      "children": [],
+      "code": null,
+      "level": "note",
+      "message": "`#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default",
+      "rendered": null,
+      "spans": []
+     }
+    ],
+    "code": {
+     "code": "dead_code",
+     "explanation": null
+    },
+    "level": "warning",
+    "message": "method `set_watch` is never used",
+    "rendered": "warning: method `set_watch` is never used\n   --> crates/ty/tests/file_watching.rs:446:8\n    |\n363 | impl<'a> SetupContext<'a> {\n    | ------------------------- method in this implementation\n...\n446 |     fn set_watch(&mut self, watch: bool) {\n    |        ^^^^^^^^^\n    |\n    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\n",
+    "spans": [
+     {
+      "byte_end": 11822,
+      "byte_start": 11797,
+      "column_end": 26,
+      "column_start": 1,
+      "expansion": null,
+      "file_name": "crates/ty/tests/file_watching.rs",
+      "is_primary": false,
+      "label": "method in this implementation",
+      "line_end": 363,
+      "line_start": 363,
+      "suggested_replacement": null,
+      "suggestion_applicability": null,
+      "text": [
+       {
+        "highlight_end": 26,
+        "highlight_start": 1,
+        "text": "impl<'a> SetupContext<'a> {"
+       }
+      ]
+     },
+     {
+      "byte_end": 14256,
+      "byte_start": 14247,
+      "column_end": 17,
+      "column_start": 8,
+      "expansion": null,
+      "file_name": "crates/ty/tests/file_watching.rs",
+      "is_primary": true,
+      "label": null,
+      "line_end": 446,
+      "line_start": 446,
+      "suggested_replacement": null,
+      "suggestion_applicability": null,
+      "text": [
+       {
+        "highlight_end": 17,
+        "highlight_start": 8,
+        "text": "    fn set_watch(&mut self, watch: bool) {"
+       }
+      ]
+     }
+    ]
+   },
+   "package_id": "path+file:///home/dev-user/code/oss/ruff-ohm-whole-native-20261027/crates/ty#0.0.0",
+   "reason": "compiler-message",
+   "target": {
+    "crate_types": [
+     "bin"
+    ],
+    "doc": false,
+    "doctest": false,
+    "edition": "2024",
+    "kind": [
+     "test"
+    ],
+    "name": "file_watching",
+    "src_path": "/home/dev-user/code/oss/ruff-ohm-whole-native-20261027/crates/ty/tests/file_watching.rs",
+    "test": true
+   }
+  }
+ ],
+ "test/edit": [
+  {
+   "manifest_path": "/home/dev-user/code/oss/ruff-ohm-whole-native-20261027/crates/ty/Cargo.toml",
+   "message": {
+    "$message_type": "diagnostic",
+    "children": [
+     {
+      "children": [],
+      "code": null,
+      "level": "note",
+      "message": "`#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default",
+      "rendered": null,
+      "spans": []
+     }
+    ],
+    "code": {
+     "code": "dead_code",
+     "explanation": null
+    },
+    "level": "warning",
+    "message": "method `set_watch` is never used",
+    "rendered": "warning: method `set_watch` is never used\n   --> crates/ty/tests/file_watching.rs:446:8\n    |\n363 | impl<'a> SetupContext<'a> {\n    | ------------------------- method in this implementation\n...\n446 |     fn set_watch(&mut self, watch: bool) {\n    |        ^^^^^^^^^\n    |\n    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\n",
+    "spans": [
+     {
+      "byte_end": 11822,
+      "byte_start": 11797,
+      "column_end": 26,
+      "column_start": 1,
+      "expansion": null,
+      "file_name": "crates/ty/tests/file_watching.rs",
+      "is_primary": false,
+      "label": "method in this implementation",
+      "line_end": 363,
+      "line_start": 363,
+      "suggested_replacement": null,
+      "suggestion_applicability": null,
+      "text": [
+       {
+        "highlight_end": 26,
+        "highlight_start": 1,
+        "text": "impl<'a> SetupContext<'a> {"
+       }
+      ]
+     },
+     {
+      "byte_end": 14256,
+      "byte_start": 14247,
+      "column_end": 17,
+      "column_start": 8,
+      "expansion": null,
+      "file_name": "crates/ty/tests/file_watching.rs",
+      "is_primary": true,
+      "label": null,
+      "line_end": 446,
+      "line_start": 446,
+      "suggested_replacement": null,
+      "suggestion_applicability": null,
+      "text": [
+       {
+        "highlight_end": 17,
+        "highlight_start": 8,
+        "text": "    fn set_watch(&mut self, watch: bool) {"
+       }
+      ]
+     }
+    ]
+   },
+   "package_id": "path+file:///home/dev-user/code/oss/ruff-ohm-whole-native-20261027/crates/ty#0.0.0",
+   "reason": "compiler-message",
+   "target": {
+    "crate_types": [
+     "bin"
+    ],
+    "doc": false,
+    "doctest": false,
+    "edition": "2024",
+    "kind": [
+     "test"
+    ],
+    "name": "file_watching",
+    "src_path": "/home/dev-user/code/oss/ruff-ohm-whole-native-20261027/crates/ty/tests/file_watching.rs",
+    "test": true
+   }
+  }
+ ],
+ "test/edit-fresh": [
+  {
+   "manifest_path": "/home/dev-user/code/oss/ruff-ohm-whole-native-20261027/crates/ty/Cargo.toml",
+   "message": {
+    "$message_type": "diagnostic",
+    "children": [
+     {
+      "children": [],
+      "code": null,
+      "level": "note",
+      "message": "`#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default",
+      "rendered": null,
+      "spans": []
+     }
+    ],
+    "code": {
+     "code": "dead_code",
+     "explanation": null
+    },
+    "level": "warning",
+    "message": "method `set_watch` is never used",
+    "rendered": "warning: method `set_watch` is never used\n   --> crates/ty/tests/file_watching.rs:446:8\n    |\n363 | impl<'a> SetupContext<'a> {\n    | ------------------------- method in this implementation\n...\n446 |     fn set_watch(&mut self, watch: bool) {\n    |        ^^^^^^^^^\n    |\n    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\n",
+    "spans": [
+     {
+      "byte_end": 11822,
+      "byte_start": 11797,
+      "column_end": 26,
+      "column_start": 1,
+      "expansion": null,
+      "file_name": "crates/ty/tests/file_watching.rs",
+      "is_primary": false,
+      "label": "method in this implementation",
+      "line_end": 363,
+      "line_start": 363,
+      "suggested_replacement": null,
+      "suggestion_applicability": null,
+      "text": [
+       {
+        "highlight_end": 26,
+        "highlight_start": 1,
+        "text": "impl<'a> SetupContext<'a> {"
+       }
+      ]
+     },
+     {
+      "byte_end": 14256,
+      "byte_start": 14247,
+      "column_end": 17,
+      "column_start": 8,
+      "expansion": null,
+      "file_name": "crates/ty/tests/file_watching.rs",
+      "is_primary": true,
+      "label": null,
+      "line_end": 446,
+      "line_start": 446,
+      "suggested_replacement": null,
+      "suggestion_applicability": null,
+      "text": [
+       {
+        "highlight_end": 17,
+        "highlight_start": 8,
+        "text": "    fn set_watch(&mut self, watch: bool) {"
+       }
+      ]
+     }
+    ]
+   },
+   "package_id": "path+file:///home/dev-user/code/oss/ruff-ohm-whole-native-20261027/crates/ty#0.0.0",
+   "reason": "compiler-message",
+   "target": {
+    "crate_types": [
+     "bin"
+    ],
+    "doc": false,
+    "doctest": false,
+    "edition": "2024",
+    "kind": [
+     "test"
+    ],
+    "name": "file_watching",
+    "src_path": "/home/dev-user/code/oss/ruff-ohm-whole-native-20261027/crates/ty/tests/file_watching.rs",
+    "test": true
+   }
+  }
+ ],
+ "test/restore": [
+  {
+   "manifest_path": "/home/dev-user/code/oss/ruff-ohm-whole-native-20261027/crates/ty/Cargo.toml",
+   "message": {
+    "$message_type": "diagnostic",
+    "children": [
+     {
+      "children": [],
+      "code": null,
+      "level": "note",
+      "message": "`#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default",
+      "rendered": null,
+      "spans": []
+     }
+    ],
+    "code": {
+     "code": "dead_code",
+     "explanation": null
+    },
+    "level": "warning",
+    "message": "method `set_watch` is never used",
+    "rendered": "warning: method `set_watch` is never used\n   --> crates/ty/tests/file_watching.rs:446:8\n    |\n363 | impl<'a> SetupContext<'a> {\n    | ------------------------- method in this implementation\n...\n446 |     fn set_watch(&mut self, watch: bool) {\n    |        ^^^^^^^^^\n    |\n    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\n",
+    "spans": [
+     {
+      "byte_end": 11822,
+      "byte_start": 11797,
+      "column_end": 26,
+      "column_start": 1,
+      "expansion": null,
+      "file_name": "crates/ty/tests/file_watching.rs",
+      "is_primary": false,
+      "label": "method in this implementation",
+      "line_end": 363,
+      "line_start": 363,
+      "suggested_replacement": null,
+      "suggestion_applicability": null,
+      "text": [
+       {
+        "highlight_end": 26,
+        "highlight_start": 1,
+        "text": "impl<'a> SetupContext<'a> {"
+       }
+      ]
+     },
+     {
+      "byte_end": 14256,
+      "byte_start": 14247,
+      "column_end": 17,
+      "column_start": 8,
+      "expansion": null,
+      "file_name": "crates/ty/tests/file_watching.rs",
+      "is_primary": true,
+      "label": null,
+      "line_end": 446,
+      "line_start": 446,
+      "suggested_replacement": null,
+      "suggestion_applicability": null,
+      "text": [
+       {
+        "highlight_end": 17,
+        "highlight_start": 8,
+        "text": "    fn set_watch(&mut self, watch: bool) {"
+       }
+      ]
+     }
+    ]
+   },
+   "package_id": "path+file:///home/dev-user/code/oss/ruff-ohm-whole-native-20261027/crates/ty#0.0.0",
+   "reason": "compiler-message",
+   "target": {
+    "crate_types": [
+     "bin"
+    ],
+    "doc": false,
+    "doctest": false,
+    "edition": "2024",
+    "kind": [
+     "test"
+    ],
+    "name": "file_watching",
+    "src_path": "/home/dev-user/code/oss/ruff-ohm-whole-native-20261027/crates/ty/tests/file_watching.rs",
+    "test": true
+   }
+  }
+ ],
+ "test/restore-fresh": [
+  {
+   "manifest_path": "/home/dev-user/code/oss/ruff-ohm-whole-native-20261027/crates/ty/Cargo.toml",
+   "message": {
+    "$message_type": "diagnostic",
+    "children": [
+     {
+      "children": [],
+      "code": null,
+      "level": "note",
+      "message": "`#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default",
+      "rendered": null,
+      "spans": []
+     }
+    ],
+    "code": {
+     "code": "dead_code",
+     "explanation": null
+    },
+    "level": "warning",
+    "message": "method `set_watch` is never used",
+    "rendered": "warning: method `set_watch` is never used\n   --> crates/ty/tests/file_watching.rs:446:8\n    |\n363 | impl<'a> SetupContext<'a> {\n    | ------------------------- method in this implementation\n...\n446 |     fn set_watch(&mut self, watch: bool) {\n    |        ^^^^^^^^^\n    |\n    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\n",
+    "spans": [
+     {
+      "byte_end": 11822,
+      "byte_start": 11797,
+      "column_end": 26,
+      "column_start": 1,
+      "expansion": null,
+      "file_name": "crates/ty/tests/file_watching.rs",
+      "is_primary": false,
+      "label": "method in this implementation",
+      "line_end": 363,
+      "line_start": 363,
+      "suggested_replacement": null,
+      "suggestion_applicability": null,
+      "text": [
+       {
+        "highlight_end": 26,
+        "highlight_start": 1,
+        "text": "impl<'a> SetupContext<'a> {"
+       }
+      ]
+     },
+     {
+      "byte_end": 14256,
+      "byte_start": 14247,
+      "column_end": 17,
+      "column_start": 8,
+      "expansion": null,
+      "file_name": "crates/ty/tests/file_watching.rs",
+      "is_primary": true,
+      "label": null,
+      "line_end": 446,
+      "line_start": 446,
+      "suggested_replacement": null,
+      "suggestion_applicability": null,
+      "text": [
+       {
+        "highlight_end": 17,
+        "highlight_start": 8,
+        "text": "    fn set_watch(&mut self, watch: bool) {"
+       }
+      ]
+     }
+    ]
+   },
+   "package_id": "path+file:///home/dev-user/code/oss/ruff-ohm-whole-native-20261027/crates/ty#0.0.0",
+   "reason": "compiler-message",
+   "target": {
+    "crate_types": [
+     "bin"
+    ],
+    "doc": false,
+    "doctest": false,
+    "edition": "2024",
+    "kind": [
+     "test"
+    ],
+    "name": "file_watching",
+    "src_path": "/home/dev-user/code/oss/ruff-ohm-whole-native-20261027/crates/ty/tests/file_watching.rs",
+    "test": true
+   }
+  }
+ ],
+ "test/warm-1": [
+  {
+   "manifest_path": "/home/dev-user/code/oss/ruff-ohm-whole-native-20261027/crates/ty/Cargo.toml",
+   "message": {
+    "$message_type": "diagnostic",
+    "children": [
+     {
+      "children": [],
+      "code": null,
+      "level": "note",
+      "message": "`#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default",
+      "rendered": null,
+      "spans": []
+     }
+    ],
+    "code": {
+     "code": "dead_code",
+     "explanation": null
+    },
+    "level": "warning",
+    "message": "method `set_watch` is never used",
+    "rendered": "warning: method `set_watch` is never used\n   --> crates/ty/tests/file_watching.rs:446:8\n    |\n363 | impl<'a> SetupContext<'a> {\n    | ------------------------- method in this implementation\n...\n446 |     fn set_watch(&mut self, watch: bool) {\n    |        ^^^^^^^^^\n    |\n    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\n",
+    "spans": [
+     {
+      "byte_end": 11822,
+      "byte_start": 11797,
+      "column_end": 26,
+      "column_start": 1,
+      "expansion": null,
+      "file_name": "crates/ty/tests/file_watching.rs",
+      "is_primary": false,
+      "label": "method in this implementation",
+      "line_end": 363,
+      "line_start": 363,
+      "suggested_replacement": null,
+      "suggestion_applicability": null,
+      "text": [
+       {
+        "highlight_end": 26,
+        "highlight_start": 1,
+        "text": "impl<'a> SetupContext<'a> {"
+       }
+      ]
+     },
+     {
+      "byte_end": 14256,
+      "byte_start": 14247,
+      "column_end": 17,
+      "column_start": 8,
+      "expansion": null,
+      "file_name": "crates/ty/tests/file_watching.rs",
+      "is_primary": true,
+      "label": null,
+      "line_end": 446,
+      "line_start": 446,
+      "suggested_replacement": null,
+      "suggestion_applicability": null,
+      "text": [
+       {
+        "highlight_end": 17,
+        "highlight_start": 8,
+        "text": "    fn set_watch(&mut self, watch: bool) {"
+       }
+      ]
+     }
+    ]
+   },
+   "package_id": "path+file:///home/dev-user/code/oss/ruff-ohm-whole-native-20261027/crates/ty#0.0.0",
+   "reason": "compiler-message",
+   "target": {
+    "crate_types": [
+     "bin"
+    ],
+    "doc": false,
+    "doctest": false,
+    "edition": "2024",
+    "kind": [
+     "test"
+    ],
+    "name": "file_watching",
+    "src_path": "/home/dev-user/code/oss/ruff-ohm-whole-native-20261027/crates/ty/tests/file_watching.rs",
+    "test": true
+   }
+  }
+ ],
+ "test/warm-2": [
+  {
+   "manifest_path": "/home/dev-user/code/oss/ruff-ohm-whole-native-20261027/crates/ty/Cargo.toml",
+   "message": {
+    "$message_type": "diagnostic",
+    "children": [
+     {
+      "children": [],
+      "code": null,
+      "level": "note",
+      "message": "`#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default",
+      "rendered": null,
+      "spans": []
+     }
+    ],
+    "code": {
+     "code": "dead_code",
+     "explanation": null
+    },
+    "level": "warning",
+    "message": "method `set_watch` is never used",
+    "rendered": "warning: method `set_watch` is never used\n   --> crates/ty/tests/file_watching.rs:446:8\n    |\n363 | impl<'a> SetupContext<'a> {\n    | ------------------------- method in this implementation\n...\n446 |     fn set_watch(&mut self, watch: bool) {\n    |        ^^^^^^^^^\n    |\n    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\n",
+    "spans": [
+     {
+      "byte_end": 11822,
+      "byte_start": 11797,
+      "column_end": 26,
+      "column_start": 1,
+      "expansion": null,
+      "file_name": "crates/ty/tests/file_watching.rs",
+      "is_primary": false,
+      "label": "method in this implementation",
+      "line_end": 363,
+      "line_start": 363,
+      "suggested_replacement": null,
+      "suggestion_applicability": null,
+      "text": [
+       {
+        "highlight_end": 26,
+        "highlight_start": 1,
+        "text": "impl<'a> SetupContext<'a> {"
+       }
+      ]
+     },
+     {
+      "byte_end": 14256,
+      "byte_start": 14247,
+      "column_end": 17,
+      "column_start": 8,
+      "expansion": null,
+      "file_name": "crates/ty/tests/file_watching.rs",
+      "is_primary": true,
+      "label": null,
+      "line_end": 446,
+      "line_start": 446,
+      "suggested_replacement": null,
+      "suggestion_applicability": null,
+      "text": [
+       {
+        "highlight_end": 17,
+        "highlight_start": 8,
+        "text": "    fn set_watch(&mut self, watch: bool) {"
+       }
+      ]
+     }
+    ]
+   },
+   "package_id": "path+file:///home/dev-user/code/oss/ruff-ohm-whole-native-20261027/crates/ty#0.0.0",
+   "reason": "compiler-message",
+   "target": {
+    "crate_types": [
+     "bin"
+    ],
+    "doc": false,
+    "doctest": false,
+    "edition": "2024",
+    "kind": [
+     "test"
+    ],
+    "name": "file_watching",
+    "src_path": "/home/dev-user/code/oss/ruff-ohm-whole-native-20261027/crates/ty/tests/file_watching.rs",
+    "test": true
+   }
+  }
+ ]
+}
