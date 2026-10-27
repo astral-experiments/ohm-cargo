@@ -465,7 +465,7 @@ pub fn translate_dep_info(
             || key == CARGO_ENV
     });
 
-    let serialize_path = |file: PathBuf| {
+    let serialize_path = |file: PathBuf, has_checksum: bool| {
         if observer {
             // Reopen the names rustc actually used, including symlinks. A different checkout
             // must capture its own names before it can use this proof.
@@ -507,6 +507,18 @@ pub fn translate_dep_info(
             // effect.
             (DepInfoPathType::BuildRootRelative, &*abs_file)
         };
+        if has_checksum && canon_file != abs_file {
+            // Use the canonical name to classify the input above, but verify the path rustc
+            // actually opened. Its symlink components can resolve elsewhere on the next build.
+            let root = match ty {
+                DepInfoPathType::PackageRootRelative => original_pkg_root,
+                DepInfoPathType::BuildRootRelative => &build_root,
+            };
+            return Some(match abs_file.strip_prefix(root) {
+                Ok(relative) => (ty, relative.to_owned()),
+                Err(_) => (DepInfoPathType::BuildRootRelative, abs_file),
+            });
+        }
         Some((ty, path.to_owned()))
     };
 
@@ -514,7 +526,7 @@ pub fn translate_dep_info(
         if observer && file == marker {
             on_disk_info.observer = Some((on_disk_info.files.len(), complete));
         }
-        let Some((path_type, path)) = serialize_path(file) else {
+        let Some((path_type, path)) = serialize_path(file, checksum_info.is_some()) else {
             continue;
         };
         on_disk_info.files.push((
@@ -1047,6 +1059,52 @@ mod encoded_dep_info {
                 EncodedDepInfo::parse(&observer).unwrap().observer,
                 Some((1, name == "lib/input"))
             );
+        }
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn checksummed_alias_is_reopened_by_its_original_name() {
+        let temp = tempfile::tempdir().unwrap();
+        let root = temp.path().canonicalize().unwrap();
+        let target = root.join("target");
+        std::fs::create_dir(&target).unwrap();
+        std::fs::write(root.join("actual"), "17").unwrap();
+        std::os::unix::fs::symlink("actual", root.join("alias space")).unwrap();
+        let raw = root.join("rustc.d");
+        let encoded = root.join("cargo.d");
+        let sum = "blake3=702b9c0c3c5d906a8947e42d8511dd36519039d83af02030a35053d2270f5763";
+        std::fs::write(&raw, format!(
+            "# ohm-raw-checksum-paths-v1\nresult: alias\\ space\n# checksum:{sum} file_len:2 alias\\ space\n"
+        )).unwrap();
+
+        for allow_package in [true, false] {
+            translate_dep_info(
+                &raw,
+                &encoded,
+                &root,
+                &root,
+                &target,
+                &ProcessBuilder::new("rustc"),
+                allow_package,
+                &Arc::new(HashMap::default()),
+                None,
+                false,
+            )
+            .unwrap();
+            let info = EncodedDepInfo::parse(&std::fs::read(&encoded).unwrap()).unwrap();
+            if allow_package {
+                assert_eq!(
+                    info.files,
+                    [(
+                        DepInfoPathType::PackageRootRelative,
+                        "alias space".into(),
+                        Some((2, sum.into()))
+                    )]
+                );
+            } else {
+                assert!(info.files.is_empty());
+            }
         }
     }
 
