@@ -1,0 +1,86 @@
+{
+  "artifacts": 383,
+  "bytes": 43475072,
+  "fresh": 0,
+  "product": [
+    {
+      "executable": null,
+      "features": [
+        "default",
+        "http-transport-curl",
+        "ohm-defaults"
+      ],
+      "filenames": [
+        "/mnt/devbox-scratch/dev-user/ohm-early-completion-20261027/release-pair-v1/canonical/target/release/build/workspaces/e75df7b649939068/v2-779c90dbf2c10f45/cargo/bd140912e996a96f/out/libcargo-bd140912e996a96f.rlib",
+        "/mnt/devbox-scratch/dev-user/ohm-early-completion-20261027/release-pair-v1/canonical/target/release/build/workspaces/e75df7b649939068/v2-779c90dbf2c10f45/cargo/bd140912e996a96f/out/libcargo-bd140912e996a96f.rmeta"
+      ],
+      "fresh": false,
+      "manifest_path": "/mnt/devbox-scratch/dev-user/ohm-early-completion-20261027/release-pair-v1/canonical/source/Cargo.toml",
+      "package_id": "path+file:///mnt/devbox-scratch/dev-user/ohm-early-completion-20261027/release-pair-v1/canonical/source#cargo@0.100.0",
+      "profile": {
+        "debug_assertions": false,
+        "debuginfo": 0,
+        "opt_level": "3",
+        "overflow_checks": false,
+        "test": false
+      },
+      "reason": "compiler-artifact",
+      "target": {
+        "crate_types": [
+          "lib"
+        ],
+        "doc": true,
+        "doctest": true,
+        "edition": "2024",
+        "kind": [
+          "lib"
+        ],
+        "name": "cargo",
+        "src_path": "/mnt/devbox-scratch/dev-user/ohm-early-completion-20261027/release-pair-v1/canonical/source/src/lib.rs",
+        "test": true
+      }
+    },
+    {
+      "executable": "/mnt/devbox-scratch/dev-user/ohm-early-completion-20261027/release-pair-v1/canonical/target/release/cargo",
+      "features": [
+        "default",
+        "http-transport-curl",
+        "ohm-defaults"
+      ],
+      "filenames": [
+        "/mnt/devbox-scratch/dev-user/ohm-early-completion-20261027/release-pair-v1/canonical/target/release/cargo"
+      ],
+      "fresh": false,
+      "manifest_path": "/mnt/devbox-scratch/dev-user/ohm-early-completion-20261027/release-pair-v1/canonical/source/Cargo.toml",
+      "package_id": "path+file:///mnt/devbox-scratch/dev-user/ohm-early-completion-20261027/release-pair-v1/canonical/source#cargo@0.100.0",
+      "profile": {
+        "debug_assertions": false,
+        "debuginfo": 0,
+        "opt_level": "3",
+        "overflow_checks": false,
+        "test": false
+      },
+      "reason": "compiler-artifact",
+      "target": {
+        "crate_types": [
+          "bin"
+        ],
+        "doc": false,
+        "doctest": false,
+        "edition": "2024",
+        "kind": [
+          "bin"
+        ],
+        "name": "cargo",
+        "src_path": "/mnt/devbox-scratch/dev-user/ohm-early-completion-20261027/release-pair-v1/canonical/source/src/bin/cargo/main.rs",
+        "test": true
+      }
+    }
+  ],
+  "product_rustc_argv_sha256": [
+    "e88d9a00b27bf43db1b954939fd280a1ac741b3e8a3d02cc85999115b3e0548b",
+    "ed5535d12c862f68c45b859a71bdc136ebcf1996284577ceea750e6a866b9c07"
+  ],
+  "sha256": "ab1aa7ad26a48a6fe5003d59d4c7b34962746fab8a3e7aa53423051906146157",
+  "version": "cargo 1.99.0 (4c07cbf6b 2026-10-27)\nrelease: 1.99.0\ncommit-hash: 4c07cbf6bd91e170e3b8904eeb82436a6dbde358\ncommit-date: 2026-10-27\nhost: x86_64-unknown-linux-gnu\nlibgit2: 1.9.6 (sys:0.21.0 vendored)\nlibcurl: 8.21.0-DEV (sys:0.4.90+curl-8.21.0 vendored ssl:OpenSSL/3.0.13)\nos: Ubuntu 24.4.0 (noble) [64-bit]\n"
+}

@@ -1,0 +1,59 @@
+{
+  "arm_order": [
+    "parent",
+    "candidate",
+    "parent-repeat"
+  ],
+  "builder_sha256": "d75b21e468f23d0614b457a33df075635fd5e4020a620d1d35326e4b60b3df0a",
+  "cache_seeding": "The target and shared directories are completely empty. Each arm starts from an independent copy of the same registry seed. Immutable archive bytes and sparse index records are checked against the subject; default trust settings remain active. The source, target, registry and shared paths seen by the process are identical.",
+  "core_affinity": [
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31
+  ],
+  "direct_command": [
+    "cargo",
+    "+ohm",
+    "build",
+    "--release",
+    "--locked",
+    "--offline",
+    "-p",
+    "cargo",
+    "--bin",
+    "cargo",
+    "--features",
+    "ohm-defaults",
+    "-j8",
+    "--message-format=json",
+    "-vv"
+  ],
+  "full_unmodified_source_git": "4c07cbf6bd91e170e3b8904eeb82436a6dbde358",
+  "initial_sources": 3108,
+  "official_sdk": {
+    "bin/cargo": "42e90992cec21a29956e20fd52ab952472a9dbc1dcc7a3b60c92aad101b5f568",
+    "bin/rustc": "b0c412a7a8010a768f00546419a0b1bcfca382d7e70191df3ae72e30ac1ef3e5",
+    "lib/librustc_driver-b03bf00bec23bb9a.so": "c442c2a36e1f37c92f138a8fb367fc09982931b5f1055e9742fb402566ad46a4"
+  },
+  "original_source_manifest_sha256": "6156ce2d78e50d0047f7449717fee2e53be4365e946dde2a17067af7e9fa43e8",
+  "packager_sha256": "c4b86702e42e557a1f6d95f76716582ee2de6fa53f542696593818a32c1844a8",
+  "parser_amendment_sha256": "3bace0c9bfd24350ef414b9e7525efab4720b6906cf281db28cd523e596cf3ff",
+  "pgo": "481ada8a40c70dad11b3c7e8871e9a52207d78447ca5e8ace06fc4aec2d2b5a7",
+  "production_only_patch_sha256": "506fa76b0e1b8cea9cebd51778c0089ddb2677298b8ab7de4569f2753e30e4c1",
+  "source_patch_sha256": "2775d92632e88badf8bdbdde266d9e0ac2e38dc54e0883817e5b87469f353f7e",
+  "source_source_archive_sha256": "f87b0b1272e7aa2f965a9a81b2a6527d798f897d864714185d35b3f3714fb2db",
+  "source_subject_sha256": "ba5ad71b4d01b570f1c6c4a1cce46e29b9afd52bb243bc3a7d315f76a45ddf2f"
+}

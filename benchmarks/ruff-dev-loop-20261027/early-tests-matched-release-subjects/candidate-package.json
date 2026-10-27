@@ -1,0 +1,445 @@
+{
+  "GNU_RELRO_present": true,
+  "LLVM_sha256": "43bac9749e539cd5988a4d5452b64582cf07ac9e7c059fde29c7bee76e106c51",
+  "LLVM_shared_library": "/mnt/devbox-scratch/dev-user/ohm-early-completion-20261027/official/sdk/lib/libLLVM.so.23.1-rust-1.99.0-beta",
+  "all_unchanged_program_headers": [
+    [
+      6,
+      4,
+      64,
+      64,
+      64,
+      784,
+      784,
+      8
+    ],
+    [
+      3,
+      4,
+      928,
+      928,
+      928,
+      28,
+      28,
+      1
+    ],
+    [
+      1,
+      4,
+      0,
+      0,
+      0,
+      7787812,
+      7787812,
+      4096
+    ],
+    [
+      1,
+      5,
+      7787824,
+      7791920,
+      7791920,
+      25262644,
+      25262644,
+      4096
+    ],
+    [
+      1,
+      6,
+      33050472,
+      33058664,
+      33058664,
+      999312,
+      999576,
+      4096
+    ],
+    [
+      1,
+      6,
+      34049792,
+      34062080,
+      34062080,
+      51584,
+      63758,
+      4096
+    ],
+    [
+      2,
+      6,
+      34001040,
+      34009232,
+      34009232,
+      800,
+      800,
+      8
+    ],
+    [
+      4,
+      4,
+      848,
+      848,
+      848,
+      80,
+      80,
+      8
+    ],
+    [
+      4,
+      4,
+      956,
+      956,
+      956,
+      32,
+      32,
+      4
+    ],
+    [
+      7,
+      4,
+      33050472,
+      33058664,
+      33058664,
+      225,
+      673,
+      8
+    ],
+    [
+      1685382480,
+      4,
+      4218004,
+      4218004,
+      4218004,
+      300756,
+      300756,
+      4
+    ],
+    [
+      1685382481,
+      6,
+      0,
+      0,
+      0,
+      0,
+      0,
+      16
+    ],
+    [
+      1685382482,
+      4,
+      33050472,
+      33058664,
+      33058664,
+      999312,
+      999576,
+      32
+    ],
+    [
+      1685382483,
+      4,
+      848,
+      848,
+      848,
+      32,
+      32,
+      8
+    ]
+  ],
+  "argv": [
+    "/mnt/devbox-scratch/dev-user/ohm-early-completion-20261027/official/sdk/lib/rustlib/x86_64-unknown-linux-gnu/bin/rust-objcopy",
+    "--strip-all",
+    "--remove-section=.note.gnu.build-id",
+    "/mnt/devbox-scratch/dev-user/ohm-early-completion-20261027/release-pair-v1/raw-cargo-candidate",
+    "/mnt/devbox-scratch/dev-user/ohm-early-completion-20261027/release-pair-v1/cargo-candidate"
+  ],
+  "cargo_version": "cargo 1.99.0 (4c07cbf6b 2026-10-27)\nrelease: 1.99.0\ncommit-hash: 4c07cbf6bd91e170e3b8904eeb82436a6dbde358\ncommit-date: 2026-10-27\nhost: x86_64-unknown-linux-gnu\nlibgit2: 1.9.6 (sys:0.21.0 vendored)\nlibcurl: 8.21.0-DEV (sys:0.4.90+curl-8.21.0 vendored ssl:OpenSSL/3.0.13)\nos: Ubuntu 24.4.0 (noble) [64-bit]\n",
+  "dynamic_dependencies": [
+    "NEEDED)             Shared library: [libssl.so.3]",
+    "NEEDED)             Shared library: [libcrypto.so.3]",
+    "NEEDED)             Shared library: [libz.so.1]",
+    "NEEDED)             Shared library: [libgcc_s.so.1]",
+    "NEEDED)             Shared library: [libm.so.6]",
+    "NEEDED)             Shared library: [libc.so.6]",
+    "NEEDED)             Shared library: [ld-linux-x86-64.so.2]"
+  ],
+  "entry_address": 7860352,
+  "load_segments": [
+    {
+      "file_offset": 0,
+      "flags": 4,
+      "packaged": "7db5cd1df1ed25c7b24d3736b0dee0c1f6be1fd2c2659d56bc9daac6beeabbba",
+      "physical_changed_byte_offsets": [
+        40,
+        41,
+        42,
+        60,
+        62,
+        880,
+        884,
+        888,
+        892,
+        893,
+        894,
+        896,
+        897,
+        898,
+        899,
+        900,
+        901,
+        902,
+        903,
+        904,
+        905,
+        906,
+        907,
+        908,
+        909,
+        910,
+        911,
+        912,
+        913,
+        914,
+        915,
+        916,
+        917,
+        918,
+        919,
+        920,
+        921,
+        922,
+        923,
+        924,
+        925,
+        926,
+        927
+      ],
+      "raw": "29f70fe5e389df682f1638f52c9838d85d9cc44455dcc35c6ea078552a3bf34a",
+      "size": 7787812,
+      "virtual": 0
+    },
+    {
+      "file_offset": 7787824,
+      "flags": 5,
+      "packaged": "5f6d2d615a6337fd4f99ede85f264296fefe6d08195db7abfcbe56442591a674",
+      "physical_changed_byte_offsets": [],
+      "raw": "5f6d2d615a6337fd4f99ede85f264296fefe6d08195db7abfcbe56442591a674",
+      "size": 25262644,
+      "virtual": 7791920
+    },
+    {
+      "file_offset": 33050472,
+      "flags": 6,
+      "packaged": "696f2b8f58ad8cb079549555a1819818fdbd93ec6f5d15549e20e338ada467bb",
+      "physical_changed_byte_offsets": [],
+      "raw": "696f2b8f58ad8cb079549555a1819818fdbd93ec6f5d15549e20e338ada467bb",
+      "size": 999312,
+      "virtual": 33058664
+    },
+    {
+      "file_offset": 34049792,
+      "flags": 6,
+      "packaged": "fd3317539e4c038d08f53f70c1c96748bafa4633baf85f2b19fde54b3fd1b16a",
+      "physical_changed_byte_offsets": [],
+      "raw": "fd3317539e4c038d08f53f70c1c96748bafa4633baf85f2b19fde54b3fd1b16a",
+      "size": 51584,
+      "virtual": 34062080
+    }
+  ],
+  "original_build_id_note": [
+    880,
+    48,
+    "b6bf802d3ace64d049011c2d5fd315e94de4e5724c54c0ec4f1b4d82349f3006"
+  ],
+  "packaged_sha256": "46d8d787ab0e8f346f9fc5186e6a9bbad6ccd8c822c193deed51e8c9e9452afd",
+  "packaged_size": 34103592,
+  "packager_path": "/mnt/devbox-scratch/dev-user/ohm-early-completion-20261027/official/sdk/lib/rustlib/x86_64-unknown-linux-gnu/bin/rust-objcopy",
+  "packager_sha256": "4d8b37053002ebfea8b6cf11e13d2a42ced0d93e8db2803f7d01c0813dcb8ab0",
+  "raw_sha256": "44c431c7fbb4434a54a96235acb113280d09227f9e47400e024388f098138e71",
+  "raw_size": 43445888,
+  "readelf": {
+    "dyn_symbols": {
+      "packaged_sha256": "623b2cb5a2b3893b6af24253399df909db1179f5e1afa793c83dc5a84d10d195",
+      "packaged_stderr": "",
+      "raw_sha256": "623b2cb5a2b3893b6af24253399df909db1179f5e1afa793c83dc5a84d10d195",
+      "raw_stderr": ""
+    },
+    "dynamic": {
+      "packaged": "\nDynamic section at offset 0x206d090 contains 30 entries:\n  Tag        Type                         Name/Value\n 0x0000000000000001 (NEEDED)             Shared library: [libssl.so.3]\n 0x0000000000000001 (NEEDED)             Shared library: [libcrypto.so.3]\n 0x0000000000000001 (NEEDED)             Shared library: [libz.so.1]\n 0x0000000000000001 (NEEDED)             Shared library: [libgcc_s.so.1]\n 0x0000000000000001 (NEEDED)             Shared library: [libm.so.6]\n 0x0000000000000001 (NEEDED)             Shared library: [libc.so.6]\n 0x0000000000000001 (NEEDED)             Shared library: [ld-linux-x86-64.so.2]\n 0x000000000000000c (INIT)               0x770350\n 0x000000000000000d (FINI)               0x77036c\n 0x0000000000000019 (INIT_ARRAY)         0x1f87050\n 0x000000000000001b (INIT_ARRAYSZ)       24 (bytes)\n 0x000000000000001a (FINI_ARRAY)         0x1f87068\n 0x000000000000001c (FINI_ARRAYSZ)       8 (bytes)\n 0x0000000000000005 (STRTAB)             0x3f88\n 0x000000000000000a (STRSZ)              10013 (bytes)\n 0x0000000000000006 (SYMTAB)             0x400\n 0x000000000000000b (SYMENT)             24 (bytes)\n 0x000000006ffffffe (VERNEED)            0x6ba0\n 0x000000006fffffff (VERNEEDNUM)         6\n 0x000000006ffffff0 (VERSYM)             0x66a6\n 0x0000000000000015 (DEBUG)              0x0\n 0x0000000000000003 (PLTGOT)             0x206f3b0\n 0x0000000000000007 (RELA)               0x6e00\n 0x0000000000000008 (RELASZ)             1456752 (bytes)\n 0x0000000000000009 (RELAENT)            24 (bytes)\n 0x000000006ffffff9 (RELACOUNT)          60035\n 0x000000006ffffef5 (GNU_HASH)           0x3e0\n 0x000000000000001e (FLAGS)              BIND_NOW\n 0x000000006ffffffb (FLAGS_1)            Flags: NOW PIE\n 0x0000000000000000 (NULL)               0x0\n",
+      "packaged_sha256": "f95704c180bb1e18c33093fb2f1d404413326f827054862a0515f70611ef39a4",
+      "packaged_stderr": "",
+      "raw": "\nDynamic section at offset 0x206d090 contains 30 entries:\n  Tag        Type                         Name/Value\n 0x0000000000000001 (NEEDED)             Shared library: [libssl.so.3]\n 0x0000000000000001 (NEEDED)             Shared library: [libcrypto.so.3]\n 0x0000000000000001 (NEEDED)             Shared library: [libz.so.1]\n 0x0000000000000001 (NEEDED)             Shared library: [libgcc_s.so.1]\n 0x0000000000000001 (NEEDED)             Shared library: [libm.so.6]\n 0x0000000000000001 (NEEDED)             Shared library: [libc.so.6]\n 0x0000000000000001 (NEEDED)             Shared library: [ld-linux-x86-64.so.2]\n 0x000000000000000c (INIT)               0x770350\n 0x000000000000000d (FINI)               0x77036c\n 0x0000000000000019 (INIT_ARRAY)         0x1f87050\n 0x000000000000001b (INIT_ARRAYSZ)       24 (bytes)\n 0x000000000000001a (FINI_ARRAY)         0x1f87068\n 0x000000000000001c (FINI_ARRAYSZ)       8 (bytes)\n 0x0000000000000005 (STRTAB)             0x3f88\n 0x000000000000000a (STRSZ)              10013 (bytes)\n 0x0000000000000006 (SYMTAB)             0x400\n 0x000000000000000b (SYMENT)             24 (bytes)\n 0x000000006ffffffe (VERNEED)            0x6ba0\n 0x000000006fffffff (VERNEEDNUM)         6\n 0x000000006ffffff0 (VERSYM)             0x66a6\n 0x0000000000000015 (DEBUG)              0x0\n 0x0000000000000003 (PLTGOT)             0x206f3b0\n 0x0000000000000007 (RELA)               0x6e00\n 0x0000000000000008 (RELASZ)             1456752 (bytes)\n 0x0000000000000009 (RELAENT)            24 (bytes)\n 0x000000006ffffff9 (RELACOUNT)          60035\n 0x000000006ffffef5 (GNU_HASH)           0x3e0\n 0x000000000000001e (FLAGS)              BIND_NOW\n 0x000000006ffffffb (FLAGS_1)            Flags: NOW PIE\n 0x0000000000000000 (NULL)               0x0\n",
+      "raw_sha256": "f95704c180bb1e18c33093fb2f1d404413326f827054862a0515f70611ef39a4",
+      "raw_stderr": ""
+    },
+    "notes": {
+      "packaged": "\nDisplaying notes found in: .note.gnu.property\n  Owner                Data size \tDescription\n  GNU                  0x00000010\tNT_GNU_PROPERTY_TYPE_0\t      Properties: x86 ISA needed: x86-64-baseline\n\nDisplaying notes found in: .note.ABI-tag\n  Owner                Data size \tDescription\n  GNU                  0x00000010\tNT_GNU_ABI_TAG (ABI version tag)\t    OS: Linux, ABI: 3.2.0\n",
+      "packaged_sha256": "9acf2ae01c5665bbf00624f9511bfe5fdb4629e48361196221cb5b665444d4c3",
+      "packaged_stderr": "",
+      "raw": "\nDisplaying notes found in: .note.gnu.property\n  Owner                Data size \tDescription\n  GNU                  0x00000010\tNT_GNU_PROPERTY_TYPE_0\t      Properties: x86 ISA needed: x86-64-baseline\n\nDisplaying notes found in: .note.gnu.build-id\n  Owner                Data size \tDescription\n  GNU                  0x00000020\tNT_GNU_BUILD_ID (unique build ID bitstring)\t    Build ID: 187f36c86e6dff6883a0925147825982a9f1a8d4250dac19447fd167a272eac4\n\nDisplaying notes found in: .note.ABI-tag\n  Owner                Data size \tDescription\n  GNU                  0x00000010\tNT_GNU_ABI_TAG (ABI version tag)\t    OS: Linux, ABI: 3.2.0\n",
+      "raw_sha256": "8d05c1dc78db2ac458284b3075a2c62a98d5a1416b654c9aecac46b97eef1ed3",
+      "raw_stderr": ""
+    },
+    "program_headers": {
+      "packaged": "\nElf file type is DYN (Position-Independent Executable file)\nEntry point 0x77f080\nThere are 14 program headers, starting at offset 64\n\nProgram Headers:\n  Type           Offset   VirtAddr           PhysAddr           FileSiz  MemSiz   Flg Align\n  PHDR           0x000040 0x0000000000000040 0x0000000000000040 0x000310 0x000310 R   0x8\n  INTERP         0x0003a0 0x00000000000003a0 0x00000000000003a0 0x00001c 0x00001c R   0x1\n      [Requesting program interpreter: /lib64/ld-linux-x86-64.so.2]\n  LOAD           0x000000 0x0000000000000000 0x0000000000000000 0x76d524 0x76d524 R   0x1000\n  LOAD           0x76d530 0x000000000076e530 0x000000000076e530 0x1817a34 0x1817a34 R E 0x1000\n  LOAD           0x1f84f68 0x0000000001f86f68 0x0000000001f86f68 0x0f3f90 0x0f4098 RW  0x1000\n  LOAD           0x2078f00 0x000000000207bf00 0x000000000207bf00 0x00c980 0x00f90e RW  0x1000\n  DYNAMIC        0x206d090 0x000000000206f090 0x000000000206f090 0x000320 0x000320 RW  0x8\n  NOTE           0x000350 0x0000000000000350 0x0000000000000350 0x000050 0x000050 R   0x8\n  NOTE           0x0003bc 0x00000000000003bc 0x00000000000003bc 0x000020 0x000020 R   0x4\n  TLS            0x1f84f68 0x0000000001f86f68 0x0000000001f86f68 0x0000e1 0x0002a1 R   0x8\n  GNU_EH_FRAME   0x405c94 0x0000000000405c94 0x0000000000405c94 0x0496d4 0x0496d4 R   0x4\n  GNU_STACK      0x000000 0x0000000000000000 0x0000000000000000 0x000000 0x000000 RW  0x10\n  GNU_RELRO      0x1f84f68 0x0000000001f86f68 0x0000000001f86f68 0x0f3f90 0x0f4098 R   0x20\n  GNU_PROPERTY   0x000350 0x0000000000000350 0x0000000000000350 0x000020 0x000020 R   0x8\n\n Section to Segment mapping:\n  Segment Sections...\n   00     \n   01     .interp \n   02     .note.gnu.property .interp .note.ABI-tag .gnu.hash .dynsym .dynstr .gnu.version .gnu.version_r .rela.dyn .rodata .eh_frame_hdr .eh_frame .gcc_except_table \n   03     .plt.got .init .fini .text \n   04     .tdata .init_array .fini_array .data.rel.ro .dynamic .got .relro_padding \n   05     .data .bss \n   06     .dynamic \n   07     .note.gnu.property \n   08     .note.ABI-tag \n   09     .tdata .tbss \n   10     .eh_frame_hdr \n   11     \n   12     .tdata .init_array .fini_array .data.rel.ro .dynamic .got .relro_padding \n   13     .note.gnu.property \n",
+      "packaged_sha256": "c2ad74bd971f9454c2caa85eea3dc8cb26a13fb86d10106b4f1921db2cf43470",
+      "packaged_stderr": "",
+      "raw": "\nElf file type is DYN (Position-Independent Executable file)\nEntry point 0x77f080\nThere are 14 program headers, starting at offset 64\n\nProgram Headers:\n  Type           Offset   VirtAddr           PhysAddr           FileSiz  MemSiz   Flg Align\n  PHDR           0x000040 0x0000000000000040 0x0000000000000040 0x000310 0x000310 R   0x8\n  INTERP         0x0003a0 0x00000000000003a0 0x00000000000003a0 0x00001c 0x00001c R   0x1\n      [Requesting program interpreter: /lib64/ld-linux-x86-64.so.2]\n  LOAD           0x000000 0x0000000000000000 0x0000000000000000 0x76d524 0x76d524 R   0x1000\n  LOAD           0x76d530 0x000000000076e530 0x000000000076e530 0x1817a34 0x1817a34 R E 0x1000\n  LOAD           0x1f84f68 0x0000000001f86f68 0x0000000001f86f68 0x0f3f90 0x0f4098 RW  0x1000\n  LOAD           0x2078f00 0x000000000207bf00 0x000000000207bf00 0x00c980 0x00f90e RW  0x1000\n  DYNAMIC        0x206d090 0x000000000206f090 0x000000000206f090 0x000320 0x000320 RW  0x8\n  NOTE           0x000350 0x0000000000000350 0x0000000000000350 0x000050 0x000050 R   0x8\n  NOTE           0x0003bc 0x00000000000003bc 0x00000000000003bc 0x000020 0x000020 R   0x4\n  TLS            0x1f84f68 0x0000000001f86f68 0x0000000001f86f68 0x0000e1 0x0002a1 R   0x8\n  GNU_EH_FRAME   0x405c94 0x0000000000405c94 0x0000000000405c94 0x0496d4 0x0496d4 R   0x4\n  GNU_STACK      0x000000 0x0000000000000000 0x0000000000000000 0x000000 0x000000 RW  0x10\n  GNU_RELRO      0x1f84f68 0x0000000001f86f68 0x0000000001f86f68 0x0f3f90 0x0f4098 R   0x20\n  GNU_PROPERTY   0x000350 0x0000000000000350 0x0000000000000350 0x000020 0x000020 R   0x8\n\n Section to Segment mapping:\n  Segment Sections...\n   00     \n   01     .interp \n   02     .note.gnu.property .note.gnu.build-id .interp .note.ABI-tag .gnu.hash .dynsym .dynstr .gnu.version .gnu.version_r .rela.dyn .rodata .eh_frame_hdr .eh_frame .gcc_except_table \n   03     .plt.got .init .fini .text \n   04     .tdata .init_array .fini_array .data.rel.ro .dynamic .got .relro_padding \n   05     .data .bss \n   06     .dynamic \n   07     .note.gnu.property .note.gnu.build-id \n   08     .note.ABI-tag \n   09     .tdata .tbss \n   10     .eh_frame_hdr \n   11     \n   12     .tdata .init_array .fini_array .data.rel.ro .dynamic .got .relro_padding \n   13     .note.gnu.property \n",
+      "raw_sha256": "f4e813467aff146de2821629dc8a9136fb1e60b1077b7874b4821f9a84597689",
+      "raw_stderr": ""
+    },
+    "relocations": {
+      "packaged_sha256": "1bcb294d146a6a14a52f06214c2c52dd406d7b5c5a9b6cef86986055d409865a",
+      "packaged_stderr": "",
+      "raw_sha256": "1bcb294d146a6a14a52f06214c2c52dd406d7b5c5a9b6cef86986055d409865a",
+      "raw_stderr": ""
+    },
+    "versions": {
+      "packaged_sha256": "76e7f2865ecb1172c60f6047f66ffee352587f0b0a749022cb89a266ccbe2cdd",
+      "packaged_stderr": "",
+      "raw_sha256": "f60f514947ae8ba4e890e349d7a3ae189f7f3b42c9ef6100c468b721ccf96c74",
+      "raw_stderr": ""
+    }
+  },
+  "unchanged_allocated_sections": {
+    ".bss": [
+      34113664,
+      12174,
+      null
+    ],
+    ".data": [
+      34062080,
+      51577,
+      "3ea8cf95529a7431fb3f73eb5a89ac65b42662f4c797a530dedea3e7f37c4c42"
+    ],
+    ".data.rel.ro": [
+      33058944,
+      950288,
+      "7f334baaae70ad9d6c3769af93cd7b39eff8cb2c33bb4f74eb109e8721220abd"
+    ],
+    ".dynamic": [
+      34009232,
+      800,
+      "8ba8ee4ed5c569f60955271b0ae8cbb930dbdf2f411ff380642eafb62191eef3"
+    ],
+    ".dynstr": [
+      16264,
+      10013,
+      "ab4973134180accdaf2ebef39e72a2007a4f714a7615477cbfb47961bd26340c"
+    ],
+    ".dynsym": [
+      1024,
+      15240,
+      "0dd8f1d064ea59e0bc8fb71a560f5adb351e15f7a6d9981e1ab6868085de86a4"
+    ],
+    ".eh_frame": [
+      4518760,
+      2218244,
+      "ed31de81bc807129d72de58934582614c9c9cb495738b2fde076b686090ab781"
+    ],
+    ".eh_frame_hdr": [
+      4218004,
+      300756,
+      "ae86f75dc0a9af35a1beac2cfbd686c66fe159e51b4fbeb351c1076cab51dae3"
+    ],
+    ".fini": [
+      7799660,
+      13,
+      "6a4f3e5efc7c1f7ee7d6f21afd9ed040ba1d7f0b97bb12b016f5b176cc558bd8"
+    ],
+    ".fini_array": [
+      33058920,
+      8,
+      "af5570f5a1810b7af78caf4bc70a660f0df51e42baf91d4de5b2328de0e83dfc"
+    ],
+    ".gcc_except_table": [
+      6737008,
+      1050804,
+      "8c03f6bd52bbcb9d92e18c9de9106d98cb4eac7c4c015fd4cc84c8df9c1cdbc2"
+    ],
+    ".gnu.hash": [
+      992,
+      28,
+      "d28529f23a56a3c983dfff43562662cd63a88564dd2639044453c7c2d1baa83a"
+    ],
+    ".gnu.version": [
+      26278,
+      1270,
+      "24ffce801e1d32137f52efa137b491f77f113b9c60ebc1571ad83f00f8f820bc"
+    ],
+    ".gnu.version_r": [
+      27552,
+      608,
+      "53cfb30152b6ca2af72632db0ba2268244f581a73d86dd408ecc8936241c951c"
+    ],
+    ".got": [
+      34010032,
+      47944,
+      "542efd660d9022068864f7c0279d43ff74e4b2cc1ed3cee67d8236948147911c"
+    ],
+    ".init": [
+      7799632,
+      27,
+      "eec006c4528bd35e8cc6b71c8527bb1b1b2543fdb8bd40a56d3f8ea7c8464354"
+    ],
+    ".init_array": [
+      33058896,
+      24,
+      "9d908ecfb6b256def8b49a7c504e6c889c4b0e41fe6ce3e01863dd7b61a20aa0"
+    ],
+    ".interp": [
+      928,
+      28,
+      "9097c98ea70f6f3b01d50145eb72bf55ad1f4e9713bccf27bd6405d6254eed00"
+    ],
+    ".note.ABI-tag": [
+      956,
+      32,
+      "6e48317ad93a8ac2dc04321465ede06d1274543fc8ab172e68171a9d684bb313"
+    ],
+    ".note.gnu.property": [
+      848,
+      32,
+      "5978480398fc48bfa6c56246117c5bc1a40145463a2faca541e5e91d5067ff79"
+    ],
+    ".plt.got": [
+      7791920,
+      7712,
+      "f9efc085433d7f042022f00807d76ab4ee4366cbf0ee4544bdec992decd72565"
+    ],
+    ".rela.dyn": [
+      28160,
+      1456752,
+      "db175b6938877c8db8d4c46f8f95ba06c97c53a0e65d79695a9f250caff1d128"
+    ],
+    ".relro_padding": [
+      34057976,
+      264,
+      null
+    ],
+    ".rodata": [
+      1484928,
+      2733075,
+      "f6bc24a283dffc8d7c6d0c264230db81002f29bda2254913885fde5e8cfa4590"
+    ],
+    ".tbss": [
+      33058896,
+      441,
+      null
+    ],
+    ".tdata": [
+      33058664,
+      225,
+      "a8b7aaac502c356c4bccc1c57ab0a611d65cb82d842633b6f1ccb580b53bc016"
+    ],
+    ".text": [
+      7799680,
+      25254884,
+      "2278ed9693ea2a05552b60d289318a35c34a0c0fa3749769ee8598367535aad8"
+    ],
+    ".tm_clone_table": [
+      34113664,
+      0,
+      "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    ]
+  },
+  "version": "llvm-objcopy, compatible with GNU objcopy\nLLVM (http://llvm.org/):\n  LLVM version 23.1.1-rust-1.99.0-beta\n  Optimized build."
+}
