@@ -1,0 +1,129 @@
+{
+  "build_gate": "Require at least 40 GiB before creating separate build arms, the exclusive native lock and a clean original Ruff index. Abort below 25 GiB at any point.",
+  "cli": {
+    "existing_controls": "Both existing py314 mixed-t-string and RUF008 diagnostics remain on the pinned original expectation throughout.",
+    "expected_reversed_signed": {
+      "diagnostics": [],
+      "exit": 0
+    },
+    "expected_valid": {
+      "diagnostics": [],
+      "exit": 0
+    },
+    "flags": [
+      "check",
+      "--isolated",
+      "--no-cache",
+      "--select",
+      "F401",
+      "--target-version",
+      "py315",
+      "--output-format",
+      "json",
+      "-"
+    ],
+    "original_signed": {
+      "code": "invalid-syntax",
+      "end_columns": [
+        15,
+        14
+      ],
+      "exit": 1,
+      "message": "Expected a numeric literal after unary operator",
+      "row": 2,
+      "start_column": 11
+    },
+    "signed_sources": [
+      "match value:\n    case -1**2: ...\n",
+      "match value:\n    case -1(): ...\n"
+    ],
+    "valid_indented_strings": "if True:\n    one = \"one\"\n    two = \"a\" \"b\"\nthree = f\"{42}\"\n"
+  },
+  "edits": {
+    "lexer-pending-indentation": {
+      "commit": "6e29838d4bd65a2ece1d93d44ce85d8ee0105117",
+      "complete_patch": true,
+      "description": "Avoid redundant pending-indentation writes (#26774)",
+      "historical_changed_paths": {
+        "crates/ruff_python_parser/src/lexer.rs": "M"
+      },
+      "parent": "25b10f9d01a15357ff5c8b54461244fa6664a552",
+      "patch_sha256": "297a637f0335d54c9987e5e4ce5f072919360c4c15c1bc043388c240be088e25",
+      "reverse_on_pinned": true
+    },
+    "signed-pattern-diagnostic": {
+      "commit": "0ecff877901a0377ad966ffab528488ce872b50e",
+      "complete_patch": true,
+      "description": "Validate unary expressions when parsing (#28233)",
+      "historical_changed_paths": {
+        "crates/ruff_python_parser/resources/inline/err/signed_pattern_non_literal_operand.py": "A",
+        "crates/ruff_python_parser/src/parser/pattern.rs": "M",
+        "crates/ruff_python_parser/tests/snapshots/invalid_syntax@signed_pattern_non_literal_operand.py.snap": "A"
+      },
+      "parent": "1edf9fe2cab23e34c383419b8c7830324c428a58",
+      "patch_sha256": "8f5df0673081205c8aac262563e3bd2d174e264b6b643e16ad1ddc424a017ba5",
+      "reverse_on_pinned": true
+    },
+    "single-string-allocation": {
+      "commit": "ae306a059e3d3d0ce15f6848662407edae4027eb",
+      "complete_patch": true,
+      "description": "Avoid allocating when parsing single string literals (#26200)",
+      "historical_changed_paths": {
+        "crates/ruff_python_parser/src/parser/expression.rs": "M"
+      },
+      "parent": "55d1f4404bd6d0c373fb2e0aa0dc046e9bc47d29",
+      "patch_sha256": "065e7d1077427e434e585f612628651c454984552f149b9132d399f52b695fe6",
+      "reverse_on_pinned": true
+    }
+  },
+  "host": "H5 charlie-ohm-loader-perf-1024",
+  "native_and_output_oracles": "Count actual full and link-only rustc, GCC/collect2/Wild processes, dirty/fresh workspace units and zero work on the immediate repeats. For each first exposure and restoration record the complete workspace artifact roster, compiler messages, all 15 or 110 native ELF SHA256 and section differences, existing plus declared Ruff CLI probes, mixed rlib object and symbol inventories and same-arm ordinary independent Rust consumers. Different compiler releases and independently compiled registry procedural macros can alter Rust metadata identities across arms. Record raw differences without claiming that artifacts from those separate dependency builds are interchangeable. No new estimate of wall time or callgrind speedup will be inferred from these launches.",
+  "original_fixture_plan": "7ef4e84e3838cabd8e713fcadef6347a67f9fc00",
+  "primary_command": [
+    "cargo",
+    "+ohm",
+    "build",
+    "--locked",
+    "--offline"
+  ],
+  "prior_scored_protocol": "2f07518331735487c84aaeadab58ce98d7c5a71b",
+  "registered_utc": "2026-10-27T13:43:00.258823+00:00",
+  "ruff": "93526150df078af7dd8fc4226cdcc469539d2001",
+  "schedule": [
+    "lexer-pending-indentation",
+    "signed-pattern-diagnostic",
+    "single-string-allocation"
+  ],
+  "scope": "Independent process-count and behavioral comparison of #232 vs fixed #233 using exactly the same corrected #254 Cargo and packaged Wild. All three historical changes from the mixed compiler holdout are included even though that other compiler comparison already has build process counts. No outcome from this exact pair of release drivers on these edits was used to choose any endpoint.",
+  "secondary_command": [
+    "cargo",
+    "+ohm",
+    "test",
+    "--no-run",
+    "--locked",
+    "--offline"
+  ],
+  "setup": "On the H5 ext4 system, construct four physically disjoint build/target/registry/rustup/fixture states. Bind canonical paths shared across comparisons. Train only on the unchanged original until ledger, native work, Ruff CLI and fully fresh baseline settle. For each mode, apply every entire reversed patch on both arms in frozen order, restore before the next one and check the immediate command after each transition. No test binary runs as part of cargo test --no-run.",
+  "source_heads": {
+    "B_rust": "8ce2f21e25c06e7f884ca7b5c4e7898180791ae4",
+    "C_rust": "27029b4bce40f3b5497add5019c02a11c16c4c18",
+    "cargo": "d38fdd02503662de04c52f5f370f5dd81bddf868",
+    "rustc_frontend": "4fa9a18b77430bcc416e88561b6fe5797d98b996a7698b9f3bd11d4e7817a19f"
+  },
+  "status": "registered before the compared source edits, no wall-time endpoint",
+  "subjects": {
+    "B": {
+      "cargo": "/home/dev-user/.cache/ohm-233-position-qualified-20261027/cargo-observer-fifo-qualification/guardv3",
+      "cargo_sha256": "dd5cab154b8dcd09ccc2753160d314cade80979b2d055ee66aa9e2217e05e7e1",
+      "driver": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/subjects/parent-driver",
+      "driver_sha256": "051b9d3f5861f984faa0f8c1d2ab9b5c28e483a05c728051de837291c83fd518"
+    },
+    "C": {
+      "cargo": "/home/dev-user/.cache/ohm-233-position-qualified-20261027/cargo-observer-fifo-qualification/guardv3",
+      "cargo_sha256": "dd5cab154b8dcd09ccc2753160d314cade80979b2d055ee66aa9e2217e05e7e1",
+      "driver": "/home/dev-user/.cache/ohm-233-position-qualified-20261027/drivers/driver-dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+      "driver_sha256": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f"
+    }
+  },
+  "test_gate": "Require at least 60 GiB after both independent build arms are complete. Test uses two new initially empty native states and original branches. Never reinterpret build-to-test reuse as test-only."
+}

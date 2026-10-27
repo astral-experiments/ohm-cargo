@@ -1,0 +1,130 @@
+{
+  "baseline": {
+    "B": {
+      "compiler_messages_hash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "raw_message_sha256": "0099c62ad11c635f5b52364b680f0d3de3dfa6ab73f2df658f85e6efeed33372",
+      "raw_output_roster_sha256": "37e9d1fdbe16fd476eb226e12cf57dc5b7be4f45ff292de60e309b6ee6aa4b8f",
+      "release_qualified_roster": {
+        "mapped_output_path_count": 862,
+        "sha256": "7cc7e6c508a9dc7468ec812806dc2363b64552c99a9123639fb9b0bb4e7f120f",
+        "units": 501
+      }
+    },
+    "C": {
+      "compiler_messages_hash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "raw_message_sha256": "f2f917f086b0797ae8c7e1ea1ccba7e4f4c9cb4b55ca9bc5102d16a39c9fb8cc",
+      "raw_output_roster_sha256": "d22f354c606f0b9ece5a7e736efb076ea2ead16d7fd204af1884b971dbc8edaa",
+      "release_qualified_roster": {
+        "mapped_output_path_count": 862,
+        "sha256": "7cc7e6c508a9dc7468ec812806dc2363b64552c99a9123639fb9b0bb4e7f120f",
+        "units": 501
+      }
+    }
+  },
+  "commands": {
+    "B": {
+      "cold": {
+        "actual_rustc_jobs": {
+          "full": 505
+        },
+        "fresh": 0,
+        "native_link_counts": {
+          "cc": 691,
+          "collect2": 152,
+          "wild": 90
+        },
+        "raw_receipt_sha256": "2745d57eb4cf5837fdb036c7c7d51ea3399cba44f971bb0c79575b5c05be97ac",
+        "total": 501
+      },
+      "original-baseline": {
+        "actual_rustc_jobs": {},
+        "fresh": 501,
+        "native_link_counts": {
+          "cc": 0,
+          "collect2": 0,
+          "wild": 0
+        },
+        "raw_receipt_sha256": "65bee2d78161a2534a424af1d8773d6566b982886b603f12e107985214b94ede",
+        "total": 501
+      },
+      "original-baseline-fresh": {
+        "actual_rustc_jobs": {},
+        "fresh": 501,
+        "native_link_counts": {
+          "cc": 0,
+          "collect2": 0,
+          "wild": 0
+        },
+        "raw_receipt_sha256": "401b15c2731f9f55827bb46e7f763fa6c4470a0dc422faa31977f6dd25498b18",
+        "total": 501
+      },
+      "original-warm-1": {
+        "actual_rustc_jobs": {},
+        "fresh": 501,
+        "native_link_counts": {
+          "cc": 0,
+          "collect2": 0,
+          "wild": 0
+        },
+        "raw_receipt_sha256": "a2ac2461ada04b2027f5ee8b50e0be2cdece824c8583feafbf414ec7995b445f",
+        "total": 501
+      }
+    },
+    "C": {
+      "cold": {
+        "actual_rustc_jobs": {
+          "full": 505
+        },
+        "fresh": 0,
+        "native_link_counts": {
+          "cc": 691,
+          "collect2": 152,
+          "wild": 90
+        },
+        "raw_receipt_sha256": "756b3bfc3c8390a5226e6e436962513b53f943597bd0d3acd90dfc47a4d7340c",
+        "total": 501
+      },
+      "original-baseline": {
+        "actual_rustc_jobs": {},
+        "fresh": 501,
+        "native_link_counts": {
+          "cc": 0,
+          "collect2": 0,
+          "wild": 0
+        },
+        "raw_receipt_sha256": "06433f97c27650d76b056bb1e752c90f99fcbfda9b8de99c27c577694d2039c8",
+        "total": 501
+      },
+      "original-baseline-fresh": {
+        "actual_rustc_jobs": {},
+        "fresh": 501,
+        "native_link_counts": {
+          "cc": 0,
+          "collect2": 0,
+          "wild": 0
+        },
+        "raw_receipt_sha256": "05406cbea59132e1aa0dad5cbb6bb29ec4dddf2963c78bd160ae5f984bd7fd0f",
+        "total": 501
+      },
+      "original-warm-1": {
+        "actual_rustc_jobs": {},
+        "fresh": 501,
+        "native_link_counts": {
+          "cc": 0,
+          "collect2": 0,
+          "wild": 0
+        },
+        "raw_receipt_sha256": "ea661e052907295afb5643a4d5b107163395f20c34433530cb526b01ced808b2",
+        "total": 501
+      }
+    }
+  },
+  "namespace_by_arm": {
+    "B": "v2-c95b8d54c8a62c02-all-native-all",
+    "C": "v2-8b4edd970c9a0df5-all-native-all"
+  },
+  "no_source_edit_exposed": true,
+  "previous_binding": "a9b16c63d4f6c4c1f7be3694992b57298e7b42e84f59e73ca67cefe71954d1ca",
+  "previous_exit": 1,
+  "terminal_failure_sha256": "472492e81208f238caef15b9a014a3a787b1eb32ed1049cbe104f3327fc7028f"
+}
