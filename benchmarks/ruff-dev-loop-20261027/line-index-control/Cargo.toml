@@ -1,0 +1,11 @@
+[package]
+name="ruff_line_index_consumer"
+version="0.0.0"
+edition="2024"
+[workspace]
+[dependencies]
+ruff_source_file={path="/home/dev-user/code/oss/ruff-ohm-private-trait-20261026/crates/ruff_source_file"}
+[profile.dev]
+opt-level=1
+debug="line-tables-only"
+lto="off"
