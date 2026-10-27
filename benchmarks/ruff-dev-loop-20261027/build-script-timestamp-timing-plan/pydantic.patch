@@ -1,0 +1,66 @@
+diff --git a/crates/ty_python_semantic/resources/mdtest/external/pydantic.md b/crates/ty_python_semantic/resources/mdtest/external/pydantic.md
+index c8c3d90419..b43334416c 100644
+--- a/crates/ty_python_semantic/resources/mdtest/external/pydantic.md
++++ b/crates/ty_python_semantic/resources/mdtest/external/pydantic.md
+@@ -152,6 +152,7 @@ Scalar types follow the Python-input conversions in Pydantic's [conversion table
+ import re
+ from datetime import date, datetime, time, timedelta
+ from decimal import Decimal
++from fractions import Fraction
+ from ipaddress import (
+     IPv4Address,
+     IPv4Interface,
+@@ -174,6 +175,7 @@ LaxBool(value=1.0)
+ LaxBool(value=1)
+ LaxBool(value=Decimal(1))
+ LaxBool(value="true")
++LaxBool(value=b"true")
+ LaxBool(value=[True])  # error: [invalid-argument-type]
+ 
+ class LaxBytes(BaseModel):
+@@ -217,6 +219,7 @@ LaxFloat(value=True)
+ LaxFloat(value=b"1.0")
+ LaxFloat(value="1.0")
+ LaxFloat(value=Decimal("1.0"))
++LaxFloat(value=Fraction(1, 2))
+ LaxFloat(value=(1, 0))  # error: [invalid-argument-type]
+ 
+ class LaxInt(BaseModel):
+@@ -228,6 +231,7 @@ LaxInt(value=b"1")
+ LaxInt(value=1.0)
+ LaxInt(value="1")
+ LaxInt(value=Decimal(1))
++LaxInt(value=Fraction(2, 1))
+ LaxInt(value=(1,))  # error: [invalid-argument-type]
+ 
+ class LaxStr(BaseModel):
+diff --git a/crates/ty_vendored/ty_extensions/pydantic.pyi b/crates/ty_vendored/ty_extensions/pydantic.pyi
+index 7057990e6d..4b629e4239 100644
+--- a/crates/ty_vendored/ty_extensions/pydantic.pyi
++++ b/crates/ty_vendored/ty_extensions/pydantic.pyi
+@@ -4,6 +4,7 @@
+ from datetime import date, datetime, time, timedelta
+ from decimal import Decimal
+ from enum import Enum
++from fractions import Fraction
+ from ipaddress import (
+     IPv4Address,
+     IPv4Interface,
+@@ -16,14 +17,14 @@ from pathlib import Path
+ from re import Pattern
+ from uuid import UUID
+ 
+-type LaxBool = bool | float | int | str | Decimal
++type LaxBool = bool | bytes | float | int | str | Decimal
+ type LaxBytes = bytearray | bytes | str
+ type LaxByteSize = float | int | str | Decimal
+ type LaxDate = bytes | date | datetime | float | int | str | Decimal
+ type LaxDatetime = bytes | date | datetime | float | int | str | Decimal
+ type LaxDecimal = float | int | str | Decimal
+-type LaxFloat = bool | bytes | float | int | str | Decimal
+-type LaxInt = bool | bytes | float | int | str | Decimal | Enum
++type LaxFloat = bool | bytes | float | int | str | Decimal | Fraction
++type LaxInt = bool | bytes | float | int | str | Decimal | Enum | Fraction
+ type LaxIPv4Address = bytes | int | str | IPv4Address | IPv4Interface
+ type LaxIPv4Interface = (
+     bytes | int | str | tuple[object, object] | IPv4Address | IPv4Interface

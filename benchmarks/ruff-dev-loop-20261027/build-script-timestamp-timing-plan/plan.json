@@ -1,0 +1,54 @@
+{
+  "baseline_git": "d38fdd02503662de04c52f5f370f5dd81bddf868",
+  "candidate_patch_sha256": "c4f5a5a170b32d883f14faf96f6fa106d6c90d5215d2d8869d2841d6e069fab5",
+  "command": [
+    "cargo",
+    "+ohm",
+    "check",
+    "--locked",
+    "--offline",
+    "--message-format=json",
+    "-j8"
+  ],
+  "control": "Both directions of complete historical change to the three real Ruff build scripts. Only git watch obligations differ in this pinned real linked checkout. Script bodies still run, no file or compiler mtimes modified during scoring.",
+  "environment": "Host H2 native lock exclusively. Affinity 0\u201323, same fixed linked source and logical paths, Rust toolchain, Cargo home/registry state, GCC/Wild and -j8 for both. No profiler, no strace or debug Cargo/Rust logging in measured commands. POSIX monotonic_ns includes Cargo process creation, child execution, ordinary stdout/stderr and clean process exit at the canonical workspace. Snapshot copy, namespace startup, untimed preflight and post-run metadata validation are outside timer.",
+  "estimands": [
+    "edited check elapsed",
+    "first unchanged check elapsed",
+    "sum of those two elapsed times"
+  ],
+  "fixed_rustc_driver": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+  "fixed_rustc_frontend": "4fa9a18b77430bcc416e88561b6fe5797d98b996a7698b9f3bd11d4e7817a19f",
+  "inference": "Within each pair take ln(candidate_ns/parent_ns) separately for the three endpoints. Point estimate 100*(1-exp(mean(log ratio))), descriptive arithmetic medians. Two-sided exact order-conditional randomization using absolute mean log-ratio across 24 pairs; enumerate all assignments preserving 6/6 arm order separately within reverse and restore. Holm familywise .05 across the three endpoints. 95% intervals are paired, direction-stratified percentile bootstrap with 100000 replicates and fixed seed 278431. Report all endpoints with per-direction subsets and raw rows; second unchanged check is descriptive. Claim a speedup only when both Holm p<.05 and reduction interval fully >0. Never represent unaffected edit latency or normalized whole day cadence as gained.",
+  "matched_source_and_subjects": "Both Cargo binaries built and repeated against identical absolute paths, vendored compiler source dependencies and training profile 481ada8a40c70dad11b3c7e8871e9a52207d78447ca5e8ace06fc4aec2d2b5a7. Final image SHA digests must be locked and published before scoring. The matched independent parent rebuild must match the first parent byte for byte. Both arms must separately reproduce the prior actual #254/#233 mechanism.",
+  "order_sha256": "d989a59b3e54f863decf1f20d8bf9637db2e5c6dfc04a96518c5b2255ab51a5d",
+  "per_arm": "Change all three source files once after confirming the starting state. Time one actual full workspace check, its first untouched next check, and the second still untouched check. Record final Cargo artifact count and freshness, workspace diagnostics and exact compiler-script inputs. Admit mutually matching pinned source, tool SHA and all exit 0 with 520 artifacts. Current expected physical control/treatment first changed check rosters and three-script outputs validated in untimed traced calibration for both source directions, and repeated after all scored pairs. Membership divergence affecting correctness invalidates the corresponding endpoint rather than silently dropping a slow row. Comprehensive positive/negative generated/side-effect gates run as untimed validators.",
+  "primary_source": {
+    "files": {
+      "crates/ruff/build.rs": {
+        "edited_sha256": "fdea3ba58e7f8c0ad6541b68950708269577ef9c5bea83a5a5cde89a1fb9dc55",
+        "original_sha256": "8809304381d04011ac796e2dc4530a803b0720b5b2b8b70f6fccb51d6db9a2c7"
+      },
+      "crates/ty/build.rs": {
+        "edited_sha256": "e8c5027c8f2c260df8ae221cdb2e164e8835b45ba70ff728005583359eac6363",
+        "original_sha256": "7099c6f0bdda194c3b9b1bf039b04fca5445cd0791cd9eec97d2cb16093f220a"
+      },
+      "crates/ty_wasm/build.rs": {
+        "edited_sha256": "a14ba6a4ca108ff8a4ab1b6ad1f4a6b27379500db0c78f448fd270f4e5f4376a",
+        "original_sha256": "27e4487951a136a81c0ac19074bdd9495e8caab57ee4043d1b4d28395efcd115"
+      }
+    },
+    "historical": "a8ba9e0458e60f8c406216778f0ea1cc3759c9b2",
+    "patch_sha256": "f51de838ddca7717936c89d344eac7bc4eb4deb07ab67fb34a975818635f1c8e",
+    "ruff": "93526150df078af7dd8fc4226cdcc469539d2001",
+    "subject": "Fix Git metadata tracking in linked worktrees (#27710)"
+  },
+  "safety": "H2 home reserve at least 25GiB, tmpfs reserve 10GiB, no competing tasks during timing. If insufficient, pause before scoring rather than overwrite earlier state. No time or native-link claim from the exploratory first-occurrence or causal timestamp data.",
+  "secondary_holdout_sha256": "c25a2f203210296bd0b2b320caa9700f2dc08e2796c2bbe1c51bdbbab475b94b",
+  "seed": 8285874694453962123,
+  "seed_domain": "Ohm Ruff build-script generation 2026-10-27 v1. Paired all-duration check trial.",
+  "seeds": "For each arm and each starting source version, construct a disposable independent, ordinary check state. Original may clone the previously independently warmed pinned native check state. For the reverse/old starting source, force all three packages\u2019 lib metadata to be genuinely emitted once after switching the private source by unlinking those three existing lib rmetas, or use an entirely empty target/shared if necessary; retain seed ledger. Verify an ordinary unchanged command reports all 520 artifacts fresh and 0 real rustc before sealing. Do not rewrite metadata times in seed or series. Source is read-only outside its three private mounted files. Distinct owned full copies preserve file metadata and canonical paths. Primary validates each private copy with one fully fresh unscored starting command before timing.",
+  "source_plan": "https://github.com/astral-sh/ohm-cargo/tree/ec22176ddf1c7e220a947dae2452420aecc53bf8/benchmarks/ruff-dev-loop-20261027/build-script-targets-plan",
+  "title": "Paired native whole-workspace cargo check around a Ruff build-script edit and the following unchanged commands",
+  "trial": "24 independent arm pairs, 12 per direction, 6/6 parent-first or candidate-first per direction, intermixed by fixed Python rng; every successful run and any rejected run is retained. Matching copies of independent seed snapshots per arm+direction; no benchmark state from previous counted episodes reused. Timings: 144 ordinary cargo invocations, three per arm per pair."
+}

@@ -1,0 +1,17 @@
+{
+  "criterion": "Newest cleanly reverse-applicable complete historical commit among 116 histories of ty_vendored/ty_extensions and vendor/typeshed/stdlib at the pinned tree, at most 15 files and no changed Rust, Cargo/other TOML, lockfile, .py or source_commit.txt. This changes exactly the Pydantic extension file and its test Markdown.",
+  "files": {
+    "crates/ty_python_semantic/resources/mdtest/external/pydantic.md": {
+      "edited_sha256": "ce20c77af6411eaf52da7ce5bc3e5e110150f0eb2a521734d04512ebd192080b",
+      "original_sha256": "f96a1314416c2159c21ddea3074384cf591cfdd26c3b8bf5c7cd81f3491d11ca"
+    },
+    "crates/ty_vendored/ty_extensions/pydantic.pyi": {
+      "edited_sha256": "e67ba66ef4884603b181f9ae4605b4726a3174d0f9d0d9ad9af300314b9d5438",
+      "original_sha256": "ef75cf9d8fe41e26eecb4c5c937983e038f715f50bee81b7d27386876dc5b811"
+    }
+  },
+  "interpretation": "Independent functional transfer only, no scored time. Run both stage-2-compatible Cargo arms from distinct settled original snapshots. Record ordinary check, real compiler/script work and its two immediately subsequent no-ops after the full reverse and restoration. Require current generated ty_extensions/pydantic.pyi ZIP member to equal the selected source for every available archive. Preserve a neutral or incompatible outcome. A checkout produces several ZIP feature variants, so qualify each variant with its physical bytes.",
+  "patch_sha256": "f3e5289239e1db043e3fc9b70ffc4c6582544931961f8cbea6c706d5ec0af09f",
+  "source": "71e87c8fcbb9851074e436afdf64ae2416a58440",
+  "title": "[ty] Accept documented boolean and fractional Pydantic inputs (#27754)"
+}
