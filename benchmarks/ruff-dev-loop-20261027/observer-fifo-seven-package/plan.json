@@ -1,0 +1,95 @@
+{
+  "protocol": "fifo-safe-seven-package-confirmation",
+  "time": "2026-10-27T11:16:58.938736+00:00",
+  "historical_registration": "f169b2d0ffcdf3caf531ab2bd1fe39409f65cefe379544f13e3d61f68aad1b06",
+  "runner_sha256": "04b860fffa7fe2a74c19e66cf457200554cef310e35e08f54af4858e83ee493c",
+  "fixture_manifest": "1a309c176ba8ea129414be486ce87a040c171d294e9d12a5388bdaaa94d6f78e",
+  "rust_source": "27029b4bce40f3b5497add5019c02a11c16c4c18",
+  "driver": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+  "parent_source": "d577be8eb1db7a3a4e4a82246d64644aaf3e0bff",
+  "candidate_source": "d38fdd02503662de04c52f5f370f5dd81bddf868",
+  "cargo_parent": "529813f90cdd7c369e347701f8c4497edc5dad8adcc44b58301661fd4b786c4a",
+  "cargo_candidate": "dd5cab154b8dcd09ccc2753160d314cade80979b2d055ee66aa9e2217e05e7e1",
+  "bootstrap_seeds": {
+    "noop": 2710271171,
+    "edit": 2710271172
+  },
+  "cpu": "0-3",
+  "jobs": 4,
+  "platform": "x86_64-unknown-linux-gnu",
+  "ordinary_invocations": 48,
+  "orders": [
+    {
+      "block": 1,
+      "no_op": "PC",
+      "edit": "add",
+      "edit_order": "PC"
+    },
+    {
+      "block": 2,
+      "no_op": "CP",
+      "edit": "remove",
+      "edit_order": "PC"
+    },
+    {
+      "block": 3,
+      "no_op": "CP",
+      "edit": "add",
+      "edit_order": "CP"
+    },
+    {
+      "block": 4,
+      "no_op": "CP",
+      "edit": "remove",
+      "edit_order": "PC"
+    },
+    {
+      "block": 5,
+      "no_op": "CP",
+      "edit": "add",
+      "edit_order": "CP"
+    },
+    {
+      "block": 6,
+      "no_op": "PC",
+      "edit": "remove",
+      "edit_order": "CP"
+    },
+    {
+      "block": 7,
+      "no_op": "PC",
+      "edit": "add",
+      "edit_order": "PC"
+    },
+    {
+      "block": 8,
+      "no_op": "PC",
+      "edit": "remove",
+      "edit_order": "CP"
+    },
+    {
+      "block": 9,
+      "no_op": "PC",
+      "edit": "add",
+      "edit_order": "CP"
+    },
+    {
+      "block": 10,
+      "no_op": "CP",
+      "edit": "remove",
+      "edit_order": "CP"
+    },
+    {
+      "block": 11,
+      "no_op": "PC",
+      "edit": "add",
+      "edit_order": "PC"
+    },
+    {
+      "block": 12,
+      "no_op": "CP",
+      "edit": "remove",
+      "edit_order": "PC"
+    }
+  ]
+}
