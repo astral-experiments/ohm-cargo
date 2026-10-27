@@ -1,0 +1,455 @@
+{
+  "stats": {
+    "oracle": {
+      "median_cut_pct": 7.032633756302747,
+      "logmedian_cut_pct": 7.070958365851121,
+      "median_raw_ms": {
+        "full": 603.8089485,
+        "oracle": 557.466962
+      },
+      "favorable": 9,
+      "n": 12,
+      "exact_two_sided_sign_p": 0.14599609375,
+      "range_pct": [
+        -43.150348837792585,
+        39.61535375928725
+      ],
+      "median_interval_pct": [
+        -3.732964583549836,
+        14.564303390025135
+      ],
+      "interval_coverage": 0.96142578125,
+      "logs": [
+        -0.1335559441598436,
+        -0.35633652901575913,
+        -0.5044353146746551,
+        -0.04461538061355993,
+        0.2734583836099756,
+        -0.04290865640038829,
+        0.3587252824220302,
+        0.03664976285588658,
+        -0.10725455161104099,
+        -0.15740617943730265,
+        -0.041626164112801886,
+        -0.10205257387338673
+      ],
+      "pct": [
+        12.502148232969269,
+        29.97630694657657,
+        39.61535375928725,
+        4.363475228158831,
+        -31.4502653218629,
+        4.200110686212966,
+        -43.150348837792585,
+        -3.732964583549836,
+        10.170301905911616,
+        14.564303390025135,
+        4.077169248144363,
+        9.701792284446665
+      ],
+      "by_direction_pct": {
+        "reversed": 7.12373557702799,
+        "restored": 7.032633756302747
+      },
+      "holm_p": 0.2919921875
+    },
+    "selected": {
+      "median_cut_pct": 4.27842419551045,
+      "logmedian_cut_pct": 4.283094977363366,
+      "median_raw_ms": {
+        "full": 603.8089485,
+        "selected": 594.1321365
+      },
+      "favorable": 7,
+      "n": 12,
+      "exact_two_sided_sign_p": 0.7744140625,
+      "range_pct": [
+        -32.935415463007864,
+        24.770983460919147
+      ],
+      "median_interval_pct": [
+        -2.3458067867833776,
+        12.885631399944874
+      ],
+      "interval_coverage": 0.96142578125,
+      "logs": [
+        -0.053654273383759346,
+        -0.20409513318489542,
+        -0.28463317122398274,
+        0.14081880109545472,
+        0.015968679195896923,
+        0.2846932262702626,
+        0.008254051487578368,
+        -0.03389624086561799,
+        -0.07257159735971878,
+        -0.1379483490295752,
+        0.023187155927555155,
+        -0.09113157728783028
+      ],
+      "pct": [
+        5.22402843735692,
+        18.461520265525888,
+        24.770983460919147,
+        -15.121603000110873,
+        -1.6096859936997943,
+        -32.935415463007864,
+        -0.8288210088160719,
+        3.332819953663979,
+        7.000084120776107,
+        12.885631399944874,
+        -2.3458067867833776,
+        8.710241359187465
+      ],
+      "by_direction_pct": {
+        "reversed": 2.197603714270424,
+        "restored": 6.021530656425722
+      },
+      "holm_p": 0.7744140625
+    }
+  },
+  "gate_for_more_engineering": false,
+  "by_block": [
+    {
+      "block": 0,
+      "source": "reversed",
+      "order": [
+        "full",
+        "oracle",
+        "selected"
+      ],
+      "ns": {
+        "full": 634195648,
+        "oracle": 554907568,
+        "selected": 601065087
+      },
+      "links": {
+        "full": {
+          "fixtures-579109038f0f72c0": 7,
+          "ruff_python_parser-6f23127b20f2e68d": 1
+        },
+        "oracle": {
+          "fixtures-579109038f0f72c0": 7,
+          "ruff_python_parser-6f23127b20f2e68d": 1
+        },
+        "selected": {
+          "fixtures-579109038f0f72c0": 7,
+          "ruff_python_parser-6f23127b20f2e68d": 1
+        }
+      }
+    },
+    {
+      "block": 1,
+      "source": "restored",
+      "order": [
+        "selected",
+        "oracle",
+        "full"
+      ],
+      "ns": {
+        "selected": 640799876,
+        "oracle": 550306726,
+        "full": 785886465
+      },
+      "links": {
+        "selected": {
+          "fixtures-579109038f0f72c0": 1,
+          "ruff_python_parser-6f23127b20f2e68d": 7
+        },
+        "oracle": {
+          "fixtures-579109038f0f72c0": 7,
+          "ruff_python_parser-6f23127b20f2e68d": 1
+        },
+        "full": {
+          "fixtures-579109038f0f72c0": 7,
+          "ruff_python_parser-6f23127b20f2e68d": 1
+        }
+      }
+    },
+    {
+      "block": 2,
+      "source": "reversed",
+      "order": [
+        "selected",
+        "oracle",
+        "full"
+      ],
+      "ns": {
+        "selected": 697697753,
+        "oracle": 560026356,
+        "full": 927431708
+      },
+      "links": {
+        "selected": {
+          "fixtures-579109038f0f72c0": 1,
+          "ruff_python_parser-6f23127b20f2e68d": 7
+        },
+        "oracle": {
+          "fixtures-579109038f0f72c0": 7,
+          "ruff_python_parser-6f23127b20f2e68d": 1
+        },
+        "full": {
+          "fixtures-579109038f0f72c0": 2,
+          "ruff_python_parser-6f23127b20f2e68d": 6
+        }
+      }
+    },
+    {
+      "block": 3,
+      "source": "restored",
+      "order": [
+        "full",
+        "oracle",
+        "selected"
+      ],
+      "ns": {
+        "full": 572144190,
+        "oracle": 547178820,
+        "selected": 658661563
+      },
+      "links": {
+        "full": {
+          "fixtures-579109038f0f72c0": 7,
+          "ruff_python_parser-6f23127b20f2e68d": 1
+        },
+        "oracle": {
+          "fixtures-579109038f0f72c0": 7,
+          "ruff_python_parser-6f23127b20f2e68d": 1
+        },
+        "selected": {
+          "fixtures-579109038f0f72c0": 1,
+          "ruff_python_parser-6f23127b20f2e68d": 7
+        }
+      }
+    },
+    {
+      "block": 4,
+      "source": "reversed",
+      "order": [
+        "oracle",
+        "full",
+        "selected"
+      ],
+      "ns": {
+        "oracle": 751543482,
+        "full": 571732191,
+        "selected": 580935284
+      },
+      "links": {
+        "oracle": {
+          "fixtures-579109038f0f72c0": 1,
+          "ruff_python_parser-6f23127b20f2e68d": 7
+        },
+        "full": {
+          "fixtures-579109038f0f72c0": 7,
+          "ruff_python_parser-6f23127b20f2e68d": 1
+        },
+        "selected": {
+          "fixtures-579109038f0f72c0": 7,
+          "ruff_python_parser-6f23127b20f2e68d": 1
+        }
+      }
+    },
+    {
+      "block": 5,
+      "source": "restored",
+      "order": [
+        "full",
+        "selected",
+        "oracle"
+      ],
+      "ns": {
+        "full": 591979780,
+        "selected": 786950780,
+        "oracle": 567115974
+      },
+      "links": {
+        "full": {
+          "fixtures-579109038f0f72c0": 7,
+          "ruff_python_parser-6f23127b20f2e68d": 1
+        },
+        "selected": {
+          "fixtures-579109038f0f72c0": 7,
+          "ruff_python_parser-6f23127b20f2e68d": 1
+        },
+        "oracle": {
+          "fixtures-579109038f0f72c0": 7,
+          "ruff_python_parser-6f23127b20f2e68d": 1
+        }
+      }
+    },
+    {
+      "block": 6,
+      "source": "reversed",
+      "order": [
+        "full",
+        "selected",
+        "oracle"
+      ],
+      "ns": {
+        "full": 593072925,
+        "selected": 597988438,
+        "oracle": 848985961
+      },
+      "links": {
+        "full": {
+          "fixtures-579109038f0f72c0": 7,
+          "ruff_python_parser-6f23127b20f2e68d": 1
+        },
+        "selected": {
+          "fixtures-579109038f0f72c0": 7,
+          "ruff_python_parser-6f23127b20f2e68d": 1
+        },
+        "oracle": {
+          "fixtures-579109038f0f72c0": 1,
+          "ruff_python_parser-6f23127b20f2e68d": 7
+        }
+      }
+    },
+    {
+      "block": 7,
+      "source": "restored",
+      "order": [
+        "oracle",
+        "full",
+        "selected"
+      ],
+      "ns": {
+        "oracle": 604223658,
+        "full": 582479890,
+        "selected": 563066884
+      },
+      "links": {
+        "oracle": {
+          "fixtures-579109038f0f72c0": 7,
+          "ruff_python_parser-6f23127b20f2e68d": 1
+        },
+        "full": {
+          "fixtures-579109038f0f72c0": 7,
+          "ruff_python_parser-6f23127b20f2e68d": 1
+        },
+        "selected": {
+          "fixtures-579109038f0f72c0": 7,
+          "ruff_python_parser-6f23127b20f2e68d": 1
+        }
+      }
+    },
+    {
+      "block": 8,
+      "source": "reversed",
+      "order": [
+        "selected",
+        "full",
+        "oracle"
+      ],
+      "ns": {
+        "selected": 571526307,
+        "full": 614544972,
+        "oracle": 552043893
+      },
+      "links": {
+        "selected": {
+          "fixtures-579109038f0f72c0": 7,
+          "ruff_python_parser-6f23127b20f2e68d": 1
+        },
+        "full": {
+          "fixtures-579109038f0f72c0": 7,
+          "ruff_python_parser-6f23127b20f2e68d": 1
+        },
+        "oracle": {
+          "fixtures-579109038f0f72c0": 7,
+          "ruff_python_parser-6f23127b20f2e68d": 1
+        }
+      }
+    },
+    {
+      "block": 9,
+      "source": "restored",
+      "order": [
+        "selected",
+        "full",
+        "oracle"
+      ],
+      "ns": {
+        "selected": 563160536,
+        "full": 646461135,
+        "oracle": 552308574
+      },
+      "links": {
+        "selected": {
+          "fixtures-579109038f0f72c0": 7,
+          "ruff_python_parser-6f23127b20f2e68d": 1
+        },
+        "full": {
+          "fixtures-579109038f0f72c0": 7,
+          "ruff_python_parser-6f23127b20f2e68d": 1
+        },
+        "oracle": {
+          "fixtures-579109038f0f72c0": 7,
+          "ruff_python_parser-6f23127b20f2e68d": 1
+        }
+      }
+    },
+    {
+      "block": 10,
+      "source": "reversed",
+      "order": [
+        "oracle",
+        "selected",
+        "full"
+      ],
+      "ns": {
+        "oracle": 553231547,
+        "selected": 590275835,
+        "full": 576746477
+      },
+      "links": {
+        "oracle": {
+          "fixtures-579109038f0f72c0": 7,
+          "ruff_python_parser-6f23127b20f2e68d": 1
+        },
+        "selected": {
+          "fixtures-579109038f0f72c0": 7,
+          "ruff_python_parser-6f23127b20f2e68d": 1
+        },
+        "full": {
+          "fixtures-579109038f0f72c0": 7,
+          "ruff_python_parser-6f23127b20f2e68d": 1
+        }
+      }
+    },
+    {
+      "block": 11,
+      "source": "restored",
+      "order": [
+        "oracle",
+        "selected",
+        "full"
+      ],
+      "ns": {
+        "oracle": 562899769,
+        "selected": 569080886,
+        "full": 623378673
+      },
+      "links": {
+        "oracle": {
+          "fixtures-579109038f0f72c0": 7,
+          "ruff_python_parser-6f23127b20f2e68d": 1
+        },
+        "selected": {
+          "fixtures-579109038f0f72c0": 7,
+          "ruff_python_parser-6f23127b20f2e68d": 1
+        },
+        "full": {
+          "fixtures-579109038f0f72c0": 7,
+          "ruff_python_parser-6f23127b20f2e68d": 1
+        }
+      }
+    }
+  ],
+  "all_widths": {
+    "1": 35,
+    "2": 1,
+    "6": 1,
+    "7": 35
+  }
+}

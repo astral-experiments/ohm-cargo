@@ -1,0 +1,137 @@
+{
+  "arms": {
+    "full": "matched diagnostic Wild runs the entire link, including the normal writer",
+    "oracle": "all standard input discovery/symbol resolution, followed by width-specific admitted stored ELF, BLAKE3-authenticated and republished through standard Wild file writer; prior selected inputs assumed free",
+    "selected": "same as oracle plus per-actual-selected input byte digests and comparison against the independently registered width-specific known fixture; it is still not a complete digest of the full semantic closure"
+  },
+  "class": "upper-bound feasibility only; neither oracle establishes a shippable input proof",
+  "cpu": "H1 CPUs 16\u201323, named native lock, 8 Cargo jobs, release 16. Use a physically independent copy of the published Ruff setup at the same logical paths; all arms use one coherent target only with a per-command width-specific full ELF gate and a fresh before every actual edit.",
+  "endpoint": "monotonic wall ns for full fresh-process ordinary cargo +ohm test --no-run -p ruff_python_parser --locked --offline -j8 on the edit, no other work inside timer",
+  "format": 1,
+  "gate": "Pursue an actual general deployable proof here only if selected is at least 2% median faster, wins at least 10/12 paired blocks and Holm p<.05 with every selection/native gate valid; otherwise no product timing/PR from this experiment.",
+  "historical": "83a3afc3156d73ae4296f3fa74ede28e4c72bfcd",
+  "invariants": [
+    "exact reference 148 full artifact roster, immediate no-op, one full trivia+2 link-only before timing",
+    "64 direct links cover both states and widths 1\u20138 with exact packaged ELF hashes before admission",
+    "full selected and known gold ELF each match both canonical outcomes by observed true worker width; each timed invocation must be successful and exactly 2 per-target Wild entries and their expected admission status",
+    "gate target native bytes and 3 terminal ELFs and correct ordinary changed caller outside timing; no Ruff tests",
+    "control source states with the historical patch and separately run full reset whenever necessary; unscored resets retained",
+    "no ordinary scored run before full participant hashes and this schedule are frozen; any refusal/mismatch retained and halts; source restoration after exit"
+  ],
+  "outdir": "diagnostic-wild/whole-pilot-v1; no exclusions post hoc",
+  "patch_sha256": "944bdab2f5a66100e9cb39eb4726c643efaf5534133c607924fc15ecf3dc50ae",
+  "released_wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5",
+  "ruff": "93526150df078af7dd8fc4226cdcc469539d2001",
+  "schedule": [
+    {
+      "block": 0,
+      "direction": "reversed",
+      "order": [
+        "full",
+        "oracle",
+        "selected"
+      ]
+    },
+    {
+      "block": 1,
+      "direction": "restored",
+      "order": [
+        "selected",
+        "oracle",
+        "full"
+      ]
+    },
+    {
+      "block": 2,
+      "direction": "reversed",
+      "order": [
+        "selected",
+        "oracle",
+        "full"
+      ]
+    },
+    {
+      "block": 3,
+      "direction": "restored",
+      "order": [
+        "full",
+        "oracle",
+        "selected"
+      ]
+    },
+    {
+      "block": 4,
+      "direction": "reversed",
+      "order": [
+        "oracle",
+        "full",
+        "selected"
+      ]
+    },
+    {
+      "block": 5,
+      "direction": "restored",
+      "order": [
+        "full",
+        "selected",
+        "oracle"
+      ]
+    },
+    {
+      "block": 6,
+      "direction": "reversed",
+      "order": [
+        "full",
+        "selected",
+        "oracle"
+      ]
+    },
+    {
+      "block": 7,
+      "direction": "restored",
+      "order": [
+        "oracle",
+        "full",
+        "selected"
+      ]
+    },
+    {
+      "block": 8,
+      "direction": "reversed",
+      "order": [
+        "selected",
+        "full",
+        "oracle"
+      ]
+    },
+    {
+      "block": 9,
+      "direction": "restored",
+      "order": [
+        "selected",
+        "full",
+        "oracle"
+      ]
+    },
+    {
+      "block": 10,
+      "direction": "reversed",
+      "order": [
+        "oracle",
+        "selected",
+        "full"
+      ]
+    },
+    {
+      "block": 11,
+      "direction": "restored",
+      "order": [
+        "oracle",
+        "selected",
+        "full"
+      ]
+    }
+  ],
+  "summary": "Report signed paired median percent cuts for both contrasts, 12 paired log ratios, binomial order-statistic median interval, exact sign test Holm across full:oracle and full:selected, all direction counts. Wall evidence labels the private fixture upper-bound only.",
+  "wild_source": "e856d81f6683cad80b9fe0ebf1a0c3c403c6fe11"
+}

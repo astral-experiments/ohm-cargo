@@ -1,0 +1,34 @@
+{
+  "before_scoring": true,
+  "cause": "Wild WILD_SAVE_BASE rewrites the exact loaded linker-script files libc.so and libm.so. A 2x2 clean-mount ablation gives the actual live selected digest for each link only after restoring BOTH real scripts read-only. Neither file nor original run was edited.",
+  "changed_input": "Rebind exactly /usr/lib/x86_64-linux-gnu/{libc,libm}.so read-only with their physical original bytes over the two corresponding captured file paths in each independent native qualification before training. Fresh seed directory, raw scoring and complete gates.",
+  "components": {
+    "oracle.patch": "944bdab2f5a66100e9cb39eb4726c643efaf5534133c607924fc15ecf3dc50ae",
+    "pilot-plan.json": "aa7646262ad696a5001360ee978481a56bfda1227b3abf90cd12e54224fd9ccc",
+    "qualify-diagnostic-v2.py": "b8296fc6dd539f34dc360345a3392b73b11ad44f7247623e9aa47d84dc241e4f",
+    "seed-audit.py": "b207e2c56674ccdf68d804d25701e6db00dc0d2e58c679abafd7ab449d0a345c",
+    "whole-feasibility-v2.py": "f0e3e9f13e68ceff304ae0f745f00ce1f66df0d87b5eb28c8e87b4f332404b3e"
+  },
+  "expected_selected": {
+    "fixtures": "094f792418c594cceee0a29ab09c9ef7e28590615cc717ee092f25cde6fa40e9",
+    "parser": "c05067dcfe8b37bda37768cbd9039c36e7d8f515b28e0714f404c24a2014f03b"
+  },
+  "format": 2,
+  "name": "unchanged upper-bound study with canonical registry system-script seed",
+  "paths": {
+    "qualify": "qualification-v2",
+    "seed": "native-oracles-v2",
+    "whole": "whole-pilot-v2"
+  },
+  "retained_v1": {
+    "exit": 1,
+    "gate": "The full-Cargo selected arm refused both links. All 64 saved-input cases and first genuine full-release Cargo case passed.",
+    "raw_timed_slots": 0,
+    "result_paths": [
+      "diagnostic-wild/whole-pilot-v1",
+      "diagnostic-wild/seed-audit/result.json"
+    ]
+  },
+  "stop": "Require all 64 independent native outputs and all four genuine full-Cargo modes, fresh graphs and actual conventional negative. Halt on any unexpected hit/refusal or output mismatch.",
+  "unchanged_fields": "All other source, binary digest, fixed schedule, 3-arm contrasts, endpoint, gates and decision policy remain exactly defined by pilot-plan.json."
+}

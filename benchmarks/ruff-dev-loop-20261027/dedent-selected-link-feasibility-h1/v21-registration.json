@@ -1,0 +1,13 @@
+{
+  "components": {
+    "oracle.patch": "944bdab2f5a66100e9cb39eb4726c643efaf5534133c607924fc15ecf3dc50ae",
+    "pilot-plan.json": "aa7646262ad696a5001360ee978481a56bfda1227b3abf90cd12e54224fd9ccc",
+    "qualify-diagnostic-v21.py": "970faa314886dde3e78abd2874878d4f22e77a07a5326484cb780cf3d62e9540",
+    "whole-feasibility-v21.py": "d6271b7087741ada915d7481e2a7739d5461bbb5d342c1b2a15f0a958ff4249d"
+  },
+  "early_v2": "Qualification stopped before any native command using a live parser target as the source of the historical one-worker ELF. Its contents had since naturally reverted to the other shipped 2+ worker output.",
+  "prior": "v2-registration.json",
+  "prior_sha256": "9fd3afeec6364951847428edaf4fd15373061ec60d0e69b5b8885e340b7d1c4d",
+  "sole_change": "Source the one-worker parser ELF from its immutable copy made at v1 with the exact same expected SHA256 ff1cdc736d8eaf6dc261d3a8007b2b2fc1c046e875a73bca84eb94a2410b93a2. All other held-out inputs, measures, gates, code, roles and schedule are unchanged. Use new output/seed roots v21.",
+  "zero_timed_prior": true
+}
