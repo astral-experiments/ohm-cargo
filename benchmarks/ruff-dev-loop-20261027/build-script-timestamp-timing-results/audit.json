@@ -1,0 +1,184 @@
+{
+  "elapsed_rows_without_trace": 144,
+  "final_traced": {
+    "candidate/restore": {
+      "change": {
+        "fresh": 511,
+        "processes": {
+          "cc": 3,
+          "collect2": 3,
+          "rustc-full": 8,
+          "wild": 3
+        },
+        "scripts": [
+          "ruff",
+          "ty",
+          "ty_wasm"
+        ],
+        "units": 520
+      },
+      "change-next": {
+        "fresh": 520,
+        "processes": {},
+        "scripts": [],
+        "units": 520
+      },
+      "change-next-2": {
+        "fresh": 520,
+        "processes": {},
+        "scripts": [],
+        "units": 520
+      },
+      "preflight": {
+        "fresh": 520,
+        "processes": {},
+        "scripts": [],
+        "units": 520
+      }
+    },
+    "candidate/reverse": {
+      "change": {
+        "fresh": 511,
+        "processes": {
+          "cc": 3,
+          "collect2": 3,
+          "rustc-full": 8,
+          "wild": 3
+        },
+        "scripts": [
+          "ruff",
+          "ty",
+          "ty_wasm"
+        ],
+        "units": 520
+      },
+      "change-next": {
+        "fresh": 520,
+        "processes": {},
+        "scripts": [],
+        "units": 520
+      },
+      "change-next-2": {
+        "fresh": 520,
+        "processes": {},
+        "scripts": [],
+        "units": 520
+      },
+      "preflight": {
+        "fresh": 520,
+        "processes": {},
+        "scripts": [],
+        "units": 520
+      }
+    },
+    "parent/restore": {
+      "change": {
+        "fresh": 511,
+        "processes": {
+          "cc": 3,
+          "collect2": 3,
+          "rustc-full": 8,
+          "wild": 3
+        },
+        "scripts": [
+          "ruff",
+          "ty",
+          "ty_wasm"
+        ],
+        "units": 520
+      },
+      "change-next": {
+        "fresh": 514,
+        "processes": {
+          "rustc-full": 3
+        },
+        "scripts": [],
+        "units": 520
+      },
+      "change-next-2": {
+        "fresh": 514,
+        "processes": {
+          "rustc-full": 3
+        },
+        "scripts": [],
+        "units": 520
+      },
+      "preflight": {
+        "fresh": 520,
+        "processes": {},
+        "scripts": [],
+        "units": 520
+      }
+    },
+    "parent/reverse": {
+      "change": {
+        "fresh": 511,
+        "processes": {
+          "cc": 3,
+          "collect2": 3,
+          "rustc-full": 8,
+          "wild": 3
+        },
+        "scripts": [
+          "ruff",
+          "ty",
+          "ty_wasm"
+        ],
+        "units": 520
+      },
+      "change-next": {
+        "fresh": 514,
+        "processes": {
+          "rustc-full": 3
+        },
+        "scripts": [],
+        "units": 520
+      },
+      "change-next-2": {
+        "fresh": 514,
+        "processes": {
+          "rustc-full": 3
+        },
+        "scripts": [],
+        "units": 520
+      },
+      "preflight": {
+        "fresh": 520,
+        "processes": {},
+        "scripts": [],
+        "units": 520
+      }
+    }
+  },
+  "nonnull_speeds": {
+    "changed": {
+      "lower_in_candidate": 10,
+      "pairs": 24
+    },
+    "changed-plus-first": {
+      "lower_in_candidate": 23,
+      "pairs": 24
+    },
+    "first-unchanged": {
+      "lower_in_candidate": 24,
+      "pairs": 24
+    },
+    "second-unchanged": {
+      "lower_in_candidate": 24,
+      "pairs": 24
+    }
+  },
+  "pair_orders": {
+    "restore": {
+      "candidate_first": 6,
+      "parent_first": 6
+    },
+    "reverse": {
+      "candidate_first": 6,
+      "parent_first": 6
+    }
+  },
+  "scored_ordinary_invocations": 144,
+  "start_seeds": {},
+  "uncounted_initial_preflights": 48
+}
