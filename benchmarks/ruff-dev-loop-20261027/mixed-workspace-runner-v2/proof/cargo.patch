@@ -1,0 +1,683 @@
+diff --git a/src/compiler/fingerprint/mod.rs b/src/compiler/fingerprint/mod.rs
+index 0fb50b634a511cb09957f30aaf24c9f3d6f23dcd..1062f475120be65a8b823fd1c00f9ced92f79302 100644
+--- a/src/compiler/fingerprint/mod.rs
++++ b/src/compiler/fingerprint/mod.rs
+@@ -417,7 +417,6 @@ use crate::{CARGO_ENV, GlobalContext};
+ 
+ use super::BuildContext;
+ use super::BuildRunner;
+-use super::CompileKind;
+ use super::CompileMode;
+ use super::FileFlavor;
+ use super::Job;
+@@ -426,6 +425,7 @@ use super::Unit;
+ use super::UnitIndex;
+ use super::Work;
+ use super::custom_build::BuildDeps;
++use super::{CompileKind, CrateType};
+ 
+ pub use self::dep_info::Checksum;
+ pub use self::dep_info::parse_dep_info;
+@@ -718,6 +718,121 @@ pub fn unit_can_use_relink_only(build_runner: &BuildRunner<'_, '_>, unit: &Unit)
+             || (unit.mode == CompileMode::Build && unit.target.is_bin()))
+ }
+ 
++pub(super) fn unit_can_relink_native_library(
++    build_runner: &BuildRunner<'_, '_>,
++    unit: &Unit,
++) -> bool {
++    let types = unit.target.rustc_crate_types();
++    unit.mode == CompileMode::Build
++        && !unit.artifact.is_true()
++        && build_runner.bcx.gctx.cli_unstable().ohm_defaults()
++        && build_runner.bcx.rustc().wrapper.is_none()
++        && build_runner.bcx.rustc().workspace_wrapper.is_none()
++        && unit_uses_public_api_hash(build_runner, unit)
++        && unit_has_exclusive_metadata_access(build_runner, unit)
++        && build_runner.bcx.ws.is_member(&unit.pkg)
++        && unit.kind == CompileKind::Host
++        && build_runner.bcx.host_triple().as_str() == "x86_64-unknown-linux-gnu"
++        && types.len() == 2
++        && types.contains(&CrateType::Cdylib)
++        && types.contains(&CrateType::Rlib)
++        && build_runner.bcx.extra_args_for(unit).is_none()
++        && unit.profile.rustflags.is_empty()
++        && super::unit_rustflags_without_ohm_defaults(
++            build_runner.bcx.gctx,
++            build_runner.rustflags_for_cache_admission(unit),
++        )
++        .iter()
++        .all(|flag| flag == super::OHM_EARLY_METADATA_RUSTFLAG)
++}
++
++#[derive(Clone, Debug, Eq, PartialEq, Deserialize, Serialize)]
++pub(super) struct NativeRlibInterface {
++    rust_api: String,
++    linked_statics: String,
++}
++
++/// Contents of every transitive native input from the last full mixed library compilation.
++pub(super) type NativeInputGenerations = std::collections::BTreeMap<PathBuf, String>;
++
++impl Fingerprint {
++    pub(super) fn native_library_producers(&self) -> Vec<(UnitIndex, NativeRlibInterface)> {
++        let mut producers = Vec::new();
++        let mut seen = HashSet::default();
++        let mut remaining: Vec<_> = self.deps.iter().collect();
++        while let Some(dep) = remaining.pop() {
++            if !seen.insert(dep.fingerprint.index) {
++                continue;
++            }
++            if let Some(interface) = dep
++                .fingerprint
++                .native_rlib_interface
++                .lock()
++                .unwrap()
++                .clone()
++            {
++                producers.push((dep.fingerprint.index, interface));
++            }
++            remaining.extend(dep.fingerprint.deps.iter());
++        }
++        producers
++    }
++
++    pub(super) fn native_library_inputs(&self) -> Option<NativeInputGenerations> {
++        let mut inputs = NativeInputGenerations::new();
++        let mut seen = HashSet::default();
++        let mut remaining: Vec<_> = self.deps.iter().collect();
++        while let Some(dep) = remaining.pop() {
++            if seen.insert(dep.fingerprint.index) {
++                for path in &dep.fingerprint.outputs {
++                    inputs.insert(path.clone(), super::cached_file(path.clone()).ok()?.blake3);
++                }
++                remaining.extend(dep.fingerprint.deps.iter());
++            }
++        }
++        Some(inputs)
++    }
++}
++
++/// Verify the complete native input roster from the last full compilation. An input whose
++/// generation changed must have an interface from this invocation, even across an early cutoff.
++pub(super) fn native_library_changes(
++    root: &Fingerprint,
++    previous: &NativeInputGenerations,
++) -> Option<Vec<(UnitIndex, NativeRlibInterface)>> {
++    if !root.is_early_cutoff_candidate() || !root.observed_span_inputs_are_current() {
++        return None;
++    }
++    let mut changed = Vec::new();
++    let mut visited = HashSet::default();
++    let mut found = HashSet::default();
++    let mut remaining: Vec<_> = root.deps.iter().collect();
++    while let Some(dep) = remaining.pop() {
++        let fingerprint = &dep.fingerprint;
++        if !visited.insert(fingerprint.index) {
++            continue;
++        }
++        let rebuilt = match fingerprint.build_state() {
++            BuildState::BuiltUnchanged => {
++                let interface = fingerprint.native_rlib_interface.lock().unwrap().clone()?;
++                changed.push((fingerprint.index, interface));
++                true
++            }
++            BuildState::Fresh | BuildState::SkippedEarlyCutoff => false,
++            _ => return None,
++        };
++        for path in &fingerprint.outputs {
++            let expected = previous.get(path)?;
++            found.insert(path);
++            if !rebuilt && expected != &super::cached_file(path.clone()).ok()?.blake3 {
++                return None;
++            }
++        }
++        remaining.extend(fingerprint.deps.iter());
++    }
++    (!changed.is_empty() && found.len() == previous.len()).then_some(changed)
++}
++
+ fn is_early_cutoff_candidate(fingerprint: &Fingerprint, dirty_reason: &DirtyReason) -> bool {
+     is_stale_due_to_dependency(fingerprint) && dirty_reason.is_dependency_only()
+ }
+@@ -1199,8 +1314,16 @@ pub fn prepare_target(
+                 return PublicApiHashUpdate::Remove;
+             };
+ 
+-            let unchanged_public_api_hash =
+-                old_public_api_hash.as_ref() == Some(&new_public_api_hash);
++            *fingerprint.native_rlib_interface.lock().unwrap() = new_public_api_hash
++                .native_rlib_hash
++                .as_ref()
++                .map(|hash| NativeRlibInterface {
++                    rust_api: new_public_api_hash.value.clone(),
++                    linked_statics: hash.clone(),
++                });
++            let unchanged_public_api_hash = old_public_api_hash
++                .as_ref()
++                .is_some_and(|old| old.same_rust_api(&new_public_api_hash));
+             if unchanged_public_api_hash && !has_changed_metadata_dependency(fingerprint) {
+                 preserve_metadata_generation(fingerprint, previous_metadata.as_ref());
+                 *fingerprint.fs_status.lock().unwrap() = FsStatus::OutputUnchanged {
+@@ -1426,6 +1549,9 @@ pub struct Fingerprint {
+     /// An empty map requests one full compile to collect the binary dependency list.
+     #[serde(skip)]
+     observed_span_inputs: Option<HashMap<PathBuf, Option<(u64, Checksum)>>>,
++    /// Only the successful compiler invocation can establish the native interface.
++    #[serde(skip)]
++    native_rlib_interface: Mutex<Option<NativeRlibInterface>>,
+     /// Whether the unit is dirty only because one of its dependencies changed.
+     #[serde(skip)]
+     early_cutoff_candidate: AtomicBool,
+@@ -1908,6 +2034,7 @@ impl Fingerprint {
+             fs_status: Mutex::new(FsStatus::Stale),
+             build_state: Mutex::new(BuildState::Pending),
+             observed_span_inputs: None,
++            native_rlib_interface: Mutex::new(None),
+             early_cutoff_candidate: AtomicBool::new(false),
+             previously_changed_metadata_dependency: AtomicBool::new(false),
+             outputs: Vec::new(),
+@@ -2758,6 +2885,7 @@ fn calculate_normal(
+         rustflags: extra_flags,
+         fs_status: Mutex::new(FsStatus::Stale),
+         build_state: Mutex::new(BuildState::Pending),
++        native_rlib_interface: Mutex::new(None),
+         early_cutoff_candidate: AtomicBool::new(false),
+         previously_changed_metadata_dependency: AtomicBool::new(false),
+         outputs,
+@@ -3925,6 +4053,7 @@ mod early_cutoff_tests {
+             Some(PublicApiHash {
+                 version: 1,
+                 value: "0123456789abcdef0123456789abcdef".to_owned(),
++                native_rlib_hash: None,
+             })
+         );
+         assert_eq!(
+diff --git a/src/compiler/job_queue/job_state.rs b/src/compiler/job_queue/job_state.rs
+index b795d0ca0f5318af1de689fcf7b6d22cf02d2f0b..25946996aef19fc2083e14159bed3f2ab2c3e9bc 100644
+--- a/src/compiler/job_queue/job_state.rs
++++ b/src/compiler/job_queue/job_state.rs
+@@ -24,6 +24,8 @@ use super::{Artifact, DiagDedupe, Job, JobId, Message};
+ pub(crate) struct PublicApiHash {
+     pub version: u32,
+     pub value: String,
++    #[serde(default, skip_serializing)]
++    pub native_rlib_hash: Option<String>,
+ }
+ 
+ impl PublicApiHash {
+@@ -32,8 +34,23 @@ impl PublicApiHash {
+             .then(|| Self {
+                 version,
+                 value: value.to_ascii_lowercase(),
++                native_rlib_hash: None,
+             })
+     }
++
++    pub fn validated(self) -> Option<Self> {
++        let mut hash = Self::new(self.version, &self.value)?;
++        hash.native_rlib_hash = self.native_rlib_hash.and_then(|value| {
++            let digest = value.strip_prefix("native-v4:")?;
++            (digest.len() == 32 && digest.bytes().all(|byte| byte.is_ascii_hexdigit()))
++                .then_some(value)
++        });
++        Some(hash)
++    }
++
++    pub fn same_rust_api(&self, other: &Self) -> bool {
++        self.version == other.version && self.value == other.value
++    }
+ }
+ 
+ impl fmt::Display for PublicApiHash {
+@@ -263,7 +280,7 @@ impl<'a, 'gctx> JobState<'a, 'gctx> {
+                     && conditional
+                         .previous_public_api_hash
+                         .as_ref()
+-                        .is_some_and(|previous| previous != &public_api_hash)
++                        .is_some_and(|previous| !previous.same_rust_api(&public_api_hash))
+                 {
+                     match fs::remove_file(&conditional.public_api_hash_path) {
+                         Ok(()) => {
+diff --git a/src/compiler/mod.rs b/src/compiler/mod.rs
+index 957aa08d01143fb5a3b4eda75f53e65589422602..118b4b15baa80a7a573e972635a11e9523b5bdc8 100644
+--- a/src/compiler/mod.rs
++++ b/src/compiler/mod.rs
+@@ -660,6 +660,25 @@ struct RelinkCachePaths {
+     executable: PathBuf,
+     manifest: PathBuf,
+     objects: PathBuf,
++    native_library: Option<NativeLibraryInputs>,
++}
++
++struct NativeLibraryInputs {
++    metadata: PathBuf,
++    producers: HashMap<UnitIndex, PathBuf>,
++}
++
++struct NativeLinkGeneration {
++    next: PathBuf,
++    previous: PathBuf,
++    previous_recipe: Option<RelinkCacheFile>,
++}
++
++#[derive(serde::Deserialize, serde::Serialize)]
++struct NativeLibraryReceipt {
++    public_api: PublicApiHash,
++    producers: std::collections::BTreeMap<PathBuf, fingerprint::NativeRlibInterface>,
++    inputs: fingerprint::NativeInputGenerations,
+ }
+ 
+ impl RelinkCachePaths {
+@@ -672,9 +691,55 @@ impl RelinkCachePaths {
+             executable,
+             manifest,
+             objects,
++            native_library: None,
+         }
+     }
+ 
++    /// Returns the active codegen directory and recipe from a previously proved mixed link.
++    fn native_library_recipe(
++        &self,
++        fingerprint: &fingerprint::Fingerprint,
++    ) -> Option<(bool, RelinkCacheFile)> {
++        let inputs = self.native_library.as_ref()?;
++        let receipt_path = self.objects.join("native-library-v5.json");
++        let manifest = self.read_manifest()?;
++        if ![&receipt_path, &inputs.metadata].into_iter().all(|path| {
++            manifest
++                .objects
++                .iter()
++                .any(|entry| &entry.path == path && file_matches(entry))
++        }) {
++            return None;
++        }
++        let receipt: NativeLibraryReceipt =
++            serde_json::from_reader(paths::open_regular(&receipt_path).ok()?).ok()?;
++        let changed = fingerprint::native_library_changes(fingerprint, &receipt.inputs)?;
++        for (id, current) in changed {
++            let path = inputs.producers.get(&id)?;
++            if receipt.producers.get(path) != Some(&current) {
++                return None;
++            }
++        }
++        receipt.public_api.validated()?;
++        let mut dirs =
++            manifest
++                .objects
++                .iter()
++                .filter_map(|entry| match entry.path.extension()?.to_str()? {
++                    "o" | "obj" => entry.path.parent(),
++                    _ => None,
++                });
++        let active = dirs.next()?;
++        let first = active == self.objects.join("0");
++        if (!first && active != self.objects.join("1"))
++            || !active.symlink_metadata().ok()?.is_dir()
++            || !dirs.all(|dir| dir == active)
++        {
++            return None;
++        }
++        Some((first, manifest.rlink))
++    }
++
+     fn is_valid(&self) -> bool {
+         let manifest = self.read_manifest();
+         let Some(manifest) = manifest else {
+@@ -693,9 +758,24 @@ impl RelinkCachePaths {
+     fn initialize(
+         &self,
+         unused_externs: Option<&std::collections::BTreeSet<InternedString>>,
++        library: Option<(&fingerprint::Fingerprint, PublicApiHash)>,
++        native: Option<&NativeLinkGeneration>,
+     ) -> CargoResult<()> {
++        let active = if let Some(native) = native {
++            // A checked hit leaves the recipe pointing at its original objects. A full fallback
++            // writes the recipe with the new directory, including when its incremental state was lost.
++            let (active, unused) = if native.previous_recipe.as_ref().is_some_and(file_matches) {
++                (&native.previous, &native.next)
++            } else {
++                (&native.next, &native.previous)
++            };
++            Self::clear_codegen_dir(unused)?;
++            active
++        } else {
++            &self.objects
++        };
+         let mut objects = Vec::new();
+-        for path in self.codegen_temps()? {
++        for path in Self::codegen_temps(active)? {
+             match path.extension().and_then(OsStr::to_str) {
+                 Some("o" | "obj") => objects.push(cached_file(path)?),
+                 Some("bc") => paths::remove_file(&path)?,
+@@ -708,6 +788,31 @@ impl RelinkCachePaths {
+             // The cache was invalidated before running rustc, so leave it absent.
+             return Ok(());
+         }
++        if let Some(inputs) = &self.native_library {
++            let Some((root, public_api)) = library else {
++                return Ok(());
++            };
++            let producers: std::collections::BTreeMap<_, _> = root
++                .native_library_producers()
++                .into_iter()
++                .filter_map(|(id, hash)| Some((inputs.producers.get(&id)?.clone(), hash)))
++                .collect();
++            if producers.is_empty() || !inputs.metadata.is_file() {
++                return Ok(());
++            }
++            let Some(generations) = root.native_library_inputs() else {
++                return Ok(());
++            };
++            let receipt = NativeLibraryReceipt {
++                public_api,
++                producers,
++                inputs: generations,
++            };
++            let path = self.objects.join("native-library-v5.json");
++            paths::write_atomic(&path, serde_json::to_vec(&receipt)?)?;
++            objects.push(cached_file(path)?);
++            objects.push(cached_file(inputs.metadata.clone())?);
++        }
+         let manifest = RelinkCacheManifest {
+             version: RELINK_CACHE_VERSION,
+             rlink: cached_file(self.rlink.clone())?,
+@@ -729,11 +834,11 @@ impl RelinkCachePaths {
+             .is_ok_and(|meta| meta.is_dir())
+     }
+ 
+-    fn codegen_temps(&self) -> CargoResult<Vec<PathBuf>> {
+-        if !self.has_object_directory() {
++    fn codegen_temps(dir: &Path) -> CargoResult<Vec<PathBuf>> {
++        if !dir.symlink_metadata().is_ok_and(|meta| meta.is_dir()) {
+             return Ok(Vec::new());
+         }
+-        let entries = match fs::read_dir(&self.objects) {
++        let entries = match fs::read_dir(dir) {
+             Ok(entries) => entries,
+             Err(error) if error.kind() == std::io::ErrorKind::NotFound => return Ok(Vec::new()),
+             Err(error) => return Err(error.into()),
+@@ -750,13 +855,13 @@ impl RelinkCachePaths {
+             .collect())
+     }
+ 
+-    fn clear_codegen_temps(&self) -> CargoResult<()> {
++    fn clear_codegen_dir(dir: &Path) -> CargoResult<()> {
+         // rustc recreates this private directory on demand. Remove the entry
+         // itself so a saved symlink cannot redirect cleanup or the next build.
+-        match fs::symlink_metadata(&self.objects) {
+-            Ok(meta) if meta.is_dir() => fs::remove_dir_all(&self.objects)
+-                .with_context(|| format!("failed to clear `{}`", self.objects.display())),
+-            Ok(_) => paths::remove_file(&self.objects),
++        match fs::symlink_metadata(dir) {
++            Ok(meta) if meta.is_dir() => fs::remove_dir_all(dir)
++                .with_context(|| format!("failed to clear `{}`", dir.display())),
++            Ok(_) => paths::remove_file(dir),
+             Err(error) if error.kind() == std::io::ErrorKind::NotFound => Ok(()),
+             Err(error) => Err(error.into()),
+         }
+@@ -1141,9 +1246,17 @@ fn rustc(
+ 
+     let outputs = build_runner.outputs(unit)?;
+     let root = build_runner.files().output_dir(unit);
+-    let relink_cache = (build_runner.bcx.gctx.cli_unstable().relink_only()
+-        && fingerprint::unit_can_use_relink_only(build_runner, unit)
+-        && matches!(build_runner.lto[unit], lto::Lto::Off | lto::Lto::OnlyObject))
++    let dep_info_name =
++        if let Some(c_extra_filename) = build_runner.files().metadata(unit).c_extra_filename() {
++            format!("{}-{}.d", unit.target.crate_name(), c_extra_filename)
++        } else {
++            format!("{}.d", unit.target.crate_name())
++        };
++    let rustc_dep_info_loc = root.join(dep_info_name);
++    let can_cache_link = build_runner.bcx.gctx.cli_unstable().relink_only()
++        && matches!(build_runner.lto[unit], lto::Lto::Off | lto::Lto::OnlyObject);
++    let mut relink_cache = (can_cache_link
++        && fingerprint::unit_can_use_relink_only(build_runner, unit))
+     .then(|| {
+         outputs
+             .iter()
+@@ -1168,6 +1281,49 @@ fn rustc(
+         })
+         .map(|dep| build_runner.bcx.unit_to_index[&dep.unit])
+         .collect::<HashSet<_>>();
++    if can_cache_link && fingerprint::unit_can_relink_native_library(build_runner, unit) {
++        if let Some(library) = outputs
++            .iter()
++            .find(|out| out.path.extension() == Some(OsStr::new("so")))
++            && let Some(metadata) = outputs.iter().find(|out| out.flavor == FileFlavor::Rmeta)
++        {
++            let mut cache = RelinkCachePaths::new(library.path.clone());
++            cache.rlink = rustc_dep_info_loc.with_extension("rlink");
++            let mut producers = HashMap::default();
++            let mut visited = HashSet::default();
++            let mut remaining = vec![unit];
++            while let Some(parent) = remaining.pop() {
++                for dep in build_runner.unit_deps(parent) {
++                    let upstream = &dep.unit;
++                    let index = build_runner.bcx.unit_to_index[upstream];
++                    if !visited.insert(index) {
++                        continue;
++                    }
++                    remaining.push(upstream);
++                    if upstream.mode == CompileMode::Build
++                        && !upstream.artifact.is_true()
++                        && upstream.target.is_lib()
++                        && build_runner.bcx.ws.is_member(&upstream.pkg)
++                        && upstream
++                            .target
++                            .rustc_crate_types()
++                            .iter()
++                            .all(|ty| matches!(ty, CrateType::Lib | CrateType::Rlib))
++                    {
++                        producers.insert(
++                            index,
++                            build_runner.files().fingerprint_file_path(upstream, ""),
++                        );
++                    }
++                }
++            }
++            cache.native_library = Some(NativeLibraryInputs {
++                metadata: metadata.path.clone(),
++                producers,
++            });
++            relink_cache = Some(cache);
++        }
++    }
+     let unused_integration_dependency = unused_integration_self_dependency(build_runner, unit);
+     let record_dev_unused = ohm_deferred_dev_deps::supported(build_runner, unit);
+     let dev_native_output_dirs = record_dev_unused
+@@ -1224,9 +1380,11 @@ fn rustc(
+         // keep them outside the dependency search directory while completing
+         // the initial link.
+         rustc.arg("-Z").arg("emit-rlink");
+-        let mut temps_dir = OsString::from("temps-dir=");
+-        temps_dir.push(&cache.objects);
+-        rustc.arg("-Z").arg(temps_dir);
++        if cache.native_library.is_none() {
++            let mut temps_dir = OsString::from("temps-dir=");
++            temps_dir.push(&cache.objects);
++            rustc.arg("-Z").arg(temps_dir);
++        }
+     }
+ 
+     // Prepare the native lib state (extra `-L` and `-l` flags).
+@@ -1239,13 +1397,6 @@ fn rustc(
+     // don't pass the `-l` flags.
+     let pass_l_flag = unit.target.is_lib() || !unit.pkg.targets().iter().any(|t| t.is_lib());
+ 
+-    let dep_info_name =
+-        if let Some(c_extra_filename) = build_runner.files().metadata(unit).c_extra_filename() {
+-            format!("{}-{}.d", unit.target.crate_name(), c_extra_filename)
+-        } else {
+-            format!("{}.d", unit.target.crate_name())
+-        };
+-    let rustc_dep_info_loc = root.join(dep_info_name);
+     let dep_info_loc = fingerprint::dep_info_loc(build_runner, unit);
+ 
+     let mut output_options = OutputOptions::for_dirty(build_runner, unit);
+@@ -1552,14 +1703,38 @@ fn rustc(
+         let can_relink_dependencies = fingerprint.as_ref().is_some_and(|fingerprint| {
+             fingerprint::can_relink_due_to_early_cutoff(fingerprint, &relinkable_dependencies)
+         });
++        let library = relink_cache
++            .as_ref()
++            .filter(|cache| cache.native_library.is_some());
+         let validation_started = Instant::now();
+-        let use_cached_relink = early_test.is_none()
++        let valid_recipe = early_test.is_none()
+             && deferred_dev_names.is_empty()
+             && can_relink_dependencies
+             && observed_inputs_current
+             && relink_cache
+                 .as_ref()
+                 .is_some_and(RelinkCachePaths::is_valid);
++        let native = library.map(|cache| {
++            let prior = if valid_recipe && !cached_output_path.exists() {
++                fingerprint
++                    .as_deref()
++                    .and_then(|fp| cache.native_library_recipe(fp))
++            } else {
++                None
++            };
++            let first_is_active = prior.as_ref().is_some_and(|(first, _)| *first);
++            let (next, previous) = if first_is_active {
++                ("1", "0")
++            } else {
++                ("0", "1")
++            };
++            NativeLinkGeneration {
++                next: cache.objects.join(next),
++                previous: cache.objects.join(previous),
++                previous_recipe: prior.map(|(_, recipe)| recipe),
++            }
++        });
++        let use_cached_relink = valid_recipe && library.is_none();
+         if can_relink_dependencies {
+             tracing::info!(
+                 "relink-only: cache validation for {unit_name} took {:?}",
+@@ -1570,8 +1745,24 @@ fn rustc(
+             tracing::info!("relink-only: reusing cached codegen for {unit_name}");
+         } else {
+             if let Some(cache) = &relink_cache {
+-                cache.invalidate()?;
+-                cache.clear_codegen_temps()?;
++                if let Some(generation) = &native
++                    && generation.previous_recipe.is_some()
++                {
++                    let mut option = OsString::from("ohm-checked-mixed-rlink=");
++                    option.push(&cache.rlink);
++                    rustc.arg("-Z").arg(option);
++                    // Both an accepted link and a full fallback publish a fresh manifest after success.
++                    paths::remove_file(&cache.manifest)?;
++                    RelinkCachePaths::clear_codegen_dir(&generation.next)?;
++                } else {
++                    cache.invalidate()?;
++                    RelinkCachePaths::clear_codegen_dir(&cache.objects)?;
++                }
++                if let Some(generation) = &native {
++                    let mut option = OsString::from("temps-dir=");
++                    option.push(&generation.next);
++                    rustc.arg("-Z").arg(option);
++                }
+             }
+             output_options.prepare_for_compiler();
+         }
+@@ -1817,7 +2008,7 @@ fn rustc(
+                     tracing::info!(target: "cargo::compiler::ohm_early_tests", "accepted early {}", target.name());
+                 } else {
+                     if let Some(cache) = &relink_cache {
+-                        cache.clear_codegen_temps()?;
++                        RelinkCachePaths::clear_codegen_dir(&cache.objects)?;
+                     }
+                     for output in outputs.iter() {
+                         if output.path.exists() {
+@@ -1834,7 +2025,7 @@ fn rustc(
+                         .all(|name| output.proves_unused(*name))
+                 {
+                     if let Some(cache) = &relink_cache {
+-                        cache.clear_codegen_temps()?;
++                        RelinkCachePaths::clear_codegen_dir(&cache.objects)?;
+                         if cache.rlink.exists() {
+                             paths::remove_file(&cache.rlink)?;
+                         }
+@@ -1981,7 +2172,11 @@ fn rustc(
+             let unused_externs = (unused_integration_dependency.is_some() || record_dev_unused)
+                 .then(|| state.recorded_unused_externs())
+                 .flatten();
+-            cache.initialize(unused_externs.as_ref())?;
++            let library = cache
++                .native_library
++                .as_ref()
++                .and_then(|_| Some((fingerprint.as_deref()?, state.public_api_hash()?)));
++            cache.initialize(unused_externs.as_ref(), library, native.as_ref())?;
+         }
+ 
+         if rustc_dep_info_loc.exists() {
+@@ -4031,20 +4226,13 @@ fn on_stderr_line_inner(
+         public_api_hash: Option<serde_json::Value>,
+     }
+ 
+-    #[derive(serde::Deserialize)]
+-    struct PublicApiHashNotification {
+-        version: u32,
+-        value: String,
+-    }
+-
+     if let Ok(artifact) = serde_json::from_str::<ArtifactNotification<'_>>(compiler_message.get()) {
+         trace!("found directive from rustc: `{}`", artifact.artifact);
+         if artifact.artifact.ends_with(".rmeta") {
+             if let Some(public_api_hash) = artifact.public_api_hash {
+                 if let Ok(public_api_hash) =
+-                    serde_json::from_value::<PublicApiHashNotification>(public_api_hash)
+-                    && let Some(public_api_hash) =
+-                        PublicApiHash::new(public_api_hash.version, &public_api_hash.value)
++                    serde_json::from_value::<PublicApiHash>(public_api_hash)
++                    && let Some(public_api_hash) = public_api_hash.validated()
+                 {
+                     state.public_api_hash_produced(public_api_hash);
+                 } else {
+@@ -4616,7 +4804,7 @@ mod relink_cache_tests {
+         for name in ["a.o", "b.o"] {
+             fs::write(cache.objects.join(name), b"codegen")?;
+         }
+-        cache.initialize(None)?;
++        cache.initialize(None, None, None)?;
+         assert!(cache.is_valid());
+ 
+         let mut manifest: serde_json::Value = serde_json::from_slice(&fs::read(&cache.manifest)?)?;
+@@ -4627,6 +4815,33 @@ mod relink_cache_tests {
+         Ok(())
+     }
+ 
++    #[test]
++    fn mixed_relink_retains_only_the_objects_in_its_recipe() -> CargoResult<()> {
++        let dir = tempfile::tempdir()?;
++        let cache = RelinkCachePaths::new(dir.path().join("bundle"));
++        fs::write(&cache.rlink, b"previous recipe")?;
++        fs::write(&cache.executable, b"library")?;
++        let generation = NativeLinkGeneration {
++            previous: cache.objects.join("1"),
++            next: cache.objects.join("0"),
++            previous_recipe: Some(cached_file(cache.rlink.clone())?),
++        };
++        fs::create_dir_all(&generation.previous)?;
++        fs::write(generation.previous.join("before.o"), b"original")?;
++
++        // A checked link does not create new objects. A full fallback writes a new recipe.
++        cache.initialize(None, None, Some(&generation))?;
++        assert!(generation.previous.join("before.o").is_file());
++        fs::write(&cache.rlink, b"new recipe")?;
++        fs::create_dir_all(&generation.next)?;
++        fs::write(generation.next.join("after.o"), b"new")?;
++        cache.initialize(None, None, Some(&generation))?;
++        assert!(generation.next.join("after.o").is_file());
++        assert!(!generation.previous.exists());
++        assert!(cache.is_valid());
++        Ok(())
++    }
++
+     #[cfg(unix)]
+     #[test]
+     fn cache_fifos_do_not_wait_for_a_writer() -> CargoResult<()> {
