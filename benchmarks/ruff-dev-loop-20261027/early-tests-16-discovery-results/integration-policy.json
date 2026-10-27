@@ -1,0 +1,815 @@
+[
+  {
+    "action": "accepted",
+    "events": [
+      {
+        "action": "accepted",
+        "arrival_ns": 1793133945349541643,
+        "byte_offset": 2024864,
+        "cargo_ns": 328542825346,
+        "line_bytes": 85,
+        "line_sha256": "3aa1b340b2ca6fcd362609350cfb5f8c02ac34c29e1182c183b2464f542ebdd8",
+        "target": "analyze_graph"
+      }
+    ],
+    "first_own_producer_exit": "after",
+    "real_wild_count": 1,
+    "real_wild_with_exact_self_rlib": 0,
+    "source": "crates/ruff/tests/analyze_graph.rs",
+    "source_sha256": "21d3484e876445d4dcc81b3fad8d3c930fbe4ca2ff33ead2469801c7a391c169",
+    "target": "analyze_graph",
+    "target_root_self_crate_path_count": 0
+  },
+  {
+    "action": "accepted",
+    "events": [
+      {
+        "action": "accepted",
+        "arrival_ns": 1793133945349919894,
+        "byte_offset": 2025035,
+        "cargo_ns": 328542905307,
+        "line_bytes": 75,
+        "line_sha256": "e9e73ccf31c010a860f2a3d058ca698c2173e380b58dc39e4aa60e472fb07830",
+        "target": "cli"
+      }
+    ],
+    "first_own_producer_exit": "after",
+    "real_wild_count": 1,
+    "real_wild_with_exact_self_rlib": 0,
+    "source": "crates/ruff/tests/cli/main.rs",
+    "source_sha256": "92a10d41b071141d8c39973faef192213550928813f37ba187910f6380b801f3",
+    "target": "cli",
+    "target_root_self_crate_path_count": 0
+  },
+  {
+    "action": "accepted",
+    "events": [
+      {
+        "action": "accepted",
+        "arrival_ns": 1793133945349381636,
+        "byte_offset": 2024701,
+        "cargo_ns": 328542741350,
+        "line_bytes": 78,
+        "line_sha256": "7c9a560f11207ad76b9111284ae206cc81ec5aa746336dd4aa69e9973ddfd557",
+        "target": "config"
+      }
+    ],
+    "first_own_producer_exit": "after",
+    "real_wild_count": 1,
+    "real_wild_with_exact_self_rlib": 0,
+    "source": "crates/ruff/tests/config.rs",
+    "source_sha256": "21e239ea11f64d863d5e35f4245069962e47ac88ce3fc675c30dc42b5de948c3",
+    "target": "config",
+    "target_root_self_crate_path_count": 0
+  },
+  {
+    "action": "accepted",
+    "events": [
+      {
+        "action": "accepted",
+        "arrival_ns": 1793133945349662817,
+        "byte_offset": 2024949,
+        "cargo_ns": 328542952961,
+        "line_bytes": 86,
+        "line_sha256": "2686effbd5afbc5de0d67ab74bbd3cffb4aeccd8a082c27f8e85d32043b63e60",
+        "target": "direxist_guard"
+      }
+    ],
+    "first_own_producer_exit": "after",
+    "real_wild_count": 1,
+    "real_wild_with_exact_self_rlib": 0,
+    "source": "crates/ruff/tests/direxist_guard.rs",
+    "source_sha256": "cd338aa982be039f95368cd4c80c335b8f2606a589ff2e41ca6ba8bfdb6207c5",
+    "target": "direxist_guard",
+    "target_root_self_crate_path_count": 0
+  },
+  {
+    "action": "retry",
+    "events": [
+      {
+        "action": "retry",
+        "arrival_ns": 1793133945345576752,
+        "byte_offset": 2024591,
+        "cargo_ns": 328539037114,
+        "line_bytes": 110,
+        "line_sha256": "cb3a0066e8486c9cac8c8cf083e0300fc4de63b89b4707be18f30bd881e3104c",
+        "target": "integration_test"
+      }
+    ],
+    "first_own_producer_exit": "after",
+    "real_wild_count": 1,
+    "real_wild_with_exact_self_rlib": 1,
+    "source": "crates/ruff/tests/integration_test.rs",
+    "source_sha256": "b3b074a02107ebcbb9cb0fdf2d1ab214255448617877f61296ea611f427b3d08",
+    "target": "integration_test",
+    "target_root_self_crate_path_count": 2
+  },
+  {
+    "action": "accepted",
+    "events": [
+      {
+        "action": "accepted",
+        "arrival_ns": 1793133945349441997,
+        "byte_offset": 2024779,
+        "cargo_ns": 328542951066,
+        "line_bytes": 85,
+        "line_sha256": "e1c52ff44799bb052389882a202e87cc5a6460379a326756a190fdb929db23cf",
+        "target": "resolve_files"
+      }
+    ],
+    "first_own_producer_exit": "after",
+    "real_wild_count": 1,
+    "real_wild_with_exact_self_rlib": 0,
+    "source": "crates/ruff/tests/resolve_files.rs",
+    "source_sha256": "0fa60801be71a677f4d5e565011d270e6f59a07dc62a2cc89480c1cb6c44a45b",
+    "target": "resolve_files",
+    "target_root_self_crate_path_count": 0
+  },
+  {
+    "action": "no early acceptance or retry",
+    "events": [],
+    "first_own_producer_exit": null,
+    "real_wild_count": 1,
+    "real_wild_with_exact_self_rlib": 0,
+    "source": "crates/ruff_annotate_snippets/tests/color/main.rs",
+    "source_sha256": "ca4a53a5832f9c082c4f9536550d47d1fa5376f52c1a8c4b4ca63dbec14d3043",
+    "target": "color",
+    "target_root_self_crate_path_count": 0
+  },
+  {
+    "action": "no early acceptance or retry",
+    "events": [],
+    "first_own_producer_exit": null,
+    "real_wild_count": 1,
+    "real_wild_with_exact_self_rlib": 0,
+    "source": "crates/ruff_annotate_snippets/tests/examples.rs",
+    "source_sha256": "598c588acb082c3c3e1e5fabe3d67a6e48261999a11789e585910f073e50c5f2",
+    "target": "examples",
+    "target_root_self_crate_path_count": 0
+  },
+  {
+    "action": "no early acceptance or retry",
+    "events": [],
+    "first_own_producer_exit": null,
+    "real_wild_count": 1,
+    "real_wild_with_exact_self_rlib": 0,
+    "source": "crates/ruff_annotate_snippets/tests/formatter.rs",
+    "source_sha256": "1a490e552d1f03eee62486c861a54807c389b3fb9928e658ffc27faaeede3364",
+    "target": "formatter",
+    "target_root_self_crate_path_count": 0
+  },
+  {
+    "action": "no early acceptance or retry",
+    "events": [],
+    "first_own_producer_exit": null,
+    "real_wild_count": 1,
+    "real_wild_with_exact_self_rlib": 0,
+    "source": "crates/ruff_annotate_snippets/tests/ruff.rs",
+    "source_sha256": "d95ed9d60465aafdee0e2e2e465b94fdf5a7335b460d1aaa0366756ff123d217",
+    "target": "ruff",
+    "target_root_self_crate_path_count": 0
+  },
+  {
+    "action": "no early acceptance or retry",
+    "events": [],
+    "first_own_producer_exit": null,
+    "real_wild_count": 1,
+    "real_wild_with_exact_self_rlib": 0,
+    "source": "crates/ruff_annotate_snippets/tests/rustc_tests.rs",
+    "source_sha256": "8d38511de8aafbae38a3b43068aeaf7e7af0bf85d8427dfa4b2ceddefb6a5798",
+    "target": "rustc_tests",
+    "target_root_self_crate_path_count": 0
+  },
+  {
+    "action": "retry",
+    "events": [
+      {
+        "action": "retry",
+        "arrival_ns": 1793133821569730741,
+        "byte_offset": 1915167,
+        "cargo_ns": 204763216120,
+        "line_bytes": 103,
+        "line_sha256": "bfc21182afd5ea2b5b1452b572129427ad6a24715cb8a45fa2338674e8e931d4",
+        "target": "cache_key"
+      }
+    ],
+    "first_own_producer_exit": "before",
+    "real_wild_count": 2,
+    "real_wild_with_exact_self_rlib": 2,
+    "source": "crates/ruff_cache/tests/cache_key.rs",
+    "source_sha256": "ba614a7732fa21ef883d8d92234953c88f1921029638d0ef589e203ea1a4218e",
+    "target": "cache_key",
+    "target_root_self_crate_path_count": 1
+  },
+  {
+    "action": "retry",
+    "events": [
+      {
+        "action": "retry",
+        "arrival_ns": 1793133843590823546,
+        "byte_offset": 1948580,
+        "cargo_ns": 226784313098,
+        "line_bytes": 100,
+        "line_sha256": "6ae794fa625abf90c2144756200226ab57af537112292f718191fec8cf507353",
+        "target": "mdtest"
+      }
+    ],
+    "first_own_producer_exit": "before",
+    "real_wild_count": 2,
+    "real_wild_with_exact_self_rlib": 2,
+    "source": "crates/ruff_mdtest/tests/mdtest.rs",
+    "source_sha256": "86c9c8a89ad78b600551cbf68e6a441b9dac4042b5a20e657f14ee712ae31863",
+    "target": "mdtest",
+    "target_root_self_crate_path_count": 1
+  },
+  {
+    "action": "accepted",
+    "events": [
+      {
+        "action": "accepted",
+        "arrival_ns": 1793133740998611366,
+        "byte_offset": 1750976,
+        "cargo_ns": 124192079633,
+        "line_bytes": 82,
+        "line_sha256": "239771c9bd3d399b009035f145e9e70ff7963efff77e673e572177644775b6be",
+        "target": "comparable"
+      }
+    ],
+    "first_own_producer_exit": "before",
+    "real_wild_count": 1,
+    "real_wild_with_exact_self_rlib": 0,
+    "source": "crates/ruff_python_ast_integration_tests/tests/comparable.rs",
+    "source_sha256": "693c1adcd26a110220b5fb8f4e7d57a6b0e8010594d90dbdc637587dafd42ec6",
+    "target": "comparable",
+    "target_root_self_crate_path_count": 0
+  },
+  {
+    "action": "accepted",
+    "events": [
+      {
+        "action": "accepted",
+        "arrival_ns": 1793133740462767836,
+        "byte_offset": 1748450,
+        "cargo_ns": 123656247700,
+        "line_bytes": 82,
+        "line_sha256": "9222eefe3c55473a3eb4090b706f6ec91a1917587944890ea37f28b8e1b31054",
+        "target": "identifier"
+      }
+    ],
+    "first_own_producer_exit": "before",
+    "real_wild_count": 1,
+    "real_wild_with_exact_self_rlib": 0,
+    "source": "crates/ruff_python_ast_integration_tests/tests/identifier.rs",
+    "source_sha256": "6770a27feaf7518a7da69a723c4039fa27947f0e0ed673b7b8b8d222ddee4ec7",
+    "target": "identifier",
+    "target_root_self_crate_path_count": 0
+  },
+  {
+    "action": "accepted",
+    "events": [
+      {
+        "action": "accepted",
+        "arrival_ns": 1793133743053452783,
+        "byte_offset": 1759443,
+        "cargo_ns": 126246894707,
+        "line_bytes": 85,
+        "line_sha256": "5e74648afb89411200e3e76115359ff866b101c5c33ab5755f37668e05f39e89",
+        "target": "match_pattern"
+      }
+    ],
+    "first_own_producer_exit": "before",
+    "real_wild_count": 1,
+    "real_wild_with_exact_self_rlib": 0,
+    "source": "crates/ruff_python_ast_integration_tests/tests/match_pattern.rs",
+    "source_sha256": "3783c25a335b25dcc36309077a9fa77fc353b076cf79597edbbb9aa4d4cbc450",
+    "target": "match_pattern",
+    "target_root_self_crate_path_count": 0
+  },
+  {
+    "action": "accepted",
+    "events": [
+      {
+        "action": "accepted",
+        "arrival_ns": 1793133744060621370,
+        "byte_offset": 1761886,
+        "cargo_ns": 127253193620,
+        "line_bytes": 83,
+        "line_sha256": "ea8f6d647146443114bb1b417712c020ad165f19100fe88560229d72c527d294",
+        "target": "parentheses"
+      }
+    ],
+    "first_own_producer_exit": "before",
+    "real_wild_count": 1,
+    "real_wild_with_exact_self_rlib": 0,
+    "source": "crates/ruff_python_ast_integration_tests/tests/parentheses.rs",
+    "source_sha256": "d18a14cd95a37e9cbacb38bea7a2d572b062eb46f1fe236d854950820c6e4211",
+    "target": "parentheses",
+    "target_root_self_crate_path_count": 0
+  },
+  {
+    "action": "accepted",
+    "events": [
+      {
+        "action": "accepted",
+        "arrival_ns": 1793133739963957548,
+        "byte_offset": 1744829,
+        "cargo_ns": 123157293427,
+        "line_bytes": 84,
+        "line_sha256": "3d870821fc90ce216fdd0a76ffbb9d4d4621413c4e2eff805e55780955a68bbf",
+        "target": "parenthesize"
+      }
+    ],
+    "first_own_producer_exit": "before",
+    "real_wild_count": 1,
+    "real_wild_with_exact_self_rlib": 0,
+    "source": "crates/ruff_python_ast_integration_tests/tests/parenthesize.rs",
+    "source_sha256": "28a40029c881e978cfcfcc1fb9d837ed8931bd2648fd766789cb87146072ba87",
+    "target": "parenthesize",
+    "target_root_self_crate_path_count": 0
+  },
+  {
+    "action": "accepted",
+    "events": [
+      {
+        "action": "accepted",
+        "arrival_ns": 1793133741522345928,
+        "byte_offset": 1753437,
+        "cargo_ns": 124715587802,
+        "line_bytes": 84,
+        "line_sha256": "7dc42d7e5ba98415e1ce150ccb09ac46431c873e9d1597ccb815aef754f6e9e1",
+        "target": "source_order"
+      }
+    ],
+    "first_own_producer_exit": "before",
+    "real_wild_count": 1,
+    "real_wild_with_exact_self_rlib": 0,
+    "source": "crates/ruff_python_ast_integration_tests/tests/source_order.rs",
+    "source_sha256": "bac37adf519bf1cab9f17ea207be14d1386a6d02cefb9608bd3a6dbb7326c8c3",
+    "target": "source_order",
+    "target_root_self_crate_path_count": 0
+  },
+  {
+    "action": "accepted",
+    "events": [
+      {
+        "action": "accepted",
+        "arrival_ns": 1793133742001255184,
+        "byte_offset": 1755892,
+        "cargo_ns": 125194667717,
+        "line_bytes": 79,
+        "line_sha256": "19414c33c16ac6b5f05d5dab085d4d2acc567328b64fe2423628b925ad1817a9",
+        "target": "stmt_if"
+      }
+    ],
+    "first_own_producer_exit": "before",
+    "real_wild_count": 1,
+    "real_wild_with_exact_self_rlib": 0,
+    "source": "crates/ruff_python_ast_integration_tests/tests/stmt_if.rs",
+    "source_sha256": "09a1c89219b68eda58b72e9d395eb782985c907a5ad0f9bf8adacf8508f01d5a",
+    "target": "stmt_if",
+    "target_root_self_crate_path_count": 0
+  },
+  {
+    "action": "accepted",
+    "events": [
+      {
+        "action": "accepted",
+        "arrival_ns": 1793133744301512102,
+        "byte_offset": 1764387,
+        "cargo_ns": 127494968468,
+        "line_bytes": 79,
+        "line_sha256": "35414fb84bde26929629a212b9c660adab5836a36c83d1c20743328770678293",
+        "target": "visitor"
+      }
+    ],
+    "first_own_producer_exit": "before",
+    "real_wild_count": 1,
+    "real_wild_with_exact_self_rlib": 0,
+    "source": "crates/ruff_python_ast_integration_tests/tests/visitor.rs",
+    "source_sha256": "465d961bcfd847f89f283cb9f5c7e57c07f38d9df2550bd861afffe7d6920069",
+    "target": "visitor",
+    "target_root_self_crate_path_count": 0
+  },
+  {
+    "action": "retry",
+    "events": [
+      {
+        "action": "retry",
+        "arrival_ns": 1793133750715759357,
+        "byte_offset": 1775188,
+        "cargo_ns": 133909218885,
+        "line_bytes": 102,
+        "line_sha256": "89c85fe8fa3d904db7779c75e688db75545f05d034e325948636a220a453403b",
+        "target": "fixtures"
+      }
+    ],
+    "first_own_producer_exit": "before",
+    "real_wild_count": 2,
+    "real_wild_with_exact_self_rlib": 2,
+    "source": "crates/ruff_python_formatter/tests/fixtures.rs",
+    "source_sha256": "85dd7010265b8adce8354a700a6c76e908cea962280a12bc9d0157abed48978e",
+    "target": "fixtures",
+    "target_root_self_crate_path_count": 1
+  },
+  {
+    "action": "accepted",
+    "events": [
+      {
+        "action": "accepted",
+        "arrival_ns": 1793133760853837950,
+        "byte_offset": 1788152,
+        "cargo_ns": 144047267454,
+        "line_bytes": 82,
+        "line_sha256": "2bc9821976262febdd0ed22e706e9fac0797a196923450b906d25b4df7713a2e",
+        "target": "normalizer"
+      }
+    ],
+    "first_own_producer_exit": "before",
+    "real_wild_count": 1,
+    "real_wild_with_exact_self_rlib": 0,
+    "source": "crates/ruff_python_formatter/tests/normalizer.rs",
+    "source_sha256": "508f19763bddc86f315f0b5f716a51aa22db565ecc62138a4e0cd2792f3f7df2",
+    "target": "normalizer",
+    "target_root_self_crate_path_count": 0
+  },
+  {
+    "action": "retry",
+    "events": [
+      {
+        "action": "retry",
+        "arrival_ns": 1793133757548120088,
+        "byte_offset": 1785713,
+        "cargo_ns": 140741568860,
+        "line_bytes": 102,
+        "line_sha256": "ddbe868e6feb844af9464ea9b1717eebcd914e5c9fdc98e0566c459d90bec2ca",
+        "target": "fixtures"
+      }
+    ],
+    "first_own_producer_exit": "before",
+    "real_wild_count": 2,
+    "real_wild_with_exact_self_rlib": 2,
+    "source": "crates/ruff_python_parser/tests/fixtures.rs",
+    "source_sha256": "a5f5ea14efb0179e4e66bcc938f43ddcc198d33014e43ad206b5a3e70b887b21",
+    "target": "fixtures",
+    "target_root_self_crate_path_count": 2
+  },
+  {
+    "action": "accepted",
+    "events": [
+      {
+        "action": "accepted",
+        "arrival_ns": 1793133747995696458,
+        "byte_offset": 1770317,
+        "cargo_ns": 131189010119,
+        "line_bytes": 93,
+        "line_sha256": "aacc86c1873b470d87c3184e2ce2bd285bcf31553b8ed6dea19bd1484fc6a112",
+        "target": "generate_inline_tests"
+      }
+    ],
+    "first_own_producer_exit": "before",
+    "real_wild_count": 1,
+    "real_wild_with_exact_self_rlib": 0,
+    "source": "crates/ruff_python_parser/tests/generate_inline_tests.rs",
+    "source_sha256": "57787c9f9a8222f57fa31fe487885cb689e487e8f5759bef3aefeeac451a24a7",
+    "target": "generate_inline_tests",
+    "target_root_self_crate_path_count": 0
+  },
+  {
+    "action": "accepted",
+    "events": [
+      {
+        "action": "accepted",
+        "arrival_ns": 1793133734235010533,
+        "byte_offset": 1712384,
+        "cargo_ns": 117428362294,
+        "line_bytes": 86,
+        "line_sha256": "fedaf1dff1704951e961c2b022b120104365534c6a23a987ef453882d7effe1d",
+        "target": "block_comments"
+      }
+    ],
+    "first_own_producer_exit": "before",
+    "real_wild_count": 1,
+    "real_wild_with_exact_self_rlib": 0,
+    "source": "crates/ruff_python_trivia_integration_tests/tests/block_comments.rs",
+    "source_sha256": "e273a9537910a695c9b79fd928576edb3bfdf3486014e68663ab996b8ee8c449",
+    "target": "block_comments",
+    "target_root_self_crate_path_count": 0
+  },
+  {
+    "action": "accepted",
+    "events": [
+      {
+        "action": "accepted",
+        "arrival_ns": 1793133736038818461,
+        "byte_offset": 1724326,
+        "cargo_ns": 119232278700,
+        "line_bytes": 88,
+        "line_sha256": "4f689fe3cf0d5ecd84b73e4e4c057c75d93ee7aa4a7be4bb58c614685c2e3a80",
+        "target": "simple_tokenizer"
+      }
+    ],
+    "first_own_producer_exit": "before",
+    "real_wild_count": 1,
+    "real_wild_with_exact_self_rlib": 0,
+    "source": "crates/ruff_python_trivia_integration_tests/tests/simple_tokenizer.rs",
+    "source_sha256": "9628fe6e611a7c83cb0a95ec26563c675bfcfce8f6c4cdbae988b1f1e6e39142",
+    "target": "simple_tokenizer",
+    "target_root_self_crate_path_count": 0
+  },
+  {
+    "action": "accepted",
+    "events": [
+      {
+        "action": "accepted",
+        "arrival_ns": 1793133735362430862,
+        "byte_offset": 1721792,
+        "cargo_ns": 118555889894,
+        "line_bytes": 82,
+        "line_sha256": "7b5f672d70f363c656cf83c81dc45f8e50a53d6d5eca5d8cdcea8e3a365b0edc",
+        "target": "whitespace"
+      }
+    ],
+    "first_own_producer_exit": "before",
+    "real_wild_count": 1,
+    "real_wild_with_exact_self_rlib": 0,
+    "source": "crates/ruff_python_trivia_integration_tests/tests/whitespace.rs",
+    "source_sha256": "73d0cd89aa2a352ebc559c1ea91b1a371ebbe751f3c31e3373b85bbceb8eaf6c",
+    "target": "whitespace",
+    "target_root_self_crate_path_count": 0
+  },
+  {
+    "action": "retry",
+    "events": [
+      {
+        "action": "retry",
+        "arrival_ns": 1793133849797026958,
+        "byte_offset": 1953358,
+        "cargo_ns": 232990485503,
+        "line_bytes": 102,
+        "line_sha256": "0cc801f5c6e971971a56ebad2dbe8871ce31cbc0dcca87207b5bdfcf7bdd31e4",
+        "target": "document"
+      }
+    ],
+    "first_own_producer_exit": "before",
+    "real_wild_count": 2,
+    "real_wild_with_exact_self_rlib": 2,
+    "source": "crates/ruff_server/tests/document.rs",
+    "source_sha256": "0ac9bb25933d8619fc0047033b8f808406995959597b4f638ee0a67731716266",
+    "target": "document",
+    "target_root_self_crate_path_count": 1
+  },
+  {
+    "action": "retry",
+    "events": [
+      {
+        "action": "retry",
+        "arrival_ns": 1793133846443077077,
+        "byte_offset": 1950990,
+        "cargo_ns": 229636552305,
+        "line_bytes": 97,
+        "line_sha256": "cbea660eabf700e4e1676746f29a3b63df5aa18b4db619f8d6d7a4c6dd531d65",
+        "target": "e2e"
+      }
+    ],
+    "first_own_producer_exit": "before",
+    "real_wild_count": 2,
+    "real_wild_with_exact_self_rlib": 2,
+    "source": "crates/ruff_server/tests/e2e/main.rs",
+    "source_sha256": "068120490fd077f9097d81b5e269304ad13602b51660d5f58a0791d51d0212af",
+    "target": "e2e",
+    "target_root_self_crate_path_count": 1
+  },
+  {
+    "action": "retry",
+    "events": [
+      {
+        "action": "retry",
+        "arrival_ns": 1793133737399150413,
+        "byte_offset": 1732889,
+        "cargo_ns": 120592507870,
+        "line_bytes": 105,
+        "line_sha256": "ef0a40289106090f6883701341911b223639cacd5860177f4a9f4f50b6c18834",
+        "target": "auto_traits"
+      }
+    ],
+    "first_own_producer_exit": "before",
+    "real_wild_count": 2,
+    "real_wild_with_exact_self_rlib": 2,
+    "source": "crates/ruff_text_size/tests/auto_traits.rs",
+    "source_sha256": "42bb3ddecd36cab69893ab30ea836ca9d04b74d052f3b975f16732e3de1092f8",
+    "target": "auto_traits",
+    "target_root_self_crate_path_count": 1
+  },
+  {
+    "action": "retry",
+    "events": [
+      {
+        "action": "retry",
+        "arrival_ns": 1793133737534254094,
+        "byte_offset": 1732994,
+        "cargo_ns": 120727669951,
+        "line_bytes": 106,
+        "line_sha256": "52d60612a2549a58aeb85eb88a85ed662159e9046d4aac72c38d38c4a588951b",
+        "target": "constructors"
+      }
+    ],
+    "first_own_producer_exit": "before",
+    "real_wild_count": 2,
+    "real_wild_with_exact_self_rlib": 2,
+    "source": "crates/ruff_text_size/tests/constructors.rs",
+    "source_sha256": "dd1cde3860dbb59f067bfd91967992901fb3da69a84c8f057996da649e0cd3ab",
+    "target": "constructors",
+    "target_root_self_crate_path_count": 1
+  },
+  {
+    "action": "retry",
+    "events": [
+      {
+        "action": "retry",
+        "arrival_ns": 1793133736599488700,
+        "byte_offset": 1730230,
+        "cargo_ns": 119792959089,
+        "line_bytes": 102,
+        "line_sha256": "abc3a283bf14d6fc2250864fcb994a20daa22be38f9998ae8b536e31a8c7b34d",
+        "target": "indexing"
+      }
+    ],
+    "first_own_producer_exit": "before",
+    "real_wild_count": 2,
+    "real_wild_with_exact_self_rlib": 2,
+    "source": "crates/ruff_text_size/tests/indexing.rs",
+    "source_sha256": "106cee4ca834fcca60620645a39a90324aabd8156a8c4301b567667d8cccaa1e",
+    "target": "indexing",
+    "target_root_self_crate_path_count": 1
+  },
+  {
+    "action": "retry",
+    "events": [
+      {
+        "action": "retry",
+        "arrival_ns": 1793133736818060414,
+        "byte_offset": 1730332,
+        "cargo_ns": 120011473444,
+        "line_bytes": 98,
+        "line_sha256": "9de2703ca54b7bf01b16e8891436a52d65fc9648691690313909c63e141a7966",
+        "target": "main"
+      }
+    ],
+    "first_own_producer_exit": "before",
+    "real_wild_count": 2,
+    "real_wild_with_exact_self_rlib": 2,
+    "source": "crates/ruff_text_size/tests/main.rs",
+    "source_sha256": "1e156d1f5c93173034fd0a14e0730e7b24ffb1d6d778709fd2132b247af7ca6f",
+    "target": "main",
+    "target_root_self_crate_path_count": 1
+  },
+  {
+    "action": "retry",
+    "events": [
+      {
+        "action": "retry",
+        "arrival_ns": 1793133735880320771,
+        "byte_offset": 1724227,
+        "cargo_ns": 119073678550,
+        "line_bytes": 99,
+        "line_sha256": "3e6f4af330d0d2cbd34fef88f12ec0b33d703571fe441c9607ea0373f867021a",
+        "target": "serde"
+      }
+    ],
+    "first_own_producer_exit": "before",
+    "real_wild_count": 2,
+    "real_wild_with_exact_self_rlib": 2,
+    "source": "crates/ruff_text_size/tests/serde.rs",
+    "source_sha256": "46cd1f5bfd2f40374e3d5312f9d151b2cf7470ec866a3a309adb1999b7231d46",
+    "target": "serde",
+    "target_root_self_crate_path_count": 1
+  },
+  {
+    "action": "no early acceptance or retry",
+    "events": [],
+    "first_own_producer_exit": null,
+    "real_wild_count": 1,
+    "real_wild_with_exact_self_rlib": 0,
+    "source": "crates/ruff_wasm/tests/api.rs",
+    "source_sha256": "02e73c911e723e33237cefb503497fef6e5d3771454cfa2582bc60aeb091f74c",
+    "target": "api",
+    "target_root_self_crate_path_count": 10
+  },
+  {
+    "action": "accepted",
+    "events": [
+      {
+        "action": "accepted",
+        "arrival_ns": 1793133936653519142,
+        "byte_offset": 2013503,
+        "cargo_ns": 319847026929,
+        "line_bytes": 75,
+        "line_sha256": "6f791cda7b16a6e2e65b6143ac2140590ae24bc6c9af2ea4e5d67915312f1a6b",
+        "target": "cli"
+      }
+    ],
+    "first_own_producer_exit": "after",
+    "real_wild_count": 1,
+    "real_wild_with_exact_self_rlib": 0,
+    "source": "crates/ty/tests/cli/main.rs",
+    "source_sha256": "9705d75dd82da98e65f1643547fda8b48ec2377034ff9ef9a0bbfa0306195522",
+    "target": "cli",
+    "target_root_self_crate_path_count": 0
+  },
+  {
+    "action": "accepted",
+    "events": [
+      {
+        "action": "accepted",
+        "arrival_ns": 1793133938924464577,
+        "byte_offset": 2015785,
+        "cargo_ns": 322117851435,
+        "line_bytes": 85,
+        "line_sha256": "009b9963b0996372e4bad30ddc460296ce0d48c3d51ff7ec667758cd45df23aa",
+        "target": "file_watching"
+      }
+    ],
+    "first_own_producer_exit": "after",
+    "real_wild_count": 1,
+    "real_wild_with_exact_self_rlib": 0,
+    "source": "crates/ty/tests/file_watching.rs",
+    "source_sha256": "4a263d667309bb5744bfe70a2fc702a90cf60b0382c79bb042ec80578a3f815f",
+    "target": "file_watching",
+    "target_root_self_crate_path_count": 0
+  },
+  {
+    "action": "accepted",
+    "events": [
+      {
+        "action": "accepted",
+        "arrival_ns": 1793133935452873250,
+        "byte_offset": 2011230,
+        "cargo_ns": 318646082286,
+        "line_bytes": 88,
+        "line_sha256": "882b78ed8e95ec470ba156f314edbc48dcd4bf29ab1de1b0ff6e7d91bf0e9f5a",
+        "target": "self_environment"
+      }
+    ],
+    "first_own_producer_exit": "after",
+    "real_wild_count": 1,
+    "real_wild_with_exact_self_rlib": 0,
+    "source": "crates/ty/tests/self_environment.rs",
+    "source_sha256": "ebe79f078f8a09b26926d105289b70c012f13ef402f3efe17dd1ed5eb1c55265",
+    "target": "self_environment",
+    "target_root_self_crate_path_count": 0
+  },
+  {
+    "action": "no early acceptance or retry",
+    "events": [],
+    "first_own_producer_exit": "before",
+    "real_wild_count": 1,
+    "real_wild_with_exact_self_rlib": 1,
+    "source": "crates/ty_python_semantic/tests/corpus.rs",
+    "source_sha256": "39ae6cd0a69503d756ab6331e3f1c7544626e66658971e00248c25fce39ec1fa",
+    "target": "corpus",
+    "target_root_self_crate_path_count": 6
+  },
+  {
+    "action": "no early acceptance or retry",
+    "events": [],
+    "first_own_producer_exit": "before",
+    "real_wild_count": 1,
+    "real_wild_with_exact_self_rlib": 1,
+    "source": "crates/ty_python_semantic/tests/mdtest.rs",
+    "source_sha256": "41c917d62355835b66be335ed3cb6f61cfae5375329b4bc6566e82a6eff8229a",
+    "target": "mdtest",
+    "target_root_self_crate_path_count": 1
+  },
+  {
+    "action": "retry",
+    "events": [
+      {
+        "action": "retry",
+        "arrival_ns": 1793133920006230408,
+        "byte_offset": 1986889,
+        "cargo_ns": 303199666632,
+        "line_bytes": 97,
+        "line_sha256": "d069a74be4557248a7f9e975d6bd8e0a1da89c86b7f89c04dd8636e263e0e5e1",
+        "target": "e2e"
+      }
+    ],
+    "first_own_producer_exit": "before",
+    "real_wild_count": 2,
+    "real_wild_with_exact_self_rlib": 2,
+    "source": "crates/ty_server/tests/e2e/main.rs",
+    "source_sha256": "4150c59a02a183cbc0a1f9fe402f5ae7a3358a8b2dd96a8ec34a6b22e00eba93",
+    "target": "e2e",
+    "target_root_self_crate_path_count": 1
+  },
+  {
+    "action": "no early acceptance or retry",
+    "events": [],
+    "first_own_producer_exit": null,
+    "real_wild_count": 1,
+    "real_wild_with_exact_self_rlib": 0,
+    "source": "crates/ty_wasm/tests/api.rs",
+    "source_sha256": "fcdedb2d9fff717f88664cb4dbaa60182245c7ff12a80865d2d67a32219d5b61",
+    "target": "api",
+    "target_root_self_crate_path_count": 11
+  }
+]

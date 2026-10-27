@@ -1,0 +1,3469 @@
+{
+  "crates/ruff/tests/integration_test.rs": {
+    "bounds": {
+      "artifact_arrival_ns": 1793133945338384089,
+      "cargo_exec_ns": 1793133616786289000,
+      "clock_uncertainty_ns": 5157663,
+      "earliest_test_scheduler_start_ns": 1793133936673516149,
+      "first_test_exec_ns": 1793133936711394000,
+      "last_producer_raw_debug_end_received_ns": 1793133945343710744,
+      "producer_terminal_ns": 1793133945315346000
+    },
+    "default_argv_sha256": "e081338b62bbceafe61bd521579ed237bdc2070359b5d6ab27ef196450dc0be4",
+    "default_tests": [
+      {
+        "argv_sha256": "e081338b62bbceafe61bd521579ed237bdc2070359b5d6ab27ef196450dc0be4",
+        "file_sha256": "e4ad4d2a93307452873c10d7a840ab04898436b542566259d9f38c34863a4bd5",
+        "pid": 1118113,
+        "raw_exec_sha256": "c246aaa6a686c4a191c250aaafffbdf2cce3663a00a17d0e5a000dcfcd1b1ee7",
+        "sigchld": [
+          {
+            "code": "CLD_EXITED",
+            "ns": 1793133937373181000,
+            "observer_pid": 1118112,
+            "value": "1"
+          }
+        ],
+        "start_ns": 1793133936711394000,
+        "terminal": {
+          "ns": 1793133937373007000,
+          "result": 1
+        }
+      },
+      {
+        "argv_sha256": "e081338b62bbceafe61bd521579ed237bdc2070359b5d6ab27ef196450dc0be4",
+        "file_sha256": "9004cc3b751f1525d40edde3bc9b20849d57d8596505017d85f5994e8a780bc5",
+        "pid": 1118545,
+        "raw_exec_sha256": "89fa152b9f64d8f181c219952d475cba9da9af094fd17c154a68284768c1620e",
+        "sigchld": [
+          {
+            "code": "CLD_EXITED",
+            "ns": 1793133952950281000,
+            "observer_pid": 1092641,
+            "value": "0"
+          }
+        ],
+        "start_ns": 1793133945360625000,
+        "terminal": {
+          "ns": 1793133952949737000,
+          "result": 0
+        }
+      }
+    ],
+    "default_wilds": [
+      {
+        "argv_sha256": "0cf660eba4a549eae74e72199f0176cf8c52fa290df69af97d01488f455c7df2",
+        "file_sha256": "1c9b3937856164de430ff670d52e1f6a59b22afe85186f0cf39ae977472830ed",
+        "own_rlib_exact_path": true,
+        "own_rlib_tokens": [
+          "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-ff513fdc40cc6d8a/ruff/054790dd1fccb46a/out/libruff-054790dd1fccb46a.rlib"
+        ],
+        "pid": 1118795,
+        "raw_exec_sha256": "44e004b0eb6304b01224e54824ba825ba6157803a638331daafca958dc5b7aca",
+        "rust_rlib_tokens": 287,
+        "sigchld": [
+          {
+            "code": "CLD_EXITED",
+            "ns": 1793133952879022000,
+            "observer_pid": 1118793,
+            "value": "0"
+          }
+        ],
+        "start_ns": 1793133951353933000,
+        "terminal": {
+          "ns": 1793133952878535000,
+          "result": 0
+        }
+      }
+    ],
+    "disabled_argv_sha256": "e081338b62bbceafe61bd521579ed237bdc2070359b5d6ab27ef196450dc0be4",
+    "disabled_test": [
+      {
+        "argv_sha256": "e081338b62bbceafe61bd521579ed237bdc2070359b5d6ab27ef196450dc0be4",
+        "file_sha256": "d5d289286ef621bccf5c944ebffa0c66ede97ad7304e92c49dd2878b33f8b94b",
+        "pid": 1144850,
+        "raw_exec_sha256": "815bae7fa4be42d327518382a9f7facfdfffba9bad2fa1095a8f021fd1d8f782",
+        "sigchld": [
+          {
+            "code": "CLD_EXITED",
+            "ns": 1793134346033329000,
+            "observer_pid": 1119371,
+            "value": "0"
+          }
+        ],
+        "start_ns": 1793134338669825000,
+        "terminal": {
+          "ns": 1793134346033158000,
+          "result": 0
+        }
+      }
+    ],
+    "disabled_wild": [
+      {
+        "argv_sha256": "b18ffaad0c67d2f8f9ad03b990e290f9617ae0236483387fc16570bcfd294738",
+        "file_sha256": "9ee89565b696d3f16153bb48d715e4a5c44e7971fc9138ad58dcc393a4cc7e1d",
+        "own_rlib_exact_path": true,
+        "own_rlib_tokens": [
+          "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-ff513fdc40cc6d8a/ruff/054790dd1fccb46a/out/libruff-054790dd1fccb46a.rlib"
+        ],
+        "pid": 1145086,
+        "raw_exec_sha256": "c07b70f0554c2c8bfde38b242b762e19743611db5a06f33bef4648c3f6c59711",
+        "rust_rlib_tokens": 287,
+        "sigchld": [
+          {
+            "code": "CLD_EXITED",
+            "ns": 1793134345972539000,
+            "observer_pid": 1145085,
+            "value": "0"
+          }
+        ],
+        "start_ns": 1793134344393619000,
+        "terminal": {
+          "ns": 1793134345972262000,
+          "result": 0
+        }
+      }
+    ],
+    "earlier_sibling_authoritative_wait": [],
+    "own_producer": {
+      "actual_extern": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-ff513fdc40cc6d8a/ruff/054790dd1fccb46a/out/libruff-054790dd1fccb46a.rlib",
+      "argv_sha256": "fcc94c26f145e5e303d31035cc2e5bc83088b97f471834d9bbe172db9316452b",
+      "features": [],
+      "file_sha256": "53395a9cfec6dd147f77eabd4da2dbcad7bc8813196b13cc144f90213fa1c88b",
+      "first_relation": "after",
+      "pid": 1117579,
+      "printed_artifact": [
+        {
+          "arrival_ns": 1793133945338384089,
+          "byte_offset": 731640,
+          "features": [],
+          "filenames": [
+            "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-ff513fdc40cc6d8a/ruff/054790dd1fccb46a/out/libruff-054790dd1fccb46a.rlib",
+            "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-ff513fdc40cc6d8a/ruff/054790dd1fccb46a/out/libruff-054790dd1fccb46a.rmeta"
+          ]
+        }
+      ],
+      "producer_entered_before_first": true,
+      "raw_exec_sha256": "d39dafe32f94b9195866ff5c8599f00d897763da97405cb41e9476295b405d5c",
+      "sigchld": [
+        {
+          "code": "CLD_EXITED",
+          "ns": 1793133945315646000,
+          "observer_pid": 1117577,
+          "value": "0"
+        }
+      ],
+      "source": "/home/dev-user/code/oss/ruff-ohm-whole-native-20261027/crates/ruff/src/lib.rs",
+      "start_ns": 1793133926580411000,
+      "terminal": {
+        "ns": 1793133945315346000,
+        "result": 0
+      }
+    },
+    "package": "ruff",
+    "policy": [
+      {
+        "action": "retry",
+        "arrival_ns": 1793133945345576752,
+        "byte_offset": 2024591,
+        "cargo_ns": 328539037114,
+        "line_bytes": 110,
+        "line_sha256": "cb3a0066e8486c9cac8c8cf083e0300fc4de63b89b4707be18f30bd881e3104c",
+        "target": "integration_test"
+      }
+    ],
+    "producer_scheduler_events": [
+      {
+        "ends": [
+          {
+            "arrival_ns": 1793133931425423680,
+            "byte_offset": 2005769,
+            "cargo_ns": 314618866208,
+            "line_bytes": 1099,
+            "line_sha256": "44e1527eef1a8058d6cf3cffcb7d223fa405a4540452efd279eab8398d8a89f2",
+            "result": "Ok(())"
+          },
+          {
+            "arrival_ns": 1793133945343710744,
+            "byte_offset": 2022425,
+            "cargo_ns": 328535147891,
+            "line_bytes": 1099,
+            "line_sha256": "3a708ae8a8a2568e738e6b70e601a2d4f1313cd687f1df942978f1c41a82fe0a",
+            "result": "Ok(())"
+          }
+        ],
+        "starts": [
+          {
+            "arrival_ns": 1793133926566024423,
+            "byte_offset": 1998058,
+            "cargo_ns": 309759511989,
+            "job_id": 671,
+            "line_bytes": 1096,
+            "line_sha256": "ec1710316724d2309286aae20e2ddd63d4ca801eefb018c05be88b234d8e7a3a"
+          }
+        ],
+        "unit_sha256": "300b6acd60601223f8f1a7584c599c4cd6c1d2bab21132b35f26f2752d31f83b"
+      }
+    ],
+    "scheduler_disposition": "producer rustc still running at first test exec",
+    "source": {
+      "bytes": 67017,
+      "first_matches": [
+        [
+          23,
+          "use ruff::args::Args;"
+        ],
+        [
+          25,
+          "use ruff::run;"
+        ]
+      ],
+      "occurrences": 2,
+      "package": "ruff",
+      "sha256": "b3b074a02107ebcbb9cb0fdf2d1ab214255448617877f61296ea611f427b3d08"
+    },
+    "target": "integration_test",
+    "test_scheduler_events": [
+      {
+        "ends": [
+          {
+            "arrival_ns": 1793133952985715213,
+            "byte_offset": 2038302,
+            "cargo_ns": 336179146293,
+            "line_bytes": 1114,
+            "line_sha256": "1aa5d78e75c4d8d081dfcc436201f73651a9132ab2d23c9d0c447dcda7c341e1",
+            "result": "Ok(())"
+          }
+        ],
+        "starts": [
+          {
+            "arrival_ns": 1793133936698925796,
+            "byte_offset": 2014674,
+            "cargo_ns": 319892384812,
+            "job_id": 680,
+            "line_bytes": 1111,
+            "line_sha256": "1defc36e460cc7ded923bfb21672a801977e4cf8b26cf19a3a8ae6448265f30b"
+          }
+        ],
+        "unit_sha256": "7269b7894eefc0a9de0ef59ccfb0382c6edbd0243d2156a401b2ac199e23951b"
+      }
+    ]
+  },
+  "crates/ruff_cache/tests/cache_key.rs": {
+    "bounds": {
+      "artifact_arrival_ns": 1793133641933053550,
+      "cargo_exec_ns": 1793133616786289000,
+      "clock_uncertainty_ns": 5157663,
+      "earliest_test_scheduler_start_ns": 1793133820714616359,
+      "first_test_exec_ns": 1793133820752392000,
+      "last_producer_raw_debug_end_received_ns": 1793133640011929128,
+      "producer_terminal_ns": 1793133640185884000
+    },
+    "default_argv_sha256": "0a2fb2d6d63be36434e873f7adcdfb190b01005eab0bee196032ac6dbb875dcb",
+    "default_tests": [
+      {
+        "argv_sha256": "0a2fb2d6d63be36434e873f7adcdfb190b01005eab0bee196032ac6dbb875dcb",
+        "file_sha256": "a3f8ea278a034336ebf598e8a85b6ec8ba9a124717d4538f5f66aca6876d4cc9",
+        "pid": 1113374,
+        "raw_exec_sha256": "aaef8863721e4a436219eea84585dd1e1f3074d3e7d177e0e3ac34e5ef6b2b35",
+        "sigchld": [
+          {
+            "code": "CLD_EXITED",
+            "ns": 1793133821567193000,
+            "observer_pid": 1113373,
+            "value": "0"
+          }
+        ],
+        "start_ns": 1793133820752392000,
+        "terminal": {
+          "ns": 1793133821566972000,
+          "result": 0
+        }
+      },
+      {
+        "argv_sha256": "0a2fb2d6d63be36434e873f7adcdfb190b01005eab0bee196032ac6dbb875dcb",
+        "file_sha256": "2dd856e854e0f9bd359ff001c8baf7b2786222cf91349075b5c4e5444062b43b",
+        "pid": 1113414,
+        "raw_exec_sha256": "c05bb93a9ba6db7303dc242d7b719b16aed5343a7d260b6d55186a1786785bcf",
+        "sigchld": [
+          {
+            "code": "CLD_EXITED",
+            "ns": 1793133822247770000,
+            "observer_pid": 1113373,
+            "value": "0"
+          }
+        ],
+        "start_ns": 1793133821578438000,
+        "terminal": {
+          "ns": 1793133822247649000,
+          "result": 0
+        }
+      }
+    ],
+    "default_wilds": [
+      {
+        "argv_sha256": "9cdb82ceea033fd0002b2d8e3a4ce9f7ea71e077bd8923d34d892df7f32f445f",
+        "file_sha256": "ba3f3c60c9ef7ebbe8514b6e4da4035efc2f3ef3e38a841e231a07fef4f54045",
+        "own_rlib_exact_path": true,
+        "own_rlib_tokens": [
+          "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-ff513fdc40cc6d8a/ruff_cache/eeea399f0a756640/out/libruff_cache-eeea399f0a756640.rlib"
+        ],
+        "pid": 1113405,
+        "raw_exec_sha256": "95152809fea27e8c396929ed74777f9548ae9d555c6baedbdad0f2679bacb41c",
+        "rust_rlib_tokens": 60,
+        "sigchld": [
+          {
+            "code": "CLD_EXITED",
+            "ns": 1793133821513413000,
+            "observer_pid": 1113404,
+            "value": "0"
+          }
+        ],
+        "start_ns": 1793133821422642000,
+        "terminal": {
+          "ns": 1793133821513243000,
+          "result": 0
+        }
+      },
+      {
+        "argv_sha256": "8a7b246a4a651358f9416c070f9c9e8f401eac0d53c963c3bb406433a3ccfa38",
+        "file_sha256": "91819a6004856a961bc1c6604755acd22f2452f100fb82c1abb8108ed2a8896c",
+        "own_rlib_exact_path": true,
+        "own_rlib_tokens": [
+          "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-ff513fdc40cc6d8a/ruff_cache/eeea399f0a756640/out/libruff_cache-eeea399f0a756640.rlib"
+        ],
+        "pid": 1113448,
+        "raw_exec_sha256": "2efaea3bb0c04902c96d2c5e85ec67405f42dfee8c42da5ca75aadc8fd68f762",
+        "rust_rlib_tokens": 60,
+        "sigchld": [
+          {
+            "code": "CLD_EXITED",
+            "ns": 1793133822204676000,
+            "observer_pid": 1113447,
+            "value": "0"
+          }
+        ],
+        "start_ns": 1793133822129725000,
+        "terminal": {
+          "ns": 1793133822204502000,
+          "result": 0
+        }
+      }
+    ],
+    "disabled_argv_sha256": "0a2fb2d6d63be36434e873f7adcdfb190b01005eab0bee196032ac6dbb875dcb",
+    "disabled_test": [
+      {
+        "argv_sha256": "0a2fb2d6d63be36434e873f7adcdfb190b01005eab0bee196032ac6dbb875dcb",
+        "file_sha256": "c67e992506a4b7b1fecb7f9d3823ecec406eafb8c2bbd5490042d25de1f8644b",
+        "pid": 1139859,
+        "raw_exec_sha256": "ff57052af1d5ff233bf718e8dbd29d1cd2aa89b8a3c22e7e4c999304305bb717",
+        "sigchld": [
+          {
+            "code": "CLD_EXITED",
+            "ns": 1793134212042410000,
+            "observer_pid": 1119371,
+            "value": "0"
+          }
+        ],
+        "start_ns": 1793134211173522000,
+        "terminal": {
+          "ns": 1793134212042207000,
+          "result": 0
+        }
+      }
+    ],
+    "disabled_wild": [
+      {
+        "argv_sha256": "2bd89268f54e241b11646da4c1e2f85849e63da8f42d35ed2fc8d27c2ada4f37",
+        "file_sha256": "ccbed3f28314b093bb222528f444f6ee52e3c468a043e562ee2e42f61ba2180f",
+        "own_rlib_exact_path": true,
+        "own_rlib_tokens": [
+          "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-ff513fdc40cc6d8a/ruff_cache/eeea399f0a756640/out/libruff_cache-eeea399f0a756640.rlib"
+        ],
+        "pid": 1139896,
+        "raw_exec_sha256": "afb82c2744045eacb254c6f1f87a09e18e5097e77315ab66f615324c9632033d",
+        "rust_rlib_tokens": 60,
+        "sigchld": [
+          {
+            "code": "CLD_EXITED",
+            "ns": 1793134211991273000,
+            "observer_pid": 1139895,
+            "value": "0"
+          }
+        ],
+        "start_ns": 1793134211896918000,
+        "terminal": {
+          "ns": 1793134211991034000,
+          "result": 0
+        }
+      }
+    ],
+    "earlier_sibling_authoritative_wait": [],
+    "own_producer": {
+      "actual_extern": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-ff513fdc40cc6d8a/ruff_cache/eeea399f0a756640/out/libruff_cache-eeea399f0a756640.rlib",
+      "argv_sha256": "03e372c7ff6dcf2e17e29470e3bd9945f2feae6da8c3fc378e35c77d94d6f20c",
+      "features": [],
+      "file_sha256": "873b5f14e7198cba6618e5ec06b089c3735b33592ec866dcd3a2b4a8c1a9c732",
+      "first_relation": "before",
+      "pid": 1095341,
+      "printed_artifact": [
+        {
+          "arrival_ns": 1793133641933053550,
+          "byte_offset": 179109,
+          "features": [],
+          "filenames": [
+            "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-ff513fdc40cc6d8a/ruff_cache/eeea399f0a756640/out/libruff_cache-eeea399f0a756640.rlib",
+            "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-ff513fdc40cc6d8a/ruff_cache/eeea399f0a756640/out/libruff_cache-eeea399f0a756640.rmeta"
+          ]
+        }
+      ],
+      "producer_entered_before_first": true,
+      "raw_exec_sha256": "5ca85e888574a018bbcd14776ba95a84d8b6f695cba16a147630476d668ba8cf",
+      "sigchld": [
+        {
+          "code": "CLD_EXITED",
+          "ns": 1793133640189374000,
+          "observer_pid": 1095449,
+          "value": "0"
+        }
+      ],
+      "source": "/home/dev-user/code/oss/ruff-ohm-whole-native-20261027/crates/ruff_cache/src/lib.rs",
+      "start_ns": 1793133639528504000,
+      "terminal": {
+        "ns": 1793133640185884000,
+        "result": 0
+      }
+    },
+    "package": "ruff_cache",
+    "policy": [
+      {
+        "action": "retry",
+        "arrival_ns": 1793133821569730741,
+        "byte_offset": 1915167,
+        "cargo_ns": 204763216120,
+        "line_bytes": 103,
+        "line_sha256": "bfc21182afd5ea2b5b1452b572129427ad6a24715cb8a45fa2338674e8e931d4",
+        "target": "cache_key"
+      }
+    ],
+    "producer_scheduler_events": [
+      {
+        "ends": [
+          {
+            "arrival_ns": 1793133640011929128,
+            "byte_offset": 436303,
+            "cargo_ns": 23205321525,
+            "line_bytes": 1123,
+            "line_sha256": "0ac62cc66ebc30e5c2b89f402b0bc55ea79db90aa8aed11f6cc9c0f1c0dafa2c",
+            "result": "Ok(())"
+          }
+        ],
+        "starts": [
+          {
+            "arrival_ns": 1793133639517573033,
+            "byte_offset": 420490,
+            "cargo_ns": 22711109206,
+            "job_id": 143,
+            "line_bytes": 1120,
+            "line_sha256": "e31aa4d5b1e44d6674e0dbfa471961ff1a369935cb4d35e626b3833fd9a90442"
+          }
+        ],
+        "unit_sha256": "7faba19f40dcf4ee553b16bf5b389887948fb0ae9b08a240548e647cf44c3d62"
+      }
+    ],
+    "scheduler_disposition": "already settled (source inference from held output and final result)",
+    "source": {
+      "bytes": 2945,
+      "first_matches": [
+        [
+          3,
+          "use ruff_cache::{CacheKey, CacheKeyHasher};"
+        ]
+      ],
+      "occurrences": 1,
+      "package": "ruff_cache",
+      "sha256": "ba614a7732fa21ef883d8d92234953c88f1921029638d0ef589e203ea1a4218e"
+    },
+    "target": "cache_key",
+    "test_scheduler_events": [
+      {
+        "ends": [
+          {
+            "arrival_ns": 1793133822257029950,
+            "byte_offset": 1915270,
+            "cargo_ns": 205450450560,
+            "line_bytes": 1118,
+            "line_sha256": "c109d7699fa6ff705b92512789c55552d73953d25fdb76ffe677234b7613eb50",
+            "result": "Ok(())"
+          }
+        ],
+        "starts": [
+          {
+            "arrival_ns": 1793133820739969126,
+            "byte_offset": 1914052,
+            "cargo_ns": 203933485022,
+            "job_id": 639,
+            "line_bytes": 1115,
+            "line_sha256": "5a6a1df733d2e62740329977f44c58604e85d230d3462e2aea0dd890cb9754f3"
+          }
+        ],
+        "unit_sha256": "47217146d3b13b9d4b84392b96b120e6d117a4eac2eb8cf60b2355845c926345"
+      }
+    ]
+  },
+  "crates/ruff_mdtest/tests/mdtest.rs": {
+    "bounds": {
+      "artifact_arrival_ns": 1793133830260888777,
+      "cargo_exec_ns": 1793133616786289000,
+      "clock_uncertainty_ns": 5157663,
+      "earliest_test_scheduler_start_ns": 1793133839791540117,
+      "first_test_exec_ns": 1793133839826819000,
+      "last_producer_raw_debug_end_received_ns": 1793133754043119070,
+      "producer_terminal_ns": 1793133756600658000
+    },
+    "default_argv_sha256": "403e1cf432699321e4bec7ea47439bfdbbd5361279b4ec4f2087b2bc22b0beb3",
+    "default_tests": [
+      {
+        "argv_sha256": "403e1cf432699321e4bec7ea47439bfdbbd5361279b4ec4f2087b2bc22b0beb3",
+        "file_sha256": "0d0156557c560d8a5560348cec4ff4816cfe19ef7dd4a4747762c768dda56682",
+        "pid": 1114491,
+        "raw_exec_sha256": "095d768b71e91ee8d29f3ac4baf1aee15009eb7476934c672ca9156209a42692",
+        "sigchld": [
+          {
+            "code": "CLD_EXITED",
+            "ns": 1793133843558587000,
+            "observer_pid": 1114489,
+            "value": "0"
+          }
+        ],
+        "start_ns": 1793133839826819000,
+        "terminal": {
+          "ns": 1793133843558326000,
+          "result": 0
+        }
+      },
+      {
+        "argv_sha256": "403e1cf432699321e4bec7ea47439bfdbbd5361279b4ec4f2087b2bc22b0beb3",
+        "file_sha256": "623bc4ee5f1510e52b92746dfb962448946f9487d3505738ee301a11eefb76e5",
+        "pid": 1114731,
+        "raw_exec_sha256": "35c41b5c068870b690100650f7cde44023598abd8af10762e9dee6b93190ab7f",
+        "sigchld": [
+          {
+            "code": "CLD_EXITED",
+            "ns": 1793133847240170000,
+            "observer_pid": 1114489,
+            "value": "0"
+          }
+        ],
+        "start_ns": 1793133843598516000,
+        "terminal": {
+          "ns": 1793133847239922000,
+          "result": 0
+        }
+      }
+    ],
+    "default_wilds": [
+      {
+        "argv_sha256": "52b2881de774b7f0218f956d2cffd23f0fca5b6ef5458d816231d4e0f04c8a80",
+        "file_sha256": "b658f0f6939a0a25096bb7e1502d1fda80b74ccd3e2d6c768f39bb8c9b9d843c",
+        "own_rlib_exact_path": true,
+        "own_rlib_tokens": [
+          "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-ff513fdc40cc6d8a/ruff_mdtest/db5507a1d2f5b543/out/libruff_mdtest-db5507a1d2f5b543.rlib"
+        ],
+        "pid": 1114656,
+        "raw_exec_sha256": "235c45fc24453806b9a0042c5e09e2743ab15f1e8e8c2005820812421ef2ecad",
+        "rust_rlib_tokens": 262,
+        "sigchld": [
+          {
+            "code": "CLD_EXITED",
+            "ns": 1793133843500642000,
+            "observer_pid": 1114654,
+            "value": "0"
+          }
+        ],
+        "start_ns": 1793133842146582000,
+        "terminal": {
+          "ns": 1793133843500366000,
+          "result": 0
+        }
+      },
+      {
+        "argv_sha256": "2ef0f66f590877213501f981e8edcb11fa00f9b6c6e45a6eb3f54d6708a3d373",
+        "file_sha256": "6069e20aeebecf782fd121701f6a0294e1c9df9c9ebdf08fa5b20fc66b27fd3e",
+        "own_rlib_exact_path": true,
+        "own_rlib_tokens": [
+          "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-ff513fdc40cc6d8a/ruff_mdtest/db5507a1d2f5b543/out/libruff_mdtest-db5507a1d2f5b543.rlib"
+        ],
+        "pid": 1114791,
+        "raw_exec_sha256": "bf70ad352125ef901d183d6fd300a5e9fc475829ca12100639c6e26fa6aa5d75",
+        "rust_rlib_tokens": 262,
+        "sigchld": [
+          {
+            "code": "CLD_EXITED",
+            "ns": 1793133847177788000,
+            "observer_pid": 1114789,
+            "value": "0"
+          }
+        ],
+        "start_ns": 1793133846048956000,
+        "terminal": {
+          "ns": 1793133847177616000,
+          "result": 0
+        }
+      }
+    ],
+    "disabled_argv_sha256": "403e1cf432699321e4bec7ea47439bfdbbd5361279b4ec4f2087b2bc22b0beb3",
+    "disabled_test": [
+      {
+        "argv_sha256": "403e1cf432699321e4bec7ea47439bfdbbd5361279b4ec4f2087b2bc22b0beb3",
+        "file_sha256": "5af35b434cd642807d9c1bf46398771d2650ca0c281964cd5de407be0ae989a5",
+        "pid": 1141162,
+        "raw_exec_sha256": "e01652d0b68a9060e5431c44d8c3042f93aa2abd715f0cc219662e6f1b5bd400",
+        "sigchld": [
+          {
+            "code": "CLD_EXITED",
+            "ns": 1793134241358080000,
+            "observer_pid": 1141160,
+            "value": "0"
+          }
+        ],
+        "start_ns": 1793134237381784000,
+        "terminal": {
+          "ns": 1793134241357708000,
+          "result": 0
+        }
+      }
+    ],
+    "disabled_wild": [
+      {
+        "argv_sha256": "4a1df641f4c3a4306c710ae5f05653afe3c3b5018bb894519597681744e84735",
+        "file_sha256": "493899030ad2d665a86cbca094bc0da4ab4b397f1a2d853ee067ba3680f6237b",
+        "own_rlib_exact_path": true,
+        "own_rlib_tokens": [
+          "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-ff513fdc40cc6d8a/ruff_mdtest/db5507a1d2f5b543/out/libruff_mdtest-db5507a1d2f5b543.rlib"
+        ],
+        "pid": 1141257,
+        "raw_exec_sha256": "619ff9cf26167d68fc9a0837554bf4e46cdd43313f362fafb05ed5e940ea22c5",
+        "rust_rlib_tokens": 262,
+        "sigchld": [
+          {
+            "code": "CLD_EXITED",
+            "ns": 1793134241295846000,
+            "observer_pid": 1141256,
+            "value": "0"
+          }
+        ],
+        "start_ns": 1793134239736683000,
+        "terminal": {
+          "ns": 1793134241295627000,
+          "result": 0
+        }
+      }
+    ],
+    "earlier_sibling_authoritative_wait": [],
+    "own_producer": {
+      "actual_extern": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-ff513fdc40cc6d8a/ruff_mdtest/db5507a1d2f5b543/out/libruff_mdtest-db5507a1d2f5b543.rlib",
+      "argv_sha256": "9eb72f550ca6e3aa5d1dd200f877068df468412c37993094051c917e81d4cef2",
+      "features": [],
+      "file_sha256": "79d8c32938f3039c02570c098b5fd3e9a8162ef7d371ff264d1ce12b00752e8a",
+      "first_relation": "before",
+      "pid": 1109613,
+      "printed_artifact": [
+        {
+          "arrival_ns": 1793133830260888777,
+          "byte_offset": 691062,
+          "features": [],
+          "filenames": [
+            "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-ff513fdc40cc6d8a/ruff_mdtest/db5507a1d2f5b543/out/libruff_mdtest-db5507a1d2f5b543.rlib",
+            "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-ff513fdc40cc6d8a/ruff_mdtest/db5507a1d2f5b543/out/libruff_mdtest-db5507a1d2f5b543.rmeta"
+          ]
+        }
+      ],
+      "producer_entered_before_first": true,
+      "raw_exec_sha256": "b5f70de60c0f001d8f37d933f1ddf05bf25a8076f2dedebcefc4c0be6987a8c4",
+      "sigchld": [
+        {
+          "code": "CLD_EXITED",
+          "ns": 1793133756600740000,
+          "observer_pid": 1109612,
+          "value": "0"
+        }
+      ],
+      "source": "/home/dev-user/code/oss/ruff-ohm-whole-native-20261027/crates/ruff_mdtest/src/lib.rs",
+      "start_ns": 1793133752615346000,
+      "terminal": {
+        "ns": 1793133756600658000,
+        "result": 0
+      }
+    },
+    "package": "ruff_mdtest",
+    "policy": [
+      {
+        "action": "retry",
+        "arrival_ns": 1793133843590823546,
+        "byte_offset": 1948580,
+        "cargo_ns": 226784313098,
+        "line_bytes": 100,
+        "line_sha256": "6ae794fa625abf90c2144756200226ab57af537112292f718191fec8cf507353",
+        "target": "mdtest"
+      }
+    ],
+    "producer_scheduler_events": [
+      {
+        "ends": [
+          {
+            "arrival_ns": 1793133754043119070,
+            "byte_offset": 1780028,
+            "cargo_ns": 137236499150,
+            "line_bytes": 1142,
+            "line_sha256": "7d2a4ae0695a8e2d780466cb7441f5393caff3ec499097ca6a27a0ae06dabf07",
+            "result": "Ok(())"
+          }
+        ],
+        "starts": [
+          {
+            "arrival_ns": 1793133752604592332,
+            "byte_offset": 1776504,
+            "cargo_ns": 135798085548,
+            "job_id": 581,
+            "line_bytes": 1139,
+            "line_sha256": "578f57564bf606c3f0733436ba537a952fe417afffe0c2e9c8f6fb1ebbaa449b"
+          }
+        ],
+        "unit_sha256": "87ced66afca18d85022c6f07def23ee70e64d83280f651a79dd3fc16afd9ebb9"
+      }
+    ],
+    "scheduler_disposition": "already settled (source inference from held output and final result)",
+    "source": {
+      "bytes": 1218,
+      "first_matches": [
+        [
+          22,
+          "ruff_mdtest::run("
+        ]
+      ],
+      "occurrences": 1,
+      "package": "ruff_mdtest",
+      "sha256": "86c9c8a89ad78b600551cbf68e6a441b9dac4042b5a20e657f14ee712ae31863"
+    },
+    "target": "mdtest",
+    "test_scheduler_events": [
+      {
+        "ends": [
+          {
+            "arrival_ns": 1793133847251996234,
+            "byte_offset": 1951087,
+            "cargo_ns": 230445444069,
+            "line_bytes": 1131,
+            "line_sha256": "8c0ea62c2c8cf144a0c602979898ba6ec8fd7ac9edb80971ee51d8a8295391b7",
+            "result": "Ok(())"
+          }
+        ],
+        "starts": [
+          {
+            "arrival_ns": 1793133839816996890,
+            "byte_offset": 1940536,
+            "cargo_ns": 223010408780,
+            "job_id": 650,
+            "line_bytes": 1128,
+            "line_sha256": "694cf5b61f903d9a231ff911aff2fd9864560f6d9f7f60b9c590a3070a0350ac"
+          }
+        ],
+        "unit_sha256": "7061e412acf1ffb8ba30c5fed4927b749d11416e7ca5acb30c41927b01f6a809"
+      }
+    ]
+  },
+  "crates/ruff_python_formatter/tests/fixtures.rs": {
+    "bounds": {
+      "artifact_arrival_ns": 1793133709471565455,
+      "cargo_exec_ns": 1793133616786289000,
+      "clock_uncertainty_ns": 5157663,
+      "earliest_test_scheduler_start_ns": 1793133744061201291,
+      "first_test_exec_ns": 1793133744104494000,
+      "last_producer_raw_debug_end_received_ns": 1793133693349841000,
+      "producer_terminal_ns": 1793133706358964000
+    },
+    "default_argv_sha256": "a5677559f6c1fb302a5b7452a56d08bb10d59d73c089bfe4e90ba2896b4fa077",
+    "default_tests": [
+      {
+        "argv_sha256": "a5677559f6c1fb302a5b7452a56d08bb10d59d73c089bfe4e90ba2896b4fa077",
+        "file_sha256": "85baaf9e586f7cd891809ae57a5c6945fb4c0b78f1ddc9847c199ce972d36147",
+        "pid": 1108088,
+        "raw_exec_sha256": "5a89808f9f917766561c5bdfe11910cc67240c8edbf77dd218e5cb0b60fa9f5e",
+        "sigchld": [
+          {
+            "code": "CLD_EXITED",
+            "ns": 1793133750693998000,
+            "observer_pid": 1108087,
+            "value": "0"
+          }
+        ],
+        "start_ns": 1793133744104494000,
+        "terminal": {
+          "ns": 1793133750693819000,
+          "result": 0
+        }
+      },
+      {
+        "argv_sha256": "a5677559f6c1fb302a5b7452a56d08bb10d59d73c089bfe4e90ba2896b4fa077",
+        "file_sha256": "e8d9ea74176ebd508c6b66dabbb3c0fd874a33f14aa3b0eb95073ff4e5f0f6f4",
+        "pid": 1109454,
+        "raw_exec_sha256": "fa9e09dc49e149d06e6ba37d7f87c8b4102946746f3baa1d55b4a5ccf4800797",
+        "sigchld": [
+          {
+            "code": "CLD_EXITED",
+            "ns": 1793133753467034000,
+            "observer_pid": 1108087,
+            "value": "0"
+          }
+        ],
+        "start_ns": 1793133750724860000,
+        "terminal": {
+          "ns": 1793133753466873000,
+          "result": 0
+        }
+      }
+    ],
+    "default_wilds": [
+      {
+        "argv_sha256": "cf8e111588cb9151682d74ca7fb4f1ed8a7b9260f0d2981ac6529b3f6e180fa4",
+        "file_sha256": "3e5ac6a673b4b525758327e302705f63c721298f509bc101292008720eddd98b",
+        "own_rlib_exact_path": true,
+        "own_rlib_tokens": [
+          "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-ff513fdc40cc6d8a/ruff_python_formatter/b3a8f519bbff3879/out/libruff_python_formatter-b3a8f519bbff3879.rlib"
+        ],
+        "pid": 1109239,
+        "raw_exec_sha256": "61b20358c58f4ec2f9e243379235f59a100db18c9fde065af38cb04c6eef7868",
+        "rust_rlib_tokens": 184,
+        "sigchld": [
+          {
+            "code": "CLD_EXITED",
+            "ns": 1793133750595978000,
+            "observer_pid": 1109236,
+            "value": "0"
+          }
+        ],
+        "start_ns": 1793133749903421000,
+        "terminal": {
+          "ns": 1793133750595796000,
+          "result": 0
+        }
+      },
+      {
+        "argv_sha256": "f9642154fcb07a904ed5554b3ab218c7ab54ffde9782389a316363bb45d60740",
+        "file_sha256": "5cec1325637e91db7972f1d3608b01022567271d06547fe7327ff0e2d4580eef",
+        "own_rlib_exact_path": true,
+        "own_rlib_tokens": [
+          "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-ff513fdc40cc6d8a/ruff_python_formatter/b3a8f519bbff3879/out/libruff_python_formatter-b3a8f519bbff3879.rlib"
+        ],
+        "pid": 1109629,
+        "raw_exec_sha256": "9411ff04699573c5ae2af86c4c9ce55b410c0d0e4036f33421fae05f13d0154d",
+        "rust_rlib_tokens": 184,
+        "sigchld": [
+          {
+            "code": "CLD_EXITED",
+            "ns": 1793133753411467000,
+            "observer_pid": 1109628,
+            "value": "0"
+          }
+        ],
+        "start_ns": 1793133752872606000,
+        "terminal": {
+          "ns": 1793133753411316000,
+          "result": 0
+        }
+      }
+    ],
+    "disabled_argv_sha256": "a5677559f6c1fb302a5b7452a56d08bb10d59d73c089bfe4e90ba2896b4fa077",
+    "disabled_test": [
+      {
+        "argv_sha256": "a5677559f6c1fb302a5b7452a56d08bb10d59d73c089bfe4e90ba2896b4fa077",
+        "file_sha256": "8c6f8c5bf9b69408b473cb45e7f310334160b491bbdf61ee29e19b24256d1abf",
+        "pid": 1134449,
+        "raw_exec_sha256": "5bdd84d5f0bc02700b46a392184e1dc9db2be1d7f2d8f5b6d60a2de19e0f203f",
+        "sigchld": [
+          {
+            "code": "CLD_EXITED",
+            "ns": 1793134137199559000,
+            "observer_pid": 1119371,
+            "value": "0"
+          }
+        ],
+        "start_ns": 1793134130244323000,
+        "terminal": {
+          "ns": 1793134137198800000,
+          "result": 0
+        }
+      }
+    ],
+    "disabled_wild": [
+      {
+        "argv_sha256": "ac3230c65a971fb75d092f0dc41d7784c92b93d60c7f75234cc390527bb2fcdb",
+        "file_sha256": "613ca023d2cc9c390357a7782f460ed3b38225ee6d9813858227deffcd08a77c",
+        "own_rlib_exact_path": true,
+        "own_rlib_tokens": [
+          "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-ff513fdc40cc6d8a/ruff_python_formatter/b3a8f519bbff3879/out/libruff_python_formatter-b3a8f519bbff3879.rlib"
+        ],
+        "pid": 1135383,
+        "raw_exec_sha256": "adafbf55fc324805616068580c9d0214046aabd7b47411c06897605f4a1768a5",
+        "rust_rlib_tokens": 184,
+        "sigchld": [
+          {
+            "code": "CLD_EXITED",
+            "ns": 1793134137036980000,
+            "observer_pid": 1135382,
+            "value": "0"
+          }
+        ],
+        "start_ns": 1793134135857253000,
+        "terminal": {
+          "ns": 1793134137036666000,
+          "result": 0
+        }
+      }
+    ],
+    "earlier_sibling_authoritative_wait": [],
+    "own_producer": {
+      "actual_extern": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-ff513fdc40cc6d8a/ruff_python_formatter/b3a8f519bbff3879/out/libruff_python_formatter-b3a8f519bbff3879.rlib",
+      "argv_sha256": "bf2b0836d925b4afbcff140b27b9dd9d91abcc8f3d4a6e428ce38348e084edf0",
+      "features": [
+        "default",
+        "schemars",
+        "serde"
+      ],
+      "file_sha256": "b868195491dd94aaeca00874b7e9cee6e9a6525ba9d5c7755e51c498b3436943",
+      "first_relation": "before",
+      "pid": 1100759,
+      "printed_artifact": [
+        {
+          "arrival_ns": 1793133709471565455,
+          "byte_offset": 499912,
+          "features": [
+            "default",
+            "schemars",
+            "serde"
+          ],
+          "filenames": [
+            "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-ff513fdc40cc6d8a/ruff_python_formatter/b3a8f519bbff3879/out/libruff_python_formatter-b3a8f519bbff3879.rlib",
+            "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-ff513fdc40cc6d8a/ruff_python_formatter/b3a8f519bbff3879/out/libruff_python_formatter-b3a8f519bbff3879.rmeta"
+          ]
+        }
+      ],
+      "producer_entered_before_first": true,
+      "raw_exec_sha256": "c4de7edd89d26b832a98e6d22e9af1a0b01c35d91a491a1289dff0a8bc9b8905",
+      "sigchld": [
+        {
+          "code": "CLD_EXITED",
+          "ns": 1793133706359271000,
+          "observer_pid": 1092641,
+          "value": "0"
+        }
+      ],
+      "source": "/home/dev-user/code/oss/ruff-ohm-whole-native-20261027/crates/ruff_python_formatter/src/lib.rs",
+      "start_ns": 1793133688140478000,
+      "terminal": {
+        "ns": 1793133706358964000,
+        "result": 0
+      }
+    },
+    "package": "ruff_python_formatter",
+    "policy": [
+      {
+        "action": "retry",
+        "arrival_ns": 1793133750715759357,
+        "byte_offset": 1775188,
+        "cargo_ns": 133909218885,
+        "line_bytes": 102,
+        "line_sha256": "89c85fe8fa3d904db7779c75e688db75545f05d034e325948636a220a453403b",
+        "target": "fixtures"
+      }
+    ],
+    "producer_scheduler_events": [
+      {
+        "ends": [
+          {
+            "arrival_ns": 1793133693349841000,
+            "byte_offset": 1295467,
+            "cargo_ns": 76543240114,
+            "line_bytes": 1197,
+            "line_sha256": "1e1c94bb1de8150bf80c6962072e962b9fa874ec659c9700b11c3ed3fac98d12",
+            "result": "Ok(())"
+          }
+        ],
+        "starts": [
+          {
+            "arrival_ns": 1793133688126891662,
+            "byte_offset": 1243688,
+            "cargo_ns": 71320348165,
+            "job_id": 404,
+            "line_bytes": 1194,
+            "line_sha256": "4b1e22ff37f7958bad2115fc91751fc114d023576cba15eaa012fb15e61dba19"
+          }
+        ],
+        "unit_sha256": "8f712a6e7cee2a486905a902b830c89689eae8198a1752b7c020f72696c5ac3e"
+      }
+    ],
+    "scheduler_disposition": "already settled (source inference from held output and final result)",
+    "source": {
+      "bytes": 25926,
+      "first_matches": [
+        [
+          13,
+          "use ruff_python_formatter::{PreviewMode, PyFormatOptions, format_module_source, format_range};"
+        ]
+      ],
+      "occurrences": 1,
+      "package": "ruff_python_formatter",
+      "sha256": "85dd7010265b8adce8354a700a6c76e908cea962280a12bc9d0157abed48978e"
+    },
+    "target": "fixtures",
+    "test_scheduler_events": [
+      {
+        "ends": [
+          {
+            "arrival_ns": 1793133753508369907,
+            "byte_offset": 1777643,
+            "cargo_ns": 136701773776,
+            "line_bytes": 1231,
+            "line_sha256": "e5edfa31deba4054b529b19647b2d1b807d0bcfe50a6eca83ff6c8fff2089cc9",
+            "result": "Ok(())"
+          }
+        ],
+        "starts": [
+          {
+            "arrival_ns": 1793133744088224983,
+            "byte_offset": 1763159,
+            "cargo_ns": 127280069954,
+            "job_id": 576,
+            "line_bytes": 1228,
+            "line_sha256": "19b38908d0e2258ec4f02da43805932b3708c164303e749554463501696087a0"
+          }
+        ],
+        "unit_sha256": "17f15c0d02777c3c000dd909921f19e6684967511b78cca8f8b7af1b01e9e7a4"
+      }
+    ]
+  },
+  "crates/ruff_python_parser/tests/fixtures.rs": {
+    "bounds": {
+      "artifact_arrival_ns": 1793133661077694613,
+      "cargo_exec_ns": 1793133616786289000,
+      "clock_uncertainty_ns": 5157663,
+      "earliest_test_scheduler_start_ns": 1793133753483086039,
+      "first_test_exec_ns": 1793133753518535000,
+      "last_producer_raw_debug_end_received_ns": 1793133655485557050,
+      "producer_terminal_ns": 1793133660449351000
+    },
+    "default_argv_sha256": "0a0aee30ec1a8abc3c9ca9834e9307cb2e8139e3c05eb5f3ea6795cef93e048c",
+    "default_tests": [
+      {
+        "argv_sha256": "0a0aee30ec1a8abc3c9ca9834e9307cb2e8139e3c05eb5f3ea6795cef93e048c",
+        "file_sha256": "6567ee6a0cef07ff53c21c14daddc358f9fa707c35924984ca9c3d2f09e76073",
+        "pid": 1109644,
+        "raw_exec_sha256": "a36c9ecc86303c73b7e84fc6033e135c59773f36ae3be922a834e77b8cfc0415",
+        "sigchld": [
+          {
+            "code": "CLD_EXITED",
+            "ns": 1793133757535525000,
+            "observer_pid": 1109643,
+            "value": "0"
+          }
+        ],
+        "start_ns": 1793133753518535000,
+        "terminal": {
+          "ns": 1793133757535355000,
+          "result": 0
+        }
+      },
+      {
+        "argv_sha256": "0a0aee30ec1a8abc3c9ca9834e9307cb2e8139e3c05eb5f3ea6795cef93e048c",
+        "file_sha256": "28a6a42b20fe219e6f0bfb588d205c5bffed60402f09ebd8c8bc38853780296d",
+        "pid": 1109863,
+        "raw_exec_sha256": "46bd64ae70a71f997c08bad47fddb5fc772d18a0532757a6b2a76c2d83c9ba37",
+        "sigchld": [
+          {
+            "code": "CLD_EXITED",
+            "ns": 1793133759505529000,
+            "observer_pid": 1109643,
+            "value": "0"
+          }
+        ],
+        "start_ns": 1793133757556007000,
+        "terminal": {
+          "ns": 1793133759505285000,
+          "result": 0
+        }
+      }
+    ],
+    "default_wilds": [
+      {
+        "argv_sha256": "208f0ac7ad7add37872cb1ce3fe7137d66fd0b7fce0e214bac9eb59449d1eabc",
+        "file_sha256": "a4632fd7f431544b078b9aee53509769bf97527ba8188f21366b0957b20cb906",
+        "own_rlib_exact_path": true,
+        "own_rlib_tokens": [
+          "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-ff513fdc40cc6d8a/ruff_python_parser/a9a8d6f9627e2852/out/libruff_python_parser-a9a8d6f9627e2852.rlib"
+        ],
+        "pid": 1109847,
+        "raw_exec_sha256": "c223047c30259c16c94649d1a4e013f910b7620c9857eed5a1eede87ee045f4f",
+        "rust_rlib_tokens": 135,
+        "sigchld": [
+          {
+            "code": "CLD_EXITED",
+            "ns": 1793133757458324000,
+            "observer_pid": 1109845,
+            "value": "0"
+          }
+        ],
+        "start_ns": 1793133757124730000,
+        "terminal": {
+          "ns": 1793133757458048000,
+          "result": 0
+        }
+      },
+      {
+        "argv_sha256": "fd9b1e66640ccdc655697b76d8deb167ddc1ba2a3f8462774d4ccb39fb95a6d7",
+        "file_sha256": "55012152dc0b3d3dc917b172d1c2a59400bfc785b8b35e1b784031770f5e8707",
+        "own_rlib_exact_path": true,
+        "own_rlib_tokens": [
+          "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-ff513fdc40cc6d8a/ruff_python_parser/a9a8d6f9627e2852/out/libruff_python_parser-a9a8d6f9627e2852.rlib"
+        ],
+        "pid": 1109962,
+        "raw_exec_sha256": "0ba8b5c62435f223a0d82c77a830b01c08caf7533f0fe4246fcd8d12702737e6",
+        "rust_rlib_tokens": 135,
+        "sigchld": [
+          {
+            "code": "CLD_EXITED",
+            "ns": 1793133759450857000,
+            "observer_pid": 1109961,
+            "value": "0"
+          }
+        ],
+        "start_ns": 1793133759100953000,
+        "terminal": {
+          "ns": 1793133759450647000,
+          "result": 0
+        }
+      }
+    ],
+    "disabled_argv_sha256": "0a0aee30ec1a8abc3c9ca9834e9307cb2e8139e3c05eb5f3ea6795cef93e048c",
+    "disabled_test": [
+      {
+        "argv_sha256": "0a0aee30ec1a8abc3c9ca9834e9307cb2e8139e3c05eb5f3ea6795cef93e048c",
+        "file_sha256": "89b42ff380ef5b489524f9b6fe9aa3f7bb3f7448effb6ce7b8e1f9066c6e2451",
+        "pid": 1136072,
+        "raw_exec_sha256": "e4d966f77b51fbd29eed96a77a645fa260704a7dfa728bb20db0d17fd752a6ca",
+        "sigchld": [
+          {
+            "code": "CLD_EXITED",
+            "ns": 1793134144076810000,
+            "observer_pid": 1136071,
+            "value": "0"
+          }
+        ],
+        "start_ns": 1793134139321171000,
+        "terminal": {
+          "ns": 1793134144076445000,
+          "result": 0
+        }
+      }
+    ],
+    "disabled_wild": [
+      {
+        "argv_sha256": "a9b8259178147d3734c9531346b5586de91f10f54b9f9a1fb7dc18f5497bdc4c",
+        "file_sha256": "3fae6a8649e7d005822c09c005b5fa0c3ce957199c57476ceceaff31482919c5",
+        "own_rlib_exact_path": true,
+        "own_rlib_tokens": [
+          "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-ff513fdc40cc6d8a/ruff_python_parser/a9a8d6f9627e2852/out/libruff_python_parser-a9a8d6f9627e2852.rlib"
+        ],
+        "pid": 1136335,
+        "raw_exec_sha256": "5f03dfa70c16c4736891b7838e57cefcce1efa860c9af66da1efd2a4efe81fa2",
+        "rust_rlib_tokens": 135,
+        "sigchld": [
+          {
+            "code": "CLD_EXITED",
+            "ns": 1793134143973798000,
+            "observer_pid": 1136334,
+            "value": "0"
+          }
+        ],
+        "start_ns": 1793134143319596000,
+        "terminal": {
+          "ns": 1793134143973571000,
+          "result": 0
+        }
+      }
+    ],
+    "earlier_sibling_authoritative_wait": [
+      {
+        "action": "accepted",
+        "arrival_ns": 1793133747995696458,
+        "sha256": "aacc86c1873b470d87c3184e2ce2bd285bcf31553b8ed6dea19bd1484fc6a112",
+        "source": "crates/ruff_python_parser/tests/generate_inline_tests.rs"
+      }
+    ],
+    "own_producer": {
+      "actual_extern": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-ff513fdc40cc6d8a/ruff_python_parser/a9a8d6f9627e2852/out/libruff_python_parser-a9a8d6f9627e2852.rlib",
+      "argv_sha256": "67d802c6cf2fe6db7c94adc5d8575c35a66aedbbde418da5192e96025e28b26e",
+      "features": [],
+      "file_sha256": "56dd08d86208eeba8ae4ce361500e23ef2ec77eca84182c77b32fbeb76aa8e39",
+      "first_relation": "before",
+      "pid": 1097463,
+      "printed_artifact": [
+        {
+          "arrival_ns": 1793133661077694613,
+          "byte_offset": 299159,
+          "features": [],
+          "filenames": [
+            "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-ff513fdc40cc6d8a/ruff_python_parser/a9a8d6f9627e2852/out/libruff_python_parser-a9a8d6f9627e2852.rlib",
+            "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-ff513fdc40cc6d8a/ruff_python_parser/a9a8d6f9627e2852/out/libruff_python_parser-a9a8d6f9627e2852.rmeta"
+          ]
+        }
+      ],
+      "producer_entered_before_first": true,
+      "raw_exec_sha256": "f739dff001553068a3ab95cbb57d69c9e0cdc71695b01656d068523e694495da",
+      "sigchld": [
+        {
+          "code": "CLD_EXITED",
+          "ns": 1793133660449834000,
+          "observer_pid": 1092641,
+          "value": "0"
+        }
+      ],
+      "source": "/home/dev-user/code/oss/ruff-ohm-whole-native-20261027/crates/ruff_python_parser/src/lib.rs",
+      "start_ns": 1793133653190290000,
+      "terminal": {
+        "ns": 1793133660449351000,
+        "result": 0
+      }
+    },
+    "package": "ruff_python_parser",
+    "policy": [
+      {
+        "action": "retry",
+        "arrival_ns": 1793133757548120088,
+        "byte_offset": 1785713,
+        "cargo_ns": 140741568860,
+        "line_bytes": 102,
+        "line_sha256": "ddbe868e6feb844af9464ea9b1717eebcd914e5c9fdc98e0566c459d90bec2ca",
+        "target": "fixtures"
+      }
+    ],
+    "producer_scheduler_events": [
+      {
+        "ends": [
+          {
+            "arrival_ns": 1793133655485557050,
+            "byte_offset": 735088,
+            "cargo_ns": 38678975441,
+            "line_bytes": 1139,
+            "line_sha256": "5e1ba46ffabe4342bd5693750649e4fb1ea20661427d3891fcab0f0a0ad7941f",
+            "result": "Ok(())"
+          }
+        ],
+        "starts": [
+          {
+            "arrival_ns": 1793133653178439183,
+            "byte_offset": 724753,
+            "cargo_ns": 36371736211,
+            "job_id": 241,
+            "line_bytes": 1136,
+            "line_sha256": "326ff8288f0d5180cad53209685d053caa1216c8be57085943265eb4d1d31c0d"
+          }
+        ],
+        "unit_sha256": "88e448b84c78582b0f22cd6f5c84e7dcb9fb617ae066a18b76b417ad5ce07bdd"
+      }
+    ],
+    "scheduler_disposition": "already settled (source inference from held output and final result)",
+    "source": {
+      "bytes": 25313,
+      "first_matches": [
+        [
+          12,
+          "use ruff_python_parser::semantic_errors::{"
+        ],
+        [
+          15,
+          "use ruff_python_parser::{Mode, ParseErrorType, ParseOptions, Parsed, parse_unchecked};"
+        ]
+      ],
+      "occurrences": 2,
+      "package": "ruff_python_parser",
+      "sha256": "a5f5ea14efb0179e4e66bcc938f43ddcc198d33014e43ad206b5a3e70b887b21"
+    },
+    "target": "fixtures",
+    "test_scheduler_events": [
+      {
+        "ends": [
+          {
+            "arrival_ns": 1793133759530305515,
+            "byte_offset": 1785815,
+            "cargo_ns": 142723650513,
+            "line_bytes": 1157,
+            "line_sha256": "2c7d6f605c11a40cdd5c1aadc686139fe0dcda2baabf00c20d3bf3230e93854c",
+            "result": "Ok(())"
+          }
+        ],
+        "starts": [
+          {
+            "arrival_ns": 1793133753508409821,
+            "byte_offset": 1778874,
+            "cargo_ns": 136701954702,
+            "job_id": 582,
+            "line_bytes": 1154,
+            "line_sha256": "2d113f5acc1ab9d8c3be397e6eea8d0a52cfe680ff0d3898e3ffdfdc8357c451"
+          }
+        ],
+        "unit_sha256": "91e2c35ed8a33399623cd706a1272e18b535d465d8550ebe5ed0a15e690a2225"
+      }
+    ]
+  },
+  "crates/ruff_server/tests/document.rs": {
+    "bounds": {
+      "artifact_arrival_ns": 1793133830261143437,
+      "cargo_exec_ns": 1793133616786289000,
+      "clock_uncertainty_ns": 5157663,
+      "earliest_test_scheduler_start_ns": 1793133845978173646,
+      "first_test_exec_ns": 1793133846015022000,
+      "last_producer_raw_debug_end_received_ns": 1793133756504792161,
+      "producer_terminal_ns": 1793133776515729000
+    },
+    "default_argv_sha256": "7770ba5bf4934331875c935332afbe8a0c3b0d44dbe49090e972921c04cf18fa",
+    "default_tests": [
+      {
+        "argv_sha256": "7770ba5bf4934331875c935332afbe8a0c3b0d44dbe49090e972921c04cf18fa",
+        "file_sha256": "5e3bf89e72fd367d8ef18867e58406c371e1779548d9c4d4cdb8dabcbc5c2579",
+        "pid": 1114788,
+        "raw_exec_sha256": "9329bfc6aa0d979296d1e1a52ed8aed2392a480a15729d6d027b019d75924718",
+        "sigchld": [
+          {
+            "code": "CLD_EXITED",
+            "ns": 1793133849772175000,
+            "observer_pid": 1114787,
+            "value": "0"
+          }
+        ],
+        "start_ns": 1793133846015022000,
+        "terminal": {
+          "ns": 1793133849771824000,
+          "result": 0
+        }
+      },
+      {
+        "argv_sha256": "7770ba5bf4934331875c935332afbe8a0c3b0d44dbe49090e972921c04cf18fa",
+        "file_sha256": "2cc6219cf6e15b66c8d57bdb033f489374f4ad3c073725513a68b3ec9f04b23c",
+        "pid": 1114986,
+        "raw_exec_sha256": "edf5b0e03d4cca2ab146a27dd7177186db3c986bf50bf189c8943b3a1db57608",
+        "sigchld": [
+          {
+            "code": "CLD_EXITED",
+            "ns": 1793133853057554000,
+            "observer_pid": 1114787,
+            "value": "0"
+          }
+        ],
+        "start_ns": 1793133849806306000,
+        "terminal": {
+          "ns": 1793133853057295000,
+          "result": 0
+        }
+      }
+    ],
+    "default_wilds": [
+      {
+        "argv_sha256": "fb0439d7729fa48871d6880f945aedccdbd2873dc36dafc2efb4fd1bda8ebb77",
+        "file_sha256": "8a13675eefdb423d90f280ca7ff21efc6933819f1dcc1be3adc70edddbdfd7e7",
+        "own_rlib_exact_path": true,
+        "own_rlib_tokens": [
+          "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-ff513fdc40cc6d8a/ruff_server/578fda1aae84f678/out/libruff_server-578fda1aae84f678.rlib"
+        ],
+        "pid": 1114950,
+        "raw_exec_sha256": "137ee94cebe0bc54bc717c961c4f7aa0645eb503dfca8ba333bba2b956fdb9c5",
+        "rust_rlib_tokens": 261,
+        "sigchld": [
+          {
+            "code": "CLD_EXITED",
+            "ns": 1793133849698432000,
+            "observer_pid": 1114949,
+            "value": "0"
+          }
+        ],
+        "start_ns": 1793133848456977000,
+        "terminal": {
+          "ns": 1793133849698004000,
+          "result": 0
+        }
+      },
+      {
+        "argv_sha256": "5515c84b23f54ce788dca09757068716d3f18d38642016feac910bca0e06d04f",
+        "file_sha256": "895963c9ce3ae5d745548c37f080007ebbb6dfec9a998669f014f4524b8677ed",
+        "own_rlib_exact_path": true,
+        "own_rlib_tokens": [
+          "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-ff513fdc40cc6d8a/ruff_server/578fda1aae84f678/out/libruff_server-578fda1aae84f678.rlib"
+        ],
+        "pid": 1115159,
+        "raw_exec_sha256": "93e5763e5fb7c78423037b2f322c81a837f83cfc7a654c0369af7e3519973a2f",
+        "rust_rlib_tokens": 261,
+        "sigchld": [
+          {
+            "code": "CLD_EXITED",
+            "ns": 1793133852995874000,
+            "observer_pid": 1115157,
+            "value": "0"
+          }
+        ],
+        "start_ns": 1793133852062626000,
+        "terminal": {
+          "ns": 1793133852995627000,
+          "result": 0
+        }
+      }
+    ],
+    "disabled_argv_sha256": "7770ba5bf4934331875c935332afbe8a0c3b0d44dbe49090e972921c04cf18fa",
+    "disabled_test": [
+      {
+        "argv_sha256": "7770ba5bf4934331875c935332afbe8a0c3b0d44dbe49090e972921c04cf18fa",
+        "file_sha256": "bcd61ceafee39e6575d9e41e10fbf4221bc1b3222a6969f2a129f505803d3957",
+        "pid": 1141276,
+        "raw_exec_sha256": "fbed2ded443ff94e6693c4e0f22a98a104eab58288de78570800133dd30176d8",
+        "sigchld": [
+          {
+            "code": "CLD_EXITED",
+            "ns": 1793134244780034000,
+            "observer_pid": 1141275,
+            "value": "0"
+          }
+        ],
+        "start_ns": 1793134241382060000,
+        "terminal": {
+          "ns": 1793134244779827000,
+          "result": 0
+        }
+      }
+    ],
+    "disabled_wild": [
+      {
+        "argv_sha256": "eba28e22c5e2424abf0460c0b5857adae50a2c6c63f5f1c4cd3b9263aa340df2",
+        "file_sha256": "8cbe4cb70e3ad94354211f1a97eeeb0bb9a5c08586cd34df3ffaf0e2d832718c",
+        "own_rlib_exact_path": true,
+        "own_rlib_tokens": [
+          "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-ff513fdc40cc6d8a/ruff_server/578fda1aae84f678/out/libruff_server-578fda1aae84f678.rlib"
+        ],
+        "pid": 1141341,
+        "raw_exec_sha256": "25f4d2c2d9683883139503c5ed29e4a3806a64fabeb0726e4f3f03423e85b066",
+        "rust_rlib_tokens": 261,
+        "sigchld": [
+          {
+            "code": "CLD_EXITED",
+            "ns": 1793134244721416000,
+            "observer_pid": 1141340,
+            "value": "0"
+          }
+        ],
+        "start_ns": 1793134243760631000,
+        "terminal": {
+          "ns": 1793134244721255000,
+          "result": 0
+        }
+      }
+    ],
+    "earlier_sibling_authoritative_wait": [],
+    "own_producer": {
+      "actual_extern": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-ff513fdc40cc6d8a/ruff_server/578fda1aae84f678/out/libruff_server-578fda1aae84f678.rlib",
+      "argv_sha256": "81e5446fc3441b9ea2f893d37e7ee68800f07d7f19895481932202533712eb9c",
+      "features": [],
+      "file_sha256": "169f447dc67d8096c158365b5ed8f0c24e788335bdd6ea9e3c0e3f4799fc737f",
+      "first_relation": "before",
+      "pid": 1109301,
+      "printed_artifact": [
+        {
+          "arrival_ns": 1793133830261143437,
+          "byte_offset": 692107,
+          "features": [],
+          "filenames": [
+            "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-ff513fdc40cc6d8a/ruff_server/578fda1aae84f678/out/libruff_server-578fda1aae84f678.rlib",
+            "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-ff513fdc40cc6d8a/ruff_server/578fda1aae84f678/out/libruff_server-578fda1aae84f678.rmeta"
+          ]
+        }
+      ],
+      "producer_entered_before_first": true,
+      "raw_exec_sha256": "cd0f20b2d56488993fbf3dbc5da5150c075045d1b20ae483ca13b124abcd69ce",
+      "sigchld": [
+        {
+          "code": "CLD_EXITED",
+          "ns": 1793133776516185000,
+          "observer_pid": 1109298,
+          "value": "0"
+        }
+      ],
+      "source": "/home/dev-user/code/oss/ruff-ohm-whole-native-20261027/crates/ruff_server/src/lib.rs",
+      "start_ns": 1793133750121806000,
+      "terminal": {
+        "ns": 1793133776515729000,
+        "result": 0
+      }
+    },
+    "package": "ruff_server",
+    "policy": [
+      {
+        "action": "retry",
+        "arrival_ns": 1793133849797026958,
+        "byte_offset": 1953358,
+        "cargo_ns": 232990485503,
+        "line_bytes": 102,
+        "line_sha256": "0cc801f5c6e971971a56ebad2dbe8871ce31cbc0dcca87207b5bdfcf7bdd31e4",
+        "target": "document"
+      }
+    ],
+    "producer_scheduler_events": [
+      {
+        "ends": [
+          {
+            "arrival_ns": 1793133756504792161,
+            "byte_offset": 1781170,
+            "cargo_ns": 139698211633,
+            "line_bytes": 1127,
+            "line_sha256": "e7ad75cabd8b00d89e29245cee8749d4913a4b74f1876e2d0dc2af60bf588270",
+            "result": "Ok(())"
+          }
+        ],
+        "starts": [
+          {
+            "arrival_ns": 1793133750109219648,
+            "byte_offset": 1774064,
+            "cargo_ns": 133302627113,
+            "job_id": 580,
+            "line_bytes": 1124,
+            "line_sha256": "2b62520703c1a153ab8621cc509a3da6db69075d39977d691a5bb70510e021d3"
+          }
+        ],
+        "unit_sha256": "a8b27b3531422e2e835ae2c05737845613697f5810dd9aa6934b0d8531ee9809"
+      }
+    ],
+    "scheduler_disposition": "already settled (source inference from held output and final result)",
+    "source": {
+      "bytes": 3250,
+      "first_matches": [
+        [
+          6,
+          "use ruff_server::{PositionEncoding, TextDocument};"
+        ]
+      ],
+      "occurrences": 1,
+      "package": "ruff_server",
+      "sha256": "0ac9bb25933d8619fc0047033b8f808406995959597b4f638ee0a67731716266"
+    },
+    "target": "document",
+    "test_scheduler_events": [
+      {
+        "ends": [
+          {
+            "arrival_ns": 1793133853070475284,
+            "byte_offset": 1954574,
+            "cargo_ns": 236263887234,
+            "line_bytes": 1119,
+            "line_sha256": "dfb49411f45408b4b8b9ddee6911a6d06f83ac1943d29285bc5419f2b4cb2457",
+            "result": "Ok(())"
+          }
+        ],
+        "starts": [
+          {
+            "arrival_ns": 1793133846003696708,
+            "byte_offset": 1949874,
+            "cargo_ns": 229197042309,
+            "job_id": 654,
+            "line_bytes": 1116,
+            "line_sha256": "ecf8b9e7d19eec3a8f6198f306497be65df7b75769070d5948ff3cc78694be09"
+          }
+        ],
+        "unit_sha256": "3739e0e0a6d25fc622778a45115f65c457a39d37acaa705571f3e37b1041214e"
+      }
+    ]
+  },
+  "crates/ruff_server/tests/e2e/main.rs": {
+    "bounds": {
+      "artifact_arrival_ns": 1793133830261143437,
+      "cargo_exec_ns": 1793133616786289000,
+      "clock_uncertainty_ns": 5157663,
+      "earliest_test_scheduler_start_ns": 1793133831805774887,
+      "first_test_exec_ns": 1793133831842573000,
+      "last_producer_raw_debug_end_received_ns": 1793133756504792161,
+      "producer_terminal_ns": 1793133776515729000
+    },
+    "default_argv_sha256": "51cfc2ade88adc81c8689093a0d118aaf85c2e31b168c8591ad08e03def12e15",
+    "default_tests": [
+      {
+        "argv_sha256": "51cfc2ade88adc81c8689093a0d118aaf85c2e31b168c8591ad08e03def12e15",
+        "file_sha256": "160df9c145591986062a2bb48dcad5aa8e5eea7131989d48b53698d34ab4966a",
+        "pid": 1114169,
+        "raw_exec_sha256": "69c40ed2065f0905fe317b9be6e63452541eb92e2bdddfeca6a3c622094ab85e",
+        "sigchld": [
+          {
+            "code": "CLD_EXITED",
+            "ns": 1793133846392368000,
+            "observer_pid": 1114168,
+            "value": "0"
+          }
+        ],
+        "start_ns": 1793133831842573000,
+        "terminal": {
+          "ns": 1793133846392085000,
+          "result": 0
+        }
+      },
+      {
+        "argv_sha256": "51cfc2ade88adc81c8689093a0d118aaf85c2e31b168c8591ad08e03def12e15",
+        "file_sha256": "bf240b6aea680d69ed0274ca132fe5fb44c6e3b71524718d32ac3ecaaff14069",
+        "pid": 1114812,
+        "raw_exec_sha256": "abd446706fc712036bfd7877c3b8998bf452152eaeeaac471482745da2932063",
+        "sigchld": [
+          {
+            "code": "CLD_EXITED",
+            "ns": 1793133850445317000,
+            "observer_pid": 1114168,
+            "value": "0"
+          }
+        ],
+        "start_ns": 1793133846451722000,
+        "terminal": {
+          "ns": 1793133850445172000,
+          "result": 0
+        }
+      }
+    ],
+    "default_wilds": [
+      {
+        "argv_sha256": "cfb3ef6be8cc9a650c099301ddc99774755fc4f4e9cd5d40883e288426172356",
+        "file_sha256": "1b40d4ef4c957376614348abf330ac3fd26a291715027260774e99408426a6b6",
+        "own_rlib_exact_path": true,
+        "own_rlib_tokens": [
+          "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-ff513fdc40cc6d8a/ruff_server/578fda1aae84f678/out/libruff_server-578fda1aae84f678.rlib"
+        ],
+        "pid": 1114757,
+        "raw_exec_sha256": "ee8cea4aadc68f8286144829cd8f4a4e377f6f40e21b36d4913557866b1a9458",
+        "rust_rlib_tokens": 261,
+        "sigchld": [
+          {
+            "code": "CLD_EXITED",
+            "ns": 1793133846277651000,
+            "observer_pid": 1114755,
+            "value": "0"
+          }
+        ],
+        "start_ns": 1793133844749642000,
+        "terminal": {
+          "ns": 1793133846277433000,
+          "result": 0
+        }
+      },
+      {
+        "argv_sha256": "cb4454bb956d6677e5b7e8e1128fc1afe3120d66e2d9ec542b25d144938993b5",
+        "file_sha256": "b20c91471040cef4af3db7aed91005e92a1fb96bafbee4a11d33716b0042d52c",
+        "own_rlib_exact_path": true,
+        "own_rlib_tokens": [
+          "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-ff513fdc40cc6d8a/ruff_server/578fda1aae84f678/out/libruff_server-578fda1aae84f678.rlib"
+        ],
+        "pid": 1114964,
+        "raw_exec_sha256": "bd91190daaddb4e803c9b7c5cfd578b1e65f7a37044d02d09848c07e4cfe8c90",
+        "rust_rlib_tokens": 261,
+        "sigchld": [
+          {
+            "code": "CLD_EXITED",
+            "ns": 1793133850368008000,
+            "observer_pid": 1114963,
+            "value": "0"
+          }
+        ],
+        "start_ns": 1793133849179069000,
+        "terminal": {
+          "ns": 1793133850367811000,
+          "result": 0
+        }
+      }
+    ],
+    "disabled_argv_sha256": "51cfc2ade88adc81c8689093a0d118aaf85c2e31b168c8591ad08e03def12e15",
+    "disabled_test": [
+      {
+        "argv_sha256": "51cfc2ade88adc81c8689093a0d118aaf85c2e31b168c8591ad08e03def12e15",
+        "file_sha256": "e46f967d8710ed54a55954595304387633df7005cf0ee5a88e8078cd4d6390af",
+        "pid": 1140767,
+        "raw_exec_sha256": "ce5cb777c7bb6d64b6bec9994c02a1719f32c9d77f4b091cea5a4ade16b291ab",
+        "sigchld": [
+          {
+            "code": "CLD_EXITED",
+            "ns": 1793134241839493000,
+            "observer_pid": 1140766,
+            "value": "0"
+          }
+        ],
+        "start_ns": 1793134226767521000,
+        "terminal": {
+          "ns": 1793134241839128000,
+          "result": 0
+        }
+      }
+    ],
+    "disabled_wild": [
+      {
+        "argv_sha256": "b9cf8408e070b5dbf6b93f84301633564d4ff2053fc76380f6e32b26e7ad9237",
+        "file_sha256": "a3091f46547f936fe9652205f0bad6aad4417287e214d3eaee6a1de828164b2d",
+        "own_rlib_exact_path": true,
+        "own_rlib_tokens": [
+          "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-ff513fdc40cc6d8a/ruff_server/578fda1aae84f678/out/libruff_server-578fda1aae84f678.rlib"
+        ],
+        "pid": 1141267,
+        "raw_exec_sha256": "897a54f6ad5b76abad0633dd8eb334d231f2342f7af6e1cd68eaf375d5ead1b1",
+        "rust_rlib_tokens": 261,
+        "sigchld": [
+          {
+            "code": "CLD_EXITED",
+            "ns": 1793134241726125000,
+            "observer_pid": 1141266,
+            "value": "0"
+          }
+        ],
+        "start_ns": 1793134240469284000,
+        "terminal": {
+          "ns": 1793134241725882000,
+          "result": 0
+        }
+      }
+    ],
+    "earlier_sibling_authoritative_wait": [],
+    "own_producer": {
+      "actual_extern": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-ff513fdc40cc6d8a/ruff_server/578fda1aae84f678/out/libruff_server-578fda1aae84f678.rlib",
+      "argv_sha256": "81e5446fc3441b9ea2f893d37e7ee68800f07d7f19895481932202533712eb9c",
+      "features": [],
+      "file_sha256": "169f447dc67d8096c158365b5ed8f0c24e788335bdd6ea9e3c0e3f4799fc737f",
+      "first_relation": "before",
+      "pid": 1109301,
+      "printed_artifact": [
+        {
+          "arrival_ns": 1793133830261143437,
+          "byte_offset": 692107,
+          "features": [],
+          "filenames": [
+            "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-ff513fdc40cc6d8a/ruff_server/578fda1aae84f678/out/libruff_server-578fda1aae84f678.rlib",
+            "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-ff513fdc40cc6d8a/ruff_server/578fda1aae84f678/out/libruff_server-578fda1aae84f678.rmeta"
+          ]
+        }
+      ],
+      "producer_entered_before_first": true,
+      "raw_exec_sha256": "cd0f20b2d56488993fbf3dbc5da5150c075045d1b20ae483ca13b124abcd69ce",
+      "sigchld": [
+        {
+          "code": "CLD_EXITED",
+          "ns": 1793133776516185000,
+          "observer_pid": 1109298,
+          "value": "0"
+        }
+      ],
+      "source": "/home/dev-user/code/oss/ruff-ohm-whole-native-20261027/crates/ruff_server/src/lib.rs",
+      "start_ns": 1793133750121806000,
+      "terminal": {
+        "ns": 1793133776515729000,
+        "result": 0
+      }
+    },
+    "package": "ruff_server",
+    "policy": [
+      {
+        "action": "retry",
+        "arrival_ns": 1793133846443077077,
+        "byte_offset": 1950990,
+        "cargo_ns": 229636552305,
+        "line_bytes": 97,
+        "line_sha256": "cbea660eabf700e4e1676746f29a3b63df5aa18b4db619f8d6d7a4c6dd531d65",
+        "target": "e2e"
+      }
+    ],
+    "producer_scheduler_events": [
+      {
+        "ends": [
+          {
+            "arrival_ns": 1793133756504792161,
+            "byte_offset": 1781170,
+            "cargo_ns": 139698211633,
+            "line_bytes": 1127,
+            "line_sha256": "e7ad75cabd8b00d89e29245cee8749d4913a4b74f1876e2d0dc2af60bf588270",
+            "result": "Ok(())"
+          }
+        ],
+        "starts": [
+          {
+            "arrival_ns": 1793133750109219648,
+            "byte_offset": 1774064,
+            "cargo_ns": 133302627113,
+            "job_id": 580,
+            "line_bytes": 1124,
+            "line_sha256": "2b62520703c1a153ab8621cc509a3da6db69075d39977d691a5bb70510e021d3"
+          }
+        ],
+        "unit_sha256": "a8b27b3531422e2e835ae2c05737845613697f5810dd9aa6934b0d8531ee9809"
+      }
+    ],
+    "scheduler_disposition": "already settled (source inference from held output and final result)",
+    "source": {
+      "bytes": 45369,
+      "first_matches": [
+        [
+          69,
+          "use ruff_server::{ConnectionInitializer, LogLevel, Server, WorkspaceTrust, init_logging};"
+        ]
+      ],
+      "occurrences": 1,
+      "package": "ruff_server",
+      "sha256": "068120490fd077f9097d81b5e269304ad13602b51660d5f58a0791d51d0212af"
+    },
+    "target": "e2e",
+    "test_scheduler_events": [
+      {
+        "ends": [
+          {
+            "arrival_ns": 1793133850502732045,
+            "byte_offset": 1953460,
+            "cargo_ns": 233696170541,
+            "line_bytes": 1114,
+            "line_sha256": "f2d57dce431e0bdf61f804c792adee95159c4a17970b38595e662280e2271253",
+            "result": "Ok(())"
+          }
+        ],
+        "starts": [
+          {
+            "arrival_ns": 1793133831831543961,
+            "byte_offset": 1933684,
+            "cargo_ns": 215024643550,
+            "job_id": 647,
+            "line_bytes": 1111,
+            "line_sha256": "0eae48d209c3614264075db394e42896737a167288c43ffd40cb8bc9220719b2"
+          }
+        ],
+        "unit_sha256": "0f3d64c462ed4d9783c2701ead3c1f26cb70e3bfa0de31d5bf855ed1566e225e"
+      }
+    ]
+  },
+  "crates/ruff_text_size/tests/auto_traits.rs": {
+    "bounds": {
+      "artifact_arrival_ns": 1793133637685003207,
+      "cargo_exec_ns": 1793133616786289000,
+      "clock_uncertainty_ns": 5157663,
+      "earliest_test_scheduler_start_ns": 1793133736095753342,
+      "first_test_exec_ns": 1793133736139707000,
+      "last_producer_raw_debug_end_received_ns": 1793133635676968622,
+      "producer_terminal_ns": 1793133635891373000
+    },
+    "default_argv_sha256": "45840818e833d1bcef00f222a80ede20a33e5eeb82405744a5c375865288d91b",
+    "default_tests": [
+      {
+        "argv_sha256": "45840818e833d1bcef00f222a80ede20a33e5eeb82405744a5c375865288d91b",
+        "file_sha256": "8015059133e4c340f7c3d0bc7c216f99719b79e3d7a1cfc5ffb404cea7850952",
+        "pid": 1106659,
+        "raw_exec_sha256": "112c25fab666e417628946b12c38c504a1cc3d09c014f1f84adedcc2658e3242",
+        "sigchld": [
+          {
+            "code": "CLD_EXITED",
+            "ns": 1793133737391663000,
+            "observer_pid": 1106657,
+            "value": "0"
+          }
+        ],
+        "start_ns": 1793133736139707000,
+        "terminal": {
+          "ns": 1793133737391448000,
+          "result": 0
+        }
+      },
+      {
+        "argv_sha256": "45840818e833d1bcef00f222a80ede20a33e5eeb82405744a5c375865288d91b",
+        "file_sha256": "aad3af9eea5b50cde2892245eaa42eed59a3877e2fa6cf809ac0ad3efa1e3246",
+        "pid": 1106904,
+        "raw_exec_sha256": "5ec02b3f294a269d83620e12e11f4eea47381af9bb17387bfae066e19853258d",
+        "sigchld": [
+          {
+            "code": "CLD_EXITED",
+            "ns": 1793133738582442000,
+            "observer_pid": 1106657,
+            "value": "0"
+          }
+        ],
+        "start_ns": 1793133737409913000,
+        "terminal": {
+          "ns": 1793133738582254000,
+          "result": 0
+        }
+      }
+    ],
+    "default_wilds": [
+      {
+        "argv_sha256": "199ca348ea80f14abdd7cd445aa329532a85d8cbc035e9336c44f9b07c50099a",
+        "file_sha256": "f9f7a692557559738861a266809357848a72aa0d2c5f6036d7f6cb2408dbf85a",
+        "own_rlib_exact_path": true,
+        "own_rlib_tokens": [
+          "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-ff513fdc40cc6d8a/ruff_text_size/838d74980e36c862/out/libruff_text_size-838d74980e36c862.rlib"
+        ],
+        "pid": 1106853,
+        "raw_exec_sha256": "12966ae6c0ef348f1e97242843ad41d7e04b87d9b6fe2269ca5cc88a90500d9a",
+        "rust_rlib_tokens": 50,
+        "sigchld": [
+          {
+            "code": "CLD_EXITED",
+            "ns": 1793133737307359000,
+            "observer_pid": 1106852,
+            "value": "0"
+          }
+        ],
+        "start_ns": 1793133737159182000,
+        "terminal": {
+          "ns": 1793133737307049000,
+          "result": 0
+        }
+      },
+      {
+        "argv_sha256": "c44d120a85866a8910bf1025b5247564fff29f21a8be9b665ec8525478e9e8a2",
+        "file_sha256": "6e24a730648c3b2b6e519674a00e21773d46c251ea9e138bf054443341650924",
+        "own_rlib_exact_path": true,
+        "own_rlib_tokens": [
+          "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-ff513fdc40cc6d8a/ruff_text_size/838d74980e36c862/out/libruff_text_size-838d74980e36c862.rlib"
+        ],
+        "pid": 1107073,
+        "raw_exec_sha256": "e574fee8b9b921cd5bce0004282c891b0d6974775bbf896335508a609441351c",
+        "rust_rlib_tokens": 50,
+        "sigchld": [
+          {
+            "code": "CLD_EXITED",
+            "ns": 1793133738515241000,
+            "observer_pid": 1107072,
+            "value": "0"
+          }
+        ],
+        "start_ns": 1793133738393651000,
+        "terminal": {
+          "ns": 1793133738514945000,
+          "result": 0
+        }
+      }
+    ],
+    "disabled_argv_sha256": "45840818e833d1bcef00f222a80ede20a33e5eeb82405744a5c375865288d91b",
+    "disabled_test": [
+      {
+        "argv_sha256": "45840818e833d1bcef00f222a80ede20a33e5eeb82405744a5c375865288d91b",
+        "file_sha256": "af8fbae8392cecbcfcd9f45faa84822089459cdeeda3c2781360b7f4688d49b2",
+        "pid": 1133715,
+        "raw_exec_sha256": "5419da5743c5590ad24126aabce24049cfe8f599400cbcfa3ba5794692b37a88",
+        "sigchld": [
+          {
+            "code": "CLD_EXITED",
+            "ns": 1793134124210935000,
+            "observer_pid": 1119371,
+            "value": "0"
+          }
+        ],
+        "start_ns": 1793134123157868000,
+        "terminal": {
+          "ns": 1793134124210704000,
+          "result": 0
+        }
+      }
+    ],
+    "disabled_wild": [
+      {
+        "argv_sha256": "5b590afc33b297f24a796d3632c17467c55444d1d6532d63acc0a4e1d1fa6453",
+        "file_sha256": "c60281e4074ada9787bd70c9b590c66b43384233fdfb5786f4b7638b7dafe12c",
+        "own_rlib_exact_path": true,
+        "own_rlib_tokens": [
+          "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-ff513fdc40cc6d8a/ruff_text_size/838d74980e36c862/out/libruff_text_size-838d74980e36c862.rlib"
+        ],
+        "pid": 1133805,
+        "raw_exec_sha256": "37114e66f52efa84cf1e106218ff34c7cbaf93c30b79b4c2fec47d0f4f4062be",
+        "rust_rlib_tokens": 50,
+        "sigchld": [
+          {
+            "code": "CLD_EXITED",
+            "ns": 1793134124139785000,
+            "observer_pid": 1133804,
+            "value": "0"
+          }
+        ],
+        "start_ns": 1793134124049238000,
+        "terminal": {
+          "ns": 1793134124139559000,
+          "result": 0
+        }
+      }
+    ],
+    "earlier_sibling_authoritative_wait": [
+      {
+        "action": "retry",
+        "arrival_ns": 1793133735880320771,
+        "sha256": "3e6f4af330d0d2cbd34fef88f12ec0b33d703571fe441c9607ea0373f867021a",
+        "source": "crates/ruff_text_size/tests/serde.rs"
+      }
+    ],
+    "own_producer": {
+      "actual_extern": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-ff513fdc40cc6d8a/ruff_text_size/838d74980e36c862/out/libruff_text_size-838d74980e36c862.rlib",
+      "argv_sha256": "22ba8301410effd08c75df18798ea3a0deece506f850e18c177724f0e08ecee1",
+      "features": [
+        "get-size",
+        "schemars",
+        "serde"
+      ],
+      "file_sha256": "653df050a4b720020454534e0197b1b6c459a7abbb1d152c8bc2dafe87cf4dce",
+      "first_relation": "before",
+      "pid": 1094623,
+      "printed_artifact": [
+        {
+          "arrival_ns": 1793133637685003207,
+          "byte_offset": 128479,
+          "features": [
+            "get-size",
+            "schemars",
+            "serde"
+          ],
+          "filenames": [
+            "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-ff513fdc40cc6d8a/ruff_text_size/838d74980e36c862/out/libruff_text_size-838d74980e36c862.rlib",
+            "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-ff513fdc40cc6d8a/ruff_text_size/838d74980e36c862/out/libruff_text_size-838d74980e36c862.rmeta"
+          ]
+        }
+      ],
+      "producer_entered_before_first": true,
+      "raw_exec_sha256": "a9abfa24ea994ed16268f9d67036e5ee6964d795feb70a4f913933830c3384dc",
+      "sigchld": [
+        {
+          "code": "CLD_EXITED",
+          "ns": 1793133635891853000,
+          "observer_pid": 1094688,
+          "value": "0"
+        }
+      ],
+      "source": "/home/dev-user/code/oss/ruff-ohm-whole-native-20261027/crates/ruff_text_size/src/lib.rs",
+      "start_ns": 1793133635220272000,
+      "terminal": {
+        "ns": 1793133635891373000,
+        "result": 0
+      }
+    },
+    "package": "ruff_text_size",
+    "policy": [
+      {
+        "action": "retry",
+        "arrival_ns": 1793133737399150413,
+        "byte_offset": 1732889,
+        "cargo_ns": 120592507870,
+        "line_bytes": 105,
+        "line_sha256": "ef0a40289106090f6883701341911b223639cacd5860177f4a9f4f50b6c18834",
+        "target": "auto_traits"
+      }
+    ],
+    "producer_scheduler_events": [
+      {
+        "ends": [
+          {
+            "arrival_ns": 1793133635676968622,
+            "byte_offset": 332489,
+            "cargo_ns": 18870362152,
+            "line_bytes": 1170,
+            "line_sha256": "b9beb863ec0b089a9622735334664c46d84307bb079749044291dfa4e66c9b48",
+            "result": "Ok(())"
+          }
+        ],
+        "starts": [
+          {
+            "arrival_ns": 1793133635208311846,
+            "byte_offset": 323241,
+            "cargo_ns": 18401788779,
+            "job_id": 111,
+            "line_bytes": 1167,
+            "line_sha256": "3d424ce0aed0ef6959247d9e9148c32b003ee6947e0989071d8d6f18e11745d7"
+          }
+        ],
+        "unit_sha256": "8c785619452c20c15cc0c7cc348830c50b81eb3d96d06bc556dcaa2ba552521d"
+      }
+    ],
+    "scheduler_disposition": "already settled (source inference from held output and final result)",
+    "source": {
+      "bytes": 529,
+      "first_matches": [
+        [
+          2,
+          "ruff_text_size::{TextRange, TextSize},"
+        ]
+      ],
+      "occurrences": 1,
+      "package": "ruff_text_size",
+      "sha256": "42bb3ddecd36cab69893ab30ea836ca9d04b74d052f3b975f16732e3de1092f8"
+    },
+    "target": "auto_traits",
+    "test_scheduler_events": [
+      {
+        "ends": [
+          {
+            "arrival_ns": 1793133738601703527,
+            "byte_offset": 1740123,
+            "cargo_ns": 121795087770,
+            "line_bytes": 1165,
+            "line_sha256": "4554f920359987efd5fff0ecf6332f61b1bcbc72f9c81b08affcb09e09f689fa",
+            "result": "Ok(())"
+          }
+        ],
+        "starts": [
+          {
+            "arrival_ns": 1793133736121219027,
+            "byte_offset": 1727902,
+            "cargo_ns": 119314622005,
+            "job_id": 562,
+            "line_bytes": 1162,
+            "line_sha256": "5d5e4c59c17147b725bd832033c3ae069dd68bb107ea2dbdb073e2416e12b02d"
+          }
+        ],
+        "unit_sha256": "2e55790f678068d21083d430c8fe89b83691864eccc7850bb8b2b4b6c01354ab"
+      }
+    ]
+  },
+  "crates/ruff_text_size/tests/constructors.rs": {
+    "bounds": {
+      "artifact_arrival_ns": 1793133637685003207,
+      "cargo_exec_ns": 1793133616786289000,
+      "clock_uncertainty_ns": 5157663,
+      "earliest_test_scheduler_start_ns": 1793133736042967965,
+      "first_test_exec_ns": 1793133736085069000,
+      "last_producer_raw_debug_end_received_ns": 1793133635676968622,
+      "producer_terminal_ns": 1793133635891373000
+    },
+    "default_argv_sha256": "435827385fd0730bae515be7d526fdae9ddf494c9b20cc2de5f023ed0b17e691",
+    "default_tests": [
+      {
+        "argv_sha256": "435827385fd0730bae515be7d526fdae9ddf494c9b20cc2de5f023ed0b17e691",
+        "file_sha256": "55ef6417f8f99ec372d669bd0830a88557c05b5a1fbf09b22a2f37ab61ad99c3",
+        "pid": 1106647,
+        "raw_exec_sha256": "67d0a6352306205f77531627aec52d80c0dc3351cafd0f90abd09b5741209c51",
+        "sigchld": [
+          {
+            "code": "CLD_EXITED",
+            "ns": 1793133737523970000,
+            "observer_pid": 1106645,
+            "value": "0"
+          }
+        ],
+        "start_ns": 1793133736085069000,
+        "terminal": {
+          "ns": 1793133737523871000,
+          "result": 0
+        }
+      },
+      {
+        "argv_sha256": "435827385fd0730bae515be7d526fdae9ddf494c9b20cc2de5f023ed0b17e691",
+        "file_sha256": "46c4a1805e994f9e578902def5b3d441592c8c70209917f4f329b7732045480e",
+        "pid": 1106930,
+        "raw_exec_sha256": "eb2e6f1af599bb4cea3b03d61abee3872f582f8d267fda1211757ea9977279ed",
+        "sigchld": [
+          {
+            "code": "CLD_EXITED",
+            "ns": 1793133738665729000,
+            "observer_pid": 1106645,
+            "value": "0"
+          }
+        ],
+        "start_ns": 1793133737543620000,
+        "terminal": {
+          "ns": 1793133738665553000,
+          "result": 0
+        }
+      }
+    ],
+    "default_wilds": [
+      {
+        "argv_sha256": "868e7fdcbecc2113bc15008480fa3dc207a432b9f958ded5d6edead595cbb1c8",
+        "file_sha256": "b61ecb5247682b845a80eb2734f07434830574128299f9b3404f4dac3985a466",
+        "own_rlib_exact_path": true,
+        "own_rlib_tokens": [
+          "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-ff513fdc40cc6d8a/ruff_text_size/838d74980e36c862/out/libruff_text_size-838d74980e36c862.rlib"
+        ],
+        "pid": 1106865,
+        "raw_exec_sha256": "8e84c0888cb18ecc5f4a294731533b834ba7fa4f85bdd336c1e4f1e3572ba44c",
+        "rust_rlib_tokens": 50,
+        "sigchld": [
+          {
+            "code": "CLD_EXITED",
+            "ns": 1793133737407290000,
+            "observer_pid": 1106858,
+            "value": "0"
+          }
+        ],
+        "start_ns": 1793133737225472000,
+        "terminal": {
+          "ns": 1793133737406947000,
+          "result": 0
+        }
+      },
+      {
+        "argv_sha256": "e448df7d66da3c4c633808f771c7460069942386da92a6ba514041f66cd65afd",
+        "file_sha256": "154ade0429ad52a332ffb1fed59918d8d7d26f1dec4cf6ab6476ae0e450b63a2",
+        "own_rlib_exact_path": true,
+        "own_rlib_tokens": [
+          "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-ff513fdc40cc6d8a/ruff_text_size/838d74980e36c862/out/libruff_text_size-838d74980e36c862.rlib"
+        ],
+        "pid": 1107096,
+        "raw_exec_sha256": "d4fd9b636129142190219a26f3b31564b4a7ed6ec620eb544a1472df4e087cbc",
+        "rust_rlib_tokens": 50,
+        "sigchld": [
+          {
+            "code": "CLD_EXITED",
+            "ns": 1793133738595413000,
+            "observer_pid": 1107093,
+            "value": "0"
+          }
+        ],
+        "start_ns": 1793133738467146000,
+        "terminal": {
+          "ns": 1793133738595178000,
+          "result": 0
+        }
+      }
+    ],
+    "disabled_argv_sha256": "435827385fd0730bae515be7d526fdae9ddf494c9b20cc2de5f023ed0b17e691",
+    "disabled_test": [
+      {
+        "argv_sha256": "435827385fd0730bae515be7d526fdae9ddf494c9b20cc2de5f023ed0b17e691",
+        "file_sha256": "ad7a121a242b6c0281d84d25809b01f0ded3a33ec7cb66edc4bb7815d33f4dba",
+        "pid": 1133670,
+        "raw_exec_sha256": "789529753b9b1c5d9a2c2ccd1cdd1c3e0b93902389fccb48b1893ec8a4168425",
+        "sigchld": [
+          {
+            "code": "CLD_EXITED",
+            "ns": 1793134123790937000,
+            "observer_pid": 1133666,
+            "value": "0"
+          }
+        ],
+        "start_ns": 1793134122604523000,
+        "terminal": {
+          "ns": 1793134123790732000,
+          "result": 0
+        }
+      }
+    ],
+    "disabled_wild": [
+      {
+        "argv_sha256": "acd7a0013e74ae84e72a0e80d93eeb891f374413fb71b786016d1734ef16688b",
+        "file_sha256": "a21210492df9b7530d58aac43ec06572996e7759bcc9a43402676f9ba04d6c45",
+        "own_rlib_exact_path": true,
+        "own_rlib_tokens": [
+          "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-ff513fdc40cc6d8a/ruff_text_size/838d74980e36c862/out/libruff_text_size-838d74980e36c862.rlib"
+        ],
+        "pid": 1133749,
+        "raw_exec_sha256": "a5237af61d0a60d63b981a718b61cd6ef5e76afc453330caa57b5fbf8ba71c2f",
+        "rust_rlib_tokens": 50,
+        "sigchld": [
+          {
+            "code": "CLD_EXITED",
+            "ns": 1793134123699084000,
+            "observer_pid": 1133747,
+            "value": "0"
+          }
+        ],
+        "start_ns": 1793134123572304000,
+        "terminal": {
+          "ns": 1793134123698870000,
+          "result": 0
+        }
+      }
+    ],
+    "earlier_sibling_authoritative_wait": [
+      {
+        "action": "retry",
+        "arrival_ns": 1793133735880320771,
+        "sha256": "3e6f4af330d0d2cbd34fef88f12ec0b33d703571fe441c9607ea0373f867021a",
+        "source": "crates/ruff_text_size/tests/serde.rs"
+      }
+    ],
+    "own_producer": {
+      "actual_extern": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-ff513fdc40cc6d8a/ruff_text_size/838d74980e36c862/out/libruff_text_size-838d74980e36c862.rlib",
+      "argv_sha256": "22ba8301410effd08c75df18798ea3a0deece506f850e18c177724f0e08ecee1",
+      "features": [
+        "get-size",
+        "schemars",
+        "serde"
+      ],
+      "file_sha256": "653df050a4b720020454534e0197b1b6c459a7abbb1d152c8bc2dafe87cf4dce",
+      "first_relation": "before",
+      "pid": 1094623,
+      "printed_artifact": [
+        {
+          "arrival_ns": 1793133637685003207,
+          "byte_offset": 128479,
+          "features": [
+            "get-size",
+            "schemars",
+            "serde"
+          ],
+          "filenames": [
+            "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-ff513fdc40cc6d8a/ruff_text_size/838d74980e36c862/out/libruff_text_size-838d74980e36c862.rlib",
+            "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-ff513fdc40cc6d8a/ruff_text_size/838d74980e36c862/out/libruff_text_size-838d74980e36c862.rmeta"
+          ]
+        }
+      ],
+      "producer_entered_before_first": true,
+      "raw_exec_sha256": "a9abfa24ea994ed16268f9d67036e5ee6964d795feb70a4f913933830c3384dc",
+      "sigchld": [
+        {
+          "code": "CLD_EXITED",
+          "ns": 1793133635891853000,
+          "observer_pid": 1094688,
+          "value": "0"
+        }
+      ],
+      "source": "/home/dev-user/code/oss/ruff-ohm-whole-native-20261027/crates/ruff_text_size/src/lib.rs",
+      "start_ns": 1793133635220272000,
+      "terminal": {
+        "ns": 1793133635891373000,
+        "result": 0
+      }
+    },
+    "package": "ruff_text_size",
+    "policy": [
+      {
+        "action": "retry",
+        "arrival_ns": 1793133737534254094,
+        "byte_offset": 1732994,
+        "cargo_ns": 120727669951,
+        "line_bytes": 106,
+        "line_sha256": "52d60612a2549a58aeb85eb88a85ed662159e9046d4aac72c38d38c4a588951b",
+        "target": "constructors"
+      }
+    ],
+    "producer_scheduler_events": [
+      {
+        "ends": [
+          {
+            "arrival_ns": 1793133635676968622,
+            "byte_offset": 332489,
+            "cargo_ns": 18870362152,
+            "line_bytes": 1170,
+            "line_sha256": "b9beb863ec0b089a9622735334664c46d84307bb079749044291dfa4e66c9b48",
+            "result": "Ok(())"
+          }
+        ],
+        "starts": [
+          {
+            "arrival_ns": 1793133635208311846,
+            "byte_offset": 323241,
+            "cargo_ns": 18401788779,
+            "job_id": 111,
+            "line_bytes": 1167,
+            "line_sha256": "3d424ce0aed0ef6959247d9e9148c32b003ee6947e0989071d8d6f18e11745d7"
+          }
+        ],
+        "unit_sha256": "8c785619452c20c15cc0c7cc348830c50b81eb3d96d06bc556dcaa2ba552521d"
+      }
+    ],
+    "scheduler_disposition": "already settled (source inference from held output and final result)",
+    "source": {
+      "bytes": 448,
+      "first_matches": [
+        [
+          1,
+          "use ruff_text_size::TextSize;"
+        ]
+      ],
+      "occurrences": 1,
+      "package": "ruff_text_size",
+      "sha256": "dd1cde3860dbb59f067bfd91967992901fb3da69a84c8f057996da649e0cd3ab"
+    },
+    "target": "constructors",
+    "test_scheduler_events": [
+      {
+        "ends": [
+          {
+            "arrival_ns": 1793133738686260240,
+            "byte_offset": 1742477,
+            "cargo_ns": 121879585885,
+            "line_bytes": 1167,
+            "line_sha256": "f91ddac9cd98c390a764fb700af263e8f87b0911b3c34a3f61b1a01ba58bc5b0",
+            "result": "Ok(())"
+          }
+        ],
+        "starts": [
+          {
+            "arrival_ns": 1793133736068357170,
+            "byte_offset": 1725623,
+            "cargo_ns": 119261836628,
+            "job_id": 561,
+            "line_bytes": 1164,
+            "line_sha256": "68390d7fc7cd361ac168638123ce539d82a0bb1ddcc59bb2c4af38fc89fefbd1"
+          }
+        ],
+        "unit_sha256": "c79def2e5a065a70537ba1d89541cb83472c667097c8ee577c1085c8f3080707"
+      }
+    ]
+  },
+  "crates/ruff_text_size/tests/indexing.rs": {
+    "bounds": {
+      "artifact_arrival_ns": 1793133637685003207,
+      "cargo_exec_ns": 1793133616786289000,
+      "clock_uncertainty_ns": 5157663,
+      "earliest_test_scheduler_start_ns": 1793133735353937885,
+      "first_test_exec_ns": 1793133735391738000,
+      "last_producer_raw_debug_end_received_ns": 1793133635676968622,
+      "producer_terminal_ns": 1793133635891373000
+    },
+    "default_argv_sha256": "044b01c3a4747fbe82eab1cbe95dcbc09c705da85f63b61aadbb3264ff9de7f1",
+    "default_tests": [
+      {
+        "argv_sha256": "044b01c3a4747fbe82eab1cbe95dcbc09c705da85f63b61aadbb3264ff9de7f1",
+        "file_sha256": "029c4b495f14383f75b18a1972892dac6e1e1eef01bb8f2f71bd99e3ad21c82e",
+        "pid": 1106508,
+        "raw_exec_sha256": "c158ab2f0bdd0e3e8aa29e54f70412d1f0c77a23c0f1f643311ba191fabcdcaa",
+        "sigchld": [
+          {
+            "code": "CLD_EXITED",
+            "ns": 1793133736595454000,
+            "observer_pid": 1106507,
+            "value": "0"
+          }
+        ],
+        "start_ns": 1793133735391738000,
+        "terminal": {
+          "ns": 1793133736595254000,
+          "result": 0
+        }
+      },
+      {
+        "argv_sha256": "044b01c3a4747fbe82eab1cbe95dcbc09c705da85f63b61aadbb3264ff9de7f1",
+        "file_sha256": "2d5ea23f1c258d45223325e09f1f28776ec56f32cd6dbcc50a7f75cdcbc73719",
+        "pid": 1106750,
+        "raw_exec_sha256": "c37a00e531bbfb23efe15caaeaf73365c92a6852d94ad167c77b29853df64308",
+        "sigchld": [
+          {
+            "code": "CLD_EXITED",
+            "ns": 1793133737945842000,
+            "observer_pid": 1106507,
+            "value": "0"
+          }
+        ],
+        "start_ns": 1793133736609473000,
+        "terminal": {
+          "ns": 1793133737945302000,
+          "result": 0
+        }
+      }
+    ],
+    "default_wilds": [
+      {
+        "argv_sha256": "975a5439fe0f6c7fd903cccdfc113221c4f565c705baea66c43d056778b21f24",
+        "file_sha256": "e152aa7ff130f86c12cc76fda25e3f1c485ec13e12b73b873a7be920a251fbbe",
+        "own_rlib_exact_path": true,
+        "own_rlib_tokens": [
+          "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-ff513fdc40cc6d8a/ruff_text_size/838d74980e36c862/out/libruff_text_size-838d74980e36c862.rlib"
+        ],
+        "pid": 1106706,
+        "raw_exec_sha256": "5c36e20a73beade6696b48d7956c434e37a56395898db764b8e1d80c47059a2c",
+        "rust_rlib_tokens": 50,
+        "sigchld": [
+          {
+            "code": "CLD_EXITED",
+            "ns": 1793133736510725000,
+            "observer_pid": 1106704,
+            "value": "0"
+          }
+        ],
+        "start_ns": 1793133736378396000,
+        "terminal": {
+          "ns": 1793133736510490000,
+          "result": 0
+        }
+      },
+      {
+        "argv_sha256": "5e3049953aea83368c19e84eadd9c27f60f1ace3767f126c454d0098b46e2c18",
+        "file_sha256": "52fb25ae01a86c00bc622a50c483018290c4b33eb86c51e5eddeb1548fb58234",
+        "own_rlib_exact_path": true,
+        "own_rlib_tokens": [
+          "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-ff513fdc40cc6d8a/ruff_text_size/838d74980e36c862/out/libruff_text_size-838d74980e36c862.rlib"
+        ],
+        "pid": 1106981,
+        "raw_exec_sha256": "dbb5daab019c2b57668c5dc90bd7454330be9c88b196c79844a27390a23baa73",
+        "rust_rlib_tokens": 50,
+        "sigchld": [
+          {
+            "code": "CLD_EXITED",
+            "ns": 1793133737862448000,
+            "observer_pid": 1106980,
+            "value": "0"
+          }
+        ],
+        "start_ns": 1793133737737672000,
+        "terminal": {
+          "ns": 1793133737862246000,
+          "result": 0
+        }
+      }
+    ],
+    "disabled_argv_sha256": "044b01c3a4747fbe82eab1cbe95dcbc09c705da85f63b61aadbb3264ff9de7f1",
+    "disabled_test": [
+      {
+        "argv_sha256": "044b01c3a4747fbe82eab1cbe95dcbc09c705da85f63b61aadbb3264ff9de7f1",
+        "file_sha256": "decf10b8c9e9b8ee7758c9cd884e4f86b98ec86b10b4b30ee3d4ac4a9b94c61d",
+        "pid": 1133787,
+        "raw_exec_sha256": "f837aad57aa0e93d28a14387a918da0288be5b7b176da8b983793c031eea6377",
+        "sigchld": [
+          {
+            "code": "CLD_EXITED",
+            "ns": 1793134124887286000,
+            "observer_pid": 1133779,
+            "value": "0"
+          }
+        ],
+        "start_ns": 1793134123823685000,
+        "terminal": {
+          "ns": 1793134124886951000,
+          "result": 0
+        }
+      }
+    ],
+    "disabled_wild": [
+      {
+        "argv_sha256": "1970d96615bc890d333f2a15e49554cf35a7453347186fdb29eb57bb1ab12d34",
+        "file_sha256": "d90d08832ae26cecc648fadb2e19c0b3f0b2be8b69dbebc6cf4a4fbee2b51013",
+        "own_rlib_exact_path": true,
+        "own_rlib_tokens": [
+          "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-ff513fdc40cc6d8a/ruff_text_size/838d74980e36c862/out/libruff_text_size-838d74980e36c862.rlib"
+        ],
+        "pid": 1133888,
+        "raw_exec_sha256": "0e4f42eb014aa68c6f1b4c7d4305d96041ecc64e755f7703dad3707a77ed4350",
+        "rust_rlib_tokens": 50,
+        "sigchld": [
+          {
+            "code": "CLD_EXITED",
+            "ns": 1793134124803320000,
+            "observer_pid": 1133886,
+            "value": "0"
+          }
+        ],
+        "start_ns": 1793134124687374000,
+        "terminal": {
+          "ns": 1793134124803073000,
+          "result": 0
+        }
+      }
+    ],
+    "earlier_sibling_authoritative_wait": [],
+    "own_producer": {
+      "actual_extern": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-ff513fdc40cc6d8a/ruff_text_size/838d74980e36c862/out/libruff_text_size-838d74980e36c862.rlib",
+      "argv_sha256": "22ba8301410effd08c75df18798ea3a0deece506f850e18c177724f0e08ecee1",
+      "features": [
+        "get-size",
+        "schemars",
+        "serde"
+      ],
+      "file_sha256": "653df050a4b720020454534e0197b1b6c459a7abbb1d152c8bc2dafe87cf4dce",
+      "first_relation": "before",
+      "pid": 1094623,
+      "printed_artifact": [
+        {
+          "arrival_ns": 1793133637685003207,
+          "byte_offset": 128479,
+          "features": [
+            "get-size",
+            "schemars",
+            "serde"
+          ],
+          "filenames": [
+            "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-ff513fdc40cc6d8a/ruff_text_size/838d74980e36c862/out/libruff_text_size-838d74980e36c862.rlib",
+            "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-ff513fdc40cc6d8a/ruff_text_size/838d74980e36c862/out/libruff_text_size-838d74980e36c862.rmeta"
+          ]
+        }
+      ],
+      "producer_entered_before_first": true,
+      "raw_exec_sha256": "a9abfa24ea994ed16268f9d67036e5ee6964d795feb70a4f913933830c3384dc",
+      "sigchld": [
+        {
+          "code": "CLD_EXITED",
+          "ns": 1793133635891853000,
+          "observer_pid": 1094688,
+          "value": "0"
+        }
+      ],
+      "source": "/home/dev-user/code/oss/ruff-ohm-whole-native-20261027/crates/ruff_text_size/src/lib.rs",
+      "start_ns": 1793133635220272000,
+      "terminal": {
+        "ns": 1793133635891373000,
+        "result": 0
+      }
+    },
+    "package": "ruff_text_size",
+    "policy": [
+      {
+        "action": "retry",
+        "arrival_ns": 1793133736599488700,
+        "byte_offset": 1730230,
+        "cargo_ns": 119792959089,
+        "line_bytes": 102,
+        "line_sha256": "abc3a283bf14d6fc2250864fcb994a20daa22be38f9998ae8b536e31a8c7b34d",
+        "target": "indexing"
+      }
+    ],
+    "producer_scheduler_events": [
+      {
+        "ends": [
+          {
+            "arrival_ns": 1793133635676968622,
+            "byte_offset": 332489,
+            "cargo_ns": 18870362152,
+            "line_bytes": 1170,
+            "line_sha256": "b9beb863ec0b089a9622735334664c46d84307bb079749044291dfa4e66c9b48",
+            "result": "Ok(())"
+          }
+        ],
+        "starts": [
+          {
+            "arrival_ns": 1793133635208311846,
+            "byte_offset": 323241,
+            "cargo_ns": 18401788779,
+            "job_id": 111,
+            "line_bytes": 1167,
+            "line_sha256": "3d424ce0aed0ef6959247d9e9148c32b003ee6947e0989071d8d6f18e11745d7"
+          }
+        ],
+        "unit_sha256": "8c785619452c20c15cc0c7cc348830c50b81eb3d96d06bc556dcaa2ba552521d"
+      }
+    ],
+    "scheduler_disposition": "already settled (source inference from held output and final result)",
+    "source": {
+      "bytes": 151,
+      "first_matches": [
+        [
+          1,
+          "use ruff_text_size::TextRange;"
+        ]
+      ],
+      "occurrences": 1,
+      "package": "ruff_text_size",
+      "sha256": "106cee4ca834fcca60620645a39a90324aabd8156a8c4301b567667d8cccaa1e"
+    },
+    "target": "indexing",
+    "test_scheduler_events": [
+      {
+        "ends": [
+          {
+            "arrival_ns": 1793133737970268939,
+            "byte_offset": 1733100,
+            "cargo_ns": 121163630039,
+            "line_bytes": 1159,
+            "line_sha256": "921e916075ec0d9d692ba7549233f0ce6097dda7ee641ee37b0f3adc69b1d2af",
+            "result": "Ok(())"
+          }
+        ],
+        "starts": [
+          {
+            "arrival_ns": 1793133735379311696,
+            "byte_offset": 1723071,
+            "cargo_ns": 118572806548,
+            "job_id": 560,
+            "line_bytes": 1156,
+            "line_sha256": "6c3554f6a3605e039a35706d347fda273b65f6765471ede88490efc60415504e"
+          }
+        ],
+        "unit_sha256": "1107cf70f0b0305b0e71c2bed422f3361eeeefa61f6fe25d57822638a5721070"
+      }
+    ]
+  },
+  "crates/ruff_text_size/tests/main.rs": {
+    "bounds": {
+      "artifact_arrival_ns": 1793133637685003207,
+      "cargo_exec_ns": 1793133616786289000,
+      "clock_uncertainty_ns": 5157663,
+      "earliest_test_scheduler_start_ns": 1793133735316175758,
+      "first_test_exec_ns": 1793133735353333000,
+      "last_producer_raw_debug_end_received_ns": 1793133635676968622,
+      "producer_terminal_ns": 1793133635891373000
+    },
+    "default_argv_sha256": "554ac094737bec4a92e7ad6d853e3011c4082413182fe8289c6ef91fbb48aa8a",
+    "default_tests": [
+      {
+        "argv_sha256": "554ac094737bec4a92e7ad6d853e3011c4082413182fe8289c6ef91fbb48aa8a",
+        "file_sha256": "acb7cca08c065ca540533b6179d9761afcbebf5cf4b3c55fbdd4051cd1a2f9dd",
+        "pid": 1106504,
+        "raw_exec_sha256": "83b8c24313e3d2e5630329ebbd3eeb8a168b1cc721713cde4f615a8136b3233a",
+        "sigchld": [
+          {
+            "code": "CLD_EXITED",
+            "ns": 1793133736812416000,
+            "observer_pid": 1106503,
+            "value": "0"
+          }
+        ],
+        "start_ns": 1793133735353333000,
+        "terminal": {
+          "ns": 1793133736812195000,
+          "result": 0
+        }
+      },
+      {
+        "argv_sha256": "554ac094737bec4a92e7ad6d853e3011c4082413182fe8289c6ef91fbb48aa8a",
+        "file_sha256": "9631c2f8814162ac7af640cce11541aa2069e0a45f1da1053ee18f864828a8fa",
+        "pid": 1106797,
+        "raw_exec_sha256": "55328c5860596f7fca56815012943d32d15aae38519f6eba4e41345b2f5ab384",
+        "sigchld": [
+          {
+            "code": "CLD_EXITED",
+            "ns": 1793133738285458000,
+            "observer_pid": 1106503,
+            "value": "0"
+          }
+        ],
+        "start_ns": 1793133736828561000,
+        "terminal": {
+          "ns": 1793133738285219000,
+          "result": 0
+        }
+      }
+    ],
+    "default_wilds": [
+      {
+        "argv_sha256": "be81d2e78d008eb9e5c7a801ea69dedb8b8e322f45b5e04ee4534a000610fb01",
+        "file_sha256": "63b93f628159f090cd64f38e0efca416d4827e4212ac3f4205b19afcb71d1453",
+        "own_rlib_exact_path": true,
+        "own_rlib_tokens": [
+          "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-ff513fdc40cc6d8a/ruff_text_size/838d74980e36c862/out/libruff_text_size-838d74980e36c862.rlib"
+        ],
+        "pid": 1106743,
+        "raw_exec_sha256": "947ec04138c110d6da85ad0b651bb07726fc64521dcaab81d2edc2bab7f2360b",
+        "rust_rlib_tokens": 50,
+        "sigchld": [
+          {
+            "code": "CLD_EXITED",
+            "ns": 1793133736726834000,
+            "observer_pid": 1106741,
+            "value": "0"
+          }
+        ],
+        "start_ns": 1793133736592720000,
+        "terminal": {
+          "ns": 1793133736726591000,
+          "result": 0
+        }
+      },
+      {
+        "argv_sha256": "2e6697d704591ca80fc6c8e28e6c90e23b8477a0073e56f28a39eaf9da6441b6",
+        "file_sha256": "f078ed5e9b2e6a453572492ed4242ecac736a84a5ad77ba6bafdf70f98e0a5fe",
+        "own_rlib_exact_path": true,
+        "own_rlib_tokens": [
+          "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-ff513fdc40cc6d8a/ruff_text_size/838d74980e36c862/out/libruff_text_size-838d74980e36c862.rlib"
+        ],
+        "pid": 1107025,
+        "raw_exec_sha256": "2af2bc5912d496eb6cc9b13b9f463108e3eb4f291459f89ffc91b93de26846d4",
+        "rust_rlib_tokens": 50,
+        "sigchld": [
+          {
+            "code": "CLD_EXITED",
+            "ns": 1793133738194758000,
+            "observer_pid": 1107016,
+            "value": "0"
+          }
+        ],
+        "start_ns": 1793133738048248000,
+        "terminal": {
+          "ns": 1793133738194523000,
+          "result": 0
+        }
+      }
+    ],
+    "disabled_argv_sha256": "554ac094737bec4a92e7ad6d853e3011c4082413182fe8289c6ef91fbb48aa8a",
+    "disabled_test": [
+      {
+        "argv_sha256": "554ac094737bec4a92e7ad6d853e3011c4082413182fe8289c6ef91fbb48aa8a",
+        "file_sha256": "af0b7f55e690234bb74bb66342251e29f7d6a5709f0c096d6110154ecc8def56",
+        "pid": 1133774,
+        "raw_exec_sha256": "a81bb1baabfeb76af0a00d3c0ee96bb3123d585c66517c5ff7926c9351468450",
+        "sigchld": [
+          {
+            "code": "CLD_EXITED",
+            "ns": 1793134125135864000,
+            "observer_pid": 1133773,
+            "value": "0"
+          }
+        ],
+        "start_ns": 1793134123730490000,
+        "terminal": {
+          "ns": 1793134125135673000,
+          "result": 0
+        }
+      }
+    ],
+    "disabled_wild": [
+      {
+        "argv_sha256": "ae7103a13a517f36ae3cc3c6d2dbc328d7cc0c9b0579d5b674b87c7ec065659a",
+        "file_sha256": "2a82454f82fdde30c1d1053c93d32236785ae8d00edf30add10064bee66d84f7",
+        "own_rlib_exact_path": true,
+        "own_rlib_tokens": [
+          "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-ff513fdc40cc6d8a/ruff_text_size/838d74980e36c862/out/libruff_text_size-838d74980e36c862.rlib"
+        ],
+        "pid": 1133908,
+        "raw_exec_sha256": "e88323d40d0bb83734354f760f42b3e58f46406be3640daabe6bd3ebd9792b7c",
+        "rust_rlib_tokens": 50,
+        "sigchld": [
+          {
+            "code": "CLD_EXITED",
+            "ns": 1793134125052217000,
+            "observer_pid": 1133903,
+            "value": "0"
+          }
+        ],
+        "start_ns": 1793134124918783000,
+        "terminal": {
+          "ns": 1793134125051976000,
+          "result": 0
+        }
+      }
+    ],
+    "earlier_sibling_authoritative_wait": [],
+    "own_producer": {
+      "actual_extern": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-ff513fdc40cc6d8a/ruff_text_size/838d74980e36c862/out/libruff_text_size-838d74980e36c862.rlib",
+      "argv_sha256": "22ba8301410effd08c75df18798ea3a0deece506f850e18c177724f0e08ecee1",
+      "features": [
+        "get-size",
+        "schemars",
+        "serde"
+      ],
+      "file_sha256": "653df050a4b720020454534e0197b1b6c459a7abbb1d152c8bc2dafe87cf4dce",
+      "first_relation": "before",
+      "pid": 1094623,
+      "printed_artifact": [
+        {
+          "arrival_ns": 1793133637685003207,
+          "byte_offset": 128479,
+          "features": [
+            "get-size",
+            "schemars",
+            "serde"
+          ],
+          "filenames": [
+            "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-ff513fdc40cc6d8a/ruff_text_size/838d74980e36c862/out/libruff_text_size-838d74980e36c862.rlib",
+            "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-ff513fdc40cc6d8a/ruff_text_size/838d74980e36c862/out/libruff_text_size-838d74980e36c862.rmeta"
+          ]
+        }
+      ],
+      "producer_entered_before_first": true,
+      "raw_exec_sha256": "a9abfa24ea994ed16268f9d67036e5ee6964d795feb70a4f913933830c3384dc",
+      "sigchld": [
+        {
+          "code": "CLD_EXITED",
+          "ns": 1793133635891853000,
+          "observer_pid": 1094688,
+          "value": "0"
+        }
+      ],
+      "source": "/home/dev-user/code/oss/ruff-ohm-whole-native-20261027/crates/ruff_text_size/src/lib.rs",
+      "start_ns": 1793133635220272000,
+      "terminal": {
+        "ns": 1793133635891373000,
+        "result": 0
+      }
+    },
+    "package": "ruff_text_size",
+    "policy": [
+      {
+        "action": "retry",
+        "arrival_ns": 1793133736818060414,
+        "byte_offset": 1730332,
+        "cargo_ns": 120011473444,
+        "line_bytes": 98,
+        "line_sha256": "9de2703ca54b7bf01b16e8891436a52d65fc9648691690313909c63e141a7966",
+        "target": "main"
+      }
+    ],
+    "producer_scheduler_events": [
+      {
+        "ends": [
+          {
+            "arrival_ns": 1793133635676968622,
+            "byte_offset": 332489,
+            "cargo_ns": 18870362152,
+            "line_bytes": 1170,
+            "line_sha256": "b9beb863ec0b089a9622735334664c46d84307bb079749044291dfa4e66c9b48",
+            "result": "Ok(())"
+          }
+        ],
+        "starts": [
+          {
+            "arrival_ns": 1793133635208311846,
+            "byte_offset": 323241,
+            "cargo_ns": 18401788779,
+            "job_id": 111,
+            "line_bytes": 1167,
+            "line_sha256": "3d424ce0aed0ef6959247d9e9148c32b003ee6947e0989071d8d6f18e11745d7"
+          }
+        ],
+        "unit_sha256": "8c785619452c20c15cc0c7cc348830c50b81eb3d96d06bc556dcaa2ba552521d"
+      }
+    ],
+    "scheduler_disposition": "already settled (source inference from held output and final result)",
+    "source": {
+      "bytes": 2300,
+      "first_matches": [
+        [
+          2,
+          "ruff_text_size::{TextRange, TextSize},"
+        ]
+      ],
+      "occurrences": 1,
+      "package": "ruff_text_size",
+      "sha256": "1e156d1f5c93173034fd0a14e0730e7b24ffb1d6d778709fd2132b247af7ca6f"
+    },
+    "target": "main",
+    "test_scheduler_events": [
+      {
+        "ends": [
+          {
+            "arrival_ns": 1793133738311398583,
+            "byte_offset": 1737787,
+            "cargo_ns": 121504829277,
+            "line_bytes": 1151,
+            "line_sha256": "537f752f41c8a1f125d45803efb83119e686f56ac55aae5799b7aca6383ca806",
+            "result": "Ok(())"
+          }
+        ],
+        "starts": [
+          {
+            "arrival_ns": 1793133735341502434,
+            "byte_offset": 1720644,
+            "cargo_ns": 118535044421,
+            "job_id": 559,
+            "line_bytes": 1148,
+            "line_sha256": "de13a74f82b7cfeac5df37c64d64b04806d57bbbf294f7700fcc7dc06610848c"
+          }
+        ],
+        "unit_sha256": "688475c5cc320c99d4ef5d616212e272487ebc4b5b3a9923eaf9fe5e8dfc8e0f"
+      }
+    ]
+  },
+  "crates/ruff_text_size/tests/serde.rs": {
+    "bounds": {
+      "artifact_arrival_ns": 1793133637685003207,
+      "cargo_exec_ns": 1793133616786289000,
+      "clock_uncertainty_ns": 5157663,
+      "earliest_test_scheduler_start_ns": 1793133734555967027,
+      "first_test_exec_ns": 1793133734593022000,
+      "last_producer_raw_debug_end_received_ns": 1793133635676968622,
+      "producer_terminal_ns": 1793133635891373000
+    },
+    "default_argv_sha256": "bf746720fac622d99cd2650c7c651899884ce2cd5713cd57b2f419c9239f4bfa",
+    "default_tests": [
+      {
+        "argv_sha256": "bf746720fac622d99cd2650c7c651899884ce2cd5713cd57b2f419c9239f4bfa",
+        "file_sha256": "694fde7afadd310e40600d785d516ae9a204d7ccb33b8dd997e6ad22f4037d08",
+        "pid": 1106364,
+        "raw_exec_sha256": "eaf5ee96c821e73df820f4afaf3d4b0c9244cf24dce237a577a8038edb6ddbe7",
+        "sigchld": [
+          {
+            "code": "CLD_EXITED",
+            "ns": 1793133735875190000,
+            "observer_pid": 1106362,
+            "value": "0"
+          }
+        ],
+        "start_ns": 1793133734593022000,
+        "terminal": {
+          "ns": 1793133735875045000,
+          "result": 0
+        }
+      },
+      {
+        "argv_sha256": "bf746720fac622d99cd2650c7c651899884ce2cd5713cd57b2f419c9239f4bfa",
+        "file_sha256": "d8c816e14e60726abf1ede74cc32baedd3d8817d1124186f48017085312635b2",
+        "pid": 1106607,
+        "raw_exec_sha256": "0891776af57dc07810fdb805eaf34ec9917d7f66cb6ec9f3d47d3e18c652988e",
+        "sigchld": [
+          {
+            "code": "CLD_EXITED",
+            "ns": 1793133737343350000,
+            "observer_pid": 1106362,
+            "value": "0"
+          }
+        ],
+        "start_ns": 1793133735889017000,
+        "terminal": {
+          "ns": 1793133737343024000,
+          "result": 0
+        }
+      }
+    ],
+    "default_wilds": [
+      {
+        "argv_sha256": "b496c48f42594411cf6f89844678f7020a5bb1cff622f03b7a28f4cb940f5aef",
+        "file_sha256": "584908b25bd372da5a84389d86d28ab0ee40fc7c79e79bbbfc5ba33dd156c037",
+        "own_rlib_exact_path": true,
+        "own_rlib_tokens": [
+          "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-ff513fdc40cc6d8a/ruff_text_size/838d74980e36c862/out/libruff_text_size-838d74980e36c862.rlib"
+        ],
+        "pid": 1106566,
+        "raw_exec_sha256": "b1452eb33c130add2423a5d5dc551f912ae9bdb9bd32d54ede9b45b00826310d",
+        "rust_rlib_tokens": 51,
+        "sigchld": [
+          {
+            "code": "CLD_EXITED",
+            "ns": 1793133735799051000,
+            "observer_pid": 1106564,
+            "value": "0"
+          }
+        ],
+        "start_ns": 1793133735667551000,
+        "terminal": {
+          "ns": 1793133735798753000,
+          "result": 0
+        }
+      },
+      {
+        "argv_sha256": "e8e927c39a4274e041a1886fa867795fea800d89c694ca22b13fff0eaba3a3e4",
+        "file_sha256": "62beec831e84383c264e5733f0833c35ae84da5bec9e1727f170438b57061da9",
+        "own_rlib_exact_path": true,
+        "own_rlib_tokens": [
+          "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-ff513fdc40cc6d8a/ruff_text_size/838d74980e36c862/out/libruff_text_size-838d74980e36c862.rlib"
+        ],
+        "pid": 1106843,
+        "raw_exec_sha256": "e40f0ee0223d2dce61146ab307294dfbc5e4d8604a28b98351b6f44e49687c68",
+        "rust_rlib_tokens": 51,
+        "sigchld": [
+          {
+            "code": "CLD_EXITED",
+            "ns": 1793133737209440000,
+            "observer_pid": 1106839,
+            "value": "0"
+          }
+        ],
+        "start_ns": 1793133737029908000,
+        "terminal": {
+          "ns": 1793133737209220000,
+          "result": 0
+        }
+      }
+    ],
+    "disabled_argv_sha256": "bf746720fac622d99cd2650c7c651899884ce2cd5713cd57b2f419c9239f4bfa",
+    "disabled_test": [
+      {
+        "argv_sha256": "bf746720fac622d99cd2650c7c651899884ce2cd5713cd57b2f419c9239f4bfa",
+        "file_sha256": "7d3eb4a5745bd4bb3a1ab738948d6af250a465e8f91f96c385bf46c0b59af7a6",
+        "pid": 1133746,
+        "raw_exec_sha256": "29ce33bac5c1614a608dd32857d5646bcb5107ac28b416daa92b0f69a177bb38",
+        "sigchld": [
+          {
+            "code": "CLD_EXITED",
+            "ns": 1793134125036351000,
+            "observer_pid": 1133745,
+            "value": "0"
+          }
+        ],
+        "start_ns": 1793134123497703000,
+        "terminal": {
+          "ns": 1793134125036205000,
+          "result": 0
+        }
+      }
+    ],
+    "disabled_wild": [
+      {
+        "argv_sha256": "8f21da752c7987cd5aea1378f40961414040d7bf2d44a3551d9fb112fbcddcbd",
+        "file_sha256": "87c9f1da6f19732726f3f94b4061d4d1fdda9839f10cd95d93545df5f3bd5482",
+        "own_rlib_exact_path": true,
+        "own_rlib_tokens": [
+          "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-ff513fdc40cc6d8a/ruff_text_size/838d74980e36c862/out/libruff_text_size-838d74980e36c862.rlib"
+        ],
+        "pid": 1133895,
+        "raw_exec_sha256": "caf7be6025edf26b6110e32a344db87184fd0a77608a68b5c399da07e4dbf6f3",
+        "rust_rlib_tokens": 51,
+        "sigchld": [
+          {
+            "code": "CLD_EXITED",
+            "ns": 1793134124947773000,
+            "observer_pid": 1133893,
+            "value": "0"
+          }
+        ],
+        "start_ns": 1793134124794603000,
+        "terminal": {
+          "ns": 1793134124947562000,
+          "result": 0
+        }
+      }
+    ],
+    "earlier_sibling_authoritative_wait": [],
+    "own_producer": {
+      "actual_extern": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-ff513fdc40cc6d8a/ruff_text_size/838d74980e36c862/out/libruff_text_size-838d74980e36c862.rlib",
+      "argv_sha256": "22ba8301410effd08c75df18798ea3a0deece506f850e18c177724f0e08ecee1",
+      "features": [
+        "get-size",
+        "schemars",
+        "serde"
+      ],
+      "file_sha256": "653df050a4b720020454534e0197b1b6c459a7abbb1d152c8bc2dafe87cf4dce",
+      "first_relation": "before",
+      "pid": 1094623,
+      "printed_artifact": [
+        {
+          "arrival_ns": 1793133637685003207,
+          "byte_offset": 128479,
+          "features": [
+            "get-size",
+            "schemars",
+            "serde"
+          ],
+          "filenames": [
+            "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-ff513fdc40cc6d8a/ruff_text_size/838d74980e36c862/out/libruff_text_size-838d74980e36c862.rlib",
+            "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-ff513fdc40cc6d8a/ruff_text_size/838d74980e36c862/out/libruff_text_size-838d74980e36c862.rmeta"
+          ]
+        }
+      ],
+      "producer_entered_before_first": true,
+      "raw_exec_sha256": "a9abfa24ea994ed16268f9d67036e5ee6964d795feb70a4f913933830c3384dc",
+      "sigchld": [
+        {
+          "code": "CLD_EXITED",
+          "ns": 1793133635891853000,
+          "observer_pid": 1094688,
+          "value": "0"
+        }
+      ],
+      "source": "/home/dev-user/code/oss/ruff-ohm-whole-native-20261027/crates/ruff_text_size/src/lib.rs",
+      "start_ns": 1793133635220272000,
+      "terminal": {
+        "ns": 1793133635891373000,
+        "result": 0
+      }
+    },
+    "package": "ruff_text_size",
+    "policy": [
+      {
+        "action": "retry",
+        "arrival_ns": 1793133735880320771,
+        "byte_offset": 1724227,
+        "cargo_ns": 119073678550,
+        "line_bytes": 99,
+        "line_sha256": "3e6f4af330d0d2cbd34fef88f12ec0b33d703571fe441c9607ea0373f867021a",
+        "target": "serde"
+      }
+    ],
+    "producer_scheduler_events": [
+      {
+        "ends": [
+          {
+            "arrival_ns": 1793133635676968622,
+            "byte_offset": 332489,
+            "cargo_ns": 18870362152,
+            "line_bytes": 1170,
+            "line_sha256": "b9beb863ec0b089a9622735334664c46d84307bb079749044291dfa4e66c9b48",
+            "result": "Ok(())"
+          }
+        ],
+        "starts": [
+          {
+            "arrival_ns": 1793133635208311846,
+            "byte_offset": 323241,
+            "cargo_ns": 18401788779,
+            "job_id": 111,
+            "line_bytes": 1167,
+            "line_sha256": "3d424ce0aed0ef6959247d9e9148c32b003ee6947e0989071d8d6f18e11745d7"
+          }
+        ],
+        "unit_sha256": "8c785619452c20c15cc0c7cc348830c50b81eb3d96d06bc556dcaa2ba552521d"
+      }
+    ],
+    "scheduler_disposition": "already settled (source inference from held output and final result)",
+    "source": {
+      "bytes": 1808,
+      "first_matches": [
+        [
+          2,
+          "ruff_text_size::{TextRange, TextSize},"
+        ]
+      ],
+      "occurrences": 1,
+      "package": "ruff_text_size",
+      "sha256": "46cd1f5bfd2f40374e3d5312f9d151b2cf7470ec866a3a309adb1999b7231d46"
+    },
+    "target": "serde",
+    "test_scheduler_events": [
+      {
+        "ends": [
+          {
+            "arrival_ns": 1793133737375823099,
+            "byte_offset": 1730430,
+            "cargo_ns": 120569212556,
+            "line_bytes": 1189,
+            "line_sha256": "c003f0cd9f36c98798cb0b052d00fdf7e2074f500aecc53fa4baee379af35183",
+            "result": "Ok(())"
+          }
+        ],
+        "starts": [
+          {
+            "arrival_ns": 1793133734581326119,
+            "byte_offset": 1718302,
+            "cargo_ns": 117774835690,
+            "job_id": 558,
+            "line_bytes": 1186,
+            "line_sha256": "94ea3f54581ade984aa56cc0ed2e0a9bcb1ac1f53c625ba829e48178fcd7063f"
+          }
+        ],
+        "unit_sha256": "eaf61c11388de97c63036266f3ca37f1e4ff769a192b08052c63f59509b721a4"
+      }
+    ]
+  },
+  "crates/ty_server/tests/e2e/main.rs": {
+    "bounds": {
+      "artifact_arrival_ns": 1793133891003641589,
+      "cargo_exec_ns": 1793133616786289000,
+      "clock_uncertainty_ns": 5157663,
+      "earliest_test_scheduler_start_ns": 1793133897805170157,
+      "first_test_exec_ns": 1793133897842583000,
+      "last_producer_raw_debug_end_received_ns": 1793133804692517536,
+      "producer_terminal_ns": 1793133831824281000
+    },
+    "default_argv_sha256": "828043f2c15a92bdb5cfc52c185dfd8b2120418c927dc5be9f94c7ca5bc9635f",
+    "default_tests": [
+      {
+        "argv_sha256": "828043f2c15a92bdb5cfc52c185dfd8b2120418c927dc5be9f94c7ca5bc9635f",
+        "file_sha256": "1e43e220550028756c297c1064a984dbee61e38df7a22b95280e2bb651fd4ca5",
+        "pid": 1116445,
+        "raw_exec_sha256": "0ce4d734882b49759fedc69a02b90b81766bfdb7040121a88c8f390b386c2d84",
+        "sigchld": [
+          {
+            "code": "CLD_EXITED",
+            "ns": 1793133919947522000,
+            "observer_pid": 1116444,
+            "value": "0"
+          }
+        ],
+        "start_ns": 1793133897842583000,
+        "terminal": {
+          "ns": 1793133919947343000,
+          "result": 0
+        }
+      },
+      {
+        "argv_sha256": "828043f2c15a92bdb5cfc52c185dfd8b2120418c927dc5be9f94c7ca5bc9635f",
+        "file_sha256": "b5457efc7e360936b1e1aea425231ec6520e2122978695f026d13fea23bc7c63",
+        "pid": 1117282,
+        "raw_exec_sha256": "7540aa55d830bc13f70b9197cc709a41fda4f9abbef79f6f41f3946a1481a983",
+        "sigchld": [
+          {
+            "code": "CLD_EXITED",
+            "ns": 1793133924986430000,
+            "observer_pid": 1116444,
+            "value": "0"
+          }
+        ],
+        "start_ns": 1793133920015494000,
+        "terminal": {
+          "ns": 1793133924986138000,
+          "result": 0
+        }
+      }
+    ],
+    "default_wilds": [
+      {
+        "argv_sha256": "914de5d9839d6c73a6a3a5b11496d11db00228b409ab36b4c8c90cdde5617642",
+        "file_sha256": "6b1dcb38a697ee81da710e572616547c16beed0782c2cb75a17979b43aca7890",
+        "own_rlib_exact_path": true,
+        "own_rlib_tokens": [
+          "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-ff513fdc40cc6d8a/ty_server/40996f53449c001b/out/libty_server-40996f53449c001b.rlib"
+        ],
+        "pid": 1117233,
+        "raw_exec_sha256": "3da8922e90d88e5164ad42f66f327a1ef2d43cd8a2c3dddd426c896918619cb3",
+        "rust_rlib_tokens": 250,
+        "sigchld": [
+          {
+            "code": "CLD_EXITED",
+            "ns": 1793133919853273000,
+            "observer_pid": 1117231,
+            "value": "0"
+          }
+        ],
+        "start_ns": 1793133918338870000,
+        "terminal": {
+          "ns": 1793133919852927000,
+          "result": 0
+        }
+      },
+      {
+        "argv_sha256": "6a1beb54ae155a58cc8a840451b6bda2c5384286dc46e53a9d1e29982b78a8ab",
+        "file_sha256": "579409637eda829213cde3e9dc514ff42fd20816af03755b49adcffa2715b1ee",
+        "own_rlib_exact_path": true,
+        "own_rlib_tokens": [
+          "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-ff513fdc40cc6d8a/ty_server/40996f53449c001b/out/libty_server-40996f53449c001b.rlib"
+        ],
+        "pid": 1117464,
+        "raw_exec_sha256": "a040d349cf2a9b76276fe5c2f887510fdb6f510fbe0957908ac330571f49b984",
+        "rust_rlib_tokens": 250,
+        "sigchld": [
+          {
+            "code": "CLD_EXITED",
+            "ns": 1793133924909491000,
+            "observer_pid": 1117463,
+            "value": "0"
+          }
+        ],
+        "start_ns": 1793133923429952000,
+        "terminal": {
+          "ns": 1793133924909325000,
+          "result": 0
+        }
+      }
+    ],
+    "disabled_argv_sha256": "828043f2c15a92bdb5cfc52c185dfd8b2120418c927dc5be9f94c7ca5bc9635f",
+    "disabled_test": [
+      {
+        "argv_sha256": "828043f2c15a92bdb5cfc52c185dfd8b2120418c927dc5be9f94c7ca5bc9635f",
+        "file_sha256": "92a7ff3529e5ab8f0fc2ac3302b41ade0fbef66c242033d53f4cbd3756d8f42d",
+        "pid": 1143046,
+        "raw_exec_sha256": "a5520b2bc6b2d918dbd3d0d77bf5c80871cad0143d631ac9f56a7987767e235e",
+        "sigchld": [
+          {
+            "code": "CLD_EXITED",
+            "ns": 1793134317831297000,
+            "observer_pid": 1143045,
+            "value": "0"
+          }
+        ],
+        "start_ns": 1793134293532221000,
+        "terminal": {
+          "ns": 1793134317830508000,
+          "result": 0
+        }
+      }
+    ],
+    "disabled_wild": [
+      {
+        "argv_sha256": "bd220e624d4bb1cb0b97540b3680e0ebd01e34a0068872de486442ea32c483e1",
+        "file_sha256": "afc22222e0ef8d19bb245d631c3c54352864126ef117d8b1da9c33abd872e0aa",
+        "own_rlib_exact_path": true,
+        "own_rlib_tokens": [
+          "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-ff513fdc40cc6d8a/ty_server/40996f53449c001b/out/libty_server-40996f53449c001b.rlib"
+        ],
+        "pid": 1143626,
+        "raw_exec_sha256": "88380248da855243d2e3f2156361451212b47d992d03131a503e5d072d3957c3",
+        "rust_rlib_tokens": 250,
+        "sigchld": [
+          {
+            "code": "CLD_EXITED",
+            "ns": 1793134317701731000,
+            "observer_pid": 1143625,
+            "value": "0"
+          }
+        ],
+        "start_ns": 1793134315802344000,
+        "terminal": {
+          "ns": 1793134317701359000,
+          "result": 0
+        }
+      }
+    ],
+    "earlier_sibling_authoritative_wait": [],
+    "own_producer": {
+      "actual_extern": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-ff513fdc40cc6d8a/ty_server/40996f53449c001b/out/libty_server-40996f53449c001b.rlib",
+      "argv_sha256": "638a3ce4063c79126fe72e4c076ac7094fb90eb0588bbfd768f0a052747a10c8",
+      "features": [],
+      "file_sha256": "f445a5ad3c542317180e9876deadb018907917f2d3926d44405a72a74a68a47c",
+      "first_relation": "before",
+      "pid": 1111934,
+      "printed_artifact": [
+        {
+          "arrival_ns": 1793133891003641589,
+          "byte_offset": 707996,
+          "features": [],
+          "filenames": [
+            "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-ff513fdc40cc6d8a/ty_server/40996f53449c001b/out/libty_server-40996f53449c001b.rlib",
+            "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-ff513fdc40cc6d8a/ty_server/40996f53449c001b/out/libty_server-40996f53449c001b.rmeta"
+          ]
+        }
+      ],
+      "producer_entered_before_first": true,
+      "raw_exec_sha256": "0dc4103184b1b9d9f0af534d66feb675d1c70b7c61bec6fcad37d2414223859a",
+      "sigchld": [
+        {
+          "code": "CLD_EXITED",
+          "ns": 1793133831824593000,
+          "observer_pid": 1111933,
+          "value": "0"
+        }
+      ],
+      "source": "/home/dev-user/code/oss/ruff-ohm-whole-native-20261027/crates/ty_server/src/lib.rs",
+      "start_ns": 1793133795760740000,
+      "terminal": {
+        "ns": 1793133831824281000,
+        "result": 0
+      }
+    },
+    "package": "ty_server",
+    "policy": [
+      {
+        "action": "retry",
+        "arrival_ns": 1793133920006230408,
+        "byte_offset": 1986889,
+        "cargo_ns": 303199666632,
+        "line_bytes": 97,
+        "line_sha256": "d069a74be4557248a7f9e975d6bd8e0a1da89c86b7f89c04dd8636e263e0e5e1",
+        "target": "e2e"
+      }
+    ],
+    "producer_scheduler_events": [
+      {
+        "ends": [
+          {
+            "arrival_ns": 1793133804692517536,
+            "byte_offset": 1861122,
+            "cargo_ns": 187885887429,
+            "line_bytes": 1119,
+            "line_sha256": "8a9644eea346af8cef2a84c142bcefabc0560e3e094028183ac0bc35fd28e8d0",
+            "result": "Ok(())"
+          }
+        ],
+        "starts": [
+          {
+            "arrival_ns": 1793133795745439957,
+            "byte_offset": 1853033,
+            "cargo_ns": 178938078873,
+            "job_id": 612,
+            "line_bytes": 1116,
+            "line_sha256": "c5fe9a4176e5b19945828f025a07bc5956bfc24f1d192ea4db3f4c8bc4581fbe"
+          }
+        ],
+        "unit_sha256": "c8d36fc60e279952b48c211d17108e69444115e8db4c917612b447fd091a8017"
+      }
+    ],
+    "scheduler_disposition": "already settled (source inference from held output and final result)",
+    "source": {
+      "bytes": 66243,
+      "first_matches": [
+        [
+          98,
+          "use ty_server::{ClientOptions, LogLevel, Server, init_logging};"
+        ]
+      ],
+      "occurrences": 1,
+      "package": "ty_server",
+      "sha256": "4150c59a02a183cbc0a1f9fe402f5ae7a3358a8b2dd96a8ec34a6b22e00eba93"
+    },
+    "target": "e2e",
+    "test_scheduler_events": [
+      {
+        "ends": [
+          {
+            "arrival_ns": 1793133925082966376,
+            "byte_offset": 1988201,
+            "cargo_ns": 308276357791,
+            "line_bytes": 1107,
+            "line_sha256": "603a4b7be6f86049bf644693f13e2f61422b274026f77b0f7cd386c6e3fcbd6d",
+            "result": "Ok(())"
+          }
+        ],
+        "starts": [
+          {
+            "arrival_ns": 1793133897830504708,
+            "byte_offset": 1973223,
+            "cargo_ns": 281024038820,
+            "job_id": 664,
+            "line_bytes": 1104,
+            "line_sha256": "07eaf3b5fd7466d64bc885315d0ae503ea735936147c5bed99b2e02dcea3940b"
+          }
+        ],
+        "unit_sha256": "7e09b79d57c0a90719957d81fa5bca925338d420b23979f4850e2a80a10de4db"
+      }
+    ]
+  }
+}

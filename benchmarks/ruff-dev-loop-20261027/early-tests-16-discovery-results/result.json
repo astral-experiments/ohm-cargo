@@ -1,0 +1,64 @@
+{
+  "actual": {
+    "default": {
+      "distinct_rustc_argv": 623,
+      "distinct_wild_outputs": 188,
+      "duplicate_compiler_argv": 13,
+      "duplicate_compiler_extra_calls": 13,
+      "duplicate_wild_destinations": 12,
+      "native": {
+        "cc": 795,
+        "collect2": 262,
+        "ld.bfd": 200
+      },
+      "native_wild": 200,
+      "rustc": {
+        "full": 636
+      },
+      "rustc_queries": 36
+    },
+    "disabled": {
+      "distinct_rustc_argv": 623,
+      "distinct_wild_outputs": 188,
+      "duplicate_compiler_argv": 0,
+      "duplicate_compiler_extra_calls": 0,
+      "duplicate_wild_destinations": 0,
+      "native": {
+        "cc": 783,
+        "collect2": 250,
+        "ld.bfd": 188
+      },
+      "native_wild": 188,
+      "rustc": {
+        "full": 623
+      },
+      "rustc_queries": 36
+    }
+  },
+  "actual_wild_consuming_exact_own_rlib": 25,
+  "additional_late_cases_inferred_from_stock_source": 9,
+  "cargo_sdk": {
+    "cargo": "42e90992cec21a29956e20fd52ab952472a9dbc1dcc7a3b60c92aad101b5f568",
+    "driver": "c442c2a36e1f37c92f138a8fb367fc09982931b5f1055e9742fb402566ad46a4",
+    "frontend": "b0c412a7a8010a768f00546419a0b1bcfca382d7e70191df3ae72e30ac1ef3e5",
+    "wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5"
+  },
+  "earlier_same_producer_sibling_wait": 3,
+  "exact_final_ELFs": 110,
+  "executable_artifacts": {
+    "other_bins_examples": 18,
+    "test_profile": 84
+  },
+  "heuristic_source_proposed": false,
+  "initial_work_overlap": 1,
+  "observed_scheduler_branches": {
+    "accepted": 21,
+    "retry": 13
+  },
+  "physical_producer_exit_before_first": 12,
+  "recognized_integration_targets": 43,
+  "registry_archives": 872,
+  "source": "93526150df078af7dd8fc4226cdcc469539d2001",
+  "terminal_zero_exit_duplicate_attempts": 25,
+  "unscored": true
+}
