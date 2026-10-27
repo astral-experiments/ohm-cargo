@@ -1,0 +1,134 @@
+{
+  "study": "whole-Ruff native no-op after verified foreign-span training; Cargo v3 vs stacked v4 and parallel verification",
+  "registered_utc": "2026-10-27T09:06:35.402380+00:00",
+  "seed": 202610270903,
+  "subjects": {
+    "ruff": "93526150df078af7dd8fc4226cdcc469539d2001",
+    "rustc_sha256": "4fa9a18b77430bcc416e88561b6fe5797d98b996a7698b9f3bd11d4e7817a19f",
+    "compiler_driver_sha256": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+    "compiler_source": "27029b4bce40f3b5497add5019c02a11c16c4c18",
+    "cargo_control": {
+      "source": "b0a4df740b57589ecec3c83e30d5d326ab52a56d",
+      "sha256": "0573969d3672f85921f8cda77487af1be5e99eb925c0302389d5d1b72f701909"
+    },
+    "cargo_candidate": {
+      "source": "d8363e7428fd0df0635ed4e7604e4d2a115dc2fa",
+      "sha256": "025d5bf9a3fd64b72fe7f7ef4231b44c434ee340d3051fbb3f15b155504ba5cd"
+    },
+    "source_changes": {
+      "v4_defer_sha256": "0331936bcd4ebc44866dcb8a630787f4a34a6330350d013e38bd1e0d15cc681f",
+      "parallel_verifier_sha256": "1ed62b210aa96a41b19ecc8788ff10e2d13a34c124a61b75614d742672add17e",
+      "combined_patch_sha256": "4978983f938d88b4ee85328d5000a97c37acbb6500249357c3c3187343bca978",
+      "release_training_profile_sha256": "481ada8a40c70dad11b3c7e8871e9a52207d78447ca5e8ace06fc4aec2d2b5a7"
+    }
+  },
+  "eligibility": "Real clean pinned workspace, original locked registry and Git source, Linux x86_64 H2. Wait for previously queued primary compiler, Cargo-only and stdlib behavioral studies to finish successfully and release native-measure.lock. Acquire it exclusively before any action and retain through final measurement. Reserve >=25 GiB on H2 home. Fresh Cargo processes at identical canonical Cargo/driver/SDK/workspace paths, PATH, native tools, installed SDK, target, shared-build and Cargo home, jobs=8, inherited absence of wrappers, target/RUSTFLAGS/profile overrides, release Ohm defaults. Both trust opts all for the existing trained private cache. Affinity 0\u201323. Never run Ruff tests. Confirm pinned clean worktree, index and byte digest, subject executables SHA, before and after.",
+  "metrics": {
+    "primary": "Elapsed native wall time measured only from process launch to wait for ordinary cargo +ohm test --no-run --locked --offline in the default workspace, terminal output. 16 fresh balanced pairs, 8 of each arm order. One-sided exact balanced-assignment randomization on mean(log(V/C)), all 12,870 labelings; retain paired median 100*(1-C/V) and conservative at-least-95% paired median interval, 4th and 13th sorted of 16. Qualifies if p<.05, >=13/16 favorable, interval lower endpoint >0. One primary only.",
+    "negative": "Ordinary cargo +ohm build --locked --offline in the same full default workspace without a reachable observer. Same 16 pairs and interval. Report all values and whether the lower limit exceeds the predeclared -5% noninferiority margin; no faster-build assertion, adjustment or exclusion. If inconclusive retain it."
+  },
+  "controls": "Require exact local V3 and combined candidate to reject same-size, same-mtime private libstd metadata slot changes and agree with an independent empty native reference, and both to handle the actual one-byte source change in both directions. Use local previously recorded exact-candidate corruption, opaque, no-token fallback, genuine dirty producer, simultaneous local/upstream and clean control receipts. A real Ruff held-out one-byte/semantic functional edit was already covered independently by the base Cargo/unchanged compiler; these commands do not change Ruff.",
+  "trained_state": "One already qualified physical target/shared-build/Cargo home per endpoint, reused across BOTH binaries inside identical canonical binds. No intervening edits, cache clears or target copying during the registered native/audited schedules. Require the same selected verified complete OBS1 bytes (marker path, complete flag, BLAKE3 trailer) for every test sample. Snapshot and require the same positive raw/translated Ron dep-info and Git/manifest proof inventory (where applicable). Check specifically that build does not access this reader. Anchor to all expected ELF raw SHA (15/110 local ELF files including 6/102 advertised executables) and full 501/619 unit roster with structural path, feature, target and profile data. Hash content at beginning/end. For every timed command compare every ELF and reader full file stat (device,inode,mode,size,mtime_ns,ctime_ns) pre/post against the common anchor; hash the observer wall before/after outside timer, and check no compiling/linking terminal status. Watch actual rustc image with an independently calibrated Linux exec-open inode watch during each timing. Reject mismatched rosters, objects, changed/invalid receipt, status errors, lock waiting or actual processing in either arm.",
+  "process_audit": "Perform all 64 ordinary timings first after both arms qualify. Then replay all 64 in exact schedule under separate strace -ff execve/execveat/prctl and --message-format=json. Each test replay must contain 619 fully fresh units and all 102 expected executables, build 501/all 6, every audited arm with zero compiler/probe/linker/target invocations. Compare structural full rosters/diagnostics and expected exact binary set. Keep raw logs separate, report per-process images and helper thread counts descriptively. Do not include traced timings. Compare all ELF raw SHA at the beginning and end; pre/post every command compare stable stat identity against pristine shared-state anchor. A build audit may have other existing checksum workers, so classify overall thread counts without equating them to observer workers.",
+  "training": "Report inherited full-Ruff cold, first training and first fully trained receipts separately from scored native times, including logging format, wall time and physical jobs. As an additional unscored missing-receipt recovery, prepare isolated test-cache clones one arm at a time, prequalify a fully fresh state, remove only private dep-lib-ron and report all recovery commands through the first fully fresh repeat. Protect original stores and >=25 GiB reserve. Record a concrete inability to clone/train independently separately; never count partial training in the fast path. Do not claim an all-cold or edited speedup from this no-op test.",
+  "exclusions": "Zero timing outliers discarded; all measured attempts/failed gates retained. A lock/precondition or integrity/freshness failure invalidates the affected run; do not replace pairs selectively or score incomplete endpoint. Report process/physical store topology, any fallback in separate training or prior qualification changes. One pilot only on isolated small fixtures; never use earlier H2 data as formal observations. Exact fixed subject binaries and this registration must be immutable before starting H2.",
+  "artifacts": "Publish paired durations, both medians, raw/adjusted status where applicable, anonymous successful execs/worker counts, exact SHA identities, observer proof, full roster and all pre/post executable stationarity checks with summary + verifier. Preserve raw stdout/stderr/syscalls privately. Label the isolated 4-core prior Ron comparison and H2 whole-workspace independently.",
+  "orders": [
+    {
+      "block": 1,
+      "endpoint_order": "test,build",
+      "test": "VC",
+      "build": "CV"
+    },
+    {
+      "block": 2,
+      "endpoint_order": "test,build",
+      "test": "CV",
+      "build": "VC"
+    },
+    {
+      "block": 3,
+      "endpoint_order": "test,build",
+      "test": "CV",
+      "build": "CV"
+    },
+    {
+      "block": 4,
+      "endpoint_order": "test,build",
+      "test": "VC",
+      "build": "VC"
+    },
+    {
+      "block": 5,
+      "endpoint_order": "build,test",
+      "test": "CV",
+      "build": "VC"
+    },
+    {
+      "block": 6,
+      "endpoint_order": "test,build",
+      "test": "CV",
+      "build": "VC"
+    },
+    {
+      "block": 7,
+      "endpoint_order": "test,build",
+      "test": "VC",
+      "build": "VC"
+    },
+    {
+      "block": 8,
+      "endpoint_order": "build,test",
+      "test": "CV",
+      "build": "CV"
+    },
+    {
+      "block": 9,
+      "endpoint_order": "test,build",
+      "test": "VC",
+      "build": "CV"
+    },
+    {
+      "block": 10,
+      "endpoint_order": "build,test",
+      "test": "CV",
+      "build": "VC"
+    },
+    {
+      "block": 11,
+      "endpoint_order": "build,test",
+      "test": "VC",
+      "build": "CV"
+    },
+    {
+      "block": 12,
+      "endpoint_order": "build,test",
+      "test": "CV",
+      "build": "CV"
+    },
+    {
+      "block": 13,
+      "endpoint_order": "build,test",
+      "test": "VC",
+      "build": "VC"
+    },
+    {
+      "block": 14,
+      "endpoint_order": "build,test",
+      "test": "CV",
+      "build": "CV"
+    },
+    {
+      "block": 15,
+      "endpoint_order": "build,test",
+      "test": "VC",
+      "build": "CV"
+    },
+    {
+      "block": 16,
+      "endpoint_order": "test,build",
+      "test": "VC",
+      "build": "VC"
+    }
+  ]
+}
