@@ -1,0 +1,55 @@
+{
+  "compiler_commit": "3a9e8ee19f74e4d0860da3ed60f9bb663332ec19",
+  "tested_pr_head": "66815c41574c8c597fa06af78a38c4c40ca30a84",
+  "compiler_git_tree": "9e52c043880793c40fedf3eb137a231479d9adba",
+  "release_base": "f1a7cf9d20b2cae39e991b178b56ba06b43dc8fa",
+  "source_manifest_sha256": "03bb40867534fac1a1ba764a056c3572839489e0ceea54a391483067cd41f41b",
+  "driver_sha256": "3e4b168966e111b52ad1a942d364ec1335cf1cfa994f4208b0909ca215b589d2",
+  "baseline_driver_sha256": "051b9d3f5861f984faa0f8c1d2ab9b5c28e483a05c728051de837291c83fd518",
+  "frontend_sha256": "4fa9a18b77430bcc416e88561b6fe5797d98b996a7698b9f3bd11d4e7817a19f",
+  "formatted_regression": {
+    "old_pr": "intended source-file-ordinal assertion fails",
+    "corrected_stage1": "pass",
+    "corrected_release": "pass"
+  },
+  "line_index": {
+    "ruff_checkout": "93526150df078af7dd8fc4226cdcc469539d2001",
+    "reversed_commit": "88d851449d2345e11da991794f3e9bfbbd666719",
+    "commands": 16,
+    "units_per_command": 4,
+    "all_elf_per_source_state_equal_across_arms_and_cache": true,
+    "line_endings": [
+      "LF",
+      "CRLF",
+      "CR"
+    ],
+    "original": [
+      1,
+      1,
+      1
+    ],
+    "reverted": [
+      1,
+      2,
+      1
+    ],
+    "warm_and_clean_rmeta_equal_within_each_arm": true,
+    "complete_diagnostics_each_command": [],
+    "restored_archive_audit": {
+      "parent": {
+        "object_payloads": 14,
+        "exact_matching_objects_by_codegen_unit": 14,
+        "embedded_rmeta_equal": true,
+        "rmeta_link_equal": false,
+        "raw_archive_equal": false
+      },
+      "candidate": {
+        "object_payloads": 14,
+        "exact_matching_objects_by_codegen_unit": 14,
+        "embedded_rmeta_equal": true,
+        "rmeta_link_equal": false,
+        "raw_archive_equal": false
+      }
+    }
+  }
+}
