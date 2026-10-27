@@ -1,0 +1,7 @@
+# Three historical Ruff parser edits on Rust #232 and #233
+
+Both arms use the same release of Cargo #254 and the packaged Wild linker. Arm B uses the #232 parent compiler. Arm C uses the corrected #233 compiler. The baseline and the three complete historical source reversals run in separate native build states on H5. Neither arm uses the later experimental guarded compiler. Native work is traced separately for whole-workspace build and test compilation. The runner emits process counts and behavioral checks. It has no scored timing endpoint.
+
+The change schedule, source hashes, release identities, observable CLI results and workspace outputs are pinned in novel-plan.json. Each mode starts with two empty stores, trains on the original, then applies and restores each patch once. Immediate repeats must schedule zero compiler or linker jobs and must preserve every workspace executable. All independent Rust callers must run with the toolchain and dependency store that emitted their inputs. Raw cross-arm ELF and metadata differences are recorded.
+
+The required operator release contains the SHA256 of binding.json, its plan_url and phase unscored-pr233-three-edits. On the prepared host run taskset -c 0-23 python3 -B novel_run.py --release operator.json. This acquires the exclusive host measurement lock. The public SHA256SUMS includes the binding, source-only rehearsal, original Git objects and historical patches.
