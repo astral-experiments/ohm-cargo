@@ -1,0 +1,66 @@
+{
+  "source": "b5fb832c70e8d0f353e9663a6e4f6e1409ae5eba",
+  "files": {
+    "bundle.rs": "d578527a0c82166ccd015a5e48a4cf90312333fda3fd68171597303c1ba68685",
+    "rmake.rs": "6410e3ca2d72fac61ef5643f30b488ff5cfced55d82008818e0c4d1794c212f0",
+    "caller.rs": "8415e4148768c73df152187304bf03c5e7e8240e2224d7095abe75d35eaea53e"
+  },
+  "frontend": "4fa9a18b77430bcc416e88561b6fe5797d98b996a7698b9f3bd11d4e7817a19f",
+  "driver": "7c31057e86f800e313b7d32080c7a5abaa7b92fef92254ac21b2e43febf16384",
+  "target": "x86_64-unknown-linux-gnu",
+  "test_exit": 0,
+  "rustc_witnesses": [
+    {
+      "hash": "0aee42190a1dfb6553349ae4bc4465e856bf13f05e86bdf8242e437ddf24e61b",
+      "bundle": true,
+      "checked": false,
+      "explicit_mir": false,
+      "caller": false
+    },
+    {
+      "hash": "818c203eb043be8ecb8f7759530ff9b545fdffdd33d1c93984421453945ea7fc",
+      "bundle": true,
+      "checked": false,
+      "explicit_mir": false,
+      "caller": false
+    },
+    {
+      "hash": "25ed3d20dae5235f558c79080692882414f78edf31a77ef6b9fa074104543a0d",
+      "bundle": true,
+      "checked": true,
+      "explicit_mir": false,
+      "caller": false
+    },
+    {
+      "hash": "b1e6061f472fa06b4742cebbe14224867a3ca1c542a3827eef5b3524f0c6eb96",
+      "bundle": false,
+      "checked": false,
+      "explicit_mir": false,
+      "caller": true
+    },
+    {
+      "hash": "ad5fccbebc04b247904d1fbc8ba525ddd01e1d2d4fd31d72796b64667f933347",
+      "bundle": true,
+      "checked": true,
+      "explicit_mir": true,
+      "caller": false
+    },
+    {
+      "hash": "2cd217ee7d67bfb966f4431d7b744aa170e335ed55bbf93de617dd6421f3ed33",
+      "bundle": true,
+      "checked": true,
+      "explicit_mir": false,
+      "caller": false
+    },
+    {
+      "hash": "95e899cc262b6caeeb25438a01dea1924a6c06b69519fd3b28d826b9f8cd4a33",
+      "bundle": false,
+      "checked": false,
+      "explicit_mir": false,
+      "caller": true
+    }
+  ],
+  "extra_mir": "1b57f0115cf0614463288966a3e15b8510bc51df7699c798546e6583dab3f0b2",
+  "final_rmeta": "edc2d989cc9f092383d450d2f3c925cc5097eaeb11113fa6fce56cf67852e470",
+  "final_source": "pub fn value() -> u8 { 2 }\n"
+}

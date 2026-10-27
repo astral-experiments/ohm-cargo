@@ -1,0 +1,233 @@
+{
+  "protocol": "ohm-mixed-library-ruff-full-v1",
+  "registered_utc": "2026-10-27T10:07:25.761488+00:00",
+  "status": "The historical parser edit was selected from prior Ruff work. Its scoped two-library guard passed independent pilot controls. No ordinary full-workspace timings on the guarded mixed Rust and Cargo subjects have run. The exact subject and storage binding will be published before any scored command.",
+  "ruff": "93526150df078af7dd8fc4226cdcc469539d2001",
+  "edit_commit": "3ea20f6161cbf59cb56595dfb634ec24bfa82f0b",
+  "reversed_patch_sha256": "08bb20f14fde4db57dd12ec3de3855021ddf6284b4a1957b54f4d06fb3c8f9ff",
+  "base_rust": "27029b4bce40f3b5497add5019c02a11c16c4c18",
+  "base_cargo": "d38fdd02503662de04c52f5f370f5dd81bddf868",
+  "base_compiler_driver": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+  "base_cargo_pgo": "dd5cab154b8dcd09ccc2753160d314cade80979b2d055ee66aa9e2217e05e7e1",
+  "arms": {
+    "A": "Guarded Cargo with baseline #233 rustc. The compiler does not advertise the new capability.",
+    "B": "FIFO-safe baseline Cargo with guarded rustc. Cargo does not request the new mixed path.",
+    "C": "Guarded Cargo and rustc, both enabled by their normal supported defaults."
+  },
+  "analysis": "Eighteen paired three-arm blocks per complete Cargo endpoint. Each block executes exactly one edit command per arm. The six arm permutations appear three times each, in the independently fixed endpoint schedules. Compare C with A for the compiler effect and C with B for the Cargo effect. For each contrast hold the third arm in its observed slot. For each of its three slot strata exactly three of the six blocks assign C later than its control. Count all 20^3 allocations using the two-sided absolute sum of paired log elapsed ratios. Use Holm across the four contrasts. Report all four medians, time reductions, 20,000 paired-bootstrap 95% intervals, faster block counts and adjusted p-values. A wall improvement needs a positive lower confidence bound and Holm p<.05. Repeated blocks support these return-to-the-same-edit workflows on the bound host.",
+  "workload": "Normal cargo +ohm build --locked --offline and cargo +ohm test --no-run --locked --offline in the pinned full Ruff workspace with the same profile and job count. No test executables run inside timing. Measure from process creation of the rustup proxy to successful exit. Time ordinary edits without tracing or compiler/link wrappers. Train each arm in its own writable state with the normal tool implementation. Warm original sources before each edit, restore exact source bytes/index and verify the next run is fully fresh after each edited and restored build. Keep preflight, first cold to warm fallback and restoration separate from edited command timings.",
+  "bound_before_scoring": "Record both product heads, full patches, source+binary hashes, same matched PGO recipe for both Cargos, same release PGO/BOLT for both Rusts, installed rustc frontend, Wild and GCC identities, host/CPU affinity/jobs, fixed canonical logical paths and unscored training states. Assign all arms to the same physical storage medium, with independent mutable upper layers and identical cache preparation. Hold an exclusive timing lock. Lacking space or a comparable host suspends this study. Change the registration prospectively if needed.",
+  "safety": "Run all three arm combinations on independent traced repetitions and save separate physical counts for ordinary full rustcs, guarded partial front-end plus native link rustcs, plain link-only rustcs, separate hash probes and Wild. A guarded hit still executes rustc. Confirm no extra stand-alone hash processes. The mixed shared libraries, dynamic exports, standalone/archived Rust metadata including private SVH, and linked Rust callers must match independent forced-full results on the same compiler. Ordinary cross-product transitive Rust bridges must accept both directions. Require native code member hashes/symbol mappings; document and bound any raw archive filename or link-record variation using full/full controls. Include cold state fallbacks, compiler format boundaries, changed C symbol/imported source order, actual build script env and FIFO-safe Cargo. Compare all workspace native ELF outputs and true parser CLI diagnostics, and record genuine controls in both edit directions. Any unexplained incorrect output invalidates the corresponding study. Preserve every failed attempt and genuine fallbacks.",
+  "no_cherry_picking": "No scored run may be discarded solely for being slow. Report both endpoints and all ablations. A draft product PR requires a qualified whole-workspace result for its own conditional component effect and the correctness gates. The helper-based isolated compiler experiments are distinct from ordinary full-workspace defaults.",
+  "endpoints": {
+    "build": {
+      "seed": 271027411,
+      "orders": [
+        [
+          "A",
+          "C",
+          "B"
+        ],
+        [
+          "A",
+          "C",
+          "B"
+        ],
+        [
+          "B",
+          "C",
+          "A"
+        ],
+        [
+          "C",
+          "B",
+          "A"
+        ],
+        [
+          "C",
+          "A",
+          "B"
+        ],
+        [
+          "B",
+          "A",
+          "C"
+        ],
+        [
+          "A",
+          "B",
+          "C"
+        ],
+        [
+          "C",
+          "B",
+          "A"
+        ],
+        [
+          "A",
+          "B",
+          "C"
+        ],
+        [
+          "B",
+          "C",
+          "A"
+        ],
+        [
+          "C",
+          "B",
+          "A"
+        ],
+        [
+          "C",
+          "A",
+          "B"
+        ],
+        [
+          "B",
+          "C",
+          "A"
+        ],
+        [
+          "C",
+          "A",
+          "B"
+        ],
+        [
+          "A",
+          "C",
+          "B"
+        ],
+        [
+          "B",
+          "A",
+          "C"
+        ],
+        [
+          "B",
+          "A",
+          "C"
+        ],
+        [
+          "A",
+          "B",
+          "C"
+        ]
+      ],
+      "bootstrap_seeds": {
+        "A": 271027611,
+        "B": 271027911
+      },
+      "expected_units": 501,
+      "expected_full_unprotected": 3,
+      "expected_full_guarded": 1,
+      "expected_native_guarded_rustcs": 2,
+      "expect_same_wild": 8
+    },
+    "test": {
+      "seed": 271027412,
+      "orders": [
+        [
+          "A",
+          "C",
+          "B"
+        ],
+        [
+          "C",
+          "B",
+          "A"
+        ],
+        [
+          "A",
+          "C",
+          "B"
+        ],
+        [
+          "C",
+          "B",
+          "A"
+        ],
+        [
+          "B",
+          "C",
+          "A"
+        ],
+        [
+          "B",
+          "C",
+          "A"
+        ],
+        [
+          "C",
+          "A",
+          "B"
+        ],
+        [
+          "B",
+          "A",
+          "C"
+        ],
+        [
+          "A",
+          "B",
+          "C"
+        ],
+        [
+          "C",
+          "A",
+          "B"
+        ],
+        [
+          "C",
+          "A",
+          "B"
+        ],
+        [
+          "B",
+          "C",
+          "A"
+        ],
+        [
+          "B",
+          "A",
+          "C"
+        ],
+        [
+          "C",
+          "B",
+          "A"
+        ],
+        [
+          "A",
+          "C",
+          "B"
+        ],
+        [
+          "A",
+          "B",
+          "C"
+        ],
+        [
+          "A",
+          "B",
+          "C"
+        ],
+        [
+          "B",
+          "A",
+          "C"
+        ]
+      ],
+      "bootstrap_seeds": {
+        "A": 271027612,
+        "B": 271027912
+      },
+      "expected_units": 619,
+      "expected_full_unprotected": 6,
+      "expected_full_guarded": 4,
+      "expected_native_guarded_rustcs": 2,
+      "expect_same_wild": 67
+    }
+  },
+  "analyzer_sha256": "4d00710ad573eb2cf933ab395bd2b8cddac3cf06a081bdda6fadba541b7919ae"
+}
