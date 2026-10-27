@@ -1,0 +1,40 @@
+{
+  "name": "stackv5",
+  "commit": "f4c3de3aafcc75de51a0e510cc6cf36cf0366459",
+  "tree": "c40a34eded049bc7e46298cee40b953a08145331",
+  "checked_git_blob_count": 3107,
+  "source_tarball_generated_metadata_sha256": "ad833a45f433b767ab37fe141193fdbe6e33d4bafb7c26cad6779f2ca47150af",
+  "source_sha256": {
+    "Cargo.lock": "151c473e1a11532946ba9421ab1beeb238f98eb1f8cd4e5f94f9811003abd5a7",
+    "src/compiler/fingerprint/dep_info.rs": "a90269db31f8a274472e7f0d81bcdbfa6f353f7f374d6b10cbfccd61652a3d1e",
+    "src/compiler/fingerprint/mod.rs": "feebdbdf79c14ffa8ed54b81bc1994f498908d94ac9c6654fc0ecd6beaa22679",
+    "src/compiler/mod.rs": "3b8c31c4e1aa1a8b9a9b0522e5e81f079dbea428af901efaff6bd657e07ab2c4",
+    "src/ops/cargo_worktree/mod.rs": "4a3c2a4331922e13ffa2507e751908667ea4ad6221457a0433c932e1a325d305"
+  },
+  "cargo_sha256": "90efada2bf15f4ce846117b252d04ded63295dc2662b0f74356b736351a27ea5",
+  "version": [
+    "cargo 1.99.0 (b0a4df740 2026-10-27)",
+    "release: 1.99.0",
+    "commit-hash: b0a4df740b57589ecec3c83e30d5d326ab52a56d",
+    "commit-date: 2026-10-27",
+    "host: x86_64-unknown-linux-gnu",
+    "libgit2: 1.9.6 (sys:0.21.0 vendored)",
+    "libcurl: 8.21.0-DEV (sys:0.4.90+curl-8.21.0 vendored ssl:OpenSSL/3.0.13)",
+    "os: Ubuntu 24.4.0 (noble) [64-bit]"
+  ],
+  "compiler_and_profile_inputs": [
+    "a63a2a6506be83dfd6cd853e9807897b120660c056a8774011d82396ef549b13  /home/dev-user/.cache/ohm-lint-cli-scout-20261026/release14-comparisons/private-rustup/toolchains/ohm/bin/rustc",
+    "9be48c4b02669047975662348a3f134d0abcd247d70d13c55ab024f806320590  /home/dev-user/.cache/ohm-lint-cli-scout-20261026/release14-comparisons/private-rustup/toolchains/ohm/bin/cargo",
+    "97a8910a6d8a8ac54936f9373f7940525b2f46ec5f005421b3913a21d9a6fa9b  /home/dev-user/.cache/ohm-lint-cli-scout-20261026/release14-comparisons/private-rustup/toolchains/ohm/lib/librustc_driver-b03bf00bec23bb9a.so"
+  ],
+  "pgo_data_sha256": "481ada8a40c70dad11b3c7e8871e9a52207d78447ca5e8ace06fc4aec2d2b5a7",
+  "cargo_invocation": "cargo +ohm build --release --locked --offline -p cargo --bin cargo --features ohm-defaults -j6",
+  "rustflags": [
+    "-Cprofile-use=<same-external-training-profdata>",
+    "-Cllvm-args=-pgo-warn-missing-function=false"
+  ],
+  "cpu_affinity": "0-3",
+  "native_release_channel": "dev",
+  "incremental": false,
+  "scope": "Task-private host tmpfs mapped onto identical pinned canonical Cargo source, registry-home, target and shared paths for all arms. Same tarball commit metadata holds the display version and registry parser cache namespace constant."
+}
