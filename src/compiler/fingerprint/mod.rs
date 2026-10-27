@@ -593,11 +593,7 @@ fn restored_metadata_mtime(
         .deps
         .iter()
         .try_fold(previous_mtime, |minimum_mtime, dependency| {
-            previous_output_mtime(
-                dependency.fingerprint.outputs.iter(),
-                dependency.only_requires_rmeta,
-            )
-            .map(|dependency_mtime| {
+            dependency.previous_output_mtime().map(|dependency_mtime| {
                 if other_output_mtime.is_some_and(|mtime| mtime >= dependency_mtime) {
                     minimum_mtime
                 } else {
@@ -3980,6 +3976,36 @@ mod early_cutoff_tests {
             only_requires_rmeta: true,
             fingerprint: fp,
         }
+    }
+
+    #[test]
+    fn restored_check_metadata_uses_the_build_script_result_generation() {
+        let dir = tempfile::tempdir().unwrap();
+        let stdout = dir.path().join("stdout");
+        let out = dir.path().join("out");
+        std::fs::create_dir(&out).unwrap();
+        std::fs::write(&stdout, "").unwrap();
+        let invoked = FileTime::from_unix_time(1, 0);
+        filetime::set_file_mtime(&stdout, invoked).unwrap();
+        let result = worktree::record_script_result(
+            &dir.path().join(OHM_WORKTREE_SCRIPT_RESULT),
+            &stdout,
+            &out,
+            &crate::compiler::BuildOutput::default(),
+            None,
+        )
+        .unwrap()
+        .unwrap();
+        let generation = result.generation;
+        let mut script = Fingerprint::new();
+        script.outputs.push(stdout);
+        *script.script_result.get_mut().unwrap() = Some(result);
+        let mut dep = make_dep_fingerprint(Arc::new(script));
+        dep.only_requires_rmeta = false;
+        let mut check = Fingerprint::new();
+        check.deps.push(dep);
+
+        assert_eq!(restored_metadata_mtime(&check, invoked), Some(generation));
     }
 
     #[test]
