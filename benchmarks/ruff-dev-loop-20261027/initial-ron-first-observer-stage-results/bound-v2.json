@@ -1,0 +1,34 @@
+{
+  "amends": "51b6db3e1cf282d9fb2bfaab156f7088144e1b86",
+  "cargo": "014d6a789ae435ee4e22d7fbd2764aa59880352b613b1a345b95952d30c2d2a9",
+  "reason": "The v1 binary-include guard correctly observed the bytes but used a permanent untrackable marker instead of retaining explicitly trained checksum freshness. The genuine v1 result is retained separately.",
+  "runner": {
+    "matrix-v2.py": "f6b4b0ded270e6d8fbef70a549459aa71ccaed52b5ab28cb4dd45eb7f4f7736f",
+    "proof-v2.py": "6ca07983f88a2f9b2750d710fe21e5244bd138d9e69d03b235057c24e31bd2f7",
+    "stage-binary-v2.py": "3173fae269f0df8c23bc0d53d2dcc957029b80b40d287f40440405d1f84748d9"
+  },
+  "rust_driver": "46f183243f2b5bae3c156aa07d64394019ef8c76e3b903f150dc4e9874c6e7c3",
+  "source": {
+    "cargo/src/compiler/mod.rs": {
+      "base": "d38fdd02503662de04c52f5f370f5dd81bddf868",
+      "base_blob": "957aa08d01143fb5a3b4eda75f53e65589422602",
+      "sha256": "9c0fb63a31c904b174de38b3dbce1464bb3b99dd684cb7a12807f72a21a996a9"
+    },
+    "cargo/src/util/rustc.rs": {
+      "base": "d38fdd02503662de04c52f5f370f5dd81bddf868",
+      "base_blob": "ee7557a73fe303787ab62706bf5653ff8b299571",
+      "sha256": "1eb9d8c32c494702bf3f4b2e25855a179a7896484d675e56beef84792c848209"
+    },
+    "rust/compiler/rustc_interface/src/passes.rs": {
+      "base": "27029b4bce40f3b5497add5019c02a11c16c4c18",
+      "base_blob": "1be3cc57bf888230c10e4e09696c53bc880da575",
+      "sha256": "05a7a1b9e50605bb78197b527840ea2efe6356715503543789778f1730ca3598"
+    },
+    "rust/compiler/rustc_session/src/options.rs": {
+      "base": "27029b4bce40f3b5497add5019c02a11c16c4c18",
+      "base_blob": "f9813490ba8bdc5714c253b4617e444afaf81e6b",
+      "sha256": "b964b809fdfd4a26e2403ca2374027d7d5bc61ea17cb8270c4ca27e50b00eb2d"
+    }
+  },
+  "unchanged_plan": "Same whole-source, selected Cargo, old compiler, four arms, both fixture rosters, all native runtime/first/trained/fresh gates. No timings are scored. Existing explicit checksum options remain authoritative. Inputs whose original bytes were not retained leave an incomplete marker to retrain on an ordinary compile."
+}

@@ -1,0 +1,310 @@
+{
+  "both-restored": {
+    "cargo": "014d6a789ae435ee4e22d7fbd2764aa59880352b613b1a345b95952d30c2d2a9",
+    "diagnostics": [],
+    "driver": "46f183243f2b5bae3c156aa07d64394019ef8c76e3b903f150dc4e9874c6e7c3",
+    "elf": "abd34830a1cb4722eab8c4a0758d2f761ef35fea4d742ffe125f361f3f833fe9",
+    "fresh": false,
+    "frontend": "fa2ed3ec44adb4455d5323c4ee582becd5307cb4aae6b5cfc3cdc289b3140512",
+    "native": "verified both restored\n19 #8 bytes(374129..374151)\n",
+    "raw_stderr_sha256": "cc3cd7526fd7741d4275a11a7f1f3f09da45d1af6a89b855fd5158786a4317c8",
+    "raw_stdout_sha256": "61cfb06eec45631e5ff1a2e53b8957aa867689f52959bf3727bdf843fbc74535",
+    "returncode": 0,
+    "rustc": [
+      {
+        "capability": false,
+        "crate": "hold_direct",
+        "known": true,
+        "new_flag": true
+      }
+    ],
+    "unknown_observer_option": false
+  },
+  "driver-only-downgrade": {
+    "cargo": "014d6a789ae435ee4e22d7fbd2764aa59880352b613b1a345b95952d30c2d2a9",
+    "diagnostics": [
+      "unknown unstable option: `ohm-observer-dep-info`",
+      "unknown unstable option: `ohm-observer-dep-info`",
+      "unknown unstable option: `ohm-observer-dep-info`"
+    ],
+    "driver": "c579c7f84a94e9b3c3d22fb54050425d91e48647ce0e3b7c6d8eaab327572e40",
+    "frontend": "fa2ed3ec44adb4455d5323c4ee582becd5307cb4aae6b5cfc3cdc289b3140512",
+    "raw_stderr_sha256": "944b2914b394b95375e5b7cc93084aea1ee26ac5116ef9047310e8ff9b84fbcf",
+    "raw_stdout_sha256": "6747e11c408dbe304974b5f090e92633a692627eec5730681ee7beaa763f0415",
+    "returncode": 101,
+    "rustc": [
+      {
+        "capability": false,
+        "crate": "hold_probe",
+        "known": false,
+        "new_flag": true
+      },
+      {
+        "capability": false,
+        "crate": "hold_tokens",
+        "known": false,
+        "new_flag": true
+      },
+      {
+        "capability": false,
+        "crate": "hold_shapes",
+        "known": false,
+        "new_flag": true
+      }
+    ],
+    "unknown_observer_option": true
+  },
+  "driver-only-return": {
+    "cargo": "014d6a789ae435ee4e22d7fbd2764aa59880352b613b1a345b95952d30c2d2a9",
+    "diagnostics": [],
+    "driver": "46f183243f2b5bae3c156aa07d64394019ef8c76e3b903f150dc4e9874c6e7c3",
+    "elf": "43755599d2cae0459f434780975fc1078d64c885255311b1b5ee3544d1e2bd24",
+    "fresh": false,
+    "frontend": "fa2ed3ec44adb4455d5323c4ee582becd5307cb4aae6b5cfc3cdc289b3140512",
+    "native": "verified new compiler\n19 #8 bytes(374128..374150)\n",
+    "raw_stderr_sha256": "5e1756c43cd38c44afe908792c31c4fa7fbcaf9812dd085dd101044e34efbce3",
+    "raw_stdout_sha256": "3ad01c1a331cca63eddd5df166aec37bdac9a3b98d377dcf9c40c64e2a9494a6",
+    "returncode": 0,
+    "rustc": [
+      {
+        "capability": false,
+        "crate": "hold_direct",
+        "known": true,
+        "new_flag": true
+      }
+    ],
+    "unknown_observer_option": false
+  },
+  "fresh": {
+    "cargo": "014d6a789ae435ee4e22d7fbd2764aa59880352b613b1a345b95952d30c2d2a9",
+    "diagnostics": [],
+    "driver": "46f183243f2b5bae3c156aa07d64394019ef8c76e3b903f150dc4e9874c6e7c3",
+    "elf": "99a99a19b36a619d3dcf595f81fa384407a8959940a1eccfa8eeec6af78329fa",
+    "fresh": true,
+    "frontend": "fa2ed3ec44adb4455d5323c4ee582becd5307cb4aae6b5cfc3cdc289b3140512",
+    "native": "verified initial\n19 #8 bytes(374123..374145)\n",
+    "raw_stderr_sha256": "cd26425abfd34e161302da7f4343751b2ffbddf5b7d0edb628973da95c8fd23d",
+    "raw_stdout_sha256": "3848ba61c224c3e9c9c48b5bdce7baa78ca11c4afc59376cae5e31aa37911198",
+    "returncode": 0,
+    "rustc": [],
+    "unknown_observer_option": false
+  },
+  "fresh-restored": {
+    "cargo": "014d6a789ae435ee4e22d7fbd2764aa59880352b613b1a345b95952d30c2d2a9",
+    "diagnostics": [],
+    "driver": "46f183243f2b5bae3c156aa07d64394019ef8c76e3b903f150dc4e9874c6e7c3",
+    "elf": "abd34830a1cb4722eab8c4a0758d2f761ef35fea4d742ffe125f361f3f833fe9",
+    "fresh": true,
+    "frontend": "fa2ed3ec44adb4455d5323c4ee582becd5307cb4aae6b5cfc3cdc289b3140512",
+    "native": "verified both restored\n19 #8 bytes(374129..374151)\n",
+    "raw_stderr_sha256": "535504aa8eaf69257a7bdfe200df195427702afedf34d8d33a7ea08575c5bd82",
+    "raw_stdout_sha256": "c04a0f2e64deaf73034c40562c484e2cc54973752295a865cac19d7099b4c7e0",
+    "returncode": 0,
+    "rustc": [],
+    "unknown_observer_option": false
+  },
+  "normal-reinstall-downgrade": {
+    "cargo": "014d6a789ae435ee4e22d7fbd2764aa59880352b613b1a345b95952d30c2d2a9",
+    "diagnostics": [],
+    "driver": "c579c7f84a94e9b3c3d22fb54050425d91e48647ce0e3b7c6d8eaab327572e40",
+    "elf": "314152e244fb6351c59aac8eacb365396707873c417a340ef164a7031aaab675",
+    "fresh": false,
+    "frontend": "fa2ed3ec44adb4455d5323c4ee582becd5307cb4aae6b5cfc3cdc289b3140512",
+    "native": "verified old reinstalled\n19 #8 bytes(374131..374153)\n",
+    "raw_stderr_sha256": "82785f3be600226abed83e4d29afa26ee6a4c159e4456910782e6c47d48e7806",
+    "raw_stdout_sha256": "00b0a8536c77808cd26540fa2e643f8513a240187c70b764246fc337336837e0",
+    "returncode": 0,
+    "rustc": [
+      {
+        "capability": false,
+        "crate": null,
+        "known": false,
+        "new_flag": false
+      },
+      {
+        "capability": false,
+        "crate": "___",
+        "known": false,
+        "new_flag": false
+      },
+      {
+        "capability": false,
+        "crate": null,
+        "known": false,
+        "new_flag": false
+      },
+      {
+        "capability": false,
+        "crate": null,
+        "known": false,
+        "new_flag": false
+      },
+      {
+        "capability": false,
+        "crate": null,
+        "known": false,
+        "new_flag": false
+      },
+      {
+        "capability": false,
+        "crate": null,
+        "known": false,
+        "new_flag": false
+      },
+      {
+        "capability": true,
+        "crate": null,
+        "known": false,
+        "new_flag": true
+      },
+      {
+        "capability": false,
+        "crate": "hold_probe",
+        "known": false,
+        "new_flag": false
+      },
+      {
+        "capability": false,
+        "crate": "hold_shapes",
+        "known": false,
+        "new_flag": false
+      },
+      {
+        "capability": false,
+        "crate": "hold_tokens",
+        "known": false,
+        "new_flag": false
+      },
+      {
+        "capability": false,
+        "crate": "hold_direct",
+        "known": false,
+        "new_flag": false
+      }
+    ],
+    "unknown_observer_option": false
+  },
+  "normal-reinstall-unchanged": {
+    "cargo": "014d6a789ae435ee4e22d7fbd2764aa59880352b613b1a345b95952d30c2d2a9",
+    "diagnostics": [],
+    "driver": "c579c7f84a94e9b3c3d22fb54050425d91e48647ce0e3b7c6d8eaab327572e40",
+    "elf": "314152e244fb6351c59aac8eacb365396707873c417a340ef164a7031aaab675",
+    "fresh": false,
+    "frontend": "fa2ed3ec44adb4455d5323c4ee582becd5307cb4aae6b5cfc3cdc289b3140512",
+    "native": "verified old reinstalled\n19 #8 bytes(374131..374153)\n",
+    "raw_stderr_sha256": "e2127b5a9296e2463e8d5baff1df541bd8bd2d8ce53ee4678b60043bfe136adb",
+    "raw_stdout_sha256": "8c77eb70b8159c8f030ebbc8ce9977f35d345b4e2886fba29cd26297a4399956",
+    "returncode": 0,
+    "rustc": [
+      {
+        "capability": false,
+        "crate": "hold_direct",
+        "known": true,
+        "new_flag": false
+      }
+    ],
+    "unknown_observer_option": false
+  },
+  "old-cargo-new-rust": {
+    "cargo": "dd5cab154b8dcd09ccc2753160d314cade80979b2d055ee66aa9e2217e05e7e1",
+    "diagnostics": [],
+    "driver": "46f183243f2b5bae3c156aa07d64394019ef8c76e3b903f150dc4e9874c6e7c3",
+    "elf": "5dd5ba20527fa82cb2a625a7c02529ddfc3eb71f6c955b92732ece0068e3748a",
+    "fresh": false,
+    "frontend": "fa2ed3ec44adb4455d5323c4ee582becd5307cb4aae6b5cfc3cdc289b3140512",
+    "native": "verified old Cargo\n19 #8 bytes(374125..374147)\n",
+    "raw_stderr_sha256": "95b1a83d8e0f063ff91ada8a773b0b667c7d56adf2fcc42d466752cae787edf5",
+    "raw_stdout_sha256": "e88b0d42a6a946d9150c90ba6101ce7a63934f1b3fde62acc64e015af21a0a49",
+    "returncode": 0,
+    "rustc": [
+      {
+        "capability": false,
+        "crate": "hold_direct",
+        "known": true,
+        "new_flag": false
+      }
+    ],
+    "unknown_observer_option": false
+  },
+  "prime": {
+    "cargo": "014d6a789ae435ee4e22d7fbd2764aa59880352b613b1a345b95952d30c2d2a9",
+    "diagnostics": [],
+    "driver": "46f183243f2b5bae3c156aa07d64394019ef8c76e3b903f150dc4e9874c6e7c3",
+    "elf": "99a99a19b36a619d3dcf595f81fa384407a8959940a1eccfa8eeec6af78329fa",
+    "fresh": false,
+    "frontend": "fa2ed3ec44adb4455d5323c4ee582becd5307cb4aae6b5cfc3cdc289b3140512",
+    "native": "verified initial\n19 #8 bytes(374123..374145)\n",
+    "raw_stderr_sha256": "55fa17665a3690c709663f8c4c816efd3af7f6d6641a0ea2ffe4338edd74efdc",
+    "raw_stdout_sha256": "fa03ec660e08103fe4ff1201d88cb4a39c080a31b935df52b5d1e7644e1b0498",
+    "returncode": 0,
+    "rustc": [
+      {
+        "capability": false,
+        "crate": null,
+        "known": false,
+        "new_flag": false
+      },
+      {
+        "capability": false,
+        "crate": "___",
+        "known": false,
+        "new_flag": false
+      },
+      {
+        "capability": false,
+        "crate": null,
+        "known": false,
+        "new_flag": false
+      },
+      {
+        "capability": false,
+        "crate": null,
+        "known": false,
+        "new_flag": false
+      },
+      {
+        "capability": false,
+        "crate": null,
+        "known": false,
+        "new_flag": false
+      },
+      {
+        "capability": false,
+        "crate": null,
+        "known": false,
+        "new_flag": false
+      },
+      {
+        "capability": true,
+        "crate": null,
+        "known": false,
+        "new_flag": true
+      },
+      {
+        "capability": false,
+        "crate": "hold_probe",
+        "known": false,
+        "new_flag": true
+      },
+      {
+        "capability": false,
+        "crate": "hold_tokens",
+        "known": false,
+        "new_flag": true
+      },
+      {
+        "capability": false,
+        "crate": "hold_shapes",
+        "known": false,
+        "new_flag": true
+      },
+      {
+        "capability": false,
+        "crate": "hold_direct",
+        "known": false,
+        "new_flag": true
+      }
+    ],
+    "unknown_observer_option": false
+  }
+}
