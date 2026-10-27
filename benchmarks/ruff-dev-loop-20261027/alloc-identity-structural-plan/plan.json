@@ -1,0 +1,16 @@
+{
+  "blocked": "If the invalid source compiles, the positive consumers disagree, the restored original differs semantically, or the statistics replay differs on the literal subject, reject the associated claim. Preserve all failures including launcher and diagnostic assumptions. The strict whole-Ruff-raw and mixed/native qualification remain independent. No PR or speedup from this registration alone.",
+  "cases": [
+    "One native Rust library with two inline functions referring to exactly the same 43-byte literal. Change 7 to 8; preserve native output and the exact raw metadata, without relabeling any alloc ID by its bytes alone.",
+    "A separately created CTFE heap allocation initialized from the same bytes as a literal plus two real statics. Positive native consumers check the identical bytes and distinct static addresses.",
+    "An invalid constant uses offset_from between that independently allocated heap object and a byte literal. Accept only matching E0080 on the edited source from three separate warm/empty histories of each compiler."
+  ],
+  "fixture": "48682498889ef5e4bb490c4bf7d9e9c2fddf0c00389260a168160c0330b23185",
+  "matched_frozen_release_inputs": "cd71743c1743d82d241eae43a1a4bdd9e7a91b82458dce23411f0e69c5ea1884",
+  "parent": "36d1fd142355c3ad9e0ce006c1e92b7e511cba70c431b09eb1e335f572d27d05",
+  "patch": "73449311253acd01db42b60c5f82ed1cb68da1c67dc1b533497ef54f46213a6d",
+  "prior_observation": "The zero-macro two-literal program from the prior compiler packet emitted 104 vs 52 bytes in the retained and empty allocation-index sections, on each of the two compilers with ordinary direct rustc and with the experimental metadata modes.",
+  "schedule": "For each subject and each of the three sources, run two independent sets of six actual compiler calls with the same canonical compiler/workspace paths. One set uses ordinary direct rustc; a separate set enables meta-stats. Train original, warm edited, empty edited, independently empty edited, restored original, independently empty original. Cross the two successful edited libraries through fresh ordinary bridges/consumers and execute all eight binaries. Both subjects use release-matched PGO+BOLT and the same frontend/sysroot. These are structural checks; zero measured wall-clock samples.",
+  "source": "Read-only Ruff at 93526150df078af7dd8fc4226cdcc469539d2001 is an eventual secondary eligibility check. This initial study uses minimal native Rust only.",
+  "subject": "Incremental decoder currently recreates all in-memory allocations with a fresh AllocId. Test the exact-id CTFE interner witness on save, encoded only for a private same-crate incremental cache, then rejoin only that canonical interner on decode."
+}
