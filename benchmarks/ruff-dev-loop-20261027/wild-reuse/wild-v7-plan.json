@@ -1,0 +1,18 @@
+{
+  "stage": "Fresh release-baseline confirmation with the corrected worker-count key. The v6 schedule stopped during parent setup, before any candidate or scored invocation.",
+  "primary_edit": "Reverse Ruff 1797ed542380c5aa0f7832e3877b1df56ddb2e08. This restores one removed docstring parsing test without changing Ruff production code.",
+  "primary_patch_sha256": "de97e2d9108c6f0b55ef8d7baa97cd62cc5d437dfd07a74b45b5d5d0ac0ff3b3",
+  "ruff": "93526150df078af7dd8fc4226cdcc469539d2001",
+  "shipped": "Ohm 1.99.0-14 Wild 0.11.0. Binary SHA256 0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5",
+  "parent": "Upstream Wild 0.11.0 at e856d81f6683cad80b9fe0ebf1a0c3c403c6fe11, built with the same pinned compiler and original dist profile as the candidate. Binary SHA256 1079dffdaee2bc9f81a8aebd800339fdbc3922c08c31cb319c7cc70cec2bb76b",
+  "candidate": "Wild 0.11.0 with commit ca77e29fcb1b0b2d8e015f9f69acdf0a9979e026, complete source patch 2deda5a2ce3f231092999b2e91da85fbaf5feb9f8db77b228bb8f48a21615859, immutable binary 560f5a182eae3cd598b1b0a97a878308e1890ce46ab0b70aa32670586388fbb4. Package feature reuse-output enables the proof. Timed commands inherit no WILD environment settings.",
+  "cargo": "Same Cargo binary 211465de4b9e4589da2be06871acd9304dd3b94c849c1304f723484cb4f71dfc and shipping release-14 rustc driver in every arm.",
+  "design": "Ordinary default-workspace cargo +ohm build and cargo +ohm test --no-run, --locked --offline added. Per endpoint, shuffle three copies of all six permutations of the three subjects. Each of 18 blocks contains one uninstrumented invocation per subject. Apply the complete real edit only in a benchmark worktree. Independently warm all three targets, train each edit direction, and restore the original source with exact index checks and a successful build between edits.",
+  "build_seed": 1729071,
+  "test_seed": 1729072,
+  "gates": "Require a successful next fully fresh Cargo command after every measured edit. Independently record full versus link-only rustcs, every linker process, and authenticated hit/miss logs using tracing outside timing at the first and last edits. Keep the full ELF roster, plus exact-input shadow links for purported hits. A failed gate is unscored.",
+  "tests": "Contrast the feature-enabled candidate with the shipped and the source-matched binary on each of the two endpoints. Condition on the third subject's position within each block, and enumerate all 8000 assignments that exchange candidate and control while retaining the balanced six permutations. Use the mean log ratio, two-sided exact p-values and Holm correction across all four contrasts at family alpha 0.05. Report a within-order stratified 20000-resample percentile interval.",
+  "miss_control": "Run a separate fixed 12-pair candidate versus source-matched parent using the full restored Pydantic change, patch SHA256 467330a56398032bfaed34cca5a89ed7de1a6459ddb95756180b16de69b912b1. Seed 1729073. Report overhead and its interval separately from the designated wins. For default activation seek an upper 95 percent bound below a 2 percent time increase on this genuine-miss workload. Repeat the proof and freshness checks on the earlier comment-only workload outside the primary family.",
+  "scope": "Substantive IDE and Pydantic edits can affect different products; qualify each separately. Do not score the old linker prototype, the stale-timestamp experiment or same-input shadow runs.",
+  "jobserver_guard": "Against the same 385 input objects, identical argv with one and four inherited workers yielded three and 194 groups, and both forced ELFs shared the same raw hash. Require miss/hit after each budget change and byte equality to the forced link."
+}
