@@ -1,0 +1,18 @@
+[
+  "rustc",
+  "+ohm",
+  "--edition=2024",
+  "--crate-name",
+  "bridge",
+  "--crate-type",
+  "rlib",
+  "/dev/shm/ohm-packaged-15-macro-20261027/late-tracked-source-v1/run/workspace/bridge.rs",
+  "--extern",
+  "test_unit=/dev/shm/ohm-packaged-15-macro-20261027/late-tracked-source-v1/run/active/target/debug/libtest_unit.rlib",
+  "-L",
+  "dependency=/dev/shm/ohm-packaged-15-macro-20261027/late-tracked-source-v1/run/active/target/debug/build/workspaces/a41996d13e941ff7/v2-acacd6a984de21bf/test_unit/1feeb1c953716297/out",
+  "-L",
+  "dependency=/dev/shm/ohm-packaged-15-macro-20261027/late-tracked-source-v1/run/active/target/debug/build/workspaces/a41996d13e941ff7/v2-acacd6a984de21bf/macro_maker/8f0b3c6208c15e12/out",
+  "-o",
+  "/dev/shm/ohm-packaged-15-macro-20261027/late-tracked-source-v1/run/evidence/track-before/bridge-empty/libbridge.rlib"
+]

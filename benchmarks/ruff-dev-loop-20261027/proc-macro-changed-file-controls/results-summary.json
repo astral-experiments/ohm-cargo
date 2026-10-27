@@ -1,0 +1,68 @@
+{
+  "parent-baseline": {
+    "cargo": "dd5cab154b8dcd09ccc2753160d314cade80979b2d055ee66aa9e2217e05e7e1",
+    "cases": {
+      "span-after": {
+        "callers": {
+          "empty/from-empty": "8:#0 bytes(374517..374527):379",
+          "empty/from-warm": "8:#0 bytes(374517..374527):379",
+          "warm/from-empty": "8:#0 bytes(374517..374527):379",
+          "warm/from-warm": "8:#0 bytes(374517..374527):379"
+        },
+        "metadata_equal": true
+      },
+      "track-after": {
+        "callers": {
+          "empty/from-empty": "8:#0 bytes(374523..374533):379",
+          "empty/from-warm": "8:#0 bytes(374523..374533):379",
+          "warm/from-empty": "8:#0 bytes(374523..374533):379",
+          "warm/from-warm": "8:#0 bytes(374523..374533):379"
+        },
+        "metadata_equal": true
+      },
+      "track-before": {
+        "callers": {
+          "empty/from-empty": "8:#0 bytes(374523..374533):379",
+          "empty/from-warm": "8:#0 bytes(374523..374533):379",
+          "warm/from-empty": "8:#0 bytes(374523..374533):379",
+          "warm/from-warm": "8:#0 bytes(374523..374533):379"
+        },
+        "metadata_equal": true
+      }
+    },
+    "driver": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f"
+  },
+  "shipping-baseline": {
+    "cargo": "9f8d4f1d2fd95c42bb82d251d5aad35b651cf7f851e0fe89ba43231b3a2c55e1",
+    "cases": {
+      "span-after": {
+        "callers": {
+          "empty/from-empty": "8:#0 bytes(374517..374527):379",
+          "empty/from-warm": "8:#0 bytes(374517..374527):379",
+          "warm/from-empty": "8:#0 bytes(374517..374527):379",
+          "warm/from-warm": "8:#0 bytes(374517..374527):379"
+        },
+        "metadata_equal": true
+      },
+      "track-after": {
+        "callers": {
+          "empty/from-empty": "8:#0 bytes(374523..374533):379",
+          "empty/from-warm": "8:#0 bytes(374523..374533):379",
+          "warm/from-empty": "8:#0 bytes(374523..374533):379",
+          "warm/from-warm": "8:#0 bytes(374523..374533):379"
+        },
+        "metadata_equal": true
+      },
+      "track-before": {
+        "callers": {
+          "empty/from-empty": "8:#0 bytes(374523..374533):379",
+          "empty/from-warm": "8:#0 bytes(374523..374533):379",
+          "warm/from-empty": "8:#0 bytes(374523..374533):379",
+          "warm/from-warm": "8:#0 bytes(374523..374533):379"
+        },
+        "metadata_equal": true
+      }
+    },
+    "driver": "60293b561edfb87fe1cee03083e0842774b7a76b5437fadce0b45724c14007a5"
+  }
+}
