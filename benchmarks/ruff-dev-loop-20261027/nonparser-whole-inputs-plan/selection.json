@@ -1,0 +1,55 @@
+{
+  "base": "93526150df078af7dd8fc4226cdcc469539d2001",
+  "candidates": [
+    {
+      "commit": "362e2aebace4b94e78f0f3a484dc759ddbb6148a",
+      "patch_sha256": "b82c4f8195eb126a1d76417de7e718bea0d2ee2719e337f05ee2b5abc80fbae2",
+      "paths": [
+        "crates/ty_python_semantic/resources/mdtest/call/function.md",
+        "crates/ty_python_semantic/resources/mdtest/diagnostics/invalid_argument_type.md",
+        "crates/ty_python_semantic/src/types/call/bind.rs"
+      ],
+      "reverse_check": 0,
+      "stderr": "",
+      "topic": "ty-diagnostic"
+    },
+    {
+      "commit": "40a62bc6992b1985bfdb6979512bd64d40d120f5",
+      "patch_sha256": "85526ad7a13fe8227984264a5d594e3663c611bdfd62bf125743d14a2f8c7864",
+      "paths": [
+        "crates/ruff_python_formatter/resources/test/fixtures/black/cases/comments_tab_indent.py",
+        "crates/ruff_python_formatter/resources/test/fixtures/black/cases/comments_tab_indent.py.expect",
+        "crates/ruff_python_formatter/src/comments/format.rs"
+      ],
+      "reverse_check": 0,
+      "stderr": "",
+      "topic": "formatter"
+    }
+  ],
+  "selected": {
+    "formatter": {
+      "commit": "40a62bc6992b1985bfdb6979512bd64d40d120f5",
+      "patch_sha256": "85526ad7a13fe8227984264a5d594e3663c611bdfd62bf125743d14a2f8c7864",
+      "paths": [
+        "crates/ruff_python_formatter/resources/test/fixtures/black/cases/comments_tab_indent.py",
+        "crates/ruff_python_formatter/resources/test/fixtures/black/cases/comments_tab_indent.py.expect",
+        "crates/ruff_python_formatter/src/comments/format.rs"
+      ],
+      "reverse_check": 0,
+      "stderr": "",
+      "topic": "formatter"
+    },
+    "ty-diagnostic": {
+      "commit": "362e2aebace4b94e78f0f3a484dc759ddbb6148a",
+      "patch_sha256": "b82c4f8195eb126a1d76417de7e718bea0d2ee2719e337f05ee2b5abc80fbae2",
+      "paths": [
+        "crates/ty_python_semantic/resources/mdtest/call/function.md",
+        "crates/ty_python_semantic/resources/mdtest/diagnostics/invalid_argument_type.md",
+        "crates/ty_python_semantic/src/types/call/bind.rs"
+      ],
+      "reverse_check": 0,
+      "stderr": "",
+      "topic": "ty-diagnostic"
+    }
+  }
+}

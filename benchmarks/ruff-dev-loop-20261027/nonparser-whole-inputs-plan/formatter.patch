@@ -1,0 +1,43 @@
+diff --git a/crates/ruff_python_formatter/resources/test/fixtures/black/cases/comments_tab_indent.py b/crates/ruff_python_formatter/resources/test/fixtures/black/cases/comments_tab_indent.py
+new file mode 100644
+index 0000000000000000000000000000000000000000..df24f16adeadbf700fe421138399e4e60be5cae3
+--- /dev/null
++++ b/crates/ruff_python_formatter/resources/test/fixtures/black/cases/comments_tab_indent.py
+@@ -0,0 +1,9 @@
++# Black will inject a space between a comment hash and tab
++# as if the tab is non-whitespace.
++
++#Flush
++# Normal
++#	Tabbed
++#		Double-tabbed
++pass # Normal missing pre-hash space
++pass #	Tabbed, missing pre-hash space
+diff --git a/crates/ruff_python_formatter/resources/test/fixtures/black/cases/comments_tab_indent.py.expect b/crates/ruff_python_formatter/resources/test/fixtures/black/cases/comments_tab_indent.py.expect
+new file mode 100644
+index 0000000000000000000000000000000000000000..0811705070b7b00232526ada39b64239e70989ab
+--- /dev/null
++++ b/crates/ruff_python_formatter/resources/test/fixtures/black/cases/comments_tab_indent.py.expect
+@@ -0,0 +1,9 @@
++# Black will inject a space between a comment hash and tab
++# as if the tab is non-whitespace.
++
++# Flush
++# Normal
++# 	Tabbed
++# 		Double-tabbed
++pass  # Normal missing pre-hash space
++pass  # 	Tabbed, missing pre-hash space
+diff --git a/crates/ruff_python_formatter/src/comments/format.rs b/crates/ruff_python_formatter/src/comments/format.rs
+index e34e7456055d1c545835fba9a9c8bf1034b9700c..dbcd341b8c45ec97857ea6183474b1f6f5beb8a3 100644
+--- a/crates/ruff_python_formatter/src/comments/format.rs
++++ b/crates/ruff_python_formatter/src/comments/format.rs
+@@ -509,7 +509,7 @@ fn normalize_comment<'a>(
+             Ok(Cow::Owned(std::format!("# {}", &content["\u{A0}".len()..])))
+         }
+     } else {
+-        Ok(Cow::Owned(std::format!("# {}", content.trim_start())))
++        Ok(Cow::Owned(std::format!("# {content}")))
+     }
+ }
+ 
