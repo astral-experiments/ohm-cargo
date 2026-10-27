@@ -1,0 +1,65 @@
+diff --git a/src/compiler/fingerprint/mod.rs b/src/compiler/fingerprint/mod.rs
+index 0fb50b634a..4be6c1ef30 100644
+--- a/src/compiler/fingerprint/mod.rs
++++ b/src/compiler/fingerprint/mod.rs
+@@ -1782,6 +1782,7 @@ impl LocalFingerprint {
+         gctx: &GlobalContext,
+         worktree_seed: bool,
+         checksum_parallelism: ChecksumParallelism<'_>,
++        deps: &[DepFingerprint],
+         observed_span_inputs: &mut Option<HashMap<PathBuf, Option<(u64, Checksum)>>>,
+     ) -> CargoResult<Option<StaleItem>> {
+         let pkg_root = pkg.root();
+@@ -1803,8 +1804,14 @@ impl LocalFingerprint {
+                     } else {
+                         HashMap::default()
+                     });
++                    // A stale dependency already schedules this unit. Its completed job must
++                    // recheck *all* these inputs, including local sources, before reusing it.
+                     if complete
+-                        && let Some(stale) = changed_observed_input(&info.files, checksum_cache)
++                        && deps
++                            .iter()
++                            .all(|dep| dep.fingerprint.fs_status.lock().unwrap().up_to_date())
++                        && let Some(stale) =
++                            changed_observed_input(&info.files, deps, checksum_cache)
+                     {
+                         return Ok(Some(stale));
+                     }
+@@ -1953,7 +1960,8 @@ impl Fingerprint {
+     /// Upstream jobs may have rewritten their metadata since graph preparation.
+     pub(super) fn observed_span_inputs_are_current(&self) -> bool {
+         self.observed_span_inputs.as_ref().is_none_or(|files| {
+-            !files.is_empty() && changed_observed_input(files, &mut HashMap::default()).is_none()
++            !files.is_empty()
++                && changed_observed_input(files, &self.deps, &mut HashMap::default()).is_none()
+         })
+     }
+ 
+@@ -2234,6 +2242,7 @@ impl Fingerprint {
+                 gctx,
+                 worktree_seed,
+                 checksum_parallelism,
++                &self.deps,
+                 &mut self.observed_span_inputs,
+             )? {
+                 item.log();
+@@ -3388,10 +3397,17 @@ fn checksum_metadata(path: &Path, expected: u64) -> Result<fs::Metadata, StaleIt
+ /// Unlike source freshness, every observed compiler byte is checked, including registry files.
+ fn changed_observed_input(
+     files: &HashMap<PathBuf, Option<(u64, Checksum)>>,
++    deps: &[DepFingerprint],
+     cache: &mut HashMap<PathBuf, Checksum>,
+ ) -> Option<StaleItem> {
++    // A rebuilt dependency's metadata can disprove the receipt before opening large SDK
++    // inputs. A fresh receipt still verifies every byte, sharing cached digests on repeats.
++    let outputs = deps
++        .iter()
++        .flat_map(|dep| &dep.fingerprint.outputs)
++        .filter_map(|path| files.get_key_value(path));
+     let mut buf = Vec::new();
+-    for (path, proof) in files {
++    for (path, proof) in outputs.chain(files) {
+         let Some((size, expected)) = *proof else {
+             return Some(StaleItem::MissingChecksum { path: path.clone() });
+         };

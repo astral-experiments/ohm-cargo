@@ -1,0 +1,160 @@
+diff --git a/src/compiler/fingerprint/mod.rs b/src/compiler/fingerprint/mod.rs
+index 0fb50b634a..ceb068a6b8 100644
+--- a/src/compiler/fingerprint/mod.rs
++++ b/src/compiler/fingerprint/mod.rs
+@@ -1782,6 +1782,7 @@ impl LocalFingerprint {
+         gctx: &GlobalContext,
+         worktree_seed: bool,
+         checksum_parallelism: ChecksumParallelism<'_>,
++        deps: &[DepFingerprint],
+         observed_span_inputs: &mut Option<HashMap<PathBuf, Option<(u64, Checksum)>>>,
+     ) -> CargoResult<Option<StaleItem>> {
+         let pkg_root = pkg.root();
+@@ -1803,8 +1804,18 @@ impl LocalFingerprint {
+                     } else {
+                         HashMap::default()
+                     });
++                    // A stale dependency already schedules this unit. Its completed job must
++                    // recheck *all* these inputs, including local sources, before reusing it.
+                     if complete
+-                        && let Some(stale) = changed_observed_input(&info.files, checksum_cache)
++                        && deps
++                            .iter()
++                            .all(|dep| dep.fingerprint.fs_status.lock().unwrap().up_to_date())
++                        && let Some(stale) = changed_observed_input(
++                            &info.files,
++                            deps,
++                            checksum_cache,
++                            Some(checksum_parallelism),
++                        )
+                     {
+                         return Ok(Some(stale));
+                     }
+@@ -1953,7 +1964,9 @@ impl Fingerprint {
+     /// Upstream jobs may have rewritten their metadata since graph preparation.
+     pub(super) fn observed_span_inputs_are_current(&self) -> bool {
+         self.observed_span_inputs.as_ref().is_none_or(|files| {
+-            !files.is_empty() && changed_observed_input(files, &mut HashMap::default()).is_none()
++            !files.is_empty()
++                && changed_observed_input(files, &self.deps, &mut HashMap::default(), None)
++                    .is_none()
+         })
+     }
+ 
+@@ -2234,6 +2247,7 @@ impl Fingerprint {
+                 gctx,
+                 worktree_seed,
+                 checksum_parallelism,
++                &self.deps,
+                 &mut self.observed_span_inputs,
+             )? {
+                 item.log();
+@@ -3388,9 +3402,34 @@ fn checksum_metadata(path: &Path, expected: u64) -> Result<fs::Metadata, StaleIt
+ /// Unlike source freshness, every observed compiler byte is checked, including registry files.
+ fn changed_observed_input(
+     files: &HashMap<PathBuf, Option<(u64, Checksum)>>,
++    deps: &[DepFingerprint],
+     cache: &mut HashMap<PathBuf, Checksum>,
++    parallelism: Option<ChecksumParallelism<'_>>,
+ ) -> Option<StaleItem> {
++    // A rebuilt dependency's metadata can disprove the receipt before opening large SDK
++    // inputs. A fresh receipt still verifies every byte, sharing cached digests on repeats.
++    let outputs = deps
++        .iter()
++        .flat_map(|dep| &dep.fingerprint.outputs)
++        .filter_map(|path| files.get_key_value(path));
+     let mut buf = Vec::new();
++    if let Some(stale) = changed_observed_files(outputs, cache, &mut buf) {
++        return Some(stale);
++    }
++    #[cfg(unix)]
++    if let Some(parallelism) = parallelism {
++        prefetch_large_observed_inputs(files, cache, parallelism);
++    }
++    #[cfg(not(unix))]
++    let _ = parallelism;
++    changed_observed_files(files.iter(), cache, &mut buf)
++}
++
++fn changed_observed_files<'a>(
++    files: impl Iterator<Item = (&'a PathBuf, &'a Option<(u64, Checksum)>)>,
++    cache: &mut HashMap<PathBuf, Checksum>,
++    buf: &mut Vec<u8>,
++) -> Option<StaleItem> {
+     for (path, proof) in files {
+         let Some((size, expected)) = *proof else {
+             return Some(StaleItem::MissingChecksum { path: path.clone() });
+@@ -3414,7 +3453,7 @@ fn changed_observed_input(
+             let Some(file) = open_regular_checksum_file(path, size) else {
+                 return Some(StaleItem::UnableToReadFile { path: path.clone() });
+             };
+-            match read_checksum(path, expected, file, &mut buf) {
++            match read_checksum(path, expected, file, buf) {
+                 Ok(sum) => {
+                     cache.insert(path.clone(), sum);
+                     sum
+@@ -3481,6 +3520,43 @@ fn prefetch_checksum(
+     read_checksum(path, prior, file, buffer).ok().map(Ok)
+ }
+ 
++/// Split a large fresh observer receipt across the main thread and one spare job slot.
++/// Put its largest input with the smallest ones so both chunks can do useful work.
++#[cfg(unix)]
++fn prefetch_large_observed_inputs(
++    files: &HashMap<PathBuf, Option<(u64, Checksum)>>,
++    cache: &mut HashMap<PathBuf, Checksum>,
++    parallelism: ChecksumParallelism<'_>,
++) {
++    if parallelism.jobs < 2 {
++        return;
++    }
++    let mut misses = files
++        .iter()
++        .filter(|(path, _)| !cache.contains_key(*path))
++        .map(|(path, prior)| (path, *prior))
++        .collect::<Vec<_>>();
++    misses.sort_unstable_by_key(|(_, prior)| prior.map_or(0, |(size, _)| size));
++    let Some(((_, Some((largest, _))), rest)) = misses.split_last() else {
++        return;
++    };
++    if *largest < 32 * 1024 * 1024
++        || rest.iter().fold(0u64, |sum, (_, prior)| {
++            sum.saturating_add(prior.map_or(0, |(size, _)| size))
++        }) < 16 * 1024 * 1024
++    {
++        return;
++    }
++    misses.rotate_right(1);
++    if let Some(results) = prefetch_checksum_batch(&misses, cache, None, parallelism, 2) {
++        for ((path, _), result) in misses.into_iter().zip(results) {
++            if let Some(Ok(checksum)) = result {
++                cache.insert(path.clone(), checksum);
++            }
++        }
++    }
++}
++
+ /// Computes isolated results without changing the shared cache or error order.
+ #[cfg(unix)]
+ fn prefetch_checksums<P: AsRef<Path> + Sync>(
+@@ -3502,6 +3578,20 @@ fn prefetch_checksums<P: AsRef<Path> + Sync>(
+         return None;
+     }
+     let workers = (parallelism.jobs as usize).min(4).min(misses.div_ceil(64));
++    prefetch_checksum_batch(paths, cache, skippable_dirs, parallelism, workers)
++}
++
++#[cfg(unix)]
++fn prefetch_checksum_batch<P: AsRef<Path> + Sync>(
++    paths: &[(P, Option<(u64, Checksum)>)],
++    cache: &HashMap<PathBuf, Checksum>,
++    skippable_dirs: Option<&[PathBuf]>,
++    parallelism: ChecksumParallelism<'_>,
++    workers: usize,
++) -> Option<PrefetchedChecksums> {
++    let skipped = |path: &Path| {
++        skippable_dirs.is_some_and(|dirs| dirs.iter().any(|dir| path.starts_with(dir)))
++    };
+     let mut tokens = Vec::new();
+     if parallelism.reserved_tokens.is_empty() {
+         // Inherited clients keep their existing opportunistic acquisition path.
