@@ -184,10 +184,11 @@ impl Package {
     }
 
     pub fn map_source(self, to_replace: SourceId, replace_with: SourceId) -> Package {
+        let inner = Rc::unwrap_or_clone(self.inner);
         Package {
             inner: Rc::new(PackageInner {
-                manifest: self.manifest().clone().map_source(to_replace, replace_with),
-                manifest_path: self.manifest_path().to_owned(),
+                manifest: inner.manifest.map_source(to_replace, replace_with),
+                ..inner
             }),
         }
     }
