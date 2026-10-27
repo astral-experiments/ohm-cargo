@@ -1,0 +1,55 @@
+{
+  "prime": {
+    "exit": 0,
+    "fresh": {
+      "leaf": false,
+      "bundle": false,
+      "app": false
+    },
+    "panic": [],
+    "output": [
+      "leaf/src/defs.rs:2:54",
+      "leaf/src/lib.rs:4:31",
+      "7"
+    ]
+  },
+  "leaf_edit": {
+    "exit": 0,
+    "fresh": {
+      "leaf": false,
+      "bundle": false,
+      "app": false
+    },
+    "panic": [],
+    "output": [
+      "leaf/src/defs.rs:2:54",
+      "leaf/src/lib.rs:4:31",
+      "7"
+    ]
+  },
+  "caller_edit": {
+    "exit": 101,
+    "fresh": {
+      "leaf": true,
+      "bundle": true
+    },
+    "panic": [
+      "Found unstable fingerprints for module_children(bundle[b2d8]): [ModChild { ident: ratio#0, res: Def(Fn, DefId(20:4 ~ bundle[b2d8]::ratio)), vis: Public, reexport_chain: [] }, ModChild { ident: nested#0, res: Def(Fn, DefId(20:6 ~ bundle[b2d8]::nested)), vis: Public, reexport_chain: [] }, ModChild { ident: Public#0, res: Def(Struct, DefId(21:6 ~ leaf[c12c]::defs::Public)), vis: Public, reexport_chain: [Glob(DefId(20:3 ~ bundle[b2d8]::{use#1}))] }, ModChild { ident: gg#0, res: Def(Fn, DefId(21:8 ~ leaf[c12c]::defs::gg)), vis: Public, reexport_chain: [Glob(DefId(20:3 ~ bundle[b2d8]::{use#1}))] }, ModChild { ident: hh#0, res: Def(Fn, DefId(21:10 ~ leaf[c12c]::defs::hh)), vis: Public, reexport_chain: [Glob(DefId(20:3 ~ bundle[b2d8]::{use#1}))] }]"
+    ],
+    "output": null
+  },
+  "empty_target_same_sources": {
+    "exit": 0,
+    "fresh": {
+      "leaf": false,
+      "bundle": false,
+      "app": false
+    },
+    "panic": [],
+    "output": [
+      "leaf/src/defs.rs:2:54",
+      "leaf/src/lib.rs:4:31",
+      "11"
+    ]
+  }
+}

@@ -1,0 +1,215 @@
+[
+  {
+    "phase": "prime",
+    "leaf_sha": "79d4cb40f19a2910b021af863c356e21e296338b53e5b9382e9a3114c1d5324b",
+    "app_sha": "90e2974ccbb9a01b24e8144c78fb64d5e31477432cbcf67ee9ae14da5e95bce9",
+    "driver": "97a8910a6d8a8ac54936f9373f7940525b2f46ec5f005421b3913a21d9a6fa9b",
+    "warm": {
+      "compiled": true,
+      "output": [
+        "leaf/src/defs.rs:2:54",
+        "leaf/src/lib.rs:4:31",
+        "7"
+      ],
+      "exit": 0,
+      "exe_sha256": "ce24a5e370fc0ffd8bdaaf52d76fb2278e8c135a9d0d3bb407f29c9b9c39028d",
+      "bundle_rmeta": "659e21af070ee3c73085ee957f75bbaef91b2b8bae2f5527334e7f0c92dd4fe9",
+      "leaf_rmeta": "4ffcd944a0d7fa6b297fd15f0dff0fb21dc25cb84b0a77d7dafe7a39fe6a10c4",
+      "public_hash": {
+        "version": 1,
+        "value": "67e10667810cf87664fe78ee540324de"
+      },
+      "actual_compilers": [
+        [
+          "app",
+          false
+        ],
+        [
+          "bundle",
+          false
+        ],
+        [
+          "leaf",
+          false
+        ]
+      ]
+    },
+    "clean": null
+  },
+  {
+    "phase": "edit_leaf",
+    "leaf_sha": "8c382d6cb77a4932412863a4a30e623c6ba2ff250db1853c53a23303fbbac1e0",
+    "app_sha": "90e2974ccbb9a01b24e8144c78fb64d5e31477432cbcf67ee9ae14da5e95bce9",
+    "driver": "97a8910a6d8a8ac54936f9373f7940525b2f46ec5f005421b3913a21d9a6fa9b",
+    "warm": {
+      "compiled": true,
+      "output": [
+        "leaf/src/defs.rs:2:54",
+        "leaf/src/lib.rs:4:31",
+        "7"
+      ],
+      "exit": 0,
+      "exe_sha256": "ce24a5e370fc0ffd8bdaaf52d76fb2278e8c135a9d0d3bb407f29c9b9c39028d",
+      "bundle_rmeta": "659e21af070ee3c73085ee957f75bbaef91b2b8bae2f5527334e7f0c92dd4fe9",
+      "leaf_rmeta": "b43cc44594e4866c2921bfec05daf63828d3ae0f1ab141b78fdfaeaf2dafc9f7",
+      "public_hash": {
+        "version": 1,
+        "value": "67e10667810cf87664fe78ee540324de"
+      },
+      "actual_compilers": [
+        [
+          "app",
+          true
+        ],
+        [
+          "leaf",
+          false
+        ]
+      ]
+    },
+    "clean": null
+  },
+  {
+    "phase": "edit_caller",
+    "leaf_sha": "8c382d6cb77a4932412863a4a30e623c6ba2ff250db1853c53a23303fbbac1e0",
+    "app_sha": "bb0127730e9f31dcf4916f6b165f34eda292f18814e3696809cfb306d1e8844b",
+    "driver": "97a8910a6d8a8ac54936f9373f7940525b2f46ec5f005421b3913a21d9a6fa9b",
+    "warm": {
+      "compiled": false,
+      "panic": "Found unstable fingerprints for module_children(bundle[b2d8]): [ModChild { ident: ratio#0, res: Def(Fn, DefId(20:4 ~ bundle[b2d8]::ratio)), vis: Public, reexport_chain: [] }, ModChild { ident: nested#0, res: Def(Fn, DefI",
+      "bundle_rmeta": "659e21af070ee3c73085ee957f75bbaef91b2b8bae2f5527334e7f0c92dd4fe9",
+      "leaf_rmeta": "b43cc44594e4866c2921bfec05daf63828d3ae0f1ab141b78fdfaeaf2dafc9f7",
+      "public_hash": {
+        "version": 1,
+        "value": "67e10667810cf87664fe78ee540324de"
+      },
+      "actual_compilers": [
+        [
+          "app",
+          false
+        ]
+      ]
+    },
+    "clean": {
+      "compiled": true,
+      "output": [
+        "leaf/src/defs.rs:2:54",
+        "leaf/src/lib.rs:4:31",
+        "11"
+      ],
+      "exit": 0,
+      "exe_sha256": "3642a0616c28dcedd082b717b0da57ccebdb3a7ec1265f216e6732a9f835dac1",
+      "bundle_rmeta": "532ca17ae2219fafdb0f274dcf8065c8379e70ff8a0e27e952cf9c61f7f7bb99",
+      "leaf_rmeta": "b43cc44594e4866c2921bfec05daf63828d3ae0f1ab141b78fdfaeaf2dafc9f7",
+      "public_hash": {
+        "version": 1,
+        "value": "67e10667810cf87664fe78ee540324de"
+      },
+      "actual_compilers": [
+        [
+          "app",
+          false
+        ],
+        [
+          "bundle",
+          false
+        ],
+        [
+          "leaf",
+          false
+        ]
+      ]
+    }
+  },
+  {
+    "phase": "restore_leaf",
+    "leaf_sha": "79d4cb40f19a2910b021af863c356e21e296338b53e5b9382e9a3114c1d5324b",
+    "app_sha": "bb0127730e9f31dcf4916f6b165f34eda292f18814e3696809cfb306d1e8844b",
+    "driver": "97a8910a6d8a8ac54936f9373f7940525b2f46ec5f005421b3913a21d9a6fa9b",
+    "warm": {
+      "compiled": true,
+      "output": [
+        "leaf/src/defs.rs:2:54",
+        "leaf/src/lib.rs:4:31",
+        "11"
+      ],
+      "exit": 0,
+      "exe_sha256": "3642a0616c28dcedd082b717b0da57ccebdb3a7ec1265f216e6732a9f835dac1",
+      "bundle_rmeta": "659e21af070ee3c73085ee957f75bbaef91b2b8bae2f5527334e7f0c92dd4fe9",
+      "leaf_rmeta": "4ffcd944a0d7fa6b297fd15f0dff0fb21dc25cb84b0a77d7dafe7a39fe6a10c4",
+      "public_hash": {
+        "version": 1,
+        "value": "67e10667810cf87664fe78ee540324de"
+      },
+      "actual_compilers": [
+        [
+          "app",
+          false
+        ],
+        [
+          "leaf",
+          false
+        ]
+      ]
+    },
+    "clean": null
+  },
+  {
+    "phase": "restore_caller",
+    "leaf_sha": "79d4cb40f19a2910b021af863c356e21e296338b53e5b9382e9a3114c1d5324b",
+    "app_sha": "90e2974ccbb9a01b24e8144c78fb64d5e31477432cbcf67ee9ae14da5e95bce9",
+    "driver": "97a8910a6d8a8ac54936f9373f7940525b2f46ec5f005421b3913a21d9a6fa9b",
+    "warm": {
+      "compiled": true,
+      "output": [
+        "leaf/src/defs.rs:2:54",
+        "leaf/src/lib.rs:4:31",
+        "7"
+      ],
+      "exit": 0,
+      "exe_sha256": "ce24a5e370fc0ffd8bdaaf52d76fb2278e8c135a9d0d3bb407f29c9b9c39028d",
+      "bundle_rmeta": "659e21af070ee3c73085ee957f75bbaef91b2b8bae2f5527334e7f0c92dd4fe9",
+      "leaf_rmeta": "4ffcd944a0d7fa6b297fd15f0dff0fb21dc25cb84b0a77d7dafe7a39fe6a10c4",
+      "public_hash": {
+        "version": 1,
+        "value": "67e10667810cf87664fe78ee540324de"
+      },
+      "actual_compilers": [
+        [
+          "app",
+          false
+        ]
+      ]
+    },
+    "clean": {
+      "compiled": true,
+      "output": [
+        "leaf/src/defs.rs:2:54",
+        "leaf/src/lib.rs:4:31",
+        "7"
+      ],
+      "exit": 0,
+      "exe_sha256": "ce24a5e370fc0ffd8bdaaf52d76fb2278e8c135a9d0d3bb407f29c9b9c39028d",
+      "bundle_rmeta": "659e21af070ee3c73085ee957f75bbaef91b2b8bae2f5527334e7f0c92dd4fe9",
+      "leaf_rmeta": "4ffcd944a0d7fa6b297fd15f0dff0fb21dc25cb84b0a77d7dafe7a39fe6a10c4",
+      "public_hash": {
+        "version": 1,
+        "value": "67e10667810cf87664fe78ee540324de"
+      },
+      "actual_compilers": [
+        [
+          "app",
+          false
+        ],
+        [
+          "bundle",
+          false
+        ],
+        [
+          "leaf",
+          false
+        ]
+      ]
+    }
+  }
+]

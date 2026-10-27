@@ -1,0 +1,8 @@
+[workspace]
+members=["leaf","mid","bundle","app"]
+resolver="3"
+
+[profile.dev]
+opt-level=1
+debug="line-tables-only"
+lto="off"
