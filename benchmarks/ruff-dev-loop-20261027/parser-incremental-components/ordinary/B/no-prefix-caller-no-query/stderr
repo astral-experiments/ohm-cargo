@@ -1,0 +1,15 @@
+error[E0460]: found possibly newer version of crate `ruff_python_parser` which `ordinary_parser_bridge` depends on
+ --> /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/parser-component-callers/B/caller.rs:1:28
+  |
+1 | fn main() { println!("{}", ordinary_parser_bridge::observed()); }
+  |                            ^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = note: perhaps that crate needs to be recompiled?
+  = note: the following crate versions were found:
+          crate `ruff_python_parser`: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/ruff_python_parser/73e0badb2a828505/out/libruff_python_parser-73e0badb2a828505.rmeta
+          crate `ruff_python_parser`: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/ruff_python_parser/73e0badb2a828505/out/libruff_python_parser-73e0badb2a828505.rlib
+          crate `ordinary_parser_bridge`: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/parser-component-callers/B/libordinary_parser_bridge_input.rlib
+
+error: aborting due to 1 previous error
+
+For more information about this error, try `rustc --explain E0460`.

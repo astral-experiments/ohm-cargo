@@ -1,0 +1,198 @@
+[
+  {
+    "actual_driver": "7c31057e86f800e313b7d32080c7a5abaa7b92fef92254ac21b2e43febf16384",
+    "argv_sha": "41239c554579160daafd1463cb9f2694ad7ddc81574d5b7c0206e9d4b62f8d0b",
+    "bridge": null,
+    "bridge_sha": "40e1a3f612ca8d0d0c0f4c1d6014f5f30a77d087a4bdc739b88988ffaf513e7e",
+    "compiler_exit": 0,
+    "diagnostics": "",
+    "kind": "bridge",
+    "mapped": {
+      "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/ruff_python_parser/73e0badb2a828505/out/libruff_python_parser-73e0badb2a828505.rlib": {
+        "dev": 64800,
+        "ino": 1325915,
+        "mmaps": 1,
+        "opens": 1,
+        "sha256": "daa177e772c666be9ff2ebe1f72becdd25a21643fa82dc9db89628293ba132ba",
+        "size": 5695090
+      }
+    },
+    "recipient": "all",
+    "runtime": null,
+    "target_rlib_sha": "daa177e772c666be9ff2ebe1f72becdd25a21643fa82dc9db89628293ba132ba"
+  },
+  {
+    "actual_driver": "7c31057e86f800e313b7d32080c7a5abaa7b92fef92254ac21b2e43febf16384",
+    "argv_sha": "41239c554579160daafd1463cb9f2694ad7ddc81574d5b7c0206e9d4b62f8d0b",
+    "bridge": null,
+    "bridge_sha": "02afa6d085e83e6f8a97e418091646873eb7b981cf59222ea807cef4e3e1eec4",
+    "compiler_exit": 0,
+    "diagnostics": "",
+    "kind": "bridge",
+    "mapped": {
+      "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/ruff_python_parser/73e0badb2a828505/out/libruff_python_parser-73e0badb2a828505.rlib": {
+        "dev": 64800,
+        "ino": 3670031,
+        "mmaps": 1,
+        "opens": 1,
+        "sha256": "5be0cbe72a04a02dffa4d3964f843a168d85bb64a369a1f656476a15fa18afb4",
+        "size": 5695130
+      }
+    },
+    "recipient": "empty",
+    "runtime": null,
+    "target_rlib_sha": "5be0cbe72a04a02dffa4d3964f843a168d85bb64a369a1f656476a15fa18afb4"
+  },
+  {
+    "actual_driver": "7c31057e86f800e313b7d32080c7a5abaa7b92fef92254ac21b2e43febf16384",
+    "argv_sha": "4a7f8824e77e77d0be3a673909c4ffda049078fc30ea2a9729152ece2ca8eeac",
+    "bridge": "all",
+    "bridge_sha": "40e1a3f612ca8d0d0c0f4c1d6014f5f30a77d087a4bdc739b88988ffaf513e7e",
+    "compiler_exit": 0,
+    "diagnostics": "",
+    "kind": "caller",
+    "mapped": {
+      "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/parser-component-open-audit/B/libordinary_parser_bridge_input.rlib": {
+        "dev": 64800,
+        "ino": 7078444,
+        "mmaps": 2,
+        "opens": 2,
+        "sha256": "40e1a3f612ca8d0d0c0f4c1d6014f5f30a77d087a4bdc739b88988ffaf513e7e",
+        "size": 51262
+      },
+      "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/ruff_python_parser/73e0badb2a828505/out/libruff_python_parser-73e0badb2a828505.rlib": {
+        "dev": 64800,
+        "ino": 1325915,
+        "mmaps": 2,
+        "opens": 2,
+        "sha256": "daa177e772c666be9ff2ebe1f72becdd25a21643fa82dc9db89628293ba132ba",
+        "size": 5695090
+      },
+      "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/ruff_python_parser/73e0badb2a828505/out/libruff_python_parser-73e0badb2a828505.rmeta": {
+        "dev": 64800,
+        "ino": 1325906,
+        "mmaps": 1,
+        "opens": 1,
+        "sha256": "efff74acaf9fa21f415aab14902c0d569e3daad6cd07fcf773f7aa076fe89318",
+        "size": 1359343
+      }
+    },
+    "recipient": "all",
+    "runtime": "Bytes literal cannot be mixed with non-bytes literals at byte range 0..18",
+    "target_rlib_sha": "daa177e772c666be9ff2ebe1f72becdd25a21643fa82dc9db89628293ba132ba"
+  },
+  {
+    "actual_driver": "7c31057e86f800e313b7d32080c7a5abaa7b92fef92254ac21b2e43febf16384",
+    "argv_sha": "4a7f8824e77e77d0be3a673909c4ffda049078fc30ea2a9729152ece2ca8eeac",
+    "bridge": "empty",
+    "bridge_sha": "02afa6d085e83e6f8a97e418091646873eb7b981cf59222ea807cef4e3e1eec4",
+    "compiler_exit": 1,
+    "diagnostics": "error[E0460]: found possibly newer version of crate `ruff_python_parser` which `ordinary_parser_bridge` depends on\n --> /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/parser-component-open-audit/B/caller.rs:1:28\n  |\n1 | fn main() { println!(\"{}\", ordinary_parser_bridge::observed()); }\n  |                            ^^^^^^^^^^^^^^^^^^^^^^\n  |\n  = note: perhaps that crate needs to be recompiled?\n  = note: the following crate versions were found:\n          crate `ruff_python_parser`: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/ruff_python_parser/73e0badb2a828505/out/libruff_python_parser-73e0badb2a828505.rmeta\n          crate `ruff_python_parser`: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/ruff_python_parser/73e0badb2a828505/out/libruff_python_parser-73e0badb2a828505.rlib\n          crate `ordinary_parser_bridge`: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/parser-component-open-audit/B/libordinary_parser_bridge_input.rlib\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0460`.\n",
+    "kind": "caller",
+    "mapped": {
+      "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/parser-component-open-audit/B/libordinary_parser_bridge_input.rlib": {
+        "dev": 64800,
+        "ino": 7078469,
+        "mmaps": 1,
+        "opens": 1,
+        "sha256": "02afa6d085e83e6f8a97e418091646873eb7b981cf59222ea807cef4e3e1eec4",
+        "size": 51262
+      },
+      "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/ruff_python_parser/73e0badb2a828505/out/libruff_python_parser-73e0badb2a828505.rlib": {
+        "dev": 64800,
+        "ino": 1325915,
+        "mmaps": 2,
+        "opens": 2,
+        "sha256": "daa177e772c666be9ff2ebe1f72becdd25a21643fa82dc9db89628293ba132ba",
+        "size": 5695090
+      },
+      "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/ruff_python_parser/73e0badb2a828505/out/libruff_python_parser-73e0badb2a828505.rmeta": {
+        "dev": 64800,
+        "ino": 1325906,
+        "mmaps": 2,
+        "opens": 2,
+        "sha256": "efff74acaf9fa21f415aab14902c0d569e3daad6cd07fcf773f7aa076fe89318",
+        "size": 1359343
+      }
+    },
+    "recipient": "all",
+    "runtime": null,
+    "target_rlib_sha": "daa177e772c666be9ff2ebe1f72becdd25a21643fa82dc9db89628293ba132ba"
+  },
+  {
+    "actual_driver": "7c31057e86f800e313b7d32080c7a5abaa7b92fef92254ac21b2e43febf16384",
+    "argv_sha": "4a7f8824e77e77d0be3a673909c4ffda049078fc30ea2a9729152ece2ca8eeac",
+    "bridge": "all",
+    "bridge_sha": "40e1a3f612ca8d0d0c0f4c1d6014f5f30a77d087a4bdc739b88988ffaf513e7e",
+    "compiler_exit": 1,
+    "diagnostics": "error[E0460]: found possibly newer version of crate `ruff_python_parser` which `ordinary_parser_bridge` depends on\n --> /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/parser-component-open-audit/B/caller.rs:1:28\n  |\n1 | fn main() { println!(\"{}\", ordinary_parser_bridge::observed()); }\n  |                            ^^^^^^^^^^^^^^^^^^^^^^\n  |\n  = note: perhaps that crate needs to be recompiled?\n  = note: the following crate versions were found:\n          crate `ruff_python_parser`: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/ruff_python_parser/73e0badb2a828505/out/libruff_python_parser-73e0badb2a828505.rmeta\n          crate `ruff_python_parser`: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/ruff_python_parser/73e0badb2a828505/out/libruff_python_parser-73e0badb2a828505.rlib\n          crate `ordinary_parser_bridge`: /mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/parser-component-open-audit/B/libordinary_parser_bridge_input.rlib\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0460`.\n",
+    "kind": "caller",
+    "mapped": {
+      "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/parser-component-open-audit/B/libordinary_parser_bridge_input.rlib": {
+        "dev": 64800,
+        "ino": 7078444,
+        "mmaps": 1,
+        "opens": 1,
+        "sha256": "40e1a3f612ca8d0d0c0f4c1d6014f5f30a77d087a4bdc739b88988ffaf513e7e",
+        "size": 51262
+      },
+      "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/ruff_python_parser/73e0badb2a828505/out/libruff_python_parser-73e0badb2a828505.rlib": {
+        "dev": 64800,
+        "ino": 3670031,
+        "mmaps": 2,
+        "opens": 2,
+        "sha256": "5be0cbe72a04a02dffa4d3964f843a168d85bb64a369a1f656476a15fa18afb4",
+        "size": 5695130
+      },
+      "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/ruff_python_parser/73e0badb2a828505/out/libruff_python_parser-73e0badb2a828505.rmeta": {
+        "dev": 64800,
+        "ino": 3670022,
+        "mmaps": 2,
+        "opens": 2,
+        "sha256": "05e501e8414a4e8a88fa26187bd5f3c8f3bb14bcd37b0f7025e80c7cabb9af80",
+        "size": 1359384
+      }
+    },
+    "recipient": "empty",
+    "runtime": null,
+    "target_rlib_sha": "5be0cbe72a04a02dffa4d3964f843a168d85bb64a369a1f656476a15fa18afb4"
+  },
+  {
+    "actual_driver": "7c31057e86f800e313b7d32080c7a5abaa7b92fef92254ac21b2e43febf16384",
+    "argv_sha": "4a7f8824e77e77d0be3a673909c4ffda049078fc30ea2a9729152ece2ca8eeac",
+    "bridge": "empty",
+    "bridge_sha": "02afa6d085e83e6f8a97e418091646873eb7b981cf59222ea807cef4e3e1eec4",
+    "compiler_exit": 0,
+    "diagnostics": "",
+    "kind": "caller",
+    "mapped": {
+      "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/parser-component-open-audit/B/libordinary_parser_bridge_input.rlib": {
+        "dev": 64800,
+        "ino": 7078469,
+        "mmaps": 2,
+        "opens": 2,
+        "sha256": "02afa6d085e83e6f8a97e418091646873eb7b981cf59222ea807cef4e3e1eec4",
+        "size": 51262
+      },
+      "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/ruff_python_parser/73e0badb2a828505/out/libruff_python_parser-73e0badb2a828505.rlib": {
+        "dev": 64800,
+        "ino": 3670031,
+        "mmaps": 2,
+        "opens": 2,
+        "sha256": "5be0cbe72a04a02dffa4d3964f843a168d85bb64a369a1f656476a15fa18afb4",
+        "size": 5695130
+      },
+      "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-b567357b5a94dfb5-all-native-all/ruff_python_parser/73e0badb2a828505/out/libruff_python_parser-73e0badb2a828505.rmeta": {
+        "dev": 64800,
+        "ino": 3670022,
+        "mmaps": 1,
+        "opens": 1,
+        "sha256": "05e501e8414a4e8a88fa26187bd5f3c8f3bb14bcd37b0f7025e80c7cabb9af80",
+        "size": 1359384
+      }
+    },
+    "recipient": "empty",
+    "runtime": "Bytes literal cannot be mixed with non-bytes literals at byte range 0..18",
+    "target_rlib_sha": "5be0cbe72a04a02dffa4d3964f843a168d85bb64a369a1f656476a15fa18afb4"
+  }
+]

@@ -1,0 +1,49 @@
+{
+  "cargo": {
+    "A": "0f237cc3b506aa90c1224e6ed80f646566b424b78c8d74f288f6523d17fc8aa1",
+    "B": "dd5cab154b8dcd09ccc2753160d314cade80979b2d055ee66aa9e2217e05e7e1"
+  },
+  "driver": {
+    "A": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+    "B": "7c31057e86f800e313b7d32080c7a5abaa7b92fef92254ac21b2e43febf16384"
+  },
+  "edits": {
+    "all": [],
+    "empty": [
+      "*"
+    ],
+    "no-graph": [
+      "dep-graph.bin"
+    ],
+    "no-metadata": [
+      "metadata.rmeta"
+    ],
+    "no-prefix": [
+      "metadata-prefix-v3.ohm-prefix-v3"
+    ],
+    "no-query": [
+      "query-cache.bin"
+    ],
+    "no-work-products": [
+      "work-products.bin"
+    ]
+  },
+  "inherited_PATH": "/usr/local/bin:/home/dev-user/.cargo/bin:/usr/local/bin:/home/linuxbrew/.linuxbrew/bin:/home/linuxbrew/.linuxbrew/sbin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+  "order": [
+    "B",
+    "A"
+  ],
+  "source": {
+    "edited": {
+      "crates/ruff_python_parser/resources/inline/err/mixed_tstring_and_bytes_literals.py": null,
+      "crates/ruff_python_parser/src/parser/expression.rs": "f55559e42d9d04a7648a73f45b2798409eedb82df0317f7c7d5400aab01200c1",
+      "crates/ruff_python_parser/tests/snapshots/invalid_syntax@mixed_tstring_and_bytes_literals.py.snap": null
+    },
+    "original": {
+      "crates/ruff_python_parser/resources/inline/err/mixed_tstring_and_bytes_literals.py": "1f0c5f7088b43a68e632784e2c572e5aeda27df350e1160c966eb3ec3f27a06a",
+      "crates/ruff_python_parser/src/parser/expression.rs": "cb7bf925c67804a739984775bd95cfdb7436f62c43c8d5847a9875c33ef0cb7e",
+      "crates/ruff_python_parser/tests/snapshots/invalid_syntax@mixed_tstring_and_bytes_literals.py.snap": "1737dfcf35d3d1650cdd648a474ce39567e98b916e93a22720e97968a54f0892"
+    }
+  },
+  "timed": false
+}

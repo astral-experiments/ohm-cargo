@@ -1,0 +1,20 @@
+# Ruff parser private hash across incremental cache histories
+
+Seven disposable copies of each compiler's original workspace state built the same historical Ruff parser edit with ordinary `cargo +ohm build --locked --offline --message-format=json`. Every edited command succeeded with 501 compiler artifacts and nine rustc executions, including a full parser compile. Its complete argv and direct extern bytes were identical within each arm. Cargo used a separate writable physical target and shared directory for each copy at the same logical paths. These experiments produced zero timing samples.
+
+| Parser's previous incremental session | Release-matched #233 private hash | Experimental mixed compiler private hash |
+| --- | --- | --- |
+| Intact, or only the live metadata-prefix manifest, metadata work product, or work-products list removed | `8738be14814a2dad789dee6fb3ba1914` | `25535f27dd2a2861b88a8bdc1d645bfb` |
+| Empty, or only the live serialized query cache or dependency graph removed | `4b38929971381640e894a8a9ecce65a0` | `0853fb0709f6e7b1c1a30289347a0a02` |
+
+Within each arm the entire raw parser metadata matches throughout each row. The two rows have different private identities and bytes, the same public hash and the same StableCrateId. Removing a required query-cache or graph file can cause rustc to discard the incremental session. This split alone does not identify an individual query that supplied the difference.
+
+Arm A used #233 driver `dec72d1e…` and Cargo `0f237cc3…`. Arm B used the mixed-library driver `7c31057e…` and preceding Cargo `dd5cab15…`. The other half of the mixed capability was absent in each arm. Exact shipping image hashes, source overlays, command order and per-state interventions are in `cargo/design.json`, full parser arguments and input hashes in `cargo/results.json.gz`. The two compilers use different authenticated unit namespaces, so the split compares histories within each arm.
+
+Seven ordinary hash-off Rust bridges per arm each compiled against its local parser. Fresh native callers then read all 49 bridge/recipient combinations. Within a row all 25 compiled and ran per arm. Their observed Ruff parser diagnostic was identical. All 24 cross-row callers per arm failed with E0460 naming the parser required by the bridge. Every ordinary command has a saved argv and stderr. The result concerns crossing separately built Rust artifacts. A single-target Cargo stale reuse failure was not part of this experiment.
+
+A separate kernel audit repeated two direct bridges and four callers per arm. `strace -ff -yy` records the direct bridge mapping the unit rlib, and callers mapping their actual bridge plus the recipient parser rmeta and rlib. Both crossed callers failed and both own-history callers succeeded in each arm. The Cargo-advertised lifted rlib and the unit rlib directly mapped by rustc have the same device, inode and bytes. The accompanying independent rustc header listings cover the lifted archive and separate metadata.
+
+The incremental graph comparison found identical same-key query result fingerprints for 4,204 HIR owners, 2,169 source spans, the crates list, resolutions, HIR crate items, debugger visualizers and five upstream crate hash entries. The local crate-hash fingerprint differed. This always-evaluated query records no direct edges here. The initial parser attempts used a wrong file version and then required direct edges. Their errors are retained with the successful v3 reader. The component splits and Rust callers above used the original compiler binaries without any interposer. The separate native-hash diagnostic has its own record.
+
+Run `python3 -B verify.py` from any directory to authenticate and cross-check the saved evidence. The collection programs reference the registered mixed-workspace namespace harness and its prior shared-registry isolation fixtures, available in the same access-controlled benchmark repository. Files under `raw-rmeta/` are the four content-addressed authentic compiler outputs, gzip-compressed.
