@@ -1,0 +1,92 @@
+{
+  "schema": 1,
+  "created": "2026-10-27T06:46:00Z",
+  "seed": 202610270646,
+  "before_first_candidate_Cargo_binary": true,
+  "provenance": "Two independent small real Cargo graphs, compiled native executables, Linux four pinned CPUs 0\u20133. Frozen compiler shared between arms, public hash guard obs3. No wall claim about Ruff from these graphs.",
+  "subject": "Exact previously benchmarked source-matched packaged PGO Cargo with #253. Candidate the matched release-PGO Cargo plus only observed-span-input proof. Record sha256, frontend, driver and SDK. No scoring until correctness gates pass. Variant/log fixes are permitted before scoring and must be disclosed.",
+  "workload": "New independent heldout variant of the two-upstream-crate observation. Package A has a public type plus private derives/documentation, does not define a macro. Package B exports the token read by stable Span Debug. Direct observer, observing Rust constant in a bridge, and a correctly retained ordinary sibling. Use complete real Cargo build of all three terminal crates, no project-level compiler/Rust flag changes; if an extra facade is used to exercise the transitive case, freeze it in the source manifest before the first score. Check the actual products before every block.",
+  "state": "Prime each separate target and Cargo build dir at a stable logical pathname. Run complete warm training, making sure the candidate actually records full rustc binary dep-info and the original actually fully rebuilds the two readers on ordinary no-op. Require both arms preserve the exact same source state before each matching pair. Prewarm only before scoring. 12 ties of exact fresh upstream/three native outputs and 12 first-build-after-real-doc-edit pairs. For the edit endpoint alternate the same single ASCII-byte addition/removal; no forced invalidation inside measured command. Record source tree, ELF SHA and actual witness / marker counts.",
+  "arms": "P control, C candidate; alternate using constant rustup/Cargo/driver mount paths and equivalent state. Pin processes via taskset; separate private home/target/shared per arm; do not mix any other work in the allocated lane.",
+  "orders": [
+    {
+      "block": 1,
+      "no_op": "PC",
+      "edit": "add",
+      "edit_order": "PC"
+    },
+    {
+      "block": 2,
+      "no_op": "CP",
+      "edit": "remove",
+      "edit_order": "PC"
+    },
+    {
+      "block": 3,
+      "no_op": "CP",
+      "edit": "add",
+      "edit_order": "CP"
+    },
+    {
+      "block": 4,
+      "no_op": "CP",
+      "edit": "remove",
+      "edit_order": "PC"
+    },
+    {
+      "block": 5,
+      "no_op": "CP",
+      "edit": "add",
+      "edit_order": "CP"
+    },
+    {
+      "block": 6,
+      "no_op": "PC",
+      "edit": "remove",
+      "edit_order": "CP"
+    },
+    {
+      "block": 7,
+      "no_op": "PC",
+      "edit": "add",
+      "edit_order": "PC"
+    },
+    {
+      "block": 8,
+      "no_op": "PC",
+      "edit": "remove",
+      "edit_order": "CP"
+    },
+    {
+      "block": 9,
+      "no_op": "PC",
+      "edit": "add",
+      "edit_order": "CP"
+    },
+    {
+      "block": 10,
+      "no_op": "CP",
+      "edit": "remove",
+      "edit_order": "CP"
+    },
+    {
+      "block": 11,
+      "no_op": "PC",
+      "edit": "add",
+      "edit_order": "PC"
+    },
+    {
+      "block": 12,
+      "no_op": "CP",
+      "edit": "remove",
+      "edit_order": "PC"
+    }
+  ],
+  "measurement": "time.monotonic_ns outside whole selected cargo +ohm build --offline invocation, no strace wall samples; trace separate matching replay or preserve Cargo vendor actual compile/relink logs in a separate audit. Ordinary terminal command and child roster in separate identical replay. Verify products after all 48; never use a traced time as a native speed estimate.",
+  "primary": "No-op median paired (P-C)/P; 12 pairs. Report both median times, individual paired ratios, exact one-sided balanced-assignments randomization on mean(log P/C) with 924 six/six assignments, two-sided distribution-free paired-median interval (3rd/10th). Need lower median bound >0, >=10/12 favorable, p<.05, matching output. Only predefined primary; edits secondary correctness/performance descriptive and unscored unless independently replicated.",
+  "edited_gate": "Record all 12 paired edited commands, show build-level source/terminal state and actual full/relink set P vs C, equality of all three binaries\u2019 observed text vs independently compiled empty-target reference for each direction. A genuine reader must update in first command, the ordinary sibling may relink, and real later caller through warm intermediate must match clean.",
+  "other_gates": [
+    "Record untouched fresh non-observer, unchanged/wrong/missing input and invalid receipt fallback, separate prior-generation producer build, transitive facade, opt-out mtime-only and checksum inputs; stable local Debug and imported source_text-only. Hold PR for any stale result, inconsistent binary witness or main correctness problem.",
+    "Warm controls before score plus fixed driver/Cargo hashes, source aliases, full process/executable/returned-value oracles. Reject and retain a whole pair if driver changes, source state differs, measured process fails, cache eligibility changes, or own CPU lane is consumed by another study. Report all exclusions. No wall outlier exclusions. If promotion/demotion differs due to changing the training flags, do not score before fixing."
+  ]
+}

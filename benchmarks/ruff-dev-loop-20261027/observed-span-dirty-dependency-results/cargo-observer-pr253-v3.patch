@@ -1,0 +1,498 @@
+diff --git a/src/compiler/fingerprint/dep_info.rs b/src/compiler/fingerprint/dep_info.rs
+index 661c6fc1b0..f28392f48f 100644
+--- a/src/compiler/fingerprint/dep_info.rs
++++ b/src/compiler/fingerprint/dep_info.rs
+@@ -35,6 +35,9 @@ pub struct RustcDepInfo {
+     ///
+     /// The optional checksums are parsed from the special `# checksum:...` comments.
+     pub files: HashMap<PathBuf, Option<(u64, Checksum)>>,
++    /// Whether rustc observed foreign spans, and whether it recorded all binary inputs.
++    pub observed_span_inputs: Option<bool>,
++    conflicting_checksums: bool,
+     /// The list of environment variables we found that the rustc compilation
+     /// depends on.
+     ///
+@@ -110,12 +113,16 @@ pub enum DepInfoPathType {
+ /// [`f4ca7390`]: https://github.com/rust-lang/cargo/commit/f4ca739073185ea5e1148ff100bb4a06d3bf721d
+ #[derive(Default, Debug, PartialEq, Eq)]
+ pub struct EncodedDepInfo {
++    /// An optional trailer points at rustc's deliberately missing input. Older Cargo versions
++    /// still see that input and always compile an observer.
++    pub observer: Option<(usize, bool)>,
+     pub files: Vec<(DepInfoPathType, PathBuf, Option<(u64, String)>)>,
+     pub env: Vec<(String, Option<String>)>,
+ }
+ 
+ impl EncodedDepInfo {
+     pub fn parse(mut bytes: &[u8]) -> Option<EncodedDepInfo> {
++        let record = bytes;
+         let bytes = &mut bytes;
+         read_magic_marker(bytes)?;
+         let version = read_u8(bytes)?;
+@@ -157,7 +164,35 @@ impl EncodedDepInfo {
+             };
+             env.push((key, val));
+         }
+-        return Some(EncodedDepInfo { files, env });
++        let observer = if bytes.is_empty() {
++            None
++        } else {
++            let suffix = bytes.strip_prefix(b"OBS1")?;
++            let mut suffix = suffix;
++            let index = read_usize(&mut suffix)?;
++            let complete = match read_u8(&mut suffix)? {
++                0 => false,
++                1 => true,
++                _ => return None,
++            };
++            let (_, marker, checksum) = files.get(index)?;
++            // A changed status byte could otherwise certify a first-run list containing
++            // only the reader's sources, with none of the compiler binaries it observed.
++            let (body, digest) = record.split_last_chunk::<32>()?;
++            if suffix != digest
++                || blake3::hash(body).as_bytes() != digest
++                || checksum.is_some()
++                || marker.file_name()? != "ohm-foreign-span-bytes"
++            {
++                return None;
++            }
++            Some((index, complete))
++        };
++        return Some(EncodedDepInfo {
++            files,
++            env,
++            observer,
++        });
+ 
+         /// See [`EncodedDepInfo`] for why a magic marker exists.
+         fn read_magic_marker(bytes: &mut &[u8]) -> Option<()> {
+@@ -233,6 +268,13 @@ impl EncodedDepInfo {
+                 }
+             }
+         }
++        if let Some((index, complete)) = self.observer {
++            dst.extend_from_slice(b"OBS1");
++            write_usize(dst, index);
++            write_bool(dst, complete);
++            let digest = blake3::hash(dst);
++            dst.extend_from_slice(digest.as_bytes());
++        }
+         return Ok(ret);
+ 
+         /// See [`EncodedDepInfo`] for why a magic marker exists.
+@@ -302,8 +344,24 @@ pub fn translate_dep_info(
+     allow_package: bool,
+     env_config: &Arc<HashMap<String, OsString>>,
+     worktree_seed_namespace: Option<&Path>,
++    captures_observer_inputs: bool,
+ ) -> CargoResult<()> {
+     let depinfo = parse_rustc_dep_info(rustc_dep_info)?;
++    let marker = rustc_dep_info.join("ohm-foreign-span-bytes");
++    let observer = depinfo.files.contains_key(&marker);
++    let complete = observer
++        && !depinfo.conflicting_checksums
++        && captures_observer_inputs
++        && depinfo.files.keys().any(|path| {
++            path.extension()
++                .is_some_and(|ext| ext == "rmeta" || ext == "rlib")
++        })
++        && depinfo
++            .files
++            .iter()
++            .all(|(path, checksum)| path == &marker || checksum.is_some());
++    // Unlike ordinary shared registry freshness, a reader must retain its entire compiler input list.
++    let allow_package = allow_package || observer;
+ 
+     let build_root = crate::util::try_canonicalize(build_root)?;
+     let original_pkg_root = pkg_root;
+@@ -377,6 +435,11 @@ pub fn translate_dep_info(
+     });
+ 
+     let serialize_path = |file: PathBuf| {
++        if observer {
++            // Reopen the names rustc actually used, including symlinks. A different checkout
++            // must capture its own names before it can use this proof.
++            return Some((DepInfoPathType::BuildRootRelative, rustc_cwd.join(file)));
++        }
+         if let Some(cwd_from_package) = &cwd_from_package {
+             // Preserve what rustc actually opened. Canonicalizing loses a
+             // relative symlink's spelling; absolutizing ../ inputs binds a
+@@ -417,6 +480,9 @@ pub fn translate_dep_info(
+     };
+ 
+     for (file, checksum_info) in depinfo.files {
++        if observer && file == marker {
++            on_disk_info.observer = Some((on_disk_info.files.len(), complete));
++        }
+         let Some((path_type, path)) = serialize_path(file) else {
+             continue;
+         };
+@@ -530,7 +596,15 @@ pub fn parse_rustc_dep_info(rustc_dep_info: &Path) -> CargoResult<RustcDepInfo>
+                     lines.next();
+                 }
+             }
+-            ret.files.insert(path.into(), Some((file_len, checksum)));
++            let proof = (file_len, checksum);
++            if ret
++                .files
++                .insert(path.into(), Some(proof))
++                .flatten()
++                .is_some_and(|old| old != proof)
++            {
++                ret.conflicting_checksums = true;
++            }
+         }
+     }
+     return Ok(ret);
+@@ -637,15 +711,25 @@ pub fn parse_dep_info(
+     }
+     let mut ret = RustcDepInfo::default();
+     ret.env = info.env;
+-    ret.files
+-        .extend(info.files.into_iter().map(|(ty, path, checksum_info)| {
+-            (
+-                make_absolute_path(ty, pkg_root, build_root, path),
+-                checksum_info.and_then(|(file_len, checksum)| {
+-                    Checksum::from_str(&checksum).ok().map(|c| (file_len, c))
+-                }),
+-            )
+-        }));
++    ret.observed_span_inputs = info.observer.map(|(_, complete)| complete);
++    // Keep the missing input until the producer has emitted a verified binary dependency list.
++    let complete_marker = info
++        .observer
++        .and_then(|(index, complete)| complete.then_some(index));
++    ret.files.extend(
++        info.files
++            .into_iter()
++            .enumerate()
++            .filter_map(|(index, item)| (Some(index) != complete_marker).then_some(item))
++            .map(|(ty, path, checksum_info)| {
++                (
++                    make_absolute_path(ty, pkg_root, build_root, path),
++                    checksum_info.and_then(|(file_len, checksum)| {
++                        Checksum::from_str(&checksum).ok().map(|c| (file_len, c))
++                    }),
++                )
++            }),
++    );
+     Ok(Some(ret))
+ }
+ 
+@@ -929,6 +1013,7 @@ mod encoded_dep_info {
+                 true,
+                 &env,
+                 seeded.then_some(namespace.as_path()),
++                false,
+             )
+             .unwrap();
+             let info = EncodedDepInfo::parse(&std::fs::read(&cargo_dep_info).unwrap()).unwrap();
+@@ -967,6 +1052,7 @@ mod encoded_dep_info {
+         );
+ 
+         let depinfo = EncodedDepInfo {
++            observer: None,
+             files: vec![lib_rs.clone()],
+             env: Vec::new(),
+         };
+@@ -979,6 +1065,7 @@ mod encoded_dep_info {
+             checksum.clone(),
+         );
+         let depinfo = EncodedDepInfo {
++            observer: None,
+             files: vec![lib_rs.clone(), mod_rs.clone()],
+             env: Vec::new(),
+         };
+@@ -986,6 +1073,7 @@ mod encoded_dep_info {
+         assert_eq!(EncodedDepInfo::parse(&data).unwrap(), depinfo);
+ 
+         let depinfo = EncodedDepInfo {
++            observer: None,
+             files: vec![lib_rs, mod_rs],
+             env: vec![
+                 ("Gimli".into(), Some("Legolas".into())),
+@@ -1001,6 +1089,22 @@ mod encoded_dep_info {
+         gen_test(false);
+     }
+ 
++    #[test]
++    fn incomplete_observer_cannot_be_changed_to_complete() {
++        let mut info = EncodedDepInfo::default();
++        info.files.push((
++            DepInfoPathType::BuildRootRelative,
++            PathBuf::from("reader.d/ohm-foreign-span-bytes"),
++            None,
++        ));
++        info.observer = Some((0, false));
++        let mut bytes = info.serialize().unwrap();
++        assert_eq!(EncodedDepInfo::parse(&bytes).unwrap(), info);
++        let status = bytes.len() - 33;
++        bytes[status] = 1;
++        assert!(EncodedDepInfo::parse(&bytes).is_none());
++    }
++
+     #[test]
+     fn round_trip_with_checksums() {
+         gen_test(true);
+@@ -1023,6 +1127,7 @@ mod encoded_dep_info {
+         assert_eq!(
+             EncodedDepInfo::parse(&data).unwrap(),
+             EncodedDepInfo {
++                observer: None,
+                 files: vec![(DepInfoPathType::PackageRootRelative, "rust".into(), None)],
+                 env: Vec::new(),
+             }
+diff --git a/src/compiler/fingerprint/mod.rs b/src/compiler/fingerprint/mod.rs
+index 4b3f5a322f..b2b6287598 100644
+--- a/src/compiler/fingerprint/mod.rs
++++ b/src/compiler/fingerprint/mod.rs
+@@ -525,7 +525,10 @@ fn unit_consumes_public_api_hash(build_runner: &BuildRunner<'_, '_>, unit: &Unit
+ }
+ 
+ /// Whether no other Cargo invocation can change this unit's metadata while it is prepared.
+-fn unit_has_exclusive_metadata_access(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> bool {
++pub(super) fn unit_has_exclusive_metadata_access(
++    build_runner: &BuildRunner<'_, '_>,
++    unit: &Unit,
++) -> bool {
+     let unstable = build_runner.bcx.gctx.cli_unstable();
+     if !unstable.fine_grain_locking {
+         return true;
+@@ -1419,6 +1422,10 @@ pub struct Fingerprint {
+     /// Used for early cutoff propagation through the dependency graph.
+     #[serde(skip)]
+     build_state: Mutex<BuildState>,
++    /// Prior complete compiler inputs for a procedural macro that read foreign span data.
++    /// An empty map requests one full compile to collect the binary dependency list.
++    #[serde(skip)]
++    observed_span_inputs: Option<HashMap<PathBuf, Option<(u64, Checksum)>>>,
+     /// Whether the unit is dirty only because one of its dependencies changed.
+     #[serde(skip)]
+     early_cutoff_candidate: AtomicBool,
+@@ -1775,6 +1782,7 @@ impl LocalFingerprint {
+         gctx: &GlobalContext,
+         worktree_seed: bool,
+         checksum_parallelism: ChecksumParallelism<'_>,
++        observed_span_inputs: &mut Option<HashMap<PathBuf, Option<(u64, Checksum)>>>,
+     ) -> CargoResult<Option<StaleItem>> {
+         let pkg_root = pkg.root();
+         match self {
+@@ -1789,6 +1797,18 @@ impl LocalFingerprint {
+                 let Some(info) = parse_dep_info(pkg_root, build_root, &dep_info)? else {
+                     return Ok(Some(StaleItem::MissingFile { path: dep_info }));
+                 };
++                if let Some(complete) = info.observed_span_inputs {
++                    *observed_span_inputs = Some(if complete {
++                        info.files.clone()
++                    } else {
++                        HashMap::default()
++                    });
++                    if complete
++                        && let Some(stale) = changed_observed_input(&info.files, checksum_cache)
++                    {
++                        return Ok(Some(stale));
++                    }
++                }
+                 for (key, previous) in info.env.iter() {
+                     let manifest_value = pkg.manifest().metadata().env_var(key);
+                     let current = if let Some(value) = manifest_value.as_deref() {
+@@ -1814,7 +1834,10 @@ impl LocalFingerprint {
+                         current: current.map(|value| value.to_string_lossy().into_owned()),
+                     }));
+                 }
+-                if *checksum {
++                if info.observed_span_inputs == Some(true) {
++                    // The stronger content check above includes every ordinary source input.
++                    Ok(None)
++                } else if *checksum {
+                     Ok(find_stale_file_with_parallelism(
+                         mtime_cache,
+                         checksum_cache,
+@@ -1884,6 +1907,7 @@ impl Fingerprint {
+             index: UnitIndex::default(),
+             fs_status: Mutex::new(FsStatus::Stale),
+             build_state: Mutex::new(BuildState::Pending),
++            observed_span_inputs: None,
+             early_cutoff_candidate: AtomicBool::new(false),
+             previously_changed_metadata_dependency: AtomicBool::new(false),
+             outputs: Vec::new(),
+@@ -1921,6 +1945,18 @@ impl Fingerprint {
+         self.set_build_state(BuildState::SkippedEarlyCutoff);
+     }
+ 
++    /// Request binary dep-info only for consumers which actually read foreign source positions.
++    pub(super) fn observes_span_inputs(&self) -> bool {
++        self.observed_span_inputs.is_some()
++    }
++
++    /// Upstream jobs may have rewritten their metadata since graph preparation.
++    pub(super) fn observed_span_inputs_are_current(&self) -> bool {
++        self.observed_span_inputs.as_ref().is_none_or(|files| {
++            !files.is_empty() && changed_observed_input(files, &mut HashMap::default()).is_none()
++        })
++    }
++
+     /// Returns whether this unit is dirty only because of its dependencies.
+     pub fn is_early_cutoff_candidate(&self) -> bool {
+         self.early_cutoff_candidate.load(Ordering::Acquire)
+@@ -2198,6 +2234,7 @@ impl Fingerprint {
+                 gctx,
+                 worktree_seed,
+                 checksum_parallelism,
++                &mut self.observed_span_inputs,
+             )? {
+                 item.log();
+                 *self.fs_status.get_mut().unwrap() = FsStatus::StaleItem(item);
+@@ -2717,6 +2754,7 @@ fn calculate_normal(
+         config: Hasher::finish(&config),
+         compile_kind,
+         index: build_runner.bcx.unit_to_index[unit],
++        observed_span_inputs: None,
+         rustflags: extra_flags,
+         fs_status: Mutex::new(FsStatus::Stale),
+         build_state: Mutex::new(BuildState::Pending),
+@@ -3347,6 +3385,54 @@ fn checksum_metadata(path: &Path, expected: u64) -> Result<fs::Metadata, StaleIt
+     Ok(metadata)
+ }
+ 
++/// Unlike source freshness, every observed compiler byte is checked, including registry files.
++fn changed_observed_input(
++    files: &HashMap<PathBuf, Option<(u64, Checksum)>>,
++    cache: &mut HashMap<PathBuf, Checksum>,
++) -> Option<StaleItem> {
++    let mut buf = Vec::new();
++    for (path, proof) in files {
++        let Some((size, expected)) = *proof else {
++            return Some(StaleItem::MissingChecksum { path: path.clone() });
++        };
++        let Ok(stat) = std::fs::metadata(path) else {
++            return Some(StaleItem::MissingFile { path: path.clone() });
++        };
++        if !stat.is_file() {
++            return Some(StaleItem::UnableToReadFile { path: path.clone() });
++        }
++        if stat.len() != size {
++            return Some(StaleItem::FileSizeChanged {
++                path: path.clone(),
++                old_size: size,
++                new_size: stat.len(),
++            });
++        }
++        let actual = if let Some(cached) = cache.get(path).filter(|c| c.algo() == expected.algo()) {
++            *cached
++        } else {
++            let Ok(file) = File::open(path) else {
++                return Some(StaleItem::UnableToReadFile { path: path.clone() });
++            };
++            match read_checksum(path, expected, file, &mut buf) {
++                Ok(sum) => {
++                    cache.insert(path.clone(), sum);
++                    sum
++                }
++                Err(stale) => return Some(stale),
++            }
++        };
++        if expected != actual {
++            return Some(StaleItem::ChangedChecksum {
++                source: path.clone(),
++                stored_checksum: expected,
++                new_checksum: actual,
++            });
++        }
++    }
++    None
++}
++
+ /// Reads through EOF with a buffer reused by this serial consumer or worker.
+ fn read_checksum(
+     path: &Path,
+diff --git a/src/compiler/mod.rs b/src/compiler/mod.rs
+index ea9aed5fb8..957aa08d01 100644
+--- a/src/compiler/mod.rs
++++ b/src/compiler/mod.rs
+@@ -1354,6 +1354,21 @@ fn rustc(
+     let env_config = Arc::clone(build_runner.bcx.gctx.env_config()?);
+ 
+     let fingerprint = build_runner.fingerprints.get(unit).cloned();
++    let captures_observer_inputs = fingerprint
++        .as_ref()
++        .is_some_and(|fp| fp.observes_span_inputs())
++        && build_runner.bcx.gctx.cli_unstable().ohm_defaults()
++        && build_runner.bcx.rustc().wrapper.is_none()
++        && (build_runner.bcx.rustc().workspace_wrapper.is_none()
++            || !build_runner.bcx.ws.is_member(&unit.pkg))
++        && build_runner.bcx.extra_args_for(unit).is_none()
++        && fingerprint::unit_has_exclusive_metadata_access(build_runner, unit);
++    if captures_observer_inputs {
++        rustc.arg("-Zbinary-dep-depinfo");
++        if !unit_uses_checksum_freshness(build_runner, unit) {
++            rustc.arg("-Zchecksum-hash-algorithm=blake3");
++        }
++    }
+     let unit_name = format!("{} v{}", unit.pkg.name(), unit.pkg.version());
+     let can_skip_compilation = fingerprint::unit_can_use_early_cutoff(build_runner, unit)
+         && fingerprint
+@@ -1443,7 +1458,12 @@ fn rustc(
+             });
+         }
+ 
+-        if let Some(ref fp) = fingerprint {
++        let observed_inputs_current = fingerprint
++            .as_ref()
++            .is_none_or(|fp| fp.observed_span_inputs_are_current());
++        if let Some(ref fp) = fingerprint
++            && observed_inputs_current
++        {
+             tracing::info!(
+                 "early cutoff check for {}: fs_status={:?}, outputs={:?}",
+                 unit_name,
+@@ -1536,6 +1556,7 @@ fn rustc(
+         let use_cached_relink = early_test.is_none()
+             && deferred_dev_names.is_empty()
+             && can_relink_dependencies
++            && observed_inputs_current
+             && relink_cache
+                 .as_ref()
+                 .is_some_and(RelinkCachePaths::is_valid);
+@@ -1609,6 +1630,7 @@ fn rustc(
+             (fingerprint.as_ref(), worktree_seed_namespace.as_deref())
+             && early_test.is_none()
+             && deferred_dev_names.is_empty()
++            && observed_inputs_current
+             && fingerprint::can_reuse_after_scripts(
+                 fingerprint,
+                 &pkg_root,
+@@ -1974,6 +1996,7 @@ fn rustc(
+                 is_local,
+                 &env_config,
+                 worktree_seed_namespace.as_deref(),
++                captures_observer_inputs,
+             )
+             .with_context(|| {
+                 internal(format!(
+@@ -2782,6 +2805,7 @@ fn rustdoc(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResult<W
+                 is_local,
+                 &env_config,
+                 worktree_seed_namespace.as_deref(),
++                false,
+             )
+             .with_context(|| {
+                 internal(format_args!(
+diff --git a/src/ops/cargo_worktree/mod.rs b/src/ops/cargo_worktree/mod.rs
+index 69ed3dac3d..c5bd8e2333 100644
+--- a/src/ops/cargo_worktree/mod.rs
++++ b/src/ops/cargo_worktree/mod.rs
+@@ -501,7 +501,13 @@ fn relocate_dep_info(path: &Path, old_prefix: &Path, new_prefix: &Path) -> Cargo
+         fs::remove_file(path)?;
+         return Ok(false);
+     };
++    // Observer receipts name the compiler inputs actually opened in the donor.
++    // Keep the missing input in the recipient until its own compiler records them.
+     let mut changed = false;
++    if let Some((_, complete)) = &mut info.observer {
++        *complete = false;
++        changed = true;
++    }
+     for (kind, path, _) in &mut info.files {
+         if *kind == DepInfoPathType::BuildRootRelative
+             && let Ok(relative) = path.strip_prefix(old_prefix)

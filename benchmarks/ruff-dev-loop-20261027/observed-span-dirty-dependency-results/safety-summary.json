@@ -1,0 +1,364 @@
+{
+  "pending_bit_flip_matches_empty": true,
+  "full_control_phase_count": 50,
+  "simultaneous": {
+    "identical_metadata_on_mtime_refire": "d8e4526ac223a811abfb8a382e5e0899466224e3b539b5d5d6906b986f0081f9",
+    "independent": "19=#6 bytes(374093..374115)",
+    "retargeted_output": {
+      "output": "19=#6 bytes(374093..374115)",
+      "sha256": "b48f90681c486cde97b17041d244c7f14a5b309636400e7eeb2b6d5933264e3f"
+    },
+    "simultaneous_type_error": "E0308",
+    "subjects": {
+      "C": "98bcf7ae65f677af0e6af1f31cc725741525112ea51a2245c8b0aa7d3d426115",
+      "P": "fd9bfe1178f30d12d412f4736eea9e0a7d68e8f687ab2653681d0181049f3025",
+      "driver": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+      "rustc": "4fa9a18b77430bcc416e88561b6fe5797d98b996a7698b9f3bd11d4e7817a19f"
+    }
+  },
+  "standalone": {
+    "same": {
+      "cases": 6,
+      "after": {
+        "plain_app": "7",
+        "direct_app": "7 \"#10 bytes(273420..273434)\"",
+        "via_app": "7 \"#8 bytes(273433..273447)\""
+      },
+      "edited_repeat": [
+        [
+          "bridge",
+          "full"
+        ],
+        [
+          "direct_app",
+          "full"
+        ],
+        [
+          "via_app",
+          "relink"
+        ]
+      ],
+      "real_edit": [
+        [
+          "bridge",
+          "full"
+        ],
+        [
+          "direct_app",
+          "full"
+        ],
+        [
+          "leaf",
+          "full"
+        ],
+        [
+          "plain_app",
+          "relink"
+        ],
+        [
+          "via_app",
+          "full"
+        ]
+      ]
+    },
+    "earlier-facade": {
+      "cases": 7,
+      "after": {
+        "plain_app": "7",
+        "direct_app": "7 \"#10 bytes(273364..273378)\"",
+        "via_app": "7 \"#8 bytes(273377..273391)\""
+      },
+      "edited_repeat": [
+        [
+          "bridge",
+          "full"
+        ],
+        [
+          "direct_app",
+          "full"
+        ],
+        [
+          "via_app",
+          "relink"
+        ]
+      ],
+      "real_edit": [
+        [
+          "bridge",
+          "full"
+        ],
+        [
+          "direct_app",
+          "full"
+        ],
+        [
+          "plain_app",
+          "full"
+        ],
+        [
+          "via_app",
+          "full"
+        ]
+      ]
+    },
+    "mtime": {
+      "cases": 6,
+      "after": {
+        "plain_app": "7",
+        "direct_app": "7 \"#10 bytes(273420..273434)\"",
+        "via_app": "7 \"#8 bytes(273433..273447)\""
+      },
+      "edited_repeat": [
+        [
+          "bridge",
+          "full"
+        ],
+        [
+          "direct_app",
+          "full"
+        ],
+        [
+          "via_app",
+          "relink"
+        ]
+      ],
+      "real_edit": [
+        [
+          "bridge",
+          "full"
+        ],
+        [
+          "direct_app",
+          "full"
+        ],
+        [
+          "leaf",
+          "full"
+        ],
+        [
+          "plain_app",
+          "relink"
+        ],
+        [
+          "via_app",
+          "full"
+        ]
+      ]
+    },
+    "ordinary-local-debug": {
+      "cases": 6,
+      "after": {
+        "direct_app": "7 \"#0 bytes(81..85)\"",
+        "plain_app": "7",
+        "via_app": "7 \"#0 bytes(60..64)\""
+      },
+      "edited_repeat": [],
+      "real_edit": [
+        [
+          "bridge",
+          "full"
+        ],
+        [
+          "direct_app",
+          "full"
+        ],
+        [
+          "leaf",
+          "full"
+        ],
+        [
+          "plain_app",
+          "full"
+        ],
+        [
+          "via_app",
+          "full"
+        ]
+      ]
+    },
+    "two-crate": {
+      "cases": 6,
+      "after": {
+        "plain_app": "7",
+        "direct_app": "7 \"#6 bytes(374239..374253)\"",
+        "via_app": "7 \"#4 bytes(273332..273346)\""
+      },
+      "edited_repeat": [
+        [
+          "bridge",
+          "full"
+        ],
+        [
+          "direct_app",
+          "full"
+        ],
+        [
+          "via_app",
+          "relink"
+        ]
+      ],
+      "real_edit": [
+        [
+          "bridge",
+          "full"
+        ],
+        [
+          "direct_app",
+          "full"
+        ],
+        [
+          "leaf",
+          "full"
+        ],
+        [
+          "plain_app",
+          "relink"
+        ],
+        [
+          "via_app",
+          "full"
+        ]
+      ]
+    },
+    "source-text": {
+      "cases": 6,
+      "after": {
+        "plain_app": "7",
+        "via_app": "7 Some(\"foreign_marker\")",
+        "direct_app": "7 Some(\"foreign_marker\")"
+      },
+      "edited_repeat": [
+        [
+          "bridge",
+          "full"
+        ],
+        [
+          "direct_app",
+          "full"
+        ],
+        [
+          "via_app",
+          "relink"
+        ]
+      ],
+      "real_edit": [
+        [
+          "bridge",
+          "full"
+        ],
+        [
+          "direct_app",
+          "full"
+        ],
+        [
+          "leaf",
+          "full"
+        ],
+        [
+          "plain_app",
+          "relink"
+        ],
+        [
+          "via_app",
+          "relink"
+        ]
+      ]
+    },
+    "upgrade-233": {
+      "cases": 6,
+      "after": {
+        "plain_app": "7",
+        "direct_app": "7 \"#10 bytes(273420..273434)\"",
+        "via_app": "7 \"#8 bytes(273433..273447)\""
+      },
+      "edited_repeat": [
+        [
+          "bridge",
+          "full"
+        ],
+        [
+          "direct_app",
+          "full"
+        ],
+        [
+          "via_app",
+          "relink"
+        ]
+      ],
+      "real_edit": [
+        [
+          "bridge",
+          "full"
+        ],
+        [
+          "direct_app",
+          "full"
+        ],
+        [
+          "leaf",
+          "full"
+        ],
+        [
+          "offset_probe",
+          "full"
+        ],
+        [
+          "plain_app",
+          "full"
+        ],
+        [
+          "via_app",
+          "full"
+        ]
+      ]
+    },
+    "upgrade-232": {
+      "cases": 6,
+      "after": {
+        "plain_app": "7",
+        "direct_app": "7 \"#10 bytes(273420..273434)\"",
+        "via_app": "7 \"#8 bytes(273433..273447)\""
+      },
+      "edited_repeat": [
+        [
+          "bridge",
+          "full"
+        ],
+        [
+          "direct_app",
+          "full"
+        ],
+        [
+          "via_app",
+          "relink"
+        ]
+      ],
+      "real_edit": [
+        [
+          "bridge",
+          "full"
+        ],
+        [
+          "direct_app",
+          "full"
+        ],
+        [
+          "leaf",
+          "full"
+        ],
+        [
+          "offset_probe",
+          "full"
+        ],
+        [
+          "plain_app",
+          "full"
+        ],
+        [
+          "via_app",
+          "full"
+        ]
+      ]
+    }
+  }
+}

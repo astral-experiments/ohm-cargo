@@ -1,0 +1,2417 @@
+[
+  {
+    "case": "facade",
+    "rows": [
+      {
+        "artifacts": {
+          "bridge": false,
+          "direct_app": false,
+          "facade": false,
+          "leaf": false,
+          "offset_probe": false,
+          "plain_app": false,
+          "via_app": false
+        },
+        "compiler_calls": [
+          [
+            "bridge",
+            "full"
+          ],
+          [
+            "direct_app",
+            "full"
+          ],
+          [
+            "facade",
+            "full"
+          ],
+          [
+            "leaf",
+            "full"
+          ],
+          [
+            "offset_probe",
+            "full"
+          ],
+          [
+            "plain_app",
+            "full"
+          ],
+          [
+            "via_app",
+            "full"
+          ]
+        ],
+        "elf": {
+          "direct_app": "7d31ade6784fd44dda90e2f68c8a83c41324ab2ab37d4be61ea76c19f9568309",
+          "plain_app": "ab6d1508692e91964a73eb322ae8641cc69e7719e18b764dc56f19cec32c8db1",
+          "via_app": "66763f3cfddd5bdc51ac832409c6dd37bee94455e4645d880c2e3041ba9bd2ee"
+        },
+        "observations": {
+          "direct_app": "7 \"#10 bytes(273363..273377)\"",
+          "plain_app": "7",
+          "via_app": "7 \"#8 bytes(273376..273390)\""
+        },
+        "phase": "prime"
+      },
+      {
+        "artifacts": {
+          "leaf": false
+        },
+        "compiler_calls": [
+          [
+            "leaf",
+            "full"
+          ]
+        ],
+        "elf": {},
+        "observations": {},
+        "phase": "earlier-producer"
+      },
+      {
+        "artifacts": {
+          "bridge": false,
+          "direct_app": false,
+          "facade": true,
+          "leaf": true,
+          "offset_probe": true,
+          "plain_app": false,
+          "via_app": false
+        },
+        "compiler_calls": [
+          [
+            "bridge",
+            "full"
+          ],
+          [
+            "direct_app",
+            "full"
+          ],
+          [
+            "plain_app",
+            "full"
+          ],
+          [
+            "via_app",
+            "full"
+          ]
+        ],
+        "elf": {
+          "direct_app": "d701561c837316e8afc2bfb4105013af3b431f7b7117f09efe975f1d1f512b8e",
+          "plain_app": "ab6d1508692e91964a73eb322ae8641cc69e7719e18b764dc56f19cec32c8db1",
+          "via_app": "898071354909245ec92c959318b39881b7370b0022837d35043b77e8826cdc1a"
+        },
+        "observations": {
+          "direct_app": "7 \"#10 bytes(273364..273378)\"",
+          "plain_app": "7",
+          "via_app": "7 \"#8 bytes(273377..273391)\""
+        },
+        "phase": "edit"
+      },
+      {
+        "artifacts": {
+          "bridge": false,
+          "direct_app": false,
+          "facade": false,
+          "leaf": false,
+          "offset_probe": false,
+          "plain_app": false,
+          "via_app": false
+        },
+        "compiler_calls": [
+          [
+            "bridge",
+            "full"
+          ],
+          [
+            "direct_app",
+            "full"
+          ],
+          [
+            "facade",
+            "full"
+          ],
+          [
+            "leaf",
+            "full"
+          ],
+          [
+            "offset_probe",
+            "full"
+          ],
+          [
+            "plain_app",
+            "full"
+          ],
+          [
+            "via_app",
+            "full"
+          ]
+        ],
+        "elf": {
+          "direct_app": "d701561c837316e8afc2bfb4105013af3b431f7b7117f09efe975f1d1f512b8e",
+          "plain_app": "ab6d1508692e91964a73eb322ae8641cc69e7719e18b764dc56f19cec32c8db1",
+          "via_app": "898071354909245ec92c959318b39881b7370b0022837d35043b77e8826cdc1a"
+        },
+        "observations": {
+          "direct_app": "7 \"#10 bytes(273364..273378)\"",
+          "plain_app": "7",
+          "via_app": "7 \"#8 bytes(273377..273391)\""
+        },
+        "phase": "edited-independent"
+      },
+      {
+        "artifacts": {
+          "bridge": true,
+          "direct_app": true,
+          "facade": true,
+          "leaf": true,
+          "offset_probe": true,
+          "plain_app": true,
+          "via_app": true
+        },
+        "compiler_calls": [],
+        "elf": {
+          "direct_app": "d701561c837316e8afc2bfb4105013af3b431f7b7117f09efe975f1d1f512b8e",
+          "plain_app": "ab6d1508692e91964a73eb322ae8641cc69e7719e18b764dc56f19cec32c8db1",
+          "via_app": "898071354909245ec92c959318b39881b7370b0022837d35043b77e8826cdc1a"
+        },
+        "observations": {
+          "direct_app": "7 \"#10 bytes(273364..273378)\"",
+          "plain_app": "7",
+          "via_app": "7 \"#8 bytes(273377..273391)\""
+        },
+        "phase": "edited-repeat"
+      },
+      {
+        "artifacts": {
+          "bridge": true,
+          "direct_app": false,
+          "facade": true,
+          "leaf": true,
+          "offset_probe": true,
+          "plain_app": false,
+          "via_app": false
+        },
+        "compiler_calls": [
+          [
+            "direct_app",
+            "full"
+          ],
+          [
+            "plain_app",
+            "full"
+          ],
+          [
+            "via_app",
+            "full"
+          ]
+        ],
+        "elf": {
+          "direct_app": "bfd22de602315f114bdcc6ee4083bd4702c60d4de51f05721c8037b6a4b08ba6",
+          "plain_app": "e0bac00bc7404091825438f93e1129b553b6129c1e84af7dadb24379f3d9dc94",
+          "via_app": "1baa75f75c491c0dcba05102a42f2b9716056eff2ea3dbe369391334ea0f2015"
+        },
+        "observations": {
+          "direct_app": "7 \"#10 bytes(273380..273394)\"",
+          "plain_app": "7",
+          "via_app": "7 \"#8 bytes(273377..273391)\""
+        },
+        "phase": "real-caller-edit"
+      },
+      {
+        "artifacts": {
+          "bridge": false,
+          "direct_app": false,
+          "facade": false,
+          "leaf": false,
+          "offset_probe": false,
+          "plain_app": false,
+          "via_app": false
+        },
+        "compiler_calls": [
+          [
+            "bridge",
+            "full"
+          ],
+          [
+            "direct_app",
+            "full"
+          ],
+          [
+            "facade",
+            "full"
+          ],
+          [
+            "leaf",
+            "full"
+          ],
+          [
+            "offset_probe",
+            "full"
+          ],
+          [
+            "plain_app",
+            "full"
+          ],
+          [
+            "via_app",
+            "full"
+          ]
+        ],
+        "elf": {
+          "direct_app": "bfd22de602315f114bdcc6ee4083bd4702c60d4de51f05721c8037b6a4b08ba6",
+          "plain_app": "e0bac00bc7404091825438f93e1129b553b6129c1e84af7dadb24379f3d9dc94",
+          "via_app": "1baa75f75c491c0dcba05102a42f2b9716056eff2ea3dbe369391334ea0f2015"
+        },
+        "observations": {
+          "direct_app": "7 \"#10 bytes(273380..273394)\"",
+          "plain_app": "7",
+          "via_app": "7 \"#8 bytes(273377..273391)\""
+        },
+        "phase": "caller-independent"
+      }
+    ]
+  },
+  {
+    "case": "standalone-exact/earlier-facade",
+    "rows": [
+      {
+        "artifacts": {
+          "bridge": false,
+          "direct_app": false,
+          "facade": false,
+          "leaf": false,
+          "offset_probe": false,
+          "plain_app": false,
+          "via_app": false
+        },
+        "compiler_calls": [
+          [
+            "bridge",
+            "full"
+          ],
+          [
+            "direct_app",
+            "full"
+          ],
+          [
+            "facade",
+            "full"
+          ],
+          [
+            "leaf",
+            "full"
+          ],
+          [
+            "offset_probe",
+            "full"
+          ],
+          [
+            "plain_app",
+            "full"
+          ],
+          [
+            "via_app",
+            "full"
+          ]
+        ],
+        "elf": {
+          "direct_app": "7d31ade6784fd44dda90e2f68c8a83c41324ab2ab37d4be61ea76c19f9568309",
+          "plain_app": "ab6d1508692e91964a73eb322ae8641cc69e7719e18b764dc56f19cec32c8db1",
+          "via_app": "66763f3cfddd5bdc51ac832409c6dd37bee94455e4645d880c2e3041ba9bd2ee"
+        },
+        "observations": {
+          "direct_app": "7 \"#10 bytes(273363..273377)\"",
+          "plain_app": "7",
+          "via_app": "7 \"#8 bytes(273376..273390)\""
+        },
+        "phase": "prime"
+      },
+      {
+        "artifacts": {
+          "leaf": false
+        },
+        "compiler_calls": [
+          [
+            "leaf",
+            "full"
+          ]
+        ],
+        "elf": {},
+        "observations": {},
+        "phase": "earlier-producer"
+      },
+      {
+        "artifacts": {
+          "bridge": false,
+          "direct_app": false,
+          "facade": true,
+          "leaf": true,
+          "offset_probe": true,
+          "plain_app": false,
+          "via_app": false
+        },
+        "compiler_calls": [
+          [
+            "bridge",
+            "full"
+          ],
+          [
+            "direct_app",
+            "full"
+          ],
+          [
+            "plain_app",
+            "full"
+          ],
+          [
+            "via_app",
+            "full"
+          ]
+        ],
+        "elf": {
+          "direct_app": "d701561c837316e8afc2bfb4105013af3b431f7b7117f09efe975f1d1f512b8e",
+          "plain_app": "ab6d1508692e91964a73eb322ae8641cc69e7719e18b764dc56f19cec32c8db1",
+          "via_app": "898071354909245ec92c959318b39881b7370b0022837d35043b77e8826cdc1a"
+        },
+        "observations": {
+          "direct_app": "7 \"#10 bytes(273364..273378)\"",
+          "plain_app": "7",
+          "via_app": "7 \"#8 bytes(273377..273391)\""
+        },
+        "phase": "edit"
+      },
+      {
+        "artifacts": {
+          "bridge": false,
+          "direct_app": false,
+          "facade": false,
+          "leaf": false,
+          "offset_probe": false,
+          "plain_app": false,
+          "via_app": false
+        },
+        "compiler_calls": [
+          [
+            "bridge",
+            "full"
+          ],
+          [
+            "direct_app",
+            "full"
+          ],
+          [
+            "facade",
+            "full"
+          ],
+          [
+            "leaf",
+            "full"
+          ],
+          [
+            "offset_probe",
+            "full"
+          ],
+          [
+            "plain_app",
+            "full"
+          ],
+          [
+            "via_app",
+            "full"
+          ]
+        ],
+        "elf": {
+          "direct_app": "d701561c837316e8afc2bfb4105013af3b431f7b7117f09efe975f1d1f512b8e",
+          "plain_app": "ab6d1508692e91964a73eb322ae8641cc69e7719e18b764dc56f19cec32c8db1",
+          "via_app": "898071354909245ec92c959318b39881b7370b0022837d35043b77e8826cdc1a"
+        },
+        "observations": {
+          "direct_app": "7 \"#10 bytes(273364..273378)\"",
+          "plain_app": "7",
+          "via_app": "7 \"#8 bytes(273377..273391)\""
+        },
+        "phase": "edited-independent"
+      },
+      {
+        "artifacts": {
+          "bridge": false,
+          "direct_app": false,
+          "facade": true,
+          "leaf": true,
+          "offset_probe": true,
+          "plain_app": true,
+          "via_app": false
+        },
+        "compiler_calls": [
+          [
+            "bridge",
+            "full"
+          ],
+          [
+            "direct_app",
+            "full"
+          ],
+          [
+            "via_app",
+            "relink"
+          ]
+        ],
+        "elf": {
+          "direct_app": "d701561c837316e8afc2bfb4105013af3b431f7b7117f09efe975f1d1f512b8e",
+          "plain_app": "ab6d1508692e91964a73eb322ae8641cc69e7719e18b764dc56f19cec32c8db1",
+          "via_app": "898071354909245ec92c959318b39881b7370b0022837d35043b77e8826cdc1a"
+        },
+        "observations": {
+          "direct_app": "7 \"#10 bytes(273364..273378)\"",
+          "plain_app": "7",
+          "via_app": "7 \"#8 bytes(273377..273391)\""
+        },
+        "phase": "edited-repeat"
+      },
+      {
+        "artifacts": {
+          "bridge": false,
+          "direct_app": false,
+          "facade": true,
+          "leaf": true,
+          "offset_probe": true,
+          "plain_app": false,
+          "via_app": false
+        },
+        "compiler_calls": [
+          [
+            "bridge",
+            "full"
+          ],
+          [
+            "direct_app",
+            "full"
+          ],
+          [
+            "plain_app",
+            "full"
+          ],
+          [
+            "via_app",
+            "full"
+          ]
+        ],
+        "elf": {
+          "direct_app": "bfd22de602315f114bdcc6ee4083bd4702c60d4de51f05721c8037b6a4b08ba6",
+          "plain_app": "e0bac00bc7404091825438f93e1129b553b6129c1e84af7dadb24379f3d9dc94",
+          "via_app": "1baa75f75c491c0dcba05102a42f2b9716056eff2ea3dbe369391334ea0f2015"
+        },
+        "observations": {
+          "direct_app": "7 \"#10 bytes(273380..273394)\"",
+          "plain_app": "7",
+          "via_app": "7 \"#8 bytes(273377..273391)\""
+        },
+        "phase": "real-caller-edit"
+      },
+      {
+        "artifacts": {
+          "bridge": false,
+          "direct_app": false,
+          "facade": false,
+          "leaf": false,
+          "offset_probe": false,
+          "plain_app": false,
+          "via_app": false
+        },
+        "compiler_calls": [
+          [
+            "bridge",
+            "full"
+          ],
+          [
+            "direct_app",
+            "full"
+          ],
+          [
+            "facade",
+            "full"
+          ],
+          [
+            "leaf",
+            "full"
+          ],
+          [
+            "offset_probe",
+            "full"
+          ],
+          [
+            "plain_app",
+            "full"
+          ],
+          [
+            "via_app",
+            "full"
+          ]
+        ],
+        "elf": {
+          "direct_app": "bfd22de602315f114bdcc6ee4083bd4702c60d4de51f05721c8037b6a4b08ba6",
+          "plain_app": "e0bac00bc7404091825438f93e1129b553b6129c1e84af7dadb24379f3d9dc94",
+          "via_app": "1baa75f75c491c0dcba05102a42f2b9716056eff2ea3dbe369391334ea0f2015"
+        },
+        "observations": {
+          "direct_app": "7 \"#10 bytes(273380..273394)\"",
+          "plain_app": "7",
+          "via_app": "7 \"#8 bytes(273377..273391)\""
+        },
+        "phase": "caller-independent"
+      }
+    ]
+  },
+  {
+    "case": "standalone-exact/mtime",
+    "rows": [
+      {
+        "artifacts": {
+          "bridge": false,
+          "direct_app": false,
+          "leaf": false,
+          "offset_probe": false,
+          "plain_app": false,
+          "via_app": false
+        },
+        "compiler_calls": [
+          [
+            "bridge",
+            "full"
+          ],
+          [
+            "direct_app",
+            "full"
+          ],
+          [
+            "leaf",
+            "full"
+          ],
+          [
+            "offset_probe",
+            "full"
+          ],
+          [
+            "plain_app",
+            "full"
+          ],
+          [
+            "via_app",
+            "full"
+          ]
+        ],
+        "elf": {
+          "direct_app": "b372e46b61b194288586e93fcd562f5d07469b783c8f25bad85528331bf73b6a",
+          "plain_app": "e09264f4a1a1aa670c3bf799f125f503eddf05f0791684ccac0fdb3593334bb0",
+          "via_app": "894d65a1be5120f408640647633f8743f612190e8b9da3c3f658a5c2ebfbbde7"
+        },
+        "observations": {
+          "direct_app": "7 \"#10 bytes(273419..273433)\"",
+          "plain_app": "7",
+          "via_app": "7 \"#8 bytes(273432..273446)\""
+        },
+        "phase": "prime"
+      },
+      {
+        "artifacts": {
+          "bridge": false,
+          "direct_app": false,
+          "leaf": false,
+          "offset_probe": true,
+          "plain_app": false,
+          "via_app": false
+        },
+        "compiler_calls": [
+          [
+            "bridge",
+            "full"
+          ],
+          [
+            "direct_app",
+            "full"
+          ],
+          [
+            "leaf",
+            "full"
+          ],
+          [
+            "plain_app",
+            "relink"
+          ],
+          [
+            "via_app",
+            "full"
+          ]
+        ],
+        "elf": {
+          "direct_app": "248bf8837f62b1a3cab915dcae3e86cb1f272c6d1eb3f248aec67e736b78b563",
+          "plain_app": "e09264f4a1a1aa670c3bf799f125f503eddf05f0791684ccac0fdb3593334bb0",
+          "via_app": "db456114227a38c4d41e8c1a89b6a7dd181b5a7b36448cd079271eff12b4a434"
+        },
+        "observations": {
+          "direct_app": "7 \"#10 bytes(273420..273434)\"",
+          "plain_app": "7",
+          "via_app": "7 \"#8 bytes(273433..273447)\""
+        },
+        "phase": "edit"
+      },
+      {
+        "artifacts": {
+          "bridge": false,
+          "direct_app": false,
+          "leaf": false,
+          "offset_probe": false,
+          "plain_app": false,
+          "via_app": false
+        },
+        "compiler_calls": [
+          [
+            "bridge",
+            "full"
+          ],
+          [
+            "direct_app",
+            "full"
+          ],
+          [
+            "leaf",
+            "full"
+          ],
+          [
+            "offset_probe",
+            "full"
+          ],
+          [
+            "plain_app",
+            "full"
+          ],
+          [
+            "via_app",
+            "full"
+          ]
+        ],
+        "elf": {
+          "direct_app": "248bf8837f62b1a3cab915dcae3e86cb1f272c6d1eb3f248aec67e736b78b563",
+          "plain_app": "e09264f4a1a1aa670c3bf799f125f503eddf05f0791684ccac0fdb3593334bb0",
+          "via_app": "db456114227a38c4d41e8c1a89b6a7dd181b5a7b36448cd079271eff12b4a434"
+        },
+        "observations": {
+          "direct_app": "7 \"#10 bytes(273420..273434)\"",
+          "plain_app": "7",
+          "via_app": "7 \"#8 bytes(273433..273447)\""
+        },
+        "phase": "edited-independent"
+      },
+      {
+        "artifacts": {
+          "bridge": false,
+          "direct_app": false,
+          "leaf": true,
+          "offset_probe": true,
+          "plain_app": true,
+          "via_app": false
+        },
+        "compiler_calls": [
+          [
+            "bridge",
+            "full"
+          ],
+          [
+            "direct_app",
+            "full"
+          ],
+          [
+            "via_app",
+            "relink"
+          ]
+        ],
+        "elf": {
+          "direct_app": "248bf8837f62b1a3cab915dcae3e86cb1f272c6d1eb3f248aec67e736b78b563",
+          "plain_app": "e09264f4a1a1aa670c3bf799f125f503eddf05f0791684ccac0fdb3593334bb0",
+          "via_app": "db456114227a38c4d41e8c1a89b6a7dd181b5a7b36448cd079271eff12b4a434"
+        },
+        "observations": {
+          "direct_app": "7 \"#10 bytes(273420..273434)\"",
+          "plain_app": "7",
+          "via_app": "7 \"#8 bytes(273433..273447)\""
+        },
+        "phase": "edited-repeat"
+      },
+      {
+        "artifacts": {
+          "bridge": false,
+          "direct_app": false,
+          "leaf": true,
+          "offset_probe": true,
+          "plain_app": false,
+          "via_app": false
+        },
+        "compiler_calls": [
+          [
+            "bridge",
+            "full"
+          ],
+          [
+            "direct_app",
+            "full"
+          ],
+          [
+            "plain_app",
+            "full"
+          ],
+          [
+            "via_app",
+            "full"
+          ]
+        ],
+        "elf": {
+          "direct_app": "0d4ed4ed3e79ab517f1f285bc47c8720e6058e875e38693746095829c3cf5110",
+          "plain_app": "4fc526930bce719f25cc1c8102c9c05d42eb99ce6f44ccd74008834f7d654271",
+          "via_app": "52fe52f8d9ead2a85af4fef1e6576fd45d12b41b7069453c45ab2c59b9e50248"
+        },
+        "observations": {
+          "direct_app": "7 \"#10 bytes(273436..273450)\"",
+          "plain_app": "7",
+          "via_app": "7 \"#8 bytes(273433..273447)\""
+        },
+        "phase": "real-caller-edit"
+      },
+      {
+        "artifacts": {
+          "bridge": false,
+          "direct_app": false,
+          "leaf": false,
+          "offset_probe": false,
+          "plain_app": false,
+          "via_app": false
+        },
+        "compiler_calls": [
+          [
+            "bridge",
+            "full"
+          ],
+          [
+            "direct_app",
+            "full"
+          ],
+          [
+            "leaf",
+            "full"
+          ],
+          [
+            "offset_probe",
+            "full"
+          ],
+          [
+            "plain_app",
+            "full"
+          ],
+          [
+            "via_app",
+            "full"
+          ]
+        ],
+        "elf": {
+          "direct_app": "0d4ed4ed3e79ab517f1f285bc47c8720e6058e875e38693746095829c3cf5110",
+          "plain_app": "4fc526930bce719f25cc1c8102c9c05d42eb99ce6f44ccd74008834f7d654271",
+          "via_app": "52fe52f8d9ead2a85af4fef1e6576fd45d12b41b7069453c45ab2c59b9e50248"
+        },
+        "observations": {
+          "direct_app": "7 \"#10 bytes(273436..273450)\"",
+          "plain_app": "7",
+          "via_app": "7 \"#8 bytes(273433..273447)\""
+        },
+        "phase": "caller-independent"
+      }
+    ]
+  },
+  {
+    "case": "standalone-exact/ordinary-local-debug",
+    "rows": [
+      {
+        "artifacts": {
+          "bridge": false,
+          "direct_app": false,
+          "leaf": false,
+          "offset_probe": false,
+          "plain_app": false,
+          "via_app": false
+        },
+        "compiler_calls": [
+          [
+            "bridge",
+            "full"
+          ],
+          [
+            "direct_app",
+            "full"
+          ],
+          [
+            "leaf",
+            "full"
+          ],
+          [
+            "offset_probe",
+            "full"
+          ],
+          [
+            "plain_app",
+            "full"
+          ],
+          [
+            "via_app",
+            "full"
+          ]
+        ],
+        "elf": {
+          "direct_app": "f36a0c42e4fe37ffdd2ca7eb484a3aa3a6cdc9fc8984bbc06fa7dc0a6761cef6",
+          "plain_app": "0724c9b801d0e9a648eb3c5169eed2d4bf7e2a4763e78482e66c56fdce82f275",
+          "via_app": "389fda6f5d3f0b68a7a6e9d4b46708de1ea99c2cf72b2eaa4adb3c0bd3cc6d76"
+        },
+        "observations": {
+          "direct_app": "7 \"#0 bytes(81..85)\"",
+          "plain_app": "7",
+          "via_app": "7 \"#0 bytes(60..64)\""
+        },
+        "phase": "prime"
+      },
+      {
+        "artifacts": {
+          "bridge": false,
+          "direct_app": false,
+          "leaf": false,
+          "offset_probe": true,
+          "plain_app": false,
+          "via_app": false
+        },
+        "compiler_calls": [
+          [
+            "bridge",
+            "full"
+          ],
+          [
+            "direct_app",
+            "full"
+          ],
+          [
+            "leaf",
+            "full"
+          ],
+          [
+            "plain_app",
+            "full"
+          ],
+          [
+            "via_app",
+            "full"
+          ]
+        ],
+        "elf": {
+          "direct_app": "f36a0c42e4fe37ffdd2ca7eb484a3aa3a6cdc9fc8984bbc06fa7dc0a6761cef6",
+          "plain_app": "0724c9b801d0e9a648eb3c5169eed2d4bf7e2a4763e78482e66c56fdce82f275",
+          "via_app": "389fda6f5d3f0b68a7a6e9d4b46708de1ea99c2cf72b2eaa4adb3c0bd3cc6d76"
+        },
+        "observations": {
+          "direct_app": "7 \"#0 bytes(81..85)\"",
+          "plain_app": "7",
+          "via_app": "7 \"#0 bytes(60..64)\""
+        },
+        "phase": "edit"
+      },
+      {
+        "artifacts": {
+          "bridge": false,
+          "direct_app": false,
+          "leaf": false,
+          "offset_probe": false,
+          "plain_app": false,
+          "via_app": false
+        },
+        "compiler_calls": [
+          [
+            "bridge",
+            "full"
+          ],
+          [
+            "direct_app",
+            "full"
+          ],
+          [
+            "leaf",
+            "full"
+          ],
+          [
+            "offset_probe",
+            "full"
+          ],
+          [
+            "plain_app",
+            "full"
+          ],
+          [
+            "via_app",
+            "full"
+          ]
+        ],
+        "elf": {
+          "direct_app": "f36a0c42e4fe37ffdd2ca7eb484a3aa3a6cdc9fc8984bbc06fa7dc0a6761cef6",
+          "plain_app": "0724c9b801d0e9a648eb3c5169eed2d4bf7e2a4763e78482e66c56fdce82f275",
+          "via_app": "389fda6f5d3f0b68a7a6e9d4b46708de1ea99c2cf72b2eaa4adb3c0bd3cc6d76"
+        },
+        "observations": {
+          "direct_app": "7 \"#0 bytes(81..85)\"",
+          "plain_app": "7",
+          "via_app": "7 \"#0 bytes(60..64)\""
+        },
+        "phase": "edited-independent"
+      },
+      {
+        "artifacts": {
+          "bridge": true,
+          "direct_app": true,
+          "leaf": true,
+          "offset_probe": true,
+          "plain_app": true,
+          "via_app": true
+        },
+        "compiler_calls": [],
+        "elf": {
+          "direct_app": "f36a0c42e4fe37ffdd2ca7eb484a3aa3a6cdc9fc8984bbc06fa7dc0a6761cef6",
+          "plain_app": "0724c9b801d0e9a648eb3c5169eed2d4bf7e2a4763e78482e66c56fdce82f275",
+          "via_app": "389fda6f5d3f0b68a7a6e9d4b46708de1ea99c2cf72b2eaa4adb3c0bd3cc6d76"
+        },
+        "observations": {
+          "direct_app": "7 \"#0 bytes(81..85)\"",
+          "plain_app": "7",
+          "via_app": "7 \"#0 bytes(60..64)\""
+        },
+        "phase": "edited-repeat"
+      },
+      {
+        "artifacts": {
+          "bridge": true,
+          "direct_app": false,
+          "leaf": true,
+          "offset_probe": true,
+          "plain_app": false,
+          "via_app": false
+        },
+        "compiler_calls": [
+          [
+            "direct_app",
+            "full"
+          ],
+          [
+            "plain_app",
+            "full"
+          ],
+          [
+            "via_app",
+            "full"
+          ]
+        ],
+        "elf": {
+          "direct_app": "f2d8fe289faae31cd43d58d04feaaa94ab62be12a36cb6099c9c6f0eff0e4e1b",
+          "plain_app": "b291829843b068911ff881091de1d42a35126b69094ea55c4c68ab5d33351d68",
+          "via_app": "bc56b97409d32841b79edc142c7b2579fe17289ec9ddf83031cfe7d16eb57606"
+        },
+        "observations": {
+          "direct_app": "7 \"#0 bytes(97..101)\"",
+          "plain_app": "7",
+          "via_app": "7 \"#0 bytes(60..64)\""
+        },
+        "phase": "real-caller-edit"
+      },
+      {
+        "artifacts": {
+          "bridge": false,
+          "direct_app": false,
+          "leaf": false,
+          "offset_probe": false,
+          "plain_app": false,
+          "via_app": false
+        },
+        "compiler_calls": [
+          [
+            "bridge",
+            "full"
+          ],
+          [
+            "direct_app",
+            "full"
+          ],
+          [
+            "leaf",
+            "full"
+          ],
+          [
+            "offset_probe",
+            "full"
+          ],
+          [
+            "plain_app",
+            "full"
+          ],
+          [
+            "via_app",
+            "full"
+          ]
+        ],
+        "elf": {
+          "direct_app": "f2d8fe289faae31cd43d58d04feaaa94ab62be12a36cb6099c9c6f0eff0e4e1b",
+          "plain_app": "b291829843b068911ff881091de1d42a35126b69094ea55c4c68ab5d33351d68",
+          "via_app": "bc56b97409d32841b79edc142c7b2579fe17289ec9ddf83031cfe7d16eb57606"
+        },
+        "observations": {
+          "direct_app": "7 \"#0 bytes(97..101)\"",
+          "plain_app": "7",
+          "via_app": "7 \"#0 bytes(60..64)\""
+        },
+        "phase": "caller-independent"
+      }
+    ]
+  },
+  {
+    "case": "standalone-exact/same",
+    "rows": [
+      {
+        "artifacts": {
+          "bridge": false,
+          "direct_app": false,
+          "leaf": false,
+          "offset_probe": false,
+          "plain_app": false,
+          "via_app": false
+        },
+        "compiler_calls": [
+          [
+            "bridge",
+            "full"
+          ],
+          [
+            "direct_app",
+            "full"
+          ],
+          [
+            "leaf",
+            "full"
+          ],
+          [
+            "offset_probe",
+            "full"
+          ],
+          [
+            "plain_app",
+            "full"
+          ],
+          [
+            "via_app",
+            "full"
+          ]
+        ],
+        "elf": {
+          "direct_app": "5c1069fa11b8a966e91a920436c408bd1542fce7513d40a0e3af262625d7d68f",
+          "plain_app": "ab6d1508692e91964a73eb322ae8641cc69e7719e18b764dc56f19cec32c8db1",
+          "via_app": "65e5c3e0c2b8fccf4e75c8ca8ceb52046d46e1b064cc0624a7e467c5424e18b8"
+        },
+        "observations": {
+          "direct_app": "7 \"#10 bytes(273419..273433)\"",
+          "plain_app": "7",
+          "via_app": "7 \"#8 bytes(273432..273446)\""
+        },
+        "phase": "prime"
+      },
+      {
+        "artifacts": {
+          "bridge": false,
+          "direct_app": false,
+          "leaf": false,
+          "offset_probe": true,
+          "plain_app": false,
+          "via_app": false
+        },
+        "compiler_calls": [
+          [
+            "bridge",
+            "full"
+          ],
+          [
+            "direct_app",
+            "full"
+          ],
+          [
+            "leaf",
+            "full"
+          ],
+          [
+            "plain_app",
+            "relink"
+          ],
+          [
+            "via_app",
+            "full"
+          ]
+        ],
+        "elf": {
+          "direct_app": "ed85226742e8b8e0048377b1f7fb45576e221ecc9a949b97d5c788d476c2baee",
+          "plain_app": "ab6d1508692e91964a73eb322ae8641cc69e7719e18b764dc56f19cec32c8db1",
+          "via_app": "53b6bd10b6f45ff9e9c409f536e50a8dd0b685030e579cb78049f6d44cae6a0e"
+        },
+        "observations": {
+          "direct_app": "7 \"#10 bytes(273420..273434)\"",
+          "plain_app": "7",
+          "via_app": "7 \"#8 bytes(273433..273447)\""
+        },
+        "phase": "edit"
+      },
+      {
+        "artifacts": {
+          "bridge": false,
+          "direct_app": false,
+          "leaf": false,
+          "offset_probe": false,
+          "plain_app": false,
+          "via_app": false
+        },
+        "compiler_calls": [
+          [
+            "bridge",
+            "full"
+          ],
+          [
+            "direct_app",
+            "full"
+          ],
+          [
+            "leaf",
+            "full"
+          ],
+          [
+            "offset_probe",
+            "full"
+          ],
+          [
+            "plain_app",
+            "full"
+          ],
+          [
+            "via_app",
+            "full"
+          ]
+        ],
+        "elf": {
+          "direct_app": "ed85226742e8b8e0048377b1f7fb45576e221ecc9a949b97d5c788d476c2baee",
+          "plain_app": "ab6d1508692e91964a73eb322ae8641cc69e7719e18b764dc56f19cec32c8db1",
+          "via_app": "53b6bd10b6f45ff9e9c409f536e50a8dd0b685030e579cb78049f6d44cae6a0e"
+        },
+        "observations": {
+          "direct_app": "7 \"#10 bytes(273420..273434)\"",
+          "plain_app": "7",
+          "via_app": "7 \"#8 bytes(273433..273447)\""
+        },
+        "phase": "edited-independent"
+      },
+      {
+        "artifacts": {
+          "bridge": false,
+          "direct_app": false,
+          "leaf": true,
+          "offset_probe": true,
+          "plain_app": true,
+          "via_app": false
+        },
+        "compiler_calls": [
+          [
+            "bridge",
+            "full"
+          ],
+          [
+            "direct_app",
+            "full"
+          ],
+          [
+            "via_app",
+            "relink"
+          ]
+        ],
+        "elf": {
+          "direct_app": "ed85226742e8b8e0048377b1f7fb45576e221ecc9a949b97d5c788d476c2baee",
+          "plain_app": "ab6d1508692e91964a73eb322ae8641cc69e7719e18b764dc56f19cec32c8db1",
+          "via_app": "53b6bd10b6f45ff9e9c409f536e50a8dd0b685030e579cb78049f6d44cae6a0e"
+        },
+        "observations": {
+          "direct_app": "7 \"#10 bytes(273420..273434)\"",
+          "plain_app": "7",
+          "via_app": "7 \"#8 bytes(273433..273447)\""
+        },
+        "phase": "edited-repeat"
+      },
+      {
+        "artifacts": {
+          "bridge": false,
+          "direct_app": false,
+          "leaf": true,
+          "offset_probe": true,
+          "plain_app": false,
+          "via_app": false
+        },
+        "compiler_calls": [
+          [
+            "bridge",
+            "full"
+          ],
+          [
+            "direct_app",
+            "full"
+          ],
+          [
+            "plain_app",
+            "full"
+          ],
+          [
+            "via_app",
+            "full"
+          ]
+        ],
+        "elf": {
+          "direct_app": "248d24f9d427af6386a5f7611542c2bbf8450c240f3a937e520799ae6496cb79",
+          "plain_app": "e0bac00bc7404091825438f93e1129b553b6129c1e84af7dadb24379f3d9dc94",
+          "via_app": "00bbe2d45f3985f4c4047edfca767bd82d76c706027beb7ccf17e68e83cf60c8"
+        },
+        "observations": {
+          "direct_app": "7 \"#10 bytes(273436..273450)\"",
+          "plain_app": "7",
+          "via_app": "7 \"#8 bytes(273433..273447)\""
+        },
+        "phase": "real-caller-edit"
+      },
+      {
+        "artifacts": {
+          "bridge": false,
+          "direct_app": false,
+          "leaf": false,
+          "offset_probe": false,
+          "plain_app": false,
+          "via_app": false
+        },
+        "compiler_calls": [
+          [
+            "bridge",
+            "full"
+          ],
+          [
+            "direct_app",
+            "full"
+          ],
+          [
+            "leaf",
+            "full"
+          ],
+          [
+            "offset_probe",
+            "full"
+          ],
+          [
+            "plain_app",
+            "full"
+          ],
+          [
+            "via_app",
+            "full"
+          ]
+        ],
+        "elf": {
+          "direct_app": "248d24f9d427af6386a5f7611542c2bbf8450c240f3a937e520799ae6496cb79",
+          "plain_app": "e0bac00bc7404091825438f93e1129b553b6129c1e84af7dadb24379f3d9dc94",
+          "via_app": "00bbe2d45f3985f4c4047edfca767bd82d76c706027beb7ccf17e68e83cf60c8"
+        },
+        "observations": {
+          "direct_app": "7 \"#10 bytes(273436..273450)\"",
+          "plain_app": "7",
+          "via_app": "7 \"#8 bytes(273433..273447)\""
+        },
+        "phase": "caller-independent"
+      }
+    ]
+  },
+  {
+    "case": "standalone-exact/source-text",
+    "rows": [
+      {
+        "artifacts": {
+          "bridge": false,
+          "direct_app": false,
+          "leaf": false,
+          "offset_probe": false,
+          "plain_app": false,
+          "via_app": false
+        },
+        "compiler_calls": [
+          [
+            "bridge",
+            "full"
+          ],
+          [
+            "direct_app",
+            "full"
+          ],
+          [
+            "leaf",
+            "full"
+          ],
+          [
+            "offset_probe",
+            "full"
+          ],
+          [
+            "plain_app",
+            "full"
+          ],
+          [
+            "via_app",
+            "full"
+          ]
+        ],
+        "elf": {
+          "direct_app": "c2747be894d4b92bc9e9149a883f92823b38099465c2fbd5c33ae06b558c83d3",
+          "plain_app": "ab6d1508692e91964a73eb322ae8641cc69e7719e18b764dc56f19cec32c8db1",
+          "via_app": "9f377f0b67a852a746890353da1203247ca84d759799c1c16f71361e8fac74ba"
+        },
+        "observations": {
+          "direct_app": "7 Some(\"foreign_marker\")",
+          "plain_app": "7",
+          "via_app": "7 Some(\"foreign_marker\")"
+        },
+        "phase": "prime"
+      },
+      {
+        "artifacts": {
+          "bridge": false,
+          "direct_app": false,
+          "leaf": false,
+          "offset_probe": true,
+          "plain_app": false,
+          "via_app": false
+        },
+        "compiler_calls": [
+          [
+            "bridge",
+            "full"
+          ],
+          [
+            "direct_app",
+            "full"
+          ],
+          [
+            "leaf",
+            "full"
+          ],
+          [
+            "plain_app",
+            "relink"
+          ],
+          [
+            "via_app",
+            "relink"
+          ]
+        ],
+        "elf": {
+          "direct_app": "c2747be894d4b92bc9e9149a883f92823b38099465c2fbd5c33ae06b558c83d3",
+          "plain_app": "ab6d1508692e91964a73eb322ae8641cc69e7719e18b764dc56f19cec32c8db1",
+          "via_app": "9f377f0b67a852a746890353da1203247ca84d759799c1c16f71361e8fac74ba"
+        },
+        "observations": {
+          "direct_app": "7 Some(\"foreign_marker\")",
+          "plain_app": "7",
+          "via_app": "7 Some(\"foreign_marker\")"
+        },
+        "phase": "edit"
+      },
+      {
+        "artifacts": {
+          "bridge": false,
+          "direct_app": false,
+          "leaf": false,
+          "offset_probe": false,
+          "plain_app": false,
+          "via_app": false
+        },
+        "compiler_calls": [
+          [
+            "bridge",
+            "full"
+          ],
+          [
+            "direct_app",
+            "full"
+          ],
+          [
+            "leaf",
+            "full"
+          ],
+          [
+            "offset_probe",
+            "full"
+          ],
+          [
+            "plain_app",
+            "full"
+          ],
+          [
+            "via_app",
+            "full"
+          ]
+        ],
+        "elf": {
+          "direct_app": "c2747be894d4b92bc9e9149a883f92823b38099465c2fbd5c33ae06b558c83d3",
+          "plain_app": "ab6d1508692e91964a73eb322ae8641cc69e7719e18b764dc56f19cec32c8db1",
+          "via_app": "9f377f0b67a852a746890353da1203247ca84d759799c1c16f71361e8fac74ba"
+        },
+        "observations": {
+          "direct_app": "7 Some(\"foreign_marker\")",
+          "plain_app": "7",
+          "via_app": "7 Some(\"foreign_marker\")"
+        },
+        "phase": "edited-independent"
+      },
+      {
+        "artifacts": {
+          "bridge": false,
+          "direct_app": false,
+          "leaf": true,
+          "offset_probe": true,
+          "plain_app": true,
+          "via_app": false
+        },
+        "compiler_calls": [
+          [
+            "bridge",
+            "full"
+          ],
+          [
+            "direct_app",
+            "full"
+          ],
+          [
+            "via_app",
+            "relink"
+          ]
+        ],
+        "elf": {
+          "direct_app": "c2747be894d4b92bc9e9149a883f92823b38099465c2fbd5c33ae06b558c83d3",
+          "plain_app": "ab6d1508692e91964a73eb322ae8641cc69e7719e18b764dc56f19cec32c8db1",
+          "via_app": "9f377f0b67a852a746890353da1203247ca84d759799c1c16f71361e8fac74ba"
+        },
+        "observations": {
+          "direct_app": "7 Some(\"foreign_marker\")",
+          "plain_app": "7",
+          "via_app": "7 Some(\"foreign_marker\")"
+        },
+        "phase": "edited-repeat"
+      },
+      {
+        "artifacts": {
+          "bridge": false,
+          "direct_app": false,
+          "leaf": true,
+          "offset_probe": true,
+          "plain_app": false,
+          "via_app": false
+        },
+        "compiler_calls": [
+          [
+            "bridge",
+            "full"
+          ],
+          [
+            "direct_app",
+            "full"
+          ],
+          [
+            "plain_app",
+            "full"
+          ],
+          [
+            "via_app",
+            "full"
+          ]
+        ],
+        "elf": {
+          "direct_app": "8d2c910b8398b30526058ca90b5ceff6740f74ca8b629248e494c53043b322e7",
+          "plain_app": "e0bac00bc7404091825438f93e1129b553b6129c1e84af7dadb24379f3d9dc94",
+          "via_app": "6471ce9c1cdfe8c8e518271ec2a814301c01877e31a8d42d0a4d39a56f747a8e"
+        },
+        "observations": {
+          "direct_app": "7 Some(\"foreign_marker\")",
+          "plain_app": "7",
+          "via_app": "7 Some(\"foreign_marker\")"
+        },
+        "phase": "real-caller-edit"
+      },
+      {
+        "artifacts": {
+          "bridge": false,
+          "direct_app": false,
+          "leaf": false,
+          "offset_probe": false,
+          "plain_app": false,
+          "via_app": false
+        },
+        "compiler_calls": [
+          [
+            "bridge",
+            "full"
+          ],
+          [
+            "direct_app",
+            "full"
+          ],
+          [
+            "leaf",
+            "full"
+          ],
+          [
+            "offset_probe",
+            "full"
+          ],
+          [
+            "plain_app",
+            "full"
+          ],
+          [
+            "via_app",
+            "full"
+          ]
+        ],
+        "elf": {
+          "direct_app": "8d2c910b8398b30526058ca90b5ceff6740f74ca8b629248e494c53043b322e7",
+          "plain_app": "e0bac00bc7404091825438f93e1129b553b6129c1e84af7dadb24379f3d9dc94",
+          "via_app": "6471ce9c1cdfe8c8e518271ec2a814301c01877e31a8d42d0a4d39a56f747a8e"
+        },
+        "observations": {
+          "direct_app": "7 Some(\"foreign_marker\")",
+          "plain_app": "7",
+          "via_app": "7 Some(\"foreign_marker\")"
+        },
+        "phase": "caller-independent"
+      }
+    ]
+  },
+  {
+    "case": "standalone-exact/two-crate",
+    "rows": [
+      {
+        "artifacts": {
+          "bridge": false,
+          "direct_app": false,
+          "leaf": false,
+          "offset_probe": false,
+          "plain_app": false,
+          "supplier": false,
+          "via_app": false
+        },
+        "compiler_calls": [
+          [
+            "bridge",
+            "full"
+          ],
+          [
+            "direct_app",
+            "full"
+          ],
+          [
+            "leaf",
+            "full"
+          ],
+          [
+            "offset_probe",
+            "full"
+          ],
+          [
+            "plain_app",
+            "full"
+          ],
+          [
+            "supplier",
+            "full"
+          ],
+          [
+            "via_app",
+            "full"
+          ]
+        ],
+        "elf": {
+          "direct_app": "9f00bb663ee2a3f0af680579ed03d0d983db4b4d357baa4005a666635f7aee53",
+          "plain_app": "6e8a7e49dd0c16f63ab0138842cc35b650e9085cdaf459d8b6a25938c847d386",
+          "via_app": "4cdd2d8e8c0d57aad17d5d20513b746f580f1aaca6c8bbb715d95eea4307e880"
+        },
+        "observations": {
+          "direct_app": "7 \"#6 bytes(374238..374252)\"",
+          "plain_app": "7",
+          "via_app": "7 \"#4 bytes(273331..273345)\""
+        },
+        "phase": "prime"
+      },
+      {
+        "artifacts": {
+          "bridge": false,
+          "direct_app": false,
+          "leaf": false,
+          "offset_probe": true,
+          "plain_app": false,
+          "supplier": true,
+          "via_app": false
+        },
+        "compiler_calls": [
+          [
+            "bridge",
+            "full"
+          ],
+          [
+            "direct_app",
+            "full"
+          ],
+          [
+            "leaf",
+            "full"
+          ],
+          [
+            "plain_app",
+            "relink"
+          ],
+          [
+            "via_app",
+            "full"
+          ]
+        ],
+        "elf": {
+          "direct_app": "6787ab4d9ea7fa2e3f083042d1c87e8b804cc197073f95d2ed76227b8730c6d5",
+          "plain_app": "6e8a7e49dd0c16f63ab0138842cc35b650e9085cdaf459d8b6a25938c847d386",
+          "via_app": "c3d87147a3a32981971e23404787b02bae6505538acb5ddda49353bb8f97c99c"
+        },
+        "observations": {
+          "direct_app": "7 \"#6 bytes(374239..374253)\"",
+          "plain_app": "7",
+          "via_app": "7 \"#4 bytes(273332..273346)\""
+        },
+        "phase": "edit"
+      },
+      {
+        "artifacts": {
+          "bridge": false,
+          "direct_app": false,
+          "leaf": false,
+          "offset_probe": false,
+          "plain_app": false,
+          "supplier": false,
+          "via_app": false
+        },
+        "compiler_calls": [
+          [
+            "bridge",
+            "full"
+          ],
+          [
+            "direct_app",
+            "full"
+          ],
+          [
+            "leaf",
+            "full"
+          ],
+          [
+            "offset_probe",
+            "full"
+          ],
+          [
+            "plain_app",
+            "full"
+          ],
+          [
+            "supplier",
+            "full"
+          ],
+          [
+            "via_app",
+            "full"
+          ]
+        ],
+        "elf": {
+          "direct_app": "6787ab4d9ea7fa2e3f083042d1c87e8b804cc197073f95d2ed76227b8730c6d5",
+          "plain_app": "6e8a7e49dd0c16f63ab0138842cc35b650e9085cdaf459d8b6a25938c847d386",
+          "via_app": "c3d87147a3a32981971e23404787b02bae6505538acb5ddda49353bb8f97c99c"
+        },
+        "observations": {
+          "direct_app": "7 \"#6 bytes(374239..374253)\"",
+          "plain_app": "7",
+          "via_app": "7 \"#4 bytes(273332..273346)\""
+        },
+        "phase": "edited-independent"
+      },
+      {
+        "artifacts": {
+          "bridge": false,
+          "direct_app": false,
+          "leaf": true,
+          "offset_probe": true,
+          "plain_app": true,
+          "supplier": true,
+          "via_app": false
+        },
+        "compiler_calls": [
+          [
+            "bridge",
+            "full"
+          ],
+          [
+            "direct_app",
+            "full"
+          ],
+          [
+            "via_app",
+            "relink"
+          ]
+        ],
+        "elf": {
+          "direct_app": "6787ab4d9ea7fa2e3f083042d1c87e8b804cc197073f95d2ed76227b8730c6d5",
+          "plain_app": "6e8a7e49dd0c16f63ab0138842cc35b650e9085cdaf459d8b6a25938c847d386",
+          "via_app": "c3d87147a3a32981971e23404787b02bae6505538acb5ddda49353bb8f97c99c"
+        },
+        "observations": {
+          "direct_app": "7 \"#6 bytes(374239..374253)\"",
+          "plain_app": "7",
+          "via_app": "7 \"#4 bytes(273332..273346)\""
+        },
+        "phase": "edited-repeat"
+      },
+      {
+        "artifacts": {
+          "bridge": false,
+          "direct_app": false,
+          "leaf": true,
+          "offset_probe": true,
+          "plain_app": false,
+          "supplier": true,
+          "via_app": false
+        },
+        "compiler_calls": [
+          [
+            "bridge",
+            "full"
+          ],
+          [
+            "direct_app",
+            "full"
+          ],
+          [
+            "plain_app",
+            "full"
+          ],
+          [
+            "via_app",
+            "full"
+          ]
+        ],
+        "elf": {
+          "direct_app": "8229d9762248d7fc7bad18adca3c7b44df7f8a1f3d670ae18de5178bd37e4538",
+          "plain_app": "8c0a14b5560a64d4d3388e53164800076037ccc6c2f71d2ef3b1a99e0f933934",
+          "via_app": "86d145ac99ad911855de6acf96e7be525782ea35512ae1d9e6f65a1b44036311"
+        },
+        "observations": {
+          "direct_app": "7 \"#6 bytes(374255..374269)\"",
+          "plain_app": "7",
+          "via_app": "7 \"#4 bytes(273332..273346)\""
+        },
+        "phase": "real-caller-edit"
+      },
+      {
+        "artifacts": {
+          "bridge": false,
+          "direct_app": false,
+          "leaf": false,
+          "offset_probe": false,
+          "plain_app": false,
+          "supplier": false,
+          "via_app": false
+        },
+        "compiler_calls": [
+          [
+            "bridge",
+            "full"
+          ],
+          [
+            "direct_app",
+            "full"
+          ],
+          [
+            "leaf",
+            "full"
+          ],
+          [
+            "offset_probe",
+            "full"
+          ],
+          [
+            "plain_app",
+            "full"
+          ],
+          [
+            "supplier",
+            "full"
+          ],
+          [
+            "via_app",
+            "full"
+          ]
+        ],
+        "elf": {
+          "direct_app": "8229d9762248d7fc7bad18adca3c7b44df7f8a1f3d670ae18de5178bd37e4538",
+          "plain_app": "8c0a14b5560a64d4d3388e53164800076037ccc6c2f71d2ef3b1a99e0f933934",
+          "via_app": "86d145ac99ad911855de6acf96e7be525782ea35512ae1d9e6f65a1b44036311"
+        },
+        "observations": {
+          "direct_app": "7 \"#6 bytes(374255..374269)\"",
+          "plain_app": "7",
+          "via_app": "7 \"#4 bytes(273332..273346)\""
+        },
+        "phase": "caller-independent"
+      }
+    ]
+  },
+  {
+    "case": "standalone-exact/upgrade-232",
+    "rows": [
+      {
+        "artifacts": {
+          "bridge": false,
+          "direct_app": false,
+          "leaf": false,
+          "offset_probe": false,
+          "plain_app": false,
+          "via_app": false
+        },
+        "compiler_calls": [
+          [
+            "bridge",
+            "full"
+          ],
+          [
+            "direct_app",
+            "full"
+          ],
+          [
+            "leaf",
+            "full"
+          ],
+          [
+            "offset_probe",
+            "full"
+          ],
+          [
+            "plain_app",
+            "full"
+          ],
+          [
+            "via_app",
+            "full"
+          ]
+        ],
+        "elf": {
+          "direct_app": "5c1069fa11b8a966e91a920436c408bd1542fce7513d40a0e3af262625d7d68f",
+          "plain_app": "ab6d1508692e91964a73eb322ae8641cc69e7719e18b764dc56f19cec32c8db1",
+          "via_app": "65e5c3e0c2b8fccf4e75c8ca8ceb52046d46e1b064cc0624a7e467c5424e18b8"
+        },
+        "observations": {
+          "direct_app": "7 \"#10 bytes(273419..273433)\"",
+          "plain_app": "7",
+          "via_app": "7 \"#8 bytes(273432..273446)\""
+        },
+        "phase": "prime"
+      },
+      {
+        "artifacts": {
+          "bridge": false,
+          "direct_app": false,
+          "leaf": false,
+          "offset_probe": false,
+          "plain_app": false,
+          "via_app": false
+        },
+        "compiler_calls": [
+          [
+            "bridge",
+            "full"
+          ],
+          [
+            "direct_app",
+            "full"
+          ],
+          [
+            "leaf",
+            "full"
+          ],
+          [
+            "offset_probe",
+            "full"
+          ],
+          [
+            "plain_app",
+            "full"
+          ],
+          [
+            "via_app",
+            "full"
+          ]
+        ],
+        "elf": {
+          "direct_app": "ed85226742e8b8e0048377b1f7fb45576e221ecc9a949b97d5c788d476c2baee",
+          "plain_app": "ab6d1508692e91964a73eb322ae8641cc69e7719e18b764dc56f19cec32c8db1",
+          "via_app": "53b6bd10b6f45ff9e9c409f536e50a8dd0b685030e579cb78049f6d44cae6a0e"
+        },
+        "observations": {
+          "direct_app": "7 \"#10 bytes(273420..273434)\"",
+          "plain_app": "7",
+          "via_app": "7 \"#8 bytes(273433..273447)\""
+        },
+        "phase": "edit"
+      },
+      {
+        "artifacts": {
+          "bridge": false,
+          "direct_app": false,
+          "leaf": false,
+          "offset_probe": false,
+          "plain_app": false,
+          "via_app": false
+        },
+        "compiler_calls": [
+          [
+            "bridge",
+            "full"
+          ],
+          [
+            "direct_app",
+            "full"
+          ],
+          [
+            "leaf",
+            "full"
+          ],
+          [
+            "offset_probe",
+            "full"
+          ],
+          [
+            "plain_app",
+            "full"
+          ],
+          [
+            "via_app",
+            "full"
+          ]
+        ],
+        "elf": {
+          "direct_app": "ed85226742e8b8e0048377b1f7fb45576e221ecc9a949b97d5c788d476c2baee",
+          "plain_app": "ab6d1508692e91964a73eb322ae8641cc69e7719e18b764dc56f19cec32c8db1",
+          "via_app": "53b6bd10b6f45ff9e9c409f536e50a8dd0b685030e579cb78049f6d44cae6a0e"
+        },
+        "observations": {
+          "direct_app": "7 \"#10 bytes(273420..273434)\"",
+          "plain_app": "7",
+          "via_app": "7 \"#8 bytes(273433..273447)\""
+        },
+        "phase": "edited-independent"
+      },
+      {
+        "artifacts": {
+          "bridge": false,
+          "direct_app": false,
+          "leaf": true,
+          "offset_probe": true,
+          "plain_app": true,
+          "via_app": false
+        },
+        "compiler_calls": [
+          [
+            "bridge",
+            "full"
+          ],
+          [
+            "direct_app",
+            "full"
+          ],
+          [
+            "via_app",
+            "relink"
+          ]
+        ],
+        "elf": {
+          "direct_app": "ed85226742e8b8e0048377b1f7fb45576e221ecc9a949b97d5c788d476c2baee",
+          "plain_app": "ab6d1508692e91964a73eb322ae8641cc69e7719e18b764dc56f19cec32c8db1",
+          "via_app": "53b6bd10b6f45ff9e9c409f536e50a8dd0b685030e579cb78049f6d44cae6a0e"
+        },
+        "observations": {
+          "direct_app": "7 \"#10 bytes(273420..273434)\"",
+          "plain_app": "7",
+          "via_app": "7 \"#8 bytes(273433..273447)\""
+        },
+        "phase": "edited-repeat"
+      },
+      {
+        "artifacts": {
+          "bridge": false,
+          "direct_app": false,
+          "leaf": true,
+          "offset_probe": true,
+          "plain_app": false,
+          "via_app": false
+        },
+        "compiler_calls": [
+          [
+            "bridge",
+            "full"
+          ],
+          [
+            "direct_app",
+            "full"
+          ],
+          [
+            "plain_app",
+            "full"
+          ],
+          [
+            "via_app",
+            "full"
+          ]
+        ],
+        "elf": {
+          "direct_app": "248d24f9d427af6386a5f7611542c2bbf8450c240f3a937e520799ae6496cb79",
+          "plain_app": "e0bac00bc7404091825438f93e1129b553b6129c1e84af7dadb24379f3d9dc94",
+          "via_app": "00bbe2d45f3985f4c4047edfca767bd82d76c706027beb7ccf17e68e83cf60c8"
+        },
+        "observations": {
+          "direct_app": "7 \"#10 bytes(273436..273450)\"",
+          "plain_app": "7",
+          "via_app": "7 \"#8 bytes(273433..273447)\""
+        },
+        "phase": "real-caller-edit"
+      },
+      {
+        "artifacts": {
+          "bridge": false,
+          "direct_app": false,
+          "leaf": false,
+          "offset_probe": false,
+          "plain_app": false,
+          "via_app": false
+        },
+        "compiler_calls": [
+          [
+            "bridge",
+            "full"
+          ],
+          [
+            "direct_app",
+            "full"
+          ],
+          [
+            "leaf",
+            "full"
+          ],
+          [
+            "offset_probe",
+            "full"
+          ],
+          [
+            "plain_app",
+            "full"
+          ],
+          [
+            "via_app",
+            "full"
+          ]
+        ],
+        "elf": {
+          "direct_app": "248d24f9d427af6386a5f7611542c2bbf8450c240f3a937e520799ae6496cb79",
+          "plain_app": "e0bac00bc7404091825438f93e1129b553b6129c1e84af7dadb24379f3d9dc94",
+          "via_app": "00bbe2d45f3985f4c4047edfca767bd82d76c706027beb7ccf17e68e83cf60c8"
+        },
+        "observations": {
+          "direct_app": "7 \"#10 bytes(273436..273450)\"",
+          "plain_app": "7",
+          "via_app": "7 \"#8 bytes(273433..273447)\""
+        },
+        "phase": "caller-independent"
+      }
+    ]
+  },
+  {
+    "case": "standalone-exact/upgrade-233",
+    "rows": [
+      {
+        "artifacts": {
+          "bridge": false,
+          "direct_app": false,
+          "leaf": false,
+          "offset_probe": false,
+          "plain_app": false,
+          "via_app": false
+        },
+        "compiler_calls": [
+          [
+            "bridge",
+            "full"
+          ],
+          [
+            "direct_app",
+            "full"
+          ],
+          [
+            "leaf",
+            "full"
+          ],
+          [
+            "offset_probe",
+            "full"
+          ],
+          [
+            "plain_app",
+            "full"
+          ],
+          [
+            "via_app",
+            "full"
+          ]
+        ],
+        "elf": {
+          "direct_app": "5c1069fa11b8a966e91a920436c408bd1542fce7513d40a0e3af262625d7d68f",
+          "plain_app": "ab6d1508692e91964a73eb322ae8641cc69e7719e18b764dc56f19cec32c8db1",
+          "via_app": "65e5c3e0c2b8fccf4e75c8ca8ceb52046d46e1b064cc0624a7e467c5424e18b8"
+        },
+        "observations": {
+          "direct_app": "7 \"#10 bytes(273419..273433)\"",
+          "plain_app": "7",
+          "via_app": "7 \"#8 bytes(273432..273446)\""
+        },
+        "phase": "prime"
+      },
+      {
+        "artifacts": {
+          "bridge": false,
+          "direct_app": false,
+          "leaf": false,
+          "offset_probe": false,
+          "plain_app": false,
+          "via_app": false
+        },
+        "compiler_calls": [
+          [
+            "bridge",
+            "full"
+          ],
+          [
+            "direct_app",
+            "full"
+          ],
+          [
+            "leaf",
+            "full"
+          ],
+          [
+            "offset_probe",
+            "full"
+          ],
+          [
+            "plain_app",
+            "full"
+          ],
+          [
+            "via_app",
+            "full"
+          ]
+        ],
+        "elf": {
+          "direct_app": "ed85226742e8b8e0048377b1f7fb45576e221ecc9a949b97d5c788d476c2baee",
+          "plain_app": "ab6d1508692e91964a73eb322ae8641cc69e7719e18b764dc56f19cec32c8db1",
+          "via_app": "53b6bd10b6f45ff9e9c409f536e50a8dd0b685030e579cb78049f6d44cae6a0e"
+        },
+        "observations": {
+          "direct_app": "7 \"#10 bytes(273420..273434)\"",
+          "plain_app": "7",
+          "via_app": "7 \"#8 bytes(273433..273447)\""
+        },
+        "phase": "edit"
+      },
+      {
+        "artifacts": {
+          "bridge": false,
+          "direct_app": false,
+          "leaf": false,
+          "offset_probe": false,
+          "plain_app": false,
+          "via_app": false
+        },
+        "compiler_calls": [
+          [
+            "bridge",
+            "full"
+          ],
+          [
+            "direct_app",
+            "full"
+          ],
+          [
+            "leaf",
+            "full"
+          ],
+          [
+            "offset_probe",
+            "full"
+          ],
+          [
+            "plain_app",
+            "full"
+          ],
+          [
+            "via_app",
+            "full"
+          ]
+        ],
+        "elf": {
+          "direct_app": "ed85226742e8b8e0048377b1f7fb45576e221ecc9a949b97d5c788d476c2baee",
+          "plain_app": "ab6d1508692e91964a73eb322ae8641cc69e7719e18b764dc56f19cec32c8db1",
+          "via_app": "53b6bd10b6f45ff9e9c409f536e50a8dd0b685030e579cb78049f6d44cae6a0e"
+        },
+        "observations": {
+          "direct_app": "7 \"#10 bytes(273420..273434)\"",
+          "plain_app": "7",
+          "via_app": "7 \"#8 bytes(273433..273447)\""
+        },
+        "phase": "edited-independent"
+      },
+      {
+        "artifacts": {
+          "bridge": false,
+          "direct_app": false,
+          "leaf": true,
+          "offset_probe": true,
+          "plain_app": true,
+          "via_app": false
+        },
+        "compiler_calls": [
+          [
+            "bridge",
+            "full"
+          ],
+          [
+            "direct_app",
+            "full"
+          ],
+          [
+            "via_app",
+            "relink"
+          ]
+        ],
+        "elf": {
+          "direct_app": "ed85226742e8b8e0048377b1f7fb45576e221ecc9a949b97d5c788d476c2baee",
+          "plain_app": "ab6d1508692e91964a73eb322ae8641cc69e7719e18b764dc56f19cec32c8db1",
+          "via_app": "53b6bd10b6f45ff9e9c409f536e50a8dd0b685030e579cb78049f6d44cae6a0e"
+        },
+        "observations": {
+          "direct_app": "7 \"#10 bytes(273420..273434)\"",
+          "plain_app": "7",
+          "via_app": "7 \"#8 bytes(273433..273447)\""
+        },
+        "phase": "edited-repeat"
+      },
+      {
+        "artifacts": {
+          "bridge": false,
+          "direct_app": false,
+          "leaf": true,
+          "offset_probe": true,
+          "plain_app": false,
+          "via_app": false
+        },
+        "compiler_calls": [
+          [
+            "bridge",
+            "full"
+          ],
+          [
+            "direct_app",
+            "full"
+          ],
+          [
+            "plain_app",
+            "full"
+          ],
+          [
+            "via_app",
+            "full"
+          ]
+        ],
+        "elf": {
+          "direct_app": "248d24f9d427af6386a5f7611542c2bbf8450c240f3a937e520799ae6496cb79",
+          "plain_app": "e0bac00bc7404091825438f93e1129b553b6129c1e84af7dadb24379f3d9dc94",
+          "via_app": "00bbe2d45f3985f4c4047edfca767bd82d76c706027beb7ccf17e68e83cf60c8"
+        },
+        "observations": {
+          "direct_app": "7 \"#10 bytes(273436..273450)\"",
+          "plain_app": "7",
+          "via_app": "7 \"#8 bytes(273433..273447)\""
+        },
+        "phase": "real-caller-edit"
+      },
+      {
+        "artifacts": {
+          "bridge": false,
+          "direct_app": false,
+          "leaf": false,
+          "offset_probe": false,
+          "plain_app": false,
+          "via_app": false
+        },
+        "compiler_calls": [
+          [
+            "bridge",
+            "full"
+          ],
+          [
+            "direct_app",
+            "full"
+          ],
+          [
+            "leaf",
+            "full"
+          ],
+          [
+            "offset_probe",
+            "full"
+          ],
+          [
+            "plain_app",
+            "full"
+          ],
+          [
+            "via_app",
+            "full"
+          ]
+        ],
+        "elf": {
+          "direct_app": "248d24f9d427af6386a5f7611542c2bbf8450c240f3a937e520799ae6496cb79",
+          "plain_app": "e0bac00bc7404091825438f93e1129b553b6129c1e84af7dadb24379f3d9dc94",
+          "via_app": "00bbe2d45f3985f4c4047edfca767bd82d76c706027beb7ccf17e68e83cf60c8"
+        },
+        "observations": {
+          "direct_app": "7 \"#10 bytes(273436..273450)\"",
+          "plain_app": "7",
+          "via_app": "7 \"#8 bytes(273433..273447)\""
+        },
+        "phase": "caller-independent"
+      }
+    ]
+  }
+]

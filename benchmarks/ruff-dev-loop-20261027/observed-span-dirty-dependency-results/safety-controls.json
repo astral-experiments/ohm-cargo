@@ -1,0 +1,3418 @@
+{
+  "controls/after-standalone-producer": {
+    "arm": "C",
+    "products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "readers": [
+      {
+        "bytes": 6048,
+        "complete": true,
+        "name": "dep-lib-hold_bridge",
+        "sha256": "c2967219433f66696e391cc4c6632ca8e4bfe52c6d6e01c8e16b0e6477f2385a",
+        "signed": true
+      },
+      {
+        "bytes": 11579,
+        "complete": true,
+        "name": "dep-bin-hold_direct",
+        "sha256": "8425de55afd5875d8041bc4fc79a26bbac828055d382e7fe0cf3b0a44a91be9d",
+        "signed": true
+      }
+    ],
+    "roster": [
+      {
+        "capture": true,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": true,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_plain",
+        "mode": "full"
+      }
+    ],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "controls/backdated-producer-now": {
+    "arm": "C",
+    "products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374094..374116)",
+        "sha256": "bb46ff22f9640a67401676f894df61fd1485d3bc4fcba37c63e4543972c98c46"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273191..273213)",
+        "sha256": "7b7d83f9ac360e8893a88e6a567960769096bc2694ed6190427b26af1286e301"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "readers": [
+      {
+        "bytes": 6048,
+        "complete": true,
+        "name": "dep-lib-hold_bridge",
+        "sha256": "36b125d8cfda63238648ed1d9f580fcc36d3e2b561bef519f9d8538854adf8b4",
+        "signed": true
+      },
+      {
+        "bytes": 11579,
+        "complete": true,
+        "name": "dep-bin-hold_direct",
+        "sha256": "92f6eb635c9fb9690e612cebcb631a0675c81410fbf0a7cba52f3fd9b623535b",
+        "signed": true
+      }
+    ],
+    "roster": [
+      {
+        "capture": true,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": true,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_plain",
+        "mode": "relink"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_shapes",
+        "mode": "full"
+      }
+    ],
+    "source_sha256": "e27e925f288b958f810e597fbc9e08780535b2baa165c80997167060bcca9c8f",
+    "status": 0
+  },
+  "controls/check-0": {
+    "arm": "C",
+    "products": {},
+    "readers": [
+      {
+        "bytes": 443,
+        "complete": false,
+        "name": "dep-lib-hold_bridge",
+        "sha256": "15cb5f846817ff8e26bffd7389b99918a9dd7eafa6c02002e28225ef6e86eec0",
+        "signed": true
+      },
+      {
+        "bytes": 444,
+        "complete": false,
+        "name": "dep-bin-hold_direct",
+        "sha256": "61deec66cac11980743e23e1d2286fe3a9169c832131f17ed76faf152035fe2a",
+        "signed": true
+      }
+    ],
+    "roster": [
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_plain",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_probe",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_shapes",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_tokens",
+        "mode": "full"
+      }
+    ],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "controls/check-1": {
+    "arm": "C",
+    "products": {},
+    "readers": [
+      {
+        "bytes": 6048,
+        "complete": true,
+        "name": "dep-lib-hold_bridge",
+        "sha256": "5ef113afe9ea0873bbbf67ac4abeb70e12895f5b32108c82ea5d7a907584e009",
+        "signed": true
+      },
+      {
+        "bytes": 6049,
+        "complete": true,
+        "name": "dep-bin-hold_direct",
+        "sha256": "1d78225c3c3fc887ca397cf9e6e17ff28d2966710d94ee32f7411eca3fa0cc66",
+        "signed": true
+      }
+    ],
+    "roster": [
+      {
+        "capture": true,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": true,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      }
+    ],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "controls/check-2": {
+    "arm": "C",
+    "products": {},
+    "readers": [
+      {
+        "bytes": 6048,
+        "complete": true,
+        "name": "dep-lib-hold_bridge",
+        "sha256": "5ef113afe9ea0873bbbf67ac4abeb70e12895f5b32108c82ea5d7a907584e009",
+        "signed": true
+      },
+      {
+        "bytes": 6049,
+        "complete": true,
+        "name": "dep-bin-hold_direct",
+        "sha256": "1d78225c3c3fc887ca397cf9e6e17ff28d2966710d94ee32f7411eca3fa0cc66",
+        "signed": true
+      }
+    ],
+    "roster": [],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "controls/check-3": {
+    "arm": "C",
+    "products": {},
+    "readers": [
+      {
+        "bytes": 6048,
+        "complete": true,
+        "name": "dep-lib-hold_bridge",
+        "sha256": "5ef113afe9ea0873bbbf67ac4abeb70e12895f5b32108c82ea5d7a907584e009",
+        "signed": true
+      },
+      {
+        "bytes": 6049,
+        "complete": true,
+        "name": "dep-bin-hold_direct",
+        "sha256": "1d78225c3c3fc887ca397cf9e6e17ff28d2966710d94ee32f7411eca3fa0cc66",
+        "signed": true
+      }
+    ],
+    "roster": [],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "controls/check-real-edit": {
+    "arm": "C",
+    "products": {},
+    "readers": [
+      {
+        "bytes": 6048,
+        "complete": true,
+        "name": "dep-lib-hold_bridge",
+        "sha256": "6fc2fadfff728c82a476358c38312f96fb063b5ea008dd68a26c67281d222be4",
+        "signed": true
+      },
+      {
+        "bytes": 6049,
+        "complete": true,
+        "name": "dep-bin-hold_direct",
+        "sha256": "b8a8e14a91012030e08a8f0fc3b7ea71ad33fa9e7a85198a05460a361b6d8264",
+        "signed": true
+      }
+    ],
+    "roster": [
+      {
+        "capture": true,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": true,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_shapes",
+        "mode": "full"
+      }
+    ],
+    "source_sha256": "e27e925f288b958f810e597fbc9e08780535b2baa165c80997167060bcca9c8f",
+    "status": 0
+  },
+  "controls/confirm": {
+    "arm": "C",
+    "products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "readers": [
+      {
+        "bytes": 6048,
+        "complete": true,
+        "name": "dep-lib-hold_bridge",
+        "sha256": "c2967219433f66696e391cc4c6632ca8e4bfe52c6d6e01c8e16b0e6477f2385a",
+        "signed": true
+      },
+      {
+        "bytes": 11579,
+        "complete": true,
+        "name": "dep-bin-hold_direct",
+        "sha256": "1b4d67d4273048f4a6057812904edca7129fae8d15d2b34b3d5d8cc7c3e6e5ef",
+        "signed": true
+      }
+    ],
+    "roster": [],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "controls/corrupt-pending-first": {
+    "arm": "C",
+    "products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "readers": [
+      {
+        "bytes": 443,
+        "complete": false,
+        "name": "dep-lib-hold_bridge",
+        "sha256": "2b9941cad52ab370494b234f2672a6d8c9a50263890a8ce67220bda1bf668fe3",
+        "signed": true
+      },
+      {
+        "bytes": 11579,
+        "complete": true,
+        "name": "dep-bin-hold_direct",
+        "sha256": "8425de55afd5875d8041bc4fc79a26bbac828055d382e7fe0cf3b0a44a91be9d",
+        "signed": true
+      }
+    ],
+    "roster": [
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "relink"
+      }
+    ],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "controls/corrupt-pending-restore-0": {
+    "arm": "C",
+    "products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "readers": [
+      {
+        "bytes": 6048,
+        "complete": true,
+        "name": "dep-lib-hold_bridge",
+        "sha256": "c2967219433f66696e391cc4c6632ca8e4bfe52c6d6e01c8e16b0e6477f2385a",
+        "signed": true
+      },
+      {
+        "bytes": 11579,
+        "complete": true,
+        "name": "dep-bin-hold_direct",
+        "sha256": "8425de55afd5875d8041bc4fc79a26bbac828055d382e7fe0cf3b0a44a91be9d",
+        "signed": true
+      }
+    ],
+    "roster": [
+      {
+        "capture": true,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "relink"
+      }
+    ],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "controls/corrupt-pending-restore-1": {
+    "arm": "C",
+    "products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "readers": [
+      {
+        "bytes": 6048,
+        "complete": true,
+        "name": "dep-lib-hold_bridge",
+        "sha256": "c2967219433f66696e391cc4c6632ca8e4bfe52c6d6e01c8e16b0e6477f2385a",
+        "signed": true
+      },
+      {
+        "bytes": 11579,
+        "complete": true,
+        "name": "dep-bin-hold_direct",
+        "sha256": "8425de55afd5875d8041bc4fc79a26bbac828055d382e7fe0cf3b0a44a91be9d",
+        "signed": true
+      }
+    ],
+    "roster": [],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "controls/corrupt-pending-steady": {
+    "arm": "C",
+    "products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "readers": [
+      {
+        "bytes": 6048,
+        "complete": true,
+        "name": "dep-lib-hold_bridge",
+        "sha256": "c2967219433f66696e391cc4c6632ca8e4bfe52c6d6e01c8e16b0e6477f2385a",
+        "signed": true
+      },
+      {
+        "bytes": 11579,
+        "complete": true,
+        "name": "dep-bin-hold_direct",
+        "sha256": "8425de55afd5875d8041bc4fc79a26bbac828055d382e7fe0cf3b0a44a91be9d",
+        "signed": true
+      }
+    ],
+    "roster": [],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "controls/discover": {
+    "arm": "C",
+    "products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "readers": [
+      {
+        "bytes": 6048,
+        "complete": true,
+        "name": "dep-lib-hold_bridge",
+        "sha256": "c2967219433f66696e391cc4c6632ca8e4bfe52c6d6e01c8e16b0e6477f2385a",
+        "signed": true
+      },
+      {
+        "bytes": 11579,
+        "complete": true,
+        "name": "dep-bin-hold_direct",
+        "sha256": "1b4d67d4273048f4a6057812904edca7129fae8d15d2b34b3d5d8cc7c3e6e5ef",
+        "signed": true
+      }
+    ],
+    "roster": [
+      {
+        "capture": true,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": true,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "relink"
+      }
+    ],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "controls/downgrade": {
+    "arm": "P",
+    "products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "readers": [
+      {
+        "bytes": 344,
+        "complete": null,
+        "name": "dep-lib-hold_bridge",
+        "sha256": "8587bf4895342481e81106335f6e9328aac8fcea6f2edc9757f52264d7d683a9",
+        "signed": false
+      },
+      {
+        "bytes": 328,
+        "complete": null,
+        "name": "dep-bin-hold_direct",
+        "sha256": "4559005771d8c022cc578370bd2eba5d50f813cdf4e7e4e1739cd741e72ac2f5",
+        "signed": false
+      }
+    ],
+    "roster": [
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "relink"
+      }
+    ],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "controls/earlier-producer": {
+    "arm": "C",
+    "products": {},
+    "readers": [
+      {
+        "bytes": 6048,
+        "complete": true,
+        "name": "dep-lib-hold_bridge",
+        "sha256": "36b125d8cfda63238648ed1d9f580fcc36d3e2b561bef519f9d8538854adf8b4",
+        "signed": true
+      },
+      {
+        "bytes": 11579,
+        "complete": true,
+        "name": "dep-bin-hold_direct",
+        "sha256": "92f6eb635c9fb9690e612cebcb631a0675c81410fbf0a7cba52f3fd9b623535b",
+        "signed": true
+      }
+    ],
+    "roster": [
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_shapes",
+        "mode": "full"
+      }
+    ],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "controls/empty-0": {
+    "arm": "P",
+    "products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "readers": [
+      {
+        "bytes": 344,
+        "complete": null,
+        "name": "dep-lib-hold_bridge",
+        "sha256": "8587bf4895342481e81106335f6e9328aac8fcea6f2edc9757f52264d7d683a9",
+        "signed": false
+      },
+      {
+        "bytes": 328,
+        "complete": null,
+        "name": "dep-bin-hold_direct",
+        "sha256": "4559005771d8c022cc578370bd2eba5d50f813cdf4e7e4e1739cd741e72ac2f5",
+        "signed": false
+      }
+    ],
+    "roster": [
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_plain",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_probe",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_shapes",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_tokens",
+        "mode": "full"
+      }
+    ],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "controls/empty-1": {
+    "arm": "P",
+    "products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374094..374116)",
+        "sha256": "bb46ff22f9640a67401676f894df61fd1485d3bc4fcba37c63e4543972c98c46"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273191..273213)",
+        "sha256": "7b7d83f9ac360e8893a88e6a567960769096bc2694ed6190427b26af1286e301"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "readers": [
+      {
+        "bytes": 344,
+        "complete": null,
+        "name": "dep-lib-hold_bridge",
+        "sha256": "8587bf4895342481e81106335f6e9328aac8fcea6f2edc9757f52264d7d683a9",
+        "signed": false
+      },
+      {
+        "bytes": 328,
+        "complete": null,
+        "name": "dep-bin-hold_direct",
+        "sha256": "4559005771d8c022cc578370bd2eba5d50f813cdf4e7e4e1739cd741e72ac2f5",
+        "signed": false
+      }
+    ],
+    "roster": [
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_plain",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_probe",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_shapes",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_tokens",
+        "mode": "full"
+      }
+    ],
+    "source_sha256": "e27e925f288b958f810e597fbc9e08780535b2baa165c80997167060bcca9c8f",
+    "status": 0
+  },
+  "controls/fill-old": {
+    "arm": "P",
+    "products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "readers": [
+      {
+        "bytes": 344,
+        "complete": null,
+        "name": "dep-lib-hold_bridge",
+        "sha256": "8587bf4895342481e81106335f6e9328aac8fcea6f2edc9757f52264d7d683a9",
+        "signed": false
+      },
+      {
+        "bytes": 328,
+        "complete": null,
+        "name": "dep-bin-hold_direct",
+        "sha256": "4559005771d8c022cc578370bd2eba5d50f813cdf4e7e4e1739cd741e72ac2f5",
+        "signed": false
+      }
+    ],
+    "roster": [
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_plain",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_probe",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_shapes",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_tokens",
+        "mode": "full"
+      }
+    ],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "controls/inherit-old": {
+    "arm": "C",
+    "products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "readers": [
+      {
+        "bytes": 443,
+        "complete": false,
+        "name": "dep-lib-hold_bridge",
+        "sha256": "2b9941cad52ab370494b234f2672a6d8c9a50263890a8ce67220bda1bf668fe3",
+        "signed": true
+      },
+      {
+        "bytes": 427,
+        "complete": false,
+        "name": "dep-bin-hold_direct",
+        "sha256": "60553ba485e8d330608ebb9b994b3600bb4d8d20022deadb815fb9ed474df79c",
+        "signed": true
+      }
+    ],
+    "roster": [
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "relink"
+      }
+    ],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "controls/invalid-trailer-first": {
+    "arm": "C",
+    "products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "readers": [
+      {
+        "bytes": 443,
+        "complete": false,
+        "name": "dep-lib-hold_bridge",
+        "sha256": "2b9941cad52ab370494b234f2672a6d8c9a50263890a8ce67220bda1bf668fe3",
+        "signed": true
+      },
+      {
+        "bytes": 11579,
+        "complete": true,
+        "name": "dep-bin-hold_direct",
+        "sha256": "8425de55afd5875d8041bc4fc79a26bbac828055d382e7fe0cf3b0a44a91be9d",
+        "signed": true
+      }
+    ],
+    "roster": [
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "relink"
+      }
+    ],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "controls/invalid-trailer-restore-0": {
+    "arm": "C",
+    "products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "readers": [
+      {
+        "bytes": 6048,
+        "complete": true,
+        "name": "dep-lib-hold_bridge",
+        "sha256": "c2967219433f66696e391cc4c6632ca8e4bfe52c6d6e01c8e16b0e6477f2385a",
+        "signed": true
+      },
+      {
+        "bytes": 11579,
+        "complete": true,
+        "name": "dep-bin-hold_direct",
+        "sha256": "8425de55afd5875d8041bc4fc79a26bbac828055d382e7fe0cf3b0a44a91be9d",
+        "signed": true
+      }
+    ],
+    "roster": [
+      {
+        "capture": true,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "relink"
+      }
+    ],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "controls/invalid-trailer-restore-1": {
+    "arm": "C",
+    "products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "readers": [
+      {
+        "bytes": 6048,
+        "complete": true,
+        "name": "dep-lib-hold_bridge",
+        "sha256": "c2967219433f66696e391cc4c6632ca8e4bfe52c6d6e01c8e16b0e6477f2385a",
+        "signed": true
+      },
+      {
+        "bytes": 11579,
+        "complete": true,
+        "name": "dep-bin-hold_direct",
+        "sha256": "8425de55afd5875d8041bc4fc79a26bbac828055d382e7fe0cf3b0a44a91be9d",
+        "signed": true
+      }
+    ],
+    "roster": [],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "controls/invalid-trailer-steady": {
+    "arm": "C",
+    "products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "readers": [
+      {
+        "bytes": 6048,
+        "complete": true,
+        "name": "dep-lib-hold_bridge",
+        "sha256": "c2967219433f66696e391cc4c6632ca8e4bfe52c6d6e01c8e16b0e6477f2385a",
+        "signed": true
+      },
+      {
+        "bytes": 11579,
+        "complete": true,
+        "name": "dep-bin-hold_direct",
+        "sha256": "8425de55afd5875d8041bc4fc79a26bbac828055d382e7fe0cf3b0a44a91be9d",
+        "signed": true
+      }
+    ],
+    "roster": [],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "controls/legacy-trailer-first": {
+    "arm": "C",
+    "products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "readers": [
+      {
+        "bytes": 443,
+        "complete": false,
+        "name": "dep-lib-hold_bridge",
+        "sha256": "2b9941cad52ab370494b234f2672a6d8c9a50263890a8ce67220bda1bf668fe3",
+        "signed": true
+      },
+      {
+        "bytes": 11579,
+        "complete": true,
+        "name": "dep-bin-hold_direct",
+        "sha256": "8425de55afd5875d8041bc4fc79a26bbac828055d382e7fe0cf3b0a44a91be9d",
+        "signed": true
+      }
+    ],
+    "roster": [
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "relink"
+      }
+    ],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "controls/legacy-trailer-restore-0": {
+    "arm": "C",
+    "products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "readers": [
+      {
+        "bytes": 6048,
+        "complete": true,
+        "name": "dep-lib-hold_bridge",
+        "sha256": "c2967219433f66696e391cc4c6632ca8e4bfe52c6d6e01c8e16b0e6477f2385a",
+        "signed": true
+      },
+      {
+        "bytes": 11579,
+        "complete": true,
+        "name": "dep-bin-hold_direct",
+        "sha256": "8425de55afd5875d8041bc4fc79a26bbac828055d382e7fe0cf3b0a44a91be9d",
+        "signed": true
+      }
+    ],
+    "roster": [
+      {
+        "capture": true,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "relink"
+      }
+    ],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "controls/legacy-trailer-restore-1": {
+    "arm": "C",
+    "products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "readers": [
+      {
+        "bytes": 6048,
+        "complete": true,
+        "name": "dep-lib-hold_bridge",
+        "sha256": "c2967219433f66696e391cc4c6632ca8e4bfe52c6d6e01c8e16b0e6477f2385a",
+        "signed": true
+      },
+      {
+        "bytes": 11579,
+        "complete": true,
+        "name": "dep-bin-hold_direct",
+        "sha256": "8425de55afd5875d8041bc4fc79a26bbac828055d382e7fe0cf3b0a44a91be9d",
+        "signed": true
+      }
+    ],
+    "roster": [],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "controls/legacy-trailer-steady": {
+    "arm": "C",
+    "products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "readers": [
+      {
+        "bytes": 6048,
+        "complete": true,
+        "name": "dep-lib-hold_bridge",
+        "sha256": "c2967219433f66696e391cc4c6632ca8e4bfe52c6d6e01c8e16b0e6477f2385a",
+        "signed": true
+      },
+      {
+        "bytes": 11579,
+        "complete": true,
+        "name": "dep-bin-hold_direct",
+        "sha256": "8425de55afd5875d8041bc4fc79a26bbac828055d382e7fe0cf3b0a44a91be9d",
+        "signed": true
+      }
+    ],
+    "roster": [],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "controls/missing-checksum-first": {
+    "arm": "C",
+    "products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "readers": [
+      {
+        "bytes": 443,
+        "complete": false,
+        "name": "dep-lib-hold_bridge",
+        "sha256": "2b9941cad52ab370494b234f2672a6d8c9a50263890a8ce67220bda1bf668fe3",
+        "signed": true
+      },
+      {
+        "bytes": 11579,
+        "complete": true,
+        "name": "dep-bin-hold_direct",
+        "sha256": "8425de55afd5875d8041bc4fc79a26bbac828055d382e7fe0cf3b0a44a91be9d",
+        "signed": true
+      }
+    ],
+    "roster": [
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "relink"
+      }
+    ],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "controls/missing-checksum-restore-0": {
+    "arm": "C",
+    "products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "readers": [
+      {
+        "bytes": 6048,
+        "complete": true,
+        "name": "dep-lib-hold_bridge",
+        "sha256": "c2967219433f66696e391cc4c6632ca8e4bfe52c6d6e01c8e16b0e6477f2385a",
+        "signed": true
+      },
+      {
+        "bytes": 11579,
+        "complete": true,
+        "name": "dep-bin-hold_direct",
+        "sha256": "8425de55afd5875d8041bc4fc79a26bbac828055d382e7fe0cf3b0a44a91be9d",
+        "signed": true
+      }
+    ],
+    "roster": [
+      {
+        "capture": true,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "relink"
+      }
+    ],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "controls/missing-checksum-restore-1": {
+    "arm": "C",
+    "products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "readers": [
+      {
+        "bytes": 6048,
+        "complete": true,
+        "name": "dep-lib-hold_bridge",
+        "sha256": "c2967219433f66696e391cc4c6632ca8e4bfe52c6d6e01c8e16b0e6477f2385a",
+        "signed": true
+      },
+      {
+        "bytes": 11579,
+        "complete": true,
+        "name": "dep-bin-hold_direct",
+        "sha256": "8425de55afd5875d8041bc4fc79a26bbac828055d382e7fe0cf3b0a44a91be9d",
+        "signed": true
+      }
+    ],
+    "roster": [],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "controls/missing-checksum-steady": {
+    "arm": "C",
+    "products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "readers": [
+      {
+        "bytes": 6048,
+        "complete": true,
+        "name": "dep-lib-hold_bridge",
+        "sha256": "c2967219433f66696e391cc4c6632ca8e4bfe52c6d6e01c8e16b0e6477f2385a",
+        "signed": true
+      },
+      {
+        "bytes": 11579,
+        "complete": true,
+        "name": "dep-bin-hold_direct",
+        "sha256": "8425de55afd5875d8041bc4fc79a26bbac828055d382e7fe0cf3b0a44a91be9d",
+        "signed": true
+      }
+    ],
+    "roster": [],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "controls/missing-receipt-first": {
+    "arm": "C",
+    "products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "readers": [
+      {
+        "bytes": 443,
+        "complete": false,
+        "name": "dep-lib-hold_bridge",
+        "sha256": "2b9941cad52ab370494b234f2672a6d8c9a50263890a8ce67220bda1bf668fe3",
+        "signed": true
+      },
+      {
+        "bytes": 11579,
+        "complete": true,
+        "name": "dep-bin-hold_direct",
+        "sha256": "8425de55afd5875d8041bc4fc79a26bbac828055d382e7fe0cf3b0a44a91be9d",
+        "signed": true
+      }
+    ],
+    "roster": [
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "relink"
+      }
+    ],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "controls/missing-receipt-restore-0": {
+    "arm": "C",
+    "products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "readers": [
+      {
+        "bytes": 6048,
+        "complete": true,
+        "name": "dep-lib-hold_bridge",
+        "sha256": "c2967219433f66696e391cc4c6632ca8e4bfe52c6d6e01c8e16b0e6477f2385a",
+        "signed": true
+      },
+      {
+        "bytes": 11579,
+        "complete": true,
+        "name": "dep-bin-hold_direct",
+        "sha256": "8425de55afd5875d8041bc4fc79a26bbac828055d382e7fe0cf3b0a44a91be9d",
+        "signed": true
+      }
+    ],
+    "roster": [
+      {
+        "capture": true,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "relink"
+      }
+    ],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "controls/missing-receipt-restore-1": {
+    "arm": "C",
+    "products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "readers": [
+      {
+        "bytes": 6048,
+        "complete": true,
+        "name": "dep-lib-hold_bridge",
+        "sha256": "c2967219433f66696e391cc4c6632ca8e4bfe52c6d6e01c8e16b0e6477f2385a",
+        "signed": true
+      },
+      {
+        "bytes": 11579,
+        "complete": true,
+        "name": "dep-bin-hold_direct",
+        "sha256": "8425de55afd5875d8041bc4fc79a26bbac828055d382e7fe0cf3b0a44a91be9d",
+        "signed": true
+      }
+    ],
+    "roster": [],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "controls/missing-receipt-steady": {
+    "arm": "C",
+    "products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "readers": [
+      {
+        "bytes": 6048,
+        "complete": true,
+        "name": "dep-lib-hold_bridge",
+        "sha256": "c2967219433f66696e391cc4c6632ca8e4bfe52c6d6e01c8e16b0e6477f2385a",
+        "signed": true
+      },
+      {
+        "bytes": 11579,
+        "complete": true,
+        "name": "dep-bin-hold_direct",
+        "sha256": "8425de55afd5875d8041bc4fc79a26bbac828055d382e7fe0cf3b0a44a91be9d",
+        "signed": true
+      }
+    ],
+    "roster": [],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "controls/mtime-0": {
+    "arm": "C",
+    "products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "6e8e11afbd84d6ab7bbd2c6236023ff54cf192f86ead95668c7ea59a68508802"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "f7c8031db8fcd5446bad1b1fa1b221c7257883a39789d297c567b088137822b0"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "97d30b3d7992944a604009cd0fa95d54a21816a9b8c9ecc454f59787c4a9f562"
+      }
+    },
+    "readers": [
+      {
+        "bytes": 360,
+        "complete": false,
+        "name": "dep-lib-hold_bridge",
+        "sha256": "a5409510e4e966d866ddc8d80cc8a589a6f50f9e019e0463bce428e3d7eaecd2",
+        "signed": true
+      },
+      {
+        "bytes": 344,
+        "complete": false,
+        "name": "dep-bin-hold_direct",
+        "sha256": "9cad2b95bede42f1981c14b886c2e9db334cff91a5a1c3dbee98b5ca4a7423d3",
+        "signed": true
+      }
+    ],
+    "roster": [
+      {
+        "capture": false,
+        "checksum": false,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": false,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": false,
+        "crate": "hold_indirect",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": false,
+        "crate": "hold_plain",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": false,
+        "crate": "hold_probe",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": false,
+        "crate": "hold_shapes",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": false,
+        "crate": "hold_tokens",
+        "mode": "full"
+      }
+    ],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "controls/mtime-1": {
+    "arm": "C",
+    "products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "6e8e11afbd84d6ab7bbd2c6236023ff54cf192f86ead95668c7ea59a68508802"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "f7c8031db8fcd5446bad1b1fa1b221c7257883a39789d297c567b088137822b0"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "97d30b3d7992944a604009cd0fa95d54a21816a9b8c9ecc454f59787c4a9f562"
+      }
+    },
+    "readers": [
+      {
+        "bytes": 6048,
+        "complete": true,
+        "name": "dep-lib-hold_bridge",
+        "sha256": "c030d203664ff68e36d0d851e5ce87176583e200abdc097c1eda458c4b86b0c8",
+        "signed": true
+      },
+      {
+        "bytes": 11579,
+        "complete": true,
+        "name": "dep-bin-hold_direct",
+        "sha256": "f98f517d0ca2e5eb606a673fc234f3e01a299e5e3963e8ea987f5f3ecdba13f5",
+        "signed": true
+      }
+    ],
+    "roster": [
+      {
+        "capture": true,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": true,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": false,
+        "crate": "hold_indirect",
+        "mode": "relink"
+      }
+    ],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "controls/mtime-2": {
+    "arm": "C",
+    "products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "6e8e11afbd84d6ab7bbd2c6236023ff54cf192f86ead95668c7ea59a68508802"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "f7c8031db8fcd5446bad1b1fa1b221c7257883a39789d297c567b088137822b0"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "97d30b3d7992944a604009cd0fa95d54a21816a9b8c9ecc454f59787c4a9f562"
+      }
+    },
+    "readers": [
+      {
+        "bytes": 6048,
+        "complete": true,
+        "name": "dep-lib-hold_bridge",
+        "sha256": "c030d203664ff68e36d0d851e5ce87176583e200abdc097c1eda458c4b86b0c8",
+        "signed": true
+      },
+      {
+        "bytes": 11579,
+        "complete": true,
+        "name": "dep-bin-hold_direct",
+        "sha256": "f98f517d0ca2e5eb606a673fc234f3e01a299e5e3963e8ea987f5f3ecdba13f5",
+        "signed": true
+      }
+    ],
+    "roster": [],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "controls/mtime-real-edit": {
+    "arm": "C",
+    "products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374094..374116)",
+        "sha256": "5cebcd70ea5b213f28cf1f9dcadc59af8be13ecd2ac52cc1f3ecbaf6157413d6"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273191..273213)",
+        "sha256": "3d967bebb82335d81faa592c1cf91ec961ea3d5a6c0ca87a1b9e11160eda7dea"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "97d30b3d7992944a604009cd0fa95d54a21816a9b8c9ecc454f59787c4a9f562"
+      }
+    },
+    "readers": [
+      {
+        "bytes": 6048,
+        "complete": true,
+        "name": "dep-lib-hold_bridge",
+        "sha256": "fc9ccc7f0aaca25ecf99fa7f593175b7ec7dda40de473e5887423461c560f280",
+        "signed": true
+      },
+      {
+        "bytes": 11579,
+        "complete": true,
+        "name": "dep-bin-hold_direct",
+        "sha256": "f6e638360a70a66eec1e65887b91b8853e64b53af9114866da97e45f93b53ca4",
+        "signed": true
+      }
+    ],
+    "roster": [
+      {
+        "capture": true,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": true,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": false,
+        "crate": "hold_indirect",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": false,
+        "crate": "hold_plain",
+        "mode": "relink"
+      },
+      {
+        "capture": false,
+        "checksum": false,
+        "crate": "hold_shapes",
+        "mode": "full"
+      }
+    ],
+    "source_sha256": "e27e925f288b958f810e597fbc9e08780535b2baa165c80997167060bcca9c8f",
+    "status": 0
+  },
+  "controls/recover-noop": {
+    "arm": "C",
+    "products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "readers": [
+      {
+        "bytes": 6048,
+        "complete": true,
+        "name": "dep-lib-hold_bridge",
+        "sha256": "c2967219433f66696e391cc4c6632ca8e4bfe52c6d6e01c8e16b0e6477f2385a",
+        "signed": true
+      },
+      {
+        "bytes": 11579,
+        "complete": true,
+        "name": "dep-bin-hold_direct",
+        "sha256": "1b4d67d4273048f4a6057812904edca7129fae8d15d2b34b3d5d8cc7c3e6e5ef",
+        "signed": true
+      }
+    ],
+    "roster": [],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "controls/recover-old": {
+    "arm": "C",
+    "products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "readers": [
+      {
+        "bytes": 443,
+        "complete": false,
+        "name": "dep-lib-hold_bridge",
+        "sha256": "2b9941cad52ab370494b234f2672a6d8c9a50263890a8ce67220bda1bf668fe3",
+        "signed": true
+      },
+      {
+        "bytes": 427,
+        "complete": false,
+        "name": "dep-bin-hold_direct",
+        "sha256": "60553ba485e8d330608ebb9b994b3600bb4d8d20022deadb815fb9ed474df79c",
+        "signed": true
+      }
+    ],
+    "roster": [
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "relink"
+      }
+    ],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "controls/retrain": {
+    "arm": "C",
+    "products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "readers": [
+      {
+        "bytes": 6048,
+        "complete": true,
+        "name": "dep-lib-hold_bridge",
+        "sha256": "c2967219433f66696e391cc4c6632ca8e4bfe52c6d6e01c8e16b0e6477f2385a",
+        "signed": true
+      },
+      {
+        "bytes": 11579,
+        "complete": true,
+        "name": "dep-bin-hold_direct",
+        "sha256": "1b4d67d4273048f4a6057812904edca7129fae8d15d2b34b3d5d8cc7c3e6e5ef",
+        "signed": true
+      }
+    ],
+    "roster": [
+      {
+        "capture": true,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": true,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "relink"
+      }
+    ],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "controls/test-no-run-0": {
+    "arm": "C",
+    "products": {},
+    "readers": [
+      {
+        "bytes": 443,
+        "complete": false,
+        "name": "dep-lib-hold_bridge",
+        "sha256": "2b9941cad52ab370494b234f2672a6d8c9a50263890a8ce67220bda1bf668fe3",
+        "signed": true
+      },
+      {
+        "bytes": 444,
+        "complete": false,
+        "name": "dep-test-bin-hold_direct",
+        "sha256": "7a2969d0010f89a7eff6e29552739b33541f0fc99fbc92af7f48a0c4851351ba",
+        "signed": true
+      }
+    ],
+    "roster": [
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_plain",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_probe",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_shapes",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_tokens",
+        "mode": "full"
+      }
+    ],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "controls/test-no-run-1": {
+    "arm": "C",
+    "products": {},
+    "readers": [
+      {
+        "bytes": 6048,
+        "complete": true,
+        "name": "dep-lib-hold_bridge",
+        "sha256": "c2967219433f66696e391cc4c6632ca8e4bfe52c6d6e01c8e16b0e6477f2385a",
+        "signed": true
+      },
+      {
+        "bytes": 13107,
+        "complete": true,
+        "name": "dep-test-bin-hold_direct",
+        "sha256": "a417adb7f33b3a9d9d66aee0700c0d2e5bd56aa2fe30c785ab93ded85adf27ba",
+        "signed": true
+      }
+    ],
+    "roster": [
+      {
+        "capture": true,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": true,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "relink"
+      }
+    ],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "controls/test-no-run-2": {
+    "arm": "C",
+    "products": {},
+    "readers": [
+      {
+        "bytes": 6048,
+        "complete": true,
+        "name": "dep-lib-hold_bridge",
+        "sha256": "c2967219433f66696e391cc4c6632ca8e4bfe52c6d6e01c8e16b0e6477f2385a",
+        "signed": true
+      },
+      {
+        "bytes": 13107,
+        "complete": true,
+        "name": "dep-test-bin-hold_direct",
+        "sha256": "a417adb7f33b3a9d9d66aee0700c0d2e5bd56aa2fe30c785ab93ded85adf27ba",
+        "signed": true
+      }
+    ],
+    "roster": [],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "controls/test-no-run-3": {
+    "arm": "C",
+    "products": {},
+    "readers": [
+      {
+        "bytes": 6048,
+        "complete": true,
+        "name": "dep-lib-hold_bridge",
+        "sha256": "c2967219433f66696e391cc4c6632ca8e4bfe52c6d6e01c8e16b0e6477f2385a",
+        "signed": true
+      },
+      {
+        "bytes": 13107,
+        "complete": true,
+        "name": "dep-test-bin-hold_direct",
+        "sha256": "a417adb7f33b3a9d9d66aee0700c0d2e5bd56aa2fe30c785ab93ded85adf27ba",
+        "signed": true
+      }
+    ],
+    "roster": [],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "controls/test-no-run-real-edit": {
+    "arm": "C",
+    "products": {},
+    "readers": [
+      {
+        "bytes": 6048,
+        "complete": true,
+        "name": "dep-lib-hold_bridge",
+        "sha256": "36b125d8cfda63238648ed1d9f580fcc36d3e2b561bef519f9d8538854adf8b4",
+        "signed": true
+      },
+      {
+        "bytes": 13107,
+        "complete": true,
+        "name": "dep-test-bin-hold_direct",
+        "sha256": "490389794384112587f6e24d55cd81b6b0c7c5219b5b2fc3192c8a5dcf26d4d7",
+        "signed": true
+      }
+    ],
+    "roster": [
+      {
+        "capture": true,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": true,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_plain",
+        "mode": "relink"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_shapes",
+        "mode": "full"
+      }
+    ],
+    "source_sha256": "e27e925f288b958f810e597fbc9e08780535b2baa165c80997167060bcca9c8f",
+    "status": 0
+  },
+  "controls/wrapper-0": {
+    "arm": "C",
+    "products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "readers": [
+      {
+        "bytes": 443,
+        "complete": false,
+        "name": "dep-lib-hold_bridge",
+        "sha256": "2b9941cad52ab370494b234f2672a6d8c9a50263890a8ce67220bda1bf668fe3",
+        "signed": true
+      },
+      {
+        "bytes": 427,
+        "complete": false,
+        "name": "dep-bin-hold_direct",
+        "sha256": "60553ba485e8d330608ebb9b994b3600bb4d8d20022deadb815fb9ed474df79c",
+        "signed": true
+      }
+    ],
+    "roster": [
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_plain",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_probe",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_shapes",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_tokens",
+        "mode": "full"
+      }
+    ],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "controls/wrapper-1": {
+    "arm": "C",
+    "products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "readers": [
+      {
+        "bytes": 443,
+        "complete": false,
+        "name": "dep-lib-hold_bridge",
+        "sha256": "2b9941cad52ab370494b234f2672a6d8c9a50263890a8ce67220bda1bf668fe3",
+        "signed": true
+      },
+      {
+        "bytes": 427,
+        "complete": false,
+        "name": "dep-bin-hold_direct",
+        "sha256": "60553ba485e8d330608ebb9b994b3600bb4d8d20022deadb815fb9ed474df79c",
+        "signed": true
+      }
+    ],
+    "roster": [
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "relink"
+      }
+    ],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "controls/wrapper-2": {
+    "arm": "C",
+    "products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "readers": [
+      {
+        "bytes": 443,
+        "complete": false,
+        "name": "dep-lib-hold_bridge",
+        "sha256": "2b9941cad52ab370494b234f2672a6d8c9a50263890a8ce67220bda1bf668fe3",
+        "signed": true
+      },
+      {
+        "bytes": 427,
+        "complete": false,
+        "name": "dep-bin-hold_direct",
+        "sha256": "60553ba485e8d330608ebb9b994b3600bb4d8d20022deadb815fb9ed474df79c",
+        "signed": true
+      }
+    ],
+    "roster": [
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "relink"
+      }
+    ],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "flipped/corrupted-early-edit": {
+    "arm": "C",
+    "products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374094..374116)",
+        "sha256": "bb46ff22f9640a67401676f894df61fd1485d3bc4fcba37c63e4543972c98c46"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273191..273213)",
+        "sha256": "7b7d83f9ac360e8893a88e6a567960769096bc2694ed6190427b26af1286e301"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "readers": [
+      {
+        "bytes": 441,
+        "complete": false,
+        "name": "dep-lib-hold_bridge",
+        "sha256": "a8c4e96a8332b68f0bb22fe1992a54504c496af8a4d833dc564e6bef2967fc3e",
+        "signed": true
+      },
+      {
+        "bytes": 425,
+        "complete": false,
+        "name": "dep-bin-hold_direct",
+        "sha256": "447f8ffcf05af126eefaf6ec4946509a8ad0ccdf82802db1a180dee18521c3f2",
+        "signed": true
+      }
+    ],
+    "roster": [
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_plain",
+        "mode": "relink"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_shapes",
+        "mode": "full"
+      }
+    ],
+    "source_sha256": "e27e925f288b958f810e597fbc9e08780535b2baa165c80997167060bcca9c8f",
+    "status": 0
+  },
+  "flipped/empty-0": {
+    "arm": "P",
+    "products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "readers": [
+      {
+        "bytes": 343,
+        "complete": null,
+        "name": "dep-lib-hold_bridge",
+        "sha256": "bca722fdbd2b86ecef71213e69d75af3277a2b1aeaadc4ba05d98712746807e8",
+        "signed": false
+      },
+      {
+        "bytes": 327,
+        "complete": null,
+        "name": "dep-bin-hold_direct",
+        "sha256": "60b8c45c2a67d1bdf9217549eda457233f2ccacafeaa69b9b7216fa00803a851",
+        "signed": false
+      }
+    ],
+    "roster": [
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_plain",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_probe",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_shapes",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_tokens",
+        "mode": "full"
+      }
+    ],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "flipped/empty-1": {
+    "arm": "P",
+    "products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374094..374116)",
+        "sha256": "bb46ff22f9640a67401676f894df61fd1485d3bc4fcba37c63e4543972c98c46"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273191..273213)",
+        "sha256": "7b7d83f9ac360e8893a88e6a567960769096bc2694ed6190427b26af1286e301"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "readers": [
+      {
+        "bytes": 343,
+        "complete": null,
+        "name": "dep-lib-hold_bridge",
+        "sha256": "bca722fdbd2b86ecef71213e69d75af3277a2b1aeaadc4ba05d98712746807e8",
+        "signed": false
+      },
+      {
+        "bytes": 327,
+        "complete": null,
+        "name": "dep-bin-hold_direct",
+        "sha256": "60b8c45c2a67d1bdf9217549eda457233f2ccacafeaa69b9b7216fa00803a851",
+        "signed": false
+      }
+    ],
+    "roster": [
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_plain",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_probe",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_shapes",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_tokens",
+        "mode": "full"
+      }
+    ],
+    "source_sha256": "e27e925f288b958f810e597fbc9e08780535b2baa165c80997167060bcca9c8f",
+    "status": 0
+  },
+  "flipped/pending-receipts": {
+    "arm": "C",
+    "products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "e2dea8f9b8e3597000516aed383315a1632791f52cb670cbf9986293350dcba4"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "b6659c9645f405592793cc9febe7cae6e76c3ebf8b33d8d45d47bddb7a8f978b"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "e97b4419cfd58df89b300676f4547b531f2220457232581d09374e919de97623"
+      }
+    },
+    "readers": [
+      {
+        "bytes": 441,
+        "complete": false,
+        "name": "dep-lib-hold_bridge",
+        "sha256": "a8c4e96a8332b68f0bb22fe1992a54504c496af8a4d833dc564e6bef2967fc3e",
+        "signed": true
+      },
+      {
+        "bytes": 425,
+        "complete": false,
+        "name": "dep-bin-hold_direct",
+        "sha256": "447f8ffcf05af126eefaf6ec4946509a8ad0ccdf82802db1a180dee18521c3f2",
+        "signed": true
+      }
+    ],
+    "roster": [
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_indirect",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_plain",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_probe",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_shapes",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "hold_tokens",
+        "mode": "full"
+      }
+    ],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "ron/candidate-confirm": {
+    "arm": "C",
+    "products": {},
+    "readers": [
+      {
+        "bytes": 12228,
+        "complete": true,
+        "name": "dep-lib-ron",
+        "sha256": "d5321401d292ff8af66ac564cb4e5447d699676b60ff1cffb6a50731d96ac2cb",
+        "signed": true
+      }
+    ],
+    "roster": [],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "ron/candidate-inherit": {
+    "arm": "C",
+    "products": {},
+    "readers": [
+      {
+        "bytes": 3870,
+        "complete": false,
+        "name": "dep-lib-ron",
+        "sha256": "0a646588f8bafc267989996995b4f051fe558f25b2c609d30ef3123b840362a9",
+        "signed": true
+      }
+    ],
+    "roster": [
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "probe_ron",
+        "mode": "relink"
+      },
+      {
+        "capture": false,
+        "checksum": false,
+        "crate": "ron",
+        "mode": "full"
+      }
+    ],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "ron/candidate-repeat": {
+    "arm": "C",
+    "products": {},
+    "readers": [
+      {
+        "bytes": 12228,
+        "complete": true,
+        "name": "dep-lib-ron",
+        "sha256": "d5321401d292ff8af66ac564cb4e5447d699676b60ff1cffb6a50731d96ac2cb",
+        "signed": true
+      }
+    ],
+    "roster": [],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "ron/candidate-train": {
+    "arm": "C",
+    "products": {},
+    "readers": [
+      {
+        "bytes": 12228,
+        "complete": true,
+        "name": "dep-lib-ron",
+        "sha256": "d5321401d292ff8af66ac564cb4e5447d699676b60ff1cffb6a50731d96ac2cb",
+        "signed": true
+      }
+    ],
+    "roster": [
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "probe_ron",
+        "mode": "relink"
+      },
+      {
+        "capture": true,
+        "checksum": true,
+        "crate": "ron",
+        "mode": "full"
+      }
+    ],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "ron/parent-cold": {
+    "arm": "P",
+    "products": {},
+    "readers": [
+      {
+        "bytes": 165,
+        "complete": null,
+        "name": "dep-lib-ron",
+        "sha256": "bee7b3c866ca0a896c5cf50b060a8b9762569b5800342ced1d3bcbede8f8f5a6",
+        "signed": false
+      }
+    ],
+    "roster": [
+      {
+        "capture": false,
+        "checksum": false,
+        "crate": "bitflags",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": false,
+        "crate": "build_script_build",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": false,
+        "crate": "build_script_build",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": false,
+        "crate": "build_script_build",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": false,
+        "crate": "build_script_build",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": false,
+        "crate": "build_script_build",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": false,
+        "crate": "once_cell",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "probe_ron",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "probe_ron",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": false,
+        "crate": "proc_macro2",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": false,
+        "crate": "quote",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": false,
+        "crate": "ron",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": false,
+        "crate": "serde",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": false,
+        "crate": "serde_core",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": false,
+        "crate": "serde_derive",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": false,
+        "crate": "syn",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": false,
+        "crate": "typeid",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": false,
+        "crate": "unicode_ident",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": false,
+        "crate": "unicode_ident",
+        "mode": "full"
+      }
+    ],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "ron/parent-repeat": {
+    "arm": "P",
+    "products": {},
+    "readers": [
+      {
+        "bytes": 165,
+        "complete": null,
+        "name": "dep-lib-ron",
+        "sha256": "bee7b3c866ca0a896c5cf50b060a8b9762569b5800342ced1d3bcbede8f8f5a6",
+        "signed": false
+      }
+    ],
+    "roster": [
+      {
+        "capture": false,
+        "checksum": true,
+        "crate": "probe_ron",
+        "mode": "relink"
+      },
+      {
+        "capture": false,
+        "checksum": false,
+        "crate": "ron",
+        "mode": "full"
+      }
+    ],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "simultaneous/check-prime-0": {
+    "arm": "C",
+    "products": {},
+    "readers": [
+      {
+        "bytes": 368,
+        "complete": false,
+        "name": "dep-lib-hold_bridge",
+        "sha256": "6e97a7eb63a43de5b3f6e5ba8927febb610d5da55241200d754bc5725f355ff3",
+        "signed": true
+      },
+      {
+        "bytes": 369,
+        "complete": false,
+        "name": "dep-bin-hold_direct",
+        "sha256": "210f04cc52402b2760f67e0748f8b6ac156a469aee04e639b5a7c6290758bc5b",
+        "signed": true
+      }
+    ],
+    "roster": [
+      {
+        "capture": false,
+        "checksum": false,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": false,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": false,
+        "crate": "hold_indirect",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": false,
+        "crate": "hold_plain",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": false,
+        "crate": "hold_probe",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": false,
+        "crate": "hold_shapes",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": false,
+        "crate": "hold_tokens",
+        "mode": "full"
+      }
+    ],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "simultaneous/check-prime-1": {
+    "arm": "C",
+    "products": {},
+    "readers": [
+      {
+        "bytes": 6068,
+        "complete": true,
+        "name": "dep-lib-hold_bridge",
+        "sha256": "023c0e0975d11a63ad74412e1b25206d40f1b10d9d924dc90a045a21b86366e8",
+        "signed": true
+      },
+      {
+        "bytes": 6069,
+        "complete": true,
+        "name": "dep-bin-hold_direct",
+        "sha256": "f637975eb34214f12d7ddb4e310a2fa3ac60686f8d47a99bd5e68b2a3cc4ee84",
+        "signed": true
+      }
+    ],
+    "roster": [
+      {
+        "capture": true,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": true,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      }
+    ],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "simultaneous/check-prime-2": {
+    "arm": "C",
+    "products": {},
+    "readers": [
+      {
+        "bytes": 6068,
+        "complete": true,
+        "name": "dep-lib-hold_bridge",
+        "sha256": "023c0e0975d11a63ad74412e1b25206d40f1b10d9d924dc90a045a21b86366e8",
+        "signed": true
+      },
+      {
+        "bytes": 6069,
+        "complete": true,
+        "name": "dep-bin-hold_direct",
+        "sha256": "f637975eb34214f12d7ddb4e310a2fa3ac60686f8d47a99bd5e68b2a3cc4ee84",
+        "signed": true
+      }
+    ],
+    "roster": [],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "simultaneous/retarget-preserved-mtime": {
+    "arm": "C",
+    "products": {
+      "hold_direct": {
+        "output": "19=#6 bytes(374093..374115)",
+        "sha256": "b48f90681c486cde97b17041d244c7f14a5b309636400e7eeb2b6d5933264e3f"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "2f540cf9a55ec4cef039dadc5216359b5f95689a869a835e8cd2872a45db42c8"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "f882fe54bb5cf23cb10a803dfb816edb3427c841919bdf9cd214382071928ce8"
+      }
+    },
+    "readers": [
+      {
+        "bytes": 6068,
+        "complete": true,
+        "name": "dep-lib-hold_bridge",
+        "sha256": "5b91aa535e705fbd6b9644f6cf24a9dbc0918b0840cf9f410f32a435ee2ab2b4",
+        "signed": true
+      },
+      {
+        "bytes": 11607,
+        "complete": true,
+        "name": "dep-bin-hold_direct",
+        "sha256": "7bbc2c48191863b768431a5627c3f453bf8a6aa49c224362bb7778b51b78cba4",
+        "signed": true
+      }
+    ],
+    "roster": [
+      {
+        "capture": true,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      }
+    ],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "simultaneous/simultaneous-check": {
+    "arm": "C",
+    "products": {},
+    "readers": [
+      {
+        "bytes": 6068,
+        "complete": true,
+        "name": "dep-lib-hold_bridge",
+        "sha256": "023c0e0975d11a63ad74412e1b25206d40f1b10d9d924dc90a045a21b86366e8",
+        "signed": true
+      },
+      {
+        "bytes": 6069,
+        "complete": true,
+        "name": "dep-bin-hold_direct",
+        "sha256": "f637975eb34214f12d7ddb4e310a2fa3ac60686f8d47a99bd5e68b2a3cc4ee84",
+        "signed": true
+      }
+    ],
+    "roster": [
+      {
+        "capture": true,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": false,
+        "crate": "hold_shapes",
+        "mode": "full"
+      }
+    ],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 101
+  },
+  "simultaneous/symlink-empty": {
+    "arm": "P",
+    "products": {},
+    "readers": [
+      {
+        "bytes": 6068,
+        "complete": true,
+        "name": "dep-lib-hold_bridge",
+        "sha256": "5b91aa535e705fbd6b9644f6cf24a9dbc0918b0840cf9f410f32a435ee2ab2b4",
+        "signed": true
+      },
+      {
+        "bytes": 11607,
+        "complete": true,
+        "name": "dep-bin-hold_direct",
+        "sha256": "7bbc2c48191863b768431a5627c3f453bf8a6aa49c224362bb7778b51b78cba4",
+        "signed": true
+      }
+    ],
+    "roster": [
+      {
+        "capture": false,
+        "checksum": false,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": false,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": false,
+        "crate": "hold_indirect",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": false,
+        "crate": "hold_plain",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": false,
+        "crate": "hold_probe",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": false,
+        "crate": "hold_shapes",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": false,
+        "crate": "hold_tokens",
+        "mode": "full"
+      }
+    ],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "simultaneous/symlink-prime-0": {
+    "arm": "C",
+    "products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "275ce9debf0fbae049f5f92070816133399360a2ab58e73137b5a3f028d0c1aa"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "2f540cf9a55ec4cef039dadc5216359b5f95689a869a835e8cd2872a45db42c8"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "f882fe54bb5cf23cb10a803dfb816edb3427c841919bdf9cd214382071928ce8"
+      }
+    },
+    "readers": [
+      {
+        "bytes": 368,
+        "complete": false,
+        "name": "dep-lib-hold_bridge",
+        "sha256": "b4a0ab929d338dbe4c111b6c5ed09e43438e5065316f21bdd91c5d4b450e7e40",
+        "signed": true
+      },
+      {
+        "bytes": 352,
+        "complete": false,
+        "name": "dep-bin-hold_direct",
+        "sha256": "a5e4a93462fdbafe9aec6699a753dc64cb5e01973b575717736b602d602c9cb9",
+        "signed": true
+      }
+    ],
+    "roster": [
+      {
+        "capture": false,
+        "checksum": false,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": false,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": false,
+        "crate": "hold_indirect",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": false,
+        "crate": "hold_plain",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": false,
+        "crate": "hold_probe",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": false,
+        "crate": "hold_shapes",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": false,
+        "crate": "hold_tokens",
+        "mode": "full"
+      }
+    ],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "simultaneous/symlink-prime-1": {
+    "arm": "C",
+    "products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "275ce9debf0fbae049f5f92070816133399360a2ab58e73137b5a3f028d0c1aa"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "2f540cf9a55ec4cef039dadc5216359b5f95689a869a835e8cd2872a45db42c8"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "f882fe54bb5cf23cb10a803dfb816edb3427c841919bdf9cd214382071928ce8"
+      }
+    },
+    "readers": [
+      {
+        "bytes": 6068,
+        "complete": true,
+        "name": "dep-lib-hold_bridge",
+        "sha256": "5b91aa535e705fbd6b9644f6cf24a9dbc0918b0840cf9f410f32a435ee2ab2b4",
+        "signed": true
+      },
+      {
+        "bytes": 11607,
+        "complete": true,
+        "name": "dep-bin-hold_direct",
+        "sha256": "f5e7b5efb61e134f4e9d09eb46d84a7729a1ae22800bac845c3fb44c48f26527",
+        "signed": true
+      }
+    ],
+    "roster": [
+      {
+        "capture": true,
+        "checksum": true,
+        "crate": "hold_bridge",
+        "mode": "full"
+      },
+      {
+        "capture": true,
+        "checksum": true,
+        "crate": "hold_direct",
+        "mode": "full"
+      },
+      {
+        "capture": false,
+        "checksum": false,
+        "crate": "hold_indirect",
+        "mode": "relink"
+      }
+    ],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  },
+  "simultaneous/symlink-prime-2": {
+    "arm": "C",
+    "products": {
+      "hold_direct": {
+        "output": "19 #6 bytes(374093..374115)",
+        "sha256": "275ce9debf0fbae049f5f92070816133399360a2ab58e73137b5a3f028d0c1aa"
+      },
+      "hold_indirect": {
+        "output": "19 #4 bytes(273190..273212)",
+        "sha256": "2f540cf9a55ec4cef039dadc5216359b5f95689a869a835e8cd2872a45db42c8"
+      },
+      "hold_plain": {
+        "output": "19",
+        "sha256": "f882fe54bb5cf23cb10a803dfb816edb3427c841919bdf9cd214382071928ce8"
+      }
+    },
+    "readers": [
+      {
+        "bytes": 6068,
+        "complete": true,
+        "name": "dep-lib-hold_bridge",
+        "sha256": "5b91aa535e705fbd6b9644f6cf24a9dbc0918b0840cf9f410f32a435ee2ab2b4",
+        "signed": true
+      },
+      {
+        "bytes": 11607,
+        "complete": true,
+        "name": "dep-bin-hold_direct",
+        "sha256": "f5e7b5efb61e134f4e9d09eb46d84a7729a1ae22800bac845c3fb44c48f26527",
+        "signed": true
+      }
+    ],
+    "roster": [],
+    "source_sha256": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "status": 0
+  }
+}
