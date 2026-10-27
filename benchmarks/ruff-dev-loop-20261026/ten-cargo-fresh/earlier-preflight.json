@@ -1,0 +1,105 @@
+{
+  "decision": "Retain separately the 24 earlier check/build pairs; test stopped before randomization. Repeat the complete three-endpoint schedule with settled Ruff-only copies.",
+  "completed_endpoints": {
+    "check": {
+      "registry": {
+        "counts": {
+          "v1": 1028,
+          "v2": 410
+        },
+        "identical": true,
+        "changes": {
+          "v1": [],
+          "v2": []
+        }
+      },
+      "git": {
+        "before": {
+          "ruff-index": [
+            79974392,
+            1708084,
+            1793035005036222583,
+            "02874f1f7591d7eb209916f1581615c8fa675a8a7fb521033f25dca1e6fbf424"
+          ],
+          "proof-fdd": [
+            163664930,
+            32,
+            1793053730639002474,
+            "93614e41c2398b48f80deef8bdc8323488d1cde88e0f1bb10a2df96037be646b"
+          ]
+        },
+        "after": {
+          "ruff-index": [
+            79974392,
+            1708084,
+            1793035005036222583,
+            "02874f1f7591d7eb209916f1581615c8fa675a8a7fb521033f25dca1e6fbf424"
+          ],
+          "proof-fdd": [
+            163664930,
+            32,
+            1793053730639002474,
+            "93614e41c2398b48f80deef8bdc8323488d1cde88e0f1bb10a2df96037be646b"
+          ]
+        }
+      }
+    },
+    "build": {
+      "registry": {
+        "counts": {
+          "v1": 1028,
+          "v2": 410
+        },
+        "identical": true,
+        "changes": {
+          "v1": [],
+          "v2": []
+        }
+      },
+      "git": {
+        "before": {
+          "ruff-index": [
+            79974392,
+            1708084,
+            1793035005036222583,
+            "02874f1f7591d7eb209916f1581615c8fa675a8a7fb521033f25dca1e6fbf424"
+          ],
+          "proof-fdd": [
+            163664930,
+            32,
+            1793053730639002474,
+            "93614e41c2398b48f80deef8bdc8323488d1cde88e0f1bb10a2df96037be646b"
+          ]
+        },
+        "after": {
+          "ruff-index": [
+            79974392,
+            1708084,
+            1793035005036222583,
+            "02874f1f7591d7eb209916f1581615c8fa675a8a7fb521033f25dca1e6fbf424"
+          ],
+          "proof-fdd": [
+            163664930,
+            32,
+            1793053730639002474,
+            "93614e41c2398b48f80deef8bdc8323488d1cde88e0f1bb10a2df96037be646b"
+          ]
+        }
+      }
+    }
+  },
+  "test_pairs": 0,
+  "settling_cycles": 6,
+  "first_prime_mtime_ns": 1793057879530861184,
+  "cache_records_with_mtime_in_the_test_preflight": {
+    "v1": [
+      {
+        "slot": "557",
+        "mtime_ns": 1793058063991203819,
+        "sha256": "27766c9d11d35789ffeff39e58ad18000d7e315f2d41f0270d0ab05b60d5536d"
+      }
+    ],
+    "v2": []
+  },
+  "last_control_record": "libtest-mimic 0.8.1"
+}
