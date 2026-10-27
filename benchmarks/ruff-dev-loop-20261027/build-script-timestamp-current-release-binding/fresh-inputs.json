@@ -1,0 +1,38 @@
+{
+  "command": [
+    "cargo",
+    "+ohm",
+    "check",
+    "--locked",
+    "--offline",
+    "--message-format=json",
+    "-j8"
+  ],
+  "empty_target_and_build_dir": [],
+  "true_release": {
+    "archive_sha256": "957ca8144205008ddaee75ef35f9775b2e428271c6b044e38bbdd8196c6bbf3e",
+    "archive_size": 359705529,
+    "driver_name": "librustc_driver-b03bf00bec23bb9a.so",
+    "hashes": {
+      "cargo": "42e90992cec21a29956e20fd52ab952472a9dbc1dcc7a3b60c92aad101b5f568",
+      "driver": "c442c2a36e1f37c92f138a8fb367fc09982931b5f1055e9742fb402566ad46a4",
+      "frontend": "b0c412a7a8010a768f00546419a0b1bcfca382d7e70191df3ae72e30ac1ef3e5",
+      "wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5"
+    },
+    "installed_cmd": [
+      "/home/dev-user/.cache/ohm-233-position-qualified-20261027/build-script-current-stock-sdk-v1/contents/rust-1.99.0-dev-x86_64-unknown-linux-gnu/install.sh",
+      "--prefix=/home/dev-user/.cache/ohm-233-position-qualified-20261027/build-script-current-stock-sdk-v1/installed-sdk",
+      "--components=rustc,cargo,rust-std-x86_64-unknown-linux-gnu",
+      "--disable-ldconfig"
+    ],
+    "reserve_after": 32040443904,
+    "sdk_root": "/home/dev-user/.cache/ohm-233-position-qualified-20261027/build-script-current-stock-sdk-v1/installed-sdk",
+    "versions": {
+      "cargo": "cargo 1.99.0-dev (4c07cbf6b 2026-10-27) (ohm-1.99.0-16)\nrelease: 1.99.0-dev\ncommit-hash: 4c07cbf6bd91e170e3b8904eeb82436a6dbde358\ncommit-date: 2026-10-27\nhost: x86_64-unknown-linux-gnu\nlibgit2: 1.9.6 (sys:0.21.0 vendored)\nlibcurl: 8.21.0-DEV (sys:0.4.90+curl-8.21.0 vendored ssl:OpenSSL/3.6.3)\nssl: OpenSSL 3.6.3 9 Jun 2026\nos: Ubuntu 24.4.0 (noble) [64-bit]\n",
+      "frontend": "rustc 1.99.0-dev (9a1b7cb6a 2026-10-27) (ohm-1.99.0-16)\nbinary: rustc\ncommit-hash: 9a1b7cb6a356d5380fdf80714523cb434c34dccb\ncommit-date: 2026-10-27\nhost: x86_64-unknown-linux-gnu\nrelease: 1.99.0-dev\nLLVM version: 23.1.1\n"
+    },
+    "wild_member_sha256": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5",
+    "wild_provenance_input": "25012a78de164686f552b7703b5d0223adab4829c79cd1fb351108221d61c7d8",
+    "wild_version": "Wild 0.11.0 non-git-build (compatible with GNU linkers)"
+  }
+}

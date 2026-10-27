@@ -1,0 +1,9 @@
+# Current-release confirmation inputs
+
+The independent 24-pair trial compares the Cargo revision shipped in Ohm 1.99.0-16 with the same source plus the build-script generation fix. Every Ruff operation uses the installed distribution's rustc, standard library, LLVM and Wild. The official Linux archive and a second independently installed copy agree on the Cargo, rustc frontend, driver and Wild binaries. The Wild input named by the release coordinator and the installed Wild binary have different byte digests; this packet records both. The executable used by Ruff matches the corresponding member of the authenticated archive.
+
+The stock workspace check started with an empty target and build directory, 520 artifact records and 524 physical full compiler invocations. Both ensuing untouched checks were fully fresh. The scored Cargo programs are separate release-profile PGO builds sharing one pinned builder, source path and training profile. An independent A/B/A build validated the packaged control twice. The builder, ELF program headers, GNU RELRO, allocated sections, dynamic tables and full source manifests are recorded. This instrumentation-free packaging omits the debug symbol table and build-id note. It differs from release distribution packaging. The unchanged original Linux Cargo is additionally exercised as a functional control in the ordinary workspace.
+
+The checked-in regression passed on the new Cargo source and failed on the unmodified parent after adding only the regression. This packet binds the two matched programs, the official stock lineage, the independent randomized order and the native runner before timed samples.
+
+[Prospective independent confirmation](https://github.com/astral-sh/ohm-cargo/tree/f112ad3394f13bd6d430ddf5598f84255bedc138/benchmarks/ruff-dev-loop-20261027/build-script-timestamp-current-confirmation-plan)
