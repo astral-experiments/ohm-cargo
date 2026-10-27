@@ -1,0 +1,32 @@
+{
+  "after": {
+    "crates/ty_python_semantic/resources/mdtest/typed_dict.md": "7ed4b83346dfc9e0cab30fa18ff53d09cb6c95945d2e754eecac8c37a10e2fc6"
+  },
+  "application": "complete reverse patch against the pinned tree",
+  "attempts": [
+    [
+      "be042539847afee4223e92ce271b080d70c91ea8",
+      1,
+      1,
+      0
+    ]
+  ],
+  "case": "be042539847afee4223e92ce271b080d70c91ea8",
+  "experiment": "Native official -16 cargo +ohm test --no-run --offline --locked -p ty_python_semantic --test mdtest plus cargo +ohm build --offline --locked -p ty_python_semantic. Record full/link-only rustcs, actual Wild, Cargo freshness/diagnostics, executable bytes, depinfo, and standalone harness --list. Confirm the actual selected fixture bytes open by an independent runtime validation of exactly that fixture on each source state; no test timing or speed inference. Only native effects surviving a clean/restore control warrant new code.",
+  "patch_hash": "1bb7dfbe145e4196851b4f78cef944ee52aafdd05956c7f29c41c0ad94c2a13c",
+  "policy": "First-parent newest-to-oldest full commit touching only Ty semantic runtime MDtest input paths, at most nine files, modifying exactly one existing .md under the shipped Rust runtime harness roots; first reverse-applicable. No native outcomes available at selection.",
+  "prior": {
+    "crates/ty_python_semantic/resources/mdtest/typed_dict.md": "2eed231b412822b4ea7eeb61c42ffbc37ad52d4b5376c3c65aaf02d1ed59f76e"
+  },
+  "source": "93526150df078af7dd8fc4226cdcc469539d2001",
+  "status": [
+    [
+      "M",
+      "crates/ty_python_semantic/resources/mdtest/typed_dict.md"
+    ]
+  ],
+  "title": "[ty] Clarify closed TypedDict get tests (#29334)",
+  "unique_fixture_names": [
+    "crates/ty_python_semantic/resources/mdtest/typed_dict.md"
+  ]
+}
