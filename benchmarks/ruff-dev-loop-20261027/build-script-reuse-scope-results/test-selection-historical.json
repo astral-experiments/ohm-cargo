@@ -1,0 +1,586 @@
+[
+  {
+    "crate": "build_script_build",
+    "src": "crates/ruff/build.rs",
+    "kind": "rustc-full",
+    "types": "bin",
+    "emit": "--emit=dep-info,link",
+    "proc": [],
+    "passed_native": [],
+    "depcount": 0
+  },
+  {
+    "crate": "build_script_build",
+    "src": "crates/ty/build.rs",
+    "kind": "rustc-full",
+    "types": "bin",
+    "emit": "--emit=dep-info,link",
+    "proc": [],
+    "passed_native": [],
+    "depcount": 0
+  },
+  {
+    "crate": "build_script_build",
+    "src": "crates/ty_wasm/build.rs",
+    "kind": "rustc-full",
+    "types": "bin",
+    "emit": "--emit=dep-info,link",
+    "proc": [],
+    "passed_native": [],
+    "depcount": 0
+  },
+  {
+    "crate": "ty",
+    "src": "crates/ty/src/lib.rs",
+    "kind": "rustc-full",
+    "types": "lib",
+    "emit": "--emit=dep-info,metadata,link",
+    "proc": [],
+    "passed_native": [
+      [
+        "workspaces",
+        "2a0346c599559020",
+        "v2-d462aeba816cd114-all-native-all",
+        "psm"
+      ],
+      [
+        "workspaces",
+        "2a0346c599559020",
+        "v2-d462aeba816cd114-all-native-all",
+        "zstd-sys"
+      ],
+      [
+        "lib"
+      ]
+    ],
+    "depcount": 29
+  },
+  {
+    "crate": "ty",
+    "src": "crates/ty/src/lib.rs",
+    "kind": "rustc-full",
+    "types": null,
+    "emit": "--emit=dep-info,link",
+    "proc": [],
+    "passed_native": [
+      [
+        "workspaces",
+        "2a0346c599559020",
+        "v2-d462aeba816cd114-all-native-all",
+        "psm"
+      ],
+      [
+        "workspaces",
+        "2a0346c599559020",
+        "v2-d462aeba816cd114-all-native-all",
+        "zstd-sys"
+      ],
+      [
+        "lib"
+      ]
+    ],
+    "depcount": 80
+  },
+  {
+    "crate": "ty_wasm",
+    "src": "crates/ty_wasm/src/lib.rs",
+    "kind": "rustc-full",
+    "types": "cdylib",
+    "emit": "--emit=dep-info,metadata,link",
+    "proc": [],
+    "passed_native": [
+      [
+        "workspaces",
+        "2a0346c599559020",
+        "v2-d462aeba816cd114-all-native-all",
+        "psm"
+      ],
+      [
+        "workspaces",
+        "2a0346c599559020",
+        "v2-d462aeba816cd114-all-native-all",
+        "zstd-sys"
+      ]
+    ],
+    "depcount": 36
+  },
+  {
+    "crate": "ruff",
+    "src": "crates/ruff/src/lib.rs",
+    "kind": "rustc-full",
+    "types": "lib",
+    "emit": "--emit=dep-info,metadata,link",
+    "proc": [
+      "is_macro",
+      "ruff_macros"
+    ],
+    "passed_native": [
+      [
+        "workspaces",
+        "2a0346c599559020",
+        "v2-d462aeba816cd114-all-native-all",
+        "psm"
+      ],
+      [
+        "workspaces",
+        "2a0346c599559020",
+        "v2-d462aeba816cd114-all-native-all",
+        "zstd-sys"
+      ],
+      [
+        "lib"
+      ]
+    ],
+    "depcount": 50
+  },
+  {
+    "crate": "ruff",
+    "src": "crates/ruff/src/lib.rs",
+    "kind": "rustc-full",
+    "types": null,
+    "emit": "--emit=dep-info,link",
+    "proc": [
+      "indoc",
+      "is_macro",
+      "ruff_macros"
+    ],
+    "passed_native": [
+      [
+        "workspaces",
+        "2a0346c599559020",
+        "v2-d462aeba816cd114-all-native-all",
+        "psm"
+      ],
+      [
+        "workspaces",
+        "2a0346c599559020",
+        "v2-d462aeba816cd114-all-native-all",
+        "zstd-sys"
+      ],
+      [
+        "lib"
+      ]
+    ],
+    "depcount": 111
+  },
+  {
+    "crate": "ty",
+    "src": "crates/ty/src/main.rs",
+    "kind": "rustc-full",
+    "types": "bin",
+    "emit": "--emit=dep-info,link",
+    "proc": [],
+    "passed_native": [
+      [
+        "workspaces",
+        "2a0346c599559020",
+        "v2-d462aeba816cd114-all-native-all",
+        "psm"
+      ],
+      [
+        "workspaces",
+        "2a0346c599559020",
+        "v2-d462aeba816cd114-all-native-all",
+        "zstd-sys"
+      ],
+      [
+        "lib"
+      ]
+    ],
+    "depcount": 60
+  },
+  {
+    "crate": "ty",
+    "src": "crates/ty/src/main.rs",
+    "kind": "rustc-full",
+    "types": null,
+    "emit": "--emit=dep-info,link",
+    "proc": [],
+    "passed_native": [
+      [
+        "workspaces",
+        "2a0346c599559020",
+        "v2-d462aeba816cd114-all-native-all",
+        "psm"
+      ],
+      [
+        "workspaces",
+        "2a0346c599559020",
+        "v2-d462aeba816cd114-all-native-all",
+        "zstd-sys"
+      ],
+      [
+        "lib"
+      ]
+    ],
+    "depcount": 82
+  },
+  {
+    "crate": "self_environment",
+    "src": "crates/ty/tests/self_environment.rs",
+    "kind": "rustc-full",
+    "types": null,
+    "emit": "--emit=dep-info,link",
+    "proc": [],
+    "passed_native": [
+      [
+        "workspaces",
+        "2a0346c599559020",
+        "v2-d462aeba816cd114-all-native-all",
+        "psm"
+      ],
+      [
+        "workspaces",
+        "2a0346c599559020",
+        "v2-d462aeba816cd114-all-native-all",
+        "zstd-sys"
+      ],
+      [
+        "lib"
+      ]
+    ],
+    "depcount": 82
+  },
+  {
+    "crate": "file_watching",
+    "src": "crates/ty/tests/file_watching.rs",
+    "kind": "rustc-full",
+    "types": null,
+    "emit": "--emit=dep-info,link",
+    "proc": [],
+    "passed_native": [
+      [
+        "workspaces",
+        "2a0346c599559020",
+        "v2-d462aeba816cd114-all-native-all",
+        "psm"
+      ],
+      [
+        "workspaces",
+        "2a0346c599559020",
+        "v2-d462aeba816cd114-all-native-all",
+        "zstd-sys"
+      ],
+      [
+        "lib"
+      ]
+    ],
+    "depcount": 82
+  },
+  {
+    "crate": "integration_test",
+    "src": "crates/ruff/tests/integration_test.rs",
+    "kind": "rustc-full",
+    "types": null,
+    "emit": "--emit=dep-info,link",
+    "proc": [
+      "indoc",
+      "is_macro",
+      "ruff_macros"
+    ],
+    "passed_native": [
+      [
+        "workspaces",
+        "2a0346c599559020",
+        "v2-d462aeba816cd114-all-native-all",
+        "psm"
+      ],
+      [
+        "workspaces",
+        "2a0346c599559020",
+        "v2-d462aeba816cd114-all-native-all",
+        "zstd-sys"
+      ],
+      [
+        "lib"
+      ]
+    ],
+    "depcount": 113
+  },
+  {
+    "crate": "analyze_graph",
+    "src": "crates/ruff/tests/analyze_graph.rs",
+    "kind": "rustc-full",
+    "types": null,
+    "emit": "--emit=dep-info,link",
+    "proc": [
+      "indoc",
+      "is_macro",
+      "ruff_macros"
+    ],
+    "passed_native": [
+      [
+        "workspaces",
+        "2a0346c599559020",
+        "v2-d462aeba816cd114-all-native-all",
+        "psm"
+      ],
+      [
+        "workspaces",
+        "2a0346c599559020",
+        "v2-d462aeba816cd114-all-native-all",
+        "zstd-sys"
+      ],
+      [
+        "lib"
+      ]
+    ],
+    "depcount": 113
+  },
+  {
+    "crate": "ruff_dev",
+    "src": "",
+    "kind": "rustc-link-only",
+    "types": null,
+    "emit": "--emit=dep-info,link",
+    "proc": [
+      "indoc"
+    ],
+    "passed_native": [
+      [
+        "workspaces",
+        "2a0346c599559020",
+        "v2-d462aeba816cd114-all-native-all",
+        "psm"
+      ],
+      [
+        "workspaces",
+        "2a0346c599559020",
+        "v2-d462aeba816cd114-all-native-all",
+        "zstd-sys"
+      ],
+      [
+        "lib"
+      ]
+    ],
+    "depcount": 75
+  },
+  {
+    "crate": "api",
+    "src": "crates/ty_wasm/tests/api.rs",
+    "kind": "rustc-full",
+    "types": null,
+    "emit": "--emit=dep-info,link",
+    "proc": [],
+    "passed_native": [
+      [
+        "workspaces",
+        "2a0346c599559020",
+        "v2-d462aeba816cd114-all-native-all",
+        "psm"
+      ],
+      [
+        "workspaces",
+        "2a0346c599559020",
+        "v2-d462aeba816cd114-all-native-all",
+        "zstd-sys"
+      ]
+    ],
+    "depcount": 40
+  },
+  {
+    "crate": "direxist_guard",
+    "src": "crates/ruff/tests/direxist_guard.rs",
+    "kind": "rustc-full",
+    "types": null,
+    "emit": "--emit=dep-info,link",
+    "proc": [
+      "indoc",
+      "is_macro",
+      "ruff_macros"
+    ],
+    "passed_native": [
+      [
+        "workspaces",
+        "2a0346c599559020",
+        "v2-d462aeba816cd114-all-native-all",
+        "psm"
+      ],
+      [
+        "workspaces",
+        "2a0346c599559020",
+        "v2-d462aeba816cd114-all-native-all",
+        "zstd-sys"
+      ],
+      [
+        "lib"
+      ]
+    ],
+    "depcount": 113
+  },
+  {
+    "crate": "config",
+    "src": "crates/ruff/tests/config.rs",
+    "kind": "rustc-full",
+    "types": null,
+    "emit": "--emit=dep-info,link",
+    "proc": [
+      "indoc",
+      "is_macro",
+      "ruff_macros"
+    ],
+    "passed_native": [
+      [
+        "workspaces",
+        "2a0346c599559020",
+        "v2-d462aeba816cd114-all-native-all",
+        "psm"
+      ],
+      [
+        "workspaces",
+        "2a0346c599559020",
+        "v2-d462aeba816cd114-all-native-all",
+        "zstd-sys"
+      ],
+      [
+        "lib"
+      ]
+    ],
+    "depcount": 113
+  },
+  {
+    "crate": "resolve_files",
+    "src": "crates/ruff/tests/resolve_files.rs",
+    "kind": "rustc-full",
+    "types": null,
+    "emit": "--emit=dep-info,link",
+    "proc": [
+      "indoc",
+      "is_macro",
+      "ruff_macros"
+    ],
+    "passed_native": [
+      [
+        "workspaces",
+        "2a0346c599559020",
+        "v2-d462aeba816cd114-all-native-all",
+        "psm"
+      ],
+      [
+        "workspaces",
+        "2a0346c599559020",
+        "v2-d462aeba816cd114-all-native-all",
+        "zstd-sys"
+      ],
+      [
+        "lib"
+      ]
+    ],
+    "depcount": 113
+  },
+  {
+    "crate": "ruff",
+    "src": "crates/ruff/src/main.rs",
+    "kind": "rustc-full",
+    "types": null,
+    "emit": "--emit=dep-info,link",
+    "proc": [
+      "indoc",
+      "is_macro",
+      "ruff_macros"
+    ],
+    "passed_native": [
+      [
+        "workspaces",
+        "2a0346c599559020",
+        "v2-d462aeba816cd114-all-native-all",
+        "psm"
+      ],
+      [
+        "workspaces",
+        "2a0346c599559020",
+        "v2-d462aeba816cd114-all-native-all",
+        "zstd-sys"
+      ],
+      [
+        "lib"
+      ]
+    ],
+    "depcount": 113
+  },
+  {
+    "crate": "cli",
+    "src": "crates/ruff/tests/cli/main.rs",
+    "kind": "rustc-full",
+    "types": null,
+    "emit": "--emit=dep-info,link",
+    "proc": [
+      "indoc",
+      "is_macro",
+      "ruff_macros"
+    ],
+    "passed_native": [
+      [
+        "workspaces",
+        "2a0346c599559020",
+        "v2-d462aeba816cd114-all-native-all",
+        "psm"
+      ],
+      [
+        "workspaces",
+        "2a0346c599559020",
+        "v2-d462aeba816cd114-all-native-all",
+        "zstd-sys"
+      ],
+      [
+        "lib"
+      ]
+    ],
+    "depcount": 113
+  },
+  {
+    "crate": "ruff",
+    "src": "crates/ruff/src/main.rs",
+    "kind": "rustc-full",
+    "types": "bin",
+    "emit": "--emit=dep-info,link",
+    "proc": [
+      "is_macro",
+      "ruff_macros"
+    ],
+    "passed_native": [
+      [
+        "workspaces",
+        "2a0346c599559020",
+        "v2-d462aeba816cd114-all-native-all",
+        "psm"
+      ],
+      [
+        "workspaces",
+        "2a0346c599559020",
+        "v2-d462aeba816cd114-all-native-all",
+        "zstd-sys"
+      ],
+      [
+        "lib"
+      ]
+    ],
+    "depcount": 100
+  },
+  {
+    "crate": "cli",
+    "src": "crates/ty/tests/cli/main.rs",
+    "kind": "rustc-full",
+    "types": null,
+    "emit": "--emit=dep-info,link",
+    "proc": [],
+    "passed_native": [
+      [
+        "workspaces",
+        "2a0346c599559020",
+        "v2-d462aeba816cd114-all-native-all",
+        "psm"
+      ],
+      [
+        "workspaces",
+        "2a0346c599559020",
+        "v2-d462aeba816cd114-all-native-all",
+        "zstd-sys"
+      ],
+      [
+        "lib"
+      ]
+    ],
+    "depcount": 82
+  }
+]

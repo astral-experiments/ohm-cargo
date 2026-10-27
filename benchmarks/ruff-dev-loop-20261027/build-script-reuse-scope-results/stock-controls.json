@@ -1,0 +1,718 @@
+{
+  "environment": {
+    "edit": {
+      "ELF": "18b6cecdf1915e24e8b16aa15a429c400324e3b610c2f459da613f446017c8c4",
+      "consumer_compilers": 1,
+      "correct": true,
+      "expected": "83",
+      "native_linkers": 1,
+      "out_files": {},
+      "outside_files": {
+        "outside.txt": "3d914f9348c9cc0ff8a79716700b9fcd4d2f3e711608004eb8f138bcba7f14d9"
+      },
+      "stdout": "83",
+      "stdout_of_script": [
+        "cargo::rerun-if-changed=trigger.txt",
+        "cargo::rustc-env=SEEN=83"
+      ]
+    },
+    "empty-edited": {
+      "ELF": "18b6cecdf1915e24e8b16aa15a429c400324e3b610c2f459da613f446017c8c4",
+      "consumer_compilers": 1,
+      "correct": true,
+      "expected": "83",
+      "native_linkers": 2,
+      "out_files": {},
+      "outside_files": {
+        "outside.txt": "3d914f9348c9cc0ff8a79716700b9fcd4d2f3e711608004eb8f138bcba7f14d9"
+      },
+      "stdout": "83",
+      "stdout_of_script": [
+        "cargo::rerun-if-changed=trigger.txt",
+        "cargo::rustc-env=SEEN=83"
+      ]
+    },
+    "prime": {
+      "ELF": "b92d8661f32317921d19e93b402d6d54feb13705ef1db9b46ecacdd90a8d3ee6",
+      "consumer_compilers": 1,
+      "correct": true,
+      "expected": "41",
+      "native_linkers": 2,
+      "out_files": {},
+      "outside_files": {
+        "outside.txt": "3d914f9348c9cc0ff8a79716700b9fcd4d2f3e711608004eb8f138bcba7f14d9"
+      },
+      "stdout": "41",
+      "stdout_of_script": [
+        "cargo::rerun-if-changed=trigger.txt",
+        "cargo::rustc-env=SEEN=41"
+      ]
+    },
+    "restore": {
+      "ELF": "b92d8661f32317921d19e93b402d6d54feb13705ef1db9b46ecacdd90a8d3ee6",
+      "consumer_compilers": 1,
+      "correct": true,
+      "expected": "41",
+      "native_linkers": 1,
+      "out_files": {},
+      "outside_files": {
+        "outside.txt": "3d914f9348c9cc0ff8a79716700b9fcd4d2f3e711608004eb8f138bcba7f14d9"
+      },
+      "stdout": "41",
+      "stdout_of_script": [
+        "cargo::rerun-if-changed=trigger.txt",
+        "cargo::rustc-env=SEEN=41"
+      ]
+    },
+    "warm-edited": {
+      "ELF": "18b6cecdf1915e24e8b16aa15a429c400324e3b610c2f459da613f446017c8c4",
+      "consumer_compilers": 0,
+      "correct": true,
+      "expected": "83",
+      "native_linkers": 0,
+      "out_files": {},
+      "outside_files": {
+        "outside.txt": "3d914f9348c9cc0ff8a79716700b9fcd4d2f3e711608004eb8f138bcba7f14d9"
+      },
+      "stdout": "83",
+      "stdout_of_script": [
+        "cargo::rerun-if-changed=trigger.txt",
+        "cargo::rustc-env=SEEN=83"
+      ]
+    },
+    "warm-original": {
+      "ELF": "b92d8661f32317921d19e93b402d6d54feb13705ef1db9b46ecacdd90a8d3ee6",
+      "consumer_compilers": 0,
+      "correct": true,
+      "expected": "41",
+      "native_linkers": 0,
+      "out_files": {},
+      "outside_files": {
+        "outside.txt": "3d914f9348c9cc0ff8a79716700b9fcd4d2f3e711608004eb8f138bcba7f14d9"
+      },
+      "stdout": "41",
+      "stdout_of_script": [
+        "cargo::rerun-if-changed=trigger.txt",
+        "cargo::rustc-env=SEEN=41"
+      ]
+    }
+  },
+  "generator": {
+    "edit": {
+      "ELF": "f76edf4f5a43b27ba3cc15c458f69d501e1fd9832e379f1ed59245c892fe1fe4",
+      "consumer_compilers": 1,
+      "correct": true,
+      "expected": "83",
+      "native_linkers": 1,
+      "out_files": {
+        "number.txt": "bbb965ab0c80d6538cf2184babad2a564a010376712012bd07b0af92dcd3097d"
+      },
+      "outside_files": {
+        "outside.txt": "3d914f9348c9cc0ff8a79716700b9fcd4d2f3e711608004eb8f138bcba7f14d9"
+      },
+      "stdout": "83",
+      "stdout_of_script": [
+        "cargo::rerun-if-changed=trigger.txt"
+      ]
+    },
+    "empty-edited": {
+      "ELF": "f76edf4f5a43b27ba3cc15c458f69d501e1fd9832e379f1ed59245c892fe1fe4",
+      "consumer_compilers": 1,
+      "correct": true,
+      "expected": "83",
+      "native_linkers": 2,
+      "out_files": {
+        "number.txt": "bbb965ab0c80d6538cf2184babad2a564a010376712012bd07b0af92dcd3097d"
+      },
+      "outside_files": {
+        "outside.txt": "3d914f9348c9cc0ff8a79716700b9fcd4d2f3e711608004eb8f138bcba7f14d9"
+      },
+      "stdout": "83",
+      "stdout_of_script": [
+        "cargo::rerun-if-changed=trigger.txt"
+      ]
+    },
+    "prime": {
+      "ELF": "7dba686959e38e0330e15d36f83d908079205216a916f1d2c8263be54083de8d",
+      "consumer_compilers": 1,
+      "correct": true,
+      "expected": "41",
+      "native_linkers": 2,
+      "out_files": {
+        "number.txt": "3d914f9348c9cc0ff8a79716700b9fcd4d2f3e711608004eb8f138bcba7f14d9"
+      },
+      "outside_files": {
+        "outside.txt": "3d914f9348c9cc0ff8a79716700b9fcd4d2f3e711608004eb8f138bcba7f14d9"
+      },
+      "stdout": "41",
+      "stdout_of_script": [
+        "cargo::rerun-if-changed=trigger.txt"
+      ]
+    },
+    "restore": {
+      "ELF": "7dba686959e38e0330e15d36f83d908079205216a916f1d2c8263be54083de8d",
+      "consumer_compilers": 1,
+      "correct": true,
+      "expected": "41",
+      "native_linkers": 1,
+      "out_files": {
+        "number.txt": "3d914f9348c9cc0ff8a79716700b9fcd4d2f3e711608004eb8f138bcba7f14d9"
+      },
+      "outside_files": {
+        "outside.txt": "3d914f9348c9cc0ff8a79716700b9fcd4d2f3e711608004eb8f138bcba7f14d9"
+      },
+      "stdout": "41",
+      "stdout_of_script": [
+        "cargo::rerun-if-changed=trigger.txt"
+      ]
+    },
+    "warm-edited": {
+      "ELF": "f76edf4f5a43b27ba3cc15c458f69d501e1fd9832e379f1ed59245c892fe1fe4",
+      "consumer_compilers": 0,
+      "correct": true,
+      "expected": "83",
+      "native_linkers": 0,
+      "out_files": {
+        "number.txt": "bbb965ab0c80d6538cf2184babad2a564a010376712012bd07b0af92dcd3097d"
+      },
+      "outside_files": {
+        "outside.txt": "3d914f9348c9cc0ff8a79716700b9fcd4d2f3e711608004eb8f138bcba7f14d9"
+      },
+      "stdout": "83",
+      "stdout_of_script": [
+        "cargo::rerun-if-changed=trigger.txt"
+      ]
+    },
+    "warm-original": {
+      "ELF": "7dba686959e38e0330e15d36f83d908079205216a916f1d2c8263be54083de8d",
+      "consumer_compilers": 0,
+      "correct": true,
+      "expected": "41",
+      "native_linkers": 0,
+      "out_files": {
+        "number.txt": "3d914f9348c9cc0ff8a79716700b9fcd4d2f3e711608004eb8f138bcba7f14d9"
+      },
+      "outside_files": {
+        "outside.txt": "3d914f9348c9cc0ff8a79716700b9fcd4d2f3e711608004eb8f138bcba7f14d9"
+      },
+      "stdout": "41",
+      "stdout_of_script": [
+        "cargo::rerun-if-changed=trigger.txt"
+      ]
+    }
+  },
+  "library-order": {
+    "edit": {
+      "ELF": "74cd44b301fd59549d3853bcd01dc035e562eb18abd489737353b75f8684c8b7",
+      "consumer_compilers": 1,
+      "correct": true,
+      "expected": "83",
+      "native_linkers": 1,
+      "out_files": {},
+      "outside_files": {
+        "native/libfirst.a": "7c8b70bd0a22d4f4c80214368fc4b0871c59e32314e15b83ead6dcaf1fd1ecc1",
+        "native/libsecond.a": "b42e47a38e0031ff8112cbc25e684838ca1fd56c72cd7ad7585d8e33b9188050",
+        "outside.txt": "3d914f9348c9cc0ff8a79716700b9fcd4d2f3e711608004eb8f138bcba7f14d9"
+      },
+      "stdout": "83",
+      "stdout_of_script": [
+        "cargo::rerun-if-changed=trigger.txt",
+        "cargo::rustc-link-search=native=/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/build-script-producer-reuse16-v1/stock-controls-v1/library-order/ws/native",
+        "cargo::rustc-link-lib=static=second",
+        "cargo::rustc-link-lib=static=first"
+      ]
+    },
+    "empty-edited": {
+      "ELF": "74cd44b301fd59549d3853bcd01dc035e562eb18abd489737353b75f8684c8b7",
+      "consumer_compilers": 1,
+      "correct": true,
+      "expected": "83",
+      "native_linkers": 2,
+      "out_files": {},
+      "outside_files": {
+        "native/libfirst.a": "7c8b70bd0a22d4f4c80214368fc4b0871c59e32314e15b83ead6dcaf1fd1ecc1",
+        "native/libsecond.a": "b42e47a38e0031ff8112cbc25e684838ca1fd56c72cd7ad7585d8e33b9188050",
+        "outside.txt": "3d914f9348c9cc0ff8a79716700b9fcd4d2f3e711608004eb8f138bcba7f14d9"
+      },
+      "stdout": "83",
+      "stdout_of_script": [
+        "cargo::rerun-if-changed=trigger.txt",
+        "cargo::rustc-link-search=native=/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/build-script-producer-reuse16-v1/stock-controls-v1/library-order/ws/native",
+        "cargo::rustc-link-lib=static=second",
+        "cargo::rustc-link-lib=static=first"
+      ]
+    },
+    "prime": {
+      "ELF": "cb2752056c5138a45784769dc0b9952b9d08e365e26609cfc791c0fef61e2fd5",
+      "consumer_compilers": 1,
+      "correct": true,
+      "expected": "41",
+      "native_linkers": 2,
+      "out_files": {},
+      "outside_files": {
+        "native/libfirst.a": "7c8b70bd0a22d4f4c80214368fc4b0871c59e32314e15b83ead6dcaf1fd1ecc1",
+        "native/libsecond.a": "b42e47a38e0031ff8112cbc25e684838ca1fd56c72cd7ad7585d8e33b9188050",
+        "outside.txt": "3d914f9348c9cc0ff8a79716700b9fcd4d2f3e711608004eb8f138bcba7f14d9"
+      },
+      "stdout": "41",
+      "stdout_of_script": [
+        "cargo::rerun-if-changed=trigger.txt",
+        "cargo::rustc-link-search=native=/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/build-script-producer-reuse16-v1/stock-controls-v1/library-order/ws/native",
+        "cargo::rustc-link-lib=static=first",
+        "cargo::rustc-link-lib=static=second"
+      ]
+    },
+    "restore": {
+      "ELF": "cb2752056c5138a45784769dc0b9952b9d08e365e26609cfc791c0fef61e2fd5",
+      "consumer_compilers": 1,
+      "correct": true,
+      "expected": "41",
+      "native_linkers": 1,
+      "out_files": {},
+      "outside_files": {
+        "native/libfirst.a": "7c8b70bd0a22d4f4c80214368fc4b0871c59e32314e15b83ead6dcaf1fd1ecc1",
+        "native/libsecond.a": "b42e47a38e0031ff8112cbc25e684838ca1fd56c72cd7ad7585d8e33b9188050",
+        "outside.txt": "3d914f9348c9cc0ff8a79716700b9fcd4d2f3e711608004eb8f138bcba7f14d9"
+      },
+      "stdout": "41",
+      "stdout_of_script": [
+        "cargo::rerun-if-changed=trigger.txt",
+        "cargo::rustc-link-search=native=/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/build-script-producer-reuse16-v1/stock-controls-v1/library-order/ws/native",
+        "cargo::rustc-link-lib=static=first",
+        "cargo::rustc-link-lib=static=second"
+      ]
+    },
+    "warm-edited": {
+      "ELF": "74cd44b301fd59549d3853bcd01dc035e562eb18abd489737353b75f8684c8b7",
+      "consumer_compilers": 0,
+      "correct": true,
+      "expected": "83",
+      "native_linkers": 0,
+      "out_files": {},
+      "outside_files": {
+        "native/libfirst.a": "7c8b70bd0a22d4f4c80214368fc4b0871c59e32314e15b83ead6dcaf1fd1ecc1",
+        "native/libsecond.a": "b42e47a38e0031ff8112cbc25e684838ca1fd56c72cd7ad7585d8e33b9188050",
+        "outside.txt": "3d914f9348c9cc0ff8a79716700b9fcd4d2f3e711608004eb8f138bcba7f14d9"
+      },
+      "stdout": "83",
+      "stdout_of_script": [
+        "cargo::rerun-if-changed=trigger.txt",
+        "cargo::rustc-link-search=native=/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/build-script-producer-reuse16-v1/stock-controls-v1/library-order/ws/native",
+        "cargo::rustc-link-lib=static=second",
+        "cargo::rustc-link-lib=static=first"
+      ]
+    },
+    "warm-original": {
+      "ELF": "cb2752056c5138a45784769dc0b9952b9d08e365e26609cfc791c0fef61e2fd5",
+      "consumer_compilers": 0,
+      "correct": true,
+      "expected": "41",
+      "native_linkers": 0,
+      "out_files": {},
+      "outside_files": {
+        "native/libfirst.a": "7c8b70bd0a22d4f4c80214368fc4b0871c59e32314e15b83ead6dcaf1fd1ecc1",
+        "native/libsecond.a": "b42e47a38e0031ff8112cbc25e684838ca1fd56c72cd7ad7585d8e33b9188050",
+        "outside.txt": "3d914f9348c9cc0ff8a79716700b9fcd4d2f3e711608004eb8f138bcba7f14d9"
+      },
+      "stdout": "41",
+      "stdout_of_script": [
+        "cargo::rerun-if-changed=trigger.txt",
+        "cargo::rustc-link-search=native=/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/build-script-producer-reuse16-v1/stock-controls-v1/library-order/ws/native",
+        "cargo::rustc-link-lib=static=first",
+        "cargo::rustc-link-lib=static=second"
+      ]
+    }
+  },
+  "outside-archive": {
+    "edit": {
+      "ELF": "e5f9a73dc8f890444513ec70622e3029b4fadb36914b97ce0958fed93be7bf4d",
+      "consumer_compilers": 1,
+      "correct": true,
+      "expected": "83",
+      "native_linkers": 1,
+      "out_files": {},
+      "outside_files": {
+        "native/libmutable.a": "3fd44e01f85c8e3fde828f9160ecfc28d24c99e2c4198eefc1b464eec1fb962c",
+        "outside.txt": "3d914f9348c9cc0ff8a79716700b9fcd4d2f3e711608004eb8f138bcba7f14d9"
+      },
+      "stdout": "83",
+      "stdout_of_script": [
+        "cargo::rerun-if-changed=trigger.txt",
+        "cargo::rustc-link-search=native=/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/build-script-producer-reuse16-v1/stock-controls-v1/outside-archive/ws/native",
+        "cargo::rustc-link-lib=static=mutable"
+      ]
+    },
+    "empty-edited": {
+      "ELF": "e5f9a73dc8f890444513ec70622e3029b4fadb36914b97ce0958fed93be7bf4d",
+      "consumer_compilers": 1,
+      "correct": true,
+      "expected": "83",
+      "native_linkers": 2,
+      "out_files": {},
+      "outside_files": {
+        "native/libmutable.a": "3fd44e01f85c8e3fde828f9160ecfc28d24c99e2c4198eefc1b464eec1fb962c",
+        "outside.txt": "3d914f9348c9cc0ff8a79716700b9fcd4d2f3e711608004eb8f138bcba7f14d9"
+      },
+      "stdout": "83",
+      "stdout_of_script": [
+        "cargo::rerun-if-changed=trigger.txt",
+        "cargo::rustc-link-search=native=/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/build-script-producer-reuse16-v1/stock-controls-v1/outside-archive/ws/native",
+        "cargo::rustc-link-lib=static=mutable"
+      ]
+    },
+    "prime": {
+      "ELF": "e4e72ad8dbc2277fede98236d124469576ed0702994df5374b87d06c688a060e",
+      "consumer_compilers": 1,
+      "correct": true,
+      "expected": "41",
+      "native_linkers": 2,
+      "out_files": {},
+      "outside_files": {
+        "native/libmutable.a": "24616f373c4ef26f36fe88fb1f8afa3e1ce7a6141e95d9e803750cb1322ebae3",
+        "outside.txt": "3d914f9348c9cc0ff8a79716700b9fcd4d2f3e711608004eb8f138bcba7f14d9"
+      },
+      "stdout": "41",
+      "stdout_of_script": [
+        "cargo::rerun-if-changed=trigger.txt",
+        "cargo::rustc-link-search=native=/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/build-script-producer-reuse16-v1/stock-controls-v1/outside-archive/ws/native",
+        "cargo::rustc-link-lib=static=mutable"
+      ]
+    },
+    "restore": {
+      "ELF": "e4e72ad8dbc2277fede98236d124469576ed0702994df5374b87d06c688a060e",
+      "consumer_compilers": 1,
+      "correct": true,
+      "expected": "41",
+      "native_linkers": 1,
+      "out_files": {},
+      "outside_files": {
+        "native/libmutable.a": "24616f373c4ef26f36fe88fb1f8afa3e1ce7a6141e95d9e803750cb1322ebae3",
+        "outside.txt": "3d914f9348c9cc0ff8a79716700b9fcd4d2f3e711608004eb8f138bcba7f14d9"
+      },
+      "stdout": "41",
+      "stdout_of_script": [
+        "cargo::rerun-if-changed=trigger.txt",
+        "cargo::rustc-link-search=native=/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/build-script-producer-reuse16-v1/stock-controls-v1/outside-archive/ws/native",
+        "cargo::rustc-link-lib=static=mutable"
+      ]
+    },
+    "warm-edited": {
+      "ELF": "e5f9a73dc8f890444513ec70622e3029b4fadb36914b97ce0958fed93be7bf4d",
+      "consumer_compilers": 0,
+      "correct": true,
+      "expected": "83",
+      "native_linkers": 0,
+      "out_files": {},
+      "outside_files": {
+        "native/libmutable.a": "3fd44e01f85c8e3fde828f9160ecfc28d24c99e2c4198eefc1b464eec1fb962c",
+        "outside.txt": "3d914f9348c9cc0ff8a79716700b9fcd4d2f3e711608004eb8f138bcba7f14d9"
+      },
+      "stdout": "83",
+      "stdout_of_script": [
+        "cargo::rerun-if-changed=trigger.txt",
+        "cargo::rustc-link-search=native=/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/build-script-producer-reuse16-v1/stock-controls-v1/outside-archive/ws/native",
+        "cargo::rustc-link-lib=static=mutable"
+      ]
+    },
+    "warm-original": {
+      "ELF": "e4e72ad8dbc2277fede98236d124469576ed0702994df5374b87d06c688a060e",
+      "consumer_compilers": 0,
+      "correct": true,
+      "expected": "41",
+      "native_linkers": 0,
+      "out_files": {},
+      "outside_files": {
+        "native/libmutable.a": "24616f373c4ef26f36fe88fb1f8afa3e1ce7a6141e95d9e803750cb1322ebae3",
+        "outside.txt": "3d914f9348c9cc0ff8a79716700b9fcd4d2f3e711608004eb8f138bcba7f14d9"
+      },
+      "stdout": "41",
+      "stdout_of_script": [
+        "cargo::rerun-if-changed=trigger.txt",
+        "cargo::rustc-link-search=native=/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/build-script-producer-reuse16-v1/stock-controls-v1/outside-archive/ws/native",
+        "cargo::rustc-link-lib=static=mutable"
+      ]
+    }
+  },
+  "outside-include": {
+    "edit": {
+      "ELF": "e98af6d36706f9d592005c77481b5bbb9f4ee0b7fb9aa1654312ad63da936537",
+      "consumer_compilers": 1,
+      "correct": true,
+      "expected": "83",
+      "native_linkers": 1,
+      "out_files": {},
+      "outside_files": {
+        "outside.txt": "bbb965ab0c80d6538cf2184babad2a564a010376712012bd07b0af92dcd3097d"
+      },
+      "stdout": "83",
+      "stdout_of_script": [
+        "cargo::rerun-if-changed=trigger.txt"
+      ]
+    },
+    "empty-edited": {
+      "ELF": "e98af6d36706f9d592005c77481b5bbb9f4ee0b7fb9aa1654312ad63da936537",
+      "consumer_compilers": 1,
+      "correct": true,
+      "expected": "83",
+      "native_linkers": 2,
+      "out_files": {},
+      "outside_files": {
+        "outside.txt": "bbb965ab0c80d6538cf2184babad2a564a010376712012bd07b0af92dcd3097d"
+      },
+      "stdout": "83",
+      "stdout_of_script": [
+        "cargo::rerun-if-changed=trigger.txt"
+      ]
+    },
+    "prime": {
+      "ELF": "ac75093eced27f1aba32c2d36e558df43c6afce1649f3963c81d3b227f635fd9",
+      "consumer_compilers": 1,
+      "correct": true,
+      "expected": "41",
+      "native_linkers": 2,
+      "out_files": {},
+      "outside_files": {
+        "outside.txt": "3d914f9348c9cc0ff8a79716700b9fcd4d2f3e711608004eb8f138bcba7f14d9"
+      },
+      "stdout": "41",
+      "stdout_of_script": [
+        "cargo::rerun-if-changed=trigger.txt"
+      ]
+    },
+    "restore": {
+      "ELF": "ac75093eced27f1aba32c2d36e558df43c6afce1649f3963c81d3b227f635fd9",
+      "consumer_compilers": 1,
+      "correct": true,
+      "expected": "41",
+      "native_linkers": 1,
+      "out_files": {},
+      "outside_files": {
+        "outside.txt": "3d914f9348c9cc0ff8a79716700b9fcd4d2f3e711608004eb8f138bcba7f14d9"
+      },
+      "stdout": "41",
+      "stdout_of_script": [
+        "cargo::rerun-if-changed=trigger.txt"
+      ]
+    },
+    "warm-edited": {
+      "ELF": "e98af6d36706f9d592005c77481b5bbb9f4ee0b7fb9aa1654312ad63da936537",
+      "consumer_compilers": 0,
+      "correct": true,
+      "expected": "83",
+      "native_linkers": 0,
+      "out_files": {},
+      "outside_files": {
+        "outside.txt": "bbb965ab0c80d6538cf2184babad2a564a010376712012bd07b0af92dcd3097d"
+      },
+      "stdout": "83",
+      "stdout_of_script": [
+        "cargo::rerun-if-changed=trigger.txt"
+      ]
+    },
+    "warm-original": {
+      "ELF": "ac75093eced27f1aba32c2d36e558df43c6afce1649f3963c81d3b227f635fd9",
+      "consumer_compilers": 0,
+      "correct": true,
+      "expected": "41",
+      "native_linkers": 0,
+      "out_files": {},
+      "outside_files": {
+        "outside.txt": "3d914f9348c9cc0ff8a79716700b9fcd4d2f3e711608004eb8f138bcba7f14d9"
+      },
+      "stdout": "41",
+      "stdout_of_script": [
+        "cargo::rerun-if-changed=trigger.txt"
+      ]
+    }
+  },
+  "outside-proc": {
+    "edit": {
+      "ELF": "4c2b4363910f1bbc787f9745e9cf6ec2cd9f083c3145670642f994058404434f",
+      "consumer_compilers": 1,
+      "correct": true,
+      "expected": "83",
+      "native_linkers": 1,
+      "out_files": {},
+      "outside_files": {
+        "outside.txt": "bbb965ab0c80d6538cf2184babad2a564a010376712012bd07b0af92dcd3097d"
+      },
+      "stdout": "83",
+      "stdout_of_script": [
+        "cargo::rerun-if-changed=trigger.txt"
+      ]
+    },
+    "empty-edited": {
+      "ELF": "4c2b4363910f1bbc787f9745e9cf6ec2cd9f083c3145670642f994058404434f",
+      "consumer_compilers": 1,
+      "correct": true,
+      "expected": "83",
+      "native_linkers": 3,
+      "out_files": {},
+      "outside_files": {
+        "outside.txt": "bbb965ab0c80d6538cf2184babad2a564a010376712012bd07b0af92dcd3097d"
+      },
+      "stdout": "83",
+      "stdout_of_script": [
+        "cargo::rerun-if-changed=trigger.txt"
+      ]
+    },
+    "prime": {
+      "ELF": "ae00f1d305a99ffdc7516db5ff94d4c6da112a5900673c04a63fe4fe25cd4a4b",
+      "consumer_compilers": 1,
+      "correct": true,
+      "expected": "41",
+      "native_linkers": 3,
+      "out_files": {},
+      "outside_files": {
+        "outside.txt": "3d914f9348c9cc0ff8a79716700b9fcd4d2f3e711608004eb8f138bcba7f14d9"
+      },
+      "stdout": "41",
+      "stdout_of_script": [
+        "cargo::rerun-if-changed=trigger.txt"
+      ]
+    },
+    "restore": {
+      "ELF": "ae00f1d305a99ffdc7516db5ff94d4c6da112a5900673c04a63fe4fe25cd4a4b",
+      "consumer_compilers": 1,
+      "correct": true,
+      "expected": "41",
+      "native_linkers": 1,
+      "out_files": {},
+      "outside_files": {
+        "outside.txt": "3d914f9348c9cc0ff8a79716700b9fcd4d2f3e711608004eb8f138bcba7f14d9"
+      },
+      "stdout": "41",
+      "stdout_of_script": [
+        "cargo::rerun-if-changed=trigger.txt"
+      ]
+    },
+    "warm-edited": {
+      "ELF": "4c2b4363910f1bbc787f9745e9cf6ec2cd9f083c3145670642f994058404434f",
+      "consumer_compilers": 0,
+      "correct": true,
+      "expected": "83",
+      "native_linkers": 0,
+      "out_files": {},
+      "outside_files": {
+        "outside.txt": "bbb965ab0c80d6538cf2184babad2a564a010376712012bd07b0af92dcd3097d"
+      },
+      "stdout": "83",
+      "stdout_of_script": [
+        "cargo::rerun-if-changed=trigger.txt"
+      ]
+    },
+    "warm-original": {
+      "ELF": "ae00f1d305a99ffdc7516db5ff94d4c6da112a5900673c04a63fe4fe25cd4a4b",
+      "consumer_compilers": 0,
+      "correct": true,
+      "expected": "41",
+      "native_linkers": 0,
+      "out_files": {},
+      "outside_files": {
+        "outside.txt": "3d914f9348c9cc0ff8a79716700b9fcd4d2f3e711608004eb8f138bcba7f14d9"
+      },
+      "stdout": "41",
+      "stdout_of_script": [
+        "cargo::rerun-if-changed=trigger.txt"
+      ]
+    }
+  },
+  "watch-only": {
+    "edit": {
+      "ELF": "2a24707f6c9181fea8d347bebc4a643b37105968bc5158b4e34bc6c6d9e083b2",
+      "consumer_compilers": 1,
+      "correct": true,
+      "expected": "41",
+      "native_linkers": 1,
+      "out_files": {},
+      "outside_files": {
+        "outside.txt": "3d914f9348c9cc0ff8a79716700b9fcd4d2f3e711608004eb8f138bcba7f14d9"
+      },
+      "stdout": "41",
+      "stdout_of_script": [
+        "cargo::rerun-if-changed=trigger.txt",
+        "cargo::rerun-if-changed=watch-83.txt"
+      ]
+    },
+    "empty-edited": {
+      "ELF": "2a24707f6c9181fea8d347bebc4a643b37105968bc5158b4e34bc6c6d9e083b2",
+      "consumer_compilers": 1,
+      "correct": true,
+      "expected": "41",
+      "native_linkers": 2,
+      "out_files": {},
+      "outside_files": {
+        "outside.txt": "3d914f9348c9cc0ff8a79716700b9fcd4d2f3e711608004eb8f138bcba7f14d9"
+      },
+      "stdout": "41",
+      "stdout_of_script": [
+        "cargo::rerun-if-changed=trigger.txt",
+        "cargo::rerun-if-changed=watch-83.txt"
+      ]
+    },
+    "prime": {
+      "ELF": "2a24707f6c9181fea8d347bebc4a643b37105968bc5158b4e34bc6c6d9e083b2",
+      "consumer_compilers": 1,
+      "correct": true,
+      "expected": "41",
+      "native_linkers": 2,
+      "out_files": {},
+      "outside_files": {
+        "outside.txt": "3d914f9348c9cc0ff8a79716700b9fcd4d2f3e711608004eb8f138bcba7f14d9"
+      },
+      "stdout": "41",
+      "stdout_of_script": [
+        "cargo::rerun-if-changed=trigger.txt",
+        "cargo::rerun-if-changed=watch-41.txt"
+      ]
+    },
+    "restore": {
+      "ELF": "2a24707f6c9181fea8d347bebc4a643b37105968bc5158b4e34bc6c6d9e083b2",
+      "consumer_compilers": 1,
+      "correct": true,
+      "expected": "41",
+      "native_linkers": 1,
+      "out_files": {},
+      "outside_files": {
+        "outside.txt": "3d914f9348c9cc0ff8a79716700b9fcd4d2f3e711608004eb8f138bcba7f14d9"
+      },
+      "stdout": "41",
+      "stdout_of_script": [
+        "cargo::rerun-if-changed=trigger.txt",
+        "cargo::rerun-if-changed=watch-41.txt"
+      ]
+    },
+    "warm-edited": {
+      "ELF": "2a24707f6c9181fea8d347bebc4a643b37105968bc5158b4e34bc6c6d9e083b2",
+      "consumer_compilers": 0,
+      "correct": true,
+      "expected": "41",
+      "native_linkers": 0,
+      "out_files": {},
+      "outside_files": {
+        "outside.txt": "3d914f9348c9cc0ff8a79716700b9fcd4d2f3e711608004eb8f138bcba7f14d9"
+      },
+      "stdout": "41",
+      "stdout_of_script": [
+        "cargo::rerun-if-changed=trigger.txt",
+        "cargo::rerun-if-changed=watch-83.txt"
+      ]
+    },
+    "warm-original": {
+      "ELF": "2a24707f6c9181fea8d347bebc4a643b37105968bc5158b4e34bc6c6d9e083b2",
+      "consumer_compilers": 0,
+      "correct": true,
+      "expected": "41",
+      "native_linkers": 0,
+      "out_files": {},
+      "outside_files": {
+        "outside.txt": "3d914f9348c9cc0ff8a79716700b9fcd4d2f3e711608004eb8f138bcba7f14d9"
+      },
+      "stdout": "41",
+      "stdout_of_script": [
+        "cargo::rerun-if-changed=trigger.txt",
+        "cargo::rerun-if-changed=watch-41.txt"
+      ]
+    }
+  }
+}

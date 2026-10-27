@@ -1,0 +1,375 @@
+{
+  "build": {
+    "historical_consumers": [
+      {
+        "compiler_kind": "rustc-full",
+        "crate": "ty",
+        "mode": "build",
+        "native_search_path_count": 3,
+        "shortest_local_macro_chain": [
+          "ty",
+          "ruff_python_ast",
+          "ruff_macros"
+        ],
+        "source": "crates/ty/src/lib.rs"
+      },
+      {
+        "compiler_kind": "rustc-full",
+        "crate": "ruff",
+        "mode": "build",
+        "native_search_path_count": 3,
+        "shortest_local_macro_chain": [
+          "ruff",
+          "ruff_macros"
+        ],
+        "source": "crates/ruff/src/lib.rs"
+      },
+      {
+        "compiler_kind": "rustc-full",
+        "crate": "ty_wasm",
+        "mode": "build",
+        "native_search_path_count": 2,
+        "shortest_local_macro_chain": [
+          "ty_wasm",
+          "ruff_python_formatter",
+          "ruff_macros"
+        ],
+        "source": "crates/ty_wasm/src/lib.rs"
+      },
+      {
+        "compiler_kind": "rustc-full",
+        "crate": "ty",
+        "mode": "build",
+        "native_search_path_count": 3,
+        "shortest_local_macro_chain": [
+          "ty",
+          "ruff_python_ast",
+          "ruff_macros"
+        ],
+        "source": "crates/ty/src/main.rs"
+      },
+      {
+        "compiler_kind": "rustc-full",
+        "crate": "ruff",
+        "mode": "build",
+        "native_search_path_count": 3,
+        "shortest_local_macro_chain": [
+          "ruff",
+          "ruff_macros"
+        ],
+        "source": "crates/ruff/src/main.rs"
+      },
+      {
+        "compiler_kind": "rustc-link-only",
+        "crate": "ruff_dev",
+        "mode": "build",
+        "native_search_path_count": 3,
+        "shortest_local_macro_chain": [
+          "ruff_dev",
+          "ruff",
+          "ruff_macros"
+        ],
+        "source": "crates/ruff_dev/src/main.rs"
+      }
+    ],
+    "without_workspace_macro_in_graph": 0
+  },
+  "check": {
+    "historical_consumers": [
+      {
+        "compiler_kind": "rustc-full",
+        "crate": "ruff",
+        "mode": "check",
+        "native_search_path_count": 3,
+        "shortest_local_macro_chain": [
+          "ruff",
+          "ruff_macros"
+        ],
+        "source": "crates/ruff/src/lib.rs"
+      },
+      {
+        "compiler_kind": "rustc-full",
+        "crate": "ty_wasm",
+        "mode": "check",
+        "native_search_path_count": 2,
+        "shortest_local_macro_chain": [
+          "ty_wasm",
+          "ruff_python_formatter",
+          "ruff_macros"
+        ],
+        "source": "crates/ty_wasm/src/lib.rs"
+      },
+      {
+        "compiler_kind": "rustc-full",
+        "crate": "ty",
+        "mode": "check",
+        "native_search_path_count": 3,
+        "shortest_local_macro_chain": [
+          "ty",
+          "ruff_python_ast",
+          "ruff_macros"
+        ],
+        "source": "crates/ty/src/lib.rs"
+      },
+      {
+        "compiler_kind": "rustc-full",
+        "crate": "ty",
+        "mode": "check",
+        "native_search_path_count": 3,
+        "shortest_local_macro_chain": [
+          "ty",
+          "ruff_python_ast",
+          "ruff_macros"
+        ],
+        "source": "crates/ty/src/main.rs"
+      },
+      {
+        "compiler_kind": "rustc-full",
+        "crate": "ruff",
+        "mode": "check",
+        "native_search_path_count": 3,
+        "shortest_local_macro_chain": [
+          "ruff",
+          "ruff_macros"
+        ],
+        "source": "crates/ruff/src/main.rs"
+      }
+    ],
+    "without_workspace_macro_in_graph": 0
+  },
+  "test": {
+    "historical_consumers": [
+      {
+        "compiler_kind": "rustc-full",
+        "crate": "ty",
+        "mode": "build",
+        "native_search_path_count": 3,
+        "shortest_local_macro_chain": [
+          "ty",
+          "ruff_python_ast",
+          "ruff_macros"
+        ],
+        "source": "crates/ty/src/lib.rs"
+      },
+      {
+        "compiler_kind": "rustc-full",
+        "crate": "ty",
+        "mode": "test",
+        "native_search_path_count": 3,
+        "shortest_local_macro_chain": [
+          "ty",
+          "ruff_python_ast",
+          "ruff_macros"
+        ],
+        "source": "crates/ty/src/lib.rs"
+      },
+      {
+        "compiler_kind": "rustc-full",
+        "crate": "ty_wasm",
+        "mode": "build",
+        "native_search_path_count": 2,
+        "shortest_local_macro_chain": [
+          "ty_wasm",
+          "ruff_python_formatter",
+          "ruff_macros"
+        ],
+        "source": "crates/ty_wasm/src/lib.rs"
+      },
+      {
+        "compiler_kind": "rustc-full",
+        "crate": "ruff",
+        "mode": "build",
+        "native_search_path_count": 3,
+        "shortest_local_macro_chain": [
+          "ruff",
+          "ruff_macros"
+        ],
+        "source": "crates/ruff/src/lib.rs"
+      },
+      {
+        "compiler_kind": "rustc-full",
+        "crate": "ruff",
+        "mode": "test",
+        "native_search_path_count": 3,
+        "shortest_local_macro_chain": [
+          "ruff",
+          "ruff_macros"
+        ],
+        "source": "crates/ruff/src/lib.rs"
+      },
+      {
+        "compiler_kind": "rustc-full",
+        "crate": "ty",
+        "mode": "build",
+        "native_search_path_count": 3,
+        "shortest_local_macro_chain": [
+          "ty",
+          "ruff_python_ast",
+          "ruff_macros"
+        ],
+        "source": "crates/ty/src/main.rs"
+      },
+      {
+        "compiler_kind": "rustc-full",
+        "crate": "ty",
+        "mode": "test",
+        "native_search_path_count": 3,
+        "shortest_local_macro_chain": [
+          "ty",
+          "ruff_python_ast",
+          "ruff_macros"
+        ],
+        "source": "crates/ty/src/main.rs"
+      },
+      {
+        "compiler_kind": "rustc-full",
+        "crate": "self_environment",
+        "mode": "test",
+        "native_search_path_count": 3,
+        "shortest_local_macro_chain": [
+          "self_environment",
+          "ruff_python_ast",
+          "ruff_macros"
+        ],
+        "source": "crates/ty/tests/self_environment.rs"
+      },
+      {
+        "compiler_kind": "rustc-full",
+        "crate": "file_watching",
+        "mode": "test",
+        "native_search_path_count": 3,
+        "shortest_local_macro_chain": [
+          "file_watching",
+          "ruff_python_ast",
+          "ruff_macros"
+        ],
+        "source": "crates/ty/tests/file_watching.rs"
+      },
+      {
+        "compiler_kind": "rustc-full",
+        "crate": "integration_test",
+        "mode": "test",
+        "native_search_path_count": 3,
+        "shortest_local_macro_chain": [
+          "integration_test",
+          "ruff_macros"
+        ],
+        "source": "crates/ruff/tests/integration_test.rs"
+      },
+      {
+        "compiler_kind": "rustc-full",
+        "crate": "analyze_graph",
+        "mode": "test",
+        "native_search_path_count": 3,
+        "shortest_local_macro_chain": [
+          "analyze_graph",
+          "ruff_macros"
+        ],
+        "source": "crates/ruff/tests/analyze_graph.rs"
+      },
+      {
+        "compiler_kind": "rustc-link-only",
+        "crate": "ruff_dev",
+        "mode": "test",
+        "native_search_path_count": 3,
+        "shortest_local_macro_chain": [
+          "ruff_dev",
+          "ruff",
+          "ruff_macros"
+        ],
+        "source": "crates/ruff_dev/src/main.rs"
+      },
+      {
+        "compiler_kind": "rustc-full",
+        "crate": "api",
+        "mode": "test",
+        "native_search_path_count": 2,
+        "shortest_local_macro_chain": [
+          "api",
+          "ruff_python_formatter",
+          "ruff_macros"
+        ],
+        "source": "crates/ty_wasm/tests/api.rs"
+      },
+      {
+        "compiler_kind": "rustc-full",
+        "crate": "direxist_guard",
+        "mode": "test",
+        "native_search_path_count": 3,
+        "shortest_local_macro_chain": [
+          "direxist_guard",
+          "ruff_macros"
+        ],
+        "source": "crates/ruff/tests/direxist_guard.rs"
+      },
+      {
+        "compiler_kind": "rustc-full",
+        "crate": "config",
+        "mode": "test",
+        "native_search_path_count": 3,
+        "shortest_local_macro_chain": [
+          "config",
+          "ruff_macros"
+        ],
+        "source": "crates/ruff/tests/config.rs"
+      },
+      {
+        "compiler_kind": "rustc-full",
+        "crate": "resolve_files",
+        "mode": "test",
+        "native_search_path_count": 3,
+        "shortest_local_macro_chain": [
+          "resolve_files",
+          "ruff_macros"
+        ],
+        "source": "crates/ruff/tests/resolve_files.rs"
+      },
+      {
+        "compiler_kind": "rustc-full",
+        "crate": "ruff",
+        "mode": "test",
+        "native_search_path_count": 3,
+        "shortest_local_macro_chain": [
+          "ruff",
+          "ruff_macros"
+        ],
+        "source": "crates/ruff/src/main.rs"
+      },
+      {
+        "compiler_kind": "rustc-full",
+        "crate": "cli",
+        "mode": "test",
+        "native_search_path_count": 3,
+        "shortest_local_macro_chain": [
+          "cli",
+          "ruff_macros"
+        ],
+        "source": "crates/ruff/tests/cli/main.rs"
+      },
+      {
+        "compiler_kind": "rustc-full",
+        "crate": "ruff",
+        "mode": "build",
+        "native_search_path_count": 3,
+        "shortest_local_macro_chain": [
+          "ruff",
+          "ruff_macros"
+        ],
+        "source": "crates/ruff/src/main.rs"
+      },
+      {
+        "compiler_kind": "rustc-full",
+        "crate": "cli",
+        "mode": "test",
+        "native_search_path_count": 3,
+        "shortest_local_macro_chain": [
+          "cli",
+          "ruff_python_ast",
+          "ruff_macros"
+        ],
+        "source": "crates/ty/tests/cli/main.rs"
+      }
+    ],
+    "without_workspace_macro_in_graph": 0
+  }
+}

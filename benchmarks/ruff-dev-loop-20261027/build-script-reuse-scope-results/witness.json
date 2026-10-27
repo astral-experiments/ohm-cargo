@@ -1,0 +1,1396 @@
+{
+  "inherited-static-build": {
+    "edit": {
+      "command": [
+        "cargo",
+        "+ohm",
+        "build",
+        "--offline",
+        "--message-format=json",
+        "-p",
+        "probe_app"
+      ],
+      "deps": [
+        {
+          "file": "probe_bundle-80275b172e179924.d",
+          "has_expected_item": false,
+          "has_expected_main": true,
+          "mentions_alternate": false,
+          "mentions_archive": false,
+          "paths": [
+            "bundle/src/lib.rs:"
+          ],
+          "sha256": "8f6e7f4ee559ef37418e47e7138f3e5c99c7599ee741439d9ebcce63f0985ffd"
+        },
+        {
+          "file": "probe_bundle-80275b172e179924.d",
+          "has_expected_item": false,
+          "has_expected_main": true,
+          "mentions_alternate": false,
+          "mentions_archive": false,
+          "paths": [
+            "bundle/src/lib.rs:"
+          ],
+          "sha256": "8f6e7f4ee559ef37418e47e7138f3e5c99c7599ee741439d9ebcce63f0985ffd"
+        }
+      ],
+      "diagnostics": [],
+      "existing_rust_source": {
+        "app/src/main.rs": "139f3a0bdd191719ceade5608ab3f0e450bfe4392a5e33663bb370eb678d1ac0",
+        "bundle/src/lib.rs": "c70ac86972097331c3db0dd4aeb6c8fc1d54bfc908e49c0a79c6a9f3b18a5fc1",
+        "search/src/lib.rs": "80c85a40374683c8751e4875ec2b754e39188a93d5f07c9808063ad7b7d48154"
+      },
+      "exit": 0,
+      "jobs": [
+        {
+          "argv_sha256": "9c1b4ea525cb69edd1288d2c653e97de6c964ad3a866dabbb1f05584fa5e04df",
+          "compiler_bytes": "b0c412a7a8010a768f00546419a0b1bcfca382d7e70191df3ae72e30ac1ef3e5",
+          "crate": "build_script_build",
+          "direct_proc_macros": [],
+          "linkonly": false,
+          "native_flags": [],
+          "native_paths": [],
+          "role": "rustc",
+          "source": "bundle/build.rs"
+        },
+        {
+          "basename": "build_script_build",
+          "role": "wild"
+        },
+        {
+          "argv_sha256": "1059dc1a7705fbf5c72f9ac7dd4102e4b9ae9eee540d0c317f9a4dd89c2b31b5",
+          "compiler_bytes": "b0c412a7a8010a768f00546419a0b1bcfca382d7e70191df3ae72e30ac1ef3e5",
+          "crate": "probe_bundle",
+          "direct_proc_macros": [],
+          "linkonly": false,
+          "native_flags": [],
+          "native_paths": [
+            "native=/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/build-script-producer-reuse16-v1/proof-boundary-v1/inherited-static/workspace/native"
+          ],
+          "role": "rustc",
+          "source": "bundle/src/lib.rs"
+        },
+        {
+          "argv_sha256": "c5215cccec087883890a783f4e2545e31d5f5088b1642eecf452cc3350e42712",
+          "compiler_bytes": "b0c412a7a8010a768f00546419a0b1bcfca382d7e70191df3ae72e30ac1ef3e5",
+          "crate": "probe_app",
+          "direct_proc_macros": [],
+          "linkonly": true,
+          "native_flags": [],
+          "native_paths": [
+            "native=/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/build-script-producer-reuse16-v1/proof-boundary-v1/inherited-static/workspace/native"
+          ],
+          "role": "rustc",
+          "source": null
+        },
+        {
+          "basename": "probe_app",
+          "role": "wild"
+        }
+      ],
+      "native": {
+        "archive": "3b9ebaee2556c513d940c36b458877129397577172225359bff5137139dfae0c",
+        "bundle_rlib": "ad8caf243f5e2fbdaa80460a6e487ce53ee732ab6f02fb3dd332f2461fa09bc8",
+        "contains_native_object": true
+      },
+      "out_files": [],
+      "present_alternate": false,
+      "raw_exec_sha": "0b514b9ed7b449ca139222c376d2b1dc1ea0ad8ef961d6191f40e7d2c9ad6f50",
+      "runtime": "83",
+      "script": {
+        "cfgs": [],
+        "env": [],
+        "linked_libs": [],
+        "linked_paths": []
+      },
+      "stderr_sha": "0fc2e2fb2e1eac1018b76310abe13e25faa95919fee6c4813880e4d5842ba7ca",
+      "stdout_sha": "991d610111f99dfcb2742b0c63711d68e1bcb239c0243fe6cf4cc30f304da80e"
+    },
+    "empty-edit": {
+      "command": [
+        "cargo",
+        "+ohm",
+        "build",
+        "--offline",
+        "--message-format=json",
+        "-p",
+        "probe_app"
+      ],
+      "deps": [
+        {
+          "file": "probe_bundle-80275b172e179924.d",
+          "has_expected_item": false,
+          "has_expected_main": true,
+          "mentions_alternate": false,
+          "mentions_archive": false,
+          "paths": [
+            "bundle/src/lib.rs:"
+          ],
+          "sha256": "526c1e39c9ed5ec20c2d93a67daf4c40292012f6e20e74a1bda0c1ad86b660cb"
+        },
+        {
+          "file": "probe_bundle-80275b172e179924.d",
+          "has_expected_item": false,
+          "has_expected_main": true,
+          "mentions_alternate": false,
+          "mentions_archive": false,
+          "paths": [
+            "bundle/src/lib.rs:"
+          ],
+          "sha256": "526c1e39c9ed5ec20c2d93a67daf4c40292012f6e20e74a1bda0c1ad86b660cb"
+        }
+      ],
+      "diagnostics": [],
+      "existing_rust_source": {
+        "app/src/main.rs": "139f3a0bdd191719ceade5608ab3f0e450bfe4392a5e33663bb370eb678d1ac0",
+        "bundle/src/lib.rs": "c70ac86972097331c3db0dd4aeb6c8fc1d54bfc908e49c0a79c6a9f3b18a5fc1",
+        "search/src/lib.rs": "80c85a40374683c8751e4875ec2b754e39188a93d5f07c9808063ad7b7d48154"
+      },
+      "exit": 0,
+      "jobs": [
+        {
+          "argv_sha256": "fa5a5e8fcdce329135e518f66e495d2826e25c6f0e8cd4183f9dc4811dbab13b",
+          "compiler_bytes": "b0c412a7a8010a768f00546419a0b1bcfca382d7e70191df3ae72e30ac1ef3e5",
+          "crate": "___",
+          "direct_proc_macros": [],
+          "linkonly": false,
+          "native_flags": [],
+          "native_paths": [],
+          "role": "rustc",
+          "source": null
+        },
+        {
+          "argv_sha256": "2895113e6b03853710c2005a18b02462a17548da46d653df5db8c77a11ed1f90",
+          "compiler_bytes": "b0c412a7a8010a768f00546419a0b1bcfca382d7e70191df3ae72e30ac1ef3e5",
+          "crate": "build_script_build",
+          "direct_proc_macros": [],
+          "linkonly": false,
+          "native_flags": [],
+          "native_paths": [],
+          "role": "rustc",
+          "source": "search/build.rs"
+        },
+        {
+          "argv_sha256": "8880ef98f9c2977c0e3aaae561d273ab0e319184ff85a975d37c7a0fb65cd7ef",
+          "compiler_bytes": "b0c412a7a8010a768f00546419a0b1bcfca382d7e70191df3ae72e30ac1ef3e5",
+          "crate": "build_script_build",
+          "direct_proc_macros": [],
+          "linkonly": false,
+          "native_flags": [],
+          "native_paths": [],
+          "role": "rustc",
+          "source": "bundle/build.rs"
+        },
+        {
+          "basename": "build_script_build",
+          "role": "wild"
+        },
+        {
+          "argv_sha256": "d304060372c41fac87ba2fc98b8e752d031f0122a179762f093c2075ace9c421",
+          "compiler_bytes": "b0c412a7a8010a768f00546419a0b1bcfca382d7e70191df3ae72e30ac1ef3e5",
+          "crate": "search",
+          "direct_proc_macros": [],
+          "linkonly": false,
+          "native_flags": [],
+          "native_paths": [
+            "native=/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/build-script-producer-reuse16-v1/proof-boundary-v1/inherited-static/workspace/native"
+          ],
+          "role": "rustc",
+          "source": "search/src/lib.rs"
+        },
+        {
+          "basename": "build_script_build",
+          "role": "wild"
+        },
+        {
+          "argv_sha256": "671c74c7935a011a53d89a0925a93df6587f290f520292ee4d0dd72295e6fba7",
+          "compiler_bytes": "b0c412a7a8010a768f00546419a0b1bcfca382d7e70191df3ae72e30ac1ef3e5",
+          "crate": "probe_bundle",
+          "direct_proc_macros": [],
+          "linkonly": false,
+          "native_flags": [],
+          "native_paths": [
+            "native=/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/build-script-producer-reuse16-v1/proof-boundary-v1/inherited-static/workspace/native"
+          ],
+          "role": "rustc",
+          "source": "bundle/src/lib.rs"
+        },
+        {
+          "argv_sha256": "1cc441abf93ae22c31024b6ca519a73df0471dff29929b09b4c0de777a83d406",
+          "compiler_bytes": "b0c412a7a8010a768f00546419a0b1bcfca382d7e70191df3ae72e30ac1ef3e5",
+          "crate": "probe_app",
+          "direct_proc_macros": [],
+          "linkonly": false,
+          "native_flags": [],
+          "native_paths": [
+            "native=/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/build-script-producer-reuse16-v1/proof-boundary-v1/inherited-static/workspace/native"
+          ],
+          "role": "rustc",
+          "source": "app/src/main.rs"
+        },
+        {
+          "basename": "probe_app",
+          "role": "wild"
+        }
+      ],
+      "native": {
+        "archive": "3b9ebaee2556c513d940c36b458877129397577172225359bff5137139dfae0c",
+        "bundle_rlib": "4a4ab4874d8c6d5c1162c4524af1c92e39b110bb08e1ee74d24cc94441a3eea3",
+        "contains_native_object": true
+      },
+      "out_files": [],
+      "present_alternate": false,
+      "raw_exec_sha": "480702eb9de64e56561ff82464bf46e47b85859b0ef4403942c4c0d811392e20",
+      "runtime": "83",
+      "script": {
+        "cfgs": [],
+        "env": [],
+        "linked_libs": [],
+        "linked_paths": []
+      },
+      "stderr_sha": "101f73e73b6e7e5e171ee14cb4da37826de1040dfe9923a99facdf8070faffc9",
+      "stdout_sha": "ba3410ac004603749d4290e950bec0fb99322125c7cab60bd999e279f51a279c"
+    },
+    "no-op": {
+      "command": [
+        "cargo",
+        "+ohm",
+        "build",
+        "--offline",
+        "--message-format=json",
+        "-p",
+        "probe_app"
+      ],
+      "deps": [
+        {
+          "file": "probe_bundle-80275b172e179924.d",
+          "has_expected_item": false,
+          "has_expected_main": true,
+          "mentions_alternate": false,
+          "mentions_archive": false,
+          "paths": [
+            "bundle/src/lib.rs:"
+          ],
+          "sha256": "8f6e7f4ee559ef37418e47e7138f3e5c99c7599ee741439d9ebcce63f0985ffd"
+        },
+        {
+          "file": "probe_bundle-80275b172e179924.d",
+          "has_expected_item": false,
+          "has_expected_main": true,
+          "mentions_alternate": false,
+          "mentions_archive": false,
+          "paths": [
+            "bundle/src/lib.rs:"
+          ],
+          "sha256": "8f6e7f4ee559ef37418e47e7138f3e5c99c7599ee741439d9ebcce63f0985ffd"
+        }
+      ],
+      "diagnostics": [],
+      "existing_rust_source": {
+        "app/src/main.rs": "139f3a0bdd191719ceade5608ab3f0e450bfe4392a5e33663bb370eb678d1ac0",
+        "bundle/src/lib.rs": "c70ac86972097331c3db0dd4aeb6c8fc1d54bfc908e49c0a79c6a9f3b18a5fc1",
+        "search/src/lib.rs": "80c85a40374683c8751e4875ec2b754e39188a93d5f07c9808063ad7b7d48154"
+      },
+      "exit": 0,
+      "jobs": [],
+      "native": {
+        "archive": "5a2a5e60bb45e00ba73db928846dbfaaace1ea3d41b4ba0317fc9f32d1a84441",
+        "bundle_rlib": "9a96f447bc1128c4dd7d3c90468f0d692e72c04cbea611d179f12e30e6dc8a40",
+        "contains_native_object": true
+      },
+      "out_files": [],
+      "present_alternate": false,
+      "raw_exec_sha": "f49cc2745623f63f1eefa1f168e0c03deacdb9f8665d33c71bec0352ad9cc11b",
+      "runtime": "41",
+      "script": {
+        "cfgs": [],
+        "env": [],
+        "linked_libs": [],
+        "linked_paths": []
+      },
+      "stderr_sha": "59639588a6f1826f129cbcd121edc07279dab94786f5fa5bde6b3439b2e845cc",
+      "stdout_sha": "20df0176e973a687682943d7492f78a4e42720405e8da78cc262bacc1490f3b2"
+    },
+    "prime": {
+      "command": [
+        "cargo",
+        "+ohm",
+        "build",
+        "--offline",
+        "--message-format=json",
+        "-p",
+        "probe_app"
+      ],
+      "deps": [
+        {
+          "file": "probe_bundle-80275b172e179924.d",
+          "has_expected_item": false,
+          "has_expected_main": true,
+          "mentions_alternate": false,
+          "mentions_archive": false,
+          "paths": [
+            "bundle/src/lib.rs:"
+          ],
+          "sha256": "8f6e7f4ee559ef37418e47e7138f3e5c99c7599ee741439d9ebcce63f0985ffd"
+        },
+        {
+          "file": "probe_bundle-80275b172e179924.d",
+          "has_expected_item": false,
+          "has_expected_main": true,
+          "mentions_alternate": false,
+          "mentions_archive": false,
+          "paths": [
+            "bundle/src/lib.rs:"
+          ],
+          "sha256": "8f6e7f4ee559ef37418e47e7138f3e5c99c7599ee741439d9ebcce63f0985ffd"
+        }
+      ],
+      "diagnostics": [],
+      "existing_rust_source": {
+        "app/src/main.rs": "139f3a0bdd191719ceade5608ab3f0e450bfe4392a5e33663bb370eb678d1ac0",
+        "bundle/src/lib.rs": "c70ac86972097331c3db0dd4aeb6c8fc1d54bfc908e49c0a79c6a9f3b18a5fc1",
+        "search/src/lib.rs": "80c85a40374683c8751e4875ec2b754e39188a93d5f07c9808063ad7b7d48154"
+      },
+      "exit": 0,
+      "jobs": [
+        {
+          "argv_sha256": "fa5a5e8fcdce329135e518f66e495d2826e25c6f0e8cd4183f9dc4811dbab13b",
+          "compiler_bytes": "b0c412a7a8010a768f00546419a0b1bcfca382d7e70191df3ae72e30ac1ef3e5",
+          "crate": "___",
+          "direct_proc_macros": [],
+          "linkonly": false,
+          "native_flags": [],
+          "native_paths": [],
+          "role": "rustc",
+          "source": null
+        },
+        {
+          "argv_sha256": "afbcc887598b9c7122157c4307508f12ce9df3eca3189efc19d6dce5f9ec01ae",
+          "compiler_bytes": "b0c412a7a8010a768f00546419a0b1bcfca382d7e70191df3ae72e30ac1ef3e5",
+          "crate": "build_script_build",
+          "direct_proc_macros": [],
+          "linkonly": false,
+          "native_flags": [],
+          "native_paths": [],
+          "role": "rustc",
+          "source": "search/build.rs"
+        },
+        {
+          "argv_sha256": "9c1b4ea525cb69edd1288d2c653e97de6c964ad3a866dabbb1f05584fa5e04df",
+          "compiler_bytes": "b0c412a7a8010a768f00546419a0b1bcfca382d7e70191df3ae72e30ac1ef3e5",
+          "crate": "build_script_build",
+          "direct_proc_macros": [],
+          "linkonly": false,
+          "native_flags": [],
+          "native_paths": [],
+          "role": "rustc",
+          "source": "bundle/build.rs"
+        },
+        {
+          "basename": "build_script_build",
+          "role": "wild"
+        },
+        {
+          "argv_sha256": "6ec2b785e31c93fbeee18394b89ebfa18419a4258342cb98c22e3b812f00074a",
+          "compiler_bytes": "b0c412a7a8010a768f00546419a0b1bcfca382d7e70191df3ae72e30ac1ef3e5",
+          "crate": "search",
+          "direct_proc_macros": [],
+          "linkonly": false,
+          "native_flags": [],
+          "native_paths": [
+            "native=/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/build-script-producer-reuse16-v1/proof-boundary-v1/inherited-static/workspace/native"
+          ],
+          "role": "rustc",
+          "source": "search/src/lib.rs"
+        },
+        {
+          "basename": "build_script_build",
+          "role": "wild"
+        },
+        {
+          "argv_sha256": "1059dc1a7705fbf5c72f9ac7dd4102e4b9ae9eee540d0c317f9a4dd89c2b31b5",
+          "compiler_bytes": "b0c412a7a8010a768f00546419a0b1bcfca382d7e70191df3ae72e30ac1ef3e5",
+          "crate": "probe_bundle",
+          "direct_proc_macros": [],
+          "linkonly": false,
+          "native_flags": [],
+          "native_paths": [
+            "native=/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/build-script-producer-reuse16-v1/proof-boundary-v1/inherited-static/workspace/native"
+          ],
+          "role": "rustc",
+          "source": "bundle/src/lib.rs"
+        },
+        {
+          "argv_sha256": "827979d5f05d0e2e2345ef7033444a51687adf718fa1077a5d55042e500bf30f",
+          "compiler_bytes": "b0c412a7a8010a768f00546419a0b1bcfca382d7e70191df3ae72e30ac1ef3e5",
+          "crate": "probe_app",
+          "direct_proc_macros": [],
+          "linkonly": false,
+          "native_flags": [],
+          "native_paths": [
+            "native=/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/build-script-producer-reuse16-v1/proof-boundary-v1/inherited-static/workspace/native"
+          ],
+          "role": "rustc",
+          "source": "app/src/main.rs"
+        },
+        {
+          "basename": "probe_app",
+          "role": "wild"
+        }
+      ],
+      "native": {
+        "archive": "5a2a5e60bb45e00ba73db928846dbfaaace1ea3d41b4ba0317fc9f32d1a84441",
+        "bundle_rlib": "9a96f447bc1128c4dd7d3c90468f0d692e72c04cbea611d179f12e30e6dc8a40",
+        "contains_native_object": true
+      },
+      "out_files": [],
+      "present_alternate": false,
+      "raw_exec_sha": "a69e14530833fcfd15982e0c1f9671a4a21e4d66b20e635adcbf175d7e9392d3",
+      "runtime": "41",
+      "script": {
+        "cfgs": [],
+        "env": [],
+        "linked_libs": [],
+        "linked_paths": []
+      },
+      "stderr_sha": "dbaa67d0b53bc391d1558cde4ebe9055ecc660c529f5e747937ededa3b9fe5ca",
+      "stdout_sha": "7e9e871f9443b09c58617cdc9a3087d877abf4ac2ebc5a4e31f7bf1fbfa0e361"
+    },
+    "restore": {
+      "command": [
+        "cargo",
+        "+ohm",
+        "build",
+        "--offline",
+        "--message-format=json",
+        "-p",
+        "probe_app"
+      ],
+      "deps": [
+        {
+          "file": "probe_bundle-80275b172e179924.d",
+          "has_expected_item": false,
+          "has_expected_main": true,
+          "mentions_alternate": false,
+          "mentions_archive": false,
+          "paths": [
+            "bundle/src/lib.rs:"
+          ],
+          "sha256": "8f6e7f4ee559ef37418e47e7138f3e5c99c7599ee741439d9ebcce63f0985ffd"
+        },
+        {
+          "file": "probe_bundle-80275b172e179924.d",
+          "has_expected_item": false,
+          "has_expected_main": true,
+          "mentions_alternate": false,
+          "mentions_archive": false,
+          "paths": [
+            "bundle/src/lib.rs:"
+          ],
+          "sha256": "8f6e7f4ee559ef37418e47e7138f3e5c99c7599ee741439d9ebcce63f0985ffd"
+        }
+      ],
+      "diagnostics": [],
+      "existing_rust_source": {
+        "app/src/main.rs": "139f3a0bdd191719ceade5608ab3f0e450bfe4392a5e33663bb370eb678d1ac0",
+        "bundle/src/lib.rs": "c70ac86972097331c3db0dd4aeb6c8fc1d54bfc908e49c0a79c6a9f3b18a5fc1",
+        "search/src/lib.rs": "80c85a40374683c8751e4875ec2b754e39188a93d5f07c9808063ad7b7d48154"
+      },
+      "exit": 0,
+      "jobs": [
+        {
+          "argv_sha256": "9c1b4ea525cb69edd1288d2c653e97de6c964ad3a866dabbb1f05584fa5e04df",
+          "compiler_bytes": "b0c412a7a8010a768f00546419a0b1bcfca382d7e70191df3ae72e30ac1ef3e5",
+          "crate": "build_script_build",
+          "direct_proc_macros": [],
+          "linkonly": false,
+          "native_flags": [],
+          "native_paths": [],
+          "role": "rustc",
+          "source": "bundle/build.rs"
+        },
+        {
+          "basename": "build_script_build",
+          "role": "wild"
+        },
+        {
+          "argv_sha256": "1059dc1a7705fbf5c72f9ac7dd4102e4b9ae9eee540d0c317f9a4dd89c2b31b5",
+          "compiler_bytes": "b0c412a7a8010a768f00546419a0b1bcfca382d7e70191df3ae72e30ac1ef3e5",
+          "crate": "probe_bundle",
+          "direct_proc_macros": [],
+          "linkonly": false,
+          "native_flags": [],
+          "native_paths": [
+            "native=/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/build-script-producer-reuse16-v1/proof-boundary-v1/inherited-static/workspace/native"
+          ],
+          "role": "rustc",
+          "source": "bundle/src/lib.rs"
+        },
+        {
+          "argv_sha256": "c5215cccec087883890a783f4e2545e31d5f5088b1642eecf452cc3350e42712",
+          "compiler_bytes": "b0c412a7a8010a768f00546419a0b1bcfca382d7e70191df3ae72e30ac1ef3e5",
+          "crate": "probe_app",
+          "direct_proc_macros": [],
+          "linkonly": true,
+          "native_flags": [],
+          "native_paths": [
+            "native=/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/build-script-producer-reuse16-v1/proof-boundary-v1/inherited-static/workspace/native"
+          ],
+          "role": "rustc",
+          "source": null
+        },
+        {
+          "basename": "probe_app",
+          "role": "wild"
+        }
+      ],
+      "native": {
+        "archive": "5a2a5e60bb45e00ba73db928846dbfaaace1ea3d41b4ba0317fc9f32d1a84441",
+        "bundle_rlib": "b6d609128e600b8a16c4b096e785e2ab069ce5a28930c086e6f3e17a2b73f8ad",
+        "contains_native_object": true
+      },
+      "out_files": [],
+      "present_alternate": false,
+      "raw_exec_sha": "a1c42867b2b35174e7066547f4c9d527dab8a9b9303af08d52719cb55fab2722",
+      "runtime": "41",
+      "script": {
+        "cfgs": [],
+        "env": [],
+        "linked_libs": [],
+        "linked_paths": []
+      },
+      "stderr_sha": "f04e20c84668e75cc2c8b77a05e102dc0941189735a8ebafc9df55d2e2d7978b",
+      "stdout_sha": "991d610111f99dfcb2742b0c63711d68e1bcb239c0243fe6cf4cc30f304da80e"
+    }
+  },
+  "negative-module-build": {
+    "edit": {
+      "command": [
+        "cargo",
+        "+ohm",
+        "build",
+        "--offline",
+        "--message-format=json",
+        "-p",
+        "probe_app"
+      ],
+      "deps": [],
+      "diagnostics": [
+        {
+          "children": [
+            "delete or rename one of them to remove the ambiguity"
+          ],
+          "code": "E0761",
+          "message": "file for module `item` found at both \"bundle/src/item.rs\" and \"bundle/src/item/mod.rs\""
+        },
+        {
+          "children": [],
+          "code": null,
+          "message": "For more information about this error, try `rustc --explain E0761`."
+        }
+      ],
+      "existing_rust_source": {
+        "app/src/main.rs": "139f3a0bdd191719ceade5608ab3f0e450bfe4392a5e33663bb370eb678d1ac0",
+        "bundle/src/item.rs": "f4542eee49c7b50c4eab471d2982a9dfe1a7f798ec176e6edeb722b02808a166",
+        "bundle/src/lib.rs": "41406781f4666d37c1e1e1e90d1d9344d00becf7760524fd820ea2a0ce3f0a87"
+      },
+      "exit": 101,
+      "jobs": [
+        {
+          "argv_sha256": "938c691446351f06fba247f7a684b9c9d58464230b1a6d6efbbf65121b16e183",
+          "compiler_bytes": "b0c412a7a8010a768f00546419a0b1bcfca382d7e70191df3ae72e30ac1ef3e5",
+          "crate": "build_script_build",
+          "direct_proc_macros": [],
+          "linkonly": false,
+          "native_flags": [],
+          "native_paths": [],
+          "role": "rustc",
+          "source": "bundle/build.rs"
+        },
+        {
+          "basename": "build_script_build",
+          "role": "wild"
+        },
+        {
+          "argv_sha256": "514ede6c40a706e1660c73762db343f96cc28bf2daaef36292612c4970470b90",
+          "compiler_bytes": "b0c412a7a8010a768f00546419a0b1bcfca382d7e70191df3ae72e30ac1ef3e5",
+          "crate": "probe_bundle",
+          "direct_proc_macros": [],
+          "linkonly": false,
+          "native_flags": [],
+          "native_paths": [],
+          "role": "rustc",
+          "source": "bundle/src/lib.rs"
+        }
+      ],
+      "native": {
+        "archive": null,
+        "bundle_rlib": null,
+        "contains_native_object": null
+      },
+      "out_files": [],
+      "present_alternate": true,
+      "raw_exec_sha": "f4dde36f87aa995e2a46674248638dfb92986a6c547b6edacbf775d63a265dbc",
+      "runtime": null,
+      "script": {
+        "cfgs": [],
+        "env": [],
+        "linked_libs": [],
+        "linked_paths": []
+      },
+      "stderr_sha": "f39e1764bcec1e7f3d0dd0a6121215052e7aa6f782ed06d77d1a70d52183c2f3",
+      "stdout_sha": "89e69f73e1511b0a86e3e739bb94894c9eefdc292641002dcdc7169affe7c443"
+    },
+    "empty-edit": {
+      "command": [
+        "cargo",
+        "+ohm",
+        "build",
+        "--offline",
+        "--message-format=json",
+        "-p",
+        "probe_app"
+      ],
+      "deps": [],
+      "diagnostics": [
+        {
+          "children": [
+            "delete or rename one of them to remove the ambiguity"
+          ],
+          "code": "E0761",
+          "message": "file for module `item` found at both \"bundle/src/item.rs\" and \"bundle/src/item/mod.rs\""
+        },
+        {
+          "children": [],
+          "code": null,
+          "message": "For more information about this error, try `rustc --explain E0761`."
+        }
+      ],
+      "existing_rust_source": {
+        "app/src/main.rs": "139f3a0bdd191719ceade5608ab3f0e450bfe4392a5e33663bb370eb678d1ac0",
+        "bundle/src/item.rs": "f4542eee49c7b50c4eab471d2982a9dfe1a7f798ec176e6edeb722b02808a166",
+        "bundle/src/lib.rs": "41406781f4666d37c1e1e1e90d1d9344d00becf7760524fd820ea2a0ce3f0a87"
+      },
+      "exit": 101,
+      "jobs": [
+        {
+          "argv_sha256": "fa5a5e8fcdce329135e518f66e495d2826e25c6f0e8cd4183f9dc4811dbab13b",
+          "compiler_bytes": "b0c412a7a8010a768f00546419a0b1bcfca382d7e70191df3ae72e30ac1ef3e5",
+          "crate": "___",
+          "direct_proc_macros": [],
+          "linkonly": false,
+          "native_flags": [],
+          "native_paths": [],
+          "role": "rustc",
+          "source": null
+        },
+        {
+          "argv_sha256": "5450000a21ed713696428874969068e8e5fe58e6800e1dd92c1d020aeb970be0",
+          "compiler_bytes": "b0c412a7a8010a768f00546419a0b1bcfca382d7e70191df3ae72e30ac1ef3e5",
+          "crate": "build_script_build",
+          "direct_proc_macros": [],
+          "linkonly": false,
+          "native_flags": [],
+          "native_paths": [],
+          "role": "rustc",
+          "source": "bundle/build.rs"
+        },
+        {
+          "basename": "build_script_build",
+          "role": "wild"
+        },
+        {
+          "argv_sha256": "b204d77f5c639cfa7c88012e4305b68478327bc6872dbcbfc5b63cb14ec67a0b",
+          "compiler_bytes": "b0c412a7a8010a768f00546419a0b1bcfca382d7e70191df3ae72e30ac1ef3e5",
+          "crate": "probe_bundle",
+          "direct_proc_macros": [],
+          "linkonly": false,
+          "native_flags": [],
+          "native_paths": [],
+          "role": "rustc",
+          "source": "bundle/src/lib.rs"
+        }
+      ],
+      "native": {
+        "archive": null,
+        "bundle_rlib": null,
+        "contains_native_object": null
+      },
+      "out_files": [],
+      "present_alternate": true,
+      "raw_exec_sha": "48a7e29ea0cba83bd012fe266d5d459b8dfaf8ae025a55ad0d7f424699444878",
+      "runtime": null,
+      "script": {
+        "cfgs": [],
+        "env": [],
+        "linked_libs": [],
+        "linked_paths": []
+      },
+      "stderr_sha": "f39e1764bcec1e7f3d0dd0a6121215052e7aa6f782ed06d77d1a70d52183c2f3",
+      "stdout_sha": "96901eeddef82721406538ca7b9794a831fd4d1abe069f3cd126e1799259a228"
+    },
+    "no-op": {
+      "command": [
+        "cargo",
+        "+ohm",
+        "build",
+        "--offline",
+        "--message-format=json",
+        "-p",
+        "probe_app"
+      ],
+      "deps": [
+        {
+          "file": "probe_bundle-1ea07fc886b818fb.d",
+          "has_expected_item": true,
+          "has_expected_main": true,
+          "mentions_alternate": false,
+          "mentions_archive": false,
+          "paths": [
+            "bundle/src/lib.rs:",
+            "bundle/src/item.rs:"
+          ],
+          "sha256": "6b0e76b52269071f15233701f1d62c0f6b909e6b271bdcae099472eb550a4df7"
+        },
+        {
+          "file": "probe_bundle-1ea07fc886b818fb.d",
+          "has_expected_item": true,
+          "has_expected_main": true,
+          "mentions_alternate": false,
+          "mentions_archive": false,
+          "paths": [
+            "bundle/src/lib.rs:",
+            "bundle/src/item.rs:"
+          ],
+          "sha256": "6b0e76b52269071f15233701f1d62c0f6b909e6b271bdcae099472eb550a4df7"
+        }
+      ],
+      "diagnostics": [],
+      "existing_rust_source": {
+        "app/src/main.rs": "139f3a0bdd191719ceade5608ab3f0e450bfe4392a5e33663bb370eb678d1ac0",
+        "bundle/src/item.rs": "f4542eee49c7b50c4eab471d2982a9dfe1a7f798ec176e6edeb722b02808a166",
+        "bundle/src/lib.rs": "41406781f4666d37c1e1e1e90d1d9344d00becf7760524fd820ea2a0ce3f0a87"
+      },
+      "exit": 0,
+      "jobs": [],
+      "native": {
+        "archive": null,
+        "bundle_rlib": "e67c89d9a5d07ef5c8f41f6f31303ad44812c0fc9051ed7ef66cae2321716735",
+        "contains_native_object": false
+      },
+      "out_files": [],
+      "present_alternate": false,
+      "raw_exec_sha": "4fe5e459994bbff30e1a131d5fc659039a4130f436b3457dcbda57ab446582ed",
+      "runtime": "41",
+      "script": {
+        "cfgs": [],
+        "env": [],
+        "linked_libs": [],
+        "linked_paths": []
+      },
+      "stderr_sha": "59639588a6f1826f129cbcd121edc07279dab94786f5fa5bde6b3439b2e845cc",
+      "stdout_sha": "0db0dfffbd714190507cd10b711530154f94107b1f6544fe4d3faf4720e9697b"
+    },
+    "prime": {
+      "command": [
+        "cargo",
+        "+ohm",
+        "build",
+        "--offline",
+        "--message-format=json",
+        "-p",
+        "probe_app"
+      ],
+      "deps": [
+        {
+          "file": "probe_bundle-1ea07fc886b818fb.d",
+          "has_expected_item": true,
+          "has_expected_main": true,
+          "mentions_alternate": false,
+          "mentions_archive": false,
+          "paths": [
+            "bundle/src/lib.rs:",
+            "bundle/src/item.rs:"
+          ],
+          "sha256": "6b0e76b52269071f15233701f1d62c0f6b909e6b271bdcae099472eb550a4df7"
+        },
+        {
+          "file": "probe_bundle-1ea07fc886b818fb.d",
+          "has_expected_item": true,
+          "has_expected_main": true,
+          "mentions_alternate": false,
+          "mentions_archive": false,
+          "paths": [
+            "bundle/src/lib.rs:",
+            "bundle/src/item.rs:"
+          ],
+          "sha256": "6b0e76b52269071f15233701f1d62c0f6b909e6b271bdcae099472eb550a4df7"
+        }
+      ],
+      "diagnostics": [],
+      "existing_rust_source": {
+        "app/src/main.rs": "139f3a0bdd191719ceade5608ab3f0e450bfe4392a5e33663bb370eb678d1ac0",
+        "bundle/src/item.rs": "f4542eee49c7b50c4eab471d2982a9dfe1a7f798ec176e6edeb722b02808a166",
+        "bundle/src/lib.rs": "41406781f4666d37c1e1e1e90d1d9344d00becf7760524fd820ea2a0ce3f0a87"
+      },
+      "exit": 0,
+      "jobs": [
+        {
+          "argv_sha256": "fa5a5e8fcdce329135e518f66e495d2826e25c6f0e8cd4183f9dc4811dbab13b",
+          "compiler_bytes": "b0c412a7a8010a768f00546419a0b1bcfca382d7e70191df3ae72e30ac1ef3e5",
+          "crate": "___",
+          "direct_proc_macros": [],
+          "linkonly": false,
+          "native_flags": [],
+          "native_paths": [],
+          "role": "rustc",
+          "source": null
+        },
+        {
+          "argv_sha256": "938c691446351f06fba247f7a684b9c9d58464230b1a6d6efbbf65121b16e183",
+          "compiler_bytes": "b0c412a7a8010a768f00546419a0b1bcfca382d7e70191df3ae72e30ac1ef3e5",
+          "crate": "build_script_build",
+          "direct_proc_macros": [],
+          "linkonly": false,
+          "native_flags": [],
+          "native_paths": [],
+          "role": "rustc",
+          "source": "bundle/build.rs"
+        },
+        {
+          "basename": "build_script_build",
+          "role": "wild"
+        },
+        {
+          "argv_sha256": "514ede6c40a706e1660c73762db343f96cc28bf2daaef36292612c4970470b90",
+          "compiler_bytes": "b0c412a7a8010a768f00546419a0b1bcfca382d7e70191df3ae72e30ac1ef3e5",
+          "crate": "probe_bundle",
+          "direct_proc_macros": [],
+          "linkonly": false,
+          "native_flags": [],
+          "native_paths": [],
+          "role": "rustc",
+          "source": "bundle/src/lib.rs"
+        },
+        {
+          "argv_sha256": "de49d59168575610851123fa9c0e8d6174d8eadbc77c95b84f9b200fa188c328",
+          "compiler_bytes": "b0c412a7a8010a768f00546419a0b1bcfca382d7e70191df3ae72e30ac1ef3e5",
+          "crate": "probe_app",
+          "direct_proc_macros": [],
+          "linkonly": false,
+          "native_flags": [],
+          "native_paths": [],
+          "role": "rustc",
+          "source": "app/src/main.rs"
+        },
+        {
+          "basename": "probe_app",
+          "role": "wild"
+        }
+      ],
+      "native": {
+        "archive": null,
+        "bundle_rlib": "e67c89d9a5d07ef5c8f41f6f31303ad44812c0fc9051ed7ef66cae2321716735",
+        "contains_native_object": false
+      },
+      "out_files": [],
+      "present_alternate": false,
+      "raw_exec_sha": "f008d1e0b5b129a24f2059b828d4d263ce91b0468b43594e663b46e1e0c5cee9",
+      "runtime": "41",
+      "script": {
+        "cfgs": [],
+        "env": [],
+        "linked_libs": [],
+        "linked_paths": []
+      },
+      "stderr_sha": "adb6ab016e45b69487ad31e06bf6bc9660aee661926fd04f6af42943fe90d279",
+      "stdout_sha": "2dd1ee100253b60894daedc7fd801c3ba810caba1103c34edb84634c84158429"
+    },
+    "restore": {
+      "command": [
+        "cargo",
+        "+ohm",
+        "build",
+        "--offline",
+        "--message-format=json",
+        "-p",
+        "probe_app"
+      ],
+      "deps": [
+        {
+          "file": "probe_bundle-1ea07fc886b818fb.d",
+          "has_expected_item": true,
+          "has_expected_main": true,
+          "mentions_alternate": false,
+          "mentions_archive": false,
+          "paths": [
+            "bundle/src/lib.rs:",
+            "bundle/src/item.rs:"
+          ],
+          "sha256": "6b0e76b52269071f15233701f1d62c0f6b909e6b271bdcae099472eb550a4df7"
+        },
+        {
+          "file": "probe_bundle-1ea07fc886b818fb.d",
+          "has_expected_item": true,
+          "has_expected_main": true,
+          "mentions_alternate": false,
+          "mentions_archive": false,
+          "paths": [
+            "bundle/src/lib.rs:",
+            "bundle/src/item.rs:"
+          ],
+          "sha256": "6b0e76b52269071f15233701f1d62c0f6b909e6b271bdcae099472eb550a4df7"
+        }
+      ],
+      "diagnostics": [],
+      "existing_rust_source": {
+        "app/src/main.rs": "139f3a0bdd191719ceade5608ab3f0e450bfe4392a5e33663bb370eb678d1ac0",
+        "bundle/src/item.rs": "f4542eee49c7b50c4eab471d2982a9dfe1a7f798ec176e6edeb722b02808a166",
+        "bundle/src/lib.rs": "41406781f4666d37c1e1e1e90d1d9344d00becf7760524fd820ea2a0ce3f0a87"
+      },
+      "exit": 0,
+      "jobs": [
+        {
+          "argv_sha256": "938c691446351f06fba247f7a684b9c9d58464230b1a6d6efbbf65121b16e183",
+          "compiler_bytes": "b0c412a7a8010a768f00546419a0b1bcfca382d7e70191df3ae72e30ac1ef3e5",
+          "crate": "build_script_build",
+          "direct_proc_macros": [],
+          "linkonly": false,
+          "native_flags": [],
+          "native_paths": [],
+          "role": "rustc",
+          "source": "bundle/build.rs"
+        },
+        {
+          "basename": "build_script_build",
+          "role": "wild"
+        },
+        {
+          "argv_sha256": "514ede6c40a706e1660c73762db343f96cc28bf2daaef36292612c4970470b90",
+          "compiler_bytes": "b0c412a7a8010a768f00546419a0b1bcfca382d7e70191df3ae72e30ac1ef3e5",
+          "crate": "probe_bundle",
+          "direct_proc_macros": [],
+          "linkonly": false,
+          "native_flags": [],
+          "native_paths": [],
+          "role": "rustc",
+          "source": "bundle/src/lib.rs"
+        },
+        {
+          "argv_sha256": "de49d59168575610851123fa9c0e8d6174d8eadbc77c95b84f9b200fa188c328",
+          "compiler_bytes": "b0c412a7a8010a768f00546419a0b1bcfca382d7e70191df3ae72e30ac1ef3e5",
+          "crate": "probe_app",
+          "direct_proc_macros": [],
+          "linkonly": false,
+          "native_flags": [],
+          "native_paths": [],
+          "role": "rustc",
+          "source": "app/src/main.rs"
+        },
+        {
+          "basename": "probe_app",
+          "role": "wild"
+        }
+      ],
+      "native": {
+        "archive": null,
+        "bundle_rlib": "07bbe5210a014097eb2fa05c8d59766c2b7ead70d33e85c972ff96a0a2e61f1d",
+        "contains_native_object": false
+      },
+      "out_files": [],
+      "present_alternate": false,
+      "raw_exec_sha": "745e897e94360053073f0adc2cddcc07def551e0deb679600a6a1bee1e118420",
+      "runtime": "41",
+      "script": {
+        "cfgs": [],
+        "env": [],
+        "linked_libs": [],
+        "linked_paths": []
+      },
+      "stderr_sha": "dd74be891fa8a21747afd77220cb8fcdee2a639631de159d94ade4f10595bd5d",
+      "stdout_sha": "2dd1ee100253b60894daedc7fd801c3ba810caba1103c34edb84634c84158429"
+    }
+  },
+  "negative-module-check": {
+    "edit": {
+      "command": [
+        "cargo",
+        "+ohm",
+        "check",
+        "--offline",
+        "--message-format=json",
+        "-p",
+        "probe_bundle"
+      ],
+      "deps": [],
+      "diagnostics": [
+        {
+          "children": [
+            "delete or rename one of them to remove the ambiguity"
+          ],
+          "code": "E0761",
+          "message": "file for module `item` found at both \"bundle/src/item.rs\" and \"bundle/src/item/mod.rs\""
+        },
+        {
+          "children": [],
+          "code": null,
+          "message": "For more information about this error, try `rustc --explain E0761`."
+        }
+      ],
+      "existing_rust_source": {
+        "app/src/main.rs": "139f3a0bdd191719ceade5608ab3f0e450bfe4392a5e33663bb370eb678d1ac0",
+        "bundle/src/item.rs": "f4542eee49c7b50c4eab471d2982a9dfe1a7f798ec176e6edeb722b02808a166",
+        "bundle/src/lib.rs": "41406781f4666d37c1e1e1e90d1d9344d00becf7760524fd820ea2a0ce3f0a87"
+      },
+      "exit": 101,
+      "jobs": [
+        {
+          "argv_sha256": "5d74d395239e42df7a6534803537aacf461a5f963d0675257de460a96ea03653",
+          "compiler_bytes": "b0c412a7a8010a768f00546419a0b1bcfca382d7e70191df3ae72e30ac1ef3e5",
+          "crate": "build_script_build",
+          "direct_proc_macros": [],
+          "linkonly": false,
+          "native_flags": [],
+          "native_paths": [],
+          "role": "rustc",
+          "source": "bundle/build.rs"
+        },
+        {
+          "basename": "build_script_build",
+          "role": "wild"
+        },
+        {
+          "argv_sha256": "401364e268bab345e0b1d7e40a252e8d3da256712c30ac558d493b301209c0f9",
+          "compiler_bytes": "b0c412a7a8010a768f00546419a0b1bcfca382d7e70191df3ae72e30ac1ef3e5",
+          "crate": "probe_bundle",
+          "direct_proc_macros": [],
+          "linkonly": false,
+          "native_flags": [],
+          "native_paths": [],
+          "role": "rustc",
+          "source": "bundle/src/lib.rs"
+        }
+      ],
+      "native": {
+        "archive": null,
+        "bundle_rlib": null,
+        "contains_native_object": null
+      },
+      "out_files": [],
+      "present_alternate": true,
+      "raw_exec_sha": "9fc05ff5cd50fa11f9a1f760af0e6ad34e003e5282e4487c2e7d7bd72b92be4a",
+      "runtime": null,
+      "script": {
+        "cfgs": [],
+        "env": [],
+        "linked_libs": [],
+        "linked_paths": []
+      },
+      "stderr_sha": "f39e1764bcec1e7f3d0dd0a6121215052e7aa6f782ed06d77d1a70d52183c2f3",
+      "stdout_sha": "a671bb7698422eb797e3db389fa5a0c3839464d01519e8ffcf1c7d36b9ed59c5"
+    },
+    "empty-edit": {
+      "command": [
+        "cargo",
+        "+ohm",
+        "check",
+        "--offline",
+        "--message-format=json",
+        "-p",
+        "probe_bundle"
+      ],
+      "deps": [],
+      "diagnostics": [
+        {
+          "children": [
+            "delete or rename one of them to remove the ambiguity"
+          ],
+          "code": "E0761",
+          "message": "file for module `item` found at both \"bundle/src/item.rs\" and \"bundle/src/item/mod.rs\""
+        },
+        {
+          "children": [],
+          "code": null,
+          "message": "For more information about this error, try `rustc --explain E0761`."
+        }
+      ],
+      "existing_rust_source": {
+        "app/src/main.rs": "139f3a0bdd191719ceade5608ab3f0e450bfe4392a5e33663bb370eb678d1ac0",
+        "bundle/src/item.rs": "f4542eee49c7b50c4eab471d2982a9dfe1a7f798ec176e6edeb722b02808a166",
+        "bundle/src/lib.rs": "41406781f4666d37c1e1e1e90d1d9344d00becf7760524fd820ea2a0ce3f0a87"
+      },
+      "exit": 101,
+      "jobs": [
+        {
+          "argv_sha256": "fa5a5e8fcdce329135e518f66e495d2826e25c6f0e8cd4183f9dc4811dbab13b",
+          "compiler_bytes": "b0c412a7a8010a768f00546419a0b1bcfca382d7e70191df3ae72e30ac1ef3e5",
+          "crate": "___",
+          "direct_proc_macros": [],
+          "linkonly": false,
+          "native_flags": [],
+          "native_paths": [],
+          "role": "rustc",
+          "source": null
+        },
+        {
+          "argv_sha256": "e708770ae044bb58927c662480922583d24d1cc571769bdf3f8f036df9222487",
+          "compiler_bytes": "b0c412a7a8010a768f00546419a0b1bcfca382d7e70191df3ae72e30ac1ef3e5",
+          "crate": "build_script_build",
+          "direct_proc_macros": [],
+          "linkonly": false,
+          "native_flags": [],
+          "native_paths": [],
+          "role": "rustc",
+          "source": "bundle/build.rs"
+        },
+        {
+          "basename": "build_script_build",
+          "role": "wild"
+        },
+        {
+          "argv_sha256": "521cc8f90f4c8776fab7df4bf1870d4e406d18e5f9493ee11f0d6094d443fc48",
+          "compiler_bytes": "b0c412a7a8010a768f00546419a0b1bcfca382d7e70191df3ae72e30ac1ef3e5",
+          "crate": "probe_bundle",
+          "direct_proc_macros": [],
+          "linkonly": false,
+          "native_flags": [],
+          "native_paths": [],
+          "role": "rustc",
+          "source": "bundle/src/lib.rs"
+        }
+      ],
+      "native": {
+        "archive": null,
+        "bundle_rlib": null,
+        "contains_native_object": null
+      },
+      "out_files": [],
+      "present_alternate": true,
+      "raw_exec_sha": "a9e213a57c504356d7b45f38accbf8bc1de22f7e9e7dd1600324a1a69aa105c7",
+      "runtime": null,
+      "script": {
+        "cfgs": [],
+        "env": [],
+        "linked_libs": [],
+        "linked_paths": []
+      },
+      "stderr_sha": "f39e1764bcec1e7f3d0dd0a6121215052e7aa6f782ed06d77d1a70d52183c2f3",
+      "stdout_sha": "96ffc051d3870fc4853c5e71159e8b3b46dfc8b77be73e2c5c78c18c7b549b0e"
+    },
+    "no-op": {
+      "command": [
+        "cargo",
+        "+ohm",
+        "check",
+        "--offline",
+        "--message-format=json",
+        "-p",
+        "probe_bundle"
+      ],
+      "deps": [
+        {
+          "file": "probe_bundle-ae6fc9a49036b8f1.d",
+          "has_expected_item": true,
+          "has_expected_main": true,
+          "mentions_alternate": false,
+          "mentions_archive": false,
+          "paths": [
+            "bundle/src/lib.rs:",
+            "bundle/src/item.rs:"
+          ],
+          "sha256": "81c5f7b2b81d9aeb69e30cbd327612b814fc5f638f3813e29620dc2350aa6b4a"
+        }
+      ],
+      "diagnostics": [],
+      "existing_rust_source": {
+        "app/src/main.rs": "139f3a0bdd191719ceade5608ab3f0e450bfe4392a5e33663bb370eb678d1ac0",
+        "bundle/src/item.rs": "f4542eee49c7b50c4eab471d2982a9dfe1a7f798ec176e6edeb722b02808a166",
+        "bundle/src/lib.rs": "41406781f4666d37c1e1e1e90d1d9344d00becf7760524fd820ea2a0ce3f0a87"
+      },
+      "exit": 0,
+      "jobs": [],
+      "native": {
+        "archive": null,
+        "bundle_rlib": null,
+        "contains_native_object": null
+      },
+      "out_files": [],
+      "present_alternate": false,
+      "raw_exec_sha": "8814b3106f9f021b8d3f63e0c939e4006d8749ffb9684e9ca355790ee5feb77b",
+      "runtime": null,
+      "script": {
+        "cfgs": [],
+        "env": [],
+        "linked_libs": [],
+        "linked_paths": []
+      },
+      "stderr_sha": "8c233a54790c4800d3dd585436af679aa838da259bfdb129412e2d51cdb75cdc",
+      "stdout_sha": "1a52943c3703a224fa58039ff16f70d3556d45706cd3d22711776c998fc6aee3"
+    },
+    "prime": {
+      "command": [
+        "cargo",
+        "+ohm",
+        "check",
+        "--offline",
+        "--message-format=json",
+        "-p",
+        "probe_bundle"
+      ],
+      "deps": [
+        {
+          "file": "probe_bundle-ae6fc9a49036b8f1.d",
+          "has_expected_item": true,
+          "has_expected_main": true,
+          "mentions_alternate": false,
+          "mentions_archive": false,
+          "paths": [
+            "bundle/src/lib.rs:",
+            "bundle/src/item.rs:"
+          ],
+          "sha256": "81c5f7b2b81d9aeb69e30cbd327612b814fc5f638f3813e29620dc2350aa6b4a"
+        }
+      ],
+      "diagnostics": [],
+      "existing_rust_source": {
+        "app/src/main.rs": "139f3a0bdd191719ceade5608ab3f0e450bfe4392a5e33663bb370eb678d1ac0",
+        "bundle/src/item.rs": "f4542eee49c7b50c4eab471d2982a9dfe1a7f798ec176e6edeb722b02808a166",
+        "bundle/src/lib.rs": "41406781f4666d37c1e1e1e90d1d9344d00becf7760524fd820ea2a0ce3f0a87"
+      },
+      "exit": 0,
+      "jobs": [
+        {
+          "argv_sha256": "fa5a5e8fcdce329135e518f66e495d2826e25c6f0e8cd4183f9dc4811dbab13b",
+          "compiler_bytes": "b0c412a7a8010a768f00546419a0b1bcfca382d7e70191df3ae72e30ac1ef3e5",
+          "crate": "___",
+          "direct_proc_macros": [],
+          "linkonly": false,
+          "native_flags": [],
+          "native_paths": [],
+          "role": "rustc",
+          "source": null
+        },
+        {
+          "argv_sha256": "5d74d395239e42df7a6534803537aacf461a5f963d0675257de460a96ea03653",
+          "compiler_bytes": "b0c412a7a8010a768f00546419a0b1bcfca382d7e70191df3ae72e30ac1ef3e5",
+          "crate": "build_script_build",
+          "direct_proc_macros": [],
+          "linkonly": false,
+          "native_flags": [],
+          "native_paths": [],
+          "role": "rustc",
+          "source": "bundle/build.rs"
+        },
+        {
+          "basename": "build_script_build",
+          "role": "wild"
+        },
+        {
+          "argv_sha256": "4cc32f00c08938a768685fd32836c12fae4a7d7adff20f372c047427fab493b9",
+          "compiler_bytes": "b0c412a7a8010a768f00546419a0b1bcfca382d7e70191df3ae72e30ac1ef3e5",
+          "crate": "probe_bundle",
+          "direct_proc_macros": [],
+          "linkonly": false,
+          "native_flags": [],
+          "native_paths": [],
+          "role": "rustc",
+          "source": "bundle/src/lib.rs"
+        }
+      ],
+      "native": {
+        "archive": null,
+        "bundle_rlib": null,
+        "contains_native_object": null
+      },
+      "out_files": [],
+      "present_alternate": false,
+      "raw_exec_sha": "65bccf1b999809926e467a773bf492652bd9a7a88a18cd9975b8416d8f7c8e70",
+      "runtime": null,
+      "script": {
+        "cfgs": [],
+        "env": [],
+        "linked_libs": [],
+        "linked_paths": []
+      },
+      "stderr_sha": "2c0c0468ad05d43f0b86ce48dd5729286c0fd3c32e3bbd87c9e7735f37ae4f93",
+      "stdout_sha": "97a0763a35d67f6d8d558db85b6a455605ba811ebe2978a091fdab9cffb7d48c"
+    },
+    "restore": {
+      "command": [
+        "cargo",
+        "+ohm",
+        "check",
+        "--offline",
+        "--message-format=json",
+        "-p",
+        "probe_bundle"
+      ],
+      "deps": [
+        {
+          "file": "probe_bundle-ae6fc9a49036b8f1.d",
+          "has_expected_item": true,
+          "has_expected_main": true,
+          "mentions_alternate": false,
+          "mentions_archive": false,
+          "paths": [
+            "bundle/src/lib.rs:",
+            "bundle/src/item.rs:"
+          ],
+          "sha256": "81c5f7b2b81d9aeb69e30cbd327612b814fc5f638f3813e29620dc2350aa6b4a"
+        }
+      ],
+      "diagnostics": [],
+      "existing_rust_source": {
+        "app/src/main.rs": "139f3a0bdd191719ceade5608ab3f0e450bfe4392a5e33663bb370eb678d1ac0",
+        "bundle/src/item.rs": "f4542eee49c7b50c4eab471d2982a9dfe1a7f798ec176e6edeb722b02808a166",
+        "bundle/src/lib.rs": "41406781f4666d37c1e1e1e90d1d9344d00becf7760524fd820ea2a0ce3f0a87"
+      },
+      "exit": 0,
+      "jobs": [
+        {
+          "argv_sha256": "5d74d395239e42df7a6534803537aacf461a5f963d0675257de460a96ea03653",
+          "compiler_bytes": "b0c412a7a8010a768f00546419a0b1bcfca382d7e70191df3ae72e30ac1ef3e5",
+          "crate": "build_script_build",
+          "direct_proc_macros": [],
+          "linkonly": false,
+          "native_flags": [],
+          "native_paths": [],
+          "role": "rustc",
+          "source": "bundle/build.rs"
+        },
+        {
+          "basename": "build_script_build",
+          "role": "wild"
+        },
+        {
+          "argv_sha256": "401364e268bab345e0b1d7e40a252e8d3da256712c30ac558d493b301209c0f9",
+          "compiler_bytes": "b0c412a7a8010a768f00546419a0b1bcfca382d7e70191df3ae72e30ac1ef3e5",
+          "crate": "probe_bundle",
+          "direct_proc_macros": [],
+          "linkonly": false,
+          "native_flags": [],
+          "native_paths": [],
+          "role": "rustc",
+          "source": "bundle/src/lib.rs"
+        }
+      ],
+      "native": {
+        "archive": null,
+        "bundle_rlib": null,
+        "contains_native_object": null
+      },
+      "out_files": [],
+      "present_alternate": false,
+      "raw_exec_sha": "618c7f4196bbf8e019b0b9c1d6bf5f2e3899753ca839cc117723e9bcd76d4804",
+      "runtime": null,
+      "script": {
+        "cfgs": [],
+        "env": [],
+        "linked_libs": [],
+        "linked_paths": []
+      },
+      "stderr_sha": "6f4d6bab3a44b3a1336a8254197fd2d6fae83caec95328067568508781400d8a",
+      "stdout_sha": "97a0763a35d67f6d8d558db85b6a455605ba811ebe2978a091fdab9cffb7d48c"
+    }
+  }
+}

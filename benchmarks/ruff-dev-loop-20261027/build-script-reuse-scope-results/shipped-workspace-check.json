@@ -1,0 +1,114 @@
+{
+  "restore": {
+    "change": {
+      "fresh": 511,
+      "processes": {
+        "cc": 3,
+        "collect2": 3,
+        "rustc-full": 8,
+        "wild": 3
+      },
+      "rustcs": [
+        "build_script_build",
+        "build_script_build",
+        "build_script_build",
+        "ruff",
+        "ruff",
+        "ty",
+        "ty",
+        "ty_wasm"
+      ],
+      "scripts": [
+        "ty",
+        "ruff",
+        "ty_wasm"
+      ]
+    },
+    "change-next": {
+      "fresh": 514,
+      "processes": {
+        "rustc-full": 3
+      },
+      "rustcs": [
+        "ruff",
+        "ty",
+        "ty_wasm"
+      ],
+      "scripts": []
+    },
+    "change-next-2": {
+      "fresh": 514,
+      "processes": {
+        "rustc-full": 3
+      },
+      "rustcs": [
+        "ruff",
+        "ty",
+        "ty_wasm"
+      ],
+      "scripts": []
+    },
+    "preflight": {
+      "fresh": 520,
+      "processes": {},
+      "rustcs": [],
+      "scripts": []
+    }
+  },
+  "reverse": {
+    "change": {
+      "fresh": 511,
+      "processes": {
+        "cc": 3,
+        "collect2": 3,
+        "rustc-full": 8,
+        "wild": 3
+      },
+      "rustcs": [
+        "build_script_build",
+        "build_script_build",
+        "build_script_build",
+        "ruff",
+        "ruff",
+        "ty",
+        "ty",
+        "ty_wasm"
+      ],
+      "scripts": [
+        "ty",
+        "ruff",
+        "ty_wasm"
+      ]
+    },
+    "change-next": {
+      "fresh": 514,
+      "processes": {
+        "rustc-full": 3
+      },
+      "rustcs": [
+        "ruff",
+        "ty",
+        "ty_wasm"
+      ],
+      "scripts": []
+    },
+    "change-next-2": {
+      "fresh": 514,
+      "processes": {
+        "rustc-full": 3
+      },
+      "rustcs": [
+        "ruff",
+        "ty",
+        "ty_wasm"
+      ],
+      "scripts": []
+    },
+    "preflight": {
+      "fresh": 520,
+      "processes": {},
+      "rustcs": [],
+      "scripts": []
+    }
+  }
+}

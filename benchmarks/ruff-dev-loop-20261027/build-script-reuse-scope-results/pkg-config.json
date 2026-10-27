@@ -1,0 +1,156 @@
+{
+  "library-order": {
+    "edit": {
+      "ELF": "74cd44b301fd59549d3853bcd01dc035e562eb18abd489737353b75f8684c8b7",
+      "consumer_compilers": 1,
+      "correct": true,
+      "expected": "83",
+      "native_linkers": 1,
+      "out_files": {},
+      "outside_files": {
+        "native/libfirst.a": "7c8b70bd0a22d4f4c80214368fc4b0871c59e32314e15b83ead6dcaf1fd1ecc1",
+        "native/libsecond.a": "b42e47a38e0031ff8112cbc25e684838ca1fd56c72cd7ad7585d8e33b9188050",
+        "outside.txt": "3d914f9348c9cc0ff8a79716700b9fcd4d2f3e711608004eb8f138bcba7f14d9"
+      },
+      "pkg_config_executable_sha256": "7e8152db1b0c7e49d47b4b82a70dc9997b557951c5d4d938b0e7f208ce9eb10b",
+      "pkg_config_executions": 1,
+      "pkg_config_execve_sha256": [
+        "9caa486e9230972c84e1ab9d5acc0e9bf7ba259dfcc56ec4c934be48dcb54f65"
+      ],
+      "raw_exec_sha256": "a0dd3b2c353853263a146062cf720788bbfe5a9fa584ee3a1e450739dff833f1",
+      "stdout": "83",
+      "stdout_of_script": [
+        "cargo::rerun-if-changed=trigger.txt",
+        "cargo::rustc-link-search=native=/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/build-script-producer-reuse16-v1/pkg-config-control-v1/library-order/ws/native",
+        "cargo::rustc-link-lib=static=second",
+        "cargo::rustc-link-lib=static=first"
+      ]
+    },
+    "empty-edited": {
+      "ELF": "74cd44b301fd59549d3853bcd01dc035e562eb18abd489737353b75f8684c8b7",
+      "consumer_compilers": 1,
+      "correct": true,
+      "expected": "83",
+      "native_linkers": 2,
+      "out_files": {},
+      "outside_files": {
+        "native/libfirst.a": "7c8b70bd0a22d4f4c80214368fc4b0871c59e32314e15b83ead6dcaf1fd1ecc1",
+        "native/libsecond.a": "b42e47a38e0031ff8112cbc25e684838ca1fd56c72cd7ad7585d8e33b9188050",
+        "outside.txt": "3d914f9348c9cc0ff8a79716700b9fcd4d2f3e711608004eb8f138bcba7f14d9"
+      },
+      "pkg_config_executable_sha256": "7e8152db1b0c7e49d47b4b82a70dc9997b557951c5d4d938b0e7f208ce9eb10b",
+      "pkg_config_executions": 1,
+      "pkg_config_execve_sha256": [
+        "de79fed784b7022af884fe0e05a3136abacf63ff82b039e40e6bf06a040dfb6c"
+      ],
+      "raw_exec_sha256": "4e7024c9bdc46630e3ae102d7aaf181b668a05fc72b9cc9952a29b8af150a8de",
+      "stdout": "83",
+      "stdout_of_script": [
+        "cargo::rerun-if-changed=trigger.txt",
+        "cargo::rustc-link-search=native=/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/build-script-producer-reuse16-v1/pkg-config-control-v1/library-order/ws/native",
+        "cargo::rustc-link-lib=static=second",
+        "cargo::rustc-link-lib=static=first"
+      ]
+    },
+    "prime": {
+      "ELF": "cb2752056c5138a45784769dc0b9952b9d08e365e26609cfc791c0fef61e2fd5",
+      "consumer_compilers": 1,
+      "correct": true,
+      "expected": "41",
+      "native_linkers": 2,
+      "out_files": {},
+      "outside_files": {
+        "native/libfirst.a": "7c8b70bd0a22d4f4c80214368fc4b0871c59e32314e15b83ead6dcaf1fd1ecc1",
+        "native/libsecond.a": "b42e47a38e0031ff8112cbc25e684838ca1fd56c72cd7ad7585d8e33b9188050",
+        "outside.txt": "3d914f9348c9cc0ff8a79716700b9fcd4d2f3e711608004eb8f138bcba7f14d9"
+      },
+      "pkg_config_executable_sha256": "7e8152db1b0c7e49d47b4b82a70dc9997b557951c5d4d938b0e7f208ce9eb10b",
+      "pkg_config_executions": 1,
+      "pkg_config_execve_sha256": [
+        "5bdf19e14758e26e316203f9050a73525de175a320110867648227c7dbb10e53"
+      ],
+      "raw_exec_sha256": "301ae81b7732795270f4c91f351462ad2d2a109f94f0ec921c297d8135d958d8",
+      "stdout": "41",
+      "stdout_of_script": [
+        "cargo::rerun-if-changed=trigger.txt",
+        "cargo::rustc-link-search=native=/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/build-script-producer-reuse16-v1/pkg-config-control-v1/library-order/ws/native",
+        "cargo::rustc-link-lib=static=first",
+        "cargo::rustc-link-lib=static=second"
+      ]
+    },
+    "restore": {
+      "ELF": "cb2752056c5138a45784769dc0b9952b9d08e365e26609cfc791c0fef61e2fd5",
+      "consumer_compilers": 1,
+      "correct": true,
+      "expected": "41",
+      "native_linkers": 1,
+      "out_files": {},
+      "outside_files": {
+        "native/libfirst.a": "7c8b70bd0a22d4f4c80214368fc4b0871c59e32314e15b83ead6dcaf1fd1ecc1",
+        "native/libsecond.a": "b42e47a38e0031ff8112cbc25e684838ca1fd56c72cd7ad7585d8e33b9188050",
+        "outside.txt": "3d914f9348c9cc0ff8a79716700b9fcd4d2f3e711608004eb8f138bcba7f14d9"
+      },
+      "pkg_config_executable_sha256": "7e8152db1b0c7e49d47b4b82a70dc9997b557951c5d4d938b0e7f208ce9eb10b",
+      "pkg_config_executions": 1,
+      "pkg_config_execve_sha256": [
+        "dcabed9f2b3ab5ccdd57b919f2952c9999b491b36d2031a7ac228e0ed5ef33ad"
+      ],
+      "raw_exec_sha256": "03937ff456296340970a31b9b9601fe36855d1d1cdd4e6486884e04e7afe8358",
+      "stdout": "41",
+      "stdout_of_script": [
+        "cargo::rerun-if-changed=trigger.txt",
+        "cargo::rustc-link-search=native=/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/build-script-producer-reuse16-v1/pkg-config-control-v1/library-order/ws/native",
+        "cargo::rustc-link-lib=static=first",
+        "cargo::rustc-link-lib=static=second"
+      ]
+    },
+    "warm-edited": {
+      "ELF": "74cd44b301fd59549d3853bcd01dc035e562eb18abd489737353b75f8684c8b7",
+      "consumer_compilers": 0,
+      "correct": true,
+      "expected": "83",
+      "native_linkers": 0,
+      "out_files": {},
+      "outside_files": {
+        "native/libfirst.a": "7c8b70bd0a22d4f4c80214368fc4b0871c59e32314e15b83ead6dcaf1fd1ecc1",
+        "native/libsecond.a": "b42e47a38e0031ff8112cbc25e684838ca1fd56c72cd7ad7585d8e33b9188050",
+        "outside.txt": "3d914f9348c9cc0ff8a79716700b9fcd4d2f3e711608004eb8f138bcba7f14d9"
+      },
+      "pkg_config_executable_sha256": "7e8152db1b0c7e49d47b4b82a70dc9997b557951c5d4d938b0e7f208ce9eb10b",
+      "pkg_config_executions": 0,
+      "pkg_config_execve_sha256": [],
+      "raw_exec_sha256": "9b1fd024cedb0ec0e7c8a8222dea2e4b8f0ee1f729fd65eb7f56e33c73aa6499",
+      "stdout": "83",
+      "stdout_of_script": [
+        "cargo::rerun-if-changed=trigger.txt",
+        "cargo::rustc-link-search=native=/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/build-script-producer-reuse16-v1/pkg-config-control-v1/library-order/ws/native",
+        "cargo::rustc-link-lib=static=second",
+        "cargo::rustc-link-lib=static=first"
+      ]
+    },
+    "warm-original": {
+      "ELF": "cb2752056c5138a45784769dc0b9952b9d08e365e26609cfc791c0fef61e2fd5",
+      "consumer_compilers": 0,
+      "correct": true,
+      "expected": "41",
+      "native_linkers": 0,
+      "out_files": {},
+      "outside_files": {
+        "native/libfirst.a": "7c8b70bd0a22d4f4c80214368fc4b0871c59e32314e15b83ead6dcaf1fd1ecc1",
+        "native/libsecond.a": "b42e47a38e0031ff8112cbc25e684838ca1fd56c72cd7ad7585d8e33b9188050",
+        "outside.txt": "3d914f9348c9cc0ff8a79716700b9fcd4d2f3e711608004eb8f138bcba7f14d9"
+      },
+      "pkg_config_executable_sha256": "7e8152db1b0c7e49d47b4b82a70dc9997b557951c5d4d938b0e7f208ce9eb10b",
+      "pkg_config_executions": 0,
+      "pkg_config_execve_sha256": [],
+      "raw_exec_sha256": "01627328d7e0022b266b70daf6141385503205cf25dfe72ce95f7ce4e7d3c1e8",
+      "stdout": "41",
+      "stdout_of_script": [
+        "cargo::rerun-if-changed=trigger.txt",
+        "cargo::rustc-link-search=native=/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/build-script-producer-reuse16-v1/pkg-config-control-v1/library-order/ws/native",
+        "cargo::rustc-link-lib=static=first",
+        "cargo::rustc-link-lib=static=second"
+      ]
+    }
+  }
+}

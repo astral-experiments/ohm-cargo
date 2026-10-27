@@ -1,0 +1,1685 @@
+{
+  "build": {
+    "argc": [
+      "cargo",
+      "+ohm",
+      "-Zunstable-options",
+      "build",
+      "--unit-graph",
+      "--offline",
+      "--locked"
+    ],
+    "num_roots": 58,
+    "num_units": 552,
+    "raw_hash": "ede2537b1564b338509c954856ff44d9dad3633ab819cd62173c34ea34ae08f3",
+    "rows": [
+      {
+        "crate": "ruff",
+        "direct_local_macro": [
+          "ruff_macros"
+        ],
+        "direct_macro": [
+          "is_macro",
+          "ruff_macros"
+        ],
+        "id": 311,
+        "kind": [
+          "lib"
+        ],
+        "local_macro_chains": [
+          [
+            "ruff",
+            "ruff_macros"
+          ]
+        ],
+        "mode": "build",
+        "registry_macros": [
+          "is_macro",
+          "clap_derive",
+          "rkyv_derive",
+          "strum_macros",
+          "serde_derive",
+          "thiserror_impl",
+          "tracing_attributes",
+          "bytecheck_derive",
+          "munge_macro",
+          "ptr_meta_derive",
+          "rustversion",
+          "get_size_derive2",
+          "salsa_macros",
+          "schemars_derive",
+          "libcst_derive",
+          "paste",
+          "ref_cast_impl",
+          "peg_macros",
+          "displaydoc",
+          "attribute_derive_macro",
+          "derive_where",
+          "thiserror_impl",
+          "zerovec_derive",
+          "manyhow_macros",
+          "yoke_derive",
+          "zerofrom_derive",
+          "quote_use_macros"
+        ],
+        "shortest_registry_chain": [
+          "ruff",
+          "is_macro"
+        ],
+        "source": "crates/ruff/src/lib.rs"
+      },
+      {
+        "crate": "ruff",
+        "direct_local_macro": [
+          "ruff_macros"
+        ],
+        "direct_macro": [
+          "is_macro",
+          "ruff_macros"
+        ],
+        "id": 312,
+        "kind": [
+          "bin"
+        ],
+        "local_macro_chains": [
+          [
+            "ruff",
+            "ruff_macros"
+          ]
+        ],
+        "mode": "build",
+        "registry_macros": [
+          "is_macro",
+          "clap_derive",
+          "rkyv_derive",
+          "strum_macros",
+          "serde_derive",
+          "thiserror_impl",
+          "tracing_attributes",
+          "bytecheck_derive",
+          "munge_macro",
+          "ptr_meta_derive",
+          "rustversion",
+          "get_size_derive2",
+          "salsa_macros",
+          "schemars_derive",
+          "libcst_derive",
+          "paste",
+          "ref_cast_impl",
+          "peg_macros",
+          "displaydoc",
+          "attribute_derive_macro",
+          "derive_where",
+          "thiserror_impl",
+          "zerovec_derive",
+          "manyhow_macros",
+          "yoke_derive",
+          "zerofrom_derive",
+          "quote_use_macros"
+        ],
+        "shortest_registry_chain": [
+          "ruff",
+          "is_macro"
+        ],
+        "source": "crates/ruff/src/main.rs"
+      },
+      {
+        "crate": "ruff_dev",
+        "direct_local_macro": [],
+        "direct_macro": [],
+        "id": 320,
+        "kind": [
+          "bin"
+        ],
+        "local_macro_chains": [
+          [
+            "ruff_dev",
+            "ruff",
+            "ruff_macros"
+          ]
+        ],
+        "mode": "build",
+        "registry_macros": [
+          "clap_derive",
+          "libcst_derive",
+          "paste",
+          "is_macro",
+          "strum_macros",
+          "schemars_derive",
+          "serde_derive",
+          "tracing_attributes",
+          "peg_macros",
+          "thiserror_impl",
+          "rkyv_derive",
+          "get_size_derive2",
+          "salsa_macros",
+          "ref_cast_impl",
+          "bytecheck_derive",
+          "munge_macro",
+          "ptr_meta_derive",
+          "rustversion",
+          "displaydoc",
+          "thiserror_impl",
+          "zerovec_derive",
+          "attribute_derive_macro",
+          "derive_where",
+          "yoke_derive",
+          "zerofrom_derive",
+          "manyhow_macros",
+          "quote_use_macros"
+        ],
+        "shortest_registry_chain": [
+          "ruff_dev",
+          "clap",
+          "clap_derive"
+        ],
+        "source": "crates/ruff_dev/src/main.rs"
+      },
+      {
+        "crate": "ty",
+        "direct_local_macro": [],
+        "direct_macro": [],
+        "id": 461,
+        "kind": [
+          "lib"
+        ],
+        "local_macro_chains": [
+          [
+            "ty",
+            "ruff_python_ast",
+            "ruff_macros"
+          ]
+        ],
+        "mode": "build",
+        "registry_macros": [
+          "clap_derive",
+          "is_macro",
+          "salsa_macros",
+          "serde_derive",
+          "tracing_attributes",
+          "strum_macros",
+          "thiserror_impl",
+          "rustversion",
+          "get_size_derive2",
+          "schemars_derive",
+          "ref_cast_impl",
+          "displaydoc",
+          "attribute_derive_macro",
+          "derive_where",
+          "zerovec_derive",
+          "manyhow_macros",
+          "yoke_derive",
+          "zerofrom_derive",
+          "quote_use_macros"
+        ],
+        "shortest_registry_chain": [
+          "ty",
+          "clap",
+          "clap_derive"
+        ],
+        "source": "crates/ty/src/lib.rs"
+      },
+      {
+        "crate": "ty",
+        "direct_local_macro": [],
+        "direct_macro": [],
+        "id": 462,
+        "kind": [
+          "bin"
+        ],
+        "local_macro_chains": [
+          [
+            "ty",
+            "ruff_python_ast",
+            "ruff_macros"
+          ]
+        ],
+        "mode": "build",
+        "registry_macros": [
+          "clap_derive",
+          "is_macro",
+          "salsa_macros",
+          "serde_derive",
+          "tracing_attributes",
+          "strum_macros",
+          "thiserror_impl",
+          "rustversion",
+          "get_size_derive2",
+          "schemars_derive",
+          "ref_cast_impl",
+          "displaydoc",
+          "attribute_derive_macro",
+          "derive_where",
+          "zerovec_derive",
+          "manyhow_macros",
+          "yoke_derive",
+          "zerofrom_derive",
+          "quote_use_macros"
+        ],
+        "shortest_registry_chain": [
+          "ty",
+          "clap",
+          "clap_derive"
+        ],
+        "source": "crates/ty/src/main.rs"
+      },
+      {
+        "crate": "ty_wasm",
+        "direct_local_macro": [],
+        "direct_macro": [],
+        "id": 480,
+        "kind": [
+          "cdylib",
+          "rlib"
+        ],
+        "local_macro_chains": [
+          [
+            "ty_wasm",
+            "ruff_python_formatter",
+            "ruff_macros"
+          ]
+        ],
+        "mode": "build",
+        "registry_macros": [
+          "is_macro",
+          "tracing_attributes",
+          "strum_macros",
+          "wasm_bindgen_macro",
+          "rustversion",
+          "get_size_derive2",
+          "salsa_macros",
+          "schemars_derive",
+          "serde_derive",
+          "thiserror_impl",
+          "clap_derive",
+          "ref_cast_impl",
+          "displaydoc",
+          "attribute_derive_macro",
+          "derive_where",
+          "zerovec_derive",
+          "manyhow_macros",
+          "yoke_derive",
+          "zerofrom_derive",
+          "quote_use_macros"
+        ],
+        "shortest_registry_chain": [
+          "ty_wasm",
+          "ruff_diagnostics",
+          "is_macro"
+        ],
+        "source": "crates/ty_wasm/src/lib.rs"
+      }
+    ]
+  },
+  "check": {
+    "argc": [
+      "cargo",
+      "+ohm",
+      "-Zunstable-options",
+      "check",
+      "--unit-graph",
+      "--offline",
+      "--locked"
+    ],
+    "num_roots": 58,
+    "num_units": 571,
+    "raw_hash": "131fa9bc5347d718f633a7c7447bea801f2b82a7a6fbdd2b5b52a286193bae6d",
+    "rows": [
+      {
+        "crate": "ruff",
+        "direct_local_macro": [
+          "ruff_macros"
+        ],
+        "direct_macro": [
+          "is_macro",
+          "ruff_macros"
+        ],
+        "id": 321,
+        "kind": [
+          "lib"
+        ],
+        "local_macro_chains": [
+          [
+            "ruff",
+            "ruff_macros"
+          ]
+        ],
+        "mode": "check",
+        "registry_macros": [
+          "is_macro",
+          "clap_derive",
+          "rkyv_derive",
+          "strum_macros",
+          "serde_derive",
+          "thiserror_impl",
+          "tracing_attributes",
+          "bytecheck_derive",
+          "munge_macro",
+          "ptr_meta_derive",
+          "rustversion",
+          "get_size_derive2",
+          "salsa_macros",
+          "schemars_derive",
+          "libcst_derive",
+          "paste",
+          "ref_cast_impl",
+          "peg_macros",
+          "displaydoc",
+          "attribute_derive_macro",
+          "derive_where",
+          "thiserror_impl",
+          "zerovec_derive",
+          "manyhow_macros",
+          "yoke_derive",
+          "zerofrom_derive",
+          "quote_use_macros"
+        ],
+        "shortest_registry_chain": [
+          "ruff",
+          "is_macro"
+        ],
+        "source": "crates/ruff/src/lib.rs"
+      },
+      {
+        "crate": "ruff",
+        "direct_local_macro": [
+          "ruff_macros"
+        ],
+        "direct_macro": [
+          "is_macro",
+          "ruff_macros"
+        ],
+        "id": 322,
+        "kind": [
+          "bin"
+        ],
+        "local_macro_chains": [
+          [
+            "ruff",
+            "ruff_macros"
+          ]
+        ],
+        "mode": "check",
+        "registry_macros": [
+          "is_macro",
+          "clap_derive",
+          "rkyv_derive",
+          "strum_macros",
+          "serde_derive",
+          "thiserror_impl",
+          "tracing_attributes",
+          "bytecheck_derive",
+          "munge_macro",
+          "ptr_meta_derive",
+          "rustversion",
+          "get_size_derive2",
+          "salsa_macros",
+          "schemars_derive",
+          "libcst_derive",
+          "paste",
+          "ref_cast_impl",
+          "peg_macros",
+          "displaydoc",
+          "attribute_derive_macro",
+          "derive_where",
+          "thiserror_impl",
+          "zerovec_derive",
+          "manyhow_macros",
+          "yoke_derive",
+          "zerofrom_derive",
+          "quote_use_macros"
+        ],
+        "shortest_registry_chain": [
+          "ruff",
+          "is_macro"
+        ],
+        "source": "crates/ruff/src/main.rs"
+      },
+      {
+        "crate": "ruff_dev",
+        "direct_local_macro": [],
+        "direct_macro": [],
+        "id": 330,
+        "kind": [
+          "bin"
+        ],
+        "local_macro_chains": [
+          [
+            "ruff_dev",
+            "ruff",
+            "ruff_macros"
+          ]
+        ],
+        "mode": "check",
+        "registry_macros": [
+          "clap_derive",
+          "libcst_derive",
+          "paste",
+          "is_macro",
+          "strum_macros",
+          "schemars_derive",
+          "serde_derive",
+          "tracing_attributes",
+          "peg_macros",
+          "thiserror_impl",
+          "rkyv_derive",
+          "get_size_derive2",
+          "salsa_macros",
+          "ref_cast_impl",
+          "bytecheck_derive",
+          "munge_macro",
+          "ptr_meta_derive",
+          "rustversion",
+          "displaydoc",
+          "thiserror_impl",
+          "zerovec_derive",
+          "attribute_derive_macro",
+          "derive_where",
+          "yoke_derive",
+          "zerofrom_derive",
+          "manyhow_macros",
+          "quote_use_macros"
+        ],
+        "shortest_registry_chain": [
+          "ruff_dev",
+          "clap",
+          "clap_derive"
+        ],
+        "source": "crates/ruff_dev/src/main.rs"
+      },
+      {
+        "crate": "ty",
+        "direct_local_macro": [],
+        "direct_macro": [],
+        "id": 478,
+        "kind": [
+          "lib"
+        ],
+        "local_macro_chains": [
+          [
+            "ty",
+            "ruff_python_ast",
+            "ruff_macros"
+          ]
+        ],
+        "mode": "check",
+        "registry_macros": [
+          "clap_derive",
+          "is_macro",
+          "salsa_macros",
+          "serde_derive",
+          "tracing_attributes",
+          "strum_macros",
+          "thiserror_impl",
+          "rustversion",
+          "get_size_derive2",
+          "schemars_derive",
+          "ref_cast_impl",
+          "displaydoc",
+          "attribute_derive_macro",
+          "derive_where",
+          "zerovec_derive",
+          "manyhow_macros",
+          "yoke_derive",
+          "zerofrom_derive",
+          "quote_use_macros"
+        ],
+        "shortest_registry_chain": [
+          "ty",
+          "clap",
+          "clap_derive"
+        ],
+        "source": "crates/ty/src/lib.rs"
+      },
+      {
+        "crate": "ty",
+        "direct_local_macro": [],
+        "direct_macro": [],
+        "id": 479,
+        "kind": [
+          "bin"
+        ],
+        "local_macro_chains": [
+          [
+            "ty",
+            "ruff_python_ast",
+            "ruff_macros"
+          ]
+        ],
+        "mode": "check",
+        "registry_macros": [
+          "clap_derive",
+          "is_macro",
+          "salsa_macros",
+          "serde_derive",
+          "tracing_attributes",
+          "strum_macros",
+          "thiserror_impl",
+          "rustversion",
+          "get_size_derive2",
+          "schemars_derive",
+          "ref_cast_impl",
+          "displaydoc",
+          "attribute_derive_macro",
+          "derive_where",
+          "zerovec_derive",
+          "manyhow_macros",
+          "yoke_derive",
+          "zerofrom_derive",
+          "quote_use_macros"
+        ],
+        "shortest_registry_chain": [
+          "ty",
+          "clap",
+          "clap_derive"
+        ],
+        "source": "crates/ty/src/main.rs"
+      },
+      {
+        "crate": "ty_wasm",
+        "direct_local_macro": [],
+        "direct_macro": [],
+        "id": 497,
+        "kind": [
+          "cdylib",
+          "rlib"
+        ],
+        "local_macro_chains": [
+          [
+            "ty_wasm",
+            "ruff_python_formatter",
+            "ruff_macros"
+          ]
+        ],
+        "mode": "check",
+        "registry_macros": [
+          "is_macro",
+          "tracing_attributes",
+          "strum_macros",
+          "wasm_bindgen_macro",
+          "rustversion",
+          "get_size_derive2",
+          "salsa_macros",
+          "schemars_derive",
+          "serde_derive",
+          "thiserror_impl",
+          "clap_derive",
+          "ref_cast_impl",
+          "displaydoc",
+          "attribute_derive_macro",
+          "derive_where",
+          "zerovec_derive",
+          "manyhow_macros",
+          "yoke_derive",
+          "zerofrom_derive",
+          "quote_use_macros"
+        ],
+        "shortest_registry_chain": [
+          "ty_wasm",
+          "ruff_diagnostics",
+          "is_macro"
+        ],
+        "source": "crates/ty_wasm/src/lib.rs"
+      }
+    ]
+  },
+  "test": {
+    "argc": [
+      "cargo",
+      "+ohm",
+      "-Zunstable-options",
+      "test",
+      "--unit-graph",
+      "--offline",
+      "--locked",
+      "--no-run"
+    ],
+    "num_roots": 118,
+    "num_units": 689,
+    "raw_hash": "542dd0e1e88402ae0c7eddec65ac89be12fc1230f448a807b8476da48e4751e5",
+    "rows": [
+      {
+        "crate": "ruff",
+        "direct_local_macro": [
+          "ruff_macros"
+        ],
+        "direct_macro": [
+          "indoc",
+          "is_macro",
+          "ruff_macros"
+        ],
+        "id": 324,
+        "kind": [
+          "lib"
+        ],
+        "local_macro_chains": [
+          [
+            "ruff",
+            "ruff_macros"
+          ]
+        ],
+        "mode": "test",
+        "registry_macros": [
+          "indoc",
+          "is_macro",
+          "clap_derive",
+          "pest_derive",
+          "rkyv_derive",
+          "strum_macros",
+          "serde_derive",
+          "test_case_macros",
+          "thiserror_impl",
+          "tracing_attributes",
+          "bytecheck_derive",
+          "munge_macro",
+          "ptr_meta_derive",
+          "rustversion",
+          "get_size_derive2",
+          "salsa_macros",
+          "schemars_derive",
+          "libcst_derive",
+          "paste",
+          "ref_cast_impl",
+          "peg_macros",
+          "displaydoc",
+          "attribute_derive_macro",
+          "derive_where",
+          "thiserror_impl",
+          "zerovec_derive",
+          "manyhow_macros",
+          "yoke_derive",
+          "zerofrom_derive",
+          "quote_use_macros"
+        ],
+        "shortest_registry_chain": [
+          "ruff",
+          "indoc"
+        ],
+        "source": "crates/ruff/src/lib.rs"
+      },
+      {
+        "crate": "ruff",
+        "direct_local_macro": [
+          "ruff_macros"
+        ],
+        "direct_macro": [
+          "is_macro",
+          "ruff_macros"
+        ],
+        "id": 325,
+        "kind": [
+          "lib"
+        ],
+        "local_macro_chains": [
+          [
+            "ruff",
+            "ruff_macros"
+          ]
+        ],
+        "mode": "build",
+        "registry_macros": [
+          "is_macro",
+          "clap_derive",
+          "rkyv_derive",
+          "strum_macros",
+          "serde_derive",
+          "thiserror_impl",
+          "tracing_attributes",
+          "bytecheck_derive",
+          "munge_macro",
+          "ptr_meta_derive",
+          "rustversion",
+          "get_size_derive2",
+          "salsa_macros",
+          "schemars_derive",
+          "libcst_derive",
+          "paste",
+          "ref_cast_impl",
+          "peg_macros",
+          "displaydoc",
+          "attribute_derive_macro",
+          "derive_where",
+          "thiserror_impl",
+          "zerovec_derive",
+          "manyhow_macros",
+          "yoke_derive",
+          "zerofrom_derive",
+          "quote_use_macros"
+        ],
+        "shortest_registry_chain": [
+          "ruff",
+          "is_macro"
+        ],
+        "source": "crates/ruff/src/lib.rs"
+      },
+      {
+        "crate": "ruff",
+        "direct_local_macro": [
+          "ruff_macros"
+        ],
+        "direct_macro": [
+          "indoc",
+          "is_macro",
+          "ruff_macros"
+        ],
+        "id": 326,
+        "kind": [
+          "bin"
+        ],
+        "local_macro_chains": [
+          [
+            "ruff",
+            "ruff_macros"
+          ]
+        ],
+        "mode": "test",
+        "registry_macros": [
+          "indoc",
+          "is_macro",
+          "clap_derive",
+          "pest_derive",
+          "rkyv_derive",
+          "strum_macros",
+          "serde_derive",
+          "test_case_macros",
+          "thiserror_impl",
+          "tracing_attributes",
+          "bytecheck_derive",
+          "munge_macro",
+          "ptr_meta_derive",
+          "rustversion",
+          "get_size_derive2",
+          "salsa_macros",
+          "schemars_derive",
+          "libcst_derive",
+          "paste",
+          "ref_cast_impl",
+          "peg_macros",
+          "displaydoc",
+          "attribute_derive_macro",
+          "derive_where",
+          "thiserror_impl",
+          "zerovec_derive",
+          "manyhow_macros",
+          "yoke_derive",
+          "zerofrom_derive",
+          "quote_use_macros"
+        ],
+        "shortest_registry_chain": [
+          "ruff",
+          "indoc"
+        ],
+        "source": "crates/ruff/src/main.rs"
+      },
+      {
+        "crate": "ruff",
+        "direct_local_macro": [
+          "ruff_macros"
+        ],
+        "direct_macro": [
+          "is_macro",
+          "ruff_macros"
+        ],
+        "id": 327,
+        "kind": [
+          "bin"
+        ],
+        "local_macro_chains": [
+          [
+            "ruff",
+            "ruff_macros"
+          ]
+        ],
+        "mode": "build",
+        "registry_macros": [
+          "is_macro",
+          "clap_derive",
+          "rkyv_derive",
+          "strum_macros",
+          "serde_derive",
+          "thiserror_impl",
+          "tracing_attributes",
+          "bytecheck_derive",
+          "munge_macro",
+          "ptr_meta_derive",
+          "rustversion",
+          "get_size_derive2",
+          "salsa_macros",
+          "schemars_derive",
+          "libcst_derive",
+          "paste",
+          "ref_cast_impl",
+          "peg_macros",
+          "displaydoc",
+          "attribute_derive_macro",
+          "derive_where",
+          "thiserror_impl",
+          "zerovec_derive",
+          "manyhow_macros",
+          "yoke_derive",
+          "zerofrom_derive",
+          "quote_use_macros"
+        ],
+        "shortest_registry_chain": [
+          "ruff",
+          "is_macro"
+        ],
+        "source": "crates/ruff/src/main.rs"
+      },
+      {
+        "crate": "analyze_graph",
+        "direct_local_macro": [
+          "ruff_macros"
+        ],
+        "direct_macro": [
+          "indoc",
+          "is_macro",
+          "ruff_macros"
+        ],
+        "id": 328,
+        "kind": [
+          "test"
+        ],
+        "local_macro_chains": [
+          [
+            "analyze_graph",
+            "ruff_macros"
+          ]
+        ],
+        "mode": "test",
+        "registry_macros": [
+          "indoc",
+          "is_macro",
+          "clap_derive",
+          "pest_derive",
+          "rkyv_derive",
+          "strum_macros",
+          "serde_derive",
+          "test_case_macros",
+          "thiserror_impl",
+          "tracing_attributes",
+          "bytecheck_derive",
+          "munge_macro",
+          "ptr_meta_derive",
+          "rustversion",
+          "get_size_derive2",
+          "salsa_macros",
+          "schemars_derive",
+          "libcst_derive",
+          "paste",
+          "ref_cast_impl",
+          "peg_macros",
+          "displaydoc",
+          "attribute_derive_macro",
+          "derive_where",
+          "thiserror_impl",
+          "zerovec_derive",
+          "manyhow_macros",
+          "yoke_derive",
+          "zerofrom_derive",
+          "quote_use_macros"
+        ],
+        "shortest_registry_chain": [
+          "analyze_graph",
+          "indoc"
+        ],
+        "source": "crates/ruff/tests/analyze_graph.rs"
+      },
+      {
+        "crate": "cli",
+        "direct_local_macro": [
+          "ruff_macros"
+        ],
+        "direct_macro": [
+          "indoc",
+          "is_macro",
+          "ruff_macros"
+        ],
+        "id": 329,
+        "kind": [
+          "test"
+        ],
+        "local_macro_chains": [
+          [
+            "cli",
+            "ruff_macros"
+          ]
+        ],
+        "mode": "test",
+        "registry_macros": [
+          "indoc",
+          "is_macro",
+          "clap_derive",
+          "pest_derive",
+          "rkyv_derive",
+          "strum_macros",
+          "serde_derive",
+          "test_case_macros",
+          "thiserror_impl",
+          "tracing_attributes",
+          "bytecheck_derive",
+          "munge_macro",
+          "ptr_meta_derive",
+          "rustversion",
+          "get_size_derive2",
+          "salsa_macros",
+          "schemars_derive",
+          "libcst_derive",
+          "paste",
+          "ref_cast_impl",
+          "peg_macros",
+          "displaydoc",
+          "attribute_derive_macro",
+          "derive_where",
+          "thiserror_impl",
+          "zerovec_derive",
+          "manyhow_macros",
+          "yoke_derive",
+          "zerofrom_derive",
+          "quote_use_macros"
+        ],
+        "shortest_registry_chain": [
+          "cli",
+          "indoc"
+        ],
+        "source": "crates/ruff/tests/cli/main.rs"
+      },
+      {
+        "crate": "config",
+        "direct_local_macro": [
+          "ruff_macros"
+        ],
+        "direct_macro": [
+          "indoc",
+          "is_macro",
+          "ruff_macros"
+        ],
+        "id": 330,
+        "kind": [
+          "test"
+        ],
+        "local_macro_chains": [
+          [
+            "config",
+            "ruff_macros"
+          ]
+        ],
+        "mode": "test",
+        "registry_macros": [
+          "indoc",
+          "is_macro",
+          "clap_derive",
+          "pest_derive",
+          "rkyv_derive",
+          "strum_macros",
+          "serde_derive",
+          "test_case_macros",
+          "thiserror_impl",
+          "tracing_attributes",
+          "bytecheck_derive",
+          "munge_macro",
+          "ptr_meta_derive",
+          "rustversion",
+          "get_size_derive2",
+          "salsa_macros",
+          "schemars_derive",
+          "libcst_derive",
+          "paste",
+          "ref_cast_impl",
+          "peg_macros",
+          "displaydoc",
+          "attribute_derive_macro",
+          "derive_where",
+          "thiserror_impl",
+          "zerovec_derive",
+          "manyhow_macros",
+          "yoke_derive",
+          "zerofrom_derive",
+          "quote_use_macros"
+        ],
+        "shortest_registry_chain": [
+          "config",
+          "indoc"
+        ],
+        "source": "crates/ruff/tests/config.rs"
+      },
+      {
+        "crate": "direxist_guard",
+        "direct_local_macro": [
+          "ruff_macros"
+        ],
+        "direct_macro": [
+          "indoc",
+          "is_macro",
+          "ruff_macros"
+        ],
+        "id": 331,
+        "kind": [
+          "test"
+        ],
+        "local_macro_chains": [
+          [
+            "direxist_guard",
+            "ruff_macros"
+          ]
+        ],
+        "mode": "test",
+        "registry_macros": [
+          "indoc",
+          "is_macro",
+          "clap_derive",
+          "pest_derive",
+          "rkyv_derive",
+          "strum_macros",
+          "serde_derive",
+          "test_case_macros",
+          "thiserror_impl",
+          "tracing_attributes",
+          "bytecheck_derive",
+          "munge_macro",
+          "ptr_meta_derive",
+          "rustversion",
+          "get_size_derive2",
+          "salsa_macros",
+          "schemars_derive",
+          "libcst_derive",
+          "paste",
+          "ref_cast_impl",
+          "peg_macros",
+          "displaydoc",
+          "attribute_derive_macro",
+          "derive_where",
+          "thiserror_impl",
+          "zerovec_derive",
+          "manyhow_macros",
+          "yoke_derive",
+          "zerofrom_derive",
+          "quote_use_macros"
+        ],
+        "shortest_registry_chain": [
+          "direxist_guard",
+          "indoc"
+        ],
+        "source": "crates/ruff/tests/direxist_guard.rs"
+      },
+      {
+        "crate": "integration_test",
+        "direct_local_macro": [
+          "ruff_macros"
+        ],
+        "direct_macro": [
+          "indoc",
+          "is_macro",
+          "ruff_macros"
+        ],
+        "id": 332,
+        "kind": [
+          "test"
+        ],
+        "local_macro_chains": [
+          [
+            "integration_test",
+            "ruff_macros"
+          ]
+        ],
+        "mode": "test",
+        "registry_macros": [
+          "indoc",
+          "is_macro",
+          "clap_derive",
+          "pest_derive",
+          "rkyv_derive",
+          "strum_macros",
+          "serde_derive",
+          "test_case_macros",
+          "thiserror_impl",
+          "tracing_attributes",
+          "bytecheck_derive",
+          "munge_macro",
+          "ptr_meta_derive",
+          "rustversion",
+          "get_size_derive2",
+          "salsa_macros",
+          "schemars_derive",
+          "libcst_derive",
+          "paste",
+          "ref_cast_impl",
+          "peg_macros",
+          "displaydoc",
+          "attribute_derive_macro",
+          "derive_where",
+          "thiserror_impl",
+          "zerovec_derive",
+          "manyhow_macros",
+          "yoke_derive",
+          "zerofrom_derive",
+          "quote_use_macros"
+        ],
+        "shortest_registry_chain": [
+          "integration_test",
+          "indoc"
+        ],
+        "source": "crates/ruff/tests/integration_test.rs"
+      },
+      {
+        "crate": "resolve_files",
+        "direct_local_macro": [
+          "ruff_macros"
+        ],
+        "direct_macro": [
+          "indoc",
+          "is_macro",
+          "ruff_macros"
+        ],
+        "id": 333,
+        "kind": [
+          "test"
+        ],
+        "local_macro_chains": [
+          [
+            "resolve_files",
+            "ruff_macros"
+          ]
+        ],
+        "mode": "test",
+        "registry_macros": [
+          "indoc",
+          "is_macro",
+          "clap_derive",
+          "pest_derive",
+          "rkyv_derive",
+          "strum_macros",
+          "serde_derive",
+          "test_case_macros",
+          "thiserror_impl",
+          "tracing_attributes",
+          "bytecheck_derive",
+          "munge_macro",
+          "ptr_meta_derive",
+          "rustversion",
+          "get_size_derive2",
+          "salsa_macros",
+          "schemars_derive",
+          "libcst_derive",
+          "paste",
+          "ref_cast_impl",
+          "peg_macros",
+          "displaydoc",
+          "attribute_derive_macro",
+          "derive_where",
+          "thiserror_impl",
+          "zerovec_derive",
+          "manyhow_macros",
+          "yoke_derive",
+          "zerofrom_derive",
+          "quote_use_macros"
+        ],
+        "shortest_registry_chain": [
+          "resolve_files",
+          "indoc"
+        ],
+        "source": "crates/ruff/tests/resolve_files.rs"
+      },
+      {
+        "crate": "ruff_dev",
+        "direct_local_macro": [],
+        "direct_macro": [
+          "indoc"
+        ],
+        "id": 364,
+        "kind": [
+          "bin"
+        ],
+        "local_macro_chains": [
+          [
+            "ruff_dev",
+            "ruff",
+            "ruff_macros"
+          ]
+        ],
+        "mode": "test",
+        "registry_macros": [
+          "indoc",
+          "clap_derive",
+          "libcst_derive",
+          "paste",
+          "is_macro",
+          "strum_macros",
+          "schemars_derive",
+          "serde_derive",
+          "tracing_attributes",
+          "peg_macros",
+          "thiserror_impl",
+          "rkyv_derive",
+          "get_size_derive2",
+          "salsa_macros",
+          "ref_cast_impl",
+          "bytecheck_derive",
+          "munge_macro",
+          "ptr_meta_derive",
+          "rustversion",
+          "displaydoc",
+          "thiserror_impl",
+          "zerovec_derive",
+          "attribute_derive_macro",
+          "derive_where",
+          "yoke_derive",
+          "zerofrom_derive",
+          "manyhow_macros",
+          "quote_use_macros"
+        ],
+        "shortest_registry_chain": [
+          "ruff_dev",
+          "indoc"
+        ],
+        "source": "crates/ruff_dev/src/main.rs"
+      },
+      {
+        "crate": "ty",
+        "direct_local_macro": [],
+        "direct_macro": [],
+        "id": 569,
+        "kind": [
+          "lib"
+        ],
+        "local_macro_chains": [
+          [
+            "ty",
+            "ruff_python_ast",
+            "ruff_macros"
+          ]
+        ],
+        "mode": "test",
+        "registry_macros": [
+          "clap_derive",
+          "pest_derive",
+          "is_macro",
+          "salsa_macros",
+          "serde_derive",
+          "tracing_attributes",
+          "strum_macros",
+          "thiserror_impl",
+          "rustversion",
+          "get_size_derive2",
+          "schemars_derive",
+          "ref_cast_impl",
+          "displaydoc",
+          "attribute_derive_macro",
+          "derive_where",
+          "zerovec_derive",
+          "manyhow_macros",
+          "yoke_derive",
+          "zerofrom_derive",
+          "quote_use_macros"
+        ],
+        "shortest_registry_chain": [
+          "ty",
+          "clap",
+          "clap_derive"
+        ],
+        "source": "crates/ty/src/lib.rs"
+      },
+      {
+        "crate": "ty",
+        "direct_local_macro": [],
+        "direct_macro": [],
+        "id": 570,
+        "kind": [
+          "lib"
+        ],
+        "local_macro_chains": [
+          [
+            "ty",
+            "ruff_python_ast",
+            "ruff_macros"
+          ]
+        ],
+        "mode": "build",
+        "registry_macros": [
+          "clap_derive",
+          "is_macro",
+          "salsa_macros",
+          "serde_derive",
+          "tracing_attributes",
+          "strum_macros",
+          "thiserror_impl",
+          "rustversion",
+          "get_size_derive2",
+          "schemars_derive",
+          "ref_cast_impl",
+          "displaydoc",
+          "attribute_derive_macro",
+          "derive_where",
+          "zerovec_derive",
+          "manyhow_macros",
+          "yoke_derive",
+          "zerofrom_derive",
+          "quote_use_macros"
+        ],
+        "shortest_registry_chain": [
+          "ty",
+          "clap",
+          "clap_derive"
+        ],
+        "source": "crates/ty/src/lib.rs"
+      },
+      {
+        "crate": "ty",
+        "direct_local_macro": [],
+        "direct_macro": [],
+        "id": 571,
+        "kind": [
+          "bin"
+        ],
+        "local_macro_chains": [
+          [
+            "ty",
+            "ruff_python_ast",
+            "ruff_macros"
+          ]
+        ],
+        "mode": "test",
+        "registry_macros": [
+          "clap_derive",
+          "pest_derive",
+          "is_macro",
+          "salsa_macros",
+          "serde_derive",
+          "tracing_attributes",
+          "strum_macros",
+          "thiserror_impl",
+          "rustversion",
+          "get_size_derive2",
+          "schemars_derive",
+          "ref_cast_impl",
+          "displaydoc",
+          "attribute_derive_macro",
+          "derive_where",
+          "zerovec_derive",
+          "manyhow_macros",
+          "yoke_derive",
+          "zerofrom_derive",
+          "quote_use_macros"
+        ],
+        "shortest_registry_chain": [
+          "ty",
+          "clap",
+          "clap_derive"
+        ],
+        "source": "crates/ty/src/main.rs"
+      },
+      {
+        "crate": "ty",
+        "direct_local_macro": [],
+        "direct_macro": [],
+        "id": 572,
+        "kind": [
+          "bin"
+        ],
+        "local_macro_chains": [
+          [
+            "ty",
+            "ruff_python_ast",
+            "ruff_macros"
+          ]
+        ],
+        "mode": "build",
+        "registry_macros": [
+          "clap_derive",
+          "is_macro",
+          "salsa_macros",
+          "serde_derive",
+          "tracing_attributes",
+          "strum_macros",
+          "thiserror_impl",
+          "rustversion",
+          "get_size_derive2",
+          "schemars_derive",
+          "ref_cast_impl",
+          "displaydoc",
+          "attribute_derive_macro",
+          "derive_where",
+          "zerovec_derive",
+          "manyhow_macros",
+          "yoke_derive",
+          "zerofrom_derive",
+          "quote_use_macros"
+        ],
+        "shortest_registry_chain": [
+          "ty",
+          "clap",
+          "clap_derive"
+        ],
+        "source": "crates/ty/src/main.rs"
+      },
+      {
+        "crate": "cli",
+        "direct_local_macro": [],
+        "direct_macro": [],
+        "id": 573,
+        "kind": [
+          "test"
+        ],
+        "local_macro_chains": [
+          [
+            "cli",
+            "ruff_python_ast",
+            "ruff_macros"
+          ]
+        ],
+        "mode": "test",
+        "registry_macros": [
+          "clap_derive",
+          "pest_derive",
+          "is_macro",
+          "salsa_macros",
+          "serde_derive",
+          "tracing_attributes",
+          "strum_macros",
+          "thiserror_impl",
+          "rustversion",
+          "get_size_derive2",
+          "schemars_derive",
+          "ref_cast_impl",
+          "displaydoc",
+          "attribute_derive_macro",
+          "derive_where",
+          "zerovec_derive",
+          "manyhow_macros",
+          "yoke_derive",
+          "zerofrom_derive",
+          "quote_use_macros"
+        ],
+        "shortest_registry_chain": [
+          "cli",
+          "clap",
+          "clap_derive"
+        ],
+        "source": "crates/ty/tests/cli/main.rs"
+      },
+      {
+        "crate": "file_watching",
+        "direct_local_macro": [],
+        "direct_macro": [],
+        "id": 574,
+        "kind": [
+          "test"
+        ],
+        "local_macro_chains": [
+          [
+            "file_watching",
+            "ruff_python_ast",
+            "ruff_macros"
+          ]
+        ],
+        "mode": "test",
+        "registry_macros": [
+          "clap_derive",
+          "pest_derive",
+          "is_macro",
+          "salsa_macros",
+          "serde_derive",
+          "tracing_attributes",
+          "strum_macros",
+          "thiserror_impl",
+          "rustversion",
+          "get_size_derive2",
+          "schemars_derive",
+          "ref_cast_impl",
+          "displaydoc",
+          "attribute_derive_macro",
+          "derive_where",
+          "zerovec_derive",
+          "manyhow_macros",
+          "yoke_derive",
+          "zerofrom_derive",
+          "quote_use_macros"
+        ],
+        "shortest_registry_chain": [
+          "file_watching",
+          "clap",
+          "clap_derive"
+        ],
+        "source": "crates/ty/tests/file_watching.rs"
+      },
+      {
+        "crate": "self_environment",
+        "direct_local_macro": [],
+        "direct_macro": [],
+        "id": 575,
+        "kind": [
+          "test"
+        ],
+        "local_macro_chains": [
+          [
+            "self_environment",
+            "ruff_python_ast",
+            "ruff_macros"
+          ]
+        ],
+        "mode": "test",
+        "registry_macros": [
+          "clap_derive",
+          "pest_derive",
+          "is_macro",
+          "salsa_macros",
+          "serde_derive",
+          "tracing_attributes",
+          "strum_macros",
+          "thiserror_impl",
+          "rustversion",
+          "get_size_derive2",
+          "schemars_derive",
+          "ref_cast_impl",
+          "displaydoc",
+          "attribute_derive_macro",
+          "derive_where",
+          "zerovec_derive",
+          "manyhow_macros",
+          "yoke_derive",
+          "zerofrom_derive",
+          "quote_use_macros"
+        ],
+        "shortest_registry_chain": [
+          "self_environment",
+          "clap",
+          "clap_derive"
+        ],
+        "source": "crates/ty/tests/self_environment.rs"
+      },
+      {
+        "crate": "ty_wasm",
+        "direct_local_macro": [],
+        "direct_macro": [],
+        "id": 608,
+        "kind": [
+          "cdylib",
+          "rlib"
+        ],
+        "local_macro_chains": [
+          [
+            "ty_wasm",
+            "ruff_python_formatter",
+            "ruff_macros"
+          ]
+        ],
+        "mode": "build",
+        "registry_macros": [
+          "is_macro",
+          "tracing_attributes",
+          "strum_macros",
+          "wasm_bindgen_macro",
+          "rustversion",
+          "get_size_derive2",
+          "salsa_macros",
+          "schemars_derive",
+          "serde_derive",
+          "thiserror_impl",
+          "clap_derive",
+          "ref_cast_impl",
+          "displaydoc",
+          "attribute_derive_macro",
+          "derive_where",
+          "zerovec_derive",
+          "manyhow_macros",
+          "yoke_derive",
+          "zerofrom_derive",
+          "quote_use_macros"
+        ],
+        "shortest_registry_chain": [
+          "ty_wasm",
+          "ruff_diagnostics",
+          "is_macro"
+        ],
+        "source": "crates/ty_wasm/src/lib.rs"
+      },
+      {
+        "crate": "api",
+        "direct_local_macro": [],
+        "direct_macro": [],
+        "id": 609,
+        "kind": [
+          "test"
+        ],
+        "local_macro_chains": [
+          [
+            "api",
+            "ruff_python_formatter",
+            "ruff_macros"
+          ]
+        ],
+        "mode": "test",
+        "registry_macros": [
+          "is_macro",
+          "tracing_attributes",
+          "strum_macros",
+          "wasm_bindgen_macro",
+          "async_trait",
+          "wasm_bindgen_test_macro",
+          "rustversion",
+          "get_size_derive2",
+          "salsa_macros",
+          "schemars_derive",
+          "serde_derive",
+          "thiserror_impl",
+          "clap_derive",
+          "ref_cast_impl",
+          "displaydoc",
+          "attribute_derive_macro",
+          "derive_where",
+          "zerovec_derive",
+          "manyhow_macros",
+          "yoke_derive",
+          "zerofrom_derive",
+          "quote_use_macros"
+        ],
+        "shortest_registry_chain": [
+          "api",
+          "ruff_diagnostics",
+          "is_macro"
+        ],
+        "source": "crates/ty_wasm/tests/api.rs"
+      }
+    ]
+  }
+}
