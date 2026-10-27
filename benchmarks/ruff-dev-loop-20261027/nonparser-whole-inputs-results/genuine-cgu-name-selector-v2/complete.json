@@ -1,0 +1,433 @@
+[
+  {
+    "actual_source_argv_paths": [
+      "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ty/440d4bc7ce0d4c47/out/cli-440d4bc7ce0d4c47.rlink-objects/cli-440d4bc7ce0d4c47.00xnreyn3fq67vg1cparhvqty.1nqw4d8.rcgu.o",
+      "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ty/440d4bc7ce0d4c47/out/cli-440d4bc7ce0d4c47.rlink-objects/cli-440d4bc7ce0d4c47.00xnreyn3fq67vg1cparhvqty.12iovz7.rcgu.o"
+    ],
+    "actual_source_wild_pids": [
+      805280,
+      807673
+    ],
+    "object_selector_script": "ENTRY(_start)\nSECTIONS {\n . = 0x600000;\n .text : { *(.text._start) }\n .selected : { picked_start = .; KEEP(*cli-440d4bc7ce0d4c47.00xnreyn3fq67vg1cparhvqty.1nqw4d8.rcgu.o(.rodata..Lanon.331294c65abf46db297232e03b152236.11)) picked_end = .; }\n .rest : { KEEP(*(.rodata..Lanon.331294c65abf46db297232e03b152236.11)) }\n /DISCARD/ : { *(*) }\n}\n",
+    "private_unused_stub_symbols": [
+      "_RINvMs3_NtCsbWfNOF91Msb_5insta8settingsNtB6_8Settings4bindNCNvNtCszqHT6DzD6K_3cli4rules_12rule_unknown0uEB10_",
+      "_RINvMs3_NtCsbWfNOF91Msb_5insta8settingsNtB6_8Settings4bindNCNvNtCszqHT6DzD6K_3cli4rules_16rule_json_output0uEB10_",
+      "_RINvMs3_NtCsbWfNOF91Msb_5insta8settingsNtB6_8Settings4bindNCNvNtCszqHT6DzD6K_3cli4rules_19rule_default_output0uEB10_",
+      "_RINvMs3_NtCsbWfNOF91Msb_5insta8settingsNtB6_8Settings8set_infoNtNtCsiajTRolxLzh_9insta_cmd5spawn4InfoECszqHT6DzD6K_3cli",
+      "_RINvMsi_NtCsjS3VZJf3kOR_3std7processNtB6_7Command3newNtNtB8_4path7PathBufECszqHT6DzD6K_3cli",
+      "_RINvMsi_NtCsjS3VZJf3kOR_3std7processNtB6_7Command4argsARej2_BR_ECszqHT6DzD6K_3cli",
+      "_RINvMsi_NtCsjS3VZJf3kOR_3std7processNtB6_7Command4argsARej3_BR_ECszqHT6DzD6K_3cli",
+      "_RINvMsi_NtCsjS3VZJf3kOR_3std7processNtB6_7Command4argsARej5_BR_ECszqHT6DzD6K_3cli",
+      "_RINvNtCscVqi9kEQnwf_10serde_json2de10from_sliceNtNtB4_5value5ValueECszqHT6DzD6K_3cli",
+      "_RINvNtCscVqi9kEQnwf_10serde_json5value8to_valueRReECsaNFExz6n6xO_8schemars",
+      "_RINvNtCsfpptKXrREi0_4core3ptr9drop_glueINtNtCs9oljiHJcNRf_5alloc3vec3VecNtNtCscVqi9kEQnwf_10serde_json5value5ValueEECskIfn8tF8wJL_14ruff_text_size",
+      "_RINvNtCsfpptKXrREi0_4core3ptr9drop_glueINtNtCs9oljiHJcNRf_5alloc3vec3VechEECskIfn8tF8wJL_14ruff_text_size",
+      "_RINvNtCsfpptKXrREi0_4core3ptr9drop_glueINtNtCscVqi9kEQnwf_10serde_json3map3MapNtNtCs9oljiHJcNRf_5alloc6string6StringNtNtBG_5value5ValueEECskIfn8tF8wJL_14ruff_text_size",
+      "_RINvNtCsfpptKXrREi0_4core3ptr9drop_glueNtNtCs9oljiHJcNRf_5alloc6string6StringECskIfn8tF8wJL_14ruff_text_size",
+      "_RINvNtCsfpptKXrREi0_4core3ptr9drop_glueNtNtCsbWfNOF91Msb_5insta8settings8SettingsECszqHT6DzD6K_3cli",
+      "_RINvNtCsfpptKXrREi0_4core3ptr9drop_glueNtNtCscVqi9kEQnwf_10serde_json5error5ErrorECskIfn8tF8wJL_14ruff_text_size",
+      "_RINvNtCsfpptKXrREi0_4core3ptr9drop_glueNtNtCsiajTRolxLzh_9insta_cmd5spawn4InfoECszqHT6DzD6K_3cli",
+      "_RINvNtCsfpptKXrREi0_4core3ptr9drop_glueNtNtCsjS3VZJf3kOR_3std7process6OutputECszqHT6DzD6K_3cli",
+      "_RINvNtCsfpptKXrREi0_4core3ptr9drop_glueNtNtCsjS3VZJf3kOR_3std7process7CommandECszqHT6DzD6K_3cli",
+      "_RINvNtCsfpptKXrREi0_4core9panicking13assert_failedNtNtCscVqi9kEQnwf_10serde_json5value5ValueBM_ECszqHT6DzD6K_3cli",
+      "_RNvMs3_NtCsbWfNOF91Msb_5insta8settingsNtB5_8Settings13clone_current",
+      "_RNvMs3_NtCsbWfNOF91Msb_5insta8settingsNtB5_8Settings19set_omit_expression",
+      "_RNvMs5_NtCs9oljiHJcNRf_5alloc7raw_vecNtB5_11RawVecInner15try_allocate_inCsgi9d6Bfp1VX_5gimli",
+      "_RNvMsi_NtCsjS3VZJf3kOR_3std7processNtB5_7Command6output",
+      "_RNvMsi_NtCsjS3VZJf3kOR_3std7processNtB5_7Command6status",
+      "_RNvMsi_NtCsjS3VZJf3kOR_3std7processNtB5_7Command9env_clear",
+      "_RNvMsi_NtNtNtCs9oljiHJcNRf_5alloc11collections5btree3mapINtB5_8BTreeMapNtNtBb_6string6StringNtNtCscVqi9kEQnwf_10serde_json5value5ValueE6insertB1w_",
+      "_RNvMsu_NtNtCsfpptKXrREi0_4core3str7patternNtB5_11StrSearcher3new",
+      "_RNvNtCs9oljiHJcNRf_5alloc7raw_vec12handle_error",
+      "_RNvNtCsfpptKXrREi0_4core3str16slice_error_fail",
+      "_RNvNtCsfpptKXrREi0_4core6result13unwrap_failed",
+      "_RNvNtCsfpptKXrREi0_4core9panicking16panic_in_cleanup",
+      "_RNvNtCsfpptKXrREi0_4core9panicking18panic_bounds_check",
+      "_RNvNtCsfpptKXrREi0_4core9panicking18panic_nounwind_fmt",
+      "_RNvNtCsfpptKXrREi0_4core9panicking5panic",
+      "_RNvNtCsfpptKXrREi0_4core9panicking9panic_fmt",
+      "_RNvNtCsiajTRolxLzh_9insta_cmd5cargo13get_cargo_bin",
+      "_RNvNtNtCsfpptKXrREi0_4core3str8converts9from_utf8",
+      "_RNvXs1t_NtNtNtCs9oljiHJcNRf_5alloc11collections5btree3mapINtB6_8BTreeMapNtNtBc_6string6StringNtNtCscVqi9kEQnwf_10serde_json5value5ValueENtNtCsfpptKXrREi0_4core3cmp9PartialEq2eqCsaNFExz6n6xO_8schemars",
+      "_RNvXs2_NtCsiajTRolxLzh_9insta_cmd5spawnQNtNtCsjS3VZJf3kOR_3std7process7CommandNtB5_5Spawn15spawn_with_info",
+      "_RNvXs3_NtNtCscVqi9kEQnwf_10serde_json5value5indexNtB7_5ValueINtNtNtCsfpptKXrREi0_4core3ops5index5IndexReE5indexCszqHT6DzD6K_3cli",
+      "_RNvXs5_NtCscVqi9kEQnwf_10serde_json5errorNtB5_5ErrorNtNtCsfpptKXrREi0_4core3fmt5Debug3fmt",
+      "_RNvXs_NtCs4oQFUft70xX_6anyhow5errorNtB6_5ErrorINtNtCsfpptKXrREi0_4core7convert4FromNtNtCs9oljiHJcNRf_5alloc6string13FromUtf8ErrorE4fromCszqHT6DzD6K_3cli",
+      "_RNvXs_NtCs4oQFUft70xX_6anyhow5errorNtB6_5ErrorINtNtCsfpptKXrREi0_4core7convert4FromNtNtCscVqi9kEQnwf_10serde_json5error5ErrorE4fromCszqHT6DzD6K_3cli",
+      "_RNvXs_NtCs4oQFUft70xX_6anyhow5errorNtB6_5ErrorINtNtCsfpptKXrREi0_4core7convert4FromNtNtNtBN_2io5error5ErrorE4fromCszqHT6DzD6K_3cli",
+      "_RNvXsi_NtCsfpptKXrREi0_4core3fmteNtB5_7Display3fmt",
+      "_Unwind_Resume",
+      "bcmp",
+      "memcpy",
+      "rust_eh_personality"
+    ],
+    "rows": [
+      {
+        "actual_gcc_argv": [
+          "gcc",
+          "-B/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/lib/rustlib/x86_64-unknown-linux-gnu/bin/wild-ld/",
+          "-fuse-ld=bfd",
+          "-nostdlib",
+          "-static",
+          "-no-pie",
+          "-Wl,--gc-sections",
+          "-Wl,--build-id=none",
+          "-o",
+          "/home/dev-user/.cache/ohm-233-position-qualified-20261027/nonparser-whole-inputs-campaign-v1/genuine-cgu-name-selector-v2/cli-440d4bc7ce0d4c47/selector-program",
+          "/home/dev-user/.cache/ohm-233-position-qualified-20261027/nonparser-whole-inputs-campaign-v1/genuine-cgu-name-selector-v2/cli-440d4bc7ce0d4c47/entry.o",
+          "/home/dev-user/.cache/ohm-233-position-qualified-20261027/nonparser-whole-inputs-campaign-v1/genuine-cgu-name-selector-v2/cli-440d4bc7ce0d4c47/cli-440d4bc7ce0d4c47.00xnreyn3fq67vg1cparhvqty.1nqw4d8.rcgu.o",
+          "-Wl,-T,/home/dev-user/.cache/ohm-233-position-qualified-20261027/nonparser-whole-inputs-campaign-v1/genuine-cgu-name-selector-v2/cli-440d4bc7ce0d4c47/selector.ld"
+        ],
+        "filename": "cli-440d4bc7ce0d4c47.00xnreyn3fq67vg1cparhvqty.1nqw4d8.rcgu.o",
+        "gcc_status": 0,
+        "gcc_stderr": "",
+        "input_sha256": "066749daf32bf525c16d3862d9ed58a11e5de11ae85e0933149663332981c615",
+        "mode": "explicit-script",
+        "program_return": 43,
+        "program_sha256": "79203fc8034d1ef9978a66ef4fd24922600ba701597b911d87091a42192a77a6",
+        "sha256_executed_wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5",
+        "successful_wild_exec_sha256": [
+          "80fbccde92c60c229348bc94e348a72d78912202ead06163cfa9317483b30aef"
+        ],
+        "symbol_addresses": {
+          "picked_end": "00000000005ff233",
+          "picked_start": "00000000005ff208"
+        }
+      },
+      {
+        "actual_gcc_argv": [
+          "gcc",
+          "-B/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/lib/rustlib/x86_64-unknown-linux-gnu/bin/wild-ld/",
+          "-fuse-ld=bfd",
+          "-nostdlib",
+          "-static",
+          "-no-pie",
+          "-Wl,--gc-sections",
+          "-Wl,--build-id=none",
+          "-o",
+          "/home/dev-user/.cache/ohm-233-position-qualified-20261027/nonparser-whole-inputs-campaign-v1/genuine-cgu-name-selector-v2/cli-440d4bc7ce0d4c47/selector-program",
+          "/home/dev-user/.cache/ohm-233-position-qualified-20261027/nonparser-whole-inputs-campaign-v1/genuine-cgu-name-selector-v2/cli-440d4bc7ce0d4c47/entry.o",
+          "/home/dev-user/.cache/ohm-233-position-qualified-20261027/nonparser-whole-inputs-campaign-v1/genuine-cgu-name-selector-v2/cli-440d4bc7ce0d4c47/cli-440d4bc7ce0d4c47.00xnreyn3fq67vg1cparhvqty.12iovz7.rcgu.o",
+          "-Wl,-T,/home/dev-user/.cache/ohm-233-position-qualified-20261027/nonparser-whole-inputs-campaign-v1/genuine-cgu-name-selector-v2/cli-440d4bc7ce0d4c47/selector.ld"
+        ],
+        "filename": "cli-440d4bc7ce0d4c47.00xnreyn3fq67vg1cparhvqty.12iovz7.rcgu.o",
+        "gcc_status": 0,
+        "gcc_stderr": "",
+        "input_sha256": "066749daf32bf525c16d3862d9ed58a11e5de11ae85e0933149663332981c615",
+        "mode": "explicit-script",
+        "program_return": 0,
+        "program_sha256": "4b20443fb51a66e5fc877a2fb5e6386dfa0a26c960ab2e547b3fd96a1b1f215e",
+        "sha256_executed_wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5",
+        "successful_wild_exec_sha256": [
+          "27e2ca478004632646d4f18ef604b4bdc9c4891fc4da8361244e50246496751b"
+        ],
+        "symbol_addresses": {
+          "picked_end": "0000000000000000",
+          "picked_start": "0000000000000000"
+        }
+      },
+      {
+        "actual_gcc_argv": [
+          "gcc",
+          "-B/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/lib/rustlib/x86_64-unknown-linux-gnu/bin/wild-ld/",
+          "-fuse-ld=bfd",
+          "-nostdlib",
+          "-static",
+          "-no-pie",
+          "-Wl,--gc-sections",
+          "-Wl,--build-id=none",
+          "-o",
+          "/home/dev-user/.cache/ohm-233-position-qualified-20261027/nonparser-whole-inputs-campaign-v1/genuine-cgu-name-selector-v2/cli-440d4bc7ce0d4c47/selector-program",
+          "/home/dev-user/.cache/ohm-233-position-qualified-20261027/nonparser-whole-inputs-campaign-v1/genuine-cgu-name-selector-v2/cli-440d4bc7ce0d4c47/entry.o",
+          "/home/dev-user/.cache/ohm-233-position-qualified-20261027/nonparser-whole-inputs-campaign-v1/genuine-cgu-name-selector-v2/cli-440d4bc7ce0d4c47/cli-440d4bc7ce0d4c47.00xnreyn3fq67vg1cparhvqty.1nqw4d8.rcgu.o",
+          "-L/home/dev-user/.cache/ohm-233-position-qualified-20261027/nonparser-whole-inputs-campaign-v1/genuine-cgu-name-selector-v2/cli-440d4bc7ce0d4c47/shadow",
+          "-Wl,-Bdynamic",
+          "-lutil"
+        ],
+        "filename": "cli-440d4bc7ce0d4c47.00xnreyn3fq67vg1cparhvqty.1nqw4d8.rcgu.o",
+        "gcc_status": 0,
+        "gcc_stderr": "",
+        "input_sha256": "066749daf32bf525c16d3862d9ed58a11e5de11ae85e0933149663332981c615",
+        "mode": "earlier-search-library",
+        "program_return": 43,
+        "program_sha256": "79203fc8034d1ef9978a66ef4fd24922600ba701597b911d87091a42192a77a6",
+        "sha256_executed_wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5",
+        "successful_wild_exec_sha256": [
+          "a0e8936b93f51ebe740d7cd89c04cb41a1df35ad6fba553728793ec0ff53b705"
+        ],
+        "symbol_addresses": {
+          "picked_end": "00000000005ff233",
+          "picked_start": "00000000005ff208"
+        }
+      },
+      {
+        "actual_gcc_argv": [
+          "gcc",
+          "-B/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/lib/rustlib/x86_64-unknown-linux-gnu/bin/wild-ld/",
+          "-fuse-ld=bfd",
+          "-nostdlib",
+          "-static",
+          "-no-pie",
+          "-Wl,--gc-sections",
+          "-Wl,--build-id=none",
+          "-o",
+          "/home/dev-user/.cache/ohm-233-position-qualified-20261027/nonparser-whole-inputs-campaign-v1/genuine-cgu-name-selector-v2/cli-440d4bc7ce0d4c47/selector-program",
+          "/home/dev-user/.cache/ohm-233-position-qualified-20261027/nonparser-whole-inputs-campaign-v1/genuine-cgu-name-selector-v2/cli-440d4bc7ce0d4c47/entry.o",
+          "/home/dev-user/.cache/ohm-233-position-qualified-20261027/nonparser-whole-inputs-campaign-v1/genuine-cgu-name-selector-v2/cli-440d4bc7ce0d4c47/cli-440d4bc7ce0d4c47.00xnreyn3fq67vg1cparhvqty.12iovz7.rcgu.o",
+          "-L/home/dev-user/.cache/ohm-233-position-qualified-20261027/nonparser-whole-inputs-campaign-v1/genuine-cgu-name-selector-v2/cli-440d4bc7ce0d4c47/shadow",
+          "-Wl,-Bdynamic",
+          "-lutil"
+        ],
+        "filename": "cli-440d4bc7ce0d4c47.00xnreyn3fq67vg1cparhvqty.12iovz7.rcgu.o",
+        "gcc_status": 0,
+        "gcc_stderr": "",
+        "input_sha256": "066749daf32bf525c16d3862d9ed58a11e5de11ae85e0933149663332981c615",
+        "mode": "earlier-search-library",
+        "program_return": 0,
+        "program_sha256": "4b20443fb51a66e5fc877a2fb5e6386dfa0a26c960ab2e547b3fd96a1b1f215e",
+        "sha256_executed_wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5",
+        "successful_wild_exec_sha256": [
+          "a56c92a7bedc097eca2a15c69da22d5e1e6c5e6b97363da6d75154552626918d"
+        ],
+        "symbol_addresses": {
+          "picked_end": "0000000000000000",
+          "picked_start": "0000000000000000"
+        }
+      }
+    ],
+    "section": ".rodata..Lanon.331294c65abf46db297232e03b152236.11",
+    "section_size": 43,
+    "selector_sha256": "14eacf8185d85bafa97db351e7d33f4c5e128e6d8befb05cf3d4aedc7557cddb",
+    "source_object_bytes": 65792,
+    "source_object_sha": "066749daf32bf525c16d3862d9ed58a11e5de11ae85e0933149663332981c615",
+    "target": "cli-440d4bc7ce0d4c47"
+  },
+  {
+    "actual_source_argv_paths": [
+      "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ty/860e2be505c8514a/out/self_environment-860e2be505c8514a.rlink-objects/self_environment-860e2be505c8514a.1wk2ac24at111atbwzggyc0f5.0zo90dx.rcgu.o",
+      "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ty/860e2be505c8514a/out/self_environment-860e2be505c8514a.rlink-objects/self_environment-860e2be505c8514a.1wk2ac24at111atbwzggyc0f5.16a8iqs.rcgu.o"
+    ],
+    "actual_source_wild_pids": [
+      805079,
+      807501
+    ],
+    "object_selector_script": "ENTRY(_start)\nSECTIONS {\n . = 0x600000;\n .text : { *(.text._start) }\n .selected : { picked_start = .; KEEP(*self_environment-860e2be505c8514a.1wk2ac24at111atbwzggyc0f5.0zo90dx.rcgu.o(.rodata..Lanon.89ebf69019ef0b61ee4b8a0dbd752073.23)) picked_end = .; }\n .rest : { KEEP(*(.rodata..Lanon.89ebf69019ef0b61ee4b8a0dbd752073.23)) }\n /DISCARD/ : { *(*) }\n}\n",
+    "private_unused_stub_symbols": [
+      "_RINvMs2_NtCs4oQFUft70xX_6anyhow3ptrINtB6_3OwnNtNtB8_5error9ErrorImplE4castIBH_INtBJ_12ContextErrorINtNtNtCsfpptKXrREi0_4core3mem13manually_drop12ManuallyDropNtNtCs9oljiHJcNRf_5alloc6string6StringENtNtNtB1F_2io5error5ErrorEEECskNvVVFkhh4V_16self_environment",
+      "_RINvMs2_NtCs4oQFUft70xX_6anyhow3ptrINtB6_3OwnNtNtB8_5error9ErrorImplE4castIBH_INtBJ_12ContextErrorINtNtNtCsfpptKXrREi0_4core3mem13manually_drop12ManuallyDropReENtNtNtB1F_2io5error5ErrorEEECskNvVVFkhh4V_16self_environment",
+      "_RINvMs2_NtCs4oQFUft70xX_6anyhow3ptrINtB6_3OwnNtNtB8_5error9ErrorImplE4castIBH_INtBJ_12ContextErrorNtNtCs9oljiHJcNRf_5alloc6string6StringINtNtNtCsfpptKXrREi0_4core3mem13manually_drop12ManuallyDropNtNtNtB2h_2io5error5ErrorEEEECskNvVVFkhh4V_16self_environment",
+      "_RINvMs2_NtCs4oQFUft70xX_6anyhow3ptrINtB6_3OwnNtNtB8_5error9ErrorImplE4castIBH_INtBJ_12ContextErrorNtNtCs9oljiHJcNRf_5alloc6string6StringNtNtNtCsfpptKXrREi0_4core2io5error5ErrorEEECskNvVVFkhh4V_16self_environment",
+      "_RINvMs2_NtCs4oQFUft70xX_6anyhow3ptrINtB6_3OwnNtNtB8_5error9ErrorImplE4castIBH_INtBJ_12ContextErrorReINtNtNtCsfpptKXrREi0_4core3mem13manually_drop12ManuallyDropNtNtNtB1H_2io5error5ErrorEEEECskNvVVFkhh4V_16self_environment",
+      "_RINvMs2_NtCs4oQFUft70xX_6anyhow3ptrINtB6_3OwnNtNtB8_5error9ErrorImplE4castIBH_INtBJ_12ContextErrorReNtNtNtCsfpptKXrREi0_4core2io5error5ErrorEEECskNvVVFkhh4V_16self_environment",
+      "_RINvMs2_NtCs4oQFUft70xX_6anyhow3ptrINtB6_3OwnNtNtB8_5error9ErrorImplE4castIBH_INtNtB8_7wrapper12DisplayErrorReEEECskNvVVFkhh4V_16self_environment",
+      "_RINvMs2_NtCs4oQFUft70xX_6anyhow3ptrINtB6_3OwnNtNtB8_5error9ErrorImplE4castIBH_INtNtNtCsfpptKXrREi0_4core3mem13manually_drop12ManuallyDropNtNtNtB1l_2io5error5ErrorEEECskNvVVFkhh4V_16self_environment",
+      "_RINvMs2_NtCs4oQFUft70xX_6anyhow3ptrINtB6_3OwnNtNtB8_5error9ErrorImplE4castIBH_NtNtNtCsfpptKXrREi0_4core2io5error5ErrorEECskNvVVFkhh4V_16self_environment",
+      "_RINvMs5_NtCs4oQFUft70xX_6anyhow3ptrINtB6_3RefINtNtB8_5error9ErrorImplINtBK_12ContextErrorNtNtCs9oljiHJcNRf_5alloc6string6StringNtNtNtCsfpptKXrREi0_4core2io5error5ErrorEEE4castBI_ECskNvVVFkhh4V_16self_environment",
+      "_RINvMs5_NtCs4oQFUft70xX_6anyhow3ptrINtB6_3RefINtNtB8_5error9ErrorImplINtBK_12ContextErrorReNtNtNtCsfpptKXrREi0_4core2io5error5ErrorEEE4castBI_ECskNvVVFkhh4V_16self_environment",
+      "_RINvMs5_NtCs4oQFUft70xX_6anyhow3ptrINtB6_3RefINtNtB8_5error9ErrorImplINtNtB8_7wrapper12DisplayErrorReEEE4castBI_ECskNvVVFkhh4V_16self_environment",
+      "_RINvMs5_NtCs4oQFUft70xX_6anyhow3ptrINtB6_3RefINtNtB8_5error9ErrorImplNtNtNtCsfpptKXrREi0_4core2io5error5ErrorEE4castBI_ECskNvVVFkhh4V_16self_environment",
+      "_RINvMs5_NtCs4oQFUft70xX_6anyhow3ptrINtB6_3RefNtNtB8_5error9ErrorImplE4castIBH_INtBJ_12ContextErrorNtNtCs9oljiHJcNRf_5alloc6string6StringNtNtNtCsfpptKXrREi0_4core2io5error5ErrorEEECskNvVVFkhh4V_16self_environment",
+      "_RINvMs5_NtCs4oQFUft70xX_6anyhow3ptrINtB6_3RefNtNtB8_5error9ErrorImplE4castIBH_INtBJ_12ContextErrorReNtNtNtCsfpptKXrREi0_4core2io5error5ErrorEEECskNvVVFkhh4V_16self_environment",
+      "_RINvMs5_NtCs4oQFUft70xX_6anyhow3ptrINtB6_3RefNtNtB8_5error9ErrorImplE4castIBH_INtNtB8_7wrapper12DisplayErrorReEEECskNvVVFkhh4V_16self_environment",
+      "_RINvMs5_NtCs4oQFUft70xX_6anyhow3ptrINtB6_3RefNtNtB8_5error9ErrorImplE4castIBH_NtNtNtCsfpptKXrREi0_4core2io5error5ErrorEECskNvVVFkhh4V_16self_environment",
+      "_RINvMs5_NtCs4oQFUft70xX_6anyhow3ptrINtB6_3RefNtNtCs9oljiHJcNRf_5alloc6string6StringE4castuEB8_",
+      "_RINvMs5_NtCs4oQFUft70xX_6anyhow3ptrINtB6_3RefNtNtNtCsfpptKXrREi0_4core2io5error5ErrorE4castuECskNvVVFkhh4V_16self_environment",
+      "_RINvMs5_NtCs4oQFUft70xX_6anyhow3ptrINtB6_3RefReE4castuEB8_",
+      "_RINvNtCs4oQFUft70xX_6anyhow7nightly7provideNtNtNtCsfpptKXrREi0_4core2io5error5ErrorECskNvVVFkhh4V_16self_environment",
+      "_RINvNtCsfpptKXrREi0_4core3ptr9drop_glueINtNtCs4oQFUft70xX_6anyhow5error12ContextErrorNtNtCs9oljiHJcNRf_5alloc6string6StringNtNtNtB4_2io5error5ErrorEECskNvVVFkhh4V_16self_environment",
+      "_RINvNtCsfpptKXrREi0_4core3ptr9drop_glueINtNtCs4oQFUft70xX_6anyhow5error12ContextErrorReNtNtNtB4_2io5error5ErrorEECskNvVVFkhh4V_16self_environment",
+      "_RINvNtCsfpptKXrREi0_4core3ptr9drop_glueINtNtCs4oQFUft70xX_6anyhow5error9ErrorImplINtBE_12ContextErrorINtNtNtB4_3mem13manually_drop12ManuallyDropNtNtCs9oljiHJcNRf_5alloc6string6StringENtNtNtB4_2io5error5ErrorEEECskNvVVFkhh4V_16self_environment",
+      "_RINvNtCsfpptKXrREi0_4core3ptr9drop_glueINtNtCs4oQFUft70xX_6anyhow5error9ErrorImplINtBE_12ContextErrorINtNtNtB4_3mem13manually_drop12ManuallyDropReENtNtNtB4_2io5error5ErrorEEECskNvVVFkhh4V_16self_environment",
+      "_RINvNtCsfpptKXrREi0_4core3ptr9drop_glueINtNtCs4oQFUft70xX_6anyhow5error9ErrorImplINtBE_12ContextErrorNtNtCs9oljiHJcNRf_5alloc6string6StringINtNtNtB4_3mem13manually_drop12ManuallyDropNtNtNtB4_2io5error5ErrorEEEECskNvVVFkhh4V_16self_environment",
+      "_RINvNtCsfpptKXrREi0_4core3ptr9drop_glueINtNtCs4oQFUft70xX_6anyhow5error9ErrorImplINtBE_12ContextErrorNtNtCs9oljiHJcNRf_5alloc6string6StringNtNtNtB4_2io5error5ErrorEEECskNvVVFkhh4V_16self_environment",
+      "_RINvNtCsfpptKXrREi0_4core3ptr9drop_glueINtNtCs4oQFUft70xX_6anyhow5error9ErrorImplINtBE_12ContextErrorReINtNtNtB4_3mem13manually_drop12ManuallyDropNtNtNtB4_2io5error5ErrorEEEECskNvVVFkhh4V_16self_environment",
+      "_RINvNtCsfpptKXrREi0_4core3ptr9drop_glueINtNtCs4oQFUft70xX_6anyhow5error9ErrorImplINtBE_12ContextErrorReNtNtNtB4_2io5error5ErrorEEECskNvVVFkhh4V_16self_environment",
+      "_RINvNtCsfpptKXrREi0_4core3ptr9drop_glueINtNtCs4oQFUft70xX_6anyhow5error9ErrorImplINtNtBG_7wrapper12DisplayErrorReEEECskNvVVFkhh4V_16self_environment",
+      "_RINvNtCsfpptKXrREi0_4core3ptr9drop_glueINtNtCs4oQFUft70xX_6anyhow5error9ErrorImplINtNtNtB4_3mem13manually_drop12ManuallyDropNtNtNtB4_2io5error5ErrorEEECskNvVVFkhh4V_16self_environment",
+      "_RINvNtCsfpptKXrREi0_4core3ptr9drop_glueINtNtCs4oQFUft70xX_6anyhow5error9ErrorImplNtNtNtB4_2io5error5ErrorEECskNvVVFkhh4V_16self_environment",
+      "_RINvNtCsfpptKXrREi0_4core3ptr9drop_glueNtNtCsjS3VZJf3kOR_3std9backtrace9BacktraceECskNvVVFkhh4V_16self_environment",
+      "_RINvNtCsfpptKXrREi0_4core3ptr9drop_glueNtNtNtB4_2io5error5ErrorECskIfn8tF8wJL_14ruff_text_size",
+      "_RNvCs79EjzKEXY7q_7___rustc12___rust_alloc",
+      "_RNvCs79EjzKEXY7q_7___rustc14___rust_dealloc",
+      "_RNvCs79EjzKEXY7q_7___rustc35___rust_no_alloc_shim_is_unstable_v2",
+      "_RNvMNtCs4oQFUft70xX_6anyhow3fmtNtNtB4_5error9ErrorImpl5debug",
+      "_RNvMs2_NtCs4oQFUft70xX_6anyhow3ptrINtB5_3OwnINtNtB7_5error9ErrorImplINtBJ_12ContextErrorINtNtNtCsfpptKXrREi0_4core3mem13manually_drop12ManuallyDropNtNtCs9oljiHJcNRf_5alloc6string6StringENtNtNtB1v_2io5error5ErrorEEE5boxedCskNvVVFkhh4V_16self_environment",
+      "_RNvMs2_NtCs4oQFUft70xX_6anyhow3ptrINtB5_3OwnINtNtB7_5error9ErrorImplINtBJ_12ContextErrorINtNtNtCsfpptKXrREi0_4core3mem13manually_drop12ManuallyDropReENtNtNtB1v_2io5error5ErrorEEE5boxedCskNvVVFkhh4V_16self_environment",
+      "_RNvMs2_NtCs4oQFUft70xX_6anyhow3ptrINtB5_3OwnINtNtB7_5error9ErrorImplINtBJ_12ContextErrorNtNtCs9oljiHJcNRf_5alloc6string6StringINtNtNtCsfpptKXrREi0_4core3mem13manually_drop12ManuallyDropNtNtNtB27_2io5error5ErrorEEEE5boxedCskNvVVFkhh4V_16self_environment",
+      "_RNvMs2_NtCs4oQFUft70xX_6anyhow3ptrINtB5_3OwnINtNtB7_5error9ErrorImplINtBJ_12ContextErrorNtNtCs9oljiHJcNRf_5alloc6string6StringNtNtNtCsfpptKXrREi0_4core2io5error5ErrorEEE5boxedCskNvVVFkhh4V_16self_environment",
+      "_RNvMs2_NtCs4oQFUft70xX_6anyhow3ptrINtB5_3OwnINtNtB7_5error9ErrorImplINtBJ_12ContextErrorReINtNtNtCsfpptKXrREi0_4core3mem13manually_drop12ManuallyDropNtNtNtB1x_2io5error5ErrorEEEE5boxedCskNvVVFkhh4V_16self_environment",
+      "_RNvMs2_NtCs4oQFUft70xX_6anyhow3ptrINtB5_3OwnINtNtB7_5error9ErrorImplINtBJ_12ContextErrorReNtNtNtCsfpptKXrREi0_4core2io5error5ErrorEEE5boxedCskNvVVFkhh4V_16self_environment",
+      "_RNvMs2_NtCs4oQFUft70xX_6anyhow3ptrINtB5_3OwnINtNtB7_5error9ErrorImplINtNtB7_7wrapper12DisplayErrorReEEE5boxedCskNvVVFkhh4V_16self_environment",
+      "_RNvMs2_NtCs4oQFUft70xX_6anyhow3ptrINtB5_3OwnINtNtB7_5error9ErrorImplINtNtNtCsfpptKXrREi0_4core3mem13manually_drop12ManuallyDropNtNtNtB1b_2io5error5ErrorEEE5boxedCskNvVVFkhh4V_16self_environment",
+      "_RNvMs2_NtCs4oQFUft70xX_6anyhow3ptrINtB5_3OwnINtNtB7_5error9ErrorImplNtNtNtCsfpptKXrREi0_4core2io5error5ErrorEE5boxedCskNvVVFkhh4V_16self_environment",
+      "_RNvMs2_NtNtCsfpptKXrREi0_4core3fmt8buildersNtB5_11DebugStruct5field",
+      "_RNvMs2_NtNtCsfpptKXrREi0_4core3fmt8buildersNtB5_11DebugStruct6finish",
+      "_RNvMs5_NtCs4oQFUft70xX_6anyhow3ptrINtB5_3RefINtNtB7_5error9ErrorImplINtBJ_12ContextErrorNtNtCs9oljiHJcNRf_5alloc6string6StringNtNtNtCsfpptKXrREi0_4core2io5error5ErrorEEE3newCskNvVVFkhh4V_16self_environment",
+      "_RNvMs5_NtCs4oQFUft70xX_6anyhow3ptrINtB5_3RefINtNtB7_5error9ErrorImplINtBJ_12ContextErrorNtNtCs9oljiHJcNRf_5alloc6string6StringNtNtNtCsfpptKXrREi0_4core2io5error5ErrorEEE6as_ptrCskNvVVFkhh4V_16self_environment",
+      "_RNvMs5_NtCs4oQFUft70xX_6anyhow3ptrINtB5_3RefINtNtB7_5error9ErrorImplINtBJ_12ContextErrorReNtNtNtCsfpptKXrREi0_4core2io5error5ErrorEEE3newCskNvVVFkhh4V_16self_environment",
+      "_RNvMs5_NtCs4oQFUft70xX_6anyhow3ptrINtB5_3RefINtNtB7_5error9ErrorImplINtBJ_12ContextErrorReNtNtNtCsfpptKXrREi0_4core2io5error5ErrorEEE6as_ptrCskNvVVFkhh4V_16self_environment",
+      "_RNvMs5_NtCs4oQFUft70xX_6anyhow3ptrINtB5_3RefINtNtB7_5error9ErrorImplINtNtB7_7wrapper12DisplayErrorReEEE3newCskNvVVFkhh4V_16self_environment",
+      "_RNvMs5_NtCs4oQFUft70xX_6anyhow3ptrINtB5_3RefINtNtB7_5error9ErrorImplINtNtB7_7wrapper12DisplayErrorReEEE6as_ptrCskNvVVFkhh4V_16self_environment",
+      "_RNvMs5_NtCs4oQFUft70xX_6anyhow3ptrINtB5_3RefINtNtB7_5error9ErrorImplNtNtNtCsfpptKXrREi0_4core2io5error5ErrorEE3newCskNvVVFkhh4V_16self_environment",
+      "_RNvMs5_NtCs4oQFUft70xX_6anyhow3ptrINtB5_3RefINtNtB7_5error9ErrorImplNtNtNtCsfpptKXrREi0_4core2io5error5ErrorEE6as_ptrCskNvVVFkhh4V_16self_environment",
+      "_RNvMs6_NtCs4oQFUft70xX_6anyhow5errorNtB5_9ErrorImpl5error",
+      "_RNvMs6_NtCs4oQFUft70xX_6anyhow5errorNtB5_9ErrorImpl7provide",
+      "_RNvMsa_NtCsfpptKXrREi0_4core3fmtNtB5_9Formatter12debug_struct",
+      "_RNvNtCs9oljiHJcNRf_5alloc5alloc18handle_alloc_error",
+      "_RNvNtCsfpptKXrREi0_4core9panicking16panic_in_cleanup",
+      "_RNvXNtNtCsfpptKXrREi0_4core2io5errorNtB2_5ErrorNtNtB6_3fmt5Debug3fmt",
+      "_RNvXs1_NtCs4oQFUft70xX_6anyhow7wrapperINtB5_12DisplayErrorReENtNtCsfpptKXrREi0_4core3fmt5Debug3fmtCskNvVVFkhh4V_16self_environment",
+      "_RNvXs1i_NtCsfpptKXrREi0_4core3fmtReNtB6_7Display3fmtCs8Xt3fUDBaIE_14rustc_demangle",
+      "_RNvXs2_NtCs4oQFUft70xX_6anyhow7wrapperINtB5_12DisplayErrorReENtNtCsfpptKXrREi0_4core3fmt7Display3fmtCskNvVVFkhh4V_16self_environment",
+      "_RNvXs3_NtNtCsfpptKXrREi0_4core2io5errorNtB5_5ErrorNtNtB9_3fmt7Display3fmt",
+      "_RNvXs4_NtCs4oQFUft70xX_6anyhow7contextINtB5_6QuotedRNtNtCs9oljiHJcNRf_5alloc6string6StringENtNtCsfpptKXrREi0_4core3fmt5Debug3fmtCskNvVVFkhh4V_16self_environment",
+      "_RNvXs4_NtCs4oQFUft70xX_6anyhow7contextINtB5_6QuotedRReENtNtCsfpptKXrREi0_4core3fmt5Debug3fmtCskNvVVFkhh4V_16self_environment",
+      "_RNvXs4_NtNtCsfpptKXrREi0_4core2io5errorNtB5_5ErrorNtNtB9_5error5Error5cause",
+      "_RNvXs4_NtNtCsfpptKXrREi0_4core2io5errorNtB5_5ErrorNtNtB9_5error5Error6source",
+      "_RNvXsi_NtCsfpptKXrREi0_4core3fmteNtB5_7Display3fmt",
+      "_RNvYINtNtCs4oQFUft70xX_6anyhow7wrapper12DisplayErrorReENtNtCsfpptKXrREi0_4core5error5Error5causeCskNvVVFkhh4V_16self_environment",
+      "_Unwind_Resume",
+      "rust_eh_personality"
+    ],
+    "rows": [
+      {
+        "actual_gcc_argv": [
+          "gcc",
+          "-B/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/lib/rustlib/x86_64-unknown-linux-gnu/bin/wild-ld/",
+          "-fuse-ld=bfd",
+          "-nostdlib",
+          "-static",
+          "-no-pie",
+          "-Wl,--gc-sections",
+          "-Wl,--build-id=none",
+          "-o",
+          "/home/dev-user/.cache/ohm-233-position-qualified-20261027/nonparser-whole-inputs-campaign-v1/genuine-cgu-name-selector-v2/self_environment-860e2be505c8514a/selector-program",
+          "/home/dev-user/.cache/ohm-233-position-qualified-20261027/nonparser-whole-inputs-campaign-v1/genuine-cgu-name-selector-v2/self_environment-860e2be505c8514a/entry.o",
+          "/home/dev-user/.cache/ohm-233-position-qualified-20261027/nonparser-whole-inputs-campaign-v1/genuine-cgu-name-selector-v2/self_environment-860e2be505c8514a/self_environment-860e2be505c8514a.1wk2ac24at111atbwzggyc0f5.0zo90dx.rcgu.o",
+          "-Wl,-T,/home/dev-user/.cache/ohm-233-position-qualified-20261027/nonparser-whole-inputs-campaign-v1/genuine-cgu-name-selector-v2/self_environment-860e2be505c8514a/selector.ld"
+        ],
+        "filename": "self_environment-860e2be505c8514a.1wk2ac24at111atbwzggyc0f5.0zo90dx.rcgu.o",
+        "gcc_status": 0,
+        "gcc_stderr": "",
+        "input_sha256": "beea427e48f446d61174b52c0c739de4a8fcf8560e756aaecb56b54178d0f86a",
+        "mode": "explicit-script",
+        "program_return": 40,
+        "program_sha256": "d7d1bea695d24ef3d4f71774d16e78e06a2614c866fbb439e52e75e18ce64887",
+        "sha256_executed_wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5",
+        "successful_wild_exec_sha256": [
+          "6b0fc18086578aab53a6bb318a46212b70a5935099e4a1395ea81b68e06c4911"
+        ],
+        "symbol_addresses": {
+          "picked_end": "00000000005ff230",
+          "picked_start": "00000000005ff208"
+        }
+      },
+      {
+        "actual_gcc_argv": [
+          "gcc",
+          "-B/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/lib/rustlib/x86_64-unknown-linux-gnu/bin/wild-ld/",
+          "-fuse-ld=bfd",
+          "-nostdlib",
+          "-static",
+          "-no-pie",
+          "-Wl,--gc-sections",
+          "-Wl,--build-id=none",
+          "-o",
+          "/home/dev-user/.cache/ohm-233-position-qualified-20261027/nonparser-whole-inputs-campaign-v1/genuine-cgu-name-selector-v2/self_environment-860e2be505c8514a/selector-program",
+          "/home/dev-user/.cache/ohm-233-position-qualified-20261027/nonparser-whole-inputs-campaign-v1/genuine-cgu-name-selector-v2/self_environment-860e2be505c8514a/entry.o",
+          "/home/dev-user/.cache/ohm-233-position-qualified-20261027/nonparser-whole-inputs-campaign-v1/genuine-cgu-name-selector-v2/self_environment-860e2be505c8514a/self_environment-860e2be505c8514a.1wk2ac24at111atbwzggyc0f5.16a8iqs.rcgu.o",
+          "-Wl,-T,/home/dev-user/.cache/ohm-233-position-qualified-20261027/nonparser-whole-inputs-campaign-v1/genuine-cgu-name-selector-v2/self_environment-860e2be505c8514a/selector.ld"
+        ],
+        "filename": "self_environment-860e2be505c8514a.1wk2ac24at111atbwzggyc0f5.16a8iqs.rcgu.o",
+        "gcc_status": 0,
+        "gcc_stderr": "",
+        "input_sha256": "beea427e48f446d61174b52c0c739de4a8fcf8560e756aaecb56b54178d0f86a",
+        "mode": "explicit-script",
+        "program_return": 0,
+        "program_sha256": "f50991ed11df1b8336986cd44d956b43d0ab5269c9de0160c73dd83e71c533cb",
+        "sha256_executed_wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5",
+        "successful_wild_exec_sha256": [
+          "5a7952fe0bc7073103658612e4a99016be61ad45be5c04f541cad7bcf7d2b9d3"
+        ],
+        "symbol_addresses": {
+          "picked_end": "0000000000000000",
+          "picked_start": "0000000000000000"
+        }
+      },
+      {
+        "actual_gcc_argv": [
+          "gcc",
+          "-B/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/lib/rustlib/x86_64-unknown-linux-gnu/bin/wild-ld/",
+          "-fuse-ld=bfd",
+          "-nostdlib",
+          "-static",
+          "-no-pie",
+          "-Wl,--gc-sections",
+          "-Wl,--build-id=none",
+          "-o",
+          "/home/dev-user/.cache/ohm-233-position-qualified-20261027/nonparser-whole-inputs-campaign-v1/genuine-cgu-name-selector-v2/self_environment-860e2be505c8514a/selector-program",
+          "/home/dev-user/.cache/ohm-233-position-qualified-20261027/nonparser-whole-inputs-campaign-v1/genuine-cgu-name-selector-v2/self_environment-860e2be505c8514a/entry.o",
+          "/home/dev-user/.cache/ohm-233-position-qualified-20261027/nonparser-whole-inputs-campaign-v1/genuine-cgu-name-selector-v2/self_environment-860e2be505c8514a/self_environment-860e2be505c8514a.1wk2ac24at111atbwzggyc0f5.0zo90dx.rcgu.o",
+          "-L/home/dev-user/.cache/ohm-233-position-qualified-20261027/nonparser-whole-inputs-campaign-v1/genuine-cgu-name-selector-v2/self_environment-860e2be505c8514a/shadow",
+          "-Wl,-Bdynamic",
+          "-lutil"
+        ],
+        "filename": "self_environment-860e2be505c8514a.1wk2ac24at111atbwzggyc0f5.0zo90dx.rcgu.o",
+        "gcc_status": 0,
+        "gcc_stderr": "",
+        "input_sha256": "beea427e48f446d61174b52c0c739de4a8fcf8560e756aaecb56b54178d0f86a",
+        "mode": "earlier-search-library",
+        "program_return": 40,
+        "program_sha256": "d7d1bea695d24ef3d4f71774d16e78e06a2614c866fbb439e52e75e18ce64887",
+        "sha256_executed_wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5",
+        "successful_wild_exec_sha256": [
+          "fbc7b163f949d646c0aa95a4aac5568871cb8255906535fb07f3a79e21d4d4fc"
+        ],
+        "symbol_addresses": {
+          "picked_end": "00000000005ff230",
+          "picked_start": "00000000005ff208"
+        }
+      },
+      {
+        "actual_gcc_argv": [
+          "gcc",
+          "-B/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/lib/rustlib/x86_64-unknown-linux-gnu/bin/wild-ld/",
+          "-fuse-ld=bfd",
+          "-nostdlib",
+          "-static",
+          "-no-pie",
+          "-Wl,--gc-sections",
+          "-Wl,--build-id=none",
+          "-o",
+          "/home/dev-user/.cache/ohm-233-position-qualified-20261027/nonparser-whole-inputs-campaign-v1/genuine-cgu-name-selector-v2/self_environment-860e2be505c8514a/selector-program",
+          "/home/dev-user/.cache/ohm-233-position-qualified-20261027/nonparser-whole-inputs-campaign-v1/genuine-cgu-name-selector-v2/self_environment-860e2be505c8514a/entry.o",
+          "/home/dev-user/.cache/ohm-233-position-qualified-20261027/nonparser-whole-inputs-campaign-v1/genuine-cgu-name-selector-v2/self_environment-860e2be505c8514a/self_environment-860e2be505c8514a.1wk2ac24at111atbwzggyc0f5.16a8iqs.rcgu.o",
+          "-L/home/dev-user/.cache/ohm-233-position-qualified-20261027/nonparser-whole-inputs-campaign-v1/genuine-cgu-name-selector-v2/self_environment-860e2be505c8514a/shadow",
+          "-Wl,-Bdynamic",
+          "-lutil"
+        ],
+        "filename": "self_environment-860e2be505c8514a.1wk2ac24at111atbwzggyc0f5.16a8iqs.rcgu.o",
+        "gcc_status": 0,
+        "gcc_stderr": "",
+        "input_sha256": "beea427e48f446d61174b52c0c739de4a8fcf8560e756aaecb56b54178d0f86a",
+        "mode": "earlier-search-library",
+        "program_return": 0,
+        "program_sha256": "f50991ed11df1b8336986cd44d956b43d0ab5269c9de0160c73dd83e71c533cb",
+        "sha256_executed_wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5",
+        "successful_wild_exec_sha256": [
+          "834315f5ccbe0fb5f105c07cfa3df5856d55a4b16eac0f109e0514c108a84625"
+        ],
+        "symbol_addresses": {
+          "picked_end": "0000000000000000",
+          "picked_start": "0000000000000000"
+        }
+      }
+    ],
+    "section": ".rodata..Lanon.89ebf69019ef0b61ee4b8a0dbd752073.23",
+    "section_size": 40,
+    "selector_sha256": "8cf9984bf577624c8d4954c13c90d1e5aa9d648348822dee7832b7a7dd6f486f",
+    "source_object_bytes": 102752,
+    "source_object_sha": "beea427e48f446d61174b52c0c739de4a8fcf8560e756aaecb56b54178d0f86a",
+    "target": "self_environment-860e2be505c8514a"
+  }
+]

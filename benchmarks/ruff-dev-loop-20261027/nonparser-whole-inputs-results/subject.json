@@ -1,0 +1,46 @@
+{
+ "cargo": "dd5cab154b8dcd09ccc2753160d314cade80979b2d055ee66aa9e2217e05e7e1",
+ "driver": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+ "frontend": "4fa9a18b77430bcc416e88561b6fe5797d98b996a7698b9f3bd11d4e7817a19f",
+ "historical_path_sha256": {
+  "before-plan": "e8f487a236e5d308820ec34f9fdf69e2b8f562f96d85166154a51a736f9730b7",
+  "formatter": "85526ad7a13fe8227984264a5d594e3663c611bdfd62bf125743d14a2f8c7864",
+  "ty": "b82c4f8195eb126a1d76417de7e718bea0d2ee2719e337f05ee2b5abc80fbae2"
+ },
+ "observed_tool_hashes": {
+  "rustc-full": [
+   "4fa9a18b77430bcc416e88561b6fe5797d98b996a7698b9f3bd11d4e7817a19f"
+  ],
+  "wild": [
+   "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5"
+  ]
+ },
+ "prior_fixed_host_manifest": {
+  "GCC_driver": {
+   "path": "/usr/bin/cc",
+   "resolved": "/usr/bin/x86_64-linux-gnu-gcc-13",
+   "sha256": "1b99826121ae6682a634e5efe09bd3e3df58ce58e0b28f849114ab5b89139c26"
+  },
+  "Wild": {
+   "path": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/lib/rustlib/x86_64-unknown-linux-gnu/bin/wild-ld/ld.bfd",
+   "resolved": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/lib/rustlib/x86_64-unknown-linux-gnu/bin/wild-ld/ld.bfd",
+   "sha256": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5"
+  },
+  "collect2": {
+   "path": "/usr/libexec/gcc/x86_64-linux-gnu/13/collect2",
+   "resolved": "/usr/libexec/gcc/x86_64-linux-gnu/13/collect2",
+   "sha256": "4d1f341ae5b763b513258ee2812422a45e063c30a2f1924a0cf63d3699f3a158"
+  },
+  "rustc_frontend": {
+   "path": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/bin/rustc",
+   "resolved": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/bin/rustc",
+   "sha256": "4fa9a18b77430bcc416e88561b6fe5797d98b996a7698b9f3bd11d4e7817a19f"
+  },
+  "rustup_cargo_proxy": {
+   "path": "/home/dev-user/.cargo/bin/cargo",
+   "resolved": "/home/dev-user/.cargo/bin/rustup",
+   "sha256": "5be191e8c70a5007074254cb74d78dbfdd25cd5a61c27de7b8e5410122ec24f4"
+  }
+ },
+ "ruff": "93526150df078af7dd8fc4226cdcc469539d2001"
+}

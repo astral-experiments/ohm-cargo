@@ -1,0 +1,280 @@
+[
+  {
+    "actual_source_argv_paths": [
+      "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ty/440d4bc7ce0d4c47/out/cli-440d4bc7ce0d4c47.rlink-objects/cli-440d4bc7ce0d4c47.00xnreyn3fq67vg1cparhvqty.1nqw4d8.rcgu.o",
+      "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ty/440d4bc7ce0d4c47/out/cli-440d4bc7ce0d4c47.rlink-objects/cli-440d4bc7ce0d4c47.00xnreyn3fq67vg1cparhvqty.12iovz7.rcgu.o"
+    ],
+    "actual_source_wild_pids": [
+      805280,
+      807673
+    ],
+    "object_selector_script": "ENTRY(_start)\nSECTIONS {\n . = 0x600000;\n .text : { *(.text._start) }\n .selected : { picked_start = .; KEEP(/home/dev-user/.cache/ohm-233-position-qualified-20261027/nonparser-whole-inputs-campaign-v1/genuine-cgu-name-selector/cli-440d4bc7ce0d4c47/cli-440d4bc7ce0d4c47.00xnreyn3fq67vg1cparhvqty.1nqw4d8.rcgu.o(.rodata..Lanon.331294c65abf46db297232e03b152236.11)) picked_end = .; }\n .rest : { KEEP(*(.rodata..Lanon.331294c65abf46db297232e03b152236.11)) }\n /DISCARD/ : { *(*) }\n}\n",
+    "rows": [
+      {
+        "actual_gcc_argv": [
+          "gcc",
+          "-B/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/lib/rustlib/x86_64-unknown-linux-gnu/bin/wild-ld/",
+          "-fuse-ld=bfd",
+          "-nostdlib",
+          "-static",
+          "-no-pie",
+          "-Wl,--gc-sections",
+          "-Wl,--build-id=none",
+          "-o",
+          "/home/dev-user/.cache/ohm-233-position-qualified-20261027/nonparser-whole-inputs-campaign-v1/genuine-cgu-name-selector/cli-440d4bc7ce0d4c47/selector-program",
+          "/home/dev-user/.cache/ohm-233-position-qualified-20261027/nonparser-whole-inputs-campaign-v1/genuine-cgu-name-selector/cli-440d4bc7ce0d4c47/entry.o",
+          "/home/dev-user/.cache/ohm-233-position-qualified-20261027/nonparser-whole-inputs-campaign-v1/genuine-cgu-name-selector/cli-440d4bc7ce0d4c47/cli-440d4bc7ce0d4c47.00xnreyn3fq67vg1cparhvqty.1nqw4d8.rcgu.o",
+          "-Wl,-T,/home/dev-user/.cache/ohm-233-position-qualified-20261027/nonparser-whole-inputs-campaign-v1/genuine-cgu-name-selector/cli-440d4bc7ce0d4c47/selector.ld"
+        ],
+        "filename": "cli-440d4bc7ce0d4c47.00xnreyn3fq67vg1cparhvqty.1nqw4d8.rcgu.o",
+        "gcc_status": 1,
+        "gcc_stderr": "wild: error: Undefined symbol rust_eh_personality, referenced by \n    /ohm-workspace/v7/library/alloc/src/string.rs:2749\n    /home/dev-user/.cache/ohm-233-position-qualified-20261027/nonparser-whole-inputs-campaign-v1/genuine-cgu-name-selector/cli-440d4bc7ce0d4c47/cli-440d4bc7ce0d4c47.00xnreyn3fq67vg1cparhvqty.1nqw4d8.rcgu.o\ncollect2: error: ld returned 1 exit status\n",
+        "input_sha256": "066749daf32bf525c16d3862d9ed58a11e5de11ae85e0933149663332981c615",
+        "mode": "explicit-script",
+        "program_return": null,
+        "program_sha256": null,
+        "sha256_executed_wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5",
+        "successful_wild_exec_sha256": [
+          "e404c927fa39910911acc9145185f9af2b815cb41f144d2230ac3b58988fd52d"
+        ],
+        "symbol_addresses": {}
+      },
+      {
+        "actual_gcc_argv": [
+          "gcc",
+          "-B/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/lib/rustlib/x86_64-unknown-linux-gnu/bin/wild-ld/",
+          "-fuse-ld=bfd",
+          "-nostdlib",
+          "-static",
+          "-no-pie",
+          "-Wl,--gc-sections",
+          "-Wl,--build-id=none",
+          "-o",
+          "/home/dev-user/.cache/ohm-233-position-qualified-20261027/nonparser-whole-inputs-campaign-v1/genuine-cgu-name-selector/cli-440d4bc7ce0d4c47/selector-program",
+          "/home/dev-user/.cache/ohm-233-position-qualified-20261027/nonparser-whole-inputs-campaign-v1/genuine-cgu-name-selector/cli-440d4bc7ce0d4c47/entry.o",
+          "/home/dev-user/.cache/ohm-233-position-qualified-20261027/nonparser-whole-inputs-campaign-v1/genuine-cgu-name-selector/cli-440d4bc7ce0d4c47/cli-440d4bc7ce0d4c47.00xnreyn3fq67vg1cparhvqty.12iovz7.rcgu.o",
+          "-Wl,-T,/home/dev-user/.cache/ohm-233-position-qualified-20261027/nonparser-whole-inputs-campaign-v1/genuine-cgu-name-selector/cli-440d4bc7ce0d4c47/selector.ld"
+        ],
+        "filename": "cli-440d4bc7ce0d4c47.00xnreyn3fq67vg1cparhvqty.12iovz7.rcgu.o",
+        "gcc_status": 1,
+        "gcc_stderr": "wild: error: Undefined symbol rust_eh_personality, referenced by \n    /ohm-workspace/v7/library/alloc/src/string.rs:2749\n    /home/dev-user/.cache/ohm-233-position-qualified-20261027/nonparser-whole-inputs-campaign-v1/genuine-cgu-name-selector/cli-440d4bc7ce0d4c47/cli-440d4bc7ce0d4c47.00xnreyn3fq67vg1cparhvqty.12iovz7.rcgu.o\ncollect2: error: ld returned 1 exit status\n",
+        "input_sha256": "066749daf32bf525c16d3862d9ed58a11e5de11ae85e0933149663332981c615",
+        "mode": "explicit-script",
+        "program_return": null,
+        "program_sha256": null,
+        "sha256_executed_wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5",
+        "successful_wild_exec_sha256": [
+          "eede48a41c3035e4d6c23ffc93539ef3b88ef12c300b0da069e00ba6c7643d72"
+        ],
+        "symbol_addresses": {}
+      },
+      {
+        "actual_gcc_argv": [
+          "gcc",
+          "-B/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/lib/rustlib/x86_64-unknown-linux-gnu/bin/wild-ld/",
+          "-fuse-ld=bfd",
+          "-nostdlib",
+          "-static",
+          "-no-pie",
+          "-Wl,--gc-sections",
+          "-Wl,--build-id=none",
+          "-o",
+          "/home/dev-user/.cache/ohm-233-position-qualified-20261027/nonparser-whole-inputs-campaign-v1/genuine-cgu-name-selector/cli-440d4bc7ce0d4c47/selector-program",
+          "/home/dev-user/.cache/ohm-233-position-qualified-20261027/nonparser-whole-inputs-campaign-v1/genuine-cgu-name-selector/cli-440d4bc7ce0d4c47/entry.o",
+          "/home/dev-user/.cache/ohm-233-position-qualified-20261027/nonparser-whole-inputs-campaign-v1/genuine-cgu-name-selector/cli-440d4bc7ce0d4c47/cli-440d4bc7ce0d4c47.00xnreyn3fq67vg1cparhvqty.1nqw4d8.rcgu.o",
+          "-L/home/dev-user/.cache/ohm-233-position-qualified-20261027/nonparser-whole-inputs-campaign-v1/genuine-cgu-name-selector/cli-440d4bc7ce0d4c47/shadow",
+          "-Wl,-Bdynamic",
+          "-lutil"
+        ],
+        "filename": "cli-440d4bc7ce0d4c47.00xnreyn3fq67vg1cparhvqty.1nqw4d8.rcgu.o",
+        "gcc_status": 1,
+        "gcc_stderr": "wild: error: Undefined symbol rust_eh_personality, referenced by \n    /ohm-workspace/v7/library/alloc/src/string.rs:2749\n    /home/dev-user/.cache/ohm-233-position-qualified-20261027/nonparser-whole-inputs-campaign-v1/genuine-cgu-name-selector/cli-440d4bc7ce0d4c47/cli-440d4bc7ce0d4c47.00xnreyn3fq67vg1cparhvqty.1nqw4d8.rcgu.o\ncollect2: error: ld returned 1 exit status\n",
+        "input_sha256": "066749daf32bf525c16d3862d9ed58a11e5de11ae85e0933149663332981c615",
+        "mode": "earlier-search-library",
+        "program_return": null,
+        "program_sha256": null,
+        "sha256_executed_wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5",
+        "successful_wild_exec_sha256": [
+          "eced4d1769d392142a1b1de5fe85e88b383314978e0b2c719a68d02b7d6e30e4"
+        ],
+        "symbol_addresses": {}
+      },
+      {
+        "actual_gcc_argv": [
+          "gcc",
+          "-B/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/lib/rustlib/x86_64-unknown-linux-gnu/bin/wild-ld/",
+          "-fuse-ld=bfd",
+          "-nostdlib",
+          "-static",
+          "-no-pie",
+          "-Wl,--gc-sections",
+          "-Wl,--build-id=none",
+          "-o",
+          "/home/dev-user/.cache/ohm-233-position-qualified-20261027/nonparser-whole-inputs-campaign-v1/genuine-cgu-name-selector/cli-440d4bc7ce0d4c47/selector-program",
+          "/home/dev-user/.cache/ohm-233-position-qualified-20261027/nonparser-whole-inputs-campaign-v1/genuine-cgu-name-selector/cli-440d4bc7ce0d4c47/entry.o",
+          "/home/dev-user/.cache/ohm-233-position-qualified-20261027/nonparser-whole-inputs-campaign-v1/genuine-cgu-name-selector/cli-440d4bc7ce0d4c47/cli-440d4bc7ce0d4c47.00xnreyn3fq67vg1cparhvqty.12iovz7.rcgu.o",
+          "-L/home/dev-user/.cache/ohm-233-position-qualified-20261027/nonparser-whole-inputs-campaign-v1/genuine-cgu-name-selector/cli-440d4bc7ce0d4c47/shadow",
+          "-Wl,-Bdynamic",
+          "-lutil"
+        ],
+        "filename": "cli-440d4bc7ce0d4c47.00xnreyn3fq67vg1cparhvqty.12iovz7.rcgu.o",
+        "gcc_status": 1,
+        "gcc_stderr": "wild: error: Undefined symbol rust_eh_personality, referenced by \n    /ohm-workspace/v7/library/alloc/src/string.rs:2749\n    /home/dev-user/.cache/ohm-233-position-qualified-20261027/nonparser-whole-inputs-campaign-v1/genuine-cgu-name-selector/cli-440d4bc7ce0d4c47/cli-440d4bc7ce0d4c47.00xnreyn3fq67vg1cparhvqty.12iovz7.rcgu.o\ncollect2: error: ld returned 1 exit status\n",
+        "input_sha256": "066749daf32bf525c16d3862d9ed58a11e5de11ae85e0933149663332981c615",
+        "mode": "earlier-search-library",
+        "program_return": null,
+        "program_sha256": null,
+        "sha256_executed_wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5",
+        "successful_wild_exec_sha256": [
+          "3b21ce4b241a2604e7fe23c99acd78d52d9313e75f68e1b7affe683887598ab7"
+        ],
+        "symbol_addresses": {}
+      }
+    ],
+    "section": ".rodata..Lanon.331294c65abf46db297232e03b152236.11",
+    "section_size": 43,
+    "selector_sha256": "b6d1ba26d58984bc5798815881540378c901e09a68612adf814940e45b1f5725",
+    "source_object_bytes": 65792,
+    "source_object_sha": "066749daf32bf525c16d3862d9ed58a11e5de11ae85e0933149663332981c615",
+    "target": "cli-440d4bc7ce0d4c47"
+  },
+  {
+    "actual_source_argv_paths": [
+      "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ty/860e2be505c8514a/out/self_environment-860e2be505c8514a.rlink-objects/self_environment-860e2be505c8514a.1wk2ac24at111atbwzggyc0f5.0zo90dx.rcgu.o",
+      "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ty/860e2be505c8514a/out/self_environment-860e2be505c8514a.rlink-objects/self_environment-860e2be505c8514a.1wk2ac24at111atbwzggyc0f5.16a8iqs.rcgu.o"
+    ],
+    "actual_source_wild_pids": [
+      805079,
+      807501
+    ],
+    "object_selector_script": "ENTRY(_start)\nSECTIONS {\n . = 0x600000;\n .text : { *(.text._start) }\n .selected : { picked_start = .; KEEP(/home/dev-user/.cache/ohm-233-position-qualified-20261027/nonparser-whole-inputs-campaign-v1/genuine-cgu-name-selector/self_environment-860e2be505c8514a/self_environment-860e2be505c8514a.1wk2ac24at111atbwzggyc0f5.0zo90dx.rcgu.o(.rodata..Lanon.89ebf69019ef0b61ee4b8a0dbd752073.23)) picked_end = .; }\n .rest : { KEEP(*(.rodata..Lanon.89ebf69019ef0b61ee4b8a0dbd752073.23)) }\n /DISCARD/ : { *(*) }\n}\n",
+    "rows": [
+      {
+        "actual_gcc_argv": [
+          "gcc",
+          "-B/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/lib/rustlib/x86_64-unknown-linux-gnu/bin/wild-ld/",
+          "-fuse-ld=bfd",
+          "-nostdlib",
+          "-static",
+          "-no-pie",
+          "-Wl,--gc-sections",
+          "-Wl,--build-id=none",
+          "-o",
+          "/home/dev-user/.cache/ohm-233-position-qualified-20261027/nonparser-whole-inputs-campaign-v1/genuine-cgu-name-selector/self_environment-860e2be505c8514a/selector-program",
+          "/home/dev-user/.cache/ohm-233-position-qualified-20261027/nonparser-whole-inputs-campaign-v1/genuine-cgu-name-selector/self_environment-860e2be505c8514a/entry.o",
+          "/home/dev-user/.cache/ohm-233-position-qualified-20261027/nonparser-whole-inputs-campaign-v1/genuine-cgu-name-selector/self_environment-860e2be505c8514a/self_environment-860e2be505c8514a.1wk2ac24at111atbwzggyc0f5.0zo90dx.rcgu.o",
+          "-Wl,-T,/home/dev-user/.cache/ohm-233-position-qualified-20261027/nonparser-whole-inputs-campaign-v1/genuine-cgu-name-selector/self_environment-860e2be505c8514a/selector.ld"
+        ],
+        "filename": "self_environment-860e2be505c8514a.1wk2ac24at111atbwzggyc0f5.0zo90dx.rcgu.o",
+        "gcc_status": 1,
+        "gcc_stderr": "wild: error: Undefined symbol rust_eh_personality, referenced by \n    /ohm-workspace/v7/library/core/src/error.rs:127\n    /home/dev-user/.cache/ohm-233-position-qualified-20261027/nonparser-whole-inputs-campaign-v1/genuine-cgu-name-selector/self_environment-860e2be505c8514a/self_environment-860e2be505c8514a.1wk2ac24at111atbwzggyc0f5.0zo90dx.rcgu.o\ncollect2: error: ld returned 1 exit status\n",
+        "input_sha256": "beea427e48f446d61174b52c0c739de4a8fcf8560e756aaecb56b54178d0f86a",
+        "mode": "explicit-script",
+        "program_return": null,
+        "program_sha256": null,
+        "sha256_executed_wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5",
+        "successful_wild_exec_sha256": [
+          "e369a71f8c14c607bb9920fc23fd9851256e31138668a94d1bfd2f75a52886a9"
+        ],
+        "symbol_addresses": {}
+      },
+      {
+        "actual_gcc_argv": [
+          "gcc",
+          "-B/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/lib/rustlib/x86_64-unknown-linux-gnu/bin/wild-ld/",
+          "-fuse-ld=bfd",
+          "-nostdlib",
+          "-static",
+          "-no-pie",
+          "-Wl,--gc-sections",
+          "-Wl,--build-id=none",
+          "-o",
+          "/home/dev-user/.cache/ohm-233-position-qualified-20261027/nonparser-whole-inputs-campaign-v1/genuine-cgu-name-selector/self_environment-860e2be505c8514a/selector-program",
+          "/home/dev-user/.cache/ohm-233-position-qualified-20261027/nonparser-whole-inputs-campaign-v1/genuine-cgu-name-selector/self_environment-860e2be505c8514a/entry.o",
+          "/home/dev-user/.cache/ohm-233-position-qualified-20261027/nonparser-whole-inputs-campaign-v1/genuine-cgu-name-selector/self_environment-860e2be505c8514a/self_environment-860e2be505c8514a.1wk2ac24at111atbwzggyc0f5.16a8iqs.rcgu.o",
+          "-Wl,-T,/home/dev-user/.cache/ohm-233-position-qualified-20261027/nonparser-whole-inputs-campaign-v1/genuine-cgu-name-selector/self_environment-860e2be505c8514a/selector.ld"
+        ],
+        "filename": "self_environment-860e2be505c8514a.1wk2ac24at111atbwzggyc0f5.16a8iqs.rcgu.o",
+        "gcc_status": 1,
+        "gcc_stderr": "wild: error: Undefined symbol rust_eh_personality, referenced by \n    /ohm-workspace/v7/library/core/src/error.rs:127\n    /home/dev-user/.cache/ohm-233-position-qualified-20261027/nonparser-whole-inputs-campaign-v1/genuine-cgu-name-selector/self_environment-860e2be505c8514a/self_environment-860e2be505c8514a.1wk2ac24at111atbwzggyc0f5.16a8iqs.rcgu.o\ncollect2: error: ld returned 1 exit status\n",
+        "input_sha256": "beea427e48f446d61174b52c0c739de4a8fcf8560e756aaecb56b54178d0f86a",
+        "mode": "explicit-script",
+        "program_return": null,
+        "program_sha256": null,
+        "sha256_executed_wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5",
+        "successful_wild_exec_sha256": [
+          "0f789a67df874ca34dbcf503919512b7ceeaca42bd1a61f140ebb9a88922f053"
+        ],
+        "symbol_addresses": {}
+      },
+      {
+        "actual_gcc_argv": [
+          "gcc",
+          "-B/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/lib/rustlib/x86_64-unknown-linux-gnu/bin/wild-ld/",
+          "-fuse-ld=bfd",
+          "-nostdlib",
+          "-static",
+          "-no-pie",
+          "-Wl,--gc-sections",
+          "-Wl,--build-id=none",
+          "-o",
+          "/home/dev-user/.cache/ohm-233-position-qualified-20261027/nonparser-whole-inputs-campaign-v1/genuine-cgu-name-selector/self_environment-860e2be505c8514a/selector-program",
+          "/home/dev-user/.cache/ohm-233-position-qualified-20261027/nonparser-whole-inputs-campaign-v1/genuine-cgu-name-selector/self_environment-860e2be505c8514a/entry.o",
+          "/home/dev-user/.cache/ohm-233-position-qualified-20261027/nonparser-whole-inputs-campaign-v1/genuine-cgu-name-selector/self_environment-860e2be505c8514a/self_environment-860e2be505c8514a.1wk2ac24at111atbwzggyc0f5.0zo90dx.rcgu.o",
+          "-L/home/dev-user/.cache/ohm-233-position-qualified-20261027/nonparser-whole-inputs-campaign-v1/genuine-cgu-name-selector/self_environment-860e2be505c8514a/shadow",
+          "-Wl,-Bdynamic",
+          "-lutil"
+        ],
+        "filename": "self_environment-860e2be505c8514a.1wk2ac24at111atbwzggyc0f5.0zo90dx.rcgu.o",
+        "gcc_status": 1,
+        "gcc_stderr": "wild: error: Undefined symbol rust_eh_personality, referenced by \n    /ohm-workspace/v7/library/core/src/error.rs:127\n    /home/dev-user/.cache/ohm-233-position-qualified-20261027/nonparser-whole-inputs-campaign-v1/genuine-cgu-name-selector/self_environment-860e2be505c8514a/self_environment-860e2be505c8514a.1wk2ac24at111atbwzggyc0f5.0zo90dx.rcgu.o\ncollect2: error: ld returned 1 exit status\n",
+        "input_sha256": "beea427e48f446d61174b52c0c739de4a8fcf8560e756aaecb56b54178d0f86a",
+        "mode": "earlier-search-library",
+        "program_return": null,
+        "program_sha256": null,
+        "sha256_executed_wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5",
+        "successful_wild_exec_sha256": [
+          "1a3728ff8d3d423c217c8f2bda9af66842a769dd8ba82587a85eb1a7751eac04"
+        ],
+        "symbol_addresses": {}
+      },
+      {
+        "actual_gcc_argv": [
+          "gcc",
+          "-B/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/lib/rustlib/x86_64-unknown-linux-gnu/bin/wild-ld/",
+          "-fuse-ld=bfd",
+          "-nostdlib",
+          "-static",
+          "-no-pie",
+          "-Wl,--gc-sections",
+          "-Wl,--build-id=none",
+          "-o",
+          "/home/dev-user/.cache/ohm-233-position-qualified-20261027/nonparser-whole-inputs-campaign-v1/genuine-cgu-name-selector/self_environment-860e2be505c8514a/selector-program",
+          "/home/dev-user/.cache/ohm-233-position-qualified-20261027/nonparser-whole-inputs-campaign-v1/genuine-cgu-name-selector/self_environment-860e2be505c8514a/entry.o",
+          "/home/dev-user/.cache/ohm-233-position-qualified-20261027/nonparser-whole-inputs-campaign-v1/genuine-cgu-name-selector/self_environment-860e2be505c8514a/self_environment-860e2be505c8514a.1wk2ac24at111atbwzggyc0f5.16a8iqs.rcgu.o",
+          "-L/home/dev-user/.cache/ohm-233-position-qualified-20261027/nonparser-whole-inputs-campaign-v1/genuine-cgu-name-selector/self_environment-860e2be505c8514a/shadow",
+          "-Wl,-Bdynamic",
+          "-lutil"
+        ],
+        "filename": "self_environment-860e2be505c8514a.1wk2ac24at111atbwzggyc0f5.16a8iqs.rcgu.o",
+        "gcc_status": 1,
+        "gcc_stderr": "wild: error: Undefined symbol rust_eh_personality, referenced by \n    /ohm-workspace/v7/library/core/src/error.rs:127\n    /home/dev-user/.cache/ohm-233-position-qualified-20261027/nonparser-whole-inputs-campaign-v1/genuine-cgu-name-selector/self_environment-860e2be505c8514a/self_environment-860e2be505c8514a.1wk2ac24at111atbwzggyc0f5.16a8iqs.rcgu.o\ncollect2: error: ld returned 1 exit status\n",
+        "input_sha256": "beea427e48f446d61174b52c0c739de4a8fcf8560e756aaecb56b54178d0f86a",
+        "mode": "earlier-search-library",
+        "program_return": null,
+        "program_sha256": null,
+        "sha256_executed_wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5",
+        "successful_wild_exec_sha256": [
+          "306746fa347aaffacfb011f7ad50dc9afd911d7721907000885c073139a695af"
+        ],
+        "symbol_addresses": {}
+      }
+    ],
+    "section": ".rodata..Lanon.89ebf69019ef0b61ee4b8a0dbd752073.23",
+    "section_size": 40,
+    "selector_sha256": "8bdafc4bd3286850930a6e0b70e58e80acf1f5bd208fec56ae48b9a277a8e036",
+    "source_object_bytes": 102752,
+    "source_object_sha": "beea427e48f446d61174b52c0c739de4a8fcf8560e756aaecb56b54178d0f86a",
+    "target": "self_environment-860e2be505c8514a"
+  }
+]

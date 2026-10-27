@@ -1,0 +1,2349 @@
+[
+ {
+  "actual_exec_trace_archive_sha256": "7c57d36d5e09bb329f586d8d01a1a25d1a39899eb7610608701cee65cd3bd87f",
+  "cargo_artifact_units": 501,
+  "cli": {
+   "ruff": {
+    "argv": [
+     "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/ruff",
+     "format",
+     "--isolated",
+     "--no-cache",
+     "--stdin-filename",
+     "example.py",
+     "-"
+    ],
+    "present": true,
+    "returncode": 0,
+    "sha256": "14b89c2b67242fbd224383ca179cae996c0bfbfcbf02f3545da38ed5cf7e734f",
+    "stderr": "",
+    "stdout": "# \tTabbed\npass  # \tTabbed\n"
+   },
+   "ty": {
+    "argv": [
+     "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/ty",
+     "check",
+     "--output-format",
+     "concise",
+     "/home/dev-user/.cache/ohm-233-position-qualified-20261027/nonparser-whole-inputs-campaign-v1/oracle/observe.py"
+    ],
+    "present": true,
+    "returncode": 1,
+    "sha256": "e8a2ff032a5b7640d08268db0e6961ef8aaf721a2955bbaa12c76b517f8e53cb",
+    "stderr": "",
+    "stdout": "observe.py:4:17: error[invalid-argument-type] Argument to function `accept_ints` is incorrect: Expected `int`, found `None`\nFound 1 diagnostic\n"
+   }
+  },
+  "complete_product_data_sha256": "c721439e11b5c3d7c522f3290cbc1a68f9f24edb814abe7464b786aeadd3c484",
+  "different_outputs": [],
+  "different_published_files": 922,
+  "different_workspace_elfs": 0,
+  "elf_map_sha256": "ee017b16210ec4e3bcbcac89767da17200a2425b023c657f95e4a67607f5cb69",
+  "executed_test_programs": [],
+  "fresh_units": 0,
+  "jobs": {
+   "cc": 691,
+   "collect2": 152,
+   "other-linker": 62,
+   "rustc-full": 505,
+   "wild": 90
+  },
+  "label": "cold",
+  "missing_published_files": 0,
+  "mode": "build",
+  "phase": "cold",
+  "published_files": 922,
+  "rustc_diagnostic_messages": [],
+  "setup": {
+   "cargo": "dd5cab154b8dcd09ccc2753160d314cade80979b2d055ee66aa9e2217e05e7e1",
+   "command": [
+    "cargo",
+    "+ohm",
+    "build",
+    "--locked",
+    "--offline",
+    "--message-format=json",
+    "-j8"
+   ],
+   "frontend": "4fa9a18b77430bcc416e88561b6fe5797d98b996a7698b9f3bd11d4e7817a19f",
+   "mode": "build",
+   "parser": "first physical screen includes actual opens in edit/restore and execs at every other phase; missing or ephemeral data never certifies equality",
+   "rustc_driver": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+   "source": "original",
+   "source_set": {
+    "crates/ruff_python_formatter/resources/test/fixtures/black/cases/comments_tab_indent.py": "0571249dde0d40767316911ba488a6f266232dd01ee861419700ad02dd6b2eab",
+    "crates/ruff_python_formatter/resources/test/fixtures/black/cases/comments_tab_indent.py.expect": "0878d791c83e4a7b657be58321d73e37061d9f8ae71eb9738a9bab4db5adcadf",
+    "crates/ruff_python_formatter/src/comments/format.rs": "a222709e604871a40e4c5337d49c4b397b55b27c5c7f8f3ba79ce5b3b3a4dc6f",
+    "crates/ty_python_semantic/resources/mdtest/call/function.md": "5fa235a863757e2fbf10a8e8a1f99ddd432fde90495d297876af4de70f085c5a",
+    "crates/ty_python_semantic/resources/mdtest/diagnostics/invalid_argument_type.md": "29d6bfe6f1b70d7552cc5b249e7f42ae7eb78261f1873e8050ee4d43df31c134",
+    "crates/ty_python_semantic/src/types/call/bind.rs": "4c80a8676c3ee72f2a0804cba346a5a5500785213ff0b204ef093e60f4722e8d"
+   },
+   "tracing": "execve,execveat"
+  },
+  "source": "original",
+  "workspace_elf_count": 15
+ },
+ {
+  "actual_exec_trace_archive_sha256": "7ca606dfe3755ccaf8be1477ebdf884b1163acfd22f9715076dd09e1ab8c50ca",
+  "cargo_artifact_units": 501,
+  "cli": {
+   "ruff": {
+    "argv": [
+     "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/ruff",
+     "format",
+     "--isolated",
+     "--no-cache",
+     "--stdin-filename",
+     "example.py",
+     "-"
+    ],
+    "present": true,
+    "returncode": 0,
+    "sha256": "14b89c2b67242fbd224383ca179cae996c0bfbfcbf02f3545da38ed5cf7e734f",
+    "stderr": "",
+    "stdout": "# \tTabbed\npass  # \tTabbed\n"
+   },
+   "ty": {
+    "argv": [
+     "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/ty",
+     "check",
+     "--output-format",
+     "concise",
+     "/home/dev-user/.cache/ohm-233-position-qualified-20261027/nonparser-whole-inputs-campaign-v1/oracle/observe.py"
+    ],
+    "present": true,
+    "returncode": 1,
+    "sha256": "e8a2ff032a5b7640d08268db0e6961ef8aaf721a2955bbaa12c76b517f8e53cb",
+    "stderr": "",
+    "stdout": "observe.py:4:17: error[invalid-argument-type] Argument to function `accept_ints` is incorrect: Expected `int`, found `None`\nFound 1 diagnostic\n"
+   }
+  },
+  "complete_product_data_sha256": "c721439e11b5c3d7c522f3290cbc1a68f9f24edb814abe7464b786aeadd3c484",
+  "different_outputs": [],
+  "different_published_files": 0,
+  "different_workspace_elfs": 0,
+  "elf_map_sha256": "ee017b16210ec4e3bcbcac89767da17200a2425b023c657f95e4a67607f5cb69",
+  "executed_test_programs": [],
+  "fresh_units": 501,
+  "jobs": {},
+  "label": "warm-1",
+  "missing_published_files": 0,
+  "mode": "build",
+  "phase": "warm",
+  "published_files": 922,
+  "rustc_diagnostic_messages": [],
+  "setup": {
+   "cargo": "dd5cab154b8dcd09ccc2753160d314cade80979b2d055ee66aa9e2217e05e7e1",
+   "command": [
+    "cargo",
+    "+ohm",
+    "build",
+    "--locked",
+    "--offline",
+    "--message-format=json",
+    "-j8"
+   ],
+   "frontend": "4fa9a18b77430bcc416e88561b6fe5797d98b996a7698b9f3bd11d4e7817a19f",
+   "mode": "build",
+   "parser": "first physical screen includes actual opens in edit/restore and execs at every other phase; missing or ephemeral data never certifies equality",
+   "rustc_driver": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+   "source": "original",
+   "source_set": {
+    "crates/ruff_python_formatter/resources/test/fixtures/black/cases/comments_tab_indent.py": "0571249dde0d40767316911ba488a6f266232dd01ee861419700ad02dd6b2eab",
+    "crates/ruff_python_formatter/resources/test/fixtures/black/cases/comments_tab_indent.py.expect": "0878d791c83e4a7b657be58321d73e37061d9f8ae71eb9738a9bab4db5adcadf",
+    "crates/ruff_python_formatter/src/comments/format.rs": "a222709e604871a40e4c5337d49c4b397b55b27c5c7f8f3ba79ce5b3b3a4dc6f",
+    "crates/ty_python_semantic/resources/mdtest/call/function.md": "5fa235a863757e2fbf10a8e8a1f99ddd432fde90495d297876af4de70f085c5a",
+    "crates/ty_python_semantic/resources/mdtest/diagnostics/invalid_argument_type.md": "29d6bfe6f1b70d7552cc5b249e7f42ae7eb78261f1873e8050ee4d43df31c134",
+    "crates/ty_python_semantic/src/types/call/bind.rs": "4c80a8676c3ee72f2a0804cba346a5a5500785213ff0b204ef093e60f4722e8d"
+   },
+   "tracing": "execve,execveat"
+  },
+  "source": "original",
+  "workspace_elf_count": 15
+ },
+ {
+  "actual_exec_trace_archive_sha256": "403a5e33fff932ae40181dd58046ed366652626e9b1ed5348a72754bc380f6b0",
+  "cargo_artifact_units": 501,
+  "cli": {
+   "ruff": {
+    "argv": [
+     "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/ruff",
+     "format",
+     "--isolated",
+     "--no-cache",
+     "--stdin-filename",
+     "example.py",
+     "-"
+    ],
+    "present": true,
+    "returncode": 0,
+    "sha256": "14b89c2b67242fbd224383ca179cae996c0bfbfcbf02f3545da38ed5cf7e734f",
+    "stderr": "",
+    "stdout": "# \tTabbed\npass  # \tTabbed\n"
+   },
+   "ty": {
+    "argv": [
+     "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/ty",
+     "check",
+     "--output-format",
+     "concise",
+     "/home/dev-user/.cache/ohm-233-position-qualified-20261027/nonparser-whole-inputs-campaign-v1/oracle/observe.py"
+    ],
+    "present": true,
+    "returncode": 1,
+    "sha256": "3e6348762f9194e9fe5ee0b9bf1cbe23a989ac8534aaa3ef9f9f5158d22c7ade",
+    "stderr": "",
+    "stdout": "observe.py:4:17: error[invalid-argument-type] Argument to function `accept_ints` is incorrect: Expected `int`, found `None`\nobserve.py:4:17: error[invalid-argument-type] Argument to function `accept_ints` is incorrect: Expected `int`, found `None`\nFound 2 diagnostics\n"
+   }
+  },
+  "complete_product_data_sha256": "1c719e124ee6e3d3ecfef4e8dfd8edd8b2547417c86b77ea526a4dba74d5281f",
+  "different_outputs": [
+   {
+    "after": "0ae7933e429f40b3dd6690c6109f0aaf8e86319d3c55c965b7d2e3f326429ccc",
+    "before": "d8b609ec20a103713c711e11c841f98ae66abd85b6648a7f8b493bf2474fd7fc",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/libty_wasm.so"
+   },
+   {
+    "after": "be16a32f9f85d2743ef7c2cf39e2f73b5650c9bf4ea2827407529332b4c470a1",
+    "before": "d5956b3b39797b7b1b622291985b43a1526a4f64a900f0716715d870a637835b",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/ruff_dev"
+   },
+   {
+    "after": "3e6348762f9194e9fe5ee0b9bf1cbe23a989ac8534aaa3ef9f9f5158d22c7ade",
+    "before": "e8a2ff032a5b7640d08268db0e6961ef8aaf721a2955bbaa12c76b517f8e53cb",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/ty"
+   },
+   {
+    "after": "ba8a9ec4256a23cd1efca62c63b2179d636962a0f6026c4de1efaa115f0d97cc",
+    "before": "99e626d70b6297991f9fd0518c7b3388c83f4e7d7ee8886d49082fb1069f7ad6",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/ty_completion_bench"
+   },
+   {
+    "after": "69ec2625d503ef86f8928fb8d198d4a162dd62906167505907ad7fae1ea2f4b8",
+    "before": "4e14a2214c3c353f8e6b71e36c243058ad934998ee426322da4651faa6c1c2bd",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/ty_completion_eval"
+   }
+  ],
+  "different_published_files": 21,
+  "different_workspace_elfs": 5,
+  "elf_map_sha256": "0f395287dac7c50ca5da95535a30b6319e9848bba42bc932774ce1b021cf9f8e",
+  "executed_test_programs": [],
+  "fresh_units": 489,
+  "jobs": {
+   "cc": 5,
+   "collect2": 5,
+   "rustc-full": 12,
+   "wild": 5
+  },
+  "label": "ty-diagnostic-edit",
+  "missing_published_files": 0,
+  "mode": "build",
+  "phase": "edit",
+  "published_files": 922,
+  "rustc_diagnostic_messages": [],
+  "setup": {
+   "cargo": "dd5cab154b8dcd09ccc2753160d314cade80979b2d055ee66aa9e2217e05e7e1",
+   "command": [
+    "cargo",
+    "+ohm",
+    "build",
+    "--locked",
+    "--offline",
+    "--message-format=json",
+    "-j8"
+   ],
+   "frontend": "4fa9a18b77430bcc416e88561b6fe5797d98b996a7698b9f3bd11d4e7817a19f",
+   "mode": "build",
+   "parser": "first physical screen includes actual opens in edit/restore and execs at every other phase; missing or ephemeral data never certifies equality",
+   "rustc_driver": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+   "source": "ty-diagnostic",
+   "source_set": {
+    "crates/ruff_python_formatter/resources/test/fixtures/black/cases/comments_tab_indent.py": "0571249dde0d40767316911ba488a6f266232dd01ee861419700ad02dd6b2eab",
+    "crates/ruff_python_formatter/resources/test/fixtures/black/cases/comments_tab_indent.py.expect": "0878d791c83e4a7b657be58321d73e37061d9f8ae71eb9738a9bab4db5adcadf",
+    "crates/ruff_python_formatter/src/comments/format.rs": "a222709e604871a40e4c5337d49c4b397b55b27c5c7f8f3ba79ce5b3b3a4dc6f",
+    "crates/ty_python_semantic/resources/mdtest/call/function.md": "befe168eddc7893d7cadc84a18f39ca65d96d0bcbaddfc5292aafbfcd21aa378",
+    "crates/ty_python_semantic/resources/mdtest/diagnostics/invalid_argument_type.md": "e280a3a7cf7cc601969d282dc660e42c33dac741501a8a6cc0b7bebc960497e7",
+    "crates/ty_python_semantic/src/types/call/bind.rs": "0808753d946658321830bc3361fab022f854cce467345a335f596921bcc5fc76"
+   },
+   "tracing": "execve,execveat,clone,clone3,fork,vfork,open,openat,openat2"
+  },
+  "source": "ty-diagnostic",
+  "workspace_elf_count": 15
+ },
+ {
+  "actual_exec_trace_archive_sha256": "4419fa4b354603c5f42384e254b0f93b3c58e8203ebbe2ec834e0a19f6a48beb",
+  "cargo_artifact_units": 501,
+  "cli": {
+   "ruff": {
+    "argv": [
+     "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/ruff",
+     "format",
+     "--isolated",
+     "--no-cache",
+     "--stdin-filename",
+     "example.py",
+     "-"
+    ],
+    "present": true,
+    "returncode": 0,
+    "sha256": "14b89c2b67242fbd224383ca179cae996c0bfbfcbf02f3545da38ed5cf7e734f",
+    "stderr": "",
+    "stdout": "# \tTabbed\npass  # \tTabbed\n"
+   },
+   "ty": {
+    "argv": [
+     "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/ty",
+     "check",
+     "--output-format",
+     "concise",
+     "/home/dev-user/.cache/ohm-233-position-qualified-20261027/nonparser-whole-inputs-campaign-v1/oracle/observe.py"
+    ],
+    "present": true,
+    "returncode": 1,
+    "sha256": "3e6348762f9194e9fe5ee0b9bf1cbe23a989ac8534aaa3ef9f9f5158d22c7ade",
+    "stderr": "",
+    "stdout": "observe.py:4:17: error[invalid-argument-type] Argument to function `accept_ints` is incorrect: Expected `int`, found `None`\nobserve.py:4:17: error[invalid-argument-type] Argument to function `accept_ints` is incorrect: Expected `int`, found `None`\nFound 2 diagnostics\n"
+   }
+  },
+  "complete_product_data_sha256": "1c719e124ee6e3d3ecfef4e8dfd8edd8b2547417c86b77ea526a4dba74d5281f",
+  "different_outputs": [],
+  "different_published_files": 0,
+  "different_workspace_elfs": 0,
+  "elf_map_sha256": "0f395287dac7c50ca5da95535a30b6319e9848bba42bc932774ce1b021cf9f8e",
+  "executed_test_programs": [],
+  "fresh_units": 501,
+  "jobs": {},
+  "label": "ty-diagnostic-edit-fresh",
+  "missing_published_files": 0,
+  "mode": "build",
+  "phase": "fresh",
+  "published_files": 922,
+  "rustc_diagnostic_messages": [],
+  "setup": {
+   "cargo": "dd5cab154b8dcd09ccc2753160d314cade80979b2d055ee66aa9e2217e05e7e1",
+   "command": [
+    "cargo",
+    "+ohm",
+    "build",
+    "--locked",
+    "--offline",
+    "--message-format=json",
+    "-j8"
+   ],
+   "frontend": "4fa9a18b77430bcc416e88561b6fe5797d98b996a7698b9f3bd11d4e7817a19f",
+   "mode": "build",
+   "parser": "first physical screen includes actual opens in edit/restore and execs at every other phase; missing or ephemeral data never certifies equality",
+   "rustc_driver": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+   "source": "ty-diagnostic",
+   "source_set": {
+    "crates/ruff_python_formatter/resources/test/fixtures/black/cases/comments_tab_indent.py": "0571249dde0d40767316911ba488a6f266232dd01ee861419700ad02dd6b2eab",
+    "crates/ruff_python_formatter/resources/test/fixtures/black/cases/comments_tab_indent.py.expect": "0878d791c83e4a7b657be58321d73e37061d9f8ae71eb9738a9bab4db5adcadf",
+    "crates/ruff_python_formatter/src/comments/format.rs": "a222709e604871a40e4c5337d49c4b397b55b27c5c7f8f3ba79ce5b3b3a4dc6f",
+    "crates/ty_python_semantic/resources/mdtest/call/function.md": "befe168eddc7893d7cadc84a18f39ca65d96d0bcbaddfc5292aafbfcd21aa378",
+    "crates/ty_python_semantic/resources/mdtest/diagnostics/invalid_argument_type.md": "e280a3a7cf7cc601969d282dc660e42c33dac741501a8a6cc0b7bebc960497e7",
+    "crates/ty_python_semantic/src/types/call/bind.rs": "0808753d946658321830bc3361fab022f854cce467345a335f596921bcc5fc76"
+   },
+   "tracing": "execve,execveat"
+  },
+  "source": "ty-diagnostic",
+  "workspace_elf_count": 15
+ },
+ {
+  "actual_exec_trace_archive_sha256": "58f86e4175e049dff34abd9d53322c52816a613f4c3fcdcb319b958ed991ec4c",
+  "cargo_artifact_units": 501,
+  "cli": {
+   "ruff": {
+    "argv": [
+     "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/ruff",
+     "format",
+     "--isolated",
+     "--no-cache",
+     "--stdin-filename",
+     "example.py",
+     "-"
+    ],
+    "present": true,
+    "returncode": 0,
+    "sha256": "14b89c2b67242fbd224383ca179cae996c0bfbfcbf02f3545da38ed5cf7e734f",
+    "stderr": "",
+    "stdout": "# \tTabbed\npass  # \tTabbed\n"
+   },
+   "ty": {
+    "argv": [
+     "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/ty",
+     "check",
+     "--output-format",
+     "concise",
+     "/home/dev-user/.cache/ohm-233-position-qualified-20261027/nonparser-whole-inputs-campaign-v1/oracle/observe.py"
+    ],
+    "present": true,
+    "returncode": 1,
+    "sha256": "e8a2ff032a5b7640d08268db0e6961ef8aaf721a2955bbaa12c76b517f8e53cb",
+    "stderr": "",
+    "stdout": "observe.py:4:17: error[invalid-argument-type] Argument to function `accept_ints` is incorrect: Expected `int`, found `None`\nFound 1 diagnostic\n"
+   }
+  },
+  "complete_product_data_sha256": "cfa51c50980481a304dec9b6b9a1d1068d8963c11e3aae550361dbe4cda0da6f",
+  "different_outputs": [
+   {
+    "after": "d8b609ec20a103713c711e11c841f98ae66abd85b6648a7f8b493bf2474fd7fc",
+    "before": "0ae7933e429f40b3dd6690c6109f0aaf8e86319d3c55c965b7d2e3f326429ccc",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/libty_wasm.so"
+   },
+   {
+    "after": "d5956b3b39797b7b1b622291985b43a1526a4f64a900f0716715d870a637835b",
+    "before": "be16a32f9f85d2743ef7c2cf39e2f73b5650c9bf4ea2827407529332b4c470a1",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/ruff_dev"
+   },
+   {
+    "after": "e8a2ff032a5b7640d08268db0e6961ef8aaf721a2955bbaa12c76b517f8e53cb",
+    "before": "3e6348762f9194e9fe5ee0b9bf1cbe23a989ac8534aaa3ef9f9f5158d22c7ade",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/ty"
+   },
+   {
+    "after": "99e626d70b6297991f9fd0518c7b3388c83f4e7d7ee8886d49082fb1069f7ad6",
+    "before": "ba8a9ec4256a23cd1efca62c63b2179d636962a0f6026c4de1efaa115f0d97cc",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/ty_completion_bench"
+   },
+   {
+    "after": "4e14a2214c3c353f8e6b71e36c243058ad934998ee426322da4651faa6c1c2bd",
+    "before": "69ec2625d503ef86f8928fb8d198d4a162dd62906167505907ad7fae1ea2f4b8",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/ty_completion_eval"
+   }
+  ],
+  "different_published_files": 21,
+  "different_workspace_elfs": 5,
+  "elf_map_sha256": "ee017b16210ec4e3bcbcac89767da17200a2425b023c657f95e4a67607f5cb69",
+  "executed_test_programs": [],
+  "fresh_units": 489,
+  "jobs": {
+   "cc": 5,
+   "collect2": 5,
+   "rustc-full": 12,
+   "wild": 5
+  },
+  "label": "ty-diagnostic-restore",
+  "missing_published_files": 0,
+  "mode": "build",
+  "phase": "restore",
+  "published_files": 922,
+  "rustc_diagnostic_messages": [],
+  "setup": {
+   "cargo": "dd5cab154b8dcd09ccc2753160d314cade80979b2d055ee66aa9e2217e05e7e1",
+   "command": [
+    "cargo",
+    "+ohm",
+    "build",
+    "--locked",
+    "--offline",
+    "--message-format=json",
+    "-j8"
+   ],
+   "frontend": "4fa9a18b77430bcc416e88561b6fe5797d98b996a7698b9f3bd11d4e7817a19f",
+   "mode": "build",
+   "parser": "first physical screen includes actual opens in edit/restore and execs at every other phase; missing or ephemeral data never certifies equality",
+   "rustc_driver": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+   "source": "original",
+   "source_set": {
+    "crates/ruff_python_formatter/resources/test/fixtures/black/cases/comments_tab_indent.py": "0571249dde0d40767316911ba488a6f266232dd01ee861419700ad02dd6b2eab",
+    "crates/ruff_python_formatter/resources/test/fixtures/black/cases/comments_tab_indent.py.expect": "0878d791c83e4a7b657be58321d73e37061d9f8ae71eb9738a9bab4db5adcadf",
+    "crates/ruff_python_formatter/src/comments/format.rs": "a222709e604871a40e4c5337d49c4b397b55b27c5c7f8f3ba79ce5b3b3a4dc6f",
+    "crates/ty_python_semantic/resources/mdtest/call/function.md": "5fa235a863757e2fbf10a8e8a1f99ddd432fde90495d297876af4de70f085c5a",
+    "crates/ty_python_semantic/resources/mdtest/diagnostics/invalid_argument_type.md": "29d6bfe6f1b70d7552cc5b249e7f42ae7eb78261f1873e8050ee4d43df31c134",
+    "crates/ty_python_semantic/src/types/call/bind.rs": "4c80a8676c3ee72f2a0804cba346a5a5500785213ff0b204ef093e60f4722e8d"
+   },
+   "tracing": "execve,execveat,clone,clone3,fork,vfork,open,openat,openat2"
+  },
+  "source": "original",
+  "workspace_elf_count": 15
+ },
+ {
+  "actual_exec_trace_archive_sha256": "1d51178eab7c71a1be7a4df02dd8bc0a76c42d9902816a5d1c95831adf07c0bd",
+  "cargo_artifact_units": 501,
+  "cli": {
+   "ruff": {
+    "argv": [
+     "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/ruff",
+     "format",
+     "--isolated",
+     "--no-cache",
+     "--stdin-filename",
+     "example.py",
+     "-"
+    ],
+    "present": true,
+    "returncode": 0,
+    "sha256": "14b89c2b67242fbd224383ca179cae996c0bfbfcbf02f3545da38ed5cf7e734f",
+    "stderr": "",
+    "stdout": "# \tTabbed\npass  # \tTabbed\n"
+   },
+   "ty": {
+    "argv": [
+     "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/ty",
+     "check",
+     "--output-format",
+     "concise",
+     "/home/dev-user/.cache/ohm-233-position-qualified-20261027/nonparser-whole-inputs-campaign-v1/oracle/observe.py"
+    ],
+    "present": true,
+    "returncode": 1,
+    "sha256": "e8a2ff032a5b7640d08268db0e6961ef8aaf721a2955bbaa12c76b517f8e53cb",
+    "stderr": "",
+    "stdout": "observe.py:4:17: error[invalid-argument-type] Argument to function `accept_ints` is incorrect: Expected `int`, found `None`\nFound 1 diagnostic\n"
+   }
+  },
+  "complete_product_data_sha256": "cfa51c50980481a304dec9b6b9a1d1068d8963c11e3aae550361dbe4cda0da6f",
+  "different_outputs": [],
+  "different_published_files": 0,
+  "different_workspace_elfs": 0,
+  "elf_map_sha256": "ee017b16210ec4e3bcbcac89767da17200a2425b023c657f95e4a67607f5cb69",
+  "executed_test_programs": [],
+  "fresh_units": 501,
+  "jobs": {},
+  "label": "ty-diagnostic-restore-fresh",
+  "missing_published_files": 0,
+  "mode": "build",
+  "phase": "fresh",
+  "published_files": 922,
+  "rustc_diagnostic_messages": [],
+  "setup": {
+   "cargo": "dd5cab154b8dcd09ccc2753160d314cade80979b2d055ee66aa9e2217e05e7e1",
+   "command": [
+    "cargo",
+    "+ohm",
+    "build",
+    "--locked",
+    "--offline",
+    "--message-format=json",
+    "-j8"
+   ],
+   "frontend": "4fa9a18b77430bcc416e88561b6fe5797d98b996a7698b9f3bd11d4e7817a19f",
+   "mode": "build",
+   "parser": "first physical screen includes actual opens in edit/restore and execs at every other phase; missing or ephemeral data never certifies equality",
+   "rustc_driver": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+   "source": "original",
+   "source_set": {
+    "crates/ruff_python_formatter/resources/test/fixtures/black/cases/comments_tab_indent.py": "0571249dde0d40767316911ba488a6f266232dd01ee861419700ad02dd6b2eab",
+    "crates/ruff_python_formatter/resources/test/fixtures/black/cases/comments_tab_indent.py.expect": "0878d791c83e4a7b657be58321d73e37061d9f8ae71eb9738a9bab4db5adcadf",
+    "crates/ruff_python_formatter/src/comments/format.rs": "a222709e604871a40e4c5337d49c4b397b55b27c5c7f8f3ba79ce5b3b3a4dc6f",
+    "crates/ty_python_semantic/resources/mdtest/call/function.md": "5fa235a863757e2fbf10a8e8a1f99ddd432fde90495d297876af4de70f085c5a",
+    "crates/ty_python_semantic/resources/mdtest/diagnostics/invalid_argument_type.md": "29d6bfe6f1b70d7552cc5b249e7f42ae7eb78261f1873e8050ee4d43df31c134",
+    "crates/ty_python_semantic/src/types/call/bind.rs": "4c80a8676c3ee72f2a0804cba346a5a5500785213ff0b204ef093e60f4722e8d"
+   },
+   "tracing": "execve,execveat"
+  },
+  "source": "original",
+  "workspace_elf_count": 15
+ },
+ {
+  "actual_exec_trace_archive_sha256": "5aeea7d82b14085276fa666871210b7b6b56a3b24ca5c88e11ab8b5157c9709d",
+  "cargo_artifact_units": 501,
+  "cli": {
+   "ruff": {
+    "argv": [
+     "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/ruff",
+     "format",
+     "--isolated",
+     "--no-cache",
+     "--stdin-filename",
+     "example.py",
+     "-"
+    ],
+    "present": true,
+    "returncode": 0,
+    "sha256": "65bbc5d209864dfa86da2cf2a9142d90168e0dc7c0f9d6e6f98d1639a605a1f3",
+    "stderr": "",
+    "stdout": "# Tabbed\npass  # Tabbed\n"
+   },
+   "ty": {
+    "argv": [
+     "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/ty",
+     "check",
+     "--output-format",
+     "concise",
+     "/home/dev-user/.cache/ohm-233-position-qualified-20261027/nonparser-whole-inputs-campaign-v1/oracle/observe.py"
+    ],
+    "present": true,
+    "returncode": 1,
+    "sha256": "8736c6f37595ed0ec4db0662670d736d650a326e6cf3c22c9803089998ca1de7",
+    "stderr": "",
+    "stdout": "observe.py:4:17: error[invalid-argument-type] Argument to function `accept_ints` is incorrect: Expected `int`, found `None`\nFound 1 diagnostic\n"
+   }
+  },
+  "complete_product_data_sha256": "7ac7f84aeff943f8f7c7ce20f6a860d72158b93c0bf00d19db54f298dc39bfbb",
+  "different_outputs": [
+   {
+    "after": "10ebfeea5a1f7055240cd45d66cd9aee4a5be413a906c5b767e8443727c94681",
+    "before": "ea474c864b24e4346babd270fe2d38f1bb7fb7ed26536b0914d4a8587ff6dfee",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/libruff_wasm.so"
+   },
+   {
+    "after": "daed703c0601237ffb047b507b0220ee4ab43a6acb972ba17984b57cbcc0c6a2",
+    "before": "d8b609ec20a103713c711e11c841f98ae66abd85b6648a7f8b493bf2474fd7fc",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/libty_wasm.so"
+   },
+   {
+    "after": "65bbc5d209864dfa86da2cf2a9142d90168e0dc7c0f9d6e6f98d1639a605a1f3",
+    "before": "14b89c2b67242fbd224383ca179cae996c0bfbfcbf02f3545da38ed5cf7e734f",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/ruff"
+   },
+   {
+    "after": "9da06078e91a1ba31d982791e68913ddad57f19eb3d16449c409f4b159ddc487",
+    "before": "d5956b3b39797b7b1b622291985b43a1526a4f64a900f0716715d870a637835b",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/ruff_dev"
+   },
+   {
+    "after": "9d9b87df8b2067467f71009138a545ed8ca61a187aea6aae29ef9388d266cdb3",
+    "before": "b456c23f8d86f6710673f10c6997890aebc9174f1df2cade5ea95af1b86f84ab",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/ruff_python_formatter"
+   },
+   {
+    "after": "8736c6f37595ed0ec4db0662670d736d650a326e6cf3c22c9803089998ca1de7",
+    "before": "e8a2ff032a5b7640d08268db0e6961ef8aaf721a2955bbaa12c76b517f8e53cb",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/ty"
+   },
+   {
+    "after": "37455ec5993e669bffde4376dca46b6c3dd65a69e03b638ceaf09a74e7cd352d",
+    "before": "99e626d70b6297991f9fd0518c7b3388c83f4e7d7ee8886d49082fb1069f7ad6",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/ty_completion_bench"
+   },
+   {
+    "after": "b5ddf0b7a0e810a6f0813b83d5a00c55f4e26d256ac0dd547a87ce3d05ff61d1",
+    "before": "4e14a2214c3c353f8e6b71e36c243058ad934998ee426322da4651faa6c1c2bd",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/ty_completion_eval"
+   }
+  ],
+  "different_published_files": 13,
+  "different_workspace_elfs": 8,
+  "elf_map_sha256": "bef584793f5b5ba0f1e44439d9e0638b9cc7f43797b415bdd06b4b9ffc2c7292",
+  "executed_test_programs": [],
+  "fresh_units": 482,
+  "jobs": {
+   "cc": 8,
+   "collect2": 8,
+   "rustc-full": 3,
+   "rustc-link-only": 6,
+   "wild": 8
+  },
+  "label": "formatter-edit",
+  "missing_published_files": 0,
+  "mode": "build",
+  "phase": "edit",
+  "published_files": 922,
+  "rustc_diagnostic_messages": [],
+  "setup": {
+   "cargo": "dd5cab154b8dcd09ccc2753160d314cade80979b2d055ee66aa9e2217e05e7e1",
+   "command": [
+    "cargo",
+    "+ohm",
+    "build",
+    "--locked",
+    "--offline",
+    "--message-format=json",
+    "-j8"
+   ],
+   "frontend": "4fa9a18b77430bcc416e88561b6fe5797d98b996a7698b9f3bd11d4e7817a19f",
+   "mode": "build",
+   "parser": "first physical screen includes actual opens in edit/restore and execs at every other phase; missing or ephemeral data never certifies equality",
+   "rustc_driver": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+   "source": "formatter",
+   "source_set": {
+    "crates/ruff_python_formatter/resources/test/fixtures/black/cases/comments_tab_indent.py": null,
+    "crates/ruff_python_formatter/resources/test/fixtures/black/cases/comments_tab_indent.py.expect": null,
+    "crates/ruff_python_formatter/src/comments/format.rs": "f537ae0dc9cb45f8f02471a06f26390d258e71448d1fd8725722cf9c4382abb3",
+    "crates/ty_python_semantic/resources/mdtest/call/function.md": "5fa235a863757e2fbf10a8e8a1f99ddd432fde90495d297876af4de70f085c5a",
+    "crates/ty_python_semantic/resources/mdtest/diagnostics/invalid_argument_type.md": "29d6bfe6f1b70d7552cc5b249e7f42ae7eb78261f1873e8050ee4d43df31c134",
+    "crates/ty_python_semantic/src/types/call/bind.rs": "4c80a8676c3ee72f2a0804cba346a5a5500785213ff0b204ef093e60f4722e8d"
+   },
+   "tracing": "execve,execveat,clone,clone3,fork,vfork,open,openat,openat2"
+  },
+  "source": "formatter",
+  "workspace_elf_count": 15
+ },
+ {
+  "actual_exec_trace_archive_sha256": "7e9afd562d19db4d97f2c5048764345268372aecef5fbeca5ca92541f82ac65d",
+  "cargo_artifact_units": 501,
+  "cli": {
+   "ruff": {
+    "argv": [
+     "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/ruff",
+     "format",
+     "--isolated",
+     "--no-cache",
+     "--stdin-filename",
+     "example.py",
+     "-"
+    ],
+    "present": true,
+    "returncode": 0,
+    "sha256": "65bbc5d209864dfa86da2cf2a9142d90168e0dc7c0f9d6e6f98d1639a605a1f3",
+    "stderr": "",
+    "stdout": "# Tabbed\npass  # Tabbed\n"
+   },
+   "ty": {
+    "argv": [
+     "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/ty",
+     "check",
+     "--output-format",
+     "concise",
+     "/home/dev-user/.cache/ohm-233-position-qualified-20261027/nonparser-whole-inputs-campaign-v1/oracle/observe.py"
+    ],
+    "present": true,
+    "returncode": 1,
+    "sha256": "8736c6f37595ed0ec4db0662670d736d650a326e6cf3c22c9803089998ca1de7",
+    "stderr": "",
+    "stdout": "observe.py:4:17: error[invalid-argument-type] Argument to function `accept_ints` is incorrect: Expected `int`, found `None`\nFound 1 diagnostic\n"
+   }
+  },
+  "complete_product_data_sha256": "7ac7f84aeff943f8f7c7ce20f6a860d72158b93c0bf00d19db54f298dc39bfbb",
+  "different_outputs": [],
+  "different_published_files": 0,
+  "different_workspace_elfs": 0,
+  "elf_map_sha256": "bef584793f5b5ba0f1e44439d9e0638b9cc7f43797b415bdd06b4b9ffc2c7292",
+  "executed_test_programs": [],
+  "fresh_units": 501,
+  "jobs": {},
+  "label": "formatter-edit-fresh",
+  "missing_published_files": 0,
+  "mode": "build",
+  "phase": "fresh",
+  "published_files": 922,
+  "rustc_diagnostic_messages": [],
+  "setup": {
+   "cargo": "dd5cab154b8dcd09ccc2753160d314cade80979b2d055ee66aa9e2217e05e7e1",
+   "command": [
+    "cargo",
+    "+ohm",
+    "build",
+    "--locked",
+    "--offline",
+    "--message-format=json",
+    "-j8"
+   ],
+   "frontend": "4fa9a18b77430bcc416e88561b6fe5797d98b996a7698b9f3bd11d4e7817a19f",
+   "mode": "build",
+   "parser": "first physical screen includes actual opens in edit/restore and execs at every other phase; missing or ephemeral data never certifies equality",
+   "rustc_driver": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+   "source": "formatter",
+   "source_set": {
+    "crates/ruff_python_formatter/resources/test/fixtures/black/cases/comments_tab_indent.py": null,
+    "crates/ruff_python_formatter/resources/test/fixtures/black/cases/comments_tab_indent.py.expect": null,
+    "crates/ruff_python_formatter/src/comments/format.rs": "f537ae0dc9cb45f8f02471a06f26390d258e71448d1fd8725722cf9c4382abb3",
+    "crates/ty_python_semantic/resources/mdtest/call/function.md": "5fa235a863757e2fbf10a8e8a1f99ddd432fde90495d297876af4de70f085c5a",
+    "crates/ty_python_semantic/resources/mdtest/diagnostics/invalid_argument_type.md": "29d6bfe6f1b70d7552cc5b249e7f42ae7eb78261f1873e8050ee4d43df31c134",
+    "crates/ty_python_semantic/src/types/call/bind.rs": "4c80a8676c3ee72f2a0804cba346a5a5500785213ff0b204ef093e60f4722e8d"
+   },
+   "tracing": "execve,execveat"
+  },
+  "source": "formatter",
+  "workspace_elf_count": 15
+ },
+ {
+  "actual_exec_trace_archive_sha256": "5be8057410e759d8bac840397d3bf4e72bf5ec9e94d8a1567405d838243afc9e",
+  "cargo_artifact_units": 501,
+  "cli": {
+   "ruff": {
+    "argv": [
+     "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/ruff",
+     "format",
+     "--isolated",
+     "--no-cache",
+     "--stdin-filename",
+     "example.py",
+     "-"
+    ],
+    "present": true,
+    "returncode": 0,
+    "sha256": "14b89c2b67242fbd224383ca179cae996c0bfbfcbf02f3545da38ed5cf7e734f",
+    "stderr": "",
+    "stdout": "# \tTabbed\npass  # \tTabbed\n"
+   },
+   "ty": {
+    "argv": [
+     "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/ty",
+     "check",
+     "--output-format",
+     "concise",
+     "/home/dev-user/.cache/ohm-233-position-qualified-20261027/nonparser-whole-inputs-campaign-v1/oracle/observe.py"
+    ],
+    "present": true,
+    "returncode": 1,
+    "sha256": "e8a2ff032a5b7640d08268db0e6961ef8aaf721a2955bbaa12c76b517f8e53cb",
+    "stderr": "",
+    "stdout": "observe.py:4:17: error[invalid-argument-type] Argument to function `accept_ints` is incorrect: Expected `int`, found `None`\nFound 1 diagnostic\n"
+   }
+  },
+  "complete_product_data_sha256": "8a7d7178a69b6d33f8d773737bdd6485ab15a21183fa8c7b37303ca5810238d7",
+  "different_outputs": [
+   {
+    "after": "ea474c864b24e4346babd270fe2d38f1bb7fb7ed26536b0914d4a8587ff6dfee",
+    "before": "10ebfeea5a1f7055240cd45d66cd9aee4a5be413a906c5b767e8443727c94681",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/libruff_wasm.so"
+   },
+   {
+    "after": "d8b609ec20a103713c711e11c841f98ae66abd85b6648a7f8b493bf2474fd7fc",
+    "before": "daed703c0601237ffb047b507b0220ee4ab43a6acb972ba17984b57cbcc0c6a2",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/libty_wasm.so"
+   },
+   {
+    "after": "14b89c2b67242fbd224383ca179cae996c0bfbfcbf02f3545da38ed5cf7e734f",
+    "before": "65bbc5d209864dfa86da2cf2a9142d90168e0dc7c0f9d6e6f98d1639a605a1f3",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/ruff"
+   },
+   {
+    "after": "d5956b3b39797b7b1b622291985b43a1526a4f64a900f0716715d870a637835b",
+    "before": "9da06078e91a1ba31d982791e68913ddad57f19eb3d16449c409f4b159ddc487",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/ruff_dev"
+   },
+   {
+    "after": "b456c23f8d86f6710673f10c6997890aebc9174f1df2cade5ea95af1b86f84ab",
+    "before": "9d9b87df8b2067467f71009138a545ed8ca61a187aea6aae29ef9388d266cdb3",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/ruff_python_formatter"
+   },
+   {
+    "after": "e8a2ff032a5b7640d08268db0e6961ef8aaf721a2955bbaa12c76b517f8e53cb",
+    "before": "8736c6f37595ed0ec4db0662670d736d650a326e6cf3c22c9803089998ca1de7",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/ty"
+   },
+   {
+    "after": "99e626d70b6297991f9fd0518c7b3388c83f4e7d7ee8886d49082fb1069f7ad6",
+    "before": "37455ec5993e669bffde4376dca46b6c3dd65a69e03b638ceaf09a74e7cd352d",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/ty_completion_bench"
+   },
+   {
+    "after": "4e14a2214c3c353f8e6b71e36c243058ad934998ee426322da4651faa6c1c2bd",
+    "before": "b5ddf0b7a0e810a6f0813b83d5a00c55f4e26d256ac0dd547a87ce3d05ff61d1",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/ty_completion_eval"
+   }
+  ],
+  "different_published_files": 12,
+  "different_workspace_elfs": 8,
+  "elf_map_sha256": "ee017b16210ec4e3bcbcac89767da17200a2425b023c657f95e4a67607f5cb69",
+  "executed_test_programs": [],
+  "fresh_units": 482,
+  "jobs": {
+   "cc": 8,
+   "collect2": 8,
+   "rustc-full": 3,
+   "rustc-link-only": 6,
+   "wild": 8
+  },
+  "label": "formatter-restore",
+  "missing_published_files": 0,
+  "mode": "build",
+  "phase": "restore",
+  "published_files": 922,
+  "rustc_diagnostic_messages": [],
+  "setup": {
+   "cargo": "dd5cab154b8dcd09ccc2753160d314cade80979b2d055ee66aa9e2217e05e7e1",
+   "command": [
+    "cargo",
+    "+ohm",
+    "build",
+    "--locked",
+    "--offline",
+    "--message-format=json",
+    "-j8"
+   ],
+   "frontend": "4fa9a18b77430bcc416e88561b6fe5797d98b996a7698b9f3bd11d4e7817a19f",
+   "mode": "build",
+   "parser": "first physical screen includes actual opens in edit/restore and execs at every other phase; missing or ephemeral data never certifies equality",
+   "rustc_driver": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+   "source": "original",
+   "source_set": {
+    "crates/ruff_python_formatter/resources/test/fixtures/black/cases/comments_tab_indent.py": "0571249dde0d40767316911ba488a6f266232dd01ee861419700ad02dd6b2eab",
+    "crates/ruff_python_formatter/resources/test/fixtures/black/cases/comments_tab_indent.py.expect": "0878d791c83e4a7b657be58321d73e37061d9f8ae71eb9738a9bab4db5adcadf",
+    "crates/ruff_python_formatter/src/comments/format.rs": "a222709e604871a40e4c5337d49c4b397b55b27c5c7f8f3ba79ce5b3b3a4dc6f",
+    "crates/ty_python_semantic/resources/mdtest/call/function.md": "5fa235a863757e2fbf10a8e8a1f99ddd432fde90495d297876af4de70f085c5a",
+    "crates/ty_python_semantic/resources/mdtest/diagnostics/invalid_argument_type.md": "29d6bfe6f1b70d7552cc5b249e7f42ae7eb78261f1873e8050ee4d43df31c134",
+    "crates/ty_python_semantic/src/types/call/bind.rs": "4c80a8676c3ee72f2a0804cba346a5a5500785213ff0b204ef093e60f4722e8d"
+   },
+   "tracing": "execve,execveat,clone,clone3,fork,vfork,open,openat,openat2"
+  },
+  "source": "original",
+  "workspace_elf_count": 15
+ },
+ {
+  "actual_exec_trace_archive_sha256": "50afc9ca4cf60a0567c67849959ab53c21eb23845acf6d55209ac28684a4bcfb",
+  "cargo_artifact_units": 501,
+  "cli": {
+   "ruff": {
+    "argv": [
+     "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/ruff",
+     "format",
+     "--isolated",
+     "--no-cache",
+     "--stdin-filename",
+     "example.py",
+     "-"
+    ],
+    "present": true,
+    "returncode": 0,
+    "sha256": "14b89c2b67242fbd224383ca179cae996c0bfbfcbf02f3545da38ed5cf7e734f",
+    "stderr": "",
+    "stdout": "# \tTabbed\npass  # \tTabbed\n"
+   },
+   "ty": {
+    "argv": [
+     "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/ty",
+     "check",
+     "--output-format",
+     "concise",
+     "/home/dev-user/.cache/ohm-233-position-qualified-20261027/nonparser-whole-inputs-campaign-v1/oracle/observe.py"
+    ],
+    "present": true,
+    "returncode": 1,
+    "sha256": "e8a2ff032a5b7640d08268db0e6961ef8aaf721a2955bbaa12c76b517f8e53cb",
+    "stderr": "",
+    "stdout": "observe.py:4:17: error[invalid-argument-type] Argument to function `accept_ints` is incorrect: Expected `int`, found `None`\nFound 1 diagnostic\n"
+   }
+  },
+  "complete_product_data_sha256": "8a7d7178a69b6d33f8d773737bdd6485ab15a21183fa8c7b37303ca5810238d7",
+  "different_outputs": [],
+  "different_published_files": 0,
+  "different_workspace_elfs": 0,
+  "elf_map_sha256": "ee017b16210ec4e3bcbcac89767da17200a2425b023c657f95e4a67607f5cb69",
+  "executed_test_programs": [],
+  "fresh_units": 501,
+  "jobs": {},
+  "label": "formatter-restore-fresh",
+  "missing_published_files": 0,
+  "mode": "build",
+  "phase": "fresh",
+  "published_files": 922,
+  "rustc_diagnostic_messages": [],
+  "setup": {
+   "cargo": "dd5cab154b8dcd09ccc2753160d314cade80979b2d055ee66aa9e2217e05e7e1",
+   "command": [
+    "cargo",
+    "+ohm",
+    "build",
+    "--locked",
+    "--offline",
+    "--message-format=json",
+    "-j8"
+   ],
+   "frontend": "4fa9a18b77430bcc416e88561b6fe5797d98b996a7698b9f3bd11d4e7817a19f",
+   "mode": "build",
+   "parser": "first physical screen includes actual opens in edit/restore and execs at every other phase; missing or ephemeral data never certifies equality",
+   "rustc_driver": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+   "source": "original",
+   "source_set": {
+    "crates/ruff_python_formatter/resources/test/fixtures/black/cases/comments_tab_indent.py": "0571249dde0d40767316911ba488a6f266232dd01ee861419700ad02dd6b2eab",
+    "crates/ruff_python_formatter/resources/test/fixtures/black/cases/comments_tab_indent.py.expect": "0878d791c83e4a7b657be58321d73e37061d9f8ae71eb9738a9bab4db5adcadf",
+    "crates/ruff_python_formatter/src/comments/format.rs": "a222709e604871a40e4c5337d49c4b397b55b27c5c7f8f3ba79ce5b3b3a4dc6f",
+    "crates/ty_python_semantic/resources/mdtest/call/function.md": "5fa235a863757e2fbf10a8e8a1f99ddd432fde90495d297876af4de70f085c5a",
+    "crates/ty_python_semantic/resources/mdtest/diagnostics/invalid_argument_type.md": "29d6bfe6f1b70d7552cc5b249e7f42ae7eb78261f1873e8050ee4d43df31c134",
+    "crates/ty_python_semantic/src/types/call/bind.rs": "4c80a8676c3ee72f2a0804cba346a5a5500785213ff0b204ef093e60f4722e8d"
+   },
+   "tracing": "execve,execveat"
+  },
+  "source": "original",
+  "workspace_elf_count": 15
+ },
+ {
+  "actual_exec_trace_archive_sha256": "517f7ac432c2cf2e8adb66f6324e2367359c19e73fedbed9896aa8908288a976",
+  "cargo_artifact_units": 619,
+  "cli": {
+   "ruff": {
+    "argv": [
+     "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/ruff",
+     "format",
+     "--isolated",
+     "--no-cache",
+     "--stdin-filename",
+     "example.py",
+     "-"
+    ],
+    "present": true,
+    "returncode": 0,
+    "sha256": "e03772c7e1fcc8255ed775b85ed9244f281b06656ea49f6e906854b69a9547b9",
+    "stderr": "",
+    "stdout": "# \tTabbed\npass  # \tTabbed\n"
+   },
+   "ty": {
+    "argv": [
+     "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/ty",
+     "check",
+     "--output-format",
+     "concise",
+     "/home/dev-user/.cache/ohm-233-position-qualified-20261027/nonparser-whole-inputs-campaign-v1/oracle/observe.py"
+    ],
+    "present": true,
+    "returncode": 1,
+    "sha256": "1b33ee4f577bf73cd66883228233b74a1aadf4c69bda6563a4b6cb5e6d6bcdb1",
+    "stderr": "",
+    "stdout": "observe.py:4:17: error[invalid-argument-type] Argument to function `accept_ints` is incorrect: Expected `int`, found `None`\nFound 1 diagnostic\n"
+   }
+  },
+  "complete_product_data_sha256": "e88b40919d5bf222e31d650a62d69c81d099bfd5679dbd5cb4381359a43fcb35",
+  "different_outputs": [],
+  "different_published_files": 1060,
+  "different_workspace_elfs": 0,
+  "elf_map_sha256": "a06c2557d66ee104a14e3f34ed2c934a44daa2da937dcb20519e8cd278e3aa02",
+  "executed_test_programs": [],
+  "fresh_units": 0,
+  "jobs": {
+   "cc": 795,
+   "collect2": 262,
+   "other-linker": 62,
+   "rustc-full": 636,
+   "wild": 200
+  },
+  "label": "cold",
+  "missing_published_files": 0,
+  "mode": "test",
+  "phase": "cold",
+  "published_files": 1060,
+  "rustc_diagnostic_messages": [
+   {
+    "code": "dead_code",
+    "level": "warning",
+    "message": "method `set_watch` is never used",
+    "target": "file_watching"
+   }
+  ],
+  "setup": {
+   "cargo": "dd5cab154b8dcd09ccc2753160d314cade80979b2d055ee66aa9e2217e05e7e1",
+   "command": [
+    "cargo",
+    "+ohm",
+    "test",
+    "--no-run",
+    "--locked",
+    "--offline",
+    "--message-format=json",
+    "-j8"
+   ],
+   "frontend": "4fa9a18b77430bcc416e88561b6fe5797d98b996a7698b9f3bd11d4e7817a19f",
+   "mode": "test",
+   "parser": "first physical screen includes actual opens in edit/restore and execs at every other phase; missing or ephemeral data never certifies equality",
+   "rustc_driver": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+   "source": "original",
+   "source_set": {
+    "crates/ruff_python_formatter/resources/test/fixtures/black/cases/comments_tab_indent.py": "0571249dde0d40767316911ba488a6f266232dd01ee861419700ad02dd6b2eab",
+    "crates/ruff_python_formatter/resources/test/fixtures/black/cases/comments_tab_indent.py.expect": "0878d791c83e4a7b657be58321d73e37061d9f8ae71eb9738a9bab4db5adcadf",
+    "crates/ruff_python_formatter/src/comments/format.rs": "a222709e604871a40e4c5337d49c4b397b55b27c5c7f8f3ba79ce5b3b3a4dc6f",
+    "crates/ty_python_semantic/resources/mdtest/call/function.md": "5fa235a863757e2fbf10a8e8a1f99ddd432fde90495d297876af4de70f085c5a",
+    "crates/ty_python_semantic/resources/mdtest/diagnostics/invalid_argument_type.md": "29d6bfe6f1b70d7552cc5b249e7f42ae7eb78261f1873e8050ee4d43df31c134",
+    "crates/ty_python_semantic/src/types/call/bind.rs": "4c80a8676c3ee72f2a0804cba346a5a5500785213ff0b204ef093e60f4722e8d"
+   },
+   "tracing": "execve,execveat"
+  },
+  "source": "original",
+  "workspace_elf_count": 110
+ },
+ {
+  "actual_exec_trace_archive_sha256": "1e724eed0dad664d4b417eb9450e4bb76036155511b0ccf28530b5afc6036007",
+  "cargo_artifact_units": 619,
+  "cli": {
+   "ruff": {
+    "argv": [
+     "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/ruff",
+     "format",
+     "--isolated",
+     "--no-cache",
+     "--stdin-filename",
+     "example.py",
+     "-"
+    ],
+    "present": true,
+    "returncode": 0,
+    "sha256": "e03772c7e1fcc8255ed775b85ed9244f281b06656ea49f6e906854b69a9547b9",
+    "stderr": "",
+    "stdout": "# \tTabbed\npass  # \tTabbed\n"
+   },
+   "ty": {
+    "argv": [
+     "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/ty",
+     "check",
+     "--output-format",
+     "concise",
+     "/home/dev-user/.cache/ohm-233-position-qualified-20261027/nonparser-whole-inputs-campaign-v1/oracle/observe.py"
+    ],
+    "present": true,
+    "returncode": 1,
+    "sha256": "1b33ee4f577bf73cd66883228233b74a1aadf4c69bda6563a4b6cb5e6d6bcdb1",
+    "stderr": "",
+    "stdout": "observe.py:4:17: error[invalid-argument-type] Argument to function `accept_ints` is incorrect: Expected `int`, found `None`\nFound 1 diagnostic\n"
+   }
+  },
+  "complete_product_data_sha256": "8edbde7cf52e43bd56e55a8760ce6d64410bc536ef1eba48a43dcfe31796f48b",
+  "different_outputs": [
+   {
+    "after": "1b2adedae5780088277aa69f080e1348ccad38b9baa13a234bdf366fe46b4b90",
+    "before": "c8089b469318f50bceeb4e18b1d55252c5b9a15998a5f08e9ae58c295c921445",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ruff_server/f81f313fe27e5621/out/document-f81f313fe27e5621"
+   },
+   {
+    "after": "e77a76d8524ec74b6e9766daa686cc4b6dea3e962b15fb091177d14d4a17bf0d",
+    "before": "f63503c92368b035e8f060fc4c68edb086871104a807bd65b2b1a68a0688da55",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ty_python_semantic/e77bf8e779c1bd16/out/ty_python_semantic-e77bf8e779c1bd16"
+   }
+  ],
+  "different_published_files": 4,
+  "different_workspace_elfs": 2,
+  "elf_map_sha256": "2f561156de9661f2ff28481e2e956f445ab4c7bea50c4c657d182124addfdaf6",
+  "executed_test_programs": [],
+  "fresh_units": 563,
+  "jobs": {
+   "cc": 50,
+   "collect2": 50,
+   "rustc-full": 1,
+   "rustc-link-only": 50,
+   "wild": 50
+  },
+  "label": "warm-1",
+  "missing_published_files": 0,
+  "mode": "test",
+  "phase": "warm",
+  "published_files": 1060,
+  "rustc_diagnostic_messages": [
+   {
+    "code": "dead_code",
+    "level": "warning",
+    "message": "method `set_watch` is never used",
+    "target": "file_watching"
+   }
+  ],
+  "setup": {
+   "cargo": "dd5cab154b8dcd09ccc2753160d314cade80979b2d055ee66aa9e2217e05e7e1",
+   "command": [
+    "cargo",
+    "+ohm",
+    "test",
+    "--no-run",
+    "--locked",
+    "--offline",
+    "--message-format=json",
+    "-j8"
+   ],
+   "frontend": "4fa9a18b77430bcc416e88561b6fe5797d98b996a7698b9f3bd11d4e7817a19f",
+   "mode": "test",
+   "parser": "first physical screen includes actual opens in edit/restore and execs at every other phase; missing or ephemeral data never certifies equality",
+   "rustc_driver": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+   "source": "original",
+   "source_set": {
+    "crates/ruff_python_formatter/resources/test/fixtures/black/cases/comments_tab_indent.py": "0571249dde0d40767316911ba488a6f266232dd01ee861419700ad02dd6b2eab",
+    "crates/ruff_python_formatter/resources/test/fixtures/black/cases/comments_tab_indent.py.expect": "0878d791c83e4a7b657be58321d73e37061d9f8ae71eb9738a9bab4db5adcadf",
+    "crates/ruff_python_formatter/src/comments/format.rs": "a222709e604871a40e4c5337d49c4b397b55b27c5c7f8f3ba79ce5b3b3a4dc6f",
+    "crates/ty_python_semantic/resources/mdtest/call/function.md": "5fa235a863757e2fbf10a8e8a1f99ddd432fde90495d297876af4de70f085c5a",
+    "crates/ty_python_semantic/resources/mdtest/diagnostics/invalid_argument_type.md": "29d6bfe6f1b70d7552cc5b249e7f42ae7eb78261f1873e8050ee4d43df31c134",
+    "crates/ty_python_semantic/src/types/call/bind.rs": "4c80a8676c3ee72f2a0804cba346a5a5500785213ff0b204ef093e60f4722e8d"
+   },
+   "tracing": "execve,execveat"
+  },
+  "source": "original",
+  "workspace_elf_count": 110
+ },
+ {
+  "actual_exec_trace_archive_sha256": "e294ae0790742b9e9bf8ef2bc3ee9a204ff8b137b3e405fa898b9b1763bcf12d",
+  "cargo_artifact_units": 619,
+  "cli": {
+   "ruff": {
+    "argv": [
+     "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/ruff",
+     "format",
+     "--isolated",
+     "--no-cache",
+     "--stdin-filename",
+     "example.py",
+     "-"
+    ],
+    "present": true,
+    "returncode": 0,
+    "sha256": "e03772c7e1fcc8255ed775b85ed9244f281b06656ea49f6e906854b69a9547b9",
+    "stderr": "",
+    "stdout": "# \tTabbed\npass  # \tTabbed\n"
+   },
+   "ty": {
+    "argv": [
+     "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/ty",
+     "check",
+     "--output-format",
+     "concise",
+     "/home/dev-user/.cache/ohm-233-position-qualified-20261027/nonparser-whole-inputs-campaign-v1/oracle/observe.py"
+    ],
+    "present": true,
+    "returncode": 1,
+    "sha256": "1b33ee4f577bf73cd66883228233b74a1aadf4c69bda6563a4b6cb5e6d6bcdb1",
+    "stderr": "",
+    "stdout": "observe.py:4:17: error[invalid-argument-type] Argument to function `accept_ints` is incorrect: Expected `int`, found `None`\nFound 1 diagnostic\n"
+   }
+  },
+  "complete_product_data_sha256": "8edbde7cf52e43bd56e55a8760ce6d64410bc536ef1eba48a43dcfe31796f48b",
+  "different_outputs": [],
+  "different_published_files": 0,
+  "different_workspace_elfs": 0,
+  "elf_map_sha256": "2f561156de9661f2ff28481e2e956f445ab4c7bea50c4c657d182124addfdaf6",
+  "executed_test_programs": [],
+  "fresh_units": 619,
+  "jobs": {},
+  "label": "warm-2",
+  "missing_published_files": 0,
+  "mode": "test",
+  "phase": "warm",
+  "published_files": 1060,
+  "rustc_diagnostic_messages": [
+   {
+    "code": "dead_code",
+    "level": "warning",
+    "message": "method `set_watch` is never used",
+    "target": "file_watching"
+   }
+  ],
+  "setup": {
+   "cargo": "dd5cab154b8dcd09ccc2753160d314cade80979b2d055ee66aa9e2217e05e7e1",
+   "command": [
+    "cargo",
+    "+ohm",
+    "test",
+    "--no-run",
+    "--locked",
+    "--offline",
+    "--message-format=json",
+    "-j8"
+   ],
+   "frontend": "4fa9a18b77430bcc416e88561b6fe5797d98b996a7698b9f3bd11d4e7817a19f",
+   "mode": "test",
+   "parser": "first physical screen includes actual opens in edit/restore and execs at every other phase; missing or ephemeral data never certifies equality",
+   "rustc_driver": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+   "source": "original",
+   "source_set": {
+    "crates/ruff_python_formatter/resources/test/fixtures/black/cases/comments_tab_indent.py": "0571249dde0d40767316911ba488a6f266232dd01ee861419700ad02dd6b2eab",
+    "crates/ruff_python_formatter/resources/test/fixtures/black/cases/comments_tab_indent.py.expect": "0878d791c83e4a7b657be58321d73e37061d9f8ae71eb9738a9bab4db5adcadf",
+    "crates/ruff_python_formatter/src/comments/format.rs": "a222709e604871a40e4c5337d49c4b397b55b27c5c7f8f3ba79ce5b3b3a4dc6f",
+    "crates/ty_python_semantic/resources/mdtest/call/function.md": "5fa235a863757e2fbf10a8e8a1f99ddd432fde90495d297876af4de70f085c5a",
+    "crates/ty_python_semantic/resources/mdtest/diagnostics/invalid_argument_type.md": "29d6bfe6f1b70d7552cc5b249e7f42ae7eb78261f1873e8050ee4d43df31c134",
+    "crates/ty_python_semantic/src/types/call/bind.rs": "4c80a8676c3ee72f2a0804cba346a5a5500785213ff0b204ef093e60f4722e8d"
+   },
+   "tracing": "execve,execveat"
+  },
+  "source": "original",
+  "workspace_elf_count": 110
+ },
+ {
+  "actual_exec_trace_archive_sha256": "afc7d0371e6389708a33c49aea8c1283444ec38b7553168dcc1b525d33d7b85c",
+  "cargo_artifact_units": 619,
+  "cli": {
+   "ruff": {
+    "argv": [
+     "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/ruff",
+     "format",
+     "--isolated",
+     "--no-cache",
+     "--stdin-filename",
+     "example.py",
+     "-"
+    ],
+    "present": true,
+    "returncode": 0,
+    "sha256": "e03772c7e1fcc8255ed775b85ed9244f281b06656ea49f6e906854b69a9547b9",
+    "stderr": "",
+    "stdout": "# \tTabbed\npass  # \tTabbed\n"
+   },
+   "ty": {
+    "argv": [
+     "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/ty",
+     "check",
+     "--output-format",
+     "concise",
+     "/home/dev-user/.cache/ohm-233-position-qualified-20261027/nonparser-whole-inputs-campaign-v1/oracle/observe.py"
+    ],
+    "present": true,
+    "returncode": 1,
+    "sha256": "0ffd2b7a7032bdf7a5dcc8521c6770ea1f9a50131a6db8f34ce2149fae203cc5",
+    "stderr": "",
+    "stdout": "observe.py:4:17: error[invalid-argument-type] Argument to function `accept_ints` is incorrect: Expected `int`, found `None`\nobserve.py:4:17: error[invalid-argument-type] Argument to function `accept_ints` is incorrect: Expected `int`, found `None`\nFound 2 diagnostics\n"
+   }
+  },
+  "complete_product_data_sha256": "b53e98ed81966e8bec45df1d0a601892d5849220a9075c75e0d7c929e8918339",
+  "different_outputs": [
+   {
+    "after": "9731b2da9d2c0f0a4906bbfa3b58b962937c7190d986783c3c42d514f7e0b063",
+    "before": "e805e049be00c75f2f9231e9d30ef4b4614b999b38bad91ddb4245c00822c637",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ruff_dev/bae0aed7593827fd/out/ruff_dev-bae0aed7593827fd"
+   },
+   {
+    "after": "29b5483a23b819aeedba666caa515fddb5da7149061daf0834736d66d05a5e19",
+    "before": "2f8dd5b460992c4d0607ad7143934ac820acb09e265348e6ff72e52d1db346cc",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ty/7b468c94385bf9c2/out/ty-7b468c94385bf9c2"
+   },
+   {
+    "after": "10d72e27ea03bbbc7066511f9ab3ddcbbd5389d4b03fad9977763051f0963039",
+    "before": "3dfd4523b91c8e13a3f6c81d0d49f59493930f5ccd91759d468fdf96bc4bc303",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ty/db522eb3681446b6/out/file_watching-db522eb3681446b6"
+   },
+   {
+    "after": "ab1b4c9feeed15e2e4391087f798e1f98804f5c483c5abcc45c116bc4aa50ca6",
+    "before": "5568f3ab04219d75f16668f4a0dd610262a38b50196a80115356cdfc60ba4289",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ty/ed6b57e4ab076002/out/ty-ed6b57e4ab076002"
+   },
+   {
+    "after": "233e419ca8710e94583acdb173862d09967635d06e4d085f2c2d4cdacd9aab5e",
+    "before": "9b84b892e814d8bf9f4ef241d971a23870fdfc09000fd99cc2680afb0d21d333",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ty_completion_bench/a54bfaddfcb56ff6/out/ty_completion_bench-a54bfaddfcb56ff6"
+   },
+   {
+    "after": "54d346de1248414a32105ab074e7ac4395fee2836a704b222844e669a2e2ff35",
+    "before": "c904f5847cdb890558abe5c0b52eefc4fa6f22a4c7d9a1d315209a46dcbc8c1e",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ty_completion_eval/30a29fc61090bd66/out/ty_completion_eval-30a29fc61090bd66"
+   },
+   {
+    "after": "ed9e440165c132aa7bd88f6137dd4c67754d1fd36d03d24e9c22bb3d208dd0f5",
+    "before": "e10745705e914b63a541da58bb9a7cc48437dddf7c8b159eb7790dbb8c7b6876",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ty_ide/3a1df486adf8781f/out/ty_ide-3a1df486adf8781f"
+   },
+   {
+    "after": "2647eda7d350fcd1ff025a8e8ec85bba0d7727b60c4241553e498a885d79d9e8",
+    "before": "c0faa3ce4c78d3485197a565161b487ca421c3025a9000ebe3c3094a0cf679ee",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ty_project/9c2720264839e981/out/ty_project-9c2720264839e981"
+   },
+   {
+    "after": "4e1ceb67a359321c5e6accd8d125a4ce4bed309fae0e1774bc5e2404cdbf0091",
+    "before": "ba8f4d221b125f525a34bf7e85bf2a2d2a1fb0fe0ec8da5e63651ed66ddbaa07",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ty_python_semantic/0c6198693585a152/out/mdtest-0c6198693585a152"
+   },
+   {
+    "after": "d595a5238c2716566cc5b1b20181ccd1ff20174706ddb16d9def46404ff9bf4c",
+    "before": "876d0975f7a898c23a161b7f573232cd33d15feab783ae86d757890aede836e6",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ty_python_semantic/e5c2bb0fe3770625/out/corpus-e5c2bb0fe3770625"
+   },
+   {
+    "after": "669ffef8b070ebfc384412f0d6c46a24e5ef5d9d1c5b0d13202e9525c51c9cbc",
+    "before": "e77a76d8524ec74b6e9766daa686cc4b6dea3e962b15fb091177d14d4a17bf0d",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ty_python_semantic/e77bf8e779c1bd16/out/ty_python_semantic-e77bf8e779c1bd16"
+   },
+   {
+    "after": "b39bc126a8c0d9420f1a74114eb8427217cee1a084f899ef4314954fb75a5811",
+    "before": "28efbb514fde1f8ac2c5d0d7a96f22a130f27141484aa8752fe340cec1874493",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ty_server/5f31be30b2802565/out/ty_server-5f31be30b2802565"
+   },
+   {
+    "after": "fd6538d8aabf665e8e8a2814cb12c7d00b4d3139927f1f5fe18e050a357aa047",
+    "before": "57361f31d48f353dc244ddaf6e76a400a5988c05f7b34304f45923e73a662701",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ty_server/c1c481f014f6bbfa/out/e2e-c1c481f014f6bbfa"
+   },
+   {
+    "after": "bde0ff70291b9ecf5ef035012f8280faf854b13c2411d126783fe2bba50ab863",
+    "before": "b995e619e723082055c0bc9a980bd74a9e907131389ff11866bca91e34c95811",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ty_test/0373f699e784d498/out/ty_test-0373f699e784d498"
+   },
+   {
+    "after": "9cd09df068b3e94400acd56d5c62fec821be08096d69e0444a9c6b7d5820229d",
+    "before": "47c9ceb9f9c93202857c922f1818b325d7381fe4da96c31dd36869e72229a0b5",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ty_wasm/e3ca85013ada9fa2/out/libty_wasm.so"
+   },
+   {
+    "after": "0ffd2b7a7032bdf7a5dcc8521c6770ea1f9a50131a6db8f34ce2149fae203cc5",
+    "before": "1b33ee4f577bf73cd66883228233b74a1aadf4c69bda6563a4b6cb5e6d6bcdb1",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/ty"
+   }
+  ],
+  "different_published_files": 30,
+  "different_workspace_elfs": 16,
+  "elf_map_sha256": "ea09108b7b59cd246a1fafd0a512dcd689440525f761503cead7662fbed1f267",
+  "executed_test_programs": [],
+  "fresh_units": 594,
+  "jobs": {
+   "cc": 19,
+   "collect2": 19,
+   "rustc-full": 25,
+   "wild": 19
+  },
+  "label": "ty-diagnostic-edit",
+  "missing_published_files": 0,
+  "mode": "test",
+  "phase": "edit",
+  "published_files": 1060,
+  "rustc_diagnostic_messages": [
+   {
+    "code": "dead_code",
+    "level": "warning",
+    "message": "method `set_watch` is never used",
+    "target": "file_watching"
+   }
+  ],
+  "setup": {
+   "cargo": "dd5cab154b8dcd09ccc2753160d314cade80979b2d055ee66aa9e2217e05e7e1",
+   "command": [
+    "cargo",
+    "+ohm",
+    "test",
+    "--no-run",
+    "--locked",
+    "--offline",
+    "--message-format=json",
+    "-j8"
+   ],
+   "frontend": "4fa9a18b77430bcc416e88561b6fe5797d98b996a7698b9f3bd11d4e7817a19f",
+   "mode": "test",
+   "parser": "first physical screen includes actual opens in edit/restore and execs at every other phase; missing or ephemeral data never certifies equality",
+   "rustc_driver": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+   "source": "ty-diagnostic",
+   "source_set": {
+    "crates/ruff_python_formatter/resources/test/fixtures/black/cases/comments_tab_indent.py": "0571249dde0d40767316911ba488a6f266232dd01ee861419700ad02dd6b2eab",
+    "crates/ruff_python_formatter/resources/test/fixtures/black/cases/comments_tab_indent.py.expect": "0878d791c83e4a7b657be58321d73e37061d9f8ae71eb9738a9bab4db5adcadf",
+    "crates/ruff_python_formatter/src/comments/format.rs": "a222709e604871a40e4c5337d49c4b397b55b27c5c7f8f3ba79ce5b3b3a4dc6f",
+    "crates/ty_python_semantic/resources/mdtest/call/function.md": "befe168eddc7893d7cadc84a18f39ca65d96d0bcbaddfc5292aafbfcd21aa378",
+    "crates/ty_python_semantic/resources/mdtest/diagnostics/invalid_argument_type.md": "e280a3a7cf7cc601969d282dc660e42c33dac741501a8a6cc0b7bebc960497e7",
+    "crates/ty_python_semantic/src/types/call/bind.rs": "0808753d946658321830bc3361fab022f854cce467345a335f596921bcc5fc76"
+   },
+   "tracing": "execve,execveat,clone,clone3,fork,vfork,open,openat,openat2"
+  },
+  "source": "ty-diagnostic",
+  "workspace_elf_count": 110
+ },
+ {
+  "actual_exec_trace_archive_sha256": "01442eb7b0c3aeffd3a5c4f20a2f224f24f1d626904ccc1a4abba0312a50d471",
+  "cargo_artifact_units": 619,
+  "cli": {
+   "ruff": {
+    "argv": [
+     "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/ruff",
+     "format",
+     "--isolated",
+     "--no-cache",
+     "--stdin-filename",
+     "example.py",
+     "-"
+    ],
+    "present": true,
+    "returncode": 0,
+    "sha256": "e03772c7e1fcc8255ed775b85ed9244f281b06656ea49f6e906854b69a9547b9",
+    "stderr": "",
+    "stdout": "# \tTabbed\npass  # \tTabbed\n"
+   },
+   "ty": {
+    "argv": [
+     "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/ty",
+     "check",
+     "--output-format",
+     "concise",
+     "/home/dev-user/.cache/ohm-233-position-qualified-20261027/nonparser-whole-inputs-campaign-v1/oracle/observe.py"
+    ],
+    "present": true,
+    "returncode": 1,
+    "sha256": "0ffd2b7a7032bdf7a5dcc8521c6770ea1f9a50131a6db8f34ce2149fae203cc5",
+    "stderr": "",
+    "stdout": "observe.py:4:17: error[invalid-argument-type] Argument to function `accept_ints` is incorrect: Expected `int`, found `None`\nobserve.py:4:17: error[invalid-argument-type] Argument to function `accept_ints` is incorrect: Expected `int`, found `None`\nFound 2 diagnostics\n"
+   }
+  },
+  "complete_product_data_sha256": "b53e98ed81966e8bec45df1d0a601892d5849220a9075c75e0d7c929e8918339",
+  "different_outputs": [],
+  "different_published_files": 0,
+  "different_workspace_elfs": 0,
+  "elf_map_sha256": "ea09108b7b59cd246a1fafd0a512dcd689440525f761503cead7662fbed1f267",
+  "executed_test_programs": [],
+  "fresh_units": 619,
+  "jobs": {},
+  "label": "ty-diagnostic-edit-fresh",
+  "missing_published_files": 0,
+  "mode": "test",
+  "phase": "fresh",
+  "published_files": 1060,
+  "rustc_diagnostic_messages": [
+   {
+    "code": "dead_code",
+    "level": "warning",
+    "message": "method `set_watch` is never used",
+    "target": "file_watching"
+   }
+  ],
+  "setup": {
+   "cargo": "dd5cab154b8dcd09ccc2753160d314cade80979b2d055ee66aa9e2217e05e7e1",
+   "command": [
+    "cargo",
+    "+ohm",
+    "test",
+    "--no-run",
+    "--locked",
+    "--offline",
+    "--message-format=json",
+    "-j8"
+   ],
+   "frontend": "4fa9a18b77430bcc416e88561b6fe5797d98b996a7698b9f3bd11d4e7817a19f",
+   "mode": "test",
+   "parser": "first physical screen includes actual opens in edit/restore and execs at every other phase; missing or ephemeral data never certifies equality",
+   "rustc_driver": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+   "source": "ty-diagnostic",
+   "source_set": {
+    "crates/ruff_python_formatter/resources/test/fixtures/black/cases/comments_tab_indent.py": "0571249dde0d40767316911ba488a6f266232dd01ee861419700ad02dd6b2eab",
+    "crates/ruff_python_formatter/resources/test/fixtures/black/cases/comments_tab_indent.py.expect": "0878d791c83e4a7b657be58321d73e37061d9f8ae71eb9738a9bab4db5adcadf",
+    "crates/ruff_python_formatter/src/comments/format.rs": "a222709e604871a40e4c5337d49c4b397b55b27c5c7f8f3ba79ce5b3b3a4dc6f",
+    "crates/ty_python_semantic/resources/mdtest/call/function.md": "befe168eddc7893d7cadc84a18f39ca65d96d0bcbaddfc5292aafbfcd21aa378",
+    "crates/ty_python_semantic/resources/mdtest/diagnostics/invalid_argument_type.md": "e280a3a7cf7cc601969d282dc660e42c33dac741501a8a6cc0b7bebc960497e7",
+    "crates/ty_python_semantic/src/types/call/bind.rs": "0808753d946658321830bc3361fab022f854cce467345a335f596921bcc5fc76"
+   },
+   "tracing": "execve,execveat"
+  },
+  "source": "ty-diagnostic",
+  "workspace_elf_count": 110
+ },
+ {
+  "actual_exec_trace_archive_sha256": "c8b598b57f76d571c840113b2b5bd28090227681cdf1319c5365ac6459567df1",
+  "cargo_artifact_units": 619,
+  "cli": {
+   "ruff": {
+    "argv": [
+     "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/ruff",
+     "format",
+     "--isolated",
+     "--no-cache",
+     "--stdin-filename",
+     "example.py",
+     "-"
+    ],
+    "present": true,
+    "returncode": 0,
+    "sha256": "e03772c7e1fcc8255ed775b85ed9244f281b06656ea49f6e906854b69a9547b9",
+    "stderr": "",
+    "stdout": "# \tTabbed\npass  # \tTabbed\n"
+   },
+   "ty": {
+    "argv": [
+     "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/ty",
+     "check",
+     "--output-format",
+     "concise",
+     "/home/dev-user/.cache/ohm-233-position-qualified-20261027/nonparser-whole-inputs-campaign-v1/oracle/observe.py"
+    ],
+    "present": true,
+    "returncode": 1,
+    "sha256": "1b33ee4f577bf73cd66883228233b74a1aadf4c69bda6563a4b6cb5e6d6bcdb1",
+    "stderr": "",
+    "stdout": "observe.py:4:17: error[invalid-argument-type] Argument to function `accept_ints` is incorrect: Expected `int`, found `None`\nFound 1 diagnostic\n"
+   }
+  },
+  "complete_product_data_sha256": "fe65f7ef0aef7d75bf4def2d46aca6bee43c9c80eb4b2befb807408e1e01326f",
+  "different_outputs": [
+   {
+    "after": "e805e049be00c75f2f9231e9d30ef4b4614b999b38bad91ddb4245c00822c637",
+    "before": "9731b2da9d2c0f0a4906bbfa3b58b962937c7190d986783c3c42d514f7e0b063",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ruff_dev/bae0aed7593827fd/out/ruff_dev-bae0aed7593827fd"
+   },
+   {
+    "after": "2f8dd5b460992c4d0607ad7143934ac820acb09e265348e6ff72e52d1db346cc",
+    "before": "29b5483a23b819aeedba666caa515fddb5da7149061daf0834736d66d05a5e19",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ty/7b468c94385bf9c2/out/ty-7b468c94385bf9c2"
+   },
+   {
+    "after": "3dfd4523b91c8e13a3f6c81d0d49f59493930f5ccd91759d468fdf96bc4bc303",
+    "before": "10d72e27ea03bbbc7066511f9ab3ddcbbd5389d4b03fad9977763051f0963039",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ty/db522eb3681446b6/out/file_watching-db522eb3681446b6"
+   },
+   {
+    "after": "5568f3ab04219d75f16668f4a0dd610262a38b50196a80115356cdfc60ba4289",
+    "before": "ab1b4c9feeed15e2e4391087f798e1f98804f5c483c5abcc45c116bc4aa50ca6",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ty/ed6b57e4ab076002/out/ty-ed6b57e4ab076002"
+   },
+   {
+    "after": "9b84b892e814d8bf9f4ef241d971a23870fdfc09000fd99cc2680afb0d21d333",
+    "before": "233e419ca8710e94583acdb173862d09967635d06e4d085f2c2d4cdacd9aab5e",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ty_completion_bench/a54bfaddfcb56ff6/out/ty_completion_bench-a54bfaddfcb56ff6"
+   },
+   {
+    "after": "c904f5847cdb890558abe5c0b52eefc4fa6f22a4c7d9a1d315209a46dcbc8c1e",
+    "before": "54d346de1248414a32105ab074e7ac4395fee2836a704b222844e669a2e2ff35",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ty_completion_eval/30a29fc61090bd66/out/ty_completion_eval-30a29fc61090bd66"
+   },
+   {
+    "after": "e10745705e914b63a541da58bb9a7cc48437dddf7c8b159eb7790dbb8c7b6876",
+    "before": "ed9e440165c132aa7bd88f6137dd4c67754d1fd36d03d24e9c22bb3d208dd0f5",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ty_ide/3a1df486adf8781f/out/ty_ide-3a1df486adf8781f"
+   },
+   {
+    "after": "c0faa3ce4c78d3485197a565161b487ca421c3025a9000ebe3c3094a0cf679ee",
+    "before": "2647eda7d350fcd1ff025a8e8ec85bba0d7727b60c4241553e498a885d79d9e8",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ty_project/9c2720264839e981/out/ty_project-9c2720264839e981"
+   },
+   {
+    "after": "ba8f4d221b125f525a34bf7e85bf2a2d2a1fb0fe0ec8da5e63651ed66ddbaa07",
+    "before": "4e1ceb67a359321c5e6accd8d125a4ce4bed309fae0e1774bc5e2404cdbf0091",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ty_python_semantic/0c6198693585a152/out/mdtest-0c6198693585a152"
+   },
+   {
+    "after": "876d0975f7a898c23a161b7f573232cd33d15feab783ae86d757890aede836e6",
+    "before": "d595a5238c2716566cc5b1b20181ccd1ff20174706ddb16d9def46404ff9bf4c",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ty_python_semantic/e5c2bb0fe3770625/out/corpus-e5c2bb0fe3770625"
+   },
+   {
+    "after": "f63503c92368b035e8f060fc4c68edb086871104a807bd65b2b1a68a0688da55",
+    "before": "669ffef8b070ebfc384412f0d6c46a24e5ef5d9d1c5b0d13202e9525c51c9cbc",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ty_python_semantic/e77bf8e779c1bd16/out/ty_python_semantic-e77bf8e779c1bd16"
+   },
+   {
+    "after": "28efbb514fde1f8ac2c5d0d7a96f22a130f27141484aa8752fe340cec1874493",
+    "before": "b39bc126a8c0d9420f1a74114eb8427217cee1a084f899ef4314954fb75a5811",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ty_server/5f31be30b2802565/out/ty_server-5f31be30b2802565"
+   },
+   {
+    "after": "f902270acced89294186939a2727a39c88cce1952b9c6a008e69e94621eae358",
+    "before": "fd6538d8aabf665e8e8a2814cb12c7d00b4d3139927f1f5fe18e050a357aa047",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ty_server/c1c481f014f6bbfa/out/e2e-c1c481f014f6bbfa"
+   },
+   {
+    "after": "b995e619e723082055c0bc9a980bd74a9e907131389ff11866bca91e34c95811",
+    "before": "bde0ff70291b9ecf5ef035012f8280faf854b13c2411d126783fe2bba50ab863",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ty_test/0373f699e784d498/out/ty_test-0373f699e784d498"
+   },
+   {
+    "after": "47c9ceb9f9c93202857c922f1818b325d7381fe4da96c31dd36869e72229a0b5",
+    "before": "9cd09df068b3e94400acd56d5c62fec821be08096d69e0444a9c6b7d5820229d",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ty_wasm/e3ca85013ada9fa2/out/libty_wasm.so"
+   },
+   {
+    "after": "1b33ee4f577bf73cd66883228233b74a1aadf4c69bda6563a4b6cb5e6d6bcdb1",
+    "before": "0ffd2b7a7032bdf7a5dcc8521c6770ea1f9a50131a6db8f34ce2149fae203cc5",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/ty"
+   }
+  ],
+  "different_published_files": 30,
+  "different_workspace_elfs": 16,
+  "elf_map_sha256": "755e4c85822f18b88fef012b5c05ce17367fce06fd540d348d55d2293db2005f",
+  "executed_test_programs": [],
+  "fresh_units": 594,
+  "jobs": {
+   "cc": 19,
+   "collect2": 19,
+   "rustc-full": 25,
+   "wild": 19
+  },
+  "label": "ty-diagnostic-restore",
+  "missing_published_files": 0,
+  "mode": "test",
+  "phase": "restore",
+  "published_files": 1060,
+  "rustc_diagnostic_messages": [
+   {
+    "code": "dead_code",
+    "level": "warning",
+    "message": "method `set_watch` is never used",
+    "target": "file_watching"
+   }
+  ],
+  "setup": {
+   "cargo": "dd5cab154b8dcd09ccc2753160d314cade80979b2d055ee66aa9e2217e05e7e1",
+   "command": [
+    "cargo",
+    "+ohm",
+    "test",
+    "--no-run",
+    "--locked",
+    "--offline",
+    "--message-format=json",
+    "-j8"
+   ],
+   "frontend": "4fa9a18b77430bcc416e88561b6fe5797d98b996a7698b9f3bd11d4e7817a19f",
+   "mode": "test",
+   "parser": "first physical screen includes actual opens in edit/restore and execs at every other phase; missing or ephemeral data never certifies equality",
+   "rustc_driver": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+   "source": "original",
+   "source_set": {
+    "crates/ruff_python_formatter/resources/test/fixtures/black/cases/comments_tab_indent.py": "0571249dde0d40767316911ba488a6f266232dd01ee861419700ad02dd6b2eab",
+    "crates/ruff_python_formatter/resources/test/fixtures/black/cases/comments_tab_indent.py.expect": "0878d791c83e4a7b657be58321d73e37061d9f8ae71eb9738a9bab4db5adcadf",
+    "crates/ruff_python_formatter/src/comments/format.rs": "a222709e604871a40e4c5337d49c4b397b55b27c5c7f8f3ba79ce5b3b3a4dc6f",
+    "crates/ty_python_semantic/resources/mdtest/call/function.md": "5fa235a863757e2fbf10a8e8a1f99ddd432fde90495d297876af4de70f085c5a",
+    "crates/ty_python_semantic/resources/mdtest/diagnostics/invalid_argument_type.md": "29d6bfe6f1b70d7552cc5b249e7f42ae7eb78261f1873e8050ee4d43df31c134",
+    "crates/ty_python_semantic/src/types/call/bind.rs": "4c80a8676c3ee72f2a0804cba346a5a5500785213ff0b204ef093e60f4722e8d"
+   },
+   "tracing": "execve,execveat,clone,clone3,fork,vfork,open,openat,openat2"
+  },
+  "source": "original",
+  "workspace_elf_count": 110
+ },
+ {
+  "actual_exec_trace_archive_sha256": "78e36643130bf3787bae95ca7a0338dd3dcaebc3b1ea099e9582d96f2aca4423",
+  "cargo_artifact_units": 619,
+  "cli": {
+   "ruff": {
+    "argv": [
+     "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/ruff",
+     "format",
+     "--isolated",
+     "--no-cache",
+     "--stdin-filename",
+     "example.py",
+     "-"
+    ],
+    "present": true,
+    "returncode": 0,
+    "sha256": "e03772c7e1fcc8255ed775b85ed9244f281b06656ea49f6e906854b69a9547b9",
+    "stderr": "",
+    "stdout": "# \tTabbed\npass  # \tTabbed\n"
+   },
+   "ty": {
+    "argv": [
+     "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/ty",
+     "check",
+     "--output-format",
+     "concise",
+     "/home/dev-user/.cache/ohm-233-position-qualified-20261027/nonparser-whole-inputs-campaign-v1/oracle/observe.py"
+    ],
+    "present": true,
+    "returncode": 1,
+    "sha256": "1b33ee4f577bf73cd66883228233b74a1aadf4c69bda6563a4b6cb5e6d6bcdb1",
+    "stderr": "",
+    "stdout": "observe.py:4:17: error[invalid-argument-type] Argument to function `accept_ints` is incorrect: Expected `int`, found `None`\nFound 1 diagnostic\n"
+   }
+  },
+  "complete_product_data_sha256": "fe65f7ef0aef7d75bf4def2d46aca6bee43c9c80eb4b2befb807408e1e01326f",
+  "different_outputs": [],
+  "different_published_files": 0,
+  "different_workspace_elfs": 0,
+  "elf_map_sha256": "755e4c85822f18b88fef012b5c05ce17367fce06fd540d348d55d2293db2005f",
+  "executed_test_programs": [],
+  "fresh_units": 619,
+  "jobs": {},
+  "label": "ty-diagnostic-restore-fresh",
+  "missing_published_files": 0,
+  "mode": "test",
+  "phase": "fresh",
+  "published_files": 1060,
+  "rustc_diagnostic_messages": [
+   {
+    "code": "dead_code",
+    "level": "warning",
+    "message": "method `set_watch` is never used",
+    "target": "file_watching"
+   }
+  ],
+  "setup": {
+   "cargo": "dd5cab154b8dcd09ccc2753160d314cade80979b2d055ee66aa9e2217e05e7e1",
+   "command": [
+    "cargo",
+    "+ohm",
+    "test",
+    "--no-run",
+    "--locked",
+    "--offline",
+    "--message-format=json",
+    "-j8"
+   ],
+   "frontend": "4fa9a18b77430bcc416e88561b6fe5797d98b996a7698b9f3bd11d4e7817a19f",
+   "mode": "test",
+   "parser": "first physical screen includes actual opens in edit/restore and execs at every other phase; missing or ephemeral data never certifies equality",
+   "rustc_driver": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+   "source": "original",
+   "source_set": {
+    "crates/ruff_python_formatter/resources/test/fixtures/black/cases/comments_tab_indent.py": "0571249dde0d40767316911ba488a6f266232dd01ee861419700ad02dd6b2eab",
+    "crates/ruff_python_formatter/resources/test/fixtures/black/cases/comments_tab_indent.py.expect": "0878d791c83e4a7b657be58321d73e37061d9f8ae71eb9738a9bab4db5adcadf",
+    "crates/ruff_python_formatter/src/comments/format.rs": "a222709e604871a40e4c5337d49c4b397b55b27c5c7f8f3ba79ce5b3b3a4dc6f",
+    "crates/ty_python_semantic/resources/mdtest/call/function.md": "5fa235a863757e2fbf10a8e8a1f99ddd432fde90495d297876af4de70f085c5a",
+    "crates/ty_python_semantic/resources/mdtest/diagnostics/invalid_argument_type.md": "29d6bfe6f1b70d7552cc5b249e7f42ae7eb78261f1873e8050ee4d43df31c134",
+    "crates/ty_python_semantic/src/types/call/bind.rs": "4c80a8676c3ee72f2a0804cba346a5a5500785213ff0b204ef093e60f4722e8d"
+   },
+   "tracing": "execve,execveat"
+  },
+  "source": "original",
+  "workspace_elf_count": 110
+ },
+ {
+  "actual_exec_trace_archive_sha256": "eac7ffa529f0fc703ae173929e17ccca5571bdae195a5955b96f1b2f3d6fb0f3",
+  "cargo_artifact_units": 619,
+  "cli": {
+   "ruff": {
+    "argv": [
+     "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/ruff",
+     "format",
+     "--isolated",
+     "--no-cache",
+     "--stdin-filename",
+     "example.py",
+     "-"
+    ],
+    "present": true,
+    "returncode": 0,
+    "sha256": "2ff97199e694a0e85d310a4a93f87302f4f1d8d182dc321266ce31c0f42b3326",
+    "stderr": "",
+    "stdout": "# Tabbed\npass  # Tabbed\n"
+   },
+   "ty": {
+    "argv": [
+     "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/ty",
+     "check",
+     "--output-format",
+     "concise",
+     "/home/dev-user/.cache/ohm-233-position-qualified-20261027/nonparser-whole-inputs-campaign-v1/oracle/observe.py"
+    ],
+    "present": true,
+    "returncode": 1,
+    "sha256": "bf7920430f2c2722b23b59572a6785a2538bfdf143f20b16396f9c684d6319bc",
+    "stderr": "",
+    "stdout": "observe.py:4:17: error[invalid-argument-type] Argument to function `accept_ints` is incorrect: Expected `int`, found `None`\nFound 1 diagnostic\n"
+   }
+  },
+  "complete_product_data_sha256": "ee1ef13c99788baa40e71daf40a643355ef71389972c6306fd9721ea4f3f3ea9",
+  "different_outputs": [
+   {
+    "after": "d560652c601f69c0b44f35c9497952715021e8cd891551d987f60e29b4695f10",
+    "before": "3841359bd54b4c8a9f0ea7e51f1904bc22f6a5d11fe96326f638b96afdc58b0b",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ruff/0484e04152dae56b/out/ruff-0484e04152dae56b"
+   },
+   {
+    "after": "eefe83151a705c4e3b84464d38cf67398294387d88a27ad8279d23cb96828051",
+    "before": "5ae8abc947bca85b3a6e951ee90fb19e9e7ef71b66f60b30153bcad444918989",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ruff/37f4bfcd0365984a/out/integration_test-37f4bfcd0365984a"
+   },
+   {
+    "after": "129cdbd32d58a43a795d0a4a9735e6280ac6efe78e6359e33d77cac499654c4d",
+    "before": "e805e049be00c75f2f9231e9d30ef4b4614b999b38bad91ddb4245c00822c637",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ruff_dev/bae0aed7593827fd/out/ruff_dev-bae0aed7593827fd"
+   },
+   {
+    "after": "885876d9c2e91fe202ea32965c8cd7a9bd613ffc98ca72a2547774d5bc6a577b",
+    "before": "fbac91ba366a097f4a9ec87e15318b8af1bb0acb2b6960b1da91e12723caf471",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ruff_markdown/8d6456532ce407fe/out/ruff_markdown-8d6456532ce407fe"
+   },
+   {
+    "after": "ff0651063e9b16d55b6b032c1753f46e4414d6e1fc33f9e527a7d47d2e1ef4ad",
+    "before": "e6eb341c0fb21c9175ee3696552102048aa9601c23689c25ad599600e7fe53a9",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ruff_mdtest/e911db4e2e1cfc32/out/mdtest-e911db4e2e1cfc32"
+   },
+   {
+    "after": "fc5bc8b605477ef93fd24b6db70f70a6f9d195fbfaabce0f02c37858ba007a30",
+    "before": "ce28a9fdbc6fb29a94ee34383e843508263bcaccfd776e1d9a1c6a7d0feeb67d",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ruff_python_formatter/593309f62906c1cd/out/ruff_python_formatter-593309f62906c1cd"
+   },
+   {
+    "after": "605076e0400cbd53d8ad9eb4c2b7ac7eb33b719b44e113925196a39b048295a7",
+    "before": "f75f8a76d345bb92d4b221c609052910ae490b74cda9fb0c21f5edcdfda5ab2e",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ruff_python_formatter/a90e830f879e2fc3/out/fixtures-a90e830f879e2fc3"
+   },
+   {
+    "after": "04eef431ac53799c08b774a96581bf6010aef6632954e94a483a290a9df952dc",
+    "before": "68fd597a816be09bc94d3697d8a3b0ce2b881ca957e6c787f9e27e1d7d1ff37d",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ruff_server/5fb728229e01709b/out/ruff_server-5fb728229e01709b"
+   },
+   {
+    "after": "0b70da686ef8e6f3a977e9c7e0d40bf059dfc8ea7fdedfebbad29dba4e1d38ce",
+    "before": "114a04f22c15682ea277f9d4af281cd4deeac630ace41528a55091b1842daa60",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ruff_server/bafe7b5f46b57185/out/e2e-bafe7b5f46b57185"
+   },
+   {
+    "after": "d036fb7206a3921d8516b42afaec93a9cd1a6ea3600272ddaa5210af61582d2f",
+    "before": "1b2adedae5780088277aa69f080e1348ccad38b9baa13a234bdf366fe46b4b90",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ruff_server/f81f313fe27e5621/out/document-f81f313fe27e5621"
+   },
+   {
+    "after": "6082c33f50ba4702003fbf70ae268bd54c3bf71bf271922d3fdefaba3667643e",
+    "before": "038d630efda459b2b4d7737762a46bd2c564327b8b6447ebb2ab74c38fcec7c3",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ruff_wasm/22f7aab93ae9436c/out/libruff_wasm.so"
+   },
+   {
+    "after": "6bf9fd49da0704b97c3349caa92a911f66b42f28c7d9abdd31cb6908a3b9713b",
+    "before": "f27e9d85ecd12c97c98cb7a85987c462a76cae1dfa3f1d16e14ad703471c94a8",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ruff_workspace/ef09ebe5edb5924f/out/ruff_workspace-ef09ebe5edb5924f"
+   },
+   {
+    "after": "792bcccd3fd6c2eea29d8452c085cf170ea98adf9d6e18584a39dd7ac79b286f",
+    "before": "2f8dd5b460992c4d0607ad7143934ac820acb09e265348e6ff72e52d1db346cc",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ty/7b468c94385bf9c2/out/ty-7b468c94385bf9c2"
+   },
+   {
+    "after": "7b65507a93d0b45123e489eff9d65900855a1d97ef6e79eb824561bcec7be682",
+    "before": "3dfd4523b91c8e13a3f6c81d0d49f59493930f5ccd91759d468fdf96bc4bc303",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ty/db522eb3681446b6/out/file_watching-db522eb3681446b6"
+   },
+   {
+    "after": "4e555001956d4aae4434e6936cdede6208463772a1eaa2b7c63c182a580c8b23",
+    "before": "5568f3ab04219d75f16668f4a0dd610262a38b50196a80115356cdfc60ba4289",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ty/ed6b57e4ab076002/out/ty-ed6b57e4ab076002"
+   },
+   {
+    "after": "23bba5e02cbeee22e097c2144db9e8c4c5684fd295032a772ddac2234878dc2b",
+    "before": "9b84b892e814d8bf9f4ef241d971a23870fdfc09000fd99cc2680afb0d21d333",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ty_completion_bench/a54bfaddfcb56ff6/out/ty_completion_bench-a54bfaddfcb56ff6"
+   },
+   {
+    "after": "4a6676dc05cd84624c2becc7e47868222650f254782716f0011144d2a6e10b3c",
+    "before": "c904f5847cdb890558abe5c0b52eefc4fa6f22a4c7d9a1d315209a46dcbc8c1e",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ty_completion_eval/30a29fc61090bd66/out/ty_completion_eval-30a29fc61090bd66"
+   },
+   {
+    "after": "6555a74fc62cfd6ffcebae8b01e79779ca681097a07ccdd803e35fae48da6963",
+    "before": "e10745705e914b63a541da58bb9a7cc48437dddf7c8b159eb7790dbb8c7b6876",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ty_ide/3a1df486adf8781f/out/ty_ide-3a1df486adf8781f"
+   },
+   {
+    "after": "c7d4597be449bdf287153510b3e28ac41ba746a805d0cc33f2af4bf3868294c1",
+    "before": "c0faa3ce4c78d3485197a565161b487ca421c3025a9000ebe3c3094a0cf679ee",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ty_project/9c2720264839e981/out/ty_project-9c2720264839e981"
+   },
+   {
+    "after": "d4efe368e498b456d316f2c34983cefc16ded693f415d89edbbb8d3ab87a357c",
+    "before": "28efbb514fde1f8ac2c5d0d7a96f22a130f27141484aa8752fe340cec1874493",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ty_server/5f31be30b2802565/out/ty_server-5f31be30b2802565"
+   },
+   {
+    "after": "1c7888941f9b458dd476d1125c285ce09b90e1c1566dd7e87aa7df3420504f15",
+    "before": "f902270acced89294186939a2727a39c88cce1952b9c6a008e69e94621eae358",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ty_server/c1c481f014f6bbfa/out/e2e-c1c481f014f6bbfa"
+   },
+   {
+    "after": "1e8376ccaddc0340384e1a6a996b602b9221245af823db45844b02eab7880c18",
+    "before": "47c9ceb9f9c93202857c922f1818b325d7381fe4da96c31dd36869e72229a0b5",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ty_wasm/e3ca85013ada9fa2/out/libty_wasm.so"
+   },
+   {
+    "after": "2ff97199e694a0e85d310a4a93f87302f4f1d8d182dc321266ce31c0f42b3326",
+    "before": "e03772c7e1fcc8255ed775b85ed9244f281b06656ea49f6e906854b69a9547b9",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/ruff"
+   },
+   {
+    "after": "682fd3af86530a696a72039659a7a85c1367cb1a22c40189d287e448d15f0a27",
+    "before": "cb1ae8b882103339b49bdda72f1a560e1be2e015173c7a770f029da0f03f9fc2",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/ruff_python_formatter"
+   },
+   {
+    "after": "bf7920430f2c2722b23b59572a6785a2538bfdf143f20b16396f9c684d6319bc",
+    "before": "1b33ee4f577bf73cd66883228233b74a1aadf4c69bda6563a4b6cb5e6d6bcdb1",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/ty"
+   }
+  ],
+  "different_published_files": 30,
+  "different_workspace_elfs": 25,
+  "elf_map_sha256": "236cf97915b933839038c5cfccbde3ebab811442f39750ed3c0609b826bc8de9",
+  "executed_test_programs": [],
+  "fresh_units": 572,
+  "jobs": {
+   "cc": 35,
+   "collect2": 35,
+   "rustc-full": 6,
+   "rustc-link-only": 30,
+   "wild": 35
+  },
+  "label": "formatter-edit",
+  "missing_published_files": 0,
+  "mode": "test",
+  "phase": "edit",
+  "published_files": 1060,
+  "rustc_diagnostic_messages": [
+   {
+    "code": "dead_code",
+    "level": "warning",
+    "message": "method `set_watch` is never used",
+    "target": "file_watching"
+   }
+  ],
+  "setup": {
+   "cargo": "dd5cab154b8dcd09ccc2753160d314cade80979b2d055ee66aa9e2217e05e7e1",
+   "command": [
+    "cargo",
+    "+ohm",
+    "test",
+    "--no-run",
+    "--locked",
+    "--offline",
+    "--message-format=json",
+    "-j8"
+   ],
+   "frontend": "4fa9a18b77430bcc416e88561b6fe5797d98b996a7698b9f3bd11d4e7817a19f",
+   "mode": "test",
+   "parser": "first physical screen includes actual opens in edit/restore and execs at every other phase; missing or ephemeral data never certifies equality",
+   "rustc_driver": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+   "source": "formatter",
+   "source_set": {
+    "crates/ruff_python_formatter/resources/test/fixtures/black/cases/comments_tab_indent.py": null,
+    "crates/ruff_python_formatter/resources/test/fixtures/black/cases/comments_tab_indent.py.expect": null,
+    "crates/ruff_python_formatter/src/comments/format.rs": "f537ae0dc9cb45f8f02471a06f26390d258e71448d1fd8725722cf9c4382abb3",
+    "crates/ty_python_semantic/resources/mdtest/call/function.md": "5fa235a863757e2fbf10a8e8a1f99ddd432fde90495d297876af4de70f085c5a",
+    "crates/ty_python_semantic/resources/mdtest/diagnostics/invalid_argument_type.md": "29d6bfe6f1b70d7552cc5b249e7f42ae7eb78261f1873e8050ee4d43df31c134",
+    "crates/ty_python_semantic/src/types/call/bind.rs": "4c80a8676c3ee72f2a0804cba346a5a5500785213ff0b204ef093e60f4722e8d"
+   },
+   "tracing": "execve,execveat,clone,clone3,fork,vfork,open,openat,openat2"
+  },
+  "source": "formatter",
+  "workspace_elf_count": 110
+ },
+ {
+  "actual_exec_trace_archive_sha256": "4bd3ee47ec7d663e2ae46f1824419d710d8985da0a026443b8b26d13d9025351",
+  "cargo_artifact_units": 619,
+  "cli": {
+   "ruff": {
+    "argv": [
+     "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/ruff",
+     "format",
+     "--isolated",
+     "--no-cache",
+     "--stdin-filename",
+     "example.py",
+     "-"
+    ],
+    "present": true,
+    "returncode": 0,
+    "sha256": "2ff97199e694a0e85d310a4a93f87302f4f1d8d182dc321266ce31c0f42b3326",
+    "stderr": "",
+    "stdout": "# Tabbed\npass  # Tabbed\n"
+   },
+   "ty": {
+    "argv": [
+     "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/ty",
+     "check",
+     "--output-format",
+     "concise",
+     "/home/dev-user/.cache/ohm-233-position-qualified-20261027/nonparser-whole-inputs-campaign-v1/oracle/observe.py"
+    ],
+    "present": true,
+    "returncode": 1,
+    "sha256": "bf7920430f2c2722b23b59572a6785a2538bfdf143f20b16396f9c684d6319bc",
+    "stderr": "",
+    "stdout": "observe.py:4:17: error[invalid-argument-type] Argument to function `accept_ints` is incorrect: Expected `int`, found `None`\nFound 1 diagnostic\n"
+   }
+  },
+  "complete_product_data_sha256": "ee1ef13c99788baa40e71daf40a643355ef71389972c6306fd9721ea4f3f3ea9",
+  "different_outputs": [],
+  "different_published_files": 0,
+  "different_workspace_elfs": 0,
+  "elf_map_sha256": "236cf97915b933839038c5cfccbde3ebab811442f39750ed3c0609b826bc8de9",
+  "executed_test_programs": [],
+  "fresh_units": 619,
+  "jobs": {},
+  "label": "formatter-edit-fresh",
+  "missing_published_files": 0,
+  "mode": "test",
+  "phase": "fresh",
+  "published_files": 1060,
+  "rustc_diagnostic_messages": [
+   {
+    "code": "dead_code",
+    "level": "warning",
+    "message": "method `set_watch` is never used",
+    "target": "file_watching"
+   }
+  ],
+  "setup": {
+   "cargo": "dd5cab154b8dcd09ccc2753160d314cade80979b2d055ee66aa9e2217e05e7e1",
+   "command": [
+    "cargo",
+    "+ohm",
+    "test",
+    "--no-run",
+    "--locked",
+    "--offline",
+    "--message-format=json",
+    "-j8"
+   ],
+   "frontend": "4fa9a18b77430bcc416e88561b6fe5797d98b996a7698b9f3bd11d4e7817a19f",
+   "mode": "test",
+   "parser": "first physical screen includes actual opens in edit/restore and execs at every other phase; missing or ephemeral data never certifies equality",
+   "rustc_driver": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+   "source": "formatter",
+   "source_set": {
+    "crates/ruff_python_formatter/resources/test/fixtures/black/cases/comments_tab_indent.py": null,
+    "crates/ruff_python_formatter/resources/test/fixtures/black/cases/comments_tab_indent.py.expect": null,
+    "crates/ruff_python_formatter/src/comments/format.rs": "f537ae0dc9cb45f8f02471a06f26390d258e71448d1fd8725722cf9c4382abb3",
+    "crates/ty_python_semantic/resources/mdtest/call/function.md": "5fa235a863757e2fbf10a8e8a1f99ddd432fde90495d297876af4de70f085c5a",
+    "crates/ty_python_semantic/resources/mdtest/diagnostics/invalid_argument_type.md": "29d6bfe6f1b70d7552cc5b249e7f42ae7eb78261f1873e8050ee4d43df31c134",
+    "crates/ty_python_semantic/src/types/call/bind.rs": "4c80a8676c3ee72f2a0804cba346a5a5500785213ff0b204ef093e60f4722e8d"
+   },
+   "tracing": "execve,execveat"
+  },
+  "source": "formatter",
+  "workspace_elf_count": 110
+ },
+ {
+  "actual_exec_trace_archive_sha256": "b746a9d36bcacbf81aec0af586709589c49059953d1cb71de1bd954fb2d6cc7d",
+  "cargo_artifact_units": 619,
+  "cli": {
+   "ruff": {
+    "argv": [
+     "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/ruff",
+     "format",
+     "--isolated",
+     "--no-cache",
+     "--stdin-filename",
+     "example.py",
+     "-"
+    ],
+    "present": true,
+    "returncode": 0,
+    "sha256": "e03772c7e1fcc8255ed775b85ed9244f281b06656ea49f6e906854b69a9547b9",
+    "stderr": "",
+    "stdout": "# \tTabbed\npass  # \tTabbed\n"
+   },
+   "ty": {
+    "argv": [
+     "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/ty",
+     "check",
+     "--output-format",
+     "concise",
+     "/home/dev-user/.cache/ohm-233-position-qualified-20261027/nonparser-whole-inputs-campaign-v1/oracle/observe.py"
+    ],
+    "present": true,
+    "returncode": 1,
+    "sha256": "1b33ee4f577bf73cd66883228233b74a1aadf4c69bda6563a4b6cb5e6d6bcdb1",
+    "stderr": "",
+    "stdout": "observe.py:4:17: error[invalid-argument-type] Argument to function `accept_ints` is incorrect: Expected `int`, found `None`\nFound 1 diagnostic\n"
+   }
+  },
+  "complete_product_data_sha256": "c99925dbe327f8f11ec14a63fce2612f24b5a25a61cf8d477bcfcf36a9453ab4",
+  "different_outputs": [
+   {
+    "after": "3841359bd54b4c8a9f0ea7e51f1904bc22f6a5d11fe96326f638b96afdc58b0b",
+    "before": "d560652c601f69c0b44f35c9497952715021e8cd891551d987f60e29b4695f10",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ruff/0484e04152dae56b/out/ruff-0484e04152dae56b"
+   },
+   {
+    "after": "5ae8abc947bca85b3a6e951ee90fb19e9e7ef71b66f60b30153bcad444918989",
+    "before": "eefe83151a705c4e3b84464d38cf67398294387d88a27ad8279d23cb96828051",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ruff/37f4bfcd0365984a/out/integration_test-37f4bfcd0365984a"
+   },
+   {
+    "after": "e805e049be00c75f2f9231e9d30ef4b4614b999b38bad91ddb4245c00822c637",
+    "before": "129cdbd32d58a43a795d0a4a9735e6280ac6efe78e6359e33d77cac499654c4d",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ruff_dev/bae0aed7593827fd/out/ruff_dev-bae0aed7593827fd"
+   },
+   {
+    "after": "fbac91ba366a097f4a9ec87e15318b8af1bb0acb2b6960b1da91e12723caf471",
+    "before": "885876d9c2e91fe202ea32965c8cd7a9bd613ffc98ca72a2547774d5bc6a577b",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ruff_markdown/8d6456532ce407fe/out/ruff_markdown-8d6456532ce407fe"
+   },
+   {
+    "after": "e6eb341c0fb21c9175ee3696552102048aa9601c23689c25ad599600e7fe53a9",
+    "before": "ff0651063e9b16d55b6b032c1753f46e4414d6e1fc33f9e527a7d47d2e1ef4ad",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ruff_mdtest/e911db4e2e1cfc32/out/mdtest-e911db4e2e1cfc32"
+   },
+   {
+    "after": "ce28a9fdbc6fb29a94ee34383e843508263bcaccfd776e1d9a1c6a7d0feeb67d",
+    "before": "fc5bc8b605477ef93fd24b6db70f70a6f9d195fbfaabce0f02c37858ba007a30",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ruff_python_formatter/593309f62906c1cd/out/ruff_python_formatter-593309f62906c1cd"
+   },
+   {
+    "after": "f75f8a76d345bb92d4b221c609052910ae490b74cda9fb0c21f5edcdfda5ab2e",
+    "before": "605076e0400cbd53d8ad9eb4c2b7ac7eb33b719b44e113925196a39b048295a7",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ruff_python_formatter/a90e830f879e2fc3/out/fixtures-a90e830f879e2fc3"
+   },
+   {
+    "after": "68fd597a816be09bc94d3697d8a3b0ce2b881ca957e6c787f9e27e1d7d1ff37d",
+    "before": "04eef431ac53799c08b774a96581bf6010aef6632954e94a483a290a9df952dc",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ruff_server/5fb728229e01709b/out/ruff_server-5fb728229e01709b"
+   },
+   {
+    "after": "114a04f22c15682ea277f9d4af281cd4deeac630ace41528a55091b1842daa60",
+    "before": "0b70da686ef8e6f3a977e9c7e0d40bf059dfc8ea7fdedfebbad29dba4e1d38ce",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ruff_server/bafe7b5f46b57185/out/e2e-bafe7b5f46b57185"
+   },
+   {
+    "after": "c8089b469318f50bceeb4e18b1d55252c5b9a15998a5f08e9ae58c295c921445",
+    "before": "d036fb7206a3921d8516b42afaec93a9cd1a6ea3600272ddaa5210af61582d2f",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ruff_server/f81f313fe27e5621/out/document-f81f313fe27e5621"
+   },
+   {
+    "after": "038d630efda459b2b4d7737762a46bd2c564327b8b6447ebb2ab74c38fcec7c3",
+    "before": "6082c33f50ba4702003fbf70ae268bd54c3bf71bf271922d3fdefaba3667643e",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ruff_wasm/22f7aab93ae9436c/out/libruff_wasm.so"
+   },
+   {
+    "after": "f27e9d85ecd12c97c98cb7a85987c462a76cae1dfa3f1d16e14ad703471c94a8",
+    "before": "6bf9fd49da0704b97c3349caa92a911f66b42f28c7d9abdd31cb6908a3b9713b",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ruff_workspace/ef09ebe5edb5924f/out/ruff_workspace-ef09ebe5edb5924f"
+   },
+   {
+    "after": "2f8dd5b460992c4d0607ad7143934ac820acb09e265348e6ff72e52d1db346cc",
+    "before": "792bcccd3fd6c2eea29d8452c085cf170ea98adf9d6e18584a39dd7ac79b286f",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ty/7b468c94385bf9c2/out/ty-7b468c94385bf9c2"
+   },
+   {
+    "after": "3dfd4523b91c8e13a3f6c81d0d49f59493930f5ccd91759d468fdf96bc4bc303",
+    "before": "7b65507a93d0b45123e489eff9d65900855a1d97ef6e79eb824561bcec7be682",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ty/db522eb3681446b6/out/file_watching-db522eb3681446b6"
+   },
+   {
+    "after": "5568f3ab04219d75f16668f4a0dd610262a38b50196a80115356cdfc60ba4289",
+    "before": "4e555001956d4aae4434e6936cdede6208463772a1eaa2b7c63c182a580c8b23",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ty/ed6b57e4ab076002/out/ty-ed6b57e4ab076002"
+   },
+   {
+    "after": "9b84b892e814d8bf9f4ef241d971a23870fdfc09000fd99cc2680afb0d21d333",
+    "before": "23bba5e02cbeee22e097c2144db9e8c4c5684fd295032a772ddac2234878dc2b",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ty_completion_bench/a54bfaddfcb56ff6/out/ty_completion_bench-a54bfaddfcb56ff6"
+   },
+   {
+    "after": "c904f5847cdb890558abe5c0b52eefc4fa6f22a4c7d9a1d315209a46dcbc8c1e",
+    "before": "4a6676dc05cd84624c2becc7e47868222650f254782716f0011144d2a6e10b3c",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ty_completion_eval/30a29fc61090bd66/out/ty_completion_eval-30a29fc61090bd66"
+   },
+   {
+    "after": "e10745705e914b63a541da58bb9a7cc48437dddf7c8b159eb7790dbb8c7b6876",
+    "before": "6555a74fc62cfd6ffcebae8b01e79779ca681097a07ccdd803e35fae48da6963",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ty_ide/3a1df486adf8781f/out/ty_ide-3a1df486adf8781f"
+   },
+   {
+    "after": "c0faa3ce4c78d3485197a565161b487ca421c3025a9000ebe3c3094a0cf679ee",
+    "before": "c7d4597be449bdf287153510b3e28ac41ba746a805d0cc33f2af4bf3868294c1",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ty_project/9c2720264839e981/out/ty_project-9c2720264839e981"
+   },
+   {
+    "after": "28efbb514fde1f8ac2c5d0d7a96f22a130f27141484aa8752fe340cec1874493",
+    "before": "d4efe368e498b456d316f2c34983cefc16ded693f415d89edbbb8d3ab87a357c",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ty_server/5f31be30b2802565/out/ty_server-5f31be30b2802565"
+   },
+   {
+    "after": "57361f31d48f353dc244ddaf6e76a400a5988c05f7b34304f45923e73a662701",
+    "before": "1c7888941f9b458dd476d1125c285ce09b90e1c1566dd7e87aa7df3420504f15",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ty_server/c1c481f014f6bbfa/out/e2e-c1c481f014f6bbfa"
+   },
+   {
+    "after": "47c9ceb9f9c93202857c922f1818b325d7381fe4da96c31dd36869e72229a0b5",
+    "before": "1e8376ccaddc0340384e1a6a996b602b9221245af823db45844b02eab7880c18",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ty_wasm/e3ca85013ada9fa2/out/libty_wasm.so"
+   },
+   {
+    "after": "e03772c7e1fcc8255ed775b85ed9244f281b06656ea49f6e906854b69a9547b9",
+    "before": "2ff97199e694a0e85d310a4a93f87302f4f1d8d182dc321266ce31c0f42b3326",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/ruff"
+   },
+   {
+    "after": "cb1ae8b882103339b49bdda72f1a560e1be2e015173c7a770f029da0f03f9fc2",
+    "before": "682fd3af86530a696a72039659a7a85c1367cb1a22c40189d287e448d15f0a27",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/ruff_python_formatter"
+   },
+   {
+    "after": "1b33ee4f577bf73cd66883228233b74a1aadf4c69bda6563a4b6cb5e6d6bcdb1",
+    "before": "bf7920430f2c2722b23b59572a6785a2538bfdf143f20b16396f9c684d6319bc",
+    "output": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/ty"
+   }
+  ],
+  "different_published_files": 29,
+  "different_workspace_elfs": 25,
+  "elf_map_sha256": "a06c2557d66ee104a14e3f34ed2c934a44daa2da937dcb20519e8cd278e3aa02",
+  "executed_test_programs": [],
+  "fresh_units": 572,
+  "jobs": {
+   "cc": 35,
+   "collect2": 35,
+   "rustc-full": 6,
+   "rustc-link-only": 30,
+   "wild": 35
+  },
+  "label": "formatter-restore",
+  "missing_published_files": 0,
+  "mode": "test",
+  "phase": "restore",
+  "published_files": 1060,
+  "rustc_diagnostic_messages": [
+   {
+    "code": "dead_code",
+    "level": "warning",
+    "message": "method `set_watch` is never used",
+    "target": "file_watching"
+   }
+  ],
+  "setup": {
+   "cargo": "dd5cab154b8dcd09ccc2753160d314cade80979b2d055ee66aa9e2217e05e7e1",
+   "command": [
+    "cargo",
+    "+ohm",
+    "test",
+    "--no-run",
+    "--locked",
+    "--offline",
+    "--message-format=json",
+    "-j8"
+   ],
+   "frontend": "4fa9a18b77430bcc416e88561b6fe5797d98b996a7698b9f3bd11d4e7817a19f",
+   "mode": "test",
+   "parser": "first physical screen includes actual opens in edit/restore and execs at every other phase; missing or ephemeral data never certifies equality",
+   "rustc_driver": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+   "source": "original",
+   "source_set": {
+    "crates/ruff_python_formatter/resources/test/fixtures/black/cases/comments_tab_indent.py": "0571249dde0d40767316911ba488a6f266232dd01ee861419700ad02dd6b2eab",
+    "crates/ruff_python_formatter/resources/test/fixtures/black/cases/comments_tab_indent.py.expect": "0878d791c83e4a7b657be58321d73e37061d9f8ae71eb9738a9bab4db5adcadf",
+    "crates/ruff_python_formatter/src/comments/format.rs": "a222709e604871a40e4c5337d49c4b397b55b27c5c7f8f3ba79ce5b3b3a4dc6f",
+    "crates/ty_python_semantic/resources/mdtest/call/function.md": "5fa235a863757e2fbf10a8e8a1f99ddd432fde90495d297876af4de70f085c5a",
+    "crates/ty_python_semantic/resources/mdtest/diagnostics/invalid_argument_type.md": "29d6bfe6f1b70d7552cc5b249e7f42ae7eb78261f1873e8050ee4d43df31c134",
+    "crates/ty_python_semantic/src/types/call/bind.rs": "4c80a8676c3ee72f2a0804cba346a5a5500785213ff0b204ef093e60f4722e8d"
+   },
+   "tracing": "execve,execveat,clone,clone3,fork,vfork,open,openat,openat2"
+  },
+  "source": "original",
+  "workspace_elf_count": 110
+ },
+ {
+  "actual_exec_trace_archive_sha256": "8870e8631f7348eb8e4f86131392cdf0f7298edab7aeb1cd885da9d0bb9925ad",
+  "cargo_artifact_units": 619,
+  "cli": {
+   "ruff": {
+    "argv": [
+     "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/ruff",
+     "format",
+     "--isolated",
+     "--no-cache",
+     "--stdin-filename",
+     "example.py",
+     "-"
+    ],
+    "present": true,
+    "returncode": 0,
+    "sha256": "e03772c7e1fcc8255ed775b85ed9244f281b06656ea49f6e906854b69a9547b9",
+    "stderr": "",
+    "stdout": "# \tTabbed\npass  # \tTabbed\n"
+   },
+   "ty": {
+    "argv": [
+     "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/ty",
+     "check",
+     "--output-format",
+     "concise",
+     "/home/dev-user/.cache/ohm-233-position-qualified-20261027/nonparser-whole-inputs-campaign-v1/oracle/observe.py"
+    ],
+    "present": true,
+    "returncode": 1,
+    "sha256": "1b33ee4f577bf73cd66883228233b74a1aadf4c69bda6563a4b6cb5e6d6bcdb1",
+    "stderr": "",
+    "stdout": "observe.py:4:17: error[invalid-argument-type] Argument to function `accept_ints` is incorrect: Expected `int`, found `None`\nFound 1 diagnostic\n"
+   }
+  },
+  "complete_product_data_sha256": "c99925dbe327f8f11ec14a63fce2612f24b5a25a61cf8d477bcfcf36a9453ab4",
+  "different_outputs": [],
+  "different_published_files": 0,
+  "different_workspace_elfs": 0,
+  "elf_map_sha256": "a06c2557d66ee104a14e3f34ed2c934a44daa2da937dcb20519e8cd278e3aa02",
+  "executed_test_programs": [],
+  "fresh_units": 619,
+  "jobs": {},
+  "label": "formatter-restore-fresh",
+  "missing_published_files": 0,
+  "mode": "test",
+  "phase": "fresh",
+  "published_files": 1060,
+  "rustc_diagnostic_messages": [
+   {
+    "code": "dead_code",
+    "level": "warning",
+    "message": "method `set_watch` is never used",
+    "target": "file_watching"
+   }
+  ],
+  "setup": {
+   "cargo": "dd5cab154b8dcd09ccc2753160d314cade80979b2d055ee66aa9e2217e05e7e1",
+   "command": [
+    "cargo",
+    "+ohm",
+    "test",
+    "--no-run",
+    "--locked",
+    "--offline",
+    "--message-format=json",
+    "-j8"
+   ],
+   "frontend": "4fa9a18b77430bcc416e88561b6fe5797d98b996a7698b9f3bd11d4e7817a19f",
+   "mode": "test",
+   "parser": "first physical screen includes actual opens in edit/restore and execs at every other phase; missing or ephemeral data never certifies equality",
+   "rustc_driver": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+   "source": "original",
+   "source_set": {
+    "crates/ruff_python_formatter/resources/test/fixtures/black/cases/comments_tab_indent.py": "0571249dde0d40767316911ba488a6f266232dd01ee861419700ad02dd6b2eab",
+    "crates/ruff_python_formatter/resources/test/fixtures/black/cases/comments_tab_indent.py.expect": "0878d791c83e4a7b657be58321d73e37061d9f8ae71eb9738a9bab4db5adcadf",
+    "crates/ruff_python_formatter/src/comments/format.rs": "a222709e604871a40e4c5337d49c4b397b55b27c5c7f8f3ba79ce5b3b3a4dc6f",
+    "crates/ty_python_semantic/resources/mdtest/call/function.md": "5fa235a863757e2fbf10a8e8a1f99ddd432fde90495d297876af4de70f085c5a",
+    "crates/ty_python_semantic/resources/mdtest/diagnostics/invalid_argument_type.md": "29d6bfe6f1b70d7552cc5b249e7f42ae7eb78261f1873e8050ee4d43df31c134",
+    "crates/ty_python_semantic/src/types/call/bind.rs": "4c80a8676c3ee72f2a0804cba346a5a5500785213ff0b204ef093e60f4722e8d"
+   },
+   "tracing": "execve,execveat"
+  },
+  "source": "original",
+  "workspace_elf_count": 110
+ }
+]

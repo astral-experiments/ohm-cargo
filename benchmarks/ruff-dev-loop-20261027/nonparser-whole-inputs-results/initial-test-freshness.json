@@ -1,0 +1,470 @@
+{
+ "bound_tools": {
+  "GCC_driver": {
+   "path": "/usr/bin/cc",
+   "resolved": "/usr/bin/x86_64-linux-gnu-gcc-13",
+   "sha256": "1b99826121ae6682a634e5efe09bd3e3df58ce58e0b28f849114ab5b89139c26"
+  },
+  "Wild": {
+   "path": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/lib/rustlib/x86_64-unknown-linux-gnu/bin/wild-ld/ld.bfd",
+   "resolved": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/lib/rustlib/x86_64-unknown-linux-gnu/bin/wild-ld/ld.bfd",
+   "sha256": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5"
+  },
+  "collect2": {
+   "path": "/usr/libexec/gcc/x86_64-linux-gnu/13/collect2",
+   "resolved": "/usr/libexec/gcc/x86_64-linux-gnu/13/collect2",
+   "sha256": "4d1f341ae5b763b513258ee2812422a45e063c30a2f1924a0cf63d3699f3a158"
+  },
+  "rustc_frontend": {
+   "path": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/bin/rustc",
+   "resolved": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/bin/rustc",
+   "sha256": "4fa9a18b77430bcc416e88561b6fe5797d98b996a7698b9f3bd11d4e7817a19f"
+  },
+  "rustup_cargo_proxy": {
+   "path": "/home/dev-user/.cargo/bin/cargo",
+   "resolved": "/home/dev-user/.cargo/bin/rustup",
+   "sha256": "5be191e8c70a5007074254cb74d78dbfdd25cd5a61c27de7b8e5410122ec24f4"
+  }
+ },
+ "lock_sha256": "c9e345325bec5ff08dbbe3916edd39ad0c3d1c7797a8c241ae32f62754e764bf",
+ "phases": {
+  "cold": {
+   "changed_product_names": [],
+   "fresh_false_targets": [],
+   "logs_sha256": {
+    "exec-traces.tar.zst": "517f7ac432c2cf2e8adb66f6324e2367359c19e73fedbed9896aa8908288a976",
+    "processes.json": "5db494ae26e168a1231594902e0db5efbcba7a52eb762a28ebee00a55907ff80",
+    "stderr": "d14716a9cc334f65b0a000c7071270471e99c0bec74a9a146bfe724d1512ed6f",
+    "stdout": "af1e0b70519ec2e9d2408582838f323671dcf22dfadd4045a8443542dbce4c04"
+   },
+   "receipt": {
+    "artifacts": 619,
+    "changed_artifacts_count": 619,
+    "different_raw_products": 1060,
+    "fresh": 0,
+    "jobs": {
+     "cc": 795,
+     "collect2": 262,
+     "other-linker": 62,
+     "rustc-full": 636,
+     "wild": 200
+    },
+    "label": "cold",
+    "missing_products": 0,
+    "mode": "test",
+    "phase": "cold",
+    "physical_products": 1060,
+    "source": "original",
+    "stdout_sha256": "af1e0b70519ec2e9d2408582838f323671dcf22dfadd4045a8443542dbce4c04"
+   },
+   "ron_actuals": {
+    "781551": {
+     "Cargo.toml_sha256": "a4e5623ca7fa784644b4084bfdeb775cd3c2d241b033fc5cd4124ef4608a3226",
+     "actual_compiler_argv": [
+      "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/rustup/toolchains/ohm/bin/rustc",
+      "-Zohm-shared-stages",
+      "-Zpublic-api-hash",
+      "-Zcache-proc-macros",
+      "-Zthreads=8",
+      "--crate-name",
+      "ron",
+      "--edition=2021",
+      "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/registry-home/registry/src/private-registry-host-42b3aaa0d2956984/ron-0.12.0/src/lib.rs",
+      "--error-format=json",
+      "--json=diagnostic-rendered-ansi,artifacts,future-incompat",
+      "--crate-type",
+      "lib",
+      "--emit=dep-info,metadata,link",
+      "-Z",
+      "embed-metadata=no",
+      "-C",
+      "opt-level=1",
+      "-C",
+      "lto=off",
+      "-C",
+      "embed-bitcode=no",
+      "-C",
+      "debuginfo=line-tables-only",
+      "-C",
+      "debug-assertions=on",
+      "--cfg",
+      "feature=\"default\"",
+      "--cfg",
+      "feature=\"std\"",
+      "--check-cfg",
+      "cfg(docsrs,test)",
+      "--check-cfg",
+      "cfg(feature, values(\"default\", \"indexmap\", \"integer128\", \"internal-span-substring-test\", \"std\", \"unicode-segmentation\"))",
+      "-C",
+      "metadata=6db9053b973b6fad",
+      "-C",
+      "extra-filename=-48dcee1813f38341",
+      "--out-dir",
+      "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ron/48dcee1813f38341/out",
+      "-L",
+      "dependency=/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/bitflags/52823cf956885841/out",
+      "-L",
+      "dependency=/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/once_cell/798a63ec2814ab45/out",
+      "-L",
+      "dependency=/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/serde/504c94950bb30370/out",
+      "-L",
+      "dependency=/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/serde_core/5673d89936f64dc4/out",
+      "-L",
+      "dependency=/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/serde_derive/7399d26c5af355c6/out",
+      "-L",
+      "dependency=/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/typeid/96ef3adb156abdfa/out",
+      "-L",
+      "dependency=/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/unicode-ident/878a6751f4a8e3b3/out",
+      "--extern",
+      "bitflags=/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/bitflags/52823cf956885841/out/libbitflags-52823cf956885841.rmeta",
+      "--extern",
+      "once_cell=/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/once_cell/798a63ec2814ab45/out/libonce_cell-798a63ec2814ab45.rmeta",
+      "--extern",
+      "serde=/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/serde/504c94950bb30370/out/libserde-504c94950bb30370.rmeta",
+      "--extern",
+      "serde_derive=/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/serde_derive/7399d26c5af355c6/out/libserde_derive-7399d26c5af355c6.so",
+      "--extern",
+      "typeid=/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/typeid/96ef3adb156abdfa/out/libtypeid-96ef3adb156abdfa.rmeta",
+      "--extern",
+      "unicode_ident=/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/unicode-ident/878a6751f4a8e3b3/out/libunicode_ident-878a6751f4a8e3b3.rmeta",
+      "--cap-lints",
+      "allow",
+      "-Zohm-early-metadata",
+      "-Clinker-features=-lld",
+      "-Clink-self-contained=-linker",
+      "-Clink-arg=-B/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/lib/rustlib/x86_64-unknown-linux-gnu/bin/wild-ld",
+      "-Clink-arg=-fuse-ld=bfd"
+     ],
+     "available_registry_checksum_files": {
+      ".cargo-ok": "afbf9d0f3560b0fd7795e81c42a0a79ee6b6fc67e064f77826aee642cad28d91"
+     },
+     "exec_line_sha256": "f1ad4422fe91876a5858329fd43a3b27eb2d366b6065c9b49f543382d4accb03",
+     "package_id": [
+      "registry+https://github.com/rust-lang/crates.io-index#ron@0.12.0"
+     ],
+     "package_tarball_current_sha256": {
+      "registry/cache/private-registry-host-42b3aaa0d2956984/ron-0.12.0.crate": "fd490c5b18261893f14449cbd28cb9c0b637aebf161cd77900bfdedaff21ec32"
+     },
+     "source_path": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/registry-home/registry/src/private-registry-host-42b3aaa0d2956984/ron-0.12.0/src/lib.rs",
+     "source_sha256": "e95953d9c1a3db029bf7bb78e694c807afc8e67c479bad2e90c4d0eeaaefb734"
+    }
+   },
+   "setup": {
+    "cargo": "dd5cab154b8dcd09ccc2753160d314cade80979b2d055ee66aa9e2217e05e7e1",
+    "command": [
+     "cargo",
+     "+ohm",
+     "test",
+     "--no-run",
+     "--locked",
+     "--offline",
+     "--message-format=json",
+     "-j8"
+    ],
+    "frontend": "4fa9a18b77430bcc416e88561b6fe5797d98b996a7698b9f3bd11d4e7817a19f",
+    "mode": "test",
+    "parser": "first physical screen includes actual opens in edit/restore and execs at every other phase; missing or ephemeral data never certifies equality",
+    "rustc_driver": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+    "source": "original",
+    "source_set": {
+     "crates/ruff_python_formatter/resources/test/fixtures/black/cases/comments_tab_indent.py": "0571249dde0d40767316911ba488a6f266232dd01ee861419700ad02dd6b2eab",
+     "crates/ruff_python_formatter/resources/test/fixtures/black/cases/comments_tab_indent.py.expect": "0878d791c83e4a7b657be58321d73e37061d9f8ae71eb9738a9bab4db5adcadf",
+     "crates/ruff_python_formatter/src/comments/format.rs": "a222709e604871a40e4c5337d49c4b397b55b27c5c7f8f3ba79ce5b3b3a4dc6f",
+     "crates/ty_python_semantic/resources/mdtest/call/function.md": "5fa235a863757e2fbf10a8e8a1f99ddd432fde90495d297876af4de70f085c5a",
+     "crates/ty_python_semantic/resources/mdtest/diagnostics/invalid_argument_type.md": "29d6bfe6f1b70d7552cc5b249e7f42ae7eb78261f1873e8050ee4d43df31c134",
+     "crates/ty_python_semantic/src/types/call/bind.rs": "4c80a8676c3ee72f2a0804cba346a5a5500785213ff0b204ef093e60f4722e8d"
+    },
+    "tracing": "execve,execveat"
+   },
+   "source_rustc": 636
+  },
+  "warm-1": {
+   "changed_product_names": [
+    "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ron/48dcee1813f38341/out/libron-48dcee1813f38341.rlib",
+    "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ron/48dcee1813f38341/out/libron-48dcee1813f38341.rmeta",
+    "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ruff_server/f81f313fe27e5621/out/document-f81f313fe27e5621",
+    "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ty_python_semantic/e77bf8e779c1bd16/out/ty_python_semantic-e77bf8e779c1bd16"
+   ],
+   "fresh_false_targets": [
+    "ron",
+    "insta",
+    "insta_cmd",
+    "mdtest",
+    "ty_test",
+    "ruff_mdtest",
+    "parenthesize",
+    "comparable",
+    "block_comments",
+    "ruff_python_semantic",
+    "mdtest",
+    "e2e",
+    "file_watching",
+    "corpus",
+    "ty_project",
+    "mdtest",
+    "config",
+    "cli",
+    "ty_test",
+    "resolve_files",
+    "ty_python_semantic",
+    "analyze_graph",
+    "ruff",
+    "direxist_guard",
+    "cli",
+    "self_environment",
+    "ruff",
+    "source_order",
+    "ty",
+    "integration_test",
+    "ty",
+    "ruff_python_formatter",
+    "identifier",
+    "fixtures",
+    "ruff_markdown",
+    "ty_module_resolver",
+    "generate_inline_tests",
+    "stmt_if",
+    "ruff_db",
+    "simple_tokenizer",
+    "ruff_python_formatter",
+    "match_pattern",
+    "fixtures",
+    "ty_server",
+    "ruff_server",
+    "visitor",
+    "ruff_python_parser",
+    "parentheses",
+    "ruff_python_importer",
+    "normalizer",
+    "mdtest",
+    "whitespace",
+    "document",
+    "ruff_linter",
+    "e2e",
+    "ty_ide"
+   ],
+   "logs_sha256": {
+    "exec-traces.tar.zst": "1e724eed0dad664d4b417eb9450e4bb76036155511b0ccf28530b5afc6036007",
+    "processes.json": "fdfef1923e547d13a7cac351d98e1702c89e3b4460e132dd6325ca4d6f54fde5",
+    "stderr": "02825d5f58b949815a87580dc31aae13fedbd9ec1848c80938c9b5faed8e00d2",
+    "stdout": "8b3ab8d90ce4681dabc181a7ffbb1c2b410abd56c127163011df635fde2a1020"
+   },
+   "receipt": {
+    "artifacts": 619,
+    "changed_artifacts_count": 56,
+    "different_raw_products": 4,
+    "fresh": 563,
+    "jobs": {
+     "cc": 50,
+     "collect2": 50,
+     "rustc-full": 1,
+     "rustc-link-only": 50,
+     "wild": 50
+    },
+    "label": "warm-1",
+    "missing_products": 0,
+    "mode": "test",
+    "phase": "warm",
+    "physical_products": 1060,
+    "source": "original",
+    "stdout_sha256": "8b3ab8d90ce4681dabc181a7ffbb1c2b410abd56c127163011df635fde2a1020"
+   },
+   "ron_actuals": {
+    "801979": {
+     "Cargo.toml_sha256": "a4e5623ca7fa784644b4084bfdeb775cd3c2d241b033fc5cd4124ef4608a3226",
+     "actual_compiler_argv": [
+      "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/rustup/toolchains/ohm/bin/rustc",
+      "-Zohm-shared-stages",
+      "-Zpublic-api-hash",
+      "-Zcache-proc-macros",
+      "-Zthreads=8",
+      "--crate-name",
+      "ron",
+      "--edition=2021",
+      "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/registry-home/registry/src/private-registry-host-42b3aaa0d2956984/ron-0.12.0/src/lib.rs",
+      "--error-format=json",
+      "--json=diagnostic-rendered-ansi,artifacts,future-incompat",
+      "--crate-type",
+      "lib",
+      "--emit=dep-info,metadata,link",
+      "-Z",
+      "embed-metadata=no",
+      "-C",
+      "opt-level=1",
+      "-C",
+      "lto=off",
+      "-C",
+      "embed-bitcode=no",
+      "-C",
+      "debuginfo=line-tables-only",
+      "-C",
+      "debug-assertions=on",
+      "--cfg",
+      "feature=\"default\"",
+      "--cfg",
+      "feature=\"std\"",
+      "--check-cfg",
+      "cfg(docsrs,test)",
+      "--check-cfg",
+      "cfg(feature, values(\"default\", \"indexmap\", \"integer128\", \"internal-span-substring-test\", \"std\", \"unicode-segmentation\"))",
+      "-C",
+      "metadata=6db9053b973b6fad",
+      "-C",
+      "extra-filename=-48dcee1813f38341",
+      "--out-dir",
+      "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/ron/48dcee1813f38341/out",
+      "-L",
+      "dependency=/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/bitflags/52823cf956885841/out",
+      "-L",
+      "dependency=/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/once_cell/798a63ec2814ab45/out",
+      "-L",
+      "dependency=/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/serde/504c94950bb30370/out",
+      "-L",
+      "dependency=/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/serde_core/5673d89936f64dc4/out",
+      "-L",
+      "dependency=/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/serde_derive/7399d26c5af355c6/out",
+      "-L",
+      "dependency=/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/typeid/96ef3adb156abdfa/out",
+      "-L",
+      "dependency=/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/unicode-ident/878a6751f4a8e3b3/out",
+      "--extern",
+      "bitflags=/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/bitflags/52823cf956885841/out/libbitflags-52823cf956885841.rmeta",
+      "--extern",
+      "once_cell=/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/once_cell/798a63ec2814ab45/out/libonce_cell-798a63ec2814ab45.rmeta",
+      "--extern",
+      "serde=/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/serde/504c94950bb30370/out/libserde-504c94950bb30370.rmeta",
+      "--extern",
+      "serde_derive=/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/serde_derive/7399d26c5af355c6/out/libserde_derive-7399d26c5af355c6.so",
+      "--extern",
+      "typeid=/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/typeid/96ef3adb156abdfa/out/libtypeid-96ef3adb156abdfa.rmeta",
+      "--extern",
+      "unicode_ident=/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target/debug/build/workspaces/2a0346c599559020/v2-d462aeba816cd114-all-native-all/unicode-ident/878a6751f4a8e3b3/out/libunicode_ident-878a6751f4a8e3b3.rmeta",
+      "--cap-lints",
+      "allow",
+      "-Zohm-early-metadata",
+      "-Clinker-features=-lld",
+      "-Clink-self-contained=-linker",
+      "-Clink-arg=-B/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/lib/rustlib/x86_64-unknown-linux-gnu/bin/wild-ld",
+      "-Clink-arg=-fuse-ld=bfd",
+      "-Zbinary-dep-depinfo",
+      "-Zchecksum-hash-algorithm=blake3"
+     ],
+     "available_registry_checksum_files": {
+      ".cargo-ok": "afbf9d0f3560b0fd7795e81c42a0a79ee6b6fc67e064f77826aee642cad28d91"
+     },
+     "exec_line_sha256": "5f4a94e2404ed04d2a657db97d4254a040a5ecbead432618ba46a47116c013e1",
+     "package_id": [
+      "registry+https://github.com/rust-lang/crates.io-index#ron@0.12.0"
+     ],
+     "package_tarball_current_sha256": {
+      "registry/cache/private-registry-host-42b3aaa0d2956984/ron-0.12.0.crate": "fd490c5b18261893f14449cbd28cb9c0b637aebf161cd77900bfdedaff21ec32"
+     },
+     "source_path": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/registry-home/registry/src/private-registry-host-42b3aaa0d2956984/ron-0.12.0/src/lib.rs",
+     "source_sha256": "e95953d9c1a3db029bf7bb78e694c807afc8e67c479bad2e90c4d0eeaaefb734"
+    }
+   },
+   "setup": {
+    "cargo": "dd5cab154b8dcd09ccc2753160d314cade80979b2d055ee66aa9e2217e05e7e1",
+    "command": [
+     "cargo",
+     "+ohm",
+     "test",
+     "--no-run",
+     "--locked",
+     "--offline",
+     "--message-format=json",
+     "-j8"
+    ],
+    "frontend": "4fa9a18b77430bcc416e88561b6fe5797d98b996a7698b9f3bd11d4e7817a19f",
+    "mode": "test",
+    "parser": "first physical screen includes actual opens in edit/restore and execs at every other phase; missing or ephemeral data never certifies equality",
+    "rustc_driver": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+    "source": "original",
+    "source_set": {
+     "crates/ruff_python_formatter/resources/test/fixtures/black/cases/comments_tab_indent.py": "0571249dde0d40767316911ba488a6f266232dd01ee861419700ad02dd6b2eab",
+     "crates/ruff_python_formatter/resources/test/fixtures/black/cases/comments_tab_indent.py.expect": "0878d791c83e4a7b657be58321d73e37061d9f8ae71eb9738a9bab4db5adcadf",
+     "crates/ruff_python_formatter/src/comments/format.rs": "a222709e604871a40e4c5337d49c4b397b55b27c5c7f8f3ba79ce5b3b3a4dc6f",
+     "crates/ty_python_semantic/resources/mdtest/call/function.md": "5fa235a863757e2fbf10a8e8a1f99ddd432fde90495d297876af4de70f085c5a",
+     "crates/ty_python_semantic/resources/mdtest/diagnostics/invalid_argument_type.md": "29d6bfe6f1b70d7552cc5b249e7f42ae7eb78261f1873e8050ee4d43df31c134",
+     "crates/ty_python_semantic/src/types/call/bind.rs": "4c80a8676c3ee72f2a0804cba346a5a5500785213ff0b204ef093e60f4722e8d"
+    },
+    "tracing": "execve,execveat"
+   },
+   "source_rustc": [
+    "ron"
+   ]
+  },
+  "warm-2": {
+   "changed_product_names": [],
+   "fresh_false_targets": [],
+   "logs_sha256": {
+    "exec-traces.tar.zst": "e294ae0790742b9e9bf8ef2bc3ee9a204ff8b137b3e405fa898b9b1763bcf12d",
+    "processes.json": "4ec45989be68965c1f1d43bd5e0346efa810eb4eb3fb603aff47f36dd0908ea3",
+    "stderr": "2ac6a86cc99865645a626e833a01b081c4fa32b943b5db0ebdd80a6d9e8f091c",
+    "stdout": "6cc92bfcca0b30336351400b3f80618afae51e42026fdd7777f91b65f324c205"
+   },
+   "receipt": {
+    "artifacts": 619,
+    "changed_artifacts_count": 0,
+    "different_raw_products": 0,
+    "fresh": 619,
+    "jobs": {},
+    "label": "warm-2",
+    "missing_products": 0,
+    "mode": "test",
+    "phase": "warm",
+    "physical_products": 1060,
+    "source": "original",
+    "stdout_sha256": "6cc92bfcca0b30336351400b3f80618afae51e42026fdd7777f91b65f324c205"
+   },
+   "ron_actuals": {},
+   "setup": {
+    "cargo": "dd5cab154b8dcd09ccc2753160d314cade80979b2d055ee66aa9e2217e05e7e1",
+    "command": [
+     "cargo",
+     "+ohm",
+     "test",
+     "--no-run",
+     "--locked",
+     "--offline",
+     "--message-format=json",
+     "-j8"
+    ],
+    "frontend": "4fa9a18b77430bcc416e88561b6fe5797d98b996a7698b9f3bd11d4e7817a19f",
+    "mode": "test",
+    "parser": "first physical screen includes actual opens in edit/restore and execs at every other phase; missing or ephemeral data never certifies equality",
+    "rustc_driver": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+    "source": "original",
+    "source_set": {
+     "crates/ruff_python_formatter/resources/test/fixtures/black/cases/comments_tab_indent.py": "0571249dde0d40767316911ba488a6f266232dd01ee861419700ad02dd6b2eab",
+     "crates/ruff_python_formatter/resources/test/fixtures/black/cases/comments_tab_indent.py.expect": "0878d791c83e4a7b657be58321d73e37061d9f8ae71eb9738a9bab4db5adcadf",
+     "crates/ruff_python_formatter/src/comments/format.rs": "a222709e604871a40e4c5337d49c4b397b55b27c5c7f8f3ba79ce5b3b3a4dc6f",
+     "crates/ty_python_semantic/resources/mdtest/call/function.md": "5fa235a863757e2fbf10a8e8a1f99ddd432fde90495d297876af4de70f085c5a",
+     "crates/ty_python_semantic/resources/mdtest/diagnostics/invalid_argument_type.md": "29d6bfe6f1b70d7552cc5b249e7f42ae7eb78261f1873e8050ee4d43df31c134",
+     "crates/ty_python_semantic/src/types/call/bind.rs": "4c80a8676c3ee72f2a0804cba346a5a5500785213ff0b204ef093e60f4722e8d"
+    },
+    "tracing": "execve,execveat"
+   },
+   "source_rustc": []
+  }
+ },
+ "redaction": {
+  "raw_json_sha256": "38935bb4be9a41b82462f15ff2858984c53fb127744f21c2f7f5b46f304ec25b",
+  "scope": "Private package cache hostname token in the pathname and local registry address only. Entry source/tool/package digests and exec trace commitments were captured on original paths."
+ },
+ "ruff_tree": "62d3f106c5e41f6022847f26ff8c7dc00139f7b1",
+ "runner": {
+  "common.py": "8dfa39c2382374cbc41036b2f7e01bc7bbe00713a641c4e66840663b40459b7a",
+  "namespace.py": "8a74140aa79e1387b066404a3b7014693ad9c57078838f4fa88d68bbd77153c7",
+  "process_scan.py": "478ac7e45fc4ae527fc91c1bda569e5a5214edf0989a62610f45269438805c0c",
+  "worker.py": "ca562787667a16d7a72e30b353143c3d9b1abe27ea0e10c005f48b58f9c3c51d"
+ },
+ "sources": {
+  "crates/ruff_python_formatter/resources/test/fixtures/black/cases/comments_tab_indent.py": "0571249dde0d40767316911ba488a6f266232dd01ee861419700ad02dd6b2eab",
+  "crates/ruff_python_formatter/resources/test/fixtures/black/cases/comments_tab_indent.py.expect": "0878d791c83e4a7b657be58321d73e37061d9f8ae71eb9738a9bab4db5adcadf",
+  "crates/ruff_python_formatter/src/comments/format.rs": "a222709e604871a40e4c5337d49c4b397b55b27c5c7f8f3ba79ce5b3b3a4dc6f",
+  "crates/ty_python_semantic/resources/mdtest/call/function.md": "5fa235a863757e2fbf10a8e8a1f99ddd432fde90495d297876af4de70f085c5a",
+  "crates/ty_python_semantic/resources/mdtest/diagnostics/invalid_argument_type.md": "29d6bfe6f1b70d7552cc5b249e7f42ae7eb78261f1873e8050ee4d43df31c134",
+  "crates/ty_python_semantic/src/types/call/bind.rs": "4c80a8676c3ee72f2a0804cba346a5a5500785213ff0b204ef093e60f4722e8d"
+ }
+}
