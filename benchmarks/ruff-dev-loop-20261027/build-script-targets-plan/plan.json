@@ -1,0 +1,59 @@
+{
+  "purpose": "Exploratory whole-workspace observation of generated build-script data versus downstream native/check work. No elapsed-time endpoint. The three build-script changes were selected from source history before running any study command on the edit.",
+  "selection_sha256": "64477f1697a95302435c1dade356c45fcb924f641fed4bcdc4e2ecedeff93109",
+  "selection": {
+    "ruff": "93526150df078af7dd8fc4226cdcc469539d2001",
+    "historical": "a8ba9e0458e60f8c406216778f0ea1cc3759c9b2",
+    "subject": "Fix Git metadata tracking in linked worktrees (#27710)",
+    "patch_sha256": "f51de838ddca7717936c89d344eac7bc4eb4deb07ab67fb34a975818635f1c8e",
+    "files": {
+      "crates/ruff/build.rs": {
+        "original_sha256": "8809304381d04011ac796e2dc4530a803b0720b5b2b8b70f6fccb51d6db9a2c7",
+        "edited_sha256": "fdea3ba58e7f8c0ad6541b68950708269577ef9c5bea83a5a5cde89a1fb9dc55"
+      },
+      "crates/ty/build.rs": {
+        "original_sha256": "7099c6f0bdda194c3b9b1bf039b04fca5445cd0791cd9eec97d2cb16093f220a",
+        "edited_sha256": "e8c5027c8f2c260df8ae221cdb2e164e8835b45ba70ff728005583359eac6363"
+      },
+      "crates/ty_wasm/build.rs": {
+        "original_sha256": "27e4487951a136a81c0ac19074bdd9495e8caab57ee4043d1b4d28395efcd115",
+        "edited_sha256": "a14ba6a4ca108ff8a4ab1b6ad1f4a6b27379500db0c78f448fd270f4e5f4376a"
+      }
+    }
+  },
+  "reference": {
+    "Cargo": "dd5cab154b8dcd09ccc2753160d314cade80979b2d055ee66aa9e2217e05e7e1",
+    "rustc_driver": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+    "rustc_frontend": "4fa9a18b77430bcc416e88561b6fe5797d98b996a7698b9f3bd11d4e7817a19f",
+    "previously_verified_source_and_scoped_stores": "https://github.com/astral-sh/ohm-cargo/tree/ffeaa8dd1b9a8a5d4acd6c25bf66ff09e4e001fe/benchmarks/ruff-dev-loop-20261027/cfg-test-only-library-edit-results"
+  },
+  "mode_order": [
+    "build",
+    "check",
+    "test --no-run"
+  ],
+  "command": [
+    "cargo",
+    "+ohm",
+    "<mode>",
+    "--locked",
+    "--offline",
+    "--message-format=json",
+    "-j8"
+  ],
+  "phase_order": [
+    "restored baseline, require all Cargo units fresh with no physical compiler, linker or workspace script; if first copy triggers bookkeeping, allow three unchanged attempts then reject mode",
+    "one complete reverse historical patch affecting all three script sources",
+    "same edited source with no further writes, retain any unexpected real jobs",
+    "original restored after the edit",
+    "unchanged original, retain actual freshness"
+  ],
+  "observation": [
+    "Save actual full compiler argv, split or joined link-only, GCC/collect2/Wild, real built and executed build script programs with PID/binary hash, terminal artifacts, full Cargo statuses and diagnostics. No test bodies.",
+    "For each of the 3 packages retain the exact ordered cargo directives in its stdout and their effect categories, Cargo public build-script JSON, stderr if present (including warnings/errors), and enumerate every OUT_DIR entry (symlink target or regular bytes). Check script output directory and logical path stability. Show every changed compiler input observed, also if none changed in the explicitly inspected set. Never infer all native/diagnostic inputs from JSON or .text alone.",
+    "Hold toolchain, profile, Cargo invocation, Rust project and genuine linked git state fixed. Check real ruff/ty version commands when parent binaries exist. Keep current Get HEAD and ref and actual tracked paths separately. Compare full output ELFs for baseline/edit/restore, including build script executables separately.",
+    "If all participating downstream rustc or linker inputs truly remain unchanged, investigate the earliest safe consumer decision preserving new/future rerun-if rules, script output and native/diagnostic freshness. If invoked jobs consume changed environment/generated data, report them. No speculative product PR or skipped links.",
+    "A before/after identical watch-only subset alone cannot certify arbitrary workspace build scripts. Additional distinct controls must include real changed rustc env/cfg/ordered link args, a generated include, an unrelated out-of-OUT_DIR write read by a proc macro and an ordinary Rust caller before proposing a skip. The previously demonstrated native linker filename/System-V script semantics remain binding."
+  ],
+  "storage": "H2, no timing. Copy previously settled mode stores to an independent target/shared/registry before active commands. Preserve source roots and original stores read-only. H2 home reserve 25 GiB. Use tmpfs with at least 10 GiB remaining, or private copy on home if the former cannot admit a mode. Hold the native lock exclusively. Report all unavailable modes. Run normally against the unchanged linked checkout; private bind only the three legitimate files. No agent H4/H5 jobs."
+}
