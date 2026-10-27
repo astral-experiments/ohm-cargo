@@ -1,0 +1,88 @@
+{
+  "rows": [
+    {
+      "phase": "cold",
+      "control": "D",
+      "candidate": "C",
+      "n": 12,
+      "geomean_reduction_pct": 0.07568579295355646,
+      "lower_upper_95_reduction_pct": [
+        -0.5609122570776581,
+        0.702780600588977
+      ],
+      "upper_98_75_overhead_pct": 0.652617919465574,
+      "upper_98_75_absolute_overhead_ms": 1719.8838082500079,
+      "median_control_s": 264.41116242,
+      "median_candidate_s": 264.3630338125,
+      "faster_pairs": 5,
+      "exact_two_sided_p": 0.8138528138528138,
+      "balanced_assignments": 924,
+      "at_least_as_extreme": 752,
+      "safety_pass": true
+    },
+    {
+      "phase": "first",
+      "control": "D",
+      "candidate": "C",
+      "n": 12,
+      "geomean_reduction_pct": 85.91294018135464,
+      "lower_upper_95_reduction_pct": [
+        85.4901017872825,
+        86.3075628271513
+      ],
+      "upper_98_75_overhead_pct": -85.42504621395273,
+      "upper_98_75_absolute_overhead_ms": -4626.723179083333,
+      "median_control_s": 5.5212857925,
+      "median_candidate_s": 0.7750486125,
+      "faster_pairs": 12,
+      "exact_two_sided_p": 0.0021645021645021645,
+      "balanced_assignments": 924,
+      "at_least_as_extreme": 2,
+      "holm_p": 0.004329004329004329,
+      "claim_pass": true
+    },
+    {
+      "phase": "settled",
+      "control": "D",
+      "candidate": "C",
+      "n": 12,
+      "geomean_reduction_pct": 3.1283815291690615,
+      "lower_upper_95_reduction_pct": [
+        -2.91372069296213,
+        8.358987428738295
+      ],
+      "upper_98_75_overhead_pct": 3.778788518382819,
+      "upper_98_75_absolute_overhead_ms": 29.211720166666638,
+      "median_control_s": 0.7726950515,
+      "median_candidate_s": 0.7765171765000001,
+      "faster_pairs": 8,
+      "exact_two_sided_p": 0.23160173160173161,
+      "balanced_assignments": 924,
+      "at_least_as_extreme": 214,
+      "safety_pass": true
+    },
+    {
+      "phase": "cold_plus_first",
+      "control": "D",
+      "candidate": "C",
+      "n": 12,
+      "geomean_reduction_pct": 1.832944944009235,
+      "lower_upper_95_reduction_pct": [
+        1.2076195488095667,
+        2.4443805890116765
+      ],
+      "upper_98_75_overhead_pct": -1.1268659831137906,
+      "upper_98_75_absolute_overhead_ms": -3035.3685202499937,
+      "median_control_s": 269.895103871,
+      "median_candidate_s": 265.2038300265,
+      "faster_pairs": 11,
+      "exact_two_sided_p": 0.0021645021645021645,
+      "balanced_assignments": 924,
+      "at_least_as_extreme": 2,
+      "holm_p": 0.004329004329004329,
+      "claim_pass": true
+    }
+  ],
+  "claims_pass": true,
+  "floors_pass": true
+}
