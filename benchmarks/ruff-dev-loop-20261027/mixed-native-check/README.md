@@ -1,0 +1,7 @@
+# Ruff check after a native build
+
+On unedited Ruff at `93526150df078af7dd8fc4226cdcc469539d2001`, the release-profile #232 and #233 compilers both failed a full workspace `cargo check` after native builds. Both reported colliding StableCrateId values for `pep440_rs` in `ruff_linter`. The parent also reported collisions while checking `ruff_workspace` and `ruff_dev`. Starting with an empty build and target directory, both compilers passed the full workspace check, and every unit was fresh on its immediate repeat.
+
+Both Rust metadata headers report StableCrateId 12752188872798595657 for pep440_rs 0.7.3 with the same feature set. The native library and check-mode metadata have different public hashes. The captured `ruff_linter` command selects checked pep440_rs directly, while its native `pyproject_toml` dependency records native pep440_rs in its metadata. The parent and corrected compiler both receive this graph from the same Cargo binary. The two compressed failing Cargo receipts, failing command lines and decoded `rustc +ohm -Zls=root` headers are in `transition.tar.gz`.
+
+In a separate control with an empty initial cache, both compilers checked 520 Ruff workspace units. Reversing the complete mixed-literal parser edit, `3ea20f6161c`, started 35 rustc processes on both drivers. This differs from the private pattern-recovery edit measured in [#232](https://github.com/astral-sh/ohm-rust/pull/232).

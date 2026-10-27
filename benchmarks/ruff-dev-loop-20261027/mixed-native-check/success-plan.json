@@ -1,0 +1,24 @@
+{
+  "status": "prospective before Cargo candidate exists",
+  "question": "Can a full Ruff check follow a native build using the same paths and cache?",
+  "source": "Ruff 93526150df078af7dd8fc4226cdcc469539d2001, no edit or executed tests",
+  "compiler": "Fixed #233 PGO/BOLT driver SHA256 3e4b168966e111b52ad1a942d364ec1335cf1cfa994f4208b0909ca215b589d2",
+  "cargo": "Ohm Cargo base 461a3d1007ecc997a6d86c7d75e8b518575c8d90 with and without only the fix, both with identical release features, compiler, PGO input and canonical paths",
+  "test": "12 paired independent warm native\u2192check invocations on the small reproducer, each in a new target and build store bound at a fixed path, with the same Cargo registry. Reproduce in the full Ruff workspace from a genuinely warmed native state for each arm; require two consecutive candidate successes and a fresh repeat and compare the fixed diagnostics to a separate clean reference. Baseline valid failure must cite a colliding StableCrateId. Do not compare elapsed time for a failed baseline to elapsed time for a successful command.",
+  "orders": [
+    "parent/candidate",
+    "candidate/parent",
+    "candidate/parent",
+    "parent/candidate",
+    "candidate/parent",
+    "parent/candidate",
+    "parent/candidate",
+    "candidate/parent",
+    "parent/candidate",
+    "candidate/parent",
+    "candidate/parent",
+    "parent/candidate"
+  ],
+  "seed": 202610270534,
+  "analysis": "Two-sided exact paired sign test on the pass/fail outcome for the small fixture, excluding ties. Preserve the independent full Ruff run, all failed runs, and any control that exposes an unexpected alternative error. A correct check must compile the downstream type equality, remain fresh on repetition, and keep a separate eligible dependency native. No time savings claim for turning a failure into success."
+}
