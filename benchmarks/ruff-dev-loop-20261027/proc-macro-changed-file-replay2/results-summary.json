@@ -1,0 +1,35 @@
+{
+  "replay2-baseline": {
+    "cargo": "dd5cab154b8dcd09ccc2753160d314cade80979b2d055ee66aa9e2217e05e7e1",
+    "cases": {
+      "span-after": {
+        "callers": {
+          "empty/from-empty": "8:#0 bytes(374517..374527):379",
+          "empty/from-warm": "8:#0 bytes(374517..374527):379",
+          "warm/from-empty": "8:#0 bytes(374517..374527):379",
+          "warm/from-warm": "8:#0 bytes(374517..374527):379"
+        },
+        "metadata_equal": true
+      },
+      "track-after": {
+        "callers": {
+          "empty/from-empty": "8:#0 bytes(374523..374533):379",
+          "empty/from-warm": "8:#0 bytes(374523..374533):379",
+          "warm/from-empty": "8:#0 bytes(374523..374533):379",
+          "warm/from-warm": "8:#0 bytes(374523..374533):379"
+        },
+        "metadata_equal": true
+      },
+      "track-before": {
+        "callers": {
+          "empty/from-empty": "8:#0 bytes(374523..374533):379",
+          "empty/from-warm": "8:#0 bytes(374523..374533):379",
+          "warm/from-empty": "8:#0 bytes(374523..374533):379",
+          "warm/from-warm": "8:#0 bytes(374523..374533):379"
+        },
+        "metadata_equal": true
+      }
+    },
+    "driver": "b0eb717e74b57f5d4529383e21ddaa504b68411c90c202f5527cf2d0b749fe47"
+  }
+}
