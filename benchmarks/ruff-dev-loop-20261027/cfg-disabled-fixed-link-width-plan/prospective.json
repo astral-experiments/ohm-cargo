@@ -1,0 +1,274 @@
+{
+  "benchmark_host": "charlie-ohm-generic-perf-1024 (H4)",
+  "both_rustc_driver": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+  "cmd": [
+    "cargo",
+    "+ohm",
+    "test",
+    "--no-run",
+    "--locked",
+    "--offline",
+    "--message-format=json"
+  ],
+  "control_cargo": "dd5cab154b8dcd09ccc2753160d314cade80979b2d055ee66aa9e2217e05e7e1",
+  "control_commit": "d38fdd02503662de04c52f5f370f5dd81bddf868",
+  "eligibility": "Both primary arms have physically separate warmed target/shared/registry-home overlays on the same disk and use the identical canonical source,target,build,toolchain paths. On the first and last historical patch transitions, compare actual exec counts/targets (full rustc, link-only rustc, GCC, Wild), full Cargo artifact roster and file content with independent same-arm forced-full replay. All reported integration test ELFs match that arm\u2019s verified same-path full links, including its actual physical embedded const-folded debug data. Demand correct CLI/runtime behavior on the semantic patch where observable, immediate fresh no-op, genuine cfg-enabled/explicit aux-output negative. No wrappers in scored commands.",
+  "endpoints": {
+    "parser": {
+      "full_commit": "3ea20f6161cbf59cb56595dfb634ec24bfa82f0b",
+      "order": [
+        [
+          "candidate",
+          "parent"
+        ],
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "parent"
+        ],
+        [
+          "candidate",
+          "parent"
+        ],
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "parent"
+        ],
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "parent"
+        ],
+        [
+          "candidate",
+          "parent"
+        ],
+        [
+          "candidate",
+          "parent"
+        ],
+        [
+          "candidate",
+          "parent"
+        ],
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "parent"
+        ]
+      ],
+      "parent_commit": "309c3340c3599da2ce5e3055016454e114b45e58",
+      "patch_sha256": "08bb20f14fde4db57dd12ec3de3855021ddf6284b4a1957b54f4d06fb3c8f9ff",
+      "paths": [
+        "crates/ruff_python_parser/resources/inline/err/mixed_tstring_and_bytes_literals.py",
+        "crates/ruff_python_parser/src/parser/expression.rs",
+        "crates/ruff_python_parser/tests/snapshots/invalid_syntax@mixed_tstring_and_bytes_literals.py.snap"
+      ]
+    },
+    "stdlib": {
+      "full_commit": "523d83c941cbae9b7c8a10739c839a8eeda3245d",
+      "order": [
+        [
+          "candidate",
+          "parent"
+        ],
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "parent"
+        ],
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "parent"
+        ],
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "parent"
+        ],
+        [
+          "candidate",
+          "parent"
+        ],
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "parent"
+        ],
+        [
+          "candidate",
+          "parent"
+        ],
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "parent"
+        ],
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "parent"
+        ]
+      ],
+      "parent_commit": "2e34f5ba227e3f8889632c957f9e5b2c466ad28a",
+      "patch_sha256": "cc3eee740006b71291cac2ac93988b47deb1cfb96daf5ec5da98750a97b872b1",
+      "paths": [
+        "crates/ruff_linter/resources/mdtest/flake8-bugbear/mutable-argument-default.md",
+        "crates/ruff_python_stdlib/src/typing.rs"
+      ]
+    },
+    "wasm-only": {
+      "full_commit": "7c7f8d1a174dc895c0feb5f9c46ca4c4992cc2bc",
+      "order": [
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "parent"
+        ],
+        [
+          "candidate",
+          "parent"
+        ],
+        [
+          "candidate",
+          "parent"
+        ],
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "parent"
+        ],
+        [
+          "candidate",
+          "parent"
+        ],
+        [
+          "candidate",
+          "parent"
+        ],
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "parent"
+        ],
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "parent"
+        ],
+        [
+          "candidate",
+          "parent"
+        ],
+        [
+          "parent",
+          "candidate"
+        ]
+      ],
+      "parent_commit": "761031f729ee43fe39cdb9b04e0133740a77be17",
+      "patch_sha256": "6039eea2d7ae5a7d782aa69dadc3d7315b37da211102d4419dff4ff2e1916742",
+      "paths": [
+        "crates/ty_wasm/src/lib.rs",
+        "playground/ty/src/Editor/Editor.tsx"
+      ]
+    }
+  },
+  "pin": "93526150df078af7dd8fc4226cdcc469539d2001",
+  "preflight": "Reserve at least 25GiB of each writable device. Check dedicated host identity, previous outside workload, cgroup/CPU and all physical runtime device paths before qualification/timing. Bind exact final Cargo and all scripts/patches in separate receipt. No schedule may start until qualification.",
+  "primary": "18 balanced independent order-randomized parent/candidate pairs, always score the complete original-to-edited cargo test --no-run, restoring unscored to the starting source and freshness before each repeated edit. Exact two-sided balanced randomization of mean paired log runtime, 48620 assignments (18 choose 9). Report medians, geometric mean paired changes, paired bootstrap percentile CI, exact p and Holm-adjusted p across all 3 full-workspace endpoints. Real gains require favorable direction, interval excluding zero, exact familywise p<0.05, favorable independent repeat or held-out comparison, and all behavior/output controls.",
+  "registered_before_native_timings": true,
+  "schema": 1,
+  "secondary": "Include the two natural -p ruff_wasm -p ty_wasm --test api scope historical parser/stdlib raw process and same-path native ELF observations; separately register paired scoped wall only if heat/capacity allow before any such measurement. A scoped result alone does not qualify a draft. Report any fresh command slowdown independently (18 balanced pairs, same trained source and both jobs already fresh) and native-input/changed-test control costs."
+}

@@ -1,0 +1,66 @@
+diff --git a/crates/ruff_linter/resources/mdtest/flake8-bugbear/mutable-argument-default.md b/crates/ruff_linter/resources/mdtest/flake8-bugbear/mutable-argument-default.md
+new file mode 100644
+index 0000000000..08e9a9b5d0
+--- /dev/null
++++ b/crates/ruff_linter/resources/mdtest/flake8-bugbear/mutable-argument-default.md
+@@ -0,0 +1,36 @@
++# `mutable-argument-default` (`B006`)
++
++```toml
++lint.select = ["B006", "B008"]
++```
++
++## `collections`
++
++Mutable types from `collections` should trigger `mutable-argument-default` (`B006`) instead of `function-call-in-default-argument` (`B008`).
++
++```py
++import collections
++
++def f(
++    a=collections.ChainMap(),  # error: [mutable-argument-default]
++    b=collections.UserDict(),  # error: [mutable-argument-default]
++    c=collections.UserList(),  # error: [mutable-argument-default]
++    d=collections.UserString(""),  # error: [mutable-argument-default]
++):
++    pass
++```
++
++## `weakref`
++
++Weak reference container types from `weakref` should trigger `mutable-argument-default` (`B006`) instead of `function-call-in-default-argument` (`B008`).
++
++```py
++import weakref
++
++def f(
++    a=weakref.WeakKeyDictionary(),  # error: [mutable-argument-default]
++    b=weakref.WeakValueDictionary(),  # error: [mutable-argument-default]
++    c=weakref.WeakSet(),  # error: [mutable-argument-default]
++):
++    pass
++```
+diff --git a/crates/ruff_python_stdlib/src/typing.rs b/crates/ruff_python_stdlib/src/typing.rs
+index 4b66f3d612..2ac0d4c1ea 100644
+--- a/crates/ruff_python_stdlib/src/typing.rs
++++ b/crates/ruff_python_stdlib/src/typing.rs
+@@ -306,7 +306,18 @@ pub fn is_mutable_return_type(qualified_name: &[&str]) -> bool {
+         ["" | "builtins", "dict" | "list" | "set"]
+             | [
+                 "collections",
+-                "Counter" | "OrderedDict" | "defaultdict" | "deque"
++                "ChainMap"
++                    | "Counter"
++                    | "OrderedDict"
++                    | "UserDict"
++                    | "UserList"
++                    | "UserString"
++                    | "defaultdict"
++                    | "deque"
++            ]
++            | [
++                "weakref",
++                "WeakKeyDictionary" | "WeakValueDictionary" | "WeakSet"
+             ]
+     )
+ }

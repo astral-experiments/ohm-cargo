@@ -1,0 +1,4137 @@
+{
+  "direct": {
+    "A": {
+      "helpermode": {
+        "cargo": "dd5cab154b8dcd09ccc2753160d314cade80979b2d055ee66aa9e2217e05e7e1",
+        "observations": {
+          "collect2": {
+            "elf": "65f1d17913a748e70b62db815cf1c80ec7667e1215a53d28c617cf8da13410e2",
+            "helper_sha256": "4d1f341ae5b763b513258ee2812422a45e063c30a2f1924a0cf63d3699f3a158",
+            "mode": "0o644",
+            "rc": 0,
+            "rustcs": [
+              "api",
+              "leaf"
+            ],
+            "stock_mode": "0o755",
+            "tests": "0 tests, 0 benchmarks\n",
+            "wild": []
+          },
+          "ld.bfd": {
+            "elf": "65f1d17913a748e70b62db815cf1c80ec7667e1215a53d28c617cf8da13410e2",
+            "helper_sha256": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5",
+            "mode": "0o444",
+            "rc": 0,
+            "rustcs": [
+              "api",
+              "leaf"
+            ],
+            "stock_mode": "0o555",
+            "tests": "0 tests, 0 benchmarks\n",
+            "wild": []
+          }
+        },
+        "rustc": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f"
+      },
+      "loader": {
+        "cargo": "dd5cab154b8dcd09ccc2753160d314cade80979b2d055ee66aa9e2217e05e7e1",
+        "cases": {
+          "edit": {
+            "elf": "e1426a00d1a5656d8bb87ff4f6e1069c724b4e8b2f1c6410015ad55d3e576e84",
+            "native_probes": [],
+            "rc": 0,
+            "rustcs": [
+              "api",
+              "kit"
+            ],
+            "tests": "0 tests, 0 benchmarks\n",
+            "wild": [
+              "api-2e6fae8a2794841b",
+              "libkit.so"
+            ]
+          },
+          "prime": {
+            "elf": "e1426a00d1a5656d8bb87ff4f6e1069c724b4e8b2f1c6410015ad55d3e576e84",
+            "native_probes": [],
+            "rc": 0,
+            "rustcs": [
+              "api",
+              "mark",
+              "kit",
+              "build_script_build"
+            ],
+            "tests": "0 tests, 0 benchmarks\n",
+            "wild": [
+              "api-2e6fae8a2794841b",
+              "libmark-1c2e766d0626af38.so",
+              "libkit.so",
+              "build_script_build"
+            ]
+          }
+        },
+        "prime_elf": "e1426a00d1a5656d8bb87ff4f6e1069c724b4e8b2f1c6410015ad55d3e576e84",
+        "requested_loader_diagnostic_files_for_actual_api_processes": [
+          [
+            [
+              "ld.bfd"
+            ],
+            true,
+            3392
+          ],
+          [
+            [
+              "rustc"
+            ],
+            true,
+            14275
+          ]
+        ],
+        "rustc": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+        "scenario": "loader"
+      },
+      "rustc": {
+        "cargo": "dd5cab154b8dcd09ccc2753160d314cade80979b2d055ee66aa9e2217e05e7e1",
+        "cases": {
+          "edit": {
+            "elf": "03f0060e8353a84a26d6abc3a0a8a4803235d3760fdabcb419735b1278113e9c",
+            "native_probes": [],
+            "rc": 0,
+            "rustcs": [
+              "api",
+              "kit"
+            ],
+            "tests": "active: test\n\n1 test, 0 benchmarks\n",
+            "wild": [
+              "api-2e6fae8a2794841b",
+              "libkit.so"
+            ]
+          },
+          "prime": {
+            "elf": "e1426a00d1a5656d8bb87ff4f6e1069c724b4e8b2f1c6410015ad55d3e576e84",
+            "native_probes": [],
+            "rc": 0,
+            "rustcs": [
+              "api",
+              "mark",
+              "kit",
+              "build_script_build"
+            ],
+            "tests": "0 tests, 0 benchmarks\n",
+            "wild": [
+              "api-2e6fae8a2794841b",
+              "libmark-1c2e766d0626af38.so",
+              "libkit.so",
+              "build_script_build"
+            ]
+          }
+        },
+        "prime_elf": "e1426a00d1a5656d8bb87ff4f6e1069c724b4e8b2f1c6410015ad55d3e576e84",
+        "rustc": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+        "scenario": "rustc"
+      }
+    },
+    "C": {
+      "helpermode": {
+        "cargo": "5227d7a8222366077a451f8d08d6e267108e16708db0326275fce212a180cf76",
+        "observations": {
+          "collect2": {
+            "elf": "65f1d17913a748e70b62db815cf1c80ec7667e1215a53d28c617cf8da13410e2",
+            "helper_sha256": "4d1f341ae5b763b513258ee2812422a45e063c30a2f1924a0cf63d3699f3a158",
+            "mode": "0o644",
+            "rc": 0,
+            "rustcs": [
+              "api",
+              "leaf"
+            ],
+            "stock_mode": "0o755",
+            "tests": "0 tests, 0 benchmarks\n",
+            "wild": []
+          },
+          "ld.bfd": {
+            "elf": "65f1d17913a748e70b62db815cf1c80ec7667e1215a53d28c617cf8da13410e2",
+            "helper_sha256": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5",
+            "mode": "0o444",
+            "rc": 0,
+            "rustcs": [
+              "api",
+              "leaf"
+            ],
+            "stock_mode": "0o555",
+            "tests": "0 tests, 0 benchmarks\n",
+            "wild": []
+          }
+        },
+        "rustc": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f"
+      },
+      "loader": {
+        "cargo": "5227d7a8222366077a451f8d08d6e267108e16708db0326275fce212a180cf76",
+        "cases": {
+          "edit": {
+            "elf": "e1426a00d1a5656d8bb87ff4f6e1069c724b4e8b2f1c6410015ad55d3e576e84",
+            "native_probes": [],
+            "rc": 0,
+            "rustcs": [
+              "api",
+              "kit"
+            ],
+            "tests": "0 tests, 0 benchmarks\n",
+            "wild": [
+              "api-2e6fae8a2794841b",
+              "libkit.so"
+            ]
+          },
+          "prime": {
+            "elf": "e1426a00d1a5656d8bb87ff4f6e1069c724b4e8b2f1c6410015ad55d3e576e84",
+            "native_probes": [
+              "wild --help",
+              "cc -print-search-dirs"
+            ],
+            "rc": 0,
+            "rustcs": [
+              "api",
+              "mark",
+              "kit",
+              "build_script_build"
+            ],
+            "tests": "0 tests, 0 benchmarks\n",
+            "wild": [
+              "api-2e6fae8a2794841b",
+              "libmark-1c2e766d0626af38.so",
+              "libkit.so",
+              "build_script_build"
+            ]
+          }
+        },
+        "prime_elf": "e1426a00d1a5656d8bb87ff4f6e1069c724b4e8b2f1c6410015ad55d3e576e84",
+        "requested_loader_diagnostic_files_for_actual_api_processes": [
+          [
+            [
+              "ld.bfd"
+            ],
+            true,
+            3392
+          ],
+          [
+            [
+              "rustc"
+            ],
+            true,
+            14275
+          ]
+        ],
+        "rustc": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+        "scenario": "loader"
+      },
+      "rustc": {
+        "cargo": "5227d7a8222366077a451f8d08d6e267108e16708db0326275fce212a180cf76",
+        "cases": {
+          "edit": {
+            "elf": "03f0060e8353a84a26d6abc3a0a8a4803235d3760fdabcb419735b1278113e9c",
+            "native_probes": [],
+            "rc": 0,
+            "rustcs": [
+              "api",
+              "kit"
+            ],
+            "tests": "active: test\n\n1 test, 0 benchmarks\n",
+            "wild": [
+              "api-2e6fae8a2794841b",
+              "libkit.so"
+            ]
+          },
+          "prime": {
+            "elf": "e1426a00d1a5656d8bb87ff4f6e1069c724b4e8b2f1c6410015ad55d3e576e84",
+            "native_probes": [],
+            "rc": 0,
+            "rustcs": [
+              "api",
+              "mark",
+              "kit",
+              "build_script_build"
+            ],
+            "tests": "0 tests, 0 benchmarks\n",
+            "wild": [
+              "api-2e6fae8a2794841b",
+              "libmark-1c2e766d0626af38.so",
+              "libkit.so",
+              "build_script_build"
+            ]
+          }
+        },
+        "prime_elf": "e1426a00d1a5656d8bb87ff4f6e1069c724b4e8b2f1c6410015ad55d3e576e84",
+        "rustc": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+        "scenario": "rustc"
+      }
+    }
+  },
+  "native": {
+    "A": {
+      "all_actual_commands": 19,
+      "cargo": "dd5cab154b8dcd09ccc2753160d314cade80979b2d055ee66aa9e2217e05e7e1",
+      "negative_cases": {
+        "activated": {
+          "execution_rc": [
+            101,
+            0
+          ],
+          "fail": {
+            "elf": "6839ac404c9fc8feed1eb1edd288d0767f83cd4f6c135bb2f964a26bb262d4aa",
+            "fixed": [],
+            "rc": 0,
+            "rustcs": [
+              "api",
+              "leaf",
+              "kit"
+            ],
+            "tests": "active: test\n\n1 test, 0 benchmarks\n",
+            "wild": [
+              "api-d85fd6b3c1ff5f15",
+              "libkit.so"
+            ]
+          },
+          "pass": {
+            "elf": "9e04870ab286832f1e523d38eabfccec5a70e7e1eba475f58d350a317169b779",
+            "fixed": [],
+            "rc": 0,
+            "rustcs": [
+              "api",
+              "kit"
+            ],
+            "tests": "active: test\n\n1 test, 0 benchmarks\n",
+            "wild": [
+              "api-d85fd6b3c1ff5f15",
+              "libkit.so"
+            ]
+          }
+        },
+        "actual_gcc_specs": {
+          "elf": "142327ec73ad77ea5ad6b985525eaeb3fd29969cff3f9f89a1cfd21fc33811c0",
+          "fixed": [],
+          "marker": "0000000000000089",
+          "rc": 0,
+          "rustcs": [
+            "api",
+            "leaf"
+          ],
+          "tests": "0 tests, 0 benchmarks\n",
+          "wild": [
+            "api-d85fd6b3c1ff5f15"
+          ]
+        },
+        "collect2": {
+          "bound_mode": "0o644",
+          "elf": "65f1d17913a748e70b62db815cf1c80ec7667e1215a53d28c617cf8da13410e2",
+          "fixed": [],
+          "rc": 0,
+          "rustcs": [
+            "api",
+            "leaf"
+          ],
+          "stock_mode": "0o755",
+          "tests": "0 tests, 0 benchmarks\n",
+          "tool_sha256": "4d1f341ae5b763b513258ee2812422a45e063c30a2f1924a0cf63d3699f3a158",
+          "wild": []
+        },
+        "earlier-library": {
+          "elf": null,
+          "fixed": [],
+          "rc": 101,
+          "rustcs": [
+            "api",
+            "leaf"
+          ],
+          "tests": null,
+          "wild": [
+            "api-d85fd6b3c1ff5f15"
+          ]
+        },
+        "layout": {
+          "elf": "c61f735cdc27ab84f207dadadddcb1655bfbada8a74cf8862afbbe9797a2afac",
+          "fixed": [],
+          "rc": 0,
+          "requested_bytes": 40440,
+          "rustcs": [
+            "api",
+            "leaf"
+          ],
+          "tests": "0 tests, 0 benchmarks\n",
+          "wild": [
+            "api-d85fd6b3c1ff5f15"
+          ]
+        },
+        "ld.bfd": {
+          "bound_mode": "0o444",
+          "elf": "65f1d17913a748e70b62db815cf1c80ec7667e1215a53d28c617cf8da13410e2",
+          "fixed": [],
+          "rc": 0,
+          "rustcs": [
+            "api",
+            "leaf"
+          ],
+          "stock_mode": "0o555",
+          "tests": "0 tests, 0 benchmarks\n",
+          "tool_sha256": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5",
+          "wild": []
+        },
+        "loader": {
+          "elf": "c61f735cdc27ab84f207dadadddcb1655bfbada8a74cf8862afbbe9797a2afac",
+          "fixed": [],
+          "rc": 0,
+          "requested_files": [
+            [
+              "ld.bfd",
+              3392
+            ],
+            [
+              "rustc",
+              14275
+            ]
+          ],
+          "rustcs": [
+            "api",
+            "leaf"
+          ],
+          "tests": "0 tests, 0 benchmarks\n",
+          "wild": [
+            "api-d85fd6b3c1ff5f15"
+          ]
+        },
+        "resolved-library": {
+          "elf": null,
+          "fixed": [],
+          "rc": 101,
+          "rustcs": [
+            "api",
+            "leaf"
+          ],
+          "tests": null,
+          "wild": [
+            "api-d85fd6b3c1ff5f15"
+          ]
+        },
+        "user-0": {
+          "elf": "6dc392ee7cb7e157cbf3c2ec6f3453d7f0ec89da286930df12b17d963832699e",
+          "fixed": [],
+          "rc": 0,
+          "requested_output_bytes": [
+            1686242,
+            11531
+          ],
+          "rustcs": [
+            "api",
+            "leaf"
+          ],
+          "tests": "0 tests, 0 benchmarks\n",
+          "wild": []
+        },
+        "user-1": {
+          "elf": "6dc392ee7cb7e157cbf3c2ec6f3453d7f0ec89da286930df12b17d963832699e",
+          "fixed": [],
+          "rc": 0,
+          "requested_output_bytes": [
+            1686242,
+            11531
+          ],
+          "rustcs": [
+            "api",
+            "leaf"
+          ],
+          "tests": "0 tests, 0 benchmarks\n",
+          "wild": []
+        }
+      },
+      "rustc": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+      "trained": "c61f735cdc27ab84f207dadadddcb1655bfbada8a74cf8862afbbe9797a2afac"
+    },
+    "B": {
+      "all_actual_commands": 44,
+      "cargo": "991d983a45416c63bc637511ccc584ea2ca6486d1a0b190108577ef00770768f",
+      "negative_cases": {
+        "activated": {
+          "execution_rc": [
+            101,
+            0
+          ],
+          "fail": {
+            "elf": "6839ac404c9fc8feed1eb1edd288d0767f83cd4f6c135bb2f964a26bb262d4aa",
+            "fixed": [],
+            "rc": 0,
+            "rustcs": [
+              "api",
+              "kit"
+            ],
+            "tests": "active: test\n\n1 test, 0 benchmarks\n",
+            "wild": [
+              "api-d85fd6b3c1ff5f15",
+              "libkit.so"
+            ]
+          },
+          "pass": {
+            "elf": "9e04870ab286832f1e523d38eabfccec5a70e7e1eba475f58d350a317169b779",
+            "fixed": [],
+            "rc": 0,
+            "rustcs": [
+              "api",
+              "kit"
+            ],
+            "tests": "active: test\n\n1 test, 0 benchmarks\n",
+            "wild": [
+              "api-d85fd6b3c1ff5f15",
+              "libkit.so"
+            ]
+          }
+        },
+        "actual_gcc_specs": {
+          "elf": "142327ec73ad77ea5ad6b985525eaeb3fd29969cff3f9f89a1cfd21fc33811c0",
+          "fixed": [],
+          "marker": "0000000000000089",
+          "rc": 0,
+          "rustcs": [
+            "api",
+            "leaf"
+          ],
+          "tests": "0 tests, 0 benchmarks\n",
+          "wild": [
+            "api-d85fd6b3c1ff5f15"
+          ]
+        },
+        "collect2": {
+          "bound_mode": "0o644",
+          "elf": "65f1d17913a748e70b62db815cf1c80ec7667e1215a53d28c617cf8da13410e2",
+          "fixed": [],
+          "rc": 0,
+          "rustcs": [
+            "api",
+            "leaf"
+          ],
+          "stock_mode": "0o755",
+          "tests": "0 tests, 0 benchmarks\n",
+          "tool_sha256": "4d1f341ae5b763b513258ee2812422a45e063c30a2f1924a0cf63d3699f3a158",
+          "wild": []
+        },
+        "earlier-library": {
+          "elf": null,
+          "fixed": [],
+          "rc": 101,
+          "rustcs": [
+            "api",
+            "leaf"
+          ],
+          "tests": null,
+          "wild": [
+            "api-d85fd6b3c1ff5f15"
+          ]
+        },
+        "layout": {
+          "elf": "c61f735cdc27ab84f207dadadddcb1655bfbada8a74cf8862afbbe9797a2afac",
+          "fixed": [],
+          "rc": 0,
+          "requested_bytes": 40384,
+          "rustcs": [
+            "api",
+            "leaf"
+          ],
+          "tests": "0 tests, 0 benchmarks\n",
+          "wild": [
+            "api-d85fd6b3c1ff5f15"
+          ]
+        },
+        "ld.bfd": {
+          "bound_mode": "0o444",
+          "elf": "65f1d17913a748e70b62db815cf1c80ec7667e1215a53d28c617cf8da13410e2",
+          "fixed": [],
+          "rc": 0,
+          "rustcs": [
+            "api",
+            "leaf"
+          ],
+          "stock_mode": "0o555",
+          "tests": "0 tests, 0 benchmarks\n",
+          "tool_sha256": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5",
+          "wild": []
+        },
+        "loader": {
+          "elf": "c61f735cdc27ab84f207dadadddcb1655bfbada8a74cf8862afbbe9797a2afac",
+          "fixed": [],
+          "rc": 0,
+          "requested_files": [
+            [
+              "ld.bfd",
+              3392
+            ],
+            [
+              "rustc",
+              14275
+            ]
+          ],
+          "rustcs": [
+            "api",
+            "leaf"
+          ],
+          "tests": "0 tests, 0 benchmarks\n",
+          "wild": [
+            "api-d85fd6b3c1ff5f15"
+          ]
+        },
+        "resolved-library": {
+          "elf": null,
+          "fixed": [],
+          "rc": 101,
+          "rustcs": [
+            "api",
+            "leaf"
+          ],
+          "tests": null,
+          "wild": [
+            "api-d85fd6b3c1ff5f15"
+          ]
+        },
+        "user-0": {
+          "elf": "6dc392ee7cb7e157cbf3c2ec6f3453d7f0ec89da286930df12b17d963832699e",
+          "fixed": [],
+          "rc": 0,
+          "requested_output_bytes": [
+            1685898,
+            11411
+          ],
+          "rustcs": [
+            "api",
+            "leaf"
+          ],
+          "tests": "0 tests, 0 benchmarks\n",
+          "wild": []
+        },
+        "user-1": {
+          "elf": "6dc392ee7cb7e157cbf3c2ec6f3453d7f0ec89da286930df12b17d963832699e",
+          "fixed": [],
+          "rc": 0,
+          "requested_output_bytes": [
+            1685898,
+            11411
+          ],
+          "rustcs": [
+            "api",
+            "leaf"
+          ],
+          "tests": "0 tests, 0 benchmarks\n",
+          "wild": []
+        }
+      },
+      "rustc": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+      "separate_unit_matrix": {
+        "active-attr-env-include": {
+          "api_modes": [
+            "full"
+          ],
+          "elf": "13b8762a4b4328f9bfc857a1b6f1df7e47066e6a4020ef8eacf582a9b0b7f7d1",
+          "execution_rc": 0,
+          "fixed": [],
+          "rc": 0,
+          "rustcs": [
+            "api",
+            "kit"
+          ],
+          "tests": "external_case: test\n\n1 test, 0 benchmarks\n",
+          "wild": [
+            "api-2e6fae8a2794841b",
+            "libkit.so"
+          ]
+        },
+        "active-env-changed": {
+          "api_modes": [
+            "full"
+          ],
+          "elf": "244f6439221257b69359cd9387cda55089d919ae2c3ac3e38d4e46f181894d49",
+          "execution_rc": 0,
+          "fixed": [],
+          "rc": 0,
+          "rustcs": [
+            "api"
+          ],
+          "tests": "external_case: test\n\n1 test, 0 benchmarks\n",
+          "wild": [
+            "api-2e6fae8a2794841b"
+          ]
+        },
+        "active-include-changed": {
+          "api_modes": [
+            "full"
+          ],
+          "elf": "1df5b8ed83a82b474e123f84f0e2d6e363a2383eb078ac2c684d0cb8156973fd",
+          "execution_rc": 101,
+          "fixed": [],
+          "rc": 0,
+          "rustcs": [
+            "api"
+          ],
+          "tests": "external_case: test\n\n1 test, 0 benchmarks\n",
+          "wild": [
+            "api-2e6fae8a2794841b"
+          ]
+        },
+        "active-raw-native-missing": {
+          "api_modes": [
+            "full"
+          ],
+          "elf": null,
+          "execution_rc": null,
+          "fixed": [],
+          "rc": 101,
+          "rustcs": [
+            "api"
+          ],
+          "tests": null,
+          "wild": [
+            "api-2e6fae8a2794841b"
+          ]
+        },
+        "cfg-active-fail": {
+          "api_modes": [
+            "full"
+          ],
+          "elf": "b558b36c84876c8c11f0c5f342f22e3c0ab4dc504d1b9b8bf1e4865af17be4d7",
+          "execution_rc": 101,
+          "fixed": [],
+          "rc": 0,
+          "rustcs": [
+            "api",
+            "kit"
+          ],
+          "tests": "active: test\n\n1 test, 0 benchmarks\n",
+          "wild": [
+            "api-2e6fae8a2794841b",
+            "libkit.so"
+          ]
+        },
+        "cfg-active-pass": {
+          "api_modes": [
+            "full"
+          ],
+          "elf": "edc7eb4d85da1c320753d1fb1030c55034bc416f0456408aa94ef4c5636e3aea",
+          "execution_rc": 0,
+          "fixed": [],
+          "rc": 0,
+          "rustcs": [
+            "api",
+            "kit"
+          ],
+          "tests": "active: test\n\n1 test, 0 benchmarks\n",
+          "wild": [
+            "api-2e6fae8a2794841b",
+            "libkit.so"
+          ]
+        },
+        "cfg-removed": {
+          "api_modes": [
+            "full"
+          ],
+          "elf": "e1426a00d1a5656d8bb87ff4f6e1069c724b4e8b2f1c6410015ad55d3e576e84",
+          "execution_rc": null,
+          "fixed": [],
+          "rc": 0,
+          "rustcs": [
+            "api",
+            "kit"
+          ],
+          "tests": "0 tests, 0 benchmarks\n",
+          "wild": [
+            "api-2e6fae8a2794841b",
+            "libkit.so"
+          ]
+        },
+        "first-dirty-training": {
+          "api_modes": [
+            "full"
+          ],
+          "elf": "e1426a00d1a5656d8bb87ff4f6e1069c724b4e8b2f1c6410015ad55d3e576e84",
+          "execution_rc": null,
+          "fixed": [
+            "api-2e6fae8a2794841b"
+          ],
+          "rc": 0,
+          "rustcs": [
+            "api",
+            "kit"
+          ],
+          "tests": "0 tests, 0 benchmarks\n",
+          "wild": [
+            "api-2e6fae8a2794841b",
+            "libkit.so"
+          ]
+        },
+        "native-140": {
+          "api_modes": [
+            "full"
+          ],
+          "elf": "dc570d3e6dfdab3f745e18b387f232b9c1589438810f735efb7821c9e9846a76",
+          "execution_rc": null,
+          "fixed": [],
+          "rc": 0,
+          "rustcs": [
+            "api",
+            "kit"
+          ],
+          "tests": "0 tests, 0 benchmarks\n",
+          "wild": [
+            "api-2e6fae8a2794841b",
+            "libkit.so"
+          ]
+        },
+        "native-141": {
+          "api_modes": [
+            "full"
+          ],
+          "elf": "6ec7b4db3a0394a033dfc0d994739b3a7e74c395e4a92e968201398cf34faecd",
+          "execution_rc": null,
+          "fixed": [],
+          "rc": 0,
+          "rustcs": [
+            "api",
+            "kit"
+          ],
+          "tests": "0 tests, 0 benchmarks\n",
+          "wild": [
+            "api-2e6fae8a2794841b",
+            "libkit.so"
+          ]
+        },
+        "native-removed": {
+          "api_modes": [
+            "full"
+          ],
+          "elf": "e1426a00d1a5656d8bb87ff4f6e1069c724b4e8b2f1c6410015ad55d3e576e84",
+          "execution_rc": null,
+          "fixed": [],
+          "rc": 0,
+          "rustcs": [
+            "api",
+            "kit"
+          ],
+          "tests": "0 tests, 0 benchmarks\n",
+          "wild": [
+            "api-2e6fae8a2794841b",
+            "libkit.so"
+          ]
+        },
+        "normal-fresh": {
+          "api_modes": [],
+          "elf": "e1426a00d1a5656d8bb87ff4f6e1069c724b4e8b2f1c6410015ad55d3e576e84",
+          "execution_rc": null,
+          "fixed": [],
+          "rc": 0,
+          "rustcs": [],
+          "tests": "0 tests, 0 benchmarks\n",
+          "wild": []
+        },
+        "normal-recovery": {
+          "api_modes": [
+            "full"
+          ],
+          "elf": "e1426a00d1a5656d8bb87ff4f6e1069c724b4e8b2f1c6410015ad55d3e576e84",
+          "execution_rc": 0,
+          "fixed": [],
+          "rc": 0,
+          "rustcs": [
+            "api"
+          ],
+          "tests": "0 tests, 0 benchmarks\n",
+          "wild": [
+            "api-2e6fae8a2794841b"
+          ]
+        },
+        "positive": {
+          "api_modes": [
+            "full"
+          ],
+          "elf": "e1426a00d1a5656d8bb87ff4f6e1069c724b4e8b2f1c6410015ad55d3e576e84",
+          "execution_rc": 0,
+          "fixed": [
+            "api-2e6fae8a2794841b"
+          ],
+          "rc": 0,
+          "rustcs": [
+            "api",
+            "kit"
+          ],
+          "tests": "0 tests, 0 benchmarks\n",
+          "wild": [
+            "api-2e6fae8a2794841b",
+            "libkit.so"
+          ]
+        },
+        "positive-return": {
+          "api_modes": [
+            "full"
+          ],
+          "elf": "e1426a00d1a5656d8bb87ff4f6e1069c724b4e8b2f1c6410015ad55d3e576e84",
+          "execution_rc": null,
+          "fixed": [
+            "api-2e6fae8a2794841b"
+          ],
+          "rc": 0,
+          "rustcs": [
+            "api",
+            "kit"
+          ],
+          "tests": "0 tests, 0 benchmarks\n",
+          "wild": [
+            "api-2e6fae8a2794841b",
+            "libkit.so"
+          ]
+        },
+        "prime": {
+          "api_modes": [
+            "full"
+          ],
+          "elf": "e1426a00d1a5656d8bb87ff4f6e1069c724b4e8b2f1c6410015ad55d3e576e84",
+          "execution_rc": null,
+          "fixed": [],
+          "rc": 0,
+          "rustcs": [
+            "api",
+            "mark",
+            "kit",
+            "build_script_build"
+          ],
+          "tests": "0 tests, 0 benchmarks\n",
+          "wild": [
+            "api-2e6fae8a2794841b",
+            "libmark-1c2e766d0626af38.so",
+            "libkit.so",
+            "build_script_build"
+          ]
+        },
+        "prime-fresh": {
+          "api_modes": [],
+          "elf": "e1426a00d1a5656d8bb87ff4f6e1069c724b4e8b2f1c6410015ad55d3e576e84",
+          "execution_rc": null,
+          "fixed": [],
+          "rc": 0,
+          "rustcs": [],
+          "tests": "0 tests, 0 benchmarks\n",
+          "wild": []
+        },
+        "reset-proof": {
+          "api_modes": [
+            "full"
+          ],
+          "elf": "e1426a00d1a5656d8bb87ff4f6e1069c724b4e8b2f1c6410015ad55d3e576e84",
+          "execution_rc": null,
+          "fixed": [
+            "api-2e6fae8a2794841b"
+          ],
+          "rc": 0,
+          "rustcs": [
+            "api",
+            "kit"
+          ],
+          "tests": "0 tests, 0 benchmarks\n",
+          "wild": [
+            "api-2e6fae8a2794841b",
+            "libkit.so"
+          ]
+        },
+        "target-override-dirty": {
+          "api_modes": [
+            "full"
+          ],
+          "elf": "c8f37fdb4a0da235e9a379cbf8bcf1bf51f308a8884a428e07b0b3a960e8759d",
+          "execution_rc": null,
+          "fixed": [],
+          "rc": 0,
+          "rustcs": [
+            "api",
+            "kit"
+          ],
+          "tests": "0 tests, 0 benchmarks\n",
+          "wild": [
+            "api-19708e53bdab7bf7",
+            "libkit.so"
+          ]
+        },
+        "target-override-prime": {
+          "api_modes": [
+            "full"
+          ],
+          "elf": "c8f37fdb4a0da235e9a379cbf8bcf1bf51f308a8884a428e07b0b3a960e8759d",
+          "execution_rc": null,
+          "fixed": [],
+          "rc": 0,
+          "rustcs": [
+            "api",
+            "mark",
+            "kit",
+            "build_script_build"
+          ],
+          "tests": "0 tests, 0 benchmarks\n",
+          "wild": [
+            "api-19708e53bdab7bf7",
+            "libmark-54d2c0baa741f99c.so",
+            "libkit.so",
+            "build_script_build"
+          ]
+        },
+        "user-rustflags": {
+          "api_modes": [
+            "full"
+          ],
+          "elf": "e1426a00d1a5656d8bb87ff4f6e1069c724b4e8b2f1c6410015ad55d3e576e84",
+          "execution_rc": null,
+          "fixed": [],
+          "rc": 0,
+          "rustcs": [
+            "api",
+            "mark",
+            "kit",
+            "build_script_build"
+          ],
+          "tests": "0 tests, 0 benchmarks\n",
+          "wild": [
+            "api-ead17eec2015bc65",
+            "libmark-f3e45f3ecaa775c7.so",
+            "libkit.so",
+            "build_script_build"
+          ]
+        },
+        "user-rustflags-dirty": {
+          "api_modes": [
+            "full"
+          ],
+          "elf": "e1426a00d1a5656d8bb87ff4f6e1069c724b4e8b2f1c6410015ad55d3e576e84",
+          "execution_rc": null,
+          "fixed": [],
+          "rc": 0,
+          "rustcs": [
+            "api",
+            "kit"
+          ],
+          "tests": "0 tests, 0 benchmarks\n",
+          "wild": [
+            "api-ead17eec2015bc65",
+            "libkit.so"
+          ]
+        },
+        "warn-removed": {
+          "api_modes": [
+            "full"
+          ],
+          "elf": "e1426a00d1a5656d8bb87ff4f6e1069c724b4e8b2f1c6410015ad55d3e576e84",
+          "execution_rc": null,
+          "fixed": [],
+          "rc": 0,
+          "rustcs": [
+            "api"
+          ],
+          "tests": "0 tests, 0 benchmarks\n",
+          "wild": [
+            "api-2e6fae8a2794841b"
+          ]
+        },
+        "warning-dirty": {
+          "api_modes": [
+            "full"
+          ],
+          "elf": "e1426a00d1a5656d8bb87ff4f6e1069c724b4e8b2f1c6410015ad55d3e576e84",
+          "execution_rc": null,
+          "fixed": [],
+          "rc": 0,
+          "rustcs": [
+            "api",
+            "kit"
+          ],
+          "tests": "0 tests, 0 benchmarks\n",
+          "wild": [
+            "api-2e6fae8a2794841b",
+            "libkit.so"
+          ]
+        },
+        "warning-prime": {
+          "api_modes": [
+            "full"
+          ],
+          "elf": "e1426a00d1a5656d8bb87ff4f6e1069c724b4e8b2f1c6410015ad55d3e576e84",
+          "execution_rc": null,
+          "fixed": [],
+          "rc": 0,
+          "rustcs": [
+            "api"
+          ],
+          "tests": "0 tests, 0 benchmarks\n",
+          "wild": [
+            "api-2e6fae8a2794841b"
+          ]
+        },
+        "wrapper-dirty": {
+          "api_modes": [
+            "full"
+          ],
+          "elf": "bea93029f908d9f6ccd5bb6ecacbf9d827c633225a8ad75f7a01c515ad8e8cc4",
+          "execution_rc": null,
+          "fixed": [],
+          "rc": 0,
+          "rustcs": [
+            "api",
+            "kit"
+          ],
+          "tests": "0 tests, 0 benchmarks\n",
+          "wild": [
+            "api-8de4058ce8650838",
+            "libkit.so"
+          ]
+        },
+        "wrapper-prime": {
+          "api_modes": [
+            "full"
+          ],
+          "elf": "bea93029f908d9f6ccd5bb6ecacbf9d827c633225a8ad75f7a01c515ad8e8cc4",
+          "execution_rc": null,
+          "fixed": [],
+          "rc": 0,
+          "rustcs": [
+            "api",
+            "mark",
+            "kit",
+            "build_script_build"
+          ],
+          "tests": "0 tests, 0 benchmarks\n",
+          "wild": [
+            "api-8de4058ce8650838",
+            "libmark-20b41428c819ba9a.so",
+            "libkit.so",
+            "build_script_build"
+          ]
+        }
+      },
+      "trained": "c61f735cdc27ab84f207dadadddcb1655bfbada8a74cf8862afbbe9797a2afac"
+    },
+    "C": {
+      "all_actual_commands": 44,
+      "cargo": "5227d7a8222366077a451f8d08d6e267108e16708db0326275fce212a180cf76",
+      "negative_cases": {
+        "activated": {
+          "execution_rc": [
+            101,
+            0
+          ],
+          "fail": {
+            "elf": "6839ac404c9fc8feed1eb1edd288d0767f83cd4f6c135bb2f964a26bb262d4aa",
+            "fixed": [],
+            "rc": 0,
+            "rustcs": [
+              "api",
+              "kit"
+            ],
+            "tests": "active: test\n\n1 test, 0 benchmarks\n",
+            "wild": [
+              "api-d85fd6b3c1ff5f15",
+              "libkit.so"
+            ]
+          },
+          "pass": {
+            "elf": "9e04870ab286832f1e523d38eabfccec5a70e7e1eba475f58d350a317169b779",
+            "fixed": [],
+            "rc": 0,
+            "rustcs": [
+              "api",
+              "kit"
+            ],
+            "tests": "active: test\n\n1 test, 0 benchmarks\n",
+            "wild": [
+              "api-d85fd6b3c1ff5f15",
+              "libkit.so"
+            ]
+          }
+        },
+        "actual_gcc_specs": {
+          "elf": "142327ec73ad77ea5ad6b985525eaeb3fd29969cff3f9f89a1cfd21fc33811c0",
+          "fixed": [],
+          "marker": "0000000000000089",
+          "rc": 0,
+          "rustcs": [
+            "api",
+            "leaf"
+          ],
+          "tests": "0 tests, 0 benchmarks\n",
+          "wild": [
+            "api-d85fd6b3c1ff5f15"
+          ]
+        },
+        "collect2": {
+          "bound_mode": "0o644",
+          "elf": "65f1d17913a748e70b62db815cf1c80ec7667e1215a53d28c617cf8da13410e2",
+          "fixed": [],
+          "rc": 0,
+          "rustcs": [
+            "api",
+            "leaf"
+          ],
+          "stock_mode": "0o755",
+          "tests": "0 tests, 0 benchmarks\n",
+          "tool_sha256": "4d1f341ae5b763b513258ee2812422a45e063c30a2f1924a0cf63d3699f3a158",
+          "wild": []
+        },
+        "earlier-library": {
+          "elf": null,
+          "fixed": [],
+          "rc": 101,
+          "rustcs": [
+            "api",
+            "leaf"
+          ],
+          "tests": null,
+          "wild": [
+            "api-d85fd6b3c1ff5f15"
+          ]
+        },
+        "layout": {
+          "elf": "c61f735cdc27ab84f207dadadddcb1655bfbada8a74cf8862afbbe9797a2afac",
+          "fixed": [],
+          "rc": 0,
+          "requested_bytes": 40384,
+          "rustcs": [
+            "api",
+            "leaf"
+          ],
+          "tests": "0 tests, 0 benchmarks\n",
+          "wild": [
+            "api-d85fd6b3c1ff5f15"
+          ]
+        },
+        "ld.bfd": {
+          "bound_mode": "0o444",
+          "elf": "65f1d17913a748e70b62db815cf1c80ec7667e1215a53d28c617cf8da13410e2",
+          "fixed": [],
+          "rc": 0,
+          "rustcs": [
+            "api",
+            "leaf"
+          ],
+          "stock_mode": "0o555",
+          "tests": "0 tests, 0 benchmarks\n",
+          "tool_sha256": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5",
+          "wild": []
+        },
+        "loader": {
+          "elf": "c61f735cdc27ab84f207dadadddcb1655bfbada8a74cf8862afbbe9797a2afac",
+          "fixed": [],
+          "rc": 0,
+          "requested_files": [
+            [
+              "ld.bfd",
+              3392
+            ],
+            [
+              "rustc",
+              14275
+            ]
+          ],
+          "rustcs": [
+            "api",
+            "leaf"
+          ],
+          "tests": "0 tests, 0 benchmarks\n",
+          "wild": [
+            "api-d85fd6b3c1ff5f15"
+          ]
+        },
+        "resolved-library": {
+          "elf": null,
+          "fixed": [],
+          "rc": 101,
+          "rustcs": [
+            "api",
+            "leaf"
+          ],
+          "tests": null,
+          "wild": [
+            "api-d85fd6b3c1ff5f15"
+          ]
+        },
+        "user-0": {
+          "elf": "6dc392ee7cb7e157cbf3c2ec6f3453d7f0ec89da286930df12b17d963832699e",
+          "fixed": [],
+          "rc": 0,
+          "requested_output_bytes": [
+            1685898,
+            11411
+          ],
+          "rustcs": [
+            "api",
+            "leaf"
+          ],
+          "tests": "0 tests, 0 benchmarks\n",
+          "wild": []
+        },
+        "user-1": {
+          "elf": "6dc392ee7cb7e157cbf3c2ec6f3453d7f0ec89da286930df12b17d963832699e",
+          "fixed": [],
+          "rc": 0,
+          "requested_output_bytes": [
+            1685898,
+            11411
+          ],
+          "rustcs": [
+            "api",
+            "leaf"
+          ],
+          "tests": "0 tests, 0 benchmarks\n",
+          "wild": []
+        }
+      },
+      "rustc": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+      "separate_unit_matrix": {
+        "active-attr-env-include": {
+          "api_modes": [
+            "full"
+          ],
+          "elf": "13b8762a4b4328f9bfc857a1b6f1df7e47066e6a4020ef8eacf582a9b0b7f7d1",
+          "execution_rc": 0,
+          "fixed": [],
+          "rc": 0,
+          "rustcs": [
+            "api",
+            "kit"
+          ],
+          "tests": "external_case: test\n\n1 test, 0 benchmarks\n",
+          "wild": [
+            "api-2e6fae8a2794841b",
+            "libkit.so"
+          ]
+        },
+        "active-env-changed": {
+          "api_modes": [
+            "full"
+          ],
+          "elf": "244f6439221257b69359cd9387cda55089d919ae2c3ac3e38d4e46f181894d49",
+          "execution_rc": 0,
+          "fixed": [],
+          "rc": 0,
+          "rustcs": [
+            "api"
+          ],
+          "tests": "external_case: test\n\n1 test, 0 benchmarks\n",
+          "wild": [
+            "api-2e6fae8a2794841b"
+          ]
+        },
+        "active-include-changed": {
+          "api_modes": [
+            "full"
+          ],
+          "elf": "1df5b8ed83a82b474e123f84f0e2d6e363a2383eb078ac2c684d0cb8156973fd",
+          "execution_rc": 101,
+          "fixed": [],
+          "rc": 0,
+          "rustcs": [
+            "api"
+          ],
+          "tests": "external_case: test\n\n1 test, 0 benchmarks\n",
+          "wild": [
+            "api-2e6fae8a2794841b"
+          ]
+        },
+        "active-raw-native-missing": {
+          "api_modes": [
+            "full"
+          ],
+          "elf": null,
+          "execution_rc": null,
+          "fixed": [],
+          "rc": 101,
+          "rustcs": [
+            "api"
+          ],
+          "tests": null,
+          "wild": [
+            "api-2e6fae8a2794841b"
+          ]
+        },
+        "cfg-active-fail": {
+          "api_modes": [
+            "full"
+          ],
+          "elf": "b558b36c84876c8c11f0c5f342f22e3c0ab4dc504d1b9b8bf1e4865af17be4d7",
+          "execution_rc": 101,
+          "fixed": [],
+          "rc": 0,
+          "rustcs": [
+            "api",
+            "kit"
+          ],
+          "tests": "active: test\n\n1 test, 0 benchmarks\n",
+          "wild": [
+            "api-2e6fae8a2794841b",
+            "libkit.so"
+          ]
+        },
+        "cfg-active-pass": {
+          "api_modes": [
+            "full"
+          ],
+          "elf": "edc7eb4d85da1c320753d1fb1030c55034bc416f0456408aa94ef4c5636e3aea",
+          "execution_rc": 0,
+          "fixed": [],
+          "rc": 0,
+          "rustcs": [
+            "api",
+            "kit"
+          ],
+          "tests": "active: test\n\n1 test, 0 benchmarks\n",
+          "wild": [
+            "api-2e6fae8a2794841b",
+            "libkit.so"
+          ]
+        },
+        "cfg-removed": {
+          "api_modes": [
+            "full"
+          ],
+          "elf": "e1426a00d1a5656d8bb87ff4f6e1069c724b4e8b2f1c6410015ad55d3e576e84",
+          "execution_rc": null,
+          "fixed": [],
+          "rc": 0,
+          "rustcs": [
+            "api",
+            "kit"
+          ],
+          "tests": "0 tests, 0 benchmarks\n",
+          "wild": [
+            "api-2e6fae8a2794841b",
+            "libkit.so"
+          ]
+        },
+        "first-dirty-training": {
+          "api_modes": [
+            "full"
+          ],
+          "elf": "e1426a00d1a5656d8bb87ff4f6e1069c724b4e8b2f1c6410015ad55d3e576e84",
+          "execution_rc": null,
+          "fixed": [
+            "api-2e6fae8a2794841b"
+          ],
+          "rc": 0,
+          "rustcs": [
+            "api",
+            "kit"
+          ],
+          "tests": "0 tests, 0 benchmarks\n",
+          "wild": [
+            "api-2e6fae8a2794841b",
+            "libkit.so"
+          ]
+        },
+        "native-140": {
+          "api_modes": [
+            "full"
+          ],
+          "elf": "dc570d3e6dfdab3f745e18b387f232b9c1589438810f735efb7821c9e9846a76",
+          "execution_rc": null,
+          "fixed": [],
+          "rc": 0,
+          "rustcs": [
+            "api",
+            "kit"
+          ],
+          "tests": "0 tests, 0 benchmarks\n",
+          "wild": [
+            "api-2e6fae8a2794841b",
+            "libkit.so"
+          ]
+        },
+        "native-141": {
+          "api_modes": [
+            "full"
+          ],
+          "elf": "6ec7b4db3a0394a033dfc0d994739b3a7e74c395e4a92e968201398cf34faecd",
+          "execution_rc": null,
+          "fixed": [],
+          "rc": 0,
+          "rustcs": [
+            "api",
+            "kit"
+          ],
+          "tests": "0 tests, 0 benchmarks\n",
+          "wild": [
+            "api-2e6fae8a2794841b",
+            "libkit.so"
+          ]
+        },
+        "native-removed": {
+          "api_modes": [
+            "full"
+          ],
+          "elf": "e1426a00d1a5656d8bb87ff4f6e1069c724b4e8b2f1c6410015ad55d3e576e84",
+          "execution_rc": null,
+          "fixed": [],
+          "rc": 0,
+          "rustcs": [
+            "api",
+            "kit"
+          ],
+          "tests": "0 tests, 0 benchmarks\n",
+          "wild": [
+            "api-2e6fae8a2794841b",
+            "libkit.so"
+          ]
+        },
+        "normal-fresh": {
+          "api_modes": [],
+          "elf": "e1426a00d1a5656d8bb87ff4f6e1069c724b4e8b2f1c6410015ad55d3e576e84",
+          "execution_rc": null,
+          "fixed": [],
+          "rc": 0,
+          "rustcs": [],
+          "tests": "0 tests, 0 benchmarks\n",
+          "wild": []
+        },
+        "normal-recovery": {
+          "api_modes": [
+            "full"
+          ],
+          "elf": "e1426a00d1a5656d8bb87ff4f6e1069c724b4e8b2f1c6410015ad55d3e576e84",
+          "execution_rc": 0,
+          "fixed": [],
+          "rc": 0,
+          "rustcs": [
+            "api"
+          ],
+          "tests": "0 tests, 0 benchmarks\n",
+          "wild": [
+            "api-2e6fae8a2794841b"
+          ]
+        },
+        "positive": {
+          "api_modes": [],
+          "elf": "e1426a00d1a5656d8bb87ff4f6e1069c724b4e8b2f1c6410015ad55d3e576e84",
+          "execution_rc": 0,
+          "fixed": [],
+          "rc": 0,
+          "rustcs": [
+            "kit"
+          ],
+          "tests": "0 tests, 0 benchmarks\n",
+          "wild": [
+            "libkit.so"
+          ]
+        },
+        "positive-return": {
+          "api_modes": [],
+          "elf": "e1426a00d1a5656d8bb87ff4f6e1069c724b4e8b2f1c6410015ad55d3e576e84",
+          "execution_rc": null,
+          "fixed": [],
+          "rc": 0,
+          "rustcs": [
+            "kit"
+          ],
+          "tests": "0 tests, 0 benchmarks\n",
+          "wild": [
+            "libkit.so"
+          ]
+        },
+        "prime": {
+          "api_modes": [
+            "full"
+          ],
+          "elf": "e1426a00d1a5656d8bb87ff4f6e1069c724b4e8b2f1c6410015ad55d3e576e84",
+          "execution_rc": null,
+          "fixed": [],
+          "rc": 0,
+          "rustcs": [
+            "api",
+            "mark",
+            "kit",
+            "build_script_build"
+          ],
+          "tests": "0 tests, 0 benchmarks\n",
+          "wild": [
+            "api-2e6fae8a2794841b",
+            "libmark-1c2e766d0626af38.so",
+            "libkit.so",
+            "build_script_build"
+          ]
+        },
+        "prime-fresh": {
+          "api_modes": [],
+          "elf": "e1426a00d1a5656d8bb87ff4f6e1069c724b4e8b2f1c6410015ad55d3e576e84",
+          "execution_rc": null,
+          "fixed": [],
+          "rc": 0,
+          "rustcs": [],
+          "tests": "0 tests, 0 benchmarks\n",
+          "wild": []
+        },
+        "reset-proof": {
+          "api_modes": [
+            "full"
+          ],
+          "elf": "e1426a00d1a5656d8bb87ff4f6e1069c724b4e8b2f1c6410015ad55d3e576e84",
+          "execution_rc": null,
+          "fixed": [
+            "api-2e6fae8a2794841b"
+          ],
+          "rc": 0,
+          "rustcs": [
+            "api",
+            "kit"
+          ],
+          "tests": "0 tests, 0 benchmarks\n",
+          "wild": [
+            "api-2e6fae8a2794841b",
+            "libkit.so"
+          ]
+        },
+        "target-override-dirty": {
+          "api_modes": [
+            "full"
+          ],
+          "elf": "c8f37fdb4a0da235e9a379cbf8bcf1bf51f308a8884a428e07b0b3a960e8759d",
+          "execution_rc": null,
+          "fixed": [],
+          "rc": 0,
+          "rustcs": [
+            "api",
+            "kit"
+          ],
+          "tests": "0 tests, 0 benchmarks\n",
+          "wild": [
+            "api-19708e53bdab7bf7",
+            "libkit.so"
+          ]
+        },
+        "target-override-prime": {
+          "api_modes": [
+            "full"
+          ],
+          "elf": "c8f37fdb4a0da235e9a379cbf8bcf1bf51f308a8884a428e07b0b3a960e8759d",
+          "execution_rc": null,
+          "fixed": [],
+          "rc": 0,
+          "rustcs": [
+            "api",
+            "mark",
+            "kit",
+            "build_script_build"
+          ],
+          "tests": "0 tests, 0 benchmarks\n",
+          "wild": [
+            "api-19708e53bdab7bf7",
+            "libmark-54d2c0baa741f99c.so",
+            "libkit.so",
+            "build_script_build"
+          ]
+        },
+        "user-rustflags": {
+          "api_modes": [
+            "full"
+          ],
+          "elf": "e1426a00d1a5656d8bb87ff4f6e1069c724b4e8b2f1c6410015ad55d3e576e84",
+          "execution_rc": null,
+          "fixed": [],
+          "rc": 0,
+          "rustcs": [
+            "api",
+            "mark",
+            "kit",
+            "build_script_build"
+          ],
+          "tests": "0 tests, 0 benchmarks\n",
+          "wild": [
+            "api-ead17eec2015bc65",
+            "libmark-f3e45f3ecaa775c7.so",
+            "libkit.so",
+            "build_script_build"
+          ]
+        },
+        "user-rustflags-dirty": {
+          "api_modes": [
+            "full"
+          ],
+          "elf": "e1426a00d1a5656d8bb87ff4f6e1069c724b4e8b2f1c6410015ad55d3e576e84",
+          "execution_rc": null,
+          "fixed": [],
+          "rc": 0,
+          "rustcs": [
+            "api",
+            "kit"
+          ],
+          "tests": "0 tests, 0 benchmarks\n",
+          "wild": [
+            "api-ead17eec2015bc65",
+            "libkit.so"
+          ]
+        },
+        "warn-removed": {
+          "api_modes": [
+            "full"
+          ],
+          "elf": "e1426a00d1a5656d8bb87ff4f6e1069c724b4e8b2f1c6410015ad55d3e576e84",
+          "execution_rc": null,
+          "fixed": [],
+          "rc": 0,
+          "rustcs": [
+            "api"
+          ],
+          "tests": "0 tests, 0 benchmarks\n",
+          "wild": [
+            "api-2e6fae8a2794841b"
+          ]
+        },
+        "warning-dirty": {
+          "api_modes": [
+            "full"
+          ],
+          "elf": "e1426a00d1a5656d8bb87ff4f6e1069c724b4e8b2f1c6410015ad55d3e576e84",
+          "execution_rc": null,
+          "fixed": [],
+          "rc": 0,
+          "rustcs": [
+            "api",
+            "kit"
+          ],
+          "tests": "0 tests, 0 benchmarks\n",
+          "wild": [
+            "api-2e6fae8a2794841b",
+            "libkit.so"
+          ]
+        },
+        "warning-prime": {
+          "api_modes": [
+            "full"
+          ],
+          "elf": "e1426a00d1a5656d8bb87ff4f6e1069c724b4e8b2f1c6410015ad55d3e576e84",
+          "execution_rc": null,
+          "fixed": [],
+          "rc": 0,
+          "rustcs": [
+            "api"
+          ],
+          "tests": "0 tests, 0 benchmarks\n",
+          "wild": [
+            "api-2e6fae8a2794841b"
+          ]
+        },
+        "wrapper-dirty": {
+          "api_modes": [
+            "full"
+          ],
+          "elf": "6a56fdda4dc792ce4428362e42d125003b9f84311e060fa7640a665dad60648c",
+          "execution_rc": null,
+          "fixed": [],
+          "rc": 0,
+          "rustcs": [
+            "api",
+            "kit"
+          ],
+          "tests": "0 tests, 0 benchmarks\n",
+          "wild": [
+            "api-7052faae29cb471e",
+            "libkit.so"
+          ]
+        },
+        "wrapper-prime": {
+          "api_modes": [
+            "full"
+          ],
+          "elf": "6a56fdda4dc792ce4428362e42d125003b9f84311e060fa7640a665dad60648c",
+          "execution_rc": null,
+          "fixed": [],
+          "rc": 0,
+          "rustcs": [
+            "api",
+            "mark",
+            "kit",
+            "build_script_build"
+          ],
+          "tests": "0 tests, 0 benchmarks\n",
+          "wild": [
+            "api-7052faae29cb471e",
+            "libmark-6f22551e826c0683.so",
+            "libkit.so",
+            "build_script_build"
+          ]
+        }
+      },
+      "trained": "c61f735cdc27ab84f207dadadddcb1655bfbada8a74cf8862afbbe9797a2afac"
+    }
+  },
+  "scope": {
+    "A": {
+      "independent_native_products": null,
+      "parser": {
+        "edit": {
+          "API_explicitly_one_worker": null,
+          "API_full_or_link_only": null,
+          "cargo_reported_elapsed_under_strace": "12.00s",
+          "lists": {
+            "ruff_wasm": "0 tests, 0 benchmarks\n",
+            "ty_wasm": "0 tests, 0 benchmarks\n"
+          },
+          "probe_processes": [],
+          "raw_ELFs": {
+            "ruff_wasm": "63d30e31240ed3b2c5278ae2d18745d9cdfd67e6a5c4de11353bfd1a876fa961",
+            "ty_wasm": "65e2c0ed4ac91de2407c1f59cd480f1b8dcf9cc8d13fd89e330443dd290e9014"
+          },
+          "rustc_crates": [
+            "api",
+            "api",
+            "ruff_python_parser",
+            "ruff_wasm",
+            "ty_wasm"
+          ],
+          "unit_count": 374,
+          "wild_outputs": [
+            "api-0815b72ae57e8533",
+            "api-7343d4c83d92d566",
+            "libruff_wasm.so",
+            "libty_wasm.so"
+          ]
+        },
+        "editfresh": {
+          "API_explicitly_one_worker": null,
+          "API_full_or_link_only": null,
+          "cargo_reported_elapsed_under_strace": "2.59s",
+          "lists": {
+            "ruff_wasm": "0 tests, 0 benchmarks\n",
+            "ty_wasm": "0 tests, 0 benchmarks\n"
+          },
+          "probe_processes": [],
+          "raw_ELFs": {
+            "ruff_wasm": "63d30e31240ed3b2c5278ae2d18745d9cdfd67e6a5c4de11353bfd1a876fa961",
+            "ty_wasm": "65e2c0ed4ac91de2407c1f59cd480f1b8dcf9cc8d13fd89e330443dd290e9014"
+          },
+          "rustc_crates": [],
+          "unit_count": 374,
+          "wild_outputs": []
+        },
+        "restore": {
+          "API_explicitly_one_worker": null,
+          "API_full_or_link_only": null,
+          "cargo_reported_elapsed_under_strace": "9.37s",
+          "lists": {
+            "ruff_wasm": "0 tests, 0 benchmarks\n",
+            "ty_wasm": "0 tests, 0 benchmarks\n"
+          },
+          "probe_processes": [],
+          "raw_ELFs": {
+            "ruff_wasm": "63d30e31240ed3b2c5278ae2d18745d9cdfd67e6a5c4de11353bfd1a876fa961",
+            "ty_wasm": "65e2c0ed4ac91de2407c1f59cd480f1b8dcf9cc8d13fd89e330443dd290e9014"
+          },
+          "rustc_crates": [
+            "api",
+            "api",
+            "ruff_python_parser",
+            "ruff_wasm",
+            "ty_wasm"
+          ],
+          "unit_count": 374,
+          "wild_outputs": [
+            "api-0815b72ae57e8533",
+            "api-7343d4c83d92d566",
+            "libruff_wasm.so",
+            "libty_wasm.so"
+          ]
+        },
+        "restorefresh": {
+          "API_explicitly_one_worker": null,
+          "API_full_or_link_only": null,
+          "cargo_reported_elapsed_under_strace": "2.48s",
+          "lists": {
+            "ruff_wasm": "0 tests, 0 benchmarks\n",
+            "ty_wasm": "0 tests, 0 benchmarks\n"
+          },
+          "probe_processes": [],
+          "raw_ELFs": {
+            "ruff_wasm": "63d30e31240ed3b2c5278ae2d18745d9cdfd67e6a5c4de11353bfd1a876fa961",
+            "ty_wasm": "65e2c0ed4ac91de2407c1f59cd480f1b8dcf9cc8d13fd89e330443dd290e9014"
+          },
+          "rustc_crates": [],
+          "unit_count": 374,
+          "wild_outputs": []
+        },
+        "warm": {
+          "API_explicitly_one_worker": null,
+          "API_full_or_link_only": null,
+          "cargo_reported_elapsed_under_strace": "31.59s",
+          "lists": {
+            "ruff_wasm": "0 tests, 0 benchmarks\n",
+            "ty_wasm": "0 tests, 0 benchmarks\n"
+          },
+          "probe_processes": [],
+          "raw_ELFs": {
+            "ruff_wasm": "2f695e26c1d7fccc825e61fa23b077b622c1b24dc494cde80d6a906bfa3357e7",
+            "ty_wasm": "65e2c0ed4ac91de2407c1f59cd480f1b8dcf9cc8d13fd89e330443dd290e9014"
+          },
+          "rustc_crates": [
+            "api",
+            "api",
+            "ruff_graph",
+            "ruff_linter",
+            "ruff_python_semantic",
+            "ruff_python_stdlib",
+            "ruff_wasm",
+            "ruff_workspace",
+            "ty_ide",
+            "ty_module_resolver",
+            "ty_project",
+            "ty_python_core",
+            "ty_python_semantic",
+            "ty_wasm"
+          ],
+          "unit_count": 374,
+          "wild_outputs": [
+            "api-0815b72ae57e8533",
+            "api-7343d4c83d92d566",
+            "libruff_wasm.so",
+            "libty_wasm.so"
+          ]
+        }
+      },
+      "stdlib": {
+        "confirm": {
+          "API_explicitly_one_worker": null,
+          "API_full_or_link_only": null,
+          "cargo_reported_elapsed_under_strace": "36.65s",
+          "lists": {
+            "ruff_wasm": "0 tests, 0 benchmarks\n",
+            "ty_wasm": "0 tests, 0 benchmarks\n"
+          },
+          "probe_processes": [],
+          "raw_ELFs": {
+            "ruff_wasm": "63d30e31240ed3b2c5278ae2d18745d9cdfd67e6a5c4de11353bfd1a876fa961",
+            "ty_wasm": "65e2c0ed4ac91de2407c1f59cd480f1b8dcf9cc8d13fd89e330443dd290e9014"
+          },
+          "rustc_crates": [
+            "api",
+            "api",
+            "ruff_graph",
+            "ruff_linter",
+            "ruff_python_semantic",
+            "ruff_python_stdlib",
+            "ruff_wasm",
+            "ruff_workspace",
+            "ty_ide",
+            "ty_module_resolver",
+            "ty_project",
+            "ty_python_core",
+            "ty_python_semantic",
+            "ty_wasm"
+          ],
+          "unit_count": 374,
+          "wild_outputs": [
+            "api-0815b72ae57e8533",
+            "api-7343d4c83d92d566",
+            "libruff_wasm.so",
+            "libty_wasm.so"
+          ]
+        },
+        "confirm-fresh": {
+          "API_explicitly_one_worker": null,
+          "API_full_or_link_only": null,
+          "cargo_reported_elapsed_under_strace": "2.82s",
+          "lists": {
+            "ruff_wasm": "0 tests, 0 benchmarks\n",
+            "ty_wasm": "0 tests, 0 benchmarks\n"
+          },
+          "probe_processes": [],
+          "raw_ELFs": {
+            "ruff_wasm": "63d30e31240ed3b2c5278ae2d18745d9cdfd67e6a5c4de11353bfd1a876fa961",
+            "ty_wasm": "65e2c0ed4ac91de2407c1f59cd480f1b8dcf9cc8d13fd89e330443dd290e9014"
+          },
+          "rustc_crates": [],
+          "unit_count": 374,
+          "wild_outputs": []
+        },
+        "restore": {
+          "API_explicitly_one_worker": null,
+          "API_full_or_link_only": null,
+          "cargo_reported_elapsed_under_strace": "34.36s",
+          "lists": {
+            "ruff_wasm": "0 tests, 0 benchmarks\n",
+            "ty_wasm": "0 tests, 0 benchmarks\n"
+          },
+          "probe_processes": [],
+          "raw_ELFs": {
+            "ruff_wasm": "63d30e31240ed3b2c5278ae2d18745d9cdfd67e6a5c4de11353bfd1a876fa961",
+            "ty_wasm": "65e2c0ed4ac91de2407c1f59cd480f1b8dcf9cc8d13fd89e330443dd290e9014"
+          },
+          "rustc_crates": [
+            "api",
+            "api",
+            "ruff_graph",
+            "ruff_linter",
+            "ruff_python_semantic",
+            "ruff_python_stdlib",
+            "ruff_wasm",
+            "ruff_workspace",
+            "ty_ide",
+            "ty_module_resolver",
+            "ty_project",
+            "ty_python_core",
+            "ty_python_semantic",
+            "ty_wasm"
+          ],
+          "unit_count": 374,
+          "wild_outputs": [
+            "api-0815b72ae57e8533",
+            "api-7343d4c83d92d566",
+            "libruff_wasm.so",
+            "libty_wasm.so"
+          ]
+        },
+        "restore-fresh": {
+          "API_explicitly_one_worker": null,
+          "API_full_or_link_only": null,
+          "cargo_reported_elapsed_under_strace": "2.70s",
+          "lists": {
+            "ruff_wasm": "0 tests, 0 benchmarks\n",
+            "ty_wasm": "0 tests, 0 benchmarks\n"
+          },
+          "probe_processes": [],
+          "raw_ELFs": {
+            "ruff_wasm": "63d30e31240ed3b2c5278ae2d18745d9cdfd67e6a5c4de11353bfd1a876fa961",
+            "ty_wasm": "65e2c0ed4ac91de2407c1f59cd480f1b8dcf9cc8d13fd89e330443dd290e9014"
+          },
+          "rustc_crates": [],
+          "unit_count": 374,
+          "wild_outputs": []
+        },
+        "train": {
+          "API_explicitly_one_worker": null,
+          "API_full_or_link_only": null,
+          "cargo_reported_elapsed_under_strace": "33.59s",
+          "lists": {
+            "ruff_wasm": "0 tests, 0 benchmarks\n",
+            "ty_wasm": "0 tests, 0 benchmarks\n"
+          },
+          "probe_processes": [],
+          "raw_ELFs": {
+            "ruff_wasm": "63d30e31240ed3b2c5278ae2d18745d9cdfd67e6a5c4de11353bfd1a876fa961",
+            "ty_wasm": "65e2c0ed4ac91de2407c1f59cd480f1b8dcf9cc8d13fd89e330443dd290e9014"
+          },
+          "rustc_crates": [
+            "api",
+            "api",
+            "ruff_graph",
+            "ruff_linter",
+            "ruff_python_semantic",
+            "ruff_python_stdlib",
+            "ruff_wasm",
+            "ruff_workspace",
+            "ty_ide",
+            "ty_module_resolver",
+            "ty_project",
+            "ty_python_core",
+            "ty_python_semantic",
+            "ty_wasm"
+          ],
+          "unit_count": 374,
+          "wild_outputs": [
+            "api-0815b72ae57e8533",
+            "api-7343d4c83d92d566",
+            "libruff_wasm.so",
+            "libty_wasm.so"
+          ]
+        },
+        "warm": {
+          "API_explicitly_one_worker": null,
+          "API_full_or_link_only": null,
+          "cargo_reported_elapsed_under_strace": "8m 21s",
+          "lists": {
+            "ruff_wasm": "0 tests, 0 benchmarks\n",
+            "ty_wasm": "0 tests, 0 benchmarks\n"
+          },
+          "probe_processes": [],
+          "raw_ELFs": {
+            "ruff_wasm": "2f695e26c1d7fccc825e61fa23b077b622c1b24dc494cde80d6a906bfa3357e7",
+            "ty_wasm": "65e2c0ed4ac91de2407c1f59cd480f1b8dcf9cc8d13fd89e330443dd290e9014"
+          },
+          "rustc_crates": [
+            "aho_corasick",
+            "aho_corasick",
+            "allocator_api2",
+            "annotate_snippets",
+            "annotate_snippets",
+            "anstream",
+            "anstyle",
+            "anstyle_parse",
+            "anstyle_query",
+            "anyhow",
+            "api",
+            "api",
+            "ar_archive_writer",
+            "arc_swap",
+            "arrayvec",
+            "async_trait",
+            "attribute_derive",
+            "attribute_derive_macro",
+            "autocfg",
+            "autocfg_a17bffca6f87691d_0",
+            "autocfg_d77397a06cd54051_0",
+            "autocfg_d77397a06cd54051_1",
+            "bitflags",
+            "bitvec",
+            "boxcar",
+            "bstr",
+            "build_script_build",
+            "build_script_build",
+            "build_script_build",
+            "build_script_build",
+            "build_script_build",
+            "build_script_build",
+            "build_script_build",
+            "build_script_build",
+            "build_script_build",
+            "build_script_build",
+            "build_script_build",
+            "build_script_build",
+            "build_script_build",
+            "build_script_build",
+            "build_script_build",
+            "build_script_build",
+            "build_script_build",
+            "build_script_build",
+            "build_script_build",
+            "build_script_build",
+            "build_script_build",
+            "build_script_build",
+            "build_script_build",
+            "build_script_build",
+            "build_script_build",
+            "build_script_build",
+            "build_script_build",
+            "build_script_build",
+            "build_script_build",
+            "build_script_build",
+            "build_script_build",
+            "build_script_build",
+            "build_script_build",
+            "build_script_build",
+            "bumpalo",
+            "camino",
+            "cast",
+            "castaway",
+            "cc",
+            "cfg_if",
+            "cfg_if",
+            "chacha20",
+            "chacha20",
+            "char_str",
+            "chrono",
+            "clap",
+            "clap_builder",
+            "clap_derive",
+            "clap_lex",
+            "collection_literals",
+            "colorchoice",
+            "colored",
+            "compact_str",
+            "console_error_panic_hook",
+            "console_log",
+            "countme",
+            "cpufeatures",
+            "cpufeatures",
+            "crc32fast",
+            "crc32fast",
+            "crossbeam",
+            "crossbeam_channel",
+            "crossbeam_deque",
+            "crossbeam_epoch",
+            "crossbeam_queue",
+            "crossbeam_utils",
+            "dashmap",
+            "derive_where",
+            "dirs",
+            "dirs_sys",
+            "displaydoc",
+            "drop_bomb",
+            "dunce",
+            "dyn_clone",
+            "either",
+            "either",
+            "equivalent",
+            "equivalent",
+            "etcetera",
+            "fern",
+            "filetime",
+            "find_msvc_tools",
+            "flate2",
+            "flate2",
+            "foldhash",
+            "form_urlencoded",
+            "funty",
+            "futures_core",
+            "futures_task",
+            "futures_util",
+            "get_size2",
+            "get_size_derive2",
+            "glob",
+            "globset",
+            "hashbrown",
+            "hashbrown",
+            "hashbrown",
+            "hashlink",
+            "heck",
+            "icu_collections",
+            "icu_locale_core",
+            "icu_normalizer",
+            "icu_normalizer_data",
+            "icu_properties",
+            "icu_properties_data",
+            "icu_provider",
+            "idna",
+            "idna_adapter",
+            "ignore",
+            "imperative",
+            "indexmap",
+            "indexmap",
+            "inotify",
+            "inotify_sys",
+            "interpolator",
+            "intrusive_collections",
+            "inventory",
+            "is_macro",
+            "is_terminal_polyfill",
+            "itertools",
+            "itertools",
+            "itertools",
+            "itoa",
+            "jiff",
+            "jiff_core",
+            "js_sys",
+            "libc",
+            "libcst_derive",
+            "libcst_native",
+            "libm",
+            "libz_rs_sys",
+            "libz_rs_sys",
+            "litemap",
+            "lock_api",
+            "log",
+            "manyhow",
+            "manyhow_macros",
+            "matchit",
+            "memchr",
+            "memchr",
+            "memoffset",
+            "mio",
+            "natord",
+            "newtype_uuid",
+            "notify",
+            "notify_types",
+            "nu_ansi_term",
+            "num_traits",
+            "object",
+            "once_cell",
+            "oorandom",
+            "option_ext",
+            "ordermap",
+            "parking_lot",
+            "parking_lot_core",
+            "paste",
+            "path_absolutize",
+            "path_dedot",
+            "path_slash",
+            "path_slash",
+            "pathdiff",
+            "peg",
+            "peg_macros",
+            "peg_runtime",
+            "peg_runtime",
+            "pep440_rs",
+            "pep508_rs",
+            "percent_encoding",
+            "phf",
+            "phf",
+            "phf_codegen",
+            "phf_generator",
+            "phf_shared",
+            "phf_shared",
+            "phf_shared",
+            "pin_project_lite",
+            "portable_atomic",
+            "potential_utf",
+            "proc_macro2",
+            "proc_macro_utils",
+            "psm",
+            "pyproject_toml",
+            "quick_junit",
+            "quick_xml",
+            "quote",
+            "quote_use",
+            "quote_use_macros",
+            "radium",
+            "rand",
+            "rand",
+            "rand",
+            "rand_core",
+            "rand_core",
+            "rand_core",
+            "rayon",
+            "rayon_core",
+            "ref_cast",
+            "ref_cast_impl",
+            "regex",
+            "regex",
+            "regex_automata",
+            "regex_automata",
+            "regex_syntax",
+            "regex_syntax",
+            "ruff_cache",
+            "ruff_db",
+            "ruff_diagnostics",
+            "ruff_formatter",
+            "ruff_graph",
+            "ruff_index",
+            "ruff_linter",
+            "ruff_macros",
+            "ruff_memory_usage",
+            "ruff_notebook",
+            "ruff_options_metadata",
+            "ruff_python_ast",
+            "ruff_python_codegen",
+            "ruff_python_edits",
+            "ruff_python_formatter",
+            "ruff_python_importer",
+            "ruff_python_index",
+            "ruff_python_literal",
+            "ruff_python_parser",
+            "ruff_python_semantic",
+            "ruff_python_stdlib",
+            "ruff_python_trivia",
+            "ruff_python_trivia",
+            "ruff_ranged_value",
+            "ruff_source_file",
+            "ruff_source_file",
+            "ruff_text_size",
+            "ruff_text_size",
+            "ruff_wasm",
+            "ruff_workspace",
+            "rust_stemmers",
+            "rustc_hash",
+            "rustc_hash",
+            "rustversion",
+            "ryu",
+            "salsa",
+            "salsa_macro_rules",
+            "salsa_macros",
+            "same_file",
+            "same_file",
+            "schemars",
+            "schemars_derive",
+            "scopeguard",
+            "seahash",
+            "serde",
+            "serde_core",
+            "serde_derive",
+            "serde_derive_internals",
+            "serde_json",
+            "serde_spanned",
+            "serde_wasm_bindgen",
+            "shellexpand",
+            "shlex",
+            "similar",
+            "siphasher",
+            "siphasher",
+            "slab",
+            "smallvec",
+            "smallvec",
+            "stable_deref_trait",
+            "stacker",
+            "static_assertions",
+            "strip_ansi_escapes",
+            "strsim",
+            "strum",
+            "strum_macros",
+            "supports_hyperlinks",
+            "syn",
+            "syn",
+            "synstructure",
+            "tap",
+            "thin_vec",
+            "thiserror",
+            "thiserror",
+            "thiserror_impl",
+            "thiserror_impl",
+            "tinystr",
+            "tinyvec",
+            "tinyvec",
+            "tinyvec_macros",
+            "tinyvec_macros",
+            "toml",
+            "toml",
+            "toml_datetime",
+            "toml_datetime",
+            "toml_parser",
+            "toml_writer",
+            "tracing",
+            "tracing_attributes",
+            "tracing_core",
+            "ty_combine",
+            "ty_ide",
+            "ty_module_resolver",
+            "ty_project",
+            "ty_python_core",
+            "ty_python_semantic",
+            "ty_site_packages",
+            "ty_static",
+            "ty_vendored",
+            "ty_wasm",
+            "typed_arena",
+            "typed_path",
+            "typed_path",
+            "typeid",
+            "unicode_ident",
+            "unicode_ident",
+            "unicode_names2",
+            "unicode_names2_generator",
+            "unicode_normalization",
+            "unicode_normalization",
+            "unicode_width",
+            "unscanny",
+            "url",
+            "urlencoding",
+            "utf8_iter",
+            "utf8parse",
+            "uuid",
+            "version_ranges",
+            "vte",
+            "walkdir",
+            "walkdir",
+            "wasm_bindgen",
+            "wasm_bindgen_futures",
+            "wasm_bindgen_macro",
+            "wasm_bindgen_macro_support",
+            "wasm_bindgen_shared",
+            "wasm_bindgen_shared",
+            "wasm_bindgen_test",
+            "wasm_bindgen_test_macro",
+            "wasm_bindgen_test_shared",
+            "web_sys",
+            "winnow",
+            "winnow",
+            "writeable",
+            "wyz",
+            "yoke",
+            "yoke_derive",
+            "zerofrom",
+            "zerofrom_derive",
+            "zerotrie",
+            "zerovec",
+            "zerovec_derive",
+            "zip",
+            "zip",
+            "zlib_rs",
+            "zlib_rs",
+            "zmij"
+          ],
+          "unit_count": 374,
+          "wild_outputs": [
+            "api-0815b72ae57e8533",
+            "api-7343d4c83d92d566",
+            "build_script_build",
+            "build_script_build",
+            "build_script_build",
+            "build_script_build",
+            "build_script_build",
+            "build_script_build",
+            "build_script_build",
+            "build_script_build",
+            "build_script_build",
+            "build_script_build",
+            "build_script_build",
+            "build_script_build",
+            "build_script_build",
+            "build_script_build",
+            "build_script_build",
+            "build_script_build",
+            "build_script_build",
+            "build_script_build",
+            "build_script_build",
+            "build_script_build",
+            "build_script_build",
+            "build_script_build",
+            "build_script_build",
+            "build_script_build",
+            "build_script_build",
+            "build_script_build",
+            "build_script_build",
+            "build_script_build",
+            "build_script_build",
+            "build_script_build",
+            "build_script_build",
+            "build_script_build",
+            "build_script_build",
+            "build_script_build",
+            "libasync_trait-551a91bd45326df1.so",
+            "libattribute_derive_macro-5a18c2801ac29878.so",
+            "libclap_derive-e10c380c070e8918.so",
+            "libderive_where-ef599a860d5eb292.so",
+            "libdisplaydoc-f3faa78f5d3c96e9.so",
+            "libget_size_derive2-0fb39456717aaf7e.so",
+            "libis_macro-3eeb015153593bca.so",
+            "liblibcst_derive-bde3303ec41585a2.so",
+            "liblibcst_native.so",
+            "libmanyhow_macros-3fe551920af5fac2.so",
+            "libpaste-7ca2a6ae18203816.so",
+            "libpeg_macros-c663aa3ae5bc014b.so",
+            "libpep440_rs.so",
+            "libpep508_rs.so",
+            "libquote_use_macros-7e6badb683255362.so",
+            "libref_cast_impl-f580a19470379b1f.so",
+            "libruff_macros-40e8ff4fc4f0c677.so",
+            "libruff_wasm.so",
+            "librustversion-627fac6c73510d0f.so",
+            "libsalsa_macros-8ba564bb834dd122.so",
+            "libschemars_derive-77a3012d708bd1e9.so",
+            "libserde_derive-a1845db8679aa8f7.so",
+            "libstrum_macros-df678097d5206c32.so",
+            "libthiserror_impl-dae40f178e95f122.so",
+            "libthiserror_impl-e09911a2a53ec3e1.so",
+            "libtracing_attributes-2ea7216e235e9569.so",
+            "libty_wasm.so",
+            "libwasm_bindgen_macro-30f0bf2c1c6b9a2e.so",
+            "libwasm_bindgen_test_macro-971e6c5f04c13067.so",
+            "libyoke_derive-06a0ec52bec45c43.so",
+            "libzerofrom_derive-08fe4a39db76b752.so",
+            "libzerovec_derive-8f38a5f919d3c40b.so"
+          ]
+        }
+      }
+    },
+    "B": {
+      "independent_native_products": {
+        "cold-fresh": {
+          "api_modes": [],
+          "fixed": [],
+          "products": {
+            "ruff_wasm": {
+              "elf": "63d30e31240ed3b2c5278ae2d18745d9cdfd67e6a5c4de11353bfd1a876fa961",
+              "files": 51,
+              "fixed_worker": false,
+              "search_directories": 31,
+              "tests": "0 tests, 0 benchmarks\n"
+            },
+            "ty_wasm": {
+              "elf": "65e2c0ed4ac91de2407c1f59cd480f1b8dcf9cc8d13fd89e330443dd290e9014",
+              "files": 51,
+              "fixed_worker": false,
+              "search_directories": 31,
+              "tests": "0 tests, 0 benchmarks\n"
+            }
+          },
+          "rc": 0,
+          "rustc_count": 0,
+          "wild_count": 0
+        },
+        "complete": {
+          "cold": {
+            "ruff_wasm": {
+              "elf": "63d30e31240ed3b2c5278ae2d18745d9cdfd67e6a5c4de11353bfd1a876fa961",
+              "files": 51,
+              "fixed_worker": false,
+              "search_directories": 31,
+              "tests": "0 tests, 0 benchmarks\n"
+            },
+            "ty_wasm": {
+              "elf": "65e2c0ed4ac91de2407c1f59cd480f1b8dcf9cc8d13fd89e330443dd290e9014",
+              "files": 51,
+              "fixed_worker": false,
+              "search_directories": 31,
+              "tests": "0 tests, 0 benchmarks\n"
+            }
+          },
+          "ordinary_and_forced_agree": true,
+          "trained": {
+            "ruff_wasm": {
+              "elf": "2f695e26c1d7fccc825e61fa23b077b622c1b24dc494cde80d6a906bfa3357e7",
+              "files": 51,
+              "fixed_worker": true,
+              "search_directories": 31,
+              "tests": "0 tests, 0 benchmarks\n"
+            },
+            "ty_wasm": {
+              "elf": "314295bf2c643bfd0c63e24cd728bed305d113ec703b56807cf7734f0521f881",
+              "files": 51,
+              "fixed_worker": true,
+              "search_directories": 31,
+              "tests": "0 tests, 0 benchmarks\n"
+            }
+          }
+        },
+        "first-dirty": {
+          "api_modes": [
+            "full",
+            "full"
+          ],
+          "fixed": [
+            "api-7343d4c83d92d566",
+            "api-0815b72ae57e8533"
+          ],
+          "products": {
+            "ruff_wasm": {
+              "elf": "2f695e26c1d7fccc825e61fa23b077b622c1b24dc494cde80d6a906bfa3357e7",
+              "files": 51,
+              "fixed_worker": true,
+              "search_directories": 31,
+              "tests": "0 tests, 0 benchmarks\n"
+            },
+            "ty_wasm": {
+              "elf": "314295bf2c643bfd0c63e24cd728bed305d113ec703b56807cf7734f0521f881",
+              "files": 51,
+              "fixed_worker": true,
+              "search_directories": 31,
+              "tests": "0 tests, 0 benchmarks\n"
+            }
+          },
+          "rc": 0,
+          "rustc_count": 14,
+          "wild_count": 4
+        },
+        "first-fresh": {
+          "api_modes": [],
+          "fixed": [],
+          "products": {
+            "ruff_wasm": {
+              "elf": "2f695e26c1d7fccc825e61fa23b077b622c1b24dc494cde80d6a906bfa3357e7",
+              "files": 51,
+              "fixed_worker": true,
+              "search_directories": 31,
+              "tests": "0 tests, 0 benchmarks\n"
+            },
+            "ty_wasm": {
+              "elf": "314295bf2c643bfd0c63e24cd728bed305d113ec703b56807cf7734f0521f881",
+              "files": 51,
+              "fixed_worker": true,
+              "search_directories": 31,
+              "tests": "0 tests, 0 benchmarks\n"
+            }
+          },
+          "rc": 0,
+          "rustc_count": 0,
+          "wild_count": 0
+        },
+        "forced-fresh": {
+          "api_modes": [],
+          "fixed": [],
+          "products": {
+            "ruff_wasm": {
+              "elf": "2f695e26c1d7fccc825e61fa23b077b622c1b24dc494cde80d6a906bfa3357e7",
+              "files": 51,
+              "fixed_worker": true,
+              "search_directories": 31,
+              "tests": "0 tests, 0 benchmarks\n"
+            },
+            "ty_wasm": {
+              "elf": "314295bf2c643bfd0c63e24cd728bed305d113ec703b56807cf7734f0521f881",
+              "files": 51,
+              "fixed_worker": true,
+              "search_directories": 31,
+              "tests": "0 tests, 0 benchmarks\n"
+            }
+          },
+          "rc": 0,
+          "rustc_count": 0,
+          "wild_count": 0
+        },
+        "independent-api-cold": {
+          "api_modes": [
+            "full",
+            "full"
+          ],
+          "fixed": [],
+          "products": {
+            "ruff_wasm": {
+              "elf": "63d30e31240ed3b2c5278ae2d18745d9cdfd67e6a5c4de11353bfd1a876fa961",
+              "files": 51,
+              "fixed_worker": false,
+              "search_directories": 31,
+              "tests": "0 tests, 0 benchmarks\n"
+            },
+            "ty_wasm": {
+              "elf": "65e2c0ed4ac91de2407c1f59cd480f1b8dcf9cc8d13fd89e330443dd290e9014",
+              "files": 51,
+              "fixed_worker": false,
+              "search_directories": 31,
+              "tests": "0 tests, 0 benchmarks\n"
+            }
+          },
+          "rc": 0,
+          "rustc_count": 2,
+          "wild_count": 2
+        },
+        "independent-force": {
+          "api_modes": [
+            "full",
+            "full"
+          ],
+          "fixed": [
+            "api-0815b72ae57e8533",
+            "api-7343d4c83d92d566"
+          ],
+          "products": {
+            "ruff_wasm": {
+              "elf": "2f695e26c1d7fccc825e61fa23b077b622c1b24dc494cde80d6a906bfa3357e7",
+              "files": 51,
+              "fixed_worker": true,
+              "search_directories": 31,
+              "tests": "0 tests, 0 benchmarks\n"
+            },
+            "ty_wasm": {
+              "elf": "314295bf2c643bfd0c63e24cd728bed305d113ec703b56807cf7734f0521f881",
+              "files": 51,
+              "fixed_worker": true,
+              "search_directories": 31,
+              "tests": "0 tests, 0 benchmarks\n"
+            }
+          },
+          "rc": 0,
+          "rustc_count": 2,
+          "wild_count": 2
+        },
+        "trained-edit": {
+          "api_modes": [
+            "full",
+            "full"
+          ],
+          "fixed": [
+            "api-7343d4c83d92d566",
+            "api-0815b72ae57e8533"
+          ],
+          "products": {
+            "ruff_wasm": {
+              "elf": "2f695e26c1d7fccc825e61fa23b077b622c1b24dc494cde80d6a906bfa3357e7",
+              "files": 51,
+              "fixed_worker": true,
+              "search_directories": 31,
+              "tests": "0 tests, 0 benchmarks\n"
+            },
+            "ty_wasm": {
+              "elf": "314295bf2c643bfd0c63e24cd728bed305d113ec703b56807cf7734f0521f881",
+              "files": 51,
+              "fixed_worker": true,
+              "search_directories": 31,
+              "tests": "0 tests, 0 benchmarks\n"
+            }
+          },
+          "rc": 0,
+          "rustc_count": 14,
+          "wild_count": 4
+        },
+        "trained-edit-fresh": {
+          "api_modes": [],
+          "fixed": [],
+          "products": {
+            "ruff_wasm": {
+              "elf": "2f695e26c1d7fccc825e61fa23b077b622c1b24dc494cde80d6a906bfa3357e7",
+              "files": 51,
+              "fixed_worker": true,
+              "search_directories": 31,
+              "tests": "0 tests, 0 benchmarks\n"
+            },
+            "ty_wasm": {
+              "elf": "314295bf2c643bfd0c63e24cd728bed305d113ec703b56807cf7734f0521f881",
+              "files": 51,
+              "fixed_worker": true,
+              "search_directories": 31,
+              "tests": "0 tests, 0 benchmarks\n"
+            }
+          },
+          "rc": 0,
+          "rustc_count": 0,
+          "wild_count": 0
+        },
+        "trained-return": {
+          "api_modes": [
+            "full",
+            "full"
+          ],
+          "fixed": [
+            "api-7343d4c83d92d566",
+            "api-0815b72ae57e8533"
+          ],
+          "products": {
+            "ruff_wasm": {
+              "elf": "2f695e26c1d7fccc825e61fa23b077b622c1b24dc494cde80d6a906bfa3357e7",
+              "files": 51,
+              "fixed_worker": true,
+              "search_directories": 31,
+              "tests": "0 tests, 0 benchmarks\n"
+            },
+            "ty_wasm": {
+              "elf": "314295bf2c643bfd0c63e24cd728bed305d113ec703b56807cf7734f0521f881",
+              "files": 51,
+              "fixed_worker": true,
+              "search_directories": 31,
+              "tests": "0 tests, 0 benchmarks\n"
+            }
+          },
+          "rc": 0,
+          "rustc_count": 14,
+          "wild_count": 4
+        },
+        "trained-return-fresh": {
+          "api_modes": [],
+          "fixed": [],
+          "products": {
+            "ruff_wasm": {
+              "elf": "2f695e26c1d7fccc825e61fa23b077b622c1b24dc494cde80d6a906bfa3357e7",
+              "files": 51,
+              "fixed_worker": true,
+              "search_directories": 31,
+              "tests": "0 tests, 0 benchmarks\n"
+            },
+            "ty_wasm": {
+              "elf": "314295bf2c643bfd0c63e24cd728bed305d113ec703b56807cf7734f0521f881",
+              "files": 51,
+              "fixed_worker": true,
+              "search_directories": 31,
+              "tests": "0 tests, 0 benchmarks\n"
+            }
+          },
+          "rc": 0,
+          "rustc_count": 0,
+          "wild_count": 0
+        },
+        "trained-return2": {
+          "api_modes": [
+            "full",
+            "full"
+          ],
+          "fixed": [
+            "api-7343d4c83d92d566",
+            "api-0815b72ae57e8533"
+          ],
+          "products": {
+            "ruff_wasm": {
+              "elf": "2f695e26c1d7fccc825e61fa23b077b622c1b24dc494cde80d6a906bfa3357e7",
+              "files": 51,
+              "fixed_worker": true,
+              "search_directories": 31,
+              "tests": "0 tests, 0 benchmarks\n"
+            },
+            "ty_wasm": {
+              "elf": "314295bf2c643bfd0c63e24cd728bed305d113ec703b56807cf7734f0521f881",
+              "files": 51,
+              "fixed_worker": true,
+              "search_directories": 31,
+              "tests": "0 tests, 0 benchmarks\n"
+            }
+          },
+          "rc": 0,
+          "rustc_count": 14,
+          "wild_count": 4
+        },
+        "trained-return2-fresh": {
+          "api_modes": [],
+          "fixed": [],
+          "products": {
+            "ruff_wasm": {
+              "elf": "2f695e26c1d7fccc825e61fa23b077b622c1b24dc494cde80d6a906bfa3357e7",
+              "files": 51,
+              "fixed_worker": true,
+              "search_directories": 31,
+              "tests": "0 tests, 0 benchmarks\n"
+            },
+            "ty_wasm": {
+              "elf": "314295bf2c643bfd0c63e24cd728bed305d113ec703b56807cf7734f0521f881",
+              "files": 51,
+              "fixed_worker": true,
+              "search_directories": 31,
+              "tests": "0 tests, 0 benchmarks\n"
+            }
+          },
+          "rc": 0,
+          "rustc_count": 0,
+          "wild_count": 0
+        }
+      },
+      "parser": {
+        "edit": {
+          "API_explicitly_one_worker": [
+            "api-7343d4c83d92d566",
+            "api-0815b72ae57e8533"
+          ],
+          "API_full_or_link_only": [
+            "full",
+            "full"
+          ],
+          "cargo_reported_elapsed_under_strace": "11.70s",
+          "lists": {
+            "ruff_wasm": "0 tests, 0 benchmarks\n",
+            "ty_wasm": "0 tests, 0 benchmarks\n"
+          },
+          "probe_processes": [
+            "cc -print-search-dirs",
+            "cc -print-search-dirs",
+            "wild --help",
+            "wild --help"
+          ],
+          "raw_ELFs": {
+            "ruff_wasm": "2f695e26c1d7fccc825e61fa23b077b622c1b24dc494cde80d6a906bfa3357e7",
+            "ty_wasm": "314295bf2c643bfd0c63e24cd728bed305d113ec703b56807cf7734f0521f881"
+          },
+          "rustc_crates": [
+            "api",
+            "api",
+            "ruff_python_parser",
+            "ruff_wasm",
+            "ty_wasm"
+          ],
+          "unit_count": 374,
+          "wild_outputs": [
+            "api-0815b72ae57e8533",
+            "api-7343d4c83d92d566",
+            "libruff_wasm.so",
+            "libty_wasm.so"
+          ]
+        },
+        "editfresh": {
+          "API_explicitly_one_worker": [],
+          "API_full_or_link_only": [],
+          "cargo_reported_elapsed_under_strace": "2.36s",
+          "lists": {
+            "ruff_wasm": "0 tests, 0 benchmarks\n",
+            "ty_wasm": "0 tests, 0 benchmarks\n"
+          },
+          "probe_processes": [],
+          "raw_ELFs": {
+            "ruff_wasm": "2f695e26c1d7fccc825e61fa23b077b622c1b24dc494cde80d6a906bfa3357e7",
+            "ty_wasm": "314295bf2c643bfd0c63e24cd728bed305d113ec703b56807cf7734f0521f881"
+          },
+          "rustc_crates": [],
+          "unit_count": 374,
+          "wild_outputs": []
+        },
+        "restore": {
+          "API_explicitly_one_worker": [
+            "api-7343d4c83d92d566",
+            "api-0815b72ae57e8533"
+          ],
+          "API_full_or_link_only": [
+            "full",
+            "full"
+          ],
+          "cargo_reported_elapsed_under_strace": "11.15s",
+          "lists": {
+            "ruff_wasm": "0 tests, 0 benchmarks\n",
+            "ty_wasm": "0 tests, 0 benchmarks\n"
+          },
+          "probe_processes": [
+            "cc -print-search-dirs",
+            "cc -print-search-dirs",
+            "wild --help",
+            "wild --help"
+          ],
+          "raw_ELFs": {
+            "ruff_wasm": "2f695e26c1d7fccc825e61fa23b077b622c1b24dc494cde80d6a906bfa3357e7",
+            "ty_wasm": "314295bf2c643bfd0c63e24cd728bed305d113ec703b56807cf7734f0521f881"
+          },
+          "rustc_crates": [
+            "api",
+            "api",
+            "ruff_python_parser",
+            "ruff_wasm",
+            "ty_wasm"
+          ],
+          "unit_count": 374,
+          "wild_outputs": [
+            "api-0815b72ae57e8533",
+            "api-7343d4c83d92d566",
+            "libruff_wasm.so",
+            "libty_wasm.so"
+          ]
+        },
+        "restorefresh": {
+          "API_explicitly_one_worker": [],
+          "API_full_or_link_only": [],
+          "cargo_reported_elapsed_under_strace": "2.85s",
+          "lists": {
+            "ruff_wasm": "0 tests, 0 benchmarks\n",
+            "ty_wasm": "0 tests, 0 benchmarks\n"
+          },
+          "probe_processes": [],
+          "raw_ELFs": {
+            "ruff_wasm": "2f695e26c1d7fccc825e61fa23b077b622c1b24dc494cde80d6a906bfa3357e7",
+            "ty_wasm": "314295bf2c643bfd0c63e24cd728bed305d113ec703b56807cf7734f0521f881"
+          },
+          "rustc_crates": [],
+          "unit_count": 374,
+          "wild_outputs": []
+        },
+        "warm": {
+          "API_explicitly_one_worker": [],
+          "API_full_or_link_only": [],
+          "cargo_reported_elapsed_under_strace": "2.38s",
+          "lists": {
+            "ruff_wasm": "0 tests, 0 benchmarks\n",
+            "ty_wasm": "0 tests, 0 benchmarks\n"
+          },
+          "probe_processes": [],
+          "raw_ELFs": {
+            "ruff_wasm": "2f695e26c1d7fccc825e61fa23b077b622c1b24dc494cde80d6a906bfa3357e7",
+            "ty_wasm": "314295bf2c643bfd0c63e24cd728bed305d113ec703b56807cf7734f0521f881"
+          },
+          "rustc_crates": [],
+          "unit_count": 374,
+          "wild_outputs": []
+        },
+        "warmfresh": {
+          "API_explicitly_one_worker": [],
+          "API_full_or_link_only": [],
+          "cargo_reported_elapsed_under_strace": "2.48s",
+          "lists": {
+            "ruff_wasm": "0 tests, 0 benchmarks\n",
+            "ty_wasm": "0 tests, 0 benchmarks\n"
+          },
+          "probe_processes": [],
+          "raw_ELFs": {
+            "ruff_wasm": "2f695e26c1d7fccc825e61fa23b077b622c1b24dc494cde80d6a906bfa3357e7",
+            "ty_wasm": "314295bf2c643bfd0c63e24cd728bed305d113ec703b56807cf7734f0521f881"
+          },
+          "rustc_crates": [],
+          "unit_count": 374,
+          "wild_outputs": []
+        }
+      },
+      "stdlib": {
+        "cold-fresh": {
+          "API_explicitly_one_worker": [],
+          "API_full_or_link_only": [],
+          "cargo_reported_elapsed_under_strace": "2.66s",
+          "lists": {
+            "ruff_wasm": "0 tests, 0 benchmarks\n",
+            "ty_wasm": "0 tests, 0 benchmarks\n"
+          },
+          "probe_processes": [],
+          "raw_ELFs": {
+            "ruff_wasm": "63d30e31240ed3b2c5278ae2d18745d9cdfd67e6a5c4de11353bfd1a876fa961",
+            "ty_wasm": "65e2c0ed4ac91de2407c1f59cd480f1b8dcf9cc8d13fd89e330443dd290e9014"
+          },
+          "rustc_crates": [],
+          "unit_count": 374,
+          "wild_outputs": []
+        },
+        "first-dirty": {
+          "API_explicitly_one_worker": [
+            "api-7343d4c83d92d566",
+            "api-0815b72ae57e8533"
+          ],
+          "API_full_or_link_only": [
+            "full",
+            "full"
+          ],
+          "cargo_reported_elapsed_under_strace": "31.14s",
+          "lists": {
+            "ruff_wasm": "0 tests, 0 benchmarks\n",
+            "ty_wasm": "0 tests, 0 benchmarks\n"
+          },
+          "probe_processes": [
+            "cc -print-search-dirs",
+            "cc -print-search-dirs",
+            "wild --help",
+            "wild --help"
+          ],
+          "raw_ELFs": {
+            "ruff_wasm": "2f695e26c1d7fccc825e61fa23b077b622c1b24dc494cde80d6a906bfa3357e7",
+            "ty_wasm": "314295bf2c643bfd0c63e24cd728bed305d113ec703b56807cf7734f0521f881"
+          },
+          "rustc_crates": [
+            "api",
+            "api",
+            "ruff_graph",
+            "ruff_linter",
+            "ruff_python_semantic",
+            "ruff_python_stdlib",
+            "ruff_wasm",
+            "ruff_workspace",
+            "ty_ide",
+            "ty_module_resolver",
+            "ty_project",
+            "ty_python_core",
+            "ty_python_semantic",
+            "ty_wasm"
+          ],
+          "unit_count": 374,
+          "wild_outputs": [
+            "api-0815b72ae57e8533",
+            "api-7343d4c83d92d566",
+            "libruff_wasm.so",
+            "libty_wasm.so"
+          ]
+        },
+        "first-fresh": {
+          "API_explicitly_one_worker": [],
+          "API_full_or_link_only": [],
+          "cargo_reported_elapsed_under_strace": "2.64s",
+          "lists": {
+            "ruff_wasm": "0 tests, 0 benchmarks\n",
+            "ty_wasm": "0 tests, 0 benchmarks\n"
+          },
+          "probe_processes": [],
+          "raw_ELFs": {
+            "ruff_wasm": "2f695e26c1d7fccc825e61fa23b077b622c1b24dc494cde80d6a906bfa3357e7",
+            "ty_wasm": "314295bf2c643bfd0c63e24cd728bed305d113ec703b56807cf7734f0521f881"
+          },
+          "rustc_crates": [],
+          "unit_count": 374,
+          "wild_outputs": []
+        },
+        "forced-fresh": {
+          "API_explicitly_one_worker": [],
+          "API_full_or_link_only": [],
+          "cargo_reported_elapsed_under_strace": "2.84s",
+          "lists": {
+            "ruff_wasm": "0 tests, 0 benchmarks\n",
+            "ty_wasm": "0 tests, 0 benchmarks\n"
+          },
+          "probe_processes": [],
+          "raw_ELFs": {
+            "ruff_wasm": "2f695e26c1d7fccc825e61fa23b077b622c1b24dc494cde80d6a906bfa3357e7",
+            "ty_wasm": "314295bf2c643bfd0c63e24cd728bed305d113ec703b56807cf7734f0521f881"
+          },
+          "rustc_crates": [],
+          "unit_count": 374,
+          "wild_outputs": []
+        },
+        "independent-api-cold": {
+          "API_explicitly_one_worker": [],
+          "API_full_or_link_only": [
+            "full",
+            "full"
+          ],
+          "cargo_reported_elapsed_under_strace": "3.60s",
+          "lists": {
+            "ruff_wasm": "0 tests, 0 benchmarks\n",
+            "ty_wasm": "0 tests, 0 benchmarks\n"
+          },
+          "probe_processes": [
+            "cc -print-search-dirs",
+            "cc -print-search-dirs",
+            "wild --help",
+            "wild --help"
+          ],
+          "raw_ELFs": {
+            "ruff_wasm": "63d30e31240ed3b2c5278ae2d18745d9cdfd67e6a5c4de11353bfd1a876fa961",
+            "ty_wasm": "65e2c0ed4ac91de2407c1f59cd480f1b8dcf9cc8d13fd89e330443dd290e9014"
+          },
+          "rustc_crates": [
+            "api",
+            "api"
+          ],
+          "unit_count": 374,
+          "wild_outputs": [
+            "api-0815b72ae57e8533",
+            "api-7343d4c83d92d566"
+          ]
+        },
+        "independent-force": {
+          "API_explicitly_one_worker": [
+            "api-0815b72ae57e8533",
+            "api-7343d4c83d92d566"
+          ],
+          "API_full_or_link_only": [
+            "full",
+            "full"
+          ],
+          "cargo_reported_elapsed_under_strace": "3.55s",
+          "lists": {
+            "ruff_wasm": "0 tests, 0 benchmarks\n",
+            "ty_wasm": "0 tests, 0 benchmarks\n"
+          },
+          "probe_processes": [
+            "cc -print-search-dirs",
+            "cc -print-search-dirs",
+            "wild --help",
+            "wild --help"
+          ],
+          "raw_ELFs": {
+            "ruff_wasm": "2f695e26c1d7fccc825e61fa23b077b622c1b24dc494cde80d6a906bfa3357e7",
+            "ty_wasm": "314295bf2c643bfd0c63e24cd728bed305d113ec703b56807cf7734f0521f881"
+          },
+          "rustc_crates": [
+            "api",
+            "api"
+          ],
+          "unit_count": 374,
+          "wild_outputs": [
+            "api-0815b72ae57e8533",
+            "api-7343d4c83d92d566"
+          ]
+        },
+        "trained-edit": {
+          "API_explicitly_one_worker": [
+            "api-7343d4c83d92d566",
+            "api-0815b72ae57e8533"
+          ],
+          "API_full_or_link_only": [
+            "full",
+            "full"
+          ],
+          "cargo_reported_elapsed_under_strace": "29.30s",
+          "lists": {
+            "ruff_wasm": "0 tests, 0 benchmarks\n",
+            "ty_wasm": "0 tests, 0 benchmarks\n"
+          },
+          "probe_processes": [
+            "cc -print-search-dirs",
+            "cc -print-search-dirs",
+            "wild --help",
+            "wild --help"
+          ],
+          "raw_ELFs": {
+            "ruff_wasm": "2f695e26c1d7fccc825e61fa23b077b622c1b24dc494cde80d6a906bfa3357e7",
+            "ty_wasm": "314295bf2c643bfd0c63e24cd728bed305d113ec703b56807cf7734f0521f881"
+          },
+          "rustc_crates": [
+            "api",
+            "api",
+            "ruff_graph",
+            "ruff_linter",
+            "ruff_python_semantic",
+            "ruff_python_stdlib",
+            "ruff_wasm",
+            "ruff_workspace",
+            "ty_ide",
+            "ty_module_resolver",
+            "ty_project",
+            "ty_python_core",
+            "ty_python_semantic",
+            "ty_wasm"
+          ],
+          "unit_count": 374,
+          "wild_outputs": [
+            "api-0815b72ae57e8533",
+            "api-7343d4c83d92d566",
+            "libruff_wasm.so",
+            "libty_wasm.so"
+          ]
+        },
+        "trained-edit-fresh": {
+          "API_explicitly_one_worker": [],
+          "API_full_or_link_only": [],
+          "cargo_reported_elapsed_under_strace": "2.24s",
+          "lists": {
+            "ruff_wasm": "0 tests, 0 benchmarks\n",
+            "ty_wasm": "0 tests, 0 benchmarks\n"
+          },
+          "probe_processes": [],
+          "raw_ELFs": {
+            "ruff_wasm": "2f695e26c1d7fccc825e61fa23b077b622c1b24dc494cde80d6a906bfa3357e7",
+            "ty_wasm": "314295bf2c643bfd0c63e24cd728bed305d113ec703b56807cf7734f0521f881"
+          },
+          "rustc_crates": [],
+          "unit_count": 374,
+          "wild_outputs": []
+        },
+        "trained-return": {
+          "API_explicitly_one_worker": [
+            "api-7343d4c83d92d566",
+            "api-0815b72ae57e8533"
+          ],
+          "API_full_or_link_only": [
+            "full",
+            "full"
+          ],
+          "cargo_reported_elapsed_under_strace": "30.40s",
+          "lists": {
+            "ruff_wasm": "0 tests, 0 benchmarks\n",
+            "ty_wasm": "0 tests, 0 benchmarks\n"
+          },
+          "probe_processes": [
+            "cc -print-search-dirs",
+            "cc -print-search-dirs",
+            "wild --help",
+            "wild --help"
+          ],
+          "raw_ELFs": {
+            "ruff_wasm": "2f695e26c1d7fccc825e61fa23b077b622c1b24dc494cde80d6a906bfa3357e7",
+            "ty_wasm": "314295bf2c643bfd0c63e24cd728bed305d113ec703b56807cf7734f0521f881"
+          },
+          "rustc_crates": [
+            "api",
+            "api",
+            "ruff_graph",
+            "ruff_linter",
+            "ruff_python_semantic",
+            "ruff_python_stdlib",
+            "ruff_wasm",
+            "ruff_workspace",
+            "ty_ide",
+            "ty_module_resolver",
+            "ty_project",
+            "ty_python_core",
+            "ty_python_semantic",
+            "ty_wasm"
+          ],
+          "unit_count": 374,
+          "wild_outputs": [
+            "api-0815b72ae57e8533",
+            "api-7343d4c83d92d566",
+            "libruff_wasm.so",
+            "libty_wasm.so"
+          ]
+        },
+        "trained-return-fresh": {
+          "API_explicitly_one_worker": [],
+          "API_full_or_link_only": [],
+          "cargo_reported_elapsed_under_strace": "2.23s",
+          "lists": {
+            "ruff_wasm": "0 tests, 0 benchmarks\n",
+            "ty_wasm": "0 tests, 0 benchmarks\n"
+          },
+          "probe_processes": [],
+          "raw_ELFs": {
+            "ruff_wasm": "2f695e26c1d7fccc825e61fa23b077b622c1b24dc494cde80d6a906bfa3357e7",
+            "ty_wasm": "314295bf2c643bfd0c63e24cd728bed305d113ec703b56807cf7734f0521f881"
+          },
+          "rustc_crates": [],
+          "unit_count": 374,
+          "wild_outputs": []
+        },
+        "trained-return2": {
+          "API_explicitly_one_worker": [
+            "api-7343d4c83d92d566",
+            "api-0815b72ae57e8533"
+          ],
+          "API_full_or_link_only": [
+            "full",
+            "full"
+          ],
+          "cargo_reported_elapsed_under_strace": "29.85s",
+          "lists": {
+            "ruff_wasm": "0 tests, 0 benchmarks\n",
+            "ty_wasm": "0 tests, 0 benchmarks\n"
+          },
+          "probe_processes": [
+            "cc -print-search-dirs",
+            "cc -print-search-dirs",
+            "wild --help",
+            "wild --help"
+          ],
+          "raw_ELFs": {
+            "ruff_wasm": "2f695e26c1d7fccc825e61fa23b077b622c1b24dc494cde80d6a906bfa3357e7",
+            "ty_wasm": "314295bf2c643bfd0c63e24cd728bed305d113ec703b56807cf7734f0521f881"
+          },
+          "rustc_crates": [
+            "api",
+            "api",
+            "ruff_graph",
+            "ruff_linter",
+            "ruff_python_semantic",
+            "ruff_python_stdlib",
+            "ruff_wasm",
+            "ruff_workspace",
+            "ty_ide",
+            "ty_module_resolver",
+            "ty_project",
+            "ty_python_core",
+            "ty_python_semantic",
+            "ty_wasm"
+          ],
+          "unit_count": 374,
+          "wild_outputs": [
+            "api-0815b72ae57e8533",
+            "api-7343d4c83d92d566",
+            "libruff_wasm.so",
+            "libty_wasm.so"
+          ]
+        },
+        "trained-return2-fresh": {
+          "API_explicitly_one_worker": [],
+          "API_full_or_link_only": [],
+          "cargo_reported_elapsed_under_strace": "2.80s",
+          "lists": {
+            "ruff_wasm": "0 tests, 0 benchmarks\n",
+            "ty_wasm": "0 tests, 0 benchmarks\n"
+          },
+          "probe_processes": [],
+          "raw_ELFs": {
+            "ruff_wasm": "2f695e26c1d7fccc825e61fa23b077b622c1b24dc494cde80d6a906bfa3357e7",
+            "ty_wasm": "314295bf2c643bfd0c63e24cd728bed305d113ec703b56807cf7734f0521f881"
+          },
+          "rustc_crates": [],
+          "unit_count": 374,
+          "wild_outputs": []
+        }
+      }
+    },
+    "C": {
+      "independent_native_products": {
+        "cold-fresh": {
+          "api_modes": [],
+          "fixed": [],
+          "products": {
+            "ruff_wasm": {
+              "elf": "63d30e31240ed3b2c5278ae2d18745d9cdfd67e6a5c4de11353bfd1a876fa961",
+              "files": 51,
+              "fixed_worker": false,
+              "search_directories": 31,
+              "tests": "0 tests, 0 benchmarks\n"
+            },
+            "ty_wasm": {
+              "elf": "314295bf2c643bfd0c63e24cd728bed305d113ec703b56807cf7734f0521f881",
+              "files": 51,
+              "fixed_worker": false,
+              "search_directories": 31,
+              "tests": "0 tests, 0 benchmarks\n"
+            }
+          },
+          "rc": 0,
+          "rustc_count": 0,
+          "wild_count": 0
+        },
+        "complete": {
+          "cold": {
+            "ruff_wasm": {
+              "elf": "63d30e31240ed3b2c5278ae2d18745d9cdfd67e6a5c4de11353bfd1a876fa961",
+              "files": 51,
+              "fixed_worker": false,
+              "search_directories": 31,
+              "tests": "0 tests, 0 benchmarks\n"
+            },
+            "ty_wasm": {
+              "elf": "314295bf2c643bfd0c63e24cd728bed305d113ec703b56807cf7734f0521f881",
+              "files": 51,
+              "fixed_worker": false,
+              "search_directories": 31,
+              "tests": "0 tests, 0 benchmarks\n"
+            }
+          },
+          "ordinary_and_forced_agree": true,
+          "trained": {
+            "ruff_wasm": {
+              "elf": "2f695e26c1d7fccc825e61fa23b077b622c1b24dc494cde80d6a906bfa3357e7",
+              "files": 51,
+              "fixed_worker": true,
+              "search_directories": 31,
+              "tests": "0 tests, 0 benchmarks\n"
+            },
+            "ty_wasm": {
+              "elf": "314295bf2c643bfd0c63e24cd728bed305d113ec703b56807cf7734f0521f881",
+              "files": 51,
+              "fixed_worker": true,
+              "search_directories": 31,
+              "tests": "0 tests, 0 benchmarks\n"
+            }
+          }
+        },
+        "first-dirty": {
+          "api_modes": [
+            "full",
+            "full"
+          ],
+          "fixed": [
+            "api-7343d4c83d92d566",
+            "api-0815b72ae57e8533"
+          ],
+          "products": {
+            "ruff_wasm": {
+              "elf": "2f695e26c1d7fccc825e61fa23b077b622c1b24dc494cde80d6a906bfa3357e7",
+              "files": 51,
+              "fixed_worker": true,
+              "search_directories": 31,
+              "tests": "0 tests, 0 benchmarks\n"
+            },
+            "ty_wasm": {
+              "elf": "314295bf2c643bfd0c63e24cd728bed305d113ec703b56807cf7734f0521f881",
+              "files": 51,
+              "fixed_worker": true,
+              "search_directories": 31,
+              "tests": "0 tests, 0 benchmarks\n"
+            }
+          },
+          "rc": 0,
+          "rustc_count": 14,
+          "wild_count": 4
+        },
+        "first-fresh": {
+          "api_modes": [],
+          "fixed": [],
+          "products": {
+            "ruff_wasm": {
+              "elf": "2f695e26c1d7fccc825e61fa23b077b622c1b24dc494cde80d6a906bfa3357e7",
+              "files": 51,
+              "fixed_worker": true,
+              "search_directories": 31,
+              "tests": "0 tests, 0 benchmarks\n"
+            },
+            "ty_wasm": {
+              "elf": "314295bf2c643bfd0c63e24cd728bed305d113ec703b56807cf7734f0521f881",
+              "files": 51,
+              "fixed_worker": true,
+              "search_directories": 31,
+              "tests": "0 tests, 0 benchmarks\n"
+            }
+          },
+          "rc": 0,
+          "rustc_count": 0,
+          "wild_count": 0
+        },
+        "forced-fresh": {
+          "api_modes": [],
+          "fixed": [],
+          "products": {
+            "ruff_wasm": {
+              "elf": "2f695e26c1d7fccc825e61fa23b077b622c1b24dc494cde80d6a906bfa3357e7",
+              "files": 51,
+              "fixed_worker": true,
+              "search_directories": 31,
+              "tests": "0 tests, 0 benchmarks\n"
+            },
+            "ty_wasm": {
+              "elf": "314295bf2c643bfd0c63e24cd728bed305d113ec703b56807cf7734f0521f881",
+              "files": 51,
+              "fixed_worker": true,
+              "search_directories": 31,
+              "tests": "0 tests, 0 benchmarks\n"
+            }
+          },
+          "rc": 0,
+          "rustc_count": 0,
+          "wild_count": 0
+        },
+        "independent-api-cold": {
+          "api_modes": [
+            "full",
+            "full"
+          ],
+          "fixed": [],
+          "products": {
+            "ruff_wasm": {
+              "elf": "63d30e31240ed3b2c5278ae2d18745d9cdfd67e6a5c4de11353bfd1a876fa961",
+              "files": 51,
+              "fixed_worker": false,
+              "search_directories": 31,
+              "tests": "0 tests, 0 benchmarks\n"
+            },
+            "ty_wasm": {
+              "elf": "314295bf2c643bfd0c63e24cd728bed305d113ec703b56807cf7734f0521f881",
+              "files": 51,
+              "fixed_worker": false,
+              "search_directories": 31,
+              "tests": "0 tests, 0 benchmarks\n"
+            }
+          },
+          "rc": 0,
+          "rustc_count": 2,
+          "wild_count": 2
+        },
+        "independent-force": {
+          "api_modes": [
+            "full",
+            "full"
+          ],
+          "fixed": [
+            "api-7343d4c83d92d566",
+            "api-0815b72ae57e8533"
+          ],
+          "products": {
+            "ruff_wasm": {
+              "elf": "2f695e26c1d7fccc825e61fa23b077b622c1b24dc494cde80d6a906bfa3357e7",
+              "files": 51,
+              "fixed_worker": true,
+              "search_directories": 31,
+              "tests": "0 tests, 0 benchmarks\n"
+            },
+            "ty_wasm": {
+              "elf": "314295bf2c643bfd0c63e24cd728bed305d113ec703b56807cf7734f0521f881",
+              "files": 51,
+              "fixed_worker": true,
+              "search_directories": 31,
+              "tests": "0 tests, 0 benchmarks\n"
+            }
+          },
+          "rc": 0,
+          "rustc_count": 2,
+          "wild_count": 2
+        },
+        "trained-edit": {
+          "api_modes": [],
+          "fixed": [],
+          "products": {
+            "ruff_wasm": {
+              "elf": "2f695e26c1d7fccc825e61fa23b077b622c1b24dc494cde80d6a906bfa3357e7",
+              "files": 51,
+              "fixed_worker": true,
+              "search_directories": 31,
+              "tests": "0 tests, 0 benchmarks\n"
+            },
+            "ty_wasm": {
+              "elf": "314295bf2c643bfd0c63e24cd728bed305d113ec703b56807cf7734f0521f881",
+              "files": 51,
+              "fixed_worker": true,
+              "search_directories": 31,
+              "tests": "0 tests, 0 benchmarks\n"
+            }
+          },
+          "rc": 0,
+          "rustc_count": 12,
+          "wild_count": 2
+        },
+        "trained-edit-fresh": {
+          "api_modes": [],
+          "fixed": [],
+          "products": {
+            "ruff_wasm": {
+              "elf": "2f695e26c1d7fccc825e61fa23b077b622c1b24dc494cde80d6a906bfa3357e7",
+              "files": 51,
+              "fixed_worker": true,
+              "search_directories": 31,
+              "tests": "0 tests, 0 benchmarks\n"
+            },
+            "ty_wasm": {
+              "elf": "314295bf2c643bfd0c63e24cd728bed305d113ec703b56807cf7734f0521f881",
+              "files": 51,
+              "fixed_worker": true,
+              "search_directories": 31,
+              "tests": "0 tests, 0 benchmarks\n"
+            }
+          },
+          "rc": 0,
+          "rustc_count": 0,
+          "wild_count": 0
+        },
+        "trained-return": {
+          "api_modes": [],
+          "fixed": [],
+          "products": {
+            "ruff_wasm": {
+              "elf": "2f695e26c1d7fccc825e61fa23b077b622c1b24dc494cde80d6a906bfa3357e7",
+              "files": 51,
+              "fixed_worker": true,
+              "search_directories": 31,
+              "tests": "0 tests, 0 benchmarks\n"
+            },
+            "ty_wasm": {
+              "elf": "314295bf2c643bfd0c63e24cd728bed305d113ec703b56807cf7734f0521f881",
+              "files": 51,
+              "fixed_worker": true,
+              "search_directories": 31,
+              "tests": "0 tests, 0 benchmarks\n"
+            }
+          },
+          "rc": 0,
+          "rustc_count": 12,
+          "wild_count": 2
+        },
+        "trained-return-fresh": {
+          "api_modes": [],
+          "fixed": [],
+          "products": {
+            "ruff_wasm": {
+              "elf": "2f695e26c1d7fccc825e61fa23b077b622c1b24dc494cde80d6a906bfa3357e7",
+              "files": 51,
+              "fixed_worker": true,
+              "search_directories": 31,
+              "tests": "0 tests, 0 benchmarks\n"
+            },
+            "ty_wasm": {
+              "elf": "314295bf2c643bfd0c63e24cd728bed305d113ec703b56807cf7734f0521f881",
+              "files": 51,
+              "fixed_worker": true,
+              "search_directories": 31,
+              "tests": "0 tests, 0 benchmarks\n"
+            }
+          },
+          "rc": 0,
+          "rustc_count": 0,
+          "wild_count": 0
+        },
+        "trained-return2": {
+          "api_modes": [],
+          "fixed": [],
+          "products": {
+            "ruff_wasm": {
+              "elf": "2f695e26c1d7fccc825e61fa23b077b622c1b24dc494cde80d6a906bfa3357e7",
+              "files": 51,
+              "fixed_worker": true,
+              "search_directories": 31,
+              "tests": "0 tests, 0 benchmarks\n"
+            },
+            "ty_wasm": {
+              "elf": "314295bf2c643bfd0c63e24cd728bed305d113ec703b56807cf7734f0521f881",
+              "files": 51,
+              "fixed_worker": true,
+              "search_directories": 31,
+              "tests": "0 tests, 0 benchmarks\n"
+            }
+          },
+          "rc": 0,
+          "rustc_count": 12,
+          "wild_count": 2
+        },
+        "trained-return2-fresh": {
+          "api_modes": [],
+          "fixed": [],
+          "products": {
+            "ruff_wasm": {
+              "elf": "2f695e26c1d7fccc825e61fa23b077b622c1b24dc494cde80d6a906bfa3357e7",
+              "files": 51,
+              "fixed_worker": true,
+              "search_directories": 31,
+              "tests": "0 tests, 0 benchmarks\n"
+            },
+            "ty_wasm": {
+              "elf": "314295bf2c643bfd0c63e24cd728bed305d113ec703b56807cf7734f0521f881",
+              "files": 51,
+              "fixed_worker": true,
+              "search_directories": 31,
+              "tests": "0 tests, 0 benchmarks\n"
+            }
+          },
+          "rc": 0,
+          "rustc_count": 0,
+          "wild_count": 0
+        }
+      },
+      "parser": {
+        "edit": {
+          "API_explicitly_one_worker": [],
+          "API_full_or_link_only": [],
+          "cargo_reported_elapsed_under_strace": "10.71s",
+          "lists": {
+            "ruff_wasm": "0 tests, 0 benchmarks\n",
+            "ty_wasm": "0 tests, 0 benchmarks\n"
+          },
+          "probe_processes": [],
+          "raw_ELFs": {
+            "ruff_wasm": "2f695e26c1d7fccc825e61fa23b077b622c1b24dc494cde80d6a906bfa3357e7",
+            "ty_wasm": "314295bf2c643bfd0c63e24cd728bed305d113ec703b56807cf7734f0521f881"
+          },
+          "rustc_crates": [
+            "ruff_python_parser",
+            "ruff_wasm",
+            "ty_wasm"
+          ],
+          "unit_count": 374,
+          "wild_outputs": [
+            "libruff_wasm.so",
+            "libty_wasm.so"
+          ]
+        },
+        "editfresh": {
+          "API_explicitly_one_worker": [],
+          "API_full_or_link_only": [],
+          "cargo_reported_elapsed_under_strace": "2.27s",
+          "lists": {
+            "ruff_wasm": "0 tests, 0 benchmarks\n",
+            "ty_wasm": "0 tests, 0 benchmarks\n"
+          },
+          "probe_processes": [],
+          "raw_ELFs": {
+            "ruff_wasm": "2f695e26c1d7fccc825e61fa23b077b622c1b24dc494cde80d6a906bfa3357e7",
+            "ty_wasm": "314295bf2c643bfd0c63e24cd728bed305d113ec703b56807cf7734f0521f881"
+          },
+          "rustc_crates": [],
+          "unit_count": 374,
+          "wild_outputs": []
+        },
+        "restore": {
+          "API_explicitly_one_worker": [],
+          "API_full_or_link_only": [],
+          "cargo_reported_elapsed_under_strace": "9.45s",
+          "lists": {
+            "ruff_wasm": "0 tests, 0 benchmarks\n",
+            "ty_wasm": "0 tests, 0 benchmarks\n"
+          },
+          "probe_processes": [],
+          "raw_ELFs": {
+            "ruff_wasm": "2f695e26c1d7fccc825e61fa23b077b622c1b24dc494cde80d6a906bfa3357e7",
+            "ty_wasm": "314295bf2c643bfd0c63e24cd728bed305d113ec703b56807cf7734f0521f881"
+          },
+          "rustc_crates": [
+            "ruff_python_parser",
+            "ruff_wasm",
+            "ty_wasm"
+          ],
+          "unit_count": 374,
+          "wild_outputs": [
+            "libruff_wasm.so",
+            "libty_wasm.so"
+          ]
+        },
+        "restorefresh": {
+          "API_explicitly_one_worker": [],
+          "API_full_or_link_only": [],
+          "cargo_reported_elapsed_under_strace": "2.38s",
+          "lists": {
+            "ruff_wasm": "0 tests, 0 benchmarks\n",
+            "ty_wasm": "0 tests, 0 benchmarks\n"
+          },
+          "probe_processes": [],
+          "raw_ELFs": {
+            "ruff_wasm": "2f695e26c1d7fccc825e61fa23b077b622c1b24dc494cde80d6a906bfa3357e7",
+            "ty_wasm": "314295bf2c643bfd0c63e24cd728bed305d113ec703b56807cf7734f0521f881"
+          },
+          "rustc_crates": [],
+          "unit_count": 374,
+          "wild_outputs": []
+        },
+        "warm": {
+          "API_explicitly_one_worker": [],
+          "API_full_or_link_only": [],
+          "cargo_reported_elapsed_under_strace": "2.64s",
+          "lists": {
+            "ruff_wasm": "0 tests, 0 benchmarks\n",
+            "ty_wasm": "0 tests, 0 benchmarks\n"
+          },
+          "probe_processes": [],
+          "raw_ELFs": {
+            "ruff_wasm": "2f695e26c1d7fccc825e61fa23b077b622c1b24dc494cde80d6a906bfa3357e7",
+            "ty_wasm": "314295bf2c643bfd0c63e24cd728bed305d113ec703b56807cf7734f0521f881"
+          },
+          "rustc_crates": [],
+          "unit_count": 374,
+          "wild_outputs": []
+        },
+        "warmfresh": {
+          "API_explicitly_one_worker": [],
+          "API_full_or_link_only": [],
+          "cargo_reported_elapsed_under_strace": "2.50s",
+          "lists": {
+            "ruff_wasm": "0 tests, 0 benchmarks\n",
+            "ty_wasm": "0 tests, 0 benchmarks\n"
+          },
+          "probe_processes": [],
+          "raw_ELFs": {
+            "ruff_wasm": "2f695e26c1d7fccc825e61fa23b077b622c1b24dc494cde80d6a906bfa3357e7",
+            "ty_wasm": "314295bf2c643bfd0c63e24cd728bed305d113ec703b56807cf7734f0521f881"
+          },
+          "rustc_crates": [],
+          "unit_count": 374,
+          "wild_outputs": []
+        }
+      },
+      "stdlib": {
+        "cold-fresh": {
+          "API_explicitly_one_worker": [],
+          "API_full_or_link_only": [],
+          "cargo_reported_elapsed_under_strace": "2.33s",
+          "lists": {
+            "ruff_wasm": "0 tests, 0 benchmarks\n",
+            "ty_wasm": "0 tests, 0 benchmarks\n"
+          },
+          "probe_processes": [],
+          "raw_ELFs": {
+            "ruff_wasm": "63d30e31240ed3b2c5278ae2d18745d9cdfd67e6a5c4de11353bfd1a876fa961",
+            "ty_wasm": "314295bf2c643bfd0c63e24cd728bed305d113ec703b56807cf7734f0521f881"
+          },
+          "rustc_crates": [],
+          "unit_count": 374,
+          "wild_outputs": []
+        },
+        "first-dirty": {
+          "API_explicitly_one_worker": [
+            "api-7343d4c83d92d566",
+            "api-0815b72ae57e8533"
+          ],
+          "API_full_or_link_only": [
+            "full",
+            "full"
+          ],
+          "cargo_reported_elapsed_under_strace": "57.28s",
+          "lists": {
+            "ruff_wasm": "0 tests, 0 benchmarks\n",
+            "ty_wasm": "0 tests, 0 benchmarks\n"
+          },
+          "probe_processes": [
+            "cc -print-search-dirs",
+            "cc -print-search-dirs",
+            "wild --help",
+            "wild --help"
+          ],
+          "raw_ELFs": {
+            "ruff_wasm": "2f695e26c1d7fccc825e61fa23b077b622c1b24dc494cde80d6a906bfa3357e7",
+            "ty_wasm": "314295bf2c643bfd0c63e24cd728bed305d113ec703b56807cf7734f0521f881"
+          },
+          "rustc_crates": [
+            "api",
+            "api",
+            "ruff_graph",
+            "ruff_linter",
+            "ruff_python_semantic",
+            "ruff_python_stdlib",
+            "ruff_wasm",
+            "ruff_workspace",
+            "ty_ide",
+            "ty_module_resolver",
+            "ty_project",
+            "ty_python_core",
+            "ty_python_semantic",
+            "ty_wasm"
+          ],
+          "unit_count": 374,
+          "wild_outputs": [
+            "api-0815b72ae57e8533",
+            "api-7343d4c83d92d566",
+            "libruff_wasm.so",
+            "libty_wasm.so"
+          ]
+        },
+        "first-fresh": {
+          "API_explicitly_one_worker": [],
+          "API_full_or_link_only": [],
+          "cargo_reported_elapsed_under_strace": "2.27s",
+          "lists": {
+            "ruff_wasm": "0 tests, 0 benchmarks\n",
+            "ty_wasm": "0 tests, 0 benchmarks\n"
+          },
+          "probe_processes": [],
+          "raw_ELFs": {
+            "ruff_wasm": "2f695e26c1d7fccc825e61fa23b077b622c1b24dc494cde80d6a906bfa3357e7",
+            "ty_wasm": "314295bf2c643bfd0c63e24cd728bed305d113ec703b56807cf7734f0521f881"
+          },
+          "rustc_crates": [],
+          "unit_count": 374,
+          "wild_outputs": []
+        },
+        "forced-fresh": {
+          "API_explicitly_one_worker": [],
+          "API_full_or_link_only": [],
+          "cargo_reported_elapsed_under_strace": "2.60s",
+          "lists": {
+            "ruff_wasm": "0 tests, 0 benchmarks\n",
+            "ty_wasm": "0 tests, 0 benchmarks\n"
+          },
+          "probe_processes": [],
+          "raw_ELFs": {
+            "ruff_wasm": "2f695e26c1d7fccc825e61fa23b077b622c1b24dc494cde80d6a906bfa3357e7",
+            "ty_wasm": "314295bf2c643bfd0c63e24cd728bed305d113ec703b56807cf7734f0521f881"
+          },
+          "rustc_crates": [],
+          "unit_count": 374,
+          "wild_outputs": []
+        },
+        "independent-api-cold": {
+          "API_explicitly_one_worker": [],
+          "API_full_or_link_only": [
+            "full",
+            "full"
+          ],
+          "cargo_reported_elapsed_under_strace": "3.56s",
+          "lists": {
+            "ruff_wasm": "0 tests, 0 benchmarks\n",
+            "ty_wasm": "0 tests, 0 benchmarks\n"
+          },
+          "probe_processes": [
+            "cc -print-search-dirs",
+            "cc -print-search-dirs",
+            "wild --help",
+            "wild --help"
+          ],
+          "raw_ELFs": {
+            "ruff_wasm": "63d30e31240ed3b2c5278ae2d18745d9cdfd67e6a5c4de11353bfd1a876fa961",
+            "ty_wasm": "314295bf2c643bfd0c63e24cd728bed305d113ec703b56807cf7734f0521f881"
+          },
+          "rustc_crates": [
+            "api",
+            "api"
+          ],
+          "unit_count": 374,
+          "wild_outputs": [
+            "api-0815b72ae57e8533",
+            "api-7343d4c83d92d566"
+          ]
+        },
+        "independent-force": {
+          "API_explicitly_one_worker": [
+            "api-7343d4c83d92d566",
+            "api-0815b72ae57e8533"
+          ],
+          "API_full_or_link_only": [
+            "full",
+            "full"
+          ],
+          "cargo_reported_elapsed_under_strace": "4.12s",
+          "lists": {
+            "ruff_wasm": "0 tests, 0 benchmarks\n",
+            "ty_wasm": "0 tests, 0 benchmarks\n"
+          },
+          "probe_processes": [
+            "cc -print-search-dirs",
+            "cc -print-search-dirs",
+            "wild --help",
+            "wild --help"
+          ],
+          "raw_ELFs": {
+            "ruff_wasm": "2f695e26c1d7fccc825e61fa23b077b622c1b24dc494cde80d6a906bfa3357e7",
+            "ty_wasm": "314295bf2c643bfd0c63e24cd728bed305d113ec703b56807cf7734f0521f881"
+          },
+          "rustc_crates": [
+            "api",
+            "api"
+          ],
+          "unit_count": 374,
+          "wild_outputs": [
+            "api-0815b72ae57e8533",
+            "api-7343d4c83d92d566"
+          ]
+        },
+        "trained-edit": {
+          "API_explicitly_one_worker": [],
+          "API_full_or_link_only": [],
+          "cargo_reported_elapsed_under_strace": "29.71s",
+          "lists": {
+            "ruff_wasm": "0 tests, 0 benchmarks\n",
+            "ty_wasm": "0 tests, 0 benchmarks\n"
+          },
+          "probe_processes": [],
+          "raw_ELFs": {
+            "ruff_wasm": "2f695e26c1d7fccc825e61fa23b077b622c1b24dc494cde80d6a906bfa3357e7",
+            "ty_wasm": "314295bf2c643bfd0c63e24cd728bed305d113ec703b56807cf7734f0521f881"
+          },
+          "rustc_crates": [
+            "ruff_graph",
+            "ruff_linter",
+            "ruff_python_semantic",
+            "ruff_python_stdlib",
+            "ruff_wasm",
+            "ruff_workspace",
+            "ty_ide",
+            "ty_module_resolver",
+            "ty_project",
+            "ty_python_core",
+            "ty_python_semantic",
+            "ty_wasm"
+          ],
+          "unit_count": 374,
+          "wild_outputs": [
+            "libruff_wasm.so",
+            "libty_wasm.so"
+          ]
+        },
+        "trained-edit-fresh": {
+          "API_explicitly_one_worker": [],
+          "API_full_or_link_only": [],
+          "cargo_reported_elapsed_under_strace": "2.33s",
+          "lists": {
+            "ruff_wasm": "0 tests, 0 benchmarks\n",
+            "ty_wasm": "0 tests, 0 benchmarks\n"
+          },
+          "probe_processes": [],
+          "raw_ELFs": {
+            "ruff_wasm": "2f695e26c1d7fccc825e61fa23b077b622c1b24dc494cde80d6a906bfa3357e7",
+            "ty_wasm": "314295bf2c643bfd0c63e24cd728bed305d113ec703b56807cf7734f0521f881"
+          },
+          "rustc_crates": [],
+          "unit_count": 374,
+          "wild_outputs": []
+        },
+        "trained-return": {
+          "API_explicitly_one_worker": [],
+          "API_full_or_link_only": [],
+          "cargo_reported_elapsed_under_strace": "29.44s",
+          "lists": {
+            "ruff_wasm": "0 tests, 0 benchmarks\n",
+            "ty_wasm": "0 tests, 0 benchmarks\n"
+          },
+          "probe_processes": [],
+          "raw_ELFs": {
+            "ruff_wasm": "2f695e26c1d7fccc825e61fa23b077b622c1b24dc494cde80d6a906bfa3357e7",
+            "ty_wasm": "314295bf2c643bfd0c63e24cd728bed305d113ec703b56807cf7734f0521f881"
+          },
+          "rustc_crates": [
+            "ruff_graph",
+            "ruff_linter",
+            "ruff_python_semantic",
+            "ruff_python_stdlib",
+            "ruff_wasm",
+            "ruff_workspace",
+            "ty_ide",
+            "ty_module_resolver",
+            "ty_project",
+            "ty_python_core",
+            "ty_python_semantic",
+            "ty_wasm"
+          ],
+          "unit_count": 374,
+          "wild_outputs": [
+            "libruff_wasm.so",
+            "libty_wasm.so"
+          ]
+        },
+        "trained-return-fresh": {
+          "API_explicitly_one_worker": [],
+          "API_full_or_link_only": [],
+          "cargo_reported_elapsed_under_strace": "2.65s",
+          "lists": {
+            "ruff_wasm": "0 tests, 0 benchmarks\n",
+            "ty_wasm": "0 tests, 0 benchmarks\n"
+          },
+          "probe_processes": [],
+          "raw_ELFs": {
+            "ruff_wasm": "2f695e26c1d7fccc825e61fa23b077b622c1b24dc494cde80d6a906bfa3357e7",
+            "ty_wasm": "314295bf2c643bfd0c63e24cd728bed305d113ec703b56807cf7734f0521f881"
+          },
+          "rustc_crates": [],
+          "unit_count": 374,
+          "wild_outputs": []
+        },
+        "trained-return2": {
+          "API_explicitly_one_worker": [],
+          "API_full_or_link_only": [],
+          "cargo_reported_elapsed_under_strace": "31.86s",
+          "lists": {
+            "ruff_wasm": "0 tests, 0 benchmarks\n",
+            "ty_wasm": "0 tests, 0 benchmarks\n"
+          },
+          "probe_processes": [],
+          "raw_ELFs": {
+            "ruff_wasm": "2f695e26c1d7fccc825e61fa23b077b622c1b24dc494cde80d6a906bfa3357e7",
+            "ty_wasm": "314295bf2c643bfd0c63e24cd728bed305d113ec703b56807cf7734f0521f881"
+          },
+          "rustc_crates": [
+            "ruff_graph",
+            "ruff_linter",
+            "ruff_python_semantic",
+            "ruff_python_stdlib",
+            "ruff_wasm",
+            "ruff_workspace",
+            "ty_ide",
+            "ty_module_resolver",
+            "ty_project",
+            "ty_python_core",
+            "ty_python_semantic",
+            "ty_wasm"
+          ],
+          "unit_count": 374,
+          "wild_outputs": [
+            "libruff_wasm.so",
+            "libty_wasm.so"
+          ]
+        },
+        "trained-return2-fresh": {
+          "API_explicitly_one_worker": [],
+          "API_full_or_link_only": [],
+          "cargo_reported_elapsed_under_strace": "2.39s",
+          "lists": {
+            "ruff_wasm": "0 tests, 0 benchmarks\n",
+            "ty_wasm": "0 tests, 0 benchmarks\n"
+          },
+          "probe_processes": [],
+          "raw_ELFs": {
+            "ruff_wasm": "2f695e26c1d7fccc825e61fa23b077b622c1b24dc494cde80d6a906bfa3357e7",
+            "ty_wasm": "314295bf2c643bfd0c63e24cd728bed305d113ec703b56807cf7734f0521f881"
+          },
+          "rustc_crates": [],
+          "unit_count": 374,
+          "wild_outputs": []
+        }
+      }
+    }
+  },
+  "subjects": {
+    "A": {
+      "cargo_sha256": "dd5cab154b8dcd09ccc2753160d314cade80979b2d055ee66aa9e2217e05e7e1",
+      "rustc_driver_sha256": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f"
+    },
+    "B": {
+      "cargo_sha256": "991d983a45416c63bc637511ccc584ea2ca6486d1a0b190108577ef00770768f",
+      "rustc_driver_sha256": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f"
+    },
+    "C": {
+      "cargo_sha256": "5227d7a8222366077a451f8d08d6e267108e16708db0326275fce212a180cf76",
+      "rustc_driver_sha256": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f"
+    }
+  }
+}
