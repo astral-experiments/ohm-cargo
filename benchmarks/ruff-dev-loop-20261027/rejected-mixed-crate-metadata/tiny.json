@@ -1,0 +1,640 @@
+{
+  "direct": [
+    {
+      "caller_sha256": "9eab4c6eb9cbce6ced9515cd6630f9758f949fb66123766babf125b2b314e1e5",
+      "expected": "full",
+      "name": "cold",
+      "observed": "full",
+      "rmeta": "bdd81b702680c5ca7bf4bbfacbea8edcfc5270b9e334efe5bc183f2c27019f18",
+      "so_sha256": "4e5e8805c318bd80869d8371bb428cbbc96953ec6abb521c648b4ff1d82c28cb",
+      "symbols": [
+        "observed"
+      ],
+      "value": 1
+    },
+    {
+      "caller_sha256": "8ba40ea19f92313cd7d5425e0c573090cccc5ccfca5635e71764429a09f19952",
+      "expected": "relink",
+      "name": "body",
+      "observed": "relink",
+      "rmeta": "bdd81b702680c5ca7bf4bbfacbea8edcfc5270b9e334efe5bc183f2c27019f18",
+      "so_sha256": "b9edb7a5ab053cc99216b0a64bbde5e2ee39de9b2b09c28963e58956cb5faf4f",
+      "symbols": [
+        "observed"
+      ],
+      "value": 2
+    },
+    {
+      "caller_sha256": "06b4cdf0a46622e4c0c097cb5b21ccfc36f5413d6697031b8ed5d52297a696cf",
+      "expected": "full",
+      "name": "add_export",
+      "observed": "full",
+      "rmeta": "6bac996bed44a565425ee8576be6c96f7acc64280ee4dd6ca89ca6e2cb700a72",
+      "so_sha256": "cbfd157e81fcf0923c5654b3fa42e7dfa2d98abe0215058f109236fff6e65006",
+      "symbols": [
+        "first_c",
+        "observed"
+      ],
+      "value": 2
+    },
+    {
+      "caller_sha256": "eac8c8ea6d5d2ca73f925467153fc35e2d0878bbc53b0b928c8399b399e70f3b",
+      "expected": "full",
+      "name": "rename_export",
+      "observed": "full",
+      "rmeta": "1264f872c3b45988be59cb4ca9381a1335f3ee340685012b6ff3200775110ff4",
+      "so_sha256": "a1a37faba4ab4363b715b62c901c68839f014211f6a3b9dcc88b4252ea723351",
+      "symbols": [
+        "observed",
+        "second_c"
+      ],
+      "value": 2
+    },
+    {
+      "caller_sha256": "8ba40ea19f92313cd7d5425e0c573090cccc5ccfca5635e71764429a09f19952",
+      "expected": "full",
+      "name": "remove_export",
+      "observed": "full",
+      "rmeta": "bdd81b702680c5ca7bf4bbfacbea8edcfc5270b9e334efe5bc183f2c27019f18",
+      "so_sha256": "b9edb7a5ab053cc99216b0a64bbde5e2ee39de9b2b09c28963e58956cb5faf4f",
+      "symbols": [
+        "observed"
+      ],
+      "value": 2
+    },
+    {
+      "caller_sha256": "8ba40ea19f92313cd7d5425e0c573090cccc5ccfca5635e71764429a09f19952",
+      "expected": "full",
+      "name": "public_api",
+      "observed": "full",
+      "rmeta": "a9ed7290d4a204c1662b02f82598f806a580ca928fa07540ab741cd9a11cf00b",
+      "so_sha256": "b9edb7a5ab053cc99216b0a64bbde5e2ee39de9b2b09c28963e58956cb5faf4f",
+      "symbols": [
+        "observed"
+      ],
+      "value": 2
+    },
+    {
+      "caller_sha256": "a4820872c017573fb971340c8d792c6997444c27b7644eedb4abe2daf3eb5a44",
+      "expected": "full",
+      "name": "prior_invocation",
+      "observed": "full",
+      "rmeta": "a9ed7290d4a204c1662b02f82598f806a580ca928fa07540ab741cd9a11cf00b",
+      "so_sha256": "8df958ecdd8badf9073e1da0be6618fcf26448199c6ccb381cd49cf51cb47df4",
+      "symbols": [
+        "observed"
+      ],
+      "value": 5
+    },
+    {
+      "caller_sha256": "98a005978ca02e7eebd8e03e9398206e023bc4389d09f351ea3b1076291b3b88",
+      "expected": "full",
+      "name": "transitive",
+      "observed": "full",
+      "rmeta": "397976c9f0493008a84233665d25b9b5e3f8a6452405d730486ebbf3e96ee3f8",
+      "so_sha256": "f8d85e0f97c26c502eea9b7c2c81a98f189298108ca123d0d4cc7c0eeeb29a52",
+      "symbols": [
+        "observed"
+      ],
+      "value": 6
+    },
+    {
+      "caller_sha256": "c07b8a4207abd39ee794d6f17eded31f75572ee646eddfdb23c26c0f8e880b5e",
+      "expected": "full",
+      "name": "new_native",
+      "observed": "full",
+      "rmeta": "85cddafe75059139bc7cb14aa4d2f4ddb7d19f55ec7c7d75f11185e0f97adff4",
+      "so_sha256": "1485f42613d4dc35c032cc2bfe40172ece826f0e8e17513fad3736167c623887",
+      "symbols": [
+        "observed"
+      ],
+      "value": 7
+    },
+    {
+      "caller_sha256": "d083e281675d0d9d1525696d02fb0c2f63b4274e863c132ee0fb9d3ee6d04c48",
+      "expected": "full",
+      "name": "remove_native",
+      "observed": "full",
+      "rmeta": "397976c9f0493008a84233665d25b9b5e3f8a6452405d730486ebbf3e96ee3f8",
+      "so_sha256": "d8039dd183cc1d1a6b5f63ef381c39e9b0dabd3aaa7f232c4c3962ee968a001b",
+      "symbols": [
+        "observed"
+      ],
+      "value": 8
+    }
+  ],
+  "downgrade-rustc": [
+    {
+      "caller_sha256": "145cae6420e73223744c47aa71b11e5d4f2624e6f2a9661790a6afca3e3ba25b",
+      "expected": "full",
+      "name": "cold",
+      "observed": "full",
+      "rmeta": "5cf9183f99e40380907fbb49fbdb96d439d3e2663648c092f19c5aa3dac8a674",
+      "so_sha256": "0ae48643d816cc93229c28b6758051cd0f25f7b342298731b5223a130b0ffd26",
+      "symbols": [
+        "observed"
+      ],
+      "value": 1
+    },
+    {
+      "caller_sha256": "d45a274c624734bae424cd3ab6681ecd480d259d0344cb048cb1a373287cd8bd",
+      "expected": "full",
+      "name": "body",
+      "observed": "full",
+      "rmeta": "5cf9183f99e40380907fbb49fbdb96d439d3e2663648c092f19c5aa3dac8a674",
+      "so_sha256": "15944f4ec54f7e5ba27385d25f840d4a71e3b7ff61236ea2c141b4d67bd09993",
+      "symbols": [
+        "observed"
+      ],
+      "value": 2
+    },
+    {
+      "caller_sha256": "2f6de5aeb9fe7206ead28d0135c60f09adf989e4edb262b090fc808eb9ca5feb",
+      "expected": "full",
+      "name": "add_export",
+      "observed": "full",
+      "rmeta": "ed51ff1056d5eb81f11d6155b488ae9c096980b5c693a3453c2d6746c074418b",
+      "so_sha256": "75f8cb40a7edb1108036c0d0a9d6dd3dcddf4f05999dceefd86597c1be551809",
+      "symbols": [
+        "first_c",
+        "observed"
+      ],
+      "value": 2
+    },
+    {
+      "caller_sha256": "7d9d4f8cd3de54ba9393b33d7957ab34b714bfb189e7c29d690da3ebfb429d3e",
+      "expected": "full",
+      "name": "rename_export",
+      "observed": "full",
+      "rmeta": "5a44239d0d8a2d68a59d66fbdc4c2ea7b030f4a2c340a6cc78247629cbc4f809",
+      "so_sha256": "52a71f5434a07b2ab7efd85656b57f4d66c29d39ca04fcda63341fffd7cc3203",
+      "symbols": [
+        "observed",
+        "second_c"
+      ],
+      "value": 2
+    },
+    {
+      "caller_sha256": "d45a274c624734bae424cd3ab6681ecd480d259d0344cb048cb1a373287cd8bd",
+      "expected": "full",
+      "name": "remove_export",
+      "observed": "full",
+      "rmeta": "5cf9183f99e40380907fbb49fbdb96d439d3e2663648c092f19c5aa3dac8a674",
+      "so_sha256": "15944f4ec54f7e5ba27385d25f840d4a71e3b7ff61236ea2c141b4d67bd09993",
+      "symbols": [
+        "observed"
+      ],
+      "value": 2
+    },
+    {
+      "caller_sha256": "d45a274c624734bae424cd3ab6681ecd480d259d0344cb048cb1a373287cd8bd",
+      "expected": "full",
+      "name": "public_api",
+      "observed": "full",
+      "rmeta": "f6876dd8b431629f47a6c0bcdb18e83bf32c62804f0c65adcb2c882782accfbc",
+      "so_sha256": "15944f4ec54f7e5ba27385d25f840d4a71e3b7ff61236ea2c141b4d67bd09993",
+      "symbols": [
+        "observed"
+      ],
+      "value": 2
+    },
+    {
+      "caller_sha256": "1aa059538786a714e52f7fc96729837603d61d85a42689408bda5893b3d782fa",
+      "expected": "full",
+      "name": "prior_invocation",
+      "observed": "full",
+      "rmeta": "f6876dd8b431629f47a6c0bcdb18e83bf32c62804f0c65adcb2c882782accfbc",
+      "so_sha256": "b25a54879c26e836bc0c25fbb78c4c1b0783342c7a72efd80ae7a3a7c273ebfd",
+      "symbols": [
+        "observed"
+      ],
+      "value": 5
+    },
+    {
+      "caller_sha256": "909feb3549fbf84051dfe32f24f31de613956e054c0b27673970a25f47f5c3e3",
+      "expected": "full",
+      "name": "new_native",
+      "observed": "full",
+      "rmeta": "07fd96a2bb982ffd97b46c7c5bdac01eaac77f13012cce945bfab2f2df289b53",
+      "so_sha256": "df65a14925cfbecccec756fd9bc257c288f5a096b897297045615d8657e0f7ea",
+      "symbols": [
+        "observed"
+      ],
+      "value": 7
+    },
+    {
+      "caller_sha256": "81864a878c64abb7236509334bb73e8b9b8b1dc6c1ed6ad57c5204d5641ed993",
+      "expected": "full",
+      "name": "remove_native",
+      "observed": "full",
+      "rmeta": "f6876dd8b431629f47a6c0bcdb18e83bf32c62804f0c65adcb2c882782accfbc",
+      "so_sha256": "5660c3783759c015b7816e05849770323cd213f0ab6764b07d86e38cd2492196",
+      "symbols": [
+        "observed"
+      ],
+      "value": 8
+    }
+  ],
+  "foreign-0-0": [
+    {
+      "first_library_linkonly": false,
+      "keys_with_mismatches": [],
+      "library_equal": {
+        "exports": true,
+        "full_rmeta": true,
+        "objects": true,
+        "observed": true,
+        "rmeta": true,
+        "sha256": true
+      },
+      "producer_hash": {
+        "value": "1a8b0d28221e7b2008c628d261da6a0f",
+        "version": 1
+      },
+      "stage": "before"
+    },
+    {
+      "first_library_linkonly": false,
+      "keys_with_mismatches": [],
+      "library_equal": {
+        "exports": true,
+        "full_rmeta": true,
+        "objects": true,
+        "observed": true,
+        "rmeta": true,
+        "sha256": true
+      },
+      "producer_hash": {
+        "value": "1a8b0d28221e7b2008c628d261da6a0f",
+        "version": 1
+      },
+      "stage": "add_files_before_macro"
+    },
+    {
+      "first_library_linkonly": false,
+      "keys_with_mismatches": [],
+      "library_equal": {
+        "exports": true,
+        "full_rmeta": true,
+        "objects": true,
+        "observed": true,
+        "rmeta": true,
+        "sha256": true
+      },
+      "producer_hash": {
+        "value": "1a8b0d28221e7b2008c628d261da6a0f",
+        "version": 1
+      },
+      "stage": "remove_files_before_macro"
+    }
+  ],
+  "foreign-0-1": [
+    {
+      "first_library_linkonly": false,
+      "keys_with_mismatches": [],
+      "library_equal": {
+        "exports": true,
+        "full_rmeta": true,
+        "objects": true,
+        "observed": true,
+        "rmeta": true,
+        "sha256": true
+      },
+      "producer_hash": {
+        "value": "1a8b0d28221e7b2008c628d261da6a0f",
+        "version": 1
+      },
+      "stage": "before_long"
+    },
+    {
+      "first_library_linkonly": false,
+      "keys_with_mismatches": [],
+      "library_equal": {
+        "exports": true,
+        "full_rmeta": true,
+        "objects": true,
+        "observed": true,
+        "rmeta": true,
+        "sha256": true
+      },
+      "producer_hash": {
+        "value": "1a8b0d28221e7b2008c628d261da6a0f",
+        "version": 1
+      },
+      "stage": "remove_files_before_macro"
+    }
+  ],
+  "foreign-1-0": [
+    {
+      "first_library_linkonly": false,
+      "keys_with_mismatches": [],
+      "library_equal": {
+        "exports": true,
+        "full_rmeta": true,
+        "objects": true,
+        "observed": true,
+        "rmeta": true,
+        "sha256": true
+      },
+      "producer_hash": {
+        "value": "67c59c0f6004ae7e24d33e8f3f5b72de",
+        "version": 1
+      },
+      "stage": "before"
+    },
+    {
+      "first_library_linkonly": false,
+      "keys_with_mismatches": [],
+      "library_equal": {
+        "exports": true,
+        "full_rmeta": true,
+        "objects": true,
+        "observed": true,
+        "rmeta": true,
+        "sha256": true
+      },
+      "producer_hash": {
+        "value": "7d27d6c5b00c01630c26c925fd383113",
+        "version": 1
+      },
+      "stage": "add_files_before_macro"
+    },
+    {
+      "first_library_linkonly": false,
+      "keys_with_mismatches": [],
+      "library_equal": {
+        "exports": true,
+        "full_rmeta": true,
+        "objects": true,
+        "observed": true,
+        "rmeta": true,
+        "sha256": true
+      },
+      "producer_hash": {
+        "value": "67c59c0f6004ae7e24d33e8f3f5b72de",
+        "version": 1
+      },
+      "stage": "remove_files_before_macro"
+    }
+  ],
+  "foreign-1-1": [
+    {
+      "first_library_linkonly": false,
+      "keys_with_mismatches": [],
+      "library_equal": {
+        "exports": true,
+        "full_rmeta": true,
+        "objects": true,
+        "observed": true,
+        "rmeta": true,
+        "sha256": true
+      },
+      "producer_hash": {
+        "value": "7d27d6c5b00c01630c26c925fd383113",
+        "version": 1
+      },
+      "stage": "before_long"
+    },
+    {
+      "first_library_linkonly": false,
+      "keys_with_mismatches": [],
+      "library_equal": {
+        "exports": true,
+        "full_rmeta": true,
+        "objects": true,
+        "observed": true,
+        "rmeta": true,
+        "sha256": true
+      },
+      "producer_hash": {
+        "value": "67c59c0f6004ae7e24d33e8f3f5b72de",
+        "version": 1
+      },
+      "stage": "remove_files_before_macro"
+    }
+  ],
+  "repeat-downgrade-cargo": [
+    {
+      "caller_sha256": "145cae6420e73223744c47aa71b11e5d4f2624e6f2a9661790a6afca3e3ba25b",
+      "expected": "full",
+      "name": "cold",
+      "observed": "full",
+      "rmeta": "5cf9183f99e40380907fbb49fbdb96d439d3e2663648c092f19c5aa3dac8a674",
+      "so_sha256": "0ae48643d816cc93229c28b6758051cd0f25f7b342298731b5223a130b0ffd26",
+      "symbols": [
+        "observed"
+      ],
+      "value": 1
+    },
+    {
+      "caller_sha256": "d45a274c624734bae424cd3ab6681ecd480d259d0344cb048cb1a373287cd8bd",
+      "expected": "full",
+      "name": "body",
+      "observed": "full",
+      "rmeta": "5cf9183f99e40380907fbb49fbdb96d439d3e2663648c092f19c5aa3dac8a674",
+      "so_sha256": "15944f4ec54f7e5ba27385d25f840d4a71e3b7ff61236ea2c141b4d67bd09993",
+      "symbols": [
+        "observed"
+      ],
+      "value": 2
+    },
+    {
+      "caller_sha256": "2f6de5aeb9fe7206ead28d0135c60f09adf989e4edb262b090fc808eb9ca5feb",
+      "expected": "full",
+      "name": "add_export",
+      "observed": "full",
+      "rmeta": "ed51ff1056d5eb81f11d6155b488ae9c096980b5c693a3453c2d6746c074418b",
+      "so_sha256": "75f8cb40a7edb1108036c0d0a9d6dd3dcddf4f05999dceefd86597c1be551809",
+      "symbols": [
+        "first_c",
+        "observed"
+      ],
+      "value": 2
+    },
+    {
+      "caller_sha256": "7d9d4f8cd3de54ba9393b33d7957ab34b714bfb189e7c29d690da3ebfb429d3e",
+      "expected": "full",
+      "name": "rename_export",
+      "observed": "full",
+      "rmeta": "5a44239d0d8a2d68a59d66fbdc4c2ea7b030f4a2c340a6cc78247629cbc4f809",
+      "so_sha256": "52a71f5434a07b2ab7efd85656b57f4d66c29d39ca04fcda63341fffd7cc3203",
+      "symbols": [
+        "observed",
+        "second_c"
+      ],
+      "value": 2
+    },
+    {
+      "caller_sha256": "d45a274c624734bae424cd3ab6681ecd480d259d0344cb048cb1a373287cd8bd",
+      "expected": "full",
+      "name": "remove_export",
+      "observed": "full",
+      "rmeta": "5cf9183f99e40380907fbb49fbdb96d439d3e2663648c092f19c5aa3dac8a674",
+      "so_sha256": "15944f4ec54f7e5ba27385d25f840d4a71e3b7ff61236ea2c141b4d67bd09993",
+      "symbols": [
+        "observed"
+      ],
+      "value": 2
+    },
+    {
+      "caller_sha256": "d45a274c624734bae424cd3ab6681ecd480d259d0344cb048cb1a373287cd8bd",
+      "expected": "full",
+      "name": "public_api",
+      "observed": "full",
+      "rmeta": "f6876dd8b431629f47a6c0bcdb18e83bf32c62804f0c65adcb2c882782accfbc",
+      "so_sha256": "15944f4ec54f7e5ba27385d25f840d4a71e3b7ff61236ea2c141b4d67bd09993",
+      "symbols": [
+        "observed"
+      ],
+      "value": 2
+    },
+    {
+      "caller_sha256": "1aa059538786a714e52f7fc96729837603d61d85a42689408bda5893b3d782fa",
+      "expected": "full",
+      "name": "prior_invocation",
+      "observed": "full",
+      "rmeta": "f6876dd8b431629f47a6c0bcdb18e83bf32c62804f0c65adcb2c882782accfbc",
+      "so_sha256": "b25a54879c26e836bc0c25fbb78c4c1b0783342c7a72efd80ae7a3a7c273ebfd",
+      "symbols": [
+        "observed"
+      ],
+      "value": 5
+    },
+    {
+      "caller_sha256": "909feb3549fbf84051dfe32f24f31de613956e054c0b27673970a25f47f5c3e3",
+      "expected": "full",
+      "name": "new_native",
+      "observed": "full",
+      "rmeta": "07fd96a2bb982ffd97b46c7c5bdac01eaac77f13012cce945bfab2f2df289b53",
+      "so_sha256": "df65a14925cfbecccec756fd9bc257c288f5a096b897297045615d8657e0f7ea",
+      "symbols": [
+        "observed"
+      ],
+      "value": 7
+    },
+    {
+      "caller_sha256": "81864a878c64abb7236509334bb73e8b9b8b1dc6c1ed6ad57c5204d5641ed993",
+      "expected": "full",
+      "name": "remove_native",
+      "observed": "full",
+      "rmeta": "f6876dd8b431629f47a6c0bcdb18e83bf32c62804f0c65adcb2c882782accfbc",
+      "so_sha256": "5660c3783759c015b7816e05849770323cd213f0ab6764b07d86e38cd2492196",
+      "symbols": [
+        "observed"
+      ],
+      "value": 8
+    }
+  ],
+  "transitive": [
+    {
+      "caller_sha256": "145cae6420e73223744c47aa71b11e5d4f2624e6f2a9661790a6afca3e3ba25b",
+      "expected": "full",
+      "name": "cold",
+      "observed": "full",
+      "rmeta": "5cf9183f99e40380907fbb49fbdb96d439d3e2663648c092f19c5aa3dac8a674",
+      "so_sha256": "0ae48643d816cc93229c28b6758051cd0f25f7b342298731b5223a130b0ffd26",
+      "symbols": [
+        "observed"
+      ],
+      "value": 1
+    },
+    {
+      "caller_sha256": "d45a274c624734bae424cd3ab6681ecd480d259d0344cb048cb1a373287cd8bd",
+      "expected": "relink",
+      "name": "body",
+      "observed": "relink",
+      "rmeta": "5cf9183f99e40380907fbb49fbdb96d439d3e2663648c092f19c5aa3dac8a674",
+      "so_sha256": "15944f4ec54f7e5ba27385d25f840d4a71e3b7ff61236ea2c141b4d67bd09993",
+      "symbols": [
+        "observed"
+      ],
+      "value": 2
+    },
+    {
+      "caller_sha256": "2f6de5aeb9fe7206ead28d0135c60f09adf989e4edb262b090fc808eb9ca5feb",
+      "expected": "full",
+      "name": "add_export",
+      "observed": "full",
+      "rmeta": "ed51ff1056d5eb81f11d6155b488ae9c096980b5c693a3453c2d6746c074418b",
+      "so_sha256": "75f8cb40a7edb1108036c0d0a9d6dd3dcddf4f05999dceefd86597c1be551809",
+      "symbols": [
+        "first_c",
+        "observed"
+      ],
+      "value": 2
+    },
+    {
+      "caller_sha256": "7d9d4f8cd3de54ba9393b33d7957ab34b714bfb189e7c29d690da3ebfb429d3e",
+      "expected": "full",
+      "name": "rename_export",
+      "observed": "full",
+      "rmeta": "5a44239d0d8a2d68a59d66fbdc4c2ea7b030f4a2c340a6cc78247629cbc4f809",
+      "so_sha256": "52a71f5434a07b2ab7efd85656b57f4d66c29d39ca04fcda63341fffd7cc3203",
+      "symbols": [
+        "observed",
+        "second_c"
+      ],
+      "value": 2
+    },
+    {
+      "caller_sha256": "d45a274c624734bae424cd3ab6681ecd480d259d0344cb048cb1a373287cd8bd",
+      "expected": "full",
+      "name": "remove_export",
+      "observed": "full",
+      "rmeta": "5cf9183f99e40380907fbb49fbdb96d439d3e2663648c092f19c5aa3dac8a674",
+      "so_sha256": "15944f4ec54f7e5ba27385d25f840d4a71e3b7ff61236ea2c141b4d67bd09993",
+      "symbols": [
+        "observed"
+      ],
+      "value": 2
+    },
+    {
+      "caller_sha256": "d45a274c624734bae424cd3ab6681ecd480d259d0344cb048cb1a373287cd8bd",
+      "expected": "full",
+      "name": "public_api",
+      "observed": "full",
+      "rmeta": "f6876dd8b431629f47a6c0bcdb18e83bf32c62804f0c65adcb2c882782accfbc",
+      "so_sha256": "15944f4ec54f7e5ba27385d25f840d4a71e3b7ff61236ea2c141b4d67bd09993",
+      "symbols": [
+        "observed"
+      ],
+      "value": 2
+    },
+    {
+      "caller_sha256": "1aa059538786a714e52f7fc96729837603d61d85a42689408bda5893b3d782fa",
+      "expected": "full",
+      "name": "prior_invocation",
+      "observed": "full",
+      "rmeta": "f6876dd8b431629f47a6c0bcdb18e83bf32c62804f0c65adcb2c882782accfbc",
+      "so_sha256": "b25a54879c26e836bc0c25fbb78c4c1b0783342c7a72efd80ae7a3a7c273ebfd",
+      "symbols": [
+        "observed"
+      ],
+      "value": 5
+    },
+    {
+      "caller_sha256": "909feb3549fbf84051dfe32f24f31de613956e054c0b27673970a25f47f5c3e3",
+      "expected": "full",
+      "name": "new_native",
+      "observed": "full",
+      "rmeta": "07fd96a2bb982ffd97b46c7c5bdac01eaac77f13012cce945bfab2f2df289b53",
+      "so_sha256": "df65a14925cfbecccec756fd9bc257c288f5a096b897297045615d8657e0f7ea",
+      "symbols": [
+        "observed"
+      ],
+      "value": 7
+    },
+    {
+      "caller_sha256": "81864a878c64abb7236509334bb73e8b9b8b1dc6c1ed6ad57c5204d5641ed993",
+      "expected": "full",
+      "name": "remove_native",
+      "observed": "full",
+      "rmeta": "f6876dd8b431629f47a6c0bcdb18e83bf32c62804f0c65adcb2c882782accfbc",
+      "so_sha256": "5660c3783759c015b7816e05849770323cd213f0ab6764b07d86e38cd2492196",
+      "symbols": [
+        "observed"
+      ],
+      "value": 8
+    }
+  ]
+}
