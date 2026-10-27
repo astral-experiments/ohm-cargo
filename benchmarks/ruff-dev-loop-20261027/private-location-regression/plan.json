@@ -1,0 +1,261 @@
+{
+  "protocol": "ohm-position-regression-v1",
+  "created_utc": "2026-10-27T06:02:24.611899+00:00",
+  "pin": "93526150df078af7dd8fc4226cdcc469539d2001",
+  "target": "x86_64-unknown-linux-gnu",
+  "cargo": "13396fe1c6886f41155ac24f507210c7a5f655e5b3279a28f45bf3a5e6bcaf08",
+  "drivers": {
+    "parent232": "051b9d3f5861f984faa0f8c1d2ab9b5c28e483a05c728051de837291c83fd518",
+    "current233": "3e4b168966e111b52ad1a942d364ec1335cf1cfa994f4208b0909ca215b589d2"
+  },
+  "edits": {
+    "doc": {
+      "commit": "36029f1c9a48690bc014c55007cf1ca69f479264",
+      "patch": "3f1869c672cf721af6ff04f0b84fe437212f0c7718bf96473caaf61d51bec1d1"
+    },
+    "parser": {
+      "commit": "3ea20f6161cbf59cb56595dfb634ec24bfa82f0b",
+      "patch": "08bb20f14fde4db57dd12ec3de3855021ddf6284b4a1957b54f4d06fb3c8f9ff"
+    }
+  },
+  "endpoints": {
+    "doc-build": {
+      "control": "current233",
+      "candidate": "position fix, source and driver hashes must be frozen before timing",
+      "edit": "doc",
+      "mode": "build",
+      "seed": 27102701,
+      "orders": [
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "parent"
+        ],
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "parent"
+        ],
+        [
+          "candidate",
+          "parent"
+        ],
+        [
+          "candidate",
+          "parent"
+        ],
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "parent"
+        ],
+        [
+          "candidate",
+          "parent"
+        ]
+      ]
+    },
+    "doc-test": {
+      "control": "current233",
+      "candidate": "position fix, source and driver hashes must be frozen before timing",
+      "edit": "doc",
+      "mode": "test",
+      "seed": 27102702,
+      "orders": [
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "parent"
+        ],
+        [
+          "candidate",
+          "parent"
+        ],
+        [
+          "candidate",
+          "parent"
+        ],
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "parent"
+        ],
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "parent"
+        ],
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "parent"
+        ],
+        [
+          "parent",
+          "candidate"
+        ]
+      ]
+    },
+    "parser-build": {
+      "control": "parent232",
+      "candidate": "position fix, source and driver hashes must be frozen before timing",
+      "edit": "parser",
+      "mode": "build",
+      "seed": 27102703,
+      "orders": [
+        [
+          "candidate",
+          "parent"
+        ],
+        [
+          "candidate",
+          "parent"
+        ],
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "parent"
+        ],
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "parent"
+        ],
+        [
+          "candidate",
+          "parent"
+        ],
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "parent"
+        ]
+      ]
+    },
+    "parser-test": {
+      "control": "parent232",
+      "candidate": "position fix, source and driver hashes must be frozen before timing",
+      "edit": "parser",
+      "mode": "test",
+      "seed": 27102704,
+      "orders": [
+        [
+          "candidate",
+          "parent"
+        ],
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "parent"
+        ],
+        [
+          "candidate",
+          "parent"
+        ],
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "parent"
+        ],
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "parent"
+        ],
+        [
+          "candidate",
+          "parent"
+        ]
+      ]
+    }
+  },
+  "measurement": "Time untraced Cargo wall time around the complete warm Ruff edit. Every endpoint has 12 interleaved pairs, six per arm order, with an all-fresh immediate repetition and a verified source restoration. No timing-based early termination or replacement of pairs. Keep target and build directories on one device, local to each arm. No tests run. Exclude only failed integrity checks; restart the entire endpoint with disclosed reason and retain the failed run.",
+  "claims": "Count actual compiler and linker execve invocations in independent initial and final traces. Doc case requires no more full compiles than the verified optimized parent (#232, 2 build and 4 test). Parser case requires reducing full Rust compiles vs #232. Disclose all four paired wall times even when inconclusive. Only claim significant reductions with a positive log-ratio paired-bootstrap 95% interval and a balanced exact two-sided randomization test significant at Holm-adjusted 0.05 across all four endpoints.",
+  "controls": [
+    "Parent #232 linter-doc scheduled separately as count control",
+    "Require all 501 or 619 units fresh after edits and restored builds",
+    "Read and compare the complete Ruff JSON diagnostic for mixed literals on both sides of both edits and a dataclass lint functional oracle for the private doc change",
+    "Compare fresh corrected binaries and diagnostics to independent corrected clean builds; qualify nondeterministic ELF sections if needed",
+    "Original private pattern-recovery edit must retain #232 single-rustc workspace check",
+    "Existing foreign macro diagnostics, proc macro source positions, source-file identity, expansion order, raw-index epochs, hidden-type/opaque controls"
+  ]
+}
