@@ -1,0 +1,150 @@
+{
+  "schema": 1,
+  "created_utc": "2026-10-27T08:45:53+00:00",
+  "seed": 202610270844,
+  "scope": "Confirmatory native whole-command measurement after exploratory four-pair screens of local source-matched PGO images. The two primary workloads are a held-out true raw foreign-span reader workspace, and an actual locked Ron 0.12.0 test build in a small consumer. Neither is a default full Ruff workspace command.",
+  "subject": {
+    "earlier": {
+      "base_commit": "b0a4df740b57589ecec3c83e30d5d326ab52a56d",
+      "v4_increment_sha256": "0331936bcd4ebc44866dcb8a630787f4a34a6330350d013e38bd1e0d15cc681f",
+      "cargo_sha256": "597a8a2d1bae8a572ff4eec7b2dd2c54dbc3c8527a61fd5a080bd3b6d4eeb419"
+    },
+    "candidate": {
+      "base_commit": "b0a4df740b57589ecec3c83e30d5d326ab52a56d",
+      "v4_increment_sha256": "0331936bcd4ebc44866dcb8a630787f4a34a6330350d013e38bd1e0d15cc681f",
+      "sdk_increment_sha256": "1ed62b210aa96a41b19ecc8788ff10e2d13a34c124a61b75614d742672add17e",
+      "cargo_sha256": "025d5bf9a3fd64b72fe7f7ef4231b44c434ee340d3051fbb3f15b155504ba5cd"
+    },
+    "golden": "fd9bfe1178f30d12d412f4736eea9e0a7d68e8f687ab2653681d0181049f3025",
+    "compiler_driver": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+    "rustc": "4fa9a18b77430bcc416e88561b6fe5797d98b996a7698b9f3bd11d4e7817a19f"
+  },
+  "inputs": {
+    "synthetic_source_manifest_sha256": "1a309c176ba8ea129414be486ce87a040c171d294e9d12a5388bdaaa94d6f78e",
+    "ruff_commit": "93526150df078af7dd8fc4226cdcc469539d2001",
+    "ruff_lock_sha256": "c9e345325bec5ff08dbbe3916edd39ad0c3d1c7797a8c241ae32f62754e764bf",
+    "local_ron_fixture_source_sha256": "07799951ded7eac020ff79cc18b27ffeee7c4630b751dbee188657b3ae3fe6a2",
+    "synthetic_command": "cargo +ohm build --offline -p hold_direct -p hold_indirect -p hold_plain",
+    "ron_command": "cargo +ohm test --no-run --offline -p probe_ron (real registry sources, both explicit trust options all, matched Ruff lock)",
+    "synthetic_edit": "Add/remove one ASCII s after One private shape, without changing the line count, in hold_shapes/src/types.rs."
+  },
+  "endpoints": "Two co-primary hypotheses on the fully trained complete unchanged runs, one per workload. 16 new balanced pairs per workload under an exclusive 0\u20133 local affinity. No timing during training or strace. Infer via one-sided exact randomization of mean(log(V/C)) over all 12,870 choices of eight V-first blocks, Holm across both primary p-values. Report medians, paired median percentage reduction 100*(1-C/V), conservatively at-least-95% sign inversion paired median interval (4th/13th order statistics of 16). Each qualifies if the lower bound is positive, >=13/16 faster and Holm p<.05. Report unqualified endpoints unchanged.",
+  "negative_control": "16 first-edit synthetic complete builds with alternating eight additions and eight removals, independently balanced 4/4 arm order per direction. Require actual changed results, four full compilers, one link-only, three native links for both, capturing exactly two true readers, and zero checksum helper starts on edits. Report medians and same interval. Only state timing noninferiority if lower bound >-5%; otherwise inconclusive. No positive edit performance hypothesis.",
+  "procedure": "Use private physical source/cargo-home/target/build stores for each arm at a matched logical bundle path per workload. Same matched release driver, frontend, native linker and cache options. Derive both synthetic states against independently empty golden Cargo, all three ELF SHA and runtime outputs. Verify one Ron test executable SHA against its independent empty build. Prime each arm, confirming complete observer dep-info and an all-fresh roster. Record all 96 ordinary native commands first, then repeat all 96 under execve+prctl audit, separately re-primed stores in the same canonical path. Each no-op expects zero rustc and linkers in either arm, zero cargo-checksum workers on the old arm and at least one (expected one) on the candidate. Require same checked SDK/source values; preserve all raw outcomes and repeated process audit. Zero timing-outlier removal. Whole failed blocks/contexts must be disclosed, never selectively removed.",
+  "safety": "Before scoring require the same-size, same-mtime mutable libstd.rmeta stable proc-macro semantic test against an empty build; malformed, truncated, flipped, missing and inherited observation receipts; opaque wrapper; true same/previous-command changed producer; simultaneous reader-local type error from a byte-identically refired producer; symlink retarget; check; test --no-run; jobserver=one and a truly empty inherited named FIFO jobserver spawn zero checksum helpers; giving the inherited client one token must spawn one helper and return the token.",
+  "orders": [
+    {
+      "block": 1,
+      "synthetic_noop": "VC",
+      "ron_noop": "VC",
+      "first_edit": "VC",
+      "edit_direction": "add"
+    },
+    {
+      "block": 2,
+      "synthetic_noop": "VC",
+      "ron_noop": "VC",
+      "first_edit": "CV",
+      "edit_direction": "remove"
+    },
+    {
+      "block": 3,
+      "synthetic_noop": "CV",
+      "ron_noop": "CV",
+      "first_edit": "VC",
+      "edit_direction": "add"
+    },
+    {
+      "block": 4,
+      "synthetic_noop": "VC",
+      "ron_noop": "CV",
+      "first_edit": "VC",
+      "edit_direction": "remove"
+    },
+    {
+      "block": 5,
+      "synthetic_noop": "CV",
+      "ron_noop": "CV",
+      "first_edit": "VC",
+      "edit_direction": "add"
+    },
+    {
+      "block": 6,
+      "synthetic_noop": "CV",
+      "ron_noop": "VC",
+      "first_edit": "CV",
+      "edit_direction": "remove"
+    },
+    {
+      "block": 7,
+      "synthetic_noop": "CV",
+      "ron_noop": "CV",
+      "first_edit": "CV",
+      "edit_direction": "add"
+    },
+    {
+      "block": 8,
+      "synthetic_noop": "CV",
+      "ron_noop": "VC",
+      "first_edit": "CV",
+      "edit_direction": "remove"
+    },
+    {
+      "block": 9,
+      "synthetic_noop": "VC",
+      "ron_noop": "CV",
+      "first_edit": "VC",
+      "edit_direction": "add"
+    },
+    {
+      "block": 10,
+      "synthetic_noop": "VC",
+      "ron_noop": "CV",
+      "first_edit": "VC",
+      "edit_direction": "remove"
+    },
+    {
+      "block": 11,
+      "synthetic_noop": "CV",
+      "ron_noop": "VC",
+      "first_edit": "CV",
+      "edit_direction": "add"
+    },
+    {
+      "block": 12,
+      "synthetic_noop": "VC",
+      "ron_noop": "VC",
+      "first_edit": "CV",
+      "edit_direction": "remove"
+    },
+    {
+      "block": 13,
+      "synthetic_noop": "CV",
+      "ron_noop": "CV",
+      "first_edit": "CV",
+      "edit_direction": "add"
+    },
+    {
+      "block": 14,
+      "synthetic_noop": "VC",
+      "ron_noop": "VC",
+      "first_edit": "VC",
+      "edit_direction": "remove"
+    },
+    {
+      "block": 15,
+      "synthetic_noop": "CV",
+      "ron_noop": "VC",
+      "first_edit": "CV",
+      "edit_direction": "add"
+    },
+    {
+      "block": 16,
+      "synthetic_noop": "VC",
+      "ron_noop": "CV",
+      "first_edit": "VC",
+      "edit_direction": "remove"
+    }
+  ],
+  "pre_scoring_amendment": "The initial exploratory Ron golden output path assumed debug/deps and exited before a timed pair. The frozen fixture now uses the exact executable from normal Cargo terminal output. No scored data was collected before the source/schedule freeze."
+}
