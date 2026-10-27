@@ -1,0 +1,187 @@
+diff --git a/compiler/rustc_interface/src/passes.rs b/compiler/rustc_interface/src/passes.rs
+index 1be3cc57bf888..0887aa4300528 100644
+--- a/compiler/rustc_interface/src/passes.rs
++++ b/compiler/rustc_interface/src/passes.rs
+@@ -592,6 +592,20 @@ fn write_out_deps(tcx: TyCtxt<'_>, outputs: &OutputFilenames, out_filenames: &[P
+     let deps_filename = deps_output.as_path();
+ 
+     let result = try {
++        let span_observer = sess.proc_macro_observed_foreign_bytes.load(Ordering::Relaxed)
++            && CStore::from_tcx(tcx).has_public_api_hash_dependencies()
++            && matches!(deps_output, OutFileName::Real(_));
++        let demand = sess.opts.unstable_opts.ohm_observer_dep_info
++            && span_observer
++            && !sess.untrackable_proc_macro_source.load(Ordering::Relaxed);
++        let requested_checksum = sess.opts.unstable_opts.checksum_hash_algorithm;
++        let checksum_hash_algo =
++            requested_checksum.or_else(|| demand.then_some(SourceFileHashAlgorithm::Blake3));
++        // If rustc did not retain the original bytes, leave the first proof incomplete.
++        // Cargo can collect the originals on its next compile with explicit checksums.
++        let hash_source = demand && requested_checksum.is_none();
++        let mut incomplete_source = false;
++
+         // Build a list of files used to compile the output and
+         // write Makefile-compatible dependency rules
+         let mut files: IndexMap<String, (u64, Option<SourceFileHash>)> = sess
+@@ -601,20 +615,34 @@ fn write_out_deps(tcx: TyCtxt<'_>, outputs: &OutputFilenames, out_filenames: &[P
+             .filter(|fmap| fmap.is_real_file())
+             .filter(|fmap| !fmap.is_imported())
+             .map(|fmap| {
++                let mut checksum = fmap.checksum_hash;
++                if hash_source {
++                    if let Some(src) = fmap
++                        .src
++                        .as_deref()
++                        .filter(|src| !src.is_empty() && fmap.normalized_pos.is_empty())
++                    {
++                        checksum = Some(SourceFileHash::new_in_memory(
++                            SourceFileHashAlgorithm::Blake3,
++                            src.as_bytes(),
++                        ));
++                    } else {
++                        // In particular, SourceMap uses empty text for non-UTF-8 include_bytes!.
++                        incomplete_source = true;
++                    }
++                }
+                 (
+                     escape_dep_filename(&fmap.name.prefer_local_unconditionally().to_string()),
+                     (
+                         // This needs to be unnormalized,
+                         // as external tools wouldn't know how rustc normalizes them
+                         fmap.unnormalized_source_len as u64,
+-                        fmap.checksum_hash,
++                        checksum,
+                     ),
+                 )
+             })
+             .collect();
+ 
+-        let checksum_hash_algo = sess.opts.unstable_opts.checksum_hash_algorithm;
+-
+         // Account for explicitly marked-to-track files
+         // (e.g. accessed in proc macros).
+         let file_depinfo = sess.file_depinfo.borrow();
+@@ -652,7 +680,13 @@ fn hash_iter_files<P: AsRef<Path>>(
+             file_depinfo.iter().map(|path_sym| normalize_path(PathBuf::from(path_sym.as_str()))),
+             checksum_hash_algo,
+         );
+-        files.extend(extra_tracked_files);
++        for (name, tracked) in extra_tracked_files {
++            if hash_source && files.get(&name).is_some_and(|source| *source != tracked) {
++                // The file may have changed between parsing and a proc macro reading it.
++                incomplete_source = true;
++            }
++            files.insert(name, tracked);
++        }
+ 
+         // We also need to track used PGO profile files
+         if let Some(ref profile_instr) = sess.opts.cg.profile_use {
+@@ -676,7 +710,7 @@ fn hash_iter_files<P: AsRef<Path>>(
+             ));
+         }
+ 
+-        if sess.binary_dep_depinfo() {
++        if sess.binary_dep_depinfo() || demand {
+             if let Some(ref backend) = sess.opts.unstable_opts.codegen_backend {
+                 if backend.contains('.') {
+                     // If the backend name contain a `.`, it is the path to an external dynamic
+@@ -711,10 +745,7 @@ fn hash_iter_files<P: AsRef<Path>>(
+             }
+         }
+ 
+-        if sess.proc_macro_observed_foreign_bytes.load(Ordering::Relaxed)
+-            && CStore::from_tcx(tcx).has_public_api_hash_dependencies()
+-            && let OutFileName::Real(path) = &deps_output
+-        {
++        if span_observer && let OutFileName::Real(path) = &deps_output {
+             // Older Cargo can reuse codegen after a dependency rewrites its metadata while
+             // preserving its public hash. A child of this dep-info file cannot exist.
+             let marker = if sess.untrackable_proc_macro_source.load(Ordering::Relaxed) {
+@@ -764,7 +795,7 @@ fn hash_iter_files<P: AsRef<Path>>(
+ 
+             // If caller requested this information, add special comments about source file checksums.
+             // These are not necessarily the same checksums as was used in the debug files.
+-            if sess.opts.unstable_opts.checksum_hash_algorithm().is_some() {
++            if checksum_hash_algo.is_some() && !incomplete_source {
+                 files
+                     .iter()
+                     .filter_map(|(path, (file_len, hash_algo))| {
+diff --git a/compiler/rustc_session/src/options.rs b/compiler/rustc_session/src/options.rs
+index f9813490ba8bd..de80cb7cd1a09 100644
+--- a/compiler/rustc_session/src/options.rs
++++ b/compiler/rustc_session/src/options.rs
+@@ -2737,6 +2737,8 @@ pub(crate) fn parse_rust_version(slot: &mut Option<RustcVersion>, v: Option<&str
+         "reuse unchanged incremental monomorphization partitions without public API hashing"),
+     ohm_metadata_macro_reuse: bool = (true, parse_bool, [TRACKED],
+         "reuse validated metadata for source-written exported macros (default: yes)"),
++    ohm_observer_dep_info: bool = (false, parse_bool, [UNTRACKED],
++        "include binary inputs and checksums in dep-info on a foreign proc-macro span observation"),
+     ohm_shared_stages: bool = (false, parse_bool, [TRACKED],
+         "reuse frontend incremental queries between metadata and link emission"),
+     ohm_split_large_cgus: bool = (true, parse_bool, [TRACKED],
+diff --git a/tests/run-make/rdr-public-hash-proc-macro-foreign-bytes/rmake.rs b/tests/run-make/rdr-public-hash-proc-macro-foreign-bytes/rmake.rs
+index 5b06a28b1983c..fd8faf1ac7845 100644
+--- a/tests/run-make/rdr-public-hash-proc-macro-foreign-bytes/rmake.rs
++++ b/tests/run-make/rdr-public-hash-proc-macro-foreign-bytes/rmake.rs
+@@ -14,7 +14,7 @@ fn leaf_hash() -> String {
+     rustc().input(rust_lib_name("leaf")).arg("-Zls=public_hash").run().stdout_utf8()
+ }
+ 
+-fn client(mode: &str, crate_type: &str, expects_marker: bool) {
++fn client_with_flags(mode: &str, crate_type: &str, flags: &[&str]) -> String {
+     rustc()
+         .input("client.rs")
+         .edition("2021")
+@@ -24,8 +24,13 @@ fn client(mode: &str, crate_type: &str, expects_marker: bool) {
+         .extern_("leaf", rust_lib_name("leaf"))
+         .emit("dep-info=actual.d,link")
+         .arg("-Zpublic-api-hash")
++        .args(flags)
+         .run();
+-    let deps = rfs::read_to_string("actual.d");
++    rfs::read_to_string("actual.d")
++}
++
++fn client(mode: &str, crate_type: &str, expects_marker: bool) {
++    let deps = client_with_flags(mode, crate_type, &[]);
+     let marker = Path::new("actual.d").join("ohm-foreign-span-bytes");
+     let inputs = deps.lines().find_map(|line| line.strip_prefix("actual.d: ")).unwrap();
+     assert_eq!(inputs.split_whitespace().any(|p| Path::new(p) == marker), expects_marker, "{deps}");
+@@ -34,6 +39,29 @@ fn client(mode: &str, crate_type: &str, expects_marker: bool) {
+     }
+ }
+ 
++fn first_observation() {
++    let first = ["-Zohm-observer-dep-info"];
++    let forced = ["-Zbinary-dep-depinfo", "-Zchecksum-hash-algorithm=blake3"];
++    let has_checksums = |deps: &str| deps.lines().any(|line| line.starts_with("# checksum:"));
++    assert!(!has_checksums(&client_with_flags("clone_only", "rlib", &first)));
++    let proof = client_with_flags("observer", "rlib", &first);
++    assert!(has_checksums(&proof));
++    assert_eq!(proof, client_with_flags("observer", "rlib", &forced));
++
++    // Do not certify normalized text as the original bytes. Explicit checksums on
++    // the next compile can still authenticate both CRLF source and a binary include.
++    let source = rfs::read_to_string("client.rs");
++    rfs::write("payload.bin", [0xff, 0x07]);
++    let edited = format!("{source}\nconst _: &[u8] = include_bytes!(\"payload.bin\");\n");
++    rfs::write("client.rs", edited.replace('\n', "\r\n"));
++    let pending = client_with_flags("observer", "rlib", &first);
++    assert!(pending.contains("ohm-foreign-span-bytes") && !has_checksums(&pending));
++    let trained = client_with_flags("observer", "rlib", &[forced[0], forced[1], first[0]]);
++    assert!(has_checksums(&trained));
++    assert_eq!(trained, client_with_flags("observer", "rlib", &forced));
++    rfs::write("client.rs", source);
++}
++
+ fn observed_byte_start() -> usize {
+     client("observer", "bin", true);
+     let output = run("client").stdout_utf8();
+@@ -44,6 +72,7 @@ fn observed_byte_start() -> usize {
+ fn main() {
+     rustc().input("probe.rs").crate_type("proc-macro").run();
+     let original = leaf_hash();
++    first_observation();
+     client("clone_only", "bin", false);
+     client("local", "bin", false);
+     let before = observed_byte_start();

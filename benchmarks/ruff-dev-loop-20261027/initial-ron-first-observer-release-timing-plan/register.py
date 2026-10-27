@@ -1,0 +1,34 @@
+"""Generate the fixed release order before timed H4 outcomes exist."""
+from pathlib import Path
+from itertools import permutations
+import hashlib,json,random
+q=Path(__file__).resolve().parent
+seed=0x682726115741
+orders=list(permutations("ABC"))*3
+random.Random(seed).shuffle(orders)
+plan={
+"registration":"All artifact identities, dispatch, eligibility, blocking, stopping rules, cold/settled margins and four marginal claims are fixed before untraced native wall measurements.",
+"host":"charlie-ohm-generic-perf-1024 H4, Linux x86_64 AMD EPYC Milan, 32 logical cores. Affinity 0–23 and CARGO_BUILD_JOBS=8. The original trace and qualification hosts are distinct from the optional H5 independent corroboration.",
+"ruff":"93526150df078af7dd8fc4226cdcc469539d2001","tree":"62d3f106c5e41f6022847f26ff8c7dc00139f7b1",
+"cargo_base":{"commit":"d38fdd02503662de04c52f5f370f5dd81bddf868","sha":"dd5cab154b8dcd09ccc2753160d314cade80979b2d055ee66aa9e2217e05e7e1"},
+"cargo_new":{"commit":"c28c6934504f05d5a6a4b9083be93a20714d29ee","sha":"51e2e21a219004007a2d51e19e5a8edc57b47c7eb290383f4bbc13428e0f7d9c"},
+"rust_base":{"commit":"27029b4bce40f3b5497add5019c02a11c16c4c18","sha":"dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f"},
+"rust_new":{"commit":"d4898e3a0ca2c661284059c080923f30c881c275","sha":"185629fabec9baacfd8fd7e61d6d84e79f69aa9abf4a4a9bb431c24f0a89d040"},
+"release":{"rustc_frontend":"4fa9a18b77430bcc416e88561b6fe5797d98b996a7698b9f3bd11d4e7817a19f","wild":"0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5","rust_profile_files":5,"cargo_profile":"481ada8a40c70dad11b3c7e8871e9a52207d78447ca5e8ace06fc4aec2d2b5a7"},
+"arms":{"A":"new Cargo + stock Rust","B":"stock Cargo + new Rust","C":"both new"},
+"schedule":{"seed":seed,"orders":orders,"blocks":18,"initially_empty_triplets":54,"commands":162},
+"command":["cargo","+ohm","test","--no-run","--locked","--offline","--message-format=json"],
+"environment":"No local registry procedural-macro or native-tool trust opt-ins. No strace, compiler wrappers, fingerprint logger, PMU, added user rustc flags, or running tests in a timed command. Input registry files are available offline. Cold refers to initially empty target and shared build stores, not an empty kernel page cache. Every arm uses the same frozen logical source, toolchain, target, shared, registry, jobs and affinity, on the same private ext4 device.",
+"phase_order":["empty cold","first unchanged","second unchanged"],
+"measurement":"A slot has three consecutive native Cargo subprocesses, each timed with monotonic_ns. Identical out-of-timer output hashing and correctness checks follow each command, including between cold and first. The combined endpoint sums the two command durations and excludes these audits. No source or flags change between commands. The ELF checks scan the same roster in each arm. The single fixed ordinary stdlib test and CLI oracles execute only after all timed commands.",
+"family":"For each of first unchanged and cold+first combined, estimate C:A and C:B as the percentage reduction in geometric mean of paired elapsed ratios. Report per-command medians, paired 95% bootstrap intervals (20,000 resamples), fraction of faster blocks, and an exact two-sided schedule-constrained randomization test. Holding the third arm slot fixed gives 20 cubed = 8,000 assignments for each marginal. Apply Holm across the four predeclared claims at 0.05.",
+"admission":"Each necessary peer must have qualified wall reductions (adjusted p<0.05 and positive lower 95% paired bootstrap reduction) on both primary endpoints, plus all four guard comparisons and all native correctness controls. Neither marginal may be rescued by switching to the stock/stock diagnostic. Report all results if these gates fail.",
+"cold_guard":"C relative to A and B. The one-sided upper 98.75% paired block-bootstrap bound on multiplicative cold overhead must be below 3.0% in each comparison.",
+"settled_guard":"C relative to A and B. Both one-sided 98.75% paired block-bootstrap upper bounds must rule out 5.0% multiplicative overhead and 100 ms mean absolute regression on the settled command. The quantile is conservative across the two cold and two settled comparisons. Bootstrap resampling is paired by block, with deterministic seeds.",
+"within_cycle":"Every successfully scored phase must have 619 Cargo artifacts, 102 test executables and 110 recorded native products, the same target roster/diagnostics, a valid complete sealed ron receipt on candidate cold and all trained arms, and the expected fresh count. Require raw cold→first→settled identity for C. In A/B trained output may differ from cold only in the previously independently reproduced Wild GNU build ID and .rodata sh_entsize 0/8, with every other ELF byte matched, and then must be byte-stable. An unknown difference stops scoring. Separately collect complete exec rosters for all three exact arms in unscored native controls, including optional rustc probes distinct from full and link-only jobs. Run an ordinary Ruff lint, Ruff/ty versions and a real stdlib test caller out of timing after every triplet. All arms must return the same results.",
+"stop":"Preserve failed attempts and suspend before using any effect sizes on a failed freshness, native, source, host, input, output, or clean-start oracle. Do not discard outliers. Verify release tool hashes and source HEAD/tree under the H4 exclusive borrowed-host lock; take the next scheduled slot only after freezing the previous private observation. No studies share the scoring CPU lane. Store full untouched native traces in private qualification roots and compact typed commitments for every scored observation.",
+"space":"Require at least 25 GiB free throughout, allow 16 GiB incremental private state per initialized slot, and retain all qualification evidence and native hashes. Scored targets may be retired only after verifying all output, metadata and receipt commitments; never retire any shared/resource donor. Estimated 4–6 hours for 54 fresh workspaces on H4.",
+"independent":"H5 stock/stock vs C is a separately prospective study if its host/release/space gates are met. It cannot change the H4 population or bounds."
+}
+(q/"plan.json").write_text(json.dumps(plan,sort_keys=True,indent=2)+"\n")
+print(hashlib.sha256((q/"plan.json").read_bytes()).hexdigest())
