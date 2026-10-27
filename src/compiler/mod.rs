@@ -2420,6 +2420,20 @@ fn prepare_rustc(build_runner: &BuildRunner<'_, '_>, unit: &Unit) -> CargoResult
     }
     if gctx.cli_unstable().ohm_defaults() {
         base.args(&OHM_DEFAULT_RUSTFLAGS);
+        // A small incremental check spends more time coordinating frontend workers
+        // than checking in parallel. The last successful dep-info is a cheap size hint.
+        if cfg!(all(target_os = "linux", target_arch = "x86_64"))
+            && is_workspace
+            && unit.kind == CompileKind::Host
+            && unit.profile.root == ProfileRoot::Debug
+            && unit.profile.incremental
+            && matches!(unit.mode, CompileMode::Check { test: false })
+            && fingerprint::dep_info_loc(build_runner, unit)
+                .metadata()
+                .is_ok_and(|info| info.is_file() && info.len() <= 16 * 1024)
+        {
+            base.arg("-Zthreads=1");
+        }
         if unit_uses_ohm_incremental_codegen(build_runner, unit) {
             base.args(&OHM_INCREMENTAL_CODEGEN_RUSTFLAGS);
         }

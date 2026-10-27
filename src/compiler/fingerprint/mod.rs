@@ -3485,7 +3485,7 @@ fn prefetch_checksum(
 #[cfg(unix)]
 fn prefetch_checksums<P: AsRef<Path> + Sync>(
     paths: &[(P, Option<(u64, Checksum)>)],
-    cache: &HashMap<PathBuf, Checksum>,
+    cache: &mut HashMap<PathBuf, Checksum>,
     skippable_dirs: Option<&[PathBuf]>,
     parallelism: ChecksumParallelism<'_>,
 ) -> Option<PrefetchedChecksums> {
@@ -3501,6 +3501,7 @@ fn prefetch_checksums<P: AsRef<Path> + Sync>(
     if misses < MIN_PARALLEL_CHECKSUM_FILES {
         return None;
     }
+    let all_uncached = misses == paths.len();
     let workers = (parallelism.jobs as usize).min(4).min(misses.div_ceil(64));
     let mut tokens = Vec::new();
     if parallelism.reserved_tokens.is_empty() {
@@ -3544,7 +3545,7 @@ fn prefetch_checksums<P: AsRef<Path> + Sync>(
                 first_unconfirmed.fetch_min(index, Ordering::Relaxed);
                 continue;
             };
-            if let Some(actual) = cache.get(path) {
+            if !all_uncached && let Some(actual) = cache.get(path) {
                 if *actual != prior {
                     first_unconfirmed.fetch_min(index, Ordering::Relaxed);
                 }
@@ -3575,13 +3576,16 @@ fn prefetch_checksums<P: AsRef<Path> + Sync>(
         }
         read_chunk(0, main_paths, main_results);
     });
+    if first_unconfirmed.into_inner() == paths.len() {
+        cache.reserve(misses);
+    }
     Some(results.into_iter())
 }
 
 #[cfg(not(unix))]
 fn prefetch_checksums<P: AsRef<Path> + Sync>(
     _paths: &[(P, Option<(u64, Checksum)>)],
-    _cache: &HashMap<PathBuf, Checksum>,
+    _cache: &mut HashMap<PathBuf, Checksum>,
     _skippable_dirs: Option<&[PathBuf]>,
     _parallelism: ChecksumParallelism<'_>,
 ) -> Option<PrefetchedChecksums> {
@@ -3693,7 +3697,7 @@ mod parallel_checksum_tests {
             let workers_started = AtomicUsize::new(0);
             let results: Vec<_> = prefetch_checksums(
                 &paths,
-                &HashMap::default(),
+                &mut HashMap::default(),
                 None,
                 ChecksumParallelism {
                     jobserver: &jobserver,
