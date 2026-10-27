@@ -1,0 +1,20 @@
+{
+  "workload": "Default unscoped Ruff cargo +ohm build and cargo +ohm test --no-run after a complete historical source and fixture edit. Test execution is excluded.",
+  "ruff_revision": "93526150df078af7dd8fc4226cdcc469539d2001",
+  "edit_origin": "3ea20f6161cbf59cb56595dfb634ec24bfa82f0b",
+  "patch_direction": "reverse",
+  "patch_sha256": "08bb20f14fde4db57dd12ec3de3855021ddf6284b4a1957b54f4d06fb3c8f9ff",
+  "cargo_sha256_both": "13396fe1c6886f41155ac24f507210c7a5f655e5b3279a28f45bf3a5e6bcaf08",
+  "parent_driver": "051b9d3f5861f984faa0f8c1d2ab9b5c28e483a05c728051de837291c83fd518",
+  "candidate_driver": "55e123a9e87f16a449d260ab65449eab743cd30ba356a7f10ffdd1fa6f8a2484",
+  "architecture": "x86_64-unknown-linux-gnu",
+  "cpus": "0-23",
+  "cargo_jobs": 8,
+  "build": {"seed": 1102917, "units": 501},
+  "test": {"seed": 1102918, "units": 619},
+  "design": "For each endpoint shuffle six AB and six BA pairs with the listed seed. Each subject keeps an independent warm target at the same absolute path. Score wall time around the ordinary command after the edit. Restore the original tree and build between edits.",
+  "command_guards": "Require process success, expected workspace unit graph, no registry compilation after settling, unchanged source and Git index after restoration, the changed Ruff error on edited source, the original error on restored source, and fresh subsequent builds for every timed edit.",
+  "verification": "Count full rustcs, link-only rustcs and actual Wild processes via an independent strace outside timing on the first and last edited builds. Save the whole ELF roster. Independently compare edited binaries against cold and warm references.",
+  "statistics": "12 pairs per endpoint. Estimate the mean paired log ratio and report elapsed reduction, each median, and a deterministic paired bootstrap interval. Use the two-sided exact randomization test on log durations under all 924 balanced allocations. Holm-correct the two endpoint p-values at alpha .05.",
+  "scoring": "Exclude all discovery/pilot runs from the registered schedules. An incomplete schedule or failed freshness or behavior guard is unscored. Keep discovery, raw schedules, process counts and behavior checks separately in the evidence."
+}
