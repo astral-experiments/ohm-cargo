@@ -1,0 +1,197 @@
+{
+  "advance": "Only propose a separately prospectively powered qualification if at least one edited endpoint has >=6/8 faster pairs AND >=1% geometric improvement, neither edited endpoint has >2% geometric slowdown, and all controls pass. Otherwise publish this as a bounded screen with all registered results. No draft from this screen.",
+  "analysis": "For each helper and each endpoint report all eight pairwise times, per-arm medians, geometric mean of C/A, median paired percent improvement, count C faster and a two-sided, balance-respecting randomization P based on absolute mean log ratios. Condition on exactly two A-first and two C-first at each direction; 6 x 6 = 36 assignments. The 95% simultaneous inference is deferred to a prospective follow-up. Report immediate no-op and first-activation transitions distinctly.",
+  "cargo_jobs": 8,
+  "commands": [
+    "cargo",
+    "+ohm",
+    "test",
+    "--no-run",
+    "--locked",
+    "--offline",
+    "--message-format=json"
+  ],
+  "cpu": "0-23",
+  "edits": {
+    "parser": {
+      "expected_cached_jobs": [
+        "ruff_wasm:api",
+        "ty_wasm:api"
+      ],
+      "id": "3ea20f6161cbf59cb56595dfb634ec24bfa82f0b",
+      "reverse_patch_sha256": "08bb20f14fde4db57dd12ec3de3855021ddf6284b4a1957b54f4d06fb3c8f9ff"
+    },
+    "wasm-only": {
+      "expected_cached_jobs": [
+        "ty_wasm:api"
+      ],
+      "id": "7c7f8d1a174dc895c0feb5f9c46ca4c4992cc2bc",
+      "reverse_patch_sha256": "6039eea2d7ae5a7d782aa69dadc3d7315b37da211102d4419dff4ff2e1916742"
+    }
+  },
+  "eligibility_gates": [
+    "Whole-command unscored physically traced before and after scoring for both directions, default Wild for every API Rust job, no native reports/fixed width or wrapper on either arm. Preserve compiler counts and real linker path.",
+    "Stock and candidate must have same registered artifact/diagnostic rosters, observable CLI and Rust caller, fresh repeated command, and independently verified emitted ELF contents. For physical full/full variability, retain every raw identity. The only pre-known classes eligible as stock variance are .rodata sh_entsize and the resulting GNU build-ID; require actual stock full/full recurrence across BOTH values before attributing an observed difference to this. All bytes outside them must be identical when claiming an equivalent same-source product.",
+    "Compare ordinary arm source changes, normal full and cached recipe on the same paths. Preserve cold-to-warm training and recovery counts. Nested actual linker input activation, invalid native input, removal/recovery, cfg activation and side outputs must match ordinary behavior.",
+    "Single host exclusive study lock, same CPU allocation and jobs, same image hashes/OS and storage, no external heavy job. Reject on missing result, wall/disk guard or behavioral failure. No outlier removal."
+  ],
+  "endpoint_order": [
+    "wasm-only",
+    "parser"
+  ],
+  "exclusions": "No code change to Ruff. The separately preregistered, then correctness-rejected A9 three-arm/three-edit schedule remains unscored. This new Cargo-only mechanism tests the lowest-fanout semantic edit and the real parser edit with two affected tests; stdlib is reserved for independent validation and cannot be substituted.",
+  "free_reserve_GiB": 25,
+  "host": "charlie-ohm-generic-perf-1024",
+  "measurement": "One time.monotonic_ns interval around the ordinary cargo process per command, from inside pre-established identical mounts. 619 Cargo artifacts, 102 exes, 110 ELF products. Source transitions, CLI/real Rust caller and product verification happen outside this interval. Each pair starts with both arms on same previous source revision. New state persists across pairs; odd pairs reverse the complete patch, even restore. Following each pair run one identically ordered no-op per arm, timing reported separately. No strace inside a timed interval.",
+  "media": "same dedicated ext4, independent physical targets and build stores, identical logical mount paths",
+  "pin": "93526150df078af7dd8fc4226cdcc469539d2001",
+  "purpose": "Feasibility screen for replacing frontend and LLVM with real default rustc link-only on already-proved cfg-disabled workspace integration targets. Neither rustc nor GCC/Wild process count is expected to decline. This experiment alone cannot qualify a draft.",
+  "rustc_driver_sha256": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+  "rustc_frontend_sha256": "4fa9a18b77430bcc416e88561b6fe5797d98b996a7698b9f3bd11d4e7817a19f",
+  "schedule": {
+    "parser": [
+      {
+        "direction": "original-to-edit",
+        "order": [
+          "C",
+          "A"
+        ],
+        "pair": 1
+      },
+      {
+        "direction": "edit-to-original",
+        "order": [
+          "C",
+          "A"
+        ],
+        "pair": 2
+      },
+      {
+        "direction": "original-to-edit",
+        "order": [
+          "C",
+          "A"
+        ],
+        "pair": 3
+      },
+      {
+        "direction": "edit-to-original",
+        "order": [
+          "A",
+          "C"
+        ],
+        "pair": 4
+      },
+      {
+        "direction": "original-to-edit",
+        "order": [
+          "A",
+          "C"
+        ],
+        "pair": 5
+      },
+      {
+        "direction": "edit-to-original",
+        "order": [
+          "A",
+          "C"
+        ],
+        "pair": 6
+      },
+      {
+        "direction": "original-to-edit",
+        "order": [
+          "A",
+          "C"
+        ],
+        "pair": 7
+      },
+      {
+        "direction": "edit-to-original",
+        "order": [
+          "C",
+          "A"
+        ],
+        "pair": 8
+      }
+    ],
+    "wasm-only": [
+      {
+        "direction": "original-to-edit",
+        "order": [
+          "A",
+          "C"
+        ],
+        "pair": 1
+      },
+      {
+        "direction": "edit-to-original",
+        "order": [
+          "C",
+          "A"
+        ],
+        "pair": 2
+      },
+      {
+        "direction": "original-to-edit",
+        "order": [
+          "C",
+          "A"
+        ],
+        "pair": 3
+      },
+      {
+        "direction": "edit-to-original",
+        "order": [
+          "A",
+          "C"
+        ],
+        "pair": 4
+      },
+      {
+        "direction": "original-to-edit",
+        "order": [
+          "C",
+          "A"
+        ],
+        "pair": 5
+      },
+      {
+        "direction": "edit-to-original",
+        "order": [
+          "A",
+          "C"
+        ],
+        "pair": 6
+      },
+      {
+        "direction": "original-to-edit",
+        "order": [
+          "A",
+          "C"
+        ],
+        "pair": 7
+      },
+      {
+        "direction": "edit-to-original",
+        "order": [
+          "C",
+          "A"
+        ],
+        "pair": 8
+      }
+    ]
+  },
+  "setup": "Independent writable arm contexts copied from the same frozen, fully built, default 619-unit workspace. Seed, restore and genuine preflight source edit as needed; immediately verify all-fresh no-op after every edit. An independent cold and duplicate full stock reference precede confirmation if screen advances.",
+  "subjects": {
+    "A": {
+      "pgo": "dd5cab154b8dcd09ccc2753160d314cade80979b2d055ee66aa9e2217e05e7e1",
+      "source": "d38fdd02503662de04c52f5f370f5dd81bddf868"
+    },
+    "C": {
+      "pgo": "a0acc664af50231926f1b69bc64fdc02dd7c4fcc7c232f5e70f8ba451a354db4",
+      "source": "399ada4c7a1a491bc3a70edeb16fb614d3ae52c9"
+    }
+  },
+  "wild_sha256": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5"
+}

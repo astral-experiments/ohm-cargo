@@ -1,0 +1,531 @@
+diff --git a/src/compiler/fingerprint/dep_info.rs b/src/compiler/fingerprint/dep_info.rs
+index f28392f48f..6cf482449b 100644
+--- a/src/compiler/fingerprint/dep_info.rs
++++ b/src/compiler/fingerprint/dep_info.rs
+@@ -37,7 +37,7 @@ pub struct RustcDepInfo {
+     pub files: HashMap<PathBuf, Option<(u64, Checksum)>>,
+     /// Whether rustc observed foreign spans, and whether it recorded all binary inputs.
+     pub observed_span_inputs: Option<bool>,
+-    conflicting_checksums: bool,
++    pub(in crate::compiler) conflicting_checksums: bool,
+     /// The list of environment variables we found that the rustc compilation
+     /// depends on.
+     ///
+diff --git a/src/compiler/fingerprint/mod.rs b/src/compiler/fingerprint/mod.rs
+index 0fb50b634a..177321ea8d 100644
+--- a/src/compiler/fingerprint/mod.rs
++++ b/src/compiler/fingerprint/mod.rs
+@@ -860,6 +860,24 @@ pub fn can_skip_unused_workspace_integration_dependencies(
+     found_rebuilt_unused
+ }
+ 
++/// A cfg-disabled integration test can reuse its CGUs if every changed Rust input was unused.
++pub(super) fn can_skip_cfg_disabled_dependencies(
++    fp: &Fingerprint,
++    ignored: &HashSet<UnitIndex>,
++) -> bool {
++    fp.is_early_cutoff_candidate()
++        && fp
++            .deps
++            .iter()
++            .all(|dep| match dep.fingerprint.build_state() {
++                BuildState::Fresh => true,
++                BuildState::BuiltChanged
++                | BuildState::BuiltUnchanged
++                | BuildState::SkippedEarlyCutoff => ignored.contains(&dep.fingerprint.index),
++                BuildState::Pending => false,
++            })
++}
++
+ /// Checks whether a dependency-only rebuild can reuse this unit's codegen and
+ /// run only its cached link step.
+ ///
+diff --git a/src/compiler/mod.rs b/src/compiler/mod.rs
+index 957aa08d01..adf6f937d5 100644
+--- a/src/compiler/mod.rs
++++ b/src/compiler/mod.rs
+@@ -43,6 +43,7 @@ pub(crate) mod layout;
+ mod links;
+ mod locking;
+ mod lto;
++mod ohm_cfg_disabled_test;
+ mod ohm_deferred_dev_deps;
+ mod ohm_early_tests;
+ mod ohm_linker;
+@@ -553,9 +554,18 @@ struct RelinkCacheManifest {
+     objects: Vec<RelinkCacheFile>,
+     #[serde(default, skip_serializing_if = "Option::is_none")]
+     unused_extern_names: Option<Vec<String>>,
++    #[serde(default, skip_serializing_if = "Option::is_none")]
++    disabled_test: Option<String>,
+ }
+ 
+ impl RelinkCacheManifest {
++    fn proof_checksum(&self, input: u64) -> u64 {
++        let existing = crate::util::hash_u64((input, &self.unused_extern_names));
++        self.disabled_test
++            .as_ref()
++            .map_or(existing, |proof| crate::util::hash_u64((existing, proof)))
++    }
++
+     fn input_checksum(&self) -> u64 {
+         crate::util::hash_u64((self.version, &self.rlink, &self.executable, &self.objects))
+     }
+@@ -596,6 +606,8 @@ fn read_relink_manifest_slice(bytes: &[u8]) -> Option<CheckedRelinkManifest> {
+         objects: Vec<File>,
+         #[serde(default)]
+         unused_extern_names: Option<Vec<String>>,
++        #[serde(default)]
++        disabled_test: Option<String>,
+     }
+ 
+     fn file(value: File) -> RelinkCacheFile {
+@@ -622,6 +634,7 @@ fn read_relink_manifest_slice(bytes: &[u8]) -> Option<CheckedRelinkManifest> {
+                     },
+                     objects: fields.objects.into_iter().map(file).collect(),
+                     unused_extern_names: fields.unused_extern_names,
++                    disabled_test: fields.disabled_test,
+                 },
+             });
+         }
+@@ -693,6 +706,7 @@ impl RelinkCachePaths {
+     fn initialize(
+         &self,
+         unused_externs: Option<&std::collections::BTreeSet<InternedString>>,
++        disabled_signature: Option<&str>,
+     ) -> CargoResult<()> {
+         let mut objects = Vec::new();
+         for path in self.codegen_temps()? {
+@@ -713,6 +727,7 @@ impl RelinkCachePaths {
+             rlink: cached_file(self.rlink.clone())?,
+             executable: cached_object(self.executable.clone())?,
+             objects,
++            disabled_test: disabled_signature.map(str::to_owned),
+             unused_extern_names: unused_externs.map(|unused_externs| {
+                 unused_externs
+                     .iter()
+@@ -774,7 +789,7 @@ impl RelinkCachePaths {
+         let input_checksum = manifest.input_checksum();
+         let checked = CheckedRelinkManifest {
+             input_checksum,
+-            proof_checksum: crate::util::hash_u64((input_checksum, &manifest.unused_extern_names)),
++            proof_checksum: manifest.proof_checksum(input_checksum),
+             manifest,
+         };
+         paths::write_atomic(&self.manifest, serde_json::to_vec(&checked)?)?;
+@@ -788,13 +803,9 @@ impl RelinkCachePaths {
+         if checked.input_checksum != checked.manifest.input_checksum() {
+             return None;
+         }
+-        if checked.proof_checksum
+-            != crate::util::hash_u64((
+-                checked.input_checksum,
+-                &checked.manifest.unused_extern_names,
+-            ))
+-        {
++        if checked.proof_checksum != checked.manifest.proof_checksum(checked.input_checksum) {
+             checked.manifest.unused_extern_names = None;
++            checked.manifest.disabled_test = None;
+         }
+         Some(checked.manifest)
+     }
+@@ -825,6 +836,22 @@ impl RelinkCachePaths {
+         )
+     }
+ 
++    fn proves_disabled_test(
++        &self,
++        signature: &str,
++        inputs: &ohm_cfg_disabled_test::Inputs,
++    ) -> bool {
++        let Some(manifest) = self.read_manifest() else {
++            return false;
++        };
++        manifest.version == RELINK_CACHE_VERSION
++            && manifest.executable.path == self.executable
++            && manifest.unused_extern_names.is_some_and(|names| {
++                inputs.proves_unused(&names.into_iter().map(InternedString::from).collect())
++            })
++            && manifest.disabled_test.as_deref() == Some(signature)
++    }
++
+     fn invalidate(&self) -> CargoResult<()> {
+         for path in [&self.manifest, &self.rlink] {
+             if let Err(error) = paths::remove_file(path)
+@@ -1169,6 +1196,9 @@ fn rustc(
+         .map(|dep| build_runner.bcx.unit_to_index[&dep.unit])
+         .collect::<HashSet<_>>();
+     let unused_integration_dependency = unused_integration_self_dependency(build_runner, unit);
++    let disabled_test = relink_cache
++        .as_ref()
++        .and_then(|_| ohm_cfg_disabled_test::Inputs::new(build_runner, unit));
+     let record_dev_unused = ohm_deferred_dev_deps::supported(build_runner, unit);
+     let dev_native_output_dirs = record_dev_unused
+         .then(|| ohm_deferred_dev_deps::native_output_dirs(build_runner))
+@@ -1376,8 +1406,14 @@ fn rustc(
+             .is_some_and(|fingerprint| fingerprint.is_early_cutoff_candidate());
+ 
+     return Ok(Work::new(move |state| {
+-        // Build-script outputs are only authoritative after their jobs finish.
+-        // An unused Rust extern can still be consumed through native linking.
++        let disabled_signature = disabled_test.as_ref().and_then(|inputs| {
++            inputs.signature(
++                build_scripts.as_deref(),
++                &build_script_outputs.lock().unwrap(),
++                current_id,
++                &rustc,
++            )
++        });
+         let record_dev_unused = record_dev_unused
+             && build_scripts.as_ref().is_none_or(|scripts| {
+                 let script_outputs = build_script_outputs.lock().unwrap();
+@@ -1551,6 +1587,16 @@ fn rustc(
+ 
+         let can_relink_dependencies = fingerprint.as_ref().is_some_and(|fingerprint| {
+             fingerprint::can_relink_due_to_early_cutoff(fingerprint, &relinkable_dependencies)
++                || disabled_test
++                    .as_ref()
++                    .zip(disabled_signature.as_ref())
++                    .is_some_and(|(inputs, (signature, _))| {
++                        inputs.changed_only_unused(fingerprint)
++                            && inputs.silent_report(&cached_output_path)
++                            && relink_cache
++                                .as_ref()
++                                .is_some_and(|cache| cache.proves_disabled_test(signature, inputs))
++                    })
+         });
+         let validation_started = Instant::now();
+         let use_cached_relink = early_test.is_none()
+@@ -1978,10 +2024,22 @@ fn rustc(
+         }
+ 
+         if let Some(cache) = &relink_cache {
+-            let unused_externs = (unused_integration_dependency.is_some() || record_dev_unused)
+-                .then(|| state.recorded_unused_externs())
+-                .flatten();
+-            cache.initialize(unused_externs.as_ref())?;
++            let unused_externs = (unused_integration_dependency.is_some()
++                || record_dev_unused
++                || disabled_signature.is_some())
++            .then(|| state.recorded_unused_externs())
++            .flatten();
++            let proof = disabled_test
++                .as_ref()
++                .zip(disabled_signature.as_ref())
++                .and_then(|(input, (key, source))| {
++                    (input.authenticates(&rustc_dep_info_loc, &cwd, *source)
++                        && unused_externs.as_ref().is_some_and(|unused| {
++                            input.proves_unused(&unused.iter().copied().collect())
++                        }))
++                    .then_some(key.as_str())
++                });
++            cache.initialize(unused_externs.as_ref(), proof)?;
+         }
+ 
+         if rustc_dep_info_loc.exists() {
+@@ -2913,6 +2971,7 @@ fn add_error_format_and_color(
+     if build_runner.bcx.gctx.cli_unstable().cargo_lints {
+         json.push_str(",unused-externs-silent");
+     } else if unused_integration_self_dependency(build_runner, unit).is_some()
++        || ohm_cfg_disabled_test::Inputs::new(build_runner, unit).is_some()
+         || ohm_deferred_dev_deps::supported(build_runner, unit)
+     {
+         json.push_str(",unused-externs-transparent");
+@@ -4400,11 +4459,12 @@ mod relink_cache_tests {
+             },
+             objects: Vec::new(),
+             unused_extern_names: Some(vec!["unused".to_owned()]),
++            disabled_test: None,
+         };
+         let input_checksum = manifest.input_checksum();
+         Ok(serde_json::to_vec(&CheckedRelinkManifest {
+             input_checksum,
+-            proof_checksum: crate::util::hash_u64((input_checksum, &manifest.unused_extern_names)),
++            proof_checksum: manifest.proof_checksum(input_checksum),
+             manifest,
+         })?)
+     }
+@@ -4616,7 +4676,7 @@ mod relink_cache_tests {
+         for name in ["a.o", "b.o"] {
+             fs::write(cache.objects.join(name), b"codegen")?;
+         }
+-        cache.initialize(None)?;
++        cache.initialize(None, None)?;
+         assert!(cache.is_valid());
+ 
+         let mut manifest: serde_json::Value = serde_json::from_slice(&fs::read(&cache.manifest)?)?;
+diff --git a/src/compiler/ohm_cfg_disabled_test.rs b/src/compiler/ohm_cfg_disabled_test.rs
+new file mode 100644
+index 0000000000..c75b8956a1
+--- /dev/null
++++ b/src/compiler/ohm_cfg_disabled_test.rs
+@@ -0,0 +1,269 @@
++//! Relink cached Rust codegen when the entire integration test was configured out.
++use super::*;
++use cargo_platform::CfgExpr;
++
++pub(super) struct Inputs {
++    root: PathBuf,
++    sysroot: PathBuf,
++    externs: HashSet<InternedString>,
++    units: HashSet<UnitIndex>,
++    cfg: Vec<Cfg>,
++}
++
++impl Inputs {
++    pub(super) fn new(runner: &BuildRunner<'_, '_>, unit: &Unit) -> Option<Self> {
++        if unit.mode != CompileMode::Test || !unit.target.is_test() {
++            return None;
++        }
++        let flags = unit_rustflags_without_ohm_defaults(
++            runner.bcx.gctx,
++            runner.rustflags_for_cache_admission(unit),
++        );
++        let no_user_flags = flags.is_empty()
++            || (runner.bcx.gctx.cli_unstable().headstart()
++                && flags == [OHM_EARLY_METADATA_RUSTFLAG]);
++        if !unit.target.harness()
++            || !runner.bcx.ws.is_member(&unit.pkg)
++            || unit.kind != CompileKind::Host
++            || !runner.bcx.gctx.cli_unstable().ohm_defaults()
++            || !runner.bcx.gctx.cli_unstable().relink_only()
++            || runner.bcx.gctx.cli_unstable().cargo_lints
++            || runner.bcx.gctx.cli_unstable().section_timings
++            || runner.bcx.rustc().wrapper.is_some()
++            || runner.bcx.rustc().workspace_wrapper.is_some()
++            || runner.bcx.build_config.primary_unit_rustc.is_some()
++            || runner.bcx.extra_args_for(unit).is_some()
++            || !unit.profile.rustflags.is_empty()
++            || unit.profile.codegen_backend.is_some()
++            || runner.bcx.target_data.info(unit.kind).ohm_linker_flags == 0
++            || !no_user_flags
++            || runner.compilation.target_linker(unit.kind).is_some()
++            || !runner
++                .bcx
++                .rustc()
++                .supports_transparent_unused_externs(runner.bcx.gctx)
++        {
++            return None;
++        }
++        // Most native integration targets already have an ordinary rlib-only self dependency.
++        if !runner.unit_deps(unit).iter().any(|dep| {
++            dep.unit.pkg == unit.pkg
++                && dep.unit.target.is_lib()
++                && dep
++                    .unit
++                    .target
++                    .rustc_crate_types()
++                    .contains(&CrateType::Cdylib)
++                && dep
++                    .unit
++                    .target
++                    .rustc_crate_types()
++                    .contains(&CrateType::Rlib)
++        }) {
++            return None;
++        }
++        let cfg = runner.bcx.target_data.cfg(unit.kind);
++        if !cfg
++            .iter()
++            .any(|c| matches!(c, Cfg::KeyPair(k, v) if k == "target_os" && v == "linux"))
++        {
++            return None;
++        }
++        let root = unit.target.src_path().path()?.to_owned();
++        let mut externs = HashSet::default();
++        let mut units = HashSet::default();
++        for dep in runner.unit_deps(unit) {
++            if dep.unit.artifact.is_true() || dep.nounused {
++                return None;
++            }
++            if dep.unit.target.is_linkable() {
++                if !externs.insert(dep.extern_crate_name) {
++                    return None;
++                }
++                if runner.bcx.ws.is_member(&dep.unit.pkg)
++                    && dep.unit.mode == CompileMode::Build
++                    && dep.unit.target.is_lib()
++                    && dep.unit.kind == unit.kind
++                {
++                    units.insert(runner.bcx.unit_to_index[&dep.unit]);
++                }
++            }
++        }
++        (!units.is_empty()).then(|| Self {
++            root,
++            sysroot: runner.bcx.target_data.info(unit.kind).sysroot.clone(),
++            externs,
++            units,
++            cfg: cfg.to_vec(),
++        })
++    }
++
++    /// Accept a simple, complete first-line inner attribute over a built-in target constant.
++    /// Other source forms are compiled normally. No user tokens precede the disabled crate.
++    fn disabled_source(path: &Path, cfg: &[Cfg]) -> Option<blake3::Hash> {
++        let mut f = paths::open_regular(path).ok()?;
++        if f.metadata().ok()?.len() > 1 << 20 {
++            return None;
++        }
++        let mut bytes = Vec::new();
++        std::io::Read::by_ref(&mut f)
++            .take((1 << 20) + 1)
++            .read_to_end(&mut bytes)
++            .ok()?;
++        if bytes.len() > 1 << 20 {
++            return None;
++        }
++        let line = std::str::from_utf8(bytes.split(|b| *b == b'\n').next()?)
++            .ok()?
++            .trim_end_matches('\r');
++        let expr = line.strip_prefix("#![cfg(")?.strip_suffix(")]")?;
++        if !expr.bytes().all(|c| {
++            c.is_ascii_alphanumeric() || matches!(c, b' ' | b'\t' | b'_' | b'-' | b'=' | b'"')
++        }) {
++            return None;
++        }
++        let pred = expr.parse::<CfgExpr>().ok()?;
++        if !matches!(&pred, CfgExpr::Value(Cfg::KeyPair(key, _)) if matches!(key.as_str(),
++            "target_arch" | "target_os" | "target_env" | "target_vendor" | "target_endian" | "target_pointer_width"))
++            || pred.matches(cfg)
++        {
++            return None;
++        }
++        Some(blake3::hash(&bytes))
++    }
++
++    /// Bind the genuine compiler, source and flags that produced the saved CGUs. Native
++    /// objects, scripts and linker behavior are handled by the actual link on every edit.
++    pub(super) fn signature(
++        &self,
++        scripts: Option<&BuildScripts>,
++        outputs: &BuildScriptOutputs,
++        current: PackageId,
++        rustc: &ProcessBuilder,
++    ) -> Option<(String, blake3::Hash)> {
++        let frontend = Path::new(rustc.get_program());
++        if !frontend.is_absolute()
++            || frontend.canonicalize().ok()?
++                != self.sysroot.join("bin/rustc").canonicalize().ok()?
++        {
++            return None;
++        }
++        let sensitive = |name: &str| {
++            name.starts_with("LD_") && name != "LD_LIBRARY_PATH"
++                || matches!(name, "RUSTC_LOG" | "LLVM_PROFILE_FILE")
++        };
++        if std::env::vars_os().any(|(n, _)| n.to_str().is_some_and(&sensitive))
++            || rustc
++                .get_envs()
++                .iter()
++                .any(|(n, v)| v.is_some() && sensitive(n))
++        {
++            return None;
++        }
++        let loaded = std::env::var_os("LD_LIBRARY_PATH");
++        if let Some(paths) = &loaded
++            && std::env::split_paths(paths).any(|d| {
++                d.canonicalize()
++                    .ok()
++                    .zip(self.sysroot.join("lib").canonicalize().ok())
++                    .is_none_or(|(d, allowed)| d != allowed)
++            })
++        {
++            return None;
++        }
++        let source = Self::disabled_source(&self.root, &self.cfg)?;
++        let mut h = blake3::Hasher::new();
++        h.update(b"ohm-cfg-disabled-cached-cgus-v1");
++        h.update(source.as_bytes());
++        for arg in rustc.get_args() {
++            let bytes = arg.as_encoded_bytes();
++            h.update(&(bytes.len() as u64).to_le_bytes());
++            h.update(bytes);
++        }
++        h.update(&crate::util::hash_u64(&loaded).to_le_bytes());
++        for (pkg, id) in scripts.into_iter().flat_map(|s| &s.to_link) {
++            let output = outputs.get(*id)?;
++            if *pkg == current
++                && (output
++                    .cfgs
++                    .iter()
++                    .any(|x| x.trim_start().starts_with("target_"))
++                    || output.env.iter().any(|(name, _)| {
++                        name == "PATH" || name == "LD_LIBRARY_PATH" || sensitive(name)
++                    }))
++            {
++                return None;
++            }
++            h.update(
++                &crate::util::hash_u64((
++                    pkg,
++                    &output.cfgs,
++                    &output.check_cfgs,
++                    &output.env,
++                    &output.library_paths,
++                    &output.library_links,
++                    &output.linker_args,
++                ))
++                .to_le_bytes(),
++            );
++        }
++        Some((h.finalize().to_hex().to_string(), source))
++    }
++
++    /// Tie the predicate to the bytes the completed compiler actually read. A source
++    /// replacement during rustc, a macro-loaded file, or an environment read must fall back.
++    pub(super) fn authenticates(&self, dep_info: &Path, cwd: &Path, source: blake3::Hash) -> bool {
++        let Some(d) = fingerprint::parse_rustc_dep_info(dep_info).ok() else {
++            return false;
++        };
++        if d.conflicting_checksums
++            || d.observed_span_inputs.is_some()
++            || !d.env.is_empty()
++            || d.files.len() != 1
++        {
++            return false;
++        }
++        d.files.iter().all(|(p, record)| {
++            cwd.join(p)
++                .canonicalize()
++                .ok()
++                .zip(self.root.canonicalize().ok())
++                .is_some_and(|(seen, root)| seen == root)
++                && record
++                    .as_ref()
++                    .is_some_and(|(_, sum)| sum.to_string() == format!("blake3={source}"))
++        })
++    }
++
++    pub(super) fn proves_unused(&self, names: &HashSet<InternedString>) -> bool {
++        self.externs.is_subset(names)
++    }
++
++    /// The transparent unused-extern notification itself is retained in Cargo's diagnostic
++    /// cache. A user-visible warning, extra record, or failed/truncated parse requires rustc.
++    pub(super) fn silent_report(&self, path: &Path) -> bool {
++        #[derive(serde::Deserialize)]
++        #[serde(deny_unknown_fields)]
++        struct Report {
++            #[serde(rename = "$message_type")]
++            kind: String,
++            lint_level: String,
++            unused_extern_names: HashSet<InternedString>,
++        }
++        let Ok(f) = paths::open_regular(path) else {
++            return false;
++        };
++        if !f.metadata().is_ok_and(|m| m.len() <= 65536) {
++            return false;
++        }
++        serde_json::from_reader::<_, Report>(f.take(65537)).is_ok_and(|r| {
++            r.kind == "unused_extern"
++                && r.lint_level == "allow"
++                && self.proves_unused(&r.unused_extern_names)
++        })
++    }
++
++    pub(super) fn changed_only_unused(&self, fp: &fingerprint::Fingerprint) -> bool {
++        fingerprint::can_skip_cfg_disabled_dependencies(fp, &self.units)
++    }
++}

@@ -1,0 +1,3959 @@
+{
+  "parser": {
+    "edited": {
+      "dirty": [
+        "analyze_graph",
+        "api",
+        "api",
+        "block_comments",
+        "cli",
+        "cli",
+        "comparable",
+        "config",
+        "corpus",
+        "direxist_guard",
+        "document",
+        "e2e",
+        "e2e",
+        "file_watching",
+        "fixtures",
+        "fixtures",
+        "generate_inline_tests",
+        "identifier",
+        "integration_test",
+        "match_pattern",
+        "mdtest",
+        "mdtest",
+        "mdtest",
+        "mdtest",
+        "normalizer",
+        "parentheses",
+        "parenthesize",
+        "resolve_files",
+        "ruff",
+        "ruff",
+        "ruff",
+        "ruff",
+        "ruff_db",
+        "ruff_db",
+        "ruff_dev",
+        "ruff_graph",
+        "ruff_linter",
+        "ruff_linter",
+        "ruff_markdown",
+        "ruff_markdown",
+        "ruff_mdtest",
+        "ruff_python_codegen",
+        "ruff_python_codegen",
+        "ruff_python_edits",
+        "ruff_python_formatter",
+        "ruff_python_formatter",
+        "ruff_python_formatter",
+        "ruff_python_formatter",
+        "ruff_python_importer",
+        "ruff_python_importer",
+        "ruff_python_index",
+        "ruff_python_parser",
+        "ruff_python_parser",
+        "ruff_python_semantic",
+        "ruff_python_semantic",
+        "ruff_ranged_value",
+        "ruff_server",
+        "ruff_server",
+        "ruff_wasm",
+        "ruff_workspace",
+        "ruff_workspace",
+        "self_environment",
+        "simple_tokenizer",
+        "source_order",
+        "stmt_if",
+        "ty",
+        "ty",
+        "ty",
+        "ty",
+        "ty_combine",
+        "ty_combine",
+        "ty_completion_bench",
+        "ty_completion_eval",
+        "ty_ide",
+        "ty_ide",
+        "ty_module_resolver",
+        "ty_module_resolver",
+        "ty_project",
+        "ty_project",
+        "ty_python_core",
+        "ty_python_core",
+        "ty_python_semantic",
+        "ty_python_semantic",
+        "ty_server",
+        "ty_server",
+        "ty_site_packages",
+        "ty_site_packages",
+        "ty_test",
+        "ty_test",
+        "ty_vendored",
+        "ty_vendored",
+        "ty_wasm",
+        "visitor",
+        "whitespace"
+      ],
+      "elfs": {
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/mdtest/598f5bf2548bfa53/out/mdtest-598f5bf2548bfa53": [
+          "3be27ebc547f7051f48ff4ee4f61eda3a27c92e762341f726463e7fa2908d858"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff/0012e4cea7754270/out/config-0012e4cea7754270": [
+          "906788cdc334412fd45a1e4cf6aaf233a900c2e837263132de71483cbcb42c8f"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff/6483a2dd53259309/out/analyze_graph-6483a2dd53259309": [
+          "087d468f1cd5df5bf51c643a8a0f945da184cb324aae6d9a145660916fd88b3c"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff/68c98f377a8f39ff/out/direxist_guard-68c98f377a8f39ff": [
+          "5cc4587adf64d66cdbcd57d14252bd6b0e5d131798bc1183a039c31ae2179775"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff/7f9f27aa9484a7eb/out/resolve_files-7f9f27aa9484a7eb": [
+          "d1d078857be7f5d0802566e61e92fe4e115559ded81679c6b75891da5a109ac0"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff/9c601305a3f3b4b8/out/ruff-9c601305a3f3b4b8": [
+          "45884e1faecc59321cda9b24d893b8e889ae385b887b7e93f263b25dc72e8d24"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff/a31c86d66c3ff0d9/out/integration_test-a31c86d66c3ff0d9": [
+          "ec9bc73b8022f3d5dd616e6c61d69b4153e6faab576a75caa29fc012fef95ded"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff/adf573b9cd0b0d31/out/cli-adf573b9cd0b0d31": [
+          "5e94b52670ebe28d711f0aed373d79fc632b3dc4913eda27453dff911938dc2c"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff/d8a31ee768a58d17/out/ruff-d8a31ee768a58d17": [
+          "c4f10704f8550ba9609edf551c081f1e82bd4e2b72f43c8993e68de96035fbcf"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff/d99eec811670d635/out/build_script_build": [
+          "b52715e7707d60b35ad4b7ff9237f8bd654448318102d1a2cd6f8fa45f064408"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_annotate_snippets/6d36cc86025feffc/out/formatter-6d36cc86025feffc": [
+          "6a9b101e993d4e451976973c759ab885f1eb0dd8dd82b55b0ec1581655d11b22"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_annotate_snippets/a29be7514d5d1070/out/rustc_tests-a29be7514d5d1070": [
+          "98dfbb9c4b0a506fefe2bcac48453e4bedac53919459168150d4dde491e3d966"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_annotate_snippets/bbc9bdfca6a78a03/out/color-bbc9bdfca6a78a03": [
+          "27494ac85d5874790563bb5708ebe6fafc3c942491dfc11bbea31fc185f18799"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_annotate_snippets/f41f773bc3e28ee1/out/examples-f41f773bc3e28ee1": [
+          "555165b019e9db7b44f7f9ae58da6849822fc6bac5ac4c44093a77a5750b6bf6"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_annotate_snippets/f659209ee331949c/out/ruff-f659209ee331949c": [
+          "1f5ece4ae45eabfa0a3053e137598a274d0c35f0042f8587e5f71a61d2c020c9"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_cache/3dececd8b3f6948c/out/cache_key-3dececd8b3f6948c": [
+          "705610ca55054a336da1e0b1f07dac0c786f77516f839cf171c94a66ba016e87"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_command_line/dc9f5f94e123120f/out/ruff_command_line-dc9f5f94e123120f": [
+          "c2c42935224ad18b2d2afc0603f81003d4f157186557ca7d36fa392342e06397"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_db/0ac3a038ac77fe63/out/ruff_db-0ac3a038ac77fe63": [
+          "bbe1348bf4f416f99725c1b081aa18ee33083adb283a293d17a39f30fd98d98c",
+          "e91d06481a5ee272094ac2a6e41f71fd5ae0987f0ed0f36810ee72d4fe0eb0b5"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_dev/8fd98c3fd7311f33/out/ruff_dev-8fd98c3fd7311f33": [
+          "1345b1069b39e5beecaa4403d6b32dbf679cdd517c5da475dee3a7567fe1efb4"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_formatter/fa93b475474f6146/out/ruff_formatter-fa93b475474f6146": [
+          "252ce300f4e88ac58625bffd487241a1d7f2edc5d5daae35ceaba1375e26c971"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_index/d113c7733800217e/out/ruff_index-d113c7733800217e": [
+          "bfbe3b33845396417a800b7885bb83c79276f89e650d14a744735558c1fd590b"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_linter/e73480eb6ce8a821/out/ruff_linter-e73480eb6ce8a821": [
+          "a3fc7f067932396bbde6a274cf6658b06acae80bbd30d3c392043390865a956a"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_macros/b04bf89c22d0a8eb/out/libruff_macros-b04bf89c22d0a8eb.so": [
+          "7cdd51cc937b8757d35a221b32c71efdcb8d9f0958d6597144497d1424a1c075"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_markdown/e55015e206352c17/out/ruff_markdown-e55015e206352c17": [
+          "458861d306355e6a16078d11145513afbc421ee851b0f95cf5308dc5220da557"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_mdtest/e122df820a12d38a/out/mdtest-e122df820a12d38a": [
+          "82838f29a94c748a8192a6796a445e102d64b51f266e4468cfef8f3d6159354f"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_notebook/85e98d483343c012/out/ruff_notebook-85e98d483343c012": [
+          "87c102cca7523642e877ef57f29a9af645dc6945a79893c49ca10b244c8cc323"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_ast/3bc4aa82c6679517/out/ruff_python_ast-3bc4aa82c6679517": [
+          "49315bae41ad4372d6478b2d9f4b6a5282750103aa50c98473072cc0dbbb5296"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_ast_integration_tests/153fc6d6cd5d7829/out/parentheses-153fc6d6cd5d7829": [
+          "061340ec7a5da846235d330d80ec9155ff1a61783c3489f396ac4fce13291f71"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_ast_integration_tests/1b3907421a1bc67d/out/source_order-1b3907421a1bc67d": [
+          "27e4e80a7b5f1727f9e07e55f4617576c8ed63dbc598215dc0c8ecfa8cb480f9"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_ast_integration_tests/20e81f99e1b1c305/out/comparable-20e81f99e1b1c305": [
+          "355323e3260302834d8cf2b7b69c8377521446aac8c40d24294301ba4c63e4b4"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_ast_integration_tests/32eafd86ca24ca03/out/stmt_if-32eafd86ca24ca03": [
+          "f96fabbc4272f546ecbf0f197bf7803755c4aeff3ad58dded95c2ea1ccc8dbe1"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_ast_integration_tests/4364343695ab1b7b/out/match_pattern-4364343695ab1b7b": [
+          "4d4052e32da8a1b9e66ef19e1d1ca44b7aa36c446648653c5f1fa183ecc75d22"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_ast_integration_tests/459c377270d0c5cd/out/parenthesize-459c377270d0c5cd": [
+          "2579f994b0189d8838e7256a7ca6a99f4f447d3d069047a52c6e5c8b09db29da"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_ast_integration_tests/670b4ec01d8d3735/out/visitor-670b4ec01d8d3735": [
+          "b86f093e2c5dfb680b605f3f56af8f080c1de355226fef96d5b606dd2f1dc7cb"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_ast_integration_tests/c4abfac836cf4e15/out/identifier-c4abfac836cf4e15": [
+          "479459155dd7cc6ab4b67a07a3330b2ee35d3c777c69917a3a2ffdbde979efd0"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_codegen/846b6bf0d8760c0c/out/ruff_python_codegen-846b6bf0d8760c0c": [
+          "17421851c1eed682065387c47cbebb81a55401dfdf8980a08713b16e1f7a87e9"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_edits/ecf30177daacc72e/out/ruff_python_edits-ecf30177daacc72e": [
+          "1dc42242e9cce17d272fcb56f5a72d0fd5e05a77eb35c1ff8c924c58c062afea"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_formatter/214532d558a61141/out/ruff_python_formatter-214532d558a61141": [
+          "8babeff670c09dec8f762b81f7926f684e6b4f6d37279fec43dd8a272c6277fd"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_formatter/34ba23003be217ba/out/ruff_python_formatter-34ba23003be217ba": [
+          "5d8fef19bf37719d0ab7a9bf07597724b9a58ee2d919eba8eb56cfc5d76fbbd5"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_formatter/a8b286dfc1ba7ed2/out/normalizer-a8b286dfc1ba7ed2": [
+          "8f911b8c772a95b5f7d185841db5c9fc36fb857a60c3fc7b1bf53267a0094d63"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_formatter/b5bc133c5943322a/out/fixtures-b5bc133c5943322a": [
+          "39a3b19fccfd73d1894b1becb801e2b5ac4f1b53155469f3cc168152b5d88629"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_importer/9ec3b8d31b145cef/out/ruff_python_importer-9ec3b8d31b145cef": [
+          "5e932a91cc5dc556811e254fa614e5325f84a5c48724d487fa3deee4ac970ec5"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_index/4529c49a29e2c178/out/ruff_python_index-4529c49a29e2c178": [
+          "8ed7a7e837223b200b1e9e07d5aef1e2a31d0d528a35d7383b3370249b25a7cc"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_literal/3e714610490ba542/out/ruff_python_literal-3e714610490ba542": [
+          "56d2b0bb948a55c334c4a3119fb05672023a505f7da1fc56e704a67eeb0d734c"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_parser/191dc0b897e70ddb/out/fixtures-191dc0b897e70ddb": [
+          "1bf3b008bcd24c76bc54b99167764d2dac4c161e83dc78cb991b8e0ea9c6ac13",
+          "917a6495cdb431c042a2ce31c67b4b4a106fff0817058d11661bcfa1955dfd22"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_parser/7a4dd098165e50cd/out/generate_inline_tests-7a4dd098165e50cd": [
+          "4002a39025ab81deb067b408eee369fd9b689c7af23321e369e800c77d260b8d"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_parser/a3c2fcd2f8c23024/out/ruff_python_parser-a3c2fcd2f8c23024": [
+          "699be73c5e1cca1c7d2fa3154b3df9b1b081275cb1ab02e8d1191830a0101b00"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_semantic/0d968301d4c813fc/out/ruff_python_semantic-0d968301d4c813fc": [
+          "4644246c6f32ba1c2d51ecb775e493c3c36491860aea92976af7825ca5981286"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_stdlib/94a91e287d044e72/out/ruff_python_stdlib-94a91e287d044e72": [
+          "1c56d59a00f12e5520598f3dcc656d60f026af3558c1a4de29586067523b1838"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_trivia/d63520b4e2b9ce20/out/ruff_python_trivia-d63520b4e2b9ce20": [
+          "aa4cb2d062f06912143eb230dc90590859c1aa5edfc3bd04ebe548b744e52698"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_trivia_integration_tests/15cd7de5ce364b8b/out/whitespace-15cd7de5ce364b8b": [
+          "120fa60734a5d996d93c55e24e2a0cdf9e5beb46d0e13c777885c0454f3ab683"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_trivia_integration_tests/ac939a3e49bd994b/out/block_comments-ac939a3e49bd994b": [
+          "b10971b0f05c6dd4f113650880904be16e4dffcf82b5f294f430465e45fb824e"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_trivia_integration_tests/c639259863b397fa/out/simple_tokenizer-c639259863b397fa": [
+          "92f1022b2cde2b7742755589da60fab24e3149c9fe7d6da0241ecde8b65badd7",
+          "a8f3ed8f9e8397e4d980e49123db4fbf032a97117daa55fc145dd6a3a6d7e95d"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_server/1dd8f0784781d62c/out/document-1dd8f0784781d62c": [
+          "5aeb4e8e15cf822255e36243c76ed0f420f34a4e6b42a1b7be893cbefb063326"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_server/3ee2932232a99b25/out/ruff_server-3ee2932232a99b25": [
+          "d31135ce0a68b68f70592aba80b07b6b474aa38567d72939334e2a8fef159123"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_server/a1affb4667ef26bf/out/e2e-a1affb4667ef26bf": [
+          "6a89130045e42c35362cc342486c595ab4a7f78dcb6868b828135bf1fd743c9e"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_source_file/1ca7d4fe8a89aa8d/out/ruff_source_file-1ca7d4fe8a89aa8d": [
+          "4462397bd81fc83f6951eaac189d4e5ba571661d74a65bc1020b37af2f256430"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_text_size/351aef0971030559/out/constructors-351aef0971030559": [
+          "8ba976e5072860883fce18be4d6a7c88615770b7e8a163236399be1984cd0d81"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_text_size/3d6fe4d7c9922dac/out/indexing-3d6fe4d7c9922dac": [
+          "69b0cc5e9aad6d7fbb6e4377802385bb6c6a06d08faf5cb95f9d43289413f77f"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_text_size/6ddda04b83d83db7/out/auto_traits-6ddda04b83d83db7": [
+          "bea3a01770bbbf8dd6733649b77c5dafcfd3654cb32db222cf5cbdbc448814f2"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_text_size/9d8fcc9e788f2a55/out/serde-9d8fcc9e788f2a55": [
+          "01e9a3869eaed6e665ae44793178dd7d62683ea7fbc35b608e03e6d59a9793f0"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_text_size/c6b16f43ff4c9f33/out/main-c6b16f43ff4c9f33": [
+          "2fdc12443013fd33b83e75f06d9011c60d3e203f9eaa4c33ecc108e41b6107ad"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_unicode_names2/9516be9b70f7d327/out/build_script_build": [
+          "1ed1056dbcc1b57306f55af6c9bc66be45f031b141896ff9543c9db9155a6d22"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_unicode_names2_generator/38b40f9cb1a2bd04/out/unicode_names2_generator-38b40f9cb1a2bd04": [
+          "5328d68a1e2503c87bbea4112c67a1c2226f24a669fdd1ecbcdfc40098d0ffb2"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_wasm/2d0df3c70090d308/out/libruff_wasm.so": [
+          "f323e5a08267110cf5374fbf4462ca78de8a1b7cba8d97ff68fd45ba80c8ecbc"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_wasm/39de91ce78a927c9/out/api-39de91ce78a927c9": [
+          "db370756c6fadef846dde0243effcea758fc478db06c3a17dffe9a4028f29a31"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_workspace/85060817619d686d/out/ruff_workspace-85060817619d686d": [
+          "d1653f063c2131f6df3d164039b5afd920aa339f973da5e37768ccf0d645b28c"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ty/43e2908b929054db/out/file_watching-43e2908b929054db": [
+          "5de522da0109cc1561e47520e950b70463c077ab6da60abb559c8071fad45fbf"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ty/9f994ba4bc9039c1/out/ty-9f994ba4bc9039c1": [
+          "699b118717580341fb4f0d4a0ebeaceb8b9786fff7a677431b432787e27808e0"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ty/a27750eef1701ced/out/self_environment-a27750eef1701ced": [
+          "2aee506be11838da7023b7d980d781b0784c9574cfb78a0c839cb90542adcbd1"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ty/a63b7013e17b8bf1/out/ty-a63b7013e17b8bf1": [
+          "a7b1e2314f7de15e14281727557ff5caa094689878c1bd97bc418c31d8bf9dfc"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ty/c4fbffe2ecaa90ff/out/cli-c4fbffe2ecaa90ff": [
+          "990d093e900058ba50e512f14eb0019fb7af234a8fd6dd3aaf47fd0e1b53142d"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ty/e947a2b11ffa8a76/out/build_script_build": [
+          "c30cbcb47f5ca2a3fc6ce2f5581629289b3018834f85df02fcb1763d6f4367a8"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ty_combine/f35051c33a7cb1b1/out/ty_combine-f35051c33a7cb1b1": [
+          "6b611fae46570f7e282d473c8bf4d02aeab481b0b419606095a43dab50fd7184"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ty_completion_bench/70688615a89edf9c/out/ty_completion_bench-70688615a89edf9c": [
+          "0c8e019a43c78b6ad4bbf028b9cdff5cb415e8396c82834fc6109b72c2fd6197"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ty_completion_eval/995a92df8fec1edb/out/ty_completion_eval-995a92df8fec1edb": [
+          "0a7a47100e5ab61c9a3cad36502498dc2de307ba6f01923420eea6dc0bb46168"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ty_ide/4212167b8375ca10/out/ty_ide-4212167b8375ca10": [
+          "233e5d4a7e83e5f3df137ff07c59008628f860e1dfd8af1b9e4fa2171bbaa31e"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ty_module_resolver/ef4903e673ee1e1f/out/ty_module_resolver-ef4903e673ee1e1f": [
+          "ec3b5d68c0500e4210398814b715e6d00560897387afe3b8236bb99ae4a20e3d"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ty_project/66dec39b18362a2f/out/ty_project-66dec39b18362a2f": [
+          "eca26ae0b773f1a2a2ecc3110d93efd6785ffd0c2ab46430df5ff185e99a0e72"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ty_python_core/452469159ddf261e/out/ty_python_core-452469159ddf261e": [
+          "ff6751ab6248c2ff74fc43de7a758554cbc0e82046d9ad89a9ece39309bcde10"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ty_python_semantic/7128779254e6b0e1/out/corpus-7128779254e6b0e1": [
+          "36e09c143c22d5fc4700ddf3e31c58934a90c87d52dafbf39bacaf30fed93b2b"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ty_python_semantic/a879b0690f634244/out/ty_python_semantic-a879b0690f634244": [
+          "c4759b03db191e3f366c2d0404ee67dd836480a48ba7b40a912144459afc6931"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ty_python_semantic/d3d7502a89615334/out/mdtest-d3d7502a89615334": [
+          "0713e1c68ae3c32002732e1a47ba754ac2033c4bb2062fe7644ccc86b215a245"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ty_server/21b174d739dc9351/out/ty_server-21b174d739dc9351": [
+          "181764a88c1837e6fd42baf22ef88ab913c703e190a4cefaa5a70a40a37cc262"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ty_server/8fa23882290527ed/out/e2e-8fa23882290527ed": [
+          "e7b4626bc3e5200641be99ec2997849e9ffbf74e08b53eccd6b0226dcdba291f"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ty_site_packages/b123485f817506d1/out/ty_site_packages-b123485f817506d1": [
+          "d543f5ea608551d39a0935f37eaec169bd3d4f8385d0f21fd4ce2ba6f4c63adb"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ty_test/c5756f5fb1919d9d/out/ty_test-c5756f5fb1919d9d": [
+          "5a92a8c5a52cfd7edcc1b711d746a0254fc2657298deb22e6dfb10c7a773f559"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ty_vendored/a98e4cda1c305924/out/build_script_build": [
+          "85e3a4afb8747ba3d68554e1fd8e2182c9d32ac2cc776283b93707bdb52ac67f"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ty_vendored/cdc90725d8be3a10/out/ty_vendored-cdc90725d8be3a10": [
+          "c1e475d23100de0e5a122f0b6934aabb5556412a78c30e005b57617bfee64e8a"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ty_wasm/14ce8de92c758c3a/out/build_script_build": [
+          "c1473433a44aefd5eda6f2edfc7b1816920bb7a5f5f0dc27062927c0a1651624"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ty_wasm/7f4ef694692e550b/out/libty_wasm.so": [
+          "1e8c16e3bc1c5903cf7f61a01a99ec7812116531d4a878b4a8f4081a854d49e7"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ty_wasm/a0cba910c3e435dc/out/api-a0cba910c3e435dc": [
+          "ea28d17cfe4db48db05aaf3f7df2ab45486d430650bd7f539ef43db540aa080a"
+        ],
+        "debug/examples/character": [
+          "b1a1116e61d730e9fa11c9633b3b735c7b6f9514a7a70411668d5f5b78519836"
+        ],
+        "debug/examples/count": [
+          "3233857dfcb97a24dea68140b53dc3b6949b253c7ead85dfcad8aadda3ce8e0a"
+        ],
+        "debug/examples/custom_error": [
+          "7245ac23ec9b3086a0c299416c1444594e4e013d3d4899edce6aeb664beceb30"
+        ],
+        "debug/examples/custom_level": [
+          "e36f2584795015a8954d43ed2fd9e5b2c1079d29427b50aa2ce41ab09ad97953"
+        ],
+        "debug/examples/elide_header": [
+          "8d7b064eadb0b8d298f54331c26b7b4fa983f335e74bc5058d3c33a2a3a9df48"
+        ],
+        "debug/examples/expected_type": [
+          "b04e08868769ba897d25c86c83b5412ba88323bcc09c15f013a24c11074099a6"
+        ],
+        "debug/examples/footer": [
+          "7586112e84d2ed3ab849dfe2965459548bc6017c358e28a12b8681088b991cdd"
+        ],
+        "debug/examples/format": [
+          "4849ac5de0fbd9a22c375998689f01ca27c0635c3fa26d85ae612d5673c02d75"
+        ],
+        "debug/examples/highlight_message": [
+          "3ef2ce53dae07ebb027b61d1ecd459018973ba3e0cd8c9339fcc4c294252f372"
+        ],
+        "debug/examples/highlight_source": [
+          "b46c4dd317cbdc857f732b0b6949d8cd4abb7c40eeee12e9fc21bd0dfe30c8d8"
+        ],
+        "debug/examples/id_hyperlink": [
+          "442e7627f349e95bcb6fc9f3c62f71c58a3dde6fe0d4fce0b28fc3e4cfff6b4c"
+        ],
+        "debug/examples/multi_suggestion": [
+          "8a506508b012497b162fb37728e93cacf62a277d5215d29a3b047dc5925297fd"
+        ],
+        "debug/examples/multislice": [
+          "9334b0ffd067b7ee60f0bf86a06a75b3f8dc7502b9d95ae4679cacafea0ca56d"
+        ],
+        "debug/examples/name": [
+          "b6af261ce2a8dd14ac6cadc01bcb1125dd1e0dbae24eebed592e1bd819375698"
+        ],
+        "debug/examples/struct_name_as_context": [
+          "271fede6b26440e067dfd95704deb8ca219fada769295f0fc5292dcf7873669c"
+        ],
+        "debug/ruff": [
+          "9d60ff94a42a2ee435608e7e5248d3db85aafa378b90efe86a7649dd5c92ed43"
+        ],
+        "debug/ruff_python_formatter": [
+          "a448a057e1ad14a281ff8bf07fde63cf7be759a4752ad8fd734abc2847b3c315"
+        ],
+        "debug/ty": [
+          "1a84dfa025813ca4d7d090b214644357f818a739954f44b5c161f4c34eed9a61"
+        ]
+      },
+      "messages": "58f164c9a8689937a0995cc3410669453efd1030bf26dafd20bb84bd4d413cc8",
+      "phase_jobs": {
+        "A": [
+          [
+            "ruff_python_parser",
+            "full",
+            null,
+            false
+          ],
+          [
+            "ruff_python_parser",
+            "full",
+            null,
+            false
+          ],
+          [
+            "match_pattern",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "parentheses",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "visitor",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ruff_python_formatter",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ruff_wasm",
+            "full",
+            null,
+            false
+          ],
+          [
+            "ty_wasm",
+            "full",
+            null,
+            false
+          ],
+          [
+            "mdtest",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "direxist_guard",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ruff_dev",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ruff",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "config",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "resolve_files",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "cli",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ruff",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "integration_test",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "analyze_graph",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ty",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ty",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "self_environment",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "api",
+            "full",
+            "ruff_wasm",
+            false
+          ],
+          [
+            "file_watching",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "api",
+            "full",
+            "ty_wasm",
+            false
+          ],
+          [
+            "cli",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ty",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "e2e",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "document",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "e2e",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ruff",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ty_completion_bench",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ty_completion_eval",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ty_server",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ruff_server",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "corpus",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "mdtest",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ruff_markdown",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ty_ide",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ty_python_semantic",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ruff_workspace",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ty_project",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ty_test",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "normalizer",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ruff_python_formatter",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "fixtures",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ty_module_resolver",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ty_python_core",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ty_combine",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ruff_linter",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "mdtest",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ty_vendored",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ty_site_packages",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ruff_python_formatter",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ruff_python_importer",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "whitespace",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ruff_python_codegen",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ruff_python_semantic",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "parenthesize",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ruff_python_index",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "comparable",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "block_comments",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "source_order",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ruff_db",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "identifier",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "stmt_if",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ruff_python_edits",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "simple_tokenizer",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "fixtures",
+            "link-only",
+            null,
+            false
+          ]
+        ],
+        "C": [
+          [
+            "ruff_python_parser",
+            "full",
+            null,
+            false
+          ],
+          [
+            "ruff_python_parser",
+            "full",
+            null,
+            false
+          ],
+          [
+            "match_pattern",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "whitespace",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "parentheses",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "visitor",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ruff_python_importer",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ty_wasm",
+            "full",
+            null,
+            false
+          ],
+          [
+            "ruff_wasm",
+            "full",
+            null,
+            false
+          ],
+          [
+            "mdtest",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "mdtest",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "corpus",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ruff_dev",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ty",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ty_python_semantic",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ty",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "self_environment",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "file_watching",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "cli",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "api",
+            "link-only",
+            "ruff_wasm",
+            false
+          ],
+          [
+            "ty_test",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "api",
+            "link-only",
+            "ty_wasm",
+            false
+          ],
+          [
+            "direxist_guard",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ruff",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "config",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "resolve_files",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "cli",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ruff",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "integration_test",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "analyze_graph",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ty",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "e2e",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "document",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "e2e",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ruff",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ty_server",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ty_completion_bench",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ty_completion_eval",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ruff_server",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ty_ide",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ruff_markdown",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ty_project",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ruff_workspace",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ty_python_core",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ruff_python_formatter",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "normalizer",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ruff_python_formatter",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "fixtures",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ty_module_resolver",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ty_combine",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "mdtest",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ruff_linter",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ty_vendored",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ty_site_packages",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ruff_python_formatter",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ruff_python_codegen",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ruff_python_semantic",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "parenthesize",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ruff_python_index",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "comparable",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "block_comments",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "source_order",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ruff_db",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "identifier",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "stmt_if",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ruff_python_edits",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "simple_tokenizer",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "fixtures",
+            "link-only",
+            null,
+            false
+          ]
+        ]
+      },
+      "roster": "f48ce010c907d5e8dfa9645a26b77c80e2504540dca1fd47c091e922ccebba5d",
+      "wild": [
+        [
+          "analyze_graph-6483a2dd53259309",
+          true,
+          false
+        ],
+        [
+          "api-39de91ce78a927c9",
+          true,
+          false
+        ],
+        [
+          "api-a0cba910c3e435dc",
+          true,
+          false
+        ],
+        [
+          "block_comments-ac939a3e49bd994b",
+          true,
+          false
+        ],
+        [
+          "cli-adf573b9cd0b0d31",
+          true,
+          false
+        ],
+        [
+          "cli-c4fbffe2ecaa90ff",
+          true,
+          false
+        ],
+        [
+          "comparable-20e81f99e1b1c305",
+          true,
+          false
+        ],
+        [
+          "config-0012e4cea7754270",
+          true,
+          false
+        ],
+        [
+          "corpus-7128779254e6b0e1",
+          true,
+          false
+        ],
+        [
+          "direxist_guard-68c98f377a8f39ff",
+          true,
+          false
+        ],
+        [
+          "document-1dd8f0784781d62c",
+          true,
+          false
+        ],
+        [
+          "e2e-8fa23882290527ed",
+          true,
+          false
+        ],
+        [
+          "e2e-a1affb4667ef26bf",
+          true,
+          false
+        ],
+        [
+          "file_watching-43e2908b929054db",
+          true,
+          false
+        ],
+        [
+          "fixtures-191dc0b897e70ddb",
+          true,
+          false
+        ],
+        [
+          "fixtures-b5bc133c5943322a",
+          true,
+          false
+        ],
+        [
+          "identifier-c4abfac836cf4e15",
+          true,
+          false
+        ],
+        [
+          "integration_test-a31c86d66c3ff0d9",
+          true,
+          false
+        ],
+        [
+          "libruff_wasm.so",
+          true,
+          false
+        ],
+        [
+          "libty_wasm.so",
+          true,
+          false
+        ],
+        [
+          "match_pattern-4364343695ab1b7b",
+          true,
+          false
+        ],
+        [
+          "mdtest-598f5bf2548bfa53",
+          true,
+          false
+        ],
+        [
+          "mdtest-d3d7502a89615334",
+          true,
+          false
+        ],
+        [
+          "mdtest-e122df820a12d38a",
+          true,
+          false
+        ],
+        [
+          "normalizer-a8b286dfc1ba7ed2",
+          true,
+          false
+        ],
+        [
+          "parentheses-153fc6d6cd5d7829",
+          true,
+          false
+        ],
+        [
+          "parenthesize-459c377270d0c5cd",
+          true,
+          false
+        ],
+        [
+          "resolve_files-7f9f27aa9484a7eb",
+          true,
+          false
+        ],
+        [
+          "ruff",
+          true,
+          false
+        ],
+        [
+          "ruff-9c601305a3f3b4b8",
+          true,
+          false
+        ],
+        [
+          "ruff-d8a31ee768a58d17",
+          true,
+          false
+        ],
+        [
+          "ruff_db-0ac3a038ac77fe63",
+          true,
+          false
+        ],
+        [
+          "ruff_dev-8fd98c3fd7311f33",
+          true,
+          false
+        ],
+        [
+          "ruff_linter-e73480eb6ce8a821",
+          true,
+          false
+        ],
+        [
+          "ruff_markdown-e55015e206352c17",
+          true,
+          false
+        ],
+        [
+          "ruff_python_codegen-846b6bf0d8760c0c",
+          true,
+          false
+        ],
+        [
+          "ruff_python_edits-ecf30177daacc72e",
+          true,
+          false
+        ],
+        [
+          "ruff_python_formatter",
+          true,
+          false
+        ],
+        [
+          "ruff_python_formatter-214532d558a61141",
+          true,
+          false
+        ],
+        [
+          "ruff_python_formatter-34ba23003be217ba",
+          true,
+          false
+        ],
+        [
+          "ruff_python_importer-9ec3b8d31b145cef",
+          true,
+          false
+        ],
+        [
+          "ruff_python_index-4529c49a29e2c178",
+          true,
+          false
+        ],
+        [
+          "ruff_python_parser-a3c2fcd2f8c23024",
+          true,
+          false
+        ],
+        [
+          "ruff_python_semantic-0d968301d4c813fc",
+          true,
+          false
+        ],
+        [
+          "ruff_server-3ee2932232a99b25",
+          true,
+          false
+        ],
+        [
+          "ruff_workspace-85060817619d686d",
+          true,
+          false
+        ],
+        [
+          "self_environment-a27750eef1701ced",
+          true,
+          false
+        ],
+        [
+          "simple_tokenizer-c639259863b397fa",
+          true,
+          false
+        ],
+        [
+          "source_order-1b3907421a1bc67d",
+          true,
+          false
+        ],
+        [
+          "stmt_if-32eafd86ca24ca03",
+          true,
+          false
+        ],
+        [
+          "ty",
+          true,
+          false
+        ],
+        [
+          "ty-9f994ba4bc9039c1",
+          true,
+          false
+        ],
+        [
+          "ty-a63b7013e17b8bf1",
+          true,
+          false
+        ],
+        [
+          "ty_combine-f35051c33a7cb1b1",
+          true,
+          false
+        ],
+        [
+          "ty_completion_bench-70688615a89edf9c",
+          true,
+          false
+        ],
+        [
+          "ty_completion_eval-995a92df8fec1edb",
+          true,
+          false
+        ],
+        [
+          "ty_ide-4212167b8375ca10",
+          true,
+          false
+        ],
+        [
+          "ty_module_resolver-ef4903e673ee1e1f",
+          true,
+          false
+        ],
+        [
+          "ty_project-66dec39b18362a2f",
+          true,
+          false
+        ],
+        [
+          "ty_python_core-452469159ddf261e",
+          true,
+          false
+        ],
+        [
+          "ty_python_semantic-a879b0690f634244",
+          true,
+          false
+        ],
+        [
+          "ty_server-21b174d739dc9351",
+          true,
+          false
+        ],
+        [
+          "ty_site_packages-b123485f817506d1",
+          true,
+          false
+        ],
+        [
+          "ty_test-c5756f5fb1919d9d",
+          true,
+          false
+        ],
+        [
+          "ty_vendored-cdc90725d8be3a10",
+          true,
+          false
+        ],
+        [
+          "visitor-670b4ec01d8d3735",
+          true,
+          false
+        ],
+        [
+          "whitespace-15cd7de5ce364b8b",
+          true,
+          false
+        ]
+      ]
+    },
+    "original": {
+      "dirty": [
+        "analyze_graph",
+        "api",
+        "api",
+        "block_comments",
+        "cli",
+        "cli",
+        "comparable",
+        "config",
+        "corpus",
+        "direxist_guard",
+        "document",
+        "e2e",
+        "e2e",
+        "file_watching",
+        "fixtures",
+        "fixtures",
+        "generate_inline_tests",
+        "identifier",
+        "integration_test",
+        "match_pattern",
+        "mdtest",
+        "mdtest",
+        "mdtest",
+        "mdtest",
+        "normalizer",
+        "parentheses",
+        "parenthesize",
+        "resolve_files",
+        "ruff",
+        "ruff",
+        "ruff",
+        "ruff",
+        "ruff_db",
+        "ruff_db",
+        "ruff_dev",
+        "ruff_graph",
+        "ruff_linter",
+        "ruff_linter",
+        "ruff_markdown",
+        "ruff_markdown",
+        "ruff_mdtest",
+        "ruff_python_codegen",
+        "ruff_python_codegen",
+        "ruff_python_edits",
+        "ruff_python_formatter",
+        "ruff_python_formatter",
+        "ruff_python_formatter",
+        "ruff_python_formatter",
+        "ruff_python_importer",
+        "ruff_python_importer",
+        "ruff_python_index",
+        "ruff_python_parser",
+        "ruff_python_parser",
+        "ruff_python_semantic",
+        "ruff_python_semantic",
+        "ruff_ranged_value",
+        "ruff_server",
+        "ruff_server",
+        "ruff_wasm",
+        "ruff_workspace",
+        "ruff_workspace",
+        "self_environment",
+        "simple_tokenizer",
+        "source_order",
+        "stmt_if",
+        "ty",
+        "ty",
+        "ty",
+        "ty",
+        "ty_combine",
+        "ty_combine",
+        "ty_completion_bench",
+        "ty_completion_eval",
+        "ty_ide",
+        "ty_ide",
+        "ty_module_resolver",
+        "ty_module_resolver",
+        "ty_project",
+        "ty_project",
+        "ty_python_core",
+        "ty_python_core",
+        "ty_python_semantic",
+        "ty_python_semantic",
+        "ty_server",
+        "ty_server",
+        "ty_site_packages",
+        "ty_site_packages",
+        "ty_test",
+        "ty_test",
+        "ty_vendored",
+        "ty_vendored",
+        "ty_wasm",
+        "visitor",
+        "whitespace"
+      ],
+      "elfs": {
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/mdtest/598f5bf2548bfa53/out/mdtest-598f5bf2548bfa53": [
+          "1f81576ef61a6330699853e22cdc5b939ff81ddd1b4d748afb0af38531bb9939"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff/0012e4cea7754270/out/config-0012e4cea7754270": [
+          "906788cdc334412fd45a1e4cf6aaf233a900c2e837263132de71483cbcb42c8f"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff/6483a2dd53259309/out/analyze_graph-6483a2dd53259309": [
+          "087d468f1cd5df5bf51c643a8a0f945da184cb324aae6d9a145660916fd88b3c"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff/68c98f377a8f39ff/out/direxist_guard-68c98f377a8f39ff": [
+          "5cc4587adf64d66cdbcd57d14252bd6b0e5d131798bc1183a039c31ae2179775"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff/7f9f27aa9484a7eb/out/resolve_files-7f9f27aa9484a7eb": [
+          "d1d078857be7f5d0802566e61e92fe4e115559ded81679c6b75891da5a109ac0"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff/9c601305a3f3b4b8/out/ruff-9c601305a3f3b4b8": [
+          "8ff3d856884177632b6fbf419796242e09bcb2336663f9d329ab916c5a92f8f2"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff/a31c86d66c3ff0d9/out/integration_test-a31c86d66c3ff0d9": [
+          "d7be071331341180321df9055b1b93a25d9f2eda6760dfc38f9dae89a8296583"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff/adf573b9cd0b0d31/out/cli-adf573b9cd0b0d31": [
+          "696258735f247f740dac5d0ce3269ecd84d146a6660cbf748d849b69b9ac91a3"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff/d8a31ee768a58d17/out/ruff-d8a31ee768a58d17": [
+          "58fff6867934bb831d6e126fe2cc58fb1d07362789ad4195089c33ba97cf627b"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff/d99eec811670d635/out/build_script_build": [
+          "b52715e7707d60b35ad4b7ff9237f8bd654448318102d1a2cd6f8fa45f064408"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_annotate_snippets/6d36cc86025feffc/out/formatter-6d36cc86025feffc": [
+          "6a9b101e993d4e451976973c759ab885f1eb0dd8dd82b55b0ec1581655d11b22"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_annotate_snippets/a29be7514d5d1070/out/rustc_tests-a29be7514d5d1070": [
+          "98dfbb9c4b0a506fefe2bcac48453e4bedac53919459168150d4dde491e3d966"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_annotate_snippets/bbc9bdfca6a78a03/out/color-bbc9bdfca6a78a03": [
+          "27494ac85d5874790563bb5708ebe6fafc3c942491dfc11bbea31fc185f18799"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_annotate_snippets/f41f773bc3e28ee1/out/examples-f41f773bc3e28ee1": [
+          "555165b019e9db7b44f7f9ae58da6849822fc6bac5ac4c44093a77a5750b6bf6"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_annotate_snippets/f659209ee331949c/out/ruff-f659209ee331949c": [
+          "1f5ece4ae45eabfa0a3053e137598a274d0c35f0042f8587e5f71a61d2c020c9"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_cache/3dececd8b3f6948c/out/cache_key-3dececd8b3f6948c": [
+          "705610ca55054a336da1e0b1f07dac0c786f77516f839cf171c94a66ba016e87"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_command_line/dc9f5f94e123120f/out/ruff_command_line-dc9f5f94e123120f": [
+          "c2c42935224ad18b2d2afc0603f81003d4f157186557ca7d36fa392342e06397"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_db/0ac3a038ac77fe63/out/ruff_db-0ac3a038ac77fe63": [
+          "2f3fabfb72cac9339e05dfd056073d291085ce6767efd7ce0146efae71aab514",
+          "4b4b149a1a6db29c964c5dcec557d1d49b9edf7d0ce6f52c76192e8ceb0f37f6"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_dev/8fd98c3fd7311f33/out/ruff_dev-8fd98c3fd7311f33": [
+          "1561cebe3c13cf9400f328d7b3f4777a2d04c9193a7144736829eded8ac7898b"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_formatter/fa93b475474f6146/out/ruff_formatter-fa93b475474f6146": [
+          "252ce300f4e88ac58625bffd487241a1d7f2edc5d5daae35ceaba1375e26c971"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_index/d113c7733800217e/out/ruff_index-d113c7733800217e": [
+          "bfbe3b33845396417a800b7885bb83c79276f89e650d14a744735558c1fd590b"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_linter/e73480eb6ce8a821/out/ruff_linter-e73480eb6ce8a821": [
+          "c7a3418aba4a7e619299cc6ac88fddc7b7b0c96822ca16f8dd6d105576329669"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_macros/b04bf89c22d0a8eb/out/libruff_macros-b04bf89c22d0a8eb.so": [
+          "7cdd51cc937b8757d35a221b32c71efdcb8d9f0958d6597144497d1424a1c075"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_markdown/e55015e206352c17/out/ruff_markdown-e55015e206352c17": [
+          "cb89bf31ef7d5e322f9679f82c4bf34d33c0ca61360ef06bdcb000611e8db244"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_mdtest/e122df820a12d38a/out/mdtest-e122df820a12d38a": [
+          "b2b6f9c9f416d10c71047c03ada39e9b765bc28fa09783041c498fc0910b9122"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_notebook/85e98d483343c012/out/ruff_notebook-85e98d483343c012": [
+          "87c102cca7523642e877ef57f29a9af645dc6945a79893c49ca10b244c8cc323"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_ast/3bc4aa82c6679517/out/ruff_python_ast-3bc4aa82c6679517": [
+          "49315bae41ad4372d6478b2d9f4b6a5282750103aa50c98473072cc0dbbb5296"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_ast_integration_tests/153fc6d6cd5d7829/out/parentheses-153fc6d6cd5d7829": [
+          "4b56bed6cff130514754d51976a8ab757bb31d0fbbf9d833b068ced1e3e13e2f"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_ast_integration_tests/1b3907421a1bc67d/out/source_order-1b3907421a1bc67d": [
+          "ed70f9945d9caada83a17f5723f48d04383390b0318292ce358e0b6ceffc2ead"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_ast_integration_tests/20e81f99e1b1c305/out/comparable-20e81f99e1b1c305": [
+          "c8e455d8d08762c8f086c019c11d4677991b5fe2faa67cb3c084262256c7eb46"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_ast_integration_tests/32eafd86ca24ca03/out/stmt_if-32eafd86ca24ca03": [
+          "01cbba203ad2aefd5add671501152d8520ac225404fd2669c1201af6c9879b20"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_ast_integration_tests/4364343695ab1b7b/out/match_pattern-4364343695ab1b7b": [
+          "4fca31e772566c49c2e0724f0349f8fb43a0a5bdff9350c4d142cc24ea5dd897"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_ast_integration_tests/459c377270d0c5cd/out/parenthesize-459c377270d0c5cd": [
+          "c3ca4fe5ae78de0ab2f7deb6222a8da9b2cdf229e69c4c023b5e67c70b117b8e"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_ast_integration_tests/670b4ec01d8d3735/out/visitor-670b4ec01d8d3735": [
+          "cc4e1378a26a18ad20c69cccbdf0d5790b2320f68c6cadb32589cdd83d5ca574"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_ast_integration_tests/c4abfac836cf4e15/out/identifier-c4abfac836cf4e15": [
+          "529d5b680426bd70232690c950346a2777bdb2c08bcdd5b29f6a761d41502ff7"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_codegen/846b6bf0d8760c0c/out/ruff_python_codegen-846b6bf0d8760c0c": [
+          "7df02541299ec75ceb0d40f9d3e564473790b38ff3e78dfbe960e453a2cbeaae"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_edits/ecf30177daacc72e/out/ruff_python_edits-ecf30177daacc72e": [
+          "622d13563a25e920a04c1b5a3a7a49aeeb089aafeb4a9d7ed193abcaebac3ace"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_formatter/214532d558a61141/out/ruff_python_formatter-214532d558a61141": [
+          "4e1210fdeb9b9e181f1f6e02ffe0ffbc194cc1c1a0ccf6d0aaecea7c0ed2cf25"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_formatter/34ba23003be217ba/out/ruff_python_formatter-34ba23003be217ba": [
+          "bc71d38bd73158656f47cd14fe76dcfb047c45ea6455fe3077fd977d58169b03"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_formatter/a8b286dfc1ba7ed2/out/normalizer-a8b286dfc1ba7ed2": [
+          "8f911b8c772a95b5f7d185841db5c9fc36fb857a60c3fc7b1bf53267a0094d63"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_formatter/b5bc133c5943322a/out/fixtures-b5bc133c5943322a": [
+          "39deb73c03c5ffb7b8cb7d036d3263f8ac763f2a87035172daf45bb00d604196"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_importer/9ec3b8d31b145cef/out/ruff_python_importer-9ec3b8d31b145cef": [
+          "d8ec082b69814336194ffaa4f219f311637509d5e5e37ae3c68586ebf30d55d0"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_index/4529c49a29e2c178/out/ruff_python_index-4529c49a29e2c178": [
+          "79d0d0e4bbdf458b5c72a9c5fb9e4e76f9b11c36f2c8af60745714b94e36547f"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_literal/3e714610490ba542/out/ruff_python_literal-3e714610490ba542": [
+          "56d2b0bb948a55c334c4a3119fb05672023a505f7da1fc56e704a67eeb0d734c"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_parser/191dc0b897e70ddb/out/fixtures-191dc0b897e70ddb": [
+          "25943ce89e95bc45c6b6237f40089b9bcc6fe61af6ee7dd8f476e63c46a792d1",
+          "42deb5e215f61b4687cccc0c186c617e201755f7e81729f8d72ca1bb39d1dd0e"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_parser/7a4dd098165e50cd/out/generate_inline_tests-7a4dd098165e50cd": [
+          "4002a39025ab81deb067b408eee369fd9b689c7af23321e369e800c77d260b8d"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_parser/a3c2fcd2f8c23024/out/ruff_python_parser-a3c2fcd2f8c23024": [
+          "c06067b58aaa3eb9c20ba86fc831c6c73a4ed5ced960ba1163492facc9ea73e7"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_semantic/0d968301d4c813fc/out/ruff_python_semantic-0d968301d4c813fc": [
+          "51c62ccd53431a4201aae6c83fdf81ac4f24c4eeb847c86f652d58837a1de108"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_stdlib/94a91e287d044e72/out/ruff_python_stdlib-94a91e287d044e72": [
+          "1c56d59a00f12e5520598f3dcc656d60f026af3558c1a4de29586067523b1838"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_trivia/d63520b4e2b9ce20/out/ruff_python_trivia-d63520b4e2b9ce20": [
+          "aa4cb2d062f06912143eb230dc90590859c1aa5edfc3bd04ebe548b744e52698"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_trivia_integration_tests/15cd7de5ce364b8b/out/whitespace-15cd7de5ce364b8b": [
+          "42e73d4600e94f1c0f2da5971289505112321225b154cd43ad732f6550b4ac31"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_trivia_integration_tests/ac939a3e49bd994b/out/block_comments-ac939a3e49bd994b": [
+          "cb32a2e77fb3a43b4da2031852b1f3d89b0c777f0f6b11ade735e28b9106700c"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_trivia_integration_tests/c639259863b397fa/out/simple_tokenizer-c639259863b397fa": [
+          "4b83b5259cdfb618e57ef6f98c637400a0cae114cfc70994a4d5f6eabdd0177c"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_server/1dd8f0784781d62c/out/document-1dd8f0784781d62c": [
+          "0bd9b0ec645a0844099715cdf22ee335edbe3a3bbb5f650792b25760d1c27c65"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_server/3ee2932232a99b25/out/ruff_server-3ee2932232a99b25": [
+          "98b243ee423f404159663ad78c607a2548389930272c1386240da0c82c85984c"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_server/a1affb4667ef26bf/out/e2e-a1affb4667ef26bf": [
+          "d1951ddedfdd495e206c85506698bffcfafc338621104c068a654a9e61d071f5"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_source_file/1ca7d4fe8a89aa8d/out/ruff_source_file-1ca7d4fe8a89aa8d": [
+          "4462397bd81fc83f6951eaac189d4e5ba571661d74a65bc1020b37af2f256430"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_text_size/351aef0971030559/out/constructors-351aef0971030559": [
+          "8ba976e5072860883fce18be4d6a7c88615770b7e8a163236399be1984cd0d81"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_text_size/3d6fe4d7c9922dac/out/indexing-3d6fe4d7c9922dac": [
+          "69b0cc5e9aad6d7fbb6e4377802385bb6c6a06d08faf5cb95f9d43289413f77f"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_text_size/6ddda04b83d83db7/out/auto_traits-6ddda04b83d83db7": [
+          "bea3a01770bbbf8dd6733649b77c5dafcfd3654cb32db222cf5cbdbc448814f2"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_text_size/9d8fcc9e788f2a55/out/serde-9d8fcc9e788f2a55": [
+          "01e9a3869eaed6e665ae44793178dd7d62683ea7fbc35b608e03e6d59a9793f0"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_text_size/c6b16f43ff4c9f33/out/main-c6b16f43ff4c9f33": [
+          "2fdc12443013fd33b83e75f06d9011c60d3e203f9eaa4c33ecc108e41b6107ad"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_unicode_names2/9516be9b70f7d327/out/build_script_build": [
+          "1ed1056dbcc1b57306f55af6c9bc66be45f031b141896ff9543c9db9155a6d22"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_unicode_names2_generator/38b40f9cb1a2bd04/out/unicode_names2_generator-38b40f9cb1a2bd04": [
+          "5328d68a1e2503c87bbea4112c67a1c2226f24a669fdd1ecbcdfc40098d0ffb2"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_wasm/2d0df3c70090d308/out/libruff_wasm.so": [
+          "7a4f6dabb74eec915e04a898835b28ca8c3500bfc69b2209b5ca39de1b7cfc3e"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_wasm/39de91ce78a927c9/out/api-39de91ce78a927c9": [
+          "db370756c6fadef846dde0243effcea758fc478db06c3a17dffe9a4028f29a31"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_workspace/85060817619d686d/out/ruff_workspace-85060817619d686d": [
+          "d2fae5b8f2abee5b8f27227e5348be41491924e262e0a7a91596eed6ec4e1c0c"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ty/43e2908b929054db/out/file_watching-43e2908b929054db": [
+          "f43be3120cc801caa201235b534475316c7742c1cdc78c1925b832e855a31e74"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ty/9f994ba4bc9039c1/out/ty-9f994ba4bc9039c1": [
+          "5b1a795f6bdbce03a9d8f28e3281753d2f87f5443d1e7a2ae0bf917f3ebaa8c7"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ty/a27750eef1701ced/out/self_environment-a27750eef1701ced": [
+          "2aee506be11838da7023b7d980d781b0784c9574cfb78a0c839cb90542adcbd1"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ty/a63b7013e17b8bf1/out/ty-a63b7013e17b8bf1": [
+          "87d75d4379d3f82e7807fe42931f91f0a713e1dbb5dc719fb486830e641592b2"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ty/c4fbffe2ecaa90ff/out/cli-c4fbffe2ecaa90ff": [
+          "990d093e900058ba50e512f14eb0019fb7af234a8fd6dd3aaf47fd0e1b53142d"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ty/e947a2b11ffa8a76/out/build_script_build": [
+          "c30cbcb47f5ca2a3fc6ce2f5581629289b3018834f85df02fcb1763d6f4367a8"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ty_combine/f35051c33a7cb1b1/out/ty_combine-f35051c33a7cb1b1": [
+          "3a3a5bf45d0d472c905303c8b9f526cd87f49acc4c9cba9e89076110dd1353c1"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ty_completion_bench/70688615a89edf9c/out/ty_completion_bench-70688615a89edf9c": [
+          "4a0a2d652bd65c73448ae741356ffda3f7e430ffed68aa61da38e5cd8a558de8"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ty_completion_eval/995a92df8fec1edb/out/ty_completion_eval-995a92df8fec1edb": [
+          "8d54e9da6b31141cde12e84b502d93031eb2c4a20e213b4f6a5ae0f01629df8e"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ty_ide/4212167b8375ca10/out/ty_ide-4212167b8375ca10": [
+          "100a5a427fdece53312af0b746d05a7d6d541511a4ff611c35b43ba1627555ff"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ty_module_resolver/ef4903e673ee1e1f/out/ty_module_resolver-ef4903e673ee1e1f": [
+          "5676d50f7b6899d313103e6520355775aee53141dbf23f2d85fb46f427dc46cc"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ty_project/66dec39b18362a2f/out/ty_project-66dec39b18362a2f": [
+          "c68b5bb5d5538e785038090b99b38e08def9c346761b89e75a425e7793f9c81a"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ty_python_core/452469159ddf261e/out/ty_python_core-452469159ddf261e": [
+          "40a461d7a0cf0cdf518ec1357eac0befe1889aac454676e1c43fab055bc22b00"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ty_python_semantic/7128779254e6b0e1/out/corpus-7128779254e6b0e1": [
+          "87b48ca5a996c8b627689d687563f766a1b5ef1491df6dc60926ccdbc61aee94"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ty_python_semantic/a879b0690f634244/out/ty_python_semantic-a879b0690f634244": [
+          "c80e9fa1a94051cec2e3af5a75841582e6b856e00f5f1392335f01ae27e61c2e"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ty_python_semantic/d3d7502a89615334/out/mdtest-d3d7502a89615334": [
+          "3e2d1f996c6813241c95fd2408f532d55c4d13721f2a09901925c83347083716"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ty_server/21b174d739dc9351/out/ty_server-21b174d739dc9351": [
+          "3777f900bf66fe80e24a2737195cd11f531bd1ce1f7354cf38001335347a389e"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ty_server/8fa23882290527ed/out/e2e-8fa23882290527ed": [
+          "219279291ff5bc2a78e596fd9ff7794186e7aca73e9f3fb4b765e7d6c3789348"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ty_site_packages/b123485f817506d1/out/ty_site_packages-b123485f817506d1": [
+          "c52431c3ebb774101e9c053f780399091b312a480ddb22cd3d2cafed0a28c803"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ty_test/c5756f5fb1919d9d/out/ty_test-c5756f5fb1919d9d": [
+          "7e3443cd9bb5e6f3aa2bfb3bfdf775f4c4ffd74be65268e9fba6560ddcfd17a2"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ty_vendored/a98e4cda1c305924/out/build_script_build": [
+          "85e3a4afb8747ba3d68554e1fd8e2182c9d32ac2cc776283b93707bdb52ac67f"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ty_vendored/cdc90725d8be3a10/out/ty_vendored-cdc90725d8be3a10": [
+          "616a7f0ed45ac9bffb6940cd20d7fd92babbbcd7dffd0579db90d79566b8707d"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ty_wasm/14ce8de92c758c3a/out/build_script_build": [
+          "c1473433a44aefd5eda6f2edfc7b1816920bb7a5f5f0dc27062927c0a1651624"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ty_wasm/7f4ef694692e550b/out/libty_wasm.so": [
+          "ea25bfba6dd83288a3b70cd5a611f0d9cbd9ec10d1314f4180433aaf1f38f28f"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ty_wasm/a0cba910c3e435dc/out/api-a0cba910c3e435dc": [
+          "ea28d17cfe4db48db05aaf3f7df2ab45486d430650bd7f539ef43db540aa080a"
+        ],
+        "debug/examples/character": [
+          "b1a1116e61d730e9fa11c9633b3b735c7b6f9514a7a70411668d5f5b78519836"
+        ],
+        "debug/examples/count": [
+          "3233857dfcb97a24dea68140b53dc3b6949b253c7ead85dfcad8aadda3ce8e0a"
+        ],
+        "debug/examples/custom_error": [
+          "7245ac23ec9b3086a0c299416c1444594e4e013d3d4899edce6aeb664beceb30"
+        ],
+        "debug/examples/custom_level": [
+          "e36f2584795015a8954d43ed2fd9e5b2c1079d29427b50aa2ce41ab09ad97953"
+        ],
+        "debug/examples/elide_header": [
+          "8d7b064eadb0b8d298f54331c26b7b4fa983f335e74bc5058d3c33a2a3a9df48"
+        ],
+        "debug/examples/expected_type": [
+          "b04e08868769ba897d25c86c83b5412ba88323bcc09c15f013a24c11074099a6"
+        ],
+        "debug/examples/footer": [
+          "7586112e84d2ed3ab849dfe2965459548bc6017c358e28a12b8681088b991cdd"
+        ],
+        "debug/examples/format": [
+          "4849ac5de0fbd9a22c375998689f01ca27c0635c3fa26d85ae612d5673c02d75"
+        ],
+        "debug/examples/highlight_message": [
+          "3ef2ce53dae07ebb027b61d1ecd459018973ba3e0cd8c9339fcc4c294252f372"
+        ],
+        "debug/examples/highlight_source": [
+          "b46c4dd317cbdc857f732b0b6949d8cd4abb7c40eeee12e9fc21bd0dfe30c8d8"
+        ],
+        "debug/examples/id_hyperlink": [
+          "442e7627f349e95bcb6fc9f3c62f71c58a3dde6fe0d4fce0b28fc3e4cfff6b4c"
+        ],
+        "debug/examples/multi_suggestion": [
+          "8a506508b012497b162fb37728e93cacf62a277d5215d29a3b047dc5925297fd"
+        ],
+        "debug/examples/multislice": [
+          "9334b0ffd067b7ee60f0bf86a06a75b3f8dc7502b9d95ae4679cacafea0ca56d"
+        ],
+        "debug/examples/name": [
+          "b6af261ce2a8dd14ac6cadc01bcb1125dd1e0dbae24eebed592e1bd819375698"
+        ],
+        "debug/examples/struct_name_as_context": [
+          "271fede6b26440e067dfd95704deb8ca219fada769295f0fc5292dcf7873669c"
+        ],
+        "debug/ruff": [
+          "a196bb860a6ef23bae1a52d2f21e2277b8f5bbeab0ceb77a8c29cb0b131384a6"
+        ],
+        "debug/ruff_python_formatter": [
+          "eff5c18a753ec93aeb3c9fad5b1b0e691da8d116c7b68441bc3d27564d28783e"
+        ],
+        "debug/ty": [
+          "1691d365935d0c36186c07e4d1f68f55cc089b34f0250fc0bf34263265abefd0"
+        ]
+      },
+      "messages": "58f164c9a8689937a0995cc3410669453efd1030bf26dafd20bb84bd4d413cc8",
+      "phase_jobs": {
+        "A": [
+          [
+            "ruff_python_parser",
+            "full",
+            null,
+            false
+          ],
+          [
+            "ruff_python_parser",
+            "full",
+            null,
+            false
+          ],
+          [
+            "parenthesize",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ruff_python_importer",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ruff_python_codegen",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ruff_python_semantic",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ty_wasm",
+            "full",
+            null,
+            false
+          ],
+          [
+            "ruff_wasm",
+            "full",
+            null,
+            false
+          ],
+          [
+            "ty_python_core",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "mdtest",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "mdtest",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "corpus",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "file_watching",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ty_python_semantic",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "cli",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ruff_dev",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ty",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ty",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "self_environment",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "api",
+            "full",
+            "ruff_wasm",
+            false
+          ],
+          [
+            "config",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "resolve_files",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "api",
+            "full",
+            "ty_wasm",
+            false
+          ],
+          [
+            "cli",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ruff",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "integration_test",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "analyze_graph",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "direxist_guard",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ruff",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ty",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "e2e",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "e2e",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ty_server",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ruff",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ty_completion_bench",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ty_completion_eval",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "document",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ty_ide",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ruff_server",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ruff_markdown",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ty_project",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ty_test",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ruff_python_formatter",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ty_module_resolver",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ruff_workspace",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "fixtures",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ruff_python_formatter",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "normalizer",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ty_combine",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ruff_linter",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ty_site_packages",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ruff_python_formatter",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "mdtest",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ty_vendored",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ruff_python_index",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "comparable",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "block_comments",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "source_order",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "stmt_if",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "identifier",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ruff_db",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "simple_tokenizer",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ruff_python_edits",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "fixtures",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "match_pattern",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "parentheses",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "visitor",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "whitespace",
+            "link-only",
+            null,
+            false
+          ]
+        ],
+        "C": [
+          [
+            "ruff_python_parser",
+            "full",
+            null,
+            false
+          ],
+          [
+            "ruff_python_parser",
+            "full",
+            null,
+            false
+          ],
+          [
+            "parenthesize",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ruff_python_index",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ruff_python_importer",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ruff_python_codegen",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ruff_python_semantic",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ty_wasm",
+            "full",
+            null,
+            false
+          ],
+          [
+            "ruff_wasm",
+            "full",
+            null,
+            false
+          ],
+          [
+            "mdtest",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "mdtest",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "corpus",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ruff_dev",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ty",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ty_python_semantic",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ty",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "self_environment",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "file_watching",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "cli",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "api",
+            "link-only",
+            "ruff_wasm",
+            false
+          ],
+          [
+            "ty_test",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "config",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "api",
+            "link-only",
+            "ty_wasm",
+            false
+          ],
+          [
+            "resolve_files",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "cli",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ruff",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "integration_test",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "analyze_graph",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "direxist_guard",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ruff",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ty",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "e2e",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "e2e",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ruff",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "document",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ty_server",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ty_completion_bench",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ty_completion_eval",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ruff_server",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ty_ide",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ruff_markdown",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ty_project",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ruff_workspace",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ruff_python_formatter",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ty_module_resolver",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ty_python_core",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "fixtures",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ruff_python_formatter",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "normalizer",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ty_combine",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ty_site_packages",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ruff_linter",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ruff_python_formatter",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "mdtest",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ty_vendored",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "comparable",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "block_comments",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "source_order",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ruff_db",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "identifier",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "stmt_if",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "ruff_python_edits",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "simple_tokenizer",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "fixtures",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "match_pattern",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "visitor",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "parentheses",
+            "link-only",
+            null,
+            false
+          ],
+          [
+            "whitespace",
+            "link-only",
+            null,
+            false
+          ]
+        ]
+      },
+      "roster": "f48ce010c907d5e8dfa9645a26b77c80e2504540dca1fd47c091e922ccebba5d",
+      "wild": [
+        [
+          "analyze_graph-6483a2dd53259309",
+          true,
+          false
+        ],
+        [
+          "api-39de91ce78a927c9",
+          true,
+          false
+        ],
+        [
+          "api-a0cba910c3e435dc",
+          true,
+          false
+        ],
+        [
+          "block_comments-ac939a3e49bd994b",
+          true,
+          false
+        ],
+        [
+          "cli-adf573b9cd0b0d31",
+          true,
+          false
+        ],
+        [
+          "cli-c4fbffe2ecaa90ff",
+          true,
+          false
+        ],
+        [
+          "comparable-20e81f99e1b1c305",
+          true,
+          false
+        ],
+        [
+          "config-0012e4cea7754270",
+          true,
+          false
+        ],
+        [
+          "corpus-7128779254e6b0e1",
+          true,
+          false
+        ],
+        [
+          "direxist_guard-68c98f377a8f39ff",
+          true,
+          false
+        ],
+        [
+          "document-1dd8f0784781d62c",
+          true,
+          false
+        ],
+        [
+          "e2e-8fa23882290527ed",
+          true,
+          false
+        ],
+        [
+          "e2e-a1affb4667ef26bf",
+          true,
+          false
+        ],
+        [
+          "file_watching-43e2908b929054db",
+          true,
+          false
+        ],
+        [
+          "fixtures-191dc0b897e70ddb",
+          true,
+          false
+        ],
+        [
+          "fixtures-b5bc133c5943322a",
+          true,
+          false
+        ],
+        [
+          "identifier-c4abfac836cf4e15",
+          true,
+          false
+        ],
+        [
+          "integration_test-a31c86d66c3ff0d9",
+          true,
+          false
+        ],
+        [
+          "libruff_wasm.so",
+          true,
+          false
+        ],
+        [
+          "libty_wasm.so",
+          true,
+          false
+        ],
+        [
+          "match_pattern-4364343695ab1b7b",
+          true,
+          false
+        ],
+        [
+          "mdtest-598f5bf2548bfa53",
+          true,
+          false
+        ],
+        [
+          "mdtest-d3d7502a89615334",
+          true,
+          false
+        ],
+        [
+          "mdtest-e122df820a12d38a",
+          true,
+          false
+        ],
+        [
+          "normalizer-a8b286dfc1ba7ed2",
+          true,
+          false
+        ],
+        [
+          "parentheses-153fc6d6cd5d7829",
+          true,
+          false
+        ],
+        [
+          "parenthesize-459c377270d0c5cd",
+          true,
+          false
+        ],
+        [
+          "resolve_files-7f9f27aa9484a7eb",
+          true,
+          false
+        ],
+        [
+          "ruff",
+          true,
+          false
+        ],
+        [
+          "ruff-9c601305a3f3b4b8",
+          true,
+          false
+        ],
+        [
+          "ruff-d8a31ee768a58d17",
+          true,
+          false
+        ],
+        [
+          "ruff_db-0ac3a038ac77fe63",
+          true,
+          false
+        ],
+        [
+          "ruff_dev-8fd98c3fd7311f33",
+          true,
+          false
+        ],
+        [
+          "ruff_linter-e73480eb6ce8a821",
+          true,
+          false
+        ],
+        [
+          "ruff_markdown-e55015e206352c17",
+          true,
+          false
+        ],
+        [
+          "ruff_python_codegen-846b6bf0d8760c0c",
+          true,
+          false
+        ],
+        [
+          "ruff_python_edits-ecf30177daacc72e",
+          true,
+          false
+        ],
+        [
+          "ruff_python_formatter",
+          true,
+          false
+        ],
+        [
+          "ruff_python_formatter-214532d558a61141",
+          true,
+          false
+        ],
+        [
+          "ruff_python_formatter-34ba23003be217ba",
+          true,
+          false
+        ],
+        [
+          "ruff_python_importer-9ec3b8d31b145cef",
+          true,
+          false
+        ],
+        [
+          "ruff_python_index-4529c49a29e2c178",
+          true,
+          false
+        ],
+        [
+          "ruff_python_parser-a3c2fcd2f8c23024",
+          true,
+          false
+        ],
+        [
+          "ruff_python_semantic-0d968301d4c813fc",
+          true,
+          false
+        ],
+        [
+          "ruff_server-3ee2932232a99b25",
+          true,
+          false
+        ],
+        [
+          "ruff_workspace-85060817619d686d",
+          true,
+          false
+        ],
+        [
+          "self_environment-a27750eef1701ced",
+          true,
+          false
+        ],
+        [
+          "simple_tokenizer-c639259863b397fa",
+          true,
+          false
+        ],
+        [
+          "source_order-1b3907421a1bc67d",
+          true,
+          false
+        ],
+        [
+          "stmt_if-32eafd86ca24ca03",
+          true,
+          false
+        ],
+        [
+          "ty",
+          true,
+          false
+        ],
+        [
+          "ty-9f994ba4bc9039c1",
+          true,
+          false
+        ],
+        [
+          "ty-a63b7013e17b8bf1",
+          true,
+          false
+        ],
+        [
+          "ty_combine-f35051c33a7cb1b1",
+          true,
+          false
+        ],
+        [
+          "ty_completion_bench-70688615a89edf9c",
+          true,
+          false
+        ],
+        [
+          "ty_completion_eval-995a92df8fec1edb",
+          true,
+          false
+        ],
+        [
+          "ty_ide-4212167b8375ca10",
+          true,
+          false
+        ],
+        [
+          "ty_module_resolver-ef4903e673ee1e1f",
+          true,
+          false
+        ],
+        [
+          "ty_project-66dec39b18362a2f",
+          true,
+          false
+        ],
+        [
+          "ty_python_core-452469159ddf261e",
+          true,
+          false
+        ],
+        [
+          "ty_python_semantic-a879b0690f634244",
+          true,
+          false
+        ],
+        [
+          "ty_server-21b174d739dc9351",
+          true,
+          false
+        ],
+        [
+          "ty_site_packages-b123485f817506d1",
+          true,
+          false
+        ],
+        [
+          "ty_test-c5756f5fb1919d9d",
+          true,
+          false
+        ],
+        [
+          "ty_vendored-cdc90725d8be3a10",
+          true,
+          false
+        ],
+        [
+          "visitor-670b4ec01d8d3735",
+          true,
+          false
+        ],
+        [
+          "whitespace-15cd7de5ce364b8b",
+          true,
+          false
+        ]
+      ]
+    }
+  },
+  "wasm-only": {
+    "edited": {
+      "dirty": [
+        "api",
+        "ty_wasm"
+      ],
+      "elfs": {
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/mdtest/598f5bf2548bfa53/out/mdtest-598f5bf2548bfa53": [
+          "1f81576ef61a6330699853e22cdc5b939ff81ddd1b4d748afb0af38531bb9939"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff/0012e4cea7754270/out/config-0012e4cea7754270": [
+          "906788cdc334412fd45a1e4cf6aaf233a900c2e837263132de71483cbcb42c8f"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff/6483a2dd53259309/out/analyze_graph-6483a2dd53259309": [
+          "087d468f1cd5df5bf51c643a8a0f945da184cb324aae6d9a145660916fd88b3c"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff/68c98f377a8f39ff/out/direxist_guard-68c98f377a8f39ff": [
+          "5cc4587adf64d66cdbcd57d14252bd6b0e5d131798bc1183a039c31ae2179775"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff/7f9f27aa9484a7eb/out/resolve_files-7f9f27aa9484a7eb": [
+          "d1d078857be7f5d0802566e61e92fe4e115559ded81679c6b75891da5a109ac0"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff/9c601305a3f3b4b8/out/ruff-9c601305a3f3b4b8": [
+          "8ff3d856884177632b6fbf419796242e09bcb2336663f9d329ab916c5a92f8f2"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff/a31c86d66c3ff0d9/out/integration_test-a31c86d66c3ff0d9": [
+          "d7be071331341180321df9055b1b93a25d9f2eda6760dfc38f9dae89a8296583"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff/adf573b9cd0b0d31/out/cli-adf573b9cd0b0d31": [
+          "696258735f247f740dac5d0ce3269ecd84d146a6660cbf748d849b69b9ac91a3"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff/d8a31ee768a58d17/out/ruff-d8a31ee768a58d17": [
+          "58fff6867934bb831d6e126fe2cc58fb1d07362789ad4195089c33ba97cf627b"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff/d99eec811670d635/out/build_script_build": [
+          "b52715e7707d60b35ad4b7ff9237f8bd654448318102d1a2cd6f8fa45f064408"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_annotate_snippets/6d36cc86025feffc/out/formatter-6d36cc86025feffc": [
+          "6a9b101e993d4e451976973c759ab885f1eb0dd8dd82b55b0ec1581655d11b22"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_annotate_snippets/a29be7514d5d1070/out/rustc_tests-a29be7514d5d1070": [
+          "98dfbb9c4b0a506fefe2bcac48453e4bedac53919459168150d4dde491e3d966"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_annotate_snippets/bbc9bdfca6a78a03/out/color-bbc9bdfca6a78a03": [
+          "27494ac85d5874790563bb5708ebe6fafc3c942491dfc11bbea31fc185f18799"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_annotate_snippets/f41f773bc3e28ee1/out/examples-f41f773bc3e28ee1": [
+          "555165b019e9db7b44f7f9ae58da6849822fc6bac5ac4c44093a77a5750b6bf6"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_annotate_snippets/f659209ee331949c/out/ruff-f659209ee331949c": [
+          "1f5ece4ae45eabfa0a3053e137598a274d0c35f0042f8587e5f71a61d2c020c9"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_cache/3dececd8b3f6948c/out/cache_key-3dececd8b3f6948c": [
+          "705610ca55054a336da1e0b1f07dac0c786f77516f839cf171c94a66ba016e87"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_command_line/dc9f5f94e123120f/out/ruff_command_line-dc9f5f94e123120f": [
+          "c2c42935224ad18b2d2afc0603f81003d4f157186557ca7d36fa392342e06397"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_db/0ac3a038ac77fe63/out/ruff_db-0ac3a038ac77fe63": [
+          "4b4b149a1a6db29c964c5dcec557d1d49b9edf7d0ce6f52c76192e8ceb0f37f6"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_dev/8fd98c3fd7311f33/out/ruff_dev-8fd98c3fd7311f33": [
+          "1561cebe3c13cf9400f328d7b3f4777a2d04c9193a7144736829eded8ac7898b"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_formatter/fa93b475474f6146/out/ruff_formatter-fa93b475474f6146": [
+          "252ce300f4e88ac58625bffd487241a1d7f2edc5d5daae35ceaba1375e26c971"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_index/d113c7733800217e/out/ruff_index-d113c7733800217e": [
+          "bfbe3b33845396417a800b7885bb83c79276f89e650d14a744735558c1fd590b"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_linter/e73480eb6ce8a821/out/ruff_linter-e73480eb6ce8a821": [
+          "c7a3418aba4a7e619299cc6ac88fddc7b7b0c96822ca16f8dd6d105576329669"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_macros/b04bf89c22d0a8eb/out/libruff_macros-b04bf89c22d0a8eb.so": [
+          "7cdd51cc937b8757d35a221b32c71efdcb8d9f0958d6597144497d1424a1c075"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_markdown/e55015e206352c17/out/ruff_markdown-e55015e206352c17": [
+          "cb89bf31ef7d5e322f9679f82c4bf34d33c0ca61360ef06bdcb000611e8db244"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_mdtest/e122df820a12d38a/out/mdtest-e122df820a12d38a": [
+          "b2b6f9c9f416d10c71047c03ada39e9b765bc28fa09783041c498fc0910b9122"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_notebook/85e98d483343c012/out/ruff_notebook-85e98d483343c012": [
+          "87c102cca7523642e877ef57f29a9af645dc6945a79893c49ca10b244c8cc323"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_ast/3bc4aa82c6679517/out/ruff_python_ast-3bc4aa82c6679517": [
+          "49315bae41ad4372d6478b2d9f4b6a5282750103aa50c98473072cc0dbbb5296"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_ast_integration_tests/153fc6d6cd5d7829/out/parentheses-153fc6d6cd5d7829": [
+          "4b56bed6cff130514754d51976a8ab757bb31d0fbbf9d833b068ced1e3e13e2f"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_ast_integration_tests/1b3907421a1bc67d/out/source_order-1b3907421a1bc67d": [
+          "ed70f9945d9caada83a17f5723f48d04383390b0318292ce358e0b6ceffc2ead"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_ast_integration_tests/20e81f99e1b1c305/out/comparable-20e81f99e1b1c305": [
+          "c8e455d8d08762c8f086c019c11d4677991b5fe2faa67cb3c084262256c7eb46"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_ast_integration_tests/32eafd86ca24ca03/out/stmt_if-32eafd86ca24ca03": [
+          "01cbba203ad2aefd5add671501152d8520ac225404fd2669c1201af6c9879b20"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_ast_integration_tests/4364343695ab1b7b/out/match_pattern-4364343695ab1b7b": [
+          "4fca31e772566c49c2e0724f0349f8fb43a0a5bdff9350c4d142cc24ea5dd897"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_ast_integration_tests/459c377270d0c5cd/out/parenthesize-459c377270d0c5cd": [
+          "c3ca4fe5ae78de0ab2f7deb6222a8da9b2cdf229e69c4c023b5e67c70b117b8e"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_ast_integration_tests/670b4ec01d8d3735/out/visitor-670b4ec01d8d3735": [
+          "cc4e1378a26a18ad20c69cccbdf0d5790b2320f68c6cadb32589cdd83d5ca574"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_ast_integration_tests/c4abfac836cf4e15/out/identifier-c4abfac836cf4e15": [
+          "529d5b680426bd70232690c950346a2777bdb2c08bcdd5b29f6a761d41502ff7"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_codegen/846b6bf0d8760c0c/out/ruff_python_codegen-846b6bf0d8760c0c": [
+          "7df02541299ec75ceb0d40f9d3e564473790b38ff3e78dfbe960e453a2cbeaae"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_edits/ecf30177daacc72e/out/ruff_python_edits-ecf30177daacc72e": [
+          "622d13563a25e920a04c1b5a3a7a49aeeb089aafeb4a9d7ed193abcaebac3ace"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_formatter/214532d558a61141/out/ruff_python_formatter-214532d558a61141": [
+          "4e1210fdeb9b9e181f1f6e02ffe0ffbc194cc1c1a0ccf6d0aaecea7c0ed2cf25"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_formatter/34ba23003be217ba/out/ruff_python_formatter-34ba23003be217ba": [
+          "bc71d38bd73158656f47cd14fe76dcfb047c45ea6455fe3077fd977d58169b03"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_formatter/a8b286dfc1ba7ed2/out/normalizer-a8b286dfc1ba7ed2": [
+          "8f911b8c772a95b5f7d185841db5c9fc36fb857a60c3fc7b1bf53267a0094d63"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_formatter/b5bc133c5943322a/out/fixtures-b5bc133c5943322a": [
+          "39deb73c03c5ffb7b8cb7d036d3263f8ac763f2a87035172daf45bb00d604196"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_importer/9ec3b8d31b145cef/out/ruff_python_importer-9ec3b8d31b145cef": [
+          "d8ec082b69814336194ffaa4f219f311637509d5e5e37ae3c68586ebf30d55d0"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_index/4529c49a29e2c178/out/ruff_python_index-4529c49a29e2c178": [
+          "79d0d0e4bbdf458b5c72a9c5fb9e4e76f9b11c36f2c8af60745714b94e36547f"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_literal/3e714610490ba542/out/ruff_python_literal-3e714610490ba542": [
+          "56d2b0bb948a55c334c4a3119fb05672023a505f7da1fc56e704a67eeb0d734c"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_parser/191dc0b897e70ddb/out/fixtures-191dc0b897e70ddb": [
+          "42deb5e215f61b4687cccc0c186c617e201755f7e81729f8d72ca1bb39d1dd0e"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_parser/7a4dd098165e50cd/out/generate_inline_tests-7a4dd098165e50cd": [
+          "4002a39025ab81deb067b408eee369fd9b689c7af23321e369e800c77d260b8d"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_parser/a3c2fcd2f8c23024/out/ruff_python_parser-a3c2fcd2f8c23024": [
+          "c06067b58aaa3eb9c20ba86fc831c6c73a4ed5ced960ba1163492facc9ea73e7"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_semantic/0d968301d4c813fc/out/ruff_python_semantic-0d968301d4c813fc": [
+          "51c62ccd53431a4201aae6c83fdf81ac4f24c4eeb847c86f652d58837a1de108"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_stdlib/94a91e287d044e72/out/ruff_python_stdlib-94a91e287d044e72": [
+          "1c56d59a00f12e5520598f3dcc656d60f026af3558c1a4de29586067523b1838"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_trivia/d63520b4e2b9ce20/out/ruff_python_trivia-d63520b4e2b9ce20": [
+          "aa4cb2d062f06912143eb230dc90590859c1aa5edfc3bd04ebe548b744e52698"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_trivia_integration_tests/15cd7de5ce364b8b/out/whitespace-15cd7de5ce364b8b": [
+          "42e73d4600e94f1c0f2da5971289505112321225b154cd43ad732f6550b4ac31"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_trivia_integration_tests/ac939a3e49bd994b/out/block_comments-ac939a3e49bd994b": [
+          "cb32a2e77fb3a43b4da2031852b1f3d89b0c777f0f6b11ade735e28b9106700c"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_trivia_integration_tests/c639259863b397fa/out/simple_tokenizer-c639259863b397fa": [
+          "4b83b5259cdfb618e57ef6f98c637400a0cae114cfc70994a4d5f6eabdd0177c"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_server/1dd8f0784781d62c/out/document-1dd8f0784781d62c": [
+          "0bd9b0ec645a0844099715cdf22ee335edbe3a3bbb5f650792b25760d1c27c65",
+          "735eb87887f26b602a5bfc1d6bf62c28592b71f729d9f98c591fb6266a09c6b2"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_server/3ee2932232a99b25/out/ruff_server-3ee2932232a99b25": [
+          "98b243ee423f404159663ad78c607a2548389930272c1386240da0c82c85984c"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_server/a1affb4667ef26bf/out/e2e-a1affb4667ef26bf": [
+          "d1951ddedfdd495e206c85506698bffcfafc338621104c068a654a9e61d071f5"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_source_file/1ca7d4fe8a89aa8d/out/ruff_source_file-1ca7d4fe8a89aa8d": [
+          "4462397bd81fc83f6951eaac189d4e5ba571661d74a65bc1020b37af2f256430"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_text_size/351aef0971030559/out/constructors-351aef0971030559": [
+          "8ba976e5072860883fce18be4d6a7c88615770b7e8a163236399be1984cd0d81"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_text_size/3d6fe4d7c9922dac/out/indexing-3d6fe4d7c9922dac": [
+          "69b0cc5e9aad6d7fbb6e4377802385bb6c6a06d08faf5cb95f9d43289413f77f"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_text_size/6ddda04b83d83db7/out/auto_traits-6ddda04b83d83db7": [
+          "bea3a01770bbbf8dd6733649b77c5dafcfd3654cb32db222cf5cbdbc448814f2"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_text_size/9d8fcc9e788f2a55/out/serde-9d8fcc9e788f2a55": [
+          "01e9a3869eaed6e665ae44793178dd7d62683ea7fbc35b608e03e6d59a9793f0"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_text_size/c6b16f43ff4c9f33/out/main-c6b16f43ff4c9f33": [
+          "2fdc12443013fd33b83e75f06d9011c60d3e203f9eaa4c33ecc108e41b6107ad"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_unicode_names2/9516be9b70f7d327/out/build_script_build": [
+          "1ed1056dbcc1b57306f55af6c9bc66be45f031b141896ff9543c9db9155a6d22"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_unicode_names2_generator/38b40f9cb1a2bd04/out/unicode_names2_generator-38b40f9cb1a2bd04": [
+          "5328d68a1e2503c87bbea4112c67a1c2226f24a669fdd1ecbcdfc40098d0ffb2"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_wasm/2d0df3c70090d308/out/libruff_wasm.so": [
+          "7a4f6dabb74eec915e04a898835b28ca8c3500bfc69b2209b5ca39de1b7cfc3e"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_wasm/39de91ce78a927c9/out/api-39de91ce78a927c9": [
+          "db370756c6fadef846dde0243effcea758fc478db06c3a17dffe9a4028f29a31"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_workspace/85060817619d686d/out/ruff_workspace-85060817619d686d": [
+          "d2fae5b8f2abee5b8f27227e5348be41491924e262e0a7a91596eed6ec4e1c0c"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ty/43e2908b929054db/out/file_watching-43e2908b929054db": [
+          "f43be3120cc801caa201235b534475316c7742c1cdc78c1925b832e855a31e74"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ty/9f994ba4bc9039c1/out/ty-9f994ba4bc9039c1": [
+          "5b1a795f6bdbce03a9d8f28e3281753d2f87f5443d1e7a2ae0bf917f3ebaa8c7"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ty/a27750eef1701ced/out/self_environment-a27750eef1701ced": [
+          "2aee506be11838da7023b7d980d781b0784c9574cfb78a0c839cb90542adcbd1"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ty/a63b7013e17b8bf1/out/ty-a63b7013e17b8bf1": [
+          "87d75d4379d3f82e7807fe42931f91f0a713e1dbb5dc719fb486830e641592b2"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ty/c4fbffe2ecaa90ff/out/cli-c4fbffe2ecaa90ff": [
+          "990d093e900058ba50e512f14eb0019fb7af234a8fd6dd3aaf47fd0e1b53142d"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ty/e947a2b11ffa8a76/out/build_script_build": [
+          "c30cbcb47f5ca2a3fc6ce2f5581629289b3018834f85df02fcb1763d6f4367a8"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ty_combine/f35051c33a7cb1b1/out/ty_combine-f35051c33a7cb1b1": [
+          "3a3a5bf45d0d472c905303c8b9f526cd87f49acc4c9cba9e89076110dd1353c1"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ty_completion_bench/70688615a89edf9c/out/ty_completion_bench-70688615a89edf9c": [
+          "4a0a2d652bd65c73448ae741356ffda3f7e430ffed68aa61da38e5cd8a558de8"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ty_completion_eval/995a92df8fec1edb/out/ty_completion_eval-995a92df8fec1edb": [
+          "8d54e9da6b31141cde12e84b502d93031eb2c4a20e213b4f6a5ae0f01629df8e"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ty_ide/4212167b8375ca10/out/ty_ide-4212167b8375ca10": [
+          "100a5a427fdece53312af0b746d05a7d6d541511a4ff611c35b43ba1627555ff"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ty_module_resolver/ef4903e673ee1e1f/out/ty_module_resolver-ef4903e673ee1e1f": [
+          "5676d50f7b6899d313103e6520355775aee53141dbf23f2d85fb46f427dc46cc"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ty_project/66dec39b18362a2f/out/ty_project-66dec39b18362a2f": [
+          "c68b5bb5d5538e785038090b99b38e08def9c346761b89e75a425e7793f9c81a"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ty_python_core/452469159ddf261e/out/ty_python_core-452469159ddf261e": [
+          "40a461d7a0cf0cdf518ec1357eac0befe1889aac454676e1c43fab055bc22b00"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ty_python_semantic/7128779254e6b0e1/out/corpus-7128779254e6b0e1": [
+          "87b48ca5a996c8b627689d687563f766a1b5ef1491df6dc60926ccdbc61aee94"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ty_python_semantic/a879b0690f634244/out/ty_python_semantic-a879b0690f634244": [
+          "c80e9fa1a94051cec2e3af5a75841582e6b856e00f5f1392335f01ae27e61c2e"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ty_python_semantic/d3d7502a89615334/out/mdtest-d3d7502a89615334": [
+          "3e2d1f996c6813241c95fd2408f532d55c4d13721f2a09901925c83347083716"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ty_server/21b174d739dc9351/out/ty_server-21b174d739dc9351": [
+          "3777f900bf66fe80e24a2737195cd11f531bd1ce1f7354cf38001335347a389e"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ty_server/8fa23882290527ed/out/e2e-8fa23882290527ed": [
+          "219279291ff5bc2a78e596fd9ff7794186e7aca73e9f3fb4b765e7d6c3789348"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ty_site_packages/b123485f817506d1/out/ty_site_packages-b123485f817506d1": [
+          "c52431c3ebb774101e9c053f780399091b312a480ddb22cd3d2cafed0a28c803"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ty_test/c5756f5fb1919d9d/out/ty_test-c5756f5fb1919d9d": [
+          "7e3443cd9bb5e6f3aa2bfb3bfdf775f4c4ffd74be65268e9fba6560ddcfd17a2"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ty_vendored/a98e4cda1c305924/out/build_script_build": [
+          "85e3a4afb8747ba3d68554e1fd8e2182c9d32ac2cc776283b93707bdb52ac67f"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ty_vendored/cdc90725d8be3a10/out/ty_vendored-cdc90725d8be3a10": [
+          "616a7f0ed45ac9bffb6940cd20d7fd92babbbcd7dffd0579db90d79566b8707d"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ty_wasm/14ce8de92c758c3a/out/build_script_build": [
+          "c1473433a44aefd5eda6f2edfc7b1816920bb7a5f5f0dc27062927c0a1651624"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ty_wasm/7f4ef694692e550b/out/libty_wasm.so": [
+          "6ced5dd7d33f9196ac890d60b2490c90fa351ddbdf0a427c335a85fe3b9a9c1b"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ty_wasm/a0cba910c3e435dc/out/api-a0cba910c3e435dc": [
+          "de78308d9724302b884e7571ebd520f29eb42051ef147009d13cc69b4632b509"
+        ],
+        "debug/examples/character": [
+          "b1a1116e61d730e9fa11c9633b3b735c7b6f9514a7a70411668d5f5b78519836"
+        ],
+        "debug/examples/count": [
+          "3233857dfcb97a24dea68140b53dc3b6949b253c7ead85dfcad8aadda3ce8e0a"
+        ],
+        "debug/examples/custom_error": [
+          "7245ac23ec9b3086a0c299416c1444594e4e013d3d4899edce6aeb664beceb30"
+        ],
+        "debug/examples/custom_level": [
+          "e36f2584795015a8954d43ed2fd9e5b2c1079d29427b50aa2ce41ab09ad97953"
+        ],
+        "debug/examples/elide_header": [
+          "8d7b064eadb0b8d298f54331c26b7b4fa983f335e74bc5058d3c33a2a3a9df48"
+        ],
+        "debug/examples/expected_type": [
+          "b04e08868769ba897d25c86c83b5412ba88323bcc09c15f013a24c11074099a6"
+        ],
+        "debug/examples/footer": [
+          "7586112e84d2ed3ab849dfe2965459548bc6017c358e28a12b8681088b991cdd"
+        ],
+        "debug/examples/format": [
+          "4849ac5de0fbd9a22c375998689f01ca27c0635c3fa26d85ae612d5673c02d75"
+        ],
+        "debug/examples/highlight_message": [
+          "3ef2ce53dae07ebb027b61d1ecd459018973ba3e0cd8c9339fcc4c294252f372"
+        ],
+        "debug/examples/highlight_source": [
+          "b46c4dd317cbdc857f732b0b6949d8cd4abb7c40eeee12e9fc21bd0dfe30c8d8"
+        ],
+        "debug/examples/id_hyperlink": [
+          "442e7627f349e95bcb6fc9f3c62f71c58a3dde6fe0d4fce0b28fc3e4cfff6b4c"
+        ],
+        "debug/examples/multi_suggestion": [
+          "8a506508b012497b162fb37728e93cacf62a277d5215d29a3b047dc5925297fd"
+        ],
+        "debug/examples/multislice": [
+          "9334b0ffd067b7ee60f0bf86a06a75b3f8dc7502b9d95ae4679cacafea0ca56d"
+        ],
+        "debug/examples/name": [
+          "b6af261ce2a8dd14ac6cadc01bcb1125dd1e0dbae24eebed592e1bd819375698"
+        ],
+        "debug/examples/struct_name_as_context": [
+          "271fede6b26440e067dfd95704deb8ca219fada769295f0fc5292dcf7873669c"
+        ],
+        "debug/ruff": [
+          "a196bb860a6ef23bae1a52d2f21e2277b8f5bbeab0ceb77a8c29cb0b131384a6"
+        ],
+        "debug/ruff_python_formatter": [
+          "eff5c18a753ec93aeb3c9fad5b1b0e691da8d116c7b68441bc3d27564d28783e"
+        ],
+        "debug/ty": [
+          "1691d365935d0c36186c07e4d1f68f55cc089b34f0250fc0bf34263265abefd0"
+        ]
+      },
+      "messages": "58f164c9a8689937a0995cc3410669453efd1030bf26dafd20bb84bd4d413cc8",
+      "phase_jobs": {
+        "A": [
+          [
+            "ty_wasm",
+            "full",
+            null,
+            false
+          ],
+          [
+            "api",
+            "full",
+            "ty_wasm",
+            false
+          ]
+        ],
+        "C": [
+          [
+            "ty_wasm",
+            "full",
+            null,
+            false
+          ],
+          [
+            "api",
+            "link-only",
+            "ty_wasm",
+            false
+          ]
+        ]
+      },
+      "roster": "f48ce010c907d5e8dfa9645a26b77c80e2504540dca1fd47c091e922ccebba5d",
+      "wild": [
+        [
+          "api-a0cba910c3e435dc",
+          true,
+          false
+        ],
+        [
+          "libty_wasm.so",
+          true,
+          false
+        ]
+      ]
+    },
+    "original": {
+      "dirty": [
+        "api",
+        "ty_wasm"
+      ],
+      "elfs": {
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/mdtest/598f5bf2548bfa53/out/mdtest-598f5bf2548bfa53": [
+          "1f81576ef61a6330699853e22cdc5b939ff81ddd1b4d748afb0af38531bb9939"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff/0012e4cea7754270/out/config-0012e4cea7754270": [
+          "906788cdc334412fd45a1e4cf6aaf233a900c2e837263132de71483cbcb42c8f"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff/6483a2dd53259309/out/analyze_graph-6483a2dd53259309": [
+          "087d468f1cd5df5bf51c643a8a0f945da184cb324aae6d9a145660916fd88b3c"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff/68c98f377a8f39ff/out/direxist_guard-68c98f377a8f39ff": [
+          "5cc4587adf64d66cdbcd57d14252bd6b0e5d131798bc1183a039c31ae2179775"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff/7f9f27aa9484a7eb/out/resolve_files-7f9f27aa9484a7eb": [
+          "d1d078857be7f5d0802566e61e92fe4e115559ded81679c6b75891da5a109ac0"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff/9c601305a3f3b4b8/out/ruff-9c601305a3f3b4b8": [
+          "8ff3d856884177632b6fbf419796242e09bcb2336663f9d329ab916c5a92f8f2"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff/a31c86d66c3ff0d9/out/integration_test-a31c86d66c3ff0d9": [
+          "d7be071331341180321df9055b1b93a25d9f2eda6760dfc38f9dae89a8296583"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff/adf573b9cd0b0d31/out/cli-adf573b9cd0b0d31": [
+          "696258735f247f740dac5d0ce3269ecd84d146a6660cbf748d849b69b9ac91a3"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff/d8a31ee768a58d17/out/ruff-d8a31ee768a58d17": [
+          "58fff6867934bb831d6e126fe2cc58fb1d07362789ad4195089c33ba97cf627b"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff/d99eec811670d635/out/build_script_build": [
+          "b52715e7707d60b35ad4b7ff9237f8bd654448318102d1a2cd6f8fa45f064408"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_annotate_snippets/6d36cc86025feffc/out/formatter-6d36cc86025feffc": [
+          "6a9b101e993d4e451976973c759ab885f1eb0dd8dd82b55b0ec1581655d11b22"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_annotate_snippets/a29be7514d5d1070/out/rustc_tests-a29be7514d5d1070": [
+          "98dfbb9c4b0a506fefe2bcac48453e4bedac53919459168150d4dde491e3d966"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_annotate_snippets/bbc9bdfca6a78a03/out/color-bbc9bdfca6a78a03": [
+          "27494ac85d5874790563bb5708ebe6fafc3c942491dfc11bbea31fc185f18799"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_annotate_snippets/f41f773bc3e28ee1/out/examples-f41f773bc3e28ee1": [
+          "555165b019e9db7b44f7f9ae58da6849822fc6bac5ac4c44093a77a5750b6bf6"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_annotate_snippets/f659209ee331949c/out/ruff-f659209ee331949c": [
+          "1f5ece4ae45eabfa0a3053e137598a274d0c35f0042f8587e5f71a61d2c020c9"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_cache/3dececd8b3f6948c/out/cache_key-3dececd8b3f6948c": [
+          "705610ca55054a336da1e0b1f07dac0c786f77516f839cf171c94a66ba016e87"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_command_line/dc9f5f94e123120f/out/ruff_command_line-dc9f5f94e123120f": [
+          "c2c42935224ad18b2d2afc0603f81003d4f157186557ca7d36fa392342e06397"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_db/0ac3a038ac77fe63/out/ruff_db-0ac3a038ac77fe63": [
+          "4b4b149a1a6db29c964c5dcec557d1d49b9edf7d0ce6f52c76192e8ceb0f37f6"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_dev/8fd98c3fd7311f33/out/ruff_dev-8fd98c3fd7311f33": [
+          "1561cebe3c13cf9400f328d7b3f4777a2d04c9193a7144736829eded8ac7898b"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_formatter/fa93b475474f6146/out/ruff_formatter-fa93b475474f6146": [
+          "252ce300f4e88ac58625bffd487241a1d7f2edc5d5daae35ceaba1375e26c971"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_index/d113c7733800217e/out/ruff_index-d113c7733800217e": [
+          "bfbe3b33845396417a800b7885bb83c79276f89e650d14a744735558c1fd590b"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_linter/e73480eb6ce8a821/out/ruff_linter-e73480eb6ce8a821": [
+          "c7a3418aba4a7e619299cc6ac88fddc7b7b0c96822ca16f8dd6d105576329669"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_macros/b04bf89c22d0a8eb/out/libruff_macros-b04bf89c22d0a8eb.so": [
+          "7cdd51cc937b8757d35a221b32c71efdcb8d9f0958d6597144497d1424a1c075"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_markdown/e55015e206352c17/out/ruff_markdown-e55015e206352c17": [
+          "cb89bf31ef7d5e322f9679f82c4bf34d33c0ca61360ef06bdcb000611e8db244"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_mdtest/e122df820a12d38a/out/mdtest-e122df820a12d38a": [
+          "b2b6f9c9f416d10c71047c03ada39e9b765bc28fa09783041c498fc0910b9122"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_notebook/85e98d483343c012/out/ruff_notebook-85e98d483343c012": [
+          "87c102cca7523642e877ef57f29a9af645dc6945a79893c49ca10b244c8cc323"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_ast/3bc4aa82c6679517/out/ruff_python_ast-3bc4aa82c6679517": [
+          "49315bae41ad4372d6478b2d9f4b6a5282750103aa50c98473072cc0dbbb5296"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_ast_integration_tests/153fc6d6cd5d7829/out/parentheses-153fc6d6cd5d7829": [
+          "4b56bed6cff130514754d51976a8ab757bb31d0fbbf9d833b068ced1e3e13e2f"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_ast_integration_tests/1b3907421a1bc67d/out/source_order-1b3907421a1bc67d": [
+          "ed70f9945d9caada83a17f5723f48d04383390b0318292ce358e0b6ceffc2ead"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_ast_integration_tests/20e81f99e1b1c305/out/comparable-20e81f99e1b1c305": [
+          "c8e455d8d08762c8f086c019c11d4677991b5fe2faa67cb3c084262256c7eb46"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_ast_integration_tests/32eafd86ca24ca03/out/stmt_if-32eafd86ca24ca03": [
+          "01cbba203ad2aefd5add671501152d8520ac225404fd2669c1201af6c9879b20"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_ast_integration_tests/4364343695ab1b7b/out/match_pattern-4364343695ab1b7b": [
+          "4fca31e772566c49c2e0724f0349f8fb43a0a5bdff9350c4d142cc24ea5dd897"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_ast_integration_tests/459c377270d0c5cd/out/parenthesize-459c377270d0c5cd": [
+          "c3ca4fe5ae78de0ab2f7deb6222a8da9b2cdf229e69c4c023b5e67c70b117b8e"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_ast_integration_tests/670b4ec01d8d3735/out/visitor-670b4ec01d8d3735": [
+          "cc4e1378a26a18ad20c69cccbdf0d5790b2320f68c6cadb32589cdd83d5ca574"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_ast_integration_tests/c4abfac836cf4e15/out/identifier-c4abfac836cf4e15": [
+          "529d5b680426bd70232690c950346a2777bdb2c08bcdd5b29f6a761d41502ff7"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_codegen/846b6bf0d8760c0c/out/ruff_python_codegen-846b6bf0d8760c0c": [
+          "7df02541299ec75ceb0d40f9d3e564473790b38ff3e78dfbe960e453a2cbeaae"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_edits/ecf30177daacc72e/out/ruff_python_edits-ecf30177daacc72e": [
+          "622d13563a25e920a04c1b5a3a7a49aeeb089aafeb4a9d7ed193abcaebac3ace"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_formatter/214532d558a61141/out/ruff_python_formatter-214532d558a61141": [
+          "4e1210fdeb9b9e181f1f6e02ffe0ffbc194cc1c1a0ccf6d0aaecea7c0ed2cf25"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_formatter/34ba23003be217ba/out/ruff_python_formatter-34ba23003be217ba": [
+          "bc71d38bd73158656f47cd14fe76dcfb047c45ea6455fe3077fd977d58169b03"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_formatter/a8b286dfc1ba7ed2/out/normalizer-a8b286dfc1ba7ed2": [
+          "8f911b8c772a95b5f7d185841db5c9fc36fb857a60c3fc7b1bf53267a0094d63"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_formatter/b5bc133c5943322a/out/fixtures-b5bc133c5943322a": [
+          "39deb73c03c5ffb7b8cb7d036d3263f8ac763f2a87035172daf45bb00d604196"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_importer/9ec3b8d31b145cef/out/ruff_python_importer-9ec3b8d31b145cef": [
+          "d8ec082b69814336194ffaa4f219f311637509d5e5e37ae3c68586ebf30d55d0"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_index/4529c49a29e2c178/out/ruff_python_index-4529c49a29e2c178": [
+          "79d0d0e4bbdf458b5c72a9c5fb9e4e76f9b11c36f2c8af60745714b94e36547f"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_literal/3e714610490ba542/out/ruff_python_literal-3e714610490ba542": [
+          "56d2b0bb948a55c334c4a3119fb05672023a505f7da1fc56e704a67eeb0d734c"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_parser/191dc0b897e70ddb/out/fixtures-191dc0b897e70ddb": [
+          "42deb5e215f61b4687cccc0c186c617e201755f7e81729f8d72ca1bb39d1dd0e"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_parser/7a4dd098165e50cd/out/generate_inline_tests-7a4dd098165e50cd": [
+          "4002a39025ab81deb067b408eee369fd9b689c7af23321e369e800c77d260b8d"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_parser/a3c2fcd2f8c23024/out/ruff_python_parser-a3c2fcd2f8c23024": [
+          "c06067b58aaa3eb9c20ba86fc831c6c73a4ed5ced960ba1163492facc9ea73e7"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_semantic/0d968301d4c813fc/out/ruff_python_semantic-0d968301d4c813fc": [
+          "51c62ccd53431a4201aae6c83fdf81ac4f24c4eeb847c86f652d58837a1de108"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_stdlib/94a91e287d044e72/out/ruff_python_stdlib-94a91e287d044e72": [
+          "1c56d59a00f12e5520598f3dcc656d60f026af3558c1a4de29586067523b1838"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_trivia/d63520b4e2b9ce20/out/ruff_python_trivia-d63520b4e2b9ce20": [
+          "aa4cb2d062f06912143eb230dc90590859c1aa5edfc3bd04ebe548b744e52698"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_trivia_integration_tests/15cd7de5ce364b8b/out/whitespace-15cd7de5ce364b8b": [
+          "42e73d4600e94f1c0f2da5971289505112321225b154cd43ad732f6550b4ac31"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_trivia_integration_tests/ac939a3e49bd994b/out/block_comments-ac939a3e49bd994b": [
+          "cb32a2e77fb3a43b4da2031852b1f3d89b0c777f0f6b11ade735e28b9106700c"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_python_trivia_integration_tests/c639259863b397fa/out/simple_tokenizer-c639259863b397fa": [
+          "4b83b5259cdfb618e57ef6f98c637400a0cae114cfc70994a4d5f6eabdd0177c"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_server/1dd8f0784781d62c/out/document-1dd8f0784781d62c": [
+          "0bd9b0ec645a0844099715cdf22ee335edbe3a3bbb5f650792b25760d1c27c65",
+          "735eb87887f26b602a5bfc1d6bf62c28592b71f729d9f98c591fb6266a09c6b2"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_server/3ee2932232a99b25/out/ruff_server-3ee2932232a99b25": [
+          "98b243ee423f404159663ad78c607a2548389930272c1386240da0c82c85984c"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_server/a1affb4667ef26bf/out/e2e-a1affb4667ef26bf": [
+          "d1951ddedfdd495e206c85506698bffcfafc338621104c068a654a9e61d071f5"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_source_file/1ca7d4fe8a89aa8d/out/ruff_source_file-1ca7d4fe8a89aa8d": [
+          "4462397bd81fc83f6951eaac189d4e5ba571661d74a65bc1020b37af2f256430"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_text_size/351aef0971030559/out/constructors-351aef0971030559": [
+          "8ba976e5072860883fce18be4d6a7c88615770b7e8a163236399be1984cd0d81"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_text_size/3d6fe4d7c9922dac/out/indexing-3d6fe4d7c9922dac": [
+          "69b0cc5e9aad6d7fbb6e4377802385bb6c6a06d08faf5cb95f9d43289413f77f"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_text_size/6ddda04b83d83db7/out/auto_traits-6ddda04b83d83db7": [
+          "bea3a01770bbbf8dd6733649b77c5dafcfd3654cb32db222cf5cbdbc448814f2"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_text_size/9d8fcc9e788f2a55/out/serde-9d8fcc9e788f2a55": [
+          "01e9a3869eaed6e665ae44793178dd7d62683ea7fbc35b608e03e6d59a9793f0"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_text_size/c6b16f43ff4c9f33/out/main-c6b16f43ff4c9f33": [
+          "2fdc12443013fd33b83e75f06d9011c60d3e203f9eaa4c33ecc108e41b6107ad"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_unicode_names2/9516be9b70f7d327/out/build_script_build": [
+          "1ed1056dbcc1b57306f55af6c9bc66be45f031b141896ff9543c9db9155a6d22"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_unicode_names2_generator/38b40f9cb1a2bd04/out/unicode_names2_generator-38b40f9cb1a2bd04": [
+          "5328d68a1e2503c87bbea4112c67a1c2226f24a669fdd1ecbcdfc40098d0ffb2"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_wasm/2d0df3c70090d308/out/libruff_wasm.so": [
+          "7a4f6dabb74eec915e04a898835b28ca8c3500bfc69b2209b5ca39de1b7cfc3e"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_wasm/39de91ce78a927c9/out/api-39de91ce78a927c9": [
+          "db370756c6fadef846dde0243effcea758fc478db06c3a17dffe9a4028f29a31"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ruff_workspace/85060817619d686d/out/ruff_workspace-85060817619d686d": [
+          "d2fae5b8f2abee5b8f27227e5348be41491924e262e0a7a91596eed6ec4e1c0c"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ty/43e2908b929054db/out/file_watching-43e2908b929054db": [
+          "f43be3120cc801caa201235b534475316c7742c1cdc78c1925b832e855a31e74"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ty/9f994ba4bc9039c1/out/ty-9f994ba4bc9039c1": [
+          "5b1a795f6bdbce03a9d8f28e3281753d2f87f5443d1e7a2ae0bf917f3ebaa8c7"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ty/a27750eef1701ced/out/self_environment-a27750eef1701ced": [
+          "2aee506be11838da7023b7d980d781b0784c9574cfb78a0c839cb90542adcbd1"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ty/a63b7013e17b8bf1/out/ty-a63b7013e17b8bf1": [
+          "87d75d4379d3f82e7807fe42931f91f0a713e1dbb5dc719fb486830e641592b2"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ty/c4fbffe2ecaa90ff/out/cli-c4fbffe2ecaa90ff": [
+          "990d093e900058ba50e512f14eb0019fb7af234a8fd6dd3aaf47fd0e1b53142d"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ty/e947a2b11ffa8a76/out/build_script_build": [
+          "c30cbcb47f5ca2a3fc6ce2f5581629289b3018834f85df02fcb1763d6f4367a8"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ty_combine/f35051c33a7cb1b1/out/ty_combine-f35051c33a7cb1b1": [
+          "3a3a5bf45d0d472c905303c8b9f526cd87f49acc4c9cba9e89076110dd1353c1"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ty_completion_bench/70688615a89edf9c/out/ty_completion_bench-70688615a89edf9c": [
+          "4a0a2d652bd65c73448ae741356ffda3f7e430ffed68aa61da38e5cd8a558de8"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ty_completion_eval/995a92df8fec1edb/out/ty_completion_eval-995a92df8fec1edb": [
+          "8d54e9da6b31141cde12e84b502d93031eb2c4a20e213b4f6a5ae0f01629df8e"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ty_ide/4212167b8375ca10/out/ty_ide-4212167b8375ca10": [
+          "100a5a427fdece53312af0b746d05a7d6d541511a4ff611c35b43ba1627555ff"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ty_module_resolver/ef4903e673ee1e1f/out/ty_module_resolver-ef4903e673ee1e1f": [
+          "5676d50f7b6899d313103e6520355775aee53141dbf23f2d85fb46f427dc46cc"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ty_project/66dec39b18362a2f/out/ty_project-66dec39b18362a2f": [
+          "c68b5bb5d5538e785038090b99b38e08def9c346761b89e75a425e7793f9c81a"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ty_python_core/452469159ddf261e/out/ty_python_core-452469159ddf261e": [
+          "40a461d7a0cf0cdf518ec1357eac0befe1889aac454676e1c43fab055bc22b00"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ty_python_semantic/7128779254e6b0e1/out/corpus-7128779254e6b0e1": [
+          "87b48ca5a996c8b627689d687563f766a1b5ef1491df6dc60926ccdbc61aee94"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ty_python_semantic/a879b0690f634244/out/ty_python_semantic-a879b0690f634244": [
+          "c80e9fa1a94051cec2e3af5a75841582e6b856e00f5f1392335f01ae27e61c2e"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ty_python_semantic/d3d7502a89615334/out/mdtest-d3d7502a89615334": [
+          "3e2d1f996c6813241c95fd2408f532d55c4d13721f2a09901925c83347083716"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ty_server/21b174d739dc9351/out/ty_server-21b174d739dc9351": [
+          "3777f900bf66fe80e24a2737195cd11f531bd1ce1f7354cf38001335347a389e"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ty_server/8fa23882290527ed/out/e2e-8fa23882290527ed": [
+          "219279291ff5bc2a78e596fd9ff7794186e7aca73e9f3fb4b765e7d6c3789348"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ty_site_packages/b123485f817506d1/out/ty_site_packages-b123485f817506d1": [
+          "c52431c3ebb774101e9c053f780399091b312a480ddb22cd3d2cafed0a28c803"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ty_test/c5756f5fb1919d9d/out/ty_test-c5756f5fb1919d9d": [
+          "7e3443cd9bb5e6f3aa2bfb3bfdf775f4c4ffd74be65268e9fba6560ddcfd17a2"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ty_vendored/a98e4cda1c305924/out/build_script_build": [
+          "85e3a4afb8747ba3d68554e1fd8e2182c9d32ac2cc776283b93707bdb52ac67f"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ty_vendored/cdc90725d8be3a10/out/ty_vendored-cdc90725d8be3a10": [
+          "616a7f0ed45ac9bffb6940cd20d7fd92babbbcd7dffd0579db90d79566b8707d"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ty_wasm/14ce8de92c758c3a/out/build_script_build": [
+          "c1473433a44aefd5eda6f2edfc7b1816920bb7a5f5f0dc27062927c0a1651624"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ty_wasm/7f4ef694692e550b/out/libty_wasm.so": [
+          "ea25bfba6dd83288a3b70cd5a611f0d9cbd9ec10d1314f4180433aaf1f38f28f"
+        ],
+        "debug/build/workspaces/38b7ca2992c44384/v2-2fd861564dc1b65b-all-native-all/ty_wasm/a0cba910c3e435dc/out/api-a0cba910c3e435dc": [
+          "de78308d9724302b884e7571ebd520f29eb42051ef147009d13cc69b4632b509"
+        ],
+        "debug/examples/character": [
+          "b1a1116e61d730e9fa11c9633b3b735c7b6f9514a7a70411668d5f5b78519836"
+        ],
+        "debug/examples/count": [
+          "3233857dfcb97a24dea68140b53dc3b6949b253c7ead85dfcad8aadda3ce8e0a"
+        ],
+        "debug/examples/custom_error": [
+          "7245ac23ec9b3086a0c299416c1444594e4e013d3d4899edce6aeb664beceb30"
+        ],
+        "debug/examples/custom_level": [
+          "e36f2584795015a8954d43ed2fd9e5b2c1079d29427b50aa2ce41ab09ad97953"
+        ],
+        "debug/examples/elide_header": [
+          "8d7b064eadb0b8d298f54331c26b7b4fa983f335e74bc5058d3c33a2a3a9df48"
+        ],
+        "debug/examples/expected_type": [
+          "b04e08868769ba897d25c86c83b5412ba88323bcc09c15f013a24c11074099a6"
+        ],
+        "debug/examples/footer": [
+          "7586112e84d2ed3ab849dfe2965459548bc6017c358e28a12b8681088b991cdd"
+        ],
+        "debug/examples/format": [
+          "4849ac5de0fbd9a22c375998689f01ca27c0635c3fa26d85ae612d5673c02d75"
+        ],
+        "debug/examples/highlight_message": [
+          "3ef2ce53dae07ebb027b61d1ecd459018973ba3e0cd8c9339fcc4c294252f372"
+        ],
+        "debug/examples/highlight_source": [
+          "b46c4dd317cbdc857f732b0b6949d8cd4abb7c40eeee12e9fc21bd0dfe30c8d8"
+        ],
+        "debug/examples/id_hyperlink": [
+          "442e7627f349e95bcb6fc9f3c62f71c58a3dde6fe0d4fce0b28fc3e4cfff6b4c"
+        ],
+        "debug/examples/multi_suggestion": [
+          "8a506508b012497b162fb37728e93cacf62a277d5215d29a3b047dc5925297fd"
+        ],
+        "debug/examples/multislice": [
+          "9334b0ffd067b7ee60f0bf86a06a75b3f8dc7502b9d95ae4679cacafea0ca56d"
+        ],
+        "debug/examples/name": [
+          "b6af261ce2a8dd14ac6cadc01bcb1125dd1e0dbae24eebed592e1bd819375698"
+        ],
+        "debug/examples/struct_name_as_context": [
+          "271fede6b26440e067dfd95704deb8ca219fada769295f0fc5292dcf7873669c"
+        ],
+        "debug/ruff": [
+          "a196bb860a6ef23bae1a52d2f21e2277b8f5bbeab0ceb77a8c29cb0b131384a6"
+        ],
+        "debug/ruff_python_formatter": [
+          "eff5c18a753ec93aeb3c9fad5b1b0e691da8d116c7b68441bc3d27564d28783e"
+        ],
+        "debug/ty": [
+          "1691d365935d0c36186c07e4d1f68f55cc089b34f0250fc0bf34263265abefd0"
+        ]
+      },
+      "messages": "58f164c9a8689937a0995cc3410669453efd1030bf26dafd20bb84bd4d413cc8",
+      "phase_jobs": {
+        "A": [
+          [
+            "ty_wasm",
+            "full",
+            null,
+            false
+          ],
+          [
+            "api",
+            "full",
+            "ty_wasm",
+            false
+          ]
+        ],
+        "C": [
+          [
+            "ty_wasm",
+            "full",
+            null,
+            false
+          ],
+          [
+            "api",
+            "link-only",
+            "ty_wasm",
+            false
+          ]
+        ]
+      },
+      "roster": "f48ce010c907d5e8dfa9645a26b77c80e2504540dca1fd47c091e922ccebba5d",
+      "wild": [
+        [
+          "api-a0cba910c3e435dc",
+          true,
+          false
+        ],
+        [
+          "libty_wasm.so",
+          true,
+          false
+        ]
+      ]
+    }
+  }
+}
