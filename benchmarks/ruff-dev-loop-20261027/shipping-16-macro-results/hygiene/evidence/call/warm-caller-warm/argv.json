@@ -1,0 +1,16 @@
+[
+  "rustc",
+  "+ohm",
+  "--edition=2024",
+  "--crate-name",
+  "app",
+  "/mnt/devbox-scratch/dev-user/ohm-packaged-16-macro-20261027/no-parse-hygiene-sites-v1/run/workspace/main.rs",
+  "--extern",
+  "bridge=/mnt/devbox-scratch/dev-user/ohm-packaged-16-macro-20261027/no-parse-hygiene-sites-v1/run/libbridge_input.rlib",
+  "-L",
+  "dependency=/mnt/devbox-scratch/dev-user/ohm-packaged-16-macro-20261027/no-parse-hygiene-sites-v1/run/active/target/debug/build/workspaces/2cdca37e2f49d5d2/v2-34c9dbe86c79144a/test_unit/c2ebe7e8f8236735/out",
+  "-L",
+  "dependency=/mnt/devbox-scratch/dev-user/ohm-packaged-16-macro-20261027/no-parse-hygiene-sites-v1/run/active/target/debug/build/workspaces/2cdca37e2f49d5d2/v2-34c9dbe86c79144a/macro_maker/b14c6ddb6533cce9/out",
+  "-o",
+  "/mnt/devbox-scratch/dev-user/ohm-packaged-16-macro-20261027/no-parse-hygiene-sites-v1/run/evidence/call/warm-caller-warm/app"
+]
