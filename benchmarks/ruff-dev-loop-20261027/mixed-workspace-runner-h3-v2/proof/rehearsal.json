@@ -1,0 +1,59 @@
+{
+  "actual_ruff_mixed_members": {
+    "ruff_wasm": {
+      "embedded_object_sha256": "7889c13a8f1444f0552442a707e7c1183805806f6121d799d60fe4c3173d1e1d",
+      "normalized_archive_sha256": "38bb1084a31fe08eee833def6c0ecf24d5c5d90be913766253e4e5f334e477cf",
+      "object_count": 66,
+      "private_svh": "9b70ce868fe2052de000a120a6227b1f",
+      "public_svh": "fd8201b8dbb2aba068edf6e6ac0bbdd4",
+      "rmeta_sha256": "b3a096e1f12a95366d0f83377cc705d32edc2469134ba64e168e2ae38d32e7a0",
+      "symbols": 2547,
+      "zero_byte_allocations": [
+        1,
+        2,
+        4,
+        8,
+        16,
+        32
+      ]
+    },
+    "ty_wasm": {
+      "embedded_object_sha256": "2b70e70d5b8db1bec4c7f8547fa4e7f3d5307bf7827b4b4f8371bb565b10faf9",
+      "normalized_archive_sha256": "bbb84923857725e4afba5710f667c69dc1c0f4ffffc4e39b62fe02e7de4ec578",
+      "object_count": 67,
+      "private_svh": "7228c58704b469d34ba1765b36c79e1e",
+      "public_svh": "c5d63e7e7a8b502e26ee340357ab0d80",
+      "rmeta_sha256": "560190cfefcef9d2002a26ce387ac5531ab22b0e0cf380ececaba3296909d031",
+      "symbols": 2264,
+      "zero_byte_allocations": [
+        1,
+        2,
+        4,
+        8,
+        16,
+        32
+      ]
+    }
+  },
+  "cargo_timings": 0,
+  "changed_symbol_to_member_detected": true,
+  "compressed_witness": "c1040bf927fcd63e589de1503a268ee24c091d80f090fe5f6d399cba0dd113f8",
+  "git_original_edited_original": [
+    "verified",
+    "verified",
+    "verified"
+  ],
+  "source_manifest": {
+    "edited": {
+      "crates/ruff_python_parser/resources/inline/err/mixed_tstring_and_bytes_literals.py": null,
+      "crates/ruff_python_parser/src/parser/expression.rs": "f55559e42d9d04a7648a73f45b2798409eedb82df0317f7c7d5400aab01200c1",
+      "crates/ruff_python_parser/tests/snapshots/invalid_syntax@mixed_tstring_and_bytes_literals.py.snap": null
+    },
+    "original": {
+      "crates/ruff_python_parser/resources/inline/err/mixed_tstring_and_bytes_literals.py": "1f0c5f7088b43a68e632784e2c572e5aeda27df350e1160c966eb3ec3f27a06a",
+      "crates/ruff_python_parser/src/parser/expression.rs": "cb7bf925c67804a739984775bd95cfdb7436f62c43c8d5847a9875c33ef0cb7e",
+      "crates/ruff_python_parser/tests/snapshots/invalid_syntax@mixed_tstring_and_bytes_literals.py.snap": "1737dfcf35d3d1650cdd648a474ce39567e98b916e93a22720e97968a54f0892"
+    }
+  },
+  "source_unchanged": true
+}

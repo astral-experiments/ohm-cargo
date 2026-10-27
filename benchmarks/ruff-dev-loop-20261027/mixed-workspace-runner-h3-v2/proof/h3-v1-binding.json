@@ -1,0 +1,458 @@
+{
+  "arm_order": {
+    "build": {
+      "bootstrap_seeds": {
+        "A": 271027611,
+        "B": 271027911
+      },
+      "expect_same_wild": 8,
+      "expected_full_guarded": 1,
+      "expected_full_unprotected": 3,
+      "expected_native_guarded_rustcs": 2,
+      "expected_units": 501,
+      "orders": [
+        [
+          "A",
+          "C",
+          "B"
+        ],
+        [
+          "A",
+          "C",
+          "B"
+        ],
+        [
+          "B",
+          "C",
+          "A"
+        ],
+        [
+          "C",
+          "B",
+          "A"
+        ],
+        [
+          "C",
+          "A",
+          "B"
+        ],
+        [
+          "B",
+          "A",
+          "C"
+        ],
+        [
+          "A",
+          "B",
+          "C"
+        ],
+        [
+          "C",
+          "B",
+          "A"
+        ],
+        [
+          "A",
+          "B",
+          "C"
+        ],
+        [
+          "B",
+          "C",
+          "A"
+        ],
+        [
+          "C",
+          "B",
+          "A"
+        ],
+        [
+          "C",
+          "A",
+          "B"
+        ],
+        [
+          "B",
+          "C",
+          "A"
+        ],
+        [
+          "C",
+          "A",
+          "B"
+        ],
+        [
+          "A",
+          "C",
+          "B"
+        ],
+        [
+          "B",
+          "A",
+          "C"
+        ],
+        [
+          "B",
+          "A",
+          "C"
+        ],
+        [
+          "A",
+          "B",
+          "C"
+        ]
+      ],
+      "seed": 271027411
+    },
+    "test": {
+      "bootstrap_seeds": {
+        "A": 271027612,
+        "B": 271027912
+      },
+      "expect_same_wild": 67,
+      "expected_full_guarded": 4,
+      "expected_full_unprotected": 6,
+      "expected_native_guarded_rustcs": 2,
+      "expected_units": 619,
+      "orders": [
+        [
+          "A",
+          "C",
+          "B"
+        ],
+        [
+          "C",
+          "B",
+          "A"
+        ],
+        [
+          "A",
+          "C",
+          "B"
+        ],
+        [
+          "C",
+          "B",
+          "A"
+        ],
+        [
+          "B",
+          "C",
+          "A"
+        ],
+        [
+          "B",
+          "C",
+          "A"
+        ],
+        [
+          "C",
+          "A",
+          "B"
+        ],
+        [
+          "B",
+          "A",
+          "C"
+        ],
+        [
+          "A",
+          "B",
+          "C"
+        ],
+        [
+          "C",
+          "A",
+          "B"
+        ],
+        [
+          "C",
+          "A",
+          "B"
+        ],
+        [
+          "B",
+          "C",
+          "A"
+        ],
+        [
+          "B",
+          "A",
+          "C"
+        ],
+        [
+          "C",
+          "B",
+          "A"
+        ],
+        [
+          "A",
+          "C",
+          "B"
+        ],
+        [
+          "A",
+          "B",
+          "C"
+        ],
+        [
+          "A",
+          "B",
+          "C"
+        ],
+        [
+          "B",
+          "A",
+          "C"
+        ]
+      ],
+      "seed": 271027412
+    }
+  },
+  "arms": {
+    "A": {
+      "cargo": "/home/dev-user/.cache/ohm-233-position-qualified-20261027/drivers/cargo-0f237cc3b506aa90c1224e6ed80f646566b424b78c8d74f288f6523d17fc8aa1",
+      "cargo_sha256": "0f237cc3b506aa90c1224e6ed80f646566b424b78c8d74f288f6523d17fc8aa1",
+      "driver": "/home/dev-user/.cache/ohm-233-position-qualified-20261027/drivers/driver-dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+      "driver_sha256": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f"
+    },
+    "B": {
+      "cargo": "/home/dev-user/.cache/ohm-233-position-qualified-20261027/cargo-observer-fifo-qualification/guardv3",
+      "cargo_sha256": "dd5cab154b8dcd09ccc2753160d314cade80979b2d055ee66aa9e2217e05e7e1",
+      "driver": "/home/dev-user/.cache/ohm-233-position-qualified-20261027/drivers/driver-7c31057e86f800e313b7d32080c7a5abaa7b92fef92254ac21b2e43febf16384",
+      "driver_sha256": "7c31057e86f800e313b7d32080c7a5abaa7b92fef92254ac21b2e43febf16384"
+    },
+    "C": {
+      "cargo": "/home/dev-user/.cache/ohm-233-position-qualified-20261027/drivers/cargo-0f237cc3b506aa90c1224e6ed80f646566b424b78c8d74f288f6523d17fc8aa1",
+      "cargo_sha256": "0f237cc3b506aa90c1224e6ed80f646566b424b78c8d74f288f6523d17fc8aa1",
+      "driver": "/home/dev-user/.cache/ohm-233-position-qualified-20261027/drivers/driver-7c31057e86f800e313b7d32080c7a5abaa7b92fef92254ac21b2e43febf16384",
+      "driver_sha256": "7c31057e86f800e313b7d32080c7a5abaa7b92fef92254ac21b2e43febf16384"
+    }
+  },
+  "cargo_base": "dd5cab154b8dcd09ccc2753160d314cade80979b2d055ee66aa9e2217e05e7e1",
+  "driver_base": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+  "host": {
+    "arch": "x86_64",
+    "cargo_jobs": 8,
+    "cpus": 32,
+    "host_tools": {
+      "GCC_driver": {
+        "path": "/usr/bin/cc",
+        "resolved": "/usr/bin/x86_64-linux-gnu-gcc-13",
+        "sha256": "1b99826121ae6682a634e5efe09bd3e3df58ce58e0b28f849114ab5b89139c26"
+      },
+      "Wild": {
+        "path": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/lib/rustlib/x86_64-unknown-linux-gnu/bin/wild-ld/ld.bfd",
+        "resolved": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/lib/rustlib/x86_64-unknown-linux-gnu/bin/wild-ld/ld.bfd",
+        "sha256": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5"
+      },
+      "collect2": {
+        "path": "/usr/libexec/gcc/x86_64-linux-gnu/13/collect2",
+        "resolved": "/usr/libexec/gcc/x86_64-linux-gnu/13/collect2",
+        "sha256": "4d1f341ae5b763b513258ee2812422a45e063c30a2f1924a0cf63d3699f3a158"
+      },
+      "rustc_frontend": {
+        "path": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/bin/rustc",
+        "resolved": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/frozen-toolchain/bin/rustc",
+        "sha256": "4fa9a18b77430bcc416e88561b6fe5797d98b996a7698b9f3bd11d4e7817a19f"
+      },
+      "rustup_cargo_proxy": {
+        "path": "/home/dev-user/.cargo/bin/cargo",
+        "resolved": "/home/dev-user/.cargo/bin/rustup",
+        "sha256": "5be191e8c70a5007074254cb74d78dbfdd25cd5a61c27de7b8e5410122ec24f4"
+      }
+    },
+    "kernel": "7.0.0-38-generic",
+    "label": "H3",
+    "logical": {
+      "registry": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/registry-home",
+      "rustup": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/rustup",
+      "shared": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/shared",
+      "target": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-target",
+      "workspace": "/home/dev-user/code/oss/ruff-ohm-whole-native-20261027"
+    },
+    "measure_lock": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/native-measure.lock",
+    "min_free_bytes": 26843545600,
+    "model": "AMD EPYC-Milan Processor",
+    "no_scored_or_training_attempt": true,
+    "node_sha256": "22a67d8cdc143aa12cc1796ed71bc6cd84cd90c1391573d14e19e15659ddf9d6",
+    "physical_state_parent": {
+      "device_number": 64769,
+      "free_bytes_preflight": 169982324736,
+      "mount": [
+        {
+          "fstype": "ext4",
+          "maj:min": "253:1",
+          "source": "/dev/vda1",
+          "target": "/"
+        }
+      ],
+      "path": "/home/dev-user/.cache/ohm-233-position-qualified-20261027"
+    },
+    "source_index_sha256": "67c1fe7287d78cfa1e910865b62d685d1da8ab11ec8fc41d1574271079d69b00",
+    "system": "Linux",
+    "timed_affinity": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23
+    ],
+    "timestamp": "2026-10-27T12:34:29.013416+00:00"
+  },
+  "plan_sha256": "1679c7c5549858ee287943e29ae7c6963079a0e75926df6ac59db9ce3551e36d",
+  "premeasurement": "Both H2 mixed registrations had zero training and zero score observations. H3 was selected for capacity before any mix-specific Ruff commands ran on either host.",
+  "prerequisite_json": [
+    "/home/dev-user/.cache/ohm-233-position-qualified-20261027/qualification-posobs4fmt-c3/complete.json",
+    "/home/dev-user/.cache/ohm-233-position-qualified-20261027/cargo-observer-ruff-final/complete.json",
+    "/home/dev-user/.cache/ohm-233-position-qualified-20261027/stdlib-holdout-exact-v1/complete.json",
+    "/home/dev-user/.cache/ohm-233-position-qualified-20261027/cargo-observer-ruff-fifo-fixed/complete.json",
+    "/home/dev-user/.cache/ohm-233-position-qualified-20261027/cargo-observer-ruff-fifo-fixed/statistics.json",
+    "/home/dev-user/.cache/ohm-233-position-qualified-20261027/whole-ruff-observer-prefetch-fifo-v2/anchors-complete.json",
+    "/home/dev-user/.cache/ohm-233-position-qualified-20261027/whole-ruff-observer-prefetch-fifo-v2/complete.json",
+    "/home/dev-user/.cache/ohm-233-position-qualified-20261027/whole-ruff-observer-prefetch-fifo-v2/public/statistics.json",
+    "/home/dev-user/.cache/ohm-233-position-qualified-20261027/corrected-toolchain-portable-rerun-v2/complete.json"
+  ],
+  "prerequisite_rc": [
+    "/home/dev-user/.cache/ohm-233-position-qualified-20261027/queue-cargo-ruff-v2.rc",
+    "/home/dev-user/.cache/ohm-233-position-qualified-20261027/stdlib-holdout-v1/queue.rc",
+    "/home/dev-user/.cache/ohm-233-position-qualified-20261027/cargo-observer-fifo-qualification/queue.rc",
+    "/home/dev-user/.cache/ohm-233-position-qualified-20261027/prefetch-fifo-qualified-v2/queue.rc",
+    "/home/dev-user/.cache/ohm-233-position-qualified-20261027/corrected-native-rerun-v2/queue.rc"
+  ],
+  "prerequisite_sha256": {
+    "/home/dev-user/.cache/ohm-233-position-qualified-20261027/cargo-observer-fifo-qualification/queue.rc": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    "/home/dev-user/.cache/ohm-233-position-qualified-20261027/cargo-observer-ruff-fifo-fixed/complete.json": "bd50bd466fe07f5e1082eab6c045da23a7e986ab5f5a58d7bb6e17132227e203",
+    "/home/dev-user/.cache/ohm-233-position-qualified-20261027/cargo-observer-ruff-fifo-fixed/statistics.json": "db5a844513957d141a468c9ace5cafbc736d0dc765055246bdb0f0836078a529",
+    "/home/dev-user/.cache/ohm-233-position-qualified-20261027/cargo-observer-ruff-final/complete.json": "bd50bd466fe07f5e1082eab6c045da23a7e986ab5f5a58d7bb6e17132227e203",
+    "/home/dev-user/.cache/ohm-233-position-qualified-20261027/corrected-native-rerun-v2/queue.rc": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    "/home/dev-user/.cache/ohm-233-position-qualified-20261027/corrected-toolchain-portable-rerun-v2/complete.json": "a4aca27bf00d7134982756125b89c07c4dfb5a60a8937755429d52dcac518d16",
+    "/home/dev-user/.cache/ohm-233-position-qualified-20261027/prefetch-fifo-qualified-v2/queue.rc": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    "/home/dev-user/.cache/ohm-233-position-qualified-20261027/qualification-posobs4fmt-c3/complete.json": "abd7da50241cedf71283ea945f38fb2c44d0561e691cdc0942824e71db4cc0b5",
+    "/home/dev-user/.cache/ohm-233-position-qualified-20261027/queue-cargo-ruff-v2.rc": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    "/home/dev-user/.cache/ohm-233-position-qualified-20261027/stdlib-holdout-exact-v1/complete.json": "f8997926e73f13550974f954a292fd3d50d61b3577609998cdd76f9838a99f46",
+    "/home/dev-user/.cache/ohm-233-position-qualified-20261027/stdlib-holdout-v1/queue.rc": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    "/home/dev-user/.cache/ohm-233-position-qualified-20261027/whole-ruff-observer-prefetch-fifo-v2/anchors-complete.json": "3e5dc0ef656f1ed11abbb140b7d639483ef178b0eac6a6d1083fa6893cc5a2dc",
+    "/home/dev-user/.cache/ohm-233-position-qualified-20261027/whole-ruff-observer-prefetch-fifo-v2/complete.json": "fea77d457e7991eb078776208186ad5eaedec4fc3ce88024407ec126b2b0e42a",
+    "/home/dev-user/.cache/ohm-233-position-qualified-20261027/whole-ruff-observer-prefetch-fifo-v2/public/statistics.json": "f49971aeba6754e25c3a0e06ef1c966bfda99ce5bd7ac28c6f1e347ba3b1afa9"
+  },
+  "previous_h2_binding_sha256": "4c5ae3e6dd1cca74bd45569109025df0f140cda14c176a7f0e00aaeb8e12f1b8",
+  "protocol": "mixed-ordinary-full-abc-H3-v1",
+  "reviewed_safety_sha256": {
+    "bounded-release.SHA256SUMS": "ca93cc9b63d8f5642d6d7b25900c381b506071e93445cc8d46de350ec74f0327",
+    "cargo-control-rebuild.json": "5e9924cd0148690ea0e7423f84bec83ef5e0f74dae0c05bebc3d694d3390c5ad",
+    "cargo-head-release.json": "c5bdddba3aef80c8e5afeb99c980e64153d027f22d3bca166ee98b1917eefb40",
+    "cargo.patch": "2d983b705063f15ea565c6eed0d13f97cc14b59f084c7070165015409985046f",
+    "control-elf-proof.json": "5e9924cd0148690ea0e7423f84bec83ef5e0f74dae0c05bebc3d694d3390c5ad",
+    "h2-capacity.json": "0e88bba48766aad34795c0b0c009c4a3afbe6ed6b399527d80b9eceda6156c4d",
+    "h2-runner-binding.json": "4c5ae3e6dd1cca74bd45569109025df0f140cda14c176a7f0e00aaeb8e12f1b8",
+    "h2-runner.SHA256SUMS": "fb92b07d824b173fefd0b41ec0625348320577e1e71bb13ad79d5293261af9b7",
+    "h3-installation.json": "c55b9365173f3beb43b15aadc9145f0b529ecf4275e9ff75dd0fa64b148cd546",
+    "h3-prerequisites.json": "13d47dff6fa8d10d19addb6ec11a57eac79aa884068f4f63cb98c0c630dea9b7",
+    "h3-source-files.json": "fd40146c22e977353be5fb638c2e4c4302b60b9f0add282507998d7b1a866747",
+    "independent-release-controls.tar.gz": "4922f7a5e83e4f63295f722c963295634ca30cf3189c4b767033d079c98ea4bb",
+    "new-prerequisites.json": "c7d95d498b79d2dd09c93a3a370248e5393e2b294c0c9c7f8798553cfbc0edb9",
+    "previous-host.json": "939e4254157be3535377e407ab0eb9874d571f4764a427f624e05e55f5b765cf",
+    "rehearsal.json": "1295c6db7fb85895735f28f35cdca27801db0d251281670c88e70213d2adc679",
+    "rust-run-make.json": "f5702119a5c254177178dfcaba638fcb6c226ea9a499645364b047cd0da59833",
+    "rust.patch": "7c85427de8be8df1b061568e83b908d81b101f0805d3de350c3ae7eb4d5ddf90",
+    "subjects.json": "3e19dc2d858837978910cdc294b9d39ec6faca87b707b3eb853d34bbbcf565f1",
+    "test-only-elf-proof.json": "9c57ff454cc764eea32449a5b9e3adb436c56c3f4b83aa907cdd308553cea35b",
+    "tested-release-subjects.json": "aa3998b34b13f481d023ca080ed69f175a27e21e0abcd7bdf98f3bee92703d5c",
+    "tested-release.SHA256SUMS": "0904cd0554f394819ae53bafdac700efd33c504cb3cbd6aa5a3e4b7d767d7aa0",
+    "upstream-portable-v2.SHA256SUMS": "e28aaf7382f56732043183b221980b373c1fb9084ad7e1421f4a614ca0dd398a",
+    "upstream-prefetch-v2-registration.json": "1916d9291b649dd442a0eae9ee3143fa525843708aebc8de8e3f51448a3c3604"
+  },
+  "runner_inputs": {
+    "README.md": "5bab3494c728ec150dc0acedbbd3ee9c76c9879ea3fcfcade0bdc0da9ff76f45",
+    "analyze.py": "4d00710ad573eb2cf933ab395bd2b8cddac3cf06a081bdda6fadba541b7919ae",
+    "archive_audit.py": "b88c7e02241f0593a6cf6eaa6b1b68fb21b04a0cd7e9353195745c46a71080a2",
+    "bridge_worker.py": "a541e57e39d8d832d302bc308151a0ede8e0598976e007a8dc81d690f28873e2",
+    "common.py": "8dfa39c2382374cbc41036b2f7e01bc7bbe00713a641c4e66840663b40459b7a",
+    "h3_host.py": "a82ad5568748945dc5b78b461735cd51ce4473a3e3e931d1cf138f959ed672be",
+    "host-preflight.json": "a0ffc428be714aa85d8660f49b1681779bdb2e7d33fd4f1b810db21a8c48c519",
+    "make-binding.py": "dfde412deefe2caf7831162a4bad60eb7b565b30b2e933e73df03426cea2f52c",
+    "namespace.py": "8a74140aa79e1387b066404a3b7014693ad9c57078838f4fa88d68bbd77153c7",
+    "parser.patch": "08bb20f14fde4db57dd12ec3de3855021ddf6284b4a1957b54f4d06fb3c8f9ff",
+    "plan.json": "1679c7c5549858ee287943e29ae7c6963079a0e75926df6ac59db9ce3551e36d",
+    "processes.py": "5130c8a90f436822b6cc17bad4c6806291818096cf38ad08b6ccaed4ecf18c07",
+    "products.py": "0278e1dcaf7a7167306c1343adc2dd6cb5303a9b546b27d79ea4a0935048b6df",
+    "proof/bounded-release.SHA256SUMS": "ca93cc9b63d8f5642d6d7b25900c381b506071e93445cc8d46de350ec74f0327",
+    "proof/cargo-control-rebuild.json": "5e9924cd0148690ea0e7423f84bec83ef5e0f74dae0c05bebc3d694d3390c5ad",
+    "proof/cargo-head-release.json": "c5bdddba3aef80c8e5afeb99c980e64153d027f22d3bca166ee98b1917eefb40",
+    "proof/cargo.patch": "2d983b705063f15ea565c6eed0d13f97cc14b59f084c7070165015409985046f",
+    "proof/control-elf-proof.json": "5e9924cd0148690ea0e7423f84bec83ef5e0f74dae0c05bebc3d694d3390c5ad",
+    "proof/h2-capacity.json": "0e88bba48766aad34795c0b0c009c4a3afbe6ed6b399527d80b9eceda6156c4d",
+    "proof/h2-runner-binding.json": "4c5ae3e6dd1cca74bd45569109025df0f140cda14c176a7f0e00aaeb8e12f1b8",
+    "proof/h2-runner.SHA256SUMS": "fb92b07d824b173fefd0b41ec0625348320577e1e71bb13ad79d5293261af9b7",
+    "proof/h3-installation.json": "c55b9365173f3beb43b15aadc9145f0b529ecf4275e9ff75dd0fa64b148cd546",
+    "proof/h3-prerequisites.json": "13d47dff6fa8d10d19addb6ec11a57eac79aa884068f4f63cb98c0c630dea9b7",
+    "proof/h3-source-files.json": "fd40146c22e977353be5fb638c2e4c4302b60b9f0add282507998d7b1a866747",
+    "proof/independent-release-controls.tar.gz": "4922f7a5e83e4f63295f722c963295634ca30cf3189c4b767033d079c98ea4bb",
+    "proof/new-prerequisites.json": "c7d95d498b79d2dd09c93a3a370248e5393e2b294c0c9c7f8798553cfbc0edb9",
+    "proof/previous-host.json": "939e4254157be3535377e407ab0eb9874d571f4764a427f624e05e55f5b765cf",
+    "proof/rehearsal.json": "1295c6db7fb85895735f28f35cdca27801db0d251281670c88e70213d2adc679",
+    "proof/rust-run-make.json": "f5702119a5c254177178dfcaba638fcb6c226ea9a499645364b047cd0da59833",
+    "proof/rust.patch": "7c85427de8be8df1b061568e83b908d81b101f0805d3de350c3ae7eb4d5ddf90",
+    "proof/subjects.json": "3e19dc2d858837978910cdc294b9d39ec6faca87b707b3eb853d34bbbcf565f1",
+    "proof/test-only-elf-proof.json": "9c57ff454cc764eea32449a5b9e3adb436c56c3f4b83aa907cdd308553cea35b",
+    "proof/tested-release-subjects.json": "aa3998b34b13f481d023ca080ed69f175a27e21e0abcd7bdf98f3bee92703d5c",
+    "proof/tested-release.SHA256SUMS": "0904cd0554f394819ae53bafdac700efd33c504cb3cbd6aa5a3e4b7d767d7aa0",
+    "proof/upstream-portable-v2.SHA256SUMS": "e28aaf7382f56732043183b221980b373c1fb9084ad7e1421f4a614ca0dd398a",
+    "proof/upstream-prefetch-v2-registration.json": "1916d9291b649dd442a0eae9ee3143fa525843708aebc8de8e3f51448a3c3604",
+    "rehearse.py": "60d2e8ab0512fca8b8ee5c2175a16008955eb61791f3979bcfb242a8221c2814",
+    "run.py": "f82a8f1e748b73699c347ac9bf3989a0eb45a8cff6f5d99a5881dae72c2d59e4",
+    "state.py": "521cfa73817deddc1ab480b6728a6119c6bdc85d78d351623b4eedf8b8e87f94",
+    "test_witness.py": "a6125203680773715d64ed94f435a841674a0788d6c63958711ca22cc98ace11",
+    "witness.py": "5a9b14a3a73b6734ca6c92faee6fb7369af57956c4d55b67c2e6838dd658df1e",
+    "worker.py": "b1cf838abbe2d9002cacee60c9b9894c15f68405d011d3de050e11b2db8b3676"
+  },
+  "source": {
+    "cargo_base": "d38fdd02503662de04c52f5f370f5dd81bddf868",
+    "cargo_base_binary": "dd5cab154b8dcd09ccc2753160d314cade80979b2d055ee66aa9e2217e05e7e1",
+    "cargo_diff_sha256": "2d983b705063f15ea565c6eed0d13f97cc14b59f084c7070165015409985046f",
+    "cargo_head": "190d261a8546f121e3aa1adf237d85e02164eb18",
+    "cargo_head_binary": "0f237cc3b506aa90c1224e6ed80f646566b424b78c8d74f288f6523d17fc8aa1",
+    "registered_plan_sha256": "1679c7c5549858ee287943e29ae7c6963079a0e75926df6ac59db9ce3551e36d",
+    "rust_base": "27029b4bce40f3b5497add5019c02a11c16c4c18",
+    "rust_base_driver": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+    "rust_diff_sha256": "7c85427de8be8df1b061568e83b908d81b101f0805d3de350c3ae7eb4d5ddf90",
+    "rust_head": "b5fb832c70e8d0f353e9663a6e4f6e1409ae5eba",
+    "rust_head_driver": "7c31057e86f800e313b7d32080c7a5abaa7b92fef92254ac21b2e43febf16384",
+    "rustc_frontend": "4fa9a18b77430bcc416e88561b6fe5797d98b996a7698b9f3bd11d4e7817a19f"
+  },
+  "storage": {
+    "expected_increment_bytes": 88046829568,
+    "fundamental_free_reserve_bytes": 26843545600,
+    "lifecycle": "Sequentially train three original empty arms per endpoint, then one independent edited forced-full gold per compiler, then one physically independent copy of the trained C state for both edit directions. Seal raw mixed products and bridge results before retiring each regenerable oracle. Preserve all six timed states.",
+    "medium": "H3 Linux ext4 /dev/vda1, same mount for all arm target/shared/registry stores",
+    "new_result_path": "/home/dev-user/.cache/ohm-233-position-qualified-20261027/mixed-native-full-abc-h3-v1",
+    "post_training_headroom_bytes": 12884901888,
+    "previous_native_measured_arm_target_bytes": {
+      "build": 5900541952,
+      "test": 12919971840
+    },
+    "previous_private_registry_bytes": 404938752,
+    "primary_physical_targets": 6,
+    "simultaneous_ephemeral_states": 1
+  }
+}

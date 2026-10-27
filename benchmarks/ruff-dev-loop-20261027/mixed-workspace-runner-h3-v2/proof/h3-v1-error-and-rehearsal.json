@@ -1,0 +1,19 @@
+{
+  "H3_v1_binding_sha256": "885d8be03942fabdfe289298d04b7e6c843bfa249733130dc8397a0649901c2d",
+  "earlier_result_path": "/home/dev-user/.cache/ohm-233-position-qualified-20261027/mixed-native-full-abc-h3-v1",
+  "error": "TypeError: train() missing 1 required positional argument: arm",
+  "observed": "Fresh A target and shared directories created, both empty. No Cargo launch, no compiler traces/receipts/CSV, zero measured rows. Original untouched.",
+  "only_native_orchestrator_change": "train(mode, arm) -> train(mode, arm, arm) for the three primary arms, preserving the distinct gold state and real arm arguments on the separate oracle branch.",
+  "previous_holdout_observations": 0,
+  "previous_native_controls_and_studies_byte_identical": true,
+  "prior_registration": "https://github.com/astral-sh/ohm-cargo/tree/095fcdb84db97b74a0b82c1e043c89cc41f8c7f8/benchmarks/ruff-dev-loop-20261027/mixed-workspace-runner-h3",
+  "scheduler_red_green": {
+    "mocked_worker_processes_preserve_actual_coordinator": true,
+    "new": [
+      "Mock full coordinator: 6 independently seeded primary targets, both independent cold contexts per mode, both actual inode-independent forced copies, 32 bridge callers and 108 correctly ordered ordinary edits.",
+      "Static calls cross-checked: 379"
+    ],
+    "old": "TypeError: train() missing 1 required positional argument: 'arm'"
+  },
+  "separate_v2_result": "mixed-native-full-abc-h3-v2"
+}
