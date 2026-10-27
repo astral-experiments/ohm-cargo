@@ -1,0 +1,327 @@
+{
+  "complete_nonptrace_worker_commands": 6,
+  "descriptive_compiler_exit_to_artifact_median_s": [
+    0.628127,
+    0.642969
+  ],
+  "descriptive_ty_98pct_median_s": [
+    0.532528,
+    0.562563
+  ],
+  "formal_build_median_difference_s": 0.768232,
+  "upper_brackets_smaller_than_formal_build_gap": 4,
+  "worker_runs": {
+    "C-worker0-edit": [
+      {
+        "cargo_tid": 3476556,
+        "compiler_exit_to_artifact_s": [
+          0.312415,
+          0.326986
+        ],
+        "compiler_pid": 3476673,
+        "maximum_task_sample_gap_s": 0.017716000000000065,
+        "net_worker_reads_before_artifact": 802839496,
+        "ninety_nine_pct_cross": [
+          4.080729,
+          4.094889
+        ],
+        "one_pct_cross": [
+          3.781598,
+          3.796169
+        ],
+        "post_98_coverage_interval_s": [
+          0.28456,
+          0.313291
+        ],
+        "prevalidation_s": 0.599256609,
+        "source_side_certified_post_bytes_for_edit": 795018442,
+        "target": "ruff_wasm"
+      },
+      {
+        "cargo_tid": 3476563,
+        "compiler_exit_to_artifact_s": [
+          0.446114,
+          0.461941
+        ],
+        "compiler_pid": 3476684,
+        "maximum_task_sample_gap_s": 0.0158270000000007,
+        "net_worker_reads_before_artifact": 929262141,
+        "ninety_nine_pct_cross": [
+          5.554223,
+          5.567442
+        ],
+        "one_pct_cross": [
+          5.149365,
+          5.162578
+        ],
+        "post_98_coverage_interval_s": [
+          0.391645,
+          0.418077
+        ],
+        "prevalidation_s": 0.661693146,
+        "source_side_certified_post_bytes_for_edit": 920751711,
+        "target": "ty_wasm"
+      }
+    ],
+    "C-worker0-restore": [
+      {
+        "cargo_tid": 3477870,
+        "compiler_exit_to_artifact_s": [
+          0.320183,
+          0.338622
+        ],
+        "compiler_pid": 3477978,
+        "maximum_task_sample_gap_s": 0.019055999999999962,
+        "net_worker_reads_before_artifact": 800386155,
+        "ninety_nine_pct_cross": [
+          4.109518,
+          4.126119
+        ],
+        "one_pct_cross": [
+          3.821417,
+          3.840473
+        ],
+        "post_98_coverage_interval_s": [
+          0.269045,
+          0.304702
+        ],
+        "prevalidation_s": 0.612317934,
+        "source_side_certified_post_bytes_for_edit": 795018442,
+        "target": "ruff_wasm"
+      },
+      {
+        "cargo_tid": 3477876,
+        "compiler_exit_to_artifact_s": [
+          0.636373,
+          0.652925
+        ],
+        "compiler_pid": 3477989,
+        "maximum_task_sample_gap_s": 0.017438999999999538,
+        "net_worker_reads_before_artifact": 929263809,
+        "ninety_nine_pct_cross": [
+          5.408242,
+          5.423585
+        ],
+        "one_pct_cross": [
+          4.856819,
+          4.873155
+        ],
+        "post_98_coverage_interval_s": [
+          0.535087,
+          0.566766
+        ],
+        "prevalidation_s": 0.678621042,
+        "source_side_certified_post_bytes_for_edit": 920751711,
+        "target": "ty_wasm"
+      }
+    ],
+    "C-worker1-edit": [
+      {
+        "cargo_tid": 3478247,
+        "compiler_exit_to_artifact_s": [
+          0.339576,
+          0.357986
+        ],
+        "compiler_pid": 3478356,
+        "maximum_task_sample_gap_s": 0.01903800000000011,
+        "net_worker_reads_before_artifact": 804205142,
+        "ninety_nine_pct_cross": [
+          4.383822,
+          4.399405
+        ],
+        "one_pct_cross": [
+          4.092311,
+          4.106561
+        ],
+        "post_98_coverage_interval_s": [
+          0.277261,
+          0.307094
+        ],
+        "prevalidation_s": 0.626673302,
+        "source_side_certified_post_bytes_for_edit": 795018442,
+        "target": "ruff_wasm"
+      },
+      {
+        "cargo_tid": 3478255,
+        "compiler_exit_to_artifact_s": [
+          0.872417,
+          0.888138
+        ],
+        "compiler_pid": 3478367,
+        "maximum_task_sample_gap_s": 0.11113499999999998,
+        "net_worker_reads_before_artifact": 929262141,
+        "ninety_nine_pct_cross": [
+          5.356337,
+          5.369532
+        ],
+        "one_pct_cross": [
+          4.594693,
+          4.610484
+        ],
+        "post_98_coverage_interval_s": [
+          0.745853,
+          0.774839
+        ],
+        "prevalidation_s": 0.6694456910000001,
+        "source_side_certified_post_bytes_for_edit": 920751711,
+        "target": "ty_wasm"
+      }
+    ],
+    "C-worker1-restore": [
+      {
+        "cargo_tid": 3478635,
+        "compiler_exit_to_artifact_s": [
+          0.310105,
+          0.32813
+        ],
+        "compiler_pid": 3478744,
+        "maximum_task_sample_gap_s": 0.018270999999999482,
+        "net_worker_reads_before_artifact": 804206810,
+        "ninety_nine_pct_cross": [
+          4.362767,
+          4.379307
+        ],
+        "one_pct_cross": [
+          4.057792,
+          4.075817
+        ],
+        "post_98_coverage_interval_s": [
+          0.28695,
+          0.321515
+        ],
+        "prevalidation_s": 0.6276059780000001,
+        "source_side_certified_post_bytes_for_edit": 795018442,
+        "target": "ruff_wasm"
+      },
+      {
+        "cargo_tid": 3478643,
+        "compiler_exit_to_artifact_s": [
+          0.619882,
+          0.633013
+        ],
+        "compiler_pid": 3478755,
+        "maximum_task_sample_gap_s": 0.017977000000000132,
+        "net_worker_reads_before_artifact": 929263809,
+        "ninety_nine_pct_cross": [
+          5.648852,
+          5.664145
+        ],
+        "one_pct_cross": [
+          5.105785,
+          5.118882
+        ],
+        "post_98_coverage_interval_s": [
+          0.52997,
+          0.55836
+        ],
+        "prevalidation_s": 0.670458171,
+        "source_side_certified_post_bytes_for_edit": 920751711,
+        "target": "ty_wasm"
+      }
+    ],
+    "C-worker2-edit": [
+      {
+        "cargo_tid": 3479012,
+        "compiler_exit_to_artifact_s": [
+          0.338636,
+          0.357794
+        ],
+        "compiler_pid": 3479131,
+        "maximum_task_sample_gap_s": 0.01915800000000001,
+        "net_worker_reads_before_artifact": 804205142,
+        "ninety_nine_pct_cross": [
+          4.859426,
+          4.873058
+        ],
+        "one_pct_cross": [
+          4.566885,
+          4.586004
+        ],
+        "post_98_coverage_interval_s": [
+          0.273422,
+          0.306173
+        ],
+        "prevalidation_s": 0.63073879,
+        "source_side_certified_post_bytes_for_edit": 795018442,
+        "target": "ruff_wasm"
+      },
+      {
+        "cargo_tid": 3479018,
+        "compiler_exit_to_artifact_s": [
+          0.559361,
+          0.57271
+        ],
+        "compiler_pid": 3479142,
+        "maximum_task_sample_gap_s": 0.016281000000000212,
+        "net_worker_reads_before_artifact": 929262141,
+        "ninety_nine_pct_cross": [
+          6.032484,
+          6.04544
+        ],
+        "one_pct_cross": [
+          5.513574,
+          5.529855
+        ],
+        "post_98_coverage_interval_s": [
+          0.502629,
+          0.531866
+        ],
+        "prevalidation_s": 0.679106505,
+        "source_side_certified_post_bytes_for_edit": 920751711,
+        "target": "ty_wasm"
+      }
+    ],
+    "C-worker2-restore": [
+      {
+        "cargo_tid": 3479408,
+        "compiler_exit_to_artifact_s": [
+          0.315087,
+          0.334438
+        ],
+        "compiler_pid": 3479517,
+        "maximum_task_sample_gap_s": 0.019350999999999452,
+        "net_worker_reads_before_artifact": 804206810,
+        "ninety_nine_pct_cross": [
+          4.383344,
+          4.400229
+        ],
+        "one_pct_cross": [
+          4.075103,
+          4.094454
+        ],
+        "post_98_coverage_interval_s": [
+          0.28889,
+          0.325126
+        ],
+        "prevalidation_s": 0.6168238460000001,
+        "source_side_certified_post_bytes_for_edit": 795018442,
+        "target": "ruff_wasm"
+      },
+      {
+        "cargo_tid": 3479413,
+        "compiler_exit_to_artifact_s": [
+          0.933079,
+          0.946153
+        ],
+        "compiler_pid": 3479528,
+        "maximum_task_sample_gap_s": 0.17063899999999954,
+        "net_worker_reads_before_artifact": 929263809,
+        "ninety_nine_pct_cross": [
+          5.47275,
+          5.487888
+        ],
+        "one_pct_cross": [
+          4.639165,
+          4.652239
+        ],
+        "post_98_coverage_interval_s": [
+          0.820511,
+          0.848723
+        ],
+        "prevalidation_s": 0.659591598,
+        "source_side_certified_post_bytes_for_edit": 920751711,
+        "target": "ty_wasm"
+      }
+    ]
+  }
+}

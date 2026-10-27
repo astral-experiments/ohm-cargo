@@ -1,0 +1,236 @@
+{
+  "B-io-edit": {
+    "arm": "B",
+    "cargo_returned_file_fraction_histogram": {
+      "0": 711,
+      "2": 35,
+      "4": 3
+    },
+    "cargo_tgid": 3466010,
+    "cargo_threads": {
+      "3466010": {
+        "conditional_relative_to_own_sampled_compiler": null,
+        "first_read_epoch_s": 1793137351.263435,
+        "last_read_epoch_s": 1793137353.386032,
+        "markers": [],
+        "paths": 38,
+        "sum_bytes": 418654,
+        "unique_per_closure": {
+          "ruff_wasm": 674,
+          "ty_wasm": 346138
+        }
+      }
+    },
+    "complete_trace_shards_sha256": "8f0f492ec7c9b4de96319cc1df29f5985a737617f025094b6e6353096f177d01",
+    "direction": "edit",
+    "groups": {
+      "cargo": {
+        "other_read_bytes": 71402656,
+        "read_bytes_all": 85496908,
+        "recipe_object_read_bytes": 14090105,
+        "rlink_bytes_read_bytes": 924549,
+        "rlink_manifest_read_bytes": 253004,
+        "saved_codegen_objects_read_bytes": 12912552,
+        "script_read_bytes": 4147,
+        "transitive_other_read_bytes": 418654,
+        "transitive_read_syscalls": 86,
+        "transitive_reads": 418654
+      },
+      "collect2": {
+        "read_bytes_all": 19200
+      },
+      "ld.bfd": {
+        "mapped_lengths_transitive": 3700774550,
+        "other_read_bytes": 51453,
+        "read_bytes_all": 51453
+      },
+      "rustc": {
+        "dso_read_bytes": 702528,
+        "mapped_lengths_transitive": 3154541973,
+        "other_read_bytes": 3192096,
+        "read_bytes_all": 4843749,
+        "rlib_read_bytes": 24576,
+        "rlink_bytes_read_bytes": 924549,
+        "transitive_dso_read_bytes": 39104,
+        "transitive_read_syscalls": 48,
+        "transitive_reads": 47296,
+        "transitive_rlib_read_bytes": 8192
+      },
+      "x86_64-linux-gnu-gcc-13": {
+        "read_bytes_all": 19200
+      }
+    },
+    "native_receipt_comparison": {
+      "allowed_elf_differences": {},
+      "mixed": {
+        "ruff_wasm": {
+          "index_entries": 2547,
+          "names_changed": 66,
+          "object_count": 66,
+          "raw_archive_equal": false
+        },
+        "ty_wasm": {
+          "index_entries": 2453,
+          "names_changed": 78,
+          "object_count": 78,
+          "raw_archive_equal": false
+        }
+      },
+      "raw_equal": 15
+    },
+    "sampled_compiler_epoch_s": {
+      "ruff_wasm": [
+        1793137356.4652193,
+        1793137362.332878
+      ],
+      "ty_wasm": [
+        1793137356.4652193,
+        1793137362.5701842
+      ]
+    },
+    "scope": "Actual successful read/pread/readv/preadv fd bytes with complete paths. Mapped lengths are separate and are not read counts. TGIDs are reconstructed from Linux CLONE_THREAD. Clock spans use external process samples and include instrumentation.",
+    "shards": 415,
+    "trace_bytes": 4299951
+  },
+  "C-io-edit": {
+    "arm": "C",
+    "cargo_returned_file_fraction_histogram": {
+      "1+partial": 2,
+      "2": 150,
+      "4": 565,
+      "6": 31,
+      "8": 1
+    },
+    "cargo_tgid": 3468415,
+    "cargo_threads": {
+      "3468415": {
+        "conditional_relative_to_own_sampled_compiler": null,
+        "first_read_epoch_s": 1793137518.296498,
+        "last_read_epoch_s": 1793137520.474395,
+        "markers": [],
+        "paths": 38,
+        "sum_bytes": 418654,
+        "unique_per_closure": {
+          "ruff_wasm": 674,
+          "ty_wasm": 346138
+        }
+      },
+      "3468539": {
+        "conditional_relative_to_own_sampled_compiler": {
+          "after_last_sample": 795018442,
+          "before_first_sample": 787963928,
+          "inside_sampled_compiler": 0
+        },
+        "first_read_epoch_s": 1793137557.979554,
+        "last_read_epoch_s": 1793137567.392913,
+        "markers": [
+          "ruff_wasm"
+        ],
+        "paths": 669,
+        "sum_bytes": 1582982370,
+        "unique_per_closure": {
+          "ruff_wasm": 535249298,
+          "ty_wasm": 0
+        }
+      },
+      "3468549": {
+        "conditional_relative_to_own_sampled_compiler": {
+          "after_last_sample": 920751711,
+          "before_first_sample": 913697197,
+          "inside_sampled_compiler": 0
+        },
+        "first_read_epoch_s": 1793137556.811385,
+        "last_read_epoch_s": 1793137566.248727,
+        "markers": [
+          "ty_wasm"
+        ],
+        "paths": 671,
+        "sum_bytes": 1834448908,
+        "unique_per_closure": {
+          "ruff_wasm": 0,
+          "ty_wasm": 786715836
+        }
+      }
+    },
+    "complete_trace_shards_sha256": "3d56d5f9fe843c676409793602a0628a0e08041acd75bb4e6f3cba4a8b965f17",
+    "direction": "edit",
+    "groups": {
+      "cargo": {
+        "dso_read_bytes": 400344864,
+        "other_native_read_bytes": 3636576,
+        "other_read_bytes": 71736976,
+        "read_bytes_all": 3538868792,
+        "receipt_json_read_bytes": 1502036,
+        "recipe_object_read_bytes": 46394135,
+        "rlib_read_bytes": 2033093232,
+        "rlink_bytes_read_bytes": 5473113,
+        "rlink_manifest_read_bytes": 356578,
+        "rmeta_read_bytes": 871667070,
+        "saved_codegen_objects_read_bytes": 39062408,
+        "script_read_bytes": 115632515,
+        "transitive_dso_read_bytes": 400344864,
+        "transitive_other_read_bytes": 752974,
+        "transitive_read_syscalls": 53826,
+        "transitive_reads": 3417849932,
+        "transitive_rlib_read_bytes": 2033093232,
+        "transitive_rmeta_read_bytes": 868030494,
+        "transitive_script_read_bytes": 115628368
+      },
+      "collect2": {
+        "read_bytes_all": 19200
+      },
+      "ld.bfd": {
+        "mapped_lengths_transitive": 3700774550,
+        "other_read_bytes": 51463,
+        "read_bytes_all": 51463
+      },
+      "rustc": {
+        "dso_read_bytes": 702528,
+        "mapped_lengths_transitive": 3154541979,
+        "other_read_bytes": 3192270,
+        "read_bytes_all": 8784495,
+        "rlib_read_bytes": 24576,
+        "rlink_bytes_read_bytes": 2440737,
+        "rmeta_read_bytes": 2424384,
+        "transitive_dso_read_bytes": 39104,
+        "transitive_read_syscalls": 48,
+        "transitive_reads": 47296,
+        "transitive_rlib_read_bytes": 8192
+      },
+      "x86_64-linux-gnu-gcc-13": {
+        "read_bytes_all": 19200
+      }
+    },
+    "native_receipt_comparison": {
+      "allowed_elf_differences": {},
+      "mixed": {
+        "ruff_wasm": {
+          "index_entries": 2547,
+          "names_changed": 0,
+          "object_count": 66,
+          "raw_archive_equal": true
+        },
+        "ty_wasm": {
+          "index_entries": 2453,
+          "names_changed": 0,
+          "object_count": 78,
+          "raw_archive_equal": true
+        }
+      },
+      "raw_equal": 15
+    },
+    "sampled_compiler_epoch_s": {
+      "ruff_wasm": [
+        1793137561.3646936,
+        1793137564.5942051
+      ],
+      "ty_wasm": [
+        1793137559.6064692,
+        1793137563.1557593
+      ]
+    },
+    "scope": "Actual successful read/pread/readv/preadv fd bytes with complete paths. Mapped lengths are separate and are not read counts. TGIDs are reconstructed from Linux CLONE_THREAD. Clock spans use external process samples and include instrumentation.",
+    "shards": 279,
+    "trace_bytes": 119011945
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "descriptions": {
+    "mixed-critical-path-v1": "The SSH-derived PATH selected a different compiler namespace. The native reserve stopped the probe before an admissible source edit. Its private donor stayed untouched.",
+    "mixed-critical-path-v2": "The first accepted B edit and its fresh follow-up completed but the accounting selected a lean fresh reference that lacked ELF records. The corrected comparison used the pre-existing detailed edit reference, retained that same observation and verified all subsequent observations.",
+    "mixed-critical-workers-v1": "A complete first edit with the original physical Rust incremental tree is retained. A private clone reached its 25 GiB reserve during restoration. That command has no completed output and is excluded.",
+    "mixed-critical-workers-v2": "The new private clone relocated only its Rust incremental files to a second ext4 device. The sorted input size, mtime and content records were identical before and after. All six commands qualified, using the original native input storage."
+  },
+  "mixed-critical-path-v1": {
+    "exception_sha256": "d7c8f859da582076dc42954f8233bb608bf3d9d98f0df9222a93dbfe2a8b3256",
+    "files": {
+      "binding.json": "8c0ea40fffe2952fe4ce69d5ea6dbe37c666548e5f4318eae7abd55851111a85",
+      "failure.txt": "865b138fef8bb0ffd421bd54dc1293edf15446977449fcd32d467df74c4e0bd5",
+      "run.err": "865b138fef8bb0ffd421bd54dc1293edf15446977449fcd32d467df74c4e0bd5",
+      "run.out": "ebb25db628da0c8d1ebfac00f1ffca9262f39e8e9f8cddcb0aa1dfcddb7dc06c"
+    }
+  },
+  "mixed-critical-path-v2": {
+    "exception_sha256": "875bd32cf712ce1418c9a5f5c768ee41718693518cc1b72ff70de9a7dff1deb8",
+    "files": {
+      "binding.json": "8c0ea40fffe2952fe4ce69d5ea6dbe37c666548e5f4318eae7abd55851111a85",
+      "complete.json": "a2ba9f48f315a9255363d56b46ec8f3cc25d5b4fc82dec76ae9f50ca66679f01",
+      "failure.txt": "bfa3763f04a1ec2fe3d6cb18918ac90685ea0dbf4bf8ae6b402d1ab3ef900b9f",
+      "run-v3.out": "0db98fb501f2c945ab86bdcbf1f010e56918d1c556010f9b91ce0f943a21b04a",
+      "run.err": "bfa3763f04a1ec2fe3d6cb18918ac90685ea0dbf4bf8ae6b402d1ab3ef900b9f",
+      "run.out": "0e9831fad2b09bd1147acf17ab59a7e98ee553c7fd0cace00d5b2ce0bdac03ae"
+    }
+  },
+  "mixed-critical-workers-v1": {
+    "exception_sha256": "723004e8a66075303b0ed290138ff3e288ce7bae726f5cf5b5b104f1f1950949",
+    "files": {
+      "binding.json": "f24bb5d5e5f026d237e52c01c830e46a8b4e4fb6e4499854a754d1a6b3898e78",
+      "failure.txt": "cae8b3c769a5f3f6a831ee01d8dc4a87b02817a490d958e0731fd54a01659fb5",
+      "run.err": "cae8b3c769a5f3f6a831ee01d8dc4a87b02817a490d958e0731fd54a01659fb5",
+      "run.out": "74a831e138884018685072ab6d92d639befc61b8d2a7466bcc8e4364eb2632a3"
+    }
+  },
+  "secondary-mount": {
+    "bytes": 4761210761,
+    "digest": "eca38c70de38f408c91c7a7ce21ee36ce51279f76bc63556484ed32886cfdcf7",
+    "files": 5846,
+    "scope": "Only the private Rust incremental tree is nested-mounted from the other ext4 device, all Cargo receipt rlib/rmeta and live native output/recipe files remain on original volume."
+  }
+}

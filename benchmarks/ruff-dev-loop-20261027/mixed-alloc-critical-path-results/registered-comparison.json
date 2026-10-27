@@ -1,0 +1,373 @@
+{
+  "aggregates": {
+    "build": {
+      "ci95": [
+        -20.054213506383313,
+        -8.633399297472355
+      ],
+      "exact_assignments": 63504,
+      "extreme_assignments": 8,
+      "holm": 0.0002519526329050139,
+      "medians_s": {
+        "B": 5.61722613,
+        "C": 6.3854585085
+      },
+      "p": 0.00012597631645250694,
+      "paired_reduction_pct": -14.027199402414215,
+      "passes": false,
+      "per_direction_pct": {
+        "edit": -16.753268640602226,
+        "restore": -11.364781088760644
+      },
+      "proportion_faster": 0.05
+    },
+    "test": {
+      "ci95": [
+        -24.748601396935317,
+        5.083580401700617
+      ],
+      "exact_assignments": 63504,
+      "extreme_assignments": 17092,
+      "holm": 0.26914840010078106,
+      "medians_s": {
+        "B": 12.542558381,
+        "C": 14.085697779
+      },
+      "p": 0.26914840010078106,
+      "paired_reduction_pct": -9.075471845565254,
+      "passes": false,
+      "per_direction_pct": {
+        "edit": -4.70425750155874,
+        "restore": -13.629176522794006
+      },
+      "proportion_faster": 0.35
+    }
+  },
+  "observations": {
+    "build": [
+      {
+        "direction": "edit",
+        "ns": {
+          "B": 5393581853,
+          "C": 7022255724
+        },
+        "order": "BC"
+      },
+      {
+        "direction": "restore",
+        "ns": {
+          "B": 5247695780,
+          "C": 5930554481
+        },
+        "order": "BC"
+      },
+      {
+        "direction": "edit",
+        "ns": {
+          "B": 6200004570,
+          "C": 5687055590
+        },
+        "order": "BC"
+      },
+      {
+        "direction": "restore",
+        "ns": {
+          "B": 5579330383,
+          "C": 5727116931
+        },
+        "order": "BC"
+      },
+      {
+        "direction": "edit",
+        "ns": {
+          "B": 5561531779,
+          "C": 5897787801
+        },
+        "order": "CB"
+      },
+      {
+        "direction": "restore",
+        "ns": {
+          "B": 5773892592,
+          "C": 6247494129
+        },
+        "order": "CB"
+      },
+      {
+        "direction": "edit",
+        "ns": {
+          "B": 5068433334,
+          "C": 7667250418
+        },
+        "order": "BC"
+      },
+      {
+        "direction": "restore",
+        "ns": {
+          "B": 6724082832,
+          "C": 6782949065
+        },
+        "order": "CB"
+      },
+      {
+        "direction": "edit",
+        "ns": {
+          "B": 6059325206,
+          "C": 6320385846
+        },
+        "order": "CB"
+      },
+      {
+        "direction": "restore",
+        "ns": {
+          "B": 5413900944,
+          "C": 6904209610
+        },
+        "order": "CB"
+      },
+      {
+        "direction": "edit",
+        "ns": {
+          "B": 5511508900,
+          "C": 6386656843
+        },
+        "order": "CB"
+      },
+      {
+        "direction": "restore",
+        "ns": {
+          "B": 5518419896,
+          "C": 6449009110
+        },
+        "order": "BC"
+      },
+      {
+        "direction": "edit",
+        "ns": {
+          "B": 6099930909,
+          "C": 6531306869
+        },
+        "order": "BC"
+      },
+      {
+        "direction": "restore",
+        "ns": {
+          "B": 5296355592,
+          "C": 5976493762
+        },
+        "order": "BC"
+      },
+      {
+        "direction": "edit",
+        "ns": {
+          "B": 5520612230,
+          "C": 6082514499
+        },
+        "order": "CB"
+      },
+      {
+        "direction": "restore",
+        "ns": {
+          "B": 6082265528,
+          "C": 6384260174
+        },
+        "order": "BC"
+      },
+      {
+        "direction": "edit",
+        "ns": {
+          "B": 5876896723,
+          "C": 7088529549
+        },
+        "order": "CB"
+      },
+      {
+        "direction": "restore",
+        "ns": {
+          "B": 5655121877,
+          "C": 6222739988
+        },
+        "order": "CB"
+      },
+      {
+        "direction": "edit",
+        "ns": {
+          "B": 5962989344,
+          "C": 8517212370
+        },
+        "order": "BC"
+      },
+      {
+        "direction": "restore",
+        "ns": {
+          "B": 5730112397,
+          "C": 6836005566
+        },
+        "order": "CB"
+      }
+    ],
+    "test": [
+      {
+        "direction": "edit",
+        "ns": {
+          "B": 7914957804,
+          "C": 11507511910
+        },
+        "order": "BC"
+      },
+      {
+        "direction": "restore",
+        "ns": {
+          "B": 9731868638,
+          "C": 13103728201
+        },
+        "order": "CB"
+      },
+      {
+        "direction": "edit",
+        "ns": {
+          "B": 20128284072,
+          "C": 15899751798
+        },
+        "order": "CB"
+      },
+      {
+        "direction": "restore",
+        "ns": {
+          "B": 7322347921,
+          "C": 14109835347
+        },
+        "order": "BC"
+      },
+      {
+        "direction": "edit",
+        "ns": {
+          "B": 11251647240,
+          "C": 18782276577
+        },
+        "order": "CB"
+      },
+      {
+        "direction": "restore",
+        "ns": {
+          "B": 14841352808,
+          "C": 14061560211
+        },
+        "order": "CB"
+      },
+      {
+        "direction": "edit",
+        "ns": {
+          "B": 11204706032,
+          "C": 12097134767
+        },
+        "order": "BC"
+      },
+      {
+        "direction": "restore",
+        "ns": {
+          "B": 13800273227,
+          "C": 17249781426
+        },
+        "order": "BC"
+      },
+      {
+        "direction": "edit",
+        "ns": {
+          "B": 14372852637,
+          "C": 15190538477
+        },
+        "order": "BC"
+      },
+      {
+        "direction": "restore",
+        "ns": {
+          "B": 11256899705,
+          "C": 12504173764
+        },
+        "order": "CB"
+      },
+      {
+        "direction": "edit",
+        "ns": {
+          "B": 15272398134,
+          "C": 15037789996
+        },
+        "order": "CB"
+      },
+      {
+        "direction": "restore",
+        "ns": {
+          "B": 14138389905,
+          "C": 12099548963
+        },
+        "order": "BC"
+      },
+      {
+        "direction": "edit",
+        "ns": {
+          "B": 12507850707,
+          "C": 14412962163
+        },
+        "order": "BC"
+      },
+      {
+        "direction": "restore",
+        "ns": {
+          "B": 12158925822,
+          "C": 14462156729
+        },
+        "order": "CB"
+      },
+      {
+        "direction": "edit",
+        "ns": {
+          "B": 17967020049,
+          "C": 12281228366
+        },
+        "order": "BC"
+      },
+      {
+        "direction": "restore",
+        "ns": {
+          "B": 12139618849,
+          "C": 13995759789
+        },
+        "order": "CB"
+      },
+      {
+        "direction": "edit",
+        "ns": {
+          "B": 25435232814,
+          "C": 16664123053
+        },
+        "order": "CB"
+      },
+      {
+        "direction": "restore",
+        "ns": {
+          "B": 7911625917,
+          "C": 12611319665
+        },
+        "order": "BC"
+      },
+      {
+        "direction": "edit",
+        "ns": {
+          "B": 12577266055,
+          "C": 17918804510
+        },
+        "order": "CB"
+      },
+      {
+        "direction": "restore",
+        "ns": {
+          "B": 20256463351,
+          "C": 11384305868
+        },
+        "order": "BC"
+      }
+    ]
+  },
+  "study_archive_sha256": "7c1df4c5e8c31bd5302ca9750a243928cfc5392ff2c96a4c09e2583fc6f501c2"
+}
