@@ -1,0 +1,7 @@
+# Independent stock-only first slot stopped on its ELF entry-width rule
+
+The original H5 protocol (866af914a3f087437bf69129804237a37e833504) retained the prior .rodata header domain {0,8}. Its first scheduled slot used the two prior component releases. Each of the three commands succeeded. The cold/first unchanged/settled freshness counts were 0/563/619 and the observer checksum counts were 0/45/45. The parser fixture ELF changed its .rodata entry width from 0 to 1 between cold and first. The original score CSV has only its header. This study is terminal and no elapsed effect was estimated.
+
+Both real 30,913,648-byte ELF images stayed available through the independent qualification and original stock-only slot. The cold digest is 96e972f82fb0531eae3af5b5661f14f4e85bff8fda642ae813634f62a25ea4cb and the first/settled digest is edba1752dc661c34e5e87f6e983685a4457e52ab248cd480f459f0ed0f1f4060. Every byte outside the numeric entry field and GNU build ID-hash bytes matches. Each executable lists the same ordinary parser fixtures and passed the first real test using its actual Ruff source and fixtures in a read-only namespace. The new .rodata field value is a genuine observable ELF difference.
+
+The receipt retains the three native phase hashes, full 110-product SHA-256/field roster, success/elapsed commitments for the rejected slot and output checksums. Run `python3 -B verify.py` for an offline check. The original H5 exec-only qualification trace and frozen target stores are separately retained, as are unchanged-reference images with the original 0 width.
