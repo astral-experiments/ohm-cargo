@@ -1,0 +1,941 @@
+{
+  "cargo_source": "68021e46474e9676108c587b095c1fbbf8f53009",
+  "nested": {
+    "nested-closed-gcc.json": {
+      "inputs": {
+        "added_object_sha": "ee59b9dea7188bd45e0f34693bca4a80f52680f4ac97bdb2a47ecc27c973985a",
+        "cargo": "ac48669832ab75e97cb8f498d3302e28100a6a634662dab275f4add4d1594bf3",
+        "ordinary_fallback_sha": "f0a17a43c74d2fe5474fa2fd29c8f14799e777d7d75a2cc4d11c20a6e7b161c5",
+        "rust": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+        "system_script_sha": "0acf9bd0b19f5cf45ace80750633b077d94a14dd0c69c7bf159446328535dd69",
+        "wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5"
+      },
+      "phases": {
+        "cold": {
+          "elf": "c61f735cdc27ab84f207dadadddcb1655bfbada8a74cf8862afbbe9797a2afac",
+          "errors": [],
+          "fixed": [],
+          "full": [
+            "full"
+          ],
+          "marker": [],
+          "rc": 0,
+          "rustcs": [
+            "api",
+            "leaf",
+            "mark",
+            "kit",
+            "build_script_build"
+          ],
+          "tests": "0 tests, 0 benchmarks\n",
+          "wild": [
+            "api-d85fd6b3c1ff5f15",
+            "libmark-1c2e766d0626af38.so",
+            "libkit.so",
+            "build_script_build"
+          ]
+        },
+        "earlier-member-now-exists": {
+          "elf": "1b89d1eb74af3b9d5e356ad8966c02e45d12f90838f26f735e2575e66122f8e2",
+          "errors": [],
+          "fixed": [],
+          "full": [
+            "full"
+          ],
+          "marker": [
+            "0000000000000097"
+          ],
+          "rc": 0,
+          "rustcs": [
+            "api",
+            "leaf"
+          ],
+          "tests": "0 tests, 0 benchmarks\n",
+          "wild": [
+            "api-d85fd6b3c1ff5f15"
+          ]
+        },
+        "earlier-member-now-invalid": {
+          "elf": null,
+          "errors": [
+            "linking with `cc` failed: exit status: 1"
+          ],
+          "fixed": [],
+          "full": [
+            "full"
+          ],
+          "marker": null,
+          "rc": 101,
+          "rustcs": [
+            "api",
+            "leaf"
+          ],
+          "tests": null,
+          "wild": [
+            "api-d85fd6b3c1ff5f15"
+          ]
+        },
+        "first-changed": {
+          "elf": "c61f735cdc27ab84f207dadadddcb1655bfbada8a74cf8862afbbe9797a2afac",
+          "errors": [],
+          "fixed": [],
+          "full": [
+            "full"
+          ],
+          "marker": [],
+          "rc": 0,
+          "rustcs": [
+            "api",
+            "leaf"
+          ],
+          "tests": "0 tests, 0 benchmarks\n",
+          "wild": [
+            "api-d85fd6b3c1ff5f15"
+          ]
+        },
+        "ordinary-or-reuse": {
+          "elf": "c61f735cdc27ab84f207dadadddcb1655bfbada8a74cf8862afbbe9797a2afac",
+          "errors": [],
+          "fixed": [],
+          "full": [
+            "full"
+          ],
+          "marker": [],
+          "rc": 0,
+          "rustcs": [
+            "api",
+            "leaf"
+          ],
+          "tests": "0 tests, 0 benchmarks\n",
+          "wild": [
+            "api-d85fd6b3c1ff5f15"
+          ]
+        },
+        "removed-earlier-member": {
+          "elf": "c61f735cdc27ab84f207dadadddcb1655bfbada8a74cf8862afbbe9797a2afac",
+          "errors": [],
+          "fixed": [],
+          "full": [
+            "full"
+          ],
+          "marker": [],
+          "rc": 0,
+          "rustcs": [
+            "api",
+            "leaf"
+          ],
+          "tests": "0 tests, 0 benchmarks\n",
+          "wild": [
+            "api-d85fd6b3c1ff5f15"
+          ]
+        }
+      }
+    },
+    "nested-original.json": {
+      "inputs": {
+        "added_object_sha": "ee59b9dea7188bd45e0f34693bca4a80f52680f4ac97bdb2a47ecc27c973985a",
+        "cargo": "ac48669832ab75e97cb8f498d3302e28100a6a634662dab275f4add4d1594bf3",
+        "ordinary_fallback_sha": "f0a17a43c74d2fe5474fa2fd29c8f14799e777d7d75a2cc4d11c20a6e7b161c5",
+        "rust": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+        "system_script_sha": "0acf9bd0b19f5cf45ace80750633b077d94a14dd0c69c7bf159446328535dd69",
+        "wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5"
+      },
+      "phases": {
+        "cold": {
+          "elf": "c61f735cdc27ab84f207dadadddcb1655bfbada8a74cf8862afbbe9797a2afac",
+          "errors": [],
+          "fixed": [],
+          "full": [
+            "full"
+          ],
+          "marker": [],
+          "rc": 0,
+          "rustcs": [
+            "api",
+            "mark",
+            "leaf",
+            "kit",
+            "build_script_build"
+          ],
+          "tests": "0 tests, 0 benchmarks\n",
+          "wild": [
+            "api-d85fd6b3c1ff5f15",
+            "libmark-1c2e766d0626af38.so",
+            "libkit.so",
+            "build_script_build"
+          ]
+        },
+        "earlier-member-now-exists": {
+          "elf": "1b89d1eb74af3b9d5e356ad8966c02e45d12f90838f26f735e2575e66122f8e2",
+          "errors": [],
+          "fixed": [],
+          "full": [
+            "full"
+          ],
+          "marker": [
+            "0000000000000097"
+          ],
+          "rc": 0,
+          "rustcs": [
+            "api",
+            "leaf"
+          ],
+          "tests": "0 tests, 0 benchmarks\n",
+          "wild": [
+            "api-d85fd6b3c1ff5f15"
+          ]
+        },
+        "earlier-member-now-invalid": {
+          "elf": null,
+          "errors": [
+            "linking with `cc` failed: exit status: 1"
+          ],
+          "fixed": [],
+          "full": [
+            "full"
+          ],
+          "marker": null,
+          "rc": 101,
+          "rustcs": [
+            "api",
+            "leaf"
+          ],
+          "tests": null,
+          "wild": [
+            "api-d85fd6b3c1ff5f15"
+          ]
+        },
+        "first-changed": {
+          "elf": "c61f735cdc27ab84f207dadadddcb1655bfbada8a74cf8862afbbe9797a2afac",
+          "errors": [],
+          "fixed": [],
+          "full": [
+            "full"
+          ],
+          "marker": [],
+          "rc": 0,
+          "rustcs": [
+            "api",
+            "leaf"
+          ],
+          "tests": "0 tests, 0 benchmarks\n",
+          "wild": [
+            "api-d85fd6b3c1ff5f15"
+          ]
+        },
+        "ordinary-or-reuse": {
+          "elf": "c61f735cdc27ab84f207dadadddcb1655bfbada8a74cf8862afbbe9797a2afac",
+          "errors": [],
+          "fixed": [],
+          "full": [
+            "full"
+          ],
+          "marker": [],
+          "rc": 0,
+          "rustcs": [
+            "api",
+            "leaf"
+          ],
+          "tests": "0 tests, 0 benchmarks\n",
+          "wild": [
+            "api-d85fd6b3c1ff5f15"
+          ]
+        },
+        "removed-earlier-member": {
+          "elf": "c61f735cdc27ab84f207dadadddcb1655bfbada8a74cf8862afbbe9797a2afac",
+          "errors": [],
+          "fixed": [],
+          "full": [
+            "full"
+          ],
+          "marker": [],
+          "rc": 0,
+          "rustcs": [
+            "api",
+            "leaf"
+          ],
+          "tests": "0 tests, 0 benchmarks\n",
+          "wild": [
+            "api-d85fd6b3c1ff5f15"
+          ]
+        }
+      }
+    }
+  },
+  "raw_input_sha256": {
+    "nested-closed-gcc.json": "d2d3a82b3fdd2441fd46c2d1163aad87b533e24347d055b336805677b4a14196",
+    "nested-original.json": "290d5387cc14a9aa7fe9fe0962e704058254c681f70b040bb4eff3e7bbca13fa",
+    "scope-limits.log": "17126185cdee70814e52297ff038f00806b3a6fc8764b1e706a186c96acada7a",
+    "whole-trace.json": "0a1ec59275e71e2cd6d48a2c7ad1d1e220053099243edd72dbbdd084c84fa012"
+  },
+  "rejected_extra_synthetic_positive": {
+    "actual_Wild": 1,
+    "actual_full_rustc": [
+      "api",
+      "leaf"
+    ],
+    "elapsed_scored": false,
+    "expected": "fixed width reuse after changing an unused dependency",
+    "fixed_width": false,
+    "root_certified": false
+  },
+  "selected_ELF_or_ar_or_closed_scripts": {
+    "libc.so": true,
+    "libgcc_s.so": false,
+    "libm.so": true
+  },
+  "workspace": {
+    "edit": {
+      "actual_API_rustc": [
+        [
+          "exec.3021884",
+          "api",
+          "full",
+          "ruff_wasm",
+          false
+        ],
+        [
+          "exec.3021935",
+          "api",
+          "full",
+          "ty_wasm",
+          false
+        ]
+      ],
+      "actual_API_wild": [
+        [
+          "exec.3021992",
+          "api-39de91ce78a927c9",
+          true,
+          false
+        ],
+        [
+          "exec.3022064",
+          "api-a0cba910c3e435dc",
+          true,
+          false
+        ]
+      ],
+      "actual_Cargo": "ac48669832ab75e97cb8f498d3302e28100a6a634662dab275f4add4d1594bf3",
+      "api": {
+        "ruff_wasm": {
+          "elf": "db370756c6fadef846dde0243effcea758fc478db06c3a17dffe9a4028f29a31",
+          "file": "api-39de91ce78a927c9",
+          "fixed_certificate": false,
+          "list": "0 tests, 0 benchmarks"
+        },
+        "ty_wasm": {
+          "elf": "ea28d17cfe4db48db05aaf3f7df2ab45486d430650bd7f539ef43db540aa080a",
+          "file": "api-a0cba910c3e435dc",
+          "fixed_certificate": false,
+          "list": "0 tests, 0 benchmarks"
+        }
+      },
+      "diagnostics": {
+        "parser": [
+          {
+            "code": "invalid-syntax",
+            "end_location": {
+              "column": 19,
+              "row": 1
+            },
+            "location": {
+              "column": 1,
+              "row": 1
+            },
+            "message": "Bytes literal cannot be mixed with non-bytes literals"
+          }
+        ],
+        "stdlib": [
+          {
+            "code": "B006",
+            "end_location": {
+              "column": 19,
+              "row": 4
+            },
+            "location": {
+              "column": 9,
+              "row": 4
+            },
+            "message": "Do not use mutable data structures for argument defaults"
+          },
+          {
+            "code": "B006",
+            "end_location": {
+              "column": 32,
+              "row": 4
+            },
+            "location": {
+              "column": 23,
+              "row": 4
+            },
+            "message": "Do not use mutable data structures for argument defaults"
+          }
+        ]
+      },
+      "dirty_count": 94,
+      "driver": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+      "elf_count": 110,
+      "full": 6,
+      "link_only": 62,
+      "roster": "f48ce010c907d5e8dfa9645a26b77c80e2504540dca1fd47c091e922ccebba5d",
+      "scope": "619-unit cargo +ohm test --no-run",
+      "source": "edited",
+      "total_rustc": 68,
+      "wild": 67
+    },
+    "edit-again": {
+      "actual_API_rustc": [
+        [
+          "exec.3026665",
+          "api",
+          "full",
+          "ruff_wasm",
+          false
+        ],
+        [
+          "exec.3026694",
+          "api",
+          "full",
+          "ty_wasm",
+          false
+        ]
+      ],
+      "actual_API_wild": [
+        [
+          "exec.3026720",
+          "api-39de91ce78a927c9",
+          true,
+          false
+        ],
+        [
+          "exec.3026755",
+          "api-a0cba910c3e435dc",
+          true,
+          false
+        ]
+      ],
+      "actual_Cargo": "ac48669832ab75e97cb8f498d3302e28100a6a634662dab275f4add4d1594bf3",
+      "api": {
+        "ruff_wasm": {
+          "elf": "db370756c6fadef846dde0243effcea758fc478db06c3a17dffe9a4028f29a31",
+          "file": "api-39de91ce78a927c9",
+          "fixed_certificate": false,
+          "list": "0 tests, 0 benchmarks"
+        },
+        "ty_wasm": {
+          "elf": "ea28d17cfe4db48db05aaf3f7df2ab45486d430650bd7f539ef43db540aa080a",
+          "file": "api-a0cba910c3e435dc",
+          "fixed_certificate": false,
+          "list": "0 tests, 0 benchmarks"
+        }
+      },
+      "diagnostics": {
+        "parser": [
+          {
+            "code": "invalid-syntax",
+            "end_location": {
+              "column": 19,
+              "row": 1
+            },
+            "location": {
+              "column": 1,
+              "row": 1
+            },
+            "message": "Bytes literal cannot be mixed with non-bytes literals"
+          }
+        ],
+        "stdlib": [
+          {
+            "code": "B006",
+            "end_location": {
+              "column": 19,
+              "row": 4
+            },
+            "location": {
+              "column": 9,
+              "row": 4
+            },
+            "message": "Do not use mutable data structures for argument defaults"
+          },
+          {
+            "code": "B006",
+            "end_location": {
+              "column": 32,
+              "row": 4
+            },
+            "location": {
+              "column": 23,
+              "row": 4
+            },
+            "message": "Do not use mutable data structures for argument defaults"
+          }
+        ]
+      },
+      "dirty_count": 94,
+      "driver": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+      "elf_count": 110,
+      "full": 6,
+      "link_only": 62,
+      "roster": "f48ce010c907d5e8dfa9645a26b77c80e2504540dca1fd47c091e922ccebba5d",
+      "scope": "619-unit cargo +ohm test --no-run",
+      "source": "edited",
+      "total_rustc": 68,
+      "wild": 67
+    },
+    "fresh-again": {
+      "actual_API_rustc": [],
+      "actual_API_wild": [],
+      "actual_Cargo": "ac48669832ab75e97cb8f498d3302e28100a6a634662dab275f4add4d1594bf3",
+      "api": {
+        "ruff_wasm": {
+          "elf": "db370756c6fadef846dde0243effcea758fc478db06c3a17dffe9a4028f29a31",
+          "file": "api-39de91ce78a927c9",
+          "fixed_certificate": false,
+          "list": "0 tests, 0 benchmarks"
+        },
+        "ty_wasm": {
+          "elf": "ea28d17cfe4db48db05aaf3f7df2ab45486d430650bd7f539ef43db540aa080a",
+          "file": "api-a0cba910c3e435dc",
+          "fixed_certificate": false,
+          "list": "0 tests, 0 benchmarks"
+        }
+      },
+      "diagnostics": {
+        "parser": [
+          {
+            "code": "invalid-syntax",
+            "end_location": {
+              "column": 19,
+              "row": 1
+            },
+            "location": {
+              "column": 1,
+              "row": 1
+            },
+            "message": "Bytes literal cannot be mixed with non-bytes literals"
+          }
+        ],
+        "stdlib": [
+          {
+            "code": "B006",
+            "end_location": {
+              "column": 19,
+              "row": 4
+            },
+            "location": {
+              "column": 9,
+              "row": 4
+            },
+            "message": "Do not use mutable data structures for argument defaults"
+          },
+          {
+            "code": "B006",
+            "end_location": {
+              "column": 32,
+              "row": 4
+            },
+            "location": {
+              "column": 23,
+              "row": 4
+            },
+            "message": "Do not use mutable data structures for argument defaults"
+          }
+        ]
+      },
+      "dirty_count": 0,
+      "driver": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+      "elf_count": 110,
+      "full": 0,
+      "link_only": 0,
+      "roster": "f48ce010c907d5e8dfa9645a26b77c80e2504540dca1fd47c091e922ccebba5d",
+      "scope": "619-unit cargo +ohm test --no-run",
+      "source": "edited",
+      "total_rustc": 0,
+      "wild": 0
+    },
+    "fresh-edit": {
+      "actual_API_rustc": [],
+      "actual_API_wild": [],
+      "actual_Cargo": "ac48669832ab75e97cb8f498d3302e28100a6a634662dab275f4add4d1594bf3",
+      "api": {
+        "ruff_wasm": {
+          "elf": "db370756c6fadef846dde0243effcea758fc478db06c3a17dffe9a4028f29a31",
+          "file": "api-39de91ce78a927c9",
+          "fixed_certificate": false,
+          "list": "0 tests, 0 benchmarks"
+        },
+        "ty_wasm": {
+          "elf": "ea28d17cfe4db48db05aaf3f7df2ab45486d430650bd7f539ef43db540aa080a",
+          "file": "api-a0cba910c3e435dc",
+          "fixed_certificate": false,
+          "list": "0 tests, 0 benchmarks"
+        }
+      },
+      "diagnostics": {
+        "parser": [
+          {
+            "code": "invalid-syntax",
+            "end_location": {
+              "column": 19,
+              "row": 1
+            },
+            "location": {
+              "column": 1,
+              "row": 1
+            },
+            "message": "Bytes literal cannot be mixed with non-bytes literals"
+          }
+        ],
+        "stdlib": [
+          {
+            "code": "B006",
+            "end_location": {
+              "column": 19,
+              "row": 4
+            },
+            "location": {
+              "column": 9,
+              "row": 4
+            },
+            "message": "Do not use mutable data structures for argument defaults"
+          },
+          {
+            "code": "B006",
+            "end_location": {
+              "column": 32,
+              "row": 4
+            },
+            "location": {
+              "column": 23,
+              "row": 4
+            },
+            "message": "Do not use mutable data structures for argument defaults"
+          }
+        ]
+      },
+      "dirty_count": 0,
+      "driver": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+      "elf_count": 110,
+      "full": 0,
+      "link_only": 0,
+      "roster": "f48ce010c907d5e8dfa9645a26b77c80e2504540dca1fd47c091e922ccebba5d",
+      "scope": "619-unit cargo +ohm test --no-run",
+      "source": "edited",
+      "total_rustc": 0,
+      "wild": 0
+    },
+    "fresh-restore": {
+      "actual_API_rustc": [],
+      "actual_API_wild": [],
+      "actual_Cargo": "ac48669832ab75e97cb8f498d3302e28100a6a634662dab275f4add4d1594bf3",
+      "api": {
+        "ruff_wasm": {
+          "elf": "db370756c6fadef846dde0243effcea758fc478db06c3a17dffe9a4028f29a31",
+          "file": "api-39de91ce78a927c9",
+          "fixed_certificate": false,
+          "list": "0 tests, 0 benchmarks"
+        },
+        "ty_wasm": {
+          "elf": "ea28d17cfe4db48db05aaf3f7df2ab45486d430650bd7f539ef43db540aa080a",
+          "file": "api-a0cba910c3e435dc",
+          "fixed_certificate": false,
+          "list": "0 tests, 0 benchmarks"
+        }
+      },
+      "diagnostics": {
+        "parser": [
+          {
+            "code": "invalid-syntax",
+            "end_location": {
+              "column": 19,
+              "row": 1
+            },
+            "location": {
+              "column": 1,
+              "row": 1
+            },
+            "message": "Cannot mix t-string literals with string or bytes literals"
+          }
+        ],
+        "stdlib": [
+          {
+            "code": "B006",
+            "end_location": {
+              "column": 19,
+              "row": 4
+            },
+            "location": {
+              "column": 9,
+              "row": 4
+            },
+            "message": "Do not use mutable data structures for argument defaults"
+          },
+          {
+            "code": "B006",
+            "end_location": {
+              "column": 32,
+              "row": 4
+            },
+            "location": {
+              "column": 23,
+              "row": 4
+            },
+            "message": "Do not use mutable data structures for argument defaults"
+          }
+        ]
+      },
+      "dirty_count": 0,
+      "driver": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+      "elf_count": 110,
+      "full": 0,
+      "link_only": 0,
+      "roster": "f48ce010c907d5e8dfa9645a26b77c80e2504540dca1fd47c091e922ccebba5d",
+      "scope": "619-unit cargo +ohm test --no-run",
+      "source": "original",
+      "total_rustc": 0,
+      "wild": 0
+    },
+    "fresh-seed": {
+      "actual_API_rustc": [],
+      "actual_API_wild": [],
+      "actual_Cargo": "ac48669832ab75e97cb8f498d3302e28100a6a634662dab275f4add4d1594bf3",
+      "api": {
+        "ruff_wasm": {
+          "elf": "db370756c6fadef846dde0243effcea758fc478db06c3a17dffe9a4028f29a31",
+          "file": "api-39de91ce78a927c9",
+          "fixed_certificate": false,
+          "list": "0 tests, 0 benchmarks"
+        },
+        "ty_wasm": {
+          "elf": "ea28d17cfe4db48db05aaf3f7df2ab45486d430650bd7f539ef43db540aa080a",
+          "file": "api-a0cba910c3e435dc",
+          "fixed_certificate": false,
+          "list": "0 tests, 0 benchmarks"
+        }
+      },
+      "diagnostics": {
+        "parser": [
+          {
+            "code": "invalid-syntax",
+            "end_location": {
+              "column": 19,
+              "row": 1
+            },
+            "location": {
+              "column": 1,
+              "row": 1
+            },
+            "message": "Cannot mix t-string literals with string or bytes literals"
+          }
+        ],
+        "stdlib": [
+          {
+            "code": "B006",
+            "end_location": {
+              "column": 19,
+              "row": 4
+            },
+            "location": {
+              "column": 9,
+              "row": 4
+            },
+            "message": "Do not use mutable data structures for argument defaults"
+          },
+          {
+            "code": "B006",
+            "end_location": {
+              "column": 32,
+              "row": 4
+            },
+            "location": {
+              "column": 23,
+              "row": 4
+            },
+            "message": "Do not use mutable data structures for argument defaults"
+          }
+        ]
+      },
+      "dirty_count": 0,
+      "driver": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+      "elf_count": 110,
+      "full": 0,
+      "link_only": 0,
+      "roster": "f48ce010c907d5e8dfa9645a26b77c80e2504540dca1fd47c091e922ccebba5d",
+      "scope": "619-unit cargo +ohm test --no-run",
+      "source": "original",
+      "total_rustc": 0,
+      "wild": 0
+    },
+    "restore": {
+      "actual_API_rustc": [
+        [
+          "exec.3025047",
+          "api",
+          "full",
+          "ruff_wasm",
+          false
+        ],
+        [
+          "exec.3025089",
+          "api",
+          "full",
+          "ty_wasm",
+          false
+        ]
+      ],
+      "actual_API_wild": [
+        [
+          "exec.3025132",
+          "api-39de91ce78a927c9",
+          true,
+          false
+        ],
+        [
+          "exec.3025146",
+          "api-a0cba910c3e435dc",
+          true,
+          false
+        ]
+      ],
+      "actual_Cargo": "ac48669832ab75e97cb8f498d3302e28100a6a634662dab275f4add4d1594bf3",
+      "api": {
+        "ruff_wasm": {
+          "elf": "db370756c6fadef846dde0243effcea758fc478db06c3a17dffe9a4028f29a31",
+          "file": "api-39de91ce78a927c9",
+          "fixed_certificate": false,
+          "list": "0 tests, 0 benchmarks"
+        },
+        "ty_wasm": {
+          "elf": "ea28d17cfe4db48db05aaf3f7df2ab45486d430650bd7f539ef43db540aa080a",
+          "file": "api-a0cba910c3e435dc",
+          "fixed_certificate": false,
+          "list": "0 tests, 0 benchmarks"
+        }
+      },
+      "diagnostics": {
+        "parser": [
+          {
+            "code": "invalid-syntax",
+            "end_location": {
+              "column": 19,
+              "row": 1
+            },
+            "location": {
+              "column": 1,
+              "row": 1
+            },
+            "message": "Cannot mix t-string literals with string or bytes literals"
+          }
+        ],
+        "stdlib": [
+          {
+            "code": "B006",
+            "end_location": {
+              "column": 19,
+              "row": 4
+            },
+            "location": {
+              "column": 9,
+              "row": 4
+            },
+            "message": "Do not use mutable data structures for argument defaults"
+          },
+          {
+            "code": "B006",
+            "end_location": {
+              "column": 32,
+              "row": 4
+            },
+            "location": {
+              "column": 23,
+              "row": 4
+            },
+            "message": "Do not use mutable data structures for argument defaults"
+          }
+        ]
+      },
+      "dirty_count": 94,
+      "driver": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+      "elf_count": 110,
+      "full": 6,
+      "link_only": 62,
+      "roster": "f48ce010c907d5e8dfa9645a26b77c80e2504540dca1fd47c091e922ccebba5d",
+      "scope": "619-unit cargo +ohm test --no-run",
+      "source": "original",
+      "total_rustc": 68,
+      "wild": 67
+    },
+    "seed": {
+      "actual_API_rustc": [],
+      "actual_API_wild": [],
+      "actual_Cargo": "ac48669832ab75e97cb8f498d3302e28100a6a634662dab275f4add4d1594bf3",
+      "api": {
+        "ruff_wasm": {
+          "elf": "db370756c6fadef846dde0243effcea758fc478db06c3a17dffe9a4028f29a31",
+          "file": "api-39de91ce78a927c9",
+          "fixed_certificate": false,
+          "list": "0 tests, 0 benchmarks"
+        },
+        "ty_wasm": {
+          "elf": "ea28d17cfe4db48db05aaf3f7df2ab45486d430650bd7f539ef43db540aa080a",
+          "file": "api-a0cba910c3e435dc",
+          "fixed_certificate": false,
+          "list": "0 tests, 0 benchmarks"
+        }
+      },
+      "diagnostics": {
+        "parser": [
+          {
+            "code": "invalid-syntax",
+            "end_location": {
+              "column": 19,
+              "row": 1
+            },
+            "location": {
+              "column": 1,
+              "row": 1
+            },
+            "message": "Cannot mix t-string literals with string or bytes literals"
+          }
+        ],
+        "stdlib": [
+          {
+            "code": "B006",
+            "end_location": {
+              "column": 19,
+              "row": 4
+            },
+            "location": {
+              "column": 9,
+              "row": 4
+            },
+            "message": "Do not use mutable data structures for argument defaults"
+          },
+          {
+            "code": "B006",
+            "end_location": {
+              "column": 32,
+              "row": 4
+            },
+            "location": {
+              "column": 23,
+              "row": 4
+            },
+            "message": "Do not use mutable data structures for argument defaults"
+          }
+        ]
+      },
+      "dirty_count": 56,
+      "driver": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+      "elf_count": 110,
+      "full": 1,
+      "link_only": 50,
+      "roster": "f48ce010c907d5e8dfa9645a26b77c80e2504540dca1fd47c091e922ccebba5d",
+      "scope": "619-unit cargo +ohm test --no-run",
+      "source": "original",
+      "total_rustc": 51,
+      "wild": 50
+    }
+  }
+}
