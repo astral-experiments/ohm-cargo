@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/home/dev-user/.cache/ohm-233-position-qualified-20261027/mixed-registry-seed-programs-20261027/ir-plan-v3-r2/parser-ir-holdout.py", line 20, in <module>
+    sdkhash=load(newplan["collector"]["manifest_path"]);assert sdkhash==newplan["collector"]["actual_files"]
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/dev-user/.cache/ohm-233-position-qualified-20261027/mixed-native-abc-protocol-h3-v2/common.py", line 44, in load
+    return json.loads(path.read_bytes())
+                      ^^^^^^^^^^^^^^^
+AttributeError: 'str' object has no attribute 'read_bytes'

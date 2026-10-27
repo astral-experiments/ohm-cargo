@@ -1,0 +1,228 @@
+{
+  "admission": "Six parent-only counts, seventh parent-only mapped-PID control and genuine ordinary compiler references. Stop if any input, source, mapping, thread ledger, native output or archive proof fails. Separate owner release after plan publication before any candidate count.",
+  "analyzer": "5578b08f62c9a3c249b279435a67a137fbcad839976def993a79169e70155dd9",
+  "arms": {
+    "candidate": {
+      "base": "27029b4bce40f3b5497add5019c02a11c16c4c18",
+      "driver_sha256": "36d1fd142355c3ad9e0ce006c1e92b7e511cba70c431b09eb1e335f572d27d05",
+      "patch_sha256": "2d6c3209b0bec656e6db298ab9b1c6ed0c2655993177114614a90d7170c46e2e"
+    },
+    "parent": {
+      "driver_sha256": "dec72d1e68fdb0f8ff91fc98e8a826bf837878eca30b1ec5ea2f3258b6b2f99f",
+      "source": "27029b4bce40f3b5497add5019c02a11c16c4c18"
+    }
+  },
+  "blocks": [
+    {
+      "empty": [
+        "parent",
+        "candidate"
+      ],
+      "endpoints": [
+        "retained",
+        "empty"
+      ],
+      "retained": [
+        "parent",
+        "candidate"
+      ]
+    },
+    {
+      "empty": [
+        "parent",
+        "candidate"
+      ],
+      "endpoints": [
+        "empty",
+        "retained"
+      ],
+      "retained": [
+        "candidate",
+        "parent"
+      ]
+    },
+    {
+      "empty": [
+        "candidate",
+        "parent"
+      ],
+      "endpoints": [
+        "retained",
+        "empty"
+      ],
+      "retained": [
+        "candidate",
+        "parent"
+      ]
+    },
+    {
+      "empty": [
+        "candidate",
+        "parent"
+      ],
+      "endpoints": [
+        "empty",
+        "retained"
+      ],
+      "retained": [
+        "parent",
+        "candidate"
+      ]
+    },
+    {
+      "empty": [
+        "parent",
+        "candidate"
+      ],
+      "endpoints": [
+        "retained",
+        "empty"
+      ],
+      "retained": [
+        "parent",
+        "candidate"
+      ]
+    },
+    {
+      "empty": [
+        "candidate",
+        "parent"
+      ],
+      "endpoints": [
+        "empty",
+        "retained"
+      ],
+      "retained": [
+        "parent",
+        "candidate"
+      ]
+    },
+    {
+      "empty": [
+        "parent",
+        "candidate"
+      ],
+      "endpoints": [
+        "empty",
+        "retained"
+      ],
+      "retained": [
+        "candidate",
+        "parent"
+      ]
+    },
+    {
+      "empty": [
+        "parent",
+        "candidate"
+      ],
+      "endpoints": [
+        "retained",
+        "empty"
+      ],
+      "retained": [
+        "candidate",
+        "parent"
+      ]
+    },
+    {
+      "empty": [
+        "candidate",
+        "parent"
+      ],
+      "endpoints": [
+        "empty",
+        "retained"
+      ],
+      "retained": [
+        "parent",
+        "candidate"
+      ]
+    },
+    {
+      "empty": [
+        "parent",
+        "candidate"
+      ],
+      "endpoints": [
+        "retained",
+        "empty"
+      ],
+      "retained": [
+        "parent",
+        "candidate"
+      ]
+    },
+    {
+      "empty": [
+        "candidate",
+        "parent"
+      ],
+      "endpoints": [
+        "retained",
+        "empty"
+      ],
+      "retained": [
+        "candidate",
+        "parent"
+      ]
+    },
+    {
+      "empty": [
+        "candidate",
+        "parent"
+      ],
+      "endpoints": [
+        "empty",
+        "retained"
+      ],
+      "retained": [
+        "candidate",
+        "parent"
+      ]
+    }
+  ],
+  "calibration_rows": "07ae5f7786edc6d76e94bb696f61dbfdd9e69cf1edb74e518cd7ca635d96ea04",
+  "calibration_source": "2a0cfb27407f97219ef3de9ced6866a644600a2195c9d63d62e8507596f484d8",
+  "cargo_sha256": "0f237cc3b506aa90c1224e6ed80f646566b424b78c8d74f288f6523d17fc8aa1",
+  "collector": {
+    "actual_files": {
+      "client/libpidcounter.so": "79f0c15d45b8d6b58a657b1816d4c2db2f798a9dbba4a1d02b3f2f3a1bda8204",
+      "client/libpidcounter.so.drpath": "d3f35f67faa11631fc283bd7f554504d69df550caf743346524d0da0c0cb80ac",
+      "counter.c": "507b7a51d497c389a2d15829cb6de639718289e7c4b2c7e2a76d7652c30f8174",
+      "sdk/bin64/drrun": "f92d796060b53c1ec14ac97e089edfb29a3ce8bd17c2c011fd763054d10f4b55",
+      "sdk/ext/lib64/release/libdrmgr.so": "f577adc23157771cf26c8dbcc1a77c4c65cc6a0750b192d0bbd4a3bd877801af",
+      "sdk/ext/lib64/release/libdrreg.so": "63acaeabdd40cc80a27ee42e97b102a972394e65bd9b57635fce998c69c99a38",
+      "sdk/lib64/release/libdynamorio.so": "c3bb1f80f3834c97f72983c59f77b42f3c66f07d311b25b66d74e4f1cae3b0f7",
+      "toy": "701e95d1235340502e5899f8b87abc636a1bfce102a2b00bb5fcf6d80344e289"
+    },
+    "manifest_path": "/mnt/devbox-scratch/dev-user/ohm-whole-skips-20261027/mixed-registry-only-pilot/parser-counter-sdk-v1/collector-files.json",
+    "source": "https://github.com/astral-sh/ohm/tree/0efa3139d4eb7be2344fd205d6e4dff7a0bc6c46/benchmarks/ruff-dev-loop-20261026/wild/counter",
+    "version": "DynamoRIO 11.91.20741 build 0"
+  },
+  "decision": "Twelve pairs per history, six parent-first and six candidate-first. Point is 100*(exp(median(log(C/P)))-1). The 10th ascending paired ratio is the one-sided upper median bound. Per endpoint coverage 1-79/4096=98.071289%; Bonferroni gives at least 96.142578% across both. Declare noninferiority only if BOTH upper bounds are strictly below +3%. This tests the instruction metric only.",
+  "frontend_sha256": "4fa9a18b77430bcc416e88561b6fe5797d98b996a7698b9f3bd11d4e7817a19f",
+  "histories": {
+    "empty": "Same edit/argv and dependency store but an empty parser incremental directory. Every trial still creates code and .rlib.",
+    "retained": "Apply real edit after priming only the original parser source in an independent per-arm incremental directory. Untimed copy for each sample."
+  },
+  "host": "charlie-ohm-trait-perf-1024",
+  "host_binding": "charlie-ohm-trait-perf-1024 H3, ext4 scratch, native-measure.lock and CPUs 0\u201323, 25 GiB scratch reserve. Root coordinates other H3 schedules; no competing H3 timing jobs.",
+  "inner": "4dece6b03fbc119b7e192fbe6fa6ece11b4be73cb78263524421bc0a6a256aa8",
+  "native_certificate": "84092c13895343d85bb7417ee44a7f3a5bf937e11cc91896e5ebff013c825fb6",
+  "native_protocol": "e2597bf5456850cce0e95302ad1e341c258fd93b9d64c02fa8b45e3cfce9a680",
+  "native_runner": "3f6521682ba9dedcac9686ecafcf49773625d8e972ebb04249d4e45a78d4c65f",
+  "observation": "One genuine multithreaded x86_64 application process. One T and F for each thread, one process start/exit, no secondary exec, no signal beyond SIGUSR1 as seen in all six parent A/A. Match mapped frontend, driver, proc macro, client and runtime inodes. Require exact native stdout, complete artifact JSON/stderr, separate and archived raw .rmeta, complete ordered object payloads, GNU symbol-to-member ordinals and normalized lib.rmeta-link in every trial. Authenticate the fixed x86_64-only collector stderr prefix separately. Raw rlib digests retained. Recheck all 16 direct externs and actual get-size-derive2 binary before and after.",
+  "primary": "Native application instructions in the resolved rustc, all genuine threads. Replay the exact ordinary workspace Cargo parser child including codegen and registry proc-macro execution. Cargo, rustup shim, kernel and client are outside this count.",
+  "prior": {
+    "correctness": "https://github.com/astral-sh/ohm-cargo/tree/ec690fbef62d4e2d5cb4e85013b65b91161e8cbd/benchmarks/ruff-dev-loop-20261027/proc-macro-source-replay-v3-h3",
+    "failed_wall": "https://github.com/astral-sh/ohm-cargo/tree/30d53f05dfbacd0e7fdbf88759cc758b6783439d/benchmarks/ruff-dev-loop-20261027/proc-macro-source-replay-v3-overhead-results",
+    "identical_binary_wall_aa": "https://github.com/astral-sh/ohm-cargo/tree/7f5f9bb0c7e1ae5060f1ff85cb09911ad1aba555/benchmarks/ruff-dev-loop-20261027/proc-macro-source-replay-v3-overhead-aa1"
+  },
+  "reverse_patch_sha256": "08bb20f14fde4db57dd12ec3de3855021ddf6284b4a1957b54f4d06fb3c8f9ff",
+  "reversed_complete_edit": "3ea20f6161cbf59cb56595dfb634ec24bfa82f0b",
+  "ruff": "93526150df078af7dd8fc4226cdcc469539d2001",
+  "runner": "51d918f9dbe279b647a8d1675e0b0242564d710fe25c6492a7d291d7901daf77",
+  "seed": "Ruff 3ea20f61 V3 parser application instructions fixed 12 per history",
+  "stopping": "Run the fixed 48 process slots at most once. Preserve every attempted outcome. On first failed invocation, 300s timeout, absent process/thread ledger or output mismatch, retain its partial records and close the family without replacement. Initial free space must exceed the fixed 25 GiB floor by 8 GiB. No trimming, substitution, extension or publication of a product PR on a failed gate."
+}
