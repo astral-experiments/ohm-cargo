@@ -1,0 +1,12 @@
+{
+  "protocol": "ohm-ruff-native-observed-sources-v2",
+  "plan_sha256": "8a132346f425bea3bdf1254c3a4e23a0bb74bef4e10db2ce3918dfac94d1883b",
+  "amendment_utc": "2026-10-27T07:35:00Z",
+  "candidate_commit": "27029b4bce40f3b5497add5019c02a11c16c4c18",
+  "candidate_compiler_patch_sha256": "cc26c805418f52aae990dc33951024c8bffa2da4e76dc38a2ce1fe26ea2f6b39",
+  "prior_candidate_commit": "95a95164a2f944faa5cdfae1f76a92f72302c6da",
+  "prior_candidate_driver_sha256": "4e967d262ea9dae4c1e673ec2e1d07a7dc492d8bca2ea42bb90cbcd509da9c7c",
+  "cargo_commit": "b0a4df740b57589ecec3c83e30d5d326ab52a56d",
+  "cargo_binary_sha256": "a99a694c680f474bef2ae17de20533890dc536606021db93aaf531e3ef40919a",
+  "reason": "Apply the pinned repository formatter to one closure in rustc_middle/src/ty/context.rs. The main native randomized study had zero paired samples in all four endpoints and no candidate Ruff screening command had started. Rebuild both the frozen release object and independently verify exact final binary. Preserve the stage4b compiler source controls and corpus results. Source changes limited to two new lines replacing three. The same scheduled sample order, outcome gates, and analysis apply."
+}
