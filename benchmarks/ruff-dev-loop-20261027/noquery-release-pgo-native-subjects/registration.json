@@ -1,0 +1,116 @@
+{
+  "all_symbol_changes_sha256": "df5701ba99fc74ab7196cbb80fe1794b70209073722574f1b91603937cbc734f",
+  "claimed_performance_endpoints": [],
+  "complete_original_tar_sha256": "a43643798126bf4c2b0487cfdd39c1bbeacfdad4fb83f0b8b58f04c4c480c0f2",
+  "eligible_immutable_inputs": {
+    "cargo": {
+      "A": {
+        "exe_sha256": "0ad5c2e226484334a5818c4702ccdf59a46732fc3cbe312b2f87411284b77ba2",
+        "source": "a0c7d08c898d3fdff992f2f431dec57d2486add2"
+      },
+      "A-repeat": {
+        "exe_sha256": "dd8718d36dd8d84d33ce623d66edabbc39c6a104e990bf5b6fe12d634f929e83",
+        "source": "a0c7d08c898d3fdff992f2f431dec57d2486add2"
+      },
+      "N": {
+        "exe_sha256": "d67c68ee27b3529c52d66022bf273df8a119353f0856deeebd9ff63b24ffadde",
+        "source": "b538e17473c6ed001c04f7026f8fe73f737b0246"
+      },
+      "Q": {
+        "exe_sha256": "03c851e44a863bb0d2cb8c9a98df1eef33310c8f3fbc77cdbb48aee516e68400",
+        "source": "97c04e448a136e8fd39948a00b095e53adf9876c"
+      },
+      "seed": {
+        "exe_sha256": "c7d5fff3efcbdc661923161bada1f4cd32fa276566fdd5bc307924a6e699eba9",
+        "source": "a0c7d08c898d3fdff992f2f431dec57d2486add2"
+      }
+    },
+    "common_cargo_builder": "b0c412a7a8010a768f00546419a0b1bcfca382d7e70191df3ae72e30ac1ef3e5",
+    "expected_actual_common_argv_and_dependency_files_sha256": "0314c19d48da0cbc1ba4474699b5dfe12ddf20f9295bc82c2227d9919d00f10a",
+    "external_production_profile": "481ada8a40c70dad11b3c7e8871e9a52207d78447ca5e8ace06fc4aec2d2b5a7",
+    "rust": {
+      "common_frontend_sha256": "4fa9a18b77430bcc416e88561b6fe5797d98b996a7698b9f3bd11d4e7817a19f",
+      "older_compiler_source": "bfa236f639034f61ec884c15bd1f4e0b75e508ac",
+      "older_compiler_tree": "df7ace004eab417c044fe62927c673daefd2b208",
+      "older_driver_sha256": "52d5c046f570d3d61ff8bbaeff0d44798df916306110b4a2cac7fe459bc11955",
+      "producer_compiler_source": "337a07a79cf8f2b9466cf8593344e5a9c479a927",
+      "producer_driver_sha256": "ee9448c27a69a06a50abe707797637638dc6b2a226011339b35adc2b9a065b99"
+    },
+    "source_files_per_arm": 3108
+  },
+  "new_contract": [
+    "Deploy the listed original A, Q and N SHA-256 executables unchanged. Retain the independently rebuilt source-identical seed and A-repeat controls and their original full-file hashes. Never substitute the masked diagnostic document for a measured binary.",
+    "Every qualified release Cargo build must come from these code trees and normal Rust/Cargo release profile. Require literally equal actual Cargo lib and CLI rustc argument hashes, all 80 foreign inputs (standalone .rmeta and sibling .rlib where applicable, or proc-macro .so), 404 files found under explicit native link inputs, same common compiler and profile. Cargo itself as the CLI input changes by construction. No unrelated rustc units may execute in any of five release builds.",
+    "Compare every pair among the three independently built same-source Cargo binaries. Require equal original length, section and segment headers, every machine, data, exception, relocation, exported-symbol and symbol-table record, and equal addresses, sizes, binding, type, visibility and section of all 69,183 symbols. The only permitted unequal original byte ranges are the existing 32-byte GNU build-ID descriptor and ASCII decimal suffixes of the 142 enumerated LLVM symbol names inside the nonloaded .strtab. All 142 symbols must remain absent from .dynstr, 53 local and 89 global in .symtab. Require all three complete-file masked SHA-256 values to be c7fb34d6563e5bf87aa29cfaf098694d0584f16d4528b93f051ea07d9d30b81b.",
+    "Require fresh-process native first-capture regression behavior on all four source/driver arms. Real external input must change 17 to 29 in place at identical size and nanosecond mtime, match empty-target 29, and run no compiler on the next no-op. Q uses an extra capability process on the supporting driver; N does not. Older Rust with N may not complete from the ordinary raw-path header or incidental .rlib source checksum.",
+    "Before any timing, the independent experiment owner must also pass its unchanged workload-native gates and issue a separate prospective measurement schedule and explicit admission. Preserve every native or packaging failure; stop instead of excluding additional fields, changing Arm A, or dropping unfavorable timings."
+  ],
+  "new_contract_does_not_authorize_timing": true,
+  "observed_timed_ruff_commands": 0,
+  "prior_raw_gate": {
+    "criterion": "strict entire same-source Cargo executable equality, no exclusions",
+    "earlier_images": {
+      "A": "50ca47744e09d3ab9cfa320794c1a656935137abc3aaf22b7f74841f7c1be466",
+      "N": "211eb23076878f94c34d965960da2e205f20beb796e3f3f8129aa427183c7f29",
+      "Q": "32037d833133cd98d437ae1f5c5b202d2ca48fa39740fe7a3b3c98135352303b"
+    },
+    "earlier_ineligible_builds": "independent-donors.tar.gz",
+    "earlier_raw_extern_disagreement": {
+      "src/bin/cargo/main.rs": {
+        "N": {
+          "argv_equal": true,
+          "differ": [
+            "cargo",
+            "curl",
+            "git2",
+            "gix",
+            "rusqlite"
+          ],
+          "same": 76,
+          "total": 81
+        },
+        "Q": {
+          "argv_equal": true,
+          "differ": [
+            "cargo",
+            "git2",
+            "gix",
+            "rusqlite"
+          ],
+          "same": 77,
+          "total": 81
+        }
+      },
+      "src/lib.rs": {
+        "N": {
+          "argv_equal": true,
+          "differ": [
+            "curl",
+            "git2",
+            "gix",
+            "rusqlite"
+          ],
+          "same": 76,
+          "total": 80
+        },
+        "Q": {
+          "argv_equal": true,
+          "differ": [
+            "git2",
+            "gix",
+            "rusqlite"
+          ],
+          "same": 77,
+          "total": 80
+        }
+      }
+    },
+    "original_outputs": "narrow-inputs.tar.gz",
+    "status": "failed",
+    "terminal_exit": 1,
+    "worker": "workers/build-pinned.py"
+  },
+  "record_kind": "Prospective admission contract for future wall-time work with the three original unmodified executables; all build and native controls below are pre-score observations.",
+  "required_native_receipt_sha256": "65428bb008cb1fcba9436f5781bb563350486e8485f7633924a5af8de9a4fbfd",
+  "schema": 1
+}
