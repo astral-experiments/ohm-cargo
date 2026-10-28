@@ -1,0 +1,103 @@
+diff --git a/crates/ruff_linter/resources/test/fixtures/flake8_simplify/SIM222.py b/crates/ruff_linter/resources/test/fixtures/flake8_simplify/SIM222.py
+index 62814c796f..ebe41aeda6 100644
+--- a/crates/ruff_linter/resources/test/fixtures/flake8_simplify/SIM222.py
++++ b/crates/ruff_linter/resources/test/fixtures/flake8_simplify/SIM222.py
+@@ -228,3 +228,12 @@ tuple(None) or True  # OK
+ tuple(...) or True  # OK
+ tuple(lambda x: x) or True  # OK
+ tuple(x for x in range(0)) or True  # OK
++
++# An f-string is guaranteed non-empty if any element is non-empty, even if others are indeterminate
++print(f"{x}abc" or "bar")  # SIM222
++# An empty f-string part in an implicit concatenation guarantees nothing
++print(f"" f"{x}" or "bar")  # OK
++
++# Regression test for: https://github.com/astral-sh/ruff/issues/21048
++print(f"{'x':.0}" or "bar")  # OK
++print(f"{x > y}" or "bar")  # OK
+diff --git a/crates/ruff_linter/src/rules/flake8_simplify/snapshots/ruff_linter__rules__flake8_simplify__tests__SIM222_SIM222.py.snap b/crates/ruff_linter/src/rules/flake8_simplify/snapshots/ruff_linter__rules__flake8_simplify__tests__SIM222_SIM222.py.snap
+index 30fb4f841b..d26697a514 100644
+--- a/crates/ruff_linter/src/rules/flake8_simplify/snapshots/ruff_linter__rules__flake8_simplify__tests__SIM222_SIM222.py.snap
++++ b/crates/ruff_linter/src/rules/flake8_simplify/snapshots/ruff_linter__rules__flake8_simplify__tests__SIM222_SIM222.py.snap
+@@ -961,6 +961,23 @@ help: Replace with `"bar"`
+     |
+ note: This is an unsafe fix and may change runtime behavior
+ 
++SIM222 [*] Use `f"{1}{''}"` instead of `f"{1}{''}" or ...`
++   --> SIM222.py:169:7
++    |
++167 | print(f"{a}{''}" or "bar")
++168 | print(f"{''}{''}" or "bar")
++169 | print(f"{1}{''}" or "bar")
++    |       ^^^^^^^^^^^^^^^^^^^
++    |
++help: Replace with `f"{1}{''}"`
++    |
++168 | print(f"{''}{''}" or "bar")
++    - print(f"{1}{''}" or "bar")
++169 + print(f"{1}{''}")
++170 |
++    |
++note: This is an unsafe fix and may change runtime behavior
++
+ SIM222 [*] Use `f"{b''}"` instead of `f"{b''}" or ...`
+    --> SIM222.py:202:7
+     |
+@@ -1052,3 +1069,21 @@ help: Replace with `True`
+ 223 | tuple(t"") or True  # OK
+     |
+ note: This is an unsafe fix and may change runtime behavior
++
++SIM222 [*] Use `f"{x}abc"` instead of `f"{x}abc" or ...`
++   --> SIM222.py:233:7
++    |
++232 | # An f-string is guaranteed non-empty if any element is non-empty, even if others are indeterminate
++233 | print(f"{x}abc" or "bar")  # SIM222
++    |       ^^^^^^^^^^^^^^^^^^
++234 | # An empty f-string part in an implicit concatenation guarantees nothing
++235 | print(f"" f"{x}" or "bar")  # OK
++    |
++help: Replace with `f"{x}abc"`
++    |
++232 | # An f-string is guaranteed non-empty if any element is non-empty, even if others are indeterminate
++    - print(f"{x}abc" or "bar")  # SIM222
++233 + print(f"{x}abc")  # SIM222
++234 | # An empty f-string part in an implicit concatenation guarantees nothing
++    |
++note: This is an unsafe fix and may change runtime behavior
+diff --git a/crates/ruff_python_ast/src/helpers.rs b/crates/ruff_python_ast/src/helpers.rs
+index 19955d1506..d3e760b1a5 100644
+--- a/crates/ruff_python_ast/src/helpers.rs
++++ b/crates/ruff_python_ast/src/helpers.rs
+@@ -1569,7 +1569,6 @@ fn is_non_empty_f_string(expr: &ast::ExprFString) -> bool {
+             Expr::ListComp(_) => true,
+             Expr::SetComp(_) => true,
+             Expr::DictComp(_) => true,
+-            Expr::Compare(_) => true,
+             Expr::NumberLiteral(_) => true,
+             Expr::BooleanLiteral(_) => true,
+             Expr::NoneLiteral(_) => true,
+@@ -1586,6 +1585,8 @@ fn is_non_empty_f_string(expr: &ast::ExprFString) -> bool {
+             Expr::BoolOp(ast::ExprBoolOp { .. }) => false,
+             Expr::BinOp(ast::ExprBinOp { .. }) => false,
+             Expr::UnaryOp(ast::ExprUnaryOp { .. }) => false,
++            // Rich comparison methods can return arbitrary objects.
++            Expr::Compare(_) => false,
+             Expr::Generator(_) => false,
+             Expr::Await(_) => false,
+             Expr::Yield(_) => false,
+@@ -1611,10 +1612,12 @@ fn is_non_empty_f_string(expr: &ast::ExprFString) -> bool {
+     expr.value.iter().any(|part| match part {
+         ast::FStringPart::Literal(string_literal) => !string_literal.is_empty(),
+         ast::FStringPart::FString(f_string) => {
+-            f_string.elements.iter().all(|element| match element {
++            // The part is a concatenation of elements, so it's guaranteed non-empty if any element is
++            f_string.elements.iter().any(|element| match element {
+                 InterpolatedStringElement::Literal(string_literal) => !string_literal.is_empty(),
+                 InterpolatedStringElement::Interpolation(f_string) => {
+-                    f_string.debug_text.is_some() || inner(&f_string.expression)
++                    f_string.debug_text.is_some()
++                        || (f_string.format_spec.is_none() && inner(&f_string.expression))
+                 }
+             })
+         }

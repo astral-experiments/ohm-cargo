@@ -1,0 +1,13 @@
+diff --git a/crates/ruff_python_ast/src/helpers.rs b/crates/ruff_python_ast/src/helpers.rs
+index d3e760b..8da6d72 100644
+--- a/crates/ruff_python_ast/src/helpers.rs
++++ b/crates/ruff_python_ast/src/helpers.rs
+@@ -1613,7 +1613,7 @@ fn is_non_empty_f_string(expr: &ast::ExprFString) -> bool {
+         ast::FStringPart::Literal(string_literal) => !string_literal.is_empty(),
+         ast::FStringPart::FString(f_string) => {
+             // The part is a concatenation of elements, so it's guaranteed non-empty if any element is
+-            f_string.elements.iter().any(|element| match element {
++            f_string.elements.iter().all(|element| match element {
+                 InterpolatedStringElement::Literal(string_literal) => !string_literal.is_empty(),
+                 InterpolatedStringElement::Interpolation(f_string) => {
+                     f_string.debug_text.is_some()

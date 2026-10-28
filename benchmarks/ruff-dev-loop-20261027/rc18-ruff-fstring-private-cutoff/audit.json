@@ -1,0 +1,76 @@
+{
+  "current_candidates": {
+    "cargo": {
+      "branch_count": 285,
+      "current_all_branch_rows_sha256": "949bf989e22512c7b9e8179c09cc84b9cf8382b6239e2621d8572473a0720b33",
+      "current_all_prs_sha256": "869e6aae72f5d4db32582c303828e557d79c46f3bdd107c7f4f7efd004c9315f",
+      "pr_count": 229,
+      "relevant_prs": {
+        "261": [
+          "Prevent stale builds from foreign span inputs and native derives",
+          "857652135b0e7ee03b9c715787056a60ea313183"
+        ],
+        "53": [
+          "Prototype reduced dependency rebuilds with public API hashes",
+          "1aa523118aad2b32eb365589956a96587e527f92"
+        ],
+        "71": [
+          "Pipeline early-cutoff dependencies when public APIs change",
+          "242e7bdc885910beff6872f71300968933293410"
+        ],
+        "83": [
+          "Restore early cutoff with shared registry caching",
+          "f80e71b3d8390e881056bf9c42d5389905b818bf"
+        ]
+      }
+    },
+    "rust": {
+      "branch_count": 313,
+      "current_all_branch_rows_sha256": "78d3ec3f0c2c217e9e1a2d4deb41c8153764d81523b490ca83de0446293a9545",
+      "current_all_prs_sha256": "cc79d5f1d986ef2d17f12cb4a85d77375b3dfee42714a9751262e946356a9672",
+      "pr_count": 221,
+      "relevant_prs": {
+        "232": [
+          "Anchor private concrete trait impls to their self types during checks",
+          "8ce2f21e25c06e7f884ca7b5c4e7898180791ae4"
+        ],
+        "233": [
+          "Keep unreachable private impls out of incremental rlib interface hashes",
+          "27029b4bce40f3b5497add5019c02a11c16c4c18"
+        ],
+        "43": [
+          "Add reachability-based public API hashing",
+          "d9aa2a6187b9028f15ad1e7e80858b315778393a"
+        ],
+        "48": [
+          "Index loaded crates by name and public API hash",
+          "7db05ced4cf799088d60799ca4c6159ef6100b35"
+        ],
+        "52": [
+          "Prune unreachable metadata before public API hashing",
+          "24ad748ab706b140ff71f30651ad881266e0ac58"
+        ]
+      }
+    }
+  },
+  "exact_edit_hits": {
+    "cargo": [],
+    "rust": []
+  },
+  "existing_evidence_ref": "e02380b1f82cb71b7dba676048326f38ebdd7c1b",
+  "number_of_releases": 55,
+  "parent_commit": "57d800be552a88751e7ecd06fc87b44714536033",
+  "parent_tree": "5fc047f61bae1b2bf7292f03ed17f85969ce4276",
+  "release_cargo": "7caf39914da1e28a67744ecbc963a5f26361474d",
+  "release_rust": "a4fa11bcd38280639cb94daacc125472657db6c3",
+  "release_sources": "885faf0af725074adc31080a1c732c60965d8bbe",
+  "source_commit": "1e9287d7654f1dbe4943d67ed5ac5363c9ee2161",
+  "source_tree": "45d40db10d362d57c37f1e52d322cdc77347d161",
+  "survey_files_sha256": {
+    "now-cargo-branches.tsv": "289a339923635d07b91fd1735e619774f410f1d18cf88af89043df1106734462",
+    "now-cargo-prs.json": "f35808b1eb853a52088e4cc3a34f11fb23879f0102a363fac81e234224771b65",
+    "now-rust-branches.tsv": "78d3ec3f0c2c217e9e1a2d4deb41c8153764d81523b490ca83de0446293a9545",
+    "now-rust-prs.json": "cc79d5f1d986ef2d17f12cb4a85d77375b3dfee42714a9751262e946356a9672"
+  },
+  "unique_released_cargo": 44
+}
