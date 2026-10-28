@@ -1,0 +1,134 @@
+{
+  "psm": [
+    {
+      "phase": "original",
+      "wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5",
+      "raw_exec_sha256": "116679e19d1eb4246b33158ffc78e303390ccacf6ffcff1ce48cb39897ac9d66",
+      "successful_wild_execs": 1,
+      "link": 0,
+      "program": 41,
+      "elf": "eecbd5abe5705181b46531a2b5550b3514063f04d79b076727e65cf684813e0b",
+      "actual_inputs": 20,
+      "baseline_inputs_unchanged": true
+    },
+    {
+      "phase": "new-earlier-input",
+      "wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5",
+      "raw_exec_sha256": "0d619bd30e0d96c8469d31cc192066d389ee0bde909fff0bca9f3d56e3af7fec",
+      "successful_wild_execs": 1,
+      "link": 0,
+      "program": 83,
+      "elf": "bf84f3413be9c40d9cdeafac1576d8c11f581185780431d56190ed4b5f2aafed",
+      "actual_inputs": 22,
+      "baseline_inputs_unchanged": true
+    },
+    {
+      "phase": "invalid-earlier-input",
+      "wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5",
+      "raw_exec_sha256": "def883bcbff669040dd57799824da82aa0247a49ab84f17740311047545f3b22",
+      "successful_wild_execs": 1,
+      "link": 1,
+      "stderr_sha256": "e2b62535d166d52e97d41312a796f011df2cb97cd4d5966fc4467cbd66164ba5",
+      "baseline_inputs_unchanged": true
+    },
+    {
+      "phase": "restored",
+      "wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5",
+      "raw_exec_sha256": "5118189d1a7fc750250230fe2544706d94d38da6285d7b12ab6cb1da7aa55eaf",
+      "successful_wild_execs": 1,
+      "link": 0,
+      "program": 41,
+      "elf": "eecbd5abe5705181b46531a2b5550b3514063f04d79b076727e65cf684813e0b",
+      "actual_inputs": 20,
+      "baseline_inputs_unchanged": true
+    }
+  ],
+  "psm-zstd": [
+    {
+      "phase": "original",
+      "wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5",
+      "raw_exec_sha256": "7a10fe84e9037f1062512addeea104f4c9a87c3423805a86a11c521ac651ea57",
+      "successful_wild_execs": 1,
+      "link": 0,
+      "program": 41,
+      "elf": "eecbd5abe5705181b46531a2b5550b3514063f04d79b076727e65cf684813e0b",
+      "actual_inputs": 20,
+      "baseline_inputs_unchanged": true
+    },
+    {
+      "phase": "new-earlier-input",
+      "wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5",
+      "raw_exec_sha256": "38d190260a768d015698dd735730a676b0de99519eae33dfe319ce8670a35708",
+      "successful_wild_execs": 1,
+      "link": 0,
+      "program": 83,
+      "elf": "bf84f3413be9c40d9cdeafac1576d8c11f581185780431d56190ed4b5f2aafed",
+      "actual_inputs": 22,
+      "baseline_inputs_unchanged": true
+    },
+    {
+      "phase": "invalid-earlier-input",
+      "wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5",
+      "raw_exec_sha256": "e05d0fb630a3da099af9426c44b4f54a775ec1ed2862e95cbefff84a55b55e69",
+      "successful_wild_execs": 1,
+      "link": 1,
+      "stderr_sha256": "266b82f955553b14a36ee916745e9497868f805765236a0175824f7f5477878d",
+      "baseline_inputs_unchanged": true
+    },
+    {
+      "phase": "restored",
+      "wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5",
+      "raw_exec_sha256": "d6381d30abbe8e7fde740b0db44addbac7089106b9b8b9fd1d7cd276346303b3",
+      "successful_wild_execs": 1,
+      "link": 0,
+      "program": 41,
+      "elf": "eecbd5abe5705181b46531a2b5550b3514063f04d79b076727e65cf684813e0b",
+      "actual_inputs": 20,
+      "baseline_inputs_unchanged": true
+    }
+  ],
+  "psm-zstd-jemalloc": [
+    {
+      "phase": "original",
+      "wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5",
+      "raw_exec_sha256": "65175f9e1b0e6c3ecf3b8cd078e9c5900f189f9e211f0f02936ccba04c076b32",
+      "successful_wild_execs": 1,
+      "link": 0,
+      "program": 41,
+      "elf": "eecbd5abe5705181b46531a2b5550b3514063f04d79b076727e65cf684813e0b",
+      "actual_inputs": 20,
+      "baseline_inputs_unchanged": true
+    },
+    {
+      "phase": "new-earlier-input",
+      "wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5",
+      "raw_exec_sha256": "a951c512218e800c67e4538ea6ffcf9a4d4c6cbd75e5fd525165fba45ef4d45e",
+      "successful_wild_execs": 1,
+      "link": 0,
+      "program": 83,
+      "elf": "bf84f3413be9c40d9cdeafac1576d8c11f581185780431d56190ed4b5f2aafed",
+      "actual_inputs": 22,
+      "baseline_inputs_unchanged": true
+    },
+    {
+      "phase": "invalid-earlier-input",
+      "wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5",
+      "raw_exec_sha256": "3d27ee2fb817cac1471ffe0042aca36d98df9cf1f31628f0fda65cbaee00b58d",
+      "successful_wild_execs": 1,
+      "link": 1,
+      "stderr_sha256": "8d43bc7a26c3f5e8ba194f9f6538c31f4752eb2b6aeb79da3c7063d3f1196e9a",
+      "baseline_inputs_unchanged": true
+    },
+    {
+      "phase": "restored",
+      "wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5",
+      "raw_exec_sha256": "0eb2ca213fb165cdad06a0fefbbc77e8df3f9d57750d48ec34b8bb7f9ca2a99a",
+      "successful_wild_execs": 1,
+      "link": 0,
+      "program": 41,
+      "elf": "eecbd5abe5705181b46531a2b5550b3514063f04d79b076727e65cf684813e0b",
+      "actual_inputs": 20,
+      "baseline_inputs_unchanged": true
+    }
+  ]
+}
