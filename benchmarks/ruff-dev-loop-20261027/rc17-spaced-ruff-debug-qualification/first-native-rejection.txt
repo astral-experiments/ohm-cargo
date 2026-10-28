@@ -1,0 +1,7 @@
+Traceback (most recent call last):
+  File "<string>", line 37, in <module>
+  File "/mnt/devbox-scratch/dev-user/ohm-spaced-ruff-20261027/rc17-spaced-wall-protocol-v2/score.py", line 44, in compare
+    assert left['normalized']==right['normalized'] and left['bytes']==right['bytes'], name
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: (PosixPath('/mnt/devbox-scratch/dev-user/ohm-spaced-ruff-20261027/matched-native-rc17-matched-parent/workspace/state/target/debug/build/workspaces/2abf155240aec459/v2-d23031a6115abf10/ruff/85b2f1faaebc4c5c/out/ruff-85b2f1faaebc4c5c'), PosixPath('/mnt/devbox-scratch/dev-user/ohm-spaced-ruff-20261027/matched-native-rc17-checked-paths-v4/workspace/state/target/debug/build/workspaces/2abf155240aec459/v2-26fd4b9f9691cd6c/ruff/85b2f1faaebc4c5c/out/ruff-85b2f1faaebc4c5c'))
+Error: exit status 1

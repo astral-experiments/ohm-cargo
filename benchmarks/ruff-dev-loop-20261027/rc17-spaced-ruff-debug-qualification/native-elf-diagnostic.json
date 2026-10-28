@@ -1,0 +1,530 @@
+{
+  "helper_sha256": "da4edc9fcc1710d7e2d3260d9034ceb872c8c621d6581a8b22c6a00d838e5b5f",
+  "native": {
+    "package": {
+      "diagnostics": 0,
+      "differences": {},
+      "exact": 4,
+      "files": 4,
+      "harness": "43678506b50dfb96f27921a111b909aa70ab0dee12f5fc57ce14c2bd1fe8fd8a",
+      "runnable": 1,
+      "units": 303
+    },
+    "workspace": {
+      "diagnostics": 1,
+      "differences": {
+        "debug/build/workspaces/2abf155240aec459/@matched-compiler@/ruff/85b2f1faaebc4c5c/out/ruff-85b2f1faaebc4c5c": {
+          "difference": {
+            "differing_bytes_by_section": {
+              ".debug_info": 50468,
+              ".debug_macro": 4911,
+              ".debug_str": 959789,
+              ".note.gnu.build-id": 32
+            },
+            "digests_after_exact_namespace_and_two_fields": [
+              "4295bf16cb857bd1abc9805ba7b031586261e6284ca3b0bb5678e57683323b8a",
+              "e63e844e93be3a2b90595a874177af5f6679ed4f47c0384fe948470754a81791"
+            ],
+            "first_offsets": [
+              [
+                896,
+                ".note.gnu.build-id"
+              ],
+              [
+                897,
+                ".note.gnu.build-id"
+              ],
+              [
+                898,
+                ".note.gnu.build-id"
+              ],
+              [
+                899,
+                ".note.gnu.build-id"
+              ],
+              [
+                900,
+                ".note.gnu.build-id"
+              ],
+              [
+                901,
+                ".note.gnu.build-id"
+              ],
+              [
+                902,
+                ".note.gnu.build-id"
+              ],
+              [
+                903,
+                ".note.gnu.build-id"
+              ],
+              [
+                904,
+                ".note.gnu.build-id"
+              ],
+              [
+                905,
+                ".note.gnu.build-id"
+              ],
+              [
+                906,
+                ".note.gnu.build-id"
+              ],
+              [
+                907,
+                ".note.gnu.build-id"
+              ],
+              [
+                908,
+                ".note.gnu.build-id"
+              ],
+              [
+                909,
+                ".note.gnu.build-id"
+              ],
+              [
+                910,
+                ".note.gnu.build-id"
+              ],
+              [
+                911,
+                ".note.gnu.build-id"
+              ],
+              [
+                912,
+                ".note.gnu.build-id"
+              ],
+              [
+                913,
+                ".note.gnu.build-id"
+              ]
+            ],
+            "namespace_occurrences": [
+              [
+                [
+                  30605768,
+                  ".debug_str"
+                ]
+              ],
+              [
+                [
+                  29597764,
+                  ".debug_str"
+                ]
+              ]
+            ],
+            "sizes": [
+              46293792,
+              46293792
+            ]
+          },
+          "original": [
+            {
+              "build_id": "101b9f9453e952db20f322c74cdb58564eddc1089a3ed1f581bd1c250118f99c",
+              "bytes": 46293792,
+              "normalized": "e0457d2cbeb633bc4f0651a5951c65b53f6378fa815cee2172c7f56d150be5f1",
+              "rodata_entsize": 0
+            },
+            {
+              "build_id": "f9ace55a0eb8c850f441ad5db3ebffa02743e4f1c475ecc6e17b8d33777808a1",
+              "bytes": 46293792,
+              "normalized": "f66a75fd49e66e2fc3450d7d3ac6edd8eb4f6de159849dbafa7d2f2a52871b4a",
+              "rodata_entsize": 0
+            }
+          ],
+          "raw": [
+            "de061fec1a6caf16d8f952b8ecaa618273323338a9522e5783774dedf017b730",
+            "43c22af194502fb4306c3f8bf3551f71c1e7e5263b5d367010438368127505ab"
+          ],
+          "strict_elf_pass": false
+        },
+        "debug/build/workspaces/2abf155240aec459/@matched-compiler@/ty/c66a86bbbe41e81c/out/ty-c66a86bbbe41e81c": {
+          "difference": {
+            "differing_bytes_by_section": {
+              ".debug_info": 151321,
+              ".debug_macro": 4862,
+              ".debug_str": 6230156,
+              ".note.gnu.build-id": 32
+            },
+            "digests_after_exact_namespace_and_two_fields": [
+              "00f7a378d4d9263704f8ae6a28b597c46e7f4142b635c6a4be2562e2abb68bf8",
+              "065fac0b00e14ede69e6d7a735af48112ccb84da0865a2290715a4fc24418664"
+            ],
+            "first_offsets": [
+              [
+                896,
+                ".note.gnu.build-id"
+              ],
+              [
+                897,
+                ".note.gnu.build-id"
+              ],
+              [
+                898,
+                ".note.gnu.build-id"
+              ],
+              [
+                899,
+                ".note.gnu.build-id"
+              ],
+              [
+                900,
+                ".note.gnu.build-id"
+              ],
+              [
+                901,
+                ".note.gnu.build-id"
+              ],
+              [
+                902,
+                ".note.gnu.build-id"
+              ],
+              [
+                903,
+                ".note.gnu.build-id"
+              ],
+              [
+                904,
+                ".note.gnu.build-id"
+              ],
+              [
+                905,
+                ".note.gnu.build-id"
+              ],
+              [
+                906,
+                ".note.gnu.build-id"
+              ],
+              [
+                907,
+                ".note.gnu.build-id"
+              ],
+              [
+                908,
+                ".note.gnu.build-id"
+              ],
+              [
+                909,
+                ".note.gnu.build-id"
+              ],
+              [
+                910,
+                ".note.gnu.build-id"
+              ],
+              [
+                911,
+                ".note.gnu.build-id"
+              ],
+              [
+                912,
+                ".note.gnu.build-id"
+              ],
+              [
+                913,
+                ".note.gnu.build-id"
+              ]
+            ],
+            "namespace_occurrences": [
+              [
+                [
+                  135261197,
+                  ".debug_str"
+                ]
+              ],
+              [
+                [
+                  128671776,
+                  ".debug_str"
+                ]
+              ]
+            ],
+            "sizes": [
+              190702568,
+              190702568
+            ]
+          },
+          "original": [
+            {
+              "build_id": "66cd98d4ea754e027ae18c5f946b17707f9d7ad11f998aea5ad7bb329a96c7fe",
+              "bytes": 190702568,
+              "normalized": "d1f8bb88b08e04509d5b1452e9ebc84d26dbb7e288d03472d5d2bcfe12f8aa85",
+              "rodata_entsize": 0
+            },
+            {
+              "build_id": "4cae995254c6079dfa73437d11e5d4dd38dfbe9347e9f403765e56d4bae36a91",
+              "bytes": 190702568,
+              "normalized": "84f0e62ed330fe8057a6c6c4584b4175f663c02ea6c1a3bb90cf486e6cc3609d",
+              "rodata_entsize": 0
+            }
+          ],
+          "raw": [
+            "d31731d491f07b28c0d120b990eb8acaf263c1d15b161c15b4df94d104bcd996",
+            "44a823327f2a151ce3b133869bf0e9b123f56d2ed4d797a10f86a0ca860f8446"
+          ],
+          "strict_elf_pass": false
+        },
+        "debug/ruff": {
+          "difference": {
+            "differing_bytes_by_section": {
+              ".debug_info": 123294,
+              ".debug_macro": 5152,
+              ".debug_str": 3130752,
+              ".note.gnu.build-id": 32
+            },
+            "digests_after_exact_namespace_and_two_fields": [
+              "b8719e57993f7c4edb166121ff08b5d39737c2f73c878418604df37c88d33b3e",
+              "941862c91e63b95658e294413707a20608def3204f366d301ca7d15ecfe24587"
+            ],
+            "first_offsets": [
+              [
+                896,
+                ".note.gnu.build-id"
+              ],
+              [
+                897,
+                ".note.gnu.build-id"
+              ],
+              [
+                898,
+                ".note.gnu.build-id"
+              ],
+              [
+                899,
+                ".note.gnu.build-id"
+              ],
+              [
+                900,
+                ".note.gnu.build-id"
+              ],
+              [
+                901,
+                ".note.gnu.build-id"
+              ],
+              [
+                902,
+                ".note.gnu.build-id"
+              ],
+              [
+                903,
+                ".note.gnu.build-id"
+              ],
+              [
+                904,
+                ".note.gnu.build-id"
+              ],
+              [
+                905,
+                ".note.gnu.build-id"
+              ],
+              [
+                906,
+                ".note.gnu.build-id"
+              ],
+              [
+                907,
+                ".note.gnu.build-id"
+              ],
+              [
+                908,
+                ".note.gnu.build-id"
+              ],
+              [
+                909,
+                ".note.gnu.build-id"
+              ],
+              [
+                910,
+                ".note.gnu.build-id"
+              ],
+              [
+                911,
+                ".note.gnu.build-id"
+              ],
+              [
+                912,
+                ".note.gnu.build-id"
+              ],
+              [
+                913,
+                ".note.gnu.build-id"
+              ]
+            ],
+            "namespace_occurrences": [
+              [
+                [
+                  112259396,
+                  ".debug_str"
+                ]
+              ],
+              [
+                [
+                  108943189,
+                  ".debug_str"
+                ]
+              ]
+            ],
+            "sizes": [
+              160007560,
+              160007560
+            ]
+          },
+          "original": [
+            {
+              "build_id": "b4a2be9a5c09c3e9883bf18c9b75109c75520d0ed744819d833622b13eb20981",
+              "bytes": 160007560,
+              "normalized": "295fede56dafa046d43b1b61a1a3910d676394a36dda18581bdddb13e2366c6a",
+              "rodata_entsize": 0
+            },
+            {
+              "build_id": "d2cb2f8b076f8587c2944d9d1113fa2b4d36fe1b8fd60d3ca1c6766a315c6468",
+              "bytes": 160007560,
+              "normalized": "8a4409dcb9508233fbe09393934cf9621633d4880c4b5c112a0c01840cd55dcf",
+              "rodata_entsize": 0
+            }
+          ],
+          "raw": [
+            "623c328e8989c289414fa73a05cdff12da626f1ae14752c1e530afd899b2568e",
+            "5b4a7c9367a91d2f6c16c3efacc2a99233a97f45f06f2f5974e4b84e37079cbd"
+          ],
+          "strict_elf_pass": false
+        },
+        "debug/ty": {
+          "difference": {
+            "differing_bytes_by_section": {
+              ".debug_info": 166741,
+              ".debug_macro": 5099,
+              ".debug_str": 6801622,
+              ".note.gnu.build-id": 31
+            },
+            "digests_after_exact_namespace_and_two_fields": [
+              "6b8f59606c714c356666b80f316a2185363d22bfc3850a0e0f666a49c2d249ef",
+              "08a18ae87a01183a712ffb3058d702ab57d7937a9be7301d420768570290f307"
+            ],
+            "first_offsets": [
+              [
+                897,
+                ".note.gnu.build-id"
+              ],
+              [
+                898,
+                ".note.gnu.build-id"
+              ],
+              [
+                899,
+                ".note.gnu.build-id"
+              ],
+              [
+                900,
+                ".note.gnu.build-id"
+              ],
+              [
+                901,
+                ".note.gnu.build-id"
+              ],
+              [
+                902,
+                ".note.gnu.build-id"
+              ],
+              [
+                903,
+                ".note.gnu.build-id"
+              ],
+              [
+                904,
+                ".note.gnu.build-id"
+              ],
+              [
+                905,
+                ".note.gnu.build-id"
+              ],
+              [
+                906,
+                ".note.gnu.build-id"
+              ],
+              [
+                907,
+                ".note.gnu.build-id"
+              ],
+              [
+                908,
+                ".note.gnu.build-id"
+              ],
+              [
+                909,
+                ".note.gnu.build-id"
+              ],
+              [
+                910,
+                ".note.gnu.build-id"
+              ],
+              [
+                911,
+                ".note.gnu.build-id"
+              ],
+              [
+                912,
+                ".note.gnu.build-id"
+              ],
+              [
+                913,
+                ".note.gnu.build-id"
+              ],
+              [
+                914,
+                ".note.gnu.build-id"
+              ]
+            ],
+            "namespace_occurrences": [
+              [
+                [
+                  140599356,
+                  ".debug_str"
+                ]
+              ],
+              [
+                [
+                  133401144,
+                  ".debug_str"
+                ]
+              ]
+            ],
+            "sizes": [
+              226416240,
+              226416240
+            ]
+          },
+          "original": [
+            {
+              "build_id": "bb57873fc11538a4c3ce21676fdf82d09f67c076e32b783cc694285e9242eb9f",
+              "bytes": 226416240,
+              "normalized": "da2244cf53165af977a1ceda8445a6a061a244f30e81ceac170c71b0a797b03f",
+              "rodata_entsize": 0
+            },
+            {
+              "build_id": "bba8efb31c476deb83ad282f1f0bcd0b6f94a81184f8dc83f6310c8002ef12b6",
+              "bytes": 226416240,
+              "normalized": "5b23b109c070a3b3519072e872ed242a857fcc2198d88d2f6f88727760d105b3",
+              "rodata_entsize": 0
+            }
+          ],
+          "raw": [
+            "6d10ceb65826bb83b991843023820d34407131f3d95f1b266589c25e2534ef30",
+            "e982535006c8b18a105e701374fe694e818c4cc04f29cc249e4f8c3159986d7a"
+          ],
+          "strict_elf_pass": false
+        }
+      },
+      "exact": 106,
+      "files": 110,
+      "harness": "e3254bff0fba6072df809c053ef4e7d7b6490d144568bf3fb4cd6916bd4db316",
+      "runnable": 102,
+      "units": 619
+    }
+  },
+  "prior_clock_files": 0,
+  "prior_exit": 1,
+  "prior_failure": "Traceback (most recent call last):\n  File \"/mnt/devbox-scratch/dev-user/ohm-spaced-ruff-20261027/rc17-spaced-wall-protocol-v2/score.py\", line 184, in <module>\n    main()\n  File \"/mnt/devbox-scratch/dev-user/ohm-spaced-ruff-20261027/rc17-spaced-wall-protocol-v2/score.py\", line 162, in main\n    assert b.roster==c.roster and b.diagnostics==c.diagnostics and b.report['oracle']==c.report['oracle']\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n",
+  "prior_grant": "9291ff85cd3af9bd65111b1688955c86cffae83ee260031869937bddc28a15a7",
+  "prior_ledger_files": 0,
+  "prior_stderr": "Traceback (most recent call last):\n  File \"/mnt/devbox-scratch/dev-user/ohm-spaced-ruff-20261027/rc17-spaced-wall-protocol-v2/score.py\", line 184, in <module>\n    main()\n  File \"/mnt/devbox-scratch/dev-user/ohm-spaced-ruff-20261027/rc17-spaced-wall-protocol-v2/score.py\", line 162, in main\n    assert b.roster==c.roster and b.diagnostics==c.diagnostics and b.report['oracle']==c.report['oracle']\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n"
+}
