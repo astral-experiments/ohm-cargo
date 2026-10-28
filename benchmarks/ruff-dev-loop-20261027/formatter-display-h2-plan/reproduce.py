@@ -82,6 +82,7 @@ def main(a):
     assert all(' ' not in str(p) for p in (ruff,sdk,state)) and not state.exists()
     assert not state.is_relative_to(ruff) and not state.is_relative_to(cache) and not state.is_relative_to(sdk)
     state.mkdir(mode=0o700)
+    a.created_scratch=True
     def run_git(*args): return subprocess.check_output(['git','-C',ruff,*args])
     def source():
         assert run_git('rev-parse','HEAD').decode().strip() == PLAN['ruff'] and not run_git('status','--porcelain=v1','-z')
@@ -113,7 +114,7 @@ def main(a):
         if not src.exists() or src.read_bytes()!=wanted:
             src.write_bytes(wanted)
         assert sha(src)==PLAN['file_sha256'][stage]
-        ns=['bwrap','--ro-bind','/','/','--dev','/dev','--proc','/proc','--tmpfs','/tmp','--bind',str(state),str(state),'--ro-bind',str(src),str(ruff/PLAN['path']),'--chdir',str(ruff),'--']
+        ns=['bwrap','--ro-bind','/','/','--dev','/dev','--proc','/proc','--tmpfs','/tmp','--ro-bind',str(sdk),str(sdk),'--ro-bind',str(ruff),str(ruff),'--ro-bind',str(HERE),str(HERE),'--bind',str(state),str(state),'--ro-bind',str(src),str(ruff/PLAN['path']),'--chdir',str(ruff),'--']
         def run(args, stdin=None):
             return subprocess.run([*ns,*args],env=env,input=stdin,capture_output=True)
         assert run(['sha256sum',str(ruff/PLAN['path'])]).stdout.decode().split()[0]==PLAN['file_sha256'][stage]
@@ -173,5 +174,5 @@ if __name__ == '__main__':
     args=parser.parse_args()
     try: main(args)
     except BaseException:
-        if args.scratch.is_dir(): (args.scratch/'failure.txt').write_text(traceback.format_exc())
+        if getattr(args,'created_scratch',False): (args.scratch/'failure.txt').write_text(traceback.format_exc())
         raise

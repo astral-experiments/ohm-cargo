@@ -10,3 +10,5 @@ On x86-64 Linux the run requires Python 3.11 or newer, Linux user namespaces, bu
 python3 -B reproduce.py --mode build --ruff /path/to/ruff --sdk /path/to/ohm-17 --cargo-cache /path/to/cargo-home --scratch /path/to/new-build-state
 python3 -B reproduce.py --mode test --ruff /path/to/ruff --sdk /path/to/ohm-17 --cargo-cache /path/to/cargo-home --scratch /path/to/new-test-state
 ```
+
+The pre-run launcher explicitly remounts read-only source, SDK and protocol paths if they live on tmpfs, and writes failure evidence only in a scratch directory that this invocation created. The original registration at `87db5ef2a8209c12da45d4869c531abcd7feb256` preceded this portability correction. Both native histories were still empty.
