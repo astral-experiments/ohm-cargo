@@ -1,0 +1,53 @@
+{
+  "gcc": "1b99826121ae6682a634e5efe09bd3e3df58ce58e0b28f849114ab5b89139c26",
+  "collect2": "4d1f341ae5b763b513258ee2812422a45e063c30a2f1924a0cf63d3699f3a158",
+  "wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5",
+  "argv_sha256": "682734cd79991ccbb853ec95b7eab5e8e9230e0ef72f46aa34935a50c6d429b9",
+  "user_link_args": [
+    "-fuse-ld=bfd",
+    "-nostdlib",
+    "-nostartfiles",
+    "-nodefaultlibs",
+    "-static",
+    "-no-pie",
+    "-Llate",
+    "-lauditffi"
+  ],
+  "source_of_change": "bin/specs",
+  "content": "*link: -L<otherwise-unsearched-override>",
+  "rows": [
+    {
+      "phase": "before",
+      "actual": 41,
+      "ELF_sha256": "58abd1c5ad3821addb51464ce296801f6e0c48f4e7ac98f26ee432b9fddf9cc3",
+      "wild_depfile": {
+        "start.o": "69b33d1cf6f4847de516f17a48283d55481cdd6dd205feeaa405f22c6bd62e5f",
+        "late/libauditffi.a": "f58502cf45c4ed4cc356f87008fc821d7ebfbeb81947ff169575a4469fce2a59"
+      },
+      "gcc_reports_new_specs": false,
+      "prior_wild_inputs_unchanged": true
+    },
+    {
+      "phase": "add-gcc-specs",
+      "actual": 83,
+      "ELF_sha256": "f0b4216539a5874b9c2b479f7f0be26d30f26bb5b8b6023920d6fcf360c9ab5c",
+      "wild_depfile": {
+        "start.o": "69b33d1cf6f4847de516f17a48283d55481cdd6dd205feeaa405f22c6bd62e5f",
+        "override/libauditffi.a": "d77f773d961e4eaadaef46ed00b94b83a6931e1d83f36d8ba8fd3d6308bf9118"
+      },
+      "gcc_reports_new_specs": true,
+      "prior_wild_inputs_unchanged": true
+    },
+    {
+      "phase": "remove-gcc-specs",
+      "actual": 41,
+      "ELF_sha256": "58abd1c5ad3821addb51464ce296801f6e0c48f4e7ac98f26ee432b9fddf9cc3",
+      "wild_depfile": {
+        "start.o": "69b33d1cf6f4847de516f17a48283d55481cdd6dd205feeaa405f22c6bd62e5f",
+        "late/libauditffi.a": "f58502cf45c4ed4cc356f87008fc821d7ebfbeb81947ff169575a4469fce2a59"
+      },
+      "gcc_reports_new_specs": false,
+      "prior_wild_inputs_unchanged": true
+    }
+  ]
+}

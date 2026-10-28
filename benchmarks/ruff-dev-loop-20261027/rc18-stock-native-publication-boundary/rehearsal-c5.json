@@ -1,0 +1,97 @@
+{
+  "rehearsal-workspace-edit-inputs": {
+    "e2e": {
+      "actual_elf_equal": false,
+      "all_observed_explicit_inputs_equal": false,
+      "changed_explicit_file_names": [
+        "libty_server-dfadfaacc7b17dea.rlib"
+      ],
+      "e2e": true,
+      "explicit_count": 255,
+      "inputs_removed_or_added": 278,
+      "literal_arg_differences": 142,
+      "normalized_argv_equal": false,
+      "target": "target/debug/build/workspaces/94af4092599137d2/v2-46cccde92ea7c690/ty_server/27d34c779ecc8418/out/e2e-27d34c779ecc8418",
+      "temporary_role_contents_equal": true
+    },
+    "exceptions": [
+      "target/debug/build/workspaces/94af4092599137d2/v2-46cccde92ea7c690/ruff_python_ast_integration_tests/5dc625c8476d8d5b/out/visitor-5dc625c8476d8d5b"
+    ],
+    "literal_three_in_all": false,
+    "new": "rehearsal-workspace-notebook-raw",
+    "new_native": 52,
+    "old": "rehearsal-workspace-second-raw",
+    "old_native": 50,
+    "parent_raw_sha256": "71ddc16c789a5465a7bb43778664873f734b16f523a00fc53a9d5d6c5a09fcc5",
+    "same_observed_explicit_inputs_but_different_elf": 1,
+    "shared_targets": 50,
+    "with_equal_elf": 48,
+    "with_same_observed_explicit_inputs": 43
+  },
+  "rehearsal-workspace-lookups": {
+    "absent_psm_libgcc_s": 50,
+    "absent_zstd_libgcc_s": 34,
+    "e2e": {
+      "directory_enumeration_calls": 0,
+      "distinct_named_lookups": 526,
+      "observed_absent": 100,
+      "observed_present": 418,
+      "output": "target/debug/build/workspaces/94af4092599137d2/v2-46cccde92ea7c690/ty_server/27d34c779ecc8418/out/e2e-27d34c779ecc8418",
+      "pid_count": 3,
+      "psm_libgcc_s_negative": true,
+      "unresolved": {
+        "fd_only": 821,
+        "unresolved_lookup": 1
+      },
+      "zstd_libgcc_s_negative": true
+    },
+    "parent_raw_sha256": "bf71cc94f8587791d32cd8c33e5df6a7b89e5ac25de6004031658919c630f4c0",
+    "total": 50
+  },
+  "rehearsal-workspace-raw": {
+    "all_existing_regular_mode_0775_single_name_no_xattr": true,
+    "e2e": {
+      "argv_fields": 446,
+      "file": "e2e-27d34c779ecc8418",
+      "persistent_explicit_operands": 394,
+      "scope": "ty_server",
+      "sha256": "1d2e6e7b52aef89d9fd80ab7cbad4997baca0f08f7bb489bf721e2d60d76b82c",
+      "size": 225116736
+    },
+    "native_counts": {
+      "full": 1,
+      "link-only": 50,
+      "wild": 50
+    },
+    "outputs": 50,
+    "parent_raw_sha256": "ccf126f5210fc343e01a69e3a9f6431d9be342fcfc879fcdfbda8676b29e2765",
+    "units": 619
+  },
+  "rehearsal-workspace-same-inputs": {
+    "e2e": {
+      "actual_elf_equal": true,
+      "all_observed_explicit_inputs_equal": true,
+      "changed_explicit_file_names": [],
+      "e2e": true,
+      "explicit_count": 394,
+      "inputs_removed_or_added": 0,
+      "literal_arg_differences": 3,
+      "normalized_argv_equal": true,
+      "target": "target/debug/build/workspaces/94af4092599137d2/v2-46cccde92ea7c690/ty_server/27d34c779ecc8418/out/e2e-27d34c779ecc8418",
+      "temporary_role_contents_equal": true
+    },
+    "exceptions": [
+      "target/debug/build/workspaces/94af4092599137d2/v2-46cccde92ea7c690/ruff_python_ast_integration_tests/5dc625c8476d8d5b/out/visitor-5dc625c8476d8d5b"
+    ],
+    "literal_three_in_all": true,
+    "new": "rehearsal-workspace-second-raw",
+    "new_native": 50,
+    "old": "rehearsal-workspace-raw",
+    "old_native": 50,
+    "parent_raw_sha256": "500249aaffa2cf820113f65af059fbeaf4eced79ae05e5481ce602f2f59331e0",
+    "same_observed_explicit_inputs_but_different_elf": 1,
+    "shared_targets": 50,
+    "with_equal_elf": 49,
+    "with_same_observed_explicit_inputs": 50
+  }
+}

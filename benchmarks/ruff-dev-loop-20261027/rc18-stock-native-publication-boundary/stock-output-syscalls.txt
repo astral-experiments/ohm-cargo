@@ -1,0 +1,6 @@
+openat(AT_FDCWD<<case>>, "image", O_RDWR|O_CREAT|O_CLOEXEC, 0666) = 10<<case>/image>
+ftruncate(10<<case>/image>, 6296) = 0
+fallocate(10<<case>/image>, 0, 0, 6296) = 0
+mmap(NULL, 6296, PROT_READ|PROT_WRITE, MAP_SHARED, 10<<case>/image>, 0) = <mapped>
+fchmod(10<<case>/image>, 0100775) = 0
+close(10<<case>/image>) = 0
