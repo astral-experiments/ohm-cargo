@@ -1,0 +1,120 @@
+{
+  "after": "f61f9d66ec9dcc29bac8067dd4d5910db6b7e52009ef7cc976ac0478c6800c52",
+  "alpha": 0.025,
+  "bootstrap_draws": 50000,
+  "bootstrap_seed": 2026102808052,
+  "cargo": {
+    "B": "0aa04df8023984b83ef676d1494d43e482472e1b2bccdb82a4d0bd390578a322",
+    "C": "813ba8a480bc6047d2effde2edff5fe5990781904ff453815ddc71aeb5e0e754"
+  },
+  "ci_sha256": "41675f6e46f035bc5f78e199d7bcf46821caacbfeb0ca9d5f30ac09ebf0df032",
+  "command": [
+    "cargo",
+    "+ohm",
+    "test",
+    "-p",
+    "ruff_text_size",
+    "--no-run",
+    "--locked",
+    "--offline",
+    "-j8"
+  ],
+  "cpus": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+  "data_disclosure": "No wall samples, timings or estimates before terminal. The first compulsory guard failure preserves every file and ends this experiment without a partial effect or p-value.",
+  "declared_paths": 16,
+  "declared_raw_sha256": "b652dd6a12abda27f63fe202d0863bb57605d3c3a66c9b6015201d203c041db8",
+  "harnesses": [
+    "auto_traits",
+    "constructors",
+    "indexing",
+    "main"
+  ],
+  "host": "charlie-ohm-relink-b-1024",
+  "lower_percent_over": 2,
+  "minimum_favorable_pairs": 16,
+  "minimum_ram_available": 6442450944,
+  "minimum_tmpfs_free": 5368709120,
+  "native_registration": {
+    "ref": "d45eb59141a0913ca429f6b44a56b9adf68ea35d",
+    "sha256": "190e3b2e9a954a08274912df804a9582fe61645e078a8b47c093c9fed3e1a000"
+  },
+  "native_result_ref": "7ad7ac2e6d3075cf7ffb21231ec152a289e7432b",
+  "native_result_sha256": "416e61265be8fe0325e67154e116d9d01a66b37a0409ff21462f54f0e0f989b0",
+  "native_seed_bytes": 181576120,
+  "native_source_ref": "d45eb59141a0913ca429f6b44a56b9adf68ea35d",
+  "native_worker_sha256": "c69ee8922fb81eb8a81f6b5d469b3ca6be5b8590b0a0f961b28b71b8ee20c945",
+  "order": [
+    "BC",
+    "BC",
+    "CB",
+    "BC",
+    "CB",
+    "BC",
+    "CB",
+    "BC",
+    "BC",
+    "CB",
+    "CB",
+    "CB",
+    "BC",
+    "BC",
+    "CB",
+    "CB",
+    "CB",
+    "BC",
+    "CB",
+    "BC",
+    "BC",
+    "BC",
+    "CB",
+    "CB"
+  ],
+  "pairs": 24,
+  "per_copy_extra_allowance": 536870912,
+  "quiet": {
+    "max_wait_seconds": 120,
+    "minimum_idle_all": 0.9,
+    "minimum_idle_each": 0.7,
+    "sample_seconds": 1
+  },
+  "remote_base": "/dev/shm/ohm-text-size-first-selection-20261028",
+  "required_ci": [
+    "Rustfmt",
+    "Clippy (depot-ubuntu-24.04-8)",
+    "Clippy (depot-macos-15)",
+    "Cargo tests (depot-ubuntu-24.04-16)",
+    "Cargo tests (depot-macos-15)",
+    "Workspace tests",
+    "Resolver tests",
+    "Schema tests"
+  ],
+  "ruff": "93526150df078af7dd8fc4226cdcc469539d2001",
+  "schedule_seed": 2026102808051,
+  "sdk": {
+    "cargo": "4e4065390403afbf4fb77b2f41fbc21c59afe3dda2337a5bbe29fda29a47dbb3",
+    "driver": "618ebac16b7d4ec01a2af89661d25b8f26ff347edbb69c6dcaa78f10115914a7",
+    "rustc": "7ec5263869aed2fc9272ea7212aabbe7b272a4685f1b79af75c123daff09c02c",
+    "wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5"
+  },
+  "skip_ci": [
+    "Clippy APFS replay"
+  ],
+  "source_heads": {
+    "B": "9a0170863f70d9a88a8b1d1f4c4e1fded4736a9c",
+    "C": "62de9a49872b6369d6246eb1c63603daf473df9a"
+  },
+  "tree": "62d3f106c5e41f6022847f26ff8c7dc00139f7b1",
+  "unscored_preflight_order": [
+    "B",
+    "C"
+  ]
+}
