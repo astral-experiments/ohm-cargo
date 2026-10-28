@@ -1,0 +1,16 @@
+# LLVM context construction while indexing real Ruff archives
+
+Stock Linux Ohm 1.99.0-18 constructs and destroys an `LLVMContext` once per native ELF member while obtaining the archive’s symbols. The LLVM wrapper already selects a context-free parser for ordinary object files. Bitcode uses the context. The investigation used the actual release `LLVMRustGetSymbols` entry point from `librustc_driver`, loaded at process startup, and its matching distributed LLVM library. The experiment fed all 687 native members from four real Ruff archives to that function. Its complete ordered stream of 81,411 `(member, symbol)` pairs matched the existing GNU archive symbol indexes exactly. [Ohm archive symbol reader](https://github.com/astral-sh/ohm-rust/blob/5cf1bf9cd196046897a7aeeaf128833d6a464dfe/compiler/rustc_llvm/llvm-wrapper/SymbolWrapper.cpp#L65) [Pinned LLVM parser](https://github.com/rust-lang/llvm-project/blob/1b9c0d5ff9bbe7634aead059efe6b11a7eeba145/llvm/lib/Object/SymbolicFile.cpp#L98)
+
+| Ruff archive | ELF members | Ordered symbols | Normal index scan | Measured context construction + destruction |
+| --- | ---: | ---: | ---: | ---: |
+| `ruff_python_ast` | 99 | 3,654 | 1.019 ms | 0.428 ms |
+| `ruff_python_parser` | 72 | 993 | 0.558 ms | 0.319 ms |
+| `ruff_linter` | 258 | 26,199 | 8.131 ms | 1.254 ms |
+| `ty_python_semantic` | 258 | 50,565 | 15.214 ms | 1.288 ms |
+
+For each archive a normal process and a second process with transparent constructor/destructor timing performed 24 full scans on one assigned CPU. The table uses the last 22 samples. The shim forwarded every call to the actual LLVM constructor and destructor. Adding those two medians gives roughly 4–5 microseconds per member in these archives. The four archive bodies came from a separate warmed Ruff build. The subsequent historical f-string edit involved 4,579 native ELF members across 32 rebuilt libraries. Extrapolating the observed per-member cost gives roughly 20 ms of aggregate work across those libraries. Parallel compilation and the rest of the native build determine what fraction could reach the command’s wall time. This screening result produced no toolchain change or new pull request. [Historical Ruff workspace build](https://github.com/astral-sh/ohm-cargo/tree/a25ee507692eaaaa074c79b049cc31e7e9ca0bc3/benchmarks/ruff-dev-loop-20261027/rc18-ruff-fstring-private-cutoff)
+
+The first launcher failed before running a compiler experiment. An initial late `dlopen` of rustc also failed because the release requires static thread-local storage. The successful fixture put the verified driver in `LD_PRELOAD` at process startup in both configurations. The symbol-index comparison ran separately from the timing passes. All original and instrumented timings and the four whole archive digests are in `observations.json`.
+
+Run `python3 -IB verify.py` and `sha256sum --quiet -c SHA256SUMS`. To repeat the actual measurements on Linux x86-64, run `python3 -IB reproduce/screen.py --sdk /path/to/ohm-1.99.0-18 --archives /path/to/target/debug --output /new/output`. The archive directory should contain the four `lib<crate>.rlib` files above. The runner validates the exact release driver and library and checks the actual archive’s symbol index before measuring. The full archives and emitted symbol bytes remain on the measurement machine.
