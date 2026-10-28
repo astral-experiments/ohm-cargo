@@ -1,0 +1,72 @@
+{
+  "link3-undefined.callgrind": {
+    "total": 6652070551,
+    "edge_groups": {
+      "section_name": [
+        1303861,
+        148517607
+      ],
+      "hashbrown": [
+        1314592,
+        90869135
+      ]
+    },
+    "all_material_direct_edges": {
+      "<libwild::elf::File<libwild::elf::Class64> as libwild::platform::ObjectFile>::section_name": [
+        1303861,
+        148517607
+      ],
+      "<hashbrown::raw::RawTable<libwild::layout_rules::SectionRule>>::find::<<libwild::layout_rules::SectionRules>::lookup_rule::{closure#0}>::{closure#0}": [
+        1314592,
+        90869135
+      ],
+      "0x0000000000188d80": [
+        1296048,
+        19440720
+      ],
+      "<alloc::raw_vec::RawVec<(u32, &str)>>::grow_one": [
+        23518,
+        7610268
+      ],
+      "__rustc::__rust_alloc_zeroed": [
+        7725,
+        7482709
+      ]
+    }
+  },
+  "candidate.callgrind": {
+    "total": 6425439774,
+    "edge_groups": {
+      "section_name": [
+        341224,
+        36574433
+      ],
+      "hashbrown": [
+        351955,
+        23417512
+      ]
+    },
+    "all_material_direct_edges": {
+      "<libwild::elf::File<libwild::elf::Class64> as libwild::platform::ObjectFile>::section_name": [
+        341224,
+        36574433
+      ],
+      "<hashbrown::raw::RawTable<libwild::layout_rules::SectionRule>>::find::<<libwild::layout_rules::SectionRules>::lookup_rule::{closure#0}>::{closure#0}": [
+        351955,
+        23417512
+      ],
+      "<alloc::raw_vec::RawVec<(u32, &str)>>::grow_one": [
+        23518,
+        7623846
+      ],
+      "__rustc::__rust_alloc_zeroed": [
+        7725,
+        7445183
+      ],
+      "0x0000000000188d80": [
+        333411,
+        5001165
+      ]
+    }
+  }
+}

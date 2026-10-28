@@ -1,0 +1,57 @@
+--- a/libwild/src/elf.rs
++++ b/libwild/src/elf.rs
+@@ -7689,3 +7689,54 @@
+         OutputSectionId::from_u32(ELF_NUM_SINGLE_PART_SECTIONS).offset(self as usize)
+     }
+ }
++
++#[test]
++fn test_default_section_name_prefixes() {
++    let names = [
++        ".text.hot",
++        ".text.unlikely",
++        ".text",
++        ".relaxed",
++        ".rela",
++        ".tex",
++        ".rel",
++    ];
++    let mut object = object::write::Object::new(
++        object::BinaryFormat::Elf,
++        object::Architecture::X86_64,
++        object::Endianness::Little,
++    );
++    for name in names {
++        object.add_section(
++            Vec::new(),
++            name.as_bytes().to_vec(),
++            object::SectionKind::Text,
++        );
++    }
++    let mut bytes = object.write().unwrap();
++    let file = File::<Class64>::parse_elf_bytes(&bytes, false).unwrap();
++    let rules =
++        crate::layout_rules::LayoutRulesBuilder::default().build::<Elf64>(&ElfArgs::default());
++    for name in names {
++        let (_, section) = file.section_by_name(name).unwrap();
++        let expected = (name.starts_with(".text") || name.starts_with(".rela")).then(|| {
++            rules
++                .section_rules
++                .lookup::<Elf64>(name.as_bytes(), None, section)
++        });
++        assert_eq!(file.default_section_rule(section), expected);
++    }
++
++    let mut section = *file.section_by_name(".text").unwrap().1;
++    section
++        .sh_name
++        .set(LittleEndian, file.section_names.len() as u32);
++    assert_eq!(file.default_section_rule(&section), None);
++
++    let hot = *file.section_by_name(".text.hot").unwrap().1;
++    let (_, strings) = file.section_by_name(".shstrtab").unwrap();
++    let (offset, len) = strings.file_range(LittleEndian).unwrap();
++    bytes[(offset + len - 1) as usize] = b'x';
++    let file = File::<Class64>::parse_elf_bytes(&bytes, false).unwrap();
++    assert_eq!(file.default_section_rule(&hot), None);
++}

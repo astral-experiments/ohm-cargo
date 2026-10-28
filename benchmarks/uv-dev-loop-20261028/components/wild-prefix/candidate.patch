@@ -1,0 +1,180 @@
+--- a/libwild/src/elf.rs
++++ b/libwild/src/elf.rs
+@@ -504,6 +504,9 @@
+     #[debug(skip)]
+     pub(crate) sections: SectionTable<'data, C>,
+ 
++    #[debug(skip)]
++    section_names: &'data [u8],
++
+     /// This may be symtab or dynsym depending on the file type.
+     #[debug(skip)]
+     pub(crate) symbols: SymbolTable<'data, C>,
+@@ -3205,6 +3208,14 @@
+         let endian = header.endian()?;
+         let architecture = header.e_machine(endian).try_into()?;
+         let sections = header.sections(endian, data)?;
++        // Any in-bounds offset in a table ending in NUL has a terminated name.
++        let section_names = header
++            .section_strings_index(endian, data)
++            .ok()
++            .and_then(|index| sections.section(index).ok())
++            .and_then(|section| section.data(endian, data).ok())
++            .filter(|names| names.last() == Some(&0))
++            .unwrap_or_default();
+         let eflags = header.e_flags(endian);
+ 
+         let mut group_sections = 0..0;
+@@ -3254,6 +3265,7 @@
+             arch: architecture,
+             data,
+             sections,
++            section_names,
+             symbols,
+             versym,
+             verdef,
+@@ -3411,6 +3423,19 @@
+         self.sections.section_by_name(LittleEndian, name.as_bytes())
+     }
+ 
++    fn default_section_rule(&self, section: &SectionHeader<C>) -> Option<SectionRuleOutcome> {
++        let name = self
++            .section_names
++            .get(section.sh_name(LittleEndian) as usize..)?;
++        if name.starts_with(secnames::TEXT_SECTION_NAME) {
++            Some(TEXT_SECTION_OUTCOME)
++        } else if name.starts_with(secnames::RELA_SECTION_NAME) {
++            Some(SectionRuleOutcome::Discard)
++        } else {
++            None
++        }
++    }
++
+     fn section_name(&self, index: object::SectionIndex) -> Result<&'data [u8]> {
+         let section = self.sections.section(index)?;
+         Ok(self.sections.section_name(LittleEndian, section)?)
+@@ -7341,6 +7366,10 @@
+     erratum_sections: HashMap<InputSectionIndex, ErratumSectionInfo>,
+ }
+ 
++const TEXT_SECTION_OUTCOME: SectionRuleOutcome = SectionRuleOutcome::Section(
++    crate::layout_rules::SectionOutputInfo::regular(output_section_id::TEXT),
++);
++
+ /// Rules that map input sections to built-in output sections when no linker script is in use.
+ const DEFAULT_SECTION_PLACEMENT_RULES: &[SectionRule<'static>] = &[
+     SectionRule::exact_section_keep(secnames::INIT_SECTION_NAME, output_section_id::INIT),
+@@ -7355,7 +7384,7 @@
+         output_section_id::NOTE_ABI_TAG,
+     ),
+     SectionRule::prefix_section(secnames::RODATA_SECTION_NAME, output_section_id::RODATA),
+-    SectionRule::prefix_section(secnames::TEXT_SECTION_NAME, output_section_id::TEXT),
++    SectionRule::prefix(secnames::TEXT_SECTION_NAME, TEXT_SECTION_OUTCOME),
+     SectionRule::prefix_section(
+         secnames::DATA_REL_RO_SECTION_NAME,
+         output_section_id::DATA_REL_RO,
+--- a/libwild/src/platform.rs
++++ b/libwild/src/platform.rs
+@@ -1322,6 +1322,14 @@
+         state: &mut <Self::Platform as Platform>::DynamicLayoutStateExt<'data>,
+     ) -> Result;
+ 
++    /// Matches common built-in rules without reading the full section name.
++    fn default_section_rule(
++        &self,
++        _section: &<Self::Platform as Platform>::SectionHeader,
++    ) -> Option<SectionRuleOutcome> {
++        None
++    }
++
+     fn section_name(&self, index: object::SectionIndex) -> Result<&'data [u8]>;
+ 
+     /// Returns the raw section data. Doesn't handle decompression.
+--- a/libwild/src/resolution.rs
++++ b/libwild/src/resolution.rs
+@@ -1656,11 +1656,12 @@
+     if !args.should_output_partial_object() && input_section.is_group_header() {
+         return Ok((SectionSlot::Discard, part_id::UNMAPPED));
+     }
+-    let section_name = obj
+-        .common
+-        .object
+-        .section_name(input_section_index)
+-        .unwrap_or_default();
++    let read_section_name = || {
++        obj.common
++            .object
++            .section_name(input_section_index)
++            .unwrap_or_default()
++    };
+ 
+     let raw_alignment = obj.common.object.section_alignment(input_section)?;
+     let alignment = Alignment::new(raw_alignment.max(1))?;
+@@ -1684,17 +1685,33 @@
+             .map(|n| n.as_encoded_bytes())
+     };
+ 
+-    let rule_outcome = if args.should_output_partial_object() {
+-        P::lookup_for_partial_link(section_name, input_section, args)
++    let (name, rule_outcome) = if args.should_output_partial_object() {
++        let name = read_section_name();
++        (
++            Some(name),
++            P::lookup_for_partial_link(name, input_section, args),
++        )
++    } else if !layout_rules.has_linker_script
++        && args.orphan_handling() == OrphanHandling::Place
++        && input_section_index.0 != 0
++        && !input_section.should_exclude()
++        && let Some(rule) = obj.common.object.default_section_rule(input_section)
++    {
++        (None, rule)
+     } else {
+-        layout_rules
+-            .section_rules
+-            .lookup::<P>(section_name, file_name, input_section)
++        let name = read_section_name();
++        (
++            Some(name),
++            layout_rules
++                .section_rules
++                .lookup::<P>(name, file_name, input_section),
++        )
+     };
++    let section_name = || name.unwrap_or_else(read_section_name);
+ 
+     if args.orphan_handling() != OrphanHandling::Place
+-        && layout_rules.is_orphan::<P>(section_name, file_name, input_section)
+-        && check_orphan_placement::<P>(args, &obj.common.input, section_name)
++        && layout_rules.is_orphan::<P>(section_name(), file_name, input_section)
++        && check_orphan_placement::<P>(args, &obj.common.input, section_name())
+             .map_err(|e| error_builder.lock().unwrap().add_error(e))
+             .is_ok_and(|is_discarded| is_discarded)
+     {
+@@ -1726,7 +1743,7 @@
+             } else {
+                 output_info.section_id.base_part_id::<P>()
+             };
+-            if let Some(priority) = P::init_section_priority(section_name) {
++            if let Some(priority) = P::init_section_priority(section_name()) {
+                 obj.init_fini_sections.push(InitFiniSectionDetail {
+                     index: input_section_index.into(),
+                     primary: output_info.section_id,
+@@ -1793,7 +1810,7 @@
+         SectionRuleOutcome::Custom => {
+             part_id = PartId::CUSTOM_PLACEHOLDER;
+             unloaded_section = UnloadedSection::new();
+-            unloaded_section.start_stop_eligible = !section_name.starts_with(b".");
++            unloaded_section.start_stop_eligible = !section_name().starts_with(b".");
+         }
+         SectionRuleOutcome::RiscVAttribute => {
+             return Ok((
+@@ -1811,7 +1828,7 @@
+ 
+     if part_id == PartId::CUSTOM_PLACEHOLDER {
+         let custom_section = CustomSectionDetails {
+-            identity: P::section_identity(SectionName(section_name), input_section),
++            identity: P::section_identity(SectionName(section_name()), input_section),
+             alignment,
+             index: input_section_index.into(),
+         };
