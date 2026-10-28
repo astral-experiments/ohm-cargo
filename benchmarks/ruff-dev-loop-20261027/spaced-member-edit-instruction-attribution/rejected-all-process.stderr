@@ -1,0 +1,22 @@
+   Compiling ty_vendored v0.0.17 (/home/dev-user/code/oss/ruff-early-completion-20261027/crates/ty_vendored)
+ ERROR rustc_interface::passes failed to compute checksum, omitting it from dep-info /mnt/devbox-scratch/dev-user/ohm-early-completion-20261027/member-build-matched-canonical-v1/ruff\ target/debug/build/workspaces/d46a37bd781ab0be/v2-14943575c854e17d/ty_vendored/374a95158e8d6db9/out/zipped_typeshed.zip No such file or directory (os error 2)
+   Compiling ty_python_core v0.0.17 (/home/dev-user/code/oss/ruff-early-completion-20261027/crates/ty_python_core)
+   Compiling ty_python_semantic v0.0.17 (/home/dev-user/code/oss/ruff-early-completion-20261027/crates/ty_python_semantic)
+   Compiling ty_project v0.0.0 (/home/dev-user/code/oss/ruff-early-completion-20261027/crates/ty_project)
+   Compiling ty_ide v0.0.0 (/home/dev-user/code/oss/ruff-early-completion-20261027/crates/ty_ide)
+   Compiling ty_wasm v0.0.0 (/home/dev-user/code/oss/ruff-early-completion-20261027/crates/ty_wasm)
+    Finished `dev` profile [optimized + debuginfo] target(s) in 21.49s
+<Application /mnt/devbox-scratch/dev-user/ohm-early-completion-20261027/member-build-matched-canonical-v1/Ohm-SDK/bin/cargo (3456161).  Tool internal crash at PC 0x0000784845c47a74.  Please report this at your tool's issue tracker.  Program aborted.
+Received SIGSEGV at unknown pc 0x0000784845c47a74 in thread 3456161
+Base: 0x0000784846c00000
+Registers:eax=0x00b04ecd77ab7dbb ebx=0x0000784845e05fa8 ecx=0x0000000000000001 edx=0x0000000000000001
+	esi=0x0000000000000000 edi=0x0000000000000000 esp=0x00007fff36dac130 ebp=0x00007fff36dac180
+	r8 =0x0000000000000000 r9 =0x0000000000000007 r10=0x0000555584004270 r11=0x804ca0fea42f775a
+	r12=0x0000000000000002 r13=0x0000000000000000 r14=0x0000000000000000 r15=0x0000784845e05fc0
+	eflags=0x0000000000010246
+version 11.91.20741, custom build
+-no_dynamic_options -client_lib '/mnt/devbox-scratch/dev-user/ohm-early-completion-20261027/spaced-dirty-attribution-20261028/tools-v1/client/libpidcounter.so;0;"/mnt/devbox-scratch/dev-user/ohm-early-completion-20261027/spaced-dirty-attribution-20261028/ir-v1/rows/01-B/edit/3456161-cargo.count"' -client_lib64 '/mnt/devb
+0x00007fff36dac180 0x0000784845c47bbe
+0x00007fff36dac190 0x0000784845c2a1d1
+0x00007fff36dac230 0x0000784845c2a28b
+0x00007fff36dac290 0x000078483e8eb0a5>

@@ -1,0 +1,25 @@
+==3486665== Callgrind, a call-graph generating cache profiler
+==3486665== Copyright (C) 2002-2017, and GNU GPL'd, by Josef Weidendorfer et al.
+==3486665== Using Valgrind-3.22.0 and LibVEX; rerun with -h for copyright info
+==3486665== Command: /mnt/devbox-scratch/dev-user/ohm-early-completion-20261027/member-build-matched-canonical-v1/Ohm-SDK/bin/cargo build --locked --offline -j4
+==3486665== Parent PID: 3486664
+==3486665== 
+==3486665== For interactive control, run 'callgrind_control -h'.
+==3486665== 
+==3486665== Process terminating with default action of signal 5 (SIGTRAP)
+==3486665==    at 0x4F89D31: setenv (in /usr/lib/x86_64-linux-gnu/libc.so.6)
+==3486665==    by 0x2036C4D: std::sys::env::unix::setenv::{closure#0}::{closure#0} (in /mnt/devbox-scratch/dev-user/ohm-early-completion-20261027/member-build-matched-canonical-v1/Ohm-SDK/bin/cargo)
+==3486665==    by 0x2059EA5: std::sys::env::unix::setenv (in /mnt/devbox-scratch/dev-user/ohm-early-completion-20261027/member-build-matched-canonical-v1/Ohm-SDK/bin/cargo)
+==3486665==    by 0x1D5F124: openssl_probe::try_init_openssl_env_vars::put (in /mnt/devbox-scratch/dev-user/ohm-early-completion-20261027/member-build-matched-canonical-v1/Ohm-SDK/bin/cargo)
+==3486665==    by 0x1D5EB2E: openssl_probe::try_init_openssl_env_vars (in /mnt/devbox-scratch/dev-user/ohm-early-completion-20261027/member-build-matched-canonical-v1/Ohm-SDK/bin/cargo)
+==3486665==    by 0x94E355: cargo::cli::main (in /mnt/devbox-scratch/dev-user/ohm-early-completion-20261027/member-build-matched-canonical-v1/Ohm-SDK/bin/cargo)
+==3486665==    by 0x9851C9: cargo::main (in /mnt/devbox-scratch/dev-user/ohm-early-completion-20261027/member-build-matched-canonical-v1/Ohm-SDK/bin/cargo)
+==3486665==    by 0x208128A: std::sys::backtrace::__rust_begin_short_backtrace::<fn(), ()> (in /mnt/devbox-scratch/dev-user/ohm-early-completion-20261027/member-build-matched-canonical-v1/Ohm-SDK/bin/cargo)
+==3486665==    by 0x91D838: std::rt::lang_start::<()>::{closure#0} (in /mnt/devbox-scratch/dev-user/ohm-early-completion-20261027/member-build-matched-canonical-v1/Ohm-SDK/bin/cargo)
+==3486665==    by 0x2054208: std::rt::lang_start_internal (in /mnt/devbox-scratch/dev-user/ohm-early-completion-20261027/member-build-matched-canonical-v1/Ohm-SDK/bin/cargo)
+==3486665==    by 0x987A73: main (in /mnt/devbox-scratch/dev-user/ohm-early-completion-20261027/member-build-matched-canonical-v1/Ohm-SDK/bin/cargo)
+==3486665== 
+==3486665== Events    : Ir
+==3486665== Collected : 8535544
+==3486665== 
+==3486665== I   refs:      8,535,544

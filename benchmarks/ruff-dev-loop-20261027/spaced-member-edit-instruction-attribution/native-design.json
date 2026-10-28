@@ -1,0 +1,189 @@
+{
+  "arms": {
+    "B": {
+      "cargo_sha": "e74dddbed648ca90bd5cabab90d9e02517478e40f5552a0a8369d72d15596d33",
+      "driver": "36d1fd142355c3ad9e0ce006c1e92b7e511cba70c431b09eb1e335f572d27d05"
+    },
+    "C": {
+      "cargo_sha": "787ed90b5a14000ac0b1efc1d1aac5d730e0107b2e995cc0471138402759a4d5",
+      "driver": "52d5c046f570d3d61ff8bbaeff0d44798df916306110b4a2cac7fe459bc11955"
+    }
+  },
+  "common": {
+    "frontend": "4fa9a18b77430bcc416e88561b6fe5797d98b996a7698b9f3bd11d4e7817a19f",
+    "wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5"
+  },
+  "design": "All thirty commands are untimed. Compare independent empty states, real unchanged front-end and linker process counts, actual source edit and restoration for ty_wasm, and the clean edited oracle. Save all traces and ordinary Cargo streams. Compile and invoke a fresh external Rust caller after every command, reading the exact stub through the compiled ty_vendored VFS. Validate both selected library versions or public types, the generated ZIP bytes in each ty_vendored rlib/rmeta, complete diagnostic and artifact rosters. Surface source-dependent checksum or path differences before a timing protocol.",
+  "git_edit": "1eab8c883aa32324a2710c1a277bf614b86cfba3",
+  "git_parent": "3955974c3accbc1aedfeaeba58965219b35f2411",
+  "histories": [
+    [
+      "Bwasm",
+      "ty_wasm",
+      "original",
+      [
+        [
+          "cold",
+          "original"
+        ],
+        [
+          "train",
+          "original"
+        ],
+        [
+          "repeat-one",
+          "original"
+        ],
+        [
+          "repeat-two",
+          "original"
+        ],
+        [
+          "edit",
+          "reversed"
+        ],
+        [
+          "edit-repeat-one",
+          "reversed"
+        ],
+        [
+          "edit-repeat-two",
+          "reversed"
+        ],
+        [
+          "restore",
+          "original"
+        ],
+        [
+          "restore-repeat-one",
+          "original"
+        ],
+        [
+          "restore-repeat-two",
+          "original"
+        ]
+      ]
+    ],
+    [
+      "Cwasm",
+      "ty_wasm",
+      "original",
+      [
+        [
+          "cold",
+          "original"
+        ],
+        [
+          "train",
+          "original"
+        ],
+        [
+          "repeat-one",
+          "original"
+        ],
+        [
+          "repeat-two",
+          "original"
+        ],
+        [
+          "edit",
+          "reversed"
+        ],
+        [
+          "edit-repeat-one",
+          "reversed"
+        ],
+        [
+          "edit-repeat-two",
+          "reversed"
+        ],
+        [
+          "restore",
+          "original"
+        ],
+        [
+          "restore-repeat-one",
+          "original"
+        ],
+        [
+          "restore-repeat-two",
+          "original"
+        ]
+      ]
+    ],
+    [
+      "Cgold",
+      "ty_wasm",
+      "reversed",
+      [
+        [
+          "clean-edit",
+          "reversed"
+        ],
+        [
+          "clean-edit-repeat",
+          "reversed"
+        ]
+      ]
+    ],
+    [
+      "Cproject",
+      "ty_project",
+      "original",
+      [
+        [
+          "cold",
+          "original"
+        ],
+        [
+          "train",
+          "original"
+        ],
+        [
+          "repeat-one",
+          "original"
+        ],
+        [
+          "repeat-two",
+          "original"
+        ]
+      ]
+    ],
+    [
+      "Bproject",
+      "ty_project",
+      "original",
+      [
+        [
+          "cold",
+          "original"
+        ],
+        [
+          "train",
+          "original"
+        ],
+        [
+          "repeat-one",
+          "original"
+        ],
+        [
+          "repeat-two",
+          "original"
+        ]
+      ]
+    ]
+  ],
+  "index": "fc84f15ac7401cd9bdc362e4574c6d395529766c16be2e6b032ac47fa63d21cd",
+  "ruff": "93526150df078af7dd8fc4226cdcc469539d2001",
+  "shipped_registration": "3023f0a5b027c838a5c59b82034cc508da89e9d5",
+  "source_comparison": "f125e6465b1d016baaa793d46a8d7c7c74877bd7",
+  "stem": "crates/ty_vendored/vendor/typeshed/stdlib/functools.pyi",
+  "stub": {
+    "original": "721696b22e172c4f9dbe15ec5e04a04a9939188eca12d8110ab62f9de81d96a1",
+    "reversed": "0a9e5b203ef44812cd48a115f5fceafaffc2b0c0b013a1de927e2660865a10c5"
+  },
+  "units": {
+    "ty_project": 275,
+    "ty_wasm": 304
+  }
+}
