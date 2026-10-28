@@ -1,0 +1,25 @@
+{
+  "compiler": "gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+  "crate_sha": "0aa83c34e62843d924f905e0f5c866eb1dd6545fc4d719e803d9ba6030371fce",
+  "fdhash_c": "97fa8b41244f7eab2fcd5cb25085b914b3574b634bae5d345d82d6d6e4e44543",
+  "flags": [
+    "-O3",
+    "-fPIC",
+    "-shared",
+    "-Wl,-z,relro,-z,now"
+  ],
+  "lib_sha": "d8475aabe064c864df9c1e7df83b82e7cf9d0c1f7910a4f1fa917f15ff373790",
+  "pkg": "blake3",
+  "sources": {
+    "blake3.c": "b118ddf7cf9e6e5ef3fded72dcb1acf9dfdc4ea923cbe4605900ad6ee9afe1af",
+    "blake3.h": "df32c1e80577eabaab8ca9ba3b8be273bc2201a8cff6276c62cd8deba15f9348",
+    "blake3_avx2_x86-64_unix.S": "a2d95519fd9845cf80252110e21a93124e81c03da836eaac0bca0537be4f8324",
+    "blake3_avx512_x86-64_unix.S": "c641987dd82fabed59d527f1a3413c4a2ff3df919af6d13ff2788c95e4035c0d",
+    "blake3_dispatch.c": "134f21550138c0af6312925c988aeee35df287e4119e8ad1d206fccdb2238fe3",
+    "blake3_impl.h": "d388dca3574602c8849805ea3c8c0a12d082ac0e428756f305e111942f099af4",
+    "blake3_portable.c": "2bc25b0dad67b4329d0b49cfa075ab2b0d04e424addbddc4e9c389c52a192524",
+    "blake3_sse2_x86-64_unix.S": "94baa998f4114bf57b99e1791a21e9f0bcdc4bd5803864eb30a2477440b7380c",
+    "blake3_sse41_x86-64_unix.S": "135048e4a81a6f9e86960b115141874a55954dbfd2cd1e8e9818837b46b498ad"
+  },
+  "version": "1.8.5"
+}
