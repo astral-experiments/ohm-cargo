@@ -1,0 +1,118 @@
+{
+  "as_of_utc": "2026-10-28T20:36:37.035044+00:00",
+  "release": "ohm-1.99.0-18",
+  "release_url": "https://github.com/astral-sh/ohm/releases/tag/ohm-1.99.0-18",
+  "linux_provenance_url": "https://github.com/astral-sh/ohm/releases/download/ohm-1.99.0-18/ohm-1.99.0-18-x86_64-unknown-linux-gnu-provenance.json",
+  "coordinator_head": "885faf0af725074adc31080a1c732c60965d8bbe",
+  "component_pins": {
+    "rust": {
+      "repository": "https://github.com/astral-sh/ohm-rust",
+      "revision": "a4fa11bcd38280639cb94daacc125472657db6c3"
+    },
+    "cargo": {
+      "repository": "https://github.com/astral-sh/ohm-cargo",
+      "revision": "7caf39914da1e28a67744ecbc963a5f26361474d"
+    },
+    "clippy": {
+      "repository": "https://github.com/astral-sh/ohm-rust-clippy",
+      "revision": "0d76dc1f4fe7ffb86ee5e1a8a9cc4d6bef1d1bf6"
+    },
+    "rustfmt": {
+      "repository": "https://github.com/astral-sh/ohm-rustfmt",
+      "revision": "3c9620c92b01e6c393324729c4861823cc3676e2"
+    }
+  },
+  "wild": {
+    "version": "0.11.0",
+    "sha256": "25012a78de164686f552b7703b5d0223adab4829c79cd1fb351108221d61c7d8"
+  },
+  "release_rust_branch": [
+    "charlie/ohm-qualify-cargo-pin-rc18-20261028"
+  ],
+  "draft": {
+    "number": 247,
+    "url": "https://github.com/astral-sh/ohm-rust/pull/247",
+    "isDraft": true,
+    "headRefOid": "395a878a9ea634f84319d2c04653ec1e79e38f16",
+    "baseRefOid": "bfa236f639034f61ec884c15bd1f4e0b75e508ac",
+    "baseRefName": "charlie/ohm-verify-dep-info-paths-1.99.0-17",
+    "reviews": [],
+    "reviewRequests": [],
+    "statusCheckRollup": [
+      {
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/astral-sh/ohm-rust/actions/runs/40729102424/job/122960238294",
+        "name": "Formatting and tidy",
+        "status": "COMPLETED"
+      },
+      {
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/astral-sh/ohm-rust/actions/runs/40729102424/job/122960238597",
+        "name": "Compiler and regression tests",
+        "status": "COMPLETED"
+      },
+      {
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/astral-sh/ohm-rust/actions/runs/40729102424/job/122960238709",
+        "name": "Compiler and regression tests (macOS)",
+        "status": "COMPLETED"
+      }
+    ]
+  },
+  "release_contains_change": false,
+  "equivalent_in_other_fork_heads": false,
+  "pr_to_release_ancestry": {
+    "base": "395a878a9ea634f84319d2c04653ec1e79e38f16",
+    "head": "a4fa11bcd38280639cb94daacc125472657db6c3",
+    "url": "https://github.com/astral-sh/ohm-rust/compare/395a878a9ea634f84319d2c04653ec1e79e38f16...a4fa11bcd38280639cb94daacc125472657db6c3",
+    "ahead_by": 7,
+    "behind_by": 1,
+    "merge_base": "bfa236f639034f61ec884c15bd1f4e0b75e508ac",
+    "status": "diverged"
+  },
+  "comparison_census": {
+    "published_releases": 55,
+    "distinct_released_rust_commits": 51,
+    "distinct_released_path_files": 3,
+    "scalar_function_sha256": "a4ee8ce881c2a853453471372cfb7d1b47d690bd4fa5bc02c4c97b5ea4be8c0c",
+    "named_fork_branches": 312,
+    "branches_with_scalar_loop": 309,
+    "branches_with_optimization": [
+      "charlie/ohm-word-path-comparison-uv"
+    ],
+    "branches_with_no_std": [
+      {
+        "name": "codex/uv-attribute-cache-evidence-20261023",
+        "sha": "684921c9838cd25db28cec4ff9c58c4d67abea61",
+        "path_blob": null,
+        "root_files": [
+          "benchmarks"
+        ]
+      },
+      {
+        "name": "codex/uv-attribute-cache-evidence-full-20261023",
+        "sha": "52627489f8f2bacc6204571430f682a8013a72b5",
+        "path_blob": null,
+        "root_files": [
+          "benchmarks"
+        ]
+      }
+    ],
+    "open_prs": 139,
+    "open_prs_with_optimization": [
+      247
+    ],
+    "closed_prs": 81,
+    "closed_merged": 12,
+    "closed_prs_touching_path_or_platform_path_files": []
+  },
+  "released_17_and_18_touched_blobs_identical": true,
+  "released_18_touched_blobs": {
+    "library/std/src/path.rs": "be216d87f324116320faa7f0111526dfdb285433",
+    "library/std/tests/path.rs": "8997b8ad192dcc022ee1754675c6ebd7af27d26b"
+  },
+  "complete_pr_patch_sha256": "101edf0543b3331315910306be22603c3595ad2549bae68144fd0b3408e91c40",
+  "complete_pr_applies_to_18": true,
+  "performance_evidence_release": "ohm-1.99.0-17",
+  "new_release_benchmarked": false
+}

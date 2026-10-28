@@ -1,0 +1,235 @@
+{
+ "as_of": "2026-10-28T20:42:56.220555+00:00",
+ "recognized_commits": 297,
+ "named_branches": 282,
+ "open_prs": 141,
+ "released_tags": 55,
+ "absent_sources": {
+  "ae67763e3d0f2d881f1c40568c82278bc6ee6a89": {
+   "branches": [
+    "charlie/uv-ohm-cumulative-177-178-evidence-20261021"
+   ],
+   "layout": null,
+   "root_files": [
+    "benchmarks"
+   ]
+  },
+  "134d3f3108524ed56c4525d3c5a05eff33472a49": {
+   "branches": [
+    "charlie/uv-ohm-four-changes-stack176-evidence-20261021"
+   ],
+   "layout": null,
+   "root_files": [
+    "benchmarks"
+   ]
+  },
+  "4a26ff22f50250a406ce0e237adba6137ec48879": {
+   "branches": [
+    "charlie/uv-ohm-joint-183-185-stack181-evidence-20261022"
+   ],
+   "layout": null,
+   "root_files": [
+    "benchmarks"
+   ]
+  },
+  "55a2638f32e21352993304a813989a40ec696ad9": {
+   "branches": [
+    "charlie/uv-ohm-lazy-git-evidence-20261021"
+   ],
+   "layout": null,
+   "root_files": [
+    "benchmarks"
+   ]
+  },
+  "c6b30370387ebf3e8efc6c21ad82cbc403e48ab0": {
+   "branches": [
+    "charlie/uv-ohm-lazy-sbom-stack179-evidence-20261021"
+   ],
+   "layout": null,
+   "root_files": [
+    "benchmarks"
+   ]
+  },
+  "59e50d2065ee2a04772842a23eb89f0b3d362adb": {
+   "branches": [
+    "charlie/uv-ohm-loader-evidence-20261021"
+   ],
+   "layout": null,
+   "root_files": [
+    "benchmarks"
+   ]
+  },
+  "759bd2affe9db7344169b8ab7a102c5e0b6d0532": {
+   "branches": [
+    "charlie/uv-ohm-package-id-order-stack181-evidence-20261021"
+   ],
+   "layout": null,
+   "root_files": [
+    "benchmarks"
+   ]
+  },
+  "6784b8b18712ec56b1b44799635bf14f5bc1b6d8": {
+   "branches": [
+    "charlie/uv-ohm-parser-allocations-stack181-evidence-20261021"
+   ],
+   "layout": null,
+   "root_files": [
+    "benchmarks"
+   ]
+  },
+  "35a2d7792848c3c45fffdcd7d4308d8d79d98ba4": {
+   "branches": [
+    "charlie/uv-ohm-path-cache-evidence-20261021"
+   ],
+   "layout": null,
+   "root_files": [
+    "benchmarks"
+   ]
+  },
+  "46e3a8185ef33ab5439c7ae5c4c01fa31d6b6f09": {
+   "branches": [
+    "charlie/uv-ohm-path-cache-stack179-evidence-20261021"
+   ],
+   "layout": null,
+   "root_files": [
+    "benchmarks"
+   ]
+  },
+  "681372231d9ca8a72f7c67a66205000fe22a6fc5": {
+   "branches": [
+    "charlie/uv-ohm-performance-evidence-20261021"
+   ],
+   "layout": null,
+   "root_files": [
+    "benchmarks"
+   ]
+  },
+  "292a5e69dfd105b577d866ff1018caf5b1721523": {
+   "branches": [
+    "charlie/uv-ohm-scheduler-bitsets-stack181-evidence-20261021"
+   ],
+   "layout": null,
+   "root_files": [
+    "benchmarks"
+   ]
+  },
+  "bac845833649bb9b545beefd73b4e94be7b2da1d": {
+   "branches": [
+    "charlie/uv-ohm-workspace-inheritance-stack180-evidence-20261021"
+   ],
+   "layout": null,
+   "root_files": [
+    "benchmarks"
+   ]
+  }
+ },
+ "unexpected_optimized_sites": [],
+ "need_manual_inspection": [],
+ "variants": {
+  "264": {
+   "head": "567b7d201b325e745d2dadd1553363b5c85f30d7",
+   "title": "Borrow unit dependencies during build and fingerprint traversal",
+   "released_tags_containing_equivalent": [],
+   "branches_containing_change": [
+    "charlie/ohm-borrow-depfile-paths-uv",
+    "charlie/ohm-borrow-unit-deps-uv",
+    "charlie/ohm-cache-feature-deps-uv",
+    "charlie/ohm-lazy-unused-dep-warnings-uv",
+    "charlie/ohm-move-locked-version-reqs-uv"
+   ],
+   "open_prs_containing_change": [
+    269,
+    264,
+    268,
+    267,
+    270
+   ],
+   "current_release": "original-work-present",
+   "ohm_1_99_tip": "original-work-present",
+   "ohm_default_tip": "original-work-present"
+  },
+  "267": {
+   "head": "4246bb695caa5f713c7234b037512c5262b6891f",
+   "title": "Format dependency warning paths only for unused manifest keys",
+   "released_tags_containing_equivalent": [],
+   "branches_containing_change": [
+    "charlie/ohm-borrow-depfile-paths-uv",
+    "charlie/ohm-cache-feature-deps-uv",
+    "charlie/ohm-lazy-unused-dep-warnings-uv",
+    "charlie/ohm-move-locked-version-reqs-uv"
+   ],
+   "open_prs_containing_change": [
+    269,
+    268,
+    267,
+    270
+   ],
+   "current_release": "original-work-present",
+   "ohm_1_99_tip": "original-work-present",
+   "ohm_default_tip": "original-work-present"
+  },
+  "268": {
+   "head": "a3c13409c1d98f3e1072d86c1d968368feb90f9c",
+   "title": "Reuse filtered dependency lists during feature activation",
+   "released_tags_containing_equivalent": [],
+   "branches_containing_change": [
+    "charlie/ohm-borrow-depfile-paths-uv",
+    "charlie/ohm-cache-feature-deps-uv",
+    "charlie/ohm-move-locked-version-reqs-uv"
+   ],
+   "open_prs_containing_change": [
+    269,
+    268,
+    270
+   ],
+   "current_release": "original-work-present",
+   "ohm_1_99_tip": "original-work-present",
+   "ohm_default_tip": "original-work-present"
+  },
+  "269": {
+   "head": "9256d6a21da8e6c0a2ba9502999d74544ed850cd",
+   "title": "Borrow unescaped paths when rendering output dependency files",
+   "released_tags_containing_equivalent": [],
+   "branches_containing_change": [
+    "charlie/ohm-borrow-depfile-paths-uv",
+    "charlie/ohm-move-locked-version-reqs-uv"
+   ],
+   "open_prs_containing_change": [
+    269,
+    270
+   ],
+   "current_release": "original-work-present",
+   "ohm_1_99_tip": "original-work-present",
+   "ohm_default_tip": "original-work-present"
+  },
+  "270": {
+   "head": "94c95d6b8ef97b0e63e04b250bc88d1a388a31af",
+   "title": "Move version requirements when selecting locked versions",
+   "released_tags_containing_equivalent": [],
+   "branches_containing_change": [
+    "charlie/ohm-move-locked-version-reqs-uv"
+   ],
+   "open_prs_containing_change": [
+    270
+   ],
+   "current_release": "original-work-present",
+   "ohm_1_99_tip": "original-work-present",
+   "ohm_default_tip": "original-work-present"
+  }
+ },
+ "distinct_source_commits": 297,
+ "distinct_released_cargo_commits": 44,
+ "distinct_file_blobs": 283,
+ "ohm_refs": {
+  "ohm_default": "5819763564a25251b83e168217c619ee1f943293",
+  "ohm_199": "ec7a03b6b50c0ed2d9582c7e40d92a26a230c491",
+  "ohm_17": "a0c7d08c898d3fdff992f2f431dec57d2486add2",
+  "ohm_18": "7caf39914da1e28a67744ecbc963a5f26361474d"
+ },
+ "authoritative_release_url": "https://github.com/astral-sh/ohm/releases/tag/ohm-1.99.0-18",
+ "source_inputs": {
+  "rust/release-history.json": "5da30f814e5105feae2f507f7799652bba29bd39d6cf771231671c774e6768e8",
+  "cargo/open-pr-index.json": "f912851c26e39d10e03a218f4d8628c2bb6c20a091985dd063368e3d937d3e9a",
+  "cargo/snapshot.json": "71247eb1fedb5c4252af278383ba56872d991fbc562a93636a7f494d52e8f678"
+ }
+}

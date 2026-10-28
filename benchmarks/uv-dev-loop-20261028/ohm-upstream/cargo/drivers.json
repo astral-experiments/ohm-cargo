@@ -1,0 +1,65 @@
+{
+  "source": "/tmp/ohm-uv-bench.0H03f2TH/cargo-18-depfile-driver/src",
+  "target": "/tmp/ohm-uv-bench.0H03f2TH/cargo-18-depfile-driver/target",
+  "registry": "/tmp/ohm-uv-bench.0H03f2TH/cargo-18-depfile-driver/cargo-home",
+  "cargo_lock_sha256": "151c473e1a11532946ba9421ab1beeb238f98eb1f8cd4e5f94f9811003abd5a7",
+  "command": [
+    "/home/dev-user/Documents/Codex/2026-10-28/i-want-you-to-hillclimb-on/work/upstream-monitor/toolchain18/bin/cargo",
+    "-Zohm-defaults=no",
+    "build",
+    "--target",
+    "x86_64-unknown-linux-gnu",
+    "--release",
+    "--locked",
+    "--offline",
+    "--bin",
+    "cargo",
+    "--features",
+    "ohm-defaults,all-static",
+    "-j8"
+  ],
+  "controlled_env": {
+    "CARGO_HOME": "/tmp/ohm-uv-bench.0H03f2TH/cargo-18-depfile-driver/cargo-home",
+    "RUSTC": "/home/dev-user/Documents/Codex/2026-10-28/i-want-you-to-hillclimb-on/work/upstream-monitor/toolchain18/bin/rustc",
+    "RUSTDOC": "/home/dev-user/Documents/Codex/2026-10-28/i-want-you-to-hillclimb-on/work/upstream-monitor/toolchain18/bin/rustdoc",
+    "CARGO_TARGET_DIR": "/tmp/ohm-uv-bench.0H03f2TH/cargo-18-depfile-driver/target",
+    "CARGO_PROFILE_RELEASE_LTO": "thin",
+    "CARGO_PROFILE_RELEASE_CODEGEN_UNITS": "1",
+    "CARGO_PROFILE_RELEASE_OPT_LEVEL": "3",
+    "CARGO_PROFILE_RELEASE_INCREMENTAL": "false",
+    "CARGO_PROFILE_RELEASE_DEBUG": "false",
+    "CARGO_PROFILE_RELEASE_DEBUG_ASSERTIONS": "false",
+    "CARGO_PROFILE_RELEASE_OVERFLOW_CHECKS": "false",
+    "LIBZ_SYS_STATIC": "1",
+    "CFG_RELEASE": "1.99.0-dev",
+    "CFG_RELEASE_CHANNEL": "dev",
+    "CFG_VER_DESCRIPTION": "ohm-1.99.0-18"
+  },
+  "arms": {
+    "base": {
+      "patches": [
+        264,
+        267,
+        268
+      ],
+      "sha256": "d4c39fb5bb7056b0297acf8bfd883286961fd2eb246c100ad09425675c9f58a4",
+      "version": "cargo 1.99.0-dev (7caf39914 2026-10-28) (ohm-1.99.0-18)\nrelease: 1.99.0-dev\ncommit-hash: 7caf39914da1e28a67744ecbc963a5f26361474d\ncommit-date: 2026-10-28\nhost: x86_64-unknown-linux-gnu\nlibgit2: 1.9.6 (sys:0.21.0 vendored)\nlibcurl: 8.21.0-DEV (sys:0.4.90+curl-8.21.0 vendored ssl:OpenSSL/3.6.3)\nssl: OpenSSL 3.6.3 9 Jun 2026\nos: Ubuntu 24.4.0 (noble) [64-bit]\n",
+      "elapsed_s": 452.63045024871826,
+      "output_depinfo_sha256": "f1acba20a46ea4190809871ae8df8dac370b856208137ca959aa76652035b43a",
+      "ldd": "\tlinux-vdso.so.1 (0x00007f2c09d5c000)\n\tlibgcc_s.so.1 => /lib/x86_64-linux-gnu/libgcc_s.so.1 (0x00007f2c09d1b000)\n\tlibm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x00007f2c07917000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007f2c07600000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007f2c09d5e000)\n"
+    },
+    "candidate": {
+      "patches": [
+        264,
+        267,
+        268,
+        269
+      ],
+      "sha256": "1b692a21d14e11422ffbeeffe29274d7443ff5c8377c6c4fb4be4be8725ccf46",
+      "version": "cargo 1.99.0-dev (7caf39914 2026-10-28) (ohm-1.99.0-18)\nrelease: 1.99.0-dev\ncommit-hash: 7caf39914da1e28a67744ecbc963a5f26361474d\ncommit-date: 2026-10-28\nhost: x86_64-unknown-linux-gnu\nlibgit2: 1.9.6 (sys:0.21.0 vendored)\nlibcurl: 8.21.0-DEV (sys:0.4.90+curl-8.21.0 vendored ssl:OpenSSL/3.6.3)\nssl: OpenSSL 3.6.3 9 Jun 2026\nos: Ubuntu 24.4.0 (noble) [64-bit]\n",
+      "elapsed_s": 391.69030570983887,
+      "output_depinfo_sha256": "fa6f6e5e3ef261a10381e51b635e2d6ad391eec3dfb87cc8e58379c845ee3bbe",
+      "ldd": "\tlinux-vdso.so.1 (0x000078e4e293c000)\n\tlibgcc_s.so.1 => /lib/x86_64-linux-gnu/libgcc_s.so.1 (0x000078e4e28fb000)\n\tlibm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x000078e4e0517000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x000078e4e0200000)\n\t/lib64/ld-linux-x86-64.so.2 (0x000078e4e293e000)\n"
+    }
+  }
+}

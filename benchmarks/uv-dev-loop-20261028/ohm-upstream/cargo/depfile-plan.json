@@ -1,0 +1,158 @@
+{
+  "registered_utc": "2026-10-28T20:36:58.544856+00:00",
+  "release": "ohm-1.99.0-18",
+  "cargo_pin": "7caf39914da1e28a67744ecbc963a5f26361474d",
+  "rustc_pin": "a4fa11bcd38280639cb94daacc125472657db6c3",
+  "distribution_archive_sha256": "629abab6a87c84bb4d910549ca96a31e437e3dc9de3039fedcbb7b50d198a5e8",
+  "released_cargo_sha256": "02a86ebd2d9e4f237b33f212102b81ed145eb77fae090d67e379cb6f1d70a573",
+  "released_rustc_sha256": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+  "source_archive_sha256": "19509090b4e5b1a09a859f2ade84af62beddabc99a0ea2ca7e7030d63b62d799",
+  "uv": "c22e6b71933443e9cd299d4b6ac8de035ed4825b",
+  "variants": {
+    "base": [
+      264,
+      267,
+      268
+    ],
+    "candidate": [
+      264,
+      267,
+      268,
+      269
+    ]
+  },
+  "patch_sha256": {
+    "264": "98c29a79cb9375bfb05034b1aaf5343e721e208b3a1c0a5654c1c0cd39d6226d",
+    "267": "653e65c1eb6147e2b645b79a6e0bd45eac83a5fdf5b9f1a23fa4cb6b56e0c3be",
+    "268": "8131d727142acc6a48343603a396f35a77af22a08a51fb1c5910b42d70c55e68",
+    "269": "6f83b41340e85a3e6da037562df9b697fee9cdc923c4763629e9c449c6451236",
+    "270": "d864badec3752f8c4458cffa9b58728a6004ece0dd82649b07e723a81d352e85"
+  },
+  "command": [
+    "cargo",
+    "build"
+  ],
+  "environment": "ordinary full workspace invocation; CARGO_NET_OFFLINE=true; no package/job flags during measurement, pinned four CPU affinity",
+  "scope": "parent Cargo PID and its threads; fresh uv graph, no rustc, linker, tests, downloads or ignored samples",
+  "driver": "matched -18 rustc; ThinLTO, one codegen unit, opt=3, all-static, ohm-defaults, fixed version metadata, no PGO",
+  "build_cpus": [
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23
+  ],
+  "measurement_cpus": [
+    24,
+    25,
+    26,
+    27
+  ],
+  "entry_admission": "actual shipped-default .d reader, forced public uv.d regeneration byte-equal in both arms and restored, plus settled fresh instrumented runs",
+  "gate": "positive median, two-sided sign p<.05, positive lower symmetric median rank interval, and two-sided order-balanced randomization p<.05 in each independent cohort",
+  "cohorts": {
+    "initial": {
+      "mode": "dynamorio",
+      "pairs": 12,
+      "seed": 11206929,
+      "order": [
+        [
+          "base",
+          "candidate"
+        ],
+        [
+          "base",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "base"
+        ],
+        [
+          "base",
+          "candidate"
+        ],
+        [
+          "base",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "base"
+        ],
+        [
+          "candidate",
+          "base"
+        ],
+        [
+          "candidate",
+          "base"
+        ],
+        [
+          "candidate",
+          "base"
+        ],
+        [
+          "base",
+          "candidate"
+        ],
+        [
+          "base",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "base"
+        ]
+      ],
+      "source": "u18",
+      "target": "release18-render-initial",
+      "cargo_home": "cargo-18-render-initial"
+    },
+    "replica": {
+      "mode": "instructions",
+      "pairs": 8,
+      "seed": 285190561,
+      "order": [
+        [
+          "base",
+          "candidate"
+        ],
+        [
+          "base",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "base"
+        ],
+        [
+          "candidate",
+          "base"
+        ],
+        [
+          "candidate",
+          "base"
+        ],
+        [
+          "base",
+          "candidate"
+        ],
+        [
+          "base",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "base"
+        ]
+      ],
+      "source": "release18-depfile-independent-root/source",
+      "target": "release18-render-replica",
+      "cargo_home": "cargo-18-render-replica"
+    }
+  }
+}

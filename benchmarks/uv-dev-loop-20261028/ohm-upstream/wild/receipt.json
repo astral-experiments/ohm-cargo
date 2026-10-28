@@ -1,0 +1,223 @@
+{
+  "account": "charliermarsh",
+  "checked_at_utc": "2026-10-28T20:35:37Z",
+  "disposition": {
+    "18_retest": "The Wild archive and source base both match the original measurement. The Rust and Cargo pins differ, so all edited-command evidence remains labeled Ohm -17. No new run was requested after the scope clarification.",
+    "45": "Open. The bundled linker still formats undefined-symbol reports inside check_for_undefined.",
+    "46": "Open. The bundled linker still reads complete section names before generic rule lookup for ordinary ELF links."
+  },
+  "fork_pr_inventory": {
+    "all_prs": 44,
+    "by_state": {
+      "closed": 17,
+      "merged": 1,
+      "open": 26
+    },
+    "latest_pr_number": 46,
+    "merged": [
+      22
+    ],
+    "merged_paths": [
+      ".github/workflows/ci.yml",
+      "README.md"
+    ],
+    "nondependency_pr_diffs_screened": [
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      20,
+      21,
+      22,
+      32,
+      41,
+      42,
+      43,
+      44
+    ]
+  },
+  "ohm_wild_base": {
+    "branch": "charlie/wild-0-11-base",
+    "default_branch": "main",
+    "default_head": "3f96b5777a58753b592fbc8bb1420f1013106dde",
+    "sha": "e856d81f6683cad80b9fe0ebf1a0c3c403c6fe11"
+  },
+  "pull_requests": {
+    "45": {
+      "ahead": 1,
+      "base": "e856d81f6683cad80b9fe0ebf1a0c3c403c6fe11",
+      "base_branch": "charlie/wild-0-11-base",
+      "behind": 0,
+      "conversation_comments": 0,
+      "dedicated_exact_source": {
+        "completed_success": 3,
+        "jobs": [
+          [
+            "Compare AArch64 lit fixtures against 0.11.0",
+            "success"
+          ],
+          [
+            "Native arm64 linker tests",
+            "success"
+          ],
+          [
+            "Native x86_64 linker tests",
+            "success"
+          ]
+        ],
+        "url": "https://github.com/astral-sh/ohm-wild/actions/runs/40732795058"
+      },
+      "draft": true,
+      "head": "a77381c04eb7ad9258cdd0475642815a2a1da711",
+      "inline_comments": 0,
+      "merge_state": "UNSTABLE",
+      "mergeability": "MERGEABLE",
+      "pr_checks": {
+        "before_checkout_failures": 24,
+        "failing_step": "Set up job",
+        "url": "https://github.com/astral-sh/ohm-wild/actions/runs/40729096383"
+      },
+      "review_decision": "",
+      "review_requests": 0,
+      "reviews": 0,
+      "state": "OPEN",
+      "title": "Keep undefined-symbol diagnostics out of the relocation hot path",
+      "url": "https://github.com/astral-sh/ohm-wild/pull/45"
+    },
+    "46": {
+      "ahead": 1,
+      "base": "a77381c04eb7ad9258cdd0475642815a2a1da711",
+      "base_branch": "charlie/ohm-cold-undefined-diagnostics-uv",
+      "behind": 0,
+      "conversation_comments": 0,
+      "dedicated_exact_source": {
+        "completed_success": 3,
+        "jobs": [
+          [
+            "Compare AArch64 lit fixtures against the parent",
+            "success"
+          ],
+          [
+            "Native arm64 linker tests",
+            "success"
+          ],
+          [
+            "Native x86_64 linker tests",
+            "success"
+          ]
+        ],
+        "url": "https://github.com/astral-sh/ohm-wild/actions/runs/40745398550"
+      },
+      "draft": true,
+      "head": "93600ec375472777043c28c33a5628adfbc0eb9b",
+      "inline_comments": 0,
+      "merge_state": "UNSTABLE",
+      "mergeability": "MERGEABLE",
+      "pr_checks": {
+        "before_checkout_failures": 24,
+        "failing_step": "Set up job",
+        "url": "https://github.com/astral-sh/ohm-wild/actions/runs/40745266965"
+      },
+      "review_decision": "",
+      "review_requests": 0,
+      "reviews": 0,
+      "state": "OPEN",
+      "title": "Fast-path built-in ELF text and relocation section rules",
+      "url": "https://github.com/astral-sh/ohm-wild/pull/46"
+    }
+  },
+  "related_ohm_wild": {
+    "41": {
+      "base": "charlie/wild-0-10-base",
+      "sha": "2203811a1d6c1aa35c73ed65148ec46a098b4b3f",
+      "state": "open",
+      "title": "Reuse selected ELF symbols when writing the symbol table",
+      "url": "https://github.com/astral-sh/ohm-wild/pull/41"
+    },
+    "42": {
+      "base": "charlie/wild-0-11-base",
+      "sha": "79a4556e767c3cdc6573f4ed086912ebfd62180c",
+      "state": "closed",
+      "title": "Reduce work for x86-64 debug relocations",
+      "url": "https://github.com/astral-sh/ohm-wild/pull/42"
+    },
+    "43": {
+      "base": "charlie/resolve-local-debug-sections",
+      "sha": "c729f2d0cc44ced0ba4e3d187109fed28b8cf5c7",
+      "state": "closed",
+      "title": "Resolve x86-64 DWARF range endpoints together",
+      "url": "https://github.com/astral-sh/ohm-wild/pull/43"
+    },
+    "44": {
+      "base": "charlie/wild-0-11-base",
+      "sha": "38eb35bd8b76dad3e97e027cc52d8e89fd3bc263",
+      "state": "open",
+      "title": "Preserve Unix filenames across ELF linker arguments and response files",
+      "url": "https://github.com/astral-sh/ohm-wild/pull/44"
+    }
+  },
+  "release_manifests": {
+    "17": {
+      "distributed_wild": {
+        "sha256": "25012a78de164686f552b7703b5d0223adab4829c79cd1fb351108221d61c7d8",
+        "version": "0.11.0"
+      },
+      "manifest_url": "https://github.com/astral-sh/ohm/blob/fdf90406638cacb725178ee17e67957f7bd662ca/toolchains/1.99.0/17.json",
+      "ohm_commit": "fdf90406638cacb725178ee17e67957f7bd662ca",
+      "release_url": "https://github.com/astral-sh/ohm/releases/tag/ohm-1.99.0-17",
+      "source_pins": {
+        "cargo": "a0c7d08c898d3fdff992f2f431dec57d2486add2",
+        "rust": "bfa236f639034f61ec884c15bd1f4e0b75e508ac"
+      },
+      "tag": "ohm-1.99.0-17"
+    },
+    "18": {
+      "distributed_wild": {
+        "sha256": "25012a78de164686f552b7703b5d0223adab4829c79cd1fb351108221d61c7d8",
+        "version": "0.11.0"
+      },
+      "manifest_url": "https://github.com/astral-sh/ohm/blob/885faf0af725074adc31080a1c732c60965d8bbe/toolchains/1.99.0/18.json",
+      "ohm_commit": "885faf0af725074adc31080a1c732c60965d8bbe",
+      "release_url": "https://github.com/astral-sh/ohm/releases/tag/ohm-1.99.0-18",
+      "source_pins": {
+        "cargo": "7caf39914da1e28a67744ecbc963a5f26361474d",
+        "rust": "a4fa11bcd38280639cb94daacc125472657db6c3"
+      },
+      "tag": "ohm-1.99.0-18"
+    }
+  },
+  "scope": "Landed and open work in astral-sh/ohm and astral-sh/ohm-wild",
+  "source_comparability": {
+    "patches": {
+      "45": {
+        "forward_check": 0,
+        "reverse_check": 1,
+        "sha256": "6f36e189a050c5ffdaf2216af3f3e728dd07a31d1dc01615b4ea849fcff5661d"
+      },
+      "46": {
+        "forward_check": 0,
+        "reverse_check": 1,
+        "sha256": "92803fbb4bead3ff1e982d5080a63d674c1bf582f4041954fb316e0667a00029"
+      }
+    },
+    "release_sha": "e856d81f6683cad80b9fe0ebf1a0c3c403c6fe11",
+    "source_blobs": {
+      "libwild/src/elf.rs": "434d3af87178ecc59c41eccf95e12edc76b49aea",
+      "libwild/src/layout.rs": "4e82f32bed1bb9ea7a18987d2dd2e8cf05d75389",
+      "libwild/src/layout_rules.rs": "c3f591e8b094dbfc13b428b110819786fb7aca0c",
+      "libwild/src/platform.rs": "fbc38d0018389c9b1bbf57a6a66333225a9c1231",
+      "libwild/src/resolution.rs": "ce5aec935f4e071c4eba580fa5f5623dc58001a4"
+    },
+    "tree_sha": "0c43bc675e3d3df3e3b0d4692638822ee34f8a8d"
+  }
+}

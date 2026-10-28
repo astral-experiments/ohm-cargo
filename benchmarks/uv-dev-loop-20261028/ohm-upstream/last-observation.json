@@ -1,0 +1,254 @@
+{
+  "utc": "20261028T210048Z",
+  "release": {
+    "tag": "ohm-1.99.0-18",
+    "release": "https://github.com/astral-sh/ohm/releases/tag/ohm-1.99.0-18",
+    "published": "2026-10-28T19:57:10Z",
+    "coordinator_main": "885faf0af725074adc31080a1c732c60965d8bbe",
+    "manifest": {
+      "$schema": "../manifest.schema.json",
+      "schema_version": 1,
+      "status": "pinned",
+      "release": {
+        "upstream_rust_version": "1.99.0",
+        "ohm_revision": 18,
+        "toolchain_name": "ohm-1.99.0-18"
+      },
+      "sources": {
+        "rust": {
+          "repository": "https://github.com/astral-sh/ohm-rust",
+          "revision": "a4fa11bcd38280639cb94daacc125472657db6c3"
+        },
+        "cargo": {
+          "repository": "https://github.com/astral-sh/ohm-cargo",
+          "revision": "7caf39914da1e28a67744ecbc963a5f26361474d"
+        },
+        "clippy": {
+          "repository": "https://github.com/astral-sh/ohm-rust-clippy",
+          "revision": "0d76dc1f4fe7ffb86ee5e1a8a9cc4d6bef1d1bf6"
+        },
+        "rustfmt": {
+          "repository": "https://github.com/astral-sh/ohm-rustfmt",
+          "revision": "3c9620c92b01e6c393324729c4861823cc3676e2"
+        }
+      },
+      "bundled_tools": {
+        "wild": {
+          "version": "0.11.0",
+          "sha256": "25012a78de164686f552b7703b5d0223adab4829c79cd1fb351108221d61c7d8"
+        }
+      }
+    },
+    "manifest_url": "https://github.com/astral-sh/ohm/blob/ohm-1.99.0-18/toolchains/1.99.0/18.json"
+  },
+  "drafts": [
+    {
+      "baseRefName": "charlie/ohm-observer-unicode-rc17-20261027",
+      "baseRefOid": "a0c7d08c898d3fdff992f2f431dec57d2486add2",
+      "comments": [],
+      "headRefOid": "567b7d201b325e745d2dadd1553363b5c85f30d7",
+      "isDraft": true,
+      "mergeable": "MERGEABLE",
+      "reviewDecision": "",
+      "reviews": [],
+      "state": "OPEN",
+      "url": "https://github.com/astral-sh/ohm-cargo/pull/264",
+      "checks": {
+        "Rustfmt": "SUCCESS",
+        "Clippy (depot-ubuntu-24.04-8)": "SUCCESS",
+        "Clippy (depot-macos-15)": "SUCCESS",
+        "Cargo tests (depot-ubuntu-24.04-16)": "SUCCESS",
+        "Cargo tests (depot-macos-15)": "SUCCESS",
+        "Workspace tests": "SUCCESS",
+        "Resolver tests": "SUCCESS",
+        "Schema tests": "SUCCESS",
+        "Clippy APFS replay": "SKIPPED"
+      }
+    },
+    {
+      "baseRefName": "charlie/ohm-borrow-unit-deps-uv",
+      "baseRefOid": "567b7d201b325e745d2dadd1553363b5c85f30d7",
+      "comments": [],
+      "headRefOid": "4246bb695caa5f713c7234b037512c5262b6891f",
+      "isDraft": true,
+      "mergeable": "MERGEABLE",
+      "reviewDecision": "",
+      "reviews": [],
+      "state": "OPEN",
+      "url": "https://github.com/astral-sh/ohm-cargo/pull/267",
+      "checks": {
+        "Rustfmt": "SUCCESS",
+        "Clippy (depot-ubuntu-24.04-8)": "SUCCESS",
+        "Clippy (depot-macos-15)": "SUCCESS",
+        "Cargo tests (depot-ubuntu-24.04-16)": "SUCCESS",
+        "Cargo tests (depot-macos-15)": "SUCCESS",
+        "Workspace tests": "SUCCESS",
+        "Resolver tests": "SUCCESS",
+        "Schema tests": "SUCCESS",
+        "Clippy APFS replay": "SKIPPED"
+      }
+    },
+    {
+      "baseRefName": "charlie/ohm-lazy-unused-dep-warnings-uv",
+      "baseRefOid": "4246bb695caa5f713c7234b037512c5262b6891f",
+      "comments": [],
+      "headRefOid": "a3c13409c1d98f3e1072d86c1d968368feb90f9c",
+      "isDraft": true,
+      "mergeable": "MERGEABLE",
+      "reviewDecision": "",
+      "reviews": [],
+      "state": "OPEN",
+      "url": "https://github.com/astral-sh/ohm-cargo/pull/268",
+      "checks": {
+        "Rustfmt": "SUCCESS",
+        "Clippy (depot-ubuntu-24.04-8)": "SUCCESS",
+        "Clippy (depot-macos-15)": "SUCCESS",
+        "Cargo tests (depot-ubuntu-24.04-16)": "SUCCESS",
+        "Cargo tests (depot-macos-15)": "SUCCESS",
+        "Workspace tests": "SUCCESS",
+        "Resolver tests": "SUCCESS",
+        "Schema tests": "SUCCESS",
+        "Clippy APFS replay": "SKIPPED"
+      }
+    },
+    {
+      "baseRefName": "charlie/ohm-cache-feature-deps-uv",
+      "baseRefOid": "a3c13409c1d98f3e1072d86c1d968368feb90f9c",
+      "comments": [],
+      "headRefOid": "9256d6a21da8e6c0a2ba9502999d74544ed850cd",
+      "isDraft": true,
+      "mergeable": "MERGEABLE",
+      "reviewDecision": "",
+      "reviews": [],
+      "state": "OPEN",
+      "url": "https://github.com/astral-sh/ohm-cargo/pull/269",
+      "checks": {
+        "Rustfmt": "SUCCESS",
+        "Clippy (depot-ubuntu-24.04-8)": "SUCCESS",
+        "Clippy (depot-macos-15)": "SUCCESS",
+        "Cargo tests (depot-ubuntu-24.04-16)": "SUCCESS",
+        "Cargo tests (depot-macos-15)": "SUCCESS",
+        "Workspace tests": "SUCCESS",
+        "Resolver tests": "SUCCESS",
+        "Schema tests": "SUCCESS",
+        "Clippy APFS replay": "SKIPPED"
+      }
+    },
+    {
+      "baseRefName": "charlie/ohm-borrow-depfile-paths-uv",
+      "baseRefOid": "9256d6a21da8e6c0a2ba9502999d74544ed850cd",
+      "comments": [],
+      "headRefOid": "94c95d6b8ef97b0e63e04b250bc88d1a388a31af",
+      "isDraft": true,
+      "mergeable": "MERGEABLE",
+      "reviewDecision": "",
+      "reviews": [],
+      "state": "OPEN",
+      "url": "https://github.com/astral-sh/ohm-cargo/pull/270",
+      "checks": {
+        "Rustfmt": "SUCCESS",
+        "Clippy (depot-ubuntu-24.04-8)": "SUCCESS",
+        "Clippy (depot-macos-15)": "SUCCESS",
+        "Cargo tests (depot-ubuntu-24.04-16)": "SUCCESS",
+        "Cargo tests (depot-macos-15)": "SUCCESS",
+        "Workspace tests": "SUCCESS",
+        "Resolver tests": "SUCCESS",
+        "Schema tests": "SUCCESS",
+        "Clippy APFS replay": "SKIPPED"
+      }
+    },
+    {
+      "baseRefName": "charlie/wild-0-11-base",
+      "baseRefOid": "e856d81f6683cad80b9fe0ebf1a0c3c403c6fe11",
+      "comments": [],
+      "headRefOid": "a77381c04eb7ad9258cdd0475642815a2a1da711",
+      "isDraft": true,
+      "mergeable": "MERGEABLE",
+      "reviewDecision": "",
+      "reviews": [],
+      "state": "OPEN",
+      "url": "https://github.com/astral-sh/ohm-wild/pull/45",
+      "checks": {
+        "Test Linux (ci-ubuntu-cross-amd64)": "FAILURE",
+        "Test Linux (ci-arch-cross-amd64)": "FAILURE",
+        "Test Linux (ci-ubuntu-arm64)": "FAILURE",
+        "Test Linux (ci-alpine-amd64)": "FAILURE",
+        "Test Linux (ci-opensuse-amd64)": "FAILURE",
+        "Test Linux (ci-opensuse-arm64)": "FAILURE",
+        "Test Linux (external tests)": "FAILURE",
+        "Build Linux (RISC-V)": "FAILURE",
+        "Build Linux (LoongArch64)": "FAILURE",
+        "Build Linux (PPC64LE)": "FAILURE",
+        "Build wasip1": "FAILURE",
+        "Test Wasm": "FAILURE",
+        "Test Mach-O (AArch64)": "FAILURE",
+        "Build Windows (x86_64)": "FAILURE",
+        "minimal-versions": "FAILURE",
+        "Clippy": "FAILURE",
+        "Cargo deny": "FAILURE",
+        "Dependency cooldown": "FAILURE",
+        "Check formatting": "FAILURE",
+        "yamlfmt": "FAILURE",
+        "Spell Check with Typos": "FAILURE",
+        "Nix/wild": "FAILURE",
+        "Nix/adapters": "FAILURE",
+        "reuse-check": "FAILURE"
+      }
+    },
+    {
+      "baseRefName": "charlie/ohm-verify-dep-info-paths-1.99.0-17",
+      "baseRefOid": "bfa236f639034f61ec884c15bd1f4e0b75e508ac",
+      "comments": [],
+      "headRefOid": "395a878a9ea634f84319d2c04653ec1e79e38f16",
+      "isDraft": true,
+      "mergeable": "MERGEABLE",
+      "reviewDecision": "",
+      "reviews": [],
+      "state": "OPEN",
+      "url": "https://github.com/astral-sh/ohm-rust/pull/247",
+      "checks": {
+        "Formatting and tidy": "SUCCESS",
+        "Compiler and regression tests": "SUCCESS",
+        "Compiler and regression tests (macOS)": "SUCCESS"
+      }
+    },
+    {
+      "baseRefName": "charlie/ohm-cold-undefined-diagnostics-uv",
+      "baseRefOid": "a77381c04eb7ad9258cdd0475642815a2a1da711",
+      "comments": [],
+      "headRefOid": "93600ec375472777043c28c33a5628adfbc0eb9b",
+      "isDraft": true,
+      "mergeable": "MERGEABLE",
+      "reviewDecision": "",
+      "reviews": [],
+      "state": "OPEN",
+      "url": "https://github.com/astral-sh/ohm-wild/pull/46",
+      "checks": {
+        "Test Linux (ci-ubuntu-cross-amd64)": "FAILURE",
+        "Test Linux (ci-arch-cross-amd64)": "FAILURE",
+        "Test Linux (ci-ubuntu-arm64)": "FAILURE",
+        "Test Linux (ci-alpine-amd64)": "FAILURE",
+        "Test Linux (ci-opensuse-amd64)": "FAILURE",
+        "Test Linux (ci-opensuse-arm64)": "FAILURE",
+        "Test Linux (external tests)": "FAILURE",
+        "Build Linux (RISC-V)": "FAILURE",
+        "Build Linux (LoongArch64)": "FAILURE",
+        "Build Linux (PPC64LE)": "FAILURE",
+        "Build wasip1": "FAILURE",
+        "Test Wasm": "FAILURE",
+        "Test Mach-O (AArch64)": "FAILURE",
+        "Build Windows (x86_64)": "FAILURE",
+        "minimal-versions": "FAILURE",
+        "Clippy": "FAILURE",
+        "Cargo deny": "FAILURE",
+        "Dependency cooldown": "FAILURE",
+        "Check formatting": "FAILURE",
+        "yamlfmt": "FAILURE",
+        "Spell Check with Typos": "FAILURE",
+        "Nix/wild": "FAILURE",
+        "Nix/adapters": "FAILURE",
+        "reuse-check": "FAILURE"
+      }
+    }
+  ]
+}
