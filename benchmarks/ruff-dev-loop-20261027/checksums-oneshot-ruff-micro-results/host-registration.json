@@ -1,0 +1,27 @@
+{
+  "findings_scope": "Each before/after standalone executes both methods from the same optimized helper; the fixture is not a full Cargo executable. Only the preregistered 12-pair screening thresholds can advance this isolated candidate.",
+  "future_command": "python3 -B worker.py score ORIGINAL_SOURCE_PACKET --grant SEPARATE_APPROVAL_JSON",
+  "host_qualification": "Only the dedicated charlie-oss-8 CPU 14 helper is eligible. All corpus identities and ELF/SDK dependencies must remain unchanged.",
+  "host_sha256": "7b1ec9ceb40f4952cbe825ff0a0318413910541a9c7082fa7535fae7a7bf6a80",
+  "immutable_inputs": "Original corpus digest and manifest, real length-verified regular files, and per-file device, inode, mode, size, mtime_ns and ctime_ns.",
+  "native_sha256": "a774e385ed4ab7ec3be6f2bb44b92357320ab44c99b212cd3e00784dee07787f",
+  "performance_observations": 0,
+  "score_condition": "Fresh-process before/after in exactly the original fixed order; per-slot status zero, single identical stdout, single B,T,F,P terminal process and thread, unchanged corpus/host/ELF and final ordinary replay. No incomplete run is replaced.",
+  "score_state": "locked",
+  "scored_argv": [
+    "drrun",
+    "-quiet",
+    "-no_follow_children",
+    "-c",
+    "libpidcounter.so",
+    "OUTPUT",
+    "--",
+    "ohm-checksum-isolated",
+    "ARM",
+    "CORPUS",
+    "4"
+  ],
+  "source_commit": "32c4f9da05956359fbd8d660c712c846fd8ff01f",
+  "source_manifest": "b8a8c4156519267acd6247adb582b160328b3107c8f8e9e2f805a5975495e42f",
+  "worker_sha256": "2e5d1dc2709dfc69683eca02b6a0f4f8ae4dc62eb15688830d2e619b88b2c62d"
+}

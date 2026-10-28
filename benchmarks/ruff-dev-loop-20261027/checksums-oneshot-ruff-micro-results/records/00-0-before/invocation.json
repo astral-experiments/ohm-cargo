@@ -1,0 +1,26 @@
+{
+  "affinity": [
+    14
+  ],
+  "argv": [
+    "/home/dev-user/.cache/ohm-dynamorio-20261026/sdk/bin64/drrun",
+    "-quiet",
+    "-no_follow_children",
+    "-c",
+    "/home/dev-user/.cache/ohm-dynamorio-20261026/client/libpidcounter.so",
+    "/dev/shm/ohm-262-blake3-screen-20261028/score-v1/00-0-before/pid.count",
+    "--",
+    "/dev/shm/ohm-262-blake3-screen-20261028/target/release/ohm-checksum-isolated",
+    "before",
+    "/dev/shm/ohm-262-blake3-screen-20261028/corpus",
+    "4"
+  ],
+  "cwd": "/dev/shm/ohm-262-blake3-screen-20261028",
+  "environment": {
+    "HOME": "/home/dev-user",
+    "LANG": "C",
+    "LC_ALL": "C",
+    "PATH": "/usr/bin:/bin",
+    "TZ": "UTC"
+  }
+}
