@@ -1,0 +1,73 @@
+name: Native macro Darwin qualification
+
+on:
+  push:
+    branches: [charlie/qa-rc18-native-macro-macos-20261028]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  native:
+    runs-on: namespace-profile-macos-15
+    timeout-minutes: 90
+    env:
+      CASE: tests/run-make/incremental-proc-macro-native-inputs
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Bind the source and host
+        shell: bash
+        run: |
+          mkdir "$RUNNER_TEMP/macro-qa"
+          test "$(uname -m)" = arm64
+          test "$(git rev-parse HEAD:compiler)" = 47e23eb4bab742e271ca9a3cf1bbd583d5b4a640
+          test "$(git rev-parse HEAD:src/tools/cargo)" = 7181bfa6256f94da142f80fd6af09cee02ec2c78
+          git diff --quiet 9828b82f475f18bf9077ee25f36de43d4fec8277 HEAD -- . ':!.github/workflows/ci.yml' ":!$CASE/qualify-darwin.py"
+          { git rev-parse HEAD HEAD:compiler HEAD:src/tools/cargo; uname -sm; sw_vers; clang --version; } | tee "$RUNNER_TEMP/macro-qa/host.txt"
+
+      - name: Install the original published toolchain
+        shell: bash
+        run: |
+          asset=ohm-1.99.0-17-aarch64-apple-darwin.tar.gz
+          cd "$RUNNER_TEMP"
+          curl --fail --location --retry 3 --output "$asset" "https://labs.astral.sh/ohm/releases/ohm-1.99.0-17/$asset"
+          printf '%s  %s\n' e58f5ce47b9dd2dbee8c47a7850fb3aec53066c1c781daa3f955ae201f3cb92b "$asset" | shasum -a256 -c - | tee macro-qa/stock-archive.txt
+          tar -xzf "$asset"
+          sh rust-1.99.0-dev-aarch64-apple-darwin/install.sh --prefix="$RUNNER_TEMP/qa-stock-sdk" --disable-ldconfig
+
+      - name: Read both macros on released Ohm
+        run: python3 "$CASE/qualify-darwin.py" stock "$RUNNER_TEMP/qa-stock-sdk" "$RUNNER_TEMP/macro-qa"
+
+      - name: Run the checked-in native regression on the final compiler
+        if: ${{ !cancelled() }}
+        shell: bash
+        run: |
+          git submodule update --init --depth 1 library/backtrace
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('tests/run-make/incremental-proc-macro-native-inputs/rmake.rs')
+          original = p.read_bytes()
+          assert original.startswith(b'//@ only-linux\n')
+          p.write_bytes(original.replace(b'//@ only-linux\n', b'//@ only-macos\n', 1))
+          PY
+          set -o pipefail
+          python3 x.py --ci false --set build.submodules=false --set rust.debug-assertions=true --set rust.lto=off test --stage 1 "$CASE" 2>&1 | tee "$RUNNER_TEMP/mac-compiletest.log"
+          grep -E 'incremental-proc-macro-native-inputs|test result:|tests passed' "$RUNNER_TEMP/mac-compiletest.log" | tail -30 | tee "$RUNNER_TEMP/macro-qa/checked-in-run-make.txt"
+
+      - name: Read both macros on the same built compiler
+        if: ${{ !cancelled() }}
+        run: python3 "$CASE/qualify-darwin.py" fixed "$PWD/build/aarch64-apple-darwin/stage1" "$RUNNER_TEMP/macro-qa"
+
+      - name: Save the original native process results
+        if: ${{ always() }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: native-proc-macro-darwin
+          path: ${{ runner.temp }}/macro-qa
+          if-no-files-found: error
+          retention-days: 14

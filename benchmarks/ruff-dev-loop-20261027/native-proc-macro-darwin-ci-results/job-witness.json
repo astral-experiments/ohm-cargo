@@ -1,0 +1,71 @@
+{
+  "full_log_sha256": "652e8010a0d8a9c38911c459e674695e1b43aadc675d09ecbb2e097b93f7c717",
+  "job": 122966381461,
+  "selected": [
+    {
+      "line": 49,
+      "raw_sha256": "a646813354a46257a28e19f7943ef62dc844ac75f42462060b7d594c5f8bd503",
+      "text": "2026-10-28T16:56:35.8241030Z   CASE: tests/run-make/incremental-proc-macro-native-inputs"
+    },
+    {
+      "line": 579,
+      "raw_sha256": "6ece7a474a35a4ff9b76a663304f69be962a6b106ad2912ddbd5f2daaee2999f",
+      "text": "2026-10-28T17:01:54.3306520Z   CASE: tests/run-make/incremental-proc-macro-native-inputs"
+    },
+    {
+      "line": 601,
+      "raw_sha256": "b65ce73fb20aa1b1195b3e9ddfbbede337e06c1fea1ce99e5e2a74b7190a93ab",
+      "text": "2026-10-28T17:01:55.9857730Z   CASE: tests/run-make/incremental-proc-macro-native-inputs"
+    },
+    {
+      "line": 640,
+      "raw_sha256": "31a751633fd3ec9598d9569114eb71975be09308c37f1b689bf0df34eb4631e4",
+      "text": "2026-10-28T17:02:55.0883980Z   CASE: tests/run-make/incremental-proc-macro-native-inputs"
+    },
+    {
+      "line": 676,
+      "raw_sha256": "4e6cd6bbe1b005269d5663fcf94946c36fbf4e8c822d44a19b0765a808f08e77",
+      "text": "2026-10-28T17:02:56.6737920Z DARWIN_NATIVE_VALUES {\"edited\": \"17,17\", \"edited-empty\": \"29,29\", \"original\": \"17,17\", \"repeat\": \"17,17\", \"restored\": \"17,17\", \"restored-empty\": \"17,17\"}"
+    },
+    {
+      "line": 687,
+      "raw_sha256": "5399c629df68c6c0d359e86b7fab0f4d458c3a5b66c4b0597d07ca8101fd0a91",
+      "text": "2026-10-28T17:02:56.6921890Z python3 x.py --ci false --set build.submodules=false --set rust.debug-assertions=true --set rust.lto=off test --stage 1 \"$CASE\" 2>&1 | tee \"$RUNNER_TEMP/mac-compiletest.log\""
+    },
+    {
+      "line": 691,
+      "raw_sha256": "e4df3c0c9cee0b6db17014ca30bcd5b8f6779ba4206612fc71d7ed26e96ef04b",
+      "text": "2026-10-28T17:02:56.6938970Z   CASE: tests/run-make/incremental-proc-macro-native-inputs"
+    },
+    {
+      "line": 1575,
+      "raw_sha256": "6147908de41702a4942b1da8fd9384238b9797eba6e15197ffdcbb33d3655ad8",
+      "text": "2026-10-28T17:05:32.0631170Z ##[group]Testing stage1 with compiletest suite=run-make mode=run-make (aarch64-apple-darwin)"
+    },
+    {
+      "line": 1580,
+      "raw_sha256": "a12d424c57e3e101a126416877c6966c00f8c6f612146d94c6813393415a25bc",
+      "text": "2026-10-28T17:05:32.7226530Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 559 filtered out; finished in 563.86ms"
+    },
+    {
+      "line": 1587,
+      "raw_sha256": "b19d3dc8e85f1dcf70916919fa9b978c159ae638ac01c5b46caf96d608db0ad0",
+      "text": "2026-10-28T17:05:32.7382350Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 559 filtered out; finished in 563.86ms"
+    },
+    {
+      "line": 1592,
+      "raw_sha256": "eef1248e8447412b02e8453057489e656fb93b60c09e2c862cd4df4ce7301d96",
+      "text": "2026-10-28T17:05:32.7654660Z   CASE: tests/run-make/incremental-proc-macro-native-inputs"
+    },
+    {
+      "line": 1628,
+      "raw_sha256": "9a2c3458fd7d43a87deadb15a1faf333048e896a12cce9631660c36e2683c8df",
+      "text": "2026-10-28T17:05:33.6410870Z DARWIN_NATIVE_VALUES {\"edited\": \"29,29\", \"edited-empty\": \"29,29\", \"original\": \"17,17\", \"repeat\": \"29,29\", \"restored\": \"17,17\", \"restored-empty\": \"17,17\"}"
+    },
+    {
+      "line": 1639,
+      "raw_sha256": "4d1ca3bfa7d95aee70cc37bd5a1cbfa392b546768a92999a8a04ac8275426a8f",
+      "text": "2026-10-28T17:05:33.6683730Z   CASE: tests/run-make/incremental-proc-macro-native-inputs"
+    }
+  ]
+}
