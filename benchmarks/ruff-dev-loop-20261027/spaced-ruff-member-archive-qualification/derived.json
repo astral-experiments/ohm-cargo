@@ -1,0 +1,167 @@
+{
+  "archive_witnesses": 40,
+  "clocks": 0,
+  "measurements": {
+    "Bproject": {
+      "commands": 2,
+      "hashes_observed": 3,
+      "objects": [
+        [
+          "libty_project.rlib",
+          246,
+          7161
+        ],
+        [
+          "libty_vendored-6266fdb557e8fcc4.rlib",
+          3,
+          9
+        ]
+      ]
+    },
+    "Bwasm": {
+      "commands": 6,
+      "hashes_observed": 7,
+      "objects": [
+        [
+          "libty_vendored-1f46eecf5ba8953a.rlib",
+          3,
+          9
+        ],
+        [
+          "libty_wasm.rlib",
+          78,
+          2453
+        ]
+      ]
+    },
+    "Cproject": {
+      "commands": 2,
+      "hashes_observed": 3,
+      "objects": [
+        [
+          "libty_project.rlib",
+          246,
+          7161
+        ],
+        [
+          "libty_vendored-6266fdb557e8fcc4.rlib",
+          3,
+          9
+        ]
+      ]
+    },
+    "Cwasm": {
+      "commands": 6,
+      "hashes_observed": 7,
+      "objects": [
+        [
+          "libty_vendored-1f46eecf5ba8953a.rlib",
+          3,
+          9
+        ],
+        [
+          "libty_wasm.rlib",
+          78,
+          2453
+        ]
+      ]
+    }
+  },
+  "mutation_controls": {
+    "inconsistent-link-name": {
+      "after_sha256": "f1748f4d4c53296a93d4cce31d06920f186e3610be701fff8d216c639ca4923d",
+      "before_sha256": "9beebc851d8e036bff9ffaf0a4b4acf32604c5b6dff2d620ae692e5a835f8fcb",
+      "offset": 1197784,
+      "outcome": "rejected"
+    },
+    "metadata-payload": {
+      "after_sha256": "ef6c660d2678642618949fa9f297a47fb57496b9e9dec7d98f3cac84fadace0c",
+      "before_sha256": "9beebc851d8e036bff9ffaf0a4b4acf32604c5b6dff2d620ae692e5a835f8fcb",
+      "offset": 493787,
+      "outcome": "changed fingerprint"
+    },
+    "object-content": {
+      "after_sha256": "59b67de9913d0b1b586e5068e04f0d739cba42c032f1d675404196501a6138db",
+      "before_sha256": "9beebc851d8e036bff9ffaf0a4b4acf32604c5b6dff2d620ae692e5a835f8fcb",
+      "offset": 1202304,
+      "outcome": "changed fingerprint"
+    },
+    "symbol-provider": {
+      "after_sha256": "3865f5da98980e16a5b410dccc5f89055bb83ab2cdfb2691860ff31cf44654eb",
+      "before_sha256": "9beebc851d8e036bff9ffaf0a4b4acf32604c5b6dff2d620ae692e5a835f8fcb",
+      "offset": 72,
+      "outcome": "changed fingerprint"
+    }
+  },
+  "original_raw_vector_unseen": {
+    "Bproject-ty_project": [
+      "unchanged-one",
+      "unchanged-two"
+    ],
+    "Bwasm-ty_wasm": [
+      "unchanged-one",
+      "unchanged-two",
+      "edit",
+      "edit-repeat",
+      "restore",
+      "restore-repeat"
+    ],
+    "Cproject-ty_project": [],
+    "Cwasm-ty_wasm": [
+      "edit",
+      "edit-repeat",
+      "restore",
+      "restore-repeat"
+    ]
+  },
+  "typed_contract": {
+    "Bproject-ty_project": {
+      "original": {
+        "debug/build/workspaces/d46a37bd781ab0be/v2-bfe75824c58f78ad/ty_project/0bc1bc4b73bc4839/out/libty_project-0bc1bc4b73bc4839.rmeta": "b8cd8253304a14b3540635d7832a6a01af4e9132ed97cf13c102e026c20fe9db",
+        "debug/build/workspaces/d46a37bd781ab0be/v2-bfe75824c58f78ad/ty_vendored/6266fdb557e8fcc4/out/libty_vendored-6266fdb557e8fcc4.rlib": "a95987291ab0e5bf383bbeeee877678f94d84745969a25effc5bb0899eba0f41",
+        "debug/build/workspaces/d46a37bd781ab0be/v2-bfe75824c58f78ad/ty_vendored/6266fdb557e8fcc4/out/libty_vendored-6266fdb557e8fcc4.rmeta": "4ca60dd3c5d359e2dfd9c7bbad509924554aaa280270b37989b1b8aa50d06786",
+        "debug/libty_project.rlib": "5c85244f732b77c8d8248c02c62277848864f2291a74bae098deb86010d92433"
+      }
+    },
+    "Bwasm-ty_wasm": {
+      "original": {
+        "debug/build/workspaces/d46a37bd781ab0be/v2-14943575c854e17d/ty_vendored/1f46eecf5ba8953a/out/libty_vendored-1f46eecf5ba8953a.rlib": "b5a208be7ca001117912e2487593492436a69a77309ccc865b11126479d40340",
+        "debug/build/workspaces/d46a37bd781ab0be/v2-14943575c854e17d/ty_vendored/1f46eecf5ba8953a/out/libty_vendored-1f46eecf5ba8953a.rmeta": "9d87275e01fc445f3fd6274c5d4dc9463a013a402f471463d62a80d6b4ec1f74",
+        "debug/build/workspaces/d46a37bd781ab0be/v2-14943575c854e17d/ty_wasm/7da3bbf4f1b584ab/out/libty_wasm.rmeta": "6e770ac6060e23014e1015ac7f796ce962a29f9e1fec3dc297943ee72274904f",
+        "debug/libty_wasm.rlib": "d52e5db06745730aef20d41154cfc3d771a30ea8c1624a7b90bbccfb562fec28",
+        "debug/libty_wasm.so": "8c688b283b7792f4cdffdb441b3cf16fa5211ec609409860e09c9b6a7592b194"
+      },
+      "reversed": {
+        "debug/build/workspaces/d46a37bd781ab0be/v2-14943575c854e17d/ty_vendored/1f46eecf5ba8953a/out/libty_vendored-1f46eecf5ba8953a.rlib": "3ddc11214d27379c6cab5c0fa7802b94b861118ae40f36beb79d76b010955a9f",
+        "debug/build/workspaces/d46a37bd781ab0be/v2-14943575c854e17d/ty_vendored/1f46eecf5ba8953a/out/libty_vendored-1f46eecf5ba8953a.rmeta": "28367b109cfc3c20ca832dda58377dc485dc662fb5d49aaf37d0e5ed68729d37",
+        "debug/build/workspaces/d46a37bd781ab0be/v2-14943575c854e17d/ty_wasm/7da3bbf4f1b584ab/out/libty_wasm.rmeta": "6e770ac6060e23014e1015ac7f796ce962a29f9e1fec3dc297943ee72274904f",
+        "debug/libty_wasm.rlib": "d52e5db06745730aef20d41154cfc3d771a30ea8c1624a7b90bbccfb562fec28",
+        "debug/libty_wasm.so": "8c688b283b7792f4cdffdb441b3cf16fa5211ec609409860e09c9b6a7592b194"
+      }
+    },
+    "Cproject-ty_project": {
+      "original": {
+        "debug/build/workspaces/d46a37bd781ab0be/v2-a9677a13cdf0eef0/ty_project/0bc1bc4b73bc4839/out/libty_project-0bc1bc4b73bc4839.rmeta": "f9faffd4d770ed77e3083f43513af9079e9598937e1e60101078927d52bf211f",
+        "debug/build/workspaces/d46a37bd781ab0be/v2-a9677a13cdf0eef0/ty_vendored/6266fdb557e8fcc4/out/libty_vendored-6266fdb557e8fcc4.rlib": "676c7b572a9466b44c1aa42bcc4959a0af8d61139857f7c456caaf72479212c4",
+        "debug/build/workspaces/d46a37bd781ab0be/v2-a9677a13cdf0eef0/ty_vendored/6266fdb557e8fcc4/out/libty_vendored-6266fdb557e8fcc4.rmeta": "3a5e0560446b7673cb775fb1baa22e816fa9e20af8ee5243d53dde8b599e5285",
+        "debug/libty_project.rlib": "7568e0955fb96d8de96508a22a85a95c82a10fbec4de134cdc8f3ac42340ffa5"
+      }
+    },
+    "Cwasm-ty_wasm": {
+      "original": {
+        "debug/build/workspaces/d46a37bd781ab0be/v2-8dc8164eb259fa2c/ty_vendored/1f46eecf5ba8953a/out/libty_vendored-1f46eecf5ba8953a.rlib": "8adf1ada768661845503e4232f7b1a337dfcde2d71ff7a11c2d55e6f6d4df5ac",
+        "debug/build/workspaces/d46a37bd781ab0be/v2-8dc8164eb259fa2c/ty_vendored/1f46eecf5ba8953a/out/libty_vendored-1f46eecf5ba8953a.rmeta": "32c2cd0e722da2abed9135fa7dbf57546d46f82b344e041c7dc71716fa692038",
+        "debug/build/workspaces/d46a37bd781ab0be/v2-8dc8164eb259fa2c/ty_wasm/7da3bbf4f1b584ab/out/libty_wasm.rmeta": "fa462b1708d5b4a9c8dafec78e52a7f0c494e74ffcce21fb28e6c1d3d53d9d2a",
+        "debug/libty_wasm.rlib": "128aa9ef8899e970563fe43116f63a4af0e450dfe085dcb233e2174ed5d938e6",
+        "debug/libty_wasm.so": "8c688b283b7792f4cdffdb441b3cf16fa5211ec609409860e09c9b6a7592b194"
+      },
+      "reversed": {
+        "debug/build/workspaces/d46a37bd781ab0be/v2-8dc8164eb259fa2c/ty_vendored/1f46eecf5ba8953a/out/libty_vendored-1f46eecf5ba8953a.rlib": "5001c0656d3babf545dd0b5bf96f8cf5c5086fa374d3b85fab8994402d4f4857",
+        "debug/build/workspaces/d46a37bd781ab0be/v2-8dc8164eb259fa2c/ty_vendored/1f46eecf5ba8953a/out/libty_vendored-1f46eecf5ba8953a.rmeta": "203d6c67fc3cd43d1520462f91c8349e2d8415cc4d2e5c1106484fccba682f8a",
+        "debug/build/workspaces/d46a37bd781ab0be/v2-8dc8164eb259fa2c/ty_wasm/7da3bbf4f1b584ab/out/libty_wasm.rmeta": "fa462b1708d5b4a9c8dafec78e52a7f0c494e74ffcce21fb28e6c1d3d53d9d2a",
+        "debug/libty_wasm.rlib": "128aa9ef8899e970563fe43116f63a4af0e450dfe085dcb233e2174ed5d938e6",
+        "debug/libty_wasm.so": "8c688b283b7792f4cdffdb441b3cf16fa5211ec609409860e09c9b6a7592b194"
+      }
+    }
+  }
+}
