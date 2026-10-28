@@ -1,0 +1,50 @@
+{
+  "actual_debug_raw": "9938625e1f1cb63ad79b0e49276755c9c1d4c802dc9b0d7e34c090365edfd127",
+  "admission": "Bind four unequal cross-arm filename/SHA pairs matching the full ELF and complete resolved DWARF report. For all remaining cross-arm and all within-arm files retain the original complete-file two-field rule. On each clock require the four named raw ELF hashes to equal their own arm; require every fixed-arm output to remain raw-identical to its own pre-clock reference. All other protocol choices including the untouched 12 paired assignments remain in plan.json.",
+  "anchors_commit": "2455f05706e9bf19dc3eb5214a516ba1df9045e8",
+  "arm_receipts": {
+    "1-B": "6f8eed7c0070970d85e7b50821d134aa0f159eba99e24e029d41bad95f0879dc",
+    "1-C": "fdafb12fa9566c33096a3f279b5adba71949f51f302ebd6050c75dfd2daa29c2",
+    "2-B": "1453a3e8e7f539f7817bf30e4090e855d4173fdbc91f875716edcd77cecb1496",
+    "2-C": "8f8b8240c02d215da9cf219bcdf9bca0183860f528d5adc1914dc84c8f3bb577"
+  },
+  "clock": [
+    "cargo",
+    "+ohm",
+    "test",
+    "--no-run",
+    "--workspace",
+    "--locked",
+    "--offline",
+    "-j4"
+  ],
+  "exact_elf_pairs": "1007dc8743007e39060272e8ce923a9678c479be26c862e10c5c5cd27b7abd8f",
+  "frozen_helpers": {
+    "clock.py": "b6ba725f07d4e4197901c4e71566ff1c63c54b2e8367928d1102731486658999",
+    "elf.py": "6e39bf4955c265d60934ac45668b92dd7564f37df3e4551a6da056f1e0884ce8",
+    "statistics_replication.py": "a1f77bbef007198ced3b1d6d3e7a3e6b5eb5d762456de412aa2eb825282694be"
+  },
+  "native_packet_manifest": "c04260f92c6a90657d10fba78707228cb07e66784d2b7a1e176b18d0ddd81f50",
+  "orders": [
+    [
+      "CB",
+      "BC",
+      "CB",
+      "CB",
+      "BC",
+      "BC"
+    ],
+    [
+      "BC",
+      "CB",
+      "CB",
+      "BC",
+      "BC",
+      "CB"
+    ]
+  ],
+  "original_plan_commit": "eeff437a2d827c20e19d0ca66de145c8e2d2ccb9",
+  "original_plan_sha": "862d8e931e22938b184dc976bad01d1344dd0cf93b4aae8ddf68c87838073009",
+  "runtime_commit": "eab4765cdc22a880bee686bfed59ae17b6adbfb2",
+  "strict_native": "72006babca42d4e7fc97bd99d14368c8dccc26270b3049498be7a52215d8d19c"
+}
