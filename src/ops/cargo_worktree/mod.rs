@@ -501,13 +501,8 @@ fn relocate_dep_info(path: &Path, old_prefix: &Path, new_prefix: &Path) -> Cargo
         fs::remove_file(path)?;
         return Ok(false);
     };
-    // Observer receipts name the compiler inputs actually opened in the donor.
-    // Keep the missing input in the recipient until its own compiler records them.
-    let mut changed = false;
-    if let Some((_, complete)) = &mut info.observer {
-        *complete = false;
-        changed = true;
-    }
+    // Rewrite older observer records as incomplete even when no paths need rebasing.
+    let mut changed = info.observer.is_some();
     for (kind, path, _) in &mut info.files {
         if *kind == DepInfoPathType::BuildRootRelative
             && let Ok(relative) = path.strip_prefix(old_prefix)

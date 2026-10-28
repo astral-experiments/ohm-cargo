@@ -1354,21 +1354,6 @@ fn rustc(
     let env_config = Arc::clone(build_runner.bcx.gctx.env_config()?);
 
     let fingerprint = build_runner.fingerprints.get(unit).cloned();
-    let captures_observer_inputs = fingerprint
-        .as_ref()
-        .is_some_and(|fp| fp.observes_span_inputs())
-        && build_runner.bcx.gctx.cli_unstable().ohm_defaults()
-        && build_runner.bcx.rustc().wrapper.is_none()
-        && (build_runner.bcx.rustc().workspace_wrapper.is_none()
-            || !build_runner.bcx.ws.is_member(&unit.pkg))
-        && build_runner.bcx.extra_args_for(unit).is_none()
-        && fingerprint::unit_has_exclusive_metadata_access(build_runner, unit);
-    if captures_observer_inputs {
-        rustc.arg("-Zbinary-dep-depinfo");
-        if !unit_uses_checksum_freshness(build_runner, unit) {
-            rustc.arg("-Zchecksum-hash-algorithm=blake3");
-        }
-    }
     let unit_name = format!("{} v{}", unit.pkg.name(), unit.pkg.version());
     let can_skip_compilation = fingerprint::unit_can_use_early_cutoff(build_runner, unit)
         && fingerprint
@@ -1459,11 +1444,11 @@ fn rustc(
             });
         }
 
-        let observed_inputs_current = fingerprint
+        let observes_foreign_span = fingerprint
             .as_ref()
-            .is_none_or(|fp| fp.observed_span_inputs_are_current());
+            .is_some_and(|fp| fp.observes_foreign_span());
         if let Some(ref fp) = fingerprint
-            && observed_inputs_current
+            && !observes_foreign_span
         {
             tracing::info!(
                 "early cutoff check for {}: fs_status={:?}, outputs={:?}",
@@ -1557,7 +1542,7 @@ fn rustc(
         let use_cached_relink = early_test.is_none()
             && deferred_dev_names.is_empty()
             && can_relink_dependencies
-            && observed_inputs_current
+            && !observes_foreign_span
             && relink_cache
                 .as_ref()
                 .is_some_and(RelinkCachePaths::is_valid);
@@ -1631,7 +1616,7 @@ fn rustc(
             (fingerprint.as_ref(), worktree_seed_namespace.as_deref())
             && early_test.is_none()
             && deferred_dev_names.is_empty()
-            && observed_inputs_current
+            && !observes_foreign_span
             && fingerprint::can_reuse_after_scripts(
                 fingerprint,
                 &pkg_root,
@@ -1997,7 +1982,6 @@ fn rustc(
                 is_local,
                 &env_config,
                 worktree_seed_namespace.as_deref(),
-                captures_observer_inputs,
             )
             .with_context(|| {
                 internal(format!(
@@ -2820,7 +2804,6 @@ fn rustdoc(build_runner: &mut BuildRunner<'_, '_>, unit: &Unit) -> CargoResult<W
                 is_local,
                 &env_config,
                 worktree_seed_namespace.as_deref(),
-                false,
             )
             .with_context(|| {
                 internal(format_args!(
