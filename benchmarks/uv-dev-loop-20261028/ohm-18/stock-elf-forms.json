@@ -1,0 +1,51 @@
+{
+  "created_utc": "2026-10-28T22:19:02.349260+00:00",
+  "test_paths": [
+    "debug/build/uv/7244341c90b6d7a6/out/uv-7244341c90b6d7a6",
+    "debug/build/uv/f86773a1331ddc31/out/uvx-f86773a1331ddc31",
+    "debug/build/uv/3327e13031dd7e00/out/uv-3327e13031dd7e00"
+  ],
+  "stock_replays": {
+    "0": {
+      "target": "debug/build/uv/7244341c90b6d7a6/out/uv-7244341c90b6d7a6",
+      "sha256": "ebe7000731dd0b3ace6e75071f9005be378265d2008bf9459f92c627f55769ab",
+      "differing": [
+        33,
+        33
+      ]
+    },
+    "1": {
+      "target": "debug/build/uv/cb417070d324abc7/out/uv",
+      "sha256": "2ce94449edadca782cc0a01099386ee28d37396e86a6477bc767b1dfb441e39a",
+      "differing": [
+        33,
+        33
+      ]
+    },
+    "2": {
+      "target": "debug/build/uv/f86773a1331ddc31/out/uvx-f86773a1331ddc31",
+      "sha256": "2f426bfac08ea5c5ef0d22ef05e48d9e55764ac17e00afa122cde3471d57dc7b",
+      "differing": [
+        33,
+        33
+      ]
+    },
+    "3": {
+      "target": "debug/build/uv/3327e13031dd7e00/out/uv-3327e13031dd7e00",
+      "sha256": "1a08b8f87bf7e47e5a86b5c927470e67b74c4d653a6e0d87c93304405626000e",
+      "differing": [
+        33,
+        33
+      ]
+    },
+    "4": {
+      "target": "debug/build/uv/7979e02459d33e07/out/uvx",
+      "sha256": "6c41b4a276444f08d9d0fa37f73e89c44f25d25ad16b1720307c948b732afaf9",
+      "differing": [
+        0,
+        0
+      ]
+    }
+  },
+  "scope": "For these three specific covered unit-test executable paths only, check all ELF bytes except the .rodata section-header entsize byte (only 0 or 8) and its GNU build ID. Retain raw SHA, both fields, and per-entsize matching raw hash. Other test products retain full raw-byte checks. Shipped and unmodified PR46 each reproduce both exact forms. All scenarios retain the original score, assignments, source edits and gates; the rejected four-way admission produced zero timed rows."
+}

@@ -1,0 +1,1399 @@
+{
+  "date_utc": "2026-10-28T21:17:50.486576+00:00",
+  "uv": "c22e6b71933443e9cd299d4b6ac8de035ed4825b",
+  "release": "ohm-1.99.0-18",
+  "cargo_pin": "7caf39914da1e28a67744ecbc963a5f26361474d",
+  "rustc_pin": "a4fa11bcd38280639cb94daacc125472657db6c3",
+  "cpu": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15
+  ],
+  "native_jobs": 8,
+  "endpoints": {
+    "check": [
+      "check"
+    ],
+    "build": [
+      "build"
+    ],
+    "test": [
+      "test",
+      "--no-run"
+    ]
+  },
+  "paired_blocks": 24,
+  "cohorts": {
+    "initial": {
+      "seed": 18010289,
+      "endpoint_order": [
+        "check",
+        "build",
+        "test"
+      ],
+      "root": "/tmp/ohm-uv-bench.0H03f2TH/round18/a",
+      "endpoints": {
+        "check": [
+          {
+            "order": [
+              "stack",
+              "refresh",
+              "shipped",
+              "base"
+            ],
+            "literal": "AC10"
+          },
+          {
+            "order": [
+              "refresh",
+              "stack",
+              "base",
+              "shipped"
+            ],
+            "literal": "AC33"
+          },
+          {
+            "order": [
+              "refresh",
+              "base",
+              "shipped",
+              "stack"
+            ],
+            "literal": "AC12"
+          },
+          {
+            "order": [
+              "shipped",
+              "base",
+              "stack",
+              "refresh"
+            ],
+            "literal": "AC22"
+          },
+          {
+            "order": [
+              "shipped",
+              "refresh",
+              "base",
+              "stack"
+            ],
+            "literal": "AC27"
+          },
+          {
+            "order": [
+              "shipped",
+              "refresh",
+              "stack",
+              "base"
+            ],
+            "literal": "AC17"
+          },
+          {
+            "order": [
+              "shipped",
+              "stack",
+              "refresh",
+              "base"
+            ],
+            "literal": "AC13"
+          },
+          {
+            "order": [
+              "stack",
+              "base",
+              "refresh",
+              "shipped"
+            ],
+            "literal": "AC25"
+          },
+          {
+            "order": [
+              "shipped",
+              "base",
+              "refresh",
+              "stack"
+            ],
+            "literal": "AC23"
+          },
+          {
+            "order": [
+              "refresh",
+              "base",
+              "stack",
+              "shipped"
+            ],
+            "literal": "AC30"
+          },
+          {
+            "order": [
+              "base",
+              "shipped",
+              "stack",
+              "refresh"
+            ],
+            "literal": "AC31"
+          },
+          {
+            "order": [
+              "refresh",
+              "shipped",
+              "stack",
+              "base"
+            ],
+            "literal": "AC19"
+          },
+          {
+            "order": [
+              "base",
+              "refresh",
+              "stack",
+              "shipped"
+            ],
+            "literal": "AC20"
+          },
+          {
+            "order": [
+              "base",
+              "stack",
+              "refresh",
+              "shipped"
+            ],
+            "literal": "AC24"
+          },
+          {
+            "order": [
+              "stack",
+              "shipped",
+              "refresh",
+              "base"
+            ],
+            "literal": "AC18"
+          },
+          {
+            "order": [
+              "stack",
+              "base",
+              "shipped",
+              "refresh"
+            ],
+            "literal": "AC11"
+          },
+          {
+            "order": [
+              "base",
+              "refresh",
+              "shipped",
+              "stack"
+            ],
+            "literal": "AC26"
+          },
+          {
+            "order": [
+              "stack",
+              "shipped",
+              "base",
+              "refresh"
+            ],
+            "literal": "AC28"
+          },
+          {
+            "order": [
+              "stack",
+              "refresh",
+              "base",
+              "shipped"
+            ],
+            "literal": "AC16"
+          },
+          {
+            "order": [
+              "base",
+              "stack",
+              "shipped",
+              "refresh"
+            ],
+            "literal": "AC32"
+          },
+          {
+            "order": [
+              "base",
+              "shipped",
+              "refresh",
+              "stack"
+            ],
+            "literal": "AC21"
+          },
+          {
+            "order": [
+              "refresh",
+              "stack",
+              "shipped",
+              "base"
+            ],
+            "literal": "AC29"
+          },
+          {
+            "order": [
+              "refresh",
+              "shipped",
+              "base",
+              "stack"
+            ],
+            "literal": "AC14"
+          },
+          {
+            "order": [
+              "shipped",
+              "stack",
+              "base",
+              "refresh"
+            ],
+            "literal": "AC15"
+          }
+        ],
+        "build": [
+          {
+            "order": [
+              "refresh",
+              "shipped",
+              "base",
+              "stack"
+            ],
+            "literal": "AB31"
+          },
+          {
+            "order": [
+              "shipped",
+              "base",
+              "stack",
+              "refresh"
+            ],
+            "literal": "AB15"
+          },
+          {
+            "order": [
+              "base",
+              "shipped",
+              "refresh",
+              "stack"
+            ],
+            "literal": "AB19"
+          },
+          {
+            "order": [
+              "base",
+              "stack",
+              "refresh",
+              "shipped"
+            ],
+            "literal": "AB24"
+          },
+          {
+            "order": [
+              "stack",
+              "refresh",
+              "base",
+              "shipped"
+            ],
+            "literal": "AB30"
+          },
+          {
+            "order": [
+              "shipped",
+              "refresh",
+              "stack",
+              "base"
+            ],
+            "literal": "AB13"
+          },
+          {
+            "order": [
+              "base",
+              "shipped",
+              "stack",
+              "refresh"
+            ],
+            "literal": "AB25"
+          },
+          {
+            "order": [
+              "stack",
+              "base",
+              "shipped",
+              "refresh"
+            ],
+            "literal": "AB21"
+          },
+          {
+            "order": [
+              "shipped",
+              "base",
+              "refresh",
+              "stack"
+            ],
+            "literal": "AB17"
+          },
+          {
+            "order": [
+              "refresh",
+              "stack",
+              "shipped",
+              "base"
+            ],
+            "literal": "AB27"
+          },
+          {
+            "order": [
+              "stack",
+              "shipped",
+              "refresh",
+              "base"
+            ],
+            "literal": "AB14"
+          },
+          {
+            "order": [
+              "base",
+              "stack",
+              "shipped",
+              "refresh"
+            ],
+            "literal": "AB18"
+          },
+          {
+            "order": [
+              "refresh",
+              "shipped",
+              "stack",
+              "base"
+            ],
+            "literal": "AB12"
+          },
+          {
+            "order": [
+              "shipped",
+              "stack",
+              "refresh",
+              "base"
+            ],
+            "literal": "AB22"
+          },
+          {
+            "order": [
+              "base",
+              "refresh",
+              "shipped",
+              "stack"
+            ],
+            "literal": "AB32"
+          },
+          {
+            "order": [
+              "shipped",
+              "refresh",
+              "base",
+              "stack"
+            ],
+            "literal": "AB11"
+          },
+          {
+            "order": [
+              "refresh",
+              "base",
+              "shipped",
+              "stack"
+            ],
+            "literal": "AB16"
+          },
+          {
+            "order": [
+              "refresh",
+              "base",
+              "stack",
+              "shipped"
+            ],
+            "literal": "AB29"
+          },
+          {
+            "order": [
+              "stack",
+              "shipped",
+              "base",
+              "refresh"
+            ],
+            "literal": "AB26"
+          },
+          {
+            "order": [
+              "shipped",
+              "stack",
+              "base",
+              "refresh"
+            ],
+            "literal": "AB10"
+          },
+          {
+            "order": [
+              "base",
+              "refresh",
+              "stack",
+              "shipped"
+            ],
+            "literal": "AB28"
+          },
+          {
+            "order": [
+              "stack",
+              "base",
+              "refresh",
+              "shipped"
+            ],
+            "literal": "AB20"
+          },
+          {
+            "order": [
+              "refresh",
+              "stack",
+              "base",
+              "shipped"
+            ],
+            "literal": "AB33"
+          },
+          {
+            "order": [
+              "stack",
+              "refresh",
+              "shipped",
+              "base"
+            ],
+            "literal": "AB23"
+          }
+        ],
+        "test": [
+          {
+            "order": [
+              "base",
+              "refresh",
+              "shipped",
+              "stack"
+            ],
+            "literal": "AT24"
+          },
+          {
+            "order": [
+              "shipped",
+              "base",
+              "stack",
+              "refresh"
+            ],
+            "literal": "AT14"
+          },
+          {
+            "order": [
+              "stack",
+              "base",
+              "shipped",
+              "refresh"
+            ],
+            "literal": "AT30"
+          },
+          {
+            "order": [
+              "stack",
+              "shipped",
+              "refresh",
+              "base"
+            ],
+            "literal": "AT32"
+          },
+          {
+            "order": [
+              "stack",
+              "refresh",
+              "shipped",
+              "base"
+            ],
+            "literal": "AT23"
+          },
+          {
+            "order": [
+              "stack",
+              "refresh",
+              "base",
+              "shipped"
+            ],
+            "literal": "AT22"
+          },
+          {
+            "order": [
+              "shipped",
+              "stack",
+              "refresh",
+              "base"
+            ],
+            "literal": "AT21"
+          },
+          {
+            "order": [
+              "shipped",
+              "refresh",
+              "base",
+              "stack"
+            ],
+            "literal": "AT12"
+          },
+          {
+            "order": [
+              "shipped",
+              "stack",
+              "base",
+              "refresh"
+            ],
+            "literal": "AT29"
+          },
+          {
+            "order": [
+              "refresh",
+              "stack",
+              "shipped",
+              "base"
+            ],
+            "literal": "AT13"
+          },
+          {
+            "order": [
+              "shipped",
+              "base",
+              "refresh",
+              "stack"
+            ],
+            "literal": "AT26"
+          },
+          {
+            "order": [
+              "stack",
+              "shipped",
+              "base",
+              "refresh"
+            ],
+            "literal": "AT31"
+          },
+          {
+            "order": [
+              "base",
+              "shipped",
+              "refresh",
+              "stack"
+            ],
+            "literal": "AT16"
+          },
+          {
+            "order": [
+              "base",
+              "shipped",
+              "stack",
+              "refresh"
+            ],
+            "literal": "AT15"
+          },
+          {
+            "order": [
+              "refresh",
+              "base",
+              "stack",
+              "shipped"
+            ],
+            "literal": "AT18"
+          },
+          {
+            "order": [
+              "refresh",
+              "shipped",
+              "stack",
+              "base"
+            ],
+            "literal": "AT20"
+          },
+          {
+            "order": [
+              "base",
+              "refresh",
+              "stack",
+              "shipped"
+            ],
+            "literal": "AT28"
+          },
+          {
+            "order": [
+              "stack",
+              "base",
+              "refresh",
+              "shipped"
+            ],
+            "literal": "AT11"
+          },
+          {
+            "order": [
+              "shipped",
+              "refresh",
+              "stack",
+              "base"
+            ],
+            "literal": "AT17"
+          },
+          {
+            "order": [
+              "refresh",
+              "base",
+              "shipped",
+              "stack"
+            ],
+            "literal": "AT10"
+          },
+          {
+            "order": [
+              "base",
+              "stack",
+              "refresh",
+              "shipped"
+            ],
+            "literal": "AT33"
+          },
+          {
+            "order": [
+              "refresh",
+              "shipped",
+              "base",
+              "stack"
+            ],
+            "literal": "AT25"
+          },
+          {
+            "order": [
+              "refresh",
+              "stack",
+              "base",
+              "shipped"
+            ],
+            "literal": "AT19"
+          },
+          {
+            "order": [
+              "base",
+              "stack",
+              "shipped",
+              "refresh"
+            ],
+            "literal": "AT27"
+          }
+        ]
+      }
+    },
+    "replica": {
+      "seed": 18020173,
+      "endpoint_order": [
+        "test",
+        "build",
+        "check"
+      ],
+      "root": "/tmp/ohm-uv-bench.0H03f2TH/round18/independent/longer-checkout-b",
+      "endpoints": {
+        "test": [
+          {
+            "order": [
+              "shipped",
+              "refresh",
+              "stack",
+              "base"
+            ],
+            "literal": "BT25"
+          },
+          {
+            "order": [
+              "refresh",
+              "stack",
+              "shipped",
+              "base"
+            ],
+            "literal": "BT23"
+          },
+          {
+            "order": [
+              "shipped",
+              "base",
+              "refresh",
+              "stack"
+            ],
+            "literal": "BT31"
+          },
+          {
+            "order": [
+              "refresh",
+              "stack",
+              "base",
+              "shipped"
+            ],
+            "literal": "BT24"
+          },
+          {
+            "order": [
+              "stack",
+              "shipped",
+              "base",
+              "refresh"
+            ],
+            "literal": "BT20"
+          },
+          {
+            "order": [
+              "shipped",
+              "base",
+              "stack",
+              "refresh"
+            ],
+            "literal": "BT26"
+          },
+          {
+            "order": [
+              "refresh",
+              "base",
+              "shipped",
+              "stack"
+            ],
+            "literal": "BT29"
+          },
+          {
+            "order": [
+              "stack",
+              "base",
+              "refresh",
+              "shipped"
+            ],
+            "literal": "BT21"
+          },
+          {
+            "order": [
+              "stack",
+              "base",
+              "shipped",
+              "refresh"
+            ],
+            "literal": "BT12"
+          },
+          {
+            "order": [
+              "base",
+              "refresh",
+              "shipped",
+              "stack"
+            ],
+            "literal": "BT11"
+          },
+          {
+            "order": [
+              "stack",
+              "refresh",
+              "shipped",
+              "base"
+            ],
+            "literal": "BT16"
+          },
+          {
+            "order": [
+              "base",
+              "stack",
+              "refresh",
+              "shipped"
+            ],
+            "literal": "BT10"
+          },
+          {
+            "order": [
+              "refresh",
+              "base",
+              "stack",
+              "shipped"
+            ],
+            "literal": "BT13"
+          },
+          {
+            "order": [
+              "refresh",
+              "shipped",
+              "stack",
+              "base"
+            ],
+            "literal": "BT15"
+          },
+          {
+            "order": [
+              "shipped",
+              "refresh",
+              "base",
+              "stack"
+            ],
+            "literal": "BT32"
+          },
+          {
+            "order": [
+              "base",
+              "stack",
+              "shipped",
+              "refresh"
+            ],
+            "literal": "BT18"
+          },
+          {
+            "order": [
+              "base",
+              "shipped",
+              "stack",
+              "refresh"
+            ],
+            "literal": "BT30"
+          },
+          {
+            "order": [
+              "base",
+              "shipped",
+              "refresh",
+              "stack"
+            ],
+            "literal": "BT22"
+          },
+          {
+            "order": [
+              "base",
+              "refresh",
+              "stack",
+              "shipped"
+            ],
+            "literal": "BT14"
+          },
+          {
+            "order": [
+              "stack",
+              "shipped",
+              "refresh",
+              "base"
+            ],
+            "literal": "BT17"
+          },
+          {
+            "order": [
+              "refresh",
+              "shipped",
+              "base",
+              "stack"
+            ],
+            "literal": "BT27"
+          },
+          {
+            "order": [
+              "shipped",
+              "stack",
+              "refresh",
+              "base"
+            ],
+            "literal": "BT33"
+          },
+          {
+            "order": [
+              "stack",
+              "refresh",
+              "base",
+              "shipped"
+            ],
+            "literal": "BT28"
+          },
+          {
+            "order": [
+              "shipped",
+              "stack",
+              "base",
+              "refresh"
+            ],
+            "literal": "BT19"
+          }
+        ],
+        "build": [
+          {
+            "order": [
+              "refresh",
+              "shipped",
+              "base",
+              "stack"
+            ],
+            "literal": "BB14"
+          },
+          {
+            "order": [
+              "refresh",
+              "base",
+              "shipped",
+              "stack"
+            ],
+            "literal": "BB19"
+          },
+          {
+            "order": [
+              "shipped",
+              "stack",
+              "refresh",
+              "base"
+            ],
+            "literal": "BB15"
+          },
+          {
+            "order": [
+              "base",
+              "shipped",
+              "stack",
+              "refresh"
+            ],
+            "literal": "BB24"
+          },
+          {
+            "order": [
+              "base",
+              "stack",
+              "refresh",
+              "shipped"
+            ],
+            "literal": "BB20"
+          },
+          {
+            "order": [
+              "base",
+              "refresh",
+              "shipped",
+              "stack"
+            ],
+            "literal": "BB33"
+          },
+          {
+            "order": [
+              "shipped",
+              "refresh",
+              "stack",
+              "base"
+            ],
+            "literal": "BB10"
+          },
+          {
+            "order": [
+              "shipped",
+              "base",
+              "stack",
+              "refresh"
+            ],
+            "literal": "BB27"
+          },
+          {
+            "order": [
+              "refresh",
+              "shipped",
+              "stack",
+              "base"
+            ],
+            "literal": "BB16"
+          },
+          {
+            "order": [
+              "stack",
+              "base",
+              "refresh",
+              "shipped"
+            ],
+            "literal": "BB17"
+          },
+          {
+            "order": [
+              "refresh",
+              "stack",
+              "base",
+              "shipped"
+            ],
+            "literal": "BB11"
+          },
+          {
+            "order": [
+              "shipped",
+              "base",
+              "refresh",
+              "stack"
+            ],
+            "literal": "BB28"
+          },
+          {
+            "order": [
+              "refresh",
+              "stack",
+              "shipped",
+              "base"
+            ],
+            "literal": "BB13"
+          },
+          {
+            "order": [
+              "shipped",
+              "refresh",
+              "base",
+              "stack"
+            ],
+            "literal": "BB31"
+          },
+          {
+            "order": [
+              "stack",
+              "shipped",
+              "refresh",
+              "base"
+            ],
+            "literal": "BB23"
+          },
+          {
+            "order": [
+              "stack",
+              "refresh",
+              "shipped",
+              "base"
+            ],
+            "literal": "BB12"
+          },
+          {
+            "order": [
+              "base",
+              "shipped",
+              "refresh",
+              "stack"
+            ],
+            "literal": "BB22"
+          },
+          {
+            "order": [
+              "stack",
+              "base",
+              "shipped",
+              "refresh"
+            ],
+            "literal": "BB25"
+          },
+          {
+            "order": [
+              "stack",
+              "refresh",
+              "base",
+              "shipped"
+            ],
+            "literal": "BB21"
+          },
+          {
+            "order": [
+              "refresh",
+              "base",
+              "stack",
+              "shipped"
+            ],
+            "literal": "BB30"
+          },
+          {
+            "order": [
+              "base",
+              "stack",
+              "shipped",
+              "refresh"
+            ],
+            "literal": "BB29"
+          },
+          {
+            "order": [
+              "base",
+              "refresh",
+              "stack",
+              "shipped"
+            ],
+            "literal": "BB32"
+          },
+          {
+            "order": [
+              "shipped",
+              "stack",
+              "base",
+              "refresh"
+            ],
+            "literal": "BB26"
+          },
+          {
+            "order": [
+              "stack",
+              "shipped",
+              "base",
+              "refresh"
+            ],
+            "literal": "BB18"
+          }
+        ],
+        "check": [
+          {
+            "order": [
+              "base",
+              "shipped",
+              "refresh",
+              "stack"
+            ],
+            "literal": "BC16"
+          },
+          {
+            "order": [
+              "base",
+              "stack",
+              "shipped",
+              "refresh"
+            ],
+            "literal": "BC30"
+          },
+          {
+            "order": [
+              "stack",
+              "refresh",
+              "base",
+              "shipped"
+            ],
+            "literal": "BC25"
+          },
+          {
+            "order": [
+              "stack",
+              "shipped",
+              "base",
+              "refresh"
+            ],
+            "literal": "BC22"
+          },
+          {
+            "order": [
+              "refresh",
+              "base",
+              "shipped",
+              "stack"
+            ],
+            "literal": "BC18"
+          },
+          {
+            "order": [
+              "stack",
+              "refresh",
+              "shipped",
+              "base"
+            ],
+            "literal": "BC26"
+          },
+          {
+            "order": [
+              "shipped",
+              "base",
+              "stack",
+              "refresh"
+            ],
+            "literal": "BC24"
+          },
+          {
+            "order": [
+              "base",
+              "stack",
+              "refresh",
+              "shipped"
+            ],
+            "literal": "BC31"
+          },
+          {
+            "order": [
+              "refresh",
+              "shipped",
+              "base",
+              "stack"
+            ],
+            "literal": "BC19"
+          },
+          {
+            "order": [
+              "stack",
+              "shipped",
+              "refresh",
+              "base"
+            ],
+            "literal": "BC20"
+          },
+          {
+            "order": [
+              "shipped",
+              "stack",
+              "refresh",
+              "base"
+            ],
+            "literal": "BC11"
+          },
+          {
+            "order": [
+              "stack",
+              "base",
+              "refresh",
+              "shipped"
+            ],
+            "literal": "BC10"
+          },
+          {
+            "order": [
+              "base",
+              "refresh",
+              "shipped",
+              "stack"
+            ],
+            "literal": "BC33"
+          },
+          {
+            "order": [
+              "shipped",
+              "base",
+              "refresh",
+              "stack"
+            ],
+            "literal": "BC12"
+          },
+          {
+            "order": [
+              "shipped",
+              "refresh",
+              "base",
+              "stack"
+            ],
+            "literal": "BC14"
+          },
+          {
+            "order": [
+              "base",
+              "shipped",
+              "stack",
+              "refresh"
+            ],
+            "literal": "BC32"
+          },
+          {
+            "order": [
+              "refresh",
+              "stack",
+              "base",
+              "shipped"
+            ],
+            "literal": "BC15"
+          },
+          {
+            "order": [
+              "shipped",
+              "refresh",
+              "stack",
+              "base"
+            ],
+            "literal": "BC21"
+          },
+          {
+            "order": [
+              "refresh",
+              "stack",
+              "shipped",
+              "base"
+            ],
+            "literal": "BC27"
+          },
+          {
+            "order": [
+              "shipped",
+              "stack",
+              "base",
+              "refresh"
+            ],
+            "literal": "BC28"
+          },
+          {
+            "order": [
+              "refresh",
+              "shipped",
+              "stack",
+              "base"
+            ],
+            "literal": "BC29"
+          },
+          {
+            "order": [
+              "refresh",
+              "base",
+              "stack",
+              "shipped"
+            ],
+            "literal": "BC17"
+          },
+          {
+            "order": [
+              "stack",
+              "base",
+              "shipped",
+              "refresh"
+            ],
+            "literal": "BC13"
+          },
+          {
+            "order": [
+              "base",
+              "refresh",
+              "stack",
+              "shipped"
+            ],
+            "literal": "BC23"
+          }
+        ]
+      }
+    }
+  },
+  "arms": {
+    "shipped": {
+      "cargo": "upstream-monitor/toolchain18/bin/cargo",
+      "wild": "upstream-monitor/toolchain18/lib/rustlib/x86_64-unknown-linux-gnu/bin/wild-ld/ld.bfd"
+    },
+    "base": {
+      "cargo": "round18-cargo/pgo/bin/base",
+      "wild": "bin/wild-baseline"
+    },
+    "stack": {
+      "cargo": "round18-cargo/pgo/bin/guard-stack",
+      "wild": "wild-prefix-v2/v2-wild"
+    },
+    "refresh": {
+      "cargo": "round18-cargo/pgo/bin/guard-stack",
+      "wild": "round18-linker/js-refresh-v3"
+    }
+  },
+  "family": "All eight previously published changes in their original tested placement: five -18 Cargo changes and #247 linked into Cargo, plus both Wild changes. Same distributed -18 rustc, target standard library and uv source in every arm.",
+  "primary": "Whole-command native wall clock including all compiler and linker work through Cargo exit; edited check/build/test --no-run. Compare stack to shipped distribution and to matched build. Two-sided exact paired sign test, balanced-period conditional randomization p, and positive distribution-free median interval. Primary multiplicity alpha 0.05/6; fresh independent confirmation alpha 0.05. A claimed whole-command win against -18 requires both comparators and both cohorts to qualify.",
+  "registered_utc": "2026-10-28T21:25:01.154808+00:00",
+  "prior_plan_sha256": "a4f57e340df1a6e112a5b4ca990d453d72c26f5156f656ac47c2af62563db3c7",
+  "target_pool": "r18-four",
+  "frozen_new_wild_sha256": "3b31c5baad41cbe6bbd3647b31f913f02d03f0d41c90eda445974ca1e59575de",
+  "novel_primary": "Edited full workspace cargo test --no-run. Compare refresh against preceding eight and shipped -18. Both need lower positive median rank interval, positive paired median, 2-sided exact sign p < 0.025 and 2-sided conditional order p < 0.025 in each of two independent 24-block cohorts. Build follows hierarchically; check invokes no linker and is an A/A comparison between eight and nine. Retain all rows and publish no native claim from isolated-link or contention pilots.",
+  "scoped_registered_utc": "2026-10-28T21:32:05.265614+00:00",
+  "superseded_plan_sha256": "2546f8a50b09b93eeb2f3340f2c6794de5909492b74aff1aa71a6445dc2b5469",
+  "reason": "Scoped Rayon pool joins workers, including background jobs, before returning all real tokens. No scored native timing of the preceding prototype or final treatment preceded this registration. Assignment unchanged from the four-arm plan."
+}

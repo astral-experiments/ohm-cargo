@@ -1,0 +1,76 @@
+{
+  "initial": {
+    "test": {
+      "stack-vs-base": {
+        "control": "base",
+        "treatment": "stack",
+        "n": 24,
+        "wins": 16,
+        "losses": 8,
+        "ties": 0,
+        "control_median_sec": 6.7187984085,
+        "treatment_median_sec": 6.334420634500001,
+        "median_saved_ms": 458.83766,
+        "median_saved_pct": 6.989857932252061,
+        "median_saved_pct_interval": {
+          "lower": -3.9843630816666384,
+          "upper": 9.515942282367552,
+          "coverage": 0.9773441553115845,
+          "lower_rank": 7
+        },
+        "median_saved_ms_interval": {
+          "lower": -267.718808,
+          "upper": 719.843876,
+          "coverage": 0.9773441553115845,
+          "lower_rank": 7
+        },
+        "median_saved_pct_by_order": {
+          "base-first": 2.947015206609586,
+          "treatment-first": 7.119208568821945
+        },
+        "exact_two_sided_sign_p": 0.15158963203430176,
+        "conditional_two_sided_p": 0.19302732534661463,
+        "conditional_extreme": 521976,
+        "possible_assignments": 2704156,
+        "permutation_strata": 1
+      }
+    }
+  },
+  "replica": {
+    "test": {
+      "stack-vs-base": {
+        "control": "base",
+        "treatment": "stack",
+        "n": 24,
+        "wins": 18,
+        "losses": 6,
+        "ties": 0,
+        "control_median_sec": 8.792464146,
+        "treatment_median_sec": 6.4669279255,
+        "median_saved_ms": 2236.4694325,
+        "median_saved_pct": 23.494645228626222,
+        "median_saved_pct_interval": {
+          "lower": 0.7430130152333845,
+          "upper": 36.346538207136994,
+          "coverage": 0.9773441553115845,
+          "lower_rank": 7
+        },
+        "median_saved_ms_interval": {
+          "lower": 43.738311,
+          "upper": 3476.329869,
+          "coverage": 0.9773441553115845,
+          "lower_rank": 7
+        },
+        "median_saved_pct_by_order": {
+          "base-first": 29.505870404144463,
+          "treatment-first": 18.818534107443067
+        },
+        "exact_two_sided_sign_p": 0.022655844688415527,
+        "conditional_two_sided_p": 0.03607484183604792,
+        "conditional_extreme": 97552,
+        "possible_assignments": 2704156,
+        "permutation_strata": 1
+      }
+    }
+  }
+}

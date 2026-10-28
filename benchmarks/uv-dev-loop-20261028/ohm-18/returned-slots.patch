@@ -1,0 +1,123 @@
+--- a/libwild/src/args.rs
++++ b/libwild/src/args.rs
+@@ -80,6 +80,8 @@
+     pub(crate) files_per_group: Option<u32>,
+ 
+     jobserver_client: Option<Client>,
++    /// The caller started a jobserver-managed pool but could only use its implicit slot.
++    retry_jobserver: bool,
+     pub(crate) inputs: Vec<Input>,
+     pub(crate) file_replacement_mode: Option<FileReplacementMode>,
+     pub(crate) file_write_mode: Option<FileWriteMode>,
+@@ -333,6 +335,7 @@
+             available_threads: NonZeroUsize::new(1).unwrap(),
+             num_threads: None,
+             jobserver_client: None,
++            retry_jobserver: false,
+             files_per_group: None,
+             inputs: Vec::new(),
+             file_replacement_mode: None,
+@@ -392,6 +395,48 @@
+         should_trace.then(|| tracing::trace_span!(crate::debug_trace::TRACE_SPAN_NAME).entered())
+     }
+ 
++    /// Runs a later linking phase on jobserver slots returned since the original pool started.
++    pub(crate) fn with_returned_jobserver_slots<T: Send>(
++        &self,
++        work: impl FnOnce() -> T + Send,
++    ) -> T {
++        let Some(client) = self
++            .jobserver_client
++            .as_ref()
++            .filter(|_| self.retry_jobserver)
++        else {
++            return work();
++        };
++        let mut slots = Vec::new();
++        while slots.len() < DEFAULT_THREAD_CAP.get() - 1 {
++            let Ok(Some(slot)) = client.try_acquire() else {
++                break;
++            };
++            slots.push(slot);
++        }
++        // The original worker keeps its implicit slot. A separate pool needs two additional
++        // slots before it can run the remaining work faster than that worker alone.
++        if slots.len() < 2 {
++            drop(slots);
++            return work();
++        }
++
++        let count = slots.len();
++        tracing::trace!(count, "Acquired late jobserver tokens");
++        let mut work = Some(work);
++        let result = ThreadPoolBuilder::new().num_threads(count).build_scoped(
++            |worker| worker.run(),
++            |pool| pool.install(work.take().unwrap()),
++        );
++        // Join this pool, including any background Rayon work, before returning its physical
++        // tokens. The CLI may exit immediately after linking.
++        drop(slots);
++        match result {
++            Ok(value) => value,
++            Err(_) => work.unwrap()(),
++        }
++    }
++
+     /// Builds up the thread pool, using the explicit number of threads if specified,
+     /// or falling back to the jobserver protocol if available.
+     ///
+@@ -427,6 +472,10 @@
+             }
+         });
+ 
++        self.retry_jobserver = self.num_threads.is_none()
++            && self.available_threads.get() == 1
++            && self.jobserver_client.is_some();
++
+         // Always let Rayon spawn the pool's workers, even when only one thread is requested.
+         // Reusing the current thread would fail if it already belonged to another pool; instead,
+         // it blocks in `install` until linking finishes.
+--- a/libwild/src/lib.rs
++++ b/libwild/src/lib.rs
+@@ -404,22 +404,27 @@
+ 
+         let layout_rules = layout_rules_builder.build::<P>(args);
+ 
+-        let resolved = resolver.resolve_sections_and_canonicalise_undefined(
+-            &mut symbol_db,
+-            &mut per_symbol_flags,
+-            &mut output_sections,
+-            &layout_rules,
+-        )?;
++        let layout = args
++            .common()
++            .with_returned_jobserver_slots(move || -> error::Result<_> {
++                let resolved = resolver.resolve_sections_and_canonicalise_undefined(
++                    &mut symbol_db,
++                    &mut per_symbol_flags,
++                    &mut output_sections,
++                    &layout_rules,
++                )?;
+ 
+-        let layout = layout::compute::<P, A, F>(
+-            symbol_db,
+-            per_symbol_flags,
+-            resolved,
+-            output_sections,
+-            &mut output,
+-        )?;
++                let layout = layout::compute::<P, A, F>(
++                    symbol_db,
++                    per_symbol_flags,
++                    resolved,
++                    output_sections,
++                    &mut output,
++                )?;
+ 
+-        P::write_output_file::<A, F>(&output, &layout)?;
++                P::write_output_file::<A, F>(&output, &layout)?;
++                Ok(layout)
++            })?;
+         diff::maybe_diff()?;
+ 
+         // We've finished linking. We consider everything from this point onwards as shutdown.

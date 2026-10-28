@@ -1,0 +1,159 @@
+{
+  "source": {
+    "source": "/tmp/ohm-uv-bench.0H03f2TH/round18-cargo/sources",
+    "scratch": "/tmp/ohm-uv-bench.0H03f2TH/round18-cargo",
+    "toolchain": "/tmp/ohm-uv-bench.0H03f2TH/round18-cargo/toolchain",
+    "release_toolchain": "/home/dev-user/Documents/Codex/2026-10-28/i-want-you-to-hillclimb-on/work/upstream-monitor/toolchain18",
+    "cargo_pin": "7caf39914da1e28a67744ecbc963a5f26361474d",
+    "rust_pin": "a4fa11bcd38280639cb94daacc125472657db6c3",
+    "uv_pin": "c22e6b71933443e9cd299d4b6ac8de035ed4825b",
+    "release": "ohm-1.99.0-18",
+    "archive_sha256": "629abab6a87c84bb4d910549ca96a31e437e3dc9de3039fedcbb7b50d198a5e8",
+    "cargo_source_archive_sha256": "19509090b4e5b1a09a859f2ade84af62beddabc99a0ea2ca7e7030d63b62d799",
+    "cargo_trees": {
+      "base": "c9d1f41de63b6d95904dc8f5325000f38ea636b0",
+      "guard-stack": "9c6e123da812bbbf5cbed205166025c742bf0f72"
+    },
+    "cargo_drafts": [
+      264,
+      267,
+      268,
+      269,
+      270
+    ],
+    "cargo_patch_sha256": {
+      "264": "98c29a79cb9375bfb05034b1aaf5343e721e208b3a1c0a5654c1c0cd39d6226d",
+      "267": "653e65c1eb6147e2b645b79a6e0bd45eac83a5fdf5b9f1a23fa4cb6b56e0c3be",
+      "268": "8131d727142acc6a48343603a396f35a77af22a08a51fb1c5910b42d70c55e68",
+      "269": "6f83b41340e85a3e6da037562df9b697fee9cdc923c4763629e9c449c6451236",
+      "270": "d864badec3752f8c4458cffa9b58728a6004ece0dd82649b07e723a81d352e85"
+    },
+    "rust_pr": 247,
+    "rust_patch_sha256": "101edf0543b3331315910306be22603c3595ad2549bae68144fd0b3408e91c40",
+    "std_path_sha256": {
+      "base": "a41beffcf2ecd2b331c71cc7d6d2e7ca18f85e613106abee770821dd0e53be14",
+      "guard-stack": "2a7b704c60ddf54ac1d9f82a9a50aa3edefe4a0e04b0f8fd3531a1d565b1f444"
+    },
+    "std_path_test_sha256": {
+      "base": "363fb12d2ec31d33116cf6b1ee5500ca12391e7b1c3671e6091d8855fe4090b2",
+      "guard-stack": "ba31d1b811413f5446531636f921619f9c990de3d71f135352b03e23ccc6ed18"
+    },
+    "cargo_hash": "02a86ebd2d9e4f237b33f212102b81ed145eb77fae090d67e379cb6f1d70a573",
+    "rustc_hash": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+    "build_registry": "/tmp/ohm-uv-bench.0H03f2TH/round18-cargo/registry-seed",
+    "training_registry": "/home/dev-user/Documents/Codex/2026-10-28/i-want-you-to-hillclimb-on/work/pgo-confirmation-v2/seed-home",
+    "materials": "/home/dev-user/Documents/Codex/2026-10-28/i-want-you-to-hillclimb-on/work/pgo-materials"
+  },
+  "arms": {
+    "fast": {
+      "base": {
+        "path": "/home/dev-user/Documents/Codex/2026-10-28/i-want-you-to-hillclimb-on/work/round18-cargo/fast/bin/base",
+        "sha256": "df678a74a7a4ae79f6dc8f15ed59fa988127d02550796abadcda00fc2c89c5a1",
+        "needed": [
+          "libgcc_s.so.1",
+          "libm.so.6",
+          "libc.so.6",
+          "ld-linux-x86-64.so.2"
+        ],
+        "word_scan_instructions": [],
+        "compare_components_bytes": 975,
+        "version": "cargo 1.99.0-dev (7caf39914 2026-10-28) (ohm-1.99.0-18)\nrelease: 1.99.0-dev\ncommit-hash: 7caf39914da1e28a67744ecbc963a5f26361474d\ncommit-date: 2026-10-28\nhost: x86_64-unknown-linux-gnu\nlibgit2: 1.9.6 (sys:0.21.0 vendored)\nlibcurl: 8.21.0-DEV (sys:0.4.90+curl-8.21.0 vendored ssl:OpenSSL/3.6.3)\nssl: OpenSSL 3.6.3 9 Jun 2026\nos: Ubuntu 24.4.0 (noble) [64-bit]\n",
+        "std_rlib_sha256": "a3e2545c47056cc64b1d872aaaa54a2e7d797e73d9bd99e6d1471c3ecc24a216",
+        "cargo_tree": "c9d1f41de63b6d95904dc8f5325000f38ea636b0",
+        "std_path_sha256": "a41beffcf2ecd2b331c71cc7d6d2e7ca18f85e613106abee770821dd0e53be14",
+        "retained_std": [
+          "/tmp/ohm-uv-bench.0H03f2TH/round18-cargo/fast/base/target/x86_64-unknown-linux-gnu/release/build/std/ff07881ccb98eb9a/out/libstd-ff07881ccb98eb9a.rlib"
+        ]
+      },
+      "guard-stack": {
+        "path": "/home/dev-user/Documents/Codex/2026-10-28/i-want-you-to-hillclimb-on/work/round18-cargo/fast/bin/guard-stack",
+        "sha256": "bc362fc8ece4c1b3c854056792c04e8869216da26b95e4dac8e5fbe6d1922255",
+        "needed": [
+          "libgcc_s.so.1",
+          "libm.so.6",
+          "libc.so.6",
+          "ld-linux-x86-64.so.2"
+        ],
+        "word_scan_instructions": [
+          "tzcnt"
+        ],
+        "compare_components_bytes": 1477,
+        "version": "cargo 1.99.0-dev (7caf39914 2026-10-28) (ohm-1.99.0-18)\nrelease: 1.99.0-dev\ncommit-hash: 7caf39914da1e28a67744ecbc963a5f26361474d\ncommit-date: 2026-10-28\nhost: x86_64-unknown-linux-gnu\nlibgit2: 1.9.6 (sys:0.21.0 vendored)\nlibcurl: 8.21.0-DEV (sys:0.4.90+curl-8.21.0 vendored ssl:OpenSSL/3.6.3)\nssl: OpenSSL 3.6.3 9 Jun 2026\nos: Ubuntu 24.4.0 (noble) [64-bit]\n",
+        "std_rlib_sha256": "59e0eb73c7450e330045fc1f2ca64d06d726a661c3c8daec1423ab771b5b29a1",
+        "cargo_tree": "9c6e123da812bbbf5cbed205166025c742bf0f72",
+        "std_path_sha256": "2a7b704c60ddf54ac1d9f82a9a50aa3edefe4a0e04b0f8fd3531a1d565b1f444",
+        "retained_std": [
+          "/tmp/ohm-uv-bench.0H03f2TH/round18-cargo/fast/guard-stack/target/x86_64-unknown-linux-gnu/release/build/std/ff07881ccb98eb9a/out/libstd-ff07881ccb98eb9a.rlib"
+        ]
+      }
+    },
+    "pgo": {
+      "base": {
+        "path": "/home/dev-user/Documents/Codex/2026-10-28/i-want-you-to-hillclimb-on/work/round18-cargo/pgo/bin/base",
+        "sha256": "df1fb0a090d36b14bfa9ef68f9243f05073d7f2c7908f5e26453473ad59f0721",
+        "needed": [
+          "libgcc_s.so.1",
+          "libm.so.6",
+          "libc.so.6",
+          "ld-linux-x86-64.so.2"
+        ],
+        "word_scan_instructions": [],
+        "compare_components_bytes": 975,
+        "version": "cargo 1.99.0-dev (7caf39914 2026-10-28) (ohm-1.99.0-18)\nrelease: 1.99.0-dev\ncommit-hash: 7caf39914da1e28a67744ecbc963a5f26361474d\ncommit-date: 2026-10-28\nhost: x86_64-unknown-linux-gnu\nlibgit2: 1.9.6 (sys:0.21.0 vendored)\nlibcurl: 8.21.0-DEV (sys:0.4.90+curl-8.21.0 vendored ssl:OpenSSL/3.6.3)\nssl: OpenSSL 3.6.3 9 Jun 2026\nos: Ubuntu 24.4.0 (noble) [64-bit]\n",
+        "std_rlib_sha256": "a6efe367f5e01706331c8cf0ee017af31b00bf4c43de62ebaaca7dc563b487dd",
+        "cargo_tree": "c9d1f41de63b6d95904dc8f5325000f38ea636b0",
+        "std_path_sha256": "a41beffcf2ecd2b331c71cc7d6d2e7ca18f85e613106abee770821dd0e53be14",
+        "retained_std": [
+          "/home/dev-user/Documents/Codex/2026-10-28/i-want-you-to-hillclimb-on/work/round18-cargo/pgo/records/base/use.target/x86_64-unknown-linux-gnu/release/build/std/90aa77cf19860783/out/libstd-90aa77cf19860783.rlib"
+        ],
+        "raw_files": 24,
+        "profdata_sha256": "446fcf1f1bbb491a589841bb595a2f58b246f87eca69c66a89f64ce853b02389",
+        "covered_symbol_matches": 2970,
+        "training_commands_verified": 24,
+        "compiler_unit_graph_sha256": "6818ad750e0b02d9214a66923e48043b38036d72be5bb81a20f8b683b1471181",
+        "profiled_target_units": 315,
+        "unprofiled_std_target_units": 22,
+        "unprofiled_host_units": 78
+      },
+      "guard-stack": {
+        "path": "/home/dev-user/Documents/Codex/2026-10-28/i-want-you-to-hillclimb-on/work/round18-cargo/pgo/bin/guard-stack",
+        "sha256": "aea8596b7caace5d2f201a9d487fb1ed2e3921584d99a4e4fb9ef812e6f9cbc6",
+        "needed": [
+          "libgcc_s.so.1",
+          "libm.so.6",
+          "libc.so.6",
+          "ld-linux-x86-64.so.2"
+        ],
+        "word_scan_instructions": [
+          "tzcnt"
+        ],
+        "compare_components_bytes": 1477,
+        "version": "cargo 1.99.0-dev (7caf39914 2026-10-28) (ohm-1.99.0-18)\nrelease: 1.99.0-dev\ncommit-hash: 7caf39914da1e28a67744ecbc963a5f26361474d\ncommit-date: 2026-10-28\nhost: x86_64-unknown-linux-gnu\nlibgit2: 1.9.6 (sys:0.21.0 vendored)\nlibcurl: 8.21.0-DEV (sys:0.4.90+curl-8.21.0 vendored ssl:OpenSSL/3.6.3)\nssl: OpenSSL 3.6.3 9 Jun 2026\nos: Ubuntu 24.4.0 (noble) [64-bit]\n",
+        "std_rlib_sha256": "cc538d0e126b5741a4b35fa5299cdc9873360fc03d54a309e27a8b5fa7ee49d0",
+        "cargo_tree": "9c6e123da812bbbf5cbed205166025c742bf0f72",
+        "std_path_sha256": "2a7b704c60ddf54ac1d9f82a9a50aa3edefe4a0e04b0f8fd3531a1d565b1f444",
+        "retained_std": [
+          "/home/dev-user/Documents/Codex/2026-10-28/i-want-you-to-hillclimb-on/work/round18-cargo/pgo/records/guard-stack/use.target/x86_64-unknown-linux-gnu/release/build/std/90aa77cf19860783/out/libstd-90aa77cf19860783.rlib"
+        ],
+        "raw_files": 24,
+        "profdata_sha256": "a266593648d928c911fd569bcddca6119c4e03c56bfd7041473a4a54b747528c",
+        "covered_symbol_matches": 2971,
+        "training_commands_verified": 24,
+        "compiler_unit_graph_sha256": "6818ad750e0b02d9214a66923e48043b38036d72be5bb81a20f8b683b1471181",
+        "profiled_target_units": 315,
+        "unprofiled_std_target_units": 22,
+        "unprofiled_host_units": 78
+      }
+    }
+  },
+  "uv_process_scope": "Cargo links the #247 std statically. uv rustc, target sysroot and Wild binaries are separately selected by the full-stack benchmark.",
+  "fast_compiler_units": {
+    "count": 415,
+    "sha256": "2495f93cd343f6cdb2da353017e856bf21a577b46387380f6b3cd0d9c118edd8"
+  },
+  "distributed_control": {
+    "path": "/home/dev-user/Documents/Codex/2026-10-28/i-want-you-to-hillclimb-on/work/upstream-monitor/toolchain18/bin/cargo",
+    "sha256": "02a86ebd2d9e4f237b33f212102b81ed145eb77fae090d67e379cb6f1d70a573",
+    "version": "cargo 1.99.0-dev (7caf39914 2026-10-28) (ohm-1.99.0-18)\nrelease: 1.99.0-dev\ncommit-hash: 7caf39914da1e28a67744ecbc963a5f26361474d\ncommit-date: 2026-10-28\nhost: x86_64-unknown-linux-gnu\nlibgit2: 1.9.6 (sys:0.21.0 vendored)\nlibcurl: 8.21.0-DEV (sys:0.4.90+curl-8.21.0 vendored ssl:OpenSSL/3.6.3)\nssl: OpenSSL 3.6.3 9 Jun 2026\nos: Ubuntu 24.4.0 (noble) [64-bit]\n"
+  }
+}

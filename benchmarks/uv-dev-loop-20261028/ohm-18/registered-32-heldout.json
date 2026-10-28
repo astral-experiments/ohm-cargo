@@ -1,0 +1,735 @@
+{
+  "release": "ohm-1.99.0-18",
+  "uv": "c22e6b71933443e9cd299d4b6ac8de035ed4825b",
+  "cargo_pin": "7caf39914da1e28a67744ecbc963a5f26361474d",
+  "rustc_pin": "a4fa11bcd38280639cb94daacc125472657db6c3",
+  "registered_utc": "2026-10-28T22:14:42.046557+00:00",
+  "discovery": "default-v3 initial 16/24 and replica 18/24. These data selected the 32-core hypothesis and are excluded from all confirmatory rows. No cross-machine-size claim.",
+  "target_pool": "r18-32-confirm",
+  "cpu": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31
+  ],
+  "endpoints": [
+    "test"
+  ],
+  "options": [],
+  "arms": {
+    "shipped": {
+      "cargo": "upstream-monitor/toolchain18/bin/cargo",
+      "wild": "upstream-monitor/toolchain18/lib/rustlib/x86_64-unknown-linux-gnu/bin/wild-ld/ld.bfd"
+    },
+    "base": {
+      "cargo": "upstream-monitor/toolchain18/bin/cargo",
+      "wild": "wild-prefix-v2/v2-wild"
+    },
+    "stack": {
+      "cargo": "upstream-monitor/toolchain18/bin/cargo",
+      "wild": "round18-linker/js-refresh-v3"
+    }
+  },
+  "cohorts": {
+    "initial": {
+      "root": "/tmp/ohm-uv-bench.0H03f2TH/round18/confirm32/c-first",
+      "cpu": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31
+      ],
+      "options": [],
+      "edit_shape": "predicate",
+      "endpoint_order": [
+        "test"
+      ],
+      "seed": 28322131,
+      "endpoints": {
+        "test": [
+          {
+            "order": [
+              "stack",
+              "shipped",
+              "base"
+            ],
+            "literal": "CX44"
+          },
+          {
+            "order": [
+              "shipped",
+              "stack",
+              "base"
+            ],
+            "literal": "CX39"
+          },
+          {
+            "order": [
+              "base",
+              "stack",
+              "shipped"
+            ],
+            "literal": "CX35"
+          },
+          {
+            "order": [
+              "shipped",
+              "base",
+              "stack"
+            ],
+            "literal": "CX38"
+          },
+          {
+            "order": [
+              "stack",
+              "base",
+              "shipped"
+            ],
+            "literal": "CX12"
+          },
+          {
+            "order": [
+              "shipped",
+              "stack",
+              "base"
+            ],
+            "literal": "CX33"
+          },
+          {
+            "order": [
+              "stack",
+              "base",
+              "shipped"
+            ],
+            "literal": "CX45"
+          },
+          {
+            "order": [
+              "shipped",
+              "base",
+              "stack"
+            ],
+            "literal": "CX41"
+          },
+          {
+            "order": [
+              "stack",
+              "base",
+              "shipped"
+            ],
+            "literal": "CX16"
+          },
+          {
+            "order": [
+              "stack",
+              "base",
+              "shipped"
+            ],
+            "literal": "CX19"
+          },
+          {
+            "order": [
+              "base",
+              "shipped",
+              "stack"
+            ],
+            "literal": "CX34"
+          },
+          {
+            "order": [
+              "stack",
+              "shipped",
+              "base"
+            ],
+            "literal": "CX20"
+          },
+          {
+            "order": [
+              "base",
+              "shipped",
+              "stack"
+            ],
+            "literal": "CX42"
+          },
+          {
+            "order": [
+              "base",
+              "shipped",
+              "stack"
+            ],
+            "literal": "CX23"
+          },
+          {
+            "order": [
+              "shipped",
+              "base",
+              "stack"
+            ],
+            "literal": "CX14"
+          },
+          {
+            "order": [
+              "stack",
+              "shipped",
+              "base"
+            ],
+            "literal": "CX18"
+          },
+          {
+            "order": [
+              "shipped",
+              "base",
+              "stack"
+            ],
+            "literal": "CX10"
+          },
+          {
+            "order": [
+              "stack",
+              "shipped",
+              "base"
+            ],
+            "literal": "CX29"
+          },
+          {
+            "order": [
+              "stack",
+              "base",
+              "shipped"
+            ],
+            "literal": "CX32"
+          },
+          {
+            "order": [
+              "shipped",
+              "stack",
+              "base"
+            ],
+            "literal": "CX30"
+          },
+          {
+            "order": [
+              "stack",
+              "base",
+              "shipped"
+            ],
+            "literal": "CX37"
+          },
+          {
+            "order": [
+              "base",
+              "stack",
+              "shipped"
+            ],
+            "literal": "CX36"
+          },
+          {
+            "order": [
+              "base",
+              "stack",
+              "shipped"
+            ],
+            "literal": "CX31"
+          },
+          {
+            "order": [
+              "shipped",
+              "base",
+              "stack"
+            ],
+            "literal": "CX25"
+          },
+          {
+            "order": [
+              "shipped",
+              "base",
+              "stack"
+            ],
+            "literal": "CX43"
+          },
+          {
+            "order": [
+              "shipped",
+              "stack",
+              "base"
+            ],
+            "literal": "CX28"
+          },
+          {
+            "order": [
+              "stack",
+              "shipped",
+              "base"
+            ],
+            "literal": "CX22"
+          },
+          {
+            "order": [
+              "stack",
+              "shipped",
+              "base"
+            ],
+            "literal": "CX24"
+          },
+          {
+            "order": [
+              "base",
+              "stack",
+              "shipped"
+            ],
+            "literal": "CX27"
+          },
+          {
+            "order": [
+              "base",
+              "stack",
+              "shipped"
+            ],
+            "literal": "CX11"
+          },
+          {
+            "order": [
+              "base",
+              "shipped",
+              "stack"
+            ],
+            "literal": "CX40"
+          },
+          {
+            "order": [
+              "shipped",
+              "stack",
+              "base"
+            ],
+            "literal": "CX13"
+          },
+          {
+            "order": [
+              "base",
+              "shipped",
+              "stack"
+            ],
+            "literal": "CX15"
+          },
+          {
+            "order": [
+              "shipped",
+              "stack",
+              "base"
+            ],
+            "literal": "CX21"
+          },
+          {
+            "order": [
+              "base",
+              "stack",
+              "shipped"
+            ],
+            "literal": "CX26"
+          },
+          {
+            "order": [
+              "base",
+              "shipped",
+              "stack"
+            ],
+            "literal": "CX17"
+          }
+        ]
+      }
+    },
+    "replica": {
+      "root": "/tmp/ohm-uv-bench.0H03f2TH/round18/confirm32/independent-d/second-checkout",
+      "cpu": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31
+      ],
+      "options": [],
+      "edit_shape": "brew-help",
+      "endpoint_order": [
+        "test"
+      ],
+      "seed": 28324623,
+      "endpoints": {
+        "test": [
+          {
+            "order": [
+              "base",
+              "shipped",
+              "stack"
+            ],
+            "literal": "DX44"
+          },
+          {
+            "order": [
+              "stack",
+              "base",
+              "shipped"
+            ],
+            "literal": "DX18"
+          },
+          {
+            "order": [
+              "base",
+              "stack",
+              "shipped"
+            ],
+            "literal": "DX42"
+          },
+          {
+            "order": [
+              "base",
+              "stack",
+              "shipped"
+            ],
+            "literal": "DX21"
+          },
+          {
+            "order": [
+              "shipped",
+              "base",
+              "stack"
+            ],
+            "literal": "DX32"
+          },
+          {
+            "order": [
+              "shipped",
+              "stack",
+              "base"
+            ],
+            "literal": "DX10"
+          },
+          {
+            "order": [
+              "stack",
+              "base",
+              "shipped"
+            ],
+            "literal": "DX30"
+          },
+          {
+            "order": [
+              "shipped",
+              "stack",
+              "base"
+            ],
+            "literal": "DX29"
+          },
+          {
+            "order": [
+              "shipped",
+              "base",
+              "stack"
+            ],
+            "literal": "DX22"
+          },
+          {
+            "order": [
+              "base",
+              "stack",
+              "shipped"
+            ],
+            "literal": "DX39"
+          },
+          {
+            "order": [
+              "base",
+              "stack",
+              "shipped"
+            ],
+            "literal": "DX27"
+          },
+          {
+            "order": [
+              "shipped",
+              "stack",
+              "base"
+            ],
+            "literal": "DX16"
+          },
+          {
+            "order": [
+              "stack",
+              "shipped",
+              "base"
+            ],
+            "literal": "DX25"
+          },
+          {
+            "order": [
+              "stack",
+              "shipped",
+              "base"
+            ],
+            "literal": "DX17"
+          },
+          {
+            "order": [
+              "shipped",
+              "base",
+              "stack"
+            ],
+            "literal": "DX20"
+          },
+          {
+            "order": [
+              "shipped",
+              "stack",
+              "base"
+            ],
+            "literal": "DX41"
+          },
+          {
+            "order": [
+              "stack",
+              "base",
+              "shipped"
+            ],
+            "literal": "DX11"
+          },
+          {
+            "order": [
+              "stack",
+              "base",
+              "shipped"
+            ],
+            "literal": "DX43"
+          },
+          {
+            "order": [
+              "stack",
+              "base",
+              "shipped"
+            ],
+            "literal": "DX45"
+          },
+          {
+            "order": [
+              "stack",
+              "base",
+              "shipped"
+            ],
+            "literal": "DX19"
+          },
+          {
+            "order": [
+              "base",
+              "shipped",
+              "stack"
+            ],
+            "literal": "DX38"
+          },
+          {
+            "order": [
+              "base",
+              "shipped",
+              "stack"
+            ],
+            "literal": "DX15"
+          },
+          {
+            "order": [
+              "base",
+              "shipped",
+              "stack"
+            ],
+            "literal": "DX26"
+          },
+          {
+            "order": [
+              "stack",
+              "shipped",
+              "base"
+            ],
+            "literal": "DX36"
+          },
+          {
+            "order": [
+              "stack",
+              "shipped",
+              "base"
+            ],
+            "literal": "DX33"
+          },
+          {
+            "order": [
+              "shipped",
+              "base",
+              "stack"
+            ],
+            "literal": "DX34"
+          },
+          {
+            "order": [
+              "base",
+              "shipped",
+              "stack"
+            ],
+            "literal": "DX23"
+          },
+          {
+            "order": [
+              "shipped",
+              "base",
+              "stack"
+            ],
+            "literal": "DX14"
+          },
+          {
+            "order": [
+              "base",
+              "stack",
+              "shipped"
+            ],
+            "literal": "DX12"
+          },
+          {
+            "order": [
+              "shipped",
+              "stack",
+              "base"
+            ],
+            "literal": "DX13"
+          },
+          {
+            "order": [
+              "base",
+              "stack",
+              "shipped"
+            ],
+            "literal": "DX31"
+          },
+          {
+            "order": [
+              "shipped",
+              "stack",
+              "base"
+            ],
+            "literal": "DX35"
+          },
+          {
+            "order": [
+              "stack",
+              "shipped",
+              "base"
+            ],
+            "literal": "DX40"
+          },
+          {
+            "order": [
+              "shipped",
+              "base",
+              "stack"
+            ],
+            "literal": "DX24"
+          },
+          {
+            "order": [
+              "base",
+              "shipped",
+              "stack"
+            ],
+            "literal": "DX37"
+          },
+          {
+            "order": [
+              "stack",
+              "shipped",
+              "base"
+            ],
+            "literal": "DX28"
+          }
+        ]
+      }
+    }
+  },
+  "paired_blocks": 36,
+  "primary": "Only the ordinary full workspace cargo test --no-run at 32 available physical CPUs with no job flag. Both contrasts (scoped Wild vs shipped -18, and vs prior #46) must meet positive lower 95% median interval, sign p < .0125 and assignment-conditioned two-sided p < .0125 in each of two new checkout and target roots. The two discovery cohorts supply no scored comparisons. All 36 blocks are retained in each cohort. No extension or replacement based on results."
+}

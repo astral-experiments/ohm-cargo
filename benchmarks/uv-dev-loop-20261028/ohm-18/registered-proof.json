@@ -1,0 +1,813 @@
+{
+  "release": "ohm-1.99.0-18",
+  "uv": "c22e6b71933443e9cd299d4b6ac8de035ed4825b",
+  "cargo_pin": "7caf39914da1e28a67744ecbc963a5f26361474d",
+  "rustc_pin": "a4fa11bcd38280639cb94daacc125472657db6c3",
+  "cpu": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15
+  ],
+  "native_jobs": 8,
+  "registered_utc": "2026-10-28T21:49:56.542911+00:00",
+  "target_pool": "r18-proof",
+  "source_file": "crates/uv/src/install_source.rs",
+  "paired_blocks": 24,
+  "expect_role_differences": true,
+  "arms": {
+    "base": {
+      "cargo": "round18-cargo/fast/bin/guard-stack",
+      "wild": "round18-linker/js-refresh-v3"
+    },
+    "stack": {
+      "cargo": "round18-compiler/fast-proof/cargo",
+      "wild": "round18-linker/js-refresh-v3"
+    }
+  },
+  "expected_roles": {
+    "build": {
+      "base": {
+        "cargo": 1,
+        "rustc": 3,
+        "wild": 2
+      },
+      "stack": {
+        "cargo": 1,
+        "rustc": 2,
+        "wild": 1
+      }
+    },
+    "test": {
+      "base": {
+        "cargo": 1,
+        "rustc": 6,
+        "wild": 5
+      },
+      "stack": {
+        "cargo": 1,
+        "rustc": 4,
+        "wild": 3
+      }
+    }
+  },
+  "primary": "Whole-command native wall after a source edit for the additional executable-unused-self proof. Compare identical five-Cargo + guarded-std binaries and the same scoped Wild. Build and test --no-run are the two endpoints. Each must pass 2-sided sign and order-conditional p < .025 and a positive lower median rank bound in two independent fixtures. Include every timed sample. Require the exact preregistered rustc/linker rosters and all executable/metadata equivalence checks before interpreting timings. A subset of endpoints may qualify.",
+  "cohorts": {
+    "initial": {
+      "root": "/tmp/ohm-uv-bench.0H03f2TH/round18/a",
+      "cpu": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "edit_shape": "predicate",
+      "options": [
+        "--locked",
+        "--offline",
+        "-j8"
+      ],
+      "endpoint_order": [
+        "build",
+        "test"
+      ],
+      "endpoints": {
+        "build": [
+          {
+            "literal": "PB33",
+            "order": [
+              "stack",
+              "base"
+            ]
+          },
+          {
+            "literal": "PB18",
+            "order": [
+              "stack",
+              "base"
+            ]
+          },
+          {
+            "literal": "PB15",
+            "order": [
+              "base",
+              "stack"
+            ]
+          },
+          {
+            "literal": "PB24",
+            "order": [
+              "stack",
+              "base"
+            ]
+          },
+          {
+            "literal": "PB17",
+            "order": [
+              "stack",
+              "base"
+            ]
+          },
+          {
+            "literal": "PB25",
+            "order": [
+              "base",
+              "stack"
+            ]
+          },
+          {
+            "literal": "PB30",
+            "order": [
+              "base",
+              "stack"
+            ]
+          },
+          {
+            "literal": "PB28",
+            "order": [
+              "base",
+              "stack"
+            ]
+          },
+          {
+            "literal": "PB12",
+            "order": [
+              "stack",
+              "base"
+            ]
+          },
+          {
+            "literal": "PB20",
+            "order": [
+              "base",
+              "stack"
+            ]
+          },
+          {
+            "literal": "PB32",
+            "order": [
+              "base",
+              "stack"
+            ]
+          },
+          {
+            "literal": "PB26",
+            "order": [
+              "base",
+              "stack"
+            ]
+          },
+          {
+            "literal": "PB11",
+            "order": [
+              "stack",
+              "base"
+            ]
+          },
+          {
+            "literal": "PB13",
+            "order": [
+              "stack",
+              "base"
+            ]
+          },
+          {
+            "literal": "PB14",
+            "order": [
+              "stack",
+              "base"
+            ]
+          },
+          {
+            "literal": "PB19",
+            "order": [
+              "stack",
+              "base"
+            ]
+          },
+          {
+            "literal": "PB22",
+            "order": [
+              "stack",
+              "base"
+            ]
+          },
+          {
+            "literal": "PB10",
+            "order": [
+              "base",
+              "stack"
+            ]
+          },
+          {
+            "literal": "PB27",
+            "order": [
+              "base",
+              "stack"
+            ]
+          },
+          {
+            "literal": "PB23",
+            "order": [
+              "base",
+              "stack"
+            ]
+          },
+          {
+            "literal": "PB21",
+            "order": [
+              "base",
+              "stack"
+            ]
+          },
+          {
+            "literal": "PB16",
+            "order": [
+              "stack",
+              "base"
+            ]
+          },
+          {
+            "literal": "PB29",
+            "order": [
+              "base",
+              "stack"
+            ]
+          },
+          {
+            "literal": "PB31",
+            "order": [
+              "stack",
+              "base"
+            ]
+          }
+        ],
+        "test": [
+          {
+            "literal": "PT25",
+            "order": [
+              "stack",
+              "base"
+            ]
+          },
+          {
+            "literal": "PT17",
+            "order": [
+              "base",
+              "stack"
+            ]
+          },
+          {
+            "literal": "PT31",
+            "order": [
+              "base",
+              "stack"
+            ]
+          },
+          {
+            "literal": "PT33",
+            "order": [
+              "stack",
+              "base"
+            ]
+          },
+          {
+            "literal": "PT21",
+            "order": [
+              "stack",
+              "base"
+            ]
+          },
+          {
+            "literal": "PT27",
+            "order": [
+              "base",
+              "stack"
+            ]
+          },
+          {
+            "literal": "PT15",
+            "order": [
+              "base",
+              "stack"
+            ]
+          },
+          {
+            "literal": "PT12",
+            "order": [
+              "base",
+              "stack"
+            ]
+          },
+          {
+            "literal": "PT20",
+            "order": [
+              "stack",
+              "base"
+            ]
+          },
+          {
+            "literal": "PT11",
+            "order": [
+              "base",
+              "stack"
+            ]
+          },
+          {
+            "literal": "PT19",
+            "order": [
+              "stack",
+              "base"
+            ]
+          },
+          {
+            "literal": "PT18",
+            "order": [
+              "base",
+              "stack"
+            ]
+          },
+          {
+            "literal": "PT14",
+            "order": [
+              "stack",
+              "base"
+            ]
+          },
+          {
+            "literal": "PT10",
+            "order": [
+              "base",
+              "stack"
+            ]
+          },
+          {
+            "literal": "PT13",
+            "order": [
+              "stack",
+              "base"
+            ]
+          },
+          {
+            "literal": "PT32",
+            "order": [
+              "base",
+              "stack"
+            ]
+          },
+          {
+            "literal": "PT30",
+            "order": [
+              "base",
+              "stack"
+            ]
+          },
+          {
+            "literal": "PT16",
+            "order": [
+              "stack",
+              "base"
+            ]
+          },
+          {
+            "literal": "PT26",
+            "order": [
+              "stack",
+              "base"
+            ]
+          },
+          {
+            "literal": "PT22",
+            "order": [
+              "stack",
+              "base"
+            ]
+          },
+          {
+            "literal": "PT24",
+            "order": [
+              "base",
+              "stack"
+            ]
+          },
+          {
+            "literal": "PT29",
+            "order": [
+              "base",
+              "stack"
+            ]
+          },
+          {
+            "literal": "PT23",
+            "order": [
+              "stack",
+              "base"
+            ]
+          },
+          {
+            "literal": "PT28",
+            "order": [
+              "stack",
+              "base"
+            ]
+          }
+        ]
+      }
+    },
+    "replica": {
+      "root": "/tmp/ohm-uv-bench.0H03f2TH/round18/independent/longer-checkout-b",
+      "cpu": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "edit_shape": "brew-help",
+      "options": [],
+      "endpoint_order": [
+        "test",
+        "build"
+      ],
+      "endpoints": {
+        "test": [
+          {
+            "literal": "QT24",
+            "order": [
+              "stack",
+              "base"
+            ]
+          },
+          {
+            "literal": "QT11",
+            "order": [
+              "base",
+              "stack"
+            ]
+          },
+          {
+            "literal": "QT16",
+            "order": [
+              "stack",
+              "base"
+            ]
+          },
+          {
+            "literal": "QT12",
+            "order": [
+              "stack",
+              "base"
+            ]
+          },
+          {
+            "literal": "QT14",
+            "order": [
+              "base",
+              "stack"
+            ]
+          },
+          {
+            "literal": "QT18",
+            "order": [
+              "stack",
+              "base"
+            ]
+          },
+          {
+            "literal": "QT30",
+            "order": [
+              "stack",
+              "base"
+            ]
+          },
+          {
+            "literal": "QT33",
+            "order": [
+              "base",
+              "stack"
+            ]
+          },
+          {
+            "literal": "QT21",
+            "order": [
+              "base",
+              "stack"
+            ]
+          },
+          {
+            "literal": "QT31",
+            "order": [
+              "stack",
+              "base"
+            ]
+          },
+          {
+            "literal": "QT13",
+            "order": [
+              "stack",
+              "base"
+            ]
+          },
+          {
+            "literal": "QT29",
+            "order": [
+              "base",
+              "stack"
+            ]
+          },
+          {
+            "literal": "QT26",
+            "order": [
+              "base",
+              "stack"
+            ]
+          },
+          {
+            "literal": "QT27",
+            "order": [
+              "base",
+              "stack"
+            ]
+          },
+          {
+            "literal": "QT28",
+            "order": [
+              "stack",
+              "base"
+            ]
+          },
+          {
+            "literal": "QT25",
+            "order": [
+              "base",
+              "stack"
+            ]
+          },
+          {
+            "literal": "QT17",
+            "order": [
+              "base",
+              "stack"
+            ]
+          },
+          {
+            "literal": "QT15",
+            "order": [
+              "stack",
+              "base"
+            ]
+          },
+          {
+            "literal": "QT20",
+            "order": [
+              "stack",
+              "base"
+            ]
+          },
+          {
+            "literal": "QT32",
+            "order": [
+              "base",
+              "stack"
+            ]
+          },
+          {
+            "literal": "QT23",
+            "order": [
+              "stack",
+              "base"
+            ]
+          },
+          {
+            "literal": "QT19",
+            "order": [
+              "base",
+              "stack"
+            ]
+          },
+          {
+            "literal": "QT22",
+            "order": [
+              "stack",
+              "base"
+            ]
+          },
+          {
+            "literal": "QT10",
+            "order": [
+              "base",
+              "stack"
+            ]
+          }
+        ],
+        "build": [
+          {
+            "literal": "QB10",
+            "order": [
+              "stack",
+              "base"
+            ]
+          },
+          {
+            "literal": "QB32",
+            "order": [
+              "stack",
+              "base"
+            ]
+          },
+          {
+            "literal": "QB30",
+            "order": [
+              "base",
+              "stack"
+            ]
+          },
+          {
+            "literal": "QB19",
+            "order": [
+              "base",
+              "stack"
+            ]
+          },
+          {
+            "literal": "QB24",
+            "order": [
+              "base",
+              "stack"
+            ]
+          },
+          {
+            "literal": "QB27",
+            "order": [
+              "base",
+              "stack"
+            ]
+          },
+          {
+            "literal": "QB26",
+            "order": [
+              "stack",
+              "base"
+            ]
+          },
+          {
+            "literal": "QB14",
+            "order": [
+              "stack",
+              "base"
+            ]
+          },
+          {
+            "literal": "QB13",
+            "order": [
+              "base",
+              "stack"
+            ]
+          },
+          {
+            "literal": "QB20",
+            "order": [
+              "base",
+              "stack"
+            ]
+          },
+          {
+            "literal": "QB33",
+            "order": [
+              "base",
+              "stack"
+            ]
+          },
+          {
+            "literal": "QB29",
+            "order": [
+              "stack",
+              "base"
+            ]
+          },
+          {
+            "literal": "QB28",
+            "order": [
+              "base",
+              "stack"
+            ]
+          },
+          {
+            "literal": "QB11",
+            "order": [
+              "base",
+              "stack"
+            ]
+          },
+          {
+            "literal": "QB25",
+            "order": [
+              "stack",
+              "base"
+            ]
+          },
+          {
+            "literal": "QB18",
+            "order": [
+              "stack",
+              "base"
+            ]
+          },
+          {
+            "literal": "QB23",
+            "order": [
+              "stack",
+              "base"
+            ]
+          },
+          {
+            "literal": "QB21",
+            "order": [
+              "stack",
+              "base"
+            ]
+          },
+          {
+            "literal": "QB31",
+            "order": [
+              "stack",
+              "base"
+            ]
+          },
+          {
+            "literal": "QB16",
+            "order": [
+              "base",
+              "stack"
+            ]
+          },
+          {
+            "literal": "QB17",
+            "order": [
+              "base",
+              "stack"
+            ]
+          },
+          {
+            "literal": "QB12",
+            "order": [
+              "stack",
+              "base"
+            ]
+          },
+          {
+            "literal": "QB22",
+            "order": [
+              "stack",
+              "base"
+            ]
+          },
+          {
+            "literal": "QB15",
+            "order": [
+              "base",
+              "stack"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "binaries": {
+    "base": {
+      "cargo": "bc362fc8ece4c1b3c854056792c04e8869216da26b95e4dac8e5fbe6d1922255",
+      "wild": "3b31c5baad41cbe6bbd3647b31f913f02d03f0d41c90eda445974ca1e59575de"
+    },
+    "stack": {
+      "cargo": "db91255850a3cb53d084eba29f5b429a074bff5504c7349020962a7a90e311e3",
+      "wild": "3b31c5baad41cbe6bbd3647b31f913f02d03f0d41c90eda445974ca1e59575de"
+    }
+  }
+}

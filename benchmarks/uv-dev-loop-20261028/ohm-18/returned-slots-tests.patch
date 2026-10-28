@@ -1,0 +1,72 @@
+--- a/libwild/src/args.rs
++++ b/libwild/src/args.rs
+@@ -1756,6 +1756,69 @@
+     use std::assert_matches;
+ 
+     #[test]
++    fn late_jobserver_slots_cover_background_work() {
++        use std::sync::mpsc;
++        use std::time::Duration;
++
++        if crate::host::os::SANDBOXED {
++            return;
++        }
++        // A client inherited by a subprocess has a nonblocking read end for try_acquire.
++        const CHILD: &str = "WILD_TEST_LATE_JOBSERVER";
++        if std::env::var_os(CHILD).is_none() {
++            let client = Client::new(3).unwrap();
++            let mut child = std::process::Command::new(std::env::current_exe().unwrap());
++            child.args([
++                "--exact",
++                "args::tests::late_jobserver_slots_cover_background_work",
++            ]);
++            child.env(CHILD, "1");
++            client.configure(&mut child);
++            assert!(child.status().unwrap().success());
++            assert_eq!(client.available().unwrap(), 3);
++            return;
++        }
++        let mut parsed = Args::new(|| ["ld.wild"].into_iter()).unwrap();
++        let args = parsed.common_mut();
++        let client = args.jobserver_client.clone().unwrap();
++        if let Err(error) = client.try_acquire() {
++            assert_eq!(error.kind(), std::io::ErrorKind::Unsupported);
++            return;
++        }
++        let occupied: Vec<_> = (0..3).map(|_| client.acquire().unwrap()).collect();
++        let initial = args.build_thread_pool().unwrap();
++        initial.pool.install(|| {
++            assert_eq!(
++                args.with_returned_jobserver_slots(rayon::current_num_threads),
++                1
++            );
++        });
++        drop(occupied);
++
++        let (started, wait_started) = mpsc::sync_channel(0);
++        let (finish, wait_finish) = mpsc::sync_channel(0);
++        let timeout = Duration::from_secs(10);
++        std::thread::scope(|scope| {
++            let run = scope.spawn(|| {
++                initial.pool.install(|| {
++                    args.with_returned_jobserver_slots(move || {
++                        assert_eq!(rayon::current_num_threads(), 3);
++                        rayon::spawn(move || {
++                            started.send(()).unwrap();
++                            wait_finish.recv_timeout(timeout).unwrap();
++                        });
++                    });
++                });
++            });
++            wait_started.recv_timeout(timeout).unwrap();
++            assert_eq!(client.available().unwrap(), 0);
++            finish.send(()).unwrap();
++            run.join().unwrap();
++        });
++        assert_eq!(client.available().unwrap(), 3);
++    }
++
++    #[test]
+     fn test_flavor() {
+         let args = Args::new(|| ["ld.wild"].into_iter()).unwrap();
+         assert_matches!(args, Args::Elf(_));

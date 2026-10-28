@@ -1,0 +1,1534 @@
+{
+  "release": "ohm-1.99.0-18",
+  "uv": "c22e6b71933443e9cd299d4b6ac8de035ed4825b",
+  "cargo_pin": "7caf39914da1e28a67744ecbc963a5f26361474d",
+  "rustc_pin": "a4fa11bcd38280639cb94daacc125472657db6c3",
+  "cpu": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15
+  ],
+  "endpoints": {
+    "check": [
+      "check"
+    ],
+    "build": [
+      "build"
+    ],
+    "test": [
+      "test",
+      "--no-run"
+    ]
+  },
+  "native_jobs": 8,
+  "date_utc": "2026-10-28T21:48:23.409686+00:00",
+  "target_pool": "r18-four",
+  "paired_blocks": 30,
+  "source_file": "crates/uv/src/bin/uvx.rs",
+  "arms": {
+    "shipped": {
+      "cargo": "upstream-monitor/toolchain18/bin/cargo",
+      "wild": "upstream-monitor/toolchain18/lib/rustlib/x86_64-unknown-linux-gnu/bin/wild-ld/ld.bfd"
+    },
+    "base": {
+      "cargo": "round18-cargo/pgo/bin/base",
+      "wild": "bin/wild-baseline"
+    },
+    "stack": {
+      "cargo": "round18-cargo/pgo/bin/guard-stack",
+      "wild": "wild-prefix-v2/v2-wild"
+    }
+  },
+  "cohorts": {
+    "initial": {
+      "root": "/tmp/ohm-uv-bench.0H03f2TH/round18/a",
+      "endpoint_order": [
+        "build",
+        "check",
+        "test"
+      ],
+      "endpoints": {
+        "build": [
+          {
+            "order": [
+              "base",
+              "stack",
+              "shipped"
+            ],
+            "literal": "UB24"
+          },
+          {
+            "order": [
+              "shipped",
+              "base",
+              "stack"
+            ],
+            "literal": "UB17"
+          },
+          {
+            "order": [
+              "stack",
+              "base",
+              "shipped"
+            ],
+            "literal": "UB38"
+          },
+          {
+            "order": [
+              "shipped",
+              "base",
+              "stack"
+            ],
+            "literal": "UB34"
+          },
+          {
+            "order": [
+              "base",
+              "shipped",
+              "stack"
+            ],
+            "literal": "UB28"
+          },
+          {
+            "order": [
+              "base",
+              "stack",
+              "shipped"
+            ],
+            "literal": "UB33"
+          },
+          {
+            "order": [
+              "stack",
+              "shipped",
+              "base"
+            ],
+            "literal": "UB31"
+          },
+          {
+            "order": [
+              "shipped",
+              "base",
+              "stack"
+            ],
+            "literal": "UB36"
+          },
+          {
+            "order": [
+              "base",
+              "shipped",
+              "stack"
+            ],
+            "literal": "UB35"
+          },
+          {
+            "order": [
+              "stack",
+              "base",
+              "shipped"
+            ],
+            "literal": "UB20"
+          },
+          {
+            "order": [
+              "stack",
+              "base",
+              "shipped"
+            ],
+            "literal": "UB10"
+          },
+          {
+            "order": [
+              "stack",
+              "shipped",
+              "base"
+            ],
+            "literal": "UB30"
+          },
+          {
+            "order": [
+              "shipped",
+              "stack",
+              "base"
+            ],
+            "literal": "UB23"
+          },
+          {
+            "order": [
+              "stack",
+              "shipped",
+              "base"
+            ],
+            "literal": "UB15"
+          },
+          {
+            "order": [
+              "shipped",
+              "stack",
+              "base"
+            ],
+            "literal": "UB12"
+          },
+          {
+            "order": [
+              "base",
+              "stack",
+              "shipped"
+            ],
+            "literal": "UB32"
+          },
+          {
+            "order": [
+              "shipped",
+              "base",
+              "stack"
+            ],
+            "literal": "UB19"
+          },
+          {
+            "order": [
+              "base",
+              "shipped",
+              "stack"
+            ],
+            "literal": "UB25"
+          },
+          {
+            "order": [
+              "shipped",
+              "stack",
+              "base"
+            ],
+            "literal": "UB11"
+          },
+          {
+            "order": [
+              "base",
+              "shipped",
+              "stack"
+            ],
+            "literal": "UB22"
+          },
+          {
+            "order": [
+              "stack",
+              "base",
+              "shipped"
+            ],
+            "literal": "UB16"
+          },
+          {
+            "order": [
+              "stack",
+              "shipped",
+              "base"
+            ],
+            "literal": "UB27"
+          },
+          {
+            "order": [
+              "shipped",
+              "stack",
+              "base"
+            ],
+            "literal": "UB26"
+          },
+          {
+            "order": [
+              "base",
+              "stack",
+              "shipped"
+            ],
+            "literal": "UB14"
+          },
+          {
+            "order": [
+              "stack",
+              "shipped",
+              "base"
+            ],
+            "literal": "UB29"
+          },
+          {
+            "order": [
+              "shipped",
+              "base",
+              "stack"
+            ],
+            "literal": "UB21"
+          },
+          {
+            "order": [
+              "shipped",
+              "stack",
+              "base"
+            ],
+            "literal": "UB18"
+          },
+          {
+            "order": [
+              "base",
+              "stack",
+              "shipped"
+            ],
+            "literal": "UB13"
+          },
+          {
+            "order": [
+              "base",
+              "shipped",
+              "stack"
+            ],
+            "literal": "UB37"
+          },
+          {
+            "order": [
+              "stack",
+              "base",
+              "shipped"
+            ],
+            "literal": "UB39"
+          }
+        ],
+        "check": [
+          {
+            "order": [
+              "stack",
+              "shipped",
+              "base"
+            ],
+            "literal": "UC18"
+          },
+          {
+            "order": [
+              "base",
+              "stack",
+              "shipped"
+            ],
+            "literal": "UC21"
+          },
+          {
+            "order": [
+              "base",
+              "shipped",
+              "stack"
+            ],
+            "literal": "UC12"
+          },
+          {
+            "order": [
+              "stack",
+              "shipped",
+              "base"
+            ],
+            "literal": "UC26"
+          },
+          {
+            "order": [
+              "base",
+              "shipped",
+              "stack"
+            ],
+            "literal": "UC31"
+          },
+          {
+            "order": [
+              "shipped",
+              "base",
+              "stack"
+            ],
+            "literal": "UC22"
+          },
+          {
+            "order": [
+              "shipped",
+              "base",
+              "stack"
+            ],
+            "literal": "UC10"
+          },
+          {
+            "order": [
+              "stack",
+              "base",
+              "shipped"
+            ],
+            "literal": "UC37"
+          },
+          {
+            "order": [
+              "base",
+              "shipped",
+              "stack"
+            ],
+            "literal": "UC36"
+          },
+          {
+            "order": [
+              "shipped",
+              "stack",
+              "base"
+            ],
+            "literal": "UC24"
+          },
+          {
+            "order": [
+              "shipped",
+              "stack",
+              "base"
+            ],
+            "literal": "UC13"
+          },
+          {
+            "order": [
+              "shipped",
+              "base",
+              "stack"
+            ],
+            "literal": "UC35"
+          },
+          {
+            "order": [
+              "stack",
+              "base",
+              "shipped"
+            ],
+            "literal": "UC32"
+          },
+          {
+            "order": [
+              "shipped",
+              "stack",
+              "base"
+            ],
+            "literal": "UC27"
+          },
+          {
+            "order": [
+              "stack",
+              "base",
+              "shipped"
+            ],
+            "literal": "UC25"
+          },
+          {
+            "order": [
+              "stack",
+              "shipped",
+              "base"
+            ],
+            "literal": "UC23"
+          },
+          {
+            "order": [
+              "shipped",
+              "base",
+              "stack"
+            ],
+            "literal": "UC20"
+          },
+          {
+            "order": [
+              "base",
+              "stack",
+              "shipped"
+            ],
+            "literal": "UC16"
+          },
+          {
+            "order": [
+              "shipped",
+              "stack",
+              "base"
+            ],
+            "literal": "UC17"
+          },
+          {
+            "order": [
+              "stack",
+              "shipped",
+              "base"
+            ],
+            "literal": "UC14"
+          },
+          {
+            "order": [
+              "base",
+              "stack",
+              "shipped"
+            ],
+            "literal": "UC19"
+          },
+          {
+            "order": [
+              "shipped",
+              "stack",
+              "base"
+            ],
+            "literal": "UC29"
+          },
+          {
+            "order": [
+              "base",
+              "stack",
+              "shipped"
+            ],
+            "literal": "UC38"
+          },
+          {
+            "order": [
+              "base",
+              "shipped",
+              "stack"
+            ],
+            "literal": "UC15"
+          },
+          {
+            "order": [
+              "shipped",
+              "base",
+              "stack"
+            ],
+            "literal": "UC34"
+          },
+          {
+            "order": [
+              "stack",
+              "base",
+              "shipped"
+            ],
+            "literal": "UC11"
+          },
+          {
+            "order": [
+              "stack",
+              "shipped",
+              "base"
+            ],
+            "literal": "UC33"
+          },
+          {
+            "order": [
+              "base",
+              "stack",
+              "shipped"
+            ],
+            "literal": "UC28"
+          },
+          {
+            "order": [
+              "stack",
+              "base",
+              "shipped"
+            ],
+            "literal": "UC39"
+          },
+          {
+            "order": [
+              "base",
+              "shipped",
+              "stack"
+            ],
+            "literal": "UC30"
+          }
+        ],
+        "test": [
+          {
+            "order": [
+              "base",
+              "shipped",
+              "stack"
+            ],
+            "literal": "UT31"
+          },
+          {
+            "order": [
+              "stack",
+              "base",
+              "shipped"
+            ],
+            "literal": "UT25"
+          },
+          {
+            "order": [
+              "base",
+              "shipped",
+              "stack"
+            ],
+            "literal": "UT38"
+          },
+          {
+            "order": [
+              "base",
+              "shipped",
+              "stack"
+            ],
+            "literal": "UT23"
+          },
+          {
+            "order": [
+              "base",
+              "stack",
+              "shipped"
+            ],
+            "literal": "UT15"
+          },
+          {
+            "order": [
+              "stack",
+              "shipped",
+              "base"
+            ],
+            "literal": "UT21"
+          },
+          {
+            "order": [
+              "base",
+              "stack",
+              "shipped"
+            ],
+            "literal": "UT30"
+          },
+          {
+            "order": [
+              "stack",
+              "shipped",
+              "base"
+            ],
+            "literal": "UT19"
+          },
+          {
+            "order": [
+              "base",
+              "shipped",
+              "stack"
+            ],
+            "literal": "UT36"
+          },
+          {
+            "order": [
+              "stack",
+              "shipped",
+              "base"
+            ],
+            "literal": "UT10"
+          },
+          {
+            "order": [
+              "shipped",
+              "base",
+              "stack"
+            ],
+            "literal": "UT26"
+          },
+          {
+            "order": [
+              "stack",
+              "shipped",
+              "base"
+            ],
+            "literal": "UT16"
+          },
+          {
+            "order": [
+              "shipped",
+              "stack",
+              "base"
+            ],
+            "literal": "UT13"
+          },
+          {
+            "order": [
+              "shipped",
+              "stack",
+              "base"
+            ],
+            "literal": "UT24"
+          },
+          {
+            "order": [
+              "shipped",
+              "base",
+              "stack"
+            ],
+            "literal": "UT33"
+          },
+          {
+            "order": [
+              "stack",
+              "base",
+              "shipped"
+            ],
+            "literal": "UT14"
+          },
+          {
+            "order": [
+              "stack",
+              "base",
+              "shipped"
+            ],
+            "literal": "UT35"
+          },
+          {
+            "order": [
+              "stack",
+              "shipped",
+              "base"
+            ],
+            "literal": "UT22"
+          },
+          {
+            "order": [
+              "stack",
+              "base",
+              "shipped"
+            ],
+            "literal": "UT32"
+          },
+          {
+            "order": [
+              "base",
+              "stack",
+              "shipped"
+            ],
+            "literal": "UT27"
+          },
+          {
+            "order": [
+              "shipped",
+              "base",
+              "stack"
+            ],
+            "literal": "UT39"
+          },
+          {
+            "order": [
+              "stack",
+              "base",
+              "shipped"
+            ],
+            "literal": "UT12"
+          },
+          {
+            "order": [
+              "shipped",
+              "stack",
+              "base"
+            ],
+            "literal": "UT37"
+          },
+          {
+            "order": [
+              "base",
+              "shipped",
+              "stack"
+            ],
+            "literal": "UT11"
+          },
+          {
+            "order": [
+              "shipped",
+              "base",
+              "stack"
+            ],
+            "literal": "UT17"
+          },
+          {
+            "order": [
+              "base",
+              "stack",
+              "shipped"
+            ],
+            "literal": "UT34"
+          },
+          {
+            "order": [
+              "base",
+              "stack",
+              "shipped"
+            ],
+            "literal": "UT18"
+          },
+          {
+            "order": [
+              "shipped",
+              "stack",
+              "base"
+            ],
+            "literal": "UT20"
+          },
+          {
+            "order": [
+              "shipped",
+              "base",
+              "stack"
+            ],
+            "literal": "UT29"
+          },
+          {
+            "order": [
+              "shipped",
+              "stack",
+              "base"
+            ],
+            "literal": "UT28"
+          }
+        ]
+      },
+      "edit_shape": "uvx-error",
+      "seed": 1816245
+    },
+    "replica": {
+      "root": "/tmp/ohm-uv-bench.0H03f2TH/round18/independent/longer-checkout-b",
+      "endpoint_order": [
+        "build",
+        "test",
+        "check"
+      ],
+      "endpoints": {
+        "build": [
+          {
+            "order": [
+              "stack",
+              "shipped",
+              "base"
+            ],
+            "literal": "VB21"
+          },
+          {
+            "order": [
+              "base",
+              "stack",
+              "shipped"
+            ],
+            "literal": "VB12"
+          },
+          {
+            "order": [
+              "base",
+              "stack",
+              "shipped"
+            ],
+            "literal": "VB29"
+          },
+          {
+            "order": [
+              "shipped",
+              "base",
+              "stack"
+            ],
+            "literal": "VB24"
+          },
+          {
+            "order": [
+              "shipped",
+              "base",
+              "stack"
+            ],
+            "literal": "VB38"
+          },
+          {
+            "order": [
+              "base",
+              "shipped",
+              "stack"
+            ],
+            "literal": "VB31"
+          },
+          {
+            "order": [
+              "shipped",
+              "stack",
+              "base"
+            ],
+            "literal": "VB26"
+          },
+          {
+            "order": [
+              "base",
+              "shipped",
+              "stack"
+            ],
+            "literal": "VB23"
+          },
+          {
+            "order": [
+              "stack",
+              "base",
+              "shipped"
+            ],
+            "literal": "VB37"
+          },
+          {
+            "order": [
+              "shipped",
+              "base",
+              "stack"
+            ],
+            "literal": "VB34"
+          },
+          {
+            "order": [
+              "base",
+              "stack",
+              "shipped"
+            ],
+            "literal": "VB11"
+          },
+          {
+            "order": [
+              "stack",
+              "base",
+              "shipped"
+            ],
+            "literal": "VB25"
+          },
+          {
+            "order": [
+              "stack",
+              "base",
+              "shipped"
+            ],
+            "literal": "VB30"
+          },
+          {
+            "order": [
+              "shipped",
+              "base",
+              "stack"
+            ],
+            "literal": "VB28"
+          },
+          {
+            "order": [
+              "stack",
+              "base",
+              "shipped"
+            ],
+            "literal": "VB17"
+          },
+          {
+            "order": [
+              "base",
+              "shipped",
+              "stack"
+            ],
+            "literal": "VB35"
+          },
+          {
+            "order": [
+              "shipped",
+              "stack",
+              "base"
+            ],
+            "literal": "VB19"
+          },
+          {
+            "order": [
+              "shipped",
+              "stack",
+              "base"
+            ],
+            "literal": "VB27"
+          },
+          {
+            "order": [
+              "stack",
+              "shipped",
+              "base"
+            ],
+            "literal": "VB10"
+          },
+          {
+            "order": [
+              "shipped",
+              "stack",
+              "base"
+            ],
+            "literal": "VB15"
+          },
+          {
+            "order": [
+              "shipped",
+              "base",
+              "stack"
+            ],
+            "literal": "VB16"
+          },
+          {
+            "order": [
+              "stack",
+              "shipped",
+              "base"
+            ],
+            "literal": "VB18"
+          },
+          {
+            "order": [
+              "base",
+              "shipped",
+              "stack"
+            ],
+            "literal": "VB33"
+          },
+          {
+            "order": [
+              "stack",
+              "shipped",
+              "base"
+            ],
+            "literal": "VB39"
+          },
+          {
+            "order": [
+              "base",
+              "stack",
+              "shipped"
+            ],
+            "literal": "VB36"
+          },
+          {
+            "order": [
+              "base",
+              "stack",
+              "shipped"
+            ],
+            "literal": "VB13"
+          },
+          {
+            "order": [
+              "shipped",
+              "stack",
+              "base"
+            ],
+            "literal": "VB14"
+          },
+          {
+            "order": [
+              "stack",
+              "base",
+              "shipped"
+            ],
+            "literal": "VB32"
+          },
+          {
+            "order": [
+              "stack",
+              "shipped",
+              "base"
+            ],
+            "literal": "VB20"
+          },
+          {
+            "order": [
+              "base",
+              "shipped",
+              "stack"
+            ],
+            "literal": "VB22"
+          }
+        ],
+        "test": [
+          {
+            "order": [
+              "base",
+              "stack",
+              "shipped"
+            ],
+            "literal": "VT23"
+          },
+          {
+            "order": [
+              "shipped",
+              "stack",
+              "base"
+            ],
+            "literal": "VT30"
+          },
+          {
+            "order": [
+              "base",
+              "stack",
+              "shipped"
+            ],
+            "literal": "VT36"
+          },
+          {
+            "order": [
+              "base",
+              "shipped",
+              "stack"
+            ],
+            "literal": "VT26"
+          },
+          {
+            "order": [
+              "stack",
+              "base",
+              "shipped"
+            ],
+            "literal": "VT21"
+          },
+          {
+            "order": [
+              "shipped",
+              "stack",
+              "base"
+            ],
+            "literal": "VT11"
+          },
+          {
+            "order": [
+              "stack",
+              "shipped",
+              "base"
+            ],
+            "literal": "VT34"
+          },
+          {
+            "order": [
+              "shipped",
+              "stack",
+              "base"
+            ],
+            "literal": "VT32"
+          },
+          {
+            "order": [
+              "base",
+              "stack",
+              "shipped"
+            ],
+            "literal": "VT33"
+          },
+          {
+            "order": [
+              "base",
+              "shipped",
+              "stack"
+            ],
+            "literal": "VT17"
+          },
+          {
+            "order": [
+              "shipped",
+              "base",
+              "stack"
+            ],
+            "literal": "VT31"
+          },
+          {
+            "order": [
+              "stack",
+              "shipped",
+              "base"
+            ],
+            "literal": "VT37"
+          },
+          {
+            "order": [
+              "shipped",
+              "stack",
+              "base"
+            ],
+            "literal": "VT13"
+          },
+          {
+            "order": [
+              "stack",
+              "shipped",
+              "base"
+            ],
+            "literal": "VT18"
+          },
+          {
+            "order": [
+              "base",
+              "stack",
+              "shipped"
+            ],
+            "literal": "VT24"
+          },
+          {
+            "order": [
+              "shipped",
+              "stack",
+              "base"
+            ],
+            "literal": "VT28"
+          },
+          {
+            "order": [
+              "stack",
+              "base",
+              "shipped"
+            ],
+            "literal": "VT19"
+          },
+          {
+            "order": [
+              "shipped",
+              "base",
+              "stack"
+            ],
+            "literal": "VT29"
+          },
+          {
+            "order": [
+              "base",
+              "shipped",
+              "stack"
+            ],
+            "literal": "VT27"
+          },
+          {
+            "order": [
+              "base",
+              "shipped",
+              "stack"
+            ],
+            "literal": "VT39"
+          },
+          {
+            "order": [
+              "base",
+              "shipped",
+              "stack"
+            ],
+            "literal": "VT10"
+          },
+          {
+            "order": [
+              "stack",
+              "shipped",
+              "base"
+            ],
+            "literal": "VT14"
+          },
+          {
+            "order": [
+              "shipped",
+              "base",
+              "stack"
+            ],
+            "literal": "VT12"
+          },
+          {
+            "order": [
+              "stack",
+              "shipped",
+              "base"
+            ],
+            "literal": "VT25"
+          },
+          {
+            "order": [
+              "shipped",
+              "base",
+              "stack"
+            ],
+            "literal": "VT35"
+          },
+          {
+            "order": [
+              "stack",
+              "base",
+              "shipped"
+            ],
+            "literal": "VT15"
+          },
+          {
+            "order": [
+              "shipped",
+              "base",
+              "stack"
+            ],
+            "literal": "VT16"
+          },
+          {
+            "order": [
+              "base",
+              "stack",
+              "shipped"
+            ],
+            "literal": "VT20"
+          },
+          {
+            "order": [
+              "stack",
+              "base",
+              "shipped"
+            ],
+            "literal": "VT38"
+          },
+          {
+            "order": [
+              "stack",
+              "base",
+              "shipped"
+            ],
+            "literal": "VT22"
+          }
+        ],
+        "check": [
+          {
+            "order": [
+              "shipped",
+              "base",
+              "stack"
+            ],
+            "literal": "VC10"
+          },
+          {
+            "order": [
+              "stack",
+              "base",
+              "shipped"
+            ],
+            "literal": "VC29"
+          },
+          {
+            "order": [
+              "base",
+              "shipped",
+              "stack"
+            ],
+            "literal": "VC39"
+          },
+          {
+            "order": [
+              "base",
+              "stack",
+              "shipped"
+            ],
+            "literal": "VC32"
+          },
+          {
+            "order": [
+              "shipped",
+              "base",
+              "stack"
+            ],
+            "literal": "VC15"
+          },
+          {
+            "order": [
+              "stack",
+              "base",
+              "shipped"
+            ],
+            "literal": "VC31"
+          },
+          {
+            "order": [
+              "base",
+              "stack",
+              "shipped"
+            ],
+            "literal": "VC18"
+          },
+          {
+            "order": [
+              "stack",
+              "shipped",
+              "base"
+            ],
+            "literal": "VC25"
+          },
+          {
+            "order": [
+              "base",
+              "shipped",
+              "stack"
+            ],
+            "literal": "VC35"
+          },
+          {
+            "order": [
+              "shipped",
+              "stack",
+              "base"
+            ],
+            "literal": "VC16"
+          },
+          {
+            "order": [
+              "shipped",
+              "stack",
+              "base"
+            ],
+            "literal": "VC26"
+          },
+          {
+            "order": [
+              "shipped",
+              "base",
+              "stack"
+            ],
+            "literal": "VC17"
+          },
+          {
+            "order": [
+              "stack",
+              "shipped",
+              "base"
+            ],
+            "literal": "VC19"
+          },
+          {
+            "order": [
+              "base",
+              "shipped",
+              "stack"
+            ],
+            "literal": "VC36"
+          },
+          {
+            "order": [
+              "base",
+              "shipped",
+              "stack"
+            ],
+            "literal": "VC14"
+          },
+          {
+            "order": [
+              "shipped",
+              "base",
+              "stack"
+            ],
+            "literal": "VC27"
+          },
+          {
+            "order": [
+              "base",
+              "stack",
+              "shipped"
+            ],
+            "literal": "VC24"
+          },
+          {
+            "order": [
+              "base",
+              "stack",
+              "shipped"
+            ],
+            "literal": "VC34"
+          },
+          {
+            "order": [
+              "stack",
+              "shipped",
+              "base"
+            ],
+            "literal": "VC38"
+          },
+          {
+            "order": [
+              "stack",
+              "shipped",
+              "base"
+            ],
+            "literal": "VC30"
+          },
+          {
+            "order": [
+              "stack",
+              "base",
+              "shipped"
+            ],
+            "literal": "VC20"
+          },
+          {
+            "order": [
+              "base",
+              "stack",
+              "shipped"
+            ],
+            "literal": "VC22"
+          },
+          {
+            "order": [
+              "stack",
+              "shipped",
+              "base"
+            ],
+            "literal": "VC23"
+          },
+          {
+            "order": [
+              "shipped",
+              "stack",
+              "base"
+            ],
+            "literal": "VC13"
+          },
+          {
+            "order": [
+              "stack",
+              "base",
+              "shipped"
+            ],
+            "literal": "VC12"
+          },
+          {
+            "order": [
+              "shipped",
+              "stack",
+              "base"
+            ],
+            "literal": "VC37"
+          },
+          {
+            "order": [
+              "base",
+              "shipped",
+              "stack"
+            ],
+            "literal": "VC21"
+          },
+          {
+            "order": [
+              "shipped",
+              "stack",
+              "base"
+            ],
+            "literal": "VC11"
+          },
+          {
+            "order": [
+              "shipped",
+              "base",
+              "stack"
+            ],
+            "literal": "VC33"
+          },
+          {
+            "order": [
+              "stack",
+              "base",
+              "shipped"
+            ],
+            "literal": "VC28"
+          }
+        ]
+      },
+      "edit_shape": "uvx-error",
+      "seed": 1917246
+    }
+  },
+  "purpose": "Independent small-binary edit. Change the user-facing text when uvx cannot launch uv. All arms receive the same tag at the same absolute source path; the application behavior and its executable change. Compare the original eight against both distributed -18 and the matched PGO control. Build is primary; check and test follow if build qualifies, with a Bonferroni denominator of four for the secondary family. Require positive lower 95% rank interval, both two-sided sign and conditional order p < .025 for both primary comparators in each independent cohort. Report all endpoints. Fixed before timing this edit."
+}

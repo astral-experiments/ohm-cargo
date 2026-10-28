@@ -1,0 +1,440 @@
+{
+  "registered_utc": "2026-10-28T21:32:05.265614+00:00",
+  "release": "ohm-1.99.0-18",
+  "uv": "c22e6b71933443e9cd299d4b6ac8de035ed4825b",
+  "frozen_new_wild_sha256": "3b31c5baad41cbe6bbd3647b31f913f02d03f0d41c90eda445974ca1e59575de",
+  "target_pool": "r18-native",
+  "cpu": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+  "endpoints": {
+    "test": [
+      "test",
+      "--no-run"
+    ]
+  },
+  "arms": {
+    "base": {
+      "cargo": "upstream-monitor/toolchain18/bin/cargo",
+      "wild": "wild-prefix-v2/v2-wild"
+    },
+    "stack": {
+      "cargo": "upstream-monitor/toolchain18/bin/cargo",
+      "wild": "round18-linker/js-refresh-v3"
+    }
+  },
+  "cohorts": {
+    "initial": {
+      "cpu": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "options": [],
+      "edit_shape": "predicate",
+      "endpoint_order": [
+        "test"
+      ],
+      "root": "/tmp/ohm-uv-bench.0H03f2TH/round18/a",
+      "endpoints": {
+        "test": [
+          {
+            "order": [
+              "base",
+              "stack"
+            ],
+            "literal": "DA17"
+          },
+          {
+            "order": [
+              "stack",
+              "base"
+            ],
+            "literal": "DA32"
+          },
+          {
+            "order": [
+              "stack",
+              "base"
+            ],
+            "literal": "DA24"
+          },
+          {
+            "order": [
+              "stack",
+              "base"
+            ],
+            "literal": "DA27"
+          },
+          {
+            "order": [
+              "base",
+              "stack"
+            ],
+            "literal": "DA20"
+          },
+          {
+            "order": [
+              "base",
+              "stack"
+            ],
+            "literal": "DA11"
+          },
+          {
+            "order": [
+              "stack",
+              "base"
+            ],
+            "literal": "DA34"
+          },
+          {
+            "order": [
+              "base",
+              "stack"
+            ],
+            "literal": "DA26"
+          },
+          {
+            "order": [
+              "stack",
+              "base"
+            ],
+            "literal": "DA33"
+          },
+          {
+            "order": [
+              "stack",
+              "base"
+            ],
+            "literal": "DA12"
+          },
+          {
+            "order": [
+              "stack",
+              "base"
+            ],
+            "literal": "DA21"
+          },
+          {
+            "order": [
+              "base",
+              "stack"
+            ],
+            "literal": "DA29"
+          },
+          {
+            "order": [
+              "stack",
+              "base"
+            ],
+            "literal": "DA22"
+          },
+          {
+            "order": [
+              "base",
+              "stack"
+            ],
+            "literal": "DA14"
+          },
+          {
+            "order": [
+              "stack",
+              "base"
+            ],
+            "literal": "DA25"
+          },
+          {
+            "order": [
+              "base",
+              "stack"
+            ],
+            "literal": "DA31"
+          },
+          {
+            "order": [
+              "base",
+              "stack"
+            ],
+            "literal": "DA19"
+          },
+          {
+            "order": [
+              "stack",
+              "base"
+            ],
+            "literal": "DA28"
+          },
+          {
+            "order": [
+              "base",
+              "stack"
+            ],
+            "literal": "DA18"
+          },
+          {
+            "order": [
+              "base",
+              "stack"
+            ],
+            "literal": "DA23"
+          },
+          {
+            "order": [
+              "stack",
+              "base"
+            ],
+            "literal": "DA16"
+          },
+          {
+            "order": [
+              "base",
+              "stack"
+            ],
+            "literal": "DA15"
+          },
+          {
+            "order": [
+              "stack",
+              "base"
+            ],
+            "literal": "DA30"
+          },
+          {
+            "order": [
+              "base",
+              "stack"
+            ],
+            "literal": "DA13"
+          }
+        ]
+      }
+    },
+    "replica": {
+      "cpu": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31
+      ],
+      "options": [],
+      "edit_shape": "brew-help",
+      "endpoint_order": [
+        "test"
+      ],
+      "root": "/tmp/ohm-uv-bench.0H03f2TH/round18/independent/longer-checkout-b",
+      "endpoints": {
+        "test": [
+          {
+            "order": [
+              "base",
+              "stack"
+            ],
+            "literal": "DB24"
+          },
+          {
+            "order": [
+              "base",
+              "stack"
+            ],
+            "literal": "DB27"
+          },
+          {
+            "order": [
+              "stack",
+              "base"
+            ],
+            "literal": "DB13"
+          },
+          {
+            "order": [
+              "stack",
+              "base"
+            ],
+            "literal": "DB29"
+          },
+          {
+            "order": [
+              "base",
+              "stack"
+            ],
+            "literal": "DB12"
+          },
+          {
+            "order": [
+              "stack",
+              "base"
+            ],
+            "literal": "DB25"
+          },
+          {
+            "order": [
+              "base",
+              "stack"
+            ],
+            "literal": "DB31"
+          },
+          {
+            "order": [
+              "base",
+              "stack"
+            ],
+            "literal": "DB20"
+          },
+          {
+            "order": [
+              "base",
+              "stack"
+            ],
+            "literal": "DB28"
+          },
+          {
+            "order": [
+              "stack",
+              "base"
+            ],
+            "literal": "DB33"
+          },
+          {
+            "order": [
+              "base",
+              "stack"
+            ],
+            "literal": "DB18"
+          },
+          {
+            "order": [
+              "stack",
+              "base"
+            ],
+            "literal": "DB11"
+          },
+          {
+            "order": [
+              "base",
+              "stack"
+            ],
+            "literal": "DB15"
+          },
+          {
+            "order": [
+              "stack",
+              "base"
+            ],
+            "literal": "DB21"
+          },
+          {
+            "order": [
+              "stack",
+              "base"
+            ],
+            "literal": "DB14"
+          },
+          {
+            "order": [
+              "stack",
+              "base"
+            ],
+            "literal": "DB32"
+          },
+          {
+            "order": [
+              "stack",
+              "base"
+            ],
+            "literal": "DB16"
+          },
+          {
+            "order": [
+              "base",
+              "stack"
+            ],
+            "literal": "DB17"
+          },
+          {
+            "order": [
+              "stack",
+              "base"
+            ],
+            "literal": "DB30"
+          },
+          {
+            "order": [
+              "base",
+              "stack"
+            ],
+            "literal": "DB23"
+          },
+          {
+            "order": [
+              "base",
+              "stack"
+            ],
+            "literal": "DB34"
+          },
+          {
+            "order": [
+              "stack",
+              "base"
+            ],
+            "literal": "DB19"
+          },
+          {
+            "order": [
+              "base",
+              "stack"
+            ],
+            "literal": "DB22"
+          },
+          {
+            "order": [
+              "stack",
+              "base"
+            ],
+            "literal": "DB26"
+          }
+        ]
+      }
+    }
+  },
+  "primary": "Additional native linker-only comparison. Both arms use exactly the distributed -18 Cargo and rustc. The control is the previous #46 Wild, the treatment is #46 plus scoped jobserver retry. Run ordinary cargo test --no-run with no job override, CARGO_NET_OFFLINE=true and two independent fresh targets. Count all 24 prescheduled pairs in each. Positive lower paired median interval and both two-sided sign and order-conditional p < 0.05 in each cohort gate any claim spanning the two machine sizes."
+}
