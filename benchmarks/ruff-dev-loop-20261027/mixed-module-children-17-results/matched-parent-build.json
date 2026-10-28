@@ -1,0 +1,90 @@
+{
+  "archived_original_sha256": "2a915d7e665a43d7a1d94d7d68a478da0a31a1ac374db3ae50e9ac329ea05345",
+  "retained": {
+    "archive_sha256": "1dea1edeb91656d38658ea9c414e3d3060f329849232fabecf77162426bc30e7",
+    "driver": "52d5c046f570d3d61ff8bbaeff0d44798df916306110b4a2cac7fe459bc11955",
+    "driver_name": "librustc_driver-774a793a844d5500.so",
+    "frontend": "4fa9a18b77430bcc416e88561b6fe5797d98b996a7698b9f3bd11d4e7817a19f"
+  },
+  "verified": {
+    "bolt": [
+      "BOLT-INFO: 13381 out of 82160 functions in the binary (16.3%) have non-empty execution profile",
+      "BOLT-WARNING: 8397649526 out of 159565719144 samples in the binary (5.3%) belong to functions with invalid (possibly stale) profile.",
+      "BOLT-INFO: profile for 43 objects was ignored"
+    ],
+    "receipt": {
+      "candidate_postbolt": "52d5c046f570d3d61ff8bbaeff0d44798df916306110b4a2cac7fe459bc11955",
+      "candidate_prebolt": "639156a806e2d2ea6956621d881c75cd2bc09a4c6792918756c35374519e5ae2",
+      "compiler_commit": "d6497b5469d81dd23cf010416c82c9443a04c61c",
+      "donor_commit": "f1a7cf9d20b2cae39e991b178b56ba06b43dc8fa",
+      "driver_name": "librustc_driver-774a793a844d5500.so",
+      "frontend": "4fa9a18b77430bcc416e88561b6fe5797d98b996a7698b9f3bd11d4e7817a19f",
+      "parent_postbolt": "051b9d3f5861f984faa0f8c1d2ab9b5c28e483a05c728051de837291c83fd518",
+      "parent_prebolt": "69cf3f1145d51029e98e9316715913826acda03355d657494db01b1b27792115",
+      "profiles": {
+        "clippy-pgo.profdata": "e98375c08ba000ec664f9aaa91f6557092e67682ff6554e23892a09406130dfc",
+        "rustc-bolt.profdata": "34cd73280713b4cfad9183f5d36ec29e4884b00ec4aac3594d6f1ef194c444f4",
+        "rustc-pgo.profdata": "481ada8a40c70dad11b3c7e8871e9a52207d78447ca5e8ace06fc4aec2d2b5a7",
+        "rustdoc-pgo.profdata": "8499f73f1fa169f858f3e7a2b4e047c53d14a0248097ddf70d2092805b57a0d1",
+        "rustfmt-pgo.profdata": "d8980c31367e4e3bd59e61f3c57619c9ab246b3effc3fcd585a30b8068395d99"
+      },
+      "source_identity": {
+        "changes": {
+          "compiler/rustc_interface/src/passes.rs": [
+            "e0b221cacb9a3b203166dd82d3c0e5885713705db2166ab34a4dd5570242da7b",
+            "23042a2fc269d6d1093b63674c3193133fb5b4aa2025111e8aa445fa0dad11d6"
+          ],
+          "compiler/rustc_session/src/filesearch.rs": [
+            "9d69e958a8774a00b410afba44270ea19f6155e34fcf5d0a910f5f9e8ea14193",
+            "9866eccd50752791244d51bbf2575bce8e815468a6dd1eeed466af3391f85462"
+          ]
+        },
+        "classification": "complete affected compiler production files from actual official source; same donor PGO+BOLT, canonical paths and options",
+        "donor": "f1a7cf9d20b2cae39e991b178b56ba06b43dc8fa",
+        "subject": "d6497b5469d81dd23cf010416c82c9443a04c61c"
+      },
+      "sources": {
+        "compiler/rustc_driver_impl/src/lib.rs": "a2bf978d6241004d34e724a6082fa126b9ecef5ea14a7f697a3d1b61cbdda708",
+        "compiler/rustc_expand/src/proc_macro.rs": "9b0c22e1eb7913ad770fc93c47d99efe6d5ae51214feacd798fe089f630a8170",
+        "compiler/rustc_expand/src/proc_macro_server.rs": "8266976342f9c5d59d2c9d57e1aab7d4f024f87d058f5040166c86fd5d85b591",
+        "compiler/rustc_fs_util/Cargo.toml": "d842bb671689dd977c2c961de3b15b4171745e366603b66b4a56c10f4cd11820",
+        "compiler/rustc_fs_util/src/lib.rs": "a38a8258e149051150f11c54a83d789c9a878cd56228ade6ef17962f40d43eb8",
+        "compiler/rustc_incremental/src/persist/file_format.rs": "7b0697a7ba77a2d38e78947656e2428341c9f64d57c8a0b1de49751b532d2bea",
+        "compiler/rustc_interface/src/passes.rs": "23042a2fc269d6d1093b63674c3193133fb5b4aa2025111e8aa445fa0dad11d6",
+        "compiler/rustc_lint/src/levels.rs": "fee6e9344c706444f98319801eb4ed6f3ca3ddd79cbba74cf8526979c14b230f",
+        "compiler/rustc_metadata/src/creader.rs": "26fac045248d50937ccc5d450521b28c7b0b388b301d860c48e801f4afa5705c",
+        "compiler/rustc_metadata/src/fs.rs": "1368dc53517c325420f24ee61fa7f79dc34f71ee2b81f55c3b57e896e2339fe8",
+        "compiler/rustc_metadata/src/locator.rs": "7a1880a388c22b5841fadf8f44eddec7cb27817217e581c3cbeb7a42747f47e6",
+        "compiler/rustc_metadata/src/rmeta/decoder.rs": "e4cd6ac0ee48a7ed900f413a2848b881daa756e76df9f473032905df1754bed6",
+        "compiler/rustc_metadata/src/rmeta/decoder/cstore_impl.rs": "1cf55dae3bfce0a6d56cd9fd53277a328d66fd2bee075d3c4772a31f3f54231c",
+        "compiler/rustc_metadata/src/rmeta/encoder.rs": "6c78069987de38e2ed2108cbc694da8935bbcdf3261690ac96f4bba6c65de142",
+        "compiler/rustc_metadata/src/rmeta/encoder/metadata_prefix.rs": "bddf15e98693e8737f96d6104cb3abf173ca0b133abaa69fca1e014910a07e40",
+        "compiler/rustc_metadata/src/rmeta/encoder/public_api_hasher.rs": "f0911fcbaebeb9eb2c009defc295af8dcc789977cbc1cad36527f38c3e3f3de7",
+        "compiler/rustc_metadata/src/rmeta/mod.rs": "e388d9c38877b4a9d6cf2a68010c1f15ea2692705d1189289e5d2e3cddd2dde0",
+        "compiler/rustc_middle/src/arena.rs": "9781a0feb3c28bc57cc99f3abc51460841b7f3ea6f8c4314277f5aaf672154c6",
+        "compiler/rustc_middle/src/dep_graph/graph.rs": "ed0fecb2c417c7ecf5d10142a534ad39f364ea2c4adb6010b63e4013937e9471",
+        "compiler/rustc_middle/src/dep_graph/serialized.rs": "10eaa4971f0dc780ec66373051754d1f8624bd8bcd43081dec4f74c7220b4d8b",
+        "compiler/rustc_middle/src/dep_graph/serialized/tests.rs": "9e524edec8b796b8d3ab4a28c2e2eb14494add06608f5618dc7bdd059c1056ba",
+        "compiler/rustc_middle/src/queries.rs": "25bbd5bea0744e16559fced24e3d289be2835b6736fb03315b5fabec9859ebd6",
+        "compiler/rustc_middle/src/query/erase.rs": "45a0b7991b8ad190cc4ef2c8c51f4947aa630de5e780a2d83797d0264c332884",
+        "compiler/rustc_middle/src/query/mod.rs": "f9a6238a5e6fbed376c15adbb21f7fba6ef0599b3ef4d91fab70830660446d9d",
+        "compiler/rustc_middle/src/query/on_disk_cache.rs": "39f76628f825db3599c9540cca93405c8c4e2995aae0e7869b6a8b1d92c549f9",
+        "compiler/rustc_middle/src/ty/context.rs": "e5adbb3e34db048eccfb7176c9fab6956b4aa52c687302f75af573bf8e0cb8b6",
+        "compiler/rustc_session/src/filesearch.rs": "9866eccd50752791244d51bbf2575bce8e815468a6dd1eeed466af3391f85462",
+        "compiler/rustc_session/src/session.rs": "c7146a0bb0265089e0e2b14b1051bc3aa3434353d1dc6bb185938c998f1da123",
+        "compiler/rustc_span/src/source_map.rs": "d31b989b13a326089b44b18c877d8976cb9bc6d1a2568d815ff742b8b0983a76"
+      },
+      "target_triple": "x86_64-unknown-linux-gnu"
+    },
+    "sdk": {
+      "cargo": "42e90992cec21a29956e20fd52ab952472a9dbc1dcc7a3b60c92aad101b5f568",
+      "donor_std": "$SCRATCH/ohm-observer-shipping-20261027/assets/stage2-sdk/lib/rustlib",
+      "driver": "52d5c046f570d3d61ff8bbaeff0d44798df916306110b4a2cac7fe459bc11955",
+      "frontend": "4fa9a18b77430bcc416e88561b6fe5797d98b996a7698b9f3bd11d4e7817a19f",
+      "name": "librustc_driver-774a793a844d5500.so",
+      "sysroot": "$SCRATCH/ohm-observer-shipping-20261027/assets/raw-rc17-unicode-fixed/toolchain",
+      "version": "rustc 1.99.0-dev (f1a7cf9d2 2026-10-25) (ohm-1.99.0-14)\nbinary: rustc\ncommit-hash: f1a7cf9d20b2cae39e991b178b56ba06b43dc8fa\ncommit-date: 2026-10-25\nhost: x86_64-unknown-linux-gnu\nrelease: 1.99.0-dev\nLLVM version: 23.1.1\n"
+    },
+    "size": 162281296
+  }
+}
