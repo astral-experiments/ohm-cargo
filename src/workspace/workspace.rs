@@ -74,6 +74,9 @@ pub struct Workspace<'gctx> {
     /// This directory may be shared between multiple workspaces.
     build_dir: Option<Filesystem>,
 
+    /// Nested Cargo must not wait for a shared-cache lock held by its parent.
+    nested_shared_cache: bool,
+
     /// List of members in this workspace with a listing of all their manifest
     /// paths. The packages themselves can be looked up through the `packages`
     /// set above.
@@ -214,6 +217,36 @@ pub struct WorkspaceRootConfig {
     custom_metadata: Option<toml::Value>,
 }
 
+/// Roots and profile lock paths that a nested Cargo must not reacquire.
+#[derive(serde::Deserialize, serde::Serialize)]
+pub(crate) struct SharedCacheAncestor {
+    #[serde(with = "shared_cache_path")]
+    pub build_root: PathBuf,
+    #[serde(with = "shared_cache_path")]
+    pub target_root: PathBuf,
+    #[serde(with = "shared_cache_path")]
+    pub build_lock: PathBuf,
+    #[serde(with = "shared_cache_path")]
+    pub artifact_lock: PathBuf,
+}
+
+/// Keep inherited paths lossless on Unix, including non-UTF-8 directory names.
+mod shared_cache_path {
+    use std::path::{Path, PathBuf};
+
+    pub fn serialize<S: serde::Serializer>(path: &Path, serializer: S) -> Result<S::Ok, S::Error> {
+        let bytes = cargo_util::paths::path2bytes(path).map_err(serde::ser::Error::custom)?;
+        serde::Serialize::serialize(bytes, serializer)
+    }
+
+    pub fn deserialize<'de, D: serde::Deserializer<'de>>(
+        deserializer: D,
+    ) -> Result<PathBuf, D::Error> {
+        let bytes = <Vec<u8> as serde::Deserialize>::deserialize(deserializer)?;
+        cargo_util::paths::bytes2path(&bytes).map_err(serde::de::Error::custom)
+    }
+}
+
 impl<'gctx> Workspace<'gctx> {
     /// Creates a new workspace given the target manifest pointed to by
     /// `manifest_path`.
@@ -240,6 +273,7 @@ impl<'gctx> Workspace<'gctx> {
             .load_workspace_config()?
             .and_then(|cfg| cfg.custom_metadata);
         ws.find_members()?;
+        ws.avoid_ancestor_shared_cache()?;
         ws.set_resolve_behavior()?;
         ws.validate()?;
         Ok(ws)
@@ -256,6 +290,7 @@ impl<'gctx> Workspace<'gctx> {
             root_manifest: None,
             target_dir: None,
             build_dir: None,
+            nested_shared_cache: false,
             members: IndexSet::default(),
             member_ids: HashSet::default(),
             default_members: Vec::new(),
@@ -495,10 +530,138 @@ impl<'gctx> Workspace<'gctx> {
     }
 
     pub fn build_dir(&self) -> Filesystem {
+        if self.nested_shared_cache {
+            return self.target_dir();
+        }
         self.build_dir
             .clone()
             .or_else(|| self.target_dir.clone())
             .unwrap_or_else(|| self.default_build_dir())
+    }
+
+    /// Whether this workspace can use the configured shared registry cache.
+    pub(crate) fn shared_registry_cache_enabled(&self) -> bool {
+        self.gctx.cli_unstable().ohm_shared_registry_cache && !self.nested_shared_cache
+    }
+
+    /// Preserves the parent's private-cache fallback in a temporary workspace.
+    pub(crate) fn with_shared_cache_policy_from(mut self, parent: &Workspace<'_>) -> Self {
+        if parent.nested_shared_cache {
+            // Pin the target before changing how embedded manifests derive it.
+            self.target_dir = Some(self.target_dir());
+            self.nested_shared_cache = true;
+        }
+        self
+    }
+
+    /// Decodes the inherited roots without treating them as authority to reuse a lock.
+    pub(crate) fn shared_cache_ancestors(&self) -> CargoResult<Vec<SharedCacheAncestor>> {
+        self.gctx
+            .get_env(crate::CARGO_SHARED_CACHE_ANCESTORS_ENV)
+            .ok()
+            .map(|value| serde_json::from_str(value))
+            .transpose()
+            .context("invalid inherited shared-cache directories")
+            .map(Option::unwrap_or_default)
+    }
+
+    /// Keeps nested builds private when an ancestor still owns their configured cache.
+    ///
+    /// Preserve the user's environment: build scripts may inspect it, and clearing an
+    /// environment override would not override a build directory set in configuration.
+    fn avoid_ancestor_shared_cache(&mut self) -> CargoResult<()> {
+        let ancestors = self.shared_cache_ancestors()?;
+        if ancestors.is_empty() {
+            return Ok(());
+        }
+        let build_root = self.canonical_build_path(self.build_dir().as_path_unlocked());
+        if !ancestors
+            .iter()
+            .any(|ancestor| ancestor.build_root == build_root || ancestor.target_root == build_root)
+        {
+            return Ok(());
+        }
+        // Pin the default before enabling the override: embedded manifests derive their
+        // default target from the build directory. Later target overrides remain effective.
+        let target = self.target_dir();
+        self.target_dir = Some(target);
+        self.nested_shared_cache = true;
+        Ok(())
+    }
+
+    /// Rejects nested target aliases before acquiring any of the ancestor's locks.
+    pub(crate) fn validate_shared_cache_target(&self) -> CargoResult<()> {
+        let ancestors = self.shared_cache_ancestors()?;
+        if ancestors.is_empty() {
+            return Ok(());
+        }
+        let target = self.canonical_build_path(self.target_dir().as_path_unlocked());
+        if ancestors
+            .iter()
+            .any(|ancestor| ancestor.build_root == target || ancestor.target_root == target)
+        {
+            bail!(
+                "nested Cargo requires a target directory separate from its parent's build and target directories"
+            );
+        }
+        Ok(())
+    }
+
+    /// Also catches symlinks below otherwise distinct roots, at the actual lock paths.
+    pub(crate) fn validate_shared_cache_layout(
+        &self,
+        build: &Path,
+        artifact: &Path,
+    ) -> CargoResult<()> {
+        let ancestors = self.shared_cache_ancestors()?;
+        if ancestors.is_empty() {
+            return Ok(());
+        }
+        let build = self.canonical_build_path(build);
+        let artifact = self.canonical_build_path(artifact);
+        if ancestors.iter().any(|ancestor| {
+            [&ancestor.build_lock, &ancestor.artifact_lock]
+                .into_iter()
+                .any(|held| *held == build || *held == artifact)
+        }) {
+            bail!(
+                "nested Cargo requires a target directory separate from its parent's build and target directories"
+            );
+        }
+        Ok(())
+    }
+
+    /// Canonicalizes existing ancestors of a build path before its directories are created.
+    pub(crate) fn canonical_build_path(&self, path: &Path) -> PathBuf {
+        let path = if path.is_absolute() {
+            path.to_path_buf()
+        } else {
+            self.gctx.cwd().join(path)
+        };
+        let mut existing = path.as_path();
+        let mut missing = Vec::new();
+        loop {
+            match existing.canonicalize() {
+                Ok(mut canonical) => {
+                    for component in missing.iter().rev() {
+                        canonical.push(component);
+                    }
+                    return paths::normalize_path(&canonical);
+                }
+                Err(error) if error.kind() == std::io::ErrorKind::NotFound => {
+                    let Some(component) = existing.file_name() else {
+                        break;
+                    };
+                    let Some(parent) = existing.parent() else {
+                        break;
+                    };
+                    missing.push(component.to_os_string());
+                    existing = parent;
+                }
+                Err(_) => break,
+            }
+        }
+        paths::normalize_path(&path)
     }
 
     fn default_target_dir(&self) -> Filesystem {
