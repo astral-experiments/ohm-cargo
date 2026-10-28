@@ -1418,10 +1418,9 @@ pub struct Fingerprint {
     /// Used for early cutoff propagation through the dependency graph.
     #[serde(skip)]
     build_state: Mutex<BuildState>,
-    /// Prior complete compiler inputs for a procedural macro that read foreign span data.
-    /// An empty map requests one full compile to collect the binary dependency list.
+    /// Whether a procedural macro read foreign span data during the previous compile.
     #[serde(skip)]
-    observed_span_inputs: Option<HashMap<PathBuf, Option<(u64, Checksum)>>>,
+    observes_foreign_span: bool,
     /// Whether the unit is dirty only because one of its dependencies changed.
     #[serde(skip)]
     early_cutoff_candidate: AtomicBool,
@@ -1778,7 +1777,7 @@ impl LocalFingerprint {
         gctx: &GlobalContext,
         worktree_seed: bool,
         checksum_parallelism: ChecksumParallelism<'_>,
-        observed_span_inputs: &mut Option<HashMap<PathBuf, Option<(u64, Checksum)>>>,
+        observes_foreign_span: &mut bool,
     ) -> CargoResult<Option<StaleItem>> {
         let pkg_root = pkg.root();
         match self {
@@ -1793,17 +1792,9 @@ impl LocalFingerprint {
                 let Some(info) = parse_dep_info(pkg_root, build_root, &dep_info)? else {
                     return Ok(Some(StaleItem::MissingFile { path: dep_info }));
                 };
-                if let Some(complete) = info.observed_span_inputs {
-                    *observed_span_inputs = Some(if complete {
-                        info.files.clone()
-                    } else {
-                        HashMap::default()
-                    });
-                    if complete
-                        && let Some(stale) = changed_observed_input(&info.files, checksum_cache)
-                    {
-                        return Ok(Some(stale));
-                    }
+                if let Some(path) = info.foreign_span_marker {
+                    *observes_foreign_span = true;
+                    return Ok(Some(StaleItem::MissingFile { path }));
                 }
                 for (key, previous) in info.env.iter() {
                     let manifest_value = pkg.manifest().metadata().env_var(key);
@@ -1830,10 +1821,7 @@ impl LocalFingerprint {
                         current: current.map(|value| value.to_string_lossy().into_owned()),
                     }));
                 }
-                if info.observed_span_inputs == Some(true) {
-                    // The stronger content check above includes every ordinary source input.
-                    Ok(None)
-                } else if *checksum {
+                if *checksum {
                     Ok(find_stale_file_with_parallelism(
                         mtime_cache,
                         checksum_cache,
@@ -1903,7 +1891,7 @@ impl Fingerprint {
             index: UnitIndex::default(),
             fs_status: Mutex::new(FsStatus::Stale),
             build_state: Mutex::new(BuildState::Pending),
-            observed_span_inputs: None,
+            observes_foreign_span: false,
             early_cutoff_candidate: AtomicBool::new(false),
             previously_changed_metadata_dependency: AtomicBool::new(false),
             outputs: Vec::new(),
@@ -1941,16 +1929,9 @@ impl Fingerprint {
         self.set_build_state(BuildState::SkippedEarlyCutoff);
     }
 
-    /// Request binary dep-info only for consumers which actually read foreign source positions.
-    pub(super) fn observes_span_inputs(&self) -> bool {
-        self.observed_span_inputs.is_some()
-    }
-
-    /// Upstream jobs may have rewritten their metadata since graph preparation.
-    pub(super) fn observed_span_inputs_are_current(&self) -> bool {
-        self.observed_span_inputs.as_ref().is_none_or(|files| {
-            !files.is_empty() && changed_observed_input(files, &mut HashMap::default()).is_none()
-        })
+    /// These compilers can read bytes that are absent from the public dependency metadata.
+    pub(super) fn observes_foreign_span(&self) -> bool {
+        self.observes_foreign_span
     }
 
     /// Returns whether this unit is dirty only because of its dependencies.
@@ -2230,7 +2211,7 @@ impl Fingerprint {
                 gctx,
                 worktree_seed,
                 checksum_parallelism,
-                &mut self.observed_span_inputs,
+                &mut self.observes_foreign_span,
             )? {
                 item.log();
                 *self.fs_status.get_mut().unwrap() = FsStatus::StaleItem(item);
@@ -2750,7 +2731,7 @@ fn calculate_normal(
         config: Hasher::finish(&config),
         compile_kind,
         index: build_runner.bcx.unit_to_index[unit],
-        observed_span_inputs: None,
+        observes_foreign_span: false,
         rustflags: extra_flags,
         fs_status: Mutex::new(FsStatus::Stale),
         build_state: Mutex::new(BuildState::Pending),
@@ -3379,54 +3360,6 @@ fn checksum_metadata(path: &Path, expected: u64) -> Result<fs::Metadata, StaleIt
         });
     }
     Ok(metadata)
-}
-
-/// Unlike source freshness, every observed compiler byte is checked, including registry files.
-fn changed_observed_input(
-    files: &HashMap<PathBuf, Option<(u64, Checksum)>>,
-    cache: &mut HashMap<PathBuf, Checksum>,
-) -> Option<StaleItem> {
-    let mut buf = Vec::new();
-    for (path, proof) in files {
-        let Some((size, expected)) = *proof else {
-            return Some(StaleItem::MissingChecksum { path: path.clone() });
-        };
-        let Ok(stat) = std::fs::metadata(path) else {
-            return Some(StaleItem::MissingFile { path: path.clone() });
-        };
-        if !stat.is_file() {
-            return Some(StaleItem::UnableToReadFile { path: path.clone() });
-        }
-        if stat.len() != size {
-            return Some(StaleItem::FileSizeChanged {
-                path: path.clone(),
-                old_size: size,
-                new_size: stat.len(),
-            });
-        }
-        let actual = if let Some(cached) = cache.get(path).filter(|c| c.algo() == expected.algo()) {
-            *cached
-        } else {
-            let Some(file) = open_regular_checksum_file(path, size) else {
-                return Some(StaleItem::UnableToReadFile { path: path.clone() });
-            };
-            match read_checksum(path, expected, file, &mut buf) {
-                Ok(sum) => {
-                    cache.insert(path.clone(), sum);
-                    sum
-                }
-                Err(stale) => return Some(stale),
-            }
-        };
-        if expected != actual {
-            return Some(StaleItem::ChangedChecksum {
-                source: path.clone(),
-                stored_checksum: expected,
-                new_checksum: actual,
-            });
-        }
-    }
-    None
 }
 
 /// Reads through EOF with a buffer reused by this serial consumer or worker.
