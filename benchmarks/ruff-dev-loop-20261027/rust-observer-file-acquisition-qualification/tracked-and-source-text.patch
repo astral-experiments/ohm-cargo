@@ -1,0 +1,41 @@
+diff --git a/compiler/rustc_expand/src/proc_macro_server.rs b/compiler/rustc_expand/src/proc_macro_server.rs
+index b2d939800eaf04f4f5e53b3aaae1267eb386d7dc..d83c3857ee65ca5e7601560081b44922e35c83ed 100644
+--- a/compiler/rustc_expand/src/proc_macro_server.rs
++++ b/compiler/rustc_expand/src/proc_macro_server.rs
+@@ -507,6 +507,8 @@ fn track_env_var(&mut self, var: &str, value: Option<&str>) {
+ 
+     fn track_path(&mut self, path: &str) {
+         invalidate_cached_expansion();
++        // The macro registers a path, but does not supply the bytes it read.
++        self.sess().untrackable_proc_macro_source.store(true, Ordering::Relaxed);
+         self.ecx.sess.file_depinfo.borrow_mut().insert(Symbol::intern(path));
+     }
+ 
+@@ -863,12 +865,12 @@ fn span_source_text(&mut self, span: Self::Span) -> Option<String> {
+         let source = sm.lookup_source_file(span.lo());
+         if source.is_imported() {
+             self.observe_foreign_span();
++            // A subsequent read of this path may disagree with the source used for the snippet.
++            self.sess().untrackable_proc_macro_source.store(true, Ordering::Relaxed);
+             if let Some(path) = sm.external_source_path(&source)
+                 && let Some(path) = path.to_str()
+             {
+                 self.sess().file_depinfo.borrow_mut().insert(Symbol::intern(path));
+-            } else {
+-                self.sess().untrackable_proc_macro_source.store(true, Ordering::Relaxed);
+             }
+         }
+         sm.span_to_snippet(span).ok()
+diff --git a/compiler/rustc_session/src/session.rs b/compiler/rustc_session/src/session.rs
+index e6525de1239066c8e26c817f0e34fa7c50bfe57b..d0a6eb699570cbd2f7d9fe360e6a12b79edada14 100644
+--- a/compiler/rustc_session/src/session.rs
++++ b/compiler/rustc_session/src/session.rs
+@@ -396,7 +396,7 @@ pub struct Session {
+     /// A procedural macro read byte positions affected by external crate metadata.
+     pub proc_macro_observed_foreign_bytes: AtomicBool,
+ 
+-    /// An imported span's source text has no physical path representable in dep-info.
++    /// A procedural macro depends on file contents that observer dep-info cannot authenticate.
+     pub untrackable_proc_macro_source: AtomicBool,
+ 
+     target_filesearch: Arc<FileSearch>,

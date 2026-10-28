@@ -1,0 +1,114 @@
+diff --git a/tests/run-make/rdr-public-hash-proc-macro-foreign-bytes/client.rs b/tests/run-make/rdr-public-hash-proc-macro-foreign-bytes/client.rs
+index c98160c6eb172a4145bcfa3a73728a6bb7a36a2c..2c51d8128e6abd3221d66e10c665dc2550c411a9 100644
+--- a/tests/run-make/rdr-public-hash-proc-macro-foreign-bytes/client.rs
++++ b/tests/run-make/rdr-public-hash-proc-macro-foreign-bytes/client.rs
+@@ -1,4 +1,4 @@
+-use probe::{discard, read_span, read_text};
++use probe::{discard, read_span, read_text, read_text_then_edit};
+ 
+ #[cfg(any(observer, clone_only))]
+ const _: u8 = leaf::prime!(discard);
+@@ -13,6 +13,12 @@
+ const SEEN: &str = read_span!(local_marker);
+ #[cfg(text)]
+ const SEEN: &str = leaf::deliver!(read_text);
++#[cfg(text_edited)]
++const SEEN: &str = leaf::deliver!(read_text_then_edit);
++#[cfg(any(tracked, tracked_observer))]
++const SEEN: &str = probe::tracked_read!();
++#[cfg(tracked_observer)]
++const _: &str = leaf::deliver!(read_span);
+ 
+ fn main() {
+     assert_eq!(leaf::value(), 7);
+diff --git a/tests/run-make/rdr-public-hash-proc-macro-foreign-bytes/probe.rs b/tests/run-make/rdr-public-hash-proc-macro-foreign-bytes/probe.rs
+index b6d426273f679fa1377e1a23067a24f04865d8bd..fc2a6bb2fbc70fc19626e60423bb6df424f0fb64 100644
+--- a/tests/run-make/rdr-public-hash-proc-macro-foreign-bytes/probe.rs
++++ b/tests/run-make/rdr-public-hash-proc-macro-foreign-bytes/probe.rs
+@@ -1,3 +1,5 @@
++#![feature(proc_macro_tracked_path)]
++
+ extern crate proc_macro;
+ 
+ use proc_macro::{Literal, TokenStream, TokenTree};
+@@ -14,6 +16,22 @@ pub fn read_text(input: TokenStream) -> TokenStream {
+     TokenTree::Literal(Literal::string(&format!("{text:?}"))).into()
+ }
+ 
++#[proc_macro]
++pub fn read_text_then_edit(input: TokenStream) -> TokenStream {
++    let result = read_text(input);
++    let source = std::fs::read_to_string("output.rs").unwrap();
++    std::fs::write("output.rs", source.replace("Unrelated note", "Unrelated edit")).unwrap();
++    result
++}
++
++#[proc_macro]
++pub fn tracked_read(_: TokenStream) -> TokenStream {
++    proc_macro::tracked::path("tracked.txt");
++    let observed = std::fs::read_to_string("tracked.txt").unwrap();
++    std::fs::write("tracked.txt", "29").unwrap();
++    TokenTree::Literal(Literal::string(&observed)).into()
++}
++
+ #[proc_macro]
+ pub fn discard(input: TokenStream) -> TokenStream {
+     drop(input.clone());
+diff --git a/tests/run-make/rdr-public-hash-proc-macro-foreign-bytes/rmake.rs b/tests/run-make/rdr-public-hash-proc-macro-foreign-bytes/rmake.rs
+index 6ca37e5b570b0fafc7cfd56640abac659ec1c4cf..76919732f44b25f1b3d5e7b6a7328f9ccd473bd8 100644
+--- a/tests/run-make/rdr-public-hash-proc-macro-foreign-bytes/rmake.rs
++++ b/tests/run-make/rdr-public-hash-proc-macro-foreign-bytes/rmake.rs
+@@ -31,7 +31,11 @@ fn client_with_flags(mode: &str, crate_type: &str, flags: &[&str]) -> String {
+ 
+ fn client(mode: &str, crate_type: &str, expects_marker: bool) {
+     let deps = client_with_flags(mode, crate_type, &[]);
+-    let marker = Path::new("actual.d").join("ohm-foreign-span-bytes");
++    let marker = Path::new("actual.d").join(if mode == "text" {
++        "ohm-untrackable-foreign-span"
++    } else {
++        "ohm-foreign-span-bytes"
++    });
+     let inputs = deps.lines().find_map(|line| line.strip_prefix("actual.d: ")).unwrap();
+     assert_eq!(inputs.split_whitespace().any(|p| Path::new(p) == marker), expects_marker, "{deps}");
+     if mode == "text" {
+@@ -89,10 +93,40 @@ fn observed_byte_start() -> usize {
+     bytes.split_once("..").unwrap().0.parse().unwrap()
+ }
+ 
++fn unverified_file_reads() {
++    let source = rfs::read_to_string("output.rs");
++    for flags in [
++        &["-Zcache-proc-macros"][..],
++        &["-Zohm-observer-dep-info"],
++        &["-Zbinary-dep-depinfo", "-Zchecksum-hash-algorithm=blake3"],
++    ] {
++        for mode in ["tracked", "tracked_observer"] {
++            rfs::write("tracked.txt", "17");
++            let deps = client_with_flags(mode, "bin", flags);
++            run("client").assert_stdout_equals("17\n");
++            assert_eq!(rfs::read_to_string("tracked.txt"), "29");
++            assert!(deps.contains("tracked.txt"));
++            assert_eq!(deps.contains("ohm-untrackable-foreign-span"), mode == "tracked_observer");
++            assert!(!deps.contains("ohm-foreign-span-bytes"));
++            assert!(!deps.contains("# ohm-observer-inputs-v1 "));
++        }
++
++        let deps = client_with_flags("text_edited", "bin", flags);
++        run("client").assert_stdout_equals("Some(\"foreign_marker\")\n");
++        assert!(deps.contains("ohm-untrackable-foreign-span"));
++        assert!(!deps.contains("ohm-foreign-span-bytes"));
++        assert!(!deps.contains("# ohm-observer-inputs-v1 "));
++        client("text", "bin", true);
++        run("client").assert_stdout_equals("None\n");
++        rfs::write("output.rs", &source);
++    }
++}
++
+ fn main() {
+     rustc().input("probe.rs").crate_type("proc-macro").run();
+     let original = leaf_hash();
+     first_observation();
++    unverified_file_reads();
+     client("clone_only", "bin", false);
+     client("local", "bin", false);
+     let before = observed_byte_start();

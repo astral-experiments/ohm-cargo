@@ -1,0 +1,59 @@
+{
+  "commands": [
+    [
+      "cc",
+      "-shared",
+      "-fPIC",
+      "sibling.c",
+      "-Wl,-soname,libunique_ohm_sibling.so",
+      "-o",
+      "libunique_ohm_sibling.so"
+    ],
+    [
+      "cc",
+      "-shared",
+      "-fPIC",
+      "plugin.c",
+      "-ldl",
+      "-o",
+      "no-deps.so"
+    ],
+    [
+      "cc",
+      "-shared",
+      "-fPIC",
+      "-DREQUIRE_ORIGIN",
+      "plugin.c",
+      "-ldl",
+      "-L.",
+      "-lunique_ohm_sibling",
+      "-Wl,-rpath,$ORIGIN",
+      "-o",
+      "origin.so"
+    ]
+  ],
+  "input_hashes": {
+    "libunique_ohm_sibling.so": "2ac48f7394e20838111771abb2b2150ff4046df556b8773b72527da6d4d2405b",
+    "no-deps.so": "be458878859db5c8db43a425d7e4d78aea1e9074a2c7b5001680fad63d6f5441",
+    "origin.so": "2cfeb937d2854f4af8bb7a54bc92f499683b47f76257e27d9519d946b28d695e",
+    "plugin.c": "cf94270ffba9739015ff46e57dde684e3e235db04b4b7cb18986fabf6ef36eed",
+    "sibling.c": "3e21f944a7cf3519f634e1baf67fa454066539378a78880b3c51e5ceed640a9b"
+  },
+  "rows": {
+    "no-deps.so/file": {
+      "path": "/home/dev-user/.cache/ohm-ruff-whole-skips-20261027/position-integrated/observer-foreign-source-fix-ops/dlopen-path-control/no-deps.so",
+      "value": 17
+    },
+    "no-deps.so/sealed": {
+      "path": "/proc/self/fd/3",
+      "value": 17
+    },
+    "origin.so/file": {
+      "path": "/home/dev-user/.cache/ohm-ruff-whole-skips-20261027/position-integrated/observer-foreign-source-fix-ops/dlopen-path-control/origin.so",
+      "value": 17
+    },
+    "origin.so/sealed": {
+      "error": "libunique_ohm_sibling.so: cannot open shared object file: No such file or directory"
+    }
+  }
+}
