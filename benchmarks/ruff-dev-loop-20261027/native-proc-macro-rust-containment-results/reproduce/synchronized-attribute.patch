@@ -1,0 +1,66 @@
+--- a/exercise.py
++++ b/exercise.py
+@@ -116,7 +116,7 @@
+         place=root/('fresh-independent' if phase=='clean' else 'warm');target=place/'target';shared=place/'shared'
+         env.update(CARGO_TARGET_DIR=str(target),CARGO_BUILD_BUILD_DIR=str(shared));rec=root/phase;rec.mkdir()
+         argv=['strace','-ff','-qq','-s','65535','-e','trace=execve','-o',str(rec/'exec'),'cargo','+ohm',cmd,'-p','hold_direct','--offline','--message-format=json']
+-        calls=root/'actual-derive-calls'
++        calls=root/'actual-attribute-calls'
+         prior=calls.read_text().splitlines() if calls.is_file() else []
+         with (rec/'stdout').open('wb') as so,(rec/'stderr').open('wb') as se:
+             p=subprocess.Popen(argv,cwd=work,env=env,stdout=so,stderr=se)
+@@ -166,20 +166,20 @@
+             (rec/'rustc.d').write_bytes(data);(rec/'cargo.fingerprint').write_bytes(encoded)
+         assert rc in (0,101)
+         if rc==101:assert diag,(kind,phase,rc)
+-        result={'derive_calls':calls.read_text().splitlines()[len(prior):],'join':joined,'exit':rc,'value':value,'diagnostics':diag,'unit_fresh':focus[0]['fresh'] if focus else None,'all_fresh':bool(arts) and all(x['fresh'] for x in arts),'native':success,'claims':claims,'trace_sha256':{f.name:sha(f) for f in sorted(rec.glob('exec.*'))}}
++        result={'attribute_calls':calls.read_text().splitlines()[len(prior):],'join':joined,'exit':rc,'value':value,'diagnostics':diag,'unit_fresh':focus[0]['fresh'] if focus else None,'all_fresh':bool(arts) and all(x['fresh'] for x in arts),'native':success,'claims':claims,'trace_sha256':{f.name:sha(f) for f in sorted(rec.glob('exec.*'))}}
+         rows[phase]=result;write(rec/'result.json',result)
+     assert after==stat(live)
+     if kind=='rmeta':assert rows['clean']['exit']==101 and any(x['code']=='E0308' for x in rows['clean']['diagnostics']),rows['clean']
+     else:assert rows['clean']['value']==29,rows['clean']
+     record={'case':kind,'timestamp':stamp,'old_token_before_replacement':17,'sections':native_identity,'old':before,'replacement':after,'compiled':defs,'observed_old_maps':opened,'rows':rows}
+     write(root/'complete.json',record)
+-    return {k:(v['exit'],v['value'],v['join'],v['unit_fresh'],v['claims'].get('complete'),v['derive_calls']) for k,v in rows.items()}
++    return {k:(v['exit'],v['value'],v['join'],v['unit_fresh'],v['claims'].get('complete'),v['attribute_calls']) for k,v in rows.items()}
+ 
+ if __name__=='__main__':
+     ap=argparse.ArgumentParser(description=__doc__);ap.add_argument('--root',type=Path,required=True);ap.add_argument('--sdk',type=Path,required=True);a=ap.parse_args()
+     a.root.mkdir();all_cases={}
+     for k in ('dso',):
+-        for stamp in ('preserved','current'):
++        for stamp in ('preserved',):
+             label=k+'-'+stamp
+             result=case(a.root/label,a.sdk,k,stamp);all_cases[label]=result;print(label,result,flush=True)
+     write(a.root/'complete.json',all_cases)
+--- a/fixture/hold_direct/src/main.rs
++++ b/fixture/hold_direct/src/main.rs
+@@ -1,6 +1,6 @@
+ use hold_shapes::Number;
+ const _:Option<Number>=None;
+-use race_extern::{Native,sample};
+-#[derive(Native)]
++use race_extern::sample;
++#[race_extern::native_attr]
+ struct Foo;
+ fn main(){println!("sample={}\njoin={}",Foo::VALUE,hold_tokens::inspect_value!(sample));}
+--- a/join.rs
++++ b/join.rs
+@@ -15,12 +15,13 @@
+     output.extend(format!("!({})",unsafe{selected_literal()}).parse::<proc_macro::TokenStream>().unwrap());
+     output
+ }
+-#[proc_macro_derive(Native)]
+-pub fn native(_:proc_macro::TokenStream)->proc_macro::TokenStream {
++#[proc_macro_attribute]
++pub fn native_attr(_:proc_macro::TokenStream, mut item:proc_macro::TokenStream)->proc_macro::TokenStream {
+     use std::io::Write;
+     let n=unsafe{selected_literal()};
+-    let path=std::path::PathBuf::from(std::env::var_os("OHM_SYNC_DIR").unwrap()).join("actual-derive-calls");
++    let path=std::path::PathBuf::from(std::env::var_os("OHM_SYNC_DIR").unwrap()).join("actual-attribute-calls");
+     let mut calls=std::fs::OpenOptions::new().append(true).create(true).open(path).unwrap();
+     writeln!(calls,"{}",n).unwrap();
+-    format!("impl Foo {{ const VALUE: u32 = {n}; }}").parse().unwrap()
++    item.extend(format!("impl Foo {{ const VALUE: u32 = {n}; }}").parse::<proc_macro::TokenStream>().unwrap());
++    item
+ }

@@ -1,0 +1,11 @@
+The shipped compiler recovered the two native values on its first compile after changing only the effective cache option.
+Matched baseline Cargo {'prime': (17, 3), 'prime-again': (17, 0), 'c-edit': (17, 2), 'c-edit-again': (17, 0), 'empty-edited': (29, 3)}
+Shipped baseline Cargo {'prime': (17, 3), 'prime-again': (17, 0), 'c-edit': (17, 2), 'c-edit-again': (17, 0), 'empty-edited': (29, 3)}
+The two matched macro libraries have equal metadata and symbol tables and one differing executable byte. The released rustdoc emits the current constants in all 12 source and argument cases.
+Intermediate Cargo recovery {'compiler-switch': (29, 3), 'compiler-switch-again': (29, 0), 'reader-edit': (29, 1), 'reader-edit-again': (29, 0), 'empty-after': (29, 3), 'restore': (17, 2), 'restore-again': (17, 0), 'empty-restored': (17, 3)}
+Both native strategies retained the same four-call order and process-local state in 16 genuine full compiles.
+The released and donor rustdoc matched pairs generated HTML. The donor rustdoc combined with the final driver received SIGSEGV for both flag spellings.
+Matched upgrade Cargo {'compiler-switch': (29, 3), 'compiler-switch-again': (29, 0), 'reader-edit': (29, 1), 'reader-edit-again': (29, 0), 'empty-after': (29, 3), 'restore': (17, 2), 'restore-again': (17, 0), 'empty-restored': (17, 3)}
+Shipped upgrade Cargo {'compiler-switch': (29, 3), 'compiler-switch-again': (29, 0), 'reader-edit': (29, 1), 'reader-edit-again': (29, 0), 'empty-after': (29, 3), 'restore': (17, 2), 'restore-again': (17, 0), 'empty-restored': (17, 3)}
+All 48 original/edited item pages and 8 in-process counter pages contain the expected actual Rust declarations. Both native macro calls use the traced rustdoc PID in every counter run.
+The source-complete compiler repaired both stale programs on the first upgrade compile and passed the native, diagnostic, and option-order controls.

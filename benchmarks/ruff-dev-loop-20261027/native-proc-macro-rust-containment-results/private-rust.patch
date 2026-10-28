@@ -1,0 +1,195 @@
+diff --git a/.github/workflows/ci.yml b/.github/workflows/ci.yml
+index a641028f382d6..e55aa5c69e1c2 100644
+--- a/.github/workflows/ci.yml
++++ b/.github/workflows/ci.yml
+@@ -267,6 +267,7 @@ jobs:
+             tests/run-make/test-harness-exact-filter
+             tests/run-make/parallel-query-depth-limits
+             tests/run-make/incremental-attribute-proc-macro-cache
++            tests/run-make/incremental-proc-macro-native-inputs
+             tests/run-make/incremental-proc-macro-parse-source
+             tests/run-make/incremental-retained-cache-snapshot
+             tests/run-make/incremental-loaded-cache-values
+diff --git a/compiler/rustc_session/src/options.rs b/compiler/rustc_session/src/options.rs
+index f9813490ba8bd..491a26c0559be 100644
+--- a/compiler/rustc_session/src/options.rs
++++ b/compiler/rustc_session/src/options.rs
+@@ -835,6 +835,7 @@ mod desc {
+     pub(crate) const parse_bool: &str =
+         "one of: `y`, `yes`, `on`, `true`, `n`, `no`, `off` or `false`";
+     pub(crate) const parse_opt_bool: &str = parse_bool;
++    pub(crate) const parse_cache_proc_macros: &str = parse_bool;
+     pub(crate) const parse_string: &str = "a string";
+     pub(crate) const parse_opt_string: &str = parse_string;
+     pub(crate) const parse_string_push: &str = parse_string;
+@@ -982,6 +983,12 @@ pub mod parse {
+         }
+     }
+ 
++    pub(crate) fn parse_cache_proc_macros(_slot: &mut bool, v: Option<&str>) -> bool {
++        // Native proc-macro inputs are not covered by the Rust crate hash. Leaving the
++        // tracked option off also invalidates old caches created with it on.
++        parse_bool(&mut false, v)
++    }
++
+     /// Use this for any boolean option that lacks a static default. (The
+     /// actions taken when such an option is not specified will depend on
+     /// other factors, such as other options, or target options.)
+@@ -2424,8 +2431,8 @@ options! {
+         "set options for branch target identification and pointer authentication on AArch64"),
+     build_sdylib_interface: bool = (false, parse_bool, [UNTRACKED],
+         "whether the stable interface is being built"),
+-    cache_proc_macros: bool = (false, parse_bool, [TRACKED],
+-        "cache the results of derive and attribute proc macro invocations (potentially unsound!) (default: no)"),
++    cache_proc_macros: bool = (false, parse_cache_proc_macros, [TRACKED],
++        "accepted for compatibility (derive and attribute proc macros run in each compilation)"),
+     cf_protection: CFProtection = (CFProtection::None, parse_cfprotection, [TRACKED],
+         "instrument control-flow architecture protection"),
+     check_cfg_all_expected: bool = (false, parse_bool, [UNTRACKED],
+diff --git a/src/doc/unstable-book/src/compiler-flags/cache-proc-macros.md b/src/doc/unstable-book/src/compiler-flags/cache-proc-macros.md
+index eefaf9ca2f1bb..e1f80534832c3 100644
+--- a/src/doc/unstable-book/src/compiler-flags/cache-proc-macros.md
++++ b/src/doc/unstable-book/src/compiler-flags/cache-proc-macros.md
+@@ -6,4 +6,4 @@ The tracking issue for this feature is: [#151364]
+ 
+ ------------------------
+ 
+-This option instructs `rustc` to cache (derive) proc-macro invocations using the incremental system. Note that the compiler does not currently check whether the proc-macro is actually "cacheable" or not. If you use this flag when compiling a crate that uses non-pure proc-macros, it can result in stale expansions being compiled.
++Ohm accepts this option for compatibility. Derive and attribute procedural macros run in each compilation because their native inputs can change independently of their Rust crate hash.
+diff --git a/tests/incremental/derive_macro_expansion/proc_macro_unchanged.rs b/tests/incremental/derive_macro_expansion/proc_macro_unchanged.rs
+index 64364e31bc456..666bad74ddd9e 100644
+--- a/tests/incremental/derive_macro_expansion/proc_macro_unchanged.rs
++++ b/tests/incremental/derive_macro_expansion/proc_macro_unchanged.rs
+@@ -1,4 +1,4 @@
+-// This test tests that derive proc macro execution is cached.
++// An unchanged derive can leave the owner's ordinary queries green.
+ 
+ //@ proc-macro:derive_nothing.rs
+ //@ revisions:rpass1 rpass2
+@@ -11,7 +11,7 @@
+ extern crate derive_nothing;
+ 
+ #[cfg(any(rpass1, rpass2))]
+-#[rustc_clean(cfg = "rpass2", loaded_from_disk = "derive_macro_expansion")]
++#[rustc_clean(cfg = "rpass2")]
+ #[derive(Nothing)]
+ pub struct Foo;
+ 
+diff --git a/tests/run-make/incremental-attribute-proc-macro-cache/rmake.rs b/tests/run-make/incremental-attribute-proc-macro-cache/rmake.rs
+index 2686f42de6216..06379c712669c 100644
+--- a/tests/run-make/incremental-attribute-proc-macro-cache/rmake.rs
++++ b/tests/run-make/incremental-attribute-proc-macro-cache/rmake.rs
+@@ -31,13 +31,13 @@ fn main() {
+             .assert_stderr_contains("pure.rs:3:");
+         run("pure").assert_stdout_equals("1 1 1 1\n");
+ 
+-        // A used body edit outside the attribute must not execute the macro again.
++        // The attribute executes again and reports the warning at its original call site.
+         let pure = pure_source.replace("1 // unrelated edit", "2 // unrelated edit");
+         assert_ne!(pure, pure_source);
+         rfs::write("pure.rs", &pure);
+         compile("pure", strategy)
+             .run()
+-            .assert_stderr_not_contains("EXECUTED cached attribute")
++            .assert_stderr_contains("EXECUTED cached attribute")
+             .assert_stderr_contains("cached attribute warning")
+             .assert_stderr_contains("pure.rs:3:");
+         run("pure").assert_stdout_equals("1 1 1 2\n");
+@@ -61,7 +61,7 @@ fn main() {
+         run("pure").assert_stdout_equals("3 2 2 2\n");
+         compile("pure", strategy)
+             .run()
+-            .assert_stderr_not_contains("EXECUTED cached attribute")
++            .assert_stderr_contains("EXECUTED cached attribute")
+             .assert_stderr_contains("cached attribute warning");
+         run("pure").assert_stdout_equals("3 2 2 2\n");
+ 
+diff --git a/tests/run-make/incremental-proc-macro-native-inputs/native.rs b/tests/run-make/incremental-proc-macro-native-inputs/native.rs
+new file mode 100644
+index 0000000000000..b28ecd4ed2171
+--- /dev/null
++++ b/tests/run-make/incremental-proc-macro-native-inputs/native.rs
+@@ -0,0 +1,18 @@
++#![crate_type = "proc-macro"]
++
++extern crate proc_macro;
++use proc_macro::TokenStream;
++
++unsafe extern "C" {
++    fn value() -> i32;
++}
++
++#[proc_macro_derive(Observe)]
++pub fn observe(_: TokenStream) -> TokenStream {
++    format!("const DERIVED: i32 = {};", unsafe { value() }).parse().unwrap()
++}
++
++#[proc_macro_attribute]
++pub fn observe_attr(_: TokenStream, _: TokenStream) -> TokenStream {
++    format!("const ATTR: i32 = {};", unsafe { value() }).parse().unwrap()
++}
+diff --git a/tests/run-make/incremental-proc-macro-native-inputs/reader.rs b/tests/run-make/incremental-proc-macro-native-inputs/reader.rs
+new file mode 100644
+index 0000000000000..654eb39e152f2
+--- /dev/null
++++ b/tests/run-make/incremental-proc-macro-native-inputs/reader.rs
+@@ -0,0 +1,13 @@
++#[macro_use]
++extern crate native;
++
++#[derive(Observe)]
++struct Marker;
++
++#[observe_attr]
++const ATTR: i32 = 0;
++
++fn main() {
++    let _ = Marker;
++    println!("{DERIVED},{ATTR}");
++}
+diff --git a/tests/run-make/incremental-proc-macro-native-inputs/rmake.rs b/tests/run-make/incremental-proc-macro-native-inputs/rmake.rs
+new file mode 100644
+index 0000000000000..8eef1d9f9f0dd
+--- /dev/null
++++ b/tests/run-make/incremental-proc-macro-native-inputs/rmake.rs
+@@ -0,0 +1,21 @@
++//@ only-linux
++//@ ignore-cross-compile
++//@ needs-crate-type: proc-macro
++
++use run_make_support::{cc, dynamic_lib_name, rfs, run, rustc};
++
++fn main() {
++    for value in [17, 29] {
++        // Relink an otherwise unchanged proc macro against new native code.
++        rfs::write("value.c", format!("int value(void) {{ return {value}; }}\n"));
++        cc().arg("-fPIC").arg("-c").input("value.c").output("value.o").run();
++        rustc().input("native.rs").arg("-Clink-arg=value.o").run();
++        rustc()
++            .input("reader.rs")
++            .extern_("native", dynamic_lib_name("native"))
++            .incremental("incremental")
++            .arg("-Zcache-proc-macros")
++            .run();
++        run("reader").assert_stdout_equals(format!("{value},{value}\n"));
++    }
++}
+diff --git a/tests/run-make/incremental-proc-macro-parse-source/rmake.rs b/tests/run-make/incremental-proc-macro-parse-source/rmake.rs
+index da1b232b5db0e..2bec90f1dfb1b 100644
+--- a/tests/run-make/incremental-proc-macro-parse-source/rmake.rs
++++ b/tests/run-make/incremental-proc-macro-parse-source/rmake.rs
+@@ -48,12 +48,9 @@ fn compare(mode: &str, original: &str) {
+     rfs::write("parse-input.txt", "379");
+ 
+     let result = producer(&cache, mode).run();
++    result.assert_stderr_contains(executed);
+     if mode == "cached" {
+-        result
+-            .assert_stderr_not_contains("executed attribute")
+-            .assert_stderr_not_contains(executed);
+-    } else {
+-        result.assert_stderr_contains(executed);
++        result.assert_stderr_contains("executed attribute");
+     }
+     save_bridge(&warm);
+     producer(&format!("{mode}-empty"), mode).run().assert_stderr_contains(executed);

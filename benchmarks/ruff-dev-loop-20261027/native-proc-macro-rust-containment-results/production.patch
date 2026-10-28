@@ -1,0 +1,28 @@
+diff --git a/compiler/rustc_session/src/config.rs b/compiler/rustc_session/src/config.rs
+index 02733fb830b40..83db247cd5434 100644
+--- a/compiler/rustc_session/src/config.rs
++++ b/compiler/rustc_session/src/config.rs
+@@ -2739,6 +2739,10 @@ pub fn build_session_options(early_dcx: &mut EarlyDiagCtxt, matches: &getopts::M
+ 
+     let mut unstable_opts = UnstableOptions::build(early_dcx, matches, &mut collected_options);
+ 
++    // Native proc-macro inputs are not covered by the Rust crate hash. The effective
++    // option is tracked, so this also invalidates incremental caches created with it on.
++    unstable_opts.cache_proc_macros = false;
++
+     // `-Zassumptions-on-binders` requires the next trait solver globally. Normalize after
+     // parsing so the effective config is independent of flag order and so consumers that
+     // read `next_solver.globally` directly (e.g. feature-gate checks) see the right value.
+diff --git a/compiler/rustc_session/src/options.rs b/compiler/rustc_session/src/options.rs
+index f9813490ba8bd..c1632dfc10ab7 100644
+--- a/compiler/rustc_session/src/options.rs
++++ b/compiler/rustc_session/src/options.rs
+@@ -2425,7 +2425,7 @@ pub(crate) fn parse_rust_version(slot: &mut Option<RustcVersion>, v: Option<&str
+     build_sdylib_interface: bool = (false, parse_bool, [UNTRACKED],
+         "whether the stable interface is being built"),
+     cache_proc_macros: bool = (false, parse_bool, [TRACKED],
+-        "cache the results of derive and attribute proc macro invocations (potentially unsound!) (default: no)"),
++        "accepted for compatibility (derive and attribute proc macros run in each compilation)"),
+     cf_protection: CFProtection = (CFProtection::None, parse_cfprotection, [TRACKED],
+         "instrument control-flow architecture protection"),
+     check_cfg_all_expected: bool = (false, parse_bool, [UNTRACKED],

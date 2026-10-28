@@ -1,0 +1,476 @@
+{
+  "combined": {
+    "driver": "22abce6921b46f93f387c7d3d99cefa4df9c0a866619447077699ef81a73827f",
+    "rows": {
+      "cross-thread-no-cold": {
+        "argv": [
+          "rustc",
+          "+ohm",
+          "reader.rs",
+          "--extern",
+          "macro_impl=libmacro_impl.so",
+          "-Zcache-proc-macros=no",
+          "-Zproc-macro-execution-strategy=cross-thread",
+          "-C",
+          "incremental=cross-threadno",
+          "-o",
+          "reader"
+        ],
+        "exe_sha": "38ab1d574ecf0e80f6ad8d5c7d083951d4eb9703ce93e1b5f3a13eccdf398c8b",
+        "exit": 0,
+        "stderr": [
+          "derive Left 1",
+          "attr FIRST 2",
+          "derive Right 3",
+          "attr SECOND 4"
+        ],
+        "value": [
+          1,
+          2,
+          3,
+          4
+        ]
+      },
+      "cross-thread-no-warm": {
+        "argv": [
+          "rustc",
+          "+ohm",
+          "reader.rs",
+          "--extern",
+          "macro_impl=libmacro_impl.so",
+          "-Zcache-proc-macros=no",
+          "-Zproc-macro-execution-strategy=cross-thread",
+          "-C",
+          "incremental=cross-threadno",
+          "-o",
+          "reader"
+        ],
+        "exe_sha": "38ab1d574ecf0e80f6ad8d5c7d083951d4eb9703ce93e1b5f3a13eccdf398c8b",
+        "exit": 0,
+        "stderr": [
+          "derive Left 1",
+          "attr FIRST 2",
+          "derive Right 3",
+          "attr SECOND 4"
+        ],
+        "value": [
+          1,
+          2,
+          3,
+          4
+        ]
+      },
+      "cross-thread-yes-cold": {
+        "argv": [
+          "rustc",
+          "+ohm",
+          "reader.rs",
+          "--extern",
+          "macro_impl=libmacro_impl.so",
+          "-Zcache-proc-macros=yes",
+          "-Zproc-macro-execution-strategy=cross-thread",
+          "-C",
+          "incremental=cross-threadyes",
+          "-o",
+          "reader"
+        ],
+        "exe_sha": "38ab1d574ecf0e80f6ad8d5c7d083951d4eb9703ce93e1b5f3a13eccdf398c8b",
+        "exit": 0,
+        "stderr": [
+          "derive Left 1",
+          "attr FIRST 2",
+          "derive Right 3",
+          "attr SECOND 4"
+        ],
+        "value": [
+          1,
+          2,
+          3,
+          4
+        ]
+      },
+      "cross-thread-yes-warm": {
+        "argv": [
+          "rustc",
+          "+ohm",
+          "reader.rs",
+          "--extern",
+          "macro_impl=libmacro_impl.so",
+          "-Zcache-proc-macros=yes",
+          "-Zproc-macro-execution-strategy=cross-thread",
+          "-C",
+          "incremental=cross-threadyes",
+          "-o",
+          "reader"
+        ],
+        "exe_sha": "38ab1d574ecf0e80f6ad8d5c7d083951d4eb9703ce93e1b5f3a13eccdf398c8b",
+        "exit": 0,
+        "stderr": [
+          "derive Left 1",
+          "attr FIRST 2",
+          "derive Right 3",
+          "attr SECOND 4"
+        ],
+        "value": [
+          1,
+          2,
+          3,
+          4
+        ]
+      },
+      "same-thread-no-cold": {
+        "argv": [
+          "rustc",
+          "+ohm",
+          "reader.rs",
+          "--extern",
+          "macro_impl=libmacro_impl.so",
+          "-Zcache-proc-macros=no",
+          "-Zproc-macro-execution-strategy=same-thread",
+          "-C",
+          "incremental=same-threadno",
+          "-o",
+          "reader"
+        ],
+        "exe_sha": "38ab1d574ecf0e80f6ad8d5c7d083951d4eb9703ce93e1b5f3a13eccdf398c8b",
+        "exit": 0,
+        "stderr": [
+          "derive Left 1",
+          "attr FIRST 2",
+          "derive Right 3",
+          "attr SECOND 4"
+        ],
+        "value": [
+          1,
+          2,
+          3,
+          4
+        ]
+      },
+      "same-thread-no-warm": {
+        "argv": [
+          "rustc",
+          "+ohm",
+          "reader.rs",
+          "--extern",
+          "macro_impl=libmacro_impl.so",
+          "-Zcache-proc-macros=no",
+          "-Zproc-macro-execution-strategy=same-thread",
+          "-C",
+          "incremental=same-threadno",
+          "-o",
+          "reader"
+        ],
+        "exe_sha": "38ab1d574ecf0e80f6ad8d5c7d083951d4eb9703ce93e1b5f3a13eccdf398c8b",
+        "exit": 0,
+        "stderr": [
+          "derive Left 1",
+          "attr FIRST 2",
+          "derive Right 3",
+          "attr SECOND 4"
+        ],
+        "value": [
+          1,
+          2,
+          3,
+          4
+        ]
+      },
+      "same-thread-yes-cold": {
+        "argv": [
+          "rustc",
+          "+ohm",
+          "reader.rs",
+          "--extern",
+          "macro_impl=libmacro_impl.so",
+          "-Zcache-proc-macros=yes",
+          "-Zproc-macro-execution-strategy=same-thread",
+          "-C",
+          "incremental=same-threadyes",
+          "-o",
+          "reader"
+        ],
+        "exe_sha": "38ab1d574ecf0e80f6ad8d5c7d083951d4eb9703ce93e1b5f3a13eccdf398c8b",
+        "exit": 0,
+        "stderr": [
+          "derive Left 1",
+          "attr FIRST 2",
+          "derive Right 3",
+          "attr SECOND 4"
+        ],
+        "value": [
+          1,
+          2,
+          3,
+          4
+        ]
+      },
+      "same-thread-yes-warm": {
+        "argv": [
+          "rustc",
+          "+ohm",
+          "reader.rs",
+          "--extern",
+          "macro_impl=libmacro_impl.so",
+          "-Zcache-proc-macros=yes",
+          "-Zproc-macro-execution-strategy=same-thread",
+          "-C",
+          "incremental=same-threadyes",
+          "-o",
+          "reader"
+        ],
+        "exe_sha": "38ab1d574ecf0e80f6ad8d5c7d083951d4eb9703ce93e1b5f3a13eccdf398c8b",
+        "exit": 0,
+        "stderr": [
+          "derive Left 1",
+          "attr FIRST 2",
+          "derive Right 3",
+          "attr SECOND 4"
+        ],
+        "value": [
+          1,
+          2,
+          3,
+          4
+        ]
+      }
+    },
+    "rustc": "4fa9a18b77430bcc416e88561b6fe5797d98b996a7698b9f3bd11d4e7817a19f",
+    "source": {
+      "macro_impl.rs": "db7de884b4e9b3eaac2236d6828ec6073651b96e8ece6ff344922400716f4c44",
+      "reader.rs": "51878d61c27293c9637e312f30acbfb11f5bec68cb9629690f606201997a6cac"
+    }
+  },
+  "released": {
+    "driver": "618ebac16b7d4ec01a2af89661d25b8f26ff347edbb69c6dcaa78f10115914a7",
+    "rows": {
+      "cross-thread-no-cold": {
+        "argv": [
+          "rustc",
+          "+ohm",
+          "reader.rs",
+          "--extern",
+          "macro_impl=libmacro_impl.so",
+          "-Zcache-proc-macros=no",
+          "-Zproc-macro-execution-strategy=cross-thread",
+          "-C",
+          "incremental=cross-threadno",
+          "-o",
+          "reader"
+        ],
+        "exe_sha": "0763994ab39a73e512bf92f424d84ec4ae4a8db51cf2e853828bbecfa66b29af",
+        "exit": 0,
+        "stderr": [
+          "derive Left 1",
+          "attr FIRST 2",
+          "derive Right 3",
+          "attr SECOND 4"
+        ],
+        "value": [
+          1,
+          2,
+          3,
+          4
+        ]
+      },
+      "cross-thread-no-warm": {
+        "argv": [
+          "rustc",
+          "+ohm",
+          "reader.rs",
+          "--extern",
+          "macro_impl=libmacro_impl.so",
+          "-Zcache-proc-macros=no",
+          "-Zproc-macro-execution-strategy=cross-thread",
+          "-C",
+          "incremental=cross-threadno",
+          "-o",
+          "reader"
+        ],
+        "exe_sha": "0763994ab39a73e512bf92f424d84ec4ae4a8db51cf2e853828bbecfa66b29af",
+        "exit": 0,
+        "stderr": [
+          "derive Left 1",
+          "attr FIRST 2",
+          "derive Right 3",
+          "attr SECOND 4"
+        ],
+        "value": [
+          1,
+          2,
+          3,
+          4
+        ]
+      },
+      "cross-thread-yes-cold": {
+        "argv": [
+          "rustc",
+          "+ohm",
+          "reader.rs",
+          "--extern",
+          "macro_impl=libmacro_impl.so",
+          "-Zcache-proc-macros=yes",
+          "-Zproc-macro-execution-strategy=cross-thread",
+          "-C",
+          "incremental=cross-threadyes",
+          "-o",
+          "reader"
+        ],
+        "exe_sha": "0763994ab39a73e512bf92f424d84ec4ae4a8db51cf2e853828bbecfa66b29af",
+        "exit": 0,
+        "stderr": [
+          "derive Left 1",
+          "attr FIRST 2",
+          "derive Right 3",
+          "attr SECOND 4"
+        ],
+        "value": [
+          1,
+          2,
+          3,
+          4
+        ]
+      },
+      "cross-thread-yes-warm": {
+        "argv": [
+          "rustc",
+          "+ohm",
+          "reader.rs",
+          "--extern",
+          "macro_impl=libmacro_impl.so",
+          "-Zcache-proc-macros=yes",
+          "-Zproc-macro-execution-strategy=cross-thread",
+          "-C",
+          "incremental=cross-threadyes",
+          "-o",
+          "reader"
+        ],
+        "exe_sha": "0763994ab39a73e512bf92f424d84ec4ae4a8db51cf2e853828bbecfa66b29af",
+        "exit": 0,
+        "stderr": [],
+        "value": [
+          1,
+          2,
+          3,
+          4
+        ]
+      },
+      "same-thread-no-cold": {
+        "argv": [
+          "rustc",
+          "+ohm",
+          "reader.rs",
+          "--extern",
+          "macro_impl=libmacro_impl.so",
+          "-Zcache-proc-macros=no",
+          "-Zproc-macro-execution-strategy=same-thread",
+          "-C",
+          "incremental=same-threadno",
+          "-o",
+          "reader"
+        ],
+        "exe_sha": "0763994ab39a73e512bf92f424d84ec4ae4a8db51cf2e853828bbecfa66b29af",
+        "exit": 0,
+        "stderr": [
+          "derive Left 1",
+          "attr FIRST 2",
+          "derive Right 3",
+          "attr SECOND 4"
+        ],
+        "value": [
+          1,
+          2,
+          3,
+          4
+        ]
+      },
+      "same-thread-no-warm": {
+        "argv": [
+          "rustc",
+          "+ohm",
+          "reader.rs",
+          "--extern",
+          "macro_impl=libmacro_impl.so",
+          "-Zcache-proc-macros=no",
+          "-Zproc-macro-execution-strategy=same-thread",
+          "-C",
+          "incremental=same-threadno",
+          "-o",
+          "reader"
+        ],
+        "exe_sha": "0763994ab39a73e512bf92f424d84ec4ae4a8db51cf2e853828bbecfa66b29af",
+        "exit": 0,
+        "stderr": [
+          "derive Left 1",
+          "attr FIRST 2",
+          "derive Right 3",
+          "attr SECOND 4"
+        ],
+        "value": [
+          1,
+          2,
+          3,
+          4
+        ]
+      },
+      "same-thread-yes-cold": {
+        "argv": [
+          "rustc",
+          "+ohm",
+          "reader.rs",
+          "--extern",
+          "macro_impl=libmacro_impl.so",
+          "-Zcache-proc-macros=yes",
+          "-Zproc-macro-execution-strategy=same-thread",
+          "-C",
+          "incremental=same-threadyes",
+          "-o",
+          "reader"
+        ],
+        "exe_sha": "0763994ab39a73e512bf92f424d84ec4ae4a8db51cf2e853828bbecfa66b29af",
+        "exit": 0,
+        "stderr": [
+          "derive Left 1",
+          "attr FIRST 2",
+          "derive Right 3",
+          "attr SECOND 4"
+        ],
+        "value": [
+          1,
+          2,
+          3,
+          4
+        ]
+      },
+      "same-thread-yes-warm": {
+        "argv": [
+          "rustc",
+          "+ohm",
+          "reader.rs",
+          "--extern",
+          "macro_impl=libmacro_impl.so",
+          "-Zcache-proc-macros=yes",
+          "-Zproc-macro-execution-strategy=same-thread",
+          "-C",
+          "incremental=same-threadyes",
+          "-o",
+          "reader"
+        ],
+        "exe_sha": "0763994ab39a73e512bf92f424d84ec4ae4a8db51cf2e853828bbecfa66b29af",
+        "exit": 0,
+        "stderr": [],
+        "value": [
+          1,
+          2,
+          3,
+          4
+        ]
+      }
+    },
+    "rustc": "7ec5263869aed2fc9272ea7212aabbe7b272a4685f1b79af75c123daff09c02c",
+    "source": {
+      "macro_impl.rs": "db7de884b4e9b3eaac2236d6828ec6073651b96e8ece6ff344922400716f4c44",
+      "reader.rs": "51878d61c27293c9637e312f30acbfb11f5bec68cb9629690f606201997a6cac"
+    }
+  }
+}

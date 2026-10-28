@@ -1,0 +1,287 @@
+{
+  "frozen-donor": {
+    "driver": "051b9d3f5861f984faa0f8c1d2ab9b5c28e483a05c728051de837291c83fd518",
+    "frontend": "4fa9a18b77430bcc416e88561b6fe5797d98b996a7698b9f3bd11d4e7817a19f",
+    "htmls": [
+      "constant.DERIVED_17.html",
+      "constant.MARKED_17.html"
+    ],
+    "library_hash": "42d8b339fd98063bf6175cfdc68a5de0d46c9f27d3e955f5acc32b3b364f6c95",
+    "name": "frozen-donor",
+    "rows": {
+      "bare": {
+        "argv": [
+          "rustdoc",
+          "+ohm",
+          "reader.rs",
+          "--crate-name",
+          "reader",
+          "--extern",
+          "native=libnative.so",
+          "-C",
+          "incremental=inc",
+          "-Zcache-proc-macros",
+          "-o",
+          "doc"
+        ],
+        "exit": 0,
+        "signal": null,
+        "stderr": "derive 17\nattribute 17\n",
+        "stdout": ""
+      },
+      "cc": {
+        "argv": [
+          "cc",
+          "-O2",
+          "-fPIC",
+          "-c",
+          "native.c",
+          "-o",
+          "native.o"
+        ],
+        "exit": 0,
+        "signal": null,
+        "stderr": "",
+        "stdout": ""
+      },
+      "macro": {
+        "argv": [
+          "rustc",
+          "+ohm",
+          "native.rs",
+          "--crate-name",
+          "native",
+          "-Clink-arg=native.o",
+          "-o",
+          "libnative.so"
+        ],
+        "exit": 0,
+        "signal": null,
+        "stderr": "",
+        "stdout": ""
+      },
+      "off": {
+        "argv": [
+          "rustdoc",
+          "+ohm",
+          "reader.rs",
+          "--crate-name",
+          "reader",
+          "--extern",
+          "native=libnative.so",
+          "-C",
+          "incremental=inc-no",
+          "-Zcache-proc-macros=no",
+          "-o",
+          "doc-off"
+        ],
+        "exit": 0,
+        "signal": null,
+        "stderr": "derive 17\nattribute 17\n",
+        "stdout": ""
+      },
+      "version": {
+        "argv": [
+          "rustdoc",
+          "+ohm",
+          "--version",
+          "--verbose"
+        ],
+        "exit": 0,
+        "signal": null,
+        "stderr": "",
+        "stdout": "rustdoc 1.99.0-dev (f1a7cf9d2 2026-10-25) (ohm-1.99.0-14)\nbinary: rustdoc\ncommit-hash: f1a7cf9d20b2cae39e991b178b56ba06b43dc8fa\ncommit-date: 2026-10-25\nhost: x86_64-unknown-linux-gnu\nrelease: 1.99.0-dev\nLLVM version: 23.1.1\n"
+      }
+    },
+    "rustdoc": "26e35ea74989c40926248a7176cda7a6cd164c1e82640f9b7249aceb1b8593a6"
+  },
+  "installed-17": {
+    "driver": "618ebac16b7d4ec01a2af89661d25b8f26ff347edbb69c6dcaa78f10115914a7",
+    "frontend": "7ec5263869aed2fc9272ea7212aabbe7b272a4685f1b79af75c123daff09c02c",
+    "htmls": [
+      "constant.DERIVED_17.html",
+      "constant.MARKED_17.html"
+    ],
+    "library_hash": "bbcda2799bb0b0f6dd6b5cb8f448a9fec17bed4789bb57b20fbf18af180615c8",
+    "name": "installed-17",
+    "rows": {
+      "bare": {
+        "argv": [
+          "rustdoc",
+          "+ohm",
+          "reader.rs",
+          "--crate-name",
+          "reader",
+          "--extern",
+          "native=libnative.so",
+          "-C",
+          "incremental=inc",
+          "-Zcache-proc-macros",
+          "-o",
+          "doc"
+        ],
+        "exit": 0,
+        "signal": null,
+        "stderr": "derive 17\nattribute 17\n",
+        "stdout": ""
+      },
+      "cc": {
+        "argv": [
+          "cc",
+          "-O2",
+          "-fPIC",
+          "-c",
+          "native.c",
+          "-o",
+          "native.o"
+        ],
+        "exit": 0,
+        "signal": null,
+        "stderr": "",
+        "stdout": ""
+      },
+      "macro": {
+        "argv": [
+          "rustc",
+          "+ohm",
+          "native.rs",
+          "--crate-name",
+          "native",
+          "-Clink-arg=native.o",
+          "-o",
+          "libnative.so"
+        ],
+        "exit": 0,
+        "signal": null,
+        "stderr": "",
+        "stdout": ""
+      },
+      "off": {
+        "argv": [
+          "rustdoc",
+          "+ohm",
+          "reader.rs",
+          "--crate-name",
+          "reader",
+          "--extern",
+          "native=libnative.so",
+          "-C",
+          "incremental=inc-no",
+          "-Zcache-proc-macros=no",
+          "-o",
+          "doc-off"
+        ],
+        "exit": 0,
+        "signal": null,
+        "stderr": "derive 17\nattribute 17\n",
+        "stdout": ""
+      },
+      "version": {
+        "argv": [
+          "rustdoc",
+          "+ohm",
+          "--version",
+          "--verbose"
+        ],
+        "exit": 0,
+        "signal": null,
+        "stderr": "",
+        "stdout": "rustdoc 1.99.0-dev (bfa236f63 2026-10-27) (ohm-1.99.0-17)\nbinary: rustdoc\ncommit-hash: bfa236f639034f61ec884c15bd1f4e0b75e508ac\ncommit-date: 2026-10-27\nhost: x86_64-unknown-linux-gnu\nrelease: 1.99.0-dev\nLLVM version: 23.1.1\n"
+      }
+    },
+    "rustdoc": "946b4c7d71af91fa372cfadfca300952024d107ad45b34679d4ac4db77e552f8"
+  },
+  "old-rustdoc-with-new-driver": {
+    "driver": "22abce6921b46f93f387c7d3d99cefa4df9c0a866619447077699ef81a73827f",
+    "frontend": "4fa9a18b77430bcc416e88561b6fe5797d98b996a7698b9f3bd11d4e7817a19f",
+    "htmls": [],
+    "library_hash": "c0382bf5ab04505f92441f0864867f73f5bee2fc94c404144fb73f6dd3f1507a",
+    "name": "old-rustdoc-with-new-driver",
+    "rows": {
+      "bare": {
+        "argv": [
+          "rustdoc",
+          "+ohm",
+          "reader.rs",
+          "--crate-name",
+          "reader",
+          "--extern",
+          "native=libnative.so",
+          "-C",
+          "incremental=inc",
+          "-Zcache-proc-macros",
+          "-o",
+          "doc"
+        ],
+        "exit": -11,
+        "signal": "SIGSEGV",
+        "stderr": "",
+        "stdout": ""
+      },
+      "cc": {
+        "argv": [
+          "cc",
+          "-O2",
+          "-fPIC",
+          "-c",
+          "native.c",
+          "-o",
+          "native.o"
+        ],
+        "exit": 0,
+        "signal": null,
+        "stderr": "",
+        "stdout": ""
+      },
+      "macro": {
+        "argv": [
+          "rustc",
+          "+ohm",
+          "native.rs",
+          "--crate-name",
+          "native",
+          "-Clink-arg=native.o",
+          "-o",
+          "libnative.so"
+        ],
+        "exit": 0,
+        "signal": null,
+        "stderr": "",
+        "stdout": ""
+      },
+      "off": {
+        "argv": [
+          "rustdoc",
+          "+ohm",
+          "reader.rs",
+          "--crate-name",
+          "reader",
+          "--extern",
+          "native=libnative.so",
+          "-C",
+          "incremental=inc-no",
+          "-Zcache-proc-macros=no",
+          "-o",
+          "doc-off"
+        ],
+        "exit": -11,
+        "signal": "SIGSEGV",
+        "stderr": "",
+        "stdout": ""
+      },
+      "version": {
+        "argv": [
+          "rustdoc",
+          "+ohm",
+          "--version",
+          "--verbose"
+        ],
+        "exit": 0,
+        "signal": null,
+        "stderr": "",
+        "stdout": "rustdoc 1.99.0-dev (f1a7cf9d2 2026-10-25) (ohm-1.99.0-14)\nbinary: rustdoc\ncommit-hash: f1a7cf9d20b2cae39e991b178b56ba06b43dc8fa\ncommit-date: 2026-10-25\nhost: x86_64-unknown-linux-gnu\nrelease: 1.99.0-dev\nLLVM version: 23.1.1\n"
+      }
+    },
+    "rustdoc": "26e35ea74989c40926248a7176cda7a6cd164c1e82640f9b7249aceb1b8593a6"
+  }
+}

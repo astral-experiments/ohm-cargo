@@ -1,0 +1,249 @@
+{
+  "basename": "candidate-rustdoc",
+  "build_id": [
+    "GNU                  0x00000014\tNT_GNU_BUILD_ID (unique build ID bitstring)\t    Build ID: c1a2f567d05095aa7d00407af38a51f9ce3b6113"
+  ],
+  "build_receipt": {
+    "driver_before_bolt": "f0bb6ef259335fdfc1e93304df3e969c23c9a5d8f34404974dc3a69d888faea9",
+    "needed": [
+      "librustc_driver-774a793a844d5500.so"
+    ],
+    "old_rustdoc": "26e35ea74989c40926248a7176cda7a6cd164c1e82640f9b7249aceb1b8593a6",
+    "rustdoc": "8a9a4f869d78dd591f7bcd77409da64dd908df175b77b7c25232d6765dabdc0f",
+    "source": {
+      "audit": {
+        "compiler/rustc_driver_impl/src/lib.rs": {
+          "donor": "a40ad13ad74866e99c8c71e5f33ccce539adea39513c86c2d0540120b03c36d2",
+          "parent": "a2bf978d6241004d34e724a6082fa126b9ecef5ea14a7f697a3d1b61cbdda708",
+          "selected": "a2bf978d6241004d34e724a6082fa126b9ecef5ea14a7f697a3d1b61cbdda708"
+        },
+        "compiler/rustc_expand/src/proc_macro.rs": {
+          "donor": "057d404e9bc00e98cf5230352c569927784ed4ded5627a282e29028daa75bec3",
+          "parent": "9b0c22e1eb7913ad770fc93c47d99efe6d5ae51214feacd798fe089f630a8170",
+          "selected": "9b0c22e1eb7913ad770fc93c47d99efe6d5ae51214feacd798fe089f630a8170"
+        },
+        "compiler/rustc_expand/src/proc_macro_server.rs": {
+          "donor": "afb333831309e2241c8fc2f94d41091823549fab7770910559f4edc81ed6ac57",
+          "parent": "8266976342f9c5d59d2c9d57e1aab7d4f024f87d058f5040166c86fd5d85b591",
+          "selected": "8266976342f9c5d59d2c9d57e1aab7d4f024f87d058f5040166c86fd5d85b591"
+        },
+        "compiler/rustc_fs_util/Cargo.toml": {
+          "donor": "d842bb671689dd977c2c961de3b15b4171745e366603b66b4a56c10f4cd11820",
+          "parent": "d842bb671689dd977c2c961de3b15b4171745e366603b66b4a56c10f4cd11820",
+          "selected": "d842bb671689dd977c2c961de3b15b4171745e366603b66b4a56c10f4cd11820"
+        },
+        "compiler/rustc_fs_util/src/lib.rs": {
+          "donor": "a38a8258e149051150f11c54a83d789c9a878cd56228ade6ef17962f40d43eb8",
+          "parent": "a38a8258e149051150f11c54a83d789c9a878cd56228ade6ef17962f40d43eb8",
+          "selected": "a38a8258e149051150f11c54a83d789c9a878cd56228ade6ef17962f40d43eb8"
+        },
+        "compiler/rustc_incremental/src/persist/file_format.rs": {
+          "donor": "51372c96bc48057146da9450bebd8bd4455f55ed521ac6b4612e1f73cee2044f",
+          "parent": "7b0697a7ba77a2d38e78947656e2428341c9f64d57c8a0b1de49751b532d2bea",
+          "selected": "2c368960e71d2e95ceed8323d3fcc9527f2ae96d0cdb0b3a137eaac9a41c7623"
+        },
+        "compiler/rustc_interface/src/passes.rs": {
+          "donor": "c0902f532cf4b28fc2bebcda386f9f84b8f5745886a65f4e4026eac65e29b492",
+          "parent": "23042a2fc269d6d1093b63674c3193133fb5b4aa2025111e8aa445fa0dad11d6",
+          "selected": "23042a2fc269d6d1093b63674c3193133fb5b4aa2025111e8aa445fa0dad11d6"
+        },
+        "compiler/rustc_lint/src/levels.rs": {
+          "donor": "2bb78c805dbb746bff033d4c022fdfdcd065128ddd4cd942c62a80d2c04dd68f",
+          "parent": "fee6e9344c706444f98319801eb4ed6f3ca3ddd79cbba74cf8526979c14b230f",
+          "selected": "fee6e9344c706444f98319801eb4ed6f3ca3ddd79cbba74cf8526979c14b230f"
+        },
+        "compiler/rustc_metadata/src/creader.rs": {
+          "donor": "294abe0c1a662705397078dbacbfdf0961b0b8bce0d44cffb6180ec7b9b52abf",
+          "parent": "26fac045248d50937ccc5d450521b28c7b0b388b301d860c48e801f4afa5705c",
+          "selected": "26fac045248d50937ccc5d450521b28c7b0b388b301d860c48e801f4afa5705c"
+        },
+        "compiler/rustc_metadata/src/fs.rs": {
+          "donor": "e22599d51a26d782a787979ed788f51c8750a6002f93988a6e9c6704fedcb69f",
+          "parent": "1368dc53517c325420f24ee61fa7f79dc34f71ee2b81f55c3b57e896e2339fe8",
+          "selected": "1368dc53517c325420f24ee61fa7f79dc34f71ee2b81f55c3b57e896e2339fe8"
+        },
+        "compiler/rustc_metadata/src/locator.rs": {
+          "donor": "da35df1b2e0c8b2dd2b08f759bcd9e288273ded08492026f669d8b6efff93885",
+          "parent": "7a1880a388c22b5841fadf8f44eddec7cb27817217e581c3cbeb7a42747f47e6",
+          "selected": "7a1880a388c22b5841fadf8f44eddec7cb27817217e581c3cbeb7a42747f47e6"
+        },
+        "compiler/rustc_metadata/src/rmeta/decoder.rs": {
+          "donor": "aa6ef16931b9cffc6e8c620f660e2798b563c8859a243fd0aca393c9d22cdaa5",
+          "parent": "e4cd6ac0ee48a7ed900f413a2848b881daa756e76df9f473032905df1754bed6",
+          "selected": "e4cd6ac0ee48a7ed900f413a2848b881daa756e76df9f473032905df1754bed6"
+        },
+        "compiler/rustc_metadata/src/rmeta/decoder/cstore_impl.rs": {
+          "donor": "3ad8a5bbe41dd6a74644944f3e8f6e3a089822f632b2d362063ccb5cdc163b09",
+          "parent": "1cf55dae3bfce0a6d56cd9fd53277a328d66fd2bee075d3c4772a31f3f54231c",
+          "selected": "1cf55dae3bfce0a6d56cd9fd53277a328d66fd2bee075d3c4772a31f3f54231c"
+        },
+        "compiler/rustc_metadata/src/rmeta/encoder.rs": {
+          "donor": "b8eff80b9421f194e6517e86e13be8145f190c7caa9a2555b7386e2b16081e16",
+          "parent": "c8adeb0d92c2890217a40b6561fb889b31b9b9f15491b10cc742c77d9aebc7f3",
+          "selected": "c8adeb0d92c2890217a40b6561fb889b31b9b9f15491b10cc742c77d9aebc7f3"
+        },
+        "compiler/rustc_metadata/src/rmeta/encoder/metadata_prefix.rs": {
+          "donor": "488a8dcbbe885c8cfe9ad5a198fa45dbeab2e86ee9ccc402f8dbd93d129d1a7b",
+          "parent": "bddf15e98693e8737f96d6104cb3abf173ca0b133abaa69fca1e014910a07e40",
+          "selected": "bddf15e98693e8737f96d6104cb3abf173ca0b133abaa69fca1e014910a07e40"
+        },
+        "compiler/rustc_metadata/src/rmeta/encoder/public_api_hasher.rs": {
+          "donor": "9f63998b6c477e776fc4675e8f11d9d1769cf94051400a8971abe066597a0c9c",
+          "parent": "f0911fcbaebeb9eb2c009defc295af8dcc789977cbc1cad36527f38c3e3f3de7",
+          "selected": "98f3e41daefaab2ea6203e290190a33350d62752f9568b480ab82fdb898e6a90"
+        },
+        "compiler/rustc_metadata/src/rmeta/mod.rs": {
+          "donor": "7244517f9bb06f5bcc74b3adc8b9d4633d10c74061888c969ae1278b61da6f95",
+          "parent": "707928219148805a36064145c90c89504c8974acf51dd749d897d575fd218b81",
+          "selected": "707928219148805a36064145c90c89504c8974acf51dd749d897d575fd218b81"
+        },
+        "compiler/rustc_middle/src/arena.rs": {
+          "donor": "9a1f6c9db577a2e5b70209277d5fe4bcf1419fd73f687215b14ca1c08afcc7bf",
+          "parent": "9781a0feb3c28bc57cc99f3abc51460841b7f3ea6f8c4314277f5aaf672154c6",
+          "selected": "9781a0feb3c28bc57cc99f3abc51460841b7f3ea6f8c4314277f5aaf672154c6"
+        },
+        "compiler/rustc_middle/src/dep_graph/graph.rs": {
+          "donor": "2eff471e846d4970b6f66f0e7f7ffa03a9174e478f8b6a3a7c78f4ebb70094c4",
+          "parent": "ed0fecb2c417c7ecf5d10142a534ad39f364ea2c4adb6010b63e4013937e9471",
+          "selected": "ed0fecb2c417c7ecf5d10142a534ad39f364ea2c4adb6010b63e4013937e9471"
+        },
+        "compiler/rustc_middle/src/dep_graph/serialized.rs": {
+          "donor": "e6c73285a2ecb08b9ba3b552737319c657cb79c61b74c63c09de335b675138b7",
+          "parent": "10eaa4971f0dc780ec66373051754d1f8624bd8bcd43081dec4f74c7220b4d8b",
+          "selected": "10eaa4971f0dc780ec66373051754d1f8624bd8bcd43081dec4f74c7220b4d8b"
+        },
+        "compiler/rustc_middle/src/dep_graph/serialized/tests.rs": {
+          "donor": "1497a8dacb33ec24ed26dea79b292a3cc9f01456e64e1f0beeaa8ca38c6b3098",
+          "parent": "9e524edec8b796b8d3ab4a28c2e2eb14494add06608f5618dc7bdd059c1056ba",
+          "selected": "9e524edec8b796b8d3ab4a28c2e2eb14494add06608f5618dc7bdd059c1056ba"
+        },
+        "compiler/rustc_middle/src/hir/map.rs": {
+          "donor": "d2e2aa994767014018bd5914d5dd28759b501a867a776f51c198108cda7b2b7c",
+          "parent": "d2e2aa994767014018bd5914d5dd28759b501a867a776f51c198108cda7b2b7c",
+          "selected": "91555f9971f07f7e90f1942749afa1f9dff744096dbceee3bc9094cf65b76cde"
+        },
+        "compiler/rustc_middle/src/ich.rs": {
+          "donor": "8e6074e1f4eeeae3658c997ba4304d63f0b514dcdb33826aae1beb0c5998047b",
+          "parent": "8e6074e1f4eeeae3658c997ba4304d63f0b514dcdb33826aae1beb0c5998047b",
+          "selected": "babaee54c70b5c05a6699a333d1d46a99d981492dfcf6dfdd331140ff0c7cf31"
+        },
+        "compiler/rustc_middle/src/queries.rs": {
+          "donor": "ca30d33f286191c052221da9c1d402c9897dbdc550ae47eebad9b11562103865",
+          "parent": "25bbd5bea0744e16559fced24e3d289be2835b6736fb03315b5fabec9859ebd6",
+          "selected": "25bbd5bea0744e16559fced24e3d289be2835b6736fb03315b5fabec9859ebd6"
+        },
+        "compiler/rustc_middle/src/query/erase.rs": {
+          "donor": "11bc168ccfb9a4374ff48982ec1f503b3c966bfc6a53e0cf54cc11046d411b88",
+          "parent": "45a0b7991b8ad190cc4ef2c8c51f4947aa630de5e780a2d83797d0264c332884",
+          "selected": "45a0b7991b8ad190cc4ef2c8c51f4947aa630de5e780a2d83797d0264c332884"
+        },
+        "compiler/rustc_middle/src/query/mod.rs": {
+          "donor": "53aa447ea55dd1edf24f2a9e6c0a36abb95c259114012f527334e685c1340abf",
+          "parent": "f9a6238a5e6fbed376c15adbb21f7fba6ef0599b3ef4d91fab70830660446d9d",
+          "selected": "f9a6238a5e6fbed376c15adbb21f7fba6ef0599b3ef4d91fab70830660446d9d"
+        },
+        "compiler/rustc_middle/src/query/on_disk_cache.rs": {
+          "donor": "361b635253607b30a599c8a64ba023946989593e46ce4ee6596694b6fe35d5b9",
+          "parent": "39f76628f825db3599c9540cca93405c8c4e2995aae0e7869b6a8b1d92c549f9",
+          "selected": "39f76628f825db3599c9540cca93405c8c4e2995aae0e7869b6a8b1d92c549f9"
+        },
+        "compiler/rustc_middle/src/ty/context.rs": {
+          "donor": "c515363f55f4996ad91d877258a0671dd27b3f18c097508780c44ba3911dba25",
+          "parent": "e5adbb3e34db048eccfb7176c9fab6956b4aa52c687302f75af573bf8e0cb8b6",
+          "selected": "e5adbb3e34db048eccfb7176c9fab6956b4aa52c687302f75af573bf8e0cb8b6"
+        },
+        "compiler/rustc_session/src/config.rs": {
+          "donor": "a206d3fe539fc0da60e16f53690fc3f582105fb7abeb1bf857b5cb528031dba7",
+          "parent": "a206d3fe539fc0da60e16f53690fc3f582105fb7abeb1bf857b5cb528031dba7",
+          "selected": "a206d3fe539fc0da60e16f53690fc3f582105fb7abeb1bf857b5cb528031dba7"
+        },
+        "compiler/rustc_session/src/filesearch.rs": {
+          "donor": "a8b5ede33b759145486b8404141508d721d438da3e0f02f1a7ed6401111ee767",
+          "parent": "9866eccd50752791244d51bbf2575bce8e815468a6dd1eeed466af3391f85462",
+          "selected": "9866eccd50752791244d51bbf2575bce8e815468a6dd1eeed466af3391f85462"
+        },
+        "compiler/rustc_session/src/options.rs": {
+          "donor": "5fec86ce2b210fd5d528b9e8727e158e03917fb0a09e7aa438927a4061ec0111",
+          "parent": "5fec86ce2b210fd5d528b9e8727e158e03917fb0a09e7aa438927a4061ec0111",
+          "selected": "a42e2ac37e30926948711ad08035487c2173f1d628204f3ec9918caa8035aee8"
+        },
+        "compiler/rustc_session/src/session.rs": {
+          "donor": "d42833798b5115626b5cf38d6be46879c4df2d6b3f14d745d22397d1f460979a",
+          "parent": "c7146a0bb0265089e0e2b14b1051bc3aa3434353d1dc6bb185938c998f1da123",
+          "selected": "c7146a0bb0265089e0e2b14b1051bc3aa3434353d1dc6bb185938c998f1da123"
+        },
+        "compiler/rustc_span/src/source_map.rs": {
+          "donor": "5dd75c97a632f4f79cebb9313f60ce83f715d7b394582b63ac5cbb1dd30f5b8e",
+          "parent": "d31b989b13a326089b44b18c877d8976cb9bc6d1a2568d815ff742b8b0983a76",
+          "selected": "d31b989b13a326089b44b18c877d8976cb9bc6d1a2568d815ff742b8b0983a76"
+        }
+      },
+      "base": "14d5456d22418dcb29467bf2fb320eb8a10442e0",
+      "changed_from_243": [
+        "compiler/rustc_incremental/src/persist/file_format.rs",
+        "compiler/rustc_metadata/src/rmeta/encoder/public_api_hasher.rs",
+        "compiler/rustc_middle/src/hir/map.rs",
+        "compiler/rustc_middle/src/ich.rs",
+        "compiler/rustc_session/src/options.rs"
+      ],
+      "diff_from_donor": [
+        "compiler/rustc_driver_impl/src/lib.rs",
+        "compiler/rustc_expand/src/proc_macro.rs",
+        "compiler/rustc_expand/src/proc_macro_server.rs",
+        "compiler/rustc_incremental/src/persist/file_format.rs",
+        "compiler/rustc_interface/src/passes.rs",
+        "compiler/rustc_lint/src/levels.rs",
+        "compiler/rustc_metadata/src/creader.rs",
+        "compiler/rustc_metadata/src/fs.rs",
+        "compiler/rustc_metadata/src/locator.rs",
+        "compiler/rustc_metadata/src/rmeta/decoder.rs",
+        "compiler/rustc_metadata/src/rmeta/decoder/cstore_impl.rs",
+        "compiler/rustc_metadata/src/rmeta/encoder.rs",
+        "compiler/rustc_metadata/src/rmeta/encoder/metadata_prefix.rs",
+        "compiler/rustc_metadata/src/rmeta/encoder/public_api_hasher.rs",
+        "compiler/rustc_metadata/src/rmeta/mod.rs",
+        "compiler/rustc_middle/src/arena.rs",
+        "compiler/rustc_middle/src/dep_graph/graph.rs",
+        "compiler/rustc_middle/src/dep_graph/serialized.rs",
+        "compiler/rustc_middle/src/dep_graph/serialized/tests.rs",
+        "compiler/rustc_middle/src/hir/map.rs",
+        "compiler/rustc_middle/src/ich.rs",
+        "compiler/rustc_middle/src/queries.rs",
+        "compiler/rustc_middle/src/query/erase.rs",
+        "compiler/rustc_middle/src/query/mod.rs",
+        "compiler/rustc_middle/src/query/on_disk_cache.rs",
+        "compiler/rustc_middle/src/ty/context.rs",
+        "compiler/rustc_session/src/filesearch.rs",
+        "compiler/rustc_session/src/options.rs",
+        "compiler/rustc_session/src/session.rs",
+        "compiler/rustc_span/src/source_map.rs"
+      ],
+      "donor": "f1a7cf9d20b2cae39e991b178b56ba06b43dc8fa",
+      "release_gitlink_commit": "fb1389e92fd0563c36075108cb00db65642e2118",
+      "rustdoc_unchanged_from_donor": {
+        "Cargo.lock": "1a4155a7c5f450485724fe3336d69ac922051f26",
+        "Cargo.toml": "0d36c3f242d82c4c777f4eae2d662853f543e218",
+        "library": "4f7a8f755164dc68fff80790db8a844ae030fd03",
+        "src/bootstrap": "1dcf3e6b142ba5c132f7a2370dffa6ba090b15e1",
+        "src/librustdoc": "28484ec17a7a7e582fa2e987ff22f2c18f3b982f",
+        "src/rustdoc-json-types": "7b40a0b2a03d205e3eb16473b05b411ec77627de",
+        "src/tools/rustdoc": "59ca849ec186edddc599e61e7f9770d2158282f8"
+      },
+      "selected_commit": "35677e3e6764de18ca37d7ab5ed634dafea53876",
+      "selected_compiler_tree": "47e23eb4bab742e271ca9a3cf1bbd583d5b4a640"
+    },
+    "target": "src/tools/rustdoc"
+  },
+  "build_receipt_sha256": "3f35dc2a7255310a886936a96320ac2b18cd29b9e54657a460a9fac43051517a",
+  "bytes": 12517056,
+  "combined_source": "35677e3e6764de18ca37d7ab5ed634dafea53876",
+  "compiler_tree": "47e23eb4bab742e271ca9a3cf1bbd583d5b4a640",
+  "needed": [
+    "0x0000000000000001 (NEEDED)             Shared library: [librustc_driver-774a793a844d5500.so]",
+    "0x0000000000000001 (NEEDED)             Shared library: [libgcc_s.so.1]",
+    "0x0000000000000001 (NEEDED)             Shared library: [libc.so.6]",
+    "0x0000000000000001 (NEEDED)             Shared library: [ld-linux-x86-64.so.2]"
+  ],
+  "runtime_driver": "22abce6921b46f93f387c7d3d99cefa4df9c0a866619447077699ef81a73827f",
+  "rustdoc": "8a9a4f869d78dd591f7bcd77409da64dd908df175b77b7c25232d6765dabdc0f"
+}

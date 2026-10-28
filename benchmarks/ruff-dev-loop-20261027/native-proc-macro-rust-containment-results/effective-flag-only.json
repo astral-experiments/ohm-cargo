@@ -1,0 +1,298 @@
+{
+  "driver": "618ebac16b7d4ec01a2af89661d25b8f26ff347edbb69c6dcaa78f10115914a7",
+  "frontend": "7ec5263869aed2fc9272ea7212aabbe7b272a4685f1b79af75c123daff09c02c",
+  "inputs": {
+    "disabled-again": {
+      "libnative.so": "e16eae651d155104f1239586aaaedbc25f5122da2386f1064f8ee5d4590516ba",
+      "native.c": "c938fced4158b4c5a7a4f74fbf77128408f2a0ec080e50135eeed43c20a8386b",
+      "native.o": "2d1cef940baa52c6131c109396441a2265a4038813ecea0a771bc27720c305be",
+      "native.rs": "6d0258888a5f71fed9fc64f8fb088dd6035ef177aafc6bd5787043d9afa1941a",
+      "reader.rs": "81bad5c310f067dc6003def772b7324f818120aa6d3e2364920ab938ace5f657"
+    },
+    "edited": {
+      "libnative.so": "e16eae651d155104f1239586aaaedbc25f5122da2386f1064f8ee5d4590516ba",
+      "native.c": "c938fced4158b4c5a7a4f74fbf77128408f2a0ec080e50135eeed43c20a8386b",
+      "native.o": "2d1cef940baa52c6131c109396441a2265a4038813ecea0a771bc27720c305be",
+      "native.rs": "6d0258888a5f71fed9fc64f8fb088dd6035ef177aafc6bd5787043d9afa1941a",
+      "reader.rs": "81bad5c310f067dc6003def772b7324f818120aa6d3e2364920ab938ace5f657"
+    },
+    "edited-again": {
+      "libnative.so": "e16eae651d155104f1239586aaaedbc25f5122da2386f1064f8ee5d4590516ba",
+      "native.c": "c938fced4158b4c5a7a4f74fbf77128408f2a0ec080e50135eeed43c20a8386b",
+      "native.o": "2d1cef940baa52c6131c109396441a2265a4038813ecea0a771bc27720c305be",
+      "native.rs": "6d0258888a5f71fed9fc64f8fb088dd6035ef177aafc6bd5787043d9afa1941a",
+      "reader.rs": "81bad5c310f067dc6003def772b7324f818120aa6d3e2364920ab938ace5f657"
+    },
+    "empty-enabled": {
+      "libnative.so": "e16eae651d155104f1239586aaaedbc25f5122da2386f1064f8ee5d4590516ba",
+      "native.c": "c938fced4158b4c5a7a4f74fbf77128408f2a0ec080e50135eeed43c20a8386b",
+      "native.o": "2d1cef940baa52c6131c109396441a2265a4038813ecea0a771bc27720c305be",
+      "native.rs": "6d0258888a5f71fed9fc64f8fb088dd6035ef177aafc6bd5787043d9afa1941a",
+      "reader.rs": "81bad5c310f067dc6003def772b7324f818120aa6d3e2364920ab938ace5f657"
+    },
+    "first-disabled": {
+      "libnative.so": "e16eae651d155104f1239586aaaedbc25f5122da2386f1064f8ee5d4590516ba",
+      "native.c": "c938fced4158b4c5a7a4f74fbf77128408f2a0ec080e50135eeed43c20a8386b",
+      "native.o": "2d1cef940baa52c6131c109396441a2265a4038813ecea0a771bc27720c305be",
+      "native.rs": "6d0258888a5f71fed9fc64f8fb088dd6035ef177aafc6bd5787043d9afa1941a",
+      "reader.rs": "81bad5c310f067dc6003def772b7324f818120aa6d3e2364920ab938ace5f657"
+    },
+    "original": {
+      "libnative.so": "e3e47127b43efadf4ce14cd6aa8c336b549757224430ec512a0581ab95440c45",
+      "native.c": "33154e71728095f60777ad090c782dcdaaab409cfd5762fac1e6827d787d23a1",
+      "native.o": "427fc60769252344d4418b6bc6b4c87eb9b1f0642b9ce7574de7f32e8428bd09",
+      "native.rs": "6d0258888a5f71fed9fc64f8fb088dd6035ef177aafc6bd5787043d9afa1941a",
+      "reader.rs": "81bad5c310f067dc6003def772b7324f818120aa6d3e2364920ab938ace5f657"
+    },
+    "original-again": {
+      "libnative.so": "e3e47127b43efadf4ce14cd6aa8c336b549757224430ec512a0581ab95440c45",
+      "native.c": "33154e71728095f60777ad090c782dcdaaab409cfd5762fac1e6827d787d23a1",
+      "native.o": "427fc60769252344d4418b6bc6b4c87eb9b1f0642b9ce7574de7f32e8428bd09",
+      "native.rs": "6d0258888a5f71fed9fc64f8fb088dd6035ef177aafc6bd5787043d9afa1941a",
+      "reader.rs": "81bad5c310f067dc6003def772b7324f818120aa6d3e2364920ab938ace5f657"
+    }
+  },
+  "rows": {
+    "disabled-again": {
+      "argv": [
+        "rustc",
+        "+ohm",
+        "reader.rs",
+        "--extern",
+        "native=libnative.so",
+        "-Zcache-proc-macros=no",
+        "-C",
+        "incremental=warm",
+        "-o",
+        "result"
+      ],
+      "executable": "6e433261e2e3dd1d9b48e3dda268c1cc80806005e44cac484b74369bb21ddb70",
+      "exit": 0,
+      "stderr": "ran derive 29\nran attribute 29\n",
+      "stdout": ""
+    },
+    "disabled-again-run": {
+      "argv": [
+        "./result"
+      ],
+      "exit": 0,
+      "stderr": "",
+      "stdout": "29,29\n"
+    },
+    "edited": {
+      "argv": [
+        "rustc",
+        "+ohm",
+        "reader.rs",
+        "--extern",
+        "native=libnative.so",
+        "-Zcache-proc-macros=yes",
+        "-C",
+        "incremental=warm",
+        "-o",
+        "result"
+      ],
+      "executable": "256aff3ce45f7e81c238c4924b4038d0684bd9942f661acca2936caacf3c7b56",
+      "exit": 0,
+      "stderr": "",
+      "stdout": ""
+    },
+    "edited-again": {
+      "argv": [
+        "rustc",
+        "+ohm",
+        "reader.rs",
+        "--extern",
+        "native=libnative.so",
+        "-Zcache-proc-macros=yes",
+        "-C",
+        "incremental=warm",
+        "-o",
+        "result"
+      ],
+      "executable": "256aff3ce45f7e81c238c4924b4038d0684bd9942f661acca2936caacf3c7b56",
+      "exit": 0,
+      "stderr": "",
+      "stdout": ""
+    },
+    "edited-again-run": {
+      "argv": [
+        "./result"
+      ],
+      "exit": 0,
+      "stderr": "",
+      "stdout": "17,17\n"
+    },
+    "edited-cc": {
+      "argv": [
+        "cc",
+        "-fPIC",
+        "-c",
+        "native.c",
+        "-o",
+        "native.o"
+      ],
+      "exit": 0,
+      "stderr": "",
+      "stdout": ""
+    },
+    "edited-macro": {
+      "argv": [
+        "rustc",
+        "+ohm",
+        "native.rs",
+        "-Clink-arg=native.o"
+      ],
+      "exit": 0,
+      "stderr": "",
+      "stdout": ""
+    },
+    "edited-run": {
+      "argv": [
+        "./result"
+      ],
+      "exit": 0,
+      "stderr": "",
+      "stdout": "17,17\n"
+    },
+    "empty-enabled": {
+      "argv": [
+        "rustc",
+        "+ohm",
+        "reader.rs",
+        "--extern",
+        "native=libnative.so",
+        "-Zcache-proc-macros=yes",
+        "-C",
+        "incremental=empty",
+        "-o",
+        "result"
+      ],
+      "executable": "6e433261e2e3dd1d9b48e3dda268c1cc80806005e44cac484b74369bb21ddb70",
+      "exit": 0,
+      "stderr": "ran derive 29\nran attribute 29\n",
+      "stdout": ""
+    },
+    "empty-enabled-run": {
+      "argv": [
+        "./result"
+      ],
+      "exit": 0,
+      "stderr": "",
+      "stdout": "29,29\n"
+    },
+    "first-disabled": {
+      "argv": [
+        "rustc",
+        "+ohm",
+        "reader.rs",
+        "--extern",
+        "native=libnative.so",
+        "-Zcache-proc-macros=no",
+        "-C",
+        "incremental=warm",
+        "-o",
+        "result"
+      ],
+      "executable": "6e433261e2e3dd1d9b48e3dda268c1cc80806005e44cac484b74369bb21ddb70",
+      "exit": 0,
+      "stderr": "ran derive 29\nran attribute 29\n",
+      "stdout": ""
+    },
+    "first-disabled-run": {
+      "argv": [
+        "./result"
+      ],
+      "exit": 0,
+      "stderr": "",
+      "stdout": "29,29\n"
+    },
+    "original": {
+      "argv": [
+        "rustc",
+        "+ohm",
+        "reader.rs",
+        "--extern",
+        "native=libnative.so",
+        "-Zcache-proc-macros=yes",
+        "-C",
+        "incremental=warm",
+        "-o",
+        "result"
+      ],
+      "executable": "256aff3ce45f7e81c238c4924b4038d0684bd9942f661acca2936caacf3c7b56",
+      "exit": 0,
+      "stderr": "ran derive 17\nran attribute 17\n",
+      "stdout": ""
+    },
+    "original-again": {
+      "argv": [
+        "rustc",
+        "+ohm",
+        "reader.rs",
+        "--extern",
+        "native=libnative.so",
+        "-Zcache-proc-macros=yes",
+        "-C",
+        "incremental=warm",
+        "-o",
+        "result"
+      ],
+      "executable": "256aff3ce45f7e81c238c4924b4038d0684bd9942f661acca2936caacf3c7b56",
+      "exit": 0,
+      "stderr": "",
+      "stdout": ""
+    },
+    "original-again-run": {
+      "argv": [
+        "./result"
+      ],
+      "exit": 0,
+      "stderr": "",
+      "stdout": "17,17\n"
+    },
+    "original-cc": {
+      "argv": [
+        "cc",
+        "-fPIC",
+        "-c",
+        "native.c",
+        "-o",
+        "native.o"
+      ],
+      "exit": 0,
+      "stderr": "",
+      "stdout": ""
+    },
+    "original-macro": {
+      "argv": [
+        "rustc",
+        "+ohm",
+        "native.rs",
+        "-Clink-arg=native.o"
+      ],
+      "exit": 0,
+      "stderr": "",
+      "stdout": ""
+    },
+    "original-run": {
+      "argv": [
+        "./result"
+      ],
+      "exit": 0,
+      "stderr": "",
+      "stdout": "17,17\n"
+    },
+    "sysroot": {
+      "argv": [
+        "rustc",
+        "+ohm",
+        "--print",
+        "sysroot"
+      ],
+      "exit": 0,
+      "stderr": "",
+      "stdout": "/dev/shm/ohm-published-member-h2-20261028/installed17\n"
+    }
+  }
+}
