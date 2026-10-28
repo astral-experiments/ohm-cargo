@@ -1400,7 +1400,8 @@ fn configured_environment_has_sensitive_case_alias(
 /// By default, an opaque package-specific native tool taints its helper, every build script,
 /// and their downstream consumers. Explicit permissive policies can instead trust authenticated
 /// build scripts or the complete native-tool closure; their executable dependency closures must
-/// always come from canonical, checksum-authenticated crates.io packages.
+/// always come from canonical, checksum-authenticated crates.io packages, fetched directly or
+/// through HTTP(S) registry mirrors. Local and vendored replacements remain private.
 fn native_tool_policy_allows_unit(
     trust: OhmNativeToolTrust,
     untrusted_native_helper: bool,
