@@ -1,0 +1,155 @@
+{
+  "binding": {
+    "cargo": {
+      "fixed": "0aa04df8023984b83ef676d1494d43e482472e1b2bccdb82a4d0bd390578a322",
+      "matched": "50ca47744e09d3ab9cfa320794c1a656935137abc3aaf22b7f74841f7c1be466",
+      "stock": "4e4065390403afbf4fb77b2f41fbc21c59afe3dda2337a5bbe29fda29a47dbb3"
+    },
+    "frontend": "7ec5263869aed2fc9272ea7212aabbe7b272a4685f1b79af75c123daff09c02c",
+    "original_packet": "be553f72eae6c0a5e476b895d1eafb3288fe711703521ffd100c925e9eb0323b",
+    "plan": "two independent copies of each already-poisoned trained state, original -17 command, then matched or corrected Cargo twice, same target and source path; new empty state for each Cargo as independent oracle, no times",
+    "rust": "618ebac16b7d4ec01a2af89661d25b8f26ff347edbb69c6dcaa78f10115914a7",
+    "source": "6d0f58425ad9d45b3ce90cb6ec6f877654f0837b0d4b0787184a14ee67d35e5c"
+  },
+  "cases": {
+    "current-fixed": [
+      {
+        "claim_complete": true,
+        "elf_sha256": "e48f9b8395833701e60ac186f033d742d9d31d607a0c7799afc9d68cb401fe37",
+        "fresh": true,
+        "phase": "before",
+        "rustc": 0,
+        "value": 17
+      },
+      {
+        "claim_complete": false,
+        "elf_sha256": "fc321be708bb9b4eb5f2044da10e1a3f24509bb2769261c36de3b41b4c31d15e",
+        "fresh": false,
+        "phase": "first",
+        "rustc": 1,
+        "value": 29
+      },
+      {
+        "claim_complete": false,
+        "elf_sha256": "fc321be708bb9b4eb5f2044da10e1a3f24509bb2769261c36de3b41b4c31d15e",
+        "fresh": false,
+        "phase": "second",
+        "rustc": 1,
+        "value": 29
+      },
+      {
+        "claim_complete": false,
+        "elf_sha256": "fc321be708bb9b4eb5f2044da10e1a3f24509bb2769261c36de3b41b4c31d15e",
+        "fresh": false,
+        "phase": "clean",
+        "rustc": 1,
+        "value": 29
+      }
+    ],
+    "current-matched": [
+      {
+        "claim_complete": true,
+        "elf_sha256": "e48f9b8395833701e60ac186f033d742d9d31d607a0c7799afc9d68cb401fe37",
+        "fresh": true,
+        "phase": "before",
+        "rustc": 0,
+        "value": 17
+      },
+      {
+        "claim_complete": true,
+        "elf_sha256": "e48f9b8395833701e60ac186f033d742d9d31d607a0c7799afc9d68cb401fe37",
+        "fresh": true,
+        "phase": "first",
+        "rustc": 0,
+        "value": 17
+      },
+      {
+        "claim_complete": true,
+        "elf_sha256": "e48f9b8395833701e60ac186f033d742d9d31d607a0c7799afc9d68cb401fe37",
+        "fresh": true,
+        "phase": "second",
+        "rustc": 0,
+        "value": 17
+      },
+      {
+        "claim_complete": false,
+        "elf_sha256": "fc321be708bb9b4eb5f2044da10e1a3f24509bb2769261c36de3b41b4c31d15e",
+        "fresh": false,
+        "phase": "clean",
+        "rustc": 1,
+        "value": 29
+      }
+    ],
+    "preserved-fixed": [
+      {
+        "claim_complete": true,
+        "elf_sha256": "e48f9b8395833701e60ac186f033d742d9d31d607a0c7799afc9d68cb401fe37",
+        "fresh": true,
+        "phase": "before",
+        "rustc": 0,
+        "value": 17
+      },
+      {
+        "claim_complete": false,
+        "elf_sha256": "fc321be708bb9b4eb5f2044da10e1a3f24509bb2769261c36de3b41b4c31d15e",
+        "fresh": false,
+        "phase": "first",
+        "rustc": 1,
+        "value": 29
+      },
+      {
+        "claim_complete": false,
+        "elf_sha256": "fc321be708bb9b4eb5f2044da10e1a3f24509bb2769261c36de3b41b4c31d15e",
+        "fresh": false,
+        "phase": "second",
+        "rustc": 1,
+        "value": 29
+      },
+      {
+        "claim_complete": false,
+        "elf_sha256": "fc321be708bb9b4eb5f2044da10e1a3f24509bb2769261c36de3b41b4c31d15e",
+        "fresh": false,
+        "phase": "clean",
+        "rustc": 1,
+        "value": 29
+      }
+    ],
+    "preserved-matched": [
+      {
+        "claim_complete": true,
+        "elf_sha256": "e48f9b8395833701e60ac186f033d742d9d31d607a0c7799afc9d68cb401fe37",
+        "fresh": true,
+        "phase": "before",
+        "rustc": 0,
+        "value": 17
+      },
+      {
+        "claim_complete": true,
+        "elf_sha256": "e48f9b8395833701e60ac186f033d742d9d31d607a0c7799afc9d68cb401fe37",
+        "fresh": true,
+        "phase": "first",
+        "rustc": 0,
+        "value": 17
+      },
+      {
+        "claim_complete": true,
+        "elf_sha256": "e48f9b8395833701e60ac186f033d742d9d31d607a0c7799afc9d68cb401fe37",
+        "fresh": true,
+        "phase": "second",
+        "rustc": 0,
+        "value": 17
+      },
+      {
+        "claim_complete": false,
+        "elf_sha256": "fc321be708bb9b4eb5f2044da10e1a3f24509bb2769261c36de3b41b4c31d15e",
+        "fresh": false,
+        "phase": "clean",
+        "rustc": 1,
+        "value": 29
+      }
+    ]
+  },
+  "members": 147,
+  "ordinary_builds": 16,
+  "terminal_elf_reruns": 8
+}
