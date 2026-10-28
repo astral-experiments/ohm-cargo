@@ -715,25 +715,9 @@ pub fn parse_dep_info(
     build_root: &Path,
     dep_info: &Path,
 ) -> CargoResult<Option<RustcDepInfo>> {
-    let Ok(data) = paths::read_bytes(dep_info) else {
+    let Some(info) = read_dep_info(pkg_root, dep_info) else {
         return Ok(None);
     };
-    let Some(info) = EncodedDepInfo::parse(&data) else {
-        tracing::warn!("failed to parse cargo's dep-info at {:?}", dep_info);
-        return Ok(None);
-    };
-    if info.files.iter().any(|(ty, path, _)| {
-        *ty == DepInfoPathType::PackageRootRelative
-            && path
-                .components()
-                .any(|component| component == std::path::Component::ParentDir)
-    }) && !crate::util::try_canonicalize(pkg_root)
-        .is_ok_and(|canonical| canonical == paths::normalize_path(pkg_root))
-    {
-        // A newly symlinked package root can change where a saved ../ prefix
-        // resolves. Recompile and let translation reject further seeding.
-        return Ok(None);
-    }
     let mut ret = RustcDepInfo::default();
     ret.env = info.env;
     ret.foreign_span_marker = info.observer.map(|index| {
@@ -750,6 +734,43 @@ pub fn parse_dep_info(
             )
         }));
     Ok(Some(ret))
+}
+
+/// Returns every filename for Cargo's output `.d` file, including the missing observer input.
+///
+/// The freshness reader also needs checksums, whereas the output needs only the paths.
+pub(crate) fn dep_info_paths<'a>(
+    pkg_root: &'a Path,
+    build_root: &'a Path,
+    dep_info: &Path,
+) -> Option<impl Iterator<Item = PathBuf> + 'a> {
+    let info = read_dep_info(pkg_root, dep_info)?;
+    Some(
+        info.files
+            .into_iter()
+            .map(move |(ty, path, _)| make_absolute_path(ty, pkg_root, build_root, path)),
+    )
+}
+
+fn read_dep_info(pkg_root: &Path, dep_info: &Path) -> Option<EncodedDepInfo> {
+    let data = paths::read_bytes(dep_info).ok()?;
+    let Some(info) = EncodedDepInfo::parse(&data) else {
+        tracing::warn!("failed to parse cargo's dep-info at {:?}", dep_info);
+        return None;
+    };
+    if info.files.iter().any(|(ty, path, _)| {
+        *ty == DepInfoPathType::PackageRootRelative
+            && path
+                .components()
+                .any(|component| component == std::path::Component::ParentDir)
+    }) && !crate::util::try_canonicalize(pkg_root)
+        .is_ok_and(|canonical| canonical == paths::normalize_path(pkg_root))
+    {
+        // A newly symlinked package root can change where a saved ../ prefix
+        // resolves. Recompile and let translation reject further seeding.
+        return None;
+    }
+    Some(info)
 }
 
 fn make_absolute_path(
@@ -1043,6 +1064,8 @@ mod encoded_dep_info {
                 let marker = root.path().join("reader.d/ohm-foreign-span-bytes");
                 assert_eq!(translated.foreign_span_marker.as_ref(), Some(&marker));
                 assert!(translated.files.contains_key(&marker));
+                let paths = dep_info_paths(root.path(), root.path(), &record).unwrap();
+                assert_eq!(paths.collect::<Vec<_>>(), [root.path().join(name), marker]);
             }
         }
     }
