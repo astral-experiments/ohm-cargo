@@ -75,7 +75,7 @@ pub(super) fn record_script_result(
     let same_record = fs::symlink_metadata(path).is_ok_and(|metadata| metadata.is_file())
         && fs::read(path).is_ok_and(|old| old == contents);
     if !same_record {
-        paths::write_atomic(path, contents)?;
+        paths::write_atomic_no_follow(path, contents)?;
     }
     Ok(Some(ScriptResult {
         digest,
