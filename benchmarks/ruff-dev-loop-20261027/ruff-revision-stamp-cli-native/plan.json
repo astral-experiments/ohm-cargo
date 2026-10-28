@@ -1,0 +1,42 @@
+{
+  "command": [
+    "cargo",
+    "+ohm",
+    "build",
+    "--locked",
+    "--offline",
+    "--message-format=json",
+    "-p",
+    "ruff",
+    "--bin",
+    "ruff"
+  ],
+  "files": [
+    ".github/secure-token-service.json",
+    ".github/workflows/ci.yaml"
+  ],
+  "heads": {
+    "A": "d1e1b1f69b511df4385f64b510eeec4da01c1a0e",
+    "B": "829455624d78f2e89669e4b4b14af2b96abdb1ae"
+  },
+  "pin": "93526150df078af7dd8fc4226cdcc469539d2001",
+  "release": {
+    "cargo": "42e90992cec21a29956e20fd52ab952472a9dbc1dcc7a3b60c92aad101b5f568",
+    "driver": "c442c2a36e1f37c92f138a8fb367fc09982931b5f1055e9742fb402566ad46a4",
+    "rustc": "b0c412a7a8010a768f00546419a0b1bcfca382d7e70191df3ae72e30ac1ef3e5",
+    "wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5"
+  },
+  "scope": "First unscored actual-head A\u2192B\u2192A and ordinary repeats after a trained A. No timing inference or use of a previous B build before first edit. Independently verify the actual version and functional CLI; preserve both lib and bin codegen/depinfo/compiler credentials and inspect every real compile/link. If a full bin rustc was running, test authentic previous-terminal cached .rlink with the next upstream artifacts against an ordinary CLI reference before considering any product design.",
+  "sha_pack": "217174608e051ac1717d98870937954f641cc6884ff4662d5a0a73915430b83b",
+  "sha_patch": "1c686b3d2d17c29f571f86e03aacea6af91e090fecf5a0d6708709bdd2e04e46",
+  "source": {
+    "Cargo.lock": "c9e345325bec5ff08dbbe3916edd39ad0c3d1c7797a8c241ae32f62754e764bf",
+    "crates/ruff/build.rs": "8809304381d04011ac796e2dc4530a803b0720b5b2b8b70f6fccb51d6db9a2c7",
+    "crates/ruff/src/main.rs": "86e708be2e31f82d453530226637e4d54ef8a7c251ccdaf0801b67e573d692e3",
+    "crates/ruff/src/version.rs": "a971907194b9e7a3831b03494c21362e920b0df668a1231eb478c3e4517d26e1"
+  },
+  "trees": {
+    "A": "196214262d82835cc504cb3f693cb19aca367473",
+    "B": "b8d6487c310b2ee32de674353fa824141abc4824"
+  }
+}
