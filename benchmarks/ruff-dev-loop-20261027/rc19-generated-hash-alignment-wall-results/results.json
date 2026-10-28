@@ -1,0 +1,43 @@
+{
+  "both_hosts_qualify": false,
+  "independent-linux": {
+    "complete": true,
+    "exact_95_ci": [
+      -0.022591844472769823,
+      0.07027875407054388
+    ],
+    "exact_two_sided_sign_p": 0.11140289106101875,
+    "interval_order": 17,
+    "negative": 18,
+    "observations": 384,
+    "paired_median_reduction": 0.027286736580664103,
+    "pass": false,
+    "positive": 30,
+    "raw_medians_ns": {
+      "A": 217329434.5,
+      "B": 215866814.5
+    },
+    "strata": 48,
+    "ties": 0
+  },
+  "primary-linux": {
+    "complete": true,
+    "exact_95_ci": [
+      0.006946901878864986,
+      0.017916052033794233
+    ],
+    "exact_two_sided_sign_p": 1.0087482138487758e-07,
+    "interval_order": 17,
+    "negative": 6,
+    "observations": 384,
+    "paired_median_reduction": 0.01091170318020111,
+    "pass": true,
+    "positive": 42,
+    "raw_medians_ns": {
+      "A": 199246451.5,
+      "B": 197855406.0
+    },
+    "strata": 48,
+    "ties": 0
+  }
+}
