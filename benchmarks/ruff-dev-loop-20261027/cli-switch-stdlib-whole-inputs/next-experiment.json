@@ -1,0 +1,384 @@
+{
+  "actual_cli": {
+    "ruff": {
+      "actual_metadata": [
+        "ef2438b30ab4ecbd",
+        "555c375f31d970ef"
+      ],
+      "all_externs": [
+        51,
+        51
+      ],
+      "argv_sha256": {
+        "build": "7bd656fc1eb7b1f240c909262ee5dc4b06a205b1c0afb322653bd7c629c5c836",
+        "test": "c6d4feb740867ff816c3d509c11892caf1294161476f9b2fc05eef85f7566771"
+      },
+      "changed_externs": [
+        "bitflags",
+        "cachedir",
+        "clap",
+        "clap_complete_command",
+        "clearscreen",
+        "colored",
+        "globwalk",
+        "ignore",
+        "notify",
+        "regex",
+        "ruff",
+        "ruff_cache",
+        "ruff_db",
+        "ruff_graph",
+        "ruff_linter",
+        "ruff_markdown",
+        "ruff_notebook",
+        "ruff_python_ast",
+        "ruff_python_formatter",
+        "ruff_python_parser",
+        "ruff_ranged_value",
+        "ruff_server",
+        "ruff_workspace",
+        "tempfile"
+      ],
+      "elf_bytes": [
+        159683912,
+        160007568
+      ],
+      "elf_raw": [
+        "1aae30097429a99f6e28a6174b6b01acc6da4bfb305409cf5ababc40d13d7694",
+        "001571a5da8249a5e36d35a69711ace1e2addf8e24cea839803a03a73f698526"
+      ],
+      "shared_codegen_flags": [
+        "opt-level=1",
+        "lto=off",
+        "embed-bitcode=no",
+        "debuginfo=line-tables-only",
+        "debug-assertions=on"
+      ],
+      "shared_own_features": []
+    },
+    "ty": {
+      "actual_metadata": [
+        "4d8d4998014664a9",
+        "e704dea02256c00e"
+      ],
+      "all_externs": [
+        30,
+        30
+      ],
+      "argv_sha256": {
+        "build": "172145a0dd7b71daeea6e39942d2c14fbeb28f308f502d94bd5e2f102712c1d8",
+        "test": "23b2eb7d7122f4e41e23d159e24c555d7b2f7cd2e4c3b7aabcac640d751ba735"
+      },
+      "changed_externs": [
+        "clap",
+        "clap_complete_command",
+        "clearscreen",
+        "colored",
+        "ctrlc",
+        "ruff_db",
+        "ruff_python_ast",
+        "ruff_ranged_value",
+        "tracing_flame",
+        "tracing_subscriber",
+        "ty",
+        "ty_combine",
+        "ty_project",
+        "ty_python_semantic",
+        "ty_server",
+        "ty_site_packages"
+      ],
+      "elf_bytes": [
+        225762888,
+        226416248
+      ],
+      "elf_raw": [
+        "d83fd3aaa95b7e904c342379230a7d25a366ffa38e2fd468322dd1106fd62325",
+        "8e78b910da6aeeaacf2bcef58a64d10295a83aaf2b97807ec054988211620c98"
+      ],
+      "shared_codegen_flags": [
+        "opt-level=1",
+        "lto=off",
+        "embed-bitcode=no",
+        "debuginfo=line-tables-only",
+        "debug-assertions=on"
+      ],
+      "shared_own_features": [
+        "feature=\"default\""
+      ]
+    }
+  },
+  "historical_cross_selection": {
+    "eligible_unit": {
+      "closure": "848bda8ce3a74a454a1a38cae11e6c1572a50f5813f91b0a02a4812b5359bb45",
+      "crate": "ruff_python_stdlib",
+      "flat": "33271dcad5a3c6ee3548f2f555dd000f9b934519ff10c4166d6971b94a59d652",
+      "kind": [
+        "lib"
+      ],
+      "mode": "build",
+      "workspace": true
+    },
+    "fully_applicable_real_edit": "609e184aa35f0034b7ef63e3e04327081c484af6",
+    "matching_scoped_selectors": {
+      "R": [
+        "cargo",
+        "+ohm",
+        "build",
+        "-p",
+        "ruff",
+        "--bin",
+        "ruff",
+        "--locked",
+        "--offline"
+      ],
+      "T": [
+        "cargo",
+        "+ohm",
+        "build",
+        "-p",
+        "ty",
+        "--bin",
+        "ty",
+        "--locked",
+        "--offline"
+      ]
+    },
+    "patch_sha256": "37b435620d826e6cbeccf3830c23b745bc63c6691e860d3c0421cc9894c90d4b",
+    "proposed_only": "Independently warm R and T and reach all-fresh in the same released-Ohm private store. Apply complete reverse of 609e184 once (stdlib builtins and real Ruff diagnostic fixture). Two independent clones compare order R then T and T then R, with immediate repeated and restored controls. Require actual current ruff_python_stdlib --out-dir, argv, all externs, rustc/driver and --emit to match; bind .rlib, .rmeta, codegen objects, active compiler flags, source and serialized dep-info before and after switching. Use both complete native terminal traces; separately run each CLI and compare to fresh same-mode referents. Ruff py315 print(__cached__) F821 is the independent edit behavior; py314 is its negative. For a true redundant opportunity require a second full compiler with identical relevant physical inputs and exact output, or same native-link inputs/outputs and negative file observations including scripts. Different hashes, absent units, correctly fresh, or a linker observed path+ordering difference ends the respective claim."
+  },
+  "independent_observed_cargo": "dd5cab154b8dcd09ccc2753160d314cade80979b2d055ee66aa9e2217e05e7e1",
+  "independent_observed_cold_compiler": "63145e253973980f3786ce562b2342d2590b4a783256e4197e8ffacdf7d110fa",
+  "original_candidate": "88d851449d2345e11da991794f3e9bfbbd666719",
+  "original_disposition": "both ruff_source_file native unit variants have different recursive identities under standalone Ruff vs Ty; they are not an upstream-equivalent return control",
+  "original_native_receipts": {
+    "build": "714c4f2b2a9b611a3bb00bc14e1c5ad1f22375d5c9a0416512623959b8ef19b5",
+    "test": "01ef9ee957fc81746bdcaa2205fce634665074d8cc3a1a4a1c36b1c7e8415969"
+  },
+  "planner_counts": {
+    "all-build after all-test": {
+      "absent": 32,
+      "dep-only": 65,
+      "different-own": 18,
+      "same": 437
+    },
+    "both after all-test": {
+      "dep-only": 53,
+      "different-own": 38,
+      "same": 369
+    },
+    "ruff after all-build": {
+      "dep-only": 45,
+      "different-own": 28,
+      "same": 335
+    },
+    "ruff after all-test": {
+      "dep-only": 65,
+      "different-own": 36,
+      "same": 307
+    },
+    "ruff after both": {
+      "dep-only": 48,
+      "different-own": 13,
+      "same": 347
+    },
+    "ty after all-build": {
+      "dep-only": 54,
+      "different-own": 42,
+      "same": 293
+    },
+    "ty after all-test": {
+      "dep-only": 55,
+      "different-own": 47,
+      "same": 287
+    },
+    "ty after both": {
+      "dep-only": 57,
+      "different-own": 19,
+      "same": 313
+    },
+    "ty after ruff": {
+      "absent": 39,
+      "dep-only": 60,
+      "different-own": 44,
+      "same": 246
+    }
+  },
+  "release_plan_sha": "42e90992cec21a29956e20fd52ab952472a9dbc1dcc7a3b60c92aad101b5f568",
+  "small_stock": {
+    "pair": {
+      "actual_runtime": 83,
+      "choice": "both",
+      "expected_runtime": 83,
+      "fresh": 0,
+      "jobs": [
+        {
+          "argv_sha256": "5fc1af95d3d8d01549e74bdcea1cd3b5e9e58385d912ffb5e6afb0a74c0a364c",
+          "crate": "used",
+          "pid": "3520246",
+          "role": "full"
+        },
+        {
+          "argv_sha256": "5d0eec0855d74e0418e4dc33a41c17f944fc557f6be1d858844b542149d7b8cc",
+          "crate": "peer",
+          "pid": "3520263",
+          "role": "full"
+        },
+        {
+          "argv_sha256": "45f1a3bde2d1d1eeb94974a67834c1d059cadc35368f652e552bc07c8151b2e0",
+          "crate": "tool",
+          "pid": "3520264",
+          "role": "full"
+        },
+        {
+          "argv_sha256": "0248a2882b516d829bbcab79bfc18f090522f0af220faaa4a3d24379ab5a323a",
+          "pid": "3520307",
+          "role": "wild"
+        },
+        {
+          "argv_sha256": "43e1678359dacb8a6bdb28d9a016ee24b044aa84990ac812c7d0679322800db5",
+          "pid": "3520308",
+          "role": "wild"
+        }
+      ],
+      "output_sha256": "298b1755988f5dde071212e0d4ddc0fb07bd6b00a50400464c9a450dd1d781e4",
+      "units": 3
+    },
+    "pair-return": {
+      "actual_runtime": 83,
+      "choice": "both",
+      "expected_runtime": 83,
+      "fresh": 3,
+      "jobs": [],
+      "output_sha256": "298b1755988f5dde071212e0d4ddc0fb07bd6b00a50400464c9a450dd1d781e4",
+      "units": 3
+    },
+    "single": {
+      "actual_runtime": 41,
+      "choice": "single",
+      "expected_runtime": 41,
+      "fresh": 0,
+      "jobs": [
+        {
+          "argv_sha256": "2f6aae488368820f1b446a348f48910987589a51d96e2726844a229e6a410c03",
+          "crate": "used",
+          "pid": "3520325",
+          "role": "full"
+        },
+        {
+          "argv_sha256": "833736843f0fc1fc85a30fd0d1faea716d50de99019c49d3be03b120ee76e9d7",
+          "crate": "tool",
+          "pid": "3520340",
+          "role": "full"
+        },
+        {
+          "argv_sha256": "d4c618992dd47903f0147560ab6caceaf00a9bfd67fc017495f4aede6f450c4b",
+          "pid": "3520363",
+          "role": "wild"
+        }
+      ],
+      "output_sha256": "368ae472afe6a41e18f13c917cdf6a92b1aacafeee111991bdcf14e476248867",
+      "units": 2
+    },
+    "single-repeat": {
+      "actual_runtime": 41,
+      "choice": "single",
+      "expected_runtime": 41,
+      "fresh": 2,
+      "jobs": [],
+      "output_sha256": "368ae472afe6a41e18f13c917cdf6a92b1aacafeee111991bdcf14e476248867",
+      "units": 2
+    },
+    "single-return": {
+      "actual_runtime": 41,
+      "choice": "single",
+      "expected_runtime": 41,
+      "fresh": 2,
+      "jobs": [],
+      "output_sha256": "368ae472afe6a41e18f13c917cdf6a92b1aacafeee111991bdcf14e476248867",
+      "units": 2
+    }
+  },
+  "source": "93526150df078af7dd8fc4226cdcc469539d2001",
+  "strict_shared_units": [
+    {
+      "closure": "11ecc073ae86109d11f512df33882e58b40414d4fd71a10658cdb80703290bcf",
+      "crate": "annotate_snippets",
+      "flat": "2ffcab7e0e21c912a079f0308321d5f880c6b0b59a706fce0c252a9977865909",
+      "kind": [
+        "lib"
+      ],
+      "mode": "build",
+      "workspace": true
+    },
+    {
+      "closure": "3ddd3454e877f66ce87fa22216f6a436c1a0956691642611c41d20a24f3ed32f",
+      "crate": "unicode_names2_generator",
+      "flat": "3d95ebc72f7f08c1d4b410401fc647c392d754c6270ade63cb1f41f5973728fd",
+      "kind": [
+        "lib"
+      ],
+      "mode": "build",
+      "workspace": true
+    },
+    {
+      "closure": "848bda8ce3a74a454a1a38cae11e6c1572a50f5813f91b0a02a4812b5359bb45",
+      "crate": "ruff_python_stdlib",
+      "flat": "33271dcad5a3c6ee3548f2f555dd000f9b934519ff10c4166d6971b94a59d652",
+      "kind": [
+        "lib"
+      ],
+      "mode": "build",
+      "workspace": true
+    },
+    {
+      "closure": "9ee95706ddf2b55d6d4d73892a895a61f1e9cc50984b3b82cbe1b5f282495855",
+      "crate": "build-script-build",
+      "flat": "a6272bdd5be551175d71a67421ae47234695da9d629dc9ffdf02f7384e78d5cd",
+      "kind": [
+        "custom-build"
+      ],
+      "mode": "run-custom-build",
+      "workspace": true
+    },
+    {
+      "closure": "9ff606d68ea27af356a6f0dc91867347f3807d208c0124e66ac02ca4207055b8",
+      "crate": "build-script-build",
+      "flat": "ec26df38893bab9b4bfd24bc046e52987bf1e0a288b2ea368f4b66e99e873ebf",
+      "kind": [
+        "custom-build"
+      ],
+      "mode": "build",
+      "workspace": true
+    },
+    {
+      "closure": "a38df9d103e53c1423a990ad6e1342a1636946a896a1cd353be08944f31c6d9e",
+      "crate": "ruff_text_size",
+      "flat": "d5f917b84a302df4d5a513f95080dcb48f08434d240ff48d187b56d01e96a209",
+      "kind": [
+        "lib"
+      ],
+      "mode": "build",
+      "workspace": true
+    },
+    {
+      "closure": "a3fff98333ace57afc72efef528b2e2552d6477444696d627ee3038af8759cde",
+      "crate": "ruff_command_line",
+      "flat": "a3e73436b06dbf2674d4d019d0dfacfa7d7a8148ad02b47b239ebc53797bef87",
+      "kind": [
+        "lib"
+      ],
+      "mode": "build",
+      "workspace": true
+    },
+    {
+      "closure": "d172db1cb1142482c4b50766bd882c45df77006f2906c28e6413a92ad0b04146",
+      "crate": "unicode_names2",
+      "flat": "13ab7bc720a36c06b63153d906045436771eadfa807fe182c2dcfe0cf5d23654",
+      "kind": [
+        "lib"
+      ],
+      "mode": "build",
+      "workspace": true
+    }
+  ]
+}

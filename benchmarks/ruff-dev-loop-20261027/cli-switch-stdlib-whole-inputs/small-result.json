@@ -1,0 +1,161 @@
+{
+  "pair": {
+    "actual_runtime": 83,
+    "choice": "both",
+    "command": [
+      "cargo",
+      "+ohm",
+      "build",
+      "--locked",
+      "--offline",
+      "--message-format=json",
+      "-p",
+      "tool",
+      "-p",
+      "peer",
+      "--bins"
+    ],
+    "expected_runtime": 83,
+    "fresh": 0,
+    "jobs": [
+      {
+        "argv_sha256": "5fc1af95d3d8d01549e74bdcea1cd3b5e9e58385d912ffb5e6afb0a74c0a364c",
+        "crate": "used",
+        "pid": "3520246",
+        "role": "full"
+      },
+      {
+        "argv_sha256": "5d0eec0855d74e0418e4dc33a41c17f944fc557f6be1d858844b542149d7b8cc",
+        "crate": "peer",
+        "pid": "3520263",
+        "role": "full"
+      },
+      {
+        "argv_sha256": "45f1a3bde2d1d1eeb94974a67834c1d059cadc35368f652e552bc07c8151b2e0",
+        "crate": "tool",
+        "pid": "3520264",
+        "role": "full"
+      },
+      {
+        "argv_sha256": "0248a2882b516d829bbcab79bfc18f090522f0af220faaa4a3d24379ab5a323a",
+        "pid": "3520307",
+        "role": "wild"
+      },
+      {
+        "argv_sha256": "43e1678359dacb8a6bdb28d9a016ee24b044aa84990ac812c7d0679322800db5",
+        "pid": "3520308",
+        "role": "wild"
+      }
+    ],
+    "output_sha256": "298b1755988f5dde071212e0d4ddc0fb07bd6b00a50400464c9a450dd1d781e4",
+    "stores": [],
+    "units": 3
+  },
+  "pair-return": {
+    "actual_runtime": 83,
+    "choice": "both",
+    "command": [
+      "cargo",
+      "+ohm",
+      "build",
+      "--locked",
+      "--offline",
+      "--message-format=json",
+      "-p",
+      "tool",
+      "-p",
+      "peer",
+      "--bins"
+    ],
+    "expected_runtime": 83,
+    "fresh": 3,
+    "jobs": [],
+    "output_sha256": "298b1755988f5dde071212e0d4ddc0fb07bd6b00a50400464c9a450dd1d781e4",
+    "stores": [],
+    "units": 3
+  },
+  "single": {
+    "actual_runtime": 41,
+    "choice": "single",
+    "command": [
+      "cargo",
+      "+ohm",
+      "build",
+      "--locked",
+      "--offline",
+      "--message-format=json",
+      "-p",
+      "tool",
+      "--bin",
+      "tool"
+    ],
+    "expected_runtime": 41,
+    "fresh": 0,
+    "jobs": [
+      {
+        "argv_sha256": "2f6aae488368820f1b446a348f48910987589a51d96e2726844a229e6a410c03",
+        "crate": "used",
+        "pid": "3520325",
+        "role": "full"
+      },
+      {
+        "argv_sha256": "833736843f0fc1fc85a30fd0d1faea716d50de99019c49d3be03b120ee76e9d7",
+        "crate": "tool",
+        "pid": "3520340",
+        "role": "full"
+      },
+      {
+        "argv_sha256": "d4c618992dd47903f0147560ab6caceaf00a9bfd67fc017495f4aede6f450c4b",
+        "pid": "3520363",
+        "role": "wild"
+      }
+    ],
+    "output_sha256": "368ae472afe6a41e18f13c917cdf6a92b1aacafeee111991bdcf14e476248867",
+    "stores": [],
+    "units": 2
+  },
+  "single-repeat": {
+    "actual_runtime": 41,
+    "choice": "single",
+    "command": [
+      "cargo",
+      "+ohm",
+      "build",
+      "--locked",
+      "--offline",
+      "--message-format=json",
+      "-p",
+      "tool",
+      "--bin",
+      "tool"
+    ],
+    "expected_runtime": 41,
+    "fresh": 2,
+    "jobs": [],
+    "output_sha256": "368ae472afe6a41e18f13c917cdf6a92b1aacafeee111991bdcf14e476248867",
+    "stores": [],
+    "units": 2
+  },
+  "single-return": {
+    "actual_runtime": 41,
+    "choice": "single",
+    "command": [
+      "cargo",
+      "+ohm",
+      "build",
+      "--locked",
+      "--offline",
+      "--message-format=json",
+      "-p",
+      "tool",
+      "--bin",
+      "tool"
+    ],
+    "expected_runtime": 41,
+    "fresh": 2,
+    "jobs": [],
+    "output_sha256": "368ae472afe6a41e18f13c917cdf6a92b1aacafeee111991bdcf14e476248867",
+    "stores": [],
+    "units": 2
+  }
+}

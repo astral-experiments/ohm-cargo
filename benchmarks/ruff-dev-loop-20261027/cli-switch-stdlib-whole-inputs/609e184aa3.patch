@@ -1,0 +1,69 @@
+diff --git a/crates/ruff_linter/resources/mdtest/pyflakes/undefined-name.md b/crates/ruff_linter/resources/mdtest/pyflakes/undefined-name.md
+new file mode 100644
+index 0000000000..24040d91f5
+--- /dev/null
++++ b/crates/ruff_linter/resources/mdtest/pyflakes/undefined-name.md
+@@ -0,0 +1,28 @@
++# `undefined-name` (`F821`)
++
++## Module cache path in Python 3.14
++
++```toml
++target-version = "py314"
++lint.select = ["F821"]
++```
++
++The import system defines `__cached__` in module scope before Python 3.15.
++
++```py
++print(__cached__)
++```
++
++## Module cache path in Python 3.15
++
++```toml
++target-version = "py315"
++lint.select = ["F821"]
++```
++
++The import system no longer defines `__cached__` in Python 3.15, so `F821` reports uses without a
++definition.
++
++```py
++print(__cached__)  # error: [undefined-name] "Undefined name `__cached__`"
++```
+diff --git a/crates/ruff_python_stdlib/src/builtins.rs b/crates/ruff_python_stdlib/src/builtins.rs
+index 91800b2739..236510c1d4 100644
+--- a/crates/ruff_python_stdlib/src/builtins.rs
++++ b/crates/ruff_python_stdlib/src/builtins.rs
+@@ -19,11 +19,13 @@ const MAGIC_GLOBALS: &[&str] = &[
+     "WindowsError",
+     "__annotations__",
+     "__builtins__",
+-    "__cached__",
+     "__warningregistry__",
+     "__file__",
+ ];
+ 
++/// Magic globals that were removed in Python 3.15.
++const PRE_PY315_MAGIC_GLOBALS: &[&str] = &["__cached__"];
++
+ /// Magic globals that are only available starting in specific Python versions.
+ ///
+ /// `__annotate__` was introduced in Python 3.14.
+@@ -242,8 +244,15 @@ pub fn python_magic_globals(minor_version: u8) -> impl Iterator<Item = &'static
+         None
+     };
+ 
++    let pre_py315_magic_globals = if minor_version < 15 {
++        Some(PRE_PY315_MAGIC_GLOBALS)
++    } else {
++        None
++    };
++
+     py314_magic_globals
+         .into_iter()
++        .chain(pre_py315_magic_globals)
+         .flatten()
+         .chain(MAGIC_GLOBALS)
+         .copied()
