@@ -1,0 +1,85 @@
+{
+  "arms": {
+    "A": {
+      "binary_bytes": 43382240,
+      "cargo_git_commit": "7caf39914da1e28a67744ecbc963a5f26361474d",
+      "cargo_git_tree": "c9d1f41de63b6d95904dc8f5325000f38ea636b0",
+      "cargo_source_receipt_sha256": "bb07130345480ff8c69263cb61e145ee4be9a4291027a4517f6608cd46c2b4bd",
+      "file": "A",
+      "sha256": "a20b7097d6c0591464583de00bea1ee8d39bddfe461d56318532fb57991a8db7"
+    },
+    "B": {
+      "binary_bytes": 43412160,
+      "cargo_git_commit": "c9c7fb9df6ca7e8f0c9c12f2471a0d8663bf5c19",
+      "cargo_git_tree": "23a7539a1b2c7c7e1bda31c914859cf8b1c04443",
+      "cargo_source_receipt_sha256": "c8202684f555a57b34cc8afcf63793390d24ac69abc6e85f536f0d600a60099f",
+      "file": "B1",
+      "sha256": "8e10b884f56d6807872c61d587b7cf152c03f04fe11e10b8bc412880f15c0ad0"
+    }
+  },
+  "bundle_sha256": "c122ddccc630ecceb04dd50e756ac46d8f50f2c9c842109a420939983db2c383",
+  "changes": [
+    "src/compiler/build_runner/mod.rs",
+    "src/compiler/mod.rs"
+  ],
+  "compiler_invocations": {
+    "src/bin/cargo/main.rs": {
+      "argv_sha256": "0921784d8bba9c9c876eedd28a9da28cb6e27eb29ab4eb57314fb6635ebc75f9",
+      "extern_operands": 161,
+      "external_equal_except_selected_cargo_product": true
+    },
+    "src/lib.rs": {
+      "argv_sha256": "a72aac58f00d3c84a3882dd5141441d38823390d8d49b32d07c40cb7221ea49a",
+      "extern_operands": 80,
+      "external_equal_except_selected_cargo_product": true
+    }
+  },
+  "direct_control_rebuild": {
+    "bytes": [
+      43382240,
+      43382240
+    ],
+    "fields": [
+      {
+        "build_id": "62779dfa9c10640aaf4df3f9d831081e5443955bcba77c192bac611321b33808",
+        "decimal_suffix_count": 14109
+      },
+      {
+        "build_id": "1c405b86099b4b76d21a9f0a7d8cfa018f51dbe58bc9eac66355da9ea857ee3c",
+        "decimal_suffix_count": 14109
+      }
+    ],
+    "precise_projections": [
+      "ce5a0f1d63f742bd87421128aec9ec886a7acfdf51b8f51cdd53b4b484dd1fa3",
+      "ce5a0f1d63f742bd87421128aec9ec886a7acfdf51b8f51cdd53b4b484dd1fa3"
+    ],
+    "raw": [
+      "a20b7097d6c0591464583de00bea1ee8d39bddfe461d56318532fb57991a8db7",
+      "4dc98fbc0a72aa31b98f14866ff3bfa33e3ac5a359dc58758d9f6041cef9c228"
+    ],
+    "residual_byte_differences": 0
+  },
+  "display_stamp": "Fixed to the base so version, commit date and Cargo fingerprint version agree. The candidate commit is separately identified in arms.",
+  "format": "ohm-release-18-link-only-source-v1",
+  "matched": {
+    "builder_cargo": "42e90992cec21a29956e20fd52ab952472a9dbc1dcc7a3b60c92aad101b5f568",
+    "compiler": "b0c412a7a8010a768f00546419a0b1bcfca382d7e70191df3ae72e30ac1ef3e5",
+    "compiler_driver": "c442c2a36e1f37c92f138a8fb367fc09982931b5f1055e9742fb402566ad46a4",
+    "pkg_cargo_lock": "151c473e1a11532946ba9421ab1beeb238f98eb1f8cd4e5f94f9811003abd5a7",
+    "profile": "481ada8a40c70dad11b3c7e8871e9a52207d78447ca5e8ace06fc4aec2d2b5a7",
+    "stamp": "d49e552a1980847ff7adba169e298da4b8c5b75100c5fc4593bf76edd237e3f3",
+    "version": "cargo 1.99.0 (7caf39914 2026-10-28)\nrelease: 1.99.0\ncommit-hash: 7caf39914da1e28a67744ecbc963a5f26361474d\ncommit-date: 2026-10-28\nhost: x86_64-unknown-linux-gnu\nlibgit2: 1.9.6 (sys:0.21.0 vendored)\nlibcurl: 8.21.0-DEV (sys:0.4.90+curl-8.21.0 vendored ssl:OpenSSL/3.0.13)\nos: Ubuntu 24.4.0 (noble) [64-bit]\n"
+  },
+  "patch_sha256": "4041822714232380d01642975b1f28f9b563f73a73f30ab796cd2a1f16a69e73",
+  "previous_refused": {
+    "binary_bytes": 43420568,
+    "cargo_git_commit": "876382850b194580609515fa22b660e7bb02e89c",
+    "cargo_git_tree": "3584f4867756eec111d4eeafbf5f24594f1c6f39",
+    "cargo_source_receipt_sha256": "c8e76b7198b61ae100804eab84a77b9d14abe689ab40783c23a11acedc50ae2a",
+    "file": "B0-positive-gate-failed",
+    "observation": "First source candidate retained -Zthreads=8 on a genuine default cached link.",
+    "sha256": "aed489315a1f815472111b165c0dc85da79c6b7c561c4bc83bf73628e8710c36"
+  },
+  "recipe_sha256": "138b4276059346eb75a4c241f19ceb63f0256e9fe36b7c5df7a07d3e5b27a87a",
+  "source_files": 3108
+}

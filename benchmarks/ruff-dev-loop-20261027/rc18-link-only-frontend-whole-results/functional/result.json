@@ -1,0 +1,415 @@
+{
+  "admissible": true,
+  "arms": {
+    "A": {
+      "approval_sha256": "324ff8c98d78a6ac1eccc91b07376c1874ba34121d7b01bb3570ef0133198861",
+      "commit": "7caf39914da1e28a67744ecbc963a5f26361474d",
+      "sha256": "a20b7097d6c0591464583de00bea1ee8d39bddfe461d56318532fb57991a8db7",
+      "source_phases": {
+        "final-repeat": {
+          "counts": {
+            "cargo": 1,
+            "collect2": 50,
+            "gcc": 50,
+            "rustc-full": 1,
+            "rustc-link-only": 50,
+            "stock-wild": 50
+          },
+          "e2e_list_count": 200,
+          "e2e_listing_sha256": "e3254bff0fba6072df809c053ef4e7d7b6490d144568bf3fb4cd6916bd4db316",
+          "e2e_sha256": "be6b9375b66036f898876d7f55d745c7ea11d028f7b106c31a273c26e2cdcef7",
+          "e2e_size": 226518976,
+          "fresh": 563,
+          "native_exec_argv_and_exit_sha256": "cbad551437caeb9b7d944082fb518ab7052b886a4a6ca34a13253e110f7a6d6b",
+          "native_outputs_sha256": "a915236e88ebd9d6469b3c29ceecbf1d9d014007e0ed9fd9c11d2af695d8e177",
+          "result_sha256": "38183a4ed1ed0b56e8ffc820cfd8a060a4ac04df3df7cefbdde7a36ea2c122ce",
+          "rust_argv_sha256": "acf227b65eecdffe9ac3967b681baae6470ab7cc5b16d5c810ad979ed2fb0f9f",
+          "selected_rust_tests": {
+            "notebook::hover_past_end_of_cell": 0,
+            "notebook::inlay_hints_range_past_end_of_cell": 0
+          },
+          "state": "original",
+          "units": 619
+        },
+        "initial-repeat": {
+          "counts": {
+            "cargo": 1,
+            "collect2": 50,
+            "gcc": 50,
+            "rustc-full": 1,
+            "rustc-link-only": 50,
+            "stock-wild": 50
+          },
+          "e2e_list_count": 200,
+          "e2e_listing_sha256": "e3254bff0fba6072df809c053ef4e7d7b6490d144568bf3fb4cd6916bd4db316",
+          "e2e_sha256": "be6b9375b66036f898876d7f55d745c7ea11d028f7b106c31a273c26e2cdcef7",
+          "e2e_size": 226518976,
+          "fresh": 563,
+          "native_exec_argv_and_exit_sha256": "4b5d232535a9253b00fbeab0a9b4f584d3b095521472d6daa13359f1db7bc72c",
+          "native_outputs_sha256": "a915236e88ebd9d6469b3c29ceecbf1d9d014007e0ed9fd9c11d2af695d8e177",
+          "result_sha256": "f1e8c30c9265fae90c1bbacf6e49f6e4ac38a73271a60891c5fc2c3785323017",
+          "rust_argv_sha256": "177fdbab1a665e67793ddf183042a8c92e1ddc3475859173256b7e0d3c8b2901",
+          "selected_rust_tests": {
+            "notebook::hover_past_end_of_cell": 0,
+            "notebook::inlay_hints_range_past_end_of_cell": 0
+          },
+          "state": "original",
+          "units": 619
+        },
+        "notebook-edit": {
+          "counts": {
+            "cargo": 1,
+            "collect2": 52,
+            "gcc": 52,
+            "rustc-full": 12,
+            "rustc-link-only": 43,
+            "stock-wild": 52
+          },
+          "e2e_list_count": 200,
+          "e2e_listing_sha256": "e3254bff0fba6072df809c053ef4e7d7b6490d144568bf3fb4cd6916bd4db316",
+          "e2e_sha256": "d76ef359714fc4339f053598978ec5464829f7d09adb24cdfd6defcae3fb56e8",
+          "e2e_size": 226518928,
+          "fresh": 559,
+          "native_exec_argv_and_exit_sha256": "7bf9a204cd53f3e3e9bde35b2ef5e63af15d4442c5bd8a6d77095453bd3454b1",
+          "native_outputs_sha256": "295d8bc37a95d4e7ce678719655e3bbac431bd576576c2a4b492adb258afe7d9",
+          "result_sha256": "ab61bf1a918bdb3aa1f61f1ffcaac4fda57e8325710bcbc637c3444875502672",
+          "rust_argv_sha256": "6e7d04d6cf2d03233300b59b52d7e37c3cbb91ad22b158ccce2d1ca385f2a57f",
+          "selected_rust_tests": {
+            "notebook::hover_past_end_of_cell": 101,
+            "notebook::inlay_hints_range_past_end_of_cell": 101
+          },
+          "state": "notebook",
+          "units": 619
+        },
+        "notebook-restore": {
+          "counts": {
+            "cargo": 1,
+            "collect2": 52,
+            "gcc": 52,
+            "rustc-full": 12,
+            "rustc-link-only": 43,
+            "stock-wild": 52
+          },
+          "e2e_list_count": 200,
+          "e2e_listing_sha256": "e3254bff0fba6072df809c053ef4e7d7b6490d144568bf3fb4cd6916bd4db316",
+          "e2e_sha256": "be6b9375b66036f898876d7f55d745c7ea11d028f7b106c31a273c26e2cdcef7",
+          "e2e_size": 226518976,
+          "fresh": 559,
+          "native_exec_argv_and_exit_sha256": "b6945a9bd4846f8fd08a94f5e26e84e28973e5ea2a81842bc143283d930202c4",
+          "native_outputs_sha256": "54be9ef4460e6a12f37e4d94d3970ce315a66206a5a5ce7e10e991db4ce522fd",
+          "result_sha256": "826bb0f0c0169c8c11c5824abcfd4bd7f0e06f412bf7a3b9db75c5fc8a506f40",
+          "rust_argv_sha256": "c89fcf40e5752d2b1f1587373161d0622fedc7428541c73b61d36d9834099547",
+          "selected_rust_tests": {
+            "notebook::hover_past_end_of_cell": 0,
+            "notebook::inlay_hints_range_past_end_of_cell": 0
+          },
+          "state": "original",
+          "units": 619
+        },
+        "seed": {
+          "counts": {
+            "cargo": 1,
+            "collect2": 250,
+            "gcc": 783,
+            "rustc-full": 623,
+            "rustc-query": 36,
+            "stock-wild": 188
+          },
+          "e2e_list_count": 200,
+          "e2e_listing_sha256": "e3254bff0fba6072df809c053ef4e7d7b6490d144568bf3fb4cd6916bd4db316",
+          "e2e_sha256": "be6b9375b66036f898876d7f55d745c7ea11d028f7b106c31a273c26e2cdcef7",
+          "e2e_size": 226518976,
+          "fresh": 0,
+          "native_exec_argv_and_exit_sha256": "11d8f5ca70eea59982a5c2655a9e035c4b027a29af3be8e02a222e29c9548210",
+          "native_outputs_sha256": "ec05d43798d8ecdbdc36c9b673ff23a99db5082c6daca7e45f63126c3ba15f3f",
+          "result_sha256": "f73d97c2c086aa83c3a0e18def22ce8c0973dcad2e401c563fb97fdc04badb05",
+          "rust_argv_sha256": "aec519c104cf54d49dd8a768201bce6211bc3fee18162ac9d8c67354bce687ff",
+          "selected_rust_tests": {
+            "notebook::hover_past_end_of_cell": 0,
+            "notebook::inlay_hints_range_past_end_of_cell": 0
+          },
+          "state": "original",
+          "units": 619
+        }
+      }
+    },
+    "B": {
+      "approval_sha256": "a5019c32b2173b6530db4795e6f72cbee778e90bf0121130803f11ab997f3446",
+      "commit": "c9c7fb9df6ca7e8f0c9c12f2471a0d8663bf5c19",
+      "sha256": "8e10b884f56d6807872c61d587b7cf152c03f04fe11e10b8bc412880f15c0ad0",
+      "source_phases": {
+        "final-repeat": {
+          "counts": {
+            "cargo": 1,
+            "collect2": 50,
+            "gcc": 50,
+            "rustc-full": 1,
+            "rustc-link-only": 50,
+            "stock-wild": 50
+          },
+          "e2e_list_count": 200,
+          "e2e_listing_sha256": "e3254bff0fba6072df809c053ef4e7d7b6490d144568bf3fb4cd6916bd4db316",
+          "e2e_sha256": "be6b9375b66036f898876d7f55d745c7ea11d028f7b106c31a273c26e2cdcef7",
+          "e2e_size": 226518976,
+          "fresh": 563,
+          "native_exec_argv_and_exit_sha256": "d004532602057cadfd05ccf5be980cbb87b3ac1ec68f35a22a4fa3e0f7763eed",
+          "native_outputs_sha256": "a915236e88ebd9d6469b3c29ceecbf1d9d014007e0ed9fd9c11d2af695d8e177",
+          "result_sha256": "19c457fdea63728d0b1383325ba733acc012c47f019c0e17372bfa0f8f403650",
+          "rust_argv_sha256": "c1e4b6af9601a9f96e4aa61d00bba2f8255785356d29a807361e1966babf3a0e",
+          "selected_rust_tests": {
+            "notebook::hover_past_end_of_cell": 0,
+            "notebook::inlay_hints_range_past_end_of_cell": 0
+          },
+          "state": "original",
+          "units": 619
+        },
+        "notebook-edit": {
+          "counts": {
+            "cargo": 1,
+            "collect2": 52,
+            "gcc": 52,
+            "rustc-full": 12,
+            "rustc-link-only": 43,
+            "stock-wild": 52
+          },
+          "e2e_list_count": 200,
+          "e2e_listing_sha256": "e3254bff0fba6072df809c053ef4e7d7b6490d144568bf3fb4cd6916bd4db316",
+          "e2e_sha256": "d76ef359714fc4339f053598978ec5464829f7d09adb24cdfd6defcae3fb56e8",
+          "e2e_size": 226518928,
+          "fresh": 559,
+          "native_exec_argv_and_exit_sha256": "d186011df1b560abaaaa77e40b3986c420c40f8880f41889f1974235cedb79db",
+          "native_outputs_sha256": "295d8bc37a95d4e7ce678719655e3bbac431bd576576c2a4b492adb258afe7d9",
+          "result_sha256": "1ed31b324c650e803d216611fcdc3cceec435f9905c976cea043a9558b8ad3d9",
+          "rust_argv_sha256": "b76b0662001b9950d4a1ea0fe400c720e0a60f53d709ccc796891bc7664bcc35",
+          "selected_rust_tests": {
+            "notebook::hover_past_end_of_cell": 101,
+            "notebook::inlay_hints_range_past_end_of_cell": 101
+          },
+          "state": "notebook",
+          "units": 619
+        },
+        "notebook-restore": {
+          "counts": {
+            "cargo": 1,
+            "collect2": 52,
+            "gcc": 52,
+            "rustc-full": 12,
+            "rustc-link-only": 43,
+            "stock-wild": 52
+          },
+          "e2e_list_count": 200,
+          "e2e_listing_sha256": "e3254bff0fba6072df809c053ef4e7d7b6490d144568bf3fb4cd6916bd4db316",
+          "e2e_sha256": "be6b9375b66036f898876d7f55d745c7ea11d028f7b106c31a273c26e2cdcef7",
+          "e2e_size": 226518976,
+          "fresh": 559,
+          "native_exec_argv_and_exit_sha256": "3b3502a22a83796f117bc65c49122fc9feb8482c8760663c943f9143f65a7c18",
+          "native_outputs_sha256": "19c32bdcc1770ef3f4d890e965cd28d18426fc42284aeb2b83ea6bc3015298c3",
+          "result_sha256": "b3a9b84c449b78d66957a42d88de6dbac90be396c9fe1b5c511b8b22d6915afd",
+          "rust_argv_sha256": "0b00fd7802324bf3542436ad7f2cce799d835e2c7fbbf84cfe2c0805f5ed0576",
+          "selected_rust_tests": {
+            "notebook::hover_past_end_of_cell": 0,
+            "notebook::inlay_hints_range_past_end_of_cell": 0
+          },
+          "state": "original",
+          "units": 619
+        },
+        "original-warm": {
+          "counts": {
+            "cargo": 1,
+            "collect2": 52,
+            "gcc": 52,
+            "rustc-full": 12,
+            "rustc-link-only": 43,
+            "stock-wild": 52
+          },
+          "e2e_list_count": 200,
+          "e2e_listing_sha256": "e3254bff0fba6072df809c053ef4e7d7b6490d144568bf3fb4cd6916bd4db316",
+          "e2e_sha256": "be6b9375b66036f898876d7f55d745c7ea11d028f7b106c31a273c26e2cdcef7",
+          "e2e_size": 226518976,
+          "fresh": 559,
+          "native_exec_argv_and_exit_sha256": "3b97721f0d21bacad3f9bda8519b6cf33c0815317f98d806a44e9eb2d7c4356f",
+          "native_outputs_sha256": "5d749b605c5240938cd05920c268d2042f5aad2038e7b6c1b1888f40b425ffa1",
+          "result_sha256": "ea8a1c32afb991c935e7d3ba9ee8f27db4ac8ca096b74fa17b60dd58a710e875",
+          "rust_argv_sha256": "ec0a8847019e93c195e19c0b98f6ad663fcc8ba879c2076372d512360dc31cd3",
+          "selected_rust_tests": {
+            "notebook::hover_past_end_of_cell": 0,
+            "notebook::inlay_hints_range_past_end_of_cell": 0
+          },
+          "state": "original",
+          "units": 619
+        },
+        "seed": {
+          "counts": {
+            "cargo": 1,
+            "collect2": 250,
+            "gcc": 783,
+            "rustc-full": 623,
+            "rustc-query": 36,
+            "stock-wild": 188
+          },
+          "e2e_list_count": 200,
+          "e2e_listing_sha256": "e3254bff0fba6072df809c053ef4e7d7b6490d144568bf3fb4cd6916bd4db316",
+          "e2e_sha256": "d76ef359714fc4339f053598978ec5464829f7d09adb24cdfd6defcae3fb56e8",
+          "e2e_size": 226518928,
+          "fresh": 0,
+          "native_exec_argv_and_exit_sha256": "329ebc395414166d99ddc166912451807caed440da519bc9f3204fba9d91c627",
+          "native_outputs_sha256": "94abd01c1a8521e2a68e7d0a03068f890ec746d02062eb3b27b3324f13dee324",
+          "result_sha256": "80d685a94b680b8d9a0d24cfcccad97afa64edd1cb845bb7da72b9a8aedea6a3",
+          "rust_argv_sha256": "ea6d2b4703b17165b8672381c9ec2d951d7f8b39b02e63c40ad2a1350570a62e",
+          "selected_rust_tests": {
+            "notebook::hover_past_end_of_cell": 101,
+            "notebook::inlay_hints_range_past_end_of_cell": 101
+          },
+          "state": "notebook",
+          "units": 619
+        }
+      }
+    }
+  },
+  "checks": {
+    "all_18_explicit_and_standard_guard_controls": true,
+    "all_50_other_argument_bytes_exact": true,
+    "all_619_typed_rosters_identical": true,
+    "all_three_warm_native_ELF_comparisons_exact_or_documented_two_fields": true,
+    "authentic_matched_Cargo_A": true,
+    "authentic_matched_Cargo_B": true,
+    "both_clean_worlds_match_independently_qualified_release": true,
+    "e2e_matches_independent_cold_endpoints": true,
+    "exact_warm_rust_arguments_final-repeat": true,
+    "exact_warm_rust_arguments_notebook-edit": true,
+    "exact_warm_rust_arguments_notebook-restore": true,
+    "genuine_end_to_end_source_observed_in_all_ten": true,
+    "matched_unchanged_execution_and_all_50_stock_target_names": true,
+    "measured_states_have_real_full_cold": true,
+    "normal_ron_full_invocation_remains_exact": true,
+    "same_warm_scheduled_targets_final-repeat": true,
+    "same_warm_scheduled_targets_notebook-edit": true,
+    "same_warm_scheduled_targets_notebook-restore": true,
+    "separate_native_edited_effect": true,
+    "ten_real_commands": true,
+    "unchanged_released_rustc_and_stock_wild_all_ten": true
+  },
+  "complete": true,
+  "fatal_checks": [],
+  "independent_configured_native_matrix": {
+    "commands": 132,
+    "configurations": 18,
+    "custom_compiler_distinct_namespace": [
+      [
+        "7ae86ef5e9cb9e16",
+        "a56f28058b0880be"
+      ]
+    ],
+    "exact_intended_argv_changes": [
+      [
+        "no_headstart",
+        "edit"
+      ],
+      [
+        "no_headstart",
+        "restore"
+      ],
+      [
+        "ordinary",
+        "edit"
+      ],
+      [
+        "ordinary",
+        "restore"
+      ]
+    ],
+    "manifest_sha256": "c118586cacf970fcef2d9ab350c3967da41d4ffe1f3f3401de686d8d71d3c7e5",
+    "matched_nonzero_errors": 2,
+    "verification_sha256": "b3b62f5baf69596eb797ad5419ce9842f8bd59315d5fdf464aa70f7ff3ddcd6f"
+  },
+  "process_status_qualification": {
+    "A/final-repeat": {
+      "ledger_sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "native_feature_or_version_queries": 0
+    },
+    "A/initial-repeat": {
+      "ledger_sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "native_feature_or_version_queries": 0
+    },
+    "A/notebook-edit": {
+      "ledger_sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "native_feature_or_version_queries": 0
+    },
+    "A/notebook-restore": {
+      "ledger_sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "native_feature_or_version_queries": 0
+    },
+    "A/seed": {
+      "ledger_sha256": "f6881b47faa6280e60866010a1551665c465c408e5efd947e809d7162a891e6d",
+      "native_feature_or_version_queries": 52
+    },
+    "B/final-repeat": {
+      "ledger_sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "native_feature_or_version_queries": 0
+    },
+    "B/notebook-edit": {
+      "ledger_sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "native_feature_or_version_queries": 0
+    },
+    "B/notebook-restore": {
+      "ledger_sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "native_feature_or_version_queries": 0
+    },
+    "B/original-warm": {
+      "ledger_sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "native_feature_or_version_queries": 0
+    },
+    "B/seed": {
+      "ledger_sha256": "868f7310450c77db6fa9ce0021e453eaad7995245d41fb43711bf775804b2bf7",
+      "native_feature_or_version_queries": 52
+    }
+  },
+  "raw_all_warm_stock_elf_outputs_byte_identical": false,
+  "receipts": {
+    "A_terminal": "87a7ad0fc2a2b58c14c85778b4816bcbed426453793e5f2e948cb7cb22b084fb",
+    "B_terminal": "da2345101ffb38a3807f3f1b00017962312f9cc8c0814dbbb7d6ca076562da2c",
+    "arm_A_capture_binding": "053e8ac5e46de83c3708b8cfb11ef498d5a4da4ff09d2db003b7af8bcf3d3570",
+    "arm_A_existing_cold_reevaluation": "327a2b481eade177b0c9215e5563a54836c1f11567e10c102c3450bef3a472db",
+    "arm_B_capture_binding": "167eb24ecdd7acca996bea25a9b6c6a1bd2275a5a01138ff6896bd9e9f564e8c",
+    "capture_source_manifest": "ef1193451cb03f808de2f0061a241830c6da28183a5e5b286636def3e3e109e3",
+    "comparison": "19b6001b5f9d965a09312daeb36e02faaef3977c2b09ef513e778e1c4610a54f",
+    "earlier_mount_switch_rejection": {
+      "cargo_exit": 101,
+      "execs_sha256": "84521ef02464ca93c4220747c0ed8a55136622916591069027e24ef208674bc1",
+      "partial_units": 65
+    },
+    "elf_fields_diagnostic": "dc233b80a636b8c62c803868002c94e99298e56b40d89831f494f59ff8da6bcb",
+    "factory_sha256": "35aa16d92a9616b94b176744ee30ab07cad1e68b96222a3235512fdc306b803e",
+    "treatment_release": "10f8a58fe9b0a996e388f86293b622e6a0a439f5e6ece028366acbc3132d126a"
+  },
+  "schema": 1,
+  "scope": "unscored Linux x86_64 released Rust and Wild, two separately trained source-built Cargo images, Ruff workspace test --no-run and two selected notebook tests",
+  "stock_elf_comparisons": {
+    "final-repeat__final-repeat": {
+      "common": 50,
+      "dispositions": {},
+      "exact": 50,
+      "nonexact": 0
+    },
+    "notebook-edit__notebook-edit": {
+      "common": 52,
+      "dispositions": {},
+      "exact": 52,
+      "nonexact": 0
+    },
+    "notebook-restore__notebook-restore": {
+      "common": 52,
+      "dispositions": {
+        "stock-rodata-and-build-id-only": 2
+      },
+      "exact": 50,
+      "nonexact": 2
+    }
+  },
+  "tools": {
+    "driver": "a7648053cbad025c1bb0bebb7009ce9e1515bdb02e8c30bef29b52a881e5b8de",
+    "rustc": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+    "source": "93526150df078af7dd8fc4226cdcc469539d2001",
+    "wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5"
+  }
+}

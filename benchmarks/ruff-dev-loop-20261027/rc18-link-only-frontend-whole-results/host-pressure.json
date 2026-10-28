@@ -1,0 +1,66 @@
+{
+  "batch1-primary": {
+    "data": {
+      "after": {
+        "/proc/loadavg": "7.57 6.98 6.48 1/932 3289601",
+        "/proc/pressure/cpu": "some avg10=0.00 avg60=0.00 avg300=0.00 total=633252101\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0",
+        "/proc/pressure/io": "some avg10=11.83 avg60=18.90 avg300=18.32 total=1731545694\nfull avg10=11.12 avg60=18.36 avg300=17.88 total=1678057272",
+        "/proc/pressure/memory": "some avg10=0.00 avg60=0.00 avg300=0.00 total=46808334\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=46561006",
+        "/proc/stat": "cpu  11054771 22997 6020515 1003178505 1196622 0 124204 8580 0 0",
+        "/sys/fs/cgroup/cpu.pressure": "some avg10=0.00 avg60=0.00 avg300=0.00 total=633252101\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0",
+        "/sys/fs/cgroup/cpu.stat": "usage_usec 172224888679\nuser_usec 110777686516\nsystem_usec 61447202162\nnice_usec 229973960\ncore_sched.force_idle_usec 0\nnr_periods 0\nnr_throttled 0\nthrottled_usec 0\nnr_bursts 0\nburst_usec 0",
+        "/sys/fs/cgroup/io.pressure": "some avg10=11.83 avg60=18.90 avg300=18.32 total=1731545694\nfull avg10=11.12 avg60=18.36 avg300=17.88 total=1678057272",
+        "/sys/fs/cgroup/memory.pressure": "some avg10=0.00 avg60=0.00 avg300=0.00 total=46808334\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=46561006",
+        "clock_ns": 1793221567347636523,
+        "monotonic_ns": 320149029790138
+      },
+      "before": {
+        "/proc/loadavg": "2.24 5.26 5.86 1/928 3247795",
+        "/proc/pressure/cpu": "some avg10=0.00 avg60=0.00 avg300=0.00 total=631931081\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0",
+        "/proc/pressure/io": "some avg10=8.03 avg60=11.83 avg300=5.77 total=1614764374\nfull avg10=7.98 avg60=11.76 avg300=5.72 total=1564073730",
+        "/proc/pressure/memory": "some avg10=0.00 avg60=0.00 avg300=0.00 total=46542248\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=46295155",
+        "/proc/stat": "cpu  10911018 22976 5927508 1001720070 1066271 0 122882 8515 0 0",
+        "/sys/fs/cgroup/cpu.pressure": "some avg10=0.00 avg60=0.00 avg300=0.00 total=631931081\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0",
+        "/sys/fs/cgroup/cpu.stat": "usage_usec 169843861833\nuser_usec 109339954019\nsystem_usec 60503907813\nnice_usec 229769969\ncore_sched.force_idle_usec 0\nnr_periods 0\nnr_throttled 0\nthrottled_usec 0\nnr_bursts 0\nburst_usec 0",
+        "/sys/fs/cgroup/io.pressure": "some avg10=8.03 avg60=11.83 avg300=5.77 total=1614764374\nfull avg10=7.98 avg60=11.76 avg300=5.72 total=1564073730",
+        "/sys/fs/cgroup/memory.pressure": "some avg10=0.00 avg60=0.00 avg300=0.00 total=46542248\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=46295155",
+        "clock_ns": 1793220991163423852,
+        "monotonic_ns": 319572845577608
+      },
+      "exit": 0
+    },
+    "source_sha256": "10f114f894cf25a8820d660272c85a9a6b919c853a54d6954efff676e063ab0b"
+  },
+  "batch2-primary": {
+    "data": {
+      "after": {
+        "/proc/loadavg": "6.05 6.89 6.94 1/928 3379754",
+        "/proc/pressure/cpu": "some avg10=0.00 avg60=0.00 avg300=0.00 total=634722041\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0",
+        "/proc/pressure/io": "some avg10=0.11 avg60=0.18 avg300=1.06 total=1746340980\nfull avg10=0.11 avg60=0.17 avg300=1.02 total=1692709754",
+        "/proc/pressure/memory": "some avg10=0.00 avg60=0.00 avg300=0.00 total=47051170\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=46802764",
+        "/proc/stat": "cpu  11576238 23034 6143669 1005494632 1204600 0 126408 8694 0 0",
+        "/sys/fs/cgroup/cpu.pressure": "some avg10=0.00 avg60=0.00 avg300=0.00 total=634722041\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0",
+        "/sys/fs/cgroup/cpu.stat": "usage_usec 178693514970\nuser_usec 115992736350\nsystem_usec 62700778619\nnice_usec 230347727\ncore_sched.force_idle_usec 0\nnr_periods 0\nnr_throttled 0\nthrottled_usec 0\nnr_bursts 0\nburst_usec 0",
+        "/sys/fs/cgroup/io.pressure": "some avg10=0.11 avg60=0.18 avg300=1.06 total=1746340980\nfull avg10=0.11 avg60=0.17 avg300=1.02 total=1692709754",
+        "/sys/fs/cgroup/memory.pressure": "some avg10=0.00 avg60=0.00 avg300=0.00 total=47051170\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=46802764",
+        "clock_ns": 1793222503388919686,
+        "monotonic_ns": 321085071074373
+      },
+      "before": {
+        "/proc/loadavg": "6.08 6.68 6.39 2/930 3289617",
+        "/proc/pressure/cpu": "some avg10=0.00 avg60=0.00 avg300=0.00 total=633289980\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0",
+        "/proc/pressure/io": "some avg10=49.65 avg60=30.10 avg300=21.01 total=1743845166\nfull avg10=49.54 avg60=29.71 avg300=20.60 total=1690321209",
+        "/proc/pressure/memory": "some avg10=0.00 avg60=0.00 avg300=0.00 total=46808334\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=46561006",
+        "/proc/stat": "cpu  11055090 22997 6020924 1003251312 1199008 0 124207 8580 0 0",
+        "/sys/fs/cgroup/cpu.pressure": "some avg10=0.00 avg60=0.00 avg300=0.00 total=633289980\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0",
+        "/sys/fs/cgroup/cpu.stat": "usage_usec 172232203906\nuser_usec 110780877973\nsystem_usec 61451325933\nnice_usec 229973960\ncore_sched.force_idle_usec 0\nnr_periods 0\nnr_throttled 0\nthrottled_usec 0\nnr_bursts 0\nburst_usec 0",
+        "/sys/fs/cgroup/io.pressure": "some avg10=49.65 avg60=30.10 avg300=21.01 total=1743845166\nfull avg10=49.54 avg60=29.71 avg300=20.60 total=1690321209",
+        "/sys/fs/cgroup/memory.pressure": "some avg10=0.00 avg60=0.00 avg300=0.00 total=46808334\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=46561006",
+        "clock_ns": 1793221591137206861,
+        "monotonic_ns": 320172819360687
+      },
+      "exit": 0
+    },
+    "source_sha256": "133d01a34b9a7ce2f155dbd9f024c098f8bf2c5d1cdc3cbc8cc72d928b045ae4"
+  }
+}

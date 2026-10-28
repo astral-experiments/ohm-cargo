@@ -1,0 +1,23 @@
+# Frontend worker count for the full Ruff test build
+
+On the first Linux x86_64 machine, reducing the frontend worker count for cached native links did not meet the registered whole-command threshold. The paired point estimate was 3.99% faster. Its 95% interval ranged from 2.34% slower to 9.92% faster. The change won 29 of 48 adjacent pairs, with a two-sided sign-test p of 0.193. [Registered first-machine experiment](https://github.com/astral-sh/ohm-cargo/tree/58e18db65a2e260f74fdf4c9333e340f606f3473/benchmarks/ruff-dev-loop-20261027/rc18-link-only-frontend-wall-plan)
+
+The independently registered second machine also missed the threshold. Its control median was 9.565 s and candidate median 9.280 s. The paired estimate was 2.14% faster, with a 95% interval from 7.06% slower to 10.38% faster. The candidate won 28 of 48 pairs with a two-sided sign-test p of 0.312. Both machines completed every planned pair. Their results are reported separately. [Second-machine registration](https://github.com/astral-sh/ohm-cargo/tree/c46547787e64621ad6d16b00e3f55206b0dfbf3e/benchmarks/ruff-dev-loop-20261027/rc18-link-only-frontend-independent-host-plan) · [Replication data and controls](replication/README.md)
+
+| First machine | Pairs | Control median | Candidate median | Paired reduction | Candidate faster |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| First independently warmed state | 24 | 10.970 s | 9.932 s | 6.10% | 16/24 |
+| Second independently warmed state | 24 | 6.001 s | 5.941 s | 1.84% | 13/24 |
+| Both states | 48 | 7.094 s | 6.694 s | 3.99% | 29/48 |
+
+The command was `cargo +ohm test --workspace --no-run --locked --offline -j8 --message-format=json` on Ruff `93526150df078af7dd8fc4226cdcc469539d2001`. The control used the exact Cargo source shipped in Ohm 1.99.0-18. The candidate added the cached-link worker-count change. Both Cargo builds used the same PGO profile and ran with the release's original rustc and Wild. Each timed run produced 619 Cargo units, 563 fresh. Each arm's separate native trace recorded one full `ron`, 50 cached rustc invocations and the same 50 real native links. E2e test executions and process tracing took place outside the timer. [Release](https://github.com/astral-sh/ohm/releases/tag/ohm-1.99.0-18)
+
+The real notebook edit linked a changed e2e and the warm executable matched an independently empty edited build byte-for-byte. Both checked notebook assertions failed after the edit and passed again after source restoration. Across the matched arms, all 52 edited ELF files and all 50 final unchanged ELF files were byte-identical. Two of 52 restored ELFs differed solely in the GNU build ID and the `.rodata` section-header entry-size field. The compiler command for the full `ron` invocation was identical in both arms. The change affected only the automatic frontend option on the 50 cached invocations. [Functional records and verifier](functional/README.md)
+
+The second machine independently verified 1,616 process records across eight native traces. Of 200 paired executable comparisons, 196 were byte-identical. The other four differed only in the GNU build ID and `.rodata.sh_entsize`. Both original notebook tests passed on each arm before and after each timing batch.
+
+A separate component experiment measured a genuine Ruff parser integration-test link. With no spare jobserver tokens it improved by 2.86%, with a 97.07% interval of 1.35–3.67%. A small complete Cargo edit in that study was inconclusive, with a paired improvement of 0.80% and a 97.07% interval of −0.10–2.13%. `component-pairs.json` retains all 240 timed component calls. The two whole-command studies determine qualification.
+
+After the first machine's unchanged study finished, twelve descriptive pairs alternated the real notebook edit with its restoration. The candidate won six pairs for the edit and its first repeat combined. The paired geometric estimate was 5.28% slower. Median combined time was 19.066 s for the control and 20.047 s for the candidate. Each direction included three AB and three BA pairs. All 48 timed builds completed. Outside the timer, each of the 24 executables listed exactly 200 tests, matched the corresponding clean binary hash and produced the expected two notebook assertion results. [All twelve pairs](edited/samples.json)
+
+Run `sha256sum -c SHA256SUMS` and `python3 -IB verify.py` to validate the functional controls, the edited follow-up and both registered wall-time results. `pairs.json` contains all 96 first-machine timed process results. `guards.json` contains each pair's unscored host and native-work checks. `host-pressure.json` contains the OS counters captured immediately before and after each batch.
