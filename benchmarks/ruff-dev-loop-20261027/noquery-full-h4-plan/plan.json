@@ -1,0 +1,493 @@
+{
+  "admission": "Before any release-profile clocks are opened, trace a completely empty cold command, the first unchanged command, and two genuinely settled repeats in each exact arm under this identical environment. Classify physical full rustc, link-only rustc, and real Wild/system linkers rather than inferring jobs from Cargo. O, A and B must each show an incomplete first cold ron receipt, first-unchanged one full ron plus 50 link-only rustc and 50 actual Wild, then zero. C must make its first cold receipt complete and all subsequent calls zero. No old-compiler optional feature probe may appear on N/old; old broad raw-path header alone must not be treated as full binary-input enumeration. Quantify real cold cohorts and flags. Bind jobs/unit/installation and all artifact references before scoring. Save all 619 Cargo rows, 84+18 executable dispositions, all 110 native files, and ordinary runtime RUSTC/small-program and Ruff/Ty/stdlib CLI/listing oracles. The exact source+ABI B/P/N nonobserver gate and old-compiler negative are preconditions.",
+  "analysis_files": {
+    "analyze.py": "7e58949740b3d900d75fbb1a8be60b3cefcbe222fed620d1fcd5bc0edc5e529c",
+    "design.py": "17204e7b9d38a467dc285d47a09d4e73522c6308c4e1aa4d52db94380932233c",
+    "elf_gate.py": "959bf3f956579daab4e769fdf2ca4fc5131292dd4e3c4e60a22cae7839fa9043"
+  },
+  "arms": {
+    "A": "New N Cargo + old Rust: downgrade/no-attestation control for the conditional cost of rustc.",
+    "B": "Old Cargo + new Rust: Cargo ignores new optional information.",
+    "C": "New N Cargo + new Rust: cooperating candidate.",
+    "O": "Old Cargo + old Rust: corrected, release-source-matched 1.99.0-17 baseline (principal control)."
+  },
+  "cargo_new": "b538e17473c6ed001c04f7026f8fe73f737b0246",
+  "cargo_old": "a0c7d08c898d3fdff992f2f431dec57d2486add2",
+  "cold_seed": 202610280817,
+  "command": [
+    "cargo",
+    "+ohm",
+    "test",
+    "--no-run",
+    "--workspace",
+    "--locked",
+    "--offline",
+    "-j8",
+    "--message-format=json"
+  ],
+  "environment": "One H4 32-logical-CPU AMD EPYC Linux devbox; cores 0 through 23 and Cargo jobs=8 for every arm. Four independent, initially empty writable target/shared/registry stores on the same private HOME ext4 volume. Kernel file caches may be warm. Fixed local offline sparse index and registry archive charges as in the whole Ruff release control. Hold one host-native lock throughout each complete history and the scored series; decline scoring during other cargo/rustc/linker work on this host.",
+  "expected_total": {
+    "cold_states": 96,
+    "later_genuinely_fresh_commands": 1152,
+    "settled_paired_waves_per_control": 288,
+    "single_cold_first_immediate_settled_commands": 288,
+    "total_scored_commands": 1440
+  },
+  "histories": [
+    {
+      "cold_order": "AOCB",
+      "history": 1,
+      "settled_orders": [
+        "BCOA",
+        "COAB",
+        "OABC",
+        "ABCO",
+        "ABOC",
+        "BOCA",
+        "CABO",
+        "OCAB",
+        "BAOC",
+        "AOCB",
+        "CBAO",
+        "OCBA"
+      ]
+    },
+    {
+      "cold_order": "OCAB",
+      "history": 2,
+      "settled_orders": [
+        "COAB",
+        "OABC",
+        "BCOA",
+        "ABCO",
+        "BCAO",
+        "AOBC",
+        "OBCA",
+        "CAOB",
+        "BCOA",
+        "OABC",
+        "COAB",
+        "ABCO"
+      ]
+    },
+    {
+      "cold_order": "CBAO",
+      "history": 3,
+      "settled_orders": [
+        "OBAC",
+        "ACOB",
+        "BACO",
+        "COBA",
+        "OABC",
+        "ABCO",
+        "COAB",
+        "BCOA",
+        "OCAB",
+        "ABOC",
+        "BOCA",
+        "CABO"
+      ]
+    },
+    {
+      "cold_order": "COAB",
+      "history": 4,
+      "settled_orders": [
+        "COBA",
+        "OBAC",
+        "BACO",
+        "ACOB",
+        "ACOB",
+        "BACO",
+        "COBA",
+        "OBAC",
+        "COAB",
+        "BCOA",
+        "OABC",
+        "ABCO"
+      ]
+    },
+    {
+      "cold_order": "ACOB",
+      "history": 5,
+      "settled_orders": [
+        "ABOC",
+        "CABO",
+        "BOCA",
+        "OCAB",
+        "BACO",
+        "OBAC",
+        "ACOB",
+        "COBA",
+        "AOCB",
+        "CBAO",
+        "BAOC",
+        "OCBA"
+      ]
+    },
+    {
+      "cold_order": "AOBC",
+      "history": 6,
+      "settled_orders": [
+        "ACOB",
+        "COBA",
+        "BACO",
+        "OBAC",
+        "BOAC",
+        "OACB",
+        "CBOA",
+        "ACBO",
+        "COAB",
+        "OABC",
+        "ABCO",
+        "BCOA"
+      ]
+    },
+    {
+      "cold_order": "BCOA",
+      "history": 7,
+      "settled_orders": [
+        "OABC",
+        "ABCO",
+        "COAB",
+        "BCOA",
+        "ABCO",
+        "COAB",
+        "BCOA",
+        "OABC",
+        "BOAC",
+        "OACB",
+        "ACBO",
+        "CBOA"
+      ]
+    },
+    {
+      "cold_order": "OACB",
+      "history": 8,
+      "settled_orders": [
+        "CBOA",
+        "ACBO",
+        "OACB",
+        "BOAC",
+        "BOAC",
+        "CBOA",
+        "OACB",
+        "ACBO",
+        "CBOA",
+        "ACBO",
+        "BOAC",
+        "OACB"
+      ]
+    },
+    {
+      "cold_order": "BOCA",
+      "history": 9,
+      "settled_orders": [
+        "ABOC",
+        "BOCA",
+        "OCAB",
+        "CABO",
+        "ABOC",
+        "OCAB",
+        "BOCA",
+        "CABO",
+        "CAOB",
+        "BCAO",
+        "OBCA",
+        "AOBC"
+      ]
+    },
+    {
+      "cold_order": "CABO",
+      "history": 10,
+      "settled_orders": [
+        "OCBA",
+        "CBAO",
+        "BAOC",
+        "AOCB",
+        "ABCO",
+        "COAB",
+        "OABC",
+        "BCOA",
+        "BCAO",
+        "AOBC",
+        "CAOB",
+        "OBCA"
+      ]
+    },
+    {
+      "cold_order": "OABC",
+      "history": 11,
+      "settled_orders": [
+        "CABO",
+        "ABOC",
+        "OCAB",
+        "BOCA",
+        "OCAB",
+        "CABO",
+        "ABOC",
+        "BOCA",
+        "OBAC",
+        "BACO",
+        "ACOB",
+        "COBA"
+      ]
+    },
+    {
+      "cold_order": "OBAC",
+      "history": 12,
+      "settled_orders": [
+        "BACO",
+        "COBA",
+        "OBAC",
+        "ACOB",
+        "AOCB",
+        "BAOC",
+        "CBAO",
+        "OCBA",
+        "COBA",
+        "BACO",
+        "ACOB",
+        "OBAC"
+      ]
+    },
+    {
+      "cold_order": "ABCO",
+      "history": 13,
+      "settled_orders": [
+        "BAOC",
+        "AOCB",
+        "OCBA",
+        "CBAO",
+        "ACBO",
+        "CBOA",
+        "OACB",
+        "BOAC",
+        "ABOC",
+        "CABO",
+        "BOCA",
+        "OCAB"
+      ]
+    },
+    {
+      "cold_order": "OBCA",
+      "history": 14,
+      "settled_orders": [
+        "COBA",
+        "ACOB",
+        "BACO",
+        "OBAC",
+        "AOBC",
+        "CAOB",
+        "BCAO",
+        "OBCA",
+        "CBOA",
+        "BOAC",
+        "OACB",
+        "ACBO"
+      ]
+    },
+    {
+      "cold_order": "BCAO",
+      "history": 15,
+      "settled_orders": [
+        "BAOC",
+        "OCBA",
+        "CBAO",
+        "AOCB",
+        "BOCA",
+        "OCAB",
+        "ABOC",
+        "CABO",
+        "CBAO",
+        "AOCB",
+        "OCBA",
+        "BAOC"
+      ]
+    },
+    {
+      "cold_order": "OCBA",
+      "history": 16,
+      "settled_orders": [
+        "BOAC",
+        "CBOA",
+        "ACBO",
+        "OACB",
+        "ABOC",
+        "BOCA",
+        "CABO",
+        "OCAB",
+        "OABC",
+        "ABCO",
+        "BCOA",
+        "COAB"
+      ]
+    },
+    {
+      "cold_order": "BACO",
+      "history": 17,
+      "settled_orders": [
+        "BACO",
+        "ACOB",
+        "OBAC",
+        "COBA",
+        "OACB",
+        "ACBO",
+        "CBOA",
+        "BOAC",
+        "CBOA",
+        "BOAC",
+        "ACBO",
+        "OACB"
+      ]
+    },
+    {
+      "cold_order": "ACBO",
+      "history": 18,
+      "settled_orders": [
+        "CAOB",
+        "OBCA",
+        "BCAO",
+        "AOBC",
+        "CAOB",
+        "AOBC",
+        "BCAO",
+        "OBCA",
+        "OACB",
+        "CBOA",
+        "ACBO",
+        "BOAC"
+      ]
+    },
+    {
+      "cold_order": "BOAC",
+      "history": 19,
+      "settled_orders": [
+        "BACO",
+        "COBA",
+        "OBAC",
+        "ACOB",
+        "AOCB",
+        "CBAO",
+        "OCBA",
+        "BAOC",
+        "BAOC",
+        "CBAO",
+        "OCBA",
+        "AOCB"
+      ]
+    },
+    {
+      "cold_order": "BAOC",
+      "history": 20,
+      "settled_orders": [
+        "COBA",
+        "ACOB",
+        "OBAC",
+        "BACO",
+        "AOBC",
+        "CAOB",
+        "BCAO",
+        "OBCA",
+        "ACBO",
+        "CBOA",
+        "BOAC",
+        "OACB"
+      ]
+    },
+    {
+      "cold_order": "ABOC",
+      "history": 21,
+      "settled_orders": [
+        "BOAC",
+        "CBOA",
+        "ACBO",
+        "OACB",
+        "ACOB",
+        "BACO",
+        "OBAC",
+        "COBA",
+        "BOAC",
+        "OACB",
+        "ACBO",
+        "CBOA"
+      ]
+    },
+    {
+      "cold_order": "CBOA",
+      "history": 22,
+      "settled_orders": [
+        "OBCA",
+        "CAOB",
+        "BCAO",
+        "AOBC",
+        "BOCA",
+        "CABO",
+        "OCAB",
+        "ABOC",
+        "COBA",
+        "ACOB",
+        "BACO",
+        "OBAC"
+      ]
+    },
+    {
+      "cold_order": "CAOB",
+      "history": 23,
+      "settled_orders": [
+        "ACBO",
+        "BOAC",
+        "OACB",
+        "CBOA",
+        "CABO",
+        "ABOC",
+        "OCAB",
+        "BOCA",
+        "AOCB",
+        "CBAO",
+        "OCBA",
+        "BAOC"
+      ]
+    },
+    {
+      "cold_order": "COBA",
+      "history": 24,
+      "settled_orders": [
+        "ACBO",
+        "BOAC",
+        "CBOA",
+        "OACB",
+        "COAB",
+        "OABC",
+        "BCOA",
+        "ABCO",
+        "ACOB",
+        "BACO",
+        "COBA",
+        "OBAC"
+      ]
+    }
+  ],
+  "measurement": "Canonical paths and physical medium stay fixed in all arms. Each of the four arms in one history executes a true cold command from an independent empty state, one unchanged command, then one immediate settled command; all three are recorded. Log single immediate settled values descriptively. Complete output verification occurs outside each timer. After all four are settled, run twelve 4-arm waves in independently generated prespecified order, only genuinely fresh commands. Retain the exact same warm store for each arm within that history. The entire next history starts from four independently empty stores. Require 619 fresh and no artifact or proof change after every settled command; separate native tracer verifies truly zero rustc/linkers. Never include tracing, output hashing, listing calls or safety checks in the wall interval. The scheduler does not drop changes in host speed or filter outliers.",
+  "official_linux_archive_sha256": "163267d26889b1bd2c467d7db97efee42cd2ac9dc9af2abc3a56ade8da9a9572",
+  "oracles": "Each command must succeed with 619 Cargo rows, 102 executable paths (84 test-profile and 18 ordinary), stable full warning+roster and the same set of 110 native ELF paths. Compare the full raw outputs and typed ELF records to independent same-arm native cold/first baselines. A genuine cold/full link may differ from an independently warmed native baseline solely in the previously demonstrated stock Wild section-header/build-ID case, proven by identical excluded-field digest, protected type/flags, raw all-other bytes and the frozen permitted-width helper. Any fresh command must retain all prior 110 raw binary hashes; no field normalization for within-arm fresh commands. C never changes a raw binary after cold. Both ordinary callers run outside the Cargo timers. Retain raw signed receipts and actual counts. If native oracles cannot reconstruct all outputs under the predeclared allowance, stop and preserve the discrepancy; do not start a timed study.",
+  "ordinary_paths": "Source, SDK, Cargo home, target, shared build and compiler temp paths contain no spaces. Per-arm physical state appears at identical canonical paths inside each process. Default Ohm settings, no proc-macro or native-tool trust override, no RUSTFLAGS, no wrappers. No test case runs inside the timed command.",
+  "power_context": "Historical H4 v2 partnered differences on the one-command settled floors had sample SDs of 171ms and log SDs .176/.169. 288 paired waves per contrast give an illustrative independent-noise 98.75% halfwidth about 23ms, vs about 41ms for 5% of a .82s run; with within-history ICC 0.1 the illustrative halfwidth is about 33ms. The use of 24 whole-history bootstrap units retains actual within-history dependence. No assumed ICC is part of the pass/fail test. H4 v2 failed its settled bounds. Its data are excluded.",
+  "primaries": "For C relative to O (principal), A (rustc conditional) and B (Cargo conditional), score the single genuine first unchanged command and the sum of the initially empty cold build and that single next command. This yields six planned contrasts. Retain all component results, and medians by arm.",
+  "proof": "For C immediately after a genuine first observation the candidate must both verify its optional compiler certificate including its whole evidence checksum and safely authenticate Cargo\u2019s complete OBS1 seal. Independently audit claimed filesystem input lengths and cryptographic digests at the exact canonical files from each real arm. The official -17 raw checksum header proves spelling only; it is not a compiler certificate of binary enumeration. Native negative controls must cover genuine missing/changed/backdated input, invalid and literal U+FFFD extern paths, regular file replaced with FIFO with no writer, true compiler downgrade and incidental archive without a complete attestation. Run a real upstream output edit to exercise correct stale handling, independently of timing.",
+  "root_manifest": "Cargo.toml",
+  "ruff": "93526150df078af7dd8fc4226cdcc469539d2001",
+  "rust_new": "337a07a79cf8f2b9466cf8593344e5a9c479a927",
+  "rust_new_compiler_tree": "225b75c42358121e459122030b11dcf75ca30e1f",
+  "rust_new_driver_sha256": "ee9448c27a69a06a50abe707797637638dc6b2a226011339b35adc2b9a065b99",
+  "rust_old": "bfa236f639034f61ec884c15bd1f4e0b75e508ac",
+  "rust_old_compiler_tree": "df7ace004eab417c044fe62927c673daefd2b208",
+  "rust_old_driver_sha256": "52d5c046f570d3d61ff8bbaeff0d44798df916306110b4a2cac7fe459bc11955",
+  "safety": "For each C:O, C:A, C:B require the cold one-sided 98.75% upper overhead <3% and both settled one-sided 98.75% upper bounds <5% and <100ms. All six primary effects and all cold/settled safety checks must pass prospectively. No adaptive enrollment, validation exception, arm change or interpretation of an uncertain safety bound as a pass.",
+  "scope": "A new study. No previously timed slot can enter. No performance claims until all fixed slots and native checks pass.",
+  "settled_seed": 202610280819,
+  "statistics": "Each of the 24 distinct permutations of O,A,B,C occurs exactly once as the cold order. For a C vs control marginal fix both remaining arms\u2019 distinct positions. The 12 ordered pairs of positions are distinct strata, each with two histories in opposite C/control order. Flip the signs of those 12 strata to enumerate all 4096 balanced assignments. For each of six primary comparisons report two-sided exact probability, 20,000 paired-history bootstrap 95% interval of geometric-mean time ratio, median individual command times and fraction of cold histories favoring C. Each reduction must have its 95% lower bound >0 and its Holm P<.05 across the entire six-claim family. The settled comparison averages the 12 paired log ratios and 12 absolute differences within each independently initialized history, then bootstraps the 24 independent histories as complete clusters. All 288 underlying comparisons per contrast are published. Each arm occupies every physical position three times per history in the independently randomized settled phase.",
+  "stopping": "Do not start clocks until exact binary/SDK/frontend/runner identities, the unscored admission and fresh storage preflight are separately sealed and authorized. Save the first failed attempt and all prior observations. If any gate fails, report unscored series or prespecified failure rather than replacing observations. No user/user-worktree edits, no release-side writes.",
+  "storage": "At least 90 GiB owner-visible free on HOME before the first cold case, and 25 GiB reserve at all times. Four live arm states fit at approximately 12\u201314 GiB each. Read-only SDK and registry input donors may reside on scratch, identical across arms. Fresh workspace and logical toolchain metadata continue to use the same canonical names.",
+  "subjects": "Release-profile A/Q/N Cargo rebuilds share the established Cargo release PGO inputs and flags, source name/path, logical toolchain and display stamp. All direct compiler inputs preceding changed Cargo library/bin code must be independently byte/semantic-attribution checked before a timed subject is bound. The first H8 PGO trio had differing raw Cargo dependency metadata and is counted as functional only. Fresh release binaries on truly common fixed inputs require a separate cryptographic binding, native qualification, and authorization. Only baseline A (here represented by O/B) and new N (here represented by A/C) enter this full-workspace study. Both Rust post-BOLT images use the identical compiler frontend and LLVM, PGO inputs and BOLT recipe. Old Rust compiler source 4c0f6097 and release bfa236f6 have the identical entire compiler subtree. Actual published -17 is qualified separately. Since it carries different build identity/SDK and potentially binary bytes, report this benchmark as the -17-source-matched release comparison and label the literal archive independently.",
+  "title": "First-observation input capture on native Ruff test compilation, with no capability subprocess"
+}
