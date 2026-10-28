@@ -39,6 +39,56 @@ fn binary(workspace: &Path) -> PathBuf {
         .join(format!("foo{}", std::env::consts::EXE_SUFFIX))
 }
 
+#[cfg(unix)]
+#[cargo_test(nightly, reason = "worktree seed preparation uses checksum freshness")]
+fn seed_markers_replace_symlinks() {
+    let donor = git::new("donor", |p| {
+        p.file("src/lib.rs", "pub fn value() {}")
+            .file(
+                "build.rs",
+                r#"fn main() { println!("cargo:rerun-if-changed=input"); }"#,
+            )
+            .file("input", "first")
+    });
+    let build = || {
+        seeded_cargo(
+            &donor,
+            "-Zohm-shared-registry-cache -Zohm-worktree-seeds=yes build --lib",
+        )
+        .run();
+    };
+    build();
+
+    let namespace = workspace_caches().pop().unwrap();
+    let markers: Vec<_> = walkdir::WalkDir::new(&namespace)
+        .into_iter()
+        .map(Result::unwrap)
+        .filter(|entry| {
+            let name = entry.file_name();
+            name == ".ohm-worktree-result-v1"
+                || name.as_encoded_bytes().starts_with(b".ohm-worktree-seed-v")
+        })
+        .map(|entry| entry.into_path())
+        .collect();
+    assert_eq!(markers.len(), 2);
+    let sentinel = paths::root().join("sentinel");
+    fs::write(&sentinel, "original").unwrap();
+    let mut contents = Vec::new();
+    for marker in &markers {
+        contents.push(fs::read(marker).unwrap());
+        fs::remove_file(marker).unwrap();
+        std::os::unix::fs::symlink(&sentinel, marker).unwrap();
+    }
+    donor.change_file("input", "second");
+    build();
+
+    assert_eq!(fs::read(&sentinel).unwrap(), b"original");
+    for (marker, expected) in markers.iter().zip(contents) {
+        assert!(marker.symlink_metadata().unwrap().is_file());
+        assert_eq!(fs::read(marker).unwrap(), expected);
+    }
+}
+
 #[cargo_test]
 fn creates_a_worktree_without_a_previous_build() {
     let donor = git::new("donor", |p| {
