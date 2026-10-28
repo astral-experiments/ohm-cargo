@@ -1,0 +1,103 @@
+Workload: unchanged astral-sh/uv at c22e6b71933443e9cd299d4b6ac8de035ed4825b.
+Ohm base: Cargo a0c7d08c898d3fdff992f2f431dec57d2486add2, rustc
+bfa236f639034f61ec884c15bd1f4e0b75e508ac, bundled Wild 0.11.0.
+Use the three default full-workspace Cargo commands: check, build, test --no-run.
+All comparisons use matched --release Cargo binaries with --features ohm-defaults,
+the same CARGO_HOME and target path, the release compiler, --locked --offline -j16,
+and a trusted manifest cache. No wall-time measurements run during unrelated builds.
+Keep screening results separate from confirmation.
+
+For the unit-dependency borrowing change the primary endpoint is warmed
+test --no-run. For lazy unused-key diagnostics it is warmed check. For a third
+feature-resolution change it is warmed check. For scheduler batching it is
+warmed test --no-run, with elapsed time also required to justify a new scheduler path.
+First screen candidates. Confirm nominated changes with at least 12 balanced
+random-order pairs on the primary, plus the two other commands. Use process-wide
+dynamic Cargo instructions as the primary metric (all threads, no executed children).
+Check ordinary full-command elapsed time separately. Exclude instrumented elapsed time
+from timing claims. A nonzero compiler exit, workspace edit leak, or observed
+recompile during a warmed timed observation invalidates the cohort.
+
+Use the exact two-sided paired sign test. For up to four separately proposed
+candidates require p < 0.0125 on the primary (Bonferroni at family alpha=0.05);
+report medians and distribution-free order-statistic intervals. Repeat qualifying
+changes on independently seeded build artifacts or in an independent process
+counter with a separately warmed target, with at least eight paired observations
+on their primary and p < 0.05. Record raw pairs for every published claim.
+Also show ordinary check/build/test construction duration. Claim elapsed-time
+savings only when the interval excludes zero and the result independently repeats.
+Use an actual edit in uv as a separate generalization test; report its measured
+scope distinctly. Revert the disposable fixture after use.
+
+2026-10-28 15:42 UTC, before any sample of the next two candidates: the fresh
+build profile motivates borrowing dependency-file path strings and writing their
+bytes directly (primary: warmed full workspace build) and moving, instead of
+cloning, locked version requirements (primary: warmed full workspace check).
+Count both additional candidates, including any skipped experiment, in the
+family along with the original four. Use a two-sided primary sign threshold
+of 0.05 / 6 for every change, and retain the separate replication requirement.
+
+2026-10-28 15:59 UTC, before ordinary timing observations: measure the five
+incremental Cargo changes as a single stack against the release source. For
+each of the three default full-workspace commands, compare 48 order-balanced
+randomized native pairs on a dedicated warmed target with a private offline
+Cargo home. Require no lock waits or recompiles. Repeat with 48 independently
+randomized pairs on another seeded target/source path. Count time from process
+launch through exit, including children. Limit a cumulative wall-time claim to
+two-sided exact sign p < 0.05 / 3, a positive median interval in the first
+cohort, and p < 0.05 with the same direction in the independent cohort. Report
+all three endpoints, positive or negative. Per-PR timings are descriptive.
+Run these cohorts after the active compiler and instrumentation jobs finish.
+
+Keep the separate standard-library first-mismatch and linker investigations in
+their own component. The former uses whole-uv warmed build as its primary;
+12 paired observations on each command plus a separate eight-pair build
+replication and portable first-mismatch equivalence tests are required. For
+any linker proposal require measured actual uv link work and whole-command
+test compilation confirmation plus conservative output checks. The edited
+workload uses fresh copies of the pinned checkout solely for the repeatable
+build stimulus. No timed command executes a uv test.
+
+2026-10-28 16:06 UTC: the grouped feature cache's 16-pair RSS measurement
+showed a 0.751% median increase. Screen a flat edge representation against the
+five-change parent to reduce both warm-check instructions and retained memory.
+Require a primary instruction p < 0.05/7, independent eight-pair replication,
+and a replicated reduction in peak RSS before publishing this follow-on.
+The five-change cumulative cohorts continue to identify their exact original
+commits. The sixth original Cargo idea, scheduler batching, remains unproposed.
+
+2026-10-28 16:14 UTC. Before any native timings, add an independent repeat
+of the edited-workspace timing cohort. Use another pristine source archive,
+private Cargo homes, independent target snapshots and a new balanced random
+order. Run eight pairs for each of check, build and test construction in each
+cohort. Use the same 16-core affinity for all native timings. For an edited
+command require the same positive median, p < 0.05/3 in the first cohort and
+p < 0.05 on the independent repeat before claiming an elapsed-time win. Keep
+all admitted samples and report the estimates when they are inconclusive.
+
+2026-10-28 16:27 UTC. Two Cargo reproducibility holdouts use eight balanced
+pairs per endpoint. Rebuild both published release-source revisions with the
+standalone reproduction script in clean directories. Separately compare the
+concurrent Cargo stack through #266 with that exact stack plus our five
+changes at the same source and target paths. Neither changes the five primary
+qualification cohorts. The combined guarded-standard-library Cargo driver
+uses the five exact draft commits. Measure the combined driver directly
+against the matching cold-built baseline on all three warm commands. For
+native edited end-to-end effects use the schedules sealed in the dedicated
+toolchain-wall plan, the released rustc in both arms and the matched Wild pair.
+
+2026-10-28 16:52 UTC. A formatter invocation on CPU 28 unexpectedly started
+a rustup download during the independently ordered five-Cargo warm native
+repeat. It was interrupted. Preserve the original repeat and all samples.
+After every initially scheduled cohort, repeat all three warm commands on
+the same repeat paths with a new balanced seed (510492), 48 pairs each.
+The original decision gate remains in force. Record the host telemetry and
+the estimated overlap separately in native-diagnostic.json.
+
+2026-10-28 16:58 UTC. After completing every native cohort, compare the actual
+downloaded release Cargo binary to the locally rebuilt unmodified driver and
+to the stacked Cargo-plus-std driver. Use Cachegrind, eight balanced pairs per
+command, settled instrumentation warmups, the same 28-byte source checkout and
+the same Cargo executable path. Use seeds 611040 and 611041. These diagnostic
+comparisons include all package/build differences, so they cannot isolate the
+patch effect; the matched parent/candidate cohorts remain the causal contrasts.

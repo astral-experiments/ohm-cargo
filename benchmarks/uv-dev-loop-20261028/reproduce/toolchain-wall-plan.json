@@ -1,0 +1,21 @@
+{
+  "cohorts": {
+    "toolchain-wall": {"check": 618183, "build": 618184, "test": 618185},
+    "toolchain-wall-replica": {"check": 930411, "build": 930412, "test": 930413}
+  },
+  "pairs": 8,
+  "alpha_initial": "0.05/3",
+  "alpha_replicate": "0.05",
+  "test": "Exact two-sided paired sign test, positive median reduction in both cohorts",
+  "cargo": {
+    "base": "path-compare/build/bin/base",
+    "candidate": "path-compare/build/bin/guard-stack"
+  },
+  "base_cargo_sha256": "744843355906004af366ca616a31bde4d79bced59e00355b71eadd7b4257d00c",
+  "wild": {
+    "base": ["bin/wild-baseline", "82a927b86f929b67c58be4d37ab8442f32fcdd115d97334dcc5ac190101d8865"],
+    "candidate": ["bin/wild-undefined", "435a253fcd8a44061aa0d88748ca12b8e63a092dc9d42593195142d8071ebc81"]
+  },
+  "release_wild_sha256": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5",
+  "linker_slot": "lib/rustlib/x86_64-unknown-linux-gnu/bin/wild-ld/ld.bfd"
+}

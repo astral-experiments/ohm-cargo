@@ -1,0 +1,1 @@
+/home/dev-user/Documents/Codex/2026-10-28/i-want-you-to-hillclimb-on/work/toolchain/bin/cargo -Zohm-defaults=no build --target x86_64-unknown-linux-gnu --release --locked --bin cargo --features ohm-defaults\,all-static -j8 

@@ -1,0 +1,100 @@
+--- a/src/resolver/features.rs
++++ b/src/resolver/features.rs
+@@ -54,6 +54,8 @@
+ /// The key used in various places to store features for a particular dependency.
+ /// The actual discrimination happens with the [`FeaturesFor`] type.
+ pub type PackageFeaturesKey = (PackageId, FeaturesFor);
++/// Dependencies of a package for one feature context, grouped by resolved package.
++type FeatureDeps<'a> = Rc<Vec<(PackageId, Vec<(&'a Dependency, FeaturesFor)>)>>;
+ /// Map of activated features.
+ pub type ActivateMap = HashMap<PackageFeaturesKey, BTreeSet<InternedString>>;
+ 
+@@ -422,6 +424,8 @@
+     /// Keeps track of which packages have had its dependencies processed.
+     /// Used to avoid cycles, and to speed up processing.
+     processed_deps: HashSet<PackageFeaturesKey>,
++    /// Reuse the dependency traversal when multiple features activate edges of the same package.
++    deps_cache: HashMap<PackageFeaturesKey, FeatureDeps<'a>>,
+     /// If this is `true`, then a non-default `feature_key` needs to be tracked while
+     /// traversing the graph.
+     ///
+@@ -467,6 +471,7 @@
+             activated_features: HashMap::default(),
+             activated_dependencies: HashMap::default(),
+             processed_deps: HashSet::default(),
++            deps_cache: HashMap::default(),
+             track_for_host,
+             deferred_weak_dependencies: HashMap::default(),
+         };
+@@ -545,8 +550,8 @@
+             // features that enable other features.
+             return Ok(());
+         }
+-        for (dep_pkg_id, deps) in self.deps(pkg_id, fk)? {
+-            for (dep, dep_fk) in deps {
++        for &(dep_pkg_id, ref deps) in self.deps(pkg_id, fk)?.iter() {
++            for &(dep, dep_fk) in deps {
+                 if dep.is_optional() {
+                     // Optional dependencies are enabled in `activate_fv` when
+                     // a feature enables it.
+@@ -645,8 +650,8 @@
+             .deferred_weak_dependencies
+             .remove(&(pkg_id, fk, dep_name));
+         // Activate the optional dep.
+-        for (dep_pkg_id, deps) in self.deps(pkg_id, fk)? {
+-            for (dep, dep_fk) in deps {
++        for &(dep_pkg_id, ref deps) in self.deps(pkg_id, fk)?.iter() {
++            for &(dep, dep_fk) in deps {
+                 if dep.name_in_toml() != dep_name {
+                     continue;
+                 }
+@@ -679,8 +684,8 @@
+         dep_feature: InternedString,
+         weak: bool,
+     ) -> CargoResult<()> {
+-        for (dep_pkg_id, deps) in self.deps(pkg_id, fk)? {
+-            for (dep, dep_fk) in deps {
++        for &(dep_pkg_id, ref deps) in self.deps(pkg_id, fk)?.iter() {
++            for &(dep, dep_fk) in deps {
+                 if dep.name_in_toml() != dep_name {
+                     continue;
+                 }
+@@ -772,11 +777,11 @@
+     }
+ 
+     /// Returns the dependencies for a package, filtering out inactive targets.
+-    fn deps(
+-        &mut self,
+-        pkg_id: PackageId,
+-        fk: FeaturesFor,
+-    ) -> CargoResult<Vec<(PackageId, Vec<(&'a Dependency, FeaturesFor)>)>> {
++    fn deps(&mut self, pkg_id: PackageId, fk: FeaturesFor) -> CargoResult<FeatureDeps<'a>> {
++        if let Some(deps) = self.deps_cache.get(&(pkg_id, fk)) {
++            return Ok(Rc::clone(deps));
++        }
++
+         // Helper for determining if a platform is activated.
+         fn platform_activated(
+             dep: &Dependency,
+@@ -864,7 +869,8 @@
+         }
+ 
+         let unstable_json_spec = self.ws.gctx().cli_unstable().json_target_spec;
+-        self.resolve
++        let deps = self
++            .resolve
+             .deps(pkg_id)
+             .map(|(dep_id, deps)| {
+                 let deps = deps
+@@ -929,7 +935,10 @@
+                 Ok((dep_id, deps))
+             })
+             .filter(|res| res.as_ref().map_or(true, |(_id, deps)| !deps.is_empty()))
+-            .collect()
++            .collect::<CargoResult<Vec<_>>>()?;
++        let deps = Rc::new(deps);
++        self.deps_cache.insert((pkg_id, fk), Rc::clone(&deps));
++        Ok(deps)
+     }
+ 
+     /// Compare the activated features to the resolver. Used for testing.

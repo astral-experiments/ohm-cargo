@@ -1,0 +1,61 @@
+diff --git a/src/compiler/build_runner/mod.rs b/src/compiler/build_runner/mod.rs
+--- a/src/compiler/build_runner/mod.rs
++++ b/src/compiler/build_runner/mod.rs
+@@ -2184,7 +2184,7 @@
+     }
+ 
+     /// Direct dependencies for the given unit.
+-    pub fn unit_deps(&self, unit: &Unit) -> &[UnitDep] {
++    pub fn unit_deps(&self, unit: &Unit) -> &'a [UnitDep] {
+         &self.bcx.unit_graph[unit]
+     }
+ 
+diff --git a/src/compiler/fingerprint/mod.rs b/src/compiler/fingerprint/mod.rs
+--- a/src/compiler/fingerprint/mod.rs
++++ b/src/compiler/fingerprint/mod.rs
+@@ -2617,13 +2617,11 @@
+         // recompile, they're just dependencies in the sense that they need to be
+         // built. The only exception here are artifact dependencies,
+         // which is an actual dependency that needs a recompile.
+-        //
+-        // Create Vec since mutable build_runner is needed in closure.
+-        let deps = Vec::from(build_runner.unit_deps(unit));
+-        let mut deps = deps
+-            .into_iter()
++        let mut deps = build_runner
++            .unit_deps(unit)
++            .iter()
+             .filter(|dep| !dep.unit.target.is_bin() || dep.unit.artifact.is_true())
+-            .map(|dep| DepFingerprint::new(build_runner, unit, &dep))
++            .map(|dep| DepFingerprint::new(build_runner, unit, dep))
+             .collect::<CargoResult<Vec<_>>>()?;
+         deps.sort_by(|a, b| a.pkg_id.cmp(&b.pkg_id));
+         deps
+@@ -2805,10 +2803,10 @@
+         // Overridden build scripts don't need to track deps.
+         vec![]
+     } else {
+-        // Create Vec since mutable build_runner is needed in closure.
+-        let deps = Vec::from(build_runner.unit_deps(unit));
+-        deps.into_iter()
+-            .map(|dep| DepFingerprint::new(build_runner, unit, &dep))
++        build_runner
++            .unit_deps(unit)
++            .iter()
++            .map(|dep| DepFingerprint::new(build_runner, unit, dep))
+             .collect::<CargoResult<Vec<_>>>()?
+     };
+ 
+diff --git a/src/compiler/mod.rs b/src/compiler/mod.rs
+--- a/src/compiler/mod.rs
++++ b/src/compiler/mod.rs
+@@ -493,8 +493,7 @@
+     }
+ 
+     // Be sure to compile all dependencies of this target as well.
+-    let deps = Vec::from(build_runner.unit_deps(unit)); // Create vec due to mutable borrow.
+-    for dep in deps {
++    for dep in build_runner.unit_deps(unit) {
+         if build_runner
+             .deferred_dev_deps
+             .dependencies

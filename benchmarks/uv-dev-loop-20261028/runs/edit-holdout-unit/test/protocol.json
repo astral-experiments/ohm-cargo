@@ -1,0 +1,66 @@
+{
+  "uv": "c22e6b71933443e9cd299d4b6ac8de035ed4825b",
+  "edit_path": "crates/uv/src/install_source.rs",
+  "study": "unit",
+  "primary": "check",
+  "endpoint": "test",
+  "command": [
+    "/tmp/ohm-uv-bench.0H03f2TH/edit-unit-test/bin/cargo",
+    "test",
+    "-p",
+    "uv",
+    "--test",
+    "it",
+    "--no-run",
+    "--locked",
+    "--offline",
+    "-j8"
+  ],
+  "pairs": 8,
+  "seed": 3301069,
+  "order": [
+    [
+      "base",
+      "candidate"
+    ],
+    [
+      "candidate",
+      "base"
+    ],
+    [
+      "base",
+      "candidate"
+    ],
+    [
+      "candidate",
+      "base"
+    ],
+    [
+      "candidate",
+      "base"
+    ],
+    [
+      "base",
+      "candidate"
+    ],
+    [
+      "base",
+      "candidate"
+    ],
+    [
+      "candidate",
+      "base"
+    ]
+  ],
+  "source": "/tmp/ohm-uv-bench.0H03f2TH/edit-unit-test/source",
+  "visible_target": "/tmp/ohm-uv-bench.0H03f2TH/edit-unit-test/target",
+  "cargo_sha256": {
+    "base": "c3a835db202b62a711fcabc7a8185f38de6d290e55f2b6f841f7548c6fae7d38",
+    "candidate": "e988dcfff4d9d273ead3287dffbbd69ef160e7120d63ff77fce830391685ce78"
+  },
+  "metric": "DynamoRIO dynamic instructions, Cargo processes' main PID and all its threads; children excluded",
+  "edit": "Ohm direct private-body edit with uv-preview-XX varied by zero-based pair",
+  "admission": "both arms succeed, compile/check uv, match compiled/checking package multisets, execute no test",
+  "initialization": "Both persistent arm targets are independent copies of a single untouched warmed snapshot.",
+  "inference": "paired proportional saving (1 - candidate/base), two-sided exact sign test and median interval"
+}
