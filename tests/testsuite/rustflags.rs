@@ -39,6 +39,7 @@ fn ohm_defaults_wrapper() -> PathBuf {
                         || arg.starts_with("-Zcache-proc-macros")
                         || arg.starts_with("-Zohm-caller-local-cgus")
                         || arg.starts_with("-Zohm-stable-cgu-merging")
+                        || arg.starts_with("-Zohm-incremental-mono-partitions")
                         || arg.starts_with("-Zthreads=")
                 }
 
@@ -61,6 +62,13 @@ fn ohm_defaults_wrapper() -> PathBuf {
                     if env::var_os("OHM_INCREMENTAL_UNSUPPORTED").is_some()
                         && args.iter().any(|arg| arg == "--print=sysroot")
                         && args.iter().any(|arg| arg == "-Zohm-caller-local-cgus")
+                    {
+                        exit(1);
+                    }
+                    if env::var_os("OHM_MONO_PARTITIONS_UNSUPPORTED")
+                        .is_some_and(|value| value == "1")
+                        && args.iter().any(|arg| arg == "--print=sysroot")
+                        && args.iter().any(|arg| arg == "-Zohm-incremental-mono-partitions")
                     {
                         exit(1);
                     }
@@ -146,6 +154,7 @@ fn ohm_defaults_apply_to_host_and_target_units() {
         assert!(invocation.contains(&"-Zcache-proc-macros"));
         assert_eq!(frontend_threads(&invocation), ["8"]);
         assert!(!invocation.contains(&"-Zpublic-api-hash=no"));
+        assert!(ohm_incremental_codegen_rustflags(&invocation).is_empty());
     }
     assert_eq!(
         frontend_threads(&rustc_invocation(&invocations, "foo")),
@@ -231,7 +240,11 @@ fn ohm_defaults_apply_to_host_and_target_units() {
     for crate_name in ["foo", "dep", "integration"] {
         assert_eq!(
             ohm_incremental_codegen_rustflags(&rustc_invocation(&invocations, crate_name)),
-            ["-Zohm-caller-local-cgus", "-Zohm-stable-cgu-merging"],
+            [
+                "-Zohm-caller-local-cgus",
+                "-Zohm-stable-cgu-merging",
+                "-Zohm-incremental-mono-partitions",
+            ],
             "workspace target `{crate_name}` should use incremental codegen defaults"
         );
     }
@@ -253,7 +266,11 @@ fn ohm_defaults_apply_to_host_and_target_units() {
     for crate_name in ["foo", "dep"] {
         assert_eq!(
             ohm_incremental_codegen_rustflags(&rustc_invocation(&invocations, crate_name)),
-            ["-Zohm-caller-local-cgus", "-Zohm-stable-cgu-merging"]
+            [
+                "-Zohm-caller-local-cgus",
+                "-Zohm-stable-cgu-merging",
+                "-Zohm-incremental-mono-partitions",
+            ]
         );
     }
 
@@ -332,6 +349,7 @@ fn ohm_defaults_apply_to_host_and_target_units() {
         [
             "-Zohm-caller-local-cgus",
             "-Zohm-stable-cgu-merging",
+            "-Zohm-incremental-mono-partitions",
             "-Zohm-caller-local-cgus=no",
             "-Zohm-stable-cgu-merging=no",
         ]
@@ -737,6 +755,239 @@ fn ohm_parallel_frontend_flags_are_fingerprinted() {
     );
 }
 
+#[cargo_test]
+fn ohm_incremental_mono_partitions_follow_compiler_capability() {
+    let wrapper = ohm_defaults_wrapper();
+    let p = project()
+        .file(
+            "src/lib.rs",
+            "#[test] fn selected() { assert_eq!(1 + 1, 2); }",
+        )
+        .build();
+    let log = p.root().join("ohm-defaults.log");
+
+    for wrapper_variable in ["RUSTC_WRAPPER", "RUSTC_WORKSPACE_WRAPPER"] {
+        for (defaults, unsupported, user_flags, expected) in [
+            (
+                "yes",
+                false,
+                None,
+                vec!["-Zohm-incremental-mono-partitions"],
+            ),
+            ("yes", true, None, vec![]),
+            ("no", false, None, vec![]),
+            (
+                "yes",
+                false,
+                Some("-Zohm-incremental-mono-partitions=no"),
+                vec![
+                    "-Zohm-incremental-mono-partitions",
+                    "-Zohm-incremental-mono-partitions=no",
+                ],
+            ),
+        ] {
+            p.cargo("clean").run();
+            fs::write(&log, "").expect("clear compiler log");
+            let mut command = p.cargo(&format!(
+                "-Zohm-defaults={defaults} -Zrelink-only=no test --lib --no-run"
+            ));
+            command
+                .masquerade_as_nightly_cargo(&["ohm-defaults", "relink-only"])
+                .env("CARGO_INCREMENTAL", "1")
+                .env(wrapper_variable, &wrapper)
+                .env("OHM_DEFAULTS_LOG", &log);
+            if unsupported {
+                command.env("OHM_MONO_PARTITIONS_UNSUPPORTED", "1");
+            }
+            if let Some(user_flags) = user_flags {
+                command.env("RUSTFLAGS", user_flags);
+            }
+            command.run();
+
+            let invocations = fs::read_to_string(&log).expect("read compiler log");
+            let invocation = rustc_invocation(&invocations, "foo");
+            assert!(invocation.contains(&"--test"));
+            assert_eq!(
+                invocation.contains(&"-Zpublic-api-hash=no"),
+                defaults == "yes"
+            );
+            assert_eq!(
+                invocation
+                    .iter()
+                    .copied()
+                    .filter(|flag| flag.starts_with("-Zohm-incremental-mono-partitions"))
+                    .collect::<Vec<_>>(),
+                expected
+            );
+            for flag in ["-Zohm-caller-local-cgus", "-Zohm-stable-cgu-merging"] {
+                assert_eq!(invocation.contains(&flag), defaults == "yes");
+            }
+        }
+    }
+}
+
+#[cargo_test]
+fn ohm_incremental_mono_partitions_are_fingerprinted() {
+    let wrapper = ohm_defaults_wrapper();
+    let p = project().file("src/lib.rs", "").build();
+    let log = p.root().join("ohm-defaults.log");
+    let mut identities = Vec::new();
+
+    for (unsupported, fresh) in [
+        (false, false),
+        (false, true),
+        (true, false),
+        (true, true),
+        (false, true),
+    ] {
+        p.change_file(
+            ".cargo/config.toml",
+            &format!(
+                "[env]\nOHM_MONO_PARTITIONS_UNSUPPORTED = {{ value = \"{}\", force = true }}\n",
+                u8::from(unsupported)
+            ),
+        );
+        fs::write(&log, "").expect("clear compiler log");
+        let mut build = p.cargo("-Zohm-defaults build --lib -v");
+        build
+            .masquerade_as_nightly_cargo(&["ohm-defaults"])
+            .env("CARGO_INCREMENTAL", "1")
+            .env("RUSTC_WORKSPACE_WRAPPER", &wrapper)
+            .env("OHM_DEFAULTS_LOG", &log);
+        if fresh {
+            build.with_stderr_data(str![[r#"
+[FRESH] foo v0.0.1 ([ROOT]/foo)
+[FINISHED] `dev` profile [unoptimized + debuginfo] target(s) in [ELAPSED]s
+
+"#]]);
+        } else {
+            build.with_stderr_data(str![[r#"
+[COMPILING] foo v0.0.1 ([ROOT]/foo)
+[RUNNING] `[..] --crate-name foo [..]`
+[FINISHED] `dev` profile [unoptimized + debuginfo] target(s) in [ELAPSED]s
+
+"#]]);
+        }
+        build.run();
+        if !fresh {
+            let invocations = fs::read_to_string(&log).expect("read compiler log");
+            let invocation = rustc_invocation(&invocations, "foo");
+            assert_eq!(
+                invocation.contains(&"-Zohm-incremental-mono-partitions"),
+                !unsupported
+            );
+            let metadata = invocation
+                .iter()
+                .find(|argument| argument.starts_with("metadata="))
+                .expect("compiler symbol metadata");
+            let extra_filename = invocation
+                .iter()
+                .find(|argument| argument.starts_with("extra-filename="))
+                .expect("compiler artifact identity");
+            identities.push((metadata.to_string(), extra_filename.to_string()));
+        }
+    }
+    assert_eq!(identities.len(), 2);
+    assert_eq!(identities[0].0, identities[1].0);
+    assert_ne!(identities[0].1, identities[1].1);
+}
+
+#[cargo_test]
+fn ohm_incremental_mono_partitions_invalidate_unhashed_artifacts() {
+    let wrapper = ohm_defaults_wrapper();
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"
+                [package]
+                name = "foo"
+                version = "0.0.1"
+                edition = "2024"
+
+                [lib]
+                crate-type = ["cdylib"]
+            "#,
+        )
+        .file("src/lib.rs", "")
+        .build();
+    let log = p.root().join("ohm-defaults.log");
+
+    for (revision, (unsupported, fresh)) in [
+        (false, false),
+        (false, true),
+        (true, false),
+        (true, true),
+        (false, false),
+    ]
+    .into_iter()
+    .enumerate()
+    {
+        p.change_file(
+            ".cargo/config.toml",
+            &format!(
+                "[env]\nOHM_MONO_PARTITIONS_UNSUPPORTED = {{ value = \"{}\", force = true }}\n",
+                u8::from(unsupported)
+            ),
+        );
+        fs::write(&log, "").expect("clear compiler log");
+        let mut build = p.cargo("-Zohm-defaults build --lib -v");
+        build
+            .masquerade_as_nightly_cargo(&["ohm-defaults"])
+            .env("CARGO_INCREMENTAL", "1")
+            .env("CARGO_UNSTABLE_BUILD_DIR_NEW_LAYOUT", "false")
+            .env("CARGO_UNSTABLE_FINE_GRAIN_LOCKING", "false")
+            .env("CARGO_UNSTABLE_OHM_SHARED_REGISTRY_CACHE", "false")
+            .env("RUSTC_WORKSPACE_WRAPPER", &wrapper)
+            .env("OHM_DEFAULTS_LOG", &log);
+        if fresh {
+            build.with_stderr_data(str![[r#"
+[FRESH] foo v0.0.1 ([ROOT]/foo)
+[FINISHED] `dev` profile [unoptimized + debuginfo] target(s) in [ELAPSED]s
+
+"#]]);
+        } else if revision == 0 {
+            build.with_stderr_data(str![[r#"
+[COMPILING] foo v0.0.1 ([ROOT]/foo)
+[RUNNING] `[..] --crate-name foo [..]`
+[FINISHED] `dev` profile [unoptimized + debuginfo] target(s) in [ELAPSED]s
+
+"#]]);
+        } else {
+            build.with_stderr_data(str![[r#"
+[DIRTY] foo v0.0.1 ([ROOT]/foo): the config settings changed
+[COMPILING] foo v0.0.1 ([ROOT]/foo)
+[RUNNING] `[..] --crate-name foo [..]`
+[FINISHED] `dev` profile [unoptimized + debuginfo] target(s) in [ELAPSED]s
+
+"#]]);
+        }
+        build.run();
+        if !fresh {
+            let invocations = fs::read_to_string(&log).expect("read compiler log");
+            let invocation = rustc_invocation(&invocations, "foo");
+            assert_eq!(
+                invocation.contains(&"-Zohm-incremental-mono-partitions"),
+                !unsupported
+            );
+            assert!(
+                !invocation
+                    .iter()
+                    .any(|argument| argument.starts_with("extra-filename="))
+            );
+        }
+    }
+    // This layout overwrites one artifact and fingerprint instead of retaining
+    // separate unit-id-suffixed outputs for the two capability states.
+    assert_eq!(
+        WalkDir::new(p.build_dir())
+            .into_iter()
+            .map(|entry| entry.expect("read fingerprint directory"))
+            .filter(|entry| entry.file_name() == "lib-foo.json")
+            .count(),
+        1
+    );
+}
+
 fn rustc_invocation<'a>(log: &'a str, crate_name: &str) -> Vec<&'a str> {
     log.lines()
         .map(|line| line.split('\t').collect::<Vec<_>>())
@@ -766,6 +1017,7 @@ fn ohm_incremental_codegen_rustflags<'a>(invocation: &'a [&str]) -> Vec<&'a str>
         .filter(|flag| {
             flag.starts_with("-Zohm-caller-local-cgus")
                 || flag.starts_with("-Zohm-stable-cgu-merging")
+                || flag.starts_with("-Zohm-incremental-mono-partitions")
         })
         .collect()
 }
