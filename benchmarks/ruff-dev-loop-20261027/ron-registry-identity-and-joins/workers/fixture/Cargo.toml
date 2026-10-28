@@ -1,0 +1,6 @@
+[workspace]
+members = ["hold_shapes", "hold_tokens", "hold_probe", "hold_bridge", "hold_direct", "hold_indirect", "hold_plain"]
+resolver = "2"
+[profile.dev]
+opt-level = 1
+debug = "line-tables-only"
