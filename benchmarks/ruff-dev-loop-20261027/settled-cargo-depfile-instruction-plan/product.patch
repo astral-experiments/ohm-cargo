@@ -1,0 +1,192 @@
+diff --git a/src/compiler/fingerprint/dep_info.rs b/src/compiler/fingerprint/dep_info.rs
+index cb50fdf267..05e28819b9 100644
+--- a/src/compiler/fingerprint/dep_info.rs
++++ b/src/compiler/fingerprint/dep_info.rs
+@@ -745,12 +745,43 @@ pub fn parse_dep_info(
+     build_root: &Path,
+     dep_info: &Path,
+ ) -> CargoResult<Option<RustcDepInfo>> {
+-    let Ok(data) = paths::read_bytes(dep_info) else {
++    let Some(mut info) = read_dep_info(pkg_root, dep_info) else {
+         return Ok(None);
+     };
++    let mut ret = RustcDepInfo::default();
++    ret.env = std::mem::take(&mut info.env);
++    ret.observed_span_inputs = info.observer.map(|(_, complete)| complete);
++    ret.files.extend(
++        info.into_absolute_paths(pkg_root, build_root)
++            .map(|(path, checksum)| {
++                (
++                    path,
++                    checksum
++                        .and_then(|(len, text)| Checksum::from_str(&text).ok().map(|c| (len, c))),
++                )
++            }),
++    );
++    Ok(Some(ret))
++}
++
++/// Returns the filenames for Cargo's output `.d` file without constructing a checksum map.
++pub(crate) fn dep_info_paths<'a>(
++    pkg_root: &'a Path,
++    build_root: &'a Path,
++    dep_info: &Path,
++) -> Option<impl Iterator<Item = PathBuf> + 'a> {
++    let info = read_dep_info(pkg_root, dep_info)?;
++    Some(
++        info.into_absolute_paths(pkg_root, build_root)
++            .map(|(path, _)| path),
++    )
++}
++
++fn read_dep_info(pkg_root: &Path, dep_info: &Path) -> Option<EncodedDepInfo> {
++    let data = paths::read_bytes(dep_info).ok()?;
+     let Some(info) = EncodedDepInfo::parse(&data) else {
+         tracing::warn!("failed to parse cargo's dep-info at {:?}", dep_info);
+-        return Ok(None);
++        return None;
+     };
+     if info.files.iter().any(|(ty, path, _)| {
+         *ty == DepInfoPathType::PackageRootRelative
+@@ -762,30 +793,29 @@ pub fn parse_dep_info(
+     {
+         // A newly symlinked package root can change where a saved ../ prefix
+         // resolves. Recompile and let translation reject further seeding.
+-        return Ok(None);
++        return None;
+     }
+-    let mut ret = RustcDepInfo::default();
+-    ret.env = info.env;
+-    ret.observed_span_inputs = info.observer.map(|(_, complete)| complete);
+-    // Keep the missing input until the producer has emitted a verified binary dependency list.
+-    let complete_marker = info
+-        .observer
+-        .and_then(|(index, complete)| complete.then_some(index));
+-    ret.files.extend(
+-        info.files
++    Some(info)
++}
++
++impl EncodedDepInfo {
++    fn into_absolute_paths<'a>(
++        self,
++        pkg_root: &'a Path,
++        build_root: &'a Path,
++    ) -> impl Iterator<Item = (PathBuf, Option<(u64, String)>)> + 'a {
++        // Keep the missing input until the producer has emitted a verified binary dependency list.
++        let complete_marker = self
++            .observer
++            .and_then(|(index, complete)| complete.then_some(index));
++        self.files
+             .into_iter()
+             .enumerate()
+-            .filter_map(|(index, item)| (Some(index) != complete_marker).then_some(item))
+-            .map(|(ty, path, checksum_info)| {
+-                (
+-                    make_absolute_path(ty, pkg_root, build_root, path),
+-                    checksum_info.and_then(|(file_len, checksum)| {
+-                        Checksum::from_str(&checksum).ok().map(|c| (file_len, c))
+-                    }),
+-                )
+-            }),
+-    );
+-    Ok(Some(ret))
++            .filter_map(move |(index, (ty, path, checksum))| {
++                (Some(index) != complete_marker)
++                    .then(|| (make_absolute_path(ty, pkg_root, build_root, path), checksum))
++            })
++    }
+ }
+ 
+ fn make_absolute_path(
+diff --git a/src/compiler/fingerprint/mod.rs b/src/compiler/fingerprint/mod.rs
+index f0618734c6..0f473a1e65 100644
+--- a/src/compiler/fingerprint/mod.rs
++++ b/src/compiler/fingerprint/mod.rs
+@@ -428,6 +428,7 @@ use super::Work;
+ use super::custom_build::BuildDeps;
+ 
+ pub use self::dep_info::Checksum;
++pub(super) use self::dep_info::dep_info_paths;
+ pub use self::dep_info::parse_dep_info;
+ pub use self::dep_info::parse_rustc_dep_info;
+ pub use self::dep_info::translate_dep_info;
+diff --git a/src/compiler/output_depinfo.rs b/src/compiler/output_depinfo.rs
+index 03f32c1ce1..20380641ac 100644
+--- a/src/compiler/output_depinfo.rs
++++ b/src/compiler/output_depinfo.rs
+@@ -3,7 +3,6 @@
+ 
+ use crate::util::data_structures::{HashMap, HashSet};
+ use cargo_util::paths::normalize_path;
+-use std::collections::BTreeSet;
+ use std::io::{BufWriter, Write};
+ use std::path::{Path, PathBuf};
+ 
+@@ -43,7 +42,7 @@ fn render_filename<P: AsRef<Path>>(path: P, basedir: Option<&str>) -> CargoResul
+ ///
+ /// [fingerprint dep-info]: super::fingerprint#fingerprint-dep-info-files
+ fn add_deps_for_unit(
+-    deps: &mut BTreeSet<PathBuf>,
++    deps: &mut Vec<PathBuf>,
+     build_runner: &BuildRunner<'_, '_>,
+     unit: &Unit,
+     visited: &mut HashSet<Unit>,
+@@ -61,17 +60,17 @@ fn add_deps_for_unit(
+         } else {
+             // Add dependencies from rustc dep-info output (stored in fingerprint directory)
+             let dep_info_loc = fingerprint::dep_info_loc(build_runner, unit);
+-            if let Some(paths) = fingerprint::parse_dep_info(
++            if let Some(paths) = fingerprint::dep_info_paths(
+                 unit.pkg.root(),
+                 &build_runner.files().build_root(unit),
+                 &dep_info_loc,
+-            )? {
++            ) {
+                 if let Some(cache) = dep_info_cache.as_mut() {
+-                    let paths: Vec<_> = paths.files.into_keys().collect();
++                    let paths: Vec<_> = paths.collect();
+                     deps.extend(paths.iter().cloned());
+                     cache.insert(unit.clone(), paths);
+                 } else {
+-                    deps.extend(paths.files.into_keys());
++                    deps.extend(paths);
+                 }
+             } else {
+                 debug!(
+@@ -106,7 +105,7 @@ fn add_deps_for_unit(
+                         package_root.join(path)
+                     };
+ 
+-                    deps.insert(path);
++                    deps.push(path);
+                 }
+             }
+         }
+@@ -164,10 +163,13 @@ pub fn output_depinfo(
+     }
+ 
+     let bcx = build_runner.bcx;
+-    let mut deps = BTreeSet::new();
++    let mut deps = Vec::new();
+     let mut visited = HashSet::default();
+     let success =
+         add_deps_for_unit(&mut deps, build_runner, unit, &mut visited, dep_info_cache).is_ok();
++    // A stable sort preserves the first spelling of equivalent paths.
++    deps.sort();
++    deps.dedup();
+     let basedir_string;
+     let basedir = match bcx.gctx.build_config()?.dep_info_basedir.clone() {
+         Some(value) => {
+diff --git a/tests/testsuite/build_script.rs b/tests/testsuite/build_script.rs
+index 23ebcc8076..abc718be9f 100644
+--- a/tests/testsuite/build_script.rs
++++ b/tests/testsuite/build_script.rs
+@@ -4257,6 +4257,7 @@ fn generate_good_d_files() {
+                 fn main() {
+                     println!("cargo::rerun-if-changed=build.rs");
+                     println!("cargo::rerun-if-changed=barkbarkbark");
++                    println!("cargo::rerun-if-changed=./barkbarkbark");
+                 }
+             "#,
+         )
