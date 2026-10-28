@@ -20,3 +20,7 @@ The two fresh 32-core confirmations finished on October 28. The candidate passed
 On a fully warm uv workspace, the five Cargo changes plus Rust #247 in the Cargo executable reduced Cargo instructions on two independently trained PGO builds. The reductions were about 2.3% for check, 5.6% and 7.8% for build, and 2.5% for test preparation. Cargo launched no compiler or linker in this measurement. [Per-command intervals, all raw counts and scorer](warm-cargo/README.md)
 
 The separate normal-binary reuse candidate also has a warm-workspace control. Its assignment fixes two counters, 12 pairs per command per checkout, and a 0.5% material regression bound. [Warm control assignment](registered-proof-warm-control.json)
+
+After changing the Homebrew path predicate in uv, the historical stack reduced full-command Cargo-plus-rustc instructions by 0.4722% and 0.4728% in two independent eight-pair checkouts. Both arms rechecked just the edited library with the released compiler. Each pair produced identical metadata. [Exact edits, raw counters and recomputation](edited-check/README.md)
+
+Both matched stage-2 compilers and their target standard libraries are built. The release control and guarded rebuild contain their intended path-comparison implementations in the compiler, a loaded proc macro, and the target program. [Compiler build and runtime receipts](literal-current-and-historical/stage2.md)

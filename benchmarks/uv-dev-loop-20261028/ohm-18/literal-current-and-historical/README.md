@@ -31,3 +31,5 @@ taskset -c 0-15 python3 -E -s -B -u "$study/run.py" time initial
 taskset -c 0-15 python3 -E -s -B -u "$study/run.py" time replica
 python3 -E -s -B "$study/run.py" report > "$study/report.json"
 ```
+
+Both source-matched stage-2 packages are now built. Their SHA-256 identities and the exact tested Wild builds were bound before warming uv. The build receipts record the differing standalone rustc linker default and the actual packaged Wild selected through Cargo in all three toolchains. [Build and execution receipts](stage2.md) · [Binary identities](input-lock.json)

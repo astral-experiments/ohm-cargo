@@ -1,0 +1,39 @@
+{
+  "plan_sha256": "e42520290d4204514948d558fa9ff5664de51385923d2b6ff1f9d62fe4b8db34",
+  "original_known_binaries_sha256": "35a429dde7cda35844389d19583e8d07dc04d6a2e80cdd931db221c151366c82",
+  "current_build_receipt": "/home/dev-user/Documents/Codex/2026-10-28/i-want-you-to-hillclimb-on/work/round18-linker/current-pr46/ready.json",
+  "current_build_receipt_sha256": "a5d4974e3208dc659fb1e7d667c279b259edc94c8b02399000b6193d4a697cd2",
+  "current_source": "db821991bd2931dd83e59f236149340ddfc2b427",
+  "current_base": "e856d81f6683cad80b9fe0ebf1a0c3c403c6fe11",
+  "current_Cargo_lock_sha256": "f80b6c9cbd12031026d8cef0c00611b726d8efc5452f21d6decca458600deff0",
+  "current_build_command": [
+    "cargo",
+    "+stable",
+    "build",
+    "--release",
+    "--locked",
+    "--offline",
+    "-p",
+    "wild-linker",
+    "-j4",
+    "--message-format=json-render-diagnostics"
+  ],
+  "known_binaries": {
+    "shipped": {
+      "cargo": "02a86ebd2d9e4f237b33f212102b81ed145eb77fae090d67e379cb6f1d70a573",
+      "wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5"
+    },
+    "base": {
+      "cargo": "df1fb0a090d36b14bfa9ef68f9243f05073d7f2c7908f5e26453473ad59f0721",
+      "wild": "82a927b86f929b67c58be4d37ab8442f32fcdd115d97334dcc5ac190101d8865"
+    },
+    "stack": {
+      "cargo": "aea8596b7caace5d2f201a9d487fb1ed2e3921584d99a4e4fb9ef812e6f9cbc6",
+      "wild": "901b68fc9ca30975d837d45dcf1bdf743a6130ecef5e23d6aef44558b09bd7e1"
+    },
+    "current": {
+      "cargo": "aea8596b7caace5d2f201a9d487fb1ed2e3921584d99a4e4fb9ef812e6f9cbc6",
+      "wild": "0f24a1f21e4bbd61b655620d9499e292942d74d7bd7ac8ac303b8aa70cdac604"
+    }
+  }
+}

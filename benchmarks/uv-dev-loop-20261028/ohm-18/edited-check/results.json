@@ -1,0 +1,271 @@
+{
+  "command": [
+    "cargo",
+    "check",
+    "--locked",
+    "--offline",
+    "-j8"
+  ],
+  "uv": "c22e6b71933443e9cd299d4b6ac8de035ed4825b",
+  "edit": "crates/uv/src/install_source.rs",
+  "release": "1.99.0-18",
+  "arms": {
+    "base": {
+      "cargo": "df1fb0a090d36b14bfa9ef68f9243f05073d7f2c7908f5e26453473ad59f0721",
+      "wild": "82a927b86f929b67c58be4d37ab8442f32fcdd115d97334dcc5ac190101d8865"
+    },
+    "candidate": {
+      "cargo": "aea8596b7caace5d2f201a9d487fb1ed2e3921584d99a4e4fb9ef812e6f9cbc6",
+      "wild": "901b68fc9ca30975d837d45dcf1bdf743a6130ecef5e23d6aef44558b09bd7e1"
+    }
+  },
+  "rustc_sha256": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+  "plan_sha256": "2b6b6069739a3daf1574e59c57d307ae34990cb5c09229f0c4bc99aaaac8328c",
+  "cohorts": {
+    "initial": {
+      "n_pairs": 8,
+      "median_paired_reduction": 0.0047218500642869365,
+      "rank_interval_99_21875": [
+        0.004457598492735637,
+        0.004792538071842323
+      ],
+      "wins": 8,
+      "losses": 0,
+      "ties": 0,
+      "two_sided_sign_p": 0.0078125,
+      "balanced_order_randomization_p": 0.02857142857142857,
+      "gate_passed": true,
+      "state": "complete",
+      "arm_median_instruction_count": {
+        "base": {
+          "cargo": 842658522.0,
+          "rustc": 4162754757.5,
+          "wild": 0.0,
+          "total": 5006225751.5
+        },
+        "candidate": {
+          "cargo": 819001820.0,
+          "rustc": 4162746150.0,
+          "wild": 0.0,
+          "total": 4982587149.0
+        }
+      },
+      "control_median_per_command_role_fraction": {
+        "cargo": 0.16840418236389953,
+        "rustc": 0.8315958176361005,
+        "wild": 0.0
+      },
+      "roster": {
+        "packages": [
+          [
+            "Checking",
+            "uv v0.12.0 (/tmp/ohm-uv-bench.0H03f2TH/role-studies-18/initial/source/crates/uv)"
+          ]
+        ],
+        "role_counts": {
+          "cargo": 1,
+          "rustc": 1
+        },
+        "tests": []
+      },
+      "observed_pairs": [
+        {
+          "id": 16,
+          "order": [
+            "candidate",
+            "base"
+          ],
+          "candidate": 4984688273,
+          "base": 5008223847
+        },
+        {
+          "id": 10,
+          "order": [
+            "base",
+            "candidate"
+          ],
+          "base": 5288833481,
+          "candidate": 5265198018
+        },
+        {
+          "id": 11,
+          "order": [
+            "candidate",
+            "base"
+          ],
+          "candidate": 4951853350,
+          "base": 4975563200
+        },
+        {
+          "id": 14,
+          "order": [
+            "candidate",
+            "base"
+          ],
+          "candidate": 4980486025,
+          "base": 5004227656
+        },
+        {
+          "id": 15,
+          "order": [
+            "base",
+            "candidate"
+          ],
+          "base": 5286407028,
+          "candidate": 5262842348
+        },
+        {
+          "id": 13,
+          "order": [
+            "candidate",
+            "base"
+          ],
+          "candidate": 4949828133,
+          "base": 4973664610
+        },
+        {
+          "id": 17,
+          "order": [
+            "base",
+            "candidate"
+          ],
+          "base": 5003261747,
+          "candidate": 4979320281
+        },
+        {
+          "id": 12,
+          "order": [
+            "base",
+            "candidate"
+          ],
+          "base": 5287036881,
+          "candidate": 5262886988
+        }
+      ],
+      "different_full_digests": {}
+    },
+    "replica": {
+      "n_pairs": 8,
+      "median_paired_reduction": 0.004727642857280445,
+      "rank_interval_99_21875": [
+        0.004209618397925219,
+        0.004952274125526457
+      ],
+      "wins": 8,
+      "losses": 0,
+      "ties": 0,
+      "two_sided_sign_p": 0.0078125,
+      "balanced_order_randomization_p": 0.02857142857142857,
+      "gate_passed": true,
+      "state": "complete",
+      "arm_median_instruction_count": {
+        "base": {
+          "cargo": 841083770.0,
+          "rustc": 4162730775.5,
+          "wild": 0.0,
+          "total": 5004708713.5
+        },
+        "candidate": {
+          "cargo": 817510784.0,
+          "rustc": 4162722120.0,
+          "wild": 0.0,
+          "total": 4980657821.5
+        }
+      },
+      "control_median_per_command_role_fraction": {
+        "cargo": 0.1682371832932269,
+        "rustc": 0.8317628167067731,
+        "wild": 0.0
+      },
+      "roster": {
+        "packages": [
+          [
+            "Checking",
+            "uv v0.12.0 (/tmp/ohm-uv-bench.0H03f2TH/role-studies-18/replica/source/crates/uv)"
+          ]
+        ],
+        "role_counts": {
+          "cargo": 1,
+          "rustc": 1
+        },
+        "tests": []
+      },
+      "observed_pairs": [
+        {
+          "id": 17,
+          "order": [
+            "base",
+            "candidate"
+          ],
+          "base": 5006667470,
+          "candidate": 4983090908
+        },
+        {
+          "id": 12,
+          "order": [
+            "base",
+            "candidate"
+          ],
+          "base": 5287221171,
+          "candidate": 5263646204
+        },
+        {
+          "id": 14,
+          "order": [
+            "candidate",
+            "base"
+          ],
+          "candidate": 4950544934,
+          "base": 4974153524
+        },
+        {
+          "id": 10,
+          "order": [
+            "candidate",
+            "base"
+          ],
+          "candidate": 4977830869,
+          "base": 5002605141
+        },
+        {
+          "id": 15,
+          "order": [
+            "candidate",
+            "base"
+          ],
+          "candidate": 5262550570,
+          "base": 5284797551
+        },
+        {
+          "id": 16,
+          "order": [
+            "base",
+            "candidate"
+          ],
+          "base": 4971049093,
+          "candidate": 4947142337
+        },
+        {
+          "id": 13,
+          "order": [
+            "candidate",
+            "base"
+          ],
+          "candidate": 4978224735,
+          "base": 5002749957
+        },
+        {
+          "id": 11,
+          "order": [
+            "base",
+            "candidate"
+          ],
+          "base": 5285112536,
+          "candidate": 5262481073
+        }
+      ],
+      "different_full_digests": {}
+    }
+  },
+  "independently_replicated": true
+}
