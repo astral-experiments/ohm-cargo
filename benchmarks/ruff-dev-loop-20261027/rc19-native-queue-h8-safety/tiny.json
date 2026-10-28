@@ -1,0 +1,753 @@
+{
+  "build-cold": {
+    "estimate": {
+      "accepted": [],
+      "stats": []
+    },
+    "fresh": 0,
+    "programs": [],
+    "raw": {
+      "baseline": "d38624dc0864a41abd31cdf6ef1efd985e74beb10d25283ab989eda8c98353b3",
+      "candidate": "112861ecb5fed593661a0014673303ce95a531e680442e4e959d26d85ef6aec5",
+      "diagnostic": "dec82d856a10bde3a0d7c45a3556f918475414443b2b54dd729825320948d9c6"
+    },
+    "roles": {
+      "rustc-full": 2
+    },
+    "same_complete_rust_argv": true,
+    "status": 0,
+    "units": 2
+  },
+  "build-fresh": {
+    "estimate": {
+      "accepted": [],
+      "stats": []
+    },
+    "fresh": 2,
+    "programs": [],
+    "raw": {
+      "baseline": "cf5c0e98c505497b46bab435056e8c62eca79509e5f32250c91589c86f2375e0",
+      "candidate": "b58c0497d793d55cb75dc4f60e5db5e17d39acd0faf93bb46f9321157932f097",
+      "diagnostic": "1aebb7b7994c268308dca4e2251412c999e464ea1e81405e9ba943402eb580a4"
+    },
+    "roles": {},
+    "same_complete_rust_argv": true,
+    "status": 0,
+    "units": 2
+  },
+  "check-cold": {
+    "estimate": {
+      "accepted": [],
+      "stats": []
+    },
+    "fresh": 0,
+    "programs": [],
+    "raw": {
+      "baseline": "2e5c04714b20890b9559b9211656f331cf88fd3982351d1be69c47b4da2f9dfe",
+      "candidate": "c2353ceed6d439f6d1d1b5e16a0761678c4176fc6c7696ebe7dc4891d445b47a",
+      "diagnostic": "97193a2573c4988499163c727885b8b7ee7cb6d8fbb33da4df98573566bedb93"
+    },
+    "roles": {
+      "rustc-full": 2
+    },
+    "same_complete_rust_argv": true,
+    "status": 0,
+    "units": 2
+  },
+  "check-fresh": {
+    "estimate": {
+      "accepted": [],
+      "stats": []
+    },
+    "fresh": 2,
+    "programs": [],
+    "raw": {
+      "baseline": "8a788951acf15590df0c1848bdf138e193b1e28d42b2e996ad350af236600a55",
+      "candidate": "5a867ce6563dc23b422c9f90d2fa1bc716c7c91d7dd49788a35c382e6d6e9eff",
+      "diagnostic": "0df5db182b7849720ad98e31133b1e3e2c35289c8ba93a13896378f23d8c81a3"
+    },
+    "roles": {},
+    "same_complete_rust_argv": true,
+    "status": 0,
+    "units": 2
+  },
+  "dependency": {
+    "estimate": {
+      "accepted": [
+        [
+          "reader",
+          "reader"
+        ],
+        [
+          "reader",
+          "beta"
+        ],
+        [
+          "reader",
+          "delta"
+        ],
+        [
+          "reader",
+          "alpha"
+        ],
+        [
+          "reader",
+          "gamma"
+        ]
+      ],
+      "stats": [
+        "reader-de30db45417f2698",
+        "beta-51d0b4d999a99d53",
+        "delta-0f609f6a18b986a7",
+        "alpha-ee64300bdc83da64",
+        "gamma-8f128149f6bbe385"
+      ]
+    },
+    "fresh": 0,
+    "programs": [
+      [
+        "alpha",
+        29,
+        0
+      ],
+      [
+        "beta",
+        29,
+        0
+      ],
+      [
+        "delta",
+        29,
+        0
+      ],
+      [
+        "gamma",
+        29,
+        0
+      ]
+    ],
+    "raw": {
+      "baseline": "ca7d418ec54606651f2770aa768f36b7fbee96ee7d72250aa3c08e92ed255692",
+      "candidate": "2833c6a1fb47d7425db2b59fda9b0a304865b2d115c2a9364eae8b1396a2c056",
+      "diagnostic": "f85d3f25ec0cf7ac2d9669ecf1818282a8041ce710ce3766f3e0e9623fe4cd3f"
+    },
+    "roles": {
+      "collect2": 6,
+      "gcc": 6,
+      "rustc-full": 2,
+      "rustc-link-only": 5,
+      "stock-wild": 6
+    },
+    "same_complete_rust_argv": true,
+    "status": 0,
+    "units": 8
+  },
+  "explicit-rustc": {
+    "estimate": {
+      "accepted": [],
+      "stats": []
+    },
+    "fresh": 0,
+    "programs": [
+      [
+        "alpha",
+        29,
+        0
+      ],
+      [
+        "beta",
+        29,
+        0
+      ],
+      [
+        "delta",
+        29,
+        0
+      ],
+      [
+        "gamma",
+        29,
+        0
+      ]
+    ],
+    "raw": {
+      "baseline": "a0b03920834a108dde5b5f97c745bbcdbc40cc20d87a29647301f0c896cfbc65",
+      "candidate": "959e147a217ebd61cd40c08518e9737b7bcb48d45b4529367afb6d2cd69015ab",
+      "diagnostic": "1194892fe1c4ca017ebdb7dcc902c5188f0da96655922200fab6fac416dade2b"
+    },
+    "roles": {
+      "collect2": 10,
+      "gcc": 10,
+      "rustc-full": 12,
+      "stock-wild": 10
+    },
+    "same_complete_rust_argv": true,
+    "status": 0,
+    "units": 8
+  },
+  "failed-output": {
+    "estimate": {
+      "accepted": [
+        [
+          "reader",
+          "reader"
+        ],
+        [
+          "reader",
+          "delta"
+        ],
+        [
+          "reader",
+          "gamma"
+        ],
+        [
+          "reader",
+          "beta"
+        ]
+      ],
+      "stats": [
+        "reader-de30db45417f2698",
+        "delta-0f609f6a18b986a7",
+        "alpha-ee64300bdc83da64",
+        "gamma-8f128149f6bbe385",
+        "beta-51d0b4d999a99d53"
+      ]
+    },
+    "fresh": 0,
+    "programs": [],
+    "raw": {
+      "baseline": "cae90c2e4f24fca0e9f4892a8173ad1d041db392847326d5a7ec9fd319367519",
+      "candidate": "dd6d69cb462f65399228f40badce6dbfff2b7cbdebad1cbee109064c15112320",
+      "diagnostic": "4392bbe9f7b98056ea41a8880f1d569e847c214eda31db9c31540a614f36cfda"
+    },
+    "roles": {
+      "collect2": 5,
+      "gcc": 5,
+      "rustc-full": 3,
+      "rustc-link-only": 4,
+      "stock-wild": 5
+    },
+    "same_complete_rust_argv": true,
+    "status": 101,
+    "units": 7
+  },
+  "failed-source": {
+    "estimate": {
+      "accepted": [],
+      "stats": []
+    },
+    "fresh": 0,
+    "programs": [],
+    "raw": {
+      "baseline": "d293c70209f6c8a1166a42df719ea0ed81d58aa97b9d0ad72f79c38aa5fc2bf9",
+      "candidate": "fdc55828bb4dbc92fbf77ccb69d4fa59b4f12e83d4c7ebeeb1d9b85aa6578396",
+      "diagnostic": "7b63150cd543b0bda71487601c2b97256bee49596b43099c0eb88857651be77a"
+    },
+    "roles": {
+      "rustc-full": 2
+    },
+    "same_complete_rust_argv": true,
+    "status": 101,
+    "units": 0
+  },
+  "ordinary-disabled": {
+    "estimate": {
+      "accepted": [],
+      "stats": []
+    },
+    "fresh": 0,
+    "programs": [
+      [
+        "alpha",
+        17,
+        0
+      ],
+      [
+        "beta",
+        17,
+        0
+      ],
+      [
+        "delta",
+        17,
+        0
+      ],
+      [
+        "gamma",
+        17,
+        0
+      ]
+    ],
+    "raw": {
+      "baseline": "1e8a2b278c734de8b3e0f1f62d07b2d09ea535af744c3ec862d853df9a94be2f",
+      "candidate": "e732d89f41d7044c01b40a04689f2c21f42f473fdf8ef4302622d496f7e82c7e",
+      "diagnostic": "80e6c01b8b29d95459facf3e19531b9ffea9254bb56dc0b268173fe59f600536"
+    },
+    "roles": {
+      "collect2": 6,
+      "gcc": 6,
+      "rustc-full": 8
+    },
+    "same_complete_rust_argv": true,
+    "status": 0,
+    "units": 8
+  },
+  "recovery-output": {
+    "estimate": {
+      "accepted": [],
+      "stats": []
+    },
+    "fresh": 7,
+    "programs": [
+      [
+        "alpha",
+        17,
+        0
+      ],
+      [
+        "beta",
+        17,
+        0
+      ],
+      [
+        "delta",
+        17,
+        0
+      ],
+      [
+        "gamma",
+        17,
+        0
+      ]
+    ],
+    "raw": {
+      "baseline": "dd601856e47e13dddd8971c66b45a6915bf2ec20e8d928b020302c705f7cc80e",
+      "candidate": "7507da3fbce5718744869735513f279cc406e4f6b643f1a00a973483dc382316",
+      "diagnostic": "6b3d94acb11cb43b1b791f33e636e2fe645923653099326aad9d82f0b7ac4997"
+    },
+    "roles": {
+      "collect2": 1,
+      "gcc": 1,
+      "rustc-full": 1,
+      "stock-wild": 1
+    },
+    "same_complete_rust_argv": true,
+    "status": 0,
+    "units": 8
+  },
+  "recovery-source": {
+    "estimate": {
+      "accepted": [
+        [
+          "reader",
+          "reader"
+        ],
+        [
+          "reader",
+          "delta"
+        ],
+        [
+          "reader",
+          "alpha"
+        ],
+        [
+          "reader",
+          "gamma"
+        ],
+        [
+          "reader",
+          "beta"
+        ]
+      ],
+      "stats": [
+        "reader-de30db45417f2698",
+        "delta-0f609f6a18b986a7",
+        "alpha-ee64300bdc83da64",
+        "gamma-8f128149f6bbe385",
+        "beta-51d0b4d999a99d53"
+      ]
+    },
+    "fresh": 0,
+    "programs": [
+      [
+        "alpha",
+        29,
+        0
+      ],
+      [
+        "beta",
+        29,
+        0
+      ],
+      [
+        "delta",
+        29,
+        0
+      ],
+      [
+        "gamma",
+        29,
+        0
+      ]
+    ],
+    "raw": {
+      "baseline": "508864a6200074de41109d549543dc5620de48f16a85a78af4661fa2d1af062d",
+      "candidate": "35d0b05e420e7dfabf653ddf12a2f156a15a86d846defc45ec84d04e6412fbf8",
+      "diagnostic": "aac6bac2b6e4ecaafe200dc925a063e05d527d0c478936457105919aba6799cd"
+    },
+    "roles": {
+      "collect2": 6,
+      "gcc": 6,
+      "rustc-full": 7,
+      "stock-wild": 6
+    },
+    "same_complete_rust_argv": true,
+    "status": 0,
+    "units": 8
+  },
+  "removed": {
+    "estimate": {
+      "accepted": [],
+      "stats": []
+    },
+    "fresh": 7,
+    "programs": [
+      [
+        "alpha",
+        29,
+        0
+      ],
+      [
+        "beta",
+        29,
+        0
+      ],
+      [
+        "delta",
+        29,
+        0
+      ],
+      [
+        "gamma",
+        29,
+        0
+      ]
+    ],
+    "raw": {
+      "baseline": "cb21e4614be1eea6fb1e80d81c4f48b90b13ddc8c309e2768548f73337604639",
+      "candidate": "6b5c499e4416310c718de44db9d0b0afa849cb475f609be608d6157e039d6695",
+      "diagnostic": "7c82ef36222bd010ee525b6f8a0078606ca91c496a57224447b96da5d7f29d74"
+    },
+    "roles": {
+      "collect2": 1,
+      "gcc": 1,
+      "rustc-full": 1,
+      "stock-wild": 1
+    },
+    "same_complete_rust_argv": true,
+    "status": 0,
+    "units": 8
+  },
+  "single": {
+    "estimate": {
+      "accepted": [],
+      "stats": []
+    },
+    "fresh": 0,
+    "programs": [
+      [
+        "alpha",
+        17,
+        0
+      ],
+      [
+        "beta",
+        17,
+        0
+      ],
+      [
+        "delta",
+        17,
+        0
+      ],
+      [
+        "gamma",
+        17,
+        0
+      ]
+    ],
+    "raw": {
+      "baseline": "894777191bac8e9441e8251b804e78d41e874ad0e93d6b0c274f6f42a0119d12",
+      "candidate": "a83f2d5a033efd4cb5dafcab07f0f8ac95afe80ee82a4f47b7c1b8ea38fef078",
+      "diagnostic": "20bbe7d9c8a4c255ed73ee02e757517ec059a313689940ad44c6b47241f809eb"
+    },
+    "roles": {
+      "collect2": 6,
+      "gcc": 6,
+      "rustc-full": 8,
+      "stock-wild": 6
+    },
+    "same_complete_rust_argv": true,
+    "status": 0,
+    "units": 8
+  },
+  "symlink": {
+    "estimate": {
+      "accepted": [
+        [
+          "reader",
+          "reader"
+        ],
+        [
+          "reader",
+          "gamma"
+        ],
+        [
+          "reader",
+          "beta"
+        ],
+        [
+          "reader",
+          "delta"
+        ]
+      ],
+      "stats": [
+        "reader-de30db45417f2698",
+        "gamma-8f128149f6bbe385",
+        "beta-51d0b4d999a99d53",
+        "delta-0f609f6a18b986a7",
+        "alpha-ee64300bdc83da64"
+      ]
+    },
+    "fresh": 0,
+    "programs": [
+      [
+        "alpha",
+        17,
+        0
+      ],
+      [
+        "beta",
+        17,
+        0
+      ],
+      [
+        "delta",
+        17,
+        0
+      ],
+      [
+        "gamma",
+        17,
+        0
+      ]
+    ],
+    "raw": {
+      "baseline": "656784bca016e8ca38766f0060634be92e7179ae8279d2977f432ae4f5a898f6",
+      "candidate": "6b9e96c567d746e99d712d0515eb6b0b94468e6413334ea7fcd936e6b63bbe26",
+      "diagnostic": "b486e59be4c9f6c83b439ff24bffb8e142e5a7630ace3f17798c119fc26a12a0"
+    },
+    "roles": {
+      "collect2": 6,
+      "gcc": 6,
+      "rustc-full": 3,
+      "rustc-link-only": 4,
+      "stock-wild": 6
+    },
+    "same_complete_rust_argv": true,
+    "status": 0,
+    "units": 8
+  },
+  "test-cold": {
+    "estimate": {
+      "accepted": [],
+      "stats": []
+    },
+    "fresh": 2,
+    "programs": [
+      [
+        "alpha",
+        17,
+        0
+      ],
+      [
+        "beta",
+        17,
+        0
+      ],
+      [
+        "delta",
+        17,
+        0
+      ],
+      [
+        "gamma",
+        17,
+        0
+      ]
+    ],
+    "raw": {
+      "baseline": "65fad71a52c9c2763b01b2fa1e921b0a16ceb7db4457695cf93f9bac813e0a88",
+      "candidate": "6a46a958a8238117e6c8b5d8f7340d6c267f189d3122db06dc74620ac9ac3c62",
+      "diagnostic": "71d45c0ccfdec677841d4e54f96a884d4d75d1646a529c8d01dcee25444d9b1a"
+    },
+    "roles": {
+      "collect2": 6,
+      "gcc": 6,
+      "rustc-full": 6,
+      "stock-wild": 6
+    },
+    "same_complete_rust_argv": true,
+    "status": 0,
+    "units": 8
+  },
+  "test-fresh": {
+    "estimate": {
+      "accepted": [],
+      "stats": []
+    },
+    "fresh": 8,
+    "programs": [
+      [
+        "alpha",
+        17,
+        0
+      ],
+      [
+        "beta",
+        17,
+        0
+      ],
+      [
+        "delta",
+        17,
+        0
+      ],
+      [
+        "gamma",
+        17,
+        0
+      ]
+    ],
+    "raw": {
+      "baseline": "4b8998ba2ee874fdf87fdb7725cb043aa3fb1cec0be8253d1c79f9eb9278f2ce",
+      "candidate": "4d564d330340d64fc67656b5b81444e7214fee3f6ac2b4f94f0b5ae01099f297",
+      "diagnostic": "8e58c45f00c4cbf3f8b11f24970c58cc203667399221429833bcae83eafc806e"
+    },
+    "roles": {},
+    "same_complete_rust_argv": true,
+    "status": 0,
+    "units": 8
+  },
+  "wrapped": {
+    "estimate": {
+      "accepted": [],
+      "stats": []
+    },
+    "fresh": 0,
+    "programs": [
+      [
+        "alpha",
+        17,
+        0
+      ],
+      [
+        "beta",
+        17,
+        0
+      ],
+      [
+        "delta",
+        17,
+        0
+      ],
+      [
+        "gamma",
+        17,
+        0
+      ]
+    ],
+    "raw": {
+      "baseline": "2fdd116c24cf0ffdd7423e6b7b8783e499fe3dc864938c06be452774824d744e",
+      "candidate": "afaef654ade5d91f8f2b7196ad453fe8f2f87aeb0d4e54e2d00e8a27ac60f890",
+      "diagnostic": "5e1170dc4459e0063d3ac20453b30278e62f66386bd6a6553922e36c43b3719d"
+    },
+    "roles": {
+      "collect2": 6,
+      "gcc": 6,
+      "rustc-full": 2,
+      "rustc-link-only": 5,
+      "stock-wild": 6
+    },
+    "same_complete_rust_argv": true,
+    "status": 0,
+    "units": 8
+  },
+  "zero": {
+    "estimate": {
+      "accepted": [
+        [
+          "reader",
+          "reader"
+        ],
+        [
+          "reader",
+          "delta"
+        ],
+        [
+          "reader",
+          "gamma"
+        ],
+        [
+          "reader",
+          "beta"
+        ]
+      ],
+      "stats": [
+        "reader-de30db45417f2698",
+        "delta-0f609f6a18b986a7",
+        "alpha-ee64300bdc83da64",
+        "gamma-8f128149f6bbe385",
+        "beta-51d0b4d999a99d53"
+      ]
+    },
+    "fresh": 0,
+    "programs": [
+      [
+        "alpha",
+        29,
+        0
+      ],
+      [
+        "beta",
+        29,
+        0
+      ],
+      [
+        "delta",
+        29,
+        0
+      ],
+      [
+        "gamma",
+        29,
+        0
+      ]
+    ],
+    "raw": {
+      "baseline": "575316424eda44a477d411aad263711d3ca11b814cb688ec22d83af1c307e09e",
+      "candidate": "35ea117bc5d61b830dffb520a235f344db23302a556aa1e2aba59d03d2a44e7b",
+      "diagnostic": "e3c0c5eadaf246a6b5fd89e0e5860e6fdfb7a8568cefff46ba48d1549302078d"
+    },
+    "roles": {
+      "collect2": 6,
+      "gcc": 6,
+      "rustc-full": 3,
+      "rustc-link-only": 4,
+      "stock-wild": 6
+    },
+    "same_complete_rust_argv": true,
+    "status": 0,
+    "units": 8
+  }
+}
