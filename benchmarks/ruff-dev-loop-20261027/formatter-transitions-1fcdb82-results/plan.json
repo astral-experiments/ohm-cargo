@@ -1,0 +1,46 @@
+{
+  "disk_floor": {
+    "scratch_home_main_shm": 26843545600,
+    "user_tmpfs": 786432000
+  },
+  "historical_patch": "1fcdb82be0169fc79f492f03728f52215af563c0",
+  "locks": "Exclusive H3 native-measure.lock; serial C-B-T-B, B-T-C-B, initially empty edited reference; same canonical paths in independent physical stores. Other hosts separate.",
+  "oracles": [
+    "Independently compiled source reader for ruff_formatter::format_element::LINE_TERMINATORS gets E0425 on original, succeeds on reversed; direct new reader for public ruff_formatter::normalize_newlines always succeeds and prints these normalized bytes.",
+    "When present run external normalize_newlines on CR, CRLF, Unicode line separator and paragraph separator. Use true named existing Rust harness format_element::tests::test_normalize_newlines outside the build. In larger selection, pipe CRLF Python to actual built Ruff format with explicit line-ending setting. Compare complete stdout, exit and relevant primary diagnostic to a clean reference.",
+    "Join full and split -Z link-only rustc argv, collected links, typed Cargo unit outputs, features, signatures, metadata and content. Express real unobserved native / proc-macro / upstream input uncertainties. An unchanged final executable alone cannot certify safe link reuse."
+  ],
+  "patch_sha256": "b4c35b497c137238d18ccd41a5c4d16b92148454e8c1d8dc394064b2da457bb8",
+  "phase_order": [
+    "empty original cycle",
+    "original repeat until whole cycle settled (up to 3, retain any failures)",
+    "first historical reverse",
+    "rerun on unchanged source",
+    "restore",
+    "rerun on unchanged source"
+  ],
+  "release": {
+    "cargo": "42e90992cec21a29956e20fd52ab952472a9dbc1dcc7a3b60c92aad101b5f568",
+    "driver": "c442c2a36e1f37c92f138a8fb367fc09982931b5f1055e9742fb402566ad46a4",
+    "frontend": "b0c412a7a8010a768f00546419a0b1bcfca382d7e70191df3ae72e30ac1ef3e5",
+    "toolchain": "1.99.0-16 x86_64-unknown-linux-gnu",
+    "wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5"
+  },
+  "rust_source": "crates/ruff_formatter/src/format_element.rs",
+  "scope": "First price the inexpensive single normal library -p ruff_formatter. Attempt jointly -p ruff_formatter and -p ruff only if an independently restored state and clean edited state fit without consuming the retained artifacts or breaching existing disk floors; disclose scope. Unscored native census. No product change or timing release.",
+  "source": "93526150df078af7dd8fc4226cdcc469539d2001",
+  "workflows": {
+    "B-T-C-B": [
+      "build",
+      "test",
+      "check",
+      "build"
+    ],
+    "C-B-T-B": [
+      "check",
+      "build",
+      "test",
+      "build"
+    ]
+  }
+}
