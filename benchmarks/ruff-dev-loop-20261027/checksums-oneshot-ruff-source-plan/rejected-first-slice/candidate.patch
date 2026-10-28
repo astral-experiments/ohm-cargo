@@ -1,0 +1,24 @@
+--- a/src/compiler/fingerprint/dep_info.rs
++++ b/src/compiler/fingerprint/dep_info.rs
+@@ -889,8 +889,20 @@
+                 )?;
+             }
+             ChecksumAlgo::Blake3 => {
++                // A short read can precede more data. Hash the buffer in one shot only at EOF.
++                let mut contents = contents;
++                let mut filled = 0;
++                while filled < buf.len() {
++                    let n = contents.read(&mut buf[filled..])?;
++                    if n == 0 {
++                        return Ok(Self::new(algo, *blake3::hash(&buf[..filled]).as_bytes()));
++                    }
++                    filled += n;
++                }
++                let mut hasher = blake3::Hasher::new();
++                hasher.update(buf);
+                 digest(
+-                    blake3::Hasher::new(),
++                    hasher,
+                     |h, b| {
+                         h.update(b);
+                     },

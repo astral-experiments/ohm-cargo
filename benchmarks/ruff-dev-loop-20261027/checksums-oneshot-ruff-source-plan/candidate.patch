@@ -1,0 +1,31 @@
+--- a/src/compiler/fingerprint/dep_info.rs
++++ b/src/compiler/fingerprint/dep_info.rs
+@@ -889,8 +889,27 @@
+                 )?;
+             }
+             ChecksumAlgo::Blake3 => {
++                let mut contents = contents;
++                let mut hasher = blake3::Hasher::new();
++                let first = contents.read(buf)?;
++                if first == 0 {
++                    return Ok(Self::new(algo, *hasher.finalize().as_bytes()));
++                }
++                if first < buf.len() {
++                    // A short read is not necessarily EOF. Preserve the original read size
++                    // for record-oriented inputs that can discard the rest of a packet.
++                    let prefix = buf[..first].to_vec();
++                    let next = contents.read(buf)?;
++                    if next == 0 {
++                        return Ok(Self::new(algo, *blake3::hash(&prefix).as_bytes()));
++                    }
++                    hasher.update(&prefix);
++                    hasher.update(&buf[..next]);
++                } else {
++                    hasher.update(buf);
++                }
+                 digest(
+-                    blake3::Hasher::new(),
++                    hasher,
+                     |h, b| {
+                         h.update(b);
+                     },
