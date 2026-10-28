@@ -1,0 +1,152 @@
+{
+  "build": {
+    "all_ordinary_readers_preserved": true,
+    "all_second_fresh_and_no_jobs": true,
+    "changed_executables": [],
+    "changed_header_facts": {
+      "same-public-id-different-private": 31
+    },
+    "final_record_classes": {
+      "current-ordinary-checksum": 68,
+      "ordinary-mtime": 433
+    },
+    "first_fresh": 433,
+    "first_jobs": {
+      "build-script": 5,
+      "cc": 15,
+      "collect2": 15,
+      "rustc-full": 68,
+      "wild": 15
+    },
+    "raw_output_differences": {
+      ".rlib": 55,
+      ".rmeta": 31
+    },
+    "retained_record_classes": {
+      "legacy-ordinary-checksum-retrain": 68,
+      "ordinary-mtime": 433
+    },
+    "total_units": 501,
+    "v3_v4_product_difference_count": 55
+  },
+  "check": {
+    "all_ordinary_readers_preserved": true,
+    "all_second_fresh_and_no_jobs": true,
+    "changed_executables": [],
+    "changed_header_facts": {
+      "same-public-id-different-private": 31
+    },
+    "final_record_classes": {
+      "current-ordinary-checksum": 71,
+      "ordinary-mtime": 449
+    },
+    "first_fresh": 449,
+    "first_jobs": {
+      "build-script": 5,
+      "cc": 6,
+      "collect2": 6,
+      "rustc-full": 71,
+      "wild": 6
+    },
+    "raw_output_differences": {
+      ".rlib": 4,
+      ".rmeta": 31
+    },
+    "retained_record_classes": {
+      "legacy-ordinary-checksum-retrain": 71,
+      "ordinary-mtime": 449
+    },
+    "total_units": 520,
+    "v3_v4_product_difference_count": 4
+  },
+  "test": {
+    "all_ordinary_readers_preserved": true,
+    "all_second_fresh_and_no_jobs": true,
+    "changed_executables": [
+      {
+        "artifact": "color-86ec018ec339559e",
+        "changed_bytes": 33,
+        "identical_listing_size": 32,
+        "mask_covers_all_other_bytes": true,
+        "rodata_entsize": [
+          0,
+          8
+        ],
+        "section_changes": [
+          ".note.gnu.build-id",
+          ".rodata"
+        ]
+      },
+      {
+        "artifact": "ruff_python_stdlib-09978b48e8f13d6a",
+        "changed_bytes": 33,
+        "identical_listing_size": 4,
+        "mask_covers_all_other_bytes": true,
+        "rodata_entsize": [
+          0,
+          8
+        ],
+        "section_changes": [
+          ".note.gnu.build-id",
+          ".rodata"
+        ]
+      },
+      {
+        "artifact": "ty_python_semantic-ee65b3fc4ebbe95f",
+        "changed_bytes": 33,
+        "identical_listing_size": 499,
+        "mask_covers_all_other_bytes": true,
+        "rodata_entsize": [
+          0,
+          8
+        ],
+        "section_changes": [
+          ".note.gnu.build-id",
+          ".rodata"
+        ]
+      },
+      {
+        "artifact": "e2e-dd9b7f57d7ba4f6b",
+        "changed_bytes": 33,
+        "identical_listing_size": 200,
+        "mask_covers_all_other_bytes": true,
+        "rodata_entsize": [
+          0,
+          8
+        ],
+        "section_changes": [
+          ".note.gnu.build-id",
+          ".rodata"
+        ]
+      }
+    ],
+    "changed_header_facts": {
+      "same-public-id-different-private": 31
+    },
+    "final_record_classes": {
+      "current-ordinary-checksum": 162,
+      "obs1-safe-complete": 1,
+      "ordinary-mtime": 456
+    },
+    "first_fresh": 457,
+    "first_jobs": {
+      "build-script": 5,
+      "cc": 110,
+      "collect2": 110,
+      "rustc-full": 162,
+      "wild": 110
+    },
+    "raw_output_differences": {
+      ".rlib": 54,
+      ".rmeta": 31,
+      "ELF": 4
+    },
+    "retained_record_classes": {
+      "legacy-ordinary-checksum-retrain": 162,
+      "obs1-safe-complete": 1,
+      "ordinary-mtime": 456
+    },
+    "total_units": 619,
+    "v3_v4_product_difference_count": 57
+  }
+}
