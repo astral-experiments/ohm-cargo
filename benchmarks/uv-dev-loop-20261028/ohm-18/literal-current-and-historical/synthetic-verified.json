@@ -1,0 +1,28 @@
+{
+  "trials": "synthetic only",
+  "physical_cargo_invocations": 0,
+  "synthetic_timing_rows": 576,
+  "preserved_original_assignments": 144,
+  "complete_orderings_per_cell": 24,
+  "contrasts_per_cohort": 12,
+  "full_conditional_support": 4096,
+  "synthetic_gate_results": {
+    "historical-eight": {
+      "check": true,
+      "build": true,
+      "test": true
+    },
+    "current-seven": {
+      "check": true,
+      "build": false,
+      "test": true
+    }
+  },
+  "rejected_false_input_bindings": [
+    "binary_sha256",
+    "source_commit",
+    "base_commit",
+    "cargo_lock_sha256",
+    "build_command"
+  ]
+}

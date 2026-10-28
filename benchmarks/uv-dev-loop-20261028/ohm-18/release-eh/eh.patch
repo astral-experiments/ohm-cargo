@@ -1,0 +1,45 @@
+--- a/libwild/src/elf_writer.rs
++++ b/libwild/src/elf_writer.rs
+@@ -3349,6 +3349,9 @@
+     let frame_info_ptr_base = table_writer.eh_frame_start_address;
+     let eh_frame_hdr_address = layout.mem_address_of_built_in(output_section_id::EH_FRAME_HDR);
+ 
++    let empty_relocation_cache = RelocationCache::default();
++    let empty_instruction_mapping = HashMap::new();
++
+     // Map from input offset to output offset of each CIE.
+     let mut cies_offset_conversion: HashMap<u32, u32> = HashMap::new();
+ 
+@@ -3424,10 +3427,15 @@
+                                     as i64
+                                     - eh_frame_hdr_address as i64;
+                                 *hdr_out = EhFrameHdrEntry {
+-                                    frame_ptr: i32::try_from(frame_ptr)
+-                                        .context("32 bit overflow in frame_ptr")?,
+-                                    frame_info_ptr: i32::try_from(frame_info_ptr)
+-                                        .context("32 bit overflow when computing frame_info_ptr")?,
++                                    frame_ptr: i32::try_from(frame_ptr).with_context(|| {
++                                        "32 bit overflow in frame_ptr".to_owned()
++                                    })?,
++                                    frame_info_ptr: i32::try_from(frame_info_ptr).with_context(
++                                        || {
++                                            "32 bit overflow when computing frame_info_ptr"
++                                                .to_owned()
++                                        },
++                                    )?,
+                                 };
+                             }
+                             // TODO: Experiment with skipping this lookup if the `input_cie_pos`
+@@ -3467,10 +3475,10 @@
+                     entry_out,
+                     table_writer,
+                     trace,
+-                    &RelocationCache::default(),
++                    &empty_relocation_cache,
+                     &iter::empty(),
+                     None,
+-                    &HashMap::new(),
++                    &empty_instruction_mapping,
+                 )
+                 .with_context(|| {
+                     format!(

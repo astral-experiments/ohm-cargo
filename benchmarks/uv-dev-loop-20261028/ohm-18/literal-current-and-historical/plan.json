@@ -1,0 +1,1539 @@
+{
+  "registered_utc": "2026-10-28T23:04:00.827018+00:00",
+  "uv": "c22e6b71933443e9cd299d4b6ac8de035ed4825b",
+  "release": "ohm-1.99.0-18",
+  "rustc_pin": "a4fa11bcd38280639cb94daacc125472657db6c3",
+  "cargo_pin": "7caf39914da1e28a67744ecbc963a5f26361474d",
+  "root": "/tmp/ohm-uv-bench.0H03f2TH/round18-literal-stage2",
+  "visible_sysroot": "/tmp/ohm-uv-bench.0H03f2TH/round18-literal-stage2/tools",
+  "cpu": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15
+  ],
+  "jobs": 8,
+  "arms": {
+    "shipped": {
+      "sysroot": "/home/dev-user/Documents/Codex/2026-10-28/i-want-you-to-hillclimb-on/work/upstream-monitor/toolchain18",
+      "cargo": "/home/dev-user/Documents/Codex/2026-10-28/i-want-you-to-hillclimb-on/work/upstream-monitor/toolchain18/bin/cargo",
+      "wild": "/home/dev-user/Documents/Codex/2026-10-28/i-want-you-to-hillclimb-on/work/upstream-monitor/toolchain18/lib/rustlib/x86_64-unknown-linux-gnu/bin/wild-ld/ld.bfd"
+    },
+    "base": {
+      "sysroot": "/home/dev-user/Documents/Codex/2026-10-28/i-want-you-to-hillclimb-on/work/round18-compiler/full-toolchain/arms/base",
+      "cargo": "/home/dev-user/Documents/Codex/2026-10-28/i-want-you-to-hillclimb-on/work/round18-cargo/pgo/bin/base",
+      "wild": "/home/dev-user/Documents/Codex/2026-10-28/i-want-you-to-hillclimb-on/work/bin/wild-baseline"
+    },
+    "stack": {
+      "sysroot": "/home/dev-user/Documents/Codex/2026-10-28/i-want-you-to-hillclimb-on/work/round18-compiler/full-toolchain/arms/guard",
+      "cargo": "/home/dev-user/Documents/Codex/2026-10-28/i-want-you-to-hillclimb-on/work/round18-cargo/pgo/bin/guard-stack",
+      "wild": "/home/dev-user/Documents/Codex/2026-10-28/i-want-you-to-hillclimb-on/work/wild-prefix-v2/v2-wild"
+    },
+    "current": {
+      "sysroot": "/home/dev-user/Documents/Codex/2026-10-28/i-want-you-to-hillclimb-on/work/round18-compiler/full-toolchain/arms/guard",
+      "cargo": "/home/dev-user/Documents/Codex/2026-10-28/i-want-you-to-hillclimb-on/work/round18-cargo/pgo/bin/guard-stack",
+      "wild": "/home/dev-user/Documents/Codex/2026-10-28/i-want-you-to-hillclimb-on/work/round18-linker/current-pr46/wild"
+    }
+  },
+  "cohorts": {
+    "initial": {
+      "seed": 64180317,
+      "root": "/tmp/ohm-uv-bench.0H03f2TH/round18-literal-stage2/a",
+      "edit_shape": "predicate",
+      "endpoint_order": [
+        "check",
+        "build",
+        "test"
+      ],
+      "endpoints": {
+        "check": [
+          {
+            "literal": "IC15",
+            "order": [
+              "shipped",
+              "base",
+              "stack",
+              "current"
+            ]
+          },
+          {
+            "literal": "IC26",
+            "order": [
+              "base",
+              "current",
+              "stack",
+              "shipped"
+            ]
+          },
+          {
+            "literal": "IC33",
+            "order": [
+              "current",
+              "base",
+              "shipped",
+              "stack"
+            ]
+          },
+          {
+            "literal": "IC13",
+            "order": [
+              "current",
+              "shipped",
+              "stack",
+              "base"
+            ]
+          },
+          {
+            "literal": "IC27",
+            "order": [
+              "stack",
+              "base",
+              "current",
+              "shipped"
+            ]
+          },
+          {
+            "literal": "IC31",
+            "order": [
+              "shipped",
+              "base",
+              "current",
+              "stack"
+            ]
+          },
+          {
+            "literal": "IC16",
+            "order": [
+              "base",
+              "stack",
+              "shipped",
+              "current"
+            ]
+          },
+          {
+            "literal": "IC18",
+            "order": [
+              "base",
+              "shipped",
+              "current",
+              "stack"
+            ]
+          },
+          {
+            "literal": "IC30",
+            "order": [
+              "stack",
+              "shipped",
+              "current",
+              "base"
+            ]
+          },
+          {
+            "literal": "IC23",
+            "order": [
+              "base",
+              "shipped",
+              "stack",
+              "current"
+            ]
+          },
+          {
+            "literal": "IC10",
+            "order": [
+              "current",
+              "shipped",
+              "base",
+              "stack"
+            ]
+          },
+          {
+            "literal": "IC28",
+            "order": [
+              "shipped",
+              "stack",
+              "base",
+              "current"
+            ]
+          },
+          {
+            "literal": "IC21",
+            "order": [
+              "current",
+              "stack",
+              "shipped",
+              "base"
+            ]
+          },
+          {
+            "literal": "IC14",
+            "order": [
+              "shipped",
+              "current",
+              "stack",
+              "base"
+            ]
+          },
+          {
+            "literal": "IC19",
+            "order": [
+              "stack",
+              "current",
+              "shipped",
+              "base"
+            ]
+          },
+          {
+            "literal": "IC22",
+            "order": [
+              "shipped",
+              "current",
+              "base",
+              "stack"
+            ]
+          },
+          {
+            "literal": "IC11",
+            "order": [
+              "stack",
+              "shipped",
+              "base",
+              "current"
+            ]
+          },
+          {
+            "literal": "IC24",
+            "order": [
+              "current",
+              "stack",
+              "base",
+              "shipped"
+            ]
+          },
+          {
+            "literal": "IC25",
+            "order": [
+              "stack",
+              "current",
+              "base",
+              "shipped"
+            ]
+          },
+          {
+            "literal": "IC32",
+            "order": [
+              "shipped",
+              "stack",
+              "current",
+              "base"
+            ]
+          },
+          {
+            "literal": "IC20",
+            "order": [
+              "base",
+              "stack",
+              "current",
+              "shipped"
+            ]
+          },
+          {
+            "literal": "IC29",
+            "order": [
+              "current",
+              "base",
+              "stack",
+              "shipped"
+            ]
+          },
+          {
+            "literal": "IC17",
+            "order": [
+              "base",
+              "current",
+              "shipped",
+              "stack"
+            ]
+          },
+          {
+            "literal": "IC12",
+            "order": [
+              "stack",
+              "base",
+              "shipped",
+              "current"
+            ]
+          }
+        ],
+        "build": [
+          {
+            "literal": "IB14",
+            "order": [
+              "base",
+              "current",
+              "stack",
+              "shipped"
+            ]
+          },
+          {
+            "literal": "IB22",
+            "order": [
+              "shipped",
+              "base",
+              "stack",
+              "current"
+            ]
+          },
+          {
+            "literal": "IB28",
+            "order": [
+              "stack",
+              "base",
+              "shipped",
+              "current"
+            ]
+          },
+          {
+            "literal": "IB21",
+            "order": [
+              "shipped",
+              "current",
+              "stack",
+              "base"
+            ]
+          },
+          {
+            "literal": "IB27",
+            "order": [
+              "base",
+              "stack",
+              "shipped",
+              "current"
+            ]
+          },
+          {
+            "literal": "IB16",
+            "order": [
+              "current",
+              "stack",
+              "base",
+              "shipped"
+            ]
+          },
+          {
+            "literal": "IB29",
+            "order": [
+              "stack",
+              "shipped",
+              "current",
+              "base"
+            ]
+          },
+          {
+            "literal": "IB12",
+            "order": [
+              "stack",
+              "current",
+              "shipped",
+              "base"
+            ]
+          },
+          {
+            "literal": "IB10",
+            "order": [
+              "shipped",
+              "stack",
+              "base",
+              "current"
+            ]
+          },
+          {
+            "literal": "IB18",
+            "order": [
+              "shipped",
+              "base",
+              "current",
+              "stack"
+            ]
+          },
+          {
+            "literal": "IB25",
+            "order": [
+              "current",
+              "shipped",
+              "base",
+              "stack"
+            ]
+          },
+          {
+            "literal": "IB32",
+            "order": [
+              "stack",
+              "base",
+              "current",
+              "shipped"
+            ]
+          },
+          {
+            "literal": "IB24",
+            "order": [
+              "base",
+              "shipped",
+              "current",
+              "stack"
+            ]
+          },
+          {
+            "literal": "IB26",
+            "order": [
+              "base",
+              "shipped",
+              "stack",
+              "current"
+            ]
+          },
+          {
+            "literal": "IB31",
+            "order": [
+              "stack",
+              "shipped",
+              "base",
+              "current"
+            ]
+          },
+          {
+            "literal": "IB13",
+            "order": [
+              "base",
+              "current",
+              "shipped",
+              "stack"
+            ]
+          },
+          {
+            "literal": "IB15",
+            "order": [
+              "shipped",
+              "stack",
+              "current",
+              "base"
+            ]
+          },
+          {
+            "literal": "IB30",
+            "order": [
+              "current",
+              "shipped",
+              "stack",
+              "base"
+            ]
+          },
+          {
+            "literal": "IB33",
+            "order": [
+              "shipped",
+              "current",
+              "base",
+              "stack"
+            ]
+          },
+          {
+            "literal": "IB17",
+            "order": [
+              "current",
+              "base",
+              "stack",
+              "shipped"
+            ]
+          },
+          {
+            "literal": "IB19",
+            "order": [
+              "stack",
+              "current",
+              "base",
+              "shipped"
+            ]
+          },
+          {
+            "literal": "IB11",
+            "order": [
+              "current",
+              "base",
+              "shipped",
+              "stack"
+            ]
+          },
+          {
+            "literal": "IB20",
+            "order": [
+              "current",
+              "stack",
+              "shipped",
+              "base"
+            ]
+          },
+          {
+            "literal": "IB23",
+            "order": [
+              "base",
+              "stack",
+              "current",
+              "shipped"
+            ]
+          }
+        ],
+        "test": [
+          {
+            "literal": "IT27",
+            "order": [
+              "base",
+              "stack",
+              "current",
+              "shipped"
+            ]
+          },
+          {
+            "literal": "IT20",
+            "order": [
+              "stack",
+              "base",
+              "shipped",
+              "current"
+            ]
+          },
+          {
+            "literal": "IT10",
+            "order": [
+              "stack",
+              "current",
+              "shipped",
+              "base"
+            ]
+          },
+          {
+            "literal": "IT23",
+            "order": [
+              "stack",
+              "shipped",
+              "current",
+              "base"
+            ]
+          },
+          {
+            "literal": "IT30",
+            "order": [
+              "base",
+              "stack",
+              "shipped",
+              "current"
+            ]
+          },
+          {
+            "literal": "IT13",
+            "order": [
+              "shipped",
+              "stack",
+              "base",
+              "current"
+            ]
+          },
+          {
+            "literal": "IT16",
+            "order": [
+              "stack",
+              "base",
+              "current",
+              "shipped"
+            ]
+          },
+          {
+            "literal": "IT17",
+            "order": [
+              "shipped",
+              "base",
+              "stack",
+              "current"
+            ]
+          },
+          {
+            "literal": "IT32",
+            "order": [
+              "stack",
+              "current",
+              "base",
+              "shipped"
+            ]
+          },
+          {
+            "literal": "IT11",
+            "order": [
+              "current",
+              "shipped",
+              "stack",
+              "base"
+            ]
+          },
+          {
+            "literal": "IT12",
+            "order": [
+              "base",
+              "shipped",
+              "stack",
+              "current"
+            ]
+          },
+          {
+            "literal": "IT15",
+            "order": [
+              "shipped",
+              "current",
+              "base",
+              "stack"
+            ]
+          },
+          {
+            "literal": "IT19",
+            "order": [
+              "current",
+              "stack",
+              "base",
+              "shipped"
+            ]
+          },
+          {
+            "literal": "IT25",
+            "order": [
+              "base",
+              "current",
+              "shipped",
+              "stack"
+            ]
+          },
+          {
+            "literal": "IT29",
+            "order": [
+              "current",
+              "base",
+              "shipped",
+              "stack"
+            ]
+          },
+          {
+            "literal": "IT18",
+            "order": [
+              "shipped",
+              "stack",
+              "current",
+              "base"
+            ]
+          },
+          {
+            "literal": "IT33",
+            "order": [
+              "shipped",
+              "base",
+              "current",
+              "stack"
+            ]
+          },
+          {
+            "literal": "IT28",
+            "order": [
+              "base",
+              "current",
+              "stack",
+              "shipped"
+            ]
+          },
+          {
+            "literal": "IT26",
+            "order": [
+              "current",
+              "shipped",
+              "base",
+              "stack"
+            ]
+          },
+          {
+            "literal": "IT31",
+            "order": [
+              "base",
+              "shipped",
+              "current",
+              "stack"
+            ]
+          },
+          {
+            "literal": "IT21",
+            "order": [
+              "shipped",
+              "current",
+              "stack",
+              "base"
+            ]
+          },
+          {
+            "literal": "IT22",
+            "order": [
+              "current",
+              "base",
+              "stack",
+              "shipped"
+            ]
+          },
+          {
+            "literal": "IT14",
+            "order": [
+              "current",
+              "stack",
+              "shipped",
+              "base"
+            ]
+          },
+          {
+            "literal": "IT24",
+            "order": [
+              "stack",
+              "shipped",
+              "base",
+              "current"
+            ]
+          }
+        ]
+      }
+    },
+    "replica": {
+      "seed": 78180391,
+      "root": "/tmp/ohm-uv-bench.0H03f2TH/round18-literal-stage2/replica/independent-longer-checkout-b",
+      "edit_shape": "brew-help",
+      "endpoint_order": [
+        "test",
+        "build",
+        "check"
+      ],
+      "endpoints": {
+        "test": [
+          {
+            "literal": "RT23",
+            "order": [
+              "stack",
+              "current",
+              "base",
+              "shipped"
+            ]
+          },
+          {
+            "literal": "RT17",
+            "order": [
+              "shipped",
+              "stack",
+              "current",
+              "base"
+            ]
+          },
+          {
+            "literal": "RT26",
+            "order": [
+              "base",
+              "stack",
+              "shipped",
+              "current"
+            ]
+          },
+          {
+            "literal": "RT32",
+            "order": [
+              "stack",
+              "base",
+              "shipped",
+              "current"
+            ]
+          },
+          {
+            "literal": "RT14",
+            "order": [
+              "stack",
+              "shipped",
+              "base",
+              "current"
+            ]
+          },
+          {
+            "literal": "RT22",
+            "order": [
+              "current",
+              "shipped",
+              "stack",
+              "base"
+            ]
+          },
+          {
+            "literal": "RT21",
+            "order": [
+              "base",
+              "shipped",
+              "current",
+              "stack"
+            ]
+          },
+          {
+            "literal": "RT16",
+            "order": [
+              "current",
+              "base",
+              "stack",
+              "shipped"
+            ]
+          },
+          {
+            "literal": "RT11",
+            "order": [
+              "current",
+              "stack",
+              "base",
+              "shipped"
+            ]
+          },
+          {
+            "literal": "RT12",
+            "order": [
+              "shipped",
+              "current",
+              "stack",
+              "base"
+            ]
+          },
+          {
+            "literal": "RT10",
+            "order": [
+              "shipped",
+              "base",
+              "current",
+              "stack"
+            ]
+          },
+          {
+            "literal": "RT33",
+            "order": [
+              "current",
+              "base",
+              "shipped",
+              "stack"
+            ]
+          },
+          {
+            "literal": "RT31",
+            "order": [
+              "shipped",
+              "stack",
+              "base",
+              "current"
+            ]
+          },
+          {
+            "literal": "RT29",
+            "order": [
+              "stack",
+              "current",
+              "shipped",
+              "base"
+            ]
+          },
+          {
+            "literal": "RT27",
+            "order": [
+              "base",
+              "shipped",
+              "stack",
+              "current"
+            ]
+          },
+          {
+            "literal": "RT13",
+            "order": [
+              "base",
+              "current",
+              "stack",
+              "shipped"
+            ]
+          },
+          {
+            "literal": "RT25",
+            "order": [
+              "stack",
+              "shipped",
+              "current",
+              "base"
+            ]
+          },
+          {
+            "literal": "RT24",
+            "order": [
+              "current",
+              "stack",
+              "shipped",
+              "base"
+            ]
+          },
+          {
+            "literal": "RT30",
+            "order": [
+              "base",
+              "stack",
+              "current",
+              "shipped"
+            ]
+          },
+          {
+            "literal": "RT15",
+            "order": [
+              "stack",
+              "base",
+              "current",
+              "shipped"
+            ]
+          },
+          {
+            "literal": "RT20",
+            "order": [
+              "shipped",
+              "current",
+              "base",
+              "stack"
+            ]
+          },
+          {
+            "literal": "RT19",
+            "order": [
+              "base",
+              "current",
+              "shipped",
+              "stack"
+            ]
+          },
+          {
+            "literal": "RT28",
+            "order": [
+              "current",
+              "shipped",
+              "base",
+              "stack"
+            ]
+          },
+          {
+            "literal": "RT18",
+            "order": [
+              "shipped",
+              "base",
+              "stack",
+              "current"
+            ]
+          }
+        ],
+        "build": [
+          {
+            "literal": "RB26",
+            "order": [
+              "base",
+              "shipped",
+              "stack",
+              "current"
+            ]
+          },
+          {
+            "literal": "RB27",
+            "order": [
+              "shipped",
+              "current",
+              "base",
+              "stack"
+            ]
+          },
+          {
+            "literal": "RB25",
+            "order": [
+              "stack",
+              "shipped",
+              "current",
+              "base"
+            ]
+          },
+          {
+            "literal": "RB14",
+            "order": [
+              "base",
+              "current",
+              "shipped",
+              "stack"
+            ]
+          },
+          {
+            "literal": "RB30",
+            "order": [
+              "base",
+              "stack",
+              "shipped",
+              "current"
+            ]
+          },
+          {
+            "literal": "RB22",
+            "order": [
+              "stack",
+              "current",
+              "base",
+              "shipped"
+            ]
+          },
+          {
+            "literal": "RB33",
+            "order": [
+              "current",
+              "shipped",
+              "base",
+              "stack"
+            ]
+          },
+          {
+            "literal": "RB12",
+            "order": [
+              "stack",
+              "current",
+              "shipped",
+              "base"
+            ]
+          },
+          {
+            "literal": "RB10",
+            "order": [
+              "stack",
+              "base",
+              "current",
+              "shipped"
+            ]
+          },
+          {
+            "literal": "RB23",
+            "order": [
+              "base",
+              "stack",
+              "current",
+              "shipped"
+            ]
+          },
+          {
+            "literal": "RB32",
+            "order": [
+              "current",
+              "shipped",
+              "stack",
+              "base"
+            ]
+          },
+          {
+            "literal": "RB18",
+            "order": [
+              "current",
+              "base",
+              "shipped",
+              "stack"
+            ]
+          },
+          {
+            "literal": "RB28",
+            "order": [
+              "stack",
+              "shipped",
+              "base",
+              "current"
+            ]
+          },
+          {
+            "literal": "RB21",
+            "order": [
+              "shipped",
+              "stack",
+              "base",
+              "current"
+            ]
+          },
+          {
+            "literal": "RB29",
+            "order": [
+              "shipped",
+              "stack",
+              "current",
+              "base"
+            ]
+          },
+          {
+            "literal": "RB16",
+            "order": [
+              "base",
+              "shipped",
+              "current",
+              "stack"
+            ]
+          },
+          {
+            "literal": "RB13",
+            "order": [
+              "shipped",
+              "current",
+              "stack",
+              "base"
+            ]
+          },
+          {
+            "literal": "RB11",
+            "order": [
+              "shipped",
+              "base",
+              "stack",
+              "current"
+            ]
+          },
+          {
+            "literal": "RB31",
+            "order": [
+              "shipped",
+              "base",
+              "current",
+              "stack"
+            ]
+          },
+          {
+            "literal": "RB15",
+            "order": [
+              "current",
+              "stack",
+              "shipped",
+              "base"
+            ]
+          },
+          {
+            "literal": "RB24",
+            "order": [
+              "current",
+              "base",
+              "stack",
+              "shipped"
+            ]
+          },
+          {
+            "literal": "RB20",
+            "order": [
+              "base",
+              "current",
+              "stack",
+              "shipped"
+            ]
+          },
+          {
+            "literal": "RB17",
+            "order": [
+              "current",
+              "stack",
+              "base",
+              "shipped"
+            ]
+          },
+          {
+            "literal": "RB19",
+            "order": [
+              "stack",
+              "base",
+              "shipped",
+              "current"
+            ]
+          }
+        ],
+        "check": [
+          {
+            "literal": "RC16",
+            "order": [
+              "current",
+              "shipped",
+              "base",
+              "stack"
+            ]
+          },
+          {
+            "literal": "RC33",
+            "order": [
+              "shipped",
+              "stack",
+              "base",
+              "current"
+            ]
+          },
+          {
+            "literal": "RC20",
+            "order": [
+              "stack",
+              "shipped",
+              "base",
+              "current"
+            ]
+          },
+          {
+            "literal": "RC19",
+            "order": [
+              "stack",
+              "current",
+              "base",
+              "shipped"
+            ]
+          },
+          {
+            "literal": "RC27",
+            "order": [
+              "shipped",
+              "base",
+              "stack",
+              "current"
+            ]
+          },
+          {
+            "literal": "RC28",
+            "order": [
+              "base",
+              "current",
+              "shipped",
+              "stack"
+            ]
+          },
+          {
+            "literal": "RC22",
+            "order": [
+              "current",
+              "base",
+              "shipped",
+              "stack"
+            ]
+          },
+          {
+            "literal": "RC26",
+            "order": [
+              "current",
+              "stack",
+              "shipped",
+              "base"
+            ]
+          },
+          {
+            "literal": "RC32",
+            "order": [
+              "base",
+              "shipped",
+              "current",
+              "stack"
+            ]
+          },
+          {
+            "literal": "RC13",
+            "order": [
+              "base",
+              "stack",
+              "shipped",
+              "current"
+            ]
+          },
+          {
+            "literal": "RC23",
+            "order": [
+              "base",
+              "shipped",
+              "stack",
+              "current"
+            ]
+          },
+          {
+            "literal": "RC21",
+            "order": [
+              "shipped",
+              "stack",
+              "current",
+              "base"
+            ]
+          },
+          {
+            "literal": "RC11",
+            "order": [
+              "stack",
+              "base",
+              "shipped",
+              "current"
+            ]
+          },
+          {
+            "literal": "RC15",
+            "order": [
+              "shipped",
+              "current",
+              "stack",
+              "base"
+            ]
+          },
+          {
+            "literal": "RC24",
+            "order": [
+              "current",
+              "shipped",
+              "stack",
+              "base"
+            ]
+          },
+          {
+            "literal": "RC12",
+            "order": [
+              "stack",
+              "base",
+              "current",
+              "shipped"
+            ]
+          },
+          {
+            "literal": "RC10",
+            "order": [
+              "current",
+              "stack",
+              "base",
+              "shipped"
+            ]
+          },
+          {
+            "literal": "RC29",
+            "order": [
+              "shipped",
+              "base",
+              "current",
+              "stack"
+            ]
+          },
+          {
+            "literal": "RC17",
+            "order": [
+              "stack",
+              "current",
+              "shipped",
+              "base"
+            ]
+          },
+          {
+            "literal": "RC25",
+            "order": [
+              "base",
+              "stack",
+              "current",
+              "shipped"
+            ]
+          },
+          {
+            "literal": "RC31",
+            "order": [
+              "stack",
+              "shipped",
+              "current",
+              "base"
+            ]
+          },
+          {
+            "literal": "RC18",
+            "order": [
+              "shipped",
+              "current",
+              "base",
+              "stack"
+            ]
+          },
+          {
+            "literal": "RC30",
+            "order": [
+              "base",
+              "current",
+              "stack",
+              "shipped"
+            ]
+          },
+          {
+            "literal": "RC14",
+            "order": [
+              "current",
+              "base",
+              "stack",
+              "shipped"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "endpoints": {
+    "check": [
+      "check",
+      "--locked",
+      "--offline",
+      "-j8"
+    ],
+    "build": [
+      "build",
+      "--locked",
+      "--offline",
+      "-j8"
+    ],
+    "test": [
+      "test",
+      "--no-run",
+      "--locked",
+      "--offline",
+      "-j8"
+    ]
+  },
+  "primary_family": "Evaluate historical eight and current seven against both the original distributed Ohm -18 and the matched rebuilt control for check, build and test --no-run. Twelve prespecified initial hypotheses are followed independently in a second checkout with a different real source edit. The historical and current treatments use exactly the same guarded stage2 compiler, target standard library and independently trained Cargo; their separately sourced Wild executable is the only arm difference.",
+  "gates": {
+    "initial_alpha": 0.004166666666666667,
+    "replica_alpha": 0.05,
+    "rule": "For each treatment, require both prespecified controls to pass on both independent cohorts for a given command. Use all 24 pairs per contrast. Each of the two-sided sign and other-label-and-position-conditional randomization p-values must fall below .05/12 initially and .05 on the separate replication. Require a positive lower 95% paired-median percentage interval and both pair-order medians positive everywhere. Report the twelve primary contrasts and all raw rows. A projection of the historical contrast onto its original three-arm ranks is a sensitivity, never an additional independent result.",
+    "blocks_per_endpoint": 24,
+    "assignments": "Within each of the six original triple orders, independently shuffle current insertion ranks 0,1,2,3 over those four original occurrences. Every one of 24 complete permutations occurs once in each cohort and endpoint, every arm occupies every position six times, every pair is 12/12 by order. Historical projection preserves the exact original 24-block order, literals and checkout sequences.",
+    "number_of_primary_hypotheses": 12
+  },
+  "receipts": "Log full Cargo argv, original raw build roster, 72 checked logical test targets, per-arm complete execve argv for admissions and postchecks, raw files and executable behavior. Hash differences between independently built sysroots are preserved.",
+  "amendment": {
+    "reason": "Ohm Wild #45 closed without merge and #46 moved from its stacked branch to the bare 0.11 base. Add the still-open seven-change configuration while preserving every randomized historical triple and source tag.",
+    "upstream_json_sha256": "5bbb8629e5c5b8f02938719c33f270635284d13b5dac67f22f4b7b92082b1b61",
+    "original_plan_sha256": "ef97ffddaefa9362e10680c5f0160db9e1e4671de5db28853ca53739b9ed7d7c",
+    "original_runner_sha256": "6231d59f9925b7e60cf71a81534e309c8f5b62beb5ece95159ad9246ed146bf8",
+    "original_plan_utc": "2026-10-28T21:59:52.360972+00:00",
+    "pre_result_checks": {
+      "live_root": "/tmp/ohm-uv-bench.0H03f2TH/round18-literal-stage2",
+      "root_absent": true,
+      "original_evidence_absent": true,
+      "amendment_evidence_absent": true
+    },
+    "current_source": {
+      "repo": "astral-sh/ohm-wild",
+      "head": "db821991bd2931dd83e59f236149340ddfc2b427",
+      "base": "e856d81f6683cad80b9fe0ebf1a0c3c403c6fe11",
+      "receipt": "/home/dev-user/Documents/Codex/2026-10-28/i-want-you-to-hillclimb-on/work/round18-linker/current-pr46/ready.json",
+      "expected_fields": [
+        "source_commit",
+        "base_commit",
+        "binary_sha256",
+        "cargo_lock_sha256",
+        "build_command"
+      ]
+    },
+    "arm_labels": {
+      "stack": "historical-eight",
+      "current": "current-seven"
+    },
+    "original_controls": [
+      "shipped",
+      "base"
+    ],
+    "treatments": [
+      "stack",
+      "current"
+    ],
+    "maximum_timed_commands": 576,
+    "sysroot_source_by_arm": {
+      "shipped": "shipped",
+      "base": "base",
+      "stack": "guard",
+      "current": "guard"
+    },
+    "combinatoric_checks": {
+      "initial": {
+        "check": {
+          "insertion_seed": 81170933,
+          "full_orders": 24,
+          "positions_per_arm": [
+            6,
+            6,
+            6,
+            6
+          ],
+          "old_triple_order_unchanged_in_all_blocks": 24,
+          "source_literals_unchanged": 24
+        },
+        "build": {
+          "insertion_seed": 81176326,
+          "full_orders": 24,
+          "positions_per_arm": [
+            6,
+            6,
+            6,
+            6
+          ],
+          "old_triple_order_unchanged_in_all_blocks": 24,
+          "source_literals_unchanged": 24
+        },
+        "test": {
+          "insertion_seed": 81181719,
+          "full_orders": 24,
+          "positions_per_arm": [
+            6,
+            6,
+            6,
+            6
+          ],
+          "old_triple_order_unchanged_in_all_blocks": 24,
+          "source_literals_unchanged": 24
+        }
+      },
+      "replica": {
+        "test": {
+          "insertion_seed": 83370954,
+          "full_orders": 24,
+          "positions_per_arm": [
+            6,
+            6,
+            6,
+            6
+          ],
+          "old_triple_order_unchanged_in_all_blocks": 24,
+          "source_literals_unchanged": 24
+        },
+        "build": {
+          "insertion_seed": 83376347,
+          "full_orders": 24,
+          "positions_per_arm": [
+            6,
+            6,
+            6,
+            6
+          ],
+          "old_triple_order_unchanged_in_all_blocks": 24,
+          "source_literals_unchanged": 24
+        },
+        "check": {
+          "insertion_seed": 83381740,
+          "full_orders": 24,
+          "positions_per_arm": [
+            6,
+            6,
+            6,
+            6
+          ],
+          "old_triple_order_unchanged_in_all_blocks": 24,
+          "source_literals_unchanged": 24
+        }
+      }
+    },
+    "randomization_support": "(24!/(4!)^6) * (4!)^6 = 24!; source-triple schedule was fixed before any outcome and amendment selection used only upstream state. Given the other two labels and their positions, each primary two-arm test has 12 strata of 2 opposite orderings, 2^12 assignments."
+  }
+}

@@ -1,0 +1,694 @@
+{
+  "registered_utc": "2026-10-28T23:07:07.630751+00:00",
+  "plan_version": 1,
+  "source": {
+    "release_ref": "e856d81f6683cad80b9fe0ebf1a0c3c403c6fe11",
+    "release_tag": "0.11.0",
+    "changed_files": [
+      "libwild/src/elf_writer.rs"
+    ],
+    "source_git_blob": "a377d9f80383f6e11eae7f36b2992ab97d905025",
+    "source_sha256": "bfbf65a88b95a17de13a5845b0229e12055535c77a45c5e44965c8f0aded3b6d",
+    "candidate_source_sha256": "4fade04c0edb96b4be2a5602e2c4002ceac204ebf273441200a770d993fd0c32",
+    "patch_sha256": "6cdd5a0e91673446eaae717184ca4d186e91967e83f6d88f9f273fd80c7bea61",
+    "release_cargo_lock_git_blob": "ae06a3513c72d129e00f81a8d4a534d702261dcc",
+    "release_cargo_lock_sha256": "5ae0778fb45afcde76cb14fb6e6dbd6f364f4405a2b27693a7af8be50bc031b8",
+    "old_measured_wild_ref": "93600ec375472777043c28c33a5628adfbc0eb9b",
+    "old_measured_matched_binary": "901b68fc9ca30975d837d45dcf1bdf743a6130ecef5e23d6aef44558b09bd7e1",
+    "old_measured_eh_binary": "767f89336bd360866164aa1cce4ed864795c67766fc4b8483bd4c36c325e23f9",
+    "matched_release_control_reference_sha256": "82a927b86f929b67c58be4d37ab8442f32fcdd115d97334dcc5ac190101d8865",
+    "shipped_control_sha256": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5",
+    "direct_release_treatment_sha256": null
+  },
+  "protocol_sha256": "19cd65c947cfee88d0970668c3fe29382c566cc11a5101103f2137adeca83834",
+  "plan_code_sha256": "98a8ef92b5d3b9fa8074ffb2303390e47d9be88c3d7071bc9d1890b607ae98a9",
+  "builder_sha256": "f38467181387340b17339a9fa87dbb7498bbcb23a7f26b97a6de82964c0ae035",
+  "support_sha256": {
+    "round18-eh/known-parent-variants.json": "19d5542471c1f999b5ec113ef0756664a3f373b721fdfdc009d681cf1d62d459",
+    "round18-linker/confirm18/inputs.json": "6124d42f8d0fb209647294983c3b36993b85b61ec8564fe6e539e376a7781091",
+    "round18-linker/confirm18/intake.json": "f9d229a3b8cd8c9c6229b462bc77c402a7a3bb50e26d613be4ff05c789785cf2",
+    "round18-uvx-admission/summary.json": "c98fb82010dae407e9d9688fca0cce54098b1ad61fb7230e48cd2dab4c292ac5",
+    "round18-eh/analysis.py": "5448532124feb24e450beb6a3e569af2a88e8b80e2358189e85069921b8a8c66",
+    "round18-eh/fixtures/frame.s": "df77955cf2dc90a7ebd5389d4f72ba88ad240a6bc69d748d0b5a8cf5498d95b2",
+    "round18-eh/fixtures/gap.ld": "c048564e72439c6a31909dd6b71869d42c500e6615d88fc4f1f4b0cad074eac1",
+    "round18-lab/elf_equivalence.py": "0c2619238b55f717767ed1871e7f643525247fe8045b031daf66287768c0d871",
+    "round18-cargo/edited-roles/run.py": "dc3de9a0c5dd5b26f4450cb019b4eef1f9a7b4eebf178192df35acb11ce7f079",
+    "round18-cargo/edited-roles/plan.py": "b37ca25fbdd8921ca09256e50a9ed19b92cedcd5ffd341078cdb8d0a1b893660",
+    "tree-count/wrap.py": "fe98589559a11680cb792af1e85527c06b5e0e11e0854940507c832ffb80f6e2",
+    "tree-count/identical.py": "560315f7f5aa81f6f8156bb1d72b0b49776801ed70309dd2afc71e5874bc6b35",
+    "tree-count/calibrate.py": "914d6cf31e8c12524783a2585b50321d577b869e15ab04f7747a96acd75be628",
+    "tree-count/calibrate.c": "d176be4833153f1712036d3756c3637c81ae9c2ed125dd7acf98e617f0506ced",
+    "dynamorio/count.py": "629107a556eae51bcd02900fc1932679e8a5a7327de5823883e3ae94a08ed74e",
+    "edit-link-profile/native-instrument/count.py": "5244e9c705d307b9521f793c211b153b525ebf898f6aa37b766b7a55ebec9d23"
+  },
+  "uv": "c22e6b71933443e9cd299d4b6ac8de035ed4825b",
+  "uv_edit_file": "crates/uv/src/install_source.rs",
+  "uv_edit_preimage_sha256": "338cddc82f4cc55a1ecdc6b02edd5c28544cd19233d8cb54a7afa9f2b02a7082",
+  "shipped_toolchain": {
+    "cargo": "02a86ebd2d9e4f237b33f212102b81ed145eb77fae090d67e379cb6f1d70a573",
+    "rustc": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60",
+    "wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5"
+  },
+  "wild_release_ref": "e856d81f6683cad80b9fe0ebf1a0c3c403c6fe11",
+  "source_patch_sha256": "6cdd5a0e91673446eaae717184ca4d186e91967e83f6d88f9f273fd80c7bea61",
+  "source_matched_baseline_sha256": "82a927b86f929b67c58be4d37ab8442f32fcdd115d97334dcc5ac190101d8865",
+  "shipped_wild_baseline_sha256": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5",
+  "treatment_sha256": null,
+  "binary_lock": "Record all build receipts, executable hashes, counter/collector, allocation and environment before admission or any count.",
+  "captures": {
+    "0": {
+      "argv": {
+        "recorded": "375def02c2e248af70da8a5f7930803eccc7ce0c36fda0eca686cd4d0b8ceb9b",
+        "run": "65b679d24e701a10a250d503437cbcd87cf4b42aef80a1617f4259989aad3c92",
+        "output": "3a58a2ec8afc6d2815f745cff68a5b3600f4fcd0c4d92e8c3d5b7c6897b3d7ec",
+        "name": "uv-7244341c90b6d7a6"
+      },
+      "one_worker_file_sha256": "4008030fc5cd4d6930d0aebef7f80d5bab84c7e3d97631a8773f7d246a3e3347"
+    },
+    "1": {
+      "argv": {
+        "recorded": "4991e0b0ea3436f12687ef9d1c33e3e6be344a18717275f131c4a67644f9bca9",
+        "run": "111d13173d2dc4024c3a1b8bfc881b583467cd96208eb02f0dfccd9e7b64e308",
+        "output": "0b1e9f9f0f2f037c1e19f707e40ee7991bc5ed0a1d05c9d92639f9d8a193746d",
+        "name": "uv"
+      },
+      "one_worker_file_sha256": "0b1e9f9f0f2f037c1e19f707e40ee7991bc5ed0a1d05c9d92639f9d8a193746d"
+    },
+    "2": {
+      "argv": {
+        "recorded": "65323d9b617ce6c0547fbf4d77e28ef1de3633470f7561fc07562ac0ef190ff3",
+        "run": "e2b2f57a4e8dbb5d3595138921e6dd55430d28fe5786096263819be378b4390a",
+        "output": "75aeae67597cec8640bea25660d65fb2a8338474628ce193ff2750d6052005eb",
+        "name": "uvx-f86773a1331ddc31"
+      },
+      "one_worker_file_sha256": "75aeae67597cec8640bea25660d65fb2a8338474628ce193ff2750d6052005eb"
+    }
+  },
+  "focused_cells": {
+    "0-base": {
+      "capture": "0",
+      "control": "base",
+      "seed": 71527091,
+      "pairs": [
+        [
+          "candidate",
+          "base"
+        ],
+        [
+          "base",
+          "candidate"
+        ],
+        [
+          "base",
+          "candidate"
+        ],
+        [
+          "base",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "base"
+        ],
+        [
+          "candidate",
+          "base"
+        ],
+        [
+          "candidate",
+          "base"
+        ],
+        [
+          "base",
+          "candidate"
+        ]
+      ]
+    },
+    "0-shipped": {
+      "capture": "0",
+      "control": "shipped",
+      "seed": 98536311,
+      "pairs": [
+        [
+          "shipped",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "shipped"
+        ],
+        [
+          "shipped",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "shipped"
+        ],
+        [
+          "shipped",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "shipped"
+        ],
+        [
+          "shipped",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "shipped"
+        ]
+      ]
+    },
+    "1-base": {
+      "capture": "1",
+      "control": "base",
+      "seed": 45639101,
+      "pairs": [
+        [
+          "candidate",
+          "base"
+        ],
+        [
+          "base",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "base"
+        ],
+        [
+          "base",
+          "candidate"
+        ],
+        [
+          "base",
+          "candidate"
+        ],
+        [
+          "base",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "base"
+        ],
+        [
+          "candidate",
+          "base"
+        ]
+      ]
+    },
+    "1-shipped": {
+      "capture": "1",
+      "control": "shipped",
+      "seed": 97154263,
+      "pairs": [
+        [
+          "candidate",
+          "shipped"
+        ],
+        [
+          "shipped",
+          "candidate"
+        ],
+        [
+          "shipped",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "shipped"
+        ],
+        [
+          "shipped",
+          "candidate"
+        ],
+        [
+          "shipped",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "shipped"
+        ],
+        [
+          "candidate",
+          "shipped"
+        ]
+      ]
+    }
+  },
+  "focused_cell_order": [
+    "0-base",
+    "0-shipped",
+    "1-base",
+    "1-shipped"
+  ],
+  "tiny_descriptive_control": {
+    "capture": "2",
+    "order": [
+      "shipped",
+      "candidate",
+      "base",
+      "base",
+      "candidate",
+      "shipped"
+    ]
+  },
+  "suite": [
+    "libwild all unit",
+    "eh-frame",
+    "eh-frame-terminator",
+    "crtend-only-eh-frame",
+    "dynsym-debug-eh-frame",
+    "relocation-overflow",
+    "backtrace"
+  ],
+  "probes": [
+    "normal",
+    "no-hdr",
+    "overflow-pc",
+    "broken-cie",
+    "overflow-fde"
+  ],
+  "focused_entry_gate": "Require all four individual link comparisons and functionality. Stop on ineligibility. Hold full command until new allocation.",
+  "thresholds_for_each_focused_and_macro_cell": {
+    "pairs": 8,
+    "wins_required": 8,
+    "median_improvement_pct_min": 0.1,
+    "two_sided_sign_p_max": 0.05,
+    "balanced_order_permutation_p_max": 0.05,
+    "randomization_statistic": "absolute mean within-pair mean-position log-instruction difference under all 70 balanced orders"
+  },
+  "macro_command": [
+    "cargo",
+    "test",
+    "--no-run",
+    "--locked",
+    "--offline",
+    "-j8"
+  ],
+  "macro_cohorts": {
+    "initial-base": {
+      "cohort": "initial",
+      "control": "base",
+      "literal_family": "FV",
+      "seed": 71245033,
+      "native_count_admission": [
+        [
+          "native",
+          "candidate"
+        ],
+        [
+          "native",
+          "base"
+        ],
+        [
+          "count",
+          "base"
+        ],
+        [
+          "count",
+          "candidate"
+        ]
+      ],
+      "edits": {
+        "0": "bf5709d08fd6f216cad394396460ff4613362c5401cd25207771813f1a2e6fb5",
+        "1": "f37f301a45294fe46eb62975109e53a06c22810d93f4e0dcad1655943421f96f",
+        "15": "31c5752496004b49e9120e65faa98529309730910662b82cfaa53e6e79e0003d",
+        "16": "f3093b7a32374feaec4dc1c22425ac6c4933d4e1b9946085c5d68aaebe113c7e",
+        "12": "e47860865a249547a761b0cb8c4499c194a7409e533ae01740e7ccd2d84f9872",
+        "14": "8187bca66e6cb3babfbce6709ebc8a150ad8f7453c9355c6a5935fdf202f52db",
+        "11": "31bf7d79bc25fd2fea466d6967f4168df8e01f96b782edf7814748df020b8e96",
+        "13": "6de00f9aa1396766dac06ac701c403d42a859b944df2d856e752920416b2c86b",
+        "10": "3d0f949cfc278d6e6b791f76c0ee00cc47be4e2f91d63b116ce097063311c9a0",
+        "17": "ba1665be69859eb472b182a3c3bbc5ad2e975078abb6c4959d1c23e4887f3e2d"
+      },
+      "pairs": [
+        {
+          "id": 15,
+          "order": [
+            "base",
+            "candidate"
+          ]
+        },
+        {
+          "id": 16,
+          "order": [
+            "base",
+            "candidate"
+          ]
+        },
+        {
+          "id": 12,
+          "order": [
+            "candidate",
+            "base"
+          ]
+        },
+        {
+          "id": 14,
+          "order": [
+            "candidate",
+            "base"
+          ]
+        },
+        {
+          "id": 11,
+          "order": [
+            "base",
+            "candidate"
+          ]
+        },
+        {
+          "id": 13,
+          "order": [
+            "candidate",
+            "base"
+          ]
+        },
+        {
+          "id": 10,
+          "order": [
+            "base",
+            "candidate"
+          ]
+        },
+        {
+          "id": 17,
+          "order": [
+            "candidate",
+            "base"
+          ]
+        }
+      ]
+    },
+    "initial-shipped": {
+      "cohort": "initial",
+      "control": "shipped",
+      "literal_family": "FZ",
+      "seed": 86209131,
+      "native_count_admission": [
+        [
+          "native",
+          "candidate"
+        ],
+        [
+          "native",
+          "shipped"
+        ],
+        [
+          "count",
+          "candidate"
+        ],
+        [
+          "count",
+          "shipped"
+        ]
+      ],
+      "edits": {
+        "0": "7f6c0e56e6b109a5565c824e93692008f8005c54ee05bd8e6c8c705288afea88",
+        "1": "5ac73266c475713cf1a76a9837305778a3bd33a675cff02146ffceb8f69da594",
+        "13": "faa72af2320d9212dc50454333fbe430b130696d6b8ca9ce5dcc9e3299a6df2e",
+        "12": "e7583375f56afd0bebc05ce03ab7a4b2331b2fdec4f0bbbc9d2655bd63f5a85e",
+        "11": "aba739addade4aed881b55bf2f5b6d50b63bd0232015c00034b0f461fdce921b",
+        "15": "c87fbf1344f2a5e4ee269c46ef0911e3d0c14f116ef8ed00a97be7426fad1059",
+        "10": "aacc84eae8aa5d8de073399e5d2adef2a18f72b4a63066cd999b5799aa73d8f8",
+        "17": "683368834f5f5789887c1b62883f87930aa74bbcfc7985772bd0530112145731",
+        "14": "405997505d303c590471747abb0f6a30ff4b93656837dd39cb562acc046b7380",
+        "16": "247bbf7f8522bb4b885d05fca2c792b4e1bbda151e8b6cad44771437fe244e5e"
+      },
+      "pairs": [
+        {
+          "id": 13,
+          "order": [
+            "shipped",
+            "candidate"
+          ]
+        },
+        {
+          "id": 12,
+          "order": [
+            "candidate",
+            "shipped"
+          ]
+        },
+        {
+          "id": 11,
+          "order": [
+            "shipped",
+            "candidate"
+          ]
+        },
+        {
+          "id": 15,
+          "order": [
+            "shipped",
+            "candidate"
+          ]
+        },
+        {
+          "id": 10,
+          "order": [
+            "candidate",
+            "shipped"
+          ]
+        },
+        {
+          "id": 17,
+          "order": [
+            "shipped",
+            "candidate"
+          ]
+        },
+        {
+          "id": 14,
+          "order": [
+            "candidate",
+            "shipped"
+          ]
+        },
+        {
+          "id": 16,
+          "order": [
+            "candidate",
+            "shipped"
+          ]
+        }
+      ]
+    },
+    "replica-base": {
+      "cohort": "replica",
+      "control": "base",
+      "literal_family": "HV",
+      "seed": 13460987,
+      "native_count_admission": [
+        [
+          "count",
+          "base"
+        ],
+        [
+          "native",
+          "base"
+        ],
+        [
+          "count",
+          "candidate"
+        ],
+        [
+          "native",
+          "candidate"
+        ]
+      ],
+      "edits": {
+        "0": "8a90060144a6f299dfc9b0c54a30bf01575be2acfbf14819eca8bb4184cafc68",
+        "1": "bdd6b3a0e5a08add5b1361f589c729c55e333aa11d8ff987002c909bc20b997d",
+        "12": "e99e1d5a4523693c05d0e71a06e4654da8221eee338508633d9e6f5abc0b725a",
+        "10": "7787ac9d481d9894bc916cfc9f004fdf778b7425778675a46bd16d681f05725e",
+        "16": "b6897fd7927e5aa49caaf25b55650c0ef15d37d70d8c79ac9f1b12fd666e1123",
+        "15": "331061eb5a56b507491b132fed29e97f262200702b469007f7d842de17fd8163",
+        "11": "e378eb701dfc0c5b53c7ca0c667ca9590ebc0d3a88c56999a449f115612a5be3",
+        "17": "75daba4561c2b4ca7de5c633ba58dded8c5d36c1706925cd50ee9cbc085fda1c",
+        "13": "721b5429952a7b531a5c06ce7878f32322cef6b2332a08d14ff0b79abb9ba4bc",
+        "14": "52c65388dc2aa3265a042f66032236af8cb63fb1cbe06d43987efa0540e32b0a"
+      },
+      "pairs": [
+        {
+          "id": 12,
+          "order": [
+            "candidate",
+            "base"
+          ]
+        },
+        {
+          "id": 10,
+          "order": [
+            "candidate",
+            "base"
+          ]
+        },
+        {
+          "id": 16,
+          "order": [
+            "candidate",
+            "base"
+          ]
+        },
+        {
+          "id": 15,
+          "order": [
+            "base",
+            "candidate"
+          ]
+        },
+        {
+          "id": 11,
+          "order": [
+            "candidate",
+            "base"
+          ]
+        },
+        {
+          "id": 17,
+          "order": [
+            "base",
+            "candidate"
+          ]
+        },
+        {
+          "id": 13,
+          "order": [
+            "base",
+            "candidate"
+          ]
+        },
+        {
+          "id": 14,
+          "order": [
+            "base",
+            "candidate"
+          ]
+        }
+      ]
+    },
+    "replica-shipped": {
+      "cohort": "replica",
+      "control": "shipped",
+      "literal_family": "HZ",
+      "seed": 24539161,
+      "native_count_admission": [
+        [
+          "count",
+          "shipped"
+        ],
+        [
+          "count",
+          "candidate"
+        ],
+        [
+          "native",
+          "shipped"
+        ],
+        [
+          "native",
+          "candidate"
+        ]
+      ],
+      "edits": {
+        "0": "68b264aeba71459f699fa6a181a5c5377959398ac6e5d75eb4e39f08936540cb",
+        "1": "c7cbe53c859e5dfd14c575db8e3c38a5a0ff18cb8a7946ac6da30a232f49eea8",
+        "10": "0d083b2e671d498f5f66636fcd918498e203d7704740c3bca3eac414dca22b8d",
+        "16": "a96081f786568bcbd16a09c75a9ca9431ef416479ebca52484521965e014ae88",
+        "15": "4248fd303968e92a8203834d7d07035c5789cac14c3ea91c6dc9cb7d15897376",
+        "12": "ef12549552ebcd92daf85f6f36af77183e07215d40c00087f6d8a1dd45581abb",
+        "17": "37fdf4f6f57f60bbe588c28a2d9373e19592648e4946272986c19ad33e21cd74",
+        "11": "a1c5cb4a7805efd3f3577560ccd8d1d24868c359810c923bbb079d37d9a4ce7e",
+        "14": "6da535c4a1d8dee73c7fb219eaaf98d6483bf55c1a0c3f7246cee5ff09b27415",
+        "13": "18e32a5b3cfc16f24d74701e7e11c7eaa6ab0c406dfcd6809ee2786bcdc9b8bf"
+      },
+      "pairs": [
+        {
+          "id": 10,
+          "order": [
+            "candidate",
+            "shipped"
+          ]
+        },
+        {
+          "id": 16,
+          "order": [
+            "candidate",
+            "shipped"
+          ]
+        },
+        {
+          "id": 15,
+          "order": [
+            "shipped",
+            "candidate"
+          ]
+        },
+        {
+          "id": 12,
+          "order": [
+            "candidate",
+            "shipped"
+          ]
+        },
+        {
+          "id": 17,
+          "order": [
+            "shipped",
+            "candidate"
+          ]
+        },
+        {
+          "id": 11,
+          "order": [
+            "shipped",
+            "candidate"
+          ]
+        },
+        {
+          "id": 14,
+          "order": [
+            "candidate",
+            "shipped"
+          ]
+        },
+        {
+          "id": 13,
+          "order": [
+            "shipped",
+            "candidate"
+          ]
+        }
+      ]
+    }
+  },
+  "macro_cell_order": [
+    "initial-base",
+    "initial-shipped",
+    "replica-base",
+    "replica-shipped"
+  ],
+  "macro_roster": {
+    "cargo": 1,
+    "rustc": 6,
+    "wild": 5,
+    "unique_test_executables": 72
+  },
+  "macro_allowed_elf_variants_by_relative_path": [
+    "debug/build/uv/3327e13031dd7e00/out/uv-3327e13031dd7e00",
+    "debug/build/uv/7244341c90b6d7a6/out/uv-7244341c90b6d7a6",
+    "debug/build/uv/cb417070d324abc7/out/uv",
+    "debug/build/uv/f86773a1331ddc31/out/uvx-f86773a1331ddc31"
+  ],
+  "macro_endpoint": "All Cargo, rustc and Wild user-mode process instructions in the complete command. No elapsed-time claim.",
+  "macro_gate": "All four independently balanced eight-pair cells separately pass both exact tests, direction and threshold. No pooling.",
+  "resource_policy": "Explicit owner allocation before compilation or any measurement; one pinned CPU for focused counts, eight allocated CPUs for complete command with its jobserver."
+}
