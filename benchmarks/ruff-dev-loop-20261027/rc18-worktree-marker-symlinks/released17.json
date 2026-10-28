@@ -1,0 +1,105 @@
+{
+  "cargo": "4e4065390403afbf4fb77b2f41fbc21c59afe3dda2337a5bbe29fda29a47dbb3",
+  "driver": "618ebac16b7d4ec01a2af89661d25b8f26ff347edbb69c6dcaa78f10115914a7",
+  "expected": "vulnerable",
+  "final_is_link": true,
+  "inode_after": 496734,
+  "inode_before": 496641,
+  "marker": "target/debug/build/workspaces/6a9b7e8d779357c1/.ohm-worktree-seed-v7",
+  "release": 17,
+  "root": "/dev/shm/ohm-marker-min-8ysgapr0",
+  "runs": [
+    {
+      "args": [
+        "+ohm",
+        "-Zohm-worktree-seeds=no",
+        "build",
+        "--lib",
+        "--message-format=json"
+      ],
+      "execs": [
+        "cargo",
+        "cargo",
+        "rustc",
+        "rustc",
+        "rustc",
+        "rustc",
+        "rustc",
+        "rustc",
+        "rustc"
+      ],
+      "fresh": false,
+      "name": "seeds-disabled",
+      "rc": 0,
+      "relevant_syscalls": [],
+      "stderr_sha256": "f7618d5efd3073a90942d3b1023c9854acd34d3feea27292761ca0bc651ded3b",
+      "stdout_sha256": "7b70549119263ed230b0a6b224b6a6301383e0b91ff9fe79a66535c8efba7332",
+      "trace_sha256": "d4451ccdeecac94d20914bb1c75f66f50d88afce5809281ff68df6f38848bdff"
+    },
+    {
+      "args": [
+        "+ohm",
+        "build",
+        "--lib",
+        "--message-format=json"
+      ],
+      "execs": [
+        "cargo",
+        "cargo",
+        "rustc"
+      ],
+      "fresh": false,
+      "name": "ordinary",
+      "rc": 0,
+      "relevant_syscalls": [],
+      "stderr_sha256": "922d83a57f4276513b92a8e2eff4a7acc20924036e024c5d3e38fb85b307c39c",
+      "stdout_sha256": "7b70549119263ed230b0a6b224b6a6301383e0b91ff9fe79a66535c8efba7332",
+      "trace_sha256": "41dcf38930113ee0c81e926e5a348812d20065c1a413fee92075f20df0356c73"
+    },
+    {
+      "args": [
+        "+ohm",
+        "build",
+        "--lib",
+        "--message-format=json"
+      ],
+      "execs": [
+        "cargo",
+        "cargo"
+      ],
+      "fresh": true,
+      "name": "settled",
+      "rc": 0,
+      "relevant_syscalls": [],
+      "stderr_sha256": "ee1d3fffa2022e962e63e0dbe4d35c9c198450a20c29fc09030f635dbb38bfcd",
+      "stdout_sha256": "0ec9ff11d5f0abe24ea7a41ccc7c03a3da9ec411b78b8ce38d1e0818a84dd4f0",
+      "trace_sha256": "adda0b2ce134e75b0e2b8c8256b06a7c3bca1bbe1cd2b9e2fe1a2d9f07052922"
+    },
+    {
+      "args": [
+        "+ohm",
+        "build",
+        "--lib",
+        "--message-format=json"
+      ],
+      "execs": [
+        "cargo",
+        "cargo"
+      ],
+      "fresh": true,
+      "name": "symlink",
+      "rc": 0,
+      "relevant_syscalls": [
+        "1661939 readlink(\"/dev/shm/ohm-marker-min-8ysgapr0/target/debug/build/workspaces/6a9b7e8d779357c1/.ohm-worktree-seed-v7\", \"/dev/shm/ohm-marker-min-8ysgapr0/victims/owned.txt\", 256) = 50",
+        "1661939 renameat(AT_FDCWD, \"/dev/shm/ohm-marker-min-8ysgapr0/victims/owned.txtG2QV4U\", AT_FDCWD, \"/dev/shm/ohm-marker-min-8ysgapr0/victims/owned.txt\") = 0"
+      ],
+      "stderr_sha256": "ee1d3fffa2022e962e63e0dbe4d35c9c198450a20c29fc09030f635dbb38bfcd",
+      "stdout_sha256": "0ec9ff11d5f0abe24ea7a41ccc7c03a3da9ec411b78b8ce38d1e0818a84dd4f0",
+      "trace_sha256": "9b0294c984fa0f4c87f378c97e1cb642a0df5bba12784fa2ba5e1124b426e89e"
+    }
+  ],
+  "rustc": "7ec5263869aed2fc9272ea7212aabbe7b272a4685f1b79af75c123daff09c02c",
+  "sdk": "/dev/shm/ohm-marker-release17-20261028/sdk",
+  "victim_after": "370a",
+  "victim_before": "6b6565702074686973206f776e65642073656e74696e656c0a"
+}

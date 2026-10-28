@@ -1,0 +1,160 @@
+{
+  "after_default": {
+    "bytes_hex": "370a",
+    "inode": 350079,
+    "permissions": 436,
+    "sha256": "10159baf262b43a92d95db59dae1f72c645127301661e0a3ce4e38b295a97c58"
+  },
+  "after_disabled": {
+    "bytes_hex": "666978747572652d6f776e65722073656e74696e656c3a206b6565702074686573652062797465730a",
+    "inode": 349956,
+    "permissions": 436,
+    "sha256": "3b26df802b48c228b2a41c9bc9a6df4f1c3386ed896fb43bf267f0df42cbbc2c"
+  },
+  "after_same_default": {
+    "bytes_hex": "370a",
+    "inode": 350101,
+    "permissions": 436,
+    "sha256": "10159baf262b43a92d95db59dae1f72c645127301661e0a3ce4e38b295a97c58"
+  },
+  "before_same_default": {
+    "bytes_hex": "667265736820636f6e74726f6c2073656e74696e656c2066726f6d20666978747572650a",
+    "inode": 350079,
+    "permissions": 436,
+    "sha256": "fcca535772e0c2f7025001f9d74f54a23b1dffd34d18ba6844ee3a716f62d981"
+  },
+  "cargo": "02a86ebd2d9e4f237b33f212102b81ed145eb77fae090d67e379cb6f1d70a573",
+  "initial": {
+    "bytes_hex": "666978747572652d6f776e65722073656e74696e656c3a206b6565702074686573652062797465730a",
+    "inode": 349956,
+    "permissions": 436,
+    "sha256": "3b26df802b48c228b2a41c9bc9a6df4f1c3386ed896fb43bf267f0df42cbbc2c"
+  },
+  "link_at_end": {
+    "inode": 350053,
+    "link": "/dev/shm/ohm-marker-sandbox-izrd6d0z/victims/user-sentinel.txt",
+    "symlink": true
+  },
+  "marker": "target/debug/build/workspaces/6beaebf8b27055ca/.ohm-worktree-seed-v7",
+  "marker_inode": 350053,
+  "marker_prepared": {
+    "bytes_hex": "370a",
+    "inode": 350028,
+    "permissions": 384,
+    "sha256": "10159baf262b43a92d95db59dae1f72c645127301661e0a3ce4e38b295a97c58"
+  },
+  "root": "/dev/shm/ohm-marker-sandbox-izrd6d0z",
+  "runs": [
+    {
+      "artifacts": [
+        {
+          "fresh": false,
+          "name": "marker_fixture"
+        }
+      ],
+      "flags": [
+        "-Zohm-worktree-seeds=no"
+      ],
+      "marker_syscalls": [],
+      "name": "first-seeds-off",
+      "rc": 0,
+      "stderr": "   Compiling marker_fixture v0.1.0 (/dev/shm/ohm-marker-sandbox-izrd6d0z/project)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.79s\n",
+      "stdout_sha256": "3464e4ac19ab3532fa5f066ae6d81151e70d6459382f44193f915e332c3db5ec",
+      "trace_sha256": "8788f816566cf2d0ec2c3f82004ddb889259be45147ef2194a964077d96ede74"
+    },
+    {
+      "artifacts": [
+        {
+          "fresh": false,
+          "name": "marker_fixture"
+        }
+      ],
+      "flags": [],
+      "marker_syscalls": [
+        "1611599 renameat(AT_FDCWD, \"/dev/shm/ohm-marker-sandbox-izrd6d0z/target/debug/build/workspaces/6beaebf8b27055ca/.ohm-worktree-seed-deny-v7hZi2ZB\", AT_FDCWD, \"/dev/shm/ohm-marker-sandbox-izrd6d0z/target/debug/build/workspaces/6beaebf8b27055ca/.ohm-worktree-seed-deny-v7\") = 0",
+        "1611599 renameat(AT_FDCWD, \"/dev/shm/ohm-marker-sandbox-izrd6d0z/target/debug/build/workspaces/6beaebf8b27055ca/.ohm-worktree-seed-v75EHDGL\", AT_FDCWD, \"/dev/shm/ohm-marker-sandbox-izrd6d0z/target/debug/build/workspaces/6beaebf8b27055ca/.ohm-worktree-seed-v7\") = 0"
+      ],
+      "name": "prepare",
+      "rc": 0,
+      "stderr": "   Compiling marker_fixture v0.1.0 (/dev/shm/ohm-marker-sandbox-izrd6d0z/project)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.30s\n",
+      "stdout_sha256": "3464e4ac19ab3532fa5f066ae6d81151e70d6459382f44193f915e332c3db5ec",
+      "trace_sha256": "3f176d553a6d40783c5aa5054498fa47c463cbb9d9eec3303d3f5ccb7309aa9c"
+    },
+    {
+      "artifacts": [
+        {
+          "fresh": true,
+          "name": "marker_fixture"
+        }
+      ],
+      "flags": [],
+      "marker_syscalls": [
+        "1611623 renameat(AT_FDCWD, \"/dev/shm/ohm-marker-sandbox-izrd6d0z/target/debug/build/workspaces/6beaebf8b27055ca/.ohm-worktree-seed-deny-v7Be4rmZ\", AT_FDCWD, \"/dev/shm/ohm-marker-sandbox-izrd6d0z/target/debug/build/workspaces/6beaebf8b27055ca/.ohm-worktree-seed-deny-v7\") = 0",
+        "1611623 renameat(AT_FDCWD, \"/dev/shm/ohm-marker-sandbox-izrd6d0z/target/debug/build/workspaces/6beaebf8b27055ca/.ohm-worktree-seed-v7659B6d\", AT_FDCWD, \"/dev/shm/ohm-marker-sandbox-izrd6d0z/target/debug/build/workspaces/6beaebf8b27055ca/.ohm-worktree-seed-v7\") = 0"
+      ],
+      "name": "regular-fresh",
+      "rc": 0,
+      "stderr": "    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.06s\n",
+      "stdout_sha256": "e6cd1987b1d9192133149d3271bc0db76bebe5763fac846b4ccf6103fa033be4",
+      "trace_sha256": "3f6d28e91191899bff48124739c187cceb4b9d52096084f921b4d4cd6cd4a773"
+    },
+    {
+      "artifacts": [
+        {
+          "fresh": false,
+          "name": "marker_fixture"
+        }
+      ],
+      "flags": [
+        "-Zohm-worktree-seeds=no"
+      ],
+      "marker_syscalls": [
+        "1611632 renameat(AT_FDCWD, \"/dev/shm/ohm-marker-sandbox-izrd6d0z/target/debug/build/workspaces/6beaebf8b27055ca/.ohm-worktree-seed-deny-v7dlBR0Y\", AT_FDCWD, \"/dev/shm/ohm-marker-sandbox-izrd6d0z/target/debug/build/workspaces/6beaebf8b27055ca/.ohm-worktree-seed-deny-v7\") = 0"
+      ],
+      "name": "symlink-seeds-off",
+      "rc": 0,
+      "stderr": "   Compiling marker_fixture v0.1.0 (/dev/shm/ohm-marker-sandbox-izrd6d0z/project)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.30s\n",
+      "stdout_sha256": "3464e4ac19ab3532fa5f066ae6d81151e70d6459382f44193f915e332c3db5ec",
+      "trace_sha256": "d30969f9fc775b06e4b09dd41c676343a598013ee85763c856bed1a805caffbd"
+    },
+    {
+      "artifacts": [
+        {
+          "fresh": false,
+          "name": "marker_fixture"
+        }
+      ],
+      "flags": [],
+      "marker_syscalls": [
+        "1611656 renameat(AT_FDCWD, \"/dev/shm/ohm-marker-sandbox-izrd6d0z/target/debug/build/workspaces/6beaebf8b27055ca/.ohm-worktree-seed-deny-v7h1aFVn\", AT_FDCWD, \"/dev/shm/ohm-marker-sandbox-izrd6d0z/target/debug/build/workspaces/6beaebf8b27055ca/.ohm-worktree-seed-deny-v7\") = 0",
+        "1611656 readlink(\"/dev/shm/ohm-marker-sandbox-izrd6d0z/target/debug/build/workspaces/6beaebf8b27055ca/.ohm-worktree-seed-v7\", \"/dev/shm/ohm-marker-sandbox-izrd6d0z/victims/user-sentinel.txt\", 256) = 62",
+        "1611656 renameat(AT_FDCWD, \"/dev/shm/ohm-marker-sandbox-izrd6d0z/victims/user-sentinel.txtbj0Tm9\", AT_FDCWD, \"/dev/shm/ohm-marker-sandbox-izrd6d0z/victims/user-sentinel.txt\") = 0"
+      ],
+      "name": "symlink-default-fresh",
+      "rc": 0,
+      "stderr": "   Compiling marker_fixture v0.1.0 (/dev/shm/ohm-marker-sandbox-izrd6d0z/project)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.30s\n",
+      "stdout_sha256": "3464e4ac19ab3532fa5f066ae6d81151e70d6459382f44193f915e332c3db5ec",
+      "trace_sha256": "de5022122035ce176efd56fdbf95ceb06a963fbd55ff694ff4abece93aac30fd"
+    },
+    {
+      "artifacts": [
+        {
+          "fresh": true,
+          "name": "marker_fixture"
+        }
+      ],
+      "flags": [],
+      "marker_syscalls": [
+        "1611680 renameat(AT_FDCWD, \"/dev/shm/ohm-marker-sandbox-izrd6d0z/target/debug/build/workspaces/6beaebf8b27055ca/.ohm-worktree-seed-deny-v7KkKv3r\", AT_FDCWD, \"/dev/shm/ohm-marker-sandbox-izrd6d0z/target/debug/build/workspaces/6beaebf8b27055ca/.ohm-worktree-seed-deny-v7\") = 0",
+        "1611680 readlink(\"/dev/shm/ohm-marker-sandbox-izrd6d0z/target/debug/build/workspaces/6beaebf8b27055ca/.ohm-worktree-seed-v7\", \"/dev/shm/ohm-marker-sandbox-izrd6d0z/victims/user-sentinel.txt\", 256) = 62",
+        "1611680 renameat(AT_FDCWD, \"/dev/shm/ohm-marker-sandbox-izrd6d0z/victims/user-sentinel.txtjnb19k\", AT_FDCWD, \"/dev/shm/ohm-marker-sandbox-izrd6d0z/victims/user-sentinel.txt\") = 0"
+      ],
+      "name": "same-default-truly-fresh",
+      "rc": 0,
+      "stderr": "    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.06s\n",
+      "stdout_sha256": "e6cd1987b1d9192133149d3271bc0db76bebe5763fac846b4ccf6103fa033be4",
+      "trace_sha256": "8aec5d0c113ff716237e276f11fa08de34b1922c6f31a3d647faadf1f27a624b"
+    }
+  ],
+  "rustc": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60"
+}

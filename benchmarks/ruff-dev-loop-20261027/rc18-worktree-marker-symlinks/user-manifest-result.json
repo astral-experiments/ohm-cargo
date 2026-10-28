@@ -1,0 +1,34 @@
+[
+  {
+    "arm": "original",
+    "cargo": "02a86ebd2d9e4f237b33f212102b81ed145eb77fae090d67e379cb6f1d70a573",
+    "command": [
+      "+ohm",
+      "add",
+      "--offline",
+      "--path",
+      "../localdep"
+    ],
+    "final_manifest": "[package]\nname=\"app\"\nversion=\"0.1.0\"\nedition=\"2024\"\n\n[dependencies]\nlocaldep = { version = \"0.1.0\", path = \"../localdep\" }\n",
+    "rc": 0,
+    "same_link_inode": true,
+    "stderr_sha256": "34143dc02b1c536e22d93f3af94c1f98b5d04703aa937b122f7ef6b9d90a9739",
+    "symlink_retained": true
+  },
+  {
+    "arm": "corrected",
+    "cargo": "a19d515cc301c05ad345ad0d657508905c28a2c900e01963632724cfd3b7289a",
+    "command": [
+      "+ohm",
+      "add",
+      "--offline",
+      "--path",
+      "../localdep"
+    ],
+    "final_manifest": "[package]\nname=\"app\"\nversion=\"0.1.0\"\nedition=\"2024\"\n\n[dependencies]\nlocaldep = { version = \"0.1.0\", path = \"../localdep\" }\n",
+    "rc": 0,
+    "same_link_inode": true,
+    "stderr_sha256": "34143dc02b1c536e22d93f3af94c1f98b5d04703aa937b122f7ef6b9d90a9739",
+    "symlink_retained": true
+  }
+]
