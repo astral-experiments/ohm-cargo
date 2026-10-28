@@ -1,0 +1,348 @@
+{
+  "registered_utc": "2026-10-28T23:25:40.234502+00:00",
+  "uv": "c22e6b71933443e9cd299d4b6ac8de035ed4825b",
+  "release": "ohm-1.99.0-18",
+  "endpoints": [
+    "check",
+    "build",
+    "test"
+  ],
+  "cpus": [
+    4,
+    5,
+    6,
+    7
+  ],
+  "question": "The new normal-binary dependency graph walk may increase work on a fully fresh workspace. Compare the exact matched Cargo binaries used for the post-edit proof study on unchanged uv.",
+  "gate": "Flag a material warm regression only if both independent engines show a paired median increase over 0.5%, a median interval entirely beyond that increase, and both exact two-sided p-values below .05/3 initially and below .05 in replication. Report all complete endpoints regardless. No post-edit publication from this guardrail.",
+  "binaries": {
+    "base": "round18-cargo/fast/bin/guard-stack",
+    "stack": "round18-compiler/fast-proof/cargo"
+  },
+  "binary_sha256": {
+    "base": "bc362fc8ece4c1b3c854056792c04e8869216da26b95e4dac8e5fbe6d1922255",
+    "stack": "db91255850a3cb53d084eba29f5b429a074bff5504c7349020962a7a90e311e3"
+  },
+  "cohorts": {
+    "initial": {
+      "target": "release18-render-initial",
+      "source": "u18",
+      "home": "cargo-18-render-initial",
+      "mode": "dynamorio",
+      "seed": 74121,
+      "pairs": 12,
+      "orders": {
+        "check": [
+          [
+            "candidate",
+            "base"
+          ],
+          [
+            "base",
+            "candidate"
+          ],
+          [
+            "base",
+            "candidate"
+          ],
+          [
+            "candidate",
+            "base"
+          ],
+          [
+            "base",
+            "candidate"
+          ],
+          [
+            "candidate",
+            "base"
+          ],
+          [
+            "base",
+            "candidate"
+          ],
+          [
+            "base",
+            "candidate"
+          ],
+          [
+            "candidate",
+            "base"
+          ],
+          [
+            "candidate",
+            "base"
+          ],
+          [
+            "candidate",
+            "base"
+          ],
+          [
+            "base",
+            "candidate"
+          ]
+        ],
+        "build": [
+          [
+            "candidate",
+            "base"
+          ],
+          [
+            "base",
+            "candidate"
+          ],
+          [
+            "candidate",
+            "base"
+          ],
+          [
+            "base",
+            "candidate"
+          ],
+          [
+            "candidate",
+            "base"
+          ],
+          [
+            "base",
+            "candidate"
+          ],
+          [
+            "base",
+            "candidate"
+          ],
+          [
+            "candidate",
+            "base"
+          ],
+          [
+            "candidate",
+            "base"
+          ],
+          [
+            "base",
+            "candidate"
+          ],
+          [
+            "base",
+            "candidate"
+          ],
+          [
+            "candidate",
+            "base"
+          ]
+        ],
+        "test": [
+          [
+            "base",
+            "candidate"
+          ],
+          [
+            "candidate",
+            "base"
+          ],
+          [
+            "candidate",
+            "base"
+          ],
+          [
+            "base",
+            "candidate"
+          ],
+          [
+            "candidate",
+            "base"
+          ],
+          [
+            "base",
+            "candidate"
+          ],
+          [
+            "candidate",
+            "base"
+          ],
+          [
+            "candidate",
+            "base"
+          ],
+          [
+            "base",
+            "candidate"
+          ],
+          [
+            "base",
+            "candidate"
+          ],
+          [
+            "candidate",
+            "base"
+          ],
+          [
+            "base",
+            "candidate"
+          ]
+        ]
+      }
+    },
+    "replica": {
+      "target": "release18-render-replica",
+      "source": "release18-depfile-independent-root/source",
+      "home": "cargo-18-render-replica",
+      "mode": "instructions",
+      "seed": 84727,
+      "pairs": 12,
+      "orders": {
+        "check": [
+          [
+            "candidate",
+            "base"
+          ],
+          [
+            "candidate",
+            "base"
+          ],
+          [
+            "base",
+            "candidate"
+          ],
+          [
+            "candidate",
+            "base"
+          ],
+          [
+            "base",
+            "candidate"
+          ],
+          [
+            "candidate",
+            "base"
+          ],
+          [
+            "base",
+            "candidate"
+          ],
+          [
+            "base",
+            "candidate"
+          ],
+          [
+            "base",
+            "candidate"
+          ],
+          [
+            "candidate",
+            "base"
+          ],
+          [
+            "candidate",
+            "base"
+          ],
+          [
+            "base",
+            "candidate"
+          ]
+        ],
+        "build": [
+          [
+            "base",
+            "candidate"
+          ],
+          [
+            "candidate",
+            "base"
+          ],
+          [
+            "base",
+            "candidate"
+          ],
+          [
+            "base",
+            "candidate"
+          ],
+          [
+            "candidate",
+            "base"
+          ],
+          [
+            "candidate",
+            "base"
+          ],
+          [
+            "base",
+            "candidate"
+          ],
+          [
+            "candidate",
+            "base"
+          ],
+          [
+            "base",
+            "candidate"
+          ],
+          [
+            "candidate",
+            "base"
+          ],
+          [
+            "base",
+            "candidate"
+          ],
+          [
+            "candidate",
+            "base"
+          ]
+        ],
+        "test": [
+          [
+            "candidate",
+            "base"
+          ],
+          [
+            "candidate",
+            "base"
+          ],
+          [
+            "base",
+            "candidate"
+          ],
+          [
+            "candidate",
+            "base"
+          ],
+          [
+            "candidate",
+            "base"
+          ],
+          [
+            "base",
+            "candidate"
+          ],
+          [
+            "base",
+            "candidate"
+          ],
+          [
+            "base",
+            "candidate"
+          ],
+          [
+            "candidate",
+            "base"
+          ],
+          [
+            "candidate",
+            "base"
+          ],
+          [
+            "base",
+            "candidate"
+          ],
+          [
+            "base",
+            "candidate"
+          ]
+        ]
+      }
+    }
+  }
+}
