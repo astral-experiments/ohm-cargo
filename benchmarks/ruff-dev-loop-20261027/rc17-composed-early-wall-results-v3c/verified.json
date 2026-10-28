@@ -1,0 +1,39 @@
+{
+  "commitment_only_text": [],
+  "complete_pair_checkpoints": 24,
+  "exceptions": {
+    "launcher/score.err": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "launcher/verify.err": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "failed_slot_products": {},
+  "launcher": {
+    "admit": 0,
+    "score": 0,
+    "verify": 0
+  },
+  "observed_clocks": 48,
+  "qualified": true,
+  "raw_clock_records": 48,
+  "retained_private_states": [],
+  "statistics": {
+    "assignments": 2704156,
+    "ci95": [
+      7.9514078698248065,
+      12.25614274823093
+    ],
+    "extreme": 4,
+    "favorable": 22,
+    "holm_single_endpoint": 1.479204602101358e-06,
+    "material_slowdown": false,
+    "medians_sec": {
+      "B": 12.601388468,
+      "C": 11.1587784325
+    },
+    "p_two_sided": 1.479204602101358e-06,
+    "paired_reduction_pct": 10.137190120440724,
+    "pairs": 24,
+    "qualifies": true
+  },
+  "terminal": "complete",
+  "verified_slots": 48
+}
