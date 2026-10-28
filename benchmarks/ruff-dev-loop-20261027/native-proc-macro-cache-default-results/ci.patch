@@ -1,0 +1,13 @@
+diff --git a/.github/workflows/ci.yml b/.github/workflows/ci.yml
+index babaf97c33..6259fbdaed 100644
+--- a/.github/workflows/ci.yml
++++ b/.github/workflows/ci.yml
+@@ -158,6 +158,8 @@ jobs:
+           if [[ "$RUNNER_OS" == Linux ]]; then
+             "$testsuite" ohm_linker::ohm_defaults_select_wild_and_allow_lld \
+               --exact --include-ignored --nocapture
++            "$testsuite" rustflags::ohm_defaults_reexpand_derive_after_native_input_changes \
++              --exact --nocapture
+           fi
+ 
+   workspace-tests:

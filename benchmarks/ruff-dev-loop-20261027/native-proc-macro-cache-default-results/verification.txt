@@ -1,0 +1,3 @@
+{"all_native_executions": 146, "earlier_observer_commands": 60, "fixed_observer_commands": 36, "ordinary_elf_17": "77ddb54ca7f3b3c530fccf864c3fe7a8440e6e9a180a8b0eff806d3a6f4ffe91", "ordinary_elf_29": "d95864fcc3df2d1233befdb17c934a8d5b9fb296f106c23ee42e839cb6cc0fe4", "ordinary_native_cargo_commands": 50}
+The checked-in native test observed the old 17 on the parent and the expected 29 on the revised default.
+The pinned -9 independently reproduced 17 on the parent and 29 on the revised default. The feature-on parent and candidate shared seven named failures. The regular module passed 51/51.
