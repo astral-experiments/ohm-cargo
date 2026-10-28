@@ -1,0 +1,337 @@
+{
+  "builds": [
+    {
+      "artifacts": [
+        [
+          "local_macro",
+          false
+        ],
+        [
+          "build-script-build",
+          false
+        ],
+        [
+          "marker_fixture",
+          false
+        ]
+      ],
+      "compiler_or_script_execs": [
+        "df67ab5deff409e76c627e78178924aeff350ce00af8ecba1928c12a55820730",
+        "74656f31375344f87d7aaf32bf789e178c6aff0c14350657c314549a5aba36a3"
+      ],
+      "name": "opt-out-no-previous",
+      "options": [
+        "-Zohm-worktree-seeds=no"
+      ],
+      "rc": 0,
+      "relevant_syscalls": [
+        "2616994 renameat2(AT_FDCWD, \"/dev/shm/ohm-markers-all-ebobzg8a/registry/.ohm-worktree-targets-v1/.tmpD1AcHm\", AT_FDCWD, \"/dev/shm/ohm-markers-all-ebobzg8a/registry/.ohm-worktree-targets-v1/1a0cc98cd79010bf.json\", RENAME_NOREPLACE) = 0"
+      ],
+      "stderr_sha256": "112f2a3e3a67baf1210d4a7b22730adc02d9a8dc568b8080e9387836cb4a2e6a",
+      "stdout_sha256": "429752db6f221c2a89ef4c7ca01ec1346fd5b451a09cb676e44f5a84b85aad29",
+      "trace_sha256": "d17ab48465443b3b93bcc12a8f9225b507f7ee98e10c52d2d732713fd323ded5"
+    },
+    {
+      "artifacts": [
+        [
+          "local_macro",
+          false
+        ],
+        [
+          "build-script-build",
+          false
+        ],
+        [
+          "marker_fixture",
+          false
+        ]
+      ],
+      "compiler_or_script_execs": [
+        "c7e146fec917f7e309074a0ca5317f56749879f0aefe0a6594b019628cdd74e6"
+      ],
+      "name": "cold",
+      "options": [],
+      "rc": 0,
+      "relevant_syscalls": [
+        "2617131 renameat(AT_FDCWD, \"/dev/shm/ohm-markers-all-ebobzg8a/target/debug/build/workspaces/bec350cafd62d5c3/.ohm-worktree-seed-deny-v7BUmaY4\", AT_FDCWD, \"/dev/shm/ohm-markers-all-ebobzg8a/target/debug/build/workspaces/bec350cafd62d5c3/.ohm-worktree-seed-deny-v7\") = 0",
+        "2617131 renameat(AT_FDCWD, \"/dev/shm/ohm-markers-all-ebobzg8a/target/debug/build/workspaces/bec350cafd62d5c3/.ohm-worktree-seed-local-proc-macro-v7SXnBFB\", AT_FDCWD, \"/dev/shm/ohm-markers-all-ebobzg8a/target/debug/build/workspaces/bec350cafd62d5c3/.ohm-worktree-seed-local-proc-macro-v7\") = 0",
+        "2617131 renameat(AT_FDCWD, \"/dev/shm/ohm-markers-all-ebobzg8a/target/debug/build/workspaces/bec350cafd62d5c3/.ohm-worktree-seed-v7xpxRu7\", AT_FDCWD, \"/dev/shm/ohm-markers-all-ebobzg8a/target/debug/build/workspaces/bec350cafd62d5c3/.ohm-worktree-seed-v7\") = 0",
+        "2617224 renameat(AT_FDCWD, \"/dev/shm/ohm-markers-all-ebobzg8a/target/debug/build/workspaces/bec350cafd62d5c3/v2-0617c4eeb78b44de/marker_fixture/5467f6bcf79a1fde/fingerprint/.ohm-worktree-result-v1LbL3jh\", AT_FDCWD, \"/dev/shm/ohm-markers-all-ebobzg8a/target/debug/build/workspaces/bec350cafd62d5c3/v2-0617c4eeb78b44de/marker_fixture/5467f6bcf79a1fde/fingerprint/.ohm-worktree-result-v1\") = 0"
+      ],
+      "stderr_sha256": "9e5dbd1d94e458a187b9c1c13d56de640a0a64338db35f345688d31f52410643",
+      "stdout_sha256": "429752db6f221c2a89ef4c7ca01ec1346fd5b451a09cb676e44f5a84b85aad29",
+      "trace_sha256": "27ef06a7597aa8d0c1ffadefa4211c1d75d09d420c4b74e2d6b2bdd2b282439d"
+    },
+    {
+      "artifacts": [
+        [
+          "build-script-build",
+          true
+        ],
+        [
+          "local_macro",
+          true
+        ],
+        [
+          "marker_fixture",
+          true
+        ]
+      ],
+      "compiler_or_script_execs": [],
+      "name": "warm",
+      "options": [],
+      "rc": 0,
+      "relevant_syscalls": [
+        "2617252 renameat(AT_FDCWD, \"/dev/shm/ohm-markers-all-ebobzg8a/target/debug/build/workspaces/bec350cafd62d5c3/.ohm-worktree-seed-deny-v7eKWPiF\", AT_FDCWD, \"/dev/shm/ohm-markers-all-ebobzg8a/target/debug/build/workspaces/bec350cafd62d5c3/.ohm-worktree-seed-deny-v7\") = 0",
+        "2617252 renameat(AT_FDCWD, \"/dev/shm/ohm-markers-all-ebobzg8a/target/debug/build/workspaces/bec350cafd62d5c3/.ohm-worktree-seed-local-proc-macro-v7HX3TlH\", AT_FDCWD, \"/dev/shm/ohm-markers-all-ebobzg8a/target/debug/build/workspaces/bec350cafd62d5c3/.ohm-worktree-seed-local-proc-macro-v7\") = 0",
+        "2617252 renameat(AT_FDCWD, \"/dev/shm/ohm-markers-all-ebobzg8a/target/debug/build/workspaces/bec350cafd62d5c3/.ohm-worktree-seed-v77fQdhI\", AT_FDCWD, \"/dev/shm/ohm-markers-all-ebobzg8a/target/debug/build/workspaces/bec350cafd62d5c3/.ohm-worktree-seed-v7\") = 0"
+      ],
+      "stderr_sha256": "a5f4c585ee974ca44916ac30a98bbc189e067a7e0a6bc6d2e8d6bc525be724af",
+      "stdout_sha256": "c056d3bcb50777a2414c19d10f42ad8cc05685593867e76fab2e4b3ccc5427c1",
+      "trace_sha256": "bb3db5e01631d49ab32074ef8873b3d1baf0a43c097b3fb9589285c7b0fb5de4"
+    },
+    {
+      "artifacts": [
+        [
+          "build-script-build",
+          true
+        ],
+        [
+          "local_macro",
+          true
+        ],
+        [
+          "marker_fixture",
+          true
+        ]
+      ],
+      "compiler_or_script_execs": [],
+      "name": "ordinary-fresh-seed",
+      "options": [],
+      "rc": 0,
+      "relevant_syscalls": [
+        "2617262 renameat(AT_FDCWD, \"/dev/shm/ohm-markers-all-ebobzg8a/target/debug/build/workspaces/bec350cafd62d5c3/.ohm-worktree-seed-deny-v7BIN1y1\", AT_FDCWD, \"/dev/shm/ohm-markers-all-ebobzg8a/target/debug/build/workspaces/bec350cafd62d5c3/.ohm-worktree-seed-deny-v7\") = 0",
+        "2617262 renameat(AT_FDCWD, \"/dev/shm/ohm-markers-all-ebobzg8a/target/debug/build/workspaces/bec350cafd62d5c3/.ohm-worktree-seed-local-proc-macro-v7xauJXr\", AT_FDCWD, \"/dev/shm/ohm-markers-all-ebobzg8a/target/debug/build/workspaces/bec350cafd62d5c3/.ohm-worktree-seed-local-proc-macro-v7\") = 0",
+        "2617262 renameat(AT_FDCWD, \"/dev/shm/ohm-markers-all-ebobzg8a/target/debug/build/workspaces/bec350cafd62d5c3/.ohm-worktree-seed-v7unQ81q\", AT_FDCWD, \"/dev/shm/ohm-markers-all-ebobzg8a/target/debug/build/workspaces/bec350cafd62d5c3/.ohm-worktree-seed-v7\") = 0"
+      ],
+      "stderr_sha256": "a5f4c585ee974ca44916ac30a98bbc189e067a7e0a6bc6d2e8d6bc525be724af",
+      "stdout_sha256": "c056d3bcb50777a2414c19d10f42ad8cc05685593867e76fab2e4b3ccc5427c1",
+      "trace_sha256": "3c5317c423b2a5235617d5b8976eb1e8d5640a6d7cd94f516823adf7241cfa52"
+    },
+    {
+      "artifacts": [
+        [
+          "build-script-build",
+          true
+        ],
+        [
+          "local_macro",
+          true
+        ],
+        [
+          "marker_fixture",
+          true
+        ]
+      ],
+      "compiler_or_script_execs": [],
+      "name": "ordinary-fresh-deny",
+      "options": [],
+      "rc": 0,
+      "relevant_syscalls": [
+        "2617271 renameat(AT_FDCWD, \"/dev/shm/ohm-markers-all-ebobzg8a/target/debug/build/workspaces/bec350cafd62d5c3/.ohm-worktree-seed-deny-v7Uvaur8\", AT_FDCWD, \"/dev/shm/ohm-markers-all-ebobzg8a/target/debug/build/workspaces/bec350cafd62d5c3/.ohm-worktree-seed-deny-v7\") = 0",
+        "2617271 renameat(AT_FDCWD, \"/dev/shm/ohm-markers-all-ebobzg8a/target/debug/build/workspaces/bec350cafd62d5c3/.ohm-worktree-seed-local-proc-macro-v7rIUVlb\", AT_FDCWD, \"/dev/shm/ohm-markers-all-ebobzg8a/target/debug/build/workspaces/bec350cafd62d5c3/.ohm-worktree-seed-local-proc-macro-v7\") = 0",
+        "2617271 renameat(AT_FDCWD, \"/dev/shm/ohm-markers-all-ebobzg8a/target/debug/build/workspaces/bec350cafd62d5c3/.ohm-worktree-seed-v7FJA3M1\", AT_FDCWD, \"/dev/shm/ohm-markers-all-ebobzg8a/target/debug/build/workspaces/bec350cafd62d5c3/.ohm-worktree-seed-v7\") = 0"
+      ],
+      "stderr_sha256": "a5f4c585ee974ca44916ac30a98bbc189e067a7e0a6bc6d2e8d6bc525be724af",
+      "stdout_sha256": "c056d3bcb50777a2414c19d10f42ad8cc05685593867e76fab2e4b3ccc5427c1",
+      "trace_sha256": "1fda4c873b649330432aad6616d56d35209a11b9abb07f1edc5d7ac9ca8d4e82"
+    },
+    {
+      "artifacts": [
+        [
+          "build-script-build",
+          true
+        ],
+        [
+          "local_macro",
+          true
+        ],
+        [
+          "marker_fixture",
+          true
+        ]
+      ],
+      "compiler_or_script_execs": [],
+      "name": "ordinary-fresh-macro",
+      "options": [],
+      "rc": 0,
+      "relevant_syscalls": [
+        "2617280 renameat(AT_FDCWD, \"/dev/shm/ohm-markers-all-ebobzg8a/target/debug/build/workspaces/bec350cafd62d5c3/.ohm-worktree-seed-deny-v7q2t1Ua\", AT_FDCWD, \"/dev/shm/ohm-markers-all-ebobzg8a/target/debug/build/workspaces/bec350cafd62d5c3/.ohm-worktree-seed-deny-v7\") = 0",
+        "2617280 renameat(AT_FDCWD, \"/dev/shm/ohm-markers-all-ebobzg8a/target/debug/build/workspaces/bec350cafd62d5c3/.ohm-worktree-seed-local-proc-macro-v7FDAt6N\", AT_FDCWD, \"/dev/shm/ohm-markers-all-ebobzg8a/target/debug/build/workspaces/bec350cafd62d5c3/.ohm-worktree-seed-local-proc-macro-v7\") = 0",
+        "2617280 renameat(AT_FDCWD, \"/dev/shm/ohm-markers-all-ebobzg8a/target/debug/build/workspaces/bec350cafd62d5c3/.ohm-worktree-seed-v7ybnarP\", AT_FDCWD, \"/dev/shm/ohm-markers-all-ebobzg8a/target/debug/build/workspaces/bec350cafd62d5c3/.ohm-worktree-seed-v7\") = 0"
+      ],
+      "stderr_sha256": "a5f4c585ee974ca44916ac30a98bbc189e067a7e0a6bc6d2e8d6bc525be724af",
+      "stdout_sha256": "c056d3bcb50777a2414c19d10f42ad8cc05685593867e76fab2e4b3ccc5427c1",
+      "trace_sha256": "44078e3435343ef9a762fe0412225aa305f61565d6d4dc9a51d99e8de12e0002"
+    },
+    {
+      "artifacts": [
+        [
+          "build-script-build",
+          true
+        ],
+        [
+          "local_macro",
+          true
+        ],
+        [
+          "marker_fixture",
+          false
+        ]
+      ],
+      "compiler_or_script_execs": [
+        "0a1c891b0826479352ab221e908fb30b2f4667d58b4fd94d8baba51118e33fbc"
+      ],
+      "name": "actual-script-rerun",
+      "options": [],
+      "rc": 0,
+      "relevant_syscalls": [
+        "2617289 renameat(AT_FDCWD, \"/dev/shm/ohm-markers-all-ebobzg8a/target/debug/build/workspaces/bec350cafd62d5c3/.ohm-worktree-seed-deny-v7RyPunv\", AT_FDCWD, \"/dev/shm/ohm-markers-all-ebobzg8a/target/debug/build/workspaces/bec350cafd62d5c3/.ohm-worktree-seed-deny-v7\") = 0",
+        "2617289 renameat(AT_FDCWD, \"/dev/shm/ohm-markers-all-ebobzg8a/target/debug/build/workspaces/bec350cafd62d5c3/.ohm-worktree-seed-local-proc-macro-v71tCzoQ\", AT_FDCWD, \"/dev/shm/ohm-markers-all-ebobzg8a/target/debug/build/workspaces/bec350cafd62d5c3/.ohm-worktree-seed-local-proc-macro-v7\") = 0",
+        "2617289 renameat(AT_FDCWD, \"/dev/shm/ohm-markers-all-ebobzg8a/target/debug/build/workspaces/bec350cafd62d5c3/.ohm-worktree-seed-v7loVhmQ\", AT_FDCWD, \"/dev/shm/ohm-markers-all-ebobzg8a/target/debug/build/workspaces/bec350cafd62d5c3/.ohm-worktree-seed-v7\") = 0",
+        "2617294 renameat(AT_FDCWD, \"/dev/shm/ohm-markers-all-ebobzg8a/target/debug/build/workspaces/bec350cafd62d5c3/v2-0617c4eeb78b44de/marker_fixture/5467f6bcf79a1fde/fingerprint/.ohm-worktree-result-v14Zhz3I\", AT_FDCWD, \"/dev/shm/ohm-markers-all-ebobzg8a/target/debug/build/workspaces/bec350cafd62d5c3/v2-0617c4eeb78b44de/marker_fixture/5467f6bcf79a1fde/fingerprint/.ohm-worktree-result-v1\") = 0"
+      ],
+      "stderr_sha256": "1df614b528db4a6cb6250e302c5091e58eb97469ecd917aa4e24ab715e12d7f7",
+      "stdout_sha256": "e598ea7eb8495842dc2173c9e1ec1cf680b499d6ff36a3e1842f41c77a699399",
+      "trace_sha256": "f201fd9635f182be6e2b712cc2ea7b7a68130e6c9c7d299f06113cb8804a7b0e"
+    },
+    {
+      "artifacts": [
+        [
+          "build-script-build",
+          true
+        ],
+        [
+          "local_macro",
+          true
+        ],
+        [
+          "marker_fixture",
+          false
+        ]
+      ],
+      "compiler_or_script_execs": [
+        "4ae78aca13aafafc8fd681505d51f54d95dadeed37849e814d61e176f509dc5e"
+      ],
+      "name": "post-script-depinfo",
+      "options": [],
+      "rc": 0,
+      "relevant_syscalls": [
+        "2617315 renameat(AT_FDCWD, \"/dev/shm/ohm-markers-all-ebobzg8a/target/debug/build/workspaces/bec350cafd62d5c3/.ohm-worktree-seed-deny-v7Kq4O4c\", AT_FDCWD, \"/dev/shm/ohm-markers-all-ebobzg8a/target/debug/build/workspaces/bec350cafd62d5c3/.ohm-worktree-seed-deny-v7\") = 0",
+        "2617315 renameat(AT_FDCWD, \"/dev/shm/ohm-markers-all-ebobzg8a/target/debug/build/workspaces/bec350cafd62d5c3/.ohm-worktree-seed-local-proc-macro-v7MiFjuO\", AT_FDCWD, \"/dev/shm/ohm-markers-all-ebobzg8a/target/debug/build/workspaces/bec350cafd62d5c3/.ohm-worktree-seed-local-proc-macro-v7\") = 0",
+        "2617315 renameat(AT_FDCWD, \"/dev/shm/ohm-markers-all-ebobzg8a/target/debug/build/workspaces/bec350cafd62d5c3/.ohm-worktree-seed-v75k1760\", AT_FDCWD, \"/dev/shm/ohm-markers-all-ebobzg8a/target/debug/build/workspaces/bec350cafd62d5c3/.ohm-worktree-seed-v7\") = 0",
+        "2617321 symlink(\"/dev/shm/ohm-markers-all-ebobzg8a/victims/depinfo.txt\", \"/dev/shm/ohm-markers-all-ebobzg8a/target/debug/build/workspaces/bec350cafd62d5c3/.ohm-worktree-seed-deny-v7\") = 0",
+        "2617322 renameat(AT_FDCWD, \"/dev/shm/ohm-markers-all-ebobzg8a/target/debug/build/workspaces/bec350cafd62d5c3/.ohm-worktree-seed-deny-v7T11zCA\", AT_FDCWD, \"/dev/shm/ohm-markers-all-ebobzg8a/target/debug/build/workspaces/bec350cafd62d5c3/.ohm-worktree-seed-deny-v7\") = 0"
+      ],
+      "stderr_sha256": "8fc8104475eb00578f6fe1c2aa026237320d396adee0f65dfe5eedd98f0b7459",
+      "stdout_sha256": "e598ea7eb8495842dc2173c9e1ec1cf680b499d6ff36a3e1842f41c77a699399",
+      "trace_sha256": "448f2703d526db4c70dea7ec358907cf14d0420a9474e02a16fac47f4282a7f4"
+    }
+  ],
+  "cargo_sha256": "a19d515cc301c05ad345ad0d657508905c28a2c900e01963632724cfd3b7289a",
+  "cases": {
+    "deny": {
+      "final_marker_hex": "756e7472757374656420636f6d70696c652d74696d6520696e707574730a",
+      "final_marker_is_link": false,
+      "marker": "target/debug/build/workspaces/bec350cafd62d5c3/.ohm-worktree-seed-deny-v7",
+      "prior_marker_hex": "756e7472757374656420636f6d70696c652d74696d6520696e707574730a",
+      "victim_after": {
+        "hex": "64756d6d79206f776e6572206461746120666f722064656e790a",
+        "inode": 8422068,
+        "mode": 436,
+        "sha256": "330250daa3752edf6588f0cd816f4b48438059f3a2de37ab68d00f12655521c2"
+      },
+      "victim_before": {
+        "hex": "64756d6d79206f776e6572206461746120666f722064656e790a",
+        "inode": 8422068,
+        "mode": 436,
+        "sha256": "330250daa3752edf6588f0cd816f4b48438059f3a2de37ab68d00f12655521c2"
+      }
+    },
+    "depinfo": {
+      "final_marker_hex": "756e747261636b656420436172676f206f7574707574207061746820696e20636f6d70696c656420636f64650a",
+      "final_marker_is_link": false,
+      "marker": "target/debug/build/workspaces/bec350cafd62d5c3/.ohm-worktree-seed-deny-v7",
+      "prior_marker_hex": "756e7472757374656420636f6d70696c652d74696d6520696e707574730a",
+      "victim_after": {
+        "hex": "64756d6d79206f776e6572206461746120666f7220646570696e666f0a",
+        "inode": 8422104,
+        "mode": 436,
+        "sha256": "5967f16bf153e184908e045dd35e6123783b67a1dcd7c41a334672c5cee474ed"
+      },
+      "victim_before": {
+        "hex": "64756d6d79206f776e6572206461746120666f7220646570696e666f0a",
+        "inode": 8422104,
+        "mode": 436,
+        "sha256": "5967f16bf153e184908e045dd35e6123783b67a1dcd7c41a334672c5cee474ed"
+      }
+    },
+    "macro": {
+      "final_marker_hex": "6c6f63616c2070726f6365647572616c2d6d6163726f206f757470757473207265717569726520747275737420617420696d706f72742074696d650a",
+      "final_marker_is_link": false,
+      "marker": "target/debug/build/workspaces/bec350cafd62d5c3/.ohm-worktree-seed-local-proc-macro-v7",
+      "prior_marker_hex": "6c6f63616c2070726f6365647572616c2d6d6163726f206f757470757473207265717569726520747275737420617420696d706f72742074696d650a",
+      "victim_after": {
+        "hex": "64756d6d79206f776e6572206461746120666f72206d6163726f0a",
+        "inode": 8422075,
+        "mode": 436,
+        "sha256": "6075afff5aea9d5ca697f81d17334e9557f6be3e587fdb806067a26ec1d8d030"
+      },
+      "victim_before": {
+        "hex": "64756d6d79206f776e6572206461746120666f72206d6163726f0a",
+        "inode": 8422075,
+        "mode": 436,
+        "sha256": "6075afff5aea9d5ca697f81d17334e9557f6be3e587fdb806067a26ec1d8d030"
+      }
+    },
+    "script": {
+      "final_marker_hex": "313130623239656639346435373562383931623365393739623032616366663262346364356636373863646363396337363537386139393036353265326236330a",
+      "final_marker_is_link": false,
+      "marker": "target/debug/build/workspaces/bec350cafd62d5c3/v2-0617c4eeb78b44de/marker_fixture/5467f6bcf79a1fde/fingerprint/.ohm-worktree-result-v1",
+      "prior_marker_hex": "313130623239656639346435373562383931623365393739623032616366663262346364356636373863646363396337363537386139393036353265326236330a",
+      "victim_after": {
+        "hex": "64756d6d79206f776e6572206461746120666f72207363726970740a",
+        "inode": 8422082,
+        "mode": 436,
+        "sha256": "741b1e3dcc171add837590be61d8ba8f008597b3bb9f85ea6041cb79f0647635"
+      },
+      "victim_before": {
+        "hex": "64756d6d79206f776e6572206461746120666f72207363726970740a",
+        "inode": 8422082,
+        "mode": 436,
+        "sha256": "741b1e3dcc171add837590be61d8ba8f008597b3bb9f85ea6041cb79f0647635"
+      }
+    },
+    "seed": {
+      "final_marker_hex": "370a",
+      "final_marker_is_link": false,
+      "marker": "target/debug/build/workspaces/bec350cafd62d5c3/.ohm-worktree-seed-v7",
+      "prior_marker_hex": "370a",
+      "victim_after": {
+        "hex": "64756d6d79206f776e6572206461746120666f7220736565640a",
+        "inode": 8422061,
+        "mode": 436,
+        "sha256": "b5a12af250c7798b3157dc3a166dc4aadff3fc3f022b769c972c83f7faefca61"
+      },
+      "victim_before": {
+        "hex": "64756d6d79206f776e6572206461746120666f7220736565640a",
+        "inode": 8422061,
+        "mode": 436,
+        "sha256": "b5a12af250c7798b3157dc3a166dc4aadff3fc3f022b769c972c83f7faefca61"
+      }
+    }
+  },
+  "expect": "protected",
+  "root": "/dev/shm/ohm-markers-all-ebobzg8a",
+  "rustc_sha256": "c6ab483d6698f68eebb49d74b27361f3e02ede55452dc0416c3fdec9a45b7f60"
+}

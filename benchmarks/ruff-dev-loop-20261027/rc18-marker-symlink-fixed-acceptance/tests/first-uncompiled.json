@@ -1,0 +1,8 @@
+{
+  "diagnostic": "error[E0425]: cannot find function `write_atomic_no_follow` in this scope",
+  "exit": 101,
+  "location": "crates/cargo-util/src/paths.rs:1072:9",
+  "original_patch": "08274a3335bf0e0c8bba2e1aaaff57a925d3b1d72e6f8a36b84e329adcbc6aea",
+  "raw_stderr": "ea8e7c92708719197cfd29c9e55009057c0bdcc0455abbba2ba317b7e8384a76",
+  "repair": "use super::write_atomic_no_follow; inside the test module"
+}

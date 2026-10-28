@@ -1,0 +1,27 @@
+{
+  "base": "7caf39914da1e28a67744ecbc963a5f26361474d",
+  "donor_before": "1c328d9c2e078019989b2c677acd666820caa093f4993ca8c606d141cf8574e4",
+  "leaves_sha256": "e7c6695283559fd0c559630b1b60500d2d4731e0fcbade75e65afef9f21ff9e7",
+  "patch": "08274a3335bf0e0c8bba2e1aaaff57a925d3b1d72e6f8a36b84e329adcbc6aea",
+  "patched": {
+    "crates/cargo-util/src/paths.rs": "09544019ac0458190837ede60f06ee4f8d94c97f290b11b838f3c86b0accaeca",
+    "src/compiler/build_runner/compilation_files.rs": "b2e899a031b4d102809074ce9366c50668700bb899a3a9e6b557781e8c4ea28c",
+    "src/compiler/fingerprint/dep_info.rs": "41ca4dd8927fa7479a43fdfe4ca9691756a82fb679875b024488d7b7689a7991",
+    "src/compiler/fingerprint/worktree.rs": "a7042a49db67e752a6e7e916d4f599f7fd7db08786d680b7f8f40e312faf1562",
+    "tests/testsuite/ohm_worktree.rs": "ee6a33a651b1eeeaf7fd32c80f96cd75b0aaf9715127dbaeb9a64b7bfb791543"
+  },
+  "source_archive_sha256": "6b13637aaf42f06549d1b39640a87dd21841fbdc8f19c7c82e53c884db193576",
+  "tmpfs_free": 10344525824,
+  "tracked_count": 3108,
+  "tree": "c9d1f41de63b6d95904dc8f5325000f38ea636b0",
+  "versions": {
+    "cargo": {
+      "stderr": "",
+      "stdout": "cargo 1.99.0-dev (a0c7d08c8 2026-10-27) (ohm-1.99.0-17)\nrelease: 1.99.0-dev\ncommit-hash: a0c7d08c898d3fdff992f2f431dec57d2486add2\ncommit-date: 2026-10-27\nhost: x86_64-unknown-linux-gnu\nlibgit2: 1.9.6 (sys:0.21.0 vendored)\nlibcurl: 8.21.0-DEV (sys:0.4.90+curl-8.21.0 vendored ssl:OpenSSL/3.6.3)\nssl: OpenSSL 3.6.3 9 Jun 2026\nos: Ubuntu 24.4.0 (noble) [64-bit]\n"
+    },
+    "rustc": {
+      "stderr": "",
+      "stdout": "rustc 1.99.0-dev (bfa236f63 2026-10-27) (ohm-1.99.0-17)\nbinary: rustc\ncommit-hash: bfa236f639034f61ec884c15bd1f4e0b75e508ac\ncommit-date: 2026-10-27\nhost: x86_64-unknown-linux-gnu\nrelease: 1.99.0-dev\nLLVM version: 23.1.1\n"
+    }
+  }
+}

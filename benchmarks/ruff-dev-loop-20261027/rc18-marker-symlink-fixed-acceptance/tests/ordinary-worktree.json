@@ -1,0 +1,124 @@
+{
+  "fixed": {
+    "canonical_path_has_target_component": false,
+    "cargo_sha256": "a19d515cc301c05ad345ad0d657508905c28a2c900e01963632724cfd3b7289a",
+    "commands": [
+      {
+        "name": "donor-cold",
+        "native_stdout": "repro-29",
+        "stderr_sha": "97511f57b7b79d19eac1ac42f57b2da4ede7cbb9283e9a6e02e2ca6c4ac81b14",
+        "stdout_sha": "61e94392ff1ad9f516fe7d84a7ba42feff10c7ff86ad911a81cbe7660716c03c",
+        "units": [
+          [
+            "marker_clone_fixture",
+            false
+          ]
+        ]
+      },
+      {
+        "name": "donor-unchanged",
+        "native_stdout": "repro-29",
+        "stderr_sha": "a13905646e2aed93ec6ea9ed6ac91490a4e01f91af0215c3965279a910612149",
+        "stdout_sha": "c12c27c2b041b5731457bcc5f536b666dd5ebfbacee21771b9c25ca170c5c58b",
+        "units": [
+          [
+            "marker_clone_fixture",
+            true
+          ]
+        ]
+      },
+      {
+        "name": "new-first",
+        "native_stdout": "repro-29",
+        "stderr_sha": "462c92dab6cd91af864650381184c92a82d2a6562739613c59fdca81164dde1f",
+        "stdout_sha": "c50b24d76eec10b2c6157991056bd87292e37d1ce8ab3f6fbc1f136ef2853ef7",
+        "units": [
+          [
+            "marker_clone_fixture",
+            false
+          ]
+        ]
+      },
+      {
+        "name": "new-unchanged",
+        "native_stdout": "repro-29",
+        "stderr_sha": "6d77f64dfc8c5325b90fdbe05d8be367bdd578bcccec24f275c5ffee7d03dd6e",
+        "stdout_sha": "4eff2142e8a94f138ba4a478b65515317c7ed5f697325ee77fe627b5eafb10af",
+        "units": [
+          [
+            "marker_clone_fixture",
+            true
+          ]
+        ]
+      }
+    ],
+    "donor_namespace_count": 1,
+    "ficlone_errno": 95,
+    "fs_type": "ext2/ext3",
+    "git_worktree_count": 2,
+    "path_uses_symlink": false,
+    "worktree_add_stderr": "Preparing worktree (new branch 'seeded')\n     Created $WORK/seeded (no compatible build snapshot seeded)\n     Skipped 1 unprepared or unsupported build profiles\n      Target $WORK/seeded/target\n",
+    "worktree_add_stderr_sha": "cdb13cb072c05dd3824eaae48e2f1db0ebc503e4993275aeb2d5743be6036cef"
+  },
+  "shipped": {
+    "canonical_path_has_target_component": false,
+    "cargo_sha256": "02a86ebd2d9e4f237b33f212102b81ed145eb77fae090d67e379cb6f1d70a573",
+    "commands": [
+      {
+        "name": "donor-cold",
+        "native_stdout": "repro-29",
+        "stderr_sha": "defd27291e97931c0fcfceb1846a6050190068ee3aff454daf87b8aad93fd32b",
+        "stdout_sha": "61e94392ff1ad9f516fe7d84a7ba42feff10c7ff86ad911a81cbe7660716c03c",
+        "units": [
+          [
+            "marker_clone_fixture",
+            false
+          ]
+        ]
+      },
+      {
+        "name": "donor-unchanged",
+        "native_stdout": "repro-29",
+        "stderr_sha": "6d77f64dfc8c5325b90fdbe05d8be367bdd578bcccec24f275c5ffee7d03dd6e",
+        "stdout_sha": "c12c27c2b041b5731457bcc5f536b666dd5ebfbacee21771b9c25ca170c5c58b",
+        "units": [
+          [
+            "marker_clone_fixture",
+            true
+          ]
+        ]
+      },
+      {
+        "name": "new-first",
+        "native_stdout": "repro-29",
+        "stderr_sha": "fea1250fce1b29e2c95921313fbadb787d40c8d41a54c0ac6ee1f4c26215ede8",
+        "stdout_sha": "c50b24d76eec10b2c6157991056bd87292e37d1ce8ab3f6fbc1f136ef2853ef7",
+        "units": [
+          [
+            "marker_clone_fixture",
+            false
+          ]
+        ]
+      },
+      {
+        "name": "new-unchanged",
+        "native_stdout": "repro-29",
+        "stderr_sha": "23b9a21bbaf189889e08dc27ed8eba521021280c5852db22205f721db08b2c7c",
+        "stdout_sha": "4eff2142e8a94f138ba4a478b65515317c7ed5f697325ee77fe627b5eafb10af",
+        "units": [
+          [
+            "marker_clone_fixture",
+            true
+          ]
+        ]
+      }
+    ],
+    "donor_namespace_count": 1,
+    "ficlone_errno": 95,
+    "fs_type": "ext2/ext3",
+    "git_worktree_count": 2,
+    "path_uses_symlink": false,
+    "worktree_add_stderr": "Preparing worktree (new branch 'seeded')\n     Created $WORK/seeded (no compatible build snapshot seeded)\n     Skipped 1 unprepared or unsupported build profiles\n      Target $WORK/seeded/target\n",
+    "worktree_add_stderr_sha": "cdb13cb072c05dd3824eaae48e2f1db0ebc503e4993275aeb2d5743be6036cef"
+  }
+}

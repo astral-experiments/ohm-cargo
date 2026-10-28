@@ -1,0 +1,60 @@
+{
+  "neutral": {
+    "fixed": {
+      "cargo": "a19d515cc301c05ad345ad0d657508905c28a2c900e01963632724cfd3b7289a",
+      "normalized_stderr": "\nthread 'ohm_worktree::seeds_an_unchanged_build_and_keeps_the_worktrees_independent' (PID) panicked at tests/testsuite/ohm_worktree.rs:53:9:\nCargo seeded without independent clone support: Preparing worktree (new branch 'charlie/seeded')\n     Created $TESTROOT/cit/testsuite/ohm_worktree/seeds_an_unchanged_build_and_keeps_the_worktrees_independent/seeded (no compatible build snapshot seeded)\n     Skipped 1 unprepared or unsupported build profiles\n      Target $TESTROOT/cit/testsuite/ohm_worktree/seeds_an_unchanged_build_and_keeps_the_worktrees_independent/seeded/target\n\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\n",
+      "normalized_stderr_sha256": "f0d99bb5b90658b3324018624045128be541fbf3824358c3f47a23c306d9652c",
+      "raw_receipt": "e4ef08b543516a9e8ee973c429b8f391fa3df2db1cb7c3d036f21eec19615a98",
+      "result": {
+        "clone_refusal": false,
+        "exit": 101,
+        "neutral_physical_path": true,
+        "raw_result": "test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 4816 filtered out; finished in 2.44s",
+        "seen_workspaces": 1,
+        "spec": "ohm_worktree::seeds_an_unchanged_build_and_keeps_the_worktrees_independent",
+        "stderr": "8faf53d885025806400675283424c017911a632387557778a3392b90186c79b8",
+        "stdout": "07fc91d2c0d07984c09ee28965daa9bef38a655a7bdf6ee1290898b2517a7cdc",
+        "successful_cargo_execs": 2,
+        "trace": "75cba4d7ce2615bcadc2c57571399cdff0499e08b837c5a95878a6dfdaf2d5ed"
+      },
+      "source_line": "53:9",
+      "suite": "1e8487c39613373386f69f122702e3c51be15683ae35dd6f0b4a16ddaf3a13fa"
+    },
+    "shipped": {
+      "cargo": "02a86ebd2d9e4f237b33f212102b81ed145eb77fae090d67e379cb6f1d70a573",
+      "normalized_stderr": "\nthread 'ohm_worktree::seeds_an_unchanged_build_and_keeps_the_worktrees_independent' (PID) panicked at tests/testsuite/ohm_worktree.rs:53:9:\nCargo seeded without independent clone support: Preparing worktree (new branch 'charlie/seeded')\n     Created $TESTROOT/cit/testsuite/ohm_worktree/seeds_an_unchanged_build_and_keeps_the_worktrees_independent/seeded (no compatible build snapshot seeded)\n     Skipped 1 unprepared or unsupported build profiles\n      Target $TESTROOT/cit/testsuite/ohm_worktree/seeds_an_unchanged_build_and_keeps_the_worktrees_independent/seeded/target\n\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\n",
+      "normalized_stderr_sha256": "f0d99bb5b90658b3324018624045128be541fbf3824358c3f47a23c306d9652c",
+      "raw_receipt": "9f41077d35ec65d9ee9605dfd82b7cfe845222ebde76bfef37c352c85b0b577c",
+      "result": {
+        "clone_refusal": false,
+        "exit": 101,
+        "neutral_physical_path": true,
+        "raw_result": "test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 4816 filtered out; finished in 2.35s",
+        "seen_workspaces": 1,
+        "spec": "ohm_worktree::seeds_an_unchanged_build_and_keeps_the_worktrees_independent",
+        "stderr": "4844747383a4f61f0e9346b092ba9ee8e445bb82aacbef16e62ae771977a1f44",
+        "stdout": "d8b5f6dfbfa9a95708682574476cf4972962771d9ba3cb5fc7c5e3ec6e7abbde",
+        "successful_cargo_execs": 2,
+        "trace": "cdbf7886b36b3ab02978997f38a9cb601a6510637ba33a93daba97f60b45512f"
+      },
+      "source_line": "53:9",
+      "suite": "1e8487c39613373386f69f122702e3c51be15683ae35dd6f0b4a16ddaf3a13fa"
+    }
+  },
+  "original": {
+    "new-test": {
+      "diagnostic": "called `Option::unwrap()` on a `None` value",
+      "exit": 101,
+      "raw_stderr": "f18b2764b9971616fc1a8bfe0bc76d57abdb952a3e253ab4d30e538e5cacbcf0",
+      "raw_stdout": "9274ae7e7c2831c1d6fcbf0f56bd4e91fb0bfb81d1ce82990766f76823e8f2a1",
+      "source_line": "103:46"
+    },
+    "unchanged-neighbor": {
+      "diagnostic": "assertion `left == right` failed",
+      "exit": 101,
+      "raw_stderr": "e18ad41c5432e73eba1b3d81c703f932f6683660cef88bca58a17f447127a322",
+      "raw_stdout": "fd971e564db752fe690323d427c69e9a8bb5b3ff12efd537de9d046b4f70fe66",
+      "source_line": "435:5"
+    }
+  }
+}

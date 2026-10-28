@@ -1,0 +1,15 @@
+[
+  "cargo",
+  "+ohm",
+  "build",
+  "--locked",
+  "--offline",
+  "-p",
+  "cargo",
+  "--bin",
+  "cargo",
+  "--features",
+  "ohm-defaults",
+  "-j12",
+  "--message-format=json"
+]

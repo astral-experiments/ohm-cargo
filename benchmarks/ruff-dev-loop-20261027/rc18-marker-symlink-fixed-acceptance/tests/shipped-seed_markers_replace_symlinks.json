@@ -1,0 +1,15 @@
+{
+  "actual_successful_cargo_execve": 2,
+  "exit": 101,
+  "observed_lines": [
+    "test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 4816 filtered out; finished in 2.14s",
+    "thread 'ohm_worktree::seed_markers_replace_symlinks' (2641424) panicked at tests/testsuite/ohm_worktree.rs:127:5:",
+    "left: [102, 101, 57, 51, 54, 100, 52, 50, 56, 48, 99, 101, 102, 56, 50, 98, 57, 102, 101, 49, 101, 48, 98, 49, 99, 102, 53, 50, 50, 48, 55, 52, 99, 48, 99, 99, 97, 52, 50, 102, 101, 53, 51, 54, 54, 48, 51, 102, 57, 49, 97, 56, 51, 56, 98, 53, 55, 50, 57, 52, 53, 55, 102, 102, 10]",
+    "right: [111, 114, 105, 103, 105, 110, 97, 108]"
+  ],
+  "raw_stderr": "6c28add02888122f36732c98d33454d6c576f9a52a016e74a977f8eb0130565f",
+  "raw_stdout": "d031208aade3c9099028529b157942ce5a5824282bb3c0eef5556510d5639d25",
+  "raw_strace": "242096d79cf067e559470c0e4cef00e6d7da737f6154118ff98dc72ab49dc238",
+  "subject": "shipped",
+  "test": "ohm_worktree::seed_markers_replace_symlinks"
+}
