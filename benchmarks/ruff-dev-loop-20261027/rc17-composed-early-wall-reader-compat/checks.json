@@ -1,0 +1,47 @@
+{
+  "full_verifier_rejections": {
+    "24_pair_lines_without_the_worker_output": 121,
+    "altered_ELF_count": 121,
+    "altered_job_count": 121,
+    "altered_typed_fresh_count": 121,
+    "extra_audit": 121,
+    "incorrect_pair_ordinal": 121,
+    "missing_second_audit": 121,
+    "missing_terminal_newline": 121,
+    "pair_boundary_before_audit": 121,
+    "simultaneously_altered_product_and_console_counts": 121,
+    "slot_duration_mismatches_raw_clock": 152,
+    "wrong_physical_process_order": 121
+  },
+  "original_exit": 1,
+  "original_rejection": {
+    "file": "verify.py",
+    "function": "check_packet",
+    "line": 121
+  },
+  "overlay_exit": 0,
+  "packet_sha256": "209a7f6c618dc34e3dd1aa26dfd65fc3cb01b91c61751269c92f165ef029b34f",
+  "pair_completion_lines": 24,
+  "physical_verifier_statistics_identical": true,
+  "pinned_reader_sha256": "322942b938ff235e1eda7964bf909603ff3aa7da658e4230bea08eaceff8f1a6",
+  "progress_mutations": [
+    "24_pair_lines_without_the_worker_output",
+    "altered_ELF_count",
+    "altered_job_count",
+    "altered_typed_fresh_count",
+    "extra_audit",
+    "incorrect_pair_ordinal",
+    "missing_second_audit",
+    "missing_terminal_newline",
+    "pair_boundary_before_audit",
+    "wrong_physical_process_order"
+  ],
+  "projected_native_jobs": 4848,
+  "raw_score_stdout_bytes": 4503,
+  "raw_score_stdout_sha256": "b443caafd976c1c691a28e271783204473d4593263b29e372ce7d9d7653bb021",
+  "subsequent_unmodified_verifier_failures": 0,
+  "terminal": "complete",
+  "unchanged_audit_lines": 48,
+  "verified_pairs": 24,
+  "verified_slots": 48
+}
