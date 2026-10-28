@@ -1,0 +1,11 @@
+Traceback (most recent call last):
+  File "/home/dev-user/.cache/ohm-settled-cargo-20261028/dr-calibrate.py", line 46, in <module>
+    with (P/'member-build-native.lock').open('a') as l:fcntl.flock(l,fcntl.LOCK_EX|fcntl.LOCK_NB);main()
+                                                                                                  ^^^^^^
+  File "/home/dev-user/.cache/ohm-settled-cargo-20261028/dr-calibrate.py", line 40, in main
+    rows[name]=launch(name,argv,dep,trace)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/dev-user/.cache/ohm-settled-cargo-20261028/dr-calibrate.py", line 15, in launch
+    assert p.returncode==0,(name,p.returncode,p.stderr[-900:])
+           ^^^^^^^^^^^^^^^
+AssertionError: ('dr-json', 255, b'ff80db151ab8c2 ebx=0x00007fc8b6805fa8 ecx=0x0000000000000001 edx=0x0000000000000001\n\tesi=0x0000000000000000 edi=0x0000000000000000 esp=0x00007ffec71f9b20 ebp=0x00007ffec71f9b70\n\tr8 =0x0000000000000000 r9 =0x0000000000000007 r10=0x000055555f67de70 r11=0xc9610f5cd9008713\n\tr12=0x0000000000000002 r13=0x0000000000000000 r14=0x0000000000000000 r15=0x00007fc8b6805fc0\n\teflags=0x0000000000010246\nversion 11.91.20741, custom build\n-no_dynamic_options -client_lib \'/mnt/devbox-scratch/dev-user/ohm-early-completion-20261027/spaced-dirty-attribution-20261028/tools-v1/client/libpidcounter.so;0;"/home/dev-user/.cache/ohm-settled-cargo-20261028/dr-calibration/dr-json/profile-3559775"\' -client_lib64 \'/mnt/devbox-scratch/dev-user/ohm-early-completion-20261\n0x00007ffec71f9b70 0x00007fc8b6647bbe\n0x00007ffec71f9b80 0x00007fc8b662a1d1\n0x00007ffec71f9c20 0x00007fc8b662a28b\n0x00007ffec71f9c80 0x00007fc8af7a1875>\n')

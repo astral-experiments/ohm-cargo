@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/home/dev-user/.cache/ohm-settled-cargo-20261028/profile.py", line 59, in <module>
+    fcntl.flock(l,fcntl.LOCK_EX|fcntl.LOCK_NB);main()
+                                               ^^^^^^
+  File "/home/dev-user/.cache/ohm-settled-cargo-20261028/profile.py", line 41, in main
+    assert run.returncode==0 and not run.stdout and b'Compiling' not in run.stderr and b'Finished' in run.stderr,(i,run.returncode,run.stderr[-500:])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: (1, 0, b'7 (/home/dev-user/code/oss/ruff-ohm-settled-cargo-20261028/crates/ruff_python_index)\n   Compiling ruff_python_edits v0.0.17 (/home/dev-user/code/oss/ruff-ohm-settled-cargo-20261028/crates/ruff_python_edits)\n   Compiling fern v0.7.1\n   Compiling typed-arena v2.0.2\n   Compiling colored v3.1.1\n   Compiling natord v1.0.9\n   Compiling ruff_linter v0.17.0 (/home/dev-user/code/oss/ruff-ohm-settled-cargo-20261028/crates/ruff_linter)\n    Finished `dev` profile [optimized + debuginfo] target(s) in 1m 17s\n')
