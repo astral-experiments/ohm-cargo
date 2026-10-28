@@ -1,0 +1,46 @@
+{
+  "base": "9a0170863f70d9a88a8b1d1f4c4e1fded4736a9c",
+  "final": "7181bfa6256f94da142f80fd6af09cee02ec2c78",
+  "heads": [
+    {
+      "head": "857652135b0e7ee03b9c715787056a60ea313183",
+      "patch_sha256": "dfff91e215f959e51f4739e6c09c8410812932deacccb1c61cb9c4e8b3ec4732",
+      "paths": [
+        ".github/workflows/ci.yml",
+        "src/compiler/mod.rs",
+        "tests/testsuite/rustflags.rs"
+      ]
+    },
+    {
+      "head": "62de9a49872b6369d6246eb1c63603daf473df9a",
+      "patch_sha256": "c4ae31c4daf73daf27c45b24a43908b57497a83d5516611c4f674f26444bc3c9",
+      "paths": [
+        "src/compiler/mod.rs",
+        "src/compiler/ohm_early_tests.rs",
+        "tests/testsuite/freshness.rs"
+      ]
+    },
+    {
+      "head": "105fe8286bef83e1ad1b62b3a2c015a6ace57ee7",
+      "patch_sha256": "1651e71add47641e7f44a10c7e2bc4291ea41292ccda75494f85a6e321e7eec0",
+      "paths": [
+        "src/compiler/fingerprint/dep_info.rs",
+        "src/compiler/fingerprint/mod.rs",
+        "src/compiler/output_depinfo.rs",
+        "tests/testsuite/build_script.rs"
+      ]
+    }
+  ],
+  "only_changed_files": {
+    ".github/workflows/ci.yml": "616691a60b4f0865afc8478d7276016f938b53af431252738b9542fce494003b",
+    "src/compiler/fingerprint/dep_info.rs": "3cd04d7e93fd77c2986963ad5fb3d1ba2c463fe8095c181b53899d1e97be5624",
+    "src/compiler/fingerprint/mod.rs": "9542a824a72048885f019aeb967ba56a20eaa328965d3be71afebdedb941d520",
+    "src/compiler/mod.rs": "415cbc48618bbda34eace953b6efd03bb2a1db26b455b6f2073e992e4ba8ae5d",
+    "src/compiler/ohm_early_tests.rs": "635ac30b56827bb1283807c4f19fc4b07162a0356eb7809ca7a67eae69e5ecf8",
+    "src/compiler/output_depinfo.rs": "f1acba20a46ea4190809871ae8df8dac370b856208137ca959aa76652035b43a",
+    "tests/testsuite/build_script.rs": "2bc6637caeb63cf602526de4a46063c3236111d196568efbc45ed93fb5bd7b67",
+    "tests/testsuite/freshness.rs": "eabdbe14bc243f83c2584125c7a738c18b68362eaecacd29ef8666ef2f749f1d",
+    "tests/testsuite/rustflags.rs": "a7502aa4c1cf2b40892bc541349617c1c835036868cc0a8d88515e19386e4888"
+  },
+  "tree": "5386201eedb3970d3cc74521f12bd644cdf33396"
+}
