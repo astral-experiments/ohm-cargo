@@ -1,0 +1,48 @@
+{
+  "commands": 72,
+  "followup_commands": 96,
+  "pairs": {
+    "cold": 12,
+    "selection": 24
+  },
+  "results": {
+    "cold": {
+      "assignments": 924,
+      "ci95": [
+        0.07853421971309979,
+        1.3288240164090022
+      ],
+      "extreme": 70,
+      "favorable": 8,
+      "holm": 0.07575757575757576,
+      "material_regression": false,
+      "medians_s": {
+        "B": 291.540263916,
+        "C": 289.850378053
+      },
+      "p_two_sided": 0.07575757575757576,
+      "paired_reduction_pct": 0.6492999177337921,
+      "pairs": 12,
+      "qualifies": false
+    },
+    "selection": {
+      "assignments": 2704156,
+      "ci95": [
+        11.119800252225062,
+        16.70019124002558
+      ],
+      "extreme": 2,
+      "favorable": 24,
+      "holm": 1.479204602101358e-06,
+      "material_regression": false,
+      "medians_s": {
+        "B": 8.296845329,
+        "C": 7.1380349055
+      },
+      "p_two_sided": 7.39602301050679e-07,
+      "paired_reduction_pct": 13.8625620859386,
+      "pairs": 24,
+      "qualifies": true
+    }
+  }
+}
