@@ -1,0 +1,29 @@
+{
+  "affinity": [
+    14
+  ],
+  "argv": [
+    "/usr/bin/strace",
+    "-ff",
+    "-qq",
+    "-yy",
+    "-s",
+    "0",
+    "-e",
+    "trace=execve,openat,read,close",
+    "-o",
+    "/dev/shm/ohm-262-blake3-screen-20261028/host-native-v1/trace-before/syscalls",
+    "/dev/shm/ohm-262-blake3-screen-20261028/target/release/ohm-checksum-isolated",
+    "before",
+    "/dev/shm/ohm-262-blake3-screen-20261028/corpus",
+    "4"
+  ],
+  "cwd": "/dev/shm/ohm-262-blake3-screen-20261028",
+  "environment": {
+    "HOME": "/home/dev-user",
+    "LANG": "C",
+    "LC_ALL": "C",
+    "PATH": "/usr/bin:/bin",
+    "TZ": "UTC"
+  }
+}

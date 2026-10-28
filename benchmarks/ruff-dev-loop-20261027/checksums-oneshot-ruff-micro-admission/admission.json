@@ -1,0 +1,30 @@
+{
+  "host": "7b1ec9ceb40f4952cbe825ff0a0318413910541a9c7082fa7535fae7a7bf6a80",
+  "inputs": "575de9d2ab288c87380273ee2f3d37cfd8375d7db4abf36e2ff0e5a044399bac",
+  "native_scores": 0,
+  "positive": "b0c0ed0e12b623aed865d0b1283203944e60f784042ad423ae8c6c57a395b2d5",
+  "proof": "Same full-size requests and returned bytes including EOF and successful close in each of 4952 file opens per arm.",
+  "raw": {
+    "after": {
+      "bytes": 49526176,
+      "eofs": 4952,
+      "execs": 1,
+      "opens": 4952,
+      "pid": 282669,
+      "reads": 10152,
+      "sha_raw": "1fba1732d3915bb4a061823d421a0491870b049d9c7f5ae0a6e1e41db8220eb9",
+      "sha_reads": "b0c0ed0e12b623aed865d0b1283203944e60f784042ad423ae8c6c57a395b2d5"
+    },
+    "before": {
+      "bytes": 49526176,
+      "eofs": 4952,
+      "execs": 1,
+      "opens": 4952,
+      "pid": 282575,
+      "reads": 10152,
+      "sha_raw": "bf612aa164839d610d1b891dcb2f01177ff4a6e1616a39bd1da9c82c1b0d04d4",
+      "sha_reads": "b0c0ed0e12b623aed865d0b1283203944e60f784042ad423ae8c6c57a395b2d5"
+    }
+  },
+  "source_commit": "32c4f9da05956359fbd8d660c712c846fd8ff01f"
+}

@@ -1,0 +1,208 @@
+{
+  "boot": "b343f54a-aec6-413e-925d-e1a7c2268c56",
+  "core": 14,
+  "corpus": "/dev/shm/ohm-262-blake3-screen-20261028/corpus",
+  "cpu_model": "AMD EPYC-Milan Processor",
+  "cpu_topology": "# The following is the parsable format, which can be fed to other\n# programs. Each different item in every column has an unique ID\n# starting usually from zero.\n# CPU,Core,Socket,Node\n0,0,0,0\n1,1,0,0\n2,2,0,0\n3,3,0,0\n4,4,0,0\n5,5,0,0\n6,6,0,0\n7,7,0,0\n8,8,0,0\n9,9,0,0\n10,10,0,0\n11,11,0,0\n12,12,0,0\n13,13,0,0\n14,14,0,0\n15,15,0,0\n16,16,0,0\n17,17,0,0\n18,18,0,0\n19,19,0,0\n20,20,0,0\n21,21,0,0\n22,22,0,0\n23,23,0,0\n24,24,0,0\n25,25,0,0\n26,26,0,0\n27,27,0,0\n28,28,0,0\n29,29,0,0\n30,30,0,0\n31,31,0,0\n",
+  "cwd": "/dev/shm/ohm-262-blake3-screen-20261028",
+  "elf_paths": {
+    "/dev/shm/ohm-262-blake3-screen-20261028/target/release/ohm-checksum-isolated": {
+      "needed": {
+        "ld-linux-x86-64.so.2": "/lib64/ld-linux-x86-64.so.2",
+        "libc.so.6": "/lib/x86_64-linux-gnu/libc.so.6",
+        "libgcc_s.so.1": "/lib/x86_64-linux-gnu/libgcc_s.so.1"
+      },
+      "physical": "/dev/shm/ohm-262-blake3-screen-20261028/target/release/ohm-checksum-isolated",
+      "sha256": "8d739a903453ffcdf9ce437e33992383f3805ed9a32c61fa86e5eba7a52dd8d1",
+      "stamp": [
+        26,
+        4296163,
+        33277,
+        614219,
+        1793172137542653665,
+        1793172137574653794
+      ]
+    },
+    "/home/dev-user/.cache/ohm-dynamorio-20261026/client/libpidcounter.so": {
+      "needed": {
+        "libc.so.6": "/lib/x86_64-linux-gnu/libc.so.6",
+        "libdrmgr.so": "/home/dev-user/.cache/ohm-dynamorio-20261026/sdk/ext/lib64/release/libdrmgr.so",
+        "libdrreg.so": "/home/dev-user/.cache/ohm-dynamorio-20261026/sdk/ext/lib64/release/libdrreg.so",
+        "libdynamorio.so": "/home/dev-user/.cache/ohm-dynamorio-20261026/sdk/lib64/release/libdynamorio.so"
+      },
+      "physical": "/home/dev-user/.cache/ohm-dynamorio-20261026/client/libpidcounter.so",
+      "sha256": "79f0c15d45b8d6b58a657b1816d4c2db2f798a9dbba4a1d02b3f2f3a1bda8204",
+      "stamp": [
+        64769,
+        107027615,
+        33261,
+        22200,
+        1792983763496746695,
+        1792983763496746695
+      ]
+    },
+    "/home/dev-user/.cache/ohm-dynamorio-20261026/client/libpidcounter.so.drpath": {
+      "physical": "/home/dev-user/.cache/ohm-dynamorio-20261026/client/libpidcounter.so.drpath",
+      "sha256": "a902552a361a44ee3dc02deb70699cc92b6d34c6d4a17d43f8e207a8faad8a45",
+      "stamp": [
+        64769,
+        107027617,
+        33204,
+        67,
+        1792983763497746701,
+        1792983763497746701
+      ],
+      "text": "/home/dev-user/.cache/ohm-dynamorio-20261026/sdk/ext/lib64/release\n"
+    },
+    "/home/dev-user/.cache/ohm-dynamorio-20261026/sdk/bin64/drrun": {
+      "needed": {
+        "libc.so.6": "/lib/x86_64-linux-gnu/libc.so.6"
+      },
+      "physical": "/home/dev-user/.cache/ohm-dynamorio-20261026/sdk/bin64/drrun",
+      "sha256": "f92d796060b53c1ec14ac97e089edfb29a3ce8bd17c2c011fd763054d10f4b55",
+      "stamp": [
+        64769,
+        107027604,
+        33261,
+        1000448,
+        1792983763478746583,
+        1792983763479746589
+      ]
+    },
+    "/home/dev-user/.cache/ohm-dynamorio-20261026/sdk/ext/lib64/release/libdrmgr.so": {
+      "needed": {
+        "libdynamorio.so": "/home/dev-user/.cache/ohm-dynamorio-20261026/sdk/lib64/release/libdynamorio.so"
+      },
+      "physical": "/home/dev-user/.cache/ohm-dynamorio-20261026/sdk/ext/lib64/release/libdrmgr.so",
+      "sha256": "f577adc23157771cf26c8dbcc1a77c4c65cc6a0750b192d0bbd4a3bd877801af",
+      "stamp": [
+        64769,
+        107027613,
+        33261,
+        91816,
+        1792983763496746695,
+        1792983763496746695
+      ]
+    },
+    "/home/dev-user/.cache/ohm-dynamorio-20261026/sdk/ext/lib64/release/libdrreg.so": {
+      "needed": {
+        "libdrmgr.so": "/home/dev-user/.cache/ohm-dynamorio-20261026/sdk/ext/lib64/release/libdrmgr.so",
+        "libdynamorio.so": "/home/dev-user/.cache/ohm-dynamorio-20261026/sdk/lib64/release/libdynamorio.so"
+      },
+      "physical": "/home/dev-user/.cache/ohm-dynamorio-20261026/sdk/ext/lib64/release/libdrreg.so",
+      "sha256": "63acaeabdd40cc80a27ee42e97b102a972394e65bd9b57635fce998c69c99a38",
+      "stamp": [
+        64769,
+        107027612,
+        33261,
+        61840,
+        1792983763495746689,
+        1792983763495746689
+      ]
+    },
+    "/home/dev-user/.cache/ohm-dynamorio-20261026/sdk/lib64/release/libdrpreload.so": {
+      "needed": {
+        "libc.so.6": "/lib/x86_64-linux-gnu/libc.so.6"
+      },
+      "physical": "/home/dev-user/.cache/ohm-dynamorio-20261026/sdk/lib64/release/libdrpreload.so",
+      "sha256": "5948c94a349db2b32a32fc8a57ed1d0f88480c4d25ac887bfb34450c124fac92",
+      "stamp": [
+        64769,
+        107027608,
+        33261,
+        43224,
+        1792983763494746683,
+        1792983763494746683
+      ]
+    },
+    "/home/dev-user/.cache/ohm-dynamorio-20261026/sdk/lib64/release/libdynamorio.so": {
+      "needed": {},
+      "physical": "/home/dev-user/.cache/ohm-dynamorio-20261026/sdk/lib64/release/libdynamorio.so",
+      "sha256": "c3bb1f80f3834c97f72983c59f77b42f3c66f07d311b25b66d74e4f1cae3b0f7",
+      "stamp": [
+        64769,
+        107027607,
+        33261,
+        2122712,
+        1792983763492746670,
+        1792983763494746683
+      ]
+    },
+    "/lib/x86_64-linux-gnu/libc.so.6": {
+      "needed": {
+        "ld-linux-x86-64.so.2": "/lib64/ld-linux-x86-64.so.2"
+      },
+      "physical": "/usr/lib/x86_64-linux-gnu/libc.so.6",
+      "sha256": "3a15d66867d83762c7f2f1e37359cb8f6c5743edb369c65285cb0b1c4f7498bf",
+      "stamp": [
+        64769,
+        14677,
+        33261,
+        2129424,
+        1788444912000000000,
+        1791156868434187015
+      ]
+    },
+    "/lib/x86_64-linux-gnu/libgcc_s.so.1": {
+      "needed": {
+        "ld-linux-x86-64.so.2": "/lib64/ld-linux-x86-64.so.2",
+        "libc.so.6": "/lib/x86_64-linux-gnu/libc.so.6"
+      },
+      "physical": "/usr/lib/x86_64-linux-gnu/libgcc_s.so.1",
+      "sha256": "d93224d2b0dab4247598be683adca02f5cf00586f99c187579cd7e92058fb7cb",
+      "stamp": [
+        64769,
+        6488,
+        33188,
+        183024,
+        1766093810000000000,
+        1774098909805295923
+      ]
+    },
+    "/lib64/ld-linux-x86-64.so.2": {
+      "needed": {},
+      "physical": "/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2",
+      "sha256": "c20a2dc8917c755f02b94049356320fe1f62ac7d9f8994731f807d9df39302da",
+      "stamp": [
+        64769,
+        14674,
+        33261,
+        236616,
+        1788444912000000000,
+        1791557695122266977
+      ]
+    }
+  },
+  "environment": {
+    "HOME": "/home/dev-user",
+    "LANG": "C",
+    "LC_ALL": "C",
+    "PATH": "/usr/bin:/bin",
+    "TZ": "UTC"
+  },
+  "expected_stdout": "7bfa0e472648eeb71386f62152c725d35ab8fa2d9ee92b796d8b46b98b68a4ae",
+  "host": "charlie-oss-8",
+  "kernel": "6.8.0-147-generic",
+  "machine": "x86_64",
+  "plan": "3b1493912337bf911258f7341fd5668a14f6bd157fb517cab14d3bd1c15707d9",
+  "siblings": [
+    14
+  ],
+  "source_commit": "32c4f9da05956359fbd8d660c712c846fd8ff01f",
+  "source_count": 1238,
+  "source_manifest": "b8a8c4156519267acd6247adb582b160328b3107c8f8e9e2f805a5975495e42f",
+  "source_sweep": "16daeab2b8a3d8d1aadd674e34cac27f445538e8bc411a42ea9e88ec82874358",
+  "strace": {
+    "physical": "/usr/bin/strace",
+    "sha256": "28f957c227012de0b18d1bd7fff2d396cb693ea60ed8013be68de071e84b5001",
+    "stamp": [
+      64769,
+      2408,
+      33261,
+      2087432,
+      1713432762000000000,
+      1774098909364281738
+    ]
+  },
+  "work_sha256": "2e5d1dc2709dfc69683eca02b6a0f4f8ae4dc62eb15688830d2e619b88b2c62d"
+}

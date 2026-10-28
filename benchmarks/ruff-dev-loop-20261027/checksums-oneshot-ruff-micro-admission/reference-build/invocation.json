@@ -1,0 +1,28 @@
+{
+  "affinity": [
+    14
+  ],
+  "argv": [
+    "/usr/bin/cc",
+    "-O2",
+    "-fPIC",
+    "-shared",
+    "-DBLAKE3_NO_SSE2",
+    "-DBLAKE3_NO_SSE41",
+    "-DBLAKE3_NO_AVX2",
+    "-DBLAKE3_NO_AVX512",
+    "-o",
+    "/dev/shm/ohm-262-blake3-screen-20261028/host-native-v1/reference.so",
+    "/dev/shm/ohm-262-blake3-screen-20261028/vendor/blake3-1.8.5/c/blake3.c",
+    "/dev/shm/ohm-262-blake3-screen-20261028/vendor/blake3-1.8.5/c/blake3_dispatch.c",
+    "/dev/shm/ohm-262-blake3-screen-20261028/vendor/blake3-1.8.5/c/blake3_portable.c"
+  ],
+  "cwd": "/dev/shm/ohm-262-blake3-screen-20261028",
+  "environment": {
+    "HOME": "/home/dev-user",
+    "LANG": "C",
+    "LC_ALL": "C",
+    "PATH": "/usr/bin:/bin",
+    "TZ": "UTC"
+  }
+}

@@ -1,0 +1,105 @@
+{
+  "acceptance": "All 24 slots valid and 12 matched pairs. Require >=10/12 favorable, >=3% median paired reduction, >=4,000,000 median fewer process instructions per corpus pass (paired command difference divided by 4), one-sided exact balanced randomized-order p<=0.01 on mean paired log change, with (3rd,10th) of the 12 paired percentages, 96.14% distribution-free median interval. Run only this one conjunction. Null/adverse closes trial. A passing result can only advance to a separately registered matched full-Cargo study on a different independent workload.",
+  "analysis_sha256": "30c56547f178e2a2422910130d35acb5dec5f7d782abfda4bfc2f29fa8e98b24",
+  "bytes_per_sweep": 12381544,
+  "corpus": "16daeab2b8a3d8d1aadd674e34cac27f445538e8bc411a42ea9e88ec82874358",
+  "corpus_sweeps_per_command": 4,
+  "counter": {
+    "client": "79f0c15d45b8d6b58a657b1816d4c2db2f798a9dbba4a1d02b3f2f3a1bda8204",
+    "drrun": "f92d796060b53c1ec14ac97e089edfb29a3ce8bd17c2c011fd763054d10f4b55",
+    "libdynamorio": "c3bb1f80f3834c97f72983c59f77b42f3c66f07d311b25b66d74e4f1cae3b0f7"
+  },
+  "defined_functions": {
+    "after.rs": "5059b46c3633ae63833d8530fb2efeaf67d129fa92d68e881fdaceeaed780cae",
+    "before.rs": "79c40ca98f6750cc4c35676652e864066d81e18d547aa3251e98c8d9c18c1008",
+    "main.rs": "f04773337bbffd20806963166806c1d934d4661632e52781603d3046f1a9bb0b",
+    "sha.rs": "ebc5f8ce425befbe9a1eec413a619a5583752d2ed93690b7a58ee18a2586ac07"
+  },
+  "expected_stdout": "7bfa0e472648eeb71386f62152c725d35ab8fa2d9ee92b796d8b46b98b68a4ae",
+  "files_per_sweep": 1238,
+  "harness": "8d739a903453ffcdf9ce437e33992383f3805ed9a32c61fa86e5eba7a52dd8d1",
+  "known_loaded_native": {
+    "/lib/x86_64-linux-gnu/libc.so.6": "3a15d66867d83762c7f2f1e37359cb8f6c5743edb369c65285cb0b1c4f7498bf",
+    "/lib/x86_64-linux-gnu/libgcc_s.so.1": "d93224d2b0dab4247598be683adca02f5cf00586f99c187579cd7e92058fb7cb",
+    "/lib64/ld-linux-x86-64.so.2": "c20a2dc8917c755f02b94049356320fe1f62ac7d9f8994731f807d9df39302da"
+  },
+  "metric": "Complete-process user-space retired-equivalent app instruction total from a fresh, direct, pinned DynamoRIO process; one B/T/F/P roster, no children. No wall endpoint. Pair individual observations at the scheduled order. Report raw signed results even on a null or adverse run.",
+  "native_admission": "On one sponsor-approved reserved x86-64 linux host, freeze host, CPU availability, assigned single core, effective library/collector hashes, exact absolute ELF and corpus paths, process environment, and complete runnable worker hashes before any exposure. Validate all 1238 SHA256, all 5200 synthetic/96 mutating-file/packet/fixed-read checks and C/Python oracle. Then run the exact uncounted before/after replay with four sweeps each, regular immutable files, 4952 successful input opens (each source four times) and complete identical per-file read request lengths, return values and EOF counts on the same descriptors. Require exact common expected stdout and no other execution in either arm; retain native raw. Read/corpus bytes and content hashes fixed. Host grant and native receipt required; no release profiles or full Cargo runs implied.",
+  "order_seed": "ohm-262-pinned-ruff-one-shot-screen-20261028",
+  "orders": [
+    [
+      "before",
+      "after"
+    ],
+    [
+      "after",
+      "before"
+    ],
+    [
+      "after",
+      "before"
+    ],
+    [
+      "before",
+      "after"
+    ],
+    [
+      "after",
+      "before"
+    ],
+    [
+      "before",
+      "after"
+    ],
+    [
+      "after",
+      "before"
+    ],
+    [
+      "after",
+      "before"
+    ],
+    [
+      "before",
+      "after"
+    ],
+    [
+      "before",
+      "after"
+    ],
+    [
+      "before",
+      "after"
+    ],
+    [
+      "after",
+      "before"
+    ]
+  ],
+  "patch": "55e40e986035ea1f46739671425a15dba8e0a94194608671d1dc5d14b4cb4cfa",
+  "primary": "12 pairs, 6 BA/6 AB in the frozen order; fresh processes, same single core/host/logical paths/common executable/inputs/environment, same four corpus passes. After all pairs, one native before+after to recheck ordinary outputs and input hashes. No cherry-picking, retries or alternate candidate. Halt and retain failure if an individual slot lacks complete instrumentation, exits nonzero, prints other bytes, starts a child, or any corpus/host/tool precondition changes. No scored row may be replaced.",
+  "recreator_sha256": "660931cf798f19d790ea9d3de4ff92743d4eb573a14d3b8618fab974390ef282",
+  "scope": "Isolated exact checksum methods and captured Ruff source files. This is not a Cargo performance comparison.",
+  "source": "105fe8286bef83e1ad1b62b3a2c015a6ace57ee7",
+  "stage": "Prospective separate host grant and host/native admission still required. Zero counted observations at freeze.",
+  "updates_at_freeze": {
+    "applies_git_commit": "105fe8286bef83e1ad1b62b3a2c015a6ace57ee7",
+    "bytes": 12381544,
+    "candidate_elf": "8d739a903453ffcdf9ce437e33992383f3805ed9a32c61fa86e5eba7a52dd8d1",
+    "candidate_patch": "55e40e986035ea1f46739671425a15dba8e0a94194608671d1dc5d14b4cb4cfa",
+    "corpus_recreated_and_validated_again": true,
+    "corrected_output_sha256": "b175e89faaa8d8aa21af7abe33192b9d8609162b4a34fe2badd31ffee91c5957",
+    "corrected_packet_sha256": "b6766a1e625f96306b36fab9bf4eeaa85a7b73a9bcb928c97dd845990773ae8b",
+    "initial_packet_sketch_rejected": "2ebf95c86c8f80e77600405e2a4669eaf9205c28130edbc088d0dc3a42726db8",
+    "native_cases": {
+      "corpus": 1238,
+      "file_mutation": 96,
+      "fixed_read_width_per_algorithm": 2,
+      "packet_pipe_actual_file": true,
+      "stream": 5200
+    },
+    "parent_elf": "8d739a903453ffcdf9ce437e33992383f3805ed9a32c61fa86e5eba7a52dd8d1",
+    "performance_observations": 0,
+    "rustfmt_entire_patched_module": true
+  }
+}
