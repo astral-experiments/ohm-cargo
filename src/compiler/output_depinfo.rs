@@ -10,27 +10,30 @@ use std::path::{Path, PathBuf};
 use super::{BuildRunner, FileFlavor, Unit, fingerprint};
 use crate::util::{CargoResult, internal};
 use cargo_util::paths;
+use std::borrow::Cow;
 use tracing::debug;
 
 /// Basically just normalizes a given path and converts it to a string.
-fn render_filename<P: AsRef<Path>>(path: P, basedir: Option<&str>) -> CargoResult<String> {
-    fn wrap_path(path: &Path) -> CargoResult<String> {
-        path.to_str()
-            .ok_or_else(|| internal(format!("path `{:?}` not utf-8", path)))
-            .map(|f| f.replace(" ", "\\ "))
+fn render_filename<'a>(path: &'a Path, basedir: Option<&str>) -> CargoResult<Cow<'a, str>> {
+    fn wrap_path(path: &Path) -> CargoResult<Cow<'_, str>> {
+        let path = path
+            .to_str()
+            .ok_or_else(|| internal(format!("path `{:?}` not utf-8", path)))?;
+        if path.as_bytes().contains(&b' ') {
+            Ok(Cow::Owned(path.replace(' ', "\\ ")))
+        } else {
+            Ok(Cow::Borrowed(path))
+        }
     }
 
-    let path = path.as_ref();
     if let Some(basedir) = basedir {
         let norm_path = normalize_path(path);
         let norm_basedir = normalize_path(basedir.as_ref());
-        match norm_path.strip_prefix(norm_basedir) {
-            Ok(relpath) => wrap_path(relpath),
-            _ => wrap_path(path),
+        if let Ok(relpath) = norm_path.strip_prefix(norm_basedir) {
+            return Ok(Cow::Owned(wrap_path(relpath)?.into_owned()));
         }
-    } else {
-        wrap_path(path)
     }
+    wrap_path(path)
 }
 
 /// Collects all dependencies of the `unit` for the output dep info file.
@@ -194,12 +197,15 @@ pub fn output_depinfo(
             let target_fn = render_filename(link_dst, basedir)?;
 
             if single_output {
-                let mut contents = Vec::new();
-                write!(contents, "{}:", target_fn)?;
+                let dep_bytes = deps.iter().map(|dep| dep.len() + 1).sum::<usize>();
+                let mut contents = Vec::with_capacity(target_fn.len() + 2 + dep_bytes);
+                contents.extend_from_slice(target_fn.as_bytes());
+                contents.push(b':');
                 for dep in &deps {
-                    write!(contents, " {}", dep)?;
+                    contents.push(b' ');
+                    contents.extend_from_slice(dep.as_bytes());
                 }
-                writeln!(contents)?;
+                contents.push(b'\n');
 
                 // Preserve the mtime when the complete rendered dep-info is unchanged.
                 if paths::read_bytes(&output_path).is_ok_and(|previous| previous == contents) {
@@ -213,7 +219,7 @@ pub fn output_depinfo(
                         .files
                         .iter()
                         .map(|(path, _checksum)| path)
-                        .eq(deps.iter().map(Path::new))
+                        .eq(deps.iter().map(|dep| Path::new(&dep[..])))
                     {
                         continue;
                     }
