@@ -97,7 +97,13 @@ fn seed_markers_replace_symlinks() {
             )
             .file("input", "first")
     });
-    let build = || seeded_cargo(&donor, "-Zohm-worktree-seeds=yes build --lib").run();
+    let build = || {
+        seeded_cargo(
+            &donor,
+            "-Zohm-shared-registry-cache -Zohm-worktree-seeds=yes build --lib",
+        )
+        .run();
+    };
     build();
 
     let namespace = workspace_caches().pop().unwrap();
