@@ -1,0 +1,25 @@
+{
+  "commands": 16,
+  "design": "Four independent build states. Change only the spelling of CARGO_TARGET_DIR between ruff target and ruff-target. Compile the selected workspace member from its directory with the default cargo build target, locked and offline. Capture an empty build and three unchanged repeats for each package and layout. Preserve invalid fixtures and negative outcomes.",
+  "inputs": {
+    "crates/ty_project/Cargo.toml": "5064db0996fd442d2a236ad2d209ba1d9d933c9ef14823ed89e740ba14a2dc13",
+    "crates/ty_vendored/build.rs": "3c80316582e75bcaeed42bba3133e0872dec22068e071e68978c599d346afce2",
+    "crates/ty_vendored/src/lib.rs": "5ba4674e6826f6c10edda325cca7d567d6fe9f936e716b5d01b8e985cd5d5f56",
+    "crates/ty_vendored/vendor/typeshed/stdlib/functools.pyi": "721696b22e172c4f9dbe15ec5e04a04a9939188eca12d8110ab62f9de81d96a1",
+    "crates/ty_wasm/Cargo.toml": "f1addb0b40eaf4dfa4cd6df554a8f5f24f5915ee079d243b7109127000139f11"
+  },
+  "jobs": 4,
+  "member_selections": [
+    "ty_wasm",
+    "ty_project"
+  ],
+  "prior_h7_inputs": "1844efed56043bca3add46f9ccac806a17af829c",
+  "programs": {
+    "capture.py": "f3288e7fc083308250ade5a436f7b656fba4753d7101dbd74c657b104c6b542c",
+    "member-build.py": "60113373dc2ae5c52738ef1787d6015e7b6016f702278535749a86fc5dd73c74"
+  },
+  "question": "Does a generated production include_bytes! in ty_vendored cause repeat rustc or native linker invocations after a plain Cargo build? ty_wasm also reports a native cdylib on the Linux host. Check the actual Wild children, build rosters, selected archives and ELF digests, and the actual vendored stdlib/functools.pyi inside the generated ZIP. No wall-time inference.",
+  "rustup": "Ohm Linux 1.99.0-16",
+  "scored_commands": 0,
+  "source": "93526150df078af7dd8fc4226cdcc469539d2001"
+}

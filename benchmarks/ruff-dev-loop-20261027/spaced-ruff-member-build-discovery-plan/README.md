@@ -1,0 +1,5 @@
+# Production Ruff builds with a space in the target directory
+
+Build `ty_wasm` and `ty_project` from their package directories with ordinary `cargo +ohm build` on the packaged Linux 1.99.0-16 toolchain. Both depend on `ty_vendored`, which uses `include_bytes!` to read a ZIP in its build script’s output directory. The selected Ty Wasm package also links a native shared library on this host.
+
+The four independent states compare a target directory named `ruff target` with `ruff-target`. Each starts with empty target and build directories and a locked offline registry, then repeats the command three times. The workload records successful physical compiler and linker invocations, complete Cargo diagnostics and product digests, including the source-verified typeshed ZIP. These are structural comparisons. No wall times are scored. [Earlier member test-build observation](https://github.com/astral-sh/ohm-cargo/tree/d269a2b9b0f2792ed3753b1c058b36af9a9ba5b0/benchmarks/ruff-dev-loop-20261027/released16-spaced-ruff-package)
