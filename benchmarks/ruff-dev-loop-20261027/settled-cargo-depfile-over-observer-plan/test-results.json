@@ -1,0 +1,66 @@
+{
+  "all-library": {
+    "argv": [
+      "/home/dev-user/.cargo/bin/cargo",
+      "+ohm",
+      "test",
+      "--locked",
+      "--offline",
+      "-p",
+      "cargo",
+      "--features",
+      "ohm-defaults",
+      "-j8",
+      "--lib"
+    ],
+    "log": "071469ed8147911c655430f095d05f9636ec1bea95c5c47dc183aa043b22ec16",
+    "rc": 0,
+    "result": [
+      "test result: ok. 406 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 4.86s"
+    ]
+  },
+  "dep-info": {
+    "argv": [
+      "/home/dev-user/.cargo/bin/cargo",
+      "+ohm",
+      "test",
+      "--locked",
+      "--offline",
+      "-p",
+      "cargo",
+      "--features",
+      "ohm-defaults",
+      "-j8",
+      "--test",
+      "testsuite",
+      "dep_info::"
+    ],
+    "log": "813b7744399951b979286ba3eb418f139219157334aec9d9d197f116daba0d35",
+    "rc": 0,
+    "result": [
+      "test result: ok. 15 passed; 0 failed; 0 ignored; 0 measured; 4800 filtered out; finished in 1.46s"
+    ]
+  },
+  "generated": {
+    "argv": [
+      "/home/dev-user/.cargo/bin/cargo",
+      "+ohm",
+      "test",
+      "--locked",
+      "--offline",
+      "-p",
+      "cargo",
+      "--features",
+      "ohm-defaults",
+      "-j8",
+      "--test",
+      "testsuite",
+      "build_script::generate_good_d_files"
+    ],
+    "log": "4d3f9522420cee197eb31f1f9083f016cedc7a6b2164b6555476a9e636de1a4b",
+    "rc": 0,
+    "result": [
+      "test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 4813 filtered out; finished in 0.74s"
+    ]
+  }
+}

@@ -1,0 +1,165 @@
+{
+  "analysis": "For each of 16 pairs calculate 100*(parent-candidate)/parent, the median reduction, 4th and 13th order statistic distribution-free 97.87% median interval, improvement count, and both medians. Test mean log(P/C) against all 12,870 balanced first/second assignments, one-sided for a reduction. Only this primary, no multiple-comparison correction. Qualify only if median >=1%, favorable >=13/16, lower interval positive, and p<0.05. Do not generalize to #261 test-build/workspace or infer wall time.",
+  "common_nonproduct_inputs": "dfffcca4f68351598ff3b6de2659f45fa946bd221f5f4b5afa700036b5f5ca32",
+  "compiler_build_profile": "481ada8a40c70dad11b3c7e8871e9a52207d78447ca5e8ace06fc4aec2d2b5a7",
+  "compiler_builder": "b0c412a7a8010a768f00546419a0b1bcfca382d7e70191df3ae72e30ac1ef3e5",
+  "counter": [
+    "f92d796060b53c1ec14ac97e089edfb29a3ce8bd17c2c011fd763054d10f4b55",
+    "c3bb1f80f3834c97f72983c59f77b42f3c66f07d311b25b66d74e4f1cae3b0f7",
+    "79f0c15d45b8d6b58a657b1816d4c2db2f798a9dbba4a1d02b3f2f3a1bda8204"
+  ],
+  "host": "charlie-ohm-pkg-build-1024, EPYC Milan, dedicated native lock on H7, CPU 0-7, storage ext4; 60 GiB scratch reserve throughout. Separate fresh physical Ruff worktree, target/shared directories, Cargo home and runtime from the released-base H7 study; same pathname in both arms.",
+  "initial_artifacts": "Original release-base results remain frozen and independent, including the 0.084% adverse test-build instruction result. #261 reopens observers at each compile; it must retain the missing sentinel. No graph with an actual observer is eligible for this narrow fully fresh linter endpoint.",
+  "matched_pair": "942b3da45870294614376741a21f742d1f72d1441ba29c52daf5937ec8d44628",
+  "orders": {
+    "library": {
+      "ir": [
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "parent"
+        ],
+        [
+          "candidate",
+          "parent"
+        ],
+        [
+          "candidate",
+          "parent"
+        ],
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "parent"
+        ],
+        [
+          "candidate",
+          "parent"
+        ],
+        [
+          "candidate",
+          "parent"
+        ],
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "parent"
+        ],
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "parent",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "parent"
+        ]
+      ]
+    }
+  },
+  "original_release_base_results_sha": "cd8d9255f928708c901e8928a055f49e1240adb87ff5f7b0d23ddb23b8e63767",
+  "procedure": "Only begin after this prospective binding is published, exact eligible native store/byte/trace gates pass, and there is an explicit scoring release. Run each adjacent pair in fixed supplied order. Verify full per-process thread termination and totals, unchanged Git and manifest proofs and exact native .d and physical product stamps after every count. Whole product SHA, native strace roster and all-fresh Cargo JSON before and after. No retrospective pruning, reordering, retries or sample extensions. Stop and retain all data after any failed gate.",
+  "programs": {
+    "README.md": "4c2fdb075acbd793e5a89a8660b40ce8772629c2d85062a493f7f43f7583cba4",
+    "build-source.json": "80d0d0732118e02901e30e89eb9309b0116253ed59e678e010477f9261f028d5",
+    "build.py": "40eb8e62772ccc4096a36be7c00da50161df756988e1140990e07d7ac4927127",
+    "cargo-tests.py": "a65be56942de2f2c771fb09357e24065c0cb2215b67b7e2a53e428595fd31739",
+    "dr-shim.c": "94970b153f7591f7f7b7b9f8af3f4dbd42c2f1430480add4c8806e733952276a",
+    "migration-fixture/exercise.py": "99c85dd40792e99d4343cefec3b47d80b383d48d3cdd7d36278425dba7eedb46",
+    "migration-fixture/fixture/Cargo.toml": "92a030291e3fac74a579df6ea7e4c44421995bf306c5e8f96c0bfe3e6cfc4e8a",
+    "migration-fixture/fixture/hold_bridge/Cargo.toml": "006f76078ad461d8bd2eacfcd7a0f1aa5ff3b80c26b0269fd65b851febbde22e",
+    "migration-fixture/fixture/hold_bridge/src/lib.rs": "3ece510e1da8a651e57eaefc42d4ca75df989fc6ce848b5ef9202c7d491af9ba",
+    "migration-fixture/fixture/hold_direct/Cargo.toml": "8244f608d41004cff8a3281352384196217c8d18a799681769113e4317a10a53",
+    "migration-fixture/fixture/hold_direct/src/main.rs": "b0e6d092bf80e749d0128af455ad00316b23870cc32ae55f82f402fb5b664774",
+    "migration-fixture/fixture/hold_indirect/Cargo.toml": "b2738153be43a6fb28d97a2a950c473ac02c5283e7687180cbafb90cbcad5a3a",
+    "migration-fixture/fixture/hold_indirect/src/main.rs": "785aadef4360516f31ee20103dbdfea217fbdc004e5ba50e815139847585cb7a",
+    "migration-fixture/fixture/hold_plain/Cargo.toml": "8f51faf33d8f23c65d11e2bbe7a005aa2cb2b5ec40875d75a5cbdcd824b7cd11",
+    "migration-fixture/fixture/hold_plain/src/main.rs": "0259ba70d80b06d95592eb74753f7de8cded24937db03115b1eee4c227b4251f",
+    "migration-fixture/fixture/hold_probe/Cargo.toml": "3988559634db00b85f0b24f13e230763501d5161e409a672668a1ba4bc9d6829",
+    "migration-fixture/fixture/hold_probe/src/lib.rs": "1ccfd1b0752af5cb092ab25e99de771a4fb3af36ae1f03f9d224d59b464ef963",
+    "migration-fixture/fixture/hold_shapes/Cargo.toml": "d9936d3ade5d4ae901d636daca21a7edff671cf4a00e85e4fd669b21fc8d4682",
+    "migration-fixture/fixture/hold_shapes/src/lib.rs": "42a5e6588888d950b812bd807379bd1a87e0a40422979e4f062d1133150048dc",
+    "migration-fixture/fixture/hold_shapes/src/types.rs": "c43f4763dbdc9411863e5037f587814d1e5cdd6eefca11c9fd9071b16ec86506",
+    "migration-fixture/fixture/hold_tokens/Cargo.toml": "299fc2ac5d4d857bcd05c32a44fee9b5abb13e0f686a04e4fbec3f019452ae40",
+    "migration-fixture/fixture/hold_tokens/src/lib.rs": "9844ce7ec021d2f04d39f25faeb6e5612653feb6fe6e4be6529e97bb9bf09d55",
+    "observer-qualification.py": "7ed9b66944c1eeb5dd9fca15ef46776770bd9d6448e4abc037e1c4342c131a55",
+    "package-controls-v3.py": "b6339faee42bc4356c6e8b995387b9e3197b9327966b45c4ae37782669f0298d",
+    "port.patch": "1651e71add47641e7f44a10c7e2bc4291ea41292ccda75494f85a6e321e7eec0",
+    "prepare-path-fixture.py": "bfcb919ae35edb626682426ea491d6c19e2f789f4104642cf143d474dc407c3c",
+    "prepare.py": "b1e3f8aa73099a3730df2d125e22605d9a24ee4c65b08d6eeb3d29b190589a3b",
+    "private.patch": "3f1869c672cf721af6ff04f0b84fe437212f0c7718bf96473caaf61d51bec1d1",
+    "qualified-pair.json": "942b3da45870294614376741a21f742d1f72d1441ba29c52daf5937ec8d44628",
+    "ready.json": "9728665b2135ad142e30c7ef40f17a0e752e5cb639b83a5370022477377e2ef0",
+    "registry-inputs.json": "24db6155256ca98a8fa5d927fba1a470f81c9a40e25a6f1cdd875a01ba14602e",
+    "source.json": "2ea68d2be29ce0d83171cc8957b44d6028cb1d121bc16f841c75e2d7573ce463",
+    "test-results.json": "341fed46248cf015559153cc3a43352a7c1649b8dbbc25f1f9113d252f152a3f",
+    "whole-paths.py": "74e55554c46827aed3ede441b227243c4d289ea6ddc00691054ce3edc1e4b38f",
+    "wire-controls.py": "188a2ba3eb25c21ae863e6068e9962e78484487e5e027752d0cafcc25bbf500c"
+  },
+  "qualification": "All 406 Cargo library tests including independent v2/v4 legacy OBS1 sentinel path parity; 15 dep-info and both generated-dep tests; both real PGO arms must correct each of 3 genuinely poisoned ordinary -17 inputs from 17 to matching clean 29, preserve the public .d sentinel before and after regeneration, and recompile only the reader on every unchanged command incl corrupted trailer recovery. Also require escaped spaces, alias paths, non-UTF8 errors, build-script watch paths, changed ordinary Rust consumer and recreated .d controls.",
+  "ruff": "93526150df078af7dd8fc4226cdcc469539d2001",
+  "ruff_file": "d48da60d8e70269c7dbdddcc0b4958220ef2b768cdd2bf9168fa23d909e07032",
+  "rust": {
+    "driver": "618ebac16b7d4ec01a2af89661d25b8f26ff347edbb69c6dcaa78f10115914a7",
+    "frontend": "7ec5263869aed2fc9272ea7212aabbe7b272a4685f1b79af75c123daff09c02c"
+  },
+  "scope": "Dedicated H7 independent composition of the released-base path-list optimization onto Cargo #261, not pooled with #262. One instruction-count endpoint; no wall times will be collected.",
+  "source": {
+    "base": "9a0170863f70d9a88a8b1d1f4c4e1fded4736a9c",
+    "base_changed_from_release": [
+      "src/compiler/fingerprint/dep_info.rs",
+      "src/compiler/fingerprint/mod.rs",
+      "src/compiler/mod.rs",
+      "src/ops/cargo_worktree/mod.rs"
+    ],
+    "base_patch": "f0d968799ed2c095111dced3a688b025527deb7ac5a0f17ab04bdc6223faf800",
+    "base_sha256": {
+      "src/compiler/fingerprint/dep_info.rs": "8d5c64c38ce9a3a2ec52180736c5d047b347909d2861537263dcd1bf4ca35571",
+      "src/compiler/fingerprint/mod.rs": "2121cc040bea8e8ebc923eee2d5a54756024acec1167846bfea11c3ac3a6ca9b",
+      "src/compiler/output_depinfo.rs": "d2e330db220f5da60ad00d1fcdceda225cdf779a71a131d1b11fbebb76838cf4",
+      "tests/testsuite/build_script.rs": "f56018a35783ea2bf815c971c5a907bace8cc41f3b5aa4b7f0ae6a2c9682e4d2"
+    },
+    "base_tree": "4b7d1dec6ffa8282ad14045a58ad1934d0c3e0b5",
+    "count": 3108,
+    "git_objects": "ba575e3db9849ffae1b8b2e3b8b3ce01b6ed361c93a49cc03b4c01a8fc4f823b",
+    "patch": "1651e71add47641e7f44a10c7e2bc4291ea41292ccda75494f85a6e321e7eec0",
+    "port_sha256": {
+      "src/compiler/fingerprint/dep_info.rs": "3cd04d7e93fd77c2986963ad5fb3d1ba2c463fe8095c181b53899d1e97be5624",
+      "src/compiler/fingerprint/mod.rs": "9542a824a72048885f019aeb967ba56a20eaa328965d3be71afebdedb941d520",
+      "src/compiler/output_depinfo.rs": "f1acba20a46ea4190809871ae8df8dac370b856208137ca959aa76652035b43a",
+      "tests/testsuite/build_script.rs": "2bc6637caeb63cf602526de4a46063c3236111d196568efbc45ed93fb5bd7b67"
+    },
+    "release": "a0c7d08c898d3fdff992f2f431dec57d2486add2",
+    "released_diff": "78eddb19af579fafb87254823e15ae0dcbec1b17bb0ce449e73cf5cae49a6238",
+    "scope": "16 balanced paired all-thread H7 linter instruction counts; correctness first; no clocks or A/B counts prior to finalized binary registration"
+  },
+  "subjects": {
+    "candidate": "60a71a271265b13f9c0b25570c3584fba100188f4778b5ef0fa85ff31eddbfc7",
+    "parent": "63ca8f87b86164a75a8d219a5fccf1879be298ef0c35fc85db439baecb597b85"
+  },
+  "workload": "cargo +ohm build --lib --locked --offline -j4 from crates/ruff_linter at Ruff 93526150df078af7dd8fc4226cdcc469539d2001, real 36029f1c9a48 reversed after the original source was fully built. Normal Ohm defaults, no trusted-script or procedural-macro overrides. Exactly 268 fresh Rust artifact events and zero compiler/linker jobs; ron is absent. Each arm must preserve all 492 reported products and recreate the sole libruff_linter.d from missing with exactly the initial bytes. It must preserve the sidecar timestamp during all unchanged commands."
+}
