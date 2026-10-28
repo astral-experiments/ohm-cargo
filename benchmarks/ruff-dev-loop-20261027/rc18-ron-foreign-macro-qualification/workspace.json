@@ -1,0 +1,619 @@
+{
+  "rehearsal-workspace-clean": {
+    "cargo_artifact_says_registry": true,
+    "compiler_binary_sha256": {
+      "cargo": "cfc66a7ceee5cad8f8939245d359e4db0d2b6f2abb5760c7cbefa6c9a1d454f8",
+      "rustc": "4fa9a18b77430bcc416e88561b6fe5797d98b996a7698b9f3bd11d4e7817a19f",
+      "rustdoc": "26e35ea74989c40926248a7176cda7a6cd164c1e82640f9b7249aceb1b8593a6",
+      "wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5"
+    },
+    "declared_cargo_fresh": false,
+    "experimental_flags": [
+      "-Zohm-shared-stages",
+      "-Zpublic-api-hash",
+      "-Zthreads=8",
+      "-Z",
+      "-Zohm-early-metadata"
+    ],
+    "extern_files_at_read_time": [
+      {
+        "current_inode": 34090587,
+        "kind": ".rmeta",
+        "literal_path_sha256": "903ce8be5a88a1f74043fbcb6837ff6ab11446e3123e35478fe816e0d5c56109",
+        "name": "bitflags",
+        "sha256": "a3593d27bab092f83856781e3017b7e1fb0ca8390810afa98617fd8db926616c",
+        "size": 246034
+      },
+      {
+        "current_inode": 34090554,
+        "kind": ".rmeta",
+        "literal_path_sha256": "d5e9a84229f0ab7e1c7ca42bba8f350aa8b7077cfc454bd42da5ec405e50db70",
+        "name": "once_cell",
+        "sha256": "4385d8ece2f8c736f7f63e1c2efae01e9dfd966799bc43d6e56e92d7d475802c",
+        "size": 193048
+      },
+      {
+        "current_inode": 34090960,
+        "kind": ".rmeta",
+        "literal_path_sha256": "bd65c5ffb8e01ad8571f0f81c3142cc280616461280bf3dece7fbacb74c5eb5b",
+        "name": "serde",
+        "sha256": "5402afec4c71cc3e32a32c9978500880cb17aef7093c44aba349ec5d8a1cff49",
+        "size": 849587
+      },
+      {
+        "current_inode": 34090643,
+        "kind": ".so",
+        "literal_path_sha256": "961fc13ef5d4727acd78019baf7303f47bfc70711c414ddaa4c01a096a075ca2",
+        "name": "serde_derive",
+        "sha256": "d6f954de2f6a93ad4f6d1312b58d01bfd065f8cc5b9c64e04878f110bdda6977",
+        "size": 4904568
+      },
+      {
+        "current_inode": 34091543,
+        "kind": ".rmeta",
+        "literal_path_sha256": "3a4f3d616d0831dd3c066f2793a7e7d1b21ecc7909b22801e010300253ad4eea",
+        "name": "typeid",
+        "sha256": "5484574647668d618289ec06e57d2884a66e04b5a17878c138d7ed7af036cc1c",
+        "size": 19192
+      },
+      {
+        "current_inode": 34090718,
+        "kind": ".rmeta",
+        "literal_path_sha256": "ba05849b7d77a1b39d9d4d61692d91afd505f8eb12ca48b0351779f7228f6aaa",
+        "name": "unicode_ident",
+        "sha256": "79e5fdcf2ce05a7d87e8d4f7a290df67f78bce1c018e8511766f35ecb2cfc9ae",
+        "size": 33092
+      }
+    ],
+    "features": [
+      "default",
+      "std"
+    ],
+    "genuine_observer_dir_at_read_time": {
+      "cargo_fingerprint_sha256": "d65db49ffe4cb202622360ddff604424ebf40eb51bc7df0b83a6c6b1402bc51a",
+      "cargo_record": {
+        "blake3_seal": "dad1f465783ce7f8d6bd72286ec6b7d440eee34f9af371b697d4c6307324fc7a",
+        "body_sha256": "0c1230db0d823120e747098916cc19ed61cc8ddfe86ae539e10499d11f9ee821",
+        "checksummed": 0,
+        "env_count": 0,
+        "marker_index": 11,
+        "marker_path_sha256": "2c28d73bc31bd1bf56baaa8b500444355e9d44599259f6d3156c65c4d020d609",
+        "marker_status": 0,
+        "marker_suffix": "ron-1bfa1acbacd00851.d/ohm-foreign-span-bytes",
+        "number_of_paths": 20,
+        "package_relative": 0,
+        "version": 2
+      },
+      "cargo_record_sha256": "0cb3241edf3c7c559f866ae772c0eb52050d4633306be7f399fc660ac5355261",
+      "dependency_names": [
+        "bitflags",
+        "once_cell",
+        "serde",
+        "serde_derive",
+        "typeid",
+        "unicode_ident"
+      ],
+      "public_hash_descriptor_sha256": "70cfe2b50108276b597575928ede619ea35c84bfd9be48a63ccbe22cb1dcefca",
+      "raw_rustc_depinfo_sha256": "1d62f547f6c76a5c2a248b1cb3b03d0159476190dd5aee3bd1a07fdd6adc879a",
+      "rustc_marker_mentions": 4
+    },
+    "history": {
+      "arm": "rehearsal",
+      "fresh": 0,
+      "native": {
+        "full": 625,
+        "other-linker": 62,
+        "wild": 188
+      },
+      "scope": "workspace",
+      "state": "edited",
+      "units": 619
+    },
+    "invocation_sha256": "c1558bf74dc1f16d9bd6a1ba1118fa9e5df3d05cff91b9bc7c71fa888f1a5998",
+    "output_history": {
+      "ron_after": {
+        ".rlib": "f9b3bc18ecb0b62ad220ff49a8b29e829da009b199e44f638cd934ea61b02cfa",
+        ".rmeta": "1539e22718a288fa143ff936f5291526ba4a0499334c1b4e762ec780cf2f16d5"
+      },
+      "ron_before": {}
+    },
+    "ron_process": 2755321,
+    "source_literal_path_sha256": "609c9773c658aebfb656a13c28c858e5eb647c5822a8894899f3233c34def7eb"
+  },
+  "rehearsal-workspace-edited": {
+    "cargo_artifact_says_registry": true,
+    "compiler_binary_sha256": {
+      "cargo": "cfc66a7ceee5cad8f8939245d359e4db0d2b6f2abb5760c7cbefa6c9a1d454f8",
+      "rustc": "4fa9a18b77430bcc416e88561b6fe5797d98b996a7698b9f3bd11d4e7817a19f",
+      "rustdoc": "26e35ea74989c40926248a7176cda7a6cd164c1e82640f9b7249aceb1b8593a6",
+      "wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5"
+    },
+    "declared_cargo_fresh": false,
+    "experimental_flags": [
+      "-Zohm-shared-stages",
+      "-Zpublic-api-hash",
+      "-Zthreads=8",
+      "-Z",
+      "-Zohm-early-metadata"
+    ],
+    "extern_files_at_read_time": [
+      {
+        "current_inode": 34090587,
+        "kind": ".rmeta",
+        "literal_path_sha256": "903ce8be5a88a1f74043fbcb6837ff6ab11446e3123e35478fe816e0d5c56109",
+        "name": "bitflags",
+        "sha256": "a3593d27bab092f83856781e3017b7e1fb0ca8390810afa98617fd8db926616c",
+        "size": 246034
+      },
+      {
+        "current_inode": 34090554,
+        "kind": ".rmeta",
+        "literal_path_sha256": "d5e9a84229f0ab7e1c7ca42bba8f350aa8b7077cfc454bd42da5ec405e50db70",
+        "name": "once_cell",
+        "sha256": "4385d8ece2f8c736f7f63e1c2efae01e9dfd966799bc43d6e56e92d7d475802c",
+        "size": 193048
+      },
+      {
+        "current_inode": 34090960,
+        "kind": ".rmeta",
+        "literal_path_sha256": "bd65c5ffb8e01ad8571f0f81c3142cc280616461280bf3dece7fbacb74c5eb5b",
+        "name": "serde",
+        "sha256": "5402afec4c71cc3e32a32c9978500880cb17aef7093c44aba349ec5d8a1cff49",
+        "size": 849587
+      },
+      {
+        "current_inode": 34090643,
+        "kind": ".so",
+        "literal_path_sha256": "961fc13ef5d4727acd78019baf7303f47bfc70711c414ddaa4c01a096a075ca2",
+        "name": "serde_derive",
+        "sha256": "d6f954de2f6a93ad4f6d1312b58d01bfd065f8cc5b9c64e04878f110bdda6977",
+        "size": 4904568
+      },
+      {
+        "current_inode": 34091543,
+        "kind": ".rmeta",
+        "literal_path_sha256": "3a4f3d616d0831dd3c066f2793a7e7d1b21ecc7909b22801e010300253ad4eea",
+        "name": "typeid",
+        "sha256": "5484574647668d618289ec06e57d2884a66e04b5a17878c138d7ed7af036cc1c",
+        "size": 19192
+      },
+      {
+        "current_inode": 34090718,
+        "kind": ".rmeta",
+        "literal_path_sha256": "ba05849b7d77a1b39d9d4d61692d91afd505f8eb12ca48b0351779f7228f6aaa",
+        "name": "unicode_ident",
+        "sha256": "79e5fdcf2ce05a7d87e8d4f7a290df67f78bce1c018e8511766f35ecb2cfc9ae",
+        "size": 33092
+      }
+    ],
+    "features": [
+      "default",
+      "std"
+    ],
+    "genuine_observer_dir_at_read_time": {
+      "cargo_fingerprint_sha256": "d65db49ffe4cb202622360ddff604424ebf40eb51bc7df0b83a6c6b1402bc51a",
+      "cargo_record": {
+        "blake3_seal": "dad1f465783ce7f8d6bd72286ec6b7d440eee34f9af371b697d4c6307324fc7a",
+        "body_sha256": "0c1230db0d823120e747098916cc19ed61cc8ddfe86ae539e10499d11f9ee821",
+        "checksummed": 0,
+        "env_count": 0,
+        "marker_index": 11,
+        "marker_path_sha256": "2c28d73bc31bd1bf56baaa8b500444355e9d44599259f6d3156c65c4d020d609",
+        "marker_status": 0,
+        "marker_suffix": "ron-1bfa1acbacd00851.d/ohm-foreign-span-bytes",
+        "number_of_paths": 20,
+        "package_relative": 0,
+        "version": 2
+      },
+      "cargo_record_sha256": "0cb3241edf3c7c559f866ae772c0eb52050d4633306be7f399fc660ac5355261",
+      "dependency_names": [
+        "bitflags",
+        "once_cell",
+        "serde",
+        "serde_derive",
+        "typeid",
+        "unicode_ident"
+      ],
+      "public_hash_descriptor_sha256": "70cfe2b50108276b597575928ede619ea35c84bfd9be48a63ccbe22cb1dcefca",
+      "raw_rustc_depinfo_sha256": "1d62f547f6c76a5c2a248b1cb3b03d0159476190dd5aee3bd1a07fdd6adc879a",
+      "rustc_marker_mentions": 4
+    },
+    "history": {
+      "arm": "rehearsal",
+      "fresh": 559,
+      "native": {
+        "full": 12,
+        "link-only": 43,
+        "wild": 52
+      },
+      "scope": "workspace",
+      "state": "edited",
+      "units": 619
+    },
+    "invocation_sha256": "c1558bf74dc1f16d9bd6a1ba1118fa9e5df3d05cff91b9bc7c71fa888f1a5998",
+    "output_history": {
+      "ron_after": {
+        ".rlib": "f9b3bc18ecb0b62ad220ff49a8b29e829da009b199e44f638cd934ea61b02cfa",
+        ".rmeta": "eaa4d96db04cadccc5a17ca9ac74d4ac8664ad67fe9a4f16a4d5a001da2905b2"
+      },
+      "ron_before": {
+        ".rlib": "f9b3bc18ecb0b62ad220ff49a8b29e829da009b199e44f638cd934ea61b02cfa",
+        ".rmeta": "d713f227bbad5dd6cea0ff3d6956a58c1985988813109c00df474eecd67384b1"
+      }
+    },
+    "ron_process": 2746099,
+    "source_literal_path_sha256": "609c9773c658aebfb656a13c28c858e5eb647c5822a8894899f3233c34def7eb"
+  },
+  "rehearsal-workspace-final-repeat": {
+    "cargo_artifact_says_registry": true,
+    "compiler_binary_sha256": {
+      "cargo": "cfc66a7ceee5cad8f8939245d359e4db0d2b6f2abb5760c7cbefa6c9a1d454f8",
+      "rustc": "4fa9a18b77430bcc416e88561b6fe5797d98b996a7698b9f3bd11d4e7817a19f",
+      "rustdoc": "26e35ea74989c40926248a7176cda7a6cd164c1e82640f9b7249aceb1b8593a6",
+      "wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5"
+    },
+    "declared_cargo_fresh": false,
+    "experimental_flags": [
+      "-Zohm-shared-stages",
+      "-Zpublic-api-hash",
+      "-Zthreads=8",
+      "-Z",
+      "-Zohm-early-metadata"
+    ],
+    "extern_files_at_read_time": [
+      {
+        "current_inode": 34090587,
+        "kind": ".rmeta",
+        "literal_path_sha256": "903ce8be5a88a1f74043fbcb6837ff6ab11446e3123e35478fe816e0d5c56109",
+        "name": "bitflags",
+        "sha256": "a3593d27bab092f83856781e3017b7e1fb0ca8390810afa98617fd8db926616c",
+        "size": 246034
+      },
+      {
+        "current_inode": 34090554,
+        "kind": ".rmeta",
+        "literal_path_sha256": "d5e9a84229f0ab7e1c7ca42bba8f350aa8b7077cfc454bd42da5ec405e50db70",
+        "name": "once_cell",
+        "sha256": "4385d8ece2f8c736f7f63e1c2efae01e9dfd966799bc43d6e56e92d7d475802c",
+        "size": 193048
+      },
+      {
+        "current_inode": 34090960,
+        "kind": ".rmeta",
+        "literal_path_sha256": "bd65c5ffb8e01ad8571f0f81c3142cc280616461280bf3dece7fbacb74c5eb5b",
+        "name": "serde",
+        "sha256": "5402afec4c71cc3e32a32c9978500880cb17aef7093c44aba349ec5d8a1cff49",
+        "size": 849587
+      },
+      {
+        "current_inode": 34090643,
+        "kind": ".so",
+        "literal_path_sha256": "961fc13ef5d4727acd78019baf7303f47bfc70711c414ddaa4c01a096a075ca2",
+        "name": "serde_derive",
+        "sha256": "d6f954de2f6a93ad4f6d1312b58d01bfd065f8cc5b9c64e04878f110bdda6977",
+        "size": 4904568
+      },
+      {
+        "current_inode": 34091543,
+        "kind": ".rmeta",
+        "literal_path_sha256": "3a4f3d616d0831dd3c066f2793a7e7d1b21ecc7909b22801e010300253ad4eea",
+        "name": "typeid",
+        "sha256": "5484574647668d618289ec06e57d2884a66e04b5a17878c138d7ed7af036cc1c",
+        "size": 19192
+      },
+      {
+        "current_inode": 34090718,
+        "kind": ".rmeta",
+        "literal_path_sha256": "ba05849b7d77a1b39d9d4d61692d91afd505f8eb12ca48b0351779f7228f6aaa",
+        "name": "unicode_ident",
+        "sha256": "79e5fdcf2ce05a7d87e8d4f7a290df67f78bce1c018e8511766f35ecb2cfc9ae",
+        "size": 33092
+      }
+    ],
+    "features": [
+      "default",
+      "std"
+    ],
+    "genuine_observer_dir_at_read_time": {
+      "cargo_fingerprint_sha256": "d65db49ffe4cb202622360ddff604424ebf40eb51bc7df0b83a6c6b1402bc51a",
+      "cargo_record": {
+        "blake3_seal": "dad1f465783ce7f8d6bd72286ec6b7d440eee34f9af371b697d4c6307324fc7a",
+        "body_sha256": "0c1230db0d823120e747098916cc19ed61cc8ddfe86ae539e10499d11f9ee821",
+        "checksummed": 0,
+        "env_count": 0,
+        "marker_index": 11,
+        "marker_path_sha256": "2c28d73bc31bd1bf56baaa8b500444355e9d44599259f6d3156c65c4d020d609",
+        "marker_status": 0,
+        "marker_suffix": "ron-1bfa1acbacd00851.d/ohm-foreign-span-bytes",
+        "number_of_paths": 20,
+        "package_relative": 0,
+        "version": 2
+      },
+      "cargo_record_sha256": "0cb3241edf3c7c559f866ae772c0eb52050d4633306be7f399fc660ac5355261",
+      "dependency_names": [
+        "bitflags",
+        "once_cell",
+        "serde",
+        "serde_derive",
+        "typeid",
+        "unicode_ident"
+      ],
+      "public_hash_descriptor_sha256": "70cfe2b50108276b597575928ede619ea35c84bfd9be48a63ccbe22cb1dcefca",
+      "raw_rustc_depinfo_sha256": "1d62f547f6c76a5c2a248b1cb3b03d0159476190dd5aee3bd1a07fdd6adc879a",
+      "rustc_marker_mentions": 4
+    },
+    "history": {
+      "arm": "rehearsal",
+      "fresh": 563,
+      "native": {
+        "full": 1,
+        "link-only": 50,
+        "wild": 50
+      },
+      "scope": "workspace",
+      "state": "original",
+      "units": 619
+    },
+    "invocation_sha256": "c1558bf74dc1f16d9bd6a1ba1118fa9e5df3d05cff91b9bc7c71fa888f1a5998",
+    "output_history": {
+      "ron_after": {
+        ".rlib": "f9b3bc18ecb0b62ad220ff49a8b29e829da009b199e44f638cd934ea61b02cfa",
+        ".rmeta": "d713f227bbad5dd6cea0ff3d6956a58c1985988813109c00df474eecd67384b1"
+      },
+      "ron_before": {
+        ".rlib": "f9b3bc18ecb0b62ad220ff49a8b29e829da009b199e44f638cd934ea61b02cfa",
+        ".rmeta": "eaa4d96db04cadccc5a17ca9ac74d4ac8664ad67fe9a4f16a4d5a001da2905b2"
+      }
+    },
+    "ron_process": 2777395,
+    "source_literal_path_sha256": "609c9773c658aebfb656a13c28c858e5eb647c5822a8894899f3233c34def7eb"
+  },
+  "rehearsal-workspace-repeat": {
+    "cargo_artifact_says_registry": true,
+    "compiler_binary_sha256": {
+      "cargo": "cfc66a7ceee5cad8f8939245d359e4db0d2b6f2abb5760c7cbefa6c9a1d454f8",
+      "rustc": "4fa9a18b77430bcc416e88561b6fe5797d98b996a7698b9f3bd11d4e7817a19f",
+      "rustdoc": "26e35ea74989c40926248a7176cda7a6cd164c1e82640f9b7249aceb1b8593a6",
+      "wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5"
+    },
+    "declared_cargo_fresh": false,
+    "experimental_flags": [
+      "-Zohm-shared-stages",
+      "-Zpublic-api-hash",
+      "-Zthreads=8",
+      "-Z",
+      "-Zohm-early-metadata"
+    ],
+    "extern_files_at_read_time": [
+      {
+        "current_inode": 34090587,
+        "kind": ".rmeta",
+        "literal_path_sha256": "903ce8be5a88a1f74043fbcb6837ff6ab11446e3123e35478fe816e0d5c56109",
+        "name": "bitflags",
+        "sha256": "a3593d27bab092f83856781e3017b7e1fb0ca8390810afa98617fd8db926616c",
+        "size": 246034
+      },
+      {
+        "current_inode": 34090554,
+        "kind": ".rmeta",
+        "literal_path_sha256": "d5e9a84229f0ab7e1c7ca42bba8f350aa8b7077cfc454bd42da5ec405e50db70",
+        "name": "once_cell",
+        "sha256": "4385d8ece2f8c736f7f63e1c2efae01e9dfd966799bc43d6e56e92d7d475802c",
+        "size": 193048
+      },
+      {
+        "current_inode": 34090960,
+        "kind": ".rmeta",
+        "literal_path_sha256": "bd65c5ffb8e01ad8571f0f81c3142cc280616461280bf3dece7fbacb74c5eb5b",
+        "name": "serde",
+        "sha256": "5402afec4c71cc3e32a32c9978500880cb17aef7093c44aba349ec5d8a1cff49",
+        "size": 849587
+      },
+      {
+        "current_inode": 34090643,
+        "kind": ".so",
+        "literal_path_sha256": "961fc13ef5d4727acd78019baf7303f47bfc70711c414ddaa4c01a096a075ca2",
+        "name": "serde_derive",
+        "sha256": "d6f954de2f6a93ad4f6d1312b58d01bfd065f8cc5b9c64e04878f110bdda6977",
+        "size": 4904568
+      },
+      {
+        "current_inode": 34091543,
+        "kind": ".rmeta",
+        "literal_path_sha256": "3a4f3d616d0831dd3c066f2793a7e7d1b21ecc7909b22801e010300253ad4eea",
+        "name": "typeid",
+        "sha256": "5484574647668d618289ec06e57d2884a66e04b5a17878c138d7ed7af036cc1c",
+        "size": 19192
+      },
+      {
+        "current_inode": 34090718,
+        "kind": ".rmeta",
+        "literal_path_sha256": "ba05849b7d77a1b39d9d4d61692d91afd505f8eb12ca48b0351779f7228f6aaa",
+        "name": "unicode_ident",
+        "sha256": "79e5fdcf2ce05a7d87e8d4f7a290df67f78bce1c018e8511766f35ecb2cfc9ae",
+        "size": 33092
+      }
+    ],
+    "features": [
+      "default",
+      "std"
+    ],
+    "genuine_observer_dir_at_read_time": {
+      "cargo_fingerprint_sha256": "d65db49ffe4cb202622360ddff604424ebf40eb51bc7df0b83a6c6b1402bc51a",
+      "cargo_record": {
+        "blake3_seal": "dad1f465783ce7f8d6bd72286ec6b7d440eee34f9af371b697d4c6307324fc7a",
+        "body_sha256": "0c1230db0d823120e747098916cc19ed61cc8ddfe86ae539e10499d11f9ee821",
+        "checksummed": 0,
+        "env_count": 0,
+        "marker_index": 11,
+        "marker_path_sha256": "2c28d73bc31bd1bf56baaa8b500444355e9d44599259f6d3156c65c4d020d609",
+        "marker_status": 0,
+        "marker_suffix": "ron-1bfa1acbacd00851.d/ohm-foreign-span-bytes",
+        "number_of_paths": 20,
+        "package_relative": 0,
+        "version": 2
+      },
+      "cargo_record_sha256": "0cb3241edf3c7c559f866ae772c0eb52050d4633306be7f399fc660ac5355261",
+      "dependency_names": [
+        "bitflags",
+        "once_cell",
+        "serde",
+        "serde_derive",
+        "typeid",
+        "unicode_ident"
+      ],
+      "public_hash_descriptor_sha256": "70cfe2b50108276b597575928ede619ea35c84bfd9be48a63ccbe22cb1dcefca",
+      "raw_rustc_depinfo_sha256": "1d62f547f6c76a5c2a248b1cb3b03d0159476190dd5aee3bd1a07fdd6adc879a",
+      "rustc_marker_mentions": 4
+    },
+    "history": {
+      "arm": "rehearsal",
+      "fresh": 563,
+      "native": {
+        "full": 1,
+        "link-only": 50,
+        "wild": 50
+      },
+      "scope": "workspace",
+      "state": "original",
+      "units": 619
+    },
+    "invocation_sha256": "c1558bf74dc1f16d9bd6a1ba1118fa9e5df3d05cff91b9bc7c71fa888f1a5998",
+    "output_history": {
+      "ron_after": {
+        ".rlib": "f9b3bc18ecb0b62ad220ff49a8b29e829da009b199e44f638cd934ea61b02cfa",
+        ".rmeta": "d713f227bbad5dd6cea0ff3d6956a58c1985988813109c00df474eecd67384b1"
+      },
+      "ron_before": {
+        ".rlib": "f9b3bc18ecb0b62ad220ff49a8b29e829da009b199e44f638cd934ea61b02cfa",
+        ".rmeta": "1539e22718a288fa143ff936f5291526ba4a0499334c1b4e762ec780cf2f16d5"
+      }
+    },
+    "ron_process": 2745104,
+    "source_literal_path_sha256": "609c9773c658aebfb656a13c28c858e5eb647c5822a8894899f3233c34def7eb"
+  },
+  "rehearsal-workspace-restore": {
+    "cargo_artifact_says_registry": true,
+    "compiler_binary_sha256": {
+      "cargo": "cfc66a7ceee5cad8f8939245d359e4db0d2b6f2abb5760c7cbefa6c9a1d454f8",
+      "rustc": "4fa9a18b77430bcc416e88561b6fe5797d98b996a7698b9f3bd11d4e7817a19f",
+      "rustdoc": "26e35ea74989c40926248a7176cda7a6cd164c1e82640f9b7249aceb1b8593a6",
+      "wild": "0d6335808b647d499f3d74993b602e64ff0625206c809bf4913c487eea380cd5"
+    },
+    "declared_cargo_fresh": false,
+    "experimental_flags": [
+      "-Zohm-shared-stages",
+      "-Zpublic-api-hash",
+      "-Zthreads=8",
+      "-Z",
+      "-Zohm-early-metadata"
+    ],
+    "extern_files_at_read_time": [
+      {
+        "current_inode": 34090587,
+        "kind": ".rmeta",
+        "literal_path_sha256": "903ce8be5a88a1f74043fbcb6837ff6ab11446e3123e35478fe816e0d5c56109",
+        "name": "bitflags",
+        "sha256": "a3593d27bab092f83856781e3017b7e1fb0ca8390810afa98617fd8db926616c",
+        "size": 246034
+      },
+      {
+        "current_inode": 34090554,
+        "kind": ".rmeta",
+        "literal_path_sha256": "d5e9a84229f0ab7e1c7ca42bba8f350aa8b7077cfc454bd42da5ec405e50db70",
+        "name": "once_cell",
+        "sha256": "4385d8ece2f8c736f7f63e1c2efae01e9dfd966799bc43d6e56e92d7d475802c",
+        "size": 193048
+      },
+      {
+        "current_inode": 34090960,
+        "kind": ".rmeta",
+        "literal_path_sha256": "bd65c5ffb8e01ad8571f0f81c3142cc280616461280bf3dece7fbacb74c5eb5b",
+        "name": "serde",
+        "sha256": "5402afec4c71cc3e32a32c9978500880cb17aef7093c44aba349ec5d8a1cff49",
+        "size": 849587
+      },
+      {
+        "current_inode": 34090643,
+        "kind": ".so",
+        "literal_path_sha256": "961fc13ef5d4727acd78019baf7303f47bfc70711c414ddaa4c01a096a075ca2",
+        "name": "serde_derive",
+        "sha256": "d6f954de2f6a93ad4f6d1312b58d01bfd065f8cc5b9c64e04878f110bdda6977",
+        "size": 4904568
+      },
+      {
+        "current_inode": 34091543,
+        "kind": ".rmeta",
+        "literal_path_sha256": "3a4f3d616d0831dd3c066f2793a7e7d1b21ecc7909b22801e010300253ad4eea",
+        "name": "typeid",
+        "sha256": "5484574647668d618289ec06e57d2884a66e04b5a17878c138d7ed7af036cc1c",
+        "size": 19192
+      },
+      {
+        "current_inode": 34090718,
+        "kind": ".rmeta",
+        "literal_path_sha256": "ba05849b7d77a1b39d9d4d61692d91afd505f8eb12ca48b0351779f7228f6aaa",
+        "name": "unicode_ident",
+        "sha256": "79e5fdcf2ce05a7d87e8d4f7a290df67f78bce1c018e8511766f35ecb2cfc9ae",
+        "size": 33092
+      }
+    ],
+    "features": [
+      "default",
+      "std"
+    ],
+    "genuine_observer_dir_at_read_time": {
+      "cargo_fingerprint_sha256": "d65db49ffe4cb202622360ddff604424ebf40eb51bc7df0b83a6c6b1402bc51a",
+      "cargo_record": {
+        "blake3_seal": "dad1f465783ce7f8d6bd72286ec6b7d440eee34f9af371b697d4c6307324fc7a",
+        "body_sha256": "0c1230db0d823120e747098916cc19ed61cc8ddfe86ae539e10499d11f9ee821",
+        "checksummed": 0,
+        "env_count": 0,
+        "marker_index": 11,
+        "marker_path_sha256": "2c28d73bc31bd1bf56baaa8b500444355e9d44599259f6d3156c65c4d020d609",
+        "marker_status": 0,
+        "marker_suffix": "ron-1bfa1acbacd00851.d/ohm-foreign-span-bytes",
+        "number_of_paths": 20,
+        "package_relative": 0,
+        "version": 2
+      },
+      "cargo_record_sha256": "0cb3241edf3c7c559f866ae772c0eb52050d4633306be7f399fc660ac5355261",
+      "dependency_names": [
+        "bitflags",
+        "once_cell",
+        "serde",
+        "serde_derive",
+        "typeid",
+        "unicode_ident"
+      ],
+      "public_hash_descriptor_sha256": "70cfe2b50108276b597575928ede619ea35c84bfd9be48a63ccbe22cb1dcefca",
+      "raw_rustc_depinfo_sha256": "1d62f547f6c76a5c2a248b1cb3b03d0159476190dd5aee3bd1a07fdd6adc879a",
+      "rustc_marker_mentions": 4
+    },
+    "history": {
+      "arm": "rehearsal",
+      "fresh": 559,
+      "native": {
+        "full": 12,
+        "link-only": 43,
+        "wild": 52
+      },
+      "scope": "workspace",
+      "state": "original",
+      "units": 619
+    },
+    "invocation_sha256": "c1558bf74dc1f16d9bd6a1ba1118fa9e5df3d05cff91b9bc7c71fa888f1a5998",
+    "output_history": {
+      "ron_after": {
+        ".rlib": "f9b3bc18ecb0b62ad220ff49a8b29e829da009b199e44f638cd934ea61b02cfa",
+        ".rmeta": "eaa4d96db04cadccc5a17ca9ac74d4ac8664ad67fe9a4f16a4d5a001da2905b2"
+      },
+      "ron_before": {
+        ".rlib": "f9b3bc18ecb0b62ad220ff49a8b29e829da009b199e44f638cd934ea61b02cfa",
+        ".rmeta": "eaa4d96db04cadccc5a17ca9ac74d4ac8664ad67fe9a4f16a4d5a001da2905b2"
+      }
+    },
+    "ron_process": 2775390,
+    "source_literal_path_sha256": "609c9773c658aebfb656a13c28c858e5eb647c5822a8894899f3233c34def7eb"
+  }
+}
