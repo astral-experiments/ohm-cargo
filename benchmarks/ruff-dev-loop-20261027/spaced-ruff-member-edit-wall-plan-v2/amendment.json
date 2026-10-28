@@ -1,0 +1,33 @@
+{
+  "archive": "b1629e465066050cb59e42f02a74d44dbe23abad",
+  "archive_witnesses": 40,
+  "commands": 144,
+  "design": "1d9e079142321b84b8b14253207b435d0a56346f",
+  "design_sha": "083c5d3c93dce12563382f2c204e34b296ead53daf2fd25f3c8d24fefb0e05fa",
+  "native": "1e5f005cb1156cb441a856e363990882b11e50a5",
+  "native_commitment": "ffec0338d43b738160e6e1228fd6da55af396c17c9bf98fca84ac484859dae3f",
+  "no_prior_clocks": true,
+  "protocol": "105d4404a56cc799c17c9d87d0264a9d2b0b807b",
+  "raw_gate_failures": {
+    "Bproject-ty_project": [
+      "unchanged-one",
+      "unchanged-two"
+    ],
+    "Bwasm-ty_wasm": [
+      "unchanged-one",
+      "unchanged-two",
+      "edit",
+      "edit-repeat",
+      "restore",
+      "restore-repeat"
+    ],
+    "Cproject-ty_project": [],
+    "Cwasm-ty_wasm": [
+      "edit",
+      "edit-repeat",
+      "restore",
+      "restore-repeat"
+    ]
+  },
+  "tracked_checks": "The exact original archive hashes and names, canonical codegen payloads and GNU index, full standalone metadata or ELF and the freshly linked VFS caller are all recorded. After a genuine edit the candidate first unchanged build also preserves every raw product inode, mtime, ctime, dev and size."
+}
