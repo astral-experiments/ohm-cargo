@@ -1,0 +1,175 @@
+diff --git a/crates/cargo-util/src/paths.rs b/crates/cargo-util/src/paths.rs
+index d7d4f6a32edce022fe13514e4a7cd704e6ba580e..d0dbaf2ae81a3478838cf27f438caed79be4ee2c 100644
+--- a/crates/cargo-util/src/paths.rs
++++ b/crates/cargo-util/src/paths.rs
+@@ -194,11 +194,17 @@ pub fn write<P: AsRef<Path>, C: AsRef<[u8]>>(path: P, contents: C) -> Result<()>
+ /// This uses `tempfile::persist` to accomplish atomic writes.
+ /// If the path is a symlink, it will follow the symlink and write to the actual target.
+ pub fn write_atomic<P: AsRef<Path>, C: AsRef<[u8]>>(path: P, contents: C) -> Result<()> {
+-    let path = path.as_ref();
++    write_atomic_impl(path.as_ref(), contents.as_ref(), true)
++}
++
++/// Atomically replaces the directory entry itself, including an existing symlink.
++pub fn write_atomic_no_follow<P: AsRef<Path>, C: AsRef<[u8]>>(path: P, contents: C) -> Result<()> {
++    write_atomic_impl(path.as_ref(), contents.as_ref(), false)
++}
+ 
+-    // Check if the path is a symlink and follow it if it is
++fn write_atomic_impl(path: &Path, contents: &[u8], follow_symlink: bool) -> Result<()> {
+     let resolved_path;
+-    let path = if path.is_symlink() {
++    let path = if follow_symlink && path.is_symlink() {
+         resolved_path = fs::read_link(path)
+             .with_context(|| format!("failed to read symlink at `{}`", path.display()))?;
+         &resolved_path
+@@ -210,7 +216,12 @@ pub fn write_atomic<P: AsRef<Path>, C: AsRef<[u8]>>(path: P, contents: C) -> Res
+     // read/write/execute permission bits. The tempfile lib defaults to an initial mode of 0o600,
+     // and we'll set the proper permissions after creating the file.
+     #[cfg(unix)]
+-    let perms = path.metadata().ok().map(|meta| {
++    let perms = if follow_symlink {
++        path.metadata().ok()
++    } else {
++        path.symlink_metadata().ok().filter(Metadata::is_file)
++    }
++    .map(|meta| {
+         use std::os::unix::fs::PermissionsExt;
+ 
+         // these constants are u16 on macOS and i32 on Redox
+@@ -223,7 +234,7 @@ pub fn write_atomic<P: AsRef<Path>, C: AsRef<[u8]>>(path: P, contents: C) -> Res
+     let mut tmp = TempFileBuilder::new()
+         .prefix(path.file_name().unwrap())
+         .tempfile_in(path.parent().unwrap())?;
+-    tmp.write_all(contents.as_ref())?;
++    tmp.write_all(contents)?;
+ 
+     // On unix platforms, set the permissions on the newly created file. We can use fchmod (called
+     // by the std lib; subject to change) which ignores the umask so that the new file has the same
+@@ -889,6 +900,7 @@ mod tests {
+     use super::normalize_path;
+     use super::write;
+     use super::write_atomic;
++    use super::write_atomic_no_follow;
+ 
+     #[test]
+     fn test_normalize_path() {
+@@ -1031,6 +1043,11 @@ mod tests {
+         // Verify symlink still exists and points to the same target
+         assert!(symlink_path.is_symlink());
+         assert_eq!(std::fs::read_link(&symlink_path).unwrap(), target_path);
++
++        write_atomic_no_follow(&symlink_path, "marker").unwrap();
++        assert!(!symlink_path.is_symlink());
++        assert_eq!(std::fs::read_to_string(&symlink_path).unwrap(), "marker");
++        assert_eq!(std::fs::read_to_string(&target_path).unwrap(), "updated");
+     }
+ 
+     #[test]
+diff --git a/src/compiler/build_runner/compilation_files.rs b/src/compiler/build_runner/compilation_files.rs
+index a9bfd6fa22484a7c1743e1a8dcb62f7393ab7f0c..e51f6b2faafd4ff8070bc400e32fb49100b84f9a 100644
+--- a/src/compiler/build_runner/compilation_files.rs
++++ b/src/compiler/build_runner/compilation_files.rs
+@@ -698,13 +698,13 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
+             }
+             paths::create_dir_all(&namespace)?;
+             if denied {
+-                paths::write_atomic(
++                paths::write_atomic_no_follow(
+                     &namespace.join(crate::compiler::OHM_WORKTREE_SEED_DENY_MARKER),
+                     b"untrusted compile-time inputs\n",
+                 )?;
+             }
+             if prepared {
+-                paths::write_atomic(&marker, b"5\n")?;
++                paths::write_atomic_no_follow(&marker, b"5\n")?;
+             }
+         }
+         Ok(())
+diff --git a/src/compiler/fingerprint/dep_info.rs b/src/compiler/fingerprint/dep_info.rs
+index 9c5a78ece443d60cfe76c811bc024b00d0959bad..1f963a09c5bf52817d1f6aebef2f7cc22bef5186 100644
+--- a/src/compiler/fingerprint/dep_info.rs
++++ b/src/compiler/fingerprint/dep_info.rs
+@@ -444,7 +444,7 @@ fn untracked_cargo_path_env(key: &str) -> bool {
+ }
+ 
+ fn deny_worktree_seed(namespace: &Path, reason: &str) -> CargoResult<()> {
+-    paths::write_atomic(
++    paths::write_atomic_no_follow(
+         namespace.join(crate::compiler::OHM_WORKTREE_SEED_DENY_MARKER),
+         reason,
+     )?;
+diff --git a/src/compiler/fingerprint/worktree.rs b/src/compiler/fingerprint/worktree.rs
+index 0682c05a4e0a95682659ca51ba1803ae829f78b7..fc4b353f19befceafc3de1ef3b877505210d01d9 100644
+--- a/src/compiler/fingerprint/worktree.rs
++++ b/src/compiler/fingerprint/worktree.rs
+@@ -72,7 +72,7 @@ pub(super) fn record_script_result(
+     let same_record = fs::symlink_metadata(path).is_ok_and(|metadata| metadata.is_file())
+         && fs::read(path).is_ok_and(|old| old == contents);
+     if !same_record {
+-        paths::write_atomic(path, contents)?;
++        paths::write_atomic_no_follow(path, contents)?;
+     }
+     Ok(Some(ScriptResult {
+         digest,
+diff --git a/tests/testsuite/ohm_worktree.rs b/tests/testsuite/ohm_worktree.rs
+index 3bf47583842bac6c9c7dfac3912a1a65cba49f94..ca664b237bc125e9b2bd734ac2cee73c914a2863 100644
+--- a/tests/testsuite/ohm_worktree.rs
++++ b/tests/testsuite/ohm_worktree.rs
+@@ -38,6 +38,56 @@ fn binary(workspace: &Path) -> PathBuf {
+         .join(format!("foo{}", std::env::consts::EXE_SUFFIX))
+ }
+ 
++#[cfg(unix)]
++#[cargo_test(nightly, reason = "worktree seed preparation uses checksum freshness")]
++fn seed_markers_replace_symlinks() {
++    let donor = git::new("donor", |p| {
++        p.file("src/lib.rs", "pub fn value() {}")
++            .file(
++                "build.rs",
++                r#"fn main() { println!("cargo:rerun-if-changed=input"); }"#,
++            )
++            .file("input", "first")
++    });
++    let build = || {
++        seeded_cargo(
++            &donor,
++            "-Zohm-shared-registry-cache -Zohm-worktree-seeds=yes build --lib",
++        )
++        .run();
++    };
++    build();
++
++    let namespace = workspace_caches().pop().unwrap();
++    let markers: Vec<_> = walkdir::WalkDir::new(&namespace)
++        .into_iter()
++        .map(Result::unwrap)
++        .filter(|entry| {
++            let name = entry.file_name();
++            name == ".ohm-worktree-result-v1"
++                || name.as_encoded_bytes().starts_with(b".ohm-worktree-seed-v")
++        })
++        .map(|entry| entry.into_path())
++        .collect();
++    assert_eq!(markers.len(), 2);
++    let sentinel = paths::root().join("sentinel");
++    fs::write(&sentinel, "original").unwrap();
++    let mut contents = Vec::new();
++    for marker in &markers {
++        contents.push(fs::read(marker).unwrap());
++        fs::remove_file(marker).unwrap();
++        std::os::unix::fs::symlink(&sentinel, marker).unwrap();
++    }
++    donor.change_file("input", "second");
++    build();
++
++    assert_eq!(fs::read(&sentinel).unwrap(), b"original");
++    for (marker, expected) in markers.iter().zip(contents) {
++        assert!(marker.symlink_metadata().unwrap().is_file());
++        assert_eq!(fs::read(marker).unwrap(), expected);
++    }
++}
++
+ #[cargo_test]
+ fn creates_a_worktree_without_a_previous_build() {
+     let donor = git::new("donor", |p| {

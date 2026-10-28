@@ -1,0 +1,151 @@
+{
+  "101": {
+    "actual_fixed_subject": "4a6202e37ecb96289aa49b183905d18fbb70552523e648011ae2f90e43949980",
+    "actual_original_subject": "492c14d4378ad5019b7f8ce6a63de3e7f3d16e3113d9b509e48f35f428aaa0a7",
+    "base": "9866420326d95cc9628ba6442b51e51af76ba35c",
+    "checks": [
+      {
+        "actual_cargo_execs": 2,
+        "cargo_sha256": "492c14d4378ad5019b7f8ce6a63de3e7f3d16e3113d9b509e48f35f428aaa0a7",
+        "code": 101,
+        "observed_overwrite": "fe936d4280cef82b9fe1e0b1cf522074c0cca42fe536603f91a838b5729457ff\n",
+        "state": "original",
+        "stderr_sha256": "63e03db32c48d7ad6513fb05c093b14d5b09ece31d4db118282ef43a700d3051",
+        "stdout_sha256": "ecc6bab6e74f558a18d04a541082eabb5d330cb040e075a19c6eeabd29036932",
+        "suite_sha256": "4de564ff25288b3699d273d8f9b9ec0fa5d2d83267244083c0ca42e5e553289e",
+        "test": "ohm_worktree::seed_markers_replace_symlinks",
+        "trace_sha256": "ff2e50db660781eabfb3ced386babd7f72c987e2ed9f0e501fa7124d46be26d0"
+      },
+      {
+        "actual_cargo_execs": 2,
+        "cargo_sha256": "4a6202e37ecb96289aa49b183905d18fbb70552523e648011ae2f90e43949980",
+        "code": 0,
+        "state": "fixed",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdout_sha256": "7149ebc2085ba42cba86d884703029f88e9074d75ee19836dd7eeb7f7c076e57",
+        "suite_sha256": "05b0a8398c76bcc9066d8d11c15d32b315d992d85a19563fc6d94e11106d613c",
+        "test": "ohm_worktree::seed_markers_replace_symlinks",
+        "trace_sha256": "2242621aa0644e93492b083504d1411780dbb8081b5d39df8e4ca6664256329f"
+      }
+    ],
+    "fixed": "62afc4ab5acf699478f72b8fdbd5927db1da26bb",
+    "locked_dependencies": {
+      "locked": "b8dee6ceec201b2031561cac7d44318f45e618e18bfa1be511370a97dfdf52df",
+      "packages": 523,
+      "tools": {
+        "cargo": "cargo 1.99.0-dev (a0c7d08c8 2026-10-27) (ohm-1.99.0-17)",
+        "rustc": "rustc 1.99.0-dev (bfa236f63 2026-10-27) (ohm-1.99.0-17)"
+      }
+    },
+    "pr": "101",
+    "raw_completion_sha256": "38b50499fffab1f751935016efc2dcd89985ffec23e1399443b86fa7b3b6d279",
+    "sources": {
+      "fixed": {
+        "test_blob": "ca664b237bc125e9b2bd734ac2cee73c914a2863",
+        "tree": "62afc4ab5acf699478f72b8fdbd5927db1da26bb",
+        "verified_files": 3075
+      },
+      "original": {
+        "test_blob": "ca664b237bc125e9b2bd734ac2cee73c914a2863",
+        "tree": "9866420326d95cc9628ba6442b51e51af76ba35c",
+        "verified_files": 3075
+      }
+    },
+    "tools": {
+      "cargo": "cargo 1.99.0-dev (a0c7d08c8 2026-10-27) (ohm-1.99.0-17)",
+      "rustc": "rustc 1.99.0-dev (bfa236f63 2026-10-27) (ohm-1.99.0-17)"
+    },
+    "util": "3f17a23168fece93e83b4c0faf90c432a5bba8b73e76433d0bbd017178ca33aa",
+    "utility_tests": [
+      "paths::tests::write_atomic_permissions",
+      "paths::tests::write_atomic_symlink",
+      "paths::tests::write_atomic_works"
+    ]
+  },
+  "103": {
+    "actual_fixed_subject": "58e3513c7e3a7f7389ae967698ddbfb73e7ccc33414ddf9db0f653c65114d1d0",
+    "actual_original_subject": "9895112414534fc87fd80a27ba997b3127b7c3e86d9e75d39cf0624c6dc6290b",
+    "base": "1269b29fe760338393c8052dbbd03154c20ebe10",
+    "checks": [
+      {
+        "actual_cargo_execs": 2,
+        "cargo_sha256": "9895112414534fc87fd80a27ba997b3127b7c3e86d9e75d39cf0624c6dc6290b",
+        "code": 101,
+        "observed_overwrite": "fe936d4280cef82b9fe1e0b1cf522074c0cca42fe536603f91a838b5729457ff\n",
+        "state": "original",
+        "stderr_sha256": "726d348e7404a361eb9373aef34bff8c7101130845e0fba5425873ccf1d4a126",
+        "stdout_sha256": "1465e3b485ce0ac7bdeaa700b43802d555f6dc4ca6738c8325742ddd4dd0ed8d",
+        "suite_sha256": "784b1d69fb3990b7fdd3dc8d64c06326d2d60ba92dfc3d7e724430cc1d02c566",
+        "test": "ohm_worktree::seed_markers_replace_symlinks",
+        "trace_sha256": "f9c31fb996c5db07b8e67bfec580c448dc9dafcfcfbc96cf70737643d021692c"
+      },
+      {
+        "actual_cargo_execs": 2,
+        "cargo_sha256": "9895112414534fc87fd80a27ba997b3127b7c3e86d9e75d39cf0624c6dc6290b",
+        "code": 101,
+        "observed_overwrite": "local procedural-macro outputs require trust at import time\n",
+        "state": "original",
+        "stderr_sha256": "13ddfefcde6653849f6764c0b04b6e5cf3b5c53c4dae269253e6bf15de8965b9",
+        "stdout_sha256": "26b1f7602fcef993706fa6751cfb640ce0693071f37e2f1adc8d4a20ab6f1406",
+        "suite_sha256": "784b1d69fb3990b7fdd3dc8d64c06326d2d60ba92dfc3d7e724430cc1d02c566",
+        "test": "ohm_worktree::local_proc_macro_marker_replaces_symlinks",
+        "trace_sha256": "375c2d630b91cb86b767946f43af7039efddd6a73e6977f781e6ab7484347b96"
+      },
+      {
+        "actual_cargo_execs": 2,
+        "cargo_sha256": "58e3513c7e3a7f7389ae967698ddbfb73e7ccc33414ddf9db0f653c65114d1d0",
+        "code": 0,
+        "state": "fixed",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdout_sha256": "5afc51748d0fc850a32888eebf79c0b33ebeef8e30cfde7bf8a7e7d0ffab8c50",
+        "suite_sha256": "c5d9662607dccd6424cf8347ea71d4305d9bfaf3371e03ceceaa02b5877d8b6d",
+        "test": "ohm_worktree::seed_markers_replace_symlinks",
+        "trace_sha256": "492782e392907f9fcdb19c7b5335628f785d6a718cbee80afdd7b48a32d88db7"
+      },
+      {
+        "actual_cargo_execs": 2,
+        "cargo_sha256": "58e3513c7e3a7f7389ae967698ddbfb73e7ccc33414ddf9db0f653c65114d1d0",
+        "code": 0,
+        "state": "fixed",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdout_sha256": "288569d0ef7bab4fb7b9631c0a87c2e68c52fbb1dca79b1b459ef80337b150da",
+        "suite_sha256": "c5d9662607dccd6424cf8347ea71d4305d9bfaf3371e03ceceaa02b5877d8b6d",
+        "test": "ohm_worktree::local_proc_macro_marker_replaces_symlinks",
+        "trace_sha256": "8c118f657dafdfecee4ab8c607ad78e538ea6e2044bf24820046f06ecec5741f"
+      }
+    ],
+    "fixed": "1a84f8f36f0ff9f283337bfcce856b4b54c47281",
+    "locked_dependencies": {
+      "locked": "b8dee6ceec201b2031561cac7d44318f45e618e18bfa1be511370a97dfdf52df",
+      "packages": 523,
+      "tools": {
+        "cargo": "cargo 1.99.0-dev (a0c7d08c8 2026-10-27) (ohm-1.99.0-17)",
+        "rustc": "rustc 1.99.0-dev (bfa236f63 2026-10-27) (ohm-1.99.0-17)"
+      }
+    },
+    "pr": "103",
+    "raw_completion_sha256": "49fa02770901bb31893f5ba97bd2e4a5a031c0d83496ba36ae2f432640632d69",
+    "sources": {
+      "fixed": {
+        "test_blob": "b5b2873a8f118786f5a4ea9092a0dd381345b72c",
+        "tree": "1a84f8f36f0ff9f283337bfcce856b4b54c47281",
+        "verified_files": 3075
+      },
+      "original": {
+        "test_blob": "b5b2873a8f118786f5a4ea9092a0dd381345b72c",
+        "tree": "1269b29fe760338393c8052dbbd03154c20ebe10",
+        "verified_files": 3075
+      }
+    },
+    "tools": {
+      "cargo": "cargo 1.99.0-dev (a0c7d08c8 2026-10-27) (ohm-1.99.0-17)",
+      "rustc": "rustc 1.99.0-dev (bfa236f63 2026-10-27) (ohm-1.99.0-17)"
+    },
+    "util": "3f17a23168fece93e83b4c0faf90c432a5bba8b73e76433d0bbd017178ca33aa",
+    "utility_tests": [
+      "paths::tests::write_atomic_permissions",
+      "paths::tests::write_atomic_symlink",
+      "paths::tests::write_atomic_works"
+    ]
+  }
+}

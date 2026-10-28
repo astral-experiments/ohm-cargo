@@ -1,0 +1,61 @@
+diff --git a/src/compiler/build_runner/compilation_files.rs b/src/compiler/build_runner/compilation_files.rs
+index e0c6c9e1413ccf35403810e1ea7fdba99eb6652f..d200a3059d00e124d8a04007283f2b53bdca32f5 100644
+--- a/src/compiler/build_runner/compilation_files.rs
++++ b/src/compiler/build_runner/compilation_files.rs
+@@ -711,7 +711,7 @@ impl<'a, 'gctx: 'a> CompilationFiles<'a, 'gctx> {
+                 )?;
+             }
+             if local_proc_macro {
+-                paths::write_atomic(
++                paths::write_atomic_no_follow(
+                     &namespace.join(crate::compiler::OHM_WORKTREE_SEED_LOCAL_PROC_MACRO_MARKER),
+                     b"local procedural-macro outputs require trust at import time\n",
+                 )?;
+diff --git a/tests/testsuite/ohm_worktree.rs b/tests/testsuite/ohm_worktree.rs
+index 59ebacd7ff92f9a735eafb3202d944a8453d8a61..b5b2873a8f118786f5a4ea9092a0dd381345b72c 100644
+--- a/tests/testsuite/ohm_worktree.rs
++++ b/tests/testsuite/ohm_worktree.rs
+@@ -1097,6 +1097,43 @@ const AMBIENT_PROC_MACRO_BODY: &str = r#"
+     format!("{directory:?}").parse().unwrap()
+ "#;
+ 
++#[cfg(unix)]
++#[cargo_test(nightly, reason = "worktree seed preparation uses checksum freshness")]
++fn local_proc_macro_marker_replaces_symlinks() {
++    let donor = local_proc_macro_project(AMBIENT_PROC_MACRO_BODY);
++    let build = || {
++        seeded_cargo(
++            &donor,
++            "-Zohm-shared-registry-cache -Zohm-worktree-seeds=yes build",
++        )
++        .run();
++    };
++    build();
++
++    let namespace = workspace_caches().pop().unwrap();
++    let marker = fs::read_dir(namespace)
++        .unwrap()
++        .map(Result::unwrap)
++        .find(|entry| {
++            entry
++                .file_name()
++                .as_encoded_bytes()
++                .starts_with(b".ohm-worktree-seed-local-proc-macro-v")
++        })
++        .unwrap()
++        .path();
++    let contents = fs::read(&marker).unwrap();
++    let sentinel = paths::root().join("sentinel");
++    fs::write(&sentinel, "original").unwrap();
++    fs::remove_file(&marker).unwrap();
++    std::os::unix::fs::symlink(&sentinel, &marker).unwrap();
++    build();
++
++    assert_eq!(fs::read(&sentinel).unwrap(), b"original");
++    assert!(marker.symlink_metadata().unwrap().is_file());
++    assert_eq!(fs::read(marker).unwrap(), contents);
++}
++
+ #[cargo_test(
+     nightly,
+     reason = "worktree seeds use checksum freshness and cwd remapping"

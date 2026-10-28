@@ -1,0 +1,972 @@
+{
+  "101": {
+    "first_fixed_sha256": "4a6202e37ecb96289aa49b183905d18fbb70552523e648011ae2f90e43949980",
+    "fixed": {
+      "builds": [
+        {
+          "artifacts": [
+            [
+              "local_macro",
+              false
+            ],
+            [
+              "build-script-build",
+              false
+            ],
+            [
+              "marker_fixture",
+              false
+            ]
+          ],
+          "compiler_or_script_execs": 4,
+          "name": "opt-out-no-previous",
+          "rc": 0,
+          "trace_sha256": "59f5763be7cddd6cf453f59324f5ee936bd8d389f9c681973f025774772dd347"
+        },
+        {
+          "artifacts": [
+            [
+              "local_macro",
+              false
+            ],
+            [
+              "build-script-build",
+              false
+            ],
+            [
+              "marker_fixture",
+              false
+            ]
+          ],
+          "compiler_or_script_execs": 2,
+          "name": "cold",
+          "rc": 0,
+          "trace_sha256": "56a1a5e5d03364057316505526bf0aac82dc42ccd67be6f55469a95a904aca05"
+        },
+        {
+          "artifacts": [
+            [
+              "build-script-build",
+              true
+            ],
+            [
+              "local_macro",
+              true
+            ],
+            [
+              "marker_fixture",
+              true
+            ]
+          ],
+          "compiler_or_script_execs": 0,
+          "name": "warm",
+          "rc": 0,
+          "trace_sha256": "e9ef24ccf0366c4ea27b37d86b687d95af0ba9ab9eb13c0325a4cbf81b2b8f16"
+        },
+        {
+          "artifacts": [
+            [
+              "build-script-build",
+              true
+            ],
+            [
+              "local_macro",
+              true
+            ],
+            [
+              "marker_fixture",
+              true
+            ]
+          ],
+          "compiler_or_script_execs": 0,
+          "name": "ordinary-fresh-seed",
+          "rc": 0,
+          "trace_sha256": "e83cff4ca51e82b392e7b6d1fcc55afbc087b227e7f080e96ae475653aba3f2d"
+        },
+        {
+          "artifacts": [
+            [
+              "build-script-build",
+              true
+            ],
+            [
+              "local_macro",
+              true
+            ],
+            [
+              "marker_fixture",
+              true
+            ]
+          ],
+          "compiler_or_script_execs": 0,
+          "name": "ordinary-fresh-deny",
+          "rc": 0,
+          "trace_sha256": "66377de68fd5e71fff98b9facf31bb0a142e60cc3b3644e9ef312f38c058f7c1"
+        },
+        {
+          "artifacts": [
+            [
+              "build-script-build",
+              true
+            ],
+            [
+              "local_macro",
+              true
+            ],
+            [
+              "marker_fixture",
+              false
+            ]
+          ],
+          "compiler_or_script_execs": 1,
+          "name": "actual-script-rerun",
+          "rc": 0,
+          "trace_sha256": "b773f835e3750e89fc4f4b8285b30daa8e4aa8055977a11c92e525380b6186de"
+        },
+        {
+          "artifacts": [
+            [
+              "build-script-build",
+              true
+            ],
+            [
+              "local_macro",
+              true
+            ],
+            [
+              "marker_fixture",
+              false
+            ]
+          ],
+          "compiler_or_script_execs": 1,
+          "name": "post-script-depinfo",
+          "rc": 0,
+          "trace_sha256": "be22a6c03cb24e8c6f37df7f98675da4faae36ffed382274f4b5f9352b168c39"
+        }
+      ],
+      "raw": "218eb87865129e478fa8473f8cb5ea543c07b06fad53c12e058b46ad07928bfe",
+      "rows": {
+        "deny": {
+          "final_marker_hex": "756e7472757374656420636f6d70696c652d74696d6520696e707574730a",
+          "final_marker_is_link": false,
+          "marker": "build/debug/build/workspaces/7150caa7ee895ff9/.ohm-worktree-seed-deny-v5",
+          "prior_marker_hex": "756e7472757374656420636f6d70696c652d74696d6520696e707574730a",
+          "victim_after": {
+            "hex": "64756d6d79206f776e6572206461746120666f722064656e790a",
+            "inode": 351902,
+            "mode": 384,
+            "sha256": "330250daa3752edf6588f0cd816f4b48438059f3a2de37ab68d00f12655521c2"
+          },
+          "victim_before": {
+            "hex": "64756d6d79206f776e6572206461746120666f722064656e790a",
+            "inode": 351902,
+            "mode": 384,
+            "sha256": "330250daa3752edf6588f0cd816f4b48438059f3a2de37ab68d00f12655521c2"
+          }
+        },
+        "depinfo": {
+          "final_marker_hex": "756e747261636b656420436172676f206f7574707574207061746820696e20636f6d70696c656420636f64650a",
+          "final_marker_is_link": false,
+          "marker": "build/debug/build/workspaces/7150caa7ee895ff9/.ohm-worktree-seed-deny-v5",
+          "prior_marker_hex": "756e7472757374656420636f6d70696c652d74696d6520696e707574730a",
+          "victim_after": {
+            "hex": "64756d6d79206f776e6572206461746120666f7220646570696e666f0a",
+            "inode": 351953,
+            "mode": 384,
+            "sha256": "5967f16bf153e184908e045dd35e6123783b67a1dcd7c41a334672c5cee474ed"
+          },
+          "victim_before": {
+            "hex": "64756d6d79206f776e6572206461746120666f7220646570696e666f0a",
+            "inode": 351953,
+            "mode": 384,
+            "sha256": "5967f16bf153e184908e045dd35e6123783b67a1dcd7c41a334672c5cee474ed"
+          }
+        },
+        "script": {
+          "final_marker_hex": "313130623239656639346435373562383931623365393739623032616366663262346364356636373863646363396337363537386139393036353265326236330a",
+          "final_marker_is_link": false,
+          "marker": "build/debug/build/workspaces/7150caa7ee895ff9/f8a94126a5c746d8/marker_fixture/5df17876e1101075/fingerprint/.ohm-worktree-result-v1",
+          "prior_marker_hex": "313130623239656639346435373562383931623365393739623032616366663262346364356636373863646363396337363537386139393036353265326236330a",
+          "victim_after": {
+            "hex": "64756d6d79206f776e6572206461746120666f72207363726970740a",
+            "inode": 351915,
+            "mode": 384,
+            "sha256": "741b1e3dcc171add837590be61d8ba8f008597b3bb9f85ea6041cb79f0647635"
+          },
+          "victim_before": {
+            "hex": "64756d6d79206f776e6572206461746120666f72207363726970740a",
+            "inode": 351915,
+            "mode": 384,
+            "sha256": "741b1e3dcc171add837590be61d8ba8f008597b3bb9f85ea6041cb79f0647635"
+          }
+        },
+        "seed": {
+          "final_marker_hex": "350a",
+          "final_marker_is_link": false,
+          "marker": "build/debug/build/workspaces/7150caa7ee895ff9/.ohm-worktree-seed-v5",
+          "prior_marker_hex": "350a",
+          "victim_after": {
+            "hex": "64756d6d79206f776e6572206461746120666f7220736565640a",
+            "inode": 351889,
+            "mode": 384,
+            "sha256": "b5a12af250c7798b3157dc3a166dc4aadff3fc3f022b769c972c83f7faefca61"
+          },
+          "victim_before": {
+            "hex": "64756d6d79206f776e6572206461746120666f7220736565640a",
+            "inode": 351889,
+            "mode": 384,
+            "sha256": "b5a12af250c7798b3157dc3a166dc4aadff3fc3f022b769c972c83f7faefca61"
+          }
+        }
+      },
+      "subject": "4a6202e37ecb96289aa49b183905d18fbb70552523e648011ae2f90e43949980"
+    },
+    "fixed_restored_sha256": "4a6202e37ecb96289aa49b183905d18fbb70552523e648011ae2f90e43949980",
+    "hosted_head": "62afc4ab5acf699478f72b8fdbd5927db1da26bb",
+    "original": {
+      "builds": [
+        {
+          "artifacts": [
+            [
+              "local_macro",
+              false
+            ],
+            [
+              "build-script-build",
+              false
+            ],
+            [
+              "marker_fixture",
+              false
+            ]
+          ],
+          "compiler_or_script_execs": 4,
+          "name": "opt-out-no-previous",
+          "rc": 0,
+          "trace_sha256": "7aede3aa1340f589f2562b161f0f489ceec09d96b99bafa274bb5925ee0ab7e1"
+        },
+        {
+          "artifacts": [
+            [
+              "local_macro",
+              false
+            ],
+            [
+              "build-script-build",
+              false
+            ],
+            [
+              "marker_fixture",
+              false
+            ]
+          ],
+          "compiler_or_script_execs": 3,
+          "name": "cold",
+          "rc": 0,
+          "trace_sha256": "6d161abd82d82521a8a17ff383b1aed548945f8b98347326b2525e556623b787"
+        },
+        {
+          "artifacts": [
+            [
+              "build-script-build",
+              true
+            ],
+            [
+              "local_macro",
+              true
+            ],
+            [
+              "marker_fixture",
+              true
+            ]
+          ],
+          "compiler_or_script_execs": 0,
+          "name": "warm",
+          "rc": 0,
+          "trace_sha256": "68fcccee12e33303b914a66ec5626aa37c77289b2a412a743f554862e3bece5d"
+        },
+        {
+          "artifacts": [
+            [
+              "build-script-build",
+              true
+            ],
+            [
+              "local_macro",
+              true
+            ],
+            [
+              "marker_fixture",
+              true
+            ]
+          ],
+          "compiler_or_script_execs": 0,
+          "name": "ordinary-fresh-seed",
+          "rc": 0,
+          "trace_sha256": "9eedb349dd64040d45d878f0a0092adbc837ef1a91c862bd742730ec09d2968b"
+        },
+        {
+          "artifacts": [
+            [
+              "build-script-build",
+              true
+            ],
+            [
+              "local_macro",
+              true
+            ],
+            [
+              "marker_fixture",
+              true
+            ]
+          ],
+          "compiler_or_script_execs": 0,
+          "name": "ordinary-fresh-deny",
+          "rc": 0,
+          "trace_sha256": "45b611c895dd7d241ebc17f53a03c9fb6b1d54ba1f4d98b1139a8ef55cba1a8b"
+        },
+        {
+          "artifacts": [
+            [
+              "build-script-build",
+              true
+            ],
+            [
+              "local_macro",
+              true
+            ],
+            [
+              "marker_fixture",
+              false
+            ]
+          ],
+          "compiler_or_script_execs": 1,
+          "name": "actual-script-rerun",
+          "rc": 0,
+          "trace_sha256": "3740e4f56f79dd48e8a07bffde15c37905a9a04167e174ed2a312079760439c2"
+        },
+        {
+          "artifacts": [
+            [
+              "build-script-build",
+              true
+            ],
+            [
+              "local_macro",
+              true
+            ],
+            [
+              "marker_fixture",
+              false
+            ]
+          ],
+          "compiler_or_script_execs": 1,
+          "name": "post-script-depinfo",
+          "rc": 0,
+          "trace_sha256": "5540c57130674d21341ff69c607e15fc7aaad9c4f6941040a3ecc94889ca56f8"
+        }
+      ],
+      "raw": "c7a6c5733618b0eeb5bc9b07fbae860eee52caf221b481fbfe67890da404618e",
+      "rows": {
+        "deny": {
+          "final_marker_hex": "756e7472757374656420636f6d70696c652d74696d6520696e707574730a",
+          "final_marker_is_link": true,
+          "marker": "build/debug/build/workspaces/965072a5dbb861bb/.ohm-worktree-seed-deny-v5",
+          "prior_marker_hex": "756e7472757374656420636f6d70696c652d74696d6520696e707574730a",
+          "victim_after": {
+            "hex": "756e7472757374656420636f6d70696c652d74696d6520696e707574730a",
+            "inode": 353095,
+            "mode": 384,
+            "sha256": "f24cef02477dcf54208474a60f61b0f003b974f7715bc70021b9c39572282fd8"
+          },
+          "victim_before": {
+            "hex": "64756d6d79206f776e6572206461746120666f722064656e790a",
+            "inode": 353092,
+            "mode": 384,
+            "sha256": "330250daa3752edf6588f0cd816f4b48438059f3a2de37ab68d00f12655521c2"
+          }
+        },
+        "depinfo": {
+          "final_marker_hex": "756e747261636b656420436172676f206f7574707574207061746820696e20636f6d70696c656420636f64650a",
+          "final_marker_is_link": true,
+          "marker": "build/debug/build/workspaces/965072a5dbb861bb/.ohm-worktree-seed-deny-v5",
+          "prior_marker_hex": "756e7472757374656420636f6d70696c652d74696d6520696e707574730a",
+          "victim_after": {
+            "hex": "756e747261636b656420436172676f206f7574707574207061746820696e20636f6d70696c656420636f64650a",
+            "inode": 353142,
+            "mode": 384,
+            "sha256": "ba9636e888210d205dade0c454bd801debd4f7d4513ffb225df7463e730c0d23"
+          },
+          "victim_before": {
+            "hex": "64756d6d79206f776e6572206461746120666f7220646570696e666f0a",
+            "inode": 353120,
+            "mode": 384,
+            "sha256": "5967f16bf153e184908e045dd35e6123783b67a1dcd7c41a334672c5cee474ed"
+          }
+        },
+        "script": {
+          "final_marker_hex": "313130623239656639346435373562383931623365393739623032616366663262346364356636373863646363396337363537386139393036353265326236330a",
+          "final_marker_is_link": true,
+          "marker": "build/debug/build/workspaces/965072a5dbb861bb/5dad5a6731ece8e3/marker_fixture/fecae0b434818549/fingerprint/.ohm-worktree-result-v1",
+          "prior_marker_hex": "313130623239656639346435373562383931623365393739623032616366663262346364356636373863646363396337363537386139393036353265326236330a",
+          "victim_after": {
+            "hex": "313130623239656639346435373562383931623365393739623032616366663262346364356636373863646363396337363537386139393036353265326236330a",
+            "inode": 353104,
+            "mode": 384,
+            "sha256": "1d77d4d6a3a8f1fe9aa710ea32cc0868c6a4832aa718e11dcf3a5d416e570b4a"
+          },
+          "victim_before": {
+            "hex": "64756d6d79206f776e6572206461746120666f72207363726970740a",
+            "inode": 353099,
+            "mode": 384,
+            "sha256": "741b1e3dcc171add837590be61d8ba8f008597b3bb9f85ea6041cb79f0647635"
+          }
+        },
+        "seed": {
+          "final_marker_hex": "350a",
+          "final_marker_is_link": true,
+          "marker": "build/debug/build/workspaces/965072a5dbb861bb/.ohm-worktree-seed-v5",
+          "prior_marker_hex": "350a",
+          "victim_after": {
+            "hex": "350a",
+            "inode": 353089,
+            "mode": 384,
+            "sha256": "f0b5c2c2211c8d67ed15e75e656c7862d086e9245420892a7de62cd9ec582a06"
+          },
+          "victim_before": {
+            "hex": "64756d6d79206f776e6572206461746120666f7220736565640a",
+            "inode": 353085,
+            "mode": 384,
+            "sha256": "b5a12af250c7798b3157dc3a166dc4aadff3fc3f022b769c972c83f7faefca61"
+          }
+        }
+      },
+      "subject": "492c14d4378ad5019b7f8ce6a63de3e7f3d16e3113d9b509e48f35f428aaa0a7"
+    },
+    "original_matches_first_elf": true,
+    "pr": "101"
+  },
+  "103": {
+    "first_fixed_sha256": "58e3513c7e3a7f7389ae967698ddbfb73e7ccc33414ddf9db0f653c65114d1d0",
+    "fixed": {
+      "builds": [
+        {
+          "artifacts": [
+            [
+              "local_macro",
+              false
+            ],
+            [
+              "build-script-build",
+              false
+            ],
+            [
+              "marker_fixture",
+              false
+            ]
+          ],
+          "compiler_or_script_execs": 2,
+          "name": "opt-out-no-previous",
+          "rc": 0,
+          "trace_sha256": "c469eb3041c62ffaceb5961971161f9ca512b3a50ef4b51c672e4c23cb762178"
+        },
+        {
+          "artifacts": [
+            [
+              "local_macro",
+              false
+            ],
+            [
+              "build-script-build",
+              false
+            ],
+            [
+              "marker_fixture",
+              false
+            ]
+          ],
+          "compiler_or_script_execs": 3,
+          "name": "cold",
+          "rc": 0,
+          "trace_sha256": "e9ee271bcd051604030352d8d59295a9b3720637ed038584dd255bfa386c1ab4"
+        },
+        {
+          "artifacts": [
+            [
+              "build-script-build",
+              true
+            ],
+            [
+              "local_macro",
+              true
+            ],
+            [
+              "marker_fixture",
+              true
+            ]
+          ],
+          "compiler_or_script_execs": 0,
+          "name": "warm",
+          "rc": 0,
+          "trace_sha256": "278717d2cd1d4569d849cc8ec97ae7b4dfa29b1b8c973500cafefde4bafdb466"
+        },
+        {
+          "artifacts": [
+            [
+              "build-script-build",
+              true
+            ],
+            [
+              "local_macro",
+              true
+            ],
+            [
+              "marker_fixture",
+              true
+            ]
+          ],
+          "compiler_or_script_execs": 0,
+          "name": "ordinary-fresh-seed",
+          "rc": 0,
+          "trace_sha256": "4e06c134dae1eedfdbfad0ffb5fb350295ab3091186c0198b2cb3436d9443c52"
+        },
+        {
+          "artifacts": [
+            [
+              "build-script-build",
+              true
+            ],
+            [
+              "local_macro",
+              true
+            ],
+            [
+              "marker_fixture",
+              true
+            ]
+          ],
+          "compiler_or_script_execs": 0,
+          "name": "ordinary-fresh-deny",
+          "rc": 0,
+          "trace_sha256": "a95a085853d9e320d48c84f66ca0527a84364a4af0c8e1ca3b52e1cce843564d"
+        },
+        {
+          "artifacts": [
+            [
+              "build-script-build",
+              true
+            ],
+            [
+              "local_macro",
+              true
+            ],
+            [
+              "marker_fixture",
+              true
+            ]
+          ],
+          "compiler_or_script_execs": 0,
+          "name": "ordinary-fresh-macro",
+          "rc": 0,
+          "trace_sha256": "d1a2be7ed5523cd580e3ada10f1bbe15f6b87c7a0c51fcf152e7a27eda1326f9"
+        },
+        {
+          "artifacts": [
+            [
+              "build-script-build",
+              true
+            ],
+            [
+              "local_macro",
+              true
+            ],
+            [
+              "marker_fixture",
+              false
+            ]
+          ],
+          "compiler_or_script_execs": 1,
+          "name": "actual-script-rerun",
+          "rc": 0,
+          "trace_sha256": "96b11e3fbe0aa028baf06d2bb916ae50f03aa493037809d4a34af547d45fb2bc"
+        },
+        {
+          "artifacts": [
+            [
+              "build-script-build",
+              true
+            ],
+            [
+              "local_macro",
+              true
+            ],
+            [
+              "marker_fixture",
+              false
+            ]
+          ],
+          "compiler_or_script_execs": 1,
+          "name": "post-script-depinfo",
+          "rc": 0,
+          "trace_sha256": "2b7435becaf63bee959f6f553954dcefc56f7f08bdd3b67560e6fffc4ec7f214"
+        }
+      ],
+      "raw": "c9cdfd31d12d5bca8fe78e02db94010c9dad856983b106cff159ea566885bcee",
+      "rows": {
+        "deny": {
+          "final_marker_hex": "756e7472757374656420636f6d70696c652d74696d6520696e707574730a",
+          "final_marker_is_link": false,
+          "marker": "build/debug/build/workspaces/f3a526528f856935/.ohm-worktree-seed-deny-v6",
+          "prior_marker_hex": "756e7472757374656420636f6d70696c652d74696d6520696e707574730a",
+          "victim_after": {
+            "hex": "64756d6d79206f776e6572206461746120666f722064656e790a",
+            "inode": 351905,
+            "mode": 384,
+            "sha256": "330250daa3752edf6588f0cd816f4b48438059f3a2de37ab68d00f12655521c2"
+          },
+          "victim_before": {
+            "hex": "64756d6d79206f776e6572206461746120666f722064656e790a",
+            "inode": 351905,
+            "mode": 384,
+            "sha256": "330250daa3752edf6588f0cd816f4b48438059f3a2de37ab68d00f12655521c2"
+          }
+        },
+        "depinfo": {
+          "final_marker_hex": "756e747261636b656420436172676f206f7574707574207061746820696e20636f6d70696c656420636f64650a",
+          "final_marker_is_link": false,
+          "marker": "build/debug/build/workspaces/f3a526528f856935/.ohm-worktree-seed-deny-v6",
+          "prior_marker_hex": "756e7472757374656420636f6d70696c652d74696d6520696e707574730a",
+          "victim_after": {
+            "hex": "64756d6d79206f776e6572206461746120666f7220646570696e666f0a",
+            "inode": 351967,
+            "mode": 384,
+            "sha256": "5967f16bf153e184908e045dd35e6123783b67a1dcd7c41a334672c5cee474ed"
+          },
+          "victim_before": {
+            "hex": "64756d6d79206f776e6572206461746120666f7220646570696e666f0a",
+            "inode": 351967,
+            "mode": 384,
+            "sha256": "5967f16bf153e184908e045dd35e6123783b67a1dcd7c41a334672c5cee474ed"
+          }
+        },
+        "macro": {
+          "final_marker_hex": "6c6f63616c2070726f6365647572616c2d6d6163726f206f757470757473207265717569726520747275737420617420696d706f72742074696d650a",
+          "final_marker_is_link": false,
+          "marker": "build/debug/build/workspaces/f3a526528f856935/.ohm-worktree-seed-local-proc-macro-v6",
+          "prior_marker_hex": "6c6f63616c2070726f6365647572616c2d6d6163726f206f757470757473207265717569726520747275737420617420696d706f72742074696d650a",
+          "victim_after": {
+            "hex": "64756d6d79206f776e6572206461746120666f72206d6163726f0a",
+            "inode": 351918,
+            "mode": 384,
+            "sha256": "6075afff5aea9d5ca697f81d17334e9557f6be3e587fdb806067a26ec1d8d030"
+          },
+          "victim_before": {
+            "hex": "64756d6d79206f776e6572206461746120666f72206d6163726f0a",
+            "inode": 351918,
+            "mode": 384,
+            "sha256": "6075afff5aea9d5ca697f81d17334e9557f6be3e587fdb806067a26ec1d8d030"
+          }
+        },
+        "script": {
+          "final_marker_hex": "313130623239656639346435373562383931623365393739623032616366663262346364356636373863646363396337363537386139393036353265326236330a",
+          "final_marker_is_link": false,
+          "marker": "build/debug/build/workspaces/f3a526528f856935/f6efd615f066a2c1/marker_fixture/df41c2496d5a7a6c/fingerprint/.ohm-worktree-result-v1",
+          "prior_marker_hex": "313130623239656639346435373562383931623365393739623032616366663262346364356636373863646363396337363537386139393036353265326236330a",
+          "victim_after": {
+            "hex": "64756d6d79206f776e6572206461746120666f72207363726970740a",
+            "inode": 351928,
+            "mode": 384,
+            "sha256": "741b1e3dcc171add837590be61d8ba8f008597b3bb9f85ea6041cb79f0647635"
+          },
+          "victim_before": {
+            "hex": "64756d6d79206f776e6572206461746120666f72207363726970740a",
+            "inode": 351928,
+            "mode": 384,
+            "sha256": "741b1e3dcc171add837590be61d8ba8f008597b3bb9f85ea6041cb79f0647635"
+          }
+        },
+        "seed": {
+          "final_marker_hex": "360a",
+          "final_marker_is_link": false,
+          "marker": "build/debug/build/workspaces/f3a526528f856935/.ohm-worktree-seed-v6",
+          "prior_marker_hex": "360a",
+          "victim_after": {
+            "hex": "64756d6d79206f776e6572206461746120666f7220736565640a",
+            "inode": 351892,
+            "mode": 384,
+            "sha256": "b5a12af250c7798b3157dc3a166dc4aadff3fc3f022b769c972c83f7faefca61"
+          },
+          "victim_before": {
+            "hex": "64756d6d79206f776e6572206461746120666f7220736565640a",
+            "inode": 351892,
+            "mode": 384,
+            "sha256": "b5a12af250c7798b3157dc3a166dc4aadff3fc3f022b769c972c83f7faefca61"
+          }
+        }
+      },
+      "subject": "58e3513c7e3a7f7389ae967698ddbfb73e7ccc33414ddf9db0f653c65114d1d0"
+    },
+    "fixed_restored_sha256": "58e3513c7e3a7f7389ae967698ddbfb73e7ccc33414ddf9db0f653c65114d1d0",
+    "hosted_head": "1a84f8f36f0ff9f283337bfcce856b4b54c47281",
+    "original": {
+      "builds": [
+        {
+          "artifacts": [
+            [
+              "local_macro",
+              false
+            ],
+            [
+              "build-script-build",
+              false
+            ],
+            [
+              "marker_fixture",
+              false
+            ]
+          ],
+          "compiler_or_script_execs": 4,
+          "name": "opt-out-no-previous",
+          "rc": 0,
+          "trace_sha256": "3b0d287f4c3ee878bc9f756e385a5e5bc8b0250277a35c92ef2177207f99a2cd"
+        },
+        {
+          "artifacts": [
+            [
+              "local_macro",
+              false
+            ],
+            [
+              "build-script-build",
+              false
+            ],
+            [
+              "marker_fixture",
+              false
+            ]
+          ],
+          "compiler_or_script_execs": 2,
+          "name": "cold",
+          "rc": 0,
+          "trace_sha256": "1e1733d3715d793462a3fbb87f144fea7e76e6e973063591877c639a419f779b"
+        },
+        {
+          "artifacts": [
+            [
+              "build-script-build",
+              true
+            ],
+            [
+              "local_macro",
+              true
+            ],
+            [
+              "marker_fixture",
+              true
+            ]
+          ],
+          "compiler_or_script_execs": 0,
+          "name": "warm",
+          "rc": 0,
+          "trace_sha256": "6ee21a21b2c08a8c08e1115cedb417c9368ee270eec8a690a2161e6d9961fc7a"
+        },
+        {
+          "artifacts": [
+            [
+              "build-script-build",
+              true
+            ],
+            [
+              "local_macro",
+              true
+            ],
+            [
+              "marker_fixture",
+              true
+            ]
+          ],
+          "compiler_or_script_execs": 0,
+          "name": "ordinary-fresh-seed",
+          "rc": 0,
+          "trace_sha256": "e88503cbd3d10321fabae27e0610a21c57a3e47c806c6abc53d2b3cf1345cc7b"
+        },
+        {
+          "artifacts": [
+            [
+              "build-script-build",
+              true
+            ],
+            [
+              "local_macro",
+              true
+            ],
+            [
+              "marker_fixture",
+              true
+            ]
+          ],
+          "compiler_or_script_execs": 0,
+          "name": "ordinary-fresh-deny",
+          "rc": 0,
+          "trace_sha256": "f0610d34a42179a7c3bd6b4f6761a2be6a4e358ac093417488ab7748ede3239a"
+        },
+        {
+          "artifacts": [
+            [
+              "build-script-build",
+              true
+            ],
+            [
+              "local_macro",
+              true
+            ],
+            [
+              "marker_fixture",
+              true
+            ]
+          ],
+          "compiler_or_script_execs": 0,
+          "name": "ordinary-fresh-macro",
+          "rc": 0,
+          "trace_sha256": "7f5720084be3acfe953888407e82c1153523d19d9090792a22a7c42d64bd3575"
+        },
+        {
+          "artifacts": [
+            [
+              "build-script-build",
+              true
+            ],
+            [
+              "local_macro",
+              true
+            ],
+            [
+              "marker_fixture",
+              false
+            ]
+          ],
+          "compiler_or_script_execs": 1,
+          "name": "actual-script-rerun",
+          "rc": 0,
+          "trace_sha256": "9cb7d7da477ae54eb6e2b8be5526241e52aa4e09033dcc0b86197562407a7ed4"
+        },
+        {
+          "artifacts": [
+            [
+              "build-script-build",
+              true
+            ],
+            [
+              "local_macro",
+              true
+            ],
+            [
+              "marker_fixture",
+              false
+            ]
+          ],
+          "compiler_or_script_execs": 1,
+          "name": "post-script-depinfo",
+          "rc": 0,
+          "trace_sha256": "4e6bb6ab104e6071503bbc21d78d43b151754dc469aa0e407bb9f501638ef6ca"
+        }
+      ],
+      "raw": "0b50548503320a76183b7ea6d0f69398fc9f18288570a2b8e6e3745c5840e43a",
+      "rows": {
+        "deny": {
+          "final_marker_hex": "756e7472757374656420636f6d70696c652d74696d6520696e707574730a",
+          "final_marker_is_link": true,
+          "marker": "build/debug/build/workspaces/9540bbd27eca1c4e/.ohm-worktree-seed-deny-v6",
+          "prior_marker_hex": "756e7472757374656420636f6d70696c652d74696d6520696e707574730a",
+          "victim_after": {
+            "hex": "756e7472757374656420636f6d70696c652d74696d6520696e707574730a",
+            "inode": 352327,
+            "mode": 384,
+            "sha256": "f24cef02477dcf54208474a60f61b0f003b974f7715bc70021b9c39572282fd8"
+          },
+          "victim_before": {
+            "hex": "64756d6d79206f776e6572206461746120666f722064656e790a",
+            "inode": 352324,
+            "mode": 384,
+            "sha256": "330250daa3752edf6588f0cd816f4b48438059f3a2de37ab68d00f12655521c2"
+          }
+        },
+        "depinfo": {
+          "final_marker_hex": "756e747261636b656420436172676f206f7574707574207061746820696e20636f6d70696c656420636f64650a",
+          "final_marker_is_link": true,
+          "marker": "build/debug/build/workspaces/9540bbd27eca1c4e/.ohm-worktree-seed-deny-v6",
+          "prior_marker_hex": "756e7472757374656420636f6d70696c652d74696d6520696e707574730a",
+          "victim_after": {
+            "hex": "756e747261636b656420436172676f206f7574707574207061746820696e20636f6d70696c656420636f64650a",
+            "inode": 352385,
+            "mode": 384,
+            "sha256": "ba9636e888210d205dade0c454bd801debd4f7d4513ffb225df7463e730c0d23"
+          },
+          "victim_before": {
+            "hex": "64756d6d79206f776e6572206461746120666f7220646570696e666f0a",
+            "inode": 352362,
+            "mode": 384,
+            "sha256": "5967f16bf153e184908e045dd35e6123783b67a1dcd7c41a334672c5cee474ed"
+          }
+        },
+        "macro": {
+          "final_marker_hex": "6c6f63616c2070726f6365647572616c2d6d6163726f206f757470757473207265717569726520747275737420617420696d706f72742074696d650a",
+          "final_marker_is_link": true,
+          "marker": "build/debug/build/workspaces/9540bbd27eca1c4e/.ohm-worktree-seed-local-proc-macro-v6",
+          "prior_marker_hex": "6c6f63616c2070726f6365647572616c2d6d6163726f206f757470757473207265717569726520747275737420617420696d706f72742074696d650a",
+          "victim_after": {
+            "hex": "6c6f63616c2070726f6365647572616c2d6d6163726f206f757470757473207265717569726520747275737420617420696d706f72742074696d650a",
+            "inode": 352336,
+            "mode": 384,
+            "sha256": "1acb1e0ca1d4e3a09720be464c4a0574b87cabcd7be93f7805e9db505c83072c"
+          },
+          "victim_before": {
+            "hex": "64756d6d79206f776e6572206461746120666f72206d6163726f0a",
+            "inode": 352332,
+            "mode": 384,
+            "sha256": "6075afff5aea9d5ca697f81d17334e9557f6be3e587fdb806067a26ec1d8d030"
+          }
+        },
+        "script": {
+          "final_marker_hex": "313130623239656639346435373562383931623365393739623032616366663262346364356636373863646363396337363537386139393036353265326236330a",
+          "final_marker_is_link": true,
+          "marker": "build/debug/build/workspaces/9540bbd27eca1c4e/98f0b3b0c8fe1257/marker_fixture/2b8bb1787a6cae07/fingerprint/.ohm-worktree-result-v1",
+          "prior_marker_hex": "313130623239656639346435373562383931623365393739623032616366663262346364356636373863646363396337363537386139393036353265326236330a",
+          "victim_after": {
+            "hex": "313130623239656639346435373562383931623365393739623032616366663262346364356636373863646363396337363537386139393036353265326236330a",
+            "inode": 352346,
+            "mode": 384,
+            "sha256": "1d77d4d6a3a8f1fe9aa710ea32cc0868c6a4832aa718e11dcf3a5d416e570b4a"
+          },
+          "victim_before": {
+            "hex": "64756d6d79206f776e6572206461746120666f72207363726970740a",
+            "inode": 352340,
+            "mode": 384,
+            "sha256": "741b1e3dcc171add837590be61d8ba8f008597b3bb9f85ea6041cb79f0647635"
+          }
+        },
+        "seed": {
+          "final_marker_hex": "360a",
+          "final_marker_is_link": true,
+          "marker": "build/debug/build/workspaces/9540bbd27eca1c4e/.ohm-worktree-seed-v6",
+          "prior_marker_hex": "360a",
+          "victim_after": {
+            "hex": "360a",
+            "inode": 352321,
+            "mode": 384,
+            "sha256": "06e9d52c1720fca412803e3b07c4b228ff113e303f4c7ab94665319d832bbfb7"
+          },
+          "victim_before": {
+            "hex": "64756d6d79206f776e6572206461746120666f7220736565640a",
+            "inode": 352316,
+            "mode": 384,
+            "sha256": "b5a12af250c7798b3157dc3a166dc4aadff3fc3f022b769c972c83f7faefca61"
+          }
+        }
+      },
+      "subject": "9895112414534fc87fd80a27ba997b3127b7c3e86d9e75d39cf0624c6dc6290b"
+    },
+    "original_matches_first_elf": true,
+    "pr": "103"
+  }
+}
