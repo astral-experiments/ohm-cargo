@@ -1,0 +1,21 @@
+# R2 Rust and release-profile Cargo on Ruff with the original packaged Wild
+
+All 15 genuine `cargo +ohm` calls exited successfully on Linux x86_64. `cargo check`, `cargo build` and `cargo test --workspace --no-run` each started with an independent empty target and build directory. Each used `--locked --offline -j8 --message-format=json`, native defaults, the same 498 authenticated registry archives, and no wrapper, trust overrides or manual Rust flags. The source was the entire Ruff tree at `93526150df078af7dd8fc4226cdcc469539d2001`.
+
+| Command | Cold logical units | Unchanged fresh | Reversed edit fresh | Restored fresh | Final unchanged fresh |
+|---|---:|---:|---:|---:|---:|
+| `cargo check` | 520 | 520 | 473 | 473 | 520 |
+| `cargo build` | 501 | 501 | 455 | 455 | 501 |
+| `cargo test --workspace --no-run` | 619 | 563 | 506 | 506 | 563 |
+
+The two unchanged checks and builds launched zero compilers or linkers. Both unchanged full test builds launched one full `ron` compiler, 50 `-Zlink-only` compilers and 50 Wild processes. Every cold unit was rebuilt. The three respective cold commands ran 524, 505 and 623 full rustcs and 78, 90 and 188 packaged Wild processes. None of the 15 commands invoked rustdoc. No time estimate is inferred from these traced commands.
+
+The complete three-file reversal of Ruff commit `83a3afc3156d73ae4296f3fa74ede28e4c72bfcd` changed output from independent conventional Rust binaries compiled against the actual `ruff_python_trivia` `.rlib`. Restoring the commit restored their original bytes. The real built `ruff check --fix-only` RET505 source output also changed, from SHA-256 `afee9040…` to `20b5c061…` and back. A valid external `.rmeta` caller compiled in all three source states. Its invalid control consistently returned E0308. The native parser harness listing agreed in all three states and `parser::tests::test_modes` ran successfully in each. The original Ruff checkout remained clean throughout and the independent copy was restored.
+
+The candidate Linux PGO Cargo `cfc66a7c…` comes from `7181bfa6256f94da142f80fd6af09cee02ec2c78`. The PGO+BOLT R2 driver `22abce69…` was compiled from the `47e23eb4…` compiler tree, byte-identical in source commit `35677e3e…` and final Rust reference `9828b82f…`, with the latter pinning that exact Cargo. The native frontend was `4fa9a18b…`. The retained production donor supplies the other SDK programs and standard libraries. Therefore version strings still identify the donor. An actual running compiler’s mapped executable pages and an actual running original packaged Wild confirmed the expected object identities. The original Linux Wild was `0d633580…`. The replacement Wild has separate three-tool and raw-path qualifications.
+
+The first preparation accepted more than one offline registry basename and stopped before any Cargo command. The final selection demanded the previously recorded index/config identity and checked all 498 archive hashes. A first observation of the successful cold check stopped because it classified a Cargo `--version` query and 61 system `ld.bfd -o conftest` configure subprocesses as production jobs. The updated observer re-read the same successful raw Cargo invocation, with both cases checked by executable and argv. The original failure and its SHA remain in the export.
+
+`python3 -IB verify.py` checks raw Cargo messages, original-to-portable hashes, successful real process arguments, phase order, input/output oracles, source/binary identities and retained ELF hashes. `python3 -IB report.py` regenerates `summary.json`. The host retained all 628 actual Wild output destinations across the invocations. Hash-based de-duplication retained 377 separate native ELF byte strings totaling 14,151,219,952 bytes. The exporter reopened and verified all those physical files. `native.tar.xz` holds 368 proof members plus its originals index, including the source edit, tiny callers, Cargo messages, per-role physical exec evidence and local native storage inventory. One private mirror *basename* was normalized in 22 members. The index binds every original and portable digest. The full linker outputs remain on the qualification host.
+
+The published native archive uses XZ. Decompressing it yields the identical tar stream as the original gzip export, SHA-256 `a2a666183de64c40bf90b86f7aab10c30a3cbc7a85b3ffcef0f7309f71ee5764`.

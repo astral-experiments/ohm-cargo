@@ -1,0 +1,1014 @@
+{
+  "commands": {
+    "build": {
+      "cold": {
+        "cargo": 1,
+        "cargo-version": 1,
+        "cold_elf_equal_at_same_path": 99,
+        "cold_elf_same_path": 99,
+        "collect2": 152,
+        "configure-linker": 61,
+        "dirty_count": 501,
+        "fresh": 0,
+        "full": 505,
+        "noncold_dirty": null,
+        "ordinary_consumers": [
+          {
+            "library": "/home/dev-user/.cache/ohm-rc18-r2-whole-ruff-20261028/states/build/target/debug/build/workspaces/8945c0dc8d04c301/v2-8b27dd99812b9fdc/ruff_python_trivia/148a7fdc4c70d9aa/out/libruff_python_trivia-148a7fdc4c70d9aa.rlib",
+            "ordinary_exe_sha256": "ea82da4fa97c378e7e11cb414d5aa7ec9863d914619601e08c4cca91fe80120b",
+            "output": "       # foo\n       # bar\n    return 2",
+            "sha256": "9108bfc3db3c726bf136f989652151d9b016cef58085385582941d19affed8d4"
+          },
+          {
+            "library": "/home/dev-user/.cache/ohm-rc18-r2-whole-ruff-20261028/states/build/target/debug/libruff_python_trivia.rlib",
+            "ordinary_exe_sha256": "103971692a1ba47488d4cce0cc98764aa1e277081c4bd7534c22c46b1c8fca41",
+            "output": "       # foo\n       # bar\n    return 2",
+            "sha256": "0bfbfe399353b6708b0b57c34ef64b016d5d20def43d6f58787e77ed6b84828e"
+          },
+          {
+            "fixed_source_sha256": "afee9040993e54f3e754eb53b9b7b04acc5a96c929adb6c89282f298cbafc8a9",
+            "ruff_cli": "/home/dev-user/.cache/ohm-rc18-r2-whole-ruff-20261028/states/build/target/debug/ruff"
+          }
+        ],
+        "reported": 501,
+        "retained_elf": 99,
+        "typed_diagnostics": {},
+        "wild": 90,
+        "wild_retained_after_command": 90
+      },
+      "edited": {
+        "cargo": 1,
+        "cold_elf_equal_at_same_path": 35,
+        "cold_elf_same_path": 52,
+        "collect2": 10,
+        "dirty_count": 46,
+        "fresh": 455,
+        "full": 46,
+        "noncold_dirty": {
+          "mdtest": 1,
+          "ruff": 2,
+          "ruff_benchmark": 1,
+          "ruff_db": 1,
+          "ruff_dev": 1,
+          "ruff_formatter": 1,
+          "ruff_graph": 1,
+          "ruff_index": 1,
+          "ruff_linter": 1,
+          "ruff_macros": 2,
+          "ruff_markdown": 1,
+          "ruff_mdtest": 1,
+          "ruff_python_ast": 1,
+          "ruff_python_codegen": 1,
+          "ruff_python_edits": 1,
+          "ruff_python_formatter": 2,
+          "ruff_python_importer": 1,
+          "ruff_python_index": 1,
+          "ruff_python_literal": 1,
+          "ruff_python_parser": 1,
+          "ruff_python_semantic": 1,
+          "ruff_python_trivia": 2,
+          "ruff_ranged_value": 1,
+          "ruff_server": 1,
+          "ruff_wasm": 1,
+          "ruff_workspace": 1,
+          "ty": 2,
+          "ty_combine": 1,
+          "ty_completion_bench": 1,
+          "ty_completion_eval": 1,
+          "ty_ide": 1,
+          "ty_module_resolver": 1,
+          "ty_project": 1,
+          "ty_python_core": 1,
+          "ty_python_semantic": 1,
+          "ty_server": 1,
+          "ty_site_packages": 1,
+          "ty_static": 1,
+          "ty_test": 1,
+          "ty_vendored": 1,
+          "ty_wasm": 1
+        },
+        "ordinary_consumers": [
+          {
+            "library": "/home/dev-user/.cache/ohm-rc18-r2-whole-ruff-20261028/states/build/target/debug/build/workspaces/8945c0dc8d04c301/v2-8b27dd99812b9fdc/ruff_python_trivia/148a7fdc4c70d9aa/out/libruff_python_trivia-148a7fdc4c70d9aa.rlib",
+            "ordinary_exe_sha256": "2db75a71b4232d6f388804f27aa73a9253478c141fb946576f6122661472fde8",
+            "output": "    # foo\n    # bar\n     return 2",
+            "sha256": "b0e4b79499387543678657183f55597a8a6c9a693b785558179036061b8211c4"
+          },
+          {
+            "library": "/home/dev-user/.cache/ohm-rc18-r2-whole-ruff-20261028/states/build/target/debug/libruff_python_trivia.rlib",
+            "ordinary_exe_sha256": "c518916662e6265198be9ffe20a983c148d1838b14b8167e50b8d3b4f73c111f",
+            "output": "    # foo\n    # bar\n     return 2",
+            "sha256": "5279e72c811779ed46c325a13064f7bd79cc6e9ef8841855c839150a66ccf934"
+          },
+          {
+            "fixed_source_sha256": "20b5c0613139c73753d937f4c493ab9fa26a82bea3b5334e9a5f97ddb98299b5",
+            "ruff_cli": "/home/dev-user/.cache/ohm-rc18-r2-whole-ruff-20261028/states/build/target/debug/ruff"
+          }
+        ],
+        "reported": 501,
+        "retained_elf": 52,
+        "typed_diagnostics": {},
+        "wild": 10,
+        "wild_retained_after_command": 10
+      },
+      "final-unchanged": {
+        "cargo": 1,
+        "cold_elf_equal_at_same_path": 43,
+        "cold_elf_same_path": 43,
+        "dirty_count": 0,
+        "fresh": 501,
+        "noncold_dirty": {},
+        "ordinary_consumers": [],
+        "reported": 501,
+        "retained_elf": 43,
+        "typed_diagnostics": {},
+        "wild_retained_after_command": 0
+      },
+      "restored": {
+        "cargo": 1,
+        "cold_elf_equal_at_same_path": 52,
+        "cold_elf_same_path": 52,
+        "collect2": 10,
+        "dirty_count": 46,
+        "fresh": 455,
+        "full": 46,
+        "noncold_dirty": {
+          "mdtest": 1,
+          "ruff": 2,
+          "ruff_benchmark": 1,
+          "ruff_db": 1,
+          "ruff_dev": 1,
+          "ruff_formatter": 1,
+          "ruff_graph": 1,
+          "ruff_index": 1,
+          "ruff_linter": 1,
+          "ruff_macros": 2,
+          "ruff_markdown": 1,
+          "ruff_mdtest": 1,
+          "ruff_python_ast": 1,
+          "ruff_python_codegen": 1,
+          "ruff_python_edits": 1,
+          "ruff_python_formatter": 2,
+          "ruff_python_importer": 1,
+          "ruff_python_index": 1,
+          "ruff_python_literal": 1,
+          "ruff_python_parser": 1,
+          "ruff_python_semantic": 1,
+          "ruff_python_trivia": 2,
+          "ruff_ranged_value": 1,
+          "ruff_server": 1,
+          "ruff_wasm": 1,
+          "ruff_workspace": 1,
+          "ty": 2,
+          "ty_combine": 1,
+          "ty_completion_bench": 1,
+          "ty_completion_eval": 1,
+          "ty_ide": 1,
+          "ty_module_resolver": 1,
+          "ty_project": 1,
+          "ty_python_core": 1,
+          "ty_python_semantic": 1,
+          "ty_server": 1,
+          "ty_site_packages": 1,
+          "ty_static": 1,
+          "ty_test": 1,
+          "ty_vendored": 1,
+          "ty_wasm": 1
+        },
+        "ordinary_consumers": [
+          {
+            "library": "/home/dev-user/.cache/ohm-rc18-r2-whole-ruff-20261028/states/build/target/debug/build/workspaces/8945c0dc8d04c301/v2-8b27dd99812b9fdc/ruff_python_trivia/148a7fdc4c70d9aa/out/libruff_python_trivia-148a7fdc4c70d9aa.rlib",
+            "ordinary_exe_sha256": "ea82da4fa97c378e7e11cb414d5aa7ec9863d914619601e08c4cca91fe80120b",
+            "output": "       # foo\n       # bar\n    return 2",
+            "sha256": "339a1c95b6d7691e570997660d5ab0c03c85be97977207ef14427815dd2cd38c"
+          },
+          {
+            "library": "/home/dev-user/.cache/ohm-rc18-r2-whole-ruff-20261028/states/build/target/debug/libruff_python_trivia.rlib",
+            "ordinary_exe_sha256": "103971692a1ba47488d4cce0cc98764aa1e277081c4bd7534c22c46b1c8fca41",
+            "output": "       # foo\n       # bar\n    return 2",
+            "sha256": "2486a41695621abf4e959058d9e81b40daa459ddbf6702e911d1b4e9d0211a97"
+          },
+          {
+            "fixed_source_sha256": "afee9040993e54f3e754eb53b9b7b04acc5a96c929adb6c89282f298cbafc8a9",
+            "ruff_cli": "/home/dev-user/.cache/ohm-rc18-r2-whole-ruff-20261028/states/build/target/debug/ruff"
+          }
+        ],
+        "reported": 501,
+        "retained_elf": 52,
+        "typed_diagnostics": {},
+        "wild": 10,
+        "wild_retained_after_command": 10
+      },
+      "unchanged": {
+        "cargo": 1,
+        "cold_elf_equal_at_same_path": 43,
+        "cold_elf_same_path": 43,
+        "dirty_count": 0,
+        "fresh": 501,
+        "noncold_dirty": {},
+        "ordinary_consumers": [],
+        "reported": 501,
+        "retained_elf": 43,
+        "typed_diagnostics": {},
+        "wild_retained_after_command": 0
+      }
+    },
+    "check": {
+      "cold": {
+        "cargo": 1,
+        "cargo-version": 1,
+        "cold_elf_equal_at_same_path": 78,
+        "cold_elf_same_path": 78,
+        "collect2": 140,
+        "configure-linker": 61,
+        "dirty_count": 520,
+        "fresh": 0,
+        "full": 524,
+        "noncold_dirty": null,
+        "ordinary_consumers": [
+          {
+            "good": 0,
+            "invalid": "E0308",
+            "library": "/home/dev-user/.cache/ohm-rc18-r2-whole-ruff-20261028/states/check/target/debug/build/workspaces/d02126bc6cd5496a/v2-b9eb776582a3b68d/ruff_python_trivia/148a7fdc4c70d9aa/out/libruff_python_trivia-148a7fdc4c70d9aa.rmeta",
+            "sha256": "7812ac3da52eded18809688256d025a134e277a89a6d898a35cae81b15293e79"
+          },
+          {
+            "good": 0,
+            "invalid": "E0308",
+            "library": "/home/dev-user/.cache/ohm-rc18-r2-whole-ruff-20261028/states/check/target/debug/build/workspaces/d02126bc6cd5496a/v2-b9eb776582a3b68d/ruff_python_trivia/6a83852c429bda6f/out/libruff_python_trivia-6a83852c429bda6f.rmeta",
+            "sha256": "00389bdd090dcc24d3950b88bdd5aa7127524ff29c1453e7d2a08c287741946a"
+          },
+          {
+            "good": 0,
+            "invalid": "E0308",
+            "library": "/home/dev-user/.cache/ohm-rc18-r2-whole-ruff-20261028/states/check/target/debug/build/workspaces/d02126bc6cd5496a/v2-b9eb776582a3b68d/ruff_python_trivia/7220199d134bb335/out/libruff_python_trivia-7220199d134bb335.rmeta",
+            "sha256": "a3e5d15434320eb35764c044ef33c4389aac26b2acc7361ac940975b39b94cb9"
+          }
+        ],
+        "reported": 520,
+        "retained_elf": 78,
+        "typed_diagnostics": {},
+        "wild": 78,
+        "wild_retained_after_command": 78
+      },
+      "edited": {
+        "cargo": 1,
+        "cold_elf_equal_at_same_path": 30,
+        "cold_elf_same_path": 31,
+        "collect2": 1,
+        "dirty_count": 47,
+        "fresh": 473,
+        "full": 46,
+        "noncold_dirty": {
+          "mdtest": 1,
+          "ruff": 2,
+          "ruff_benchmark": 1,
+          "ruff_db": 1,
+          "ruff_dev": 1,
+          "ruff_formatter": 1,
+          "ruff_graph": 1,
+          "ruff_index": 1,
+          "ruff_linter": 1,
+          "ruff_macros": 2,
+          "ruff_markdown": 1,
+          "ruff_mdtest": 1,
+          "ruff_python_ast": 1,
+          "ruff_python_codegen": 1,
+          "ruff_python_edits": 1,
+          "ruff_python_formatter": 2,
+          "ruff_python_importer": 1,
+          "ruff_python_index": 1,
+          "ruff_python_literal": 1,
+          "ruff_python_parser": 1,
+          "ruff_python_semantic": 1,
+          "ruff_python_trivia": 3,
+          "ruff_ranged_value": 1,
+          "ruff_server": 1,
+          "ruff_wasm": 1,
+          "ruff_workspace": 1,
+          "ty": 2,
+          "ty_combine": 1,
+          "ty_completion_bench": 1,
+          "ty_completion_eval": 1,
+          "ty_ide": 1,
+          "ty_module_resolver": 1,
+          "ty_project": 1,
+          "ty_python_core": 1,
+          "ty_python_semantic": 1,
+          "ty_server": 1,
+          "ty_site_packages": 1,
+          "ty_static": 1,
+          "ty_test": 1,
+          "ty_vendored": 1,
+          "ty_wasm": 1
+        },
+        "ordinary_consumers": [
+          {
+            "good": 0,
+            "invalid": "E0308",
+            "library": "/home/dev-user/.cache/ohm-rc18-r2-whole-ruff-20261028/states/check/target/debug/build/workspaces/d02126bc6cd5496a/v2-b9eb776582a3b68d/ruff_python_trivia/148a7fdc4c70d9aa/out/libruff_python_trivia-148a7fdc4c70d9aa.rmeta",
+            "sha256": "d6fb21dca5591368d49295e352ca761e73151bd19eb2bed29a64d9f54ad39eb5"
+          },
+          {
+            "good": 0,
+            "invalid": "E0308",
+            "library": "/home/dev-user/.cache/ohm-rc18-r2-whole-ruff-20261028/states/check/target/debug/build/workspaces/d02126bc6cd5496a/v2-b9eb776582a3b68d/ruff_python_trivia/6a83852c429bda6f/out/libruff_python_trivia-6a83852c429bda6f.rmeta",
+            "sha256": "6b688e0189e024689c5454a47e2f516fe817e6c7f7cab738fc7cf942b9904a9c"
+          },
+          {
+            "good": 0,
+            "invalid": "E0308",
+            "library": "/home/dev-user/.cache/ohm-rc18-r2-whole-ruff-20261028/states/check/target/debug/build/workspaces/d02126bc6cd5496a/v2-b9eb776582a3b68d/ruff_python_trivia/7220199d134bb335/out/libruff_python_trivia-7220199d134bb335.rmeta",
+            "sha256": "10243e21c9d928eaa8a6faba700ed8d2f13fed80c4392805a15961696dee897b"
+          }
+        ],
+        "reported": 520,
+        "retained_elf": 31,
+        "typed_diagnostics": {},
+        "wild": 1,
+        "wild_retained_after_command": 1
+      },
+      "final-unchanged": {
+        "cargo": 1,
+        "cold_elf_equal_at_same_path": 31,
+        "cold_elf_same_path": 31,
+        "dirty_count": 0,
+        "fresh": 520,
+        "noncold_dirty": {},
+        "ordinary_consumers": [],
+        "reported": 520,
+        "retained_elf": 31,
+        "typed_diagnostics": {},
+        "wild_retained_after_command": 0
+      },
+      "restored": {
+        "cargo": 1,
+        "cold_elf_equal_at_same_path": 31,
+        "cold_elf_same_path": 31,
+        "collect2": 1,
+        "dirty_count": 47,
+        "fresh": 473,
+        "full": 46,
+        "noncold_dirty": {
+          "mdtest": 1,
+          "ruff": 2,
+          "ruff_benchmark": 1,
+          "ruff_db": 1,
+          "ruff_dev": 1,
+          "ruff_formatter": 1,
+          "ruff_graph": 1,
+          "ruff_index": 1,
+          "ruff_linter": 1,
+          "ruff_macros": 2,
+          "ruff_markdown": 1,
+          "ruff_mdtest": 1,
+          "ruff_python_ast": 1,
+          "ruff_python_codegen": 1,
+          "ruff_python_edits": 1,
+          "ruff_python_formatter": 2,
+          "ruff_python_importer": 1,
+          "ruff_python_index": 1,
+          "ruff_python_literal": 1,
+          "ruff_python_parser": 1,
+          "ruff_python_semantic": 1,
+          "ruff_python_trivia": 3,
+          "ruff_ranged_value": 1,
+          "ruff_server": 1,
+          "ruff_wasm": 1,
+          "ruff_workspace": 1,
+          "ty": 2,
+          "ty_combine": 1,
+          "ty_completion_bench": 1,
+          "ty_completion_eval": 1,
+          "ty_ide": 1,
+          "ty_module_resolver": 1,
+          "ty_project": 1,
+          "ty_python_core": 1,
+          "ty_python_semantic": 1,
+          "ty_server": 1,
+          "ty_site_packages": 1,
+          "ty_static": 1,
+          "ty_test": 1,
+          "ty_vendored": 1,
+          "ty_wasm": 1
+        },
+        "ordinary_consumers": [
+          {
+            "good": 0,
+            "invalid": "E0308",
+            "library": "/home/dev-user/.cache/ohm-rc18-r2-whole-ruff-20261028/states/check/target/debug/build/workspaces/d02126bc6cd5496a/v2-b9eb776582a3b68d/ruff_python_trivia/148a7fdc4c70d9aa/out/libruff_python_trivia-148a7fdc4c70d9aa.rmeta",
+            "sha256": "7812ac3da52eded18809688256d025a134e277a89a6d898a35cae81b15293e79"
+          },
+          {
+            "good": 0,
+            "invalid": "E0308",
+            "library": "/home/dev-user/.cache/ohm-rc18-r2-whole-ruff-20261028/states/check/target/debug/build/workspaces/d02126bc6cd5496a/v2-b9eb776582a3b68d/ruff_python_trivia/6a83852c429bda6f/out/libruff_python_trivia-6a83852c429bda6f.rmeta",
+            "sha256": "00389bdd090dcc24d3950b88bdd5aa7127524ff29c1453e7d2a08c287741946a"
+          },
+          {
+            "good": 0,
+            "invalid": "E0308",
+            "library": "/home/dev-user/.cache/ohm-rc18-r2-whole-ruff-20261028/states/check/target/debug/build/workspaces/d02126bc6cd5496a/v2-b9eb776582a3b68d/ruff_python_trivia/7220199d134bb335/out/libruff_python_trivia-7220199d134bb335.rmeta",
+            "sha256": "a3e5d15434320eb35764c044ef33c4389aac26b2acc7361ac940975b39b94cb9"
+          }
+        ],
+        "reported": 520,
+        "retained_elf": 31,
+        "typed_diagnostics": {},
+        "wild": 1,
+        "wild_retained_after_command": 1
+      },
+      "unchanged": {
+        "cargo": 1,
+        "cold_elf_equal_at_same_path": 31,
+        "cold_elf_same_path": 31,
+        "dirty_count": 0,
+        "fresh": 520,
+        "noncold_dirty": {},
+        "ordinary_consumers": [],
+        "reported": 520,
+        "retained_elf": 31,
+        "typed_diagnostics": {},
+        "wild_retained_after_command": 0
+      }
+    },
+    "test": {
+      "cold": {
+        "cargo": 1,
+        "cold_elf_equal_at_same_path": 206,
+        "cold_elf_same_path": 206,
+        "collect2": 250,
+        "configure-linker": 61,
+        "dirty_count": 619,
+        "fresh": 0,
+        "full": 623,
+        "noncold_dirty": null,
+        "ordinary_consumers": [
+          {
+            "library": "/home/dev-user/.cache/ohm-rc18-r2-whole-ruff-20261028/states/test/target/debug/build/workspaces/f668ecff90ea55a1/v2-f7836a9e0f6f61d4/ruff_python_trivia/148a7fdc4c70d9aa/out/libruff_python_trivia-148a7fdc4c70d9aa.rlib",
+            "ordinary_exe_sha256": "d8b0d5c61eb3304b34e61dfd8927b3fdf0b4d62e44ccd5c70cf885e74874b707",
+            "output": "       # foo\n       # bar\n    return 2",
+            "sha256": "3c3c9a444baed4e1dacae7154d93573f18d9a9eb301f9e516498ff6424b36b40"
+          },
+          {
+            "library": "/home/dev-user/.cache/ohm-rc18-r2-whole-ruff-20261028/states/test/target/debug/build/workspaces/f668ecff90ea55a1/v2-f7836a9e0f6f61d4/ruff_python_trivia/92268686b637ee11/out/libruff_python_trivia-92268686b637ee11.rlib",
+            "ordinary_exe_sha256": "5fdd1742c2c6748c9680b43b2cba3cea69610a0ba4225412f9bfbfbec0af3229",
+            "output": "       # foo\n       # bar\n    return 2",
+            "sha256": "2d1282cfc135e3ab4d326d3a625763b52014d6ad52fcbbc411da3889665394cd"
+          },
+          {
+            "case": "parser::tests::test_modes",
+            "list_sha256": "abf9421fe257430900f0c9e2dfa177bd3d29d8313ec7bc7a2b353d1801d8a8b0",
+            "parser_test": "/home/dev-user/.cache/ohm-rc18-r2-whole-ruff-20261028/states/test/target/debug/build/workspaces/f668ecff90ea55a1/v2-f7836a9e0f6f61d4/ruff_python_parser/778c3fbbf719bfac/out/ruff_python_parser-778c3fbbf719bfac"
+          }
+        ],
+        "reported": 619,
+        "retained_elf": 206,
+        "typed_diagnostics": {
+          "warning": 1
+        },
+        "wild": 188,
+        "wild_retained_after_command": 188
+      },
+      "edited": {
+        "cargo": 1,
+        "cold_elf_equal_at_same_path": 107,
+        "cold_elf_same_path": 145,
+        "collect2": 75,
+        "dirty_count": 113,
+        "fresh": 506,
+        "full": 111,
+        "noncold_dirty": {
+          "analyze_graph": 1,
+          "api": 2,
+          "block_comments": 1,
+          "cache_key": 1,
+          "cli": 2,
+          "comparable": 1,
+          "config": 1,
+          "corpus": 1,
+          "direxist_guard": 1,
+          "document": 1,
+          "e2e": 2,
+          "file_watching": 1,
+          "fixtures": 2,
+          "generate_inline_tests": 1,
+          "identifier": 1,
+          "insta": 1,
+          "insta_cmd": 1,
+          "integration_test": 1,
+          "match_pattern": 1,
+          "mdtest": 4,
+          "normalizer": 1,
+          "parentheses": 1,
+          "parenthesize": 1,
+          "resolve_files": 1,
+          "ron": 1,
+          "ruff": 4,
+          "ruff_db": 2,
+          "ruff_dev": 1,
+          "ruff_formatter": 2,
+          "ruff_graph": 1,
+          "ruff_index": 2,
+          "ruff_linter": 2,
+          "ruff_macros": 1,
+          "ruff_markdown": 2,
+          "ruff_mdtest": 1,
+          "ruff_python_ast": 2,
+          "ruff_python_codegen": 2,
+          "ruff_python_edits": 2,
+          "ruff_python_formatter": 4,
+          "ruff_python_importer": 2,
+          "ruff_python_index": 2,
+          "ruff_python_literal": 2,
+          "ruff_python_parser": 2,
+          "ruff_python_semantic": 2,
+          "ruff_python_trivia": 3,
+          "ruff_ranged_value": 1,
+          "ruff_server": 2,
+          "ruff_wasm": 1,
+          "ruff_workspace": 2,
+          "self_environment": 1,
+          "simple_tokenizer": 1,
+          "source_order": 1,
+          "stmt_if": 1,
+          "ty": 4,
+          "ty_combine": 2,
+          "ty_completion_bench": 1,
+          "ty_completion_eval": 1,
+          "ty_ide": 2,
+          "ty_module_resolver": 2,
+          "ty_project": 2,
+          "ty_python_core": 2,
+          "ty_python_semantic": 2,
+          "ty_server": 2,
+          "ty_site_packages": 2,
+          "ty_static": 1,
+          "ty_test": 2,
+          "ty_vendored": 2,
+          "ty_wasm": 1,
+          "visitor": 1,
+          "whitespace": 1
+        },
+        "ordinary_consumers": [
+          {
+            "library": "/home/dev-user/.cache/ohm-rc18-r2-whole-ruff-20261028/states/test/target/debug/build/workspaces/f668ecff90ea55a1/v2-f7836a9e0f6f61d4/ruff_python_trivia/148a7fdc4c70d9aa/out/libruff_python_trivia-148a7fdc4c70d9aa.rlib",
+            "ordinary_exe_sha256": "76dccd9109c35d15771db636b03c1899eb65d81f695fdc1b69f3a6d8bf2a119e",
+            "output": "    # foo\n    # bar\n     return 2",
+            "sha256": "25a3c07f41f74b3e4b604de7399425b85de6ef8510e157c2db01e8560e8b68b1"
+          },
+          {
+            "library": "/home/dev-user/.cache/ohm-rc18-r2-whole-ruff-20261028/states/test/target/debug/build/workspaces/f668ecff90ea55a1/v2-f7836a9e0f6f61d4/ruff_python_trivia/92268686b637ee11/out/libruff_python_trivia-92268686b637ee11.rlib",
+            "ordinary_exe_sha256": "66e0d4cd5427bcb398eb37ec67ecd0bd91a5fa666e042150c425eb19c0da9960",
+            "output": "    # foo\n    # bar\n     return 2",
+            "sha256": "fa979156fe6e9384696ea04a32ae03006fd81954f13dc226c6e1021313703444"
+          },
+          {
+            "case": "parser::tests::test_modes",
+            "list_sha256": "abf9421fe257430900f0c9e2dfa177bd3d29d8313ec7bc7a2b353d1801d8a8b0",
+            "parser_test": "/home/dev-user/.cache/ohm-rc18-r2-whole-ruff-20261028/states/test/target/debug/build/workspaces/f668ecff90ea55a1/v2-f7836a9e0f6f61d4/ruff_python_parser/778c3fbbf719bfac/out/ruff_python_parser-778c3fbbf719bfac"
+          }
+        ],
+        "reported": 619,
+        "retained_elf": 145,
+        "typed_diagnostics": {
+          "warning": 1
+        },
+        "wild": 75,
+        "wild_retained_after_command": 75
+      },
+      "final-unchanged": {
+        "cargo": 1,
+        "cold_elf_equal_at_same_path": 137,
+        "cold_elf_same_path": 142,
+        "collect2": 50,
+        "dirty_count": 56,
+        "fresh": 563,
+        "full": 1,
+        "link-only": 50,
+        "noncold_dirty": {
+          "analyze_graph": 1,
+          "block_comments": 1,
+          "cli": 2,
+          "comparable": 1,
+          "config": 1,
+          "corpus": 1,
+          "direxist_guard": 1,
+          "document": 1,
+          "e2e": 2,
+          "file_watching": 1,
+          "fixtures": 2,
+          "generate_inline_tests": 1,
+          "identifier": 1,
+          "insta": 1,
+          "insta_cmd": 1,
+          "integration_test": 1,
+          "match_pattern": 1,
+          "mdtest": 4,
+          "normalizer": 1,
+          "parentheses": 1,
+          "parenthesize": 1,
+          "resolve_files": 1,
+          "ron": 1,
+          "ruff": 2,
+          "ruff_db": 1,
+          "ruff_linter": 1,
+          "ruff_markdown": 1,
+          "ruff_mdtest": 1,
+          "ruff_python_formatter": 2,
+          "ruff_python_importer": 1,
+          "ruff_python_parser": 1,
+          "ruff_python_semantic": 1,
+          "ruff_server": 1,
+          "self_environment": 1,
+          "simple_tokenizer": 1,
+          "source_order": 1,
+          "stmt_if": 1,
+          "ty": 2,
+          "ty_ide": 1,
+          "ty_module_resolver": 1,
+          "ty_project": 1,
+          "ty_python_semantic": 1,
+          "ty_server": 1,
+          "ty_test": 2,
+          "visitor": 1,
+          "whitespace": 1
+        },
+        "ordinary_consumers": [],
+        "reported": 619,
+        "retained_elf": 142,
+        "typed_diagnostics": {
+          "warning": 1
+        },
+        "wild": 50,
+        "wild_retained_after_command": 50
+      },
+      "restored": {
+        "cargo": 1,
+        "cold_elf_equal_at_same_path": 140,
+        "cold_elf_same_path": 145,
+        "collect2": 75,
+        "dirty_count": 113,
+        "fresh": 506,
+        "full": 111,
+        "noncold_dirty": {
+          "analyze_graph": 1,
+          "api": 2,
+          "block_comments": 1,
+          "cache_key": 1,
+          "cli": 2,
+          "comparable": 1,
+          "config": 1,
+          "corpus": 1,
+          "direxist_guard": 1,
+          "document": 1,
+          "e2e": 2,
+          "file_watching": 1,
+          "fixtures": 2,
+          "generate_inline_tests": 1,
+          "identifier": 1,
+          "insta": 1,
+          "insta_cmd": 1,
+          "integration_test": 1,
+          "match_pattern": 1,
+          "mdtest": 4,
+          "normalizer": 1,
+          "parentheses": 1,
+          "parenthesize": 1,
+          "resolve_files": 1,
+          "ron": 1,
+          "ruff": 4,
+          "ruff_db": 2,
+          "ruff_dev": 1,
+          "ruff_formatter": 2,
+          "ruff_graph": 1,
+          "ruff_index": 2,
+          "ruff_linter": 2,
+          "ruff_macros": 1,
+          "ruff_markdown": 2,
+          "ruff_mdtest": 1,
+          "ruff_python_ast": 2,
+          "ruff_python_codegen": 2,
+          "ruff_python_edits": 2,
+          "ruff_python_formatter": 4,
+          "ruff_python_importer": 2,
+          "ruff_python_index": 2,
+          "ruff_python_literal": 2,
+          "ruff_python_parser": 2,
+          "ruff_python_semantic": 2,
+          "ruff_python_trivia": 3,
+          "ruff_ranged_value": 1,
+          "ruff_server": 2,
+          "ruff_wasm": 1,
+          "ruff_workspace": 2,
+          "self_environment": 1,
+          "simple_tokenizer": 1,
+          "source_order": 1,
+          "stmt_if": 1,
+          "ty": 4,
+          "ty_combine": 2,
+          "ty_completion_bench": 1,
+          "ty_completion_eval": 1,
+          "ty_ide": 2,
+          "ty_module_resolver": 2,
+          "ty_project": 2,
+          "ty_python_core": 2,
+          "ty_python_semantic": 2,
+          "ty_server": 2,
+          "ty_site_packages": 2,
+          "ty_static": 1,
+          "ty_test": 2,
+          "ty_vendored": 2,
+          "ty_wasm": 1,
+          "visitor": 1,
+          "whitespace": 1
+        },
+        "ordinary_consumers": [
+          {
+            "library": "/home/dev-user/.cache/ohm-rc18-r2-whole-ruff-20261028/states/test/target/debug/build/workspaces/f668ecff90ea55a1/v2-f7836a9e0f6f61d4/ruff_python_trivia/148a7fdc4c70d9aa/out/libruff_python_trivia-148a7fdc4c70d9aa.rlib",
+            "ordinary_exe_sha256": "d8b0d5c61eb3304b34e61dfd8927b3fdf0b4d62e44ccd5c70cf885e74874b707",
+            "output": "       # foo\n       # bar\n    return 2",
+            "sha256": "033a705be8a63bf7823552f5f6dbf6fdf9094639e238975befbbb708649b11dd"
+          },
+          {
+            "library": "/home/dev-user/.cache/ohm-rc18-r2-whole-ruff-20261028/states/test/target/debug/build/workspaces/f668ecff90ea55a1/v2-f7836a9e0f6f61d4/ruff_python_trivia/92268686b637ee11/out/libruff_python_trivia-92268686b637ee11.rlib",
+            "ordinary_exe_sha256": "5fdd1742c2c6748c9680b43b2cba3cea69610a0ba4225412f9bfbfbec0af3229",
+            "output": "       # foo\n       # bar\n    return 2",
+            "sha256": "2c649a823d2b984047b4e0c832fa52b7c0020f02782c3a56d719bcb8ac231233"
+          },
+          {
+            "case": "parser::tests::test_modes",
+            "list_sha256": "abf9421fe257430900f0c9e2dfa177bd3d29d8313ec7bc7a2b353d1801d8a8b0",
+            "parser_test": "/home/dev-user/.cache/ohm-rc18-r2-whole-ruff-20261028/states/test/target/debug/build/workspaces/f668ecff90ea55a1/v2-f7836a9e0f6f61d4/ruff_python_parser/778c3fbbf719bfac/out/ruff_python_parser-778c3fbbf719bfac"
+          }
+        ],
+        "reported": 619,
+        "retained_elf": 145,
+        "typed_diagnostics": {
+          "warning": 1
+        },
+        "wild": 75,
+        "wild_retained_after_command": 75
+      },
+      "unchanged": {
+        "cargo": 1,
+        "cold_elf_equal_at_same_path": 141,
+        "cold_elf_same_path": 142,
+        "collect2": 50,
+        "dirty_count": 56,
+        "fresh": 563,
+        "full": 1,
+        "link-only": 50,
+        "noncold_dirty": {
+          "analyze_graph": 1,
+          "block_comments": 1,
+          "cli": 2,
+          "comparable": 1,
+          "config": 1,
+          "corpus": 1,
+          "direxist_guard": 1,
+          "document": 1,
+          "e2e": 2,
+          "file_watching": 1,
+          "fixtures": 2,
+          "generate_inline_tests": 1,
+          "identifier": 1,
+          "insta": 1,
+          "insta_cmd": 1,
+          "integration_test": 1,
+          "match_pattern": 1,
+          "mdtest": 4,
+          "normalizer": 1,
+          "parentheses": 1,
+          "parenthesize": 1,
+          "resolve_files": 1,
+          "ron": 1,
+          "ruff": 2,
+          "ruff_db": 1,
+          "ruff_linter": 1,
+          "ruff_markdown": 1,
+          "ruff_mdtest": 1,
+          "ruff_python_formatter": 2,
+          "ruff_python_importer": 1,
+          "ruff_python_parser": 1,
+          "ruff_python_semantic": 1,
+          "ruff_server": 1,
+          "self_environment": 1,
+          "simple_tokenizer": 1,
+          "source_order": 1,
+          "stmt_if": 1,
+          "ty": 2,
+          "ty_ide": 1,
+          "ty_module_resolver": 1,
+          "ty_project": 1,
+          "ty_python_semantic": 1,
+          "ty_server": 1,
+          "ty_test": 2,
+          "visitor": 1,
+          "whitespace": 1
+        },
+        "ordinary_consumers": [],
+        "reported": 619,
+        "retained_elf": 142,
+        "typed_diagnostics": {
+          "warning": 1
+        },
+        "wild": 50,
+        "wild_retained_after_command": 50
+      }
+    }
+  },
+  "final": {
+    "driver": "22abce6921b46f93f387c7d3d99cefa4df9c0a866619447077699ef81a73827f",
+    "records": [
+      [
+        "check",
+        "cold",
+        520,
+        0,
+        {
+          "cargo": 1,
+          "cargo-version": 1,
+          "collect2": 140,
+          "configure-linker": 61,
+          "full": 524,
+          "wild": 78
+        }
+      ],
+      [
+        "build",
+        "cold",
+        501,
+        0,
+        {
+          "cargo": 1,
+          "cargo-version": 1,
+          "collect2": 152,
+          "configure-linker": 61,
+          "full": 505,
+          "wild": 90
+        }
+      ],
+      [
+        "test",
+        "cold",
+        619,
+        0,
+        {
+          "cargo": 1,
+          "collect2": 250,
+          "configure-linker": 61,
+          "full": 623,
+          "wild": 188
+        }
+      ],
+      [
+        "check",
+        "unchanged",
+        520,
+        520,
+        {
+          "cargo": 1
+        }
+      ],
+      [
+        "build",
+        "unchanged",
+        501,
+        501,
+        {
+          "cargo": 1
+        }
+      ],
+      [
+        "test",
+        "unchanged",
+        619,
+        563,
+        {
+          "cargo": 1,
+          "collect2": 50,
+          "full": 1,
+          "link-only": 50,
+          "wild": 50
+        }
+      ],
+      [
+        "check",
+        "edited",
+        520,
+        473,
+        {
+          "cargo": 1,
+          "collect2": 1,
+          "full": 46,
+          "wild": 1
+        }
+      ],
+      [
+        "build",
+        "edited",
+        501,
+        455,
+        {
+          "cargo": 1,
+          "collect2": 10,
+          "full": 46,
+          "wild": 10
+        }
+      ],
+      [
+        "test",
+        "edited",
+        619,
+        506,
+        {
+          "cargo": 1,
+          "collect2": 75,
+          "full": 111,
+          "wild": 75
+        }
+      ],
+      [
+        "check",
+        "restored",
+        520,
+        473,
+        {
+          "cargo": 1,
+          "collect2": 1,
+          "full": 46,
+          "wild": 1
+        }
+      ],
+      [
+        "build",
+        "restored",
+        501,
+        455,
+        {
+          "cargo": 1,
+          "collect2": 10,
+          "full": 46,
+          "wild": 10
+        }
+      ],
+      [
+        "test",
+        "restored",
+        619,
+        506,
+        {
+          "cargo": 1,
+          "collect2": 75,
+          "full": 111,
+          "wild": 75
+        }
+      ],
+      [
+        "check",
+        "final-unchanged",
+        520,
+        520,
+        {
+          "cargo": 1
+        }
+      ],
+      [
+        "build",
+        "final-unchanged",
+        501,
+        501,
+        {
+          "cargo": 1
+        }
+      ],
+      [
+        "test",
+        "final-unchanged",
+        619,
+        563,
+        {
+          "cargo": 1,
+          "collect2": 50,
+          "full": 1,
+          "link-only": 50,
+          "wild": 50
+        }
+      ]
+    ],
+    "release": "cfc66a7ceee5cad8f8939245d359e4db0d2b6f2abb5760c7cbefa6c9a1d454f8",
+    "restored": true,
+    "root_free": 213936427008,
+    "scratch_free": 104895254528
+  },
+  "native": {
+    "total_bytes": 14151219952,
+    "unique_byte_objects": 377
+  },
+  "portable": {
+    "members": 368,
+    "original_bytes": 102876791,
+    "substituted_members": 22
+  }
+}
