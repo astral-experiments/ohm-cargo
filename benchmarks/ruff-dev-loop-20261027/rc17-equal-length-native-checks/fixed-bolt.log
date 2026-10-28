@@ -1,0 +1,71 @@
+BOLT-INFO: shared object or position-independent executable detected
+BOLT-INFO: Target architecture: x86_64
+BOLT-INFO: BOLT version: 85ac560262434c9ccfc0c183ec22d4138ed647fb
+BOLT-INFO: first alloc address is 0x0
+BOLT-INFO: creating new program header table at address 0x5800000, offset 0x5800000
+BOLT-INFO: enabling relocation mode
+BOLT-INFO: enabling lite mode
+BOLT-WARNING: split function detected on input : LLVMRustModuleHasInlineAsm.cold. The support is limited in relocation mode
+BOLT-WARNING: Failed to analyze 332 relocations
+BOLT-INFO: pre-processing profile using branch profile reader
+BOLT-WARNING: 6 collisions detected while hashing binary objects. Use -v=1 to see the list.
+BOLT-INFO: 13381 out of 82160 functions in the binary (16.3%) have non-empty execution profile
+BOLT-INFO: 437 functions with profile could not be optimized
+BOLT-WARNING: 150 (1.1% of all profiled) functions have invalid (possibly stale) profile. Use -report-stale to see the list.
+BOLT-WARNING: 8397649526 out of 159565719144 samples in the binary (5.3%) belong to functions with invalid (possibly stale) profile.
+BOLT-INFO: profile for 43 objects was ignored
+BOLT-INFO: profile quality metrics for the hottest 1000 functions (reporting top 5% values): function CFG discontinuity 0.00%; call graph flow conservation gap 3.38%; CFG flow conservation gap 0.00% (weighted) 0.00% (worst); exception handling usage 0.00% (of total BBEC) 0.00% (of total InvokeEC)
+BOLT-INFO: 907907 instructions were shortened
+BOLT-INFO: removed 1821 empty blocks
+BOLT-INFO: merged 4 duplicate CFG edges
+BOLT-INFO: ICF folded 517 out of 82478 functions in 4 passes. 11 functions had jump tables.
+BOLT-INFO: Removing all identical functions will save 95.81 KB of code space. Folded functions were called 241888707 times based on profile.
+BOLT-INFO: basic block reordering modified layout of 8676 functions (64.84% of profiled, 10.52% of total)
+BOLT-INFO: UCE removed 3 blocks and 14 bytes of code
+BOLT-INFO: splitting separates 18593758 hot bytes from 10071618 cold bytes (64.86% of split functions is hot).
+BOLT-INFO: 58 Functions were reordered by LoopInversionPass
+BOLT-INFO: splitting separates 10799420 hot bytes from 7045167 cold bytes (60.52% of split functions is hot).
+BOLT-INFO: program-wide dynostats after all optimizations before SCTC and FOP:
+
+        104993549034 : executed forward branches
+         10364422570 : taken forward branches
+         14932183125 : executed backward branches
+          9661687004 : taken backward branches
+          5451823008 : executed unconditional branches
+          6510488295 : all function calls
+          4357693364 : indirect calls
+           124991726 : PLT calls
+        874044298479 : executed instructions
+        220359686847 : executed load instructions
+        123903023365 : executed store instructions
+          2803459069 : taken jump table branches
+                   0 : taken unknown indirect branches
+        125377555167 : total branches
+         25477932582 : taken branches
+         99899622585 : non-taken conditional branches
+         20026109574 : taken conditional branches
+        119925732159 : all conditional branches
+
+         97827561664 : executed forward branches (-6.8%)
+          5638512157 : taken forward branches (-45.6%)
+         22093214107 : executed backward branches (+48.0%)
+          9852004893 : taken backward branches (+2.0%)
+          4171839725 : executed unconditional branches (-23.5%)
+          6510488295 : all function calls (=)
+          4357693364 : indirect calls (=)
+           124991726 : PLT calls (=)
+        869691038253 : executed instructions (-0.5%)
+        220359686847 : executed load instructions (=)
+        123903023365 : executed store instructions (=)
+          2803459069 : taken jump table branches (=)
+                   0 : taken unknown indirect branches (=)
+        124092615496 : total branches (-1.0%)
+         19662356775 : taken branches (-22.8%)
+        104430258721 : non-taken conditional branches (+4.5%)
+         15490517050 : taken conditional branches (-22.6%)
+        119920775771 : all conditional branches (-0.0%)
+
+BOLT-INFO: SCTC: patched 28 tail calls (24 forward) tail calls (4 backward) from a total of 28 while removing 0 double jumps and removing 27 basic blocks totalling 135 bytes of code. CTCs total execution count is 4291910 and the number of times CTCs are taken is 11366
+BOLT-INFO: patched build-id (flipped last bit)
+BOLT-INFO: setting __hot_start to 0x5a00000
+BOLT-INFO: setting __hot_end to 0x736d49a
